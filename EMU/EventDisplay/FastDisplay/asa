@@ -1,0 +1,48 @@
+Reading cached build data
+Scanning src/Display/FastDisplay/BuildFile
+
+Entering Package Display/FastDisplay
+Entering library rule at Display/FastDisplay
+>> Running moc for /afs/cern.ch/user/g/golao/scratch0/CMSSW_0_4_0/src/Display/FastDisplay/src/form1.h
+/usr/lib/qt-3.1/bin/moc -o tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/moc/form1_h_moc.cc /afs/cern.ch/user/g/golao/scratch0/CMSSW_0_4_0/src/Display/FastDisplay/src/form1.h
+>> Running moc for /afs/cern.ch/user/g/golao/scratch0/CMSSW_0_4_0/src/Display/FastDisplay/src/ui/form1.h
+/usr/lib/qt-3.1/bin/moc -o tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/moc/ui/form1_h_moc.cc /afs/cern.ch/user/g/golao/scratch0/CMSSW_0_4_0/src/Display/FastDisplay/src/ui/form1.h
+>> Compiling /afs/cern.ch/user/g/golao/scratch0/CMSSW_0_4_0/src/Display/FastDisplay/src/main.cpp 
+/usr/bin/c++ -MMD  -c -DPROJECT_NAME=CMSSW -DPROJECT_VERSION=CMSSW_0_4_0 -DGNU_GCC -D_GNU_SOURCE -I/afs/cern.ch/user/g/golao/scratch0/CMSSW_0_4_0/src -I/afs/cern.ch/cms/Releases/CMSSW/CMSSW_0_4_0/src -I/afs/cern.ch/cms/external/SCRAM-v1/SEAL/SEAL_1_7_8/include -I/afs/cern.ch/cms/external/SCRAM-v1/SEAL/SEAL_1_7_8/slc3_ia32_gcc323/include -I/afs/cern.ch/cms/external/SCRAM-v1/POOL/POOL_2_2_6/include  -Itmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/moc -I/usr/lib/qt-3.1/include -pedantic -ansi -pthread -pipe -O2 -felide-constructors -fmessage-length=0 -ftemplate-depth-300 -Wall -Wno-non-template-friend -Wno-long-long -Wimplicit -Wreturn-type -Wunused -Wparentheses    -fPIC /afs/cern.ch/user/g/golao/scratch0/CMSSW_0_4_0/src/Display/FastDisplay/src/main.cpp -o tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/main.o
+>> Compiling tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/moc/form1_h_moc.cc
+/usr/bin/c++ -MMD  -c -DPROJECT_NAME=CMSSW -DPROJECT_VERSION=CMSSW_0_4_0 -DGNU_GCC -D_GNU_SOURCE -I/afs/cern.ch/user/g/golao/scratch0/CMSSW_0_4_0/src -I/afs/cern.ch/cms/Releases/CMSSW/CMSSW_0_4_0/src -I/afs/cern.ch/cms/external/SCRAM-v1/SEAL/SEAL_1_7_8/include -I/afs/cern.ch/cms/external/SCRAM-v1/SEAL/SEAL_1_7_8/slc3_ia32_gcc323/include -I/afs/cern.ch/cms/external/SCRAM-v1/POOL/POOL_2_2_6/include  -Itmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/moc -I/usr/lib/qt-3.1/include -pedantic -ansi -pthread -pipe -O2 -felide-constructors -fmessage-length=0 -ftemplate-depth-300 -Wall -Wno-non-template-friend -Wno-long-long -Wimplicit -Wreturn-type -Wunused -Wparentheses    -fPIC tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/moc/form1_h_moc.cc -o tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/moc/form1_h_moc.o
+>> Building shared library tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/libDisplayFastDisplay.so
+/usr/bin/c++ -pedantic -ansi -pthread -pipe -O2 -felide-constructors -fmessage-length=0 -ftemplate-depth-300 -Wall -Wno-non-template-friend -Wno-long-long -Wimplicit -Wreturn-type -Wunused -Wparentheses   -Wl,-E tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/main.o tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/moc/form1_h_moc.o -o tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/libDisplayFastDisplay.so -shared -Wl,-E  -L/afs/cern.ch/user/g/golao/scratch0/CMSSW_0_4_0/lib/slc3_ia32_gcc323 -L/afs/cern.ch/cms/Releases/CMSSW/CMSSW_0_4_0/lib/slc3_ia32_gcc323 -L/afs/cern.ch/user/g/golao/scratch0/CMSSW_0_4_0/lib/slc3_ia32_gcc323 -L/afs/cern.ch/cms/Releases/CMSSW/CMSSW_0_4_0/lib/slc3_ia32_gcc323 -L/afs/cern.ch/cms/external/SCRAM-v1/SEAL/SEAL_1_7_8/slc3_ia32_gcc323/lib -L/afs/cern.ch/cms/external/SCRAM-v1/POOL/POOL_2_2_6/slc3_ia32_gcc323/lib -lqt -lX11 -lqt-mt -lg2
+Copying tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/libDisplayFastDisplay.so to productstore area:
+@@@@ Checking shared library for missing symbols: 
+tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/libDisplayFastDisplay.so: undefined symbols
+  _ZN5Form1C1EP7QWidgetPKcj
+        needed by tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/libDisplayFastDisplay.so
+  _ZN5Form1D0Ev
+        needed by tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/libDisplayFastDisplay.so
+  _ZN5Form110fileSaveAsEv
+        needed by tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/libDisplayFastDisplay.so
+  _ZN5Form18fileOpenEv
+        needed by tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/libDisplayFastDisplay.so
+  _ZThn40_N5Form1D1Ev
+        needed by tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/libDisplayFastDisplay.so
+  _ZN5Form19filePrintEv
+        needed by tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/libDisplayFastDisplay.so
+  _ZN5Form117checkBox1_toggledEb
+        needed by tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/libDisplayFastDisplay.so
+  _ZThn40_N5Form1D0Ev
+        needed by tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/libDisplayFastDisplay.so
+  _ZN5Form118checkBox1_releasedEv
+        needed by tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/libDisplayFastDisplay.so
+  _ZN5Form18fileSaveEv
+        needed by tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/libDisplayFastDisplay.so
+  _ZN5Form17fileNewEv
+        needed by tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/libDisplayFastDisplay.so
+  _ZN5Form18fileExitEv
+        needed by tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/libDisplayFastDisplay.so
+  _ZN5Form1D1Ev
+        needed by tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/libDisplayFastDisplay.so
+  _ZN5Form117checkBox1_pressedEv
+        needed by tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/libDisplayFastDisplay.so
+  _ZN5Form114languageChangeEv
+        needed by tmp/slc3_ia32_gcc323/src/Display/FastDisplay/src/libDisplayFastDisplay.so
