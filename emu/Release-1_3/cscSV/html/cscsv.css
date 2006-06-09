@@ -1,0 +1,13 @@
+td.Halted {
+	color: #22c;
+}
+td.Configured {
+	color: #2c2;
+}
+td.Enabled {
+	color: #ca2;
+}
+td.Error {
+	color: #c22;
+}
+/* vim: set sw=4 ts=4: */
