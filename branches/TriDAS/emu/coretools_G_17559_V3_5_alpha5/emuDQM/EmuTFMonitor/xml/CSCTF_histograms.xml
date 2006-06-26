@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Booking xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<Histogram Options="LineColor=4">
+		<Type>h1_</Type>
+		<Prefix>TF_id_</Prefix>
+		<Name>L1A_BXN</Name>
+		<Title>DDU_FPGA: BXN of L1A arrival</Title>
+		<XRange>(0:4096)</XRange>
+		<XBins>4096</XBins>
+		<XLabel>BXN Counter Number</XLabel>
+		<YLabel>Number of Events</YLabel>
+	</Histogram>
+
+	<Histogram Options="LineColor=4">
+		<Type>h2_</Type>
+		<Prefix>TF_id_</Prefix>
+		<Name>FMM_status</Name>
+		<Title>FMM Status (rate dependent)</Title>
+		<XRange>(0:50000)</XRange>
+		<XBins>1024</XBins>
+		<XLabel>Sequential event number as received by DQM</XLabel>
+		<YRange>(0:7)</YRange>
+		<YBins>7</YBins>
+		<YLabel></YLabel>
+		<YBinLabels>Warning Overflow,Out of Synch,Buzy,Ready,FA: Out of Synch,SP: Out of Synch,Skip</YBinLabels>
+	</Histogram>
+
+
+	<Histogram Options="textcolz:XnDivizions=505">
+		<Type>h2_</Type>
+		<Prefix>TF_</Prefix>
+		<Name>integrity</Name>
+		<Title>Data Integrity Timeline</Title>
+		<XRange>(0:50000)</XRange>
+		<XBins>1024</XBins>
+		<XLabel>Sequential event number as received by DQM</XLabel>
+		<YRange>(0:8)</YRange>
+		<YBins>8</YBins>
+		<YLabel></YLabel>
+		<YBinLabels>SP Header Missing,SP Trailer Missing,Out of SP Buffer,SP Word Count,DDU Trailer Missing (2 headers in a row),DDU Trailer Missing (overflow),DDU Header Missing,DDU Buffer Unidentified</YBinLabels>
+	</Histogram>
+
+
+	<Histogram Options="LineColor=2">
+		<Type>h1_</Type>
+		<Prefix>TF_id_</Prefix>
+		<Name>SE</Name>
+		<Title>Synchronization Error</Title>
+		<XRange>(0:15)</XRange>
+		<XBins>15</XBins>
+		<XLabel>SP Input</XLabel>
+		<XBinLabels>SE1a,SE1b,SE1c,SE1d,SE1e,SE1f,SE2a,SE2b,SE2c,SE3a,SE3b,SE3c,SE4a,SE4b,SE4c</XBinLabels>
+		<YLabel>Number of Errors</YLabel>
+	</Histogram>
+
+	<Histogram Options="LineColor=2">
+		<Type>h1_</Type>
+		<Prefix>TF_id_</Prefix>
+		<Name>SM</Name>
+		<Title>Synchronization Error | SP Optical Link Status | Alignment FIFO Error</Title>
+		<XRange>(0:15)</XRange>
+		<XBins>15</XBins>
+		<XLabel>SP Input</XLabel>
+		<XBinLabels>SM1a,SM1b,SM1c,SM1d,SM1e,SM1f,SM2a,SM2b,SM2c,SM3a,SM3b,SM3c,SM4a,SM4b,SM4c</XBinLabels>
+		<YLabel>Number of Errors</YLabel>
+	</Histogram>
+
+
+	<Histogram Options="LineColor=2">
+		<Type>h1_</Type>
+		<Prefix>TF_id_</Prefix>
+		<Name>AF</Name>
+		<Title>Alignment FIFO status</Title>
+		<XRange>(0:17)</XRange>
+		<XBins>17</XBins>
+		<XLabel>SP Input</XLabel>
+		<XBinLabels>AF1a,AF1b,AF1c,AF1d,AF1e,AF1f,AF2a,AF2b,AF2c,AF3a,AF3b,AF3c,AF4a,AF4b,AF4c,AFBa,AFBb</XBinLabels>
+		<YLabel>Number of Errors</YLabel>
+	</Histogram>
+
+	<Histogram Options="LineColor=2">
+		<Type>h1_</Type>
+		<Prefix>TF_id_</Prefix>
+		<Name>BX</Name>
+		<Title>BX counter status with respect to BC0 mark</Title>
+		<XRange>(0:17)</XRange>
+		<XBins>17</XBins>
+		<XLabel>SP Input</XLabel>
+		<XBinLabels>BX1a,BX1b,BX1c,BX1d,BX1e,BX1f,BX2a,BX2b,BX2c,BX3a,BX3b,BX3c,BX4a,BX4b,BX4c,BXBa,BXBb</XBinLabels>
+		<YLabel>Number of Errors</YLabel>
+	</Histogram>
+
+
+	<Histogram Options="bar1:FillColor=48">
+		<Type>h1_</Type>
+		<Prefix>TF_id_id_id_</Prefix>
+		<Name>CLCT</Name>
+		<Title>CLCT Pattern #</Title>
+		<XRange>(0:16)</XRange>
+		<XBins>16</XBins>
+		<XLabel>CLCT Pattern #</XLabel>
+		<YLabel>Number of Events</YLabel>
+	</Histogram>
+
+
+	<Histogram Options="bar1:FillColor=48">
+		<Type>h1_</Type>
+		<Prefix>TF_id_id_id_</Prefix>
+		<Name>LCTquality</Name>
+		<Title>Correlated LCT Quality</Title>
+		<XRange>(0:16)</XRange>
+		<XBins>16</XBins>
+		<XLabel>Quality</XLabel>
+		<YLabel>Number of Events</YLabel>
+	</Histogram>
+
+
+	<Histogram Options="bar1:FillColor=48">
+		<Type>h1_</Type>
+		<Prefix>TF_id_id_id_</Prefix>
+		<Name>WireGroup</Name>
+		<Title>Wire Group</Title>
+		<XRange>(0:128)</XRange>
+		<XBins>128</XBins>
+		<XLabel>Wire Group</XLabel>
+		<YLabel>Number of Events</YLabel>
+	</Histogram>
+
+
+	<Histogram Options="bar1:FillColor=48">
+		<Type>h1_</Type>
+		<Prefix>TF_id_id_id_</Prefix>
+		<Name>HalfStrips</Name>
+		<Title>Half-Strips</Title>
+		<XRange>(0:256)</XRange>
+		<XBins>256</XBins>
+		<XLabel>Half-Strip</XLabel>
+		<YLabel>Number of Events</YLabel>
+	</Histogram>
+
+	<Histogram Options="bar1:FillColor=48">
+		<Type>h1_</Type>
+		<Prefix>TF_id_id_id_</Prefix>
+		<Name>DiStrips</Name>
+		<Title>Di-Strips</Title>
+		<XRange>(0:256)</XRange>
+		<XBins>256</XBins>
+		<XLabel>Di-Strip</XLabel>
+		<YLabel>Number of Events</YLabel>
+	</Histogram>
+
+
+	<Histogram Options="bar1:FillColor=48">
+		<Type>h1_</Type>
+		<Prefix>TF_id_id_id_</Prefix>
+		<Name>csc</Name>
+		<Title>CSC ID</Title>
+		<XRange>(0:16)</XRange>
+		<XBins>16</XBins>
+		<XLabel>CSC ID</XLabel>
+		<YLabel>Number of Events</YLabel>
+	</Histogram>
+
+
+	<Histogram Options="bar1:FillColor=48">
+		<Type>h1_</Type>
+		<Prefix>TF_id_id_id_</Prefix>
+		<Name>lct_bits</Name>
+		<Title>BC0, BXN0, and L/R Bits</Title>
+		<XRange>(0:3)</XRange>
+		<XBins>3</XBins>
+		<XBinLabels>BC0,BXN0,L/R</XBinLabels>
+		<YLabel>Efficiency (portion of total number of events)</YLabel>
+	</Histogram>
+
+	<Histogram Options="bar1:FillColor=48">
+		<Type>h1_</Type>
+		<Prefix>TF_id_id_id_</Prefix>
+		<Name>sp_bits</Name>
+		<Title>Receiver status for first and second frame and Alignment FIFO Full/Empty bit</Title>
+		<XRange>(0:11)</XRange>
+		<XBins>11</XBins>
+		<XBinLabels>Idle Char[1],Carrier Extend[1],Normal Data[1],Error Prop.[1],Idle Char[2],Carrier Extend[2],Normal Data[2],Error Prop.[2],Aligment FIFO Empty,Aligment FIFO Full,Aligment FIFO Full+Empty</XBinLabels>
+		<YLabel>Number of Events</YLabel>
+	</Histogram>
+
+	<Histogram>
+		<Type>h2_</Type>
+		<Prefix>TF_id_id_id_</Prefix>
+		<Name>synch</Name>
+		<Title>Synchronization</Title>
+		<XRange>(0:3600)</XRange>
+		<XBins>128</XBins>
+		<XLabel>L1A_BXN</XLabel>
+		<YRange>(0:3600)</YRange>
+		<YBins>128</YBins>
+		<YLabel>ME_BXN</YLabel>
+	</Histogram>
+
+
+	<Histogram Options="bar1:FillColor=48">
+		<Type>h1_</Type>
+		<Prefix>TF_id_id_id_</Prefix>
+		<Name>wg0quality</Name>
+		<Title>Quality for WireGroup=0</Title>
+		<XRange>(0:16)</XRange>
+		<XBins>16</XBins>
+		<!--<XBinLabels>Reserved,ALCT-accel+!CLCT,ALCT-accel+CLCT,ALCT+!CLCT,!ALCT+CLCT_di-strip,!ALCT+CLCT_half-strip,ALCT+CLCT_di-strip,ALCT+CLCT_di-strip,ALCT+CLCT_di-strip,ALCT+CLCT_di-strip,ALCT+CLCT_di-strip,ALCT+CLCT_half-strip,ALCT+CLCT_half-strip,ALCT+CLCT_half-strip,ALCT+CLCT_half-strip,ALCT+CLCT_half-strip</XBinLabels>-->
+		<XLabel></XLabel>
+		<YLabel>Number of Events</YLabel>
+	</Histogram>
+
+	<Histogram Options="bar1:FillColor=48">
+		<Type>h1_</Type>
+		<Prefix>TF_id_id_id_</Prefix>
+		<Name>strip0quality</Name>
+		<Title>Quality for Stip=0</Title>
+		<XRange>(0:16)</XRange>
+		<XBins>16</XBins>
+		<!--<XBinLabels>Reserved,ALCT-accel+!CLCT,ALCT-accel+CLCT,ALCT+!CLCT,!ALCT+CLCT_di-strip,!ALCT+CLCT_half-strip,ALCT+CLCT_di-strip,ALCT+CLCT_di-strip,ALCT+CLCT_di-strip,ALCT+CLCT_di-strip,ALCT+CLCT_di-strip,ALCT+CLCT_half-strip,ALCT+CLCT_half-strip,ALCT+CLCT_half-strip,ALCT+CLCT_half-strip,ALCT+CLCT_half-strip</XBinLabels>-->
+		<XLabel></XLabel>
+		<YLabel>Number of Events</YLabel>
+	</Histogram>
+
+	<Histogram Options="bar1:FillColor=48">
+		<Type>h1_</Type>
+		<Prefix>TF_id_id_id_</Prefix>
+		<Name>diStripQuality</Name>
+		<Title>Quality of Di-Strips</Title>
+		<XRange>(0:16)</XRange>
+		<XBins>16</XBins>
+		<!--<XBinLabels>Reserved,ALCT-accel+!CLCT,ALCT-accel+CLCT,ALCT+!CLCT,!ALCT+CLCT_di-strip,!ALCT+CLCT_half-strip,ALCT+CLCT_di-strip,ALCT+CLCT_di-strip,ALCT+CLCT_di-strip,ALCT+CLCT_di-strip,ALCT+CLCT_di-strip,ALCT+CLCT_half-strip,ALCT+CLCT_half-strip,ALCT+CLCT_half-strip,ALCT+CLCT_half-strip,ALCT+CLCT_half-strip</XBinLabels>-->
+		<YLabel>Number of Events</YLabel>
+	</Histogram>
+
+	<Histogram Options="bar1:FillColor=48">
+		<Type>h1_</Type>
+		<Prefix>TF_id_id_id_</Prefix>
+		<Name>halfStripQuality</Name>
+		<Title>Quality of Half-Strips</Title>
+		<XRange>(0:16)</XRange>
+		<XBins>16</XBins>
+		<!--<XBinLabels>Reserved,ALCT-accel+!CLCT,ALCT-accel+CLCT,ALCT+!CLCT,!ALCT+CLCT_di-strip,!ALCT+CLCT_half-strip,ALCT+CLCT_di-strip,ALCT+CLCT_di-strip,ALCT+CLCT_di-strip,ALCT+CLCT_di-strip,ALCT+CLCT_di-strip,ALCT+CLCT_half-strip,ALCT+CLCT_half-strip,ALCT+CLCT_half-strip,ALCT+CLCT_half-strip,ALCT+CLCT_half-strip</XBinLabels>-->
+		<YLabel>Number of Events</YLabel>
+	</Histogram>
+
+
+	<Histogram>
+		<Type>h2_</Type>
+		<Prefix>TF_id_id_</Prefix>
+		<Name>inputs</Name>
+		<Title>Links' Consistency</Title>
+		<XRange>(1:16)</XRange>
+		<XBins>15</XBins>
+		<XLabel>Link, LCT Received on</XLabel>
+		<YRange>(1:16)</YRange>
+		<YBins>15</YBins>
+		<YLabel>Link ID, Reported by LCT</YLabel>
+	</Histogram>
+
+	<Histogram Options="textcolz:XnDivizions=501">
+		<Type>h2_</Type>
+		<Prefix>TF_id_id_</Prefix>
+		<Name>epc</Name>
+		<Title>Error Propagation Counters</Title>
+		<XRange>(0:1)</XRange>
+		<XBins>1</XBins>
+		<XLabel></XLabel>
+		<YRange>(1:16)</YRange>
+		<YBins>15</YBins>
+		<YLabel>CSC ID</YLabel>
+	</Histogram>
+
+	<Histogram Options="bar1:FillColor=48">
+		<Type>h2_</Type>
+		<Prefix>TF_id_id_</Prefix>
+		<Name>mpc_id</Name>
+		<Title>Reported MPC ID vs. Front FPGA #</Title>
+		<XRange>(0:63)</XRange>
+		<XBins>63</XBins>
+		<XLabel>MPC ID</XLabel>
+		<YRange>(1:6)</YRange>
+		<YBins>5</YBins>
+		<YLabel>Front FPGA #</YLabel>
+	</Histogram>
+
+</Booking>
