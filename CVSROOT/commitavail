@@ -14,3 +14,31 @@ avail | cvsadmin cvsemu graymond geurts
 
 avail.dev   | manuel reguero defert slopiens 
 unavail.dev | manuel reguero defert slopiens | CVSROOT
+unavail
+#EMU
+avail|tumanov|EMU
+avail|tumanov|CVSROOT/modules
+avail|tumanov|CVSROOT/module_contacts
+avail|geurts|EMU
+avail|geurts|CVSROOT/modules
+avail|geurts|CVSROOT/module_contacts
+#EMU/AnalysisUtilities
+avail|mumford|EMU/AnalysisUtilities
+avail|slava|EMU/AnalysisUtilities
+avail|geurts|EMU/AnalysisUtilities
+avail|geurts|CVSROOT/modules
+avail|geurts|CVSROOT/module_contacts
+#EMU/cscSV
+avail|ichiro|EMU/cscSV
+avail|ichiro|CVSROOT/modules
+avail|ichiro|CVSROOT/module_contacts
+avail|emuslice|EMU/cscSV
+avail|emuslice|CVSROOT/modules
+avail|emuslice|CVSROOT/module_contacts
+#EMU/EventDisplay/FastDisplay
+avail|emuslice|EMU/EventDisplay/FastDisplay
+avail|emuslice|CVSROOT/modules
+avail|emuslice|CVSROOT/module_contacts
+avail|golao|EMU/EventDisplay/FastDisplay
+avail|golao|CVSROOT/modules
+avail|golao|CVSROOT/module_contacts

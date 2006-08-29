@@ -21,3 +21,4 @@
 
 ALL $CVSROOT/CVSROOT/check-tag-avail %t %o %p %{sv}
 
+ALL $CVSROOT/CVSROOT/tagMail.py

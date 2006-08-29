@@ -19,3 +19,5 @@ check-commit-avail      Could not checkout 'check-commit-avail' file
 cvs-acls.pl             Could not checkout 'cvs-acls.pl' file
 tagavail                Could not checkout 'tagavail' file
 commitavail             Could not checkout 'commitavail' file
+logMail.py could not check out logMail.py !
+tagMail.py could not check out tagMail.py !
