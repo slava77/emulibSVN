@@ -5,7 +5,7 @@ unavail
 # These users can commit everywhere including CVSROOT 
 # (do not remove cvsadmin from here).
 
-avail | cvsadmin
+avail | cvsadmin cvsemu graymond geurts
 
 # Development team can commit everywhere except under CVSROOT.
 # Make sure these two lists are the same. 
