@@ -79,6 +79,13 @@
 	<CMSUserFile xsi:type="xsd:string">/home/cscdaq/config/.CMSUser</CMSUserFile>
 	<eLogUserFile xsi:type="xsd:string">/home/cscdaq/config/.eLogUser</eLogUserFile>
 	<eLogURL xsi:type="xsd:string">https://cmsdaq.cern.ch/elog/CSC</eLogURL>
+        <peripheralCrateConfigFiles xsi:type="soapenc:Array" soapenc:arrayType="xsd:ur-type[4]">
+          <item xsi:type="xsd:string" soapenc:position="[0]">/net/user/cscpc/config/configFall2006ME1a.xml</item>
+          <item xsi:type="xsd:string" soapenc:position="[1]">/net/user/cscpc/config/configFall2006ME1b.xml</item>
+          <item xsi:type="xsd:string" soapenc:position="[2]">/net/user/cscpc/config/configFall2006ME2.xml</item>
+          <item xsi:type="xsd:string" soapenc:position="[3]">/net/user/cscpc/config/configFall2006ME3.xml</item>
+	</peripheralCrateConfigFiles>
+	<controlDQM xsi:type="xsd:boolean">true</controlDQM>
       </properties>
     </xc:Application>
     <xc:Module>${XDAQ_ROOT}/emu/emuDAQ/emuDAQManager/lib/linux/x86/libEmuDAQManager.so</xc:Module>
