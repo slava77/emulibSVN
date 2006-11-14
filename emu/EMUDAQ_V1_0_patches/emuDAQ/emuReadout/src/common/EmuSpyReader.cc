@@ -373,19 +373,19 @@ int EmuSpyReader::readDDU(unsigned short*& buf) {
     if(end_event==0x4000) {endEventCount++; break;}
   }
   visitCount++;
-  if ( ec.timeIsUp() ){
-    std::cout << " v:" << std::setw(10) << visitCount
-	      << " o:" << std::setw(10) << oversizedCount
-	      << " m:" << std::setw(10) << pmissingCount
-	      << " b:" << std::setw(10) << bufferOverwriteCount
-	      << " l:" << std::setw(10) << loopOverwriteCount
-	      << " p:" << std::setw(10) << packetsCount
-	      << " t:" << std::setw(10) << timeoutCount
-	      << " e:" << std::setw(10) << endEventCount
-	      << " s:" << std::setw(10) << len 
-	      << std::endl;
-    std::cout << std::flush;
-  }
+//   if ( ec.timeIsUp() ){
+//     std::cout << " v:" << std::setw(10) << visitCount
+// 	      << " o:" << std::setw(10) << oversizedCount
+// 	      << " m:" << std::setw(10) << pmissingCount
+// 	      << " b:" << std::setw(10) << bufferOverwriteCount
+// 	      << " l:" << std::setw(10) << loopOverwriteCount
+// 	      << " p:" << std::setw(10) << packetsCount
+// 	      << " t:" << std::setw(10) << timeoutCount
+// 	      << " e:" << std::setw(10) << endEventCount
+// 	      << " s:" << std::setw(10) << len 
+// 	      << std::endl;
+//     std::cout << std::flush;
+//   }
   // DEBUG END                                                                  
 
 

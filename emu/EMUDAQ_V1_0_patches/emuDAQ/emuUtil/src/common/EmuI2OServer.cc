@@ -120,6 +120,13 @@ void EmuI2OServer::addData( const int            runNumber,
 	  if( !pool_->isHighThresholdExceeded() )
 	    isToBeSent = true;
 // 	  else  LOG4CPLUS_WARN(logger_, name_ << " memory pool's high threshold exceeded.");
+// 	  else LOG4CPLUS_WARN(logger_, poolName_ << 
+// 			      " at high threshold: " << pool_->getMemoryUsage().getUsed() <<
+// 			      " bytes ( " << 100*(float)(pool_->getMemoryUsage().getUsed())/(float)(pool_->getMemoryUsage().getCommitted()) << 
+// 			      " % ) Event " << nEvents <<
+// 			      ". Now " << nEventsInQueue <<
+// 			      " events in queue. Holding " << *nEventCreditsHeld_ <<
+// 			      " credits. Prescaling: 1/" << *prescaling_ );
 	}
       }
     }
@@ -320,7 +327,7 @@ void EmuI2OServer::sendData()
 
     dataIsPendingTransmission_ = dataBlocks_.size() > 0;
 
-//     LOG4CPLUS_DEBUG(logger_, "EmuI2OServer::sendData: " << dataBlocks_.size() << " data blocks pending.");
+    LOG4CPLUS_DEBUG(logger_, name_ << " is sending. " << dataBlocks_.size() << " data blocks pending.");
   }
 
 }
