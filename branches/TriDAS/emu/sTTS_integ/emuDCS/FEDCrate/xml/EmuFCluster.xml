@@ -13,6 +13,11 @@
                   <xmlFileName xsi:type="xsd:string">${XDAQ_ROOT}/emu/emuDCS/FEDCrate/xml/config.xml</xmlFileName>
                  </properties>
                  </xc:Application>	
+                <xc:Application class="EmuFCrate" id="33" service="emufcrate" network="local"> 
+                  <properties xmlns="urn:xdaq-application:EmuFCrate" xsi:type="soapenc:Struct">
+                  <xmlFileName xsi:type="xsd:string">${XDAQ_ROOT}/emu/emuDCS/FEDCrate/xml/config.xml</xmlFileName>
+                 </properties>
+                 </xc:Application>	
                 <xc:Module>${XDAQ_ROOT}/emu/cscSV/lib/linux/x86/libCSCSupervisor.so</xc:Module>
         	<xc:Module>${XDAQ_ROOT}/emu/emuDCS/FEDCrate/lib/linux/x86/libEmuFEDCrate.so</xc:Module>        
         </xc:Context>
