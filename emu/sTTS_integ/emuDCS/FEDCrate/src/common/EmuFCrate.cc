@@ -44,6 +44,10 @@ EmuFCrate::EmuFCrate(xdaq::ApplicationStub *s): EmuApplication(s)
 	fsm_.addStateTransition(
 			'H', 'H', "Halt",      this, &EmuFCrate::haltAction);
 	fsm_.addStateTransition(
+			'H', 'H', "SetTTSBits", this, &EmuFCrate::setTTSBitsAction);
+	fsm_.addStateTransition(
+			'C', 'C', "SetTTSBits", this, &EmuFCrate::setTTSBitsAction);
+	fsm_.addStateTransition(
 			'E', 'E', "SetTTSBits", this, &EmuFCrate::setTTSBitsAction);
 
 	fsm_.setInitialState('H');
