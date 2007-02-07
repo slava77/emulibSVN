@@ -7,7 +7,8 @@ else
     exit -1
 fi
 #
-killproc xdaq.exe
+#killproc xdaq.exe
+killall -q $XDAQ_ROOT/daq/xdaq/bin/linux/x86/xdaq.exe
 #
 cd $XDAQ_ROOT/emu/emuDCS/FEDCrate/
-$XDAQ_ROOT/daq/xdaq/bin/linux/x86/xdaq.sh -p 40100 -c xml/EmuFCluster.xml -l INFO
+nohup $XDAQ_ROOT/daq/xdaq/scripts/xdaq.sh -p 40100 -c xml/EmuFCluster.xml -l INFO >& ~/log/xdaq.log &
