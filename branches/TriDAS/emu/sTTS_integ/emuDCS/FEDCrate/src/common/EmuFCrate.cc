@@ -65,6 +65,7 @@ EmuFCrate::EmuFCrate(xdaq::ApplicationStub *s): EmuApplication(s)
 
 	// HyperDAQ pages
 	xgi::bind(this, &EmuFCrate::webDefault, "Default");
+	xgi::bind(this, &EmuFCrate::webConfigure, "Configure");
 	xgi::bind(this, &EmuFCrate::webSetTTSBits, "SetTTSBits");
 }
 
@@ -147,7 +148,11 @@ void EmuFCrate::setTTSBitsAction(toolbox::Event::Reference e)
 	ttsBits_ = ttsBits_ | 0x10;  // assert bit 4
 	                             // there is no |= operator in xdata::*
 
-	// TO BE FILLED
+	// set sTTS bits
+	writeTTSBits(ttsCrate_, ttsSlot_, ttsBits_);
+
+	// read back sTTS bits
+	ttsBits_ = readTTSBits(ttsCrate_, ttsSlot_);
 
 	cout << "Received Message SetTTSBits" << endl ;
 }
@@ -166,7 +171,16 @@ void EmuFCrate::webDefault(xgi::Input *in, xgi::Output *out)
 	*out << h1("EmuFCrate") << endl ;
 	*out << br() << endl;
 
-	//
+	// One click configure
+	*out << "Config file: " << xmlFile_.toString() << endl;
+	*out << form().set("action",
+			"/" + getApplicationDescriptor()->getURN() + "/Configure") << endl;
+	*out << input().set("type", "submit")
+			.set("name", "command")
+			.set("value", "Configure") << endl;
+	*out << form() << endl;
+
+	// sTTS control
 	*out << hr() << endl;
 	*out << form().set("action",
 			"/" + getApplicationDescriptor()->getURN() + "/SetTTSBits") << endl;
@@ -193,6 +207,16 @@ void EmuFCrate::webDefault(xgi::Input *in, xgi::Output *out)
 			.set("name", "command")
 			.set("value", "SetTTSBits") << endl;
 	*out << form() << endl;
+}
+
+void EmuFCrate::webConfigure(xgi::Input *in, xgi::Output *out)
+		throw (xgi::exception::Exception)
+{
+	fireEvent("Configure");
+
+	fireEvent("Enable");
+
+	webRedirect(in, out);
 }
 
 void EmuFCrate::webSetTTSBits(xgi::Input *in, xgi::Output *out)
