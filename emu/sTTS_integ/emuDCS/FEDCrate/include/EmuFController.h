@@ -26,7 +26,13 @@ public:
 
   inline void SetConfFile(std::string xmlFile) { xmlFile_ = xmlFile; }
 
+  void writeTTSBits(unsigned int crate, unsigned int slot, unsigned int bits);
+  unsigned int readTTSBits(unsigned int crate, unsigned int slot);
+
   CrateSelector & selector() {return theSelector;}
+
+private:
+  DCC *getDCC(int crate, int slot);
 
 protected:
 

@@ -1,6 +1,9 @@
 //-----------------------------------------------------------------------
-// $Id: EmuFController.cc,v 3.1 2006/09/06 15:43:50 gilmore Exp $
+// $Id: EmuFController.cc,v 3.1.2.1 2007/02/07 16:57:58 ichiro Exp $
 // $Log: EmuFController.cc,v $
+// Revision 3.1.2.1  2007/02/07 16:57:58  ichiro
+// add read/writeTTSBits()
+//
 // Revision 3.1  2006/09/06 15:43:50  gilmore
 // Improved Config and interrupt features.
 //
@@ -102,3 +105,31 @@ int EmuFController::irqtest(){
   }
   return ret;
 }
+
+void EmuFController::writeTTSBits(
+    unsigned int crate, unsigned int slot, unsigned int bits)
+{
+  DCC *dcc = getDCC(crate, slot);
+
+  dcc->mctrl_fmmset(bits & 0xffff);
+}
+
+unsigned int EmuFController::readTTSBits(
+    unsigned int crate, unsigned int slot)
+{
+  DCC *dcc = getDCC(crate, slot);
+
+  return dcc->mctrl_fmmrd();
+}
+
+DCC *EmuFController::getDCC(int crate, int slot)
+{
+  std::vector<DCC *> dccs = theSelector.dccs();
+
+  if (dccs.size() > 0) {
+    return dccs[0];
+  } else {
+    return NULL;
+  }
+}
+// End of file
