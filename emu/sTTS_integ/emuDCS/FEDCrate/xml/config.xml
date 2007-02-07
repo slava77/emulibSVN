@@ -5,17 +5,19 @@
 
     <VME crate="0" Device="0" Link="0">
     </VME>
+<!-- Me2-->
     <DDU slot="3"
-       killfiber="f7000"
        gbe_prescale="0"
        vmeirq_start="0" >
     </DDU>
+
+<!-- Me3-->
     <DDU slot="6"
        gbe_prescale="0"
        vmeirq_start="0" >
     </DDU>
+
     <DDU slot="10"
-       killfiber="f7000"
        gbe_prescale="0"
        vmeirq_start="0" >
     </DDU>
@@ -23,19 +25,16 @@
        gbe_prescale="0"
        vmeirq_start="0" >
     </DDU>
-<!-- TF
-    <DDU slot="20"
-       gbe_prescale="0"
-       vmeirq_start="0" >
-    </DDU>
--->
-    <!--DCC slot="8" 
-        fifoinuse="c9" >
-    </DCC-->
 
     <DCC slot="8" 
-        fifoinuse="08" >
+        fifoinuse="c9" >
     </DCC>
+
+<!-- Only Me1 -->
+
+    <!--DCC slot="8" 
+        fifoinuse="88" >
+    </DCC-->
 
  </FEDCrate>
 
