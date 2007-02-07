@@ -186,8 +186,8 @@ void EmuFCrate::webDefault(xgi::Input *in, xgi::Output *out)
 			.set("size", "10") << br() << endl;
 
 	*out << input().set("type", "submit")
-				.set("name", "command")
-				.set("value", "SetTTSBits") << endl;
+			.set("name", "command")
+			.set("value", "SetTTSBits") << endl;
 	*out << form() << endl;
 }
 
