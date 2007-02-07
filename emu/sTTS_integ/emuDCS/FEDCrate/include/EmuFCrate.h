@@ -43,6 +43,8 @@ public:
 	// HyperDAQ pages
 	void webDefault(xgi::Input *in, xgi::Output *out)
 			throw (xgi::exception::Exception);
+	void webConfigure(xgi::Input *in, xgi::Output *out)
+			throw (xgi::exception::Exception);
 
 	void webSetTTSBits(xgi::Input *in, xgi::Output *out)
 			throw (xgi::exception::Exception);
