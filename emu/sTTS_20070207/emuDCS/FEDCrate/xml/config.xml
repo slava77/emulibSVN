@@ -1,0 +1,42 @@
+<EmuSystem>
+
+<!-- start of 1st crate -->
+  <FEDCrate Crate="0">
+
+    <VME crate="0" Device="0" Link="0">
+    </VME>
+<!-- Me2-->
+    <DDU slot="3"
+       gbe_prescale="0"
+       vmeirq_start="0" >
+    </DDU>
+
+<!-- Me3-->
+    <DDU slot="6"
+       gbe_prescale="0"
+       vmeirq_start="0" >
+    </DDU>
+
+    <DDU slot="10"
+       gbe_prescale="0"
+       vmeirq_start="0" >
+    </DDU>
+    <DDU slot="12"
+       gbe_prescale="0"
+       vmeirq_start="0" >
+    </DDU>
+
+    <DCC slot="8" 
+        fifoinuse="c9" >
+    </DCC>
+
+<!-- Only Me1 -->
+
+    <!--DCC slot="8" 
+        fifoinuse="88" >
+    </DCC-->
+
+ </FEDCrate>
+
+</EmuSystem>
+
