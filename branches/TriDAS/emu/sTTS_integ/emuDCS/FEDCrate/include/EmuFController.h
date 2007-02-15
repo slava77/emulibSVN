@@ -33,6 +33,7 @@ public:
 
 private:
   DCC *getDCC(int crate, int slot);
+  DDU *getDDU(int crate, int slot);
 
 protected:
 
