@@ -144,10 +144,6 @@ void EmuFCrate::haltAction(toolbox::Event::Reference e)
 void EmuFCrate::setTTSBitsAction(toolbox::Event::Reference e) 
 		throw (toolbox::fsm::exception::Exception)
 {
-	// ttsCrate_, ttsSlot_, ttsBits_
-	ttsBits_ = ttsBits_ | 0x10;  // assert bit 4
-	                             // there is no |= operator in xdata::*
-
 	// set sTTS bits
 	writeTTSBits(ttsCrate_, ttsSlot_, ttsBits_);
 
@@ -197,7 +193,7 @@ void EmuFCrate::webDefault(xgi::Input *in, xgi::Output *out)
 			.set("value", ttsSlotStr_)
 			.set("size", "10") << br() << endl;
 
-	*out << "TTS value (0-15): " << endl;
+	*out << "TTS value (0-15, decimal): " << endl;
 	*out << input().set("type", "text")
 			.set("name", "ttsbits")
 			.set("value", ttsBitsStr_)

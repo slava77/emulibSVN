@@ -1,6 +1,9 @@
 //-----------------------------------------------------------------------
-// $Id: EmuFController.cc,v 3.1.2.1 2007/02/07 16:57:58 ichiro Exp $
+// $Id: EmuFController.cc,v 3.1.2.2 2007/02/15 15:39:27 ichiro Exp $
 // $Log: EmuFController.cc,v $
+// Revision 3.1.2.2  2007/02/15 15:39:27  ichiro
+// added DDU sTTS bits setting/reading
+//
 // Revision 3.1.2.1  2007/02/07 16:57:58  ichiro
 // add read/writeTTSBits()
 //
@@ -109,17 +112,39 @@ int EmuFController::irqtest(){
 void EmuFController::writeTTSBits(
     unsigned int crate, unsigned int slot, unsigned int bits)
 {
-  DCC *dcc = getDCC(crate, slot);
+  bool useDCC = (slot == 8 || slot == 18);
 
-  dcc->mctrl_fmmset(bits & 0xffff);
+  if (useDCC) {
+    DCC *dcc = getDCC(crate, slot);
+
+    dcc->mctrl_fmmset((bits | 0x10) & 0xffff);
+
+  } else { // DDU
+    DDU *ddu = getDDU(crate, slot);
+
+    ddu->vmepara_wr_fmmreg((bits | 0xf0e0) & 0xffff);
+  }
 }
 
 unsigned int EmuFController::readTTSBits(
     unsigned int crate, unsigned int slot)
 {
-  DCC *dcc = getDCC(crate, slot);
+  unsigned int bits;
 
-  return dcc->mctrl_fmmrd();
+  bool useDCC = (slot == 8 || slot == 18);
+
+  if (useDCC) {
+    DCC *dcc = getDCC(crate, slot);
+
+    bits = dcc->mctrl_fmmrd();
+
+  } else { // DDU
+    DDU *ddu = getDDU(crate, slot);
+
+    bits = ddu->vmepara_rd_fmmreg();
+  }
+
+  return bits & 0xf;
 }
 
 DCC *EmuFController::getDCC(int crate, int slot)
@@ -132,4 +157,16 @@ DCC *EmuFController::getDCC(int crate, int slot)
     return NULL;
   }
 }
+
+DDU *EmuFController::getDDU(int crate, int slot)
+{
+  std::vector<DDU *> ddus = theSelector.ddus();
+
+  if (ddus.size() > 0) {
+    return ddus[0];
+  } else {
+    return NULL;
+  }
+}
+
 // End of file
