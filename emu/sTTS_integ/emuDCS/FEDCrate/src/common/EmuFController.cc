@@ -1,6 +1,9 @@
 //-----------------------------------------------------------------------
-// $Id: EmuFController.cc,v 3.1.2.2 2007/02/15 15:39:27 ichiro Exp $
+// $Id: EmuFController.cc,v 3.1.2.3 2007/02/20 10:20:40 ichiro Exp $
 // $Log: EmuFController.cc,v $
+// Revision 3.1.2.3  2007/02/20 10:20:40  ichiro
+// access correct crate/slot
+//
 // Revision 3.1.2.2  2007/02/15 15:39:27  ichiro
 // added DDU sTTS bits setting/reading
 //
@@ -149,6 +152,9 @@ unsigned int EmuFController::readTTSBits(
 
 DCC *EmuFController::getDCC(int crate, int slot)
 {
+  theSelector.setCrate(crate);
+  theSelector.setSlot(slot);
+
   std::vector<DCC *> dccs = theSelector.dccs();
 
   if (dccs.size() > 0) {
@@ -160,6 +166,9 @@ DCC *EmuFController::getDCC(int crate, int slot)
 
 DDU *EmuFController::getDDU(int crate, int slot)
 {
+  theSelector.setCrate(crate);
+  theSelector.setSlot(slot);
+
   std::vector<DDU *> ddus = theSelector.ddus();
 
   if (ddus.size() > 0) {
