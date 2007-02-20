@@ -112,9 +112,10 @@ xoap::MessageReference EmuFCrate::onSetTTSBits(xoap::MessageReference message)
 void EmuFCrate::configureAction(toolbox::Event::Reference e) 
 		throw (toolbox::fsm::exception::Exception)
 {
-	// calls only EmuFController::configure().
-	// init() is called in the nexe 'Enable' step.
-	configure();
+	// calls only EmuFController::init().
+	// configure() is called in the nexe 'Enable' step.
+	SetConfFile(xmlFile_);
+	init();
 	cout << "Configure " << xmlFile_.toString() << endl;
 	cout << "Received Message Configure" << endl ;
 }
@@ -122,8 +123,7 @@ void EmuFCrate::configureAction(toolbox::Event::Reference e)
 void EmuFCrate::enableAction(toolbox::Event::Reference e) 
 		throw (toolbox::fsm::exception::Exception)
 {
-	SetConfFile(xmlFile_);
-	init();
+	configure();
 	cout << "Received Message Enable" << endl ;
 }
 
