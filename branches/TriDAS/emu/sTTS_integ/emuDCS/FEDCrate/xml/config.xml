@@ -1,36 +1,61 @@
 <EmuSystem>
 
-<!-- start of 1st crate -->
-  <FEDCrate Crate="1">
+<!-- start of 2nd crate -->
+  <FEDCrate Crate="2">
 
     <VME Device="0" Link="0" vmeirq_start="0" >
     </VME>
 
-    <DDU slot="3"
-       gbe_prescale="0"
-       killfiber="f7fff" >
+    <DDU slot="4"
+       killfiber="f7fff"
+       gbe_prescale="0">
+    </DDU>
+
+    <DDU slot="5"
+       killfiber="f7fff"
+       gbe_prescale="0">
     </DDU>
 
     <DDU slot="6"
-       gbe_prescale="0"
-       killfiber="f7fff" >
+       killfiber="f7fff"
+       gbe_prescale="0">
+    </DDU>
+
+    <DDU slot="7"
+       killfiber="f7fff"
+       gbe_prescale="0">
+    </DDU>
+
+    <DDU slot="9"
+       killfiber="f7fff"
+       gbe_prescale="0">
     </DDU>
 
     <DDU slot="10"
-       gbe_prescale="0"
-       killfiber="f7fff" >
+       killfiber="f7fff"
+       gbe_prescale="0">
+    </DDU>
+
+    <DDU slot="11"
+       killfiber="f7fff"
+       gbe_prescale="0">
     </DDU>
 
     <DDU slot="12"
-       gbe_prescale="0"
-       killfiber="f7fff" >
+       killfiber="f7fff"
+       gbe_prescale="0">
+    </DDU>
+
+    <DDU slot="13"
+       killfiber="f7fff"
+       gbe_prescale="0">
     </DDU>
 
     <DCC slot="8" 
-        fifoinuse="c9" >
+        fifoinuse="000" >
+      <!-- later 3fe  -->
     </DCC>
 
  </FEDCrate>
 
 </EmuSystem>
-
