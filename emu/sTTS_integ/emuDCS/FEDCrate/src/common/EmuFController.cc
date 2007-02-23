@@ -1,6 +1,9 @@
 //-----------------------------------------------------------------------
-// $Id: EmuFController.cc,v 3.1.2.3 2007/02/20 10:20:40 ichiro Exp $
+// $Id: EmuFController.cc,v 3.1.2.4 2007/02/23 14:16:43 ichiro Exp $
 // $Log: EmuFController.cc,v $
+// Revision 3.1.2.4  2007/02/23 14:16:43  ichiro
+// add a debug output
+//
 // Revision 3.1.2.3  2007/02/20 10:20:40  ichiro
 // access correct crate/slot
 //
@@ -116,6 +119,8 @@ void EmuFController::writeTTSBits(
     unsigned int crate, unsigned int slot, unsigned int bits)
 {
   bool useDCC = (slot == 8 || slot == 18);
+
+  cout << "EmuFController::writeTTSBits on " << crate << " " << slot << endl;
 
   if (useDCC) {
     DCC *dcc = getDCC(crate, slot);
