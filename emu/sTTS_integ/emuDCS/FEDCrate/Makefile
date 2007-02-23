@@ -36,7 +36,6 @@ Sources=\
 	VMEParser.cc \
 	EmuFCrateHyperDAQ.cc \
 	EmuFRunControlHyperDAQ.cc \
-	EmuFCrateSOAP.cc \
 	EmuFCrate.cc \
 	EmuFController.cc
 
