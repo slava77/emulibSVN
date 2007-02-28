@@ -14,7 +14,6 @@ avail | cvsadmin cvsemu graymond geurts
 
 avail.dev   | manuel reguero defert slopiens 
 unavail.dev | manuel reguero defert slopiens | CVSROOT
-unavail
 #EMU
 avail|tumanov|EMU
 avail|tumanov|CVSROOT/modules
