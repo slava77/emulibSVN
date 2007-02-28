@@ -3,7 +3,7 @@
 unavail
 
 # These users can commit everywhere including CVSROOT 
-# (do not remove cvsadmin from here).
+# ( do not remove cvsadmin from here ).
 
 avail | cvsadmin cvsemu graymond geurts
 
