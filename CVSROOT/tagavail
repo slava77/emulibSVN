@@ -14,3 +14,10 @@ avail | cvsadmin cvsemu graymond geurts
 
 avail.dev   | manuel reguero defert slopiens 
 unavail.dev | manuel reguero defert slopiens | CVSROOT
+
+
+#EMU/HV
+avail | madorsky barvic | EMU/HV
+
+#EMU/EventDisplay
+avail | golao | EMU/EventDisplay/FastDisplay
