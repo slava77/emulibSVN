@@ -51,6 +51,11 @@
        gbe_prescale="0">
     </DDU>
 
+    <DDU slot="28"
+       killfiber="f7fff"
+       gbe_prescale="0">
+    </DDU>
+
     <DCC slot="8" 
         fifoinuse="000" >
       <!-- later 3fe  -->
