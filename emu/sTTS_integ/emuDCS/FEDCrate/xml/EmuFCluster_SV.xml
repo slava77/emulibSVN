@@ -1,6 +1,6 @@
 <?xml version='1.0'?>
 <xc:Partition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xc="http://xdaq.web.cern.ch/xdaq/xsd/2004/XMLConfiguration-30">
-	<xc:Context url="http://vmepcS2G18-07:40000">		
+	<xc:Context url="http://zeuspc16:40000">		
 		<xc:Application class="CSCSupervisor" id="40" iinstance="0" service="emufcrate" network="local">
 			<properties xmlns="urn:xdaq-application:CSCSupervisor" xsi:type="soapenc:Struct">
 				<configKeys soapenc:arrayType="xsd:ur-type[4]" xsi:type="soapenc:Array">
@@ -52,16 +52,17 @@
 		<xc:Module>${XDAQ_ROOT}/emu/cscSV/lib/linux/x86/libCSCSupervisor.so</xc:Module>
 	</xc:Context>
 
-	<xc:Context url="http://vmepcS2G18-07:40100">		
+	<xc:Context url="http://zeuspc16:40100">		
+<!--
 		<xc:Application class="EmuFCrate" id="33" instance="0" service="emufcrate" network="local"> 
 			<properties xmlns="urn:xdaq-application:EmuFCrate" xsi:type="soapenc:Struct">
-				<xmlFileName xsi:type="xsd:string">/nfshome0/cscpro/TriDAS/emu/emuDCS/FEDCrate/xml/config_c1.xml</xmlFileName>
+				<xmlFileName xsi:type="xsd:string">/home/uscfed/v4.1/TriDAS/emu/emuDCS/FEDCrate/xml/config_c1.xml</xmlFileName>
 			</properties>
 		</xc:Application>	
-
+-->
 		<xc:Application class="EmuFCrate" id="34" instance="1" service="emufcrate" network="local"> 
 			<properties xmlns="urn:xdaq-application:EmuFCrate" xsi:type="soapenc:Struct">
-				<xmlFileName xsi:type="xsd:string">/nfshome0/cscpro/TriDAS/emu/emuDCS/FEDCrate/xml/config_c2.xml</xmlFileName>
+				<xmlFileName xsi:type="xsd:string">/home/uscfed/v4.1/TriDAS/emu/emuDCS/FEDCrate/xml/config_c2.xml</xmlFileName>
 			</properties>
 		</xc:Application>	
 
