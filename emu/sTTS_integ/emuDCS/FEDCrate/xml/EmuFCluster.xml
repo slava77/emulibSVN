@@ -8,6 +8,11 @@
 			<xmlFileName xsi:type="xsd:string">/home/uscfed/v4.1/TriDAS/emu/emuDCS/FEDCrate/xml/config_c2.xml</xmlFileName>
 		</properties>
 	</xc:Application>	
+	<xc:Application class="EmuFCrateHyperDAQ" id="32" instance="0" service="emufcratehyperdaq" network="local">                 
+		<properties xmlns="urn:xdaq-application:EmuFCrateHyperDAQ" xsi:type="soapenc:Struct">
+			<xmlFileName xsi:type="xsd:string">/nfshome0/cscpro/TriDAS/emu/emuDCS/FEDCrate/xml/config_c2.xml</xmlFileName>
+		</properties>
+	</xc:Application>	
 	<xc:Application class="EmuFCrate" id="33" instance="0" service="emufcrate" network="local"> 
 		<properties xmlns="urn:xdaq-application:EmuFCrate" xsi:type="soapenc:Struct">
 			<xmlFileName xsi:type="xsd:string">/home/uscfed/v4.1/TriDAS/emu/emuDCS/FEDCrate/xml/config.xml</xmlFileName>
