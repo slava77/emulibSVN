@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xc:Partition
+		xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+		xmlns:xc="http://xdaq.web.cern.ch/xdaq/xsd/2004/XMLConfiguration-30">
+
+	<xc:Context url="http://emupc:40000">
+		<xc:Application class="CSCSupervisor" id="40" instance="0" network="local">
+			<properties xmlns="urn:xdaq-application:CSCSupervisor" xsi:type="soapenc:Struct">
+				<configKeys soapenc:arrayType="xsd:ur-type[4]" xsi:type="soapenc:Array">
+					<item soapenc:position="[0]" xsi:type="xsd:string">Monitor</item>
+					<item soapenc:position="[1]" xsi:type="xsd:string">Calib_CFEB_Gain</item>
+					<item soapenc:position="[2]" xsi:type="xsd:string">Calib_CFEB_Time</item>
+					<item soapenc:position="[3]" xsi:type="xsd:string">Calib_CFEB_Ped</item>
+				</configKeys>
+				<pcKeys soapenc:arrayType="xsd:ur-type[1]" xsi:type="soapenc:Array">
+					<item soapenc:position="[0]" xsi:type="xsd:string">default</item>
+				</pcKeys>
+				<pcConfigs soapenc:arrayType="xsd:ur-type[1]" xsi:type="soapenc:Array">
+					<item soapenc:position="[0]" xsi:type="xsd:string">Global</item>
+				</pcConfigs>
+				<fcKeys soapenc:arrayType="xsd:ur-type[1]" xsi:type="soapenc:Array">
+					<item soapenc:position="[0]" xsi:type="xsd:string">default</item>
+				</fcKeys>
+				<fcConfigs soapenc:arrayType="xsd:ur-type[1]" xsi:type="soapenc:Array">
+					<item soapenc:position="[0]" xsi:type="xsd:string">Global</item>
+				</fcConfigs>
+			</properties>
+		</xc:Application>
+		<xc:Module>$XDAQ_ROOT/lib/linux/x86/libCSCSupervisor.so</xc:Module>
+	</xc:Context>
+</xc:Partition>
+<!-- vim: set sw=2 ts=2: -->
