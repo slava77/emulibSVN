@@ -164,6 +164,7 @@ private:
 
 	xdaq::ApplicationDescriptor *daq_descr_, *tf_descr_, *ttc_descr_;
 	xoap::MessageReference daq_param_, tf_param_, ttc_param_;
+	bool daq_notavailable_;
 
 	string getDAQMode();
 	string getTFConfig();
@@ -204,7 +205,8 @@ private:
 	class StateTable
 	{
 	public:
-		void addApplication(CSCSupervisor *sv, string klass);
+		StateTable(CSCSupervisor *sv);
+		void addApplication(string klass);
 		void refresh() ;
 		string getState(string klass, unsigned int instance);
 		void webOutput(xgi::Output *out, string sv_state)

@@ -52,9 +52,11 @@ void CSCSupervisor::CalibParam::registerFields(xdata::Bag<CalibParam> *bag)
 CSCSupervisor::CSCSupervisor(xdaq::ApplicationStub *stub)
 		throw (xdaq::exception::Exception) :
 		EmuApplication(stub),
+		run_type_(""), run_number_(0), runSequenceNumber_(0),
 		daq_mode_(""), trigger_config_(""), ttc_source_(""),
 		wl_semaphore_(BSem::EMPTY), quit_calibration_(false),
 		daq_descr_(NULL), tf_descr_(NULL), ttc_descr_(NULL),
+		daq_notavailable_(false),
 		nevents_(-1),
 		step_counter_(0),
 		error_message_(""), keep_refresh_(false), hide_tts_control_(true),
@@ -63,12 +65,9 @@ CSCSupervisor::CSCSupervisor(xdaq::ApplicationStub *stub)
 		runDbWritingCommand_( "java -jar runinfowriter.jar" ),
 		runDbAddress_       ( "" ),
 		runDbUserFile_      ( "" ),
-		isBookedRunNumber_  ( false )
+		isBookedRunNumber_  ( false ),
+		state_table_(this)
 {
-	run_type_ = "";
-	run_number_ = 0;
-	runSequenceNumber_ = 0;
-
 	start_attr.insert(std::map<string, string>::value_type("Param", "Start"));
 	stop_attr.insert(std::map<string, string>::value_type("Param", "Stop"));
 
@@ -153,12 +152,12 @@ CSCSupervisor::CSCSupervisor(xdaq::ApplicationStub *stub)
 
 	state_ = fsm_.getStateName(fsm_.getCurrentState());
 
-	state_table_.addApplication(this, "EmuFCrateManager");
-	state_table_.addApplication(this, "EmuPeripheralCrateManager");
-	state_table_.addApplication(this, "EmuPeripheralCrate");
-	state_table_.addApplication(this, "EmuDAQManager");
-	state_table_.addApplication(this, "TTCciControl");
-	state_table_.addApplication(this, "LTCControl");
+	state_table_.addApplication("EmuFCrateManager");
+	state_table_.addApplication("EmuPeripheralCrateManager");
+	state_table_.addApplication("EmuPeripheralCrate");
+	state_table_.addApplication("EmuDAQManager");
+	state_table_.addApplication("TTCciControl");
+	state_table_.addApplication("LTCControl");
 
 	last_log_.size(N_LOG_MESSAGES);
 
@@ -1170,11 +1169,14 @@ string CSCSupervisor::getDAQMode()
 {
 	string result = "";
 
+	if (daq_notavailable_) { return result; }
+
 	if (daq_descr_ == NULL) {
 		try {
 			daq_descr_ = getApplicationContext()->getDefaultZone()
 					->getApplicationDescriptor("EmuDAQManager", 0);
 		} catch (xdaq::exception::ApplicationDescriptorNotFound e) {
+			daq_notavailable_ = true;
 			return result; // Do nothing if the target doesn't exist
 		}
 
@@ -1193,7 +1195,30 @@ string CSCSupervisor::getDAQMode()
 		result = extractParameter(reply, "globalMode");
 		result = (result == "true") ? "global" : "local";
 	} catch (xdaq::exception::Exception e) {
+		daq_notavailable_ = true;
 		result = "Unknown";
+	}
+
+	return result;
+}
+
+string CSCSupervisor::getLocalDAQState()
+{
+	string result = "";
+
+	if (daq_notavailable_) { return result; }
+
+	if (daq_descr_ != NULL) {
+		xoap::MessageReference reply;
+		try {
+			reply = getApplicationContext()->postSOAP(daq_param_, daq_descr_);
+			analyzeReply(daq_param_, reply, daq_descr_);
+
+			result = extractParameter(reply, "daqState");
+		} catch (xdaq::exception::Exception e) {
+			daq_notavailable_ = true;
+			result = "Unknown";
+		}
 	}
 
 	return result;
@@ -1282,25 +1307,6 @@ bool CSCSupervisor::isDAQConfiguredInGlobal()
 	return result == "true";
 }
 
-string CSCSupervisor::getLocalDAQState()
-{
-	string result = "";
-
-	if (daq_descr_ != NULL) {
-		xoap::MessageReference reply;
-		try {
-			reply = getApplicationContext()->postSOAP(daq_param_, daq_descr_);
-			analyzeReply(daq_param_, reply, daq_descr_);
-
-			result = extractParameter(reply, "daqState");
-		} catch (xdaq::exception::Exception e) {
-			result = "Unknown";
-		}
-	}
-
-	return result;
-}
-
 bool CSCSupervisor::isDAQManagerControlled(string command)
 {
 	// Enforce "Halt" irrespective of DAQ mode.
@@ -1315,14 +1321,14 @@ bool CSCSupervisor::isDAQManagerControlled(string command)
 	return true;
 }
 
-void CSCSupervisor::StateTable::addApplication(CSCSupervisor *sv, string klass)
-{
-	sv_ = sv;
+CSCSupervisor::StateTable::StateTable(CSCSupervisor *sv) : sv_(sv) {}
 
+void CSCSupervisor::StateTable::addApplication(string klass)
+{
 	// find applications
 	std::set<xdaq::ApplicationDescriptor *> apps;
 	try {
-		apps = sv->getApplicationContext()->getDefaultZone()
+		apps = sv_->getApplicationContext()->getDefaultZone()
 				->getApplicationDescriptors(klass);
 	} catch (xdaq::exception::ApplicationDescriptorNotFound e) {
 		return; // Do nothing if the target doesn't exist
@@ -1349,6 +1355,11 @@ void CSCSupervisor::StateTable::refresh()
 			message = createStateSOAP(klass);
 		}
 
+		if (klass == "EmuDAQManager" && sv_->daq_notavailable_) {
+			i->second = STATE_UNKNOWN;
+			continue;
+		}
+
 		try {
 			reply = sv_->getApplicationContext()->postSOAP(message, i->first);
 			sv_->analyzeReply(message, reply, i->first);
@@ -1359,6 +1370,10 @@ void CSCSupervisor::StateTable::refresh()
 		} catch (...) {
 			LOG4CPLUS_DEBUG(sv_->getApplicationLogger(), "Exception with " << klass);
 			i->second = STATE_UNKNOWN;
+		}
+
+		if (klass == "EmuDAQManager" && i->second == STATE_UNKNOWN) {
+			sv_->daq_notavailable_ = true;
 		}
 	}
 }
