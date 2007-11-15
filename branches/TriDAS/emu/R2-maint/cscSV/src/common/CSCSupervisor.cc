@@ -154,7 +154,7 @@ CSCSupervisor::CSCSupervisor(xdaq::ApplicationStub *stub)
 
 	state_table_.addApplication("EmuFCrateManager");
 	state_table_.addApplication("EmuPeripheralCrateManager");
-	state_table_.addApplication("EmuPeripheralCrate");
+	state_table_.addApplication("EmuPeripheralCrateBroadcast");
 	state_table_.addApplication("EmuDAQManager");
 	state_table_.addApplication("TTCciControl");
 	state_table_.addApplication("LTCControl");
@@ -568,7 +568,7 @@ void CSCSupervisor::configureAction(toolbox::Event::Reference evt)
 		string str = trim(getCrateConfig("PC", run_type_.toString()));
 		if (!str.empty()) {
 			setParameter(
-					"EmuPeripheralCrate", "xmlFileName", "xsd:string", str);
+					"EmuPeripheralCrateManager", "xmlFileName", "xsd:string", str);
 		}
 
 		try {
@@ -580,7 +580,7 @@ void CSCSupervisor::configureAction(toolbox::Event::Reference evt)
 
 		sendCommand("Configure", "EmuFCrateManager");
 		if (!isCalibrationMode()) {
-			sendCommand("Configure", "EmuPeripheralCrate");
+			sendCommand("Configure", "EmuPeripheralCrateManager");
 		} else {
 			sendCommand("ConfigCalCFEB", "EmuPeripheralCrateBroadcast");
 		}
@@ -626,7 +626,7 @@ void CSCSupervisor::enableAction(toolbox::Event::Reference evt)
 
 		sendCommand("Enable", "EmuFCrateManager");
 		if (!isCalibrationMode()) {
-			sendCommand("Enable", "EmuPeripheralCrate");
+			sendCommand("Enable", "EmuPeripheralCrateManager");
 		}
 
 		try {
@@ -690,9 +690,9 @@ void CSCSupervisor::disableAction(toolbox::Event::Reference evt)
 		writeRunInfo( true, true );
 		sendCommand("Disable", "EmuFCrateManager");
 		if (!isCalibrationMode()) {
-			sendCommand("Disable", "EmuPeripheralCrate");
-		} else {
 			sendCommand("Disable", "EmuPeripheralCrateManager");
+		} else {
+			sendCommand("Disable", "EmuPeripheralCrateBroadcast");
 		}
 		sendCommand("Configure", "TTCciControl");
 		sendCommand("Configure", "LTCControl");
@@ -723,7 +723,8 @@ void CSCSupervisor::haltAction(toolbox::Event::Reference evt)
 		}
 		sendCommand("Halt", "EmuFCrateManager");
 		sendCommand("Halt", "EmuPeripheralCrateManager");
-		sendCommand("Halt", "EmuPeripheralCrate");
+		sendCommand("Halt", "EmuPeripheralCrateBroadcast");
+
 		try {
 			sendCommand("Halt", "EmuDAQManager");
 		} catch (xcept::Exception ignored) {}
