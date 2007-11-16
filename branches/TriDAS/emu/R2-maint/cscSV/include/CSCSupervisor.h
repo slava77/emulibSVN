@@ -209,6 +209,7 @@ private:
 		void addApplication(string klass);
 		void refresh() ;
 		string getState(string klass, unsigned int instance);
+		bool isValidState(string expected);
 		void webOutput(xgi::Output *out, string sv_state)
 				throw (xgi::exception::Exception);
 

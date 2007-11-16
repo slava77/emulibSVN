@@ -563,8 +563,6 @@ void CSCSupervisor::configureAction(toolbox::Event::Reference evt)
 			sendCommand("Halt", "LTCControl");
 		}
 
-		state_table_.refresh();
-
 		string str = trim(getCrateConfig("PC", run_type_.toString()));
 		if (!str.empty()) {
 			setParameter(
@@ -596,6 +594,12 @@ void CSCSupervisor::configureAction(toolbox::Event::Reference evt)
 					"[file=" + calib_params_[index].bag.ltc_.toString() + "]");
 		}
 		sendCommand("Configure", "LTCControl");
+
+		state_table_.refresh();
+		if (!state_table_.isValidState("Configured")) {
+			XCEPT_RAISE(xdaq::exception::Exception,
+					"Applications got to unexpected states.");
+		}
 
 		refreshConfigParameters();
 
@@ -1394,6 +1398,32 @@ string CSCSupervisor::StateTable::getState(string klass, unsigned int instance)
 	}
 
 	return state;
+}
+
+bool CSCSupervisor::StateTable::isValidState(string expected)
+{
+	bool is_valid = true;
+
+	vector<pair<xdaq::ApplicationDescriptor *, string> >::iterator i =
+			table_.begin();
+	for (; i != table_.end(); ++i) {
+		string checked = expected;
+		string klass = i->first->getClassName();
+
+		if (klass == "EmuPeripheralCrateBroadcast") {
+			continue;
+		}
+		if (klass == "TTCciControl" || klass == "LTCControl") {
+			if (expected == "Configured") { checked = "Ready"; }
+		}
+
+		if (i->second != checked) {
+			is_valid = false;
+			break;
+		}
+	}
+
+	return is_valid;
 }
 
 void CSCSupervisor::StateTable::webOutput(xgi::Output *out, string sv_state)
