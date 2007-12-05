@@ -154,7 +154,6 @@ CSCSupervisor::CSCSupervisor(xdaq::ApplicationStub *stub)
 
 	state_table_.addApplication("EmuFCrateManager");
 	state_table_.addApplication("EmuPeripheralCrateManager");
-	state_table_.addApplication("EmuPeripheralCrateBroadcast");
 	state_table_.addApplication("EmuDAQManager");
 	state_table_.addApplication("TTCciControl");
 	state_table_.addApplication("LTCControl");
@@ -524,7 +523,7 @@ bool CSCSupervisor::calibrationAction(toolbox::task::WorkLoop *wl)
 		LOG4CPLUS_DEBUG(getApplicationLogger(),
 				"calibrationAction: " << step_counter_);
 
-		sendCommand(command, "EmuPeripheralCrateBroadcast");
+		sendCommand(command, "EmuPeripheralCrateManager");
 		sendCommandWithAttr("Cyclic", start_attr, "LTCControl");
 		sleep(delay);
 	}
@@ -580,7 +579,7 @@ void CSCSupervisor::configureAction(toolbox::Event::Reference evt)
 		if (!isCalibrationMode()) {
 			sendCommand("Configure", "EmuPeripheralCrateManager");
 		} else {
-			sendCommand("ConfigCalCFEB", "EmuPeripheralCrateBroadcast");
+			sendCommand("ConfigCalCFEB", "EmuPeripheralCrateManager");
 		}
 
 		try {
@@ -693,11 +692,7 @@ void CSCSupervisor::disableAction(toolbox::Event::Reference evt)
 
 		writeRunInfo( true, true );
 		sendCommand("Disable", "EmuFCrateManager");
-		if (!isCalibrationMode()) {
-			sendCommand("Disable", "EmuPeripheralCrateManager");
-		} else {
-			sendCommand("Disable", "EmuPeripheralCrateBroadcast");
-		}
+		sendCommand("Disable", "EmuPeripheralCrateManager");
 		sendCommand("Configure", "TTCciControl");
 		sendCommand("Configure", "LTCControl");
 	} catch (xoap::exception::Exception e) {
@@ -727,7 +722,6 @@ void CSCSupervisor::haltAction(toolbox::Event::Reference evt)
 		}
 		sendCommand("Halt", "EmuFCrateManager");
 		sendCommand("Halt", "EmuPeripheralCrateManager");
-		sendCommand("Halt", "EmuPeripheralCrateBroadcast");
 
 		try {
 			sendCommand("Halt", "EmuDAQManager");
@@ -1410,9 +1404,6 @@ bool CSCSupervisor::StateTable::isValidState(string expected)
 		string checked = expected;
 		string klass = i->first->getClassName();
 
-		if (klass == "EmuPeripheralCrateBroadcast") {
-			continue;
-		}
 		if (klass == "TTCciControl" || klass == "LTCControl") {
 			if (expected == "Configured") { checked = "Ready"; }
 		}
