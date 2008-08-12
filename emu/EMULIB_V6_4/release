@@ -1,0 +1,10 @@
+cscLevelOneFM
+cscSV
+emuDCS/Makefile
+emuDCS/PeripheralCore
+emuDCS/PeripheralApps
+emuDCS/e2p
+emuDCS/OnlineDB
+emuDCS/drivers/gbit-vme
+emuDCS/FEDCrate
+Makefile
