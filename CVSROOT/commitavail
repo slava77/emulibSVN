@@ -25,7 +25,7 @@ avail | golao | EMU/EventDisplay/FastDisplay
 avail | madorsky barvic |EMU/HV
 
 #EMU/firmware
-avail | hauser rakness durkin gujh gilmore mmatveev | EMU/firmware
+avail | hauser rakness bylsma durkin gujh gilmore mmatveev | EMU/firmware
 
 #EMU/DCS
 avail | evka sytnik clare xyang yangxf sytnik vsytnik | EMU/DCS

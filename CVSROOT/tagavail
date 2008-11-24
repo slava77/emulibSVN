@@ -16,7 +16,7 @@ avail | cvsadmin cvsemu geurts
 #unavail.dev | manuel reguero defert slopiens | CVSROOT
 
 #EMU/firmware
-avail | hauser rakness durkin gujh gilmore mmatveev | EMU/firmware
+avail | hauser rakness bylsma durkin gujh gilmore mmatveev | EMU/firmware
 
 #EMU/HV
 avail | madorsky barvic | EMU/HV
