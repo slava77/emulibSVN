@@ -18,12 +18,6 @@ avail | cvsadmin cvsemu geurts
 #EMU
 avail|geurts|EMU
 
-#EMU/AnalysisUtilities
-#avail | mumford slava | EMU/AnalysisUtilities
-
-#EMU/cscSV
-#avail | ichiro | EMU/cscSV
-
 #EMU/EventDisplay
 avail | golao | EMU/EventDisplay/FastDisplay
 
@@ -31,4 +25,8 @@ avail | golao | EMU/EventDisplay/FastDisplay
 avail | madorsky barvic |EMU/HV
 
 #EMU/firmware
-avail | hauser | EMU/firmware
+avail | hauser rakness durkin gujh gilmore mmatveev | EMU/firmware
+
+#EMU/DCS
+avail | evka sytnik clare xyang yangxf sytnik vsytnik | EMU/DCS
+
