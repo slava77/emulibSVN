@@ -22,7 +22,7 @@ avail|geurts|EMU
 avail | golao | EMU/EventDisplay/FastDisplay
 
 #EMU/HV
-avail | madorsky barvic |EMU/HV
+avail | madorsky barvic vavilov |EMU/HV
 
 #EMU/firmware
 avail | hauser rakness bylsma durkin gujh gilmore mmatveev | EMU/firmware
