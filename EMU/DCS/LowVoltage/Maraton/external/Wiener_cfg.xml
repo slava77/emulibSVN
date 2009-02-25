@@ -1,0 +1,535 @@
+<?xml version="1.0"?>
+<ROOT name="WIENER" version="1.1">
+
+<PORT_BRANCH PortID="CAN4" BaudRate="250000" ReadQueueLenght="100" WriteQueueLenght="0">
+<CRATE_BRANCH  CrateID="1">
+<CHANNEL_BRANCH ChannelID="0"/>
+<CHANNEL_BRANCH ChannelID="1"/>
+<CHANNEL_BRANCH ChannelID="2"/>
+<CHANNEL_BRANCH ChannelID="3"/>
+<CHANNEL_BRANCH ChannelID="4"/>
+<CHANNEL_BRANCH ChannelID="5"/>
+<CHANNEL_BRANCH ChannelID="6"/>
+<CHANNEL_BRANCH ChannelID="7"/>
+<FANS_BRANCH>
+<Fan FanID="1"/>
+<Fan FanID="2"/>
+<Fan FanID="3"/>
+<Fan FanID="4"/>
+<Fan FanID="5"/>
+<Fan FanID="6"/>
+</FANS_BRANCH>
+<TEMPERATURES_BRANCH>
+<Temp TempID="1"/>
+<Temp TempID="2"/>
+<Temp TempID="3"/>
+<Temp TempID="4"/>
+<Temp TempID="5"/>
+<Temp TempID="6"/>
+<Temp TempID="7"/>
+<Temp TempID="8"/>
+</TEMPERATURES_BRANCH>
+</CRATE_BRANCH>
+<CRATE_BRANCH  CrateID="2">
+<CHANNEL_BRANCH ChannelID="0"/>
+<CHANNEL_BRANCH ChannelID="1"/>
+<CHANNEL_BRANCH ChannelID="2"/>
+<CHANNEL_BRANCH ChannelID="3"/>
+<CHANNEL_BRANCH ChannelID="4"/>
+<CHANNEL_BRANCH ChannelID="5"/>
+<CHANNEL_BRANCH ChannelID="6"/>
+<CHANNEL_BRANCH ChannelID="7"/>
+<FANS_BRANCH>
+<Fan FanID="1"/>
+<Fan FanID="2"/>
+<Fan FanID="3"/>
+<Fan FanID="4"/>
+<Fan FanID="5"/>
+<Fan FanID="6"/>
+</FANS_BRANCH>
+<TEMPERATURES_BRANCH>
+<Temp TempID="1"/>
+<Temp TempID="2"/>
+<Temp TempID="3"/>
+<Temp TempID="4"/>
+<Temp TempID="5"/>
+<Temp TempID="6"/>
+<Temp TempID="7"/>
+<Temp TempID="8"/>
+</TEMPERATURES_BRANCH>
+</CRATE_BRANCH>
+<CRATE_BRANCH  CrateID="7">
+<CHANNEL_BRANCH ChannelID="0"/>
+<CHANNEL_BRANCH ChannelID="1"/>
+<CHANNEL_BRANCH ChannelID="2"/>
+<CHANNEL_BRANCH ChannelID="3"/>
+<CHANNEL_BRANCH ChannelID="4"/>
+<CHANNEL_BRANCH ChannelID="5"/>
+<CHANNEL_BRANCH ChannelID="6"/>
+<CHANNEL_BRANCH ChannelID="7"/>
+<FANS_BRANCH>
+<Fan FanID="1"/>
+<Fan FanID="2"/>
+<Fan FanID="3"/>
+<Fan FanID="4"/>
+<Fan FanID="5"/>
+<Fan FanID="6"/>
+</FANS_BRANCH>
+<TEMPERATURES_BRANCH>
+<Temp TempID="1"/>
+<Temp TempID="2"/>
+<Temp TempID="3"/>
+<Temp TempID="4"/>
+<Temp TempID="5"/>
+<Temp TempID="6"/>
+<Temp TempID="7"/>
+<Temp TempID="8"/>
+</TEMPERATURES_BRANCH>
+</CRATE_BRANCH>
+<CRATE_BRANCH  CrateID="8">
+<CHANNEL_BRANCH ChannelID="0"/>
+<CHANNEL_BRANCH ChannelID="1"/>
+<CHANNEL_BRANCH ChannelID="2"/>
+<CHANNEL_BRANCH ChannelID="3"/>
+<CHANNEL_BRANCH ChannelID="4"/>
+<CHANNEL_BRANCH ChannelID="5"/>
+<CHANNEL_BRANCH ChannelID="6"/>
+<CHANNEL_BRANCH ChannelID="7"/>
+<FANS_BRANCH>
+<Fan FanID="1"/>
+<Fan FanID="2"/>
+<Fan FanID="3"/>
+<Fan FanID="4"/>
+<Fan FanID="5"/>
+<Fan FanID="6"/>
+</FANS_BRANCH>
+<TEMPERATURES_BRANCH>
+<Temp TempID="1"/>
+<Temp TempID="2"/>
+<Temp TempID="3"/>
+<Temp TempID="4"/>
+<Temp TempID="5"/>
+<Temp TempID="6"/>
+<Temp TempID="7"/>
+<Temp TempID="8"/>
+</TEMPERATURES_BRANCH>
+</CRATE_BRANCH>
+
+<CRATE_BRANCH  CrateID="9">
+<CHANNEL_BRANCH ChannelID="0"/>
+<CHANNEL_BRANCH ChannelID="1"/>
+<CHANNEL_BRANCH ChannelID="2"/>
+<CHANNEL_BRANCH ChannelID="3"/>
+<CHANNEL_BRANCH ChannelID="4"/>
+<CHANNEL_BRANCH ChannelID="5"/>
+<CHANNEL_BRANCH ChannelID="6"/>
+<CHANNEL_BRANCH ChannelID="7"/>
+<FANS_BRANCH>
+<Fan FanID="1"/>
+<Fan FanID="2"/>
+<Fan FanID="3"/>
+<Fan FanID="4"/>
+<Fan FanID="5"/>
+<Fan FanID="6"/>
+</FANS_BRANCH>
+<TEMPERATURES_BRANCH>
+<Temp TempID="1"/>
+<Temp TempID="2"/>
+<Temp TempID="3"/>
+<Temp TempID="4"/>
+<Temp TempID="5"/>
+<Temp TempID="6"/>
+<Temp TempID="7"/>
+<Temp TempID="8"/>
+</TEMPERATURES_BRANCH>
+</CRATE_BRANCH>
+
+<CRATE_BRANCH  CrateID="10">
+<CHANNEL_BRANCH ChannelID="0"/>
+<CHANNEL_BRANCH ChannelID="1"/>
+<CHANNEL_BRANCH ChannelID="2"/>
+<CHANNEL_BRANCH ChannelID="3"/>
+<CHANNEL_BRANCH ChannelID="4"/>
+<CHANNEL_BRANCH ChannelID="5"/>
+<CHANNEL_BRANCH ChannelID="6"/>
+<CHANNEL_BRANCH ChannelID="7"/>
+<FANS_BRANCH>
+<Fan FanID="1"/>
+<Fan FanID="2"/>
+<Fan FanID="3"/>
+<Fan FanID="4"/>
+<Fan FanID="5"/>
+<Fan FanID="6"/>
+</FANS_BRANCH>
+<TEMPERATURES_BRANCH>
+<Temp TempID="1"/>
+<Temp TempID="2"/>
+<Temp TempID="3"/>
+<Temp TempID="4"/>
+<Temp TempID="5"/>
+<Temp TempID="6"/>
+<Temp TempID="7"/>
+<Temp TempID="8"/>
+</TEMPERATURES_BRANCH>
+</CRATE_BRANCH>
+
+<CRATE_BRANCH  CrateID="15">
+<CHANNEL_BRANCH ChannelID="0"/>
+<CHANNEL_BRANCH ChannelID="1"/>
+<CHANNEL_BRANCH ChannelID="2"/>
+<CHANNEL_BRANCH ChannelID="3"/>
+<CHANNEL_BRANCH ChannelID="4"/>
+<CHANNEL_BRANCH ChannelID="5"/>
+<CHANNEL_BRANCH ChannelID="6"/>
+<CHANNEL_BRANCH ChannelID="7"/>
+<FANS_BRANCH>
+<Fan FanID="1"/>
+<Fan FanID="2"/>
+<Fan FanID="3"/>
+<Fan FanID="4"/>
+<Fan FanID="5"/>
+<Fan FanID="6"/>
+</FANS_BRANCH>
+<TEMPERATURES_BRANCH>
+<Temp TempID="1"/>
+<Temp TempID="2"/>
+<Temp TempID="3"/>
+<Temp TempID="4"/>
+<Temp TempID="5"/>
+<Temp TempID="6"/>
+<Temp TempID="7"/>
+<Temp TempID="8"/>
+</TEMPERATURES_BRANCH>
+</CRATE_BRANCH>
+
+<CRATE_BRANCH  CrateID="16">
+<CHANNEL_BRANCH ChannelID="0"/>
+<CHANNEL_BRANCH ChannelID="1"/>
+<CHANNEL_BRANCH ChannelID="2"/>
+<CHANNEL_BRANCH ChannelID="3"/>
+<CHANNEL_BRANCH ChannelID="4"/>
+<CHANNEL_BRANCH ChannelID="5"/>
+<CHANNEL_BRANCH ChannelID="6"/>
+<CHANNEL_BRANCH ChannelID="7"/>
+<FANS_BRANCH>
+<Fan FanID="1"/>
+<Fan FanID="2"/>
+<Fan FanID="3"/>
+<Fan FanID="4"/>
+<Fan FanID="5"/>
+<Fan FanID="6"/>
+</FANS_BRANCH>
+<TEMPERATURES_BRANCH>
+<Temp TempID="1"/>
+<Temp TempID="2"/>
+<Temp TempID="3"/>
+<Temp TempID="4"/>
+<Temp TempID="5"/>
+<Temp TempID="6"/>
+<Temp TempID="7"/>
+<Temp TempID="8"/>
+</TEMPERATURES_BRANCH>
+</CRATE_BRANCH>
+
+<CRATE_BRANCH  CrateID="18">
+<CHANNEL_BRANCH ChannelID="0"/>
+<CHANNEL_BRANCH ChannelID="1"/>
+<CHANNEL_BRANCH ChannelID="2"/>
+<CHANNEL_BRANCH ChannelID="3"/>
+<CHANNEL_BRANCH ChannelID="4"/>
+<CHANNEL_BRANCH ChannelID="5"/>
+<CHANNEL_BRANCH ChannelID="6"/>
+<CHANNEL_BRANCH ChannelID="7"/>
+<FANS_BRANCH>
+<Fan FanID="1"/>
+<Fan FanID="2"/>
+<Fan FanID="3"/>
+<Fan FanID="4"/>
+<Fan FanID="5"/>
+<Fan FanID="6"/>
+</FANS_BRANCH>
+<TEMPERATURES_BRANCH>
+<Temp TempID="1"/>
+<Temp TempID="2"/>
+<Temp TempID="3"/>
+<Temp TempID="4"/>
+<Temp TempID="5"/>
+<Temp TempID="6"/>
+<Temp TempID="7"/>
+<Temp TempID="8"/>
+</TEMPERATURES_BRANCH>
+</CRATE_BRANCH>
+
+
+
+</PORT_BRANCH>
+
+
+
+<PORT_BRANCH PortID="CAN5" BaudRate="250000" ReadQueueLenght="100" WriteQueueLenght="0">
+
+<CRATE_BRANCH  CrateID="3">
+<CHANNEL_BRANCH ChannelID="0"/>
+<CHANNEL_BRANCH ChannelID="1"/>
+<CHANNEL_BRANCH ChannelID="2"/>
+<CHANNEL_BRANCH ChannelID="3"/>
+<CHANNEL_BRANCH ChannelID="4"/>
+<CHANNEL_BRANCH ChannelID="5"/>
+<CHANNEL_BRANCH ChannelID="6"/>
+<CHANNEL_BRANCH ChannelID="7"/>
+<FANS_BRANCH>
+<Fan FanID="1"/>
+<Fan FanID="2"/>
+<Fan FanID="3"/>
+<Fan FanID="4"/>
+<Fan FanID="5"/>
+<Fan FanID="6"/>
+</FANS_BRANCH>
+<TEMPERATURES_BRANCH>
+<Temp TempID="1"/>
+<Temp TempID="2"/>
+<Temp TempID="3"/>
+<Temp TempID="4"/>
+<Temp TempID="5"/>
+<Temp TempID="6"/>
+<Temp TempID="7"/>
+<Temp TempID="8"/>
+</TEMPERATURES_BRANCH>
+</CRATE_BRANCH>
+
+<CRATE_BRANCH  CrateID="4">
+<CHANNEL_BRANCH ChannelID="0"/>
+<CHANNEL_BRANCH ChannelID="1"/>
+<CHANNEL_BRANCH ChannelID="2"/>
+<CHANNEL_BRANCH ChannelID="3"/>
+<CHANNEL_BRANCH ChannelID="4"/>
+<CHANNEL_BRANCH ChannelID="5"/>
+<CHANNEL_BRANCH ChannelID="6"/>
+<CHANNEL_BRANCH ChannelID="7"/>
+<FANS_BRANCH>
+<Fan FanID="1"/>
+<Fan FanID="2"/>
+<Fan FanID="3"/>
+<Fan FanID="4"/>
+<Fan FanID="5"/>
+<Fan FanID="6"/>
+</FANS_BRANCH>
+<TEMPERATURES_BRANCH>
+<Temp TempID="1"/>
+<Temp TempID="2"/>
+<Temp TempID="3"/>
+<Temp TempID="4"/>
+<Temp TempID="5"/>
+<Temp TempID="6"/>
+<Temp TempID="7"/>
+<Temp TempID="8"/>
+</TEMPERATURES_BRANCH>
+</CRATE_BRANCH>
+
+
+<CRATE_BRANCH  CrateID="5">
+<CHANNEL_BRANCH ChannelID="0"/>
+<CHANNEL_BRANCH ChannelID="1"/>
+<CHANNEL_BRANCH ChannelID="2"/>
+<CHANNEL_BRANCH ChannelID="3"/>
+<CHANNEL_BRANCH ChannelID="4"/>
+<CHANNEL_BRANCH ChannelID="5"/>
+<CHANNEL_BRANCH ChannelID="6"/>
+<CHANNEL_BRANCH ChannelID="7"/>
+<FANS_BRANCH>
+<Fan FanID="1"/>
+<Fan FanID="2"/>
+<Fan FanID="3"/>
+<Fan FanID="4"/>
+<Fan FanID="5"/>
+<Fan FanID="6"/>
+</FANS_BRANCH>
+<TEMPERATURES_BRANCH>
+<Temp TempID="1"/>
+<Temp TempID="2"/>
+<Temp TempID="3"/>
+<Temp TempID="4"/>
+<Temp TempID="5"/>
+<Temp TempID="6"/>
+<Temp TempID="7"/>
+<Temp TempID="8"/>
+</TEMPERATURES_BRANCH>
+</CRATE_BRANCH>
+
+
+<CRATE_BRANCH  CrateID="6">
+<CHANNEL_BRANCH ChannelID="0"/>
+<CHANNEL_BRANCH ChannelID="1"/>
+<CHANNEL_BRANCH ChannelID="2"/>
+<CHANNEL_BRANCH ChannelID="3"/>
+<CHANNEL_BRANCH ChannelID="4"/>
+<CHANNEL_BRANCH ChannelID="5"/>
+<CHANNEL_BRANCH ChannelID="6"/>
+<CHANNEL_BRANCH ChannelID="7"/>
+<FANS_BRANCH>
+<Fan FanID="1"/>
+<Fan FanID="2"/>
+<Fan FanID="3"/>
+<Fan FanID="4"/>
+<Fan FanID="5"/>
+<Fan FanID="6"/>
+</FANS_BRANCH>
+<TEMPERATURES_BRANCH>
+<Temp TempID="1"/>
+<Temp TempID="2"/>
+<Temp TempID="3"/>
+<Temp TempID="4"/>
+<Temp TempID="5"/>
+<Temp TempID="6"/>
+<Temp TempID="7"/>
+<Temp TempID="8"/>
+</TEMPERATURES_BRANCH>
+</CRATE_BRANCH>
+
+
+
+<CRATE_BRANCH  CrateID="11">
+<CHANNEL_BRANCH ChannelID="0"/>
+<CHANNEL_BRANCH ChannelID="1"/>
+<CHANNEL_BRANCH ChannelID="2"/>
+<CHANNEL_BRANCH ChannelID="3"/>
+<CHANNEL_BRANCH ChannelID="4"/>
+<CHANNEL_BRANCH ChannelID="5"/>
+<CHANNEL_BRANCH ChannelID="6"/>
+<CHANNEL_BRANCH ChannelID="7"/>
+<FANS_BRANCH>
+<Fan FanID="1"/>
+<Fan FanID="2"/>
+<Fan FanID="3"/>
+<Fan FanID="4"/>
+<Fan FanID="5"/>
+<Fan FanID="6"/>
+</FANS_BRANCH>
+<TEMPERATURES_BRANCH>
+<Temp TempID="1"/>
+<Temp TempID="2"/>
+<Temp TempID="3"/>
+<Temp TempID="4"/>
+<Temp TempID="5"/>
+<Temp TempID="6"/>
+<Temp TempID="7"/>
+<Temp TempID="8"/>
+</TEMPERATURES_BRANCH>
+</CRATE_BRANCH>
+<CRATE_BRANCH  CrateID="12">
+<CHANNEL_BRANCH ChannelID="0"/>
+<CHANNEL_BRANCH ChannelID="1"/>
+<CHANNEL_BRANCH ChannelID="2"/>
+<CHANNEL_BRANCH ChannelID="3"/>
+<CHANNEL_BRANCH ChannelID="4"/>
+<CHANNEL_BRANCH ChannelID="5"/>
+<CHANNEL_BRANCH ChannelID="6"/>
+<CHANNEL_BRANCH ChannelID="7"/>
+<FANS_BRANCH>
+<Fan FanID="1"/>
+<Fan FanID="2"/>
+<Fan FanID="3"/>
+<Fan FanID="4"/>
+<Fan FanID="5"/>
+<Fan FanID="6"/>
+</FANS_BRANCH>
+<TEMPERATURES_BRANCH>
+<Temp TempID="1"/>
+<Temp TempID="2"/>
+<Temp TempID="3"/>
+<Temp TempID="4"/>
+<Temp TempID="5"/>
+<Temp TempID="6"/>
+<Temp TempID="7"/>
+<Temp TempID="8"/>
+</TEMPERATURES_BRANCH>
+</CRATE_BRANCH>
+<CRATE_BRANCH  CrateID="13">
+<CHANNEL_BRANCH ChannelID="0"/>
+<CHANNEL_BRANCH ChannelID="1"/>
+<CHANNEL_BRANCH ChannelID="2"/>
+<CHANNEL_BRANCH ChannelID="3"/>
+<CHANNEL_BRANCH ChannelID="4"/>
+<CHANNEL_BRANCH ChannelID="5"/>
+<CHANNEL_BRANCH ChannelID="6"/>
+<CHANNEL_BRANCH ChannelID="7"/>
+<FANS_BRANCH>
+<Fan FanID="1"/>
+<Fan FanID="2"/>
+<Fan FanID="3"/>
+<Fan FanID="4"/>
+<Fan FanID="5"/>
+<Fan FanID="6"/>
+</FANS_BRANCH>
+<TEMPERATURES_BRANCH>
+<Temp TempID="1"/>
+<Temp TempID="2"/>
+<Temp TempID="3"/>
+<Temp TempID="4"/>
+<Temp TempID="5"/>
+<Temp TempID="6"/>
+<Temp TempID="7"/>
+<Temp TempID="8"/>
+</TEMPERATURES_BRANCH>
+</CRATE_BRANCH>
+<CRATE_BRANCH  CrateID="14">
+<CHANNEL_BRANCH ChannelID="0"/>
+<CHANNEL_BRANCH ChannelID="1"/>
+<CHANNEL_BRANCH ChannelID="2"/>
+<CHANNEL_BRANCH ChannelID="3"/>
+<CHANNEL_BRANCH ChannelID="4"/>
+<CHANNEL_BRANCH ChannelID="5"/>
+<CHANNEL_BRANCH ChannelID="6"/>
+<CHANNEL_BRANCH ChannelID="7"/>
+<FANS_BRANCH>
+<Fan FanID="1"/>
+<Fan FanID="2"/>
+<Fan FanID="3"/>
+<Fan FanID="4"/>
+<Fan FanID="5"/>
+<Fan FanID="6"/>
+</FANS_BRANCH>
+<TEMPERATURES_BRANCH>
+<Temp TempID="1"/>
+<Temp TempID="2"/>
+<Temp TempID="3"/>
+<Temp TempID="4"/>
+<Temp TempID="5"/>
+<Temp TempID="6"/>
+<Temp TempID="7"/>
+<Temp TempID="8"/>
+</TEMPERATURES_BRANCH>
+</CRATE_BRANCH>
+
+<CRATE_BRANCH  CrateID="17">
+<CHANNEL_BRANCH ChannelID="0"/>
+<CHANNEL_BRANCH ChannelID="1"/>
+<CHANNEL_BRANCH ChannelID="2"/>
+<CHANNEL_BRANCH ChannelID="3"/>
+<CHANNEL_BRANCH ChannelID="4"/>
+<CHANNEL_BRANCH ChannelID="5"/>
+<CHANNEL_BRANCH ChannelID="6"/>
+<CHANNEL_BRANCH ChannelID="7"/>
+<FANS_BRANCH>
+<Fan FanID="1"/>
+<Fan FanID="2"/>
+<Fan FanID="3"/>
+<Fan FanID="4"/>
+<Fan FanID="5"/>
+<Fan FanID="6"/>
+</FANS_BRANCH>
+<TEMPERATURES_BRANCH>
+<Temp TempID="1"/>
+<Temp TempID="2"/>
+<Temp TempID="3"/>
+<Temp TempID="4"/>
+<Temp TempID="5"/>
+<Temp TempID="6"/>
+<Temp TempID="7"/>
+<Temp TempID="8"/>
+</TEMPERATURES_BRANCH>
+</CRATE_BRANCH>
+
+
+</PORT_BRANCH>
+</ROOT>
