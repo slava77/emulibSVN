@@ -1,0 +1,910 @@
+V 10
+1
+LANG:1 8 (NoName)
+PANEL,-1 -1 749 500 N "_3DFace" 1
+"$sDpName"
+"main()
+{
+//--- my_corr--------------------------- 
+  mudcsMrtnPnlInit();  
+  DpName=mudcsLvAddSystem($sDpName, CSC_fwCAN2_g_SYSTEM_NAME);
+  int local_sys;
+  int is_local_sys;
+  
+  string local_sys = fwFsm_getSystemName();
+if(strpos(local_sys,\"CSC\")>=0 || strpos(local_sys,\"csc\")>=0 || strpos(local_sys,\"dcspcS2G19\")>=0 
+   || strpos(local_sys,\"EMU\")>=0 || strpos(local_sys,\"emu\")>=0)
+is_local_sys=1;
+else is_local_sys=0;
+if(is_local_sys){
+  setValue(\"button1\",\"enabled\",true);
+  setValue(\"button2\",\"enabled\",true);  
+  }else{
+  setValue(\"button1\",\"enabled\",false);
+  setValue(\"button2\",\"enabled\",false);     
+  }
+
+  //mudcsLvDebug(DpName);
+//-----------------------------------------  
+	string model;
+	dyn_string exceptionInfo;
+
+	fwDevice_getModel(makeDynString(DpName), model, exceptionInfo);
+
+	if(strpos(model, \"(CAN)\") > 0)
+	{
+		string deviceName;
+		int devicePosition;
+	
+		fwDevice_getPosition(DpName, deviceName, devicePosition, exceptionInfo);
+		psIdField.text = devicePosition;
+		Tab1.namedRegisterVisible(\"groups\") = FALSE;
+		psId.text = \"CAN Bus ID:\";
+		outputInhibits.visible = TRUE;
+		g_Model = \"CAN\";
+//DebugN(\"IS CAN\");
+	}
+	else
+	{
+		psId.text = \"IP Number:\";
+	  EP_textFieldIn();
+		g_Model = \"TCP/IP\";
+//DebugN(\"IS TCP/IP\");
+	}
+	
+	dpConnect(\"_fwOperatingTimeCB\", TRUE, DpName + \".UpTime:_online.._value\");
+}" 0
+ E E E E 1 -1 -1 0  15 70
+""0  1
+E "string DpName;
+string g_Model;
+
+_fwOperatingTimeCB(string dpe, string value)
+{
+	float operatingTime;
+	int d, h, m, s;
+	
+	operatingTime = value;
+
+	if(g_Model == \"CAN\")
+		operatingTime /= (24*60);
+		
+	d = floor(operatingTime);
+	operatingTime = (operatingTime - d)*24;
+
+	h = floor(operatingTime);
+	operatingTime = (operatingTime - h)*60;
+
+	m = floor(operatingTime);
+	operatingTime = (operatingTime - m)*60;
+
+	s = floor(operatingTime);
+	
+	sprintf(value, \"%d days %02d:%02d:%02d\", d, h, m, s);
+	operatingTimeField.text(value);
+}
+
+fwWriteValue(string sDpe, int value)
+{
+	this.text = value;
+}
+
+InvalidColour(string dp, bool invalid)
+{
+	string elementColour;
+
+	if(invalid)
+		this.backCol = \"FwDead\";
+	else
+		this.backCol = \"_3DFace\";
+}
+
+EP_textFieldIn()
+{
+dyn_errClass err;
+
+  if( !dpExists( DpName + \".ipNumber:_online.._value\"))
+  {
+    setValue(\"psIdField\", \"color\", \"_dpdoesnotexist\");
+    return;
+  }
+
+  dpConnect(\"EP_textFieldInCB\",
+            DpName + \".ipNumber:_online.._value\");
+  err = getLastError();
+  if (dynlen(err) > 0)
+    setValue(\"psIdField\", \"color\", \"_dpdoesnotexist\");
+
+}
+
+
+EP_textFieldInCB(string dp, string sNewValue)
+{
+  setValue(\"psIdField\", \"text\", dpValToString(dp, sNewValue, FALSE) );
+}
+" 0
+ 2
+"CBRef" "1"
+"EClose" "main()
+{
+	int i;
+}" 0
+
+""
+NC
+1
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 0
+"Text7"
+""
+1 10 70 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 10 10 297 33
+0 0 0 "0s" 0 0 0 192 0 0  10 10 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-19-*-100-100-*-*-iso8859-1|-19,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 31 Marathon Power Supply Operation
+1 238 13 "" 19
+0
+1 239 13 "" 18
+0
+2 170
+"Text6"
+""
+1 71 156 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+80 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 53 134 70
+0 2 0 "0s" 0 0 0 192 0 0  12 53 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 18 Power Supply Name:
+2 171
+"Text1"
+""
+1 504 155 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+81 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 492 52 531 69
+0 2 0 "0s" 0 0 0 192 0 0  492 52 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 6 Model:
+2 172
+"NameText"
+""
+1 58 245 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+82 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 87 81 104
+0 2 2 "0s" 0 0 0 192 0 0  12 87 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 12 Description:
+30 176
+"Frame1"
+""
+1 10 350 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+86 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 10 180 215 350
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 6 Status
+30 177
+"Frame2"
+""
+1 10 440 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+87 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 10 370 215 440
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 8 Commands
+2 181
+"Text5"
+""
+1 44 208 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+92 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+	dyn_errClass err;
+
+	if( dpSubStr( $sDpName + \".Status.On:_online.._value\", DPSUB_DP_EL ) == \"\" )	
+	{
+		setValue(\"\", \"color\", \"_dpdoesnotexist\");
+		return;
+	}
+
+	dpConnect(\"EP_textFieldInCB\", TRUE, $sDpName + \".Status.On\");
+	err = getLastError();
+	if (dynlen(err) > 0)
+		setValue(\"\", \"color\", \"_dpdoesnotexist\");
+}
+
+EP_textFieldInCB(string dp, bool boNewValue)
+{
+	if(boNewValue)
+		this.text = \"Power ON\";
+	else
+		this.text = \"Power OFF\";
+}" 0
+ E 0 1 1 0 1 E U  0 E 46 210 103 227
+0 2 0 "0s" 0 0 0 192 0 0  46 210 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 8 (ON/OFF)
+2 188
+"Text2"
+""
+1 53 472 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+95 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 19 314 71 331
+0 2 2 "0s" 0 0 0 192 0 0  19 314 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 8 Up Time:
+2 189
+"Text8"
+""
+1 28 383 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+96 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 19 280 113 297
+0 2 0 "0s" 0 0 0 192 0 0  19 280 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 15 Remote Control:
+2 191
+"Text3"
+""
+1 45 562 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+98 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 22 404 62 421
+0 2 2 "0s" 0 0 0 192 0 0  22 404 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 6 Power:
+2 192
+"Text4"
+""
+1 17 347 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+99 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 19 244 120 261
+0 2 0 "0s" 0 0 0 192 0 0  19 244 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 16 Output Channels:
+2 201
+"Text9"
+""
+1 63 279 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+104 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 121 121 138
+0 2 2 "0s" 0 0 0 192 0 0  12 121 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 19 Device Information:
+2 218
+"psId"
+""
+1 495 279 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+105 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 492 121 524 138
+0 2 2 "0s" 0 0 0 192 0 0  492 121 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 6 (psId)
+28 210
+"Tab1"
+""
+1 460 319 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+105 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 221 158 742 452
+E2 "channels" 1
+LANG:1 8 Channels
+1 "objects\\fwWiener\\fwWienerChannelsOverview.pnl" 1
+LANG:1 0 
+3
+"$bShowCurrents""TRUE"
+"$bShowUnits""TRUE"
+"$sDpName""$sDpName"
+
+"groups" 1
+LANG:1 6 Groups
+1 "objects\\fwWiener\\fwWienerGroupsOverview.pnl" 1
+LANG:1 0 
+1
+"$sDpName""$sDpName"
+
+
+13 13
+"Button8"
+""
+1 660 460 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 658 458 742 492
+
+T 
+1
+LANG:1 5 Close
+"main()
+{
+	PanelOff();
+}" 0
+ E E E
+1 240 14 "" 0
+0
+1 241 15 "" 0
+0
+1 242 15 "" 1
+0
+14 173
+"sBusId"
+""
+1 625 182 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+83 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 534 48 702 75
+2 "0s" 0 0 0 0 0 -1  E "main()
+{
+	string modelName;
+	dyn_string exceptionInfo;
+
+	fwDevice_getModel(makeDynString($sDpName), modelName, exceptionInfo);
+	this.text = modelName;
+	
+	if(dynlen(exceptionInfo)>0)
+	{
+		fwExceptionHandling_display(exceptionInfo);
+	}
+}" 0
+ E
+14 174
+"sChannelName"
+""
+1 342 182 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+84 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 138 48 482 75
+2 "0s" 0 0 0 0 0 -1  E "main()
+{
+	this.text = $sDpName;
+}" 0
+ E
+14 175
+"description"
+""
+1 155 245 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+85 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 138 81 482 108
+2 "0s" 0 0 0 0 0 -1  E "main()
+{
+	this.text = dpGetDescription($sDpName + \".\");
+}
+" 0
+ E
+13 178
+"Button1"
+""
+1 70 400 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+88 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 68 398 125 432
+
+T 
+1
+LANG:1 2 On
+"main()
+{
+	dpSet(DpName + \".Settings.OnOffCrate:_original.._value\", TRUE);
+}" 0
+ E E E
+13 179
+"Button2"
+""
+1 140 400 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+89 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 138 398 195 432
+
+T 
+1
+LANG:1 3 Off
+"main()
+{
+	dpSet(DpName + \".Settings.OnOffCrate:_original.._value\", FALSE);
+}" 0
+ E E E
+14 186
+"operatingTimeField"
+""
+1 72 310 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+93 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 70 308 207 335
+2 "0s" 0 0 0 2 0 -1  E "main()
+{
+	dpConnect(\"InvalidColour\", TRUE, $sDpName + \".UpTime:_online.._invalid\");
+}" 0
+ E
+14 190
+"LocalControlOnly"
+""
+1 171 407 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+97 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 123 273 207 300
+2 "0s" 0 0 0 0 0 -1  E "main()
+{
+	string sDpe;
+
+	sDpe = this.name;
+
+	dpConnect(\"EP_textFieldInCB\", TRUE, $sDpName + \".Status.\" + sDpe + \":_online.._value\");
+	dpConnect(\"InvalidColour\", TRUE, $sDpName + \".Status.\" + sDpe + \":_online.._invalid\");
+}
+
+EP_textFieldInCB(string dp, bool boNewValue)
+{
+	if(boNewValue)
+		this.text = \"DISABLED\";
+	else
+		this.text = \"ENABLED\";
+}" 0
+ E
+14 193
+"OutputFailure"
+""
+1 171 372 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+100 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 123 238 207 265
+2 "0s" 0 0 0 0 0 -1  E "main()
+{
+	string sDpe;
+	dyn_string exceptionInfo;
+
+	sDpe = this.name;
+
+	dpConnect(\"EP_textFieldInCB\", TRUE, $sDpName + \".Status.\" + sDpe + \":_online.._value\");
+	fwColour_connectItemBackColToStatus($sDpName + \".Status.\" + sDpe, exceptionInfo);
+
+	if(dynlen(exceptionInfo) > 0)
+		fwExceptionHandling_display(exceptionInfo);
+}
+
+EP_textFieldInCB(string dp, bool boNewValue)
+{
+	if(boNewValue)
+		this.text = \"FAILED\";
+	else
+		this.text = \"OK\";
+}" 0
+ E
+14 202
+"TextField1"
+""
+1 155 279 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+105 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 138 115 482 142
+2 "0s" 0 0 0 0 0 -1  E "main()
+{
+  EP_textFieldIn();
+	dpConnect(\"InvalidColour\", TRUE, $sDpName + \".Description:_online.._invalid\");
+}
+
+EP_textFieldIn()
+{
+dyn_errClass err;
+
+  if( !dpExists( $sDpName + \".Description:_online.._value\"))
+  {
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+    return;
+  }
+
+  dpConnect(\"EP_textFieldInCB\",
+            $sDpName + \".Description:_online.._value\");
+  err = getLastError();
+  if (dynlen(err) > 0)
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+
+}
+
+
+EP_textFieldInCB(string dp, string sNewValue)
+{
+  setValue(\"\", \"text\", dpValToString(dp, sNewValue, FALSE) );
+}
+
+// SimpleCtrlScript {EP_textFieldIn}
+// DP {dist_1:Wiener/Marathon11.Description}
+// DPConfig {:_online.._value}
+// DPType {string}
+// UseDPUnit {FALSE}
+// UseDPFormat {TRUE}
+// SimpleCtrlScriptEnd {EP_textFieldIn}
+" 0
+ E
+14 219
+"psIdField"
+""
+1 574 279 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+106 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 568 115 702 142
+2 "0s" 0 0 0 0 0 -1  E "main()
+{
+	string model;
+	dyn_string exceptionInfo;
+
+	fwDevice_getModel(makeDynString($sDpName), model, exceptionInfo);
+
+	if(strpos(model, \"(CAN)\") < 0)
+	{
+		dpConnect(\"InvalidColour\", TRUE, $sDpName + \".ipNumber:_online.._invalid\");
+	}
+}" 0
+ E
+13 226
+"outputInhibits"
+""
+1 20 450 E E E 0 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+107 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 18 448 142 482
+
+T 
+1
+LANG:1 15 Output Inhibits
+"// SimpleCtrlScriptStart {invalid}
+main()
+{
+  EP_childPanelOn();
+}
+
+EP_childPanelOn()
+{
+  ChildPanelOnCentral(\"objects/fwWiener/fwWienerInhibitsSettings.pnl\",
+      \"Set Output Inhibits\",
+      makeDynString(\"$sDpName:\" + DpName));
+}
+
+// SimpleCtrlScript {EP_childPanelOn}
+// Function {ChildPanelOnCentral}
+// File {objects/fwWiener/fwWienerInhibitsSettings.pnl}
+// Panel {Set Output Inhibits}
+// Parent {}
+// Module {}
+// OffsetX {0}
+// OffsetY {0}
+// PanelPara1 {$sDpName:$sDpName}
+// SimpleCtrlScriptEnd {EP_childPanelOn}
+" 0
+ E E E
+2 237
+"PRIMITIVE_TEXT1"
+""
+1 160 460 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+108 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 160 460 181 474
+0 2 2 "0s" 0 0 0 192 0 0  160 460 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 3 CSC
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+1 243 16 "" 4
+0
+1 244 16 "" 0
+0
+1 245 16 "" 3
+0
+1 246 16 "" 1
+0
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+3 13 "Group13"
+"fwDeviceEditorNavigator/fwActionButton.pnl" 551 10 T 77 1 0 1 -71 -12
+1
+"$sDpName""$sDpName"
+3 14 "Group14"
+"objects\\fwGeneral\\fwHelpButton.pnl" 604 10 T 80 1 0 1 82 0
+1
+"$sPanelRelativePath""fwWiener/fwWienerMarathonOperation"
+3 15 ""
+"objects\\fwConfigs\\fwAlarmSummaryButton.pnl" 190 40 T 80 1 0 1 706 -20
+1
+"$sDpName""$sDpName"
+3 16 "Group16"
+"objects\\fwGeneral\\fwLedWithAlert.pnl" 20 40 T 91 0.666666666666667 0 0.666666666666667 -0.6666666666666 173.333333333333
+4
+"$color0""_3DFace"
+"$color1""FwStateOKPhysics"
+"$sDpName""$sDpName"
+"$sDpSubName"".Status.On"
+0

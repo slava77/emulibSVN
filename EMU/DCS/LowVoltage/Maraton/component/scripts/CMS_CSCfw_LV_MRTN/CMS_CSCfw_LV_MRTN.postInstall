@@ -1,0 +1,25 @@
+#uses "CMS_CSCfw_LV_MRTN/emuDcsLv.ctl"
+#uses "CMS_CSCfw_LV_MRTN/emuDcsMrtn.ctl"
+
+main(){
+ 
+fwInstallation_appendManager(TRUE, "fwCMS_CSC_LV_MRTN server", "PVSS00ctrl", 
+"manual", 30, 2, 2, "-num 16 libs/CMS_CSCfw_LV_MRTN/mudcsLVserver.ctl");
+
+//================================================================
+  int i;
+ string emu_side=mudcsMrtnPnlInit();
+ 
+  
+  dyn_string ds1=dpNames("CMS_CSC_LV_MRTN*","MUDCS_STRING");
+  for(i=1;i<=dynlen(ds1);i++)dpDelete(ds1[i]);
+
+  dpCreate("CMS_CSC_LV_MRTN"+emu_side,"MUDCS_STRING");
+
+//================================================================  
+
+   system("start /b PVSS00ctrl -num 18 CMS_CSCfw_LV_MRTN/mudcsMrtnCreate.ctl");  
+
+   
+   
+}

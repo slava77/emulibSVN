@@ -1,0 +1,250 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 412 338 N "_3DFace" 0
+E E E E E 1 -1 -1 0  110 100
+""0  1
+E E 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"PUSH_BUTTON1"
+""
+1 110 100 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-32-*-100-100-*-*-iso8859-1|-32,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 108 98 282 192
+
+T 
+1
+LANG:1 5 Click
+"main()
+{
+  string SysName = getSystemName();
+  
+  int err;
+  string grFastIn  = \"WienerOPCGroupFastIn\";
+  string grSlowIn  = \"WienerOPCGroupSlowIn\";
+  string grOut     = \"WienerOPCGroupOut\";
+//
+//+++      Create & set groups 
+// 
+  int vFastIn      = 3000,
+      vSlowIn      = 31000;
+  
+  int LAST_CANBUS  = 4;
+  int NbCAN;
+  string GroupName;
+  
+  for (NbCAN = 0; NbCAN <LAST_CANBUS; NbCAN++)
+  {
+    GroupName = SysName + \"_\" + grFastIn + NbCAN;
+    DebugTN(\"Group\", GroupName);
+    dpCopy(SysName + \"_\" + grFastIn, GroupName, err);   
+    dpSet(GroupName + \".UpdateRateReq:_original.._value\", vFastIn); 
+    dpSet(GroupName + \".Active:_original.._value\", 1);
+    dpSet(GroupName + \".EnableCallback:_original.._value\", 1);
+      
+    GroupName = SysName + \"_\" + grSlowIn + NbCAN;
+    DebugTN(\"Group\", GroupName);
+    dpCopy(SysName + \"_\" + grSlowIn, GroupName, err);   
+    dpSet(GroupName + \".UpdateRateReq:_original.._value\", vSlowIn); 
+    dpSet(GroupName + \".Active:_original.._value\", 1);
+    dpSet(GroupName + \".EnableCallback:_original.._value\", 1); 
+     
+    GroupName = SysName + \"_\" + grOut + NbCAN;
+    DebugTN(\"Group\", GroupName);
+    dpCopy(SysName + \"_\" + grOut, GroupName, err);   
+//    dpSet(GroupName + \".UpdateRateReq:_original.._value\", vSlowIn); 
+    dpSet(GroupName + \".Active:_original.._value\", 1);
+    dpSet(GroupName + \".EnableCallback:_original.._value\", 1);  
+  }
+    dpSet(SysName + \"_\" + grSlowIn + \".Active:_original.._value\", 0);
+  DebugN(\">>>   Groups created   <<<\");  
+//
+//+++      Items configurations 
+// 
+  dyn_string sCrateIn     = makeDynString(\".Status.On\",
+                                          \".Status.CrateStatus\",
+                                          \".Status.OutputFailure\",
+                                          \".Status.LocalControlOnly\",
+                                          \".ReadbackSettings.OnOffCrate\");
+  dyn_string sCrateSlowIn = makeDynString(\".Description\",
+                                          \".UpTime\",
+                                          \".ReadbackSettings.OutputInhibits\");
+  dyn_string sCrateOut    = makeDynString(\".Settings.OnOffCrate\",
+                                          \".Settings.OutputInhibits\");
+  
+  dyn_string sChannelIn      = makeDynString(\".Status.On\",
+                                             \".Status.FailureMaxCurrent\",
+                                             \".Status.FailureMaxSenseVoltage\",
+                                             \".Status.FailureMaxTerminalVoltage\",
+                                             \".MeasurementSenseVoltage\",
+                                             \".MeasurementCurrent\");
+  dyn_string sChannelSlowIn  = makeDynString(\".ReadbackSettings.CurrentLimitSetpoint\",
+                                             \".ReadbackSettings.MinCurrentCompSetpoint\",
+                                             \".ReadbackSettings.OverCurrentCompSetpoint\",
+                                             \".ReadbackSettings.OverVoltCompSetpoint\",
+                                             \".ReadbackSettings.OverVoltProtection\",
+                                             \".ReadbackSettings.UnderVoltCompSetpoint\",
+                                             \".ReadbackSettings.VoltageFineAdjust\",
+                                             \".ReadbackSettings.VoltageSetpoint\");
+  dyn_string sChannelOut     = makeDynString(\".Settings.CurrentLimitSetpoint\",
+                                             \".Settings.MinCurrentCompSetpoint\",
+                                             \".Settings.OverCurrentCompSetpoint\",
+                                             \".Settings.OverVoltCompSetpoint\",
+                                             \".Settings.OverVoltProtection\",
+                                             \".Settings.UnderVoltCompSetpoint\",
+                                             \".Settings.VoltageFineAdjust\",
+                                             \".Settings.VoltageSetpoint\");
+ 
+//
+//+++      End items configurations 
+// 
+  dyn_string exceptionInfo;
+  dyn_string channelElements, psuElements;
+  dyn_int mode;
+  int item, crate, chan;
+  
+  bool configurationExists, configurationActive;
+  dyn_mixed configurationDetails;
+  
+  dyn_string sCrates, sChannels;
+  
+  for (NbCAN = 0; NbCAN <LAST_CANBUS; NbCAN++)
+  {
+    sCrates   = dpNames(\"*CAN\" + NbCAN + \"*\", \"FwWienerMarathon\");
+    sChannels = dpNames(\"*CAN\" + NbCAN + \"*\", \"FwWienerMarathonChannel\");
+//  DebugN(sCrates);
+//  DebugN(sChannels);
+  
+    for(crate = 1; crate <= dynlen(sCrates); crate++)
+    {
+      DebugTN(\"Crate\", sCrates[crate]);
+      for(item = 1; item <= dynlen(sCrateIn); item++)
+      {
+        fwPeriphAddress_get(sCrates[crate] + sCrateIn[item], configurationExists, configurationDetails, configurationActive, exceptionInfo);
+        if (configurationExists)
+        {
+          configurationDetails[fwPeriphAddress_OPC_GROUP_IN] = grFastIn + NbCAN;
+          fwPeriphAddress_set(sCrates[crate] + sCrateIn[item], configurationDetails, exceptionInfo);
+          if (dynlen(exceptionInfo))
+              DebugN(\"1\", exceptionInfo);
+        } else
+              DebugN(\" Configuration not exist\", sCrates[crate] + sCrateIn[item]);
+       } 
+      for(item = 1; item <= dynlen(sCrateSlowIn); item++)
+      {
+        fwPeriphAddress_get(sCrates[crate] + sCrateSlowIn[item], configurationExists, configurationDetails, configurationActive, exceptionInfo);
+        if (configurationExists)
+        {
+          configurationDetails[fwPeriphAddress_OPC_GROUP_IN] = grSlowIn + NbCAN;
+          fwPeriphAddress_set(sCrates[crate] + sCrateSlowIn[item], configurationDetails, exceptionInfo);
+          if (dynlen(exceptionInfo))
+              DebugN(\"2\",exceptionInfo);
+        } else
+              DebugN(\" Configuration not exist\", sCrates[crate] + sCrateSlowIn[item]);
+      }
+     for(item = 1; item <= dynlen(sCrateOut); item++)
+      {
+        fwPeriphAddress_get(sCrates[crate] + sCrateOut[item], configurationExists, configurationDetails, configurationActive, exceptionInfo);
+        if (configurationExists)
+        {
+          configurationDetails[fwPeriphAddress_OPC_GROUP_OUT] = grOut + NbCAN;
+          fwPeriphAddress_set(sCrates[crate] + sCrateOut[item], configurationDetails, exceptionInfo);
+          if (dynlen(exceptionInfo))
+              DebugN(\"3\",exceptionInfo);
+        } else
+              DebugN(\" Configuration not exist\", sCrates[crate] + sCrateOut[item]);
+      }
+    }
+    DebugN(\"CRATEs finished\");
+  
+    for(chan = 1; chan <= dynlen(sChannels); chan++)
+    {
+      DebugTN(\"Channel\", sChannels[chan]);
+      for(item = 1; item <= dynlen(sChannelIn); item++)
+      {
+        fwPeriphAddress_get(sChannels[chan] + sChannelIn[item], configurationExists, configurationDetails, configurationActive, exceptionInfo);
+        if (configurationExists)
+        {
+          configurationDetails[fwPeriphAddress_OPC_GROUP_IN] = grFastIn + NbCAN;
+          fwPeriphAddress_set(sChannels[chan] + sChannelIn[item], configurationDetails, exceptionInfo);
+          if (dynlen(exceptionInfo))
+              DebugN(\"1\", exceptionInfo);
+        } else
+              DebugN(\" Configuration not exist\", sChannels[chan] + sChannelIn[item]);
+       }     
+      for(item = 1; item <= dynlen(sChannelSlowIn); item++)
+      {
+        fwPeriphAddress_get(sChannels[chan] + sChannelSlowIn[item], configurationExists, configurationDetails, configurationActive, exceptionInfo);
+        if (configurationExists)
+        {
+          configurationDetails[fwPeriphAddress_OPC_GROUP_IN] = grSlowIn + NbCAN;
+          fwPeriphAddress_set(sChannels[chan] + sChannelSlowIn[item], configurationDetails, exceptionInfo);
+          if (dynlen(exceptionInfo))
+              DebugN(\"2\",exceptionInfo);
+         } else
+              DebugN(\" Configuration not exist\", sChannels[chan] + sChannelSlowIn[item]);
+      }
+      for(item = 1; item <= dynlen(sChannelOut); item++)
+      {
+        fwPeriphAddress_get(sChannels[chan] + sChannelOut[item], configurationExists, configurationDetails, configurationActive, exceptionInfo);
+        if (configurationExists)
+        {
+          configurationDetails[fwPeriphAddress_OPC_GROUP_OUT] = grOut + NbCAN;
+          fwPeriphAddress_set(sChannels[chan] + sChannelOut[item], configurationDetails, exceptionInfo);
+          if (dynlen(exceptionInfo))
+              DebugN(\"3\",exceptionInfo);
+        } else
+              DebugN(\" Configuration not exist\", sChannels[chan] + sChannelOut[item]);
+      }
+    }
+  }
+  DebugN(\"Channels finished\");
+ }" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

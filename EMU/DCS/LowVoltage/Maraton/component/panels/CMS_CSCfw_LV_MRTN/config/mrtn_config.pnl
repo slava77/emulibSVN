@@ -1,0 +1,912 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 240 292 N "_3DFace" 0
+"main()
+{
+  mudcsMrtnPnlInit();
+ channel_dps=dpNames(\"*\",\"FwWienerMarathonChannel\");
+ //DebugTN(channel_dps);
+ 	listOfElement = makeDynString(\"VoltageSetpoint\",
+									\"VoltageFineAdjust\",
+									\"CurrentLimitSetpoint\",
+									\"UnderVoltCompSetpoint\",
+									\"OverVoltCompSetpoint\",
+									\"OverVoltProtection\",
+									\"MinCurrentCompSetpoint\",
+									\"OverCurrentCompSetpoint\");
+  dyn_int individual_ids;
+ dyn_int individual_chs;
+ dyn_int individual_dpes;
+ dyn_float individual_vals;       
+}" 0
+ E E E E 1 -1 -1 0  0 10
+""0  1
+E "//#uses \"CMS_CSCfw_LV_CRB/emuDcsLv.ctl\"
+#uses \"CMS_CSCfw_LV_MRTN/emuDcsLv.ctl\"
+//#uses \"CMS_CSCfw_LV_CRB/emuDcsCrb.ctl\"
+#uses \"CMS_CSCfw_LV_MRTN/emuDcsMrtn.ctl\"
+//#uses \"CMS_CSCfw_LV_CRB/emuDcsLvAlert.ctl\"
+#uses \"CMS_CSCfw_LV_MRTN/emuDcsLvAlert.ctl\"
+//#uses \"CMS_CSCfw_LV_CRB/emuDcsCrbAlert.ctl\"
+#uses \"CMS_CSCfw_LV_MRTN/emuDcsMrtnAlert.ctl\"
+//#uses \"CMS_CSCfw_LV_CRB/emufw.ctl\"
+#uses \"CMS_CSCfw_LV_MRTN/emufw.ctl\"
+
+dyn_dyn_int groups;
+dyn_string channel_dps;
+dyn_string listOfElement;
+
+ dyn_int individual_ids;
+ dyn_int individual_chs; // cross channel number !!! (1,2,3,4,5,6)
+ dyn_int individual_dpes; // element index 
+ dyn_float individual_vals;
+ 
+ 
+  dyn_dyn_float settings_group1;
+  dyn_dyn_float settings_group2;
+  dyn_dyn_float settings_group3;
+  dyn_dyn_float settings_group4;
+  dyn_dyn_float settings_group5;
+  dyn_dyn_float settings_group6;
+  dyn_dyn_float settings_group7;
+  dyn_dyn_float settings_group8;
+  dyn_dyn_float settings_group9; 
+  dyn_dyn_float settings_group10;         
+  
+mudcsMrtnSettingsAll()
+{
+  
+  string dp;
+  
+  int i,j,icr, igr, ich;
+  dyn_string ds1,ds2;
+  string s1,s2;
+  dyn_float setting_channel;  
+
+//=================================================================================
+  
+  for(i=1;i<=dynlen(channel_dps);i++){
+  ich=i%6;
+  if(ich==0)ich=6;
+  
+  ds2=strsplit(channel_dps[i],\"/\");
+  bool found=false;
+  for(j=1;j<=dynlen(ds2);j++){
+    if(strpos(ds2[j],\"Crate\")>=0){s1=substr(ds2[j],5);icr=s1;}
+    else continue;
+    //DebugTN(channel_dps[i]+\" \"+ich+\" \"+i+\" \"+icr+\" \"+s1+\" \"+ds2[j]);
+    for(igr=1;igr<=dynlen(groups);igr++){
+      if(dynContains(groups[igr],icr)){
+       if(igr==1) setting_channel=settings_group1[ich];
+       else if(igr==2) setting_channel=settings_group2[ich];
+       else if(igr==3) setting_channel=settings_group3[ich];
+       else if(igr==4) setting_channel=settings_group4[ich];
+       else if(igr==5) setting_channel=settings_group5[ich];
+       else if(igr==6) setting_channel=settings_group6[ich];
+       else if(igr==7) setting_channel=settings_group7[ich];
+       else if(igr==8) setting_channel=settings_group8[ich];
+       else if(igr==9) setting_channel=settings_group9[ich];
+       else if(igr==10) setting_channel=settings_group10[ich];
+       found=true;    
+      }
+    } // for igr
+  } // for j
+    if(!found)continue;
+     
+  mudcsMrtnSettings(channel_dps[i], setting_channel);
+ DebugTN(channel_dps[i]+\" \"+ich+\" \"+setting_channel[1]);
+  }  // for i
+  
+//============= Individual settings =============================================  
+  for(i=1;i<=dynlen(individual_ids);i++){
+  ich=individual_chs[i];
+  j=individual_dpes[i];
+  s1=CSC_fwCAN2_g_actual_channels[ich];
+  ds1=dpNames(\"*Crate\"+individual_ids[i]+\"/Channel\"+s1,\"FwWienerMarathonChannel\");
+   ///////////////////dpSet(ds1[1]+\".Settings.\"+listOfElement[j],individual_vals[i]); 
+  DebugTN(\"Crate\"+individual_ids[i]+\"/Channel\"+s1);
+  DebugTN(ds1[1]+\".Settings.\"+listOfElement[j]+\"     \"+individual_vals[i]); 
+  }
+mudcsLvDebug(\"done\");  
+}
+//=========================================
+mudcsMrtnSettings(string dp, dyn_float set){
+int i;
+float readback;
+    for(i=1;i<=dynlen(listOfElement);i++){  
+      DebugTN(dp+\".Settings.\"+listOfElement[i]+\"  \"+\">>>>>\");
+//      while(1){
+     dpSetWait(dp+\".Settings.\"+listOfElement[i],set[i]);
+//     dpGet(dp+\"Readback.Settings.\"+listOfElement[i],readback);
+//     if(fabs(set[i]-readback) <0.2)break; 
+//      }
+     delay(1);
+    }
+}
+
+
+
+  " 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"PUSH_BUTTON1"
+""
+1 20 40 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 18 38 112 72
+
+T 
+1
+LANG:1 14 TEST config
+-X
+"
+
+
+
+main()
+{
+
+
+//========== Individual settings =======================
+// 1\"VoltageSetpoint\",    
+// 2\"VoltageFineAdjust\",
+// 3\"CurrentLimitSetpoint\",
+// 4\"UnderVoltCompSetpoint\",
+// 5\"OverVoltCompSetpoint\",
+// 6\"OverVoltProtection\",
+// 7\"MinCurrentCompSetpoint\",
+// 8\"OverCurrentCompSetpoint\",
+  
+// example:  
+// dynAppend(individual_ids,9);
+// dynAppend(individual_chs,1); // cross channel number !!! (1,2,3,4,5,6)
+// dynAppend(individual_dpes,1); // element index 
+// dynAppend(individual_vals,5.5);
+ 
+//======================================================= 
+//====================================================================  
+//=================================================================== 
+  
+  groups[1]=makeDynInt(3,4,5,6,11,12,13,14,17); // maratons IDs for group 1
+//    groups[1]=makeDynInt(1,2,7,8,9,10,15,16,18); // maratons IDs for group 1
+  groups[2]=makeDynInt(); // maratons IDs for group 2
+  groups[3]=makeDynInt(); // maratons IDs for group 3
+  groups[4]=makeDynInt(); // maratons IDs for group 4
+  groups[5]=makeDynInt(); // maratons IDs for group 5
+  groups[6]=makeDynInt(); // maratons IDs for group 6
+  groups[7]=makeDynInt(); // maratons IDs for group 7
+  groups[8]=makeDynInt(); // maratons IDs for group 8
+  groups[9]=makeDynInt(); // maratons IDs for group 9
+  groups[10]=makeDynInt(); // maratons IDs for group 10        
+//===============================================================================
+
+  
+ 
+  settings_group1[1]=makeDynFloat(0.5,0.,0.5,0.,8.4,9.,0.,0.5); //channel 1
+  settings_group1[2]=makeDynFloat(0.7,0.,0.5,0.,8.4,9.,0.,0.5); //channel 2
+  settings_group1[3]=makeDynFloat(0.9,0.,0.5,0.,8.4,9.,0.,0.5); //channel 3
+  settings_group1[4]=makeDynFloat(1.1,0.,0.5,0.,8.4,9.,0.,0.5); //channel 4
+  settings_group1[5]=makeDynFloat(1.3,0.,0.5,0.,8.4,9.,0.,0.5); //channel 5
+  settings_group1[6]=makeDynFloat(1.5,0.,0.5,0.,8.4,9.,0.,0.5); //channel 6
+  
+  
+//=================================================================================
+ mudcsMrtnSettingsAll();
+ mudcsLvDebug(\"done\");
+}
+
+
+" 0
+ E E E
+13 1
+"PUSH_BUTTON2"
+""
+1 120 40 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 118 38 212 72
+
+T 
+1
+LANG:1 14 PROD config
+-X
+"
+
+
+
+main()
+{
+
+ 
+//========== Individual settings =======================
+// 1\"VoltageSetpoint\",    
+// 2\"VoltageFineAdjust\",
+// 3\"CurrentLimitSetpoint\",
+// 4\"UnderVoltCompSetpoint\",
+// 5\"OverVoltCompSetpoint\",
+// 6\"OverVoltProtection\",
+// 7\"MinCurrentCompSetpoint\",
+// 8\"OverCurrentCompSetpoint\",
+  
+// example:  
+// dynAppend(individual_ids,9);
+// dynAppend(individual_chs,1); // cross channel number !!! (1,2,3,4,5,6)
+// dynAppend(individual_dpes,1); // element index 
+// dynAppend(individual_vals,5.5);
+ 
+//======================================================= 
+//====================================================================  
+//=================================================================== 
+  
+  groups[1]=makeDynInt(6,14); // maratons IDs for group 1
+  groups[2]=makeDynInt(3,4,5,11,12,13); // maratons IDs for group 2
+  groups[3]=makeDynInt(17); // maratons IDs for group 3
+//  groups[1]=makeDynInt(14); // maratons IDs for group 1
+//  groups[2]=makeDynInt(11); // maratons IDs for group 2
+//  groups[3]=makeDynInt(); // maratons IDs for group 3 
+  groups[4]=makeDynInt(); // maratons IDs for group 4
+  groups[5]=makeDynInt(); // maratons IDs for group 5
+  groups[6]=makeDynInt(); // maratons IDs for group 6
+  groups[7]=makeDynInt(); // maratons IDs for group 7
+  groups[8]=makeDynInt(); // maratons IDs for group 8
+  groups[9]=makeDynInt(); // maratons IDs for group 9
+  groups[10]=makeDynInt(); // maratons IDs for group 10        
+//===============================================================================
+
+  
+ 
+  settings_group1[1]=makeDynFloat(5.5,0.,150.,0.,8.4,9.,0.,165.); //channel 1
+  settings_group1[2]=makeDynFloat(5.5,0.,55.,0.,8.4,9.,0.,55.); //channel 2
+  settings_group1[3]=makeDynFloat(7.0,0.,100.,0.,8.4,9.,0.,110.); //channel 3
+  settings_group1[4]=makeDynFloat(5.5,0.,150.,0.,8.4,9.,0.,165.); //channel 4
+  settings_group1[5]=makeDynFloat(7.0,0.,50.,0.,8.4,9.,0.,55.); //channel 5
+  settings_group1[6]=makeDynFloat(7.0,0.,100.,0.,8.4,9.,0.,110.); //channel 6
+  
+  settings_group2[1]=makeDynFloat(8.0,0.,150.,0.,8.4,9.,0.,165.); //channel 1
+  settings_group2[2]=makeDynFloat(5.5,0.,55.,0.,8.4,9.,0.,55.); //channel 2
+  settings_group2[3]=makeDynFloat(8.0,0.,100.,0.,8.4,9.,0.,110.); //channel 3
+  settings_group2[4]=makeDynFloat(8.0,0.,100.,0.,8.4,9.,0.,165.); //channel 4
+  settings_group2[5]=makeDynFloat(7.0,0.,50.,0.,8.4,9.,0.,55.); //channel 5
+  settings_group2[6]=makeDynFloat(8.0,0.,110.,0.,8.4,9.,0.,110.); //channel 6
+  
+  settings_group3[1]=makeDynFloat(8.0,0.,150.,0.,8.4,9.,0.,165.); //channel 1
+  settings_group3[2]=makeDynFloat(0.0,0.,55.,0.,8.4,9.,0.,55.); //channel 2
+  settings_group3[3]=makeDynFloat(8.0,0.,100.,0.,8.4,9.,0.,110.); //channel 3
+  settings_group3[4]=makeDynFloat(5.5,0.,150.,0.,8.4,9.,0.,165.); //channel 4
+  settings_group3[5]=makeDynFloat(0.0,0.,55.,0.,8.4,9.,0.,55.); //channel 5
+  settings_group3[6]=makeDynFloat(7.0,0.,100.,0.,8.4,9.,0.,110.); //channel 6
+ 
+  
+//=================================================================================
+ mudcsMrtnSettingsAll();
+  mudcsLvDebug(\"done\");
+}
+
+
+" 0
+ E E E
+13 2
+"PUSH_BUTTON3"
+""
+1 20 80 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 18 78 112 112
+
+T 
+1
+LANG:1 14 TEST config
++X
+"
+
+
+
+main()
+{
+
+
+//========== Individual settings =======================
+// 1\"VoltageSetpoint\",    
+// 2\"VoltageFineAdjust\",
+// 3\"CurrentLimitSetpoint\",
+// 4\"UnderVoltCompSetpoint\",
+// 5\"OverVoltCompSetpoint\",
+// 6\"OverVoltProtection\",
+// 7\"MinCurrentCompSetpoint\",
+// 8\"OverCurrentCompSetpoint\",
+  
+// example:  
+// dynAppend(individual_ids,9);
+// dynAppend(individual_chs,1); // cross channel number !!! (1,2,3,4,5,6)
+// dynAppend(individual_dpes,1); // element index 
+// dynAppend(individual_vals,5.5);
+ 
+//======================================================= 
+//====================================================================  
+//=================================================================== 
+  
+//  groups[1]=makeDynInt(3,4,5,6,11,12,13,14,17); // maratons IDs for group 1
+    groups[1]=makeDynInt(1,2,7,8,9,10,15,16,18); // maratons IDs for group 1
+  groups[2]=makeDynInt(); // maratons IDs for group 2
+  groups[3]=makeDynInt(); // maratons IDs for group 3
+  groups[4]=makeDynInt(); // maratons IDs for group 4
+  groups[5]=makeDynInt(); // maratons IDs for group 5
+  groups[6]=makeDynInt(); // maratons IDs for group 6
+  groups[7]=makeDynInt(); // maratons IDs for group 7
+  groups[8]=makeDynInt(); // maratons IDs for group 8
+  groups[9]=makeDynInt(); // maratons IDs for group 9
+  groups[10]=makeDynInt(); // maratons IDs for group 10        
+//===============================================================================
+
+  
+ 
+  settings_group1[1]=makeDynFloat(0.5,0.,0.5,0.,8.4,9.,0.,0.5); //channel 1
+  settings_group1[2]=makeDynFloat(0.7,0.,0.5,0.,8.4,9.,0.,0.5); //channel 2
+  settings_group1[3]=makeDynFloat(0.9,0.,0.5,0.,8.4,9.,0.,0.5); //channel 3
+  settings_group1[4]=makeDynFloat(1.1,0.,0.5,0.,8.4,9.,0.,0.5); //channel 4
+  settings_group1[5]=makeDynFloat(1.3,0.,0.5,0.,8.4,9.,0.,0.5); //channel 5
+  settings_group1[6]=makeDynFloat(1.5,0.,0.5,0.,8.4,9.,0.,0.5); //channel 6
+  
+  
+//=================================================================================
+ mudcsMrtnSettingsAll();
+  mudcsLvDebug(\"done\");
+}
+
+
+" 0
+ E E E
+13 3
+"PUSH_BUTTON4"
+""
+1 120 80 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 118 78 212 112
+
+T 
+1
+LANG:1 14 PROD config
++X
+"
+
+
+
+main()
+{
+
+ 
+//========== Individual settings =======================
+// 1\"VoltageSetpoint\",    
+// 2\"VoltageFineAdjust\",
+// 3\"CurrentLimitSetpoint\",
+// 4\"UnderVoltCompSetpoint\",
+// 5\"OverVoltCompSetpoint\",
+// 6\"OverVoltProtection\",
+// 7\"MinCurrentCompSetpoint\",
+// 8\"OverCurrentCompSetpoint\",
+  
+// example:  
+// dynAppend(individual_ids,9);
+// dynAppend(individual_chs,1); // cross channel number !!! (1,2,3,4,5,6)
+// dynAppend(individual_dpes,1); // element index 
+// dynAppend(individual_vals,5.5);
+ 
+//======================================================= 
+//====================================================================  
+//=================================================================== 
+  
+  groups[1]=makeDynInt(1,9); // maratons IDs for group 1
+  groups[2]=makeDynInt(2,7,8,10,15,16); // maratons IDs for group 2
+  groups[3]=makeDynInt(18); // maratons IDs for group 3
+//  groups[1]=makeDynInt(); // maratons IDs for group 1
+//  groups[2]=makeDynInt(15,16); // maratons IDs for group 2
+//  groups[3]=makeDynInt(); // maratons IDs for group 3 
+  groups[4]=makeDynInt(); // maratons IDs for group 4
+  groups[5]=makeDynInt(); // maratons IDs for group 5
+  groups[6]=makeDynInt(); // maratons IDs for group 6
+  groups[7]=makeDynInt(); // maratons IDs for group 7
+  groups[8]=makeDynInt(); // maratons IDs for group 8
+  groups[9]=makeDynInt(); // maratons IDs for group 9
+  groups[10]=makeDynInt(); // maratons IDs for group 10        
+//===============================================================================
+
+  
+ 
+  settings_group1[1]=makeDynFloat(5.5,0.,150.,0.,8.4,9.,0.,165.); //channel 1
+  settings_group1[2]=makeDynFloat(5.5,0.,55.,0.,8.4,9.,0.,55.); //channel 2
+  settings_group1[3]=makeDynFloat(7.0,0.,100.,0.,8.4,9.,0.,110.); //channel 3
+  settings_group1[4]=makeDynFloat(5.5,0.,150.,0.,8.4,9.,0.,165.); //channel 4
+  settings_group1[5]=makeDynFloat(7.0,0.,50.,0.,8.4,9.,0.,55.); //channel 5
+  settings_group1[6]=makeDynFloat(7.0,0.,100.,0.,8.4,9.,0.,110.); //channel 6
+  
+  settings_group2[1]=makeDynFloat(8.0,0.,150.,0.,8.4,9.,0.,165.); //channel 1
+  settings_group2[2]=makeDynFloat(5.5,0.,55.,0.,8.4,9.,0.,55.); //channel 2
+  settings_group2[3]=makeDynFloat(8.0,0.,100.,0.,8.4,9.,0.,110.); //channel 3
+  settings_group2[4]=makeDynFloat(8.0,0.,100.,0.,8.4,9.,0.,165.); //channel 4
+  settings_group2[5]=makeDynFloat(7.0,0.,50.,0.,8.4,9.,0.,55.); //channel 5
+  settings_group2[6]=makeDynFloat(8.0,0.,110.,0.,8.4,9.,0.,110.); //channel 6
+  
+  settings_group3[1]=makeDynFloat(8.0,0.,150.,0.,8.4,9.,0.,165.); //channel 1
+  settings_group3[2]=makeDynFloat(0.0,0.,55.,0.,8.4,9.,0.,55.); //channel 2
+  settings_group3[3]=makeDynFloat(8.0,0.,100.,0.,8.4,9.,0.,110.); //channel 3
+  settings_group3[4]=makeDynFloat(5.5,0.,150.,0.,8.4,9.,0.,165.); //channel 4
+  settings_group3[5]=makeDynFloat(0.0,0.,55.,0.,8.4,9.,0.,55.); //channel 5
+  settings_group3[6]=makeDynFloat(7.0,0.,100.,0.,8.4,9.,0.,110.); //channel 6
+ 
+  
+//=================================================================================
+ mudcsMrtnSettingsAll();
+  mudcsLvDebug(\"done\");
+}
+
+
+" 0
+ E E E
+13 4
+"PUSH_BUTTON5"
+""
+1 20 170 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 18 168 112 202
+
+T 
+1
+LANG:1 14 TEST config
+-X
+"
+
+
+
+main()
+{
+
+
+//========== Individual settings =======================
+// 1\"VoltageSetpoint\",    
+// 2\"VoltageFineAdjust\",
+// 3\"CurrentLimitSetpoint\",
+// 4\"UnderVoltCompSetpoint\",
+// 5\"OverVoltCompSetpoint\",
+// 6\"OverVoltProtection\",
+// 7\"MinCurrentCompSetpoint\",
+// 8\"OverCurrentCompSetpoint\",
+  
+// example:  
+// dynAppend(individual_ids,9);
+// dynAppend(individual_chs,1); // cross channel number !!! (1,2,3,4,5,6)
+// dynAppend(individual_dpes,1); // element index 
+// dynAppend(individual_vals,5.5);
+ 
+//======================================================= 
+//====================================================================  
+//=================================================================== 
+  
+  groups[1]=makeDynInt(23,24,25,26,31,32,33,34,37); // maratons IDs for group 1
+//    groups[1]=makeDynInt(1,2,7,8,9,10,15,16,18); // maratons IDs for group 1
+  groups[2]=makeDynInt(); // maratons IDs for group 2
+  groups[3]=makeDynInt(); // maratons IDs for group 3
+  groups[4]=makeDynInt(); // maratons IDs for group 4
+  groups[5]=makeDynInt(); // maratons IDs for group 5
+  groups[6]=makeDynInt(); // maratons IDs for group 6
+  groups[7]=makeDynInt(); // maratons IDs for group 7
+  groups[8]=makeDynInt(); // maratons IDs for group 8
+  groups[9]=makeDynInt(); // maratons IDs for group 9
+  groups[10]=makeDynInt(); // maratons IDs for group 10        
+//===============================================================================
+
+  
+ 
+  settings_group1[1]=makeDynFloat(0.5,0.,0.5,0.,8.4,9.,0.,0.5); //channel 1
+  settings_group1[2]=makeDynFloat(0.7,0.,0.5,0.,8.4,9.,0.,0.5); //channel 2
+  settings_group1[3]=makeDynFloat(0.9,0.,0.5,0.,8.4,9.,0.,0.5); //channel 3
+  settings_group1[4]=makeDynFloat(1.1,0.,0.5,0.,8.4,9.,0.,0.5); //channel 4
+  settings_group1[5]=makeDynFloat(1.3,0.,0.5,0.,8.4,9.,0.,0.5); //channel 5
+  settings_group1[6]=makeDynFloat(1.5,0.,0.5,0.,8.4,9.,0.,0.5); //channel 6
+  
+  
+//=================================================================================
+ mudcsMrtnSettingsAll();
+ mudcsLvDebug(\"done\");
+}
+
+
+" 0
+ E E E
+13 5
+"PUSH_BUTTON6"
+""
+1 120 170 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 118 168 212 202
+
+T 
+1
+LANG:1 14 PROD config
+-X
+"
+
+
+
+main()
+{
+
+ 
+//========== Individual settings =======================
+// 1\"VoltageSetpoint\",    
+// 2\"VoltageFineAdjust\",
+// 3\"CurrentLimitSetpoint\",
+// 4\"UnderVoltCompSetpoint\",
+// 5\"OverVoltCompSetpoint\",
+// 6\"OverVoltProtection\",
+// 7\"MinCurrentCompSetpoint\",
+// 8\"OverCurrentCompSetpoint\",
+  
+// example:  
+// dynAppend(individual_ids,9);
+// dynAppend(individual_chs,1); // cross channel number !!! (1,2,3,4,5,6)
+// dynAppend(individual_dpes,1); // element index 
+// dynAppend(individual_vals,5.5);
+ 
+//======================================================= 
+//====================================================================  
+//=================================================================== 
+  
+  groups[1]=makeDynInt(26,34); // maratons IDs for group 1
+  groups[2]=makeDynInt(23,24,25,31,32,33); // maratons IDs for group 2
+  groups[3]=makeDynInt(37); // maratons IDs for group 3
+//  groups[1]=makeDynInt(14); // maratons IDs for group 1
+//  groups[2]=makeDynInt(11); // maratons IDs for group 2
+//  groups[3]=makeDynInt(); // maratons IDs for group 3 
+  groups[4]=makeDynInt(); // maratons IDs for group 4
+  groups[5]=makeDynInt(); // maratons IDs for group 5
+  groups[6]=makeDynInt(); // maratons IDs for group 6
+  groups[7]=makeDynInt(); // maratons IDs for group 7
+  groups[8]=makeDynInt(); // maratons IDs for group 8
+  groups[9]=makeDynInt(); // maratons IDs for group 9
+  groups[10]=makeDynInt(); // maratons IDs for group 10        
+//===============================================================================
+
+  
+ 
+  settings_group1[1]=makeDynFloat(5.5,0.,150.,0.,8.4,9.,0.,165.); //channel 1
+  settings_group1[2]=makeDynFloat(5.5,0.,55.,0.,8.4,9.,0.,55.); //channel 2
+  settings_group1[3]=makeDynFloat(7.0,0.,100.,0.,8.4,9.,0.,110.); //channel 3
+  settings_group1[4]=makeDynFloat(5.5,0.,150.,0.,8.4,9.,0.,165.); //channel 4
+  settings_group1[5]=makeDynFloat(7.0,0.,50.,0.,8.4,9.,0.,55.); //channel 5
+  settings_group1[6]=makeDynFloat(7.0,0.,100.,0.,8.4,9.,0.,110.); //channel 6
+  
+  settings_group2[1]=makeDynFloat(8.0,0.,150.,0.,8.4,9.,0.,165.); //channel 1
+  settings_group2[2]=makeDynFloat(5.5,0.,55.,0.,8.4,9.,0.,55.); //channel 2
+  settings_group2[3]=makeDynFloat(8.0,0.,100.,0.,8.4,9.,0.,110.); //channel 3
+  settings_group2[4]=makeDynFloat(8.0,0.,100.,0.,8.4,9.,0.,165.); //channel 4
+  settings_group2[5]=makeDynFloat(7.0,0.,50.,0.,8.4,9.,0.,55.); //channel 5
+  settings_group2[6]=makeDynFloat(8.0,0.,110.,0.,8.4,9.,0.,110.); //channel 6
+  
+  settings_group3[1]=makeDynFloat(8.0,0.,150.,0.,8.4,9.,0.,165.); //channel 1
+  settings_group3[2]=makeDynFloat(0.0,0.,55.,0.,8.4,9.,0.,55.); //channel 2
+  settings_group3[3]=makeDynFloat(8.0,0.,100.,0.,8.4,9.,0.,110.); //channel 3
+  settings_group3[4]=makeDynFloat(5.5,0.,150.,0.,8.4,9.,0.,165.); //channel 4
+  settings_group3[5]=makeDynFloat(0.0,0.,55.,0.,8.4,9.,0.,55.); //channel 5
+  settings_group3[6]=makeDynFloat(7.0,0.,100.,0.,8.4,9.,0.,110.); //channel 6
+ 
+  
+//=================================================================================
+ mudcsMrtnSettingsAll();
+  mudcsLvDebug(\"done\");
+}
+
+
+" 0
+ E E E
+13 6
+"PUSH_BUTTON7"
+""
+1 20 210 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 18 208 112 242
+
+T 
+1
+LANG:1 14 TEST config
++X
+"
+
+
+
+main()
+{
+
+
+//========== Individual settings =======================
+// 1\"VoltageSetpoint\",    
+// 2\"VoltageFineAdjust\",
+// 3\"CurrentLimitSetpoint\",
+// 4\"UnderVoltCompSetpoint\",
+// 5\"OverVoltCompSetpoint\",
+// 6\"OverVoltProtection\",
+// 7\"MinCurrentCompSetpoint\",
+// 8\"OverCurrentCompSetpoint\",
+  
+// example:  
+// dynAppend(individual_ids,9);
+// dynAppend(individual_chs,1); // cross channel number !!! (1,2,3,4,5,6)
+// dynAppend(individual_dpes,1); // element index 
+// dynAppend(individual_vals,5.5);
+ 
+//======================================================= 
+//====================================================================  
+//=================================================================== 
+  
+//  groups[1]=makeDynInt(3,4,5,6,11,12,13,14,17); // maratons IDs for group 1
+    groups[1]=makeDynInt(21,22,27,28,29,30,35,36,38); // maratons IDs for group 1
+  groups[2]=makeDynInt(); // maratons IDs for group 2
+  groups[3]=makeDynInt(); // maratons IDs for group 3
+  groups[4]=makeDynInt(); // maratons IDs for group 4
+  groups[5]=makeDynInt(); // maratons IDs for group 5
+  groups[6]=makeDynInt(); // maratons IDs for group 6
+  groups[7]=makeDynInt(); // maratons IDs for group 7
+  groups[8]=makeDynInt(); // maratons IDs for group 8
+  groups[9]=makeDynInt(); // maratons IDs for group 9
+  groups[10]=makeDynInt(); // maratons IDs for group 10        
+//===============================================================================
+
+  
+ 
+  settings_group1[1]=makeDynFloat(0.5,0.,0.5,0.,8.4,9.,0.,0.5); //channel 1
+  settings_group1[2]=makeDynFloat(0.7,0.,0.5,0.,8.4,9.,0.,0.5); //channel 2
+  settings_group1[3]=makeDynFloat(0.9,0.,0.5,0.,8.4,9.,0.,0.5); //channel 3
+  settings_group1[4]=makeDynFloat(1.1,0.,0.5,0.,8.4,9.,0.,0.5); //channel 4
+  settings_group1[5]=makeDynFloat(1.3,0.,0.5,0.,8.4,9.,0.,0.5); //channel 5
+  settings_group1[6]=makeDynFloat(1.5,0.,0.5,0.,8.4,9.,0.,0.5); //channel 6
+  
+  
+//=================================================================================
+ mudcsMrtnSettingsAll();
+  mudcsLvDebug(\"done\");
+}
+
+
+" 0
+ E E E
+13 7
+"PUSH_BUTTON8"
+""
+1 120 210 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 118 208 212 242
+
+T 
+1
+LANG:1 14 PROD config
++X
+"
+
+
+
+main()
+{
+
+ 
+//========== Individual settings =======================
+// 1\"VoltageSetpoint\",    
+// 2\"VoltageFineAdjust\",
+// 3\"CurrentLimitSetpoint\",
+// 4\"UnderVoltCompSetpoint\",
+// 5\"OverVoltCompSetpoint\",
+// 6\"OverVoltProtection\",
+// 7\"MinCurrentCompSetpoint\",
+// 8\"OverCurrentCompSetpoint\",
+  
+// example:  
+// dynAppend(individual_ids,9);
+// dynAppend(individual_chs,1); // cross channel number !!! (1,2,3,4,5,6)
+// dynAppend(individual_dpes,1); // element index 
+// dynAppend(individual_vals,5.5);
+ 
+//======================================================= 
+//====================================================================  
+//=================================================================== 
+  
+//  groups[1]=makeDynInt(21,29); // maratons IDs for group 1
+//  groups[2]=makeDynInt(22,27,28,30,35,36); // maratons IDs for group 2
+//  groups[3]=makeDynInt(38); // maratons IDs for group 3
+  groups[1]=makeDynInt(); // maratons IDs for group 1
+  groups[2]=makeDynInt(36); // maratons IDs for group 2
+  groups[3]=makeDynInt(); // maratons IDs for group 3 
+  groups[4]=makeDynInt(); // maratons IDs for group 4
+  groups[5]=makeDynInt(); // maratons IDs for group 5
+  groups[6]=makeDynInt(); // maratons IDs for group 6
+  groups[7]=makeDynInt(); // maratons IDs for group 7
+  groups[8]=makeDynInt(); // maratons IDs for group 8
+  groups[9]=makeDynInt(); // maratons IDs for group 9
+  groups[10]=makeDynInt(); // maratons IDs for group 10        
+//===============================================================================
+
+  
+ 
+  settings_group1[1]=makeDynFloat(5.5,0.,150.,0.,8.4,9.,0.,165.); //channel 1
+  settings_group1[2]=makeDynFloat(5.5,0.,55.,0.,8.4,9.,0.,55.); //channel 2
+  settings_group1[3]=makeDynFloat(7.0,0.,100.,0.,8.4,9.,0.,110.); //channel 3
+  settings_group1[4]=makeDynFloat(5.5,0.,150.,0.,8.4,9.,0.,165.); //channel 4
+  settings_group1[5]=makeDynFloat(7.0,0.,50.,0.,8.4,9.,0.,55.); //channel 5
+  settings_group1[6]=makeDynFloat(7.0,0.,100.,0.,8.4,9.,0.,110.); //channel 6
+  
+  settings_group2[1]=makeDynFloat(8.0,0.,150.,0.,8.4,9.,0.,165.); //channel 1
+  settings_group2[2]=makeDynFloat(5.5,0.,55.,0.,8.4,9.,0.,55.); //channel 2
+  settings_group2[3]=makeDynFloat(8.0,0.,100.,0.,8.4,9.,0.,110.); //channel 3
+  settings_group2[4]=makeDynFloat(8.0,0.,100.,0.,8.4,9.,0.,165.); //channel 4
+  settings_group2[5]=makeDynFloat(7.0,0.,50.,0.,8.4,9.,0.,55.); //channel 5
+  settings_group2[6]=makeDynFloat(8.0,0.,110.,0.,8.4,9.,0.,110.); //channel 6
+  
+  settings_group3[1]=makeDynFloat(8.0,0.,150.,0.,8.4,9.,0.,165.); //channel 1
+  settings_group3[2]=makeDynFloat(0.0,0.,55.,0.,8.4,9.,0.,55.); //channel 2
+  settings_group3[3]=makeDynFloat(8.0,0.,100.,0.,8.4,9.,0.,110.); //channel 3
+  settings_group3[4]=makeDynFloat(5.5,0.,150.,0.,8.4,9.,0.,165.); //channel 4
+  settings_group3[5]=makeDynFloat(0.0,0.,55.,0.,8.4,9.,0.,55.); //channel 5
+  settings_group3[6]=makeDynFloat(7.0,0.,100.,0.,8.4,9.,0.,110.); //channel 6
+ 
+  
+//=================================================================================
+ mudcsMrtnSettingsAll();
+  mudcsLvDebug(\"done\");
+}
+
+
+" 0
+ E E E
+2 8
+"PRIMITIVE_TEXT1"
+""
+1 90 20 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+15 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 90 20 131 34
+0 2 2 "0s" 0 0 0 192 0 0  90 20 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 7 +Z SIDE
+2 9
+"PRIMITIVE_TEXT2"
+""
+1 100 150 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 100 150 138 164
+0 2 2 "0s" 0 0 0 192 0 0  100 150 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 7 -Z SIDE
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
