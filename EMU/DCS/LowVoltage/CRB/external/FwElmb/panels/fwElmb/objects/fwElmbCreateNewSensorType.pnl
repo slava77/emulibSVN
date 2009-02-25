@@ -1,0 +1,1069 @@
+V 10
+1
+LANG:1 8 (NoName)
+PANEL,452 181 570 475 N "_3DFace" 4
+"$bEdit"
+"$sSensorFormula"
+"$sSensorName"
+"$sSensorPrefix"
+"main()
+{
+// Local Variables
+// ---------------
+	bool bEdit = false;
+	bool bIsRaw = false;
+	
+	int iIndex;
+	
+	string sSensorTypeName;
+	string sPDOName = ELMB_AI_PREFIX;
+	
+	dyn_bool dbIsRaw;
+	
+	dyn_string dsPDOdps;
+	dyn_string dsExistingSensorTypes;
+
+// Executable Code
+// ---------------
+	// Update list of raw sensors
+	modUpdateRawSensors();
+	
+	// Check if $params given
+	if (isDollarDefined(\"$bEdit\"))
+		bEdit = $bEdit;
+	
+	if (bEdit) {
+		sSensorTypeName = $sSensorName;
+			
+		dpGet(ELMB_SENSOR_INFO_NAME + \".types\", dsExistingSensorTypes,
+					ELMB_SENSOR_INFO_NAME + \".isRaw\", dbIsRaw,
+					ELMB_SENSOR_INFO_NAME + \".pdoDp\", dsPDOdps);
+	  iIndex = dynContains(dsExistingSensorTypes, sSensorTypeName);
+			
+		if (iIndex <= dynlen(dbIsRaw))
+			bIsRaw = dbIsRaw[iIndex];
+			
+		if (iIndex <= dynlen(dsPDOdps)) {
+			if (dsPDOdps[iIndex] != ELMB_NO_INFO)
+				dpGet(dsPDOdps[iIndex] + \".name\", sPDOName);
+		}
+		
+		chkUseFormula.state(0) = !bIsRaw;
+					
+		txtSensorTypeName.text = sSensorTypeName;
+		txtSensorTypeName.enabled = false;
+		txtSensorFormula.text = $sSensorFormula;
+		txtDefaultPrefix.text = $sSensorPrefix;
+	}
+	
+	// Set other controls
+	modSetControls(sPDOName);
+
+	// Return to calling routine
+	return;
+}" 0
+"main()
+{
+	int i;
+}" 0
+E E E 1 -1 -1 0  27 38
+"" 0 1
+E"//*****************************************************************************
+// @name Function: userFunctionInvalid
+//
+// Checks whether the user function given is valid or not.
+//
+// Returns: true is user function is invalid
+//					false otherwise
+//
+// @param sFct: The user function entered is given her
+//
+// Modification History: None
+//
+// Constraints:
+//
+// Usage: Public
+//
+// PVSS manager usage: VISION
+//
+// @author Jim Cook
+//*****************************************************************************
+bool userFunctionInvalid(string sFct)
+{
+// Local Variables
+// ---------------
+	bool bValid;
+	
+	int i, j;
+
+	dyn_string dsTmp;
+	
+	dyn_int diVariableNumbers;
+	
+	const dyn_string dsValidVariables = makeDynString(\"c\", \"x\");
+	const dyn_string dsValidOperators = makeDynString(\"+\", \"-\", \"*\", \"/\", \"(\", \"\");
+
+// Executable Code
+// --------------
+	// Split the string at the variable points
+	dsTmp = strsplit(sFct, \"%\");
+	
+	// Loop through all variable
+	for (i = 2; i <= dynlen(dsTmp); i++) {
+	
+		// Firstly check that correct variable names have been entered
+		bValid = false;
+		for (j = 1; j <= dynlen(dsValidVariables); j++) {
+			if (substr(dsTmp[i], 0, strlen(dsValidVariables[j])) == dsValidVariables[j]) {
+				if (dynlen(diVariableNumbers) >= j)
+					diVariableNumbers[j] = diVariableNumbers[j] + 1;
+				else
+					diVariableNumbers[j] = 1;
+				bValid = true;
+				break;
+			}
+		}
+	
+		// Now check that the preceding operators are valid
+		bValid = false;
+		for (j = 1; j <= dynlen(dsValidOperators); j++) {
+			if (substr(dsTmp[i-1], strlen(dsTmp[i-1]), strlen(dsValidOperators[j])) == dsValidOperators[j]) {
+				bValid = true;
+				break;
+			}
+		}
+		
+		// Check if valid so far
+		if (!bValid)
+			break;
+	}
+	
+	// Return to calling routine
+	return (!bValid);
+}
+
+//*****************************************************************************
+// @name Function: modUpdateRawSensors
+//
+// Updates the combo box for selection of a raw value sensor. This sensor may
+// then be used as input in the formula.
+//
+// Returns: None
+//
+// @param sFct: The user function entered is given her
+//
+// Modification History: None
+//
+// Constraints:
+//
+// Usage: Public
+//
+// PVSS manager usage: VISION
+//
+// @author Jim Cook
+//*****************************************************************************
+void modUpdateRawSensors()
+{
+// Local Variables
+// ---------------
+	dyn_string dsPDOdps;
+	dyn_string dsRawPDOs;
+
+// Executable Code
+// ---------------
+	// Get all input PDO types defined
+	fwElmb_getRawSensors(dsRawPDOs, dsPDOdps, \"IN\");
+	
+	// Enter information into combo box
+	if (dynlen(dsRawPDOs) > 0) {
+		cmbRawInput.items = dsRawPDOs;
+		lstPDOdps.items = dsPDOdps;
+	} else {
+		cmbRawInput.deleteAllItems();
+		cmbRawInput.enabled = false;
+	}
+
+	// Return to calling routine
+	return;
+}
+
+//*****************************************************************************
+// @name Function: modSetControls
+//
+// Sets control sensitivity depending upon values given
+//
+// Returns: None
+//
+// @param sFct: The user function entered is given her
+//
+// Modification History: None
+//
+// Constraints:
+//
+// Usage: Public
+//
+// PVSS manager usage: VISION
+//
+// @author Jim Cook
+//*****************************************************************************
+void modSetControls(string sRawSensorName = \"\")
+{
+// Local Variables
+// ---------------
+	bool bUseFormula;
+	
+	int iPos;
+	
+	dyn_string dsItems;
+
+// Executable Code
+// ---------------
+	if (chkUseFormula.state(0))
+		bUseFormula = true;
+	else
+		bUseFormula = false;
+	
+	// Check for default PDO
+	dsItems = cmbRawInput.items;
+	if (strlen(sRawSensorName) == 0) {
+		iPos = cmbRawInput.selectedPos;
+		if (iPos <= 0) {
+			iPos = 1;
+			cmbRawInput.selectedPos = iPos;
+		}
+	} else {
+		iPos = dynContains(dsItems, sRawSensorName);
+		if (iPos > 0) {
+			cmbRawInput.selectedPos = iPos;
+		} else {
+			iPos = 1;
+			cmbRawInput.selectedPos = iPos;
+		}
+	}
+	sRawSensorName = dsItems[iPos];
+	
+	if (sRawSensorName == ELMB_AI_PREFIX) {
+		setValue(\"cmdTxPDO\", \"enableItem\", \"1\", false);
+		setValue(\"cmdTxPDO\", \"enableItem\", \"2\", false);
+	} else {
+		setValue(\"cmdTxPDO\", \"enableItem\", \"1\", true);
+		setValue(\"cmdTxPDO\", \"enableItem\", \"2\", true);
+	}
+		
+	// Check whether raw value or not and set controls as necessary
+	if (bUseFormula) {
+		// This sensor will use a formula
+		frmSensorFormula.enabled = true;
+		lblSensorFormula.enabled = true;
+		txtSensorFormula.enabled = true;
+		cmdSyntaxCheck.enabled = true;
+		lblSyntaxExample.enabled = true;
+		lblDefaultPrefix.enabled = true;
+		txtDefaultPrefix.enabled = true;
+		lblCanBeChanged.enabled = true;
+	} else {
+		frmSensorFormula.enabled = false;
+		lblSensorFormula.enabled = false;
+		txtSensorFormula.enabled = false;
+		txtSensorFormula.text = \"%c1\";
+		cmdSyntaxCheck.enabled = false;
+		lblSyntaxExample.enabled = false;
+		lblDefaultPrefix.enabled = false;
+		txtDefaultPrefix.enabled = false;
+		txtDefaultPrefix.text = sRawSensorName;
+		lblCanBeChanged.enabled = false;
+	}
+
+	// Return to calling routine
+	return;
+}
+" 0
+ 2
+"CBRef""1"
+"EClose""main()
+{
+	int i;
+}" 0
+
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 1
+"lblSensorFormula"
+""
+1 20 230 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+6 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 22 232 113 248
+0 2 0 "s" 0 0 0 64 0 0  22 232
+ 1
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 15 Sensor formula:
+2 0
+"lblSensorTypeName"
+""
+1 10 13 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+7 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 15 122 31
+0 2 0 "s" 0 0 0 192 0 0  12 15
+ 1
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 17 Sensor type name:
+2 6
+"lblSyntaxExample"
+""
+1 120 260 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+8 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 122 262 492 390
+0 2 0 "s" 0 0 0 192 0 0  122 262
+ 8
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 57 Syntax example: %x2/(%x1*(27.9*%c1+(18.7/(1.0-1.0/%c2))))
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 0 
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 6 where:
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 62    - %c1, %c2..., %cN will be substituted by the corresponding
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 41 ELMB channels when the sensor is created.
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 61    - %x1, %x2..., %xM will be parameters that you can change 
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 64 from the panels when the sensors will be created. Default values
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 17 must be assigned.
+2 10
+"lblDefaultPrefix"
+""
+1 20 190 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+9 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 22 192 101 208
+0 2 0 "s" 0 0 0 64 0 0  22 192
+ 1
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 15 Default prefix:
+2 12
+"lblCanBeChanged"
+""
+1 280 190 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+10 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 282 192 538 208
+0 2 0 "s" 0 0 0 64 0 0  282 192
+ 1
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-110-100-100-*-*-iso8859-1|-12,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 46 (It can be changed when the sensor is created)
+2 14
+"txtMessage"
+""
+1 20 400 E E E 1 E 1 E N "Rot" E N "_Transparent" E E
+ E E
+11 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 22 402 548 428
+0 2 0 "s" 0 0 0 64 0 0  22 402
+ 1
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 4     
+30 17
+"frmSensorFormula"
+""
+1 10 430 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+12 0 0 0 0 0
+EE E
+1
+1
+LANG:1 0 
+0
+E E 0 1 1 0 1 E U  0 E 10 170 560 430
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 15 Sensor Formula:
+2 18
+"lblSensorUsesFormula"
+""
+1 170 40 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+13 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 172 42 488 58
+0 2 0 "s" 0 0 0 64 0 0  172 42
+ 1
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-110-100-100-*-*-iso8859-1|-12,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 58 (If no formula is applied, the raw ADC value will be used)
+2 19
+"Text1"
+""
+1 10 80 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+13 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 82 528 118
+0 2 0 "s" 0 0 0 64 0 0  12 82
+ 2
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 83 You may select any 'raw' value sensor as input to the formula. You may create a new
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 74 'raw' sensor for this calculated sensor by clicking on the button 'TxPDO'.
+2 23
+"lblRawValueSensors"
+""
+1 10 130 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+17 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 132 118 148
+0 2 0 "s" 0 0 0 64 0 0  12 132
+ 1
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 17 Raw value sensor:
+14 2
+"txtSensorTypeName"
+""
+1 143 10 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+141 8 285 35
+3 "s" 0 0 0 0 0 0 
+E
+E
+E
+14 13
+"txtDefaultPrefix"
+""
+1 120 190 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+118 188 272 215
+3 "s" 0 0 0 0 0 0 
+E
+E
+E
+14 3
+"txtSensorFormula"
+""
+1 120 230 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+3 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+118 228 539 255
+3 "s" 0 0 0 0 0 0 
+E
+E
+E
+13 4
+"cmdOK"
+""
+1 430 440 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+4 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+428 438 492 467
+T 
+1
+LANG:1 2 OK
+"main()
+{
+// Local Variables
+// ---------------
+	bool bEdit = false;
+	bool bIsRaw = !chkUseFormula.state(0);
+	
+	int i;
+	int iIndex;
+	int iPos;
+	
+	string sSensorTypeName = txtSensorTypeName.text;
+	string sSensorFct = txtSensorFormula.text;
+	string sPrefix = txtDefaultPrefix.text;
+	string sDefaultParameters;
+	string sParamDescriptions;
+	string sPDOdp;
+	
+	dyn_bool dbIsStandard;
+	dyn_bool dbIsRaw;
+
+	dyn_float df;
+
+	dyn_string dsExistingSensorTypes;
+	dyn_string dsExistingSensorFcts;
+	dyn_string dsExistingParameters;
+	dyn_string dsExistingSensorPrefixes;
+	dyn_string dsExistingParameterDescriptions;
+	dyn_string dsReturnedValues;
+	dyn_string dsParameters;
+	dyn_string dsDescriptions;
+	dyn_string dsDollarParams;
+	dyn_string dsPDOdps;
+	dyn_string dsItems;
+
+// Executable Code
+// ---------------
+	// Check sensor name and function have some text
+	if ((sSensorTypeName == \"\") || (sSensorFct == \"\")) {
+		ChildPanelOnCentral(\"vision/MessageInfo1\",
+												\"Warning\",
+												makeDynString(\"Check sensor name and sensor formula\"));
+		return;
+	}
+	
+	// Check if $params given
+	if (isDollarDefined(\"$bEdit\"))
+		bEdit = $bEdit;
+
+	// Get existing sensor type information
+	dpGet(ELMB_SENSOR_INFO_NAME + \".types\", dsExistingSensorTypes,
+	      ELMB_SENSOR_INFO_NAME + \".prefix\", dsExistingSensorPrefixes,
+	      ELMB_SENSOR_INFO_NAME + \".functions\", dsExistingSensorFcts,
+	      ELMB_SENSOR_INFO_NAME + \".parameters\", dsExistingParameters,
+	      ELMB_SENSOR_INFO_NAME + \".parameterDescriptions\", dsExistingParameterDescriptions,
+	      ELMB_SENSOR_INFO_NAME + \".isStandard\", dbIsStandard,
+	      ELMB_SENSOR_INFO_NAME + \".isRaw\", dbIsRaw,
+	      ELMB_SENSOR_INFO_NAME + \".pdoDp\", dsPDOdps);
+  
+  // Get the index of this sensor in the types (if it exists)
+  iIndex = dynContains(dsExistingSensorTypes, sSensorTypeName);
+  
+  if (bEdit) {
+  	if (iIndex <= 0) {
+			ChildPanelOnCentral(\"vision/MessageInfo1\",
+													\"Warning\",
+													makeDynString(\"Sensor type not found in this system\\nSensor cannot be updated\"));
+			return;
+  	}
+  } else {
+	  // Ensure that no sensor of this name already exists    
+		if (iIndex != 0) {
+			ChildPanelOnCentral(\"vision/MessageInfo1\",
+													\"Warning\",
+													makeDynString(\"This sensor type already exists.\\nPlease enter a different sensor type name.\"));
+			return;
+		}
+	}
+
+	// Check the formula entered by the user:
+	/* Currently not done!!!!!!!!!!!!!!!!!!!
+	if (userFunctionInvalid(sSensorFct)) {
+		ChildPanelOnCentral(\"vision/MessageInfo1\", \"Warning\", makeDynString(\"Invalid formula syntax. Check for errors!\"));
+		txtDisplay.text = \"Info: Incorrect formula!\";
+		return;
+	}
+	*/
+
+	// Does it contain any %x??
+	if (!bIsRaw && (patternMatch(\"*%x*\", sSensorFct))) {
+		// Create required dollar parameter string
+		if (bEdit) {
+			dsDollarParams = makeDynString(	\"$sFct:\" + sSensorFct,
+																			\"$sParams:\" + dsExistingParameters[iIndex],
+																			\"$sDescriptions:\" + dsExistingParameterDescriptions[iIndex]);
+		} else {
+			dsDollarParams = makeDynString(\"$sFct:\" + sSensorFct);
+		}
+		
+		// Get default parameters
+		ChildPanelOnCentralReturn(\"fwElmb/objects/fwElmbUserSensorDefaultParameters.pnl\",
+															\"Enter default values of parameters %x\",
+															dsDollarParams,
+															df, dsReturnedValues);
+
+		if (df[1] > 0.0) {
+			txtMessage.text = \"\";
+			
+			// Set the values into the local variables
+			for (i = 1; i <= df[1]; i++) {
+				if ((i % 2) == 0)
+					dynAppend(dsParameters, dsReturnedValues[i]);
+				else
+					dynAppend(dsDescriptions, dsReturnedValues[i]);
+			}
+		} else {
+			txtMessage.text = \"You must set default values for the parameters\";
+			return;
+		}
+		
+		//Convert parameters from dyn_string to string.
+		fwGeneral_dynStringToString(dsParameters, sDefaultParameters);
+		fwGeneral_dynStringToString(dsDescriptions, sParamDescriptions);
+	} else {
+		sDefaultParameters = ELMB_NO_INFO;
+		sParamDescriptions = ELMB_NO_INFO;
+		txtMessage.text = \"\";
+	}
+	
+	// Check sensor prefix
+	if (!fwElmb_checkSensorPrefix(sPrefix)) {
+		if (!bIsRaw) {
+			ChildPanelOnCentral(\"vision/MessageInfo1\",
+													\"Warning\",
+													makeDynString(\"Prefix '\" + sPrefix + \"' is reserved for a raw sensor and cannot be used\"));
+			return;
+		}
+	}
+	
+	// Get information about which PDO to use as input
+	iPos = cmbRawInput.selectedPos;
+	dsItems = lstPDOdps.items;
+	sPDOdp = dsItems[iPos];
+	
+	// Remove system name from DP
+	if (dpExists(sPDOdp))
+		sPDOdp = dpSubStr(sPDOdp, DPSUB_DP);
+	
+	// Check for raw sensor
+	if (bIsRaw) {
+		sDefaultParameters = ELMB_NO_INFO;
+		sParamDescriptions = ELMB_NO_INFO;
+		sSensorFct = ELMB_NO_INFO;
+	}
+	
+	if (bEdit) {
+		// Update new information to variables
+		dsExistingSensorFcts[iIndex] = sSensorFct;
+		dsExistingParameters[iIndex] = sDefaultParameters;
+		dsExistingSensorPrefixes[iIndex] = sPrefix;
+		dsExistingParameterDescriptions[iIndex] = sParamDescriptions;
+		dbIsRaw[iIndex] = bIsRaw;
+		dsPDOdps[iIndex] = sPDOdp;
+	} else {
+		// Append new information to variables
+		dynAppend(dsExistingSensorTypes, sSensorTypeName);
+		dynAppend(dsExistingSensorFcts, sSensorFct);
+		dynAppend(dsExistingParameters, sDefaultParameters);
+		dynAppend(dsExistingSensorPrefixes, sPrefix);
+		dynAppend(dsExistingParameterDescriptions, sParamDescriptions);
+		dynAppend(dbIsStandard, false);
+		dynAppend(dbIsRaw, bIsRaw);
+		dynAppend(dsPDOdps, sPDOdp);
+	}
+
+	// Set the information into the sensorinfo DP
+	dpSet(ELMB_SENSOR_INFO_NAME + \".types\", dsExistingSensorTypes,
+	      ELMB_SENSOR_INFO_NAME + \".functions\", dsExistingSensorFcts,
+	      ELMB_SENSOR_INFO_NAME + \".parameters\", dsExistingParameters,
+	      ELMB_SENSOR_INFO_NAME + \".prefix\", dsExistingSensorPrefixes,
+	      ELMB_SENSOR_INFO_NAME + \".parameterDescriptions\", dsExistingParameterDescriptions,
+	      ELMB_SENSOR_INFO_NAME + \".isStandard\", dbIsStandard,
+	      ELMB_SENSOR_INFO_NAME + \".isRaw\", dbIsRaw,
+	      ELMB_SENSOR_INFO_NAME + \".pdoDp\", dsPDOdps);
+
+	// Return to calling routine
+	PanelOffReturn(makeDynFloat(1.0), makeDynString(\"OK\"));
+}
+" 0
+ E E E
+13 5
+"cmdCancel"
+""
+1 500 440 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+5 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+498 438 562 467
+T 
+1
+LANG:1 6 Cancel
+"main()
+{
+	// Return to calling routine
+	PanelOffReturn(makeDynFloat(0.0), makeDynString(\"Cancel\"));
+}" 0
+ E E E
+13 15
+"cmdSyntaxCheck"
+""
+1 20 260 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+11 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+18 258 112 292
+T 
+1
+LANG:1 12 Check Syntax
+"main()
+{
+	bool bInvalid;
+	string sSensorFct = txtSensorFormula.text;
+	dyn_string dsText;
+	
+	bInvalid = userFunctionInvalid(sSensorFct);
+	
+	if (bInvalid) {
+		dsText = makeDynString(\"Syntax error in formula\");
+	} else {
+		dsText = makeDynString(\"Syntax of formula is OK\");
+	}
+	ChildPanelOnCentral(\"vision/MessageInfo1\",
+											\"Warning\",
+											dsText);
+}" 0
+ E E E
+20 16
+"chkUseFormula"
+""
+1 10 40 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+11 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+8 38 162 62
+1
+T 
+1
+LANG:1 20 Sensor uses formula?
+ 1
+1
+LANG:1 0 
+ E  E  0 0 0 0 0
+1
+E E 
+E"main(int button, bool state)
+{
+	modSetControls();
+}" 0
+26 21
+"cmdTxPDO"
+""
+1 270 130 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+15 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+268 128 332 155
+0 1
+LANG:1 5 TxPDO
+"" 0 0 0 0 0
+3 1 1
+LANG:1 13 Create New...
+"add" 0 0 0 0 0
+1 1
+LANG:1 7 Edit...
+"configure" 0 0 0 0 0
+1 1
+LANG:1 9 Delete...
+"delete" 0 0 0 0 0
+E "main(string id)
+{
+// Local Variables
+// ---------------
+	int i;
+	int iPos;
+	
+	string sDpName;
+	string sSensorName;
+	
+	dyn_float df;
+
+	dyn_string dsItems;	
+	dyn_string dsPDOdps;
+	dyn_string ds;
+
+// Executable Code
+// ---------------
+	// Check whether editing or creating a new raw value sensor
+	switch (id) {
+		case \"configure\": // Raw value sensor is to be edited
+			iPos = cmbRawInput.selectedPos;
+			dsItems = lstPDOdps.items;
+			sDpName = dsItems[iPos];
+		
+			// Get default parameters
+			ChildPanelOnCentralReturn(\"fwElmb/objects/fwElmbPDOConfigurationRef.pnl\",
+																\"Alter settings for PDO\",
+																makeDynString(\"$sDpName:\" + sDpName,
+																							\"$bEdit:\" + true,
+																							\"$sDirection:IN\"),
+																df, ds);
+			break;
+		case \"add\": // New raw value sensor to be created
+		
+			// Get default parameters
+			ChildPanelOnCentralReturn(\"fwElmb/objects/fwElmbPDOConfigurationRef.pnl\",
+																\"Settings for new PDO\",
+																makeDynString(\"$bEdit:\" + false,
+																							\"$sDirection:IN\"),
+																df, ds);
+																
+			if (df[1] > 0.0) {
+				modUpdateRawSensors();
+				modSetControls(ds[1]);
+			}
+			break;
+		case \"delete\":
+			// Get which PDO is currently selected
+			iPos = cmbRawInput.selectedPos;
+			dsItems = cmbRawInput.items;
+			sSensorName = dsItems[iPos];
+			dsItems = lstPDOdps.items;
+			sDpName = dsItems[iPos];
+			
+			// Display panel for confirmation
+			ChildPanelOnCentralModalReturn(	\"vision/MessageInfo\",
+																			\"Confirm Deletion\",
+																			makeDynString(\"Are you sure you wish to delete the\\nPDO '\" + sSensorName + \"'?\\nSensors using this PDO will be set to default input\", \"OK\", \"Cancel\"),
+																			df, ds);
+			if (df[1] == 1.0) {
+				// Delete datapoint
+				dpDelete(sDpName);
+				
+				// Get information
+				dpGet(ELMB_SENSOR_INFO_NAME + \".pdoDp\", dsPDOdps);
+				
+				for (i = 1; i <= dynlen(dsPDOdps); i++) {
+					if (dsPDOdps[i] == sDpName)
+						dsPDOdps[i] = ELMB_NO_INFO;
+				}
+			  
+				// Set new information back into datapoint
+				dpSet(ELMB_SENSOR_INFO_NAME + \".pdoDp\", dsPDOdps);
+				modUpdateRawSensors();
+				modSetControls();
+			}
+			break;
+	}
+
+	// Return to calling routine
+	return;
+}" 0
+ 0 
+22 22
+"cmbRawInput"
+""
+1 130 130 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+16 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+128 128 262 155
+0
+E
+"main()
+{
+	modSetControls();
+}" 0
+
+E
+ 0 0
+17 24
+"lstPDOdps"
+""
+1 430 100 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+18 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+428 98 512 152
+0
+E
+E
+E
+
+3 1
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0

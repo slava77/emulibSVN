@@ -1,0 +1,490 @@
+V 10
+1
+LANG:1 8 (NoName)
+PANEL,537 172 554 475 N "_3DFace" 1
+"$sDpName"
+E"main()
+{
+	int i;
+}" 0
+E E E 1 -1 -1 0  10 10
+"" 0 1
+E"
+pnlUpdateDeviceListTable()
+{
+// Local Variables
+// ---------------
+	int i;
+	int iSpeed;
+	
+	string sDeviceName;
+  string sInterfacePort;
+  string sInterfaceCard;
+  
+  langString lsComment;
+	
+	dyn_string dsChildren;
+	dyn_string dsExceptionInfo;
+	
+// Executable Code
+// ---------------
+	// Delete all lines before starting
+	deviceListTable.deleteAllLines();
+
+	// Get all buses
+	fwDevice_getChildren($sDpName, fwDevice_HARDWARE, dsChildren, dsExceptionInfo);
+	
+	// Get required information
+	for (i = 1; i <= dynlen(dsChildren); i++) {
+		dpGet(dsChildren[i] + \".interfacePort\", sInterfacePort,
+					dsChildren[i] + \".id\", sInterfaceCard,
+		      dsChildren[i] + \".busSpeed\", iSpeed);
+		lsComment = dpGetDescription(dsChildren[i] + \".\");
+		      
+		fwDevice_getName(dsChildren[i], sDeviceName, dsExceptionInfo);
+
+		deviceListTable.appendLine(	\"deviceName\", sDeviceName,
+																\"comment\", lsComment,
+																\"interface\", sInterfaceCard,
+																\"port\", sInterfacePort,
+																\"speed\", iSpeed,
+																\"dpName\", dsChildren[i]);
+	}
+}" 0
+ 2
+"CBRef""1"
+"EClose""main()
+{
+	int i;
+}" 0
+
+""
+NC
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 0
+"lblTitle"
+""
+1 10 10 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+1 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  1 E 12 12 168 34
+0 2 0 "s" 0 0 0 64 0 0  12 12
+ 1
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-160-100-100-*-*-iso8859-1|-19,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 14 ELMB CAN Buses
+30 11
+"frmShowColumns"
+""
+1 400 77 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+8 0 0 0 0 0
+EE E
+1
+1
+LANG:1 0 
+0
+E E 0 1 1 0 1 E U  0 E 400 10 540 80
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 12 Show Columns
+25 1
+"deviceListTable"
+""
+1 11 90 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 106 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,0,0,0,0,Arial
+0 ""
+9 88 546 432
+"main()
+{
+	// Put table in multiple selection mode
+	deviceListTable.tableMode(TABLE_SELECT_MULTIPLE); 
+	deviceListTable.selectByClick(TABLE_SELECT_LINE);
+	
+	// Call function to initialise data
+	pnlUpdateDeviceListTable();
+}" 0
+ E 1 0 1 6 1 "deviceName" 0 1 0 "s" 1
+LANG:1 11 Device Name
+E1
+LANG:1 0 
+ 300 "comment" 0 0 0 "s" 1
+LANG:1 7 Comment
+E1
+LANG:1 0 
+ 300 "interface" 0 1 0 "s" 1
+LANG:1 9 Interface
+E1
+LANG:1 0 
+ 80 "port" 0 -1 0 "s" 1
+LANG:1 4 Port
+E1
+LANG:1 0 
+ 50 "speed" 0 -1 0 "s" 1
+LANG:1 5 Speed
+E1
+LANG:1 0 
+ 100 "dpName" 0 0 0 "s" 1
+LANG:1 6 dpName
+E1
+LANG:1 0 
+ 100 26 26 "" 1 1
+LANG:1 2 #1
+8 30 1
+LANG:1 106 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,0,0,0,0,Arial
+0 ""
+0 1 0 3 0
+1 0
+13 4
+"btnModify"
+""
+1 348 440 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+5 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+346 438 409 467
+T 
+1
+LANG:1 6 Modify
+"main()
+{
+// Local Variables
+// ---------------
+	int iBusSpeed;
+	
+	string sBusName;
+	string sInterface;
+	string sPort;
+	
+	dyn_int diSelectedLines;
+	
+	dyn_float df;
+	
+	dyn_string ds;
+	
+// Executable Code
+// ---------------
+	// Get any selected lines
+	diSelectedLines = deviceListTable.getSelectedLines();	
+	if (dynlen(diSelectedLines) == 0) {
+		ChildPanelOnCentral(\"vision/MessageInfo1\",
+												\"Warning\",
+												makeDynString(\"No Bus selected\"));
+		return;
+	} else {
+		// Only use the first selected line (ignore any multi-select)
+		getValue(\"deviceListTable\", \"cellValueRC\", diSelectedLines[1], \"dpName\", sBusName);
+		getValue(\"deviceListTable\", \"cellValueRC\", diSelectedLines[1], \"interface\", sInterface);
+		getValue(\"deviceListTable\", \"cellValueRC\", diSelectedLines[1], \"port\", sPort);
+		getValue(\"deviceListTable\", \"cellValueRC\", diSelectedLines[1], \"speed\", iBusSpeed);
+				
+		ChildPanelOnCentralReturn(\"fwElmb/fwElmbModifyBusParameters.pnl\",
+															\"Modify Bus parameters\",
+															makeDynString(\"$sDpName:\" + $sDpName,
+																						\"$sBusName:\" + sBusName,
+																						\"$sInterface:\" + sInterface,
+																						\"$sPort:\" + sPort,
+																						\"$iBusSpeed:\" + iBusSpeed),
+															df, ds);
+	}	
+	
+	// Update table
+	pnlUpdateDeviceListTable();
+	
+	// Return to calling routine
+	return;
+}" 0
+ E E E
+13 6
+"btnClose"
+""
+1 484 440 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+7 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+482 438 545 467
+T 
+1
+LANG:1 5 Close
+"main()
+{
+	PanelOff();
+}" 0
+ E E E
+13 7
+"btnCreate"
+""
+1 280 440 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+7 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+278 438 341 467
+T 
+1
+LANG:1 6 Create
+"main()
+{
+	dyn_float df;
+	dyn_string ds;
+	
+ 	ChildPanelOnCentralModalReturn(	\"fwElmb/fwElmbCANbusCreate.pnl\",
+							   									\"Create new CANbus\",
+ 																	makeDynString(\"$sDpName:\" + $sDpName),
+							   									df, ds);
+ 	pnlUpdateDeviceListTable();
+}" 0
+ E E E
+13 8
+"btnCreateConfig"
+""
+1 10 440 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+8 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+8 438 152 467
+T 
+1
+LANG:1 17 Create OPC Config
+"main()
+{
+	ChildPanelOnCentral(\"fwElmb/fwElmbOpcExportConfiguration.pnl\",
+	                    \"Create new OPC Server configuration file\",
+	                    makeDynString(\"$sDpName:\" + $sDpName));
+}" 0
+ E E E
+13 9
+"btnDelete"
+""
+1 416 440 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+8 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+414 438 477 467
+T 
+1
+LANG:1 6 Delete
+"main()
+{
+// Local Variables
+// ---------------
+	int i;
+	
+	string sDpName;
+	
+	dyn_int diSelectedLines;
+	
+	dyn_float df;
+	
+	dyn_string dsExceptionInfo;
+	dyn_string ds;
+	
+// Executable Code
+// ---------------
+	// Get any selected nodes from the table
+	diSelectedLines = deviceListTable.getSelectedLines();	
+
+	if (dynlen(diSelectedLines) > 0) {	
+	
+		// Give user the chance to cancel
+		if (dynlen(diSelectedLines) == 1)
+			ChildPanelOnCentralReturn(\"vision/MessageInfo\",
+																\"Confirm\",
+																makeDynString(\"Are you sure you want delete this bus?\", \"OK\", \"Cancel\"),
+																df, ds);
+		else
+			ChildPanelOnCentralReturn(\"vision/MessageInfo\",
+																\"Confirm\",
+																makeDynString(\"Are you sure you want delete these \" + dynlen(diSelectedLines) + \" buses?\", \"OK\", \"Cancel\"),
+																df, ds);
+																
+		if (df[1]==1) {
+	
+			// Indicate system is busy
+			fwOpenProgressBar(\"Deleting Buses\", \"In progress. Please wait...\", 1);
+	
+			for (i = 1; i <= dynlen(diSelectedLines); i++) {
+				getValue(\"deviceListTable\", \"cellValueRC\", diSelectedLines[i], \"dpName\", sDpName);
+				fwDevice_delete(sDpName, dsExceptionInfo);
+			}
+
+			// Check for errors																
+			if (dynlen(dsExceptionInfo) > 0) {
+				fwCloseProgressBar(\"Bus deletion encountered errors\");
+				fwExceptionHandling_display(dsExceptionInfo);
+			} else {
+				fwCloseProgressBar(\"Bus deletion completed successfully\");
+			}	
+			
+			// Update the table information
+			pnlUpdateDeviceListTable();
+		}
+	} else {
+		ChildPanelOnCentral(\"vision/MessageInfo1\",
+												\"Nothing to Delete\",
+												makeDynString(\"No buses have been selected for deletion\"));
+	}
+	
+	// Return to calling routine
+	return;
+}" 0
+ E E E
+13 10
+"cmdOpenMonitorSetup"
+""
+1 180 10 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+8 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+178 8 303 42
+T 
+1
+LANG:1 16 Setup Monitoring
+"main()
+{
+	ChildPanelOnCentral(\"fwElmb/fwElmbMonitorConfiguration.pnl\",
+											\"Monitor Setup\",
+											makeDynString());
+}" 0
+ E E E
+20 12
+"chkShowDescription"
+""
+1 410 30 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+9 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+408 28 532 72
+2
+T 
+1
+LANG:1 11 Device Name
+ 1
+1
+LANG:1 0 
+ E  E  0 0 0 0 0
+T 
+1
+LANG:1 7 Comment
+ 0
+1
+LANG:1 0 
+ E  E  0 0 0 0 0
+2
+E E E E 
+E"main(int button, bool state)
+{
+	switch (button) {
+		case 0:	// ELMB name
+			if (state)
+				deviceListTable.namedColumnVisibility(\"deviceName\", true);
+			else
+				deviceListTable.namedColumnVisibility(\"deviceName\", false);
+			break;
+		case 1:	// Comment
+			if (state)
+				deviceListTable.namedColumnVisibility(\"comment\", true);
+			else
+				deviceListTable.namedColumnVisibility(\"comment\", false);
+			break;
+	}
+}" 0
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0

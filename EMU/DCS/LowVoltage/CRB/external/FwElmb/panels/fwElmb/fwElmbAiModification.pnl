@@ -1,0 +1,864 @@
+V 10
+1
+LANG:1 8 (NoName)
+PANEL,457 241 590 403 N "_3DFace" 1
+"$sChannelDp"
+EEE E E 1 0 0 0  -1 -1
+"" 0 1
+E"// Modular (Panel) Variables
+// -------------------------
+	string m_sType;
+	string m_sFunction;
+	
+	dyn_string m_dsChannels;
+
+// ************************************************************************************
+// Function:		pnlUpdateForSensorsOnChange
+//
+// Description:	Updates all fields in the panel. This is mainly used on initialisation
+//							and when a different sensor type is selected from the combo box
+//
+// Returns:			None
+// ************************************************************************************
+void pnlUpdateForSensorsOnChange( string argsChannel = \"\",
+																	string argsElmb = \"\")
+{
+// Local Variables
+// ---------------
+	bool bIsStandard;
+	bool bIsRaw;
+	bool bMuxAll;
+	bool bMuxed;
+	
+	int i;
+	int iPos;
+	int iCount = 0;
+	
+	string sDpName;
+  string sSensorType;
+  string sSensorName;
+  string sParameter;
+  string sFctTemplate;
+  string sPrefix;
+	string sParamDescription;
+	string sTruncatedFormula;
+	string sPDOdp;
+	string sProfile;
+	string sItem;
+	string sFunction;
+	string sFunctionTemplate;
+	string sTemp;
+	
+	dyn_bool dbIsStandard;
+	dyn_bool dbIsRaw;
+	
+	dyn_string dsAvailableChannels;
+	dyn_string dsSensorTypes;
+	dyn_string dsFctTemplate;
+	dyn_string dsParameters;
+	dyn_string dsParamDescriptions;
+	dyn_string dsPrefixes;
+	dyn_string dsPDOdps;
+	dyn_string dsTemp;
+	dyn_string dsExceptionInfo;
+
+// Executable Code
+// ---------------
+	// Get the selected sensor
+	iPos = cmbSensorType.selectedPos();
+	
+	// Get information about all sensors
+	dpGet(ELMB_SENSOR_INFO_NAME + \".types\", dsSensorTypes,
+        ELMB_SENSOR_INFO_NAME + \".functions\", dsFctTemplate,
+        ELMB_SENSOR_INFO_NAME + \".parameters\", dsParameters,
+        ELMB_SENSOR_INFO_NAME + \".parameterDescriptions\", dsParamDescriptions,
+        ELMB_SENSOR_INFO_NAME + \".prefix\", dsPrefixes,
+        ELMB_SENSOR_INFO_NAME + \".isStandard\", dbIsStandard,
+        ELMB_SENSOR_INFO_NAME + \".isRaw\", dbIsRaw,
+        ELMB_SENSOR_INFO_NAME + \".pdoDp\", dsPDOdps);
+        
+  // Get information specific to the selected sensor
+  sSensorType = dsSensorTypes[iPos];
+  sFctTemplate = dsFctTemplate[iPos];
+  sParameter = dsParameters[iPos];
+	sParamDescription = dsParamDescriptions[iPos];
+  sPrefix = dsPrefixes[iPos];
+  bIsStandard = dbIsStandard[iPos];
+  bIsRaw = dbIsRaw[iPos];
+  sPDOdp = dsPDOdps[iPos];
+		
+	// Get information about the PDO used
+	if (sPDOdp == ELMB_NO_INFO) {
+		// Default analog input used
+		bMuxed = true;
+		bMuxAll = true;
+	} else {
+		dpGet(sPDOdp + \".profile\", sProfile,
+					sPDOdp + \".mux.all\", bMuxAll);
+					
+		if ((sProfile == \"404\") || (sProfile == \"LMB\")) {
+			bMuxed = true;
+		} else {
+			bMuxed = false;
+			bMuxAll = false;
+		}
+	}
+		
+	// If sensor is a standard type, do not allow edits or deletions
+	if (bIsStandard) {
+		setValue(\"cmdSensorType\", \"enableItem\", \"1\", false);
+		setValue(\"cmdSensorType\", \"enableItem\", \"2\", false);
+	} else {
+		setValue(\"cmdSensorType\", \"enableItem\", \"1\", true);
+		setValue(\"cmdSensorType\", \"enableItem\", \"2\", true);
+	}
+
+	// How many channels does our sensor use? (only applicable to non-raw sensors)
+	if (!bIsRaw) {
+		for (i = 1; i <= ELMB_MAX_CHANNEL; i++) {
+			if (patternMatch(\"*%c\" + i + \"*\", sFctTemplate))
+				iCount++;
+		}
+	} else {
+		iCount = 1;
+	}
+	
+	// Enter the number of channels used into the correct field
+	lblChannelCounter.text = iCount; 
+  fwElmb_getUserDefinedFct(sFctTemplate, m_dsChannels, makeDynFloat(), sTemp, dsExceptionInfo, true);
+  DebugN(sFctTemplate);
+  DebugN(sTemp);
+  dsTemp = strsplit(m_sFunction, \"=\");
+  sItem = strrtrim(dsTemp[1], \" \");
+  sFunction = strltrim(dsTemp[2], \" \");
+  for (i = 1; i <= 10; i++) {
+  	sTemp = \"%x\" + i;
+  	strreplace(sFunctionTemplate, sTemp, \"%s\");
+  }
+
+	// Display the function (if sensor is raw, just indicate the channel value is used)
+	if (bIsRaw) {
+		lblEquationNote.text = \"\";
+		lblEquation.text = \"%c1\";
+	} else if (strlen(sFctTemplate) > 95) {
+		sTruncatedFormula = substr(sFctTemplate, 0, 95) + \"...\";
+	  lblEquation.text = sTruncatedFormula;
+		lblEquationNote.text = \"Formula is too long to show all of it. It has been truncated (indicated by '...')\";
+	} else {
+		lblEquationNote.text = \"\";
+	  lblEquation.text = sFctTemplate;
+	}
+	
+	// Update the table showing the parameters
+	modUpdateParameterTable(sParameter, sParamDescription);
+	
+	// Return to calling routine
+	return;
+}
+
+// ************************************************************************************
+// Function:		modUpdateParameterTable
+//
+// Description:	Updates table showing values to be applied to the parameter values for
+//							the sensor
+//
+// Returns:			None
+// ************************************************************************************
+void modUpdateParameterTable(	string argsParameter,
+															string argsParamDescription)
+{
+// Local Variables
+// ---------------
+	int i;
+	
+	string sDescription;
+	
+	dyn_string dsDefaultParameters;
+	dyn_string dsDefaultParameterDescriptions;
+	dyn_string dsTemp;
+
+// Executable Code
+// ---------------
+  // Clear table contents and then fill with the right parameters:
+  tblParameters.deleteAllLines();
+  
+	// Check if parameters exist
+	if (argsParameter != ELMB_NO_INFO) {
+		// Get information from the parameters given
+		fwGeneral_stringToDynString(argsParameter, dsDefaultParameters);
+		fwGeneral_stringToDynString(argsParamDescription, dsDefaultParameterDescriptions, \"|\", false);
+  
+		for (i = 1; i <= dynlen(dsDefaultParameters); i++) {
+			if (dynlen(dsDefaultParameterDescriptions) < i || dsDefaultParameterDescriptions[i] == \"\")
+				sDescription = \"%x\" + i;
+			else
+				sDescription = dsDefaultParameterDescriptions[i];
+
+			tblParameters.appendLine(\"parameter\", \"%x\" + i, 
+			                         \"description\", sDescription,
+			                         \"value\", dsDefaultParameters[i]);
+		}
+	}
+
+	// Return to calling routine
+	return;
+}
+" 0
+ 2
+"CBRef""1"
+"EClose"E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 3
+"lblComment"
+""
+1 10 320 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+4 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 322 68 338
+0 2 0 "s" 0 0 0 192 0 0  12 322
+ 1
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 7 Comment
+2 5
+"lblChannelsUsed"
+""
+1 20 162 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+6 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 22 164 353 180
+0 2 0 "s" 0 0 0 64 0 0  22 164
+ 1
+1
+LANG:1 105 -microsoft windows-Arial-bold-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,700,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 49 Number of ELMB channels used by this sensor type:
+2 6
+"lblApplyChanges"
+""
+1 20 273 E E E 1 E 1 E N {255,0,0} E N "_Transparent" E E
+ E E
+7 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 22 275 273 308
+0 2 0 "s" 0 0 0 64 0 0  22 275
+ 2
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-110-100-100-*-*-iso8859-1|-11,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 40 For changes in the table to be permanent
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-110-100-100-*-*-iso8859-1|-11,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 39 you must press the Apply Changes button
+2 7
+"lblSensorFormula"
+""
+1 20 120 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+8 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 22 122 118 138
+0 2 0 "s" 0 0 0 64 0 0  22 122
+ 1
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 15 Sensor Formula:
+2 8
+"lblEquation"
+""
+1 25 140 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+9 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 27 142 563 158
+0 2 0 "s" 0 0 0 64 0 0  27 142
+ 1
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-110-100-100-*-*-iso8859-1|-11,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 0 
+2 9
+"lblChannelCounter"
+""
+1 360 160 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+10 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 362 162 388 181
+1 2 0 "s" 0 0 0 65 0 0  362 162
+ 1
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 0 
+2 10
+"lblEquationNote"
+""
+1 120 120 E E E 1 E 1 E N {255,0,0} E N "_Transparent" E E
+ E E
+11 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 122 122 568 138
+0 2 0 "s" 0 0 0 64 0 0  122 122
+ 1
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-110-100-100-*-*-iso8859-1|-11,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 0 
+30 13
+"frmSensorType"
+""
+1 10 90 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+14 0 0 0 0 0
+EE E
+1
+1
+LANG:1 0 
+0
+E E 0 1 1 0 1 E U  0 E 10 40 310 90
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 11 Sensor Type
+2 16
+"lblTitle"
+""
+1 10 87 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+17 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 12 283 36
+0 2 0 "s" 0 0 0 64 0 0  12 12
+ 1
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-180-100-100-*-*-iso8859-1|-21,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-180-100-100-*-*-iso8859-1|-21,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 26 Modify Analog Input Sensor
+LANG:5 16 Create Elmb Node
+30 17
+"frmConfiguration"
+""
+1 10 310 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+18 0 0 0 0 0
+EE E
+1
+1
+LANG:1 0 
+0
+E E 0 1 1 0 1 E U  0 E 10 100 580 310
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 13 Configuration
+13 0
+"cmdOK"
+""
+1 350 370 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+1 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+348 368 422 395
+T 
+1
+LANG:1 2 OK
+"main()
+{
+	modCreateAiChannels();
+	PanelOff();
+	PanelOffPanel(\"Create Device\");
+	ModuleOff(\"assignIdsModule\");
+}" 0
+ E E E
+13 1
+"cmdApply"
+""
+1 430 370 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+2 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+428 368 502 395
+T 
+1
+LANG:1 5 Apply
+"main()
+{
+	modCreateAiChannels();
+}" 0
+ E E E
+13 2
+"cmdClose"
+""
+1 510 370 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+3 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+508 368 582 395
+T 
+1
+LANG:1 5 Close
+"main()
+{
+	PanelOff();
+	PanelOffPanel(\"Create Device\");
+	ModuleOff(\"assignIdsModule\");
+}" 0
+ E E E
+14 4
+"txtComment"
+""
+1 10 337 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+5 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+8 335 582 362
+3 "s" 0 0 0 0 0 0 
+E
+E
+E
+25 11
+"tblParameters"
+""
+1 -1296 -209 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+12 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 106 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,0,0,0,0,Arial
+0 ""
+18 190 572 276
+E E 1 0 1 3 1 "parameter" 0 1 0 "s" 1
+LANG:1 9 Parameter
+E1
+LANG:1 0 
+ 100 "description" 0 1 -1 "s" 1
+LANG:1 11 Description
+E1
+LANG:1 67 Click on the corresponding cell to change the parameter description
+ 331 "value" 0 1 -1 "s" 1
+LANG:1 5 Value
+E1
+LANG:1 44 Click on the cell to enter the default value
+ 91 26 26 "" 1 1
+LANG:1 2 #1
+8 30 1
+LANG:1 106 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,0,0,0,0,Arial
+0 ""
+0 2 0 3 0
+1 0
+13 12
+"cmdApplyChanges"
+""
+1 460 280 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+13 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+458 278 571 305
+T 
+1
+LANG:1 13 Apply Changes
+"main()
+{
+// Local Variables
+// ---------------
+	int iLines;
+	int i, j;
+	int iSelectedSensorType = cmbSensorType.selectedPos;
+	
+	string sParameters;
+	string sDescriptions;
+	string sTemp;
+	
+	dyn_string dsParameters;
+	dyn_string dsDescriptions;
+	dyn_string dsAllParameters;
+	dyn_string dsAllDescriptions;
+
+	dyn_anytype daLine;
+
+// Executable Code
+// ---------------
+	// Get information from 'SensorInfo' DP
+	dpGet(ELMB_SENSOR_INFO_NAME + \".parameters\", dsAllParameters,
+	      ELMB_SENSOR_INFO_NAME + \".parameterDescriptions\", dsAllDescriptions);
+
+	// Get information from the table
+	for (i = 0; i < tblParameters.lineCount; i++) {
+		
+		// Get the data from the current line
+		daLine = tblParameters.getLineN(i);
+		
+		// Get the '%x' parameter number
+		sTemp = daLine[1];
+		sTemp = strltrim(sTemp, \"%x\");
+		sscanf(sTemp, \"%d\", j);
+		
+		// Set information into local variable
+		dsDescriptions[j] = daLine[2];
+		dsParameters[j] = daLine[3];
+		
+		// Trim each value of any spaces
+		dsDescriptions[j] = strltrim(dsDescriptions[j], \" \");
+		dsDescriptions[j] = strrtrim(dsDescriptions[j], \" \");
+		dsParameters[j] = strltrim(dsParameters[j], \" \");
+		dsParameters[j] = strrtrim(dsParameters[j], \" \");
+	}
+	
+	// Create strings of the parameters and descriptions
+	fwGeneral_dynStringToString(dsDescriptions, sDescriptions);
+	fwGeneral_dynStringToString(dsParameters, sParameters);
+	
+	// Set new information into the datapoint
+	dsAllParameters[iSelectedSensorType] = sParameters;
+	dsAllDescriptions[iSelectedSensorType] = sDescriptions;
+	dpSet(ELMB_SENSOR_INFO_NAME + \".parameters\", dsAllParameters,
+	      ELMB_SENSOR_INFO_NAME + \".parameterDescriptions\", dsAllDescriptions);
+	
+	// Return to calling routine
+	return;
+}" 0
+ E E E
+22 14
+"cmbSensorType"
+""
+1 21 55 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+15 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+19 53 173 80
+0
+"main()
+{
+// Local Variables
+// ---------------
+	int iPos;
+	
+	langString lsComment;
+	
+	dyn_string dsSensorTypes;
+	
+// Executable Code
+// ---------------
+	// Get all sensor types defined in this system
+	dpGet(ELMB_SENSOR_INFO_NAME + \".types\", dsSensorTypes,
+				$sChannelDp + \".type\", m_sType,
+				$sChannelDp + \".function\", m_sFunction,
+				$sChannelDp + \".channel\", m_dsChannels);
+	lsComment = dpGetDescription($sChannelDp + \".value\");
+	txtComment.text = lsComment;
+	
+	// Display the information in the combo box
+	this.items = dsSensorTypes;
+	
+	iPos = dynContains(dsSensorTypes, m_sType);
+	if (iPos > 0)	
+		this.selectedPos = iPos;
+	
+	// Update all fields in the panel for this sensor
+	pnlUpdateForSensorsOnChange();
+	
+	// Return to calling routine
+	return;
+}" 0
+
+"main()
+{
+	// Call function to update all fields for new selected sensor
+	pnlUpdateForSensorsOnChange();
+}" 0
+
+E
+ 0 0
+26 15
+"cmdSensorType"
+""
+1 191 55 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+16 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+189 53 288 81
+0 1
+LANG:1 11 Sensor Type
+"" 0 0 0 0 0
+3 1 1
+LANG:1 13 Create New...
+"cmdCreateNewSensorType" 0 0 0 0 0
+1 1
+LANG:1 7 Edit...
+"cmdEditSensorType" 0 0 0 0 0
+1 1
+LANG:1 9 Delete...
+"cmdDeleteSensorType" 0 0 0 0 0
+E "main(string id)
+{
+// Local Variables
+// ---------------
+	int iPos;
+	
+	string sSensorName;
+	string sSensorPrefix;
+	string sSensorFormula;
+	
+	dyn_bool dbIsRaw;
+	dyn_bool dbIsStandard;
+	
+	dyn_float df;
+	
+	dyn_string ds;
+	dyn_string dsExistingSensorTypes;
+	dyn_string dsSensorPrefixes;
+	dyn_string dsSensorFormulas;
+	dyn_string dsParameters;
+	dyn_string dsParamDescriptions;
+	dyn_string dsPDOdps;
+
+// Executable Code
+// ---------------
+	// Action whichever command has been selected
+	if (id == \"cmdCreateNewSensorType\") {
+	
+		// Display panel allowing for a new sensor type to be created
+		ChildPanelOnCentralModalReturn(	\"fwElmb/objects/fwElmbCreateNewSensorType.pnl\",
+		                          			\"Create New Sensor Type\",
+					                          makeDynString(\"\"),
+					                          df, ds);
+
+		// Refresh combo box of sensors existing (which will add any new one if created)                          
+		dpGet(ELMB_SENSOR_INFO_NAME + \".types\", dsExistingSensorTypes);
+		cmbSensorType.items = dsExistingSensorTypes;
+		
+	} else if (id == \"cmdEditSensorType\") {
+	
+		// Get which sensor is currently selected
+		iPos = cmbSensorType.selectedPos;
+	
+		// Get all sensor information
+		dpGet(ELMB_SENSOR_INFO_NAME + \".types\", dsExistingSensorTypes,
+					ELMB_SENSOR_INFO_NAME + \".functions\", dsSensorFormulas,
+					ELMB_SENSOR_INFO_NAME + \".prefix\", dsSensorPrefixes);
+					
+		// Get values to give to panel
+		sSensorName = dsExistingSensorTypes[iPos];
+		sSensorPrefix = dsSensorPrefixes[iPos];
+		sSensorFormula = dsSensorFormulas[iPos];
+					
+		// Display panel allowing for a new sensor type to be created
+		ChildPanelOnCentralModalReturn(	\"fwElmb/objects/fwElmbCreateNewSensorType.pnl\",
+		                          			\"Edit Sensor Type\",
+					                          makeDynString(\"$sSensorName:\" + sSensorName,
+					                          							\"$sSensorPrefix:\" + sSensorPrefix,
+					                          							\"$sSensorFormula:\" + sSensorFormula,
+					                          							\"$bEdit:\" + true),
+					                          df, ds);
+	      
+		// If sensor type has been edited, give message to check the variable descriptions
+	  if (df[1] == 1.0) {
+			ChildPanelOnCentralModal(	\"vision/MessageInfo1\",
+																\"Information\",
+																makeDynString(\"Please verify the parameter descriptions and modify\\nif necessary as they may now be incorrect.\\nNote: Existing sensors of this type are NOT updated\"));
+		}
+		                          
+		// Update panel to reflect any changes made
+		pnlUpdateForSensorsOnChange();
+		                          
+	} else if (id == \"cmdDeleteSensorType\") {
+		// Get which sensor is currently selected
+		iPos = cmbSensorType.selectedPos;
+	
+		// Get all sensor information
+		dpGet(ELMB_SENSOR_INFO_NAME + \".types\", dsExistingSensorTypes,
+					ELMB_SENSOR_INFO_NAME + \".functions\", dsSensorFormulas,
+		      ELMB_SENSOR_INFO_NAME + \".parameters\", dsParameters,
+		      ELMB_SENSOR_INFO_NAME + \".parameterDescriptions\", dsParamDescriptions,
+		      ELMB_SENSOR_INFO_NAME + \".prefix\", dsSensorPrefixes,
+		      ELMB_SENSOR_INFO_NAME + \".isStandard\", dbIsStandard,
+		      ELMB_SENSOR_INFO_NAME + \".isRaw\", dbIsRaw,
+		      ELMB_SENSOR_INFO_NAME + \".pdoDp\", dsPDOdps);
+					
+		// Get values to give to panel
+		sSensorName = dsExistingSensorTypes[iPos];
+		
+		// Display panel for confirmation
+		ChildPanelOnCentralModalReturn(	\"vision/MessageInfo\",
+																		\"Confirm Deletion\",
+																		makeDynString(\"Are you sure you wish to delete the\\nsensor type '\" + sSensorName + \"'?\\nExisting sensors will remain in the system\", \"OK\", \"Cancel\"),
+																		df, ds);
+		if (df[1] == 1.0) {
+		  // Delete the sensor information
+		  dynRemove(dsExistingSensorTypes, iPos);
+		  dynRemove(dsSensorFormulas, iPos);
+		  dynRemove(dsParameters, iPos);
+		  dynRemove(dsParamDescriptions, iPos);
+		  dynRemove(dsSensorPrefixes, iPos);
+		  dynRemove(dbIsStandard, iPos);
+		  dynRemove(dbIsRaw, iPos);
+		  dynRemove(dsPDOdps, iPos);
+		  
+			// Set new information back into datapoint
+			dpSet(ELMB_SENSOR_INFO_NAME + \".types\", dsExistingSensorTypes,
+						ELMB_SENSOR_INFO_NAME + \".functions\", dsSensorFormulas,
+		        ELMB_SENSOR_INFO_NAME + \".parameters\", dsParameters,
+		        ELMB_SENSOR_INFO_NAME + \".parameterDescriptions\", dsParamDescriptions,
+		        ELMB_SENSOR_INFO_NAME + \".prefix\", dsSensorPrefixes,
+		        ELMB_SENSOR_INFO_NAME + \".isStandard\", dbIsStandard,
+		        ELMB_SENSOR_INFO_NAME + \".isRaw\", dbIsRaw,
+		        ELMB_SENSOR_INFO_NAME + \".pdoDp\", dsPDOdps);
+		}
+
+		// Refresh combo box of sensors existing (which will remove any that have been deleted)
+		dpGet(ELMB_SENSOR_INFO_NAME + \".types\", dsExistingSensorTypes);
+		cmbSensorType.items = dsExistingSensorTypes;
+		cmbSensorType.selectedPos = 1;
+		pnlUpdateForSensorsOnChange();
+	}
+	
+	// Return to calling routine
+	return;
+}" 0
+ 0 
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0

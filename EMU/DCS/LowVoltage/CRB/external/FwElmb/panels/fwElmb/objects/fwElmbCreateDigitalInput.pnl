@@ -1,0 +1,688 @@
+V 10
+1
+LANG:1 8 (NoName)
+PANEL,-1 -1 410 340 N "_3DFace" 2
+"$sDpName"
+"$sElmbLabels"
+"main()
+{
+  int iTemp;
+  pnlUpdateDigitalInput(1, iTemp);
+}" 0
+ E E E E 1 -1 -1 0  0 0
+""0  1
+E "pnlUpdateDigitalInput(int iNumElmb, int &argiNextBit)
+{
+// Local Variables
+// ---------------
+  bool bCustomElmb = false;
+  
+  int i;
+  int iBit;
+  int iCount;
+  int iPort;
+
+  string sElmb;
+
+  dyn_string dsAvailableDiPorts;
+  dyn_string dsBitList;
+  dyn_string dsExceptionInfo;
+  dyn_string dsABits;
+  dyn_string dsFBits;
+  dyn_string dsDBits;
+  dyn_string dsEBits;
+
+// Executable Code
+// ---------------
+  // Get the ELMB datapoint name to update for
+  pnlGetDpNameElmb(iNumElmb, sElmb);
+  
+  // Get whether to show custom digital input ports
+  bCustomElmb = chkCustomElmb.state(0);
+
+  // Get any available digital lines on port F
+  fwElmb_getAvailableBitList(sElmb, ELMB_DI_TYPE_NAME, \"F\", dsFBits, dsExceptionInfo);
+  if (dynlen(dsExceptionInfo) > 0) {
+    fwExceptionHandling_display(dsExceptionInfo);
+    return;
+  }
+
+  // Get any available digital lines on port A
+  fwElmb_getAvailableBitList(sElmb, ELMB_DI_TYPE_NAME, \"A\", dsABits, dsExceptionInfo);
+  if (dynlen(dsExceptionInfo) > 0) {
+    fwExceptionHandling_display(dsExceptionInfo);
+    return;
+  }
+  
+  if (bCustomElmb) {
+    // Get any available digital lines on port D
+    fwElmb_getAvailableBitList(sElmb, ELMB_DI_TYPE_NAME, \"D\", dsDBits, dsExceptionInfo);
+    if (dynlen(dsExceptionInfo) > 0) {
+      fwExceptionHandling_display(dsExceptionInfo);
+      return;
+    }
+
+    // Get any available digital lines on port E
+    fwElmb_getAvailableBitList(sElmb, ELMB_DI_TYPE_NAME, \"E\", dsEBits, dsExceptionInfo);
+    if (dynlen(dsExceptionInfo) > 0) {
+      fwExceptionHandling_display(dsExceptionInfo);
+      return;
+    }
+  }
+
+  // Set the list of available ports
+  if (dynlen(dsFBits) > 0)
+    dynAppend(dsAvailableDiPorts, \"F\");
+  if (dynlen(dsABits) > 0)
+    dynAppend(dsAvailableDiPorts, \"A\");
+  if (bCustomElmb) {
+    if (dynlen(dsDBits) > 0)
+      dynAppend(dsAvailableDiPorts, \"D\");
+    if (dynlen(dsEBits) > 0)
+      dynAppend(dsAvailableDiPorts, \"E\");
+  }
+  
+  // Check if any ports are available
+  if (dynlen(dsAvailableDiPorts) > 0) {
+
+    // Make certain the selected port is valid
+    iPort = cmbDigitalPort.selectedPos;
+    cmbDigitalPort.items = dsAvailableDiPorts;
+    if ((iPort < 1) || (iPort > dynlen(dsAvailableDiPorts)))
+      iPort = 1;
+    cmbDigitalPort.selectedPos = iPort;
+
+    // Check which port should be checked for available bits
+    if (dsAvailableDiPorts[iPort] == \"F\")
+      dsBitList = dsFBits;
+    else if (dsAvailableDiPorts[iPort] == \"A\")
+      dsBitList = dsABits;
+    else if (dsAvailableDiPorts[iPort] == \"D\")
+      dsBitList = dsDBits;
+    else if (dsAvailableDiPorts[iPort] == \"E\")
+      dsBitList = dsEBits;
+
+    // Check selected position before updating items
+    iBit = cmbBitSelector.selectedPos;
+    cmbBitSelector.items = dsBitList;
+    if ((iBit == 0) || (iBit > dynlen(dsBitList)))
+      cmbBitSelector.selectedPos = 1;
+    else
+      cmbBitSelector.selectedPos = iBit;
+  } else {
+    txtMessage.text = \"No available digital input ports in this ELMB\";
+    cmbDigitalPort.items = makeDynString(\"\");
+    cmbDigitalPort.text = \"\";
+    cmbBitSelector.items = makeDynString(\"\");
+    cmbBitSelector.text = \"\";
+    cmdCreate.enabled = false;
+    spnHowMany.sbMaximum = 0;
+    spnHowMany.text = \"0\";
+    return;
+  }
+
+  // The maximum number of channels (spnHowMany.sbMaximum) is set depending on the first bit selected 
+  // not avoiding to jump bits already created
+  iCount = 1;
+  for (i = cmbBitSelector.selectedPos; i < dynlen(dsBitList); i++) {
+    if (((int)dsBitList[i] + 1) == dsBitList[i + 1])
+      iCount++;
+    else
+      break;
+  }
+
+  // Set the max value and the start value
+  spnHowMany.sbMaximum = iCount;
+  spnHowMany.text = \"1\";
+
+  // Set return value of next bit in array
+  argiNextBit = dsBitList[cmbBitSelector.selectedPos];
+
+  // Return to calling routine
+  return;
+}
+
+pnlGetDpNameElmb(int argiNElmb, string &argsElmbDpName)
+{
+// Local Variables
+// ---------------
+  string sDpName;
+
+  dyn_string dsExceptionInfo;
+  dyn_string dsTemp = strsplit($sElmbLabels, \"|\");
+
+// Executable Code
+// ---------------
+  // Check the datapoint type of the dollar parameter
+  if (dpTypeName($sDpName) == ELMB_DI_CONFIG_TYPE_NAME) {
+    fwDevice_getParent($sDpName, sDpName, dsExceptionInfo);
+  } else if (dpTypeName($sDpName) == ELMB_TYPE_NAME) {
+    sDpName = $sDpName;
+  } else if (dpTypeName($sDpName) == ELMB_CAN_BUS_TYPE_NAME) {
+    sDpName = $sDpName + fwDevice_HIERARCHY_SEPARATOR + dsTemp[argiNElmb];
+  } else {
+    fwExceptionHandling_display(makeDynString(\"Unknown parent DP type. Action aborted!!\"));
+    return;
+  }
+
+  // Return only the datapoint name
+  argsElmbDpName = dpSubStr(sDpName, DPSUB_DP);
+
+  // Return to calling routine
+  return;
+}
+" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 13
+"lblBitSelector"
+""
+1 12 149 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 85 111 108
+0 2 0 "0s" 0 0 0 64 0 0  12 85 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 12 Bit in Byte:
+2 14
+"lblDigitalPort"
+""
+1 11 92 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+15 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 45 81 61
+0 2 0 "0s" 0 0 0 64 0 0  12 45 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 13 Digital Port:
+2 20
+"txtMessage"
+""
+1 10 210 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 212 398 238
+0 2 0 "0s" 0 0 0 64 0 0  12 212 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 0 
+2 21
+"lblComment"
+""
+1 10 160 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 162 68 179
+0 2 0 "0s" 0 0 0 192 0 0  12 162 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 7 Comment
+30 27
+"frmOpcAddressing"
+""
+1 10 290 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+26 0 0 0 0 0
+E E E
+1
+2
+LANG:1 0 
+LANG:5 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 10 240 400 290
+2
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 0 
+LANG:5 0 
+2 32
+"txtTitle"
+""
+1 10 87 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+30 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:5 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 12 328 36
+0 2 0 "0s" 0 0 0 64 0 0  12 12 1
+2
+LANG:1 84 -*-Arial-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-180-100-100-*-*-iso8859-1|-21,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 26 Create Digital Input Lines
+LANG:5 16 Create Elmb Node
+2 34
+"lblHowMany"
+""
+1 10 123 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+31 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 125 80 142
+0 2 0 "0s" 0 0 0 192 0 0  12 125 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 9 How Many?
+22 15
+"cmbBitSelector"
+""
+1 117 83 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 115 81 189 108
+0
+
+E
+"main()
+{
+  int iTemp;
+  pnlUpdateDigitalInput(1, iTemp);
+}" 0
+
+E
+ 0 0
+22 16
+"cmbDigitalPort"
+""
+1 117 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 115 38 189 65
+0
+
+E
+"main()
+{
+  int iTemp;
+  pnlUpdateDigitalInput(1, iTemp);
+}" 0
+
+E
+ 0 0
+14 28
+"txtComment"
+""
+1 10 180 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+27 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 8 178 402 205
+3 "0s" 0 0 0 0 0 -1  E E E
+20 29
+"chbOpcAddressing"
+""
+1 26 250 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+28 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:5 0 
+
+0
+2
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+ 24 248 221 282
+1
+T 
+2
+LANG:1 23 Default OPC addressing?
+LANG:5 23 Default OPC addressing?
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, bool state)
+{
+// Local Variables
+// ---------------
+  dyn_float df;
+
+  dyn_string ds;
+
+// Executable Code
+// ---------------
+  // Check the state of the check-box
+  if (!state) {
+    ChildPanelOnCentralReturn(\"vision/MessageInfo3\",
+                              \"Question\",
+                              makeDynString(\"Unselecting this option you'll have to address\\nyour devices by hand.\\nAre you sure you want to do it?\",
+                                            \"Yes\",
+                                            \"No\",
+                                            \"Cancel\"),
+                              df, ds);
+    if (df[1] != 1)
+      this.state(button) = true;
+  }
+
+  // Return to calling routine
+  return;
+}" 0
+13 31
+"cmdClose"
+""
+1 310 300 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+29 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 308 298 402 332
+
+T 
+1
+LANG:1 5 Close
+"main()
+{
+  // Close the panel
+  PanelOff();
+}
+" 0
+ E E E
+21 35
+"spnHowMany"
+""
+1 117 123 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+32 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 115 121 169 148
+0
+
+E
+E
+E
+
+N 0 8 1 1 1 1
+13 37
+"cmdCreate"
+""
+1 210 300 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+33 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 208 298 302 332
+
+T 
+1
+LANG:1 6 Create
+"main()
+{
+// Local Variables
+// ---------------
+  bool bIsRunning;
+  bool bDefaultOPCAddressing;
+  
+  int iDriverNumber;
+  int i, j;
+  int iHowMany;
+  int iFirstBit;
+  int iBit;
+  int iNextBit;
+
+  string sBus;
+  string sElmb;
+  string sComment;
+  string sPort;
+
+  dyn_float df;
+  
+  dyn_string dsExceptionInfo;
+  dyn_string dsElmbs = strsplit($sElmbLabels, \"|\");
+  dyn_string ds;
+
+// Executable Code
+// ---------------
+  // Check if the default driver is running
+  bIsRunning = fwElmbUser_checkDefaultDriver(iDriverNumber, dsExceptionInfo);
+  if (dynlen(dsExceptionInfo) > 0) {
+    fwExceptionHandling_display(dsExceptionInfo);
+    return;
+  } else if (!bIsRunning) {
+    ChildPanelOnCentralReturn(\"fwElmb/fwElmbDriverMessage.pnl\",
+                              \"Warning\",
+                              makeDynString(\"$drvNum:\" + iDriverNumber),
+                              df, ds);
+    return;
+  }
+
+  // Get required information from the panel
+  iFirstBit = cmbBitSelector.text;
+  bDefaultOPCAddressing = chbOpcAddressing.state(0);
+  sComment = txtComment.text;
+  iHowMany = spnHowMany.text;
+  sPort = cmbDigitalPort.text;
+
+  // Start progress bar to indicate system is busy
+  fwOpenProgressBar(\"Create Digital Input\", \"In progress. Please wait...\", 1);
+
+  // For each ELMB, create the required digital lines
+  for (i = 1; i <= dynlen(dsElmbs); i++) {
+
+    // Get current ELMB datapoint name	
+    pnlGetDpNameElmb(i, sElmb);
+
+    // Get the bus name, removing all framework path information (not strictly
+    // necessary in this loop, but would allow for mutliple ELMBs to have digital
+    // inputs created even if not on the same bus). Also get the ELMB name without
+    // framework path information at the same time.
+    ds = strsplit(sElmb, fwDevice_HIERARCHY_SEPARATOR);
+    if (dynlen(ds) >= 3) {
+      sBus = ds[2];
+      sElmb = ds[3];
+      iBit = iFirstBit;
+
+      // Create all digital inputs for this ELMB	
+      for (j = 1; j <= iHowMany; j++) {
+
+        // Create the digital input
+        fwElmbUser_createDigital(sBus, sElmb,
+                                 sComment,
+                                 sPort, iBit,
+                                 true,
+                                 bDefaultOPCAddressing,
+                                 dsExceptionInfo);
+
+        // Check for success or error
+        if (dynlen(dsExceptionInfo) > 0) {
+          fwExceptionHandling_display(dsExceptionInfo);
+        } else {
+          pnlUpdateDigitalInput(i, iNextBit);
+          iBit = iNextBit;
+        }
+      } // End of loop j (inputs)
+    }
+  } // End of loop i (ELMBs)
+
+  if (dynlen(dsExceptionInfo) > 0) {
+    fwCloseProgressBar(\"Digital Input creation encountered errors\");
+    fwExceptionHandling_display(dsExceptionInfo);
+  } else {
+    fwCloseProgressBar(\"Digital Input creation completed successfully\");
+  }	
+
+  // Return to calling routine
+  return;
+}
+" 0
+ E E E
+20 38
+"chkCustomElmb"
+""
+1 200 40 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+34 0 0 0 0 0
+E E E
+0
+1
+LANG:1 30 This requires custom firmware!
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 198 38 402 62
+1
+T 
+1
+LANG:1 41 Show all possible digital ports for input
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  int iTemp;
+  pnlUpdateDigitalInput(1, iTemp);
+}" 0
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0

@@ -1,0 +1,247 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 179 325 N "_3DFace" 0
+E E E E E 1 -1 -1 0  130 100
+""0  1
+E "void modRefreshInformation()
+{
+  int i;
+  dyn_string dsOpcGroups;
+  
+  for (i = 0; i < tabOpcGroups.lineCount; i++)
+    tabOpcGroups.cellBackColRC(i, \"opcGroup\", \"yellow\");
+  dsOpcGroups = dpNames(getSystemName() + \"*\", \"_OPCGroup\");
+  for (i = 1; i <= dynlen(dsOpcGroups); i++)
+    dpSet(dsOpcGroups[i] + \".GetIds\", true);
+  tabOpcGroups.deleteSelection();
+}" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"cmdRefreshInformation"
+""
+1 30 10 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 28 8 152 35
+
+T 
+1
+LANG:1 19 Refresh Information
+"main()
+{
+  modRefreshInformation();
+}" 0
+ E E E
+25 1
+"tabOpcGroups"
+""
+1 10 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 8 38 172 252
+"main()
+{
+  int i;
+  dyn_string dsOpcGroups;
+  dyn_string dsDpIds;
+  dyn_string dsItemIds;
+  
+  tabOpcGroups.tableMode = TABLE_SELECT_MULTIPLE;
+  tabOpcGroups.selectByClick = TABLE_SELECT_LINE;
+  for (i = 0; i < tabOpcGroups.columnCount; i++)
+    tabOpcGroups.columnEditable(i, false);
+  
+  dsOpcGroups = dpNames(getSystemName() + \"*\", \"_OPCGroup\");
+  for (i = 1; i <= dynlen(dsOpcGroups); i++)
+    dpConnect(\"cbkUpdateLine\", dsOpcGroups[i] + \".DpIds\");
+  tabOpcGroups.deleteSelection();
+}
+
+void cbkUpdateLine(string sDpe, dyn_string dsValues)
+{
+  string sBackCol;
+  sDpe = dpSubStr(sDpe, DPSUB_DP);
+  tabOpcGroups.updateLine(1, \"opcGroup\", sDpe, \"items\", dynlen(dsValues));
+  if (dynlen(dsValues) == 0)
+    sBackCol = \"red\";
+  else
+    sBackCol = \"white\";
+  tabOpcGroups.lineParam(1, \"opcGroup\", sDpe,
+                         \"backCol\", makeDynString(\"items\"), makeDynString(sBackCol),
+                         \"backCol\", makeDynString(\"opcGroup\"), makeDynString(\"white\"));
+}" 0
+E 1 0 1 2 0 "opcGroup" 15 1 1 "s" 1
+LANG:1 9 OPC Group
+E
+1
+LANG:1 0 
+
+100 "items" 15 1 1 "s" 1
+LANG:1 5 Items
+E
+1
+LANG:1 0 
+
+50 
+14 14 10 10
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+0 1 1 1 7
+1 0
+13 2
+"cmdSelectEmpty"
+""
+1 50 260 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 48 258 172 285
+
+T 
+1
+LANG:1 19 Select Empty Groups
+"main()
+{
+  int i;
+  int iItemsCol;
+  dyn_int iEmptyLines;
+  dyn_anytype daLine;
+  tabOpcGroups.deleteSelection();
+  iItemsCol = tabOpcGroups.nameToColumn(\"items\");
+  iItemsCol++;
+  for (i = 0; i < tabOpcGroups.lineCount; i++) {
+    daLine = tabOpcGroups.getLineN(i);
+    if (daLine[iItemsCol] == 0)
+      dynAppend(iEmptyLines, i);
+  }
+  for (i = 1; i <= dynlen(iEmptyLines); i++)
+    tabOpcGroups.selectLineN(iEmptyLines[i]);
+}" 0
+ E E E
+13 3
+"cmdDeleteSelected"
+""
+1 50 290 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 48 288 172 315
+
+T 
+1
+LANG:1 22 Delete Selected Groups
+"main()
+{
+  int i;
+  int iGroupCol;
+  dyn_int diLines;
+  dyn_string dsGroups;
+  dyn_string dsOpcGroups;
+  dyn_string dsGroupLinesToDelete;
+  dyn_anytype daLine;
+  iGroupCol = tabOpcGroups.nameToColumn(\"opcGroup\");
+  iGroupCol++;
+  diLines = tabOpcGroups.getSelectedLines;
+  for (i = 1; i <= dynlen(diLines); i++) {
+    daLine = tabOpcGroups.getLineN(diLines[i]);
+    dynAppend(dsGroups, daLine[iGroupCol]);
+  }
+  for (i = 1; i <= dynlen(dsGroups); i++) {
+    dpSetWait(dsGroups[i] + \".DeleteGroup\", true);
+    dpDelete(dsGroups[i]);
+  }
+  delay(0,500);
+  
+  // Now need to delete the lines of any removed OPC groups
+  dsOpcGroups = dpNames(getSystemName() + \"*\", \"_OPCGroup\");
+  for (i = 1; i <= dynlen(dsOpcGroups); i++)
+    dsOpcGroups[i] = dpSubStr(dsOpcGroups[i], DPSUB_DP);
+  dynClear(dsGroups);
+  for (i = 0; i < tabOpcGroups.lineCount; i++) {
+    daLine = tabOpcGroups.getLineN(i);
+    dynAppend(dsGroups, daLine[iGroupCol]);
+  }
+  // Check if any groups have actually been deleted
+  if (dynlen(dsOpcGroups) != dynlen(dsGroups)) {
+    for (i = 1; i <= dynlen(dsGroups); i++) {
+      if (dynContains(dsOpcGroups, dsGroups[i]) == 0)
+        dynAppend(dsGroupLinesToDelete, dsGroups[i]);
+    }
+    tabOpcGroups.deleteLines(1, \"opcGroup\", dsGroupLinesToDelete);
+  }
+  modRefreshInformation();
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

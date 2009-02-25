@@ -1,0 +1,541 @@
+V 10
+1
+LANG:1 8 (NoName)
+PANEL,428 148 543 475 N "_3DFace" 1
+"$sDpName"
+E"main()
+{
+	int i;
+}" 0
+E E E 1 -1 -1 0  10 10
+"" 0 1
+E"updateDeviceListTable()
+{
+// Local Variables
+// ---------------
+	bool bActive;
+	
+	int i;
+	
+	string sNodeId;
+	string sDeviceType, sDeviceName;
+	
+	langString lsComment;
+	
+	dyn_string dsChildren, dsExceptionInfo;
+	
+// Executable Code
+// ---------------
+	// Delete all lines to start with
+	deviceListTable.deleteAllLines();
+	
+	// Get all ELMBs on this bus
+	fwDevice_getChildren($sDpName, fwDevice_HARDWARE, dsChildren, dsExceptionInfo);
+	
+	// Loop through all ELMBs on this bus
+	for (i = 1; i <= dynlen(dsChildren); i++) {
+		
+		// Get the node ID
+		dpGet(dsChildren[i] + \".id\", sNodeId,
+					dsChildren[i] + \".monitoring.autoActions.active\", bActive);
+		
+		// Get the framework device type
+		fwDevice_getType(dpTypeName(dsChildren[i]), sDeviceType, dsExceptionInfo);
+		
+		// Get the framework device name
+		fwDevice_getName(dsChildren[i], sDeviceName, dsExceptionInfo);
+		
+		// Get any comment
+		lsComment = dpGetDescription(dsChildren[i] + \".\");
+			
+		// Append the line to the table
+		deviceListTable.appendLine(	\"deviceName\", sDeviceName,
+																\"comment\", lsComment,
+																\"nodeId\", sNodeId,
+																\"deviceType\", sDeviceType, 
+																\"monitoring\", bActive ? \"Active\" : \"Inactive\",
+																\"datapointName\", dsChildren[i]);
+	}
+	
+	// Return to calling routine
+	return;
+}" 0
+ 2
+"CBRef""1"
+"EClose""main()
+{
+	int i;
+}" 0
+
+""
+NC
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 0
+"Text1"
+""
+1 16 10 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+1 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  1 E 18 12 203 34
+0 2 0 "s" 0 0 0 192 0 0  18 12
+ 1
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-160-100-100-*-*-iso8859-1|-19,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 17 Manage ELMB Nodes
+30 11
+"frmShowColumns"
+""
+1 390 77 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+10 0 0 0 0 0
+EE E
+1
+1
+LANG:1 0 
+0
+E E 0 1 1 0 1 E U  0 E 390 10 530 80
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 12 Show Columns
+13 4
+"btnModify"
+""
+1 268 440 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+5 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+266 438 329 467
+T 
+1
+LANG:1 6 Modify
+"main()
+{
+// Local Variables
+// ---------------
+	string sDpName;
+	string sElmb;
+	string sElmbDp;
+	
+	dyn_int diSelectedLines;
+	
+	dyn_float df;
+	
+	dyn_string ds;
+	
+// Executable Code
+// ---------------
+	// Get any selected nodes from the table
+	diSelectedLines = deviceListTable.getSelectedLines();	
+	if (dynlen(diSelectedLines) > 0) {
+		// Get information for the first node selected
+		getValue(\"deviceListTable\", \"cellValueRC\", diSelectedLines[1], \"deviceName\", sElmb);
+		getValue(\"deviceListTable\", \"cellValueRC\", diSelectedLines[1], \"datapointName\", sElmbDp);
+	 	ChildPanelOnCentralModalReturn(	\"fwElmb/fwElmbNodeCreate.pnl\",
+	   																\"Modify ELMB Node\",
+								   									makeDynString(\"$sDpName:\" + $sDpName,
+								   																\"$bModify:\" + true,
+								   																\"$sElmbName:\" + sElmb,
+								   																\"$sElmbDp:\" + sElmbDp),
+	   																df, ds);
+	
+		// Update the table information
+		updateDeviceListTable();
+	} else {
+		ChildPanelOnCentral(\"vision/MessageInfo1\",
+												\"Nothing to Modify\",
+												makeDynString(\"No nodes have been selected for modification\"));
+	}
+	
+	// Return to calling routine
+	return;
+}" 0
+ E E E
+13 3
+"btnDelete"
+""
+1 336 440 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+4 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+334 438 397 467
+T 
+1
+LANG:1 6 Delete
+"main()
+{
+// Local Variables
+// ---------------
+	int i;
+	
+	string sDpName;
+	
+	dyn_int diSelectedLines;
+	
+	dyn_float df;
+	
+	dyn_string dsExceptionInfo;
+	dyn_string ds;
+	
+// Executable Code
+// ---------------
+	// Get any selected nodes from the table
+	diSelectedLines = deviceListTable.getSelectedLines();	
+
+	if (dynlen(diSelectedLines) > 0) {	
+	
+		// Give user the chance to cancel
+		if (dynlen(diSelectedLines) == 1)
+			ChildPanelOnCentralReturn(\"vision/MessageInfo\",
+																\"Confirm\",
+																makeDynString(\"Are you sure you want delete this node?\", \"OK\", \"Cancel\"),
+																df, ds);
+		else
+			ChildPanelOnCentralReturn(\"vision/MessageInfo\",
+																\"Confirm\",
+																makeDynString(\"Are you sure you want delete these \" + dynlen(diSelectedLines) + \" nodes?\", \"OK\", \"Cancel\"),
+																df, ds);
+																
+		if (df[1]==1) {
+	
+			// Indicate system is busy
+			fwOpenProgressBar(\"Deleting Nodes\", \"In progress. Please wait...\", 1);
+	
+			for (i = 1; i <= dynlen(diSelectedLines); i++) {
+				getValue(\"deviceListTable\", \"cellValueRC\", diSelectedLines[i], \"datapointName\", sDpName);
+				fwDevice_delete(sDpName, dsExceptionInfo);
+			}
+
+			// Check for errors																
+			if (dynlen(dsExceptionInfo) > 0) {
+				fwCloseProgressBar(\"Node deletion encountered errors\");
+				fwExceptionHandling_display(dsExceptionInfo);
+			} else {
+				fwCloseProgressBar(\"Node deletion completed successfully\");
+			}	
+			
+			// Update the table information
+			updateDeviceListTable();
+		}
+	} else {
+		ChildPanelOnCentral(\"vision/MessageInfo1\",
+												\"Nothing to Delete\",
+												makeDynString(\"No nodes have been selected for deletion\"));
+	}
+	
+	// Return to calling routine
+	return;
+}" 0
+ E E E
+13 6
+"btnClose"
+""
+1 472 440 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+7 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+470 438 533 467
+T 
+1
+LANG:1 5 Close
+"main()
+{
+	PanelOff();
+}" 0
+ E E E
+25 7
+"deviceListTable"
+""
+1 -11 30 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ "main()
+{
+// Local Variables
+// ---------------
+	int iRow;
+	int iColumn;
+	int iReturn;
+	
+	string sColumnName;
+	string sName = this.name;
+	string sNodeDpName;
+	
+	dyn_float df;
+	
+	dyn_string dsMenu;
+	dyn_string ds;
+
+// Executable Code
+// ---------------
+	// Get the column name that has been clicked
+	getValue(sName, \"currentColumn\", sColumnName);
+	
+	// Check if this column should have a menu
+	if (sColumnName == \"monitoring\") {
+	
+		// Get the row
+		getValue(sName, \"currentCell\", iRow, iColumn);
+		getValue(sName, \"cellValueRC\", iRow, \"datapointName\", sNodeDpName);
+		
+		// Check if we have the necessary information
+		if ((strlen(sNodeDpName) > 0) && dpExists(sNodeDpName)) {
+			// Setup the menu
+			dsMenu = makeDynString(\"PUSH_BUTTON, Configure, 1, 1\");
+
+			// Display the popup menu
+			if (popupMenu(dsMenu, iReturn) == 0) {
+				if (iReturn == 1) {
+					// Display monitor configuration panel
+					ChildPanelOnCentralModalReturn(	\"fwElmb/fwElmbMonitorAutoActionConfiguration.pnl\",
+											   									\"ELMB Node Monitor Configuration\",
+																					makeDynString(\"$sDpName:\" + sNodeDpName),
+																					df, ds);
+																				
+					// Update the table to refect any changes
+					updateDeviceListTable();
+				}
+			}
+		}
+	}
+
+	// Return to calling routine
+	return;
+}" 0
+ E
+7 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 106 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,0,0,0,0,Arial
+0 ""
+8 88 535 432
+"main()
+{
+	// Put table in multiple selection mode
+	deviceListTable.tableMode(TABLE_SELECT_MULTIPLE); 
+	deviceListTable.selectByClick(TABLE_SELECT_LINE);
+	
+	// Call function to initialise data displayed
+	updateDeviceListTable();
+}" 0
+ E 1 0 1 6 1 "deviceName" 0 1 0 "s" 1
+LANG:1 11 Device Name
+E1
+LANG:1 0 
+ 200 "comment" 0 0 0 "s" 1
+LANG:1 7 Comment
+E1
+LANG:1 0 
+ 200 "nodeId" 0 1 0 "s" 1
+LANG:1 7 Node Id
+E1
+LANG:1 0 
+ 60 "deviceType" 0 -1 0 "s" 1
+LANG:1 11 Device Type
+E1
+LANG:1 0 
+ 150 "monitoring" 0 0 0 "s" 1
+LANG:1 10 Monitoring
+E1
+LANG:1 35 Right click to configure monitoring
+ 90 "datapointName" 0 0 0 "s" 1
+LANG:1 15 Data Point Name
+E1
+LANG:1 0 
+ 250 26 26 "" 1 1
+LANG:1 2 #1
+8 30 1
+LANG:1 106 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,0,0,0,0,Arial
+0 ""
+0 1 1 3 0
+1 0
+13 10
+"btnRefresh"
+""
+1 404 440 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+9 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+402 438 465 467
+T 
+1
+LANG:1 7 Refresh
+"main()
+{
+	updateDeviceListTable();
+}" 0
+ E E E
+20 12
+"chkShowDescription"
+""
+1 400 30 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+11 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+398 28 522 72
+2
+T 
+1
+LANG:1 11 Device Name
+ 1
+1
+LANG:1 0 
+ E  E  0 0 0 0 0
+T 
+1
+LANG:1 7 Comment
+ 0
+1
+LANG:1 0 
+ E  E  0 0 0 0 0
+2
+E E E E 
+E"main(int button, bool state)
+{
+	switch (button) {
+		case 0:	// ELMB name
+			if (state)
+				deviceListTable.namedColumnVisibility(\"deviceName\", true);
+			else
+				deviceListTable.namedColumnVisibility(\"deviceName\", false);
+			break;
+		case 1:	// Comment
+			if (state)
+				deviceListTable.namedColumnVisibility(\"comment\", true);
+			else
+				deviceListTable.namedColumnVisibility(\"comment\", false);
+			break;
+	}
+}" 0
+26 13
+"cmdCreate"
+""
+1 200 440 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+11 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+198 438 261 467
+0 1
+LANG:1 7  Create
+"" 0 0 0 0 0
+2 1 1
+LANG:1 11 Single Node
+"single" 0 0 0 0 0
+1 1
+LANG:1 10 Many Nodes
+"many" 0 0 0 0 0
+E "main(string id)
+{
+// Local Variables
+// ---------------
+	dyn_float df;
+	dyn_string ds;
+	
+// Executable Code
+// ---------------
+	// Check for create single or create many
+	if (id == \"many\") {
+		ModuleOn(\"elmbCreateManyModule\", 0, 0, 600, 800, 0, 0, \"\");
+										  
+		RootPanelOnModule(\"fwElmb/objects/fwElmbCreateManyNodes.pnl\",
+										  \"Mass creation of ELMBs in bus \" + $sDpName,
+										  \"elmbCreateManyModule\",
+										   makeDynString(\"$sDpName:\" + $sDpName));
+	} else {
+	 	ChildPanelOnCentralModalReturn(	\"fwElmb/fwElmbNodeCreate.pnl\",
+	   																\"Create ELMB Node\",
+								   									makeDynString(\"$sDpName:\" + $sDpName),
+	   																df, ds);
+	 	updateDeviceListTable();
+	}
+	
+	// Return to calling routine
+	return;
+}" 0
+ 0 
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0

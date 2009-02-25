@@ -1,0 +1,474 @@
+V 10
+1
+LANG:1 23 fwElmbDoConfigOperation
+PANEL,-1 -1 430 490 N "_3DFace" 1
+"$sDpName"
+E E E E E 1 -1 -1 0  0 0
+""0  1
+E E 2
+"CBRef" "0"
+"EClose" E
+""
+NC
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 1
+"txtTitle"
+""
+1 57 30 E E E 1 E 1 E N "schwarz" E N "_Transparent" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 12 358 36
+0 2 0 "0s" 0 0 0 64 0 0  12 12 1
+2
+LANG:1 84 -*-Arial-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+LANG:0 70 -microsoft windows-arial-medium-r-normal-*-*-160-100-100-*-*-iso8859-1
+0 ""
+2
+LANG:1 35 Elmb Digital Output Operation Panel
+LANG:0 11 DP-Funktion
+30 30
+"Frame1"
+""
+1 10 260 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+23 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 10 170 420 260
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 38 Initialization of Digital Output Lines
+2 31
+"Text2"
+""
+1 20 200 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+24 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 22 202 324 236
+0 2 0 "0s" 0 0 0 192 0 0  22 202 2
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 49 When a hard reset is perfomed to the ELMB, do you
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 47 want the output lines to be set to Low or High?
+2 49
+"txtMessage"
+""
+1 10 410 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+40 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 412 278 438
+0 2 0 "0s" 0 0 0 64 0 0  12 412 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 0 
+1 61 0 "" 0
+0
+1 62 0 "" 1
+0
+1 63 0 "" 2
+0
+1 64 0 "" 3
+0
+1 65 0 "" 4
+0
+1 66 0 "" 5
+0
+1 67 0 "" 6
+0
+1 68 0 "" 7
+0
+1 69 0 "" 8
+0
+2 59
+"lblNodeID"
+""
+1 10 50 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+42 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 52 58 68
+0 2 0 "0s" 0 0 0 64 0 0  12 52 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 8 Node Id:
+2 60
+"txtNodeID"
+""
+1 70 50 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+43 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+// Local Variables
+// ---------------
+	string sDpName = $sDpName;
+	string nodeId;
+	
+// Executable Code
+// ---------------
+	// Remove the config part from the DP name to get the ELMB DP name
+	strreplace(sDpName, fwDevice_HIERARCHY_SEPARATOR + ELMB_DO_CONFIG_NAME, \"\");
+	
+	// Get the node ID
+	dpGet(sDpName + \".id\", nodeId);
+	
+	// Display the text
+	this.text = nodeId;
+	
+	// Return to calling routine
+	return;
+}" 0
+ E 0 1 1 0 1 E U  0 E 72 52 128 68
+0 2 0 "0s" 0 0 0 64 0 0  72 52 1
+1
+LANG:1 87 -*-Arial-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,697,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 0 
+19 32
+"spnLowHigh"
+""
+1 340 190 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+25 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 338 188 408 242
+2
+T 
+1
+LANG:1 3 Low
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 4 High
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+13 45
+"cmdWrite"
+""
+1 358 410 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+36 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 356 408 422 442
+
+T 
+1
+LANG:1 5 Write
+"main()
+{
+// Local Variables
+// ---------------
+	int i;
+	
+	unsigned uState;
+	unsigned uInitHigh = spnLowHigh.number;
+
+	string sElmbDpName = $sDpName;
+
+	dyn_float df;
+
+	dyn_string ds;
+
+
+// Executable Code
+// ---------------
+	// Check if values should be saved to EEPROM
+	ChildPanelOnCentralReturn(\"vision/MessageInfo3\",
+														\"Question\",
+														makeDynString(\"Save these settings to the EEPROM? \\n(i.e. make default settings)\", \"Yes\", \"No\", \"Cancel\"),
+														df, ds);
+
+	// If cancel clicked, do not set configuration
+	if (df[1] == 2)
+		return;
+
+	// Disable necessary controls until configuration set
+	this.enabled = false;
+	cmdRead.enabled = false;
+			
+	// Remove the config part from the DP name to get the ELMB DP name
+	strreplace(sElmbDpName, fwDevice_HIERARCHY_SEPARATOR + ELMB_DO_CONFIG_NAME, \"\");
+	
+	// Get current state of ELMB
+	dpGet(sElmbDpName + \".state.value\", uState);
+
+	// Set ELMB pre-operational	
+	dpSet(sElmbDpName + \".management\", 128);
+
+	txtMessage.text = \"This will take a few seconds. Please wait...\";
+
+	// Set whether digital outputs should be low or high after reset
+	if (uInitHigh != 2) {
+		dpSet($sDpName + \".initHigh.write\", uInitHigh);
+		delay(0,50);
+	}
+
+	// Save values to EEPROM if requested
+	if (df[1] == 1.0) {
+		dpSet(sElmbDpName + \".eeprom.save\", ELMB_SAVE_EEPROM);
+		delay(0, 50);
+	}
+	
+	// Set the ELMB back to it's original state, but only if it was stopped or operational.
+	// Otherwise, leave it as preoperational
+	if ((uState == 0x84) || (uState == 0x04))
+		dpSet(sElmbDpName + \".management\", 2);
+	else if ((uState  == 0x85) || (uState == 0x05))
+		dpSet(sElmbDpName + \".management\", 1);
+		
+	// Indicate success to user
+	txtMessage.text = \"Info: DO configuration set\";
+	
+	// Re-enable controls
+	this.enabled = true;
+	cmdRead.enabled = true;
+
+	// Return to calling routine
+	return;
+}" 0
+ E E E
+13 46
+"cmdRead"
+""
+1 290 410 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+37 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 288 408 354 442
+
+T 
+1
+LANG:1 4 Read
+"main()
+{
+// Local Variables
+// ---------------
+  unsigned uState;
+  unsigned uInitHigh;
+
+  string sElmbName;
+  string sMessage;
+  
+  anytype aValue;
+
+  dyn_string dsExceptionInfo;
+			
+// Executable Code
+// ---------------
+  // Disable certain controls while the read takes place
+  this.enabled = false;
+  cmdWrite.enabled = false;
+
+  // Give some information to the user
+  txtMessage.text = \"Reading Digital Output Settings. Please wait...\";
+  fwOpenProgressBar(\"Reading Digital Output Settings\", \"In progress. Please wait...\", 1);
+
+  // Get the parent (ELMB) that this config comes from
+  fwDevice_getParent($sDpName, sElmbName, dsExceptionInfo);			
+	
+  // Get current state of ELMB
+  dpGet(sElmbName + \".state.value\", uState);
+			
+  // Set node to Pre-Operational:
+  dpSetWait(sElmbName + \".management\", 128);
+
+  // Query the value
+  fwElmb_elementSQ($sDpName + \".initHigh.read\", 2, aValue, dsExceptionInfo);
+  if (dynlen(dsExceptionInfo) == 0) {
+    uInitHigh = aValue;
+    spnLowHigh.enabled = true;
+    switch(uInitHigh) {
+      case 0:
+        spnLowHigh.number = 0;
+        break;
+      case 1:
+        spnLowHigh.number = 1;
+      break;
+    }
+  } else {
+    spnLowHigh.enabled = false;
+  }
+  fwElmbUser_updateFirmwareInfo(sElmbName);
+
+  // Set the ELMB back to it's original state, but only if it was stopped or operational.
+  // Otherwise, leave it as preoperational
+  if ((uState == 0x84) || (uState == 0x04))
+    dpSet(sElmbName + \".management\", 2);
+  else if ((uState  == 0x85) || (uState == 0x05))
+    dpSet(sElmbName + \".management\", 1);
+
+  // Check for errors
+  if (dynlen(dsExceptionInfo) > 0) {
+    fwCloseProgressBar(\"Problems reading DI settings\");
+    txtMessage.text = \"Info: Problems reading DO settings\";
+    fwExceptionHandling_display(dsExceptionInfo);
+  } else {
+    fwCloseProgressBar(\"DO settings successfully read\");
+    txtMessage.text = \"Info: DO settings successfully read\";
+  }
+		
+  // Re-enable controls
+  this.enabled = true;
+  cmdWrite.enabled = true;
+
+  // Return to calling routine
+  return;
+}
+" 0
+ E E E
+13 47
+"cmdClose"
+""
+1 290 450 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+38 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 288 448 422 482
+
+T 
+1
+LANG:1 5 Close
+"main()
+{
+	PanelOff(myPanelName());
+}
+" 0
+ E E E
+1 70 1 "" 0
+0
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+3 0 ""
+"fwElmb\\objects\\fwElmbVersionsRef.pnl" 240 110 T 41 1 0 1 -60 -10
+1
+"$sDpName""$sDpName"
+3 1 "Group3"
+"objects\\fwGeneral\\fwHelpButton.pnl" 394 10 T 44 U 
+1
+"$sPanelRelativePath""fwElmb/fwElmbDoConfigOperation"
+0

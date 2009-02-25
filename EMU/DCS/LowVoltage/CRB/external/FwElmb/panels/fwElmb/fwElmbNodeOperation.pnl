@@ -1,0 +1,988 @@
+V 10
+1
+LANG:1 8 (NoName)
+PANEL,-1 -1 680 678 N "_3DFace" 1
+"$sDpName"
+E "main()
+{
+  int i;
+}" 0
+ E E E 1 -1 -1 0  0 0
+""0  1
+E "void modUpdateValues()
+{
+// Local Variables
+// ---------------
+  bool bUseFormat;
+  
+  int i;
+  int iLines;
+  int iDpeIndex;
+  int iTypeIndex;
+
+  float fValue;
+
+  string sType;
+  string sValue;
+  string sDecPlaces;
+  string sFormat;
+
+  dyn_anytype daLine;
+
+// Executable Code
+// ---------------
+  // Get information from controls
+  bUseFormat = chkFormatValues.state(0);
+  sDecPlaces = spnDecimalPlaces.text;
+  sFormat = \"%.\" + sDecPlaces + \"f\";
+  if (bUseFormat) {
+    lblFormat.text = sDecPlaces;
+  } else {
+    lblFormat.text = \"-1\";
+  }
+  
+  // Update the standard channels
+  iDpeIndex = tabStandardChannels.nameToColumn(\"dpe\") + 1;
+  iTypeIndex = tabStandardChannels.nameToColumn(\"type\") + 1;
+  for (i = 0; i < tabStandardChannels.lineCount(); i++) {
+    daLine = tabStandardChannels.getLineN(i);
+    sType = daLine[iTypeIndex];
+    if (patternMatch(ELMB_AI_CONFIG_NAME + \"*\", sType)) {
+      dpGet(daLine[iDpeIndex], fValue);
+
+      // Get whether a format has been specified
+      if (bUseFormat) {
+        sprintf(sValue, sFormat, fValue);
+        tabStandardChannels.cellValueRC(i, \"value\", sValue);
+      } else {
+        tabStandardChannels.cellValueRC(i, \"value\", fValue);
+      }
+    }
+  }
+
+  // Return to calling routine
+  return;
+}" 0
+ 2
+"CBRef" "0"
+"EClose" "main()
+{
+  int i;
+}" 0
+
+""
+NC
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 0
+"txtTitle"
+""
+1 51 41 E E E 1 E 1 E N "schwarz" E N "_Transparent" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 13 23 308 47
+0 2 0 "0s" 0 0 0 64 0 0  13 23 1
+2
+LANG:1 84 -*-Arial-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+LANG:0 70 -microsoft windows-arial-medium-r-normal-*-*-160-100-100-*-*-iso8859-1
+0 ""
+2
+LANG:1 25 Elmb Node Operation Panel
+LANG:0 11 DP-Funktion
+2 18
+"lblBootupTimeStamp"
+""
+1 106 519 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 108 521 209 537
+0 2 0 "0s" 0 0 0 64 0 0  108 521 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 17 Last bootup time:
+2 19
+"txtBootupTimeStamp"
+""
+1 276 519 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+// Local Variables
+// ---------------
+// None
+
+// Executable Code
+// ---------------
+  // Connect to the DPE
+  dpConnect(\"cbkUpdateBootupMsgTimeStamp\",
+            $sDpName + \".bootup:_online.._stime\");
+
+  // Return to calling routine
+  return;
+}
+
+cbkUpdateBootupMsgTimeStamp(string sDp, time tNewValue)
+{
+// Local Variables
+// ---------------
+  string sTemp;
+	
+// Executable Code
+// ---------------
+  // Format the time to that required
+  sTemp = formatTime(\"%d.%m.%Y %H:%M:%S\", tNewValue, \".%03d\");
+	
+  // Set the value into the display
+  this.text = sTemp;
+  
+  // Return to calling routine
+  return;
+}
+" 0
+ E 0 1 1 0 1 E U  0 E 278 521 484 537
+0 2 0 "0s" 0 0 0 64 0 0  278 521 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 0 
+2 20
+"lblErrorCode"
+""
+1 106 548 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 108 550 344 567
+0 2 0 "0s" 0 0 0 192 0 0  108 550 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 37 Last Emergency Message -> Error code:
+2 21
+"txtSpecificBytes"
+""
+1 374 578 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+21 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+// Local Variables
+// ---------------
+// None
+
+// Executable Code
+// ---------------
+  // Connect to the DPE
+  dpConnect(\"cbkUpdateEmergencyMsgValue\",
+            $sDpName + \".emergency.errorCodeByte1\",
+            $sDpName + \".emergency.errorCodeByte2\",
+            $sDpName + \".emergency.errorCodeByte3\",
+            $sDpName + \".emergency.errorCodeByte4\",
+            $sDpName + \".emergency.errorCodeByte5\");
+
+  // Return to calling routine
+  return;
+}
+
+cbkUpdateEmergencyMsgValue(string sDpByte1, char cNewValueByte1,
+                           string sDpByte2, char cNewValueByte2,
+                           string sDpByte3, char cNewValueByte3,
+                           string sDpByte4, char cNewValueByte4,
+                           string sDpbyte5, char cNewValueByte5)
+{
+// Local Variables
+// ---------------
+  string sEmergencyMsg;
+	
+// Executable Code
+// ---------------
+  // Create the emergency message from the decimal value given
+  sprintf(sEmergencyMsg, \"0x%02x 0x%02x 0x%02x 0x%02x 0x%02x\",
+          cNewValueByte1,
+          cNewValueByte2,
+          cNewValueByte3,
+          cNewValueByte4,
+          cNewValueByte5);
+	
+	// Set the value into the display
+  this.text = sEmergencyMsg;
+  
+  // Return to calling routine
+  return;
+}
+" 0
+ E 0 1 1 0 1 E U  0 E 376 580 556 598
+0 2 0 "0s" 0 0 0 64 0 0  376 580 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 17 00 00 00 00 00 00
+2 22
+"txtEmergencyMsgTimeStamp"
+""
+1 374 606 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+22 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+// Local Variables
+// ---------------
+// None
+
+// Executable Code
+// ---------------
+  // Connect to the DPE
+  dpConnect(\"cbkUpdateEmergencyMsgTimeStamp\",
+            $sDpName + \".emergency:_online.._stime\");
+
+  // Return to calling routine
+  return;
+}
+
+cbkUpdateEmergencyMsgTimeStamp(string sDp, time tNewValue)
+{
+// Local Variables
+// ---------------
+  string sTemp;
+	
+// Executable Code
+// ---------------
+  // Format the time to that required
+  sprintf(sTemp, \"@ %s\", formatTime(\"%d.%m.%Y %H:%M:%S\", tNewValue, \".%03d\"));
+
+  // Set the value into the display
+  this.text = sTemp;
+
+  // Return to calling routine
+  return;
+}
+" 0
+ E 0 1 1 0 1 E U  0 E 376 608 585 628
+0 2 0 "0s" 0 0 0 64 0 0  376 608 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 0 
+2 26
+"lblStatus"
+""
+1 107 490 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+25 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 109 492 210 508
+0 2 0 "0s" 0 0 0 64 0 0  109 492 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 11 ELMB state:
+2 27
+"txtStatus"
+""
+1 276 490 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+26 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+// Local Variables
+// ---------------
+// None
+
+// Executable Code
+// ---------------
+  // Connect to the DPE
+  dpConnect(\"cbkUpdateElmbState\", $sDpName + \".state.value\");
+  
+  // Return to calling routine
+  return;
+}
+
+cbkUpdateElmbState(string sDp, int iNewValue)
+{
+// Local Variables
+// ---------------
+  string sState;
+	
+// Executable Code
+// ---------------
+  // Check the state and set the text
+  if ((iNewValue == 0x84) || (iNewValue == 0x04))
+    sState = \"STOPPED\";
+  else if ((iNewValue  == 0xff) || (iNewValue == 0x7f))
+    sState = \"PREOPERATIONAL\";
+  else if ((iNewValue  == 0x85) || (iNewValue == 0x05))
+    sState = \"OPERATIONAL\";
+  else if (iNewValue  == 0x01)
+    sState = \"DISCON.\";
+  else
+    sState = \"UNKNOWN\";	
+
+  // Set the value into the display
+  this.text = sState;
+ 
+  // Return to calling routine
+  return;
+}" 0
+ E 0 1 1 0 1 E U  0 E 278 492 484 508
+0 2 0 "0s" 0 0 0 64 0 0  278 492 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 0 
+2 30
+"txtNodeID"
+""
+1 25 70 E E E 1 E 1 E N "schwarz" E N "_Transparent" E E
+ E E
+29 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+// Local Variables
+// ---------------
+  string sId;
+
+// Executable Code
+// ---------------
+  // Get the node ID from the relevant DPE
+  dpGet($sDpName + \".id\", sId);
+
+  // Display the value in the text field
+  this.text = \"Node ID: \" + sId;
+
+  // Return to calling routine
+  return;
+}" 0
+ E 0 1 1 0 1 E U  0 E 12 52 128 76
+0 2 0 "0s" 0 0 0 64 0 0  12 52 1
+2
+LANG:1 87 -*-Arial-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,697,0,0,0,0,0,0,0,0,Arial
+LANG:0 70 -microsoft windows-arial-medium-r-normal-*-*-160-100-100-*-*-iso8859-1
+0 ""
+2
+LANG:1 8 Node ID:
+LANG:0 11 DP-Funktion
+30 31
+"frmELMBInfo"
+""
+1 10 590 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+30 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E 1.04928457869634 0 1 -0.4928457869634 40 0 E 10 430 640 590
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 26 ELMB management and states
+2 32
+"txtErrorCode"
+""
+1 374 548 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+30 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+// Local Variables
+// ---------------
+// None
+
+// Executable Code
+// ---------------
+  // Connect to the DPE
+  dpConnect(\"cbkUpdateEmergencyCodeValue\",
+            $sDpName + \".emergency.emergencyErrorCode\");
+
+  // Return to calling routine
+  return;
+}
+
+cbkUpdateEmergencyCodeValue(string sDpByte1, int iNewValueByte1)
+{
+// Local Variables
+// ---------------
+  string sEmergencyMsg;
+	
+// Executable Code
+// ---------------
+  // Create the emergency message from the decimal value given
+  sprintf(sEmergencyMsg, \"0x%04x\", iNewValueByte1 & 0xffff);
+
+  // Set the value into the display
+  this.text = sEmergencyMsg;
+  
+  // Return to calling routine
+  return;
+}
+" 0
+ E 0 1 1 0 1 E U  0 E 376 550 556 568
+0 2 0 "0s" 0 0 0 64 0 0  376 550 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 5 00 00
+2 33
+"lblSpecificBytes"
+""
+1 263 577 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+31 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 265 579 367 596
+0 2 0 "0s" 0 0 0 192 0 0  265 579 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 18 -> Specific bytes:
+30 39
+"frmShowColumns"
+""
+1 470 77 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+33 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 470 10 610 80
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 12 Show Columns
+30 41
+"frmFormatValue"
+""
+1 300 77 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+34 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 300 10 460 80
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 13 Format Values
+2 44
+"lblDecimalPlaces"
+""
+1 310 50 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+37 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 312 52 408 68
+0 2 0 "0s" 0 0 0 64 0 0  312 52 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 15 Decimal Places:
+13 23
+"cmdStart"
+""
+1 16 495 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+23 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 14 493 78 522
+
+T 
+1
+LANG:1 5 Start
+"main()
+{
+// Local Variables
+// ---------------
+// None
+
+// Executable Code
+// ---------------
+  // Set the management item for the ELMB to signal it to start
+  dpSet($sDpName + \".management\", 1);
+  txtStatus.text = \"wait...\";
+
+  // Return to calling routine
+  return;
+}" 0
+ E E E
+13 24
+"cmdStop"
+""
+1 16 525 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+24 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 14 523 78 552
+
+T 
+1
+LANG:1 4 Stop
+"main()
+{
+// Local Variables
+// ---------------
+// None
+
+// Executable Code
+// ---------------
+  // Set the management item for the ELMB to signal it to stop
+  dpSet($sDpName + \".management\", 2);
+  txtStatus.text = \"wait...\";
+
+  // Return to calling routine
+  return;
+}" 0
+ E E E
+13 25
+"cmdReset"
+""
+1 16 555 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+25 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 14 553 78 582
+
+T 
+1
+LANG:1 5 Reset
+"main()
+{
+// Local Variables
+// ---------------
+// None
+
+// Executable Code
+// ---------------
+  // Set the management item for the ELMB to signal it to reset
+  dpSet($sDpName + \".management\", 129);
+  txtStatus.text = \"wait...\";
+
+  // Return to calling routine
+  return;
+}" 0
+ E E E
+13 34
+"cmdClose"
+""
+1 590 640 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+32 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 588 638 672 672
+
+T 
+1
+LANG:1 5 Close
+"main()
+{
+  PanelOff(myPanelName());
+}" 0
+ E E E
+13 35
+"cmdShowMonitorInfo"
+""
+1 20 640 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+32 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 18 638 82 667
+
+T 
+1
+LANG:1 7 Monitor
+"main()
+{
+  ChildPanelOnCentral(\"fwElmb/fwElmbMonitorNodeInformation.pnl\",
+                      \"\",
+                      makeDynString(\"$sDpName:\" + $sDpName));
+}
+" 0
+ E E E
+1 47 0 "" 0
+0
+13 37
+"cmdPreop"
+""
+1 16 585 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+32 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 14 583 78 612
+
+T 
+1
+LANG:1 6 Pre-Op
+"main()
+{
+// Local Variables
+// ---------------
+// None
+
+// Executable Code
+// ---------------
+  // Set the management item for the ELMB to signal it to go Pre-Operational
+  dpSet($sDpName + \".management\", 128);
+  txtStatus.text = \"wait...\";
+
+  // Return to calling routine
+  return;
+}" 0
+ E E E
+20 38
+"chkShowDescription"
+""
+1 480 30 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+32 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 478 28 602 72
+2
+T 
+1
+LANG:1 12 Channel Name
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 7 Comment
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+2
+E E
+E E
+E"main(int button, bool state)
+{
+  switch (button) {
+    case 0:	// Channel name
+      if (state) {
+        tabStandardChannels.namedColumnVisibility(\"channelName\", true);
+        tabSDOChannels.namedColumnVisibility(\"channelName\", true);
+      } else {
+        tabStandardChannels.namedColumnVisibility(\"channelName\", false);
+        tabSDOChannels.namedColumnVisibility(\"channelName\", false);
+      }
+      break;
+    case 1:	// Comment
+      if (state) {
+        tabStandardChannels.namedColumnVisibility(\"comment\", true);
+        tabSDOChannels.namedColumnVisibility(\"comment\", true);
+      } else {
+        tabStandardChannels.namedColumnVisibility(\"comment\", false);
+        tabSDOChannels.namedColumnVisibility(\"comment\", false);
+      }
+      break;
+  }
+}" 0
+20 42
+"chkFormatValues"
+""
+1 310 30 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+35 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 308 28 412 52
+1
+T 
+1
+LANG:1 10 Set Format
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+"main()
+{
+  if (this.state(0)) {
+    lblDecimalPlaces.enabled = true;
+    spnDecimalPlaces.enabled = true;
+  } else {
+    lblDecimalPlaces.enabled = false;
+    spnDecimalPlaces.enabled = false;
+  }
+  modUpdateValues();
+}" 0
+"main(int button, bool state)
+{
+  if (state) {
+    lblDecimalPlaces.enabled = true;
+    spnDecimalPlaces.enabled = true;
+  } else {
+    lblDecimalPlaces.enabled = false;
+    spnDecimalPlaces.enabled = false;
+  }
+  modUpdateValues();
+}" 0
+21 43
+"spnDecimalPlaces"
+""
+1 410 49 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+36 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 408 47 451 74
+0
+
+E
+"main()
+{
+  modUpdateValues();
+}" 0
+
+E
+
+N 0 5 1 2 1 1
+28 46
+"tabChannels"
+""
+1 10 80 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+38 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 8 78 672 462
+E2 "standardChannels" 1
+LANG:1 17 Standard Channels
+1 "fwElmb/objects/fwElmbChannelOperationRef.pnl" 1
+LANG:1 0 
+1
+"$sDpName""$sDpName"
+
+"sdoChannels" 1
+LANG:1 12 SDO Channels
+1 "fwElmb/objects/fwElmbSDOChannelOperationRef.pnl" 1
+LANG:1 0 
+1
+"$sDpName""$sDpName"
+
+
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+3 0 "Group2"
+"objects\\fwGeneral\\fwHelpButton.pnl" 638 10 T 32 1 0 1 -24 0
+1
+"$sPanelRelativePath""fwElmb/fwElmbNodeOperation"
+0

@@ -1,0 +1,835 @@
+V 10
+2
+LANG:1 8 (NoName)
+LANG:5 8 (NoName)
+PANEL,-1 -1 593 420 N "_3DFace" 2
+"$passedPackedString"
+"$sDpName"
+E E E E E 1 -1 -1 0  0 0
+""0  1
+E "void pnlUpdateMaxAllowed()
+{
+// Local Variables
+// ---------------
+	bool bStandardElmb;
+	
+	int i;
+	int iMaxAllowed;
+	int iMax;
+	int iCurrentRequested;
+	int iAvailable;
+	
+	string sMaxAllowed;
+	
+	dyn_string dsAvailableNodeIdList;
+
+// Executable Code
+// ---------------
+	// Check whether standard ELMBs
+	bStandardElmb = chkStandardElmb.state(0);
+	
+	// Set maximum number allowed on bus
+	if (bStandardElmb)
+		iMax = 63;
+	else
+		iMax = 127;
+
+	// Get all available node IDs	
+	fwElmb_getAvailableNodeIdList($sDpName, dsAvailableNodeIdList, bStandardElmb);
+	iAvailable = dynlen(dsAvailableNodeIdList);
+	
+	// Get number of nodes being requested
+	iCurrentRequested = tabDevicesToBeCreated.lineCount;
+	
+	// Calculate number allowed to be created
+	iMaxAllowed = iAvailable - iCurrentRequested;
+	sprintf(sMaxAllowed, \"Max %d\", iMaxAllowed);
+	// Set lines greater than the max allowed to be created to red
+	for (i = 0; (i < tabDevicesToBeCreated.lineCount) && (i < iAvailable); i++) {
+		setValue(\"tabDevicesToBeCreated\", \"cellForeColRC\", i, \"node\", \"black\");
+	}
+	for (i = iAvailable; i < tabDevicesToBeCreated.lineCount; i++) {
+		setValue(\"tabDevicesToBeCreated\", \"cellForeColRC\", i, \"node\", \"red\");
+	}
+	lblRowLimit.text = iAvailable;
+
+	if (iMaxAllowed == 0) {
+		btnAdd.enabled = false;
+		btnAddAll.enabled = false;
+		txtMaxExceeded.visible = false;
+	} else if (iMaxAllowed < 0) {
+		btnAdd.enabled = false;
+		btnAddAll.enabled = false;
+		txtMaxExceeded.visible = true;
+	} else {
+		btnAdd.enabled = true;
+		btnAddAll.enabled = true;
+		txtMaxExceeded.visible = false;
+	}
+	txtMaxAllowed.text = sMaxAllowed;
+
+	// Return to calling routine
+	return;
+}" 0
+ 2
+"CBRef" "0"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 3
+"txtTitle"
+""
+1 10 81 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:5 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 12 202 34
+0 2 0 "0s" 0 0 0 64 0 0  12 12 1
+2
+LANG:1 84 -*-Arial-*-r-normal-*-19-*-100-100-*-*-iso8859-1|-19,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-160-100-100-*-*-iso8859-1|-19,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 21 Devices to be Created
+LANG:5 21 Devices to be Created
+2 5
+"dpTypeTitle"
+""
+1 12 91 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:5 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 14 43 88 59
+0 2 0 "0s" 0 0 0 64 0 0  14 43 1
+2
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 12 Device Type:
+LANG:5 12 Device Type:
+2 45
+"lblDeviceNames"
+""
+1 11 100 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+43 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:5 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 13 102 170 118
+0 2 0 "0s" 0 0 0 64 0 0  13 102 1
+2
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 24 Suggested Device Names  
+LANG:5 25 Suggested Device Labels  
+2 46
+"typeOfDevice"
+""
+1 100 40 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+44 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:5 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+	this.text = ELMB_TYPE_NAME;
+}" 0
+ E 0 1 1 0 1 E U  1 E 102 42 578 59
+0 2 0 "0s" 0 0 0 64 0 0  102 42 1
+2
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 10 deviceType
+LANG:5 10 deviceType
+2 54
+"messageInPanel"
+""
+1 14 416 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+52 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:5 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 16 363 17 382
+0 2 0 "0s" 0 0 0 192 0 0  16 363 1
+2
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-140-100-100-*-*-iso8859-1|-16,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 0 
+LANG:5 0 
+2 60
+"lblDevicesToBeCreated"
+""
+1 338 100 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+57 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:5 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 340 102 468 118
+0 2 0 "0s" 0 0 0 64 0 0  340 102 1
+2
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 24 Devices to be created:  
+LANG:5 24 Devices to be created:  
+2 65
+"txtExplanation"
+""
+1 10 359 E E E 1 E 0 E N {255,0,0} E N "_Transparent" E E
+ E E
+60 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:5 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 361 258 377
+0 2 0 "0s" 0 0 0 64 0 0  12 361 1
+2
+LANG:1 84 -*-Arial-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 49 Names in red already exist and cannot be created 
+LANG:5 25 Suggested Device Labels  
+2 67
+"txtMaxAllowed"
+""
+1 480 100 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+62 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 482 102 578 118
+0 2 0 "0s" 0 0 0 64 0 0  482 102 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 0 
+2 68
+"txtMaxExceeded"
+""
+1 340 360 E E E 1 E 0 E N {255,0,0} E N "_Transparent" E E
+ E E
+63 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:5 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 342 362 581 378
+0 2 0 "0s" 0 0 0 64 0 0  342 362 1
+2
+LANG:1 84 -*-Arial-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 49 Names in red will not be created ( > max allowed)
+LANG:5 25 Suggested Device Labels  
+2 69
+"lblRowLimit"
+""
+1 270 390 E E E 1 E 0 E N "_WindowText" E N "_Transparent" E E
+ E E
+64 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 272 392 368 408
+0 2 0 "0s" 0 0 0 64 0 0  272 392 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 0 
+13 4
+"btnCancel"
+""
+1 500 380 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:5 0 
+
+0
+2
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+ 498 378 582 412
+
+T 
+2
+LANG:1 6 Cancel
+LANG:5 6 Cancel
+"main()
+{	
+	PanelOff();
+}" 0
+ E E E
+13 55
+"btnAddAll"
+""
+1 262 244 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+52 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:5 0 
+
+0
+2
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+ 260 242 334 276
+
+T 
+2
+LANG:1 2 >>
+LANG:5 2 >>
+"main()
+{
+// Local Variables
+// ---------------
+	int i;
+	
+	dyn_int diLinesToRemove;
+	
+	dyn_anytype daLine;
+	
+// Executable Code
+// ---------------
+	// Go through each of the devices
+	for (i = 0; i < tabDeviceNames.lineCount; i++) {
+
+		// Get information from line
+		getValue(\"tabDeviceNames\", \"getLineN\", i, daLine);
+		if (!(daLine[2])) {
+			tabDevicesToBeCreated.appendLine(\"node\", daLine[1]);
+			dynAppend(diLinesToRemove, i);
+		}
+	}
+	
+	// Sort the device names
+	tabDevicesToBeCreated.sort(\"node\");
+	
+	// Remove the added devices
+	for (i = dynlen(diLinesToRemove); i > 0; i--)
+		tabDeviceNames.deleteLineN(diLinesToRemove[i]);
+
+	// Enable button to continue	
+	if (tabDevicesToBeCreated.lineCount > 0)
+		btnNext.enabled = true;
+		
+	pnlUpdateMaxAllowed();
+	
+	// Return to calling routine
+	return;
+}" 0
+ E E E
+13 56
+"btnAdd"
+""
+1 262 164 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+53 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:5 0 
+
+0
+2
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+ 260 162 334 196
+
+T 
+2
+LANG:1 1 >
+LANG:5 1 >
+"main()
+{
+// Local Variables
+// ---------------
+	int i;
+	
+	dyn_int diSelectedLines;
+	
+	dyn_anytype daLine;
+	
+// Executable Code
+// ---------------
+	// Get (and sort) the selected rows
+	diSelectedLines = tabDeviceNames.getSelectedLines;
+	dynSortAsc(diSelectedLines);
+	
+	// Go through each of the selected devices
+	for (i = 1; i <= dynlen(diSelectedLines); i++) {
+
+		// Get information from line
+		getValue(\"tabDeviceNames\", \"getLineN\", diSelectedLines[i], daLine);
+		if (!(daLine[2]))
+			tabDevicesToBeCreated.appendLine(\"node\", daLine[1]);
+	}
+	
+	tabDevicesToBeCreated.sort(\"node\");
+	for (i = dynlen(diSelectedLines); i > 0; i--) {
+		if (!(daLine[2]))
+			tabDeviceNames.deleteLineN(diSelectedLines[i]);
+	}
+
+	// Enable button to continue	
+	if (tabDevicesToBeCreated.lineCount > 0)
+		btnNext.enabled = true;
+		
+	pnlUpdateMaxAllowed();
+	
+	// Return to calling routine
+	return;
+}
+" 0
+ E E E
+13 57
+"btnRemove"
+""
+1 262 204 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+54 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:5 0 
+
+0
+2
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+ 260 202 334 236
+
+T 
+2
+LANG:1 1 <
+LANG:5 1 <
+"main()
+{
+// Local Variables
+// ---------------
+	int i;
+	
+	dyn_int diSelectedLines;
+	
+	dyn_anytype daLine;
+	
+// Executable Code
+// ---------------
+	// Get (and sort) the selected rows
+	diSelectedLines = tabDevicesToBeCreated.getSelectedLines;
+	dynSortAsc(diSelectedLines);
+	
+	// Go through each of the selected devices
+	for (i = 1; i <= dynlen(diSelectedLines); i++) {
+
+		// Get information from line
+		getValue(\"tabDevicesToBeCreated\", \"getLineN\", diSelectedLines[i], daLine);
+		tabDeviceNames.appendLine(\"node\", daLine[1], \"exists\", false);
+	}
+	
+	tabDeviceNames.sort(\"node\");
+	for (i = dynlen(diSelectedLines); i > 0; i--)
+		tabDevicesToBeCreated.deleteLineN(diSelectedLines[i]);
+	
+	// Check if any devices are left
+	if (tabDevicesToBeCreated.lineCount == 0)
+		btnNext.enabled = false;
+		
+	pnlUpdateMaxAllowed();
+
+	// Return to calling routine
+	return;
+}" 0
+ E E E
+13 58
+"btnRemoveAll"
+""
+1 262 284 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+55 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:5 0 
+
+0
+2
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+ 260 282 334 316
+
+T 
+2
+LANG:1 2 <<
+LANG:5 2 <<
+"main()
+{
+// Local Variables
+// ---------------
+	int i;
+	
+	dyn_int diSelectedLines;
+	
+	dyn_anytype daLine;
+	
+// Executable Code
+// ---------------
+	// Go through each of the devices
+	for (i = 0; i < tabDevicesToBeCreated.lineCount; i++) {
+
+		// Get information from line
+		getValue(\"tabDevicesToBeCreated\", \"getLineN\", i, daLine);
+		tabDeviceNames.appendLine(\"node\", daLine[1], \"exists\", false);
+	}
+	
+	tabDeviceNames.sort(\"node\");
+	tabDevicesToBeCreated.deleteAllLines();
+
+	// Disable 'Next' button	
+	btnNext.enabled = false;
+		
+	pnlUpdateMaxAllowed();
+
+	// Return to calling routine
+	return;
+}
+" 0
+ E E E
+13 62
+"btnNext"
+""
+1 400 380 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+58 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:5 0 
+
+0
+2
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+ 398 378 492 412
+
+T 
+2
+LANG:1 6 Next >
+LANG:5 6 Next >
+"main()
+{
+// Local Variables
+// ---------------
+	int i;
+	int iLimit;
+	
+	string sText;
+	
+	dyn_string dsDeviceList;
+	
+	dyn_anytype daLine;
+	
+// Executable Code
+// ---------------
+	// Get information from panel
+	sText = lblRowLimit.text;
+	iLimit = sText;
+	if (iLimit > tabDevicesToBeCreated.lineCount)
+		iLimit = tabDevicesToBeCreated.lineCount;
+		
+	// Get all devices to be created
+	for (i = 0; i < iLimit; i++) {
+		getValue(\"tabDevicesToBeCreated\", \"getLineN\", i, daLine);
+		dynAppend(dsDeviceList, daLine[1]);
+	}
+
+	// Create new module
+	ModuleOn(\"assignIdsModule\", 0,0,600,800, 0,0,\"\");
+	
+	// Display panel
+	RootPanelOnModule(\"fwElmb/objects/fwElmbMassConfigurationAssignIDDeviceBunch.pnl\",
+										\"Assign ELMB IDs for this bus\",
+										\"assignIdsModule\",
+										makeDynString(\"$sDeviceList:\" + dsDeviceList, \"$sDpName:\" + $sDpName, \"$bStandardElmb:\" + chkStandardElmb.state(0)));
+							
+	// Close this module
+	ModuleOff(myModuleName());
+	
+	// Return to calling routine
+	return;
+}" 0
+ E E E
+25 63
+"tabDeviceNames"
+""
+1 13 127 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+58 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 11 125 255 359
+"main()
+{
+// Local Variables
+// ---------------
+	bool bSomeRed = false;
+	
+	int i;
+	
+	dyn_string dsDevices;
+
+// Executable Code
+// ---------------
+	// Set the table mode to allow for multiple selections
+	this.selectByClick = TABLE_SELECT_LINE;
+	this.tableMode = TABLE_SELECT_MULTIPLE;
+	
+	// Unpack string passed
+	fwGeneral_stringToDynString($passedPackedString, dsDevices);
+	
+	// First entry is always an empty string, therefore remove it
+	dynRemove(dsDevices, 1);
+	
+	// Add the names to the list
+	for (i = 1; i <= dynlen(dsDevices); i++) {
+		// Check if device already exists
+		if (dpExists($sDpName + fwDevice_HIERARCHY_SEPARATOR + dsDevices[i])) {
+			bSomeRed = true;
+			this.appendLine(\"node\", dsDevices[i], \"exists\", true);
+			setValue(\"\", \"cellForeColRC\", i - 1, \"node\", \"red\");
+		} else {
+			this.appendLine(\"node\", dsDevices[i], \"exists\", false);
+			setValue(\"\", \"cellForeColRC\", i - 1, \"node\", \"black\");
+		}
+	}
+	
+	if (bSomeRed)
+		txtExplanation.visible = true;	
+	pnlUpdateMaxAllowed();
+	
+	return;
+}" 0
+E 0 0 1 2 1 "node" 19 1 0 "s" 1
+LANG:1 4 node
+E
+1
+LANG:1 0 
+
+220 "exists" 8 0 1 "s" 1
+LANG:1 6 exists
+E
+1
+LANG:1 0 
+
+100 
+16 16 "" 1 1
+LANG:1 2 #1
+8 30
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+0 1 1 0 7
+1 0
+25 64
+"tabDevicesToBeCreated"
+""
+1 310 17 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+59 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 338 125 585 359
+"main()
+{
+// Local Variables
+// ---------------
+// None
+
+// Executable Code
+// ---------------
+	// Set the table mode to allow for multiple selections
+	this.selectByClick = TABLE_SELECT_LINE;
+	this.tableMode = TABLE_SELECT_MULTIPLE;
+	
+	// Return to calling routine
+	return;
+}" 0
+E 0 0 1 1 1 "node" 19 1 0 "s" 1
+LANG:1 4 node
+E
+1
+LANG:1 0 
+
+220 
+16 16 "" 1 1
+LANG:1 2 #1
+8 30
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+0 1 1 0 7
+1 0
+20 66
+"chkStandardElmb"
+""
+1 10 70 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+61 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 8 68 262 92
+1
+T 
+1
+LANG:1 36 Limit Node IDs to 63 (Standard ELMB)
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, bool state)
+{
+	// Call function to update maximum number of nodes allowed
+	pnlUpdateMaxAllowed();
+}" 0
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0

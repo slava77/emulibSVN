@@ -1,0 +1,275 @@
+V 10
+1
+LANG:1 11 viewADItems
+PANEL,258 100 610 391 N "_3DFace" 3
+"$sDpName"
+"$sParentReference"
+"$sTitle"
+EEE E E 1 -1 -1 0  71 79
+"" 0 1
+E"pnlOpenChildPanel()
+{
+// Local Variables
+// ---------------
+	bool bDone;
+	
+	int iLength;
+	int i;
+	
+	string sChild;
+	string sLabel;
+	string sChildDp;
+	string sDpType;
+	string sConfigPanel;
+	
+	dyn_string dsExceptionInfo;
+	dyn_string dsPanelList;
+
+// Executable Code
+// ---------------
+	// Get the selection from the list
+	sChild = lstChildren.selectedText;
+
+	// Split reference to obtain DP name
+	fwGenericDpFunctions_splitReference(sChild,
+																			sLabel,
+																			sChildDp,
+																			dsExceptionInfo);
+
+	// Check the child DP exists
+	if (!dpExists(sChildDp))	{
+		fwException_raise(dsExceptionInfo,
+											\"ERROR\",
+											\"The data point \\\"\" + sChildDp + \"\\\" does not exist\",
+											\"\");
+		fwExceptionHandling_display(dsExceptionInfo);
+		return;
+	} else {
+		// Get the type of the selected child
+		sDpType = dpTypeName(sChildDp);	
+
+		// Get the composite label
+		fwGenericDpFunctions_getLabel($sDpName,
+																	$sParentReference,
+																	sLabel,
+																	dsExceptionInfo);
+																	
+		// Get available panels for this DP
+		fwGenericDpFunctions_getPanelList(sChildDp,
+																			false,
+																			dsPanelList,
+																			dsExceptionInfo);
+		
+		// Loop through all panels, possibly looking for default?!?!
+		iLength = dynlen(dsPanelList);
+		for (i = 1; (i <= iLength) && (!bDone); i++) {
+			if (strpos(dsPanelList[i], sLabel + \"|\") == 0) {
+				fwGenericDpFunctions_splitReference(dsPanelList[i],
+																						sLabel,
+																						sConfigPanel,
+																						dsExceptionInfo);
+				bDone = true;
+			}
+		}
+
+		// Check that panel exists
+		if (getPath(PANELS_REL_PATH, sConfigPanel + \".pnl\") == \"\") {
+			fwException_raise(dsExceptionInfo,
+												\"WARNING\",
+												\"The panel \\\"\" + sConfigPanel +\".pnl\" + \"\\\" could not be found\",
+												\"\");
+			fwExceptionHandling_display(dsExceptionInfo);
+			return;
+		}
+
+		// Check for module being open, and if not, open one
+		if (!isModuleOpen(sConfigPanel + \".pnl\"))
+			ModuleOn(sConfigPanel + \".pnl\", 100, 100, 100, 100, 1, 1, 1, \"\");
+			
+		// Open the required panel
+		RootPanelOnModule(sConfigPanel + \".pnl\",
+											sDpType + \" Operation for \" + sChildDp,
+											sConfigPanel + \".pnl\",
+											makeDynString(\"$sDpName:\" + sChildDp,
+																		\"$sParentReference:\" + sLabel,
+																		\"$bHierarchyBrowser:\" + false));
+	}
+
+	// Return to calling routine
+	return;
+}
+" 0
+ 2
+"CBRef""0"
+"EClose"E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 0
+"txtTitle"
+""
+1 459 79 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+1 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+"main()
+{
+	this.text($sTitle);
+}" 0
+ E 0 1 1 0 1 E U  0 E 12 12 598 36
+0 2 0 "s" 0 0 0 64 0 0  12 12
+ 1
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-180-100-100-*-*-iso8859-1|-21,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 9 ($sTitle)
+17 8
+"lstChildren"
+""
+1 50 160 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E "main()
+{
+// Local Variables
+// ---------------
+// None
+
+// Executable Code
+// ---------------
+	// Call function to open panel selected
+	pnlOpenChildPanel();
+	
+	// Return to calling routine
+	return;
+}" 0
+
+8 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+8 48 442 382
+0
+"main()
+{
+// Local Variables
+// ---------------
+	dyn_errClass deError;
+
+// Executable Code
+// ---------------
+	// Check for DP existing
+	if (dpExists($sDpName)) {
+		// Check for a view and connect to the DP as necessary
+		if (dpTypeName($sDpName) == \"_FwViews\") {
+			dpConnect(\"cbkDisplayChildren\",
+								$sDpName + \".fwReferences.children:_original.._value\");
+		} else {
+			dpConnect(\"cbkDisplayChildren\",
+								$sDpName + \".fwDeclarations.fwReferences.children:_original.._value\");
+		}
+	}
+
+	// Check for any errors
+	deError = getLastError();
+	if (dynlen(deError) > 0)
+		this.color = \"DpDoesNotExist\";
+		
+	// Return to calling routine
+	return;
+}
+
+void cbkDisplayChildren(string argsDp,
+												dyn_string argdsNewValue)
+{
+// Local Variables
+// ---------------
+// None
+
+// Executable Code
+// ---------------
+	// Display the list of children
+	this.items = argdsNewValue;
+	
+	// Return to calling routine
+	return;
+}" 0
+
+E
+E
+
+3 1
+13 9
+"cmdOpenConfigPanel"
+""
+1 1362 563 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+9 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+448 48 602 82
+T 
+1
+LANG:1 17 Open Config Panel
+"main()
+{
+// Local Variables
+// ---------------
+// None
+
+// Executable Code
+// ---------------
+	// Call function to open panel selected
+	pnlOpenChildPanel();
+	
+	// Return to calling routine
+	return;
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0
