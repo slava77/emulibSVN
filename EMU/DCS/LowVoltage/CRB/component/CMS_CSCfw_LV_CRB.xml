@@ -1,0 +1,16 @@
+ <component>
+        <name>CMS_CSCfw_LV_CRB</name>
+        <version>1.0.1</version>
+        <date> 15/03/2007 </date>
+        <config>./config/CMS_CSCfw_LV_CRB.config</config>
+        <dplist>./dplist/CMS_CSCfw_LV_CRB/CMS_CSCfw_LV_CRB.dpl</dplist>
+        <postInstall>./scripts/CMS_CSCfw_LV_CRB/CMS_CSCfw_LV_CRB.postInstall</postInstall>                   
+        <file>./CMS_CSCfw_LV_CRB.xml</file> 
+        <file>./source/CMS_CSCfw_LV_CRB/config/CMS_CSCfw_LV_*.xml</file>
+        <file>./source/CMS_CSCfw_LV_CRB/config/CMS_CSCfw_LV_*.config</file>
+        <file>./panels/CMS_CSCfw_LV_CRB/*.pnl</file>
+        <file>./panels/CMS_CSCfw_LV_CRB/config/*.pnl</file>        
+        <file>./scripts/libs/CMS_CSCfw_LV_CRB/*.ctl</file>
+        <file>./scripts/CMS_CSCfw_LV_CRB/*.*</file>
+        <file>./source/CMS_CSCfw_LV_CRB/special_stuff/*</file>           
+</component>

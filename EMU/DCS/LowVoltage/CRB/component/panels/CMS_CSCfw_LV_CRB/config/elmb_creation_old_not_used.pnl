@@ -1,0 +1,1098 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 424 517 N "_3DFace" 0
+E E E E E 1 -1 -1 0  60 70
+""0  1
+E "string CSC_fwG_g_SYSTEM_NAME=\"dist_151\";
+string CSC_fwG_g_csc_part=\"CMS_CSC_LV_CAN1\";
+string CSC_fwG_g_MainLogicalFsmType=\"CSC_LV_NODES\";
+string CSC_fwG_g_NodeLogicalFsmType=\"EMUTREENodes\";
+
+string EmuCmsGlobalNode, CSC_fwG_EmuCmsGlobalType;
+string CSC_fwG_EmuCmsGlobalCu, CSC_fwG_EmuCmsGlobalParent;
+dyn_string CSC_fwG_g_EMU_ALIASES;
+
+pnlInit(){
+ 
+  
+  return; 
+  
+}
+//=======================================================================
+string mudcsAddSystem(string dp){
+  if(strpos(dp,CSC_fwG_g_SYSTEM_NAME+\":\")>=0)return dp;
+  return CSC_fwG_g_SYSTEM_NAME+\":\"+dp;
+  
+}
+//=======================================================================
+string mudcsRemoveSystem(string dp){
+  int pos;
+  if((pos=strpos(dp,CSC_fwG_g_SYSTEM_NAME+\":\"))< 0)return dp;  
+  dp = substr(dp,strlen(CSC_fwG_g_SYSTEM_NAME+\":\"));
+  return dp;
+}" 0
+ 2
+"CBRef""1"
+"EClose"E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"PUSH_BUTTON1"
+""
+1 60 40 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 58 38 232 92
+
+T 
+1
+LANG:1 18 HW CREATION_SINGLE
+"main()
+{
+string   sUserName,sComment,sPort,sCard, sDpName,sNodeID;
+string   sSensorName,sBusName,sElmbName,sSensorType;
+string   sBus,sElmb;
+
+dyn_string dsExceptionInfo, dsIds, dsDefaultParameters;
+bool bDefaultAddressing;
+int iBusSpeed,iBit;
+
+sUserName=\"LVCB_1\";
+sComment=\"\";
+sPort=\"\";
+iBusSpeed=125000;
+bDefaultAddressing=true;
+    
+  	fwElmbUser_createCANbus(sUserName,
+				sComment,
+				sPort,
+				sCard,
+				iBusSpeed,
+			        bDefaultAddressing,
+			        dsExceptionInfo);
+        
+/*
+PVSS00ui1:2007.02.08 17:17:25.094[\"\"]
+PVSS00ui1:2007.02.08 17:17:25.094[\"0\"]
+PVSS00ui1:2007.02.08 17:17:25.094[\"Kvaser\"]
+PVSS00ui1:2007.02.08 17:17:25.094[125000]
+PVSS00ui1:2007.02.08 17:17:25.094[1]
+*/
+//==============================
+sUserName=\"ELMB_12\";   //???????????
+sComment=\"\";
+sDpName=\"dist_151:ELMB/LVCB_1\";  // ?????
+sNodeID=\"18\";
+bDefaultAddressing=true;
+
+	fwElmbUser_createElmb(sUserName, 
+	                      sComment, 
+	                      sDpName, 
+	                      sNodeID, 
+	                      bDefaultAddressing, 
+	                      dsExceptionInfo);
+
+/*
+PVSS00ui1:2007.02.08 17:22:04.276[\"ELMB_12\"]
+PVSS00ui1:2007.02.08 17:22:04.276[\"\"]
+PVSS00ui1:2007.02.08 17:22:04.276[\"dist_151:ELMB/LVCB_1\"]
+PVSS00ui1:2007.02.08 17:22:04.276[\"18\"]
+PVSS00ui1:2007.02.08 17:22:04.276[1]
+PVSS00ui1:2007.02.08 17:22:04.276[dyn_string 0 items
+PVSS00ui1:]
+*/
+
+
+
+//=====================================
+//==================================
+sSensorName=\"ai_0\"; // ????????
+sBusName=\"LVCB_1\";
+sElmbName=\"ELMB_12\";
+sComment=\"\";
+dsIds=makeDynString(\"0\"); //?????
+sSensorType=\"Raw ADC Value\"; // ????
+dsDefaultParameters==makeDynString();
+bDefaultAddressing=true;
+                
+fwElmbUser_createSensor(sSensorName, 
+			sBusName, 
+			sElmbName,
+			sComment, 
+		        dsIds, 
+			sSensorType,
+			dsDefaultParameters,
+			bDefaultAddressing,
+			dsExceptionInfo);
+														  
+			// Check for any errors
+
+/*
+Creation of three channels (example)
+
+PVSS00ui1:2007.02.08 17:23:24.629[\"LVCB_1\"]
+PVSS00ui1:2007.02.08 17:23:24.629[\"ELMB_12\"]
+PVSS00ui1:2007.02.08 17:23:24.629[\"\"]
+PVSS00ui1:2007.02.08 17:23:24.629[dyn_string 1 items
+PVSS00ui1:     1:\"0\"
+PVSS00ui1:]
+PVSS00ui1:2007.02.08 17:23:24.629[\"Raw ADC Value\"]
+PVSS00ui1:2007.02.08 17:23:24.629[dyn_string 0 items
+PVSS00ui1:]
+PVSS00ui1:2007.02.08 17:23:24.629[1]
+PVSS00ui1:2007.02.08 17:23:26.909[\"LVCB_1\"]
+PVSS00ui1:2007.02.08 17:23:26.909[\"ELMB_12\"]
+PVSS00ui1:2007.02.08 17:23:26.909[\"\"]
+PVSS00ui1:2007.02.08 17:23:26.909[dyn_string 1 items
+PVSS00ui1:     1:\"1\"
+PVSS00ui1:]
+PVSS00ui1:2007.02.08 17:23:26.909[\"Raw ADC Value\"]
+PVSS00ui1:2007.02.08 17:23:26.909[dyn_string 0 items
+PVSS00ui1:]
+PVSS00ui1:2007.02.08 17:23:26.909[1]
+PVSS00ui1:2007.02.08 17:23:27.237[\"LVCB_1\"]
+PVSS00ui1:2007.02.08 17:23:27.237[\"ELMB_12\"]
+PVSS00ui1:2007.02.08 17:23:27.237[\"\"]
+PVSS00ui1:2007.02.08 17:23:27.237[dyn_string 1 items
+PVSS00ui1:     1:\"2\"
+PVSS00ui1:]
+PVSS00ui1:2007.02.08 17:23:27.237[\"Raw ADC Value\"]
+PVSS00ui1:2007.02.08 17:23:27.237[dyn_string 0 items
+PVSS00ui1:]
+PVSS00ui1:2007.02.08 17:23:27.237[1]
+*/
+
+//===============================================
+sBus=\"LVCB_1\";
+sElmb=\"ELMB_12\";
+sComment=\"\";
+sPort=\"C\";
+iBit=0;
+bDefaultAddressing=true;
+
+	fwElmbUser_createDigital(	
+                                  sBus, 
+                                  sElmb,
+				  sComment,
+				  sPort,
+                                  iBit,   // integer
+			          false, 
+          		          bDefaultAddressing, // bool 
+                                  dsExceptionInfo); 
+
+/*																
+				// Check for success or error
+PVSS00ui1:2007.02.08 17:28:36.280[\"LVCB_1\"]
+PVSS00ui1:2007.02.08 17:28:36.280[\"ELMB_12\"]
+PVSS00ui1:2007.02.08 17:28:36.280[\"\"]
+PVSS00ui1:2007.02.08 17:28:36.280[\"C\"]
+PVSS00ui1:2007.02.08 17:28:36.280[0]
+PVSS00ui1:2007.02.08 17:28:36.280[false]
+PVSS00ui1:2007.02.08 17:28:36.280[1]
+
+PVSS00ui1:2007.02.08 17:28:37.077[\"LVCB_1\"]
+PVSS00ui1:2007.02.08 17:28:37.077[\"ELMB_12\"]
+PVSS00ui1:2007.02.08 17:28:37.077[\"\"]
+PVSS00ui1:2007.02.08 17:28:37.077[\"C\"]
+PVSS00ui1:2007.02.08 17:28:37.077[1]
+PVSS00ui1:2007.02.08 17:28:37.077[false]
+PVSS00ui1:2007.02.08 17:28:37.077[1]
+*/
+
+}
+
+
+/*
+Start of the can bus
+
+	string sDpe = \".management\";
+
+// Executable Code
+// ---------------
+	// Action the command
+	dpSet($sDpName + sDpe, iAction);
+  
+*/" 0
+ E E E
+13 1
+"PUSH_BUTTON2"
+""
+1 60 100 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 58 98 232 152
+
+T 
+1
+LANG:1 15 HW CREATION_ALL
+"main()
+{
+string   sUserName,sComment,sPort,sCard, sDpName,sNodeID;
+string   sSensorName,sBusName,sElmbName,sSensorType;
+string   sBus,sElmb;
+
+dyn_string dsExceptionInfo, dsIds, dsDefaultParameters;
+bool bDefaultAddressing;
+int iBusSpeed,iBit;
+
+  
+
+int iE, iA, iD;
+string sxE, siA, siD;
+//==== DEFINITIONS================================================
+
+string sCanBusDef=\"LVCB_1\";
+int iNumberElmb=2;
+int iNumberAi=10;
+int iNumberDCo=8; 
+int iNumberDAo=2;
+
+
+//======================================================
+sUserName=sCanBusDef;
+sComment=\"\";
+sPort=\"\";
+iBusSpeed=125000;
+bDefaultAddressing=true;
+    
+  	fwElmbUser_createCANbus(sUserName, sComment, sPort, sCard, iBusSpeed,
+			        bDefaultAddressing, dsExceptionInfo);
+        
+
+//==============================
+  for(iE=17;iE<17+iNumberElmb;iE++){
+//iE=18;
+        
+sprintf(sxE,\"%x\",iE);
+                    
+sUserName=\"ELMB_\"+sxE;  
+sComment=\"\";
+sDpName=g_SYSTEM_NAME+\"ELMB/LVCB_1\";  // ?????????????????
+sNodeID=iE;
+bDefaultAddressing=true;
+ 
+	fwElmbUser_createElmb(sUserName, sComment, sDpName, sNodeID, 
+	                      bDefaultAddressing, dsExceptionInfo);
+
+//=====================================
+//==================================
+
+        for(iA=0;iA<iNumberAi;iA++){     
+               
+ sprintf(siA,\"%d\",iA);           
+sSensorName=\"ai_\"+siA; 
+sBusName=sCanBusDef;
+sElmbName=\"ELMB_\"+sxE;
+sComment=\"\";
+dsIds=makeDynString(siA);
+sSensorType=\"Raw ADC Value\"; // ?????????????????
+dsDefaultParameters==makeDynString();
+bDefaultAddressing=true;
+                
+fwElmbUser_createSensor(sSensorName, sBusName, sElmbName, sComment, dsIds, sSensorType,
+			dsDefaultParameters, bDefaultAddressing, dsExceptionInfo);
+														  
+			// Check for any errors
+        } // for iA
+//===============================================
+        
+         for(iD=0;iD<iNumberDCo;iD++){           
+         sprintf(siD,\"%d\",iD); 
+        
+sBus=sCanBusDef;
+sElmb=\"ELMB_\"+sxE;
+sComment=\"\";
+sPort=\"C\";
+iBit=iD;
+bDefaultAddressing=true;
+
+	fwElmbUser_createDigital(sBus, sElmb, sComment, sPort, iBit,
+			          false, bDefaultAddressing, dsExceptionInfo); 
+         } // for iD
+//==========================================
+                  
+         for(iD=0;iD<iNumberDAo;iD++){           
+         sprintf(siD,\"%d\",iD); 
+        
+sBus=sCanBusDef;
+sElmb=\"ELMB_\"+sxE;
+sComment=\"\";
+sPort=\"A\";
+iBit=iD;
+bDefaultAddressing=true;
+
+	fwElmbUser_createDigital(sBus, sElmb, sComment, sPort, iBit,
+			          false, bDefaultAddressing, dsExceptionInfo); 
+         } // for iD         
+         
+         
+   } // for(iE=1;iE<=60;iE++)
+//===============================================
+        
+
+
+
+}
+
+
+/*
+Start of the can bus
+
+	string sDpe = \".management\";
+
+// Executable Code
+// ---------------
+	// Action the command
+	dpSet($sDpName + sDpe, iAction);
+  
+*/" 0
+ E E E
+13 2
+"PUSH_BUTTON3"
+""
+1 60 280 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 58 278 232 342
+
+T 
+1
+LANG:1 11 DB CREATION
+"main(){
+int i;
+
+
+pnlInit();
+create_pcmb_database_type();
+dpCreate(\"db_pcmb\",\"Db_PCMB\");
+fill_pcmb_database();
+
+
+}
+//============================
+
+create_pcmb_database_type()
+{
+string dtype;
+dyn_dyn_string xxdepes;
+dyn_dyn_int xxdepei;
+
+dtype=\"Db_PCMB\";
+
+xxdepes[1] = makeDynString (dtype,\"\");
+xxdepes[2] = makeDynString (\"\",\"list\");
+
+xxdepei[1]=makeDynInt (DPEL_STRUCT);
+xxdepei[2]=makeDynInt (0,DPEL_DYN_STRING);
+
+dpTypeCreate(xxdepes,xxdepei);
+}
+//============================
+fill_pcmb_database(){
+
+  dyn_string db;
+  
+dynAppend(db,\"M4_PC1;\");
+dynAppend(db,\"M4_PC2;\");
+dynAppend(db,\"M4_PC3;\");
+dynAppend(db,\"M4_PC4;\");
+dynAppend(db,\"M4_PC5;\");
+dynAppend(db,\"M4_PC6;\");
+
+dynAppend(db,\"M3_PC1;\");
+dynAppend(db,\"M3_PC2;\");
+dynAppend(db,\"M3_PC3;3F\");
+dynAppend(db,\"M3_PC4;\");
+dynAppend(db,\"M3_PC5;\");
+dynAppend(db,\"M4_PC6;\");
+
+dynAppend(db,\"M2_PC1;\");
+dynAppend(db,\"M2_PC2;\");
+dynAppend(db,\"M2_PC3;3E\");
+dynAppend(db,\"M2_PC4;\");
+dynAppend(db,\"M2_PC5;\");
+dynAppend(db,\"M2_PC6;\");
+
+dynAppend(db,\"M1_PC1A;\");
+dynAppend(db,\"M1_PC1B;\");
+dynAppend(db,\"M1_PC2A;\");
+dynAppend(db,\"M1_PC2B;\");
+dynAppend(db,\"M1_PC3A;\");
+dynAppend(db,\"M1_PC3B;\");
+dynAppend(db,\"M1_PC4A;\");
+dynAppend(db,\"M1_PC4B;\");
+dynAppend(db,\"M1_PC5A;\");
+dynAppend(db,\"M1_PC5B;\");
+dynAppend(db,\"M1_PC6A;\");
+dynAppend(db,\"M1_PC6B;\");
+
+dynAppend(db,\"P1_PC1A;\");
+dynAppend(db,\"P1_PC1B;\");
+dynAppend(db,\"P1_PC2A;\");
+dynAppend(db,\"P1_PC2B;\");
+dynAppend(db,\"P1_PC3A;\");
+dynAppend(db,\"P1_PC3B;\");
+dynAppend(db,\"P1_PC4A;\");
+dynAppend(db,\"P1_PC4B;\");
+dynAppend(db,\"P1_PC5A;\");
+dynAppend(db,\"P1_PC5B;\");
+dynAppend(db,\"P1_PC6A;\");
+dynAppend(db,\"P1_PC6B;\");
+
+dynAppend(db,\"P2_PC1;\");
+dynAppend(db,\"P2_PC2;\");
+dynAppend(db,\"P2_PC3;\");
+dynAppend(db,\"P2_PC4;\");
+dynAppend(db,\"P2_PC5;\");
+dynAppend(db,\"P2_PC6;\");
+
+
+dynAppend(db,\"P3_PC1;\");
+dynAppend(db,\"P3_PC2;\");
+dynAppend(db,\"P3_PC3;\");
+dynAppend(db,\"P3_PC4;\");
+dynAppend(db,\"P3_PC5;\");
+dynAppend(db,\"P3_PC6;\");
+
+
+dynAppend(db,\"P4_PC1;\");
+dynAppend(db,\"P4_PC2;\");
+dynAppend(db,\"P4_PC3;\");
+dynAppend(db,\"P4_PC4;\");
+dynAppend(db,\"P4_PC5;\");
+dynAppend(db,\"P4_PC6;\");
+
+dpSetWait(\"db_pcmb.list\",db);
+  
+  
+}
+//============================" 0
+ E E E
+13 3
+"PUSH_BUTTON4"
+""
+1 240 280 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 238 278 352 342
+
+T 
+1
+LANG:1 11 DB DELETION
+"main(){
+int i;
+
+
+pnlInit();
+dpDelete(\"db_pcmb\");
+dpTypeDelete(\"Db_PCMB\");
+
+}
+//============================
+" 0
+ E E E
+13 4
+"PUSH_BUTTON5"
+""
+1 60 350 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 58 348 232 412
+
+T 
+1
+LANG:1 20 LOGICAL
+FSM
+CREATION
+"main()
+{
+  int iStationCross, iStation;
+ int cu_flag;  
+  pnlInit();
+
+//================================================================  
+
+  if(!dpExists(\"EMUALIASES.\")){
+   dpCreate(\"EMUALIASES\",\"MUDCS_DYN_STRING\");     
+  }
+
+   
+//======== main node creation (CMS_CSC_LV_CAN1) ==================  
+
+EmuCmsGlobalNode=CSC_fwG_g_csc_part;
+CSC_fwG_EmuCmsGlobalType= CSC_fwG_g_MainLogicalFsmType;//\"TEST_TYPE\";
+CSC_fwG_EmuCmsGlobalCu=\"1\";cu_flag = 1;
+CSC_fwG_EmuCmsGlobalParent=\"FSM\";
+ 
+ mudcs_addLogical(false, \"\", EmuCmsGlobalNode, CSC_fwG_EmuCmsGlobalType,
+ \"emu_config/emuEmuConfig\", \"emu/emuEmuOperation\");
+ 
+ mudcs_addNode();
+//=====================================================================
+//===========================================
+ 
+ for(iStationCross=1;iStationCross<=8;iStationCross++){ 
+  mudcsCreatePC(iStationCross, CSC_fwG_g_csc_part);
+ } // for iStationCross
+ //=====================================
+ 
+ dpSet(\"EMUALIASES.\", CSC_fwG_g_EMU_ALIASES);
+ 
+ DebugTN(\"TREE IS DONE\");
+  DebugTN(\"TREE IS DONE\");
+   DebugTN(\"TREE IS DONE\");
+    DebugTN(\"TREE IS DONE\");
+     DebugTN(\"TREE IS DONE\");
+      DebugTN(\"TREE IS DONE\");
+       DebugTN(\"TREE IS DONE\"); 
+//====================================================================== 
+}
+//====================================================================
+//mudcsCreatePC(int CreateLevel, int isAppendToFilledStation, int idisk, int idisk_cross, 
+//              string emu_system_side, string station_parent_node)
+mudcsCreatePC(int iStationCross, string system_parent_node)
+{
+  int iStation;
+string emu_system_side;  
+dyn_string list, ds1, ds2, ds3 ,ds4, ds5;
+int i,j;
+string sTemplate, sTemplate2;
+//---------------------------------------
+string parent_domain;
+string Node_save;
+int cu_flag;
+string parent_node, parent_node_2;
+
+  dpGet(mudcsAddSystem(\"db_pcmb.list\"),list);
+
+//---------------------
+parent_domain=system_parent_node;
+
+CSC_fwG_EmuCmsGlobalType=CSC_fwG_g_NodeLogicalFsmType;
+//mudcsNameCompose(\"LV_CRB\", station_label, emu_system_side, idisk, \"\", \"\", EmuCmsGlobalNode);
+mudcsGetStationInforByCrossNumber(iStationCross, iStation, emu_system_side);
+EmuCmsGlobalNode=\"CSC_ME_\"+emu_system_side+iStation+\"_LV_CRB\";
+
+ parent_node=EmuCmsGlobalNode;
+//EmuCmsGlobalNode=\"CSC\"+station_label+emu_system_side+idisk+\"PC\";
+CSC_fwG_EmuCmsGlobalCu=\"0\";cu_flag = 0; // logical unit
+CSC_fwG_EmuCmsGlobalParent=parent_domain;
+
+ mudcs_addLogical(false, CSC_fwG_g_csc_part, 
+ EmuCmsGlobalNode, CSC_fwG_EmuCmsGlobalType,
+ \"emu_config/emuPCConfig\", \"emu/emuPCOperation\");
+ 
+mudcs_addNode();
+
+DebugTN(EmuCmsGlobalNode+\" \"+CSC_fwG_EmuCmsGlobalParent);
+
+//----------------------
+parent_domain=parent_node;  
+
+sTemplate=emu_system_side+iStation+\"_\";
+
+
+ for(i=1;i<=dynlen(list);i++){
+//DebugTN(\"=====\"+list[i]+\" \"+sTemplate);
+
+  if(strpos(list[i],sTemplate) < 0)continue; 
+  ds1=strsplit(list[i],\";\"); 
+  if(dynlen(ds1) < 2 || ds1[2] == \"\")continue;
+  
+ CSC_fwG_EmuCmsGlobalType=CSC_fwG_g_NodeLogicalFsmType;
+ EmuCmsGlobalNode=\"CSC_ME_\"+ds1[1]+\"_LV_CRB\";
+
+ parent_node_2=EmuCmsGlobalNode;
+// mudcsNameCompose(CSC_fwG_EmuCmsGlobalType, station_label, emu_system_side, idisk, \"\", i, EmuCmsGlobalNode);
+// EmuCmsGlobalNode= \"CSC\"+station_label+emu_system_side+idisk+\"p\"+i+\"CRB_1\"; 
+
+ CSC_fwG_EmuCmsGlobalCu=\"0\";cu_flag = 0;
+ CSC_fwG_EmuCmsGlobalParent=parent_domain;
+
+ mudcs_addLogical(false, system_parent_node+\"/\"+parent_domain, 
+ EmuCmsGlobalNode, CSC_fwG_EmuCmsGlobalType,
+ \"emu_config/emuDevCRB_1Config\", \"emu/emuDevCRB_1Operation\");
+
+ mudcs_addNode();
+
+DebugTN(\"=====\"+EmuCmsGlobalNode+\" \"+CSC_fwG_EmuCmsGlobalParent);
+  
+//===========ADD DEVICES=============
+ 
+ ds2=dpNames(\"*ELMB_\"+ds1[2]+\"*\", \"FwElmbAi\");
+
+//----------------------
+
+ parent_domain=parent_node_2; 
+ 
+ for(j=1;j<=dynlen(ds2);j++){
+
+ ds4=strsplit(ds2[j],\"/\");
+ sTemplate2=ds4[dynlen(ds4)];
+       
+ CSC_fwG_EmuCmsGlobalType=\"FwElmbAi\";
+// mudcsNameCompose(CSC_fwG_EmuCmsGlobalType, station_label, emu_system_side, idisk, \"\", i, EmuCmsGlobalNode);
+// EmuCmsGlobalNode= \"CSC\"+station_label+emu_system_side+idisk+\"p\"+i+\"CRB_1\"; 
+ Node_save=EmuCmsGlobalNode;
+ CSC_fwG_EmuCmsGlobalCu=\"0\";cu_flag = 0;
+ CSC_fwG_EmuCmsGlobalParent=parent_domain;
+
+ EmuCmsGlobalNode=ds2[j];
+
+ mudcs_addLogical(true, system_parent_node+\"/\"+parent_node+\"/\"+parent_node_2, 
+ /*Node_save*/ds2[j], CSC_fwG_EmuCmsGlobalType,
+ \"emu_config/emuDevCRB_1Config\", \"emu/emuDevCRB_1Operation\");
+
+ mudcs_addNode();
+} // for j
+//-------------------
+
+ ds2=dpNames(\"*ELMB_\"+ds1[2]+\"*\", \"FwElmbDo\");
+    
+ for(j=1;j<=dynlen(ds2);j++){
+
+ ds4=strsplit(ds2[j],\"/\");
+ sTemplate2=ds4[dynlen(ds4)];
+       
+ CSC_fwG_EmuCmsGlobalType=\"FwElmbDo\";
+// mudcsNameCompose(CSC_fwG_EmuCmsGlobalType, station_label, emu_system_side, idisk, \"\", i, EmuCmsGlobalNode);
+// EmuCmsGlobalNode= \"CSC\"+station_label+emu_system_side+idisk+\"p\"+i+\"CRB_1\"; 
+ Node_save=EmuCmsGlobalNode;
+ CSC_fwG_EmuCmsGlobalCu=\"0\";cu_flag = 0;
+ CSC_fwG_EmuCmsGlobalParent=parent_domain;
+
+ EmuCmsGlobalNode=ds2[j];
+
+ mudcs_addLogical(true, system_parent_node+\"/\"+parent_node+\"/\"+parent_node_2, 
+ /*Node_save*/ds2[j], CSC_fwG_EmuCmsGlobalType,
+ \"emu_config/emuDevCRB_1Config\", \"emu/emuDevCRB_1Operation\");
+
+ mudcs_addNode();
+} // for j
+  
+ 
+//===================================
+ } // for i
+//--------------------
+
+
+}
+
+//====================================================================
+mudcsGetStationInforByCrossNumber(int iStationCross, int &iStation, string &emu_system_side){
+
+if(iStationCross<=4){iStation=5-iStationCross;emu_system_side=\"M\";}
+else {iStation=iStationCross-4;emu_system_side=\"P\";}
+
+}
+
+//============================================================================
+mudcs_addNode(){
+
+ int cu_flag;
+ if(CSC_fwG_EmuCmsGlobalCu==\"0\")cu_flag=0;
+ else cu_flag=1;
+ fwFsmTree_addNode(CSC_fwG_EmuCmsGlobalParent,EmuCmsGlobalNode,CSC_fwG_EmuCmsGlobalType,cu_flag);
+// DebugTN(\"+++\"+CSC_fwG_EmuCmsGlobalParent+\">>>\"+EmuCmsGlobalNode+\">>>\"+CSC_fwG_EmuCmsGlobalType+\">>\"+cu_flag);
+ 
+// fwFsmTree_generateTreeNode(EmuCmsGlobalNode);
+ return;
+}
+
+//====================================================
+mudcs_addLogical(bool isDevice,  string parent, string node, string deviceType,
+string config_panel, string op_panel){
+
+dyn_string exceptionInfo;
+string generalDeviceType;
+
+ if(!isDevice){
+	createNode(parent,node,config_panel,op_panel,exceptionInfo);
+	if(dynlen(exceptionInfo) > 0)
+		fwExceptionHandling_display(exceptionInfo);
+ }
+ else{
+
+  dyn_string deviceObject,ds, ds1;
+  string dpAlias, node_leaf;
+  dpAlias=parent;
+
+node=mudcsRemoveSystem(node);  
+
+
+ds1=strsplit(node,fwDevice_HIERARCHY_SEPARATOR);  
+node_leaf=ds1[dynlen(ds1)];
+
+ds=makeDynString(mudcsAddSystem(node)+\" | | | | | \"+node);
+
+
+  for(int i = 1; i <= dynlen(ds); i++){
+  	fwGeneral_stringToDynString(ds[i], deviceObject);
+//dpSetAlias(deviceObject[fwDevice_DP_NAME] + \".\", dpAlias + fwDevice_HIERARCHY_SEPARATOR + deviceObject[fwDevice_ALIAS]);
+dpSetAlias(deviceObject[fwDevice_DP_NAME] + \".\", dpAlias + fwDevice_HIERARCHY_SEPARATOR + node_leaf);
+  DebugTN(deviceObject[fwDevice_DP_NAME] + \".\"+\"===========\"+ dpAlias + fwDevice_HIERARCHY_SEPARATOR + node_leaf);    
+  
+/*        
+        dynAppend(CSC_fwG_g_EMU_ALIASES, deviceObject[fwDevice_DP_NAME] + \".\"
+             +\"#\"+
+              dpAlias + fwDevice_HIERARCHY_SEPARATOR + deviceObject[fwDevice_ALIAS]);  
+*/
+  
+        dynAppend(CSC_fwG_g_EMU_ALIASES, deviceObject[fwDevice_DP_NAME] + \".\"
+             +\"#\"+
+              dpAlias + fwDevice_HIERARCHY_SEPARATOR + node_leaf);  
+     
+  } // for i
+ } // else
+
+
+}
+//====================================================
+//=============================================================================================================
+
+createNode(string sDpName, string nodeNameText, string config_panel, string op_panel, dyn_string exceptionInfo)
+{ 
+
+
+
+// my_corr:
+//  new params of createNode:sDpName, nodeNameText, op_panel, config_panel
+//  $sDpName --> sDpName
+//  see my_corr above and below  
+//  nodeNameText.text() --> nodeNameText
+// navigatorPanelText.text() --> op_panel 
+// editotPanelText.text()  --> config_panel
+
+	string name, type, alias;
+//	dyn_string exceptionInfo;
+	dyn_errClass err;		
+						
+	if (sDpName == \"\")
+	{
+		name = nodeNameText;
+		alias = nodeNameText;
+		type = fwNode_TYPE_LOGICAL_ROOT;
+	}
+	else
+	{
+		name = sDpName + fwDevice_HIERARCHY_SEPARATOR + nodeNameText;
+		alias = dpGetAlias(sDpName + \".\") + fwDevice_HIERARCHY_SEPARATOR + nodeNameText;
+		type = fwNode_TYPE_LOGICAL;	
+	}
+
+	fwDevice_create(makeDynString(nodeNameText, \"FwNode\", \"\", \"\"),
+					makeDynString(sDpName, \"\"),
+					exceptionInfo);		
+
+//////mudcsDebug(name);
+	
+	if(dynlen(exceptionInfo) > 0)
+		return;
+	 
+
+	
+	dpSet(mudcsAddSystem(name + \".type\"), type);
+	dpSet(mudcsAddSystem(name + \".dpTypes\"), makeDynString());
+	dpSet(mudcsAddSystem(name + \".navigatorPanels\"), makeDynString(op_panel));
+	dpSet(mudcsAddSystem(name + \".editorPanels\"), makeDynString(config_panel));
+	
+	dpSetAlias(name + \".\", alias);
+ 
+ 	//test whether there were errors
+	err = getLastError(); 
+ 	if(dynlen(err) > 0)
+ 	{
+ 		dpDelete(name);
+ 		fwException_raise(	exceptionInfo,
+ 							\"ERROR\",
+ 							\"Could not create the logical node\",
+ 							\"\");
+		return;
+ 	}
+
+
+}
+
+//=============================
+
+
+//========== ?????????????????????????????
+// to define globals, to create dp for mudcsalias (just in case)
+//===========" 0
+ E E E
+13 5
+"PUSH_BUTTON6"
+""
+1 60 420 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 58 418 232 482
+
+T 
+1
+LANG:1 14 SET
+FSM PANELS
+"main()
+{
+  pnlInit();
+  fwFsmTree_addNode(\"CSC_ME_M3_LV_CRB\",\"CSC_ME_M3_PC3_LV_CRB\",\"EMUTREENodes\",0);
+}" 0
+ E E E
+2 6
+"PRIMITIVE_TEXT1"
+""
+1 60 170 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 60 170 400 184
+0 2 2 "0s" 0 0 0 192 0 0  60 170 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 70 Do not forget to creat/configure ELMB FSM device types: FwElmbAi, ... 
+2 8
+"PRIMITIVE_TEXT3"
+""
+1 60 200 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 60 190 312 204
+0 2 2 "0s" 0 0 0 192 0 0  60 190 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 51 Not forget to import FSM Domain types from pvss_fsm
+13 9
+"PUSH_BUTTON7"
+""
+1 240 350 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 238 348 352 412
+
+T 
+1
+LANG:1 17 FSM TREE
+DELETION
+"main(){
+int i;
+
+pnlInit();
+mudcsDeleteAllTrees();
+}
+//============================
+mudcsDeleteAllTrees()
+{
+
+int i;
+//int cu_flag;
+
+system(\"rm scripts/libs/*'$install'\");
+
+//CSC_fwG_EmuCmsSpecialMode=1;
+
+EmuCmsGlobalNode=CSC_fwG_g_csc_part;
+//CSC_fwG_EmuCmsGlobalType=\"MainNode\";
+//CSC_fwG_EmuCmsGlobalCu=\"1\";cu_flag = 1;
+CSC_fwG_EmuCmsGlobalParent=\"FSM\";
+
+//onSelectSimulation(1,1,EmuCmsGlobalNode,CSC_fwG_EmuCmsGlobalType,cu_flag);
+
+////////mudcsDebug2(\"\"+CSC_fwG_EmuCmsSpecialMode);
+
+mudcs_removeNode();
+
+//-----------------------------------------------------------------
+// 10/01/2004: see doc: this is because some dpoint may remain in the tree that prevents the following tree creation
+dyn_string fwTN_names=dpNames(\"*\",\"_FwTreeNode\");
+for(i=1;i<=dynlen(fwTN_names);i++){
+  if(strpos(fwTN_names[i],\"TrendTree\")>=0)continue;
+  if(strpos(fwTN_names[i],\"FSM\")>=0)continue;  
+dpDelete(fwTN_names[i]);
+}
+
+
+
+//-------  deleting logical tree ----------------------------------
+
+//----------------------------------------------------------------
+
+
+dpSet(mudcsAddSystem(\"EMUALIASES.\"),makeDynString()); // deleting dp wher aliase are stored
+
+//CSC_fwG_EmuCmsSpecialMode=0;
+
+}
+
+//=========================================================================
+
+
+//=========================================================================
+
+mudcs_removeNode(){
+
+
+ fwFsmTree_removeNode(CSC_fwG_EmuCmsGlobalParent,EmuCmsGlobalNode,1);
+ return;
+
+}
+//=========================================================================
+" 0
+ E E E
+13 10
+"PUSH_BUTTON8"
+""
+1 280 50 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+13 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 278 48 332 82
+
+T 
+1
+LANG:1 5 test
+
+"main()
+{
+  dyn_string dps, ali;
+
+int i;
+
+i = dpGetAllAliases(dps, ali);
+
+DebugN(i);
+
+DebugN(dps, ali); // Output
+
+return;
+  
+
+//=================================
+    if(!dpExists(\"EMUALIASES.\")) {
+//      return;
+     dpCreate(\"EMUALIASES\",\"MUDCS_DYN_STRING\");     
+    }
+
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
