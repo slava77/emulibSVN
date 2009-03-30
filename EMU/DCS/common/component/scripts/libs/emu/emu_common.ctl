@@ -57,6 +57,7 @@ void emu_error(dyn_string error, bool terminateManager = false) {
     backtrace += "trace [" + i + "]: " + g_emu_debugBacktrace[i] + '\n';
     DebugTN("trace [" + i + "]: " + g_emu_debugBacktrace[i]);
   }
+  //TODO figure out somehow if it's running on a CTRL manager or a UI manager (if it's not on UI - do not show the dialog box).
   dynAppend(exInfoForGraphics, backtrace);
   dynAppend(exInfoForGraphics, "");
   fwExceptionHandling_display(exInfoForGraphics);
