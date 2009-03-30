@@ -17,7 +17,7 @@ void emucdb_initialize() {
   dyn_string exceptionInfo;
   time t0;
   
-  if (rdbIsConnectionValid(g_emucdb_dbConn) == 0) { return; }
+  if (rdbIsConnectionValid(g_emucdb_dbConn) == 1) { return; }
 
   emu_debugFuncStart("emucdb_initialize", t0);
  
