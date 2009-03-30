@@ -17,8 +17,10 @@ void emucdb_initialize() {
   dyn_string exceptionInfo;
   time t0;
   
+  if (rdbIsConnectionValid(g_emucdb_dbConn) == 0) { return; }
+
   emu_debugFuncStart("emucdb_initialize", t0);
-  
+ 
   // reset the connection manager - terminate all connections that are still present
   rdbOption("Reset",0);
   
