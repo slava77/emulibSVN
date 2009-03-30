@@ -28,7 +28,9 @@ void emu_errorSingle(string msg) {
 }
 
 
-/** Register an EMU error.
+/** Register an EMU error. 
+    Appends EMU initials, skips identical consecutive errors (happens often when the same exception travels through different procedures), 
+      appends a backtrace (if available) and reports to the user.
   @param error         JCOP framework error object.
 */
 void emu_error(dyn_string error, bool terminateManager = false) {
@@ -82,7 +84,7 @@ void emu_debug(string msg, int level = emu_DEBUG_GENERAL) {
   }
 }
 
-/** Checks the exceptionInfo parameter and if it contains any exception - it's registered.
+/** Checks the exceptionInfo parameter and if it contains any exception - it's registered and reported and true is returned.
   @param exceptionInfo   standard framework "exception object".
   @returns               true if there was any error, false if not.
 */
