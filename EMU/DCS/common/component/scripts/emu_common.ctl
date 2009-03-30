@@ -1,0 +1,126 @@
+/**@file
+
+This package contains general purpose utility functions.
+
+@author Evaldas Juska (PH/UCM)
+@date   March 2009
+*/
+
+const int emu_DEBUG_GENERAL = 1;
+const int emu_DEBUG_FUNC_START_STOP = 2;
+
+/** Debug level (bitmask)
+  1 - general debug messages
+  2 - function start/stop messages
+*/
+global int g_emu_Debug = 3;//emu_DEBUG_GENERAL | emu_DEBUG_FUNC_START_STOP;
+
+global dyn_string g_emu_debugBacktrace;
+global dyn_string g_emu_lastException;
+global time g_emu_lastExceptionTimestamp;
+
+
+/** Register an EMU error
+  @param msg         Error message. 
+*/
+void emu_errorSingle(string msg) {
+  emu_error(makeDynString(msg));
+}
+
+
+/** Register an EMU error.
+  @param error         JCOP framework error object.
+*/
+void emu_error(dyn_string error, bool terminateManager = false) {
+  //if it's the same error just escalading upwards - skip it
+  bool lessThanSecond = (period(getCurrentTime()) - period(g_emu_lastExceptionTimestamp)) == 0;
+  if (((bool) (error == g_emu_lastException)) && (lessThanSecond)) {
+    DebugTN("EMU - skipping the same error report");
+    return;
+  }
+  dyn_string exInfoForGraphics;
+  DebugTN("EMU ERROR:");
+  for (int i=1; i <= dynlen(error); i++) {
+    dynAppend(exInfoForGraphics, "EMU DCS Exception");
+    dynAppend(exInfoForGraphics, error[i]);
+    dynAppend(exInfoForGraphics, "");
+    DebugTN("error [" + i + "]: " + error[i]);
+    //throwError(makeError("", PRIO_SEVERE, ERR_IMPL, 0, "error [" + i + "]: " + error[i])); //this one works very slow
+  }
+  
+  DebugTN("EMU EXCEPTION BACKTRACE:");
+  dynAppend(exInfoForGraphics, "EMU EXCEPTION BACKTRACE:");
+  string backtrace;
+  for (int i=1; i <= dynlen(g_emu_debugBacktrace); i++) {
+    backtrace += "trace [" + i + "]: " + g_emu_debugBacktrace[i] + '\n';
+    DebugTN("trace [" + i + "]: " + g_emu_debugBacktrace[i]);
+  }
+  dynAppend(exInfoForGraphics, backtrace);
+  dynAppend(exInfoForGraphics, "");
+  fwExceptionHandling_display(exInfoForGraphics);
+  if (terminateManager) {
+    throwError(makeError("", PRIO_FATAL, ERR_IMPL, 0, error));
+  }
+  g_emu_lastException = error;
+  g_emu_lastExceptionTimestamp = getCurrentTime();
+}
+
+/** Register an info message.
+  @param msg           Info message.
+*/
+void emu_info(string msg) {
+  DebugTN("EMU INFO: " + msg);
+}
+
+/** Register a debug message.
+  @param msg           Debug message.
+  @param level         Level of the debug message. See g_emu_Debug.
+*/
+void emu_debug(string msg, int level = emu_DEBUG_GENERAL) {
+  if (g_emu_Debug & level) {
+    DebugTN("EMU DEBUG: " + msg);
+  }
+}
+
+/** Checks the exceptionInfo parameter and if it contains any exception - it's registered.
+  @param exceptionInfo   standard framework "exception object".
+  @returns               true if there was any error, false if not.
+*/
+bool emu_checkException(dyn_string exceptionInfo) {
+  if (dynlen(exceptionInfo)) {
+    emu_error(exceptionInfo);
+    return true;
+  }
+  return false;
+}
+
+/** Providing that the appropriate DEBUG level is set this function 
+    logs that a certain function has been started (and updates the t0 with the current time).
+  @param funcName      Function name.
+  @param t0            Time when the function has been started (it's updated with the current time).
+*/
+void emu_debugFuncStart(string funcName, time &t0) {
+  t0=getCurrentTime();
+  emu_debug("-- "+funcName+" started --", emu_DEBUG_FUNC_START_STOP);
+  dynAppend(g_emu_debugBacktrace, funcName);
+}
+
+
+/** Providing that the appropriate DEBUG level is set this function 
+    logs that a certain function has finished and prints out how much time did it take to execute).
+  @param funcName      Function name.
+  @param t0            Time when the function has been started.
+*/
+void emu_debugFuncEnd(string funcName, time t0) {
+  time t1=getCurrentTime();
+  time dt=t1-t0;
+  emu_debug("## "+funcName+" ended ## finished in "+minute(dt)+":"+second(dt)+"."+milliSecond(dt),
+            emu_DEBUG_FUNC_START_STOP);
+  if (g_emu_debugBacktrace[dynlen(g_emu_debugBacktrace)] != funcName) {
+    emu_errorSingle("Error in the backtrace - the ended function is not at the end of the stack. " +
+                    "Please check the emu_debugFuncStart() and emu_debugFuncEnd() calls, " +
+                    "also refer to the printed backtrace.");
+  } else {
+    dynRemove(g_emu_debugBacktrace, dynlen(g_emu_debugBacktrace));
+  }
+}
