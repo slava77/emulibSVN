@@ -68,6 +68,12 @@ void emu_error(dyn_string error, bool terminateManager = false) {
   g_emu_lastExceptionTimestamp = getCurrentTime();
 }
 
+/** Adds an error to exceptionInfo and reports it through emu_error(...). */
+void emu_addError(string errMsg, dyn_string &exceptionInfo) {
+  dynAppend(exceptionInfo, errMsg);
+  emu_error(exceptionInfo);
+}
+
 /** Register an info message.
   @param msg           Info message.
 */
