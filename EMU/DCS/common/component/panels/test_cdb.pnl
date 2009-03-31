@@ -35,16 +35,68 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
 
 T 
 1
-LANG:1 4 test
+LANG:1 19 create elmb devices
+"main()
+{
+  emucdb_createCustomHwMain();
+}" 0
+ E E E
+13 2
+"PUSH_BUTTON3"
+""
+1 70 100 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 68 98 192 125
+
+T 
+1
+LANG:1 17 test name parsing
 "main()
 {
   dyn_string ex;
-  mapping bvmap;
-  bvmap[\"rowLimit\"] = 3;
-  DebugTN(emucdb_executeSql(\"select id, name from items where rownum < :rowLimit\", ex, false, bvmap, makeDynInt(INT_VAR, STRING_VAR)));
+  emu_info(\"sending LVCB_3\");
+  int ret = _emucdb_getLastHexNumber(\"LVCB_3\", \"_\", ex);
   if (emu_checkException(ex)) { return; }
-  DebugTN(emucdb_executeSql(\"select id, name from items where rownum < :rowLimit\", ex, true, bvmap, makeDynInt(INT_VAR, STRING_VAR)));
+  emu_info(\"got number: \" + ret);
+  emu_info(\"sending ELMB_3f\");
+  ret = _emucdb_getLastHexNumber(\"ELMB_3f\", \"_\", ex);
   if (emu_checkException(ex)) { return; }
+  emu_info(\"got number: \" + ret);
+}" 0
+ E E E
+13 3
+"PUSH_BUTTON4"
+""
+1 330 80 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 328 78 452 105
+
+T 
+1
+LANG:1 12 PUSH_BUTTON4
+"main()
+{
+  emu_info(_emucdb_dropLastDevice(\"ELMB/AI/ELMB_01/AI\"));
 }" 0
  E E E
 0
