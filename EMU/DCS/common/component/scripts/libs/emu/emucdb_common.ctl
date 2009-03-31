@@ -9,23 +9,26 @@ This package contains general purpose utility functions to access DB.
 const mapping emucdb_dummyMapping;
 
 string g_emucdb_dbConnectionString =                                                                 "Driver=QOCI8;Database=devdb10;User=<your_username>;Password=<your_pass>";
-global dbConnection g_emucdb_dbConn;
+global string g_emucdb_dbConnName = "emucdb_conn";
 
 /** Opens connection to the EMU confDB and initializes the fwConfigurationDB. */
 void emucdb_initialize() {
   string err;
+  dbConnection dbConn;
   dyn_string exceptionInfo;
+  dyn_string connections;
   time t0;
   
-  if (rdbIsConnectionValid(g_emucdb_dbConn) == 1) { return; }
+  rdbGetConnectionNames(connections);
+  if (dynContains(connections, g_emucdb_dbConnName) > 0) { return; }
 
   emu_debugFuncStart("emucdb_initialize", t0);
  
   // reset the connection manager - terminate all connections that are still present
   rdbOption("Reset",0);
   
-  rdbOpenConnection(g_emucdb_dbConnectionString, g_emucdb_dbConn);
-  if (rdbCheckError(err, g_emucdb_dbConn)){emu_error(makeDynString("ERROR WHILE CONNECTING TO THE EMU CONFIGURATION DATABASE",err));return;};
+  rdbOpenConnection(g_emucdb_dbConnectionString, dbConn, g_emucdb_dbConnName);
+  if (rdbCheckError(err, dbConn)){emu_error(makeDynString("ERROR WHILE CONNECTING TO THE EMU CONFIGURATION DATABASE",err));return;};
   
   DebugTN("Connection to the EMU configuration DB opened OK");
   
@@ -71,7 +74,7 @@ dbCommand _emucdb_prepareStatement(string sql, dyn_string &exceptionInfo) {
   dbCommand cmd;
   string err;
 
-  rdbStartCommand(g_emucdb_dbConn, sql, cmd);
+  rdbStartCommand(g_emucdb_dbConnName, sql, cmd);
   if (rdbCheckError(err,cmd)){dynAppend(exceptionInfo, "DB ERROR: " + err); emu_error(exceptionInfo); return;};
 
   return cmd;
