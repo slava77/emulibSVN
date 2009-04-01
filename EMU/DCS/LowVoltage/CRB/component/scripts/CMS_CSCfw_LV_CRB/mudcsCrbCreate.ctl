@@ -18,25 +18,25 @@
 #uses "CMS_CSCfw_LV_CRB/mudcs8SetPanelsCrb.ctl"
 #uses "CMS_CSCfw_LV_CRB/mudcs9ArchiveCrb.ctl"
 
-main(){
-  
- int state;
- while(1){
- DebugTN("POSTINSTALLING IS RUNNING: please wait");
- delay(5);
- dpGet("_OPCCANopen.ServerState",state);
- if(state==1)break;
- }
-  
- mudcsCrbDbCreateMain();
- mudcsCrbHWcreateMain(); 
- mudcsPsuHWcreateMain();
- mudcsTypeCrbCreateMain(); 
- mudcsCrbFsmCreateMain();
- mudcsCrbNodesConfigAccording2DbMain();
- mudcsAlertCrbMain();
- mudcsAlertPsuMain();
- mudcsLvCrbFsmPanelsAndFsmAliasesSetMain(); 
- mudcsArchiveCrbMain(); 
- exit(0);
+main() {
+
+  int state;
+  while (1) {
+    DebugTN("POSTINSTALLING IS RUNNING: please wait");
+    delay(5);
+    dpGet("_OPCCANopen.ServerState", state);
+    if (state == 1)break;
+  }
+
+  mudcsCrbDbCreateMain();
+  mudcsCrbHWcreateMain();
+  mudcsPsuHWcreateMain();
+  mudcsTypeCrbCreateMain();
+  mudcsCrbFsmCreateMain();
+  mudcsCrbNodesConfigAccording2DbMain();
+  mudcsAlertCrbMain();
+  mudcsAlertPsuMain();
+  mudcsLvCrbFsmPanelsAndFsmAliasesSetMain();
+  mudcsArchiveCrbMain();
+  exit(0);
 }

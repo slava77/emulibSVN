@@ -1,138 +1,132 @@
 string CSC_fwCAN1_g_EmuCmsGlobalNode, CSC_fwCAN1_g_EmuCmsGlobalType;
 string CSC_fwCAN1_g_EmuCmsGlobalCu, CSC_fwCAN1_g_EmuCmsGlobalParent;
-string CSC_fwCAN1_g_MainLogicalFsmType="CSC_LV_NODES";
-string CSC_fwCAN1_g_NodeLogicalFsmType="CSC_LV_TREE_NODES";
+string CSC_fwCAN1_g_MainLogicalFsmType = "CSC_LV_NODES";
+string CSC_fwCAN1_g_NodeLogicalFsmType = "CSC_LV_TREE_NODES";
 
 
 
 //============================================================================
-mudcsLv_addNode(){
+mudcsLv_addNode() {
 
- int cu_flag;
- if(CSC_fwCAN1_g_EmuCmsGlobalCu=="0")cu_flag=0;
- else cu_flag=1;
- fwFsmTree_addNode(CSC_fwCAN1_g_EmuCmsGlobalParent,CSC_fwCAN1_g_EmuCmsGlobalNode,CSC_fwCAN1_g_EmuCmsGlobalType,cu_flag);
+  int cu_flag;
+  if (CSC_fwCAN1_g_EmuCmsGlobalCu == "0")cu_flag = 0;
+  else cu_flag = 1;
+  fwFsmTree_addNode(CSC_fwCAN1_g_EmuCmsGlobalParent, CSC_fwCAN1_g_EmuCmsGlobalNode, CSC_fwCAN1_g_EmuCmsGlobalType, cu_flag);
 // DebugTN("+++"+CSC_fwCAN1_g_EmuCmsGlobalParent+">>>"+CSC_fwCAN1_g_EmuCmsGlobalNode+">>>"+CSC_fwCAN1_g_EmuCmsGlobalType+">>"+cu_flag);
- 
+
 // fwFsmTree_generateTreeNode(CSC_fwCAN1_g_EmuCmsGlobalNode);
- return;
+  return;
 }
 
 //====================================================
 mudcsLv_addLogical(bool isDevice,  string parent, string node, string deviceType,
-string config_panel, string op_panel){
+                   string config_panel, string op_panel) {
 
-dyn_string exceptionInfo;
-string generalDeviceType;
+  dyn_string exceptionInfo;
+  string generalDeviceType;
 
- if(!isDevice){
-	mudcsLvCreateNode(parent,node,config_panel,op_panel,exceptionInfo);
-	if(dynlen(exceptionInfo) > 0)
-		fwExceptionHandling_display(exceptionInfo);
- }
- else{
+  if (!isDevice) {
+    mudcsLvCreateNode(parent, node, config_panel, op_panel, exceptionInfo);
+    if (dynlen(exceptionInfo) > 0)
+      fwExceptionHandling_display(exceptionInfo);
+  } else {
 
-  dyn_string deviceObject,ds, ds1;
-  string dpAlias, node_leaf;
-  dpAlias=parent;
+    dyn_string deviceObject, ds, ds1;
+    string dpAlias, node_leaf;
+    dpAlias = parent;
 
-node=mudcsLvRemoveSystem(node);  
-
-
-ds1=strsplit(node,fwDevice_HIERARCHY_SEPARATOR);  
-node_leaf=ds1[dynlen(ds1)];
-
-ds=makeDynString(mudcsLvAddSystem(node)+" | | | | | "+node);
+    node = mudcsLvRemoveSystem(node);
 
 
-  for(int i = 1; i <= dynlen(ds); i++){
-  	fwGeneral_stringToDynString(ds[i], deviceObject);
+    ds1 = strsplit(node, fwDevice_HIERARCHY_SEPARATOR);
+    node_leaf = ds1[dynlen(ds1)];
+
+    ds = makeDynString(mudcsLvAddSystem(node) + " | | | | | " + node);
+
+
+    for (int i = 1; i <= dynlen(ds); i++) {
+      fwGeneral_stringToDynString(ds[i], deviceObject);
 //dpSetAlias(deviceObject[fwDevice_DP_NAME] + ".", dpAlias + fwDevice_HIERARCHY_SEPARATOR + deviceObject[fwDevice_ALIAS]);
-dpSetAlias(deviceObject[fwDevice_DP_NAME] + ".", dpAlias + fwDevice_HIERARCHY_SEPARATOR + node_leaf);
-  DebugTN(deviceObject[fwDevice_DP_NAME] + "."+"==========="+ dpAlias + fwDevice_HIERARCHY_SEPARATOR + node_leaf);    
-  
-/*        
+      dpSetAlias(deviceObject[fwDevice_DP_NAME] + ".", dpAlias + fwDevice_HIERARCHY_SEPARATOR + node_leaf);
+      DebugTN(deviceObject[fwDevice_DP_NAME] + "." + "===========" + dpAlias + fwDevice_HIERARCHY_SEPARATOR + node_leaf);
+
+      /*
+              dynAppend(CSC_fwCAN1_g_EMU_ALIASES, deviceObject[fwDevice_DP_NAME] + "."
+                   +"#"+
+                    dpAlias + fwDevice_HIERARCHY_SEPARATOR + deviceObject[fwDevice_ALIAS]);
+      */
+
+      if (globalExists("CSC_fwCAN1_g_EMU_ALIASES"))
         dynAppend(CSC_fwCAN1_g_EMU_ALIASES, deviceObject[fwDevice_DP_NAME] + "."
-             +"#"+
-              dpAlias + fwDevice_HIERARCHY_SEPARATOR + deviceObject[fwDevice_ALIAS]);  
-*/
-  
-   if(globalExists("CSC_fwCAN1_g_EMU_ALIASES")) 
-        dynAppend(CSC_fwCAN1_g_EMU_ALIASES, deviceObject[fwDevice_DP_NAME] + "."
-             +"#"+
-              dpAlias + fwDevice_HIERARCHY_SEPARATOR + node_leaf);  
-  else if(globalExists("CSC_fwCAN2_g_EMU_ALIASES"))     
+                  + "#" +
+                  dpAlias + fwDevice_HIERARCHY_SEPARATOR + node_leaf);
+      else if (globalExists("CSC_fwCAN2_g_EMU_ALIASES"))
         dynAppend(CSC_fwCAN2_g_EMU_ALIASES, deviceObject[fwDevice_DP_NAME] + "."
-             +"#"+
-              dpAlias + fwDevice_HIERARCHY_SEPARATOR + node_leaf);            
-             
-  } // for i
- } // else
+                  + "#" +
+                  dpAlias + fwDevice_HIERARCHY_SEPARATOR + node_leaf);
+
+    } // for i
+  } // else
 
 
 }
 //====================================================
 //=============================================================================================================
 
-mudcsLvCreateNode(string sDpName, string nodeNameText, string config_panel, string op_panel, dyn_string exceptionInfo)
-{ 
+mudcsLvCreateNode(string sDpName, string nodeNameText, string config_panel, string op_panel, dyn_string exceptionInfo) {
 
 
 
 // my_corr:
 //  new params of mudcsLvCreateNode:sDpName, nodeNameText, op_panel, config_panel
 //  $sDpName --> sDpName
-//  see my_corr above and below  
+//  see my_corr above and below
 //  nodeNameText.text() --> nodeNameText
-// navigatorPanelText.text() --> op_panel 
+// navigatorPanelText.text() --> op_panel
 // editotPanelText.text()  --> config_panel
 
-	string name, type, alias;
+  string name, type, alias;
 //	dyn_string exceptionInfo;
-	dyn_errClass err;		
-						
-	if (sDpName == "")
-	{
-		name = nodeNameText;
-		alias = nodeNameText;
-		type = fwNode_TYPE_LOGICAL_ROOT;
-	}
-	else
-	{
-		name = sDpName + fwDevice_HIERARCHY_SEPARATOR + nodeNameText;
-		alias = dpGetAlias(sDpName + ".") + fwDevice_HIERARCHY_SEPARATOR + nodeNameText;
-		type = fwNode_TYPE_LOGICAL;	
-	}
+  dyn_errClass err;
 
-	fwDevice_create(makeDynString(nodeNameText, "FwNode", "", ""),
-					makeDynString(sDpName, ""),
-					exceptionInfo);		
+  if (sDpName == "") {
+    name = nodeNameText;
+    alias = nodeNameText;
+    type = fwNode_TYPE_LOGICAL_ROOT;
+  } else {
+    name = sDpName + fwDevice_HIERARCHY_SEPARATOR + nodeNameText;
+    alias = dpGetAlias(sDpName + ".") + fwDevice_HIERARCHY_SEPARATOR + nodeNameText;
+    type = fwNode_TYPE_LOGICAL;
+  }
+
+  fwDevice_create(makeDynString(nodeNameText, "FwNode", "", ""),
+                  makeDynString(sDpName, ""),
+                  exceptionInfo);
 
 //////mudcsLvDebug(name);
-	
-	if(dynlen(exceptionInfo) > 0)
-		return;
-	 
 
-	
-	dpSet(mudcsLvAddSystem(name + ".type"), type);
-	dpSet(mudcsLvAddSystem(name + ".dpTypes"), makeDynString());
-	dpSet(mudcsLvAddSystem(name + ".navigatorPanels"), makeDynString(op_panel));
-	dpSet(mudcsLvAddSystem(name + ".editorPanels"), makeDynString(config_panel));
-	
-	dpSetAlias(name + ".", alias);
- 
- 	//test whether there were errors
-	err = getLastError(); 
- 	if(dynlen(err) > 0)
- 	{
- 		dpDelete(name);
- 		fwException_raise(	exceptionInfo,
- 							"ERROR",
- 							"Could not create the logical node",
- 							"");
-		return;
- 	}
+  if (dynlen(exceptionInfo) > 0)
+    return;
+
+
+
+  dpSet(mudcsLvAddSystem(name + ".type"), type);
+  dpSet(mudcsLvAddSystem(name + ".dpTypes"), makeDynString());
+  dpSet(mudcsLvAddSystem(name + ".navigatorPanels"), makeDynString(op_panel));
+  dpSet(mudcsLvAddSystem(name + ".editorPanels"), makeDynString(config_panel));
+
+  dpSetAlias(name + ".", alias);
+
+  //test whether there were errors
+  err = getLastError();
+  if (dynlen(err) > 0) {
+    dpDelete(name);
+    fwException_raise(	exceptionInfo,
+                       "ERROR",
+                       "Could not create the logical node",
+                       "");
+    return;
+  }
 
 
 }
@@ -146,80 +140,78 @@ mudcsLvCreateNode(string sDpName, string nodeNameText, string config_panel, stri
 
 //=======================================================================
 
-mudcsLv_addHardwareDevice(string deviceName,string deviceType,string deviceComment, string &dpN)
-{
+mudcsLv_addHardwareDevice(string deviceName, string deviceType, string deviceComment, string &dpN) {
 /////	string 	deviceName = "CSCdm4r2c01LV_1",
 /////			deviceType = "Low Voltage Device (1)",
-//////	string		deviceComment, 
-string			dpType;//////////, dpName;
-        string generalDeviceType;
+//////	string		deviceComment,
+  string			dpType;//////////, dpName;
+  string generalDeviceType;
 
-	dyn_string exceptionInfo;
+  dyn_string exceptionInfo;
 //DebugTN("======================================================###################################");
-        
+
 //mudcsLvPutCscDeviceList(deviceType);
 
-if(strpos(deviceType,"fwCrb")>=0){
-  generalDeviceType = "CRB";
-  if(strpos(deviceType,"fwCrb_CSC_LV")>=0)deviceType = "CRB Device (2)";
-}
+  if (strpos(deviceType, "fwCrb") >= 0) {
+    generalDeviceType = "CRB";
+    if (strpos(deviceType, "fwCrb_CSC_LV") >= 0)deviceType = "CRB Device (2)";
+  }
 //else if(strpos(deviceType,"MRTN")>=0){
 //  generalDeviceType = "MRTN";
 //  if(strpos(deviceType,"MRTN_2")>=0)deviceType = "MRTN Device (2)";
 //}
-//DebugTN(deviceName+">>"+deviceType+">>"+generalDeviceType); 
-	fwDevice_getDpType(deviceType, dpType, exceptionInfo);		
-	dpN = generalDeviceType + fwDevice_HIERARCHY_SEPARATOR + deviceName;
-//DebugTN(deviceName+">"+dpType+">"+generalDeviceType);        
-	fwDevice_create(makeDynString(deviceName, dpType, deviceComment, ""/*deviceModelText.text*/), 
-					makeDynString(generalDeviceType, "", "", ""), 
-					exceptionInfo);
+//DebugTN(deviceName+">>"+deviceType+">>"+generalDeviceType);
+  fwDevice_getDpType(deviceType, dpType, exceptionInfo);
+  dpN = generalDeviceType + fwDevice_HIERARCHY_SEPARATOR + deviceName;
+//DebugTN(deviceName+">"+dpType+">"+generalDeviceType);
+  fwDevice_create(makeDynString(deviceName, dpType, deviceComment, ""/*deviceModelText.text*/),
+                  makeDynString(generalDeviceType, "", "", ""),
+                  exceptionInfo);
 }
 
 //====================================================
 //============================
-mudcsLvDeleteAllTrees()
-{
+mudcsLvDeleteAllTrees() {
 
-int i;
+  int i;
 //int cu_flag;
 
-system("rm scripts/libs/*'$install'");
+  system("rm scripts/libs/*'$install'");
 
 //CSC_fwCAN1_g_EmuCmsSpecialMode=1;
 
-CSC_fwCAN1_g_EmuCmsGlobalNode=CSC_fwCAN1_g_csc_part;
+  CSC_fwCAN1_g_EmuCmsGlobalNode = CSC_fwCAN1_g_csc_part;
 //CSC_fwCAN1_g_EmuCmsGlobalType="MainNode";
 //CSC_fwCAN1_g_EmuCmsGlobalCu="1";cu_flag = 1;
-CSC_fwCAN1_g_EmuCmsGlobalParent="FSM";
+  CSC_fwCAN1_g_EmuCmsGlobalParent = "FSM";
 
 //onSelectSimulation(1,1,CSC_fwCAN1_g_EmuCmsGlobalNode,CSC_fwCAN1_g_EmuCmsGlobalType,cu_flag);
 
 ////////mudcsLvDebug2(""+CSC_fwCAN1_g_EmuCmsSpecialMode);
 
-mudcsLv_removeNode();
+  mudcsLv_removeNode();
 
 //-----------------------------------------------------------------
 // 10/01/2004: see doc: this is because some dpoint may remain in the tree that prevents the following tree creation
-dyn_string fwTN_names=dpNames("*","_FwTreeNode");
-for(i=1;i<=dynlen(fwTN_names);i++){
-  if(strpos(fwTN_names[i],"TrendTree")>=0)continue;
-  if(strpos(fwTN_names[i],"FSM")>=0)continue;  
-dpDelete(fwTN_names[i]);
-}
+  dyn_string fwTN_names = dpNames("*", "_FwTreeNode");
+  for (i = 1; i <= dynlen(fwTN_names); i++) {
+    if (strpos(fwTN_names[i], "TrendTree") >= 0)continue;
+    if (strpos(fwTN_names[i], "FSM") >= 0)continue;
+    dpDelete(fwTN_names[i]);
+  }
 //----------------------------------------------------------------
 //--- DELETE HARDWARE TREE (EXCEPT STANDARD ELMB-s-------------
 
-mudcsLv_deleteHardwareDevices("fwCrb_CSC_LV");
-mudcsLv_deleteHardwareDevices("FwWienerMarathonChannel");
-mudcsLv_deleteHardwareDevices("FwWienerMarathon");
+  mudcsLv_deleteHardwareDevices("fwCrb_CSC_LV");
+  mudcsLv_deleteHardwareDevices("FwWienerMarathonChannel");
+  mudcsLv_deleteHardwareDevices("FwWienerMarathon");
 
 //-------  deleting logical tree ----------------------------------
 
 //----------------------------------------------------------------
 
 
-dpSet(mudcsLvAddSystem("EMUALIASES."),makeDynString()); // deleting dp wher aliase are stored
+  dpSet(mudcsLvAddSystem("EMUALIASES."), makeDynString()); // deleting dp wher aliase are stored
 
 //CSC_fwCAN1_g_EmuCmsSpecialMode=0;
 
@@ -230,33 +222,33 @@ dpSet(mudcsLvAddSystem("EMUALIASES."),makeDynString()); // deleting dp wher alia
 
 //=========================================================================
 
-mudcsLv_removeNode(){
+mudcsLv_removeNode() {
 
 
- fwFsmTree_removeNode(CSC_fwCAN1_g_EmuCmsGlobalParent,CSC_fwCAN1_g_EmuCmsGlobalNode,1);
- return;
+  fwFsmTree_removeNode(CSC_fwCAN1_g_EmuCmsGlobalParent, CSC_fwCAN1_g_EmuCmsGlobalNode, 1);
+  return;
 
 }
 //=========================================================================
 //===========================================================================
 
-mudcsLv_deleteHardwareDevices(string generalDeviceType){
+mudcsLv_deleteHardwareDevices(string generalDeviceType) {
 
-dyn_string exceptionInfo;
-dyn_string dps;
-int i;
+  dyn_string exceptionInfo;
+  dyn_string dps;
+  int i;
 
 
 //dps=dpNames(generalDeviceType + fwDevice_HIERARCHY_SEPARATOR + "*" );
 
-dps=dpNames("*", generalDeviceType);
+  dps = dpNames("*", generalDeviceType);
 
 
-for(i=1;i<=dynlen(dps);i++){
-DebugTN("delete "+mudcsLvAddSystem(dps[i]));
-dpDelete(mudcsLvAddSystem(dps[i]));
+  for (i = 1; i <= dynlen(dps); i++) {
+    DebugTN("delete " + mudcsLvAddSystem(dps[i]));
+    dpDelete(mudcsLvAddSystem(dps[i]));
 //fwDevice_delete(mudcsLvAddSystem(dps[i]), exceptionInfo);
-}
+  }
 
 //mudcsDebug2(""+dynlen(dps));
 

@@ -1,10 +1,10 @@
-main(){
- 
-fwInstallation_appendManager(TRUE, "fwCMS_CSC_LV_CRB server", "PVSS00ctrl", 
-"manual", 30, 2, 2, "-num 15 libs/CMS_CSCfw_LV_CRB/mudcsLVserver.ctl");
+main() {
 
-  
-   system("start /b PVSS00ctrl -num 17 CMS_CSCfw_LV_CRB/mudcsCrbCreate.ctl");  
+  fwInstallation_appendManager(TRUE, "fwCMS_CSC_LV_CRB server", "PVSS00ctrl",
+                               "manual", 30, 2, 2, "-num 15 libs/CMS_CSCfw_LV_CRB/mudcsLVserver.ctl");
+
+
+  system("start /b PVSS00ctrl -num 17 CMS_CSCfw_LV_CRB/mudcsCrbCreate.ctl");
 
 // system("cmd /c cp "+ProjectHome+"\\source\\"+dir+"\\special_stuff/*cfg* "+
 //       OPC_SERVER_DIR+"/.");

@@ -21,20 +21,20 @@
 #uses "fwDeviceEditorNavigator/fwDeviceEditorNavigatorClipboard.ctl"
 
 
-main(){
- int state;
- while(1){
- DebugTN("POSTINSTALLING IS RUNNING: please wait");
- delay(5);
- dpGet("_WienerOPCServer.ServerState",state);
- if(state==1)break;
- }  
-  
+main() {
+  int state;
+  while (1) {
+    DebugTN("POSTINSTALLING IS RUNNING: please wait");
+    delay(5);
+    dpGet("_WienerOPCServer.ServerState", state);
+    if (state == 1)break;
+  }
+
   mudcsMrtnHWcreateMain();
   mudcsMrtnDbCreateMain();
-  mudcsMrtnFsmCreateMain(); 
+  mudcsMrtnFsmCreateMain();
   mudcsAlertMrtnMain();
-  mudcsLvMrtnFsmPanelsAndFsmAliasesSetMain();  
-  mudcsArchiveMrtnMain();   
+  mudcsLvMrtnFsmPanelsAndFsmAliasesSetMain();
+  mudcsArchiveMrtnMain();
   exit(0);
 }
