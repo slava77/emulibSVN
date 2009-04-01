@@ -8,7 +8,7 @@ This package contains general purpose utility functions to access DB.
 
 const mapping emucdb_dummyMapping;
 
-string g_emucdb_dbConnectionString =                                                                 "Driver=QOCI8;Database=devdb10;User=CMS_MUON_ENDCAP_EVKA;Password=Ventos6385!";
+string g_emucdb_dbConnectionString =                                                                 "Driver=QOCI8;Database=devdb10;User=<your_username>;Password=<your_pass>";
 global string g_emucdb_dbConnName = "emucdb_conn";
 
 /** Opens connection to the EMU confDB and initializes the fwConfigurationDB. */
@@ -21,7 +21,7 @@ void emucdb_initialize() {
 
   emu_debugFuncStart("emucdb_initialize", t0);
 
-  fwConfigurationDB_initialize("", exceptionInfo);
+  fwConfigurationDB_checkInit("", exceptionInfo);
   if (emu_checkException(exceptionInfo)) { return; }
   DebugTN("Connection to the fwConfigurationDB database opened OK");
   
