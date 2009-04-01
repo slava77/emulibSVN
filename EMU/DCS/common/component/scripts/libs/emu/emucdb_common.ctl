@@ -8,7 +8,7 @@ This package contains general purpose utility functions to access DB.
 
 const mapping emucdb_dummyMapping;
 
-string g_emucdb_dbConnectionString =                                                                 "Driver=QOCI8;Database=devdb10;User=<your_username>;Password=<your_pass>";
+string g_emucdb_dbConnectionString =                                                                 "Driver=QOCI8;Database=devdb10;User=CMS_MUON_ENDCAP_EVKA;Password=Ventos6385!";
 global string g_emucdb_dbConnName = "emucdb_conn";
 
 /** Opens connection to the EMU confDB and initializes the fwConfigurationDB. */
@@ -18,24 +18,22 @@ void emucdb_initialize() {
   dyn_string exceptionInfo;
   dyn_string connections;
   time t0;
-  
-  rdbGetConnectionNames(connections);
-  if (dynContains(connections, g_emucdb_dbConnName) > 0) { return; }
 
   emu_debugFuncStart("emucdb_initialize", t0);
- 
-  // reset the connection manager - terminate all connections that are still present
-  rdbOption("Reset",0);
-  
-  rdbOpenConnection(g_emucdb_dbConnectionString, dbConn, g_emucdb_dbConnName);
-  if (rdbCheckError(err, dbConn)){emu_error(makeDynString("ERROR WHILE CONNECTING TO THE EMU CONFIGURATION DATABASE",err));return;};
-  
-  DebugTN("Connection to the EMU configuration DB opened OK");
-  
+
   fwConfigurationDB_initialize("", exceptionInfo);
   if (emu_checkException(exceptionInfo)) { return; }
   DebugTN("Connection to the fwConfigurationDB database opened OK");
   
+  rdbGetConnectionNames(connections);
+  if (dynContains(connections, g_emucdb_dbConnName) > 0) { return; }
+  // reset the connection manager - terminate all connections that are still present
+  rdbOption("Reset",0);  
+  rdbOpenConnection(g_emucdb_dbConnectionString, dbConn, g_emucdb_dbConnName);
+  if (rdbCheckError(err, dbConn)){emu_error(makeDynString("ERROR WHILE CONNECTING TO THE EMU CONFIGURATION DATABASE",err));return;};
+
+  DebugTN("Connection to the EMU configuration DB opened OK");
+    
   emu_debugFuncEnd("emucdb_initialize", t0);
 }
 

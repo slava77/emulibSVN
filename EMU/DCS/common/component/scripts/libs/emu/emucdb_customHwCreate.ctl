@@ -23,13 +23,12 @@ void emucdb_checkConfDB(dyn_string &ex) {
 }
 
 /** Creates the hardware which needs custom actions and is not created correctly by fwConfDB. */
-void emucdb_createCustomHwMain() {
+void emucdb_createCustomHwMain(dyn_string &ex) {
   dyn_dyn_mixed data;
   string itemsSql = "select n.dpname dp, p.dpname parent_dp, n.name, n.description " +
                     "from items n join items p on (p.id = n.parent) " +
                     "where n.type = :type and n.dpname like :sysName || '%' order by length(dp) asc";
   mapping bindVariables;
-  dyn_string ex;
   time t0;
   emu_debugFuncStart("emucdb_createCustomHwMain", t0);
   
@@ -44,6 +43,7 @@ void emucdb_createCustomHwMain() {
   data = emucdb_executeSql(itemsSql, ex, false, bindVariables);
   if (emu_checkException(ex)) { return; }
   for (int i=1; i <= dynlen(data); i++) {
+    if (dpExists(data[i][1])) { continue; } // if this device already exists - skip it
     emucdb_createElmbCANbus(data[i], ex);
     if (emu_checkException(ex)) { return; }
   }
@@ -53,6 +53,7 @@ void emucdb_createCustomHwMain() {
   data = emucdb_executeSql(itemsSql, ex, false, bindVariables);
   if (emu_checkException(ex)) { return; }
   for (int i=1; i <= dynlen(data); i++) {
+    if (dpExists(data[i][1])) { continue; } // if this device already exists - skip it
     emucdb_createElmbNode(data[i], ex);
     if (emu_checkException(ex)) { return; }
   }
@@ -62,6 +63,7 @@ void emucdb_createCustomHwMain() {
   data = emucdb_executeSql(itemsSql, ex, false, bindVariables);
   if (emu_checkException(ex)) { return; }
   for (int i=1; i <= dynlen(data); i++) {
+    if (dpExists(data[i][1])) { continue; } // if this device already exists - skip it
     emucdb_createElmbAi(data[i], ex);
     if (emu_checkException(ex)) { return; }
   }
@@ -71,6 +73,7 @@ void emucdb_createCustomHwMain() {
   data = emucdb_executeSql(itemsSql, ex, false, bindVariables);
   if (emu_checkException(ex)) { return; }
   for (int i=1; i <= dynlen(data); i++) {
+    if (dpExists(data[i][1])) { continue; } // if this device already exists - skip it
     emucdb_createElmbDo(data[i], ex);
     if (emu_checkException(ex)) { return; }
   }
