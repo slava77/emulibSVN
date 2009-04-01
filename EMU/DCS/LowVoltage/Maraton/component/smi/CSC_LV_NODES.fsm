@@ -1,0 +1,35 @@
+class: $FWPART_$TOP$CSC_LV_NODES_CLASS
+!panel: CSC_LV_NODES.pnl
+    state: OFF	!color: FwStateOKNotPhysics
+        when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR
+                when ( $ALL$FwCHILDREN in_state ON )  move_to ON
+        action: ON	!visible: 1
+            do ON $ALL$FwCHILDREN
+        action: STANDBY	!visible: 1
+            do ON $ALL$FwCHILDREN
+        action: OFF	!visible: 1
+            do OFF $ALL$FwCHILDREN
+    state: ERROR	!color: FwStateAttention3
+                when ( $ALL$FwCHILDREN in_state ON )  move_to ON
+                when ( $ALL$FwCHILDREN in_state {ON,OFF} )  move_to OFF
+        action: OFF	!visible: 1
+            do OFF $ALL$FwCHILDREN
+        action: ON	!visible: 1
+            do ON $ALL$FwCHILDREN
+        action: STANDBY	!visible: 1
+            do ON $ALL$FwCHILDREN
+    state: ON	!color: FwStateOKPhysics
+           when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR
+           when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF
+        action: STANDBY	!visible: 1
+            do ON $ALL$FwCHILDREN
+        action: OFF	!visible: 1
+            do OFF $ALL$FwCHILDREN
+    state: STANDBY	!color: FwStateAttention1
+        when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR
+          when ( $ALL$FwCHILDREN in_state ON )  move_to ON
+         when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF
+        action: ON	!visible: 1
+            do ON $ALL$FwCHILDREN
+        action: OFF	!visible: 1
+            do OFF $ALL$FwCHILDREN

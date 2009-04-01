@@ -1,0 +1,27 @@
+class: $FWPART_$TOP$CSC_LV_TREE_NODES_CLASS
+!panel: CSC_LV_TREE_NODES.pnl
+    state: OFF	!color: FwStateOKNotPhysics
+        when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR
+                when ( $ALL$FwCHILDREN in_state ON )  move_to ON
+        action: ON	!visible: 1
+            do ON $ALL$FwCHILDREN
+        action: STANDBY	!visible: 1
+            do ON $ALL$FwCHILDREN
+        action: OFF	!visible: 1
+            do OFF $ALL$FwCHILDREN
+    state: ERROR	!color: FwStateAttention3
+                when ( $ALL$FwCHILDREN in_state ON )  move_to ON
+                when ( $ALL$FwCHILDREN in_state {ON,OFF,RAMP,STANDBY} )  move_to OFF
+        action: OFF	!visible: 1
+            do OFF $ALL$FwCHILDREN
+        action: ON	!visible: 1
+            do ON $ALL$FwCHILDREN
+        action: STANDBY	!visible: 1
+            do ON $ALL$FwCHILDREN
+    state: ON	!color: FwStateOKPhysics
+        when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR
+           when ( $ANY$FwCHILDREN in_state {OFF,RAMP,STANDBY} )  move_to OFF
+        action: OFF	!visible: 1
+            do OFF $ALL$FwCHILDREN
+        action: STANDBY	!visible: 1
+            do ON $ALL$FwCHILDREN
