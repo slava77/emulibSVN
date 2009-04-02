@@ -13,7 +13,7 @@ const int emu_DEBUG_FUNC_START_STOP = 2;
   1 - general debug messages
   2 - function start/stop messages
 */
-global int g_emu_Debug = 3;//emu_DEBUG_GENERAL | emu_DEBUG_FUNC_START_STOP;
+global int g_emu_Debug = 1;//emu_DEBUG_GENERAL | emu_DEBUG_FUNC_START_STOP;
 
 global dyn_string g_emu_debugBacktrace;
 global dyn_string g_emu_lastException;
@@ -85,8 +85,8 @@ void emu_info(string msg) {
   @param msg           Debug message.
   @param level         Level of the debug message. See g_emu_Debug.
 */
-void emu_debug(string msg, int level = emu_DEBUG_GENERAL) {
-  if (g_emu_Debug & level) {
+void emu_debug(string msg, int level = 1 /*emu_DEBUG_GENERAL*/) {
+  if ((g_emu_Debug & level) > 0) {
     DebugTN("EMU DEBUG: " + msg);
   }
 }
