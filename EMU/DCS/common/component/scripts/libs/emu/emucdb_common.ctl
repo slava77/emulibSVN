@@ -7,6 +7,9 @@ This package contains general purpose utility functions to access DB.
 */
 
 const mapping emucdb_dummyMapping;
+const string emucdb_CONNECTION_FILENAME = "emucdb_DBConnection";
+
+global string emucdb_g_connName = "emucdb_DB_connection";
 
 /** Opens connection to the EMU confDB and initializes the fwConfigurationDB. */
 void emucdb_initialize() {
@@ -15,11 +18,98 @@ void emucdb_initialize() {
 
   emu_debugFuncStart("emucdb_initialize", t0);
 
+  //initialize fwConfigurationDB connection - always using default setup
   fwConfigurationDB_checkInit(exceptionInfo);
   if (emu_checkException(exceptionInfo)) { return; }
-  DebugTN("Connection to the fwConfigurationDB database opened OK");
+  DebugTN("Connection to the fwConfigurationDB database OK");
+  
+  //initialize EMU CDB connection
+  dyn_string connections;
+  bool connectRequired = false;
+  rdbGetConnectionNames(connections);
+  if (!dynContains(connections, emucdb_g_connName)) {
+    connectRequired = true;
+  } else {
+    dbConnection dbConn;
+    int rc = rdbGetConnection(emucdb_g_connName, dbConn);
+    if (rc != 0) {
+      connectRequired = true;
+    } else {
+      rc = rdbIsConnectionValid(dbConn);
+      if (rc != 0) {
+        rdbCloseConnection(emucdb_g_connName);
+        connectRequired = true;
+      }
+    }
+  }
+  if (connectRequired) {
+    string connFile=getPath(CONFIG_REL_PATH, emucdb_CONNECTION_FILENAME);
+    string connString;
+    dbConnection dbConn;
+    string err;
+    
+    bool ok=fileToString(connFile, connString);
+    if (!ok) {
+      emu_error("EMU CDB connection file cannot be open");
+      return;
+    }
+    emu_info("EMU CDB connection file opened successfully, connecting to DB...");
+    rdbOpenConnection(connString, dbConn, emucdb_g_connName);
+    if (rdbCheckError(err,dbConn)){ emu_error("Error while connecting to EMU CDB database: " + err); return;};
+    emu_info("Connection to the EMU CDB database opened OK");
+  }
+
+  emu_info("Checking DB schema");  
+  emucdb_checkSchema(exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  emu_info("DB Schema OK");
   
   emu_debugFuncEnd("emucdb_initialize", t0);
+}
+
+void emucdb_checkSchema(dyn_string &exceptionInfo) {
+  time t0;
+
+  emu_debugFuncStart("emucdb_checkSchema", t0);
+  
+  //check fwConfigurationDB schema
+  float fwConfDbVersion = fwConfigurationDB_verifyDBSchema(g_fwConfigurationDB_DBConnection, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  if (fwConfDbVersion <= 0.0) {
+    emu_error("fwConfigurationDB component not installed or there's a DB connection problem");
+  }
+  
+  //check EMU CDB schema
+  dyn_dyn_mixed data = emucdb_executeSql("select value from emucdb_parameters where name = 'emucdb_version'", exceptionInfo);
+  if (dynlen(exceptionInfo) || dynlen(data) == 0) { //if there's an error - try to create it.
+    emu_info("An error occured while retrieving EMU CDB version from DB. Trying to create schema...");
+    emucdb_createDBSchema(exceptionInfo, false);
+    if (emu_checkException(exceptionInfo)) { return; }
+  }
+
+  emu_debugFuncEnd("emucdb_checkSchema", t0);
+}
+
+/** Creates EMU CDB DB schema. Stops on error. */
+void emucdb_createDBSchema(dyn_string &exceptionInfo,bool dropExistingSchema=FALSE) {
+  if (dropExistingSchema) {
+    emu_info("Dropping existing schema");
+    emucdb_dropDBSchema(exceptionInfo);
+  }
+  
+  _fwConfigurationDB_executeSqlFromFile(emucdb_g_connName,
+                                        "emucdb_createSchema.sql",
+                                        "CREATE DB SCHEMA", exceptionInfo,TRUE);
+  if (emu_checkException(exceptionInfo)) { return; }
+
+  emu_info("Database schema succesfully created");
+}
+
+/** Drops EMU CDB schema. Doesn't stop on error. */
+void emucdb_dropDBSchema(dyn_string &exceptionInfo) {
+  _fwConfigurationDB_executeSqlFromFile(emucdb_g_connName,
+                                        "emucdb_dropSchema.sql",
+                                        "DROP DB SCHEMA", exceptionInfo,FALSE);
 }
 
 /** Executes the sql statement and transposes the returned dataset (i.e. the resulting 2D array is [column][row]).
@@ -49,6 +139,23 @@ dyn_dyn_mixed emucdb_executeSql(string sql, dyn_string &exceptionInfo,
   return data;
 }
 
+/** Executes a bulk command. Sql must contain at least one bound variable and the values of those should be given in data param.*/
+void emu_executeBulk(string sql, dyn_dyn_mixed data, dyn_string exceptionInfo){
+  dbCommand cmd;
+  string err;
+  time t0;
+  emu_debugFuncStart("emu_executeBulk", t0);
+  
+  cmd = _emucdb_prepareStatement(sql, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  rdbBindAndExecute(cmd, data);
+  if (rdbCheckError(err)){dynAppend(exceptionInfo, "DB ERROR: " + err); emu_error(exceptionInfo); return;};
+  rdbFinishCommand(cmd);
+  if (rdbCheckError(err)){dynAppend(exceptionInfo, "DB ERROR: " + err); emu_error(exceptionInfo); return;};
+  
+  emu_debugFuncEnd("emu_executeBulk", t0);
+}
+
 /** Prepares an sql statement and returns dbCommand object which can be executed multiple times.
   @param sql            sql statement.
   @param exceptionInfo  any exceptions are reported here.
@@ -57,7 +164,7 @@ dbCommand _emucdb_prepareStatement(string sql, dyn_string &exceptionInfo) {
   dbCommand cmd;
   string err;
 
-  rdbStartCommand(g_fwConfigurationDB_DBConnection, sql, cmd);
+  rdbStartCommand(emucdb_g_connName, sql, cmd);
   if (rdbCheckError(err,cmd)){dynAppend(exceptionInfo, "DB ERROR: " + err); emu_error(exceptionInfo); return;};
 
   return cmd;
