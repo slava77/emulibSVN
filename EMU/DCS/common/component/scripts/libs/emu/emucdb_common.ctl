@@ -140,7 +140,7 @@ dyn_dyn_mixed emucdb_executeSql(string sql, dyn_string &exceptionInfo,
 }
 
 /** Executes a bulk command. Sql must contain at least one bound variable and the values of those should be given in data param.*/
-void emucdb_executeBulk(string sql, dyn_dyn_mixed data, dyn_string exceptionInfo){
+void emucdb_executeBulk(string sql, dyn_dyn_mixed data, dyn_string &exceptionInfo){
   dbCommand cmd;
   string err;
   time t0;
