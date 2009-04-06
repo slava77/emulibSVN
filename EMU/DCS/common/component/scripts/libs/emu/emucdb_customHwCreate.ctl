@@ -6,22 +6,6 @@ This package contains general purpose utility functions to access DB.
 @date   March 2009
 */
 
-/** Checks if fwConfigurationDB table "ITEMS" is present in the EMU conf db. 
-    If it doesn't exits - it returns an exception in the ex. */
-void emucdb_checkConfDB(dyn_string &ex) {
-  dyn_dyn_mixed data;
-  time t0;   
-  emu_debugFuncStart("emucdb_checkConfDB", t0);
-
-  data = emucdb_executeSql("select * from user_tables where table_name = 'ITEMS'", ex);
-  if (dynlen(data) < 1) {
-    emu_addError("fwConfigurationDB table 'ITEMS' does not exits. Check if fwConfigurationDB is installed and the version is correct.", ex);
-    return;
-  }
-  
-  emu_debugFuncEnd("emucdb_checkConfDB", t0);
-}
-
 /** Creates the hardware which needs custom actions and is not created correctly by fwConfDB. */
 void emucdb_createCustomHwMain(dyn_string &ex) {
   dyn_dyn_mixed data;
@@ -33,8 +17,6 @@ void emucdb_createCustomHwMain(dyn_string &ex) {
   emu_debugFuncStart("emucdb_createCustomHwMain", t0);
   
   emu_info("Creating custom devices");
-  emucdb_checkConfDB(ex);
-  if (emu_checkException(ex)) { return; }
   
   bindVariables["sysName"] = getSystemName();
 
