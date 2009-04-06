@@ -6,14 +6,27 @@ This package contains EMU CDB functions to work with FSM configuration.
 @date   April 2009
 */
 
-/** Reads FSM types and updates their definitions in DB (adds missing). */
+/** Updates FSM type definitions and device FSM types in conf DB. */
 void emucdb_updateFsmTypes(dyn_string &exceptionInfo) {
+  time t0;  
+  emu_debugFuncStart("emucdb_updateFsmTypes", t0);
+  
+  emucdb_updateFsmTypeDefinitions(exceptionInfo);
+  if (emu_checkException(ex)) { return; }
+  emucdb_updateDeviceFsmTypes(exceptionInfo);
+  if (emu_checkException(ex)) { return; }
+  
+  emu_debugFuncEnd("emucdb_updateFsmTypes", t0);
+}
+
+/** Reads FSM types and updates their definitions in DB (adds missing). */
+void emucdb_updateFsmTypeDefinitions(dyn_string exceptionInfo) {
   string existingTypesSql = "select name from emucdb_fsm_types";
   string insertSql = "insert into emucdb_fsm_types (name, type) values (:insName, :insType)";
   dyn_string devTypes, objTypes;
   time t0;
   
-  emu_debugFuncStart("emucdb_updateFsmTypes", t0);
+  emu_debugFuncStart("emucdb_updateFsmTypeDefinitions", t0);
   
   fwFsm_initialize();
   devTypes = fwFsm_getDeviceTypes();
@@ -45,10 +58,15 @@ void emucdb_updateFsmTypes(dyn_string &exceptionInfo) {
     }
   }
   
-  emu_executeBulk(insertSql, insertBindVars, exceptionInfo);
+  emucdb_executeBulk(insertSql, insertBindVars, exceptionInfo);
   if (emu_checkException(exceptionInfo)) return;
 
   emu_info("[DONE] FSM objects and device saved: " + dynlen(insertBindVars));
   
-  emu_debugFuncEnd("emucdb_updateFsmTypes", t0);
+  emu_debugFuncEnd("emucdb_updateFsmTypeDefinitions", t0);
+}
+
+/** Updates device FSM types in conf DB. */
+void emucdb_updateDeviceFsmTypes(dyn_string &exceptionInfo) {
+  
 }
