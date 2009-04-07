@@ -13,16 +13,16 @@ void emucdb_updateFsmTypes(dyn_string &exceptionInfo) {
   
   emu_info("Saving FSM object and device types to DB");
   //update type definitions
-  emucdb_updateFsmTypeDefinitions(exceptionInfo);
+  _emucdb_updateFsmTypeDefinitions(exceptionInfo);
   if (emu_checkException(exceptionInfo)) { return; }
   
   //recurse down the tree and get the types of all FSM nodes
   dyn_dyn_string deviceTypes;
-  emucdb_getFsmDeviceTypesRecursively("FSM", deviceTypes, exceptionInfo);
+  _emucdb_getFsmDeviceTypesRecursively("FSM", deviceTypes, exceptionInfo);
   if (emu_checkException(exceptionInfo)) { return; }
   
   //update ITEMS table
-  emucdb_updateDeviceFsmTypes(deviceTypes, exceptionInfo);
+  _emucdb_updateDeviceFsmTypes(deviceTypes, exceptionInfo);
   if (emu_checkException(exceptionInfo)) { return; }
   emu_info("[DONE] FSM objects and devices were saved successfully");
   
@@ -30,7 +30,7 @@ void emucdb_updateFsmTypes(dyn_string &exceptionInfo) {
 }
 
 /** Reads FSM types and updates their definitions in DB (adds missing). */
-void emucdb_updateFsmTypeDefinitions(dyn_string exceptionInfo) {
+void _emucdb_updateFsmTypeDefinitions(dyn_string exceptionInfo) {
   string existingTypesSql = "select name from emucdb_fsm_types";
   string insertSql = "insert into emucdb_fsm_types (name, type) values (:insName, :insType)";
   dyn_string devTypes, objTypes;
@@ -78,7 +78,7 @@ void emucdb_updateFsmTypeDefinitions(dyn_string exceptionInfo) {
 /** Saves the FSM device types to the DB.
   @param deviceTypes          2D array [device] -> [logical_alias][fsm_type]
 */
-void emucdb_updateDeviceFsmTypes(dyn_dyn_string deviceTypes, dyn_string &exceptionInfo) {
+void _emucdb_updateDeviceFsmTypes(dyn_dyn_string deviceTypes, dyn_string &exceptionInfo) {
   string typesSql = "SELECT ID, NAME FROM EMUCDB_FSM_TYPES";
   string updateSql = "UPDATE ITEMS SET FSM_TYPE = :id WHERE DPNAME = :dpName";
   dyn_dyn_mixed data; // the bind variables passed to the update command
@@ -119,7 +119,7 @@ void emucdb_updateDeviceFsmTypes(dyn_dyn_string deviceTypes, dyn_string &excepti
 
 /** Recurse down the FSM tree and get types of all the nodes 
     and return them all in deviceTypes parameter (2D array [device] -> [logical_alias][fsm_type]). */
-void emucdb_getFsmDeviceTypesRecursively(string parent, dyn_dyn_string &deviceTypes, dyn_string &exceptionInfo, string parentLogicalName = "") {
+void _emucdb_getFsmDeviceTypesRecursively(string parent, dyn_dyn_string &deviceTypes, dyn_string &exceptionInfo, string parentLogicalName = "") {
   dyn_string children;
   time t0;
   emu_debugFuncStart("emucdb_getFsmDeviceTypesRecursively", t0);
@@ -153,7 +153,7 @@ void emucdb_getFsmDeviceTypesRecursively(string parent, dyn_dyn_string &deviceTy
       }
       parentLogicalName += children[i];
     }
-    emucdb_getFsmDeviceTypesRecursively(children[i], deviceTypes, exceptionInfo, parentLogicalName);
+    _emucdb_getFsmDeviceTypesRecursively(children[i], deviceTypes, exceptionInfo, parentLogicalName);
     if (emu_checkException(exceptionInfo)) { return; }
   }
   
