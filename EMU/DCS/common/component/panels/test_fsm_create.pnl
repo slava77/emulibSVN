@@ -1,0 +1,326 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 501 400 N "_3DFace" 0
+"main()
+{
+  emucdb_initialize();
+}" 0
+ E E E E 1 -1 -1 0  50 70
+""0  1
+E E 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"PUSH_BUTTON1"
+""
+1 50 70 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 48 68 172 95
+
+T 
+1
+LANG:1 11 create tree
+"main()
+{
+  emu_info(\"1\");
+  fwFsmTree_addNode(\"FSM\", \"CMS_CSC_LV_CAN2\", \"CSC_LV_NODES\", 1);
+  emu_info(\"2\");
+  fwFsmTree_addNode(\"CMS_CSC_LV_CAN2\", \"CSC_ME_P1_LV_MRTN\", \"CSC_LV_TREE_NODES\", 0);
+  emu_info(\"3\");
+  fwFsmTree_addNode(\"CSC_ME_P1_LV_MRTN\", \"CSC_ME_P1_CR1_LV_MRTN\", \"CSC_LV_TREE_NODES\", 0);
+  emu_info(\"4\");
+  fwFsmTree_addNode(\"CSC_ME_P1_CR1_LV_MRTN\", \"Wiener/CAN0/Crate1\", \"FwWienerMarathon\", 0);
+  emu_info(\"5\");
+  fwFsmTree_addNode(\"CSC_ME_P1_CR1_LV_MRTN\", \"Wiener/CAN0/Crate1/Channel0\", \"FwWienerMarathonChannel\", 0);
+  emu_info(\"6\");
+  fwFsmTree_addNode(\"CSC_ME_P1_CR1_LV_MRTN\", \"Wiener/CAN0/Crate1/Channel1\", \"FwWienerMarathonChannel\", 0);
+  emu_info(\"7\");
+  fwFsmTree_addNode(\"CSC_ME_P1_CR1_LV_MRTN\", \"Wiener/CAN0/Crate1/Channel3\", \"FwWienerMarathonChannel\", 0);
+  emu_info(\"8\");
+  fwFsmTree_addNode(\"CSC_ME_P1_CR1_LV_MRTN\", \"Wiener/CAN0/Crate1/Channel4\", \"FwWienerMarathonChannel\", 0);
+  emu_info(\"9\");
+  fwFsmTree_addNode(\"CSC_ME_P1_CR1_LV_MRTN\", \"Wiener/CAN0/Crate1/Channel5\", \"FwWienerMarathonChannel\", 0);
+  emu_info(\"10\");
+  fwFsmTree_addNode(\"CSC_ME_P1_CR1_LV_MRTN\", \"Wiener/CAN0/Crate1/Channel7\", \"FwWienerMarathonChannel\", 0);
+  emu_info(\"DONE creating!\");
+
+  emu_info(\"generating and refreshing\");
+  fwFsmTree_generateAll();
+  fwFsmTree_refreshTree();
+  emu_info(\"DONE!\");
+}" 0
+ E E E
+13 1
+"PUSH_BUTTON2"
+""
+1 50 110 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 48 108 172 135
+
+T 
+1
+LANG:1 5 types
+"main()
+{
+  dyn_string ex;
+  emucdb_updateFsmTypes(ex);
+  if (emu_checkException(ex)) { return; } 
+}
+" 0
+ E E E
+13 3
+"PUSH_BUTTON4"
+""
+1 -30 390 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ -32 388 92 415
+
+T 
+1
+LANG:1 21 obsolete fsm create..
+"main()
+{
+  dyn_string ex;
+  
+  //recurse down the tree and get the types of all FSM nodes
+  dyn_dyn_string deviceTypes;
+  emucdb_getFsmDeviceTypesRecursively(\"FSM\", deviceTypes, ex);
+  if (emu_checkException(ex)) { return; }
+  emu_info(\"Device types read: \" + deviceTypes);
+  
+  // now that we have the FSM tree with the corresponding types - we save it to the DB
+  emucdb_saveFsmTypes(deviceTypes, ex);
+  if (emu_checkException(ex)) { return; }
+
+}
+
+/** Saves the FSM device types to the DB.
+  @param deviceTypes          2D array [device] -> [logical_alias][fsm_type]
+*/
+void emucdb_saveFsmTypes(dyn_dyn_string deviceTypes, dyn_string &exceptionInfo) {
+  string typesSql = \"SELECT ID, NAME FROM EMUCDB_FSM_TYPES\";
+  string updateSql = \"UPDATE ITEMS SET FSM_TYPE = :id WHERE DPNAME = :dpName\";
+  dyn_dyn_mixed data; // the bind variables passed to the update command
+  time t0;
+  emu_debugFuncStart(\"emucdb_saveFsmTypes\", t0);
+  
+  // get a fsm types id \"look-up table\"
+  dyn_dyn_mixed types = emucdb_executeSql(typesSql, exceptionInfo, true, emucdb_dummyMapping, makeDynInt(INT_VAR, STRING_VAR));
+  if (emu_checkException(exceptionInfo)) { return; }
+  
+  //fill the \"data\" array with all the necessary info
+  for (int i=1; i <= dynlen(deviceTypes); i++) {
+    string logName = deviceTypes[i][1];
+    string typeName = deviceTypes[i][2];
+    int typeId;
+    
+    if (dpExists(logName)) { // it's not a logical name, it's a device name - we change it to the logical
+      logName = dpGetAlias(logName);
+      emu_info(\"Alias: \" + logName);
+    }
+    data[i][2] = logName;
+    
+    //find out type ID
+    int index = dynContains(types[2], typeName);
+    if (index <= 0) {
+      emu_addError(\"FSM type \\\"\" + typeName + \"\\\" doesn't exist in the confDB, please update the FSM_TYPES table.\", exceptionInfo);
+      return;
+    }
+    data[i][1] = types[1][index];
+  }
+  //update the DB
+  emucdb_executeBulk(updateSql, data, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  
+  emu_debugFuncEnd(\"emucdb_saveFsmTypes\", t0);
+}
+
+/** Recurse down the FSM tree and get types of all the nodes 
+    and return them all in deviceTypes parameter (2D array [device] -> [logical_alias][fsm_type]). */
+void emucdb_getFsmDeviceTypesRecursively(string parent, dyn_dyn_string &deviceTypes, dyn_string &exceptionInfo, string parentLogicalName = \"\") {
+  dyn_string children;
+  time t0;
+  emu_debugFuncStart(\"emucdb_getFsmDeviceTypesRecursively\", t0);
+  
+  fwTree_getChildren(parent, children, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  
+  //process current node (parent)
+  if (parent != \"FSM\") {
+    //find out the type and put it into deviceTypes
+    string device, type;
+    fwTree_getNodeDevice(parent, device, type, exceptionInfo);
+    if (emu_checkException(exceptionInfo)) { return; }
+    dynAppend(deviceTypes, makeDynString(parentLogicalName, type));
+  }
+  
+  //exit condition
+  if (dynlen(children) == 0) {
+    emu_debugFuncEnd(\"emucdb_getFsmDeviceTypesRecursively\", t0);
+    return;
+  }
+  
+  //recurse down
+  for (int i=1; i <= dynlen(children); i++) {
+    // if this is a device, so do not prepend any parent stuff to the logical name
+    if (dpExists(children[i]) || (strlen(dpAliasToName(children[i])) > 0)) {
+      parentLogicalName = children[i];
+    } else { // this is an FSM object - that means we prepend parent's name to make a valid name in the logical tree
+      if (strlen(parentLogicalName) > 0) {
+        parentLogicalName += fwDevice_HIERARCHY_SEPARATOR;
+      }
+      parentLogicalName += children[i];
+    }
+    emucdb_getFsmDeviceTypesRecursively(children[i], deviceTypes, exceptionInfo, parentLogicalName);
+    if (emu_checkException(exceptionInfo)) { return; }
+  }
+  
+  emu_debugFuncEnd(\"emucdb_getFsmDeviceTypesRecursively\", t0);
+}" 0
+ E E E
+13 4
+"PUSH_BUTTON5"
+""
+1 200 70 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 198 68 322 95
+
+T 
+1
+LANG:1 8 save fsm
+"main()
+{
+  dyn_string ex;
+  emucdb_saveFsm(ex);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+13 5
+"PUSH_BUTTON6"
+""
+1 180 310 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 178 308 302 335
+
+T 
+1
+LANG:1 11 just a test
+"main()
+{
+  emu_info(\"dp exists: \" + dpExists(\"Wiener/CAN0/Crate1\"));
+  emu_info(dpGetAlias(\"Wiener/CAN0/Crate1.\"));
+}" 0
+ E E E
+13 6
+"PUSH_BUTTON7"
+""
+1 200 110 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 198 108 322 135
+
+T 
+1
+LANG:1 8 load fsm
+"main()
+{
+  dyn_string ex;
+  emucdb_loadFsm(ex);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
