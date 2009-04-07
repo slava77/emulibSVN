@@ -12,17 +12,27 @@ void emucdb_saveFsm(dyn_string &exceptionInfo) {
   emu_debugFuncStart("emucdb_updateFsmTypes", t0);
   
   emu_info("Saving FSM object and device types to DB");
+  emucdb_beginTransaction(exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+
+  //delete FSM configuration from DB
+  emucdb_deleteFsmConf(exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { emucdb_rollback(); return; }
+  
   //update type definitions
   _emucdb_updateFsmTypeDefinitions(exceptionInfo);
-  if (emu_checkException(exceptionInfo)) { return; }
+  if (emu_checkException(exceptionInfo)) { emucdb_rollback(); return; }
   
   //recurse down the tree and get the types of all FSM nodes
   dyn_dyn_string deviceTypes;
   _emucdb_getFsmDeviceTypesRecursively("FSM", deviceTypes, exceptionInfo);
-  if (emu_checkException(exceptionInfo)) { return; }
+  if (emu_checkException(exceptionInfo)) { emucdb_rollback(); return; }
   
   //update ITEMS table
   _emucdb_updateDeviceFsmTypes(deviceTypes, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { emucdb_rollback(); return; }
+  
+  emucdb_commit(exceptionInfo);
   if (emu_checkException(exceptionInfo)) { return; }
   emu_info("[DONE] FSM objects and devices were saved successfully");
   
@@ -244,4 +254,86 @@ void _emucdb_createFsmRecursively(dyn_mixed nodeData, dyn_string &exceptionInfo,
   }
   
   emu_debugFuncEnd("_emucdb_createFsmRecursively", t0);
+}
+
+/** Set default FSM types to logical tree items in conf DB.
+    This enables to generate FSM tree out of Logical tree using emucdb_loadFsm(...).
+    Note: All nodes that have references to real devices are assigned an FSM type which name is equal to the device type in HW tree (this type must exist, otherwise an error will be generated).
+  @param defTopNodeType            FSM type to be assigned to the top node.
+  @param defObjType                FSM type to be assigned to all intermediate tree nodes (all nodes except tops and leafs).
+*/
+void emucdb_setDefaultFsmTypes(dyn_string &exceptionInfo, string defTopNodeType = "CSC_LV_NODES", 
+                                                          string defObjType = "CSC_LV_TREE_NODES") {
+  string updateRootsSql = "update items set fsm_type = :fsmTypeId " +
+                          "where fsm_type is null and " +
+                                "hver in (select hver from hierarchies where htype = 'LOGICAL') and " +
+                                "parent in (select id from items where type = 'SYSTEM')";
+  string updateTreeNodesSql = "update items set fsm_type = :fsmTypeId " +
+                              "where fsm_type is null and " +
+                              "hver in (select hver from hierarchies where htype = 'LOGICAL') and " +
+                              "id not in (select id from references where valid_to is null) and " +
+                              "type <> 'SYSTEM'";
+  string selectDevicesSql = "select fsmt.id, i.id " +
+                            "from items i left outer join emucdb_fsm_types fsmt on (fsmt.name = i.type) "
+                            "where i.fsm_type is null and " +
+                            "i.hver in (select hver from hierarchies where htype = 'LOGICAL') and " +
+                            "i.id in (select id from references where valid_to is null)";
+  string updateIndividualSql = "update items set fsm_type = :fsmTypeId where id = :itemId";
+  string selectFsmTypeIdSql = "select id from emucdb_fsm_types where name = :fsmTypeName";
+  int defTopTypeId, defObjTypeId;
+  time t0;
+  emu_debugFuncStart("emucdb_setDefaultFsmTypes", t0);
+  emu_info("Applying default FSM types for logical tree nodes in DB");
+  
+  mapping fsmTypeNameMapping;
+  fsmTypeNameMapping["fsmTypeName"] = defTopNodeType;
+  defTopTypeId = emucdb_querySingleField(selectFsmTypeIdSql, exceptionInfo, fsmTypeNameMapping, INT_VAR);
+  if (dynlen(exceptionInfo)) { dynInsertAt(exceptionInfo, "Problem getting the default FSM type for top nodes: " + defTopNodeType, 1); }
+  if (emu_checkException(exceptionInfo)) { return; }
+  fsmTypeNameMapping["fsmTypeName"] = defObjType;
+  defObjTypeId = emucdb_querySingleField(selectFsmTypeIdSql, exceptionInfo, fsmTypeNameMapping, INT_VAR);
+  if (dynlen(exceptionInfo)) { dynInsertAt(exceptionInfo, "Problem getting the default FSM type for object nodes: " + defObjType, 1); }
+  if (emu_checkException(exceptionInfo)) { return; }
+  
+  mapping fsmTypeIdMapping;
+  fsmTypeIdMapping["fsmTypeId"] = defTopTypeId;
+  emucdb_executeSql(updateRootsSql, exceptionInfo, FALSE, fsmTypeIdMapping);
+  if (emu_checkException(exceptionInfo)) { return; }
+  fsmTypeIdMapping["fsmTypeId"] = defObjTypeId;
+  emucdb_executeSql(updateTreeNodesSql, exceptionInfo, FALSE, fsmTypeIdMapping);
+  if (emu_checkException(exceptionInfo)) { return; }
+  
+  dyn_dyn_mixed devices = emucdb_executeSql(selectDevicesSql, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  //check if there are no null values for fsmTypeId, if there are - report an error
+  for (int i=1; i <= dynlen(devices); i++) {
+    if (devices[i][2] == "") {
+      emu_addError("Some device types haven't got their equivalent in FSM types. e.g. device id in DB: " + devices[i][1], exceptionInfo);
+      return;
+    }
+  }
+  emucdb_executeBulk(updateIndividualSql, devices, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  
+  emu_info("[DONE] Default FSM types applied successfully");
+  emu_debugFuncEnd("emucdb_setDefaultFsmTypes", t0);
+}
+
+/** Deletes FSM tree configuration from DB. Optionally (if deleteTypes flag is set) also FSM type definitions are deleted from DB. */
+void emucdb_deleteFsmConf(dyn_string &exceptionInfo, bool deleteTypes = false) {
+  string deleteSql = "update items set fsm_type = null";
+  string deleteTypesSql = "delete from emucdb_fsm_types";
+  time t0;
+  emu_debugFuncStart("emucdb_deleteFsmConf", t0);
+  emu_info("Deleting FSM configuration from DB");
+  
+  emucdb_executeSql(deleteSql, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  if (deleteTypes) {
+    emucdb_executeSql(deleteTypesSql, exceptionInfo);
+    if (emu_checkException(exceptionInfo)) { return; }
+  }
+  
+  emu_info("[DONE] FSM configuration deleted successfully");
+  emu_debugFuncEnd("emucdb_deleteFsmConf", t0);
 }
