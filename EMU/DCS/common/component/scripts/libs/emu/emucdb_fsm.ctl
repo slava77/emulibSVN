@@ -7,7 +7,7 @@ This package contains EMU CDB functions to work with FSM configuration.
 */
 
 /** Updates FSM type definitions and device FSM types in conf DB. */
-void emucdb_updateFsmTypes(dyn_string &exceptionInfo) {
+void emucdb_saveFsm(dyn_string &exceptionInfo) {
   time t0;  
   emu_debugFuncStart("emucdb_updateFsmTypes", t0);
   
@@ -136,7 +136,7 @@ void _emucdb_getFsmDeviceTypesRecursively(string parent, dyn_dyn_string &deviceT
     dynAppend(deviceTypes, makeDynString(parentLogicalName, type));
   }
   
-  //exit condition
+  //exit criteria
   if (dynlen(children) == 0) {
     emu_debugFuncEnd("emucdb_getFsmDeviceTypesRecursively", t0);
     return;
@@ -158,4 +158,90 @@ void _emucdb_getFsmDeviceTypesRecursively(string parent, dyn_dyn_string &deviceT
   }
   
   emu_debugFuncEnd("emucdb_getFsmDeviceTypesRecursively", t0);
+}
+
+
+/** Loads the FSM tree from conf DB.
+  @param useHardwareTreeDevices            If this is true then all DUs (devices) will be created using HW tree,
+                                           otherwise Logical tree will be used (default).
+*/
+void emucdb_loadFsm(dyn_string &exceptionInfo, bool useHardwareTreeDevices = false) {
+  string selectRootsSql = "select i.id, 'FSM' parent_name, i.name, i.dpname, ft.name fsm_type_name, ft.type, ft.is_cu " +
+                         "from items i inner join emucdb_fsm_types ft on (i.fsm_type = ft.id) join items p on (p.id = i.parent) " +
+                         "where i.parent not in (select id from items where fsm_type is not null)";
+  time t0;
+  emu_debugFuncStart("emucdb_loadFsm", t0);
+  emu_info("Loading FSM tree from DB");
+  
+  dyn_dyn_mixed roots = emucdb_executeSql(selectRootsSql, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  for (int i=1; i <= dynlen(roots); i++) {
+    _emucdb_createFsmRecursively(roots[i], exceptionInfo, useHardwareTreeDevices);
+    if (emu_checkException(exceptionInfo)) { return; }
+  }
+  
+  emu_info("[DONE] FSM tree loaded successfully");
+  emu_info("Generating and refreshing FSM");
+  fwFsmTree_generateAll();
+  fwFsmTree_refreshTree();
+  emu_info("DONE!");
+  emu_debugFuncEnd("emucdb_loadFsm", t0);
+}
+
+/** Creates the node provided in nodeData parameter and then recurses down the tree.
+  @param nodeData            information about the node: [1] nodeId, [2] parent name, [3] node name, [4] node dp name,
+                                                         [5] fsm type name, [6] fsm type type (dev - device or obj - object),
+                                                         [7] is CU (1 or 0)
+*/
+void _emucdb_createFsmRecursively(dyn_mixed nodeData, dyn_string &exceptionInfo, bool useHardwareTree = false) {
+  string selectChildrenSql = "select i.id, p.name parent_name, i.name, i.dpname, ft.name fsm_type_name, ft.type, ft.is_cu " +
+                             "from items i inner join emucdb_fsm_types ft on (i.fsm_type = ft.id) join items p on (p.id = i.parent) " +
+                             "where i.parent = :parentId";
+  string getFromHwSql = "select i.dpname " +
+                        "from references r join items i on (i.id = r.ref_id) " +
+                        "where r.valid_to is null and r.id = :nodeLogId";
+  int id             = nodeData[1];
+  string parentName  = nodeData[2];
+  string name        = nodeData[3];
+  string dpName      = nodeData[4];
+  string fsmTypeName = nodeData[5];
+  string fsmTypeType = nodeData[6];
+  int isCu           = nodeData[7];
+  time t0;
+  emu_debugFuncStart("_emucdb_createFsmRecursively", t0);
+  
+  //create the parent node
+  if (fsmTypeType == "dev") { // for devices replace the name with dpName
+    if (useHardwareTree) { // get the device name from HW tree
+      mapping bindVariables;
+      bindVariables["nodeLogId"] = id;
+      dyn_dyn_mixed hwDp = emucdb_executeSql(getFromHwSql, exceptionInfo, FALSE, bindVariables);
+      if (emu_checkException(exceptionInfo)) { return; }
+      if (dynlen(hwDp) < 1) {
+        emu_addError("Reference to HW tree for \"" + dpName + "\" was not found", exceptionInfo);
+        return;
+      } else if (dynlen(hwDp) > 1) {
+        emu_addError("More than one reference to HW tree for \"" + dpName + "\" were found", exceptionInfo);
+        return;
+      }
+      name = hwDp[1][1];
+    } else {               // replace the name with full DP name from Logical tree
+      name = dpName;
+    }
+  }
+  fwFsmTree_addNode(parentName, name, fsmTypeName, isCu);
+  
+  //get the children
+  mapping bindVariables;
+  bindVariables["parentId"] = id;
+  dyn_dyn_mixed children = emucdb_executeSql(selectChildrenSql, exceptionInfo, FALSE, bindVariables);
+  if (emu_checkException(exceptionInfo)) { return; }
+  
+  //create children
+  for (int i=1; i <= dynlen(children); i++) {
+    _emucdb_createFsmRecursively(children[i], exceptionInfo, useHardwareTree);
+    if (emu_checkException(exceptionInfo)) { return; }
+  }
+  
+  emu_debugFuncEnd("_emucdb_createFsmRecursively", t0);
 }
