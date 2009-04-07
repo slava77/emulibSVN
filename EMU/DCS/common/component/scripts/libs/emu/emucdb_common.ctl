@@ -10,6 +10,7 @@ const mapping emucdb_dummyMapping;
 const string emucdb_CONNECTION_FILENAME = "emucdb_DBConnection";
 
 global string emucdb_g_connName = "emucdb_DB_connection";
+global dbConnection emucdb_g_dbConn;
 
 /** Opens connection to the EMU confDB and initializes the fwConfigurationDB. */
 void emucdb_initialize() {
@@ -45,8 +46,9 @@ void emucdb_initialize() {
   if (connectRequired) {
     string connFile=getPath(CONFIG_REL_PATH, emucdb_CONNECTION_FILENAME);
     string connString;
-    dbConnection dbConn;
     string err;
+    dbConnection newConn;
+    emucdb_g_dbConn = newConn;
     
     bool ok=fileToString(connFile, connString);
     if (!ok) {
@@ -54,8 +56,8 @@ void emucdb_initialize() {
       return;
     }
     emu_info("EMU CDB connection file opened successfully, connecting to DB...");
-    rdbOpenConnection(connString, dbConn, emucdb_g_connName);
-    if (rdbCheckError(err,dbConn)){ emu_error("Error while connecting to EMU CDB database: " + err); return;};
+    rdbOpenConnection(connString, emucdb_g_dbConn, emucdb_g_connName);
+    if (rdbCheckError(err, emucdb_g_dbConn)){ emu_error("Error while connecting to EMU CDB database: " + err); return;};
     emu_info("Connection to the EMU CDB database opened OK");
   }
 
@@ -133,6 +135,7 @@ dyn_dyn_mixed emucdb_executeSql(string sql, dyn_string &exceptionInfo,
   cmd = _emucdb_prepareStatement(sql, exceptionInfo);
   if (emu_checkException(exceptionInfo)) { return; }
   data = _emucdb_executeCommand(cmd, exceptionInfo, true, transposeResults, bindVariables, datatypes);
+  if (dynlen(exceptionInfo)) { emu_addError("Error when executing sql statement: " + sql, exceptionInfo); }
   if (emu_checkException(exceptionInfo)) { return; }
   
   emu_debugFuncEnd("emucdb_executeSql", t0);
@@ -154,6 +157,80 @@ void emucdb_executeBulk(string sql, dyn_dyn_mixed data, dyn_string &exceptionInf
   if (rdbCheckError(err)){dynAppend(exceptionInfo, "DB ERROR: " + err); emu_error(exceptionInfo); return;};
   
   emu_debugFuncEnd("emu_executeBulk", t0);
+}
+
+/** Very simple but yet quite often useful (because of error handling) wrapper function to query just a single field of information from DB. 
+    For parameters see emucdb_executeSql(...). */
+mixed emucdb_querySingleField(string sql, dyn_string &exceptionInfo, 
+                              mapping bindVariables = emucdb_dummyMapping, int datatype = STRING_VAR) {
+  dyn_mixed data;
+  time t0;
+  emu_debugFuncStart("emucdb_querySingleField", t0);
+  
+  data = emucdb_querySingleRow(sql, exceptionInfo, bindVariables, makeDynInt(datatype));
+  if (emu_checkException(exceptionInfo)) { return; }
+
+  if (dynlen(data) != 1) {
+    emu_addError("Expected one result column on query, but got: " + dynlen(data[1]));
+    emu_addError("Error when executing sql statement: " + sql, exceptionInfo);
+  }
+  
+  emu_debugFuncEnd("emucdb_querySingleField", t0);
+  return data[1];
+}
+
+/** Very simple but yet quite often useful (because of error handling) wrapper function to query just a single row of information from DB. 
+    If the number of returned rows is not 1 then error message will be issued.
+    For parameters see emucdb_executeSql(...). */
+dyn_mixed emucdb_querySingleRow(string sql, dyn_string &exceptionInfo, 
+                              mapping bindVariables = emucdb_dummyMapping, dyn_int datatypes = makeDynInt()) {
+  dyn_dyn_mixed data;
+  time t0;
+  emu_debugFuncStart("emucdb_querySingleRow", t0);
+  
+  data = emucdb_executeSql(sql, exceptionInfo, FALSE, bindVariables, datatypes);
+  if (emu_checkException(exceptionInfo)) { return; }
+  if (dynlen(data) != 1) {
+    emu_addError("Expected one result row on query, but got: " + dynlen(data), exceptionInfo);
+    emu_addError("Error when executing sql statement: " + sql, exceptionInfo);
+  }
+  
+  emu_debugFuncEnd("emucdb_querySingleRow", t0);
+  return data[1];
+}
+
+/** Begins a transaction. */
+void emucdb_beginTransaction(dyn_string &exceptionInfo) {
+  string err;
+  time t0;
+  emu_debugFuncStart("emucdb_beginTransaction", t0);
+  
+  rdbBeginTransaction(emucdb_g_connName);
+  if (rdbCheckError(err, emucdb_g_dbConn)){dynAppend(exceptionInfo, "DB TRANSACTION ERROR: " + err); emu_error(exceptionInfo); return;};
+      
+  emu_debugFuncEnd("emucdb_beginTransaction", t0);
+}
+
+/** Commits the current transaction. */
+void emucdb_commit(dyn_string &exceptionInfo) {
+  string err;
+  time t0;
+  emu_debugFuncStart("emucdb_commit", t0);
+  
+  rdbCommitTransaction(emucdb_g_connName);
+  if (rdbCheckError(err, emucdb_g_dbConn)){dynAppend(exceptionInfo, "DB TRANSACTION ERROR: " + err); emu_error(exceptionInfo); return;};
+      
+  emu_debugFuncEnd("emucdb_commit", t0);
+}
+
+/** Rolls back the current transaction. */
+void emucdb_rollback() {
+  time t0;
+  emu_debugFuncStart("emucdb_rollback", t0);
+  
+  rdbRollbackTransaction(emucdb_g_connName);
+      
+  emu_debugFuncEnd("emucdb_rollback", t0);
 }
 
 /** Prepares an sql statement and returns dbCommand object which can be executed multiple times.
