@@ -82,8 +82,9 @@ void emucdb_checkSchema(dyn_string &exceptionInfo) {
   }
   
   //check EMU CDB schema
-  dyn_dyn_mixed data = emucdb_executeSql("select value from emucdb_parameters where name = 'emucdb_version'", exceptionInfo);
-  if (dynlen(exceptionInfo) || dynlen(data) == 0) { //if there's an error - try to create it.
+  dyn_string ex;
+  float schemaVersion = emu_getParameter("emucdb_version", ex, FLOAT_VAR);
+  if (dynlen(ex)) { //if there's an error - try to create it.
     emu_info("An error occured while retrieving EMU CDB version from DB. Trying to create schema...");
     emucdb_createDBSchema(exceptionInfo, false);
     if (emu_checkException(exceptionInfo)) { return; }
@@ -152,7 +153,11 @@ void emucdb_executeBulk(string sql, dyn_dyn_mixed data, dyn_string &exceptionInf
   cmd = _emucdb_prepareStatement(sql, exceptionInfo);
   if (emu_checkException(exceptionInfo)) { return; }
   rdbBindAndExecute(cmd, data);
-  if (rdbCheckError(err)){dynAppend(exceptionInfo, "DB ERROR: " + err); emu_error(exceptionInfo); return;};
+  if (rdbCheckError(err)) {
+    dynAppend(exceptionInfo, "DB ERROR: " + err);
+    emu_addError("Error when executing bulk operation using this sql statement: " + sql, exceptionInfo);
+    return;
+  }
   rdbFinishCommand(cmd);
   if (rdbCheckError(err)){dynAppend(exceptionInfo, "DB ERROR: " + err); emu_error(exceptionInfo); return;};
   
