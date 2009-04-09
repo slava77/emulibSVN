@@ -6,10 +6,10 @@ This package contains EMU CDB functions to work with FSM configuration.
 @date   April 2009
 */
 
-/** Updates FSM type definitions and device FSM types in conf DB. */
+/** Updates FSM type definitions and saves FSM tree to conf DB. */
 void emucdb_saveFsm(dyn_string &exceptionInfo) {
   time t0;  
-  emu_debugFuncStart("emucdb_updateFsmTypes", t0);
+  emu_debugFuncStart("emucdb_saveFsm", t0);
   
   emu_info("Saving FSM object and device types to DB");
   emucdb_beginTransaction(exceptionInfo);
@@ -33,16 +33,16 @@ void emucdb_saveFsm(dyn_string &exceptionInfo) {
   if (emu_checkException(exceptionInfo)) { emucdb_rollback(); return; }
   
   emucdb_commit(exceptionInfo);
-  if (emu_checkException(exceptionInfo)) { return; }
+  if (emu_checkException(exceptionInfo)) { emucdb_rollback(); return; }
   emu_info("[DONE] FSM objects and devices were saved successfully");
   
-  emu_debugFuncEnd("emucdb_updateFsmTypes", t0);
+  emu_debugFuncEnd("emucdb_saveFsm", t0);
 }
 
 /** Reads FSM types and updates their definitions in DB (adds missing). */
 void _emucdb_updateFsmTypeDefinitions(dyn_string exceptionInfo) {
   string existingTypesSql = "select name from emucdb_fsm_types";
-  string insertSql = "insert into emucdb_fsm_types (name, type) values (:insName, :insType)";
+  string insertSql = "insert into emucdb_fsm_types (name, type, is_cu) values (:insName, :insType, :isCu)";
   dyn_string devTypes, objTypes;
   time t0;  
   emu_debugFuncStart("emucdb_updateFsmTypeDefinitions", t0);
@@ -68,12 +68,16 @@ void _emucdb_updateFsmTypeDefinitions(dyn_string exceptionInfo) {
   dyn_dyn_mixed insertBindVars;
   for (int i=1; i <= dynlen(devTypes); i++) {
     if (!dynContains(data[1], devTypes[i])) {
-      dynAppend(insertBindVars, makeDynString(devTypes[i], "dev"));
+      int isCu = 0;
+      emu_info("TODO!!!!!! MOVE IS_CU FLAG TO EMUCDB_DEVICES FROM EMUCDB_FSM_TYPES!!!!!!!!!!!");
+      dynAppend(insertBindVars, makeDynString(devTypes[i], "dev", isCu));
     }
   }
   for (int i=1; i <= dynlen(objTypes); i++) {
     if (!dynContains(data[1], objTypes[i])) {
-      dynAppend(insertBindVars, makeDynString(objTypes[i], "obj"));
+      int isCu = 0;
+      emu_info("TODO!!!!!! MOVE IS_CU FLAG TO EMUCDB_DEVICES FROM EMUCDB_FSM_TYPES!!!!!!!!!!!");
+      dynAppend(insertBindVars, makeDynString(objTypes[i], "obj", isCu));
     }
   }
   
@@ -86,30 +90,36 @@ void _emucdb_updateFsmTypeDefinitions(dyn_string exceptionInfo) {
 
 
 /** Saves the FSM device types to the DB.
-  @param deviceTypes          2D array [device] -> [logical_alias][fsm_type]
+  @param deviceTypes          2D array [device] -> [logical_alias][fsm_type][is_root]
 */
 void _emucdb_updateDeviceFsmTypes(dyn_dyn_string deviceTypes, dyn_string &exceptionInfo) {
-  string typesSql = "SELECT ID, NAME FROM EMUCDB_FSM_TYPES";
-  string updateSql = "UPDATE ITEMS SET FSM_TYPE = :id WHERE DPNAME = :dpName";
-  dyn_dyn_mixed data; // the bind variables passed to the update command
+  string typesSql = "select id, name, default_ui from emucdb_fsm_types";
+  string selectIdSql = "select i.id, emu.id from items i left outer join emucdb_devices emu on (emu.id = i.id) where i.dpname = :dpName";
+  string insertSql = "insert into emucdb_devices (id, fsm_type, fsm_ui, is_root) values (:id, :fsmType, :fsmUi, :isRoot)";
+  string updateSql = "update emucdb_devices set fsm_type = :fsmType, fsm_ui = :fsmUi, is_root = :isRoot where id = :id";
+  dyn_dyn_mixed updateData; // the bind variables passed to the bulk update command
+  dyn_dyn_mixed insertData; // the bind variables passed to the bulk insert command
+  mapping selectIdMapping;
   time t0;
   emu_debugFuncStart("emucdb_updateDeviceFsmTypes", t0);
 
   emu_info("Updating FSM object and device types in DB");
   // get a fsm types id "look-up table"
-  dyn_dyn_mixed types = emucdb_executeSql(typesSql, exceptionInfo, true, emucdb_dummyMapping, makeDynInt(INT_VAR, STRING_VAR));
+  dyn_dyn_mixed types = emucdb_executeSql(typesSql, exceptionInfo, true, emucdb_dummyMapping, makeDynInt(INT_VAR, STRING_VAR, STRING_VAR));
   if (emu_checkException(exceptionInfo)) { return; }
   
-  //fill the "data" array with all the necessary info
+  //fill the "data" arrays with all the necessary info
   for (int i=1; i <= dynlen(deviceTypes); i++) {
     string logName = deviceTypes[i][1];
     string typeName = deviceTypes[i][2];
+    int isRoot = deviceTypes[i][3];
     int typeId;
+    int deviceId;
+    string defaultUi;
     
     if (dpExists(logName)) { // it's not a logical name, it's a device name - we change it to the logical
       logName = dpGetAlias(logName + ".");
     }
-    data[i][2] = logName;
     
     //find out type ID
     int index = dynContains(types[2], typeName);
@@ -117,18 +127,44 @@ void _emucdb_updateDeviceFsmTypes(dyn_dyn_string deviceTypes, dyn_string &except
       emu_addError("FSM type \"" + typeName + "\" doesn't exist in the confDB, please update the FSM_TYPES table.", exceptionInfo);
       return;
     }
-    data[i][1] = types[1][index];
+    typeId = types[1][index];
+    defaultUi = types[3][index];
+    
+    //find out device ID and if it's already in emucdb table or not
+    selectIdMapping["dpName"] = logName;
+    emu_debug("--== _emucdb_updateDeviceFsmTypes ==-- Checking Id of device: " + logName, emu_DEBUG_DETAIL);
+    dyn_mixed ids = emucdb_querySingleRow(selectIdSql, exceptionInfo, selectIdMapping, makeDynInt(INT_VAR, INT_VAR));
+    if (emu_checkException(exceptionInfo)) { return; }
+    deviceId = ids[1];
+    if (ids[2] == "") { // device does not exist in emucdb table - insert operation
+      int index = dynlen(insertData) + 1;
+      insertData[index][1] = deviceId;
+      insertData[index][2] = typeId;
+      insertData[index][3] = defaultUi;
+      insertData[index][4] = isRoot;
+    } else {            // device already exists in emucdb table - update operation
+      int index = dynlen(updateData) + 1;
+      updateData[index][1] = typeId;
+      updateData[index][2] = defaultUi;
+      updateData[index][3] = isRoot;
+      updateData[index][4] = deviceId;
+    }
   }
-  //update the DB
-  emucdb_executeBulk(updateSql, data, exceptionInfo);
+  //update the DB - perform insert
+  emu_debug("--== _emucdb_updateDeviceFsmTypes ==-- Executing bulk insert with data: " + insertData, emu_DEBUG_DETAIL);
+  emucdb_executeBulk(insertSql, insertData, exceptionInfo);
   if (emu_checkException(exceptionInfo)) { return; }
-  emu_info("[DONE] FSM object and device types updated: " + dynlen(data));
+  //update the DB - perform update
+  emu_debug("--== _emucdb_updateDeviceFsmTypes ==-- Executing bulk update with data: " + updateData, emu_DEBUG_DETAIL);
+  emucdb_executeBulk(updateSql, updateData, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  emu_info("[DONE] FSM object and device types inserted: " + dynlen(insertData) + ", updated: " + dynlen(updateData));
 
   emu_debugFuncEnd("emucdb_updateDeviceFsmTypes", t0);
 }
 
 /** Recurse down the FSM tree and get types of all the nodes 
-    and return them all in deviceTypes parameter (2D array [device] -> [logical_alias][fsm_type]). */
+    and return them all in deviceTypes parameter (2D array [device] -> [logical_alias][fsm_type][is_root]). */
 void _emucdb_getFsmDeviceTypesRecursively(string parent, dyn_dyn_string &deviceTypes, dyn_string &exceptionInfo, string parentLogicalName = "") {
   dyn_string children;
   time t0;
@@ -136,6 +172,9 @@ void _emucdb_getFsmDeviceTypesRecursively(string parent, dyn_dyn_string &deviceT
   
   fwTree_getChildren(parent, children, exceptionInfo);
   if (emu_checkException(exceptionInfo)) { return; }
+  emu_debug("--== _emucdb_getFsmDeviceTypesRecursively ==-- parent: " + parent, emu_DEBUG_DETAIL);
+  emu_debug("--== _emucdb_getFsmDeviceTypesRecursively ==-- parent logical name: " + parentLogicalName, emu_DEBUG_DETAIL);
+  emu_debug("--== _emucdb_getFsmDeviceTypesRecursively ==-- children: " + children, emu_DEBUG_DETAIL);
   
   //process current node (parent)
   if (parent != "FSM") {
@@ -143,7 +182,11 @@ void _emucdb_getFsmDeviceTypesRecursively(string parent, dyn_dyn_string &deviceT
     string device, type;
     fwTree_getNodeDevice(parent, device, type, exceptionInfo);
     if (emu_checkException(exceptionInfo)) { return; }
-    dynAppend(deviceTypes, makeDynString(parentLogicalName, type));
+    int isRoot = 0;
+    if (strpos(parentLogicalName, fwDevice_HIERARCHY_SEPARATOR) < 0) { // if there's no separator in the logical name - then it's root
+      isRoot = 1;
+    }
+    dynAppend(deviceTypes, makeDynString(parentLogicalName, type, isRoot));
   }
   
   //exit criteria
@@ -154,16 +197,17 @@ void _emucdb_getFsmDeviceTypesRecursively(string parent, dyn_dyn_string &deviceT
   
   //recurse down
   for (int i=1; i <= dynlen(children); i++) {
+    string logName = parentLogicalName;
     // if this is a device, so do not prepend any parent stuff to the logical name
     if (dpExists(children[i]) || (strlen(dpAliasToName(children[i])) > 0)) {
-      parentLogicalName = children[i];
+      logName = children[i];
     } else { // this is an FSM object - that means we prepend parent's name to make a valid name in the logical tree
-      if (strlen(parentLogicalName) > 0) {
-        parentLogicalName += fwDevice_HIERARCHY_SEPARATOR;
+      if (strlen(logName) > 0) {
+        logName += fwDevice_HIERARCHY_SEPARATOR;
       }
-      parentLogicalName += children[i];
+      logName += children[i];
     }
-    _emucdb_getFsmDeviceTypesRecursively(children[i], deviceTypes, exceptionInfo, parentLogicalName);
+    _emucdb_getFsmDeviceTypesRecursively(children[i], deviceTypes, exceptionInfo, logName);
     if (emu_checkException(exceptionInfo)) { return; }
   }
   
@@ -177,8 +221,9 @@ void _emucdb_getFsmDeviceTypesRecursively(string parent, dyn_dyn_string &deviceT
 */
 void emucdb_loadFsm(dyn_string &exceptionInfo, bool useHardwareTreeDevices = false) {
   string selectRootsSql = "select i.id, 'FSM' parent_name, i.name, i.dpname, ft.name fsm_type_name, ft.type, ft.is_cu " +
-                         "from items i inner join emucdb_fsm_types ft on (i.fsm_type = ft.id) join items p on (p.id = i.parent) " +
-                         "where i.parent not in (select id from items where fsm_type is not null)";
+                         "from items i inner join emucdb_devices emud on (emud.id = i.id) " +
+                                      "inner join emucdb_fsm_types ft on (emud.fsm_type = ft.id) " +
+                         "where emud.is_root = 1";
   time t0;
   emu_debugFuncStart("emucdb_loadFsm", t0);
   emu_info("Loading FSM tree from DB");
@@ -205,7 +250,9 @@ void emucdb_loadFsm(dyn_string &exceptionInfo, bool useHardwareTreeDevices = fal
 */
 void _emucdb_createFsmRecursively(dyn_mixed nodeData, dyn_string &exceptionInfo, bool useHardwareTree = false) {
   string selectChildrenSql = "select i.id, p.name parent_name, i.name, i.dpname, ft.name fsm_type_name, ft.type, ft.is_cu " +
-                             "from items i inner join emucdb_fsm_types ft on (i.fsm_type = ft.id) join items p on (p.id = i.parent) " +
+                             "from items i inner join emucdb_devices emud on (emud.id = i.id) " +
+                                          "inner join emucdb_fsm_types ft on (emud.fsm_type = ft.id) " +
+                                          "join items p on (p.id = i.parent) " +
                              "where i.parent = :parentId";
   string getFromHwSql = "select i.dpname " +
                         "from references r join items i on (i.id = r.ref_id) " +
@@ -256,13 +303,27 @@ void _emucdb_createFsmRecursively(dyn_mixed nodeData, dyn_string &exceptionInfo,
   emu_debugFuncEnd("_emucdb_createFsmRecursively", t0);
 }
 
+/** Generates FSM tree out of the Logical Tree in confDB. */
+void emucdb_generateFSM(dyn_string &exceptionInfo) {
+  time t0;
+  emu_debugFuncStart("emucdb_generateFSM", t0);
+  
+  emu_addError("emucdb_generateFSM is not yet implemented", exceptionInfo);
+  return;
+  // Update EMUCDB_DEVICES table
+  _emucdb_setDefaultFsmTypes(exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  
+  emu_debugFuncEnd("emucdb_generateFSM", t0);
+}
+
 /** Set default FSM types to logical tree items in conf DB.
     This enables to generate FSM tree out of Logical tree using emucdb_loadFsm(...).
     Note: All nodes that have references to real devices are assigned an FSM type which name is equal to the device type in HW tree (this type must exist, otherwise an error will be generated).
   @param defTopNodeType            FSM type to be assigned to the top node.
   @param defObjType                FSM type to be assigned to all intermediate tree nodes (all nodes except tops and leafs).
 */
-void emucdb_setDefaultFsmTypes(dyn_string &exceptionInfo, string defTopNodeType = "CSC_LV_NODES", 
+void _emucdb_setDefaultFsmTypes(dyn_string &exceptionInfo, string defTopNodeType = "CSC_LV_NODES", 
                                                           string defObjType = "CSC_LV_TREE_NODES") {
   string updateRootsSql = "update items set fsm_type = :fsmTypeId " +
                           "where fsm_type is null and " +
@@ -321,7 +382,7 @@ void emucdb_setDefaultFsmTypes(dyn_string &exceptionInfo, string defTopNodeType 
 
 /** Deletes FSM tree configuration from DB. Optionally (if deleteTypes flag is set) also FSM type definitions are deleted from DB. */
 void emucdb_deleteFsmConf(dyn_string &exceptionInfo, bool deleteTypes = false) {
-  string deleteSql = "update items set fsm_type = null";
+  string deleteSql = "update emucdb_devices set fsm_type = null, fsm_ui = null";
   string deleteTypesSql = "delete from emucdb_fsm_types";
   time t0;
   emu_debugFuncStart("emucdb_deleteFsmConf", t0);
