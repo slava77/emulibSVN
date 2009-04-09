@@ -8,6 +8,7 @@ This package contains general purpose utility functions.
 
 const int emu_DEBUG_GENERAL = 1;
 const int emu_DEBUG_FUNC_START_STOP = 2;
+const int emu_DEBUG_DETAIL = 4;
 
 /** Debug level (bitmask)
   1 - general debug messages
@@ -132,4 +133,18 @@ void emu_debugFuncEnd(string funcName, time t0) {
   } else {
     dynRemove(g_emu_debugBacktrace, dynlen(g_emu_debugBacktrace));
   }
+}
+
+mixed emu_getParameter(string paramName, dyn_string &exceptionInfo, int datatype = STRING_VAR) {
+  string sql = "select value from emucdb_parameters where name = :paramName";
+  time t0;
+  emu_debugFuncStart("emu_getParameter", t0);
+  
+  mapping bindVariables;
+  bindVariables["paramName"] = paramName;
+  mixed ret = emucdb_querySingleField(sql, exceptionInfo, bindVariables, datatype);
+  if (emu_checkException(exceptionInfo)) { return; }
+  
+  emu_debugFuncEnd("emu_getParameter", t0);
+  return ret;
 }
