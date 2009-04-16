@@ -6,6 +6,8 @@ This package contains general purpose utility functions.
 @date   March 2009
 */
 
+const int emu_ERROR_REPORT_DELAY = 100; //ms
+
 const int emu_DEBUG_GENERAL = 1;
 const int emu_DEBUG_FUNC_START_STOP = 2;
 const int emu_DEBUG_DETAIL = 4;
@@ -14,12 +16,11 @@ const int emu_DEBUG_DETAIL = 4;
   1 - general debug messages
   2 - function start/stop messages
 */
-global int g_emu_Debug = 1;//emu_DEBUG_GENERAL | emu_DEBUG_FUNC_START_STOP;
+global int g_emu_Debug = 3;//emu_DEBUG_GENERAL | emu_DEBUG_FUNC_START_STOP;
 
 global dyn_string g_emu_debugBacktrace;
-global dyn_string g_emu_lastException;
-global time g_emu_lastExceptionTimestamp;
-
+global dyn_int g_emu_reportingThreads;
+global dyn_dyn_string g_emu_exceptionsToReport;
 
 /** Register an EMU error
   @param msg         Error message. 
@@ -31,16 +32,36 @@ void emu_errorSingle(string msg) {
 
 /** Register an EMU error. 
     Appends EMU initials, skips identical consecutive errors (happens often when the same exception travels through different procedures), 
-      appends a backtrace (if available) and reports to the user.
+      appends a backtrace (if available) and reports to the user. Now reports only the most informative message.
   @param error         JCOP framework error object.
 */
-void emu_error(dyn_string error, bool terminateManager = false) {
-  //if it's the same error just escalading upwards - skip it
-  bool lessThanSecond = (period(getCurrentTime()) - period(g_emu_lastExceptionTimestamp)) == 0;
-  if (((bool) (error == g_emu_lastException)) && (lessThanSecond)) {
+void emu_error(dyn_string error, bool pvssReport = false, bool terminateManager = false) {
+  // error is already on the queue to be reported - kill the thread and post the new one
+  int index = emu_dynDynContains(g_emu_exceptionsToReport, error);
+  if (index > 0) {
     DebugTN("EMU - skipping the same error report");
-    return;
+    stopThread(g_emu_reportingThreads[index]);
+    dynRemove(g_emu_reportingThreads, index);
+    dynRemove(g_emu_exceptionsToReport, index);
+  } 
+  //if this isn't the same error that's already waiting then maybe it's just a more detailed one - then do the same because we want this one to be displayed
+  if (index <= 0) {  
+    index = _emu_findSimilarInMap(g_emu_exceptionsToReport, error);
+    if (index > 0) {
+      DebugTN("EMU - skipping a less detailed error report");
+      stopThread(g_emu_reportingThreads[index]);
+      dynRemove(g_emu_reportingThreads, index);
+      dynRemove(g_emu_exceptionsToReport, index);
+    }
   }
+  
+  dynAppend(g_emu_exceptionsToReport, error);
+  int id = startThread("_emu_delayedReport", error, emu_ERROR_REPORT_DELAY, pvssReport, terminateManager);
+  dynAppend(g_emu_reportingThreads, id);
+}
+
+/** Reports the error. */
+void _emu_reportError(dyn_string error, bool pvssReport = false, bool terminateManager = false) {
   dyn_string exInfoForGraphics;
   DebugTN("EMU ERROR:");
   for (int i=1; i <= dynlen(error); i++) {
@@ -48,7 +69,9 @@ void emu_error(dyn_string error, bool terminateManager = false) {
     dynAppend(exInfoForGraphics, error[i]);
     dynAppend(exInfoForGraphics, "");
     DebugTN("error [" + i + "]: " + error[i]);
-    //throwError(makeError("", PRIO_SEVERE, ERR_IMPL, 0, "error [" + i + "]: " + error[i])); //this one works very slow
+    if (pvssReport) {
+      throwError(makeError("", PRIO_SEVERE, ERR_IMPL, -1, "error [" + i + "]: " + error[i])); //this one works very slow
+    }
   }
   
   DebugTN("EMU EXCEPTION BACKTRACE:");
@@ -65,8 +88,37 @@ void emu_error(dyn_string error, bool terminateManager = false) {
   if (terminateManager) {
     throwError(makeError("", PRIO_FATAL, ERR_IMPL, 0, error));
   }
-  g_emu_lastException = error;
-  g_emu_lastExceptionTimestamp = getCurrentTime();
+}
+
+/** This is used in a thread to report an exception after certain delay 
+  (if another exception which is just an extended version of this arrives then this thread is killed and a new one is started).
+  @param error         error to be reported
+  @param delayMs       delay in milli seconds
+*/
+void _emu_delayedReport(dyn_string error, int delayMs, bool pvssReport = false, bool terminateManager = false) {
+  delay(0, delayMs);
+  _emu_reportError(error, pvssReport, terminateManager);
+  int index = dynContains(g_emu_reportingThreads, getThreadId());
+  dynRemove(g_emu_reportingThreads, index);
+  dynRemove(g_emu_exceptionsToReport, index);
+}
+
+/** Searches for a same or a subset of the given array in the given map.
+    If it's found then index in map is returned, otherwise -1 is returned.
+*/
+int _emu_findSimilarInMap(dyn_dyn_anytype map, dyn_anytype array) {
+  for (int i=1; i <= dynlen(map); i++) {
+    if (dynlen(map[i]) > dynlen(array)) { //it's not a subset (it has more elements)
+      continue;
+    }
+    string arrayS = array;
+    string mapS = map[i];
+    
+    if (strpos(arrayS, mapS) >= 0) {
+      return i;
+    }    
+  }
+  return -1;
 }
 
 /** Adds an error to exceptionInfo and reports it through emu_error(...). */
@@ -151,4 +203,13 @@ mixed emu_getParameter(string paramName, dyn_string &exceptionInfo, int datatype
   
   emu_debugFuncEnd("emu_getParameter", t0);
   return ret;
+}
+
+int emu_dynDynContains(dyn_dyn_anytype map, dyn_anytype array) {
+  for (int i=1; i <= dynlen(map); i++) {
+    if ((bool) (map[i] == array)) {
+      return i;
+    }
+  }
+  return -1;
 }
