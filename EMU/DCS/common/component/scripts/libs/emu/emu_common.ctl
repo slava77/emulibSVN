@@ -71,7 +71,7 @@ void emu_error(dyn_string error, bool terminateManager = false) {
 
 /** Adds an error to exceptionInfo and reports it through emu_error(...). */
 void emu_addError(string errMsg, dyn_string &exceptionInfo) {
-  dynAppend(exceptionInfo, errMsg);
+  dynInsertAt(exceptionInfo, errMsg, 1);
   emu_error(exceptionInfo);
 }
 
@@ -96,9 +96,13 @@ void emu_debug(string msg, int level = 1 /*emu_DEBUG_GENERAL*/) {
   @param exceptionInfo   standard framework "exception object".
   @returns               true if there was any error, false if not.
 */
-bool emu_checkException(dyn_string exceptionInfo) {
+bool emu_checkException(dyn_string &exceptionInfo, string higherLevelMsg = "") {
   if (dynlen(exceptionInfo)) {
-    emu_error(exceptionInfo);
+    if (strlen(higherLevelMsg) > 0) { // add and report
+      emu_addError(higherLevelMsg, exceptionInfo, false);
+    } else {  // just report
+      emu_error(exceptionInfo);
+    }
     return true;
   }
   return false;
