@@ -6,7 +6,7 @@ This package contains general purpose utility functions.
 @date   March 2009
 */
 
-const int emu_ERROR_REPORT_DELAY = 100; //ms
+const int emu_ERROR_REPORT_DELAY = 150; //ms
 
 const int emu_DEBUG_GENERAL = 1;
 const int emu_DEBUG_FUNC_START_STOP = 2;
@@ -16,7 +16,7 @@ const int emu_DEBUG_DETAIL = 4;
   1 - general debug messages
   2 - function start/stop messages
 */
-global int g_emu_Debug = 3;//emu_DEBUG_GENERAL | emu_DEBUG_FUNC_START_STOP;
+global int g_emu_Debug = 5;//emu_DEBUG_GENERAL | emu_DEBUG_FUNC_START_STOP;
 
 global dyn_string g_emu_debugBacktrace;
 global dyn_int g_emu_reportingThreads;
@@ -88,6 +88,8 @@ void _emu_reportError(dyn_string error, bool pvssReport = false, bool terminateM
   if (terminateManager) {
     throwError(makeError("", PRIO_FATAL, ERR_IMPL, 0, error));
   }
+  //clear backtrace
+  dynClear(g_emu_debugBacktrace);
 }
 
 /** This is used in a thread to report an exception after certain delay 
@@ -151,7 +153,7 @@ void emu_debug(string msg, int level = 1 /*emu_DEBUG_GENERAL*/) {
 bool emu_checkException(dyn_string &exceptionInfo, string higherLevelMsg = "") {
   if (dynlen(exceptionInfo)) {
     if (strlen(higherLevelMsg) > 0) { // add and report
-      emu_addError(higherLevelMsg, exceptionInfo, false);
+      emu_addError(higherLevelMsg, exceptionInfo);
     } else {  // just report
       emu_error(exceptionInfo);
     }
