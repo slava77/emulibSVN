@@ -178,6 +178,7 @@ mixed emucdb_querySingleField(string sql, dyn_string &exceptionInfo,
   if (dynlen(data) != 1) {
     emu_addError("Expected one result column on query, but got: " + dynlen(data[1]));
     emu_addError("Error when executing sql statement: " + sql, exceptionInfo);
+    return;
   }
   
   emu_debugFuncEnd("emucdb_querySingleField", t0);
@@ -198,6 +199,7 @@ dyn_mixed emucdb_querySingleRow(string sql, dyn_string &exceptionInfo,
   if (dynlen(data) != 1) {
     emu_addError("Expected one result row on query, but got: " + dynlen(data), exceptionInfo);
     emu_addError("Error when executing sql statement: " + sql, exceptionInfo);
+    return;
   }
   
   emu_debugFuncEnd("emucdb_querySingleRow", t0);
