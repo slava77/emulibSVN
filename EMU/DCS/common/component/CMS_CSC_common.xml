@@ -9,6 +9,7 @@
 <required>fwFSM=27.06.0</required>
 <required>fwGeneral=4.0.0</required>
 <required>fwNode=4.0.0</required>
+<dontRestartProject>yes</dontRestartProject>
 <file>./panels/test_cdb.pnl</file>
 <file>./panels/test_ex_handling.pnl</file>
 <file>./panels/test_fsm_create.pnl</file>
