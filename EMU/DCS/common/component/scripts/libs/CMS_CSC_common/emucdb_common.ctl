@@ -8,6 +8,7 @@ This package contains general purpose utility functions to access DB.
 
 const mapping emucdb_dummyMapping;
 const string emucdb_CONNECTION_FILENAME = "emucdb_DBConnection";
+const float emucdb_SCHEMA_VERSION = 1.0;
 
 global string emucdb_g_connName = "emucdb_DB_connection";
 global dbConnection emucdb_g_dbConn;
@@ -71,7 +72,6 @@ void emucdb_initialize() {
 
 void emucdb_checkSchema(dyn_string &exceptionInfo) {
   time t0;
-
   emu_debugFuncStart("emucdb_checkSchema", t0);
   
   //check fwConfigurationDB schema
@@ -82,12 +82,36 @@ void emucdb_checkSchema(dyn_string &exceptionInfo) {
   }
   
   //check EMU CDB schema
-  dyn_string ex;
-  float schemaVersion = emu_getParameter("emucdb_version", ex, FLOAT_VAR);
-  if (dynlen(ex)) { //if there's an error - try to create it.
+  string err;
+  string selectVersionSql = "select value from emucdb_parameters where name = :paramName";
+  mapping bindVars;
+  dbCommand cmd;
+  bool isError;
+  dyn_dyn_mixed sqlret;
+  
+  // we have to do all this stuff to execute sql manually because emucdb_executeSql or emucdb_querySingle* will report any errors and we want to keep it quite and handle the error
+  bindVars["paramName"] = "emucdb_version";
+  rdbStartCommand(emucdb_g_connName, selectVersionSql, cmd);
+  if (rdbCheckError(err,cmd)) { isError = true; }
+  rdbBindParams(cmd, bindVars);
+  if (rdbCheckError(err,cmd)) { isError = true; }
+  rdbExecuteCommand(cmd);
+  if (rdbCheckError(err,cmd)) { isError = true; } 
+  rdbGetData(cmd, sqlret, false, 0, makeDynInt(FLOAT_VAR));
+  if (rdbCheckError(err,cmd)) { isError = true; } 
+  rdbFinishCommand(cmd);
+  if (rdbCheckError(err)) { isError = true; } 
+    
+  if (isError || (dynlen(sqlret) < 1) || (dynlen(sqlret[1]) < 1)) { //if there's an error - try to create it.
     emu_info("An error occured while retrieving EMU CDB version from DB. Trying to create schema...");
     emucdb_createDBSchema(exceptionInfo, false);
     if (emu_checkException(exceptionInfo)) { return; }
+  } else if (sqlret[1][1] < emucdb_SCHEMA_VERSION) { // old schema - drop and create
+    emu_addError("Old EMUCDB schema found (version " + schemaVersion + 
+             "), this code is working with schema version " + emucdb_SCHEMA_VERSION + " or greater. " + 
+             "Please drop the current schema and with the next execution EMUCDB will create the new one", 
+             exceptionInfo);
+    return;
   }
 
   emu_debugFuncEnd("emucdb_checkSchema", t0);
@@ -95,17 +119,21 @@ void emucdb_checkSchema(dyn_string &exceptionInfo) {
 
 /** Creates EMU CDB DB schema. Stops on error. */
 void emucdb_createDBSchema(dyn_string &exceptionInfo,bool dropExistingSchema=FALSE) {
+  time t0;
+  emu_debugFuncStart("emucdb_createDBSchema", t0);
+
   if (dropExistingSchema) {
     emu_info("Dropping existing schema");
     emucdb_dropDBSchema(exceptionInfo);
   }
-  
+  emu_info("Creating EMUCDB schema..");
   _fwConfigurationDB_executeSqlFromFile(emucdb_g_connName,
                                         "emucdb_createSchema.sql",
                                         "CREATE DB SCHEMA", exceptionInfo,TRUE);
   if (emu_checkException(exceptionInfo)) { return; }
 
-  emu_info("Database schema succesfully created");
+  emu_info("[DONE] EMUCDB database schema succesfully created");
+  emu_debugFuncEnd("emucdb_createDBSchema", t0);
 }
 
 /** Drops EMU CDB schema. Doesn't stop on error. */
