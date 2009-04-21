@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 501 400 N "_3DFace" 0
+PANEL,-1 -1 501 462 N "_3DFace" 0
 "main()
 {
   emucdb_initialize();
@@ -97,7 +97,7 @@ LANG:1 16 update FSM types
 13 3
 "PUSH_BUTTON4"
 ""
-1 -30 390 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 -20 450 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 3 0 0 0 0 0
 E E E
@@ -109,7 +109,7 @@ LANG:1 0
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
- -32 388 92 415
+ -22 448 102 475
 
 T 
 1
@@ -242,7 +242,7 @@ LANG:1 8 save fsm
 }" 0
  E E E
 13 5
-"PUSH_BUTTON6"
+"just_test_btn"
 ""
 1 180 310 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
@@ -263,8 +263,42 @@ T
 LANG:1 11 just a test
 "main()
 {
-  emu_info(\"dp exists: \" + dpExists(\"Wiener/CAN0/Crate1\"));
-  emu_info(dpGetAlias(\"Wiener/CAN0/Crate1.\"));
+  dyn_string ex;
+//  fwFsm_setObjectLabelPanel(\"CMS_CSC_LV_CAN2\", \"Wiener/CAN0/Crate2\", \"kreitas\", \"fwFSMuser/fwUi.pnl\", true, true);
+  dyn_string data;
+  fwTree_getNodeUserData(\"Wiener/CAN0/Crate2\", data, ex);
+  if (emu_checkException(ex)) { return; }
+  emu_info(\"fwTree_getNodeUserData for crate2: \" + data);
+  fwTree_getNodeUserData(\"CSC_ME_P2_CR1_LV_MRTN\", data, ex);
+  if (emu_checkException(ex)) { return; }
+  emu_info(\"fwTree_getNodeUserData for CSC_ME_P2_CR1_LV_MRTN: \" + data);
+  string defLabel = fwFsm_getDefaultLabel(\"CMS_CSC_LV_CAN2\", \"Wiener/CAN0/Crate2\");
+  emu_info(\"Default label: \" + defLabel);
+  string defPanel = fwFsm_getDefaultPanel(\"CMS_CSC_LV_CAN2\", \"Wiener/CAN0/Crate2\");
+  emu_info(\"Default panel: \" + defPanel);
+  string panel;
+  fwUi_getTypePanel(\"FwWienerMarathon\", panel);
+  emu_info(\"default type panel: \" + panel);
+  
+  string fwUiPanel;
+  fwUi_getPanel(\"CMS_CSC_LV_CAN2\", \"Wiener/CAN0/Crate2\", fwUiPanel);
+  emu_info(\"fwUi_getPanel for crate2: \" + fwUiPanel);
+  string fwUiLabel;
+  fwUi_getLabel(\"CMS_CSC_LV_CAN2\", \"Wiener/CAN0/Crate2\", fwUiLabel);
+  emu_info(\"fwUi_getLabel for crate2: \" + fwUiLabel);
+  fwFsm_getDefaultLabel(\"CMS_CSC_LV_CAN2\", \"Wiener/CAN0/Crate2\", fwUiLabel);
+  emu_info(\"default label for crate2: \" + fwUiLabel);
+
+  fwUi_getPanel(\"CMS_CSC_LV_CAN2\", \"CSC_ME_P2_CR1_LV_MRTN\", fwUiPanel);
+  emu_info(\"fwUi_getPanel for CSC_ME_P2_CR1_LV_MRTN: \" + fwUiPanel);
+  fwUi_getLabel(\"CMS_CSC_LV_CAN2\", \"CSC_ME_P2_CR1_LV_MRTN\", fwUiLabel);
+  emu_info(\"fwUi_getLabel for CSC_ME_P2_CR1_LV_MRTN: \" + fwUiLabel);
+  fwFsm_getDefaultLabel(\"CMS_CSC_LV_CAN2\", \"CSC_ME_P2_CR1_LV_MRTN\", fwUiLabel);
+  emu_info(\"default label for CSC_ME_P2_CR1_LV_MRTN: \" + fwUiLabel);
+  
+  string domain, obj;
+  fwFsmTree_getObjFromTnode(\"\", \"CMS_CSC_LV_CAN2/CSC_ME_P2_LV_MRTN/CSC_ME_P2_CR1_LV_MRTN\", domain, obj);
+  emu_info(\"fwFsmTree_getObjFromTnode, domain: \" + domain + \", obj: \" + obj);
 }" 0
  E E E
 13 6
@@ -289,8 +323,9 @@ T
 LANG:1 8 load fsm
 "main()
 {
+  string domain = editLoadDomain.text;
   dyn_string ex;
-  emucdb_loadFsm(ex, true);
+  emucdb_loadFsm(domain, ex, true);
   if (emu_checkException(ex)) { return; }
 }" 0
  E E E
@@ -317,14 +352,14 @@ LANG:1 25 generate FSM from Logical
 "main()
 {
   dyn_string ex;
-  emucdb_setDefaultFsmTypes(ex);
+  emucdb_generateFSM(ex, true);
   if (emu_checkException(ex)) { return; }
 }" 0
  E E E
 13 8
 "PUSH_BUTTON9"
 ""
-1 200 190 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 160 200 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 8 0 0 0 0 0
 E E E
@@ -334,24 +369,25 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
- 198 188 372 215
+ 158 198 332 225
 
 T 
 1
 LANG:1 33 delete FSM conf (including types)
 "main()
 {
+  string domain = editLoadDomain.text;
   dyn_string ex;
-  emucdb_deleteFsmConf(ex, true);
+  emucdb_deleteFsmConf(domain, ex, true);
   if (emu_checkException(ex)) { return; }  
 }" 0
  E E E
 13 9
 "PUSH_BUTTON10"
 ""
-1 200 220 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 160 230 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 10 0 0 0 0 0
 E E E
@@ -361,20 +397,232 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
- 198 218 372 245
+ 158 228 332 255
 
 T 
 1
 LANG:1 31 delete FSM conf (but not types)
 "main()
 {
+  string domain = editLoadDomain.text;
   dyn_string ex;
-  emucdb_deleteFsmConf(ex, true);
+  emucdb_deleteFsmConf(domain, ex, false);
   if (emu_checkException(ex)) { return; }  
 }" 0
  E E E
+13 10
+"PUSH_BUTTON11"
+""
+1 180 340 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 178 338 302 365
+
+T 
+1
+LANG:1 13 just a test 1
+"main()
+{
+  dyn_string ex;
+  ex[1] = \"viens\";
+  ex[2] = \"du\";
+  ex[3] = \"trys\";
+  
+  string higherLev = \"higher level msg\";
+  dynInsertAt(ex, higherLev, 1);
+  emu_checkException(ex);
+  emu_checkException(ex); // same as before
+  emu_addError(\"addError\", ex);
+  emu_addError(\"addError12\", ex);
+  emu_addError(\"addError15\", ex);
+}" 0
+ E E E
+13 11
+"PUSH_BUTTON12"
+""
+1 180 370 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 178 368 302 395
+
+T 
+1
+LANG:1 26 stress test of findSimilar
+"main()
+{
+//   int id = startThread(\"threadFunc\", \"viens\", 1500);
+//   delay(0, 1000);
+//   emu_info(\"killing\");
+//   stopThread(id);
+  
+  dyn_string ds1;
+  ds1[1] = \"vienas\";
+  ds1[2] = \"du\";
+  
+  dyn_string ds2;
+  ds2[1] = \"vienas\";
+  ds2[2] = \"du\";
+  ds2[3] = \"trys\";
+
+  dyn_string ds3;
+  ds3[1] = \"vienas\";
+  
+  dyn_dyn_string dds1;
+  dds1[1] = ds1;
+  dds1[2] = makeDynString(\"vienas\", \"du\", \"trys\", \"keturi\");
+  dds1[3] = makeDynString(\"vienas\", \"du\", \"trys\");
+  
+  bool isSame = ds2 == ds1;
+  emu_info(\"ds1 == ds2 ? \" + isSame);
+  emu_info(\"does map contain ds1? \" + _emu_findSimilarInMap(dds1, ds1));
+  emu_info(\"does map contain ds2? \" + _emu_findSimilarInMap(dds1, ds2));
+  emu_info(\"does map contain makeDynString(viens, du, trys, keturi)? \" + _emu_findSimilarInMap(dds1, makeDynString(\"vienas\", \"du\", \"trys\", \"keturi\")));
+  emu_info(\"does map contain makeDynString(labas)? \" + _emu_findSimilarInMap(dds1, makeDynString(\"labas\")));
+  emu_info(\"does map contain ds3? \" + _emu_findSimilarInMap(dds1, ds3));
+  
+  isSame = ds1[1] == ds2[1];
+  emu_info(\"ds1[1] == ds2[1] ? \" + isSame);
+  
+  //stress test
+  dyn_dyn_string sMap;
+  dyn_string searchString;
+  time t0;
+  emu_debugFuncStart(\"creating map and array\", t0);
+  for (int i=1; i < 1000; i++) {
+    searchString[i] = \"abc\" + 5678 + \"def\" + i;
+  }
+  for (int i=1; i < 6000; i++) {
+    for (int j=1; j < 1500; j++) {
+      sMap[i][j] = \"abc\" + i + \"def\" + j;
+    }
+  }
+  emu_debugFuncEnd(\"creating map and array\", t0);
+  emu_debugFuncStart(\"searching\", t0);
+  _emu_findSimilarInMap(sMap, searchString);
+  emu_debugFuncEnd(\"searching\", t0);  
+}
+
+// void threadFunc(string name, int delayMs) {
+//   emu_info(\"thread \" + name + \" started, waiting \" + delayMs + \"ms\");
+//   delay(0, delayMs);
+//   emu_info(\"thread \" + name + \" finished\");
+// }
+" 0
+ E E E
+13 12
+"PUSH_BUTTON13"
+""
+1 320 310 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+15 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 318 308 442 335
+
+T 
+1
+LANG:1 15 test Smi import
+"main()
+{
+  dyn_string ex;
+  fwFsm_importSmi(\"CSC_LV_NODES\", ex);
+  if (emu_checkException(ex)) { return; }
+  
+//   	allTypes = fwFsm_getObjectTypes();
+// 	types = fwFsm_getDeviceTypes();
+
+}" 0
+ E E E
+14 13
+"editLoadDomain"
+""
+1 340 110 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 338 108 462 131
+3 "0s" 0 0 0 0 0 -1  E "main()
+{
+  this.text = \"CMS_CSC_LV_CAN2\";
+}" 0
+ E
+14 14
+"editDeleteDomain"
+""
+1 340 200 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 338 198 462 221
+3 "0s" 0 0 0 0 0 -1  E "main()
+{
+  this.text = \"CMS_CSC_LV_CAN2\";
+}" 0
+ E
+14 15
+"editDeleteDomain1"
+""
+1 340 230 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 338 228 462 251
+3 "0s" 0 0 0 0 0 -1  E "main()
+{
+  this.text = \"CMS_CSC_LV_CAN2\";
+}" 0
+ E
 0
 LAYER, 1 
 1

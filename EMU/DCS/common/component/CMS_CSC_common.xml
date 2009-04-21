@@ -17,5 +17,7 @@
 <file>./scripts/libs/CMS_CSC_common/emucdb_customHwCreate.ctl</file>
 <file>./scripts/libs/CMS_CSC_common/emucdb_fsm.ctl</file>
 <file>./scripts/libs/CMS_CSC_common/fwFsm_importSmi.ctl</file>
+<file>./config/emucdb_DBConnection</file>
+<file>./config/emucdb_createSchema.sql</file>
 <file>./CMS_CSC_common.xml</file>
 </component>
