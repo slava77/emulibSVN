@@ -15,10 +15,6 @@ void emucdb_saveFsm(dyn_string &exceptionInfo) {
   emucdb_beginTransaction(exceptionInfo);
   if (emu_checkException(exceptionInfo)) { return; }
 
-  //delete FSM configuration from DB
-  emucdb_deleteFsmConf(exceptionInfo);
-  if (emu_checkException(exceptionInfo)) { emucdb_rollback(); return; }
-  
   //update type definitions
   _emucdb_updateFsmTypeDefinitions(exceptionInfo);
   if (emu_checkException(exceptionInfo)) { emucdb_rollback(); return; }
@@ -27,6 +23,14 @@ void emucdb_saveFsm(dyn_string &exceptionInfo) {
   dyn_dyn_string deviceTypes;
   _emucdb_getFsmDeviceTypesRecursively("FSM", deviceTypes, exceptionInfo);
   if (emu_checkException(exceptionInfo)) { emucdb_rollback(); return; }
+  
+  //get root devices and use them as domains to delete FSM from DB
+  for (int i=1; i <= dynlen(deviceTypes); i++) {
+    if (deviceTypes[i][3] == 1) {  // this is a root - use it as domain and delete the FSM conf for that domain from DB
+      emucdb_deleteFsmConf(deviceTypes[i][1], exceptionInfo);
+      if (emu_checkException(exceptionInfo)) { emucdb_rollback(); return; }
+    }
+  }
   
   //update EMUCDB_DEVICES table
   _emucdb_updateDeviceFsmTypes(deviceTypes, exceptionInfo);
@@ -252,20 +256,23 @@ void _emucdb_getFsmDeviceTypesRecursively(string node, dyn_dyn_string &deviceTyp
   @param useHardwareTreeDevices            If this is true then all DUs (devices) will be created using HW tree,
                                            otherwise Logical tree will be used (default).
 */
-void emucdb_loadFsm(dyn_string &exceptionInfo, bool useHardwareTreeDevices = false) {
+void emucdb_loadFsm(string domain, dyn_string &exceptionInfo, bool useHardwareTreeDevices = false) {
   string selectRootsSql = "select i.id, 'FSM' parent_name, i.name, i.dpname, ft.name fsm_type_name, ft.type, ft.is_cu " +
                          "from items i inner join emucdb_devices emud on (emud.id = i.id) " +
                                       "inner join emucdb_fsm_types ft on (emud.fsm_type = ft.id) " +
-                         "where emud.is_root = 1 " +
+                         "where emud.is_root = 1 and " +
+                               "fsm_domain = :domain " +
                          "order by i.name";
+  mapping bindVars;
   time t0;
   emu_debugFuncStart("emucdb_loadFsm", t0);
   emu_info("Loading FSM tree from DB");
   
-  _emucdb_importTypes(exceptionInfo);
+  _emucdb_importTypes(domain, exceptionInfo);
   if (emu_checkException(exceptionInfo, "FSM types were not imported correctly, terminating..")) { return; }
   
-  dyn_dyn_mixed roots = emucdb_executeSql(selectRootsSql, exceptionInfo);
+  bindVars["domain"] = domain;
+  dyn_dyn_mixed roots = emucdb_executeSql(selectRootsSql, exceptionInfo, false, bindVars);
   if (emu_checkException(exceptionInfo)) { return; }
   for (int i=1; i <= dynlen(roots); i++) {
     _emucdb_createFsmRecursively(roots[i], exceptionInfo, useHardwareTreeDevices);
@@ -345,15 +352,19 @@ void _emucdb_createFsmRecursively(dyn_mixed nodeData, dyn_string &exceptionInfo,
 }
 
 /** Imports device and object types from DB. */
-void _emucdb_importTypes(dyn_string &exceptionInfo) {
-  string selectSql = "select name from emucdb_fsm_types order by type desc";
+void _emucdb_importTypes(string domain, dyn_string &exceptionInfo) {
+  string selectSql = "select name from emucdb_fsm_types " +
+                     "where id in (select fsm_type from emucdb_devices where fsm_domain = :domain) " +
+                     "order by type desc";
+  mapping bindVars;
   dyn_dyn_mixed types;
   time t0;
   
   emu_debugFuncStart("_emucdb_importTypes", t0);
   emu_info ("Importing FSM object and device types");
   
-  types = emucdb_executeSql(selectSql, exceptionInfo);
+  bindVars["domain"] = domain;
+  types = emucdb_executeSql(selectSql, exceptionInfo, false, bindVars);
   if (emu_checkException(exceptionInfo)) { return; }
   
   for (int i=1; i <= dynlen(types); i++) {
@@ -429,7 +440,9 @@ void emucdb_generateFSM(dyn_string &exceptionInfo, bool useHardwareTreeDevices =
   _emucdb_setDefaultFsmTypes(exceptionInfo);
   if (emu_checkException(exceptionInfo, "Error while setting default FSM types in DB")) { return; }
   
-  emucdb_loadFsm(exceptionInfo, useHardwareTreeDevices);
+  string generatedDomain = emu_getParameter("fsm_generator_default_fill", exceptionInfo);
+  if (emu_checkException(exceptionInfo, "Error while getting parameter \"fsm_generator_default_fill\" from DB")) { return; }
+  emucdb_loadFsm(generatedDomain, exceptionInfo, useHardwareTreeDevices);
   if (emu_checkException(exceptionInfo, "Error while loading the FSM tree from DB")) { return; }
 
   emucdb_saveFsm(exceptionInfo);
@@ -507,17 +520,26 @@ void _emucdb_setDefaultFsmTypes(dyn_string &exceptionInfo, string defTopNodeType
 }
 
 /** Deletes FSM tree configuration from DB. Optionally (if deleteTypes flag is set) also FSM type definitions are deleted from DB. */
-void emucdb_deleteFsmConf(dyn_string &exceptionInfo, bool deleteTypes = false) {
-  string deleteSql = "delete from emucdb_devices";
-  string deleteTypesSql = "delete from emucdb_fsm_types";
+void emucdb_deleteFsmConf(string domain, dyn_string &exceptionInfo, bool deleteTypes = false) {
+  string selectDomainTypesSql = "select distinct fsm_type from emucdb_devices where fsm_domain = :domain";
+  string deleteSql = "delete from emucdb_devices where fsm_domain = :domain";
+  string deleteTypesSql = "delete from emucdb_fsm_types where id = :id";
+  mapping bindVars;
+  dyn_dyn_mixed typeIds;
   time t0;
   emu_debugFuncStart("emucdb_deleteFsmConf", t0);
   emu_info("Deleting FSM configuration from DB");
   
-  emucdb_executeSql(deleteSql, exceptionInfo);
+  bindVars["domain"] = domain;
+  
+  typeIds = emucdb_executeSql(selectDomainTypesSql, exceptionInfo, false, bindVars);
   if (emu_checkException(exceptionInfo)) { return; }
+  
+  emucdb_executeSql(deleteSql, exceptionInfo, false, bindVars);
+  if (emu_checkException(exceptionInfo)) { return; }
+  
   if (deleteTypes) {
-    emucdb_executeSql(deleteTypesSql, exceptionInfo);
+    emucdb_executeBulk(deleteTypesSql, typeIds, exceptionInfo);
     if (emu_checkException(exceptionInfo)) { return; }
   }
   
