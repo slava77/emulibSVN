@@ -9,7 +9,6 @@
 <required>fwFSM=27.06.0</required>
 <required>fwGeneral=4.0.0</required>
 <required>fwNode=4.0.0</required>
-<dontRestartProject>yes</dontRestartProject>
 <config>./config/CMS_CSC_common.config</config>
 <file>./config/emucdb_createSchema.sql</file>
 <file>./config/emucdb_DBConnection</file>
