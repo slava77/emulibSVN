@@ -127,7 +127,7 @@ void emucdb_createDBSchema(dyn_string &exceptionInfo,bool dropExistingSchema=FAL
     emucdb_dropDBSchema(exceptionInfo);
   }
   emu_info("Creating EMUCDB schema..");
-  _fwConfigurationDB_executeSqlFromFile(emucdb_g_connName,
+  _fwConfigurationDB_executeSqlFromFile(emucdb_g_dbConn,
                                         "emucdb_createSchema.sql",
                                         "CREATE DB SCHEMA", exceptionInfo,TRUE);
   if (emu_checkException(exceptionInfo)) { return; }
@@ -138,7 +138,7 @@ void emucdb_createDBSchema(dyn_string &exceptionInfo,bool dropExistingSchema=FAL
 
 /** Drops EMU CDB schema. Doesn't stop on error. */
 void emucdb_dropDBSchema(dyn_string &exceptionInfo) {
-  _fwConfigurationDB_executeSqlFromFile(emucdb_g_connName,
+  _fwConfigurationDB_executeSqlFromFile(emucdb_g_dbConn,
                                         "emucdb_dropSchema.sql",
                                         "DROP DB SCHEMA", exceptionInfo,FALSE);
 }
