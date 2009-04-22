@@ -1,0 +1,1343 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 549 472 N "_3DFace" 0
+"main()
+{
+  
+  
+int i, n;
+string valid;
+  string system_plus=\"\";
+  string system_minus=\"\";
+  dyn_string ds1,ds2,ds3;
+  ds1=dpNames(\"*:CMS_CSC_HV_CC_*\",\"MUDCS_STRING\");
+  for(i=1;i<=dynlen(ds1);i++){
+    dpGet(ds1[i]+\".value\",valid);
+    if(valid !=\"valid\")continue;
+    ds2=strsplit(ds1[i],\":\");
+    ds3=strsplit(ds2[dynlen(ds2)],\"_\");
+    n=ds3[dynlen(ds3)];
+    if(n<=4)system_minus=ds2[1];
+    else system_plus=ds2[1];
+  }  
+  
+  
+ string s1,s2,add1,add2,banner_text;
+  type_save=\"HV_1\"; // current page
+  g_type1=\"_HV\"; // current page
+  ////type2=\"HV\"; // current page
+  g_panel=\"CMS_CSCfw_HV_CC/emuDevHV_1Browser.pnl\"; // current page
+         
+  while(1){
+  s1=s2=add1=add2=\"\";
+  if(system_minus!=\"\")dpGet(system_minus+\":STOP_SLOW_CONTROL.value\",s1);
+  if(system_plus!=\"\")dpGet(system_plus+\":STOP_SLOW_CONTROL.value\",s2);
+
+  if(strpos(s1,\"STOP\")>=0)add1=\"-Z side: \";
+  if(strpos(s2,\"STOP\")>=0)add2=\"+Z side: \";
+   
+  if(add1!=\"\" || add2!=\"\"){
+//    getValue(\"stop_banner\",\"text\",banner_text);
+    //mudcsDebug(banner_text);
+
+banner_text=\"Attention! The Peripheral Crate slow control is stopped \\n\";
+banner_text+=\"Please do not forget to resume it when you finish firmware \\n\";
+banner_text+=\"downloading: Go to CSC_LV folder and click \\n\";
+banner_text+=\"Resume Peripheral Crate Slow Control button\";
+
+   banner_text=add1+add2+banner_text; 
+    setValue(\"stop_banner\",\"text\",banner_text);
+     setValue(\"stop_banner\",\"backCol\",\"{255,48,49}\"); 
+    setValue(\"stop_banner\",\"visible\",\"true\");
+    delay(1);
+  setValue(\"stop_banner\",\"backCol\",\"{202,202,202}\");
+    delay(1);    
+ setValue(\"stop_banner\",\"backCol\",\"{255,48,49}\");
+    delay(3);
+  
+    periodic_read();
+  }  
+  else setValue(\"stop_banner\",\"visible\",\"false\"); 
+   delay(5);
+    periodic_read();
+  }
+}
+
+
+periodic_read(){
+  int i;
+  dynClear(flags_error);
+  mudcsErrorDisplay(\"fwCrb_CSC_LV\",\"_LV_CRB\",\"CRB\",\"fwCrb_CSC_LV\"); 
+  mudcsErrorDisplay(\"HV_1\",\"_HV\",\"HV\",\"HV_1\");
+  mudcsErrorDisplay(\"LV_1\",\"_LV\",\"LV chamber boards\",\"LV_1\");
+  mudcsErrorDisplay(\"TEMP_1\",\"_TEMP\",\"Temperature\",\"TEMP_1\");
+  mudcsErrorDisplay2(\"PC_1\",\"no matter\",\"PeripheralCrate Reading\",\"PC_1\"); // PCRATE CONNECTION
+  mudcsErrorMrtnDisplay(\"Maraton\",\"\",\"MRTN\",\"Maraton\");
+  mudcsErrorMrtnDisplay(\"Dubna\",\"\",\"Dubna_HV\",\"Dubna\");  
+  setValue(\"lv_errors\",\"backCol\",\"{202,202,202}\");
+  setValue(\"temp_errors\",\"backCol\",\"{202,202,202}\");
+  setValue(\"hv_errors\",\"backCol\",\"{202,202,202}\");
+  setValue(\"crb_errors\",\"backCol\",\"{202,202,202}\");
+  setValue(\"PCRATE\",\"backCol\",\"{202,202,202}\"); 
+  setValue(\"mrtn_errors\",\"backCol\",\"{202,202,202}\");  
+  setValue(\"dubna_errors\",\"backCol\",\"{202,202,202}\");     
+ // delay(1); 
+  for(i=1;i<=dynlen(flags_error);i++){
+    if(strpos(flags_error[i],\"LV_1\")>=0)setValue(\"lv_errors\",\"backCol\",\"{255,48,49}\");
+    else if(strpos(flags_error[i],\"TEMP_1\")>=0)setValue(\"temp_errors\",\"backCol\",\"{255,48,49}\");
+    else if(strpos(flags_error[i],\"HV_1\")>=0)setValue(\"hv_errors\",\"backCol\",\"{255,48,49}\");
+    else if(strpos(flags_error[i],\"fwCrb\")>=0)setValue(\"crb_errors\",\"backCol\",\"{255,48,49}\");  
+    else if(strpos(flags_error[i],\"PCRATE\")>=0)setValue(\"PCRATE\",\"backCol\",\"{255,255,49}\"); 
+    else if(strpos(flags_error[i],\"Maraton\")>=0)setValue(\"mrtn_errors\",\"backCol\",\"{255,49,49}\"); 
+    else if(strpos(flags_error[i],\"Dubna\")>=0)setValue(\"dubna_errors\",\"backCol\",\"{255,49,49}\");                      
+  }
+  
+}" 0
+ E E E E 1 -1 -1 0  80 40
+""0  1
+E "
+
+int main_mode=0;
+  
+  /////string type;
+  string type_save;
+  string g_type1;
+  /////string type2;
+  string g_panel, g_node, g_system_name;
+    dyn_string flags_error, g_system_names, g_nodes;
+ int flag_press=0;
+ 
+ dyn_string dps_en;
+ 
+ int frozen=0;
+ 
+//========================================================================================     
+mudcsErrorMrtnDisplay(string type, string type1, string type2, string current_type=\"\"){
+  
+ dyn_string dps, dps1, dps2, dpse, dps3; 
+ int pos,lineCount, isEnabled_i;
+  string fsm2,DomainName,DomainName1,isEnabled, sys_name,sys_name1, line1, state;
+  dyn_string split1, split2, split3;
+  bool status_com;  
+  
+  dyn_string l_system_names, l_nodes;
+  
+ ///// if(current_type!=\"\")type=current_type;
+  int i, status; 
+  time last_set_status;
+  dyn_time dpst;
+  dynClear(dps);
+  dynClear(dpse);
+  dynClear(dpst);  
+   dynClear(l_system_names);
+   dynClear(l_nodes); 
+ // dyn_string dps, dps1, dpse;
+  shape table=getShape(\"table\"); 
+ 
+ if(type==\"Maraton\")  
+  dps=dpNames(\"*:*_CR*_LV_MRTN\",\"_FwFsmObject\");
+ else if(type==\"Dubna\"){dps=dpNames(\"*:CSC_ME_*11_C*_HV\",\"_FwFsmObject\");}
+ 
+ 
+  for(i=1;i<=dynlen(dps);i++){
+
+
+split2=strsplit(dps[i],\":\");
+      if(dynlen(split2)<2){
+        DebugTN(\"ERROR DEBUG SUMMARY PANEL MRTN\"+dps[i]);
+        continue; 
+      } 
+
+
+sys_name=split2[1];
+fsm2=split2[2];
+
+     
+
+if(type==\"Maraton\"){ 
+ if(main_mode==1 && strpos(dps[i],\"CSC_ME_M\")<0)continue; 
+// if(main_mode==0 && strpos(dps[i],\"CSC_ME_P\")<0)continue; // temporal !!!!! ?????
+}
+else if(type==\"Dubna\"){
+ if(main_mode==1 && strpos(dps[i],\"CSC_ME_N\")<0)continue; 
+// if(main_mode==0 && strpos(dps[i],\"CSC_ME_P\")<0)continue; // temporal !!!!! ?????  
+}
+//DebugTN(dps[i]);
+
+/////dps2=dpNames(sys_name+\":*\"+fsm2,\"_FwFsmDevice\");     
+//if(dynlen(dps2)>=1)
+split3=strsplit(dps[i],\"|\");
+DomainName=substr(split3[1],(strpos(split3[1],\":\")+1));
+///if((strpos(DomainName,\"CSC_LV\"))!=0)continue;
+
+if(type==\"Maraton\"){
+ if((strpos(DomainName,\"LV_CAN\"))>=0)continue; // to take only imported nodes
+}
+else if(type==\"Dubna\"){
+ if((strpos(DomainName,\"CSC_ME_11_HV\"))>=0)continue; // to take only imported nodes
+}
+ 
+DomainName1=DomainName;
+sys_name1=sys_name;
+//DebugTN(DomainName+\"   \"+fsm2+\" \"+strpos(DomainName,\"CSC_LV\"));
+    dpGet(dps[i]+\".fsm.currentState\",state);
+    dpGet(dps[i]+\".mode.enabled\",isEnabled_i);
+    if(!isEnabled_i)isEnabled=\"Disabled\";
+    
+    status_com=false;
+    if(state==\"ERROR\" || state==\"DEAD\")status_com=true;
+    
+if(type!=\"\"){
+//  if(i==124 || i==1)status_com=true;
+// DebugTN(dps[i]); 
+// DebugTN(state+\">\"+isEnabled_i+\">\");
+}    
+ ////   status_com=true;
+    
+    
+       DebugTN(dps[i]+\" \"+state+\" >\"+isEnabled);     
+//        if(status==-2 && isEnabled==\"Disabled\")DebugTN(DomainName+\"   \"+fsm2);
+    if(status_com && isEnabled!=\"Disabled\"){
+        if(!dynContains(flags_error,current_type))dynAppend(flags_error,current_type);
+        //DebugTN(flags_error);
+        // DebugTN(type1);       
+        if(current_type!=\"\" && type_save!=current_type)continue;
+        
+            dpGet(dps[i]+\".fsm.currentState:_online.._stime\",last_set_status);
+      dps1=makeDynString(split3[dynlen(split3)]);//(dps[i]);
+      
+      
+//=========================================================
+  /*
+      int j;
+      dyn_int child_flags;
+      dyn_string dsFsm,dp_ms;
+      string obj;
+ dyn_string children = fwFsmUi_getAllChildren(DomainName, split3[dynlen(split3)], child_flags);
+ for(j=1;j<=dynlen(children);j++){
+  dsFsm=strsplit(children[j],\"|\");
+  dp_ms=dpNames(sys_name+\":\"+dsFsm[dynlen(dsFsm)]);
+  
+  DebugTN(\">>>\"+\">>>>>>>>>>>>>>>>>>>\"+children[j]);
+  DebugTN(\">>>\"+\">>>>>\"+dp_ms[1]);
+  
+  
+ if(dpTypeName(dp_ms[1]) == \"FwWienerMarathon\"){
+    obj=sys_name+\":\"+dsFsm[dynlen(dsFsm)];
+    break;  
+  }  
+
+ } // for
+ 
+ */      
+//===========================================================      
+      
+      
+      string obj=split3[dynlen(split3)];
+ //     dps[i]=substr(dps1[dynlen(dps1)],0,strpos(dps1[dynlen(dps1)],type1));
+      if(!dynContains(dpse,obj)){
+      dynAppend(dpse,obj);
+      dynAppend(dpst,last_set_status);
+      dynAppend(l_system_names,sys_name1);
+      dynAppend(l_nodes,DomainName1);
+      }
+    }
+  }
+  if(current_type!=\"\" && type_save!=current_type)return;
+
+     lineCount=table.lineCount();
+    line1=table.getLineN(1); // index 1 is second line    
+   //  mudcsDebug(lineCount+\">>\"+dynlen(dpse));    
+  if(flag_press==1 && current_type!=\"\"){   
+    if(strpos(line1,\"no entries\")>=0 && dynlen(dpse)==0)return;
+    else if(strpos(line1,\"no entries\")>=0 && dynlen(dpse)>0){}
+    else if((lineCount-1) != dynlen(dpse)){}
+    else return;
+  } 
+ //     mudcsDebug(lineCount+\">>\"+dynlen(dpse)+\">>\"+line1);
+  
+ // DebugTN(dpst);
+ //   DebugTN(dpse);
+  //setValue(\"table\",\"deleteAllLines\");
+  g_node=DomainName1;
+  g_system_name=sys_name1;
+  g_system_names=l_system_names;
+  g_nodes=l_nodes;    
+  table.deleteAllLines();
+     //    setValue(\"table\",\"appendLine\",\"Item\",\"CRB/CSC_ME_P2_PC2\",\"Time\",\"\");
+       setValue(\"table\",\"appendLine\",\"Item\",type2+\" summary\",\"Time\",\"\");
+       if(dynlen(dpse)==0) setValue(\"table\",\"appendLine\",\"Item\",\"no entries\",\"Time\",\"\");
+    for(i=1;i<=dynlen(dpse);i++){      
+                 setValue(\"table\",\"appendLine\",
+            \"Item\",dpse[i],
+            \"Time\",dpst[i]
+            ); 
+    }
+ 
+    flag_press=1;
+}  
+//========================================================================================
+//========================================================================================
+//========================================================================================      
+ 
+//====================================================
+  
+ mudcsErrorDisplay2(string type, string type1, string type2, string current_type=\"\"){
+  
+ time current_time=getCurrentTime(); 
+ string current_time_s=current_time;
+  
+   setValue(\"current_time\",\"text\",current_time_s);
+  
+ dyn_string dps, dps1, dps2, dpse; 
+ int pos, lineCount;
+  string fsm2,DomainName,isEnabled, sys_name, dp, line1;
+  dyn_string split1, split2, split3;
+  string real_type, dynatemTcpIp;  
+  
+  if(current_type!=\"\" && current_type!=\"double_click\")type=current_type;
+  if(type==\"PC_1\")real_type=\"TEMP_1\";
+  
+  int i, status; 
+  time last_set_status;
+  dyn_time dpst;
+  dynClear(dps);
+  dynClear(dpse);
+  dynClear(dpst);    
+ // dyn_string dps, dps1, dpse;
+  shape table=getShape(\"table\"); 
+  
+  if(!main_mode)dps=dpNames(\"*:*\",real_type);
+  else dps=dpNames(\"*\",real_type);
+  
+  for(i=1;i<=dynlen(dps);i++){
+
+
+split2=strsplit(dps[i],\":\");
+
+      if(dynlen(split2)<2){
+        DebugTN(\"ERROR DEBUG SUMMARY PANEL \"+dps[i]);
+        continue; 
+      } 
+      
+sys_name=split2[1];
+fsm2=split2[2];
+split1=strsplit(fsm2,\"/\");
+
+      if(dynlen(split1)<2){
+        DebugTN(\"ERROR DEBUG SUMMARY PANEL \"+dps[i]);
+        continue; 
+      } 
+    if(real_type!=\"fwCrb_CSC_LV\"){
+      
+DomainName=substr(split1[2],0, strlen(\"CSC_ME_\")+2);
+isEnabled=fwFsmUi_getDUMode(DomainName,fsm2);
+    }
+    else{
+dps2=dpNames(sys_name+\":*\"+fsm2,\"_FwFsmDevice\");     
+if(dynlen(dps2)>=1){split3=strsplit(dps2[1],\"|\");
+DomainName=substr(split3[1],strpos(split3[1],\":\"));
+} 
+    }
+//DebugTN(DomainName+\"   \"+fsm2);
+    dpGet(dps[i]+\".status\",status);
+//        if(status==-2 && isEnabled==\"Disabled\")DebugTN(DomainName+\"   \"+fsm2);
+    if(status==-2 && isEnabled!=\"Disabled\"){
+     // DebugTN(DomainName+\" \"+fsm2+\" \"+isEnabled);
+      if(strpos(dps[i],\"TEMP\")>=0 && !dynContains(flags_error,\"PCRATE\"))dynAppend(flags_error,\"PCRATE\"); 
+        //DebugTN(flags_error);
+        // DebugTN(type1);       
+      if(current_type!=\"double_click\"){
+        if(current_type!=\"\" && type_save!=current_type)continue;
+      }
+            dpGet(dps[i]+\".status:_online.._stime\",last_set_status);
+///      if(type!=\"fwCrb_CSC_LV\")dps1=strsplit(dps[i],\"/\");
+////      else dps1=makeDynString(dps[i]);
+///      dps[i]=substr(dps1[dynlen(dps1)],0,strpos(dps1[dynlen(dps1)],type1));
+    if(current_type==\"double_click\"){       
+      if(type!=\"fwCrb_CSC_LV\")dps1=strsplit(dps[i],\"/\");
+      else dps1=makeDynString(dps[i]);
+      
+      dpGet(sys_name+\":\"+dps1[dynlen(dps1)]+\".dynatemTcpIp\",dynatemTcpIp); 
+      //DebugTN(sys_name+\":\"+dps1[dynlen(dps1)]+\".dynatemTcpIp\",dynatemTcpIp);   
+      dps[i]=substr(dps1[dynlen(dps1)],0,strpos(dps1[dynlen(dps1)],type1));
+      dynAppend(dpse,dps[i]+\" (\"+dynatemTcpIp+\")\");    
+      dynAppend(dpst,last_set_status);           
+    }
+    else{            
+            
+      if(strpos(dps[i],\"ME_M\")>=0 && !dynContains(dpse,\"-Z Reading problem\")){
+        dynAppend(dpse,\"-Z Reading problem\");
+      dynAppend(dpst,last_set_status);        
+      }
+      else  if(strpos(dps[i],\"ME_P\")>=0 && !dynContains(dpse,\"+Z Reading problem\")){
+        dynAppend(dpse,\"+Z Reading problem\");   
+       dynAppend(dpst,last_set_status);        
+      }
+    }
+    } // if(status==-2 && isEnabled!=\"Disabled\")
+  }
+  
+
+ if(current_type!=\"double_click\"){
+  if(current_type!=\"\" && type_save!=current_type)return;
+  
+    lineCount=table.lineCount();
+    line1=table.getLineN(1); // index 1 is second line
+    
+    //mudcsDebug(lineCount+\" \"+line1+\" \");
+
+  if(flag_press==1 && current_type!=\"\"){   
+    if(strpos(line1,\"no entries\")>=0 && dynlen(dpse)==0)return;
+    else if(strpos(line1,\"no entries\")>=0 && dynlen(dpse)>0){}
+    else if((lineCount-1) != dynlen(dpse)){}
+    else return;
+  }   
+} // current_type!=\"double_click\"
+  
+ if(frozen)return;
+ 
+ // DebugTN(dpst);
+ //   DebugTN(dpse);
+  //setValue(\"table\",\"deleteAllLines\");
+  table.deleteAllLines();
+     //    setValue(\"table\",\"appendLine\",\"Item\",\"CRB/CSC_ME_P2_PC2\",\"Time\",\"\");
+       setValue(\"table\",\"appendLine\",\"Item\",type2+\" summary\",\"Time\",\"\");
+       if(dynlen(dpse)==0) setValue(\"table\",\"appendLine\",\"Item\",\"no entries: \"+ current_time_s,\"Time\",\"\");
+    for(i=1;i<=dynlen(dpse);i++){    
+                 setValue(\"table\",\"appendLine\",
+            \"Item\",dpse[i],
+            \"Time\",dpst[i]
+            ); 
+    }
+    flag_press=1;
+    if(current_type==\"double_click\")frozen=1;
+  
+}  
+
+//========================================================================================
+//========================================================================================
+
+mudcsErrorDisplay(string type, string type1, string type2, string current_type=\"\"){
+  
+ dyn_string dps, dps1, dps2, dpse, dps3; 
+ int pos,lineCount,isEnabled_i;
+  string fsm2,DomainName,DomainName1,isEnabled, sys_name,sys_name1, line1;
+  dyn_string split1, split2, split3;
+  bool status_com;  
+  
+   dyn_string l_system_names, l_nodes;
+    
+  if(current_type!=\"\")type=current_type;
+  int i, status; 
+  time last_set_status;
+  dyn_time dpst;
+  dynClear(dps);
+  dynClear(dpse);
+  dynClear(dpst);    
+  dynClear(l_system_names);
+   dynClear(l_nodes);    
+ // dyn_string dps, dps1, dpse;
+  shape table=getShape(\"table\"); 
+  
+  if(!main_mode || type==\"fwCrb_CSC_LV\")dps=dpNames(\"*:*\",type);
+  else dps=dpNames(\"*\",type);
+    
+  if(type==\"HV_1\"){
+    if(!main_mode)dps3=dpNames(\"*:*\",\"HV_PR\");
+    else dps3=dpNames(\"*:*\",\"HV_PR\");
+  }
+  dynAppend(dps,dps3);
+  
+  for(i=1;i<=dynlen(dps);i++){
+
+
+split2=strsplit(dps[i],\":\");
+      if(dynlen(split2)<2){
+        DebugTN(\"ERROR DEBUG SUMMARY PANEL \"+dps[i]);
+        continue; 
+      } 
+
+sys_name=split2[1];
+fsm2=split2[2];
+split1=strsplit(fsm2,\"/\");
+      if(dynlen(split1)<2){
+        DebugTN(\"ERROR DEBUG SUMMARY PANEL \"+dps[i]);
+        continue; 
+      }    
+    if(type!=\"fwCrb_CSC_LV\"){       
+DomainName=substr(split1[2],0, strlen(\"CSC_ME_\")+2);
+if(strpos(fsm2,\"primary\")>=0)DomainName=\"CSC_HV\";
+isEnabled=fwFsmUi_getDUMode(DomainName,fsm2);
+if(main_mode==1 && strpos(dps[i],\"primary\")>=0 && strpos(dps[i],\"500\")<0)continue;
+//if(main_mode==0 && strpos(dps[i],\"primary\")>=0 && strpos(dps[i],\"600\")<0)continue; // temporal !!!!! ?????
+    }
+    else{
+if(main_mode==1 && strpos(split1[2],\"CSC_ME_M\")<0)continue; 
+//if(main_mode==0 && strpos(split1[2],\"CSC_ME_P\")<0)continue; // temporal !!!!! ?????
+ 
+
+dps2=dpNames(sys_name+\":*\"+fsm2,\"_FwFsmDevice\");     
+if(dynlen(dps2)>=1){split3=strsplit(dps2[1],\"|\");
+DomainName=substr(split3[1],(strpos(split3[1],\":\")+1));
+    dpGet(dps2[1]+\".mode.enabled\",isEnabled_i);
+    if(!isEnabled_i)isEnabled=\"Disabled\";
+} 
+    }
+    
+    
+    
+//DebugTN(DomainName+\"   \"+fsm2);
+    dpGet(dps[i]+\".status\",status);
+    status_com=false;
+    if(strpos(dps[i],\"primary\")>=0){
+      if(status==-1 || status==-2)status_com=true;
+    }
+    else if(status==-1)status_com=true;
+            
+    
+    
+    
+    
+    
+ ///  if(type==\"fwCrb_CSC_LV\")  status_com=true;  
+    
+if(type!=\"\"){
+//  if(i==124 || i==1)status_com=true;
+// DebugTN(dps[i]); 
+// DebugTN(state+\">\"+isEnabled_i+\">\");
+}       
+     
+     
+DomainName1=DomainName;
+sys_name1=sys_name;    
+     
+//        if(status==-2 && isEnabled==\"Disabled\")DebugTN(DomainName+\"   \"+fsm2);
+    if(status_com && isEnabled!=\"Disabled\"){
+        if(!dynContains(flags_error,current_type))dynAppend(flags_error,current_type);
+        //DebugTN(flags_error);
+        // DebugTN(type1);       
+        if(current_type!=\"\" && type_save!=current_type)continue;
+        
+            dpGet(dps[i]+\".status:_online.._stime\",last_set_status);
+            
+   ////  DebugTN(dps[i]);
+                   
+      if(type!=\"fwCrb_CSC_LV\")dps1=strsplit(dps[i],\"/\");
+      else dps1=strsplit(dps[i],\":\");//makeDynString(dps[i]);
+      
+      pos=strpos(dps1[dynlen(dps1)],type1);
+      if(pos<0){
+        pos=strlen(dps1[dynlen(dps1)]);
+      }
+      
+      dps[i]=substr(dps1[dynlen(dps1)],0,pos);
+      dynAppend(dpse,dps[i]);    
+      dynAppend(dpst,last_set_status);
+      dynAppend(l_system_names,sys_name1);
+      dynAppend(l_nodes,DomainName1);      
+    }
+  }
+  if(current_type!=\"\" && type_save!=current_type)return;
+
+     lineCount=table.lineCount();
+    line1=table.getLineN(1); // index 1 is second line    
+   //  mudcsDebug(lineCount+\">>\"+dynlen(dpse));    
+  if(flag_press==1 && current_type!=\"\"){   
+    if(strpos(line1,\"no entries\")>=0 && dynlen(dpse)==0)return;
+    else if(strpos(line1,\"no entries\")>=0 && dynlen(dpse)>0){}
+    else if((lineCount-1) != dynlen(dpse)){}
+    else return;
+  } 
+ //     mudcsDebug(lineCount+\">>\"+dynlen(dpse)+\">>\"+line1);
+  
+ // DebugTN(dpst);
+ //   DebugTN(dpse);
+  //setValue(\"table\",\"deleteAllLines\");
+  g_node=DomainName1;
+  g_system_name=sys_name1;  
+  g_system_names=l_system_names;
+  g_nodes=l_nodes;  
+  table.deleteAllLines();
+     //    setValue(\"table\",\"appendLine\",\"Item\",\"CRB/CSC_ME_P2_PC2\",\"Time\",\"\");
+       setValue(\"table\",\"appendLine\",\"Item\",type2+\" summary\",\"Time\",\"\");
+       if(dynlen(dpse)==0) setValue(\"table\",\"appendLine\",\"Item\",\"no entries\",\"Time\",\"\");
+    for(i=1;i<=dynlen(dpse);i++){
+
+      if(strpos(dpse[i],\"primary500\")>=0)dpse[i]=\"-Z general HV problem\";
+      else if(strpos(dpse[i],\"primary600\")>=0)dpse[i]=\"+Z general HV problem\";      
+                 setValue(\"table\",\"appendLine\",
+            \"Item\",dpse[i],
+            \"Time\",dpst[i]
+            ); 
+    }
+    flag_press=1;
+}  
+
+//========================================================================================
+//========================================================================================
+//========================================================================================
+
+
+//CSC_fwGSuper_g_csc_part
+
+mudcsDisbledDevicesDisplay()
+{
+
+  dyn_string dps, dps1, dps2, dpse;
+   int pos;
+  string fsm2,DomainName,isEnabled, sys_name;
+  dyn_string split1, split2, split3;
+  
+dyn_string flags;
+dyn_string chs;
+int i;
+   dynClear(dps_en);
+  dynClear(dpse);
+   
+//chs=fwFsmUi_getAllChildren(\"CSC_ME_P4\",\"CSC_ME_P4\",flags);
+//for(i=1;i<dynlen(chs);i++){
+// mudcsDebug(chs[i]);
+//}
+
+
+//string node=\"CMS_CSC\";
+//chs=fwFsmUi_getAllChildren(node,node,flags);
+if(!main_mode)DebugTN(\"CMS_CSC\");
+else DebugTN(\"cms_csc_dcs_04\");
+  
+if(!main_mode)chs=makeDynString(\"CMS_CSC\");
+else chs=makeDynString(\"cms_csc_dcs_04\");
+///////getch(2, chs[1], chs, makeDynInt(1));
+getch(1, chs[1], chs, makeDynInt(1));
+
+///fwFsmUi_setCUModeByName(\"CMS_CSC\",\"CSC_ME_P4::CSC_ME_P4\",\"Exclude\");
+    for(i=1;i<=dynlen(dps_en);i++){
+     if(strpos(dps_en[i],type1)>=0){ 
+      if(type!=\"fwCrb_CSC_LV\")dps1=strsplit(dps_en[i],\"/\");
+      else dps1=makeDynString(dps_en[i]);
+      dps_en[i]=substr(dps1[dynlen(dps1)],0,strpos(dps1[dynlen(dps1)],type1));
+      dynAppend(dpse,dps_en[i]);
+     }
+    }
+    
+      table.deleteAllLines();
+     //    setValue(\"table\",\"appendLine\",\"Item\",\"CRB/CSC_ME_P2_PC2\",\"Time\",\"\");
+       setValue(\"table\",\"appendLine\",\"Item\",type2+\" summary\",\"Time\",\"\");
+       if(dynlen(dpse)==0) setValue(\"table\",\"appendLine\",\"Item\",\"no entries\",\"Time\",\"\");
+    for(i=1;i<=dynlen(dpse);i++){    
+                 setValue(\"table\",\"appendLine\",
+            \"Item\",dpse[i],
+            \"Time\",\"\"
+            ); 
+    }
+//mudcsDebug(\"done\");
+
+}
+//===========================================================
+getch(int mode, string domain, dyn_string chs, dyn_int flags){
+
+dyn_string chs1;
+dyn_string split;
+int status;
+dyn_int flags1;
+int i,j;
+int count;
+string mode_en;
+
+//if(domain==\"CSC_ME_P12_C27\")mudcsDebug(domain);
+
+ for(i=1;i<=dynlen(chs);i++){
+  if(flags[i]==2){
+   continue;
+
+
+  }
+  else{
+   if(flags[i]==0){
+    split[1]=domain;
+    chs1=fwFsmUi_getAllChildren(split[1],chs[i],flags1);
+   }
+   else{ 
+    split=strsplit(chs[i],\":\");
+    chs1=fwFsmUi_getAllChildren(split[1],split[1],flags1);
+   }
+
+   if(dynlen(chs1)>=1)getch(mode,split[1],chs1,flags1);
+    count=0;
+    for(j=1;j<=dynlen(chs1);j++){
+
+
+
+//if(domain==\"CSC_ME_P2\")mudcsDebug(chs1[j]+\" \"+flags1[j]);
+     if(flags1[j]==2){
+     if(strpos(chs1[j],type1)<0)continue; 
+//mudcsDebug2(split[1]+\" \"+chs1[j]);
+///////////////////////      dpGet(chs1[j]+\".status\",status);
+//if(domain==\"CSC_ME_P2\")mudcsDebug2(split[1]+\" \"+chs1[j]);
+/////////////      if(status!=-2){
+          count++;
+
+         mode_en=fwFsmUi_getDUMode(split[1],chs1[j]);
+         if(mode==1 && strpos(mode_en,\"Disabled\")>=0){
+           DebugTN(split[1]+\" \"+chs1[j]+\" \"+mode_en);
+           dynAppend(dps_en,chs1[j]);
+//mudcsDebug(split[1]+\" \"+chs1[j]);
+//          fwFsmUi_setDUModeByName(split[1],chs1[j],\"Enable\");
+         }
+
+//        if(domain==\"CSC_ME_P2\")mudcsDebug2(split[1]+\" \"+chs1[j]);
+
+/////////      } // if(status!=-2)
+     }
+    } // for j
+/*
+    if(count>0){
+
+
+
+//continue;
+
+ if(flags[i]==0){
+      mode_en=fwFsmUi_getDUMode(domain,chs[i]);
+
+
+// if(domain==\"CSC_ME_P2\")mudcsDebug(count +\" \"+strlen(chs1));
+
+         //mudcsDebug(domain+\" \"+chs[i]);
+      if(mode==2 && mode_en==\"Disabled\"){
+          fwFsmUi_setDUModeByName(domain,chs[i],\"Enable\");
+///       mudcsDebug(domain+\"\"+chs[i]);
+      }
+ }
+ else{
+      mode_en=fwFsmUi_getCUMode(domain,chs[i]);
+           // if(domain==\"CSC_ME_P2\")mudcsDebug(count +\" \"+strlen(chs1));
+      if(mode==2 && mode_en==\"Excluded\"){
+          fwFsmUi_setCUModeByName(domain,chs[i],\"Include\");
+///       mudcsDebug(domain+\"\"+chs[i]);
+      }
+ } //else
+
+    }  // if(count >0)
+*/
+
+  } // else if(flags[i]==2)
+ } // for i
+
+
+}
+
+
+  " 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+2 13
+"stop_banner"
+""
+1 10 10 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 10 450 100
+0 2 2 "0s" 0 0 0 64 0 0  10 10 4
+1
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-15-*-100-100-*-*-iso8859-1|-15,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+1
+LANG:1 56 Attention! The Peripheral Crate slow control is stopped.
+1
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-15-*-100-100-*-*-iso8859-1|-15,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+1
+LANG:1 58 Please do not forget to resume it when you finish firmware
+1
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-15-*-100-100-*-*-iso8859-1|-15,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+1
+LANG:1 43 downloading: Go to CSC_LV folder and click 
+1
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-15-*-100-100-*-*-iso8859-1|-15,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+1
+LANG:1 45 "Resume Peripheral Crate Slow Control" button
+25 4
+"table"
+""
+1 10 110 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 8 108 441.9999999999998 462
+"main()
+{
+   setValue(\"\",\"tableMode\",TABLE_SELECT_BROWSE);
+setValue(\"\",\"selectByClick\",1); 
+}" 0
+"main(int row, string column, string value)
+{
+
+  
+
+int i;
+int j;
+      string obj;
+dyn_int lines;
+dyn_anytype line; 
+dyn_string systemNamesDps;
+dyn_string s_split;
+
+string project_station, project_system;
+
+string l_system_name;
+
+shape table=getShape(\"table\");
+
+dyn_int lines1 = table.getSelectedLines();
+
+
+////DebugN(table.getSelectedLines());
+//mudcsDebug(lines1[1]);
+for(i=1;i<=dynlen(lines1);i++){
+ // DebugN(lines1[i]);
+ getValue(\"\",\"getLineN\", lines1[i], line);
+ 
+ 
+    if(strpos(line[1],\"ME_M4\")>=0)project_station=\"1\"; 
+   else if(strpos(line[1],\"ME_M3\")>=0)project_station=\"2\";    
+   else if(strpos(line[1],\"ME_M2\")>=0)project_station=\"3\";
+   else if(strpos(line[1],\"ME_M1\")>=0)project_station=\"4\";     
+   else if(strpos(line[1],\"ME_P4\")>=0)project_station=\"8\"; 
+   else if(strpos(line[1],\"ME_P3\")>=0)project_station=\"7\";    
+   else if(strpos(line[1],\"ME_P2\")>=0)project_station=\"6\";
+   else if(strpos(line[1],\"ME_P1\")>=0)project_station=\"5\";
+   else if(strpos(line[1],\"summary\")>=0 || strpos(line[1],\"no entries\")>=0)return;
+   
+   if( g_panel==\"\"){mudcsDebug(\"No panel is presumed for this item\");return;}
+   if(strpos(line[1],\"general\")>=0){mudcsDebug(\"No panel is presumed for this item\");return;}
+//   else if($node==\"CSC_LV\")project_station=\"101\";   
+//   else if($node==\"CSC_HV\")project_station=\"102\"; 
+ 
+ //// DebugN(line);
+
+// DebugN(line[1]+line[2]+line[3]);
+
+  
+ }
+
+mudcsInit(project_station);
+
+/*
+dyn_string super_systems=dpNames(\"*:CMS_CSC_Super\");
+dyn_string super_systems_split;
+
+
+addGlobal(\"CSC_fwG_g_SUPERVISOR_SYSTEM\",STRING_VAR);
+if(dynlen(super_systems)>=1){
+  super_systems_split=strsplit(super_systems[1],\":\");
+CSC_fwG_g_SUPERVISOR_SYSTEM=super_systems_split[1]; //CSC_fwG_CSC_fwG_g_SYSTEM_NAME2;  // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++1
+}
+else CSC_fwG_g_SUPERVISOR_SYSTEM=\"\";
+*/
+
+i=lines1[1];
+//------------    
+   systemNamesDps=dpNames(\"*:CMS_CSC_HV_CC\"+\"_\"+project_station);
+//------------
+   if(type_save==\"Maraton\" || type_save==\"fwCrb_CSC_LV\" || type_save==\"Dubna\"){
+     if(type_save==\"Maraton\"){
+      dyn_int child_flags;
+      dyn_string dsFsm,dp_ms;
+     DebugTN(\">>>\"+g_nodes[i]+\">>>>>>>>>>>>>>>>>>>\"+ line[1]+g_type1);
+     
+      dyn_string children;
+      if(strpos(line[1],\"CSC_ME_M\")>=0){ // temporal !!!!
+       children = fwFsmUi_getAllChildren(\"CMS_CSC_LV_CAN2_M\", line[1]+g_type1, child_flags);
+       if(dynlen(children)==0)children = fwFsmUi_getAllChildren(\"CMS_CSC_LV_CAN2\", line[1]+g_type1, child_flags);
+       l_system_name=\"csc_dcs_lv2\"; 
+      }
+      else if(strpos(line[1],\"CSC_ME_P\")>=0){// temporal !!!!
+       children = fwFsmUi_getAllChildren(\"CMS_CSC_LV_CAN2\", line[1]+g_type1, child_flags);
+       if(dynlen(children)==0)children = fwFsmUi_getAllChildren(\"CMS_CSC_LV_CAN2_P\", line[1]+g_type1, child_flags);        
+       l_system_name=\"CMS_CSCfw_LV_CAN\";
+        
+      }
+     // mudcsDebug(dynlen(children));
+      for(j=1;j<=dynlen(children);j++){
+       dsFsm=strsplit(children[j],\"|\");
+//       mudcsDebug2(g_system_names[i]+\":\"+children[j]);
+       dp_ms=dpNames(l_system_name+\":\"+children[j]);//+dsFsm[dynlen(dsFsm)]);
+  
+       DebugTN(\">>>\"+\">>>>>>>>>>>>>>>>>>>\"+children[j]);
+       DebugTN(\">>>\"+\">>>>>\"+dp_ms[1]);
+  
+  
+       if(dpTypeName(dp_ms[1]) == \"FwWienerMarathon\"){
+         obj=l_system_name+\":\"+dsFsm[dynlen(dsFsm)];
+         break;  
+       }  
+
+      } // for       
+       
+     } // if(type_save==\"Maraton\")
+     else if(type_save==\"fwCrb_CSC_LV\" || type_save==\"Dubna\"){
+     obj=g_system_names[i]+\":\"+line[1]+g_type1;      
+       
+     }
+ 
+   }
+   else{
+    if(dynlen(systemNamesDps)==0)mudcsDebug(\"SYSTEM NAME NOT DEFINED !\");
+    else{
+    obj=line[1]+g_type1;
+    s_split=strsplit(systemNamesDps[1],\":\"); 
+    project_system=s_split[1];//dpSubStr(systemNamesDps[1], DPSUB_SYS);
+    ///mudcsLvDebug(CSC_fwG_CSC_fwG_g_SYSTEM_NAME2); 
+    } //else
+  } // else
+// mudcsDebug(project_station);
+// mudcsDebug(project_system);
+//--------------------------------------------------------------------------  
+string LVModule=\"Summary_Module\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+//	ModuleOn(LVModule, xPos + xSize, yPos, 0, 0, 1, 1, \"\");
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(g_panel, //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + obj, \"$obj:\"+obj,\"$node:\"+g_nodes[i],
+                      \"$project_station:\"+project_station,\"$project_system:\"+project_system));
+
+
+return;
+
+  
+}" 0
+ 1 0 1 2 0 "Item" 24 1 0 "s" 1
+LANG:1 4 Item
+E
+1
+LANG:1 0 
+
+275 "Time" 13 1 0 "s" 1
+LANG:1 4 Time
+E
+1
+LANG:1 0 
+
+154 
+16 16 10 10
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+0 1 1 1 7
+1 0
+13 5
+"hv_errors"
+""
+1 440 110 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 438 108 542.0000000000001 152
+
+T 
+1
+LANG:1 17 HV ERRORS
+SUMMARY
+"main()
+{
+ flag_press=1;
+frozen=0;
+  string type;
+  type_save=type=\"HV_1\";
+  string type1=\"_HV\";
+  g_type1=type1;
+  string type2=\"HV\";
+        g_panel=\"CMS_CSCfw_HV_CC/emuDevHV_1Browser.pnl\";
+    bool ischeck;
+    getValue(\"check1\",\"state\",0,ischeck);
+    
+  if(!ischeck)mudcsErrorDisplay(type,type1,type2,\"\");
+  else mudcsDisbledDevicesDisplay();
+
+}
+
+
+" 0
+ E E E
+13 6
+"crb_errors"
+""
+1 440 250 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 438 248 542 302
+
+T 
+1
+LANG:1 21 CRB
+LV ERRORS
+SUMMARY
+"main()
+{
+  
+  flag_press=1;
+  frozen=0;
+  string type;
+  type=type_save=\"fwCrb_CSC_LV\";
+  string type1=\"_LV_CRB\";
+    g_type1=type1;
+  string type2=\"CRB\"; 
+      g_panel=\"CMS_CSCfw_LV_CRB/emuDevfwCrb_CSC_LVOperation.pnl\";
+ //     g_node=\"CMS_CSC_LV_CAN1\";
+    bool ischeck;
+    getValue(\"check1\",\"state\",0,ischeck);
+    
+  if(!ischeck)mudcsErrorDisplay(type,type1,type2,\"\");
+  else mudcsDisbledDevicesDisplay();
+
+}" 0
+ E E E
+13 7
+"lv_errors"
+""
+1 440 300 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 438 298 542 352
+
+T 
+1
+LANG:1 32 Chamber Boards
+LV ERRORS
+SUMMARY
+"main()
+{
+  flag_press=1;
+  frozen=0;
+  string type;
+    type=type_save=\"LV_1\";
+  string type1=\"_LV\";
+    g_type1=type1;
+  string   type2=\"LV chamber boards\";
+    g_panel=\"CMS_CSCfw_HV_CC/emuDevLV_1Browser.pnl\";
+    
+    bool ischeck;
+    getValue(\"check1\",\"state\",0,ischeck);
+    
+  if(!ischeck)mudcsErrorDisplay(type,type1,type2,\"\");
+  else mudcsDisbledDevicesDisplay();
+}" 0
+ E E E
+13 8
+"temp_errors"
+""
+1 440 350 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 438 348 542 422
+
+T 
+1
+LANG:1 42 Chamber Boards
+Temperature 
+ERRORS
+SUMMARY
+"main()
+{
+  flag_press=1;
+  frozen=0;
+  string type;
+    type=type_save=\"TEMP_1\";
+  string type1=\"_TEMP\";
+    g_type1=type1;
+  string   type2=\"Temperature \";
+        g_panel=\"CMS_CSCfw_HV_CC/emuDevTEMP_1Browser.pnl\";
+    bool ischeck;
+    getValue(\"check1\",\"state\",0,ischeck);
+    
+  if(!ischeck)mudcsErrorDisplay(type,type1,type2,\"\");
+  else mudcsDisbledDevicesDisplay();        
+
+}" 0
+ E E E
+20 9
+"check1"
+""
+1 290 90 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 288 88 452 112
+1
+T 
+1
+LANG:1 21 Show Disabled Devices
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+EE13 14
+"PCRATE"
+""
+1 440 420 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ "main()
+{
+        flag_press=1;
+//    type=type_save=\"TEMP_1\";
+  string type;
+        type=type_save=\"PC_1\";
+  string type1=\"_TEMP\";
+    g_type1=type1;
+  string type2=\"PeripheralCrate Reading \";
+        g_panel=\"\";//\"CMS_CSCfw_HV_CC/emuDevTEMP_1Browser.pnl\";
+    bool ischeck;
+    getValue(\"check1\",\"state\",0,ischeck);
+    
+  mudcsErrorDisplay2(type,type1,type2,\"double_click\");
+  //else mudcsDisbledDevicesDisplay();     
+}" 0
+ "
+main()
+{
+
+}" 0
+
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 99 Yellow color indicates a bad status in one or more VME controllers: call to PeeripheralCrate expert
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 438 418 542 461.9999999999999
+
+T 
+1
+LANG:1 31 PeripheralCrate
+Reading Problem
+"main()
+{
+  flag_press=1;
+  frozen=0;
+//    type=type_save=\"TEMP_1\";
+  string type;
+        type=type_save=\"PC_1\";
+  string type1=\"no matter\";
+    g_type1=type1;
+  string type2=\"PeripheralCrate Reading \";
+        g_panel=\"\";//\"CMS_CSCfw_HV_CC/emuDevTEMP_1Browser.pnl\";
+    bool ischeck;
+    getValue(\"check1\",\"state\",0,ischeck);
+    
+  mudcsErrorDisplay2(type,type1,type2,\"\");
+  //else mudcsDisbledDevicesDisplay();        
+
+}" 0
+ E E E
+14 15
+"current_time"
+""
+1 390 50 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 388 48 542 72
+3 "0s" 0 0 0 0 0 -1  E E E
+13 17
+"mrtn_errors"
+""
+1 440 200 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+23 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 438 198 542 252
+
+T 
+1
+LANG:1 25 Maraton
+LV ERRORS
+SUMMARY
+"main()
+{
+  
+  flag_press=1;
+  frozen=0;
+  string type;
+  type=type_save=\"Maraton\";
+  string type1=\"\";//\"_LV_MRTN\";
+    g_type1=type1;
+  string type2=\"MRTN\"; 
+      g_panel=\"CMS_CSCfw_LV_MRTN/fwWienerMarathonOperationCsc.pnl\";
+   //   g_node=\"CMS_CSC_LV_CAN1\";
+   
+    
+  mudcsErrorMrtnDisplay(type,type1,type2,\"\");
+
+}" 0
+ E E E
+13 18
+"dubna_errors"
+""
+1 440 150 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+25 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 438 148 542 202
+
+T 
+1
+LANG:1 23 Dubna HV
+ERRORS
+SUMMARY
+"main()
+{
+  
+  flag_press=1;
+  frozen=0;
+  string type;
+  type=type_save=\"Dubna\";
+  string type1=\"\";//\"_LV_MRTN\";
+    g_type1=type1;
+  string type2=\"Dubna_HV\"; 
+      g_panel=\"CMS_ME11/ME11PN.pnl\";
+   //   g_node=\"CMS_CSC_LV_CAN1\";
+   
+    
+  mudcsErrorMrtnDisplay(type,type1,type2,\"\");
+
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

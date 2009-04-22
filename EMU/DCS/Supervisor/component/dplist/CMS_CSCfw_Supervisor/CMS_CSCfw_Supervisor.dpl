@@ -1,0 +1,26 @@
+# ascii dump of database
+
+# DpType
+TypeName
+_FwFsmObjectType._FwFsmObjectType	1#1
+	panel	25#6
+	components	9#7
+	states	9#8
+	actions	9#9
+	parameters	9#11
+
+# Datapoint/DpId
+DpName	TypeName	ID
+fwOT_EMUNodes	_FwFsmObjectType	69001
+
+# DpValue
+ElementName	TypeName	_original.._value	_original.._status	_original.._stime
+fwOT_EMUNodes.panel	_FwFsmObjectType	"EMUNodes.pnl"	0x101	17.08.2008 13:21:00.498
+fwOT_EMUNodes.components	_FwFsmObjectType		0x141	17.08.2008 13:21:00.500
+fwOT_EMUNodes.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR|        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ANY$FwCHILDREN in_state STANDBY )  move_to STANDBY|", "", "", "ERROR", "FwStateAttention3", "        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|        when ( $ALL$FwCHILDREN in_state {ON,OFF} )  move_to OFF|when ( $ALL$FwCHILDREN in_state {ON,OFF,STANDBY} )  move_to STANDBY|", "", "", "ON", "FwStateOKPhysics", "   when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|when ( $ANY$FwCHILDREN in_state STANDBY )  move_to STANDBY|when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|", "", "", "STANDBY", "FwStateAttention1", "when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,OFF} )  move_to OFF|", "", ""	0x101	17.08.2008 13:21:00.502
+fwOT_EMUNodes.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "OFF/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "ERROR/STANDBY", "", "1", "do  STANDBY $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN
+move_to OFF", "0", "STANDBY/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0"	0x101	17.08.2008 13:21:00.504
+fwOT_EMUNodes.parameters	_FwFsmObjectType		0x141	17.08.2008 13:21:00.506
