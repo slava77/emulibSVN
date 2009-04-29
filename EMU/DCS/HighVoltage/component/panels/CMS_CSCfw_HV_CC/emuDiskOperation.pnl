@@ -1,0 +1,110 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 918 705 N "_3DFace" 4
+"$obj"
+"$project_station"
+"$project_system"
+"$sDpName"
+"
+
+main()
+{
+    $project_system;
+  $project_station;
+//mudcsDebug2($pars_obj);
+}" 0
+ E E E E 1 -1 -1 0  10 10
+""0  1
+E "#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs2.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs3.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs4.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcsDim.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuAlert.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emufw.ctl\"" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+28 133
+"TAB1"
+""
+1 10 10 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 111 -*-Helvetica [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 10 10 922 721
+E3 "Browser" 1
+LANG:1 7 Browser
+1 "CMS_CSCfw_HV_CC/emuDiskBrowser.pnl" 1
+LANG:1 0 
+4
+"$obj""$obj"
+"$project_station""$project_station"
+"$project_system""$project_system"
+"$sDpName""$sDpName"
+
+"Summary_LV" 1
+LANG:1 10 Summary_LV
+1 "CMS_CSCfw_HV_CC/emuDiskSummaryLV.pnl" 1
+LANG:1 0 
+4
+"$obj""$obj"
+"$project_station""$project_station"
+"$project_system""$project_system"
+"$sDpName""$sDpName"
+
+"HVcontrol" 1
+LANG:1 9 HVcontrol
+1 "CMS_CSCfw_HV_CC/emuDiskHVcontrol.pnl" 1
+LANG:1 0 
+4
+"$obj""$obj"
+"$project_station""$project_station"
+"$project_system""$project_system"
+"$sDpName""$sDpName"
+
+
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

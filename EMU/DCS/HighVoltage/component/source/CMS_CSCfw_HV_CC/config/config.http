@@ -1,0 +1,42 @@
+################################################
+# File: 'config.http'  
+# Config-file to set the HTTP-Server standard
+################################################
+
+httpServerPort          = "80"      # Used HTTP-Server Portnumber
+httpLogin               = "none"    # Use: 'pvss'- Login as PVSS-User
+                                     #      'code'- Use Accesscode
+                                     #      'none'- Do not check user
+#httpAccesscode          = ""        # Define- Access code(s) / if httpLogin="code" is set
+#httpMainTitle           = "PVSS HTTP-Server / Titel / Title"
+#httpSubTitle            = "PVSS HTTP-Server / Untertitel / Subtitle"
+#httpWelcomeText         = "Willkommen beim PVSS HTTP-Server<br>Welcome to the PVSS HTTP-Server<br><br>Bitte klicken Sie auf eine der Flaggen, um eine Sprache auszuwählen<br>Please click on one of the flags to select a language"
+#httpCopyRightText       = "(c) 2001 - ETM AG"
+#httpBackColorLight      = "#88bbee"
+#httpFontColorLight      = "#000000"
+#httpBackColorDark       = "#6699cc"
+#httpFontColorDark       = "#ffffff"
+#httpBackColorAnswer     = "#c0c0c0"
+#httpFontColorAnswer     = "#000000"
+#httpFontFamily          = "arial"
+#httpStartPageLogoLink   = "http://www.etm.at/"
+#httpHeaderLogoLeftLink  = "http://www.pvss.com/"
+#httpHeaderLogoRightLink = "http://www.etm.at/"
+#httpHomeLink            = "main.html"
+#httpHelpLink            = "WebHelp/HTTP_Server/http1-02.htm"
+#httpMailTo              = "product_center@etm.at"
+#httpLastChanges         = "14.06.2001"
+
+
+###########################
+# Configs for WAP using   
+###########################
+
+#wapTitle                = "PVSS II WAP"
+#wapInfoText             = "Welcome to<br/>PVSS II WAP<br/>Email:<br/><b>product_center@etm.at</b>"
+#wapLanguage             = ""                  # Set default language like "de_AT.iso88591" for WAP
+                                               # or use "" to choose language in WAP
+#wapTitleURL             = "wap.pvss.com"
+#wapRedirectionDelay     = "10"
+#wapGroup                = "WAP-Group"         # DP-Group for WAP
+#wapGroupList            = "WAP-Datasets"      # List of DP-Groups for WAP

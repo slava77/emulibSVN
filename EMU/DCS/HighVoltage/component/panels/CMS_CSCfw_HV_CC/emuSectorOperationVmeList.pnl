@@ -1,0 +1,101 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 191 575 N "_3DFace" 1
+"$DpName"
+"main()
+{
+ int i;
+ dyn_string children, dps;
+ dyn_int types;
+ string station,ts,system_name, dynatemTcpIp, text;
+ 
+ dps=strsplit($DpName,\":\");
+ system_name=dps[1];
+ ts=dps[dynlen(dps)];
+ station=substr(ts,0,strpos(ts,\"_TS\"));
+ 
+// mudcsDebug(station+\"::\"+ts);
+ 
+ children=fwCU_getChildren(types,station+\"::\"+ts);
+ 
+ for(i=1;i<=dynlen(children);i++){
+  dpGet(mudcsAddSystem(children[i]+\"_LV.dynatemTcpIp\"),dynatemTcpIp); 
+  if(i!=dynlen(children))text+=dynatemTcpIp+\"\\n\";
+  else text+=dynatemTcpIp;
+ }
+  setValue(\"list_1\",\"text\",text); 
+ 
+return;  
+    if(strpos($DpName,\"1_TS_\")<0)return; 
+  
+  //  mudcsLvDebug($DpName);
+if(strpos($DpName,\"TS_6\")>=0)setValue(\"crate_list_3\",\"visible\", true);
+else if(strpos($DpName,\"TS_1\")>=0
+        || strpos($DpName,\"TS_5\")>=0)setValue(\"crate_list_2\",\"visible\", true);
+else if(strpos($DpName,\"TS_2\")>=0
+        || strpos($DpName,\"TS_3\")>=0
+        || strpos($DpName,\"TS_4\")>=0 )setValue(\"crate_list_1\",\"visible\", true);
+  
+//  setValue(\"list_1\",\"text\",\"02:00:00:00:00:3A\\n02:00:00:00:00:3B\\n02:00:00:00:00:3C\");
+}" 0
+ E E E E 1 -1 -1 0  10 20
+""0  1
+E E 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+2 0
+"list_1"
+""
+1 20 10 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 40 59 66
+0 2 2 "0s" 0 0 0 192 0 0  10 40 1
+1
+LANG:1 109 -*-Bitstream Charter-*-r-normal-*-*-160-100-100-*-*-iso8859-1|-21,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+1
+LANG:1 4 TEST
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

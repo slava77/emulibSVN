@@ -1,0 +1,3352 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 674 411 N "_3DFace" 4
+"$obj"
+"$project_station"
+"$project_system"
+"$sDpName"
+"string mudcs_alias;
+int is_local_sys;
+
+main()
+{
+// mudcsDebug($project_system);
+$project_station;
+$project_system;    
+  mudcsProjectConnect();  
+  
+string local_sys = fwFsm_getSystemName();
+if(strpos(local_sys,\"CSC\")>=0 || strpos(local_sys,\"csc\")>=0
+|| strpos(local_sys,\"EMU\")>=0 || strpos(local_sys,\"emu\")>=0 || strpos(local_sys,\"dcspcS2G19\")>=0 )is_local_sys=1;
+else is_local_sys=0;
+
+
+string local_sys = fwFsm_getSystemName();
+if(is_local_sys){
+// setValue(\"exclude\",\"visible\",true);
+// setValue(\"exclude_text1\",\"visible\",true);
+// setValue(\"exclude_text2\",\"visible\",true);
+
+
+// setValue(\"noalert\",\"visible\",true);
+// setValue(\"noalert_text1\",\"visible\",true);
+// setValue(\"noalert_text2\",\"visible\",true);
+}
+
+
+//mudcsDebug2($pars_obj);
+//mudcsDebug2($pars_obj);
+//mudcsDebug2($pars_obj);
+
+///mudcsDebug(\"1\"+$obj);
+//mudcsDebug(\"2\"+$sDpName);
+
+ string test_string;
+ int i,j, index, index1; 
+ dyn_string ds1,ds2,ds3;
+ dyn_string error_list, split1;
+ string s1,s2; 
+ 
+init_dp_switch();
+init();
+
+dyn_int noalert_channels;
+dyn_int off_channels;
+dpGet(DpNameFsm+\".noalert_channels\",noalert_channels);
+dpGet(DpNameFsm+\".off_channels\",off_channels);
+
+
+if(dynlen(noalert_channels)>0){
+  
+  s1=\"noalert_channels: \";
+  for(j=1;j<=dynlen(noalert_channels);j++)s1+=noalert_channels[j]+\"; \";
+//  setValue(\"noalert_channels_text\",\"visible\",true);
+//  setValue(\"noalert_channels_text\",\"text\",s1);
+}
+if(dynlen(off_channels)>0){
+    s1=\"off_channels: \";
+  for(j=1;j<=dynlen(off_channels);j++)s1+=off_channels[j]+\"; \";
+//  setValue(\"off_channels_text\",\"visible\",true);
+//  setValue(\"off_channels_text\",\"text\",s1);
+}
+
+//=============================
+
+  setValue(\"t_alct\",\"enabled\",true);
+  setValue(\"alct\",\"backCol\",\"{0,153,153}\");    
+  setValue(\"alct\",\"state\",0,true);                    
+
+  setValue(\"t_cfeb1\",\"enabled\",true);
+  setValue(\"cfeb01\",\"backCol\",\"{0,153,153}\"); 
+  setValue(\"cfeb01\",\"state\",0,true);               
+
+  setValue(\"t_cfeb2\",\"enabled\",true);
+  setValue(\"cfeb02\",\"backCol\",\"{0,153,153}\");   
+  setValue(\"cfeb02\",\"state\",0,true);                     
+
+  setValue(\"t_cfeb3\",\"enabled\",true);
+  setValue(\"cfeb03\",\"backCol\",\"{0,153,153}\"); 
+  setValue(\"cfeb03\",\"state\",0,true);                         
+
+  setValue(\"t_cfeb4\",\"enabled\",true);
+  setValue(\"cfeb04\",\"backCol\",\"{0,153,153}\");  
+  setValue(\"cfeb04\",\"state\",0,true);                        
+
+  setValue(\"t_cfeb5\",\"enabled\",true);
+  setValue(\"cfeb05\",\"backCol\",\"{0,153,153}\"); 
+  setValue(\"cfeb05\",\"state\",0,true);                         
+
+
+dyn_int off_channels,off_channels1;
+string  isEnabled;
+
+//off_channels=makeDynInt(0,0,0,0,0,0,0);
+dpGet(DpNameFsm+\".noalert_channels\",off_channels);
+//mudcsDebug(off_channels);
+for(i=1;i<=dynlen(off_channels);i++){
+
+
+if(off_channels[i]==6){
+  setValue(\"t_alct\",\"enabled\",false);
+  setValue(\"alct\",\"backCol\",\"{202,202,202}\");    
+  setValue(\"alct\",\"state\",0,false);                    
+}
+else if(off_channels[i]==1){
+  setValue(\"t_cfeb1\",\"enabled\",false);
+  setValue(\"cfeb01\",\"backCol\",\"{202,202,202}\"); 
+  setValue(\"cfeb01\",\"state\",0,false);               
+}
+else if(off_channels[i]==2){
+  setValue(\"t_cfeb2\",\"enabled\",false);
+  setValue(\"cfeb02\",\"backCol\",\"{202,202,202}\");   
+  setValue(\"cfeb02\",\"state\",0,false);                     
+}
+else if(off_channels[i]==3){
+  setValue(\"t_cfeb3\",\"enabled\",false);
+  setValue(\"cfeb03\",\"backCol\",\"{202,202,202}\"); 
+  setValue(\"cfeb03\",\"state\",0,false);                         
+}
+else if(off_channels[i]==4){
+  setValue(\"t_cfeb4\",\"enabled\",false);
+  setValue(\"cfeb04\",\"backCol\",\"{202,202,202}\");  
+  setValue(\"cfeb04\",\"state\",0,false);                        
+}
+else if(off_channels[i]==5){
+  setValue(\"t_cfeb5\",\"enabled\",false);
+  setValue(\"cfeb05\",\"backCol\",\"{202,202,202}\"); 
+  setValue(\"cfeb05\",\"state\",0,false);                         
+}
+
+}
+DpNameFsm2=mudcsRemoveSystem(DpNameFsm);
+split1=strsplit(DpNameFsm2,\"/\");
+DomainName=substr(split1[2],0, strlen(\"CSC_ME_\")+2);
+isEnabled=fwFsmUi_getDUMode(DomainName,DpNameFsm2);
+
+
+if(isEnabled==\"Disabled\"){
+  setValue(\"isDeviceEnabled\",\"visible\",true);
+  setValue(\"isDeviceEnabledCheck\",\"backCol\",\"{202,202,202}\");  
+  setValue(\"isDeviceEnabledCheck\",\"state\",0,0);    
+}
+else {
+  setValue(\"isDeviceEnabled\",\"visible\",false);
+  setValue(\"isDeviceEnabledCheck\",\"backCol\",\"{0,153,153}\");   
+  setValue(\"isDeviceEnabledCheck\",\"state\",0,1);     
+}
+
+g_dps2=dpNames(CSC_fwG_g_SYSTEM_NAME+\":*\"+DpNameFsm2,\"_FwFsmDevice\");
+dpConnect(\"update_enabled\",g_dps2[1]+\".mode.enabled\");
+
+//DebugTN(DomainName+\"                         \"+DpNameFsm2);
+//mudcsDebug(isEnabled);
+
+//=============================
+
+
+dpConnect(\"status_monitor\",DpNameFsm+\".status\");
+dpConnect(\"update_dpoints_not_controlled\",CSC_fwG_g_SYSTEM_NAME+\":DPOINTS_NOT_CONTROLLED.value\");
+if(CSC_fwG_g_DEFINE_ELMB){
+ determine_two_chambers_from_same_lv_controller();
+  for(j=1;j<=dynlen(two_positions);j++){
+
+   test_string+=CSC_fwG_g_WHEELS[disk_number]+CSC_fwG_g_RADIUSES[ring_number]+two_positions[j]+\"\\n\";
+ 
+  }
+       if(!ELMB_MODE)test_string=chamber_name;
+  setValue(\"TWO_DP\",\"text\",test_string);  
+
+} // if(CSC_fwG_g_DEFINE_ELMB)
+
+get_error_list();
+
+
+/* maybe will be used later  (10/06/2004: for fsm browsing)
+string double_name,type;
+int disk_pos, radius, ich;
+
+dyn_string params_0,params,params1;
+int i;
+
+
+params_0=strsplit($pars_dev,\"\\n\");
+
+
+params=strsplit(params_0[dynlen(params_0)],\",\");
+//mudcsDebug2(mudcs_parameters_obj[1]);
+
+//mudcsDebug2(params_0[1]);
+
+//params1=makeDynString(params[1],params[3],params[2],params[5]);
+///mudcsDebug2($pars_dev);
+///mudcsDebug2(params[2]);
+
+///mudcsNameToPosConvert(params[2], disk_pos, radius, ich, type);
+*/
+
+}
+//==========================================
+update_enabled(string dp, int state){
+  
+  if(state==0){
+      setValue(\"isDeviceEnabledCheck\",\"backCol\",\"{202,202,202}\"); 
+      setValue(\"isDeviceEnabled\",\"visible\",true);
+  setValue(\"isDeviceEnabledCheck\",\"state\",0,0);          
+    
+  }
+  else{
+      setValue(\"isDeviceEnabledCheck\",\"backCol\",\"{0,153,153}\"); 
+    setValue(\"isDeviceEnabled\",\"visible\",false);
+  setValue(\"isDeviceEnabledCheck\",\"state\",0,1);        
+    
+  }
+}
+//==========================================
+
+//============================================================
+//============================================================
+status_monitor(string dp, int status){
+
+ if(status ==0 ){
+
+
+ }
+ else{
+
+
+ }
+
+}
+
+
+//============================================================
+
+init(){
+
+string test_string;
+
+mudcs_alias=mudcsAliasNameGet(DpName);
+//mudcsDebug(DpName);
+//mudcsDebug(mudcs_alias);
+mudcsNameToPosConvert(mudcs_alias/*DpName*/, disk_number, ring_number, 
+                       chamber_number, device_type);
+
+test_string=CSC_fwG_g_WHEELS[disk_number]+CSC_fwG_g_RADIUSES[ring_number]+chamber_number;
+  setValue(\"ch_number\",\"text\",test_string);
+
+chamber_name=test_string;
+
+mudcsCommand(\"LV\",DpName,\"get_data\");
+
+}
+
+//==================================================================
+  
+update_dpoints_not_controlled(string dpName, string value){
+
+ if(strpos(value,DpNameFsm) <0){
+  if(is_local_sys)setValue(\"POWER_ON\",\"enabled\",TRUE);
+  else setValue(\"POWER_ON\",\"enabled\",FALSE);
+  
+  setValue(\"NOT_CONNECTED\",\"visible\",FALSE);
+  }
+ else  {
+  setValue(\"POWER_ON\",\"enabled\",FALSE);
+  setValue(\"NOT_CONNECTED\",\"visible\",TRUE);
+ }
+
+}
+
+//============================================================" 0
+ E E E E 1 -1 -1 0  420 39
+""0  1
+E "#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs2.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs3.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs4.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcsDim.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuAlert.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emufw.ctl\"
+
+/*
+string project_station;
+string project_system;
+
+string DpName;
+string DpNameFsm;
+
+int disk_number;
+int ring_number;
+int chamber_number;
+string device_type;
+
+dyn_string temp_variables;
+dyn_string temp_variables_cfeb;
+*/
+dyn_string g_dps2;
+
+string DpNameFsm2, DomainName;
+
+string project_station;
+string project_system;
+
+string DpName;
+string DpNameFsm;
+
+string DpName_u;
+
+string DpName_dup;
+string DpNameFsm_dup;
+
+int disk_number;
+int ring_number;
+int chamber_number;
+string device_type;
+
+
+
+dyn_string Services; 
+string Config; 
+dyn_string data_type;
+
+dyn_string alct_variables; 
+dyn_string cfeb_variables; 
+int table_type; 
+int cfeb_number; 
+
+string Special_Alarm_Mode; 
+
+// == for ELMB ==
+dyn_string two_dp;
+dyn_int two_positions;
+int ELMB_MODE=0;
+
+string chamber_name;
+
+
+get_error_list(){
+
+  int i,j;
+  string  s1,s2,s3,s4;
+      dyn_string ds1,ds2,ds3,error_list;
+
+      dynClear(error_list);
+      //error_list=makeDynString(\"\",\"\");
+      
+setValue(\"error_list\",\"deleteAllItems\");
+              
+dpGet(DpName+\".:_alert_hdl.._dp_list\",ds2);
+for(i=1;i<=dynlen(ds2);i++){
+ dpGet(ds2[i]+\":_alert_hdl.._act_state_color\",s1);
+ if(strpos(s1,\"Error\")<0)continue; 
+ if(strpos(ds2[i],\"Cfeb\")>=0)
+ {
+   dpGet(ds2[i]+\":_alert_hdl.._dp_list\",ds3);
+   for(j=1;j<=dynlen(ds3);j++){
+    dpGet(ds3[j]+\":_alert_hdl.._act_state_color\",s2);
+    if(strpos(s2,\"Error\")<0)continue;
+    ds1=strsplit(ds3[j],\".\");
+ 
+    s2=ds1[dynlen(ds1)-2]+\".\"+ds1[dynlen(ds1)-1]+\".\"+ds1[dynlen(ds1)];
+    dynAppend(error_list,s2);     
+   }
+ }
+ else{
+ ds1=strsplit(ds2[i],\".\");
+ 
+   s2=ds1[dynlen(ds1)-1]+\".\"+ds1[dynlen(ds1)];
+   dynAppend(error_list,s2);
+ }
+} // for
+
+for(i=1;i<=dynlen(error_list);i++){
+ ds1=strsplit(error_list[i],\".\");
+ s1=substr(ds1[1],0,strlen(ds1[1])-2);
+ if(s1==\"Cfeb\"){
+   s2=substr(ds1[3],1,1);
+ }
+ else {
+   s2=\"\";
+ }
+ if(strpos(ds1[2],\"c\")==0)s3=\"current\";
+ else s3=\"voltage\";
+ s4=substr(ds1[2],1,1)+\".\"+substr(ds1[2],2,1)+\"V\";
+ if(s4==\"5.5V\")s4=\"5.5V(I)\";
+ else  if(s4==\"5.6V\")s4=\"5.5V(II)\";      
+  error_list[i]=s1+\"#\"+s2+\" \"+s3+\" \"+\"at \"+s4;
+}
+
+
+//mudcsDebug(\"1\");
+
+if(dynlen(error_list)==0)error_list=makeDynString(\"\"); // otherwise the setValue(\"items\") does not work
+setValue(\"error_list\",\"items\",error_list);
+if(dynlen(error_list)>=1)setValue(\"error_list\",\"selectedPos\",1);
+
+}
+
+
+//======= trending below ============
+
+//string  pnl_channel_prefix;
+
+trending(dyn_bool isTrending) 
+{ 
+
+string dir=\"CMS_CSCfw_HV_CC\";  
+
+dyn_string params_for_trend;
+
+ get_params(isTrending, params_for_trend);
+
+
+string CSCTrendingModule=\"mudcsTrending\";
+
+	if(!isModuleOpen(CSCTrendingModule) ){ 
+		ModuleOn(CSCTrendingModule,1,1,0,0,1,1,1,\"\"); 
+
+	} 
+/////        else PanelOffModule(\"\",MRTNTrendingModule);
+
+	RootPanelOnModule(dir+\"/TrendLV_1.pnl\", 
+				\"\",CSCTrendingModule, 
+	params_for_trend);
+
+//for(int i;i<=dynlen(params_for_trend);i++)mudcsDebug(params_for_trend[i]);
+//DebugN(\"+++++++++++++++++++++++++++\"+params_for_trend[1]);
+
+
+} 
+
+//====================
+
+get_params(dyn_bool isTrending, dyn_string &params_for_trend){
+
+dynClear(params_for_trend);
+
+dyn_string s_ch;
+if(isTrending[1])s_ch[1]=\"true\";else s_ch[1]=\"false\";
+if(isTrending[2])s_ch[2]=\"true\";else s_ch[2]=\"false\";
+if(isTrending[3])s_ch[3]=\"true\";else s_ch[3]=\"false\";
+if(isTrending[4])s_ch[4]=\"true\";else s_ch[4]=\"false\";
+if(isTrending[5])s_ch[5]=\"true\";else s_ch[5]=\"false\";
+if(isTrending[6])s_ch[6]=\"true\";else s_ch[6]=\"false\";
+
+//dpGet(DpName+\".module_num_chans\");
+//mudcsLvAddSystem(pnl_channel_prefix+CSC_fwCAN1_g_LIST_3V1[i]+\".value\",CSC_fwCAN1_g_SYSTEM_NAME);
+
+   dynAppend(params_for_trend,\"$sDpe:\"+\"\"+DpName);
+
+   dynAppend(params_for_trend, \"$iMinYScaleV:0\");
+   dynAppend(params_for_trend, \"$iMaxYScaleV:8\");
+   dynAppend(params_for_trend, \"$iMinYScaleC:0\");
+   dynAppend(params_for_trend, \"$iMaxYScaleC:3\");
+
+   dynAppend(params_for_trend, \"$channelNumber1:\"+s_ch[1]);
+   dynAppend(params_for_trend, \"$channelNumber2:\"+s_ch[2]);
+   dynAppend(params_for_trend, \"$channelNumber3:\"+s_ch[3]);   
+   dynAppend(params_for_trend, \"$channelNumber4:\"+s_ch[4]);
+   dynAppend(params_for_trend, \"$channelNumber5:\"+s_ch[5]);
+   dynAppend(params_for_trend, \"$channelNumber6:\"+s_ch[6]);    
+   
+}
+//===========================================================
+
+/*
+
+string project_station;
+string project_system;
+
+string DpName;
+string DpNameFsm;
+
+string DpName_u;
+
+string DpName_dup;
+string DpNameFsm_dup;
+
+int disk_number;
+int ring_number;
+int chamber_number;
+string device_type;
+
+
+
+dyn_string Services; 
+string Config; 
+dyn_string data_type;
+
+dyn_string alct_variables; 
+dyn_string cfeb_variables; 
+int table_type; 
+int cfeb_number; 
+
+string Special_Alarm_Mode; 
+
+// == for ELMB ==
+dyn_string two_dp;
+dyn_int two_positions;
+int ELMB_MODE=0;
+
+string chamber_name;
+*/
+//============================================================
+
+init_dp_switch(){
+ if($obj != \"\"){   // the panel is called from FSM
+    DpName_u=$obj;
+ } 
+ else{
+    DpName_u=$sDpName; // the panel is called from LOGICAL TREE
+ }
+
+ DpName_u=mudcsAddSystem(DpName_u);
+
+  mudcsConvertData2FsmOne(\"LV_1\",DpName_u,DpNameFsm);
+///mudcsDebug(DpNameFsm);
+  mudcsConvertFsm2DataOne(DpNameFsm,DpName);
+
+//mudcsDebug(DpNameFsm);
+//mudcsDebug(DpName);
+  dyn_string dps;  
+  
+//DebugTN(\">>>======\"+DpName);  
+   dpGet(DpName+\".:_alert_hdl.._dp_list\",dps);
+//  DebugTN(dps);
+
+
+    if(dynlen(dps) <= 0){
+   mudcsDebug(DpName+\".:_alert_hdl.._dp_list (2)\" + \"is not configured\");  
+  }
+
+
+}
+//============================================================
+
+init_dp_switch_dup(){
+ if($obj != \"\"){   // the panel is called from FSM
+    DpName_dup=$obj;
+ } 
+ else{
+    DpName_dup=$sDpName; // the panel is called from LOGICAL TREE
+ }
+
+// mudcsDebug(\"1\"+DpName_dup);
+ DpName_dup=mudcsAddSystem(DpName_dup);
+// mudcsDebug(\"2\"+DpName_dup);
+  mudcsConvertData2FsmOne(\"LV_1\",DpName_dup,DpNameFsm_dup);
+//   mudcsDebug(\"3\"+DpNameFsm_dup);
+///mudcsDebug(DpNameFsm);
+  mudcsConvertFsm2DataOne(DpNameFsm_dup,DpName_dup);
+// mudcsDebug(\"4\"+DpName_dup);
+//mudcsDebug(DpNameFsm);
+//mudcsDebug(DpName);
+  dyn_string dps;  
+  
+//DebugTN(\">>>======\"+DpName);  
+   dpGet(DpName_dup+\".:_alert_hdl.._dp_list\",dps);
+//  DebugTN(dps);
+
+
+    if(dynlen(dps) <= 0){
+   mudcsDebug(DpName_dup+\".:_alert_hdl.._dp_list (2)\" + \"is not configured\");  
+  }
+
+    DpName=DpName_dup;
+    DpNameFsm=DpNameFsm_dup;
+// mudcsDebug(\"1\"+DpNameFsm);
+//  mudcsDebug(\"2\"+DpName);
+}
+//==============================================================
+/*
+lv_trending() 
+{ 
+
+dyn_string params_for_trend;
+ get_params(params_for_trend);
+
+
+string LowVoltageTrendingModule=\"mudcsLowVoltageTrending\";
+
+
+	if(!isModuleOpen(LowVoltageTrendingModule) ){ 
+		ModuleOn(LowVoltageTrendingModule,1,1,0,0,1,1,1,\"\"); 
+
+	} 
+/////        else PanelOffModule(\"\",LowVoltageTrendingModule);
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/myTrend.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LowVoltageTrendingModule, 
+	params_for_trend);
+
+//for(int i;i<=dynlen(params_for_trend);i++)mudcsDebug(params_for_trend[i]);
+//DebugN(\"+++++++++++++++++++++++++++\"+params_for_trend[1]);
+
+
+} 
+
+//====================
+
+get_params(dyn_string &params_for_trend){
+
+int cfeb_n, pos;
+string s;
+
+dynClear(params_for_trend);
+
+getValue(\"number_combo\",\"text\",cfeb_n);
+//getValue(\"select\",\"text\",pos);
+pos=table_type;
+//pos=1;
+
+
+ if(pos==1 || pos==2){ // cfebs
+ s=\".v\"; // voltage
+ if(pos==2)s=\".c\";   // current
+
+   dynAppend(params_for_trend,\"$sDpe:\"+\"\"+DpName
+                 +\".data.Cfeb_o\"+s+\"33.v\"+cfeb_n);   
+   dynAppend(params_for_trend,\"$sDp1:\"+\"\"+DpName
+                 +\".data.Cfeb_o\"+s+\"33.v\"+cfeb_n); 
+   dynAppend(params_for_trend,\"$sDp2:\"+\"\"+DpName
+                 +\".data.Cfeb_o\"+s+\"33.v\"+cfeb_n); 
+
+   dynAppend(params_for_trend,\"$sDp3:\"+\"\"+DpName
+                 +\".data.Cfeb_o\"+s+\"50.v\"+cfeb_n);   
+   dynAppend(params_for_trend,\"$sDp4:\"+\"\"+DpName
+                 +\".data.Cfeb_o\"+s+\"60.v\"+cfeb_n); 
+
+
+if(s==\".v\"){
+   dynAppend(params_for_trend, \"$iMinYScale1:0\");
+   dynAppend(params_for_trend, \"$iMaxYScale1:8\");
+   dynAppend(params_for_trend, \"$iMinYScale2:0\");
+   dynAppend(params_for_trend, \"$iMaxYScale2:8\");
+   dynAppend(params_for_trend, \"$iMinYScale3:0\");
+   dynAppend(params_for_trend, \"$iMaxYScale3:8\");
+   dynAppend(params_for_trend, \"$iMinYScale4:0\");
+   dynAppend(params_for_trend, \"$iMaxYScale4:8\");
+}
+else{ 
+   dynAppend(params_for_trend, \"$iMinYScale1:0\");
+   dynAppend(params_for_trend, \"$iMaxYScale1:2\");
+   dynAppend(params_for_trend, \"$iMinYScale2:0\");
+   dynAppend(params_for_trend, \"$iMaxYScale2:2\");
+   dynAppend(params_for_trend, \"$iMinYScale3:0\");
+   dynAppend(params_for_trend, \"$iMaxYScale3:2\");
+   dynAppend(params_for_trend, \"$iMinYScale4:0\");
+   dynAppend(params_for_trend, \"$iMaxYScale4:2\");
+}
+  
+ }
+ else { // alct
+ s=\".v\"; // voltage
+ if(pos==4)s=\".c\";   // current
+   dynAppend(params_for_trend,\"$sDpe:\"+\"\"+DpName
+                 +\".data.Alct_o\"+s+\"18\"); 
+   dynAppend(params_for_trend,\"$sDp1:\"+\"\"+DpName
+                 +\".data.Alct_o\"+s+\"18\"); 
+
+   dynAppend(params_for_trend,\"$sDp2:\"+\"\"+DpName
+                 +\".data.Alct_o\"+s+\"33\");
+   dynAppend(params_for_trend,\"$sDp3:\"+\"\"+DpName
+                 +\".data.Alct_o\"+s+\"55\");
+   dynAppend(params_for_trend,\"$sDp4:\"+\"\"+DpName
+                 +\".data.Alct_o\"+s+\"56\"); 
+
+if(s==\".v\"){
+   dynAppend(params_for_trend, \"$iMinYScale1:0\");
+   dynAppend(params_for_trend, \"$iMaxYScale1:7\");
+   dynAppend(params_for_trend, \"$iMinYScale2:0\");
+   dynAppend(params_for_trend, \"$iMaxYScale2:7\");
+   dynAppend(params_for_trend, \"$iMinYScale3:0\");
+   dynAppend(params_for_trend, \"$iMaxYScale3:7\");
+   dynAppend(params_for_trend, \"$iMinYScale4:0\");
+   dynAppend(params_for_trend, \"$iMaxYScale4:7\");
+}
+else{ 
+   dynAppend(params_for_trend, \"$iMinYScale1:0\");
+   dynAppend(params_for_trend, \"$iMaxYScale1:4\");
+   dynAppend(params_for_trend, \"$iMinYScale2:0\");
+   dynAppend(params_for_trend, \"$iMaxYScale2:4\");
+   dynAppend(params_for_trend, \"$iMinYScale3:0\");
+   dynAppend(params_for_trend, \"$iMaxYScale3:4\");
+   dynAppend(params_for_trend, \"$iMinYScale4:0\");
+   dynAppend(params_for_trend, \"$iMaxYScale4:4\");
+}
+
+ }
+
+}
+//===========================================================
+//===========================================================
+//===========================================================
+
+*/
+determine_two_chambers_from_same_lv_controller()
+{
+
+int j;
+
+//=========== ELMB STUFF ==================================
+
+if(CSC_fwG_g_DEFINE_ELMB){
+dyn_string list;
+string ip_address;
+
+
+dynClear(two_positions);
+
+ if((disk_number==4 || disk_number==5) && ring_number == 1){ // i.e. ME 1/1
+  dpGet(CSC_fwG_g_SYSTEM_NAME+\":Db_o.Wheels_o.Ring_DUBNA.DynatemAndSetNumberList\",list);
+
+ }
+ else{
+    if(((disk_number==4 || disk_number==5) && ring_number==2 ) || ring_number==1)
+      dpGet(CSC_fwG_g_SYSTEM_NAME+\":Db_o.Wheels_o.Wheel\"+disk_number+\".InDynatemAndSetNumberList\",list);
+    else 
+      dpGet(CSC_fwG_g_SYSTEM_NAME+\":Db_o.Wheels_o.Wheel\"+disk_number+\".OutDynatemAndSetNumberList\",list);
+
+ } // else
+
+
+//-------
+//--------
+ if((disk_number==4 || disk_number==5) && ring_number == 1){ // i.e. ME 1/1
+    if((disk_number-4)*36+chamber_number  > dynlen(list) ||  list[(disk_number-4)*36+chamber_number] == \"\"){
+       mudcsDebug(\"address of device is \\n not defined in database\");
+       return;
+    }
+    else{
+      ip_address = substr(list[(disk_number-4)*36+chamber_number],0,strpos(list[(disk_number-4)*36+chamber_number],\";\"));
+
+      if(strpos(ip_address,\"ELMB\") >=0 )ELMB_MODE=1;
+      for(j=1;j<=dynlen(list);j++){
+       if(strpos(list[j],ip_address)>=0)dynAppend(two_positions,j);
+//mudcsDebug(ip_address+j);
+      }
+    }
+
+//      dpSetWait(command_list[i]+\".command\",list[(w_pos-4)*36+ich]+\"|\"+subcommand);
+ }
+ else{
+    if(chamber_number  > dynlen(list) ||  list[chamber_number] == \"\"){
+       mudcsDebug(\"address of device is \\n not defined in database\");
+       return;
+    }
+    else{
+      ip_address = substr(list[chamber_number],0,strpos(list[chamber_number],\";\"));
+      if(strpos(ip_address,\"ELMB\") >=0 )ELMB_MODE=1;
+      for(j=1;j<=dynlen(list);j++){
+       if(strpos(list[j],ip_address)>=0)dynAppend(two_positions,j);
+      }
+    }
+
+//      dpSetWait(command_list[i]+\".command\",list[ich]+\"|\"+subcommand);
+
+ }
+//--------
+string prefix_number=\"0\";
+
+for(j=1;j<=dynlen(two_positions);j++){
+ if(two_positions[j]>=10)prefix_number=\"\";
+ dynAppend(two_dp,DpNameFsm);
+ strreplace(two_dp[j],substr(DpNameFsm,strpos(DpNameFsm,\"c\"),3),\"c\"+prefix_number+two_positions[j]);
+}
+
+
+} // if(CSC_fwG_g_DEFINE_ELMB)
+//==========================================================
+
+}
+
+
+
+//====================================
+alert_reconfig(string dp_frag, int isexclude){
+
+bool configExists;
+dyn_string alertTexts;
+dyn_string ilist, ilist_new;
+string alertPanel;
+dyn_string alertPanelParameters;
+string alertHelp;
+bool isActive;
+dyn_string exceptionInfo;
+int pos;
+
+int i,j;
+dyn_int dplist;
+dyn_string dplist_text;
+int current_status;
+dyn_string volts_cfeb=makeDynString(\"v33\",\"v50\",\"v60\",\"c33\",\"c50\",\"c60\");
+int volts_number;
+string test_s;
+
+ dpGet(DpNameFsm+\".status\",current_status);
+
+if(dp_frag != \"Alct_o\")volts_number=6;
+else volts_number=1;
+
+for(j=1;j<=volts_number;j++){
+
+if(dp_frag != \"Alct_o\")
+fwAlertConfig_getSummary(DpName+\".data.Cfeb_o.\"+volts_cfeb[j],configExists,alertTexts,ilist,
+	alertPanel,alertPanelParameters,alertHelp,isActive,exceptionInfo);
+else 
+fwAlertConfig_getSummary(DpName+\".\",configExists,alertTexts,ilist,
+	alertPanel,alertPanelParameters,alertHelp,isActive,exceptionInfo);
+
+//mudcsDebug(dp_frag);
+
+
+for(i=1;i<=dynlen(ilist);i++){ 
+test_s=volts_cfeb[j]+\".\"+dp_frag;
+ if(strpos(ilist[i],test_s) >=0 ||
+    (dp_frag == \"Alct_o\" && strpos(ilist[i],dp_frag) >=0)
+ ){
+ dynAppend(dplist,i);
+//  mudcsDebug(ilist[i]+\" \\n \"+volts_cfeb[j]+\".\"+dp_frag);
+ }
+}
+
+ilist_new=ilist;
+
+
+if(isexclude){
+ dynClear(ilist);
+ for(i=1;i<=dynlen(ilist_new);i++){
+  if(dynContains(dplist,i) == 0)dynAppend(ilist,ilist_new[i]);
+ }
+  
+ if(current_status !=0)dpSet(DpNameFsm+\".status\",2);
+}
+else{
+
+  
+  if(dp_frag != \"Alct_o\")dplist_text=dpNames(DpName+\".data.Cfeb_o.\"+volts_cfeb[j]+\".\"+dp_frag);
+  else dplist_text=dpNames(DpName+\".data.Alct_o\"+\".**\");
+
+ for(i=1;i<=dynlen(dplist_text);i++){
+  if(strpos(dplist_text[i],\".status\") < 0)dynAppend(ilist,dplist_text[i]); 
+ }
+ if(current_status !=0)dpSet(DpNameFsm+\".status\",2);
+}
+
+//=====
+
+  for(i=1;i<=dynlen(ilist);i++){
+   DebugTN(ilist[i]); 
+  } 
+
+if(dp_frag != \"Alct_o\")							
+ fwAlertConfig_createSummary(DpName+\".data.Cfeb_o.\"+volts_cfeb[j],makeDynString(\"\",\"\") , ilist ,\"\", 
+                              makeDynString(),\"\",exceptionInfo);
+else
+ fwAlertConfig_createSummary(DpName+\".\",makeDynString(\"\",\"\") , ilist ,\"\", 
+                              makeDynString(),\"\",exceptionInfo);
+
+//======
+
+
+} // for over j
+
+}
+//====================================
+
+exclude_main()
+{
+
+string state;
+dyn_string test_dyn, test_dyn2;
+string dp_frag;
+int chn;
+
+//getValue(\"\",\"text\",state);
+string box_name, text_name;
+bool isEnabled;
+
+getValue(\"\",\"name\",box_name);
+getValue(\"\",\"state\",0,isEnabled);
+
+if(box_name==\"alct\")text_name=\"t_alct\";
+else if(box_name==\"cfeb01\")text_name=\"t_cfeb1\";
+else if(box_name==\"cfeb02\")text_name=\"t_cfeb2\";
+else if(box_name==\"cfeb03\")text_name=\"t_cfeb3\";
+else if(box_name==\"cfeb04\")text_name=\"t_cfeb4\";
+else if(box_name==\"cfeb05\")text_name=\"t_cfeb5\";
+
+if(isEnabled){
+  state=\"include \"+box_name;
+  setValue(text_name,\"enabled\",true);
+  setValue(\"\",\"backCol\",\"{0,153,153}\");  
+}  
+else{
+  state=\"exclude \"+box_name;
+  setValue(text_name,\"enabled\",false);
+  setValue(\"\",\"backCol\",\"{202,202,202}\");  
+}
+
+
+test_dyn=strsplit(state,\" \");
+test_dyn2=strsplit(test_dyn[2],\"b\");  // i.e. cfeb
+
+if(dynlen(test_dyn2)>=2){
+chn=test_dyn2[2];
+dp_frag=\"v\"+chn;
+}
+
+if(test_dyn[2]==\"alct\"){test_dyn2[2]=\"6\";dp_frag=\"Alct_o\";}
+
+chn=test_dyn2[2];
+if(chn<1 || chn>6){
+ mudcsDebug(\"wrong format\\n righ format is:\\nexclude cfeb03\");
+ return;
+}
+
+if(strpos(state,\"exclude\")>=0)exclude(1,test_dyn2[2],dp_frag);
+else if(strpos(state,\"include\")>=0)exclude(0,test_dyn2[2],dp_frag);
+else {
+ mudcsDebug(\"wrong format\\n righ format is:\\nexclude cfeb03\");
+ return;
+}
+
+
+
+}
+
+//==================================
+exclude(int isexclude, string chn_text, string dp_frag){
+
+int chn=chn_text;
+
+dyn_int noalert_channels;
+int pos;
+
+dpGet(DpNameFsm+\".noalert_channels\",noalert_channels);
+
+ if(isexclude){
+  if(dynContains(noalert_channels,chn)==0)dynAppend(noalert_channels,chn);
+ }
+ else{
+  pos=dynContains(noalert_channels,chn);
+  if(pos)dynRemove(noalert_channels,pos);
+
+ }
+ 
+dpSetWait(DpNameFsm+\".noalert_channels\",noalert_channels);
+  alert_reconfig(dp_frag, isexclude);   
+ 
+}
+" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+26 1
+"select"
+""
+1 10 11 E E E 1 E 1 E N {255,255,255} E N {0,153,153} E E
+ E E
+44 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+ 10 11 410 41
+ 0 1
+LANG:1 29 Please Choose Data to Display
+"" 0 0 0 0 0
+ 4 1 1
+LANG:1 13 CFEB voltages
+"1" 0 0 0 0 0
+ 1 1
+LANG:1 13 CFEB currents
+"2" 0 0 0 0 0
+ 1 1
+LANG:1 13 ALCT voltages
+"3" 0 0 0 0 0
+ 1 1
+LANG:1 13 ALCT currents
+"4" 0 0 0 0 0
+ "int g_busyThread; 
+
+
+main()
+{
+
+
+//init_dp_switch();
+init_dp_switch_dup();
+//mudcsDebug(\"1\"+DpNameFsm);
+//mudcsDebug(\"2\"+DpName);
+dyn_string items_s, dps_s;
+int j;
+int typ;
+dyn_float test_v_ar;
+dyn_string exceptionInfo;
+
+
+
+Special_Alarm_Mode=\"NONE\";
+
+
+data_type[1]=\"CFEB voltages\";
+data_type[2]=\"CFEB currents\";
+data_type[3]=\"ALCT voltages\";
+data_type[4]=\"ALCT currents\";
+
+if(dynlen(exceptionInfo)>0)mudcsDebug(exceptionInfo);
+
+table_type=1; //-1
+//==========================================================
+
+getValue(\"number_combo\",\"text\",cfeb_number);
+
+//==================
+dynClear(alct_variables);
+
+dps_s=dpNames(DpName+\".data.Alct_o\"+\".*\");
+
+for(j=1; j<=dynlen(dps_s); j++){
+typ=dpElementType(dps_s[j]);
+  if(typ != DPEL_STRUCT ){
+  dynAppend(alct_variables,dps_s[j]);
+ } // if
+} // for
+
+//dpConnect(\"update_monitor\",DpName+\".data.Alct_o.status\"); // very last item
+
+//=========
+
+dynClear(cfeb_variables);
+dps_s=dpNames(DpName+\".data.Cfeb_o\"+\".*\");
+
+for(j=1; j<=dynlen(dps_s); j++){
+typ=dpElementType(dps_s[j]);
+  if(typ == DPEL_STRUCT && dps_s[j] != (DpName+\".data.Cfeb_o\")){
+  dynAppend(cfeb_variables,dps_s[j]);
+ } // if
+} // for
+
+//dpConnect(\"update_monitor_dyn\",DpName+\".data.Cfeb_o.c60.v1\"); 
+
+
+dpConnect(\"update_common\",DpName+\".update_value\"); 
+
+////////////mudcsDebug(DpName+\".data.Alct_o.c56\");
+
+//========
+//=========
+//==========
+
+
+} 
+
+//==================================================
+
+update_common(string dp, string value)
+{
+
+update_monitor(\"\", \"\");
+update_monitor_dyn(\"\", \"\");
+get_error_list();
+//mudcsDebug(\"\");
+}
+
+
+//==================================================
+
+update_monitor_cfeb(string dp, string value)
+{
+
+float test_v;
+
+mudcsDebug(dp);
+mudcsDebug(value);
+
+
+}
+
+//==================================================
+
+
+update_monitor(string dp, string value)
+{
+//mudcsDebug(\"1\"+DpNameFsm);
+//mudcsDebug(\"2\"+DpName);
+  
+int i;
+string test_string;
+float test_v;
+string addition;
+ int ret;
+ int pos, pos1;
+
+string dynatemTcpIp;
+ dpGet(DpName+\".dynatemTcpIp\",dynatemTcpIp);
+///mudcsDebug(dynatemTcpIp);
+ if(strpos(dynatemTcpIp,\"00:00:00:00\") <0 
+&& strpos(dynatemTcpIp,\".0.0.\") <0 && strpos(dynatemTcpIp,\"LVCB\"))return; // not to receive a corrupted data !!!!!!!
+
+//mudcsDebug(dynatemTcpIp);
+
+
+///mudcsDebug(Special_Alarm_Mode);
+
+//mudcsDebug(\"1\"+DpNameFsm);
+//mudcsDebug(\"2\"+DpName); 
+          ret=dpGet(DpName+\".data.Alct_o.status\",test_v);
+          if( test_v > 0.9 ){
+
+setValue(\"power_status\",\"text\",\"ON\");
+setValue(\"power_status\",\"backCol\",\"{255,0,0}\");
+setValue(\"POWER_ON\",\"text\",\"OFF\");
+setValue(\"POWER_ON\",\"backCol\",\"{255,0,0}\");
+//////////mudcsAlertSetActive(DpName,true);
+
+          }
+          else {
+                setValue(\"POWER_ON\",\"text\",\"ON\");
+
+setValue(\"power_status\",\"text\",\"OFF\");
+setValue(\"power_status\",\"backCol\",\"{0,153,153}\");
+setValue(\"POWER_ON\",\"text\",\"ON\");
+setValue(\"POWER_ON\",\"backCol\",\"{0,153,153}\");
+/////////////mudcsAlertSetActive(DpName,false);
+
+
+          }
+////mudcsDebug(test_v);
+
+
+ if( table_type==-1 || table_type <= 2)return;
+
+////////if(strpos(dp,\"Alct_o\") >=0 ){
+///////////////////mudcsDebug(\"update_monitor\");
+ setValue(\"table_view\",\"deleteAllLines\");
+
+     for(i = 1; i <= dynlen(alct_variables); i++) 
+    { 
+
+      if( table_type==-1 || table_type <= 2)continue;
+
+  if(table_type%2){
+
+      if((pos=strpos(alct_variables[i],\"data.Alct_o.v\")) <0 )continue;
+      pos=strpos(alct_variables[i],\".v\");
+      pos1=strpos(alct_variables[i],\".data.\");
+      addition=substr(alct_variables[i],pos1+6,4)+\" voltage \"+substr(alct_variables[i],pos+2,1)+\".\"+substr(alct_variables[i],pos+3,1);
+  }
+   else {
+
+      if((pos=strpos(alct_variables[i],\"data.Alct_o.c\") )<0 )continue;
+      pos=strpos(alct_variables[i],\".c\");
+      pos1=strpos(alct_variables[i],\".data.\");
+      addition=substr(alct_variables[i],pos1+6,4)+\" current \"+substr(alct_variables[i],pos+2,1)+\".\"+substr(alct_variables[i],pos+3,1);
+  }
+
+          ret=dpGet(mudcsAddSystem(alct_variables[i]),test_v);
+           test_string=test_v;//alct_variables[i];
+
+//if(i==1)mudcsDebug(test_string);
+             setValue(\"table_view\",\"appendLine\",
+            \"parameter\", addition, 
+            \"value\", test_string); 
+
+
+   }
+
+///// }
+
+//mudcsDebug(\"\");
+if(Special_Alarm_Mode != \"NONE\")alarm_special(Special_Alarm_Mode);
+
+}
+//=============================================================
+
+update_monitor_dyn(string dp, string value)
+{
+
+
+
+
+dyn_float test_v_ar;
+int i;
+string test_string, test_string_1;
+float test_v;
+string addition;
+ int ret;
+ int pos;
+int pos1;
+string cfeb_number_str;
+float test_v;
+
+
+string dynatemTcpIp;
+ dpGet(DpName+\".dynatemTcpIp\",dynatemTcpIp);
+///mudcsDebug(dynatemTcpIp+\"  #\");
+ if(strpos(dynatemTcpIp,\"00:00:00:00\") <0 
+&& strpos(dynatemTcpIp,\".0.0.\") <0 && strpos(dynatemTcpIp,\"LVCB\"))return; // not to receive a corrupted data !!!!!!!
+
+
+
+/*
+          ret=dpGet(DpName+\".data.Cfeb_o.status.v1\",test_v);
+          if( test_v > 0.5 ){
+
+setValue(\"power_status\",\"text\",\"ON\");
+setValue(\"power_status\",\"backCol\",\"{255,0,0}\");
+setValue(\"POWER_ON\",\"text\",\"OFF\");
+setValue(\"POWER_ON\",\"backCol\",\"{255,0,0}\");
+mudcsAlertSetActive(DpName,true);
+
+          }
+          else {
+                setValue(\"POWER_ON\",\"text\",\"ON\");
+
+setValue(\"power_status\",\"text\",\"OFF\");
+setValue(\"power_status\",\"backCol\",\"{0,153,153}\");
+setValue(\"POWER_ON\",\"text\",\"ON\");
+setValue(\"POWER_ON\",\"backCol\",\"{0,153,153}\");
+mudcsAlertSetActive(DpName,false);
+          }
+*/
+
+
+   if(table_type==-1 ||  table_type > 2)return;
+
+////////if(strpos(dp,\"Cfeb_o\") >=0 ){
+
+////mudcsDebug(\" update_monitor_dyn\");
+
+cfeb_number_str=cfeb_number;
+
+ setValue(\"table_view\",\"deleteAllLines\");
+
+///////////mudcsDebug(dp);
+
+     for(i = 1; i <= dynlen(cfeb_variables) ;i++) 
+    { 
+
+
+
+   if(table_type==-1 ||  table_type > 2)continue;
+  if(table_type%2){
+
+      if((pos=strpos(cfeb_variables[i],\"data.Cfeb_o.v\")) <0 )continue;
+      pos=strpos(cfeb_variables[i],\".v\");
+      pos1=strpos(cfeb_variables[i],\".data.\");
+      addition=substr(cfeb_variables[i],pos1+6,4)+\"# \"+cfeb_number+\" voltage \"+substr(cfeb_variables[i],pos+2,1)+\".\"+substr(cfeb_variables[i],pos+3,1);
+  }
+   else {
+
+      if((pos=strpos(cfeb_variables[i],\"data.Cfeb_o.c\") )<0 )continue;
+      pos=strpos(cfeb_variables[i],\".c\");
+      pos1=strpos(cfeb_variables[i],\".data.\");
+      addition=substr(cfeb_variables[i],pos1+6,4)+\"# \"+cfeb_number +\" current \"+substr(cfeb_variables[i],pos+2,1)+\".\"+substr(cfeb_variables[i],pos+3,1);
+  }
+
+     test_string_1=cfeb_number;
+     test_string_1=\".v\"+test_string_1;
+
+          ret=dpGet(mudcsAddSystem(cfeb_variables[i])+test_string_1,test_v);
+           test_string=test_v;
+
+//////mudcsDebug(addition+\"-------\"+test_string);
+
+             setValue(\"table_view\",\"appendLine\",
+            \"parameter\", addition, 
+            \"value\", test_string); 
+
+
+   }
+
+
+
+
+
+
+
+
+/////// }
+
+//mudcsDebug(\"\");
+if(Special_Alarm_Mode != \"NONE\")alarm_special(Special_Alarm_Mode);
+}
+
+//==============================================
+
+alarm_special(string mode)
+{
+
+string test_string;
+
+	dyn_string exceptionInfo; 
+
+Special_Alarm_Mode=\"NONE\";
+
+//getValue(\"POWER_ON\",\"text\",test_string);
+
+if(mode == \"ON\"){
+
+
+	g_busyThread = -1; 
+	fwBusyBarButton_std_startBusy(exceptionInfo); 
+
+//mudcsDebug(\"ON\");
+mudcsCommand(\"LV\",DpName,\"power_on\");
+mudcsAlertSetActive(DpName,true);
+
+		fwBusyBarButton_std_stopBusy(exceptionInfo);
+
+}
+else {
+//mudcsDebug(\"OFF\");
+mudcsCommand(\"LV\",DpName,\"power_off\");
+/////mudcsAlertSetActive(DpName,false);
+}
+
+mudcsCommand(\"LV\",DpName,\"get_data_master\");
+}" 0
+ "main(int id)
+{
+string type, config, color, str;
+dyn_string published, formats, dps, defaults, dps1;
+dyn_int times, flags;
+int i;
+dyn_string items, children;
+string addition;
+
+int test_v_i;
+float test_v;
+
+int ret;
+string test_string;
+//dyn_string items; 
+
+dyn_string items_s, dps_s, dps_cfeb;
+int j;
+int typ;
+bool first=true;
+
+string cfeb_number_str;
+
+dyn_float test_v_ar;
+/*
+	items = dpNames(\"*\",\"_FwDimConfig\"); 
+	items[1] = dpSubStr(items[1],DPSUB_DP); 
+	Config = items[1]; 
+*/
+/////		fwDim_getSubscribedServices(Config,Services,  
+/////			dps, defaults, times, flags); 
+
+//fwDim_unPublishCommands(Config,\"test_command\");
+
+//===========================================================
+getValue(\"number_combo\",\"text\",cfeb_number);
+cfeb_number_str=cfeb_number;
+//===========================================================
+
+  ret=dpGet(DpName+\".data.Alct_o.v18\",test_v);
+  test_string=test_v;
+
+//=============================================================
+
+ mudcsCommand(\"LV\",DpName,\"get_data\");
+	table_type = id; 
+	switch(id) 
+	{ 
+	case 1: 
+//////////dpSet(\"Alct_lv.command\",cfeb_number);
+		setValue(\"\",\"text\",data_type[id]); 
+/////		setValue(\"number_label\",\"visible\",true); 
+/////		setValue(\"number_label\",\"text\",\"CFEB number\"); 
+		setValue(\"number_combo\",\"visible\",true); 
+		break; 
+	case 2: 
+/////////dpSet(\"Alct_lv.command\",cfeb_number);
+		setValue(\"\",\"text\",data_type[id]); 
+/////		setValue(\"number_label\",\"visible\",true); 
+/////		setValue(\"number_label\",\"text\",\"CFEB number\"); 
+		setValue(\"number_combo\",\"visible\",true); 
+                                    break;
+	case 3: 
+/////////dpSet(\"Alct_lv.command\",\"alct_monitor\");
+                  	setValue(\"\",\"text\",data_type[id]); 
+//////		setValue(\"number_label\",\"visible\",false); 
+
+		setValue(\"number_combo\",\"visible\",false); 
+                                    break;
+	case 4: 
+/////////dpSet(\"Alct_lv.command\",\"alct_monitor\");
+		setValue(\"\",\"text\",data_type[id]); 
+///////		setValue(\"number_label\",\"visible\",false); 
+		
+		setValue(\"number_combo\",\"visible\",false); 
+                                    break;
+                  }
+
+
+/////////////lv_trending();
+//=============================================================
+//========
+//=========
+//==========
+
+}
+" 0
+0 
+22 2
+"number_combo"
+""
+1 420 10 E E E 1 E 0 E N {0,0,0} E N "_Window" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 103 -*-Times [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Times [Adobe]
+0 ""
+ 420 10 490 38
+5
+1
+LANG:1 1 1
+
+1
+1
+LANG:1 1 2
+
+0
+1
+LANG:1 1 3
+
+0
+1
+LANG:1 1 4
+
+0
+1
+LANG:1 1 5
+
+0
+
+E
+"main()
+{
+int icfeb=getValue(\"\",\"text\",icfeb);
+
+ if(disk_number == 1 && ring_number == 3 && icfeb == 5){
+// there are 4 cfebs on ME1/3 chambers
+
+   setValue(\"\",\"text\",cfeb_number); // restore previous cfeb_number 
+
+ }
+ else{
+
+//mudcsDebug(DpName);
+  mudcsCommand(\"LV\",DpName,\"get_data\");
+  getValue(\"\",\"text\",cfeb_number);
+
+ }
+////lv_trending();
+//////////dpSet(\"Alct_lv.command\",cfeb_number);
+}
+//======================================================
+//============================================================================================
+// fsm:
+// usage: panels/mudcsCscCHIP_1OpBrowser.pnl
+// usage: panels/mudcsCscLV_1OpBrowser.pnl
+
+mudcsCommandTest(string type_par, string dp_name,string subcommand){
+//---------------------------
+
+string mudcs_alias;
+dyn_string subcommand_split;
+subcommand_split=strsplit(subcommand,\"|\");
+subcommand=subcommand_split[1]; // mostly case of set_data
+
+//----------------------------
+    dyn_string dyn_debug;
+
+int i,j, pos;
+
+int last_vset;
+string DpNameFsm;
+
+int w_pos,radius,ich;
+string type;
+string address,comp_subcommand;
+dyn_string list;
+dyn_string test_list, command_list;
+
+string ip_address;
+
+string setList;
+string set, set_save;
+if(type_par==\"LV\")setList=\"DynatemAndSetNumberList\";
+else if(type_par==\"HV\")setList=\"HVsetList\";
+else if(type_par==\"CRB\")setList=\"DiskLevelDevicesCoordinates\";
+else if(type_par==\"MRTN\")setList=\"CscLevelDevicesCoordinates\";
+else if(type_par==\"WNR12\")setList=\"CscLevelDevicesCoordinates\";
+else if(type_par==\"ALNM\")setList=\"DiskLevelDevicesCoordinates\";
+
+ dynClear(command_list);
+
+ test_list=dpNames(CSC_fwG_g_SYSTEM_NAME+\":\"+type_par+\"*_COM\");////,\"MUDCS_DIMCOM\");
+
+ for(i=1;i<=dynlen(test_list);i++){
+   pos=strpos(test_list[i],\"_CONF\");
+   if(pos < 0){
+      dynAppend(command_list, test_list[i]);
+   }
+ }
+
+ if(dp_name != \"all;all\"){
+
+ mudcs_alias=mudcsAliasNameGet(dp_name);
+mudcsNameToPosConvert(mudcs_alias/*dp_name*/, w_pos, radius, ich, type);
+
+/*
+   dyn_string d_s2;
+if(strpos(dp_name,\"ALNM\")>=0){
+
+    dpGet(mudcsAddSystem(\"dyn_debug2.\"),d_s2);
+    dynAppend(d_s2,dp_name+\">>>\"+mudcs_alias+\">>>\"+type);
+    dpSetWait(mudcsAddSystem(\"dyn_debug2.\"),d_s2);
+}
+*/
+
+for(int i=1;i<=dynlen(CSC_fwG_g_DEVICE_LIST);i++){
+  DebugN(\"mudcsCommand: \"+CSC_fwG_g_DEVICE_LIST[i]+\">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>11\");
+  if(strpos(dp_name,CSC_fwG_g_DEVICE_LIST[i])>=0 && strpos(CSC_fwG_g_DEVICE_LIST[i],type_par)>=0)type=CSC_fwG_g_DEVICE_LIST[i];
+}
+DebugN(\"mudcsCommand:\"+type+\">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>1 \"+dp_name +\" \"+subcommand);
+//DebugN(type+\">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>2 \");
+
+//DebugN(\">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>??????????????????????????????????????????????????????1234\"+type_par);
+  if(dynContains(CSC_fwG_g_DEVICE_LIST,type)){
+
+retrieveCoordinateSet(type_par, dp_name, setList, w_pos, radius, ich, type, set);
+
+/*
+if(strpos(dp_name,\"ALNM\")>=0){
+    dpGet(mudcsAddSystem(\"dyn_debug2.\"),d_s2);
+    dynAppend(d_s2,dp_name+\"111>>>\"+set);
+    dpSetWait(mudcsAddSystem(\"dyn_debug2.\"),d_s2);
+}
+*/
+
+//DebugN(\">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>??????????????????????????????????????????????????????1\"+type_par+\">>\"+setList+\">>\"+set+\">>\"
+//  +w_pos+\">>\"+radius+\">>\"+ich+\">>\"+type);
+if(set==\"\")return;
+//DebugN(\">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>??????????????????????????????????????????????????????2\"+type_par+\" \"+setList+\" \"+set);
+//--------
+
+   string host,inhostcoordinates,cmd,cmd_data, chamber_depend_all_channels;
+   dyn_int off_channels;
+   int ichan; 
+  
+   dyn_string coords=strsplit(set,\";\");   
+
+    if(strpos(dp_name,\".status\") >=0 )DpNameFsm=substr(dp_name,0,strpos(dp_name,\".status\"));
+    if(strpos(dp_name,\".\") >=0 )DpNameFsm=substr(dp_name,0,strpos(dp_name,\".\"));
+    else DpNameFsm=substr(dp_name,0);
+
+//---------------------------------------------------------------------------------------------------------------------------
+   if(type_par==\"HV\"){
+//    DebugN(\">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>??????????????????????????????????????????????????????  \"+set +\" \"+dp_name);
+
+    set=coords[1];
+    if(coords[4]==\"0\")chamber_depend_all_channels=\"255;\";
+    else if(coords[4]==\"1\")chamber_depend_all_channels=\"253;\";
+    else if(coords[4]==\"2\")chamber_depend_all_channels=\"254;\";
+
+
+    if(subcommand==\"power_on\"){ subcommand=      \"HVCMD;\"+coords[2]+\";\"+coords[3]+\";\"+\"0;\"+\"30;\"+\"1;\"+\"-1\";
+                                //////mudcs_master_check_voltage(dp_name);
+
+
+
+    dpGet(mudcsAddSystem(DpNameFsm+\".off_channels\"),off_channels);
+
+                                subcommand=subcommand  +\"|\"+   \"HVCMD;\"+coords[2]+\";\"+coords[3]+\";\"+chamber_depend_all_channels+\"1;\"+\"0;\"+\"-1\";
+                                // DpNameFsm=substr(dp_name,0,strpos(dp_name,\".status\"));
+                                dpGet(mudcsAddSystem(DpNameFsm+\".last_vset\"),last_vset);
+                            subcommand=subcommand  +\"|\"+   \"HVCMD;\"+coords[2]+\";\"+coords[3]+\";\"+chamber_depend_all_channels+\"7;\"+last_vset+\";\"+\"-1\";// vset
+                            subcommand=subcommand  +\"|\"+   \"HVCMD;\"+coords[2]+\";\"+coords[3]+\";\"+chamber_depend_all_channels+\"3;\"+\"14\"+\";\"+\"-1\"; // ramp_up
+                            subcommand=subcommand  +\"|\"+   \"HVCMD;\"+coords[2]+\";\"+coords[3]+\";\"+chamber_depend_all_channels+\"6;\"+\"10\"+\";\"+\"-1\"; //imax
+                            subcommand=subcommand  +\"|\"+   \"HVCMD;\"+coords[2]+\";\"+coords[3]+\";\"+chamber_depend_all_channels+\"38;\"+\"500\"+\";\"+\"-1\"; //trip_dl
+                            mudcsHVMasterChannelSwitch(dp_name, true);
+
+                            for(i=1;i<=dynlen(off_channels);i++){ // switching of the channels to be excluded according to db
+                             ichan=off_channels[i]-1;                              
+                             subcommand=subcommand  +\"|\"+   \"HVCMD;\"+coords[2]+\";\"+coords[3]+\";\"+ichan+\";0;\"+\"0;\"+\"-1\";
+                            }
+
+/*
+    dpGet(mudcsAddSystem(\"dyn_debug2.\"),dyn_debug);
+    dynAppend(dyn_debug,dp_name);
+    dpSetWait(mudcsAddSystem(\"dyn_debug2.\"),dyn_debug);
+*/
+
+
+
+
+    }
+    else if(subcommand==\"power_off\"){
+                                    if(chamber_depend_all_channels == \"255;\"){
+                                    subcommand=      \"HVCMD;\"+coords[2]+\";\"+coords[3]+\";\"+\"0;\"+\"30;\"+\"0;\"+\"-1\";
+                                    subcommand=subcommand   +\"|\";
+                                    }
+                                    else subcommand=\"\";
+                                    subcommand=subcommand   +  \"HVCMD;\"+coords[2]+\";\"+coords[3]+\";\"+chamber_depend_all_channels+\"0;\"+\"0;\"+\"-1\";
+                                    mudcsHVMasterChannelSwitch(dp_name, false);
+
+/*
+    dpGet(mudcsAddSystem(\"dyn_debug2.\"),dyn_debug);
+    dynAppend(dyn_debug,dp_name);
+    dpSetWait(mudcsAddSystem(\"dyn_debug2.\"),dyn_debug);
+*/
+
+    }
+    else if(subcommand==\"get_data\")subcommand= \"HVDATA;\"+coords[2]+\";\"+coords[3]+\";\"+\"255;\"+\"0;\"+\"0;\"+\"-1\";
+   }
+//---------------------------------------------------------------------------------------------------------------------------
+   else{ // i.e not the HV
+
+    set_save=set;
+    //----------------
+    if(subcommand==\"power_on\"){
+     dpGet(mudcsAddSystem(DpNameFsm+\".off_channels\"),off_channels);
+     if(type == \"ALNM_1\"){ 
+      set=set+\";\"+subcommand_split[2];
+     }
+     else if(type != \"LV_1\"){ 
+      for(i=1;i<=dynlen(off_channels);i++){ // switching off the channels to be excluded according to db
+         ichan=off_channels[i]-1;
+         set=set  +\"|\"+  set_save+\";\"+ichan;
+         subcommand=subcommand  +\"|\"+\"power_off\";
+      }
+     }
+     else{ // == LV_1
+      int ichan_lv=0;
+      for(i=1;i<=6;i++){ // switching off the channels to be excluded according to db
+         if(!dynContains(off_channels,i)){
+           ichan=i-1;
+           ichan_lv += (1 << ichan);
+         }
+      }
+      set=set +\";\"+ichan_lv;
+     } // LV_1
+    }
+    //----------------
+    else  if(subcommand==\"power_off\"){
+     if(type == \"ALNM_1\"){ 
+      set=set+\";\"+subcommand_split[2];
+     }    
+    } 
+    //----------------
+    else if(subcommand==\"set_data\"){
+     set=set+\";\"+subcommand_split[2];
+    } // else
+   }
+//---------------------------------------------------------------------------------------------------------------------------
+dyn_string subcommands;
+dyn_string sets;
+
+  
+///DebugN(\">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>??????????????????????????????????????????????????????3\"+type_par);
+   for(i=1;i<=dynlen(command_list);i++){
+
+///DebugN(\">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>??????????????????????????????????????????????????????4\"+type_par);
+    if(type_par==\"HV\" && strpos(command_list[i],\"HV_1\") <0)continue;
+    else if(type_par==\"LV\" && (strpos(command_list[i],\"LV_1\") <0 && strpos(command_list[i],\"LV_SX5\") <0))continue;
+    else if(type_par==\"CRB\" && (strpos(command_list[i],\"CRB_1\") <0))continue;
+    else if(type_par==\"ALNM\" && (strpos(command_list[i],\"ALNM_1\") <0))continue;
+
+//mudcsDebug(\"1\");
+ 
+//if(ich  <= dynlen(list) &&  list[ich] != \"\")
+//DebugN(\"mudcsCommand:>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> \"+command_list[i]+\".command\"+list[ich]+\"|\"+subcommand);
+ 
+   if(strpos(subcommand,\"|\") >=0 && strpos(set,\"|\") < 0){
+    subcommands=strsplit(subcommand,\"|\");
+     for(j=1;j<=dynlen(subcommands);j++){
+
+/*
+    dpGet(mudcsAddSystem(\"dyn_debug1.\"),dyn_debug);
+    dynAppend(dyn_debug,\"3333\"+mudcsAddSystem(command_list[i]+\".command\")+set+\"|\"+subcommands[j]);
+    dpSet(mudcsAddSystem(\"dyn_debug1.\"),dyn_debug);
+*/
+
+      dpSetWait(mudcsAddSystem(command_list[i]+\".command\"),set+\"|\"+subcommands[j]);
+      //dpSetWait(mudcsAddSystem(command_list[i]+\".command\"),set+\"|\"+subcommands[2]);
+
+/*
+if(strpos(dp_name,\"dp2r1c01HV_1\") >=0 ){
+    dyn_string dyn_debug;
+    dpGet(mudcsAddSystem(\"dyn_debug2.\"),dyn_debug);
+    dynAppend(dyn_debug,subcommands[j]);
+    dpSet(mudcsAddSystem(\"dyn_debug2.\"),dyn_debug);
+        dynAppend(dyn_debug,\"_____\"+dp_name+\"____\"+DpNameFsm);
+}
+*/
+     }
+
+/*
+    dyn_string dyn_debug;
+    dpGet(mudcsAddSystem(\"dyn_debug1.\"),dyn_debug);
+    dynAppend(dyn_debug,subcommand);
+    dpSet(mudcsAddSystem(\"dyn_debug1.\"),dyn_debug);
+*/
+
+   }
+   else if(strpos(subcommand,\"|\") >=0 &&  strpos(set,\"|\") >=0){
+     sets=strsplit(set,\"|\");
+     subcommands=strsplit(subcommand,\"|\");
+     for(j=1;j<=dynlen(sets);j++){
+
+/*
+    dpGet(mudcsAddSystem(\"dyn_debug1.\"),dyn_debug);
+    dynAppend(dyn_debug,\"2222\"+mudcsAddSystem(command_list[i]+\".command\")+sets[j]+\"|\"+subcommands[j]);
+    dpSet(mudcsAddSystem(\"dyn_debug1.\"),dyn_debug);
+*/
+      dpSetWait(mudcsAddSystem(command_list[i]+\".command\"),sets[j]+\"|\"+subcommands[j]);
+     }
+   } 
+   else {
+
+/* 
+    dpGet(mudcsAddSystem(\"dyn_debug1.\"),dyn_debug);
+    dynAppend(dyn_debug,\"1111\"+mudcsAddSystem(command_list[i]+\".command\")+set+\"|\"+subcommand);
+    dpSet(mudcsAddSystem(\"dyn_debug1.\"),dyn_debug);
+*/
+
+      dpSetWait(mudcsAddSystem(command_list[i]+\".command\"),set+\"|\"+subcommand);
+   }
+
+   } // for
+
+  } //if(dynContains(CSC_fwG_g_DEVICE_LIST,type))
+
+  }// not all;all
+  else {
+   for(i=1;i<=dynlen(command_list);i++){  
+    dpSetWait(mudcsAddSystem(command_list[i]+\".command\"),\"all;all\"+\"|\"+subcommand);
+   }
+  }
+}
+//============================================================================================" 0
+
+E
+ 1 0
+25 3
+"table_view"
+""
+1 10 50 E E E 1 E 1 E N "_3DText" E N {204,204,204} E E
+ E E
+77 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 103 -*-Times [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Times [Adobe]
+0 ""
+ 10 50 280 210
+"main()
+{
+  
+  mudcsProjectConnect();
+    
+/////////setValue(\"line1\",\"rowHeight\",18);
+
+int option=0;
+
+if(option==0)
+setValue(\"select\",\"text\",\"CFEB voltages\");
+else if(option==1)
+setValue(\"select\",\"text\",\"CFEB currents\");
+
+setValue(\"number_combo\",\"visible\",true);
+setValue(\"number_combo\",\"text\",\"1\");
+
+setValue(\"power_status\",\"text\",\"ON\");
+setValue(\"power_status\",\"backCol\",\"{255,0,0}\");
+setValue(\"POWER_ON\",\"text\",\"OFF\");
+setValue(\"POWER_ON\",\"backCol\",\"{255,0,0}\");
+
+ setValue(\"table_view\",\"deleteAllLines\");
+
+
+ if(option==0){
+             setValue(\"table_view\",\"appendLine\",
+            \"parameter\",\"Cfeb#1 voltage 3.3\" , 
+            \"value\", \"3.22998\"); 
+             setValue(\"table_view\",\"appendLine\",
+            \"parameter\",\"Cfeb#1 voltage 5.0\" , 
+            \"value\", \"4.9292\"); 
+             setValue(\"table_view\",\"appendLine\",
+            \"parameter\",\"Cfeb#1 voltage 6.0\" , 
+            \"value\", \"5.87158\"); 
+ }
+ else if(option==1){
+             setValue(\"table_view\",\"appendLine\",
+            \"parameter\",\"Cfeb#1 current 3.3\" , 
+            \"value\", \"0.33665\"); 
+             setValue(\"table_view\",\"appendLine\",
+            \"parameter\",\"Cfeb#1 current 5.0\" , 
+            \"value\", \"5.12926\"); 
+             setValue(\"table_view\",\"appendLine\",
+            \"parameter\",\"Cfeb#1 current 6.0\" , 
+            \"value\", \"0.66323\"); 
+ }
+}" 0
+E 1 0 1 2 2 "parameter" 10 1 0 "s" 1
+LANG:1 9 parameter
+E
+1
+LANG:1 0 
+
+150 "value" 4 1 0 "s" 1
+LANG:1 5 value
+E
+1
+LANG:1 0 
+
+70 
+21 21 "line1" 1 1
+LANG:1 0 
+"?" 0 20 168
+1
+LANG:1 103 -*-Times [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Times [Adobe]
+0 ""
+0 1 1 1 7
+1 0
+13 4
+"POWER_ON"
+""
+1 418 342 E E E 1 E 1 E N {255,255,153} E N {255,0,0} E E
+ E E
+13 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 103 -*-Times [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Times [Adobe]
+0 ""
+ 418 342 488 366
+
+T 
+1
+LANG:1 5 PW_ON
+"int g_busyThread; 
+
+
+
+
+main()
+{
+
+string test_string, current_status;
+
+int j;
+
+//// mudcsDebug(DpNameFsm);
+
+
+
+dpSetWait(CSC_fwG_g_SYSTEM_NAME+\":MUDCS_DOMAIN.value\",DpName);
+
+	dyn_string exceptionInfo; 
+
+// the order of power/on/off and setting alarm is essential !!! 
+
+	g_busyThread = -1; 
+	fwBusyBarButton_std_startBusy(exceptionInfo); 
+
+//determine_two_chambers_from_same_lv_controller();
+
+getValue(\"POWER_ON\",\"text\",test_string);
+
+//mudcsDebug(DpName);
+
+dpGet(DpNameFsm+\".status\",current_status);
+   if(current_status != -2){
+
+if(test_string == \"ON\"){
+ if(!dpExists(DpName+\".:_alert_hdl.._active\")){
+   mudcsDebug(\"You can not TURN the device ON until \\n ALERT CONFIGURATION IS MADE\");
+   fwBusyBarButton_std_stopBusy(exceptionInfo);
+   return;
+ }
+
+ if(!ELMB_MODE)
+  dpSet(DpNameFsm+\".status\",2);
+ else{
+  for(j=1;j<=dynlen(two_positions);j++){
+   dpSet(mudcsAddSystem(two_dp[j])+\".status\",2);
+//   mudcsDebug(two_dp[j]);
+  }
+ }
+
+}
+else {
+ if(!ELMB_MODE)
+  dpSet(DpNameFsm+\".status\",0);
+ else{
+  for(j=1;j<=dynlen(two_positions);j++){
+   dpSet(mudcsAddSystem(two_dp[j])+\".status\",0);
+  }
+ }
+
+} // else
+   } //if(current_status != -2)
+fwBusyBarButton_std_stopBusy(exceptionInfo);
+
+
+
+
+}
+" 0
+ E E "main()
+{
+
+// moved after defining of DpName:  mudcsCommand(DpName,\"get_data\");
+
+//setValue(\"\",\"foreCol\",\"0,0,0\");
+}" 0
+
+13 5
+"Button1"
+""
+1 459.489361702128 380 E E E 1 E 0 E N {255,255,102} E N {51,51,153} E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 103 -*-Times [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Times [Adobe]
+0 ""
+ 458 378 528 412
+
+T 
+1
+LANG:1 7 Dismiss
+"main()
+{
+	PanelOff();
+}" 0
+ E E E
+13 7
+"power_status"
+""
+1 418 290 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+21 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+ 418 290 488 340
+
+T 
+1
+LANG:1 0 
+E E E E
+2 15
+"ch_number"
+""
+1 484 -443 E E E 1 E 1 E N {0,51,255} E N {255,255,255} E E
+ E E
+79 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"
+main()
+{
+
+}" 0
+ E 0 0 0 0 1 E U  1 E 494 10 495 33
+1 2 2 "0s" 0 0 0 192 0 0  494 10 1
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 1  
+4 23
+"LINE1"
+""
+1 488 352 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+89 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 0 0 1 E  488 352 518 352
+4 24
+"LINE3"
+""
+1 518 351 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+91 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 0 0 1 E  518 351 507.898474554478 361.101525445522
+4 25
+"LINE2"
+""
+1 518 353 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+93 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 0 0 1 E  518 353 507.898474554478 342.898474554478
+2 26
+"TWO_DP"
+""
+1 51 215 E E E 1 E 1 E N {255,255,255} E N {255,0,0} E E
+ E E
+95 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 524 342 525 365
+1 2 2 "0s" 0 0 0 192 0 0  524 342 1
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 1  
+14 27
+"exclude"
+""
+1 308 378 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+97 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 308 378 418 404
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+string state;
+dyn_string test_dyn, test_dyn2;
+string dp_frag;
+int chn;
+
+getValue(\"\",\"text\",state);
+
+test_dyn=strsplit(state,\" \");
+test_dyn2=strsplit(test_dyn[2],\"b\");  // i.e. cfeb
+
+if(dynlen(test_dyn2)>=2){
+chn=test_dyn2[2];
+dp_frag=\"v\"+chn;
+}
+
+if(test_dyn[2]==\"alct\"){test_dyn2[2]=\"6\";dp_frag=\"Alct_o\";}
+
+chn=test_dyn2[2];
+if(chn<1 || chn>6){
+ mudcsDebug(\"wrong format\\n righ format is:\\nexclude cfeb03\");
+ return;
+}
+
+if(strpos(state,\"exclude\")>=0)exclude(1,test_dyn2[2],dp_frag);
+else if(strpos(state,\"include\")>=0)exclude(0,test_dyn2[2],dp_frag);
+else {
+ mudcsDebug(\"wrong format\\n righ format is:\\nexclude cfeb03\");
+ return;
+}
+
+
+
+}
+
+//==================================
+exclude(int isexclude, string chn_text, string dp_frag){
+
+int chn=chn_text;
+
+dyn_int off_channels;
+int pos;
+
+dpGet(DpNameFsm+\".off_channels\",off_channels);
+
+ if(isexclude){
+  if(dynContains(off_channels,chn)==0)dynAppend(off_channels,chn);
+ }
+ else{
+  pos=dynContains(off_channels,chn);
+  if(pos)dynRemove(off_channels,pos);
+
+ }
+ 
+dpSetWait(DpNameFsm+\".off_channels\",off_channels);
+  alert_reconfig(dp_frag, isexclude);   
+ 
+}
+" 0
+
+2 28
+"exclude_text1"
+""
+1 170 860 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+99 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 260 380 305 399
+1 2 2 "0s" 0 0 0 192 0 0  260 380 1
+1
+LANG:1 111 -*-Helvetica [Adobe]-bold-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,758,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 7 exclude
+2 29
+"exclude_text2"
+""
+1 332 354 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+101 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 260 390 471 514
+1 2 2 "0s" 0 0 0 192 0 0  260 390 6
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 38 examples: exclude cfeb01, include alct
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 6 Use it
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 33 a) to keep excluded channels off 
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 25    at the module power on
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 32 b) for excluded channels not to 
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 38    affect a error status of the module
+14 30
+"noalert"
+""
+1 588 378 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+103 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 588 378 698 404
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+string state;
+dyn_string test_dyn, test_dyn2;
+string dp_frag;
+int chn;
+
+getValue(\"\",\"text\",state);
+
+test_dyn=strsplit(state,\" \");
+test_dyn2=strsplit(test_dyn[2],\"b\");  // i.e. cfeb
+
+if(dynlen(test_dyn2)>=2){
+chn=test_dyn2[2];
+dp_frag=\"v\"+chn;
+}
+
+if(test_dyn[2]==\"alct\"){test_dyn2[2]=\"6\";dp_frag=\"Alct_o\";}
+
+chn=test_dyn2[2];
+if(chn<1 || chn>6){
+ mudcsDebug(\"wrong format\\n righ format is:\\nexclude cfeb03\");
+ return;
+}
+
+if(strpos(state,\"exclude\")>=0)exclude(1,test_dyn2[2],dp_frag);
+else if(strpos(state,\"include\")>=0)exclude(0,test_dyn2[2],dp_frag);
+else {
+ mudcsDebug(\"wrong format\\n righ format is:\\nexclude cfeb03\");
+ return;
+}
+
+
+
+}
+
+//==================================
+exclude(int isexclude, string chn_text, string dp_frag){
+
+int chn=chn_text;
+
+dyn_int noalert_channels;
+int pos;
+
+dpGet(DpNameFsm+\".noalert_channels\",noalert_channels);
+
+ if(isexclude){
+  if(dynContains(noalert_channels,chn)==0)dynAppend(noalert_channels,chn);
+ }
+ else{
+  pos=dynContains(noalert_channels,chn);
+  if(pos)dynRemove(noalert_channels,pos);
+
+ }
+ 
+dpSetWait(DpNameFsm+\".noalert_channels\",noalert_channels);
+  alert_reconfig(dp_frag, isexclude);   
+ 
+}
+" 0
+
+2 31
+"noalert_text2"
+""
+1 440 342 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+105 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 540 380 696 525
+1 2 2 "0s" 0 0 0 192 0 0  540 380 7
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 10 examples: 
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 16 exclude cfeb01, 
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 12 include alct
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 7 Use it:
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 30  for excluded channels not to 
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 23  affect a error status 
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 15   of the module
+2 32
+"noalert_text1"
+""
+1 280 860 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+107 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 540 380 618 399
+1 2 2 "0s" 0 0 0 192 0 0  540 380 1
+1
+LANG:1 111 -*-Helvetica [Adobe]-bold-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,758,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 13 exclude_alert
+13 33
+"FPOWER_OFF"
+""
+1 298 310 E E E 1 E 1 E N {255,255,153} E N {0,149,255} E E
+ E E
+109 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 103 -*-Times [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Times [Adobe]
+0 ""
+ 298 310 408 334
+
+T 
+1
+LANG:1 12 Forcible OFF
+"int g_busyThread; 
+
+
+
+
+main()
+{
+
+string current_status;
+
+
+dpGet(DpNameFsm+\".status\",current_status);
+   if(current_status != -2){
+    dpSet(DpNameFsm+\".status\",0);
+   }
+
+
+}
+" 0
+ E E "main()
+{
+
+// moved after defining of DpName:  mudcsCommand(DpName,\"get_data\");
+
+//setValue(\"\",\"foreCol\",\"0,0,0\");
+}" 0
+
+13 34
+"FPOWER_ON"
+""
+1 298 342 E E E 1 E 1 E N {255,255,153} E N {0,149,149} E E
+ E E
+111 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 103 -*-Times [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Times [Adobe]
+0 ""
+ 298 342 408 366
+
+T 
+1
+LANG:1 11 Forcible ON
+"int g_busyThread; 
+
+
+
+
+main()
+{
+
+string current_status;
+
+
+dpGet(DpNameFsm+\".status\",current_status);
+   if(current_status != -2){
+    dpSet(DpNameFsm+\".status\",2);
+   }
+
+
+}
+" 0
+ E E "main()
+{
+
+// moved after defining of DpName:  mudcsCommand(DpName,\"get_data\");
+
+//setValue(\"\",\"foreCol\",\"0,0,0\");
+}" 0
+
+2 35
+"noalert_channels_text"
+""
+1 14.8 212 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+112 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 2.4 0 1 -9.199999999999999 -8 1 E 10 220 11 234
+0 2 2 "0s" 0 0 0 192 0 0  10 220 1
+1
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+1
+LANG:1 0 
+2 36
+"off_channels_text"
+""
+1 14.8 232 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+114 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 2.4 0 1 -9.199999999999999 -8 1 E 10 240 11 254
+0 2 2 "0s" 0 0 0 192 0 0  10 240 1
+1
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+1
+LANG:1 0 
+2 40
+"PRIMITIVE_TEXT5"
+""
+1 367.2357999193284 165 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+122 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+2
+"hoverfclr" "N \"_Transparent\""
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E 0.9767441860465116 0 1 112.1860465116279 -38 1 E 10 310 52 324
+1 2 2 "0s" 0 0 0 192 0 0  10 310 1
+1
+LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+1
+LANG:1 8 ALCT__  
+2 42
+"PRIMITIVE_TEXT6"
+""
+1 -200 274 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+126 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 12 272 45 286
+1 2 2 "0s" 0 0 0 192 0 0  12 272 1
+1
+LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+1
+LANG:1 5 CFEB1
+2 43
+"PRIMITIVE_TEXT7"
+""
+1 -200 247 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+128 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 12 292 45 306
+1 2 2 "0s" 0 0 0 192 0 0  12 292 1
+1
+LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+1
+LANG:1 5 CFEB2
+2 44
+"PRIMITIVE_TEXT8"
+""
+1 -200 217 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+130 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 12 312 44 326
+1 2 2 "0s" 0 0 0 192 0 0  12 312 1
+1
+LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+1
+LANG:1 5 CFEB3
+2 45
+"PRIMITIVE_TEXT9"
+""
+1 -200 187 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+132 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 12 332 46 346
+1 2 2 "0s" 0 0 0 192 0 0  12 332 1
+1
+LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+1
+LANG:1 5 CFEB4
+2 46
+"PRIMITIVE_TEXT10"
+""
+1 -200 157 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+134 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 12 352 45 366
+1 2 2 "0s" 0 0 0 192 0 0  12 352 1
+1
+LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+1
+LANG:1 5 CFEB5
+20 52
+"isTrending6"
+""
+1 160.7189204708584 268.6153846153846 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+ E E
+146 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+ 159.953488372093 268 213.953488372093 290
+1
+T 
+1
+LANG:1 5 trend
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+EE20 53
+"isTrending1"
+""
+1 50.76543209876539 267.6923076923077 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+ E E
+148 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+ 50 268 104 302
+1
+T 
+1
+LANG:1 5 trend
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+EE20 54
+"isTrending2"
+""
+1 50.76543209876539 288.6153846153846 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+ E E
+150 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+ 50 288 104 310
+1
+T 
+1
+LANG:1 5 trend
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+EE20 55
+"isTrending3"
+""
+1 50.76543209876539 308.6153846153846 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+ E E
+152 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+ 50 308 104 330
+1
+T 
+1
+LANG:1 5 trend
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+EE20 56
+"isTrending4"
+""
+1 50.76543209876539 328.6153846153846 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+ E E
+154 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+ 50 328 104 350
+1
+T 
+1
+LANG:1 5 trend
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+EE20 57
+"isTrending5"
+""
+1 50.76543209876539 348.6153846153846 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+ E E
+156 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+ 50 348 104 370
+1
+T 
+1
+LANG:1 5 trend
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+EE13 58
+"PUSH_BUTTON1"
+""
+1 120 320 E E E 1 E 1 E N "_ButtonText" E N "_ETM" E E
+ E E
+158 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 118 318 202 372
+
+T 
+1
+LANG:1 5 TREND
+"main()
+{
+  /*
+string name;
+dyn_string row;
+getValue(\"\",\"name\",name);
+row=strsplit(name,\"_\");
+string ch_n_text=row[2];
+*/
+//==== Trending ======
+
+  dyn_bool isTrending;
+  getValue(\"isTrending1\",\"state\",0,isTrending[1]);
+  getValue(\"isTrending2\",\"state\",0,isTrending[2]);
+  getValue(\"isTrending3\",\"state\",0,isTrending[3]);
+  getValue(\"isTrending4\",\"state\",0,isTrending[4]);
+  getValue(\"isTrending5\",\"state\",0,isTrending[5]);
+  getValue(\"isTrending6\",\"state\",0,isTrending[6]);         
+
+  trending(isTrending);
+
+//====================
+return;
+}" 0
+ E E E
+22 60
+"error_list"
+""
+1 430 140 E E E 1 E 1 E N "_WindowText" E N {255,84,65} E E
+ E E
+161 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 428 138 632 162
+0
+
+E
+E
+E
+ 1 0
+2 61
+"PRIMITIVE_TEXT11"
+""
+1 340 600 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+163 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 430 120 499 139
+1 2 2 "0s" 0 0 0 192 0 0  430 120 1
+1
+LANG:1 111 -*-Helvetica [Adobe]-bold-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,758,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 10 ERRORS IN:
+2 63
+"t_alct"
+""
+1 1499.73712874943 -301 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+167 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+2
+"hoverfclr" "N \"_Transparent\""
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E 0.9767441860465116 0 1 422.1860465116279 -218 1 E 10 310 52 324
+1 2 2 "0s" 0 0 0 192 0 0  10 310 1
+1
+LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+1
+LANG:1 8 ALCT__  
+2 64
+"t_cfeb1"
+""
+1 90 94 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+169 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 302 92 335 106
+1 2 2 "0s" 0 0 0 192 0 0  302 92 1
+1
+LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+1
+LANG:1 5 CFEB1
+2 65
+"t_cfeb2"
+""
+1 90 77 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+171 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 302 122 335 136
+1 2 2 "0s" 0 0 0 192 0 0  302 122 1
+1
+LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+1
+LANG:1 5 CFEB2
+2 66
+"t_cfeb3"
+""
+1 90 57 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+173 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 302 152 334 166
+1 2 2 "0s" 0 0 0 192 0 0  302 152 1
+1
+LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+1
+LANG:1 5 CFEB3
+2 67
+"t_cfeb4"
+""
+1 90 39 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+175 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 302 184 336 198
+1 2 2 "0s" 0 0 0 192 0 0  302 184 1
+1
+LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+1
+LANG:1 5 CFEB4
+2 68
+"t_cfeb5"
+""
+1 90 17 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+177 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 302 212 335 226
+1 2 2 "0s" 0 0 0 192 0 0  302 212 1
+1
+LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+1
+LANG:1 5 CFEB5
+20 69
+"alct"
+""
+1 470.0015159345392 88.61538461538458 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+ E E
+179 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+ 469.9274418604652 88 551.9274418604651 110
+1
+T 
+1
+LANG:1 9 isEnabled
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  exclude_main();
+}" 0
+20 76
+"cfeb01"
+""
+1 338.074074074074 88.61538461538458 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+ E E
+193 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+ 338 88 420 110
+1
+T 
+1
+LANG:1 9 isEnabled
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  exclude_main();
+}" 0
+20 77
+"cfeb02"
+""
+1 338.074074074074 118.6153846153846 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+ E E
+195 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+ 338 118 420 140
+1
+T 
+1
+LANG:1 9 isEnabled
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  exclude_main();
+}" 0
+20 78
+"cfeb03"
+""
+1 338.074074074074 148.6153846153846 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+ E E
+197 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+ 338 148 420 170
+1
+T 
+1
+LANG:1 9 isEnabled
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  exclude_main();
+}" 0
+20 79
+"cfeb04"
+""
+1 338.074074074074 186 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+ E E
+199 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+ 338 179 420 201
+1
+T 
+1
+LANG:1 9 isEnabled
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  exclude_main();
+}" 0
+20 80
+"cfeb05"
+""
+1 338.074074074074 208.6153846153846 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+ E E
+201 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+ 338 208 420 230
+1
+T 
+1
+LANG:1 9 isEnabled
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  exclude_main();
+}" 0
+2 17
+"NOT_CONNECTED"
+""
+1 -322 193 E E E 1 E 1 E N {255,255,255} E N {255,0,0} E E
+ E E
+83 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 10 210 178 258
+1 2 2 "0s" 0 0 0 192 0 0  10 210 2
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 12    DEVICE IS
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 15  NOT CONNECTED 
+2 82
+"isDeviceEnabled"
+""
+1 480 50 E E E 1 E 1 E N "_Window" E N "AESfgPending" E E
+ E E
+205 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 480 50 663 70
+0 2 2 "0s" 0 0 0 192 0 0  480 50 1
+1
+LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+1
+LANG:1 22 _DEVICE IS DESABLED_  
+20 83
+"isDeviceEnabledCheck"
+""
+1 297.5555555555554 47.69230769230768 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+ E E
+207 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-19-*-100-100-*-*-iso8859-1|-19,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+ 300 48 484 82
+1
+T 
+1
+LANG:1 15 isDeviceEnabled
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+"main()
+{
+
+}" 0
+"main(int button, int state)
+{
+ 
+//string DpNameFsm2;
+// dyn_string  dps2;
+ 
+//DpNameFsm2=mudcsRemoveSystem(DpNameFsm);
+//split1=strsplit(DpNameFsm2,\"/\");
+//DomainName=substr(split1[2],0, strlen(\"CSC_ME_\")+2);
+//isEnabled=fwFsmUi_getDUMode(DomainName,DpNameFsm2);
+  
+//DpNameFsm2=mudcsRemoveSystem(DpNameFsm);
+//dps2=dpNames(CSC_fwG_g_SYSTEM_NAME+\":*\"+DpNameFsm2,\"_FwFsmDevice\");     
+//if(dynlen(dps2)>=1){split3=strsplit(dps2[1],\"|\");
+//DomainName=substr(split3[1],(strpos(split3[1],\":\")+1));
+//    dpGet(dps2[1]+\".mode.enabled\",isEnabled_i);
+//  }
+  
+//dpSet(g_dps2[1]+\".mode.enabled\",state);
+  if(state==0)  
+fwFsmUi_setDUModeByName(DomainName, DpNameFsm2, \"Disable\");
+  else if(state==1)
+fwFsmUi_setDUModeByName(DomainName, DpNameFsm2, \"Enable\");    
+ 
+/*
+  if(state==0){
+      setValue(\"\",\"backCol\",\"{202,202,202}\"); 
+      setValue(\"isDeviceEnabled\",\"visible\",true);
+    
+  }
+  else{
+      setValue(\"\",\"backCol\",\"{0,153,153}\"); 
+    setValue(\"isDeviceEnabled\",\"visible\",false);
+    
+    
+  }
+*/
+
+}" 0
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

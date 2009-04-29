@@ -1,0 +1,13 @@
+#!/bin/bash
+
+
+
+#
+# this script should be in ~/bin directory
+#
+
+
+export LD_LIBRARY_PATH="/home/fast/bin:$LD_LIBRARY_PATH"
+
+. /home/fast/.bash_profile
+/home/fast/pvss_fsm/bin/dns

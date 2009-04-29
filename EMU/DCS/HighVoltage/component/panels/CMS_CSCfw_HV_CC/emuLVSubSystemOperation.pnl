@@ -1,0 +1,437 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 438 503 N "_3DFace" 4
+"$obj"
+"$project_station"
+"$project_system"
+"$sDpName"
+"main()
+{
+  $project_system;
+  $project_station;
+   
+  int i, n;
+  int m_max=0;
+  int p_min=10;
+  
+  system_plus=\"\";
+  system_minus=\"\";
+  dyn_string ds1,ds2,ds3;
+  string valid;
+  ds1=dpNames(\"*:CMS_CSC_HV_CC_*\",\"MUDCS_STRING\");
+  for(i=1;i<=dynlen(ds1);i++){
+    dpGet(ds1[i]+\".value\",valid);
+    if(valid !=\"valid\")continue;    
+    ds2=strsplit(ds1[i],\":\");
+    ds3=strsplit(ds2[dynlen(ds2)],\"_\");
+    n=ds3[dynlen(ds3)];
+    if(n<=4 && n > m_max){system_minus=ds2[1];m_max=n;}
+    else if(n>=5 && n < p_min){system_plus=ds2[1];p_min=n;}
+  }
+ // mudcsDebug(\"minus \"+system_minus);
+ //   mudcsDebug(system_plus);
+  if(system_minus!=\"\"){
+   setValue(\"stop_m\",\"enabled\",true); 
+   setValue(\"resume_m\",\"enabled\",true);    
+  }
+  if(system_plus!=\"\"){
+   setValue(\"stop_p\",\"enabled\",true); 
+   setValue(\"resume_p\",\"enabled\",true);    
+  }
+ /*
+  
+      dyn_string types, dps;
+     int status;
+  dps=dpNames(\"*:*\",\"LV_1\");
+ int f=0; 
+  for(i=1;i<=dynlen(dps);i++){
+    if(strpos(dps[i],\"ME_M\")>=0 && f==0){
+     f=1; 
+      mudcsDebug(dps[i]);
+      dpGet(dps[i]+\".status\",status);
+      mudcsDebug(status);
+    }
+ }
+ */
+       
+}" 0
+ E E E E 1 -1 -1 0  68 70
+""0  1
+E "#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs2.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs3.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs4.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcsDim.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuAlert.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emufw.ctl\"
+
+  string system_plus;
+  string system_minus;
+  
+//===========================================================
+
+mudcsCrbSwitch(int mode_action, int mode=0){
+  
+int i;  
+dyn_string dps, dps1, split3;
+string DomainName;
+int all_mode=0, minus_mode=1, plus_mode=2;
+int on_mode=1, off_mode=0;
+
+if(mode==all_mode)
+  dps=dpNames(\"*:*|CSC_ME_*_LV_CRB\",\"_FwFsmObject\");
+else if(mode==minus_mode){
+  dps=dpNames(\"*:*|CSC_ME_M*_LV_CRB\",\"_FwFsmObject\");  
+//    mudcsDebug(mode_action+\" > \"+mode+\" > \"+dynlen(dps));
+ }
+else if(mode==plus_mode)
+  dps=dpNames(\"*:*|CSC_ME_P*_LV_CRB\",\"_FwFsmObject\");   
+///if((strpos(DomainName,\"CSC_LV\"))!=0)continue;
+
+
+
+ for(i=1;i<=dynlen(dps);i++){
+  split3=strsplit(dps[i],\"|\");
+  DomainName=substr(split3[1],(strpos(split3[1],\":\")+1));   
+  if((strpos(DomainName,\"CSC_ME_P\"))<0 && (strpos(DomainName,\"CSC_ME_M\"))<0)continue; // to take only imported nodes
+ 
+ 
+//  DebugTN(dps[i]+\".fsm.sendCommand\");
+  if(mode_action==on_mode){
+  fwCU_sendCommand(DomainName+\"::\"+split3[dynlen(split3)],\"ON\");
+     DebugTN(DomainName+\"::\"+split3[dynlen(split3)]);
+ // dpSet(dps[i]+\".fsm.sendCommand\",\"ON\");
+  }
+  else if(mode_action==off_mode){
+  fwCU_sendCommand(DomainName+\"::\"+split3[dynlen(split3)],\"OFF\");
+     DebugTN(DomainName+\"::\"+split3[dynlen(split3)]);
+ // dpSet(dps[i]+\".fsm.sendCommand\",\"OFF\");
+  }
+    
+    
+    
+ }
+   
+  
+  
+}
+//=========================================================" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 3
+"RECTANGLE1"
+""
+1 100 50 E E E 1 E 1 E N "_3DFace" E N {51,153,153} E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E 1 0 0.8095238095238095 -3 50.52380952380952 1 E 100 50 380 260
+1 23 1 "" 0
+0
+1 24 1 "" 13
+0
+1 25 1 "" 14
+0
+1 26 1 "" 15
+0
+13 8
+"stop_m"
+""
+1 100 270 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 29 e.g. for firmware downloading
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 98 268 242 332
+
+T 
+1
+LANG:1 38 -Z
+Stop Peripheral 
+Crate Slow Control
+"main()
+{
+  
+dpSet(system_minus+\":LV_1_COM.command\",\"STOP_SLOW_CONTROL\");
+  dpSet(system_minus+\":STOP_SLOW_CONTROL.value\",\"STOP_SLOW_CONTROL\");    
+    
+}" 0
+ E E E
+13 9
+"PUSH_BUTTON2"
+""
+1 40 30 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 38 28 172 82
+
+T 
+1
+LANG:1 37 Resume Peripheral 
+Crate Slow Control
+"main()
+{
+  dpSet(CSC_fwG_g_HW_SYSTEM_NAME+\":LV_1_COM.command\",\"RESUME_SLOW_CONTROL\");
+  dpSet(CSC_fwG_g_HW_SYSTEM_NAME+\":STOP_SLOW_CONTROL.value\",\"RESUME_SLOW_CONTROL\");
+}" 0
+ E E E
+13 14
+"resume_m"
+""
+1 100 330 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 98 328 242 432
+
+T 
+1
+LANG:1 102 -Z
+Resume Peripheral 
+Crate Slow Control:
+(after click: wait for 
+for five minutes 
+for data to come) 
+"main()
+{
+  dpSetWait(system_minus+\":LV_1_COM.command\",\"EXIT_SLOW_CONTROL\");
+   dpSetWait(system_minus+\":LV_1_COM.command\",\"RESUME_SLOW_CONTROL\"); //for x2p
+  dpSet(system_minus+\":STOP_SLOW_CONTROL.value\",\"RESUME_SLOW_CONTROL\");
+}" 0
+ E E E
+13 21
+"stop_p"
+""
+1 240 270 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 29 e.g. for firmware downloading
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 238 268 382 332
+
+T 
+1
+LANG:1 38 +Z
+Stop Peripheral 
+Crate Slow Control
+"main()
+{
+  
+dpSet(system_plus+\":LV_1_COM.command\",\"STOP_SLOW_CONTROL\");
+  dpSet(system_plus+\":STOP_SLOW_CONTROL.value\",\"STOP_SLOW_CONTROL\");    
+    
+}" 0
+ E E E
+13 22
+"resume_p"
+""
+1 240 330 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+13 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 238 328 382 432
+
+T 
+1
+LANG:1 102 +Z
+Resume Peripheral 
+Crate Slow Control:
+(after click: wait for 
+for five minutes 
+for data to come) 
+"main()
+{
+  dpSetWait(system_plus+\":LV_1_COM.command\",\"EXIT_SLOW_CONTROL\");
+   dpSetWait(system_plus+\":LV_1_COM.command\",\"RESUME_SLOW_CONTROL\"); // for x2p 
+  dpSet(system_plus+\":STOP_SLOW_CONTROL.value\",\"RESUME_SLOW_CONTROL\");
+}" 0
+ E E E
+13 27
+"PUSH_BUTTON3"
+""
+1 100 440 E E E 1 E 1 E N "_ButtonText" E N "_ETM" E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 93 -*-helvetica-*-r-normal-*-*-120-100-100-*-*-iso8859-1|-17,0,0,0,505,0,0,0,0,0,0,0,0,helvetica
+0 ""
+ 98 438 242 462
+
+T 
+1
+LANG:1 10 -Z CRB OFF
+"main()
+{
+  mudcsCrbSwitch(0,1);
+}" 0
+ E E E
+13 28
+"PUSH_BUTTON4"
+""
+1 100 470 E E E 1 E 1 E N "_Window" E N "alertCamAckn" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 93 -*-helvetica-*-r-normal-*-*-120-100-100-*-*-iso8859-1|-17,0,0,0,505,0,0,0,0,0,0,0,0,helvetica
+0 ""
+ 98 468 242 492
+
+T 
+1
+LANG:1 9 -Z CRB ON
+"main()
+{
+  mudcsCrbSwitch(1,1);
+}" 0
+ E E E
+13 29
+"PUSH_BUTTON5"
+""
+1 250 440 E E E 1 E 1 E N "_ButtonText" E N "_ETM" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 93 -*-helvetica-*-r-normal-*-*-120-100-100-*-*-iso8859-1|-17,0,0,0,505,0,0,0,0,0,0,0,0,helvetica
+0 ""
+ 248 438 392 462
+
+T 
+1
+LANG:1 10 +Z CRB OFF
+"main()
+{
+  mudcsCrbSwitch(0,2);
+}" 0
+ E E E
+13 30
+"PUSH_BUTTON6"
+""
+1 250 470 E E E 1 E 1 E N "_Window" E N "alertCamAckn" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 93 -*-helvetica-*-r-normal-*-*-120-100-100-*-*-iso8859-1|-17,0,0,0,505,0,0,0,0,0,0,0,0,helvetica
+0 ""
+ 248 468 392 492
+
+T 
+1
+LANG:1 9 +Z CRB ON
+"main()
+{
+  mudcsCrbSwitch(1,2);
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+3 1 "PANEL_REF2"
+"CMS_CSCfw_HV_CC/genericSubSystemOperation.pnl" 174 108 T 0 U 
+4
+"$obj""$obj"
+"$project_station""$project_station"
+"$project_system""$project_system"
+"$sDpName""$sDpName"
+0

@@ -1,0 +1,906 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 265 52 N "_3DFace" 0
+"
+main(){
+  
+  
+  
+}" 0
+ E E E E 1 -1 -1 0  51 83
+""0  1
+E E 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"PUSH_BUTTON1"
+""
+1 10 10 E E E 1 E 1 E N "_Window" E N "_ETM" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+ 8 8 252 42
+
+T 
+1
+LANG:1 16 create component
+"
+int mode;//=1; // mode =2 is browsing with all CSC panels
+            // mode=0 only FSM panel browsing
+            // mode=1  : is browsing with all CSC panels besides some
+
+string Component;//=\"CMS_CSCfw_HV_CC\";
+string dir_oper;
+
+main()
+{
+string os=getenv(\"OS\");
+
+DebugTN(\"1\");  
+
+if (os ==\"Linux\")system(\"PVSS00ctrl -num 15 CMS_CSCfw_HV_CC/mudcsComponent.ctl &\");
+else system(\"cmd /c PVSS00ctrl -num 15 CMS_CSCfw_HV_CC/mudcsComponent.ctl\");
+DebugTN(\"11\"); 
+  return; // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+  
+mudcsCreateComponent(1);
+mudcsCreateComponent(2);
+mudcsDebug(\"done\");
+}
+
+mudcsCreateComponent(int mode_par){  
+
+  
+Component=\"CMS_CSCfw_HV_CC\";
+mode=mode_par;    
+mudcsInit();
+
+DebugTN(\"2\");  
+
+
+
+
+dir_oper=Component;
+
+string key_add=\"\";
+if(mode==1)key_add=\"_MINI\";
+
+Component+=key_add;
+
+string dir_config=dir_oper+\"/config\";
+string dir_init=dir_oper+\"/init\";
+
+
+string dir_dubna=\"CMS_ME11\";
+
+
+//---forming package: EMU DCS components------------
+system(\"rm -rf $HOME/\"+Component);
+DebugTN(\"3\"); 
+system(\"mkdir $HOME/\"+Component);
+
+system(\"mkdir $HOME/\"+Component+\"/scripts\");
+system(\"mkdir $HOME/\"+Component+\"/scripts/\"+dir_oper);
+system(\"mkdir $HOME/\"+Component+\"/scripts/libs\");
+system(\"mkdir $HOME/\"+Component+\"/scripts/libs/\"+dir_oper);
+
+system(\"mkdir $HOME/\"+Component+\"/panels\");
+system(\"mkdir $HOME/\"+Component+\"/panels/\"+dir_oper);
+//system(\"mkdir $HOME/\"+Component+\"/panels/\"+dir_config);
+//system(\"mkdir $HOME/\"+Component+\"/panels/\"+dir_init);
+
+system(\"mkdir $HOME/\"+Component+\"/config/\");
+
+system(\"mkdir $HOME/\"+Component+\"/dplist/\");
+system(\"mkdir $HOME/\"+Component+\"/dplist/\"+dir_oper+\"/\");
+system(\"mkdir $HOME/\"+Component+\"/images/\");
+system(\"mkdir $HOME/\"+Component+\"/images/\"+dir_oper+\"/\");
+
+system(\"mkdir $HOME/\"+Component+\"/source/\");
+system(\"mkdir $HOME/\"+Component+\"/source/\"+dir_oper+\"/\");
+//system(\"mkdir $HOME/\"+Component+\"/source/\"+Component+\"/special_stuff\");
+//system(\"mkdir $HOME/\"+Component+\"/source/\"+Component+\"/unix2dos\");
+//system(\"mkdir $HOME/\"+Component+\"/source/\"+Component+\"/delete_processes_by_name\");
+//system(\"mkdir $HOME/\"+Component+\"/source/\"+Component+\"/config\");
+//system(\"mkdir $HOME/\"+Component+\"/source/\"+Component+\"/text\");
+
+/////////////###########system(\"rm -f $HOME/\"+Component+\"/panels/\"+dir_oper+\"/*\");
+/////////////#############system(\"rm -f \"+CSC_fwG_g_project_name_home+\"/CSCfw/scripts/libs/*\");
+
+if(dpExists(\"fwOT_WTH_SX5\"))dpSet(\"fwOT_WTH_SX5.panel\", dir_oper+\"/emuDevWTH_SX5Operation.pnl\");
+if(dpExists(\"fwOT_ALNM_1\"))dpSet(\"fwOT_ALNM_1.panel\",  dir_oper+\"/emuDevALNM_1Operation.pnl\");
+if(dpExists(\"fwOT_CHIP_1\"))dpSet(\"fwOT_CHIP_1.panel\",  dir_oper+\"/emuDevCHIP_1Operation.pnl\");
+if(dpExists(\"fwOT_CRB_1\"))dpSet(\"fwOT_CRB_1.panel\",   dir_oper+\"/emuDevCRB_1Operation.pnl\");
+if(dpExists(\"fwOT_GAS_SX5\"))dpSet(\"fwOT_GAS_SX5.panel\", dir_oper+\"/emuDevGAS_SX5Operation.pnl\");
+if(dpExists(\"fwOT_TEMP_1\"))dpSet(\"fwOT_TEMP_1.panel\",  dir_oper+\"/emuDevTEMP_1Operation.pnl\");
+if(dpExists(\"fwOT_WNR12_1\"))dpSet(\"fwOT_WNR12_1.panel\", dir_oper+\"/emuDevWNR12_1Operation.pnl\");
+if(dpExists(\"fwOT_HV_1\"))dpSet(\"fwOT_HV_1.panel\",    dir_oper+\"/emuDevHV_1Operation.pnl\");
+if(dpExists(\"fwOT_HV_PR\"))dpSet(\"fwOT_HV_PR.panel\",   dir_oper+\"/emuDevHV_PROperation.pnl\");
+if(dpExists(\"fwOT_LV_1\"))dpSet(\"fwOT_LV_1.panel\",    dir_oper+\"/emuDevLV_1Operation.pnl\");
+if(dpExists(\"fwOT_MRTN_1\"))dpSet(\"fwOT_MRTN_1.panel\",  dir_oper+\"/emuDevMRTN_1Operation.pnl\");
+if(dpExists(\"fwOT_PT100\"))dpSet(\"fwOT_PT100.panel\",   dir_oper+\"/emuDevPT100Operation.pnl\");
+if(dpExists(\"fwOT_fwWnrCr_CSC_LV\"))dpSet(\"fwOT_fwWnrCr_CSC_LV.panel\",   dir_oper+\"/emuDevfwWnrCr_CSC_LVOperation.pnl\");
+
+
+if(!mode){
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/emuDevWTH_SX5Operation.pnl\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/emuDevALNM_1Operation.pnl\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/emuDevCHIP_1Operation.pnl\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/emuDevCRB_1Operation.pnl\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/emuDevGAS_SX5Operation.pnl\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/emuDevTEMP_1Operation.pnl\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/emuDevWNR12_1Operation.pnl\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/emuDevHV_1Operation.pnl\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/emuDevHV_PROperation.pnl\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/emuDevLV_1Operation.pnl\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/emuDevMRTN_1Operation.pnl\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/emuDevPT100Operation.pnl\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/emuDevfwWnrCr_CSC_LVOperation.pnl\");
+}
+else{
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuDevWTH_SX5Operation.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuDevALNM_1Operation.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuDevCHIP_1Operation.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuDevCRB_1Operation.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuDevGAS_SX5Operation.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuDevTEMP_1Operation.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuDevWNR12_1Operation.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuDevHV_1Operation.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuDevHV_PROperation.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuDevLV_1Operation.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuDevMRTN_1Operation.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuDevPT100Operation.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuDevfwWnrCr_CSC_LVOperation.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+}
+//=================================
+
+
+if(!mode)system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emufwUi.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/emufwUi.pnl\");
+else {
+ system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/*.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+ if(mode==1)system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emufwUi.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/emufwUi.pnl\");
+ else if(mode==2)system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emufwUi.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/emufwUi.pnl\");
+
+}
+
+
+//=================================
+string fwUiPnl;
+//if(!mode)
+ fwUiPnl=dir_oper+\"/emufwUi.pnl\";
+//else 
+// fwUiPnl=\"fwFSMuser/fwUi.pnl\";
+
+
+//=================================================================
+
+dyn_string os;
+string o,s, s1, s2;
+int i, pos;
+dyn_string panels;
+string p;
+
+  dyn_string d_string1, d_string2;
+  string label, o_cut;
+//----------------------------------------------------------------- 
+ 
+dyn_string objs=dpNames(\"*\",\"_FwFsmDevice\");
+
+
+
+for(i=1;i<=dynlen(objs);i++){
+
+d_string1=strsplit(objs[i],\"|\");
+d_string2=strsplit(d_string1[dynlen(d_string1)],\"/\");
+o_cut=d_string2[dynlen(d_string2)];    
+  
+panels=makeDynString(fwUiPnl);
+
+//////DebugTN(\"OOOOOOOOOOOOO1 \"+objs[i]);
+
+//mudcsDebug(objs[i]);
+os=strsplit(objs[i],\"|\");
+o=os[dynlen(os)];
+
+/////DebugTN(\"OOOOOOOOOOOOO2 \"+o);
+o=mudcsAliasNameGet(o);
+//////DebugTN(\"OOOOOOOOOOOOO3 \"+o);
+///////////DebugTN(mudcsAliasNameGet(o));
+
+s=\"GAS_SX5\";
+ if((pos=strpos(o,s))>=0){
+p=\"emuDev\"+s+\"Operation.pnl\"; 
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+  label=o_cut;
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);  
+  continue;
+ }
+
+s=\"PT100\";
+ if((pos=strpos(o,s))>=0){
+p=\"emuDev\"+s+\"Operation.pnl\"; 
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+  label=o_cut;
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);  
+  continue;
+ }
+
+s=\"HV_PR\";
+ if((pos=strpos(o,s))>=0){
+p=\"emuDev\"+s+\"Operation.pnl\"; 
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+  label=substr(o_cut,strlen(\"HV_PR_\"));
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);
+  continue;
+ }
+
+s=\"WTH_SX5\";
+ if((pos=strpos(o,s))>=0){
+p=\"emuDev\"+s+\"Operation.pnl\"; 
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+  label=o_cut;
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);  
+  continue;
+ }
+
+s=\"MRTN_1\";
+ if((pos=strpos(o,s))>=0){
+p=\"emuDev\"+s+\"Operation.pnl\"; 
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+   label=substr(o_cut,strlen(\"MRTN_\"));
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);  
+  continue;
+ }
+
+s=\"WienerSnmp\";
+s1=\"Channel\";
+ if((pos=strpos(o,s))>=0 && (pos=strpos(o,s1))<0){
+p=\"emuDev\"+\"fwWnrCr_CSC_LV\"+\"Operation.pnl\"; 
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+  label=substr(o_cut,strpos(o_cut,\"Crate\"));
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);  
+  continue;
+ }
+ 
+s=\"WienerSnmp\";
+s1=\"Channel\";
+ if((pos=strpos(o,s))>=0 && (pos=strpos(o,s1))>=0){
+p=\"emuDev\"+\"fwWnrCh_CSC_LV\"+\"Operation.pnl\"; 
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+//  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+  label=substr(o_cut,strpos(o_cut,\"Channel\"));
+//  dpSet(objs[i]+\".ui.label:_original.._value\",label);  
+  continue;
+ }
+
+ 
+ 
+s=\"ALNM_1\";
+ if((pos=strpos(o,s))>=0){
+p=\"emuDev\"+s+\"Operation.pnl\"; 
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+  label=o_cut;
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);  
+  continue;
+ }
+
+s=\"CRB_1\";
+ if((pos=strpos(o,s))>=0){
+p=\"emuDev\"+s+\"Operation.pnl\"; 
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+  label=substr(o_cut,strlen(\"CSC_\")+6);
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);  
+  continue;
+ }
+
+s=\"TEMP_1\";
+ if((pos=strpos(o,s))>=0){
+p=\"emuDev\"+s+\"Operation.pnl\"; 
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+    label=substr(o_cut,strlen(\"CSC_\"));
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);  
+  continue;
+ }
+
+s=\"CHIP_1\";
+ if((pos=strpos(o,s))>=0){
+p=\"emuDev\"+s+\"Operation.pnl\"; 
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+  label=substr(o_cut,strlen(\"CSC_\"));
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);  
+  continue;
+ }
+
+s=\"LV_1\";
+ if((pos=strpos(o,s))>=0){
+p=\"emuDev\"+s+\"Operation.pnl\"; 
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+  label=substr(o_cut,strlen(\"CSC_\"));
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);  
+  continue;
+ }
+
+s=\"HV_1\";
+ if((pos=strpos(o,s))>=0){
+p=\"emuDev\"+s+\"Operation.pnl\"; 
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+  label=substr(o_cut,strlen(\"CSC_\"));
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);  
+  continue;
+ }
+
+
+
+
+} // for
+
+//==================================================================
+
+objs=dpNames(\"*\",\"_FwFsmObject\");
+//dyn_string os;
+//string o,s;
+//int i, pos;
+//dyn_string panels;
+//string p;
+
+
+
+for(i=1;i<=dynlen(objs);i++){
+
+d_string1=strsplit(objs[i],\"|\");
+d_string2=strsplit(d_string1[dynlen(d_string1)],\"/\");
+o_cut=d_string2[dynlen(d_string2)];
+    
+  panels=makeDynString(fwUiPnl);
+
+
+//mudcsDebug(objs[i]);
+os=strsplit(objs[i],\"|\");
+o=os[dynlen(os)];
+
+////////DebugTN(o);
+
+
+
+s=\"csc\";
+s1=\"emu\";
+s2=\"dcspcS2G19\";
+// if((pos=strpos(o,s))>=0 && pos==(strlen(o)-strlen(s))){
+  if((pos=strpos(o,s) )>=0 || (pos=strpos(o,s1) )>=0 || (pos=strpos(o,s2) )>=0 ){
+//panels=makeDynString(\"fwFSMuser/fwUi.pnl\");
+p=\"emuEmuOperationS.pnl\";  // ****** S was added !!!!!!!
+system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/\"+p);
+if(mode==2)system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/\"+p+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+  label=o_cut;
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);
+  continue;
+ }
+
+
+//return;
+s=\"_LV_HV\";
+ if((pos=strpos(o,s))>=0 && pos==(strlen(o)-strlen(s))){
+//panels=makeDynString(\"fwFSMuser/fwUi.pnl\");
+//p=\"emuLVSubSystemOperation.pnl\";
+ p=\"emuLV_MRTNOperation.pnl\";  
+//system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/\"+p);
+//if(mode==2)system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/\"+p+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+    label=o_cut;
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);
+  continue;
+ }
+  
+s=\"_HV\";
+ if((pos=strpos(o,s))>=0 && pos==(strlen(o)-strlen(s))){
+//panels=makeDynString(\"fwFSMuser/fwUi.pnl\");
+p=\"emuHVSubSystemOperation.pnl\";
+system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/\"+p);
+if(mode==2)system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/\"+p+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+  label=o_cut;
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);
+  continue;
+ }
+s=\"_LV\";
+ if((pos=strpos(o,s))>=0 && pos==(strlen(o)-strlen(s))){
+//panels=makeDynString(\"fwFSMuser/fwUi.pnl\");
+p=\"emuLVSubSystemOperation.pnl\";
+system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/\"+p);
+if(mode==2)system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/\"+p+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+    label=o_cut;
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);
+  continue;
+ }
+
+ 
+s=\"_WIENER_CRATE_SNMP\";
+ if((pos=strpos(o,s))>=0 ){
+//panels=makeDynString(\"fwFSMuser/fwUi.pnl\");
+ p=\"emuWienerOperation.pnl\";
+ //p=\"emuPanelComponentTemplate.pnl\";  
+system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/\"+p);
+if(mode)system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/\"+p+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+    label=substr(o_cut,strpos(o_cut,\"CRATE\"));
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);
+  continue;
+ }
+  
+ 
+ 
+s=\"_GAS\";
+ if((pos=strpos(o,s))>=0 && pos==(strlen(o)-strlen(s))){
+//panels=makeDynString(\"fwFSMuser/fwUi.pnl\");
+p=\"emuGASSubSystemOperation.pnl\";
+system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/\"+p);
+if(mode)system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/\"+p+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+   label=o_cut;
+  dpSet(objs[i]+\".ui.label:_original.._value\",label); 
+  continue;
+ }
+
+s=\"_WTH\";
+ if((pos=strpos(o,s))>=0 && pos==(strlen(o)-strlen(s))){
+//panels=makeDynString(\"fwFSMuser/fwUi.pnl\");
+p=\"emuWTHSubSystemOperation.pnl\";
+system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/\"+p);
+if(mode)system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/\"+p+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+  label=o_cut;
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);  
+  continue;
+ }
+
+s=\"HV_HOSTS\";
+ if((pos=strpos(o,s))>=0 && pos==(strlen(o)-strlen(s))){
+//panels=makeDynString(\"fwFSMuser/fwUi.pnl\");
+p=\"emuHV_HOSTSOperation.pnl\";
+system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/\"+p);
+if(mode)system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/\"+p+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+  label=o_cut;
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);  
+  continue;
+ }
+ s=\"HV_HOST_\";
+ if((pos=strpos(o,s))>=0 && pos==(strlen(o)-strlen(s))){
+//panels=makeDynString(\"fwFSMuser/fwUi.pnl\");
+p=\"emuHV_HOSTSOperation.pnl\";
+system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/\"+p);
+if(mode)system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/\"+p+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+  label=substr(o_cut,strpos(o_cut,\"HOST_\"));
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);  
+  continue;
+ }
+ 
+s=\"LV_MRTN\";
+s1=\"_CR\";
+ if((pos=strpos(o,s))>=0 && pos==(strlen(o)-strlen(s))){
+   if(strpos(o,s1)>=0){
+    p=\"emuMRTNOperation.pnl\";
+    dynAppend(panels,\"CMS_CSCfw_LV_MRTN\"+\"/\"+p);
+    label=substr(o_cut,strlen(\"CSC_\")+3);
+   }
+   else{  
+//panels=makeDynString(\"fwFSMuser/fwUi.pnl\");
+    p=\"emuLV_MRTNOperation.pnl\";
+    dynAppend(panels,dir_oper+\"/\"+p);
+    label=\"LV_MARATONS\";
+system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/\"+p);
+if(mode)system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/\"+p+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");    
+   }
+   
+
+
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);  
+  continue;
+ }
+
+s=\"LV_CRB\";
+ if((pos=strpos(o,s))>=0 && pos==(strlen(o)-strlen(s))){
+//panels=makeDynString(\"fwFSMuser/fwUi.pnl\");
+p=\"emuPCOperation.pnl\";
+system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/\"+p);
+if(mode)system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/\"+p+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+  
+  label=s;
+  if((pos=strpos(o,\"_PC\"))>=0) label=substr(o_cut,strlen(\"CSC_\")+6); // case of reference from CRB project
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);  
+  continue;
+ }
+
+s=\"ME_P\"; s1=\"ME_M\"; 
+ if((pos=strpos(o,s))>=0 && pos==(strlen(o)-5) ||
+    (pos=strpos(o,s1))>=0 && pos==(strlen(o)-5))  {
+//panels=makeDynString(\"fwFSMuser/fwUi.pnl\");
+p=\"emuDiskOperationS.pnl\"; // ****** S was added !!!!!!!
+system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/\"+p);
+if(mode==2)system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/\"+p+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+  label=o_cut;
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);  
+  continue;
+ }
+
+
+s=\"_TS_\"; 
+ if((pos=strpos(o,s))>=0)  {
+//panels=makeDynString(\"fwFSMuser/fwUi.pnl\");
+p=\"emuSectorOperation.pnl\";
+system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/\"+p);
+if(mode)system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/\"+p+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+  label=substr(o_cut,strlen(\"CSC_\"));
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);  
+  continue;
+ }
+
+s=\"ME_P\"; s1=\"ME_M\"; 
+ if((pos=strpos(o,s))>=0 && pos==(strlen(o)-10) ||
+    (pos=strpos(o,s1))>=0 && pos==(strlen(o)-10))  {
+//panels=makeDynString(\"fwFSMuser/fwUi.pnl\");
+p=\"emuChamberOperation.pnl\";
+system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/emuPanelComponentTemplate.pnl\"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/\"+p);
+if(mode)system(\"cp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_oper+\"/\"+p+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+  dynAppend(panels,dir_oper+\"/\"+p);
+//  mudcsDebug(o+\" \"+panels[dynlen(panels)]);
+  dpSet(objs[i]+\".ui.panels:_original.._value\",panels);
+  label=substr(o_cut,strlen(\"CSC_\"));
+  dpSet(objs[i]+\".ui.label:_original.._value\",label);  
+  continue;
+ }
+
+
+
+
+
+
+} //for
+
+
+
+
+
+
+if(mode)system(\"cp \"+CSC_fwG_g_project_name_home+\"/scripts/libs/\"+dir_oper+\"/emu*.ctl\"+\" $HOME/\"+Component+\"/scripts/libs/\"+dir_oper+\"/.\");
+else system(\"cp \"+CSC_fwG_g_project_name_home+\"/scripts/libs/\"+dir_oper+\"/emufw.ctl\"+\" $HOME/\"+Component+\"/scripts/libs/\"+dir_oper+\"/.\");
+
+
+
+//======== COPYING EVERYTHING FOR THE WHOLE PROJECT===============================================
+if(mode==2){
+
+system(\"cp -rp \"+CSC_fwG_g_project_name_home+\"/scripts/\"+dir_oper+\"/*.ctl\"+\" $HOME/\"+Component+\"/scripts/\"+dir_oper+\"/.\");  
+system(\"cp -rp \"+CSC_fwG_g_project_name_home+\"/scripts/\"+dir_oper+\"/\"+dir_oper+\".postInstall\"+\" $HOME/\"+Component+\"/scripts/\"+dir_oper+\"/.\"); 
+
+system(\"cp -rp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_config+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+system(\"cp -rp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_init+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+system(\"cp -rp \"+CSC_fwG_g_project_name_home+\"/panels/\"+dir_dubna+             \" $HOME/\"+Component+\"/panels/.\");
+
+
+
+//system(\"cp -rp \"+CSC_fwG_g_project_name_home+\"/panles/\"+dir_dubna+\"/\"+dir_init+\" $HOME/\"+Component+\"/panels/\"+Component+\"/.\");
+
+}
+//================================================================================================
+
+
+////////#########system(\"cp \"+CSC_fwG_g_project_name_home+\"/CSCfw/scripts/libs/* \"+\" $HOME/\"+Component+\"/scripts/libs/CMS_CSCfw/.\");
+///////##########system(\"cp \"+CSC_fwG_g_project_name_home+\"/CSCfw/panels/* \"+\" $HOME/\"+Component+\"/panels/\"+dir_oper+\"/.\");
+
+if(!mode)system(\"cp \"+CSC_fwG_g_project_name_home+\"/source/\"+dir_oper+\"/config/\"+dir_oper+\"_short.config \"+
+                                  \" $HOME/\"+Component+\"/config/\"+dir_oper+\".config\");
+else system(\"cp \"+CSC_fwG_g_project_name_home+\"/source/\"+dir_oper+\"/config/\"+dir_oper+\"_long.config \"+
+                                  \" $HOME/\"+Component+\"/config/\"+dir_oper+\".config\");
+
+if(mode==2)
+system(\"cp \"+CSC_fwG_g_project_name_home+\"/source/\"+dir_oper+\"/config/\"+dir_oper+\"_long.xml \"+\" $HOME/\"+Component+\"/\"+dir_oper+\".xml\");
+else system(\"cp \"+CSC_fwG_g_project_name_home+\"/source/\"+dir_oper+\"/config/\"+dir_oper+\"_short.xml \"+\" $HOME/\"+Component+\"/\"+dir_oper+\".xml\");
+
+dplist();
+dplist2();
+system(\"cd \"+CSC_fwG_g_project_name_home+\"/source/\"+dir_oper+\"/unix2dos; ./macro_unix2dos \"+Component);
+//=================================================================================================
+system(\"cp -rp \"+CSC_fwG_g_project_name_home+\"/source/\"+dir_oper+\"/delete_processes_by_name\"+\" $HOME/\"+Component+\"/source/\"+dir_oper+\"/.\");
+system(\"cp -rp \"+CSC_fwG_g_project_name_home+\"/source/\"+dir_oper+\"/unix2dos\"+\" $HOME/\"+Component+\"/source/\"+dir_oper+\"/.\");
+system(\"cp -rp \"+CSC_fwG_g_project_name_home+\"/source/\"+dir_oper+\"/special_stuff\"+\" $HOME/\"+Component+\"/source/\"+dir_oper+\"/.\");
+system(\"cp -rp \"+CSC_fwG_g_project_name_home+\"/source/\"+dir_oper+\"/config\"+\" $HOME/\"+Component+\"/source/\"+dir_oper+\"/.\");
+system(\"cp -rp \"+CSC_fwG_g_project_name_home+\"/source/\"+dir_oper+\"/text\"+\" $HOME/\"+Component+\"/source/\"+dir_oper+\"/.\");
+
+//mudcsDebug(\"done\");
+}
+
+//======================================
+
+dplist(){
+
+dyn_string all_dps, dps;
+int i;
+
+dynAppend(all_dps,\"fwOT_EMUNodes\");
+dps=dpNames(\"fwOT_EMUNodes.*\");
+dynAppend(all_dps,dps);
+
+if(mode==2){
+dynAppend(all_dps,\"fwOT_EMUTREENodes\");
+dps=dpNames(\"fwOT_EMUTREENodes.*\");
+dynAppend(all_dps,dps);
+
+dynAppend(all_dps,\"fwOT_EMUSTBYNodes\");
+dps=dpNames(\"fwOT_EMUSTBYNodes.*\");
+dynAppend(all_dps,dps);
+
+dynAppend(all_dps,\"fwOT_EMUTREESTBYNodes\");
+dps=dpNames(\"fwOT_EMUTREESTBYNodes.*\");
+dynAppend(all_dps,dps);
+
+
+/*
+dynAppend(all_dps,\"fwOT_ALNM_1\");
+dps=dpNames(\"fwOT_ALNM_1.*\");
+dynAppend(all_dps,dps);
+*/
+
+dynAppend(all_dps,\"fwOT_MRTN_1\");
+dps=dpNames(\"fwOT_MRTN_1.*\");
+dynAppend(all_dps,dps);
+
+dynAppend(all_dps,\"fwOT_fwWnrCr_CSC_LV\");
+dps=dpNames(\"fwOT_fwWnrCr_CSC_LV.*\");
+dynAppend(all_dps,dps);
+
+dynAppend(all_dps,\"fwOT_fwWnrCh_CSC_LV\");
+dps=dpNames(\"fwOT_fwWnrCh_CSC_LV.*\");
+dynAppend(all_dps,dps);
+
+dynAppend(all_dps,\"fwOT_CRB_1\");
+dps=dpNames(\"fwOT_CRB_1.*\");
+dynAppend(all_dps,dps);
+/*
+dynAppend(all_dps,\"fwOT_WNR12_1\");
+dps=dpNames(\"fwOT_WNR12_1.*\");
+dynAppend(all_dps,dps);
+*/
+dynAppend(all_dps,\"fwOT_HV_PR\");
+dps=dpNames(\"fwOT_HV_PR.*\");
+dynAppend(all_dps,dps);
+
+dynAppend(all_dps,\"fwOT_WTH_SX5\");
+dps=dpNames(\"fwOT_WTH_SX5.*\");
+dynAppend(all_dps,dps);
+
+dynAppend(all_dps,\"fwOT_GAS_SX5\");
+dps=dpNames(\"fwOT_GAS_SX5.*\");
+dynAppend(all_dps,dps);
+
+dynAppend(all_dps,\"fwOT_PT100\");
+dps=dpNames(\"fwOT_PT100.*\");
+dynAppend(all_dps,dps);
+
+dynAppend(all_dps,\"fwOT_TEMP_1\");
+dps=dpNames(\"fwOT_TEMP_1.*\");
+dynAppend(all_dps,dps);
+
+dynAppend(all_dps,\"fwOT_CHIP_1\");
+dps=dpNames(\"fwOT_CHIP_1.*\");
+dynAppend(all_dps,dps);
+
+dynAppend(all_dps,\"fwOT_LV_1\");
+dps=dpNames(\"fwOT_LV_1.*\");
+dynAppend(all_dps,dps);
+
+dynAppend(all_dps,\"fwOT_HV_1\");
+dps=dpNames(\"fwOT_HV_1.*\");
+dynAppend(all_dps,dps);
+}
+//all_dps=makeDynString();
+
+//=================
+
+//string command=\"PVSS00ascii -out dplist/migr_to_new_project.dpl \";
+string command=\"PVSS00ascii -out $HOME/\"+Component+\"/dplist/\"+dir_oper+\"/\"+dir_oper+\".dpl -filterDpType _FwFsmObjectType \";
+
+ for(i=1;i<=dynlen(all_dps);i++){
+
+
+   command += \" -filterDp \"+all_dps[i];
+
+ }
+
+
+
+DebugTN(command);
+
+
+DebugTN(\"-------\");
+system(command);
+DebugTN(\"-------\");
+
+////////////////#####################system(\"cp \"+CSC_fwG_g_project_name_home+\"/CSCfw/dplist/CMS_CSCfw.dpl \"+\" /home/fast/CMS_CSCfw/dplist/CMS_CSCfw/.\");
+
+
+}
+//========================================================================
+dplist2()
+{
+
+string command;
+
+
+dyn_string all_types, dps;
+dyn_dyn_string all_dps;
+int i,j;
+
+all_types=dpTypes(\"*MUDCS_*\");
+
+dynAppend(all_types,\"_FwDimConfig\");
+
+dynAppend(all_types,\"Db\");
+dynAppend(all_types,\"Db_GAS_SX5_alert\");
+dynAppend(all_types,\"Db_LV_1_alert\");
+
+dynAppend(all_types,\"Db_TEMP1_alert\");
+
+/*
+dynAppend(all_types,\"ExampleDP_Int\");
+dynAppend(all_types,\"int20\");
+*/
+dynAppend(all_types,\"FLOAT_FIVE\");
+dynAppend(all_types,\"FLOAT_ONE\");
+dynAppend(all_types,\"Wheel\");
+dynAppend(all_types,\"Wheels\");
+dynAppend(all_types,\"WheelRing\"); /// ?????
+
+
+////////dynAppend(all_types,\"_FwFsmObjectType\");
+
+/////////////dynAppend(all_types,\"\");
+////////dynAppend(all_types,\"\");
+
+
+
+ for(i=1;i<=dynlen(all_types);i++){
+ /* not necessary as all data to any dp level (*.**) are stored in dpl: if only -filterDpType is idicated (without -filterDp)
+      
+   if(strpos(all_types[i],\"Db\")>=0 ){
+    dps=dpNames(\"*.**\",all_types[i]);
+    dynAppend(all_dps[i],dps);    
+   }
+ */
+   all_dps[i]=makeDynString(); 
+  DebugTN(all_types[i]);
+ }
+
+//=================
+
+//string command=\"PVSS00ascii -out dplist/migr_to_new_project.dpl \";
+// command=\"PVSS00ascii -out /home/fast/pvss_export/migr_to_new_project.dpl \";
+ command=\"PVSS00ascii -out $HOME/\"+Component+\"/dplist/\"+dir_oper+\"/\"+dir_oper+\"2.dpl \";
+ 
+ for(i=1;i<=dynlen(all_types);i++){
+
+  command += \" -filterDpType \"+all_types[i];
+  for(j=1;j<=dynlen(all_dps[i]);j++){
+
+
+   command += \" -filterDp \"+all_dps[i][j];
+
+
+  } // j
+ } // i
+
+
+
+DebugTN(command);
+
+
+DebugTN(\"-------\");
+system(command);
+DebugTN(\"-------\");
+
+}
+
+
+//========================================================================" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

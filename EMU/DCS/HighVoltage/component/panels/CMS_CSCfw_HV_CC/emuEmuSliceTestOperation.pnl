@@ -1,0 +1,653 @@
+V 10
+1
+LANG:1 24 emuEmuSliceTestOperation
+PANEL,-1 -1 744 308 N "_3DFace" 2
+"$project_station"
+"$project_system"
+"main()
+{
+$project_station;
+$project_system;      
+    mudcsProjectConnect();
+}" 0
+ E E E E 1 -1 -1 0  70 -52
+""0  1
+E "#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs2.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs3.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs4.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcsDim.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuAlert.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emufw.ctl\"
+
+string DpName;
+string DpNameFsm;
+dyn_string selected_list_lvb;
+dyn_string selected_list_mrtn;
+
+LVboardsInit(){
+
+string device_type=\"_LV\";
+if(dynlen(selected_list_lvb)==0)mudcsScanTreeForDevices(device_type, DpName, selected_list_lvb); // _LV
+///mudcsConvertFsm2Data(selected_list_lvb, selected_list_lvb_data);
+
+return;
+
+}
+//======================
+LVboardsSwitch(int status){
+
+int i;
+string current_status;
+
+ for(i=1;i<= dynlen(selected_list_lvb); i++){
+
+   dpGet(mudcsAddSystem(selected_list_lvb[i])+\".status\",current_status);
+   if(current_status != -2)
+   dpSet(mudcsAddSystem(selected_list_lvb[i])+\".status\",status);
+ }
+
+}
+
+//=======================
+
+LVmrtnInit(){
+
+//mudcsDebug(\"\");
+
+dyn_string exceptionInfo;
+//////mudcsDebug(DpName);
+if(dynlen(selected_list_mrtn)==0){
+ fwDevice_getChildren(DpName, \"LOGICAL\", selected_list_mrtn, exceptionInfo);
+}
+
+//DebugTN(selected_list_mrtn);
+mudcsConvertData2Fsm(\"MRTN_1\",selected_list_mrtn,selected_list_mrtn);
+//DebugTN(selected_list_mrtn);
+
+//mudcsConvertData2Fsm(\"MRTN_1\",selected_list_mrtn,selected_list_mrtn;
+
+}
+//=======================
+
+LVmrtnSwitch(int status){
+
+int i;
+string current_status;
+
+ for(i=1;i<= dynlen(selected_list_mrtn); i++){
+
+//mudcsConvertData2FsmOne(\"MRTN_1\",selected_list_mrtn[i],selected_list_mrtn[i]);
+
+   dpGet(mudcsAddSystem(selected_list_mrtn[i])+\".status\",current_status);
+   if(current_status != -2)
+   dpSet(mudcsAddSystem(selected_list_mrtn[i])+\".status\",status);
+ }
+
+
+}
+//=======================
+HVSwitch(int status){
+ if(status)emudcs_hv_slice_test_on_new(3600);
+ else {
+//-----
+
+   dyn_string dps;
+   int j;
+   dps=dpNames(CSC_fwG_g_SYSTEM_NAME+\":HighVoltage/HV_PR_primary*\");
+   for(j=1;j<=dynlen(dps);j++){
+      dpSet(dps[j]+\".status\",0);
+     // mudcsDebug(dps[j]);
+   }
+
+//-----
+  emudcs_hv_slice_test_off_new(0);
+ }
+}
+
+//=======================
+
+
+
+
+//=======================
+
+
+
+" 0
+ 2
+"CBRef""1"
+"EClose"E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 8
+"RECTANGLE1"
+""
+1 10 80 E E E 1 E 1 E N "_3DFace" E N {145,145,145} E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E 1.27586206896552 0 1.21428571428571 357.241379310345 -47.1428571428571 1 E 10 80 300 220
+6 7
+"RECTANGLE1"
+""
+1 10 80 E E E 1 E 1 E N "_3DFace" E N {145,145,145} E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E 1.20689655172414 0 1.21428571428571 -2.06896551724138 -47.1428571428571 1 E 10 80 300 220
+13 0
+"CSCboardsLV"
+""
+1 550 120 E E E 0 E 1 E N "_3DText" E N {0,149,255} E E
+ "
+main()
+{
+
+
+
+
+}" 0
+ E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 92 -*-helvetica-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,helvetica
+0 ""
+ 550 120 720 147
+
+T 
+1
+LANG:1 17 CSC_boards_LV OFF
+"main()
+{
+DpName=\"CMS_CSC\";
+LVboardsInit();
+LVboardsSwitch(0);
+}" 0
+ E E "
+
+
+main()
+{
+
+
+}
+
+
+//============================================================
+//============================================================
+//============================================================
+
+
+" 0
+
+13 1
+"CSCboardsLVON"
+""
+1 550 160 E E E 1 E 1 E N {255,255,255} E N {0,149,148} E E
+ "
+main()
+{
+
+
+}" 0
+ E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 95 -*-helvetica-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,helvetica
+0 ""
+ 550 160 720 210
+
+T 
+1
+LANG:1 16 CSC_boards_LV ON
+"main()
+{
+
+DpName=\"CMS_CSC\";
+LVboardsInit();
+LVboardsSwitch(2);
+
+
+}" 0
+ E E "
+
+
+main()
+{
+
+
+}
+
+
+//============================================================
+//============================================================
+//============================================================
+
+
+" 0
+
+13 2
+"mrtnLVoff"
+""
+1 380 120 E E E 1 E 1 E N "_3DText" E N {0,149,255} E E
+ "
+main()
+{
+
+
+
+}" 0
+ E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 92 -*-helvetica-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,helvetica
+0 ""
+ 380 120 540 147
+
+T 
+1
+LANG:1 11 MRTN_LV OFF
+"main()
+{
+DpName=\"CMS_CSC:CMS_CSC/CSC_LV/CSC_LV_MRTN\";
+LVmrtnInit();
+
+LVmrtnSwitch(0);
+
+}" 0
+ E E "
+
+
+main()
+{
+
+
+
+}
+
+
+//============================================================
+//============================================================
+//============================================================
+
+
+" 0
+
+13 3
+"mrtnLVon"
+""
+1 380 160 E E E 1 E 1 E N {255,255,255} E N {0,149,148} E E
+ "
+main()
+{
+
+
+
+}" 0
+ E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 95 -*-helvetica-bold-r-normal-*-19-*-100-100-*-*-iso8859-1|-19,0,0,0,758,0,0,0,0,0,0,0,0,helvetica
+0 ""
+ 380 160 540 211
+
+T 
+1
+LANG:1 10 MRTN_LV ON
+"main()
+{
+DpName=\"CMS_CSC:CMS_CSC/CSC_LV/CSC_LV_MRTN\";
+LVmrtnInit();
+
+LVmrtnSwitch(2);
+
+}" 0
+ E E "
+
+
+main()
+{
+
+
+}
+
+
+//============================================================
+//============================================================
+//============================================================
+
+
+" 0
+
+13 4
+"HVoff"
+""
+1 20 120 E E E 1 E 1 E N "_3DText" E N {0,149,255} E E
+ "
+main()
+{
+
+
+
+
+}" 0
+ E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 92 -*-helvetica-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,helvetica
+0 ""
+ 20 120 180 147
+
+T 
+1
+LANG:1 6 HV OFF
+"main()
+{
+HVSwitch(0);
+//////fwCU_sendCommand(\"CMS_CSC_ME11P_HV\",\"OFF\");
+}" 0
+ E E "
+
+
+main()
+{
+
+
+
+}
+
+
+//============================================================
+//============================================================
+//============================================================
+
+
+" 0
+
+13 5
+"HVon"
+""
+1 20 160 E E E 1 E 1 E N {255,255,255} E N {0,149,148} E E
+ "
+main()
+{
+
+
+
+}" 0
+ E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 95 -*-helvetica-bold-r-normal-*-19-*-100-100-*-*-iso8859-1|-19,0,0,0,758,0,0,0,0,0,0,0,0,helvetica
+0 ""
+ 20 160 180 211
+
+T 
+1
+LANG:1 5 HV ON
+"main()
+{
+
+HVSwitch(2);
+////fwCU_sendCommand(\"CMS_CSC_ME11P_HV\",\"ON\");
+}" 0
+ E E "
+
+
+main()
+{
+
+
+}
+
+
+//============================================================
+//============================================================
+//============================================================
+
+
+" 0
+
+2 6
+"slice_text"
+""
+1 298 92 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 300 10 481 35
+1 2 2 "0s" 0 0 0 192 0 0  300 10 1
+1
+LANG:1 95 -*-helvetica-bold-r-normal-*-19-*-100-100-*-*-iso8859-1|-19,0,0,0,758,0,0,0,0,0,0,0,0,helvetica
+0 ""
+1
+LANG:1 20 Slice Test operation
+13 9
+"HVoff"
+""
+1 190 120 E E E 1 E 1 E N "_3DText" E N {0,149,255} E E
+ "
+main()
+{
+
+
+
+
+}" 0
+ E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 92 -*-helvetica-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,helvetica
+0 ""
+ 190 120 350 147
+
+T 
+1
+LANG:1 12 Dubna HV OFF
+"main()
+{
+/////HVSwitch(0);
+fwCU_sendCommand(\"CMS_CSC_ME11P_HV\",\"OFF\");
+}" 0
+ E E "
+
+
+main()
+{
+
+
+
+}
+
+
+//============================================================
+//============================================================
+//============================================================
+
+
+" 0
+
+13 10
+"HVon"
+""
+1 190 160 E E E 1 E 1 E N {255,255,255} E N {0,149,148} E E
+ "
+main()
+{
+
+
+
+}" 0
+ E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 95 -*-helvetica-bold-r-normal-*-19-*-100-100-*-*-iso8859-1|-19,0,0,0,758,0,0,0,0,0,0,0,0,helvetica
+0 ""
+ 190 160 350 211
+
+T 
+1
+LANG:1 11 Dubna HV ON
+"main()
+{
+
+//////HVSwitch(2);
+fwCU_sendCommand(\"CMS_CSC_ME11P_HV\",\"ON\");
+}" 0
+ E E "
+
+
+main()
+{
+
+
+}
+
+
+//============================================================
+//============================================================
+//============================================================
+
+
+" 0
+
+2 11
+"slice_text"
+""
+1 -100 184 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 22 72 140 97
+1 2 2 "0s" 0 0 0 192 0 0  22 72 1
+1
+LANG:1 95 -*-helvetica-bold-r-normal-*-19-*-100-100-*-*-iso8859-1|-19,0,0,0,758,0,0,0,0,0,0,0,0,helvetica
+0 ""
+1
+LANG:1 12 HV operation
+2 12
+"slice_text"
+""
+1 538 122 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+22 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 382 72 498 97
+1 2 2 "0s" 0 0 0 192 0 0  382 72 1
+1
+LANG:1 95 -*-helvetica-bold-r-normal-*-19-*-100-100-*-*-iso8859-1|-19,0,0,0,758,0,0,0,0,0,0,0,0,helvetica
+0 ""
+1
+LANG:1 12 LV operation
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

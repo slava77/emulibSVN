@@ -1,0 +1,18 @@
+#!/bin/bash
+
+
+
+
+
+
+grep $1 */*.ctl
+grep $1 */*/*.ctl
+grep $1 */*/*/*.ctl
+grep $1 */*/*/*/*.ctl
+grep $1 */*/*/*/*/*.ctl
+
+grep $1 */*.pnl
+grep $1 */*/*.pnl
+grep $1 */*/*/*.pnl
+grep $1 */*/*/*/*.pnl
+grep $1 */*/*/*/*/*.pnl

@@ -1,0 +1,821 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 567 385 N "_3DFace" 4
+"$obj"
+"$project_station"
+"$project_system"
+"$sDpName"
+"int DEVICE_MAX_NUMBER=9;
+string mudcs_alias;
+
+main(){
+//mudcsDebug($project_station);
+project_station=$project_station;
+project_system=$project_system;    
+
+  mudcsProjectConnect();
+//  mudcsProjectConnect();
+///mudcsDebug($sDpName);
+
+//===========================
+
+string type, test_string;
+int disk_pos, radius, ich;
+int i;
+
+//======================================================
+
+
+
+//------------------------------------------------
+if($obj != \"\"){
+
+mudcsGetLogicalDomainByFsmDomain($obj, DpName);
+//mudcsDebug($obj);
+
+//DpName=$obj;
+
+//mudcsDebug(DpName);
+
+mudcs_alias=mudcsAliasNameGet(DpName);
+processing();
+
+//mudcsDebug($obj);
+//mudcsDebug($node);
+
+/////dyn_string dpName_tree;
+/////dpName_tree=strsplit($obj,\"/\");
+/////string DpName=dpName_tree[dynlen(dpName_tree)];
+
+
+ 
+} // if($obj != \"\")
+//=============================================================
+else{
+
+DpName=$sDpName;
+
+mudcs_alias=mudcsAliasNameGet(DpName);
+processing();
+
+} // else
+//----------------------------------------
+
+
+//mudcsDebug(DpName);
+
+}
+
+//==================================================================
+processing(){
+
+
+//===========================
+
+string type, test_string;
+int disk_pos, radius, ich;
+int i;
+
+
+
+//======================================================
+//=============================================================
+
+////dyn_string dpName_tree;
+////dpName_tree=strsplit($sDpName,\"/\");
+/////string DpName=dpName_tree[dynlen(dpName_tree)];
+
+//mudcsDebug(mudcs_alias);
+mudcsNameToPosConvert(mudcs_alias/*DpName*/,disk_pos,radius,ich,type);
+
+//mudcsDebug(mudcs_alias+\" \"+DpName);
+
+if(disk_pos > 0 && radius >0 && ich >0)
+  test_string=CSC_fwG_g_WHEELS[disk_pos]+CSC_fwG_g_RADIUSES[radius]+ich;
+else if(disk_pos > 0)
+  test_string=CSC_fwG_g_WHEELS[disk_pos];
+else 
+  test_string=type;
+
+if(strpos(DpName,\"GAS\")>=0)test_string=\"GAS\";
+
+  setValue(\"ch_number\",\"text\",test_string);
+
+//-----------
+
+dyn_string childList , exceptionInfo;
+//////mudcsDebug(DpName);
+fwDevice_getChildren(DpName, \"LOGICAL\", childList , exceptionInfo);
+
+/*
+        for(i=1;i <= dynlen(CSC_fwG_g_LIST_FSM_DOMAINS); i++){
+DebugTN(CSC_fwG_g_LIST_FSM_DOMAINS[i]);
+DebugTN(CSC_fwG_g_LIST_LOGICAL_DOMAINS[i]);
+         }
+*/         
+         
+//-----------------------------------------------------------
+        for(i=1;i <= DEVICE_MAX_NUMBER; i++){
+         setValue(\"dev\"+i,\"visible\",false);
+        }
+//-----------------------------------------------------------        
+	if(dynlen(childList)>0)
+	{
+	dynClear(device_names);
+	dynClear(device_types);
+             for(i=1;i <= dynlen(childList); i++){
+
+////dpName_tree=strsplit(childList[i],\"/\");
+/////string DpName=dpName_tree[dynlen(dpName_tree)];
+
+//mudcsDebug(childList[i]);
+
+mudcs_alias=mudcsAliasNameGet(childList[i]);
+
+
+         mudcsNameToPosConvert(mudcs_alias/*childList[i]*/, disk_pos, radius, ich, type);
+//         mudcsDebug(ich);
+DebugTN(\"1:\"+childList[i]);
+DebugTN(\"2:\"+mudcs_alias+\" \"+type+\" \"+ich);
+
+dynAppend(device_names,childList[i]);
+dynAppend(device_types,type);
+
+          if(type == \"HV_PR\"){
+            setValue(\"dev\"+i,\"visible\",true);
+            setValue(\"dev\"+i,\"text\",\"#\"+disk_pos+\"_\"+radius+\"_\"+ich+\"_\"+type);
+          }
+          else{
+               setValue(\"dev\"+i,\"visible\",true);
+             if(radius !=-1 || ich == -1)
+              setValue(\"dev\"+i,\"text\",type);
+             else 
+              setValue(\"dev\"+i,\"text\",\"#\"+ich+\"_\"+type);
+             
+          }
+           } // for
+        } // if(dynlen(childList)>0) 
+
+
+
+//----------------------------------------
+
+
+
+
+}
+
+//==================================================================
+" 0
+ E E E E 1 -1 -1 0  210 110
+""0  1
+E "#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs2.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs3.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs4.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcsDim.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuAlert.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emufw.ctl\"
+
+string project_station;
+string project_system;
+
+
+string DpName, DpNameFsm;
+dyn_string device_names;
+dyn_string device_types;
+
+device_select(){
+
+//  mudcsDebug(project_system);
+  
+int i;
+string box_name;
+dyn_string split;
+
+/////getValue(\"\",\"selectedPos\",i);
+
+string DeviceModule=\"DeviceModule\";
+
+	if(!isModuleOpen(DeviceModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(DeviceModule, xPos, yPos + 100, 10, 10, 1, 1, \"Scale\");
+//	ModuleOn(HVModule, xPos + xSize, yPos, 0, 0, 1, 1, \"\");
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+
+getValue(\"\",\"name\",box_name);
+split=strsplit(box_name,\"v\");
+i=split[2];
+
+string panelName=CSC_fwG_g_Component+\"/emuDev\"+device_types[i]+\"Operation.pnl\";
+if(device_types[i]==\"fwWnrCr_CSC_LV\")panelName=CSC_fwG_g_Component+\"/emuLvSnmpOperation.pnl\";
+
+/////mudcsDebug(panelName+\"\\n\"+$sDpName);
+//mudcsDebug(device_names[i]);
+
+//return;
+	RootPanelOnModule(panelName, 
+				\"\",DeviceModule, 
+	makeDynString(\"$sDpName:\" + device_names[i], \"$project_station:\"+project_station,\"$project_system:\"+project_system) );
+	
+}" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+10 3
+"chamber_polygon"
+""
+1 220 100 E E E 1 E 1 E N {0,204,255} E N {0,204,255} E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E 1 0 1 -190 -40 1 E 4 220 100
+480 100
+440 420
+260 420
+ 1
+2 4
+"ch_number"
+""
+1 472 -441 E E E 1 E 1 E N {0,51,255} E N {255,255,255} E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"
+main()
+{
+
+}" 0
+ E 0 0 0 0 1 E U  1 E 180 20 181 43
+1 2 2 "0s" 0 0 0 192 0 0  180 20 1
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 1  
+13 5
+"dev1"
+""
+1 349.0188679245283 20 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 20 512 44
+
+T 
+1
+LANG:1 4 dev1
+"main()
+{
+
+
+
+device_select();
+return;
+
+/* fsm
+string test_string, g_dev, g_par;
+int pos, dev_number;
+string button_name, test_string;
+
+getValue(\"\",\"name\",button_name);
+sscanf(button_name,\"%3s%d\",test_string,dev_number);
+
+////////mudcsDebug(current_ch_name);
+////////mudcsDebug(childLabels[dev_number]);
+g_dev=childLabels[dev_number];
+g_par=current_ch_name;
+dpSet(CSC_fwG_g_SYSTEM_NAME+\":treeBrowser_control.\",makeDynString(\"select\",g_dev,g_par));
+*/
+
+
+/* 10/06/2004 commented out : probably to use in fsm browsing 
+dyn_string params_0,params,params1;
+int i;
+
+//mudcsDebug2($pars_dev);
+params_0=strsplit($pars_dev,\"\\n\");
+
+params=strsplit(params_0[1],\",\");
+//mudcsDebug2(mudcs_parameters_obj[1]);
+
+params1=makeDynString(params[1],params[3],params[2],params[5]);
+
+dpSetWait(\"mudcs_ToDo.params:_original.._value\",params1);
+//makeDynString($domain,$logobj,$obj,$parent));
+dpSetWait(\"mudcs_ToDo.action:_original.._value\",\"double_click_on_objtitle_pnl_child\");
+
+*/
+
+}" 0
+ E E E
+13 7
+"back"
+""
+1 30 20 E E E 1 E 1 E N "_3DText" E N {0,153,153} E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+ 30 20 110 52
+
+T 
+1
+LANG:1 4 BACK
+"main()
+{
+/* fsm
+string parent;
+int pos;
+
+pos = strpos($sParentReference,\";\");
+
+parent=substr($sParentReference,0,pos)+\"|\";
+dpSet(CSC_fwG_g_SYSTEM_NAME+\":treeBrowser_control.\",makeDynString(\"back\",parent));
+
+////dpSet(CSC_fwG_g_SYSTEM_NAME+\":treeBrowser_control.\",makeDynString(\"back\",wheel_name_to_return));
+
+*/
+
+//==========================================================
+// 10/06/2004
+// commented out: probably to use in fsm browsing
+/*
+dyn_string params_0,params,params1;
+int i;
+
+///////mudcsDebug2($pars_parent);
+params_0=strsplit($pars_parent,\";\");
+
+params=strsplit(params_0[1],\",\");
+
+
+if(params[1]==\"Super\")fwUi_showFsmObject(\"Super\", \"Super\", \"Super\");
+
+else{
+params1=makeDynString(params[1],params[2],params[3],params[4]);
+//params1=makeDynString(params[1],params[3],params[2],params[5]);
+
+//params1=makeDynString(params[5],params[5]+\"::\"+params[5],params[5]+\"::\"+params[5],params[5]);
+
+dpSetWait(\"mudcs_ToDo.params:_original.._value\",params1);
+//makeDynString($domain,$logobj,$obj,$parent));
+dpSetWait(\"mudcs_ToDo.action:_original.._value\",\"double_click_on_objtitle_pnl_parent\");
+
+
+} // else
+*/
+//==============================================================
+
+}" 0
+ E E E
+13 8
+"dev2"
+""
+1 349.0188679245283 60 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 60 512 84
+
+T 
+1
+LANG:1 4 dev2
+"main()
+{
+
+device_select();
+return;
+
+/* fsm
+string test_string, g_dev, g_par;
+int pos, dev_number;
+string button_name, test_string;
+
+getValue(\"\",\"name\",button_name);
+sscanf(button_name,\"%3s%d\",test_string,dev_number);
+
+////////mudcsDebug(current_ch_name);
+/////////mudcsDebug(childLabels[dev_number]+\"___\"+dev_number+button_name);
+g_dev=childLabels[dev_number];
+g_par=current_ch_name;
+dpSet(CSC_fwG_g_SYSTEM_NAME+\":treeBrowser_control.\",makeDynString(\"select\",g_dev,g_par));
+*/
+
+/* 10/06/2004 commented out : probably to use in fsm browsing 
+dyn_string params_0,params,params1;
+int i;
+
+//mudcsDebug2($pars_dev);
+params_0=strsplit($pars_dev,\"\\n\");
+
+params=strsplit(params_0[2],\",\");
+//mudcsDebug2(mudcs_parameters_obj[1]);
+
+params1=makeDynString(params[1],params[3],params[2],params[5]);
+
+dpSetWait(\"mudcs_ToDo.params:_original.._value\",params1);
+//makeDynString($domain,$logobj,$obj,$parent));
+dpSetWait(\"mudcs_ToDo.action:_original.._value\",\"double_click_on_objtitle_pnl_child\");
+*/
+
+
+}" 0
+ E E E
+13 9
+"dev3"
+""
+1 349.0188679245283 100 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 100 512 124
+
+T 
+1
+LANG:1 4 dev3
+"main()
+{
+
+
+device_select();
+return;
+
+
+/* fsm
+string test_string, g_dev, g_par;
+int pos, dev_number;
+string button_name, test_string;
+
+getValue(\"\",\"name\",button_name);
+sscanf(button_name,\"%3s%d\",test_string,dev_number);
+
+////////mudcsDebug(current_ch_name);
+////////mudcsDebug(childLabels[dev_number]);
+g_dev=childLabels[dev_number];
+g_par=current_ch_name;
+dpSet(CSC_fwG_g_SYSTEM_NAME+\":treeBrowser_control.\",makeDynString(\"select\",g_dev,g_par));
+*/
+
+
+/* 10/06/2004 commented out : probably to use in fsm browsing 
+
+dyn_string params_0,params,params1;
+int i;
+
+//mudcsDebug2($pars_dev);
+params_0=strsplit($pars_dev,\"\\n\");
+
+params=strsplit(params_0[3],\",\");
+//mudcsDebug2(mudcs_parameters_obj[1]);
+
+params1=makeDynString(params[1],params[3],params[2],params[5]);
+
+dpSetWait(\"mudcs_ToDo.params:_original.._value\",params1);
+//makeDynString($domain,$logobj,$obj,$parent));
+dpSetWait(\"mudcs_ToDo.action:_original.._value\",\"double_click_on_objtitle_pnl_child\");
+
+*/
+}" 0
+ E E E
+13 10
+"dev4"
+""
+1 349.0188679245283 140 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 140 512 164
+
+T 
+1
+LANG:1 4 dev4
+"main()
+{
+
+
+device_select();
+return;
+
+/* 10/06/2004 commented out : outdated ? 
+string test_string, g_dev, g_par;
+int pos, dev_number;
+string button_name, test_string;
+
+getValue(\"\",\"name\",button_name);
+sscanf(button_name,\"%3s%d\",test_string,dev_number);
+
+////////mudcsDebug(current_ch_name);
+////////mudcsDebug(childLabels[dev_number]);
+g_dev=childLabels[dev_number];
+g_par=current_ch_name;
+dpSet(CSC_fwG_g_SYSTEM_NAME+\":treeBrowser_control.\",makeDynString(\"select\",g_dev,g_par));
+*/
+}" 0
+ E E E
+13 11
+"dev5"
+""
+1 349.0188679245283 180 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 180 512 204
+
+T 
+1
+LANG:1 4 dev5
+"main()
+{
+
+
+device_select();
+return;
+
+/* 10/06/2004 commented out : outdated ? 
+string test_string, g_dev, g_par;
+int pos, dev_number;
+string button_name, test_string;
+
+getValue(\"\",\"name\",button_name);
+sscanf(button_name,\"%3s%d\",test_string,dev_number);
+
+////////mudcsDebug(current_ch_name);
+////////mudcsDebug(childLabels[dev_number]);
+g_dev=childLabels[dev_number];
+g_par=current_ch_name;
+dpSet(CSC_fwG_g_SYSTEM_NAME+\":treeBrowser_control.\",makeDynString(\"select\",g_dev,g_par));
+*/
+}" 0
+ E E E
+13 12
+"dev6"
+""
+1 349.0188679245283 220 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 220 512 244
+
+T 
+1
+LANG:1 4 dev6
+"main()
+{
+
+device_select();
+return;
+
+
+/* 10/06/2004 commented out : outdated ? 
+string test_string, g_dev, g_par;
+int pos, dev_number;
+string button_name, test_string;
+
+getValue(\"\",\"name\",button_name);
+sscanf(button_name,\"%3s%d\",test_string,dev_number);
+
+////////mudcsDebug(current_ch_name);
+////////mudcsDebug(childLabels[dev_number]);
+g_dev=childLabels[dev_number];
+g_par=current_ch_name;
+dpSet(CSC_fwG_g_SYSTEM_NAME+\":treeBrowser_control.\",makeDynString(\"select\",g_dev,g_par));
+*/
+}" 0
+ E E E
+13 13
+"dev7"
+""
+1 349.0188679245283 260 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+22 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 260 512 284
+
+T 
+1
+LANG:1 4 dev7
+"main()
+{
+
+device_select();
+return;
+
+
+/* 10/06/2004 commented out : outdated ? 
+string test_string, g_dev, g_par;
+int pos, dev_number;
+string button_name, test_string;
+
+getValue(\"\",\"name\",button_name);
+sscanf(button_name,\"%3s%d\",test_string,dev_number);
+
+////////mudcsDebug(current_ch_name);
+////////mudcsDebug(childLabels[dev_number]);
+g_dev=childLabels[dev_number];
+g_par=current_ch_name;
+dpSet(CSC_fwG_g_SYSTEM_NAME+\":treeBrowser_control.\",makeDynString(\"select\",g_dev,g_par));
+*/
+}" 0
+ E E E
+13 14
+"dev8"
+""
+1 349.0188679245283 300 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+24 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 300 512 324
+
+T 
+1
+LANG:1 4 dev8
+"main()
+{
+
+device_select();
+return;
+
+
+/* 10/06/2004 commented out : outdated ? 
+string test_string, g_dev, g_par;
+int pos, dev_number;
+string button_name, test_string;
+
+getValue(\"\",\"name\",button_name);
+sscanf(button_name,\"%3s%d\",test_string,dev_number);
+
+////////mudcsDebug(current_ch_name);
+////////mudcsDebug(childLabels[dev_number]);
+g_dev=childLabels[dev_number];
+g_par=current_ch_name;
+dpSet(CSC_fwG_g_SYSTEM_NAME+\":treeBrowser_control.\",makeDynString(\"select\",g_dev,g_par));
+*/
+}" 0
+ E E E
+13 15
+"dev9"
+""
+1 349.0188679245283 340 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+26 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 340 512 364
+
+T 
+1
+LANG:1 4 dev9
+"main()
+{
+
+device_select();
+return;
+
+/* 10/06/2004 commented out : outdated ? 
+string test_string, g_dev, g_par;
+int pos, dev_number;
+string button_name, test_string;
+
+getValue(\"\",\"name\",button_name);
+sscanf(button_name,\"%3s%d\",test_string,dev_number);
+
+////////mudcsDebug(current_ch_name);
+////////mudcsDebug(childLabels[dev_number]);
+g_dev=childLabels[dev_number];
+g_par=current_ch_name;
+dpSet(CSC_fwG_g_SYSTEM_NAME+\":treeBrowser_control.\",makeDynString(\"select\",g_dev,g_par));
+*/
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

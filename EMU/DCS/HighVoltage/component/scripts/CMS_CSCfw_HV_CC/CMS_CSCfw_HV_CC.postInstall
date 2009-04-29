@@ -1,0 +1,88 @@
+main(){
+
+
+
+  int i;
+dyn_int disk_numbers;
+
+
+//------------------------------------
+dyn_int dist_connections;
+int n, found;
+
+while(1){
+ dpGet("_DistConnections.Dist.ManNums",dist_connections);
+ n=dynlen(dist_connections);
+
+ delay(3);
+ if(n >= 1){
+ found=0;
+  for(i=1;i <= n ;i++){
+   if(dist_connections[i]==161 || dist_connections[i]==162 || dist_connections[i]==163 )
+   found++;  // the LV project should be connected
+  }
+  if(found>=1){
+   delay(20);
+   break;
+  }
+ }
+ DebugTN("NOT ENOUGH DISTANT CONNECTIONS: CHECK THE CHILD PROJECTS ARE RUNNING  ========================== "+ dist_connections);   
+  
+}
+//-------------------------------------
+dyn_string watch_dps=dpNames("WATCH_TIME*","MUDCS_TIME");
+for(i=1;i<=dynlen(watch_dps);i++)dpDelete(watch_dps[i]);
+
+//-------------------------------------
+
+string os=getenv("OS");
+string add_to_system_command="";
+if (os !="Linux")add_to_system_command="cmd /c ";
+ 
+ mudcsInit();
+  
+fwInstallation_appendManager(TRUE, "fwCMS_CSCfw_HV_CC Visual Server", "PVSS00ui", 
+"always", 30, 2, 2, "-m vision -p CMS_CSCfw_HV_CC/emuEmuVisualServer.pnl");
+
+fwInstallation_appendManager(TRUE, "fwInstallation", "PVSS00ui", 
+"manual", 30, 2, 2, "-m vision -p fwInstallation/fwInstallation.pnl");
+ 
+if (os =="Linux")fwInstallation_appendManager(TRUE, "fwCMS_CSCfw_HV_CC delete_old_lib_versions", "PVSS00ctrl", 
+"manual", 30, 2, 2, "-num 11 CMS_CSCfw_HV_CC/delete_old_lib_versions.ctl");
+
+fwInstallation_appendManager(TRUE, "fwCMS_CSCfw_HV_CC server", "PVSS00ctrl", 
+"manual", 30, 2, 2, "-num 12 CMS_CSCfw_HV_CC/mudcsServer.ctl");
+
+if (os =="Linux")system("cd "+CSC_fwG_g_project_name_home+"/source/"+CSC_fwG_g_Component+"/delete_processes_by_name;make");
+if (os =="Linux")system("dos2unix "+CSC_fwG_g_project_name_home+"/source/"+CSC_fwG_g_Component+"/special_stuff/*");
+if (os =="Linux")system("chmod 755 "+CSC_fwG_g_project_name_home+"/source/"+CSC_fwG_g_Component+"/special_stuff/*");
+if (os =="Linux")system("chmod 755 "+CSC_fwG_g_project_name_home+"/source/"+CSC_fwG_g_Component+"/unix2dos/*");
+if (os =="Linux")system("cp "+CSC_fwG_g_project_name_home+"/source/"+CSC_fwG_g_Component+"/special_stuff/start_servers "+CSC_fwG_g_project_name_home+"/bin/.");
+if (os =="Linux")system("ln -s /usr/bin/X11/nedit $HOME/bin/xemacs");
+
+//-------------------------------------------------------
+dynClear(disk_numbers);
+
+for(i=1;i<=dynlen(CSC_fwG_g_idisk_cross_numbers);i++){
+  dynAppend(disk_numbers,CSC_fwG_g_idisk_cross_numbers[i]);
+}
+  
+//------------------------------------------------------
+
+  mudcsSynchSystemPoratbleOS(os,"cat "+CSC_fwG_g_project_name_home+"/source/"+CSC_fwG_g_Component+"/config/CMS_CSCfw_HV_CC_add.config >> "+CSC_fwG_g_project_name_home+"/config/config");
+ if(!dynContains(disk_numbers,CSC_fwG_g_StationWithFsmHwTree)){
+  mudcsSynchSystemPoratbleOS(os,"cat "+CSC_fwG_g_project_name_home+"/source/"+CSC_fwG_g_Component+"/config/CMS_CSCfw_HV_CC_add2.config >> "+CSC_fwG_g_project_name_home+"/config/config");
+ }
+
+dpDelete("CMS_CSC_GAS");
+ 
+ if(os=="Linux"){
+  system("PVSS00ctrl -num 15 CMS_CSCfw_HV_CC/mudcsCreateHV_CC.ctl &");
+       
+ }
+ else{ 
+  system("cmd /c PVSS00ctrl -num 15 CMS_CSCfw_HV_CC/mudcsCreateHV_CC.ctl");
+ }
+
+} 
+ 

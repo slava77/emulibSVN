@@ -1,0 +1,109 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 264 171 N "_3DFace" 0
+E E E E E 1 -1 -1 0  50 50
+""0  1
+E "#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs2.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs3.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs4.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcsDim.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuAlert.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emufw.ctl\"" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"PUSH_BUTTON1"
+""
+1 50 50 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 48 48 232 112
+
+T 
+1
+LANG:1 13 Dubna Fsm Add
+"main()
+{
+  int i,j;
+  
+  dyn_string s_split;
+  string Dubna_System_Name=\"\";   
+   dyn_string systemNamesDps=dpNames(\"*:CSC_ME_11_HV|CSC_ME_11_HV\");
+   if(dynlen(systemNamesDps)==0)DebugTN(\"DUBNA ME11 SYSTEM NAME NOT DEFINED !\");
+   else{
+    s_split=strsplit(systemNamesDps[1],\":\"); 
+    Dubna_System_Name=s_split[1];//dpSubStr(systemNamesDps[1], DPSUB_SYS);
+  
+   }
+  
+  
+  dyn_string side=makeDynString(\"P\",\"M\"); 
+  dyn_string sideD=makeDynString(\"P\",\"N\");
+  
+  
+  string parent,node;
+  string type=\"CMS_CSC_ME11_HV_Type\";
+  string cn;
+  for(j=1;j<=2;j++){
+   for(i=1;i<=36;i++){
+    if(i<=9)cn=\"0\"+i;
+    else cn=i;
+   
+    parent=\"CSC_ME_\"+side[j]+\"11_C\"+cn;
+    node=Dubna_System_Name+\":CSC_ME_11_HV::\"+\"CSC_ME_\"+sideD[j]+\"11_C\"+cn+\"_HV\";
+    int is_node=fwFsmTree_isNode(parent);
+    if(is_node==1){
+     fwFsmTree_addNode(parent,node,type,0); 
+     DebugTN(parent+\"  \"+node);
+    }
+   } // i
+  } // j
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

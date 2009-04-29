@@ -1,0 +1,671 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 409 302 N "_3DFace" 4
+"$obj"
+"$project_station"
+"$project_system"
+"$sDpName"
+"main()
+{
+
+  project_system=$project_system;
+  project_station=$project_station;
+    
+  int i;
+  string mudcs_alias;
+  dyn_string childList , exceptionInfo;
+
+
+////mudcsDebug($obj);
+//------------------------------------------------
+if($obj != \"\"){
+
+mudcsGetLogicalDomainByFsmDomain($obj, DpName);
+
+
+mudcs_alias=mudcsAliasNameGet(DpName);
+
+
+
+ 
+} // if($obj != \"\")
+//=============================================================
+else{
+
+DpName=$sDpName;
+
+mudcs_alias=mudcsAliasNameGet(DpName);
+
+
+} // else
+//----------------------------------------
+
+fwDevice_getChildren(DpName, \"LOGICAL\", childList , exceptionInfo);
+
+//mudcsDebug(childList[2]);
+   
+//if($obj!=\"\")DpName=$obj;
+//else DpName=$sDpName;
+
+dyn_string dyn_test;
+string test;
+
+for(i=1;i<=dynlen(childList);i++){ 
+if(strpos(DpName,\"LV\")>=0){
+
+
+  if(i==1){
+    if(CSC_fwG_g_CUSTOM_LV){
+    setValue(\"dev1\",\"visible\",TRUE);setValue(\"dev1\",\"text\",\"Wiener Maratons\");//
+    }
+    else {setValue(\"dev1\",\"visible\",FALSE);}
+  }
+  else if(i==2){setValue(\"dev2\",\"visible\",TRUE);setValue(\"dev2\",\"text\",\"Wiener PL512\");}
+
+}
+else if(strpos(DpName,\"HV_HOSTS\")>=0){
+
+  dyn_test=strsplit(childList[i],\"_\");
+  test=dyn_test[dynlen(dyn_test)];
+      
+  if(i==1){setValue(\"dev1\",\"visible\",TRUE);setValue(\"dev1\",\"text\",\"HOST_\"+test);}
+  else if(i==2){setValue(\"dev2\",\"visible\",TRUE);setValue(\"dev2\",\"text\",\"HOST_\"+test);}
+  else if(i==3){setValue(\"dev2\",\"visible\",TRUE);setValue(\"dev2\",\"text\",\"HOST_\"+test);}
+  else if(i==4){setValue(\"dev2\",\"visible\",TRUE);setValue(\"dev2\",\"text\",\"HOST_\"+test);}
+   else if(i==5){setValue(\"dev2\",\"visible\",TRUE);setValue(\"dev2\",\"text\",\"HOST_\"+test);}
+  else if(i==6){setValue(\"dev2\",\"visible\",TRUE);setValue(\"dev2\",\"text\",\"HOST_\"+test);}
+   else if(i==7){setValue(\"dev2\",\"visible\",TRUE);setValue(\"dev2\",\"text\",\"HOST_\"+test);}
+   else if(i==8){setValue(\"dev2\",\"visible\",TRUE);setValue(\"dev2\",\"text\",\"HOST_\"+test);}         
+  else if(i==9){setValue(\"dev2\",\"visible\",TRUE);setValue(\"dev2\",\"text\",\"HOST_\"+test);}
+}
+else if(strpos(DpName,\"HV\")>=0){
+
+  if(i==1){setValue(\"dev1\",\"visible\",TRUE);setValue(\"dev1\",\"text\",\"HV HOSTS\");}
+  else if(i==2){setValue(\"dev2\",\"visible\",TRUE);setValue(\"dev2\",\"text\",\"CAEN mainframes\");}
+
+
+}
+else if(strpos(DpName,\"WTH\")>=0){
+
+  if(i==1){setValue(\"dev2\",\"visible\",TRUE);setValue(\"dev1\",\"text\",\"Weather Station\");}
+
+}
+
+} //for
+
+/////mudcsDebug($sDpName);
+
+}" 0
+ E E E E 1 -1 -1 0  90 40
+""0  1
+E "#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs2.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs3.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs4.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcsDim.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuAlert.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emufw.ctl\"
+
+string project_station;
+string project_system;
+
+
+string DpName, DpNameFsm;
+dyn_string device_names;
+dyn_string device_types;
+string panelName;
+
+device_select(){
+
+int i;
+string box_name;
+dyn_string split;
+
+/////getValue(\"\",\"selectedPos\",i);
+
+string DeviceModule=\"DeviceModule\";
+
+	if(!isModuleOpen(DeviceModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(DeviceModule, xPos, yPos + 100, 10, 10, 1, 1, \"Scale\");
+//	ModuleOn(HVModule, xPos + xSize, yPos, 0, 0, 1, 1, \"\");
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+
+getValue(\"\",\"name\",box_name);
+split=strsplit(box_name,\"v\");
+i=split[2];
+
+
+
+/////mudcsDebug(panelName+\"\\n\"+$sDpName);
+////mudcsDebug(panelName+\"\\n\"+$sDpName);
+//mudcsDebug(device_names[i]);
+	RootPanelOnModule(panelName, 
+				\"\",DeviceModule, 
+	makeDynString(\"$sDpName:\" + device_names[i],\"$project_system:\"+project_system,\"$project_station:\"+project_station));
+	
+}" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"dev1"
+""
+1 90 49 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 90 49 200 73
+
+T 
+1
+LANG:1 4 dev1
+"main()
+{
+ 
+int i=1;
+string test;
+string box_name;
+dyn_string split;
+
+getValue(\"\",\"name\",box_name);
+split=strsplit(box_name,\"v\");
+i=split[2];
+
+//mudcsDebug(DpName);
+if(strpos(DpName,\"LV\")>=0){
+
+  if(i==1){  
+  panelName=CSC_fwG_g_Component+\"/emuLV_MRTNOperation.pnl\";
+  device_names[i]=CSC_fwG_g_SYSTEM_NAME+\":\"+CSC_fwG_g_csc_part+\"/CSC_LV/CSC_LV_MRTN\";
+  }
+  else if(i==2){
+  panelName=CSC_fwG_g_Component+\"/emuLV_MRTNOperation.pnl\";
+  device_names[i]=CSC_fwG_g_SYSTEM_NAME+\":\"+CSC_fwG_g_csc_part+\"/CSC_LV/CSC_LV_HV\";  
+  }
+}
+
+else if(strpos(DpName,\"HV_HOSTS\")>=0){
+
+ 
+  panelName=CSC_fwG_g_Component+\"/emuHV_HOSTOperation.pnl\";
+  getValue(\"\",\"text\",test);
+  device_names[i]=CSC_fwG_g_SYSTEM_NAME+\":\"+CSC_fwG_g_csc_part+\"/CSC_HV/CSC_HV_HOSTS/CSC_HV_\"+test;
+  
+
+}
+else if(strpos(DpName,\"HV\")>=0){
+
+  panelName=CSC_fwG_g_Component+\"/emuHV_HOSTSOperation.pnl\";
+  device_names[i]=CSC_fwG_g_SYSTEM_NAME+\":\"+CSC_fwG_g_csc_part+\"/CSC_HV/CSC_HV_HOSTS\";
+
+
+}
+else if(strpos(DpName,\"WTH\")>=0){
+
+  panelName=CSC_fwG_g_Component+\"/emuDevWTH_SX5Operation.pnl\";
+  device_names[i]=CSC_fwG_g_SYSTEM_NAME+\":\"+CSC_fwG_g_csc_part+\"/CSC_WTH/WeatherStation/WEATHER_SX5\";
+
+}
+
+
+
+device_select();
+return;
+
+
+
+
+
+/* fsm
+string test_string, g_dev, g_par;
+int pos, dev_number;
+string button_name, test_string;
+
+getValue(\"\",\"name\",button_name);
+sscanf(button_name,\"%3s%d\",test_string,dev_number);
+
+////////mudcsDebug(current_ch_name);
+////////mudcsDebug(childLabels[dev_number]);
+g_dev=childLabels[dev_number];
+g_par=current_ch_name;
+dpSet(CSC_fwG_g_SYSTEM_NAME+\":treeBrowser_control.\",makeDynString(\"select\",g_dev,g_par));
+*/
+
+
+/* 10/06/2004 commented out : probably to use in fsm browsing 
+dyn_string params_0,params,params1;
+int i;
+
+//mudcsDebug2($pars_dev);
+params_0=strsplit($pars_dev,\"\\n\");
+
+params=strsplit(params_0[1],\",\");
+//mudcsDebug2(mudcs_parameters_obj[1]);
+
+params1=makeDynString(params[1],params[3],params[2],params[5]);
+
+dpSetWait(\"mudcs_ToDo.params:_original.._value\",params1);
+//makeDynString($domain,$logobj,$obj,$parent));
+dpSetWait(\"mudcs_ToDo.action:_original.._value\",\"double_click_on_objtitle_pnl_child\");
+
+*/
+
+}" 0
+ E E "
+main()
+{
+
+
+
+}" 0
+
+13 13
+"dev2"
+""
+1 88 88 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+27 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 88 88 198 112
+
+T 
+1
+LANG:1 4 dev1
+"main()
+{
+ 
+int i=1;
+string test;
+string box_name;
+dyn_string split;
+
+getValue(\"\",\"name\",box_name);
+split=strsplit(box_name,\"v\");
+i=split[2];
+
+//mudcsDebug(DpName);
+if(strpos(DpName,\"LV\")>=0){
+
+  if(i==1){  
+  panelName=CSC_fwG_g_Component+\"/emuLV_MRTNOperation.pnl\";
+  device_names[i]=CSC_fwG_g_SYSTEM_NAME+\":\"+CSC_fwG_g_csc_part+\"/CSC_LV/CSC_LV_MRTN\";
+  }
+  else if(i==2){
+  panelName=CSC_fwG_g_Component+\"/emuLV_MRTNOperation.pnl\";
+  device_names[i]=CSC_fwG_g_SYSTEM_NAME+\":\"+CSC_fwG_g_csc_part+\"/CSC_LV/CSC_LV_HV\";  
+  }
+}
+
+else if(strpos(DpName,\"HV_HOSTS\")>=0){
+
+ 
+  panelName=CSC_fwG_g_Component+\"/emuHV_HOSTOperation.pnl\";
+  getValue(\"\",\"text\",test);
+  device_names[i]=CSC_fwG_g_SYSTEM_NAME+\":\"+CSC_fwG_g_csc_part+\"/CSC_HV/CSC_HV_HOSTS/CSC_HV_\"+test;
+  
+
+}
+else if(strpos(DpName,\"HV\")>=0){
+
+  panelName=CSC_fwG_g_Component+\"/emuHV_HOSTSOperation.pnl\";
+  device_names[i]=CSC_fwG_g_SYSTEM_NAME+\":\"+CSC_fwG_g_csc_part+\"/CSC_HV/CSC_HV_HOSTS\";
+
+
+}
+else if(strpos(DpName,\"WTH\")>=0){
+
+  panelName=CSC_fwG_g_Component+\"/emuDevWTH_SX5Operation.pnl\";
+  device_names[i]=CSC_fwG_g_SYSTEM_NAME+\":\"+CSC_fwG_g_csc_part+\"/CSC_WTH/WeatherStation/WEATHER_SX5\";
+
+}
+
+
+
+device_select();
+return;
+
+
+
+
+
+/* fsm
+string test_string, g_dev, g_par;
+int pos, dev_number;
+string button_name, test_string;
+
+getValue(\"\",\"name\",button_name);
+sscanf(button_name,\"%3s%d\",test_string,dev_number);
+
+////////mudcsDebug(current_ch_name);
+////////mudcsDebug(childLabels[dev_number]);
+g_dev=childLabels[dev_number];
+g_par=current_ch_name;
+dpSet(CSC_fwG_g_SYSTEM_NAME+\":treeBrowser_control.\",makeDynString(\"select\",g_dev,g_par));
+*/
+
+
+/* 10/06/2004 commented out : probably to use in fsm browsing 
+dyn_string params_0,params,params1;
+int i;
+
+//mudcsDebug2($pars_dev);
+params_0=strsplit($pars_dev,\"\\n\");
+
+params=strsplit(params_0[1],\",\");
+//mudcsDebug2(mudcs_parameters_obj[1]);
+
+params1=makeDynString(params[1],params[3],params[2],params[5]);
+
+dpSetWait(\"mudcs_ToDo.params:_original.._value\",params1);
+//makeDynString($domain,$logobj,$obj,$parent));
+dpSetWait(\"mudcs_ToDo.action:_original.._value\",\"double_click_on_objtitle_pnl_child\");
+
+*/
+
+}" 0
+ E E "
+main()
+{
+
+
+
+}" 0
+
+13 14
+"dev3"
+""
+1 88 128 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+29 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 88 128 198 152
+
+T 
+1
+LANG:1 4 dev1
+"main()
+{
+ 
+int i=1;
+string test;
+string box_name;
+dyn_string split;
+
+getValue(\"\",\"name\",box_name);
+split=strsplit(box_name,\"v\");
+i=split[2];
+
+//mudcsDebug(DpName);
+if(strpos(DpName,\"LV\")>=0){
+
+  if(i==1){  
+  panelName=CSC_fwG_g_Component+\"/emuLV_MRTNOperation.pnl\";
+  device_names[i]=CSC_fwG_g_SYSTEM_NAME+\":\"+CSC_fwG_g_csc_part+\"/CSC_LV/CSC_LV_MRTN\";
+  }
+  else if(i==2){
+  panelName=CSC_fwG_g_Component+\"/emuLV_MRTNOperation.pnl\";
+  device_names[i]=CSC_fwG_g_SYSTEM_NAME+\":\"+CSC_fwG_g_csc_part+\"/CSC_LV/CSC_LV_HV\";  
+  }
+}
+
+else if(strpos(DpName,\"HV_HOSTS\")>=0){
+
+ 
+  panelName=CSC_fwG_g_Component+\"/emuHV_HOSTOperation.pnl\";
+  getValue(\"\",\"text\",test);
+  device_names[i]=CSC_fwG_g_SYSTEM_NAME+\":\"+CSC_fwG_g_csc_part+\"/CSC_HV/CSC_HV_HOSTS/CSC_HV_\"+test;
+  
+
+}
+else if(strpos(DpName,\"HV\")>=0){
+
+  panelName=CSC_fwG_g_Component+\"/emuHV_HOSTSOperation.pnl\";
+  device_names[i]=CSC_fwG_g_SYSTEM_NAME+\":\"+CSC_fwG_g_csc_part+\"/CSC_HV/CSC_HV_HOSTS\";
+
+
+}
+else if(strpos(DpName,\"WTH\")>=0){
+
+  panelName=CSC_fwG_g_Component+\"/emuDevWTH_SX5Operation.pnl\";
+  device_names[i]=CSC_fwG_g_SYSTEM_NAME+\":\"+CSC_fwG_g_csc_part+\"/CSC_WTH/WeatherStation/WEATHER_SX5\";
+
+}
+
+
+
+device_select();
+return;
+
+
+
+
+
+/* fsm
+string test_string, g_dev, g_par;
+int pos, dev_number;
+string button_name, test_string;
+
+getValue(\"\",\"name\",button_name);
+sscanf(button_name,\"%3s%d\",test_string,dev_number);
+
+////////mudcsDebug(current_ch_name);
+////////mudcsDebug(childLabels[dev_number]);
+g_dev=childLabels[dev_number];
+g_par=current_ch_name;
+dpSet(CSC_fwG_g_SYSTEM_NAME+\":treeBrowser_control.\",makeDynString(\"select\",g_dev,g_par));
+*/
+
+
+/* 10/06/2004 commented out : probably to use in fsm browsing 
+dyn_string params_0,params,params1;
+int i;
+
+//mudcsDebug2($pars_dev);
+params_0=strsplit($pars_dev,\"\\n\");
+
+params=strsplit(params_0[1],\",\");
+//mudcsDebug2(mudcs_parameters_obj[1]);
+
+params1=makeDynString(params[1],params[3],params[2],params[5]);
+
+dpSetWait(\"mudcs_ToDo.params:_original.._value\",params1);
+//makeDynString($domain,$logobj,$obj,$parent));
+dpSetWait(\"mudcs_ToDo.action:_original.._value\",\"double_click_on_objtitle_pnl_child\");
+
+*/
+
+}" 0
+ E E "
+main()
+{
+
+
+
+}" 0
+
+13 15
+"dev4"
+""
+1 88 168 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+31 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 88 168 198 192
+
+T 
+1
+LANG:1 4 dev1
+"main()
+{
+ 
+int i=1;
+string test;
+string box_name;
+dyn_string split;
+
+getValue(\"\",\"name\",box_name);
+split=strsplit(box_name,\"v\");
+i=split[2];
+
+//mudcsDebug(DpName);
+if(strpos(DpName,\"LV\")>=0){
+
+  if(i==1){  
+  panelName=CSC_fwG_g_Component+\"/emuLV_MRTNOperation.pnl\";
+  device_names[i]=CSC_fwG_g_SYSTEM_NAME+\":\"+CSC_fwG_g_csc_part+\"/CSC_LV/CSC_LV_MRTN\";
+  }
+  else if(i==2){
+  panelName=CSC_fwG_g_Component+\"/emuLV_MRTNOperation.pnl\";
+  device_names[i]=CSC_fwG_g_SYSTEM_NAME+\":\"+CSC_fwG_g_csc_part+\"/CSC_LV/CSC_LV_HV\";  
+  }
+}
+
+else if(strpos(DpName,\"HV_HOSTS\")>=0){
+
+ 
+  panelName=CSC_fwG_g_Component+\"/emuHV_HOSTOperation.pnl\";
+  getValue(\"\",\"text\",test);
+  device_names[i]=CSC_fwG_g_SYSTEM_NAME+\":\"+CSC_fwG_g_csc_part+\"/CSC_HV/CSC_HV_HOSTS/CSC_HV_\"+test;
+  
+
+}
+else if(strpos(DpName,\"HV\")>=0){
+
+  panelName=CSC_fwG_g_Component+\"/emuHV_HOSTSOperation.pnl\";
+  device_names[i]=CSC_fwG_g_SYSTEM_NAME+\":\"+CSC_fwG_g_csc_part+\"/CSC_HV/CSC_HV_HOSTS\";
+
+
+}
+else if(strpos(DpName,\"WTH\")>=0){
+
+  panelName=CSC_fwG_g_Component+\"/emuDevWTH_SX5Operation.pnl\";
+  device_names[i]=CSC_fwG_g_SYSTEM_NAME+\":\"+CSC_fwG_g_csc_part+\"/CSC_WTH/WeatherStation/WEATHER_SX5\";
+
+}
+
+
+
+device_select();
+return;
+
+
+
+
+
+/* fsm
+string test_string, g_dev, g_par;
+int pos, dev_number;
+string button_name, test_string;
+
+getValue(\"\",\"name\",button_name);
+sscanf(button_name,\"%3s%d\",test_string,dev_number);
+
+////////mudcsDebug(current_ch_name);
+////////mudcsDebug(childLabels[dev_number]);
+g_dev=childLabels[dev_number];
+g_par=current_ch_name;
+dpSet(CSC_fwG_g_SYSTEM_NAME+\":treeBrowser_control.\",makeDynString(\"select\",g_dev,g_par));
+*/
+
+
+/* 10/06/2004 commented out : probably to use in fsm browsing 
+dyn_string params_0,params,params1;
+int i;
+
+//mudcsDebug2($pars_dev);
+params_0=strsplit($pars_dev,\"\\n\");
+
+params=strsplit(params_0[1],\",\");
+//mudcsDebug2(mudcs_parameters_obj[1]);
+
+params1=makeDynString(params[1],params[3],params[2],params[5]);
+
+dpSetWait(\"mudcs_ToDo.params:_original.._value\",params1);
+//makeDynString($domain,$logobj,$obj,$parent));
+dpSetWait(\"mudcs_ToDo.action:_original.._value\",\"double_click_on_objtitle_pnl_child\");
+
+*/
+
+}" 0
+ E E "
+main()
+{
+
+
+
+}" 0
+
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

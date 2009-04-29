@@ -1,0 +1,21 @@
+#!/bin/sh
+
+
+
+
+
+
+
+   cp /home/fast/fwComponents_20060505/libs_corr/fwTreeDisplay.ctl /home/fast/pvss_fsm/scripts/libs/.
+       mkdir /home/fast/pvss_fsm/scripts/libs/fwTreeView
+   cp /home/fast/fwComponents_20060505/libs_corr/fwTreeView/fwTreeView.ctl /home/fast/pvss_fsm/scripts/libs/fwTreeView/.
+   cp /home/fast/fwComponents_20060505/libs_corr/fwUi /home/fast/pvss_fsm/scripts/libs/.
+       mkdir /home/fast/pvss_fsm/scripts/libs/fwDevice
+   cp /home/fast/fwComponents_20060505/libs_corr/fwDevice/fwDevice.ctl /home/fast/pvss_fsm/scripts/libs/fwDevice/.
+   cp /home/fast/fwComponents_20060505/libs_corr/fwFsmTreeDisplay.ctl /home/fast/pvss_fsm/scripts/libs/.
+   cp /home/fast/fwComponents_20060505/libs_corr/fwFsm /home/fast/pvss_fsm/scripts/libs/.
+   cp /home/fast/fwComponents_20060505/libs_corr/fwFsmUtil.ctl /home/fast/pvss_fsm/scripts/libs/.
+   cp /home/fast/fwComponents_20060505/libs_corr/fwFsmUi.ctl /home/fast/pvss_fsm/scripts/libs/.
+       mkdir /home/fast/pvss_fsm/scripts/libs/fwDeviceEditorNavigator
+   cp /home/fast/fwComponents_20060505/libs_corr/fwDeviceEditorNavigator/fwDeviceEditorNavigator.ctl \
+      /home/fast/pvss_fsm/scripts/libs/fwDeviceEditorNavigator/.

@@ -1,0 +1,531 @@
+V 10
+1
+LANG:1 9 WTH_alert
+PANEL,203 63 507 341 N "_3DFace" 1
+"$sDpName"
+"main()
+{
+
+float t_min, t_max;
+float h_min, h_max;
+float p_min, p_max;
+
+
+
+t_min=0;
+t_max=45;
+h_min=0;
+h_max=80;
+p_min=600;
+p_max=1000;
+
+setValue(\"t_min\",\"text\",t_min);
+setValue(\"h_min\",\"text\",h_min);
+setValue(\"p_min\",\"text\",p_min);
+
+setValue(\"t_max\",\"text\",t_max);
+setValue(\"h_max\",\"text\",h_max);
+setValue(\"p_max\",\"text\",p_max);
+}
+//=================================================================" 0
+ E E E E 1 -1 -1 0  420 39
+""0  1
+E "wth_set(bool isSet, string device_type)
+{
+
+dyn_string limits_s;
+string value;
+string s1,s2;
+//bool isGeneralSetting;
+
+float t_min, t_max;
+float h_min, h_max;
+float p_min, p_max;
+
+
+//isGeneralSetting = true;
+//if(strpos($sDpName,device_type) >= 0 )isGeneralSetting = false;
+
+
+limits_s = makeDynString();
+
+/*
+t_min=0;
+t_max=45;
+h_min=0;
+h_max=80;
+p_min=600;
+p_max=1000;
+*/
+
+getValue(\"t_min\",\"text\",t_min);
+getValue(\"h_min\",\"text\",h_min);
+getValue(\"p_min\",\"text\",p_min);
+
+getValue(\"t_max\",\"text\",t_max);
+getValue(\"h_max\",\"text\",h_max);
+getValue(\"p_max\",\"text\",p_max);
+
+
+value=\".data.TEMPERATURE.sensor1|\"
+         +\".data.TEMPERATURE.sensor2|\"
+         +\".data.TEMPERATURE.sensor3|\"
+         +\".data.TEMPERATURE.sensor4|\"
+         +\".data.HUMIDITY.sensor1|\"
+         +\".data.HUMIDITY.sensor2|\"
+         +\".data.HUMIDITY.sensor3|\"
+         +\".data.PRESSURE.sensor1\";
+
+
+//if(v18_d == 0 || v33_d == 0 || v55_d == 0 || v56_d == 0){
+//  mudcsDebug(\"Interval should be > 0\");
+//  return;
+//}
+ for(int i=1;i<=4;i++){
+s1=t_min;
+s2=t_max;
+dynAppend(limits_s,s1+\"|\"+s2);
+ }
+
+ for(int i=1;i<=3;i++){
+s1=h_min;
+s2=h_max;
+dynAppend(limits_s,s1+\"|\"+s2);
+ }
+
+ for(int i=1;i<=1;i++){
+  s1=p_min;
+  s2=p_max;
+  dynAppend(limits_s,s1+\"|\"+s2);
+ }
+
+
+mudcsLookAndAlertArchiveConfig(true, 
+false, isSet, device_type, value, limits_s, $sDpName, \"\",0,0,0.,0.);
+
+
+}
+
+//==========================================================
+" 0
+ 2
+"CBRef""1"
+"EClose"E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+14 1
+"t_min"
+""
+1 193.5625 108 E E E 1 E 1 E N "FwForegroundInputText" E N "FwBackgroundInputText" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -adobe-helvetica-medium-r-normal-*-*-90-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0
+""  192 106 242 133
+3 "s" 0 0 0 0 0 -1  E E E
+14 2
+"h_min"
+""
+1 193.5625 148 E E E 1 E 1 E N "FwForegroundInputText" E N "FwBackgroundInputText" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -adobe-helvetica-medium-r-normal-*-*-90-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0
+""  192 146 242 173
+3 "s" 0 0 0 0 0 -1  E E E
+14 3
+"p_min"
+""
+1 193.5625 188 E E E 1 E 1 E N "FwForegroundInputText" E N "FwBackgroundInputText" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -adobe-helvetica-medium-r-normal-*-*-90-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0
+""  192 186 242 213
+3 "s" 0 0 0 0 0 -1  E E E
+14 6
+"t_max"
+""
+1 263.5625 108 E E E 1 E 1 E N "FwForegroundInputText" E N "FwBackgroundInputText" E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -adobe-helvetica-medium-r-normal-*-*-90-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0
+""  262 106 312 133
+3 "s" 0 0 0 0 0 -1  E E E
+14 7
+"h_max"
+""
+1 263.5625 148 E E E 1 E 1 E N "FwForegroundInputText" E N "FwBackgroundInputText" E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -adobe-helvetica-medium-r-normal-*-*-90-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0
+""  262 146 312 173
+3 "s" 0 0 0 0 0 -1  E E E
+14 8
+"p_max"
+""
+1 263.5625 188 E E E 1 E 1 E N "FwForegroundInputText" E N "FwBackgroundInputText" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -adobe-helvetica-medium-r-normal-*-*-90-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0
+""  262 186 312 213
+3 "s" 0 0 0 0 0 -1  E E E
+13 10
+"apply_button_set"
+""
+1 112 252 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 62 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1
+0
+""  112 252 162 276
+
+T 
+1
+LANG:1 3 Set
+"int g_busyThread; 
+
+main(){
+
+	dyn_string exceptionInfo; 
+	g_busyThread = -1; 
+	fwBusyBarButton_std_startBusy(exceptionInfo); 
+
+string device_type=\"WTH_SX5\";
+  wth_set(true,device_type);
+
+		fwBusyBarButton_std_stopBusy(exceptionInfo);
+
+}
+
+" 0
+ E E E
+13 18
+"apply_button_unset"
+""
+1 342 252 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+34 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 62 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1
+0
+""  342 252 392 276
+
+T 
+1
+LANG:1 5 Unset
+"int g_busyThread; 
+
+main(){
+
+	dyn_string exceptionInfo; 
+	g_busyThread = -1; 
+	fwBusyBarButton_std_startBusy(exceptionInfo); 
+string device_type=\"WTH_SX5\";
+  wth_set(false,device_type);
+ 
+
+		fwBusyBarButton_std_stopBusy(exceptionInfo);
+
+}
+
+
+" 0
+ E E E
+10 29
+"Polyline1"
+""
+1 276 1165 E E E 1 E 1 E N "_Window" E N "_Transparent" E E
+ E E
+56 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 2 1 0 1 E 1 0 1 162 139 0 E 3 179 180
+179 190
+10 190
+ 0
+10 30
+"Polyline2"
+""
+1 127 1175 E E E 1 E 1 E N "_ButtonShadow" E N "_Transparent" E E
+ E E
+58 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 2 1 0 1 E 1 0 1 162 139 0 E 3 10 190
+10 180
+178 180
+ 0
+6 31
+"busySize"
+""
+1 145 1169 E E E 1 E 1 E N "_3DFace" E N "_Transparent" E E
+ E E
+60 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E 1 0 1 162 139 0 E 14 181 172 187
+6 32
+"busyFlag"
+""
+1 140 1173 E E E 1 E 0 E N {0,0,153} E N {0,0,153} E E
+ E E
+62 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E 1 0 1 162 139 1 E 12 182 52 188
+2 33
+"resultDelete"
+""
+1 -278 587 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+64 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+	this.text = \"\";
+}" 0
+ E 0 1 1 0 1 E U  0 E 174 284 275 302
+0 2 0 "s" 0 0 0 192 0 0  174 284 1
+1
+LANG:1 99 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1|-16,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0
+"" 1
+LANG:1 23 result of alert setting
+2 34
+"PRIMITIVE_TEXT1"
+""
+1 72 91 E E E 1 E 1 E N "_3DText" E N {255,255,153} E E
+ E E
+65 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 200 74 270 89
+1 2 2 "s" 0 0 0 192 0 0  200 74 1
+1
+LANG:1 58 -adobe-courier-bold-r-normal-*-*-120-100-100-*-*-iso8859-1
+0
+"" 1
+LANG:1 3 MIN
+2 36
+"PRIMITIVE_TEXT1"
+""
+1 90 89 E E E 1 E 1 E N "_3DText" E N {255,255,153} E E
+ E E
+68 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 270 74 340 89
+1 2 2 "s" 0 0 0 192 0 0  270 74 1
+1
+LANG:1 58 -adobe-courier-bold-r-normal-*-*-120-100-100-*-*-iso8859-1
+0
+"" 1
+LANG:1 3 MAX
+2 39
+"PRIMITIVE_TEXT1"
+""
+1 92 89 E E E 1 E 1 E N "_3DText" E N {255,255,153} E E
+ E E
+74 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 132 114 202 129
+1 2 2 "s" 0 0 0 192 0 0  132 114 1
+1
+LANG:1 58 -adobe-courier-bold-r-normal-*-*-120-100-100-*-*-iso8859-1
+0
+"" 1
+LANG:1 4 Temp
+2 40
+"PRIMITIVE_TEXT1"
+""
+1 88 95 E E E 1 E 1 E N "_3DText" E N {255,255,153} E E
+ E E
+76 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 134 152 204 167
+1 2 2 "s" 0 0 0 192 0 0  134 152 1
+1
+LANG:1 58 -adobe-courier-bold-r-normal-*-*-120-100-100-*-*-iso8859-1
+0
+"" 1
+LANG:1 3 Hum
+2 41
+"PRIMITIVE_TEXT1"
+""
+1 92 95 E E E 1 E 1 E N "_3DText" E N {255,255,153} E E
+ E E
+78 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 134 192 204 207
+1 2 2 "s" 0 0 0 192 0 0  134 192 1
+1
+LANG:1 58 -adobe-courier-bold-r-normal-*-*-120-100-100-*-*-iso8859-1
+0
+"" 1
+LANG:1 4 Pres
+2 48
+"PRIMITIVE_TEXT1"
+""
+1 68 105 E E E 1 E 1 E N "_3DText" E N {255,255,153} E E
+ E E
+92 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 150 40 220 55
+1 2 2 "s" 0 0 0 192 0 0  150 40 1
+1
+LANG:1 58 -adobe-courier-bold-r-normal-*-*-120-100-100-*-*-iso8859-1
+0
+"" 1
+LANG:1 22 Weather Station LIMITS
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

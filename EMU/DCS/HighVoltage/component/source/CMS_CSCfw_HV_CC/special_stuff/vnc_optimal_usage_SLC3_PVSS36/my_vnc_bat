@@ -1,0 +1,22 @@
+#!/bin/sh
+
+
+
+
+
+#sleep 2
+
+
+vncserver -kill :1
+
+#/home/slice/bin/delete_processes_by_name "Xvnc"
+delete_processes_by_name "Xvnc"
+echo "hi there"
+rm -rf /tmp/.X1-lock; rm -rf /tmp/.X11-unix/X; rm /tmp/.X11-unix/X1
+
+echo "hello again"
+vncserver :1 -geometry 1280x980 -AlwaysShared -IdleTimeout 86400
+#rm -rf /tmp/.X1-lock; rm /tmp/.X11-unix/X1; vncserver :1 -geometry 1280x980 -alwaysshared 
+#vncserver :1 -geometry 1152x864 -alwaysshared
+###vncviewer emudcs:1
+

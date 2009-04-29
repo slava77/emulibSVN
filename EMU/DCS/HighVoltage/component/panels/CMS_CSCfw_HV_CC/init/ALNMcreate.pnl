@@ -1,0 +1,225 @@
+V 10
+1
+LANG:1 14 MRTNcreateType
+PANEL,-1 -1 532 188 N "_3DFace" 0
+"int STATION_ITEMS_NUMBER=168; // 84+84 
+int LASERS_NUMBER=6;
+
+main(){
+int i;
+
+
+create_data(\"ALNM_1_data\");
+create_d(\"ALNM_1_d\");
+create(\"ALNM_1\");
+DebugTN(\"types: ALNM_* created\");
+//---------
+dpCreate(\"ALNM_1_DimBroker_o\",\"ALNM_1_d\");
+DebugTN(\"dp: ALNM_1_DimBroker_o created\");
+//---------
+dpCreate(\"ALNM_1Info\",\"_FwDeviceDefinition\");
+dpSet(\"ALNM_1Info.type\",\"ALNM Device (1)\");
+dpSet(\"ALNM_1Info.dpType\",\"ALNM_1\"); //?
+DebugTN(\"ALNM_1Info created\");
+//----------
+//----------
+dpCreate(\"ALNM\",\"FwNode\");
+dpSet(\"ALNM.type\",\"VENDOR\");
+dpSet(\"ALNM.dpTypes\",makeDynString(\"ALNM_1\"));
+dpSet(\"ALNM.navigatorPanels\",makeDynString(\"fwDevice/fwDeviceManage\"));
+dpSet(\"ALNM.editorPanels\",makeDynString(\"fwDevice/fwDeviceManage\"));
+dpSet(\"ALNM.model\",\"ALNM\");
+dpSet(\"ALNM.fsmState\",0);
+dpSet(\"ALNM.fsmCommand\",0);
+DebugTN(\"types: ALNM of FwNode created\");
+
+
+
+DebugTN(\"types: ALNM of FwNode created\");
+mudcsInit();
+
+//-----------
+mudcs_setBrokerList();
+DebugTN(\"mudcs_setBrokerList()\");
+//------------
+//FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+dyn_string device_list;
+string device_info;
+
+mudcsGetDeviceList(device_list);
+for(int i=1;i<=dynlen(device_list);i++){
+
+  device_info= device_list[i]+\"Info.panels.editor.hardware\";
+  dpSet(device_info,\"emu_config/emuDev\" + device_list[i]+\"Config\");
+
+  device_info= device_list[i]+\"Info.panels.navigator.hardware\";
+  dpSet(device_info,\"emu/emuDev\" + device_list[i]+\"Operation\");
+
+}
+DebugTN(\"panels set\");
+//FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+
+
+
+
+}
+//============================
+//============================
+//============================
+create(string dtype)
+{
+
+dyn_dyn_string xxdepes;
+dyn_dyn_int xxdepei;
+
+xxdepes[1] = makeDynString (dtype,\"\");
+xxdepes[2] = makeDynString (\"\",\"module_state\");
+xxdepes[3] = makeDynString (\"\",\"coord\");
+xxdepes[4] = makeDynString (\"\",\"status\");
+xxdepes[5] = makeDynString (\"\",\"off_channels\");
+xxdepes[6] = makeDynString (\"\",\"off_channels_volt\");
+
+xxdepei[1]=makeDynInt (DPEL_STRUCT);
+xxdepei[2]=makeDynInt (0,DPEL_INT);
+xxdepei[3]=makeDynInt (0,DPEL_STRING);
+xxdepei[4]=makeDynInt (0,DPEL_INT);
+xxdepei[5]=makeDynInt (0,DPEL_DYN_INT);
+xxdepei[6]=makeDynInt (0,DPEL_DYN_FLOAT);
+
+dpTypeCreate(xxdepes,xxdepei);
+
+}
+
+//=============================
+//============================
+create_d(string dtype)
+{
+
+dyn_dyn_string xxdepes;
+dyn_dyn_int xxdepei;
+
+xxdepes[1] = makeDynString (dtype,\"\");
+xxdepes[2] = makeDynString (\"\",\"data\",\"ALNM_1_data\");
+xxdepes[3] = makeDynString (\"\",\"update_value\");
+xxdepes[4] = makeDynString (\"\",\"setNumber\");
+xxdepes[5] = makeDynString (\"\",\"dynatemTcpIp\");
+
+
+xxdepei[1]=makeDynInt (DPEL_STRUCT);
+
+xxdepei[2]=makeDynInt (0,DPEL_TYPEREF);
+xxdepei[3]=makeDynInt (0,DPEL_INT);
+xxdepei[4]=makeDynInt (0,DPEL_INT);
+xxdepei[5]=makeDynInt (0,DPEL_STRING);
+
+
+dpTypeCreate(xxdepes,xxdepei);
+
+}
+
+//=============================
+create_data(string dtype)
+{
+
+
+char a;
+a=50;
+
+int b=a;
+
+dyn_dyn_string xxdepes;
+dyn_dyn_int xxdepei;
+int i,i1;
+
+
+xxdepes[1] = makeDynString (dtype,\"\");
+
+for(i=2;i<=(STATION_ITEMS_NUMBER+1);i++){
+i1=i-2+1;
+xxdepes[i] = makeDynString (\"\",\"item\"+i1);
+}
+//////xxdepes[8] = makeDynString (\"\",\"crate\",\"ALNM_Crate\");
+
+for(i=(STATION_ITEMS_NUMBER+2);i<=(STATION_ITEMS_NUMBER+LASERS_NUMBER+1);i++){
+i1=i-STATION_ITEMS_NUMBER-2+1;
+xxdepes[i] = makeDynString (\"\",\"status\"+i1);
+}
+xxdepes[STATION_ITEMS_NUMBER+LASERS_NUMBER+2] = makeDynString (\"\",\"general_status\");
+//=====================================
+
+xxdepei[1]=makeDynInt (DPEL_STRUCT);
+
+for(i=2;i<=(STATION_ITEMS_NUMBER+2);i++){
+xxdepei[i]=makeDynInt (0,DPEL_FLOAT);
+}
+//////xxdepei[8]=makeDynInt (0,DPEL_TYPEREF);
+
+for(i=(STATION_ITEMS_NUMBER+2);i<=(STATION_ITEMS_NUMBER+LASERS_NUMBER+1);i++){
+xxdepei[i]=makeDynInt (0,DPEL_INT);
+}
+
+xxdepei[STATION_ITEMS_NUMBER+LASERS_NUMBER+2]=makeDynInt (0,DPEL_INT);
+
+dpTypeCreate(xxdepes,xxdepei);
+
+}" 0
+ E E E E 1 -1 -1 0  110 64
+""0  1
+E E 2
+"CBRef""1"
+"EClose"E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+2 0
+"PRIMITIVE_TEXT1"
+""
+1 60 70 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 60 70 451 95
+1 2 2 "0s" 0 0 0 192 0 0  60 70 1
+1
+LANG:1 111 -*-Helvetica [Adobe]-bold-i-normal-*-19-*-100-100-*-*-iso8859-1|-19,0,0,0,758,1,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 42 ALIGNMENT type and intinial data creation 
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

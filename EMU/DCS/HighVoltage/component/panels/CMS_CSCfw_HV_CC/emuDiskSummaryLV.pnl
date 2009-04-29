@@ -1,0 +1,3349 @@
+V 10
+1
+LANG:1 9 LVSummary
+PANEL,-1 -1 907 659 N "_3DFace" 4
+"$obj"
+"$project_station"
+"$project_system"
+"$sDpName"
+"int g_busyThread; 
+int FIRST_TABLE=1;
+
+main()
+{
+  
+  int i;
+  
+$project_station;
+$project_system;      
+    mudcsProjectConnect();
+
+        
+init_dp_switch();
+
+dyn_string limits_s;
+string value;
+
+////mudcsDebug(g_T);
+
+	dyn_string exceptionInfo; 
+	g_busyThread = -1; 
+	fwBusyBarButton_std_startBusy(exceptionInfo); 
+
+string device_type=\"_LV\";
+// mudcsDebug(DpName);
+//if(strpos(DpName,\":\")<0){
+// DpName=CSC_fwG_g_SYSTEM_NAME+\":\"+DpName;
+// 
+// mudcsDebug(DpName);
+//}
+
+//mudcsDebug(DpName);
+
+mudcsScanTreeForDevices(device_type, DpName, selected_list); // _LV
+mudcsConvertFsm2Data(selected_list, selected_list_data);
+
+//-----for Temperatures to switch them with buttons on/off--------
+mudcsScanTreeForDevices(\"_TEMP\", DpName, selected_list_temp); // _TEMP
+mudcsConvertFsm2Data(selected_list_temp, selected_list_temp_data);
+//-------------
+
+		fwBusyBarButton_std_stopBusy(exceptionInfo);
+
+dpConnect(\"update_dpoints_not_controlled\",CSC_fwG_g_SYSTEM_NAME+\":DPOINTS_NOT_CONTROLLED.value\");
+
+//-------
+dyn_string excluded_chambers, ds1;
+dynClear(excluded_chambers);
+string s1;
+dyn_int di1;
+for(i=1;i<=dynlen(selected_list);i++){
+ dpGet(selected_list[i]+\".noalert_channels\",di1);
+ if(dynlen(di1)>=2 ||
+    (dynlen(di1)==1 && (strpos(selected_list[i],\"13_C\")<0 || !dynContains(di1,5)) ) ){ds1=strsplit(selected_list[i],\"/\");
+  dynAppend(excluded_chambers,ds1[dynlen(ds1)]);  
+ }
+}
+
+
+
+setValue(\"excluded_chambers\",\"items\",excluded_chambers);
+setValue(\"excluded_chambers\",\"selectedPos\",1);
+
+for(i=1;i<=dynlen(selected_list_temp);i++){
+ dpGet(selected_list_temp[i]+\".off_channels\",di1);
+ if(dynlen(di1)>=2 ||
+    (dynlen(di1)==1 &&  (strpos(selected_list[i],\"13_C\")<0 || !dynContains(di1,5)) )){ds1=strsplit(selected_list_temp[i],\"/\");
+  dynAppend(excluded_chambers,ds1[dynlen(ds1)]);  
+ }
+}
+
+setValue(\"excluded_t_chambers\",\"items\",excluded_chambers);
+setValue(\"excluded_t_chambers\",\"selectedPos\",1);
+//-------
+
+while(1){
+ delay(5);
+ update_table();
+}
+
+
+//============================================================
+
+
+}
+//=================================================================
+
+//============================================================
+
+init_dp_switch(){
+ if($obj != \"\"){   // the panel is called from FSM
+  //  DpName=$obj;
+mudcsGetLogicalDomainByFsmDomain($obj, DpName);
+ } 
+ else{
+    DpName=$sDpName; // the panel is called from LOGICAL TREE
+ }
+
+
+ DpName=mudcsAddSystem(DpName);
+
+}
+
+//============================================================
+
+  
+update_dpoints_not_controlled(string dpName, string value){
+
+
+
+update_table();
+
+
+}
+
+//============================================================
+update_table(){
+
+int i;
+string value;
+dyn_string selected_list_2;
+
+int disk_i, ring_i, chamber_i;
+string dev_type;
+
+string test_string1, test_string2, test_string3;
+float test_value1, test_value2;
+
+ dpGet(CSC_fwG_g_SYSTEM_NAME+\":DPOINTS_NOT_CONTROLLED.value\",value);  
+ if(FIRST_TABLE){
+   setValue(\"table\",\"deleteAllLines\");
+   setValue(\"table1\",\"deleteAllLines\"); 
+ }
+  if(value == \"INITIAL\"){
+             setValue(\"table\",\"appendLine\",
+            \"device\",\"no data yet\", 
+            \"status\",\"\",
+            \"alarm\" ,\"\"); 
+
+             setValue(\"table1\",\"appendLine\",
+            \"device\",\"no data yet\", 
+            \"status\",\"\",
+            \"alarm\" ,\"\"); 
+     return;
+  }
+
+string name;
+
+
+ for(i=1;i<= 20; i++){
+ if(i<=dynlen(selected_list))continue;
+name=i;
+setValue(name,\"visible\",false);
+ }
+
+
+ for(i=1;i<= dynlen(selected_list); i++){
+
+// if(i>20)continue; 
+
+string mudcs_alias;
+mudcs_alias=mudcsAliasNameGet(selected_list[i]);
+mudcsNameToPosConvert(mudcs_alias/*selected_list[i]*/, disk_i, ring_i, chamber_i, dev_type);
+test_string1=CSC_fwG_g_WHEELS[disk_i]+CSC_fwG_g_RADIUSES[ring_i]+chamber_i+\"___\"+\"LV\";
+//  setValue(\"ch_number\",\"text\",test_string);
+
+
+////   if(strpos(value,selected_list[i])<0){ // commented out 10/09/2004
+     dynAppend(selected_list_2,selected_list[i]);
+
+
+
+
+////test_string1=substr(selected_list[i],strpos(selected_list[i],\":\")+1);
+dpGet(mudcsAddSystem(selected_list[i])+\".status\",test_value1);
+dpGet(mudcsAddSystem(selected_list_data[i])+\".data.Alct_o.status\",test_value2);
+
+string d360;
+dpGet(mudcsAddSystem(selected_list_data[i])+\".dynatemTcpIp\",d360);
+if(strpos(d360,\"00:00:00:00\") <0)test_value1=-2;
+
+
+if(test_value1 ==-1 )test_string3=\"ERROR\";
+else if(test_value1 ==-2 )test_string3=\"NOT Connected\";
+else test_string3=\"OK\";
+
+if(test_value2==0)test_string2=\"OFF\";
+else test_string2=\"ON\";
+
+if(test_value2==1 && test_value1 == 0)test_string2=\"going OFF\";
+//-------------------------------------------
+ if(i<=27){ 
+if(FIRST_TABLE){
+             setValue(\"table\",\"appendLine\",
+            \"device\",test_string1, 
+            \"status\",test_string2,
+            \"alarm\" ,test_string3); 
+}
+else {
+             setValue(\"table\",\"updateLine\",1,
+            \"device\",test_string1, 
+            \"status\",test_string2,
+            \"alarm\" ,test_string3); 
+}
+  }
+//-------------------------------------------
+ else{ 
+if(FIRST_TABLE){
+             setValue(\"table1\",\"appendLine\",
+            \"device\",test_string1, 
+            \"status\",test_string2,
+            \"alarm\" ,test_string3); 
+}
+else {
+             setValue(\"table1\",\"updateLine\",1,
+            \"device\",test_string1, 
+            \"status\",test_string2,
+            \"alarm\" ,test_string3); 
+}
+  }
+
+//-------------------------------------------
+
+name=i;
+setValue(name,\"visible\",true);
+
+if(test_string3 == \"ERROR\")
+setValue(name,\"backCol\",\"{255,0,0}\"); 
+else if(test_string3 == \"NOT Connected\")
+setValue(name,\"backCol\",\"{0,0,0}\"); 
+else if(test_string3 == \"OK\"){
+ if(test_string2 == \"OFF\")setValue(name,\"backCol\",\"{0,153,153}\"); 
+ else if(test_string2 == \"going OFF\")setValue(name,\"backCol\",\"{255,255,0}\"); // yellow 
+ else setValue(name,\"backCol\",\"{0,255,255}\");  // light blue
+
+}
+
+//   } //////////////////////// if
+
+
+ } // for
+
+if(FIRST_TABLE && value != \"INITIAL\"){
+ FIRST_TABLE=0;
+/////setValue(\"table\",\"tableMode\",TABLE_SELECT_BROWSE);
+} 
+
+}
+
+
+
+
+
+" 0
+ E E E E 1 -1 -1 0  420 39
+""0  1
+E "#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs2.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs3.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs4.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcsDim.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuAlert.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emufw.ctl\"
+
+string project_station;
+string project_system;
+
+
+string DpName;
+dyn_string selected_list;
+dyn_string selected_list_data;
+
+dyn_string selected_list_temp;
+dyn_string selected_list_temp_data;" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 10
+"apply_button_set"
+""
+1 178 630 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 178 630 228 654
+
+T 
+1
+LANG:1 3 Set
+"int g_busyThread; 
+
+main(){
+
+dyn_string limits_s;
+string value;
+
+////mudcsDebug(g_T);
+
+	dyn_string exceptionInfo; 
+	g_busyThread = -1; 
+	fwBusyBarButton_std_startBusy(exceptionInfo); 
+
+string device_type=\"_LV\";
+// mudcsDebug(DpName);
+//if(strpos(DpName,\":\")<0){
+// DpName=CSC_fwG_g_SYSTEM_NAME+\":\"+DpName;
+// 
+// mudcsDebug(DpName);
+//}
+mudcsScanTreeForDevices(device_type, DpName); // _LV
+
+		fwBusyBarButton_std_stopBusy(exceptionInfo);
+
+}
+//============================================================
+
+" 0
+ E E E
+13 18
+"apply_button_unset"
+""
+1 408 630 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+34 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 408 630 458 654
+
+T 
+1
+LANG:1 5 Unset
+"int g_busyThread; 
+
+main(){
+
+dyn_string limits_s;
+string value;
+
+	dyn_string exceptionInfo; 
+	g_busyThread = -1; 
+	fwBusyBarButton_std_startBusy(exceptionInfo); 
+
+string device_type=\"GENERAL\";
+
+mudcsLookAndAlertArchiveConfig(true, 
+false, false, device_type, value, limits_s, $sDpName, \"\",0,0,0.,0.);
+
+		fwBusyBarButton_std_stopBusy(exceptionInfo);
+
+
+}
+
+
+" 0
+ E E E
+10 29
+"Polyline1"
+""
+1 276 1165 E E E 1 E 1 E N "_Window" E N "_Transparent" E E
+ E E
+56 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 2 1 0 1 E 1 0 1 228 459 0 E 3 179 180
+179 190
+10 190
+ 0
+10 30
+"Polyline2"
+""
+1 127 1175 E E E 1 E 1 E N "_ButtonShadow" E N "_Transparent" E E
+ E E
+58 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 2 1 0 1 E 1 0 1 228 459 0 E 3 10 190
+10 180
+178 180
+ 0
+6 31
+"busySize"
+""
+1 145 1169 E E E 1 E 0 E N "_3DFace" E N "_Transparent" E E
+ E E
+60 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E 1 0 1 228 459 0 E 14 181 172 187
+6 32
+"busyFlag"
+""
+1 140 1173 E E E 1 E 0 E N {0,0,153} E N {0,0,153} E E
+ E E
+62 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E 1 0 1 228 459 1 E 12 182 52 188
+2 33
+"resultDelete"
+""
+1 -492 657 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+64 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+	this.text = \"\";
+}" 0
+ E 0 1 1 0 1 E U  0 E 148 622 288 647
+0 2 0 "0s" 0 0 0 192 0 0  148 622 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 23 result of alert setting
+25 34
+"table"
+""
+1 10 10 E E E 1 E 1 E N "_3DText" E N {204,204,204} E E
+ E E
+157 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 103 -*-Times [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Times [Adobe]
+0 ""
+ 10 10 350 600
+"
+main()
+{
+//
+// shape table=getShape(\"table\");
+ 
+//...
+ 
+//table.tableMode(TABLE_SELECT_BROWSE);
+ 
+// table.selectByClick(TABLE_SELECT_LINE);
+ 
+setValue(\"\",\"tableMode\",TABLE_SELECT_BROWSE);
+setValue(\"\",\"selectByClick\",1);
+
+}" 0
+"main(int row, string column, string value)
+{
+
+int i;
+int j;
+dyn_int lines;
+dyn_anytype line; 
+
+/*
+shape table=getShape(\"table\");
+
+dyn_int lines1 = table.getSelectedLines();
+
+////DebugN(table.getSelectedLines());
+
+for(i=1;i<=dynlen(lines1);i++){
+  DebugN(lines1[i]);
+ getValue(\"\",\"getLineN\", lines1[i], line);
+//// DebugN(line);
+
+ DebugN(line[1]+line[2]+line[3]);
+
+
+}
+ 
+return;
+
+*/
+
+
+}" 0
+ 1 0 1 3 27 "device" 8 1 0 "s" 1
+LANG:1 6 device
+E
+1
+LANG:1 0 
+
+120 "status" 5 1 0 "s" 1
+LANG:1 6 status
+E
+1
+LANG:1 0 
+
+75 "alarm" 10 1 0 "s" 1
+LANG:1 5 alarm
+E
+1
+LANG:1 0 
+
+145 
+20 20 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "2" 0 "3" 0 "4" 0 "5" 0 "6" 0 "7" 0 "8" 0 "9" 0 "10" 0 "11" 0 "12" 0 "13" 0 "14" 0 "15" 0 "16" 0 "17" 0 "18" 0 "19" 0 "20" 0 20 166
+1
+LANG:1 103 -*-Times [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Times [Adobe]
+0 ""
+0 1 1 1 7
+1 0
+13 35
+"1"
+""
+1 350 30 E E E 1 E 0 E N "_3DText" E N {0,153,153} E E
+ E E
+80 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 30 400 51.5217391304348
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+//	ModuleOn(LVModule, xPos + xSize, yPos, 0, 0, 1, 1, \"\");
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+
+}" 0
+ E E E
+13 36
+"2"
+""
+1 350 50 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+84 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 50 400 71.5217391304348
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 37
+"3"
+""
+1 350 70 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+86 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 70 400 91.5217391304348
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 38
+"4"
+""
+1 350 90 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+88 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 90 400 111.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 39
+"5"
+""
+1 350 110 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+90 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 110 400 131.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 40
+"6"
+""
+1 350 130 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+92 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 130 400 151.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 41
+"7"
+""
+1 350 150 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+94 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 150 400 171.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 42
+"8"
+""
+1 350 170 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+96 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 170 400 191.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 43
+"9"
+""
+1 350 190 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+98 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 190 400 211.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 44
+"10"
+""
+1 350 210 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+100 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 210 400 231.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 45
+"11"
+""
+1 350 230 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+102 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 230 400 251.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 46
+"12"
+""
+1 350 250 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+104 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 250 400 271.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 47
+"13"
+""
+1 350 270 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+106 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 270 400 291.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 48
+"14"
+""
+1 350 290 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+108 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 290 400 311.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 49
+"15"
+""
+1 350 310 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+110 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 310 400 331.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 50
+"16"
+""
+1 350 330 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+112 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 330 400 351.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 51
+"17"
+""
+1 350 350 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+114 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 350 400 371.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 52
+"18"
+""
+1 350 370 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+116 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 370 400 391.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 53
+"19"
+""
+1 349 390 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+118 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 349 390 399 411.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 54
+"20"
+""
+1 350 410 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+120 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 410 400 431.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 55
+"button_on"
+""
+1 8 630 E E E 1 E 1 E N {255,255,255} E N {255,0,0} E E
+ E E
+122 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 111 -*-Helvetica [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 8 630 58 654
+
+T 
+1
+LANG:1 2 ON
+"int g_busyThread; 
+
+main(){
+
+int i;
+
+	dyn_string exceptionInfo; 
+	g_busyThread = -1; 
+	fwBusyBarButton_std_startBusy(exceptionInfo); 
+
+string current_status;
+
+ for(i=1;i<= dynlen(selected_list); i++){
+
+dpGet(mudcsAddSystem(selected_list[i])+\".status\",current_status);
+   if(current_status != -2)
+   dpSet(mudcsAddSystem(selected_list[i])+\".status\",2);
+ }
+//--- for temperatures--------------
+ for(i=1;i<= dynlen(selected_list_temp); i++){
+
+dpGet(mudcsAddSystem(selected_list_temp[i])+\".status\",current_status);
+   if(current_status != -2)
+   dpSet(mudcsAddSystem(selected_list_temp[i])+\".status\",2);
+ }
+
+//------------------
+
+
+		fwBusyBarButton_std_stopBusy(exceptionInfo);
+
+}
+//============================================================
+
+" 0
+ E E E
+13 56
+"button_off"
+""
+1 78 630 E E E 1 E 1 E N {255,255,255} E N {0,153,153} E E
+ E E
+124 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 111 -*-Helvetica [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 78 630 128 654
+
+T 
+1
+LANG:1 3 OFF
+"int g_busyThread; 
+
+main(){
+
+int i;
+
+	dyn_string exceptionInfo; 
+	g_busyThread = -1; 
+	fwBusyBarButton_std_startBusy(exceptionInfo); 
+
+string current_status;
+
+ for(i=1;i<= dynlen(selected_list); i++){
+dpGet(mudcsAddSystem(selected_list[i])+\".status\",current_status);
+   if(current_status != -2)
+   dpSet(mudcsAddSystem(selected_list[i])+\".status\",0);
+ }
+//--- for temperatures--------------
+ for(i=1;i<= dynlen(selected_list_temp); i++){
+
+dpGet(mudcsAddSystem(selected_list_temp[i])+\".status\",current_status);
+   if(current_status != -2)
+   dpSet(mudcsAddSystem(selected_list_temp[i])+\".status\",0);
+ }
+
+//------------------
+		fwBusyBarButton_std_stopBusy(exceptionInfo);
+
+}
+//============================================================
+
+" 0
+ E E E
+13 57
+"21"
+""
+1 350 430 E E E 1 E 0 E N "_3DText" E N {0,153,153} E E
+ E E
+159 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 430 400 451.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+//	ModuleOn(LVModule, xPos + xSize, yPos, 0, 0, 1, 1, \"\");
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+
+}" 0
+ E E E
+13 58
+"22"
+""
+1 350 450 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+161 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 450 400 471.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 59
+"23"
+""
+1 350 470 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+163 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 470 400 491.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 60
+"24"
+""
+1 350 490 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+165 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 490 400 511.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 61
+"25"
+""
+1 350 510 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+167 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 510 400 531.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 62
+"26"
+""
+1 350 530 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+169 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 350 530 400 551.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 63
+"27"
+""
+1 349 550 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+171 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 349 550 399 571.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize/2, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+25 64
+"table1"
+""
+1 410 10 E E E 1 E 1 E N "_3DText" E N {204,204,204} E E
+ E E
+173 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 103 -*-Times [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Times [Adobe]
+0 ""
+ 410 10 750 600
+"
+main()
+{
+//
+// shape table=getShape(\"table\");
+ 
+//...
+ 
+//table.tableMode(TABLE_SELECT_BROWSE);
+ 
+// table.selectByClick(TABLE_SELECT_LINE);
+ 
+setValue(\"\",\"tableMode\",TABLE_SELECT_BROWSE);
+setValue(\"\",\"selectByClick\",1);
+
+}" 0
+"main(int row, string column, string value)
+{
+
+int i;
+int j;
+dyn_int lines;
+dyn_anytype line; 
+
+/*
+shape table=getShape(\"table\");
+
+dyn_int lines1 = table.getSelectedLines();
+
+////DebugN(table.getSelectedLines());
+
+for(i=1;i<=dynlen(lines1);i++){
+  DebugN(lines1[i]);
+ getValue(\"\",\"getLineN\", lines1[i], line);
+//// DebugN(line);
+
+ DebugN(line[1]+line[2]+line[3]);
+
+
+}
+ 
+return;
+
+*/
+
+
+}" 0
+ 1 0 1 3 27 "device" 8 1 0 "s" 1
+LANG:1 6 device
+E
+1
+LANG:1 0 
+
+120 "status" 5 1 0 "s" 1
+LANG:1 6 status
+E
+1
+LANG:1 0 
+
+75 "alarm" 10 1 0 "s" 1
+LANG:1 5 alarm
+E
+1
+LANG:1 0 
+
+145 
+20 20 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "2" 0 "3" 0 "4" 0 "5" 0 "6" 0 "7" 0 "8" 0 "9" 0 "10" 0 "11" 0 "12" 0 "13" 0 "14" 0 "15" 0 "16" 0 "17" 0 "18" 0 "19" 0 "20" 0 20 166
+1
+LANG:1 103 -*-Times [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Times [Adobe]
+0 ""
+0 1 1 1 7
+1 0
+13 65
+"28"
+""
+1 750 30 E E E 1 E 0 E N "_3DText" E N {0,153,153} E E
+ E E
+175 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 30 800 51.5217391304348
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+//	ModuleOn(LVModule, xPos + xSize, yPos, 0, 0, 1, 1, \"\");
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+
+}" 0
+ E E E
+13 66
+"29"
+""
+1 750 50 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+177 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 50 800 71.5217391304348
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 67
+"30"
+""
+1 750 70 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+179 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 70 800 91.5217391304348
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 68
+"31"
+""
+1 750 90 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+181 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 90 800 111.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 69
+"32"
+""
+1 750 110 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+183 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 110 800 131.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 70
+"33"
+""
+1 750 130 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+185 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 130 800 151.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 71
+"34"
+""
+1 750 150 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+187 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 150 800 171.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 72
+"35"
+""
+1 750 170 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+189 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 170 800 191.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 73
+"36"
+""
+1 750 190 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+191 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 190 800 211.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 74
+"37"
+""
+1 750 210 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+193 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 210 800 231.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 75
+"38"
+""
+1 750 230 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+195 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 230 800 251.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 76
+"39"
+""
+1 750 250 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+197 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 250 800 271.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 77
+"40"
+""
+1 750 270 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+199 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 270 800 291.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 78
+"41"
+""
+1 750 290 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+201 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 290 800 311.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 79
+"42"
+""
+1 750 310 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+203 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 310 800 331.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 80
+"43"
+""
+1 749 330 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+205 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 749 330 799 351.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 81
+"44"
+""
+1 750 350 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+207 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 350 800 371.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 82
+"45"
+""
+1 750 370 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+209 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 370 800 391.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 83
+"46"
+""
+1 750 390 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+211 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 390 800 411.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 84
+"47"
+""
+1 750 410 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+213 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 410 800 431.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 85
+"48"
+""
+1 750 430 E E E 1 E 0 E N "_3DText" E N {0,153,153} E E
+ E E
+215 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 430 800 451.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+//	ModuleOn(LVModule, xPos + xSize, yPos, 0, 0, 1, 1, \"\");
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+
+}" 0
+ E E E
+13 86
+"49"
+""
+1 750 450 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+217 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 450 800 471.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 87
+"50"
+""
+1 750 470 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+219 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 470 800 491.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 88
+"51"
+""
+1 750 490 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+221 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 490 800 511.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 89
+"52"
+""
+1 750 510 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+223 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 510 800 531.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 90
+"53"
+""
+1 750 530 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+225 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 750 530 800 551.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+13 91
+"54"
+""
+1 748 550 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+227 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 748 550 798 571.521739130435
+
+T 
+1
+LANG:1 0 
+"main()
+{
+
+string name;
+int i;
+getValue(\"\",\"name\",name);
+i=name;
+
+string LVModule=\"LVModule\";
+
+	if(!isModuleOpen(LVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(LVModule, xPos + xSize, yPos, 10, 10, 1, 1, \"Scale\");
+
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevLV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",LVModule, 
+	makeDynString(\"$sDpName:\" + selected_list[i]));
+}" 0
+ E E E
+22 94
+"excluded_chambers"
+""
+1 156.2068965517241 597 E E E 1 E 1 E N {0,0,0} E N "_Window" E E
+ E E
+233 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 103 -*-Times [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Times [Adobe]
+0 ""
+ 158 598 382 626
+0
+
+E
+"main()
+{
+  /*
+int i;
+getValue(\"\",\"selectedPos\",i);
+
+string HVModule=\"HVModule\";
+
+	if(!isModuleOpen(HVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(HVModule, xPos, yPos + 100, 10, 10, 1, 1, \"Scale\");
+//	ModuleOn(HVModule, xPos + xSize, yPos, 0, 0, 1, 1, \"\");
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevHV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",HVModule, 
+	makeDynString(\"$sDpName:\" + on_selected_list[i],\"$project_system:\"+project_system,\"$project_station:\"+project_station));
+    */ 
+}" 0
+
+E
+ 1 0
+2 95
+"PRIMITIVE_TEXT1"
+""
+1 30 577 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+234 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 30 600 157 616
+0 2 2 "0s" 0 0 0 192 0 0  30 600 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 20 excluded LV channels
+22 96
+"excluded_t_chambers"
+""
+1 556.2068965517242 597 E E E 1 E 1 E N {0,0,0} E N "_Window" E E
+ E E
+236 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 103 -*-Times [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Times [Adobe]
+0 ""
+ 558 598 782 626
+0
+
+E
+"main()
+{
+  /*
+int i;
+getValue(\"\",\"selectedPos\",i);
+
+string HVModule=\"HVModule\";
+
+	if(!isModuleOpen(HVModule) ){ 
+	int xPos, yPos, xSize, ySize;
+	
+	panelPosition(myModuleName(), \"\", xPos, yPos);
+	panelSize(\"\", xSize, ySize);
+	ModuleOn(HVModule, xPos, yPos + 100, 10, 10, 1, 1, \"Scale\");
+//	ModuleOn(HVModule, xPos + xSize, yPos, 0, 0, 1, 1, \"\");
+//		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
+	} 
+
+	RootPanelOnModule(CSC_fwG_g_Component+\"/emuDevHV_1Browser.pnl\", //\"emu_all/fwTrendPanel.pnl\", 
+				\"\",HVModule, 
+	makeDynString(\"$sDpName:\" + on_selected_list[i],\"$project_system:\"+project_system,\"$project_station:\"+project_station));
+    */ 
+}" 0
+
+E
+ 1 0
+2 97
+"PRIMITIVE_TEXT2"
+""
+1 410 577 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+238 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 410 600 558 616
+0 2 2 "0s" 0 0 0 192 0 0  410 600 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 22 excluded TEMP channels
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

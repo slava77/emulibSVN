@@ -1,0 +1,746 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 611 400 N "_3DFace" 4
+"$obj"
+"$project_station"
+"$project_system"
+"$sDpName"
+"int is_local_sys;
+
+main()
+{
+$project_station;
+$project_system;   
+  mudcsProjectConnect();
+    
+string local_sys = fwFsm_getSystemName();
+if(strpos(local_sys,\"CSC\")>=0 || strpos(local_sys,\"csc\")>=0
+|| strpos(local_sys,\"EMU\")>=0 || strpos(local_sys,\"emu\")>=0 || strpos(local_sys,\"dcspcS2G19\")>=0 )is_local_sys=1;
+else is_local_sys=0;
+
+
+string mudcs_alias;
+init_dp_switch();
+mudcs_alias=mudcsAliasNameGet(DpName);
+mudcsNameToPosConvert(mudcs_alias/*DpName*/, disk_number, ring_number, 
+                       chamber_number, device_type);
+dpConnect(\"status_monitor\",DpNameFsm+\".status\");
+dpConnect(\"update_monitor\",DpName+\".data.operation_result\");
+
+dpConnect(\"update_dpoints_not_controlled\",CSC_fwG_g_SYSTEM_NAME+\":DPOINTS_NOT_CONTROLLED.value\");
+}
+
+//============================================================
+
+init_dp_switch(){
+ if($obj != \"\"){   // the panel is called from FSM
+    DpName=$obj;
+ } 
+ else{
+    DpName=$sDpName; // the panel is called from LOGICAL TREE
+ }
+
+ DpName=mudcsAddSystem(DpName);
+
+  mudcsConvertData2FsmOne(\"CHIP_1\",DpName,DpNameFsm);
+  mudcsConvertFsm2DataOne(DpNameFsm,DpName);
+
+
+
+/*
+  dyn_string dps;  
+  dpGet(DpName+\".:_alert_hdl.._dp_list\",dps);
+  if(dynlen(dps) <= 0){
+   mudcsDebug(DpName+\".:_alert_hdl.._active\" + \"is not configured\");  
+  }
+*/
+
+}
+
+//============================================================
+//============================================================
+//============================================================
+status_monitor(string dp, int status){
+
+ dyn_string ds=makeDynString(
+// \"alct_eprom\",
+// \"daqmb_eprom\",
+// \"tmb_eprom\",
+// \"cfeb_eprom\",
+// \"mpc_eprom\",
+// \"select2\",
+ \"all_fpga\",
+ \"alct_fpga\",
+ \"daqmb_fpga\",
+ \"tmb_fpga\",
+ \"cfeb_fpga\",
+ \"mpc_fpga\",
+ \"hard_reset\"
+
+ );
+
+ if(status ==0 ){
+
+  for(int i=1;i<=dynlen(ds);i++)setValue(ds[i],\"enabled\",FALSE);
+setValue(\"enable_disable\",\"text\",\"TO SWITCH ON\");
+setValue(\"enable_disable\",\"backCol\",\"{0,153,153}\");
+ }
+ else{
+  for(int i=1;i<=dynlen(ds);i++)setValue(ds[i],\"enabled\",TRUE);
+setValue(\"enable_disable\",\"text\",\"TO SWITCH OFF\");
+setValue(\"enable_disable\",\"backCol\",\"{255,0,0}\");
+ }
+
+
+}
+//============================================================
+
+update_monitor(string dp, string value)
+{
+
+// mudcsDebug(\"1\");
+
+}
+//=============================================================
+  
+update_dpoints_not_controlled(string dpName, string value){
+
+ if(strpos(value,DpNameFsm) <0){
+  if(is_local_sys)setValue(\"enable_disable\",\"enabled\",TRUE);
+  else setValue(\"enable_disable\",\"enabled\",FALSE);
+  setValue(\"NOT_CONNECTED\",\"visible\",FALSE);
+  }
+ else  {
+  setValue(\"enable_disable\",\"enabled\",FALSE);
+  setValue(\"NOT_CONNECTED\",\"visible\",TRUE);
+ }
+
+}
+
+//==================================================================" 0
+ E E E E 1 -1 -1 0  420 39
+""0  1
+E "#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs2.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs3.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs4.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcsDim.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuAlert.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emufw.ctl\"
+
+string DpName;
+string DpNameFsm;
+int disk_number;
+int ring_number;
+int chamber_number;
+string device_type;
+
+
+string project_station;
+string project_system;" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+26 2
+"alct_eprom"
+""
+1 30 150 E E E 0 E 1 E N {255,255,255} E N {0,153,153} E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+ 30 150 180 180
+ 0 1
+LANG:1 11  ALCT/combo
+"" 0 0 0 0 0
+ 2 1 1
+LANG:1 6 VIRTEX
+"0" 0 0 0 0 0
+ 1 1
+LANG:1 12 SLOW CONTROL
+"1" 0 0 0 0 0
+ "main()
+{
+
+
+}" 0
+ "main(int id)
+{
+string command;
+if(ring_number == 1 && disk_number > 1 )command=\"load_alct672\"; //PNPI
+else if(ring_number == 2 )command=\"load_alct384\"; //USA  or China (1/2)
+else if(ring_number == 1 && disk_number == 1 )command=\"load_alct288\"; //Dubna
+else if(ring_number == 3 && disk_number == 1 )command=\"load_alct288\"; //China(1/3)
+////////mudcsDebug(command);
+ mudcsCommand(\"LV\",DpName,command);
+
+}" 0
+0 
+13 3
+"tmb_eprom"
+""
+1 30 230 E E E 0 E 1 E N {255,255,255} E N {0,153,153} E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+ 30 230 180 262
+
+T 
+1
+LANG:1 4 TMBs
+"main()
+{
+ mudcsCommand(\"LV\",DpName,\"load_tmb\");
+}" 0
+ E E "main()
+{
+
+}" 0
+
+2 5
+"PRIMITIVE_TEXT1"
+""
+1 32 82 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 32 82 136 98
+1 2 2 "0s" 0 0 0 192 0 0  32 82 1
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 13 EPROM LOADING
+2 6
+"PRIMITIVE_TEXT1"
+""
+1 2 59 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+13 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 222 82 350 98
+1 2 2 "0s" 0 0 0 192 0 0  222 82 1
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 16 FPGA PROGRAMMING
+2 8
+"PRIMITIVE_TEXT1"
+""
+1 40 5 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 430 80 502 96
+1 2 2 "0s" 0 0 0 192 0 0  430 80 1
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 9 RESETTING
+2 10
+"PRIMITIVE_TEXT1"
+""
+1 60 27 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 30 30 440 49
+1 2 2 "0s" 0 0 0 192 0 0  30 30 1
+1
+LANG:1 107 -*-Courier [Adobe]-bold-i-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,1,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 41 EPROM LOADING/FPGA PROGRAMMING/ RESETTING
+13 12
+"mpc_eprom"
+""
+1 30 310 E E E 0 E 1 E N {255,255,255} E N {0,153,153} E E
+ E E
+48 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+ 30 310 180 342
+
+T 
+1
+LANG:1 3 MPC
+"main()
+{
+ mudcsCommand(\"LV\",DpName,\"load_mpc\");
+}" 0
+ E E "main()
+{
+
+}" 0
+
+13 13
+"tmb_fpga"
+""
+1 230 230 E E E 1 E 1 E N {255,255,255} E N {0,153,153} E E
+ E E
+50 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+ 230 230 360 262
+
+T 
+1
+LANG:1 4 TMBs
+"main()
+{
+ mudcsCommand(\"LV\",DpName,\"program_tmb\");
+}" 0
+ E E E
+13 14
+"cfeb_fpga"
+""
+1 230 270 E E E 1 E 1 E N {255,255,255} E N {0,153,153} E E
+ E E
+52 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+ 230 270 360 302
+
+T 
+1
+LANG:1 5 CFEBs
+"main()
+{
+ mudcsCommand(\"LV\",DpName,\"program_all_cfebs\");
+}" 0
+ E E E
+13 15
+"mpc_fpga"
+""
+1 230 310 E E E 1 E 1 E N {255,255,255} E N {0,153,153} E E
+ E E
+54 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+ 230 310 360 342
+
+T 
+1
+LANG:1 3 MPC
+"main()
+{
+ mudcsCommand(\"LV\",DpName,\"program_mpc\");
+}" 0
+ E E E
+13 16
+"daqmb_fpga"
+""
+1 230 190 E E E 1 E 1 E N {255,255,255} E N {0,153,153} E E
+ E E
+56 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+ 230 190 360 222
+
+T 
+1
+LANG:1 6 DAQMBs
+"main()
+{
+ mudcsCommand(\"LV\",DpName,\"program_dmb\");
+}" 0
+ E E E
+13 17
+"alct_fpga"
+""
+1 230 150 E E E 1 E 1 E N {255,255,255} E N {0,153,153} E E
+ E E
+58 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+ 230 150 360 182
+
+T 
+1
+LANG:1 4 ALCT
+"main()
+{
+ mudcsCommand(\"LV\",DpName,\"program_alct\");
+}" 0
+ E E E
+26 19
+"select2"
+""
+1 390 150 E E E 0 E 1 E N {255,255,255} E N {0,153,153} E E
+ E E
+95 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+ 390 150 600 180
+ 0 1
+LANG:1 14    RESET/combo
+"" 0 0 0 0 0
+ 6 1 1
+LANG:1 16 ALL_CRATE_BOARDS
+"1" 0 0 0 0 0
+ 1 1
+LANG:1 6 DAQMBs
+"2" 0 0 0 0 0
+ 1 1
+LANG:1 4 TMBs
+"3" 0 0 0 0 0
+ 1 1
+LANG:1 4 MPCs
+"4" 0 0 0 0 0
+ 1 1
+LANG:1 10 DMBs_fifos
+"6" 0 0 0 0 0
+ 1 1
+LANG:1 8 L1_reset
+"7" 0 0 0 0 0
+ "main()
+{
+
+}" 0
+ "main(int id)
+{
+
+if(id==1)
+ mudcsCommand(\"LV\",DpName,\"soft_reset_all\");
+else if(id==2)
+ mudcsCommand(\"LV\",DpName,\"soft_reset_dmb\");
+else if(id==3)
+ mudcsCommand(\"LV\",DpName,\"soft_reset_tmb\");
+else if(id==4)
+ mudcsCommand(\"LV\",DpName,\"soft_reset_mpc\");
+//else if(id==5)
+// mudcsCommand(\"LV\",DpName,\"int_logic_reset_ccb\");
+else if(id==5)
+ mudcsCommand(\"LV\",DpName,\"reset_fifo_dmb\");
+else if(id==6)
+ mudcsCommand(\"LV\",DpName,\"l1_reset_ccb\");
+
+
+}" 0
+0 
+13 20
+"all_fpga"
+""
+1 230 110 E E E 1 E 1 E N {255,255,255} E N {0,153,153} E E
+ E E
+65 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+ 230 110 360 142
+
+T 
+1
+LANG:1 9 ALL FPGAs
+"main()
+{
+ mudcsCommand(\"LV\",DpName,\"program_all_via_ccb\");
+}" 0
+ E E E
+26 22
+"daqmb_eprom"
+""
+1 30 190 E E E 0 E 1 E N {255,255,255} E N {0,153,153} E E
+ E E
+87 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+ 30 190 180 220
+ 0 1
+LANG:1 12 DAQMBs/combo
+"" 0 0 0 0 0
+ 2 1 1
+LANG:1 8 VME_CHIP
+"0" 0 0 0 0 0
+ 1 1
+LANG:1 12 CONTROL CHIP
+"1" 0 0 0 0 0
+ "main()
+{
+
+}" 0
+ "main(int id)
+{
+
+ if(id==0)
+ mudcsCommand(\"LV\",DpName,\"load_dmb_vme_chip\");
+ else if (id==1)
+ mudcsCommand(\"LV\",DpName,\"load_dmb_ctl_chip\");
+
+}" 0
+0 
+26 23
+"cfeb_eprom"
+""
+1 30 270 E E E 0 E 1 E N {255,255,255} E N {0,153,153} E E
+ E E
+90 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+ 30 270 180 300
+ 0 1
+LANG:1 11 CFEBs/combo
+"" 0 0 0 0 0
+ 5 1 1
+LANG:1 6 cfeb 1
+"0" 0 0 0 0 0
+ 1 1
+LANG:1 6 cfeb 2
+"1" 0 0 0 0 0
+ 1 1
+LANG:1 6 cfeb 3
+"2" 0 0 0 0 0
+ 1 1
+LANG:1 6 cfeb 5
+"4" 0 0 0 0 0
+ 1 1
+LANG:1 6 cfeb 2
+"1" 0 0 0 0 0
+ E "main(int id)
+{
+
+ if(id==0)
+ mudcsCommand(\"LV\",DpName,\"load_cfeb1\");
+ else if (id==1)
+ mudcsCommand(\"LV\",DpName,\"load_cfeb2\");
+ else if (id==2)
+ mudcsCommand(\"LV\",DpName,\"load_cfeb3\");
+ else if (id==3)
+ mudcsCommand(\"LV\",DpName,\"load_cfeb4\");
+ else if (id==4)
+ mudcsCommand(\"LV\",DpName,\"load_cfeb5\");
+
+}" 0
+0 
+13 24
+"enable_disable"
+""
+1 390 360 E E E 1 E 1 E N "_3DText" E N {0,153,153} E E
+ E E
+92 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+ 390 360 600 392
+
+T 
+1
+LANG:1 4 ....
+"main()
+{
+
+int current_status;
+
+ dpGet(mudcsAddSystem(DpNameFsm)+\".status\",current_status);
+ if(current_status==0)dpSet(mudcsAddSystem(DpNameFsm)+\".status\",2);
+ else /*if(current_status==2)*/dpSet(mudcsAddSystem(DpNameFsm)+\".status\",0);
+
+}" 0
+ E E "
+main(){
+
+
+}" 0
+
+2 25
+"NOT_CONNECTED"
+""
+1 110 -5 E E E 1 E 1 E N {255,255,255} E N {255,0,0} E E
+ E E
+97 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 410 20 578 68
+1 2 2 "0s" 0 0 0 192 0 0  410 20 2
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 12    DEVICE IS
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 15  NOT CONNECTED 
+13 26
+"hard_reset"
+""
+1 230 350 E E E 1 E 1 E N {255,255,255} E N {0,153,153} E E
+ E E
+99 0 0 0 0 0
+E E E
+0
+1
+LANG:1 60 complete hard reset of the crate used by Crate Configuration
+
+0
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+ 230 350 360 382
+
+T 
+1
+LANG:1 10 Hard Reset
+"main()
+{
+ mudcsCommand(\"LV\",DpName,\"hard_reset_all\");
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

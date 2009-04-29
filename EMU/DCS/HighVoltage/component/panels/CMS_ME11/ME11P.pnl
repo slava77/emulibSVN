@@ -1,0 +1,187 @@
+V 10
+1
+LANG:1 8 (NoName)
+PANEL,-1 -1 427 427 N "_3DFace" 1
+"$2"
+E E E E E 1 -1 -1 0  40 120
+""0  1
+E E 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+7 3
+"Ellipse1"
+""
+1 2 2 E E E 1 E 0 E N "_WindowText" E N {204,204,204} E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+   int k;
+//   DebugN($1);
+//   DebugN($2);
+//   return;
+    drawRing();
+
+   if (strlen($2)>7) 
+       k=addSymbol(myModuleName(),myPanelName(), // parameters table
+         \"CMS_ME11\\\\Params.pnl\",
+         \"params\",makeDynString(\"$ChHVName:\"+$2),
+        0,300,0,1.0,1.0);
+}
+
+drawRing ()
+{
+
+   int i,ix;
+   float k,x,y,ar,a5r,a10r,ag,ag1,arg;
+   float scale,side,pi,rad,rad1;
+	 float x1,y1,x0,y0,x00,y00,xx0,yy0,xx1,yy1;
+	 
+	 int Cx,Cy;
+	 string s,ss,sx,selectedColor=\"{153,153,153}\";
+
+   if (isDollarDefined(\"$2\")) {
+      s=$2;
+      getValue(\"Ellipse1\",\"position\",Cx,Cy); // 
+      Cx=Cx+40;
+      Cy=Cy+100;
+   }
+   else {
+      s=\"ME11PHV\";
+      Cx=0;
+      Cy=0;
+   }
+   
+   i=strlen(s);
+   ss=substr(s,0,5);
+   if (i>=9) {
+      sx=substr(s,5,2);
+      ix=sx;
+      ix=ix-1;
+   }
+   else {
+      ix=-1; 
+      sx=\"\";
+   }
+   
+//   DebugN(ix,ss,sx);
+   
+   if (ss!=\"ME11P\") return;
+	 
+	 
+	 
+   pi=3.14;
+   x00=10;
+   y00=210;
+   side=1.0;
+   a10r=pi/18.0*side;
+   a5r=pi/36.0*side;
+   ar=0;
+   ag=0;
+   scale=0.5;
+   rad=200;
+   rad1=rad*0.85;
+   string s;
+   
+//   CHAMBERS ----------------
+     ar=a5r;
+     for (i=0; i<36; i++){       
+      ar=ar-a10r;
+//    arg=ar*360.0/(2.0*pi*rad); 
+      x1=rad-rad*cos(ar);
+      y1=rad*sin(ar);
+      x0=x00+x1;
+      y0=y00+y1;
+//     DebugN(x0,y0,arg,\"x0,y0\");
+      s=i+1;
+      if (i<9) s=\"0\"+s;
+      s=\"\";
+      
+      sx=\"s\"+i;
+
+      
+      k=addSymbol(myModuleName(),myPanelName(), // chamber itself
+         \"CMS_ME11\\\\ME11_chamber.pnl\",
+         sx,makeDynString(\"$ChHVName:\"+s,\"$Color:\"+selectedColor),
+         Cx+x0,Cy+y0,ag,scale,scale);
+      if (((ix>=0) && (i==ix)) || ((ix<0) && (i>25) && (i<32))) { // mark selected chamber
+         setValue(sx,\"backCol\",selectedColor);
+      }
+      
+         
+      ag=ag-10;   
+
+    }// for
+      
+ 
+//  TEXT  -----------------      
+    x00=8;
+    y00=212;
+    xx1=0;
+    yy1=0;
+    ar=a5r/5.0*2.0;
+     for (i=0; i<36; i++){       
+      ar=ar-a10r;
+
+      s=i+1;
+      if (i<9) s=\"0\"+s;
+ //     DebugN(s);
+      xx0=x00+xx1;
+      yy0=y00+yy1;
+     
+     k=addSymbol(myModuleName(),myPanelName(), // chamber nbr
+         \"CMS_ME11\\\\ME11_text.pnl\",
+         \"s1\",makeDynString(\"$ChNumber:\"+s),
+         Cx+xx0+25,Cy+yy0+5,0,scale,scale);         
+       
+      xx1=rad1-rad1*cos(ar);
+      yy1=rad1*sin(ar);
+      xx0=x00+xx1;
+      yy0=y00+yy1;
+
+    }
+
+}" 0
+ E 0 1 1 0 1 E U  1 E 210 210 200 200
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0

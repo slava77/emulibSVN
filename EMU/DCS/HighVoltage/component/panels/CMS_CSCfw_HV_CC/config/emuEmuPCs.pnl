@@ -1,0 +1,304 @@
+V 10
+1
+LANG:1 12 EmuConfigPCs
+PANEL,-1 -1 487 396 N "_3DFace" 0
+"main()
+{
+
+ //  mudcsInit();
+dyn_string list;
+
+ dpGet(CSC_fwG_g_SYSTEM_NAME+\":Db_o.DimServerComputerList\",list);
+  PCList.items()=list;
+}" 0
+ E E E E 1 -1 -1 0  50 160
+""0  1
+E E 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+17 0
+"PCList"
+""
+1 51.86813186813188 162 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 50.00000000000001 160 390 374
+0
+
+E
+"main()
+{
+string test_string;
+
+getValue(\"\",\"selectedText\",test_string);
+setValue(\"PC\",\"text\",test_string);
+
+}" 0
+
+E
+
+0 0
+13 1
+"addPC"
+""
+1 51.57142857142858 80 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 48 78 198 112
+
+T 
+1
+LANG:1 10 Add DAQ PC
+"main()
+{
+	string sPC, managerName;
+	dyn_string list, exceptionInfo;
+	int pos;
+	
+                 list=PCList.items();
+
+
+	sPC = PC.text();
+	if(sPC == \"\" || dynContains(list,sPC) || sPC == \"smi\"){
+             if(sPC == \"smi\")mudcsDebug(\"You can not add smi PC name\");          
+              else if(sPC == \"\") mudcsDebug(\"Empty PC name\");
+              else mudcsDebug(\"PC name already on the list\");
+               return;
+
+        }
+                  dynAppend(list,sPC);
+            	
+PCList.items() = list;
+dpSet(CSC_fwG_g_SYSTEM_NAME+\":Db_o.DimServerComputerList\",list);
+     mudcsDimAddRemovePC(true,sPC,exceptionInfo);
+
+
+/*
+
+
+	managerName = dimConfig.text();
+
+	if(!dpExists(managerName)) {
+		result.text()=\"DP not existing\";
+		return;
+	}
+
+	pos = strpos(srvCmd, \" \");
+	
+	if(pos >=0) {
+		fwException_raise(exceptionInfo, \"ERROR\", \"fwModifyDpClientConfig.pnl: the DIM name must not have ' ' character\", \"\");
+	}
+	list = strsplit(srvCmd,\",\");
+	if(dynlen(list) == 5) {
+		if((list[1] == \"\") || (list[2] == \"\"))
+			fwException_raise(exceptionInfo, \"ERROR\", \"fwModifyDpClientConfig.pnl: wrong dp or service\", \"\");
+	}
+	else
+		fwException_raise(exceptionInfo, \"ERROR\", \"fwModifyDpClientConfig.pnl: the DIM format is wrong\", \"\");
+	
+	if(dynlen(exceptionInfo) != 0) {
+		fwExceptionHandling_display(exceptionInfo);
+		return;
+	}
+	this.enabled = false;
+	if(managerName != \"\") {
+		dpGet(managerName+\".clientServices:_online.._value\",list);
+		dynAppend(list,srvCmd);
+//DebugN(managerName,list);
+		dpSet(managerName+\".clientServices:_original.._value\",list);
+		serviceList.items() = list;
+		resultAdd.text()=\"Service added\";
+	}
+	this.enabled = true;
+*/
+
+}
+
+" 0
+ E E E
+13 2
+"removePC"
+""
+1 230 246 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 218 78 387 112
+
+T 
+1
+LANG:1 13 Remove DAQ PC
+"main()
+{
+
+	string sPC, managerName; 
+	dyn_string list, exceptionInfo; 
+	int pos; 
+	 
+                 list=PCList.items();
+
+
+	sPC = PCList.selectedText();
+                  pos= dynContains(list,sPC);
+//	if(sPC == \"\" || pos<=0)  return; 
+
+
+
+	if(sPC == \"\" || pos <=0 || sPC == \"smi\"){ 
+             if(sPC == \"smi\")mudcsDebug(\"You can not remove smi PC name\"); 
+              else if(pos <=0)mudcsDebug(\"PC name is not on the list\");       
+              else if(sPC == \"\") mudcsDebug(\"Select PC name\");
+               return;
+
+        }
+
+
+                  dynRemove(list,pos);
+            	 PCList.items() = list;
+dpSet(CSC_fwG_g_SYSTEM_NAME+\":Db_o.DimServerComputerList\",list);
+
+ mudcsDimAddRemovePC(false,sPC,exceptionInfo);
+
+/*
+
+	string srvCmd, managerName;
+	dyn_string list;
+	int pos;
+	
+	srvCmd = serviceList.selectedText();
+	
+	managerName = dimConfig.text();
+
+	if(!dpExists(managerName)) {
+		result.text()=\"DP not existing\";
+		return;
+	}
+
+	this.enabled = false;
+	if(managerName != \"\") {
+		dpGet(managerName+\".clientServices:_online.._value\",list);
+		pos = dynContains(list,srvCmd);
+		if(pos >0)
+			dynRemove(list, pos);
+//DebugN(managerName,list);
+		dpSet(managerName+\".clientServices:_original.._value\",list);
+		serviceList.items() = list;
+		resultAdd.text()=\"Service removed\";
+	}
+	this.enabled = true;
+*/
+}" 0
+ E E E
+14 3
+"PC"
+""
+1 299.7204968944099 108 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 50 50 389.9999999999999 77
+3 "0s" 0 0 0 0 0 -1  E E E
+13 4
+"PUSH_BUTTON1"
+""
+1 90 130 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 88 128 292 162
+
+T 
+1
+LANG:1 15 all dim restart
+"main()
+{
+  dyn_string exceptionInfo;
+  
+  mudcsInit();
+  //mudcsDebug(CSC_fwG_g_project_name_home);
+  mudcsAllDimManagersStop();
+  mudcsDimConfigAllManagers(exceptionInfo);
+
+if(dynlen(exceptionInfo)>0){mudcsDebug(exceptionInfo);return;}
+
+delay(5);
+ mudcsAllDimManagersStart();
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

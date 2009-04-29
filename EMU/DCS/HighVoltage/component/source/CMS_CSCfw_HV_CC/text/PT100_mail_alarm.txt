@@ -1,0 +1,9 @@
+To: valerii.sytnik@cern.ch
+Subject: possible PT100 alarm at SX5:
+
+  The flow in some channel(s) which did not go down 3 l/h
+  is now below 1 l/h
+
+                   DCS.
+
+

@@ -1,0 +1,353 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 755 855 N "_3DFace" 2
+"$project_station"
+"$project_system"
+"dyn_string master2chamber;
+main()
+{
+project_station=$project_station;
+project_system=$project_system; 
+  mudcsProjectConnect();
+dyn_string selected_list;
+string test;
+int i;
+int line_count=0, number_of_lines;
+string coord;
+dyn_string coords;
+dyn_dyn_int cards;
+dyn_dyn_int cards_sort;
+dyn_int hosts;
+
+
+dyn_string tableCols;
+dyn_string values;
+dyn_string data;
+
+tableCols[1]=\"chn\";
+tableCols[2]=\"chamber\";
+tableCols[3]=\"host\";
+tableCols[4]=\"n\";
+tableCols[5]=\"a\";
+tableCols[6]=\"part\";
+tableCols[7]=\"master\";
+tableCols[8]=\"ms_ch\";
+
+//////dpGet(CSC_fwG_g_SYSTEM_NAME+\":HV_MASTER2CHAMBER.\",master2chamber);
+ dpGet(CSC_fwG_g_SYSTEM_NAME+\":HV_MASTER2CHAMBER.\",master2chamber);
+
+//mudcsScanTreeForDevices(\"_HV\", $DpName, selected_list);
+
+data=dpNames(CSC_fwG_g_SYSTEM_NAME+\":*\",\"HV_1_d\");
+mudcsConvertData2Fsm(\"HV_1\",data,selected_list);
+//========
+
+int index;
+
+for(i=1;i<= dynlen(selected_list);i++){
+
+
+if(strpos(data[i],\"master\") >=0)mudcsGetCoordForDp(\"HV_1\", data[i], coord);
+else if(strpos(data[i],\"Broker\") < 0)dpGet(mudcsAddSystem(selected_list[i])+\".coord\", coord);
+
+if(coord==\"\" || strpos(data[i],\"Broker\") >=0 )continue;
+ 
+ coords=strsplit(coord,\";\");
+ index=dynContains(hosts,coords[1]);
+ if(index == 0){
+  dynAppend(hosts,coords[1]);
+  dynAppend(cards[dynlen(hosts)],coords[2]);
+ }
+ else{
+  dynAppend(cards[index],coords[2]);
+ }
+
+} // for
+//=====
+int a_min;
+for(i=1;i<= dynlen(hosts);i++){
+   cards_sort[i]=makeDynString();
+
+ while(dynlen(cards[i]) > 0){
+  a_min=dynMin(cards[i]);
+  index=dynContains(cards[i],a_min); 
+  if(dynContains(cards_sort[i],a_min) <= 0)dynAppend(cards_sort[i],a_min);
+  dynRemove(cards[i],index); 
+ }
+
+} // for
+
+//mudcsDebug(cards_sort[1][2]);
+
+//========
+getValue(\"table\",\"lineCount\",number_of_lines);
+
+int card_int;
+int host_int;
+int host_index;
+string channel_s;
+string master;
+string master_id;
+
+setValue(\"table\",\"lineVisible\",0);
+
+for(i=1;i<= dynlen(data);i++){
+
+if(strpos(data[i],\"master\") >=0)mudcsGetCoordForDp(\"HV_1\", data[i], coord);
+else if(strpos(data[i],\"Broker\") < 0)dpGet(mudcsAddSystem(selected_list[i])+\".coord\", coord);
+
+if(coord==\"\" || strpos(data[i],\"Broker\") >=0 )continue;
+line_count++;
+
+chamber2masterchannel(data[i], master, channel_s, master_id);
+
+
+  values[1]=line_count;
+  values[2]=substr(data[i],strpos(data[i],\":\")+1);
+  coords=strsplit(coord,\";\");
+  values[3]=coords[1];
+  host_int= coords[1];
+  host_index=dynContains(hosts,host_int);
+  
+  card_int = coords[2];
+
+  values[4]=coords[2];
+  values[4]+=\"(\";
+  values[4]+=dynContains(cards_sort[host_index],card_int)-1;
+  values[4]+=\")\";
+
+
+  values[5]=coords[3];
+  if(strpos(data[i],\"master\") >= 0)values[6]=\"\";
+  else values[6]=coords[4];
+
+  values[7]=substr(master,strpos(master,\"master\"))+\"(\"+master_id+\")\";
+  values[8]=channel_s;
+
+
+//////  test += selected_list[i] + \"\\n\";
+
+    if(line_count>number_of_lines){
+
+             setValue(\"table\",\"appendLine\",
+            tableCols[1],values[1], // key pair for update: see below
+            tableCols[2],values[2],
+            tableCols[3],values[3],
+            tableCols[4],values[4],
+            tableCols[5],values[5],
+            tableCols[6],values[6],
+            tableCols[7],values[7],
+            tableCols[8],values[8]
+            ); 
+    }
+    else {
+             setValue(\"table\",\"updateLine\",1,
+            tableCols[1],values[1],  // key pair
+            tableCols[2],values[2],
+            tableCols[3],values[3],
+            tableCols[4],values[4],
+            tableCols[5],values[5],
+            tableCols[6],values[6],
+            tableCols[7],values[7],
+            tableCols[8],values[8]
+            ); 
+    } // else
+
+} // for
+
+
+///// setValue(\"list\",\"text\",test);
+
+
+}
+
+//===========================================================
+//===========================================================
+
+chamber2masterchannel(string data, string &master, string &channel_s, string &master_id){
+
+int i,j;
+
+//===== 
+
+
+ dyn_string test, test1;
+//=====
+
+ if(strpos(data, \"master\") >=0 ){
+  master=\"\";
+  channel_s=\"\";
+  master_id=\"\";
+  return;
+ }
+
+ for(j=1;j<=dynlen(master2chamber);j++){
+
+  test=strsplit(master2chamber[j],\"|\"); 
+
+   if(strpos(master2chamber[j],data)<0)continue;
+
+   for(i=1;i<=dynlen(test);i++){
+    if(strpos(test[i],data)<0)continue;
+    test1=strsplit(test[i],\";\");
+      channel_s=test1[2];
+      master=CSC_fwG_g_all_masters[j];
+      dpGet(mudcsAddSystem(master)+\".data.module_ID\",master_id);
+      break;
+   } 
+   break;
+
+ } // for j
+
+//=====
+
+
+
+}" 0
+ E E E E 1 -1 -1 0  20 4
+""0  1
+E "#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs2.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs3.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs4.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcsDim.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuAlert.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emufw.ctl\"
+
+string project_station;
+string project_system;" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+25 1
+"table"
+""
+1 20 20 E E E 1 E 1 E N "_3DText" E N {202,202,202} E E
+ E E
+40 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 100 -*-Times [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Times [Adobe]
+0 ""
+ 20 20 720 840
+"
+main()
+{
+//
+// shape table=getShape(\"table\");
+ 
+//...
+ 
+//table.tableMode(TABLE_SELECT_BROWSE);
+ 
+// table.selectByClick(TABLE_SELECT_LINE);
+ 
+setValue(\"\",\"tableMode\",TABLE_SELECT_BROWSE);
+setValue(\"\",\"selectByClick\",1);
+
+}" 0
+"
+main(int row, string column, string value)
+{
+
+
+
+
+
+}" 0
+ 1 0 1 8 43 "chn" 2 1 0 "s" 1
+LANG:1 1 #
+E
+1
+LANG:1 0 
+
+40 "chamber" 11 1 0 "s" 1
+LANG:1 7 chamber
+E
+1
+LANG:1 0 
+
+140 "host" 3 1 0 "s" 1
+LANG:1 4 host
+E
+1
+LANG:1 0 
+
+50 "n" 3 1 0 "s" 1
+LANG:1 1 n
+E
+1
+LANG:1 0 
+
+50 "a" 3 1 0 "s" 1
+LANG:1 1 a
+E
+1
+LANG:1 0 
+
+50 "part" 3 1 0 "s" 1
+LANG:1 4 part
+E
+1
+LANG:1 0 
+
+50 "master" 11 1 0 "s" 1
+LANG:1 16 master/master_ID
+E
+1
+LANG:1 0 
+
+140 "ms_ch" 3 1 0 "s" 1
+LANG:1 5 ms_ch
+E
+1
+LANG:1 0 
+
+50 
+18 18 "3" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "?" 0 "4" 0 "5" 0 "6" 0 "7" 0 "8" 0 "9" 0 "10" 0 "11" 0 "12" 0 "13" 0 "14" 0 "15" 0 "16" 0 "17" 0 "18" 0 "19" 0 20 164
+1
+LANG:1 100 -*-Times [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Times [Adobe]
+0 ""
+0 1 1 1 7
+1 0
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

@@ -1,0 +1,594 @@
+V 10
+1
+LANG:1 9 testTrend
+PANEL,156 101 694 485 N "_3DFace" 1
+"$DpName"
+"main()
+{
+
+ 
+//==========================
+
+
+time timeScale,endTime,beginTime;
+
+     timeScale = makeTime(2000,0,0,10)-makeTime(2000,0,0,0);  // 1hour 
+
+
+      endTime = getCurrentTime(); 
+      beginTime = (endTime-timeScale); 
+ 
+setValue(\"iMon_a0\",\"trendRun\"); 
+setValue(\"iMon_a0\",\"trendStop\");
+ 
+/////  setValue(\"iMon_a0\",\"trendStop\"); 
+  setValue(\"iMon_a0\",\"timeBegin\",beginTime); 
+  setValue(\"iMon_a0\",\"timeInterval\",timeScale); 
+
+
+setValue(\"iMon_a0\",\"trendRun\"); 
+
+//      setValue(\"\",\"curveVal\",\"upperLimit\",upLimit,endTime); 
+//      setValue(\"\",\"curveVal\",\"upperLimit\",upLimit,beginTime);
+
+//============================
+
+ 
+
+//============================
+
+
+//  setValue(\"iMon_a1\",\"trendRun\"); 
+//  setValue(\"iMon_strip\",\"trendRun\"); 
+//  setValue(\"iMon_ibeam\",\"trendRun\"); 
+//  setValue(\"vMon_a0\",\"trendRun\"); 
+//  setValue(\"vMon_a1\",\"trendRun\"); 
+//  setValue(\"vMon_strip\",\"trendRun\"); 
+//  setValue(\"vMon_ibeam\",\"trendRun\"); 
+}" 0
+ E E E E 1 -1 -1 0  40 70
+""0  1
+E "	shape trend_1; 
+	shape trend_2; 
+	shape trend_3; 
+	shape trend_4; 
+	shape trend_5; 
+	shape trend_6; 
+	shape trend_7; 
+	shape trend_8; 
+	shape trend_9; 
+	shape trend_10; 
+
+int plots_number=1;
+
+string plot_1=\"iMon_a0\";
+string plot_2=\"\";
+string plot_3=\"\";
+string plot_4=\"\";
+string plot_5=\"\";
+string plot_6=\"\";
+string plot_7=\"\";
+string plot_8=\"\";
+string plot_9=\"\";
+string plot_10=\"\";
+
+
+get_shapes(){
+
+if(plots_number>=1)trend_1 = getShape(plot_1); 
+if(plots_number>=2)trend_2 = getShape(plot_2); 
+if(plots_number>=3)trend_3 = getShape(plot_3); 
+if(plots_number>=4)trend_4 = getShape(plot_4); 
+if(plots_number>=5)trend_5 = getShape(plot_5); 
+if(plots_number>=6)trend_6 = getShape(plot_6); 
+if(plots_number>=7)trend_7 = getShape(plot_7); 
+if(plots_number>=8)trend_8 = getShape(plot_8); 
+if(plots_number>=9)trend_9 = getShape(plot_9); 
+if(plots_number>=10)trend_10 = getShape(plot_10); 
+
+}
+" 0
+ 2
+"CBRef""1"
+"EClose"E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+23 0
+"iMon_a0"
+""
+1 30 110 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 102 -adobe-courier-medium-r-normal-*-*-90-100-100-*-*-iso8859-1|-12,0,0,0,400,0,0,0,0,3,2,1,49,Courier New
+0
+""  30 110 634 334
+5 "main()
+
+{
+  int temp, temp1, minValue, maxValue, res, iMon_max;
+  float iMonExists, i0Exists;
+  bool doesExist, negateRange, ignoreOutside, inclusiveMin, inclusiveMax, aut;
+  dyn_string exceptionInfo;
+  
+
+// Make sure that Autoscale is OFF for all curves!!
+  aut = FALSE;
+  setValue(\"iMon_a0\" ,\"curveAutoscale\", \"iMon_anod0\", aut);
+
+  setValue(\"iMon_a0\",\"curveMin\",\"iMon_anod0\",0);
+
+////// if($anod0 != \"0\") {     
+//////  fwPvRange_get($anod0+\".settings.i0\",doesExist,minValue,maxValue,negateRange,ignoreOutside,
+//////  			   inclusiveMin,inclusiveMax,exceptionInfo);
+////// } 			   
+//Ignore PVSS range and set maxValue to 30 uA
+  maxValue = 20;  			  
+ 
+/////  if (doesExist)
+///// 		  setValue(\"iMon_a0\",\"curveMax\",\"iMon_anod0\",maxValue);
+/////  else  		  			    
+  		  setValue(\"iMon_a0\",\"curveMax\",\"iMon_anod0\",maxValue);
+
+}	
+  " 0
+ E E 1 148 N {0,0,0} 0 0 1 0 1 0 1 0 "iMon_anod0" "$DpName" 0 1 0 0 1 "3 2 0.000000" "%x" 1 0 2 0 E
+E
+0 0 0 3 2
+1
+LANG:1 10 iMon_anod0
+1
+LANG:1 0 
+1 "" ""  0 0 1 0 2 1 0 1 N "Red"
+0 0 0 0 0 0 0 0
+1 1 "%d/%m/%y %H:%M" "%x" 1 1 0 0 
+E 1 0 1 0 90 0 10 7200
+1
+LANG:1 101 -adobe-courier-medium-r-normal-*-*-90-100-100-*-*-iso8859-1|-12,0,0,0,400,0,0,0,0,0,0,0,0,Courier New
+0
+""  1
+LANG:1 116 -microsoft windows-Courier New-bold-r-normal-*-*-120-100-100-*-*-iso8859-1|-12,0,0,0,700,0,0,0,0,0,0,0,0,Courier New
+0
+""  1
+LANG:1 101 -adobe-courier-medium-r-normal-*-*-90-100-100-*-*-iso8859-1|-12,0,0,0,400,0,0,0,0,0,0,0,0,Courier New
+0
+""  30 
+N {0,0,0} 0 0 1 0 1 150 0 5 5 1 3
+0
+21 1
+"spin1"
+""
+1 190 70 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 99 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1|-16,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0
+""  190 70 261 99
+0
+
+"main()
+{
+
+
+return;
+int a;
+
+	int dayScale; 
+	time currentTime, timeScale, newStartTime; 
+	float upLimit, lowLimit, pvUpLimit, pvLowLimit; 
+	int test, pvTest, ranges; 
+	string trendStatus, elementName; 
+
+	dyn_string divide1, divide2; 
+
+
+
+
+
+/////while(!(trend1_init) || !(trend2_init) || !(trend3_init) || !(trend4_init));
+////mudcsDebug(\"\");
+
+get_shapes();
+
+ 
+	dayScale = 10; 
+	 
+	currentTime = getCurrentTime(); 
+ 
+	timeScale = makeTime(2000,0,0,dayScale)-makeTime(2000,0,0,0); 
+
+//int t=timeScale;
+//mudcsDebug(t);
+
+
+time begin_time=currentTime-timeScale;
+//int begin_time_i=begin_time;
+
+string t2;
+t2=formatTime(\"%c\", begin_time);
+
+ if(plots_number>=1){
+	trend_1.trendStop(); 
+	trend_1.timeInterval(timeScale); 
+	trend_1.timeBegin(begin_time); 
+	trend_1.trendRun(); 
+//mudcsDebug(t2);
+
+ } 	 
+ if(plots_number>=2){
+	trend_2.trendStop(); 
+	trend_2.timeInterval(timeScale); 
+	trend_2.timeBegin(currentTime-timeScale); 
+	trend_2.trendRun(); 
+ }
+ if(plots_number>=3){
+	trend_3.trendStop(); 
+	trend_3.timeInterval(timeScale); 
+	trend_3.timeBegin(currentTime-timeScale); 
+	trend_3.trendRun(); 
+ }
+ if(plots_number>=4){
+	trend_4.trendStop(); 
+	trend_4.timeInterval(timeScale); 
+	trend_4.timeBegin(currentTime-timeScale); 
+	trend_4.trendRun(); 
+ }
+ if(plots_number>=5){
+	trend_5.trendStop(); 
+	trend_5.timeInterval(timeScale); 
+	trend_5.timeBegin(currentTime-timeScale); 
+	trend_5.trendRun(); 
+ } 
+ if(plots_number>=6){
+	trend_6.trendStop(); 
+	trend_6.timeInterval(timeScale); 
+	trend_6.timeBegin(currentTime-timeScale); 
+	trend_6.trendRun(); 
+ } 
+ if(plots_number>=7){
+	trend_7.trendStop(); 
+	trend_7.timeInterval(timeScale); 
+	trend_7.timeBegin(currentTime-timeScale); 
+	trend_7.trendRun(); 
+ }
+ if(plots_number>=8){
+	trend_8.trendStop(); 
+	trend_8.timeInterval(timeScale); 
+	trend_8.timeBegin(currentTime-timeScale); 
+	trend_8.trendRun(); 
+ } 
+ if(plots_number>=9){
+	trend_9.trendStop(); 
+	trend_9.timeInterval(timeScale); 
+	trend_9.timeBegin(currentTime-timeScale); 
+	trend_9.trendRun(); 
+ }
+ if(plots_number>=10){
+	trend_10.trendStop(); 
+	trend_10.timeInterval(timeScale); 
+	trend_10.timeBegin(currentTime-timeScale); 
+	trend_10.trendRun(); 
+ }
+	setValue(\"\",\"text\",dayScale); 
+
+
+
+
+/*
+int a;
+
+	int dayScale; 
+	time currentTime, timeScale, newStartTime; 
+	float upLimit, lowLimit, pvUpLimit, pvLowLimit; 
+	int test, pvTest, ranges; 
+	string trendStatus, elementName; 
+
+	dyn_string divide1, divide2; 
+	shape trend_c; 
+	shape trend_v; 
+
+/////while(!(trend1_init) || !(trend2_init) || !(trend3_init) || !(trend4_init));
+////mudcsDebug(\"\");
+
+
+	
+		trend_v = getShape(\"analogueTrendV\");
+		trend_c = getShape(\"analogueTrendC\"); 
+
+
+
+	dayScale = 10;
+	
+	currentTime = getCurrentTime();
+
+	timeScale = makeTime(2000,0,0,dayScale)-makeTime(2000,0,0,0);
+
+	trend_v.trendStop();
+	trend_v.timeInterval(timeScale);
+	trend_v.timeBegin(currentTime-timeScale);
+	trend_v.trendRun();
+	
+	trend_c.trendStop(); 
+	trend_c.timeInterval(timeScale); 
+	trend_c.timeBegin(currentTime-timeScale); 
+	trend_c.trendRun(); 
+
+	setValue(\"\",\"text\",dayScale);
+*/
+
+}" 0
+
+"main()
+{
+
+
+
+int a;
+
+	int dayScale; 
+	time currentTime, timeScale, newStartTime; 
+	float upLimit, lowLimit, pvUpLimit, pvLowLimit; 
+	int test, pvTest, ranges; 
+	string trendStatus, elementName; 
+
+	dyn_string divide1, divide2; 
+
+
+
+
+
+/////while(!(trend1_init) || !(trend2_init) || !(trend3_init) || !(trend4_init));
+////mudcsDebug(\"\");
+
+get_shapes();
+
+
+	getValue(\"\",\"text\",dayScale); 
+	 
+	currentTime = getCurrentTime(); 
+ 
+	timeScale = makeTime(2000,0,0,dayScale)-makeTime(2000,0,0,0); 
+
+ if(plots_number>=1){
+	trend_1.trendStop(); 
+	trend_1.timeInterval(timeScale); 
+	trend_1.timeBegin(currentTime-timeScale); 
+//////	trend_1.trendRun(); 
+ } 	 
+ if(plots_number>=2){
+	trend_2.trendStop(); 
+	trend_2.timeInterval(timeScale); 
+	trend_2.timeBegin(currentTime-timeScale); 
+	trend_2.trendRun(); 
+ }
+ if(plots_number>=3){
+	trend_3.trendStop(); 
+	trend_3.timeInterval(timeScale); 
+	trend_3.timeBegin(currentTime-timeScale); 
+	trend_3.trendRun(); 
+ }
+ if(plots_number>=4){
+	trend_4.trendStop(); 
+	trend_4.timeInterval(timeScale); 
+	trend_4.timeBegin(currentTime-timeScale); 
+	trend_4.trendRun(); 
+ }
+ if(plots_number>=5){
+	trend_5.trendStop(); 
+	trend_5.timeInterval(timeScale); 
+	trend_5.timeBegin(currentTime-timeScale); 
+	trend_5.trendRun(); 
+ } 
+ if(plots_number>=6){
+	trend_6.trendStop(); 
+	trend_6.timeInterval(timeScale); 
+	trend_6.timeBegin(currentTime-timeScale); 
+	trend_6.trendRun(); 
+ } 
+ if(plots_number>=7){
+	trend_7.trendStop(); 
+	trend_7.timeInterval(timeScale); 
+	trend_7.timeBegin(currentTime-timeScale); 
+	trend_7.trendRun(); 
+ }
+ if(plots_number>=8){
+	trend_8.trendStop(); 
+	trend_8.timeInterval(timeScale); 
+	trend_8.timeBegin(currentTime-timeScale); 
+	trend_8.trendRun(); 
+ } 
+ if(plots_number>=9){
+	trend_9.trendStop(); 
+	trend_9.timeInterval(timeScale); 
+	trend_9.timeBegin(currentTime-timeScale); 
+	trend_9.trendRun(); 
+ }
+ if(plots_number>=10){
+	trend_10.trendStop(); 
+	trend_10.timeInterval(timeScale); 
+	trend_10.timeBegin(currentTime-timeScale); 
+	trend_10.trendRun(); 
+ }
+////////	setValue(\"\",\"text\",dayScale); 
+
+
+/*
+
+
+
+	int dayScale;
+	time currentTime, timeScale, newStartTime;
+	float upLimit, lowLimit, pvUpLimit, pvLowLimit;
+	int test, pvTest, ranges;
+	string trendStatus, elementName;
+
+	dyn_string divide1, divide2;
+	shape trend_c;
+	shape trend_v; 
+
+
+		trend_v = getShape(\"analogueTrendV\");
+		trend_c = getShape(\"analogueTrendC\"); 
+
+
+
+	getValue(\"\",\"text\",dayScale);
+	
+	currentTime = getCurrentTime();
+
+	timeScale = makeTime(2000,0,0,dayScale)-makeTime(2000,0,0,0);
+
+	trend_v.trendStop();
+	trend_v.timeInterval(timeScale);
+	trend_v.timeBegin(currentTime-timeScale);
+
+	trend_c.trendStop(); 
+	trend_c.timeInterval(timeScale); 
+	trend_c.timeBegin(currentTime-timeScale); 
+
+//--------------------------------------------------------------
+
+///getValue(\"stopStartButton\",\"text\",trendStatus); 
+
+///	if(trendStatus==\"Stop Trend\")
+////	{
+		trend_v.trendRun();
+		trend_c.trendRun(); 
+
+////	}
+
+*/
+
+
+}" 0
+
+E
+
+N 1 8800 1 1 1 1
+13 2
+"start_trend"
+""
+1 180 359 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 62 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1
+0
+""  180 359 260 386
+
+T 
+1
+LANG:1 11 start trend
+"main()
+{
+ if(plots_number>=1){
+	trend_1.trendRun(); 
+ } 	 
+ if(plots_number>=2){
+	trend_2.trendStop(); 
+	trend_2.timeInterval(timeScale); 
+	trend_2.timeBegin(currentTime-timeScale); 
+	trend_2.trendRun(); 
+ }
+ if(plots_number>=3){
+	trend_3.trendStop(); 
+	trend_3.timeInterval(timeScale); 
+	trend_3.timeBegin(currentTime-timeScale); 
+	trend_3.trendRun(); 
+ }
+ if(plots_number>=4){
+	trend_4.trendStop(); 
+	trend_4.timeInterval(timeScale); 
+	trend_4.timeBegin(currentTime-timeScale); 
+	trend_4.trendRun(); 
+ }
+ if(plots_number>=5){
+	trend_5.trendStop(); 
+	trend_5.timeInterval(timeScale); 
+	trend_5.timeBegin(currentTime-timeScale); 
+	trend_5.trendRun(); 
+ } 
+ if(plots_number>=6){
+	trend_6.trendStop(); 
+	trend_6.timeInterval(timeScale); 
+	trend_6.timeBegin(currentTime-timeScale); 
+	trend_6.trendRun(); 
+ } 
+ if(plots_number>=7){
+	trend_7.trendStop(); 
+	trend_7.timeInterval(timeScale); 
+	trend_7.timeBegin(currentTime-timeScale); 
+	trend_7.trendRun(); 
+ }
+ if(plots_number>=8){
+	trend_8.trendStop(); 
+	trend_8.timeInterval(timeScale); 
+	trend_8.timeBegin(currentTime-timeScale); 
+	trend_8.trendRun(); 
+ } 
+ if(plots_number>=9){
+	trend_9.trendStop(); 
+	trend_9.timeInterval(timeScale); 
+	trend_9.timeBegin(currentTime-timeScale); 
+	trend_9.trendRun(); 
+ }
+ if(plots_number>=10){
+	trend_10.trendStop(); 
+	trend_10.timeInterval(timeScale); 
+	trend_10.timeBegin(currentTime-timeScale); 
+	trend_10.trendRun(); 
+ }
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

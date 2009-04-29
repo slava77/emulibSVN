@@ -1,0 +1,7 @@
+# Do not remove the following line, or various programs
+# that require network functionality will fail.
+127.0.0.1		 localhost.localdomain localhost
+10.176.11.96    pcmslvux01.cern.ch      pcmslvux01--cms pcmslvux01
+10.176.11.103 ufcmshv2--cms.cms	ufcmshv2--cms
+10.176.11.67 ufcmshv1--cms.cms	ufcmshv1--cms
+10.176.3.81 cms-cent-dcs-01 cms-cent-dcs-01.cms cms-cent-dcs-01.cern.ch

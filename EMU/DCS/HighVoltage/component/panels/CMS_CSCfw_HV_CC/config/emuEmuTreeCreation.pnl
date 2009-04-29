@@ -1,0 +1,643 @@
+V 10
+1
+LANG:1 0 
+PANEL,129 101 554 396 N "_3DFace" 0
+E E E E E 1 -1 -1 0  30 40
+""0  1
+E E 2
+"CBRef""1"
+"EClose"E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"Button_cr_all"
+""
+1 32 42 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ "main()
+{
+int x,y;
+x=0;
+y=0;
+
+
+	ChildPanelOn(\"emu_config/emuCreate.pnl\",\"name:emuCreate.pnl\",
+		makeDynString(),x,y);
+
+}" 0
+ E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 62 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1
+0
+""  30 40 154 64
+
+T 
+1
+LANG:1 10 Create ALL
+"//////int id;
+
+main()
+{
+
+mudcsCreateAllTrees(0);
+dpSet(CSC_fwG_g_SYSTEM_NAME+\":\"+\"EMUALIASES.\",CSC_fwG_g_EMU_ALIASES);
+}
+
+//=============================
+" 0
+ E E "main()
+{
+/*
+addGlobal(\"CSC_fwG_EmuCmsSpecialMode\",INT_VAR);
+addGlobal(\"EmuCmsGlobalNode\",STRING_VAR);
+addGlobal(\"CSC_fwG_EmuCmsGlobalType\",STRING_VAR);
+addGlobal(\"CSC_fwG_EmuCmsGlobalCu\",STRING_VAR);
+addGlobal(\"CSC_fwG_EmuCmsGlobalParent\",STRING_VAR);
+
+
+CSC_fwG_EmuCmsSpecialMode=0;
+*/
+
+}" 0
+
+13 1
+"Button_dl_all"
+""
+1 162 42 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 62 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1
+0
+""  160 40 284 64
+
+T 
+1
+LANG:1 11 Delete All 
+"/////////int id;
+
+main()
+{
+mudcsDeleteAllTrees();
+
+}
+" 0
+ E E E
+13 2
+"Button_cr_chambers"
+""
+1 32 66 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ "main()
+{
+/*
+int x,y;
+x=0;
+y=0;
+
+
+	ChildPanelOn(\"emu_config/emuCreate.pnl\",\"name:emuCreate.pnl\",
+		makeDynString(),x,y);
+*/
+}" 0
+ E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 62 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1
+0
+""  30 64 154 88
+
+T 
+1
+LANG:1 9 Create CH
+"//////int id;
+
+main()
+{
+
+//=========================================================
+//==== the case of tree appending with chamber devices ====
+//=========================================================
+//mudcsCreateAllTrees(5); // 5 is to add devices on chambers
+/*
+mudcsCreateAllTrees(50); // 50 is to add CRB only
+dyn_string EMU_ALIASES;
+dpGet(CSC_fwG_g_SYSTEM_NAME+\":\"+\"EMUALIASES.\",EMU_ALIASES);
+dynAppend(EMU_ALIASES, CSC_fwG_g_EMU_ALIASES);
+dpSet(CSC_fwG_g_SYSTEM_NAME+\":\"+\"EMUALIASES.\",EMU_ALIASES);
+*/
+//=========================================================
+//==== end of case of tree appending with chamber devices ====
+//=========================================================
+
+
+//=========================================================
+//==== the case of tree appending with UPPER devices ====
+//=========================================================
+
+
+dyn_string EMU_ALIASES;
+
+dpGet(CSC_fwG_g_SYSTEM_NAME+\":\"+\"EMUALIASES.\",EMU_ALIASES);
+
+///mudcsCreateWTH_SX5();
+///mudcsCreateHV_PR();
+///mudcsCreatePT100();
+/// mudcsCreateMRTN();
+mudcsCreateWNR12();
+
+dynAppend(EMU_ALIASES, CSC_fwG_g_EMU_ALIASES);
+
+
+dpSet(CSC_fwG_g_SYSTEM_NAME+\":\"+\"EMUALIASES.\",EMU_ALIASES);
+
+
+
+//=========================================================
+//==== end of case of tree appending with UPPER devices ====
+//=========================================================
+
+}
+
+//=============================
+" 0
+ E E "main()
+{
+/*
+addGlobal(\"CSC_fwG_EmuCmsSpecialMode\",INT_VAR);
+addGlobal(\"EmuCmsGlobalNode\",STRING_VAR);
+addGlobal(\"CSC_fwG_EmuCmsGlobalType\",STRING_VAR);
+addGlobal(\"CSC_fwG_EmuCmsGlobalCu\",STRING_VAR);
+addGlobal(\"CSC_fwG_EmuCmsGlobalParent\",STRING_VAR);
+
+CSC_fwG_EmuCmsSpecialMode=0;
+*/
+}" 0
+
+13 3
+"Button_redraw_fsm"
+""
+1 292.258064516129 42 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 62 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1
+0
+""  290 40 430 64
+
+T 
+1
+LANG:1 15 Redraw FSM tree
+"main()
+{
+fwFsmTree_refreshTree();
+
+}
+" 0
+ E E E
+13 6
+"create_all_temp_log"
+""
+1 30 140 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+13 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 62 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1
+0
+""  30 140 150 167
+
+T 
+1
+LANG:1 15 create_all_temp
+"int id; // important to redraw the tree
+
+main()
+{
+
+	dyn_string exceptionInfo;
+
+mudcsInit();
+	
+
+	createNode(\"\",\"CSC\",\"emu/emuLV_1Operation\",\"emu/emuLV_1Operation\",exceptionInfo);
+	if(dynlen(exceptionInfo) > 0)
+		fwExceptionHandling_display(exceptionInfo);
+
+
+	createNode(\"CSC\",\"dm4\",\"emu/emuLV_1Operation\",\"emu/emuLV_1Operation\",exceptionInfo);
+	if(dynlen(exceptionInfo) > 0)
+		fwExceptionHandling_display(exceptionInfo);
+
+
+	createNode(\"CSC/dm4\",\"dm4c01\",\"emu/emuLV_1Operation\",\"emu/emuLV_1Operation\",exceptionInfo);
+	if(dynlen(exceptionInfo) > 0)
+		fwExceptionHandling_display(exceptionInfo);
+
+
+dyn_string deviceObject,ds;
+string dpAlias;
+
+dpAlias=\"CSC/dm4/dm4c01\";
+
+ds=makeDynString(CSC_fwG_g_SYSTEM_NAME+\":\"+\"LowVoltage/CSCdm4r2c01LV_1 | | | | | CSCdm4r2c01LV_1\");//,\"\");
+
+
+for(int i = 1; i <= dynlen(ds); i++){
+	fwGeneral_stringToDynString(ds[i], deviceObject);
+	dpSetAlias(deviceObject[fwDevice_DP_NAME] + \".\", dpAlias + fwDevice_HIERARCHY_SEPARATOR + deviceObject[fwDevice_ALIAS]);
+}
+
+fwDeviceEditorNavigator_expandTree(1, \"logicalTree.\");
+fwTreeView_draw(\"logicalTree.\");
+
+///////	mycorr: PanelOff();
+}
+
+
+createNode(string sDpName, string nodeNameText, string op_panel, string config_panel, dyn_string exceptionInfo)
+{ 
+
+
+
+// my_corr:
+//  new params of createNode:sDpName, nodeNameText, op_panel, config_panel
+//  $sDpName --> sDpName
+//  see my_corr above and below  
+//  nodeNameText.text() --> nodeNameText
+// navigatorPanelText.text() --> op_panel 
+// editotPanelText.text()  --> config_panel
+
+	string name, type, alias;
+//	dyn_string exceptionInfo;
+	dyn_errClass err;		
+						
+	if (sDpName == \"\")
+	{
+		name = nodeNameText;
+		alias = nodeNameText;
+		type = fwNode_TYPE_LOGICAL_ROOT;
+	}
+	else
+	{
+		name = sDpName + fwDevice_HIERARCHY_SEPARATOR + nodeNameText;
+		alias = dpGetAlias(sDpName + \".\") + fwDevice_HIERARCHY_SEPARATOR + nodeNameText;
+		type = fwNode_TYPE_LOGICAL;	
+	}
+
+	fwDevice_create(makeDynString(nodeNameText, \"FwNode\", \"\", \"\"),
+					makeDynString(sDpName, \"\"),
+					exceptionInfo);		
+
+//////mudcsDebug(name);
+	
+	if(dynlen(exceptionInfo) > 0)
+		return;
+	 
+
+	
+	dpSet(name + \".type\", type);
+	dpSet(name + \".dpTypes\", makeDynString());
+	dpSet(name + \".navigatorPanels\", makeDynString(op_panel));
+	dpSet(name + \".editorPanels\", makeDynString(config_panel));
+	
+	dpSetAlias(name + \".\", alias);
+ 
+ 	//test whether there were errors
+	err = getLastError(); 
+ 	if(dynlen(err) > 0)
+ 	{
+ 		dpDelete(name);
+ 		fwException_raise(	exceptionInfo,
+ 							\"ERROR\",
+ 							\"Could not create the logical node\",
+ 							\"\");
+		return;
+ 	}
+
+
+}" 0
+ E E E
+13 7
+"delete_all_temp_log"
+""
+1 160 140 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ "
+
+main(){
+
+}" 0
+ E
+15 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 62 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1
+0
+""  160 140 280 167
+
+T 
+1
+LANG:1 15 delete_all_temp
+"int id; // important to redraw the tree
+
+main()
+{
+
+string dpAlias=\"CSC\";
+int pos=2;
+int parentPos=1;
+
+	dyn_string exceptionInfo;
+fwDevice_deleteLogical(makeDynString(\"\", \"\", \"\", \"\", dpAlias), \"\", exceptionInfo);
+fwTreeView_getParentNodePosition(pos, parentPos, \"\");
+//DebugN(\"Parent position is: \" + parentPos + \" \" + pos);				
+fwDeviceEditorNavigator_expandTree(parentPos, \"\");
+fwTreeView_draw(\"logicalTree.\");
+////mudcsDebug(\" \"+dpAlias+\" \"+pos+\" \"+parentPos);
+}" 0
+ E E E
+13 8
+"redraw_all_temp_log"
+""
+1 290 140 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 62 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1
+0
+""  290 140 430 167
+
+T 
+1
+LANG:1 15 Redraw Log tree
+"int id; // important to redraw the tree
+
+main()
+{
+
+
+fwDeviceEditorNavigator_expandTree(1, \"logicalTree.\");
+fwTreeView_draw(\"logicalTree.\");
+
+///////	mycorr: PanelOff();
+}
+
+" 0
+ E E E
+13 9
+"create_all_hw"
+""
+1 30 250 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 62 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1
+0
+""  30 250 150 277
+
+T 
+1
+LANG:1 15 create_all_temp
+"main()
+{
+	string 	deviceName = \"CSCdm4r2c01LV_1\",
+			deviceType = \"Low Voltage Device (1)\",
+			deviceComment,
+			dpType, dpName;
+	dyn_string exceptionInfo;
+
+//////	controlsEnabled(FALSE);
+	
+	fwDevice_getDpType(deviceType, dpType, exceptionInfo);
+		
+	dpName = \"LowVoltage\" + fwDevice_HIERARCHY_SEPARATOR + deviceName;
+
+////////	resultCreate.text() = \"Creating \" + dpName + \"...\";
+	
+////////	fwOpenProgressBar(\"MyProgress\", \"Creating device \" + deviceName + \"...\", 2);
+	
+	fwDevice_create(makeDynString(deviceName, dpType, deviceComment, \"\"/*deviceModelText.text*/), 
+					makeDynString(\"LowVoltage\", \"\", \"\", \"\"), 
+					exceptionInfo);
+					
+	if(dynlen(exceptionInfo) > 0) 
+	{
+//////		fwExceptionHandling_display(exceptionInfo);
+///////		resultCreate.text() = \"Creating \" + dpName + \" failed.\";
+///////		controlsEnabled(TRUE);
+///////		fwCloseProgressBar(\"There were errors while creating the device \" + deviceName);
+		return;
+	}
+	else 
+	{
+////////		resultCreate.text() = dpName + \" created successfully.\";
+	}
+
+/* 
+========================================================================
+	if(defaultsCheckButton.state(0))
+	{
+//		DebugN(\"Setting addresses for \" + dpName);
+		fwShowProgressBar(\"Setting hardware connection for \" + deviceName + \"...\", 25);	
+		fwDevice_setAddress(dpName, 
+							makeDynString(fwDevice_ADDRESS_DEFAULT), 
+							exceptionInfo);
+	}
+
+	// Set the alerts
+	if(defaultsCheckButton.state(1))
+	{
+		//DebugN(\"Setting alarms for \" + dpName);
+		fwShowProgressBar(\"Setting alarms for \" + deviceName + \"...\", 50);
+		fwDevice_setAlert(dpName, fwDevice_ALERT_SET, exceptionInfo);
+	}
+	
+	// Set the archiving
+	if(defaultsCheckButton.state(2))
+	{
+//		DebugN(\"Setting archiving for \" + dpName);
+		fwShowProgressBar(\"Setting archiving for \" + deviceName + \"...\", 75);
+		fwDevice_setArchive(dpName, \"\", fwDevice_ARCHIVE_SET, exceptionInfo);
+	}
+		
+	if(dynlen(exceptionInfo) > 0) 
+	{
+		fwExceptionHandling_display(exceptionInfo);
+		resultCreate.text() = \"Configuring \" + dpName + \" failed.\";
+		fwCloseProgressBar(\"There were errors while configuring the device \" + deviceName);
+	}
+	else 
+	{
+		resultCreate.text() = dpName + \" created and configured successfully.\";
+		fwCloseProgressBar(\"Device \" + deviceName + \" created successfully.\");
+	}
+	controlsEnabled(TRUE);
+============================================================================
+*/
+}" 0
+ E E E
+13 10
+"delete_all_hw"
+""
+1 160 250 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+21 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 62 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1
+0
+""  160 250 280 277
+
+T 
+1
+LANG:1 15 delete_all_temp
+"main()
+{
+
+///////	dyn_int selectedLines;
+///////	dyn_string tableLine, exceptionInfo;
+dyn_string exceptionInfo;
+fwDevice_delete(\"System1:LowVoltage/CSCdm4r2c01LV_1\", exceptionInfo);
+/*	
+
+	// build list of selected devices
+	selectedLines = deviceListTable.getSelectedLines();		
+	if(dynlen(selectedLines) < 1)
+	{
+		fwException_raise(	exceptionInfo, 
+							\"WARNING\",
+							\"You should select at least one device from the table to be removed.\",
+		 					\"\");
+		fwExceptionHandling_display(exceptionInfo);
+		return;
+	}		
+
+	for (int i = 1; i <= dynlen(selectedLines); i++)
+	{
+		tableLine = deviceListTable.getLineN(selectedLines[i]);
+		//DebugN(\"tableline \" + selectedLines[i] + \" \" + tableLine);
+		fwDevice_delete(tableLine[DEVICE_DP_NAME_COLUMN], exceptionInfo);
+	}
+	
+	updateDeviceListTable();
+	//fwDeviceEditorNavigator_executeCommand(fwDEN_COMMAND_REFRESH);
+*/
+
+}" 0
+ E E E
+13 11
+"redraw_temp_hw"
+""
+1 290 250 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+23 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 62 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1
+0
+""  290 250 430 277
+
+T 
+1
+LANG:1 14 Redraw HW tree
+"int id; // important to redraw the tree
+
+main()
+{
+
+int pos=1;
+
+fwDeviceEditorNavigator_expandTree(pos, \"hardwareTree.\");
+fwTreeView_draw(\"hardwareTree.\");
+
+}
+" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
