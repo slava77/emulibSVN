@@ -12,9 +12,10 @@
 <config>./config/CMS_CSC_common.config</config>
 <file>./config/emucdb_createSchema.sql</file>
 <file>./config/emucdb_DBConnection</file>
-<file>./panels/test_cdb.pnl</file>
-<file>./panels/test_ex_handling.pnl</file>
-<file>./panels/test_fsm_create.pnl</file>
+<file>./panels/CMS_CSC_common/test_cdb.pnl</file>
+<file>./panels/CMS_CSC_common/test_ex_handling.pnl</file>
+<file>./panels/CMS_CSC_common/test_fsm_create.pnl</file>
+<file>./panels/CMS_CSC_common/encrypt_db_password.pnl</file>
 <file>./scripts/libs/CMS_CSC_common/emu_common.ctl</file>
 <file>./scripts/libs/CMS_CSC_common/emucdb_common.ctl</file>
 <file>./scripts/libs/CMS_CSC_common/emucdb_customHwCreate.ctl</file>
