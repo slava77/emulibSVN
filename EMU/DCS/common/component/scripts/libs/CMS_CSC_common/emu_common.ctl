@@ -219,7 +219,7 @@ int emu_dynDynContains(dyn_dyn_anytype map, dyn_anytype array) {
 //utility (math) functions
 string emu_decToHex(int value, int byteCount = 2) {
   blob tmpBlob;
-  blobAppendValue(tmpBlob, 255, byteCount, true);
+  blobAppendValue(tmpBlob, value, byteCount, true);
   string ret = tmpBlob;
   
   return tmpBlob;
