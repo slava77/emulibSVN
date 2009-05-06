@@ -228,7 +228,7 @@ string emu_decToHex(int value, int byteCount = 2) {
 string emu_decToBin(int value, int bitCount) {
   bit32 bits;
   
-  unsigned valueUnsigned = signedToUnsigned(value, bitCount);
+  unsigned valueUnsigned = emu_signedToUnsigned(value, bitCount);
   bits = valueUnsigned;
 
   string ret;
