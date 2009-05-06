@@ -216,11 +216,51 @@ int emu_dynDynContains(dyn_dyn_anytype map, dyn_anytype array) {
   return -1;
 }
 
-//utility functions
+//utility (math) functions
 string emu_decToHex(int value, int byteCount = 2) {
   blob tmpBlob;
   blobAppendValue(tmpBlob, 255, byteCount, true);
   string ret = tmpBlob;
   
   return tmpBlob;
+}
+
+string emu_decToBin(int value, int bitCount) {
+  bit32 bits;
+  
+  unsigned valueUnsigned = signedToUnsigned(value, bitCount);
+  bits = valueUnsigned;
+
+  string ret;
+  for(int i = bitCount - 1; i >= 0; i--) {
+    ret += getBit(bits, i);
+  }
+    
+  return ret;
+}
+
+unsigned emu_signedToUnsigned(int value, int bitCount) {
+  bit32 maxValueBits;
+  int maxValueInt;
+  unsigned ret;
+  
+  if (value < 0) {
+    for(int i=0; i < bitCount; i++) {
+      setBit(maxValueBits, i, true);
+    }
+    maxValueInt = maxValueBits;
+    
+    ret = maxValueInt + value + 1;
+  } else {
+    ret = value;
+  }
+  
+  return ret;
+}
+
+int emu_abs(int value) {
+  if (value < 0) {
+    value = value * -1;
+  }
+  return value;
 }
