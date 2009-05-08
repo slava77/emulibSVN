@@ -56,9 +56,8 @@ E "void changeCrate(int crateId) {
 }
 
 string getElmbDp(int id) {
-  string strId;
-  sprintf(strId, \"%02d\", id);
-  string elmbDp = dpNames(\"*/ELMB_\" + strId, \"FwElmbNode\");
+  string hexId = emu_decToHex(id, 1);
+  string elmbDp = dpNames(\"*/ELMB_\" + hexId, \"FwElmbNode\");
   
   return elmbDp;
 }
