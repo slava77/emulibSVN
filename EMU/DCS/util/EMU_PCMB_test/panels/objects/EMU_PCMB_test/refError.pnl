@@ -1,0 +1,613 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 397 415 N "_3DFace" 1
+"$elmbDp"
+"main()
+{
+  string elmbDp = $elmbDp;
+  
+  initEmergencyMeaning();
+  initGui();
+  
+  //hook up the errors
+  dyn_string emergencyDps = makeDynString(elmbDp + \".error\",
+                                          elmbDp + \".emergency.emergencyErrorCode\",
+                                          elmbDp + \".emergency.errorCodeByte1\",
+                                          elmbDp + \".emergency.errorCodeByte2\",
+                                          elmbDp + \".emergency.errorCodeByte3\",
+                                          elmbDp + \".emergency.errorCodeByte4\",
+                                          elmbDp + \".emergency.errorCodeByte5\");
+  dpConnect(\"updateError\", true, emergencyDps);
+  dpConnect(\"updateErrorTime\", true, elmbDp + \".error:_original.._stime\", 
+                                     elmbDp + \".bootup:_online.._stime\");
+}
+
+void initGui() {
+  //fill error register table
+  errorRegTable.appendLine(\"bit\", 0, \"set\", false, \"meaning\", \"Generic\");
+  errorRegTable.appendLine(\"bit\", 1, \"set\", false, \"meaning\", \"Current\");
+  errorRegTable.appendLine(\"bit\", 2, \"set\", false, \"meaning\", \"Voltage\");
+  errorRegTable.appendLine(\"bit\", 3, \"set\", false, \"meaning\", \"Temperature\");
+  errorRegTable.appendLine(\"bit\", 4, \"set\", false, \"meaning\", \"Communication\");
+  errorRegTable.appendLine(\"bit\", 5, \"set\", false, \"meaning\", \"Device profile specific\");
+  errorRegTable.appendLine(\"bit\", 6, \"set\", false, \"meaning\", \"reserved (always = 0)\");
+  errorRegTable.appendLine(\"bit\", 7, \"set\", false, \"meaning\", \"Manufacturer specific\");
+  
+  //fill the emergency table
+  emergencyTable.appendLine(\"meaning\", \"\");
+  emergencyTable.appendLine(\"meaning\", \"\");
+  emergencyTable.appendLine(\"meaning\", \"\");
+  emergencyTable.appendLine(\"meaning\", \"\");
+  emergencyTable.appendLine(\"meaning\", \"\");
+  emergencyTable.appendLine(\"meaning\", \"\");
+  emergencyTable.rowHeader(0, \"Code\");
+  emergencyTable.rowHeader(1, \"Byte 3\");
+  emergencyTable.rowHeader(2, \"Byte 4\");
+  emergencyTable.rowHeader(3, \"Byte 5\");
+  emergencyTable.rowHeader(4, \"Byte 6\");
+  emergencyTable.rowHeader(5, \"Byte 7\");
+}
+
+void initEmergencyMeaning() {
+  emergencyMeaning[1][\"code\"] = \"0x8100;\";
+  emergencyMeaning[1][\"code_meaning\"] = \"CAN Communication\";
+  emergencyMeaning[1][\"specByte1_name\"] = \"Interrupt\";
+  emergencyMeaning[1][\"specByte1=0x04\"] = \"Warning Level\";
+  emergencyMeaning[1][\"specByte1=0x20\"] = \"Bus Off\";
+  emergencyMeaning[1][\"specByte1=0x40\"] = \"Error Passive\";
+  emergencyMeaning[1][\"specByte1=0x80\"] = \"Transmit Check\";
+  emergencyMeaning[1][\"specByte2_name\"] = \"MODE/STATUS\";
+  emergencyMeaning[1][\"specByte2=0x01\"] = \"Init Mode\";
+  emergencyMeaning[1][\"specByte2=0x02\"] = \"Reset State\";
+  emergencyMeaning[1][\"specByte2=0x04\"] = \"Bus Off\";
+  emergencyMeaning[1][\"specByte2=0x08\"] = \"Receive Error Counter >= 96\";
+  emergencyMeaning[1][\"specByte2=0x10\"] = \"Transmit Error Counter >= 96\";
+  emergencyMeaning[1][\"specByte2=0x20\"] = \"Last Transmission Complete\";
+  emergencyMeaning[1][\"specByte2=0x40\"] = \"Receive Mode\";
+  emergencyMeaning[1][\"specByte2=0x80\"] = \"Auto Decrement Address\";
+  emergencyMeaning[1][\"specByte3_name\"] = \"Error Counter\";
+  emergencyMeaning[1][\"specByte4_name\"] = \"Bus-off counter\";
+  
+  emergencyMeaning[2][\"code\"] = \"0x8110;\";
+  emergencyMeaning[2][\"code_meaning\"] = \"CAN Buffer Overrun (CAN message buffer in RAM full; at least 1 message was lost)\";
+
+  emergencyMeaning[3][\"code\"] = \"0x8130;\";
+  emergencyMeaning[3][\"code_meaning\"] = \"Life Guarding Timeout (CAN-controller has been reinitialized)\";
+  
+  emergencyMeaning[4][\"code\"] = \"0x8210;\";
+  emergencyMeaning[4][\"code_meaning\"] = \"RPDO: too few bytes\";
+  emergencyMeaning[4][\"specByte1_name\"] = \"minimum DLC (Data Length Code) required\";
+
+  emergencyMeaning[5][\"code\"] = \"0x5000;0x01;\";
+  emergencyMeaning[5][\"code_meaning\"] = \"ADC: conversion timeout\";
+  emergencyMeaning[5][\"specByte2_name\"] = \"ADC channel number (0..63)\";
+  emergencyMeaning[5][\"specByte3_name\"] = \"Should be 0\";
+  
+  emergencyMeaning[6][\"code\"] = \"0x5000;0x02;0x00;\";
+  emergencyMeaning[6][\"code_meaning\"] = \"ADC: reset failed\";
+  emergencyMeaning[6][\"specByte3_name\"] = \"Error ID\";
+  emergencyMeaning[6][\"specByte3=0x01\"] = \"Reset-Valid bit not set\";
+  emergencyMeaning[6][\"specByte3=0x02\"] = \"Reset-Valid bit not reset\";
+  emergencyMeaning[6][\"specByte3=0x04\"] = \"error in initial Offset Register value\";
+  emergencyMeaning[6][\"specByte3=0x08\"] = \"error in initial Gain Register value\";
+
+  emergencyMeaning[7][\"code\"] = \"0x5000;0x03;0x00;\";
+  emergencyMeaning[7][\"code_meaning\"] = \"ADC: offset calibration failed\";
+
+  emergencyMeaning[8][\"code\"] = \"0x5000;0x04;0x00;\";
+  emergencyMeaning[8][\"code_meaning\"] = \"ADC: gain calibration failed\";
+  
+  emergencyMeaning[9][\"code\"] = \"0x5000;0x10;\";
+  emergencyMeaning[9][\"code_meaning\"] = \"ADC problem during initialisation\";
+  emergencyMeaning[9][\"specByte2_name\"] = \"ADC status (see OD index 1002)\";
+
+  emergencyMeaning[10][\"code\"] = \"0x5000;0x11;\";
+  emergencyMeaning[10][\"code_meaning\"] = \"ADC calibration constants: not available\";
+
+  emergencyMeaning[11][\"code\"] = \"0x5000;0x20;\";
+  emergencyMeaning[11][\"code_meaning\"] = \"Slave processor not responding (ELMB103 only)\";
+  
+  emergencyMeaning[12][\"code\"] = \"0x5000;0x30;\";
+  emergencyMeaning[12][\"code_meaning\"] = \"CRC error\";
+  emergencyMeaning[12][\"specByte2=0x01\"] = \"Program FLASH\";
+  emergencyMeaning[12][\"specByte2=0x02\"] = \"Slave FLASH (ELMB103 only)\";
+
+  emergencyMeaning[13][\"code\"] = \"0x5000;0x41;\";
+  emergencyMeaning[13][\"code_meaning\"] = \"EEPROM: write error\";
+  emergencyMeaning[13][\"specByte2_name\"] = \"Parameter block index\";
+  emergencyMeaning[13][\"specByte2=0x00\"] = \"PDO communication parameters\";
+  emergencyMeaning[13][\"specByte2=0x01\"] = \"Guarding parameters\";
+  emergencyMeaning[13][\"specByte2=0x02\"] = \"ADC configuration\";
+  emergencyMeaning[13][\"specByte2=0x03\"] = \"Digital I/O configuration\";
+  emergencyMeaning[13][\"specByte2=0x04\"] = \"DAC configuration\";
+  emergencyMeaning[13][\"specByte2=0x05\"] = \"CAN configuration parameters\";
+  emergencyMeaning[13][\"specByte3_name\"] = \"if 0: while writing datablock info. if > 0: size of parameter block to write\";
+  
+  emergencyMeaning[14][\"code\"] = \"0x5000;0x42;\";
+  emergencyMeaning[14][\"code_meaning\"] = \"EEPROM: read error\";
+  emergencyMeaning[14][\"specByte2_name\"] = \"Parameter block index\";
+  emergencyMeaning[14][\"specByte2=0x00\"] = \"PDO communication parameters\";
+  emergencyMeaning[14][\"specByte2=0x01\"] = \"Guarding parameters\";
+  emergencyMeaning[14][\"specByte2=0x02\"] = \"ADC configuration\";
+  emergencyMeaning[14][\"specByte2=0x03\"] = \"Digital I/O configuration\";
+  emergencyMeaning[14][\"specByte2=0x04\"] = \"DAC configuration\";
+  emergencyMeaning[14][\"specByte2=0x05\"] = \"CAN configuration parameters\";
+  emergencyMeaning[14][\"specByte3_name\"] = \"Error ID\";
+  emergencyMeaning[14][\"specByte3=0x01\"] = \"CRC\";
+  emergencyMeaning[14][\"specByte3=0x02\"] = \"length\";
+  emergencyMeaning[14][\"specByte3=0x04\"] = \"infoblock\";
+  
+  emergencyMeaning[15][\"code\"] = \"0x5000;0x43;\";
+  emergencyMeaning[15][\"code_meaning\"] = \"EEPROM: ADC-limits write error\";
+  emergencyMeaning[15][\"specByte2_name\"] = \"Parameter block ID\";
+  emergencyMeaning[15][\"specByte2=0x01\"] = \"ADC delta-change values\";
+  emergencyMeaning[15][\"specByte2=0x02\"] = \"ADC upper limits\";
+  emergencyMeaning[15][\"specByte2=0x03\"] = \"ADC lower limits\";
+  emergencyMeaning[15][\"specByte3_name\"] = \"size of parameter block to write\";
+
+  emergencyMeaning[16][\"code\"] = \"0x5000;0xF0;\";
+  emergencyMeaning[16][\"code_meaning\"] = \"Irregular reset (Watchdog, Brown-out or JTAG)\";
+  emergencyMeaning[16][\"specByte2_name\"] = \"Microcontroller MCUCSR register contents\";
+  emergencyMeaning[16][\"specByte2=0x01\"] = \"Power-On Reset\";
+  emergencyMeaning[16][\"specByte2=0x02\"] = \"External Reset\";
+  emergencyMeaning[16][\"specByte2=0x04\"] = \"Brown-Out Reset\";
+  emergencyMeaning[16][\"specByte2=0x08\"] = \"Watchdog Reset\";
+  emergencyMeaning[16][\"specByte2=0x10\"] = \"JTAG Reset\";
+  emergencyMeaning[16][\"specByte2=0x80\"] = \"Interface Disable\";
+  
+  emergencyMeaning[17][\"code\"] = \"0x5000;0xF1;\";
+  emergencyMeaning[17][\"code_meaning\"] = \"Bootloader: not present!!\";
+  
+  emergencyMeaning[18][\"code\"] = \"0x5000;0xFE;0x01;0x28;\";
+  emergencyMeaning[18][\"code_meaning\"] = \"Bootloader is now in control (The Emergency message is actually generated by the Bootloader program !)\";
+  emergencyMeaning[18][\"specByte4_name\"] = \"Microcontroller MCUCSR register contents\";
+  emergencyMeaning[18][\"specByte4=0x01\"] = \"Power-On Reset\";
+  emergencyMeaning[18][\"specByte4=0x02\"] = \"External Reset\";
+  emergencyMeaning[18][\"specByte4=0x04\"] = \"Brown-Out Reset\";
+  emergencyMeaning[18][\"specByte4=0x08\"] = \"Watchdog Reset\";
+  emergencyMeaning[18][\"specByte4=0x10\"] = \"JTAG Reset\";
+  emergencyMeaning[18][\"specByte4=0x80\"] = \"Interface Disable\";
+  emergencyMeaning[18][\"specByte5_name\"] = \"Should be 0x00\";
+  
+  emergencyMeaning[18][\"code\"] = \"0x6000;0xFE;0xAA;0xAA;0x00;0x00\";
+  emergencyMeaning[18][\"code_meaning\"] = \"Bootloader cannot jump to application: invalid (The Emergency message is actually generated by the Bootloader program !)\";
+}" 0
+ E E E E 1 -1 -1 0  0 0
+""0  1
+E "dyn_mapping emergencyMeaning;
+
+void updateErrorTime(string dpe, time timestamp, string bootupTimeDpe, time bootupTime) {
+  lblErrorTimestamp.text = \"Last error report: \" + (string) timestamp;
+  lblOutdated.visible = (bootupTime > timestamp);
+}
+
+void updateError(dyn_string dps, dyn_int values) {
+  
+  unsigned errorReg = values[1];
+  dyn_string emergencyObject;
+  for (int i=1; i <= 6; i++) {
+    int byteCount = 1;
+    if (i == 1) { byteCount = 2; } // if it's the emergency error code (not the specific bytes) - it's 2 bytes long
+    emergencyObject[i] = \"0x\" + emu_decToHex(values[i + 1], byteCount);
+  }
+  
+  // ERROR REGISTER
+  string errorRegHex = \"0x\" + emu_decToHex(errorReg, 1);
+  string errorRegBitsStr = emu_decToBin(errorReg, 8);
+  bit32 errorRegBits = emu_signedToUnsigned(errorReg, 8);
+  lblErrorRegister.text = errorRegHex + \" (\" + errorRegBitsStr + \")\";
+  
+  for (int i=0; i < 8; i++) { // update the table
+    bool set = getBit(errorRegBits, i);
+    errorRegTable.cellValueRC(i, \"set\", set);
+    string color = \"White\";
+    if (set) {
+      color = \"FwStateAttention3\";
+    }
+    errorRegTable.cellBackColRC(i, \"bit\", color);
+    errorRegTable.cellBackColRC(i, \"set\", color);
+    errorRegTable.cellBackColRC(i, \"meaning\", color);
+  }
+  
+  // EMERGENCY OBJECT
+  dyn_string meaning = getEmergencyObjectMeaning(emergencyObject);
+  for (int i=1; i <= dynlen(emergencyObject); i++) {
+    emergencyTable.cellValueRC(i - 1, \"value\", emergencyObject[i]);
+    if (dynlen(meaning) >= i) {
+      emergencyTable.cellValueRC(i - 1, \"meaning\", meaning[i]);
+    }
+  }
+}
+
+/** returns the meaning of the emergency object 
+    @param emergency object      array [1] - emergency error code [2-6] manufacturer specific bytes
+    @return                      array [1] - error meaning [2-6] specific bytes meaning
+*/
+dyn_string getEmergencyObjectMeaning(dyn_string emergencyObject) {
+  dyn_string ret; // what we'll return
+  
+  string code;
+  for (int i=1; i <= dynlen(emergencyObject); i++) {
+    code += emergencyObject[i] + \";\";
+  }
+  
+  // match the code and find the appropriate emergency object in desctription array
+  int index = -1;
+  for (int i=1; i <= dynlen(emergencyMeaning); i++) {
+    if (strpos(code, emergencyMeaning[i][\"code\"]) >= 0) { // match
+      index = i;
+      break;
+    }
+  }
+  
+  // nothing was found
+  if (index == -1) {
+    return ret;
+  }
+  
+  //fill in the emergency object meaning
+  ret[1] = emergencyMeaning[index][\"code_meaning\"];
+  
+  // fill in the detailed information - manufacturer specific bytes meaning
+  for (int i=2; i <= dynlen(emergencyObject); i++) {
+    string byteName = \"specByte\" + (i - 1) + \"_name\";
+    string byteValue = \"specByte\" + (i - 1) + \"=\" + emergencyObject[i];
+    if (mappingHasKey(emergencyMeaning[index], byteName)) {
+      ret[i] = emergencyMeaning[index][byteName];
+    }
+    if (mappingHasKey(emergencyMeaning[index], byteValue)) {
+      ret[i] += \": \" + emergencyMeaning[index][byteValue];
+    }
+  }
+  
+  return ret;
+}
+" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+2 0
+"lblErrorTimestamp"
+""
+1 10 10 E E E 1 E 1 E N "_WindowText" E N "White" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 10 87 24
+1 2 2 "0s" 0 0 0 192 0 0  10 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 18 Last error report:
+2 1
+"lblForErrorRegister"
+""
+1 10 40 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 40 77 54
+0 2 2 "0s" 0 0 0 192 0 0  10 40 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 15 Error Register:
+2 2
+"lblErrorRegMeaning"
+""
+1 10 60 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 60 68 74
+0 2 2 "0s" 0 0 0 192 0 0  10 60 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 12 Bit meaning:
+25 3
+"errorRegTable"
+""
+1 10 80 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 8 78 392 216
+EE 1 0 1 3 0 "bit" 4 1 0 "s" 1
+LANG:1 7 Bit No.
+E
+1
+LANG:1 0 
+
+45 "set" 4 1 0 "s" 1
+LANG:1 3 Set
+E
+1
+LANG:1 0 
+
+45 "meaning" 31 1 0 "s" 1
+LANG:1 7 Meaning
+E
+1
+LANG:1 0 
+
+287 
+14 14 10 10
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+0 0 0 1 7
+1 0
+2 4
+"lblErrorRegister"
+""
+1 80 40 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 80 40 104 54
+0 2 2 "0s" 0 0 0 192 0 0  80 40 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 4 code
+2 10
+"PRIMITIVE_TEXT4"
+""
+1 12 222 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 12 222 92 236
+0 2 2 "0s" 0 0 0 192 0 0  12 222 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 16 Emergecy report:
+25 11
+"emergencyTable"
+""
+1 24.6 242 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+13 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 10 240 392 367
+EE 1 1 1 2 6 "value" 3 1 0 "s" 1
+LANG:1 5 Value
+E
+1
+LANG:1 0 
+
+40 "meaning" 54 1 0 "s" 1
+LANG:1 7 Meaning
+E
+1
+LANG:1 0 
+
+500 
+14 14 "" 1 1
+LANG:1 4 Code
+"" 1 1
+LANG:1 6 Byte 3
+"" 1 1
+LANG:1 6 Byte 4
+"" 1 1
+LANG:1 6 Byte 5
+"" 1 1
+LANG:1 6 Byte 6
+"" 1 1
+LANG:1 6 Byte 7
+10 43
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+0 0 1 1 7
+1 0
+2 14
+"PRIMITIVE_TEXT5"
+""
+1 12 372 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 12 372 193 387
+0 2 2 "0s" 0 0 0 192 0 0  12 372 1
+1
+LANG:1 84 -*-Arial-*-i-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,1,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 34 More about emergency objects here:
+2 15
+"PRIMITIVE_TEXT6"
+""
+1 12 392 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 12 392 327 407
+0 2 2 "0s" 0 0 0 192 0 0  12 392 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 59 www.nikhef.nl/pub/departments/ct/po/html/ELMB128/ELMB22.pdf
+2 16
+"lblOutdated"
+""
+1 250 10 E E E 1 E 1 E N "_WindowText" E N "White" E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 250 10 358 24
+1 2 2 "0s" 0 0 0 192 0 0  250 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 24 Earlier than last bootup
+13 18
+"PUSH_BUTTON7"
+""
+1 250 30 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+21 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 248 28 392 55
+
+T 
+1
+LANG:1 20 Read From Device Now
+"main()
+{
+  int tmp;
+  dyn_string ex;
+  fwElmb_elementSQ($elmbDp + \".error\", 2, tmp, ex);
+  if (dynlen(ex)) {
+    emu_info(\"Exception updating emergency object: \" + ex);
+    dynClear(ex);
+  }
+  fwElmb_elementSQ($elmbDp + \".emergency.emergencyErrorCode\", 2, tmp, ex);
+  if (dynlen(ex)) {
+    emu_info(\"Exception updating emergency object: \" + ex);
+    dynClear(ex);
+  }
+  fwElmb_elementSQ($elmbDp + \".emergency.errorCodeByte1\", 2, tmp, ex);
+  if (dynlen(ex)) {
+    emu_info(\"Exception updating emergency object: \" + ex);
+    dynClear(ex);
+  }
+  fwElmb_elementSQ($elmbDp + \".emergency.errorCodeByte2\", 2, tmp, ex);
+  if (dynlen(ex)) {
+    emu_info(\"Exception updating emergency object: \" + ex);
+    dynClear(ex);
+  }
+  fwElmb_elementSQ($elmbDp + \".emergency.errorCodeByte3\", 2, tmp, ex);
+  if (dynlen(ex)) {
+    emu_info(\"Exception updating emergency object: \" + ex);
+    dynClear(ex);
+  }
+  fwElmb_elementSQ($elmbDp + \".emergency.errorCodeByte4\", 2, tmp, ex);
+  if (dynlen(ex)) {
+    emu_info(\"Exception updating emergency object: \" + ex);
+    dynClear(ex);
+  }
+  fwElmb_elementSQ($elmbDp + \".emergency.errorCodeByte5\", 2, tmp, ex);
+  if (dynlen(ex)) {
+    emu_info(\"Exception updating emergency object: \" + ex);
+    dynClear(ex);
+  }
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

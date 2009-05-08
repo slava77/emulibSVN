@@ -1,0 +1,326 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 755 720 N "_3DFace" 0
+"main()
+{
+  //start monitoring
+  changeCrate((int) spinId.text);
+}" 0
+ E E E E 1 -1 -1 0  70 60
+""0  1
+E "void changeCrate(int crateId) {
+  string elmbDp = getElmbDp(crateId);
+  emu_info(\"Crate changed to id=\" + crateId);
+  lblUsingId.text = \"Using Crate ID:\";
+
+  //get serial number
+  string serial;
+  dpGet(elmbDp + \".serialNumber\", serial);
+  lblSerialNo.text(\"ELMB Serial no.: \" + serial);
+  
+  // ELMB status
+  removeSymbol(myModuleName(), myPanelName(), \"refStatus\");
+  int x, y;
+  getValue(\"frameStatus\", \"position\", x, y);
+  addSymbol(myModuleName(), myPanelName(),
+            \"objects/EMU_PCMB_test/refStatus.pnl\", \"refStatus\",
+            makeDynString(\"$elmbDp:\" + elmbDp),
+            x, y + 10, 0, 1, 1);
+
+  // Peripheral Crate control
+  removeSymbol(myModuleName(), myPanelName(), \"refCrateControl\");
+  getValue(\"frameControl\", \"position\", x, y);
+  addSymbol(myModuleName(), myPanelName(),
+            \"objects/EMU_PCMB_test/refCrateControl.pnl\", \"refCrateControl\",
+            makeDynString(\"$elmbDp:\" + elmbDp),
+            x, y + 10, 0, 1, 1);
+
+  // voltage monitoring
+  removeSymbol(myModuleName(), myPanelName(), \"refMonitor\");
+  getValue(\"frameMonitor\", \"position\", x, y);
+  addSymbol(myModuleName(), myPanelName(),
+            \"objects/EMU_PCMB_test/refMonitor.pnl\", \"refMonitor\",
+            makeDynString(\"$elmbDp:\" + elmbDp),
+            x, y + 10, 0, 1, 1);
+    
+  // last ELMB error
+  removeSymbol(myModuleName(), myPanelName(), \"refError\");
+  getValue(\"frameError\", \"position\", x, y);
+  addSymbol(myModuleName(), myPanelName(),
+            \"objects/EMU_PCMB_test/refError.pnl\", \"refError\",
+            makeDynString(\"$elmbDp:\" + elmbDp),
+            x, y + 10, 0, 1, 1);
+
+  lblId.text(crateId);
+}
+
+string getElmbDp(int id) {
+  string strId;
+  sprintf(strId, \"%02d\", id);
+  string elmbDp = dpNames(\"*/ELMB_\" + strId, \"FwElmbNode\");
+  
+  return elmbDp;
+}
+" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+21 2
+"spinId"
+""
+1 380 30 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 378 28 432 51
+0
+
+E
+E
+E
+
+N 1 64 1 0 1 1
+2 3
+"lblSelectId"
+""
+1 312 32 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 312 32 373 46
+0 2 2 "0s" 0 0 0 192 0 0  312 32 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 13 Select Crate:
+30 11
+"frameControl"
+""
+1 10 3 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+11 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 0.789473684210527 0 0.801687763713081 422.105263157895 87.5949367088608 0 E 10 3 201 241
+1
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 13 Crate Control
+30 12
+"frameMonitor"
+""
+1 220 3 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+12 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 0.815789473684211 0 1.77215189873418 250.526315789474 284.683544303797 0 E 220 3 601 241
+1
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 13 Crate Monitor
+2 14
+"lblUsingId"
+""
+1 22 32 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 22 32 212 46
+0 2 2 "0s" 0 0 0 192 0 0  22 32 1
+1
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 33 No Crate selected. Select here ->
+13 16
+"btnChangeId"
+""
+1 440 30 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 438 28 562 55
+
+T 
+1
+LANG:1 12 Change Crate
+"main()
+{
+  changeCrate((int) spinId.text);
+}" 0
+ E E E
+2 18
+"lblId"
+""
+1 112 32 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 112 32 113 46
+0 2 2 "0s" 0 0 0 192 0 0  112 32 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 0 
+30 20
+"frameStatus"
+""
+1 20 33 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+21 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 0.666666666666667 0 2.46753246753247 -3.33333333333333 8.57142857142859 0 E 20 33 621 111
+1
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 11 ELMB Status
+2 24
+"lblSerialNo"
+""
+1 22 52 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+26 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 22 52 100 66
+0 2 2 "0s" 0 0 0 192 0 0  22 52 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 15 ELMB Serial No.
+30 28
+"frameError"
+""
+1 20 33 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+31 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 0.666666666666667 0 5.45454545454546 -3.33333333333333 110 0 E 20 33 621 111
+1
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 15 Last ELMB Error
+30 30
+"FRAME3"
+""
+1 120 53 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+33 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 6.33333333333333 0 2.59259259259259 -750 -127.407407407407 0 E 120 53 211 81
+1
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 9 Selection
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
