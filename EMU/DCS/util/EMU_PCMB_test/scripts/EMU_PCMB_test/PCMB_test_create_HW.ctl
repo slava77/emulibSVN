@@ -1,4 +1,4 @@
-void pcmbTS_createHW() {
+main() {
   dyn_string ex;
   string mainBus = "LVCB_2";
   
