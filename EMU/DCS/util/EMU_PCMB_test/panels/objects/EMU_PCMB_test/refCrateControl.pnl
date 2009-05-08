@@ -26,6 +26,14 @@ void pcTurnOn(string elmbDp, int delayMs) {
   
   emu_info(\"Switching ON crate hooked up with ELMB: \" + elmbDp);
 
+  //ensure we're not in the suspend/standby state
+  fwElmbUser_setDoBit(elmbDp, \"A;7\", FALSE, exception);
+  if (emu_checkException(exception) > 0) { return; }
+  fwElmbUser_setDoBit(elmbDp, \"A;6\", FALSE, exception);
+  if (emu_checkException(exception) > 0) { return; }
+  fwElmbUser_setDoBit(elmbDp, \"A;5\", FALSE, exception);
+  if (emu_checkException(exception) > 0) { return; }
+
   //turn on some power
   fwElmbUser_setDoBit(elmbDp, \"A;3\", FALSE, exception);
   if (emu_checkException(exception) > 0) { return; }
