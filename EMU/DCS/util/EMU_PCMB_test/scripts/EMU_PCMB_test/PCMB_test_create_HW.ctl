@@ -1,19 +1,13 @@
 main() {
-	PCMBtest_createHW();
-}
-
-void PCMBtest_createHW() {
   dyn_string ex;
   string mainBus = "LVCB_2";
-  
-  fwOpenProgressBar("Creating ELMB devices on CANbus " + mainBus, "In progress. Please wait...", 1);
   
   //create CANbus
   dyn_mixed canBusData;
   canBusData[3] = mainBus;
   canBusData[4] = "";
   emucdb_createElmbCANbus(canBusData, ex);
-  if (emu_checkException(ex)) { fwCloseProgressBar("Error creating CANbus"); return; }
+  if (emu_checkException(ex)) { return; }
   
   //create ELMBs
   dyn_mixed elmbNodeData;
@@ -22,7 +16,7 @@ void PCMBtest_createHW() {
   for (int i=1; i < 64; i++) {
     elmbNodeData[3] = "ELMB_" + emu_decToHex(i, 1);
     emucdb_createElmbNode(elmbNodeData, ex);
-    if (emu_checkException(ex)) { fwCloseProgressBar("Error creating ELMB"); return; }
+    if (emu_checkException(ex)) { return; }
     
     //create AI
     dyn_mixed aiData;
@@ -33,17 +27,17 @@ void PCMBtest_createHW() {
     for (int j=0; j <= 21; j++) {
       aiData[3] = "ai_" + j;
       emucdb_createElmbAi(aiData, ex);
-      if (emu_checkException(ex)) { fwCloseProgressBar("Error creating AI channel"); return; }
+      if (emu_checkException(ex)) { return; }
     }
     for (int j=32; j <= 35; j++) {
       aiData[3] = "ai_" + j;
       emucdb_createElmbAi(aiData, ex);
-      if (emu_checkException(ex)) { fwCloseProgressBar("Error creating AI channel"); return; }
+      if (emu_checkException(ex)) { return; }
     }
     for (int j=48; j <= 57; j++) {
       aiData[3] = "ai_" + j;
       emucdb_createElmbAi(aiData, ex);
-      if (emu_checkException(ex)) { fwCloseProgressBar("Error creating AI channel"); return; }
+      if (emu_checkException(ex)) { return; }
     }
     
     //create DO
@@ -53,12 +47,10 @@ void PCMBtest_createHW() {
     for (int j=0; j < 8; j++) {
       doData[3] = "do_A_" + j;
       emucdb_createElmbDo(doData, ex);
-      if (emu_checkException(ex)) { fwCloseProgressBar("Error creating DO channel"); return; }
+      if (emu_checkException(ex)) { return; }
       doData[3] = "do_C_" + j;
       emucdb_createElmbDo(doData, ex);
-      if (emu_checkException(ex)) { fwCloseProgressBar("Error creating DO channel"); return; }
+      if (emu_checkException(ex)) { return; }
     }
   }
-  
-  fwCloseProgressBar("Done! All devices were created successfully");
 }
