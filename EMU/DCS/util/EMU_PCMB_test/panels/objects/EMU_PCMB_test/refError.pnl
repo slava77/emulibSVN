@@ -216,6 +216,8 @@ void updateError(dyn_string dps, dyn_int values) {
     emergencyTable.cellValueRC(i - 1, \"value\", emergencyObject[i]);
     if (dynlen(meaning) >= i) {
       emergencyTable.cellValueRC(i - 1, \"meaning\", meaning[i]);
+    } else {
+      emergencyTable.cellValueRC(i - 1, \"meaning\", \"\");
     }
   }
 }
