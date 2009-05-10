@@ -1,0 +1,154 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 2100 1200 N "_3DFace" 0
+"  const int chHeight = 40;
+  const int chHalfWidth = 35;
+  const float me234_2_scaleFactor = 1.3;
+  const int gapBetweenRings = 2;
+  
+main()
+{
+  //construct Plus side
+  drawStation(300, 300, 150, \"P_1\", true);
+  drawStation(847, 300, 150, \"P_2\", false);
+  drawStation(1343, 300, 150, \"P_3\", false);
+  drawStation(1839, 300, 150, \"P_4\", false);
+  
+  //construct Minus side
+  drawStation(300, 900, 150, \"M_1\", true);
+  drawStation(847, 900, 150, \"M_2\", false);
+  drawStation(1343, 900, 150, \"M_3\", false);
+  drawStation(1839, 900, 150, \"M_4\", false);
+  
+  
+//old
+//   drawRing(300, 300, 150, 36, \"P_1/1_\");
+//   drawRing(300, 300, 222, 36, \"P_1/2_\");
+//   drawRing(300, 300, 294, 36, \"P_1/3_\");
+//     
+//   drawRing(847, 300, 150, 18, \"P_2/1_\");
+//   drawRing(847, 300, 243, 36, \"P_2/2_\", 1.3);
+//   
+//   drawRing(1343, 300, 150, 18, \"P_3/1_\");
+//   drawRing(1343, 300, 243, 36, \"P_3/2_\", 1.3);
+// 
+//   drawRing(1839, 300, 150, 18, \"P_4/1_\");
+//   drawRing(1839, 300, 243, 36, \"P_4/2_\", 1.3);
+// 
+//   drawRing(300, 900, 150, 36, \"N_1/1_\");
+//   drawRing(300, 900, 222, 36, \"N_1/2_\");
+//   drawRing(300, 900, 294, 36, \"N_1/3_\");
+//   
+//   drawRing(847, 900, 150, 18, \"N_2/1_\");
+//   drawRing(847, 900, 243, 36, \"N_2/2_\", 1.3);
+// 
+//   drawRing(1343, 900, 150, 18, \"N_3/1_\");
+//   drawRing(1343, 900, 243, 36, \"N_3/2_\", 1.3);
+// 
+//   drawRing(1839, 900, 150, 18, \"N_4/1_\");
+//   drawRing(1839, 900, 243, 36, \"N_4/2_\", 1.3);
+}
+
+drawStation(int x, int y, int innerRadius, string namePrefix, bool isME1){
+  if (isME1){  // stations ME 2, 3, 4
+    drawRing(x, y, innerRadius, 36, namePrefix + \"/1_\");
+    drawRing(x, y, innerRadius + (2 * chHalfWidth) + gapBetweenRings, 36, namePrefix + \"/2_\");
+    drawRing(x, y, innerRadius + (4 * chHalfWidth) + 2 * gapBetweenRings, 36, namePrefix + \"/3_\");
+  } else { //ME 1 station
+    drawRing(x, y, innerRadius, 18, namePrefix + \"/1_\");
+    drawRing(x, y, 
+             innerRadius + (2 * chHalfWidth) * me234_2_scaleFactor + gapBetweenRings,
+             36, namePrefix + \"/2_\", me234_2_scaleFactor);
+  }
+}
+
+drawRing(int x, int y, float radius, int chCount, string namePrefix, float scaleWidth = 1){
+  float pi = 3.14;
+  float perimeter = 2 * pi * radius;
+  float scaleHeight = (perimeter / chCount) / chHeight;
+  float angleStep = (2 * pi) / chCount;
+    
+  //radius -= chHalfWidth;
+  float txtRadius = radius - (chHalfWidth * scaleWidth);
+                    
+  for (int i=0; i < chCount; i++){
+    //compute the angle and position
+    float angle = i * angleStep;
+    int currX = -1 * radius * cos(angle) + x;
+    int currY = -1 * radius * sin(angle) + y;
+    int currTxtX = -1 * txtRadius * cos(angle) + x;
+    int currTxtY = -1 * txtRadius * sin(angle) + y;
+    
+    //construct a chamber name
+    string chName;
+    if (i < 10) {
+      chName = namePrefix + \"0\" + i;
+    } else {
+      chName = namePrefix + i;
+    }
+    
+    //convert angle from radians to degrees
+    float angleDeg = rad2deg(angle);
+
+    //import the chamber panel (no changes in the panel shape; position - [0,0])
+    addSymbol(myModuleName(), myPanelName(),
+              \"CSC\\\\Chamber.pnl\",
+              chName,
+              makeDynString(\"$name:\" + chName),
+              0, 0, 0, 1, 1);
+    
+    //scale and position chamber
+    setValue(chName + \".chamber\", \"scale\", scaleWidth, scaleHeight);
+    setValue(chName + \".chamber\", \"position\", currX, currY);
+    setValue(chName + \".chamber\", \"rotation\", -1 * angleDeg);
+
+    //position text
+    setValue(chName + \".txtName\", \"position\", currTxtX, currTxtY);
+    if ((angleDeg > 90) && (angleDeg <= 270)){
+      setValue(chName + \".txtName\", \"rotation\", -1 * angleDeg + 180);
+    } else {
+      setValue(chName + \".txtName\", \"rotation\", -1 * angleDeg);
+    }
+  }
+}" 0
+ E E E E 0.8 -1 -1 0  50 30
+""0  1
+E E 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
