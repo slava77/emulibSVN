@@ -1,11 +1,61 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 120 46 N "_3DFace" 1
+PANEL,-1 -1 120 46 N "_3DFace" 5
+"$chamberNumber"
 "$name"
-E E E E E 1 -1 -1 0  20 23
+"$ring"
+"$side"
+"$station"
+"void initConstants() {
+  stateColors[\"ON\"] = \"FwStateOKPhysics\";
+  stateColors[\"OFF\"] = \"FwStateOKNotPhysics\";
+  stateColors[\"ERROR\"] = \"FwStateAttention3\";
+  stateColors[\"DEAD\"] = \"FwDead\";
+  stateColors[\"default\"] = \"FwDead\";
+}
+
+main()
+{
+  initConstants();
+
+  string chamberNode = \"CSC_ME_\" + $side + $station + $ring + \"_C\" + $chamberNumber;
+  
+  int rc = fwCU_connectState(\"updateStateCB\", chamberNode);
+  emu_info(\"RC for connect to \" + chamberNode + \": \" + rc);
+  
+  if (rc == 0) {
+    int chamberNumber = $chamberNumber;
+    int red = (255 / 14) * chamberNumber;
+    int green = 127 * $ring;
+    int blue = 63 * $station;
+    setChamberColor(\"{\" + red + \";\" + green + \";\" + blue + \"}\");
+  }
+}
+" 0
+ E E E E 1 -1 -1 0  20 23
 ""0  1
-E E 2
+E "mapping stateColors;
+
+void updateStateCB(string node, string state) {
+  emu_info(\"state update came for \" + node + \": \" + state);
+  
+  if (!mappingHasKey(stateColors, state)) {
+    state = \"default\";
+  }
+  setChamberColor(stateColors[state]);
+}
+
+void setChamberColor(string color) {
+  chamber.backCol(color);
+  txtName.backCol(color);
+}
+
+void setChamberTooltip(string tooltip) {
+  chamber.toolTipText(tooltip);
+  txtName.toolTipText(tooltip);
+}" 0
+ 2
 "CBRef" "1"
 "EClose" E
 ""
@@ -27,7 +77,10 @@ LANG:1 0
 2
 "hoverfclr" "N \"black_yellow\""
 "dashclr"N "_Transparent"
-"main()
+"main(){
+}
+
+old()
 {
   //the $name is of the following structure: <side>_<station>/<ring>_<chamber_number>
   dyn_string nameComp = strsplit($name, \"_\");
@@ -67,16 +120,7 @@ updateInfo(string dpIsOn, bool isOn, string dpIMon, float iMon, string dpVMon, f
   }
   setChamberTooltip(ttt);
 }
-
-setChamberColor(string color) {
-  this.backCol(color);
-  txtName.backCol(color);
-}
-
-setChamberTooltip(string tooltip) {
-  this.toolTipText(tooltip);
-  txtName.toolTipText(tooltip);
-}" 0
+" 0
  E 0 1 1 2 1 E 0.774020156774913 0 1.02222222222222 -15.4642777155655 -30.6666666666667 1 E 4 19.9791666666667 30.0000000000001
 19.9791666666667 69.1304347826089
 109.041666666667 61.3043478260871
