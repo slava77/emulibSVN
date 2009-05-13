@@ -8,11 +8,6 @@ PANEL,-1 -1 120 46 N "_3DFace" 5
 "$side"
 "$station"
 "void initConstants() {
-  stateColors[\"ON\"] = \"FwStateOKPhysics\";
-  stateColors[\"OFF\"] = \"FwStateOKNotPhysics\";
-  stateColors[\"ERROR\"] = \"FwStateAttention3\";
-  stateColors[\"DEAD\"] = \"FwDead\";
-  stateColors[\"default\"] = \"FwDead\";
 }
 
 main()
@@ -20,21 +15,16 @@ main()
   initConstants();
 
   string chamberNode = \"CSC_ME_\" + $side + $station + $ring + \"_C\" + $chamberNumber;
+
   
-  int rc = fwCU_connectState(\"updateFSMStateCB\", chamberNode);
-  emu_info(\"RC for connect to \" + chamberNode + \": \" + rc);
-  
-  if (rc == 0) {
-    setChamberColor(stateColors[\"default\"]);
-  }
   
   //rainbow :)
 //   if (rc == 0) {
 //     int chamberNumber = $chamberNumber;
 //     int ring = $ring;
 //     int station = $station;
-//     int red = (255 / 14) * chamberNumber;
-//     int green = 127 * ring;
+//     int red = 7 * chamberNumber;
+//     int green = 85 * ring;
 //     int blue = 63 * station;
 //     setChamberColor(\"{\" + red + \";\" + green + \";\" + blue + \"}\");
 //   }
@@ -42,24 +32,13 @@ main()
 " 0
  E E E E 1 -1 -1 0  20 23
 ""0  1
-E "mapping stateColors;
-
-void updateFSMStateCB(string node, string state) {
-  emu_info(\"state update came for \" + node + \": \" + state);
-  
-  if (!mappingHasKey(stateColors, state)) {
-    state = \"default\";
-  }
-  setChamberColor(stateColors[state]);
-}
-
+E "
 void setChamberColor(string color) {
-  chamber.backCol(color);
-  txtName.backCol(color);
+  chamberRect.backCol(color);
 }
 
 void setChamberTooltip(string tooltip) {
-  chamber.toolTipText(tooltip);
+  chamberRect.toolTipText(tooltip);
   txtName.toolTipText(tooltip);
 }" 0
  2
@@ -73,7 +52,7 @@ LANG:1 0
 10 0
 "chamber"
 ""
-1 19.9791666666667 52.5 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+1 19.9791666666667 52.5 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
  E E
 0 0 0 0 0 0
 E E E
@@ -136,7 +115,7 @@ updateInfo(string dpIsOn, bool isOn, string dpIMon, float iMon, string dpVMon, f
 6 2
 "chamberRect"
 ""
-1 90 10 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+1 90 10 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
  E E
 2 0 0 0 0 0
 E E E
@@ -150,7 +129,7 @@ E E 0 1 1 2 1 E 1 0 1 -90 -10 1 E 90 10 110 30
 2 1
 "txtName"
 ""
-1 0 7 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 10 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 1 0 0 0 0 0
 E E "main(bool enter)
@@ -172,8 +151,8 @@ LANG:1 0
 {
   this.text($name);
 }" 0
- E 0 1 1 2 1 E U  1 E -13 0 13 14
-0 2 2 "0s" 0 0 0 193 0 0  0 0 1
+ E 0 1 1 2 1 E U  1 E -3 3 23 17
+0 2 2 "0s" 0 0 0 193 0 0  10 3 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""

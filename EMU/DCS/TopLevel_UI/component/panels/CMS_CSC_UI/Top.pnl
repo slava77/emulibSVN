@@ -16,10 +16,10 @@ main()
   drawStation(1839, 300, 150, \"P\", 4);
   
   //construct Minus side
-//   drawStation(300, 900, 150, \"M\", 1);
-//   drawStation(847, 900, 150, \"M\", 2);
-//   drawStation(1343, 900, 150, \"M\", 3);
-//   drawStation(1839, 900, 150, \"M\", 4);
+  drawStation(300, 900, 150, \"M\", 1);
+  drawStation(847, 900, 150, \"M\", 2);
+  drawStation(1343, 900, 150, \"M\", 3);
+  drawStation(1839, 900, 150, \"M\", 4);
 }
 
 drawStation(int x, int y, int innerRadius, string side, int station){
@@ -38,7 +38,7 @@ drawStation(int x, int y, int innerRadius, string side, int station){
 }
 
 drawRing(int x, int y, float radius, int chCount, string side, int station, int ring, float scaleHeight = 1){
-  float pi = 3.14;
+  float pi = 3.14159265;
   float perimeter = 2 * pi * radius;
   float scaleWidth = (perimeter / chCount) / chWidth;
   float angleStep = (2 * pi) / chCount;
@@ -59,7 +59,7 @@ drawRing(int x, int y, float radius, int chCount, string side, int station, int 
     string chName;
     string strChamberNumber;
     sprintf(strChamberNumber, \"%02d\", chamberNumber);
-    chName = strChamberNumber;//side + \"_\" + station + \"/\" + ring + \"_\" + strChamberNumber;
+    chName = strChamberNumber;//side + \"_\" + station + \"/\" + ring + \"_\" + strChamberNumber; //strChamberNumber;
     
     //convert angle from radians to degrees
     float angleDeg = rad2deg(angle);
