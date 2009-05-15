@@ -42,7 +42,7 @@ unsigned emu_signedToUnsigned(int value, int bitCount) {
 }
 
 // @return absolute value
-int emu_abs(int value) {
+float emu_abs(float value) {
   if (value < 0) {
     value = value * -1;
   }
