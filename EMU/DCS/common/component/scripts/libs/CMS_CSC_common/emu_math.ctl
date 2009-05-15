@@ -50,7 +50,7 @@ int emu_abs(int value) {
 }
 
 //@return maximum value
-float max(dyn_float values) {
+float emu_max(dyn_float values) {
   float ret = minFLOAT();
   for (int i=1; i <= dynlen(values); i++) {
     if (values[i] > ret) {
