@@ -20,7 +20,7 @@ mapping emuui_getMapping(string name, dyn_string &exceptionInfo, string version 
   string dpName = "emuui_map_" + name + version;
   if (!dpExists(dpName)) {
     emu_addError("Requested mapping \"" + name + version + "\" does not exist", exceptionInfo);
-    return;
+    return emucdb_dummyMapping;
   }
 
   dyn_string data;
@@ -32,11 +32,11 @@ mapping emuui_getMapping(string name, dyn_string &exceptionInfo, string version 
     tmpSplit = strsplit(data[i], ";");
     if (dynlen(tmpSplit) != 2) {
       emu_addError("Lines #" + i + " in mapping \"" + name + version + "\" is corrupted", exceptionInfo);
-      return;
+      return emucdb_dummyMapping;
     }
     if (mappingHasKey(ret, tmpSplit[1])) {
       emu_addError("Key \"" + tmpSplit[1] + "\" in mapping \"" + name + version + "\" is defined multiple times", exceptionInfo);
-      return;
+      return emucdb_dummyMapping;
     }
     
     ret[tmpSplit[1]] = tmpSplit[2];
@@ -52,23 +52,37 @@ anytype emuui_getMappingValue(string name, string key, dyn_string &exceptionInfo
   mapping map = emuui_getMapping(name, exceptionInfo, version);
   if (emu_checkException(exceptionInfo)) { return; }
   if (!mappingHasKey(map, key)) {
-//     emu_addError("Key \"" + key + "\" does not exist in mapping \"" + name + version + "\"", exceptionInfo);
+    emu_addError("Key \"" + key + "\" does not exist in mapping \"" + name + version + "\"", exceptionInfo);
     return "";
   }
   return map[key];
 }
 
+/** Checks if a key exists in a given mapping (if the mapping itself exists).
+    Doesn't generate any exceptions - all are handled here. If indeed the key is reachable - returns true.
+*/
+bool emuui_mappingHasKey(string mappingName, string key, string mappingVersion = "") {
+  dyn_string ex;
+  emuui_getMappingValue(mappingName, key, ex, version);
+  if (dynlen(ex) > 0) {
+    emu_errorHandled(ex);
+    return false;
+  }
+  return true;
+}
+
+/** Clears the mapping cache. */
 void emuui_clearMappingCache() {
   mappingClear(emuui_g_mappingCache);
 }
 
-/** 
+/**
     @param parameters    describes what FSM node you are interested to e.g. for chamber you give side, station, ring and chamberNumber.
     @return an FSM node of a requested type and matching the parameters given.
 */
 string emuui_getFsmNode(string type, mapping parameters, dyn_string &exceptionInfo) {
   string pattern = emuui_getMappingValue("fsmNodePatterns", type, exceptionInfo);
-  if (emu_checkException(exceptionInfo)) { return; }
+  if (emu_checkException(exceptionInfo)) { return ""; }
   
   for(int i=1; i <= mappinglen(parameters); i++) {
     string key = mappingGetKey(parameters, i);
