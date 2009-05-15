@@ -20,7 +20,7 @@ main()
     
     for (int ring = 1; ring <= stationRingCount[side + station]; ring++) {
       int chamberCount = 18;
-      if (station == 1) { chamberCount = 36; }
+      if ((station == 1) || (ring > 1)) { chamberCount = 36; }
       
       for (int chamberNum=1; chamberNum <= chamberCount; chamberNum++) {
         int red = 7 * chamberNum;
@@ -71,7 +71,7 @@ void drawEMU(int x, int y) {
 void drawStation(int x, int y, string side, int station, int ring) {
   int chamberCount = 18;
   int scaleWidth = 2;
-  if (station == 1) {
+  if ((station == 1) || (ring > 1)) {
     chamberCount = 36;
     scaleWidth = 1;
   }
@@ -87,9 +87,11 @@ void drawStation(int x, int y, string side, int station, int ring) {
     //import the chamber panel (no changes in the panel shape; position - [0,0])
     string refName = \"refChamber_\" + side + station + ring + \"_\" + i;
     addSymbol(myModuleName(), myPanelName(),
-              \"objects/CMS_CSC_UI/ChamberRect.pnl\",
+              \"objects/CMS_CSC_UI/Chamber.pnl\",
               refName,
-              makeDynString(\"$name:\" + chamberName, \"$side:\" + side, \"$station:\" + station, \"$ring:\" + ring, \"$chamberNumber:\" + strChamberNumber),
+              makeDynString(\"$name:\" + chamberName, \"$side:\" + side, \"$station:\" + station, 
+                            \"$ring:\" + ring, \"$chamberNumber:\" + strChamberNumber,
+                            \"$shape:rectangular\"),
               chamberX, y, 0, 1, 1);
     setValue(refName + \".chamberRect\", \"scale\", scaleWidth, 1);
   }
