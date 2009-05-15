@@ -17,19 +17,23 @@ PANEL,-1 -1 120 49 N "_3DFace" 7
   deviceParams[\"chamberNumber\"] = $chamberNumber;
   currentConnectionType = \"\";
   currentConnection = \"\";
-  chamberShape = \"Chamber\";
-  chamber.visible = true;
-  chamberRect.visible = false;
+  
+  //by default the physical chamber shape is used
+  chamberShape = \"chamber\";
 
-  if (isDollarDefined(\"$shape\")) {
-    if ($shape == \"rectangular\") {
-      chamber.visible = false;
-      chamberRect.visible = true;
-      chamberShape = \"ChamberRect\";
-    }
+  if ($shape == \"physical\") {
+    chamberShape = \"chamber\";
+    chamber.visible = true;
+    chamberRect.visible = false;
+  } else if ($shape == \"rectangular\") {
+    chamber.visible = false;
+    chamberRect.visible = true;
+    chamberShape = \"chamberRect\";
   }
   
-  dpConnect(\"modeChangedCB\", true, $group + \".mode\", $group + \".connectionType\");
+  if (strlen($group) > 0) {
+    dpConnect(\"modeChangedCB\", true, $group + \".mode\", $group + \".connectionType\");
+  }
 }
 " 0
  E E E E 1 -1 -1 0  20 23
@@ -173,7 +177,7 @@ updateInfo(string dpIsOn, bool isOn, string dpIMon, float iMon, string dpVMon, f
 109.041666666667 39.7826086956523
  1
 6 2
-"ChamberRect"
+"chamberRect"
 ""
 1 90 10 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
  E E
