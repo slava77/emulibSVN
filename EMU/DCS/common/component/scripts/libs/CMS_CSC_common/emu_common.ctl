@@ -39,7 +39,7 @@ void emu_error(dyn_string error, bool pvssReport = false, bool terminateManager 
   // error is already on the queue to be reported - kill the thread and post the new one
   int index = emu_dynDynContains(g_emu_exceptionsToReport, error);
   if (index > 0) {
-    DebugTN("EMU - skipping the same error report");
+    emu_debug("EMU - skipping the same error report", emu_DEBUG_DETAIL);
     stopThread(g_emu_reportingThreads[index]);
     dynRemove(g_emu_reportingThreads, index);
     dynRemove(g_emu_exceptionsToReport, index);
@@ -48,7 +48,7 @@ void emu_error(dyn_string error, bool pvssReport = false, bool terminateManager 
   if (index <= 0) {  
     index = _emu_findSimilarInMap(g_emu_exceptionsToReport, error);
     if (index > 0) {
-      DebugTN("EMU - skipping a less detailed error report");
+      emu_debug("EMU - skipping a less detailed error report", emu_DEBUG_DETAIL);
       stopThread(g_emu_reportingThreads[index]);
       dynRemove(g_emu_reportingThreads, index);
       dynRemove(g_emu_exceptionsToReport, index);
@@ -129,6 +129,41 @@ void emu_addError(string errMsg, dyn_string &exceptionInfo) {
   emu_error(exceptionInfo);
 }
 
+/** Used when an exception has been handled - cancels the error report.
+  @param exceptionInfo - exception which was handled and so to be canceled to report
+  @param funcName - name of the function which handled the exception (needed to fix the backtrace).
+                    This is not mandatory - if the name is not provided then all the backtrace is cleared out.
+                    If the function doesnt use emu_debugFuncStart(...) or emu_debugFuncEnd(...) then a parent function can be used.
+*/
+void emu_errorHandled(dyn_string &exceptionInfo, string funcName = "") {
+  // if the exception is there then cancel the report
+  int index = emu_dynDynContains(g_emu_exceptionsToReport, exceptionInfo);
+  if (index > 0) {
+    emu_debug("EMU - exception has been handled - canceling the report", emu_DEBUG_DETAIL);
+    stopThread(g_emu_reportingThreads[index]);
+    dynRemove(g_emu_reportingThreads, index);
+    dynRemove(g_emu_exceptionsToReport, index);
+    dynClear(exceptionInfo);
+  } else { // if it's not there then just clear the exception and return - we probably missed it and it's been reported already
+    dynClear(exceptionInfo);
+    return;
+  }
+  
+  // if we canceled the report - go ahead and fix the debug backtrace
+  if (funcName == "") {
+    dynClear(g_emu_debugBacktrace);
+  } else {
+    int index = dynContains(g_emu_debugBacktrace, funcName);
+    if (index > 0) {
+      dyn_string tmpBacktrace;
+      for (int i=1; i <= index; i++) {
+        tmpBacktrace[i] = g_emu_debugBacktrace[i];
+      }
+      g_emu_debugBacktrace = tmpBacktrace;
+    }
+  }
+}
+
 /** Register an info message.
   @param msg           Info message.
 */
@@ -166,6 +201,8 @@ bool emu_checkException(dyn_string &exceptionInfo, string higherLevelMsg = "") {
     logs that a certain function has been started (and updates the t0 with the current time).
   @param funcName      Function name.
   @param t0            Time when the function has been started (it's updated with the current time).
+  
+  @note                DO NOT USE WHEN MULTI-THREADING!
 */
 void emu_debugFuncStart(string funcName, time &t0) {
   t0=getCurrentTime();
@@ -178,6 +215,8 @@ void emu_debugFuncStart(string funcName, time &t0) {
     logs that a certain function has finished and prints out how much time did it take to execute).
   @param funcName      Function name.
   @param t0            Time when the function has been started.
+  
+  @note                DO NOT USE WHEN MULTI-THREADING!
 */
 void emu_debugFuncEnd(string funcName, time t0) {
   time t1=getCurrentTime();
