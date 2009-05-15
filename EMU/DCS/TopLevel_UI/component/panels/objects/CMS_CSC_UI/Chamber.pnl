@@ -1,65 +1,104 @@
 V 10
 1
-LANG:1 0 
-PANEL,-1 -1 120 46 N "_3DFace" 5
+LANG:1 7 Chamber
+PANEL,-1 -1 120 49 N "_3DFace" 7
 "$chamberNumber"
+"$group"
 "$name"
 "$ring"
+"$shape"
 "$side"
 "$station"
-"void initConstants() {
-  stateColors[\"ON\"] = \"FwStateOKPhysics\";
-  stateColors[\"OFF\"] = \"FwStateOKNotPhysics\";
-  stateColors[\"ERROR\"] = \"FwStateAttention3\";
-  stateColors[\"DEAD\"] = \"FwDead\";
-  stateColors[\"default\"] = \"FwDead\";
-}
-
-main()
+"main()
 {
-  initConstants();
+  deviceParams[\"side\"] = $side;
+  deviceParams[\"station\"] = $station;
+  deviceParams[\"ring\"] = $ring;
+  deviceParams[\"chamberNumber\"] = $chamberNumber;
+  currentConnectionType = \"\";
+  currentConnection = \"\";
+  chamberShape = \"Chamber\";
+  chamber.visible = true;
+  chamberRect.visible = false;
 
-  string chamberNode = \"CSC_ME_\" + $side + $station + $ring + \"_C\" + $chamberNumber;
-  
-  int rc = fwCU_connectState(\"updateFSMStateCB\", chamberNode);
-  emu_info(\"RC for connect to \" + chamberNode + \": \" + rc);
-  
-  if (rc == 0) {
-    setChamberColor(stateColors[\"default\"]);
+  if (isDollarDefined(\"$shape\")) {
+    if ($shape == \"rectangular\") {
+      chamber.visible = false;
+      chamberRect.visible = true;
+      chamberShape = \"ChamberRect\";
+    }
   }
   
-  //rainbow :)
-//   if (rc == 0) {
-//     int chamberNumber = $chamberNumber;
-//     int ring = $ring;
-//     int station = $station;
-//     int red = (255 / 14) * chamberNumber;
-//     int green = 127 * ring;
-//     int blue = 63 * station;
-//     setChamberColor(\"{\" + red + \";\" + green + \";\" + blue + \"}\");
-//   }
+  dpConnect(\"modeChangedCB\", true, $group + \".mode\", $group + \".connectionType\");
 }
 " 0
  E E E E 1 -1 -1 0  20 23
 ""0  1
-E "mapping stateColors;
+E "//some panel-wide constants
+mapping deviceParams;
+string currentConnectionType;
+string currentConnection;
+string chamberShape;
+
+void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string connectionType) {
+  dyn_string ex;
+  bool connectSuccessful = false;
+
+  disconnect();  
+    
+  // this is an FSM connection
+  if (connectionType == \"FSM\") {
+    bool nodeFound = false;
+    string node = emuui_getFsmNode(mode, deviceParams, ex);
+    // node hasn't been found
+    if (dynlen(ex) > 0) {
+      emu_errorHandled(ex);
+    } else {
+      nodeFound = true;
+    }
+    
+    if (nodeFound) {
+      int rc = fwCU_connectState(\"updateFSMStateCB\", node);
+      emu_debug(\"RC for connect to \" + node + \": \" + rc, emu_DEBUG_DETAIL);
+      if (rc != 0) { 
+        connectSuccessful = true;
+        currentConnectionType = connectionType;
+        currentConnection = node;
+      }
+    }
+  }
+  
+  if (!connectSuccessful) {
+    string color = emuui_getMappingValue(\"fsmStateColors\", \"DEAD\", ex);
+    if (emu_checkException(ex)) { return; }
+    setChamberColor(color);
+    currentConnectionType = \"\";
+    currentConnection = \"\";
+  }
+}
 
 void updateFSMStateCB(string node, string state) {
-  emu_info(\"state update came for \" + node + \": \" + state);
+  emu_debug(\"state update came for \" + node + \": \" + state);
   
-  if (!mappingHasKey(stateColors, state)) {
-    state = \"default\";
+  dyn_string ex;
+  string color = emuui_getMappingValue(\"fsmStateColors\", state, ex);
+  if (emu_checkException(ex)) { return; }
+  setChamberColor(color);
+}
+
+void disconnect() {
+  if (currentConnectionType == \"FSM\") {
+    fwCU_disconnectState(currentConnection);
+  } else if (currentConnectionType == \"DP\") {
   }
-  setChamberColor(stateColors[state]);
 }
 
 void setChamberColor(string color) {
-  chamber.backCol(color);
-  txtName.backCol(color);
+  setValue(chamberShape, \"backCol\", color);
 }
 
 void setChamberTooltip(string tooltip) {
-  chamber.toolTipText(tooltip);
+  setValue(chamberShape, \"toolTipText\", tooltip);
   txtName.toolTipText(tooltip);
 }" 0
  2
@@ -134,7 +173,7 @@ updateInfo(string dpIsOn, bool isOn, string dpIMon, float iMon, string dpVMon, f
 109.041666666667 39.7826086956523
  1
 6 2
-"chamberRect"
+"ChamberRect"
 ""
 1 90 10 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
  E E
@@ -150,7 +189,7 @@ E E 0 1 1 2 1 E 1 0 1 -90 -10 1 E 90 10 110 30
 2 1
 "txtName"
 ""
-1 0 7 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 0 7 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 1 0 0 0 0 0
 E E "main(bool enter)
