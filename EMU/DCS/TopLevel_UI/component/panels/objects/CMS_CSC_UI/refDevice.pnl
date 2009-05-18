@@ -1,6 +1,6 @@
 V 10
 1
-LANG:1 7 Chamber
+LANG:1 6 Device
 PANEL,-1 -1 120 49 N "_3DFace" 7
 "$chamberNumber"
 "$group"
