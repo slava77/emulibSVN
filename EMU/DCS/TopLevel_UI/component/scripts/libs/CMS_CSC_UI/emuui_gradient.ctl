@@ -6,7 +6,10 @@ string emuui_getGradientColor(float value, float minValue, float maxValue) {
   dyn_float color; // color components (r, g, b), top value is 2, later cut at 1.
   dyn_int intColor;
   string strColor;
-  
+
+  if (value < minValue) { value = minValue; }
+  if (value > maxValue) { value = maxValue; }
+    
   value -= minValue;             // move value to start at 0
   value = (value / range) * 4;   // shrink the scale to [0;4]
   value -= 2;                    // transfer to left by 2 so that we have a range [-2;2]

@@ -77,19 +77,52 @@ void emuui_clearMappingCache() {
 }
 
 /**
-    @param parameters    describes what FSM node you are interested to e.g. for chamber you give side, station, ring and chamberNumber.
-    @return an FSM node of a requested type and matching the parameters given.
+    @param parameters    describes what FSM node you are interested in e.g. for chamber you give side, station, ring and chamberNumber.
+    @return an FSM node of a requested type and matching the given parameters.
 */
 string emuui_getFsmNode(string type, mapping parameters, dyn_string &exceptionInfo) {
   string pattern = emuui_getMappingValue("fsmNodePatterns", type, exceptionInfo);
-  if (emu_checkException(exceptionInfo)) { return ""; }
+  if (dynlen(exceptionInfo) > 0) {
+    emu_errorHandled(exceptionInfo);
+    return "";
+  }
+
+  return _emuui_fillPattern(pattern, parameters);  
+}
+
+/**
+    @param parameters    describes what DP you are interested in e.g. for chamber you give side, station, ring and chamberNumber.
+    @return DP name of a requested type and matching the given parameters.
+*/
+string emuui_getDpName(string type, mapping parameters, dyn_string &exceptionInfo) {
+  string pattern = emuui_getMappingValue("dpNamePatterns", type, exceptionInfo);
+  if (dynlen(exceptionInfo) > 0) {
+    emu_errorHandled(exceptionInfo);
+    return "";
+  }
+
+  string dp = _emuui_fillPattern(pattern, parameters);
+  dyn_string searchResult = dpNames("*:" + dp);
   
+  if (dynlen(searchResult) < 1) {
+    return "";
+  }
+  
+  if (dynlen(searchResult) > 1) {
+    emu_info("WARNING: more than one match found for DP '" + dp + "'. Returned the first one");
+  }
+  
+  return searchResult[1];
+}
+
+/** Substitutes parameter values in the pattern. Parameters in patterns have dollar symbols on both sides of the parameter name.
+  e.g. pattern "LowVoltage/CSC_ME_$side$$station$$ring$_C$chamberNumber$_LV" */
+string _emuui_fillPattern(string pattern, mapping parameters) {
   for(int i=1; i <= mappinglen(parameters); i++) {
     string key = mappingGetKey(parameters, i);
     string value = parameters[key];
     
     strreplace(pattern, "$" + key + "$", value);
   }
-  
   return pattern;
 }
