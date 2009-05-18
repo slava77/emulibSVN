@@ -19,17 +19,8 @@ PANEL,-1 -1 120 49 N "_3DFace" 7
   currentConnection = \"\";
   
   //by default the physical chamber shape is used
-  chamberShape = \"chamber\";
-
-  if ($shape == \"physical\") {
-    chamberShape = \"chamber\";
-    chamber.visible = true;
-    chamberRect.visible = false;
-  } else if ($shape == \"rectangular\") {
-    chamber.visible = false;
-    chamberRect.visible = true;
-    chamberShape = \"chamberRect\";
-  }
+  deviceShape = $shape;
+  setValue(deviceShape, \"visible\", true);
   
   if (strlen($group) > 0) {
     dpConnect(\"modeChangedCB\", true, $group + \".mode\", $group + \".connectionType\");
@@ -42,7 +33,7 @@ E "//some panel-wide constants
 mapping deviceParams;
 string currentConnectionType;
 string currentConnection;
-string chamberShape;
+string deviceShape;
 
 void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string connectionType) {
   dyn_string ex;
@@ -57,7 +48,7 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
     // node hasn't been found
     if (dynlen(ex) > 0) {
       emu_errorHandled(ex);
-    } else {
+    } else if (strlen(node) > 0){
       nodeFound = true;
     }
     
@@ -70,12 +61,31 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
         currentConnection = node;
       }
     }
+  } else if (connectionType == \"DP\") {
+    bool dpFound = false;
+    string dp = emuui_getDpName(mode, deviceParams, ex);
+    // dp hasn't been found
+    if (dynlen(ex) > 0) {
+      emu_errorHandled(ex);
+    } else if (strlen(dp) > 0){
+      dpFound = true;
+    }
+    
+    if (dpFound) {
+      int rc = dpConnect(\"updateDPStateCB\", true, dp);
+      emu_debug(\"RC for connect to \" + dp + \": \" + rc, emu_DEBUG_DETAIL);
+      if (rc == 0) {
+        connectSuccessful = true;
+        currentConnectionType = connectionType;
+        currentConnection = dp;
+      }
+    }
   }
   
   if (!connectSuccessful) {
     string color = emuui_getMappingValue(\"fsmStateColors\", \"DEAD\", ex);
     if (emu_checkException(ex)) { return; }
-    setChamberColor(color);
+    setColor(color);
     currentConnectionType = \"\";
     currentConnection = \"\";
   }
@@ -87,22 +97,31 @@ void updateFSMStateCB(string node, string state) {
   dyn_string ex;
   string color = emuui_getMappingValue(\"fsmStateColors\", state, ex);
   if (emu_checkException(ex)) { return; }
-  setChamberColor(color);
+  setColor(color);
 }
 
+void updateDPStateCB(string dp, float value) {
+  emu_debug(\"update came for DP: \" + dp + \": \" + value);
+  
+  dyn_string ex;
+  string color = emuui_getGradientColor(value, 20, 32);
+  setColor(color);
+}
+    
 void disconnect() {
   if (currentConnectionType == \"FSM\") {
     fwCU_disconnectState(currentConnection);
   } else if (currentConnectionType == \"DP\") {
+    dpDisconnect(\"updateDPStateCB\", currentConnection);
   }
 }
 
-void setChamberColor(string color) {
-  setValue(chamberShape, \"backCol\", color);
+void setColor(string color) {
+  setValue(deviceShape, \"backCol\", color);
 }
 
-void setChamberTooltip(string tooltip) {
-  setValue(chamberShape, \"toolTipText\", tooltip);
+void setTooltip(string tooltip) {
+  setValue(deviceShape, \"toolTipText\", tooltip);
   txtName.toolTipText(tooltip);
 }" 0
  2
@@ -116,7 +135,7 @@ LANG:1 0
 10 0
 "chamber"
 ""
-1 19.9791666666667 52.5 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+1 19.9791666666667 52.5 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
  E E
 0 0 0 0 0 0
 E E E
@@ -177,7 +196,7 @@ updateInfo(string dpIsOn, bool isOn, string dpIMon, float iMon, string dpVMon, f
 109.041666666667 39.7826086956523
  1
 6 2
-"chamberRect"
+"rectangle"
 ""
 1 90 10 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
  E E
@@ -193,7 +212,7 @@ E E 0 1 1 2 1 E 1 0 1 -90 -10 1 E 90 10 110 30
 2 1
 "txtName"
 ""
-1 0 7 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 10 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 1 0 0 0 0 0
 E E "main(bool enter)
@@ -215,13 +234,13 @@ LANG:1 0
 {
   this.text($name);
 }" 0
- E 0 1 1 2 1 E U  1 E -13 0 13 14
-0 2 2 "0s" 0 0 0 193 0 0  0 0 1
+ E 0 1 1 2 1 E U  1 E 3 3 17 17
+0 2 2 "0s" 0 0 0 193 0 0  10 3 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
-LANG:1 4 name
+LANG:1 2 me
 0
 LAYER, 1 
 1
