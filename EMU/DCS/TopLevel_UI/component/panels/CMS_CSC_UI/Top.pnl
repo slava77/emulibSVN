@@ -70,11 +70,11 @@ drawRing(int x, int y, float radius, int chCount, string side, int station, int 
     //import the chamber panel (no changes in the panel shape; position - [0,0])
     string refName = \"refChamber_\" + side + station + ring + \"_\" + strChamberNumber;
     addSymbol(myModuleName(), myPanelName(),
-              \"objects/CMS_CSC_UI/Chamber.pnl\",
+              \"objects/CMS_CSC_UI/refDevice.pnl\",
               refName,
               makeDynString(\"$name:\" + chName, \"$side:\" + side, \"$station:\" + station, 
                             \"$ring:\" + ring, \"$chamberNumber:\" + strChamberNumber,
-                            \"$group:\" + emuui_getSessionDp(\"mainChamberView\"), \"$shape:physical\"),
+                            \"$group:\" + emuui_getSessionDp(\"mainChamberView\"), \"$shape:chamber\"),
               0, 0, 0, 1, 1);
     
     //scale and position chamber
@@ -114,7 +114,7 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
  218 598 342 722
 4

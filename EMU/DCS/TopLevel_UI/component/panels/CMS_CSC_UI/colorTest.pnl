@@ -8,42 +8,44 @@ mapping stationRingCount;
 
 main()
 {
+  emuui_initSession();
+  
   initConsts();
   drawEMU(30, 30);
   
   // set chamber colors
-  for (int i=-4; i <= 4; i++) {
-    string side = \"P\";
-    if (i < 0) { side = \"M\"; }
-    if (i == 0) { continue; } // no such station
-    int station = emu_abs(i);
-    
-    for (int ring = 1; ring <= stationRingCount[side + station]; ring++) {
-      int chamberCount = 18;
-      if ((station == 1) || (ring > 1)) { chamberCount = 36; }
-      
-      for (int chamberNum=1; chamberNum <= chamberCount; chamberNum++) {
-        int red = 7 * chamberNum;
-        int green = 85 * ring;
-        int blue = 63 * station;
-        setValue(\"refChamber_\" + side + station + ring + \"_\" + chamberNum + \".chamberRect\", \"backCol\", \"{\" + red + \";\" + green + \";\" + blue + \"}\");
-      }
-    }
-  }
+//   for (int i=-4; i <= 4; i++) {
+//     string side = \"P\";
+//     if (i < 0) { side = \"M\"; }
+//     if (i == 0) { continue; } // no such station
+//     int station = emu_abs(i);
+//     
+//     for (int ring = 1; ring <= stationRingCount[side + station]; ring++) {
+//       int chamberCount = 18;
+//       if ((station == 1) || (ring > 1)) { chamberCount = 36; }
+//       
+//       for (int chamberNum=1; chamberNum <= chamberCount; chamberNum++) {
+//         int red = 7 * chamberNum;
+//         int green = 85 * ring;
+//         int blue = 63 * station;
+//         setValue(\"refChamber_\" + side + station + ring + \"_\" + chamberNum + \".chamberRect\", \"backCol\", \"{\" + red + \";\" + green + \";\" + blue + \"}\");
+//       }
+//     }
+//   }
   
   drawGradient(30, 380);
   drawGradient2(30, 410);
 
   int x = 30;
   int y = 440;
-  for (int i=0; i <= 1022; i++) {
+  for (int i=0; i <= 150; i++) {
     string refName = \"uaua\" + i;
     addSymbol(myModuleName(), myPanelName(),
               \"objects/CMS_CSC_UI/refLine.pnl\",
               refName,
               makeDynString(),
               x+i, y, 0, 1, 1);
-    setValue(refName + \".line\", \"foreCol\", emuui_getGradientColor(i, 0, 1022));
+    setValue(refName + \".line\", \"foreCol\", emuui_getGradientColor(i, 0, 150));
   }
 }
 
@@ -99,13 +101,14 @@ void drawStation(int x, int y, string side, int station, int ring) {
     //import the chamber panel (no changes in the panel shape; position - [0,0])
     string refName = \"refChamber_\" + side + station + ring + \"_\" + i;
     addSymbol(myModuleName(), myPanelName(),
-              \"objects/CMS_CSC_UI/Chamber.pnl\",
+              \"objects/CMS_CSC_UI/refDevice.pnl\",
               refName,
               makeDynString(\"$name:\" + chamberName, \"$side:\" + side, \"$station:\" + station, 
                             \"$ring:\" + ring, \"$chamberNumber:\" + strChamberNumber,
-                            \"$shape:rectangular\"),
+                            \"$group:\" + emuui_getSessionDp(\"temperatureMonitor\"),
+                            \"$shape:rectangle\"),
               chamberX, y, 0, 1, 1);
-    setValue(refName + \".chamberRect\", \"scale\", scaleWidth, 1);
+    setValue(refName + \".rectangle\", \"scale\", scaleWidth, 1);
   }
 }
 
@@ -172,7 +175,7 @@ void drawGradient2(int x, int y) {
   
   emu_info(\"COL_COUNT: \" + count);
 }" 0
- E E E E 1 -1 -1 0  -1 -1
+ E E E E 1 -1 -1 0  70 450
 ""0  1
 E E 2
 "CBRef" "1"
