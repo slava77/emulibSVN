@@ -104,7 +104,7 @@ string emuui_getDpName(string type, mapping parameters, dyn_string &exceptionInf
   }
   
   if (dynlen(dps) > 1) {
-    emu_info("WARNING: more than one match found for DP request '" + dp + "'. Returned the first one");
+    emu_info("WARNING: more than one match found  (" + dynlen(dps) + ") for DP request of type '" + type + "'. Returned the first one");
   }
   
   return dps[1];
@@ -131,14 +131,20 @@ dyn_string emuui_getDpNames(string type, mapping parameters, dyn_string &excepti
 }
 
 /** Substitutes parameter values in the pattern. Parameters in patterns have dollar symbols on both sides of the parameter name.
-  e.g. pattern "LowVoltage/CSC_ME_$side$$station$$ring$_C$chamberNumber$_LV" */
-
+  e.g. pattern "LowVoltage/CSC_ME_$side$$station$$ring$_C$chamberNumber$_LV".
+  Note any remaining $ parameters which were not found in the parameters mapping are replaced by a wildcard - "*".
+*/
 string _emuui_fillPattern(string pattern, mapping parameters) {
   for(int i=1; i <= mappinglen(parameters); i++) {
     string key = mappingGetKey(parameters, i);
     string value = parameters[key];
     
     strreplace(pattern, "$" + key + "$", value);
+  }
+  while (patternMatch("*$*$*", pattern)) {
+    dyn_string split = strsplit(pattern, "$");
+    string param = "$" + split[2] + "$";
+    strreplace(pattern, param, "*");
   }
   return pattern;
 }
