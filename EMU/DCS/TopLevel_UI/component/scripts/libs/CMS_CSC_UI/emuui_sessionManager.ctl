@@ -14,7 +14,7 @@ void emuui_initSession() {
   fwAccessControl_getUserName(user);
   emuui_g_sessionId = "session_" + getHostname() + "_" + user;
   
-  dyn_string sessionDps = dpNames("emu_g_sessionId", "CSC_UI_sessionState");
+  dyn_string sessionDps = dpNames(emuui_g_sessionId, "CSC_UI_sessionState");
   // should never happen, but just in case
   if (dynlen(sessionDps) > 1) {
     emu_info("More than one saved session found for this user at this computer - cleaning up (deleting all of them and starting new)");
