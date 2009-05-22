@@ -1,0 +1,218 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 402 189 N "_3DFace" 1
+"$deviceParams"
+"main()
+{
+  dyn_string ex;
+  deviceParams = emuui_parseDeviceParameters($deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+
+  dyn_string dps = emuui_getDpNames(\"chamber_temperature\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  initGui(dps);
+  
+  dpConnect(\"updateTemperatureCB\", true, dps);
+}
+
+void initGui(dyn_string dps) {
+  
+  // Fill up the columnNames array. 
+  // And if any column name is not found in part of the DPs name then it's removed (e.g. not all chambers have CFEB5 so it's removed from the table)
+  int columnCount = tableTemp.columnCount();
+  dyn_int columnsToDelete;
+  for (int i=0; i < columnCount; i++) {
+    string columnName = tableTemp.columnToName(i);
+    //check if the column name is part of any dps
+    if (dynPartiallyContains(dps, columnName) > 0) {
+      dynAppend(columnNames, columnName);
+    } else {
+      dynAppend(columnsToDelete, i); // register to be deleted
+    }
+  }
+  //delete unnecessary columns
+  for (int i = dynlen(columnsToDelete); i >=1; i--) {
+    tableTemp.deleteColumn(columnsToDelete[i]);
+  }
+  
+  //set the appropriate width for the table
+  columnCount = tableTemp.columnCount();
+  int newTableWidth = 0;
+  for (int i=0; i < columnCount; i++) {
+    newTableWidth += tableTemp.columnWidth(i);
+  }
+  newTableWidth += TABLE_BORDER_WIDTH;
+  
+  int actualWidth, actualHeight;
+  getValue(\"tableTemp\", \"size\", actualWidth, actualHeight);
+  tableTemp.size(newTableWidth, actualHeight);
+  
+  tableTemp.appendLine(columnNames[1], \"\");
+}" 0
+ E E E E 1 -1 -1 0  0 0
+""0  1
+E "//some panel-wide constants and variables
+int cfebCount;
+mapping deviceParams;
+dyn_string columnNames;
+const int TABLE_BORDER_WIDTH = 4;
+
+void updateTemperatureCB(dyn_string dps, dyn_float temperatures) {
+  for (int i=1; i <= dynlen(columnNames); i++) {
+    int index = dynPartiallyContains(dps, columnNames[i]);
+    if (index > 0) {
+      string strValue;
+      sprintf(strValue, \"%d °C\", temperatures[index]);
+      tableTemp.cellValueRC(0, columnNames[i], strValue);
+    }
+  }
+}
+
+/** returns index of an element within the container which is first to contain a searchString. -1 is returned if no match is found. */
+int dynPartiallyContains(dyn_string container, string searchString) {
+  for (int i=1; i <= dynlen(container); i++) {
+    if (strpos(container[i], searchString) >= 0) {
+      return i;
+    }
+  }
+  return -1;
+}" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 0
+"RECTANGLE1"
+""
+1 240 90 E E E 1 E 1 E N {0,0,0} E N {255,255,225} E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1.45833333333333 0 0.88888888888889 0 0 1 E 240 90 0 0
+2 1
+"PRIMITIVE_TEXT1"
+""
+1 10 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 10 70 24
+0 2 2 "0s" 0 0 0 192 0 0  10 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 11 Temperature
+25 2
+"tableTemp"
+""
+1 10 30 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 8 28 344 69
+EE 1 0 1 7 0 "Alct_T1" 6 1 0 "s" 1
+LANG:1 4 ALCT
+E
+1
+LANG:1 0 
+
+47 "Cfeb_T1" 6 1 0 "s" 1
+LANG:1 6 CFEB 1
+E
+1
+LANG:1 0 
+
+47 "Cfeb_T2" 6 1 0 "s" 1
+LANG:1 6 CFEB 2
+E
+1
+LANG:1 0 
+
+47 "Cfeb_T3" 6 1 0 "s" 1
+LANG:1 6 CFEB 3
+E
+1
+LANG:1 0 
+
+47 "Cfeb_T4" 6 1 0 "s" 1
+LANG:1 6 CFEB 4
+E
+1
+LANG:1 0 
+
+47 "Cfeb_T5" 6 1 0 "s" 1
+LANG:1 6 CFEB 5
+E
+1
+LANG:1 0 
+
+47 "Dmb__T1" 6 1 0 "s" 1
+LANG:1 3 DMB
+E
+1
+LANG:1 0 
+
+47 
+14 14 10 10
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+0 0 0 1 7
+1 0
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

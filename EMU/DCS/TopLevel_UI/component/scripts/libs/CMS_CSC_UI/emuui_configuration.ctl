@@ -91,32 +91,48 @@ string emuui_getFsmNode(string type, mapping parameters, dyn_string &exceptionIn
 }
 
 /**
+    @param type          what type of DP are you interested in? e.g. temperature_max
     @param parameters    describes what DP you are interested in e.g. for chamber you give side, station, ring and chamberNumber.
-    @return DP name of a requested type and matching the given parameters.
+    @return              name of a DP that matches the requested type and given parameters.
 */
 string emuui_getDpName(string type, mapping parameters, dyn_string &exceptionInfo) {
+  dyn_string dps = emuui_getDpNames(type, parameters, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; } // should never happen as they're handled in emuui_getDpNames(...)
+  
+  if (dynlen(dps) < 1) {
+    return "";
+  }
+  
+  if (dynlen(dps) > 1) {
+    emu_info("WARNING: more than one match found for DP request '" + dp + "'. Returned the first one");
+  }
+  
+  return dps[1];
+}
+
+/**
+    @param type          what type of DPs are you interested in? e.g. HV_vMon, HV_Primary_vMon, HV_Primary_iMon...
+    @param parameters    describes what DPs you are interested in e.g. for chamber you give side, station, ring and chamberNumber.
+    @return              an array of DP names that match the requested type and given parameters.
+*/
+dyn_string emuui_getDpNames(string type, mapping parameters, dyn_string &exceptionInfo) {
+  dyn_string ret;
+  
   string pattern = emuui_getMappingValue("dpNamePatterns", type, exceptionInfo);
   if (dynlen(exceptionInfo) > 0) {
-    emu_errorHandled(exceptionInfo);
-    return "";
+    emu_errorHandled(exceptionInfo);  
+    return ret;
   }
 
   string dp = _emuui_fillPattern(pattern, parameters);
-  dyn_string searchResult = dpNames("*:" + dp);
+  ret = dpNames("*:" + dp);
   
-  if (dynlen(searchResult) < 1) {
-    return "";
-  }
-  
-  if (dynlen(searchResult) > 1) {
-    emu_info("WARNING: more than one match found for DP '" + dp + "'. Returned the first one");
-  }
-  
-  return searchResult[1];
+  return ret;
 }
 
 /** Substitutes parameter values in the pattern. Parameters in patterns have dollar symbols on both sides of the parameter name.
   e.g. pattern "LowVoltage/CSC_ME_$side$$station$$ring$_C$chamberNumber$_LV" */
+
 string _emuui_fillPattern(string pattern, mapping parameters) {
   for(int i=1; i <= mappinglen(parameters); i++) {
     string key = mappingGetKey(parameters, i);

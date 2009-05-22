@@ -1,0 +1,134 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 388 123 N "_3DFace" 3
+"$deviceParams"
+"$deviceType"
+"$mode"
+"main()
+{
+  //initialize some panel-wide variables and constants
+  tooltipHeight = 0;
+  getCursorPosition(tooltipX, tooltipY);
+  tooltipY += 20;
+  
+  //add Caption - device name
+  string filename = getTooltipObjFile($deviceType + \"_name\");
+  if (strlen(filename) == 0) {
+    lblError.visible = true;
+    return;
+  }
+  addTooltipObj(filename);
+  
+  filename = getTooltipObjFile($mode);
+  addTooltipObj(filename);
+}
+" 0
+ "main()
+{
+  for (int i=1; i <= dynlen(refObjects); i++) {
+    removeSymbol(myModuleName(), myPanelName(), refObjects[i]);
+  }
+}" 0
+ E E E 1 -1 -1 0  30 40
+""0  1
+E "int tooltipHeight;
+int tooltipX, tooltipY;
+dyn_string refObjects;
+
+string getTooltipObjFile(string type) {
+  dyn_string filenames = getFileNames(PROJ_PATH + \"panels/objects/CMS_CSC_UI/tooltip_objects\", \"refTooltipObj_\" + type + \".pnl\");
+  if (dynlen(filenames) > 0) {
+    return \"objects/CMS_CSC_UI/tooltip_objects/\" + filenames[1];
+  }
+  return \"\";
+}
+
+void addTooltipObj(string filename) {
+  addSymbol(myModuleName(), myPanelName(),
+          filename,
+          filename,
+          makeDynString(\"$deviceParams:\" + $deviceParams),
+          tooltipX, tooltipY + tooltipHeight, 0, 1, 1);
+  
+  dynAppend(refObjects, filename);
+  tooltipHeight += 20;
+}" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+2 0
+"PRIMITIVE_TEXT1"
+""
+1 30 40 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 30 40 335 54
+0 2 2 "0s" 0 0 0 192 0 0  30 40 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 66 Content is dynamically generated - see initialize event & scopeLib
+2 2
+"lblError"
+""
+1 0 0 E E E 1 E 0 E N "_WindowText" E N "FwStateAttention3" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 0 0 375 14
+0 2 2 "0s" 0 0 0 192 0 0  0 0 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 85 Error - tooltip file for this type of device is missing! Please inform DCS developers
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

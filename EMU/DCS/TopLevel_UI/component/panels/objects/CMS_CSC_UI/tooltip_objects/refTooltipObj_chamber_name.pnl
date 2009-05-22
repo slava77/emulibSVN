@@ -1,0 +1,94 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 217 34 N "_3DFace" 1
+"$deviceParams"
+"main()
+{
+  dyn_string ex;
+  deviceParams = emuui_parseDeviceParameters($deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  string strSide = \"+\";
+  if (deviceParams[\"side\"] == \"M\") { strSide = \"-\"; }
+  
+  lblDeviceName.text = \"ME\" + strSide + 
+                       deviceParams[\"station\"] + \"/\" + deviceParams[\"ring\"] + \"/\" +
+                       deviceParams[\"chamberNumber\"];
+}" 0
+ E E E E 1 -1 -1 0  0 0
+""0  1
+E "//some panel-wide constants
+mapping deviceParams;
+" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 2
+"RECTANGLE1"
+""
+1 240 90 E E E 1 E 1 E N {0,0,0} E N {255,255,225} E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 0.416666666666667 0 0.222222222222222 0 0 1 E 240 90 0 0
+2 1
+"lblDeviceName"
+""
+1 3 3 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 3 3 88 17
+0 2 2 "0s" 0 0 0 192 0 0  3 3 1
+1
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 12 Chamber Name
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
