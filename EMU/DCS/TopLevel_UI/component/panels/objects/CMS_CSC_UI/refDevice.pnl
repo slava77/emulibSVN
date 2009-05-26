@@ -46,7 +46,8 @@ bool tooltipIsOn;
 void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string connectionType) {
   dyn_string ex;
   bool connectSuccessful = false;
-
+  mode = $deviceType + \"_\" + mode; // prepend mode with device type
+  
   disconnect();  
     
   // this is an FSM connection

@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 3 EMU
-PANEL,-1 -1 2100 1199 N "_3DFace" 0
+PANEL,-1 -1 2100 1200 N "_3DFace" 0
 "  const int chWidth = 40;
   const int chHalfHeight = 35;
   const float me234_2_scaleFactor = 1.3;
@@ -18,7 +18,7 @@ main()
   drawStation(1839, 300, 150, \"P\", 4);
   
   //construct Minus side
-//   drawStation(300, 900, 150, \"M\", 1);
+  drawStation(300, 900, 150, \"M\", 1);
 //   drawStation(847, 900, 150, \"M\", 2);
 //   drawStation(1343, 900, 150, \"M\", 3);
 //   drawStation(1839, 900, 150, \"M\", 4);
@@ -72,8 +72,11 @@ drawRing(int x, int y, float radius, int chCount, string side, int station, int 
     addSymbol(myModuleName(), myPanelName(),
               \"objects/CMS_CSC_UI/refDevice.pnl\",
               refName,
-              makeDynString(\"$name:\" + chName, \"$side:\" + side, \"$station:\" + station, 
-                            \"$ring:\" + ring, \"$chamberNumber:\" + strChamberNumber,
+              makeDynString(\"$caption:\" + chName, \"$deviceType:chamber\",
+                            \"$deviceParams:\" + \"side=\" + side + 
+                                               \";station=\" + station + 
+                                               \";ring=\" + ring + 
+                                               \";chamberNumber=\" + strChamberNumber,
                             \"$group:\" + emuui_getSessionDp(\"mainChamberView\"), \"$shape:chamber\"),
               0, 0, 0, 1, 1);
     
@@ -83,15 +86,15 @@ drawRing(int x, int y, float radius, int chCount, string side, int station, int 
     setValue(refName + \".chamber\", \"rotation\", -1 * angleDeg);
 
     //position text
-    setValue(refName + \".txtName\", \"position\", currTxtX, currTxtY);
+    setValue(refName + \".caption\", \"position\", currTxtX, currTxtY);
     if ((angleDeg > 90) && (angleDeg <= 270)){
-      setValue(refName + \".txtName\", \"rotation\", -1 * angleDeg + 180);
+      setValue(refName + \".caption\", \"rotation\", -1 * angleDeg + 180);
     } else {
-      setValue(refName + \".txtName\", \"rotation\", -1 * angleDeg);
+      setValue(refName + \".caption\", \"rotation\", -1 * angleDeg);
     }
   }
 }" 0
- E E E E 0.8 -1 -1 0  50 30
+ E E E E 1 -1 -1 0  50 30
 ""0  1
 E E 2
 "CBRef" "1"
@@ -162,19 +165,19 @@ E "main(int button){
   switch (button) {
     case 0:
       connectionType = \"FSM\";
-      mode = \"chamber_general\";
+      mode = \"general\";
       break;
     case 1:
       connectionType = \"FSM\";
-      mode = \"chamber_high_voltage\";
+      mode = \"high_voltage\";
       break;
     case 2:
       connectionType = \"FSM\";
-      mode = \"chamber_low_voltage\";
+      mode = \"low_voltage\";
       break;
     case 3:
       connectionType = \"FSM\";
-      mode = \"chamber_temperature\";
+      mode = \"temperature\";
       break;
     default:
       break;

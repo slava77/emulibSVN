@@ -13,15 +13,12 @@ PANEL,-1 -1 388 123 N "_3DFace" 3
   tooltipY += 20;
   
   //add Caption - device name
-  string filename = getTooltipObjFile($deviceType + \"_name\");
-  if (strlen(filename) == 0) {
+  if (!addTooltipObj($deviceType + \"_name\")) {
     lblError.visible = true;
     return;
   }
-  addTooltipObj(filename);
   
-  filename = getTooltipObjFile($mode);
-  addTooltipObj(filename);
+  addTooltipObj($mode);
 }
 " 0
  "main()
@@ -44,19 +41,41 @@ string getTooltipObjFile(string type) {
   return \"\";
 }
 
-void addTooltipObj(string filename) {
+/** Adds a tooltip object and returns true on success and false if it failed (e.g. file was not found). */
+bool addTooltipObj(string type) {
+  string filename = getTooltipObjFile(type);
+  if (strlen(filename) == 0) {
+    return false;
+  }
   addSymbol(myModuleName(), myPanelName(),
           filename,
           filename,
           makeDynString(\"$deviceParams:\" + $deviceParams),
           tooltipX, tooltipY + tooltipHeight, 0, 1, 1);
   
+  // adds the tooltip object in an array of to-be-deleted items when the panel is closed or terminated
   dynAppend(refObjects, filename);
-  tooltipHeight += 20;
+  
+  // update the tooltipHeight variable - used to position new tooltipObjects
+  if (shapeExists(type + \"_tooltipBack\")) {
+    int objWidth, objHeight;
+    getValue(type + \"_tooltipBack\", \"size\", objWidth, objHeight);
+    tooltipHeight += objHeight - 1;
+  } else { // if the background object doesn't exist we cannot really tell what's the height of that tooltipObject, so just lets increase it by let's say 50 so that we notice that problem if we will try to add something in addition to a tooltip object which hasn't got a fixed height (e.g. chamber_general).
+    tooltipHeight += 50;
+  }
+  
+  return true;
 }" 0
  2
 "CBRef" "1"
-"EClose" E
+"EClose" "main()
+{
+  for (int i=1; i <= dynlen(refObjects); i++) {
+    removeSymbol(myModuleName(), myPanelName(), refObjects[i]);
+  }
+}" 0
+
 ""
 DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
 LAYER, 0 

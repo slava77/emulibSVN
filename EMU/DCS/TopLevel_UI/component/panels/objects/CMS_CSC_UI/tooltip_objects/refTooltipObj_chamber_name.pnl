@@ -29,7 +29,7 @@ LAYER, 0
 1
 LANG:1 0 
 6 2
-"RECTANGLE1"
+"chamber_name_tooltipBack"
 ""
 1 240 90 E E E 1 E 1 E N {0,0,0} E N {255,255,225} E E
  E E

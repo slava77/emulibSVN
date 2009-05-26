@@ -103,8 +103,11 @@ void drawStation(int x, int y, string side, int station, int ring) {
     addSymbol(myModuleName(), myPanelName(),
               \"objects/CMS_CSC_UI/refDevice.pnl\",
               refName,
-              makeDynString(\"$name:\" + chamberName, \"$side:\" + side, \"$station:\" + station, 
-                            \"$ring:\" + ring, \"$chamberNumber:\" + strChamberNumber,
+              makeDynString(\"$caption:VALUE\", \"$deviceType:chamber\",
+                            \"$deviceParams:\" + \"side=\" + side + 
+                                               \";station=\" + station + 
+                                               \";ring=\" + ring + 
+                                               \";chamberNumber=\" + strChamberNumber,
                             \"$group:\" + emuui_getSessionDp(\"temperatureMonitor\"),
                             \"$shape:rectangle\"),
               chamberX, y, 0, 1, 1);
