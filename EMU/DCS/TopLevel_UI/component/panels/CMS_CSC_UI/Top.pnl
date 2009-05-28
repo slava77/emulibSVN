@@ -1,8 +1,12 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 602 417 N "_3DFace" 0
-E E E E E 1 -1 -1 0  -1 -1
+PANEL,-1 -1 1600 1080 N "_3DFace" 0
+"main()
+{
+  emuui_init();
+}" 0
+ E E E E 1 -1 -1 0  60 250
 ""0  1
 E E 2
 "CBRef" "1"
@@ -12,6 +16,39 @@ DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
 LAYER, 0 
 1
 LANG:1 0 
+29 0
+"mainChamberView"
+""
+1 290 100 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"lineWidth" "int 1"
+"vScrollBarMode" "enum 1"
+"hScrollBarMode" "enum 1"
+ 0 40 1600 840
+15 Canvas.Canvas.1
+0
+"main()
+{
+  this.ModuleName = \"MainChamberView\";
+  while(!emuui_isInitialized()) { // wait for the emuui initialization
+    delay(0, 200);
+  }
+  
+  int width, height;
+  getValue(\"\", \"size\", width, height);
+  
+  string group = emuui_getSessionDp(\"mainChamberView\");          //group name
+  string refName = \"MainChamberView_EMU\";
+  RootPanelOnModule(\"objects/CMS_CSC_UI/refEMUPhysical.pnl\",\"MainChamberViewPanel\",\"MainChamberView\",
+                    makeDynString(\"$group:\" + group, \"$width:\" + width));
+}" 0
 0
 LAYER, 1 
 1

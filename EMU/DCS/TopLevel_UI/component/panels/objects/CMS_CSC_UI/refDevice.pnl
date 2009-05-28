@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 6 Device
-PANEL,-1 -1 260 162 N "_3DFace" 5
+PANEL,-1 -1 120 53 N "_3DFace" 5
 "$caption"
 "$deviceParams"
 "$deviceType"
@@ -32,12 +32,6 @@ PANEL,-1 -1 260 162 N "_3DFace" 5
   
   if (strlen($group) > 0) {
     dpConnect(\"modeChangedCB\", true, $group + \".mode\", $group + \".connectionType\");
-  }
-  
-  if ((deviceParams[\"chamberNumber\"] == \"01\") && (deviceParams[\"ring\"] ==1)) {
-    dyn_dyn_int points = chamber.points;
-    emu_info(\"printing geometry for: \" + emu_mappingToString(deviceParams));
-    emu_printMap(points);  
   }
 }
 
@@ -246,7 +240,7 @@ LANG:1 0
 10 0
 "chamber"
 ""
-1 43.2343750000001 52.5000000000001 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+1 45.8182870370372 52.5000000000001 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
  E E
 0 0 0 0 0 0
 E E "main(bool enter)

@@ -109,7 +109,7 @@ void drawStation(int x, int y, string side, int station, int ring) {
                                                \";ring=\" + ring + 
                                                \";chamberNumber=\" + strChamberNumber,
                             \"$group:\" + emuui_getSessionDp(\"temperatureMonitor\"),
-                            \"$shape:rectangle\"),
+                            \"$shapeParams:type=rectangle\"),
               chamberX, y, 0, 1, 1);
     setValue(refName + \".rectangle\", \"scale\", scaleWidth, 1);
   }

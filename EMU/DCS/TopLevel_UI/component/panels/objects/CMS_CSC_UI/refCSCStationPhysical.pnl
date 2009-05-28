@@ -1,16 +1,17 @@
 V 10
 1
-LANG:1 0 
-PANEL,-1 -1 538 515 N "_3DFace" 3
-"$diameter"
+LANG:1 7 Station
+PANEL,-1 -1 538 515 N "_3DFace" 4
+"$group"
+"$radius"
 "$side"
 "$station"
 "main()
 {
-  int radius = $diameter / 2;
-  
   dyn_string ex;
-  drawStation(radius, radius, radius, $side, $station, ex);
+  int posX, posY;
+  getValue(\"refPoint\", \"position\", posX, posY);
+  drawStation(posX + (int)$radius, posY + (int)$radius, $radius, $side, $station, ex);
   if (emu_checkException(ex)) { return; }
 }
 
@@ -76,8 +77,8 @@ void drawRing(int x, int y, int innerRadius, int outerRadius, int chamberCount, 
     //compute the angle and position
     float angle = i * angleStep + angleOffset;
     float angleDeg = rad2deg(angle);             //convert angle from radians to degrees
-    int posX = -1 * outerRadius * cos(angle) + x;
-    int posY = -1 * outerRadius * sin(angle) + y;
+    int posX = round(-1 * outerRadius * cos(angle) + x);
+    int posY = round(-1 * outerRadius * sin(angle) + y);
     int captionPosX = -1 * captionRadius * cos(angle) + x;
     int captionPosY = -1 * captionRadius * sin(angle) + y;
     
@@ -101,14 +102,13 @@ void drawRing(int x, int y, int innerRadius, int outerRadius, int chamberCount, 
                                                  \";outerWidth=\" + chamberOuterWidth +
                                                  \";innerWidth=\" + chamberInnerWidth +
                                                  \";height=\" + chamberHeight;
-    string groupDollar = \"$group:\" + emuui_getSessionDp(\"mainChamberView\");          //group name
     
     //import the chamber panel (no changes in the panel orientation; position - [0,0])
     addSymbol(myModuleName(), myPanelName(),
               \"objects/CMS_CSC_UI/refDevice.pnl\",
               refName,
               makeDynString(\"$caption:\" + chamberName, \"$deviceType:chamber\",
-                            deviceParamsDollar, shapeParamsDollar, groupDollar),
+                            deviceParamsDollar, shapeParamsDollar, \"$group:\" + $group),
               0, 0, 0, 1, 1);
     
 //transfer the chamber local coordinate system from the upper left corner to the middle of the outer part (where we think we have the center :) )
@@ -127,8 +127,17 @@ void drawRing(int x, int y, int innerRadius, int outerRadius, int chamberCount, 
       setValue(refName + \".caption\", \"rotation\", -1 * angleDeg);
     }
   }
+}
+
+int round(float value) {
+  int ret = floor(value);
+  if (value - ret > 0.5) {
+    ret++;
+  }
+  
+  return ret;
 }" 0
- E E E E 1 -1 -1 0  -1 -1
+ E E E E 1 -1 -1 0  0 0
 ""0  1
 E E 2
 "CBRef" "1"
@@ -138,6 +147,20 @@ DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
 LAYER, 0 
 1
 LANG:1 0 
+7 1
+"refPoint"
+""
+1 140 110 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -140 -110 1 E 140 110 10 10
 0
 LAYER, 1 
 1

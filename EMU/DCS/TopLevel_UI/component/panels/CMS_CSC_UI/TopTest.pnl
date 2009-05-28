@@ -4,7 +4,7 @@ LANG:1 3 EMU
 PANEL,-1 -1 2100 1200 N "_3DFace" 0
 "  const int chWidth = 40;
   const int chHalfHeight = 35;
-  const float me234_2_scaleFactor = 1.3;
+  const float me234_2_scaleFactor = 1.5;
   const int gapBetweenRings = 2;
   
 main()
@@ -70,14 +70,14 @@ drawRing(int x, int y, float radius, int chCount, string side, int station, int 
     //import the chamber panel (no changes in the panel shape; position - [0,0])
     string refName = \"refChamber_\" + side + station + ring + \"_\" + strChamberNumber;
     addSymbol(myModuleName(), myPanelName(),
-              \"objects/CMS_CSC_UI/refDevice.pnl\",
+              \"objects/CMS_CSC_UI/refDevice_oldTest.pnl\",
               refName,
               makeDynString(\"$caption:\" + chName, \"$deviceType:chamber\",
                             \"$deviceParams:\" + \"side=\" + side + 
                                                \";station=\" + station + 
                                                \";ring=\" + ring + 
                                                \";chamberNumber=\" + strChamberNumber,
-                            \"$group:\" + emuui_getSessionDp(\"mainChamberView\"), \"$shape:chamber\"),
+                            \"$group:\" + emuui_getSessionDp(\"mainChamberView\"), \"$shapeParams:type=chamber\"),
               0, 0, 0, 1, 1);
     
     //scale and position chamber
