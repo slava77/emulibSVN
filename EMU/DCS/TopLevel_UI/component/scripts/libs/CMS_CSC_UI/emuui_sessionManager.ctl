@@ -10,6 +10,14 @@ global string emuui_g_sessionId;
 
 /** Initializes a session (creates a new DP or registers an already existing one. */
 void emuui_initSession() {
+  time t0;
+  emu_debugFuncStart("emuui_initSession", t0);
+  
+  if (strlen(emuui_g_sessionId) > 0) {
+    emu_debugFuncEnd("emuui_initSession", t0);
+    return;
+  }
+  
   string user;
   fwAccessControl_getUserName(user);
   emuui_g_sessionId = "session_" + getHostname() + "_" + user;
@@ -30,6 +38,8 @@ void emuui_initSession() {
     dpSetWait(emuui_g_sessionId + ".hostname", getHostname());
     emuui_applySessionDefaults(emuui_g_sessionId);
   }
+  
+  emu_debugFuncEnd("emuui_initSession", t0);
 }
 
 /** @return a requested DPE of the current session. */
