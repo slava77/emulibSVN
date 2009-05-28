@@ -6,7 +6,7 @@ PANEL,-1 -1 380 83 N "_3DFace" 1
 "main()
 {
   dyn_string ex;
-  deviceParams = emuui_parseDeviceParameters($deviceParams, ex);
+  deviceParams = emuui_parseParameterString($deviceParams, ex);
   if (emu_checkException(ex)) { return; }
 
   dyn_string dps = emuui_getDpNames(\"chamber_temperature\", deviceParams, ex);

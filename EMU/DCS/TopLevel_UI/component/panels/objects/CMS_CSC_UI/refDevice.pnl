@@ -1,24 +1,27 @@
 V 10
 1
 LANG:1 6 Device
-PANEL,-1 -1 120 49 N "_3DFace" 5
+PANEL,-1 -1 260 162 N "_3DFace" 5
 "$caption"
 "$deviceParams"
 "$deviceType"
 "$group"
-"$shape"
+"$shapeParams"
 "main()
 {
   dyn_string ex;
-  deviceParams = emuui_parseDeviceParameters($deviceParams, ex);
+  deviceParams = emuui_parseParameterString($deviceParams, ex);
   if (emu_checkException(ex)) { return; }
   currentConnectionType = \"\";
   currentConnectionMode = \"\";
   currentConnection = \"\";
   tooltipIsOn = false;
   
+  initShape(ex);
+  if (emu_checkException(ex)) { return; }
+  
   //by default the physical chamber shape is used
-  setValue($shape, \"visible\", true);
+  setValue(shapeName, \"visible\", true);
   if ($caption == \"VALUE\") {
     caption.text = \"\";
     showValueOnCaption = true;
@@ -30,13 +33,77 @@ PANEL,-1 -1 120 49 N "_3DFace" 5
   if (strlen($group) > 0) {
     dpConnect(\"modeChangedCB\", true, $group + \".mode\", $group + \".connectionType\");
   }
+  
+  if ((deviceParams[\"chamberNumber\"] == \"01\") && (deviceParams[\"ring\"] ==1)) {
+    dyn_dyn_int points = chamber.points;
+    emu_info(\"printing geometry for: \" + emu_mappingToString(deviceParams));
+    emu_printMap(points);  
+  }
+}
+
+void initShape(dyn_string ex) {
+  mapping shapeParams = emuui_parseParameterString($shapeParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  if (!mappingHasKey(shapeParams, \"type\")) { // if parameters do not include the mandatory \"type\" parameter - error
+    emu_addError(\"mandatory 'type' parameter was not found in the $shapeParams parameterString in refDevice.pnl\", ex);
+  }
+  shapeName = shapeParams[\"type\"];
+  
+  switch (shapeName) {
+    case \"chamber\":
+      confChamberShape(shapeParams);
+      break;
+    case \"rectangle\":
+      confRectShape(shapeParams);
+      break;
+    default:
+      break;
+  }
+}
+
+void confChamberShape(mapping shapeParams) {
+  //check if relevant parameters are present, if not - leave default shape and return
+  if (!mappingHasKey(shapeParams, \"innerWidth\") || 
+      !mappingHasKey(shapeParams, \"outerWidth\") || 
+      !mappingHasKey(shapeParams, \"height\")) {
+    
+    return;
+  }
+  
+  float innerWidth = shapeParams[\"innerWidth\"],
+        outerWidth = shapeParams[\"outerWidth\"],
+        height     = shapeParams[\"height\"];
+  dyn_dyn_int points; //polygon points
+  
+  //create the points
+  //note: in comments it's assumed that chamber is positioned like this: chamber outer part is on the left and on the right there's inner part of the chamber
+  points[1][1] = 0;                          // the bottom left corner X
+  points[1][2] = floor(outerWidth / 2) * -1; // the bottom left corner Y
+  points[2][1] = 0;                          // the top left corner X
+  points[2][2] = ceil(outerWidth / 2);       // the top left corner Y
+  points[3][1] = height;                     // the top right corner X
+  points[3][2] = ceil(innerWidth / 2);       // the top right corner Y
+  points[4][1] = height;                     // the bottom right corner X
+  points[4][2] = floor(innerWidth / 2) * -1; // the bottom right corner Y
+  
+  points[5][1] = points[1][1]; // just to close the polygon
+  points[5][2] = points[1][2]; // just to close the polygon
+  
+  setValue(shapeName, \"points\", points);
+}
+
+void confRectShape(mapping shapeParams) {
 }
 " 0
  E E E E 1 -1 -1 0  20 23
 ""0  1
 E "//some panel-wide constants
-const string TOOLTIP_REF_NAME = \"refTooltip\";
+const string EMUUI_REFDEV_TOOLTIP_REF_NAME = \"refTooltip\";
+
 mapping deviceParams;
+string shapeName;
+
 string currentConnectionType;
 string currentConnectionMode;
 string currentConnection;
@@ -138,11 +205,11 @@ void disconnect() {
 }
 
 void setColor(string color) {
-  setValue($shape, \"backCol\", color);
+  setValue(shapeName, \"backCol\", color);
 }
 
 void setTooltip(string tooltip) {
-  setValue($shape, \"toolTipText\", tooltip);
+  setValue(shapeName, \"toolTipText\", tooltip);
   caption.toolTipText(tooltip);
 }
 
@@ -153,7 +220,7 @@ void showTooltip() {
   
   int mouseX, mouseY;
   getCursorPosition(mouseX, mouseY);
-  string refName = TOOLTIP_REF_NAME;
+  string refName = EMUUI_REFDEV_TOOLTIP_REF_NAME;
   addSymbol(myModuleName(), myPanelName(),
             \"objects/CMS_CSC_UI/refTooltip.pnl\",
             refName,
@@ -165,7 +232,7 @@ void hideTooltip() {
 //   if (tooltipIsOn) {
 //     tooltipIsOn = false;
 //   }
-  removeSymbol(myModuleName(), myPanelName(), TOOLTIP_REF_NAME);
+  removeSymbol(myModuleName(), myPanelName(), EMUUI_REFDEV_TOOLTIP_REF_NAME);
 }
 " 0
  2
@@ -179,7 +246,7 @@ LANG:1 0
 10 0
 "chamber"
 ""
-1 19.9791666666667 52.5 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+1 43.2343750000001 52.5000000000001 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
  E E
 0 0 0 0 0 0
 E E "main(bool enter)
@@ -195,10 +262,11 @@ E E "main(bool enter)
 1
 LANG:1 0 
 
-2
+3
 "hoverfclr" "N \"black_yellow\""
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 0.774020156774913 0 1.02222222222222 -15.4642777155655 -30.6666666666667 1 E 4 19.9791666666667 30.0000000000001
+"selectable" ""
+E E 0 1 1 1 1 E 0.774020156774913 0 1.02222222222222 -15.4642777155655 -30.6666666666667 1 E 4 19.9791666666667 30.0000000000001
 19.9791666666667 69.1304347826089
 109.041666666667 61.3043478260871
 109.041666666667 39.7826086956523
@@ -235,10 +303,10 @@ E E 0 1 1 2 1 E 1 0 1 -90 -10 1 E 90 10 110 30
 E E "main(bool enter)
 {
   if (enter) {
-    setValue($shape, \"foreCol\", \"black_yellow\");
+    setValue(shapeName, \"foreCol\", \"black_yellow\");
     showTooltip();
   } else {
-    setValue($shape, \"foreCol\", \"\");
+    setValue(shapeName, \"foreCol\", \"\");
     hideTooltip();
   }
 }" 0
@@ -252,7 +320,7 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 3 3 17 17
 0 2 2 "0s" 0 0 0 193 0 0  10 3 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 2 me

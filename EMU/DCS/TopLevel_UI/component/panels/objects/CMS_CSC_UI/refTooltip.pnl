@@ -10,6 +10,13 @@ PANEL,-1 -1 388 123 N "_3DFace" 3
   //initialize some panel-wide variables and constants
   tooltipHeight = 0;
   getCursorPosition(tooltipX, tooltipY);
+  
+  float zoomFactor;
+  getZoomFactor(zoomFactor);
+  
+  tooltipX /= zoomFactor;
+  tooltipY /= zoomFactor;
+  
   tooltipY += 20;
   
   //add Caption - device name
