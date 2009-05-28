@@ -22,6 +22,10 @@ void emuui_init() {
   emu_info("------========== EMU Top Level UI initialization DONE! ==========------");
 }
 
+bool emuui_isInitialized() {
+  return emuui_g_initialized;
+}
+
 /** Parses the "parameters string" and returns a mapping.
   String syntax is: key1=value1;key2=value2;.... */
 mapping emuui_parseParameterString(string strParams, dyn_string &exceptionInfo) {
