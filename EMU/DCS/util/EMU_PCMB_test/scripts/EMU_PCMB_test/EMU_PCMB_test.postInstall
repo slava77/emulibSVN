@@ -1,4 +1,0 @@
-main(){
-  system("start /b PVSS00ctrl -num 18 EMU_PCMB_test/PCMB_test_create_HW.ctl");
-} 
- 
