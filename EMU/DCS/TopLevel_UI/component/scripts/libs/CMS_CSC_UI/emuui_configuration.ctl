@@ -130,6 +130,22 @@ dyn_string emuui_getDpNames(string type, mapping parameters, dyn_string &excepti
   return ret;
 }
 
+/** read the emuui_map_dpValueRanges map and return the minimum value for a given type. Exception is thrown if mapping or type does not exist. */
+float emuui_getDpValueRangeMin(string type, dyn_string &exceptionInfo) {
+  float ret = emuui_getMappingValue("dpValueRanges", "min_" + type, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  
+  return ret;
+}
+
+/** read the emuui_map_dpValueRanges map and return the maximum value for a given type. Exception is thrown if mapping or type does not exist. */
+float emuui_getDpValueRangeMax(string type, dyn_string &exceptionInfo) {
+  float ret = emuui_getMappingValue("dpValueRanges", "max_" + type, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  
+  return ret;
+}
+
 /** Substitutes parameter values in the pattern. Parameters in patterns have dollar symbols on both sides of the parameter name.
   e.g. pattern "LowVoltage/CSC_ME_$side$$station$$ring$_C$chamberNumber$_LV".
   Note any remaining $ parameters which were not found in the parameters mapping are replaced by a wildcard - "*".

@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 120 42 N "_3DFace" 0
+PANEL,-1 -1 120 33 N "_3DFace" 0
 E E E E E 1 -1 -1 0  30 30
 ""0  1
 E E 2
@@ -13,9 +13,9 @@ LAYER, 0
 1
 LANG:1 0 
 4 1
-"line"
+"lineVertical"
 ""
-1 0 0 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+1 0 0 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
  E E
 1 0 0 0 0 0
 E E E
@@ -26,6 +26,20 @@ LANG:1 0
 1
 "dashclr"N "_Transparent"
 E E 0 1 1 2 1 E  0 0 0 30
+4 3
+"lineHorizontal"
+""
+1 0 0 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  0 0 30 0
 0
 LAYER, 1 
 1

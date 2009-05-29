@@ -1,66 +1,30 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 1348 532 N "_3DFace" 0
-"const int EMUUI_CHAMBER_WIDTH = 20;
-const int EMUUI_CHAMBER_HEIGHT = 20;
-mapping stationRingCount;
-
-main()
+PANEL,-1 -1 1348 532 N "_3DFace" 2
+"$group"
+"$width"
+"main()
 {
-  emuui_initSession();
+  initParams();
   
-  initConsts();
-  drawEMU(30, 30);
+  dyn_string ex;
+  layoutParams = emuui_getMapping(\"chamberLayout\", ex);
+  if (emu_checkException(ex)) { return; }
   
-  // set chamber colors
-//   for (int i=-4; i <= 4; i++) {
-//     string side = \"P\";
-//     if (i < 0) { side = \"M\"; }
-//     if (i == 0) { continue; } // no such station
-//     int station = emu_abs(i);
-//     
-//     for (int ring = 1; ring <= stationRingCount[side + station]; ring++) {
-//       int chamberCount = 18;
-//       if ((station == 1) || (ring > 1)) { chamberCount = 36; }
-//       
-//       for (int chamberNum=1; chamberNum <= chamberCount; chamberNum++) {
-//         int red = 7 * chamberNum;
-//         int green = 85 * ring;
-//         int blue = 63 * station;
-//         setValue(\"refChamber_\" + side + station + ring + \"_\" + chamberNum + \".chamberRect\", \"backCol\", \"{\" + red + \";\" + green + \";\" + blue + \"}\");
-//       }
-//     }
-//   }
+  int myPosX, myPosY;
+  getValue(\"refPoint\", \"position\", myPosX, myPosY);
+  myPosY += 200;
   
-  drawGradient(30, 380);
-  drawGradient2(30, 410);
-
-  int x = 30;
-  int y = 440;
-  for (int i=0; i <= 150; i++) {
-    string refName = \"uaua\" + i;
-    addSymbol(myModuleName(), myPanelName(),
-              \"objects/CMS_CSC_UI/refLine.pnl\",
-              refName,
-              makeDynString(),
-              x+i, y, 0, 1, 1);
-    setValue(refName + \".line\", \"foreCol\", emuui_getGradientColor(i, 0, 150));
-  }
+  float paramWidthFloat = paramWidth;
+  int chamberWidthHeight = floor(paramWidthFloat / 37); // max 36 chambers + gradient scale
+  int height = chamberWidthHeight * 16; // 16 rings
+  
+  drawEMU(myPosX, myPosY, chamberWidthHeight);
+  drawGradientScale(myPosX + paramWidth - chamberWidthHeight, myPosY + height, height, chamberWidthHeight);
 }
 
-void initConsts() {
-  stationRingCount[\"P1\"] = 3;
-  stationRingCount[\"P2\"] = 2;
-  stationRingCount[\"P3\"] = 2;
-  stationRingCount[\"P4\"] = 1;
-  stationRingCount[\"M1\"] = 3;
-  stationRingCount[\"M2\"] = 2;
-  stationRingCount[\"M3\"] = 2;
-  stationRingCount[\"M4\"] = 1;
-}
-
-void drawEMU(int x, int y) {
+void drawEMU(int x, int y, int chamberWidthHeight) {
   int currentY = y;
   for (int i=4; i >= -4; i--) {
     string side = \"P\";
@@ -69,20 +33,20 @@ void drawEMU(int x, int y) {
     int station = emu_abs(i);
     
     if (side == \"M\") { // count rings increasingly
-      for (int ring = 1; ring <= stationRingCount[side + station]; ring++) {
-        drawStation(x, currentY, side, station, ring);
-        currentY += EMUUI_CHAMBER_HEIGHT;
+      for (int ring = 1; ring <= layoutParams[\"ringCount_ME_\" + side + station]; ring++) {
+        drawStation(x, currentY, side, station, ring, chamberWidthHeight);
+        currentY += chamberWidthHeight;
       }
     } else { // count ring decresingly
-      for (int ring = stationRingCount[side + station]; ring >= 1; ring--) {
-        drawStation(x, currentY, side, station, ring);
-        currentY += EMUUI_CHAMBER_HEIGHT;
+      for (int ring = layoutParams[\"ringCount_ME_\" + side + station]; ring >= 1; ring--) {
+        drawStation(x, currentY, side, station, ring, chamberWidthHeight);
+        currentY += chamberWidthHeight;
       }
     }
   }
 }
 
-void drawStation(int x, int y, string side, int station, int ring) {
+void drawStation(int x, int y, string side, int station, int ring, int chamberWidthHeight) {
   int chamberCount = 18;
   int scaleWidth = 2;
   if ((station == 1) || (ring > 1)) {
@@ -96,10 +60,11 @@ void drawStation(int x, int y, string side, int station, int ring) {
     sprintf(strChamberNumber, \"%02d\", i);
     chamberName = strChamberNumber;
     
-    int chamberX = x + (EMUUI_CHAMBER_WIDTH * scaleWidth * (i - 1));
+    int chamberX = x + (chamberWidthHeight * scaleWidth * (i - 1));
     
     //import the chamber panel (no changes in the panel shape; position - [0,0])
     string refName = \"refChamber_\" + side + station + ring + \"_\" + i;
+    if (shapeExists(refName)) { refName += \"_1\"; }
     addSymbol(myModuleName(), myPanelName(),
               \"objects/CMS_CSC_UI/refDevice.pnl\",
               refName,
@@ -108,86 +73,91 @@ void drawStation(int x, int y, string side, int station, int ring) {
                                                \";station=\" + station + 
                                                \";ring=\" + ring + 
                                                \";chamberNumber=\" + strChamberNumber,
-                            \"$group:\" + emuui_getSessionDp(\"temperatureMonitor\"),
+                            \"$group:\" + paramGroup,
                             \"$shapeParams:type=rectangle\"),
               chamberX, y, 0, 1, 1);
+    dynAppend(references, refName);
     setValue(refName + \".rectangle\", \"scale\", scaleWidth, 1);
   }
 }
 
-// algorythm 1 - constant brightness
-void drawGradient(int x, int y) {
-  int currentX = x;
-  
-  for (int i=3; i >= 2; i--) {
-    for (int shade=0; shade < 256; shade++) {
-      dyn_int color;
-      color[1] = 0; color[2] = 0; color[3] = 0;
-      
-      color[i] = 255 - shade;
-      color[i-1] = shade;
-      
-      currentX += 1;
-      string refName = \"gradientLine_\" + ((i - 1) * 256 + shade);
-      addSymbol(myModuleName(), myPanelName(),
-                \"objects/CMS_CSC_UI/refLine.pnl\",
-                refName,
-                makeDynString(),
-                currentX, y, 0, 1, 1);
-      setValue(refName + \".line\", \"foreCol\", \"{\" + color[1] + \";\" + color[2] + \";\" + color[3] + \"}\");
-    }
+void drawGradientScale(int bottomLeftX, int bottomLeftY, int height, int width) {
+  for (int i=0; i < height; i++) {
+    string refName = \"gradientScaleLine\" + i;
+    if (shapeExists(refName)) { refName += \"_1\"; }
+    addSymbol(myModuleName(), myPanelName(),
+              \"objects/CMS_CSC_UI/refLine.pnl\",
+              refName,
+              makeDynString(),
+              bottomLeftX, bottomLeftY - i, 0, 1, 1);
+    dynAppend(references, refName);
+    setValue(refName + \".lineHorizontal\", \"foreCol\", emuui_getGradientColor(i, 0, height));
+    setValue(refName + \".lineHorizontal\", \"size\", width, 1);
+  }
+}" 0
+ "main()
+{
+  destroyReferences();
+}
+" 0
+ E E E 1 -1 -1 0  70 450
+""0  1
+E "// init parameters
+string paramGroup;
+int paramWidth;
+
+// some panel-wide constants
+mapping layoutParams;
+dyn_string references;
+
+void destroyReferences() {
+  for (int i=1; i <= dynlen(references); i++) {
+    removeSymbol(myModuleName(), myPanelName(), references[i]);
   }
 }
 
-// algorythm 2 - more colors
-void drawGradient2(int x, int y) {
-  int currentX = x;
-  
-  int count = 0;
-  
-  for (int i=1; i <= 2; i++) {
-    int maxShade = 510;
-    for (int shade=0; shade <= maxShade; shade++) {
-      dyn_int color;
-      color[1] = 0; color[2] = 0; color[3] = 0;
-      
-      int currentColor = i;
-      int nextColor = i + 1;
-      if (nextColor > 3) { nextColor = 1; }
-      
-      color[currentColor] = 510 - shade;
-      color[nextColor] = shade;
-
-      for (int j=1; j <= 3; j++) {
-        if (color[j] > 255) {
-          color[j] = 255;
-        }
-      }
-            
-      currentX += 1;
-      string refName = \"gradientLine2_\" + ((i - 1) * 511 + shade);
-      addSymbol(myModuleName(), myPanelName(),
-                \"objects/CMS_CSC_UI/refLine.pnl\",
-                refName,
-                makeDynString(),
-                currentX, y, 0, 1, 1);
-      setValue(refName + \".line\", \"foreCol\", \"{\" + color[1] + \";\" + color[2] + \";\" + color[3] + \"}\");
-      count++;
-    }
+/** coppies dollar parameters to local variables. If any dollar parameter is missing 
+   then local variable is given a default value to allow to run the panel separatelly for debugging purposes. */
+void initParams() {
+  //default values
+  if ((strlen($group) == 0) &&
+      (strlen($width) == 0)) {
+    
+    emuui_init();
+    paramGroup = emuui_getSessionDp(\"temperatureMonitor\");
+    paramWidth = 740;
+  } else { // copy from dollar params
+    paramGroup = $group;
+    paramWidth = $width;
   }
-  
-  emu_info(\"COL_COUNT: \" + count);
 }" 0
- E E E E 1 -1 -1 0  70 450
-""0  1
-E E 2
+ 2
 "CBRef" "1"
-"EClose" E
+"EClose" "main()
+{
+  destroyReferences();
+}
+" 0
+
 ""
 DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
 LAYER, 0 
 1
 LANG:1 0 
+7 0
+"refPoint"
+""
+1 140 110 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -140 -110 1 E 140 110 10 10
 0
 LAYER, 1 
 1

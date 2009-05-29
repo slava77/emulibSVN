@@ -103,6 +103,8 @@ string shapeName;
 string currentConnectionType;
 string currentConnectionMode;
 string currentConnection;
+float currentDpValueRangeMin;
+float currentDpValueRangeMax;
 bool showValueOnCaption;
 bool tooltipIsOn;
 
@@ -134,7 +136,7 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
         currentConnection = node;
       }
     }
-  } else if (connectionType == \"DP\") {
+  } else if (connectionType == \"DP\") { // this is a DP connection
     bool dpFound = false;
     string dp = emuui_getDpName(mode, deviceParams, ex);
     // dp hasn't been found
@@ -145,6 +147,10 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
     }
     
     if (dpFound) {
+      currentDpValueRangeMin = emuui_getDpValueRangeMin(mode, ex);
+      if (emu_checkException(ex)) { return; }
+      currentDpValueRangeMax = emuui_getDpValueRangeMax(mode, ex);
+      if (emu_checkException(ex)) { return; }
       int rc = dpConnect(\"updateDPStateCB\", true, dp);
       emu_debug(\"RC for connect to \" + dp + \": \" + rc, emu_DEBUG_DETAIL);
       if (rc == 0) {
@@ -186,7 +192,7 @@ void updateDPStateCB(string dp, float value) {
   emu_debug(\"update came for DP: \" + dp + \": \" + value);
   
   dyn_string ex;
-  string color = emuui_getGradientColor(value, 20, 32);
+  string color = emuui_getGradientColor(value, currentDpValueRangeMin, currentDpValueRangeMax);
   setColor(color);
   
   if (showValueOnCaption) {

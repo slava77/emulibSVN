@@ -6,8 +6,8 @@ PANEL,-1 -1 1600 1200 N "_3DFace" 2
 "$width"
 "main()
 {
-  float width = $width;
-  int stationRadius = (width / 8) - (EMUUI_REFEMU_GAP_BETWEEN_STATIONS / 2); // EMUUI_REFEMU_GAP_BETWEEN_STATIONS is defined in the ScopeLib of this panel
+  initParams();
+  int stationRadius = (paramWidth / 8) - (EMUUI_REFEMU_GAP_BETWEEN_STATIONS / 2); // EMUUI_REFEMU_GAP_BETWEEN_STATIONS is defined in the ScopeLib of this panel
 
   int myPosX, myPosY;
   getValue(\"refPoint\", \"position\", myPosX, myPosY);
@@ -20,7 +20,7 @@ PANEL,-1 -1 1600 1200 N "_3DFace" 2
     addSymbol(myModuleName(), myPanelName(),
               \"objects/CMS_CSC_UI/refCSCStationPhysical.pnl\",
               refName,
-              makeDynString(\"$side:P\", \"$station:\" + station, \"$radius:\" + stationRadius, \"$group:\" + $group),
+              makeDynString(\"$side:P\", \"$station:\" + station, \"$radius:\" + stationRadius, \"$group:\" + paramGroup),
               posX, myPosY + (EMUUI_REFEMU_GAP_BETWEEN_STATIONS / 2), 0, 1, 1);
     
     //Minus slide
@@ -28,13 +28,14 @@ PANEL,-1 -1 1600 1200 N "_3DFace" 2
     addSymbol(myModuleName(), myPanelName(),
               \"objects/CMS_CSC_UI/refCSCStationPhysical.pnl\",
               refName,
-              makeDynString(\"$side:M\", \"$station:\" + station, \"$radius:\" + stationRadius, \"$group:\" + $group),
+              makeDynString(\"$side:M\", \"$station:\" + station, \"$radius:\" + stationRadius, \"$group:\" + paramGroup),
               posX, myPosY + stationRadius * 2 + (EMUUI_REFEMU_GAP_BETWEEN_STATIONS * 1.5), 0, 1, 1);
     
     // set position for the next station
     posX += 2 * stationRadius + EMUUI_REFEMU_GAP_BETWEEN_STATIONS;
   }
-}" 0
+}
+" 0
  "main()
 {
   destroyReferences();
@@ -42,12 +43,33 @@ PANEL,-1 -1 1600 1200 N "_3DFace" 2
 " 0
  E E E 1 -1 -1 0  10 0
 ""0  1
-E "const int EMUUI_REFEMU_GAP_BETWEEN_STATIONS = 10;
+E "// init parameters
+string paramGroup;
+float paramWidth;
+
+// some panel-wide constants and variables
+const int EMUUI_REFEMU_GAP_BETWEEN_STATIONS = 10;
 dyn_string references;
 
 void destroyReferences() {
   for (int i=1; i <= dynlen(references); i++) {
     removeSymbol(myModuleName(), myPanelName(), references[i]);
+  }
+}
+
+/** coppies dollar parameters to local variables. If any dollar parameter is missing 
+   then local variable is given a default value to allow to run the panel separatelly for debugging purposes. */
+void initParams() {
+  //default values
+  if ((strlen($group) == 0) &&
+      (strlen($width) == 0)) {
+    
+    emuui_init();
+    paramGroup = emuui_getSessionDp(\"mainChamberView\");
+    paramWidth = 1200;
+  } else { // copy from dollar params
+    paramGroup = $group;
+    paramWidth = $width;
   }
 }" 0
  2
@@ -99,7 +121,7 @@ E E "main(bool enter)
     addSymbol(myModuleName(), myPanelName(),
               \"objects/CMS_CSC_UI/refCSCStationPhysical.pnl\",
               refName,
-              makeDynString(\"$side:P\", \"$station:1\", \"$radius:350\", \"$group:\" + $group),
+              makeDynString(\"$side:P\", \"$station:1\", \"$radius:350\", \"$group:\" + paramGroup),
               posX, posY, 0, 1, 1);
     setValue(refName + \".background\", \"visible\", true);
   } else {
