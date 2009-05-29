@@ -85,6 +85,8 @@ void confChamberShape(mapping shapeParams) {
   points[5][2] = points[1][2]; // just to close the polygon
   
   setValue(shapeName, \"points\", points);
+  
+  if (outerWidth < 15) { caption.visible = false; }
 }
 
 void confRectShape(mapping shapeParams) {
