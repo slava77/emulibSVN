@@ -1,0 +1,23 @@
+# ascii dump of database
+
+# DpType
+TypeName
+CSC_UI_mapping.CSC_UI_mapping	1#1
+	map	9#5
+
+# Datapoint/DpId
+DpName	TypeName	ID
+emuui_map_fsmStateColors	CSC_UI_mapping	106530
+emuui_map_fsmNodePatterns	CSC_UI_mapping	106532
+emuui_map_sessionDefaults	CSC_UI_mapping	106534
+emuui_map_dpNamePatterns	CSC_UI_mapping	106574
+emuui_map_modeToTooltipObjects	CSC_UI_mapping	106745
+emuui_map_chamberLayout	CSC_UI_mapping	106750
+
+# DpValue
+ElementName	TypeName	_original.._value	_original.._status	_original.._stime
+emuui_map_fsmStateColors.map	CSC_UI_mapping	"ON;FwStateOKPhysics", "OFF;FwStateOKNotPhysics", "ERROR;FwStateAttention3", "DEAD;FwDead", "default;FwDead"	0x101	13.05.2009 18:52:16.015
+emuui_map_fsmNodePatterns.map	CSC_UI_mapping	"chamber_general;CSC_ME_$side$$station$$ring$_C$chamberNumber$", "chamber_low_voltage;LowVoltage/CSC_ME_$side$$station$$ring$_C$chamberNumber$_LV", "chamber_high_voltage;HighVoltage/CSC_ME_$side$$station$$ring$_C$chamberNumber$_HV", "chamber_temperature;Temperature/CSC_ME_$side$$station$$ring$_C$chamberNumber$_TEMP"	0x101	15.05.2009 18:22:46.327
+emuui_map_sessionDefaults.map	CSC_UI_mapping	"mainChamberView.connectionType;FSM", "mainChamberView.mode;general", "temperatureMonitor.connectionType;DP", "temperatureMonitor.mode;temperature_max"	0x101	26.05.2009 09:42:14.078
+emuui_map_dpNamePatterns.map	CSC_UI_mapping	"chamber_temperature_max;CSC_ME_$side$$station$$ring$_C$chamberNumber$_TEMP.data.t_cfeb.v1", "HV_vMon;CSC_ME_$side$$station$$ring$_C$chamberNumber$_HV_V*_VMON.value", "chamber_temperature;CSC_ME_$side$$station$$ring$_C$chamberNumber$_TEMP_$boardType$_T$boardNumber$.value", "chamber_LV_vMon;CSC_ME_$side$$station$$ring$_C$chamberNumber$_LV_$boardType$$voltageLine$_V$boardNumber$.value", "chamber_LV_iMon;CSC_ME_$side$$station$$ring$_C$chamberNumber$_LV_$boardType$$voltageLine$_C$boardNumber$.value"	0x101	22.05.2009 19:14:21.279
+emuui_map_chamberLayout.map	CSC_UI_mapping	"gapBetweenRings;2", "gapBetweenME12-ME13;9", "innerRadius_ME11;14", "innerRadius_ME12;41", "innerRadius_ME13;71", "innerRadius_ME21;18", "innerRadius_ME22;52", "innerRadius_ME31;20", "innerRadius_ME32;52", "innerRadius_ME41;22", "innerRadius_ME42;52", "ringCount_ME_P1;3", "ringCount_ME_M1;3", "ringCount_ME_P2;2", "ringCount_ME_M2;2", "ringCount_ME_P3;2", "ringCount_ME_M3;2", "ringCount_ME_P4;1", "ringCount_ME_M4;1"	0x101	28.05.2009 10:48:36.109
