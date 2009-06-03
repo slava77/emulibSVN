@@ -172,12 +172,12 @@ LANG:1 0
 "dashclr"N "_Transparent"
 E E 0 0 1 0 1 E 1 0 1 10 -3 0 E 40 833 181 981
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 4 Mode
 30 7
-"FRAME2"
+"frameTemperatureMonitor"
 ""
 1 250 833 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
  E E
@@ -204,14 +204,14 @@ LANG:1 0
             \"objects/CMS_CSC_UI/refEMUPlot.pnl\",
             refName,
             makeDynString(\"$group:\" + group, \"$width:\" + width),
-            posX, posY, 0, 1, 1); 
+            posX + 15, posY + 20, 0, 1, 1);   
 }" 0
- E 0 0 1 0 1 E U  0 E 250 833 581 1051
+ E 0 0 1 0 1 E 1.54545454545455 0 1.09216589861751 -136.363636363636 -76.7741935483871 0 E 250 833 581 1051
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
-LANG:1 11 Frame Title
+LANG:1 19 Temperature Monitor
 0
 LAYER, 1 
 1

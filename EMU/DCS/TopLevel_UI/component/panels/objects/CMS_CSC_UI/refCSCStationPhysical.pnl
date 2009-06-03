@@ -24,6 +24,8 @@ void drawStation(int x, int y, int radius, string side, int station, dyn_string 
   if (emu_checkException(exceptionInfo)) { return; }
   int gap = layoutParams[\"gapBetweenRings\"];
   float scale = ((float) radius) / 100; // all parameters in layoutParams are in 100px radius scale
+
+  positionAndNameCaption(x, y, side, station);
   
   if (station == 1){ // stations ME +&- 1
     //ring 1
@@ -48,7 +50,29 @@ void drawStation(int x, int y, int radius, string side, int station, dyn_string 
                      outerRadius,
                      chamberCount, side, station, ring);
     }
+  }  
+}
+
+/* sets the caption in the right position (also depending on the label size) and sets the proper text for the label. */
+void positionAndNameCaption(int x, int y, string side, int station) {
+  // set the text
+  string name = \"ME\";
+  if (side == \"P\") {
+    name += \"+\";
+  } else {
+    name += \"-\";
   }
+  name += station;
+  caption.text = name;
+  
+  // set the position
+  int width, height;
+  getValue(\"caption\", \"size\", width, height);
+  
+  int posX, posY;
+  posX = x - ((float) width) / 2 + 3; // +4 is just a correction which is needed for some reason
+  posY = y - ((float) height) / 2 + 3;// +4 is just a correction which is needed for some reason
+  caption.position(posX, posY);  
 }
 
 /** multiplies the value by scale and then rounds the result to the nearest integer. */
@@ -108,14 +132,13 @@ void drawRing(int x, int y, int innerRadius, int outerRadius, int chamberCount, 
                                                  \";height=\" + chamberHeight;
     
     //import the chamber panel (no changes in the panel orientation; position - [0,0])
+    dynAppend(references, refName);
     addSymbol(myModuleName(), myPanelName(),
               \"objects/CMS_CSC_UI/refDevice.pnl\",
               refName,
               makeDynString(\"$caption:\" + chamberName, \"$deviceType:chamber\",
                             deviceParamsDollar, shapeParamsDollar, \"$group:\" + paramGroup),
               0, 0, 0, 1, 1);
-    
-    dynAppend(references, refName);
     
 //transfer the chamber local coordinate system from the upper left corner to the middle of the outer part (where we think we have the center :) )
 //     posX += sin(angle) * (chamberOuterWidth / 2);
@@ -191,6 +214,7 @@ void initParams() {
 "EClose" "main()
 {
   destroyReferences();
+  PanelOff();
 }
 " 0
 
@@ -227,6 +251,26 @@ LANG:1 0
 1
 "dashclr"N "_Transparent"
 E E 0 1 1 2 1 E 1 0 1 -140 -110 1 E 140 110 10 10
+2 3
+"caption"
+""
+1 140 440 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 140 440 202 461
+0 2 2 "0s" 0 0 0 192 0 0  140 440 1
+1
+LANG:1 102 -*-MS Shell Dlg-bold-r-normal-*-*-120-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 7 Caption
 0
 LAYER, 1 
 1

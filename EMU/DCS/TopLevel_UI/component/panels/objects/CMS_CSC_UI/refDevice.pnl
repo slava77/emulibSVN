@@ -8,14 +8,14 @@ PANEL,-1 -1 120 53 N "_3DFace" 5
 "$group"
 "$shapeParams"
 "main()
-{
+{  
   dyn_string ex;
   deviceParams = emuui_parseParameterString($deviceParams, ex);
   if (emu_checkException(ex)) { return; }
   currentConnectionType = \"\";
   currentConnectionMode = \"\";
   currentConnection = \"\";
-  tooltipIsOn = false;
+  tooltipRefName = \"refTooltip_\" + $deviceParams;
   
   initShape(ex);
   if (emu_checkException(ex)) { return; }
@@ -90,12 +90,27 @@ void confChamberShape(mapping shapeParams) {
 }
 
 void confRectShape(mapping shapeParams) {
+  //check if relevant parameters are present, if not - leave default shape and return
+  if (!mappingHasKey(shapeParams, \"width\") || 
+      !mappingHasKey(shapeParams, \"height\")) {
+    
+    return;
+  }
+  
+  int width = shapeParams[\"width\"];
+  int height = shapeParams[\"height\"];
+  setValue(\"rectangle\", \"size\", width, height);
+  if ((width < 17) || (height < 17)) { 
+    caption.visible = false;
+  }
 }
 " 0
- E E E E 1 -1 -1 0  20 23
+ E E E E 1 -1 -1 0  0 0
 ""0  1
 E "//some panel-wide constants
 const string EMUUI_REFDEV_TOOLTIP_REF_NAME = \"refTooltip\";
+string tooltipRefName;
+
 
 mapping deviceParams;
 string shapeName;
@@ -106,12 +121,14 @@ string currentConnection;
 float currentDpValueRangeMin;
 float currentDpValueRangeMax;
 bool showValueOnCaption;
-bool tooltipIsOn;
 
 void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string connectionType) {
   dyn_string ex;
   bool connectSuccessful = false;
   mode = $deviceType + \"_\" + mode; // prepend mode with device type
+  
+  setColor(\"white\"); // to indicate busy
+  currentConnectionMode = \"busy\";
   
   disconnect();  
     
@@ -173,7 +190,7 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
     currentConnectionType = \"\";
     currentConnection = \"\";
     currentConnectionMode = \"dead\";
-  }
+  }  
 }
 
 void updateFSMStateCB(string node, string state) {
@@ -220,13 +237,9 @@ void setTooltip(string tooltip) {
 }
 
 void showTooltip() {
-//   if (!tooltipIsOn) {
-//     tooltipIsOn = true;
-//   }
-  
   int mouseX, mouseY;
   getCursorPosition(mouseX, mouseY);
-  string refName = EMUUI_REFDEV_TOOLTIP_REF_NAME;
+  string refName = tooltipRefName;
   addSymbol(myModuleName(), myPanelName(),
             \"objects/CMS_CSC_UI/refTooltip.pnl\",
             refName,
@@ -235,10 +248,7 @@ void showTooltip() {
 }
 
 void hideTooltip() {
-//   if (tooltipIsOn) {
-//     tooltipIsOn = false;
-//   }
-  removeSymbol(myModuleName(), myPanelName(), EMUUI_REFDEV_TOOLTIP_REF_NAME);
+  removeSymbol(myModuleName(), myPanelName(), tooltipRefName);
 }
 " 0
  2
@@ -252,7 +262,7 @@ LANG:1 0
 10 0
 "chamber"
 ""
-1 45.8182870370372 52.5000000000001 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+1 19.9791666666667 30.0000000000001 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
  E E
 0 0 0 0 0 0
 E E "main(bool enter)
@@ -268,8 +278,9 @@ E E "main(bool enter)
 1
 LANG:1 0 
 
-3
+4
 "hoverfclr" "N \"black_yellow\""
+"hoverbclr" "N \"advanceAlarmCamAckn\""
 "dashclr"N "_Transparent"
 "selectable" ""
 E E 0 1 1 1 1 E 0.774020156774913 0 1.02222222222222 -15.4642777155655 -30.6666666666667 1 E 4 19.9791666666667 30.0000000000001
