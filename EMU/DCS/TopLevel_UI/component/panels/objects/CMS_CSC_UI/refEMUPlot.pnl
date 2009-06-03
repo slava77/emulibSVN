@@ -7,24 +7,30 @@ PANEL,-1 -1 1348 532 N "_3DFace" 2
 "main()
 {
   initParams();
-  
+
   dyn_string ex;
   layoutParams = emuui_getMapping(\"chamberLayout\", ex);
   if (emu_checkException(ex)) { return; }
   
+  // get connectionType and mode to determine wether gradient scale is necessary or not (and if so also determine min and max values for the gradient scale)  
+  string connectionType, mode;
+  dpGet(paramGroup + \".connectionType\", connectionType);
+  dpGet(paramGroup + \".mode\", mode);
+  
+  // compute the size parameters
   float paramWidthFloat = paramWidth;
-  int chamberWidthHeight = floor(paramWidthFloat / 37); // max 36 chambers + gradient scale
+  int chamberWidthHeight;
+  if (connectionType == \"DP\") { // gradient scale is necessary
+    chamberWidthHeight = floor((paramWidthFloat - (float)EMUUI_EMUPLOT_LABEL_WIDTH) / 37); // max 36 chambers + gradient scale
+  } else { // gradient scale is NOT necessary
+    chamberWidthHeight = floor((paramWidthFloat - (float)EMUUI_EMUPLOT_LABEL_WIDTH) / 36); // max 36 chambers
+  }
   int height = chamberWidthHeight * 16; // 16 rings
   
   int myPosX, myPosY;
   getValue(\"refPoint\", \"position\", myPosX, myPosY);
   
   drawEMU(myPosX, myPosY, chamberWidthHeight);
-  
-  // get connectionType and mode to determine wether gradient scale is necessary or not (and if so also determine min and max values for the gradient scale)  
-  string connectionType, mode;
-  dpGet(paramGroup + \".connectionType\", connectionType);
-  dpGet(paramGroup + \".mode\", mode);
   
   if (connectionType == \"DP\") { // gradient scale is necessary
     dyn_string ex;
@@ -33,7 +39,9 @@ PANEL,-1 -1 1348 532 N "_3DFace" 2
     float maxValue = emuui_getDpValueRangeMax(\"chamber_\" + mode, ex);
     if (dynlen(ex) > 0) { emu_errorHandled(ex); }
 
-    drawGradientScale(myPosX + (chamberWidthHeight * 36) + 1, myPosY + height, height + 1, chamberWidthHeight, minValue, maxValue);
+    drawGradientScale(myPosX + EMUUI_EMUPLOT_LABEL_WIDTH + (chamberWidthHeight * 36) + 1, myPosY + height, 
+                      height + 1, chamberWidthHeight, 
+                      minValue, maxValue);
   }
 }
 
@@ -47,11 +55,13 @@ void drawEMU(int x, int y, int chamberWidthHeight) {
     
     if (side == \"M\") { // count rings increasingly
       for (int ring = 1; ring <= layoutParams[\"ringCount_ME_\" + side + station]; ring++) {
+        // draw the ring
         drawStation(x, currentY, side, station, ring, chamberWidthHeight);
         currentY += chamberWidthHeight;
       }
     } else { // count ring decresingly
       for (int ring = layoutParams[\"ringCount_ME_\" + side + station]; ring >= 1; ring--) {
+        // draw the ring
         drawStation(x, currentY, side, station, ring, chamberWidthHeight);
         currentY += chamberWidthHeight;
       }
@@ -70,6 +80,10 @@ void drawStation(int x, int y, string side, int station, int ring, int chamberWi
     chamberWidth *= 2;
     xStep *= 2;
   }
+  
+  //draw ring label
+  drawRingLabel(x, y, side, station, ring);
+  x += EMUUI_EMUPLOT_LABEL_WIDTH;
   
   for (int i=1; i <= chamberCount; i++) {
     string chamberName;
@@ -97,6 +111,23 @@ void drawStation(int x, int y, string side, int station, int ring, int chamberWi
                                               \";height=\" + chamberHeight),
               chamberX, y, 0, 1, 1);
   }
+}
+
+void drawRingLabel(int x, int y, string side, int station, int ring) {
+    //construct the ring label text
+    string ringLabel = \"ME\";
+    if (side == \"P\") {
+      ringLabel += \"+\";
+    } else if (side == \"M\") {
+      ringLabel += \"-\";
+    }
+    ringLabel += station + \"/\" + ring;
+    
+    // add the label
+    addSymbol(myModuleName(), myPanelName(), 
+              \"objects/CMS_CSC_UI/refLabel.pnl\", \"ringLabel_\" + ringLabel, 
+              makeDynString(\"$text:\" + ringLabel),
+              x, y, 0, 1, 1);
 }
 
 void drawGradientScale(int bottomLeftX, int bottomLeftY, int height, int width, float minValue, float maxValue) {
@@ -132,6 +163,7 @@ string paramGroup;
 int paramWidth;
 
 // some panel-wide constants
+const int EMUUI_EMUPLOT_LABEL_WIDTH = 40;
 mapping layoutParams;
 dyn_string references;
 bool runningLocal; // if true then panel is running localy, if false then panel is a reference
@@ -153,7 +185,7 @@ void initParams() {
     runningLocal = true;
     
     paramGroup = emuui_getSessionDp(\"temperatureMonitor\");
-    paramWidth = 370;
+    paramWidth = 410;
   } else { // copy from dollar params
     runningLocal = false;
     

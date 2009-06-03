@@ -237,6 +237,8 @@ void setTooltip(string tooltip) {
 }
 
 void showTooltip() {
+  if (currentConnectionMode == \"busy\") { return; } // in the process of connecting, don't show any tooltips while in that mode
+  
   int mouseX, mouseY;
   getCursorPosition(mouseX, mouseY);
   string refName = tooltipRefName;
