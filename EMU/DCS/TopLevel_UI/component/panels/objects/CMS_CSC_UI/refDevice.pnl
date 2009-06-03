@@ -278,9 +278,8 @@ E E "main(bool enter)
 1
 LANG:1 0 
 
-4
+3
 "hoverfclr" "N \"black_yellow\""
-"hoverbclr" "N \"advanceAlarmCamAckn\""
 "dashclr"N "_Transparent"
 "selectable" ""
 E E 0 1 1 1 1 E 0.774020156774913 0 1.02222222222222 -15.4642777155655 -30.6666666666667 1 E 4 19.9791666666667 30.0000000000001

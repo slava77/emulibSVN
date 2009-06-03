@@ -12,16 +12,29 @@ PANEL,-1 -1 1348 532 N "_3DFace" 2
   layoutParams = emuui_getMapping(\"chamberLayout\", ex);
   if (emu_checkException(ex)) { return; }
   
-  int myPosX, myPosY;
-  getValue(\"refPoint\", \"position\", myPosX, myPosY);
-  myPosY += 200;
-  
   float paramWidthFloat = paramWidth;
   int chamberWidthHeight = floor(paramWidthFloat / 37); // max 36 chambers + gradient scale
   int height = chamberWidthHeight * 16; // 16 rings
   
+  int myPosX, myPosY;
+  getValue(\"refPoint\", \"position\", myPosX, myPosY);
+  
   drawEMU(myPosX, myPosY, chamberWidthHeight);
-  drawGradientScale(myPosX + paramWidth - chamberWidthHeight, myPosY + height, height, chamberWidthHeight);
+  
+  // get connectionType and mode to determine wether gradient scale is necessary or not (and if so also determine min and max values for the gradient scale)  
+  string connectionType, mode;
+  dpGet(paramGroup + \".connectionType\", connectionType);
+  dpGet(paramGroup + \".mode\", mode);
+  
+  if (connectionType == \"DP\") { // gradient scale is necessary
+    dyn_string ex;
+    float minValue = emuui_getDpValueRangeMin(\"chamber_\" + mode, ex);
+    if (dynlen(ex) > 0) { emu_errorHandled(ex); }
+    float maxValue = emuui_getDpValueRangeMax(\"chamber_\" + mode, ex);
+    if (dynlen(ex) > 0) { emu_errorHandled(ex); }
+
+    drawGradientScale(myPosX + (chamberWidthHeight * 36) + 1, myPosY + height, height + 1, chamberWidthHeight, minValue, maxValue);
+  }
 }
 
 void drawEMU(int x, int y, int chamberWidthHeight) {
@@ -47,11 +60,15 @@ void drawEMU(int x, int y, int chamberWidthHeight) {
 }
 
 void drawStation(int x, int y, string side, int station, int ring, int chamberWidthHeight) {
-  int chamberCount = 18;
-  int scaleWidth = 2;
-  if ((station == 1) || (ring > 1)) {
-    chamberCount = 36;
-    scaleWidth = 1;
+  int chamberCount = 36;
+  int chamberWidth = chamberWidthHeight + 1; // for small chambers (add one to make the border 1 pixed in width between two chambers)
+  int chamberHeight = chamberWidthHeight + 1; //add one to make the border 1 pixed in height between two chambers
+  int xStep = chamberWidthHeight;
+  
+  if ((station > 1) && (ring == 1)) { // if those are big chambers then scale them twice in width
+    chamberCount = 18;
+    chamberWidth *= 2;
+    xStep *= 2;
   }
   
   for (int i=1; i <= chamberCount; i++) {
@@ -60,11 +77,12 @@ void drawStation(int x, int y, string side, int station, int ring, int chamberWi
     sprintf(strChamberNumber, \"%02d\", i);
     chamberName = strChamberNumber;
     
-    int chamberX = x + (chamberWidthHeight * scaleWidth * (i - 1));
+    int chamberX = x + (xStep * (i - 1)); // substract 1 from chamberWidth to keep original requested width
     
     //import the chamber panel (no changes in the panel shape; position - [0,0])
-    string refName = \"refChamber_\" + side + station + ring + \"_\" + i;
+    string refName = \"refPlotChamber_\" + side + station + ring + \"_\" + i;
     if (shapeExists(refName)) { refName += \"_1\"; }
+    dynAppend(references, refName);
     addSymbol(myModuleName(), myPanelName(),
               \"objects/CMS_CSC_UI/refDevice.pnl\",
               refName,
@@ -74,25 +92,32 @@ void drawStation(int x, int y, string side, int station, int ring, int chamberWi
                                                \";ring=\" + ring + 
                                                \";chamberNumber=\" + strChamberNumber,
                             \"$group:\" + paramGroup,
-                            \"$shapeParams:type=rectangle\"),
+                            \"$shapeParams:\" + \"type=rectangle\" + 
+                                              \";width=\" + chamberWidth +
+                                              \";height=\" + chamberHeight),
               chamberX, y, 0, 1, 1);
-    dynAppend(references, refName);
-    setValue(refName + \".rectangle\", \"scale\", scaleWidth, 1);
   }
 }
 
-void drawGradientScale(int bottomLeftX, int bottomLeftY, int height, int width) {
+void drawGradientScale(int bottomLeftX, int bottomLeftY, int height, int width, float minValue, float maxValue) {
+  float currentValue = minValue;
+  
   for (int i=0; i < height; i++) {
     string refName = \"gradientScaleLine\" + i;
     if (shapeExists(refName)) { refName += \"_1\"; }
+    dynAppend(references, refName);
     addSymbol(myModuleName(), myPanelName(),
               \"objects/CMS_CSC_UI/refLine.pnl\",
               refName,
               makeDynString(),
               bottomLeftX, bottomLeftY - i, 0, 1, 1);
-    dynAppend(references, refName);
     setValue(refName + \".lineHorizontal\", \"foreCol\", emuui_getGradientColor(i, 0, height));
     setValue(refName + \".lineHorizontal\", \"size\", width, 1);
+    
+//     currentValue += (maxValue - minValue) / ((float) height);
+//     string currentValueStr;
+//     sprintf(currentValueStr, \"%.2f\", currentValue);
+//     setValue(refName + \".lineHorizontal\", \"toolTipText\", currentValueStr);
   }
 }" 0
  "main()
@@ -100,7 +125,7 @@ void drawGradientScale(int bottomLeftX, int bottomLeftY, int height, int width) 
   destroyReferences();
 }
 " 0
- E E E 1 -1 -1 0  70 450
+ E E E 1 -1 -1 0  0 0
 ""0  1
 E "// init parameters
 string paramGroup;
@@ -109,6 +134,7 @@ int paramWidth;
 // some panel-wide constants
 mapping layoutParams;
 dyn_string references;
+bool runningLocal; // if true then panel is running localy, if false then panel is a reference
 
 void destroyReferences() {
   for (int i=1; i <= dynlen(references); i++) {
@@ -124,9 +150,13 @@ void initParams() {
       (strlen($width) == 0)) {
     
     emuui_init();
+    runningLocal = true;
+    
     paramGroup = emuui_getSessionDp(\"temperatureMonitor\");
-    paramWidth = 740;
+    paramWidth = 370;
   } else { // copy from dollar params
+    runningLocal = false;
+    
     paramGroup = $group;
     paramWidth = $width;
   }
@@ -136,6 +166,10 @@ void initParams() {
 "EClose" "main()
 {
   destroyReferences();
+  
+  if (runningLocal) {
+    PanelOff();
+  }
 }
 " 0
 

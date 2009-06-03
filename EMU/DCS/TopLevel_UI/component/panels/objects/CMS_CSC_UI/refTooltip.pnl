@@ -24,8 +24,11 @@ PANEL,-1 -1 388 123 N "_3DFace" 3
     lblError.visible = true;
     return;
   }
-  
-  addTooltipObj($mode);
+
+  dyn_string ex;
+  string tooltipType = emuui_getMappingValue(\"modeToTooltipObj\", $mode, ex); // get the tooltip type given the device connection mode
+  if (dynlen(ex)) { emu_errorHandled(ex); return; } // if the tooltip type is missing - no problem, just don't display that tooltip object
+  addTooltipObj(tooltipType); // if tooltip type is found - add the appropriate tooltip object
 }
 " 0
  "main()
@@ -54,14 +57,15 @@ bool addTooltipObj(string type) {
   if (strlen(filename) == 0) {
     return false;
   }
+  string refName = filename + $deviceParams;
+  // adds the tooltip object in an array of to-be-deleted items when the panel is closed or terminated
+  dynAppend(refObjects, refName);
+  
   addSymbol(myModuleName(), myPanelName(),
           filename,
-          filename,
+          refName,
           makeDynString(\"$deviceParams:\" + $deviceParams),
           tooltipX, tooltipY + tooltipHeight, 0, 1, 1);
-  
-  // adds the tooltip object in an array of to-be-deleted items when the panel is closed or terminated
-  dynAppend(refObjects, filename);
   
   // update the tooltipHeight variable - used to position new tooltipObjects
   if (shapeExists(type + \"_tooltipBack\")) {
