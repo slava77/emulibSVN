@@ -6,6 +6,13 @@ E E E E E 1 -1 -1 0  40 30
 ""0  1
 E "search()
 {
+  if (strlen(editSearch.text) == 0) {
+    lblEmptyPhrase.visible = true;
+    return;
+  } else {
+    lblEmptyPhrase.visible = false;
+  }
+  
   string searchString = editSearch.text;
   dyn_string types = dpTypes(\"*\");
   dyn_dyn_anytype data;
@@ -69,7 +76,7 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
  358 58 482 85
 
@@ -93,7 +100,7 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
  98 58 342 81
 3 "0s" 0 0 0 0 0 -1  E E "main() {
@@ -116,7 +123,7 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 20 60 91 74
 0 2 2 "0s" 0 0 0 192 0 0  20 60 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 15 Text to search:
@@ -136,7 +143,7 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 120 10 264 31
 0 2 2 "0s" 0 0 0 192 0 0  120 10 1
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-120-100-100-*-*-iso8859-1|-16,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 19 Find/Replace in DPs
@@ -153,16 +160,16 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
  18 88 482 362
-EE 1 0 1 2 0 "DPE" 6 1 0 "s" 1
+EE 1 0 1 2 0 "DPE" 21 1 0 "s" 1
 LANG:1 3 DPE
 E
 1
 LANG:1 0 
 
-200 "value" 6 1 0 "s" 1
+200 "value" 27 1 0 "s" 1
 LANG:1 5 Value
 E
 1
@@ -171,7 +178,7 @@ LANG:1 0
 257 
 14 14 10 10
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 0 1 1 1 7
 1 0
@@ -191,7 +198,7 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 20 380 110 394
 0 2 2 "0s" 0 0 0 192 0 0  20 380 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 20 Total results found:
@@ -211,7 +218,7 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 120 380 121 394
 0 2 2 "0s" 0 0 0 192 0 0  120 380 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 0 
@@ -231,7 +238,7 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 20 410 60 424
 0 2 2 "0s" 0 0 0 192 0 0  20 410 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 7 Replace
@@ -248,7 +255,7 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
  68 408 262 431
 3 "0s" 0 0 0 0 0 -1  E E E
@@ -265,7 +272,7 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
  67.9999999999998 438 492 465
 
@@ -303,7 +310,7 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 270 410 292 424
 0 2 2 "0s" 0 0 0 192 0 0  270 410 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 5 with:
@@ -320,7 +327,7 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
  298 408 492 431
 3 "0s" 0 0 0 0 0 -1  E E E
@@ -337,7 +344,7 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
  68 468 492 495
 
@@ -356,6 +363,26 @@ LANG:1 4 Save
   emu_info(\"DONE saving!\");
 }" 0
  E E E
+2 15
+"lblEmptyPhrase"
+""
+1 100 40 E E E 1 E 0 E N "_WindowText" E N "FwStateAttention3" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 100 40 238 54
+0 2 2 "0s" 0 0 0 192 0 0  100 40 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 28 Please enter a search phrase
 0
 LAYER, 1 
 1
