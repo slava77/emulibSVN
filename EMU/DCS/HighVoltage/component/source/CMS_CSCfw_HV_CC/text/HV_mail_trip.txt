@@ -1,9 +1,0 @@
-To: valerii.sytnik@cern.ch 
-Subject: trip in HV system
-
-         There is a trip in HV system.
-         Please, check.
- 
-                   DCS.
-
-vandreev@mail.cern.ch, Xiaofeng.Yang@cern.ch,

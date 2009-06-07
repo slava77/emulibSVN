@@ -1,8 +1,0 @@
-
- 11/11/12
-
-
- example to use to delete the processes by temp0late name:
-
-
-   delete_processes_by_name "'wget -O'"
