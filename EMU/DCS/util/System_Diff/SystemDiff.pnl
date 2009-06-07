@@ -1,0 +1,857 @@
+V 10
+1
+LANG:1 4 Diff
+PANEL,-1 -1 631 570 N "_3DFace" 0
+"main()
+{
+  // get all connected system names and put them into combo boxes
+  dyn_string names;
+  dyn_uint ids;
+  getSystemNamesConnected(names, ids);
+  for (int i=1; i <= dynlen(names); i++) {
+    comboSystemNameA.appendItem(names[i]);
+    comboSystemNameB.appendItem(names[i]);
+    comboSystemNameB1.appendItem(names[i]);
+  }
+}" 0
+ E E E E 1 -1 -1 0  140 20
+""0  1
+E "mapping missingDpsA, missingDpsB; // map [DP type -> array of DPs]
+
+void doDiff(string sysA, string sysB, string sysB1 = \"\") {
+  if (sysA == sysB) {
+    setStatus(\"Error - same systems specified for A and B\", \"red\");
+    return;
+  }
+  resetGui();
+  mappingClear(missingDpsA);
+  mappingClear(missingDpsB);
+  setStatus(\"processing...\", \"yellow\");
+  
+  emu_info(\"Started diff on systems A: \" + sysA + \", B: \" + sysB);
+  dyn_string dpsA = dpNames(sysA + \"*\");
+  dyn_string dpsB = dpNames(sysB + \"*\");
+  if (strlen(sysB1) > 0) {
+    dyn_string dpsB1 = dpNames(sysB1 + \"*\");
+    dynAppend(dpsB, dpsB1);
+  }
+  emu_info(\"number of DPs found on system A: \" + dynlen(dpsA));
+  emu_info(\"number of DPs found on system B: \" + dynlen(dpsB));
+//  printArray(dpsA);
+  dyn_string dpsAnoSys, dpsBnoSys;
+  dpsAnoSys = removeSystemName(dpsA);
+  dpsBnoSys = removeSystemName(dpsB);
+//  printArray(dpsA);
+  
+  int missingCountA = 0,
+      missingCountB = 0;
+  //find missing in sys A
+  setStatus(\"searching for missing DPs in sys. A\", \"yellow\");
+  int dpCountB = dynlen(dpsB);
+  for (int i=1; i <= dpCountB; i++) {
+    if (!dynContains(dpsAnoSys, dpsBnoSys[i])) {
+      string type = dpTypeName(dpsB[i]);
+      if (!mappingHasKey(missingDpsA, type)) {
+        missingDpsA[type] = makeDynString();
+      }
+      dynAppend(missingDpsA[type], dpsB[i]);
+      missingCountA++;
+    }
+    setProgress(i, dpCountB);
+  }
+  //find missing in sys B
+  setStatus(\"searching for missing DPs in sys. A\", \"yellow\");
+  int dpCountA = dynlen(dpsA);
+  for (int i=1; i <= dpCountA; i++) {
+    if (!dynContains(dpsBnoSys, dpsAnoSys[i])) {
+      string type = dpTypeName(dpsA[i]);
+      if (!mappingHasKey(missingDpsB, type)) {
+        missingDpsB[type] = makeDynString();
+      }
+      dynAppend(missingDpsB[type], dpsA[i]);
+      missingCountB++;
+    }
+    setProgress(i, dpCountA);
+  }
+  
+  // build the missing DPs tree
+  setStatus(\"Building missing DPs tree for sys A\", \"yellow\");
+  dyn_string missingTypesA = mappingKeys(missingDpsA);
+  dynSortAsc(missingTypesA);
+  for(int i=1; i <= dynlen(missingTypesA); i++) {
+    string type = missingTypesA[i];
+    treeMissingA.appendItem(\"\", type, type);
+  }
+  
+  setStatus(\"Building missing DPs tree for sys B\", \"yellow\");
+  dyn_string missingTypesB = mappingKeys(missingDpsB);
+  dynSortAsc(missingTypesB);
+  for(int i=1; i <= dynlen(missingTypesB); i++) {
+    string type = missingTypesB[i];    
+    treeMissingB.appendItem(\"\", type, type);
+  }
+  
+  setStatus(\"done\", \"green\");
+}
+
+dyn_string removeSystemName(dyn_string dps) {
+  dyn_string ret;
+  for (int i=1; i <= dynlen(dps); i++) {
+    ret[i] = dpSubStr(dps[i], DPSUB_DP);
+  }
+  return ret;
+}
+
+void setStatus(string status, string color) {
+  lblStatus.text = status;
+  lblStatus.backCol(color);
+}
+
+void setProgress(int value, int max) {
+  int percentage = ((float) value) / ((float) max) * 100;
+  
+  progress.progress(percentage);
+}
+
+void resetGui() {
+  treeMissingA.clear();
+  treeMissingB.clear();
+}
+
+void printArray(dyn_string array) {
+  for (int i=1; i <= dynlen(array); i++) {
+    emu_info(i + \": \" + array[i]);
+  }
+}
+" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+2 0
+"System_Diff"
+""
+1 140 20 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 140 20 304 34
+0 2 2 "0s" 0 0 0 192 0 0  140 20 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 34 PVSS System Diff (in terms of DPs)
+2 1
+"PRIMITIVE_TEXT2"
+""
+1 20 60 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 20 60 67 74
+0 2 2 "0s" 0 0 0 192 0 0  20 60 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 9 System A:
+2 2
+"PRIMITIVE_TEXT3"
+""
+1 20 90 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 20 90 67 104
+0 2 2 "0s" 0 0 0 192 0 0  20 90 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 9 System B:
+19 4
+"rdbLocalRemoteA"
+""
+1 90 60 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"horizontal" ""
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 88 58 222 82
+2
+T 
+1
+LANG:1 5 Local
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 7 Remote:
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E "main(int button)
+{
+  comboSystemNameA.enabled = button;
+}" 0
+
+19 5
+"rdbLocalRemoteB"
+""
+1 90 90 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"horizontal" ""
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 88 88 222 112
+2
+T 
+1
+LANG:1 5 Local
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 7 Remote:
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E "main(int button)
+{
+  comboSystemNameB.enabled = button;
+}" 0
+
+13 8
+"btnDiff"
+""
+1 500 60 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 498 58 622 142
+
+T 
+1
+LANG:1 4 Diff
+"main()
+{
+  string sysA, sysB, sysB1;
+  this.enabled = false;
+  
+  if (rdbLocalRemoteA.number == 0) {
+    sysA = getSystemName();
+  } else {
+    sysA = comboSystemNameA.text;
+  }
+  if (rdbLocalRemoteB.number == 0) {
+    sysB = getSystemName();
+  } else {
+    sysB = comboSystemNameB.text;
+  }
+  if (chkAdditionalSystemB.state(0)) {
+    if (comboSystemNameB1.text != sysB) {
+      sysB1 = comboSystemNameB1.text;
+    }
+  }
+
+  doDiff(sysA, sysB, sysB1);
+  
+  if ((rdbLocalRemoteA.number == 0) && (chkAdditionalSystemB.state(0) == false)) {
+    btnCopyDp.enabled = true;
+  } else {
+    btnCopyDp.enabled = false;
+  }
+  
+  this.enabled = true;
+}" 0
+ E E E
+2 12
+"PRIMITIVE_TEXT6"
+""
+1 22 162 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+15 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 22 162 55 176
+0 2 2 "0s" 0 0 0 192 0 0  22 162 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 7 Status:
+2 13
+"lblStatus"
+""
+1 62 162 E E E 1 E 1 E N "_WindowText" E N "green" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 62 162 78 176
+0 2 2 "0s" 0 0 0 192 0 0  62 162 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 4 idle
+22 14
+"comboSystemNameA"
+""
+1 220 60 E E E 0 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 218 58 482 85
+0
+
+E
+E
+E
+ 0 0
+22 15
+"comboSystemNameB"
+""
+1 220 90 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 218 88 482 115
+0
+
+E
+E
+E
+ 0 0
+29 17
+"progress"
+""
+1 10 180 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+22 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"centerIndicator" "bool TRUE"
+ 10 180 621 201
+11 ProgressBar
+0
+E20 18
+"chkAdditionalSystemB"
+""
+1 180 120 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+23 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 178 118 222 142
+1
+T 
+1
+LANG:1 1 +
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  comboSystemNameB1.enabled = state;
+}" 0
+22 19
+"comboSystemNameB1"
+""
+1 220 120 E E E 0 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+25 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 218 118 482 145
+0
+
+E
+E
+E
+ 0 0
+29 21
+"treeMissingA"
+""
+1 10 210 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+27 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"selectionMode" "enum 2"
+ 10 210 301 531
+10 TreeWidget
+7
+0 "expanded" "(string id)"
+""
+0 "collapsed" "(string id)"
+""
+0 "selectionChanged" "(string id)"
+"  dyn_string ids = treeMissingA.selectedItems();
+  for (int i=1; i <= dynlen(ids); i++) {
+    string id = ids[i];
+    if (dynlen(treeMissingA.children(id)) > 0 || // if it already has children
+        strlen(treeMissingA.parent(id)) != 0) {  // or it's not a root element
+    
+      continue; 
+    }
+  
+    setStatus(\"Building requested tree branch...\", \"yellow\");
+    dyn_string dps = missingDpsA[id];
+    int total = dynlen(dps);
+    for (int j=1; j <= total; j++) {
+      string itemText = dpSubStr(dps[j], DPSUB_DP);
+      treeMissingA.appendItem(id, dps[j], itemText);
+      setProgress(j, total);
+    }
+    setStatus(\"done\", \"green\");
+  }"
+0 "clicked" "(string id, int column)"
+""
+0 "doubleClicked" "(string id, int column)"
+""
+0 "rightClicked" "(string id, int column)"
+""
+0 "itemRenamed" "(string id, int column, string text)"
+""
+"main()
+{
+  this.addColumn(\"Missing DPs in System A\");
+}" 0
+29 22
+"treeMissingB"
+""
+1 320 210 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+29 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"selectionMode" "enum 2"
+ 320 210 621 531
+10 TreeWidget
+7
+0 "expanded" "(string id)"
+""
+0 "collapsed" "(string id)"
+""
+0 "selectionChanged" "(string id)"
+"  dyn_string ids = treeMissingB.selectedItems();
+  for (int i=1; i <= dynlen(ids); i++) {
+    string id = ids[i];
+    if (dynlen(treeMissingB.children(id)) > 0 || // if it already has children
+        strlen(treeMissingB.parent(id)) != 0) {  // or it's not a root element
+    
+      continue; 
+    }
+  
+    setStatus(\"Building requested tree branch...\", \"yellow\");
+    dyn_string dps = missingDpsB[id];
+    int total = dynlen(dps);
+    for (int j=1; j <= total; j++) {
+      string itemText = dpSubStr(dps[j], DPSUB_DP);
+      treeMissingB.appendItem(id, id + \"_\" + dps[j], itemText);
+      setProgress(j, total);
+    }
+    setStatus(\"done\", \"green\");
+  }"
+0 "clicked" "(string id, int column)"
+""
+0 "doubleClicked" "(string id, int column)"
+""
+0 "rightClicked" "(string id, int column)"
+""
+0 "itemRenamed" "(string id, int column, string text)"
+""
+"main()
+{
+  this.addColumn(\"Missing DPs in System B\");
+}" 0
+13 24
+"btnCopyDp"
+""
+1 10 540 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+31 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 8 538 302 565
+
+T 
+1
+LANG:1 48 Copy over selected DP(s) (sys. B => sys. A only)
+"main()
+{
+  dyn_string items = treeMissingA.selectedItems();
+  
+  setStatus(\"copying DP(s)...\", \"yellow\");
+
+  for (int i=1; i <= dynlen(items); i++) {
+    setProgress(i, dynlen(items));
+    
+    dyn_string dps;
+    string type;
+    //is it type or a single DP?
+    if (strlen(treeMissingA.parent(items[i])) == 0) { // DPT
+      dps = treeMissingA.children(items[i]);
+      type = items[i];
+    } else { // DP
+      dynAppend(dps, items[i]);
+      type = dpTypeName(items[i]);
+    }
+    
+    for (int j=1; j <= dynlen(dps); j++) {
+      string remoteDp, localDp;
+      remoteDp = dps[j];
+      localDp = dpSubStr(dps[j], DPSUB_DP);
+      
+      //check if type exists
+      if (dynlen(dpTypes(type)) == 0) {
+        setStatus(\"Error - DP type '\" + type + \"' does not exist in local system\", \"red\");
+        return;
+      }
+      emu_debug(\"copying DP '\" + remoteDp + \"'\");
+      
+      dpCreate(localDp, type);
+      dyn_string localDpes = dpNames(localDp + \".**\", type);
+      dyn_string remoteDpes = dpNames(remoteDp + \".**\", type);
+      
+      dyn_string ex;
+      copyAllConfigs(remoteDpes, localDpes, type, ex);
+      if (emu_checkException(ex)) { return; }      
+      
+      //checking if DP exists
+      bool exists = dpExists(localDp);
+      if (exists) {
+        emu_info(\"DP '\" + remoteDp + \"' copied over successfully.\");
+      } else {
+        emu_info(\"DP '\" + remoteDp + \"' copying was unsuccessful, check log for error messages.\");
+      }
+    }
+  }
+  
+  setStatus(\"done\", \"green\");
+}
+
+void changeSystemToLocal(dyn_string &dpList, string dpType, dyn_string exceptionInfo) {
+  for (int i=1; i <= dynlen(dpList); i++) {
+    if (strlen(dpList[i]) == 0) { continue; }
+    string dpeNoSys = dpSubStr(dpList[i], DPSUB_DP_EL_CONF_DET_ATT);
+    dyn_string localDpe = dpNames(dpeNoSys, dpType);
+    if (dynlen(localDpe) != 1) { 
+      emu_addError(\"expected one result from dpNames, but got a different number of results. Pattern: \" + dpeNoSys + \", type: \" + dpType, exceptionInfo);
+      return;
+    }
+    dpList[i] = localDpe;
+  }
+}
+
+/** works only if targetDpes are in local system. */
+void copyAllConfigs(dyn_string sourceDpes, dyn_string targetDpes, string dpType, dyn_string ex) {
+  for (int dpeIndex=1; dpeIndex <= dynlen(sourceDpes); dpeIndex++) {
+    //ALL CONFIGS EXCEPT _ALERT_HDL, _ARCHIVE, _DP_FCT AND _ORIGINAL
+    dyn_string allConfigNames = dpGetAllConfigs(targetDpes[dpeIndex]);
+    int alertHdlIdx = dynContains(allConfigNames, \"_alert_hdl\");
+    if (alertHdlIdx > 0) { dynRemove(allConfigNames, alertHdlIdx); }
+    int archiveIdx = dynContains(allConfigNames, \"_archive\");
+    if (archiveIdx > 0) { dynRemove(allConfigNames, archiveIdx); }
+    int dpFctIdx = dynContains(allConfigNames, \"_dp_fct\");
+    if (dpFctIdx > 0) { dynRemove(allConfigNames, dpFctIdx); }
+    
+    int error;
+    dpCopyConfig(sourceDpes[dpeIndex], targetDpes[dpeIndex], allConfigNames, error);
+    dpCopyBufferClear();
+    if (error < 0) {
+      emu_addError(\"error while doing dpCopyConfig(\" + sourceDpes[dpeIndex] + \", \" + 
+                                                       targetDpes[dpeIndex] + \", [\" +
+                                                       allConfigNames +
+                                                       \"], error). error = \" + error,
+                   ex);
+      return;
+    }
+    
+    //ORIGINAL VALUES
+    anytype value;
+    if (dynContains(allConfigNames, \"_original\")) {
+      dpGet(sourceDpes[dpeIndex], value);
+      dpSetWait(targetDpes[dpeIndex], value);
+    }
+
+    //ARCHIVE
+    copyArchive(sourceDpes[dpeIndex], targetDpes[dpeIndex], ex);
+    if (emu_checkException(ex)) { return; }
+    
+    //DP-FCT
+    copyDpFct(sourceDpes[dpeIndex], targetDpes[dpeIndex], dpType, ex);
+    if (emu_checkException(ex)) { return; }
+            
+    //ALERT
+    copyAlert(sourceDpes[dpeIndex], targetDpes[dpeIndex], dpType, ex);
+    if (emu_checkException(ex)) { return; }
+  }
+}
+
+void copyAlert(string source, string target, string dpType, dyn_string ex) {
+  bool alertExists;
+  int alertConfType;
+  dyn_string alertTexts;
+  dyn_float alertLimits;
+  dyn_string alertClasses;
+  dyn_string summaryDpeList;
+  string alertPanel;
+  dyn_string alertPanelParams;
+  string alertHelp;
+  bool isAlertActive;
+        
+  fwAlertConfig_get(source, 
+                    alertExists, 
+                    alertConfType, 
+                    alertTexts, 
+                    alertLimits, 
+                    alertClasses, 
+                    summaryDpeList, 
+                    alertPanel, 
+                    alertPanelParams, 
+                    alertHelp, 
+                    isAlertActive, 
+                    ex);
+  if (emu_checkException(ex)) { return; }
+  if (!alertExists) { return; }
+  //correct system names in summaryDpeList
+  changeSystemToLocal(summaryDpeList, dpType, ex);
+  if (emu_checkException(ex)) { return; }
+  changeSystemToLocal(alertClasses, \"_FwAlertClass\", ex);
+  if (emu_checkException(ex)) { return; }
+        
+  fwAlertConfig_set(target,
+                    alertConfType,
+                    alertTexts,
+                    alertLimits,
+                    alertClasses,
+                    summaryDpeList,
+                    alertPanel,
+                    alertPanelParams,
+                    alertHelp,
+                    ex);
+  if (emu_checkException(ex)) { return; }
+    
+  if (isAlertActive) { // activate the alarm if necessary
+    fwAlertConfig_activate(target, ex);
+    if (emu_checkException(ex)) { return; }
+  }
+}
+
+void copyArchive(string source, string target, dyn_string ex) {
+  bool configExists;
+  string archiveClass;
+  int archiveType;
+  int smoothProcedure;
+  float deadband;
+  float timeInterval;
+  bool isActive;
+  fwArchive_get(source, 
+                configExists, 
+                archiveClass, 
+                archiveType, 
+                smoothProcedure, 
+                deadband, 
+                timeInterval, 
+                isActive, 
+                ex);
+  if (emu_checkException(ex)) {
+    emu_addError(\"Error while getting archive parameters from '\" + source + \"'.\", ex);
+    return;
+  }
+  if (!configExists) { return; }
+  
+  fwArchive_set(target, archiveClass, archiveType, smoothProcedure, deadband, timeInterval, ex);
+  if (emu_checkException(ex)) {
+    emu_addError(\"Error while setting archive parameters for '\" + target + \"'.\", ex);
+    return;
+  }
+}
+
+void copyDpFct(string source, string target, string dpType, dyn_string ex) {
+  bool configExists;
+  dyn_string functionParams;
+  dyn_string functionGlobals;
+  string functionDefinition;
+  
+  fwDpFunction_getDpeConnection(source, configExists, functionParams, functionGlobals, functionDefinition, ex);
+  if (emu_checkException(ex)) {
+    emu_addError(\"Error while getting dp-fct parameters from '\" + source + \"'.\", ex);
+    return;
+  }
+  if (!configExists) { return; }
+
+  changeSystemToLocal(functionParams, \"\", ex);
+  changeSystemToLocal(functionGlobals, \"\", ex);
+  if (emu_checkException(ex)) { return; }
+  emu_info(\"functionParams: \" + functionParams);
+  emu_info(\"functionGlobals: \" + functionGlobals);
+  emu_info(\"functionDefinition: \" + functionDefinition);
+
+    
+  fwDpFunction_setDpeConnection(target, functionParams, functionGlobals, functionDefinition, ex);
+  if (emu_checkException(ex)) {
+    emu_addError(\"Error while setting dp-fct parameters for '\" + target + \"'.\", ex);
+    return;
+  }
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
