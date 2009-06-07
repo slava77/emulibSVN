@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 4 Diff
-PANEL,-1 -1 631 570 N "_3DFace" 0
+PANEL,-1 -1 635 880 N "_3DFace" 0
 "main()
 {
   // get all connected system names and put them into combo boxes
@@ -17,6 +17,8 @@ PANEL,-1 -1 631 570 N "_3DFace" 0
  E E E E 1 -1 -1 0  140 20
 ""0  1
 E "mapping missingDpsA, missingDpsB; // map [DP type -> array of DPs]
+mapping differentDps;
+dyn_string dpsA, dpsB;
 
 void doDiff(string sysA, string sysB, string sysB1 = \"\") {
   if (sysA == sysB) {
@@ -24,13 +26,15 @@ void doDiff(string sysA, string sysB, string sysB1 = \"\") {
     return;
   }
   resetGui();
+  dynClear(dpsA);
+  dynClear(dpsB);
   mappingClear(missingDpsA);
   mappingClear(missingDpsB);
   setStatus(\"processing...\", \"yellow\");
   
   emu_info(\"Started diff on systems A: \" + sysA + \", B: \" + sysB);
-  dyn_string dpsA = dpNames(sysA + \"*\");
-  dyn_string dpsB = dpNames(sysB + \"*\");
+  dpsA = dpNames(sysA + \"*\");
+  dpsB = dpNames(sysB + \"*\");
   if (strlen(sysB1) > 0) {
     dyn_string dpsB1 = dpNames(sysB1 + \"*\");
     dynAppend(dpsB, dpsB1);
@@ -123,7 +127,89 @@ void printArray(dyn_string array) {
     emu_info(i + \": \" + array[i]);
   }
 }
-" 0
+
+/** Compares values of all DPEs of given DPs. DP types must match. */
+bool dpsIdentical(string dp1, string dp2, string type) {
+  dyn_string dpes1 = dpNames(dp1 + \".**\", type);
+  dyn_string dpes2 = dpNames(dp2 + \".**\", type);
+
+  for (int i=1; i <= dynlen(dpes1); i++) {
+    dyn_string allConfigs = dpGetAllConfigs(dpes1[i]);
+    if (!dynContains(allConfigs, \"_original\")) {
+      continue;
+    }
+    if (!isTypeDyn(dpElementType(dpes1[i]))) {
+      anytype value1, value2;
+      dpGet(dpes1[i], value1);
+      dpGet(dpes2[i], value2);
+      if (value1 != value2) {
+        return FALSE;
+      }
+    } else {
+      dyn_anytype value1, value2;
+      dpGet(dpes1[i], value1);
+      dpGet(dpes2[i], value2);
+      if (!compareArrays(value1, value2)) {
+        return FALSE;
+      }
+    }
+  }
+  
+  return TRUE;
+}
+
+bool isTypeDyn(int type) {
+  return type == DPEL_DYN_STRING ||
+         type == DPEL_DYN_INT ||
+         type == DPEL_DYN_FLOAT ||
+         type == DPEL_DYN_TIME ||
+         type == DPEL_DYN_CHAR ||
+         type == DPEL_DYN_BOOL ||
+         type == DPEL_DYN_BIT32 ||
+         type == DPEL_DYN_BIT32_STRUCT ||
+         type == DPEL_DYN_BLOB ||
+         type == DPEL_DYN_BLOB_STRUCT ||
+         type == DPEL_DYN_BOOL_STRUCT ||
+         type == DPEL_DYN_CHAR_STRUCT ||
+         type == DPEL_DYN_DPID ||
+         type == DPEL_DYN_DPID_STRUCT ||
+         type == DPEL_DYN_FLOAT_STRUCT ||
+         type == DPEL_DYN_INT_STRUCT ||
+         type == DPEL_DYN_LANGSTRING ||
+         type == DPEL_DYN_LANGSTRING_STRUCT ||
+         type == DPEL_DYN_STRING_STRUCT ||
+         type == DPEL_DYN_TIME_STRUCT ||
+         type == DPEL_DYN_UINT ||
+         type == DPEL_DYN_UINT_STRUCT;
+}
+
+bool compareArrays(dyn_anytype array1, dyn_anytype array2) {
+  int length1, length2;
+  length1 = dynlen(array1);
+  length2 = dynlen(array2);
+  
+  if (length1 != length2) {
+    return FALSE;
+  }
+  
+  for (int i=1; i <= length1; i++) {
+    if (array1[i] != array2[i]) {
+      return FALSE;
+    }
+  }
+  
+  return TRUE;
+}
+
+string convertToString(anytype value, int maxChars) {
+  string strValue = (string)value;
+  if (strlen(strValue) > maxChars) {
+    strValue = substr(strValue, 0, maxChars - 3);
+    strValue += \"...\";
+  }
+  
+  return strValue;
+}" 0
  2
 "CBRef" "1"
 "EClose" E
@@ -325,6 +411,7 @@ LANG:1 4 Diff
     btnCopyDp.enabled = false;
   }
   
+  btnCompareValues.enabled = true;
   this.enabled = true;
 }" 0
  E E E
@@ -823,6 +910,176 @@ void copyDpFct(string source, string target, string dpType, dyn_string ex) {
     emu_addError(\"Error while setting dp-fct parameters for '\" + target + \"'.\", ex);
     return;
   }
+}" 0
+ E E E
+29 28
+"treeDifferentValues"
+""
+1 10 580 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+36 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"selectionMode" "enum 2"
+ 10 580 621 841
+10 TreeWidget
+7
+0 "expanded" "(string id)"
+""
+0 "collapsed" "(string id)"
+""
+0 "selectionChanged" "(string id)"
+"  dyn_string ids = treeDifferentValues.selectedItems();
+  for (int i=1; i <= dynlen(ids); i++) {
+    string id = ids[i];
+    if (dynlen(treeDifferentValues.children(id)) > 0 || // if it already has children
+        strlen(treeDifferentValues.parent(id)) != 0) {  // or it's not a root element
+    
+      continue; 
+    }
+  
+    setStatus(\"Building requested tree branch...\", \"yellow\");
+    dyn_string dps = differentDps[id];
+    int total = dynlen(dps);
+    for (int j=1; j <= total; j++) {
+      dyn_string tmpSplit;
+      string dpA, dpB;
+      tmpSplit = strsplit(dps[j], \";\");
+      dpA = tmpSplit[1];
+      dpB = tmpSplit[2];
+      
+      dyn_string dpesA = dpNames(dpA + \".**\", id);
+      dyn_string dpesB = dpNames(dpB + \".**\", id);
+      
+      treeDifferentValues.appendItem(id, dpA, dpSubStr(dpA, DPSUB_DP));
+      for (int k=1; k <= dynlen(dpesA); k++) {
+        dyn_string allConfigs = dpGetAllConfigs(dpesA[k]);
+        if (!dynContains(allConfigs, \"_original\")) {  // taking only leafs here
+          continue;
+        }
+        
+        string dpeName = dpSubStr(dpesA[k], DPSUB_DP_EL);
+        strreplace(dpeName, dpSubStr(dpA, DPSUB_DP), \"\");
+        if (!isTypeDyn(dpElementType(dpesA[k]))) {
+          anytype valueA, valueB;
+          dpGet(dpesA[k], valueA);
+          dpGet(dpesB[k], valueB);
+          treeDifferentValues.appendItem(dpA, dpesA[k], dpeName);
+          treeDifferentValues.setText(dpesA[k], 1, convertToString(valueA, 40));
+          treeDifferentValues.setText(dpesA[k], 2, convertToString(valueB, 40));
+          if (valueA != valueB) {
+            treeDifferentValues.setIcon(dpesA[k], 0, \"alarm_red.bmp\");
+          }
+        } else {
+          dyn_anytype arrayA, arrayB;
+          dpGet(dpesA[k], arrayA);
+          dpGet(dpesB[k], arrayB);
+          treeDifferentValues.appendItem(dpA, dpesA[k], dpeName);
+          int length = dynlen(arrayA);
+          if (dynlen(arrayB) > length) {
+            length = dynlen(arrayB);
+          }
+          bool foundDifferent = false;
+          for (int l=1; l <= length; l++) {
+            string valueA, valueB;
+            if (l <= dynlen(arrayA)) {
+              valueA = (string)arrayA[l];
+            } else {
+              valueA = \"\";
+            }
+            if (l <= dynlen(arrayB)) {
+              valueB = (string)arrayB[l];
+            } else {
+              valueB = \"\";
+            }
+            treeDifferentValues.appendItem(dpesA[k], dpesA[k] + \"_\" + l, \"[\" + l + \"]\");
+            treeDifferentValues.setText(dpesA[k] + \"_\" + l, 1, convertToString(valueA, 40));
+            treeDifferentValues.setText(dpesA[k] + \"_\" + l, 2, convertToString(valueB, 40));
+            if (valueA != valueB) {
+              treeDifferentValues.setIcon(dpesA[k] + \"_\" + l, 0, \"alarm_red.bmp\");
+              foundDifferent = true;
+            }
+          }
+          if (foundDifferent) {
+            treeDifferentValues.setIcon(dpesA[k], 0, \"alarm_red.bmp\");
+          }
+        }
+      }
+      
+      setProgress(j, total);
+    }
+    setStatus(\"done\", \"green\");
+  }"
+0 "clicked" "(string id, int column)"
+""
+0 "doubleClicked" "(string id, int column)"
+""
+0 "rightClicked" "(string id, int column)"
+""
+0 "itemRenamed" "(string id, int column, string text)"
+""
+"main()
+{
+  this.addColumn(\"DPT/DP/DPE name\");
+  this.addColumn(\"Value in sys. A\");
+  this.addColumn(\"Value in sys. B\");
+}" 0
+13 29
+"btnCompareValues"
+""
+1 10 850 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+37 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 8 848 622 872
+
+T 
+1
+LANG:1 51 Compare Values (takes a minute or two sometimes)...
+"main()
+{
+  this.enabled = false;
+  
+  dyn_string dpsAnoSys, dpsBnoSys;
+  dpsAnoSys = removeSystemName(dpsA);
+  dpsBnoSys = removeSystemName(dpsB);
+  
+  //find missing in sys A
+  setStatus(\"searching same DPs in both systems but with different values\", \"yellow\");
+  int dpCountA = dynlen(dpsA);
+  for (int i=1; i <= dpCountA; i++) {
+    int dpIndexB = dynContains(dpsBnoSys, dpsAnoSys[i]);
+    if (dpIndexB) {
+      string type = dpTypeName(dpsA[i]);
+      if (!dpsIdentical(dpsA[i], dpsB[dpIndexB], type)) {
+        if (!mappingHasKey(differentDps, type)) {
+          differentDps[type] = makeDynString();
+        }
+        dynAppend(differentDps[type], dpsA[i] + \";\" + dpsB[dpIndexB]);
+      }
+    }
+    setProgress(i, dpCountA);
+  }
+  // build the tree in GUI
+  dyn_string types = mappingKeys(differentDps);
+  dynSortAsc(types);
+  for (int i=1; i <= dynlen(types); i++) {
+    treeDifferentValues.appendItem(\"\", types[i], types[i]);
+  }
+  
+  setStatus(\"done\", \"green\");
 }" 0
  E E E
 0
