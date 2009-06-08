@@ -658,7 +658,7 @@ LANG:1 0
     int total = dynlen(dps);
     for (int j=1; j <= total; j++) {
       string itemText = dpSubStr(dps[j], DPSUB_DP);
-      treeMissingB.appendItem(id, id + \"_\" + dps[j], itemText);
+      treeMissingB.appendItem(id, dps[j], itemText);
       setProgress(j, total);
     }
     setStatus(\"done\", \"green\");
@@ -699,13 +699,11 @@ LANG:1 48 Copy over selected DP(s) (sys. B => sys. A only)
 {
   dyn_string items = treeMissingA.selectedItems();
   
-  setStatus(\"copying DP(s)...\", \"yellow\");
-
   for (int i=1; i <= dynlen(items); i++) {
-    setProgress(i, dynlen(items));
-    
     dyn_string dps;
     string type;
+    
+    setStatus(\"copying DPs (\" + i + \"/\" + dynlen(items) + \")...\", \"yellow\");
     //is it type or a single DP?
     if (strlen(treeMissingA.parent(items[i])) == 0) { // DPT
       dps = treeMissingA.children(items[i]);
@@ -716,6 +714,7 @@ LANG:1 48 Copy over selected DP(s) (sys. B => sys. A only)
     }
     
     for (int j=1; j <= dynlen(dps); j++) {
+      setProgress(j, dynlen(dps));
       string remoteDp, localDp;
       remoteDp = dps[j];
       localDp = dpSubStr(dps[j], DPSUB_DP);
@@ -733,10 +732,10 @@ LANG:1 48 Copy over selected DP(s) (sys. B => sys. A only)
       
       string alias = dpGetAlias(remoteDp + \".\");
       string comment = dpGetComment(remoteDp + \".\");
-      string description = dpGetDescription(remoteDp + \".\");
+//      string description = dpGetDescription(remoteDp + \".\");
       if (strlen(alias)) { dpSetAlias(localDp + \".\", alias); }
       if (strlen(comment)) { dpSetComment(localDp + \".\", comment); }
-      if (strlen(description)) { dpSetDescription(localDp + \".\", description); }
+//      if (strlen(description)) { dpSetDescription(localDp + \".\", description); }
       
       dyn_string localDpes = dpNames(localDp + \".**\", type);
       dyn_string remoteDpes = dpNames(remoteDp + \".**\", type);
@@ -1118,57 +1117,6 @@ LANG:1 51 Compare Values (takes a minute or two sometimes)...
   setStatus(\"done\", \"green\");
 }" 0
  E E E
-13 30
-"PUSH_BUTTON1"
-""
-1 310 550 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-38 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 308 548 492 575
-
-T 
-1
-LANG:1 30 delete some stuff (DON'T PUSH)
-"main()
-{
-  dyn_string dps = dpNames(\"CSC_ME_P3*\", \"_FwFsmDevice\");
-  dyn_string dps1 = dpNames(\"CSC_ME_P4*\", \"_FwFsmDevice\");
-  dynAppend(dps, dps1);
-  dyn_string dps1 = dpNames(\"*CSC_ME_P3*\", \"_FwTreeNode\");
-  dynAppend(dps, dps1);
-  dyn_string dps1 = dpNames(\"*CSC_ME_P4*\", \"_FwTreeNode\");
-  dynAppend(dps, dps1);
-  dyn_string dps1 = dpNames(\"*csc_dcs_07*\", \"_FwTreeNode\");
-  dynAppend(dps, dps1);
-  dyn_string dps1 = dpNames(\"*CSC_ME_P3*\", \"_FwFsmObject\");
-  dynAppend(dps, dps1);
-  dyn_string dps1 = dpNames(\"*CSC_ME_P4*\", \"_FwFsmObject\");
-  dynAppend(dps, dps1);
-  dyn_string dps1 = dpNames(\"*csc_dcs_07*\", \"_FwFsmObject\");
-  dynAppend(dps, dps1);
-  dyn_string dps1 = dpNames(\"*CSC_ME_P3*\", \"_FwCtrlUnit\");
-  dynAppend(dps, dps1);
-  dyn_string dps1 = dpNames(\"*CSC_ME_P4*\", \"_FwCtrlUnit\");
-  dynAppend(dps, dps1);
-  dyn_string dps1 = dpNames(\"*csc_dcs_07*\", \"_FwCtrlUnit\");
-  dynAppend(dps, dps1);
-  emu_info(\"Va: \" + dynlen(dps));
-  emu_info(\"deleting...\");
-  for (int i=1; i <= dynlen(dps); i++) {
-    dpDelete(dps[i]);
-  }
-  emu_info(\"DONE\");
-}" 0
- E E E
 25 31
 "tableWarnings"
 ""
@@ -1221,6 +1169,58 @@ LANG:1 5 Clear
 "main()
 {
   tableWarnings.deleteAllLines();
+}" 0
+ E E E
+13 34
+"btnDelete"
+""
+1 320 540 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+42 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 318 538 622 565
+
+T 
+1
+LANG:1 37 Delete selected from the local system
+"main()
+{
+  dyn_string items = treeMissingB.selectedItems();
+  
+  setStatus(\"deleting DP(s)...\", \"yellow\");
+
+  for (int i=1; i <= dynlen(items); i++) {
+    dyn_string dps;
+    string type;
+    //is it type or a single DP?
+    if (strlen(treeMissingB.parent(items[i])) == 0) { // DPT
+      dps = treeMissingB.children(items[i]);
+      type = items[i];
+    } else { // DP
+      dynAppend(dps, items[i]);
+      type = dpTypeName(items[i]);
+    }
+    
+    for (int j=1; j <= dynlen(dps); j++) {
+      setProgress(j, dynlen(dps));
+      string remoteDp, localDp;
+      remoteDp = dps[j];
+      localDp = dpSubStr(dps[j], DPSUB_DP);
+      
+      emu_info(\"deleting: \" + localDp);
+      dpDelete(localDp);
+    }
+  }
+  
+  setStatus(\"done\", \"green\");
 }" 0
  E E E
 0
