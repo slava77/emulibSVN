@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 4 Diff
-PANEL,-1 -1 635 880 N "_3DFace" 0
+PANEL,-1 -1 635 1016 N "_3DFace" 0
 "main()
 {
   // get all connected system names and put them into combo boxes
@@ -84,7 +84,8 @@ void doDiff(string sysA, string sysB, string sysB1 = \"\") {
   dynSortAsc(missingTypesA);
   for(int i=1; i <= dynlen(missingTypesA); i++) {
     string type = missingTypesA[i];
-    treeMissingA.appendItem(\"\", type, type);
+    int childrenCount = dynlen(missingDpsA[type]);
+    treeMissingA.appendItem(\"\", type, type + \" (\" + childrenCount + \")\");
   }
   
   setStatus(\"Building missing DPs tree for sys B\", \"yellow\");
@@ -92,7 +93,8 @@ void doDiff(string sysA, string sysB, string sysB1 = \"\") {
   dynSortAsc(missingTypesB);
   for(int i=1; i <= dynlen(missingTypesB); i++) {
     string type = missingTypesB[i];    
-    treeMissingB.appendItem(\"\", type, type);
+    int childrenCount = dynlen(missingDpsB[type]);
+    treeMissingB.appendItem(\"\", type, type + \" (\" + childrenCount + \")\");
   }
   
   setStatus(\"done\", \"green\");
@@ -686,7 +688,7 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
  8 538 302 565
 
@@ -725,7 +727,17 @@ LANG:1 48 Copy over selected DP(s) (sys. B => sys. A only)
       }
       emu_debug(\"copying DP '\" + remoteDp + \"'\");
       
-      dpCreate(localDp, type);
+      if (!dpExists(localDp)) {
+        dpCreate(localDp, type);
+      }
+      
+      string alias = dpGetAlias(remoteDp + \".\");
+      string comment = dpGetComment(remoteDp + \".\");
+      string description = dpGetDescription(remoteDp + \".\");
+      if (strlen(alias)) { dpSetAlias(localDp + \".\", alias); }
+      if (strlen(comment)) { dpSetComment(localDp + \".\", comment); }
+      if (strlen(description)) { dpSetDescription(localDp + \".\", description); }
+      
       dyn_string localDpes = dpNames(localDp + \".**\", type);
       dyn_string remoteDpes = dpNames(remoteDp + \".**\", type);
       
@@ -746,7 +758,7 @@ LANG:1 48 Copy over selected DP(s) (sys. B => sys. A only)
   setStatus(\"done\", \"green\");
 }
 
-void changeSystemToLocal(dyn_string &dpList, string dpType, dyn_string exceptionInfo) {
+void changeSystemToLocal(dyn_string &dpList, string dpType, dyn_string &exceptionInfo) {
   for (int i=1; i <= dynlen(dpList); i++) {
     if (strlen(dpList[i]) == 0) { continue; }
     string dpeNoSys = dpSubStr(dpList[i], DPSUB_DP_EL_CONF_DET_ATT);
@@ -760,7 +772,7 @@ void changeSystemToLocal(dyn_string &dpList, string dpType, dyn_string exception
 }
 
 /** works only if targetDpes are in local system. */
-void copyAllConfigs(dyn_string sourceDpes, dyn_string targetDpes, string dpType, dyn_string ex) {
+void copyAllConfigs(dyn_string sourceDpes, dyn_string targetDpes, string dpType, dyn_string &ex) {
   for (int dpeIndex=1; dpeIndex <= dynlen(sourceDpes); dpeIndex++) {
     //ALL CONFIGS EXCEPT _ALERT_HDL, _ARCHIVE, _DP_FCT AND _ORIGINAL
     dyn_string allConfigNames = dpGetAllConfigs(targetDpes[dpeIndex]);
@@ -789,7 +801,7 @@ void copyAllConfigs(dyn_string sourceDpes, dyn_string targetDpes, string dpType,
       dpGet(sourceDpes[dpeIndex], value);
       dpSetWait(targetDpes[dpeIndex], value);
     }
-
+    
     //ARCHIVE
     copyArchive(sourceDpes[dpeIndex], targetDpes[dpeIndex], ex);
     if (emu_checkException(ex)) { return; }
@@ -804,7 +816,7 @@ void copyAllConfigs(dyn_string sourceDpes, dyn_string targetDpes, string dpType,
   }
 }
 
-void copyAlert(string source, string target, string dpType, dyn_string ex) {
+void copyAlert(string source, string target, string dpType, dyn_string &ex) {
   bool alertExists;
   int alertConfType;
   dyn_string alertTexts;
@@ -831,11 +843,28 @@ void copyAlert(string source, string target, string dpType, dyn_string ex) {
   if (emu_checkException(ex)) { return; }
   if (!alertExists) { return; }
   //correct system names in summaryDpeList
-  changeSystemToLocal(summaryDpeList, dpType, ex);
-  if (emu_checkException(ex)) { return; }
+  changeSystemToLocal(summaryDpeList, \"\", ex);
+  if (dynlen(ex) > 0) { 
+    emu_debug(\"ERROR: \" + ex[1]);
+    emu_errorHandled(ex); 
+    tableWarnings.appendLine(\"warnings\", \"alert not created for '\" + target + \"'\");
+    return; 
+  }
   changeSystemToLocal(alertClasses, \"_FwAlertClass\", ex);
-  if (emu_checkException(ex)) { return; }
-        
+  if (dynlen(ex) > 0) { 
+    emu_debug(\"ERROR: \" + ex[1]);
+    emu_errorHandled(ex); 
+    tableWarnings.appendLine(\"warnings\", \"alert not created for '\" + target + \"'\");
+    return; 
+  }
+  
+  fwAlertConfig_deactivate(target, ex);
+  if (dynlen(ex) > 0) { 
+    emu_debug(\"ERROR: \" + ex[1]);
+    emu_errorHandled(ex); 
+    tableWarnings.appendLine(\"warnings\", \"failed to deactivate alarm for '\" + target + \"'\");
+    return; 
+  }
   fwAlertConfig_set(target,
                     alertConfType,
                     alertTexts,
@@ -854,7 +883,7 @@ void copyAlert(string source, string target, string dpType, dyn_string ex) {
   }
 }
 
-void copyArchive(string source, string target, dyn_string ex) {
+void copyArchive(string source, string target, dyn_string &ex) {
   bool configExists;
   string archiveClass;
   int archiveType;
@@ -884,7 +913,7 @@ void copyArchive(string source, string target, dyn_string ex) {
   }
 }
 
-void copyDpFct(string source, string target, string dpType, dyn_string ex) {
+void copyDpFct(string source, string target, string dpType, dyn_string &ex) {
   bool configExists;
   dyn_string functionParams;
   dyn_string functionGlobals;
@@ -898,12 +927,19 @@ void copyDpFct(string source, string target, string dpType, dyn_string ex) {
   if (!configExists) { return; }
 
   changeSystemToLocal(functionParams, \"\", ex);
+  if (dynlen(ex) > 0) { 
+    emu_debug(\"ERROR: \" + ex[1]);
+    emu_errorHandled(ex); 
+    tableWarnings.appendLine(\"warnings\", \"dp-fct not created for '\" + target + \"'\");
+    return; 
+  }
   changeSystemToLocal(functionGlobals, \"\", ex);
-  if (emu_checkException(ex)) { return; }
-  emu_info(\"functionParams: \" + functionParams);
-  emu_info(\"functionGlobals: \" + functionGlobals);
-  emu_info(\"functionDefinition: \" + functionDefinition);
-
+  if (dynlen(ex) > 0) { 
+    emu_debug(\"ERROR: \" + ex[1]);
+    emu_errorHandled(ex); 
+    tableWarnings.appendLine(\"warnings\", \"dp-fct not created for '\" + target + \"'\");
+    return; 
+  }
     
   fwDpFunction_setDpeConnection(target, functionParams, functionGlobals, functionDefinition, ex);
   if (emu_checkException(ex)) {
@@ -915,7 +951,7 @@ void copyDpFct(string source, string target, string dpType, dyn_string ex) {
 29 28
 "treeDifferentValues"
 ""
-1 10 580 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 10 720 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 36 0 0 0 0 0
 E E E
@@ -925,7 +961,7 @@ LANG:1 0
 
 1
 "selectionMode" "enum 2"
- 10 580 621 841
+ 10 720 621 981
 10 TreeWidget
 7
 0 "expanded" "(string id)"
@@ -1031,7 +1067,7 @@ LANG:1 0
 13 29
 "btnCompareValues"
 ""
-1 10 850 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+1 10 990 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 37 0 0 0 0 0
 E E E
@@ -1041,9 +1077,9 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
- 8 848 622 872
+ 8 988 622 1012
 
 T 
 1
@@ -1080,6 +1116,111 @@ LANG:1 51 Compare Values (takes a minute or two sometimes)...
   }
   
   setStatus(\"done\", \"green\");
+}" 0
+ E E E
+13 30
+"PUSH_BUTTON1"
+""
+1 310 550 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+38 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 308 548 492 575
+
+T 
+1
+LANG:1 30 delete some stuff (DON'T PUSH)
+"main()
+{
+  dyn_string dps = dpNames(\"CSC_ME_P3*\", \"_FwFsmDevice\");
+  dyn_string dps1 = dpNames(\"CSC_ME_P4*\", \"_FwFsmDevice\");
+  dynAppend(dps, dps1);
+  dyn_string dps1 = dpNames(\"*CSC_ME_P3*\", \"_FwTreeNode\");
+  dynAppend(dps, dps1);
+  dyn_string dps1 = dpNames(\"*CSC_ME_P4*\", \"_FwTreeNode\");
+  dynAppend(dps, dps1);
+  dyn_string dps1 = dpNames(\"*csc_dcs_07*\", \"_FwTreeNode\");
+  dynAppend(dps, dps1);
+  dyn_string dps1 = dpNames(\"*CSC_ME_P3*\", \"_FwFsmObject\");
+  dynAppend(dps, dps1);
+  dyn_string dps1 = dpNames(\"*CSC_ME_P4*\", \"_FwFsmObject\");
+  dynAppend(dps, dps1);
+  dyn_string dps1 = dpNames(\"*csc_dcs_07*\", \"_FwFsmObject\");
+  dynAppend(dps, dps1);
+  dyn_string dps1 = dpNames(\"*CSC_ME_P3*\", \"_FwCtrlUnit\");
+  dynAppend(dps, dps1);
+  dyn_string dps1 = dpNames(\"*CSC_ME_P4*\", \"_FwCtrlUnit\");
+  dynAppend(dps, dps1);
+  dyn_string dps1 = dpNames(\"*csc_dcs_07*\", \"_FwCtrlUnit\");
+  dynAppend(dps, dps1);
+  emu_info(\"Va: \" + dynlen(dps));
+  emu_info(\"deleting...\");
+  for (int i=1; i <= dynlen(dps); i++) {
+    dpDelete(dps[i]);
+  }
+  emu_info(\"DONE\");
+}" 0
+ E E E
+25 31
+"tableWarnings"
+""
+1 10 580 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+39 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 8 578 542 712
+EE 1 0 1 1 0 "warnings" 57 1 0 "s" 1
+LANG:1 13 Copy warnings
+E
+1
+LANG:1 0 
+
+527 
+14 14 10 10
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+0 1 1 1 7
+1 0
+13 32
+"btnClearErrors"
+""
+1 560 580 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+40 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 558 578 622 712
+
+T 
+1
+LANG:1 5 Clear
+"main()
+{
+  tableWarnings.deleteAllLines();
 }" 0
  E E E
 0
