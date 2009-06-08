@@ -638,14 +638,14 @@ E E E
 LANG:1 0 
 
 8
-"frameShadow" "enum 48"
-"backgroundOrigin" "enum 0"
-"defaultRenameAction" "enum 0"
-"frameShape" "enum 6"
-"vScrollBarMode" "enum 0"
-"hScrollBarMode" "enum 0"
-"resizeMode" "enum 0"
 "selectionMode" "enum 2"
+"resizeMode" "enum 0"
+"hScrollBarMode" "enum 0"
+"vScrollBarMode" "enum 0"
+"frameShape" "enum 6"
+"defaultRenameAction" "enum 0"
+"backgroundOrigin" "enum 0"
+"frameShadow" "enum 48"
  320 210 621 531
 10 TreeWidget
 7
@@ -742,9 +742,10 @@ LANG:1 48 Copy over selected DP(s) (sys. B => sys. A only)
       
       string alias = dpGetAlias(remoteDp + \".\");
       string comment = dpGetComment(remoteDp + \".\");
+      if (comment == remoteDp + \".\") { comment = \"\"; }
 //      string description = dpGetDescription(remoteDp + \".\");
       if (strlen(alias)) { dpSetAlias(localDp + \".\", alias); }
-      if (strlen(comment)) { dpSetComment(localDp + \".\", comment); }
+      dpSetComment(localDp + \".\", comment);
 //      if (strlen(description)) { dpSetDescription(localDp + \".\", description); }
       
       dyn_string localDpes = dpNames(localDp + \".**\", type);
@@ -1096,6 +1097,7 @@ LANG:1 51 Compare Values (takes a minute or two sometimes)...
 "main()
 {
   this.enabled = false;
+  treeDifferentValues.clear();
   
   dyn_string dpsAnoSys, dpsBnoSys;
   dpsAnoSys = removeSystemName(dpsA);
@@ -1125,6 +1127,7 @@ LANG:1 51 Compare Values (takes a minute or two sometimes)...
   }
   
   setStatus(\"done\", \"green\");
+  this.enabled = true;
 }" 0
  E E E
 25 31
