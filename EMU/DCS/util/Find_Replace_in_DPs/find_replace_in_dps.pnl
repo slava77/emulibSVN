@@ -6,13 +6,6 @@ E E E E E 1 -1 -1 0  40 30
 ""0  1
 E "search()
 {
-  if (strlen(editSearch.text) == 0) {
-    lblEmptyPhrase.visible = true;
-    return;
-  } else {
-    lblEmptyPhrase.visible = false;
-  }
-  
   string searchString = editSearch.text;
   dyn_string types = dpTypes(\"*\");
   dyn_dyn_anytype data;
@@ -278,15 +271,16 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
 
 T 
 1
-LANG:1 28 Replace All (don't save yet)
+LANG:1 33 Replace Selected (don't save yet)
 "main()
 {
   string search = editReplaceWhat.text;
   string replacement = editReplacement.text;
-  int lineCount = resultsTable.lineCount();
   resultsTable.updatesEnabled(true);
-  for (int i=0; i < lineCount; i++) {
-    dyn_anytype line = resultsTable.getLineN(i);
+  dyn_int selectedLines;
+  resultsTable.getSelectedLines(selectedLines);
+  for (int i=0; i < dynlen(selectedLines); i++) {
+    dyn_anytype line = resultsTable.getLineN(selectedLines[i]);
     string dp = line[1];
     string value = line[2];
     strreplace(value, search, replacement);
@@ -350,12 +344,13 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
 
 T 
 1
-LANG:1 4 Save
+LANG:1 13 Save Selected
 "main()
 {
-  int lineCount = resultsTable.lineCount();
-  for (int i=0; i < lineCount; i++) {
-    dyn_anytype line = resultsTable.getLineN(i);
+  dyn_int selectedLines;
+  resultsTable.getSelectedLines(selectedLines);
+  for (int i=0; i < dynlen(selectedLines); i++) {
+    dyn_anytype line = resultsTable.getLineN(selectedLines[i]);
     string dp = line[1];
     string value = line[2];
     dpSetWait(dp, value);
@@ -363,26 +358,6 @@ LANG:1 4 Save
   emu_info(\"DONE saving!\");
 }" 0
  E E E
-2 15
-"lblEmptyPhrase"
-""
-1 100 40 E E E 1 E 0 E N "_WindowText" E N "FwStateAttention3" E E
- E E
-16 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 100 40 238 54
-0 2 2 "0s" 0 0 0 192 0 0  100 40 1
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
-LANG:1 28 Please enter a search phrase
 0
 LAYER, 1 
 1
