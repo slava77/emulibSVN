@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 4 Diff
-PANEL,-1 -1 635 1016 N "_3DFace" 0
+PANEL,-1 -1 633 1017 N "_3DFace" 0
 "main()
 {
   // get all connected system names and put them into combo boxes
@@ -412,6 +412,9 @@ LANG:1 4 Diff
   } else {
     btnCopyDp.enabled = false;
   }
+  if (rdbLocalRemoteA.number == 0) {
+    btnDelete.enabled = true;
+  }
   
   btnCompareValues.enabled = true;
   this.enabled = true;
@@ -595,13 +598,13 @@ LANG:1 0
 "  dyn_string ids = treeMissingA.selectedItems();
   for (int i=1; i <= dynlen(ids); i++) {
     string id = ids[i];
-    if (dynlen(treeMissingA.children(id)) > 0 || // if it already has children
-        strlen(treeMissingA.parent(id)) != 0) {  // or it's not a root element
-    
+    if (strlen(treeMissingA.parent(id)) != 0 || // if it's not a root element
+        dynlen(treeMissingA.children(id)) > 0)   // or it already has children 
+    {
       continue; 
     }
   
-    setStatus(\"Building requested tree branch...\", \"yellow\");
+    setStatus(\"Building requested tree branch (\" + i + \"/\" + dynlen(ids) + \")...\", \"yellow\");
     dyn_string dps = missingDpsA[id];
     int total = dynlen(dps);
     for (int j=1; j <= total; j++) {
@@ -609,8 +612,8 @@ LANG:1 0
       treeMissingA.appendItem(id, dps[j], itemText);
       setProgress(j, total);
     }
-    setStatus(\"done\", \"green\");
-  }"
+  }
+  setStatus(\"done\", \"green\");"
 0 "clicked" "(string id, int column)"
 ""
 0 "doubleClicked" "(string id, int column)"
@@ -634,7 +637,14 @@ E E E
 1
 LANG:1 0 
 
-1
+8
+"frameShadow" "enum 48"
+"backgroundOrigin" "enum 0"
+"defaultRenameAction" "enum 0"
+"frameShape" "enum 6"
+"vScrollBarMode" "enum 0"
+"hScrollBarMode" "enum 0"
+"resizeMode" "enum 0"
 "selectionMode" "enum 2"
  320 210 621 531
 10 TreeWidget
@@ -647,13 +657,13 @@ LANG:1 0
 "  dyn_string ids = treeMissingB.selectedItems();
   for (int i=1; i <= dynlen(ids); i++) {
     string id = ids[i];
-    if (dynlen(treeMissingB.children(id)) > 0 || // if it already has children
-        strlen(treeMissingB.parent(id)) != 0) {  // or it's not a root element
-    
+    if (strlen(treeMissingB.parent(id)) != 0 || // if it's not a root element
+        dynlen(treeMissingB.children(id)) > 0)   // or it already has children 
+    {
       continue; 
     }
   
-    setStatus(\"Building requested tree branch...\", \"yellow\");
+    setStatus(\"Building requested tree branch (\" + i + \"/\" + dynlen(ids) + \")...\", \"yellow\");
     dyn_string dps = missingDpsB[id];
     int total = dynlen(dps);
     for (int j=1; j <= total; j++) {
@@ -661,8 +671,8 @@ LANG:1 0
       treeMissingB.appendItem(id, dps[j], itemText);
       setProgress(j, total);
     }
-    setStatus(\"done\", \"green\");
-  }"
+  }
+  setStatus(\"done\", \"green\");"
 0 "clicked" "(string id, int column)"
 ""
 0 "doubleClicked" "(string id, int column)"
@@ -1092,7 +1102,7 @@ LANG:1 51 Compare Values (takes a minute or two sometimes)...
   dpsBnoSys = removeSystemName(dpsB);
   
   //find missing in sys A
-  setStatus(\"searching same DPs in both systems but with different values\", \"yellow\");
+  setStatus(\"searching for DPs which exist in both systems but have different values\", \"yellow\");
   int dpCountA = dynlen(dpsA);
   for (int i=1; i <= dpCountA; i++) {
     int dpIndexB = dynContains(dpsBnoSys, dpsAnoSys[i]);
@@ -1174,7 +1184,7 @@ LANG:1 5 Clear
 13 34
 "btnDelete"
 ""
-1 320 540 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 320 540 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 42 0 0 0 0 0
 E E E
@@ -1195,9 +1205,9 @@ LANG:1 37 Delete selected from the local system
 {
   dyn_string items = treeMissingB.selectedItems();
   
-  setStatus(\"deleting DP(s)...\", \"yellow\");
-
   for (int i=1; i <= dynlen(items); i++) {
+    setStatus(\"deleting DPs (set \" + i + \"/\" + dynlen(items) + \")...\", \"yellow\");
+    
     dyn_string dps;
     string type;
     //is it type or a single DP?
