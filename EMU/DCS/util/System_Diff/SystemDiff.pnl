@@ -638,14 +638,14 @@ E E E
 LANG:1 0 
 
 8
-"selectionMode" "enum 2"
-"resizeMode" "enum 0"
-"hScrollBarMode" "enum 0"
-"vScrollBarMode" "enum 0"
-"frameShape" "enum 6"
-"defaultRenameAction" "enum 0"
-"backgroundOrigin" "enum 0"
 "frameShadow" "enum 48"
+"backgroundOrigin" "enum 0"
+"defaultRenameAction" "enum 0"
+"frameShape" "enum 6"
+"vScrollBarMode" "enum 0"
+"hScrollBarMode" "enum 0"
+"resizeMode" "enum 0"
+"selectionMode" "enum 2"
  320 210 621 531
 10 TreeWidget
 7
@@ -970,7 +970,7 @@ E E E
 LANG:1 0 
 
 1
-"selectionMode" "enum 2"
+"selectionMode" "enum 0"
  10 720 621 981
 10 TreeWidget
 7
@@ -1014,17 +1014,17 @@ LANG:1 0
           anytype valueA, valueB;
           dpGet(dpesA[k], valueA);
           dpGet(dpesB[k], valueB);
-          treeDifferentValues.appendItem(dpA, dpesA[k], dpeName);
-          treeDifferentValues.setText(dpesA[k], 1, convertToString(valueA, 40));
-          treeDifferentValues.setText(dpesA[k], 2, convertToString(valueB, 40));
+          treeDifferentValues.appendItem(dpA, dpesA[k] + \";\" + dpesB[k], dpeName);
+          treeDifferentValues.setText(dpesA[k] + \";\" + dpesB[k], 1, convertToString(valueA, 40));
+          treeDifferentValues.setText(dpesA[k] + \";\" + dpesB[k], 2, convertToString(valueB, 40));
           if (valueA != valueB) {
-            treeDifferentValues.setIcon(dpesA[k], 0, \"alarm_red.bmp\");
+            treeDifferentValues.setIcon(dpesA[k] + \";\" + dpesB[k], 0, \"alarm_red.bmp\");
           }
         } else {
           dyn_anytype arrayA, arrayB;
           dpGet(dpesA[k], arrayA);
           dpGet(dpesB[k], arrayB);
-          treeDifferentValues.appendItem(dpA, dpesA[k], dpeName);
+          treeDifferentValues.appendItem(dpA, dpesA[k] + \";\" + dpesB[k], dpeName);
           int length = dynlen(arrayA);
           if (dynlen(arrayB) > length) {
             length = dynlen(arrayB);
@@ -1042,16 +1042,16 @@ LANG:1 0
             } else {
               valueB = \"\";
             }
-            treeDifferentValues.appendItem(dpesA[k], dpesA[k] + \"_\" + l, \"[\" + l + \"]\");
-            treeDifferentValues.setText(dpesA[k] + \"_\" + l, 1, convertToString(valueA, 40));
-            treeDifferentValues.setText(dpesA[k] + \"_\" + l, 2, convertToString(valueB, 40));
+            treeDifferentValues.appendItem(dpesA[k] + \";\" + dpesB[k], dpesA[k] + \";\" + dpesB[k] + \"_\" + l, \"[\" + l + \"]\");
+            treeDifferentValues.setText(dpesA[k] + \";\" + dpesB[k] + \"_\" + l, 1, convertToString(valueA, 40));
+            treeDifferentValues.setText(dpesA[k] + \";\" + dpesB[k] + \"_\" + l, 2, convertToString(valueB, 40));
             if (valueA != valueB) {
-              treeDifferentValues.setIcon(dpesA[k] + \"_\" + l, 0, \"alarm_red.bmp\");
+              treeDifferentValues.setIcon(dpesA[k] + \";\" + dpesB[k] + \"_\" + l, 0, \"alarm_red.bmp\");
               foundDifferent = true;
             }
           }
           if (foundDifferent) {
-            treeDifferentValues.setIcon(dpesA[k], 0, \"alarm_red.bmp\");
+            treeDifferentValues.setIcon(dpesA[k] + \";\" + dpesB[k], 0, \"alarm_red.bmp\");
           }
         }
       }
@@ -1063,7 +1063,21 @@ LANG:1 0
 0 "clicked" "(string id, int column)"
 ""
 0 "doubleClicked" "(string id, int column)"
-""
+"  string dpes = treeDifferentValues.selectedItem();
+  if (dynlen(treeDifferentValues.children(id)) == 0 || // doesn't have children - not an array
+      strlen(treeDifferentValues.parent(id)) == 0) {  // or doesn't have parent - this is type
+    
+    return; 
+  }
+  dyn_string tmpSplit = strsplit(dpes, \";\");
+  if (dynlen(tmpSplit) != 2) {
+    return;
+  }
+  
+  string dpeA = tmpSplit[1];
+  string dpeB = tmpSplit[2];
+  
+  ChildPanelOnCentral(\"objects/refArrayMerge.pnl\", \"arrayMergePnl\", makeDynString(\"$dpeA:\" + dpeA, \"$dpeB:\" + dpeB));"
 0 "rightClicked" "(string id, int column)"
 ""
 0 "itemRenamed" "(string id, int column, string text)"
