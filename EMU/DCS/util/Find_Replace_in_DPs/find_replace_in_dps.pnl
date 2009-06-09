@@ -1,11 +1,15 @@
 V 10
 1
 LANG:1 5 panel
-PANEL,-1 -1 500 501 N "_3DFace" 0
+PANEL,-1 -1 868 661 N "_3DFace" 0
 E E E E E 1 -1 -1 0  40 30
 ""0  1
 E "search()
 {
+  lblResultCount.text = \"searching...\";
+  resultsTable.deleteSelection();
+  resultsTable.deleteAllLines();
+   
   string searchString = editSearch.text;
   dyn_string types = dpTypes(\"*\");
   dyn_dyn_anytype data;
@@ -27,14 +31,16 @@ E "search()
     }
     
     if (strpos(value, searchString) >= 0) {
-      dynAppend(results, data[i]);//makeDynString(data[i][1], data[i][2]));
+      string dp = dpSubStr(data[i][1], DPSUB_DP_EL_CONF_DET_ATT);
+      string type = dpTypeName(dp);
+      dyn_string resultLine = makeDynString(type, dp, value);
+      dynAppend(results, resultLine);//makeDynString(data[i][1], data[i][2]));
     }
   }
   emu_info(\"Result count: \" + dynlen(results));
-  resultsTable.deleteAllLines();
   lblResultCount.text = dynlen(results);
   for (int i=1; i <= dynlen(results); i++) {
-    resultsTable.appendLine(\"DPE\", results[i][1], \"value\", results[i][2]);
+    resultsTable.appendLine(\"type\", results[i][1], \"DPE\", results[i][2], \"value\", results[i][3]);
   }
 }
 
@@ -56,34 +62,10 @@ DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
 LAYER, 0 
 1
 LANG:1 0 
-13 0
-"btnFind"
-""
-1 360 60 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-0 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 358 58 482 85
-
-T 
-1
-LANG:1 16 Find Path in DPs
-"main() {
-  search();
-}" 0
- E E E
 14 1
 "editSearch"
 ""
-1 100 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 90 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 1 0 0 0 0 0
 E E E
@@ -95,7 +77,7 @@ LANG:1 0
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
- 98 58 342 81
+ 88 58 602 81
 3 "0s" 0 0 0 0 0 -1  E E "main() {
   search();
 }" 0
@@ -103,7 +85,7 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
 2 3
 "PRIMITIVE_TEXT2"
 ""
-1 20 60 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 10 60 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 3 0 0 0 0 0
 E E E
@@ -113,8 +95,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 20 60 91 74
-0 2 2 "0s" 0 0 0 192 0 0  20 60 1
+E E 0 1 1 2 1 E U  1 E 10 60 81 74
+0 2 2 "0s" 0 0 0 192 0 0  10 60 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -143,7 +125,7 @@ LANG:1 19 Find/Replace in DPs
 25 5
 "resultsTable"
 ""
-1 20 90 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 10 90 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 5 0 0 0 0 0
 E E E
@@ -155,20 +137,31 @@ LANG:1 0
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
- 18 88 482 362
-EE 1 0 1 2 0 "DPE" 21 1 0 "s" 1
+ 8.00000000000004 88 862 522
+"main()
+{
+  this.tableMode = TABLE_SELECT_MULTIPLE;
+  this.selectByClick = TABLE_SELECT_LINE;
+}" 0
+E 1 0 1 3 0 "type" 6 1 0 "s" 1
+LANG:1 7 DP Type
+E
+1
+LANG:1 0 
+
+150 "DPE" 21 1 0 "s" 1
 LANG:1 3 DPE
 E
 1
 LANG:1 0 
 
-200 "value" 27 1 0 "s" 1
+327 "value" 27 1 0 "s" 1
 LANG:1 5 Value
 E
 1
 LANG:1 0 
 
-257 
+370 
 14 14 10 10
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
@@ -178,7 +171,7 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
 2 6
 "PRIMITIVE_TEXT4"
 ""
-1 20 380 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 20 530 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 6 0 0 0 0 0
 E E E
@@ -188,8 +181,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 20 380 110 394
-0 2 2 "0s" 0 0 0 192 0 0  20 380 1
+E E 0 1 1 2 1 E U  1 E 20 530 110 544
+0 2 2 "0s" 0 0 0 192 0 0  20 530 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -198,7 +191,7 @@ LANG:1 20 Total results found:
 2 7
 "lblResultCount"
 ""
-1 120 380 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 120 530 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 7 0 0 0 0 0
 E E E
@@ -208,8 +201,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 120 380 121 394
-0 2 2 "0s" 0 0 0 192 0 0  120 380 1
+E E 0 1 1 2 1 E U  1 E 120 530 121 544
+0 2 2 "0s" 0 0 0 192 0 0  120 530 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -218,7 +211,7 @@ LANG:1 0
 2 8
 "PRIMITIVE_TEXT6"
 ""
-1 20 410 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 22 562 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 8 0 0 0 0 0
 E E E
@@ -228,8 +221,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 20 410 60 424
-0 2 2 "0s" 0 0 0 192 0 0  20 410 1
+E E 0 1 1 2 1 E U  1 E 22 562 62 576
+0 2 2 "0s" 0 0 0 192 0 0  22 562 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -238,7 +231,7 @@ LANG:1 7 Replace
 14 9
 "editReplaceWhat"
 ""
-1 70 410 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 72 562 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 9 0 0 0 0 0
 E E E
@@ -250,12 +243,12 @@ LANG:1 0
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
- 68 408 262 431
+ 70 560 444 583
 3 "0s" 0 0 0 0 0 -1  E E E
 13 10
 "btnReplace"
 ""
-1 69.9999999999998 440 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 71.9999999999996 592 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 10 0 0 0 0 0
 E E E
@@ -267,7 +260,7 @@ LANG:1 0
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
- 67.9999999999998 438 492 465
+ 69.9999999999996 590 864 617
 
 T 
 1
@@ -277,12 +270,11 @@ LANG:1 33 Replace Selected (don't save yet)
   string search = editReplaceWhat.text;
   string replacement = editReplacement.text;
   resultsTable.updatesEnabled(true);
-  dyn_int selectedLines;
-  resultsTable.getSelectedLines(selectedLines);
-  for (int i=0; i < dynlen(selectedLines); i++) {
+  dyn_int selectedLines = resultsTable.getSelectedLines();
+  for (int i=1; i <= dynlen(selectedLines); i++) {
     dyn_anytype line = resultsTable.getLineN(selectedLines[i]);
-    string dp = line[1];
-    string value = line[2];
+    string dp = line[2];
+    string value = line[3];
     strreplace(value, search, replacement);
     resultsTable.updateLine(1, \"DPE\", dp, \"value\", value);
   }
@@ -291,7 +283,7 @@ LANG:1 33 Replace Selected (don't save yet)
 2 12
 "PRIMITIVE_TEXT7"
 ""
-1 270 410 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 462 562 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 12 0 0 0 0 0
 E E E
@@ -301,8 +293,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 270 410 292 424
-0 2 2 "0s" 0 0 0 192 0 0  270 410 1
+E E 0 1 1 2 1 E U  1 E 462 562 484 576
+0 2 2 "0s" 0 0 0 192 0 0  462 562 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -311,7 +303,7 @@ LANG:1 5 with:
 14 13
 "editReplacement"
 ""
-1 300 410 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 492 562 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 13 0 0 0 0 0
 E E E
@@ -323,12 +315,12 @@ LANG:1 0
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
- 298 408 492 431
+ 490 560 864 583
 3 "0s" 0 0 0 0 0 -1  E E E
 13 14
 "PUSH_BUTTON3"
 ""
-1 70 470 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 72 622 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 15 0 0 0 0 0
 E E E
@@ -340,22 +332,97 @@ LANG:1 0
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
- 68 468 492 495
+ 70 620 864 647
 
 T 
 1
 LANG:1 13 Save Selected
 "main()
 {
-  dyn_int selectedLines;
-  resultsTable.getSelectedLines(selectedLines);
-  for (int i=0; i < dynlen(selectedLines); i++) {
+  dyn_int selectedLines = resultsTable.getSelectedLines();
+  for (int i=1; i <= dynlen(selectedLines); i++) {
     dyn_anytype line = resultsTable.getLineN(selectedLines[i]);
-    string dp = line[1];
-    string value = line[2];
+    string dp = line[2];
+    string value = line[3];
     dpSetWait(dp, value);
   }
   emu_info(\"DONE saving!\");
+}" 0
+ E E E
+2 15
+"PRIMITIVE_TEXT8"
+""
+1 610 60 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 610 60 783 74
+0 2 2 "0s" 0 0 0 192 0 0  610 60 1
+1
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 31 Press Enter to start the search
+13 16
+"btnSelectNone"
+""
+1 740 530 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 738 528 862 555
+
+T 
+1
+LANG:1 11 Select None
+"main()
+{
+  resultsTable.deleteSelection();
+}" 0
+ E E E
+13 17
+"btnSelectAll"
+""
+1 610 530 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 608 528 732 555
+
+T 
+1
+LANG:1 10 Select All
+"main()
+{
+  resultsTable.deleteSelection();
+  int lineCount = resultsTable.lineCount;
+  dyn_int selection;
+  for (int i=0; i < lineCount; i++) {
+    dynAppend(selection, i);
+  }
+  resultsTable.addSelectLines(selection);
 }" 0
  E E E
 0
