@@ -232,6 +232,7 @@ void emu_debugFuncEnd(string funcName, time t0) {
   }
 }
 
+/** Gets requested parameter from the database and returns it. */
 mixed emu_getParameter(string paramName, dyn_string &exceptionInfo, int datatype = STRING_VAR) {
   string sql = "select value from emucdb_parameters where name = :paramName";
   time t0;
@@ -246,6 +247,7 @@ mixed emu_getParameter(string paramName, dyn_string &exceptionInfo, int datatype
   return ret;
 }
 
+/** If a given map contains a given array - returns the index at which it was found, if not -1 is returned. */
 int emu_dynDynContains(dyn_dyn_anytype map, dyn_anytype array) {
   for (int i=1; i <= dynlen(map); i++) {
     if ((bool) (map[i] == array)) {
@@ -253,4 +255,98 @@ int emu_dynDynContains(dyn_dyn_anytype map, dyn_anytype array) {
     }
   }
   return -1;
+}
+
+/** If the given datapoint element type (acquired by dpElementType(...)) is an array - returns true, otherwise - false. */
+bool emu_isDpTypeDyn(int type) {
+  return type == DPEL_DYN_STRING ||
+         type == DPEL_DYN_INT ||
+         type == DPEL_DYN_FLOAT ||
+         type == DPEL_DYN_TIME ||
+         type == DPEL_DYN_CHAR ||
+         type == DPEL_DYN_BOOL ||
+         type == DPEL_DYN_BIT32 ||
+         type == DPEL_DYN_BIT32_STRUCT ||
+         type == DPEL_DYN_BLOB ||
+         type == DPEL_DYN_BLOB_STRUCT ||
+         type == DPEL_DYN_BOOL_STRUCT ||
+         type == DPEL_DYN_CHAR_STRUCT ||
+         type == DPEL_DYN_DPID ||
+         type == DPEL_DYN_DPID_STRUCT ||
+         type == DPEL_DYN_FLOAT_STRUCT ||
+         type == DPEL_DYN_INT_STRUCT ||
+         type == DPEL_DYN_LANGSTRING ||
+         type == DPEL_DYN_LANGSTRING_STRUCT ||
+         type == DPEL_DYN_STRING_STRUCT ||
+         type == DPEL_DYN_TIME_STRUCT ||
+         type == DPEL_DYN_UINT ||
+         type == DPEL_DYN_UINT_STRUCT;
+}
+
+/** If the given type (acquired by getType(...)) is an array - returns true, otherwise - false. */
+bool emu_isTypeDyn(int type) {
+  return type == DYN_STRING_VAR ||
+         type == DYN_INT_VAR ||
+		 type == DYN_UINT_VAR ||
+         type == DYN_FLOAT_VAR ||
+         type == DYN_TIME_VAR ||
+         type == DYN_CHAR_VAR ||
+         type == DYN_BOOL_VAR ||
+         type == DYN_BIT32_VAR ||
+         type == DYN_ERRCLASS_VAR ||
+         type == DYN_ANYTYPE_VAR ||
+         type == DYN_LANGSTRING_VAR ||
+         type == DYN_DPIDENTIFIER_VAR ||
+		 type == DYN_BLOB_VAR ||
+		 type == DYN_MIXED_VAR;
+}
+
+/** If the given type (acquired by getType(...)) is of type dyn_dyn_* - returns true, otherwise - false. */
+bool emu_isTypeDynDyn(int type) {
+  return type == DYN_DYN_STRING_VAR ||
+         type == DYN_DYN_INT_VAR ||
+		 type == DYN_DYN_UINT_VAR ||
+         type == DYN_DYN_FLOAT_VAR ||
+         type == DYN_DYN_TIME_VAR ||
+         type == DYN_DYN_CHAR_VAR ||
+         type == DYN_DYN_BOOL_VAR ||
+         type == DYN_DYN_BIT32_VAR ||
+         type == DYN_DYN_ERRCLASS_VAR ||
+         type == DYN_DYN_ANYTYPE_VAR ||
+         type == DYN_DYN_LANGSTRING_VAR ||
+		 type == DYN_DYN_BLOB_VAR ||
+		 type == DYN_DYN_MAPPING_VAR ||
+		 type == DYN_DYN_MIXED_VAR;
+}
+
+/** Compares two arrays.
+  @return true if they are identical, false if not.
+*/
+bool compareArrays(dyn_anytype array1, dyn_anytype array2) {
+  int length1, length2;
+  length1 = dynlen(array1);
+  length2 = dynlen(array2);
+  
+  if (length1 != length2) {
+    return FALSE;
+  }
+  
+  for (int i=1; i <= length1; i++) {
+    if (array1[i] != array2[i]) {
+      return FALSE;
+    }
+  }
+  
+  return TRUE;
+}
+
+/** Converts anytype value to string. If maxChars is given then if resulting string is longer than maxChars - it's cut off and "..." is added. */
+string convertToString(anytype value, int maxChars = 0) {
+  string strValue = (string)value;
+  if ((maxChars > 0) &&(strlen(strValue) > maxChars)) {
+    strValue = substr(strValue, 0, maxChars - 3);
+    strValue += "...";
+  }
+  
+  return strValue;
 }
