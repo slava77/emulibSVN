@@ -167,17 +167,45 @@ void emu_errorHandled(dyn_string &exceptionInfo, string funcName = "") {
 /** Register an info message.
   @param msg           Info message.
 */
-void emu_info(string msg) {
-  DebugTN("EMU INFO: " + msg);
+void emu_info(anytype msg) {
+  _emu_printWithPrefix(msg, "EMU INFO: ");
+}
+
+/** Prints any type of value (including arrays and 2D arrays). Adds a prefix if provided. */
+dyn_string _emu_printWithPrefix(anytype value, string prefix = "") {
+  dyn_string ret;
+  if (emu_isTypeDyn(getType(value))) {  // it's a 1D array
+    DebugTN(prefix + "array {");
+    for (int i=1; i <= dynlen(value); i++) {
+      DebugTN(prefix + "    [" + i + "]: " + value[i]);
+    }
+    DebugTN(prefix + "}");
+  } else if (emu_isTypeDynDyn(getType(value))) { // it's a 2D array
+    DebugTN(prefix + "2D array {");
+    for (int i=1; i <= dynlen(value); i++) {
+      string line;
+      int length = dynlen(value[i]);
+      for (int j=1; j <= length; j++) {
+        line += "[" + i + "][" + j + "]: " + value[i][j];
+        if (j != length) {
+          line += ", ";
+        }
+      }
+      DebugTN(prefix + "    " + line);
+    }
+    DebugTN(prefix + "}");
+  } else { // it's a simple value
+    DebugTN(prefix + value);
+  }
 }
 
 /** Register a debug message.
   @param msg           Debug message.
   @param level         Level of the debug message. See g_emu_Debug.
 */
-void emu_debug(string msg, int level = 1 /*emu_DEBUG_GENERAL*/) {
+void emu_debug(anytype msg, int level = 1 /*emu_DEBUG_GENERAL*/) {
   if ((g_emu_Debug & level) > 0) {
-    DebugTN("EMU DEBUG: " + msg);
+    _emu_printWithPrefix(msg, "EMU DEBUG: ");
   }
 }
 
