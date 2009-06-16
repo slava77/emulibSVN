@@ -175,13 +175,10 @@ void emu_info(anytype msg) {
 dyn_string _emu_printWithPrefix(anytype value, string prefix = "") {
   dyn_string ret;
   if (emu_isTypeDyn(getType(value))) {  // it's a 1D array
-    DebugTN(prefix + "array {");
     for (int i=1; i <= dynlen(value); i++) {
       DebugTN(prefix + "    [" + i + "]: " + value[i]);
     }
-    DebugTN(prefix + "}");
   } else if (emu_isTypeDynDyn(getType(value))) { // it's a 2D array
-    DebugTN(prefix + "2D array {");
     for (int i=1; i <= dynlen(value); i++) {
       string line;
       int length = dynlen(value[i]);
@@ -193,7 +190,6 @@ dyn_string _emu_printWithPrefix(anytype value, string prefix = "") {
       }
       DebugTN(prefix + "    " + line);
     }
-    DebugTN(prefix + "}");
   } else { // it's a simple value
     DebugTN(prefix + value);
   }
