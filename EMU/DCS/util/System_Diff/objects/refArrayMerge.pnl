@@ -53,8 +53,7 @@ void merge() {
     } else if (strlen((string)line[2]) > 0) {
       element = line[2];
     } else {
-      emu_errorSingle(\"Implementation error!!\");
-      return;
+      element = line[1];
     }
     tableResult.appendLine(\"num\", i + 1, \"result\", element);
   }
