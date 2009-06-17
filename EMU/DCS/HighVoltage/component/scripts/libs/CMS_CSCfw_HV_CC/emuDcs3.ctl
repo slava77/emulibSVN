@@ -5,8 +5,9 @@ string Component="CMS_CSCfw_HV_CC";
 string dir_config="config";
 bool custom_lv;
 bool isWholeCrbFolderAdd=true;
-bool isWholeMrtnFolderAdd=false;
+bool isWholeMrtnFolderAdd=true;
 dyn_string project_stations=makeDynString("M4","M3","M2","M1","P1","P2","P3","P4"); 
+bool isMajority_official=false;
 //
 mudcsPostCreateConfig(){
  
@@ -1104,14 +1105,26 @@ if(emu_system_side=="m"){
  } // if custom lv
  else{
  
-   if(idisk==-1){
-     if(CSC_fwG_g_MRTN_SYSTEM_NAME_P!="")
-       emu_db=dpNames(CSC_fwG_g_MRTN_SYSTEM_NAME_P+":*ME_P*_CR*_LV_MRTN","_FwFsmObject");      
+    if(idisk==-1){
+     if(CSC_fwG_g_MRTN_SYSTEM_NAME_P!=""){
+       if(!isWholeMrtnFolderAdd)emu_db=dpNames(CSC_fwG_g_MRTN_SYSTEM_NAME_P+":*ME_P*_CR*_LV_MRTN","_FwFsmObject");
+       else {
+         emu_db=dpNames(CSC_fwG_g_MRTN_SYSTEM_NAME_P+":*ME_P1_LV_MRTN","_FwFsmObject");
+         dynAppend(emu_db,dpNames(CSC_fwG_g_MRTN_SYSTEM_NAME_P+":*ME_P2_LV_MRTN","_FwFsmObject"));
+         dynAppend(emu_db,dpNames(CSC_fwG_g_MRTN_SYSTEM_NAME_P+":*ME_P4_LV_MRTN","_FwFsmObject"));         
+       }
+     }
    }
    else if(idisk==-2){
-     if(CSC_fwG_g_MRTN_SYSTEM_NAME_M!="")
-       emu_db=dpNames(CSC_fwG_g_MRTN_SYSTEM_NAME_M+":*ME_M*_CR*_LV_MRTN","_FwFsmObject");      
-   }   
+     if(CSC_fwG_g_MRTN_SYSTEM_NAME_M!=""){
+       if(!isWholeMrtnFolderAdd)emu_db=dpNames(CSC_fwG_g_MRTN_SYSTEM_NAME_M+":*ME_M*_CR*_LV_MRTN","_FwFsmObject");
+       else {
+         emu_db=dpNames(CSC_fwG_g_MRTN_SYSTEM_NAME_M+":*ME_M1_LV_MRTN","_FwFsmObject");
+         dynAppend(emu_db,dpNames(CSC_fwG_g_MRTN_SYSTEM_NAME_M+":*ME_M2_LV_MRTN","_FwFsmObject"));
+         dynAppend(emu_db,dpNames(CSC_fwG_g_MRTN_SYSTEM_NAME_M+":*ME_M4_LV_MRTN","_FwFsmObject"));         
+       }
+     }
+   }       
    else{ 
     if(isWholeMrtnFolderAdd){
       if(idisk==3) // for stations 2 and 3 are the same and are contained only in station 2 folder 
@@ -2460,6 +2473,7 @@ if(!found_sec)continue;
 mudcs_selectParent(2, i10-1+(iring-iringB), station_parent_node,"DCSNodes",1, parent_domain);
 
 CSC_fwG_EmuCmsGlobalType=CSC_fwG_g_NodeLogicalFsmType;
+if(isMajority_official)CSC_fwG_EmuCmsGlobalType=CSC_fwG_EmuCmsGlobalType+"_MAJOR";
 mudcsNameCompose("", station_label, emu_system_side, idisk, s_sec, "", EmuCmsGlobalNode);
  sector_parent_node=EmuCmsGlobalNode;
 //EmuCmsGlobalNode="CSC"+station_label+emu_system_side+idisk+disk_rad+c0+i100; //r2
@@ -2737,6 +2751,12 @@ CSC_fwG_EmuCmsGlobalParent=parent_domain;
 }
 // ----------------------------------------------------------------------------
 } // loop on chmbers
+if(isMajority_official){
+int majority_threshold=1;
+if(iring==iringL)fwFsmTree_addMajorityNode(sector_parent_node,CSC_fwG_g_NodeLogicalFsmType,"more",majority_threshold,makeDynString("ERROR"),
+                          false,false,majority_threshold+1);
+} // if(isMajority_official)
+
 } // i_sec
 } // for(iring=iringB;iring<=iringL;iring++)
 // ----------------------------------------------------------------------------

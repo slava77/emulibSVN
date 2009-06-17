@@ -156,3 +156,103 @@ int  mudcsGetMasterChannelStatus(string DpName){
     
   }
 }
+//===================================================================
+mudcsInitServer(){
+//  mudcsGetMasterForChamber(string fsm, int &master_id, int &master_chan, int &master_index, dyn_string &coord_master);
+ 
+    addGlobal("CSC_fwG_so_primary_chambers",DYN_DYN_STRING_VAR);
+    addGlobal("CSC_fwG_so_primary_fsm",DYN_STRING_VAR);
+    addGlobal("CSC_fwG_so_get_chambers_time",DYN_TIME_VAR);
+    addGlobal("CSC_fwG_so_chambers_fsm",DYN_STRING_VAR);    
+  int i,j;
+  
+  string system_master;
+  
+  
+  CSC_fwG_so_primary_fsm= dpNames("*:*","HV_PR");
+  
+   for(j=1;j<=dynlen(CSC_fwG_so_primary_fsm);j++){
+      CSC_fwG_so_primary_chambers[j]=makeDynString();
+   }   
+
+  
+  int master_id; int master_chan; int master_index; dyn_string coord_master;
+  string master, primary;
+  dyn_int coord_primary;
+  
+  dyn_string chambers_fsm= dpNames("*","HV_1");
+  CSC_fwG_so_chambers_fsm=chambers_fsm;
+    for(i=1;i<=dynlen(chambers_fsm);i++){
+
+      
+  mudcsGetMasterForChamber(chambers_fsm[i], master_id, master_chan, master_index, coord_master);
+  system_master=substr(chambers_fsm[i],0,strpos(chambers_fsm[i],":" ));
+  //DebugTN(chambers_fsm[i]);
+ // DebugTN(master_id);
+  //  DebugTN(master_chan);
+   //   DebugTN(master_index);
+    //    DebugTN(coord_master);
+  master=system_master+":master"+coord_master[1]+"_"+coord_master[2]+"_"+coord_master[3];
+   dpGet(master+".data.master_hostid",coord_primary[1]); 
+  dpGet(master+".data.master_busaddr",coord_primary[2]);
+  dpGet(master+".data.master_hvcard",coord_primary[3]);
+  primary="HV_PR_primary"+coord_primary[1]+"_"+coord_primary[2]+"_"+coord_primary[3];
+  
+ // DebugTN(primary);
+   for(j=1;j<=dynlen(CSC_fwG_so_primary_fsm);j++){
+     if(strpos(CSC_fwG_so_primary_fsm[j], primary)>=0){
+       dynAppend(CSC_fwG_so_primary_chambers[j],chambers_fsm[i]);
+   // DebugTN("fsm:"+CSC_fwG_so_primary_fsm[j]);
+  //      DebugTN("data:"+substr(primary,strpos(primary,":")+1));
+      }
+   }  //for
+  
+   
+  } //for
+
+    
+}
+
+//====================================================================
+string mudcsGetPrimaryFsmForChamberFsm(string &fsm, int &primary_status, time &last_set_primary_status){
+  int i,j;
+  string data;
+  
+     for(j=1;j<=dynlen(CSC_fwG_so_primary_fsm);j++){
+            for(i=1;i<=dynlen(CSC_fwG_so_primary_chambers[j]);i++){
+       if(strpos(CSC_fwG_so_primary_chambers[j][i],fsm)>=0){
+         data=substr(CSC_fwG_so_primary_fsm[j],0,strpos(CSC_fwG_so_primary_fsm[j],":")+1)+
+                  substr(CSC_fwG_so_primary_fsm[j],strpos(CSC_fwG_so_primary_fsm[j],"/")+1) ;
+        // mudcsDebug(data);
+          dpGet(data+".status",primary_status);
+          dpGet(data+".status:_online.._stime",last_set_primary_status);
+
+          
+          
+         return  CSC_fwG_so_primary_fsm[j];
+       } 
+            }
+     }
+  
+}
+//====================================================================
+dyn_string mudcsGetChambersFsmForPrimaryFsm(string &fsm){
+    int i,j;
+     for(j=1;j<=dynlen(CSC_fwG_so_primary_fsm);j++){
+       if(strpos(CSC_fwG_so_primary_fsm[j],fsm)>=0){
+         return  CSC_fwG_so_primary_chambers[j];
+       } 
+       
+     }  
+  
+}
+//=====================================================================
+mudcsSetRampUpRateForAllChambers(string primary_fsm, int rate){
+   int i;
+   dyn_string ds1= mudcsGetChambersFsmForPrimaryFsm(primary_fsm);   
+    DebugTN(ds1);
+    for(i=1;i<=dynlen(ds1);i++){
+       mudcsHVCommand(ds1[i], 6, rate);
+     }      
+}
+     

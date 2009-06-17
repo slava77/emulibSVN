@@ -71,7 +71,7 @@ int i,j, pos;
 dyn_string panels;
 string p;
 
-  dyn_string d_string1, d_string2;
+  dyn_string d_string1, d_string2, split;
   string label, o_cut;
 //----------------------------------------------------------------- 
  
@@ -468,10 +468,12 @@ s1="_CR";
    }
    else{  
 //panels=makeDynString("fwFSMuser/fwUi.pnl");
+     split=strsplit(o,"_");
     if(CSC_fwG_g_CUSTOM_LV)p="emuLV_MRTNOperation.pnl";
     else p="emuEmptyOperation.pnl";
     dynAppend(panels,dir_oper+"/"+p);
-    label="LV_MARATONS";
+    if(strpos(split[3],"2")>=0)split[3]=split[3]+"/3";
+    label="LV_MARATONS"+"_"+split[3];
 
    }
    

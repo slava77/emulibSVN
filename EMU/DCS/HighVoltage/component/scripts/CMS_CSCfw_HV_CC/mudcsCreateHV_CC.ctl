@@ -14,6 +14,8 @@
 #uses "CMS_CSCfw_HV_CC/mudcs4SetFsmPanels.ctl"
 #uses "CMS_CSCfw_HV_CC/mudcs5Archive.ctl"
 
+ #uses "CMS_CSCfw_LV_CRB/mudcs9XAlertReconfigAllSlowControls.ctl"
+
 main(){
   mudcsInit();
   dpSetWait(CSC_fwG_g_SYSTEM_NAME+":MYWARNING.value","postinstall_start");  

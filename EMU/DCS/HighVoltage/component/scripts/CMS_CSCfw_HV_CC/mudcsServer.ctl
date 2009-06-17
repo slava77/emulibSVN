@@ -354,6 +354,7 @@ dyn_string test_dyn_string;
 dyn_string test_dyn_string1; 
 
 mudcsInit_new();
+mudcsInitServer();
 dpConnect("mudcsserver_update_mywarning",TRUE,CSC_fwG_g_SYSTEM_NAME+":MYWARNING.value");
 
 //===================================================================================================
@@ -715,9 +716,11 @@ dpGet(substr(dpName,0,strpos(dpName,"."))+".chamber_state",state_save);
 
 if(value == 2 || (value==-1 && index >=1) /*|| (value==-2 && state_destin==true && index >=1)*/){  // -1, -2  is to initialize the state at start  
  mudcsCommandCscLevel(dpName,"power_on","HV_1");
+ mudcsSetRampUpRateForAllChambers(substr(dpName,0,strpos(dpName,".")), 10);
 }
 else if(value == 1 || (value==-1 && index >=1) /*|| (value==-2 && state_destin==true && index >=1)*/){  // -1, -2  is to initialize the state at start  
  mudcsCommandCscLevel(dpName,"standby","HV_1");
+  mudcsSetRampUpRateForAllChambers(substr(dpName,0,strpos(dpName,".")), 10);
 }
 else if(value == 0 /*|| (value==-2 && state_destin==false && index >=1)*/){ //  -2  is to initialize the state at start  
  if(state_save ==-2)dpSetWait(substr(dpName,0,strpos(dpName,"."))+".status",-2);
@@ -1845,6 +1848,7 @@ int index=dynContains(CSC_fwG_g_BROKER_HANDLERS_FIRST, substr(dpName,0,strpos(dp
 
 DebugTN("5555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555"+" "+dpName);
 
+
 int pos;
 int w_pos,radius;
 string label;
@@ -1896,7 +1900,7 @@ test_string1=test_string1+";"+test_int;
  DebugN("MODULE TYPE "+module_type);
   if(module_type==1){
 
-    return;
+    return; // if master we do not go further 
   }
 
   if( host_hostid <=0 )return; // not to receive a corrupted data !!!!!!!
@@ -1913,8 +1917,14 @@ DebugTN("mudcsServer::mudcsUpdateMonitor_HV_N_new 222222222222222222222222222222
 /////DebugTN("mudcsServer::mudcsUpdateMonitor_HV_N_new-->test_string_status "+test_string_status);
 
  int current_status;
+ int update_mode;  // 2 - on a change; 1 - regular (once per 2 hours) 
  dpGet(test_string_status+".status",current_status);
-
+ dpGet(test_string+".update_value",update_mode);
+ if(update_mode !=1 && update_mode !=2)update_mode=2; // very temporal (server is not restarted after change) 
+ if(dpExists(test_string_status+".reserve1") && update_mode ==2)dpSet(test_string_status+".reserve1", update_mode);
+ 
+ 
+ 
  int status_save;
  dpGet(test_string_status+".module_state",status_save);
  if(status_save==-2)dpSetWait(test_string_status+".module_state",-22); // this all is to allow to switch off from error state and differ -2 and -1
@@ -1954,7 +1964,29 @@ dpGet(test_string+".data.chamber_complex_status",chamber_complex_status);
  else if(module_type == 2){
   chamber_complex_status=chamber_complex_status;
  }
-
+//---------------------------------
+ string primary_status;
+ time last_set_primary_status;
+ int chamber_index;
+  mudcsGetPrimaryFsmForChamberFsm(test_string_status, primary_status, last_set_primary_status);
+  chamber_index=dynContains(CSC_fwG_so_chambers_fsm,test_string_status);
+ /*
+  if(strpos(test_string_status,"P12_C03")>=0){ 
+  dyn_string dyn_debug3;
+  dyn_debug3[1]=test_string_status;
+    dyn_debug3[2]=CSC_fwG_so_chambers_fsm[1];
+         dyn_debug3[3]=   chamber_index;
+        dyn_debug3[4]=last_set_primary_status;
+          if(chamber_index>=1)dyn_debug3[5]=  CSC_fwG_so_get_chambers_time[chamber_index];  
+   dpSet("dyn_debug3.",dyn_debug3);
+  
+  }
+  */
+  
+  if(chamber_index>=1 && primary_status<2 && current_status==3 && update_mode ==2
+    /* &&  last_set_primary_status > (CSC_fwG_so_get_chambers_time[chamber_index]-200 )*/ ){
+     mudcsHVCommand(test_string_status, 6, 1);
+   }
 
 //--------------------- cause simetimes the status ON comes form server before the ramping !!!!! -------------
  time last_set_status;
@@ -2040,6 +2072,7 @@ if(previous_status >=0 && current_status == -1){
 
 //////} // for(i_module_part=1;i_module_part<=2;i_module_part++)
 
+CSC_fwG_so_get_chambers_time[chamber_index]=getCurrentTime();
 DebugTN("mudcsServer::mudcsUpdateMonitor_HV_N_new BROKER ********************************"+"HV_N"+" "+subtype+ test_string);
 
 

@@ -452,6 +452,14 @@ dynAppend(all_dps,"fwOT_EMUTREESTBYNodes");
 dps=dpNames("fwOT_EMUTREESTBYNodes.*");
 dynAppend(all_dps,dps);
 
+dynAppend(all_dps,"fwOT_CSC_LV_HV");
+dps=dpNames("fwOT_CSC_LV_HV.*");
+dynAppend(all_dps,dps);
+
+dynAppend(all_dps,"fwOT_EMUTREENodes_MAJOR");
+dps=dpNames("fwOT_EMUTREENodes_MAJOR.*");
+dynAppend(all_dps,dps);
+
 if(mode==2){
 /*
 dynAppend(all_dps,"fwOT_ALNM_1");

@@ -1140,14 +1140,25 @@ dpSet(mudcsAddSystem("dyn_debug2."),dyn_debug);
 //======================================================================
 //===================================================================================
 
-mudcsLV_1_alert_set(bool isAlertChangeOnly, bool isAlertActive, string dpe, dyn_float limits)
+mudcsLV_1_alert_set(bool isAlertChangeOnly, bool isAlertActive, string dpe, dyn_float limits, bool isAck=false)
 {
 // !!!!! 08/10/2004 Attention: this function is never called now with isAlertChangeOnly=true;
 // !!!!! the alerts set active in the DeviceAlertSetting
 
 int j;
 string test_string;
+//=== new
+string error_class, fatal_class;
 
+if(isAck){
+ error_class="_fwErrorAck";
+ fatal_class="_fwFatalAck";
+ }
+else {
+ error_class="_fwErrorNack";
+ fatal_class="_fwFatalNack";
+ }
+//=== new
 ////////// DebugN("mudcsLV_1_alert_set:++++++++++++++++++++++++++++++++++"+" "+isAlertActive);
     bool alertRequest;
     int i, requestedRanges;
@@ -1213,14 +1224,45 @@ string test_string;
 				alertType = DPCONFIG_ALERT_NONBINARYSIGNAL;
 /////////				requestedRanges = rangeCombo.text;
 requestedRanges = 3;
+requestedRanges = dynlen(limits)+1; // new
 	
 				for (i = 1; i <= requestedRanges; i++)
 				{ 
 ////////				getValue("alText" + i, "text", alertText[i]);
 alertText[i]="";
 ///////					getValue("alClass" + i, "text", alertClass[i]);
+
+
 if(i!=2)alertClass[i]="_fwErrorNack";
 else alertClass[i]="";
+
+// ================== new
+if(requestedRanges >=3 ){
+ if(i%2)alertText[i]="error";
+ else alertText[i]="";;
+}
+else if(requestedRanges ==2 ){
+ if(i==2)alertText[i]="error";
+ else alertText[i]="";;
+}
+
+///////					getValue("alClass" + i, "text", alertClass[i]);
+//if(i!=2)alertClass[i]="_fwErrorNack";
+if(requestedRanges == 4){
+ if(i%2)alertClass[i]= error_class;//"_fwErrorNack";
+ else alertClass[i]="";
+ if(i==4)alertClass[i]=fatal_class;
+}
+else if(requestedRanges ==3){
+ if(i%2)alertClass[i]= error_class;//"_fwErrorNack";
+ else alertClass[i]="";
+}
+else if(requestedRanges ==2 ){
+ if(i==2)alertClass[i]= error_class;//"_fwErrorNack";
+ else alertClass[i]="";
+}
+//================ new
+
 					if (alertClass[i] != "")
 						alertClass[i] = alertClass[i] + ".";
 				}
@@ -1288,6 +1330,10 @@ DebugTN("++++++++++++++++++++++++++++++++++++++++++++++++++++++11111");
 
 
 }
+
+//===================================================================================
+//===================================================================================
+
 
 //===================================================================================
 mudcsAlertGroupAcknowlege(string groupDp){

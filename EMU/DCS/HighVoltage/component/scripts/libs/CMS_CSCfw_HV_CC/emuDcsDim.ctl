@@ -28,6 +28,7 @@ mudcsDimConfigOneManagerNew(string type_par, string pc, string manager, dyn_stri
 
  
  BrokerList=dpNames("*",type_par+"_d");
+ if(type_par=="LV_1")dynAppend(BrokerList,"LV_CONFIRMATION_SERVICE");
  
    for(j=1; j<= dynlen(BrokerList); j++){
     command="no_command";
@@ -234,6 +235,7 @@ else if(type_par=="PT100"){
 }
 //---------
 else if(type_par=="LV_1" || type_par=="TEMP_1" || type_par=="CHIP_1"){
+  DebugTN(broker);
   setList="DynatemAndSetNumberList";
   for(i=1;i<=dynlen(CSC_fwG_g_PCRATE_ID2PC_NAME);i++){
    test_dyn=strsplit(CSC_fwG_g_PCRATE_ID2PC_NAME[i],";");
@@ -285,6 +287,7 @@ mudcsNameToPosConvert(mudcs_alias/*broker*/, w_pos, radius, ich, type);
 ///DebugTN("*** "+type_par+" " +broker+" " + setList+" " + w_pos+" " + radius+" " + ich+" " +type+" " +set);
 
 retrieveCoordinateSet(type_par, broker, setList, w_pos, radius, ich, type, set);
+if(broker=="LV_CONFIRMATION_SERVICE")set="LV_CONFIRMATION_SERVICE";
 //-------------------
 /*
 if(type_par=="CRB_1"||type_par=="MRTN_1"){
@@ -321,7 +324,8 @@ else if(pc_id != "all" && (strpos(pc_id,coord[1]) < 0 /*&& strpos(coord[1], pc_i
 if(type_par=="LV_1" || type_par=="TEMP_1" || type_par=="CHIP_1" || type_par=="CRB_1"
  || type_par=="MRTN_1" || type_par=="WNR12_1" || type_par=="ALNM_1"  ){
 
-if(dynlen(coord)>=2)service=type_par + "_"+coord[1]+"_"+coord[2];
+if(broker=="LV_CONFIRMATION_SERVICE")service="LV_CONFIRMATION_SERVICE";
+else if(dynlen(coord)>=2)service=type_par + "_"+coord[1]+"_"+coord[2];
 else service=type_par + "_"+coord[1];
 
 strreplace(service,".","_");

@@ -176,10 +176,10 @@ project_station_from_host=dsTest[dynlen(dsTest)];
 if(project_station_from_host==1){project_station_set=makeDynInt(1,2,3,4);project_suffix="_m1";}  // temporal
 
 if(project_station_from_host==2){project_station_set=makeDynInt(1,2);project_suffix="_m3m4";}
-else if(project_station_from_host==3){project_station_set=makeDynInt(3);project_suffix="_m2";}
+else if(project_station_from_host==3){project_station_set=makeDynInt(1,2,3);project_suffix="_m2";}
 else if(project_station_from_host==4){project_station_set=makeDynInt(4);project_suffix="_m1";}
 else if(project_station_from_host==5){project_station_set=makeDynInt(5);project_suffix="_p1";}
-else if(project_station_from_host==6){project_station_set=makeDynInt(6);project_suffix="_p2";}
+else if(project_station_from_host==6){project_station_set=makeDynInt(6,7,8);project_suffix="_p2";}
 else if(project_station_from_host==7){project_station_set=makeDynInt(7,8);project_suffix="_p3p4";}
 //else if(project_station_from_host==8)       
 if(temporary_windows_pc_for_hv_cc_project){project_station_set=makeDynInt(6,7);project_suffix="_p2";}

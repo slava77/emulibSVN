@@ -1,3 +1,9 @@
+ #uses "CMS_CSCfw_LV_CRB/mudcs9XAlertReconfigAllSlowControls.ctl"
+
+
+
+
+
 string DpName;
 
 main()
@@ -8,7 +14,7 @@ main()
   DpName=CSC_fwG_g_csc_part;
       
   HV_1_alert_main();
- 
+     mudcsAlertReconfig("HV_1", ".off_channels", true);
 }
 
 
@@ -84,7 +90,7 @@ s2="5000";   // alarm
 }
 
 value=value+".data.module_status|"; 
-dynAppend(limits_s,"0|5");  // 0 is OK
+dynAppend(limits_s,"-2|5");  // -2 is OK
                             // 5 is alarm
 
 value=value+".data.module_type"; 

@@ -1,3 +1,5 @@
+
+
 string DpNameStartForAlertConfig;
 mudcsAlertCreateMain()
 {
@@ -13,6 +15,20 @@ mudcsAlertCreateMain()
   TEMP_1_alert_main();  
   Snmp_alert_main();
   Cooling_alert_main();  
+  
+    mudcsAlertReconfig("TEMP_1", ".off_channels", true);
+
+    mudcsAlertReconfig("HV_1", ".off_channels", true);
+
+    mudcsAlertReconfig("LV_1", ".noalert_channels", true);  
+  mudcsAlertReconfig("LV_1;.data.Cfeb_o.v33", ".noalert_channels", true);
+  mudcsAlertReconfig("LV_1;.data.Cfeb_o.v50", ".noalert_channels", true); 
+  mudcsAlertReconfig("LV_1;.data.Cfeb_o.v60", ".noalert_channels", true); 
+  mudcsAlertReconfig("LV_1;.data.Cfeb_o.c33", ".noalert_channels", true);
+  mudcsAlertReconfig("LV_1;.data.Cfeb_o.c50", ".noalert_channels", true); 
+  mudcsAlertReconfig("LV_1;.data.Cfeb_o.c60", ".noalert_channels", true);
+ 
+  
 }
 
 //CSC_fwG_g_csc_part
@@ -316,7 +332,7 @@ s2="5000";   // alarm
 
 
 value=value+".data.module_status|"; 
-dynAppend(limits_s,"0|5");  // 0 is OK
+dynAppend(limits_s,"-2|5");  // -2 is OK
                             // 5 is alarm
 
 
