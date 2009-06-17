@@ -1,0 +1,399 @@
+# ascii dump of database
+
+# DpType
+TypeName
+CSC_HV_M_DATA.CSC_HV_M_DATA	1#1
+	value	22#2
+
+# Datapoint/DpId
+DpName	TypeName	ID
+master600_00_0_V1_VMON	CSC_HV_M_DATA	391737
+master600_00_0_V1_IMON	CSC_HV_M_DATA	391738
+master600_00_0_V2_VMON	CSC_HV_M_DATA	391739
+master600_00_0_V2_IMON	CSC_HV_M_DATA	391740
+master600_00_0_V3_VMON	CSC_HV_M_DATA	391741
+master600_00_0_V3_IMON	CSC_HV_M_DATA	391742
+master600_00_0_V4_VMON	CSC_HV_M_DATA	391743
+master600_00_0_V4_IMON	CSC_HV_M_DATA	391744
+master600_00_0_V5_VMON	CSC_HV_M_DATA	391745
+master600_00_0_V5_IMON	CSC_HV_M_DATA	391746
+master600_00_0_V6_VMON	CSC_HV_M_DATA	391747
+master600_00_0_V6_IMON	CSC_HV_M_DATA	391748
+master600_00_0_V7_VMON	CSC_HV_M_DATA	391749
+master600_00_0_V7_IMON	CSC_HV_M_DATA	391750
+master600_00_0_V8_VMON	CSC_HV_M_DATA	391751
+master600_00_0_V8_IMON	CSC_HV_M_DATA	391752
+master600_00_1_V1_VMON	CSC_HV_M_DATA	391753
+master600_00_1_V1_IMON	CSC_HV_M_DATA	391754
+master600_00_1_V2_VMON	CSC_HV_M_DATA	391755
+master600_00_1_V2_IMON	CSC_HV_M_DATA	391756
+master600_00_1_V3_VMON	CSC_HV_M_DATA	391757
+master600_00_1_V3_IMON	CSC_HV_M_DATA	391758
+master600_00_1_V4_VMON	CSC_HV_M_DATA	391759
+master600_00_1_V4_IMON	CSC_HV_M_DATA	391760
+master600_00_1_V5_VMON	CSC_HV_M_DATA	391761
+master600_00_1_V5_IMON	CSC_HV_M_DATA	391762
+master600_00_1_V6_VMON	CSC_HV_M_DATA	391763
+master600_00_1_V6_IMON	CSC_HV_M_DATA	391764
+master600_00_1_V7_VMON	CSC_HV_M_DATA	391765
+master600_00_1_V7_IMON	CSC_HV_M_DATA	391766
+master600_00_1_V8_VMON	CSC_HV_M_DATA	391767
+master600_00_1_V8_IMON	CSC_HV_M_DATA	391768
+master600_00_2_V1_VMON	CSC_HV_M_DATA	391769
+master600_00_2_V1_IMON	CSC_HV_M_DATA	391770
+master600_00_2_V2_VMON	CSC_HV_M_DATA	391771
+master600_00_2_V2_IMON	CSC_HV_M_DATA	391772
+master600_00_2_V3_VMON	CSC_HV_M_DATA	391773
+master600_00_2_V3_IMON	CSC_HV_M_DATA	391774
+master600_00_2_V4_VMON	CSC_HV_M_DATA	391775
+master600_00_2_V4_IMON	CSC_HV_M_DATA	391776
+master600_00_2_V5_VMON	CSC_HV_M_DATA	391777
+master600_00_2_V5_IMON	CSC_HV_M_DATA	391778
+master600_00_2_V6_VMON	CSC_HV_M_DATA	391779
+master600_00_2_V6_IMON	CSC_HV_M_DATA	391780
+master600_00_2_V7_VMON	CSC_HV_M_DATA	391781
+master600_00_2_V7_IMON	CSC_HV_M_DATA	391782
+master600_00_2_V8_VMON	CSC_HV_M_DATA	391783
+master600_00_2_V8_IMON	CSC_HV_M_DATA	391784
+master600_00_3_V1_VMON	CSC_HV_M_DATA	391785
+master600_00_3_V1_IMON	CSC_HV_M_DATA	391786
+master600_00_3_V2_VMON	CSC_HV_M_DATA	391787
+master600_00_3_V2_IMON	CSC_HV_M_DATA	391788
+master600_00_3_V3_VMON	CSC_HV_M_DATA	391789
+master600_00_3_V3_IMON	CSC_HV_M_DATA	391790
+master600_00_3_V4_VMON	CSC_HV_M_DATA	391791
+master600_00_3_V4_IMON	CSC_HV_M_DATA	391792
+master600_00_3_V5_VMON	CSC_HV_M_DATA	391793
+master600_00_3_V5_IMON	CSC_HV_M_DATA	391794
+master600_00_3_V6_VMON	CSC_HV_M_DATA	391795
+master600_00_3_V6_IMON	CSC_HV_M_DATA	391796
+master600_00_3_V7_VMON	CSC_HV_M_DATA	391797
+master600_00_3_V7_IMON	CSC_HV_M_DATA	391798
+master600_00_3_V8_VMON	CSC_HV_M_DATA	391799
+master600_00_3_V8_IMON	CSC_HV_M_DATA	391800
+master600_00_4_V1_VMON	CSC_HV_M_DATA	391801
+master600_00_4_V1_IMON	CSC_HV_M_DATA	391802
+master600_00_4_V2_VMON	CSC_HV_M_DATA	391803
+master600_00_4_V2_IMON	CSC_HV_M_DATA	391804
+master600_00_4_V3_VMON	CSC_HV_M_DATA	391805
+master600_00_4_V3_IMON	CSC_HV_M_DATA	391806
+master600_00_4_V4_VMON	CSC_HV_M_DATA	391807
+master600_00_4_V4_IMON	CSC_HV_M_DATA	391808
+master600_00_4_V5_VMON	CSC_HV_M_DATA	391809
+master600_00_4_V5_IMON	CSC_HV_M_DATA	391810
+master600_00_4_V6_VMON	CSC_HV_M_DATA	391811
+master600_00_4_V6_IMON	CSC_HV_M_DATA	391812
+master600_00_4_V7_VMON	CSC_HV_M_DATA	391813
+master600_00_4_V7_IMON	CSC_HV_M_DATA	391814
+master600_00_4_V8_VMON	CSC_HV_M_DATA	391815
+master600_00_4_V8_IMON	CSC_HV_M_DATA	391816
+master600_00_5_V1_VMON	CSC_HV_M_DATA	391817
+master600_00_5_V1_IMON	CSC_HV_M_DATA	391818
+master600_00_5_V2_VMON	CSC_HV_M_DATA	391819
+master600_00_5_V2_IMON	CSC_HV_M_DATA	391820
+master600_00_5_V3_VMON	CSC_HV_M_DATA	391821
+master600_00_5_V3_IMON	CSC_HV_M_DATA	391822
+master600_00_5_V4_VMON	CSC_HV_M_DATA	391823
+master600_00_5_V4_IMON	CSC_HV_M_DATA	391824
+master600_00_5_V5_VMON	CSC_HV_M_DATA	391825
+master600_00_5_V5_IMON	CSC_HV_M_DATA	391826
+master600_00_5_V6_VMON	CSC_HV_M_DATA	391827
+master600_00_5_V6_IMON	CSC_HV_M_DATA	391828
+master600_00_5_V7_VMON	CSC_HV_M_DATA	391829
+master600_00_5_V7_IMON	CSC_HV_M_DATA	391830
+master600_00_5_V8_VMON	CSC_HV_M_DATA	391831
+master600_00_5_V8_IMON	CSC_HV_M_DATA	391832
+
+# DpFunction
+ElementName	TypeName	_dp_fct.._type	_dp_fct.._param	_dp_fct.._fct	_dp_fct.._global	_dp_fct.._stat_type	_dp_fct.._interval	_dp_fct.._time	_dp_fct.._day_of_week	_dp_fct.._day	_dp_fct.._month	_dp_fct.._delay	_dp_fct.._read_archive	_dp_fct.._inv_func	_dp_fct.._inv_limit	_dp_fct.._def_func	_dp_fct.._def_limit	_dp_fct.._user1_func	_dp_fct.._user1_limit	_dp_fct.._user2_func	_dp_fct.._user2_limit	_dp_fct.._user3_func	_dp_fct.._user3_limit	_dp_fct.._user4_func	_dp_fct.._user4_limit	_dp_fct.._user5_func	_dp_fct.._user5_limit	_dp_fct.._user6_func	_dp_fct.._user6_limit	_dp_fct.._user7_func	_dp_fct.._user7_limit	_dp_fct.._user8_func	_dp_fct.._user8_limit	_dp_fct.._interm_res	_dp_fct.._interm_res_cyc
+master600_00_0_V1_VMON.value	CSC_HV_M_DATA	60	master600_0_0.data.v1.vmon:_original.._value	"p1"	
+master600_00_0_V1_IMON.value	CSC_HV_M_DATA	60	master600_0_0.data.v1.imon:_original.._value	"p1"	
+master600_00_0_V2_VMON.value	CSC_HV_M_DATA	60	master600_0_0.data.v2.vmon:_original.._value	"p1"	
+master600_00_0_V2_IMON.value	CSC_HV_M_DATA	60	master600_0_0.data.v2.imon:_original.._value	"p1"	
+master600_00_0_V3_VMON.value	CSC_HV_M_DATA	60	master600_0_0.data.v3.vmon:_original.._value	"p1"	
+master600_00_0_V3_IMON.value	CSC_HV_M_DATA	60	master600_0_0.data.v3.imon:_original.._value	"p1"	
+master600_00_0_V4_VMON.value	CSC_HV_M_DATA	60	master600_0_0.data.v4.vmon:_original.._value	"p1"	
+master600_00_0_V4_IMON.value	CSC_HV_M_DATA	60	master600_0_0.data.v4.imon:_original.._value	"p1"	
+master600_00_0_V5_VMON.value	CSC_HV_M_DATA	60	master600_0_0.data.v5.vmon:_original.._value	"p1"	
+master600_00_0_V5_IMON.value	CSC_HV_M_DATA	60	master600_0_0.data.v5.imon:_original.._value	"p1"	
+master600_00_0_V6_VMON.value	CSC_HV_M_DATA	60	master600_0_0.data.v6.vmon:_original.._value	"p1"	
+master600_00_0_V6_IMON.value	CSC_HV_M_DATA	60	master600_0_0.data.v6.imon:_original.._value	"p1"	
+master600_00_0_V7_VMON.value	CSC_HV_M_DATA	60	master600_0_0.data.v7.vmon:_original.._value	"p1"	
+master600_00_0_V7_IMON.value	CSC_HV_M_DATA	60	master600_0_0.data.v7.imon:_original.._value	"p1"	
+master600_00_0_V8_VMON.value	CSC_HV_M_DATA	60	master600_0_0.data.v8.vmon:_original.._value	"p1"	
+master600_00_0_V8_IMON.value	CSC_HV_M_DATA	60	master600_0_0.data.v8.imon:_original.._value	"p1"	
+master600_00_1_V1_VMON.value	CSC_HV_M_DATA	60	master600_0_1.data.v1.vmon:_original.._value	"p1"	
+master600_00_1_V1_IMON.value	CSC_HV_M_DATA	60	master600_0_1.data.v1.imon:_original.._value	"p1"	
+master600_00_1_V2_VMON.value	CSC_HV_M_DATA	60	master600_0_1.data.v2.vmon:_original.._value	"p1"	
+master600_00_1_V2_IMON.value	CSC_HV_M_DATA	60	master600_0_1.data.v2.imon:_original.._value	"p1"	
+master600_00_1_V3_VMON.value	CSC_HV_M_DATA	60	master600_0_1.data.v3.vmon:_original.._value	"p1"	
+master600_00_1_V3_IMON.value	CSC_HV_M_DATA	60	master600_0_1.data.v3.imon:_original.._value	"p1"	
+master600_00_1_V4_VMON.value	CSC_HV_M_DATA	60	master600_0_1.data.v4.vmon:_original.._value	"p1"	
+master600_00_1_V4_IMON.value	CSC_HV_M_DATA	60	master600_0_1.data.v4.imon:_original.._value	"p1"	
+master600_00_1_V5_VMON.value	CSC_HV_M_DATA	60	master600_0_1.data.v5.vmon:_original.._value	"p1"	
+master600_00_1_V5_IMON.value	CSC_HV_M_DATA	60	master600_0_1.data.v5.imon:_original.._value	"p1"	
+master600_00_1_V6_VMON.value	CSC_HV_M_DATA	60	master600_0_1.data.v6.vmon:_original.._value	"p1"	
+master600_00_1_V6_IMON.value	CSC_HV_M_DATA	60	master600_0_1.data.v6.imon:_original.._value	"p1"	
+master600_00_1_V7_VMON.value	CSC_HV_M_DATA	60	master600_0_1.data.v7.vmon:_original.._value	"p1"	
+master600_00_1_V7_IMON.value	CSC_HV_M_DATA	60	master600_0_1.data.v7.imon:_original.._value	"p1"	
+master600_00_1_V8_VMON.value	CSC_HV_M_DATA	60	master600_0_1.data.v8.vmon:_original.._value	"p1"	
+master600_00_1_V8_IMON.value	CSC_HV_M_DATA	60	master600_0_1.data.v8.imon:_original.._value	"p1"	
+master600_00_2_V1_VMON.value	CSC_HV_M_DATA	60	master600_0_2.data.v1.vmon:_original.._value	"p1"	
+master600_00_2_V1_IMON.value	CSC_HV_M_DATA	60	master600_0_2.data.v1.imon:_original.._value	"p1"	
+master600_00_2_V2_VMON.value	CSC_HV_M_DATA	60	master600_0_2.data.v2.vmon:_original.._value	"p1"	
+master600_00_2_V2_IMON.value	CSC_HV_M_DATA	60	master600_0_2.data.v2.imon:_original.._value	"p1"	
+master600_00_2_V3_VMON.value	CSC_HV_M_DATA	60	master600_0_2.data.v3.vmon:_original.._value	"p1"	
+master600_00_2_V3_IMON.value	CSC_HV_M_DATA	60	master600_0_2.data.v3.imon:_original.._value	"p1"	
+master600_00_2_V4_VMON.value	CSC_HV_M_DATA	60	master600_0_2.data.v4.vmon:_original.._value	"p1"	
+master600_00_2_V4_IMON.value	CSC_HV_M_DATA	60	master600_0_2.data.v4.imon:_original.._value	"p1"	
+master600_00_2_V5_VMON.value	CSC_HV_M_DATA	60	master600_0_2.data.v5.vmon:_original.._value	"p1"	
+master600_00_2_V5_IMON.value	CSC_HV_M_DATA	60	master600_0_2.data.v5.imon:_original.._value	"p1"	
+master600_00_2_V6_VMON.value	CSC_HV_M_DATA	60	master600_0_2.data.v6.vmon:_original.._value	"p1"	
+master600_00_2_V6_IMON.value	CSC_HV_M_DATA	60	master600_0_2.data.v6.imon:_original.._value	"p1"	
+master600_00_2_V7_VMON.value	CSC_HV_M_DATA	60	master600_0_2.data.v7.vmon:_original.._value	"p1"	
+master600_00_2_V7_IMON.value	CSC_HV_M_DATA	60	master600_0_2.data.v7.imon:_original.._value	"p1"	
+master600_00_2_V8_VMON.value	CSC_HV_M_DATA	60	master600_0_2.data.v8.vmon:_original.._value	"p1"	
+master600_00_2_V8_IMON.value	CSC_HV_M_DATA	60	master600_0_2.data.v8.imon:_original.._value	"p1"	
+master600_00_3_V1_VMON.value	CSC_HV_M_DATA	60	master600_0_3.data.v1.vmon:_original.._value	"p1"	
+master600_00_3_V1_IMON.value	CSC_HV_M_DATA	60	master600_0_3.data.v1.imon:_original.._value	"p1"	
+master600_00_3_V2_VMON.value	CSC_HV_M_DATA	60	master600_0_3.data.v2.vmon:_original.._value	"p1"	
+master600_00_3_V2_IMON.value	CSC_HV_M_DATA	60	master600_0_3.data.v2.imon:_original.._value	"p1"	
+master600_00_3_V3_VMON.value	CSC_HV_M_DATA	60	master600_0_3.data.v3.vmon:_original.._value	"p1"	
+master600_00_3_V3_IMON.value	CSC_HV_M_DATA	60	master600_0_3.data.v3.imon:_original.._value	"p1"	
+master600_00_3_V4_VMON.value	CSC_HV_M_DATA	60	master600_0_3.data.v4.vmon:_original.._value	"p1"	
+master600_00_3_V4_IMON.value	CSC_HV_M_DATA	60	master600_0_3.data.v4.imon:_original.._value	"p1"	
+master600_00_3_V5_VMON.value	CSC_HV_M_DATA	60	master600_0_3.data.v5.vmon:_original.._value	"p1"	
+master600_00_3_V5_IMON.value	CSC_HV_M_DATA	60	master600_0_3.data.v5.imon:_original.._value	"p1"	
+master600_00_3_V6_VMON.value	CSC_HV_M_DATA	60	master600_0_3.data.v6.vmon:_original.._value	"p1"	
+master600_00_3_V6_IMON.value	CSC_HV_M_DATA	60	master600_0_3.data.v6.imon:_original.._value	"p1"	
+master600_00_3_V7_VMON.value	CSC_HV_M_DATA	60	master600_0_3.data.v7.vmon:_original.._value	"p1"	
+master600_00_3_V7_IMON.value	CSC_HV_M_DATA	60	master600_0_3.data.v7.imon:_original.._value	"p1"	
+master600_00_3_V8_VMON.value	CSC_HV_M_DATA	60	master600_0_3.data.v8.vmon:_original.._value	"p1"	
+master600_00_3_V8_IMON.value	CSC_HV_M_DATA	60	master600_0_3.data.v8.imon:_original.._value	"p1"	
+master600_00_4_V1_VMON.value	CSC_HV_M_DATA	60	master600_0_4.data.v1.vmon:_original.._value	"p1"	
+master600_00_4_V1_IMON.value	CSC_HV_M_DATA	60	master600_0_4.data.v1.imon:_original.._value	"p1"	
+master600_00_4_V2_VMON.value	CSC_HV_M_DATA	60	master600_0_4.data.v2.vmon:_original.._value	"p1"	
+master600_00_4_V2_IMON.value	CSC_HV_M_DATA	60	master600_0_4.data.v2.imon:_original.._value	"p1"	
+master600_00_4_V3_VMON.value	CSC_HV_M_DATA	60	master600_0_4.data.v3.vmon:_original.._value	"p1"	
+master600_00_4_V3_IMON.value	CSC_HV_M_DATA	60	master600_0_4.data.v3.imon:_original.._value	"p1"	
+master600_00_4_V4_VMON.value	CSC_HV_M_DATA	60	master600_0_4.data.v4.vmon:_original.._value	"p1"	
+master600_00_4_V4_IMON.value	CSC_HV_M_DATA	60	master600_0_4.data.v4.imon:_original.._value	"p1"	
+master600_00_4_V5_VMON.value	CSC_HV_M_DATA	60	master600_0_4.data.v5.vmon:_original.._value	"p1"	
+master600_00_4_V5_IMON.value	CSC_HV_M_DATA	60	master600_0_4.data.v5.imon:_original.._value	"p1"	
+master600_00_4_V6_VMON.value	CSC_HV_M_DATA	60	master600_0_4.data.v6.vmon:_original.._value	"p1"	
+master600_00_4_V6_IMON.value	CSC_HV_M_DATA	60	master600_0_4.data.v6.imon:_original.._value	"p1"	
+master600_00_4_V7_VMON.value	CSC_HV_M_DATA	60	master600_0_4.data.v7.vmon:_original.._value	"p1"	
+master600_00_4_V7_IMON.value	CSC_HV_M_DATA	60	master600_0_4.data.v7.imon:_original.._value	"p1"	
+master600_00_4_V8_VMON.value	CSC_HV_M_DATA	60	master600_0_4.data.v8.vmon:_original.._value	"p1"	
+master600_00_4_V8_IMON.value	CSC_HV_M_DATA	60	master600_0_4.data.v8.imon:_original.._value	"p1"	
+master600_00_5_V1_VMON.value	CSC_HV_M_DATA	60	master600_0_5.data.v1.vmon:_original.._value	"p1"	
+master600_00_5_V1_IMON.value	CSC_HV_M_DATA	60	master600_0_5.data.v1.imon:_original.._value	"p1"	
+master600_00_5_V2_VMON.value	CSC_HV_M_DATA	60	master600_0_5.data.v2.vmon:_original.._value	"p1"	
+master600_00_5_V2_IMON.value	CSC_HV_M_DATA	60	master600_0_5.data.v2.imon:_original.._value	"p1"	
+master600_00_5_V3_VMON.value	CSC_HV_M_DATA	60	master600_0_5.data.v3.vmon:_original.._value	"p1"	
+master600_00_5_V3_IMON.value	CSC_HV_M_DATA	60	master600_0_5.data.v3.imon:_original.._value	"p1"	
+master600_00_5_V4_VMON.value	CSC_HV_M_DATA	60	master600_0_5.data.v4.vmon:_original.._value	"p1"	
+master600_00_5_V4_IMON.value	CSC_HV_M_DATA	60	master600_0_5.data.v4.imon:_original.._value	"p1"	
+master600_00_5_V5_VMON.value	CSC_HV_M_DATA	60	master600_0_5.data.v5.vmon:_original.._value	"p1"	
+master600_00_5_V5_IMON.value	CSC_HV_M_DATA	60	master600_0_5.data.v5.imon:_original.._value	"p1"	
+master600_00_5_V6_VMON.value	CSC_HV_M_DATA	60	master600_0_5.data.v6.vmon:_original.._value	"p1"	
+master600_00_5_V6_IMON.value	CSC_HV_M_DATA	60	master600_0_5.data.v6.imon:_original.._value	"p1"	
+master600_00_5_V7_VMON.value	CSC_HV_M_DATA	60	master600_0_5.data.v7.vmon:_original.._value	"p1"	
+master600_00_5_V7_IMON.value	CSC_HV_M_DATA	60	master600_0_5.data.v7.imon:_original.._value	"p1"	
+master600_00_5_V8_VMON.value	CSC_HV_M_DATA	60	master600_0_5.data.v8.vmon:_original.._value	"p1"	
+master600_00_5_V8_IMON.value	CSC_HV_M_DATA	60	master600_0_5.data.v8.imon:_original.._value	"p1"	
+
+# DbArchiveInfo
+ElementName	TypeName	DetailNr	_archive.._type	_archive.._archive	_archive.._class	_archive.._interv	_archive.._interv_type	_archive.._std_type	_archive.._std_tol	_archive.._std_time	_archive.._round_val	_archive.._round_inv
+master600_00_0_V1_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_0_V1_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_0_V1_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_0_V1_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_0_V2_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_0_V2_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_0_V2_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_0_V2_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_0_V3_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_0_V3_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_0_V3_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_0_V3_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_0_V4_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_0_V4_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_0_V4_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_0_V4_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_0_V5_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_0_V5_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_0_V5_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_0_V5_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_0_V6_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_0_V6_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_0_V6_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_0_V6_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_0_V7_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_0_V7_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_0_V7_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_0_V7_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_0_V8_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_0_V8_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_0_V8_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_0_V8_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_1_V1_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_1_V1_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_1_V1_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_1_V1_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_1_V2_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_1_V2_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_1_V2_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_1_V2_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_1_V3_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_1_V3_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_1_V3_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_1_V3_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_1_V4_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_1_V4_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_1_V4_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_1_V4_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_1_V5_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_1_V5_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_1_V5_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_1_V5_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_1_V6_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_1_V6_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_1_V6_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_1_V6_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_1_V7_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_1_V7_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_1_V7_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_1_V7_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_1_V8_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_1_V8_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_1_V8_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_1_V8_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_2_V1_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_2_V1_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_2_V1_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_2_V1_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_2_V2_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_2_V2_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_2_V2_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_2_V2_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_2_V3_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_2_V3_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_2_V3_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_2_V3_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_2_V4_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_2_V4_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_2_V4_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_2_V4_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_2_V5_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_2_V5_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_2_V5_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_2_V5_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_2_V6_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_2_V6_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_2_V6_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_2_V6_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_2_V7_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_2_V7_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_2_V7_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_2_V7_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_2_V8_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_2_V8_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_2_V8_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_2_V8_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_3_V1_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_3_V1_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_3_V1_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_3_V1_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_3_V2_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_3_V2_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_3_V2_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_3_V2_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_3_V3_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_3_V3_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_3_V3_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_3_V3_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_3_V4_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_3_V4_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_3_V4_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_3_V4_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_3_V5_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_3_V5_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_3_V5_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_3_V5_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_3_V6_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_3_V6_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_3_V6_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_3_V6_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_3_V7_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_3_V7_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_3_V7_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_3_V7_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_3_V8_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_3_V8_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_3_V8_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_3_V8_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_4_V1_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_4_V1_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_4_V1_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_4_V1_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_4_V2_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_4_V2_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_4_V2_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_4_V2_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_4_V3_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_4_V3_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_4_V3_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_4_V3_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_4_V4_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_4_V4_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_4_V4_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_4_V4_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_4_V5_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_4_V5_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_4_V5_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_4_V5_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_4_V6_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_4_V6_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_4_V6_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_4_V6_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_4_V7_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_4_V7_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_4_V7_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_4_V7_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_4_V8_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_4_V8_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_4_V8_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_4_V8_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_5_V1_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_5_V1_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_5_V1_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_5_V1_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_5_V2_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_5_V2_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_5_V2_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_5_V2_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_5_V3_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_5_V3_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_5_V3_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_5_V3_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_5_V4_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_5_V4_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_5_V4_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_5_V4_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_5_V5_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_5_V5_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_5_V5_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_5_V5_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_5_V6_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_5_V6_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_5_V6_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_5_V6_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_5_V7_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_5_V7_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_5_V7_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_5_V7_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0
+master600_00_5_V8_VMON.value	CSC_HV_M_DATA		45	1
+master600_00_5_V8_VMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	20	01.01.1970 02:00:00.000	0	0
+master600_00_5_V8_IMON.value	CSC_HV_M_DATA		45	1
+master600_00_5_V8_IMON.value	CSC_HV_M_DATA	1	3		_EVENT	0	0	2	1	01.01.1970 02:00:00.000	0	0

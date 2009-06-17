@@ -27,11 +27,10 @@ fwOT_fwWnrCh_CSC_LV	_FwFsmObjectType	113936
 fwOT_fwWnrCr_CSC_LV	_FwFsmObjectType	113937
 fwOT_EMUSTBYNodes	_FwFsmObjectType	119792
 fwOT_EMUTREESTBYNodes	_FwFsmObjectType	120600
-fwOT_CMS_CSC_ME11_HV_Type	_FwFsmObjectType	175179
 
 # DpValue
 ElementName	TypeName	_original.._value	_original.._status	_original.._stime
-fwOT_LV_1.panel	_FwFsmObjectType	"CMS_CSCfw_HV_CC/emuDevLV_1Operation.pnl"	0x101	18.04.2009 12:27:15.983
+fwOT_LV_1.panel	_FwFsmObjectType	"CMS_CSCfw_HV_CC/emuDevLV_1Operation.pnl"	0x101	29.03.2008 13:18:07.976
 fwOT_LV_1.components	_FwFsmObjectType	"int status
 ", "int status
 ", "LV_1_initialize(string domain, string device)
@@ -52,11 +51,10 @@ fwOT_LV_1.components	_FwFsmObjectType	"int status
 	{
 		fwState = \"OFF\";
 	}
-	else if(status == -1)
+	else
 	{
 		fwState = \"ERROR\";
 	}
-        else fwState = \"ON\";
 }
 ", "LV_1_doCommand(string domain, string device, string command)
 {
@@ -73,11 +71,11 @@ fwOT_LV_1.components	_FwFsmObjectType	"int status
 		dpSet(device+\".status:_original.._value\",2);
 	}
 }
-"	0x101	05.04.2009 15:53:17.067
-fwOT_LV_1.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	05.04.2009 15:53:17.062
-fwOT_LV_1.actions	_FwFsmObjectType	"ON/OFF", "", "1", "move_to ", "0", "ON/STANDBY", "", "1", "", "0", "OFF/ON", "", "1", "move_to ", "0", "OFF/STANDBY", "", "1", "", "0"	0x101	05.04.2009 15:53:17.061
-fwOT_LV_1.parameters	_FwFsmObjectType		0x101	02.07.2008 12:52:36.877
-fwOT_TEMP_1.panel	_FwFsmObjectType	"CMS_CSCfw_HV_CC/emuDevTEMP_1Operation.pnl"	0x101	18.04.2009 12:27:15.983
+"	0x101	29.03.2008 13:13:24.816
+fwOT_LV_1.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	29.03.2008 13:13:24.812
+fwOT_LV_1.actions	_FwFsmObjectType	"ON/OFF", "", "1", "move_to ", "0", "ON/STANDBY", "", "1", "", "0", "OFF/ON", "", "1", "move_to ", "0", "OFF/STANDBY", "", "1", "", "0"	0x101	29.03.2008 13:13:24.811
+fwOT_LV_1.parameters	_FwFsmObjectType		0x141	29.03.2008 13:11:05.440
+fwOT_TEMP_1.panel	_FwFsmObjectType	"CMS_CSCfw_HV_CC/emuDevTEMP_1Operation.pnl"	0x101	29.03.2008 13:18:07.976
 fwOT_TEMP_1.components	_FwFsmObjectType	"int status
 ", "int status
 ", "TEMP_1_initialize(string domain, string device)
@@ -98,11 +96,10 @@ fwOT_TEMP_1.components	_FwFsmObjectType	"int status
 	{
 		fwState = \"OFF\";
 	}
-	else if(status == -1)
+	else
 	{
 		fwState = \"ERROR\";
 	}
-        else fwState = \"ON\";        
 }
 ", "TEMP_1_doCommand(string domain, string device, string command)
 {
@@ -119,11 +116,11 @@ fwOT_TEMP_1.components	_FwFsmObjectType	"int status
 		dpSet(device+\".status:_original.._value\",2);
 	}
 }
-"	0x101	05.04.2009 15:53:17.617
-fwOT_TEMP_1.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	05.04.2009 15:53:17.611
-fwOT_TEMP_1.actions	_FwFsmObjectType	"ON/OFF", "", "1", "move_to ", "0", "ON/STANDBY", "", "1", "", "0", "OFF/ON", "", "1", "move_to ", "0", "OFF/STANDBY", "", "1", "", "0"	0x101	05.04.2009 15:53:17.611
-fwOT_TEMP_1.parameters	_FwFsmObjectType		0x101	02.07.2008 12:53:12.235
-fwOT_CHIP_1.panel	_FwFsmObjectType	"CMS_CSCfw_HV_CC/emuDevCHIP_1Operation.pnl"	0x101	18.04.2009 12:27:15.982
+"	0x101	29.03.2008 13:13:25.352
+fwOT_TEMP_1.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	29.03.2008 13:13:25.346
+fwOT_TEMP_1.actions	_FwFsmObjectType	"ON/OFF", "", "1", "move_to ", "0", "ON/STANDBY", "", "1", "", "0", "OFF/ON", "", "1", "move_to ", "0", "OFF/STANDBY", "", "1", "", "0"	0x101	29.03.2008 13:13:25.346
+fwOT_TEMP_1.parameters	_FwFsmObjectType		0x141	29.03.2008 13:11:05.455
+fwOT_CHIP_1.panel	_FwFsmObjectType	"CMS_CSCfw_HV_CC/emuDevCHIP_1Operation.pnl"	0x101	29.03.2008 13:18:07.976
 fwOT_CHIP_1.components	_FwFsmObjectType	"int status
 ", "int status
 ", "CHIP_1_initialize(string domain, string device)
@@ -164,10 +161,10 @@ fwOT_CHIP_1.components	_FwFsmObjectType	"int status
 		dpSet(device+\".status:_original.._value\",2);
 	}
 }
-"	0x101	05.04.2009 15:53:14.424
-fwOT_CHIP_1.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	05.04.2009 15:53:14.418
-fwOT_CHIP_1.actions	_FwFsmObjectType	"ON/OFF", "", "1", "move_to ", "0", "ON/STANDBY", "", "1", "", "0", "OFF/ON", "", "1", "move_to ", "0", "OFF/STANDBY", "", "1", "", "0", "ERROR/OFF", "", "1", "move_to ", "0"	0x101	05.04.2009 15:53:14.417
-fwOT_GAS_SX5.panel	_FwFsmObjectType	"CMS_CSCfw_HV_CC/emuDevGAS_SX5Operation.pnl"	0x101	18.04.2009 12:27:15.983
+"	0x101	29.03.2008 13:13:22.262
+fwOT_CHIP_1.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	29.03.2008 13:13:22.255
+fwOT_CHIP_1.actions	_FwFsmObjectType	"ON/OFF", "", "1", "move_to ", "0", "ON/STANDBY", "", "1", "", "0", "OFF/ON", "", "1", "move_to ", "0", "OFF/STANDBY", "", "1", "", "0", "ERROR/OFF", "", "1", "move_to ", "0"	0x101	29.03.2008 13:13:22.254
+fwOT_GAS_SX5.panel	_FwFsmObjectType	"CMS_CSCfw_HV_CC/emuDevGAS_SX5Operation.pnl"	0x101	29.03.2008 13:18:07.976
 fwOT_GAS_SX5.components	_FwFsmObjectType	"int status
 ", "int status
 ", "GAS_SX5_initialize(string domain, string device)
@@ -204,10 +201,10 @@ fwOT_GAS_SX5.components	_FwFsmObjectType	"int status
 		dpSet(device+\".status:_original.._value\",2);
 	}
 }
-"	0x101	05.04.2009 15:53:16.205
-fwOT_GAS_SX5.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	05.04.2009 15:53:16.200
-fwOT_GAS_SX5.actions	_FwFsmObjectType	"ON/OFF", "", "1", "move_to ", "0", "OFF/ON", "", "1", "move_to ", "0"	0x101	05.04.2009 15:53:16.199
-fwOT_HV_1.panel	_FwFsmObjectType	"CMS_CSCfw_HV_CC/emuDevHV_1Operation.pnl"	0x101	18.04.2009 12:27:15.983
+"	0x101	29.03.2008 13:13:23.999
+fwOT_GAS_SX5.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	29.03.2008 13:13:23.993
+fwOT_GAS_SX5.actions	_FwFsmObjectType	"ON/OFF", "", "1", "move_to ", "0", "OFF/ON", "", "1", "move_to ", "0"	0x101	29.03.2008 13:13:23.992
+fwOT_HV_1.panel	_FwFsmObjectType	"CMS_CSCfw_HV_CC/emuDevHV_1Operation.pnl"	0x101	29.03.2008 13:18:07.976
 fwOT_HV_1.components	_FwFsmObjectType	"int status
 ", "int status
 ", "HV_1_initialize(string domain, string device)
@@ -218,27 +215,7 @@ fwOT_HV_1.components	_FwFsmObjectType	"int status
 {
 	if(status > 2)
 	{
-/*          
-          int vset_prim;
-          dyn_string prims;
-              
-          if(strpos(device,\"ME_P\")>=0){
-           prims=dpNames(\"*:HighVoltage/HV_PR_primary600_1_1\");
-           dpGet(prims[1]+\".last_vset\",vset_prim);
-                      
-          }
-          else{
-           prims=dpNames(\"*:HighVoltage/HV_PR_primary500_1_1\");
-           dpGet(prims[1]+\".last_vset\",vset_prim);            
-            
-            
-          }          
-            if(vset_prim>3400)
 		fwState = \"ON\";
-            else
-		fwState = \"OFF\";              
-*/
-		fwState = \"ON\";                          
 	}
 	else if(status > 1)
 	{
@@ -246,7 +223,7 @@ fwOT_HV_1.components	_FwFsmObjectType	"int status
 	}
 	else if(status > 0)
 	{
-		fwState = \"STANDBY\";
+		fwState = \"RECOVERING\";
 	}
 	else if(status > -1)
 	{
@@ -263,16 +240,20 @@ fwOT_HV_1.components	_FwFsmObjectType	"int status
 	{
 		dpSet(device+\".status:_original.._value\",0);
 	}
+	if (command == \"STANDBY\")
+	{
+		dpSet(device+\".status:_original.._value\",0);
+	}        
 	if (command == \"RAMP\")
 	{
 		dpSet(device+\".status:_original.._value\",2);
 	}
 }
-"	0x101	05.04.2009 15:53:16.487
-fwOT_HV_1.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", "", "RAMP", "FwStateAttention1", "", "", "", "STANDBY", "FwStateAttention1", "", "", ""	0x101	05.04.2009 15:53:16.481
-fwOT_HV_1.actions	_FwFsmObjectType	"OFF/RAMP", "", "1", "", "0", "ERROR/OFF", "", "1", "move_to ", "0", "STANDBY/OFF", "", "1", "move_to ", "0", "STANDBY/RAMP", "", "1", "", "0"	0x101	05.04.2009 15:53:16.480
-fwOT_HV_1.parameters	_FwFsmObjectType	"int estimatedTime = 0"	0x101	29.03.2008 13:22:02.441
-fwOT_WTH_SX5.panel	_FwFsmObjectType	"CMS_CSCfw_HV_CC/emuDevWTH_SX5Operation.pnl"	0x101	18.04.2009 12:27:15.982
+"	0x101	29.03.2008 13:13:24.289
+fwOT_HV_1.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", "", "RAMP", "FwStateAttention1", "", "", ""	0x101	29.03.2008 13:13:24.284
+fwOT_HV_1.actions	_FwFsmObjectType	"ON/OFF", "", "1", "move_to ", "0", "ON/STANDBY", "", "1", "", "0", "OFF/RAMP", "", "1", "", "0", "OFF/STANDBY", "", "1", "", "0", "ERROR/OFF", "", "1", "move_to ", "0", "ERROR/STANDBY", "", "1", "", "0", "RAMP/OFF", "", "1", "", "0", "RAMP/STANDBY", "", "1", "", "0"	0x101	29.03.2008 13:13:24.283
+fwOT_HV_1.parameters	_FwFsmObjectType	"int estimatedTime = 0"	0x101	29.03.2008 13:11:05.495
+fwOT_WTH_SX5.panel	_FwFsmObjectType	"CMS_CSCfw_HV_CC/emuDevWTH_SX5Operation.pnl"	0x101	29.03.2008 13:18:07.976
 fwOT_WTH_SX5.components	_FwFsmObjectType	"int status
 ", "int status
 ", "WTH_SX5_initialize(string domain, string device)
@@ -309,115 +290,56 @@ fwOT_WTH_SX5.components	_FwFsmObjectType	"int status
 		dpSet(device+\".status:_original.._value\",2);
 	}
 }
-"	0x101	05.04.2009 15:53:17.891
-fwOT_WTH_SX5.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	05.04.2009 15:53:17.885
-fwOT_WTH_SX5.actions	_FwFsmObjectType	"ON/OFF", "", "1", "move_to ", "0", "OFF/ON", "", "1", "move_to ", "0", "ERROR/OFF", "", "1", "move_to ", "0"	0x101	05.04.2009 15:53:17.884
-fwOT_WTH_SX5.parameters	_FwFsmObjectType	"int estimatedTime = 0"	0x101	29.03.2008 13:22:02.451
-fwOT_HV_PR.panel	_FwFsmObjectType	"CMS_CSCfw_HV_CC/emuDevHV_PROperation.pnl"	0x101	18.04.2009 12:27:15.983
-fwOT_HV_PR.components	_FwFsmObjectType	"", "", "
-HV_PR_initialize(string domain, string device)
+"	0x101	29.03.2008 13:13:25.606
+fwOT_WTH_SX5.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	29.03.2008 13:13:25.601
+fwOT_WTH_SX5.actions	_FwFsmObjectType	"ON/OFF", "", "1", "move_to ", "0", "OFF/ON", "", "1", "move_to ", "0", "ERROR/OFF", "", "1", "move_to ", "0"	0x101	29.03.2008 13:13:25.600
+fwOT_WTH_SX5.parameters	_FwFsmObjectType	"int estimatedTime = 0"	0x101	29.03.2008 13:11:05.513
+fwOT_HV_PR.panel	_FwFsmObjectType	"CMS_CSCfw_HV_CC/emuDevHV_PROperation.pnl"	0x101	29.03.2008 13:18:07.976
+fwOT_HV_PR.components	_FwFsmObjectType	"int status
+", "int status
+", "HV_PR_initialize(string domain, string device)
 {
- 
-   
-         
-          dyn_string dpNames;
-     
-        dpNames[1] = device + \".status:_online.._value\";  
-        dpNames[2] = device + \".chamber_state:_online.._value\";              
-        dpNames[3] = device + \".coord:_online.._value\";  
-//        dpNames[3] = device + \".MeasurementCurrent:_online.._value\";  
-                 
-  	dpConnect(\"Check_Status\", TRUE, dpNames); 
-                 
-            
 }
-
-Check_Status(dyn_string dp, dyn_int qval)
-{  
- //============================================================== 
-  
-   dyn_string split;
-    string LogName, domain, device;
-    string sdp;
-    sdp = dp;
-    int colon, dot, slash;
-    colon = strpos(sdp, \":\");
-    dot = strpos(sdp, \".\");
-    device = substr(sdp, colon + 1, dot - colon - 1);
-    LogName = fwDU_getLogicalName( device);
-    split=strsplit(LogName,\"/\");
-    domain=split[2];
-    //slash = strpos(LogName, \"/\");
-   // domain = substr(LogName, 0, slash);
- 
- 
- //===============================================================    
-  
-      int vmon, status1;
-      string data;
-      string error_class_destin;
-      bool state_destin;
-      int status;
- 
-      
-      status=qval[1];//dpGet(device+\".status\",status);
-      dyn_string split1=strsplit(device,\"/\");
-      data=split1[dynlen(split1)];
-       
-      dpGet(data+\".:_alert_hdl.._act_state_color\",error_class_destin);
-      dpGet(data+\".:_alert_hdl.._active\",state_destin);
-      
- 
-      dpGet(data+\".data.vmon\",vmon);
-      dpGet(data+\".status\",status1);
-      
-    // dyn_debug[1]=device;
-    //  dyn_debug[2]=data;
-    //  dyn_debug[3]=error_class_destin;
-    //  dyn_debug[4]=state_destin;
-    // dyn_debug[5]=vmon;   
-    // dyn_debug[6]= status1;
-   //  dyn_debug[7]=status;              
-   // if(strpos(device,\"500_1_3\")>=0) 
-    // dyn_debug[8]=domain;     
-    // dpSetWait(\"dyn_debug2.\",dyn_debug);
-      
-      if(status==-2 || (error_class_destin == \"FwAlarmErrorAck\" && state_destin == true)){
-       fwDU_setState(domain, device, \"ERROR\");//fwState = \"ERROR\";
-      }
-      else if(vmon>3550 && (status1 == 1 || status1 == 2)){
-        fwDU_setState(domain, device, \"ON\");//fwState = \"ON\";
-      }
-      else if(vmon>2950 && (status1 == 1 || status1 == 2 || status1==3) && qval[1] !=0 ){
-        fwDU_setState(domain, device, \"STANDBY\");//fwState = \"STANDBY\";
-      }
-      else{
-        fwDU_setState(domain, device, \"OFF\");//fwState = \"OFF\";
-      }
-}
-", "HV_PR_valueChanged( string domain, string device, string &fwState)
+", "HV_PR_valueChanged( string domain, string device,
+      int status , string &fwState)
 {
+	if(status > 1)
+	{
+		fwState = \"ON\";
+	}
+	else if(status > 0)
+	{
+		fwState = \"RECOVERING\";
+	}
+	else if(status > -1)
+	{
+		fwState = \"OFF\";
+	}
+	else
+	{
+		fwState = \"ERROR\";
+	}
 }
 ", "HV_PR_doCommand(string domain, string device, string command)
 {
- 	if (command == \"OFF\")
+	if (command == \"OFF\")
 	{
 		dpSet(device+\".status:_original.._value\",0);
 	}
-	if (command == \"STANDBY\")
+       	if (command == \"STANDBY\")
 	{
-		dpSet(device+\".status:_original.._value\",1);
-	}
+		dpSet(device+\".status:_original.._value\",0);
+	} 
 	if (command == \"ON\")
 	{
 		dpSet(device+\".status:_original.._value\",2);
-	} 
+	}
 }
-"	0x101	05.04.2009 15:53:16.800
-fwOT_HV_PR.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "STANDBY", "FwStateAttention1", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	05.04.2009 15:53:16.794
-fwOT_HV_PR.actions	_FwFsmObjectType	"ON/OFF", "", "1", "", "0", "ON/STANDBY", "", "1", "", "0", "ON/ON", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "OFF/STANDBY", "", "1", "", "0", "OFF/OFF", "", "1", "", "0", "STANDBY/ON", "", "1", "", "0", "STANDBY/OFF", "", "1", "", "0", "STANDBY/STANDBY", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0"	0x101	05.04.2009 15:53:16.793
-fwOT_HV_PR.parameters	_FwFsmObjectType	"int estimatedTime = 0"	0x101	10.02.2009 19:10:11.992
-fwOT_PT100.panel	_FwFsmObjectType	"CMS_CSCfw_HV_CC/emuDevPT100Operation.pnl"	0x101	18.04.2009 12:27:15.983
+"	0x101	29.03.2008 13:13:24.552
+fwOT_HV_PR.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	29.03.2008 13:13:24.547
+fwOT_HV_PR.actions	_FwFsmObjectType	"ON/OFF", "", "1", "move_to ", "0", "ON/STANDBY", "", "1", "", "0", "OFF/ON", "", "1", "move_to ", "0", "OFF/STANDBY", "", "1", "", "0", "ERROR/OFF", "", "1", "move_to ", "0"	0x101	29.03.2008 13:13:24.547
+fwOT_HV_PR.parameters	_FwFsmObjectType	"int estimatedTime = 0"	0x101	29.03.2008 13:11:05.532
+fwOT_PT100.panel	_FwFsmObjectType	"CMS_CSCfw_HV_CC/emuDevPT100Operation.pnl"	0x101	29.03.2008 13:18:07.976
 fwOT_PT100.components	_FwFsmObjectType	"int status
 ", "int status
 ", "PT100_initialize(string domain, string device)
@@ -454,11 +376,11 @@ fwOT_PT100.components	_FwFsmObjectType	"int status
 		dpSet(device+\".status:_original.._value\",2);
 	}
 }
-"	0x101	29.03.2008 13:22:02.466
-fwOT_PT100.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	05.04.2009 15:53:24.321
-fwOT_PT100.actions	_FwFsmObjectType	"ON/OFF", "", "1", "move_to ", "0", "OFF/ON", "", "1", "move_to ", "0", "ERROR/OFF", "", "1", "move_to ", "0"	0x101	05.04.2009 15:53:24.320
-fwOT_PT100.parameters	_FwFsmObjectType	"int estimatedTime = 0"	0x101	29.03.2008 13:22:02.475
-fwOT_CRB_1.panel	_FwFsmObjectType	"CMS_CSCfw_HV_CC/emuDevCRB_1Operation.pnl"	0x101	18.04.2009 12:27:15.982
+"	0x101	29.03.2008 13:11:05.536
+fwOT_PT100.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	29.03.2008 13:13:29.787
+fwOT_PT100.actions	_FwFsmObjectType	"ON/OFF", "", "1", "move_to ", "0", "OFF/ON", "", "1", "move_to ", "0", "ERROR/OFF", "", "1", "move_to ", "0"	0x101	29.03.2008 13:13:29.787
+fwOT_PT100.parameters	_FwFsmObjectType	"int estimatedTime = 0"	0x101	29.03.2008 13:11:05.542
+fwOT_CRB_1.panel	_FwFsmObjectType	"CMS_CSCfw_HV_CC/emuDevCRB_1Operation.pnl"	0x101	29.03.2008 13:18:07.976
 fwOT_CRB_1.components	_FwFsmObjectType	"int status
 ", "int status
 ", "CRB_1_initialize(string domain, string device)
@@ -499,11 +421,11 @@ fwOT_CRB_1.components	_FwFsmObjectType	"int status
 		dpSet(device+\".status:_original.._value\",2);
 	}
 }
-"	0x101	05.04.2009 15:53:14.698
-fwOT_CRB_1.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	05.04.2009 15:53:14.693
-fwOT_CRB_1.actions	_FwFsmObjectType	"ON/OFF", "", "1", "move_to ", "0", "ON/STANDBY", "", "1", "", "0", "OFF/ON", "", "1", "move_to ", "0", "OFF/STANDBY", "", "1", "", "0", "ERROR/OFF", "", "1", "move_to ", "0"	0x101	05.04.2009 15:53:14.692
-fwOT_CRB_1.parameters	_FwFsmObjectType		0x141	29.03.2008 13:22:02.489
-fwOT_MRTN_1.panel	_FwFsmObjectType	"CMS_CSCfw_HV_CC/emuDevMRTN_1Operation.pnl"	0x101	18.04.2009 12:27:15.983
+"	0x101	29.03.2008 13:13:22.533
+fwOT_CRB_1.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	29.03.2008 13:13:22.528
+fwOT_CRB_1.actions	_FwFsmObjectType	"ON/OFF", "", "1", "move_to ", "0", "ON/STANDBY", "", "1", "", "0", "OFF/ON", "", "1", "move_to ", "0", "OFF/STANDBY", "", "1", "", "0", "ERROR/OFF", "", "1", "move_to ", "0"	0x101	29.03.2008 13:13:22.527
+fwOT_CRB_1.parameters	_FwFsmObjectType		0x141	29.03.2008 13:11:05.552
+fwOT_MRTN_1.panel	_FwFsmObjectType	"CMS_CSCfw_HV_CC/emuDevMRTN_1Operation.pnl"	0x101	29.03.2008 13:18:07.976
 fwOT_MRTN_1.components	_FwFsmObjectType	"int status
 ", "int status
 ", "MRTN_1_initialize(string domain, string device)
@@ -544,41 +466,25 @@ fwOT_MRTN_1.components	_FwFsmObjectType	"int status
 		dpSet(device+\".status:_original.._value\",2);
 	}
 }
-"	0x101	05.04.2009 15:53:17.339
-fwOT_MRTN_1.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	05.04.2009 15:53:17.333
-fwOT_MRTN_1.actions	_FwFsmObjectType	"ON/OFF", "", "1", "move_to ", "0", "ON/STANDBY", "", "1", "", "0", "OFF/ON", "", "1", "move_to ", "0", "OFF/STANDBY", "", "1", "", "0", "ERROR/OFF", "", "1", "move_to ", "0"	0x101	05.04.2009 15:53:17.333
-fwOT_MRTN_1.parameters	_FwFsmObjectType		0x141	29.03.2008 13:22:02.504
-fwOT_EMUNodes.panel	_FwFsmObjectType	"EMUNodes.pnl"	0x101	12.10.2008 14:42:23.931
-fwOT_EMUNodes.components	_FwFsmObjectType		0x101	01.08.2008 11:09:14.054
-fwOT_EMUNodes.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ANY$FwCHILDREN in_state STANDBY)  move_to STANDBY|", "", "", "ERROR", "FwStateAttention3", "when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,OFF,RAMP} )  move_to OFF|when ( $ALL$FwCHILDREN in_state {ON,OFF,RAMP,STANDBY} )  move_to STANDBY|", "", "", "ON", "FwStateOKPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|when ( $ANY$FwCHILDREN in_state STANDBY)  move_to STANDBY|when ( $ANY$FwCHILDREN in_state {OFF,RAMP} )  move_to OFF|", "", "", "STANDBY", "FwStateAttention1", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,OFF,RAMP} )  move_to OFF|", "", ""	0x101	05.04.2009 15:53:21.258
+"	0x101	29.03.2008 13:13:25.092
+fwOT_MRTN_1.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	29.03.2008 13:13:25.087
+fwOT_MRTN_1.actions	_FwFsmObjectType	"ON/OFF", "", "1", "move_to ", "0", "ON/STANDBY", "", "1", "", "0", "OFF/ON", "", "1", "move_to ", "0", "OFF/STANDBY", "", "1", "", "0", "ERROR/OFF", "", "1", "move_to ", "0"	0x101	29.03.2008 13:13:25.086
+fwOT_MRTN_1.parameters	_FwFsmObjectType		0x141	29.03.2008 13:11:05.563
+fwOT_EMUNodes.panel	_FwFsmObjectType	"EMUNodes.pnl"	0x101	29.03.2008 13:11:05.565
+fwOT_EMUNodes.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR|        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ANY$FwCHILDREN in_state STANDBY )  move_to STANDBY|", "", "", "ERROR", "FwStateAttention3", "        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|        when ( $ALL$FwCHILDREN in_state {ON,OFF} )  move_to OFF|when ( $ALL$FwCHILDREN in_state {ON,OFF,STANDBY} )  move_to STANDBY|", "", "", "ON", "FwStateOKPhysics", "   when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|when ( $ANY$FwCHILDREN in_state STANDBY )  move_to STANDBY|when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|", "", "", "STANDBY", "FwStateAttention1", "when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,OFF} )  move_to OFF|", "", ""	0x101	29.03.2008 13:13:27.104
 fwOT_EMUNodes.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN
-do RAMP $ALL$HV_1", "0", "OFF/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
-do STANDBY $ALL$CMS_CSC_ME11_HV_Type
-do RAMP $ALL$HV_1", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN
-do RAMP $ALL$HV_1", "0", "ERROR/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
-do STANDBY $ALL$CMS_CSC_ME11_HV_Type
-do RAMP $ALL$HV_1", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
-do STANDBY $ALL$CMS_CSC_ME11_HV_Type
-do RAMP $ALL$HV_1", "0", "ON/ON", "", "1", "do ON $ALL$FwCHILDREN
-do RAMP $ALL$HV_1", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN
-do RAMP $ALL$HV_1", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
-do STANDBY $ALL$CMS_CSC_ME11_HV_Type
-do RAMP $ALL$HV_1", "0"	0x101	05.04.2009 15:53:21.257
-fwOT_EMUNodes.parameters	_FwFsmObjectType		0x101	12.10.2008 14:41:53.994
-fwOT_EMUTREENodes.panel	_FwFsmObjectType	"EMUTREENodes.pnl"	0x101	05.04.2009 15:47:57.049
-fwOT_EMUTREENodes.components	_FwFsmObjectType		0x101	05.04.2009 15:47:57.047
-fwOT_EMUTREENodes.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,STANDBY} )  move_to STANDBY|", "", "", "ERROR", "FwStateAttention3", "when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,STANDBY} )  move_to STANDBY|when ( $ALL$FwCHILDREN in_state {ON,OFF,RAMP,STANDBY} )  move_to OFF|", "", "", "ON", "FwStateOKPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|when ( $ANY$FwCHILDREN in_state {OFF,RAMP} )  move_to OFF|when ( $ANY$FwCHILDREN in_state STANDBY )  move_to STANDBY|", "", "", "STANDBY", "FwStateAttention1", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ANY$FwCHILDREN in_state {OFF,RAMP} )  move_to OFF|", "", ""	0x101	05.04.2009 15:53:21.884
+do RAMP $ALL$HV_1", "0", "OFF/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "ERROR/STANDBY", "", "1", "do  STANDBY $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN
+move_to OFF", "0", "STANDBY/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0"	0x101	29.03.2008 13:13:27.103
+fwOT_EMUNodes.parameters	_FwFsmObjectType		0x141	29.03.2008 13:11:05.573
+fwOT_EMUTREENodes.panel	_FwFsmObjectType	"EMUTREENodes.pnl"	0x101	29.03.2008 13:11:05.575
+fwOT_EMUTREENodes.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|", "", "", "ERROR", "FwStateAttention3", "        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|        when ( $ALL$FwCHILDREN in_state {ON,OFF,RAMP,STANDBY} )  move_to OFF|", "", "", "ON", "FwStateOKPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|   when ( $ANY$FwCHILDREN in_state {OFF,RAMP,STANDBY} )  move_to OFF|", "", ""	0x101	29.03.2008 13:13:27.653
 fwOT_EMUTREENodes.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN
-do RAMP $ALL$HV_1", "0", "OFF/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
-do RAMP $ALL$HV_1", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN
-do RAMP $ALL$HV_1", "0", "ERROR/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
-do RAMP $ALL$HV_1", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
-do RAMP $ALL$HV_1", "0", "ON/ON", "", "1", "do ON $ALL$FwCHILDREN
-do RAMP $ALL$HV_1", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN
-do RAMP $ALL$HV_1", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
-do RAMP $ALL$HV_1", "0"	0x101	05.04.2009 15:53:21.882
-fwOT_EMUTREENodes.parameters	_FwFsmObjectType		0x101	05.04.2009 15:47:57.051
-fwOT_fwWnrCh_CSC_LV.panel	_FwFsmObjectType	"fwWnrCh_CSC_LV.pnl"	0x101	14.10.2008 07:41:10.091
+do RAMP $ALL$HV_1", "0", "OFF/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "ERROR/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0"	0x101	29.03.2008 13:13:27.652
+fwOT_EMUTREENodes.parameters	_FwFsmObjectType		0x141	29.03.2008 13:11:05.583
+fwOT_fwWnrCh_CSC_LV.panel	_FwFsmObjectType	"fwWnrCh_CSC_LV.pnl"	0x101	29.03.2008 13:11:05.585
 fwOT_fwWnrCh_CSC_LV.components	_FwFsmObjectType	"int status
 ", "int status
 ", "fwWnrCh_CSC_LV_initialize(string domain, string device)
@@ -606,10 +512,10 @@ fwOT_fwWnrCh_CSC_LV.components	_FwFsmObjectType	"int status
 }
 ", "fwWnrCh_CSC_LV_doCommand(string domain, string device, string command)
 {
-//	if (command == \"OFF\")
-//	{
-//		dpSet(device+\".status:_original.._value\",2);
-//	}
+	if (command == \"OFF\")
+	{
+		dpSet(device+\".status:_original.._value\",2);
+	}
 	if (command == \"STANDBY\")
 	{
 		dpSet(device+\".status:_original.._value\",2);
@@ -620,11 +526,11 @@ fwOT_fwWnrCh_CSC_LV.components	_FwFsmObjectType	"int status
 	}
         
 }
-"	0x101	05.04.2009 15:53:18.710
-fwOT_fwWnrCh_CSC_LV.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	05.04.2009 15:53:18.703
-fwOT_fwWnrCh_CSC_LV.actions	_FwFsmObjectType	"ON/OFF", "", "1", "", "0", "ON/STANDBY", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "OFF/STANDBY", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0"	0x101	05.04.2009 15:53:18.702
-fwOT_fwWnrCh_CSC_LV.parameters	_FwFsmObjectType	"int estimatedTime = 0"	0x101	29.03.2008 13:22:02.544
-fwOT_fwWnrCr_CSC_LV.panel	_FwFsmObjectType	"CMS_CSCfw_HV_CC/emuDevfwWnrCr_CSC_LVOperation.pnl"	0x101	18.04.2009 12:27:15.983
+"	0x101	29.03.2008 13:13:25.872
+fwOT_fwWnrCh_CSC_LV.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	29.03.2008 13:13:25.867
+fwOT_fwWnrCh_CSC_LV.actions	_FwFsmObjectType	"ON/OFF", "", "1", "", "0", "ON/STANDBY", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "OFF/STANDBY", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0"	0x101	29.03.2008 13:13:25.866
+fwOT_fwWnrCh_CSC_LV.parameters	_FwFsmObjectType	"int estimatedTime = 0"	0x101	29.03.2008 13:11:05.597
+fwOT_fwWnrCr_CSC_LV.panel	_FwFsmObjectType	"CMS_CSCfw_HV_CC/emuDevfwWnrCr_CSC_LVOperation.pnl"	0x101	29.03.2008 13:18:07.976
 fwOT_fwWnrCr_CSC_LV.components	_FwFsmObjectType	"int status
 ", "int status
 ", "fwWnrCr_CSC_LV_initialize(string domain, string device)
@@ -652,11 +558,11 @@ fwOT_fwWnrCr_CSC_LV.components	_FwFsmObjectType	"int status
 }
 ", "fwWnrCr_CSC_LV_doCommand(string domain, string device, string command)
 {
-//	if (command == \"OFF\")
-//	{
-//		dpSet(device+\".status:_original.._value\",3);
-//	}
-      if (command == \"STANDBY\")
+	if (command == \"OFF\")
+	{
+		dpSet(device+\".status:_original.._value\",3);
+	}
+       	if (command == \"STANDBY\")
 	{
 		dpSet(device+\".status:_original.._value\",3);
 	} 
@@ -665,26 +571,21 @@ fwOT_fwWnrCr_CSC_LV.components	_FwFsmObjectType	"int status
 		dpSet(device+\".status:_original.._value\",3);
 	}
 }
-"	0x101	05.04.2009 15:53:18.986
-fwOT_fwWnrCr_CSC_LV.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	05.04.2009 15:53:18.980
-fwOT_fwWnrCr_CSC_LV.actions	_FwFsmObjectType	"ON/OFF", "", "1", "", "0", "ON/STANDBY", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "OFF/STANDBY", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0"	0x101	05.04.2009 15:53:18.979
-fwOT_fwWnrCr_CSC_LV.parameters	_FwFsmObjectType	"int estimatedTime = 0"	0x101	29.03.2008 13:22:02.559
-fwOT_EMUSTBYNodes.panel	_FwFsmObjectType	"EMUSTBYNodes.pnl"	0x101	29.03.2008 13:22:02.562
-fwOT_EMUSTBYNodes.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|", "", "", "ERROR", "FwStateAttention3", "        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|        when ( $ALL$FwCHILDREN in_state {ON,OFF,RAMP,STANDBY} )  move_to OFF|", "", "", "ON", "FwStateOKPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|   when ( $ANY$FwCHILDREN in_state {OFF,RAMP,STANDBY} )  move_to OFF|", "", ""	0x101	05.04.2009 15:53:21.543
+"	0x101	29.03.2008 13:13:26.138
+fwOT_fwWnrCr_CSC_LV.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	29.03.2008 13:13:26.133
+fwOT_fwWnrCr_CSC_LV.actions	_FwFsmObjectType	"ON/OFF", "", "1", "", "0", "ON/STANDBY", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "OFF/STANDBY", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0"	0x101	29.03.2008 13:13:26.132
+fwOT_fwWnrCr_CSC_LV.parameters	_FwFsmObjectType	"int estimatedTime = 0"	0x101	29.03.2008 13:11:05.612
+fwOT_EMUSTBYNodes.panel	_FwFsmObjectType	"EMUSTBYNodes.pnl"	0x101	29.03.2008 13:11:05.615
+fwOT_EMUSTBYNodes.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|", "", "", "ERROR", "FwStateAttention3", "        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|        when ( $ALL$FwCHILDREN in_state {ON,OFF,RAMP,STANDBY} )  move_to OFF|", "", "", "ON", "FwStateOKPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|   when ( $ANY$FwCHILDREN in_state {OFF,RAMP,STANDBY} )  move_to OFF|", "", ""	0x101	29.03.2008 13:13:27.378
 fwOT_EMUSTBYNodes.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN
 do RAMP $ALL$HV_1", "0", "OFF/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN
-do RAMP $ALL$HV_1", "0", "ERROR/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0"	0x101	05.04.2009 15:53:21.542
-fwOT_EMUSTBYNodes.parameters	_FwFsmObjectType		0x141	29.03.2008 13:22:02.572
-fwOT_EMUTREESTBYNodes.panel	_FwFsmObjectType	"EMUTREESTBYNodes.pnl"	0x101	29.03.2008 13:22:02.576
-fwOT_EMUTREESTBYNodes.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR|        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ANY$FwCHILDREN in_state STANDBY )  move_to STANDBY|", "", "", "ERROR", "FwStateAttention3", "        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|        when ( $ALL$FwCHILDREN in_state {ON,OFF} )  move_to OFF|when ( $ALL$FwCHILDREN in_state {ON,OFF,STANDBY} )  move_to STANDBY|", "", "", "ON", "FwStateOKPhysics", "   when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|when ( $ANY$FwCHILDREN in_state STANDBY )  move_to STANDBY|when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|", "", "", "STANDBY", "FwStateAttention1", "when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,OFF} )  move_to OFF|", "", ""	0x101	05.04.2009 15:53:22.551
+do RAMP $ALL$HV_1", "0", "ERROR/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0"	0x101	29.03.2008 13:13:27.377
+fwOT_EMUSTBYNodes.parameters	_FwFsmObjectType		0x141	29.03.2008 13:11:05.624
+fwOT_EMUTREESTBYNodes.panel	_FwFsmObjectType	"EMUTREESTBYNodes.pnl"	0x101	29.03.2008 13:11:05.627
+fwOT_EMUTREESTBYNodes.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR|        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ANY$FwCHILDREN in_state STANDBY )  move_to STANDBY|", "", "", "ERROR", "FwStateAttention3", "        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|        when ( $ALL$FwCHILDREN in_state {ON,OFF} )  move_to OFF|when ( $ALL$FwCHILDREN in_state {ON,OFF,STANDBY} )  move_to STANDBY|", "", "", "ON", "FwStateOKPhysics", "   when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|when ( $ANY$FwCHILDREN in_state STANDBY )  move_to STANDBY|when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|", "", "", "STANDBY", "FwStateAttention1", "when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,OFF} )  move_to OFF|", "", ""	0x101	29.03.2008 13:13:27.965
 fwOT_EMUTREESTBYNodes.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN
 do RAMP $ALL$HV_1", "0", "OFF/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN
 do RAMP $ALL$HV_1", "0", "ERROR/STANDBY", "", "1", "do  STANDBY $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN
 do RAMP $ALL$HV_1", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN
-move_to OFF", "0", "STANDBY/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0"	0x101	05.04.2009 15:53:22.550
-fwOT_EMUTREESTBYNodes.parameters	_FwFsmObjectType		0x141	29.03.2008 13:22:02.588
-fwOT_CMS_CSC_ME11_HV_Type.panel	_FwFsmObjectType	"CMS_ME11/ME11PN.pnl"	0x101	03.03.2009 19:03:42.474
-fwOT_CMS_CSC_ME11_HV_Type.components	_FwFsmObjectType		0x101	03.03.2009 19:03:42.472
-fwOT_CMS_CSC_ME11_HV_Type.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ANY$FwCHILDREN in_state STANDBY )  move_to STANDBY|", "", "", "ON", "FwStateOKPhysics", "when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|when ( $ANY$FwCHILDREN in_state STANDBY )  move_to STANDBY|when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|", "", "", "ERROR", "FwStateAttention3", "when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,OFF} )  move_to OFF|when ( $ALL$FwCHILDREN in_state {ON,OFF,STANDBY} )  move_to STANDBY|", "", "", "STANDBY", "FwStateAttention1", "when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,OFF} )  move_to OFF|", "", ""	0x101	05.04.2009 15:53:19.705
-fwOT_CMS_CSC_ME11_HV_Type.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "ON/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0"	0x101	05.04.2009 15:53:19.704
-fwOT_CMS_CSC_ME11_HV_Type.parameters	_FwFsmObjectType		0x101	03.03.2009 19:03:42.475
+move_to OFF", "0", "STANDBY/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0"	0x101	29.03.2008 13:13:27.964
+fwOT_EMUTREESTBYNodes.parameters	_FwFsmObjectType		0x141	29.03.2008 13:11:05.636
