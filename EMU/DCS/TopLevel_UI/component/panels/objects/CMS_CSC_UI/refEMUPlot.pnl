@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 1348 532 N "_3DFace" 2
+PANEL,-1 -1 800 370 N "_3DFace" 2
 "$group"
 "$width"
 "main()
@@ -185,7 +185,7 @@ void initParams() {
     runningLocal = true;
     
     paramGroup = emuui_getSessionDp(\"temperatureMonitor\");
-    paramWidth = 410;
+    paramWidth = 780;
   } else { // copy from dollar params
     runningLocal = false;
     

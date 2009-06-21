@@ -20,14 +20,14 @@ PANEL,-1 -1 355 174 N "_3DFace" 1
     deviceParams[\"boardNumber\"] = i;
     for (int j=1; j <= dynlen(voltageLines); j++) { // cycle through voltage lines
       deviceParams[\"voltageLine\"] = voltageLines[j];
-      string dp = emuui_getDpName(\"chamber_LV_vMon\", deviceParams, ex); // get vMon dp
+      string dp = emuui_getDpName(\"chamber_LV_CFEB_vMon\", deviceParams, ex); // get vMon dp
       if (emu_checkException(ex)) { return; }
       if (strlen(dp) == 0) { // if that dp does not exist delete the column in the table and break the loop - happens e.g. when CFEB5 does not exist
         tableCfeb.deleteColumn(i - 1);
         break;
       }
       vMonDps[index] = dp;
-      string dp = emuui_getDpName(\"chamber_LV_iMon\", deviceParams, ex); // get iMon dp
+      string dp = emuui_getDpName(\"chamber_LV_CFEB_iMon\", deviceParams, ex); // get iMon dp
       if (emu_checkException(ex)) { return; }
       iMonDps[index] = dp;
       dpIndexToTableCell[index] = makeDynMixed(j - 1, \"Cfeb_\" + i); // location in table is [j; boardType_boardNumber]
@@ -42,6 +42,13 @@ PANEL,-1 -1 355 174 N "_3DFace" 1
   dynAppend(values, iMonDps);
 
   dpConnect(\"updateCfebLvCB\", true, values);
+
+  // CFEB ALARM COLORS
+  for (int i=1; i <= dynlen(values); i++) {
+    values[i] += \":_alert_hdl.._act_state_color\";
+  }
+  
+  dpConnect(\"updateCfebAlarmColorsCB\", true, values);
   
   //----------============= ALCT ================-------------
   dynClear(vMonDps);
@@ -51,11 +58,11 @@ PANEL,-1 -1 355 174 N "_3DFace" 1
   voltageLines = makeDynString(\"18\", \"33\", \"55\", \"56\"); // 3.3V, 5.0V and 6.0V lines
   for (int i=1; i <= dynlen(voltageLines); i++) {
     deviceParams[\"voltageLine\"] = voltageLines[i];
-    string dp = emuui_getDpName(\"chamber_LV_vMon\", deviceParams, ex); // get vMon dp
+    string dp = emuui_getDpName(\"chamber_LV_ALCT_vMon\", deviceParams, ex); // get vMon dp
     if (emu_checkException(ex)) { return; }
     if (strlen(dp) == 0) { emu_errorSingle(\"vMon dp not found for given deviceParams: \" + emu_mappingToString(deviceParams)); }
     dynAppend(vMonDps, dp);
-    dp = emuui_getDpName(\"chamber_LV_iMon\", deviceParams, ex); // get iMon dp
+    dp = emuui_getDpName(\"chamber_LV_ALCT_iMon\", deviceParams, ex); // get iMon dp
     if (emu_checkException(ex)) { return; }
     if (strlen(dp) == 0) { emu_errorSingle(\"iMon dp not found for given deviceParams: \" + emu_mappingToString(deviceParams)); }
     dynAppend(iMonDps, dp);
@@ -65,7 +72,14 @@ PANEL,-1 -1 355 174 N "_3DFace" 1
   dynAppend(values, vMonDps);
   dynAppend(values, iMonDps);
 
-  dpConnect(\"updateAlctLvCB\", true, values);
+  dpConnect(\"updateAlctLvCB\", true, values);  
+  
+  // ALCT ALARM COLORS
+  for (int i=1; i <= dynlen(values); i++) {
+    values[i] += \":_alert_hdl.._act_state_color\";
+  }
+  
+  dpConnect(\"updateAlctAlarmColorsCB\", true, values);
 }
 
 void initGui() {
@@ -88,8 +102,9 @@ void initGui() {
 E "//some panel-wide constants and variables
 mapping deviceParams;
 dyn_dyn_mixed dpIndexToTableCell; // map of DP index in the array and coordinates in the Cfeb table where they should be written
+time lastUpdateTime;
 
-// Call-back function which updates voltages and currents for CFEBs
+/** Call-back function which updates voltages and currents for CFEBs. */
 void updateCfebLvCB(dyn_string dps, dyn_float voltagesAndCurrents) {
   int currentsOffset = dynlen(voltagesAndCurrents) / 2; // the first half of this array is filled with voltages, the second one with currents
   
@@ -102,9 +117,40 @@ void updateCfebLvCB(dyn_string dps, dyn_float voltagesAndCurrents) {
     strToShow += strValue + \"A\";
     tableCfeb.cellValueRC(dpIndexToTableCell[i][1], dpIndexToTableCell[i][2], strToShow);
   }
+  
+  //find out the last update  
+  for (int i=1; i <= dynlen(dps); i++) {
+    time stime;
+    string dp = dpSubStr(dps[i], DPSUB_SYS_DP_EL_CONF) + \".._stime\";
+    dpGet(dp, stime);
+    
+    if (stime > lastUpdateTime) {
+      lastUpdateTime = stime;
+    }
+  }
+  lblLastUpdate.text = (string) lastUpdateTime;
 }
 
-// Call-back function which updates voltages and currents for ALCT
+/** Call-back function which updates the background color of the CFEB table cells accordingly to cfeb voltage and current alarm color. */
+void updateCfebAlarmColorsCB(dyn_string dps, dyn_string colors) {
+  int currentsOffset = dynlen(colors) / 2; // the first half of this array is filled with voltage alarm colors, the second one with current alarm colors
+  
+  for (int i=1; i <= dynlen(colors) / 2; i++) {
+    string voltageAlarmColor = colors[i];
+    string currentAlarmColor = colors[i + currentsOffset];
+    if (strlen(voltageAlarmColor) == 0) {
+      voltageAlarmColor = \"FwStateOKPhysics\";
+    }
+    string mainColor = voltageAlarmColor;
+    if ((strlen(currentAlarmColor) != 0) && (currentAlarmColor != \"FwStateOKPhysics\")) { // if there's an error in current, put this color in main color
+      mainColor = currentAlarmColor;
+    }
+    
+    tableCfeb.cellBackColRC(dpIndexToTableCell[i][1], dpIndexToTableCell[i][2], mainColor);
+  }
+}                             
+                             
+/** Call-back function which updates voltages and currents for ALCT. */
 void updateAlctLvCB(dyn_string dps, dyn_float voltagesAndCurrents) {
   int currentsOffset = dynlen(voltagesAndCurrents) / 2; // the first half of this array is filled with voltages, the second one with currents
   
@@ -116,6 +162,37 @@ void updateAlctLvCB(dyn_string dps, dyn_float voltagesAndCurrents) {
     sprintf(strValue, \"%.1f\", voltagesAndCurrents[i + currentsOffset]);
     strToShow += strValue + \"A\";
     tableAlct.cellValueRC(0, tableAlct.columnToName(i - 1), strToShow);
+  }
+  
+  //find out the last update  
+  for (int i=1; i <= dynlen(dps); i++) {
+    time stime;
+    string dp = dpSubStr(dps[i], DPSUB_SYS_DP_EL_CONF) + \".._stime\";
+    dpGet(dp, stime);
+    
+    if (stime > lastUpdateTime) {
+      lastUpdateTime = stime;
+    }
+  }
+  lblLastUpdate.text = (string) lastUpdateTime;
+}
+
+/** Call-back function which updates the background color of the ALCT table cells accordingly to ALCT voltage and current alarm color. */
+void updateAlctAlarmColorsCB(dyn_string dps, dyn_string colors) {
+  int currentsOffset = dynlen(colors) / 2; // the first half of this array is filled with voltage alarm colors, the second one with current alarm colors
+  
+  for (int i=1; i <= dynlen(colors) / 2; i++) {
+    string voltageAlarmColor = colors[i];
+    string currentAlarmColor = colors[i + currentsOffset];
+    if (strlen(voltageAlarmColor) == 0) {
+      voltageAlarmColor = \"FwStateOKPhysics\";
+    }
+    string mainColor = voltageAlarmColor;
+    if ((strlen(currentAlarmColor) != 0) && (currentAlarmColor != \"FwStateOKPhysics\")) { // if there's an error in current, put this color in main color
+      mainColor = currentAlarmColor;
+    }
+    
+    tableAlct.cellBackColRC(0, tableAlct.columnToName(i - 1), mainColor);
   }
 }" 0
  2
@@ -268,6 +345,46 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
 0 ""
 0 0 0 1 7
 1 0
+2 4
+"lblLastUpdate"
+""
+1 212 12 E E E 1 E 1 E N "_WindowText" E N {255,255,225} E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 212 12 259 26
+0 2 2 "0s" 0 0 0 192 0 0  212 12 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 9 timestamp
+2 5
+"PRIMITIVE_TEXT3"
+""
+1 152 12 E E E 1 E 1 E N "_WindowText" E N {255,255,225} E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 152 12 211 26
+0 2 2 "0s" 0 0 0 192 0 0  152 12 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 12 Last update:
 0
 LAYER, 1 
 1

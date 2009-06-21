@@ -15,6 +15,7 @@ PANEL,-1 -1 120 53 N "_3DFace" 5
   currentConnectionType = \"\";
   currentConnectionMode = \"\";
   currentConnection = \"\";
+  hvOffChannelsWarningEnabled = false;
   tooltipRefName = \"refTooltip_\" + $deviceParams;
   
   initShape(ex);
@@ -121,6 +122,8 @@ string currentConnection;
 float currentDpValueRangeMin;
 float currentDpValueRangeMax;
 bool showValueOnCaption;
+bool hvOffChannelsWarningEnabled;
+dyn_int disabledHvChannels;
 
 void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string connectionType) {
   dyn_string ex;
@@ -190,7 +193,19 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
     currentConnectionType = \"\";
     currentConnection = \"\";
     currentConnectionMode = \"dead\";
-  }  
+  } else { // connection successful
+    dyn_string modesWithHvDisabledWarning = emuui_getArray(\"modesWithHvDisabledWarning\", ex);
+    if (emu_checkException(ex)) { return; }
+    if (dynContains(modesWithHvDisabledWarning, currentConnectionMode)) {
+      string dpName = emuui_getDpName(\"HV_off_channels\", deviceParams, ex);
+      if (emu_checkException(ex)) { return; }
+      if (dpExists(dpName)) {
+        hvOffChannelsWarningEnabled = true;
+        //TODO need a more generic approach here - probably show the exclamation mark if any (not only HV) channel is excluded (?) i.e. also LV and TEMP, ... maybe also FSM subnodes
+        dpConnect(\"updateHVOffChannels\", true, dpName);
+      }
+    }
+  }
 }
 
 void updateFSMStateCB(string node, string state) {
@@ -218,8 +233,20 @@ void updateDPStateCB(string dp, float value) {
     caption.text = captionStr;
   }
 }
-    
+
+void updateHVOffChannels(string dpName, dyn_string offChannels) {
+  disabledHvChannels = offChannels;
+  imgHvChannelsDisabled.visible = (dynlen(offChannels) > 0);
+}
+
 void disconnect() {
+  if (hvOffChannelsWarningEnabled) {
+    dyn_string ex;
+    hvOffChannelsWarningEnabled = false;
+    imgHvChannelsDisabled.visible = false;
+    string dpName = emuui_getDpName(\"HV_off_channels\", deviceParams, ex);
+    dpDisconnect(\"updateHVOffChannels\", dpName);
+  }
   if (currentConnectionType == \"FSM\") {
     fwCU_disconnectState(currentConnection);
   } else if (currentConnectionType == \"DP\") {
@@ -252,6 +279,68 @@ void showTooltip() {
 void hideTooltip() {
   removeSymbol(myModuleName(), myPanelName(), tooltipRefName);
 }
+
+void showPopupMenu() {
+  int answer;
+  dyn_string menu;
+  
+//   example of a menu
+//   dyn_string menu = makeDynString(\"PUSH_BUTTON, text1, 1, 1\", 
+//    \"PUSH_BUTTON, text2, 2, 1\", 
+//    \"SEPARATOR\", // separating line 
+//    \"CASCADE_BUTTON, Level 2, 1\", // branch 
+//    \"PUSH_BUTTON, text3, 3, 1\", 
+//    \"Level 2\", // from here level 2 
+//    \"PUSH_BUTTON, text4, 4, 0\", 
+//    \"PUSH_BUTTON, text5, 5, 1\"); 
+  
+  int canEnable = 0;
+  if (dynlen(disabledHvChannels) > 0) { canEnable = 1; }
+  
+  dynAppend(menu, \"CASCADE_BUTTON, Recover High Voltage, 1\");
+  dynAppend(menu, \"CASCADE_BUTTON, Disable High Voltage Channels, 1\");
+  dynAppend(menu, \"CASCADE_BUTTON, Enable High Voltage Channels, \" + canEnable);
+    
+  // recover submenu
+  dynAppend(menu, \"Recover High Voltage\");
+  dynAppend(menu, \"PUSH_BUTTON, Recover All Tripped Channels, 100, 1\");
+  dynAppend(menu, \"CASCADE_BUTTON, Recover One Channel, 1\");
+  dynAppend(menu, \"Recover One Channel\");
+  dynAppend(menu, \"PUSH_BUTTON, Recover #3, 103, 1\");
+  dynAppend(menu, \"PUSH_BUTTON, Recover #4, 104, 1\");
+
+  //disable submenu
+  dynAppend(menu, \"Disable High Voltage Channels\");
+  dynAppend(menu, \"PUSH_BUTTON, Disable All Tripped Channels, 200, 1\");
+  dynAppend(menu, \"CASCADE_BUTTON, Disable One Channel, 1\");
+  dynAppend(menu, \"Disable One Channel\");
+  dynAppend(menu, \"PUSH_BUTTON, Disable #3, 203, 1\");
+  dynAppend(menu, \"PUSH_BUTTON, Disable #4, 204, 1\");
+    
+  //enable submenu
+  dynAppend(menu, \"Enable High Voltage Channels\");
+  dynAppend(menu, \"PUSH_BUTTON, Enable All Disabled Channels, 300, 1\");
+  dynAppend(menu, \"CASCADE_BUTTON, Enable One Channel, 1\");
+  dynAppend(menu, \"Enable One Channel\");
+  for (int i=1; i <= dynlen(disabledHvChannels); i++) {
+    dynAppend(menu, \"PUSH_BUTTON, Enable #\" + disabledHvChannels[i] + \", 30\" + disabledHvChannels[i] + \", 1\");
+  }
+    
+    
+  string font = \"\";//\"-microsoft windows-Courier New-bold-i-normal-*-*-140-100-100-*-*-iso8859-1\"; //font 
+  string forecolor = \"black\"; //foreground color 
+  string backcolor = \"white\"; //background color 
+
+  int posX, posY;   
+  getCursorPosition(posX, posY);
+  //popupMenuXY(menu, posX, posY, answer, font, forecolor, backcolor);
+  popupMenu(menu, answer);
+  
+  emu_info(\"popupso atsakymas: \" + answer);
+  if (answer != 0) {
+    emu_errorSingle(\"This functionality is not implemented. Please inform DCS expert about this (make sure to describe how you got this message)\");
+  }
+}
 " 0
  2
 "CBRef" "1"
@@ -265,7 +354,26 @@ LANG:1 0
 "chamber"
 ""
 1 19.9791666666667 30.0000000000001 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
- E E
+ "main()
+{
+  showPopupMenu();
+}" 0
+ "main()
+{
+//   if ($deviceType != \"chamber\") {
+//     return;
+//   }
+//   string name = \"CSC_ME_\" + deviceParams[\"side\"] + deviceParams[\"station\"] + deviceParams[\"ring\"] + \"_C\" + deviceParams[\"chamberNumber\"];
+//   
+//   emu_info(\"labas, va name: \" + name);
+//   
+//   string domain = fwFsm_getAssociatedDomain(name);
+//   emu_info(\"domain: \" + domain);
+//   string obj = fwFsm_getAssociatedObj(name);
+//   emu_info(\"obj: \" + obj);
+//   fwUi_showFsmObject(\"CSC_ME_P1\", \"CSC_ME_P1\", \"\");
+}" 0
+
 0 0 0 0 0 0
 E E "main(bool enter)
 {
@@ -293,7 +401,11 @@ E E 0 1 1 1 1 E 0.774020156774913 0 1.02222222222222 -15.4642777155655 -30.66666
 "rectangle"
 ""
 1 90 10 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
- E E
+ "main()
+{
+  showPopupMenu();
+}" 0
+ E
 2 0 0 0 0 0
 E E "main(bool enter)
 {
@@ -316,7 +428,11 @@ E E 0 1 1 2 1 E 1 0 1 -90 -10 1 E 90 10 110 30
 "caption"
 ""
 1 10 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
- E E
+ "main()
+{
+  showPopupMenu();
+}" 0
+ E
 1 0 0 0 0 0
 E E "main(bool enter)
 {
@@ -342,6 +458,40 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
 0 ""
 1
 LANG:1 2 me
+2 8
+"imgHvChannelsDisabled"
+""
+1 4 21 E E E 1 E 0 E N "_Window" E N "_Transparent" E E
+ "main()
+{
+  showPopupMenu();
+}" 0
+ E
+9 0 0 0 0 0
+E E "main(bool enter)
+{
+  if (enter) {
+    setValue(shapeName, \"foreCol\", \"black_yellow\");
+    showTooltip();
+  } else {
+    setValue(shapeName, \"foreCol\", \"\");
+    hideTooltip();
+  }
+}" 0
+
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 0 10 6 35
+0 2 2 "0s" 0 0 0 192 0 0  0 10 1
+1
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-19-*-100-100-*-*-iso8859-1|-19,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 1 !
 0
 LAYER, 1 
 1

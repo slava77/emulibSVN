@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 380 134 N "_3DFace" 1
+PANEL,-1 -1 380 171 N "_3DFace" 1
 "$deviceParams"
 "main()
 {
@@ -12,9 +12,16 @@ PANEL,-1 -1 380 134 N "_3DFace" 1
   dyn_string dps = emuui_getDpNames(\"HV_vMon\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
   
+  string offChannelsDp = emuui_getDpName(\"HV_off_channels\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
   initGui(dynlen(dps));
   
   dpConnect(\"updateVMonCB\", true, dps);
+  dpConnect(\"updateDisabledChannelsCB\", true, offChannelsDp);
+
+// TODO show this if there's no communication with HV  
+//    lblNoCommunication.visible = todo;
 }
 
 void initGui(int channelCount) {  
@@ -43,6 +50,23 @@ void updateVMonCB(dyn_string dpList, dyn_float voltages) {
       tableVoltages.cellValueRC(i, \"group\" + j, voltages[arrayIndex] + \" V\");
     }
   }
+}
+
+void updateDisabledChannelsCB(string dpName, dyn_string disabledChannels) {
+  if (dynlen(disabledChannels) == 0) {
+    lblDisabledChannels.text = \"none\";
+    return;
+  }
+  
+  string channelsStr;
+  int count = dynlen(disabledChannels);
+  for (int i=1; i <= count; i++) {
+    channelsStr += \"#\" + disabledChannels[i];
+    if (i != count) { // not the last one
+      channelsStr += \", \";
+    }
+  }
+  lblDisabledChannels.text = channelsStr;
 }" 0
  2
 "CBRef" "1"
@@ -65,7 +89,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1.45833333333333 0 1.44444444444445 0 0 1 E 240 90 0 0
+E E 0 1 1 2 1 E 1.45833333333333 0 1.66666666666667 0 0 1 E 240 90 0 0
 2 4
 "PRIMITIVE_TEXT1"
 ""
@@ -158,7 +182,7 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
 2 6
 "PRIMITIVE_TEXT2"
 ""
-1 10 110 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 10 130 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 8 0 0 0 0 0
 E E E
@@ -168,13 +192,97 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 110 319 124
-0 2 2 "0s" 0 0 0 192 0 0  10 110 1
+E E 0 1 1 2 1 E U  1 E 10 130 319 144
+0 2 2 "0s" 0 0 0 192 0 0  10 130 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 65 Tripped channels: TBD.......       TODO change table cell backCol
+2 7
+"PRIMITIVE_TEXT3"
+""
+1 10 110 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 110 100 124
+0 2 2 "0s" 0 0 0 192 0 0  10 110 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 18 Disabled channels:
+2 8
+"lblDisabledChannels"
+""
+1 103 110 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+  this.text = \"\";
+}" 0
+ E 0 1 1 2 1 E U  1 E 103 110 139 124
+0 2 2 "0s" 0 0 0 192 0 0  103 110 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 9 list here
+2 9
+"PRIMITIVE_TEXT4"
+""
+1 140 10 E E E 1 E 1 E N "_WindowText" E N {255,255,225} E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 140 10 327 24
+0 2 2 "0s" 0 0 0 192 0 0  140 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 38 Background colors are work in progress
+2 10
+"lblNoCommunication"
+""
+1 170 110 E E E 1 E 0 E N "_WindowText" E N "FwStateAttention3" E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 170 110 335 124
+0 2 2 "0s" 0 0 0 192 0 0  170 110 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 33 No Communication with this device
 0
 LAYER, 1 
 1

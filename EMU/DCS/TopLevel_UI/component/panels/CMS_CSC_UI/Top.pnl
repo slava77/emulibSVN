@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 7 CSC_DCS
-PANEL,-1 -1 1600 1081 N "_3DFace" 0
+PANEL,-1 -1 1600 1090 N "_3DFace" 0
 "main()
 {
   emuui_init();
@@ -67,6 +67,7 @@ LANG:1 0
   getValue(\"\", \"size\", width, height);
   int posX, posY;
   getValue(\"\", \"position\", posX, posY);
+  posY += 40; // shift everything a bit down to give space for mode selector
   
   string group = emuui_getSessionDp(\"mainChamberView\");          //group name
   string refName = \"MainChamberView_EMU\";
@@ -76,7 +77,7 @@ LANG:1 0
             makeDynString(\"$group:\" + group, \"$width:\" + width),
             posX, posY, 0, 1, 1);
 }" 0
- E 0 1 1 0 1 E 2.26865671641791 0 2.49211356466877 -18.0597014925373 -560.662460567823 0 E 30 233 701 551
+ E 0 1 1 0 1 E 2.26828999963328 0 2.58675078864353 -18.0486999889985 -582.712933753943 0 E 30 233 701 551
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -85,7 +86,7 @@ LANG:1 17 Main Chamber View
 19 5
 "radioMode"
 ""
-1 60 847 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+1 63.6585365853659 847 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
  E E
 7 0 0 0 0 0
 E E E
@@ -93,11 +94,12 @@ E E E
 1
 LANG:1 0 
 
-0
+1
+"horizontal" ""
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
- 58 845 182 969
+ 108 48 492 70
 4
 T 
 1
@@ -157,25 +159,6 @@ E E
   dpSetWait(dp + \".mode\", mainChamberViewModes[button + 1][2]);
 }" 0
 
-30 6
-"frameModeSelection"
-""
-1 40 833 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
- E E
-8 0 0 0 0 0
-E E E
-1
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 0 1 0 1 E 1 0 1 10 -3 0 E 40 833 181 981
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
-LANG:1 4 Mode
 30 7
 "frameTemperatureMonitor"
 ""
@@ -206,12 +189,212 @@ LANG:1 0
             makeDynString(\"$group:\" + group, \"$width:\" + width),
             posX + 15, posY + 20, 0, 1, 1);   
 }" 0
- E 0 0 1 0 1 E 1.54545454545455 0 1.09216589861751 -136.363636363636 -76.7741935483871 0 E 250 833 581 1051
+ E 0 0 1 0 1 E 1.45454545454546 0 1.05990783410139 726.363636363635 -32.9032258064545 0 E 250 833 581 1051
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 19 Temperature Monitor
+2 8
+"PRIMITIVE_TEXT1"
+""
+1 70 50 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 70 50 100 64
+0 2 2 "0s" 0 0 0 192 0 0  70 50 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 5 Mode:
+30 9
+"FRAME1"
+""
+1 70 853 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+11 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+  int posX, posY;
+  getValue(\"\", \"position\", posX, posY);
+  posY += 100;
+  posX += 30;
+  
+  addFsmNode(\"CSC_GAS\", posX, posY);
+  posY += 30;
+  addFsmNode(\"CSC_COOLING\", posX, posY);
+  posY += 30;
+  addFsmNode(\"CSC_LV\", posX, posY);
+  posY += 30;
+  addFsmNode(\"CSC_HV\", posX, posY);
+  posY += 30;
+}
+
+void addFsmNode(string node, int x, int y) {
+  string refName = \"ref_FSMobj_\" + node;
+  if (shapeExists(refName)) { refName += \"_1\"; }
+  
+  addSymbol(myModuleName(), myPanelName(), \"test_FSMobj.pnl\", refName, makeDynString(\"$node:\" + node, \"$obj:\" + node), x, y, 0, 1, 1);
+}" 0
+ E 0 0 1 0 1 E 1.63636363636364 0 1.46496815286624 -64.5454545454545 -399.617834394905 0 E 70 853 291 1011
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 10 Subsystems
+30 10
+"FRAME2"
+""
+1 920 853 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+12 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1.06896551724138 0 1.05990783410138 -553.448275862069 -54.1013824884793 0 E 920 853 1211 1071
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 29 High Voltage Primary Supplies
+2 11
+"PRIMITIVE_TEXT2"
+""
+1 440 910 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+13 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 440 910 709 924
+0 2 2 "0s" 0 0 0 192 0 0  440 910 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 58 Here will be control and monitoring of HV primary supplies
+30 12
+"FRAME3"
+""
+1 920 853 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+15 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1.06896551724138 0 1.05990783410138 -223.448275862069 -54.1013824884793 0 E 920 853 1211 1071
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 8 Maratons
+2 13
+"PRIMITIVE_TEXT3"
+""
+1 780 910 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 780 910 1048 924
+0 2 2 "0s" 0 0 0 192 0 0  780 910 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 58 Here will be control and monitoring of individual Maratons
+2 14
+"PRIMITIVE_TEXT4"
+""
+1 1553 870 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 1553 870 1565 884
+0 2 2 "0s" 0 0 0 192 0 0  1553 870 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 2 32
+2 15
+"PRIMITIVE_TEXT5"
+""
+1 1553 1040 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 1553 1040 1565 1054
+0 2 2 "0s" 0 0 0 192 0 0  1553 1040 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 2 20
+6 16
+"iconZoomInMEM1"
+""
+1 10 10 E E E 1 E 1 E N {0,0,0} E N "white" E E
+ E E
+22 0 0 0 0 0
+E E E
+0
+1
+LANG:1 12 Zoom in ME-1
+
+1
+"dashclr"N "_Transparent"
+E "main()
+{
+  ChildPanelOn(\"objects/CMS_CSC_UI/refEMUPlot.pnl\", \"panelTemperatureMonitor\", 
+               makeDynString(\"$group:\" + emuui_getSessionDp(\"temperatureMonitor\"), \"$width:780\"), 200, 200);
+}
+" 0
+ 0 1 1 2 1 E 1 0 1 1090 1040 2  0 0  "pictures/CMS_CSC_UI/zoom_in.bmp" 4294967295 E 10 10 36 35
 0
 LAYER, 1 
 1

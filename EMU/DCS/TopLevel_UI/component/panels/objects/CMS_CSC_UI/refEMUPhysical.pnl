@@ -7,7 +7,7 @@ PANEL,-1 -1 1600 1200 N "_3DFace" 2
 "main()
 {
   initParams();
-  int stationRadius = (paramWidth / 8) - (EMUUI_REFEMU_GAP_BETWEEN_STATIONS / 2); // EMUUI_REFEMU_GAP_BETWEEN_STATIONS is defined in the ScopeLib of this panel
+  stationRadius = (paramWidth / 8) - (EMUUI_REFEMU_GAP_BETWEEN_STATIONS / 2); // EMUUI_REFEMU_GAP_BETWEEN_STATIONS is defined in the ScopeLib of this panel
 
   int myPosX, myPosY;
   getValue(\"refPoint\", \"position\", myPosX, myPosY);
@@ -15,25 +15,38 @@ PANEL,-1 -1 1600 1200 N "_3DFace" 2
   // draw EMU
   int posX = myPosX + (EMUUI_REFEMU_GAP_BETWEEN_STATIONS / 2);
   for (int station=1; station <= 4; station++) {
+    int posYplus = myPosY + (EMUUI_REFEMU_GAP_BETWEEN_STATIONS / 2);
+    int posYminus = myPosY + stationRadius * 2 + (EMUUI_REFEMU_GAP_BETWEEN_STATIONS * 1.5);
+    
     //Plus side
     string refName = \"station_ME+\" + station;
+    dynAppend(references, refName);
+    stationPositions[refName] = makeDynInt(posX, posYplus);
     addSymbol(myModuleName(), myPanelName(),
               \"objects/CMS_CSC_UI/refCSCStationPhysical.pnl\",
               refName,
               makeDynString(\"$side:P\", \"$station:\" + station, \"$radius:\" + stationRadius, \"$group:\" + paramGroup),
-              posX, myPosY + (EMUUI_REFEMU_GAP_BETWEEN_STATIONS / 2), 0, 1, 1);
+              posX, posYplus, 0, 1, 1);
     
     //Minus slide
     string refName = \"station_ME-\" + station;
+    dynAppend(references, refName);
+    stationPositions[refName] = makeDynInt(posX, posYminus);
     addSymbol(myModuleName(), myPanelName(),
               \"objects/CMS_CSC_UI/refCSCStationPhysical.pnl\",
               refName,
               makeDynString(\"$side:M\", \"$station:\" + station, \"$radius:\" + stationRadius, \"$group:\" + paramGroup),
-              posX, myPosY + stationRadius * 2 + (EMUUI_REFEMU_GAP_BETWEEN_STATIONS * 1.5), 0, 1, 1);
+              posX, posYminus, 0, 1, 1);
     
     // set position for the next station
     posX += 2 * stationRadius + EMUUI_REFEMU_GAP_BETWEEN_STATIONS;
   }
+  
+  //position the zoom-in and zoom-out icons
+  iconZoomInMEP1.position(stationPositions[\"station_ME+1\"][1] + 20, stationPositions[\"station_ME+1\"][2] + 20);
+  iconZoomOutMEP1.position(stationPositions[\"station_ME+1\"][1], stationPositions[\"station_ME+1\"][2]);
+  iconZoomInMEM1.position(stationPositions[\"station_ME-1\"][1] + 20, stationPositions[\"station_ME-1\"][2] + 20);
+  iconZoomOutMEM1.position(stationPositions[\"station_ME+1\"][1], stationPositions[\"station_ME+1\"][2]); // positioned same as for plus because window is in the same place
 }
 " 0
  "main()
@@ -46,10 +59,13 @@ PANEL,-1 -1 1600 1200 N "_3DFace" 2
 E "// init parameters
 string paramGroup;
 float paramWidth;
+bool runningLocal; // if true then panel is running localy, if false then panel is a reference
 
 // some panel-wide constants and variables
 const int EMUUI_REFEMU_GAP_BETWEEN_STATIONS = 10;
 dyn_string references;
+mapping stationPositions; // refName -> array[posX, posY]
+int stationRadius;
 
 void destroyReferences() {
   for (int i=1; i <= dynlen(references); i++) {
@@ -65,9 +81,11 @@ void initParams() {
       (strlen($width) == 0)) {
     
     emuui_init();
+    runningLocal = true;
     paramGroup = emuui_getSessionDp(\"mainChamberView\");
     paramWidth = 1200;
   } else { // copy from dollar params
+    runningLocal = false;
     paramGroup = $group;
     paramWidth = $width;
   }
@@ -77,6 +95,10 @@ void initParams() {
 "EClose" "main()
 {
   destroyReferences();
+  
+  if (runningLocal) {
+    PanelOff();
+  }
 }
 " 0
 
@@ -104,40 +126,119 @@ LAYER, 1
 1
 LANG:1 0 
 6 3
-"zoomRect"
+"iconZoomInMEP1"
 ""
-1 30 30 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+1 10 10 E E E 1 E 1 E N {0,0,0} E N "white" E E
  E E
 4 0 0 0 0 0
-E E "main(bool enter)
-{
-  if (enter) {
-    this.size(700, 700);
-  
-    int posX, posY;
-    getValue(\"\", \"position\", posX, posY);
-  
-    string refName = \"station_ME+1_zoom\";
-    addSymbol(myModuleName(), myPanelName(),
-              \"objects/CMS_CSC_UI/refCSCStationPhysical.pnl\",
-              refName,
-              makeDynString(\"$side:P\", \"$station:1\", \"$radius:350\", \"$group:\" + paramGroup),
-              posX, posY, 0, 1, 1);
-    setValue(refName + \".background\", \"visible\", true);
-  } else {
-    removeSymbol(myModuleName(), myPanelName(), \"station_ME+1_zoom\");
-    this.size(100, 100);
-  }
-}
-" 0
-
+E E E
 0
 1
-LANG:1 0 
+LANG:1 12 Zoom in ME+1
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 0.0612244897959185 0 0.0697674418604652 28.1632653061224 27.906976744186 1 E 30 30 520 460
+E "main()
+{
+  int posX, posY;
+  posX = stationPositions[\"station_ME+1\"][1];
+  posY = stationPositions[\"station_ME+1\"][2];
+  
+  int radius = stationRadius * 2 + EMUUI_REFEMU_GAP_BETWEEN_STATIONS;
+  
+  string refName = \"station_ME+1_zoom\";
+  addSymbol(myModuleName(), myPanelName(),
+            \"objects/CMS_CSC_UI/refCSCStationPhysical.pnl\",
+            refName,
+            makeDynString(\"$side:P\", \"$station:1\", \"$radius:\" + radius, \"$group:\" + paramGroup),
+            posX, posY, 0, 1, 1);
+  setValue(refName + \".background\", \"visible\", true);
+  
+  this.visible = false;
+  iconZoomInMEM1.visible = false;
+  iconZoomOutMEP1.visible = true;
+}
+" 0
+ 0 1 1 2 1 E 1 0 1 20 10 2  0 0  "pictures/CMS_CSC_UI/zoom_in.bmp" 4294967295 E 10 10 36 35
+6 4
+"iconZoomOutMEP1"
+""
+1 50 10 E E E 1 E 0 E N {0,0,0} E N "white" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 13 Zoom out ME+1
+
+1
+"dashclr"N "_Transparent"
+E "main()
+{
+  removeSymbol(myModuleName(), myPanelName(), \"station_ME+1_zoom\");
+  this.visible = false;
+  iconZoomInMEP1.visible = true;
+  iconZoomInMEM1.visible = true;
+}
+" 0
+ 0 1 1 2 1 E 1 0 1 -40 20 2  0 0  "pictures/CMS_CSC_UI/close.bmp" 4294967295 E 50 10 75 35
+6 5
+"iconZoomInMEM1"
+""
+1 10 10 E E E 1 E 1 E N {0,0,0} E N "white" E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+1
+LANG:1 12 Zoom in ME-1
+
+1
+"dashclr"N "_Transparent"
+E "main()
+{
+  int posX, posY;
+  posX = stationPositions[\"station_ME+1\"][1];
+  posY = stationPositions[\"station_ME+1\"][2];
+  
+  int radius = stationRadius * 2 + EMUUI_REFEMU_GAP_BETWEEN_STATIONS;
+  
+  string refName = \"station_ME-1_zoom\";
+  addSymbol(myModuleName(), myPanelName(),
+            \"objects/CMS_CSC_UI/refCSCStationPhysical.pnl\",
+            refName,
+            makeDynString(\"$side:M\", \"$station:1\", \"$radius:\" + radius, \"$group:\" + paramGroup),
+            posX, posY, 0, 1, 1);
+  setValue(refName + \".background\", \"visible\", true);
+  
+  this.visible = false;
+  iconZoomOutMEM1.visible = true;
+  iconZoomInMEP1.visible = false;
+}
+" 0
+ 0 1 1 2 1 E 1 0 1 30 410 2  0 0  "pictures/CMS_CSC_UI/zoom_in.bmp" 4294967295 E 10 10 36 35
+6 6
+"iconZoomOutMEM1"
+""
+1 50 10 E E E 1 E 0 E N {0,0,0} E N "white" E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 13 Zoom out ME-1
+
+1
+"dashclr"N "_Transparent"
+E "main()
+{
+  removeSymbol(myModuleName(), myPanelName(), \"station_ME-1_zoom\");
+  this.visible = false;
+  iconZoomInMEM1.visible = true;
+  iconZoomInMEP1.visible = true;
+}
+" 0
+ 0 1 1 2 1 E 1 0 1 -30 420 2  0 0  "pictures/CMS_CSC_UI/close.bmp" 4294967295 E 50 10 75 35
 0
 LAYER, 2 
 1

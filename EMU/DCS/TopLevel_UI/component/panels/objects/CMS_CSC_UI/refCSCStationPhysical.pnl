@@ -98,15 +98,20 @@ void drawRing(int x, int y, int innerRadius, int outerRadius, int chamberCount, 
   int chamberInnerWidth = floor((float)(innerPerimeter / chamberCount));
   int chamberOuterWidth = floor((float)(outerPerimeter / chamberCount));
   int captionRadius = outerRadius - (chamberHeight / 2);     // radius of the ring on which chamber captions will be positioned
+  int warningRadius = outerRadius - 4;     // radius of the ring on which chamber warning sign is positioned
   
   for (int i=0; i < chamberCount; i++) {
     //compute the angle and position
     float angle = i * angleStep + angleOffset;
     float angleDeg = rad2deg(angle);             //convert angle from radians to degrees
-    int posX = round(-1 * outerRadius * cos(angle) + x);
-    int posY = round(-1 * outerRadius * sin(angle) + y);
-    int captionPosX = -1 * captionRadius * cos(angle) + x;
-    int captionPosY = -1 * captionRadius * sin(angle) + y;
+    float cosValue = cos(angle);
+    float sinValue = sin(angle);
+    int posX = round(-1 * outerRadius * cosValue + x);
+    int posY = round(-1 * outerRadius * sinValue + y);
+    int captionPosX = -1 * captionRadius * cosValue + x;
+    int captionPosY = -1 * captionRadius * sinValue + y;
+    int warningPosX = -1 * warningRadius * cosValue + x;
+    int warningPosY = -1 * warningRadius * sinValue + y;
     
     //construct a chamber name
     string chamberName;
@@ -148,12 +153,16 @@ void drawRing(int x, int y, int innerRadius, int outerRadius, int chamberCount, 
     setValue(refName + \".chamber\", \"position\", posX, posY);
     setValue(refName + \".chamber\", \"rotation\", -1 * angleDeg);
 
-    //position the caption
+    //position the caption and other gadgets
     setValue(refName + \".caption\", \"position\", captionPosX, captionPosY);
+    setValue(refName + \".imgHvChannelsDisabled\", \"position\", warningPosX, warningPosY);
+    //setValue(refName + \".imgHvChannelsDisabled\", \"rotation\", -1 * angleDeg + 180);
     if ((angleDeg > 90) && (angleDeg <= 270)){
       setValue(refName + \".caption\", \"rotation\", -1 * angleDeg + 180);
+      setValue(refName + \".imgHvChannelsDisabled\", \"rotation\", -1 * angleDeg + 180);
     } else {
       setValue(refName + \".caption\", \"rotation\", -1 * angleDeg);
+      setValue(refName + \".imgHvChannelsDisabled\", \"rotation\", -1 * angleDeg);
     }
   }
 }
@@ -208,6 +217,65 @@ void initParams() {
     paramStation = $station;
     paramRadius = $radius;
   }
+}
+
+void showPopupMenu() {
+  int answer;
+  dyn_string menu;
+  
+//   example of a menu
+//   dyn_string menu = makeDynString(\"PUSH_BUTTON, text1, 1, 1\", 
+//    \"PUSH_BUTTON, text2, 2, 1\", 
+//    \"SEPARATOR\", // separating line 
+//    \"CASCADE_BUTTON, Level 2, 1\", // branch 
+//    \"PUSH_BUTTON, text3, 3, 1\", 
+//    \"Level 2\", // from here level 2 
+//    \"PUSH_BUTTON, text4, 4, 0\", 
+//    \"PUSH_BUTTON, text5, 5, 1\"); 
+  
+  string stationName = \"ME\";
+  if (paramSide == \"P\") {
+    stationName += \"+\";
+  } else {
+    stationName += \"-\";
+  }
+  stationName += paramStation;
+  
+  dynAppend(menu, \"CASCADE_BUTTON, Command to Whole Station \" + stationName + \", 1\");
+  dynAppend(menu, \"CASCADE_BUTTON, Command to \" + stationName + \" High Voltage, 1\");
+  dynAppend(menu, \"CASCADE_BUTTON, Command to \" + stationName + \" Low Voltage, 1\");
+    
+  // whole station submenu
+  dynAppend(menu, \"Command to Whole Station \" + stationName);
+  dynAppend(menu, \"PUSH_BUTTON, Turn ON, 101, 1\");
+  dynAppend(menu, \"PUSH_BUTTON, Turn OFF, 102, 1\");
+  dynAppend(menu, \"PUSH_BUTTON, Go to STANDBY, 103, 1\");
+
+  // whole station submenu
+  dynAppend(menu, \"Command to \" + stationName + \" High Voltage\");
+  dynAppend(menu, \"PUSH_BUTTON, Turn ON, 201, 1\");
+  dynAppend(menu, \"PUSH_BUTTON, Turn OFF, 202, 1\");
+  dynAppend(menu, \"PUSH_BUTTON, Go to STANDBY, 203, 1\");
+    
+  // whole station submenu
+  dynAppend(menu, \"Command to \" + stationName + \" Low Voltage\");
+  dynAppend(menu, \"PUSH_BUTTON, Turn ON Low Voltage, 301, 1\");
+  dynAppend(menu, \"PUSH_BUTTON, Turn OFF Peripheral Crates, 302, 1\");
+  dynAppend(menu, \"PUSH_BUTTON, Turn OFF Peripheral Crates And Maratons, 303, 1\");
+    
+  string font = \"\";//\"-microsoft windows-Courier New-bold-i-normal-*-*-140-100-100-*-*-iso8859-1\"; //font 
+  string forecolor = \"black\"; //foreground color 
+  string backcolor = \"white\"; //background color 
+
+  int posX, posY;   
+  getCursorPosition(posX, posY);
+  //popupMenuXY(menu, posX, posY, answer, font, forecolor, backcolor);
+  popupMenu(menu, answer);
+  
+  emu_info(\"popupso atsakymas: \" + answer);
+  if (answer != 0) {
+    emu_errorSingle(\"This functionality is not implemented. Please inform DCS expert about this (make sure to describe how you got this message)\");
+  }
 }" 0
  2
 "CBRef" "1"
@@ -226,11 +294,11 @@ LANG:1 0
 6 2
 "background"
 ""
-1 30 30 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+1 30 30 E E E 1 E 0 E N {0,0,0} E N "_Button" E E
  E E
 3 0 0 0 0 0
 E E E
-0
+4
 1
 LANG:1 0 
 
@@ -255,7 +323,11 @@ E E 0 1 1 2 1 E 1 0 1 -140 -110 1 E 140 110 10 10
 "caption"
 ""
 1 140 440 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
- E E
+ "main()
+{
+  showPopupMenu();
+}" 0
+ E
 4 0 0 0 0 0
 E E E
 0
@@ -267,7 +339,7 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 140 440 202 461
 0 2 2 "0s" 0 0 0 192 0 0  140 440 1
 1
-LANG:1 102 -*-MS Shell Dlg-bold-r-normal-*-*-120-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 7 Caption
