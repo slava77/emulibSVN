@@ -7,9 +7,12 @@ This package contains functions to get configuration parameters and mappings.
 */
 
 global mapping emuui_g_mappingCache;
+global mapping emuui_g_arrayCache;
+const string emuui_g_version = ""; // default version is empty, if any other version is specified then you have to make sure that you have all the datapoints available i.e. CSC_UI_mapping and CSC_UI_array with appendix "_<version>"
 
 /** @return a mapping of a given name (the mapping is retrieved from configuration DPs). */
-mapping emuui_getMapping(string name, dyn_string &exceptionInfo, string version = "") {
+mapping emuui_getMapping(string name, dyn_string &exceptionInfo) {
+  string version = emuui_g_version;
   if (strlen(version) > 0) { version = "_" + version; } // add prefix to version if it's provided
   
   //check the cache
@@ -48,11 +51,11 @@ mapping emuui_getMapping(string name, dyn_string &exceptionInfo, string version 
 }
 
 /** @return a value of a requested key in a given mapping. */
-anytype emuui_getMappingValue(string name, string key, dyn_string &exceptionInfo, string version = "") {
-  mapping map = emuui_getMapping(name, exceptionInfo, version);
+anytype emuui_getMappingValue(string name, string key, dyn_string &exceptionInfo) {
+  mapping map = emuui_getMapping(name, exceptionInfo);
   if (emu_checkException(exceptionInfo)) { return; }
   if (!mappingHasKey(map, key)) {
-    emu_addError("Key \"" + key + "\" does not exist in mapping \"" + name + version + "\"", exceptionInfo);
+    emu_addError("Key \"" + key + "\" does not exist in mapping \"" + name + "\"", exceptionInfo);
     return "";
   }
   return map[key];
@@ -61,9 +64,9 @@ anytype emuui_getMappingValue(string name, string key, dyn_string &exceptionInfo
 /** Checks if a key exists in a given mapping (if the mapping itself exists).
     Doesn't generate any exceptions - all are handled here. If indeed the key is reachable - returns true.
 */
-bool emuui_mappingHasKey(string mappingName, string key, string mappingVersion = "") {
+bool emuui_mappingHasKey(string mappingName, string key) {
   dyn_string ex;
-  emuui_getMappingValue(mappingName, key, ex, version);
+  emuui_getMappingValue(mappingName, key, ex);
   if (dynlen(ex) > 0) {
     emu_errorHandled(ex);
     return false;
@@ -87,7 +90,7 @@ string emuui_getFsmNode(string type, mapping parameters, dyn_string &exceptionIn
     return "";
   }
 
-  return _emuui_fillPattern(pattern, parameters);  
+  return emuui_fillPattern(pattern, parameters);  
 }
 
 /**
@@ -124,7 +127,7 @@ dyn_string emuui_getDpNames(string type, mapping parameters, dyn_string &excepti
     return ret;
   }
 
-  string dp = _emuui_fillPattern(pattern, parameters);
+  string dp = emuui_fillPattern(pattern, parameters);
   ret = dpNames("*:" + dp);
   
   return ret;
@@ -150,7 +153,7 @@ float emuui_getDpValueRangeMax(string type, dyn_string &exceptionInfo) {
   e.g. pattern "LowVoltage/CSC_ME_$side$$station$$ring$_C$chamberNumber$_LV".
   Note any remaining $ parameters which were not found in the parameters mapping are replaced by a wildcard - "*".
 */
-string _emuui_fillPattern(string pattern, mapping parameters) {
+string emuui_fillPattern(string pattern, mapping parameters) {
   for(int i=1; i <= mappinglen(parameters); i++) {
     string key = mappingGetKey(parameters, i);
     string value = parameters[key];
@@ -163,4 +166,27 @@ string _emuui_fillPattern(string pattern, mapping parameters) {
     strreplace(pattern, param, "*");
   }
   return pattern;
+}
+
+dyn_string emuui_getArray(string name, dyn_string &exceptionInfo) {
+  string version = emuui_g_version;
+  if (strlen(version) > 0) { version = "_" + version; } // add prefix to version if it's provided
+  
+  //check the cache
+  if (mappingHasKey(emuui_g_arrayCache, name + version)) {
+    return emuui_g_arrayCache[name + version];
+  }
+  
+  string dpName = "emuui_array_" + name + version;
+  if (!dpExists(dpName)) {
+    emu_addError("Requested array \"" + name + version + "\" does not exist", exceptionInfo);
+    return makeDynString();
+  }
+
+  dyn_string data;
+  dpGet(dpName + ".array", data);
+  
+  emuui_g_arrayCache[name + version] = data;
+      
+  return data;
 }
