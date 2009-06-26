@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 800 370 N "_3DFace" 2
+PANEL,-1 -1 780 370 N "_3DFace" 2
 "$group"
 "$width"
 "main()
@@ -21,7 +21,7 @@ PANEL,-1 -1 800 370 N "_3DFace" 2
   float paramWidthFloat = paramWidth;
   int chamberWidthHeight;
   if (connectionType == \"DP\") { // gradient scale is necessary
-    chamberWidthHeight = floor((paramWidthFloat - (float)EMUUI_EMUPLOT_LABEL_WIDTH) / 37); // max 36 chambers + gradient scale
+    chamberWidthHeight = floor((paramWidthFloat - (float)EMUUI_EMUPLOT_LABEL_WIDTH - (float)EMUUI_EMUPLOT_GRADIENT_LABEL_WIDTH) / 37); // max 36 chambers + gradient scale
   } else { // gradient scale is NOT necessary
     chamberWidthHeight = floor((paramWidthFloat - (float)EMUUI_EMUPLOT_LABEL_WIDTH) / 36); // max 36 chambers
   }
@@ -124,15 +124,15 @@ void drawRingLabel(int x, int y, string side, int station, int ring) {
     ringLabel += station + \"/\" + ring;
     
     // add the label
+    string refName = \"ringLabel_\" + ringLabel;
+    dynAppend(references, refName);
     addSymbol(myModuleName(), myPanelName(), 
-              \"objects/CMS_CSC_UI/refLabel.pnl\", \"ringLabel_\" + ringLabel, 
+              \"objects/CMS_CSC_UI/refLabel.pnl\", refName, 
               makeDynString(\"$text:\" + ringLabel),
               x, y, 0, 1, 1);
 }
 
 void drawGradientScale(int bottomLeftX, int bottomLeftY, int height, int width, float minValue, float maxValue) {
-  float currentValue = minValue;
-  
   for (int i=0; i < height; i++) {
     string refName = \"gradientScaleLine\" + i;
     if (shapeExists(refName)) { refName += \"_1\"; }
@@ -144,11 +144,23 @@ void drawGradientScale(int bottomLeftX, int bottomLeftY, int height, int width, 
               bottomLeftX, bottomLeftY - i, 0, 1, 1);
     setValue(refName + \".lineHorizontal\", \"foreCol\", emuui_getGradientColor(i, 0, height));
     setValue(refName + \".lineHorizontal\", \"size\", width, 1);
-    
-//     currentValue += (maxValue - minValue) / ((float) height);
-//     string currentValueStr;
-//     sprintf(currentValueStr, \"%.2f\", currentValue);
-//     setValue(refName + \".lineHorizontal\", \"toolTipText\", currentValueStr);
+
+    float tmp = ((float)i) / 30;
+    if ((floor(tmp) == tmp) && (height - i > 15) ||    // draw value every 30 pixels, but don't draw if there's only 15 pixels left to the top - to avoid overlapping with the last value
+        (i == height - 1))                             // or if it's the last value
+    {
+      float value = minValue + ((maxValue - minValue) / ((float)height)) * ((float)i);
+      if (i == height -1) { value = maxValue; } // if it's the last one - just set the maxValue to avoid rounding error
+      string strValue;
+      sprintf(strValue, \"%d\", value);
+      // add the label
+      string refName = \"valueLabel_\" + strValue;
+      dynAppend(references, refName);
+      addSymbol(myModuleName(), myPanelName(), 
+                \"objects/CMS_CSC_UI/refLabel.pnl\", refName, 
+                makeDynString(\"$text:\" + strValue),
+                bottomLeftX + width, bottomLeftY - i - 6, 0, 1, 1); // shift a bit up, because the reference point of the label is in bottom left corner
+    }
   }
 }" 0
  "main()
@@ -163,7 +175,8 @@ string paramGroup;
 int paramWidth;
 
 // some panel-wide constants
-const int EMUUI_EMUPLOT_LABEL_WIDTH = 40;
+const int EMUUI_EMUPLOT_LABEL_WIDTH = 43;
+const int EMUUI_EMUPLOT_GRADIENT_LABEL_WIDTH = 20;
 mapping layoutParams;
 dyn_string references;
 bool runningLocal; // if true then panel is running localy, if false then panel is a reference
@@ -197,11 +210,8 @@ void initParams() {
 "CBRef" "1"
 "EClose" "main()
 {
-  destroyReferences();
-  
-  if (runningLocal) {
-    PanelOff();
-  }
+  destroyReferences();  
+  PanelOff();
 }
 " 0
 

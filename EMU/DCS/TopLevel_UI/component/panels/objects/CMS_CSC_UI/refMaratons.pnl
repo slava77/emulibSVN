@@ -1,0 +1,503 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 257 244 N "_3DFace" 1
+"$group"
+"main()
+{
+  initParams();
+  drawMaratons();
+}
+
+void drawMaratons() {
+  dyn_string ex;
+  
+  //get systems list, pick those with \"LV\" and query them for Maraton DB
+  dyn_string sysNames, lvSysNames;
+  dyn_uint sysIds;
+  getSystemNames(sysNames, sysIds);
+  for (int i=1; i <= dynlen(sysNames); i++) {
+    if (strpos(strtolower(sysNames[i]), \"lv\") >= 0) { // contains LV (case insensitive).
+      dynAppend(lvSysNames, sysNames[i]);
+    }
+  }
+  if (dynlen(lvSysNames) == 0) {
+    emu_errorSingle(\"No Low Voltage systems found (Low Voltage system name should contain 'lv' in the name (case insensitive))\");
+    return;
+  }
+  
+  dyn_string dbMrtn;
+  for (int i=1; i <= dynlen(lvSysNames); i++) {
+    dyn_string tmp;
+    dpGet(lvSysNames[i] + \":db_mrtn.list\", tmp);
+// use this if there can be duplicates (probably there won't be any, but who knows)..
+//     for (int j=1; j <= dynlen(tmp); j++) {
+//       if (!dynContains(dbMrtn, tmp[j])) {
+//         dynAppend(dbMrtn, tmp[j]); // if it doesn't contain the value yet - include it in the \"DB\"
+//       }
+//     }
+    dynAppend(dbMrtn, tmp);
+  }
+  
+  if (dynlen(dbMrtn) == 0) { emu_errorSingle(\"Could not find Maraton DB (check LV projects)\"); return; }
+  
+  mapping mapMaratons = _emuui_constructMappingFromCSV(dbMrtn, ex, \"Maraton DB\", \"\", true);
+  if (emu_checkException(ex)) { return; }
+  
+  int width = getVerticalLinePosX(\"M2\") - getVerticalLinePosX(\"M3\") + 1;
+  int topY = getHorizontalLinePosY(0);
+  
+  for (int i=1; i <= mappinglen(mapMaratons); i++) {
+    string key = mappingGetKey(mapMaratons, i);
+    string value = mapMaratons[key];
+    if (strlen(value) == 0) {
+      continue;
+    }
+    
+    // parse the key (there's side, disk and crate number information, value contains the Maraton ID
+    int id = value;
+    dyn_string keySplit = strsplit(key, \"_\"); // e.g M4_CR2
+    string side = keySplit[1][0]; // first part e.g. is M4 and second is CR2
+    string station = keySplit[1][1];
+    int disk = station;
+    if (disk > 2) { disk--; } // Valeri named them after stations ME 1, 2, 4 (I like disks YE 1, 2, 3).
+    strreplace(keySplit[2], \"CR\", \"\");
+    int crateNum = keySplit[2];
+    
+    // draw the Maratons
+    int x = getVerticalLinePosX(side + disk);
+    int y = topY + ((EMUUI_MARATONS_HEIGHT - 1) * (crateNum - 1));
+    
+    string deviceParamsDollar = \"$deviceParams:\" + \"side=\" + side +
+                                                   \";station=\" + station +
+                                                   \";disk=\" + disk +
+                                                   \";crateNum=\" + crateNum +
+                                                   \";id=\" + id;
+    string shapeParamsDollar = \"$shapeParams:\" + \"type=rectangle\" +
+                                                 \";width=\" + width +
+                                                 \";height=\" + EMUUI_MARATONS_HEIGHT;
+    
+    //import the chamber panel (no changes in the panel orientation; position - [0,0])
+    string refName = \"refMaraton_YE_\" + side + disk + \"_CR\" + crateNum + \"_ID\" + id ;  //reference name
+    if (shapeExists(refName)) { refName += \"_1\"; }
+    dynAppend(references, refName);
+    addSymbol(myModuleName(), myPanelName(),
+              \"objects/CMS_CSC_UI/refDevice.pnl\",
+              refName,
+              makeDynString(\"$caption:VALUE\", \"$deviceType:maraton\",
+                            deviceParamsDollar, shapeParamsDollar, \"$group:\" + paramGroup),
+              x, y, 0, 1, 1);
+  }
+}
+
+// returns X coordinate of the requested vertical line position
+int getVerticalLinePosX(string lineName) {
+  int posX, posY;
+  getValue(\"lineVertical\" + lineName, \"position\", posX, posY);
+  return posX;
+}
+
+// returns Y coordinate of the requested horizontal line position
+int getHorizontalLinePosY(int lineNum) {
+  int posX, posY;
+  getValue(\"lineHorizontal\" + lineNum, \"position\", posX, posY);
+  return posY;
+}
+" 0
+ "main()
+{
+  destroyReferences();
+}
+" 0
+ E E E 1 -1 -1 0  0 0
+""0  1
+E "// init parameters
+string paramGroup;
+
+// some panel-wide constants and variables
+const int EMUUI_MARATONS_HEIGHT = 20;
+dyn_string references;
+bool runningLocal; // if true then panel is running localy, if false then panel is a reference
+
+void destroyReferences() {
+  for (int i=1; i <= dynlen(references); i++) {
+    removeSymbol(myModuleName(), myPanelName(), references[i]);
+  }
+}
+
+/** coppies dollar parameters to local variables. If any dollar parameter is missing 
+   then local variable is given a default value to allow to run the panel separatelly for debugging purposes. */
+void initParams() {
+  //default values
+  if (strlen($group) == 0) {
+    
+    emuui_init();
+    runningLocal = true;
+    
+    paramGroup = emuui_getSessionDp(\"maratonView\");
+  } else { // copy from dollar params
+    runningLocal = false;
+    
+    paramGroup = $group;
+  }
+}" 0
+ 2
+"CBRef" "1"
+"EClose" "main()
+{
+  destroyReferences();  
+  PanelOff();
+}
+" 0
+
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+4 5
+"lineHorizontal0"
+""
+1 1.4210854715202e-014 30 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  1.4210854715202e-014 30 240 30
+4 17
+"lineVerticalM1"
+""
+1 80 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  80 30 80 50
+4 1
+"lineVerticalM2"
+""
+1 40 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  40 30 40 50
+4 6
+"lineVerticalM3"
+""
+1 0 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  0 30 0 50
+6 30
+"RECTANGLE10"
+""
+1 190 10 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+42 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 0.666666666666667 0 1 -39.3333333333333 0 1 E 119 0 59 30
+2 3
+"PRIMITIVE_TEXT2"
+""
+1 10 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 10 33 24
+0 2 2 "0s" 0 0 0 192 0 0  10 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 4 YE-3
+4 36
+"lineVerticalP1"
+""
+1 120 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+53 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  120 30 120 50
+6 41
+"RECTANGLE11"
+""
+1 190 10 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+63 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -60 0 1 E 140 0 101 30
+2 40
+"PRIMITIVE_TEXT3"
+""
+1 50 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+61 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 50 10 73 24
+0 2 2 "0s" 0 0 0 192 0 0  50 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 4 YE-2
+6 43
+"RECTANGLE12"
+""
+1 190 10 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+67 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -60 0 1 E 180 0 141 30
+2 42
+"PRIMITIVE_TEXT4"
+""
+1 90 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+65 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 90 10 113 24
+0 2 2 "0s" 0 0 0 192 0 0  90 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 4 YE-1
+4 44
+"lineVerticalP2"
+""
+1 160 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+69 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  160 30 160 50
+4 48
+"lineVerticalP3"
+""
+1 200 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+77 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  200 30 200 50
+6 49
+"RECTANGLE13"
+""
+1 190 10 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+79 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -60 0 1 E 220 0 181 30
+4 50
+"lineVertical6"
+""
+1 240 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+81 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  240 30 240 50
+6 52
+"RECTANGLE14"
+""
+1 190 10 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+85 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -60 0 1 E 260 0 221 30
+6 54
+"RECTANGLE15"
+""
+1 190 10 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+89 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -60 0 1 E 300 0 261 30
+2 45
+"PRIMITIVE_TEXT5"
+""
+1 130 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+71 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 130 10 156 24
+0 2 2 "0s" 0 0 0 192 0 0  130 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 4 YE+1
+2 51
+"PRIMITIVE_TEXT6"
+""
+1 170 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+83 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 170 10 196 24
+0 2 2 "0s" 0 0 0 192 0 0  170 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 4 YE+2
+2 53
+"PRIMITIVE_TEXT7"
+""
+1 210 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+87 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 210 10 236 24
+0 2 2 "0s" 0 0 0 192 0 0  210 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 4 YE+3
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

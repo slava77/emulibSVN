@@ -8,6 +8,7 @@ This package contains functions to get configuration parameters and mappings.
 
 global mapping emuui_g_mappingCache;
 global mapping emuui_g_arrayCache;
+global dyn_string emuui_g_lvSystemNames;
 const string emuui_g_version = ""; // default version is empty, if any other version is specified then you have to make sure that you have all the datapoints available i.e. CSC_UI_mapping and CSC_UI_array with appendix "_<version>"
 
 /** @return a mapping of a given name (the mapping is retrieved from configuration DPs). */
@@ -29,13 +30,36 @@ mapping emuui_getMapping(string name, dyn_string &exceptionInfo) {
   dyn_string data;
   dpGet(dpName + ".map", data);
   
+  mapping ret = _emuui_constructMappingFromCSV(data, exceptionInfo, name, version);
+  if (emu_checkException(exceptionInfo)) { return emucdb_dummyMapping; }
+
+  //add the mapping to the cache
+  emuui_g_mappingCache[name + version] = ret;
+      
+  return ret;
+}
+
+/** Converts an array of comma separated values to mapping. 
+  Parameters name and version are optional and only used for additional information in error messages.
+  If ingnoreEmptyValue is true then no error message is produced when the value is empty (not recommended, but needed sometimes).
+*/
+mapping _emuui_constructMappingFromCSV(dyn_string csvArray, dyn_string exceptionInfo, string name="", string version="", bool tolerateEmptyValue = false) {
   mapping ret;
   dyn_string tmpSplit;
-  for (int i=1; i <= dynlen(data); i++) {
-    tmpSplit = strsplit(data[i], ";");
+  for (int i=1; i <= dynlen(csvArray); i++) {
+    tmpSplit = strsplit(csvArray[i], ";");
     if (dynlen(tmpSplit) != 2) {
-      emu_addError("Lines #" + i + " in mapping \"" + name + version + "\" is corrupted", exceptionInfo);
-      return emucdb_dummyMapping;
+      bool tolerate = false;
+      if (tolerateEmptyValue) {
+        if ((dynlen(tmpSplit) == 1) && (strpos(csvArray[i], ";") > 0)) { // only value is empty
+          dynAppend(tmpSplit, "");
+          tolerate = true;
+        }
+      }
+      if (!tolerate) {
+        emu_addError("Line #" + i + " in mapping \"" + name + version + "\" is corrupted", exceptionInfo);
+        return emucdb_dummyMapping;
+      }
     }
     if (mappingHasKey(ret, tmpSplit[1])) {
       emu_addError("Key \"" + tmpSplit[1] + "\" in mapping \"" + name + version + "\" is defined multiple times", exceptionInfo);
@@ -44,9 +68,6 @@ mapping emuui_getMapping(string name, dyn_string &exceptionInfo) {
     
     ret[tmpSplit[1]] = tmpSplit[2];
   }
-  //add the mapping to the cache
-  emuui_g_mappingCache[name + version] = ret;
-      
   return ret;
 }
 
@@ -189,4 +210,27 @@ dyn_string emuui_getArray(string name, dyn_string &exceptionInfo) {
   emuui_g_arrayCache[name + version] = data;
       
   return data;
+}
+
+/** returns names of the Low Voltage systems that are now reachable. */
+dyn_string emuui_getLvSystemNames(dyn_string &exceptionInfo) {
+  if (dynlen(emuui_g_lvSystemNames) > 0) {
+    return emuui_g_lvSystemNames;
+  }
+  
+  //get systems list, pick those with "LV" and query them for PCMB DB
+  dyn_string sysNames;
+  dyn_uint sysIds;
+  getSystemNames(sysNames, sysIds);
+  for (int i=1; i <= dynlen(sysNames); i++) {
+    if (strpos(strtolower(sysNames[i]), "lv") >= 0) { // contains LV (case insensitive).
+      dynAppend(emuui_g_lvSystemNames, sysNames[i]);
+    }
+  }
+  if (dynlen(emuui_g_lvSystemNames) == 0) {
+    emu_addError("No Low Voltage systems found (Low Voltage system name should contain 'lv' in the name (case insensitive))", exceptionInfo);
+    return emuui_g_lvSystemNames;
+  }
+  
+  return emuui_g_lvSystemNames;
 }

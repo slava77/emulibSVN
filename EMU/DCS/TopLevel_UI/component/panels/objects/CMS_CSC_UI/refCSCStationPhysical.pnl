@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 7 Station
-PANEL,-1 -1 538 515 N "_3DFace" 4
+PANEL,-1 -1 538 517 N "_3DFace" 4
 "$group"
 "$radius"
 "$side"
@@ -50,7 +50,142 @@ void drawStation(int x, int y, int radius, string side, int station, dyn_string 
                      outerRadius,
                      chamberCount, side, station, ring);
     }
-  }  
+  }
+  
+//   int pcrateRadius = radius;
+//   if (station == 4) { pcrateRadius = scaleValue(layoutParams[\"innerRadius_ME42\"], scale) - gap; }
+//   drawPeripheralCrates(x, y, pcrateRadius + 5, side, station, exceptionInfo);
+}
+
+void drawPeripheralCrates(int x, int y, int radius, string side, int station, dyn_string &exceptionInfo) {
+  dyn_string ex;
+  
+  //get systems list, pick those with \"LV\" and query them for PCMB DB
+  dyn_string lvSysNames = emuui_getLvSystemNames(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  dyn_string dbPcmb;
+  for (int i=1; i <= dynlen(lvSysNames); i++) {
+    dyn_string tmp;
+    dpGet(lvSysNames[i] + \":db_pcmb.list\", tmp);
+// use this if there can be duplicates (probably there won't be any, but who knows)..
+//     for (int j=1; j <= dynlen(tmp); j++) {
+//       if (!dynContains(dbMrtn, tmp[j])) {
+//         dynAppend(dbMrtn, tmp[j]); // if it doesn't contain the value yet - include it in the \"DB\"
+//       }
+//     }
+    
+    //remove the line for Atlas PSU
+    for (int j=1; j <= dynlen(tmp); j++) {
+      if (strpos(tmp[j], \"PSU\") >= 0) {
+        dynRemove(tmp, j);
+        break;
+      }
+    }
+    
+    dynAppend(dbPcmb, tmp);
+  }
+  
+  if (dynlen(dbPcmb) == 0) { emu_errorSingle(\"Could not find PCMB DB (check LV projects)\"); return; }
+  
+  
+  mapping mapPcmbs = _emuui_constructMappingFromCSV(dbPcmb, ex, \"PCMB DB\", \"\", true);
+  if (emu_checkException(ex)) { return; }
+  
+  string currentStation = paramSide + paramStation + \"_PC\";
+  
+  // create the peripheral crate objects
+  dyn_string crateRefs;
+  string pcGroup = emuui_getSessionDp(\"mainPeripheralCrateView\");
+  for (int i=1; i <= mappinglen(mapPcmbs); i++) {
+    string key = mappingGetKey(mapPcmbs,i);
+    if (strpos(key, currentStation) < 0) {
+      continue;
+    }
+    string value = mapPcmbs[key];
+    
+    // parse the key
+    string id = value;
+    strreplace(key, currentStation, \"\");
+    string crateNum = key;
+    
+    string deviceParamsDollar = \"$deviceParams:\" + \"side=\" + side +
+                                                   \";station=\" + station +
+                                                   \";crateNum=\" + crateNum +
+                                                   \";id=\" + id;
+    string shapeParamsDollar = \"$shapeParams:\" + \"type=rectangle\" +
+                                                 \";width=\" + paramPCrateWidth +
+                                                 \";height=\" + paramPCrateHeight;
+    
+    //import the chamber panel (no changes in the panel orientation; position - [0,0])
+    string refName = \"refPeripheralCrate_\" + side + station + \"_PC\" + crateNum + \"_ID\" + id ;  //reference name
+    if (shapeExists(refName)) { refName += \"_1\"; }
+    dynAppend(references, refName);
+    dynAppend(crateRefs, refName);
+    addSymbol(myModuleName(), myPanelName(),
+              \"objects/CMS_CSC_UI/refDevice.pnl\",
+              refName,
+              makeDynString(\"$caption:VALUE\", \"$deviceType:peripheralCrate\",
+                            deviceParamsDollar, shapeParamsDollar, \"$group:\" + pcGroup),
+              x, y, 0, 1, 1);
+  }
+
+  delay(0, 50); // give just a little bit of time for the shapes to initialize before moving them around and rotating (they get screwd up if you don't)
+    
+  dynSortAsc(crateRefs);
+  
+  // position the crates around the station
+  float perimeter = 2 * EMUMATH_PI * radius;
+  float angleStep = (2 * EMUMATH_PI) / 6;
+  float angleOffset = ((2 * EMUMATH_PI) / 6); // start with the first crate which is in the top left
+  bool me11 = (dynlen(crateRefs) == 12); // ME11 stations have 12 crates, all others have 6
+  
+  for (int i=0; i < 6; i++) {
+    //compute the angle and position
+    float angle = i * angleStep + angleOffset;
+    float angleDeg = rad2deg(angle);             //convert angle from radians to degrees
+    float cosValue = cos(angle);
+    float sinValue = sin(angle);
+    int posX = round(-1 * radius * cosValue + x);
+    int posY = round(-1 * radius * sinValue + y);
+    int posXB, posYB; // position for \"B\" crates if it's ME11 station
+    string refName = crateRefs[i + 1],
+           refNameB;
+           
+    if (me11) {
+      int radiusB = radius + paramPCrateHeight - 1;
+      posXB = round(-1 * radiusB * cosValue + x);
+      posYB = round(-1 * radiusB * sinValue + y);
+      refName = crateRefs[(i * 2) + 1];
+      refNameB = crateRefs[(i + 1) * 2];
+    }
+    
+    //position the crate
+    setValue(refName + \".rectangle\", \"position\", posX, posY);
+    setValue(refName + \".rectangle\", \"rotation\", -1 * angleDeg - 90);
+
+    if (me11) {
+      setValue(refNameB + \".rectangle\", \"position\", posXB, posYB);
+      setValue(refNameB + \".rectangle\", \"rotation\", -1 * angleDeg + 90);
+    }
+    
+    //position the caption and other gadgets
+//     setValue(refName + \".caption\", \"position\", captionPosX, captionPosY);
+//     setValue(refName + \".imgHvChannelsDisabled\", \"position\", warningPosX, warningPosY);
+    //setValue(refName + \".imgHvChannelsDisabled\", \"rotation\", -1 * angleDeg + 180);
+//     if ((angleDeg > 90) && (angleDeg <= 270)){
+//       setValue(refName + \".caption\", \"rotation\", -1 * angleDeg + 180);
+//       setValue(refName + \".imgHvChannelsDisabled\", \"rotation\", -1 * angleDeg + 180);
+//     } else {
+//       setValue(refName + \".caption\", \"rotation\", -1 * angleDeg);
+//       setValue(refName + \".imgHvChannelsDisabled\", \"rotation\", -1 * angleDeg);
+//     }
+  }
+
+  
+  
+  
+  
 }
 
 /* sets the caption in the right position (also depending on the label size) and sets the proper text for the label. */
@@ -187,6 +322,8 @@ int paramRadius;
 string paramSide;
 int paramStation;
 string paramGroup;
+int paramPCrateWidth;
+int paramPCrateHeight;
 
 // some panel-wide constants and variables
 dyn_string references;
@@ -217,6 +354,8 @@ void initParams() {
     paramStation = $station;
     paramRadius = $radius;
   }
+  paramPCrateWidth = paramRadius / 6;
+  paramPCrateHeight = paramRadius / 13;
 }
 
 void showPopupMenu() {

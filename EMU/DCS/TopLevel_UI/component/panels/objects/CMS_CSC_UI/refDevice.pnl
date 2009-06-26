@@ -26,7 +26,8 @@ PANEL,-1 -1 120 53 N "_3DFace" 5
   if ($caption == \"VALUE\") {
     caption.text = \"\";
     showValueOnCaption = true;
-  } else {
+//  } else if (strpos($caption, \"DP=\") == 0) { 
+  }else {
     caption.text = $caption;
     showValueOnCaption = false;
   }
@@ -92,14 +93,22 @@ void confChamberShape(mapping shapeParams) {
 
 void confRectShape(mapping shapeParams) {
   //check if relevant parameters are present, if not - leave default shape and return
+  int posX, posY;
+  getValue(\"rectangle\", \"position\", posX, posY);
   if (!mappingHasKey(shapeParams, \"width\") || 
       !mappingHasKey(shapeParams, \"height\")) {
     
+    setValue(\"caption\", \"position\", posX + 10, posY + 7);
     return;
   }
   
+  posY += ((int)shapeParams[\"height\"]) / 2;
+  posX += ((int)shapeParams[\"width\"]) / 2;
+  setValue(\"caption\", \"position\", posX, posY);
+  
   int width = shapeParams[\"width\"];
   int height = shapeParams[\"height\"];
+  setValue(\"rectangle\", \"size\", width, height); // for some reason a single setSize doesn't set quite the size that you request!!!??? nonsence but it's true - the second setSize does it correctly (discovered when setting size 90px)
   setValue(\"rectangle\", \"size\", width, height);
   if ((width < 17) || (height < 17)) { 
     caption.visible = false;
@@ -155,6 +164,8 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
         currentConnectionMode = mode;
         currentConnection = node;
       }
+    } else {
+      emu_debug(\"FSM node was not found for mode '\" + mode + \"' with deviceParams '\" + deviceParams + \"'\");
     }
   } else if (connectionType == \"DP\") { // this is a DP connection
     bool dpFound = false;
