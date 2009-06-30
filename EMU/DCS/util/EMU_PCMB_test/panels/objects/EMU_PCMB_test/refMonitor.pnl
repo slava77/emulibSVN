@@ -28,12 +28,19 @@ PANEL,-1 -1 310 409 N "_3DFace" 1
   }
   
   // hook up the elmb state
-  dpConnect(\"elmbStateUpdatedCB\", true, $elmbDp + \".state.noToggle\");
+  string stateDp = $elmbDp + \".state.noToggle\";
+  if (!dpExists(stateDp)) { // on older ELMB component versions state.noToggle DPE doesn't exists so then use the state.value and dismis the toggle bit at the work function
+    stateDp = $elmbDp + \".state.value\"; 
+    stateWithToggleBit = true;
+  }
+  dpConnect(\"elmbStateUpdatedCB\", true, stateDp);
 }
 " 0
  E E E E 1 -1 -1 0  0 0
 ""0  1
-E "//AI channel mapping
+E "bool stateWithToggleBit = false; // if an older ELMB component is used then we use the state with toggle bit and dismiss that at CB func.
+
+//AI channel mapping
 dyn_int list3v3_1;
 dyn_int list3v3_2;
 dyn_int list5v;
@@ -44,6 +51,10 @@ dyn_int listStandby;
 mapping voltageColors;
 
 void elmbStateUpdatedCB(string dpe, int state) {
+  if (stateWithToggleBit) {
+    state &= 127; // dismiss the toggle bit
+  }
+  
   if (state == 5) { // OPERATIONAL
     updateAllVoltages();
   } else {
