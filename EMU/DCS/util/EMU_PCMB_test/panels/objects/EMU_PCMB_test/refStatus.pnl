@@ -14,8 +14,14 @@ PANEL,-1 -1 392 171 N "_3DFace" 1
   
   string elmbDp = $elmbDp;
   
+  string stateDp = elmbDp + \".state.noToggle\";
+  if (!dpExists(stateDp)) { // on older ELMB component versions state.noToggle DPE doesn't exists so then use the state.value and dismis the toggle bit at the work function
+    stateDp = elmbDp + \".state.value\"; 
+    stateWithToggleBit = true;
+  }
+  
   // hook up the state and bootup time
-  dpConnect(\"updateStateCB\", true, elmbDp + \".state.noToggle\");
+  dpConnect(\"updateStateCB\", true, stateDp);
   dpConnect(\"updateBootupTimeCB\", true, elmbDp + \".bootup:_online.._stime\");
     
   // hook up the heartbeat trend
@@ -28,8 +34,13 @@ PANEL,-1 -1 392 171 N "_3DFace" 1
 ""0  1
 E "//CONSTANTS
 mapping states; // a mapping of arrays [state name][color][start button enabled][stop button enabled]
+bool stateWithToggleBit = false; // if an older ELMB component is used then we use the state with toggle bit and dismiss that at CB func.
 
 void updateStateCB(string stateDp, int state){
+  if (stateWithToggleBit) {
+    state &= 127; // dismiss the toggle bit
+  }
+  
   if (!mappingHasKey(states, state)) {
     state = 0;
   }
