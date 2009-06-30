@@ -52,9 +52,12 @@ void pcTurnOn(string elmbDp, int delayMs) {
   if (toggleControlBit(elmbDp, delayMs) == -1) { return; } // toggle control bit and check for exception
   
   //turn on boards
-  fwElmbUser_setDoByte(elmbDp, \"C\", 0, exception);
-  if (emu_checkException(exception) > 0) { return; }
-  fwElmbUser_setDoBit(elmbDp, \"A;0\", FALSE, exception);
+  for (int i=0; i < 8; i++) {  // turn ON the first 8 TMB/DMB pairs
+    fwElmbUser_setDoBit(elmbDp, \"C;\" + i, FALSE, exception);
+    if (emu_checkException(exception) > 0) { return; }
+    if (toggleControlBit(elmbDp, delayMs) == -1) { return; } // toggle control bit and check for exception
+  }
+  fwElmbUser_setDoBit(elmbDp, \"A;0\", FALSE, exception); // turn ON the last - 9th TMB/DMB pair
   if (emu_checkException(exception) > 0) { return; }
   if (toggleControlBit(elmbDp, delayMs) == -1) { return; } // toggle control bit and check for exception
   
