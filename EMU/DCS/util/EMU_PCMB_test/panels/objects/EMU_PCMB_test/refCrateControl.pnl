@@ -33,7 +33,7 @@ void elmbStateUpdatedCB(string dpe, int state) {
 }
 
 // ---------============== CONTROL ===============---------------
-void pcTurnOn(string elmbDp, int delayMs) {
+void pcTurnOn(string elmbDp, unsigned delayMs) {
   dyn_string exception;
   
   emu_info(\"Switching ON crate hooked up with ELMB: \" + elmbDp);
@@ -41,10 +41,13 @@ void pcTurnOn(string elmbDp, int delayMs) {
   //ensure we're not in the suspend/standby state
   fwElmbUser_setDoBit(elmbDp, \"A;7\", FALSE, exception);
   if (emu_checkException(exception) > 0) { return; }
+  delay(0, delayMs / 2);
   fwElmbUser_setDoBit(elmbDp, \"A;6\", FALSE, exception);
   if (emu_checkException(exception) > 0) { return; }
+  delay(0, delayMs / 2);
   fwElmbUser_setDoBit(elmbDp, \"A;5\", FALSE, exception);
   if (emu_checkException(exception) > 0) { return; }
+  delay(0, delayMs / 2);
 
   //turn on some power
   fwElmbUser_setDoBit(elmbDp, \"A;3\", FALSE, exception);
@@ -64,12 +67,13 @@ void pcTurnOn(string elmbDp, int delayMs) {
   //turn on the rest of the power
   fwElmbUser_setDoBit(elmbDp, \"A;1\", FALSE, exception);
   if (emu_checkException(exception) > 0) { return; }
+  delay(0, delayMs / 2);
   fwElmbUser_setDoBit(elmbDp, \"A;2\", FALSE, exception);
   if (emu_checkException(exception) > 0) { return; }
   if (toggleControlBit(elmbDp, delayMs) == -1) { return; } // toggle control bit and check for exception
 }
 
-void pcTurnOff(string elmbDp, int delayMs) {
+void pcTurnOff(string elmbDp, unsigned delayMs) {
   dyn_string exception;
   
   emu_info(\"Switching OFF crate hooked up with ELMB: \" + elmbDp);
@@ -80,12 +84,13 @@ void pcTurnOff(string elmbDp, int delayMs) {
   toggleControlBit(elmbDp, delayMs);
 }
 
-int toggleControlBit(string node, time delayMs) {
+int toggleControlBit(string node, unsigned delayMs) {
   dyn_string exception;
   
+  delay(0, delayMs / 2);
   fwElmbUser_setDoBit(node, \"A;4\", FALSE, exception);
   if (emu_checkException(exception) > 0) { return -1; }
-  delay(0, delayMs);
+  delay(0, delayMs / 2);
   fwElmbUser_setDoBit(node, \"A;4\", TRUE, exception);
   if (emu_checkException(exception) > 0) { return -1; }
   return 0;
@@ -102,7 +107,7 @@ LANG:1 0
 13 0
 "btnOn"
 ""
-1 11.8518518518518 10 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 9.99999999999995 9.99999999999999 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 1 0 0 0 0 0
 E E E
@@ -114,20 +119,24 @@ LANG:1 0
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
- 9.85185185185185 8.00000000000001 133.851851851852 35
+ 8 8 132 35
 
 T 
 1
 LANG:1 7 Turn ON
 "main()
 {
-  pcTurnOn($elmbDp, spinDelay.text);
+  this.enabled = false;
+  btnOff.enabled = false;
+  pcTurnOn($elmbDp, (unsigned) spinDelay.text);
+  this.enabled = true;
+  btnOff.enabled = true;
 }" 0
  E E E
 13 1
 "btnOff"
 ""
-1 11.8518518518518 40 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 9.99999999999995 40 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 3 0 0 0 0 0
 E E E
@@ -139,14 +148,18 @@ LANG:1 0
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
- 9.85185185185185 38 133.851851851852 65
+ 8 38 132 65
 
 T 
 1
 LANG:1 8 Turn OFF
 "main()
 {
-  pcTurnOff($elmbDp, spinDelay.text);
+  this.enabled = false;
+  btnOff.enabled = false;
+  pcTurnOff($elmbDp, (unsigned) spinDelay.text);
+  this.enabled = true;
+  btnOff.enabled = true;
 }" 0
  E E E
 21 2
@@ -171,7 +184,7 @@ E
 E
 E
 
-N 0 10000 1 100 1 1
+N 0 10000 1 500 1 1
 2 3
 "PRIMITIVE_TEXT3"
 ""
