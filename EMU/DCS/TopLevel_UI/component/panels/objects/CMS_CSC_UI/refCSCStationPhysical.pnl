@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 7 Station
-PANEL,-1 -1 538 517 N "_3DFace" 4
+PANEL,-1 -1 866 641 N "_3DFace" 4
 "$group"
 "$radius"
 "$side"
@@ -346,7 +346,7 @@ void initParams() {
     emuui_init();
     paramGroup = emuui_getSessionDp(\"mainChamberView\");
     paramSide = \"P\";
-    paramStation = 1;
+    paramStation = 2;
     paramRadius = 200;
   } else { // copy from dollar params
     paramGroup = $group;

@@ -292,6 +292,11 @@ void hideTooltip() {
 }
 
 void showPopupMenu() {
+  dyn_string ex;
+  emuui_openContextMenu($deviceType, deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  return;
+  
   int answer;
   dyn_string menu;
   

@@ -9,15 +9,27 @@ PANEL,-1 -1 380 171 N "_3DFace" 1
   deviceParams = emuui_parseParameterString($deviceParams, ex);
   if (emu_checkException(ex)) { return; }
 
-  dyn_string dps = emuui_getDpNames(\"HV_vMon\", deviceParams, ex);
+  hvStatusColors = emuui_getMapping(\"hvStatusColors\", ex);
+  if (emu_checkException(ex)) { return; }
+  hvStatusTexts = emuui_getMapping(\"hvChannelStatusMeaning\", ex);
   if (emu_checkException(ex)) { return; }
   
   string offChannelsDp = emuui_getDpName(\"HV_off_channels\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
   
-  initGui(dynlen(dps));
+  dyn_string channelDps;
+  emuui_chamberGetHvChannelDps(deviceParams, channelDps, channelsOffset, ex);
+  if (emu_checkException(ex)) { return; }
   
-  dpConnect(\"updateVMonCB\", true, dps);
+  initGui(dynlen(channelDps));
+  
+  for (int i=1; i <= dynlen(channelDps); i++) {
+    dynAppend(vMonDps, channelDps[i] + \".vmon\");
+    dynAppend(statusDps, channelDps[i] + \".status\");
+  }
+  
+  dpConnect(\"updateVMonCB\", true, vMonDps);
+  dpConnect(\"updateStatusCB\", true, statusDps);
   dpConnect(\"updateDisabledChannelsCB\", true, offChannelsDp);
 
 // TODO show this if there's no communication with HV  
@@ -40,6 +52,12 @@ void initGui(int channelCount) {
 ""0  1
 E "//some panel-wide constants
 mapping deviceParams;
+dyn_string vMonDps, statusDps;
+mapping hvStatusColors;
+mapping hvStatusTexts;
+int channelsOffset = 0; // offset in module channels that are used by this chamber (e.g. small chambers use channels 1-18 or 19-36 so offset is either 0 or 18 here)
+dyn_int currentStatuses;
+dyn_int disabledChannels;
 
 void updateVMonCB(dyn_string dpList, dyn_float voltages) {
   int rowCount = ceil(dynlen(voltages) / 6);
@@ -47,12 +65,38 @@ void updateVMonCB(dyn_string dpList, dyn_float voltages) {
   for (int i=0; i < rowCount; i++) {
     for (int j=1; j <= 6; j++) {
       int arrayIndex = (i * 6) + j;
+      if (dynlen(currentStatuses) >= arrayIndex) {
+        if (currentStatuses[arrayIndex] > 3) { continue; } // if status flag is > 3 - it's an error state, so don't write voltage
+      }
       tableVoltages.cellValueRC(i, \"group\" + j, voltages[arrayIndex] + \" V\");
     }
   }
 }
 
-void updateDisabledChannelsCB(string dpName, dyn_string disabledChannels) {
+void updateStatusCB(dyn_string dpList, dyn_int statuses) {
+  currentStatuses = statuses;
+  int rowCount = ceil(dynlen(statuses) / 6);
+  
+  for (int i=0; i < rowCount; i++) {
+    for (int j=1; j <= 6; j++) {
+      int arrayIndex = (i * 6) + j;
+      string statusText = hvStatusTexts[(string)statuses[arrayIndex]];
+      string statusColor = hvStatusColors[statusText];
+      if (!dynContains(disabledChannels, arrayIndex)) { // if this channel is disabled - do not update it's color - let it stay gray
+        tableVoltages.cellBackColRC(i, \"group\" + j, statusColor);
+      }
+      if (statuses[arrayIndex] > 3) { // if it's an error state
+        tableVoltages.cellValueRC(i, \"group\" + j, statusText);
+      }
+    }
+  }
+}
+
+void updateDisabledChannelsCB(string dpName, dyn_string disabledChannelsParam) {
+  disabledChannels = disabledChannelsParam;
+  for (int i=1; i <= dynlen(disabledChannels); i++) {
+    disabledChannels[i] -= channelsOffset;
+  }
   if (dynlen(disabledChannels) == 0) {
     lblDisabledChannels.text = \"none\";
     return;
@@ -61,10 +105,16 @@ void updateDisabledChannelsCB(string dpName, dyn_string disabledChannels) {
   string channelsStr;
   int count = dynlen(disabledChannels);
   for (int i=1; i <= count; i++) {
-    channelsStr += \"#\" + disabledChannels[i];
+    int channelNum = disabledChannels[i];
+    // construct a label text
+    channelsStr += \"#\" + channelNum;
     if (i != count) { // not the last one
       channelsStr += \", \";
     }
+    // paint the table cell background
+    int row = floor((channelNum - 1) / 6);
+    int column = channelNum - (row * 6);
+    tableVoltages.cellBackColRC(row, \"group\" + column, \"FwEquipmentDisabled\");
   }
   lblDisabledChannels.text = channelsStr;
 }" 0
@@ -89,7 +139,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1.45833333333333 0 1.66666666666667 0 0 1 E 240 90 0 0
+E E 0 1 1 2 1 E 1.45833333333333 0 1.55555555555556 0 0 1 E 240 90 0 0
 2 4
 "PRIMITIVE_TEXT1"
 ""
@@ -179,26 +229,6 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
 0 ""
 0 0 0 1 7
 1 0
-2 6
-"PRIMITIVE_TEXT2"
-""
-1 10 130 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
- E E
-8 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 130 319 144
-0 2 2 "0s" 0 0 0 192 0 0  10 130 1
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
-LANG:1 65 Tripped channels: TBD.......       TODO change table cell backCol
 2 7
 "PRIMITIVE_TEXT3"
 ""
@@ -243,26 +273,6 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
 0 ""
 1
 LANG:1 9 list here
-2 9
-"PRIMITIVE_TEXT4"
-""
-1 140 10 E E E 1 E 1 E N "_WindowText" E N {255,255,225} E E
- E E
-11 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 140 10 327 24
-0 2 2 "0s" 0 0 0 192 0 0  140 10 1
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
-LANG:1 38 Background colors are work in progress
 2 10
 "lblNoCommunication"
 ""
