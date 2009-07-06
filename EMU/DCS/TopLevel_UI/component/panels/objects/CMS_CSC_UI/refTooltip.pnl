@@ -8,16 +8,17 @@ PANEL,-1 -1 388 123 N "_3DFace" 3
 "main()
 {
   //initialize some panel-wide variables and constants
-  tooltipHeight = 0;
+  tooltipHeight = EMUUI_TOOLTIP_SHIFT_Y; // to make the tooltip appear a bit lower than the mouse
+  tooltipWidth = 0;
+  panelSize(\"\", screenSizeX, screenSizeY);
   getCursorPosition(tooltipX, tooltipY);
+  tooltipX += EMUUI_TOOLTIP_SHIFT_X;
   
   float zoomFactor;
   getZoomFactor(zoomFactor);
   
   tooltipX /= zoomFactor;
   tooltipY /= zoomFactor;
-  
-  tooltipY += 20;
   
   //add Caption - device name
   if (!addTooltipObj($deviceType + \"_name\")) {
@@ -29,6 +30,27 @@ PANEL,-1 -1 388 123 N "_3DFace" 3
   string tooltipType = emuui_getMappingValue(\"modeToTooltipObj\", $mode, ex); // get the tooltip type given the device connection mode
   if (dynlen(ex)) { emu_errorHandled(ex); return; } // if the tooltip type is missing - no problem, just don't display that tooltip object
   addTooltipObj(tooltipType); // if tooltip type is found - add the appropriate tooltip object
+
+  // if the tooltip hides over the edge of the panel - correct that  
+  int hideX, hideY; // number of pixels of tooltip width or hight that is hidden over the edge of the panel
+  hideY = (tooltipY + tooltipHeight) - screenSizeY;
+  hideX = (tooltipX + tooltipWidth) - screenSizeX;
+  if (hideY < 0) { hideY = 0; } // cut on -0 to avoid funny effects
+  if (hideX < 0) { hideX = 0; } // cut on -0 to avoid funny effects
+  
+  if ((hideY > 0) || (hideX > 0)) {
+    for (int i=1; i <= dynlen(refObjects); i++) {
+      int objPosX, objPosY;
+      getValue(refObjects[i], \"position\", objPosX, objPosY);
+      objPosY -= hideY;
+      if (hideX > 0) {
+        objPosX -= tooltipWidth + (EMUUI_TOOLTIP_SHIFT_X * 2);
+        objPosY -= EMUUI_TOOLTIP_SHIFT_Y;
+      }
+      setValue(refObjects[i], \"position\", objPosX, objPosY);
+    }
+  }
+
 }
 " 0
  "main()
@@ -39,9 +61,14 @@ PANEL,-1 -1 388 123 N "_3DFace" 3
 }" 0
  E E E 1 -1 -1 0  30 40
 ""0  1
-E "int tooltipHeight;
+E "int tooltipHeight, tooltipWidth;
 int tooltipX, tooltipY;
+int screenSizeX, screenSizeY;
 dyn_string refObjects;
+
+// shift the tooltip a bit down and right in order not to overlap it with mouse cursor
+const int EMUUI_TOOLTIP_SHIFT_X = 8;
+const int EMUUI_TOOLTIP_SHIFT_Y = 20;
 
 string getTooltipObjFile(string type) {
   dyn_string filenames = getFileNames(PROJ_PATH + \"panels/objects/CMS_CSC_UI/tooltip_objects\", \"refTooltipObj_\" + type + \".pnl\");
@@ -72,12 +99,17 @@ bool addTooltipObj(string type) {
     int objWidth, objHeight;
     getValue(type + \"_tooltipBack\", \"size\", objWidth, objHeight);
     tooltipHeight += objHeight - 1;
+    if (objWidth > tooltipWidth) {
+      tooltipWidth = objWidth;
+    }
   } else { // if the background object doesn't exist we cannot really tell what's the height of that tooltipObject, so just lets increase it by let's say 50 so that we notice that problem if we will try to add something in addition to a tooltip object which hasn't got a fixed height (e.g. chamber_general).
     tooltipHeight += 50;
+    tooltipWidth += 170;
   }
-  
+    
   return true;
-}" 0
+}
+" 0
  2
 "CBRef" "1"
 "EClose" "main()
