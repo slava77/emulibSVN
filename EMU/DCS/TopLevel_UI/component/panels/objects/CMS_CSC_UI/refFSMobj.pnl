@@ -9,7 +9,6 @@ PANEL,-1 -1 298 30 N "_3DFace" 2
   int posX, posY;
   getValue(\"refPoint\", \"position\", posX, posY);
 
-  fwFsmUi_init($node, $obj);
   fwFsmUi_addObjWithLock($node, $obj, posX, posY);
 }" 0
  E E E E 1 -1 -1 0  28 92
