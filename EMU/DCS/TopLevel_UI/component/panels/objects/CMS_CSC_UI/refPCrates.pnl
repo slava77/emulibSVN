@@ -1,0 +1,609 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 324 290 N "_3DFace" 1
+"$group"
+"main()
+{
+  initParams();
+  drawPCrates();
+}
+
+void drawPCrates() {
+  dyn_string ex;
+  
+  //get systems list, pick those with \"LV\" and query them for PCMB DB
+  dyn_string lvSysNames = emuui_getLvSystemNames(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  dyn_string dbPcmb;
+  for (int i=1; i <= dynlen(lvSysNames); i++) {
+    dyn_string tmp;
+    dpGet(lvSysNames[i] + \":db_pcmb.list\", tmp);
+    
+    //remove the line for Atlas PSU
+    for (int j=1; j <= dynlen(tmp); j++) {
+      if (strpos(tmp[j], \"PSU\") >= 0) {
+        dynRemove(tmp, j);
+        break;
+      }
+    }
+    
+    dynAppend(dbPcmb, tmp);
+  }
+  
+  if (dynlen(dbPcmb) == 0) { emu_errorSingle(\"Could not find PCMB DB (check LV projects)\"); return; }
+  
+  
+  mapping mapPcmbs = _emuui_constructMappingFromCSV(dbPcmb, ex, \"PCMB DB\", \"\", true);
+  if (emu_checkException(ex)) { return; }
+  
+  int width = getVerticalLinePosX(\"M3\") - getVerticalLinePosX(\"M4\") + 1;
+  int topY = getHorizontalLinePosY(0);
+  
+  for (int i=1; i <= mappinglen(mapPcmbs); i++) {
+    string key = mappingGetKey(mapPcmbs, i);
+    string value = mapPcmbs[key];
+    if (strlen(value) == 0) {
+      continue;
+    }
+    
+    // parse the key (there's side, station and crate number information, value contains the ELMB ID (hexadecimal)
+    string id = value; // string because it's hex
+    dyn_string keySplit = strsplit(key, \"_\"); // e.g M4_PC2
+    string side = keySplit[1][0]; // first part e.g. is M4 and second is PC2
+    string station = keySplit[1][1];
+    strreplace(keySplit[2], \"PC\", \"\");
+    string crateNum = keySplit[2]; // this is string because there are crate numbers like \"2A\" (for ME11)
+    // construct a crate number in which the crates will be ordered (if it doesn't contain a letter then nothing to do, but if theres A or B - they are ordered accordingly - see the algorithm)
+    int crateNumInt = (string) crateNum[0]; // zero-based. There can be no more than one digit in crate number
+    if (strlen(crateNum) > 1) { // if there's a letter
+      crateNumInt *= 2;
+      if (crateNum[1] == 'A') {
+        crateNumInt -= 1;
+      }
+    }
+    
+    // draw the Peripheral Crates
+    int x = getVerticalLinePosX(side + station);
+    int y = topY + ((EMUUI_PCRATES_HEIGHT - 1) * (crateNumInt - 1));
+    
+    string deviceParamsDollar = \"$deviceParams:\" + \"side=\" + side +
+                                                   \";station=\" + station +
+                                                   \";crateNum=\" + crateNum +
+                                                   \";id=\" + id;
+    string shapeParamsDollar = \"$shapeParams:\" + \"type=rectangle\" +
+                                                 \";width=\" + width +
+                                                 \";height=\" + EMUUI_PCRATES_HEIGHT;
+    
+    //import the chamber panel
+    string refName = \"refPCrate_ME_\" + side + station + \"_PC\" + crateNum + \"_ID=\" + id ;  //reference name
+    if (shapeExists(refName)) { refName += \"_duplicate1\"; }
+    
+    
+    emu_info(\"------------------------\");
+    emu_info(\"PCrate height: \" + EMUUI_PCRATES_HEIGHT);
+    emu_info(\"refName: \" + refName);
+    emu_info(\"crateNumInt: \" + crateNumInt);
+    emu_info(\"topY: \" + topY);
+    emu_info(\"pos= \" + x + \",\" + y);
+    emu_info(\"------------------------\");
+    
+    
+    dynAppend(references, refName);
+    addSymbol(myModuleName(), myPanelName(),
+              \"objects/CMS_CSC_UI/refDevice.pnl\",
+              refName,
+              makeDynString(\"$caption:VALUE\", \"$deviceType:peripheralCrate\",
+                            deviceParamsDollar, shapeParamsDollar, \"$group:\" + paramGroup),
+              x, y, 0, 1, 1);
+  }
+}
+
+// returns X coordinate of the requested vertical line position
+int getVerticalLinePosX(string lineName) {
+  int posX, posY;
+  getValue(\"lineVertical\" + lineName, \"position\", posX, posY);
+  return posX;
+}
+
+// returns Y coordinate of the requested horizontal line position
+int getHorizontalLinePosY(int lineNum) {
+  int posX, posY;
+  getValue(\"lineHorizontal\" + lineNum, \"position\", posX, posY);
+  return posY;
+}
+" 0
+ "main()
+{
+  destroyReferences();
+}
+" 0
+ E E E 1 -1 -1 0  0 0
+""0  1
+E "// init parameters
+string paramGroup;
+
+// some panel-wide constants and variables
+const int EMUUI_PCRATES_HEIGHT = 20;
+dyn_string references;
+bool runningLocal; // if true then panel is running localy, if false then panel is a reference
+
+void destroyReferences() {
+  for (int i=1; i <= dynlen(references); i++) {
+    removeSymbol(myModuleName(), myPanelName(), references[i]);
+  }
+}
+
+/** coppies dollar parameters to local variables. If any dollar parameter is missing 
+   then local variable is given a default value to allow to run the panel separatelly for debugging purposes. */
+void initParams() {
+  //default values
+  if (strlen($group) == 0) {
+    
+    emuui_init();
+    runningLocal = true;
+    
+    paramGroup = emuui_getSessionDp(\"mainPeripheralCrateView\");
+  } else { // copy from dollar params
+    runningLocal = false;
+    
+    paramGroup = $group;
+  }
+}" 0
+ 2
+"CBRef" "1"
+"EClose" "main()
+{
+  destroyReferences();  
+  PanelOff();
+}
+" 0
+
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 57
+"RECTANGLE16"
+""
+1 190 10 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+95 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 1 0 1 E 279 0 240 30
+4 5
+"lineHorizontal0"
+""
+1 1.4210854715202e-014 30 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  1.4210854715202e-014 30 240 30
+4 17
+"lineVerticalM2"
+""
+1 80 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  80 30 80 50
+4 1
+"lineVerticalM3"
+""
+1 40 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  40 30 40 50
+4 6
+"lineVerticalM4"
+""
+1 0 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  0 30 0 50
+6 30
+"RECTANGLE10"
+""
+1 190 10 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+42 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 0.666666666666667 0 1 -39.3333333333333 0 1 E 119 0 59 30
+2 3
+"PRIMITIVE_TEXT2"
+""
+1 8 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 8 10 33 24
+0 2 2 "0s" 0 0 0 192 0 0  8 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 4 ME-4
+4 36
+"lineVerticalM1"
+""
+1 120 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+53 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  120 30 120 50
+6 41
+"RECTANGLE11"
+""
+1 190 10 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+63 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -60 0 1 E 140 0 101 30
+2 40
+"PRIMITIVE_TEXT3"
+""
+1 48 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+61 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 48 10 73 24
+0 2 2 "0s" 0 0 0 192 0 0  48 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 4 ME-3
+6 43
+"RECTANGLE12"
+""
+1 190 10 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+67 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -60 0 1 E 180 0 141 30
+2 42
+"PRIMITIVE_TEXT4"
+""
+1 88 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+65 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 88 10 113 24
+0 2 2 "0s" 0 0 0 192 0 0  88 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 4 ME-2
+4 44
+"lineVerticalP1"
+""
+1 160 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+69 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  160 30 160 50
+4 48
+"lineVerticalP2"
+""
+1 200 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+77 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  200 30 200 50
+6 49
+"RECTANGLE13"
+""
+1 190 10 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+79 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -60 0 1 E 220 0 181 30
+4 50
+"lineVerticalP3"
+""
+1 240 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+81 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  240 30 240 50
+6 52
+"RECTANGLE14"
+""
+1 190 10 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+85 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -60 0 1 E 260 0 221 30
+6 54
+"RECTANGLE15"
+""
+1 190 10 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+89 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -60 0 1 E 300 0 261 30
+2 45
+"PRIMITIVE_TEXT5"
+""
+1 128 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+71 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 128 10 153 24
+0 2 2 "0s" 0 0 0 192 0 0  128 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 4 ME-1
+2 51
+"PRIMITIVE_TEXT6"
+""
+1 167 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+83 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 167 10 195 24
+0 2 2 "0s" 0 0 0 192 0 0  167 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 4 ME+1
+2 53
+"PRIMITIVE_TEXT7"
+""
+1 207 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+87 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 207 10 235 24
+0 2 2 "0s" 0 0 0 192 0 0  207 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 4 ME+2
+2 55
+"PRIMITIVE_TEXT8"
+""
+1 247 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+91 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 247 10 275 24
+0 2 2 "0s" 0 0 0 192 0 0  247 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 4 ME+3
+6 58
+"RECTANGLE17"
+""
+1 190 10 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+97 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 20 0 1 E 300 0 261 30
+4 59
+"lineVerticalP4"
+""
+1 280 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+99 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  280 30 280 50
+4 60
+"LINE2"
+""
+1 320 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+101 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  320 30 320 50
+2 56
+"PRIMITIVE_TEXT9"
+""
+1 287 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+93 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 287 10 315 24
+0 2 2 "0s" 0 0 0 192 0 0  287 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 4 ME+4
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
