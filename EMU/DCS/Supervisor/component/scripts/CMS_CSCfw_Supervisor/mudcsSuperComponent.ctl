@@ -1,6 +1,7 @@
 int mode=2; // mode =2 is browsing with all CSC panels
             // mode=0 only FSM panel browsing
             // mode=1  : is browsing with all CSC panels besides some
+            // mode=3 easy mode
 
 string Component;
 string ProjectHome;
@@ -18,6 +19,7 @@ mudcsSuperInit();
 DebugTN("Super Component Creation 2");
 mudcsSupeComponentrCreate(1);
 mudcsSupeComponentrCreate(2);
+mudcsSupeComponentrCreate(3);
 
 }
 
@@ -43,8 +45,10 @@ dir_init=Component+"/init";
 
 string dir_dubna="CMS_ME11";
 
-string key_add="";
-if(mode==1)key_add="_MINI";
+string key_add;
+if(mode==2)key_add="";
+else if(mode==1)key_add="_MINI";
+else if(mode==3)key_add="_EASY";
 
 Component+=key_add;
 
@@ -107,11 +111,14 @@ if(mode==2)
 mudcsSynchSystemPoratbleOS(oper_system,"cp "+ProjectHome+"/source/"+dir_oper+"/config/"+dir_oper+".xml "+CSC_fwGSuper_g_HOME+"/"+Component+"/"+dir_oper+".xml");
 else if(mode==1)
 mudcsSynchSystemPoratbleOS(oper_system,"cp "+ProjectHome+"/source/"+dir_oper+"/config/"+dir_oper+"_short.xml "+CSC_fwGSuper_g_HOME+"/"+Component+"/"+dir_oper+".xml");  
+else if(mode==3)
+mudcsSynchSystemPoratbleOS(oper_system,"cp "+ProjectHome+"/source/"+dir_oper+"/config/"+dir_oper+"_easy.xml "+CSC_fwGSuper_g_HOME+"/"+Component+"/"+dir_oper+".xml");  
 
-//if(mode==2){
+
+if(mode!=3){
 dplist();
 dplist2();
-//}
+}
 
 mudcsSynchSystemPoratbleOS(oper_system,"cp -rp "+ProjectHome+"/source/"+dir_oper+"/config"+" "+CSC_fwGSuper_g_HOME+"/"+Component+"/source/"+dir_oper+"/.");
 
