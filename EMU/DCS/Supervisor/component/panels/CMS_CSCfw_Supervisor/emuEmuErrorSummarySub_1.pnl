@@ -1,9 +1,9 @@
 V 10
 1
 LANG:1 9 do_config
-PANEL,-1 -1 548 502 N "_3DFace" 0
+PANEL,-1 -1 547 502 N "_3DFace" 0
 "bool isBanner;
-int one_crate_configuration_time=60;
+int one_crate_configuration_time=10; // 6-7 according to Jinghua + 1-2 minutes for all
 
 main()
 {
@@ -99,9 +99,12 @@ banner_text+=\"Resume Peripheral Crate Slow Control button\";
   dyn_string power_up_buffer;
   dpGet(system_crb+\":PREPARE_POWER_UP_BUFFER.:_online.._stime\",last_set_buffer);
   dpGet(system_crb+\":PREPARE_POWER_UP_BUFFER.\",power_up_buffer); 
-  int time_out=current_time-last_set_buffer;
-  dpSet(\"time_out\",\"text\",time_out+\" sec\");
-  if(time_out>dynlen(power_up_buffer)*one_crate_configuration_time){
+  int time_out;
+  time_out=  current_time-last_set_buffer;
+  
+  setValue(\"time_out\",\"text\",time_out+\" sec\");
+  if(dynlen(power_up_buffer)>=1 
+     && time_out>(dynlen(power_up_buffer)*one_crate_configuration_time +120)){
     setValue(\"time_out\",\"backCol\",\"{255,48,49}\");
    setValue(\"do_config\",\"visible\",true); 
   }
@@ -116,7 +119,7 @@ banner_text+=\"Resume Peripheral Crate Slow Control button\";
 //==============================================================
 update_prepare_power_up(string dpName,dyn_string value){
 
-  if(dynlen(value)>1 || (dynlen(value)==1 && value[1] != \"done\")){
+  if(dynlen(value) >= 1  ){
    
  //  isBanner=false;
    setValue(\"PREPARE_POWER_UP\",\"visible\",true);      
@@ -129,7 +132,7 @@ update_prepare_power_up(string dpName,dyn_string value){
  //  isBanner=true;
    setValue(\"PREPARE_POWER_UP\",\"visible\",false);    
    setValue(\"CRATES_ARE_NOT_CONFIGURED\",\"visible\",false);    
-   if(dynlen(value)==1 && value[1] == \"done\")setValue(\"CONFIGURATION_IS_DONE\",\"visible\",true);   
+   if(dynlen(value)==0)setValue(\"CONFIGURATION_IS_DONE\",\"visible\",true);   
    
   }
   
@@ -278,7 +281,7 @@ DomainName=substr(split3[1],(strpos(split3[1],\":\")+1));
 ///if((strpos(DomainName,\"CSC_LV\"))!=0)continue;
 
 if(type==\"Maraton\"){
- if((strpos(DomainName,\"LV_CAN\"))>=0)continue; // to take only imported nodes
+// commented if whole mrtn folders are imported  if((strpos(DomainName,\"LV_CAN\"))>=0)continue; // to take only imported nodes
 }
 else if(type==\"Dubna\"){
  if((strpos(DomainName,\"CSC_ME_11_HV\"))>=0)continue; // to take only imported nodes
@@ -727,7 +730,7 @@ getch(1, chs[1], chs, makeDynInt(1));
 
 ///fwFsmUi_setCUModeByName(\"CMS_CSC\",\"CSC_ME_P4::CSC_ME_P4\",\"Exclude\");
     for(i=1;i<=dynlen(dps_en);i++){
-     if(strpos(dps_en[i],type1)>=0){ 
+     if(strpos(dps_en[i],type1)==(strlen(dps_en[i])-strlen(type1)) ){ 
       if(type!=\"fwCrb_CSC_LV\")dps1=strsplit(dps_en[i],\"/\");
       else dps1=makeDynString(dps_en[i]);
       dps_en[i]=substr(dps1[dynlen(dps1)],0,strpos(dps1[dynlen(dps1)],type1));
@@ -768,8 +771,15 @@ string mode_en;
 
   }
   else{
-   if(flags[i]==0){
-    split[1]=domain;
+    if(flags[i]==0){
+     
+    if(strpos(chs[i],\"::\")>=0){
+       split[1]=substr(chs[i],0,strpos(chs[i],\"::\") );
+       chs[i]=substr(chs[i],strpos(chs[i],\"::\")+2 );
+    }
+    else{
+        split[1]=domain;
+     }  
     chs1=fwFsmUi_getAllChildren(split[1],chs[i],flags1);
    }
    else{ 
@@ -908,7 +918,8 @@ LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,
    setValue(\"\",\"tableMode\",TABLE_SELECT_BROWSE);
 setValue(\"\",\"selectByClick\",1); 
 }" 0
-"main(int row, string column, string value)
+"
+main(int row, string column, string value)
 {
 
   
@@ -993,7 +1004,7 @@ i=lines1[1];
       else if(strpos(line[1],\"CSC_ME_P\")>=0){// temporal !!!!
        children = fwFsmUi_getAllChildren(\"CMS_CSC_LV_CAN2\", line[1]+g_type1, child_flags);
        if(dynlen(children)==0)children = fwFsmUi_getAllChildren(\"CMS_CSC_LV_CAN2_P\", line[1]+g_type1, child_flags);        
-       l_system_name=\"CMS_CSCfw_LV_CAN\";
+       l_system_name=\"csc_dcs_lv1\";//\"CMS_CSCfw_LV_CAN\";
         
       }
      // mudcsDebug(dynlen(children));
@@ -1016,9 +1027,14 @@ i=lines1[1];
      } // if(type_save==\"Maraton\")
      else if(type_save==\"fwCrb_CSC_LV\" || type_save==\"Dubna\"){
      obj=g_system_names[i]+\":\"+line[1]+g_type1;      
-       
+  
+   // g_panel=\"fwFSMuser/fwUi.pnl\";
+      if(type_save==\"Dubna\"){
+      obj=substr(obj,strpos(obj,\":\")+1);
+      g_nodes[i]=\"CSC_ME_11_HV\";
+      }         
      }
- 
+  
    }
    else{
     if(dynlen(systemNamesDps)==0)mudcsDebug(\"SYSTEM NAME NOT DEFINED !\");
@@ -1044,6 +1060,15 @@ string LVModule=\"Summary_Module\";
 //		ModuleOn(LVModule,1,1,0,0,1,1,1,\"\"); 
 	} 
 
+// mudcsDebug(obj);
+// mudcsDebug(g_nodes[i]);       
+// if(strpos(type_save,\"Dubna\")>=0){
+//   g_panel=\"fwFSMuser/fwUi.pnl\";
+//   obj=substr(obj,strpos(obj,\":\")+1);
+//    g_nodes[i]=\"CSC_ME_11_HV\";
+// } 
+ // mudcsDebug(obj);
+//  mudcsDebug(g_nodes[i]);    
 	RootPanelOnModule(g_panel, //\"emu_all/fwTrendPanel.pnl\", 
 				\"\",LVModule, 
 	makeDynString(\"$sDpName:\" + obj, \"$obj:\"+obj,\"$node:\"+g_nodes[i],
@@ -1053,7 +1078,8 @@ string LVModule=\"Summary_Module\";
 return;
 
   
-}" 0
+}
+" 0
  1 0 1 2 0 "Item" 24 1 0 "s" 1
 LANG:1 4 Item
 E
@@ -1409,6 +1435,10 @@ SUMMARY
 "main()
 {
   
+  
+  
+   
+  flag_press=1; 
   flag_press=1;
   frozen=0;
   string type;
@@ -1417,10 +1447,13 @@ SUMMARY
     g_type1=type1;
   string type2=\"Dubna_HV\"; 
       g_panel=\"CMS_ME11/ME11PN.pnl\";
+      g_panel=\"fwFSMuser/fwUi.pnl\";     
    //   g_node=\"CMS_CSC_LV_CAN1\";
    
     
   mudcsErrorMrtnDisplay(type,type1,type2,\"\");
+  
+ 
 
 }" 0
  E E E
@@ -1504,7 +1537,7 @@ LANG:1 0
 
 0
 1
-LANG:1 93 -*-helvetica-*-r-normal-*-*-120-100-100-*-*-iso8859-1|-17,0,0,0,505,0,0,0,0,0,0,0,0,helvetica
+LANG:1 92 -*-helvetica-*-r-normal-*-17-*-100-100-*-*-iso8859-1|-17,0,0,0,505,0,0,0,0,0,0,0,0,helvetica
 0 ""
  388 112 472 136
 3 "0s" 0 0 0 0 0 -1  E E E
@@ -1521,7 +1554,7 @@ LANG:1 0
 
 0
 1
-LANG:1 109 -*-Bitstream Charter-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
 0 ""
  388 88 472 112
 

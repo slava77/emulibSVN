@@ -4,7 +4,10 @@ LANG:1 0
 PANEL,-1 -1 451 483 N "_3DFace" 0
 E E E E E 1 -1 -1 0  80 40
 ""0  1
-E "int main_mode=0;
+E "#uses \"CMS_CSCfw_LV_CRB/mudcs9XAlertReconfigAllSlowControls.ctl\"
+
+int g_busyThread;
+int main_mode=0;
   
   string type;
   string type1;
@@ -13,11 +16,18 @@ E "int main_mode=0;
    dyn_string dps, dps1, dpse, dpseF;
      dyn_time dpst;
    dyn_string dpsD, dps1D, dpseD,  dpseDF; 
-     dyn_time dpstD;     
+     dyn_time dpstD;
+     dyn_string dpst1D;     
      
 mudcsErrorDisplay(string type_par=\"\"){
+  
+dyn_string exceptionInfo;  
+  	g_busyThread = -1; 
+	fwBusyBarButton_std_startBusy(exceptionInfo); 
+
     dynClear(dps);
   dynClear(dpse);
+    dynClear(dpst);
     dynClear(dpseF);
     
   string off_channels_s, dp;
@@ -30,6 +40,7 @@ mudcsErrorDisplay(string type_par=\"\"){
   time last_set_status;
 
   shape table=getShape(\"table\"); 
+    table.deleteAllLines();
   
   if(!main_mode)dps=dpNames(\"*:*\",type);
   else dps=dpNames(\"*\",type);
@@ -69,7 +80,7 @@ mudcsErrorDisplay(string type_par=\"\"){
  // DebugTN(dpst);
  //   DebugTN(dpse);
   //setValue(\"table\",\"deleteAllLines\");
-  table.deleteAllLines();
+ /// table.deleteAllLines();
    //        setValue(\"table\",\"appendLine\",\"Item\",\"CRB/CSC_ME_P2_PC2\",\"Time\",\"\");
        setValue(\"table\",\"appendLine\",\"Item\",type2+\" excluded summary\",\"Time\",\"\");
        if(dynlen(dpse)==0 && dynlen(dpseD)==0) setValue(\"table\",\"appendLine\",\"Item\",\"no entries\",\"Time\",\"\");
@@ -83,9 +94,15 @@ mudcsErrorDisplay(string type_par=\"\"){
      for(i=1;i<=dynlen(dpseD);i++){    
                  setValue(\"table\",\"appendLine\",
             \"Item\",dpseD[i],
-            \"Time\",+\"(whole device disabled)\"
+            \"Time\",\"(dev)\"+dpst1D[i]
             ); 
-          }   
+          }
+     
+   //---------------
+fwBusyBarButton_std_stopBusy(exceptionInfo);
+//---------------
+	if(dynlen(exceptionInfo)>0)
+		fwExceptionHandling_display(exceptionInfo);     
 }  
   
 
@@ -106,6 +123,9 @@ int i;
    dynClear(dpsD);
   dynClear(dpseD);
      dynClear(dpseDF);
+     
+    dynClear(dpstD);
+  dynClear(dpst1D);    
 //chs=fwFsmUi_getAllChildren(\"CSC_ME_P4\",\"CSC_ME_P4\",flags);
 //for(i=1;i<dynlen(chs);i++){
 // mudcsDebug(chs[i]);
@@ -124,11 +144,12 @@ getch(1, chs[1], chs, makeDynInt(1));
 
 ///fwFsmUi_setCUModeByName(\"CMS_CSC\",\"CSC_ME_P4::CSC_ME_P4\",\"Exclude\");
     for(i=1;i<=dynlen(dpsD);i++){
-     if(strpos(dpsD[i],type1)>=0){ 
+     if(strpos(dpsD[i],type1)==(strlen(dpsD[i]) - strlen(type1) ) ){ 
       if(type!=\"fwCrb_CSC_LV\")dps1D=strsplit(dpsD[i],\"/\");
       else dps1D=makeDynString(dpsD[i]);
       dpsD[i]=substr(dps1D[dynlen(dps1D)],0,strpos(dps1D[dynlen(dps1D)],type1));
       dynAppend(dpseD,dpsD[i]);
+      dynAppend(dpst1D,dpstD[i]);      
      }
     }
 /*    
@@ -167,12 +188,29 @@ string mode_en;
   }
   else{
    if(flags[i]==0){
-    split[1]=domain;
+
+    if(strpos(chs[i],\"::\")>=0){
+       split[1]=substr(chs[i],0,strpos(chs[i],\"::\") );
+       chs[i]=substr(chs[i],strpos(chs[i],\"::\")+2 );
+    }
+    else{
+        split[1]=domain;
+     }
+    
     chs1=fwFsmUi_getAllChildren(split[1],chs[i],flags1);
+    
+//   if(strpos(chs[i],\"CRB\" )>=0 )     
+//   DebugTN(\"0>>> \"+chs[i]+\" \"+dynlen(chs1)+\"  >> \"+split[1]);
+  
+    
    }
    else{ 
     split=strsplit(chs[i],\":\");
     chs1=fwFsmUi_getAllChildren(split[1],split[1],flags1);
+    
+  // if(strpos(chs[i],\"CRB\" )>=0 )     
+  // DebugTN(\"1>>> \"+chs[i]+\" \"+dynlen(chs1)+\"  >> \"+split[1]);
+       
    }
 
    if(dynlen(chs1)>=1)getch(mode,split[1],chs1,flags1);
@@ -180,10 +218,11 @@ string mode_en;
     for(j=1;j<=dynlen(chs1);j++){
 
 
-
 //if(domain==\"CSC_ME_P2\")mudcsDebug(chs1[j]+\" \"+flags1[j]);
      if(flags1[j]==2){
      if(strpos(chs1[j],type1)<0)continue; 
+
+// DebugTN(\">>> \"+chs1[j]+\" >> \"+split[1]+\" \"+type1);    
 //mudcsDebug2(split[1]+\" \"+chs1[j]);
 ///////////////////////      dpGet(chs1[j]+\".status\",status);
 //if(domain==\"CSC_ME_P2\")mudcsDebug2(split[1]+\" \"+chs1[j]);
@@ -191,10 +230,23 @@ string mode_en;
           count++;
 
          mode_en=fwFsmUi_getDUMode(split[1],chs1[j]);
+         
+    
+         
          if(mode==1 && mode_en==\"Disabled\"){
            DebugTN(split[1]+\" \"+chs1[j]);
+
            dynAppend(dpsD,chs1[j]);
            dynAppend(dpseDF,split[1]+\",\"+chs1[j]);
+           
+string dp_fsm;           
+time dp_fsm_mode_time;
+fwCU_getDp(split[1]+\"::\"+chs1[j],dp_fsm);
+  dpGet(dp_fsm+\".mode.enabled:_online.._stime\",dp_fsm_mode_time);
+            dynAppend(dpstD,dp_fsm_mode_time);    
+           
+//DebugTN(\">>> \"+chs1[j]+\" >> \"+split[1]+\" \"+type1+\" \"+dp_fsm);       
+  
 //mudcsDebug(split[1]+\" \"+chs1[j]);
 //          fwFsmUi_setDUModeByName(split[1],chs1[j],\"Enable\");
          }
@@ -482,7 +534,9 @@ LANG:1 43 Chamber Boards LV
 EXCLUDED
 SUMMARY
 refresh
-"main()
+"
+
+main()
 {
     type=\"LV_1\";
   type1=\"_LV\";
@@ -532,7 +586,7 @@ refresh
 13 9
 "upload"
 ""
-1 70 120 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+1 70 90 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
  E E
 12 0 0 0 0 0
 E E E
@@ -544,7 +598,7 @@ LANG:1 0
 1
 LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
 0 ""
- 68 118 162 152
+ 68 88 162 122
 
 T 
 1
@@ -584,7 +638,7 @@ LANG:1 6 upload
 13 11
 "download"
 ""
-1 200 120 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+1 190 90 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
  E E
 15 0 0 0 0 0
 E E E
@@ -596,7 +650,7 @@ LANG:1 0
 1
 LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
 0 ""
- 198 118 332 152
+ 188 88 322 122
 
 T 
 1
@@ -631,7 +685,21 @@ LANG:1 20 download (dangerous)
     
    }
   }
-  
+  //------------------------------------------------------------------
+   mudcsAlertReconfig(\"TEMP_1\", \".off_channels\");
+
+    mudcsAlertReconfig(\"HV_1\", \".off_channels\");
+
+    mudcsAlertReconfig(\"LV_1\", \".noalert_channels\");  
+  mudcsAlertReconfig(\"LV_1;.data.Cfeb_o.v33\", \".noalert_channels\");
+  mudcsAlertReconfig(\"LV_1;.data.Cfeb_o.v50\", \".noalert_channels\"); 
+  mudcsAlertReconfig(\"LV_1;.data.Cfeb_o.v60\", \".noalert_channels\"); 
+  mudcsAlertReconfig(\"LV_1;.data.Cfeb_o.c33\", \".noalert_channels\");
+  mudcsAlertReconfig(\"LV_1;.data.Cfeb_o.c50\", \".noalert_channels\"); 
+  mudcsAlertReconfig(\"LV_1;.data.Cfeb_o.c60\", \".noalert_channels\");
+
+  mudcsAlertReconfig(\"fwCrb_CSC_LV\", \".off_channels\");
+  //--------------------------------------------------------------------
   mudcsDebug(\"done\");
   
 }" 0
@@ -661,6 +729,88 @@ LANG:1 12 PUSH_BUTTON5
   dpCreate(\"MUDCS_EXCLUDE_GLOBAL1\",\"MUDCS_DYN_STRING\");
 }" 0
  E E E
+10 13
+"Polyline1"
+""
+1 276 1165 E E E 1 E 1 E N "_Window" E N "_Transparent" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 2 1 0 1 E 1 0 1 92 -31 0 E 3 179 180
+179 190
+10 190
+ 0
+10 14
+"Polyline2"
+""
+1 127 1175 E E E 1 E 1 E N "_ButtonShadow" E N "_Transparent" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 2 1 0 1 E 1 0 1 92 -31 0 E 3 10 190
+10 180
+178 180
+ 0
+6 15
+"busySize"
+""
+1 145 1169 E E E 1 E 1 E N "_3DFace" E N "_Transparent" E E
+ E E
+22 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E 1 0 1 92 -31 0 E 14 181 172 187
+6 16
+"busyFlag"
+""
+1 140 1173 E E E 1 E 0 E N {0,0,153} E N {0,0,153} E E
+ E E
+24 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E 1 0 1 92 -31 1 E 12 182 52 188
+2 18
+"PRIMITIVE_TEXT1"
+""
+1 50 140 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+27 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 50 140 91 159
+0 2 2 "0s" 0 0 0 192 0 0  50 140 1
+1
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-15-*-100-100-*-*-iso8859-1|-15,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+1
+LANG:1 6 Result
 0
 LAYER, 1 
 1
