@@ -3242,13 +3242,13 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 480 50 663 70
+E E 0 1 1 2 1 E U  1 E 480 50 659 70
 0 2 2 "0s" 0 0 0 192 0 0  480 50 1
 1
 LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
 0 ""
 1
-LANG:1 22 _DEVICE IS DESABLED_  
+LANG:1 22 _DEVICE IS DISABLED_  
 20 83
 "isDeviceEnabledCheck"
 ""

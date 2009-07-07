@@ -131,7 +131,7 @@ else {
   setValue(\"isDeviceEnabledCheck\",\"backCol\",\"{0,153,153}\");   
   setValue(\"isDeviceEnabledCheck\",\"state\",0,1);     
 }
-
+setValue(\"table\",\"deleteAllLines\");
 g_dps2=dpNames(CSC_fwG_g_SYSTEM_NAME+\":*\"+DpNameFsm2,\"_FwFsmDevice\");
 dpConnect(\"update_enabled\",g_dps2[1]+\".mode.enabled\");
 
@@ -245,6 +245,8 @@ update_monitor(string dp, string value)
         if(ms_status>3)setValue(\"ms_status\",\"backCol\",\"{255,48,49}\");
         else setValue(\"ms_status\",\"backCol\",\"{202,202,202}\");    
   }
+  
+  dpSet(DpNameFsm+\".reserve1\",3); // to update the FSM state handler
   
 int i, j, j_b, j_e, shift=0;
 
@@ -2169,15 +2171,48 @@ int current_status;
 
  dpGet(DpNameFsm+\".status\",current_status);
 
+ mudcsSwitchOffTripChannels();
 if(current_status != -2){
  if(current_status==-1){
 
            dpSetWait(DpNameFsm+\".status\",2);
+   //        DebugTN(DpNameFsm+\".status,2\");
  }
 //mudcsCommand(\"HV\",DpName,\"get_data\");
 
 } // if
 
+}
+mudcsSwitchOffTripChannels(){
+ int i, i_shift, state,status,i_zero_bazed;
+ int com=0, value=0; // value does not play role for OFF command
+ int channel_number=18;
+ string host,subcommand;
+ dyn_string coords=split_set;
+ dyn_int di1;
+ if(coords[dynlen(coords)]==0)channel_number=30;
+//  mudcsDebug(project_system);
+ for(i=1;i<=channel_number;i++){
+    i_shift=channel_numeration_shift+i;
+   dpGet(DpName+\".data.v\"+i_shift+\".state\", state);
+   dpGet(DpName+\".data.v\"+i_shift+\".status\", status);  
+   if(state==0 && status >=4){
+    dynAppend(di1,i_shift); 
+    host=coords[1];
+      i_zero_bazed= i_shift -1;
+    subcommand=\"HVCMD;\"+coords[2]+\";\"+coords[3]+\";\"+i_zero_bazed+\";\"+com+\";\"+value+\";\"+\"-1\";
+
+    dpSetWait(mudcsAddSystem(\"HV_1_COM\"+\".command\",project_system),host+\"|\"+subcommand);
+  DebugTN(subcommand);
+       
+   }
+   
+ }
+ 
+ 
+ 
+   
+  
 }" 0
  E E "
 main(){
@@ -2243,18 +2278,18 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 40 380 800 420
+E E 0 0 0 0 1 E U  1 E 40 380 599 420
 1 2 2 "0s" 0 0 0 192 0 0  40 380 2
 1
 LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
 0 ""
 1
-LANG:1 77   THE LV IS PROBABLY OFF: YOU SHOULD RESTART HV SERVER: with slice_w command 
+LANG:1 56   THE LV PROBLEM OR SIGNAL CABLE PROBLEM: CALL HV EXPERT
 1
 LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
 0 ""
 1
-LANG:1 41   or if it does not help to ckeck cabling
+LANG:1 2   
 14 66
 "module_status"
 ""

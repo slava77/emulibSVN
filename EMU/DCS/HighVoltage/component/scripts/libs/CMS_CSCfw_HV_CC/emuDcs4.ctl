@@ -157,6 +157,7 @@ int  mudcsGetMasterChannelStatus(string DpName){
   }
 }
 //===================================================================
+/*
 mudcsInitServer(){
 //  mudcsGetMasterForChamber(string fsm, int &master_id, int &master_chan, int &master_index, dyn_string &coord_master);
  
@@ -212,7 +213,7 @@ mudcsInitServer(){
 
     
 }
-
+*/
 //====================================================================
 string mudcsGetPrimaryFsmForChamberFsm(string &fsm, int &primary_status, time &last_set_primary_status){
   int i,j;
@@ -256,3 +257,140 @@ mudcsSetRampUpRateForAllChambers(string primary_fsm, int rate){
      }      
 }
      
+//=======================================================================
+
+//===================================================================
+mudcsInitServer(){
+//  mudcsGetMasterForChamber(string fsm, int &master_id, int &master_chan, int &master_index, dyn_string &coord_master);
+ 
+    addGlobal("CSC_fwG_so_primary_chambers",DYN_DYN_STRING_VAR);
+    addGlobal("CSC_fwG_so_primary_fsm",DYN_STRING_VAR);
+    addGlobal("CSC_fwG_so_get_chambers_time",DYN_TIME_VAR);
+    addGlobal("CSC_fwG_so_chambers_fsm",DYN_STRING_VAR);    
+  int i,j;
+  
+  string system_master;
+  
+  
+  CSC_fwG_so_primary_fsm= dpNames("*:*","HV_PR");
+  
+   for(j=1;j<=dynlen(CSC_fwG_so_primary_fsm);j++){
+      CSC_fwG_so_primary_chambers[j]=makeDynString();
+   }   
+
+  
+  int master_id; int master_chan; int master_index; dyn_string coord_master;
+  string master, primary;
+  dyn_int coord_primary;
+  //===
+ // dyn_string chambers_fsm= dpNames("*","HV_1");
+//  CSC_fwG_so_chambers_fsm=chambers_fsm;
+//    for(i=1;i<=dynlen(chambers_fsm);i++){    
+//  mudcsGetMasterForChamber(chambers_fsm[i], master_id, master_chan, master_index, coord_master);
+  //=====
+    dyn_string chambers_fsm; //++
+  dyn_string local_primary_fsm= dpNames("*","HV_PR"); //++
+  if(dynlen(local_primary_fsm)>=1)chambers_fsm= dpNames("*:*","HV_1"); // ++
+  else chambers_fsm= dpNames("*","HV_1"); // ++
+     CSC_fwG_so_chambers_fsm=chambers_fsm;
+    for(i=1;i<=dynlen(chambers_fsm);i++){
+//  mudcsGetMasterForChamber(chambers_fsm[i], master_id, master_chan, master_index, coord_master); //++
+    int ret=mudcsGetMasterForChamberGlobal(chambers_fsm[i], master_id, master_chan, coord_master);  // ++
+    if(ret){
+  
+  
+  system_master=substr(chambers_fsm[i],0,strpos(chambers_fsm[i],":" ));
+  //DebugTN(chambers_fsm[i]);
+ // DebugTN(master_id);
+  //  DebugTN(master_chan);
+   //   DebugTN(master_index);
+    //    DebugTN(coord_master);
+  master=system_master+":master"+coord_master[1]+"_"+coord_master[2]+"_"+coord_master[3];
+   dpGet(master+".data.master_hostid",coord_primary[1]); 
+  dpGet(master+".data.master_busaddr",coord_primary[2]);
+  dpGet(master+".data.master_hvcard",coord_primary[3]);
+  primary="HV_PR_primary"+coord_primary[1]+"_"+coord_primary[2]+"_"+coord_primary[3];
+  
+ // DebugTN(primary);
+   for(j=1;j<=dynlen(CSC_fwG_so_primary_fsm);j++){
+     if(strpos(CSC_fwG_so_primary_fsm[j], primary)>=0){
+       dynAppend(CSC_fwG_so_primary_chambers[j],chambers_fsm[i]);
+   // DebugTN("fsm:"+CSC_fwG_so_primary_fsm[j]);
+  //      DebugTN("data:"+substr(primary,strpos(primary,":")+1));
+      }
+   }  //for
+ } // if(ret)
+   
+  } //for
+//=====
+     /*
+         int primary_status;
+          time last_set_primary_status;
+    string s1=mudcsGetPrimaryFsmForChamberFsm(chambers_fsm[1],primary_status,last_set_primary_status);
+    mudcsDebug(s1);
+ 
+    dyn_string ds1= mudcsGetChambersFsmForPrimaryFsm(CSC_fwG_so_primary_fsm[2]);   
+    DebugTN(ds1);
+    for(i=1;i<=dynlen(ds1);i++){
+ //      mudcsHVCommand(ds1[i], 6, 1);
+      
+    }
+    */
+ //=========     
+    
+}
+
+//====================================================================
+  //================================================================================================
+int mudcsGetMasterForChamberGlobal(string fsm, int &master_id, int &master_chan, dyn_string &coord_master){
+
+ dynClear(coord_master);
+    dyn_string dyn_debug;
+
+int status;
+int i;
+string data;
+int master_busaddr, master_hvcard, master_hostid;
+
+
+  master_id=-2;
+  master_chan=-2;
+ // master_index=-2;
+
+
+ dpGet(fsm+".status",status);
+
+ if(status==-2){
+  return 0;
+ }
+//--- 
+
+ string system_name, set;
+ dyn_string coord;
+ int master_module_id;
+
+ system_name=substr(fsm,0,strpos(fsm,":")+1);
+ 
+ mudcsConvertFsm2DataOne(fsm, data);
+data=system_name+substr(fsm,strpos(fsm,"/")+1);
+ 
+// dpGet(mudcsAddSystem(fsm+".coord"),set); commented out as fsm.coord might not be set 
+// coord=strsplit(set,";");
+ 
+ dpGet(data+".data.master_chan",master_chan);
+ dpGet(data+".data.master_id",master_id);
+dpGet(data+".data.master_busaddr",master_busaddr);
+ dpGet(data+".data.master_hvcard",master_hvcard);
+ dpGet(data+".data.master_hostid",master_hostid);
+ 
+
+ dynAppend(coord_master,master_hostid);
+ dynAppend(coord_master,master_hvcard);
+ dynAppend(coord_master,master_busaddr);
+////// dynAppend(CSC_fwG_g_dyn_debug1,fsm+" "+master_id);
+
+   return 1;
+
+
+}
+//================================================================================================

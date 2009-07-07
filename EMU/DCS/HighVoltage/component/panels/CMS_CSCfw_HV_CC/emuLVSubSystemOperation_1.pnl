@@ -177,7 +177,8 @@ Crate Slow Control
   
   if(strpos(last_command,\"PREPARE_POWER_UP\")<0){
    dpSet(system_minus+\":LV_1_COM.command\",\"STOP_SLOW_CONTROL\");
-   dpSet(system_minus+\":STOP_SLOW_CONTROL.value\",\"STOP_SLOW_CONTROL\");    
+   dpSet(system_minus+\":STOP_SLOW_CONTROL.value\",\"STOP_SLOW_CONTROL\"); 
+       dpSet(system_minus+\":SPECIAL_STOP_SC.value\",\"STOP\");
   }
   else{
    mudcsDebug(\"LV IS POWERED UP: \\n TRY TO DO IT LATER (in 1 minute)\");
@@ -247,6 +248,7 @@ for data to come)
    dpSetWait(system_minus+\":LV_1_COM.command\",\"EXIT_SLOW_CONTROL\");
    dpSetWait(system_minus+\":LV_1_COM.command\",\"RESUME_SLOW_CONTROL\"); //for x2p
    dpSet(system_minus+\":STOP_SLOW_CONTROL.value\",\"RESUME_SLOW_CONTROL\");
+    dpSet(system_minus+\":SPECIAL_STOP_SC.value\",\"RESUME\");
   }
    else{
    mudcsDebug(\"LV IS POWERED UP: \\n TRY TO DO IT LATER (in 1 minute)\");
@@ -285,7 +287,8 @@ Crate Slow Control
   
   if(strpos(last_command,\"PREPARE_POWER_UP\")<0){
    dpSet(system_plus+\":LV_1_COM.command\",\"STOP_SLOW_CONTROL\");
-   dpSet(system_plus+\":STOP_SLOW_CONTROL.value\",\"STOP_SLOW_CONTROL\");    
+   dpSet(system_plus+\":STOP_SLOW_CONTROL.value\",\"STOP_SLOW_CONTROL\");  
+      dpSet(system_plus+\":SPECIAL_STOP_SC.value\",\"STOP\");
   }
   else{
    mudcsDebug(\"LV IS POWERED UP: \\n TRY TO DO IT LATER (in 1 minute)\");
@@ -327,6 +330,7 @@ for data to come)
    dpSetWait(system_plus+\":LV_1_COM.command\",\"EXIT_SLOW_CONTROL\");
    dpSetWait(system_plus+\":LV_1_COM.command\",\"RESUME_SLOW_CONTROL\"); // for x2p 
    dpSet(system_plus+\":STOP_SLOW_CONTROL.value\",\"RESUME_SLOW_CONTROL\");
+       dpSet(system_plus+\":SPECIAL_STOP_SC.value\",\"RESUME\");
   }
   else{
    mudcsDebug(\"LV IS POWERED UP: \\n TRY TO DO IT LATER (in 1 minute)\");

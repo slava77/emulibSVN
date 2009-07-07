@@ -230,6 +230,11 @@ mudcsNameCompose(string type, string station_label, string emu_system_side, int 
   name+="_HV_HOSTS";
   alias="CSCHV_HOSTS";
  }
+  else if(type=="HV_ME11"){ //LU
+  name="CSC";
+  name+="_HV_ME11";
+  alias="CSCHV_ME11";
+ }
  else if(type=="HV_HOST"){ //LU
   name="CSC";
   name+="_HV_HOST_"+idisk; // idisk stands for  host ID;

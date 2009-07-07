@@ -207,6 +207,8 @@ xxdepes[3] = makeDynString ("","coord");
 xxdepes[4] = makeDynString ("","status");
 xxdepes[5] = makeDynString ("","off_channels");
 xxdepes[6] = makeDynString ("","noalert_channels");
+xxdepes[7] = makeDynString ("","reserve1");
+xxdepes[8] = makeDynString ("","reserve2");
 
 xxdepei[1]=makeDynInt (DPEL_STRUCT);
 xxdepei[2]=makeDynInt (0,DPEL_INT);
@@ -214,6 +216,8 @@ xxdepei[3]=makeDynInt (0,DPEL_STRING);
 xxdepei[4]=makeDynInt (0,DPEL_INT);
 xxdepei[5]=makeDynInt (0,DPEL_DYN_INT);
 xxdepei[6]=makeDynInt (0,DPEL_DYN_INT);
+xxdepei[7]=makeDynInt (0,DPEL_INT);
+xxdepei[8]=makeDynInt (0,DPEL_INT);
 
 dpTypeCreate(xxdepes,xxdepei);
 
@@ -1300,6 +1304,8 @@ xxdepes[3] = makeDynString ("","coord");
 xxdepes[4] = makeDynString ("","last_vset");
 xxdepes[5] = makeDynString ("","status");
 xxdepes[6] = makeDynString ("","off_channels");
+xxdepes[7] = makeDynString ("","reserve1");
+xxdepes[8] = makeDynString ("","reserve2");
 
 xxdepei[1]=makeDynInt (DPEL_STRUCT);
 xxdepei[2]=makeDynInt (0,DPEL_INT);
@@ -1307,6 +1313,8 @@ xxdepei[3]=makeDynInt (0,DPEL_STRING);
 xxdepei[4]=makeDynInt (0,DPEL_INT);
 xxdepei[5]=makeDynInt (0,DPEL_INT);
 xxdepei[6]=makeDynInt (0,DPEL_DYN_INT);
+xxdepei[7]=makeDynInt (0,DPEL_INT);
+xxdepei[8]=makeDynInt (0,DPEL_INT);
 
 dpTypeCreate(xxdepes,xxdepei);
 

@@ -692,7 +692,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 302 130 349 149
+E E 0 0 0 0 1 E U  1 E 302 130 350 149
 1 2 2 "0s" 0 0 0 192 0 0  302 130 1
 1
 LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
@@ -729,7 +729,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 302 180 349 199
+E E 0 0 0 0 1 E U  1 E 302 180 350 199
 1 2 2 "0s" 0 0 0 192 0 0  302 180 1
 1
 LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
@@ -766,7 +766,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 302 230 349 249
+E E 0 0 0 0 1 E U  1 E 302 230 350 249
 1 2 2 "0s" 0 0 0 192 0 0  302 230 1
 1
 LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
@@ -803,7 +803,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 302 280 349 299
+E E 0 0 0 0 1 E U  1 E 302 280 350 299
 1 2 2 "0s" 0 0 0 192 0 0  302 280 1
 1
 LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
@@ -840,7 +840,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 302 82 349 101
+E E 0 0 0 0 1 E U  1 E 302 82 350 101
 1 2 2 "0s" 0 0 0 192 0 0  302 82 1
 1
 LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
@@ -1168,7 +1168,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 130 370 340 494
+E E 0 0 0 0 1 E U  1 E 130 370 341 494
 1 2 2 "0s" 0 0 0 192 0 0  130 370 6
 1
 LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
@@ -1213,7 +1213,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 22 212 62 228
+E E 0 0 0 0 1 E U  1 E 22 212 62 227
 1 2 2 "0s" 0 0 0 192 0 0  22 212 1
 1
 LANG:1 91 -*-Courier-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,Courier
@@ -1233,7 +1233,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 22 232 62 248
+E E 0 0 0 0 1 E U  1 E 22 232 62 247
 1 2 2 "0s" 0 0 0 192 0 0  22 232 1
 1
 LANG:1 91 -*-Courier-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,Courier
@@ -1253,7 +1253,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 132 212 171 228
+E E 0 0 0 0 1 E U  1 E 132 212 171 227
 1 2 2 "0s" 0 0 0 192 0 0  132 212 1
 1
 LANG:1 91 -*-Courier-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,Courier
@@ -1273,7 +1273,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 132 232 171 248
+E E 0 0 0 0 1 E U  1 E 132 232 171 247
 1 2 2 "0s" 0 0 0 192 0 0  132 232 1
 1
 LANG:1 91 -*-Courier-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,Courier
@@ -1293,7 +1293,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 132 252 171 268
+E E 0 0 0 0 1 E U  1 E 132 252 171 267
 1 2 2 "0s" 0 0 0 192 0 0  132 252 1
 1
 LANG:1 91 -*-Courier-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,Courier
@@ -1313,7 +1313,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 132 272 171 288
+E E 0 0 0 0 1 E U  1 E 132 272 171 287
 1 2 2 "0s" 0 0 0 192 0 0  132 272 1
 1
 LANG:1 91 -*-Courier-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,Courier
@@ -1333,7 +1333,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 132 292 171 308
+E E 0 0 0 0 1 E U  1 E 132 292 171 307
 1 2 2 "0s" 0 0 0 192 0 0  132 292 1
 1
 LANG:1 91 -*-Courier-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,Courier
@@ -1759,13 +1759,13 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 40 193 60
+E E 0 1 1 2 1 E U  1 E 10 40 189 60
 0 2 2 "0s" 0 0 0 192 0 0  10 40 1
 1
 LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
 0 ""
 1
-LANG:1 22 _DEVICE IS DESABLED_  
+LANG:1 22 _DEVICE IS DISABLED_  
 20 57
 "isDeviceEnabledCheck"
 ""

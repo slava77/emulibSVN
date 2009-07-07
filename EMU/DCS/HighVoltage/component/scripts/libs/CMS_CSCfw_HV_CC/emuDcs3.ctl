@@ -772,7 +772,7 @@ string Node_save;
 string dpN;
 int cu_flag;
 dyn_string panels;
-string parent_node;
+string parent_node, parent_node_me11;
 
 CSC_fwG_EmuCmsSpecialMode=1;
 panels=makeDynString("fwFSMuser/fwUi.pnl");
@@ -813,9 +813,31 @@ CSC_fwG_EmuCmsGlobalParent=parent_domain;
  Component+"/"+dir_config+"/emuHV_HOSTSConfig", Component+"/emuHV_HOSTSOperation");
  
 mudcs_addNode();
+//==============================
 
+CSC_fwG_EmuCmsGlobalType=CSC_fwG_g_NodeLogicalFsmType;
+mudcsNameCompose("HV_ME11", "", "", 0, "", "", EmuCmsGlobalNode);
+parent_node_me11=EmuCmsGlobalNode;
+CSC_fwG_EmuCmsGlobalCu="0";cu_flag = 0; // logical unit
+CSC_fwG_EmuCmsGlobalParent=parent_domain;
 
+ mudcs_addLogical(false, CSC_fwG_g_csc_part+"/"+parent_node_test, 
+ EmuCmsGlobalNode, CSC_fwG_EmuCmsGlobalType,
+ Component+"/"+dir_config+"/emuEmptyConfig", Component+"/emuEmptyOperation");
+ 
+mudcs_addNode();
 
+//==
+CSC_fwG_EmuCmsGlobalType="CMS_CSC_ME11_HV_Type";
+
+CSC_fwG_EmuCmsGlobalCu="0";cu_flag = 0; // logical unit
+CSC_fwG_EmuCmsGlobalParent=parent_node_me11;
+
+EmuCmsGlobalNode=CSC_fwG_g_Dubna_System_Name+":CSC_ME_11_HV::"+"CSC_ME_N11_HV";
+mudcs_addNode();
+EmuCmsGlobalNode=CSC_fwG_g_Dubna_System_Name+":CSC_ME_11_HV::"+"CSC_ME_P11_HV";
+mudcs_addNode();
+//==============================
 /// dynRemove(panels,2);
 /// dynAppend(panels,Component+"/emuHV_PROperation.pnl");
 /// dpSet(mudcsAddSystem(EmuCmsGlobalNode+"|"+EmuCmsGlobalNode+".ui.panels:_original.._value"),panels);
