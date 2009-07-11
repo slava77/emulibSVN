@@ -11,7 +11,19 @@ PANEL,-1 -1 120 53 N "_3DFace" 5
 {  
   dyn_string ex;
   deviceParams = emuui_parseParameterString($deviceParams, ex);
-  if (emu_checkException(ex)) { return; }
+  if (emu_checkException(ex)) { return; }  
+  
+  // is it an ME11?
+  if (($deviceType == \"chamber\") && (deviceParams[\"station\"] == 1) && (deviceParams[\"ring\"] == 1)) {
+    me11 = true;
+    //in ME11 project sides are P & N, not P and M like in others.
+    deviceParams[\"side_ME11style\"] = deviceParams[\"side\"];
+    if (deviceParams[\"side_ME11style\"] == \"M\") {
+      deviceParams[\"side_ME11style\"] = \"N\";
+    }
+  }
+  deviceParamsStr = emuui_mappingToParameterString(deviceParams);
+  
   currentConnectionType = \"\";
   currentConnectionMode = \"\";
   currentConnection = \"\";
@@ -123,6 +135,7 @@ string tooltipRefName;
 
 
 mapping deviceParams;
+string deviceParamsStr;
 string shapeName;
 
 string currentConnectionType;
@@ -133,10 +146,17 @@ float currentDpValueRangeMax;
 bool showValueOnCaption;
 bool hvOffChannelsWarningEnabled;
 dyn_int disabledHvChannels;
+bool me11;
 
 void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string connectionType) {
   dyn_string ex;
   bool connectSuccessful = false;
+  
+  //special case for ME11 high voltage
+  if (($deviceType == \"chamber\") && (mode == \"high_voltage\") && me11) {
+    mode = \"me11_\" + mode;
+  }
+  
   mode = $deviceType + \"_\" + mode; // prepend mode with device type
   
   setColor(\"white\"); // to indicate busy
@@ -283,7 +303,7 @@ void showTooltip() {
   addSymbol(myModuleName(), myPanelName(),
             \"objects/CMS_CSC_UI/refTooltip.pnl\",
             refName,
-            makeDynString(\"$deviceParams:\" + $deviceParams, \"$deviceType:\" + $deviceType, \"$mode:\" + currentConnectionMode),
+            makeDynString(\"$deviceParams:\" + deviceParamsStr, \"$deviceType:\" + $deviceType, \"$mode:\" + currentConnectionMode),
             mouseX, mouseY, 0, 1, 1);
 }
 

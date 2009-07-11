@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 380 83 N "_3DFace" 1
+PANEL,-1 -1 368 113 N "_3DFace" 1
 "$deviceParams"
 "main()
 {
@@ -9,13 +9,15 @@ PANEL,-1 -1 380 83 N "_3DFace" 1
   deviceParams = emuui_parseParameterString($deviceParams, ex);
   if (emu_checkException(ex)) { return; }
 
+  getValue(\"refPoint\", \"position\", posX, posY);
+  
   dyn_string dps = emuui_getDpNames(\"chamber_temperature\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
+  
   
   initGui(dps);
   
   dpConnect(\"updateTemperatureCB\", true, dps);
-  
   
   // ALARM COLORS
   for (int i=1; i <= dynlen(dps); i++) {
@@ -23,6 +25,25 @@ PANEL,-1 -1 380 83 N "_3DFace" 1
   }
   
   dpConnect(\"updateTemperatureAlarmColorsCB\", true, dps);
+  
+  // ----------========== FSM NODE ==========----------
+  fsmNode = emuui_getFsmNode(\"chamber_temperature\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+
+  int fsmX, fsmY;
+  getValue(\"fsmRefPoint\", \"position\", fsmX, fsmY);
+  dyn_string refs = emuui_addFsmNode(fsmNode, fsmX, fsmY, true);
+  dynAppend(references, refs);
+  dpConnect(\"positionChangedCB\", true, emuui_getSessionDp(\"tooltipPositionUpdated\"));
+  
+  // ----------========== DISCONNECTED WARNING ==========----------
+  if (dynlen(dps) > 1) {
+    deviceParams[\"sysName\"] = emuui_getSystemName(dps[1]);
+  }
+  string disconnectedDevicesDp = emuui_getDpName(\"disconnected_devices\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  dpConnect(\"updateDisconnectedWarningCB\", true, disconnectedDevicesDp);
+
 }
 
 void initGui(dyn_string dps) {
@@ -49,12 +70,27 @@ void initGui(dyn_string dps) {
   tableTemp.appendLine(columnNames[1], \"\");
   emuui_tableCompact(\"tableTemp\", 1);
 }" 0
- E E E E 1 -1 -1 0  0 0
+ "main()
+{
+  emuui_destroyReferences(references);
+}" 0
+ E E E 1 -1 -1 0  0 0
 ""0  1
 E "//some panel-wide constants and variables
 int cfebCount;
 mapping deviceParams;
 dyn_string columnNames;
+string fsmNode;
+dyn_string references;
+int posX, posY;
+
+void positionChangedCB(string dummyDpName, int dummyValue) {
+  int oldPosX = posX,
+      oldPosY = posY;
+  getValue(\"refPoint\", \"position\", posX, posY);
+
+  emuui_repositionObjectRelatively(references, oldPosX, oldPosY, posX, posY);  
+}
 
 void updateTemperatureCB(dyn_string dps, dyn_float temperatures) {
   for (int i=1; i <= dynlen(columnNames); i++) {
@@ -66,18 +102,7 @@ void updateTemperatureCB(dyn_string dps, dyn_float temperatures) {
     }
   }
 
-  //find out the last update  
-  time lastUpdateTime;
-  for (int i=1; i <= dynlen(dps); i++) {
-    time stime;
-    string dp = dpSubStr(dps[i], DPSUB_SYS_DP_EL_CONF) + \".._stime\";
-    dpGet(dp, stime);
-    
-    if (stime > lastUpdateTime) {
-      lastUpdateTime = stime;
-    }
-  }
-  lblLastUpdate.text = (string) lastUpdateTime;
+  lblLastUpdate.text = emuui_getLastUpdateTime(dps[1]);
 }
 
 void updateTemperatureAlarmColorsCB(dyn_string dps, dyn_string alarmColors) {
@@ -101,21 +126,39 @@ int dynPartiallyContains(dyn_string container, string searchString) {
     }
   }
   return -1;
-}" 0
+}
+
+/** if disconnectedDevices contains hvFsmNode then \"no communication\" warning is shown, otherwise it's hidden. */
+void updateDisconnectedWarningCB(string dpName, string disconnectedDevices) {
+  if (strpos(disconnectedDevices, fsmNode) >= 0) {
+    emuui_showTooltipWarning(getShape(\"refPoint\"),
+                           getShape(\"warnNoTempCommunication\"), 
+                           getShape(\"chamber_temperature_tooltipBack\"));
+  } else {
+    emuui_hideTooltipWarning(getShape(\"warnNoTempCommunication\"), 
+                             getShape(\"chamber_temperature_tooltipBack\"));
+  }
+}
+" 0
  2
 "CBRef" "1"
-"EClose" E
+"EClose" "main()
+{
+  emuui_destroyReferences(references);
+  PanelOff();
+}" 0
+
 ""
 DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
 LAYER, 0 
 1
 LANG:1 0 
-6 0
+6 10
 "chamber_temperature_tooltipBack"
 ""
-1 240 90 E E E 1 E 1 E N {0,0,0} E N {255,255,225} E E
+1 400 40 E E E 1 E 1 E N {0,0,0} E N {255,255,225} E E
  E E
-1 0 0 0 0 0
+17 0 0 0 0 0
 E E E
 0
 1
@@ -123,7 +166,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1.45833333333333 0 0.88888888888889 7.95807864051312e-013 -9.9475983006414e-014 1 E 240 90 0 0
+E E 0 1 1 2 1 E 3.18181818181818 0 0.888888888888889 -1272.72727272727 -35.5555555555556 1 E 400 40 510 130
 2 1
 "PRIMITIVE_TEXT1"
 ""
@@ -212,7 +255,7 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
 2 3
 "lblLastUpdate"
 ""
-1 212 12 E E E 1 E 1 E N "_WindowText" E N {255,255,225} E E
+1 250 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 4 0 0 0 0 0
 E E E
@@ -222,17 +265,17 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 212 12 259 26
-0 2 2 "0s" 0 0 0 192 0 0  212 12 1
+E E 0 1 1 2 1 E U  1 E 250 10 297 24
+0 2 2 "0s" 0 0 0 192 0 0  250 10 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 9 timestamp
 2 4
 "PRIMITIVE_TEXT3"
 ""
-1 152 12 E E E 1 E 1 E N "_WindowText" E N {255,255,225} E E
+1 190 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 5 0 0 0 0 0
 E E E
@@ -242,13 +285,61 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 152 12 211 26
-0 2 2 "0s" 0 0 0 192 0 0  152 12 1
+E E 0 1 1 2 1 E U  1 E 190 10 249 24
+0 2 2 "0s" 0 0 0 192 0 0  190 10 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 12 Last update:
+7 6
+"refPoint"
+""
+1 140 110 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -140 -110 1 E 140 110 10 10
+6 7
+"fsmRefPoint"
+""
+1 110 0 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 2.5 0 1 -185 6 1 E 110 0 130 20
+2 8
+"warnNoTempCommunication"
+""
+1 12 80 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+13 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 12 80 337 94
+1 2 2 "0s" 0 0 0 65 0 0  12 80 1
+1
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 16 No Communication
 0
 LAYER, 1 
 1

@@ -79,7 +79,7 @@ LANG:1 0
             makeDynString(\"$group:\" + group, \"$width:\" + width),
             posX, posY, 0, 1, 1);
 }" 0
- E 0 1 1 0 1 E 2.26828999963328 0 2.58675078864353 -18.0486999889985 -582.712933753943 0 E 30 233 701 551
+ E 0 1 1 0 1 E 2.3578277627767 0 2.64984227129337 -60.734832883301 -607.413249211355 0 E 30 233 701 551
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -88,7 +88,7 @@ LANG:1 17 Main Chamber View
 19 5
 "radioMode"
 ""
-1 63.6585365853659 847 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+1 24.1976893453147 867.256097560976 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
  E E
 7 0 0 0 0 0
 E E E
@@ -101,7 +101,7 @@ LANG:1 0
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
- 108 48 492 70
+ 70.3684210526317 39.0975609756102 469.368421052632 61.7560975609761
 4
 T 
 1
@@ -176,8 +176,11 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "main()
 {
+  lblLoading.visible = true;
   waitForEmuUiInitialize();
-    
+  delay(9); // wait a bit till everything else is more or less initialized (in particular the chambers are drawn)
+  lblLoading.visible = false;
+  
   int width, height;
   getValue(\"\", \"size\", width, height);
   int posX, posY;
@@ -194,7 +197,7 @@ LANG:1 0
             makeDynString(\"$group:\" + group, \"$width:\" + width),
             posX, posY, 0, 1, 1);   
 }" 0
- E 0 0 1 0 1 E 1.45454545454546 0 1.05990783410139 726.363636363635 -32.9032258064545 0 E 250 833 581 1051
+ E 0 0 1 0 1 E 1.45454545454546 0 0.995391705069132 746.363636363635 34.8387096774137 0 E 250 833 581 1051
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -203,7 +206,7 @@ LANG:1 19 Temperature Monitor
 2 8
 "PRIMITIVE_TEXT1"
 ""
-1 70 50 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 30.7894736842106 41.0975609756102 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 10 0 0 0 0 0
 E E E
@@ -213,8 +216,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 70 50 100 64
-0 2 2 "0s" 0 0 0 192 0 0  70 50 1
+E E 0 1 1 2 1 E 1.03947368421053 0 1.03658536585366 -0.394736842105263 -0.365853658536586 1 E 30.0000000000001 40.0000000000005 60 54
+0 2 2 "0s" 0 0 0 192 0 0  30.0000000000001 40.0000000000005 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -235,35 +238,28 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "main()
 {
+  waitForEmuUiInitialize();
+  
   int posX, posY;
   getValue(\"\", \"position\", posX, posY);
   posX += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_X;
   posY += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y;
   
-  posY += 80;  // hmm fwFsmUi positioning is screwed up
-  posX += 20;
-  
-  addFsmNode(\"CMS_CSC\", posX, posY);
-  posY += 60;
-  
-  addFsmNode(\"CSC_GAS\", posX, posY);
+  emuui_addFsmNode(\"CMS_CSC\", posX, posY);
+  posY += 55;
+
+  posX += 20;  
+  emuui_addFsmNode(\"CSC_GAS\", posX, posY);
   posY += 30;
-  addFsmNode(\"CSC_COOLING\", posX, posY);
+  emuui_addFsmNode(\"CSC_COOLING\", posX, posY);
   posY += 30;
-  addFsmNode(\"CSC_LV\", posX, posY);
+  emuui_addFsmNode(\"CSC_LV\", posX, posY);
   posY += 30;
-  addFsmNode(\"CSC_HV\", posX, posY);
+  emuui_addFsmNode(\"CSC_HV\", posX, posY);
   posY += 30;
 }
-
-void addFsmNode(string node, int x, int y) {
-  string refName = \"ref_FSMobj_\" + node;
-  if (shapeExists(refName)) { refName += \"_1\"; }
-  
-  addSymbol(myModuleName(), myPanelName(), \"objects/CMS_CSC_UI/refFSMobj.pnl\", 
-            refName, makeDynString(\"$node:\" + node, \"$obj:\" + node), x, y, 0, 1, 1);
-}" 0
- E 0 0 1 0 1 E 1.63636363636364 0 1.46496815286624 -64.5454545454545 -399.617834394905 0 E 70 853 291 1011
+" 0
+ E 0 0 1 0 1 E 1.72727272727273 0 1.33757961783439 -110.909090909091 -270.955414012737 0 E 70 853 291 1011
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -299,7 +295,7 @@ LANG:1 0
             makeDynString(\"$group:\" + group),
             posX, posY, 0, 1, 1);
 }" 0
- E 0 0 1 0 1 E 0.689655172413793 0 1.05990783410138 -204.48275862069 -54.101382488477 0 E 920 853 1211 1071
+ E 0 0 1 0 1 E 0.689655172413793 0 0.967741935483869 -224.48275862069 44.51612903226 0 E 920 853 1211 1071
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -335,7 +331,7 @@ LANG:1 0
             makeDynString(\"$group:\" + group),
             posX, posY, 0, 1, 1);
 }" 0
- E 0 0 1 0 1 E 0.896551724137931 0 1.05990783410138 -174.827586206897 -54.101382488477 0 E 920 853 1211 1071
+ E 0 0 1 0 1 E 0.896551724137931 0 0.967741935483869 -194.827586206897 44.5161290322601 0 E 920 853 1211 1071
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -360,7 +356,27 @@ E "main()
                makeDynString(\"$group:\" + emuui_getSessionDp(\"temperatureMonitor\"), \"$width:780\"), 200, 200);
 }
 " 0
- 0 1 1 2 1 E 1 0 1 1190 836 2  0 0  "pictures/CMS_CSC_UI/zoom_in.bmp" 4294967295 E 10 10 36 35
+ 0 1 1 2 1 E 1 0 1 1210 850 2  0 0  "pictures/CMS_CSC_UI/zoom_in.bmp" 4294967295 E 10 10 36 35
+2 17
+"lblLoading"
+""
+1 1130 960 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+23 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 1130 960 1575 998
+1 2 2 "0s" 0 0 0 65 0 0  1130 960 1
+1
+LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-240-100-100-*-*-iso8859-1|-32,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 23 Loading, please wait...
 0
 LAYER, 1 
 1

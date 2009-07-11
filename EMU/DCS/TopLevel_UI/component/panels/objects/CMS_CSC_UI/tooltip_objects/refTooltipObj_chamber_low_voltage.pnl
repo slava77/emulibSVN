@@ -1,13 +1,15 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 355 174 N "_3DFace" 1
+PANEL,-1 -1 367 199 N "_3DFace" 1
 "$deviceParams"
 "main()
 {
   dyn_string ex;
   deviceParams = emuui_parseParameterString($deviceParams, ex);
   if (emu_checkException(ex)) { return; }
+
+  getValue(\"refPoint\", \"position\", posX, posY);
 
   // -------=========== CFEB ============---------
   
@@ -80,6 +82,25 @@ PANEL,-1 -1 355 174 N "_3DFace" 1
   }
   
   dpConnect(\"updateAlctAlarmColorsCB\", true, values);
+  
+  // ----------========== FSM NODE ==========----------
+  fsmNode = emuui_getFsmNode(\"chamber_low_voltage\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+
+  int fsmX, fsmY;
+  getValue(\"fsmRefPoint\", \"position\", fsmX, fsmY);
+  dyn_string refs = emuui_addFsmNode(fsmNode, fsmX, fsmY, true);
+  dynAppend(references, refs);
+  
+  dpConnect(\"positionChangedCB\", true, emuui_getSessionDp(\"tooltipPositionUpdated\"));
+
+  // ----------========== DISCONNECTED WARNING ==========----------
+  if (dynlen(values) > 1) {
+    deviceParams[\"sysName\"] = emuui_getSystemName(values[1]);
+  }
+  string disconnectedDevicesDp = emuui_getDpName(\"disconnected_devices\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  dpConnect(\"updateDisconnectedWarningCB\", true, disconnectedDevicesDp);
 }
 
 void initGui() {
@@ -97,12 +118,26 @@ void initGui() {
   tableAlct.rowHeader(0, \"ALCT\");
   emuui_tableCompact(\"tableAlct\", 1);
 }" 0
- E E E E 1 -1 -1 0  0 0
+ "main()
+{
+  emuui_destroyReferences(references);
+}" 0
+ E E E 1 -1 -1 0  0 0
 ""0  1
 E "//some panel-wide constants and variables
 mapping deviceParams;
 dyn_dyn_mixed dpIndexToTableCell; // map of DP index in the array and coordinates in the Cfeb table where they should be written
-time lastUpdateTime;
+string fsmNode;
+dyn_string references;
+int posX, posY;
+
+void positionChangedCB(string dummyDpName, int dummyValue) {
+  int oldPosX = posX,
+      oldPosY = posY;
+  getValue(\"refPoint\", \"position\", posX, posY);
+
+  emuui_repositionObjectRelatively(references, oldPosX, oldPosY, posX, posY);  
+}
 
 /** Call-back function which updates voltages and currents for CFEBs. */
 void updateCfebLvCB(dyn_string dps, dyn_float voltagesAndCurrents) {
@@ -118,17 +153,7 @@ void updateCfebLvCB(dyn_string dps, dyn_float voltagesAndCurrents) {
     tableCfeb.cellValueRC(dpIndexToTableCell[i][1], dpIndexToTableCell[i][2], strToShow);
   }
   
-  //find out the last update  
-  for (int i=1; i <= dynlen(dps); i++) {
-    time stime;
-    string dp = dpSubStr(dps[i], DPSUB_SYS_DP_EL_CONF) + \".._stime\";
-    dpGet(dp, stime);
-    
-    if (stime > lastUpdateTime) {
-      lastUpdateTime = stime;
-    }
-  }
-  lblLastUpdate.text = (string) lastUpdateTime;
+  lblLastUpdate.text = emuui_getLastUpdateTime(dps[1]);
 }
 
 /** Call-back function which updates the background color of the CFEB table cells accordingly to cfeb voltage and current alarm color. */
@@ -164,17 +189,7 @@ void updateAlctLvCB(dyn_string dps, dyn_float voltagesAndCurrents) {
     tableAlct.cellValueRC(0, tableAlct.columnToName(i - 1), strToShow);
   }
   
-  //find out the last update  
-  for (int i=1; i <= dynlen(dps); i++) {
-    time stime;
-    string dp = dpSubStr(dps[i], DPSUB_SYS_DP_EL_CONF) + \".._stime\";
-    dpGet(dp, stime);
-    
-    if (stime > lastUpdateTime) {
-      lastUpdateTime = stime;
-    }
-  }
-  lblLastUpdate.text = (string) lastUpdateTime;
+  lblLastUpdate.text = emuui_getLastUpdateTime(dps[1]);
 }
 
 /** Call-back function which updates the background color of the ALCT table cells accordingly to ALCT voltage and current alarm color. */
@@ -194,21 +209,39 @@ void updateAlctAlarmColorsCB(dyn_string dps, dyn_string colors) {
     
     tableAlct.cellBackColRC(0, tableAlct.columnToName(i - 1), mainColor);
   }
-}" 0
+}
+
+/** if disconnectedDevices contains hvFsmNode then \"no communication\" warning is shown, otherwise it's hidden. */
+void updateDisconnectedWarningCB(string dpName, string disconnectedDevices) {
+  if (strpos(disconnectedDevices, fsmNode) >= 0) {
+    emuui_showTooltipWarning(getShape(\"refPoint\"),
+                           getShape(\"warnNoLvCommunication\"), 
+                           getShape(\"chamber_low_voltage_tooltipBack\"));
+  } else {
+    emuui_hideTooltipWarning(getShape(\"warnNoLvCommunication\"), 
+                             getShape(\"chamber_low_voltage_tooltipBack\"));
+  }
+}
+" 0
  2
 "CBRef" "1"
-"EClose" E
+"EClose" "main()
+{
+  emuui_destroyReferences(references);
+  PanelOff();
+}" 0
+
 ""
 DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
 LAYER, 0 
 1
 LANG:1 0 
-6 0
-"RECTANGLE1"
+6 12
+"chamber_low_voltage_tooltipBack"
 ""
-1 205.945945945947 -8.5265128291212e-014 E E E 1 E 1 E N {0,0,0} E N {255,255,225} E E
+1 400 40 E E E 1 E 1 E N {0,0,0} E N {255,255,225} E E
  E E
-1 0 0 0 0 0
+22 0 0 0 0 0
 E E E
 0
 1
@@ -216,7 +249,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1 0 1 -59.9999999999992 -8.5265128291212e-014 1 E 409.999999999999 170 60 0
+E E 0 1 1 2 1 E 3.18181818181818 0 1.77777777777778 -1272.72727272727 -71.1111111111111 1 E 400 40 510 130
 2 1
 "PRIMITIVE_TEXT1"
 ""
@@ -240,7 +273,7 @@ LANG:1 11 Low Voltage
 2 5
 "PRIMITIVE_TEXT3"
 ""
-1 152 12 E E E 1 E 1 E N "_WindowText" E N {255,255,225} E E
+1 190 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 8 0 0 0 0 0
 E E E
@@ -250,8 +283,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 152 12 211 26
-0 2 2 "0s" 0 0 0 192 0 0  152 12 1
+E E 0 1 1 2 1 E U  1 E 190 10 249 24
+0 2 2 "0s" 0 0 0 192 0 0  190 10 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -260,7 +293,7 @@ LANG:1 12 Last update:
 2 4
 "lblLastUpdate"
 ""
-1 212 12 E E E 1 E 1 E N "_WindowText" E N {255,255,225} E E
+1 250 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 6 0 0 0 0 0
 E E E
@@ -270,8 +303,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 212 12 259 26
-0 2 2 "0s" 0 0 0 192 0 0  212 12 1
+E E 0 1 1 2 1 E U  1 E 250 10 297 24
+0 2 2 "0s" 0 0 0 192 0 0  250 10 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -351,7 +384,7 @@ LANG:1 0
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
- 8 108 292 162
+ 8 108 292 148
 EE 1 1 1 4 1 "#1" 5 1 0 "s" 1
 LANG:1 5 1.8 V
 E
@@ -385,6 +418,54 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
 0 ""
 0 0 0 1 7
 1 0
+7 6
+"refPoint"
+""
+1 140 110 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -140 -110 1 E 140 110 10 10
+6 7
+"fsmRefPoint"
+""
+1 110 0 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 2.5 0 1 -185 6 1 E 110 0 130 20
+2 8
+"warnNoLvCommunication"
+""
+1 10 170 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 170 335 184
+1 2 2 "0s" 0 0 0 65 0 0  10 170 1
+1
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 16 No Communication
 0
 LAYER, 1 
 1

@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 7 Station
-PANEL,-1 -1 866 641 N "_3DFace" 4
+PANEL,-1 -1 710 683 N "_3DFace" 4
 "$group"
 "$radius"
 "$side"
@@ -46,9 +46,19 @@ void drawStation(int x, int y, int radius, string side, int station, dyn_string 
         outerRadius = scaleValue(layoutParams[\"innerRadius_ME\" + station + (ring + 1)], scale) - gap;
       }
       
+      // check if chambersStart and chambersEnd parameters exist in layoutParams - if so then draw only chambers in that range    
+      int chambersStart = -1,
+          chambersEnd = -1;
+      if (mappingHasKey(layoutParams, \"chambersStart_ME_\" + side + station + ring) &&
+          mappingHasKey(layoutParams, \"chambersEnd_ME_\" + side + station + ring)) {
+        chambersStart = layoutParams[\"chambersStart_ME_\" + side + station + ring];
+        chambersEnd = layoutParams[\"chambersEnd_ME_\" + side + station + ring];
+      }
+      
       drawRing(x, y, scaleValue(layoutParams[\"innerRadius_ME\" + station + ring], scale),
                      outerRadius,
-                     chamberCount, side, station, ring);
+                     chamberCount, side, station, ring,
+                     chambersStart, chambersEnd);
     }
   }
   
@@ -223,8 +233,11 @@ int scaleValue(int value, float scale) {
 }
 
 /** Draws a CSCs ring. You have to provide coordinates where to draw it, then inner and outer radius of the ring and ring parameters:
-        side (\"P\" or \"M\"), station number and ring number. */
-void drawRing(int x, int y, int innerRadius, int outerRadius, int chamberCount, string side, int station, int ring) {
+        side (\"P\" or \"M\"), station number and ring number.
+    If chambersStart and chamberEnd is provided then only the interval of chambers between these start and end are drawn. */
+void drawRing(int x, int y, int innerRadius, int outerRadius, int chamberCount, string side, int station, int ring, 
+              int chambersStart = -1, int chambersEnd = -1) {
+  
   float outerPerimeter = 2 * EMUMATH_PI * outerRadius;
   float innerPerimeter = 2 * EMUMATH_PI * innerRadius;
   float angleStep = (2 * EMUMATH_PI) / chamberCount;
@@ -235,7 +248,14 @@ void drawRing(int x, int y, int innerRadius, int outerRadius, int chamberCount, 
   int captionRadius = outerRadius - (chamberHeight / 2);     // radius of the ring on which chamber captions will be positioned
   int warningRadius = outerRadius - 4;     // radius of the ring on which chamber warning sign is positioned
   
-  for (int i=0; i < chamberCount; i++) {
+  if ((chambersStart == -1) || (chambersEnd == -1)) { 
+    chambersStart = 0;
+    chambersEnd = chamberCount;
+  } else {
+    chambersStart--;
+  }
+  
+  for (int i=chambersStart; i < chambersEnd; i++) {
     //compute the angle and position
     float angle = i * angleStep + angleOffset;
     float angleDeg = rad2deg(angle);             //convert angle from radians to degrees
@@ -312,7 +332,7 @@ int round(float value) {
 }" 0
  "main()
 {
-  destroyReferences();
+  emuui_destroyReferences(references);
 }
 " 0
  E E E 1 -1 -1 0  0 0
@@ -328,12 +348,6 @@ int paramPCrateHeight;
 // some panel-wide constants and variables
 dyn_string references;
 
-void destroyReferences() {
-  for (int i=1; i <= dynlen(references); i++) {
-    removeSymbol(myModuleName(), myPanelName(), references[i]);
-  }
-}
-
 /** coppies dollar parameters to local variables. If any dollar parameter is missing 
    then local variable is given a default value to allow to run the panel separatelly for debugging purposes. */
 void initParams() {
@@ -345,8 +359,8 @@ void initParams() {
     
     emuui_init();
     paramGroup = emuui_getSessionDp(\"mainChamberView\");
-    paramSide = \"P\";
-    paramStation = 2;
+    paramSide = \"M\";
+    paramStation = 1;
     paramRadius = 200;
   } else { // copy from dollar params
     paramGroup = $group;
@@ -420,7 +434,7 @@ void showPopupMenu() {
 "CBRef" "1"
 "EClose" "main()
 {
-  destroyReferences();
+  emuui_destroyReferences(references);
   PanelOff();
 }
 " 0

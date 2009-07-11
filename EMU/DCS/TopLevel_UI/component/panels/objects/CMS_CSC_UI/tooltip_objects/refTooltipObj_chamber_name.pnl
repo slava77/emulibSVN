@@ -8,21 +8,54 @@ PANEL,-1 -1 217 34 N "_3DFace" 1
   dyn_string ex;
   deviceParams = emuui_parseParameterString($deviceParams, ex);
   if (emu_checkException(ex)) { return; }
+  
+  getValue(\"refPoint\", \"position\", posX, posY);
+
   string strSide = \"+\";
   if (deviceParams[\"side\"] == \"M\") { strSide = \"-\"; }
   
   lblDeviceName.text = \"ME\" + strSide + 
                        deviceParams[\"station\"] + \"/\" + deviceParams[\"ring\"] + \"/\" +
                        deviceParams[\"chamberNumber\"];
+  
+  // get the FSM node
+  string fsmNode = emuui_getFsmNode(\"chamber_general\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+
+  int fsmX, fsmY;
+  getValue(\"fsmRefPoint\", \"position\", fsmX, fsmY);
+  dyn_string refs = emuui_addFsmNode(fsmNode, fsmX, fsmY, true);
+  dynAppend(references, refs);
+  
+  dpConnect(\"positionChangedCB\", false, emuui_getSessionDp(\"tooltipPositionUpdated\"));
 }" 0
- E E E E 1 -1 -1 0  0 0
+ "main()
+{
+  emuui_destroyReferences(references);
+}" 0
+ E E E 1 -1 -1 0  0 0
 ""0  1
 E "//some panel-wide constants
 mapping deviceParams;
+dyn_string references;
+int posX, posY;
+
+void positionChangedCB(string dummyDpName, int dummyValue) {
+  int oldPosX = posX,
+      oldPosY = posY;
+  getValue(\"refPoint\", \"position\", posX, posY);
+
+  emuui_repositionObjectRelatively(references, oldPosX, oldPosY, posX, posY);  
+}
 " 0
  2
 "CBRef" "1"
-"EClose" E
+"EClose" "main()
+{
+  emuui_destroyReferences(references);
+  PanelOff();
+}" 0
+
 ""
 DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
 LAYER, 0 
@@ -41,7 +74,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 0.416666666666667 0 0.222222222222222 0 0 1 E 240 90 0 0
+E E 0 1 1 2 1 E 1 0 1 0 -0.999999999999979 1 E 100 20 0 1
 2 1
 "lblDeviceName"
 ""
@@ -62,6 +95,34 @@ LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,
 0 ""
 1
 LANG:1 12 Chamber Name
+6 4
+"fsmRefPoint"
+""
+1 110 0 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 2.5 0 1 -175 -1 1 E 110 0 130 20
+7 5
+"refPoint"
+""
+1 140 110 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -140 -110 1 E 140 110 10 10
 0
 LAYER, 1 
 1

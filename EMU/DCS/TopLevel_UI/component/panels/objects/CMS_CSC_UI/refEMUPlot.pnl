@@ -25,7 +25,7 @@ PANEL,-1 -1 780 370 N "_3DFace" 2
   } else { // gradient scale is NOT necessary
     chamberWidthHeight = floor((paramWidthFloat - (float)EMUUI_EMUPLOT_LABEL_WIDTH) / 36); // max 36 chambers
   }
-  int height = chamberWidthHeight * 16; // 16 rings
+  int height = chamberWidthHeight * 17; // 17 rings
   
   int myPosX, myPosY;
   getValue(\"refPoint\", \"position\", myPosX, myPosY);
@@ -46,30 +46,40 @@ PANEL,-1 -1 780 370 N "_3DFace" 2
 }
 
 void drawEMU(int x, int y, int chamberWidthHeight) {
+  dyn_string ex;
+  
   int currentY = y;
   for (int i=4; i >= -4; i--) {
     string side = \"P\";
     if (i < 0) { side = \"M\"; }
     if (i == 0) { continue; } // no such station
     int station = emu_abs(i);
-    
+
     if (side == \"M\") { // count rings increasingly
       for (int ring = 1; ring <= layoutParams[\"ringCount_ME_\" + side + station]; ring++) {
+        // check if chambersStart and chambersEnd parameters exist in layoutParams - if so then draw only chambers in that range    
+        int chambersStart, chambersEnd;
+        getChambersStartEndParams(side, station, ring, chambersStart, chambersEnd, ex);
+        if (emu_checkException(ex)) { return; }
         // draw the ring
-        drawStation(x, currentY, side, station, ring, chamberWidthHeight);
+        drawStation(x, currentY, side, station, ring, chamberWidthHeight, chambersStart, chambersEnd);
         currentY += chamberWidthHeight;
       }
     } else { // count ring decresingly
       for (int ring = layoutParams[\"ringCount_ME_\" + side + station]; ring >= 1; ring--) {
+        // check if chambersStart and chambersEnd parameters exist in layoutParams - if so then draw only chambers in that range    
+        int chambersStart, chambersEnd;
+        getChambersStartEndParams(side, station, ring, chambersStart, chambersEnd, ex);
+        if (emu_checkException(ex)) { return; }
         // draw the ring
-        drawStation(x, currentY, side, station, ring, chamberWidthHeight);
+        drawStation(x, currentY, side, station, ring, chamberWidthHeight, chambersStart, chambersEnd);
         currentY += chamberWidthHeight;
       }
     }
   }
 }
 
-void drawStation(int x, int y, string side, int station, int ring, int chamberWidthHeight) {
+void drawStation(int x, int y, string side, int station, int ring, int chamberWidthHeight, int chambersStart = -1, int chambersEnd = -1) {
   int chamberCount = 36;
   int chamberWidth = chamberWidthHeight + 1; // for small chambers (add one to make the border 1 pixed in width between two chambers)
   int chamberHeight = chamberWidthHeight + 1; //add one to make the border 1 pixed in height between two chambers
@@ -84,8 +94,13 @@ void drawStation(int x, int y, string side, int station, int ring, int chamberWi
   //draw ring label
   drawRingLabel(x, y, side, station, ring);
   x += EMUUI_EMUPLOT_LABEL_WIDTH;
+
+  if ((chambersStart == -1) || (chambersEnd == -1)) { 
+    chambersStart = 1;
+    chambersEnd = chamberCount;
+  }
   
-  for (int i=1; i <= chamberCount; i++) {
+  for (int i = chambersStart; i <= chambersEnd; i++) {
     string chamberName;
     string strChamberNumber;
     sprintf(strChamberNumber, \"%02d\", i);
@@ -162,10 +177,23 @@ void drawGradientScale(int bottomLeftX, int bottomLeftY, int height, int width, 
                 bottomLeftX + width, bottomLeftY - i - 6, 0, 1, 1); // shift a bit up, because the reference point of the label is in bottom left corner
     }
   }
+}
+
+void getChambersStartEndParams(string side, int station, int ring, int &chambersStart, int &chambersEnd, dyn_string &exceptionInfo) {
+  mapping layoutParams = emuui_getMapping(\"chamberLayout\", exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  
+  chambersStart = -1;
+  chambersEnd = -1;
+  if (mappingHasKey(layoutParams, \"chambersStart_ME_\" + side + station + ring) &&
+      mappingHasKey(layoutParams, \"chambersEnd_ME_\" + side + station + ring)) {
+    chambersStart = layoutParams[\"chambersStart_ME_\" + side + station + ring];
+    chambersEnd = layoutParams[\"chambersEnd_ME_\" + side + station + ring];
+  }
 }" 0
  "main()
 {
-  destroyReferences();
+  emuui_destroyReferences(references);
 }
 " 0
  E E E 1 -1 -1 0  0 0
@@ -180,12 +208,6 @@ const int EMUUI_EMUPLOT_GRADIENT_LABEL_WIDTH = 20;
 mapping layoutParams;
 dyn_string references;
 bool runningLocal; // if true then panel is running localy, if false then panel is a reference
-
-void destroyReferences() {
-  for (int i=1; i <= dynlen(references); i++) {
-    removeSymbol(myModuleName(), myPanelName(), references[i]);
-  }
-}
 
 /** coppies dollar parameters to local variables. If any dollar parameter is missing 
    then local variable is given a default value to allow to run the panel separatelly for debugging purposes. */
@@ -210,7 +232,7 @@ void initParams() {
 "CBRef" "1"
 "EClose" "main()
 {
-  destroyReferences();  
+  emuui_destroyReferences(references);
   PanelOff();
 }
 " 0

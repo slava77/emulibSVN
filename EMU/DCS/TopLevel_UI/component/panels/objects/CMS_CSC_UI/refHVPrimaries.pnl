@@ -69,7 +69,7 @@ int getHorizontalLinePosY(int lineNum) {
 " 0
  "main()
 {
-  destroyReferences();
+  emuui_destroyReferences(references);
 }
 " 0
  E E E 1 -1 -1 0  0 0
@@ -80,12 +80,6 @@ string paramGroup;
 // some panel-wide constants and variables
 dyn_string references;
 bool runningLocal; // if true then panel is running localy, if false then panel is a reference
-
-void destroyReferences() {
-  for (int i=1; i <= dynlen(references); i++) {
-    removeSymbol(myModuleName(), myPanelName(), references[i]);
-  }
-}
 
 /** coppies dollar parameters to local variables. If any dollar parameter is missing 
    then local variable is given a default value to allow to run the panel separatelly for debugging purposes. */
@@ -107,7 +101,7 @@ void initParams() {
 "CBRef" "1"
 "EClose" "main()
 {
-  destroyReferences();  
+  emuui_destroyReferences(references);
   PanelOff();
 }
 " 0
