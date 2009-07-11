@@ -17,6 +17,7 @@ void emuui_init() {
   
   emu_info("------========== EMU Top Level UI is initializing... ==========------");
   emuui_initSession();
+  fwFsmUi_init("CMS_CSC", "CMS_CSC");
   
   emuui_g_initialized = true;
   emu_info("------========== EMU Top Level UI initialization DONE! ==========------");
@@ -40,6 +41,23 @@ mapping emuui_parseParameterString(string strParams, dyn_string &exceptionInfo) 
       return;
     }
     ret[entry[1]] = entry[2];
+  }
+  
+  return ret;
+}
+
+/** Converts a mapping to parameter string. */
+string emuui_mappingToParameterString(mapping params) {
+  string ret;
+  
+  for (int i=1; i <= mappinglen(params); i++) {
+    string key = mappingGetKey(params, i);
+    string value = params[key];
+    
+    if (i > 1) {
+      ret += ";";
+    }
+    ret += key + "=" + value;
   }
   
   return ret;

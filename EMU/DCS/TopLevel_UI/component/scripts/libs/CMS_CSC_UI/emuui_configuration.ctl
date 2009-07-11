@@ -6,6 +6,8 @@ This package contains functions to get configuration parameters and mappings.
 @date   May 2009
 */
 
+const mapping emuui_dummyMapping;
+
 global mapping emuui_g_mappingCache;
 global mapping emuui_g_arrayCache;
 global dyn_string emuui_g_lvSystemNames;
@@ -24,14 +26,14 @@ mapping emuui_getMapping(string name, dyn_string &exceptionInfo) {
   string dpName = "emuui_map_" + name + version;
   if (!dpExists(dpName)) {
     emu_addError("Requested mapping \"" + name + version + "\" does not exist", exceptionInfo);
-    return emucdb_dummyMapping;
+    return emuui_dummyMapping;
   }
 
   dyn_string data;
   dpGet(dpName + ".map", data);
   
   mapping ret = _emuui_constructMappingFromCSV(data, exceptionInfo, name, version);
-  if (emu_checkException(exceptionInfo)) { return emucdb_dummyMapping; }
+  if (emu_checkException(exceptionInfo)) { return emuui_dummyMapping; }
 
   //add the mapping to the cache
   emuui_g_mappingCache[name + version] = ret;
@@ -58,12 +60,12 @@ mapping _emuui_constructMappingFromCSV(dyn_string csvArray, dyn_string exception
       }
       if (!tolerate) {
         emu_addError("Line #" + i + " in mapping \"" + name + version + "\" is corrupted", exceptionInfo);
-        return emucdb_dummyMapping;
+        return emuui_dummyMapping;
       }
     }
     if (mappingHasKey(ret, tmpSplit[1])) {
       emu_addError("Key \"" + tmpSplit[1] + "\" in mapping \"" + name + version + "\" is defined multiple times", exceptionInfo);
-      return emucdb_dummyMapping;
+      return emuui_dummyMapping;
     }
     
     ret[tmpSplit[1]] = tmpSplit[2];
@@ -149,7 +151,11 @@ dyn_string emuui_getDpNames(string type, mapping parameters, dyn_string &excepti
   }
 
   string dp = emuui_fillPattern(pattern, parameters);
-  ret = dpNames("*:" + dp);
+  if (strpos(dp, ":") >= 0) { // if system name is included
+    ret = dpNames(dp);
+  } else {                    // if there's no sys name (most of the time this is the case) then search accross all connected systems
+    ret = dpNames("*:" + dp);
+  }
   
   return ret;
 }
@@ -234,3 +240,4 @@ dyn_string emuui_getLvSystemNames(dyn_string &exceptionInfo) {
   
   return emuui_g_lvSystemNames;
 }
+

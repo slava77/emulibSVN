@@ -36,3 +36,45 @@ void emuui_tableCompact(string tableShapeName, int numOfRows = -1) {
   
   table.size(newTableWidth, newTableHeight);
 }
+
+/** returns stime of a given datapoint in string. So this is the only place if you need to change the date format everywhere. */
+string emuui_getLastUpdateTime(string dp) {
+  time stime;
+  string dpSTime = dpSubStr(dp, DPSUB_SYS_DP_EL_CONF) + ".._stime";
+  dpGet(dpSTime, stime);
+
+  string timeStr = formatTime("%Y.%m.%d %H:%M", stime);
+
+  return (string) timeStr;
+}
+
+/** returns stime of a given datapoint in string. So this is the only place if you need to change the date format everywhere. */
+string emuui_getLastUpdateTimeOfDpList(dyn_string dpList) {
+  time lastUpdate;
+  for (int i=1; i <= dynlen(dpList); i++) {
+    time stime;
+    string dpSTime = dpSubStr(dpList[i], DPSUB_SYS_DP_EL_CONF) + ".._stime";
+    dpGet(dpSTime, stime);
+    if ((i == 1) || (stime > lastUpdate)) {
+      lastUpdate = stime;
+    }
+  }
+
+  string timeStr = formatTime("%Y.%m.%d %H:%M", lastUpdate);
+
+  return (string) timeStr;
+}
+
+/** Destroy reference panels given in the array. */
+void emuui_destroyReferences(dyn_string references) {
+  for (int i=1; i <= dynlen(references); i++) {
+    removeSymbol(myModuleName(), myPanelName(), references[i]);
+  }
+}
+
+/** Returns system name of the given DP without the colon at the end. */
+string emuui_getSystemName(string dp) {
+  string sysName = dpSubStr(dp, DPSUB_SYS);
+  strreplace(sysName, ":", "");
+  return sysName;
+}
