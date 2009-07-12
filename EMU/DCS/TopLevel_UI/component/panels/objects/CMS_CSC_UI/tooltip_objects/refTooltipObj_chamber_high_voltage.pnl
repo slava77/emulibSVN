@@ -91,7 +91,7 @@ PANEL,-1 -1 374 227 N "_3DFace" 1
   dyn_string refs = emuui_addFsmNode(hvFsmNode, fsmX, fsmY, true);
   dynAppend(references, refs);
   
-  dpConnect(\"positionChangedCB\", false, emuui_getSessionDp(\"tooltipPositionUpdated\"));  
+  dpConnect(\"positionChangedCB\", true, emuui_getSessionDp(\"tooltipPositionUpdated\"));  
   dpConnect(\"updateDisconnectedWarningCB\", true, disconnectedDevicesDp);
   dpConnect(\"updateModuleTypeCB\", true, moduleTypeDp);
 }
