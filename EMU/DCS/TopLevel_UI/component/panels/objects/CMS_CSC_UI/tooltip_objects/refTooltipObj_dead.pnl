@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 380 74 N "_3DFace" 0
+PANEL,-1 -1 380 89 N "_3DFace" 0
 E E E E E 1 -1 -1 0  0 0
 ""0  1
 E E 2
@@ -25,7 +25,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1.45833333333333 0 0.444444444444445 0 0 1 E 240 90 0 0
+E E 0 1 1 2 1 E 1.45833333333333 0 0.88888888888889 0 0 1 E 240 90 0 0
 2 3
 "PRIMITIVE_TEXT1"
 ""
@@ -39,17 +39,17 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 3 118 17
+E E 0 1 1 2 1 E U  1 E 10 3 202 17
 0 2 2 "0s" 0 0 0 192 0 0  10 3 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
-LANG:1 23 Device is inaccessible.
+LANG:1 32 Device FSM node is inaccessible.
 2 4
 "PRIMITIVE_TEXT2"
 ""
-1 10 20 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 30 40 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 6 0 0 0 0 0
 E E E
@@ -59,13 +59,53 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 20 331 34
-0 2 2 "0s" 0 0 0 192 0 0  10 20 1
+E E 0 1 1 2 1 E U  1 E 30 40 233 54
+0 2 2 "0s" 0 0 0 192 0 0  30 40 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
-LANG:1 63 Check if all DCS computers are ON and reachable and running FSM
+LANG:1 40 * Are all DCS computers ON and reachable
+2 5
+"PRIMITIVE_TEXT3"
+""
+1 12 22 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 12 22 231 36
+0 2 2 "0s" 0 0 0 192 0 0  12 22 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 45 Please ask DCS expert to check the following:
+2 6
+"PRIMITIVE_TEXT4"
+""
+1 30 60 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 30 60 213 74
+0 2 2 "0s" 0 0 0 192 0 0  30 60 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 37 * Is FSM running on all DCS computers
 0
 LAYER, 1 
 1
