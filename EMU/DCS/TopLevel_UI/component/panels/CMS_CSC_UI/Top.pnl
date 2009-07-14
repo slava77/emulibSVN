@@ -178,7 +178,7 @@ LANG:1 0
 {
   lblLoading.visible = true;
   waitForEmuUiInitialize();
-  delay(9); // wait a bit till everything else is more or less initialized (in particular the chambers are drawn)
+  delay(14); // wait a bit till everything else is more or less initialized (in particular the chambers are drawn)
   lblLoading.visible = false;
   
   int width, height;
@@ -373,7 +373,7 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 1130 960 1575 998
 1 2 2 "0s" 0 0 0 65 0 0  1130 960 1
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-240-100-100-*-*-iso8859-1|-32,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-32-*-100-100-*-*-iso8859-1|-32,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 23 Loading, please wait...
