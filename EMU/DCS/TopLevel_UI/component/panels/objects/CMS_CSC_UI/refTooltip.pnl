@@ -24,7 +24,7 @@ PANEL,-1 -1 388 123 N "_3DFace" 3
   tooltipY /= zoomFactor;
   
   //add Caption - device name
-  if (!addTooltipObj($deviceType + \"_name\")) {
+  if (addTooltipObj($deviceType + \"_name\") == \"\") {
     lblError.visible = true;
     return;
   }

@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 7 Station
-PANEL,-1 -1 710 683 N "_3DFace" 4
+PANEL,-1 -1 864 683 N "_3DFace" 4
 "$group"
 "$radius"
 "$side"
@@ -9,12 +9,14 @@ PANEL,-1 -1 710 683 N "_3DFace" 4
 "main()
 {
   initParams();
+  int totalRadius = paramRadius + paramPCrateHeight + EMUUI_STATION_PCRATE_DISTANCE_FROM_DISK;
+  int totalSize = totalRadius * 2;
   
   dyn_string ex;
   int posX, posY;
   getValue(\"refPoint\", \"position\", posX, posY);
-  background.size(paramRadius * 2, paramRadius * 2);
-  drawStation(posX + paramRadius, posY + paramRadius, paramRadius, paramSide, paramStation, ex);
+  background.size(totalSize, totalSize);
+  drawStation(posX + totalRadius, posY + totalRadius, paramRadius, paramSide, paramStation, ex);
   if (emu_checkException(ex)) { return; }
 }
 
@@ -62,13 +64,21 @@ void drawStation(int x, int y, int radius, string side, int station, dyn_string 
     }
   }
   
-//   int pcrateRadius = radius;
-//   if (station == 4) { pcrateRadius = scaleValue(layoutParams[\"innerRadius_ME42\"], scale) - gap; }
-//   drawPeripheralCrates(x, y, pcrateRadius + 5, side, station, exceptionInfo);
+  int pcrateRadius = radius;
+//  if (station == 4) { pcrateRadius = scaleValue(layoutParams[\"innerRadius_ME42\"], scale) - gap; }
+  drawPeripheralCrates(x, y, pcrateRadius + EMUUI_STATION_PCRATE_DISTANCE_FROM_DISK, side, station, exceptionInfo);
 }
 
 void drawPeripheralCrates(int x, int y, int radius, string side, int station, dyn_string &exceptionInfo) {
   dyn_string ex;
+  
+  // shape type used in refDevice.
+  //If it's ME11 then use the rectangle shape which has it's ref point at the corner so that it's simple to position two crates next to each other
+  //if it's any other station use the rectangle_middle_ref_point shape which has it's ref point in the middle so that it's easy to center them
+  string shapeType = \"rectangle_middle_ref_point\";
+  if (station == 1) {
+    shapeType = \"rectangle\";
+  }
   
   //get systems list, pick those with \"LV\" and query them for PCMB DB
   dyn_string lvSysNames = emuui_getLvSystemNames(ex);
@@ -98,7 +108,6 @@ void drawPeripheralCrates(int x, int y, int radius, string side, int station, dy
   
   if (dynlen(dbPcmb) == 0) { emu_errorSingle(\"Could not find PCMB DB (check LV projects)\"); return; }
   
-  
   mapping mapPcmbs = _emuui_constructMappingFromCSV(dbPcmb, ex, \"PCMB DB\", \"\", true);
   if (emu_checkException(ex)) { return; }
   
@@ -123,7 +132,7 @@ void drawPeripheralCrates(int x, int y, int radius, string side, int station, dy
                                                    \";station=\" + station +
                                                    \";crateNum=\" + crateNum +
                                                    \";id=\" + id;
-    string shapeParamsDollar = \"$shapeParams:\" + \"type=rectangle\" +
+    string shapeParamsDollar = \"$shapeParams:\" + \"type=\" + shapeType +
                                                  \";width=\" + paramPCrateWidth +
                                                  \";height=\" + paramPCrateHeight;
     
@@ -170,26 +179,51 @@ void drawPeripheralCrates(int x, int y, int radius, string side, int station, dy
       refNameB = crateRefs[(i + 1) * 2];
     }
     
-    //position the crate
-    setValue(refName + \".rectangle\", \"position\", posX, posY);
-    setValue(refName + \".rectangle\", \"rotation\", -1 * angleDeg - 90);
-
-    if (me11) {
-      setValue(refNameB + \".rectangle\", \"position\", posXB, posYB);
-      setValue(refNameB + \".rectangle\", \"rotation\", -1 * angleDeg + 90);
+    //position the crate(s)
+    if (!me11) {
+      setValue(refName + \".\" + shapeType, \"position\", posX, posY);
+      setValue(refName + \".\" + shapeType, \"rotation\", -1 * angleDeg - 90);
+    } else {
+      // if it's on the right side of the disk - switch the two crates so that crate A is always at the bottom
+      if ((angleDeg > 90) && (angleDeg < 270)) {
+        string tmp = refNameB;
+        refNameB = refName;
+        refName = tmp;
+      }
+      setValue(refName + \".\" + shapeType, \"position\", posX, posY);
+      setValue(refName + \".\" + shapeType, \"rotation\", -1 * angleDeg - 90);
+      setValue(refNameB + \".\" + shapeType, \"position\", posXB, posYB);
+      setValue(refNameB + \".\" + shapeType, \"rotation\", -1 * angleDeg + 90);
     }
     
-    //position the caption and other gadgets
-//     setValue(refName + \".caption\", \"position\", captionPosX, captionPosY);
-//     setValue(refName + \".imgHvChannelsDisabled\", \"position\", warningPosX, warningPosY);
-    //setValue(refName + \".imgHvChannelsDisabled\", \"rotation\", -1 * angleDeg + 180);
-//     if ((angleDeg > 90) && (angleDeg <= 270)){
-//       setValue(refName + \".caption\", \"rotation\", -1 * angleDeg + 180);
-//       setValue(refName + \".imgHvChannelsDisabled\", \"rotation\", -1 * angleDeg + 180);
-//     } else {
-//       setValue(refName + \".caption\", \"rotation\", -1 * angleDeg);
-//       setValue(refName + \".imgHvChannelsDisabled\", \"rotation\", -1 * angleDeg);
-//     }
+    //position the caption(s)
+    if (!me11) {
+      float crateHalfHeight = paramPCrateHeight / 2;
+      float captionOffsetX = -1 * crateHalfHeight * cosValue;
+      float captionOffsetY = -1 * crateHalfHeight * sinValue;
+      setValue(refName + \".caption\", \"position\", posX + captionOffsetX, posY + captionOffsetY);
+    } else {
+      float crateHalfWidth = paramPCrateWidth / 2;
+      float crateHalfHeight = paramPCrateHeight / 2;
+      // move to middle of the crate in width
+      float captionOffsetX1 = crateHalfWidth * sinValue;
+      float captionOffsetY1 = -1 * crateHalfWidth * cosValue;
+      // move to the very center of the crate
+      float captionOffsetX2 = -1 * crateHalfHeight * cosValue;
+      float captionOffsetY2 = -1 * crateHalfHeight * sinValue;
+      
+      setValue(refName + \".caption\", \"position\", posX - captionOffsetX1 + captionOffsetX2, posY - captionOffsetY1 + captionOffsetY2);
+      setValue(refNameB + \".caption\", \"position\", posX + captionOffsetX1 + captionOffsetX2, posY + captionOffsetY1 + captionOffsetY2);
+    }
+    
+    // rotate the caption(s)
+    if (((angleDeg >= 0) && (angleDeg < 180)) || (angleDeg >= 350)){
+      setValue(refName + \".caption\", \"rotation\", -1 * angleDeg + 90);
+      setValue(refNameB + \".caption\", \"rotation\", -1 * angleDeg + 90);
+    } else {
+      setValue(refName + \".caption\", \"rotation\", -1 * angleDeg - 90);
+      setValue(refNameB + \".caption\", \"rotation\", -1 * angleDeg - 90);
+    }
   }
 
   
@@ -346,6 +380,7 @@ int paramPCrateWidth;
 int paramPCrateHeight;
 
 // some panel-wide constants and variables
+const int EMUUI_STATION_PCRATE_DISTANCE_FROM_DISK = 5;
 dyn_string references;
 
 /** coppies dollar parameters to local variables. If any dollar parameter is missing 
@@ -359,9 +394,9 @@ void initParams() {
     
     emuui_init();
     paramGroup = emuui_getSessionDp(\"mainChamberView\");
-    paramSide = \"M\";
+    paramSide = \"P\";
     paramStation = 1;
-    paramRadius = 200;
+    paramRadius = 300;
   } else { // copy from dollar params
     paramGroup = $group;
     paramSide = $side;
@@ -370,6 +405,7 @@ void initParams() {
   }
   paramPCrateWidth = paramRadius / 6;
   paramPCrateHeight = paramRadius / 13;
+  paramRadius -= paramPCrateHeight;
 }
 
 void showPopupMenu() {

@@ -12,30 +12,7 @@ PANEL,-1 -1 324 290 N "_3DFace" 1
 void drawPCrates() {
   dyn_string ex;
   
-  //get systems list, pick those with \"LV\" and query them for PCMB DB
-  dyn_string lvSysNames = emuui_getLvSystemNames(ex);
-  if (emu_checkException(ex)) { return; }
-  
-  dyn_string dbPcmb;
-  for (int i=1; i <= dynlen(lvSysNames); i++) {
-    dyn_string tmp;
-    dpGet(lvSysNames[i] + \":db_pcmb.list\", tmp);
-    
-    //remove the line for Atlas PSU
-    for (int j=1; j <= dynlen(tmp); j++) {
-      if (strpos(tmp[j], \"PSU\") >= 0) {
-        dynRemove(tmp, j);
-        break;
-      }
-    }
-    
-    dynAppend(dbPcmb, tmp);
-  }
-  
-  if (dynlen(dbPcmb) == 0) { emu_errorSingle(\"Could not find PCMB DB (check LV projects)\"); return; }
-  
-  
-  mapping mapPcmbs = _emuui_constructMappingFromCSV(dbPcmb, ex, \"PCMB DB\", \"\", true);
+  mapping mapPcmbs = emuui_getPcmbDb(ex);
   if (emu_checkException(ex)) { return; }
   
   int width = getVerticalLinePosX(\"M3\") - getVerticalLinePosX(\"M4\") + 1;

@@ -73,7 +73,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 2.1 0 1 0 -0.999999999999979 1 E 100 20 0 1
+E E 0 1 1 2 1 E 1 0 1 0 0.999999999999979 1 E 210 19 0 -1
 2 1
 "lblDeviceName"
 ""
@@ -107,7 +107,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 2.5 0 1 -65 -1 1 E 110 0 130 20
+E E 0 1 1 2 1 E 2.5 0 1 -65 0 1 E 110 0 130 20
 7 5
 "refPoint"
 ""

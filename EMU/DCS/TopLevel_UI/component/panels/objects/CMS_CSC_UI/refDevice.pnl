@@ -65,6 +65,9 @@ void initShape(dyn_string ex) {
     case \"rectangle\":
       confRectShape(shapeParams);
       break;
+    case \"rectangle_middle_ref_point\":
+      confRectShape(shapeParams);
+      break;
     default:
       break;
   }
@@ -106,7 +109,7 @@ void confChamberShape(mapping shapeParams) {
 void confRectShape(mapping shapeParams) {
   //check if relevant parameters are present, if not - leave default shape and return
   int posX, posY;
-  getValue(\"rectangle\", \"position\", posX, posY);
+  getValue(shapeParams[\"type\"], \"position\", posX, posY);
   if (!mappingHasKey(shapeParams, \"width\") || 
       !mappingHasKey(shapeParams, \"height\")) {
     
@@ -120,8 +123,8 @@ void confRectShape(mapping shapeParams) {
   
   int width = shapeParams[\"width\"];
   int height = shapeParams[\"height\"];
-  setValue(\"rectangle\", \"size\", width, height); // for some reason a single setSize doesn't set quite the size that you request!!!??? nonsence but it's true - the second setSize does it correctly (discovered when setting size 90px)
-  setValue(\"rectangle\", \"size\", width, height);
+  setValue(shapeParams[\"type\"], \"size\", width, height); // for some reason a single setSize doesn't set quite the size that you request!!!??? nonsence but it's true - the second setSize does it correctly (discovered when setting size 90px)
+  setValue(shapeParams[\"type\"], \"size\", width, height);
   if ((width < 17) || (height < 17)) { 
     caption.visible = false;
   }
@@ -131,8 +134,11 @@ void confRectShape(mapping shapeParams) {
 ""0  1
 E "//some panel-wide constants
 const string EMUUI_REFDEV_TOOLTIP_REF_NAME = \"refTooltip\";
+const int EMUUI_REFDEV_TOOLTIP_ON_DELAY_MS = 600;
+const int EMUUI_REFDEV_TOOLTIP_OFF_DELAY_MS = 200;
 string tooltipRefName;
-
+bool tooltipVisible;
+mapping mouseOverObjects;
 
 mapping deviceParams;
 string deviceParamsStr;
@@ -147,10 +153,13 @@ bool showValueOnCaption;
 bool hvOffChannelsWarningEnabled;
 dyn_int disabledHvChannels;
 bool me11;
+bool isDisabled;
+
 
 void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string connectionType) {
   dyn_string ex;
   bool connectSuccessful = false;
+  isDisabled = false;
   
   //special case for ME11 high voltage
   if (($deviceType == \"chamber\") && (mode == \"high_voltage\") && me11) {
@@ -176,6 +185,8 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
     }
     
     if (nodeFound) {
+//       int rc = fwCU_connectOperationMode(\"updateFSMOperationModeCB\", node);
+//       emu_debug(\"RC for connect to operation mode of \" + node + \": \" + rc, emu_DEBUG_DETAIL);
       int rc = fwCU_connectState(\"updateFSMStateCB\", node);
       emu_debug(\"RC for connect to \" + node + \": \" + rc, emu_DEBUG_DETAIL);
       if (rc != 0) { 
@@ -241,13 +252,46 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
 
 void updateFSMStateCB(string node, string state) {
   emu_debug(\"state update came for \" + node + \": \" + state);
-  
-  dyn_string ex;
-  string color = emuui_getMappingValue(\"fsmStateColors\", state, ex);
-  if (emu_checkException(ex)) { return; }
-  setColor(color);
+  // update text
   if (showValueOnCaption) {
     caption.text = state;
+  }
+  // this device is disabled or excluded - do not update the state color
+  if (isDisabled) {
+    return;
+  }
+  // update color
+//  dyn_string ex;
+//   string color = emuui_getMappingValue(\"fsmStateColors\", state, ex);
+//   if (emu_checkException(ex)) { return; }
+  string color;
+  fwCU_getStateColor(node, state, color);
+  if (color == \"\") {
+    dyn_string ex;
+    color = emuui_getMappingValue(\"fsmStateColors\", state, ex);
+    if (emu_checkException(ex)) { return; }
+  }
+  setColor(color);
+
+}
+
+/** Updates device operation mode. If paramOperationFlag is 0 - that means the device cannot be operated - so it's grayed out. */
+void updateFSMOperationModeCB(string node, string paramOperationFlag) {
+  bool newIsDisabled = isDisabled;
+  if ((paramOperationFlag == 0) && (!newIsDisabled)) {
+    newIsDisabled = !emuui_isFsmNodeEnabled(node);
+  } else if (paramOperationFlag == 1) {
+    newIsDisabled = false;
+  }
+  
+  if ((isDisabled) && (!newIsDisabled)) { // if device just got enabled
+    isDisabled = newIsDisabled;
+    string state;
+    fwCU_getState(node, state);
+    updateFSMStateCB(node, state);
+  } else if ((!isDisabled) && (newIsDisabled)) { // if device just got disabled
+    isDisabled = newIsDisabled;
+    setColor(\"FwEquipmentDisabled\");
   }
 }
 
@@ -289,13 +333,11 @@ void setColor(string color) {
   setValue(shapeName, \"backCol\", color);
 }
 
-void setTooltip(string tooltip) {
-  setValue(shapeName, \"toolTipText\", tooltip);
-  caption.toolTipText(tooltip);
-}
-
 void showTooltip() {
   if (currentConnectionMode == \"busy\") { return; } // in the process of connecting, don't show any tooltips while in that mode
+
+  delay(0, EMUUI_REFDEV_TOOLTIP_ON_DELAY_MS);  
+  if (tooltipVisible || !isMouseOver()) { return; }
   
   int mouseX, mouseY;
   getCursorPosition(mouseX, mouseY);
@@ -305,10 +347,25 @@ void showTooltip() {
             refName,
             makeDynString(\"$deviceParams:\" + deviceParamsStr, \"$deviceType:\" + $deviceType, \"$mode:\" + currentConnectionMode),
             mouseX, mouseY, 0, 1, 1);
+  tooltipVisible = true;
 }
 
 void hideTooltip() {
+  delay(0, EMUUI_REFDEV_TOOLTIP_OFF_DELAY_MS);
+  if (!tooltipVisible || isMouseOver()) { return; }
+  
   removeSymbol(myModuleName(), myPanelName(), tooltipRefName);
+  tooltipVisible = false;
+}
+
+/** If mouse is over any of the objects - this function returns true, if not then false. */
+bool isMouseOver() {
+  for (int i=1; i <= mappinglen(mouseOverObjects); i++) {
+    if (mappingGetValue(mouseOverObjects, i)) {
+      return true;
+    }
+  }
+  return false;
 }
 
 void showPopupMenu() {
@@ -413,6 +470,7 @@ LANG:1 0
 0 0 0 0 0 0
 E E "main(bool enter)
 {
+  mouseOverObjects[this.name] = enter;
   if (enter) {
     showTooltip();
   } else {
@@ -445,6 +503,7 @@ E E 0 1 1 1 1 E 0.774020156774913 0 1.02222222222222 -15.4642777155655 -30.66666
 2 0 0 0 0 0
 E E "main(bool enter)
 {
+  mouseOverObjects[this.name] = enter;
   if (enter) {
     showTooltip();
   } else {
@@ -460,40 +519,6 @@ LANG:1 0
 "hoverfclr" "N \"black_yellow\""
 "dashclr"N "_Transparent"
 E E 0 1 1 2 1 E 1 0 1 -90 -10 1 E 90 10 110 30
-2 1
-"caption"
-""
-1 10 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
- "main()
-{
-  showPopupMenu();
-}" 0
- E
-1 0 0 0 0 0
-E E "main(bool enter)
-{
-  if (enter) {
-    setValue(shapeName, \"foreCol\", \"black_yellow\");
-    showTooltip();
-  } else {
-    setValue(shapeName, \"foreCol\", \"\");
-    hideTooltip();
-  }
-}" 0
-
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 3 3 17 17
-0 2 2 "0s" 0 0 0 193 0 0  10 3 1
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
-LANG:1 2 me
 2 8
 "imgHvChannelsDisabled"
 ""
@@ -506,6 +531,7 @@ LANG:1 2 me
 9 0 0 0 0 0
 E E "main(bool enter)
 {
+  mouseOverObjects[this.name] = enter;
   if (enter) {
     setValue(shapeName, \"foreCol\", \"black_yellow\");
     showTooltip();
@@ -528,6 +554,69 @@ LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-19-*-100-100-*-*-iso8859-1|-19,0,0,0,
 0 ""
 1
 LANG:1 1 !
+6 9
+"rectangle_middle_ref_point"
+""
+1 100 10 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ "main()
+{
+  showPopupMenu();
+}" 0
+ E
+11 0 0 0 0 0
+E E "main(bool enter)
+{
+  mouseOverObjects[this.name] = enter;
+  if (enter) {
+    showTooltip();
+  } else {
+    hideTooltip();
+  }
+}" 0
+
+0
+1
+LANG:1 0 
+
+2
+"hoverfclr" "N \"black_yellow\""
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -100 -10 1 E 90 10 110 30
+2 1
+"caption"
+""
+1 10 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ "main()
+{
+  showPopupMenu();
+}" 0
+ E
+1 0 0 0 0 0
+E E "main(bool enter)
+{
+  mouseOverObjects[this.name] = enter;
+  if (enter) {
+    setValue(shapeName, \"foreCol\", \"black_yellow\");
+    showTooltip();
+  } else {
+    setValue(shapeName, \"foreCol\", \"\");
+    hideTooltip();
+  }
+}" 0
+
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 3 3 17 17
+0 2 2 "0s" 0 0 0 193 0 0  10 3 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 2 me
 0
 LAYER, 1 
 1

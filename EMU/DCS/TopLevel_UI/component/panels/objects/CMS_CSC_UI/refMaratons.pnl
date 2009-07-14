@@ -12,36 +12,7 @@ PANEL,-1 -1 257 244 N "_3DFace" 1
 void drawMaratons() {
   dyn_string ex;
   
-  //get systems list, pick those with \"LV\" and query them for Maraton DB
-  dyn_string sysNames, lvSysNames;
-  dyn_uint sysIds;
-  getSystemNames(sysNames, sysIds);
-  for (int i=1; i <= dynlen(sysNames); i++) {
-    if (strpos(strtolower(sysNames[i]), \"lv\") >= 0) { // contains LV (case insensitive).
-      dynAppend(lvSysNames, sysNames[i]);
-    }
-  }
-  if (dynlen(lvSysNames) == 0) {
-    emu_errorSingle(\"No Low Voltage systems found (Low Voltage system name should contain 'lv' in the name (case insensitive))\");
-    return;
-  }
-  
-  dyn_string dbMrtn;
-  for (int i=1; i <= dynlen(lvSysNames); i++) {
-    dyn_string tmp;
-    dpGet(lvSysNames[i] + \":db_mrtn.list\", tmp);
-// use this if there can be duplicates (probably there won't be any, but who knows)..
-//     for (int j=1; j <= dynlen(tmp); j++) {
-//       if (!dynContains(dbMrtn, tmp[j])) {
-//         dynAppend(dbMrtn, tmp[j]); // if it doesn't contain the value yet - include it in the \"DB\"
-//       }
-//     }
-    dynAppend(dbMrtn, tmp);
-  }
-  
-  if (dynlen(dbMrtn) == 0) { emu_errorSingle(\"Could not find Maraton DB (check LV projects)\"); return; }
-  
-  mapping mapMaratons = _emuui_constructMappingFromCSV(dbMrtn, ex, \"Maraton DB\", \"\", true);
+  mapping mapMaratons = emuui_getMaratonDb(ex);
   if (emu_checkException(ex)) { return; }
   
   int width = getVerticalLinePosX(\"M2\") - getVerticalLinePosX(\"M3\") + 1;

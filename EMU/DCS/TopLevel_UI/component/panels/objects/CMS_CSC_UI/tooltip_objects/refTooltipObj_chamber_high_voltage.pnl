@@ -46,7 +46,12 @@ PANEL,-1 -1 374 227 N "_3DFace" 1
   // get the FSM node for the HV of this chamber (this will be used in \"no communication\" warning update
   hvFsmNode = emuui_getFsmNode(\"chamber_high_voltage\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
-  
+  // add the FSM node
+  int fsmX, fsmY;
+  getValue(\"fsmRefPoint\", \"position\", fsmX, fsmY);
+  dyn_string refs = emuui_addFsmNode(hvFsmNode, fsmX, fsmY, true);
+  dynAppend(references, refs);
+    
   // get master channel status DP
   mapping masterDeviceParams;
   string masterIdDp = emuui_getDpName(\"HV_moduleToMasterId\", deviceParams, ex);
@@ -80,18 +85,12 @@ PANEL,-1 -1 374 227 N "_3DFace" 1
     dynAppend(statusDps, channelDps[i] + \".status\");
   }
   
+  dpConnect(\"positionChangedCB\", false, emuui_getSessionDp(\"tooltipPositionUpdated\"));  
   dpConnect(\"updateVMonCB\", true, vMonDps);
   dpConnect(\"updateStatusCB\", true, statusDps);
   dpConnect(\"updateDisabledChannelsCB\", true, offChannelsDp);  
   dpConnect(\"updateModuleStatusCB\", true, moduleStatusDp);
   dpConnect(\"updateMasterChannelStatusCB\", true, masterChannelStatusDp);
-  
-  int fsmX, fsmY;
-  getValue(\"fsmRefPoint\", \"position\", fsmX, fsmY);
-  dyn_string refs = emuui_addFsmNode(hvFsmNode, fsmX, fsmY, true);
-  dynAppend(references, refs);
-  
-  dpConnect(\"positionChangedCB\", true, emuui_getSessionDp(\"tooltipPositionUpdated\"));  
   dpConnect(\"updateDisconnectedWarningCB\", true, disconnectedDevicesDp);
   dpConnect(\"updateModuleTypeCB\", true, moduleTypeDp);
 }

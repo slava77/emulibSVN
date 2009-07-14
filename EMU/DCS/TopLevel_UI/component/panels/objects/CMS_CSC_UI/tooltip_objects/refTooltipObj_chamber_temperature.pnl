@@ -10,10 +10,18 @@ PANEL,-1 -1 368 113 N "_3DFace" 1
   if (emu_checkException(ex)) { return; }
 
   getValue(\"refPoint\", \"position\", posX, posY);
+  // ----------========== FSM NODE ==========----------
+  fsmNode = emuui_getFsmNode(\"chamber_temperature\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  int fsmX, fsmY;
+  getValue(\"fsmRefPoint\", \"position\", fsmX, fsmY);
+  dyn_string refs = emuui_addFsmNode(fsmNode, fsmX, fsmY, true);
+  dynAppend(references, refs);
+  dpConnect(\"positionChangedCB\", false, emuui_getSessionDp(\"tooltipPositionUpdated\"));  
   
+  // connect to the temperature    
   dyn_string dps = emuui_getDpNames(\"chamber_temperature\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
-  
   
   initGui(dps);
   
@@ -26,16 +34,6 @@ PANEL,-1 -1 368 113 N "_3DFace" 1
   
   dpConnect(\"updateTemperatureAlarmColorsCB\", true, dps);
   
-  // ----------========== FSM NODE ==========----------
-  fsmNode = emuui_getFsmNode(\"chamber_temperature\", deviceParams, ex);
-  if (emu_checkException(ex)) { return; }
-
-  int fsmX, fsmY;
-  getValue(\"fsmRefPoint\", \"position\", fsmX, fsmY);
-  dyn_string refs = emuui_addFsmNode(fsmNode, fsmX, fsmY, true);
-  dynAppend(references, refs);
-  dpConnect(\"positionChangedCB\", true, emuui_getSessionDp(\"tooltipPositionUpdated\"));
-  
   // ----------========== DISCONNECTED WARNING ==========----------
   if (dynlen(dps) > 1) {
     deviceParams[\"sysName\"] = emuui_getSystemName(dps[1]);
@@ -43,7 +41,6 @@ PANEL,-1 -1 368 113 N "_3DFace" 1
   string disconnectedDevicesDp = emuui_getDpName(\"disconnected_devices\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
   dpConnect(\"updateDisconnectedWarningCB\", true, disconnectedDevicesDp);
-
 }
 
 void initGui(dyn_string dps) {
@@ -109,10 +106,7 @@ void updateTemperatureAlarmColorsCB(dyn_string dps, dyn_string alarmColors) {
   for (int i=1; i <= dynlen(columnNames); i++) {
     int index = dynPartiallyContains(dps, columnNames[i]);
     if (index > 0) {
-      if (strlen(alarmColors[index]) == 0) {
-        alarmColors[index] = \"FwStateOKPhysics\";
-      }
-      
+      alarmColors[index] = emuui_correctAlarmColor(alarmColors[index]);
       tableTemp.cellBackColRC(0, columnNames[i], alarmColors[index]);
     }
   }

@@ -10,7 +10,15 @@ PANEL,-1 -1 367 199 N "_3DFace" 1
   if (emu_checkException(ex)) { return; }
 
   getValue(\"refPoint\", \"position\", posX, posY);
-
+  // ----------========== FSM NODE ==========----------
+  fsmNode = emuui_getFsmNode(\"chamber_low_voltage\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  int fsmX, fsmY;
+  getValue(\"fsmRefPoint\", \"position\", fsmX, fsmY);
+  dyn_string refs = emuui_addFsmNode(fsmNode, fsmX, fsmY, true);
+  dynAppend(references, refs);
+  dpConnect(\"positionChangedCB\", false, emuui_getSessionDp(\"tooltipPositionUpdated\"));
+  
   // -------=========== CFEB ============---------
   
   //cycle through 5 CFEBs at most, get the datapoints for each board and voltage and fill the dpIndexToTableCell map
@@ -83,17 +91,6 @@ PANEL,-1 -1 367 199 N "_3DFace" 1
   
   dpConnect(\"updateAlctAlarmColorsCB\", true, values);
   
-  // ----------========== FSM NODE ==========----------
-  fsmNode = emuui_getFsmNode(\"chamber_low_voltage\", deviceParams, ex);
-  if (emu_checkException(ex)) { return; }
-
-  int fsmX, fsmY;
-  getValue(\"fsmRefPoint\", \"position\", fsmX, fsmY);
-  dyn_string refs = emuui_addFsmNode(fsmNode, fsmX, fsmY, true);
-  dynAppend(references, refs);
-  
-  dpConnect(\"positionChangedCB\", true, emuui_getSessionDp(\"tooltipPositionUpdated\"));
-
   // ----------========== DISCONNECTED WARNING ==========----------
   if (dynlen(values) > 1) {
     deviceParams[\"sysName\"] = emuui_getSystemName(values[1]);
@@ -163,9 +160,8 @@ void updateCfebAlarmColorsCB(dyn_string dps, dyn_string colors) {
   for (int i=1; i <= dynlen(colors) / 2; i++) {
     string voltageAlarmColor = colors[i];
     string currentAlarmColor = colors[i + currentsOffset];
-    if (strlen(voltageAlarmColor) == 0) {
-      voltageAlarmColor = \"FwStateOKPhysics\";
-    }
+    voltageAlarmColor = emuui_correctAlarmColor(voltageAlarmColor);
+    currentAlarmColor = emuui_correctAlarmColor(currentAlarmColor);
     string mainColor = voltageAlarmColor;
     if ((strlen(currentAlarmColor) != 0) && (currentAlarmColor != \"FwStateOKPhysics\")) { // if there's an error in current, put this color in main color
       mainColor = currentAlarmColor;

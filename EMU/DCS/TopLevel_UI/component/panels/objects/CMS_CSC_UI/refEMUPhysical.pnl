@@ -62,7 +62,7 @@ float paramWidth;
 bool runningLocal; // if true then panel is running localy, if false then panel is a reference
 
 // some panel-wide constants and variables
-const int EMUUI_REFEMU_GAP_BETWEEN_STATIONS = 10;
+const int EMUUI_REFEMU_GAP_BETWEEN_STATIONS = 15;
 dyn_string references;
 mapping stationPositions; // refName -> array[posX, posY]
 int stationRadius;
