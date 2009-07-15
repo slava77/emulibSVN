@@ -1,0 +1,691 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 331 425 N "_3DFace" 1
+"$deviceParams"
+"main()
+{
+  dyn_string ex;
+  deviceParams = emuui_parseParameterString($deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  getValue(\"refPoint\", \"position\", posX, posY);
+  initChannelToTableCellMapping(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // get the FSM state colors and connect the FSM state
+  fsmStateColors = emuui_getMapping(\"fsmStateColors\", ex);
+  if (emu_checkException(ex)) { return; }
+  string fsmNode = emuui_getFsmNode(\"peripheralCrate_general\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // get the maraton ID and add it's FSM node
+  int maratonId = emuui_getPcmbToMaratonMap(ex)[(string)emu_hexToDec(deviceParams[\"id\"], 1)];
+  if (emu_checkException(ex)) { return; }
+  mapping maratonDeviceParams = emuui_getMaratonDeviceParams(maratonId, ex);
+  if (emu_checkException(ex)) { return; }
+  string mrtnSide = \"+\";
+  if (maratonDeviceParams[\"side\"] == \"M\") { mrtnSide = \"-\"; }
+  lblForMaraton.text = \"Supplying MARATON (ID=\" + maratonId + \"):\";
+  lblMrtnInfo.text = \"Maraton Info: crate no. \" + maratonDeviceParams[\"crateNum\"] + \" on YE\"+ mrtnSide + maratonDeviceParams[\"disk\"];
+  string mrtnFsmNode = emuui_getFsmNode(\"maraton_general\", maratonDeviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  int fsmX, fsmY;
+  getValue(\"fsmMrtnRefPoint\", \"position\", fsmX, fsmY);
+  dyn_string refs = emuui_addFsmNode(mrtnFsmNode, fsmX, fsmY, true);
+  dynAppend(references, refs);
+  
+  // get the status meanings and colors
+  elmbStateColors = emuui_getMapping(\"elmbStateColors\", ex);
+  if (emu_checkException(ex)) { return; }
+  elmbStateTexts = emuui_getMapping(\"elmbStateMeaning\", ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // ELMB analog input DPs
+  dyn_string aiDps = emuui_getDpNames(\"peripheralCrate_ELMB_AI\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  for (int i=1; i <= dynlen(aiDps); i++) {
+    dyn_string channel;
+    dpGet(aiDps[i] + \".channel\", channel);
+    channelToDp[(int)channel[1]] = aiDps[i];
+    dpToChannel[aiDps[i]] = channel[1];
+  }
+  
+  // PCrate error status
+  string pcrateErrorStatusDp = emuui_getDpName(\"peripheralCrate_error_status\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // Disabled channels
+  string disabledChannelsDp = emuui_getDpName(\"peripheralCrate_off_channels\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // ELMB status
+  string elmbStateDp = emuui_getDpName(\"peripheralCrate_ELMB_state\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  dpConnect(\"positionChangedCB\", false, emuui_getSessionDp(\"tooltipPositionUpdated\"));  
+  fwCU_connectState(\"updateFSMStateCB\", fsmNode);
+  dpConnect(\"updatePCrateErrorStatusCB\", true, pcrateErrorStatusDp);
+  dpConnect(\"updateDisabledChannelsCB\", true, disabledChannelsDp);
+  dpConnect(\"updateELMBStatusCB\", true, elmbStateDp);
+  
+  // connect the analog input DPs to VMon call-back function (first DP is channel number, second is the voltage and third is alarm color)
+  for (int i=1; i <= dynlen(aiDps); i++) {
+    dpConnect(\"updateVMonCB\", true, aiDps[i] + \".value\");
+    if (!isStandbyChannel(aiDps[i])) {
+      dpConnect(\"updateVMonBackColorCB\", true, aiDps[i] + \".value:_alert_hdl.._act_state_color\");
+    }
+  }
+}
+
+void initChannelToTableCellMapping(dyn_string &ex) {
+  // get the ELMB AI channel lists for various voltages
+  dyn_int list3v3_1   = emuui_getArray(\"elmb_3v3_1_channels\", ex);
+  dyn_int list3v3_2   = emuui_getArray(\"elmb_3v3_2_channels\", ex);
+  dyn_int list5v      = emuui_getArray(\"elmb_5v_channels\", ex);
+  dyn_int list1v5     = emuui_getArray(\"elmb_1v5_channels\", ex);
+  dyn_int listCCB     = emuui_getArray(\"elmb_CCB_MPC_v_channels\", ex);
+  dyn_int listVCC     = emuui_getArray(\"elmb_VCC_v_channels\", ex);
+  listStandbyChannels = emuui_getArray(\"elmb_STANDBY_v_channels\", ex);
+  if (emu_checkException(ex)) { return; }
+  
+  for (int i=1; i <= dynlen(list3v3_1); i++) {
+    channelToTableCell[list3v3_1[i]] = makeDynString(\"pairsTable\", \"3v3_1\", i - 1);
+  }
+  for (int i=1; i <= dynlen(list3v3_2); i++) {
+    channelToTableCell[list3v3_2[i]] = makeDynString(\"pairsTable\", \"3v3_2\", i - 1);
+  }
+  for (int i=1; i <= dynlen(list5v); i++) {
+    channelToTableCell[list5v[i]] = makeDynString(\"pairsTable\", \"5v\", i - 1);
+  }
+  channelToTableCell[listCCB[1]] = makeDynString(\"pairsTable\", \"3v3_1\", 9);
+  channelToTableCell[listCCB[2]] = makeDynString(\"pairsTable\", \"5v\", 9);
+  channelToTableCell[listVCC[1]] = makeDynString(\"pairsTable\", \"3v3_1\", 10);
+  channelToTableCell[listVCC[2]] = makeDynString(\"pairsTable\", \"5v\", 10);
+  channelToTableCell[list1v5[1]] = makeDynString(\"tableOther\", \"1v5_1\", 0);
+  channelToTableCell[list1v5[2]] = makeDynString(\"tableOther\", \"1v5_2\", 0);
+  channelToTableCell[listStandbyChannels[1]] = makeDynString(\"tableStandby\", \"standby_5v_1\", 0);
+  channelToTableCell[listStandbyChannels[2]] = makeDynString(\"tableStandby\", \"standby_5v_2\", 0);
+  channelToTableCell[listStandbyChannels[3]] = makeDynString(\"tableStandby\", \"standby_10v\", 0);
+  
+  // fill in the pairChannels array
+  for (int i=1; i <= dynlen(list3v3_1); i++) {
+    pairChannels[i] = makeDynInt(list3v3_1[i], list3v3_2[i], list5v[i]);
+  }
+  ccbMpcChannels = listCCB;
+  vccChannels = listVCC;
+  channels1v5 = list1v5;
+}
+" 0
+ "main()
+{
+  emuui_destroyReferences(references);
+}" 0
+ E E E 1 -1 -1 0  0 0
+""0  1
+E "//some panel-wide constants
+mapping deviceParams;
+int posX, posY;
+mapping fsmStateColors;
+mapping elmbStateTexts, elmbStateColors;
+mapping channelToTableCell; // here key is a channel number and a value is an array: [1] - table name; [2] - column name; [3] row number;
+dyn_int listStandbyChannels;
+dyn_string references;
+mapping channelToDp, dpToChannel;
+dyn_dyn_int pairChannels;
+dyn_int ccbMpcChannels, vccChannels, channels1v5; // need this .. thing to interpret Valeri's disabled channel numbers
+
+// current status variables
+string currentPCrateStatus;
+dyn_int disabledChannels; // Valeri convention (1-9 is one TMB/DMB pair disabled, 10 - CCB/MPC disabled, 11 - VCC disabled, 12 - both 1.5V lines disabled)
+
+/** Update voltage reading */
+void updateVMonCB(string aiValueDpe, float voltage){
+  string dp = dpSubStr(aiValueDpe, DPSUB_SYS_DP);
+  int channel = dpToChannel[dp];
+  
+  string strVoltage;
+  sprintf(strVoltage, \"%.2f V\", voltage);
+  if (dynContains(disabledChannels, channel)) {
+    strVoltage += \" ignore\";
+    setValue(channelToTableCell[channel][1], \"cellBackColRC\", channelToTableCell[channel][3], 
+             channelToTableCell[channel][2], \"FwEquipmentDisabled\");
+  }
+  setValue(channelToTableCell[channel][1], \"cellValueRC\", channelToTableCell[channel][3], channelToTableCell[channel][2], strVoltage);
+  
+  lblLastUpdate.text = emuui_getLastUpdateTime(aiValueDpe);
+}
+
+/** Update voltage background color */
+void updateVMonBackColorCB(string alarmColDp, string alarmColor){
+  string dp = dpSubStr(alarmColDp, DPSUB_SYS_DP);
+  int channel = dpToChannel[dp];
+  
+  if (currentPCrateStatus == \"OFF\") { // we need this hard-code because this alarm is ON when voltage is 0 even though the crate is OFF
+    alarmColor = fsmStateColors[currentPCrateStatus];
+  } else {
+    alarmColor = emuui_correctAlarmColor(alarmColor, fsmStateColors[currentPCrateStatus]);
+  }
+  if (dynContains(disabledChannels, channel)) {
+    alarmColor = \"FwEquipmentDisabled\";
+  }
+  setValue(channelToTableCell[channel][1], \"cellBackColRC\", channelToTableCell[channel][3], channelToTableCell[channel][2], alarmColor);
+}
+
+/** updates the currentPCrateStatus which is used to paint the table cell background. */
+void updateFSMStateCB(string fsmNode, string state) {
+  currentPCrateStatus = state;
+}
+
+void updatePCrateErrorStatusCB(string dpName, int errorStatus) {
+  if (errorStatus > 0) {
+    emuui_showTooltipWarning(getShape(\"refPoint\"),
+                           getShape(\"warnNoCommunication\"), 
+                           getShape(\"peripheralCrate_general_tooltipBack\"));
+  } else {
+    emuui_hideTooltipWarning(getShape(\"warnNoCommunication\"), 
+                             getShape(\"peripheralCrate_general_tooltipBack\"));
+  }
+}
+
+// Valeri convention (1-9 is one TMB/DMB pair disabled, 10 - CCB/MPC disabled, 11 - VCC disabled, 12 - both 1.5V lines disabled)
+void updateDisabledChannelsCB(string dpName, dyn_int disChannels) {
+  dynClear(disabledChannels);
+  for (int i=1; i <= dynlen(disChannels); i++) {
+    if ((disChannels[i] > 0) && (disChannels[i] <= 9)) {
+      emu_dynAppend(disabledChannels, pairChannels[disChannels[i]]);
+    } else if (disChannels[i] == 10) {
+      emu_dynAppend(disabledChannels, ccbMpcChannels);
+    } else if (disChannels[i] == 11) {
+      emu_dynAppend(disabledChannels, vccChannels);
+    } else if (disChannels[i] == 12) {
+      emu_dynAppend(disabledChannels, channels1v5);
+    }
+  }
+  
+  // update all voltages
+  for (int i=1; i <= mappinglen(dpToChannel); i++) {
+    float voltage;
+    string dp = mappingGetKey(dpToChannel, i) + \".value\";
+    dpGet(dp, voltage);
+    updateVMonCB(dp, voltage);
+    if (!isStandbyChannel(mappingGetValue(dpToChannel, i))) {
+      string dpAlarm = mappingGetKey(dpToChannel, i) + \".value:_alert_hdl.._act_state_color\";
+      string color;
+      dpGet(dpAlarm, color);
+      updateVMonBackColorCB(dpAlarm, color);
+    }
+  }
+}
+
+void updateELMBStatusCB(string dpName, int state) {
+  state &= 127; // dismiss the toggle bit
+  
+  if (!mappingHasKey(elmbStateTexts, (string)state)) {
+    state = 0;
+  }
+  string stateTxt = elmbStateTexts[(string)state];
+  lblELMBState.text = stateTxt;
+  lblELMBState.backCol = elmbStateColors[stateTxt];
+}
+
+void positionChangedCB(string dummyDpName, int dummyValue) {
+  int oldPosX = posX,
+      oldPosY = posY;
+  getValue(\"refPoint\", \"position\", posX, posY);
+
+  emuui_repositionObjectRelatively(references, oldPosX, oldPosY, posX, posY);  
+}
+
+bool isStandbyChannel(string dpOrChannelNum) {
+  for (int i=1; i <= dynlen(listStandbyChannels); i++) {
+    if (strpos(dpOrChannelNum, (string)listStandbyChannels[i]) >= 0) {
+      return true;
+    }
+  }
+  return false;
+}
+" 0
+ 2
+"CBRef" "1"
+"EClose" "main()
+{
+  emuui_destroyReferences(references);
+  PanelOff();
+}" 0
+
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 31
+"peripheralCrate_general_tooltipBack"
+""
+1 400 40 E E E 1 E 1 E N {0,0,0} E N {255,255,225} E E
+ E E
+44 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 2.90909090909091 0 4.33333333333334 -1163.63636363637 -173.333333333333 1 E 400 40 510 130
+2 10
+"warnNoCommunication"
+""
+1 10 400 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 400 309 414
+1 2 2 "0s" 0 0 0 65 0 0  10 400 1
+1
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 33 No Communication - CANbus problem
+2 13
+"lblLastUpdate"
+""
+1 220 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 220 10 267 24
+0 2 2 "0s" 0 0 0 192 0 0  220 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 9 timestamp
+2 14
+"PRIMITIVE_TEXT6"
+""
+1 160 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 160 10 219 24
+0 2 2 "0s" 0 0 0 192 0 0  160 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 12 Last update:
+7 17
+"refPoint"
+""
+1 140 110 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ E E
+26 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -140 -110 1 E 140 110 10 10
+2 18
+"PRIMITIVE_TEXT7"
+""
+1 10 320 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+27 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 320 164 334
+0 2 2 "0s" 0 0 0 192 0 0  10 320 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 31 Monitoring Board (ELMB) Status:
+2 22
+"lblELMBState"
+""
+1 170.046511627907 320 E E E 1 E 1 E N "_WindowText" E N "FwStateOKPhysics" E E
+ E E
+31 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 170.046511627907 320 304 334
+1 2 2 "0s" 0 0 0 65 0 0  170.046511627907 320 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 6 STATUS
+2 40
+"lblForMaraton"
+""
+1 10 345 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+59 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 345 156 359
+0 2 2 "0s" 0 0 0 192 0 0  10 345 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 26 Supplying MARATON (ID=##):
+6 42
+"fsmMrtnRefPoint"
+""
+1 110 0 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ E E
+63 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 2.5 0 1 -107 340 1 E 110 0 130 20
+25 43
+"pairsTable"
+""
+1 258.571428571429 124 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+65 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 8 28 310 208
+"main()
+{
+  //write slot numbers
+  for (int i=1; i <= 9; i++) {
+//    this.appendLine(\"board\", \"TMB/DMB \" + i);
+    this.appendLine(\"5v\", \"\");
+    this.rowHeader(i - 1, \"TMB/DMB \" + i);
+  }
+//   this.appendLine(\"board\", \"CCB/MPC\");
+//   this.appendLine(\"board\", \"VCC\");
+  this.appendLine(\"5v\", \"\");
+    this.rowHeader(9, \"CCB/MPC\");
+  this.appendLine(\"5v\", \"\");
+    this.rowHeader(10, \"VCC\");
+}" 0
+E 1 1 1 3 11 "3v3_1" 6 1 0 "s" 1
+LANG:1 11 3.3V line 1
+E
+1
+LANG:1 0 
+
+70 "3v3_2" 6 1 0 "s" 1
+LANG:1 11 3.3V line 2
+E
+1
+LANG:1 0 
+
+70 "5v" 6 1 0 "s" 1
+LANG:1 7 5V line
+E
+1
+LANG:1 0 
+
+70 
+14 14 "" 1 1
+LANG:1 9 TMB/DMB 1
+"" 1 1
+LANG:1 9 TMB/DMB 2
+"" 1 1
+LANG:1 9 TMB/DMB 3
+"" 1 1
+LANG:1 9 TMB/DMB 4
+"" 1 1
+LANG:1 9 TMB/DMB 5
+"" 1 1
+LANG:1 9 TMB/DMB 6
+"" 1 1
+LANG:1 9 TMB/DMB 7
+"" 1 1
+LANG:1 9 TMB/DMB 8
+"" 1 1
+LANG:1 9 TMB/DMB 9
+"" 1 1
+LANG:1 7 CCB/MPC
+"" 1 1
+LANG:1 3 VCC
+10 85
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+0 0 0 1 7
+1 0
+25 44
+"tableOther"
+""
+1 181.428571428572 124 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+67 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 8 218 211 259
+"main()
+{
+  this.appendLine(\"1v5_1\", \"\");
+}" 0
+E 1 0 1 2 9 "1v5_1" 10 1 0 "s" 1
+LANG:1 11 1.5V line 1
+E
+1
+LANG:1 0 
+
+98 "1v5_2" 10 1 0 "s" 1
+LANG:1 11 1.5V line 2
+E
+1
+LANG:1 0 
+
+98 
+14 14 "" 1 1
+LANG:1 6 Slot 1
+"" 1 1
+LANG:1 6 Slot 2
+"" 1 1
+LANG:1 6 Slot 3
+"" 1 1
+LANG:1 6 Slot 4
+"" 1 1
+LANG:1 6 Slot 5
+"" 1 1
+LANG:1 6 Slot 6
+"" 1 1
+LANG:1 6 Slot 7
+"" 1 1
+LANG:1 6 Slot 3
+"" 1 1
+LANG:1 6 Slot 9
+10 46
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+0 0 0 1 7
+1 0
+25 45
+"tableStandby"
+""
+1 258.571428571429 174 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+69 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 8 268 310 309
+"main()
+{
+  this.appendLine(\"standby_5v_1\", \"\");
+}" 0
+E 1 0 1 3 9 "standby_5v_1" 10 1 0 "s" 1
+LANG:1 12 5V Standby 1
+E
+1
+LANG:1 0 
+
+98 "standby_5v_2" 10 1 0 "s" 1
+LANG:1 12 5V Standby 2
+E
+1
+LANG:1 0 
+
+98 "standby_10v" 10 1 0 "s" 1
+LANG:1 13 10V Standby 3
+E
+1
+LANG:1 0 
+
+99 
+14 14 "" 1 1
+LANG:1 6 Slot 1
+"" 1 1
+LANG:1 6 Slot 2
+"" 1 1
+LANG:1 6 Slot 3
+"" 1 1
+LANG:1 6 Slot 4
+"" 1 1
+LANG:1 6 Slot 5
+"" 1 1
+LANG:1 6 Slot 6
+"" 1 1
+LANG:1 6 Slot 7
+"" 1 1
+LANG:1 6 Slot 3
+"" 1 1
+LANG:1 6 Slot 9
+10 46
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+0 0 0 1 7
+1 0
+2 46
+"PRIMITIVE_TEXT10"
+""
+1 10 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+70 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 10 75 24
+0 2 2 "0s" 0 0 0 192 0 0  10 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 12 CRB voltages
+2 49
+"lblMrtnInfo"
+""
+1 10 370 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+74 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 370 174 384
+0 2 2 "0s" 0 0 0 192 0 0  10 370 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 33 Maraton Info: crate no. # on YE##
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
