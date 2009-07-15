@@ -127,10 +127,31 @@ void drawPeripheralCrates(int x, int y, int radius, string side, int station, dy
     string id = value;
     strreplace(key, currentStation, \"\");
     string crateNum = key;
+    int crateNumPartInt = (int)(string)crateNum[0];
+    int crateNumberStd;
+    if (station != 1) { // not ME11 (6 crates)
+      crateNumberStd = crateNum;
+    } else { // ME11 - 12 crates. deviceParams[\"crateNum\"] goes 1-6 and has a postfix of A or B
+      crateNumberStd = (string) crateNum[0];
+      crateNumberStd *= 2;
+      // oh this is very weird I know, but in Valeri's convention crates with A are always bottom (but they're not always with a lower number)
+      if ((crateNumPartInt >= 2) && (crateNumPartInt <= 4) && (crateNum[1] == \"A\")) {
+        crateNumberStd++;
+      } else if (((crateNumPartInt == 1) || (crateNumPartInt == 5) || (crateNumPartInt == 6)) && (crateNum[1] == \"B\")) {
+        crateNumberStd++;
+      }
+      if (crateNumberStd > 12) { 
+        crateNumberStd = 1;
+      }
+    }
+    string placeInRack = emuui_getMappingValue(\"peripheralCrateRackPlace\", station + \"/\" + crateNumberStd, ex);
+    if (emu_checkException(ex)) { return; }
     
     string deviceParamsDollar = \"$deviceParams:\" + \"side=\" + side +
                                                    \";station=\" + station +
                                                    \";crateNum=\" + crateNum +
+                                                   \";crateNumStd=\" + crateNumberStd +
+                                                   \";placeInRack=\" + placeInRack +
                                                    \";id=\" + id;
     string shapeParamsDollar = \"$shapeParams:\" + \"type=\" + shapeType +
                                                  \";width=\" + paramPCrateWidth +
@@ -219,10 +240,14 @@ void drawPeripheralCrates(int x, int y, int radius, string side, int station, dy
     // rotate the caption(s)
     if (((angleDeg >= 0) && (angleDeg < 180)) || (angleDeg >= 350)){
       setValue(refName + \".caption\", \"rotation\", -1 * angleDeg + 90);
-      setValue(refNameB + \".caption\", \"rotation\", -1 * angleDeg + 90);
+      if (me11) {
+        setValue(refNameB + \".caption\", \"rotation\", -1 * angleDeg + 90);
+      }
     } else {
       setValue(refName + \".caption\", \"rotation\", -1 * angleDeg - 90);
-      setValue(refNameB + \".caption\", \"rotation\", -1 * angleDeg - 90);
+      if (me11) {
+        setValue(refNameB + \".caption\", \"rotation\", -1 * angleDeg - 90);
+      }
     }
   }
 

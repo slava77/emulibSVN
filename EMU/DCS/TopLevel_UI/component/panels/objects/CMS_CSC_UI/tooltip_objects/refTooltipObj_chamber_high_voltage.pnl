@@ -225,7 +225,7 @@ void updateDisconnectedWarningCB(string dpName, string disconnectedDevices) {
   } else {
     emuui_hideTooltipWarning(getShape(\"warnNoHvCommunication\"), 
                              getShape(\"chamber_high_voltage_tooltipBack\"),
-                             \"warnLV\");
+                             makeDynString(\"warnLV\"));
   }
 }
 

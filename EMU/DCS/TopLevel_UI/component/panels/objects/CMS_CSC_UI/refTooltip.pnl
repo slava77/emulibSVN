@@ -49,6 +49,12 @@ PANEL,-1 -1 388 123 N "_3DFace" 3
     addTooltipObj(tooltipTypes[i]); // add the appropriate tooltip objects
   }
 
+  //add info tooltip - says that you have to double click for control or more information
+  int saveTooltipWidth = tooltipWidth;
+  string ref = addTooltipObj(\"info\");
+  tooltipWidth = saveTooltipWidth;
+  setValue(\"info_tooltipBack\", \"size\", tooltipWidth, 21);
+  
   moveAwayFromEdge();
   
   dpConnect(\"repositionTooltipObjsCB\", false, emuui_getSessionDp(\"tooltipSizeUpdated\"));

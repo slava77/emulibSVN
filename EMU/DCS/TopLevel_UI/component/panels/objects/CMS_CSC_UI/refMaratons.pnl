@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 257 244 N "_3DFace" 1
+PANEL,-1 -1 694 512 N "_3DFace" 1
 "$group"
 "main()
 {
@@ -11,19 +11,20 @@ PANEL,-1 -1 257 244 N "_3DFace" 1
 
 void drawMaratons() {
   dyn_string ex;
-  
-  mapping mapMaratons = emuui_getMaratonDb(ex);
+
+  dyn_string maratonDb = emuui_getMaratonDbArray(ex);  
   if (emu_checkException(ex)) { return; }
   
   int width = getVerticalLinePosX(\"M2\") - getVerticalLinePosX(\"M3\") + 1;
   int topY = getHorizontalLinePosY(0);
   
-  for (int i=1; i <= mappinglen(mapMaratons); i++) {
-    string key = mappingGetKey(mapMaratons, i);
-    string value = mapMaratons[key];
-    if (strlen(value) == 0) {
+  for (int i=1; i <= dynlen(maratonDb); i++) {
+    dyn_string split = strsplit(maratonDb[i], \";\");
+    if (dynlen(split) < 2) {
       continue;
     }
+    string key = split[1];
+    string value = split[2];
     
     // parse the key (there's side, disk and crate number information, value contains the Maraton ID
     int id = value;
