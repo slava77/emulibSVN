@@ -445,7 +445,7 @@ E E 0 1 1 2 1 E 2.5 0 1 -185 6 1 E 110 0 130 20
 2 8
 "warnNoLvCommunication"
 ""
-1 10 170 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+1 6 170 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
  E E
 14 0 0 0 0 0
 E E E
@@ -455,13 +455,13 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 170 335 184
-1 2 2 "0s" 0 0 0 65 0 0  10 170 1
+E E 0 1 1 2 1 E U  1 E 6 170 344 184
+1 2 2 "0s" 0 0 0 65 0 0  6 170 1
 1
 LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
-LANG:1 16 No Communication
+LANG:1 54 No Communication - check PCrate LV and Xmas monitoring
 0
 LAYER, 1 
 1
