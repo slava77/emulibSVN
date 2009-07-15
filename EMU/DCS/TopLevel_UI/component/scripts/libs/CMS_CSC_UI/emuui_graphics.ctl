@@ -148,6 +148,9 @@ void emuui_hideTooltipWarning(shape warnShp, shape backgroundShp, dyn_string oth
   warnShp.visible = false;
   
   for (int i=1; i <= dynlen(otherWarningShapes); i++) {
+    if (otherWarningShapes[i] == warnShp) {
+      continue;
+    }
     int objPosX, objPosY;
     getValue(otherWarningShapes[i], "position", objPosX, objPosY);
     if (objPosY > warnPosY) {
@@ -173,4 +176,16 @@ void emuui_repositionObjectRelatively(dyn_string objects, int oldRefObjX, int ol
     getValue(objects[i], "position", objPosX, objPosY);
     setValue(objects[i], "position", objPosX + deltaX, objPosY + deltaY);
   }
+}
+
+/** Corrects a given alarm color e.g. if the color is empty string - it's changed to OK color. */
+string emuui_correctAlarmColor(string color, string noAlarmColor = "FwStateOKPhysics") {
+  if (strlen(color) == 0) {
+    return "FwStateOKPhysics";
+  }
+  if (color == "FwAlarmErrorAck") {
+    return "FwAlarmFatalAck";
+  }
+  
+  return color;
 }

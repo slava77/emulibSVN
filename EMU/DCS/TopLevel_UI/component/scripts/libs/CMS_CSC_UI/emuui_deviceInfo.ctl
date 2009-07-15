@@ -131,3 +131,69 @@ mapping emuui_parseME11channelName(string channelName, dyn_string &exceptionInfo
   
   return ret;
 }
+
+/** A recursive function which tells if the given FSM node is disabled 
+    (i.e. this node or any of its parents are either disabled or "excluded and lockedOut", any other state is considered as enabled). */
+bool emuui_isFsmNodeEnabled(string fsmNode) {
+  emu_info("IS FSM NODE ENABLED: " + fsmNode);
+  
+  // if at any level of the hierarchy we get operation flag == 1 - break recursing and return ENABLED
+  int operationFlag = fwCU_getOperationMode(fsmNode);
+  if (operationFlag == 1) {
+    return true;
+  }
+  // at this point (we have operation flag == 0) it's possible that our device or it's parent is disabled
+  string domain = fsmNode;
+  string object = _fwCU_getNodeObj(domain);
+
+  if (fwFsm_isCU(domain, object)) {
+    string cuMode = fwFsmUi_getCUMode(domain, object);
+    emu_info("IS FSM NODE ENABLED: " + fsmNode + " is CU and it's mode is " + cuMode);
+    if (cuMode == "Disabled") {
+      return false;
+    } else {
+      int type;
+      string parent = fwCU_getParent(type, fsmNode);
+      if (parent == "") { // top level node reached
+        return true;
+      } else {
+        return emuui_isFsmNodeEnabled(parent);
+      }
+    }
+  } else {
+    string duMode = fwFsmUi_getDUMode(domain, object);
+    emu_info("IS FSM NODE ENABLED: " + fsmNode + " is DU and it's mode is " + duMode);
+    if (duMode == "Disabled") {
+      return false;
+    } else {
+      int type;
+      string parent = fwCU_getParent(type, fsmNode);
+      if (parent == "") { // top level node reached
+        return true;
+      } else {
+        return emuui_isFsmNodeEnabled(parent);
+      }
+    }
+  }
+}
+
+/** Returns Maraton device parameters given an ID. */
+mapping emuui_getMaratonDeviceParams(int maratonId, dyn_string &exceptionInfo) {
+  mapping maratonDbSwapped = emuui_getMaratonDbSwapped(exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  
+  string maratonStr = maratonDbSwapped[(string)maratonId];
+  mapping deviceParams;
+  
+  dyn_string split = strsplit(maratonStr, "_"); // e.g M4_CR2
+  deviceParams["side"] = split[1][0]; // first part e.g. is M4 and second is CR2
+  int station = (string) split[1][1];
+  deviceParams["station"] = station;
+  int disk = station;
+  if (disk > 2) { disk--; } // Valeri named them after stations ME 1, 2, 4 (I like disks YE 1, 2, 3).
+  deviceParams["disk"] = disk;
+  strreplace(split[2], "CR", "");
+  deviceParams["crateNum"] = split[2];
+  
+  return deviceParams;
+}

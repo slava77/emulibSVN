@@ -41,6 +41,9 @@ void emuui_tableCompact(string tableShapeName, int numOfRows = -1) {
 string emuui_getLastUpdateTime(string dp) {
   time stime;
   string dpSTime = dpSubStr(dp, DPSUB_SYS_DP_EL_CONF) + ".._stime";
+  if (!dpExists(dpSTime)) {
+    return "";
+  }
   dpGet(dpSTime, stime);
 
   string timeStr = formatTime("%Y.%m.%d %H:%M", stime);

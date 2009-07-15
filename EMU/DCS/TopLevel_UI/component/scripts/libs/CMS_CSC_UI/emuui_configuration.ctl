@@ -11,6 +11,10 @@ const mapping emuui_dummyMapping;
 global mapping emuui_g_mappingCache;
 global mapping emuui_g_arrayCache;
 global dyn_string emuui_g_lvSystemNames;
+global mapping emuui_g_mapPcmbToMaraton = emuui_dummyMapping;
+global mapping emuui_g_mapMaratonDb = emuui_dummyMapping;
+global mapping emuui_g_mapMaratonDbSwapped = emuui_dummyMapping;
+global dyn_string emuui_g_maratonDbArray = makeDynString();
 const string emuui_g_version = ""; // default version is empty, if any other version is specified then you have to make sure that you have all the datapoints available i.e. CSC_UI_mapping and CSC_UI_array with appendix "_<version>"
 
 /** @return a mapping of a given name (the mapping is retrieved from configuration DPs). */
@@ -149,7 +153,7 @@ dyn_string emuui_getDpNames(string type, mapping parameters, dyn_string &excepti
     emu_errorHandled(exceptionInfo);  
     return ret;
   }
-
+  
   string dp = emuui_fillPattern(pattern, parameters);
   if (strpos(dp, ":") >= 0) { // if system name is included
     ret = dpNames(dp);
@@ -241,3 +245,114 @@ dyn_string emuui_getLvSystemNames(dyn_string &exceptionInfo) {
   return emuui_g_lvSystemNames;
 }
 
+/** Gets the "Maraton DB" (found on LV project(-s)) - it's a mapping of $side$$station$_CR$crateNum$ => Maraton ID. */
+mapping emuui_getMaratonDb(dyn_string &exceptionInfo) {
+  if (mappinglen(emuui_g_mapMaratonDb) > 0) {
+    return emuui_g_mapMaratonDb;
+  }
+  
+  dyn_string dbMrtn = emuui_getMaratonDbArray(exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return emuui_dummyMapping; }
+  mapping mapMaratons = _emuui_constructMappingFromCSV(dbMrtn, exceptionInfo, "Maraton DB", "", true);
+  if (emu_checkException(exceptionInfo)) { return emuui_dummyMapping; }
+  
+  emuui_g_mapMaratonDb = mapMaratons;
+  
+  return mapMaratons;
+}
+
+/** Gets the "Maraton DB" as array (found on LV project(-s)) - it's a mapping (separated by ';') of $side$$station$_CR$crateNum$;Maraton ID. */
+dyn_string emuui_getMaratonDbArray(dyn_string &exceptionInfo) {
+  if (dynlen(emuui_g_maratonDbArray) > 0) {
+    return emuui_g_maratonDbArray;
+  }
+  
+  //get systems list, pick those with "LV" and query them for Maraton DB
+  dyn_string lvSysNames = emuui_getLvSystemNames(exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return makeDynString(); };
+  
+  dyn_string dbMrtn;
+  for (int i=1; i <= dynlen(lvSysNames); i++) {
+    dyn_string tmp;
+    dpGet(lvSysNames[i] + ":db_mrtn.list", tmp);
+    dynAppend(dbMrtn, tmp);
+  }
+  
+  if (dynlen(dbMrtn) == 0) { emu_addError("Could not find Maraton DB (check LV projects)", exceptionInfo); return makeDynString(); }
+  
+  return dbMrtn;
+}
+
+/** Gets the "swapped" "Maraton DB" (found on LV project(-s)) - it's a mapping of Maraton ID => $side$$station$_CR$crateNum$. */
+mapping emuui_getMaratonDbSwapped(dyn_string &exceptionInfo) {
+  if (mappinglen(emuui_g_mapMaratonDbSwapped) > 0) {
+    return emuui_g_mapMaratonDbSwapped;
+  }
+  mapping maratonDb = emuui_getMaratonDb(exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  
+  for (int i=1; i <= mappinglen(maratonDb); i++) {
+    string key = mappingGetKey(maratonDb, i);
+    string value = maratonDb[key];
+    emuui_g_mapMaratonDbSwapped[value] = key;
+  }
+  
+  return emuui_g_mapMaratonDbSwapped;
+}
+
+/** Gets the "PCMB DB" (found on LV project(-s)) - it's a mapping of $side$$station$_PC$crateNum$ => ELMB ID. */
+mapping emuui_getPcmbDb(dyn_string &exceptionInfo) {
+  //get systems list, pick those with "LV" and query them for PCMB DB
+  dyn_string lvSysNames = emuui_getLvSystemNames(exceptionInfo);
+  if (emu_checkException(ex)) { return emuui_dummyMapping; }
+  
+  dyn_string dbPcmb;
+  for (int i=1; i <= dynlen(lvSysNames); i++) {
+    dyn_string tmp;
+    dpGet(lvSysNames[i] + ":db_pcmb.list", tmp);
+    
+    //remove the line for Atlas PSU
+    for (int j=1; j <= dynlen(tmp); j++) {
+      if (strpos(tmp[j], "PSU") >= 0) {
+        dynRemove(tmp, j);
+        break;
+      }
+    }
+    
+    dynAppend(dbPcmb, tmp);
+  }
+  
+  if (dynlen(dbPcmb) == 0) { emu_addError("Could not find PCMB DB (check LV projects)", exceptionInfo); return emuui_dummyMapping; }
+  
+  mapping mapPcmbs = _emuui_constructMappingFromCSV(dbPcmb, exceptionInfo, "PCMB DB", "", true);
+  if (emu_checkException(exceptionInfo)) { return emuui_dummyMapping; }
+  
+  return mapPcmbs;
+}
+
+/** Get the ELMB ID to Maraton ID mapping (this is taken from LV project(-s). */
+mapping emuui_getPcmbToMaratonMap(dyn_string &exceptionInfo) {
+  if (mappinglen(emuui_g_mapPcmbToMaraton) > 0) {
+    return emuui_g_mapPcmbToMaraton;
+  }
+  
+  //get systems list, pick those with "LV" and query them for PCMB DB
+  dyn_string lvSysNames = emuui_getLvSystemNames(exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return emuui_dummyMapping; }
+  
+  dyn_string dbPcmbMrtn;
+  for (int i=1; i <= dynlen(lvSysNames); i++) {
+    dyn_string tmp;
+    dpGet(lvSysNames[i] + ":pcmb_mrtn.list", tmp);
+    dynAppend(dbPcmbMrtn, tmp);
+  }
+  
+  if (dynlen(dbPcmbMrtn) == 0) { emu_addError("Could not find PCMB-MRTN DB (check LV projects)", exceptionInfo); return emuui_dummyMapping; }
+  
+  mapping mapPcmbsToMaratons = _emuui_constructMappingFromCSV(dbPcmbMrtn, exceptionInfo, "PCMB-MRTN DB", "", true);
+  if (emu_checkException(exceptionInfo)) { return emuui_dummyMapping; }
+  
+  emuui_g_mapPcmbToMaraton = mapPcmbsToMaratons; // cache it
+  
+  return mapPcmbsToMaratons;
+}
