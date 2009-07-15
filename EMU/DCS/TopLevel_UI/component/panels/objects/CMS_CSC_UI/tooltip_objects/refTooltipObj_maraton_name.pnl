@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 305 34 N "_3DFace" 1
+PANEL,-1 -1 305 35 N "_3DFace" 1
 "$deviceParams"
 "main()
 {
@@ -14,11 +14,11 @@ PANEL,-1 -1 305 34 N "_3DFace" 1
   string strSide = \"+\";
   if (deviceParams[\"side\"] == \"M\") { strSide = \"-\"; }
   
-  lblDeviceName.text = \"Peripheral Crate VME\" + strSide + deviceParams[\"station\"] + \"/\" + deviceParams[\"crateNumStd\"] + 
-                       \" (\" + deviceParams[\"placeInRack\"] + \"),id\" + emu_hexToDec(deviceParams[\"id\"], 1);
-  
+  lblDeviceName.text = \"Maraton \" + deviceParams[\"id\"] + 
+                       \" (crate no. \" + deviceParams[\"crateNum\"] + \" on YE\" + strSide + deviceParams[\"disk\"] + \")\";
+    
   // get the FSM node
-  string fsmNode = emuui_getFsmNode(\"peripheralCrate_general\", deviceParams, ex);
+  string fsmNode = emuui_getFsmNode(\"maraton_general\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
 
   int fsmX, fsmY;
@@ -61,7 +61,7 @@ LAYER, 0
 1
 LANG:1 0 
 6 2
-"peripheralCrate_name_tooltipBack"
+"maraton_name_tooltipBack"
 ""
 1 240 90 E E E 1 E 1 E N {0,0,0} E N {255,255,225} E E
  E E
@@ -73,7 +73,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1.14285714285714 0 1 -5.45696821063757e-014 1 1 E 210 19 0 -1
+E E 0 1 1 2 1 E 0.95238095238095 0 1 -4.54747350886464e-014 1 1 E 210 19 0 -1
 2 1
 "lblDeviceName"
 ""
@@ -87,13 +87,13 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 3 3 130 17
+E E 0 1 1 2 1 E U  1 E 3 3 85 17
 0 2 2 "0s" 0 0 0 192 0 0  3 3 1
 1
 LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
-LANG:1 21 Peripheral Crate Name
+LANG:1 12 Maraton Name
 6 4
 "fsmRefPoint"
 ""
@@ -107,7 +107,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 2.5 0 1 -35 0 1 E 110 0 130 20
+E E 0 1 1 2 1 E 2.5 0 1 -75 0 1 E 110 0 130 20
 7 5
 "refPoint"
 ""
