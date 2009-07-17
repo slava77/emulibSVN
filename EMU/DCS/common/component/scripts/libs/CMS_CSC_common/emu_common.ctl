@@ -6,7 +6,7 @@ This package contains general purpose utility functions.
 @date   March 2009
 */
 
-const int emu_ERROR_REPORT_DELAY = 150; //ms
+const int emu_ERROR_REPORT_DELAY = 300; //ms
 
 const int emu_DEBUG_GENERAL = 1;
 const int emu_DEBUG_FUNC_START_STOP = 2;
@@ -373,4 +373,45 @@ string convertToString(anytype value, int maxChars = 0) {
   }
   
   return strValue;
+}
+
+// ---=== SOME USEFUL UTILITY FUNCTIONS ===---
+
+void emu_printMap(dyn_dyn_anytype map) {
+  emu_info("Printing map:");
+  for (int i=1; i <= dynlen(map); i++) {
+    string line = "";
+    for (int j=1; j <= dynlen(map[i]); j++) {
+      line += "\t" + map[i][j] + "\t|";
+    }
+    emu_info(line);
+  }
+}
+
+/* prints a mapping to a string. */
+string emu_mappingToString(mapping map) {
+  string ret = "[";
+  for (int i=1; i <= mappinglen(map); i++) {
+    string key = mappingGetKey(map, i);
+    string value = map[key];
+    ret += key + "=" + value;
+    if (i != mappinglen(map)) { // if it's not the last element then append a semicolon
+      ret += ";";
+    }
+  }
+  ret += "]";
+  return ret;
+}
+
+/** Does exactly what dynAppend does provided y as an array. But doesn't do any nonsence emptying array Y stuff like dynAppend does :| */
+int emu_dynAppend(dyn_anytype &x, dyn_anytype y) {
+  bool errors;
+  for (int i=1; i <= dynlen(y); i++) {
+    int rc = dynAppend(x, y[i]);
+    if (rc == -1) {
+      errors = true;
+    }
+  }
+  if (errors) { return -1; }
+  return dynlen(x);
 }
