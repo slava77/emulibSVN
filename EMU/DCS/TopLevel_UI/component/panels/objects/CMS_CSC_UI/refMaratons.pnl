@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 694 512 N "_3DFace" 1
+PANEL,-1 -1 560 460 N "_3DFace" 1
 "$group"
 "main()
 {

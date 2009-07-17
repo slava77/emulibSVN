@@ -9,8 +9,6 @@ PANEL,-1 -1 305 34 N "_3DFace" 1
   deviceParams = emuui_parseParameterString($deviceParams, ex);
   if (emu_checkException(ex)) { return; }
   
-  getValue(\"refPoint\", \"position\", posX, posY);
-
   string strSide = \"+\";
   if (deviceParams[\"side\"] == \"M\") { strSide = \"-\"; }
   
@@ -21,12 +19,10 @@ PANEL,-1 -1 305 34 N "_3DFace" 1
   string fsmNode = emuui_getFsmNode(\"peripheralCrate_general\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
 
-  int fsmX, fsmY;
-  getValue(\"fsmRefPoint\", \"position\", fsmX, fsmY);
-  dyn_string refs = emuui_addFsmNode(fsmNode, fsmX, fsmY, true);
-  dynAppend(references, refs);
-  
   dpConnect(\"positionChangedCB\", false, emuui_getSessionDp(\"tooltipPositionUpdated\"));
+  int fsmX, fsmY;
+  getValue(\"peripheralCrate_name_fsmRefPoint\", \"position\", fsmX, fsmY);
+  emuui_addFsmNode(fsmNode, fsmX, fsmY, references, true);
 }" 0
  "main()
 {
@@ -37,14 +33,9 @@ PANEL,-1 -1 305 34 N "_3DFace" 1
 E "//some panel-wide constants
 mapping deviceParams;
 dyn_string references;
-int posX, posY;
 
 void positionChangedCB(string dummyDpName, int dummyValue) {
-  int oldPosX = posX,
-      oldPosY = posY;
-  getValue(\"refPoint\", \"position\", posX, posY);
-
-  emuui_repositionObjectRelatively(references, oldPosX, oldPosY, posX, posY);  
+  emuui_alignSmallFsmNodes(references, makeDynString(\"peripheralCrate_name_fsmRefPoint\"));
 }
 " 0
  2
@@ -95,7 +86,7 @@ LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,
 1
 LANG:1 21 Peripheral Crate Name
 6 4
-"fsmRefPoint"
+"peripheralCrate_name_fsmRefPoint"
 ""
 1 110 0 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
  E E
@@ -108,20 +99,6 @@ LANG:1 0
 1
 "dashclr"N "_Transparent"
 E E 0 1 1 2 1 E 2.5 0 1 -35 0 1 E 110 0 130 20
-7 5
-"refPoint"
-""
-1 140 110 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
- E E
-9 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1 0 1 -140 -110 1 E 140 110 10 10
 0
 LAYER, 1 
 1

@@ -9,7 +9,6 @@ PANEL,-1 -1 335 425 N "_3DFace" 1
   deviceParams = emuui_parseParameterString($deviceParams, ex);
   if (emu_checkException(ex)) { return; }
   
-  getValue(\"refPoint\", \"position\", posX, posY);
   initChannelToTableCellMapping(ex);
   if (emu_checkException(ex)) { return; }
   
@@ -30,10 +29,12 @@ PANEL,-1 -1 335 425 N "_3DFace" 1
   lblMrtnInfo.text = \"Maraton Info: crate no. \" + maratonDeviceParams[\"crateNum\"] + \" on YE\"+ mrtnSide + maratonDeviceParams[\"disk\"];
   string mrtnFsmNode = emuui_getFsmNode(\"maraton_general\", maratonDeviceParams, ex);
   if (emu_checkException(ex)) { return; }
+  
+  // CONNECT MARATON FSM
+  dpConnect(\"positionChangedCB\", false, emuui_getSessionDp(\"tooltipPositionUpdated\"));  
   int fsmX, fsmY;
-  getValue(\"fsmMrtnRefPoint\", \"position\", fsmX, fsmY);
-  dyn_string refs = emuui_addFsmNode(mrtnFsmNode, fsmX, fsmY, true);
-  dynAppend(references, refs);
+  getValue(\"peripheralCrate_general_fsmMrtnRefPoint\", \"position\", fsmX, fsmY);
+  emuui_addFsmNode(mrtnFsmNode, fsmX, fsmY, references, true);
   
   // get the status meanings and colors
   elmbStateColors = emuui_getMapping(\"elmbStateColors\", ex);
@@ -63,7 +64,6 @@ PANEL,-1 -1 335 425 N "_3DFace" 1
   string elmbStateDp = emuui_getDpName(\"peripheralCrate_ELMB_state\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
   
-  dpConnect(\"positionChangedCB\", false, emuui_getSessionDp(\"tooltipPositionUpdated\"));  
   fwCU_connectState(\"updateFSMStateCB\", fsmNode);
   dpConnect(\"updatePCrateErrorStatusCB\", true, pcrateErrorStatusDp);
   dpConnect(\"updateDisabledChannelsCB\", true, disabledChannelsDp);
@@ -125,7 +125,6 @@ void initChannelToTableCellMapping(dyn_string &ex) {
 ""0  1
 E "//some panel-wide constants
 mapping deviceParams;
-int posX, posY;
 mapping fsmStateColors;
 mapping elmbStateTexts, elmbStateColors;
 mapping channelToTableCell; // here key is a channel number and a value is an array: [1] - table name; [2] - column name; [3] row number;
@@ -230,11 +229,7 @@ void updateELMBStatusCB(string dpName, int state) {
 }
 
 void positionChangedCB(string dummyDpName, int dummyValue) {
-  int oldPosX = posX,
-      oldPosY = posY;
-  getValue(\"refPoint\", \"position\", posX, posY);
-
-  emuui_repositionObjectRelatively(references, oldPosX, oldPosY, posX, posY);  
+  emuui_alignSmallFsmNodes(references, makeDynString(\"peripheralCrate_general_fsmMrtnRefPoint\"));
 }
 
 bool isStandbyChannel(string dpOrChannelNum) {
@@ -333,20 +328,6 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
 0 ""
 1
 LANG:1 12 Last update:
-7 17
-"refPoint"
-""
-1 140 110 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
- E E
-26 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1 0 1 -140 -110 1 E 140 110 10 10
 2 18
 "PRIMITIVE_TEXT7"
 ""
@@ -408,7 +389,7 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
 1
 LANG:1 26 Supplying MARATON (ID=##):
 6 42
-"fsmMrtnRefPoint"
+"peripheralCrate_general_fsmMrtnRefPoint"
 ""
 1 110 0 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
  E E

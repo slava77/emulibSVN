@@ -73,7 +73,6 @@ PANEL,-1 -1 394 311 N "_3DFace" 1
   dynAppend(maratonProblemDps, inputFailureDp);
   dynAppend(maratonProblemDps, outputFailureDp);
   
-  dpConnect(\"positionChangedCB\", false, emuui_getSessionDp(\"tooltipPositionUpdated\"));  
   fwCU_connectState(\"updateFSMStateCB\", fsmNode);
   dpConnect(\"updateWarningsCB\", true, maratonProblemDps);
   dpConnect(\"updateChannelStateCB\", true, tripDps);
@@ -211,14 +210,6 @@ void updateWarningsCB(dyn_string dpList, dyn_bool problems) {
                                allWarningShapes);
     }  
   }
-}
-
-void positionChangedCB(string dummyDpName, int dummyValue) {
-  int oldPosX = posX,
-      oldPosY = posY;
-  getValue(\"refPoint\", \"position\", posX, posY);
-
-  emuui_repositionObjectRelatively(references, oldPosX, oldPosY, posX, posY);  
 }
 " 0
  2

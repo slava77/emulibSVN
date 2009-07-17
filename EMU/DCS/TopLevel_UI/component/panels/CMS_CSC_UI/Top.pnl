@@ -22,6 +22,20 @@ void initConstants() {
   
   mainChamberViewModes[4][1] = \"FSM\";
   mainChamberViewModes[4][2] = \"temperature\";
+  
+  // mini-Monitor modes
+  miniMonitorModes[1][1] = \"DPs_Max\";
+  miniMonitorModes[1][2] = \"temperature\";
+  
+  miniMonitorModes[2][1] = \"DPs_Average\";
+  miniMonitorModes[2][2] = \"temperature\";
+  
+  miniMonitorModes[3][1] = \"DPs_Max\";
+  miniMonitorModes[3][2] = \"HV_vMon\";
+  
+  miniMonitorModes[4][1] = \"DPs_Average\";
+  miniMonitorModes[4][2] = \"HV_vMon\";
+
 }" 0
  E E E E 1 -1 -1 0  60 250
 ""0  1
@@ -29,6 +43,7 @@ E "// some panel-wide constants and variables
 const int EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_X = 10;
 const int EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y = 20;
 dyn_dyn_string mainChamberViewModes;
+dyn_dyn_string miniMonitorModes;
 bool topPanelInitialized;
 
 void waitForEmuUiInitialize() {
@@ -48,6 +63,81 @@ DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
 LAYER, 0 
 1
 LANG:1 0 
+19 18
+"RADIO_BOX1"
+""
+1 930 876 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+24 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 928 874 1052 1002
+4
+T 
+1
+LANG:1 15 Max Temperature
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 19 Average Temperature
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 16 Max High Voltage
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 20 Average High Voltage
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+"main()
+{
+  waitForEmuUiInitialize();
+  
+  string dp = emuui_getSessionDp(\"miniMonitor\");
+  string connectionType, mode;
+  dpGet(dp + \".connectionType\", connectionType);
+  dpGet(dp + \".mode\", mode);
+  
+  int index = emu_dynDynContains(miniMonitorModes, makeDynString(connectionType, mode));
+  if (index > 0) {
+    this.number(index - 1);
+  }
+}" 0
+ "main(int button)
+{
+  string dp = emuui_getSessionDp(\"miniMonitor\");
+  dpSetWait(dp + \".connectionType\", miniMonitorModes[button + 1][1], 
+            dp + \".mode\", miniMonitorModes[button + 1][2]);
+}" 0
+
 30 4
 "frameMainChamberView"
 ""
@@ -186,23 +276,23 @@ LANG:1 0
   int posX, posY;
   getValue(\"\", \"position\", posX, posY);
   posX += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_X;
-  posY += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y;
+  posY += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y - 5; // mini monitor fine adjustment
   posY += 5; // shift a bit down no avoid overlap with \"zoom in\" icon
           
-  string group = emuui_getSessionDp(\"temperatureMonitor\");          //group name
-  string refName = \"TemperatureMonitor_EMU\";
+  string group = emuui_getSessionDp(\"miniMonitor\");          //group name
+  string refName = \"MiniMonitor_EMU\";
   addSymbol(myModuleName(), myPanelName(),
             \"objects/CMS_CSC_UI/refEMUPlot.pnl\",
             refName,
             makeDynString(\"$group:\" + group, \"$width:\" + width),
             posX, posY, 0, 1, 1);   
 }" 0
- E 0 0 1 0 1 E 1.45454545454546 0 0.995391705069132 746.363636363635 34.8387096774137 0 E 250 833 581 1051
+ E 0 0 1 0 1 E 1.48484848484849 0 0.995391705069132 728.787878787877 34.8387096774137 0 E 250 833 581 1051
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
-LANG:1 19 Temperature Monitor
+LANG:1 12 Mini Monitor
 2 8
 "PRIMITIVE_TEXT1"
 ""
@@ -245,17 +335,18 @@ LANG:1 0
   posX += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_X;
   posY += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y;
   
-  emuui_addFsmNode(\"CMS_CSC\", posX, posY);
+  dyn_string references;
+  emuui_addFsmNode(\"CMS_CSC\", posX, posY, references);
   posY += 55;
 
   posX += 20;  
-  emuui_addFsmNode(\"CSC_GAS\", posX, posY);
+  emuui_addFsmNode(\"CSC_GAS\", posX, posY, references);
   posY += 30;
-  emuui_addFsmNode(\"CSC_COOLING\", posX, posY);
+  emuui_addFsmNode(\"CSC_COOLING\", posX, posY, references);
   posY += 30;
-  emuui_addFsmNode(\"CSC_LV\", posX, posY);
+  emuui_addFsmNode(\"CSC_LV\", posX, posY, references);
   posY += 30;
-  emuui_addFsmNode(\"CSC_HV\", posX, posY);
+  emuui_addFsmNode(\"CSC_HV\", posX, posY, references);
   posY += 30;
 }
 " 0
@@ -338,7 +429,7 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
 1
 LANG:1 8 Maratons
 6 16
-"iconZoomInMEM1"
+"iconZoomInMiniMonitor"
 ""
 1 10 10 E E E 1 E 1 E N {0,0,0} E N "white" E E
  E E
@@ -352,15 +443,15 @@ LANG:1 35 Detach and zoom temperature monitor
 "dashclr"N "_Transparent"
 E "main()
 {
-  ChildPanelOn(\"objects/CMS_CSC_UI/refEMUPlot.pnl\", \"panelTemperatureMonitor\", 
-               makeDynString(\"$group:\" + emuui_getSessionDp(\"temperatureMonitor\"), \"$width:780\"), 200, 200);
+  ChildPanelOn(\"objects/CMS_CSC_UI/refEMUPlot.pnl\", \"panelMiniMonitor\", 
+               makeDynString(\"$group:\" + emuui_getSessionDp(\"miniMonitor\"), \"$width:780\"), 200, 200);
 }
 " 0
- 0 1 1 2 1 E 1 0 1 1210 850 2  0 0  "pictures/CMS_CSC_UI/zoom_in.bmp" 4294967295 E 10 10 36 35
+ 0 1 1 2 1 E 1 0 1 1160 850 2  0 0  "pictures/CMS_CSC_UI/zoom_in.bmp" 4294967295 E 10 10 36 35
 2 17
 "lblLoading"
 ""
-1 1130 960 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+1 1120 960 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
  E E
 23 0 0 0 0 0
 E E E
@@ -370,13 +461,32 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1130 960 1575 998
-1 2 2 "0s" 0 0 0 65 0 0  1130 960 1
+E E 0 1 1 2 1 E U  1 E 1120 960 1575 998
+1 2 2 "0s" 0 0 0 65 0 0  1120 960 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-32-*-100-100-*-*-iso8859-1|-32,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 23 Loading, please wait...
+30 19
+"FRAME4"
+""
+1 950 873 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+25 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 0.9375 0 0.929936305732484 29.375 52.1656050955415 0 E 950 873 1111 1031
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 17 Mini Monitor Mode
 0
 LAYER, 1 
 1

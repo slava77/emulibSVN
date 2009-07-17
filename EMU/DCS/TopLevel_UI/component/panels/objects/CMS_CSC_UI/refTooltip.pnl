@@ -136,15 +136,22 @@ void moveAwayFromEdge() {
   if (hideX < 0) { hideX = 0; } // cut on -0 to avoid funny effects
   
   if ((hideY > 0) || (hideX > 0)) {
+    hideY += 2;
     for (int i=1; i <= dynlen(refObjects); i++) {
       int objPosX, objPosY;
       getValue(refObjects[i], \"position\", objPosX, objPosY);
-      objPosY -= hideY + 2;
+      objPosY -= hideY;
       if (hideX > 0) {
         objPosX -= tooltipWidth + (EMUUI_TOOLTIP_SHIFT_X * 2);
         objPosY -= EMUUI_TOOLTIP_SHIFT_Y;
       }
       setValue(refObjects[i], \"position\", objPosX, objPosY);
+    }
+    // correct the tooltipX & tooltipY
+    tooltipY -= hideY;
+    if (hideX > 0) {
+      tooltipX -= tooltipWidth + (EMUUI_TOOLTIP_SHIFT_X * 2);
+      tooltipY -= EMUUI_TOOLTIP_SHIFT_Y;
     }
   }
 }

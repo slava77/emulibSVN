@@ -48,9 +48,9 @@ PANEL,-1 -1 374 227 N "_3DFace" 1
   if (emu_checkException(ex)) { return; }
   // add the FSM node
   int fsmX, fsmY;
-  getValue(\"fsmRefPoint\", \"position\", fsmX, fsmY);
-  dyn_string refs = emuui_addFsmNode(hvFsmNode, fsmX, fsmY, true);
-  dynAppend(references, refs);
+  dpConnect(\"positionChangedCB\", false, emuui_getSessionDp(\"tooltipPositionUpdated\"));  
+  getValue(\"chamber_high_voltage_fsmRefPoint\", \"position\", fsmX, fsmY);
+  emuui_addFsmNode(hvFsmNode, fsmX, fsmY, references, true);
     
   // get master channel status DP
   mapping masterDeviceParams;
@@ -85,7 +85,6 @@ PANEL,-1 -1 374 227 N "_3DFace" 1
     dynAppend(statusDps, channelDps[i] + \".status\");
   }
   
-  dpConnect(\"positionChangedCB\", false, emuui_getSessionDp(\"tooltipPositionUpdated\"));  
   dpConnect(\"updateVMonCB\", true, vMonDps);
   dpConnect(\"updateStatusCB\", true, statusDps);
   dpConnect(\"updateDisabledChannelsCB\", true, offChannelsDp);  
@@ -262,11 +261,7 @@ void updateMasterChannelStatusCB(string dpName, int status) {
 }
 
 void positionChangedCB(string dummyDpName, int dummyValue) {
-  int oldPosX = posX,
-      oldPosY = posY;
-  getValue(\"refPoint\", \"position\", posX, posY);
-
-  emuui_repositionObjectRelatively(references, oldPosX, oldPosY, posX, posY);  
+  emuui_alignSmallFsmNodes(references, makeDynString(\"chamber_high_voltage_fsmRefPoint\"));
 }" 0
  2
 "CBRef" "1"
@@ -509,7 +504,7 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
 1
 LANG:1 12 Last update:
 6 16
-"fsmRefPoint"
+"chamber_high_voltage_fsmRefPoint"
 ""
 1 110 0 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
  E E

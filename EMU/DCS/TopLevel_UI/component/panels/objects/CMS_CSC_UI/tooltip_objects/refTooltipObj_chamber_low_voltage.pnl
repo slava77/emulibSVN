@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 367 199 N "_3DFace" 1
+PANEL,-1 -1 364 199 N "_3DFace" 1
 "$deviceParams"
 "main()
 {
@@ -14,10 +14,9 @@ PANEL,-1 -1 367 199 N "_3DFace" 1
   fsmNode = emuui_getFsmNode(\"chamber_low_voltage\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
   int fsmX, fsmY;
-  getValue(\"fsmRefPoint\", \"position\", fsmX, fsmY);
-  dyn_string refs = emuui_addFsmNode(fsmNode, fsmX, fsmY, true);
-  dynAppend(references, refs);
   dpConnect(\"positionChangedCB\", false, emuui_getSessionDp(\"tooltipPositionUpdated\"));
+  getValue(\"chamber_low_voltage_fsmRefPoint\", \"position\", fsmX, fsmY);
+  emuui_addFsmNode(fsmNode, fsmX, fsmY, references, true);
   
   // -------=========== CFEB ============---------
   
@@ -129,11 +128,7 @@ dyn_string references;
 int posX, posY;
 
 void positionChangedCB(string dummyDpName, int dummyValue) {
-  int oldPosX = posX,
-      oldPosY = posY;
-  getValue(\"refPoint\", \"position\", posX, posY);
-
-  emuui_repositionObjectRelatively(references, oldPosX, oldPosY, posX, posY);  
+  emuui_alignSmallFsmNodes(references, makeDynString(\"chamber_low_voltage_fsmRefPoint\"));
 }
 
 /** Call-back function which updates voltages and currents for CFEBs. */
@@ -429,7 +424,7 @@ LANG:1 0
 "dashclr"N "_Transparent"
 E E 0 1 1 2 1 E 1 0 1 -140 -110 1 E 140 110 10 10
 6 7
-"fsmRefPoint"
+"chamber_low_voltage_fsmRefPoint"
 ""
 1 110 0 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
  E E

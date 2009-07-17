@@ -19,29 +19,35 @@ PANEL,-1 -1 780 370 N "_3DFace" 2
   
   // compute the size parameters
   float paramWidthFloat = paramWidth;
-  int chamberWidthHeight;
-  if (connectionType == \"DP\") { // gradient scale is necessary
+  chamberWidthHeight;
+  if (strpos(connectionType, \"DP\") >= 0) { // gradient scale is necessary
     chamberWidthHeight = floor((paramWidthFloat - (float)EMUUI_EMUPLOT_LABEL_WIDTH - (float)EMUUI_EMUPLOT_GRADIENT_LABEL_WIDTH) / 37); // max 36 chambers + gradient scale
   } else { // gradient scale is NOT necessary
     chamberWidthHeight = floor((paramWidthFloat - (float)EMUUI_EMUPLOT_LABEL_WIDTH) / 36); // max 36 chambers
   }
-  int height = chamberWidthHeight * 17; // 17 rings
+  height = chamberWidthHeight * 17; // 17 rings
   
   int myPosX, myPosY;
   getValue(\"refPoint\", \"position\", myPosX, myPosY);
   
   drawEMU(myPosX, myPosY, chamberWidthHeight);
   
-  if (connectionType == \"DP\") { // gradient scale is necessary
+  if (strpos(connectionType, \"DP\") >= 0) { // gradient scale is necessary
     dyn_string ex;
     float minValue = emuui_getDpValueRangeMin(\"chamber_\" + mode, ex);
     if (dynlen(ex) > 0) { emu_errorHandled(ex); }
     float maxValue = emuui_getDpValueRangeMax(\"chamber_\" + mode, ex);
     if (dynlen(ex) > 0) { emu_errorHandled(ex); }
 
-    drawGradientScale(myPosX + EMUUI_EMUPLOT_LABEL_WIDTH + (chamberWidthHeight * 36) + 1, myPosY + height, 
+    gradientScaleX = myPosX + EMUUI_EMUPLOT_LABEL_WIDTH + (chamberWidthHeight * 36) + 1;
+    gradientScaleY = myPosY + height;
+    drawGradientScale(gradientScaleX, gradientScaleY, 
                       height + 1, chamberWidthHeight, 
                       minValue, maxValue);
+  }
+  
+  if (strlen($group) > 0) {
+    dpConnect(\"modeChangedCB\", false, $group + \".mode\", $group + \".connectionType\");
   }
 }
 
@@ -147,38 +153,6 @@ void drawRingLabel(int x, int y, string side, int station, int ring) {
               x, y, 0, 1, 1);
 }
 
-void drawGradientScale(int bottomLeftX, int bottomLeftY, int height, int width, float minValue, float maxValue) {
-  for (int i=0; i < height; i++) {
-    string refName = \"gradientScaleLine\" + i;
-    if (shapeExists(refName)) { refName += \"_1\"; }
-    dynAppend(references, refName);
-    addSymbol(myModuleName(), myPanelName(),
-              \"objects/CMS_CSC_UI/refLine.pnl\",
-              refName,
-              makeDynString(),
-              bottomLeftX, bottomLeftY - i, 0, 1, 1);
-    setValue(refName + \".lineHorizontal\", \"foreCol\", emuui_getGradientColor(i, 0, height));
-    setValue(refName + \".lineHorizontal\", \"size\", width, 1);
-
-    float tmp = ((float)i) / 30;
-    if ((floor(tmp) == tmp) && (height - i > 15) ||    // draw value every 30 pixels, but don't draw if there's only 15 pixels left to the top - to avoid overlapping with the last value
-        (i == height - 1))                             // or if it's the last value
-    {
-      float value = minValue + ((maxValue - minValue) / ((float)height)) * ((float)i);
-      if (i == height -1) { value = maxValue; } // if it's the last one - just set the maxValue to avoid rounding error
-      string strValue;
-      sprintf(strValue, \"%d\", value);
-      // add the label
-      string refName = \"valueLabel_\" + strValue;
-      dynAppend(references, refName);
-      addSymbol(myModuleName(), myPanelName(), 
-                \"objects/CMS_CSC_UI/refLabel.pnl\", refName, 
-                makeDynString(\"$text:\" + strValue),
-                bottomLeftX + width, bottomLeftY - i - 6, 0, 1, 1); // shift a bit up, because the reference point of the label is in bottom left corner
-    }
-  }
-}
-
 void getChambersStartEndParams(string side, int station, int ring, int &chambersStart, int &chambersEnd, dyn_string &exceptionInfo) {
   mapping layoutParams = emuui_getMapping(\"chamberLayout\", exceptionInfo);
   if (emu_checkException(exceptionInfo)) { return; }
@@ -204,10 +178,13 @@ int paramWidth;
 
 // some panel-wide constants
 const int EMUUI_EMUPLOT_LABEL_WIDTH = 43;
-const int EMUUI_EMUPLOT_GRADIENT_LABEL_WIDTH = 20;
+const int EMUUI_EMUPLOT_GRADIENT_LABEL_WIDTH = 30;
 mapping layoutParams;
 dyn_string references;
 bool runningLocal; // if true then panel is running localy, if false then panel is a reference
+dyn_string gradientScaleRefs, gradientScaleLabelRefs;
+int gradientScaleX, gradientScaleY;
+int height, chamberWidthHeight;
 
 /** coppies dollar parameters to local variables. If any dollar parameter is missing 
    then local variable is given a default value to allow to run the panel separatelly for debugging purposes. */
@@ -219,13 +196,73 @@ void initParams() {
     emuui_init();
     runningLocal = true;
     
-    paramGroup = emuui_getSessionDp(\"temperatureMonitor\");
+    paramGroup = emuui_getSessionDp(\"miniMonitor\");
     paramWidth = 780;
   } else { // copy from dollar params
     runningLocal = false;
     
     paramGroup = $group;
     paramWidth = $width;
+  }
+}
+
+void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string connectionType) {
+  deleteGradientScaleLabels();
+  if (strpos(connectionType, \"DP\") >= 0) { // gradient scale is necessary
+    dyn_string ex;
+    float minValue = emuui_getDpValueRangeMin(\"chamber_\" + mode, ex);
+    if (dynlen(ex) > 0) { emu_errorHandled(ex); }
+    float maxValue = emuui_getDpValueRangeMax(\"chamber_\" + mode, ex);
+    if (dynlen(ex) > 0) { emu_errorHandled(ex); }
+    drawGradientScaleLabels(gradientScaleX, gradientScaleY, height + 1, chamberWidthHeight, minValue, maxValue);
+  }
+}
+
+
+void drawGradientScale(int bottomLeftX, int bottomLeftY, int height, int width, float minValue, float maxValue) {
+  for (int i=0; i < height; i++) {
+    string refName = \"gradientScaleLine\" + i;
+    if (shapeExists(refName)) { refName += \"_1\"; }
+    dynAppend(references, refName);
+    dynAppend(gradientScaleRefs, refName);
+    addSymbol(myModuleName(), myPanelName(),
+              \"objects/CMS_CSC_UI/refLine.pnl\",
+              refName,
+              makeDynString(),
+              bottomLeftX, bottomLeftY - i, 0, 1, 1);
+    setValue(refName + \".lineHorizontal\", \"foreCol\", emuui_getGradientColor(i, 0, height));
+    setValue(refName + \".lineHorizontal\", \"size\", width, 1);
+  }
+  
+  drawGradientScaleLabels(bottomLeftX, bottomLeftY, height, width, minValue, maxValue);
+}
+
+void drawGradientScaleLabels(int bottomLeftX, int bottomLeftY, int height, int width, float minValue, float maxValue) {
+  for (int i=0; i < height; i++) {
+    // draw values
+    float tmp = ((float)i) / 30;
+    if ((floor(tmp) == tmp) && (height - i > 15) ||    // draw value every 30 pixels, but don't draw if there's only 15 pixels left to the top - to avoid overlapping with the last value
+        (i == height - 1))                             // or if it's the last value
+    {
+      float value = minValue + ((maxValue - minValue) / ((float)height)) * ((float)i);
+      if (i == height -1) { value = maxValue; } // if it's the last one - just set the maxValue to avoid rounding error
+      string strValue;
+      sprintf(strValue, \"%d\", value);
+      // add the label
+      string refName = \"valueLabel_\" + strValue;
+      dynAppend(references, refName);
+      dynAppend(gradientScaleLabelRefs, refName);
+      addSymbol(myModuleName(), myPanelName(), 
+                \"objects/CMS_CSC_UI/refLabel.pnl\", refName, 
+                makeDynString(\"$text:\" + strValue),
+                bottomLeftX + width, bottomLeftY - i - 6, 0, 1, 1); // shift a bit up, because the reference point of the label is in bottom left corner
+    }
+  }
+}
+
+void deleteGradientScaleLabels() {
+  for (int i=1; i <= dynlen(gradientScaleLabelRefs); i++) {
+    removeSymbol(myModuleName(), myPanelName(), gradientScaleLabelRefs[i]);
   }
 }" 0
  2

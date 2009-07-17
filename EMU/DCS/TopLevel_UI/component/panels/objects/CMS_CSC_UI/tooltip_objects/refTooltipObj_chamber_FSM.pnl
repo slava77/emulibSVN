@@ -18,8 +18,7 @@ PANEL,-1 -1 380 184 N "_3DFace" 1
   for (int i=1; i <= dynlen(fsmNodeModes); i++) {
     string node = emuui_getFsmNode(fsmNodeModes[i], deviceParams, ex);
     if (emu_checkException(ex)) { return; }
-    string refName = emuui_addFsmNode(node, posX, posY);
-    dynAppend(references, refName);
+    emuui_addFsmNode(node, posX, posY, references);
     posY += 27;
     if (i == 1) { // this is parent - let it be a bit more in the left than others
       posX += 4;
@@ -85,7 +84,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 10 86 26
+E E 0 1 1 2 1 E U  1 E 10 10 86 24
 0 2 2 "0s" 0 0 0 192 0 0  10 10 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg

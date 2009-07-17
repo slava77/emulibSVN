@@ -170,7 +170,7 @@ void drawPeripheralCrates(int x, int y, int radius, string side, int station, dy
               x, y, 0, 1, 1);
   }
 
-  delay(0, 50); // give just a little bit of time for the shapes to initialize before moving them around and rotating (they get screwd up if you don't)
+  delay(0, 80); // give just a little bit of time for the shapes to initialize before moving them around and rotating (they get screwd up if you don't)
     
   dynSortAsc(crateRefs);
   

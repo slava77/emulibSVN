@@ -197,3 +197,40 @@ mapping emuui_getMaratonDeviceParams(int maratonId, dyn_string &exceptionInfo) {
   
   return deviceParams;
 }
+
+/** Given the ME11 (dubna) chamber deviceParams mapping this function adds neccessary parameters for ME11 HV channels. */
+mapping emuui_getME11HVChannelsDeviceParams(mapping deviceParams, dyn_string &exceptionInfo) {
+  dyn_string channelFsmNodes = emuui_getME11HVChannelFsmNodes(deviceParams, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  
+  string boardAndChannelParam = "{";
+  for (int i=1; i <= dynlen(channelFsmNodes); i++) {
+    mapping channelDeviceParams = emuui_parseME11channelName(channelFsmNodes[i], exceptionInfo);
+    if (emu_checkException(exceptionInfo)) { return; }
+    if (i > 1) {
+      boardAndChannelParam += ",";
+    }
+    boardAndChannelParam += "board" + channelDeviceParams["boardNumber"] + 
+                            "/channel" + channelDeviceParams["channelNumber"];
+  }
+  boardAndChannelParam += "}";
+  deviceParams["boardAndChannel"] = boardAndChannelParam;
+  return deviceParams;
+}
+
+/** Given the ME11 (dubna) chamber deviceParams this function returns FSM nodes for HV channels. */
+dyn_string emuui_getME11HVChannelFsmNodes(mapping deviceParams, dyn_string &exceptionInfo) {
+  if ((deviceParams["station"] != 1) || deviceParams["ring"] != 1) {
+    return makeDynString();
+  }
+  
+  // ----------========== GET THE MAIN HV FSM NODE FOR THIS CHAMBER ==========----------
+  string fsmNode = emuui_getFsmNode("chamber_me11_high_voltage", deviceParams, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  
+  // ----------========== GET CHANNEL FSM NODES ==========----------
+  dyn_int channelTypes;
+  dyn_string channelFsmNodes = fwCU_getChildren(channelTypes, fsmNode);
+  
+  return channelFsmNodes;
+}

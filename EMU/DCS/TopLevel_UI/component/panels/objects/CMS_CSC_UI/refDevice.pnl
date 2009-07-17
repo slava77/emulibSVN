@@ -144,6 +144,8 @@ mapping deviceParams;
 string deviceParamsStr;
 string shapeName;
 
+string multipleConnectionFunction;
+dyn_string currentConnectionMultiple;
 string currentConnectionType;
 string currentConnectionMode;
 string currentConnection;
@@ -162,8 +164,12 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
   isDisabled = false;
   
   //special case for ME11 high voltage
-  if (($deviceType == \"chamber\") && (mode == \"high_voltage\") && me11) {
+  if (($deviceType == \"chamber\") && me11 && (
+                                              (mode == \"high_voltage\") ||
+                                              (mode == \"HV_vMon\"))) {
     mode = \"me11_\" + mode;
+    deviceParams = emuui_getME11HVChannelsDeviceParams(deviceParams, ex);
+    if (emu_checkException(ex)) { return; }
   }
   
   mode = $deviceType + \"_\" + mode; // prepend mode with device type
@@ -173,8 +179,7 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
   
   disconnect();  
     
-  // this is an FSM connection
-  if (connectionType == \"FSM\") {
+  if (connectionType == \"FSM\") { // -----===== FSM CONNECTION =====-----
     bool nodeFound = false;
     string node = emuui_getFsmNode(mode, deviceParams, ex);
     // node hasn't been found
@@ -194,12 +199,14 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
         currentConnectionType = connectionType;
         currentConnectionMode = mode;
         currentConnection = node;
+        currentConnectionMultiple = makeDynString();
       }
     } else {
       emu_debug(\"FSM node was not found for mode '\" + mode + \"' with deviceParams '\" + deviceParams + \"'\");
     }
-  } else if (connectionType == \"DP\") { // this is a DP connection
+  } else if (connectionType == \"DP\") { // -----===== DP CONNECTION =====-----
     bool dpFound = false;
+    
     string dp = emuui_getDpName(mode, deviceParams, ex);
     // dp hasn't been found
     if (dynlen(ex) > 0) {
@@ -220,10 +227,51 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
         currentConnectionType = connectionType;
         currentConnectionMode = mode;
         currentConnection = dp;
+        currentConnectionMultiple = makeDynString();
       }
     } else {
       emu_debug(\"DP not found, reporting device as dead. \" +
                 \"DP='\" + dp + \"', connection type='\" + connectionType + \"', mode='\" + mode + \"'\", 
+                emu_DEBUG_DETAIL);
+    }
+  } else if (strpos(connectionType, \"DPs_\") >= 0) { // -----===== MULTIPLE DPs CONNECTION =====-----
+    bool dpsFound = false;
+    
+    dyn_string dps = emuui_getDpNames(mode, deviceParams, ex);
+    // dp hasn't been found
+    if (dynlen(ex) > 0) {
+      emu_errorHandled(ex);
+    } else if (dynlen(dps) > 0){
+      dpsFound = true;
+    }
+
+    // find the function to which we want to connect these multiple DPs    
+    string dpsFunction = strsplit(connectionType, \"_\")[2];
+    multipleConnectionFunction = \"updateDPs\" + dpsFunction + \"StateCB\";
+    if (!isFunctionDefined(multipleConnectionFunction)) { // if it's not defined - issue an error and use dpsFound = false
+      emu_errorSingle(\"Connection function for multiple DPs '\" + multipleConnectionFunction + \"' is not defined! Please inform DCS developers\");
+      dpsFound = false;
+    }
+    
+    if (dpsFound) {
+      currentDpValueRangeMin = emuui_getDpValueRangeMin(mode, ex);
+      if (emu_checkException(ex)) { return; }
+      currentDpValueRangeMax = emuui_getDpValueRangeMax(mode, ex);
+      if (emu_checkException(ex)) { return; }
+      currentConnectionMultiple = dps;
+      int rc = dpConnect(multipleConnectionFunction, true, dps[1]);
+      emu_debug(\"RC for connect to \" + dps + \": \" + rc, emu_DEBUG_DETAIL);
+      if (rc == 0) {
+        connectSuccessful = true;
+        currentConnectionType = connectionType;
+        currentConnectionMode = mode;
+        currentConnection = \"\";
+      } else {
+        currentConnectionMultiple = makeDynString();
+      }
+    } else {
+      emu_debug(\"DPs not found, reporting device as dead. \" +
+                \"DPs='\" + dps + \"', connection type='\" + connectionType + \"', mode='\" + mode + \"'\", 
                 emu_DEBUG_DETAIL);
     }
   }
@@ -296,9 +344,55 @@ void updateFSMOperationModeCB(string node, string paramOperationFlag) {
 }
 
 void updateDPStateCB(string dp, float value) {
-  emu_debug(\"update came for DP: \" + dp + \": \" + value);
-  
   dyn_string ex;
+  string color = emuui_getGradientColor(value, currentDpValueRangeMin, currentDpValueRangeMax);
+  setColor(color);
+  
+  if (showValueOnCaption) {
+    string captionStr;
+    sprintf(captionStr, \"%d\", value);
+    caption.text = captionStr;
+  }
+}
+
+/** Call-back function to update the state of multiple DPs connection computing the value by taking an average. */
+void updateDPsAverageStateCB(string firstDp, float firstValue) {
+  dyn_float values;
+  for (int i=1; i <= dynlen(currentConnectionMultiple); i++) {
+    dpGet(currentConnectionMultiple[i], values[i]);
+  }
+  // compute the average value
+  float value = 0;
+  for (int i=1; i <= dynlen(values); i++) {
+    value += values[i];
+  }
+  value /= dynlen(values);
+  
+  string color = emuui_getGradientColor(value, currentDpValueRangeMin, currentDpValueRangeMax);
+  setColor(color);
+  
+  if (showValueOnCaption) {
+    string captionStr;
+    sprintf(captionStr, \"%d\", value);
+    caption.text = captionStr;
+  }
+}
+
+/** Call-back function to update the state of multiple DPs connection computing the value by taking the maximum. */
+void updateDPsMaxStateCB(string firstDp, float firstValue) {
+  dyn_float values;
+  for (int i=1; i <= dynlen(currentConnectionMultiple); i++) {
+    dpGet(currentConnectionMultiple[i], values[i]);
+  }
+  
+  // compute the average value
+  float value = minFLOAT();
+  for (int i=1; i <= dynlen(values); i++) {
+    if (values[i] > value) {
+      value = values[i];
+    }
+  }
+  
   string color = emuui_getGradientColor(value, currentDpValueRangeMin, currentDpValueRangeMax);
   setColor(color);
   
@@ -326,6 +420,8 @@ void disconnect() {
     fwCU_disconnectState(currentConnection);
   } else if (currentConnectionType == \"DP\") {
     dpDisconnect(\"updateDPStateCB\", currentConnection);
+  } else if (strpos(currentConnectionType, \"DPs_\") >= 0) {
+    dpDisconnect(multipleConnectionFunction, currentConnectionMultiple);
   }
 }
 
@@ -369,6 +465,8 @@ bool isMouseOver() {
 }
 
 void showPopupMenu() {
+  return; // NOT IMPLEMENTED YET
+  
   dyn_string ex;
   emuui_openContextMenu($deviceType, deviceParams, ex);
   if (emu_checkException(ex)) { return; }
