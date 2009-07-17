@@ -7,7 +7,7 @@ CSC_UI_sessionState.CSC_UI_sessionState	1#1
 	mainChamberView	1#3
 		connectionType	25#4
 		mode	25#5
-	temperatureMonitor	1#9
+	miniMonitor	1#9
 		connectionType	25#10
 		mode	25#11
 	hvPrimaryView	1#12
@@ -19,3 +19,5 @@ CSC_UI_sessionState.CSC_UI_sessionState	1#1
 	mainPeripheralCrateView	1#18
 		connectionType	25#19
 		mode	25#20
+	tooltipSizeUpdated	21#21
+	tooltipPositionUpdated	21#22
