@@ -1,3 +1,13 @@
+/**@file
+
+This package contains general purpose utility functions.
+
+@author Evaldas Juska (PH/UCM)
+@date   May 2009
+*/
+
+const float EMUMATH_PI = 3.1415926535897932384626433832795;
+
 //utility (math) functions
 string emu_decToHex(int value, int byteCount = 2) {
   blob tmpBlob;
@@ -5,6 +15,14 @@ string emu_decToHex(int value, int byteCount = 2) {
   string ret = tmpBlob;
   
   return tmpBlob;
+}
+
+int emu_hexToDec(string value, int byteCount = 2) {
+  blob tmpBlob = value;
+  int ret;
+  blobGetValue(tmpBlob, 0, ret, byteCount, true);
+  
+  return ret;
 }
 
 //decimal to binary
