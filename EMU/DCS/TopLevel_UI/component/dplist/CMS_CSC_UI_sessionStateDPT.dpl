@@ -21,3 +21,8 @@ CSC_UI_sessionState.CSC_UI_sessionState	1#1
 		mode	25#20
 	tooltipSizeUpdated	21#21
 	tooltipPositionUpdated	21#22
+
+# Datapoint/DpId
+DpName	TypeName	ID
+session_SCX5SCR05_NO_USER	CSC_UI_sessionState	392009
+session_macfrank_root	CSC_UI_sessionState	392011
