@@ -163,7 +163,7 @@ void drawPeripheralCrates(int x, int y, int radius, string side, int station, dy
     dynAppend(references, refName);
     dynAppend(crateRefs, refName);
     addSymbol(myModuleName(), myPanelName(),
-              \"objects/CMS_CSC_UI/refDevice.pnl\",
+              \"objects/\" + EMUUI_COMPONENT_NAME + \"/refDevice.pnl\",
               refName,
               makeDynString(\"$caption:VALUE\", \"$deviceType:peripheralCrate\",
                             deviceParamsDollar, shapeParamsDollar, \"$group:\" + pcGroup),
@@ -353,7 +353,7 @@ void drawRing(int x, int y, int innerRadius, int outerRadius, int chamberCount, 
     //import the chamber panel (no changes in the panel orientation; position - [0,0])
     dynAppend(references, refName);
     addSymbol(myModuleName(), myPanelName(),
-              \"objects/CMS_CSC_UI/refDevice.pnl\",
+              \"objects/\" + EMUUI_COMPONENT_NAME + \"/refDevice.pnl\",
               refName,
               makeDynString(\"$caption:\" + chamberName, \"$deviceType:chamber\",
                             deviceParamsDollar, shapeParamsDollar, \"$group:\" + paramGroup),
@@ -419,8 +419,8 @@ void initParams() {
     
     emuui_init();
     paramGroup = emuui_getSessionDp(\"mainChamberView\");
-    paramSide = \"P\";
-    paramStation = 1;
+    paramSide = \"M\";
+    paramStation = 2;
     paramRadius = 300;
   } else { // copy from dollar params
     paramGroup = $group;

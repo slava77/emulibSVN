@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 6 Device
-PANEL,-1 -1 120 53 N "_3DFace" 5
+PANEL,-1 -1 120 51 N "_3DFace" 5
 "$caption"
 "$deviceParams"
 "$deviceType"
@@ -153,6 +153,7 @@ float currentDpValueRangeMin;
 float currentDpValueRangeMax;
 bool showValueOnCaption;
 bool hvOffChannelsWarningEnabled;
+mapping disabledME11HvChannels;
 dyn_int disabledHvChannels;
 bool me11;
 bool isDisabled;
@@ -293,6 +294,11 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
         hvOffChannelsWarningEnabled = true;
         //TODO need a more generic approach here - probably show the exclamation mark if any (not only HV) channel is excluded (?) i.e. also LV and TEMP, ... maybe also FSM subnodes
         dpConnect(\"updateHVOffChannels\", true, dpName);
+      } else if (me11){
+        dyn_string channelFsmNodes = emuui_getME11HVChannelFsmNodes(deviceParams, ex);
+        for (int i=1; i <= dynlen(channelFsmNodes); i++) {
+          fwCU_connectOperationMode(\"updateME11HVOffChannels\", channelFsmNodes[i]);
+        }
       }
     }
   }
@@ -362,11 +368,15 @@ void updateDPsAverageStateCB(string firstDp, float firstValue) {
     dpGet(currentConnectionMultiple[i], values[i]);
   }
   // compute the average value
+  int count = 0;
   float value = 0;
   for (int i=1; i <= dynlen(values); i++) {
+    if (values[i] != 0) { count++; }
     value += values[i];
   }
-  value /= dynlen(values);
+  if (count > 0) {
+    value /= count;
+  }
   
   string color = emuui_getGradientColor(value, currentDpValueRangeMin, currentDpValueRangeMax);
   setColor(color);
@@ -408,13 +418,35 @@ void updateHVOffChannels(string dpName, dyn_string offChannels) {
   imgHvChannelsDisabled.visible = (dynlen(offChannels) > 0);
 }
 
+void updateME11HVOffChannels(string nodeName, int operationFlag) {
+  string domain = nodeName;
+  string object = _fwCU_getNodeObj(domain);
+  string mode = fwFsmUi_getDUMode(domain, object);
+  bool isDisabled = (mode == \"Disabled\");
+  disabledME11HvChannels[nodeName] = isDisabled;
+  for (int i=1; i <= mappinglen(disabledME11HvChannels); i++) {
+    if (mappingGetValue(disabledME11HvChannels, i) == true) {
+      imgHvChannelsDisabled.visible = true; // if at least one disabled channel is found - show the warning
+      return;
+    }
+  }
+  imgHvChannelsDisabled.visible = false; // if there wasn't a single disabled channel - hide the warning
+}
+
 void disconnect() {
   if (hvOffChannelsWarningEnabled) {
     dyn_string ex;
     hvOffChannelsWarningEnabled = false;
     imgHvChannelsDisabled.visible = false;
-    string dpName = emuui_getDpName(\"HV_off_channels\", deviceParams, ex);
-    dpDisconnect(\"updateHVOffChannels\", dpName);
+    if (!me11) {
+      string dpName = emuui_getDpName(\"HV_off_channels\", deviceParams, ex);
+      dpDisconnect(\"updateHVOffChannels\", dpName);
+    } else {
+      dyn_string channelFsmNodes = emuui_getME11HVChannelFsmNodes(deviceParams, ex);
+      for (int i=1; i <= dynlen(channelFsmNodes); i++) {
+        fwCU_disconnectOperationMode(channelFsmNodes[i]);
+      }
+    }
   }
   if (currentConnectionType == \"FSM\") {
     fwCU_disconnectState(currentConnection);
@@ -439,7 +471,7 @@ void showTooltip() {
   getCursorPosition(mouseX, mouseY);
   string refName = tooltipRefName;
   addSymbol(myModuleName(), myPanelName(),
-            \"objects/CMS_CSC_UI/refTooltip.pnl\",
+            \"objects/\" + EMUUI_COMPONENT_NAME + \"/refTooltip.pnl\",
             refName,
             makeDynString(\"$deviceParams:\" + deviceParamsStr, \"$deviceType:\" + $deviceType, \"$mode:\" + currentConnectionMode),
             mouseX, mouseY, 0, 1, 1);
@@ -463,6 +495,35 @@ bool isMouseOver() {
   }
   return false;
 }
+
+/** this is usually called from a double click on the device or label - opens an FSM node associated with the current device. */
+void openFsmPanel() {
+  dyn_string ex;
+  
+  // if the connection type is anything but FSM - return
+  if (currentConnectionType != \"FSM\") {
+    return;
+  }
+  // get the domain and object
+  string fsmNode = emuui_getFsmNode(currentConnectionMode, deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  string domain = fsmNode;
+  string object = _fwCU_getNodeObj(domain);
+
+  // open the panel
+  fwFsmUi_ObjButtonDoubleClick(domain, object, domain);      
+}
+
+
+
+
+
+
+
+
+
+
+
 
 void showPopupMenu() {
   return; // NOT IMPLEMENTED YET
@@ -551,18 +612,7 @@ LANG:1 0
 }" 0
  "main()
 {
-//   if ($deviceType != \"chamber\") {
-//     return;
-//   }
-//   string name = \"CSC_ME_\" + deviceParams[\"side\"] + deviceParams[\"station\"] + deviceParams[\"ring\"] + \"_C\" + deviceParams[\"chamberNumber\"];
-//   
-//   emu_info(\"labas, va name: \" + name);
-//   
-//   string domain = fwFsm_getAssociatedDomain(name);
-//   emu_info(\"domain: \" + domain);
-//   string obj = fwFsm_getAssociatedObj(name);
-//   emu_info(\"obj: \" + obj);
-//   fwUi_showFsmObject(\"CSC_ME_P1\", \"CSC_ME_P1\", \"\");
+  openFsmPanel();
 }" 0
 
 0 0 0 0 0 0
@@ -597,7 +647,11 @@ E E 0 1 1 1 1 E 0.774020156774913 0 1.02222222222222 -15.4642777155655 -30.66666
 {
   showPopupMenu();
 }" 0
- E
+ "main()
+{
+  openFsmPanel();
+}" 0
+
 2 0 0 0 0 0
 E E "main(bool enter)
 {
@@ -625,7 +679,11 @@ E E 0 1 1 2 1 E 1 0 1 -90 -10 1 E 90 10 110 30
 {
   showPopupMenu();
 }" 0
- E
+ "main()
+{
+  openFsmPanel();
+}" 0
+
 9 0 0 0 0 0
 E E "main(bool enter)
 {
@@ -660,7 +718,11 @@ LANG:1 1 !
 {
   showPopupMenu();
 }" 0
- E
+ "main()
+{
+  openFsmPanel();
+}" 0
+
 11 0 0 0 0 0
 E E "main(bool enter)
 {
@@ -688,7 +750,11 @@ E E 0 1 1 2 1 E 1 0 1 -100 -10 1 E 90 10 110 30
 {
   showPopupMenu();
 }" 0
- E
+ "main()
+{
+  openFsmPanel();
+}" 0
+
 1 0 0 0 0 0
 E E "main(bool enter)
 {

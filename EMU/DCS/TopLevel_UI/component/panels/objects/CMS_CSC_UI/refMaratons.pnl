@@ -54,7 +54,7 @@ void drawMaratons() {
     if (shapeExists(refName)) { refName += \"_1\"; }
     dynAppend(references, refName);
     addSymbol(myModuleName(), myPanelName(),
-              \"objects/CMS_CSC_UI/refDevice.pnl\",
+              \"objects/\" + EMUUI_COMPONENT_NAME + \"/refDevice.pnl\",
               refName,
               makeDynString(\"$caption:VALUE\", \"$deviceType:maraton\",
                             deviceParamsDollar, shapeParamsDollar, \"$group:\" + paramGroup),

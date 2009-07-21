@@ -1,50 +1,36 @@
 V 10
 1
-LANG:1 7 CSC_DCS
+LANG:1 26 CMS Endcap Muon System DCS
 PANEL,-1 -1 1600 1090 N "_3DFace" 0
 "main()
 {
   emuui_init();
   initConstants();
+  resetToDefaultChamberViewMode();
+  dyn_string ex;
+  drawLegend(ex);
+  if (emu_checkException(ex)) { return; }
   topPanelInitialized = true;
 }
 
 void initConstants() {
-  // main chamber view modes
-  mainChamberViewModes[1][1] = \"FSM\";
-  mainChamberViewModes[1][2] = \"general\";
-  
-  mainChamberViewModes[2][1] = \"FSM\";
-  mainChamberViewModes[2][2] = \"high_voltage\";
-  
-  mainChamberViewModes[3][1] = \"FSM\";
-  mainChamberViewModes[3][2] = \"low_voltage\";
-  
-  mainChamberViewModes[4][1] = \"FSM\";
-  mainChamberViewModes[4][2] = \"temperature\";
-  
-  // mini-Monitor modes
-  miniMonitorModes[1][1] = \"DPs_Max\";
-  miniMonitorModes[1][2] = \"temperature\";
-  
-  miniMonitorModes[2][1] = \"DPs_Average\";
-  miniMonitorModes[2][2] = \"temperature\";
-  
-  miniMonitorModes[3][1] = \"DPs_Max\";
-  miniMonitorModes[3][2] = \"HV_vMon\";
-  
-  miniMonitorModes[4][1] = \"DPs_Average\";
-  miniMonitorModes[4][2] = \"HV_vMon\";
-
+  emuui_g_topFsmNodesRightX = 390;
+  emuui_g_topFsmNodesHeight = 220;
 }" 0
- E E E E 1 -1 -1 0  60 250
+ "main()
+{
+  fwCU_releaseFullTree(\"CMS_CSC\");
+  PanelOff();
+}" 0
+ E E E 1 -1 -1 0  60 250
 ""0  1
 E "// some panel-wide constants and variables
 const int EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_X = 10;
 const int EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y = 20;
-dyn_dyn_string mainChamberViewModes;
-dyn_dyn_string miniMonitorModes;
+const int EMUUI_TOP_CHAMBER_VIEW_MODE_TIMEOUT = 300;
+
 bool topPanelInitialized;
+int chamberViewModeTimerThreadId = -1;
 
 void waitForEmuUiInitialize() {
   while(!emuui_isInitialized()) { // wait for the emuui initialization
@@ -53,204 +39,107 @@ void waitForEmuUiInitialize() {
   while(!topPanelInitialized) { // wait for the emuui initialization
     delay(0, 100);
   }
+}
 
-}" 0
+void updateValueMonitorMode(string connTypeDp, string connType, string modeDp, string mode) {
+  // remove the DPs_ prefix
+  strreplace(connType, \"DPs_\", \"\");
+  
+  //ok some hard code ... :/
+  if (mode == \"HV_vMon\") {
+    mode = \"High Voltage\";
+  } else {
+    mode = emuui_capitalizeFirstLetters(mode);
+  }
+  lblValueDisplayMode.text = \"Current Mode: \" + connType + \" \" + mode;
+}
+
+void updateChamberViewMode(string connTypeDp, string connType, string modeDp, string mode) {
+  lblChamberViewMode.text = \"Current Mode: \" + emuui_capitalizeFirstLetters(mode) + \" state\";
+  
+  if (mode != \"general\") {
+    stopChamberViewModeTimer();
+    startChamberViewModeTimer();
+  } else {
+    stopChamberViewModeTimer();
+  }
+}
+
+void startChamberViewModeTimer() {
+  chamberViewModeTimerThreadId = startThread(\"chamberViewModeTimerThread\");
+}
+
+void stopChamberViewModeTimer() {
+  if (chamberViewModeTimerThreadId >=0) {
+    stopThread(chamberViewModeTimerThreadId);
+    chamberViewModeTimerThreadId = -1;
+    lblChamberViewModeTimer.visible = false;
+  }
+}
+
+void chamberViewModeTimerThread() {
+  lblChamberViewModeTimer.visible = true;
+  
+  for (int i = EMUUI_TOP_CHAMBER_VIEW_MODE_TIMEOUT; i > 0; i--) {
+    delay(1);
+    lblChamberViewModeTimer.text = \"Switching back to \\\"General state\\\" mode in \" + i + \"s\";
+  }
+  chamberViewModeTimerThreadId = -1;
+  resetToDefaultChamberViewMode();
+      
+  lblChamberViewModeTimer.visible = false;
+}
+
+void resetToDefaultChamberViewMode() {
+  string dp = emuui_getSessionDp(\"mainChamberView\");
+  dpSetWait(dp + \".connectionType\", \"FSM\", dp + \".mode\", \"general\");
+}
+
+/** Draws the main FSM legend obviously :) */
+void drawLegend(dyn_string &ex, bool vertical = false) {
+  int posX, posY;
+  getValue(\"lblLegend\", \"position\", posX, posY);
+  if (vertical) {
+    posY += 25;
+  } else {
+    posX += 50;
+  }
+  
+  // use array instead of mapping to preserve the ordering
+  dyn_string stateColors = emuui_getMappingAsCSV(\"fsmStateColors\", ex);
+  for (int i=1; i <= dynlen(stateColors); i++) {
+    dyn_string split = strsplit(stateColors[i], \";\");
+    string state = split[1];
+    string color = split[2];
+    if (state == \"default\") { continue; }
+    
+    string refName = \"LegendaryItem_\" + state;
+    addSymbol(myModuleName(), myPanelName(),
+              \"objects/\" + EMUUI_COMPONENT_NAME + \"/refLegendItem.pnl\",
+              refName,
+              makeDynString(\"$caption:\" + state, \"$color:\" + color),
+              posX, posY, 0, 1, 1);
+    if (vertical) {
+      posY += 27;
+    } else {
+      posX += 80;
+    }
+  }
+}
+" 0
  2
 "CBRef" "1"
-"EClose" E
+"EClose" "main()
+{
+  fwCU_releaseFullTree(\"CMS_CSC\");
+  PanelOff();
+}" 0
+
 ""
 DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
 LAYER, 0 
 1
 LANG:1 0 
-19 18
-"RADIO_BOX1"
-""
-1 930 876 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
- E E
-24 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 928 874 1052 1002
-4
-T 
-1
-LANG:1 15 Max Temperature
-
-1 
-1
-LANG:1 0 
-E E
-0 0 0 0 0
-T 
-1
-LANG:1 19 Average Temperature
-
-0 
-1
-LANG:1 0 
-E E
-0 0 0 0 0
-T 
-1
-LANG:1 16 Max High Voltage
-
-0 
-1
-LANG:1 0 
-E E
-0 0 0 0 0
-T 
-1
-LANG:1 20 Average High Voltage
-
-0 
-1
-LANG:1 0 
-E E
-0 0 0 0 0
-1
-"main()
-{
-  waitForEmuUiInitialize();
-  
-  string dp = emuui_getSessionDp(\"miniMonitor\");
-  string connectionType, mode;
-  dpGet(dp + \".connectionType\", connectionType);
-  dpGet(dp + \".mode\", mode);
-  
-  int index = emu_dynDynContains(miniMonitorModes, makeDynString(connectionType, mode));
-  if (index > 0) {
-    this.number(index - 1);
-  }
-}" 0
- "main(int button)
-{
-  string dp = emuui_getSessionDp(\"miniMonitor\");
-  dpSetWait(dp + \".connectionType\", miniMonitorModes[button + 1][1], 
-            dp + \".mode\", miniMonitorModes[button + 1][2]);
-}" 0
-
-30 4
-"frameMainChamberView"
-""
-1 34.4078947368421 238.283333333333 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
- E E
-5 0 0 0 0 0
-E E E
-1
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-"main()
-{
-  waitForEmuUiInitialize();
-    
-  int width, height;
-  getValue(\"\", \"size\", width, height);
-  int posX, posY;
-  getValue(\"\", \"position\", posX, posY);
-  posY += 40; // shift everything a bit down to give space for mode selector
-  
-  string group = emuui_getSessionDp(\"mainChamberView\");          //group name
-  string refName = \"MainChamberView_EMU\";
-  addSymbol(myModuleName(), myPanelName(),
-            \"objects/CMS_CSC_UI/refEMUPhysical.pnl\",
-            refName,
-            makeDynString(\"$group:\" + group, \"$width:\" + width),
-            posX, posY, 0, 1, 1);
-}" 0
- E 0 1 1 0 1 E 2.3578277627767 0 2.64984227129337 -60.734832883301 -607.413249211355 0 E 30 233 701 551
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
-LANG:1 17 Main Chamber View
-19 5
-"radioMode"
-""
-1 24.1976893453147 867.256097560976 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
- E E
-7 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"horizontal" ""
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 70.3684210526317 39.0975609756102 469.368421052632 61.7560975609761
-4
-T 
-1
-LANG:1 13 General state
-
-1 
-1
-LANG:1 0 
-E E
-0 0 0 0 0
-T 
-1
-LANG:1 12 High Voltage
-
-0 
-1
-LANG:1 0 
-E E
-0 0 0 0 0
-T 
-1
-LANG:1 11 Low Voltage
-
-0 
-1
-LANG:1 0 
-E E
-0 0 0 0 0
-T 
-1
-LANG:1 11 Temperature
-
-0 
-1
-LANG:1 0 
-E E
-0 0 0 0 0
-1
-"main()
-{
-  waitForEmuUiInitialize();
-  
-  string dp = emuui_getSessionDp(\"mainChamberView\");
-  string connectionType, mode;
-  dpGet(dp + \".connectionType\", connectionType);
-  dpGet(dp + \".mode\", mode);
-  
-  int index = emu_dynDynContains(mainChamberViewModes, makeDynString(connectionType, mode));
-  if (index > 0) {
-    this.number(index - 1);
-  }
-}
-" 0
- "main(int button){
-  string dp = emuui_getSessionDp(\"mainChamberView\");
-  dpSetWait(dp + \".connectionType\", mainChamberViewModes[button + 1][1], 
-            dp + \".mode\", mainChamberViewModes[button + 1][2]);
-}" 0
-
 30 7
 "frameTemperatureMonitor"
 ""
@@ -268,7 +157,7 @@ LANG:1 0
 {
   lblLoading.visible = true;
   waitForEmuUiInitialize();
-  delay(14); // wait a bit till everything else is more or less initialized (in particular the chambers are drawn)
+  delay(16); // wait a bit till everything else is more or less initialized (in particular the chambers are drawn)
   lblLoading.visible = false;
   
   int width, height;
@@ -279,10 +168,10 @@ LANG:1 0
   posY += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y - 5; // mini monitor fine adjustment
   posY += 5; // shift a bit down no avoid overlap with \"zoom in\" icon
           
-  string group = emuui_getSessionDp(\"miniMonitor\");          //group name
-  string refName = \"MiniMonitor_EMU\";
+  string group = emuui_getSessionDp(\"valueMonitor\");          //group name
+  string refName = \"ValueMonitor_EMU\";
   addSymbol(myModuleName(), myPanelName(),
-            \"objects/CMS_CSC_UI/refEMUPlot.pnl\",
+            \"objects/\" + EMUUI_COMPONENT_NAME + \"/refEMUPlot.pnl\",
             refName,
             makeDynString(\"$group:\" + group, \"$width:\" + width),
             posX, posY, 0, 1, 1);   
@@ -292,27 +181,45 @@ LANG:1 0
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
-LANG:1 12 Mini Monitor
-2 8
-"PRIMITIVE_TEXT1"
+LANG:1 13 Value Monitor
+30 4
+"frameMainChamberView"
 ""
-1 30.7894736842106 41.0975609756102 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 34.4078947368421 238.283333333333 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
  E E
-10 0 0 0 0 0
+5 0 0 0 0 0
 E E E
-0
+1
 1
 LANG:1 0 
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1.03947368421053 0 1.03658536585366 -0.394736842105263 -0.365853658536586 1 E 30.0000000000001 40.0000000000005 60 54
-0 2 2 "0s" 0 0 0 192 0 0  30.0000000000001 40.0000000000005 1
+"main()
+{
+  waitForEmuUiInitialize();
+  
+  int width, height;
+  getValue(\"\", \"size\", width, height);
+  int posX, posY;
+  getValue(\"\", \"position\", posX, posY);
+  posY += 40; // shift everything a bit down to give space for mode selector
+  
+  string group = emuui_getSessionDp(\"mainChamberView\");          //group name
+  string refName = \"MainChamberView_EMU\";
+  addSymbol(myModuleName(), myPanelName(),
+            \"objects/\" + EMUUI_COMPONENT_NAME + \"/refEMUPhysical.pnl\",
+            refName,
+            makeDynString(\"$group:\" + group, \"$width:\" + width),
+            posX, posY, 0, 1, 1);
+}
+" 0
+ E 0 1 1 0 1 E 2.3578277627767 0 2.64984227129337 -60.734832883301 -607.413249211355 0 E 30 233 701 551
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
-LANG:1 5 Mode:
+LANG:1 17 Main Chamber View
 30 9
 "FRAME1"
 ""
@@ -381,7 +288,7 @@ LANG:1 0
   string group = emuui_getSessionDp(\"hvPrimaryView\");          //group name
   string refName = \"HV_PrimaryView_EMU\";
   addSymbol(myModuleName(), myPanelName(),
-            \"objects/CMS_CSC_UI/refHVPrimaries.pnl\",
+            \"objects/\" + EMUUI_COMPONENT_NAME + \"/refHVPrimaries.pnl\",
             refName,
             makeDynString(\"$group:\" + group),
             posX, posY, 0, 1, 1);
@@ -417,7 +324,7 @@ LANG:1 0
   string group = emuui_getSessionDp(\"maratonView\");          //group name
   string refName = \"MaratonView_EMU\";
   addSymbol(myModuleName(), myPanelName(),
-            \"objects/CMS_CSC_UI/refMaratons.pnl\",
+            \"objects/\" + EMUUI_COMPONENT_NAME + \"/refMaratons.pnl\",
             refName,
             makeDynString(\"$group:\" + group),
             posX, posY, 0, 1, 1);
@@ -443,11 +350,11 @@ LANG:1 35 Detach and zoom temperature monitor
 "dashclr"N "_Transparent"
 E "main()
 {
-  ChildPanelOn(\"objects/CMS_CSC_UI/refEMUPlot.pnl\", \"panelMiniMonitor\", 
+  ChildPanelOn(\"objects/\" + EMUUI_COMPONENT_NAME + \"/refEMUPlot.pnl\", \"panelMiniMonitor\", 
                makeDynString(\"$group:\" + emuui_getSessionDp(\"miniMonitor\"), \"$width:780\"), 200, 200);
 }
 " 0
- 0 1 1 2 1 E 1 0 1 1160 850 2  0 0  "pictures/CMS_CSC_UI/zoom_in.bmp" 4294967295 E 10 10 36 35
+ 0 1 1 2 1 E 1 0 1 1167 850 2  0 0  "pictures/CMS_CSC_UI/zoom_in.bmp" 4294967295 E 10 10 36 35
 2 17
 "lblLoading"
 ""
@@ -468,25 +375,226 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-32-*-100-100-*-*-iso8859-1|-32,0,0,0,505,
 0 ""
 1
 LANG:1 23 Loading, please wait...
-30 19
-"FRAME4"
+6 26
+"RECTANGLE1"
 ""
-1 950 873 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+1 1200 740 E E E 1 E 1 E N "_Transparent" E N "_3DFace" E E
  E E
-25 0 0 0 0 0
+34 0 0 0 0 0
 E E E
-1
+0
 1
 LANG:1 0 
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 1 0 1 E 0.9375 0 0.929936305732484 29.375 52.1656050955415 0 E 950 873 1111 1031
+E E 0 1 1 2 1 E 1.525 0 0.5 -590 490 1 E 1200 740 1320 780
+6 25
+"btnValueDisplayMode"
+""
+1 830 600 E E E 1 E 1 E N {0,0,0} E N "_Button" E E
+ E E
+33 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E "main()
+{
+  btnValueDisplayMode.borderStyle = BS_SUNKEN;
+  delay(0, 150);
+  btnValueDisplayMode.borderStyle = BS_RAISED;
+  
+  ChildPanelOnCentralModal(EMUUI_COMPONENT_NAME + \"/ValueMonitorModeChooser.pnl\", \"ModeChooser\", makeDynString());
+}" 0
+ 0 1 1 2 1 E 1 0 1 1050 800 1 E 360 60 470 83
+2 21
+"btnValueDisplayMode_label"
+""
+1 1410 865 E E E 1 E 1 E N "_ButtonText" E N "_Transparent" E E
+ E E
+27 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E "main()
+{
+  btnValueDisplayMode.borderStyle = BS_SUNKEN;
+  delay(0, 150);
+  btnValueDisplayMode.borderStyle = BS_RAISED;
+  
+  ChildPanelOnCentralModal(EMUUI_COMPONENT_NAME + \"/ValueMonitorModeChooser.pnl\", \"ModeChooser\", makeDynString());
+}" 0
+ 0 1 1 2 1 E U  1 E 1410 865 1516 878
+0 2 2 "0s" 0 0 0 65 0 0  1410 865 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
-LANG:1 17 Mini Monitor Mode
+LANG:1 11 Change Mode
+2 20
+"lblValueDisplayMode"
+""
+1 1230 864 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+26 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+  waitForEmuUiInitialize();
+  string dp = emuui_getSessionDp(\"valueMonitor\");
+  dpConnect(\"updateValueMonitorMode\", true, dp + \".connectionType\", dp + \".mode\");
+}" 0
+ E 0 1 1 2 1 E U  1 E 1230 864 1383 878
+0 2 2 "0s" 0 0 0 192 0 0  1230 864 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 29 Current Mode: Max Temperature
+6 30
+"RECTANGLE3"
+""
+1 1200 740 E E E 1 E 1 E N "_Transparent" E N "_3DFace" E E
+ E E
+42 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1.775 0 0.5 -1759 -364 1 E 1200 740 1320 780
+2 27
+"lblChamberViewMode"
+""
+1 361 10 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+36 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+  waitForEmuUiInitialize();
+  string dp = emuui_getSessionDp(\"mainChamberView\");
+  dpConnect(\"updateChamberViewMode\", true, dp + \".connectionType\", dp + \".mode\");
+}" 0
+ E 0 1 1 2 1 E U  1 E 361 10 494 24
+0 2 2 "0s" 0 0 0 192 0 0  361 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 27 Current Mode: General state
+6 29
+"btnChamberViewMode"
+""
+1 830 600 E E E 1 E 1 E N {0,0,0} E N "_Button" E E
+ E E
+40 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E "main()
+{
+  btnValueDisplayMode.borderStyle = BS_SUNKEN;
+  delay(0, 150);
+  btnValueDisplayMode.borderStyle = BS_RAISED;
+  
+  ChildPanelOnCentralModal(EMUUI_COMPONENT_NAME + \"/ChamberViewModeChooser.pnl\", \"ModeChooser\", makeDynString());
+}" 0
+ 0 1 1 2 1 E 1 0 1 177 -54 1 E 360 60 470 83
+2 28
+"btnChamberViewMode_label"
+""
+1 537 11 E E E 1 E 1 E N "_ButtonText" E N "_Transparent" E E
+ E E
+38 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E "main()
+{
+  btnChamberViewMode.borderStyle = BS_SUNKEN;
+  delay(0, 150);
+  btnChamberViewMode.borderStyle = BS_RAISED;
+  
+  ChildPanelOnCentralModal(EMUUI_COMPONENT_NAME + \"/ChamberViewModeChooser.pnl\", \"ModeChooser\", makeDynString());
+}" 0
+ 0 1 1 2 1 E U  1 E 537 11 643 24
+0 2 2 "0s" 0 0 0 65 0 0  537 11 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 11 Change Mode
+2 31
+"lblChamberViewModeTimer"
+""
+1 659 10 E E E 1 E 0 E N "_WindowText" E N "white" E E
+ E E
+43 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 659 10 886 24
+1 2 2 "0s" 0 0 0 192 0 0  659 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 46 Switching back to "General state" mode in 300s
+2 32
+"lblLegend"
+""
+1 1110 10 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+44 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 1110 10 1152 24
+0 2 2 "0s" 0 0 0 192 0 0  1110 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 8 Legend :
 0
 LAYER, 1 
 1

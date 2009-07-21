@@ -1,0 +1,217 @@
+V 10
+1
+LANG:1 12 Mode changer
+PANEL,-1 -1 167 283 N "_3DFace" 0
+"main()
+{
+  initConstants();
+}
+
+void initConstants() {
+  // main chamber view modes
+  mainChamberViewModes[1][1] = \"FSM\";
+  mainChamberViewModes[1][2] = \"general\";
+  
+  mainChamberViewModes[2][1] = \"FSM\";
+  mainChamberViewModes[2][2] = \"high_voltage\";
+  
+  mainChamberViewModes[3][1] = \"FSM\";
+  mainChamberViewModes[3][2] = \"low_voltage\";
+  
+  mainChamberViewModes[4][1] = \"FSM\";
+  mainChamberViewModes[4][2] = \"temperature\";
+}" 0
+ E E E E 1 -1 -1 0  0 0
+""0  1
+E "dyn_dyn_string mainChamberViewModes;
+" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+30 1
+"FRAME4"
+""
+1 950 873 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+3 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 0.900248344370861 0 0.894720745455704 -845.235927152317 -771.091210782828 0 E 950 873 1111 1031
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 18 Value Monitor Mode
+19 2
+"radioMode"
+""
+1 17.1976893453147 838.256097560976 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 18 20 142 148
+4
+T 
+1
+LANG:1 13 General state
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 12 High Voltage
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 11 Low Voltage
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 11 Temperature
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+"main()
+{
+  string dp = emuui_getSessionDp(\"mainChamberView\");
+  string connectionType, mode;
+  dpGet(dp + \".connectionType\", connectionType);
+  dpGet(dp + \".mode\", mode);
+  
+  int index = emu_dynDynContains(mainChamberViewModes, makeDynString(connectionType, mode));
+  if (index > 0) {
+    this.number(index - 1);
+  }
+}
+" 0
+ "main(int button){
+  string dp = emuui_getSessionDp(\"mainChamberView\");
+  dpSetWait(dp + \".connectionType\", mainChamberViewModes[button + 1][1], 
+            dp + \".mode\", mainChamberViewModes[button + 1][2]);
+}" 0
+
+2 3
+"PRIMITIVE_TEXT1"
+""
+1 10 160 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 160 155 272
+0 2 2 "0s" 0 0 0 64 0 0  10 160 9
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 5 NOTE:
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 28 It's not recommended to keep
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 29 other than "general" mode for
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 12 a long time.
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 25 Therefore after 5 minutes
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 30 mode will automatically switch
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 28 back to "General state" mode
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 0 
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 0 
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

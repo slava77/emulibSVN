@@ -1,0 +1,157 @@
+V 10
+1
+LANG:1 12 Mode changer
+PANEL,-1 -1 173 165 N "_3DFace" 0
+"main()
+{
+  initConstants();
+}
+
+void initConstants() {
+  // value-Monitor modes
+  valueMonitorModes[1][1] = \"DPs_Max\";
+  valueMonitorModes[1][2] = \"temperature\";
+  
+  valueMonitorModes[2][1] = \"DPs_Average\";
+  valueMonitorModes[2][2] = \"temperature\";
+  
+  valueMonitorModes[3][1] = \"DPs_Max\";
+  valueMonitorModes[3][2] = \"HV_vMon\";
+  
+  valueMonitorModes[4][1] = \"DPs_Average\";
+  valueMonitorModes[4][2] = \"HV_vMon\";
+}" 0
+ E E E E 1 -1 -1 0  0 0
+""0  1
+E "dyn_dyn_string valueMonitorModes;
+" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+19 0
+"RADIO_BOX1"
+""
+1 20 22 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 18 20 142 148
+4
+T 
+1
+LANG:1 15 Max Temperature
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 19 Average Temperature
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 16 Max High Voltage
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 20 Average High Voltage
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+"main()
+{
+  string dp = emuui_getSessionDp(\"valueMonitor\");
+  string connectionType, mode;
+  dpGet(dp + \".connectionType\", connectionType);
+  dpGet(dp + \".mode\", mode);
+  
+  int index = emu_dynDynContains(valueMonitorModes, makeDynString(connectionType, mode));
+  if (index > 0) {
+    this.number(index - 1);
+  }
+}" 0
+ "main(int button)
+{
+  string dp = emuui_getSessionDp(\"valueMonitor\");
+  dpSetWait(dp + \".connectionType\", valueMonitorModes[button + 1][1], 
+            dp + \".mode\", valueMonitorModes[button + 1][2]);
+}" 0
+
+30 1
+"FRAME4"
+""
+1 950 873 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+3 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 0.9375 0 0.89171974522293 -880.625 -768.471337579618 0 E 950 873 1111 1031
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 18 Value Monitor Mode
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

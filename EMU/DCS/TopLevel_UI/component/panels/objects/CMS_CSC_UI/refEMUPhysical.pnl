@@ -23,7 +23,7 @@ PANEL,-1 -1 1600 1200 N "_3DFace" 2
     dynAppend(references, refName);
     stationPositions[refName] = makeDynInt(posX, posYplus);
     addSymbol(myModuleName(), myPanelName(),
-              \"objects/CMS_CSC_UI/refCSCStationPhysical.pnl\",
+              \"objects/\" + EMUUI_COMPONENT_NAME + \"/refCSCStationPhysical.pnl\",
               refName,
               makeDynString(\"$side:P\", \"$station:\" + station, \"$radius:\" + stationRadius, \"$group:\" + paramGroup),
               posX, posYplus, 0, 1, 1);
@@ -33,7 +33,7 @@ PANEL,-1 -1 1600 1200 N "_3DFace" 2
     dynAppend(references, refName);
     stationPositions[refName] = makeDynInt(posX, posYminus);
     addSymbol(myModuleName(), myPanelName(),
-              \"objects/CMS_CSC_UI/refCSCStationPhysical.pnl\",
+              \"objects/\" + EMUUI_COMPONENT_NAME + \"/refCSCStationPhysical.pnl\",
               refName,
               makeDynString(\"$side:M\", \"$station:\" + station, \"$radius:\" + stationRadius, \"$group:\" + paramGroup),
               posX, posYminus, 0, 1, 1);
@@ -142,7 +142,7 @@ E "main()
   
   string refName = \"station_ME+1_zoom\";
   addSymbol(myModuleName(), myPanelName(),
-            \"objects/CMS_CSC_UI/refCSCStationPhysical.pnl\",
+            \"objects/\" + EMUUI_COMPONENT_NAME + \"/refCSCStationPhysical.pnl\",
             refName,
             makeDynString(\"$side:P\", \"$station:1\", \"$radius:\" + radius, \"$group:\" + paramGroup),
             posX, posY, 0, 1, 1);
@@ -199,7 +199,7 @@ E "main()
   
   string refName = \"station_ME-1_zoom\";
   addSymbol(myModuleName(), myPanelName(),
-            \"objects/CMS_CSC_UI/refCSCStationPhysical.pnl\",
+            \"objects/\" + EMUUI_COMPONENT_NAME + \"/refCSCStationPhysical.pnl\",
             refName,
             makeDynString(\"$side:M\", \"$station:1\", \"$radius:\" + radius, \"$group:\" + paramGroup),
             posX, posY, 0, 1, 1);

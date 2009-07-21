@@ -119,7 +119,7 @@ void drawStation(int x, int y, string side, int station, int ring, int chamberWi
     if (shapeExists(refName)) { refName += \"_1\"; }
     dynAppend(references, refName);
     addSymbol(myModuleName(), myPanelName(),
-              \"objects/CMS_CSC_UI/refDevice.pnl\",
+              \"objects/\" + EMUUI_COMPONENT_NAME + \"/refDevice.pnl\",
               refName,
               makeDynString(\"$caption:VALUE\", \"$deviceType:chamber\",
                             \"$deviceParams:\" + \"side=\" + side + 
@@ -148,7 +148,7 @@ void drawRingLabel(int x, int y, string side, int station, int ring) {
     string refName = \"ringLabel_\" + ringLabel;
     dynAppend(references, refName);
     addSymbol(myModuleName(), myPanelName(), 
-              \"objects/CMS_CSC_UI/refLabel.pnl\", refName, 
+              \"objects/\" + EMUUI_COMPONENT_NAME + \"/refLabel.pnl\", refName, 
               makeDynString(\"$text:\" + ringLabel),
               x, y, 0, 1, 1);
 }
@@ -196,7 +196,7 @@ void initParams() {
     emuui_init();
     runningLocal = true;
     
-    paramGroup = emuui_getSessionDp(\"miniMonitor\");
+    paramGroup = emuui_getSessionDp(\"valueMonitor\");
     paramWidth = 780;
   } else { // copy from dollar params
     runningLocal = false;
@@ -226,7 +226,7 @@ void drawGradientScale(int bottomLeftX, int bottomLeftY, int height, int width, 
     dynAppend(references, refName);
     dynAppend(gradientScaleRefs, refName);
     addSymbol(myModuleName(), myPanelName(),
-              \"objects/CMS_CSC_UI/refLine.pnl\",
+              \"objects/\" + EMUUI_COMPONENT_NAME + \"/refLine.pnl\",
               refName,
               makeDynString(),
               bottomLeftX, bottomLeftY - i, 0, 1, 1);
@@ -253,7 +253,7 @@ void drawGradientScaleLabels(int bottomLeftX, int bottomLeftY, int height, int w
       dynAppend(references, refName);
       dynAppend(gradientScaleLabelRefs, refName);
       addSymbol(myModuleName(), myPanelName(), 
-                \"objects/CMS_CSC_UI/refLabel.pnl\", refName, 
+                \"objects/\" + EMUUI_COMPONENT_NAME + \"/refLabel.pnl\", refName, 
                 makeDynString(\"$text:\" + strValue),
                 bottomLeftX + width, bottomLeftY - i - 6, 0, 1, 1); // shift a bit up, because the reference point of the label is in bottom left corner
     }

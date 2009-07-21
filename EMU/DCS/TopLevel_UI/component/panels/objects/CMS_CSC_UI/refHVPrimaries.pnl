@@ -44,7 +44,7 @@ void drawPrimaries() {
       //import the chamber panel (no changes in the panel orientation; position - [0,0])
       dynAppend(references, refName);
       addSymbol(myModuleName(), myPanelName(),
-                \"objects/CMS_CSC_UI/refDevice.pnl\",
+                \"objects/\" + EMUUI_COMPONENT_NAME + \"/refDevice.pnl\",
                 refName,
                 makeDynString(\"$caption:VALUE\", \"$deviceType:hvPrimary\",
                               deviceParamsDollar, shapeParamsDollar, \"$group:\" + paramGroup),
