@@ -144,6 +144,7 @@ mapping deviceParams;
 string deviceParamsStr;
 string shapeName;
 
+int fsmStatePollingThreadId = -1;
 string multipleConnectionFunction;
 dyn_string currentConnectionMultiple;
 string currentConnectionType;
@@ -157,6 +158,7 @@ mapping disabledME11HvChannels;
 dyn_int disabledHvChannels;
 bool me11;
 bool isDisabled;
+string lastFsmState;
 
 
 void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string connectionType) {
@@ -175,7 +177,9 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
   
   mode = $deviceType + \"_\" + mode; // prepend mode with device type
   
-  setColor(\"white\"); // to indicate busy
+  if (currentConnectionMode != \"dead\") {
+    setColor(\"white\"); // to indicate busy
+  }
   currentConnectionMode = \"busy\";
   
   disconnect();  
@@ -201,6 +205,9 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
         currentConnectionMode = mode;
         currentConnection = node;
         currentConnectionMultiple = makeDynString();
+        if (EMUUI_FSM_STATE_POLLING_ENABLED) {
+          fsmStatePollingThreadId = startThread(\"pollFsmStateThread\");
+        }
       }
     } else {
       emu_debug(\"FSM node was not found for mode '\" + mode + \"' with deviceParams '\" + deviceParams + \"'\");
@@ -284,6 +291,7 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
     currentConnectionType = \"\";
     currentConnection = \"\";
     currentConnectionMode = \"dead\";
+    pollMode(); // try to reconnect again in EMUUI_FSM_STATE_POLLING_RATE seconds
   } else { // connection successful
     dyn_string modesWithHvDisabledWarning = emuui_getArray(\"modesWithHvDisabledWarning\", ex);
     if (emu_checkException(ex)) { return; }
@@ -305,6 +313,7 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
 }
 
 void updateFSMStateCB(string node, string state) {
+  lastFsmState = state;
   emu_debug(\"state update came for \" + node + \": \" + state);
   // update text
   if (showValueOnCaption) {
@@ -315,6 +324,7 @@ void updateFSMStateCB(string node, string state) {
     return;
   }
   // update color
+  if (state == \"\") { state = \"DEAD\"; }
   dyn_string ex;
   string color = emuui_getMappingValue(\"fsmStateColors\", state, ex);
   if (emu_checkException(ex)) { return; }
@@ -451,6 +461,10 @@ void disconnect() {
   }
   if (currentConnectionType == \"FSM\") {
     fwCU_disconnectState(currentConnection);
+    if (fsmStatePollingThreadId != -1) {
+      stopThread(fsmStatePollingThreadId);
+      fsmStatePollingThreadId = -1;
+    }
   } else if (currentConnectionType == \"DP\") {
     dpDisconnect(\"updateDPStateCB\", currentConnection);
   } else if (strpos(currentConnectionType, \"DPs_\") >= 0) {
@@ -471,10 +485,15 @@ void showTooltip() {
   int mouseX, mouseY;
   getCursorPosition(mouseX, mouseY);
   string refName = tooltipRefName;
+  string mode = currentConnectionMode;
+  // to avoid trying to show a tooltip when the device is DEAD
+  if (currentConnectionType == \"FSM\" && ((lastFsmState == \"\") || (lastFsmState == \"DEAD\"))) {
+    mode = \"dead\";
+  }
   addSymbol(myModuleName(), myPanelName(),
             \"objects/\" + EMUUI_COMPONENT_NAME + \"/refTooltip.pnl\",
             refName,
-            makeDynString(\"$deviceParams:\" + deviceParamsStr, \"$deviceType:\" + $deviceType, \"$mode:\" + currentConnectionMode),
+            makeDynString(\"$deviceParams:\" + deviceParamsStr, \"$deviceType:\" + $deviceType, \"$mode:\" + mode),
             mouseX, mouseY, 0, 1, 1);
   tooltipVisible = true;
 }
@@ -515,9 +534,31 @@ void openFsmPanel() {
   fwFsmUi_ObjButtonDoubleClick(domain, object, domain);      
 }
 
+/** Thread that polls FSM state every EMUUI_FSM_STATE_POLLING_RATE seconds and check if it's consistent with the last update (sometimes it's not). */
+void pollFsmStateThread() {
+  while(1) {
+    delay(EMUUI_FSM_STATE_POLLING_RATE);
+    string state;
+    fwCU_getState(currentConnection, state);
+    if (state != lastFsmState) {
+      emu_info(\"ERROR: Found inconsistent FSM state after polling. \" +
+               \"Node = \" + currentConnection + 
+               \"; last FSM state update = \" + lastFsmState + 
+               \"; polled out state = \" + state);
+      updateFSMStateCB(currentConnection, state);
+    }
+  }
+}
 
-
-
+/** Polls connection mode. Used ONLY when an initial connection was unsucessful. */
+void pollMode() {
+  delay(EMUUI_FSM_STATE_POLLING_RATE);
+  if (currentConnection == \"\") {
+    string connType, mode;
+    dpGet($group + \".mode\", mode, $group + \".connectionType\", connType);
+    modeChangedCB($group + \".mode\", mode, $group + \".connectionType\", connType);
+  }
+}
 
 
 

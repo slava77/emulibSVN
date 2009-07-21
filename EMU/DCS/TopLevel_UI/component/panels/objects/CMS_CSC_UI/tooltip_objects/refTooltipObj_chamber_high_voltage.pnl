@@ -115,7 +115,10 @@ void initGui(int channelCount, dyn_string &ex) {
   string coordsCombined;
   dpGet(hvCoordDp, coordsCombined);
   dyn_string coords = strsplit(coordsCombined, \";\");
-  if (dynlen(coords) < 4) {
+  if (dynlen(coords) == 0) {
+    emu_addError(\"Could not get HV module coordinates. This is a sign that one of DCS computers is unreachable (perhaps OFF).\", ex);
+    return;
+  } else if (dynlen(coords) < 4) {
     emu_addError(\"HV module coordinates are incomplete. DP = \" + hvCoordDp + \". Returned coordinates = \" + coordsCombined, ex);
     return;
   }
