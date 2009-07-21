@@ -84,9 +84,18 @@ void initTooltipSize() {
 }
 
 string getTooltipObjFile(string type) {
-  dyn_string filenames = getFileNames(PROJ_PATH + \"panels/objects/\" + EMUUI_COMPONENT_NAME + \"/tooltip_objects\", \"refTooltipObj_\" + type + \".pnl\");
-  if (dynlen(filenames) > 0) {
-    return \"objects/\" + EMUUI_COMPONENT_NAME + \"/tooltip_objects/\" + filenames[1];
+  bool fileFound = false;
+  string filename = \"refTooltipObj_\" + type + \".pnl\";
+  for (int i=1; i <= SEARCH_PATH_LEN; i++) {
+    string test = getPath(PANELS_REL_PATH, \"objects/\" + EMUUI_COMPONENT_NAME + \"/tooltip_objects\", filename, i);
+    if (strlen(test) > 0) { 
+      fileFound = true; 
+      break;
+    }
+  }
+  
+  if (fileFound) {
+    return \"objects/\" + EMUUI_COMPONENT_NAME + \"/tooltip_objects/\" + filename;
   }
   return \"\";
 }
