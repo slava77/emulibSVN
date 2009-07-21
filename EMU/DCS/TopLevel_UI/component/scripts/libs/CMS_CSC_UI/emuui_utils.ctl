@@ -81,3 +81,18 @@ string emuui_getSystemName(string dp) {
   strreplace(sysName, ":", "");
   return sysName;
 }
+
+/** Makes first letters of all the words in the string capital. */
+string emuui_capitalizeFirstLetters(string str) {
+  dyn_string split = strsplit(str, " ");
+  for (int i=1; i <= dynlen(split); i++) {
+    string firstLetter = strtoupper((string) split[i][0]);
+    split[i] = firstLetter + substr(split[i], 1);
+  }
+  string ret;
+  for (int i=1; i <= dynlen(split); i++) {
+    if (i > 1) { ret += " "; }
+    ret += split[i];
+  }
+  return ret;
+}

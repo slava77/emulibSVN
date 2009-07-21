@@ -15,6 +15,8 @@ global mapping emuui_g_mapPcmbToMaraton = emuui_dummyMapping;
 global mapping emuui_g_mapMaratonDb = emuui_dummyMapping;
 global mapping emuui_g_mapMaratonDbSwapped = emuui_dummyMapping;
 global dyn_string emuui_g_maratonDbArray = makeDynString();
+global int emuui_g_topFsmNodesRightX = 0; // this is the right edge of the FSM nodes - area that should be avoided by tooltips. This is only initialized by Top.pnl because only this one has those evil FSM nodes
+global int emuui_g_topFsmNodesHeight = 0; // this is the height of the box where the FSM nodes are in top.pnl - area that should be avoided by tooltips. This is only initialized by Top.pnl because only this one has those evil FSM nodes
 const string emuui_g_version = ""; // default version is empty, if any other version is specified then you have to make sure that you have all the datapoints available i.e. CSC_UI_mapping and CSC_UI_array with appendix "_<version>"
 
 /** @return a mapping of a given name (the mapping is retrieved from configuration DPs). */
@@ -27,14 +29,8 @@ mapping emuui_getMapping(string name, dyn_string &exceptionInfo) {
     return emuui_g_mappingCache[name + version];
   }
   
-  string dpName = "emuui_map_" + name + version;
-  if (!dpExists(dpName)) {
-    emu_addError("Requested mapping \"" + name + version + "\" does not exist", exceptionInfo);
-    return emuui_dummyMapping;
-  }
-
-  dyn_string data;
-  dpGet(dpName + ".map", data);
+  dyn_string data = emuui_getMappingAsCSV(name, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return emuui_dummyMapping; }
   
   mapping ret = _emuui_constructMappingFromCSV(data, exceptionInfo, name, version);
   if (emu_checkException(exceptionInfo)) { return emuui_dummyMapping; }
@@ -43,6 +39,23 @@ mapping emuui_getMapping(string name, dyn_string &exceptionInfo) {
   emuui_g_mappingCache[name + version] = ret;
       
   return ret;
+}
+
+/** @return a mapping of a given name in CSV array (the mapping is retrieved from configuration DPs). */
+dyn_string emuui_getMappingAsCSV(string name, dyn_string &exceptionInfo) {
+  string version = emuui_g_version;
+  if (strlen(version) > 0) { version = "_" + version; } // add prefix to version if it's provided
+  
+  string dpName = "emuui_map_" + name + version;
+  if (!dpExists(dpName)) {
+    emu_addError("Requested mapping \"" + name + version + "\" does not exist", exceptionInfo);
+    return makeDynString();
+  }
+
+  dyn_string data;
+  dpGet(dpName + ".map", data);
+  
+  return data;
 }
 
 /** Converts an array of comma separated values to mapping. 

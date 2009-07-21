@@ -103,6 +103,10 @@ string _emuui_addFsmLockButton(string node, string obj, int x, int y, dyn_string
 void emuui_alignSmallFsmNodes(dyn_string fsmReferences, dyn_string fsmRefPointShapes) {
   int nodeCount = dynlen(fsmRefPointShapes);
   for (int i=1; i <= nodeCount; i++) {
+    if (dynlen(fsmReferences) < i * 2 - 1) {
+      emu_debug("Some FSM nodes missing in emuui_alignSmallFsmNodes");
+      return;
+    }
     int refPosX, refPosY;
     getValue(fsmRefPointShapes[i], "position", refPosX, refPosY);
     refPosX += EMUUI_SMALL_FSM_POSITION_FIX_OFFSET_X - 1;

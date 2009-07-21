@@ -15,12 +15,15 @@
 <dplist>./dplist/CMS_CSC_UI_sessionStateDPT.dpl</dplist>
 <dplist>./dplist/CMS_CSC_UI_settings.dpl</dplist>
 <file>./panels/CMS_CSC_UI/Top.pnl</file>
+<file>./panels/CMS_CSC_UI/ChamberViewModeChooser.pnl</file>
+<file>./panels/CMS_CSC_UI/ValueMonitorModeChooser.pnl</file>
 <file>./panels/objects/CMS_CSC_UI/refCSCStationPhysical.pnl</file>
 <file>./panels/objects/CMS_CSC_UI/refDevice.pnl</file>
 <file>./panels/objects/CMS_CSC_UI/refEMUPhysical.pnl</file>
 <file>./panels/objects/CMS_CSC_UI/refEMUPlot.pnl</file>
 <file>./panels/objects/CMS_CSC_UI/refFSMobj.pnl</file>
 <file>./panels/objects/CMS_CSC_UI/refHVPrimaries.pnl</file>
+<file>./panels/objects/CMS_CSC_UI/refLegendItem.pnl</file>
 <file>./panels/objects/CMS_CSC_UI/refLabel.pnl</file>
 <file>./panels/objects/CMS_CSC_UI/refLine.pnl</file>
 <file>./panels/objects/CMS_CSC_UI/refMaratons.pnl</file>

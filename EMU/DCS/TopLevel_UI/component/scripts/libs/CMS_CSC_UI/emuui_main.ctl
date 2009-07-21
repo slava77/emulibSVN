@@ -8,6 +8,9 @@ This package contains the main top level functions of the UI.
 
 #uses "CMS_CSC_UI/look_and_feel/default.ctl"
 
+const string EMUUI_COMPONENT_NAME = "CMS_CSC_UI";
+const string EMUUI_COMPONENT_VERSION = "1.0";
+                                    
 global bool emuui_g_initialized = false;
 
 void emuui_init() {
@@ -18,6 +21,7 @@ void emuui_init() {
   emu_info("------========== EMU Top Level UI is initializing... ==========------");
   emuui_initSession();
   fwFsmUi_init("CMS_CSC", "CMS_CSC");
+  fwCU_takeTree("CMS_CSC");
   
   emuui_g_initialized = true;
   emu_info("------========== EMU Top Level UI initialization DONE! ==========------");
