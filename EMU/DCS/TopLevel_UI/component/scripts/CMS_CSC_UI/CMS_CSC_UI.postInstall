@@ -1,3 +1,0 @@
-main() {
-  dpCreate("session_SCX5SCR05_NO USER", "CSC_UI_sessionState");
-}
