@@ -315,16 +315,17 @@ void updateFSMStateCB(string node, string state) {
     return;
   }
   // update color
-//  dyn_string ex;
-//   string color = emuui_getMappingValue(\"fsmStateColors\", state, ex);
-//   if (emu_checkException(ex)) { return; }
-  string color;
-  fwCU_getStateColor(node, state, color);
-  if (color == \"\") {
-    dyn_string ex;
-    color = emuui_getMappingValue(\"fsmStateColors\", state, ex);
-    if (emu_checkException(ex)) { return; }
-  }
+  dyn_string ex;
+  string color = emuui_getMappingValue(\"fsmStateColors\", state, ex);
+  if (emu_checkException(ex)) { return; }
+  
+//   string color;
+//   fwCU_getStateColor(node, state, color);
+//   if (color == \"\") {
+//     dyn_string ex;
+//     color = emuui_getMappingValue(\"fsmStateColors\", state, ex);
+//     if (emu_checkException(ex)) { return; }
+//   }
   setColor(color);
 
 }

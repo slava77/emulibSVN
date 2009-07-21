@@ -254,7 +254,7 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 10 60 85 74
 0 2 2 "0s" 0 0 0 192 0 0  10 60 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 16 Voltage Setting:
@@ -274,7 +274,7 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 180 60 273 74
 0 2 2 "0s" 0 0 0 192 0 0  180 60 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 19 Max CurrentSetting:
@@ -294,7 +294,7 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 10 40 92 54
 0 2 2 "0s" 0 0 0 192 0 0  10 40 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 16 Voltage Reading:
@@ -314,7 +314,7 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 180 40 260 54
 0 2 2 "0s" 0 0 0 192 0 0  180 40 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 16 Current Reading:
@@ -334,7 +334,7 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 100 40 160 54
 1 2 2 "0s" 0 0 0 65 0 0  100 40 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 6 3599 V
@@ -354,36 +354,16 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 100 60 160 74
 1 2 2 "0s" 0 0 0 65 0 0  100 60 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 6 3600 V
 2 38
 "lblIMax"
 ""
-1 280 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
- E E
-55 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 280 40 340 54
-1 2 2 "0s" 0 0 0 65 0 0  280 40 1
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
-LANG:1 8 30000 uA
-2 39
-"lblIMon"
-""
 1 280 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
-57 0 0 0 0 0
+55 0 0 0 0 0
 E E E
 0
 1
@@ -394,7 +374,27 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 280 60 340 74
 1 2 2 "0s" 0 0 0 65 0 0  280 60 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 8 30000 uA
+2 39
+"lblIMon"
+""
+1 280 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+57 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 280 40 340 54
+1 2 2 "0s" 0 0 0 65 0 0  280 40 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 7 5533 uA

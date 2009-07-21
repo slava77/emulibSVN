@@ -55,7 +55,7 @@ void updateValueMonitorMode(string connTypeDp, string connType, string modeDp, s
 }
 
 void updateChamberViewMode(string connTypeDp, string connType, string modeDp, string mode) {
-  lblChamberViewMode.text = \"Current Mode: \" + emuui_capitalizeFirstLetters(mode) + \" state\";
+  lblChamberViewMode.text = \"Current chamber view mode: \" + emuui_capitalizeFirstLetters(mode) + \" state\";
   
   if (mode != \"general\") {
     stopChamberViewModeTimer();
@@ -176,7 +176,7 @@ LANG:1 0
             makeDynString(\"$group:\" + group, \"$width:\" + width),
             posX, posY, 0, 1, 1);   
 }" 0
- E 0 0 1 0 1 E 1.48484848484849 0 0.995391705069132 728.787878787877 34.8387096774137 0 E 250 833 581 1051
+ E 0 0 1 0 1 E 1.48484848484849 0 1.01382488479263 728.787878787877 15.4838709677361 0 E 250 833 581 1051
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -203,7 +203,6 @@ LANG:1 0
   getValue(\"\", \"size\", width, height);
   int posX, posY;
   getValue(\"\", \"position\", posX, posY);
-  posY += 40; // shift everything a bit down to give space for mode selector
   
   string group = emuui_getSessionDp(\"mainChamberView\");          //group name
   string refName = \"MainChamberView_EMU\";
@@ -214,7 +213,7 @@ LANG:1 0
             posX, posY, 0, 1, 1);
 }
 " 0
- E 0 1 1 0 1 E 2.3578277627767 0 2.64984227129337 -60.734832883301 -607.413249211355 0 E 30 233 701 551
+ E 0 1 1 0 1 E 2.3578277627767 0 2.52365930599369 -60.734832883301 -548.012618296529 0 E 30 233 701 551
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -257,7 +256,7 @@ LANG:1 0
   posY += 30;
 }
 " 0
- E 0 0 1 0 1 E 1.72727272727273 0 1.33757961783439 -110.909090909091 -270.955414012737 0 E 70 853 291 1011
+ E 0 0 1 0 1 E 1.72727272727273 0 1.40127388535031 -110.909090909091 -335.28662420382 0 E 70 853 291 1011
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -293,7 +292,7 @@ LANG:1 0
             makeDynString(\"$group:\" + group),
             posX, posY, 0, 1, 1);
 }" 0
- E 0 0 1 0 1 E 0.689655172413793 0 0.967741935483869 -224.48275862069 44.51612903226 0 E 920 853 1211 1071
+ E 0 0 1 0 1 E 0.689655172413793 0 1.01382488479262 -224.48275862069 -4.79262672810863 0 E 920 853 1211 1071
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -329,7 +328,7 @@ LANG:1 0
             makeDynString(\"$group:\" + group),
             posX, posY, 0, 1, 1);
 }" 0
- E 0 0 1 0 1 E 0.896551724137931 0 0.967741935483869 -194.827586206897 44.5161290322601 0 E 920 853 1211 1071
+ E 0 0 1 0 1 E 0.896551724137931 0 1.01382488479262 -194.827586206897 -4.79262672810853 0 E 920 853 1211 1071
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -354,7 +353,7 @@ E "main()
                makeDynString(\"$group:\" + emuui_getSessionDp(\"miniMonitor\"), \"$width:780\"), 200, 200);
 }
 " 0
- 0 1 1 2 1 E 1 0 1 1167 850 2  0 0  "pictures/CMS_CSC_UI/zoom_in.bmp" 4294967295 E 10 10 36 35
+ 0 1 1 2 1 E 1 0 1 1167 845 2  0 0  "pictures/CMS_CSC_UI/zoom_in.bmp" 4294967295 E 10 10 36 35
 2 17
 "lblLoading"
 ""
@@ -410,11 +409,11 @@ E "main()
   
   ChildPanelOnCentralModal(EMUUI_COMPONENT_NAME + \"/ValueMonitorModeChooser.pnl\", \"ModeChooser\", makeDynString());
 }" 0
- 0 1 1 2 1 E 1 0 1 1050 800 1 E 360 60 470 83
+ 0 1 1 2 1 E 1 0 1 1060 795 1 E 360 60 470 83
 2 21
 "btnValueDisplayMode_label"
 ""
-1 1410 865 E E E 1 E 1 E N "_ButtonText" E N "_Transparent" E E
+1 1420 860 E E E 1 E 1 E N "_ButtonText" E N "_Transparent" E E
  E E
 27 0 0 0 0 0
 E E E
@@ -432,8 +431,8 @@ E "main()
   
   ChildPanelOnCentralModal(EMUUI_COMPONENT_NAME + \"/ValueMonitorModeChooser.pnl\", \"ModeChooser\", makeDynString());
 }" 0
- 0 1 1 2 1 E U  1 E 1410 865 1516 878
-0 2 2 "0s" 0 0 0 65 0 0  1410 865 1
+ 0 1 1 2 1 E U  1 E 1420 860 1526 873
+0 2 2 "0s" 0 0 0 65 0 0  1420 860 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -442,7 +441,7 @@ LANG:1 11 Change Mode
 2 20
 "lblValueDisplayMode"
 ""
-1 1230 864 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+1 1230 860 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
  E E
 26 0 0 0 0 0
 E E E
@@ -458,8 +457,8 @@ LANG:1 0
   string dp = emuui_getSessionDp(\"valueMonitor\");
   dpConnect(\"updateValueMonitorMode\", true, dp + \".connectionType\", dp + \".mode\");
 }" 0
- E 0 1 1 2 1 E U  1 E 1230 864 1383 878
-0 2 2 "0s" 0 0 0 192 0 0  1230 864 1
+ E 0 1 1 2 1 E U  1 E 1230 860 1383 874
+0 2 2 "0s" 0 0 0 192 0 0  1230 860 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -478,11 +477,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1.775 0 0.5 -1759 -364 1 E 1200 740 1320 780
+E E 0 1 1 2 1 E 1.775 0 0.5 -2030 -360 1 E 1200 740 1320 780
 2 27
 "lblChamberViewMode"
 ""
-1 361 10 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+1 12 14 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
  E E
 36 0 0 0 0 0
 E E E
@@ -498,13 +497,13 @@ LANG:1 0
   string dp = emuui_getSessionDp(\"mainChamberView\");
   dpConnect(\"updateChamberViewMode\", true, dp + \".connectionType\", dp + \".mode\");
 }" 0
- E 0 1 1 2 1 E U  1 E 361 10 494 24
-0 2 2 "0s" 0 0 0 192 0 0  361 10 1
+ E 0 1 1 2 1 E U  1 E 12 14 213 28
+0 2 2 "0s" 0 0 0 192 0 0  12 14 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
-LANG:1 27 Current Mode: General state
+LANG:1 40 Current chamber view mode: General state
 6 29
 "btnChamberViewMode"
 ""
@@ -526,11 +525,11 @@ E "main()
   
   ChildPanelOnCentralModal(EMUUI_COMPONENT_NAME + \"/ChamberViewModeChooser.pnl\", \"ModeChooser\", makeDynString());
 }" 0
- 0 1 1 2 1 E 1 0 1 177 -54 1 E 360 60 470 83
+ 0 1 1 2 1 E 1 0 1 -94 -50 1 E 360 60 470 83
 2 28
 "btnChamberViewMode_label"
 ""
-1 537 11 E E E 1 E 1 E N "_ButtonText" E N "_Transparent" E E
+1 266 15 E E E 1 E 1 E N "_ButtonText" E N "_Transparent" E E
  E E
 38 0 0 0 0 0
 E E E
@@ -548,8 +547,8 @@ E "main()
   
   ChildPanelOnCentralModal(EMUUI_COMPONENT_NAME + \"/ChamberViewModeChooser.pnl\", \"ModeChooser\", makeDynString());
 }" 0
- 0 1 1 2 1 E U  1 E 537 11 643 24
-0 2 2 "0s" 0 0 0 65 0 0  537 11 1
+ 0 1 1 2 1 E U  1 E 266 15 372 28
+0 2 2 "0s" 0 0 0 65 0 0  266 15 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -558,7 +557,7 @@ LANG:1 11 Change Mode
 2 31
 "lblChamberViewModeTimer"
 ""
-1 659 10 E E E 1 E 0 E N "_WindowText" E N "white" E E
+1 388 14 E E E 1 E 0 E N "_WindowText" E N "white" E E
  E E
 43 0 0 0 0 0
 E E E
@@ -568,8 +567,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 659 10 886 24
-1 2 2 "0s" 0 0 0 192 0 0  659 10 1
+E E 0 1 1 2 1 E U  1 E 388 14 615 28
+1 2 2 "0s" 0 0 0 192 0 0  388 14 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -578,7 +577,7 @@ LANG:1 46 Switching back to "General state" mode in 300s
 2 32
 "lblLegend"
 ""
-1 1110 10 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+1 1150 10 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
  E E
 44 0 0 0 0 0
 E E E
@@ -588,8 +587,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1110 10 1152 24
-0 2 2 "0s" 0 0 0 192 0 0  1110 10 1
+E E 0 1 1 2 1 E U  1 E 1150 10 1192 24
+0 2 2 "0s" 0 0 0 192 0 0  1150 10 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""

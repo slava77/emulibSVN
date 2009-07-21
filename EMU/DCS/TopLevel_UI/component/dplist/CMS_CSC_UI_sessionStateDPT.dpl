@@ -25,4 +25,4 @@ CSC_UI_sessionState.CSC_UI_sessionState	1#1
 # Datapoint/DpId
 DpName	TypeName	ID
 session_SCX5SCR05_NO_USER	CSC_UI_sessionState	392009
-session_macfrank_root	CSC_UI_sessionState	392011
+session_macfrank_NO_USER	CSC_UI_sessionState	392012
