@@ -490,11 +490,13 @@ void showTooltip() {
   if (currentConnectionType == \"FSM\" && ((lastFsmState == \"\") || (lastFsmState == \"DEAD\"))) {
     mode = \"dead\";
   }
+  emuui_sessionKillAllActiveTooltips();
   addSymbol(myModuleName(), myPanelName(),
             \"objects/\" + EMUUI_COMPONENT_NAME + \"/refTooltip.pnl\",
             refName,
             makeDynString(\"$deviceParams:\" + deviceParamsStr, \"$deviceType:\" + $deviceType, \"$mode:\" + mode),
             mouseX, mouseY, 0, 1, 1);
+  emuui_sessionRegisterActiveTooltip(refName);
   tooltipVisible = true;
 }
 
@@ -502,7 +504,7 @@ void hideTooltip() {
   delay(0, EMUUI_REFDEV_TOOLTIP_OFF_DELAY_MS);
   if (!tooltipVisible || isMouseOver()) { return; }
   
-  removeSymbol(myModuleName(), myPanelName(), tooltipRefName);
+  emuui_sessionKillAllActiveTooltips();
   tooltipVisible = false;
 }
 

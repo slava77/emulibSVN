@@ -20,9 +20,9 @@ PANEL,-1 -1 305 35 N "_3DFace" 1
   if (emu_checkException(ex)) { return; }
 
   int fsmX, fsmY;
-  dpConnect(\"positionChangedCB\", false, emuui_getSessionDp(\"tooltipPositionUpdated\"));
   getValue(\"maraton_name_fsmRefPoint\", \"position\", fsmX, fsmY);
   emuui_addFsmNode(fsmNode, fsmX, fsmY, references, true);
+  dpConnect(\"positionChangedCB\", true, emuui_getSessionDp(\"tooltipPositionUpdated\"));
 }" 0
  "main()
 {

@@ -7,6 +7,7 @@ This package contains functions for session management.
 */
 
 global string emuui_g_sessionId;
+global dyn_string emuui_g_activeTooltips;
 
 /** Initializes a session (creates a new DP or registers an already existing one. */
 void emuui_initSession() {
@@ -67,4 +68,17 @@ void emuui_applySessionDefaults(string sessionDp) {
   }
   
   dpSetWait(sessionDp + ".hostname", getHostname());
+}
+
+emuui_sessionRegisterActiveTooltip(string refName) {
+  dynAppend(emuui_g_activeTooltips, refName);
+}
+
+emuui_sessionKillAllActiveTooltips() {
+  dyn_string refNames;
+  dynAppend(refNames, emuui_g_activeTooltips);
+  dynClear(emuui_g_activeTooltips);
+  for (int i=1; i <= dynlen(refNames); i++) {
+    removeSymbol(myModuleName(), myPanelName(), refNames[i]);
+  }
 }

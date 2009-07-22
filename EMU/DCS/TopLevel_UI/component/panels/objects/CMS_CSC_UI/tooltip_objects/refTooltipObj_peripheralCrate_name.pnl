@@ -19,10 +19,10 @@ PANEL,-1 -1 305 34 N "_3DFace" 1
   string fsmNode = emuui_getFsmNode(\"peripheralCrate_general\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
 
-  dpConnect(\"positionChangedCB\", false, emuui_getSessionDp(\"tooltipPositionUpdated\"));
   int fsmX, fsmY;
   getValue(\"peripheralCrate_name_fsmRefPoint\", \"position\", fsmX, fsmY);
   emuui_addFsmNode(fsmNode, fsmX, fsmY, references, true);
+  dpConnect(\"positionChangedCB\", true, emuui_getSessionDp(\"tooltipPositionUpdated\"));
 }" 0
  "main()
 {

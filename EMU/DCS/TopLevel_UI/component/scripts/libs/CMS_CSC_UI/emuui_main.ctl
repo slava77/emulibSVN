@@ -9,7 +9,7 @@ This package contains the main top level functions of the UI.
 #uses "CMS_CSC_UI/look_and_feel/default.ctl"
 
 const string EMUUI_COMPONENT_NAME = "CMS_CSC_UI";
-global string EMUUI_COMPONENT_VERSION = "1.0.0";
+global string EMUUI_COMPONENT_VERSION;
                                     
 global bool emuui_g_initialized = false;
 

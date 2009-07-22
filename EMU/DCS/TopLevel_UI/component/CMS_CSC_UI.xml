@@ -1,6 +1,6 @@
 <component>
 <name>CMS_CSC_UI</name>
-<version>1.0.9</version>
+<version>1.0.10</version>
 <date>2009/07/21</date>
 <required>CMS_CSC_common=1.0.1</required>
 <required>CMS_CSCfw_Supervisor=2.0.0</required>

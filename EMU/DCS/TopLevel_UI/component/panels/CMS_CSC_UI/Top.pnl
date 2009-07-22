@@ -20,6 +20,7 @@ void initConstants() {
 }" 0
  "main()
 {
+  exiting = true;
   fwCU_releaseFullTree(\"CMS_CSC\");
   PanelOff();
 }" 0
@@ -30,6 +31,7 @@ const int EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_X = 10;
 const int EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y = 20;
 const int EMUUI_TOP_CHAMBER_VIEW_MODE_TIMEOUT = 300;
 
+bool exiting = false;
 bool topPanelInitialized;
 int chamberViewModeTimerThreadId = -1;
 
@@ -127,11 +129,25 @@ void drawLegend(dyn_string &ex, bool vertical = false) {
     }
   }
 }
-" 0
+
+/** This is called when Top FSM node (CMS_CSC) operation mode has changed. If it's detected that it's excluded - take the whole FSM tree. */
+void updateTopFsmNodeOperationModeCB(string fsmNode, int operationFlag) {
+  if (exiting) { return; }
+  if (operationFlag == 0) { // not controllable
+    string domain = fsmNode;
+    string object = _fwCU_getNodeObj(domain);
+    string mode = fwFsmUi_getCUMode(domain, object);
+    if (mode == \"Excluded\") {
+      emu_info(\"Detected that top fsm node (CMS_CSC) is excluded - taking the tree back.\");
+      fwCU_takeTree(fsmNode);
+    }
+  }
+}" 0
  2
 "CBRef" "1"
 "EClose" "main()
 {
+  exiting = true;
   fwCU_releaseFullTree(\"CMS_CSC\");
   PanelOff();
 }" 0
@@ -255,6 +271,8 @@ LANG:1 0
   posY += 30;
   emuui_addFsmNode(\"CSC_HV\", posX, posY, references);
   posY += 30;
+  
+  fwCU_connectOperationMode(\"updateTopFsmNodeOperationModeCB\", \"CMS_CSC\");
 }
 " 0
  E 0 0 1 0 1 E 1.72727272727273 0 1.40127388535031 -110.909090909091 -335.28662420382 0 E 70 853 291 1011
