@@ -6,7 +6,7 @@ This package contains functions to get configuration parameters and mappings.
 @date   May 2009
 */
 
-const bool EMUUI_FSM_STATE_POLLING_ENABLED = false;
+const bool EMUUI_FSM_STATE_POLLING_ENABLED = true;
 const int EMUUI_FSM_STATE_POLLING_RATE = 30; // number of seconds in which a device polls out the FSM state just to double check because state changes sometimes don't come via connect when there's a lot of activity
 const mapping emuui_dummyMapping;
 

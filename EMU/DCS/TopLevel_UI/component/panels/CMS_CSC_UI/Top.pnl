@@ -5,6 +5,7 @@ PANEL,-1 -1 1600 1090 N "_3DFace" 0
 "main()
 {
   emuui_init();
+  lblVersion.text = \"UI Version \" + EMUUI_COMPONENT_VERSION;
   initConstants();
   resetToDefaultChamberViewMode();
   dyn_string ex;
@@ -213,7 +214,7 @@ LANG:1 0
             posX, posY, 0, 1, 1);
 }
 " 0
- E 0 1 1 0 1 E 2.3578277627767 0 2.52365930599369 -60.734832883301 -548.012618296529 0 E 30 233 701 551
+ E 0 1 1 0 1 E 2.3578277627767 0 2.52365930599369 -60.734832883301 -548.01261829653 0 E 30 233 701 551
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -464,24 +465,10 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
 0 ""
 1
 LANG:1 29 Current Mode: Max Temperature
-6 30
-"RECTANGLE3"
-""
-1 1200 740 E E E 1 E 1 E N "_Transparent" E N "_3DFace" E E
- E E
-42 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1.775 0 0.5 -2030 -360 1 E 1200 740 1320 780
 2 27
 "lblChamberViewMode"
 ""
-1 12 14 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+1 10 10 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
  E E
 36 0 0 0 0 0
 E E E
@@ -497,8 +484,8 @@ LANG:1 0
   string dp = emuui_getSessionDp(\"mainChamberView\");
   dpConnect(\"updateChamberViewMode\", true, dp + \".connectionType\", dp + \".mode\");
 }" 0
- E 0 1 1 2 1 E U  1 E 12 14 213 28
-0 2 2 "0s" 0 0 0 192 0 0  12 14 1
+ E 0 1 1 2 1 E U  1 E 10 10 211 24
+0 2 2 "0s" 0 0 0 192 0 0  10 10 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -525,11 +512,11 @@ E "main()
   
   ChildPanelOnCentralModal(EMUUI_COMPONENT_NAME + \"/ChamberViewModeChooser.pnl\", \"ModeChooser\", makeDynString());
 }" 0
- 0 1 1 2 1 E 1 0 1 -94 -50 1 E 360 60 470 83
+ 0 1 1 2 1 E 1 0 1 -90 -55 1 E 360 60 470 83
 2 28
 "btnChamberViewMode_label"
 ""
-1 266 15 E E E 1 E 1 E N "_ButtonText" E N "_Transparent" E E
+1 270 10 E E E 1 E 1 E N "_ButtonText" E N "_Transparent" E E
  E E
 38 0 0 0 0 0
 E E E
@@ -547,8 +534,8 @@ E "main()
   
   ChildPanelOnCentralModal(EMUUI_COMPONENT_NAME + \"/ChamberViewModeChooser.pnl\", \"ModeChooser\", makeDynString());
 }" 0
- 0 1 1 2 1 E U  1 E 266 15 372 28
-0 2 2 "0s" 0 0 0 65 0 0  266 15 1
+ 0 1 1 2 1 E U  1 E 270 10 376 23
+0 2 2 "0s" 0 0 0 65 0 0  270 10 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -557,7 +544,7 @@ LANG:1 11 Change Mode
 2 31
 "lblChamberViewModeTimer"
 ""
-1 388 14 E E E 1 E 0 E N "_WindowText" E N "white" E E
+1 390 10 E E E 1 E 0 E N "_WindowText" E N "white" E E
  E E
 43 0 0 0 0 0
 E E E
@@ -567,8 +554,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 388 14 615 28
-1 2 2 "0s" 0 0 0 192 0 0  388 14 1
+E E 0 1 1 2 1 E U  1 E 390 10 617 24
+1 2 2 "0s" 0 0 0 192 0 0  390 10 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -594,6 +581,26 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
 0 ""
 1
 LANG:1 8 Legend :
+2 33
+"lblVersion"
+""
+1 800 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+45 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 800 10 876 24
+1 2 2 "0s" 0 0 0 192 0 0  800 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 16 UI Version 1.0.0
 0
 LAYER, 1 
 1

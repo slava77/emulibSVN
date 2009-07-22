@@ -513,6 +513,8 @@ bool isMouseOver() {
       return true;
     }
   }
+  
+  setValue(shapeName, \"foreCol\", \"\");
   return false;
 }
 
