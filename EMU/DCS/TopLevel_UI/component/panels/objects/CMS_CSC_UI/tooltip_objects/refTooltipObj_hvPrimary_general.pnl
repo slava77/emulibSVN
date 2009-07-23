@@ -237,7 +237,7 @@ E E 0 1 1 2 1 E U  1 E 100 10 160 24
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
-LANG:1 6 STATUS
+LANG:1 10 LOADING...
 2 32
 "PRIMITIVE_TEXT8"
 ""
@@ -337,7 +337,7 @@ E E 0 1 1 2 1 E U  1 E 100 40 160 54
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
-LANG:1 6 3599 V
+LANG:1 10 LOADING...
 2 37
 "lblVSet"
 ""
@@ -357,7 +357,7 @@ E E 0 1 1 2 1 E U  1 E 100 60 160 74
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
-LANG:1 6 3600 V
+LANG:1 10 LOADING...
 2 38
 "lblIMax"
 ""
@@ -377,7 +377,7 @@ E E 0 1 1 2 1 E U  1 E 280 60 340 74
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
-LANG:1 8 30000 uA
+LANG:1 10 LOADING...
 2 39
 "lblIMon"
 ""
@@ -397,7 +397,7 @@ E E 0 1 1 2 1 E U  1 E 280 40 340 54
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
-LANG:1 7 5533 uA
+LANG:1 10 LOADING...
 0
 LAYER, 1 
 1

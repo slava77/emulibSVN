@@ -15,7 +15,8 @@ PANEL,-1 -1 374 227 N "_3DFace" 1
   for (int i=1; i <= 7; i++) {
     fsmRefPointShapes[i] = \"fsmRefPoint\" + i;
   }
-  tableVoltages.appendLine(\"1\", \"\");
+  tableVoltages.appendLine(\"1\", \"loading\", \"2\", \"loading\", \"3\", \"loading\",
+                           \"4\", \"loading\", \"5\", \"loading\", \"6\", \"loading\");
   
   // ----------========== GET THE MAIN HV FSM NODE FOR THIS CHAMBER ==========----------
   fsmNode = emuui_getFsmNode(\"chamber_me11_high_voltage\", deviceParams, ex);

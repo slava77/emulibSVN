@@ -100,7 +100,8 @@ void initGui(int channelCount, dyn_string &ex) {
   
   for (int i=0; i < rows; i++) {
     string rowHeader = \"v\" + ( (i * 6) + 1 ) + \"-\" + \"v\" + ( (i + 1) * 6 ); // e.g. v1-v6 or v7-v12
-    tableVoltages.appendLine(\"group1\", \"\");
+    tableVoltages.appendLine(\"group1\", \"loading\", \"group2\", \"loading\", \"group3\", \"loading\",
+                             \"group4\", \"loading\", \"group5\", \"loading\", \"group6\", \"loading\");
     tableVoltages.rowHeader(i, rowHeader);
   }
   // set proper size for vMon table
@@ -593,7 +594,7 @@ E E 0 1 1 2 1 E U  1 E 88 40 148 54
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
-LANG:1 6 STATUS
+LANG:1 10 LOADING...
 2 26
 "lblMasterChannelStatus"
 ""
@@ -613,7 +614,7 @@ E E 0 1 1 2 1 E U  1 E 275 40 335 54
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
-LANG:1 6 STATUS
+LANG:1 10 LOADING...
 2 27
 "lblForModuleInfo"
 ""

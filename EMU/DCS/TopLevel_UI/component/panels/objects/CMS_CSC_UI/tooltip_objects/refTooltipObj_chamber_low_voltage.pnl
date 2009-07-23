@@ -27,6 +27,10 @@ PANEL,-1 -1 364 199 N "_3DFace" 1
   int index = 1;
   for (int i=1; i <= 5; i++) { // cycle through cfeb boards
     deviceParams[\"boardNumber\"] = i;
+    if ((deviceParams[\"station\"] == 1) && (deviceParams[\"ring\"] == 3) && (deviceParams[\"boardNumber\"] == 5)) {
+      tableCfeb.deleteColumn(i - 1);
+      continue;
+    }
     for (int j=1; j <= dynlen(voltageLines); j++) { // cycle through voltage lines
       deviceParams[\"voltageLine\"] = voltageLines[j];
       string dp = emuui_getDpName(\"chamber_LV_CFEB_vMon\", deviceParams, ex); // get vMon dp
@@ -101,16 +105,16 @@ PANEL,-1 -1 364 199 N "_3DFace" 1
 
 void initGui() {
   // -------=========== prepare CFEB Table ============---------
-  tableCfeb.appendLine(\"Cfeb_1\", \"\");
-  tableCfeb.appendLine(\"Cfeb_1\", \"\");
-  tableCfeb.appendLine(\"Cfeb_1\", \"\");
+  tableCfeb.appendLine(\"Cfeb_1\", \"loading\", \"Cfeb_2\", \"loading\", \"Cfeb_3\", \"loading\", \"Cfeb_4\", \"loading\");
+  tableCfeb.appendLine(\"Cfeb_1\", \"loading\", \"Cfeb_2\", \"loading\", \"Cfeb_3\", \"loading\", \"Cfeb_4\", \"loading\");
+  tableCfeb.appendLine(\"Cfeb_1\", \"loading\", \"Cfeb_2\", \"loading\", \"Cfeb_3\", \"loading\", \"Cfeb_4\", \"loading\");
   tableCfeb.rowHeader(0, \"3.3 V\");
   tableCfeb.rowHeader(1, \"5 V\");
   tableCfeb.rowHeader(2, \"6 V\");
   emuui_tableCompact(\"tableCfeb\", 3);
   
   // -------=========== prepare ALCT Table ============---------
-  tableAlct.appendLine(\"#1\", \"\");
+  tableAlct.appendLine(\"#1\", \"loading\", \"#2\", \"loading\", \"#3\", \"loading\", \"#4\", \"loading\");
   tableAlct.rowHeader(0, \"ALCT\");
   emuui_tableCompact(\"tableAlct\", 1);
 }" 0

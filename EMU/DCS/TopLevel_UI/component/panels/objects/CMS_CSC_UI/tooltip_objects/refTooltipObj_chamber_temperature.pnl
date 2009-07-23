@@ -64,6 +64,9 @@ void initGui(dyn_string dps) {
   
   //set the appropriate width for the table
   tableTemp.appendLine(columnNames[1], \"\");
+  for (int i=1; i <= dynlen(columnNames); i++) {
+    tableTemp.cellValueRC(0, columnNames[i], \"loading\");
+  }
   emuui_tableCompact(\"tableTemp\", 1);
 }" 0
  "main()

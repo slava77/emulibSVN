@@ -20,7 +20,8 @@ void emuui_init() {
   
   emu_info("------========== EMU Top Level UI is initializing... ==========------");
   fwInstallation_getComponentInfo(EMUUI_COMPONENT_NAME, "componentVersionString", EMUUI_COMPONENT_VERSION);
-  emu_info("Component version: " + EMUUI_COMPONENT_VERSION);
+  EMUUI_COMPONENT_VERSION = substr(EMUUI_COMPONENT_VERSION, 3);
+  emu_info("Component version: '" + EMUUI_COMPONENT_VERSION + "'");
            
   emuui_initSession();
   fwFsmUi_init("CMS_CSC", "CMS_CSC");
