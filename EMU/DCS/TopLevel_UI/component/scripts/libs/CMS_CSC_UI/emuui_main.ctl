@@ -10,6 +10,7 @@ This package contains the main top level functions of the UI.
 
 const string EMUUI_COMPONENT_NAME = "CMS_CSC_UI";
 global string EMUUI_COMPONENT_VERSION;
+global string EMUUI_COMPONENT_DATE;
                                     
 global bool emuui_g_initialized = false;
 
@@ -21,7 +22,9 @@ void emuui_init() {
   emu_info("------========== EMU Top Level UI is initializing... ==========------");
   fwInstallation_getComponentInfo(EMUUI_COMPONENT_NAME, "componentVersionString", EMUUI_COMPONENT_VERSION);
   EMUUI_COMPONENT_VERSION = substr(EMUUI_COMPONENT_VERSION, 3);
-  emu_info("Component version: '" + EMUUI_COMPONENT_VERSION + "'");
+  fwInstallation_getComponentInfo(EMUUI_COMPONENT_NAME, "date", EMUUI_COMPONENT_DATE);
+  EMUUI_COMPONENT_DATE = substr(EMUUI_COMPONENT_DATE, 3);
+  emu_info("Component version: " + EMUUI_COMPONENT_VERSION + ", date: " + EMUUI_COMPONENT_DATE);
            
   emuui_initSession();
   fwFsmUi_init("CMS_CSC", "CMS_CSC");
