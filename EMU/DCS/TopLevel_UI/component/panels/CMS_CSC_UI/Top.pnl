@@ -613,7 +613,7 @@ LANG:1 46 Switching back to "General state" mode in 300s
 2 32
 "lblLegend"
 ""
-1 1150 10 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+1 1070 10 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
  E E
 44 0 0 0 0 0
 E E E
@@ -623,8 +623,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1150 10 1192 24
-0 2 2 "0s" 0 0 0 192 0 0  1150 10 1
+E E 0 1 1 2 1 E U  1 E 1070 10 1112 24
+0 2 2 "0s" 0 0 0 192 0 0  1070 10 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -633,7 +633,7 @@ LANG:1 8 Legend :
 2 33
 "lblVersion"
 ""
-1 770 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 700 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 45 0 0 0 0 0
 E E E
@@ -643,8 +643,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 770 10 913 24
-1 2 2 "0s" 0 0 0 192 0 0  770 10 1
+E E 0 1 1 2 1 E U  1 E 700 10 843 24
+1 2 2 "0s" 0 0 0 192 0 0  700 10 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -703,7 +703,7 @@ LANG:1 14 automatically.
 2 38
 "lblNewVersion1"
 ""
-1 930 10 E E E 1 E 0 E N "_WindowText" E N "warningWentUna" E E
+1 860 10 E E E 1 E 0 E N "_WindowText" E N "warningWentUna" E E
  E E
 51 0 0 0 0 0
 E E E
@@ -713,8 +713,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 930 10 1083 24
-1 2 2 "0s" 0 0 0 192 0 0  930 10 1
+E E 0 1 1 2 1 E U  1 E 860 10 1013 24
+1 2 2 "0s" 0 0 0 192 0 0  860 10 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
