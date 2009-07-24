@@ -123,6 +123,7 @@ E E
   string dp = emuui_getSessionDp(\"mainChamberView\");
   dpSetWait(dp + \".connectionType\", mainChamberViewModes[button + 1][1], 
             dp + \".mode\", mainChamberViewModes[button + 1][2]);
+  PanelOff();
 }" 0
 
 2 3

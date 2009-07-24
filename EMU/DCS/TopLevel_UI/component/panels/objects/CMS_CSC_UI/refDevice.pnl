@@ -147,24 +147,34 @@ string shapeName;
 int fsmStatePollingThreadId = -1;
 string multipleConnectionFunction;
 dyn_string currentConnectionMultiple;
+string currentMultipleConnectionRepresentative;
 string currentConnectionType;
 string currentConnectionMode;
 string currentConnection;
 float currentDpValueRangeMin;
 float currentDpValueRangeMax;
+string currentDomain, currentObject;
 bool showValueOnCaption;
-bool hvOffChannelsWarningEnabled;
-mapping disabledME11HvChannels;
-dyn_int disabledHvChannels;
 bool me11;
-bool isDisabled;
 string lastFsmState;
 
+// operation mode related variabled
+bool hvOffChannelsWarningEnabled;
+dyn_int disabledHvChannels;
+bool me11HasDisabledChannels;
+string me11HvFsmNode;
+bool deviceIncomplete; // when device has disabled children or PNPI HV channels (which are not in FSM) - show the incompleteWarning and set this flag
+bool greyOut; // when device is disabled or excluded - this is set to true and color always stays grey
 
 void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string connectionType) {
   dyn_string ex;
   bool connectSuccessful = false;
-  isDisabled = false;
+  
+  dynClear(disabledHvChannels);
+  me11HasDisabledChannels = false;
+  deviceIncomplete = false;
+  greyOut = false;
+  me11HvFsmNode = \"\";
   
   //special case for ME11 high voltage
   if (($deviceType == \"chamber\") && me11 && (
@@ -181,6 +191,7 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
     setColor(\"white\"); // to indicate busy
   }
   currentConnectionMode = \"busy\";
+  lastFsmState = \"UI_initial\";
   
   disconnect();  
     
@@ -195,11 +206,28 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
     }
     
     if (nodeFound) {
-//       int rc = fwCU_connectOperationMode(\"updateFSMOperationModeCB\", node);
-//       emu_debug(\"RC for connect to operation mode of \" + node + \": \" + rc, emu_DEBUG_DETAIL);
-      int rc = fwCU_connectState(\"updateFSMStateCB\", node);
-      emu_debug(\"RC for connect to \" + node + \": \" + rc, emu_DEBUG_DETAIL);
-      if (rc != 0) { 
+      // ---=== connect mode bits ===---
+      currentDomain = node;
+      currentObject = _fwCU_getNodeObj(currentDomain);
+      int rc1;
+      rc1 = fwFsmUi_connectModeBits(\"updateFSMModeBitsCB\", currentDomain, currentObject);
+      emu_debug(\"RC for connect to mode bits of \" + node + \": \" + rc1, emu_DEBUG_DETAIL);        
+      // for ME11 we have to connect the HV mode bits too because it has also channels as children
+      if (me11 && (mode == \"chamber_general\")) {
+        me11HvFsmNode = emuui_getFsmNode(\"chamber_me11_high_voltage\", deviceParams, ex);
+        if (dynlen(ex) == 0) {
+          string me11HvDomain = me11HvFsmNode;
+          string me11HvObject = _fwCU_getNodeObj(me11HvDomain);
+          fwUi_connectDUModeBits(\"updateME11hvFSMModeBitsCB\", me11HvDomain, me11HvObject);
+        } else {
+          emu_errorHandled(ex);
+        }
+      }
+      // ---=== connect state ===---
+      int rc2 = fwCU_connectState(\"updateFSMStateCB\", node);
+      emu_debug(\"RC for connect to \" + node + \": \" + rc2, emu_DEBUG_DETAIL);
+      // ---=== check return codes ===---
+      if ((rc1 != 0) && (rc2 != 0)) { 
         connectSuccessful = true;
         currentConnectionType = connectionType;
         currentConnectionMode = mode;
@@ -267,13 +295,15 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
       currentDpValueRangeMax = emuui_getDpValueRangeMax(mode, ex);
       if (emu_checkException(ex)) { return; }
       currentConnectionMultiple = dps;
-      int rc = dpConnect(multipleConnectionFunction, true, dps[1]);
+      string connectionDp = emuui_getDpWithLastUpdateTime(dps);
+      int rc = dpConnect(multipleConnectionFunction, true, connectionDp);
       emu_debug(\"RC for connect to \" + dps + \": \" + rc, emu_DEBUG_DETAIL);
       if (rc == 0) {
         connectSuccessful = true;
         currentConnectionType = connectionType;
         currentConnectionMode = mode;
         currentConnection = \"\";
+        currentMultipleConnectionRepresentative = connectionDp;
       } else {
         currentConnectionMultiple = makeDynString();
       }
@@ -302,11 +332,6 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
         hvOffChannelsWarningEnabled = true;
         //TODO need a more generic approach here - probably show the exclamation mark if any (not only HV) channel is excluded (?) i.e. also LV and TEMP, ... maybe also FSM subnodes
         dpConnect(\"updateHVOffChannels\", true, dpName);
-      } else if (me11){
-        dyn_string channelFsmNodes = emuui_getME11HVChannelFsmNodes(deviceParams, ex);
-        for (int i=1; i <= dynlen(channelFsmNodes); i++) {
-          fwCU_connectOperationMode(\"updateME11HVOffChannels\", channelFsmNodes[i]);
-        }
       }
     }
   }
@@ -319,8 +344,8 @@ void updateFSMStateCB(string node, string state) {
   if (showValueOnCaption) {
     caption.text = state;
   }
-  // this device is disabled or excluded - do not update the state color
-  if (isDisabled) {
+  if (greyOut) {
+    setColor(\"FwEquipmentDisabled\");
     return;
   }
   // update color
@@ -340,24 +365,38 @@ void updateFSMStateCB(string node, string state) {
 
 }
 
-/** Updates device operation mode. If paramOperationFlag is 0 - that means the device cannot be operated - so it's grayed out. */
-void updateFSMOperationModeCB(string node, string paramOperationFlag) {
-  bool newIsDisabled = isDisabled;
-  if ((paramOperationFlag == 0) && (!newIsDisabled)) {
-    newIsDisabled = !emuui_isFsmNodeEnabled(node);
-  } else if (paramOperationFlag == 1) {
-    newIsDisabled = false;
-  }
+/** When mode bits for the FSM node have changed - this function is called.
+  This function basically does two things:
+  1. Check if device is incomplete - if so then display the imgDeviceIncomplete warning (exclamation mark).
+  2. If the device is excluded or disabled or for any other reason should be grey - greys it out.
+*/
+void updateFSMModeBitsCB() {
+  bit32 modeBits = fwUi_getModeBits(currentDomain, currentObject);
   
-  if ((isDisabled) && (!newIsDisabled)) { // if device just got enabled
-    isDisabled = newIsDisabled;
-    string state;
-    fwCU_getState(node, state);
-    updateFSMStateCB(node, state);
-  } else if ((!isDisabled) && (newIsDisabled)) { // if device just got disabled
-    isDisabled = newIsDisabled;
-    setColor(\"FwEquipmentDisabled\");
+  // ---=== Check if device is incomplete ===---
+  deviceIncomplete = getBit(modeBits, FwIncompleteBit) ||
+                     getBit(modeBits, FwIncompleteDevBit);
+  
+  imgDeviceIncomplete.visible = me11HasDisabledChannels || 
+                                deviceIncomplete || 
+                                (dynlen(disabledHvChannels) > 0);
+
+  // --=== Check for grey color ===---
+  greyOut = getBit(modeBits, FwFreeBit) ||
+            (!getBit(modeBits, FwUseStatesBit));
+  if (lastFsmState != \"UI_initial\") {
+    updateFSMStateCB(currentConnection, lastFsmState);
   }
+}
+
+void updateME11hvFSMModeBitsCB(string dp, bit32 modeBits) {
+  // ---=== Check if device is incomplete ===---
+  me11HasDisabledChannels = getBit(modeBits, FwIncompleteBit) ||
+                            getBit(modeBits, FwIncompleteDevBit);
+  
+  imgDeviceIncomplete.visible = me11HasDisabledChannels || 
+                                deviceIncomplete || 
+                                (dynlen(disabledHvChannels) > 0);
 }
 
 void updateDPStateCB(string dp, float value) {
@@ -424,31 +463,19 @@ void updateDPsMaxStateCB(string firstDp, float firstValue) {
   }
 }
 
+/** Updates UF PNPI disabled HV channels. Addition to deviceIncomplete. */
 void updateHVOffChannels(string dpName, dyn_string offChannels) {
   disabledHvChannels = offChannels;
-  imgHvChannelsDisabled.visible = (dynlen(offChannels) > 0);
-}
-
-void updateME11HVOffChannels(string nodeName, int operationFlag) {
-  string domain = nodeName;
-  string object = _fwCU_getNodeObj(domain);
-  string mode = fwFsmUi_getDUMode(domain, object);
-  bool isDisabled = (mode == \"Disabled\");
-  disabledME11HvChannels[nodeName] = isDisabled;
-  for (int i=1; i <= mappinglen(disabledME11HvChannels); i++) {
-    if (mappingGetValue(disabledME11HvChannels, i) == true) {
-      imgHvChannelsDisabled.visible = true; // if at least one disabled channel is found - show the warning
-      return;
-    }
-  }
-  imgHvChannelsDisabled.visible = false; // if there wasn't a single disabled channel - hide the warning
+  imgDeviceIncomplete.visible = me11HasDisabledChannels || 
+                                deviceIncomplete || 
+                                (dynlen(offChannels) > 0);
 }
 
 void disconnect() {
   if (hvOffChannelsWarningEnabled) {
     dyn_string ex;
     hvOffChannelsWarningEnabled = false;
-    imgHvChannelsDisabled.visible = false;
+    imgDeviceIncomplete.visible = false;
     if (!me11) {
       string dpName = emuui_getDpName(\"HV_off_channels\", deviceParams, ex);
       dpDisconnect(\"updateHVOffChannels\", dpName);
@@ -461,6 +488,19 @@ void disconnect() {
   }
   if (currentConnectionType == \"FSM\") {
     fwCU_disconnectState(currentConnection);
+    string domain = currentConnection;
+    string object = _fwCU_getNodeObj(domain);
+    if (fwFsm_isCU(domain, object)) {
+      fwUi_disconnectCUModeBits(\"updateFSMModeBitsCB\", domain, object, 1);
+    } else {
+      fwUi_disconnectDUModeBits(\"updateFSMModeBitsCB\", domain, object);
+    }
+    if (me11HvFsmNode != \"\") {
+      string me11HvDomain = me11HvFsmNode;
+      string me11HvObject = _fwCU_getNodeObj(me11HvDomain);
+      fwUi_disconnectDUModeBits(\"updateFSMModeBitsCB\", me11HvDomain, me11HvObject);
+    }
+    
     if (fsmStatePollingThreadId != -1) {
       stopThread(fsmStatePollingThreadId);
       fsmStatePollingThreadId = -1;
@@ -468,7 +508,7 @@ void disconnect() {
   } else if (currentConnectionType == \"DP\") {
     dpDisconnect(\"updateDPStateCB\", currentConnection);
   } else if (strpos(currentConnectionType, \"DPs_\") >= 0) {
-    dpDisconnect(multipleConnectionFunction, currentConnectionMultiple);
+    dpDisconnect(multipleConnectionFunction, currentMultipleConnectionRepresentative);
   }
 }
 
@@ -485,6 +525,7 @@ void showTooltip() {
   int mouseX, mouseY;
   getCursorPosition(mouseX, mouseY);
   string refName = tooltipRefName;
+  while (shapeExists(refName)) { refName += \"_duplicate_1\"; }
   string mode = currentConnectionMode;
   // to avoid trying to show a tooltip when the device is DEAD
   if (currentConnectionType == \"FSM\" && ((lastFsmState == \"\") || (lastFsmState == \"DEAD\"))) {
@@ -718,7 +759,7 @@ LANG:1 0
 "dashclr"N "_Transparent"
 E E 0 1 1 2 1 E 1 0 1 -90 -10 1 E 90 10 110 30
 2 8
-"imgHvChannelsDisabled"
+"imgDeviceIncomplete"
 ""
 1 4 21 E E E 1 E 0 E N "_Window" E N "_Transparent" E E
  "main()

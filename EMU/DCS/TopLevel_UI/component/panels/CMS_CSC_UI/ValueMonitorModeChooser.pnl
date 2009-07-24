@@ -104,6 +104,7 @@ E E
   string dp = emuui_getSessionDp(\"valueMonitor\");
   dpSetWait(dp + \".connectionType\", valueMonitorModes[button + 1][1], 
             dp + \".mode\", valueMonitorModes[button + 1][2]);
+  PanelOff();
 }" 0
 
 30 1

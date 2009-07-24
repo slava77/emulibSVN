@@ -14,9 +14,9 @@ PANEL,-1 -1 368 113 N "_3DFace" 1
   fsmNode = emuui_getFsmNode(\"chamber_temperature\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
   int fsmX, fsmY;
-  dpConnect(\"positionChangedCB\", false, emuui_getSessionDp(\"tooltipPositionUpdated\"));  
   getValue(\"chamber_temperature_fsmRefPoint\", \"position\", fsmX, fsmY);
   emuui_addFsmNode(fsmNode, fsmX, fsmY, references, true);
+  dpConnect(\"positionChangedCB\", true, emuui_getSessionDp(\"tooltipPositionUpdated\"));  
   
   // connect to the temperature    
   dyn_string dps = emuui_getDpNames(\"chamber_temperature\", deviceParams, ex);

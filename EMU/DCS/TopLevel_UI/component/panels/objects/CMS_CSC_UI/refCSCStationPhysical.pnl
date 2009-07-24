@@ -369,14 +369,14 @@ void drawRing(int x, int y, int innerRadius, int outerRadius, int chamberCount, 
 
     //position the caption and other gadgets
     setValue(refName + \".caption\", \"position\", captionPosX, captionPosY);
-    setValue(refName + \".imgHvChannelsDisabled\", \"position\", warningPosX, warningPosY);
-    //setValue(refName + \".imgHvChannelsDisabled\", \"rotation\", -1 * angleDeg + 180);
+    setValue(refName + \".imgDeviceIncomplete\", \"position\", warningPosX, warningPosY);
+    //setValue(refName + \".imgDeviceIncomplete\", \"rotation\", -1 * angleDeg + 180);
     if ((angleDeg > 90) && (angleDeg <= 270)){
       setValue(refName + \".caption\", \"rotation\", -1 * angleDeg + 180);
-      setValue(refName + \".imgHvChannelsDisabled\", \"rotation\", -1 * angleDeg + 180);
+      setValue(refName + \".imgDeviceIncomplete\", \"rotation\", -1 * angleDeg + 180);
     } else {
       setValue(refName + \".caption\", \"rotation\", -1 * angleDeg);
-      setValue(refName + \".imgHvChannelsDisabled\", \"rotation\", -1 * angleDeg);
+      setValue(refName + \".imgDeviceIncomplete\", \"rotation\", -1 * angleDeg);
     }
   }
 }
@@ -419,7 +419,7 @@ void initParams() {
     
     emuui_init();
     paramGroup = emuui_getSessionDp(\"mainChamberView\");
-    paramSide = \"P\";
+    paramSide = \"M\";
     paramStation = 1;
     paramRadius = 300;
   } else { // copy from dollar params
