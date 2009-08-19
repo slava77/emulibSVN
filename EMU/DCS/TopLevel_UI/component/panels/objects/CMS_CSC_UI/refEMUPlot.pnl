@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 780 370 N "_3DFace" 2
+PANEL,-1 -1 1200 540 N "_3DFace" 2
 "$group"
 "$width"
 "main()
@@ -197,7 +197,7 @@ void initParams() {
     runningLocal = true;
     
     paramGroup = emuui_getSessionDp(\"valueMonitor\");
-    paramWidth = 780;
+    paramWidth = 1200;
   } else { // copy from dollar params
     runningLocal = false;
     

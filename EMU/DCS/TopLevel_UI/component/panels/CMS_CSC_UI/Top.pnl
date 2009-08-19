@@ -399,8 +399,9 @@ LANG:1 35 Detach and zoom temperature monitor
 "dashclr"N "_Transparent"
 E "main()
 {
+  // old width was 780
   ChildPanelOn(\"objects/\" + EMUUI_COMPONENT_NAME + \"/refEMUPlot.pnl\", \"panelMiniMonitor\", 
-               makeDynString(\"$group:\" + emuui_getSessionDp(\"miniMonitor\"), \"$width:780\"), 200, 200);
+               makeDynString(\"$group:\" + emuui_getSessionDp(\"valueMonitor\"), \"$width:1200\"), 200, 200);
 }
 " 0
  0 1 1 2 1 E 1 0 1 1167 845 2  0 0  "pictures/CMS_CSC_UI/zoom_in.bmp" 4294967295 E 10 10 36 35
