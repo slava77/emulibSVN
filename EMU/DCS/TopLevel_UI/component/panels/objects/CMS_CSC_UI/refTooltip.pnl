@@ -1,10 +1,12 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 388 123 N "_3DFace" 3
+PANEL,-1 -1 388 123 N "_3DFace" 5
 "$deviceParams"
 "$deviceType"
 "$mode"
+"$refName"
+"$showInfo"
 "main()
 {
   dyn_string ex;
@@ -50,10 +52,13 @@ PANEL,-1 -1 388 123 N "_3DFace" 3
   }
 
   //add info tooltip - says that you have to double click for control or more information
-  int saveTooltipWidth = tooltipWidth;
-  string ref = addTooltipObj(\"info\");
-  tooltipWidth = saveTooltipWidth;
-  setValue(\"info_tooltipBack\", \"size\", tooltipWidth, 21);
+  if ($showInfo) {
+    int saveTooltipWidth = tooltipWidth;
+    string ref = addTooltipObj(\"info\");
+    tooltipWidth = saveTooltipWidth;
+    setValue(\"info_tooltipBack\", \"size\", tooltipWidth, 21);
+  }
+  
   
   moveAwayFromEdge();
   
@@ -65,6 +70,7 @@ PANEL,-1 -1 388 123 N "_3DFace" 3
   for (int i=1; i <= dynlen(refObjects); i++) {
     removeSymbol(myModuleName(), myPanelName(), refObjects[i]);
   }
+  emuui_tooltipClosed($refName);
 }" 0
  E E E 1 -1 -1 0  30 40
 ""0  1
@@ -195,6 +201,7 @@ void repositionTooltipObjsCB(string dummyDpName, int dummyValue) {
   for (int i=1; i <= dynlen(refObjects); i++) {
     removeSymbol(myModuleName(), myPanelName(), refObjects[i]);
   }
+  emuui_tooltipClosed($refName);
 }" 0
 
 ""

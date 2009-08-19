@@ -76,9 +76,19 @@ emuui_sessionRegisterActiveTooltip(string refName) {
 
 emuui_sessionKillAllActiveTooltips() {
   dyn_string refNames;
-  dynAppend(refNames, emuui_g_activeTooltips);
-  dynClear(emuui_g_activeTooltips);
+  emu_dynAppend(refNames, emuui_g_activeTooltips);
   for (int i=1; i <= dynlen(refNames); i++) {
-    removeSymbol(myModuleName(), myPanelName(), refNames[i]);
+    int rc = removeSymbol(myModuleName(), myPanelName(), refNames[i]);
+  }  
+}
+
+bool emuui_isTooltipActive(string refName) {
+  return dynContains(emuui_g_activeTooltips, refName);
+}
+
+emuui_tooltipClosed(string refName) {
+  int index = dynContains(emuui_g_activeTooltips, refName);
+  if (index > 0) {
+    dynRemove(emuui_g_activeTooltips, index);
   }
 }

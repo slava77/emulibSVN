@@ -525,19 +525,21 @@ void showTooltip() {
   int mouseX, mouseY;
   getCursorPosition(mouseX, mouseY);
   string refName = tooltipRefName;
-  while (shapeExists(refName)) { refName += \"_duplicate_1\"; }
+  while (shapeExists(refName) || emuui_isTooltipActive(refName)) { refName += \"_duplicate_1\"; }
   string mode = currentConnectionMode;
   // to avoid trying to show a tooltip when the device is DEAD
   if (currentConnectionType == \"FSM\" && ((lastFsmState == \"\") || (lastFsmState == \"DEAD\"))) {
     mode = \"dead\";
   }
   emuui_sessionKillAllActiveTooltips();
+  emuui_sessionRegisterActiveTooltip(refName);
+  bool showInfo = (currentConnectionType == \"FSM\");
   addSymbol(myModuleName(), myPanelName(),
             \"objects/\" + EMUUI_COMPONENT_NAME + \"/refTooltip.pnl\",
             refName,
-            makeDynString(\"$deviceParams:\" + deviceParamsStr, \"$deviceType:\" + $deviceType, \"$mode:\" + mode),
+            makeDynString(\"$deviceParams:\" + deviceParamsStr, \"$deviceType:\" + $deviceType, 
+                          \"$mode:\" + mode, \"$showInfo:\" + showInfo, \"$refName:\" + refName),
             mouseX, mouseY, 0, 1, 1);
-  emuui_sessionRegisterActiveTooltip(refName);
   tooltipVisible = true;
 }
 
