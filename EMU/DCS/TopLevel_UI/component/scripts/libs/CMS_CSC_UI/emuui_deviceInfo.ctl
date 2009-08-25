@@ -234,3 +234,19 @@ dyn_string emuui_getME11HVChannelFsmNodes(mapping deviceParams, dyn_string &exce
   
   return channelFsmNodes;
 }
+
+/** Returns Peripheral Crate name in standard format (VME+-station/pcrateNum). */
+string emuui_getPCrateName(string side, string station, string pcrateNum) {
+  string sideSign = "+";
+  if (side == "M") { sideSign = "-"; }
+  
+  return "VME" + sideSign + station + "/" + pcrateNum;
+}
+
+/** Returns Peripheral Crate name in standard format (VME+-station/pcrateNum) given the pcrate ID. */
+string emuui_getPCrateNameId(string elmbId, dyn_string &exceptionInfo) {
+  dyn_string info = emuui_getPcmbInfoById(elmbId, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  
+  return emuui_getPCrateName(info[1], info[2], info[6]);
+}

@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 394 311 N "_3DFace" 1
+PANEL,-1 -1 394 348 N "_3DFace" 1
 "$deviceParams"
 "main()
 {
@@ -79,6 +79,24 @@ PANEL,-1 -1 394 311 N "_3DFace" 1
   dpConnect(\"updateVMonCB\", false, channelVMonDps);
   dpConnect(\"updateIMonCB\", false, channelIMonDps);
   dpConnect(\"updateVSetCB\", true, channelVSetDps);
+  
+  //Show which crates are supplied by this Maraton
+  mapping maratonToPCrates = emuui_getMaratonToPcmbsMap(ex);
+  if (emu_checkException(ex)) { return; }
+  if (mappingHasKey(maratonToPCrates, deviceParams[\"id\"])) {
+    dyn_string pcrates = maratonToPCrates[deviceParams[\"id\"]];
+    string pcratesStr;
+    for (int i=1; i <= dynlen(pcrates); i++) {
+      if (i != 1) {
+        pcratesStr += \", \";
+      }
+      pcratesStr += emuui_getPCrateNameId(pcrates[i], ex);
+      if (emu_checkException(ex)) { return; }
+    }
+    lblPCrates.text = pcratesStr;
+  } else {
+    lblPCrates.text = \"none\";
+  }
 }
 " 0
  "main()
@@ -238,11 +256,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 3.54545454545455 0 1.33333333333334 -1418.18181818182 -53.3333333333334 1 E 400 40 510 130
+E E 0 1 1 2 1 E 3.54545454545455 0 1.77777777777779 -1418.18181818182 -71.1111111111112 1 E 400 40 510 130
 2 10
 "warnNoCommunication"
 ""
-1 10 130 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+1 12 172 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
  E E
 12 0 0 0 0 0
 E E E
@@ -252,8 +270,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 130 379 144
-1 2 2 "0s" 0 0 0 65 0 0  10 130 1
+E E 0 1 1 2 1 E U  1 E 12 172 381 186
+1 2 2 "0s" 0 0 0 65 0 0  12 172 1
 1
 LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -418,7 +436,7 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
 2 51
 "warnInhibit"
 ""
-1 10 160 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+1 12 202 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
  E E
 77 0 0 0 0 0
 E E E
@@ -428,8 +446,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 160 379 174
-1 2 2 "0s" 0 0 0 65 0 0  10 160 1
+E E 0 1 1 2 1 E U  1 E 12 202 381 216
+1 2 2 "0s" 0 0 0 65 0 0  12 202 1
 1
 LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -438,7 +456,7 @@ LANG:1 7 INHIBIT
 2 52
 "warnSensorFailure"
 ""
-1 10 190 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+1 12 232 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
  E E
 79 0 0 0 0 0
 E E E
@@ -448,8 +466,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 190 379 204
-1 2 2 "0s" 0 0 0 65 0 0  10 190 1
+E E 0 1 1 2 1 E U  1 E 12 232 381 246
+1 2 2 "0s" 0 0 0 65 0 0  12 232 1
 1
 LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -458,7 +476,7 @@ LANG:1 22 Maraton Sensor Failure
 2 53
 "warnSystemFailure"
 ""
-1 10 220 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+1 12 262 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
  E E
 81 0 0 0 0 0
 E E E
@@ -468,8 +486,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 220 379 234
-1 2 2 "0s" 0 0 0 65 0 0  10 220 1
+E E 0 1 1 2 1 E U  1 E 12 262 381 276
+1 2 2 "0s" 0 0 0 65 0 0  12 262 1
 1
 LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -478,7 +496,7 @@ LANG:1 22 Maraton System Failure
 2 54
 "warnInputFailure"
 ""
-1 10 250 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+1 12 292 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
  E E
 83 0 0 0 0 0
 E E E
@@ -488,8 +506,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 250 379 264
-1 2 2 "0s" 0 0 0 65 0 0  10 250 1
+E E 0 1 1 2 1 E U  1 E 12 292 381 306
+1 2 2 "0s" 0 0 0 65 0 0  12 292 1
 1
 LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -498,7 +516,7 @@ LANG:1 21 Maraton Input Failure
 2 55
 "warnOutputFailure"
 ""
-1 10 280 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+1 12 322 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
  E E
 85 0 0 0 0 0
 E E E
@@ -508,13 +526,53 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 280 379 294
-1 2 2 "0s" 0 0 0 65 0 0  10 280 1
+E E 0 1 1 2 1 E U  1 E 12 322 381 336
+1 2 2 "0s" 0 0 0 65 0 0  12 322 1
 1
 LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 22 Maraton Output Failure
+2 56
+"lblForPCrates"
+""
+1 10 120 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+86 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 120 228 134
+0 2 2 "0s" 0 0 0 192 0 0  10 120 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 46 This Maraton supplies these Peripheral Crates:
+2 57
+"lblPCrates"
+""
+1 10 140 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+87 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 140 53 154
+0 2 2 "0s" 0 0 0 192 0 0  10 140 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 10 loading...
 0
 LAYER, 1 
 1

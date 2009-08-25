@@ -20,7 +20,7 @@ void drawPCrates() {
   
   for (int i=1; i <= mappinglen(mapPcmbs); i++) {
     string key = mappingGetKey(mapPcmbs, i);
-    string value = mapPcmbs[key];
+    string value = mapPcmbs[key][1];
     if (strlen(value) == 0) {
       continue;
     }

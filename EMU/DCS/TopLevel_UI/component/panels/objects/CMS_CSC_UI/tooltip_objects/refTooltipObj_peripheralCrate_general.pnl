@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 335 425 N "_3DFace" 1
+PANEL,-1 -1 440 425 N "_3DFace" 1
 "$deviceParams"
 "main()
 {
@@ -19,7 +19,7 @@ PANEL,-1 -1 335 425 N "_3DFace" 1
   if (emu_checkException(ex)) { return; }
   
   // get the maraton ID and add it's FSM node
-  int maratonId = emuui_getPcmbToMaratonMap(ex)[(string)emu_hexToDec(deviceParams[\"id\"], 1)];
+  int maratonId = emuui_getPcmbToMaratonMap(ex)[deviceParams[\"id\"]];
   if (emu_checkException(ex)) { return; }
   mapping maratonDeviceParams = emuui_getMaratonDeviceParams(maratonId, ex);
   if (emu_checkException(ex)) { return; }
@@ -267,7 +267,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 2.90909090909091 0 4.33333333333334 -1163.63636363637 -173.333333333333 1 E 400 40 510 130
+E E 0 1 1 2 1 E 3.45454545454546 0 4.33333333333334 -1381.81818181819 -173.333333333333 1 E 400 40 510 130
 2 10
 "warnNoCommunication"
 ""
@@ -405,7 +405,7 @@ E E 0 1 1 2 1 E 2.5 0 1 -107 340 1 E 110 0 130 20
 25 43
 "pairsTable"
 ""
-1 258.571428571429 124 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 310.287631831257 124 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 65 0 0 0 0 0
 E E E
@@ -417,13 +417,13 @@ LANG:1 0
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
- 8 28 310 208
+ 8 28 372 208
 "main()
 {
   //write slot numbers
   for (int i=1; i <= 9; i++) {
     this.appendLine(\"board\", \"TMB/DMB \" + i,
-                    \"3v3_1\", \"loading\", \"3v3_2\", \"loading\", \"5v\", \"loading\");
+                    \"3v3_1\", \"loading\", \"3v3_2\", \"loading\", \"5v\", \"loading\", \"dmb_temp\", \"loading\");
     //sthis.appendLine(\"5v\", \"\");
   }
   this.appendLine(\"board\", \"CCB/MPC\",
@@ -431,7 +431,7 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
   this.appendLine(\"board\", \"VCC\",
                   \"3v3_1\", \"loading\", \"5v\", \"loading\");
 }" 0
-E 1 0 1 4 9 "board" 8 1 0 "s" 1
+E 1 0 1 5 9 "board" 8 1 0 "s" 1
 LANG:1 5 Board
 E
 1
@@ -455,7 +455,13 @@ E
 1
 LANG:1 0 
 
-70 
+70 "dmb_temp" 5 1 0 "s" 1
+LANG:1 9 DMB temp.
+E
+1
+LANG:1 0 
+
+60 
 14 14 "" 1 1
 LANG:1 6 Slot 1
 "" 1 1

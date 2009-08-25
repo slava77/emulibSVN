@@ -13,6 +13,9 @@ const mapping emuui_dummyMapping;
 global mapping emuui_g_mappingCache;
 global mapping emuui_g_arrayCache;
 global dyn_string emuui_g_lvSystemNames;
+global mapping emuui_g_mapPcmbDb = emuui_dummyMapping;
+global mapping emuui_g_mapPcmbDbById = emuui_dummyMapping;
+global mapping emuui_g_mapMaratonToPcmbs = emuui_dummyMapping;
 global mapping emuui_g_mapPcmbToMaraton = emuui_dummyMapping;
 global mapping emuui_g_mapMaratonDb = emuui_dummyMapping;
 global mapping emuui_g_mapMaratonDbSwapped = emuui_dummyMapping;
@@ -62,9 +65,9 @@ dyn_string emuui_getMappingAsCSV(string name, dyn_string &exceptionInfo) {
 
 /** Converts an array of comma separated values to mapping. 
   Parameters name and version are optional and only used for additional information in error messages.
-  If ingnoreEmptyValue is true then no error message is produced when the value is empty (not recommended, but needed sometimes).
+  If tolerateEmptyValue is true then no error message is produced when the value is empty (not recommended, but needed sometimes).
 */
-mapping _emuui_constructMappingFromCSV(dyn_string csvArray, dyn_string exceptionInfo, string name="", string version="", bool tolerateEmptyValue = false) {
+mapping _emuui_constructMappingFromCSV(dyn_string csvArray, dyn_string &exceptionInfo, string name="", string version="", bool tolerateEmptyValue = false) {
   mapping ret;
   dyn_string tmpSplit;
   for (int i=1; i <= dynlen(csvArray); i++) {
@@ -88,6 +91,39 @@ mapping _emuui_constructMappingFromCSV(dyn_string csvArray, dyn_string exception
     }
     
     ret[tmpSplit[1]] = tmpSplit[2];
+  }
+  return ret;
+}
+
+/** Converts an array of strings to one-to-many mapping (key -> array[value1, value2...]. 
+  Parameters name and version are optional and only used for additional information in error messages.
+  Note the format of the strings must be the following: key;value1,value2,...,valueN
+  If tolerateEmptyValue is true then no error message is produced when the value is empty (not recommended, but needed sometimes).
+*/
+mapping _emuui_constructOneToManyMapping(dyn_string source, dyn_string &exceptionInfo, string name="", string version="", bool tolerateEmptyValue = false) {
+  mapping ret;
+  dyn_string splitKeyValues;
+  for (int i=1; i <= dynlen(source); i++) {
+    splitKeyValues = strsplit(source[i], ";");
+    if (dynlen(splitKeyValues) != 2) {
+      bool tolerate = false;
+      if (tolerateEmptyValue) {
+        if ((dynlen(splitKeyValues) == 1) && (strpos(source[i], ";") > 0)) { // only value is empty
+          dynAppend(splitKeyValues, "");
+          tolerate = true;
+        }
+      }
+      if (!tolerate) {
+        emu_addError("Line #" + i + " in mapping \"" + name + version + "\" is corrupted", exceptionInfo);
+        return emuui_dummyMapping;
+      }
+    }
+    if (mappingHasKey(ret, splitKeyValues[1])) {
+      emu_addError("Key \"" + splitKeyValues[1] + "\" in mapping \"" + name + version + "\" is defined multiple times", exceptionInfo);
+      return emuui_dummyMapping;
+    }
+    
+    ret[splitKeyValues[1]] = strsplit(splitKeyValues[2], ",");
   }
   return ret;
 }
@@ -315,37 +351,105 @@ mapping emuui_getMaratonDbSwapped(dyn_string &exceptionInfo) {
   return emuui_g_mapMaratonDbSwapped;
 }
 
-/** Gets the "PCMB DB" (found on LV project(-s)) - it's a mapping of $side$$station$_PC$crateNum$ => ELMB ID. */
+/** Gets the "PCMB DB" (found on LV project(-s)) - it's a mapping of $side$$station$_PC$crateNum$ => array[ELMB ID, rack name, top/bottom, trigger section]. */
 mapping emuui_getPcmbDb(dyn_string &exceptionInfo) {
+  if (mappinglen(emuui_g_mapPcmbDb) > 0) {
+    return emuui_g_mapPcmbDb;
+  }
+  
   //get systems list, pick those with "LV" and query them for PCMB DB
   dyn_string lvSysNames = emuui_getLvSystemNames(exceptionInfo);
-  if (emu_checkException(ex)) { return emuui_dummyMapping; }
+  if (emu_checkException(exceptionInfo)) { return emuui_dummyMapping; }
   
   dyn_string dbPcmb;
+  dyn_string pcmbDetailInfo;
   for (int i=1; i <= dynlen(lvSysNames); i++) {
-    dyn_string tmp;
-    dpGet(lvSysNames[i] + ":db_pcmb.list", tmp);
+    dyn_string tmp1, tmp2;
+    dpGet(lvSysNames[i] + ":db_pcmb.list", tmp1);
+    dpGet(lvSysNames[i] + ":db_pcmb_geographic.list", tmp2);
     
     //remove the line for Atlas PSU
-    for (int j=1; j <= dynlen(tmp); j++) {
-      if (strpos(tmp[j], "PSU") >= 0) {
-        dynRemove(tmp, j);
+    for (int j=1; j <= dynlen(tmp1); j++) {
+      if (strpos(tmp1[j], "PSU") >= 0) {
+        dynRemove(tmp1, j);
+        if (j <= dynlen(tmp2)) {
+          dynRemove(tmp2, j);
+        }
         break;
       }
     }
     
-    dynAppend(dbPcmb, tmp);
+    dynAppend(dbPcmb, tmp1);
+    dynAppend(pcmbDetailInfo, tmp2);
   }
   
+  if (dynlen(dbPcmb) != dynlen(pcmbDetailInfo)) {
+    emu_addError("PCrate ID <-> ELMB ID and PCrate coordinate arrays are not the same length. This is a DCS error - please inform DCS expert about this.", exceptionInfo);
+    return;
+  }
   if (dynlen(dbPcmb) == 0) { emu_addError("Could not find PCMB DB (check LV projects)", exceptionInfo); return emuui_dummyMapping; }
   
-  mapping mapPcmbs = _emuui_constructMappingFromCSV(dbPcmb, exceptionInfo, "PCMB DB", "", true);
+  //join the two arrays into one with the correct format for "key-to-array" maps (key;value1,value2,...,valueN)
+  for (int i=1; i <= dynlen(dbPcmb); i++) {
+    strreplace(pcmbDetailInfo[i], "/", ",");
+    strreplace(pcmbDetailInfo[i], ";", ",");
+    strreplace(pcmbDetailInfo[i], "bot", "bottom");
+    
+    dbPcmb[i] += "," + pcmbDetailInfo[i];
+  }
+  
+  mapping mapPcmbs = _emuui_constructOneToManyMapping(dbPcmb, exceptionInfo, "PCMB DB", "", true);
   if (emu_checkException(exceptionInfo)) { return emuui_dummyMapping; }
+  
+  // convert hex IDs to decimal
+  for (int i=1; i <= mappinglen(mapPcmbs); i++) {
+    string key = mappingGetKey(mapPcmbs, i);
+    string hexId = mapPcmbs[key][1];
+    string decId = (string) emu_hexToDec(hexId, 1);
+    mapPcmbs[key][1] = decId;
+  }
+  
+  emuui_g_mapPcmbDb = mapPcmbs; // cache it
   
   return mapPcmbs;
 }
 
-/** Get the ELMB ID to Maraton ID mapping (this is taken from LV project(-s). */
+/** Same as emuui_getPcmbDb(), but the key of the mapping is ELMB ID instead of $side$$station$_PC$crateNum$.
+    So the returned mapping is ELMB ID => [side][station][crateNumber (DCS style e.g. 2A)][rack name][top/bottom][trigger section]*/
+mapping emuui_getPcmbDbById(dyn_string &exceptionInfo) {
+  if (mappinglen(emuui_g_mapPcmbDbById) > 0) {
+    return emuui_g_mapPcmbDbById;
+  }
+  
+  mapping ret;
+  mapping pcmbDb = emuui_getPcmbDb(exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return emuui_dummyMapping; }
+  
+  for (int i=1; i <= mappinglen(pcmbDb); i++) {
+    string key = mappingGetKey(pcmbDb, i);
+    dyn_string value = pcmbDb[key];
+    string id = value[1];
+    string side = key[0];
+    string station = key[1];
+    strreplace(key, side + station + "_PC", "");
+    string crateNum = key;
+    
+    ret[id] = makeDynString(side, station, crateNum, value[2], value[3], value[4]);
+  }
+  
+  emuui_g_mapPcmbDbById = ret;
+  return ret;
+}
+
+/** Given an ELMB id (dec), this function returns this kind of array (using mapping returned by emuui_getPcmbDbById):
+      [side][station][crateNumber (DCS style e.g. 2A)][rack name][top/bottom][trigger section] */
+dyn_string emuui_getPcmbInfoById(string elmbId, dyn_string &exceptionInfo) {
+  mapping pcmbDbById = emuui_getPcmbDbById(exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  return pcmbDbById[elmbId];
+}
+
+/** Get the ELMB ID (dec) to Maraton ID mapping (this is taken from LV project(-s). */
 mapping emuui_getPcmbToMaratonMap(dyn_string &exceptionInfo) {
   if (mappinglen(emuui_g_mapPcmbToMaraton) > 0) {
     return emuui_g_mapPcmbToMaraton;
@@ -370,4 +474,30 @@ mapping emuui_getPcmbToMaratonMap(dyn_string &exceptionInfo) {
   emuui_g_mapPcmbToMaraton = mapPcmbsToMaratons; // cache it
   
   return mapPcmbsToMaratons;
+}
+
+/** Get the Peripheral Crate IDs which are connected to a Maraton mapping (this is taken from LV project(-s). */
+mapping emuui_getMaratonToPcmbsMap(dyn_string &exceptionInfo) {
+  if (mappinglen(emuui_g_mapMaratonToPcmbs) > 0) {
+    return emuui_g_mapMaratonToPcmbs;
+  }
+  
+  mapping pcmbToMaraton = emuui_getPcmbToMaratonMap(exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  
+  // invert the map
+  mapping ret;
+  for (int i=1; i <= mappinglen(pcmbToMaraton); i++) {
+    string key = mappingGetKey(pcmbToMaraton, i);
+    string value = pcmbToMaraton[key];
+    if (!mappingHasKey(ret, value)) {
+      ret[value] = makeDynString(key);
+    } else {
+      dynAppend(ret[value], key);
+    }
+  }
+  
+  emuui_g_mapMaratonToPcmbs = ret; // cache it
+  
+  return ret;
 }

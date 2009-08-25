@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 305 34 N "_3DFace" 1
+PANEL,-1 -1 444 34 N "_3DFace" 1
 "$deviceParams"
 "main()
 {
@@ -9,11 +9,11 @@ PANEL,-1 -1 305 34 N "_3DFace" 1
   deviceParams = emuui_parseParameterString($deviceParams, ex);
   if (emu_checkException(ex)) { return; }
   
-  string strSide = \"+\";
-  if (deviceParams[\"side\"] == \"M\") { strSide = \"-\"; }
   
-  lblDeviceName.text = \"Peripheral Crate VME\" + strSide + deviceParams[\"station\"] + \"/\" + deviceParams[\"crateNumStd\"] + 
-                       \" (\" + deviceParams[\"placeInRack\"] + \"),id\" + emu_hexToDec(deviceParams[\"id\"], 1);
+  lblDeviceName.text = \"Peripheral Crate \" + 
+                       emuui_getPCrateName(deviceParams[\"side\"], deviceParams[\"station\"], deviceParams[\"crateNumStd\"]) + 
+                       \", id\" + deviceParams[\"id\"] + 
+                       \" (rack \" + deviceParams[\"rack\"] + \" \" + deviceParams[\"placeInRack\"] + \")\";
   
   // get the FSM node
   string fsmNode = emuui_getFsmNode(\"peripheralCrate_general\", deviceParams, ex);
@@ -64,7 +64,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1.14285714285714 0 1 -5.45696821063757e-014 1 1 E 210 19 0 -1
+E E 0 1 1 2 1 E 1.42857142857142 0 1 -6.82121026329696e-014 1 1 E 210 19 0 -1
 2 1
 "lblDeviceName"
 ""
@@ -98,7 +98,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 2.5 0 1 -35 0 1 E 110 0 130 20
+E E 0 1 1 2 1 E 2.5 0 1 25 0 1 E 110 0 130 20
 0
 LAYER, 1 
 1

@@ -80,36 +80,9 @@ void drawPeripheralCrates(int x, int y, int radius, string side, int station, dy
     shapeType = \"rectangle\";
   }
   
-  //get systems list, pick those with \"LV\" and query them for PCMB DB
-  dyn_string lvSysNames = emuui_getLvSystemNames(ex);
-  if (emu_checkException(ex)) { return; }
-  
-  dyn_string dbPcmb;
-  for (int i=1; i <= dynlen(lvSysNames); i++) {
-    dyn_string tmp;
-    dpGet(lvSysNames[i] + \":db_pcmb.list\", tmp);
-// use this if there can be duplicates (probably there won't be any, but who knows)..
-//     for (int j=1; j <= dynlen(tmp); j++) {
-//       if (!dynContains(dbMrtn, tmp[j])) {
-//         dynAppend(dbMrtn, tmp[j]); // if it doesn't contain the value yet - include it in the \"DB\"
-//       }
-//     }
-    
-    //remove the line for Atlas PSU
-    for (int j=1; j <= dynlen(tmp); j++) {
-      if (strpos(tmp[j], \"PSU\") >= 0) {
-        dynRemove(tmp, j);
-        break;
-      }
-    }
-    
-    dynAppend(dbPcmb, tmp);
-  }
-  
-  if (dynlen(dbPcmb) == 0) { emu_errorSingle(\"Could not find PCMB DB (check LV projects)\"); return; }
-  
-  mapping mapPcmbs = _emuui_constructMappingFromCSV(dbPcmb, ex, \"PCMB DB\", \"\", true);
-  if (emu_checkException(ex)) { return; }
+  // get the PCMBs
+  mapping mapPcmbs = emuui_getPcmbDb(exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
   
   string currentStation = paramSide + paramStation + \"_PC\";
   
@@ -117,42 +90,28 @@ void drawPeripheralCrates(int x, int y, int radius, string side, int station, dy
   dyn_string crateRefs;
   string pcGroup = emuui_getSessionDp(\"mainPeripheralCrateView\");
   for (int i=1; i <= mappinglen(mapPcmbs); i++) {
-    string key = mappingGetKey(mapPcmbs,i);
+    string key = mappingGetKey(mapPcmbs, i);
     if (strpos(key, currentStation) < 0) {
       continue;
     }
-    string value = mapPcmbs[key];
+
+    string id = mapPcmbs[key][1];
+    string idHex = strtolower(emu_decToHex(id, 1));
+    string rack = mapPcmbs[key][2];
+    string placeInRack = mapPcmbs[key][3];
+    string crateNumberStd = mapPcmbs[key][4];
     
-    // parse the key
-    string id = value;
     strreplace(key, currentStation, \"\");
     string crateNum = key;
-    int crateNumPartInt = (int)(string)crateNum[0];
-    int crateNumberStd;
-    if (station != 1) { // not ME11 (6 crates)
-      crateNumberStd = crateNum;
-    } else { // ME11 - 12 crates. deviceParams[\"crateNum\"] goes 1-6 and has a postfix of A or B
-      crateNumberStd = (string) crateNum[0];
-      crateNumberStd *= 2;
-      // oh this is very weird I know, but in Valeri's convention crates with A are always bottom (but they're not always with a lower number)
-      if ((crateNumPartInt >= 2) && (crateNumPartInt <= 4) && (crateNum[1] == \"A\")) {
-        crateNumberStd++;
-      } else if (((crateNumPartInt == 1) || (crateNumPartInt == 5) || (crateNumPartInt == 6)) && (crateNum[1] == \"B\")) {
-        crateNumberStd++;
-      }
-      if (crateNumberStd > 12) { 
-        crateNumberStd = 1;
-      }
-    }
-    string placeInRack = emuui_getMappingValue(\"peripheralCrateRackPlace\", station + \"/\" + crateNumberStd, ex);
-    if (emu_checkException(ex)) { return; }
     
     string deviceParamsDollar = \"$deviceParams:\" + \"side=\" + side +
                                                    \";station=\" + station +
                                                    \";crateNum=\" + crateNum +
                                                    \";crateNumStd=\" + crateNumberStd +
+                                                   \";rack=\" + rack +
                                                    \";placeInRack=\" + placeInRack +
-                                                   \";id=\" + id;
+                                                   \";id=\" + id +
+                                                   \";idHex=\" + idHex;
     string shapeParamsDollar = \"$shapeParams:\" + \"type=\" + shapeType +
                                                  \";width=\" + paramPCrateWidth +
                                                  \";height=\" + paramPCrateHeight;
@@ -177,12 +136,12 @@ void drawPeripheralCrates(int x, int y, int radius, string side, int station, dy
   // position the crates around the station
   float perimeter = 2 * EMUMATH_PI * radius;
   float angleStep = (2 * EMUMATH_PI) / 6;
-  float angleOffset = ((2 * EMUMATH_PI) / 6); // start with the first crate which is in the top left
+  float angleOffset = EMUMATH_PI - ((2 * EMUMATH_PI) / 6); // start with the first crate which is in the top left
   bool me11 = (dynlen(crateRefs) == 12); // ME11 stations have 12 crates, all others have 6
   
   for (int i=0; i < 6; i++) {
     //compute the angle and position
-    float angle = i * angleStep + angleOffset;
+    float angle = angleOffset - i * angleStep;
     float angleDeg = rad2deg(angle);             //convert angle from radians to degrees
     float cosValue = cos(angle);
     float sinValue = sin(angle);
@@ -206,7 +165,7 @@ void drawPeripheralCrates(int x, int y, int radius, string side, int station, dy
       setValue(refName + \".\" + shapeType, \"rotation\", -1 * angleDeg - 90);
     } else {
       // if it's on the right side of the disk - switch the two crates so that crate A is always at the bottom
-      if ((angleDeg > 90) && (angleDeg < 270)) {
+      if ((angleDeg > 90) || (angleDeg < -90)) {
         string tmp = refNameB;
         refNameB = refName;
         refName = tmp;
@@ -300,7 +259,7 @@ void drawRing(int x, int y, int innerRadius, int outerRadius, int chamberCount, 
   float outerPerimeter = 2 * EMUMATH_PI * outerRadius;
   float innerPerimeter = 2 * EMUMATH_PI * innerRadius;
   float angleStep = (2 * EMUMATH_PI) / chamberCount;
-  float angleOffset = ((2 * EMUMATH_PI) / chamberCount) / 2; // to keep the chambers nicely alligned
+  float angleOffset = EMUMATH_PI - ((2 * EMUMATH_PI) / chamberCount) / 2; // to keep the chambers nicely alligned
   int chamberHeight = outerRadius - innerRadius;
   int chamberInnerWidth = floor((float)(innerPerimeter / chamberCount));
   int chamberOuterWidth = floor((float)(outerPerimeter / chamberCount));
@@ -316,7 +275,7 @@ void drawRing(int x, int y, int innerRadius, int outerRadius, int chamberCount, 
   
   for (int i=chambersStart; i < chambersEnd; i++) {
     //compute the angle and position
-    float angle = i * angleStep + angleOffset;
+    float angle = angleOffset - i * angleStep;
     float angleDeg = rad2deg(angle);             //convert angle from radians to degrees
     float cosValue = cos(angle);
     float sinValue = sin(angle);
@@ -371,7 +330,7 @@ void drawRing(int x, int y, int innerRadius, int outerRadius, int chamberCount, 
     setValue(refName + \".caption\", \"position\", captionPosX, captionPosY);
     setValue(refName + \".imgDeviceIncomplete\", \"position\", warningPosX, warningPosY);
     //setValue(refName + \".imgDeviceIncomplete\", \"rotation\", -1 * angleDeg + 180);
-    if ((angleDeg > 90) && (angleDeg <= 270)){
+    if ((angleDeg > 90) || (angleDeg <= -90)){
       setValue(refName + \".caption\", \"rotation\", -1 * angleDeg + 180);
       setValue(refName + \".imgDeviceIncomplete\", \"rotation\", -1 * angleDeg + 180);
     } else {
@@ -419,7 +378,7 @@ void initParams() {
     
     emuui_init();
     paramGroup = emuui_getSessionDp(\"mainChamberView\");
-    paramSide = \"M\";
+    paramSide = \"P\";
     paramStation = 1;
     paramRadius = 300;
   } else { // copy from dollar params
