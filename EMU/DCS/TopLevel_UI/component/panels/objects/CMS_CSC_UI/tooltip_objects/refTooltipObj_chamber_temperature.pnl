@@ -26,12 +26,18 @@ PANEL,-1 -1 368 113 N "_3DFace" 1
   
   dpConnect(\"updateTemperatureCB\", true, dps);
   
+  // DISABLED CHANNELS
+  string disabledChannelsDp = emuui_getDpName(\"chamber_temperature_disabled_channels\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
   // ALARM COLORS
   for (int i=1; i <= dynlen(dps); i++) {
     dps[i] += \":_alert_hdl.._act_state_color\";
   }
+  alarmColorDps = dps;
   
-  dpConnect(\"updateTemperatureAlarmColorsCB\", true, dps);
+  dpConnect(\"updateDisabledChannelsCB\", true, disabledChannelsDp);
+  dpConnect(\"updateTemperatureAlarmColorsCB\", false, alarmColorDps);
   
   // ----------========== DISCONNECTED WARNING ==========----------
   if (dynlen(dps) > 1) {
@@ -43,6 +49,16 @@ PANEL,-1 -1 368 113 N "_3DFace" 1
 }
 
 void initGui(dyn_string dps) {
+  // mapping of [disabled channel numbers (array index)] to [column names in the table]
+  disabledChNumToColumn = makeDynString(\"cfeb.v1\", \"cfeb.v2\", \"cfeb.v3\", \"cfeb.v4\", \"cfeb.v5\", \"alct.v1\", \"dmb.v1\");
+  
+  //special case for ME1/3 - they don't have CFEB5 but it is in DCS for some reason - remove it here
+  if ((deviceParams[\"station\"] == 1) && (deviceParams[\"ring\"] == 3)) {
+    int index = dynPartiallyContains(dps, \"cfeb.v5\");
+    if (index > 0) {
+      dynRemove(dps, index);
+    }
+  }
   
   // Fill up the columnNames array. 
   // And if any column name is not found in part of the DPs name then it's removed (e.g. not all chambers have CFEB5 so it's removed from the table)
@@ -57,6 +73,7 @@ void initGui(dyn_string dps) {
       dynAppend(columnsToDelete, i); // register to be deleted
     }
   }
+  
   //delete unnecessary columns
   for (int i = dynlen(columnsToDelete); i >=1; i--) {
     tableTemp.deleteColumn(columnsToDelete[i]);
@@ -79,9 +96,13 @@ E "//some panel-wide constants and variables
 int cfebCount;
 mapping deviceParams;
 dyn_string columnNames;
+dyn_string disabledChNumToColumn;  // mapping of [disabled channel numbers (array index)] to [column names in the table]
 string fsmNode;
 dyn_string references;
 int posX, posY;
+
+dyn_string alarmColorDps;
+dyn_int disabledChannels;
 
 void positionChangedCB(string dummyDpName, int dummyValue) {
   emuui_alignSmallFsmNodes(references, makeDynString(\"chamber_temperature_fsmRefPoint\"));
@@ -100,6 +121,15 @@ void updateTemperatureCB(dyn_string dps, dyn_float temperatures) {
   lblLastUpdate.text = emuui_getLastUpdateTime(dps[1]);
 }
 
+void updateDisabledChannelsCB(string dp, dyn_int disabledChannelsParam) {
+  disabledChannels = disabledChannelsParam;
+  
+  //repaint the colors
+  dyn_anytype values;
+  dpGet(alarmColorDps, values);
+  updateTemperatureAlarmColorsCB(alarmColorDps, values);
+}
+
 void updateTemperatureAlarmColorsCB(dyn_string dps, dyn_string alarmColors) {
   for (int i=1; i <= dynlen(columnNames); i++) {
     int index = dynPartiallyContains(dps, columnNames[i]);
@@ -107,6 +137,11 @@ void updateTemperatureAlarmColorsCB(dyn_string dps, dyn_string alarmColors) {
       alarmColors[index] = emuui_correctAlarmColor(alarmColors[index]);
       tableTemp.cellBackColRC(0, columnNames[i], alarmColors[index]);
     }
+  }
+  //gray out the disabled channels
+  for (int i=1; i <= dynlen(disabledChannels); i++) {
+    string column = disabledChNumToColumn[disabledChannels[i]];
+    tableTemp.cellBackColRC(0, column, \"FwEquipmentDisabled\");
   }
 }
     

@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 394 348 N "_3DFace" 1
+PANEL,-1 -1 392 348 N "_3DFace" 1
 "$deviceParams"
 "main()
 {
