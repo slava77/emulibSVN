@@ -56,12 +56,17 @@ PANEL,-1 -1 364 199 N "_3DFace" 1
 
   dpConnect(\"updateCfebLvCB\", true, values);
 
+  // DISABLED CHANNELS
+  string disabledChannelsDp = emuui_getDpName(\"chamber_LV_disabled_channels\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
   // CFEB ALARM COLORS
   for (int i=1; i <= dynlen(values); i++) {
     values[i] += \":_alert_hdl.._act_state_color\";
   }
+  cfebAlarmColorDps = values;
   
-  dpConnect(\"updateCfebAlarmColorsCB\", true, values);
+  dpConnect(\"updateCfebAlarmColorsCB\", false, cfebAlarmColorDps);
   
   //----------============= ALCT ================-------------
   dynClear(vMonDps);
@@ -91,8 +96,10 @@ PANEL,-1 -1 364 199 N "_3DFace" 1
   for (int i=1; i <= dynlen(values); i++) {
     values[i] += \":_alert_hdl.._act_state_color\";
   }
+  alctAlarmColorDps = values;
   
-  dpConnect(\"updateAlctAlarmColorsCB\", true, values);
+  dpConnect(\"updateDisabledChannelsCB\", true, disabledChannelsDp);
+  dpConnect(\"updateAlctAlarmColorsCB\", false, alctAlarmColorDps);
   
   // ----------========== DISCONNECTED WARNING ==========----------
   if (dynlen(values) > 1) {
@@ -131,6 +138,9 @@ string fsmNode;
 dyn_string references;
 int posX, posY;
 
+dyn_int disabledChannels;
+dyn_string cfebAlarmColorDps, alctAlarmColorDps;
+
 void positionChangedCB(string dummyDpName, int dummyValue) {
   emuui_alignSmallFsmNodes(references, makeDynString(\"chamber_low_voltage_fsmRefPoint\"));
 }
@@ -152,6 +162,17 @@ void updateCfebLvCB(dyn_string dps, dyn_float voltagesAndCurrents) {
   lblLastUpdate.text = emuui_getLastUpdateTime(dps[1]);
 }
 
+void updateDisabledChannelsCB(string dp, dyn_int disabledChannelsParam) {
+  disabledChannels = disabledChannelsParam;
+  
+  //repaint the colors
+  dyn_anytype values;
+  dpGet(cfebAlarmColorDps, values);
+  updateCfebAlarmColorsCB(cfebAlarmColorDps, values);
+  dpGet(alctAlarmColorDps, values);
+  updateAlctAlarmColorsCB(alctAlarmColorDps, values);
+}
+
 /** Call-back function which updates the background color of the CFEB table cells accordingly to cfeb voltage and current alarm color. */
 void updateCfebAlarmColorsCB(dyn_string dps, dyn_string colors) {
   int currentsOffset = dynlen(colors) / 2; // the first half of this array is filled with voltage alarm colors, the second one with current alarm colors
@@ -167,6 +188,15 @@ void updateCfebAlarmColorsCB(dyn_string dps, dyn_string colors) {
     }
     
     tableCfeb.cellBackColRC(dpIndexToTableCell[i][1], dpIndexToTableCell[i][2], mainColor);
+  }
+  
+  // gray out the disabled channels
+  for (int i=1; i <= dynlen(disabledChannels); i++) {
+    if (disabledChannels[i] <= 5) { // if channel number is in [1;5] - it means it's a CFEB
+      tableCfeb.cellBackColRC(0, \"Cfeb_\" + disabledChannels[i], \"FwEquipmentDisabled\");
+      tableCfeb.cellBackColRC(1, \"Cfeb_\" + disabledChannels[i], \"FwEquipmentDisabled\");
+      tableCfeb.cellBackColRC(2, \"Cfeb_\" + disabledChannels[i], \"FwEquipmentDisabled\");
+    }
   }
 }                             
                              
@@ -189,6 +219,14 @@ void updateAlctLvCB(dyn_string dps, dyn_float voltagesAndCurrents) {
 
 /** Call-back function which updates the background color of the ALCT table cells accordingly to ALCT voltage and current alarm color. */
 void updateAlctAlarmColorsCB(dyn_string dps, dyn_string colors) {
+  if (dynContains(disabledChannels, 6)) { // 6 is the channel number for ALCT
+    tableAlct.cellBackColRC(0, \"#1\", \"FwEquipmentDisabled\");
+    tableAlct.cellBackColRC(0, \"#2\", \"FwEquipmentDisabled\");
+    tableAlct.cellBackColRC(0, \"#3\", \"FwEquipmentDisabled\");
+    tableAlct.cellBackColRC(0, \"#4\", \"FwEquipmentDisabled\");
+    return;
+  }
+  
   int currentsOffset = dynlen(colors) / 2; // the first half of this array is filled with voltage alarm colors, the second one with current alarm colors
   
   for (int i=1; i <= dynlen(colors) / 2; i++) {
