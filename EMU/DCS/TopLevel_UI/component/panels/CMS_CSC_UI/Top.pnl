@@ -35,7 +35,7 @@ void initConstants() {
 //     killAllPvss();
 //   }
 }" 0
- E E E 1 -1 -1 0  60 250
+ E E E 1 -1 -1 0  0 0
 ""0  1
 E "// some panel-wide constants and variables
 const int EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_X = 10;
@@ -118,7 +118,8 @@ void drawLegend(dyn_string &ex, bool vertical = false) {
   if (vertical) {
     posY += 25;
   } else {
-    posX += 50;
+    posX += 60;
+    posY -= 10;
   }
   
   // use array instead of mapping to preserve the ordering
@@ -159,9 +160,8 @@ void updateTopFsmNodeOperationModeCB(string fsmNode, int operationFlag) {
 
 void updateVersionCB(string dpName, string version) {
   if (version != EMUUI_COMPONENT_VERSION) {
+    lblNewVersion.text = \"New version (\" + version + \") is available\\nRestart the UI when possible\";
     lblNewVersion.visible = true;
-    lblNewVersion1.text = \"New version (\" + version + \") is available\";
-    lblNewVersion1.visible = true;
   }
 }
 
@@ -251,6 +251,7 @@ LANG:1 0
   getValue(\"\", \"size\", width, height);
   int posX, posY;
   getValue(\"\", \"position\", posX, posY);
+  posX -= 15; //some correction..
   
   string group = emuui_getSessionDp(\"mainChamberView\");          //group name
   string refName = \"MainChamberView_EMU\";
@@ -261,7 +262,7 @@ LANG:1 0
             posX, posY, 0, 1, 1);
 }
 " 0
- E 0 1 1 0 1 E 2.3578277627767 0 2.52365930599369 -60.734832883301 -548.01261829653 0 E 30 233 701 551
+ E 0 1 1 0 1 E 2.3578277627767 0 2.52365930599369 -60.734832883301 -538.01261829653 0 E 30 233 701 551
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -342,7 +343,7 @@ LANG:1 0
             makeDynString(\"$group:\" + group),
             posX, posY, 0, 1, 1);
 }" 0
- E 0 0 1 0 1 E 0.689655172413793 0 1.01382488479262 -224.48275862069 -4.79262672810863 0 E 920 853 1211 1071
+ E 0 0 1 0 1 E 0.689655172413793 0 1.01382488479262 -224.48275862069 -4.79262672810476 0 E 920 853 1211 1071
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -378,7 +379,7 @@ LANG:1 0
             makeDynString(\"$group:\" + group),
             posX, posY, 0, 1, 1);
 }" 0
- E 0 0 1 0 1 E 0.896551724137931 0 1.01382488479262 -194.827586206897 -4.79262672810853 0 E 920 853 1211 1071
+ E 0 0 1 0 1 E 0.896551724137931 0 1.01382488479262 -194.827586206897 -4.79262672810478 0 E 920 853 1211 1071
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -614,7 +615,7 @@ LANG:1 46 Switching back to "General state" mode in 300s
 2 32
 "lblLegend"
 ""
-1 1070 10 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+1 1063 20 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
  E E
 44 0 0 0 0 0
 E E E
@@ -624,8 +625,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1070 10 1112 24
-0 2 2 "0s" 0 0 0 192 0 0  1070 10 1
+E E 0 1 1 2 1 E U  1 E 1063 20 1105 34
+0 2 2 "0s" 0 0 0 192 0 0  1063 20 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -651,58 +652,8 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
 0 ""
 1
 LANG:1 29 UI Version 1.0.0 (2009/07/22)
-2 37
-"lblNewVersion"
-""
-1 900 970 E E E 1 E 0 E N "_WindowText" E N "yellow" E E
- E E
-50 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 900 970 1090 1080
-1 2 2 "0s" 0 0 0 64 0 0  900 970 7
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
-LANG:1 31 A new version of this DCS UI is
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
-LANG:1 10 available.
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
-LANG:1 0 
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
-LANG:1 30 When you have a spare minute -
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
-LANG:1 37 please restart the DCS User Interface
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
-LANG:1 30 and the update will be applied
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
-LANG:1 14 automatically.
 2 38
-"lblNewVersion1"
+"lblNewVersion"
 ""
 1 860 10 E E E 1 E 0 E N "_WindowText" E N "warningWentUna" E E
  E E
@@ -714,13 +665,189 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 860 10 1013 24
-1 2 2 "0s" 0 0 0 192 0 0  860 10 1
+E E 0 1 1 2 1 E U  1 E 860 10 1013 40
+1 2 2 "0s" 0 0 0 192 0 0  860 10 2
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 33 New version (1.0.22) is available
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 28 Restart the UI when possible
+2 39
+"PRIMITIVE_TEXT1"
+""
+1 1130 35 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+52 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 1130 35 1328 49
+0 2 2 "0s" 0 0 0 192 0 0  1130 35 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 39 Known problem (something is masked out)
+2 40
+"PRIMITIVE_TEXT2"
+""
+1 1120 34 E E E 1 E 1 E N "white" E N "_3DText" E E
+ E E
+53 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 1120 34 1124 51
+0 2 2 "0s" 0 0 0 192 0 0  1120 34 1
+1
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 1 !
+30 46
+"FRAME4"
+""
+1 900 863 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+59 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+  waitForEmuUiInitialize();
+    
+  int posX, posY;
+  getValue(\"\", \"position\", posX, posY);
+  posX += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_X;
+  posY += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y;
+  
+  string refName = \"CommunicationStatusView_EMU\";
+  string group = emuui_getSessionDp(\"communicationMonitor\");
+  addSymbol(myModuleName(), myPanelName(),
+            \"objects/\" + EMUUI_COMPONENT_NAME + \"/refCommunication.pnl\",
+            refName,
+            makeDynString(\"$group:\" + group),
+            posX, posY, 0, 1, 1);
+}" 0
+ E 0 0 1 0 1 E 0.894736842105263 0 1 104.736842105263 -3 0 E 900 863 1091 1081
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 20 Communication Status
+7 47
+"legendImgNoCommunication"
+""
+1 85 215 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ "main()
+{
+  showPopupMenu();
+}" 0
+ "main()
+{
+  openFsmPanel();
+}" 0
+
+61 0 0 0 0 0
+E E "main(bool enter)
+{
+  mouseOverObjects[this.name] = enter;
+  if (enter) {
+    setValue(shapeName, \"foreCol\", \"black_yellow\");
+    showTooltip();
+  } else {
+    setValue(shapeName, \"foreCol\", \"\");
+    hideTooltip();
+  }
+}" 0
+
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 0.666666666666667 0 0.666666666666667 1309.33333333333 -100.333333333333 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4294967295 E 85 215 15 15
+2 48
+"PRIMITIVE_TEXT3"
+""
+1 1380 35 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+62 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 0.991071428571429 0 1 22.232142857143 5 1 E 1370 30 1482 44
+0 2 2 "0s" 0 0 0 192 0 0  1370 30 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 21 Communication problem
+4 49
+"LINE1"
+""
+1 1108 4 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+63 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  1108 4 1108 54
+4 50
+"LINE2"
+""
+1 1108 3 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+64 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  1108 3 1118 3
+4 51
+"LINE3"
+""
+1 1108 54 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+65 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  1108 54 1118 54
 0
 LAYER, 1 
 1
