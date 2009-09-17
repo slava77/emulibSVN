@@ -1,8 +1,8 @@
 mudcsMrtnDbCreateMain(){
 int i;
+string emu_side;
 
-
-mudcsMrtnPnlInit();
+emu_side=mudcsMrtnPnlInit();
 mudcsMrtn_create_mrtn_database_type();
 dpCreate("db_mrtn","Db_MRTN");
 mudcsMrtn_fill_mrtn_database();
@@ -35,7 +35,13 @@ mudcsMrtn_fill_mrtn_database(){
 //dynAppend(db,"CR1_PL500;2");
   
 // addresses are decimal !!!!!!!!!  
-  
+
+if(emu_side=="_904"){
+dynAppend(db,"904_CR1;2");dynAppend(db_geog,"X4S51");//1
+//dynAppend(db,"M4_CR2;2");dynAppend(db_geog,"X2V51");//2
+      
+} 
+else{   
   
 dynAppend(db,"M4_CR1;37");dynAppend(db_geog,"X4S51");//37
 dynAppend(db,"M4_CR2;38");dynAppend(db_geog,"X2V51");//38
@@ -112,6 +118,7 @@ dynAppend(db,"P4_CR6;");dynAppend(db_geog,"");//
 dynAppend(db,"P4_CR7;");dynAppend(db_geog,"");//
 dynAppend(db,"P4_CR8;");dynAppend(db_geog,"");//
 
+}
 dpSetWait("db_mrtn.list",db);
 dpSetWait("db_mrtn_geographic.list",db_geog); 
   

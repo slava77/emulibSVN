@@ -1,12 +1,14 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 240 292 N "_3DFace" 0
+PANEL,-1 -1 240 360 N "_3DFace" 0
 "main()
 {
-  mudcsMrtnPnlInit();
+  string emu_side=mudcsMrtnPnlInit();
  channel_dps=dpNames(\"*\",\"FwWienerMarathonChannel\");
  //DebugTN(channel_dps);
+ if(!CSC_fwCAN2_g_ISNEWOPCSERVER){
+ 
  	listOfElement = makeDynString(\"VoltageSetpoint\",
 									\"VoltageFineAdjust\",
 									\"CurrentLimitSetpoint\",
@@ -15,10 +17,50 @@ PANEL,-1 -1 240 292 N "_3DFace" 0
 									\"OverVoltProtection\",
 									\"MinCurrentCompSetpoint\",
 									\"OverCurrentCompSetpoint\");
+  }
+ else {// new OPC server
+   
+listOfElement = makeDynString(\"Voltage\",
+\"VoltageFineAdjust\",
+\"Current\",
+\"SupervisionMinSenseVoltage\",
+\"SupervisionMaxSenseVoltage\",
+\"SupervisionMaxTerminalVoltage\",
+\"MinCurrentCompSetpoint\", // fake 
+\"SupervisionMaxCurrent\");   
+   
+   
+   
+   
+   
+ }
   dyn_int individual_ids;
  dyn_int individual_chs;
  dyn_int individual_dpes;
- dyn_float individual_vals;       
+ dyn_float individual_vals; 
+ //================================================
+ 
+// mudcsLvDebug(emu_side);
+ 
+ if(emu_side==\"\"){
+   setValue(\"prod_MZ_MX\",\"enabled\",true);
+   setValue(\"prod_MZ_PX\",\"enabled\",true);
+   setValue(\"prod_PZ_MX\",\"enabled\",true);
+   setValue(\"prod_PZ_PX\",\"enabled\",true);         
+ }
+ else if(emu_side==\"_P\"){
+   setValue(\"prod_PZ_MX\",\"enabled\",true);
+   setValue(\"prod_PZ_PX\",\"enabled\",true);   
+ }
+ else if(emu_side==\"_M\"){
+   setValue(\"prod_MZ_MX\",\"enabled\",true);
+   setValue(\"prod_MZ_PX\",\"enabled\",true);   
+ }
+ else if(emu_side==\"_DEV\"){
+   setValue(\"prod_904\",\"enabled\",true);
+ }  
+ 
+       
 }" 0
  E E E E 1 -1 -1 0  0 10
 ""0  1
@@ -121,7 +163,9 @@ float readback;
 //     dpGet(dp+\"Readback.Settings.\"+listOfElement[i],readback);
 //     if(fabs(set[i]-readback) <0.2)break; 
 //      }
-     delay(1);
+//     delay(1);
+     if(!CSC_fwCAN2_g_ISNEWOPCSERVER)delay(1);
+     else delay(0,10);
     }
 }
 
@@ -137,7 +181,7 @@ LAYER, 0
 1
 LANG:1 0 
 13 0
-"PUSH_BUTTON1"
+"test_PZ_MX"
 ""
 1 20 40 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
  E E
@@ -217,7 +261,7 @@ main()
 " 0
  E E E
 13 1
-"PUSH_BUTTON2"
+"prod_PZ_MX"
 ""
 1 120 40 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
  E E
@@ -229,9 +273,9 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
- 118 38 212 72
+ 118 38 222 72
 
 T 
 1
@@ -265,13 +309,13 @@ main()
 //====================================================================  
 //=================================================================== 
   
-  groups[1]=makeDynInt(6,14); // maratons IDs for group 1
-  groups[2]=makeDynInt(3,4,5,11,12,13); // maratons IDs for group 2
-  groups[3]=makeDynInt(17); // maratons IDs for group 3
-//  groups[1]=makeDynInt(14); // maratons IDs for group 1
-//  groups[2]=makeDynInt(11); // maratons IDs for group 2
-//  groups[3]=makeDynInt(); // maratons IDs for group 3 
-  groups[4]=makeDynInt(); // maratons IDs for group 4
+//  groups[1]=makeDynInt(6,14); // maratons IDs for group 1
+//  groups[2]=makeDynInt(3,4,5,11,12,13); // maratons IDs for group 2
+//  groups[3]=makeDynInt(17); // maratons IDs for group 3
+/////  groups[1]=makeDynInt(14); // maratons IDs for group 1
+/////  groups[2]=makeDynInt(11); // maratons IDs for group 2
+/////  groups[3]=makeDynInt(); // maratons IDs for group 3 
+  groups[4]=makeDynInt(19); // maratons IDs for group 4
   groups[5]=makeDynInt(); // maratons IDs for group 5
   groups[6]=makeDynInt(); // maratons IDs for group 6
   groups[7]=makeDynInt(); // maratons IDs for group 7
@@ -302,8 +346,23 @@ main()
   settings_group3[4]=makeDynFloat(5.5,0.,150.,0.,8.4,9.,0.,165.); //channel 4
   settings_group3[5]=makeDynFloat(0.0,0.,55.,0.,8.4,9.,0.,55.); //channel 5
   settings_group3[6]=makeDynFloat(7.0,0.,100.,0.,8.4,9.,0.,110.); //channel 6
- 
-  
+
+  settings_group4[1]=makeDynFloat(8.0,0.,150.,0.,8.4,9.,0.,165.); //channel U0
+  settings_group4[2]=makeDynFloat(5.5,0.,50.,0.,8.4,9.,0.,55.); //channel U1
+  settings_group4[3]=makeDynFloat(8.0,0.,100.,0.,8.4,9.,0.,110.); //channel U3
+  settings_group4[4]=makeDynFloat(0.0,0.,150.,0.,8.4,9.,0.,165.); //channel U4
+  settings_group4[5]=makeDynFloat(7.0,0.,50.,0.,8.4,9.,0.,55.); //channel U5
+  settings_group4[6]=makeDynFloat(0.0,0.,100.,0.,8.4,9.,0.,110.); //channel U7
+
+  /* 
+ MRTN 19   
+    
+U5   PC+4/2 - 6.5V
+U1   PC+4/2 - 4.5V
+U3   JB+4/1 - 8.0V - ANalog
+U0   JB+4/1 - 8.0V - DIGital
+
+*/
 //=================================================================================
  mudcsMrtnSettingsAll();
   mudcsLvDebug(\"done\");
@@ -313,7 +372,7 @@ main()
 " 0
  E E E
 13 2
-"PUSH_BUTTON3"
+"test_PZ_PX"
 ""
 1 20 80 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
  E E
@@ -393,7 +452,7 @@ main()
 " 0
  E E E
 13 3
-"PUSH_BUTTON4"
+"prod_PZ_PX"
 ""
 1 120 80 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
  E E
@@ -405,9 +464,9 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
- 118 78 212 112
+ 118 78 222 112
 
 T 
 1
@@ -445,7 +504,7 @@ main()
   groups[2]=makeDynInt(2,7,8,10,15,16); // maratons IDs for group 2
   groups[3]=makeDynInt(18); // maratons IDs for group 3
 //  groups[1]=makeDynInt(); // maratons IDs for group 1
-//  groups[2]=makeDynInt(15,16); // maratons IDs for group 2
+//  groups[2]=makeDynInt(8); // maratons IDs for group 2
 //  groups[3]=makeDynInt(); // maratons IDs for group 3 
   groups[4]=makeDynInt(); // maratons IDs for group 4
   groups[5]=makeDynInt(); // maratons IDs for group 5
@@ -489,9 +548,9 @@ main()
 " 0
  E E E
 13 4
-"PUSH_BUTTON5"
+"test_MZ_MX"
 ""
-1 20 170 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 20 152 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 8 0 0 0 0 0
 E E E
@@ -503,7 +562,7 @@ LANG:1 0
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
- 18 168 112 202
+ 18 150 112 184
 
 T 
 1
@@ -569,9 +628,9 @@ main()
 " 0
  E E E
 13 5
-"PUSH_BUTTON6"
+"prod_MZ_MX"
 ""
-1 120 170 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 120 152 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 10 0 0 0 0 0
 E E E
@@ -581,9 +640,9 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
- 118 168 212 202
+ 118 150 222 184
 
 T 
 1
@@ -665,9 +724,9 @@ main()
 " 0
  E E E
 13 6
-"PUSH_BUTTON7"
+"test_MZ_PX"
 ""
-1 20 210 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 20 192 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 12 0 0 0 0 0
 E E E
@@ -679,7 +738,7 @@ LANG:1 0
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
- 18 208 112 242
+ 18 190 112 224
 
 T 
 1
@@ -745,9 +804,9 @@ main()
 " 0
  E E E
 13 7
-"PUSH_BUTTON8"
+"prod_MZ_PX"
 ""
-1 120 210 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 120 192 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 14 0 0 0 0 0
 E E E
@@ -757,9 +816,9 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
- 118 208 212 242
+ 118 190 222 224
 
 T 
 1
@@ -793,12 +852,12 @@ main()
 //====================================================================  
 //=================================================================== 
   
-//  groups[1]=makeDynInt(21,29); // maratons IDs for group 1
-//  groups[2]=makeDynInt(22,27,28,30,35,36); // maratons IDs for group 2
-//  groups[3]=makeDynInt(38); // maratons IDs for group 3
-  groups[1]=makeDynInt(); // maratons IDs for group 1
-  groups[2]=makeDynInt(36); // maratons IDs for group 2
-  groups[3]=makeDynInt(); // maratons IDs for group 3 
+  groups[1]=makeDynInt(21,29); // maratons IDs for group 1
+  groups[2]=makeDynInt(22,27,28,30,35,36); // maratons IDs for group 2
+  groups[3]=makeDynInt(38); // maratons IDs for group 3
+//  groups[1]=makeDynInt(); // maratons IDs for group 1
+//  groups[2]=makeDynInt(36); // maratons IDs for group 2
+//  groups[3]=makeDynInt(); // maratons IDs for group 3 
   groups[4]=makeDynInt(); // maratons IDs for group 4
   groups[5]=makeDynInt(); // maratons IDs for group 5
   groups[6]=makeDynInt(); // maratons IDs for group 6
@@ -863,7 +922,7 @@ LANG:1 7 +Z SIDE
 2 9
 "PRIMITIVE_TEXT2"
 ""
-1 100 150 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 100 132 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 16 0 0 0 0 0
 E E E
@@ -873,13 +932,216 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 100 150 138 164
-0 2 2 "0s" 0 0 0 192 0 0  100 150 1
+E E 0 1 1 2 1 E U  1 E 100 132 138 146
+0 2 2 "0s" 0 0 0 192 0 0  100 132 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 7 -Z SIDE
+13 10
+"test_904"
+""
+1 20 292 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 18 290 112 324
+
+T 
+1
+LANG:1 16 TEST 904 config
+
+"
+
+
+
+main()
+{
+
+
+//========== Individual settings =======================
+// 1\"VoltageSetpoint\",    
+// 2\"VoltageFineAdjust\",
+// 3\"CurrentLimitSetpoint\",
+// 4\"UnderVoltCompSetpoint\",
+// 5\"OverVoltCompSetpoint\",
+// 6\"OverVoltProtection\",
+// 7\"MinCurrentCompSetpoint\",
+// 8\"OverCurrentCompSetpoint\",
+  
+// example:  
+// dynAppend(individual_ids,9);
+// dynAppend(individual_chs,1); // cross channel number !!! (1,2,3,4,5,6)
+// dynAppend(individual_dpes,1); // element index 
+// dynAppend(individual_vals,5.5);
+ 
+//======================================================= 
+//====================================================================  
+//=================================================================== 
+  
+  groups[1]=makeDynInt(2); // maratons IDs for group 1
+//    groups[1]=makeDynInt(1,2,7,8,9,10,15,16,18); // maratons IDs for group 1
+  groups[2]=makeDynInt(); // maratons IDs for group 2
+  groups[3]=makeDynInt(); // maratons IDs for group 3
+  groups[4]=makeDynInt(); // maratons IDs for group 4
+  groups[5]=makeDynInt(); // maratons IDs for group 5
+  groups[6]=makeDynInt(); // maratons IDs for group 6
+  groups[7]=makeDynInt(); // maratons IDs for group 7
+  groups[8]=makeDynInt(); // maratons IDs for group 8
+  groups[9]=makeDynInt(); // maratons IDs for group 9
+  groups[10]=makeDynInt(); // maratons IDs for group 10        
+//===============================================================================
+
+  
+ 
+  settings_group1[1]=makeDynFloat(0.5,0.,0.5,0.,8.4,9.,0.,0.5); //channel 1
+  settings_group1[2]=makeDynFloat(0.7,0.,0.5,0.,8.4,9.,0.,0.5); //channel 2
+  settings_group1[3]=makeDynFloat(0.9,0.,0.5,0.,8.4,9.,0.,0.5); //channel 3
+  settings_group1[4]=makeDynFloat(1.1,0.,0.5,0.,8.4,9.,0.,0.5); //channel 4
+  settings_group1[5]=makeDynFloat(1.3,0.,0.5,0.,8.4,9.,0.,0.5); //channel 5
+  settings_group1[6]=makeDynFloat(1.5,0.,0.5,0.,8.4,9.,0.,0.5); //channel 6
+  
+  
+//=================================================================================
+ mudcsMrtnSettingsAll();
+ mudcsLvDebug(\"done\");
+}
+
+
+" 0
+ E E E
+13 11
+"prod_904"
+""
+1 120 170 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 118 288 222 324
+
+T 
+1
+LANG:1 15 PROD 904 config
+"
+
+
+
+main()
+{
+
+ 
+//========== Individual settings =======================
+// 1\"VoltageSetpoint\",    
+// 2\"VoltageFineAdjust\",
+// 3\"CurrentLimitSetpoint\",
+// 4\"UnderVoltCompSetpoint\",
+// 5\"OverVoltCompSetpoint\",
+// 6\"OverVoltProtection\",
+// 7\"MinCurrentCompSetpoint\",
+// 8\"OverCurrentCompSetpoint\",
+  
+// example:  
+// dynAppend(individual_ids,9);
+// dynAppend(individual_chs,1); // cross channel number !!! (1,2,3,4,5,6)
+// dynAppend(individual_dpes,1); // element index 
+// dynAppend(individual_vals,5.5);
+ 
+//======================================================= 
+//====================================================================  
+//=================================================================== 
+  
+  groups[1]=makeDynInt(); // maratons IDs for group 1
+  groups[2]=makeDynInt(); // maratons IDs for group 2
+  groups[3]=makeDynInt(); // maratons IDs for group 3
+//  groups[1]=makeDynInt(14); // maratons IDs for group 1
+//  groups[2]=makeDynInt(11); // maratons IDs for group 2
+//  groups[3]=makeDynInt(); // maratons IDs for group 3 
+  groups[4]=makeDynInt(2); // maratons IDs for group 4
+  groups[5]=makeDynInt(); // maratons IDs for group 5
+  groups[6]=makeDynInt(); // maratons IDs for group 6
+  groups[7]=makeDynInt(); // maratons IDs for group 7
+  groups[8]=makeDynInt(); // maratons IDs for group 8
+  groups[9]=makeDynInt(); // maratons IDs for group 9
+  groups[10]=makeDynInt(); // maratons IDs for group 10        
+//===============================================================================
+
+  
+ 
+  settings_group1[1]=makeDynFloat(5.5,0.,150.,0.,8.4,9.,0.,165.); //channel 1
+  settings_group1[2]=makeDynFloat(5.5,0.,55.,0.,8.4,9.,0.,55.); //channel 2
+  settings_group1[3]=makeDynFloat(7.0,0.,100.,0.,8.4,9.,0.,110.); //channel 3
+  settings_group1[4]=makeDynFloat(5.5,0.,150.,0.,8.4,9.,0.,165.); //channel 4
+  settings_group1[5]=makeDynFloat(7.0,0.,50.,0.,8.4,9.,0.,55.); //channel 5
+  settings_group1[6]=makeDynFloat(7.0,0.,100.,0.,8.4,9.,0.,110.); //channel 6
+  
+  settings_group2[1]=makeDynFloat(8.0,0.,150.,0.,8.4,9.,0.,165.); //channel 1
+  settings_group2[2]=makeDynFloat(5.5,0.,55.,0.,8.4,9.,0.,55.); //channel 2
+  settings_group2[3]=makeDynFloat(8.0,0.,100.,0.,8.4,9.,0.,110.); //channel 3
+  settings_group2[4]=makeDynFloat(8.0,0.,100.,0.,8.4,9.,0.,165.); //channel 4
+  settings_group2[5]=makeDynFloat(7.0,0.,50.,0.,8.4,9.,0.,55.); //channel 5
+  settings_group2[6]=makeDynFloat(8.0,0.,110.,0.,8.4,9.,0.,110.); //channel 6
+  
+  settings_group3[1]=makeDynFloat(8.0,0.,150.,0.,8.4,9.,0.,165.); //channel 1
+  settings_group3[2]=makeDynFloat(0.0,0.,55.,0.,8.4,9.,0.,55.); //channel 2
+  settings_group3[3]=makeDynFloat(8.0,0.,100.,0.,8.4,9.,0.,110.); //channel 3
+  settings_group3[4]=makeDynFloat(5.5,0.,150.,0.,8.4,9.,0.,165.); //channel 4
+  settings_group3[5]=makeDynFloat(0.0,0.,55.,0.,8.4,9.,0.,55.); //channel 5
+  settings_group3[6]=makeDynFloat(7.0,0.,100.,0.,8.4,9.,0.,110.); //channel 6
+//===============================================================================
+// special for 904 (Petr's draft)  
+  settings_group4[1]=makeDynFloat(8.0,0.,150.,0.,8.4,9.,0.,165.); //channel 1
+  settings_group4[2]=makeDynFloat(7.0,0.,50.,0.,8.4,9.,0.,55.); //channel 5    
+  settings_group4[3]=makeDynFloat(5.5,0.,100.,0.,8.4,9.,0.,115.); //channel 4  
+  settings_group4[4]=makeDynFloat(8.0,0.,150.,0.,8.4,9.,0.,165.); //channel 1    
+  settings_group4[5]=makeDynFloat(7.0,0.,50.,0.,8.4,9.,0.,55.); //channel 5   
+  settings_group4[6]=makeDynFloat(5.5,0.,100.,0.,8.4,9.,0.,115.); //channel 4
+  
+  
+//=================================================================================
+ mudcsMrtnSettingsAll();
+  mudcsLvDebug(\"done\");
+}
+
+
+" 0
+ E E E
+2 14
+"PRIMITIVE_TEXT3"
+""
+1 100 272 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+26 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 100 272 136 286
+0 2 2 "0s" 0 0 0 192 0 0  100 272 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 7 904 Bld
 0
 LAYER, 1 
 1

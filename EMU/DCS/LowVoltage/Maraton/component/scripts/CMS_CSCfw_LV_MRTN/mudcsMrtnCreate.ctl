@@ -21,20 +21,29 @@
 #uses "fwDeviceEditorNavigator/fwDeviceEditorNavigatorClipboard.ctl"
 
 
-main() {
-  int state;
-  while (1) {
-    DebugTN("POSTINSTALLING IS RUNNING: please wait");
-    delay(5);
-    dpGet("_WienerOPCServer.ServerState", state);
-    if (state == 1)break;
+main(){
+ int state, state1, count=0;
+ while(1){
+ 
+ DebugTN("POSTINSTALLING IS RUNNING: please wait");
+ delay(5);
+ dpGet("_WienerOPCServer.ServerState",state);
+ dpGet("_WienerMarathonOPCServer.ServerState",state1);
+ if(state==1 || state1==1)break;
+ count++;
+ if(count>5){
+  DebugTN("CSC POSTINSTALL:  OPC server is NOT running, probably SIM is running?, I am starting the POSTINSTALL ");
+  break;
   }
+ }  
+  
+ //return;
 
   mudcsMrtnHWcreateMain();
   mudcsMrtnDbCreateMain();
-  mudcsMrtnFsmCreateMain();
+  mudcsMrtnFsmCreateMain(); 
   mudcsAlertMrtnMain();
-  mudcsLvMrtnFsmPanelsAndFsmAliasesSetMain();
-  mudcsArchiveMrtnMain();
+  mudcsLvMrtnFsmPanelsAndFsmAliasesSetMain();  
+  mudcsArchiveMrtnMain();   
   exit(0);
 }

@@ -35,7 +35,7 @@ dyn_string dsCanBuses;
   if(emu_side=="_P"){
 dsCanBuses=makeDynString("CAN4","CAN5"); // CAN1 means the second socket 
 dsCratesIDsInt[1]=makeDynString(1,2,7,8,9,10,15,16,18);
-dsCratesIDsInt[2]=makeDynString(3,4,5,6,11,12,13,14,17,19);
+dsCratesIDsInt[2]=makeDynString(3,4,5,6,11,12,13,14,17);
 //dsCratesIDsInt[3]=makeDynString(21,22,27,28,29,30,35,36,38);
 //dsCratesIDsInt[4]=makeDynString(23,24,25,26,31,32,33,34,37);
   }
@@ -46,11 +46,11 @@ dsCanBuses=makeDynString("CAN6","CAN7"); // CAN1 means the second socket
 dsCratesIDsInt[1]=makeDynString(21,22,27,28,29,30,35,36,38);
 dsCratesIDsInt[2]=makeDynString(23,24,25,26,31,32,33,34,37);
   }
-  else if(emu_side=="_DEV"){
-dsCanBuses=makeDynString("CAN0");//,"CAN1"); // CAN1 means the second socket 
+  else if(emu_side=="_904"){
+dsCanBuses=makeDynString("CAN1");//,"CAN1"); // CAN1 means the second socket 
 //dsCratesIDsInt[1]=makeDynString(1,2,7,8,9,10,15,16,18);
 //dsCratesIDsInt[2]=makeDynString(3,4,5,6,11,12,13,14,17);
-dsCratesIDsInt[1]=makeDynString(10);
+dsCratesIDsInt[1]=makeDynString(2);
 //dsCratesIDsInt[2]=makeDynString(23,24,25,26,31,32,33,34,37);
   }  
   else if(emu_side==""){
@@ -59,16 +59,6 @@ dsCratesIDsInt[1]=makeDynString(1,2,7,8,9,10,15,16,18);
 dsCratesIDsInt[2]=makeDynString(3,4,5,6,11,12,13,14,17);
 dsCratesIDsInt[3]=makeDynString(21,22,27,28,29,30,35,36,38);
 dsCratesIDsInt[4]=makeDynString(23,24,25,26,31,32,33,34,37);
-
-if(CSC_fwCAN2_g_904_MACHINE && !CSC_fwCAN2_g_P5_SIM){
-dsCanBuses=makeDynString("CAN0","CAN5","CAN6","CAN7"); // CAN1 means the second socket 
-dsCratesIDsInt[1]=makeDynString(1,2,7,8,9,10,15,16,18);
-dsCratesIDsInt[2]=makeDynString(3,4,5,6,11,12,13,14,17);
-dsCratesIDsInt[3]=makeDynString(21,22,27,28,29,30,35,36,38);
-dsCratesIDsInt[4]=makeDynString(23,24,25,26,31,32,33,34,37);  
-  
-}
-
   }  
   
 //dsCratesIDsInt[1]=makeDynString(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20);
@@ -99,11 +89,8 @@ PVSS00ui1:2007.02.20 15:30:52.623["i=end"]
 PVSS00ui1:2007.02.20 15:30:52.623["i=end"]
 PVSS00ui1:2007.02.20 15:30:52.623["i=end"]
 */
-if(CSC_fwCAN2_g_ISNEWOPCSERVER)
-device=makeDynString(dsCanBuses[iBus],"FwWienerCanBus","","CAN Bus");//"Wiener CAN Bus");
-else
+
 device=makeDynString(dsCanBuses[iBus],"FwWienerCanBus","","Wiener CAN Bus");
-  
 parentDevice=makeDynString(CSC_fwCAN2_g_SYSTEM_NAME+":"+"Wiener","","",""); 
   
 //device=makeDynString("","","","");
@@ -137,11 +124,7 @@ PVSS00ui1:2007.02.20 15:33:26.622["i=end"]
 PVSS00ui1:2007.02.20 15:33:26.622["i=end"]
 */
  
-if(CSC_fwCAN2_g_ISNEWOPCSERVER)   
-device=makeDynString(dsCratesIDs[iBus][iCr],"FwWienerMarathon","","PL508 Crate (CAN)");//"PL508-DO Crate (CAN)");//"Wiener Marathon (CAN)");
-else
 device=makeDynString(dsCratesIDs[iBus][iCr],"FwWienerMarathon","","Wiener Marathon (CAN)");
-
 parentDevice=makeDynString(CSC_fwCAN2_g_SYSTEM_NAME+":"+"Wiener/"+dsCanBuses[iBus],"","","");
 
         DebugTN("+++++++++++++device "+device);
@@ -169,11 +152,7 @@ PVSS00ui1:2007.02.20 15:35:54.510["i=end"]
 PVSS00ui1:2007.02.20 15:35:54.510["i=end"]
 */
 
-if(CSC_fwCAN2_g_ISNEWOPCSERVER)    
-device=makeDynString("Channel"+dsChannels[iCh],"FwWienerMarathonChannel","","PL508 Channel (CAN)");//"Marathon Channel (CAN)");
-else
 device=makeDynString("Channel"+dsChannels[iCh],"FwWienerMarathonChannel","","Marathon Channel (CAN)");
-  
 parentDevice=makeDynString(CSC_fwCAN2_g_SYSTEM_NAME+":"+"Wiener/"+dsCanBuses[iBus]+"/"+dsCratesIDs[iBus][iCr],"","","");
   
 

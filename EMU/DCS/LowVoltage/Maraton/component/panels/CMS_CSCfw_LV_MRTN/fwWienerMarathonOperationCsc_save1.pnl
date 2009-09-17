@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 8 (NoName)
-PANEL,-1 -1 769 526 N "_3DFace" 2
+PANEL,-1 -1 749 500 N "_3DFace" 2
 "$node"
 "$sDpName"
 "//=========--- my_corr---------------------------==========================================
@@ -21,9 +21,8 @@ string get_geographic(string DpName){
   }  
   return s1;
 }
-
 main()
-{
+{ 
 //--- my_corr--------------------------- 
   
   mudcsMrtnPnlInit($node);  
@@ -45,29 +44,19 @@ if(is_local_sys){
   }
 position=get_geographic(DpName);
 setValue(\"geographic\",\"text\",position);
-
-bool is_invalid;
-dpGet(DpName + \".Status.On:_online.._invalid\", is_invalid);
-if(is_invalid){
-  setValue(\"NOT_CONNECTED\",\"visible\",true);
-}
-else{
-  setValue(\"NOT_CONNECTED\",\"visible\",false);
-  
-}
-//  mudcsLvDebug(is_invalid);
-//-------------------------------------------  
+  //mudcsLvDebug(DpName);
+//-----------------------------------------  
 	string model;
 	dyn_string exceptionInfo;
 
-	fwDevice_getModel(makeDynString($sDpName), model, exceptionInfo);
+	fwDevice_getModel(makeDynString(DpName), model, exceptionInfo);
 
 	if(strpos(model, \"(CAN)\") > 0)
 	{
 		string deviceName;
 		int devicePosition;
 	
-		fwDevice_getPosition($sDpName, deviceName, devicePosition, exceptionInfo);
+		fwDevice_getPosition(DpName, deviceName, devicePosition, exceptionInfo);
 		psIdField.text = devicePosition;
 		Tab1.namedRegisterVisible(\"groups\") = FALSE;
 		psId.text = \"CAN Bus ID:\";
@@ -82,21 +71,13 @@ else{
 		g_Model = \"TCP/IP\";
 //DebugN(\"IS TCP/IP\");
 	}
-        
-        if(strpos(model, \"RCM\") >= 0)
-        {
-          inhibitText.visible = FALSE;
-          hideInhibitLed.visible = TRUE;
-        }
 	
-	dpConnect(\"_fwOperatingTimeCB\", TRUE, $sDpName + \".UpTime:_online.._value\");
-	dpConnect(\"_fwOperatingTimeCB\", TRUE, $sDpName + \".OperatingTime:_online.._value\");
+	dpConnect(\"_fwOperatingTimeCB\", TRUE, DpName + \".UpTime:_online.._value\");
 }" 0
  E E E E 1 -1 -1 0  15 70
 ""0  1
 E "string DpName; // my_corr
 string g_Model;
-
 
 //-------- my_corr---------------------------
 trending(string DpName) 
@@ -173,11 +154,7 @@ _fwOperatingTimeCB(string dpe, string value)
 	s = floor(operatingTime);
 	
 	sprintf(value, \"%d days %02d:%02d:%02d\", d, h, m, s);
-        
-        if(strpos(dpe, \"OperatingTime\") >= 0)
-         	operatingTimeField.text(value);
-        else
-         	upTimeField.text(value);
+	operatingTimeField.text(value);
 }
 
 fwWriteValue(string sDpe, int value)
@@ -199,14 +176,14 @@ EP_textFieldIn()
 {
 dyn_errClass err;
 
-  if( !dpExists( $sDpName + \".ipNumber:_online.._value\"))
+  if( !dpExists( DpName + \".ipNumber:_online.._value\"))
   {
     setValue(\"psIdField\", \"color\", \"_dpdoesnotexist\");
     return;
   }
 
   dpConnect(\"EP_textFieldInCB\",
-            $sDpName + \".ipNumber:_online.._value\");
+            DpName + \".ipNumber:_online.._value\");
   err = getLastError();
   if (dynlen(err) > 0)
     setValue(\"psIdField\", \"color\", \"_dpdoesnotexist\");
@@ -246,16 +223,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 10 10 277 33
+E E 0 1 1 0 1 E U  0 E 10 10 297 33
 0 0 0 "0s" 0 0 0 192 0 0  10 10 1
 1
 LANG:1 84 -*-Arial-*-r-normal-*-19-*-100-100-*-*-iso8859-1|-19,0,0,0,404,0,0,0,0,0,0,0,0,Arial
 0 ""
 1
-LANG:1 28 PL508 Power Supply Operation
-1 369 13 "" 19
+LANG:1 31 Marathon Power Supply Operation
+1 261 13 "" 19
 0
-1 370 13 "" 18
+1 262 13 "" 18
 0
 2 170
 "Text6"
@@ -317,6 +294,25 @@ LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0
 0 ""
 1
 LANG:1 12 Description:
+30 176
+"Frame1"
+""
+1 10 350 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+86 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 10 180 215 350
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 6 Status
 30 177
 "Frame2"
 ""
@@ -330,7 +326,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E 1 0 1 0 80 0 E 10 370 215 440
+E E 0 1 1 0 1 E U  0 E 10 370 215 440
 1
 LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
 0 ""
@@ -339,7 +335,7 @@ LANG:1 8 Commands
 2 181
 "Text5"
 ""
-1 43.6666666666665 222.333333333335 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+1 44 208 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
  E E
 92 0 0 0 0 0
 E E E
@@ -372,8 +368,8 @@ EP_textFieldInCB(string dp, bool boNewValue)
 	else
 		this.text = \"Power OFF\";
 }" 0
- E 0 1 1 0 1 E U  0 E 45.6666666666665 194.333333333335 103 211
-0 2 0 "0s" 0 0 0 192 0 0  45.6666666666665 194.333333333335 1
+ E 0 1 1 0 1 E U  0 E 46 210 103 227
+0 2 0 "0s" 0 0 0 192 0 0  46 210 1
 1
 LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
 0 ""
@@ -382,7 +378,7 @@ LANG:1 8 (ON/OFF)
 2 188
 "Text2"
 ""
-1 51 447.000000000001 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+1 53 472 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
  E E
 95 0 0 0 0 0
 E E E
@@ -392,17 +388,37 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 17 259.000000000001 69 276
-0 2 2 "0s" 0 0 0 192 0 0  17 259.000000000001 1
+E E 0 1 1 0 1 E U  0 E 19 314 71 331
+0 2 2 "0s" 0 0 0 192 0 0  19 314 1
 1
 LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
 0 ""
 1
 LANG:1 8 Up Time:
+2 189
+"Text8"
+""
+1 28 383 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+96 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 19 280 113 297
+0 2 0 "0s" 0 0 0 192 0 0  19 280 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 15 Remote Control:
 2 191
 "Text3"
 ""
-1 45 627 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+1 45 562 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
  E E
 98 0 0 0 0 0
 E E E
@@ -412,8 +428,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 22 479 62 496
-0 2 2 "0s" 0 0 0 192 0 0  22 479 1
+E E 0 1 1 0 1 E U  0 E 22 404 62 421
+0 2 2 "0s" 0 0 0 192 0 0  22 404 1
 1
 LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
 0 ""
@@ -422,7 +438,7 @@ LANG:1 6 Power:
 2 192
 "Text4"
 ""
-1 15 358.000000000001 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+1 17 347 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
  E E
 99 0 0 0 0 0
 E E E
@@ -432,8 +448,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 17 225.000000000001 118 242
-0 2 0 "0s" 0 0 0 192 0 0  17 225.000000000001 1
+E E 0 1 1 0 1 E U  0 E 19 244 120 261
+0 2 0 "0s" 0 0 0 192 0 0  19 244 1
 1
 LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
 0 ""
@@ -482,7 +498,7 @@ LANG:1 6 (psId)
 28 210
 "Tab1"
 ""
-1 487 319 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+1 472.41586073501 319 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
  E E
 105 0 0 0 0 0
 E E E
@@ -494,7 +510,7 @@ LANG:1 0
 1
 LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
 0 ""
- 248 158 769 452
+ 238 158 749 452
 E2 "channels" 1
 LANG:1 8 Channels
 1 "objects\\fwWiener\\fwWienerChannelsOverview.pnl" 1
@@ -515,7 +531,7 @@ LANG:1 0
 13 13
 "Button8"
 ""
-1 660 476 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 660 460 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 14 0 0 0 0 0
 E E E
@@ -527,7 +543,7 @@ LANG:1 0
 1
 LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
 0 ""
- 658 474 742 508
+ 658 458 742 492
 
 T 
 1
@@ -537,11 +553,11 @@ LANG:1 5 Close
 	PanelOff();
 }" 0
  E E E
-1 371 14 "" 0
+1 263 14 "" 0
 0
-1 372 15 "" 0
+1 264 15 "" 0
 0
-1 373 15 "" 1
+1 265 15 "" 1
 0
 14 173
 "sBusId"
@@ -566,11 +582,6 @@ LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0
 
 	fwDevice_getModel(makeDynString($sDpName), modelName, exceptionInfo);
 	this.text = modelName;
-        
-        if(strpos(modelName, \"DO\") >= 0)
-          outputInhibits.visible = TRUE;
-        else
-          outputInhibits.visible = FALSE;
 	
 	if(dynlen(exceptionInfo)>0)
 	{
@@ -622,9 +633,9 @@ LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0
 " 0
  E
 13 178
-"onButton"
+"Button1"
 ""
-1 73 471 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 70 400 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 88 0 0 0 0 0
 E E E
@@ -636,38 +647,20 @@ LANG:1 0
 1
 LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
 0 ""
- 71 469 128 503
+ 68 398 125 432
 
 T 
 1
 LANG:1 2 On
 "main()
 {
-	dpSet($sDpName + \".Settings.OnOffCrate:_original.._value\", TRUE);
+	dpSet(DpName + \".Settings.OnOffCrate:_original.._value\", TRUE);
 }" 0
- E E "main()
-{
-	dpConnect(\"fwSetPowerButtons\", TRUE, $sDpName + \".Status.On:_online.._value\");
-}
-
-fwSetPowerButtons(string dpe, bool powerOn)
-{
-	if(powerOn)
-	{
-		onButton.enabled = FALSE;
-		offButton.enabled = TRUE;
-	}
-	else
-	{
-		onButton.enabled = TRUE;
-		offButton.enabled = FALSE;
-	}
-}" 0
-
+ E E E
 13 179
-"offButton"
+"Button2"
 ""
-1 144 471 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 140 400 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 89 0 0 0 0 0
 E E E
@@ -679,20 +672,20 @@ LANG:1 0
 1
 LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
 0 ""
- 142 469 199 503
+ 138 398 195 432
 
 T 
 1
 LANG:1 3 Off
 "main()
 {
-	dpSet($sDpName + \".Settings.OnOffCrate:_original.._value\", FALSE);
+	dpSet(DpName + \".Settings.OnOffCrate:_original.._value\", FALSE);
 }" 0
  E E E
 14 186
-"upTimeField"
+"operatingTimeField"
 ""
-1 72 254.000000000001 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+1 72 310 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
  E E
 93 0 0 0 0 0
 E E E
@@ -704,22 +697,50 @@ LANG:1 0
 1
 LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
 0 ""
- 70 252.000000000001 207 279.000000000001
-2 "0s" 0 0 0 2 0 -1  "main()
-{
-	dyn_string exceptionInfo;
-
-	fwGeneral_openDetailsPanel($sDpName + \".UpTime\", exceptionInfo); 
-}" 0
- "main()
+ 70 308 207 335
+2 "0s" 0 0 0 2 0 -1  E "main()
 {
 	dpConnect(\"InvalidColour\", TRUE, $sDpName + \".UpTime:_online.._invalid\");
+}" 0
+ E
+14 190
+"LocalControlOnly"
+""
+1 171 407 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+97 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 123 273 207 300
+2 "0s" 0 0 0 0 0 -1  E "main()
+{
+	string sDpe;
+
+	sDpe = this.name;
+
+	dpConnect(\"EP_textFieldInCB\", TRUE, $sDpName + \".Status.\" + sDpe + \":_online.._value\");
+	dpConnect(\"InvalidColour\", TRUE, $sDpName + \".Status.\" + sDpe + \":_online.._invalid\");
+}
+
+EP_textFieldInCB(string dp, bool boNewValue)
+{
+	if(boNewValue)
+		this.text = \"DISABLED\";
+	else
+		this.text = \"ENABLED\";
 }" 0
  E
 14 193
 "OutputFailure"
 ""
-1 171 353.000000000001 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+1 171 372 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
  E E
 100 0 0 0 0 0
 E E E
@@ -731,14 +752,8 @@ LANG:1 0
 1
 LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
 0 ""
- 123 219.000000000001 207 246.000000000001
-2 "0s" 0 0 0 0 0 -1  "main()
-{
-	dyn_string exceptionInfo;
-
-	fwGeneral_openDetailsPanel($sDpName + \".Status.\" + this.name, exceptionInfo); 
-}" 0
- "main()
+ 123 238 207 265
+2 "0s" 0 0 0 0 0 -1  E "main()
 {
 	string sDpe;
 	dyn_string exceptionInfo;
@@ -845,9 +860,9 @@ LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0
 }" 0
  E
 13 226
-"temperatures"
+"outputInhibits"
 ""
-1 240 480 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 20 450 E E E 0 E 0 E N "_ButtonText" E N "_Button" E E
  E E
 107 0 0 0 0 0
 E E E
@@ -859,232 +874,7 @@ LANG:1 0
 1
 LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
 0 ""
- 238 478 362 512
-
-T 
-1
-LANG:1 12 Temperatures
-"main()
-{
-	string panelName;
-	
-	panelName = \"fwWiener/fwWienerUnifiedTemperaturesDetail\";
-
-	if(!isModuleOpen(\"PL508 Temperature Details\")) 
-			ModuleOn(\"PL508 Temperature Details\",100,100,100,100,1,1,1,\"\");
-	
-	RootPanelOnModule(panelName + \".pnl\",
-					\"\", \"PL508 Temperature Details\",
-					makeDynString(\"$sDpName:\"+$sDpName));
-}" 0
- E E E
-2 249
-"trendingButtonPosition"
-""
-1 560 460 E E E 1 E 0 E N {255,0,51} E N "_Transparent" E E
- E E
-112 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 562 462 608 508
-1 2 0 "0s" 0 0 0 64 0 0  562 462 1
-1
-LANG:1 84 -*-Arial-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
-LANG:1 8 TRENDING
-14 259
-"operatingTimeField"
-""
-1 72 304.000000000001 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
- E E
-114 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 70 302.000000000001 207 329.000000000001
-2 "0s" 0 0 0 2 0 -1  "main()
-{
-	dyn_string exceptionInfo;
-
-	fwGeneral_openDetailsPanel($sDpName + \".OperatingTime\", exceptionInfo); 
-}" 0
- "main()
-{
-	dpConnect(\"InvalidColour\", TRUE, $sDpName + \".OperatingTime:_online.._invalid\");
-}" 0
- E
-2 261
-"PRIMITIVE_TEXT3"
-""
-1 17 287.000000000001 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
- E E
-117 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 17 287.000000000001 157 323
-0 2 2 "0s" 0 0 0 192 0 0  17 287.000000000001 2
-1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
-LANG:1 22 Power Supply Operating
-1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
-LANG:1 5 Time:
-30 262
-"Frame1"
-""
-1 10 330 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
- E E
-119 0 0 0 0 0
-E E E
-1
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 0 1 E 0.999902448541609 0 1.54437869822485 0.000975514583914094 -77.1005917159755 0 E 10 160 215 330
-1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
-LANG:1 6 Status
-2 267
-"inhibitText"
-""
-1 151.666666666667 222.333333333335 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
- E E
-122 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 153.666666666667 194.333333333335 188 211
-0 2 0 "0s" 0 0 0 192 0 0  153.666666666667 194.333333333335 1
-1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
-LANG:1 7 Inhibit
-2 286
-"PRIMITIVE_TEXT4"
-""
-1 41.6666666666669 369.333333333334 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
- E E
-126 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 43.6666666666669 341.333333333334 112 358
-0 2 0 "0s" 0 0 0 192 0 0  43.6666666666669 341.333333333334 1
-1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
-LANG:1 11 Input Power
-2 291
-"PRIMITIVE_TEXT5"
-""
-1 41.6666666666669 400.333333333334 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
- E E
-129 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 43.6666666666669 372.333333333334 123 389
-0 2 0 "0s" 0 0 0 192 0 0  43.6666666666669 372.333333333334 1
-1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
-LANG:1 12 Temperatures
-2 296
-"PRIMITIVE_TEXT6"
-""
-1 41.6666666666669 432.333333333334 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
- E E
-132 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 43.6666666666669 404.333333333334 89 421
-0 2 0 "0s" 0 0 0 192 0 0  43.6666666666669 404.333333333334 1
-1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
-LANG:1 6 System
-2 301
-"PRIMITIVE_TEXT7"
-""
-1 121.666666666667 432.333333333334 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
- E E
-135 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 123.666666666667 404.333333333334 201 421
-0 2 0 "0s" 0 0 0 192 0 0  123.666666666667 404.333333333334 1
-1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
-LANG:1 13 Write Protect
-13 302
-"outputInhibits"
-""
-1 380 480 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
- E E
-137 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 378 478 502 512
+ 18 448 142 482
 
 T 
 1
@@ -1099,7 +889,7 @@ EP_childPanelOn()
 {
   ChildPanelOnCentral(\"objects/fwWiener/fwWienerInhibitsSettings.pnl\",
       \"Set Output Inhibits\",
-      makeDynString(\"$sDpName:\" + $sDpName));
+      makeDynString(\"$sDpName:\" + DpName));
 }
 
 // SimpleCtrlScript {EP_childPanelOn}
@@ -1114,240 +904,32 @@ EP_childPanelOn()
 // SimpleCtrlScriptEnd {EP_childPanelOn}
 " 0
  E E E
-13 332
-"0"
+2 237
+"PRIMITIVE_TEXT1"
 ""
-1 220 220 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 160 460 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
-139 0 0 0 0 0
+108 0 0 0 0 0
 E E E
 0
 1
 LANG:1 0 
 
-0
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 160 460 181 474
+0 2 2 "0s" 0 0 0 192 0 0  160 460 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
- 218 218 252 242
-
-T 
 1
-LANG:1 5 trend
-"main()
-{
-  string name;
-getValue(\"\",\"name\",name);
-string ch_n_text=name;
-
-//==== Trending ======
-
-  bool isTrending;
-  getValue(\"isTrending\",\"state\",0,isTrending);
-
-
-  if(isTrending)trending($sDpName+\"/Channel\"+ch_n_text);
-
-//====================
-return;
-}" 0
- E E E
-13 333
-"1"
-""
-1 220 250 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-141 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 218 248 252 272
-
-T 
-1
-LANG:1 5 trend
-"main()
-{
-  string name;
-getValue(\"\",\"name\",name);
-string ch_n_text=name;
-
-//==== Trending ======
-
-  bool isTrending;
-  getValue(\"isTrending\",\"state\",0,isTrending);
-
-
-  if(isTrending)trending($sDpName+\"/Channel\"+ch_n_text);
-
-//====================
-return;
-}" 0
- E E E
-13 334
-"3"
-""
-1 220 300 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-143 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 218 298 252 322
-
-T 
-1
-LANG:1 5 trend
-"main()
-{
-  string name;
-getValue(\"\",\"name\",name);
-string ch_n_text=name;
-
-//==== Trending ======
-
-  bool isTrending;
-  getValue(\"isTrending\",\"state\",0,isTrending);
-
-
-  if(isTrending)trending($sDpName+\"/Channel\"+ch_n_text);
-
-//====================
-return;
-}" 0
- E E E
-13 335
-"4"
-""
-1 220 330 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-145 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 218 328 252 352
-
-T 
-1
-LANG:1 5 trend
-"main()
-{
-  string name;
-getValue(\"\",\"name\",name);
-string ch_n_text=name;
-
-//==== Trending ======
-
-  bool isTrending;
-  getValue(\"isTrending\",\"state\",0,isTrending);
-
-
-  if(isTrending)trending($sDpName+\"/Channel\"+ch_n_text);
-
-//====================
-return;
-}" 0
- E E E
-13 336
-"5"
-""
-1 220 350 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-147 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 218 348 252 372
-
-T 
-1
-LANG:1 5 trend
-"main()
-{
-  string name;
-getValue(\"\",\"name\",name);
-string ch_n_text=name;
-
-//==== Trending ======
-
-  bool isTrending;
-  getValue(\"isTrending\",\"state\",0,isTrending);
-
-
-  if(isTrending)trending($sDpName+\"/Channel\"+ch_n_text);
-
-//====================
-return;
-}" 0
- E E E
-13 337
-"7"
-""
-1 220 400 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-149 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 218 398 252 422
-
-T 
-1
-LANG:1 5 trend
-"main()
-{
-  string name;
-getValue(\"\",\"name\",name);
-string ch_n_text=name;
-
-//==== Trending ======
-
-  bool isTrending;
-  getValue(\"isTrending\",\"state\",0,isTrending);
-
-
-  if(isTrending)trending($sDpName+\"/Channel\"+ch_n_text);
-
-//====================
-return;
-}" 0
- E E E
-20 338
+LANG:1 3 CSC
+20 247
 "isTrending"
 ""
-1 218 448 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+1 148 448 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
  E E
-151 0 0 0 0 0
+110 0 0 0 0 0
 E E E
 0
 1
@@ -1357,7 +939,7 @@ LANG:1 53 check Trend and click Vmon or Imon box of the channel
 1
 LANG:1 88 -*-Courier-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,505,0,0,0,0,0,0,0,0,Courier
 0 ""
- 218 448 303 478
+ 148 448 233 478
 1
 T 
 1
@@ -1370,12 +952,240 @@ E E
 0 0 0 0 0
 1
 E E
-EE2 368
+EE13 249
+"0"
+""
+1 210 220 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+112 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 208 218 242 242
+
+T 
+1
+LANG:1 5 trend
+"main()
+{
+  string name;
+getValue(\"\",\"name\",name);
+string ch_n_text=name;
+
+//==== Trending ======
+
+  bool isTrending;
+  getValue(\"isTrending\",\"state\",0,isTrending);
+
+
+  if(isTrending)trending($sDpName+\"/Channel\"+ch_n_text);
+
+//====================
+return;
+}" 0
+ E E E
+13 256
+"1"
+""
+1 210 250 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+126 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 208 248 242 272
+
+T 
+1
+LANG:1 5 trend
+"main()
+{
+  string name;
+getValue(\"\",\"name\",name);
+string ch_n_text=name;
+
+//==== Trending ======
+
+  bool isTrending;
+  getValue(\"isTrending\",\"state\",0,isTrending);
+
+
+  if(isTrending)trending($sDpName+\"/Channel\"+ch_n_text);
+
+//====================
+return;
+}" 0
+ E E E
+13 257
+"3"
+""
+1 210 300 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+128 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 208 298 242 322
+
+T 
+1
+LANG:1 5 trend
+"main()
+{
+  string name;
+getValue(\"\",\"name\",name);
+string ch_n_text=name;
+
+//==== Trending ======
+
+  bool isTrending;
+  getValue(\"isTrending\",\"state\",0,isTrending);
+
+
+  if(isTrending)trending($sDpName+\"/Channel\"+ch_n_text);
+
+//====================
+return;
+}" 0
+ E E E
+13 258
+"4"
+""
+1 210 330 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+130 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 208 328 242 352
+
+T 
+1
+LANG:1 5 trend
+"main()
+{
+  string name;
+getValue(\"\",\"name\",name);
+string ch_n_text=name;
+
+//==== Trending ======
+
+  bool isTrending;
+  getValue(\"isTrending\",\"state\",0,isTrending);
+
+
+  if(isTrending)trending($sDpName+\"/Channel\"+ch_n_text);
+
+//====================
+return;
+}" 0
+ E E E
+13 259
+"5"
+""
+1 210 350 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+132 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 208 348 242 372
+
+T 
+1
+LANG:1 5 trend
+"main()
+{
+  string name;
+getValue(\"\",\"name\",name);
+string ch_n_text=name;
+
+//==== Trending ======
+
+  bool isTrending;
+  getValue(\"isTrending\",\"state\",0,isTrending);
+
+
+  if(isTrending)trending($sDpName+\"/Channel\"+ch_n_text);
+
+//====================
+return;
+}" 0
+ E E E
+13 260
+"7"
+""
+1 210 400 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+134 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 208 398 242 422
+
+T 
+1
+LANG:1 5 trend
+"main()
+{
+  string name;
+getValue(\"\",\"name\",name);
+string ch_n_text=name;
+
+//==== Trending ======
+
+  bool isTrending;
+  getValue(\"isTrending\",\"state\",0,isTrending);
+
+
+  if(isTrending)trending($sDpName+\"/Channel\"+ch_n_text);
+
+//====================
+return;
+}" 0
+ E E E
+2 271
 "geographic"
 ""
-1 312 452 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 252 454 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
-153 0 0 0 0 0
+136 0 0 0 0 0
 E E E
 0
 1
@@ -1383,108 +1193,29 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 312 452 313 473
-0 2 2 "0s" 0 0 0 192 0 0  312 452 1
+E E 0 1 1 2 1 E U  1 E 252 454 253 475
+0 2 2 "0s" 0 0 0 192 0 0  252 454 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-120-100-100-*-*-iso8859-1|-16,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 0 
-2 398
-"NOT_CONNECTED"
-""
-1 2 142 E E E 1 E 0 E N "_Window" E N "red" E E
- E E
-155 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 2 142 242 172
-0 2 2 "0s" 0 0 0 64 0 0  2 142 2
-1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
-LANG:1 33 CAN BUS PROBLEM: CHECK OPFC is ON
-1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
-LANG:1 14 CALL LV EXPERT
 0
 LAYER, 1 
 1
 LANG:1 6 Layer2
-1 378 17 "" 4
+1 266 16 "" 4
 0
-1 379 17 "" 0
+1 267 16 "" 0
 0
-1 380 17 "" 3
+1 268 16 "" 3
 0
-1 381 17 "" 1
-0
-1 374 16 "" 4
-0
-1 375 16 "" 0
-0
-1 376 16 "" 3
-0
-1 377 16 "" 1
-0
-1 382 18 "" 4
-0
-1 383 18 "" 0
-0
-1 384 18 "" 3
-0
-1 385 18 "" 1
-0
-1 386 19 "" 4
-0
-1 387 19 "" 0
-0
-1 388 19 "" 3
-0
-1 389 19 "" 1
-0
-1 390 20 "" 4
-0
-1 391 20 "" 0
-0
-1 392 20 "" 3
-0
-1 393 20 "" 1
-0
-1 394 21 "" 4
-0
-1 395 21 "" 0
-0
-1 396 21 "" 3
-0
-1 397 21 "" 1
+1 269 16 "" 1
 0
 0
 LAYER, 2 
 1
 LANG:1 6 Layer3
-6 268
-"hideInhibitLed"
-""
-1 120 160 E E E 1 E 0 E N "_3DFace" E N "_3DFace" E E
- E E
-123 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1 0 1 0 31.0000000000009 1 E 120 160 150 190
 0
 LAYER, 3 
 1
@@ -1519,45 +1250,10 @@ LANG:1 6 Layer8
 1
 "$sDpName""$sDpName"
 3 16 "Group16"
-"objects\\fwGeneral\\fwLedWithAlert.pnl" 20 40 T 91 0.666666666666667 0 0.666666666666667 -1.00000000000006 157.666666666668
+"objects\\fwGeneral\\fwLedWithAlert.pnl" 20 40 T 91 0.666666666666667 0 0.666666666666667 -0.6666666666666 173.333333333333
 4
 "$color0""_3DFace"
 "$color1""FwStateOKPhysics"
 "$sDpName""$sDpName"
 "$sDpSubName"".Status.On"
-3 17 "inhibit"
-"objects\\fwGeneral\\fwLedWithAlert.pnl" 20 40 T 120 0.666666666666667 0 0.666666666666667 110 157.666666666668
-4
-"$color0""_3DFace"
-"$color1""FwAlarmWarnAck"
-"$sDpName""$sDpName"
-"$sDpSubName"".Status.Inhibit"
-3 18 "PANEL_REF19"
-"objects\\fwGeneral\\fwLedWithAlert.pnl" 20 40 T 124 0.666666666666667 0 0.666666666666667 -5.6843418860808e-014 304.666666666667
-4
-"$color0"""
-"$color1"""
-"$sDpName""$sDpName"
-"$sDpSubName"".Status.InputFailure"
-3 19 "PANEL_REF20"
-"objects\\fwGeneral\\fwLedWithAlert.pnl" 20 40 T 127 0.666666666666667 0 0.666666666666667 -6.3948846218409e-014 335.666666666667
-4
-"$color0"""
-"$color1"""
-"$sDpName""$sDpName"
-"$sDpSubName"".Status.SensorFailure"
-3 20 "PANEL_REF21"
-"objects\\fwGeneral\\fwLedWithAlert.pnl" 20 40 T 130 0.666666666666667 0 0.666666666666667 -6.3948846218409e-014 367.666666666667
-4
-"$color0"""
-"$color1"""
-"$sDpName""$sDpName"
-"$sDpSubName"".Status.SystemFailure"
-3 21 "PANEL_REF22"
-"objects\\fwGeneral\\fwLedWithAlert.pnl" 20 40 T 133 0.666666666666667 0 0.666666666666667 79.9999999999999 367.666666666667
-4
-"$color0""_3DFace"
-"$color1""FwStateOKPhysics"
-"$sDpName""$sDpName"
-"$sDpSubName"".Status.WriteProtect"
 0

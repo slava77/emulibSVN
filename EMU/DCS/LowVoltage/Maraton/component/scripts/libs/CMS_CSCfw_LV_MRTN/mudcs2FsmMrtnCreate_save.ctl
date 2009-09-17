@@ -20,10 +20,6 @@ mudcsMrtnFsmCreateMain()
    first_station=1;
    last_station=4;
   }
-  else if(emu_side=="_DEV"){ // corr++
-   first_station=20;
-   last_station=20; 
-  }
   else if(emu_side==""){
    first_station=1;
    last_station=8;
@@ -102,9 +98,6 @@ parent_domain=system_parent_node;
 CSC_fwCAN1_g_EmuCmsGlobalType=CSC_fwCAN1_g_NodeLogicalFsmType;
 //mudcsMrtnNameCompose("LV_CRB", station_label, emu_system_side, idisk, "", "", CSC_fwCAN1_g_EmuCmsGlobalNode);
 mudcsMrtnGetStationInforByCrossNumber(iStationCross, iStation, emu_system_side);
-if(emu_system_side == "DEV") // corr++
-CSC_fwCAN1_g_EmuCmsGlobalNode="CSC_ME_"+emu_system_side+"_LV_MRTN";
-else 
 CSC_fwCAN1_g_EmuCmsGlobalNode="CSC_ME_"+emu_system_side+iStation+"_LV_MRTN";
 
  parent_node=CSC_fwCAN1_g_EmuCmsGlobalNode;
@@ -122,10 +115,9 @@ DebugTN(CSC_fwCAN1_g_EmuCmsGlobalNode+" "+CSC_fwCAN1_g_EmuCmsGlobalParent);
 
 //----------------------
 
-if(emu_system_side == "DEV")
-sTemplate=emu_system_side+"_";
-else 
+
 sTemplate=emu_system_side+iStation+"_";
+
 
  for(i=1;i<=dynlen(list);i++){
 //DebugTN("====="+list[i]+" "+sTemplate);
@@ -223,8 +215,7 @@ DebugTN("====="+CSC_fwCAN1_g_EmuCmsGlobalNode+" "+CSC_fwCAN1_g_EmuCmsGlobalParen
 //====================================================================
 mudcsMrtnGetStationInforByCrossNumber(int iStationCross, int &iStation, string &emu_system_side){
 
-if(iStationCross==20){iStation=20;emu_system_side="DEV";}
-else if(iStationCross<=4){iStation=5-iStationCross;emu_system_side="M";}
+if(iStationCross<=4){iStation=5-iStationCross;emu_system_side="M";}
 else {iStation=iStationCross-4;emu_system_side="P";}
 
 }
