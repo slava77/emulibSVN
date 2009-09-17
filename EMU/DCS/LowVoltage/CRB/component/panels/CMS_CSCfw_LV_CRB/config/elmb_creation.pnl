@@ -23,7 +23,9 @@ E "#uses \"CMS_CSCfw_LV_CRB/emuDcsLv.ctl\"
 #uses \"CMS_CSCfw_LV_CRB/mudcs6AlertCrb.ctl\"
 #uses \"CMS_CSCfw_LV_CRB/mudcs7AlertPsu.ctl\"
 #uses \"CMS_CSCfw_LV_CRB/mudcs8SetPanelsCrb.ctl\"
-#uses \"CMS_CSCfw_LV_CRB/mudcs9ArchiveCrb.ctl\"" 0
+#uses \"CMS_CSCfw_LV_CRB/mudcs9ArchiveCrb.ctl\"
+
+#uses \"CMS_CSCfw_LV_CRB/mudcs9XAlertReconfigAllSlowControls.ctl\"" 0
  2
 "CBRef" "1"
 "EClose" E
@@ -619,7 +621,7 @@ CONFIG
 {
 mudcsAlertCrbMain();
 mudcsLvDebug(\"Done\");
- 
+ mudcsAlertReconfig(\"fwCrb_CSC_LV\", \".off_channels\",true);
 }
 
 " 0

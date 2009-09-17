@@ -12,5 +12,7 @@
         <file>./panels/CMS_CSCfw_LV_CRB/config/*.pnl</file>        
         <file>./scripts/libs/CMS_CSCfw_LV_CRB/*.ctl</file>
         <file>./scripts/CMS_CSCfw_LV_CRB/*.*</file>
-        <file>./source/CMS_CSCfw_LV_CRB/special_stuff/*</file>           
+        <file>./source/CMS_CSCfw_LV_CRB/special_stuff/*</file> 
+        <file>./source/CMS_CSCfw_LV_CRB/special_stuff/csc_dcs_lv1_install/*</file>  
+        <file>./source/CMS_CSCfw_LV_CRB/special_stuff/csc_dcs_lv2_install/*</file> 			
 </component>

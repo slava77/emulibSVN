@@ -18,25 +18,38 @@
 #uses "CMS_CSCfw_LV_CRB/mudcs8SetPanelsCrb.ctl"
 #uses "CMS_CSCfw_LV_CRB/mudcs9ArchiveCrb.ctl"
 
-main() {
+#uses "CMS_CSCfw_LV_CRB/mudcs9XAlertReconfigAllSlowControls.ctl"
 
-  int state;
-  while (1) {
-    DebugTN("POSTINSTALLING IS RUNNING: please wait");
-    delay(5);
-    dpGet("_OPCCANopen.ServerState", state);
-    if (state == 1)break;
-  }
+main(){
+  
+ int state, count=0;
+ while(1){
+ DebugTN("POSTINSTALLING IS RUNNING: please wait");
+ delay(5);
+ dpGet("_OPCCANopen.ServerState",state);
+ if(state==1)break;
+ 
+ count++;
+ if(count>5){
+  DebugTN("CSC POSTINSTALL:  OPC server is NOT running, probably SIM is running?, I am starting the POSTINSTALL ");
+  break; 
+ }
+ }
+  
+ mudcsCrbDbCreateMain();
+ mudcsCrbHWcreateMain(); 
+ mudcsPsuHWcreateMain();
+ mudcsTypeCrbCreateMain(); 
+ mudcsCrbFsmCreateMain();
+ mudcsCrbNodesConfigAccording2DbMain();
+ mudcsAlertCrbMain();
+ mudcsAlertPsuMain();
+ mudcsLvCrbFsmPanelsAndFsmAliasesSetMain(); 
+ mudcsArchiveCrbMain(); 
+ 
+  mudcsAlertReconfig("fwCrb_CSC_LV", ".off_channels", true);
 
-  mudcsCrbDbCreateMain();
-  mudcsCrbHWcreateMain();
-  mudcsPsuHWcreateMain();
-  mudcsTypeCrbCreateMain();
-  mudcsCrbFsmCreateMain();
-  mudcsCrbNodesConfigAccording2DbMain();
-  mudcsAlertCrbMain();
-  mudcsAlertPsuMain();
-  mudcsLvCrbFsmPanelsAndFsmAliasesSetMain();
-  mudcsArchiveCrbMain();
-  exit(0);
+  mudcsCrbDistConfig();
+    
+ exit(0);
 }
