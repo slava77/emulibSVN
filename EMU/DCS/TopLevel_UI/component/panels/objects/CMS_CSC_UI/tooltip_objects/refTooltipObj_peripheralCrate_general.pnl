@@ -76,6 +76,24 @@ PANEL,-1 -1 440 425 N "_3DFace" 1
       dpConnect(\"updateVMonBackColorCB\", true, aiDps[i] + \".value:_alert_hdl.._act_state_color\");
     }
   }
+  
+  // DMB Temp Dps (this is in the end, because we're using an external (Valeri's) function  here, which maybe can throw an exception - just to safe it's in the end
+  string crbDp = emuui_getDpName(\"peripheralCrate_crbDp\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  dyn_string chamberTempDps;
+  dyn_int alertChannels; // don't really need this (just to be able to call Valeri's function below)
+  mudcsCrbGetDmbTempAlerts(crbDp, dmbTempDps, alertChannels, chamberTempDps);
+  dyn_string chamberTempOffChannelsDps;
+  for (int i=1; i <= dynlen(chamberTempDps); i++) {
+    chamberTempOffChannelsDps[i] = chamberTempDps[i] + \".off_channels\";
+  }
+
+  // connect the DMB temperature DPs
+  dpConnect(\"updateDisabledDmbTempsCB\", true, chamberTempOffChannelsDps);
+  for (int i=1; i <= dynlen(dmbTempDps); i++) {
+    dpConnect(\"updateDmbTemperatureCB\", true, dmbTempDps[i]);
+    dpConnect(\"updateDmbTemperatureBackColorCB\", true, dmbTempDps[i] + \":_alert_hdl.._act_state_color\");
+  }
 }
 
 void initChannelToTableCellMapping(dyn_string &ex) {
@@ -133,10 +151,12 @@ dyn_string references;
 mapping channelToDp, dpToChannel;
 dyn_dyn_int pairChannels;
 dyn_int ccbMpcChannels, vccChannels, channels1v5; // need this .. thing to interpret Valeri's disabled channel numbers
+dyn_string dmbTempDps; // stores DMB temperature DPs (in the order right order)
 
 // current status variables
 string currentPCrateStatus;
 dyn_int disabledChannels; // Valeri convention (1-9 is one TMB/DMB pair disabled, 10 - CCB/MPC disabled, 11 - VCC disabled, 12 - both 1.5V lines disabled)
+dyn_int disabledDmbTempChannels;
 
 /** Update voltage reading */
 void updateVMonCB(string aiValueDpe, float voltage){
@@ -169,6 +189,56 @@ void updateVMonBackColorCB(string alarmColDp, string alarmColor){
     alarmColor = \"FwEquipmentDisabled\";
   }
   setValue(channelToTableCell[channel][1], \"cellBackColRC\", channelToTableCell[channel][3], channelToTableCell[channel][2], alarmColor);
+}
+
+void updateDisabledDmbTempsCB(dyn_string dps, dyn_dyn_int offChannels) {
+  for (int dmbIndex=1; dmbIndex <= dynlen(offChannels); dmbIndex++) {
+    bool disabled = dynContains(offChannels[dmbIndex], 7); // DMB temperature channel is #7
+    if (disabled && !dynContains(disabledDmbTempChannels, dmbIndex)) {
+      dynAppend(disabledDmbTempChannels, dmbIndex);
+    } else if (!disabled && dynContains(disabledDmbTempChannels, dmbIndex)) {
+      int tempIdx = dynContains(disabledDmbTempChannels, dmbIndex);
+      dynRemove(disabledDmbTempChannels, tempIdx);
+    }
+  }
+  
+  //update all the DMB temperatures and their background colors
+  for (int i=1; i <= dynlen(dmbTempDps); i++) {
+    float temperature;
+    dpGet(dmbTempDps[i], temperature);
+    updateDmbTemperatureCB(dmbTempDps[i], temperature);
+    
+    string alarmColor;
+    dpGet(dmbTempDps[i] + \":_alert_hdl.._act_state_color\", alarmColor);
+    updateDmbTemperatureBackColorCB(dmbTempDps[i] + \":_alert_hdl.._act_state_color\", alarmColor);
+  }
+}
+
+/** Update DMB temperature. */
+void updateDmbTemperatureCB(string dp, float temperature) {
+  dp = dpSubStr(dp, DPSUB_SYS_DP_EL);
+  int dmbIndex = dynContains(dmbTempDps, dp);
+  string strTemperature;
+  sprintf(strTemperature, \"%.1f °C\", temperature);
+  if (dynContains(disabledDmbTempChannels, dmbIndex)) {
+    strTemperature += \" ignore\";
+    pairsTable.cellBackColRC(dmbIndex - 1, \"dmb_temp\", \"FwEquipmentDisabled\");
+  }
+  pairsTable.cellValueRC(dmbIndex - 1, \"dmb_temp\", strTemperature);
+  
+  lblLastUpdate.text = emuui_getLastUpdateTime(dp);
+}
+
+/** Update DMB temperature color. */
+void updateDmbTemperatureBackColorCB(string alarmColDp, string alarmColor) {
+  string dp = dpSubStr(alarmColDp, DPSUB_SYS_DP_EL);
+  int dmbIndex = dynContains(dmbTempDps, dp);
+  
+  alarmColor = emuui_correctAlarmColor(alarmColor);
+  if (dynContains(disabledDmbTempChannels, dmbIndex)) {
+    alarmColor = \"FwEquipmentDisabled\";
+  }
+  pairsTable.cellBackColRC(dmbIndex - 1, \"dmb_temp\", alarmColor);
 }
 
 /** updates the currentPCrateStatus which is used to paint the table cell background. */
