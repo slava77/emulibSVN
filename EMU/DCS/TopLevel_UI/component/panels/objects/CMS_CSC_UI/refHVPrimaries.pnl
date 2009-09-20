@@ -47,7 +47,8 @@ void drawPrimaries() {
                 \"objects/\" + EMUUI_COMPONENT_NAME + \"/refDevice.pnl\",
                 refName,
                 makeDynString(\"$caption:VALUE\", \"$deviceType:hvPrimary\",
-                              deviceParamsDollar, shapeParamsDollar, \"$group:\" + paramGroup),
+                              deviceParamsDollar, shapeParamsDollar, \"$group:\" + paramGroup,
+                              \"$refName:\" + refName),
                 x, y, 0, 1, 1);
     }
   }

@@ -125,7 +125,8 @@ void drawPeripheralCrates(int x, int y, int radius, string side, int station, dy
               \"objects/\" + EMUUI_COMPONENT_NAME + \"/refDevice.pnl\",
               refName,
               makeDynString(\"$caption:VALUE\", \"$deviceType:peripheralCrate\",
-                            deviceParamsDollar, shapeParamsDollar, \"$group:\" + pcGroup),
+                            deviceParamsDollar, shapeParamsDollar, \"$group:\" + pcGroup,
+                            \"$refName:\" + refName),
               x, y, 0, 1, 1);
   }
 
@@ -315,7 +316,8 @@ void drawRing(int x, int y, int innerRadius, int outerRadius, int chamberCount, 
               \"objects/\" + EMUUI_COMPONENT_NAME + \"/refDevice.pnl\",
               refName,
               makeDynString(\"$caption:\" + chamberName, \"$deviceType:chamber\",
-                            deviceParamsDollar, shapeParamsDollar, \"$group:\" + paramGroup),
+                            deviceParamsDollar, shapeParamsDollar, \"$group:\" + paramGroup,
+                            \"$refName:\" + refName),
               0, 0, 0, 1, 1);
     
 //transfer the chamber local coordinate system from the upper left corner to the middle of the outer part (where we think we have the center :) )
@@ -329,13 +331,16 @@ void drawRing(int x, int y, int innerRadius, int outerRadius, int chamberCount, 
     //position the caption and other gadgets
     setValue(refName + \".caption\", \"position\", captionPosX, captionPosY);
     setValue(refName + \".imgDeviceIncomplete\", \"position\", warningPosX, warningPosY);
+    setValue(refName + \".imgNoCommunication\", \"position\", warningPosX, warningPosY);
     //setValue(refName + \".imgDeviceIncomplete\", \"rotation\", -1 * angleDeg + 180);
     if ((angleDeg > 90) || (angleDeg <= -90)){
       setValue(refName + \".caption\", \"rotation\", -1 * angleDeg + 180);
       setValue(refName + \".imgDeviceIncomplete\", \"rotation\", -1 * angleDeg + 180);
+//      setValue(refName + \".imgNoCommunication\", \"rotation\", -1 * angleDeg + 180);
     } else {
       setValue(refName + \".caption\", \"rotation\", -1 * angleDeg);
       setValue(refName + \".imgDeviceIncomplete\", \"rotation\", -1 * angleDeg);
+//      setValue(refName + \".imgNoCommunication\", \"rotation\", -1 * angleDeg);
     }
   }
 }
@@ -379,7 +384,7 @@ void initParams() {
     emuui_init();
     paramGroup = emuui_getSessionDp(\"mainChamberView\");
     paramSide = \"P\";
-    paramStation = 1;
+    paramStation = 2;
     paramRadius = 300;
   } else { // copy from dollar params
     paramGroup = $group;

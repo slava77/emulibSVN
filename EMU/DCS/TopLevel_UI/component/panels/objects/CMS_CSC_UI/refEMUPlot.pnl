@@ -129,7 +129,8 @@ void drawStation(int x, int y, string side, int station, int ring, int chamberWi
                             \"$group:\" + paramGroup,
                             \"$shapeParams:\" + \"type=rectangle\" + 
                                               \";width=\" + chamberWidth +
-                                              \";height=\" + chamberHeight),
+                                              \";height=\" + chamberHeight,
+                            \"$refName:\" + refName),
               chamberX, y, 0, 1, 1);
   }
 }

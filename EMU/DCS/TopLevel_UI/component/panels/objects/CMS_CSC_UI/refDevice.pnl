@@ -1,11 +1,12 @@
 V 10
 1
 LANG:1 6 Device
-PANEL,-1 -1 120 51 N "_3DFace" 5
+PANEL,-1 -1 120 51 N "_3DFace" 6
 "$caption"
 "$deviceParams"
 "$deviceType"
 "$group"
+"$refName"
 "$shapeParams"
 "main()
 {  
@@ -223,6 +224,11 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
           emu_errorHandled(ex);
         }
       }
+      // ---=== if this is a chamber - register to background checks ===---
+      if ($deviceType == \"chamber\") {
+        emuuibc_registerChamberViewFsmNode($refName, node, deviceParams);
+      }
+      
       // ---=== connect state ===---
       int rc2 = fwCU_connectState(\"updateFSMStateCB\", node);
       emu_debug(\"RC for connect to \" + node + \": \" + rc2, emu_DEBUG_DETAIL);
@@ -252,12 +258,19 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
     }
     
     if (dpFound) {
-      currentDpValueRangeMin = emuui_getDpValueRangeMin(mode, ex);
-      if (emu_checkException(ex)) { return; }
-      currentDpValueRangeMax = emuui_getDpValueRangeMax(mode, ex);
-      if (emu_checkException(ex)) { return; }
-      int rc = dpConnect(\"updateDPStateCB\", true, dp);
-      emu_debug(\"RC for connect to \" + dp + \": \" + rc, emu_DEBUG_DETAIL);
+      int type = dpElementType(dp);
+      int rc;
+      if (type == DPEL_FLOAT || type == DPEL_INT) {
+        currentDpValueRangeMin = emuui_getDpValueRangeMin(mode, ex);
+        if (emu_checkException(ex)) { return; }
+        currentDpValueRangeMax = emuui_getDpValueRangeMax(mode, ex);
+        if (emu_checkException(ex)) { return; }
+        rc = dpConnect(\"updateDPStateCB\", true, dp);
+        emu_debug(\"RC for connect to (numerical) DP '\" + dp + \"': \" + rc, emu_DEBUG_DETAIL);
+      } else {
+        rc = dpConnect(\"updateStringDPStateCB\", true, dp);
+        emu_debug(\"RC for connect to (string) DP '\" + dp + \"': \" + rc, emu_DEBUG_DETAIL);
+      }
       if (rc == 0) {
         connectSuccessful = true;
         currentConnectionType = connectionType;
@@ -351,7 +364,12 @@ void updateFSMStateCB(string node, string state) {
   // update color
   if (state == \"\") { state = \"DEAD\"; }
   dyn_string ex;
-  string color = emuui_getMappingValue(\"fsmStateColors\", state, ex);
+  string color;
+  if (emuui_mappingHasKey(\"fsmStateColors\", state)) {
+    color = emuui_getMappingValue(\"fsmStateColors\", state, ex);
+  } else {
+    color = \"white\";
+  }
   if (emu_checkException(ex)) { return; }
   
 //   string color;
@@ -399,6 +417,7 @@ void updateME11hvFSMModeBitsCB(string dp, bit32 modeBits) {
                                 (dynlen(disabledHvChannels) > 0);
 }
 
+/** This function is used in in DP mode when connection is made to a DP of float or integer types. */
 void updateDPStateCB(string dp, float value) {
   dyn_string ex;
   string color = emuui_getGradientColor(value, currentDpValueRangeMin, currentDpValueRangeMax);
@@ -409,6 +428,23 @@ void updateDPStateCB(string dp, float value) {
     sprintf(captionStr, \"%d\", value);
     caption.text = captionStr;
   }
+}
+
+/** This function is used in in DP mode when connection is made to a DP of string type. */
+void updateStringDPStateCB(string dp, string value) {
+  if (showValueOnCaption) {
+    caption.text = value;
+  }
+  dyn_string ex;
+  string color;
+  // if there's a color for this value in the dpStringValueColor mapping - then use that one, if not - red
+  if (emuui_mappingHasKey(\"dpStringValueColors\", value)) {
+    color = emuui_getMappingValue(\"dpStringValueColors\", value, ex);
+    if (emu_checkException(ex)) { return; }
+  } else {
+    color = \"FwStateAttention3\";
+  }
+  setColor(color);
 }
 
 /** Call-back function to update the state of multiple DPs connection computing the value by taking an average. */
@@ -870,6 +906,39 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
 0 ""
 1
 LANG:1 2 me
+7 11
+"imgNoCommunication"
+""
+1 85 215 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ "main()
+{
+  showPopupMenu();
+}" 0
+ "main()
+{
+  openFsmPanel();
+}" 0
+
+14 0 0 0 0 0
+E E "main(bool enter)
+{
+  mouseOverObjects[this.name] = enter;
+  if (enter) {
+    setValue(shapeName, \"foreCol\", \"black_yellow\");
+    showTooltip();
+  } else {
+    setValue(shapeName, \"foreCol\", \"\");
+    hideTooltip();
+  }
+}" 0
+
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 0.666666666666667 0 0.666666666666667 23.3333333333333 -123.333333333333 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4294967295 E 85 215 15 15
 0
 LAYER, 1 
 1

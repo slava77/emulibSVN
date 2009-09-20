@@ -39,7 +39,11 @@ PANEL,-1 -1 388 123 N "_3DFace" 5
   
   dyn_string ex;
   string tooltipTypesCombined = emuui_getMappingValue(\"modeToTooltipObj\", $mode, ex); // get the tooltip types given the device connection mode
-  if (dynlen(ex)) { emu_errorHandled(ex); return; } // if the tooltip type is missing - no problem, just don't display that tooltip object
+  if (dynlen(ex)) { // if the tooltip type is missing - no problem, just don't display that tooltip object and log the error
+    emu_errorHandled(ex); 
+    emu_info(\"Could not find tooltip object mapping for mode: \" + $mode);
+    return;
+  }
   
   dyn_string tooltipTypes = strsplit(tooltipTypesCombined, \",\");
   for (int i=1; i <= dynlen(tooltipTypes); i++) {
