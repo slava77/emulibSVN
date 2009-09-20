@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 26 CMS Endcap Muon System DCS
-PANEL,-1 -1 1600 1090 N "_3DFace" 0
+PANEL,-1 -1 1600 1150 N "_3DFace" 0
 "main()
 {
   emuui_init();
@@ -224,7 +224,7 @@ LANG:1 0
             makeDynString(\"$group:\" + group, \"$width:\" + width),
             posX, posY, 0, 1, 1);   
 }" 0
- E 0 0 1 0 1 E 1.48484848484849 0 1.01382488479263 728.787878787877 15.4838709677361 0 E 250 833 581 1051
+ E 0 0 1 0 1 E 1.48484848484849 0 1.01382488479263 728.787878787878 75.4838709677391 0 E 250 833 581 1051
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -307,7 +307,7 @@ LANG:1 0
   fwCU_connectOperationMode(\"updateTopFsmNodeOperationModeCB\", \"CMS_CSC\");
 }
 " 0
- E 0 0 1 0 1 E 1.72727272727273 0 1.40127388535031 -110.909090909091 -335.28662420382 0 E 70 853 291 1011
+ E 0 0 1 0 1 E 1.68181818181818 0 1.40127388535031 -107.727272727273 -275.286624203814 0 E 70 853 291 1011
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -343,7 +343,7 @@ LANG:1 0
             makeDynString(\"$group:\" + group),
             posX, posY, 0, 1, 1);
 }" 0
- E 0 0 1 0 1 E 0.689655172413793 0 1.01382488479262 -224.48275862069 -4.79262672810476 0 E 920 853 1211 1071
+ E 0 0 1 0 1 E 0.689655172413793 0 1.01382488479262 -234.48275862069 55.2073732718952 0 E 920 853 1211 1071
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -379,7 +379,7 @@ LANG:1 0
             makeDynString(\"$group:\" + group),
             posX, posY, 0, 1, 1);
 }" 0
- E 0 0 1 0 1 E 0.896551724137931 0 1.01382488479262 -194.827586206897 -4.79262672810478 0 E 920 853 1211 1071
+ E 0 0 1 0 1 E 0.896551724137931 0 1.01382488479262 -204.827586206897 55.2073732718952 0 E 920 853 1211 1071
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -405,11 +405,11 @@ E "main()
                makeDynString(\"$group:\" + emuui_getSessionDp(\"valueMonitor\"), \"$width:1200\"), 200, 200);
 }
 " 0
- 0 1 1 2 1 E 1 0 1 1167 845 2  0 0  "pictures/CMS_CSC_UI/zoom_in.bmp" 4294967295 E 10 10 36 35
+ 0 1 1 2 1 E 1 0 1 1167 906 2  0 0  "pictures/CMS_CSC_UI/zoom_in.bmp" 4294967295 E 10 10 36 35
 2 17
 "lblLoading"
 ""
-1 1120 960 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+1 1120 1025 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
  E E
 23 0 0 0 0 0
 E E E
@@ -419,8 +419,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1120 960 1575 998
-1 2 2 "0s" 0 0 0 65 0 0  1120 960 1
+E E 0 1 1 2 1 E U  1 E 1120 1025 1575 1063
+1 2 2 "0s" 0 0 0 65 0 0  1120 1025 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-32-*-100-100-*-*-iso8859-1|-32,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -439,7 +439,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1.525 0 0.5 -590 490 1 E 1200 740 1320 780
+E E 0 1 1 2 1 E 1.525 0 0.5 -590 555 1 E 1200 740 1320 780
 6 25
 "btnValueDisplayMode"
 ""
@@ -461,11 +461,11 @@ E "main()
   
   ChildPanelOnCentralModal(EMUUI_COMPONENT_NAME + \"/ValueMonitorModeChooser.pnl\", \"ModeChooser\", makeDynString());
 }" 0
- 0 1 1 2 1 E 1 0 1 1060 795 1 E 360 60 470 83
+ 0 1 1 2 1 E 1 0 1 1060 856 1 E 360 60 470 83
 2 21
 "btnValueDisplayMode_label"
 ""
-1 1420 860 E E E 1 E 1 E N "_ButtonText" E N "_Transparent" E E
+1 1420 921 E E E 1 E 1 E N "_ButtonText" E N "_Transparent" E E
  E E
 27 0 0 0 0 0
 E E E
@@ -483,8 +483,8 @@ E "main()
   
   ChildPanelOnCentralModal(EMUUI_COMPONENT_NAME + \"/ValueMonitorModeChooser.pnl\", \"ModeChooser\", makeDynString());
 }" 0
- 0 1 1 2 1 E U  1 E 1420 860 1526 873
-0 2 2 "0s" 0 0 0 65 0 0  1420 860 1
+ 0 1 1 2 1 E U  1 E 1420 921 1526 934
+0 2 2 "0s" 0 0 0 65 0 0  1420 921 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -493,7 +493,7 @@ LANG:1 11 Change Mode
 2 20
 "lblValueDisplayMode"
 ""
-1 1230 860 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+1 1230 921 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
  E E
 26 0 0 0 0 0
 E E E
@@ -509,8 +509,8 @@ LANG:1 0
   string dp = emuui_getSessionDp(\"valueMonitor\");
   dpConnect(\"updateValueMonitorMode\", true, dp + \".connectionType\", dp + \".mode\");
 }" 0
- E 0 1 1 2 1 E U  1 E 1230 860 1383 874
-0 2 2 "0s" 0 0 0 192 0 0  1230 860 1
+ E 0 1 1 2 1 E U  1 E 1230 921 1383 935
+0 2 2 "0s" 0 0 0 192 0 0  1230 921 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -747,7 +747,7 @@ LANG:1 0
             makeDynString(\"$group:\" + group),
             posX, posY, 0, 1, 1);
 }" 0
- E 0 0 1 0 1 E 0.894736842105263 0 1 104.736842105263 -3 0 E 900 863 1091 1081
+ E 0 0 1 0 1 E 8.31578947368421 0 0.230414746543779 -7474.21052631579 661.152073732719 0 E 900 863 1091 1081
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -848,6 +848,42 @@ LANG:1 0
 1
 "dashclr"N "_Transparent"
 E E 0 1 1 2 1 E  1108 54 1118 54
+30 52
+"FRAME5"
+""
+1 900 923 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+66 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+  waitForEmuUiInitialize();
+    
+  int posX, posY;
+  getValue(\"\", \"position\", posX, posY);
+  posX += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_X;
+  posY += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y;
+  
+  string refName = \"FedView_EMU\";
+  string group = emuui_getSessionDp(\"fedView\");
+  addSymbol(myModuleName(), myPanelName(),
+            \"objects/\" + EMUUI_COMPONENT_NAME + \"/refFED.pnl\",
+            refName,
+            makeDynString(\"$group:\" + group),
+            posX, posY, 0, 1, 1);
+}" 0
+ E 0 0 1 0 1 E 1 0 1.01382488479263 1.56319401867222e-013 -15.7603686635945 0 E 900 923 1081 1141
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 10 FED Crates
 0
 LAYER, 1 
 1

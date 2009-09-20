@@ -144,12 +144,13 @@ anytype emuui_getMappingValue(string name, string key, dyn_string &exceptionInfo
 */
 bool emuui_mappingHasKey(string mappingName, string key) {
   dyn_string ex;
-  emuui_getMappingValue(mappingName, key, ex);
+  mapping map = emuui_getMapping(mappingName, ex);
   if (dynlen(ex) > 0) {
     emu_errorHandled(ex);
     return false;
   }
-  return true;
+  
+  return mappingHasKey(map, key);
 }
 
 /** Clears the mapping cache. */

@@ -46,9 +46,14 @@ string emuui_getLastUpdateTime(string dp) {
   }
   dpGet(dpSTime, stime);
 
-  string timeStr = formatTime("%Y.%m.%d %H:%M", stime);
+  string timeStr = emuui_formatTime(stime);
 
   return (string) timeStr;
+}
+
+/* Format time as a string. */
+string emuui_formatTime(time t) {
+  return formatTime("%Y.%m.%d %H:%M", t);
 }
 
 /** returns dp which has been updated most recently in the dp List. */

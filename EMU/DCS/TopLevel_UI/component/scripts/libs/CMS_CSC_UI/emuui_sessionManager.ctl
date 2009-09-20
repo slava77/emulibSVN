@@ -49,9 +49,14 @@ void emuui_initSession() {
   emu_debugFuncEnd("emuui_initSession", t0);
 }
 
+/** @return ID of the current session. */
+string emuui_getSessionId() {
+  return emuui_g_sessionId;
+}
+
 /** @return a requested DPE of the current session. */
 string emuui_getSessionDp(string dp) {
-  return emuui_g_sessionId + "." + dp;
+  return emuui_getSessionId() + "." + dp;
 }
 
 void emuui_applySessionDefaults(string sessionDp) {

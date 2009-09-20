@@ -27,11 +27,14 @@ void emuui_init() {
   emu_info("Component version: " + EMUUI_COMPONENT_VERSION + ", date: " + EMUUI_COMPONENT_DATE);
            
   emuui_initSession();
+  emu_info("Session ID: " + emuui_getSessionId());
   fwFsmUi_init("CMS_CSC", "CMS_CSC");
   fwCU_takeTree("CMS_CSC");
   
   emuui_g_initialized = true;
+  emuuibc_startBackgroundChecks(); // in emuui_backgroundChecks.ctl
   emu_info("------========== EMU Top Level UI initialization DONE! ==========------");
+  
 }
 
 bool emuui_isInitialized() {
