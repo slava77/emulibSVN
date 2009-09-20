@@ -51,7 +51,15 @@ PANEL,-1 -1 374 227 N "_3DFace" 1
   dpConnect(\"positionChangedCB\", false, emuui_getSessionDp(\"tooltipPositionUpdated\"));  
   getValue(\"chamber_high_voltage_fsmRefPoint\", \"position\", fsmX, fsmY);
   emuui_addFsmNode(hvFsmNode, fsmX, fsmY, references, true);
-    
+  
+  // check if the node is disabled, if so - then paint everything in gray and set allGrayMode to true
+  string domain = hvFsmNode;
+  string object = _fwCU_getNodeObj(domain);
+  string duMode = fwFsmUi_getDUMode(domain, object);
+  if (duMode == \"Disabled\") {
+    allGrayMode = true;
+  }
+
   // get master channel status DP
   mapping masterDeviceParams;
   string masterIdDp = emuui_getDpName(\"HV_moduleToMasterId\", deviceParams, ex);
@@ -87,7 +95,9 @@ PANEL,-1 -1 374 227 N "_3DFace" 1
   
   dpConnect(\"updateVMonCB\", true, vMonDps);
   dpConnect(\"updateStatusCB\", true, statusDps);
-  dpConnect(\"updateDisabledChannelsCB\", true, offChannelsDp);  
+  if (!allGrayMode) {
+    dpConnect(\"updateDisabledChannelsCB\", true, offChannelsDp);
+  }
   dpConnect(\"updateModuleStatusCB\", true, moduleStatusDp);
   dpConnect(\"updateMasterChannelStatusCB\", true, masterChannelStatusDp);
   dpConnect(\"updateDisconnectedWarningCB\", true, disconnectedDevicesDp);
@@ -130,6 +140,17 @@ void initGui(int channelCount, dyn_string &ex) {
   getValue(\"chamber_high_voltage_tooltipBack\", \"size\", backSizeX, backSizeY);
   setValue(\"chamber_high_voltage_tooltipBack\", \"size\", backSizeX, backSizeY - (oldSizeY - newSizeY));
   dpSet(emuui_getSessionDp(\"tooltipSizeUpdated\"), 1);
+  
+  if (allGrayMode) {
+    //paint everything in gray
+    lblModuleStatus.backCol = \"FwEquipmentDisabled\";
+    lblMasterChannelStatus.backCol = \"FwEquipmentDisabled\";
+    for (int i=0; i < tableVoltages.lineCount(); i++) {
+      for (int j=0; j < tableVoltages.columnCount(); j++) {
+        tableVoltages.cellBackColRC(i, tableVoltages.columnToName(j), \"FwEquipmentDisabled\");
+      }
+    }
+  }
 }
 
 void initConsts() {
@@ -156,6 +177,7 @@ string hvFsmNode;
 dyn_string references;
 int posX, posY;
 dyn_string shapesBelowTable;
+bool allGrayMode; // this flag is true when the whole LV FSM node is disabled - then back color of the tables is always gray
 
 void updateVMonCB(dyn_string dpList, dyn_float voltages) {
   int rowCount = ceil(dynlen(voltages) / 6);
@@ -170,7 +192,7 @@ void updateVMonCB(dyn_string dpList, dyn_float voltages) {
     }
   }
   
-  lblLastUpdate.text = emuui_getLastUpdateTime(dpList[1]);
+  lblLastUpdate.text = emuui_getLastUpdateTimeOfDpList(dpList);
 }
 
 void updateStatusCB(dyn_string dpList, dyn_int statuses) {
@@ -182,7 +204,7 @@ void updateStatusCB(dyn_string dpList, dyn_int statuses) {
       int arrayIndex = (i * 6) + j;
       string statusText = hvStatusTexts[(string)statuses[arrayIndex]];
       string statusColor = hvStatusColors[statusText];
-      if (!dynContains(disabledChannels, arrayIndex)) { // if this channel is disabled - do not update it's color - let it stay gray
+      if (!dynContains(disabledChannels, arrayIndex) && !allGrayMode) { // if this channel is disabled - do not update it's color - let it stay gray
         tableVoltages.cellBackColRC(i, \"group\" + j, statusColor);
       }
       if (statuses[arrayIndex] > 3) { // if it's an error state
@@ -252,7 +274,9 @@ void updateModuleStatusCB(string dpName, int status) {
   string statusColor = hvStatusColors[statusText];
   
   lblModuleStatus.text = statusText;
-  lblModuleStatus.backCol = statusColor;
+  if (!allGrayMode) {
+    lblModuleStatus.backCol = statusColor;
+  }
 }
 
 /** Updates master channel status. */
@@ -261,7 +285,9 @@ void updateMasterChannelStatusCB(string dpName, int status) {
   string statusColor = hvStatusColors[statusText];
   
   lblMasterChannelStatus.text = statusText;
-  lblMasterChannelStatus.backCol = statusColor;
+  if (!allGrayMode) {
+    lblMasterChannelStatus.backCol = statusColor;
+  }
 }
 
 void positionChangedCB(string dummyDpName, int dummyValue) {

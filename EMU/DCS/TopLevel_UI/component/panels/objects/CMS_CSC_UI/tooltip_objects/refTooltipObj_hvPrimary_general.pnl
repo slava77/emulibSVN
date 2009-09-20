@@ -33,7 +33,7 @@ PANEL,-1 -1 374 128 N "_3DFace" 1
   // get the FSM node for the HV of this chamber (this will be used in \"no communication\" warning update
   fsmNode = emuui_getFsmNode(\"hvPrimary_general\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
-  
+
   string vMonDp = hvPrimaryDataDp + \".vmon\";
   string vSetDp = hvPrimaryDataDp + \".vset\";
   string iMonDp = hvPrimaryDataDp + \".imon\";
@@ -271,13 +271,13 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 180 60 273 74
+E E 0 1 1 2 1 E U  1 E 180 60 276 74
 0 2 2 "0s" 0 0 0 192 0 0  180 60 1
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
-LANG:1 19 Max CurrentSetting:
+LANG:1 20 Max Current Setting:
 2 34
 "PRIMITIVE_TEXT10"
 ""

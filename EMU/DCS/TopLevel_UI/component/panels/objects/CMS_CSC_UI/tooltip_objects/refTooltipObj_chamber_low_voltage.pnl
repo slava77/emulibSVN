@@ -18,6 +18,14 @@ PANEL,-1 -1 364 199 N "_3DFace" 1
   emuui_addFsmNode(fsmNode, fsmX, fsmY, references, true);
   dpConnect(\"positionChangedCB\", true, emuui_getSessionDp(\"tooltipPositionUpdated\"));
   
+  // check if the node is disabled, if so - then paint everything in gray and set allGrayMode to true
+  string domain = fsmNode;
+  string object = _fwCU_getNodeObj(domain);
+  string duMode = fwFsmUi_getDUMode(domain, object);
+  if (duMode == \"Disabled\") {
+    allGrayMode = true;
+  }
+  
   // -------=========== CFEB ============---------
   
   //cycle through 5 CFEBs at most, get the datapoints for each board and voltage and fill the dpIndexToTableCell map
@@ -66,7 +74,9 @@ PANEL,-1 -1 364 199 N "_3DFace" 1
   }
   cfebAlarmColorDps = values;
   
-  dpConnect(\"updateCfebAlarmColorsCB\", false, cfebAlarmColorDps);
+  if (!allGrayMode) {
+    dpConnect(\"updateCfebAlarmColorsCB\", false, cfebAlarmColorDps);
+  }
   
   //----------============= ALCT ================-------------
   dynClear(vMonDps);
@@ -98,8 +108,15 @@ PANEL,-1 -1 364 199 N "_3DFace" 1
   }
   alctAlarmColorDps = values;
   
-  dpConnect(\"updateDisabledChannelsCB\", true, disabledChannelsDp);
-  dpConnect(\"updateAlctAlarmColorsCB\", false, alctAlarmColorDps);
+  if (!allGrayMode) {
+    dpConnect(\"updateDisabledChannelsCB\", true, disabledChannelsDp);
+    dpConnect(\"updateAlctAlarmColorsCB\", false, alctAlarmColorDps);
+  }
+  
+  // connect to last update timestamp
+  string timestampDp = emuui_getDpName(\"chamber_LV_timestamp\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  dpConnect(\"updateLastReadTimestampCB\", true, timestampDp);
   
   // ----------========== DISCONNECTED WARNING ==========----------
   if (dynlen(values) > 1) {
@@ -124,6 +141,18 @@ void initGui() {
   tableAlct.appendLine(\"#1\", \"loading\", \"#2\", \"loading\", \"#3\", \"loading\", \"#4\", \"loading\");
   tableAlct.rowHeader(0, \"ALCT\");
   emuui_tableCompact(\"tableAlct\", 1);
+
+  if (allGrayMode) {
+    // paint everyting gray
+    for (int i=0; i < tableCfeb.lineCount(); i++) {
+      for (int j=0; j < tableCfeb.columnCount(); j++) {
+        tableCfeb.cellBackColRC(i, tableCfeb.columnToName(j), \"FwEquipmentDisabled\");
+      }
+    }
+    for (int j=0; j < tableAlct.columnCount(); j++) {
+      tableAlct.cellBackColRC(0, tableAlct.columnToName(j), \"FwEquipmentDisabled\");
+    }
+  }
 }" 0
  "main()
 {
@@ -137,6 +166,7 @@ dyn_dyn_mixed dpIndexToTableCell; // map of DP index in the array and coordinate
 string fsmNode;
 dyn_string references;
 int posX, posY;
+bool allGrayMode; // this flag is true when the whole LV FSM node is disabled - then back color of the tables is always gray
 
 dyn_int disabledChannels;
 dyn_string cfebAlarmColorDps, alctAlarmColorDps;
@@ -158,8 +188,12 @@ void updateCfebLvCB(dyn_string dps, dyn_float voltagesAndCurrents) {
     strToShow += strValue + \"A\";
     tableCfeb.cellValueRC(dpIndexToTableCell[i][1], dpIndexToTableCell[i][2], strToShow);
   }
-  
-  lblLastUpdate.text = emuui_getLastUpdateTime(dps[1]);
+}
+
+/** This function is called when the last reading timestamp changes and it shows that timestamp on the lblLastUpdate label. */
+void updateLastReadTimestampCB(string timestampDp, int timestamp) {
+  time t = timestamp;
+  lblLastUpdate.text = emuui_formatTime(t);
 }
 
 void updateDisabledChannelsCB(string dp, dyn_int disabledChannelsParam) {
@@ -213,8 +247,6 @@ void updateAlctLvCB(dyn_string dps, dyn_float voltagesAndCurrents) {
     strToShow += strValue + \"A\";
     tableAlct.cellValueRC(0, tableAlct.columnToName(i - 1), strToShow);
   }
-  
-  lblLastUpdate.text = emuui_getLastUpdateTime(dps[1]);
 }
 
 /** Call-back function which updates the background color of the ALCT table cells accordingly to ALCT voltage and current alarm color. */
