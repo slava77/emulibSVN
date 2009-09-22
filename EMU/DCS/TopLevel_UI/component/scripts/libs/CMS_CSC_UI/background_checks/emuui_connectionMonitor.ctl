@@ -15,30 +15,6 @@ global mapping emuuibc_g_chamberRefNameToFsmNode; // map of chamber reference na
 global mapping emuuibc_g_disconnectedDevices; // map of disconnected devices dp name to its' value
 global mapping emuuibc_g_lastXmasCommand; // map of detector side -> last XMas command (side is M or P)
 
-/** Starts the background checks - basically makes the initial dpConnects. */
-void emuuibc_startBackgroundChecks() {
-  // get the necessary datapoints
-  dyn_string ex;
-  dyn_string disconnectedDevDPs = emuui_getDpNames("disconnected_devices", emuui_dummyMapping, ex);
-  if (emu_checkException(ex)) { return; }
-  dyn_string xmasControlDPs = emuui_getDpNames("xmas_control", emuui_dummyMapping, ex);
-  if (emu_checkException(ex)) { return; }
-  emu_info("Background checks service: starting monitoring for disconnected devices (devices that loose communication)");
-  emu_debug("Background checks service: disconnected devices dps: " + disconnectedDevDPs, emu_DEBUG_DETAIL);
-  emu_debug("Background checks service: xmas control dps: " + xmasControlDPs, emu_DEBUG_DETAIL);
-  
-  // connect the DPs to the work functions
-  for (int i=1; i <= dynlen(xmasControlDPs); i++) {
-    dpConnect("emuuibc_xmasControlUpdatedCB", true, xmasControlDPs[i]);
-  }
-  for (int i=1; i <= dynlen(disconnectedDevDPs); i++) {
-    dpConnect("emuuibc_disconnectedDevicesUpdatedCB", true, disconnectedDevDPs[i]);
-  }
-  
-  // connect to a list of remote PVSS projects (from distribution manager)
-  dpConnect("emuuibc_checkComputersConnectionStatusCB", true, "_DistManager.State.SystemNums");
-}
-
 /** Register a chamber for background checks. */
 void emuuibc_registerChamberViewFsmNode(string refName, string fsmNodeName, mapping deviceParams) {
   emuuibc_g_chamberRefNameToFsmNode[refName] = fsmNodeName;

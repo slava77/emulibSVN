@@ -5,5 +5,5 @@ This package contains functions which monitor various connection status in backg
 All functions have prefix emuuibc_ where bc stands for Background Checks.
 
 @author Evaldas Juska (PH/UCM)
-@date   May 2009
+@date   September 2009
 */
