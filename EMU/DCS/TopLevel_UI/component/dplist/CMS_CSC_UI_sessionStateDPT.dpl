@@ -32,12 +32,15 @@ CSC_UI_sessionState.CSC_UI_sessionState	1#1
 		gas	25#31
 		cooling	25#32
 		dcsPCs	25#33
+	fedView	1#34
+		connectionType	25#35
+		mode	25#36
 
 # Datapoint/DpId
 DpName	TypeName	ID
 session_SCX5SCR05_NO_USER	CSC_UI_sessionState	392009
 session_macfrank_NO_USER	CSC_UI_sessionState	392012
-session_macfrank_root	CSC_UI_sessionState	392014
 session_SCX5SCR06_NO_USER	CSC_UI_sessionState	392015
 session_cerntscms01_NO_USER	CSC_UI_sessionState	392021
 session_CERNTSCMS01_NO_USER	CSC_UI_sessionState	392022
+session_macfrank_root	CSC_UI_sessionState	392044
