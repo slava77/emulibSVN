@@ -35,6 +35,13 @@ CSC_UI_sessionState.CSC_UI_sessionState	1#1
 	fedView	1#34
 		connectionType	25#35
 		mode	25#36
+	pcrateConfigurationStatus	1#37
+		summaryStatus	25#38
+		offCrates	9#39
+		turningOnCrates	9#40
+		configuringCrates	9#41
+		configuredCrates	9#42
+		failedToConfigureCrates	9#43
 
 # Datapoint/DpId
 DpName	TypeName	ID

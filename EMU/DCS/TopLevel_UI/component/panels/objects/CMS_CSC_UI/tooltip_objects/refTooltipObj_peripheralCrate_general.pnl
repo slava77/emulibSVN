@@ -3,7 +3,9 @@ V 10
 LANG:1 0 
 PANEL,-1 -1 440 425 N "_3DFace" 1
 "$deviceParams"
-"main()
+"#uses \"CMS_CSCfw_LV_CRB/emuDcsCrb.ctl\"
+
+main()
 {
   dyn_string ex;
   deviceParams = emuui_parseParameterString($deviceParams, ex);
@@ -500,6 +502,7 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
                   \"3v3_1\", \"loading\", \"5v\", \"loading\");
   this.appendLine(\"board\", \"VCC\",
                   \"3v3_1\", \"loading\", \"5v\", \"loading\");
+  emuui_tableCompact(\"pairsTable\", 11);
 }" 0
 E 1 0 1 5 9 "board" 8 1 0 "s" 1
 LANG:1 5 Board

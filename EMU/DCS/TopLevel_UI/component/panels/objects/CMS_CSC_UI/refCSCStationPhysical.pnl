@@ -69,7 +69,7 @@ void drawStation(int x, int y, int radius, string side, int station, dyn_string 
   drawPeripheralCrates(x, y, pcrateRadius + EMUUI_STATION_PCRATE_DISTANCE_FROM_DISK, side, station, exceptionInfo);
   
   // draw trigger sectors
-  drawTriggerSectors(x, y, radius);
+//   drawTriggerSectors(x, y, radius);
 }
 
 void drawPeripheralCrates(int x, int y, int radius, string side, int station, dyn_string &exceptionInfo) {
