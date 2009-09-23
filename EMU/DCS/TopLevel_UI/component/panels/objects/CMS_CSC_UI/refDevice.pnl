@@ -71,7 +71,7 @@ void initShape(dyn_string ex) {
       break;
     default:
       break;
-  }
+  }  
 }
 
 void confChamberShape(mapping shapeParams) {
@@ -111,6 +111,7 @@ void confRectShape(mapping shapeParams) {
   //check if relevant parameters are present, if not - leave default shape and return
   int posX, posY;
   getValue(shapeParams[\"type\"], \"position\", posX, posY);
+  setValue(\"imgNoCommunication\", \"position\", posX + 10, posY + 10);
   if (!mappingHasKey(shapeParams, \"width\") || 
       !mappingHasKey(shapeParams, \"height\")) {
     
@@ -225,7 +226,7 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
         }
       }
       // ---=== if this is a chamber - register to background checks ===---
-      if ($deviceType == \"chamber\") {
+      if ($deviceType == \"chamber\" || $deviceType == \"DDU\") {
         emuuibc_registerChamberViewFsmNode($refName, node, deviceParams);
       }
       

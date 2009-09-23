@@ -1,0 +1,442 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 381 256 N "_3DFace" 1
+"$deviceParams"
+"main()
+{
+  dyn_string ex;
+  deviceParams = emuui_parseParameterString($deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+
+  getValue(\"refPoint\", \"position\", posX, posY);
+  // ----------========== FSM NODE ==========----------
+  fsmNode = emuui_getFsmNode(\"DDU_general\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // check if the node is disabled, if so - then paint everything in gray and set allGrayMode to true
+  string domain = fsmNode;
+  string object = _fwCU_getNodeObj(domain);
+  string duMode = fwFsmUi_getDUMode(domain, object);
+  if (duMode == \"Disabled\") {
+    allGrayMode = true;
+  }
+  
+  initGui();
+  
+  // connect to the temperature    
+  dyn_string tempDps = emuui_getDpNames(\"DDU_temperature\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  dpConnect(\"updateTemperatureCB\", true, tempDps);
+
+  // connect to the LV
+  dyn_string lvDps = emuui_getDpNames(\"DDU_LV_vMon\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  dpConnect(\"updateLVvMonCB\", true, lvDps);
+  
+  // connect to last update timestamp
+  string timestampDp = emuui_getDpName(\"DDU_timestamp\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  dpConnect(\"updateLastReadTimestampCB\", true, timestampDp);
+  
+  // DISABLED CHANNELS
+  string disabledChannelsDp = emuui_getDpName(\"DDU_disabled_channels\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // ALARM COLORS
+  for (int i=1; i <= dynlen(tempDps); i++) {
+    dynAppend(alarmColorDps, tempDps[i] + \":_alert_hdl.._act_state_color\");
+  }
+  for (int i=1; i <= dynlen(lvDps); i++) {
+    dynAppend(alarmColorDps, lvDps[i] + \":_alert_hdl.._act_state_color\");
+  }
+  
+  if (!allGrayMode) {
+    dpConnect(\"updateDisabledChannelsCB\", true, disabledChannelsDp);
+    dpConnect(\"updateAlarmColorsCB\", false, alarmColorDps);
+  }
+  
+  // ----------========== DISCONNECTED WARNING ==========----------
+  if (dynlen(tempDps) > 1) {
+    deviceParams[\"sysName\"] = emuui_getSystemName(tempDps[1]);
+  }
+  string disconnectedDevicesDp = emuui_getDpName(\"disconnected_devices\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  dpConnect(\"updateDisconnectedWarningCB\", true, disconnectedDevicesDp);
+}
+
+void initGui() {
+  // mapping of [disabled channel numbers (array index)] to [column names in the table]
+  disabledChNumToTable = makeDynString(\"tableLV\", \"tableLV\", \"tableLV\", \"tableLV\", \"tableTemp\", \"tableTemp\", \"tableTemp\", \"tableTemp\");
+  disabledChNumToColumn = makeDynString(\"v15\", \"v25a\", \"v25b\", \"v33\", \"td1\", \"td2\", \"td3\", \"td4\");
+  
+  //set the appropriate width for the table
+  tableLV.appendLine(\"v15\", \"loading\", \"v25a\", \"loading\", \"v25b\", \"loading\", \"v33\", \"loading\");
+  emuui_tableCompact(\"tableLV\", 1);
+  tableTemp.appendLine(\"td1\", \"loading\", \"td2\", \"loading\", \"td3\", \"loading\", \"td4\", \"loading\");
+  emuui_tableCompact(\"tableTemp\", 1);
+  
+  if (allGrayMode) {
+    // paint everyting gray
+    for (int i=0; i < tableLV.columnCount(); i++) {
+      tableLV.cellBackColRC(0, tableLV.columnToName(i), \"FwEquipmentDisabled\");
+    }
+    for (int i=0; i < tableTemp.columnCount(); i++) {
+      tableTemp.cellBackColRC(0, tableTemp.columnToName(i), \"FwEquipmentDisabled\");
+    }
+  }
+}" 0
+ "main()
+{
+  emuui_destroyReferences(references);
+}" 0
+ E E E 1 -1 -1 0  0 0
+""0  1
+E "//some panel-wide constants and variables
+mapping deviceParams;
+dyn_string disabledChNumToTable;  // mapping of [disabled channel numbers (array index)] to [table name]
+dyn_string disabledChNumToColumn;  // mapping of [disabled channel numbers (array index)] to [column names in the table]
+dyn_string references;
+string fsmNode;
+int posX, posY;
+bool allGrayMode; // this flag is true when the whole LV FSM node is disabled - then back color of the tables is always gray
+
+dyn_string alarmColorDps;
+dyn_int disabledChannels;
+
+/** Updates the temperature values in the temperature table. */
+void updateTemperatureCB(dyn_string dps, dyn_float temperatures) {
+  for (int i=1; i <= dynlen(dps); i++) {
+    dps[i] = dpSubStr(dps[i], DPSUB_SYS_DP_EL);
+    dyn_string dpSplit = strsplit(dps[i], \".\");
+    string columnName = dpSplit[dynlen(dpSplit)];    
+    string strValue;
+    sprintf(strValue, \"%.1f °C\", temperatures[i]);
+    tableTemp.cellValueRC(0, columnName, strValue);
+  }
+}
+
+/** Updates the voltage in the low voltage table. */
+void updateLVvMonCB(dyn_string dps, dyn_float voltages) {
+  for (int i=1; i <= dynlen(dps); i++) {
+    dps[i] = dpSubStr(dps[i], DPSUB_SYS_DP_EL);
+    dyn_string dpSplit = strsplit(dps[i], \".\");
+    string columnName = dpSplit[dynlen(dpSplit)];    
+    string strValue;
+    sprintf(strValue, \"%.2f V\", voltages[i]);
+    tableLV.cellValueRC(0, columnName, strValue);
+  }
+}
+
+/** This function is called when the last reading timestamp changes and it shows that timestamp on the lblLastUpdate label. */
+void updateLastReadTimestampCB(string timestampDp, int timestamp) {
+  time t = timestamp;
+  lblLastUpdate.text = emuui_formatTime(t);
+}
+
+void updateDisabledChannelsCB(string dp, dyn_int disabledChannelsParam) {
+  disabledChannels = disabledChannelsParam;
+  
+  //repaint the colors
+  dyn_anytype values;
+  dpGet(alarmColorDps, values);
+  updateAlarmColorsCB(alarmColorDps, values);
+}
+
+void updateAlarmColorsCB(dyn_string dps, dyn_string alarmColors) {
+  for (int i=1; i <= dynlen(dps); i++) {
+    dps[i] = dpSubStr(dps[i], DPSUB_SYS_DP_EL);
+    dyn_string dpSplit = strsplit(dps[i], \".\");
+    string columnName = dpSplit[dynlen(dpSplit)];
+    string tableName = \"tableLV\";
+    if (strpos(columnName, \"td\") >= 0) { tableName = \"tableTemp\"; }
+    
+    alarmColors[i] = emuui_correctAlarmColor(alarmColors[i]);
+    setValue(tableName, \"cellBackColRC\", 0, columnName, alarmColors[i]);
+  }
+  
+  //gray out the disabled channels
+  for (int i=1; i <= dynlen(disabledChannels); i++) {
+    string table = disabledChNumToTable[disabledChannels[i]];
+    string column = disabledChNumToColumn[disabledChannels[i]];
+    setValue(table, \"cellBackColRC\", 0, column, \"FwEquipmentDisabled\");
+  }
+}
+
+/** if disconnectedDevices contains hvFsmNode then \"no communication\" warning is shown, otherwise it's hidden. */
+void updateDisconnectedWarningCB(string dpName, string disconnectedDevices) {
+  if (strpos(disconnectedDevices, fsmNode) >= 0) {
+    emuui_showTooltipWarning(getShape(\"refPoint\"),
+                           getShape(\"warnNoTempCommunication\"), 
+                           getShape(\"DDU_general_tooltipBack\"));
+  } else {
+    emuui_hideTooltipWarning(getShape(\"warnNoTempCommunication\"), 
+                             getShape(\"DDU_general_tooltipBack\"));
+  }
+}
+" 0
+ 2
+"CBRef" "1"
+"EClose" "main()
+{
+  emuui_destroyReferences(references);
+  PanelOff();
+}" 0
+
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 10
+"DDU_general_tooltipBack"
+""
+1 400 40 E E E 1 E 1 E N {0,0,0} E N {255,255,225} E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 2.72727272727273 0 1.66666666666667 -1090.90909090909 -66.6666666666667 1 E 400 40 510 130
+2 1
+"PRIMITIVE_TEXT1"
+""
+1 10 80 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 80 70 94
+0 2 2 "0s" 0 0 0 192 0 0  10 80 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 11 Temperature
+25 2
+"tableTemp"
+""
+1 10 100 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 8 98 292 139
+EE 1 0 1 4 0 "td1" 5 1 0 "s" 1
+LANG:1 8 Sensor 1
+E
+1
+LANG:1 0 
+
+70 "td2" 5 1 0 "s" 1
+LANG:1 8 Sensor 2
+E
+1
+LANG:1 0 
+
+70 "td3" 5 1 0 "s" 1
+LANG:1 8 Sensor 3
+E
+1
+LANG:1 0 
+
+70 "td4" 5 1 0 "s" 1
+LANG:1 8 Sensor 4
+E
+1
+LANG:1 0 
+
+70 
+14 14 10 10
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+0 0 0 1 7
+1 0
+2 3
+"lblLastUpdate"
+""
+1 200 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 200 10 247 24
+0 2 2 "0s" 0 0 0 192 0 0  200 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 9 timestamp
+2 4
+"PRIMITIVE_TEXT3"
+""
+1 140 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 140 10 199 24
+0 2 2 "0s" 0 0 0 192 0 0  140 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 12 Last update:
+7 6
+"refPoint"
+""
+1 140 110 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -140 -110 1 E 140 110 10 10
+2 8
+"warnNoTempCommunication"
+""
+1 10 160 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+13 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 160 290 174
+1 2 2 "0s" 0 0 0 65 0 0  10 160 1
+1
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 40 No Communication - check Xmas monitoring
+2 11
+"PRIMITIVE_TEXT4"
+""
+1 10 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 10 69 24
+0 2 2 "0s" 0 0 0 192 0 0  10 10 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 11 Low Voltage
+25 12
+"tableLV"
+""
+1 10 30 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+21 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 8 28 292 69
+EE 1 0 1 4 0 "v15" 5 1 0 "s" 1
+LANG:1 9 1.5V line
+E
+1
+LANG:1 0 
+
+70 "v25a" 5 1 0 "s" 1
+LANG:1 11 2.5V line 1
+E
+1
+LANG:1 0 
+
+70 "v25b" 5 1 0 "s" 1
+LANG:1 11 2.5V line 2
+E
+1
+LANG:1 0 
+
+70 "v33" 5 1 0 "s" 1
+LANG:1 9 3.3V line
+E
+1
+LANG:1 0 
+
+70 
+14 14 10 10
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+0 0 0 1 7
+1 0
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
