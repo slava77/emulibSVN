@@ -18,8 +18,8 @@
 <file>./panels/objects/CMS_CSC_UI/*.pnl</file>
 <file>./panels/objects/CMS_CSC_UI/tooltip_objects/*.pnl</file>
 <file>./scripts/libs/CMS_CSC_UI/*.ctl</file>
-<file>./scripts/libs/CMS_CSC_UI/contextMenus/*.ctl</file>
 <file>./scripts/libs/CMS_CSC_UI/background_checks/*.ctl</file>
+<file>./scripts/libs/CMS_CSC_UI/contextMenus/*.ctl</file>
 <file>./CMS_CSC_UI.xml</file>
 <file>./pictures/CMS_CSC_UI/*.*</file>
 </component>
