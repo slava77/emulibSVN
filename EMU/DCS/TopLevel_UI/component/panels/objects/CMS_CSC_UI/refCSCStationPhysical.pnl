@@ -67,6 +67,9 @@ void drawStation(int x, int y, int radius, string side, int station, dyn_string 
   int pcrateRadius = radius;
 //  if (station == 4) { pcrateRadius = scaleValue(layoutParams[\"innerRadius_ME42\"], scale) - gap; }
   drawPeripheralCrates(x, y, pcrateRadius + EMUUI_STATION_PCRATE_DISTANCE_FROM_DISK, side, station, exceptionInfo);
+  
+  // draw trigger sectors
+  drawTriggerSectors(x, y, radius);
 }
 
 void drawPeripheralCrates(int x, int y, int radius, string side, int station, dyn_string &exceptionInfo) {
@@ -210,11 +213,21 @@ void drawPeripheralCrates(int x, int y, int radius, string side, int station, dy
       }
     }
   }
+}
 
-  
-  
-  
-  
+void drawTriggerSectors(int centerX, int centerY, int radius) {
+  float angleStep = 360 / 6;
+  float angle = -1 * ((360 / 36) * 4); // angle at which to start  
+  for (int i=1; i <= 6; i++) {
+    string refName = \"triggerSectorSeparator_\" + paramSide + paramStation + i;
+    while (shapeExists(refName)) { refName += \"_duplicate\"; }
+    dynAppend(references, refName);
+    addSymbol(myModuleName(), myPanelName(), \"objects/\" + EMUUI_COMPONENT_NAME + \"/refTriggerSectorSeparator.pnl\", 
+              refName, makeDynString(), 0, 0, 0, 1, 1);
+    setValue(refName + \".separator\", \"position\", centerX, centerY);
+    setValue(refName + \".separator\", \"rotation\", angle);
+    angle += angleStep;
+  }
 }
 
 /* sets the caption in the right position (also depending on the label size) and sets the proper text for the label. */
