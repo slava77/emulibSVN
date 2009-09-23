@@ -747,7 +747,7 @@ LANG:1 0
             makeDynString(\"$group:\" + group),
             posX, posY, 0, 1, 1);
 }" 0
- E 0 0 1 0 1 E 8.31578947368421 0 0.230414746543779 -7474.21052631579 661.152073732719 0 E 900 863 1091 1081
+ E 0 0 1 0 1 E 5.63157894736842 0 0.230414746543779 -5058.42105263158 661.152073732719 0 E 900 863 1091 1081
 1
 LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
@@ -884,6 +884,62 @@ LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,
 0 ""
 1
 LANG:1 10 FED Crates
+30 53
+"FRAME6"
+""
+1 1000 483 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+67 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+//   waitForEmuUiInitialize();
+//     
+//   int posX, posY;
+//   getValue(\"\", \"position\", posX, posY);
+//   posX += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_X;
+//   posY += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y;
+//   
+//   string refName = \"PeripheralCrateStatusView\";
+//   string group = \"\";//emuui_getSessionDp(\"communicationMonitor\");
+//   addSymbol(myModuleName(), myPanelName(),
+//             \"objects/\" + EMUUI_COMPONENT_NAME + \"/refPCrateConfiguration.pnl\",
+//             refName,
+//             makeDynString(\"$group:\" + group),
+//             posX, posY, 0, 1, 1);
+}" 0
+ E 0 0 1 0 1 E 4.45454545454545 0 0.393700787401575 -3354.54545454546 669.842519685039 0 E 1000 483 1111 611
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 24 Peripheral Crates Status
+2 54
+"PRIMITIVE_TEXT4"
+""
+1 1120 880 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+68 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 1120 880 1579 894
+0 2 2 "0s" 0 0 0 192 0 0  1120 880 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 97 Still under development, but coming soon!  This will show PCrate configuration process and status
 0
 LAYER, 1 
 1
