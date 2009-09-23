@@ -12,8 +12,8 @@ PANEL,-1 -1 1600 247 N "_3DFace" 1
 void drawCommunicationDevices() {
   int posX, posY;
   getValue(\"refPoint\", \"position\", posX, posY); 
-  int lblWidth = 60;
-  int xGapSize = 175;
+  int lblWidth = 53;
+  int xGapSize = 97;
 
   lblXmasP.position(posX, posY);
   posX += lblWidth;

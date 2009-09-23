@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 373 35 N "_3DFace" 1
+PANEL,-1 -1 373 30 N "_3DFace" 1
 "$deviceParams"
 "main()
 {
@@ -27,12 +27,12 @@ DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
 LAYER, 0 
 1
 LANG:1 0 
-6 2
+6 3
 "connection_xmas_name_tooltipBack"
 ""
-1 240 90 E E E 1 E 1 E N {0,0,0} E N {255,255,225} E E
+1 0 50 E E E 1 E 1 E N {0,0,0} E N {255,255,225} E E
  E E
-4 0 0 0 0 0
+5 0 0 0 0 0
 E E E
 0
 1
@@ -40,7 +40,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1.42857142857142 0 1 -6.82121026329696e-014 1 1 E 210 19 0 -1
+E E 0 1 1 2 1 E 1 0 1 0 -50 1 E 0 50 300 70
 2 1
 "lblDeviceName"
 ""
