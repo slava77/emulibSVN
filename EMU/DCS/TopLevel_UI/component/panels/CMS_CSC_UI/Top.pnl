@@ -757,28 +757,9 @@ LANG:1 20 Communication Status
 "legendImgNoCommunication"
 ""
 1 85 215 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
- "main()
-{
-  showPopupMenu();
-}" 0
- "main()
-{
-  openFsmPanel();
-}" 0
-
+ E E
 61 0 0 0 0 0
-E E "main(bool enter)
-{
-  mouseOverObjects[this.name] = enter;
-  if (enter) {
-    setValue(shapeName, \"foreCol\", \"black_yellow\");
-    showTooltip();
-  } else {
-    setValue(shapeName, \"foreCol\", \"\");
-    hideTooltip();
-  }
-}" 0
-
+E E E
 0
 1
 LANG:1 0 
@@ -936,7 +917,7 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 1120 880 1579 894
 0 2 2 "0s" 0 0 0 192 0 0  1120 880 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
 0 ""
 1
 LANG:1 97 Still under development, but coming soon!  This will show PCrate configuration process and status
