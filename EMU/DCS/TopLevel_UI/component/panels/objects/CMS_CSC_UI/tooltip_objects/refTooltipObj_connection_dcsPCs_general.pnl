@@ -13,7 +13,8 @@ PANEL,-1 -1 373 314 N "_3DFace" 0
     requiredSystemNums[i] = split[1];
     requiredSystemNames[i] = split[2];
   }
-
+  ownSystemNum = getSystemId();
+  
   initGui();
   dpConnect(\"distConnectionsChangedCB\", true, \"_DistManager.State.SystemNums\");
 }
@@ -28,12 +29,13 @@ void initGui() {
 ""0  1
 E "dyn_string requiredSystemNames;
 dyn_string requiredSystemNums;
+string ownSystemNum;
 
 void distConnectionsChangedCB(string dp, dyn_string systemNumbers) {
   for (int i=1; i <= dynlen(requiredSystemNums); i++) {
     string reqSystemNum = requiredSystemNums[i];
     string computerName = requiredSystemNames[i];
-    if (dynContains(systemNumbers, reqSystemNum)) {
+    if (dynContains(systemNumbers, reqSystemNum) || (reqSystemNum == ownSystemNum)) {
       tableComputers.cellValueRC(i - 1, \"status\", \"OK\");
       tableComputers.cellBackColRC(i - 1, \"computer\", \"FwStateOKPhysics\");
       tableComputers.cellBackColRC(i - 1, \"status\", \"FwStateOKPhysics\");
