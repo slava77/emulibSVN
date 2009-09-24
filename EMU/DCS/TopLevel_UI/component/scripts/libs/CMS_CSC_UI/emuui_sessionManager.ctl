@@ -23,6 +23,7 @@ void emuui_initSession() {
   fwAccessControl_getUserName(user);
   emuui_g_sessionId = "session_" + getHostname() + "_" + user;
   strreplace(emuui_g_sessionId, " ", "_");
+  strreplace(emuui_g_sessionId, "-", "_");
   
   dyn_string sessionDps = dpNames(emuui_g_sessionId, "CSC_UI_sessionState");
   // should never happen, but just in case
