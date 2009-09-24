@@ -40,11 +40,8 @@ void emuui_initSession() {
     emuui_applySessionDefaults(emuui_g_sessionId);
   }
   
-  string test;
-  dpGet(emuui_g_sessionId + ".mainChamberView.connectionType", test);
-  if (test == "") {
-    emuui_applySessionDefaults(emuui_g_sessionId);
-  }
+  // go through all the session variables and if theres any that haven't got a value - apply the default
+  emuui_applySessionDefaults(emuui_g_sessionId);
   
   emu_debugFuncEnd("emuui_initSession", t0);
 }
@@ -59,7 +56,10 @@ string emuui_getSessionDp(string dp) {
   return emuui_getSessionId() + "." + dp;
 }
 
-void emuui_applySessionDefaults(string sessionDp) {
+/** goes through all the session variables and if theres any that haven't got a value - applies the default
+  
+  */
+void emuui_applySessionDefaults(string sessionDp, bool forceRewrite = false) {
   dyn_string ex;
   mapping sessDefaults = emuui_getMapping("sessionDefaults", ex);
   if (emu_checkException(ex)) { return; }
@@ -69,7 +69,12 @@ void emuui_applySessionDefaults(string sessionDp) {
     string setting = sessDefaults[key];
     string dpe = sessionDp + "." + key;
     
-    dpSetWait(dpe, setting);
+    string testValue;
+    dpGet(dpe, testValue);
+    if ((testValue == "") || forceRewrite){
+      emu_info("applying default value to session variable '" + dpe + "': " + setting);
+      dpSetWait(dpe, setting);
+    }
   }
   
   dpSetWait(sessionDp + ".hostname", getHostname());
