@@ -186,7 +186,7 @@ string emuui_getDpName(string type, mapping parameters, dyn_string &exceptionInf
   }
   
   if (dynlen(dps) > 1) {
-    emu_info("WARNING: more than one match found  (" + dynlen(dps) + ") for DP request of type '" + type + "'. Returned the first one");
+    emu_info("WARNING: more than one match found  (" + dynlen(dps) + ") for DP request of type '" + type + "': " + dps + ". Returned the first one");
   }
   
   return dps[1];

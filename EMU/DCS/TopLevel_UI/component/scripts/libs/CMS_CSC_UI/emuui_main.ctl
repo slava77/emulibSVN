@@ -6,8 +6,6 @@ This package contains the main top level functions of the UI.
 @date   May 2009
 */
 
-#uses "CMS_CSC_UI/look_and_feel/default.ctl"
-
 const string EMUUI_COMPONENT_NAME = "CMS_CSC_UI";
 global string EMUUI_COMPONENT_VERSION;
 global string EMUUI_COMPONENT_DATE;
