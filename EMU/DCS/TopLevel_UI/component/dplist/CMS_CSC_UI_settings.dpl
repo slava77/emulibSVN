@@ -57,6 +57,6 @@ emuui_map_elmbStateColors.map	CSC_UI_mapping	"OPERATIONAL;FwStateOKPhysics", "ST
 emuui_map_elmbStateMeaning.map	CSC_UI_mapping	"4;STOPPED", "5;OPERATIONAL", "127;PRE-OPERATIONAL", "1;DISCONNECTED", "0;UNKNOWN"	0x101	14.07.2009 18:52:56.263
 emuui_array_elmb_VCC_v_channels.array	CSC_UI_array	"35", "19"	0x101	15.07.2009 10:32:52.294
 emuui_array_elmb_CCB_MPC_v_channels.array	CSC_UI_array	"34", "57"	0x101	15.07.2009 10:33:09.325
-emuui_map_dpStringValueColors.map	CSC_UI_mapping	"OK;FwStateOKPhysics"	0x101	03.09.2009 17:03:48.765
+emuui_map_dpStringValueColors.map	CSC_UI_mapping	"OK;FwStateOKPhysics", "ALL OK;FwStateOKPhysics"	0x101	24.09.2009 15:01:52.984
 emuui_map_sysNameToSide.map	CSC_UI_mapping	"cms_csc_dcs_03;M", "cms_csc_dcs_04;M", "cms_csc_dcs_05;P", "cms_csc_dcs_06;P"	0x101	08.09.2009 09:48:15.234
 emuui_map_dcsProjects.map	CSC_UI_mapping	"164;Supervisor", "153;Middle Layer for ME -2,-3,-4", "154;Middle Layer for -1", "155;Middle Layer for ME +1", "156;Middle Layer for ME +2,+3,+4", "165;ME1/1 (Dubna) High Voltage", "163;Low Voltage"	0x101	22.09.2009 18:17:07.375
