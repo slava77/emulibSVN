@@ -30,4 +30,16 @@ void emuuibc_startBackgroundChecks() {
   
   // connect to a list of remote PVSS projects (from distribution manager)
   dpConnect("emuuibc_checkComputersConnectionStatusCB", true, "_DistManager.State.SystemNums");
+  
+  // connect to the "UPS on battery" signal
+  string upsOnBatteryDp = emuui_getDpName("UPS_on_battery_status", emuui_dummyMapping, ex);
+  if (emu_checkException(ex)) { return; }
+  dpConnect("emuuibc_upsMonitorCB", true, upsOnBatteryDp);
+  emu_debug("Background checks service: connected to 'UPS on battery' signal - " + upsOnBatteryDp, emu_DEBUG_DETAIL);
+}
+
+/** This function is called when "UPS on battery" state has changed. */
+void emuuibc_upsMonitorCB(string dp, bool onBattery) {
+  lblUpsOnBattery.visible = onBattery;
+  upsOnBatteryBack.visible = onBattery;
 }
