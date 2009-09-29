@@ -17,7 +17,7 @@ main()
    dyn_string dpes;
    dyn_string tags;
 
-   string dipConfigDp = "DIPConfig_1";
+   string dipConfigDp = "csc_dcs_lv1:DIPConfig_1";
    string item;
    
    // Connect to the DIP server variable
