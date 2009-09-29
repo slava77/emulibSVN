@@ -3,6 +3,7 @@
 <version>1.0.0</version>
 <date>2009/09/29</date>
 <required>fwDIP=3.1.2</required>
+<dontRestartProject>yes</dontRestartProject>
 <postInstall>./scripts/CMS_CSC_UPS/CMS_CSC_UPS.postInstall</postInstall>
 <dplist>./dplist/CMS_CSC_UPS.dpl</dplist>
 <file>./CMS_CSC_UPS.xml</file>
