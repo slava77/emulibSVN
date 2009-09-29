@@ -22,7 +22,7 @@ main()
    
    // Connect to the DIP server variable
    item = "dip/CMSX/DSS/AL_UPS_Low_Voltage_In_SDX5_Is_On_Battery";
-   dpes = makeDynString("CMS_CSC_UPS_Test.");
+   dpes = makeDynString("CMS_CSC_UPS_LV_On_Battery.");
    
    fwDIP_DipQuery(dipConfigDp,item,childName,childType,fieldName,fieldType,exInfo);
    tags = fieldName;
