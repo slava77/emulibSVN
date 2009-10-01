@@ -148,8 +148,8 @@ void emuuibc_checkXmasConnectionState(string side) {
     if (dpSide != side) { continue; }
     
     string disconnectedDpsStr = emuuibc_g_disconnectedDevices[dpName];
-    errorCount += strreplace(disconnectedDpsStr, "LowVoltage/", "LowVoltage/");
-    errorCount += strreplace(disconnectedDpsStr, "Temperature/", "Temperature/");
+    errorCount += strreplace(disconnectedDpsStr, "LowVoltage/CSC", "LowVoltage/CSC");
+    errorCount += strreplace(disconnectedDpsStr, "Temperature/CSC", "Temperature/CSC");
   }
   if (errorCount > EMUUIBC_MAX_XMAS_ERROR_COUNT) {
     state = "ERROR";
