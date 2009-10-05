@@ -13,6 +13,114 @@ const float emucdb_SCHEMA_VERSION = 1.0;
 global string emucdb_g_connName = "emucdb_DB_connection";
 global dbConnection emucdb_g_dbConn;
 
+//mostly copied from fwConfigurationDB_initialize in fwConfigurationDB/fwConfigurationDB.ctl
+void emucdb_getConnectionDetails(string &connectString, string &dbType, string &dbName,
+                                 string &dbUser, string &dbPassword,dyn_string &exceptionInfo) {
+      dyn_string setupNames, setupDPs;
+    string defaultSetupName,defaultSetupDp;
+    
+    
+  time t0;
+
+  emu_debugFuncStart("emucdb_getConnectionDetails", t0);
+    fwConfigurationDB_getSetups(setupNames, setupDPs, defaultSetupName,defaultSetupDp, exceptionInfo);
+    if (emu_checkException(exceptionInfo)) return;
+    if (defaultSetupName=="") {
+        fwException_raise(exceptionInfo,"WARNING!",
+                          "Cannot find default setup. Please configure the tool first.","");
+        return;
+    }
+
+    //if (setupName=="") {
+        string setupName=defaultSetupName;
+        string dpName=defaultSetupDp;
+   /* } else {
+        int idx=dynContains(setupNames,setupName);
+        if (idx<1) {
+            fwException_raise(exceptionInfo,"ERROR","Configuration Tool setup "+setupName+" not defined","");
+            return;
+        };
+        dpName=setupDPs[idx];
+    };*/
+
+    string dbConnectionName;
+    float version;
+    int rc=dpGet(dpName+".DBConnection",dbConnectionName,
+                dpName+".version",version);
+    if (rc) {
+        fwException_raise(exceptionInfo,"ERROR","Could not get Configuration Tool setup  "+setupName,"");
+        return;
+    }
+    
+    string DPName = fwConfigurationDB_ConnectionNamePrefix + dbConnectionName;
+    if (!dpExists(DPName)) {
+	fwException_raise(exceptionInfo,"ERROR","DB Connection: "+dbConnectionName+" does not exist","");
+	return;
+    }
+    int rc=dpGet( 
+		    DPName+".dbUser",dbUser,
+		    DPName+".dbName",dbName,
+		    DPName+".dbType",dbType,
+		    DPName+".dbPassword",dbPassword,
+		    DPName+".connectString",connectString);
+
+    if (rc) {
+	fwException_raise(exceptionInfo,"ERROR", "Cannot get database connection information","");
+	return;
+    }
+  emu_debugFuncEnd("emucdb_getConnectionDetails", t0);
+
+}
+
+//copied from fwConfigurationDB_dbConnect
+string emucdb_getConnectionString(dyn_string &exceptionInfo)
+{
+    string connectString;
+    string dbType;
+    string dbName;
+    string dbUser;
+    string dbPassword;
+    
+  time t0;
+
+  emu_debugFuncStart("emucdb_getConnectionString", t0);
+    emucdb_getConnectionDetails(connectString,dbType,dbName,dbUser,dbPassword,exceptionInfo);
+    if ( connectString=="") {
+        fwException_raise(exceptionInfo,"ERROR","Empty connect string","");
+        return;
+    }
+
+
+    if (strpos(connectString,"<DRIVER>")>=0) {
+        string driver;
+        _fwConfigurationDB_getDBDriver(dbType, driver, exceptionInfo);
+        if (dynlen(exceptionInfo)) return;
+        if (strreplace(connectString,"<DRIVER>",driver)!=1) {
+            fwException_raise(exceptionInfo,"ERROR","Could not set <DRIVER> in the connect string","");
+            return;
+        }
+    }
+
+    if (strpos(connectString,"<USER>")>=0)
+        if (strreplace(connectString,"<USER>",dbUser)!=1) {
+            fwException_raise(exceptionInfo,"ERROR","Could not set <USER> in the connect string","");
+            return;
+        }
+    if (strpos(connectString,"<PASSWORD>")>=0)
+        if (strreplace(connectString,"<PASSWORD>",dbPassword)!=1) {
+            fwException_raise(exceptionInfo,"ERROR","Could not set <PASSWORD> in the connect string","");
+            return;
+        }
+    if (strpos(connectString,"<DBNAME>")>=0)
+        if (strreplace(connectString,"<DBNAME>",dbName)!=1) {
+            fwException_raise(exceptionInfo,"ERROR", "Could not set <DBNAME> in the connect string","");
+            return;
+        }
+  
+    emu_debugFuncEnd("emucdb_getConnectionString", t0);
+    return connectString;
+}
+
 /** Opens connection to the EMU confDB and initializes the fwConfigurationDB. */
 void emucdb_initialize() {
   dyn_string exceptionInfo;
@@ -50,13 +158,16 @@ void emucdb_initialize() {
     string err;
     dbConnection newConn;
     emucdb_g_dbConn = newConn;
-    
+    /*
     bool ok=fileToString(connFile, connString);
     if (!ok) {
       emu_error("EMU CDB connection file cannot be open");
       return;
     }
-    emu_info("EMU CDB connection file opened successfully, connecting to DB...");
+    emu_info("EMU CDB connection file opened successfully, connecting to DB...");*/
+    string connString=emucdb_getConnectionString(exceptionInfo);
+    
+    if (emu_checkException(exceptionInfo)) return;
     rdbOpenConnection(connString, emucdb_g_dbConn, emucdb_g_connName);
     if (rdbCheckError(err, emucdb_g_dbConn)){ emu_error("Error while connecting to EMU CDB database: " + err); return;};
     emu_info("Connection to the EMU CDB database opened OK");
