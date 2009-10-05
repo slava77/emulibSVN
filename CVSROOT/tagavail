@@ -25,7 +25,7 @@ avail | madorsky barvic vavilov | EMU/HV
 avail | golao | EMU/EventDisplay/FastDisplay
 
 #EMU/DCS
-avail | evka haryo bclare xyang yangxf sytnik vsytnik | EMU/DCS
+avail | evka haryo bclare xyang yangxf sytnik vsytnik brett | EMU/DCS
 
 #EMU/cscdw
 avail | evka valdo banicz barvic liu | EMU/cscdw
