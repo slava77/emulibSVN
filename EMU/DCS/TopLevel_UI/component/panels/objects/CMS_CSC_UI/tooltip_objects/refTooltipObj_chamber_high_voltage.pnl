@@ -133,7 +133,7 @@ void initGui(int channelCount, dyn_string &ex) {
     emu_addError(\"HV module coordinates are incomplete. DP = \" + hvCoordDp + \". Returned coordinates = \" + coordsCombined, ex);
     return;
   }
-  lblModuleInfo.text = \"host=\" + coords[1] + \"; slot=\" + coords[2] + \"; addr=\" + coords[3] + \"; part=\" + coords[4];
+  lblModuleInfo.text = \"host=\" + coords[1] + \"; slot=\" + coords[2] + \"; addr=\" + coords[3] + \"; part=\" + coords[4] + \",\";
   
   emuui_repositionObjectRelatively(shapesBelowTable, oldSizeX, oldSizeY, newSizeX, newSizeY);
   int backSizeX, backSizeY;
