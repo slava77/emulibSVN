@@ -1,4 +1,4 @@
-V 10
+V 11
 1
 LANG:1 26 CMS Endcap Muon System DCS
 PANEL,-1 -1 1600 1150 N "_3DFace" 0
@@ -23,12 +23,19 @@ void initConstants() {
   emuui_g_topFsmNodesRightX = 390;
   emuui_g_topFsmNodesHeight = 220;
   hostsToKillAllPvss = makeDynString(\"SCX5SCR05\", \"SCX5SCR06\");
+  developmentHosts = makeDynString(\"macfrank\", \"hp-evka\");
 }" 0
  "main()
 {
   exiting = true;
   fwCU_releaseFullTree(\"CMS_CSC\");
-  exit();
+  string hostname = getHostname();
+  if (dynContains(developmentHosts, hostname)) {
+    PanelOff();
+  } else {
+    exit();
+  }
+  
 //   string hostname = getHostname();
 //   if (dynContains(hostsToKillAllPvss, hostname)) {
 //     emu_info(\"Killing all PVSS processes\");
@@ -47,6 +54,7 @@ bool topPanelInitialized;
 int chamberViewModeTimerThreadId = -1;
 
 dyn_string hostsToKillAllPvss;
+dyn_string developmentHosts;
 
 void waitForEmuUiInitialize() {
   while(!emuui_isInitialized()) { // wait for the emuui initialization
@@ -175,7 +183,13 @@ void killAllPvss() {
 {
   exiting = true;    
   fwCU_releaseFullTree(\"CMS_CSC\");
-  exit();
+  string hostname = getHostname();
+  if (dynContains(developmentHosts, hostname)) {
+    PanelOff();
+  } else {
+    exit();
+  }
+
 //   string hostname = getHostname();
 //   if (dynContains(hostsToKillAllPvss, hostname)) {
 //     emu_info(\"Killing all PVSS processes\");
@@ -191,7 +205,7 @@ LANG:1 0
 30 7
 "frameTemperatureMonitor"
 ""
-1 250 833 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+1 250 833 E E E 1 E 0 E N "_WindowText" E N {0,0,0} E E
  E E
 9 0 0 0 0 0
 E E E
@@ -224,16 +238,78 @@ LANG:1 0
             makeDynString(\"$group:\" + group, \"$width:\" + width),
             posX, posY, 0, 1, 1);   
 }" 0
- E 0 0 1 0 1 E 1.48484848484849 0 1.01382488479263 728.787878787878 75.4838709677391 0 E 250 833 581 1051
+ E 0 0 1 0 1 E 1.48484848484849 0 1.01382488479263 728.787878787878 75.48387096773909 0 E 250 833 581 1051
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0 1
 LANG:1 13 Value Monitor
+6 73
+"RECTANGLE9"
+""
+1 750 920 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+87 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 2.722222222222223 0 2.625 -941.666666666667 -1485 1 E 750 920 930 1000
+30 53
+"FRAME6"
+""
+1 1000 483 E E E 1 E 0 E N "_WindowText" E N {0,0,0} E E
+ E E
+67 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+//   waitForEmuUiInitialize();
+//     
+//   int posX, posY;
+//   getValue(\"\", \"position\", posX, posY);
+//   posX += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_X;
+//   posY += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y;
+//   
+//   string refName = \"PeripheralCrateStatusView\";
+//   string group = \"\";//emuui_getSessionDp(\"communicationMonitor\");
+//   addSymbol(myModuleName(), myPanelName(),
+//             \"objects/\" + EMUUI_COMPONENT_NAME + \"/refPCrateConfiguration.pnl\",
+//             refName,
+//             makeDynString(\"$group:\" + group),
+//             posX, posY, 0, 1, 1);
+}" 0
+ E 0 0 1 0 1 E 4.45454545454545 0 0.393700787401575 -3354.54545454546 669.842519685039 0 E 1000 483 1111 611
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0 1
+LANG:1 24 Peripheral Crates Status
+6 72
+"RECTANGLE8"
+""
+1 750 920 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+86 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 2.722222222222223 0 0.5 -941.666666666667 410.0000000000001 1 E 750 920 930 1000
 30 4
 "frameMainChamberView"
 ""
-1 34.4078947368421 238.283333333333 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+1 34.4078947368421 238.283333333333 E E E 1 E 0 E N "_WindowText" E N {0,0,0} E E
  E E
 5 0 0 0 0 0
 E E E
@@ -264,14 +340,48 @@ LANG:1 0
 " 0
  E 0 1 1 0 1 E 2.3578277627767 0 2.52365930599369 -60.734832883301 -538.01261829653 0 E 30 233 701 551
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0 1
 LANG:1 37 Main Chamber View (view from +Z side)
+30 46
+"FRAME4"
+""
+1 900 863 E E E 1 E 0 E N "_WindowText" E N {0,0,0} E E
+ E E
+59 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+  waitForEmuUiInitialize();
+    
+  int posX, posY;
+  getValue(\"\", \"position\", posX, posY);
+  posX += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_X;
+  posY += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y;
+  
+  string refName = \"CommunicationStatusView_EMU\";
+  string group = emuui_getSessionDp(\"communicationMonitor\");
+  addSymbol(myModuleName(), myPanelName(),
+            \"objects/\" + EMUUI_COMPONENT_NAME + \"/refCommunication.pnl\",
+            refName,
+            makeDynString(\"$group:\" + group),
+            posX, posY, 0, 1, 1);
+}" 0
+ E 0 0 1 0 1 E 5.63157894736842 0 0.230414746543779 -5058.42105263158 661.152073732719 0 E 900 863 1091 1081
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0 1
+LANG:1 20 Communication Status
 30 9
 "FRAME1"
 ""
-1 70 853 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+1 70 853 E E E 1 E 0 E N "_WindowText" E N {0,0,0} E E
  E E
 11 0 0 0 0 0
 E E E
@@ -307,16 +417,15 @@ LANG:1 0
   fwCU_connectOperationMode(\"updateTopFsmNodeOperationModeCB\", \"CMS_CSC\");
 }
 " 0
- E 0 0 1 0 1 E 1.68181818181818 0 1.40127388535031 -107.727272727273 -275.286624203814 0 E 70 853 291 1011
+ E 0 0 1 0 1 E 1.68181818181818 0 1.40127388535031 -107.7272727272726 -275.2866242038144 0 E 70 853 291 1011
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0 1
 LANG:1 10 Subsystems
 30 10
 "FRAME2"
 ""
-1 920 853 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+1 920 853 E E E 1 E 0 E N "_WindowText" E N {0,0,0} E E
  E E
 12 0 0 0 0 0
 E E E
@@ -345,14 +454,62 @@ LANG:1 0
 }" 0
  E 0 0 1 0 1 E 0.689655172413793 0 1.01382488479262 -234.48275862069 55.2073732718952 0 E 920 853 1211 1071
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0 1
 LANG:1 29 High Voltage Primary Supplies
+30 52
+"FRAME5"
+""
+1 900 923 E E E 1 E 0 E N "_WindowText" E N {0,0,0} E E
+ E E
+66 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+  waitForEmuUiInitialize();
+    
+  int posX, posY;
+  getValue(\"\", \"position\", posX, posY);
+  posX += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_X;
+  posY += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y;
+  
+  string refName = \"FedView_EMU\";
+  string group = emuui_getSessionDp(\"fedView\");
+  addSymbol(myModuleName(), myPanelName(),
+            \"objects/\" + EMUUI_COMPONENT_NAME + \"/refFED.pnl\",
+            refName,
+            makeDynString(\"$group:\" + group),
+            posX, posY, 0, 1, 1);
+}" 0
+ E 0 0 1 0 1 E 1 0 1.01382488479263 4.263256414560596e-014 -15.76036866359757 0 E 900 923 1081 1141
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0 1
+LANG:1 10 FED Crates
+6 71
+"RECTANGLE7"
+""
+1 750 920 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+85 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 2.625 149.9999999999999 -1485 1 E 750 920 930 1000
 30 12
 "FRAME3"
 ""
-1 920 853 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+1 920 853 E E E 1 E 0 E N "_WindowText" E N {0,0,0} E E
  E E
 15 0 0 0 0 0
 E E E
@@ -379,12 +536,81 @@ LANG:1 0
             makeDynString(\"$group:\" + group),
             posX, posY, 0, 1, 1);
 }" 0
- E 0 0 1 0 1 E 0.896551724137931 0 1.01382488479262 -204.827586206897 55.2073732718952 0 E 920 853 1211 1071
+ E 0 0 1 0 1 E 0.8965517241379311 0 1.01382488479262 -204.8275862068965 55.2073732718952 0 E 920 853 1211 1071
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0 1
 LANG:1 8 Maratons
+6 58
+"RECTANGLE2"
+""
+1 750 920 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+72 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 8.777777777777777 0 9.875 -6573.333333333332 -9025 1 E 750 920 930 1000
+6 60
+"RECTANGLE3"
+""
+1 750 920 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+74 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 5.944444444444445 0 0.5 -4448.333333333333 410 1 E 750 920 930 1000
+6 62
+"RECTANGLE4"
+""
+1 750 920 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+76 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 2.055555555555555 0 2.625 -1531.666666666667 -1485 1 E 750 920 930 1000
+6 64
+"RECTANGLE5"
+""
+1 750 920 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+78 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1.111111111111111 0 2.625 -433.3333333333334 -1485 1 E 750 920 930 1000
+6 70
+"RECTANGLE6"
+""
+1 750 920 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+84 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1.444444444444445 0 2.625 -463.3333333333335 -1485 1 E 750 920 930 1000
 6 16
 "iconZoomInMiniMonitor"
 ""
@@ -405,7 +631,7 @@ E "main()
                makeDynString(\"$group:\" + emuui_getSessionDp(\"valueMonitor\"), \"$width:1200\"), 200, 200);
 }
 " 0
- 0 1 1 2 1 E 1 0 1 1167 906 2  0 0  "pictures/CMS_CSC_UI/zoom_in.bmp" 4294967295 E 10 10 36 35
+ 0 1 1 2 1 E 1 0 1 1180 910 2  0 0  "pictures/CMS_CSC_UI/zoom_in.bmp" 4294967295 E 10 10 36 35
 2 17
 "lblLoading"
 ""
@@ -422,24 +648,9 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 1120 1025 1575 1063
 1 2 2 "0s" 0 0 0 65 0 0  1120 1025 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-32-*-100-100-*-*-iso8859-1|-32,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 26 Arial,24,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 23 Loading, please wait...
-6 26
-"RECTANGLE1"
-""
-1 1200 740 E E E 1 E 1 E N "_Transparent" E N "_3DFace" E E
- E E
-34 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1.525 0 0.5 -590 555 1 E 1200 740 1320 780
 6 25
 "btnValueDisplayMode"
 ""
@@ -461,11 +672,11 @@ E "main()
   
   ChildPanelOnCentralModal(EMUUI_COMPONENT_NAME + \"/ValueMonitorModeChooser.pnl\", \"ModeChooser\", makeDynString());
 }" 0
- 0 1 1 2 1 E 1 0 1 1060 856 1 E 360 60 470 83
+ 0 1 1 2 1 E 1 0 1 1072 860 1 E 360 60 470 83
 2 21
 "btnValueDisplayMode_label"
 ""
-1 1420 921 E E E 1 E 1 E N "_ButtonText" E N "_Transparent" E E
+1 1432 924 E E E 1 E 1 E N "_ButtonText" E N "_Transparent" E E
  E E
 27 0 0 0 0 0
 E E E
@@ -483,17 +694,16 @@ E "main()
   
   ChildPanelOnCentralModal(EMUUI_COMPONENT_NAME + \"/ValueMonitorModeChooser.pnl\", \"ModeChooser\", makeDynString());
 }" 0
- 0 1 1 2 1 E U  1 E 1420 921 1526 934
-0 2 2 "0s" 0 0 0 65 0 0  1420 921 1
+ 0 1 1 2 1 E U  1 E 1432 924 1538 937
+0 2 2 "0s" 0 0 0 65 0 0  1432 924 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 11 Change Mode
 2 20
 "lblValueDisplayMode"
 ""
-1 1230 921 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+1 1230 920 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
  E E
 26 0 0 0 0 0
 E E E
@@ -509,12 +719,11 @@ LANG:1 0
   string dp = emuui_getSessionDp(\"valueMonitor\");
   dpConnect(\"updateValueMonitorMode\", true, dp + \".connectionType\", dp + \".mode\");
 }" 0
- E 0 1 1 2 1 E U  1 E 1230 921 1383 935
-0 2 2 "0s" 0 0 0 192 0 0  1230 921 1
+ E 0 1 1 2 1 E U  1 E 1230 920 1403 936
+0 2 2 "0s" 0 0 0 192 0 0  1230 920 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 29 Current Mode: Max Temperature
 2 27
 "lblChamberViewMode"
@@ -535,12 +744,11 @@ LANG:1 0
   string dp = emuui_getSessionDp(\"mainChamberView\");
   dpConnect(\"updateChamberViewMode\", true, dp + \".connectionType\", dp + \".mode\");
 }" 0
- E 0 1 1 2 1 E U  1 E 10 10 211 24
+ E 0 1 1 2 1 E U  1 E 10 10 245 26
 0 2 2 "0s" 0 0 0 192 0 0  10 10 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 40 Current chamber view mode: General state
 6 29
 "btnChamberViewMode"
@@ -563,11 +771,11 @@ E "main()
   
   ChildPanelOnCentralModal(EMUUI_COMPONENT_NAME + \"/ChamberViewModeChooser.pnl\", \"ModeChooser\", makeDynString());
 }" 0
- 0 1 1 2 1 E 1 0 1 -90 -55 1 E 360 60 470 83
+ 0 1 1 2 1 E 1 0 1 -60 -55 1 E 360 60 470 83
 2 28
 "btnChamberViewMode_label"
 ""
-1 270 10 E E E 1 E 1 E N "_ButtonText" E N "_Transparent" E E
+1 300 9 E E E 1 E 1 E N "_ButtonText" E N "_Transparent" E E
  E E
 38 0 0 0 0 0
 E E E
@@ -585,17 +793,16 @@ E "main()
   
   ChildPanelOnCentralModal(EMUUI_COMPONENT_NAME + \"/ChamberViewModeChooser.pnl\", \"ModeChooser\", makeDynString());
 }" 0
- 0 1 1 2 1 E U  1 E 270 10 376 23
-0 2 2 "0s" 0 0 0 65 0 0  270 10 1
+ 0 1 1 2 1 E U  1 E 300 9 406 22
+0 2 2 "0s" 0 0 0 65 0 0  300 9 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 11 Change Mode
 2 31
 "lblChamberViewModeTimer"
 ""
-1 390 10 E E E 1 E 0 E N "_WindowText" E N "white" E E
+1 420 10 E E E 1 E 0 E N "_WindowText" E N "white" E E
  E E
 43 0 0 0 0 0
 E E E
@@ -605,17 +812,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 390 10 617 24
-1 2 2 "0s" 0 0 0 192 0 0  390 10 1
+E E 0 1 1 2 1 E U  1 E 420 10 679 26
+1 2 2 "0s" 0 0 0 192 0 0  420 10 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 46 Switching back to "General state" mode in 300s
 2 32
 "lblLegend"
 ""
-1 1063 20 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+1 1060 20 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
  E E
 44 0 0 0 0 0
 E E E
@@ -625,17 +831,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1063 20 1105 34
-0 2 2 "0s" 0 0 0 192 0 0  1063 20 1
+E E 0 1 1 2 1 E U  1 E 1060 20 1105 36
+0 2 2 "0s" 0 0 0 192 0 0  1060 20 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
-LANG:1 8 Legend :
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 7 Legend:
 2 33
 "lblVersion"
 ""
-1 700 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 690 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 45 0 0 0 0 0
 E E E
@@ -645,12 +850,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 700 10 843 24
-1 2 2 "0s" 0 0 0 192 0 0  700 10 1
+E E 0 1 1 2 1 E U  1 E 690 10 849 26
+1 2 2 "0s" 0 0 0 192 0 0  690 10 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 29 UI Version 1.0.0 (2009/07/22)
 2 38
 "lblNewVersion"
@@ -665,17 +869,15 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 860 10 1013 40
+E E 0 1 1 2 1 E U  1 E 860 10 1038 44
 1 2 2 "0s" 0 0 0 192 0 0  860 10 2
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 33 New version (1.0.22) is available
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 28 Restart the UI when possible
 2 39
 "PRIMITIVE_TEXT1"
@@ -690,12 +892,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1130 35 1328 49
+E E 0 1 1 2 1 E U  1 E 1130 35 1368 51
 0 2 2 "0s" 0 0 0 192 0 0  1130 35 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 39 Known problem (something is masked out)
 2 40
 "PRIMITIVE_TEXT2"
@@ -713,46 +914,9 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 1120 34 1124 51
 0 2 2 "0s" 0 0 0 192 0 0  1120 34 1
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,75,0,0,0,0,0
+0 1
 LANG:1 1 !
-30 46
-"FRAME4"
-""
-1 900 863 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
- E E
-59 0 0 0 0 0
-E E E
-1
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-"main()
-{
-  waitForEmuUiInitialize();
-    
-  int posX, posY;
-  getValue(\"\", \"position\", posX, posY);
-  posX += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_X;
-  posY += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y;
-  
-  string refName = \"CommunicationStatusView_EMU\";
-  string group = emuui_getSessionDp(\"communicationMonitor\");
-  addSymbol(myModuleName(), myPanelName(),
-            \"objects/\" + EMUUI_COMPONENT_NAME + \"/refCommunication.pnl\",
-            refName,
-            makeDynString(\"$group:\" + group),
-            posX, posY, 0, 1, 1);
-}" 0
- E 0 0 1 0 1 E 5.63157894736842 0 0.230414746543779 -5058.42105263158 661.152073732719 0 E 900 863 1091 1081
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
-LANG:1 20 Communication Status
 7 47
 "legendImgNoCommunication"
 ""
@@ -766,11 +930,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 0.666666666666667 0 0.666666666666667 1309.33333333333 -100.333333333333 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4294967295 E 85 215 15 15
+E E 0 1 1 2 1 E 1 0 1 0 4 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4294967295 E 1424 40 10 10
 2 48
 "PRIMITIVE_TEXT3"
 ""
-1 1380 35 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 1742.234623776773 70 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -780,12 +944,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 0.991071428571429 0 1 22.232142857143 5 1 E 1370 30 1482 44
+E E 0 1 1 2 1 E 0.9910714285714291 0 1 82.23214285714232 5 1 E 1370 30 1507 46
 0 2 2 "0s" 0 0 0 192 0 0  1370 30 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 21 Communication problem
 4 49
 "LINE1"
@@ -829,78 +992,6 @@ LANG:1 0
 1
 "dashclr"N "_Transparent"
 E E 0 1 1 2 1 E  1108 54 1118 54
-30 52
-"FRAME5"
-""
-1 900 923 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
- E E
-66 0 0 0 0 0
-E E E
-1
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-"main()
-{
-  waitForEmuUiInitialize();
-    
-  int posX, posY;
-  getValue(\"\", \"position\", posX, posY);
-  posX += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_X;
-  posY += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y;
-  
-  string refName = \"FedView_EMU\";
-  string group = emuui_getSessionDp(\"fedView\");
-  addSymbol(myModuleName(), myPanelName(),
-            \"objects/\" + EMUUI_COMPONENT_NAME + \"/refFED.pnl\",
-            refName,
-            makeDynString(\"$group:\" + group),
-            posX, posY, 0, 1, 1);
-}" 0
- E 0 0 1 0 1 E 1 0 1.01382488479263 1.56319401867222e-013 -15.7603686635945 0 E 900 923 1081 1141
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
-LANG:1 10 FED Crates
-30 53
-"FRAME6"
-""
-1 1000 483 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
- E E
-67 0 0 0 0 0
-E E E
-1
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-"main()
-{
-//   waitForEmuUiInitialize();
-//     
-//   int posX, posY;
-//   getValue(\"\", \"position\", posX, posY);
-//   posX += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_X;
-//   posY += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y;
-//   
-//   string refName = \"PeripheralCrateStatusView\";
-//   string group = \"\";//emuui_getSessionDp(\"communicationMonitor\");
-//   addSymbol(myModuleName(), myPanelName(),
-//             \"objects/\" + EMUUI_COMPONENT_NAME + \"/refPCrateConfiguration.pnl\",
-//             refName,
-//             makeDynString(\"$group:\" + group),
-//             posX, posY, 0, 1, 1);
-}" 0
- E 0 0 1 0 1 E 4.45454545454545 0 0.393700787401575 -3354.54545454546 669.842519685039 0 E 1000 483 1111 611
-1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
-LANG:1 24 Peripheral Crates Status
 2 54
 "PRIMITIVE_TEXT4"
 ""
@@ -914,13 +1005,12 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1120 880 1579 894
+E E 0 1 1 2 1 E U  1 E 1120 880 1551 896
 0 2 2 "0s" 0 0 0 192 0 0  1120 880 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
-LANG:1 97 Still under development, but coming soon!  This will show PCrate configuration process and status
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 75 Under development, but coming soon!  Will show PCrate configuration process
 2 57
 "upsOnBatteryBack"
 ""
@@ -937,139 +1027,113 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 13 61 1586 845
 0 2 2 "0s" 0 0 0 65 0 0  13 61 26
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 99 -*-MS Shell Dlg-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 2 55
 "lblUpsOnBattery"
 ""
-1 698 434 E E E 1 E 0 E N "_WindowText" E N "FwStateAttention3" E E
+1 698 434 E E E 1 E 1 E N "_WindowText" E N "FwStateAttention3" E E
  E E
 69 0 0 0 0 0
 E E E
@@ -1079,23 +1143,172 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 698 434 902 489
+E E 0 1 1 2 1 E U  1 E 698 434 905 495
 1 2 2 "0s" 0 0 0 192 0 0  698 434 3
 1
-LANG:1 102 -*-MS Shell Dlg-bold-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 26 Arial,11,-1,5,75,0,0,0,0,0
+0 1
 LANG:1 30 Atention: UPS is on battery !!
 1
-LANG:1 102 -*-MS Shell Dlg-bold-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 26 Arial,11,-1,5,75,0,0,0,0,0
+0 1
 LANG:1 26 All LV is being turned OFF
 1
-LANG:1 102 -*-MS Shell Dlg-bold-r-normal-*-*-100-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 26 Arial,11,-1,5,75,0,0,0,0,0
+0 1
 LANG:1 29 Make sure it is and stays OFF
+2 59
+"PRIMITIVE_TEXT5"
+""
+1 20 50 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+73 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 20 50 237 66
+0 2 2 "0s" 0 0 0 192 0 0  20 50 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 37 Main Chamber View (view from +Z side)
+2 61
+"PRIMITIVE_TEXT6"
+""
+1 20 860 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+75 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 20 860 146 876
+0 2 2 "0s" 0 0 0 192 0 0  20 860 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 20 Communication Status
+2 63
+"PRIMITIVE_TEXT7"
+""
+1 20 920 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+77 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 20 920 89 936
+0 2 2 "0s" 0 0 0 192 0 0  20 920 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 10 Subsystems
+2 65
+"PRIMITIVE_TEXT8"
+""
+1 410 920 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+79 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 410 920 576 936
+0 2 2 "0s" 0 0 0 192 0 0  410 920 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 29 High Voltage Primary Supplies
+2 66
+"PRIMITIVE_TEXT9"
+""
+1 630 920 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+80 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 630 920 681 936
+0 2 2 "0s" 0 0 0 192 0 0  630 920 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 8 Maratons
+2 67
+"PRIMITIVE_TEXT10"
+""
+1 910 920 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+81 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 910 920 974 936
+0 2 2 "0s" 0 0 0 192 0 0  910 920 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 10 FED Crates
+2 68
+"PRIMITIVE_TEXT11"
+""
+1 1110 920 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+82 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 1110 920 1183 936
+0 2 2 "0s" 0 0 0 192 0 0  1110 920 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 13 Value Monitor
+2 69
+"PRIMITIVE_TEXT12"
+""
+1 1110 860 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+83 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 1110 860 1245 876
+0 2 2 "0s" 0 0 0 192 0 0  1110 860 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 24 Peripheral Crates Status
 0
 LAYER, 1 
 1

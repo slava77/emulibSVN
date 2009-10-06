@@ -1,4 +1,4 @@
-V 10
+V 11
 1
 LANG:1 0 
 PANEL,-1 -1 373 314 N "_3DFace" 0
@@ -67,7 +67,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 0 0 292 141
+E E 0 1 1 2 1 E 1.095890410958904 0 1.134751773049646 0 0 1 E 0 0 292 141
 25 4
 "tableComputers"
 ""
@@ -81,27 +81,25 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 8 8 282 132
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0  8 8 312 152
 EE 1 0 1 2 0 "computer" 16 1 0 "s" 1
 LANG:1 8 Computer
 E
 1
 LANG:1 0 
 
-160 "status" 11 1 0 "s" 1
+170 "status" 11 1 0 "s" 1
 LANG:1 6 Status
 E
 1
 LANG:1 0 
 
-110 
-14 14 10 10
+125 
+16 16 10 10
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-0 0 0 1 7
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 0 0 0 1 7
 1 0
 0
 LAYER, 1 

@@ -1,7 +1,7 @@
-V 10
+V 11
 1
 LANG:1 0 
-PANEL,-1 -1 548 83 N "_3DFace" 1
+PANEL,-1 -1 728 83 N "_3DFace" 1
 "$deviceParams"
 "main()
 {
@@ -40,7 +40,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1.02 0 1 0 0 1 E 0 0 500 50
+E E 0 1 1 2 1 E 1.14 0 1 0 0 1 E 0 0 500 50
 2 6
 "PRIMITIVE_TEXT3"
 ""
@@ -54,17 +54,15 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 10 496 40
+E E 0 1 1 2 1 E U  1 E 10 10 566 44
 0 2 2 "0s" 0 0 0 192 0 0  10 10 2
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 106 If DCS doesn't receive data from Xmas for any chamber, that chamber is be highlighted with           icon,
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 59 if you see such chambers - mouse over for more information.
 7 7
 "legendImgNoCommunication"
@@ -98,7 +96,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 0.666666666666667 0 0.666666666666667 400.333333333333 -127.333333333333 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4294967295 E 85 215 15 15
+E E 0 1 1 2 1 E 0.666666666666667 0 0.666666666666667 465.3333333333333 -127.3333333333334 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4294967295 E 85 215 15 15
 0
 LAYER, 1 
 1

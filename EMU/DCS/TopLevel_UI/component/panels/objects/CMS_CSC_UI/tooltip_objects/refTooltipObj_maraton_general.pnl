@@ -1,7 +1,7 @@
-V 10
+V 11
 1
 LANG:1 0 
-PANEL,-1 -1 392 348 N "_3DFace" 1
+PANEL,-1 -1 404 367 N "_3DFace" 1
 "$deviceParams"
 "main()
 {
@@ -256,11 +256,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 3.54545454545455 0 1.77777777777779 -1418.18181818182 -71.1111111111112 1 E 400 40 510 130
+E E 0 1 1 2 1 E 3.54545454545455 0 1.888888888888902 -1418.18181818182 -75.55555555555566 1 E 400 40 510 130
 2 10
 "warnNoCommunication"
 ""
-1 12 172 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+1 10 180 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
  E E
 12 0 0 0 0 0
 E E E
@@ -270,17 +270,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 12 172 381 186
-1 2 2 "0s" 0 0 0 65 0 0  12 172 1
+E E 0 1 1 2 1 E U  1 E 10 180 379 194
+1 2 2 "0s" 0 0 0 65 0 0  10 180 1
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
 LANG:1 33 No Communication - CANbus problem
 2 13
 "lblLastUpdate"
 ""
-1 290 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 280 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 18 0 0 0 0 0
 E E E
@@ -290,17 +289,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 290 10 337 24
-0 2 2 "0s" 0 0 0 192 0 0  290 10 1
+E E 0 1 1 2 1 E U  1 E 280 10 339 26
+0 2 2 "0s" 0 0 0 192 0 0  280 10 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 9 timestamp
 2 14
 "PRIMITIVE_TEXT6"
 ""
-1 230 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 210 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 20 0 0 0 0 0
 E E E
@@ -310,12 +308,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 230 10 289 24
-0 2 2 "0s" 0 0 0 192 0 0  230 10 1
+E E 0 1 1 2 1 E U  1 E 210 10 278 26
+0 2 2 "0s" 0 0 0 192 0 0  210 10 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 12 Last update:
 7 17
 "refPoint"
@@ -344,17 +341,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 10 54 24
+E E 0 1 1 2 1 E U  1 E 10 10 64 26
 0 2 2 "0s" 0 0 0 192 0 0  10 10 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 8 Channels
 25 50
 "tableChannels"
 ""
-1 9.99999999999999 30 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 10 30 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 75 0 0 0 0 0
 E E E
@@ -364,9 +360,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 7.99999999999999 28 381 111
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0  8 28 381 128
 "main()
 {
   this.appendLine(\"0\", \"loading\", \"1\", \"loading\", \"2\", \"loading\", 
@@ -419,7 +414,7 @@ E
 LANG:1 0 
 
 50 
-14 14 "" 1 1
+18 18 "" 1 1
 LANG:1 6 Status
 "" 1 1
 LANG:1 7 Voltage
@@ -429,14 +424,13 @@ LANG:1 7 Current
 LANG:1 10 V. Setting
 10 66
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-0 0 0 1 7
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 0 0 0 1 7
 1 0
 2 51
 "warnInhibit"
 ""
-1 12 202 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+1 10 210 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
  E E
 77 0 0 0 0 0
 E E E
@@ -446,17 +440,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 12 202 381 216
-1 2 2 "0s" 0 0 0 65 0 0  12 202 1
+E E 0 1 1 2 1 E U  1 E 10 210 379 224
+1 2 2 "0s" 0 0 0 65 0 0  10 210 1
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
 LANG:1 7 INHIBIT
 2 52
 "warnSensorFailure"
 ""
-1 12 232 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+1 10 240 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
  E E
 79 0 0 0 0 0
 E E E
@@ -466,17 +459,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 12 232 381 246
-1 2 2 "0s" 0 0 0 65 0 0  12 232 1
+E E 0 1 1 2 1 E U  1 E 10 240 379 254
+1 2 2 "0s" 0 0 0 65 0 0  10 240 1
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
 LANG:1 22 Maraton Sensor Failure
 2 53
 "warnSystemFailure"
 ""
-1 12 262 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+1 10 270 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
  E E
 81 0 0 0 0 0
 E E E
@@ -486,17 +478,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 12 262 381 276
-1 2 2 "0s" 0 0 0 65 0 0  12 262 1
+E E 0 1 1 2 1 E U  1 E 10 270 379 284
+1 2 2 "0s" 0 0 0 65 0 0  10 270 1
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
 LANG:1 22 Maraton System Failure
 2 54
 "warnInputFailure"
 ""
-1 12 292 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+1 10 300 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
  E E
 83 0 0 0 0 0
 E E E
@@ -506,17 +497,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 12 292 381 306
-1 2 2 "0s" 0 0 0 65 0 0  12 292 1
+E E 0 1 1 2 1 E U  1 E 10 300 379 314
+1 2 2 "0s" 0 0 0 65 0 0  10 300 1
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
 LANG:1 21 Maraton Input Failure
 2 55
 "warnOutputFailure"
 ""
-1 12 322 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+1 10 330 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
  E E
 85 0 0 0 0 0
 E E E
@@ -526,17 +516,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 12 322 381 336
-1 2 2 "0s" 0 0 0 65 0 0  12 322 1
+E E 0 1 1 2 1 E U  1 E 10 330 379 344
+1 2 2 "0s" 0 0 0 65 0 0  10 330 1
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
 LANG:1 22 Maraton Output Failure
 2 56
 "lblForPCrates"
 ""
-1 10 120 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 10 130 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 86 0 0 0 0 0
 E E E
@@ -546,17 +535,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 120 228 134
-0 2 2 "0s" 0 0 0 192 0 0  10 120 1
+E E 0 1 1 2 1 E U  1 E 10 130 269 146
+0 2 2 "0s" 0 0 0 192 0 0  10 130 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 46 This Maraton supplies these Peripheral Crates:
 2 57
 "lblPCrates"
 ""
-1 10 140 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 10 150 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 87 0 0 0 0 0
 E E E
@@ -566,12 +554,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 140 53 154
-0 2 2 "0s" 0 0 0 192 0 0  10 140 1
+E E 0 1 1 2 1 E U  1 E 10 150 60 166
+0 2 2 "0s" 0 0 0 192 0 0  10 150 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 10 loading...
 0
 LAYER, 1 

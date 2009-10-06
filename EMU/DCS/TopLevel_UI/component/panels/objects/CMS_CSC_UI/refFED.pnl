@@ -1,4 +1,4 @@
-V 10
+V 11
 1
 LANG:1 0 
 PANEL,-1 -1 557 460 N "_3DFace" 1
@@ -115,10 +115,66 @@ DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
 LAYER, 0 
 1
 LANG:1 0 
+6 53
+"RECTANGLE17"
+""
+1 33 134 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+83 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 92 -134 1 E 32 134 73 164
+6 52
+"RECTANGLE16"
+""
+1 33 134 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+82 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 51 -134 1 E 32 134 73 164
+6 51
+"RECTANGLE15"
+""
+1 33 134 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+81 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 10 -134 1 E 32 134 73 164
+6 50
+"RECTANGLE14"
+""
+1 33 134 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+80 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 0 0 42 30
 4 5
 "lineHorizontal0"
 ""
-1 9.473903143468e-015 30 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+1 9.473903143468e-015 29 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
  E E
 6 0 0 0 0 0
 E E E
@@ -128,11 +184,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E  9.473903143468e-015 30 160 30
+E E 0 1 1 2 1 E  0 29 164 29
 4 17
 "lineVerticalP1"
 ""
-1 80 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+1 82 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
  E E
 19 0 0 0 0 0
 E E E
@@ -142,11 +198,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E  80 30 80 50
+E E 0 1 1 2 1 E  82 30 82 50
 4 1
 "lineVerticalM1"
 ""
-1 40 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+1 41 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
  E E
 2 0 0 0 0 0
 E E E
@@ -156,7 +212,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E  40 30 40 50
+E E 0 1 1 2 1 E  41 30 41 50
 4 6
 "lineVerticalM2"
 ""
@@ -171,24 +227,10 @@ LANG:1 0
 1
 "dashclr"N "_Transparent"
 E E 0 1 1 2 1 E  0 30 0 50
-6 30
-"RECTANGLE10"
-""
-1 190 10 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
- E E
-42 0 0 0 0 0
-E E E
-4
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 0.666666666666667 0 1 -39.3333333333333 0 1 E 119 0 59 30
 2 3
 "PRIMITIVE_TEXT2"
 ""
-1 5 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 5 7 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 4 0 0 0 0 0
 E E E
@@ -198,17 +240,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 5 10 36 24
-0 2 2 "0s" 0 0 0 192 0 0  5 10 1
+E E 0 1 1 2 1 E U  1 E 5 7 38 23
+0 2 2 "0s" 0 0 0 192 0 0  5 7 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 7 -Z cr.2
 4 36
 "lineVerticalP2"
 ""
-1 120 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+1 123 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
  E E
 53 0 0 0 0 0
 E E E
@@ -218,25 +259,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E  120 30 120 50
-6 41
-"RECTANGLE11"
-""
-1 190 10 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
- E E
-63 0 0 0 0 0
-E E E
-4
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1 0 1 -60 0 1 E 140 0 101 30
+E E 0 1 1 2 1 E  123 30 123 50
 2 40
 "PRIMITIVE_TEXT3"
 ""
-1 45 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 45 7 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 61 0 0 0 0 0
 E E E
@@ -246,31 +273,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 45 10 76 24
-0 2 2 "0s" 0 0 0 192 0 0  45 10 1
+E E 0 1 1 2 1 E U  1 E 45 7 78 23
+0 2 2 "0s" 0 0 0 192 0 0  45 7 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 7 -Z cr.1
-6 43
-"RECTANGLE12"
-""
-1 190 10 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
- E E
-67 0 0 0 0 0
-E E E
-4
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1 0 1 -60 0 1 E 180 0 141 30
 2 42
 "PRIMITIVE_TEXT4"
 ""
-1 84 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 84 7 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 65 0 0 0 0 0
 E E E
@@ -280,17 +292,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 84 10 118 24
-0 2 2 "0s" 0 0 0 192 0 0  84 10 1
+E E 0 1 1 2 1 E U  1 E 84 7 120 23
+0 2 2 "0s" 0 0 0 192 0 0  84 7 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 7 +Z cr.1
 4 44
 "lineEnd"
 ""
-1 160 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+1 164 29 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
  E E
 69 0 0 0 0 0
 E E E
@@ -300,25 +311,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E  160 30 160 50
-6 49
-"RECTANGLE13"
-""
-1 190 10 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
- E E
-79 0 0 0 0 0
-E E E
-4
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1 0 1 -60 0 1 E 220 0 181 30
+E E 0 1 1 2 1 E  164 29 164 49
 2 45
 "PRIMITIVE_TEXT5"
 ""
-1 124 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 124 7 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 71 0 0 0 0 0
 E E E
@@ -328,12 +325,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 124 10 158 24
-0 2 2 "0s" 0 0 0 192 0 0  124 10 1
+E E 0 1 1 2 1 E U  1 E 124 7 160 23
+0 2 2 "0s" 0 0 0 192 0 0  124 7 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 7 +Z cr.2
 0
 LAYER, 1 

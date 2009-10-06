@@ -1,4 +1,4 @@
-V 10
+V 11
 1
 LANG:1 0 
 PANEL,-1 -1 1600 247 N "_3DFace" 1
@@ -12,8 +12,8 @@ PANEL,-1 -1 1600 247 N "_3DFace" 1
 void drawCommunicationDevices() {
   int posX, posY;
   getValue(\"refPoint\", \"position\", posX, posY); 
-  int lblWidth = 53;
-  int xGapSize = 97;
+  int lblWidth = 57;
+  int xGapSize = 93;
 
   lblXmasP.position(posX, posY);
   posX += lblWidth;
@@ -131,12 +131,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 0 0 50 14
+E E 0 1 1 2 1 E U  1 E 0 0 55 14
 0 2 2 "0s" 0 0 0 66 0 0  0 0 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 8 Xmas +Z:
 2 1
 "lblXmasM"
@@ -151,12 +150,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 0 20 50 34
+E E 0 1 1 2 1 E U  1 E 0 20 55 34
 0 2 2 "0s" 0 0 0 66 0 0  0 20 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 8 Xmas -Z:
 2 2
 "lblHv"
@@ -171,12 +169,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 0 40 50 54
+E E 0 1 1 2 1 E U  1 E 0 40 55 54
 0 2 2 "0s" 0 0 0 66 0 0  0 40 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 3 HV:
 2 3
 "lblLvForHv"
@@ -191,12 +188,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 0 60 50 74
+E E 0 1 1 2 1 E U  1 E 0 60 55 74
 0 2 2 "0s" 0 0 0 66 0 0  0 60 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 10 LV for HV:
 2 4
 "lblGas"
@@ -211,12 +207,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 0 79 50 93
+E E 0 1 1 2 1 E U  1 E 0 79 55 93
 0 2 2 "0s" 0 0 0 66 0 0  0 79 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 4 Gas:
 2 5
 "lblCooling"
@@ -231,12 +226,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 0 100 50 114
+E E 0 1 1 2 1 E U  1 E 0 100 55 114
 0 2 2 "0s" 0 0 0 66 0 0  0 100 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 8 Cooling:
 2 12
 "lblDcsPCs"
@@ -251,12 +245,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 0 120 50 134
+E E 0 1 1 2 1 E U  1 E 0 120 55 134
 0 2 2 "0s" 0 0 0 66 0 0  0 120 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 8 DCS PCs:
 7 14
 "refPoint"

@@ -1,4 +1,4 @@
-V 10
+V 11
 1
 LANG:1 0 
 PANEL,-1 -1 846 460 N "_3DFace" 1
@@ -135,7 +135,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E  1.4210854715202e-014 30 240 30
+E E 0 1 1 2 1 E  0 30 240 30
 4 17
 "lineVerticalM1"
 ""
@@ -191,11 +191,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 0.666666666666667 0 1 -39.3333333333333 0 1 E 119 0 59 30
+E E 0 1 1 2 1 E 1 0 1 1 0 1 E 40 0 -1 31
 2 3
 "PRIMITIVE_TEXT2"
 ""
-1 10 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 7 8 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 4 0 0 0 0 0
 E E E
@@ -205,12 +205,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 10 33 24
-0 2 2 "0s" 0 0 0 192 0 0  10 10 1
+E E 0 1 1 2 1 E U  1 E 7 8 33 24
+0 2 2 "0s" 0 0 0 192 0 0  7 8 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 4 YE-3
 4 36
 "lineVerticalP1"
@@ -239,11 +238,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1 0 1 -60 0 1 E 140 0 101 30
+E E 0 1 1 2 1 E 1 0 1 1 0 1 E 80 0 40 31
 2 40
 "PRIMITIVE_TEXT3"
 ""
-1 50 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 47 8 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 61 0 0 0 0 0
 E E E
@@ -253,12 +252,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 50 10 73 24
-0 2 2 "0s" 0 0 0 192 0 0  50 10 1
+E E 0 1 1 2 1 E U  1 E 47 8 73 24
+0 2 2 "0s" 0 0 0 192 0 0  47 8 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 4 YE-2
 6 43
 "RECTANGLE12"
@@ -273,11 +271,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1 0 1 -60 0 1 E 180 0 141 30
+E E 0 1 1 2 1 E 1 0 1 1 0 1 E 120 0 80 31
 2 42
 "PRIMITIVE_TEXT4"
 ""
-1 90 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 87 8 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 65 0 0 0 0 0
 E E E
@@ -287,12 +285,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 90 10 113 24
-0 2 2 "0s" 0 0 0 192 0 0  90 10 1
+E E 0 1 1 2 1 E U  1 E 87 8 113 24
+0 2 2 "0s" 0 0 0 192 0 0  87 8 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 4 YE-1
 4 44
 "lineVerticalP2"
@@ -335,7 +332,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1 0 1 -60 0 1 E 220 0 181 30
+E E 0 1 1 2 1 E 1 0 1 1 0 1 E 160 0 120 31
 4 50
 "lineVertical6"
 ""
@@ -363,7 +360,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1 0 1 -60 0 1 E 260 0 221 30
+E E 0 1 1 2 1 E 1 0 1 1 0 1 E 200 0 160 31
 6 54
 "RECTANGLE15"
 ""
@@ -377,11 +374,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1 0 1 -60 0 1 E 300 0 261 30
+E E 0 1 1 2 1 E 1 0 1 1 0 1 E 240 0 200 31
 2 45
 "PRIMITIVE_TEXT5"
 ""
-1 130 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 127 8 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 71 0 0 0 0 0
 E E E
@@ -391,17 +388,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 130 10 156 24
-0 2 2 "0s" 0 0 0 192 0 0  130 10 1
+E E 0 1 1 2 1 E U  1 E 127 8 156 24
+0 2 2 "0s" 0 0 0 192 0 0  127 8 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 4 YE+1
 2 51
 "PRIMITIVE_TEXT6"
 ""
-1 170 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 167 8 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 83 0 0 0 0 0
 E E E
@@ -411,17 +407,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 170 10 196 24
-0 2 2 "0s" 0 0 0 192 0 0  170 10 1
+E E 0 1 1 2 1 E U  1 E 167 8 196 24
+0 2 2 "0s" 0 0 0 192 0 0  167 8 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 4 YE+2
 2 53
 "PRIMITIVE_TEXT7"
 ""
-1 210 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 207 8 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 87 0 0 0 0 0
 E E E
@@ -431,12 +426,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 210 10 236 24
-0 2 2 "0s" 0 0 0 192 0 0  210 10 1
+E E 0 1 1 2 1 E U  1 E 207 8 236 24
+0 2 2 "0s" 0 0 0 192 0 0  207 8 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 4 YE+3
 0
 LAYER, 1 

@@ -1,7 +1,7 @@
-V 10
+V 11
 1
 LANG:1 0 
-PANEL,-1 -1 374 227 N "_3DFace" 1
+PANEL,-1 -1 420 255 N "_3DFace" 1
 "$deviceParams"
 "main()
 {
@@ -319,7 +319,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 3.18181818181818 0 2 -1272.72727272727 -80 1 E 400 40 510 130
+E E 0 1 1 2 1 E 3.454545454545452 0 2.222222222222222 -1381.818181818179 -88.8888888888889 1 E 400 40 510 130
 2 4
 "PRIMITIVE_TEXT1"
 ""
@@ -333,17 +333,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 12 10 73 24
+E E 0 1 1 2 1 E U  1 E 12 10 81 26
 0 2 2 "0s" 0 0 0 192 0 0  12 10 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 12 High Voltage
 25 5
 "tableVoltages"
 ""
-1 12 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 12 59.99999999999999 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 7 0 0 0 0 0
 E E E
@@ -353,47 +352,46 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 10 58 341 134
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0  10 58 372 152
 EE 0 1 1 6 5 "group1" 4 1 0 "s" 1
 LANG:1 2 #1
 E
 1
 LANG:1 0 
 
-45 "group2" 4 1 0 "s" 1
+51 "group2" 4 1 0 "s" 1
 LANG:1 2 #2
 E
 1
 LANG:1 0 
 
-45 "group3" 4 1 0 "s" 1
+51 "group3" 4 1 0 "s" 1
 LANG:1 2 #3
 E
 1
 LANG:1 0 
 
-45 "group4" 4 1 0 "s" 1
+51 "group4" 4 1 0 "s" 1
 LANG:1 2 #4
 E
 1
 LANG:1 0 
 
-45 "group5" 4 1 0 "s" 1
+51 "group5" 4 1 0 "s" 1
 LANG:1 2 #5
 E
 1
 LANG:1 0 
 
-45 "group6" 4 1 0 "s" 1
+51 "group6" 4 1 0 "s" 1
 LANG:1 2 #6
 E
 1
 LANG:1 0 
 
-45 
-14 14 "" 1 1
+51 
+18 18 "" 1 1
 LANG:1 5 v1-v6
 "" 1 1
 LANG:1 6 v7-v12
@@ -405,14 +403,13 @@ LANG:1 7 v19-v24
 LANG:1 7 v25-v30
 10 52
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-0 0 0 1 7
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 0 0 0 1 7
 1 0
 2 7
 "lblForDisabledChannels"
 ""
-1 12 140 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 10 160 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 9 0 0 0 0 0
 E E E
@@ -422,17 +419,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 12 140 102 154
-0 2 2 "0s" 0 0 0 192 0 0  12 140 1
+E E 0 1 1 2 1 E U  1 E 10 160 117 176
+0 2 2 "0s" 0 0 0 192 0 0  10 160 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 18 Disabled channels:
 2 8
 "lblDisabledChannels"
 ""
-1 105 140 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 120 160 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 10 0 0 0 0 0
 E E E
@@ -446,17 +442,16 @@ LANG:1 0
 {
   this.text = \"\";
 }" 0
- E 0 1 1 2 1 E U  1 E 105 140 141 154
-0 2 2 "0s" 0 0 0 192 0 0  105 140 1
+ E 0 1 1 2 1 E U  1 E 120 160 164 176
+0 2 2 "0s" 0 0 0 192 0 0  120 160 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 9 list here
 2 10
 "warnNoHvCommunication"
 ""
-1 12 182 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+1 10 210 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
  E E
 12 0 0 0 0 0
 E E E
@@ -466,17 +461,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 12 182 337 196
-1 2 2 "0s" 0 0 0 65 0 0  12 182 1
+E E 0 1 1 2 1 E U  1 E 10 210 370 224
+1 2 2 "0s" 0 0 0 65 0 0  10 210 1
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
 LANG:1 36 No Communication with this HV module
 2 12
 "warnLV"
 ""
-1 12 202 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+1 10 230 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
  E E
 16 0 0 0 0 0
 E E E
@@ -486,17 +480,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 12 202 337 216
-1 2 2 "0s" 0 0 0 65 0 0  12 202 1
+E E 0 1 1 2 1 E U  1 E 10 230 370 244
+1 2 2 "0s" 0 0 0 65 0 0  10 230 1
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
 LANG:1 56 High Voltage LV or Signal Cable problem - call HV expert
 2 13
 "lblLastUpdate"
 ""
-1 250 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 270 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 18 0 0 0 0 0
 E E E
@@ -506,17 +499,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 250 10 297 24
-0 2 2 "0s" 0 0 0 192 0 0  250 10 1
+E E 0 1 1 2 1 E U  1 E 270 10 329 26
+0 2 2 "0s" 0 0 0 192 0 0  270 10 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 9 timestamp
 2 14
 "PRIMITIVE_TEXT6"
 ""
-1 190 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 200 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 20 0 0 0 0 0
 E E E
@@ -526,12 +518,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 190 10 249 24
-0 2 2 "0s" 0 0 0 192 0 0  190 10 1
+E E 0 1 1 2 1 E U  1 E 200 10 268 26
+0 2 2 "0s" 0 0 0 192 0 0  200 10 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 12 Last update:
 6 16
 "chamber_high_voltage_fsmRefPoint"
@@ -546,7 +537,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 2.5 0 1 -185 6 1 E 110 0 130 20
+E E 0 1 1 2 1 E 2.5 0 1 -179 6 1 E 110 0 130 20
 7 17
 "refPoint"
 ""
@@ -574,17 +565,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 12 40 83 54
+E E 0 1 1 2 1 E U  1 E 12 40 93 56
 0 2 2 "0s" 0 0 0 192 0 0  12 40 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 14 Module Status:
 2 19
 "PRIMITIVE_TEXT8"
 ""
-1 160 40 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 173 40 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 28 0 0 0 0 0
 E E E
@@ -594,17 +584,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 160 40 270 54
-0 2 2 "0s" 0 0 0 192 0 0  160 40 1
+E E 0 1 1 2 1 E U  1 E 173 40 301 56
+0 2 2 "0s" 0 0 0 192 0 0  173 40 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 22 Master Channel Status:
 2 22
 "lblModuleStatus"
 ""
-1 88 40 E E E 1 E 1 E N "_WindowText" E N "FwStateOKPhysics" E E
+1 100 40 E E E 1 E 1 E N "_WindowText" E N "FwStateOKPhysics" E E
  E E
 31 0 0 0 0 0
 E E E
@@ -614,17 +603,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 88 40 148 54
-1 2 2 "0s" 0 0 0 65 0 0  88 40 1
+E E 0 1 1 2 1 E U  1 E 100 40 160 54
+1 2 2 "0s" 0 0 0 65 0 0  100 40 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 10 LOADING...
 2 26
 "lblMasterChannelStatus"
 ""
-1 275 40 E E E 1 E 1 E N "_WindowText" E N "FwStateOKPhysics" E E
+1 307 40 E E E 1 E 1 E N "_WindowText" E N "FwStateOKPhysics" E E
  E E
 39 0 0 0 0 0
 E E E
@@ -634,17 +622,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 275 40 335 54
-1 2 2 "0s" 0 0 0 65 0 0  275 40 1
+E E 0 1 1 2 1 E U  1 E 307 40 367 54
+1 2 2 "0s" 0 0 0 65 0 0  307 40 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 10 LOADING...
 2 27
 "lblForModuleInfo"
 ""
-1 12 160 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 10 180 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 40 0 0 0 0 0
 E E E
@@ -654,17 +641,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 12 160 73 174
-0 2 2 "0s" 0 0 0 192 0 0  12 160 1
+E E 0 1 1 2 1 E U  1 E 10 180 79 196
+0 2 2 "0s" 0 0 0 192 0 0  10 180 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 13 Module info: 
 2 28
 "lblForMasterInfo"
 ""
-1 240 160 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 262 180 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 41 0 0 0 0 0
 E E E
@@ -674,17 +660,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 240 160 275 174
-0 2 2 "0s" 0 0 0 192 0 0  240 160 1
+E E 0 1 1 2 1 E U  1 E 262 180 302 196
+0 2 2 "0s" 0 0 0 192 0 0  262 180 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 7 Master:
 2 29
 "lblModuleInfo"
 ""
-1 73 160 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 80 180 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 42 0 0 0 0 0
 E E E
@@ -694,17 +679,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 73 160 232 174
-0 2 2 "0s" 0 0 0 192 0 0  73 160 1
+E E 0 1 1 2 1 E U  1 E 80 180 261 196
+0 2 2 "0s" 0 0 0 192 0 0  80 180 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
-LANG:1 32 host=###; slot=#; addr=#; part=#
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 33 host=###; slot=#; addr=#; part=#,
 2 30
 "lblMasterInfo"
 ""
-1 277 160 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 328.2263575072887 220 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 43 0 0 0 0 0
 E E E
@@ -714,12 +698,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 0.964285714285714 0 1 -2.64285714285716 0 1 E 290 160 356 174
+E E 0 1 1 2 1 E 0.964285714285714 0 1 22.35714285714295 20 1 E 290 160 358 176
 0 2 2 "0s" 0 0 0 192 0 0  290 160 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 13 ID ##, ch. ##
 0
 LAYER, 1 

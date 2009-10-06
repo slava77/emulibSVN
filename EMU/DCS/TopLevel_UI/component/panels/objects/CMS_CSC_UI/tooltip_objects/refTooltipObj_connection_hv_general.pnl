@@ -1,7 +1,7 @@
-V 10
+V 11
 1
 LANG:1 0 
-PANEL,-1 -1 655 83 N "_3DFace" 1
+PANEL,-1 -1 832 83 N "_3DFace" 1
 "$deviceParams"
 "main()
 {
@@ -40,7 +40,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1.12 0 1.4 0 0 1 E 0 0 500 50
+E E 0 1 1 2 1 E 1.28 0 1.4 0 0 1 E 0 0 500 50
 2 6
 "PRIMITIVE_TEXT3"
 ""
@@ -54,17 +54,15 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 10 545 24
-0 2 2 "0s" 0 0 0 64 0 0  10 10 2
+E E 0 1 1 2 1 E U  1 E 10 10 635 44
+0 2 2 "0s" 0 0 0 192 0 0  10 10 2
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 119 If there is a communication problem with HV distribution boards - affected chambers are highlighted with          icon,
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 59 if you see such chambers - mouse over for more information.
 7 7
 "legendImgNoCommunication"
@@ -98,11 +96,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 0.666666666666667 0 0.666666666666667 453.333333333333 -127.333333333333 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4294967295 E 85 215 15 15
+E E 0 1 1 2 1 E 0.666666666666667 0 0.666666666666667 537.3333333333333 -126.3333333333334 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4294967295 E 85 215 15 15
 2 8
 "PRIMITIVE_TEXT4"
 ""
-1 10 50 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 10 46 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 12 0 0 0 0 0
 E E E
@@ -112,12 +110,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 50 463 64
-0 2 2 "0s" 0 0 0 192 0 0  10 50 1
+E E 0 1 1 2 1 E U  1 E 10 46 544 62
+0 2 2 "0s" 0 0 0 192 0 0  10 46 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 97 If there is communication problem with HV primary supplies - affected HV primary supplies go red.
 0
 LAYER, 1 

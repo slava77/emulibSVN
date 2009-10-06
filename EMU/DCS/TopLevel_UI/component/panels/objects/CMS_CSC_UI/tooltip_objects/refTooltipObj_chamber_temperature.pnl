@@ -1,7 +1,7 @@
-V 10
+V 11
 1
 LANG:1 0 
-PANEL,-1 -1 368 112 N "_3DFace" 1
+PANEL,-1 -1 405 131 N "_3DFace" 1
 "$deviceParams"
 "main()
 {
@@ -224,7 +224,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 3.18181818181818 0 0.888888888888889 -1272.72727272727 -35.5555555555556 1 E 400 40 510 130
+E E 0 1 1 2 1 E 3.454545454545453 0 0.888888888888889 -1381.818181818179 -35.5555555555556 1 E 400 40 510 130
 2 1
 "PRIMITIVE_TEXT1"
 ""
@@ -238,12 +238,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 10 70 24
+E E 0 1 1 2 1 E U  1 E 10 10 79 26
 0 2 2 "0s" 0 0 0 192 0 0  10 10 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 11 Temperature
 25 2
 "tableTemp"
@@ -258,56 +257,54 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 8 28 344 69
-EE 1 0 1 6 0 "alct.v1" 4 1 0 "s" 1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0  8 28 372 72
+EE 1 0 1 6 0 "alct.v1" 5 1 0 "s" 1
 LANG:1 4 ALCT
 E
 1
 LANG:1 0 
 
-55 "cfeb.v1" 4 1 0 "s" 1
+60 "cfeb.v1" 5 1 0 "s" 1
 LANG:1 6 CFEB 1
 E
 1
 LANG:1 0 
 
-55 "cfeb.v2" 4 1 0 "s" 1
+60 "cfeb.v2" 5 1 0 "s" 1
 LANG:1 6 CFEB 2
 E
 1
 LANG:1 0 
 
-55 "cfeb.v3" 4 1 0 "s" 1
+60 "cfeb.v3" 5 1 0 "s" 1
 LANG:1 6 CFEB 3
 E
 1
 LANG:1 0 
 
-55 "cfeb.v4" 4 1 0 "s" 1
+60 "cfeb.v4" 5 1 0 "s" 1
 LANG:1 6 CFEB 4
 E
 1
 LANG:1 0 
 
-55 "cfeb.v5" 4 1 0 "s" 1
+60 "cfeb.v5" 5 1 0 "s" 1
 LANG:1 6 CFEB 5
 E
 1
 LANG:1 0 
 
-55 
-14 14 10 10
+59 
+18 18 10 10
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-0 0 0 1 7
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 0 0 0 1 7
 1 0
 2 3
 "lblLastUpdate"
 ""
-1 250 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 270 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 4 0 0 0 0 0
 E E E
@@ -317,17 +314,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 250 10 297 24
-0 2 2 "0s" 0 0 0 192 0 0  250 10 1
+E E 0 1 1 2 1 E U  1 E 270 10 329 26
+0 2 2 "0s" 0 0 0 192 0 0  270 10 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 9 timestamp
 2 4
 "PRIMITIVE_TEXT3"
 ""
-1 190 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 200 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 5 0 0 0 0 0
 E E E
@@ -337,12 +333,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 190 10 249 24
-0 2 2 "0s" 0 0 0 192 0 0  190 10 1
+E E 0 1 1 2 1 E U  1 E 200 10 268 26
+0 2 2 "0s" 0 0 0 192 0 0  200 10 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 12 Last update:
 7 6
 "refPoint"
@@ -375,7 +370,7 @@ E E 0 1 1 2 1 E 2.5 0 1 -185 6 1 E 110 0 130 20
 2 8
 "warnNoTempCommunication"
 ""
-1 6 80 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+1 10 90 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
  E E
 13 0 0 0 0 0
 E E E
@@ -385,12 +380,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 6 80 344 94
-1 2 2 "0s" 0 0 0 65 0 0  6 80 1
+E E 0 1 1 2 1 E U  1 E 10 90 370 104
+1 2 2 "0s" 0 0 0 65 0 0  10 90 1
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
 LANG:1 54 No Communication - check PCrate LV and Xmas monitoring
 0
 LAYER, 1 

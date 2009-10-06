@@ -1,7 +1,7 @@
-V 10
+V 11
 1
 LANG:1 0 
-PANEL,-1 -1 374 128 N "_3DFace" 1
+PANEL,-1 -1 441 128 N "_3DFace" 1
 "$deviceParams"
 "main()
 {
@@ -123,7 +123,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 3.18181818181818 0 1 -1272.72727272727 -40 1 E 400 40 510 130
+E E 0 1 1 2 1 E 3.363636363636362 0 1 -1345.454545454543 -40 1 E 400 40 510 130
 2 10
 "warnNoHvCommunication"
 ""
@@ -137,17 +137,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 100 335 114
+E E 0 1 1 2 1 E U  1 E 10 100 360 114
 1 2 2 "0s" 0 0 0 65 0 0  10 100 1
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
 LANG:1 33 No Communication with this device
 2 13
 "lblLastUpdate"
 ""
-1 250 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 260 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 18 0 0 0 0 0
 E E E
@@ -157,12 +156,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 250 10 297 24
-0 2 2 "0s" 0 0 0 192 0 0  250 10 1
+E E 0 1 1 2 1 E U  1 E 260 10 319 26
+0 2 2 "0s" 0 0 0 192 0 0  260 10 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 9 timestamp
 2 14
 "PRIMITIVE_TEXT6"
@@ -177,12 +175,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 190 10 249 24
+E E 0 1 1 2 1 E U  1 E 190 10 258 26
 0 2 2 "0s" 0 0 0 192 0 0  190 10 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 12 Last update:
 7 17
 "refPoint"
@@ -211,17 +208,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 10 43 24
+E E 0 1 1 2 1 E U  1 E 10 10 48 26
 0 2 2 "0s" 0 0 0 192 0 0  10 10 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 7 Status:
 2 22
 "lblStatus"
 ""
-1 100 10 E E E 1 E 1 E N "_WindowText" E N "FwStateOKPhysics" E E
+1 110 10 E E E 1 E 1 E N "_WindowText" E N "FwStateOKPhysics" E E
  E E
 31 0 0 0 0 0
 E E E
@@ -231,12 +227,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 100 10 160 24
-1 2 2 "0s" 0 0 0 65 0 0  100 10 1
+E E 0 1 1 2 1 E U  1 E 110 10 170 24
+1 2 2 "0s" 0 0 0 65 0 0  110 10 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 10 LOADING...
 2 32
 "PRIMITIVE_TEXT8"
@@ -251,12 +246,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 60 85 74
+E E 0 1 1 2 1 E U  1 E 10 60 94 76
 0 2 2 "0s" 0 0 0 192 0 0  10 60 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 16 Voltage Setting:
 2 33
 "PRIMITIVE_TEXT9"
@@ -271,12 +265,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 180 60 276 74
+E E 0 1 1 2 1 E U  1 E 180 60 289 76
 0 2 2 "0s" 0 0 0 192 0 0  180 60 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 20 Max Current Setting:
 2 34
 "PRIMITIVE_TEXT10"
@@ -291,12 +284,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 40 92 54
+E E 0 1 1 2 1 E U  1 E 10 40 103 56
 0 2 2 "0s" 0 0 0 192 0 0  10 40 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 16 Voltage Reading:
 2 35
 "PRIMITIVE_TEXT11"
@@ -311,17 +303,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 180 40 260 54
+E E 0 1 1 2 1 E U  1 E 180 40 274 56
 0 2 2 "0s" 0 0 0 192 0 0  180 40 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 16 Current Reading:
 2 36
 "lblVMon"
 ""
-1 100 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 110 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 51 0 0 0 0 0
 E E E
@@ -331,17 +322,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 100 40 160 54
-1 2 2 "0s" 0 0 0 65 0 0  100 40 1
+E E 0 1 1 2 1 E U  1 E 110 40 170 54
+1 2 2 "0s" 0 0 0 65 0 0  110 40 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 10 LOADING...
 2 37
 "lblVSet"
 ""
-1 100 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 110 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 53 0 0 0 0 0
 E E E
@@ -351,17 +341,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 100 60 160 74
-1 2 2 "0s" 0 0 0 65 0 0  100 60 1
+E E 0 1 1 2 1 E U  1 E 110 60 170 74
+1 2 2 "0s" 0 0 0 65 0 0  110 60 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 10 LOADING...
 2 38
 "lblIMax"
 ""
-1 280 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 300 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 55 0 0 0 0 0
 E E E
@@ -371,17 +360,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 280 60 340 74
-1 2 2 "0s" 0 0 0 65 0 0  280 60 1
+E E 0 1 1 2 1 E U  1 E 300 60 360 74
+1 2 2 "0s" 0 0 0 65 0 0  300 60 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 10 LOADING...
 2 39
 "lblIMon"
 ""
-1 280 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 300 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 57 0 0 0 0 0
 E E E
@@ -391,12 +379,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 280 40 340 54
-1 2 2 "0s" 0 0 0 65 0 0  280 40 1
+E E 0 1 1 2 1 E U  1 E 300 40 360 54
+1 2 2 "0s" 0 0 0 65 0 0  300 40 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 10 LOADING...
 0
 LAYER, 1 

@@ -1,4 +1,4 @@
-V 10
+V 11
 1
 LANG:1 7 Station
 PANEL,-1 -1 864 683 N "_3DFace" 4
@@ -527,12 +527,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 140 440 202 461
+E E 0 1 1 2 1 E U  1 E 140 440 200 460
 0 2 2 "0s" 0 0 0 192 0 0  140 440 1
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 26 Arial,12,-1,5,75,0,0,0,0,0
+0 1
 LANG:1 7 Caption
 0
 LAYER, 1 

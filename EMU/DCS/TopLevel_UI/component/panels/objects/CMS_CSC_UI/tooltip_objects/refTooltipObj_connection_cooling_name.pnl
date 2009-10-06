@@ -1,4 +1,4 @@
-V 10
+V 11
 1
 LANG:1 0 
 PANEL,-1 -1 373 35 N "_3DFace" 0
@@ -39,12 +39,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 3 3 257 17
+E E 0 1 1 2 1 E U  1 E 3 3 262 19
 0 2 2 "0s" 0 0 0 192 0 0  3 3 1
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
 LANG:1 43 Status of communication with Cooling system
 0
 LAYER, 1 

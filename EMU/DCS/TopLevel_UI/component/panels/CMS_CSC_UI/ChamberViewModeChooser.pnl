@@ -1,7 +1,7 @@
-V 10
+V 11
 1
 LANG:1 12 Mode changer
-PANEL,-1 -1 167 283 N "_3DFace" 0
+PANEL,-1 -1 167 294 N "_3DFace" 0
 "main()
 {
   initConstants();
@@ -46,11 +46,10 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 1 0 1 E 0.900248344370861 0 0.894720745455704 -845.235927152317 -771.091210782828 0 E 950 873 1111 1031
+E E 0 0 1 0 1 E 0.900248344370861 0 0.894720745455704 -845.235927152317 -771.0912107828281 0 E 950 873 1111 1031
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 18 Value Monitor Mode
 19 2
 "radioMode"
@@ -65,9 +64,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 18 20 142 148
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0  18 20 142 148
 4
 T 
 1
@@ -140,52 +138,43 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 160 155 272
+E E 0 1 1 2 1 E U  1 E 10 160 155 281
 0 2 2 "0s" 0 0 0 64 0 0  10 160 9
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 5 NOTE:
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 28 It's not recommended to keep
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 29 other than "general" mode for
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 12 a long time.
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 25 Therefore after 5 minutes
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 30 mode will automatically switch
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 28 back to "General state" mode
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 0
 LAYER, 1 

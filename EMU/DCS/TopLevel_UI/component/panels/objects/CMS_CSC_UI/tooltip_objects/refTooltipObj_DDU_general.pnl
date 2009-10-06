@@ -1,4 +1,4 @@
-V 10
+V 11
 1
 LANG:1 0 
 PANEL,-1 -1 381 256 N "_3DFace" 1
@@ -215,12 +215,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 80 70 94
+E E 0 1 1 2 1 E U  1 E 10 80 79 96
 0 2 2 "0s" 0 0 0 192 0 0  10 80 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 11 Temperature
 25 2
 "tableTemp"
@@ -235,44 +234,42 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 8 98 292 139
-EE 1 0 1 4 0 "td1" 5 1 0 "s" 1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0  8 98 292 142
+EE 1 0 1 4 0 "td1" 6 1 0 "s" 1
 LANG:1 8 Sensor 1
 E
 1
 LANG:1 0 
 
-70 "td2" 5 1 0 "s" 1
+70 "td2" 6 1 0 "s" 1
 LANG:1 8 Sensor 2
 E
 1
 LANG:1 0 
 
-70 "td3" 5 1 0 "s" 1
+70 "td3" 6 1 0 "s" 1
 LANG:1 8 Sensor 3
 E
 1
 LANG:1 0 
 
-70 "td4" 5 1 0 "s" 1
+70 "td4" 6 1 0 "s" 1
 LANG:1 8 Sensor 4
 E
 1
 LANG:1 0 
 
 70 
-14 14 10 10
+18 18 10 10
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-0 0 0 1 7
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 0 0 0 1 7
 1 0
 2 3
 "lblLastUpdate"
 ""
-1 200 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 190 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 4 0 0 0 0 0
 E E E
@@ -282,17 +279,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 200 10 247 24
-0 2 2 "0s" 0 0 0 192 0 0  200 10 1
+E E 0 1 1 2 1 E U  1 E 190 10 249 26
+0 2 2 "0s" 0 0 0 192 0 0  190 10 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 9 timestamp
 2 4
 "PRIMITIVE_TEXT3"
 ""
-1 140 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 120 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 5 0 0 0 0 0
 E E E
@@ -302,12 +298,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 140 10 199 24
-0 2 2 "0s" 0 0 0 192 0 0  140 10 1
+E E 0 1 1 2 1 E U  1 E 120 10 188 26
+0 2 2 "0s" 0 0 0 192 0 0  120 10 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 12 Last update:
 7 6
 "refPoint"
@@ -339,9 +334,8 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 10 160 290 174
 1 2 2 "0s" 0 0 0 65 0 0  10 160 1
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
 LANG:1 40 No Communication - check Xmas monitoring
 2 11
 "PRIMITIVE_TEXT4"
@@ -356,12 +350,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 10 69 24
+E E 0 1 1 2 1 E U  1 E 10 10 76 26
 0 2 2 "0s" 0 0 0 192 0 0  10 10 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
 LANG:1 11 Low Voltage
 25 12
 "tableLV"
@@ -376,39 +369,37 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 8 28 292 69
-EE 1 0 1 4 0 "v15" 5 1 0 "s" 1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0  8 28 292 72
+EE 1 0 1 4 0 "v15" 6 1 0 "s" 1
 LANG:1 9 1.5V line
 E
 1
 LANG:1 0 
 
-70 "v25a" 5 1 0 "s" 1
+70 "v25a" 6 1 0 "s" 1
 LANG:1 11 2.5V line 1
 E
 1
 LANG:1 0 
 
-70 "v25b" 5 1 0 "s" 1
+70 "v25b" 6 1 0 "s" 1
 LANG:1 11 2.5V line 2
 E
 1
 LANG:1 0 
 
-70 "v33" 5 1 0 "s" 1
+70 "v33" 6 1 0 "s" 1
 LANG:1 9 3.3V line
 E
 1
 LANG:1 0 
 
 70 
-14 14 10 10
+18 18 10 10
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-0 0 0 1 7
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 0 0 0 1 7
 1 0
 0
 LAYER, 1 
