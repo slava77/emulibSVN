@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- Use this file to generate the CSC ontology as follows: -->
+<!-- xsltproc ontology_generator.xsl ontology_template.xml -->
+
+<!DOCTYPE Ontology [
+   <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+   <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+   <!ENTITY csc "http://www.cern.ch/cms/csc.owl#" >
+]>
+
+<Ontology xmlns="http://www.w3.org/2006/12/owl2-xml#"
+	  xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
+	  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	  xmlns:ontology="http://www.cern.ch/cms/csc/ontology.owl#"
+	  xmlns:owl="http://www.w3.org/2002/07/owl#"
+	  xmlns:xsd="&xsd;"
+	  xmlns:csc="&csc;"
+	  xmlns:rdfs="&rdfs;"
+	  xmlns:templ="http://www.cern.ch/cms/csc/owl-template"
+	  URI="http://www.cern.ch/cms/csc.owl">
+
+
+<!-- declarations and relations of individuals -->
+  <templ:individuals>
+    <templ:chambers source="mappings/RUI-to-chamber_mapping.xml"/>
+    <templ:SectorProc source="mappings/RUI-to-chamber_mapping.xml"/>
+    <templ:PSidePCrates source="mappings/VME_plus_20091005_pretrigger3.xml"/>
+    <templ:MSidePCrates source="mappings/VME_minus_20091005_pretrigger3.xml"/>
+    <templ:FEDCrates source="mappings/RUI-to-chamber_mapping.xml"/>
+    <templ:PSideFMM source="mappings/config_plus_global.xml"/>
+    <templ:MSideFMM source="mappings/config_minus_global.xml"/>
+    <templ:TFFMM source="mappings/config_tf_global.xml"/>
+    <templ:lDAQChain source="mappings/RUI-to-chamber_mapping.xml"/>
+    <templ:lDAQFarm source="mappings/RUI-to-computer_mapping.xml"/>
+  </templ:individuals>
+
+
+
+<!-- class declarations -->
+  <Declaration><Class URI="&csc;LogicalDomain"/></Declaration>
+  <Declaration><Class URI="&csc;LogicalComponent"/></Declaration>
+
+  <Declaration><Class URI="&csc;Local"/></Declaration>
+  <Declaration><Class URI="&csc;Global"/></Declaration>
+
+  <Declaration><Class URI="&csc;CSC"/></Declaration>
+  <Declaration><Class URI="&csc;Endcap"/></Declaration>
+  <Declaration><Class URI="&csc;Station"/></Declaration>
+  <Declaration><Class URI="&csc;Ring"/></Declaration>
+  <Declaration><Class URI="&csc;Chamber"/></Declaration>
+  <Declaration><Class URI="&csc;Layer"/></Declaration>
+
+  <Declaration><Class URI="&csc;PeripheralCrate"/></Declaration>
+  <Declaration><Class URI="&csc;FEDCrate"/></Declaration>
+
+  <Declaration><Class URI="&csc;Computer"/></Declaration>
+  <Declaration><Class URI="&csc;/dev/schar"/></Declaration>
+
+  <Declaration><Class URI="&csc;Software"/></Declaration>
+
+  <Declaration><Class URI="&csc;TriggerSector"/></Declaration>
+  <Declaration><Class URI="&csc;Trigger"/></Declaration>
+  <Declaration><Class URI="&csc;DAQ"/></Declaration>
+  <Declaration><Class URI="&csc;LocalDAQ"/></Declaration>
+  <Declaration><Class URI="&csc;GlobalDAQ"/></Declaration>
+
+  <Declaration><Class URI="&csc;RUI"/></Declaration>
+  <Declaration><Class URI="&csc;TFRUI"/></Declaration>
+
+  <Declaration><Class URI="&csc;Device"/></Declaration>
+  <Declaration><Class URI="&csc;DAQDevice"/></Declaration>
+  <Declaration><Class URI="&csc;TriggerDevice"/></Declaration>
+  <Declaration><Class URI="&csc;DDU"/></Declaration>
+  <Declaration><Class URI="&csc;DDUInput"/></Declaration>
+  <Declaration><Class URI="&csc;DCC"/></Declaration>
+  <Declaration><Class URI="&csc;Slink"/></Declaration>
+  <Declaration><Class URI="&csc;DMB"/></Declaration>
+  <Declaration><Class URI="&csc;SectorProcessor"/></Declaration>
+  <Declaration><Class URI="&csc;ALCT"/></Declaration>
+  <Declaration><Class URI="&csc;RAT"/></Declaration>
+  <Declaration><Class URI="&csc;TMB"/></Declaration>
+  <Declaration><Class URI="&csc;CFEB"/></Declaration>
+  <Declaration><Class URI="&csc;DMB"/></Declaration>
+  <Declaration><Class URI="&csc;VCC"/></Declaration>
+  <Declaration><Class URI="&csc;CCB"/></Declaration>
+  <Declaration><Class URI="&csc;MPC"/></Declaration>
+
+
+<!-- property declarations -->
+
+  <Declaration><ObjectProperty URI="&csc;receivesDataFrom"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;sendsDataTo"/></Declaration>
+
+  <Declaration><ObjectProperty URI="&csc;isIn"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;contains"/></Declaration>
+
+  <Declaration><DataProperty URI="&csc;hasInstance"/></Declaration>
+  <Declaration><DataProperty URI="&csc;isOn"/></Declaration>
+  <Declaration><DataProperty URI="&csc;hasFMM"/></Declaration>
+
+
+<!-- class and property relations -->
+  <SubClassOf><Class URI="&csc;Trigger"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;DAQ"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
+
+  <SubClassOf><Class URI="&csc;Local"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;Global"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
+
+  <EquivalentClasses>
+    <Class URI="&csc;LocalDAQ"/>
+    <ObjectIntersectionOf><Class URI="&csc;DAQ"/><Class URI="&csc;Local"/></ObjectIntersectionOf>
+  </EquivalentClasses>
+  <EquivalentClasses>
+    <Class URI="&csc;GlobalDAQ"/>
+    <ObjectIntersectionOf><Class URI="&csc;DAQ"/><Class URI="&csc;Global"/></ObjectIntersectionOf>
+  </EquivalentClasses>
+
+  <EquivalentClasses>
+    <Class URI="&csc;DAQDevice"/>
+    <ObjectIntersectionOf><Class URI="&csc;DAQ"/><Class URI="&csc;Device"/></ObjectIntersectionOf>
+  </EquivalentClasses>
+  <EquivalentClasses>
+    <Class URI="&csc;TriggerDevice"/>
+    <ObjectIntersectionOf><Class URI="&csc;Trigger"/><Class URI="&csc;Device"/></ObjectIntersectionOf>
+  </EquivalentClasses>
+
+
+  <SubClassOf><Class URI="&csc;RUI"/><Class URI="&csc;Software"/></SubClassOf>
+
+
+  <SubClassOf><Class URI="&csc;ALCT"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;CFEB"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;RAT"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;TMB"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;DMB"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;DDU"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;DCC"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;SectorProcessor"/><Class URI="&csc;Device"/></SubClassOf>
+
+  <SubClassOf><Class URI="&csc;SectorProcessor"/><Class URI="&csc;Trigger"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;TriggerSector"/><Class URI="&csc;Trigger"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;TFRUI"/><Class URI="&csc;Trigger"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;TFDDU"/><Class URI="&csc;Trigger"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;ALCT"/><Class URI="&csc;Trigger"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;RAT"/><Class URI="&csc;Trigger"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;TMB"/><Class URI="&csc;Trigger"/></SubClassOf>
+
+  <SubClassOf><Class URI="&csc;DDU"/><Class URI="&csc;DAQ"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;DCC"/><Class URI="&csc;DAQ"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;ALCT"/><Class URI="&csc;DAQ"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;CFEB"/><Class URI="&csc;DAQ"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;RAT"/><Class URI="&csc;DAQ"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;TMB"/><Class URI="&csc;DAQ"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;DMB"/><Class URI="&csc;DAQ"/></SubClassOf>
+
+  <SubClassOf><Class URI="&csc;DDU"/><Class URI="&csc;LocalDAQ"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;RUI"/><Class URI="&csc;LocalDAQ"/></SubClassOf>
+
+  <SubClassOf><Class URI="&csc;DDU"/><Class URI="&csc;GlobalDAQ"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;DCC"/><Class URI="&csc;GlobalDAQ"/></SubClassOf>
+
+  <SubClassOf><Class URI="&csc;TriggerSector"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;CSC"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;Endcap"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;Station"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;Ring"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;Chamber"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;Layer"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
+
+
+  <SubClassOf><Class URI="&csc;TFRUI"/><Class URI="&csc;RUI"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;TFDDU"/><Class URI="&csc;DDU"/></SubClassOf>
+
+  <InverseObjectProperties><ObjectProperty URI="&csc;sendsDataTo"/><ObjectProperty URI="&csc;receivesDataFrom"/></InverseObjectProperties>
+  <InverseObjectProperties><ObjectProperty URI="&csc;sendsTriggerTo"/><ObjectProperty URI="&csc;receivesTriggerFrom"/></InverseObjectProperties>
+  <InverseObjectProperties><ObjectProperty URI="&csc;sendsL1ATo"/><ObjectProperty URI="&csc;receivesL1AFrom"/></InverseObjectProperties>
+  <InverseObjectProperties><ObjectProperty URI="&csc;isIn"/><ObjectProperty URI="&csc;contains"/></InverseObjectProperties>
+
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;sendsDataTo"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;receivesDataFrom"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;sendsTriggerTo"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;receivesTriggerFrom"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;sendsL1ATo"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;receivesL1AFrom"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;isIn"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;contains"/></TransitiveObjectProperty>
+
+  <DataPropertyRange><DataProperty URI="&csc;hasInstance"/><Datatype URI="&xsd;unsignedInt"/></DataPropertyRange>
+  <DataPropertyRange><DataProperty URI="&csc;isOn"/><Datatype URI="&xsd;boolean"/></DataPropertyRange>
+  <DataPropertyRange><DataProperty URI="&csc;hasFMM"/><Datatype URI="&xsd;unsignedInt"/></DataPropertyRange>
+
+  <FunctionalDataProperty><DataProperty URI="&csc;isOn"/></FunctionalDataProperty>
+
+
+</Ontology>
