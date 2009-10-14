@@ -22,7 +22,7 @@ cvsDir  = "/local/reps/emu"
 fromaddr = "emu.CVSLibrarian@cern.ch"
 
 # TO BE MODIFIED: provide a comma-separated list of e-mail addresses
-toaddrs  = "Frank.Geurts@cern.ch"
+toaddrs  = "Frank.Geurts@cern.ch, Evaldas.Juska@cern.ch, banicz@mail.cern.ch, valdo@cern.ch"
 
 # the place (and name) of the logfile (by default top level in repository)
 logDir  = cvsDir + "/logs"
