@@ -222,14 +222,14 @@
       <ClassAssertion><Class URI="&csc;DCC"/><Individual URI="&csc;DCC{DCC/@FMM_ID}"/></ClassAssertion>
       <ClassAssertion><Class URI="&csc;Slink"/><Individual URI="&csc;Slink{DCC/@SLINK1_ID}"/></ClassAssertion>
       <ClassAssertion><Class URI="&csc;Slink"/><Individual URI="&csc;Slink{DCC/@SLINK2_ID}"/></ClassAssertion>
-      <ObjectPropertyAssertion>
-	<ObjectProperty URI="&csc;receivesDataFrom"/>
-	<Individual URI="&csc;Slink{DCC/@SLINK1_ID}"/><Individual URI="&csc;DCC{DCC/@FMM_ID}"/>
-      </ObjectPropertyAssertion>
-      <ObjectPropertyAssertion>
-	<ObjectProperty URI="&csc;receivesDataFrom"/>
-	<Individual URI="&csc;Slink{DCC/@SLINK2_ID}"/><Individual URI="&csc;DCC{DCC/@FMM_ID}"/>
-      </ObjectPropertyAssertion>
+<!--       <ObjectPropertyAssertion> -->
+<!-- 	<ObjectProperty URI="&csc;receivesDataFrom"/> -->
+<!-- 	<Individual URI="&csc;Slink{DCC/@SLINK1_ID}"/><Individual URI="&csc;DCC{DCC/@FMM_ID}"/> -->
+<!--       </ObjectPropertyAssertion> -->
+<!--       <ObjectPropertyAssertion> -->
+<!-- 	<ObjectProperty URI="&csc;receivesDataFrom"/> -->
+<!-- 	<Individual URI="&csc;Slink{DCC/@SLINK2_ID}"/><Individual URI="&csc;DCC{DCC/@FMM_ID}"/> -->
+<!--       </ObjectPropertyAssertion> -->
       <ObjectPropertyAssertion>
 	<ObjectProperty URI="&csc;isIn"/>
 	<Individual URI="&csc;Slink{DCC/@SLINK1_ID}"/><Individual URI="&csc;DCC{DCC/@FMM_ID}"/>
@@ -250,10 +250,11 @@
       <!-- DDUs -->
       <xsl:for-each select="DDU">
 	<xsl:variable name="PADDED_RUI_INSTANCE"><xsl:if test="string-length(@RUI)=1">0</xsl:if><xsl:value-of select="@RUI"/></xsl:variable>
-	<ObjectPropertyAssertion>
-	  <ObjectProperty URI="&csc;receivesDataFrom"/>
-	  <Individual URI="&csc;DCC{../DCC/@FMM_ID}"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/>
-	</ObjectPropertyAssertion>
+<!-- 	<ObjectPropertyAssertion> -->
+<!-- 	  <ObjectProperty URI="&csc;receivesDataFrom"/> -->
+<!-- 	  <Individual URI="&csc;DCC{../DCC/@FMM_ID}"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/> -->
+<!-- 	  <Individual URI="&csc;DCC{../DCC/@FMM_ID}"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/> -->
+<!-- 	</ObjectPropertyAssertion> -->
  	<DataPropertyAssertion>
 	  <DataProperty URI="&csc;hasFMM"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/>
 	  <Constant datatypeURI="&xsd;unsignedInt"><xsl:value-of select="@FMM_ID"/></Constant>
@@ -302,16 +303,19 @@
 	<Constant datatypeURI="&xsd;unsignedInt"><xsl:value-of select="@instance"/></Constant>
       </DataPropertyAssertion>
 
-      <xsl:if test="@instance=0">
-	<ClassAssertion><Class URI="&csc;TFDDU"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/></ClassAssertion>
-	<ClassAssertion><Class URI="&csc;TFRUI"/><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/></ClassAssertion>
-      </xsl:if>
-
-<!--       <ObjectPropertyAssertion> -->
-<!-- 	<ObjectProperty URI="&csc;receivesDataFrom"/> -->
-<!-- 	<Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/> -->
-<!-- 	<Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/> -->
-<!--       </ObjectPropertyAssertion> -->
+      <xsl:choose>
+	<xsl:when test="@instance=0">
+	  <ClassAssertion><Class URI="&csc;TFDDU"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/></ClassAssertion>
+	  <ClassAssertion><Class URI="&csc;TFRUI"/><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/></ClassAssertion>
+	</xsl:when>
+	<xsl:otherwise>
+	  <ObjectPropertyAssertion>
+	    <ObjectProperty URI="&csc;receivesDataFrom"/>
+	    <Individual URI="&csc;Slink{DCC/@slink}"/>
+	    <Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/>
+	  </ObjectPropertyAssertion>
+	</xsl:otherwise>
+      </xsl:choose>
 
       <ObjectPropertyAssertion>
 	<ObjectProperty URI="&csc;isIn"/>
@@ -367,7 +371,7 @@
     </xsl:for-each>
   </xsl:template>
 
-
+  <!-- Peripheral crates -->
   <xsl:template match="templ:PSidePCrates|templ:MSidePCrates">
     <xsl:text>&LF;</xsl:text>
     <xsl:comment>declaration of ALCTs, CFEBs, RATs, TMBs and DMBs, and their relation to chambers and PCrates</xsl:comment>
@@ -377,6 +381,7 @@
     <xsl:variable name="SOURCE" select="@source"/>
     <xsl:text>&LF;</xsl:text>
     <xsl:for-each select="document($SOURCE)/EmuSystem/PeripheralCrate">
+      <!-- VCC, CCB, MPC -->
       <xsl:variable name="VME_NAME"><xsl:value-of select="translate(@label,'mp_','-+/')"/></xsl:variable>
       <xsl:variable name="PADDED_VME_NAME"><xsl:value-of select="substring($VME_NAME,1,6)"/><xsl:if test="string-length($VME_NAME)=7">0</xsl:if><xsl:value-of select="substring($VME_NAME,7,string-length($VME_NAME)-6)"/></xsl:variable>
       <!--       <xsl:message><xsl:value-of select="$VME_NAME"/><xsl:text>  </xsl:text><xsl:value-of select="$PADDED_VME_NAME"/></xsl:message> -->
@@ -389,6 +394,7 @@
       <ObjectPropertyAssertion><ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;{$PADDED_VME_NAME}/VCC"/><Individual URI="&csc;{$PADDED_VME_NAME}"/></ObjectPropertyAssertion>
       <ObjectPropertyAssertion><ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;{$PADDED_VME_NAME}/CCB"/><Individual URI="&csc;{$PADDED_VME_NAME}"/></ObjectPropertyAssertion>
       <ObjectPropertyAssertion><ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;{$PADDED_VME_NAME}/MPC"/><Individual URI="&csc;{$PADDED_VME_NAME}"/></ObjectPropertyAssertion>
+      <!-- ALCT, RAT, TMB, DMB -->
       <xsl:for-each select="CSC">
 	<xsl:variable name="PADDED_CHAMBER_NAME"><xsl:value-of select="substring(@label,1,7)"/><xsl:if test="string-length(@label)=8">0</xsl:if><xsl:value-of select="substring(@label,8,string-length(@label)-7)"/></xsl:variable>
 	<!-- 	<xsl:message><xsl:value-of select="@label"/><xsl:text>  </xsl:text><xsl:value-of select="$PADDED_CHAMBER_NAME"/></xsl:message> -->
@@ -437,6 +443,7 @@
 	  <ObjectProperty URI="&csc;receivesTriggerFrom"/><Individual URI="&csc;{$PADDED_VME_NAME}/MPC"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/TMB"/>
 	</ObjectPropertyAssertion>
 	<xsl:for-each select="DAQMB/CFEB">
+	  <!-- CFEB -->
 	  <Declaration><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/CFEB{@cfeb_number}"/></Declaration>
 	  <ClassAssertion><Class URI="&csc;CFEB"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/CFEB{@cfeb_number}"/></ClassAssertion>
 	  <ObjectPropertyAssertion>
@@ -519,6 +526,14 @@
       </xsl:for-each>
 
     </xsl:for-each>
+  </xsl:template>
+
+  <!-- LTC and TTC -->
+  <xsl:template match="templ:LTCandTTC">
+    <Declaration><Individual URI="&csc;LTC"/></Declaration>
+    <Declaration><Individual URI="&csc;TTC"/></Declaration>
+    <ClassAssertion><Class URI="&csc;LTC"/><Individual URI="&csc;LTC"/></ClassAssertion>
+    <ClassAssertion><Class URI="&csc;TTC"/><Individual URI="&csc;TTC"/></ClassAssertion>
   </xsl:template>
 
 </xsl:transform>
