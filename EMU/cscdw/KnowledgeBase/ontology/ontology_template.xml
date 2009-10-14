@@ -34,6 +34,8 @@
     <templ:lDAQChain source="mappings/RUI-to-chamber_mapping.xml"/>
     <templ:lDAQFarm source="mappings/RUI-to-computer_mapping.xml"/>
     <templ:LTCandTTC/>
+    <templ:HV source="mappings/hvMapping.xml"/>
+    <templ:HVSegments source="mappings/HVChannelToSegment.xml"/>
   </templ:individuals>
 
 
@@ -63,6 +65,8 @@
   <Declaration><Class URI="&csc;TriggerSector"/></Declaration>
   <Declaration><Class URI="&csc;Trigger"/></Declaration>
   <Declaration><Class URI="&csc;DAQ"/></Declaration>
+  <Declaration><Class URI="&csc;HV"/></Declaration>
+  <Declaration><Class URI="&csc;LV"/></Declaration>
   <Declaration><Class URI="&csc;LocalDAQ"/></Declaration>
   <Declaration><Class URI="&csc;GlobalDAQ"/></Declaration>
 
@@ -89,23 +93,56 @@
   <Declaration><Class URI="&csc;TTC"/></Declaration>
   <Declaration><Class URI="&csc;LTC"/></Declaration>
 
+  <Declaration><Class URI="&csc;HVPrimary"/></Declaration>
+  <Declaration><Class URI="&csc;HVMaster"/></Declaration>
+  <Declaration><Class URI="&csc;HVDistribution"/></Declaration>
+  <Declaration><Class URI="&csc;HVSegment"/></Declaration>
 
 <!-- property declarations -->
 
+  <Declaration><ObjectProperty URI="&csc;triggerPath"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;receivesTriggerFrom"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;sendsTriggerTo"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;receivesL1AFrom"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;sendsL1ATo"/></Declaration>
+
+  <Declaration><ObjectProperty URI="&csc;dataPath"/></Declaration>
   <Declaration><ObjectProperty URI="&csc;receivesDataFrom"/></Declaration>
   <Declaration><ObjectProperty URI="&csc;sendsDataTo"/></Declaration>
 
+  <Declaration><ObjectProperty URI="&csc;locationPath"/></Declaration>
   <Declaration><ObjectProperty URI="&csc;isIn"/></Declaration>
   <Declaration><ObjectProperty URI="&csc;contains"/></Declaration>
+
+  <Declaration><ObjectProperty URI="&csc;logicalComposition"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;isPartOf"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;consistsOf"/></Declaration>
+
+  <Declaration><ObjectProperty URI="&csc;controlPath"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;isControlledBy"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;controls"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;isMonitoredBy"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;monitors"/></Declaration>
+
+  <Declaration><ObjectProperty URI="&csc;powerSupplyPath"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;deliversHVTo"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;getsHVFrom"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;deliversLVTo"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;getsLVFrom"/></Declaration>
+
+
 
   <Declaration><DataProperty URI="&csc;hasInstance"/></Declaration>
   <Declaration><DataProperty URI="&csc;isOn"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasFMM"/></Declaration>
+  <Declaration><DataProperty URI="&csc;hasHVChannel"/></Declaration>
 
 
 <!-- class and property relations -->
   <SubClassOf><Class URI="&csc;Trigger"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
   <SubClassOf><Class URI="&csc;DAQ"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;LV"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HV"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
 
   <SubClassOf><Class URI="&csc;Local"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
   <SubClassOf><Class URI="&csc;Global"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
@@ -142,6 +179,15 @@
   <SubClassOf><Class URI="&csc;SectorProcessor"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;LTC"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;TTC"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVPrimary"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVMaster"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVDistribution"/><Class URI="&csc;Device"/></SubClassOf>
+
+  <!-- HV -->
+  <SubClassOf><Class URI="&csc;HVPrimary"/><Class URI="&csc;HV"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVMaster"/><Class URI="&csc;HV"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVDistribution"/><Class URI="&csc;HV"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVSegment"/><Class URI="&csc;HV"/></SubClassOf>
 
   <!-- Trigger -->
   <SubClassOf><Class URI="&csc;SectorProcessor"/><Class URI="&csc;Trigger"/></SubClassOf>
@@ -178,6 +224,7 @@
   <SubClassOf><Class URI="&csc;DDU"/><Class URI="&csc;GlobalDAQ"/></SubClassOf>
   <SubClassOf><Class URI="&csc;DCC"/><Class URI="&csc;GlobalDAQ"/></SubClassOf>
 
+
   <!-- LogicalComponent -->
   <SubClassOf><Class URI="&csc;TriggerSector"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
   <SubClassOf><Class URI="&csc;CSC"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
@@ -186,16 +233,50 @@
   <SubClassOf><Class URI="&csc;Ring"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
   <SubClassOf><Class URI="&csc;Chamber"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
   <SubClassOf><Class URI="&csc;Layer"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVSegment"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
 
 
   <SubClassOf><Class URI="&csc;TFRUI"/><Class URI="&csc;RUI"/></SubClassOf>
   <SubClassOf><Class URI="&csc;TFDDU"/><Class URI="&csc;DDU"/></SubClassOf>
+
+
+  <!-- SubObjectPropertyOf -->
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;receivesTriggerFrom"/><ObjectProperty URI="&csc;triggerPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;sendsTriggerTo"/><ObjectProperty URI="&csc;triggerPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;receivesL1AFrom"/><ObjectProperty URI="&csc;triggerPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;sendsL1ATo"/><ObjectProperty URI="&csc;triggerPath"/></SubObjectPropertyOf>
+
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;receivesDataFrom"/><ObjectProperty URI="&csc;dataPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;sendsDataTo"/><ObjectProperty URI="&csc;dataPath"/></SubObjectPropertyOf>
+
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;isIn"/><ObjectProperty URI="&csc;locationPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;contains"/><ObjectProperty URI="&csc;locationPath"/></SubObjectPropertyOf>
+
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;isPartOf"/><ObjectProperty URI="&csc;logicalComposition"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;consistsOf"/><ObjectProperty URI="&csc;logicalComposition"/></SubObjectPropertyOf>
+
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;isControlledBy"/><ObjectProperty URI="&csc;controlPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;controls"/><ObjectProperty URI="&csc;controlPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;isMonitoredBy"/><ObjectProperty URI="&csc;controlPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;monitors"/><ObjectProperty URI="&csc;controlPath"/></SubObjectPropertyOf>
+
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;deliversHVTo"/><ObjectProperty URI="&csc;powerSupplyPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;getsHVFrom"/><ObjectProperty URI="&csc;powerSupplyPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;deliversLVTo"/><ObjectProperty URI="&csc;powerSupplyPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;getsLVFrom"/><ObjectProperty URI="&csc;powerSupplyPath"/></SubObjectPropertyOf>
+
 
   <!-- InverseObjectProperties -->
   <InverseObjectProperties><ObjectProperty URI="&csc;sendsDataTo"/><ObjectProperty URI="&csc;receivesDataFrom"/></InverseObjectProperties>
   <InverseObjectProperties><ObjectProperty URI="&csc;sendsTriggerTo"/><ObjectProperty URI="&csc;receivesTriggerFrom"/></InverseObjectProperties>
   <InverseObjectProperties><ObjectProperty URI="&csc;sendsL1ATo"/><ObjectProperty URI="&csc;receivesL1AFrom"/></InverseObjectProperties>
   <InverseObjectProperties><ObjectProperty URI="&csc;isIn"/><ObjectProperty URI="&csc;contains"/></InverseObjectProperties>
+  <InverseObjectProperties><ObjectProperty URI="&csc;isPartOf"/><ObjectProperty URI="&csc;consistsOf"/></InverseObjectProperties>
+  <InverseObjectProperties><ObjectProperty URI="&csc;controls"/><ObjectProperty URI="&csc;isControlledBy"/></InverseObjectProperties>
+  <InverseObjectProperties><ObjectProperty URI="&csc;monitors"/><ObjectProperty URI="&csc;isMonitoredBy"/></InverseObjectProperties>
+  <InverseObjectProperties><ObjectProperty URI="&csc;deliversHVTo"/><ObjectProperty URI="&csc;getsHVFrom"/></InverseObjectProperties>
+  <InverseObjectProperties><ObjectProperty URI="&csc;deliversLVTo"/><ObjectProperty URI="&csc;getsLVFrom"/></InverseObjectProperties>
+
 
   <!-- TransitiveObjectProperty -->
   <TransitiveObjectProperty><ObjectProperty URI="&csc;sendsDataTo"/></TransitiveObjectProperty>
@@ -206,11 +287,19 @@
   <TransitiveObjectProperty><ObjectProperty URI="&csc;receivesL1AFrom"/></TransitiveObjectProperty>
   <TransitiveObjectProperty><ObjectProperty URI="&csc;isIn"/></TransitiveObjectProperty>
   <TransitiveObjectProperty><ObjectProperty URI="&csc;contains"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;isPartOf"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;consistsOf"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;deliversHVTo"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;getsHVFrom"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;deliversLVTo"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;getsLVFrom"/></TransitiveObjectProperty>
+
 
   <!-- DataPropertyRange -->
   <DataPropertyRange><DataProperty URI="&csc;hasInstance"/><Datatype URI="&xsd;unsignedInt"/></DataPropertyRange>
   <DataPropertyRange><DataProperty URI="&csc;isOn"/><Datatype URI="&xsd;boolean"/></DataPropertyRange>
   <DataPropertyRange><DataProperty URI="&csc;hasFMM"/><Datatype URI="&xsd;unsignedInt"/></DataPropertyRange>
+
 
   <!-- FunctionalDataProperty -->
   <FunctionalDataProperty><DataProperty URI="&csc;isOn"/></FunctionalDataProperty>

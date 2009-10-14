@@ -65,7 +65,7 @@
 	<Declaration><Individual URI="&csc;ME{$ENDCAP}"/></Declaration>
 	<ClassAssertion><Class URI="&csc;Endcap"/><Individual URI="&csc;ME{$ENDCAP}"/></ClassAssertion>
 	<ObjectPropertyAssertion>
-	  <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;ME{$ENDCAP}"/><Individual URI="&csc;ME"/>
+	  <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}"/><Individual URI="&csc;ME"/>
 	</ObjectPropertyAssertion>
 
 	<xsl:for-each select="document($SOURCE)//Chamber[@endcap=$ENDCAP]">
@@ -76,7 +76,7 @@
 	    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}"/></Declaration>
 	    <ClassAssertion><Class URI="&csc;Station"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}"/></ClassAssertion>
 	    <ObjectPropertyAssertion>
-	      <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}"/><Individual URI="&csc;ME{$ENDCAP}"/>
+	      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}"/><Individual URI="&csc;ME{$ENDCAP}"/>
 	    </ObjectPropertyAssertion>
 
 	    <xsl:for-each select="document($SOURCE)//Chamber[@endcap=$ENDCAP and @station=$STATION]">
@@ -87,7 +87,7 @@
 		<Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}"/></Declaration>
 		<ClassAssertion><Class URI="&csc;Ring"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}"/></ClassAssertion>
 		<ObjectPropertyAssertion>
-		  <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}"/>
+		  <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}"/>
 		</ObjectPropertyAssertion>
 		
 		<xsl:for-each select="document($SOURCE)//Chamber[@endcap=$ENDCAP and @station=$STATION and @type=$RING]">
@@ -99,7 +99,7 @@
 		    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/></Declaration>
 		    <ClassAssertion><Class URI="&csc;Chamber"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/></ClassAssertion>
 		    <ObjectPropertyAssertion>
-		      <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}"/>
+		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}"/>
 		    </ObjectPropertyAssertion>
 
 		    <!-- Layers -->
@@ -116,22 +116,22 @@
 		    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/6"/></Declaration>
 		    <ClassAssertion><Class URI="&csc;Layer"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/6"/></ClassAssertion>
 		    <ObjectPropertyAssertion>
-		      <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/1"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/>
+		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/1"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/>
 		    </ObjectPropertyAssertion>
 		    <ObjectPropertyAssertion>
-		      <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/2"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/>
+		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/2"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/>
 		    </ObjectPropertyAssertion>
 		    <ObjectPropertyAssertion>
-		      <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/3"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/>
+		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/3"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/>
 		    </ObjectPropertyAssertion>
 		    <ObjectPropertyAssertion>
-		      <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/4"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/>
+		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/4"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/>
 		    </ObjectPropertyAssertion>
 		    <ObjectPropertyAssertion>
-		      <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/5"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/>
+		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/5"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/>
 		    </ObjectPropertyAssertion>
 		    <ObjectPropertyAssertion>
-		      <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/6"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/>
+		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/6"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/>
 		    </ObjectPropertyAssertion>
 		  </xsl:if>
 		</xsl:for-each>
@@ -534,6 +534,60 @@
     <Declaration><Individual URI="&csc;TTC"/></Declaration>
     <ClassAssertion><Class URI="&csc;LTC"/><Individual URI="&csc;LTC"/></ClassAssertion>
     <ClassAssertion><Class URI="&csc;TTC"/><Individual URI="&csc;TTC"/></ClassAssertion>
+  </xsl:template>
+
+  <!-- HV -->
+  <xsl:template match="templ:HV">
+    <xsl:text>&LF;</xsl:text>
+    <xsl:comment>HV</xsl:comment>
+    <xsl:text>&LF;</xsl:text>
+    <xsl:variable name="SOURCE_DISTR" select="@source"/>
+    <xsl:variable name="SOURCE_SEGMENT" select="../templ:HVSegments/@source"/>
+    <xsl:message><xsl:value-of select="$SOURCE_SEGMENT"/></xsl:message>
+    <xsl:for-each select="document($SOURCE_DISTR)/hv/hvPrimary">
+      <!-- HV Primary -->
+      <xsl:variable name="HVPRIMARY">HVPrimary<xsl:value-of select="@id"/></xsl:variable>
+      <Declaration><Individual URI="&csc;{$HVPRIMARY}"/></Declaration>
+      <ClassAssertion><Class URI="&csc;HVPrimary"/><Individual URI="&csc;{$HVPRIMARY}"/></ClassAssertion>
+      <xsl:for-each select="hvMaster">
+	<!-- HV Master -->
+	<xsl:variable name="MASTER">Master<xsl:value-of select="@id"/></xsl:variable>
+	<Declaration><Individual URI="&csc;{$HVPRIMARY}/{$MASTER}"/></Declaration>
+	<ClassAssertion><Class URI="&csc;HVMaster"/><Individual URI="&csc;{$HVPRIMARY}/{$MASTER}"/></ClassAssertion>
+	<ObjectPropertyAssertion>
+	  <ObjectProperty URI="&csc;getsHVFrom"/><Individual URI="&csc;{$HVPRIMARY}/{$MASTER}"/><Individual URI="&csc;{$HVPRIMARY}"/>
+	</ObjectPropertyAssertion>
+	<xsl:for-each select="hvDistribution">
+	  <!-- HV Distribution Board -->
+	  <xsl:variable name="DISTRIBUTION">Distribution<xsl:value-of select="@id"/></xsl:variable>
+	  <Declaration><Individual URI="&csc;{$HVPRIMARY}/{$MASTER}/{$DISTRIBUTION}"/></Declaration>
+	  <ClassAssertion><Class URI="&csc;HVDistribution"/><Individual URI="&csc;{$HVPRIMARY}/{$MASTER}/{$DISTRIBUTION}"/></ClassAssertion>
+	  <ObjectPropertyAssertion>
+	    <ObjectProperty URI="&csc;getsHVFrom"/><Individual URI="&csc;{$HVPRIMARY}/{$MASTER}/{$DISTRIBUTION}"/><Individual URI="&csc;{$HVPRIMARY}/{$MASTER}"/>
+	  </ObjectPropertyAssertion>
+	  <xsl:for-each select="hvSegment">
+	    <xsl:variable name="CHANNEL" select="@moduleChannel"/>
+	    <xsl:variable name="CHAMBER_TYPE"><xsl:choose><xsl:when test="substring(@isInChamber,4,1)!='1' and substring(@isInChamber,6,1)='2'">large</xsl:when><xsl:otherwise>small</xsl:otherwise></xsl:choose></xsl:variable>
+	    <xsl:variable name="LAYER" select="document($SOURCE_SEGMENT)/HV/chamber[@type=$CHAMBER_TYPE]/channel[@OUT=$CHANNEL or @OUT2=$CHANNEL or @OUT2=$CHANNEL]/@layer"/>
+<!-- 	    <xsl:variable name="LAYER"><xsl:choose><xsl:when test="$CHAMBER_TYPE='small'"><xsl:value-of select="document($SOURCE_SEGMENT)/HV/chamber[@type=$CHAMBER_TYPE]/channel[@OUT1=$CHANNEL or @OUT2=$CHANNEL]/@layer"/></xsl:when><xsl:otherwise><xsl:value-of select="document($SOURCE_SEGMENT)/HV/chamber[@type=$CHAMBER_TYPE]/channel[@OUT=$CHANNEL]/@layer"/></xsl:otherwise></xsl:choose> -->
+            <xsl:variable name="SEGMENT" select="document($SOURCE_SEGMENT)/HV/chamber[@type=$CHAMBER_TYPE]/channel[@OUT=$CHANNEL or @OUT2=$CHANNEL or @OUT2=$CHANNEL]/@segment"/>
+	    <!-- HV Segment -->
+	    <Declaration><Individual URI="&csc;{@isInChamber}/{$LAYER}/HVSegment{$SEGMENT}"/></Declaration>
+	    <ClassAssertion><Class URI="&csc;HVSegment"/><Individual URI="&csc;{@isInChamber}/{$LAYER}/HVSegment{$SEGMENT}"/></ClassAssertion>
+	    <DataPropertyAssertion>
+	      <DataProperty URI="&csc;hasHVChannel"/><Individual URI="&csc;{@isInChamber}/{$LAYER}/HVSegment{$SEGMENT}"/>
+	      <Constant datatypeURI="&xsd;unsignedInt"><xsl:value-of select="$CHANNEL"/></Constant>
+	    </DataPropertyAssertion>
+	  <ObjectPropertyAssertion>
+	    <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;{@isInChamber}/{$LAYER}/HVSegment{$SEGMENT}"/><Individual URI="&csc;{@isInChamber}/{$LAYER}"/>
+	  </ObjectPropertyAssertion>
+	  <ObjectPropertyAssertion>
+	    <ObjectProperty URI="&csc;getsHVFrom"/><Individual URI="&csc;{@isInChamber}/{$LAYER}/HVSegment{$SEGMENT}"/><Individual URI="&csc;{$HVPRIMARY}/{$MASTER}/{$DISTRIBUTION}"/>
+	  </ObjectPropertyAssertion>
+	  </xsl:for-each>
+	</xsl:for-each>
+      </xsl:for-each>
+    </xsl:for-each>
   </xsl:template>
 
 </xsl:transform>
