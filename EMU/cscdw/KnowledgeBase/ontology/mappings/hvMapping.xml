@@ -1,7 +1,7 @@
 <!--HV devices-->
 <hv>
  <hvPrimary hostId="500" port="1" address="1" id="500_1_1" >
-  <hvMaster hostId="500" busAddress="1" id="26" hvCard="0" >
+  <hvDistribution hostId="500" address="1" id="26" slot="0" >
    <hvModule masterChannel="6" host="500" address="1" bus="3" id="154" slot="2" >
     <hvSegment isInChamber="ME-1/2/01" moduleChannel="19" />
     <hvSegment isInChamber="ME-1/2/01" moduleChannel="20" />
@@ -306,8 +306,8 @@
     <hvSegment isInChamber="ME-1/3/36" moduleChannel="17" />
     <hvSegment isInChamber="ME-1/3/36" moduleChannel="18" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="500" busAddress="2" id="30" hvCard="0" >
+  </hvDistribution>
+  <hvDistribution hostId="500" address="2" id="30" slot="0" >
    <hvModule masterChannel="1" host="500" address="9" bus="3" id="161" slot="3" >
     <hvSegment isInChamber="ME-1/2/03" moduleChannel="19" />
     <hvSegment isInChamber="ME-1/2/03" moduleChannel="20" />
@@ -384,8 +384,8 @@
     <hvSegment isInChamber="ME-1/2/10" moduleChannel="17" />
     <hvSegment isInChamber="ME-1/2/10" moduleChannel="18" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="500" busAddress="3" id="32" hvCard="0" >
+  </hvDistribution>
+  <hvDistribution hostId="500" address="3" id="32" slot="0" >
    <hvModule masterChannel="6" host="500" address="8" bus="3" id="2" slot="3" >
     <hvSegment isInChamber="ME-1/2/05" moduleChannel="19" />
     <hvSegment isInChamber="ME-1/2/05" moduleChannel="20" />
@@ -690,8 +690,8 @@
     <hvSegment isInChamber="ME-1/3/12" moduleChannel="17" />
     <hvSegment isInChamber="ME-1/3/12" moduleChannel="18" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="500" busAddress="0" id="21" hvCard="0" >
+  </hvDistribution>
+  <hvDistribution hostId="500" address="0" id="21" slot="0" >
    <hvModule masterChannel="5" host="500" address="5" bus="3" id="29" slot="3" >
     <hvSegment isInChamber="ME-1/2/11" moduleChannel="19" />
     <hvSegment isInChamber="ME-1/2/11" moduleChannel="20" />
@@ -996,8 +996,8 @@
     <hvSegment isInChamber="ME-1/3/20" moduleChannel="17" />
     <hvSegment isInChamber="ME-1/3/20" moduleChannel="18" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="500" busAddress="5" id="14" hvCard="0" >
+  </hvDistribution>
+  <hvDistribution hostId="500" address="5" id="14" slot="0" >
    <hvModule masterChannel="1" host="500" address="2" bus="3" id="14" slot="3" >
     <hvSegment isInChamber="ME-1/2/17" moduleChannel="19" />
     <hvSegment isInChamber="ME-1/2/17" moduleChannel="20" />
@@ -1074,8 +1074,8 @@
     <hvSegment isInChamber="ME-1/2/20" moduleChannel="17" />
     <hvSegment isInChamber="ME-1/2/20" moduleChannel="18" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="500" busAddress="4" id="48" hvCard="0" >
+  </hvDistribution>
+  <hvDistribution hostId="500" address="4" id="48" slot="0" >
    <hvModule masterChannel="7" host="500" address="8" bus="3" id="144" slot="2" >
     <hvSegment isInChamber="ME-1/2/23" moduleChannel="19" />
     <hvSegment isInChamber="ME-1/2/23" moduleChannel="20" />
@@ -1380,10 +1380,10 @@
     <hvSegment isInChamber="ME-1/3/30" moduleChannel="17" />
     <hvSegment isInChamber="ME-1/3/30" moduleChannel="18" />
    </hvModule>
-  </hvMaster>
+  </hvDistribution>
  </hvPrimary>
  <hvPrimary hostId="600" port="4" address="1" id="600_4_1" >
-  <hvMaster hostId="600" busAddress="0" id="50" hvCard="12" >
+  <hvDistribution hostId="600" address="0" id="50" slot="12" >
    <hvModule masterChannel="0" host="600" address="9" bus="4" id="20" slot="13" >
     <hvSegment isInChamber="ME+4/1/01" moduleChannel="19" />
     <hvSegment isInChamber="ME+4/1/01" moduleChannel="20" />
@@ -1582,8 +1582,8 @@
     <hvSegment isInChamber="ME+4/2/13" moduleChannel="29" />
     <hvSegment isInChamber="ME+4/2/13" moduleChannel="30" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="600" busAddress="1" id="34" hvCard="12" >
+  </hvDistribution>
+  <hvDistribution hostId="600" address="1" id="34" slot="12" >
    <hvModule masterChannel="7" host="600" address="1" bus="4" id="130" slot="13" >
     <hvSegment isInChamber="ME+4/1/03" moduleChannel="19" />
     <hvSegment isInChamber="ME+4/1/03" moduleChannel="20" />
@@ -1888,10 +1888,10 @@
     <hvSegment isInChamber="ME+4/1/18" moduleChannel="17" />
     <hvSegment isInChamber="ME+4/1/18" moduleChannel="18" />
    </hvModule>
-  </hvMaster>
+  </hvDistribution>
  </hvPrimary>
  <hvPrimary hostId="600" port="3" address="1" id="600_3_1" >
-  <hvMaster hostId="600" busAddress="1" id="11" hvCard="8" >
+  <hvDistribution hostId="600" address="1" id="11" slot="8" >
    <hvModule masterChannel="0" host="600" address="1" bus="4" id="156" slot="9" >
     <hvSegment isInChamber="ME+2/1/08" moduleChannel="1" />
     <hvSegment isInChamber="ME+2/1/08" moduleChannel="2" />
@@ -2154,8 +2154,8 @@
     <hvSegment isInChamber="ME+3/2/18" moduleChannel="29" />
     <hvSegment isInChamber="ME+3/2/18" moduleChannel="30" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="600" busAddress="5" id="31" hvCard="8" >
+  </hvDistribution>
+  <hvDistribution hostId="600" address="5" id="31" slot="8" >
    <hvModule masterChannel="7" host="600" address="2" bus="4" id="124" slot="9" >
     <hvSegment isInChamber="ME+2/1/09" moduleChannel="1" />
     <hvSegment isInChamber="ME+2/1/09" moduleChannel="2" />
@@ -2454,8 +2454,8 @@
     <hvSegment isInChamber="ME+2/2/20" moduleChannel="29" />
     <hvSegment isInChamber="ME+2/2/20" moduleChannel="30" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="600" busAddress="4" id="39" hvCard="8" >
+  </hvDistribution>
+  <hvDistribution hostId="600" address="4" id="39" slot="8" >
    <hvModule masterChannel="0" host="600" address="4" bus="4" id="151" slot="9" >
     <hvSegment isInChamber="ME+2/1/11" moduleChannel="1" />
     <hvSegment isInChamber="ME+2/1/11" moduleChannel="2" />
@@ -2686,8 +2686,8 @@
     <hvSegment isInChamber="ME+2/2/23" moduleChannel="29" />
     <hvSegment isInChamber="ME+2/2/23" moduleChannel="30" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="600" busAddress="2" id="7" hvCard="8" >
+  </hvDistribution>
+  <hvDistribution hostId="600" address="2" id="7" slot="8" >
    <hvModule masterChannel="3" host="600" address="3" bus="4" id="315" slot="10" >
     <hvSegment isInChamber="ME+2/2/21" moduleChannel="1" />
     <hvSegment isInChamber="ME+2/2/21" moduleChannel="2" />
@@ -2912,8 +2912,8 @@
     <hvSegment isInChamber="ME+3/2/32" moduleChannel="29" />
     <hvSegment isInChamber="ME+3/2/32" moduleChannel="30" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="600" busAddress="0" id="25" hvCard="8" >
+  </hvDistribution>
+  <hvDistribution hostId="600" address="0" id="25" slot="8" >
    <hvModule masterChannel="0" host="600" address="14" bus="4" id="424" slot="11" >
     <hvSegment isInChamber="ME+2/2/25" moduleChannel="1" />
     <hvSegment isInChamber="ME+2/2/25" moduleChannel="2" />
@@ -3138,8 +3138,8 @@
     <hvSegment isInChamber="ME+3/2/27" moduleChannel="29" />
     <hvSegment isInChamber="ME+3/2/27" moduleChannel="30" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="600" busAddress="3" id="16" hvCard="8" >
+  </hvDistribution>
+  <hvDistribution hostId="600" address="3" id="16" slot="8" >
    <hvModule masterChannel="3" host="600" address="13" bus="4" id="263" slot="9" >
     <hvSegment isInChamber="ME+2/2/30" moduleChannel="1" />
     <hvSegment isInChamber="ME+2/2/30" moduleChannel="2" />
@@ -3396,10 +3396,10 @@
     <hvSegment isInChamber="ME+3/2/23" moduleChannel="29" />
     <hvSegment isInChamber="ME+3/2/23" moduleChannel="30" />
    </hvModule>
-  </hvMaster>
+  </hvDistribution>
  </hvPrimary>
  <hvPrimary hostId="500" port="2" address="1" id="500_2_1" >
-  <hvMaster hostId="500" busAddress="2" id="9" hvCard="4" >
+  <hvDistribution hostId="500" address="2" id="9" slot="4" >
    <hvModule masterChannel="4" host="500" address="2" bus="4" id="35" slot="7" >
     <hvSegment isInChamber="ME-2/1/01" moduleChannel="1" />
     <hvSegment isInChamber="ME-2/1/01" moduleChannel="2" />
@@ -3654,8 +3654,8 @@
     <hvSegment isInChamber="ME-2/2/09" moduleChannel="29" />
     <hvSegment isInChamber="ME-2/2/09" moduleChannel="30" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="500" busAddress="3" id="46" hvCard="4" >
+  </hvDistribution>
+  <hvDistribution hostId="500" address="3" id="46" slot="4" >
    <hvModule masterChannel="4" host="500" address="4" bus="4" id="32" slot="7" >
     <hvSegment isInChamber="ME-2/1/03" moduleChannel="1" />
     <hvSegment isInChamber="ME-2/1/03" moduleChannel="2" />
@@ -3936,8 +3936,8 @@
     <hvSegment isInChamber="ME-2/2/14" moduleChannel="29" />
     <hvSegment isInChamber="ME-2/2/14" moduleChannel="30" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="500" busAddress="1" id="40" hvCard="4" >
+  </hvDistribution>
+  <hvDistribution hostId="500" address="1" id="40" slot="4" >
    <hvModule masterChannel="3" host="500" address="4" bus="4" id="293" slot="6" >
     <hvSegment isInChamber="ME-2/2/01" moduleChannel="1" />
     <hvSegment isInChamber="ME-2/2/01" moduleChannel="2" />
@@ -4194,8 +4194,8 @@
     <hvSegment isInChamber="ME-3/2/36" moduleChannel="29" />
     <hvSegment isInChamber="ME-3/2/36" moduleChannel="30" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="500" busAddress="5" id="53" hvCard="4" >
+  </hvDistribution>
+  <hvDistribution hostId="500" address="5" id="53" slot="4" >
    <hvModule masterChannel="3" host="500" address="3" bus="4" id="305" slot="6" >
     <hvSegment isInChamber="ME-2/2/02" moduleChannel="1" />
     <hvSegment isInChamber="ME-2/2/02" moduleChannel="2" />
@@ -4452,8 +4452,8 @@
     <hvSegment isInChamber="ME-3/2/05" moduleChannel="29" />
     <hvSegment isInChamber="ME-3/2/05" moduleChannel="30" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="500" busAddress="4" id="51" hvCard="4" >
+  </hvDistribution>
+  <hvDistribution hostId="500" address="4" id="51" slot="4" >
    <hvModule masterChannel="1" host="500" address="2" bus="4" id="404" slot="6" >
     <hvSegment isInChamber="ME-2/2/03" moduleChannel="1" />
     <hvSegment isInChamber="ME-2/2/03" moduleChannel="2" />
@@ -4678,8 +4678,8 @@
     <hvSegment isInChamber="ME-3/2/14" moduleChannel="29" />
     <hvSegment isInChamber="ME-3/2/14" moduleChannel="30" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="500" busAddress="0" id="41" hvCard="4" >
+  </hvDistribution>
+  <hvDistribution hostId="500" address="0" id="41" slot="4" >
    <hvModule masterChannel="5" host="500" address="6" bus="3" id="335" slot="5" >
     <hvSegment isInChamber="ME-2/2/08" moduleChannel="1" />
     <hvSegment isInChamber="ME-2/2/08" moduleChannel="2" />
@@ -4904,10 +4904,10 @@
     <hvSegment isInChamber="ME-3/2/09" moduleChannel="29" />
     <hvSegment isInChamber="ME-3/2/09" moduleChannel="30" />
    </hvModule>
-  </hvMaster>
+  </hvDistribution>
  </hvPrimary>
  <hvPrimary hostId="unknown" port="unknown" ERROR="Master doesn't exist" address="unknown" id="unknown_unknown_unknown" >
-  <hvMaster hostId="500" busAddress="-1" id="0" hvCard="-1" >
+  <hvDistribution hostId="500" address="-1" id="0" slot="-1" >
    <hvModule masterChannel="0" host="500" address="11" bus="4" id="309" slot="9" >
     <hvSegment isInChamber="ME-3/2/27" moduleChannel="1" />
     <hvSegment isInChamber="ME-3/2/27" moduleChannel="2" />
@@ -4940,10 +4940,10 @@
     <hvSegment isInChamber="ME-3/2/27" moduleChannel="29" />
     <hvSegment isInChamber="ME-3/2/27" moduleChannel="30" />
    </hvModule>
-  </hvMaster>
+  </hvDistribution>
  </hvPrimary>
  <hvPrimary hostId="600" port="1" address="1" id="600_1_1" >
-  <hvMaster hostId="600" busAddress="1" id="6" hvCard="0" >
+  <hvDistribution hostId="600" address="1" id="6" slot="0" >
    <hvModule masterChannel="2" host="600" address="15" bus="3" id="113" slot="3" >
     <hvSegment isInChamber="ME+1/2/01" moduleChannel="19" />
     <hvSegment isInChamber="ME+1/2/01" moduleChannel="20" />
@@ -5134,8 +5134,8 @@
     <hvSegment isInChamber="ME+1/2/36" moduleChannel="17" />
     <hvSegment isInChamber="ME+1/2/36" moduleChannel="18" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="600" busAddress="3" id="28" hvCard="0" >
+  </hvDistribution>
+  <hvDistribution hostId="600" address="3" id="28" slot="0" >
    <hvModule masterChannel="1" host="600" address="8" bus="3" id="10" slot="2" >
     <hvSegment isInChamber="ME+1/2/03" moduleChannel="19" />
     <hvSegment isInChamber="ME+1/2/03" moduleChannel="20" />
@@ -5212,8 +5212,8 @@
     <hvSegment isInChamber="ME+1/2/20" moduleChannel="17" />
     <hvSegment isInChamber="ME+1/2/20" moduleChannel="18" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="600" busAddress="4" id="45" hvCard="0" >
+  </hvDistribution>
+  <hvDistribution hostId="600" address="4" id="45" slot="0" >
    <hvModule masterChannel="3" host="600" address="7" bus="3" id="141" slot="2" >
     <hvSegment isInChamber="ME+1/2/05" moduleChannel="19" />
     <hvSegment isInChamber="ME+1/2/05" moduleChannel="20" />
@@ -5518,8 +5518,8 @@
     <hvSegment isInChamber="ME+1/3/10" moduleChannel="17" />
     <hvSegment isInChamber="ME+1/3/10" moduleChannel="18" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="600" busAddress="0" id="29" hvCard="0" >
+  </hvDistribution>
+  <hvDistribution hostId="600" address="0" id="29" slot="0" >
    <hvModule masterChannel="3" host="600" address="5" bus="3" id="137" slot="3" >
     <hvSegment isInChamber="ME+1/2/27" moduleChannel="19" />
     <hvSegment isInChamber="ME+1/2/27" moduleChannel="20" />
@@ -5786,8 +5786,8 @@
     <hvSegment isInChamber="ME+1/3/36" moduleChannel="17" />
     <hvSegment isInChamber="ME+1/3/36" moduleChannel="18" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="600" busAddress="2" id="33" hvCard="0" >
+  </hvDistribution>
+  <hvDistribution hostId="600" address="2" id="33" slot="0" >
    <hvModule masterChannel="1" host="600" address="3" bus="3" id="111" slot="3" >
     <hvSegment isInChamber="ME+1/2/31" moduleChannel="19" />
     <hvSegment isInChamber="ME+1/2/31" moduleChannel="20" />
@@ -6016,8 +6016,8 @@
     <hvSegment isInChamber="ME+1/3/34" moduleChannel="17" />
     <hvSegment isInChamber="ME+1/3/34" moduleChannel="18" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="600" busAddress="5" id="42" hvCard="0" >
+  </hvDistribution>
+  <hvDistribution hostId="600" address="5" id="42" slot="0" >
    <hvModule masterChannel="2" host="600" address="14" bus="3" id="31" slot="2" >
     <hvSegment isInChamber="ME+1/3/03" moduleChannel="19" />
     <hvSegment isInChamber="ME+1/3/03" moduleChannel="20" />
@@ -6322,10 +6322,10 @@
     <hvSegment isInChamber="ME+1/3/20" moduleChannel="17" />
     <hvSegment isInChamber="ME+1/3/20" moduleChannel="18" />
    </hvModule>
-  </hvMaster>
+  </hvDistribution>
  </hvPrimary>
  <hvPrimary hostId="600" port="2" address="1" id="600_2_1" >
-  <hvMaster hostId="600" busAddress="5" id="19" hvCard="4" >
+  <hvDistribution hostId="600" address="5" id="19" slot="4" >
    <hvModule masterChannel="4" host="600" address="2" bus="3" id="65" slot="5" >
     <hvSegment isInChamber="ME+2/1/01" moduleChannel="19" />
     <hvSegment isInChamber="ME+2/1/01" moduleChannel="20" />
@@ -6630,8 +6630,8 @@
     <hvSegment isInChamber="ME+3/1/18" moduleChannel="35" />
     <hvSegment isInChamber="ME+3/1/18" moduleChannel="36" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="600" busAddress="4" id="5" hvCard="4" >
+  </hvDistribution>
+  <hvDistribution hostId="600" address="4" id="5" slot="4" >
    <hvModule masterChannel="0" host="600" address="15" bus="3" id="159" slot="5" >
     <hvSegment isInChamber="ME+2/1/17" moduleChannel="19" />
     <hvSegment isInChamber="ME+2/1/17" moduleChannel="20" />
@@ -6862,8 +6862,8 @@
     <hvSegment isInChamber="ME+2/2/14" moduleChannel="29" />
     <hvSegment isInChamber="ME+2/2/14" moduleChannel="30" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="600" busAddress="2" id="22" hvCard="4" >
+  </hvDistribution>
+  <hvDistribution hostId="600" address="2" id="22" slot="4" >
    <hvModule masterChannel="2" host="600" address="5" bus="4" id="303" slot="6" >
     <hvSegment isInChamber="ME+2/2/01" moduleChannel="1" />
     <hvSegment isInChamber="ME+2/2/01" moduleChannel="2" />
@@ -7088,8 +7088,8 @@
     <hvSegment isInChamber="ME+3/2/02" moduleChannel="29" />
     <hvSegment isInChamber="ME+3/2/02" moduleChannel="30" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="600" busAddress="1" id="20" hvCard="4" >
+  </hvDistribution>
+  <hvDistribution hostId="600" address="1" id="20" slot="4" >
    <hvModule masterChannel="2" host="600" address="3" bus="4" id="410" slot="6" >
     <hvSegment isInChamber="ME+2/2/03" moduleChannel="1" />
     <hvSegment isInChamber="ME+2/2/03" moduleChannel="2" />
@@ -7346,8 +7346,8 @@
     <hvSegment isInChamber="ME+3/2/09" moduleChannel="29" />
     <hvSegment isInChamber="ME+3/2/09" moduleChannel="30" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="600" busAddress="3" id="37" hvCard="4" >
+  </hvDistribution>
+  <hvDistribution hostId="600" address="3" id="37" slot="4" >
    <hvModule masterChannel="4" host="600" address="14" bus="4" id="312" slot="6" >
     <hvSegment isInChamber="ME+3/2/01" moduleChannel="1" />
     <hvSegment isInChamber="ME+3/2/01" moduleChannel="2" />
@@ -7604,8 +7604,8 @@
     <hvSegment isInChamber="ME+3/2/36" moduleChannel="29" />
     <hvSegment isInChamber="ME+3/2/36" moduleChannel="30" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="600" busAddress="0" id="38" hvCard="4" >
+  </hvDistribution>
+  <hvDistribution hostId="600" address="0" id="38" slot="4" >
    <hvModule masterChannel="3" host="600" address="10" bus="4" id="300" slot="7" >
     <hvSegment isInChamber="ME+3/2/06" moduleChannel="1" />
     <hvSegment isInChamber="ME+3/2/06" moduleChannel="2" />
@@ -7830,10 +7830,10 @@
     <hvSegment isInChamber="ME+3/2/14" moduleChannel="29" />
     <hvSegment isInChamber="ME+3/2/14" moduleChannel="30" />
    </hvModule>
-  </hvMaster>
+  </hvDistribution>
  </hvPrimary>
  <hvPrimary hostId="500" port="4" address="1" id="500_4_1" >
-  <hvMaster hostId="500" busAddress="1" id="15" hvCard="12" >
+  <hvDistribution hostId="500" address="1" id="15" slot="12" >
    <hvModule masterChannel="6" host="500" address="2" bus="4" id="109" slot="13" >
     <hvSegment isInChamber="ME-4/1/01" moduleChannel="19" />
     <hvSegment isInChamber="ME-4/1/01" moduleChannel="20" />
@@ -8138,8 +8138,8 @@
     <hvSegment isInChamber="ME-4/1/18" moduleChannel="17" />
     <hvSegment isInChamber="ME-4/1/18" moduleChannel="18" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="500" busAddress="0" id="3" hvCard="12" >
+  </hvDistribution>
+  <hvDistribution hostId="500" address="0" id="3" slot="12" >
    <hvModule masterChannel="0" host="500" address="9" bus="4" id="60" slot="13" >
     <hvSegment isInChamber="ME-4/1/15" moduleChannel="19" />
     <hvSegment isInChamber="ME-4/1/15" moduleChannel="20" />
@@ -8178,10 +8178,10 @@
     <hvSegment isInChamber="ME-4/1/16" moduleChannel="17" />
     <hvSegment isInChamber="ME-4/1/16" moduleChannel="18" />
    </hvModule>
-  </hvMaster>
+  </hvDistribution>
  </hvPrimary>
  <hvPrimary hostId="500" port="3" address="1" id="500_3_1" >
-  <hvMaster hostId="500" busAddress="5" id="35" hvCard="8" >
+  <hvDistribution hostId="500" address="5" id="35" slot="8" >
    <hvModule masterChannel="4" host="500" address="15" bus="4" id="91" slot="11" >
     <hvSegment isInChamber="ME-2/1/08" moduleChannel="1" />
     <hvSegment isInChamber="ME-2/1/08" moduleChannel="2" />
@@ -8486,8 +8486,8 @@
     <hvSegment isInChamber="ME-3/1/14" moduleChannel="35" />
     <hvSegment isInChamber="ME-3/1/14" moduleChannel="36" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="500" busAddress="0" id="43" hvCard="8" >
+  </hvDistribution>
+  <hvDistribution hostId="500" address="0" id="43" slot="8" >
    <hvModule masterChannel="6" host="500" address="7" bus="4" id="360" slot="10" >
     <hvSegment isInChamber="ME-2/2/15" moduleChannel="1" />
     <hvSegment isInChamber="ME-2/2/15" moduleChannel="2" />
@@ -8712,8 +8712,8 @@
     <hvSegment isInChamber="ME-3/2/21" moduleChannel="29" />
     <hvSegment isInChamber="ME-3/2/21" moduleChannel="30" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="500" busAddress="4" id="36" hvCard="8" >
+  </hvDistribution>
+  <hvDistribution hostId="500" address="4" id="36" slot="8" >
    <hvModule masterChannel="5" host="500" address="4" bus="4" id="389" slot="10" >
     <hvSegment isInChamber="ME-2/2/18" moduleChannel="1" />
     <hvSegment isInChamber="ME-2/2/18" moduleChannel="2" />
@@ -8944,8 +8944,8 @@
     <hvSegment isInChamber="ME-3/1/16" moduleChannel="35" />
     <hvSegment isInChamber="ME-3/1/16" moduleChannel="36" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="500" busAddress="2" id="4" hvCard="8" >
+  </hvDistribution>
+  <hvDistribution hostId="500" address="2" id="4" slot="8" >
    <hvModule masterChannel="4" host="500" address="6" bus="4" id="406" slot="9" >
     <hvSegment isInChamber="ME-2/2/25" moduleChannel="1" />
     <hvSegment isInChamber="ME-2/2/25" moduleChannel="2" />
@@ -9170,8 +9170,8 @@
     <hvSegment isInChamber="ME-3/2/30" moduleChannel="29" />
     <hvSegment isInChamber="ME-3/2/30" moduleChannel="30" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="500" busAddress="1" id="27" hvCard="8" >
+  </hvDistribution>
+  <hvDistribution hostId="500" address="1" id="27" slot="8" >
    <hvModule masterChannel="3" host="500" address="14" bus="4" id="420" slot="10" >
     <hvSegment isInChamber="ME-3/2/15" moduleChannel="1" />
     <hvSegment isInChamber="ME-3/2/15" moduleChannel="2" />
@@ -9428,8 +9428,8 @@
     <hvSegment isInChamber="ME-3/2/23" moduleChannel="29" />
     <hvSegment isInChamber="ME-3/2/23" moduleChannel="30" />
    </hvModule>
-  </hvMaster>
-  <hvMaster hostId="500" busAddress="3" id="44" hvCard="8" >
+  </hvDistribution>
+  <hvDistribution hostId="500" address="3" id="44" slot="8" >
    <hvModule masterChannel="6" host="500" address="14" bus="4" id="371" slot="9" >
     <hvSegment isInChamber="ME-3/2/24" moduleChannel="1" />
     <hvSegment isInChamber="ME-3/2/24" moduleChannel="2" />
@@ -9654,6 +9654,6 @@
     <hvSegment isInChamber="ME-3/2/32" moduleChannel="29" />
     <hvSegment isInChamber="ME-3/2/32" moduleChannel="30" />
    </hvModule>
-  </hvMaster>
+  </hvDistribution>
  </hvPrimary>
 </hv>
