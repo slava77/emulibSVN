@@ -33,6 +33,7 @@
     <templ:TFFMM source="mappings/config_tf_global.xml"/>
     <templ:lDAQChain source="mappings/RUI-to-chamber_mapping.xml"/>
     <templ:lDAQFarm source="mappings/RUI-to-computer_mapping.xml"/>
+    <templ:LTCandTTC/>
   </templ:individuals>
 
 
@@ -85,6 +86,8 @@
   <Declaration><Class URI="&csc;VCC"/></Declaration>
   <Declaration><Class URI="&csc;CCB"/></Declaration>
   <Declaration><Class URI="&csc;MPC"/></Declaration>
+  <Declaration><Class URI="&csc;TTC"/></Declaration>
+  <Declaration><Class URI="&csc;LTC"/></Declaration>
 
 
 <!-- property declarations -->
@@ -128,7 +131,7 @@
 
   <SubClassOf><Class URI="&csc;RUI"/><Class URI="&csc;Software"/></SubClassOf>
 
-
+  <!-- Device -->
   <SubClassOf><Class URI="&csc;ALCT"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;CFEB"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;RAT"/><Class URI="&csc;Device"/></SubClassOf>
@@ -137,7 +140,10 @@
   <SubClassOf><Class URI="&csc;DDU"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;DCC"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;SectorProcessor"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;LTC"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;TTC"/><Class URI="&csc;Device"/></SubClassOf>
 
+  <!-- Trigger -->
   <SubClassOf><Class URI="&csc;SectorProcessor"/><Class URI="&csc;Trigger"/></SubClassOf>
   <SubClassOf><Class URI="&csc;TriggerSector"/><Class URI="&csc;Trigger"/></SubClassOf>
   <SubClassOf><Class URI="&csc;TFRUI"/><Class URI="&csc;Trigger"/></SubClassOf>
@@ -145,7 +151,10 @@
   <SubClassOf><Class URI="&csc;ALCT"/><Class URI="&csc;Trigger"/></SubClassOf>
   <SubClassOf><Class URI="&csc;RAT"/><Class URI="&csc;Trigger"/></SubClassOf>
   <SubClassOf><Class URI="&csc;TMB"/><Class URI="&csc;Trigger"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;LTC"/><Class URI="&csc;Trigger"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;TTC"/><Class URI="&csc;Trigger"/></SubClassOf>
 
+  <!-- DAQ -->
   <SubClassOf><Class URI="&csc;DDU"/><Class URI="&csc;DAQ"/></SubClassOf>
   <SubClassOf><Class URI="&csc;DCC"/><Class URI="&csc;DAQ"/></SubClassOf>
   <SubClassOf><Class URI="&csc;ALCT"/><Class URI="&csc;DAQ"/></SubClassOf>
@@ -154,12 +163,22 @@
   <SubClassOf><Class URI="&csc;TMB"/><Class URI="&csc;DAQ"/></SubClassOf>
   <SubClassOf><Class URI="&csc;DMB"/><Class URI="&csc;DAQ"/></SubClassOf>
 
+  <!-- Local -->
+  <SubClassOf><Class URI="&csc;TTC"/><Class URI="&csc;Local"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;LTC"/><Class URI="&csc;Local"/></SubClassOf>
+
+  <!-- Global -->
+  <SubClassOf><Class URI="&csc;TTC"/><Class URI="&csc;Global"/></SubClassOf>
+
+  <!-- LocalDAQ -->
   <SubClassOf><Class URI="&csc;DDU"/><Class URI="&csc;LocalDAQ"/></SubClassOf>
   <SubClassOf><Class URI="&csc;RUI"/><Class URI="&csc;LocalDAQ"/></SubClassOf>
 
+  <!-- GlobalDAQ -->
   <SubClassOf><Class URI="&csc;DDU"/><Class URI="&csc;GlobalDAQ"/></SubClassOf>
   <SubClassOf><Class URI="&csc;DCC"/><Class URI="&csc;GlobalDAQ"/></SubClassOf>
 
+  <!-- LogicalComponent -->
   <SubClassOf><Class URI="&csc;TriggerSector"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
   <SubClassOf><Class URI="&csc;CSC"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
   <SubClassOf><Class URI="&csc;Endcap"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
@@ -172,11 +191,13 @@
   <SubClassOf><Class URI="&csc;TFRUI"/><Class URI="&csc;RUI"/></SubClassOf>
   <SubClassOf><Class URI="&csc;TFDDU"/><Class URI="&csc;DDU"/></SubClassOf>
 
+  <!-- InverseObjectProperties -->
   <InverseObjectProperties><ObjectProperty URI="&csc;sendsDataTo"/><ObjectProperty URI="&csc;receivesDataFrom"/></InverseObjectProperties>
   <InverseObjectProperties><ObjectProperty URI="&csc;sendsTriggerTo"/><ObjectProperty URI="&csc;receivesTriggerFrom"/></InverseObjectProperties>
   <InverseObjectProperties><ObjectProperty URI="&csc;sendsL1ATo"/><ObjectProperty URI="&csc;receivesL1AFrom"/></InverseObjectProperties>
   <InverseObjectProperties><ObjectProperty URI="&csc;isIn"/><ObjectProperty URI="&csc;contains"/></InverseObjectProperties>
 
+  <!-- TransitiveObjectProperty -->
   <TransitiveObjectProperty><ObjectProperty URI="&csc;sendsDataTo"/></TransitiveObjectProperty>
   <TransitiveObjectProperty><ObjectProperty URI="&csc;receivesDataFrom"/></TransitiveObjectProperty>
   <TransitiveObjectProperty><ObjectProperty URI="&csc;sendsTriggerTo"/></TransitiveObjectProperty>
@@ -186,10 +207,12 @@
   <TransitiveObjectProperty><ObjectProperty URI="&csc;isIn"/></TransitiveObjectProperty>
   <TransitiveObjectProperty><ObjectProperty URI="&csc;contains"/></TransitiveObjectProperty>
 
+  <!-- DataPropertyRange -->
   <DataPropertyRange><DataProperty URI="&csc;hasInstance"/><Datatype URI="&xsd;unsignedInt"/></DataPropertyRange>
   <DataPropertyRange><DataProperty URI="&csc;isOn"/><Datatype URI="&xsd;boolean"/></DataPropertyRange>
   <DataPropertyRange><DataProperty URI="&csc;hasFMM"/><Datatype URI="&xsd;unsignedInt"/></DataPropertyRange>
 
+  <!-- FunctionalDataProperty -->
   <FunctionalDataProperty><DataProperty URI="&csc;isOn"/></FunctionalDataProperty>
 
 
