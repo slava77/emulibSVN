@@ -244,7 +244,7 @@
       </ObjectPropertyAssertion>
       <DataPropertyAssertion>
 	<DataProperty URI="&csc;hasFMM"/><Individual URI="&csc;DCC{DCC/@FMM_ID}"/>
-	<Constant datatypeURI="&xsd;unsignedInt"><xsl:value-of select="DCC/@FMM_ID"/></Constant>
+	<Constant datatypeURI="&xsd;integer"><xsl:value-of select="DCC/@FMM_ID"/></Constant>
       </DataPropertyAssertion>
 
       <!-- DDUs -->
@@ -257,7 +257,7 @@
 <!-- 	</ObjectPropertyAssertion> -->
  	<DataPropertyAssertion>
 	  <DataProperty URI="&csc;hasFMM"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/>
-	  <Constant datatypeURI="&xsd;unsignedInt"><xsl:value-of select="@FMM_ID"/></Constant>
+	  <Constant datatypeURI="&xsd;integer"><xsl:value-of select="@FMM_ID"/></Constant>
 	</DataPropertyAssertion>
       </xsl:for-each>
 
@@ -273,7 +273,7 @@
     <xsl:variable name="SOURCE" select="@source"/>
     <DataPropertyAssertion>
       <DataProperty URI="&csc;hasFMM"/><Individual URI="&csc;DDU00"/>
-      <Constant datatypeURI="&xsd;unsignedInt"><xsl:value-of select="document($SOURCE)//DDU/@FMM_ID"/></Constant>
+      <Constant datatypeURI="&xsd;integer"><xsl:value-of select="document($SOURCE)//DDU/@FMM_ID"/></Constant>
     </DataPropertyAssertion>
   </xsl:template>
 
@@ -293,14 +293,14 @@
       <ClassAssertion><Class URI="&csc;RUI"/><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/></ClassAssertion>
       <DataPropertyAssertion>
 	<DataProperty URI="&csc;hasInstance"/><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/>
-	<Constant datatypeURI="&xsd;unsignedInt"><xsl:value-of select="@instance"/></Constant>
+	<Constant datatypeURI="&xsd;integer"><xsl:value-of select="@instance"/></Constant>
       </DataPropertyAssertion>
 
       <Declaration><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/></Declaration>
       <ClassAssertion><Class URI="&csc;DDU"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/></ClassAssertion>
       <DataPropertyAssertion>
 	<DataProperty URI="&csc;hasInstance"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/>
-	<Constant datatypeURI="&xsd;unsignedInt"><xsl:value-of select="@instance"/></Constant>
+	<Constant datatypeURI="&xsd;integer"><xsl:value-of select="@instance"/></Constant>
       </DataPropertyAssertion>
 
       <xsl:choose>
@@ -576,7 +576,7 @@
 	    <ClassAssertion><Class URI="&csc;HVSegment"/><Individual URI="&csc;{@isInChamber}/{$LAYER}/HVSegment{$SEGMENT}"/></ClassAssertion>
 	    <DataPropertyAssertion>
 	      <DataProperty URI="&csc;hasHVChannel"/><Individual URI="&csc;{@isInChamber}/{$LAYER}/HVSegment{$SEGMENT}"/>
-	      <Constant datatypeURI="&xsd;unsignedInt"><xsl:value-of select="$CHANNEL"/></Constant>
+	      <Constant datatypeURI="&xsd;integer"><xsl:value-of select="$CHANNEL"/></Constant>
 	    </DataPropertyAssertion>
 	  <ObjectPropertyAssertion>
 	    <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;{@isInChamber}/{$LAYER}/HVSegment{$SEGMENT}"/><Individual URI="&csc;{@isInChamber}/{$LAYER}"/>

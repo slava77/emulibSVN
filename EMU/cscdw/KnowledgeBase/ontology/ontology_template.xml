@@ -296,9 +296,9 @@
 
 
   <!-- DataPropertyRange -->
-  <DataPropertyRange><DataProperty URI="&csc;hasInstance"/><Datatype URI="&xsd;unsignedInt"/></DataPropertyRange>
+  <DataPropertyRange><DataProperty URI="&csc;hasInstance"/><Datatype URI="&xsd;integer"/></DataPropertyRange>
   <DataPropertyRange><DataProperty URI="&csc;isOn"/><Datatype URI="&xsd;boolean"/></DataPropertyRange>
-  <DataPropertyRange><DataProperty URI="&csc;hasFMM"/><Datatype URI="&xsd;unsignedInt"/></DataPropertyRange>
+  <DataPropertyRange><DataProperty URI="&csc;hasFMM"/><Datatype URI="&xsd;integer"/></DataPropertyRange>
 
 
   <!-- FunctionalDataProperty -->
