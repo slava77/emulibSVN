@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 477 534 N "_3DFace" 1
+PANEL,-1 -1 616 534 N "_3DFace" 1
 "$deviceParams"
 "#uses \"CMS_CSCfw_LV_CRB/emuDcsCrb.ctl\"
 
@@ -95,6 +95,18 @@ main()
   for (int i=1; i <= dynlen(dmbTempDps); i++) {
     dpConnect(\"updateDmbTemperatureCB\", true, dmbTempDps[i]);
     dpConnect(\"updateDmbTemperatureBackColorCB\", true, dmbTempDps[i] + \":_alert_hdl.._act_state_color\");
+    
+    //extract a chamber name and put it into the table
+    string chamberName = dmbTempDps[i];
+    chamberName = dpSubStr(chamberName, DPSUB_DP);
+    strreplace(chamberName, \"ME_P\", \"ME+\");
+    strreplace(chamberName, \"ME_M\", \"ME-\");
+    strreplace(chamberName, \"_\", \"\");
+    strreplace(chamberName, \"CSC\", \"\");
+    strreplace(chamberName, \"TEMP\", \"\");
+    strreplace(chamberName, \"C\", \"/\");
+    chamberName = substr(chamberName, 0, 4) + \"/\" + substr(chamberName, 4);
+    pairsTable.cellValueRC(i-1, \"chamber\", chamberName);
   }
 }
 
@@ -329,7 +341,7 @@ LANG:1 0
 6 31
 "peripheralCrate_general_tooltipBack"
 ""
-1 400 40 E E E 1 E 1 E N {0,0,0} E N {255,255,225} E E
+1 0 0 E E E 1 E 1 E N {0,0,0} E N {255,255,225} E E
  E E
 44 0 0 0 0 0
 E E E
@@ -339,11 +351,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 3.45454545454546 0 4.888888888888896 -1381.81818181819 -195.5555555555552 1 E 400 40 510 130
+E E 0 1 1 2 1 E 1 0 0.9318181818181816 0 0 1 E 0 0 437 440
 2 10
 "warnNoCommunication"
 ""
-1 10 450 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+1 10 420 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
  E E
 12 0 0 0 0 0
 E E E
@@ -353,8 +365,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 450 370 464
-1 2 2 "0s" 0 0 0 65 0 0  10 450 1
+E E 0 1 1 2 1 E U  1 E 10 420 427 434
+1 2 2 "0s" 0 0 0 65 0 0  10 420 1
 1
 LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
 0 1
@@ -362,7 +374,7 @@ LANG:1 33 No Communication - CANbus problem
 2 13
 "lblLastUpdate"
 ""
-1 270 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 330 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 18 0 0 0 0 0
 E E E
@@ -372,8 +384,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 270 10 329 26
-0 2 2 "0s" 0 0 0 192 0 0  270 10 1
+E E 0 1 1 2 1 E U  1 E 330 10 389 26
+0 2 2 "0s" 0 0 0 192 0 0  330 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -381,7 +393,7 @@ LANG:1 9 timestamp
 2 14
 "PRIMITIVE_TEXT6"
 ""
-1 200 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 260 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 20 0 0 0 0 0
 E E E
@@ -391,8 +403,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 200 10 268 26
-0 2 2 "0s" 0 0 0 192 0 0  200 10 1
+E E 0 1 1 2 1 E U  1 E 260 10 328 26
+0 2 2 "0s" 0 0 0 192 0 0  260 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -400,7 +412,7 @@ LANG:1 12 Last update:
 2 18
 "PRIMITIVE_TEXT7"
 ""
-1 10 370 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 10 340 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 27 0 0 0 0 0
 E E E
@@ -410,8 +422,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 370 187 386
-0 2 2 "0s" 0 0 0 192 0 0  10 370 1
+E E 0 1 1 2 1 E U  1 E 10 340 187 356
+0 2 2 "0s" 0 0 0 192 0 0  10 340 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -419,7 +431,7 @@ LANG:1 31 Monitoring Board (ELMB) Status:
 2 22
 "lblELMBState"
 ""
-1 190 370 E E E 1 E 1 E N "_WindowText" E N "FwStateOKPhysics" E E
+1 193 340 E E E 1 E 1 E N "_WindowText" E N "FwStateOKPhysics" E E
  E E
 31 0 0 0 0 0
 E E E
@@ -429,8 +441,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 190 370 323.953488372093 384
-1 2 2 "0s" 0 0 0 65 0 0  190 370 1
+E E 0 1 1 2 1 E U  1 E 193 340 327 354
+1 2 2 "0s" 0 0 0 65 0 0  193 340 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -438,7 +450,7 @@ LANG:1 10 LOADING...
 2 40
 "lblForMaraton"
 ""
-1 10 395 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 10 365 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 59 0 0 0 0 0
 E E E
@@ -448,8 +460,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 395 170 411
-0 2 2 "0s" 0 0 0 192 0 0  10 395 1
+E E 0 1 1 2 1 E U  1 E 10 365 170 381
+0 2 2 "0s" 0 0 0 192 0 0  10 365 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -467,11 +479,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 2.5 0 1 -88 390 1 E 110 0 130 20
+E E 0 1 1 2 1 E 2.5 0 1 -85 360 1 E 110 0 130 20
 25 43
 "pairsTable"
 ""
-1 310.287631831257 147.5 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 360.3355704697997 147.5 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 65 0 0 0 0 0
 E E E
@@ -482,28 +494,34 @@ LANG:1 0
 0
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
-0  8 28 372 252
+0  8 28 429 252
 "main()
 {
   //write slot numbers
   for (int i=1; i <= 9; i++) {
-    this.appendLine(\"board\", \"TMB/DMB \" + i,
+    this.appendLine(\"board\", \"TMB/DMB \" + i, \"chamber\", \"loading\",
                     \"3v3_1\", \"loading\", \"3v3_2\", \"loading\", \"5v\", \"loading\", \"dmb_temp\", \"loading\");
     //sthis.appendLine(\"5v\", \"\");
   }
-  this.appendLine(\"board\", \"CCB/MPC\",
+  this.appendLine(\"board\", \"CCB/MPC\", \"chamber\", \"---\", \"3v3_2\", \"---\", \"dmb_temp\", \"---\",
                   \"3v3_1\", \"loading\", \"5v\", \"loading\");
-  this.appendLine(\"board\", \"VCC\",
+  this.appendLine(\"board\", \"VCC\", \"chamber\", \"---\", \"3v3_2\", \"---\", \"dmb_temp\", \"---\",
                   \"3v3_1\", \"loading\", \"5v\", \"loading\");
   emuui_tableCompact(\"pairsTable\", 11);
 }" 0
-E 1 0 1 5 9 "board" 8 1 0 "s" 1
+E 1 0 1 6 9 "board" 8 1 0 "s" 1
 LANG:1 5 Board
 E
 1
 LANG:1 0 
 
-85 "3v3_1" 6 1 0 "s" 1
+70 "chamber" 6 1 0 "s" 1
+LANG:1 7 Chamber
+E
+1
+LANG:1 0 
+
+70 "3v3_1" 6 1 0 "s" 1
 LANG:1 11 3.3V line 1
 E
 1
@@ -521,7 +539,7 @@ E
 1
 LANG:1 0 
 
-70 "dmb_temp" 5 1 0 "s" 1
+70 "dmb_temp" 6 1 0 "s" 1
 LANG:1 9 DMB temp.
 E
 1
@@ -554,7 +572,7 @@ LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 25 44
 "tableOther"
 ""
-1 181.428571428572 156.2162162162162 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 181.428571428572 176.2162162162162 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 67 0 0 0 0 0
 E E E
@@ -565,7 +583,7 @@ LANG:1 0
 0
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
-0  8 258 211 302
+0  8 278 155 322
 "main()
 {
   this.appendLine(\"1v5_1\", \"loading\", \"1v5_2\", \"loading\");
@@ -576,13 +594,13 @@ E
 1
 LANG:1 0 
 
-98 "1v5_2" 10 1 0 "s" 1
+70 "1v5_2" 10 1 0 "s" 1
 LANG:1 11 1.5V line 2
 E
 1
 LANG:1 0 
 
-98 
+70 
 18 18 "" 1 1
 LANG:1 6 Slot 1
 "" 1 1
@@ -609,7 +627,7 @@ LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 25 45
 "tableStandby"
 ""
-1 258.571428571429 206.2162162162162 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 282.571428571429 226.2162162162162 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 69 0 0 0 0 0
 E E E
@@ -620,7 +638,7 @@ LANG:1 0
 0
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
-0  8 308 310 352
+0  182 278 429 322
 "main()
 {
   this.appendLine(\"standby_5v_1\", \"loading\", \"standby_5v_2\", \"loading\", \"standby_10v\", \"loading\");
@@ -631,19 +649,19 @@ E
 1
 LANG:1 0 
 
-98 "standby_5v_2" 10 1 0 "s" 1
+80 "standby_5v_2" 10 1 0 "s" 1
 LANG:1 12 5V Standby 2
 E
 1
 LANG:1 0 
 
-98 "standby_10v" 10 1 0 "s" 1
+80 "standby_10v" 10 1 0 "s" 1
 LANG:1 13 10V Standby 3
 E
 1
 LANG:1 0 
 
-99 
+80 
 18 18 "" 1 1
 LANG:1 6 Slot 1
 "" 1 1
@@ -689,7 +707,7 @@ LANG:1 12 CRB voltages
 2 49
 "lblMrtnInfo"
 ""
-1 10 420 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 10 390 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 74 0 0 0 0 0
 E E E
@@ -699,8 +717,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 420 189 436
-0 2 2 "0s" 0 0 0 192 0 0  10 420 1
+E E 0 1 1 2 1 E U  1 E 10 390 189 406
+0 2 2 "0s" 0 0 0 192 0 0  10 390 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -719,6 +737,44 @@ LANG:1 0
 1
 "dashclr"N "_Transparent"
 E E 0 1 1 2 1 E 1 0 1 -140 -110 1 E 140 110 10 10
+2 51
+"PRIMITIVE_TEXT11"
+""
+1 10 260 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+77 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 260 147 276
+0 2 2 "0s" 0 0 0 192 0 0  10 260 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 27 1.5V lines (for all boards)
+2 52
+"PRIMITIVE_TEXT12"
+""
+1 186 260 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+78 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 186 260 338 276
+0 2 2 "0s" 0 0 0 192 0 0  186 260 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 27 Input from Maraton (to CRB)
 0
 LAYER, 1 
 1
