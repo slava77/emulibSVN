@@ -502,7 +502,7 @@ LANG:1 0
             makeDynString(\"$group:\" + group),
             posX, posY, 0, 1, 1);
 }" 0
- E 0 0 1 0 1 E 1 0 1.01382488479263 4.263256414560596e-14 -15.76036866359757 0 E 900 923 1081 1141
+ E 0 0 1 0 1 E 1 0 1.01382488479263 4.263256414560596e-014 -15.76036866359757 0 E 900 923 1081 1141
 1
 LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
 0 1
@@ -551,7 +551,7 @@ LANG:1 0
             makeDynString(\"$group:\" + group),
             posX, posY, 0, 1, 1);
 }" 0
- E 0 0 1 0 1 E 0.896551724137931 0 1.01382488479262 -204.8275862068965 55.2073732718952 0 E 920 853 1211 1071
+ E 0 0 1 0 1 E 0.8965517241379311 0 1.01382488479262 -204.8275862068965 55.2073732718952 0 E 920 853 1211 1071
 1
 LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
 0 1
@@ -734,7 +734,7 @@ LANG:1 0
   string dp = emuui_getSessionDp(\"valueMonitor\");
   dpConnect(\"updateValueMonitorMode\", true, dp + \".connectionType\", dp + \".mode\");
 }" 0
- E 0 1 1 2 1 E U  1 E 1230 920 1405 935
+ E 0 1 1 2 1 E U  1 E 1230 920 1403 936
 0 2 2 "0s" 0 0 0 192 0 0  1230 920 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -759,7 +759,7 @@ LANG:1 0
   string dp = emuui_getSessionDp(\"mainChamberView\");
   dpConnect(\"updateChamberViewMode\", true, dp + \".connectionType\", dp + \".mode\");
 }" 0
- E 0 1 1 2 1 E U  1 E 10 10 245 25
+ E 0 1 1 2 1 E U  1 E 10 10 245 26
 0 2 2 "0s" 0 0 0 192 0 0  10 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -827,7 +827,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 420 10 679 25
+E E 0 1 1 2 1 E U  1 E 420 10 679 26
 1 2 2 "0s" 0 0 0 192 0 0  420 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -846,7 +846,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1060 20 1105 35
+E E 0 1 1 2 1 E U  1 E 1060 20 1105 36
 0 2 2 "0s" 0 0 0 192 0 0  1060 20 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -865,7 +865,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 690 10 850 25
+E E 0 1 1 2 1 E U  1 E 690 10 849 26
 1 2 2 "0s" 0 0 0 192 0 0  690 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -884,7 +884,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 860 10 1038 42
+E E 0 1 1 2 1 E U  1 E 860 10 1038 44
 1 2 2 "0s" 0 0 0 192 0 0  860 10 2
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -907,7 +907,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1130 35 1368 50
+E E 0 1 1 2 1 E U  1 E 1130 35 1368 51
 0 2 2 "0s" 0 0 0 192 0 0  1130 35 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -926,7 +926,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1120 34 1124 52
+E E 0 1 1 2 1 E U  1 E 1120 34 1124 51
 0 2 2 "0s" 0 0 0 192 0 0  1120 34 1
 1
 LANG:1 33 MS Shell Dlg,-1,13,5,75,0,0,0,0,0
@@ -949,7 +949,7 @@ E E 0 1 1 2 1 E 1 0 1 0 4 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4294
 2 48
 "PRIMITIVE_TEXT3"
 ""
-1 2005.389790140875 90 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 2069.716667014618 95 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -959,7 +959,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 0.991071428571429 0 1 82.23214285714232 5 1 E 1370 30 1507 45
+E E 0 1 1 2 1 E 0.9910714285714291 0 1 82.23214285714232 5 1 E 1370 30 1507 46
 0 2 2 "0s" 0 0 0 192 0 0  1370 30 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -1020,7 +1020,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1120 880 1551 895
+E E 0 1 1 2 1 E U  1 E 1120 880 1551 896
 0 2 2 "0s" 0 0 0 192 0 0  1120 880 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -1185,7 +1185,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 20 50 237 65
+E E 0 1 1 2 1 E U  1 E 20 50 237 66
 0 2 2 "0s" 0 0 0 192 0 0  20 50 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -1204,7 +1204,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 20 860 146 875
+E E 0 1 1 2 1 E U  1 E 20 860 146 876
 0 2 2 "0s" 0 0 0 192 0 0  20 860 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -1223,7 +1223,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 20 920 89 935
+E E 0 1 1 2 1 E U  1 E 20 920 89 936
 0 2 2 "0s" 0 0 0 192 0 0  20 920 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -1242,7 +1242,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 410 920 577 935
+E E 0 1 1 2 1 E U  1 E 410 920 576 936
 0 2 2 "0s" 0 0 0 192 0 0  410 920 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -1261,7 +1261,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 630 920 681 935
+E E 0 1 1 2 1 E U  1 E 630 920 681 936
 0 2 2 "0s" 0 0 0 192 0 0  630 920 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -1280,7 +1280,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 910 920 974 935
+E E 0 1 1 2 1 E U  1 E 910 920 974 936
 0 2 2 "0s" 0 0 0 192 0 0  910 920 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -1299,7 +1299,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1110 920 1187 935
+E E 0 1 1 2 1 E U  1 E 1110 920 1183 936
 0 2 2 "0s" 0 0 0 192 0 0  1110 920 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -1318,7 +1318,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1110 860 1245 875
+E E 0 1 1 2 1 E U  1 E 1110 860 1245 876
 0 2 2 "0s" 0 0 0 192 0 0  1110 860 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
