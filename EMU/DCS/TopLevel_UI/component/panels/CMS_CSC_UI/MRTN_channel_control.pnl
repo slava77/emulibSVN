@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 613 643 N "_3DFace" 0
+PANEL,-1 -1 752 726 N "_3DFace" 0
 "main()
 {
   dyn_string sysNames;
@@ -62,7 +62,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  8 48 602 632
+0  8 48 742 712
 E1 "#1" 1
 LANG:1 2 #1
 0
@@ -80,7 +80,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 210 10 327 24
+E E 0 1 1 2 1 E U  0 E 210 10 353 26
 0 2 2 "0s" 0 0 0 192 0 0  210 10 1
 1
 LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
