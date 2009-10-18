@@ -40,6 +40,8 @@ void emuui_init() {
   
   emuui_g_initialized = true;
   emuuibc_startBackgroundChecks(); // in emuui_backgroundChecks.ctl
+  emuui_initContextMenus();
+  emu_info("Context menus initialized");
   emu_info("------========== EMU Top Level UI initialization DONE! ==========------");
   
 }
@@ -62,6 +64,17 @@ mapping emuui_parseParameterString(string strParams, dyn_string &exceptionInfo) 
       return;
     }
     ret[entry[1]] = entry[2];
+  }
+  
+  return ret;
+}
+
+string emuui_deviceParamsToString(mapping deviceParams) {
+  string ret;
+  for (int i=1; i <= mappinglen(deviceParams); i++) {
+    if (i > 1) { ret += ";"; }
+    string key = mappingGetKey(deviceParams, i);
+    ret += key + "=" + deviceParams[key];
   }
   
   return ret;

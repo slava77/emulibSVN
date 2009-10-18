@@ -6,8 +6,14 @@ This package contains functions to construct context and process menus for "cham
 @date   June 2009
 */
 
+/** Initializes the actionMap which is [menu_answer]->[function] mapping. */
+mapping emuuicm_initChamberContextMenus() {
+  mapping actionMap;
+  return actionMap;
+}
+
 /** Returns context menu for chamber (as popupMenu structure - search PVSS help for popupMenu() for more information).*/
-dyn_string emuui_getChamberContextMenu(mapping deviceParams, dyn_string &exceptionInfo) {
+dyn_string emuuicm_getChamberContextMenu(mapping deviceParams, dyn_string &exceptionInfo) {
   dyn_string menu;
   
   // ------====== HIGH VOLTAGE ======------

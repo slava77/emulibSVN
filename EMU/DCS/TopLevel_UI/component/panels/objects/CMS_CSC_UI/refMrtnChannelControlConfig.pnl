@@ -1,0 +1,102 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 491 400 N "_3DFace" 2
+"$lvSystemId"
+"$lvSystemName"
+E E E E E 1 -1 -1 0  70 60
+""0  1
+E "void recreateDbDp() {
+  string lvSystemName = $lvSystemName;
+  int lvSystemId = $lvSystemId;
+  
+  emu_info(\"Deleting existing dps...\");
+  emu_info(\"searching for: \" + lvSystemName + \":*\", \"MaratonChannelOriginalVoltage\");
+  dyn_string existingDps = dpNames(lvSystemName + \":*\", \"MaratonChannelOriginalVoltage\");
+  for (int i=1; i <= dynlen(existingDps); i++) {
+    dpDelete(existingDps[i]);
+  }
+  emu_info(dynlen(existingDps) + \" existing DPs deleted.\");
+  
+  emu_info(\"Creating new DPs for all Maraton channels that are found...\");
+  dyn_string channelDps = dpNames(lvSystemName + \":*\", \"FwWienerMarathonChannel\");
+  for (int i=1; i <= dynlen(channelDps); i++) {
+    string dpName = \"origVoltage_\" + dpSubStr(channelDps[i], DPSUB_DP);
+    dpCreate(dpName, \"MaratonChannelOriginalVoltage\", lvSystemId);
+  }
+  emu_info(dynlen(channelDps) + \" new channel original voltage DPs created.\");
+  
+  emu_info(\"Copying the voltage settings - creating a DB\");
+  for (int i=1; i <= dynlen(channelDps); i++) {
+    float voltageSetting;
+    dpGet(channelDps[i] + \".ReadbackSettings.Voltage\", voltageSetting);
+    string origVoltageDp = lvSystemName + \":origVoltage_\" + dpSubStr(channelDps[i], DPSUB_DP) + \".voltage\";
+    dpSetWait(origVoltageDp, voltageSetting);
+    if (voltageSetting < 0.01) {
+      emu_info(\"ATTENTION: voltage setting for \" + channelDps[i] + \" is 0!!\");
+    }
+  }
+  emu_info(\"DONE!\");
+}" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 1
+"PUSH_BUTTON2"
+""
+1 9.999999999999972 10 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
+0  8 8 482 42
+
+T 
+1
+LANG:1 40 Read the original voltages from hardware
+"main()
+{
+  recreateDbDp();
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
