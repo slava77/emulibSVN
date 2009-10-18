@@ -8,6 +8,13 @@ All functions have prefix emuuibc_ where bc stands for Background Checks.
 @date   May 2009
 */
 
+// Common libs
+#uses "CMS_CSC_common/emu_common.ctl"
+#uses "CMS_CSC_common/emu_math.ctl"
+
+// UI libs
+#uses "CMS_CSC_UI/emuui_utils.ctl"
+
 const string EMUUIBC_NO_COMMUNICATION_ICON_NAME = "imgNoCommunication";
 const int EMUUIBC_MAX_XMAS_ERROR_COUNT = 6;
 

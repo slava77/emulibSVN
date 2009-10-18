@@ -1,3 +1,14 @@
+// Common libs
+#uses "CMS_CSC_common/emu_common.ctl"
+#uses "CMS_CSC_common/emu_math.ctl"
+
+// UI libs
+#uses "CMS_CSC_UI/emuui_main.ctl"
+#uses "CMS_CSC_UI/emuui_configuration.ctl"
+#uses "CMS_CSC_UI/emuui_sessionManager.ctl"
+#uses "CMS_CSC_UI/emuui_utils.ctl"
+#uses "CMS_CSC_UI/emuui_deviceInfo.ctl"
+
 /**@file
 
 This package contains functions to construct context menus and issue commands using them.

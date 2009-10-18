@@ -1,3 +1,11 @@
+// Common libs
+#uses "CMS_CSC_common/emu_common.ctl"
+#uses "CMS_CSC_common/emu_math.ctl"
+
+// UI libs
+#uses "CMS_CSC_UI/background_checks/emuui_connectionMonitor.ctl"
+#uses "CMS_CSC_UI/background_checks/emuui_pcrateConfigurationMonitor.ctl"
+
 /**@file
 
 This package is the entry point to background checks package e.g. it has a main function to start all the background checks
