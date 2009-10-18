@@ -78,7 +78,6 @@
   <Declaration><Class URI="&csc;DAQDevice"/></Declaration>
   <Declaration><Class URI="&csc;TriggerDevice"/></Declaration>
   <Declaration><Class URI="&csc;DDU"/></Declaration>
-  <Declaration><Class URI="&csc;DDUInput"/></Declaration>
   <Declaration><Class URI="&csc;DCC"/></Declaration>
   <Declaration><Class URI="&csc;Slink"/></Declaration>
   <Declaration><Class URI="&csc;DMB"/></Declaration>
@@ -138,7 +137,9 @@
 
 
   <Declaration><DataProperty URI="&csc;hasInstance"/></Declaration>
+  <Declaration><DataProperty URI="&csc;hasName"/></Declaration>
   <Declaration><DataProperty URI="&csc;isOn"/></Declaration>
+  <Declaration><DataProperty URI="&csc;hasDDUInput"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasFMM"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasHVChannel"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasPositionInRack"/></Declaration>
@@ -311,6 +312,7 @@
 
   <!-- DataPropertyRange -->
   <DataPropertyRange><DataProperty URI="&csc;hasInstance"/><Datatype URI="&xsd;integer"/></DataPropertyRange>
+  <DataPropertyRange><DataProperty URI="&csc;hasName"/><Datatype URI="&xsd;string"/></DataPropertyRange>
   <DataPropertyRange><DataProperty URI="&csc;isOn"/><Datatype URI="&xsd;boolean"/></DataPropertyRange>
   <DataPropertyRange><DataProperty URI="&csc;hasFMM"/><Datatype URI="&xsd;integer"/></DataPropertyRange>
 
