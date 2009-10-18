@@ -36,6 +36,7 @@
     <templ:LTCandTTC/>
     <templ:HV source="mappings/hvMapping.xml"/>
     <templ:HVSegments source="mappings/HVChannelToSegment.xml"/>
+    <templ:LV source="mappings/lvMapping.xml"/>
   </templ:individuals>
 
 
@@ -98,6 +99,10 @@
   <Declaration><Class URI="&csc;HVDistribution"/></Declaration>
   <Declaration><Class URI="&csc;HVSegment"/></Declaration>
 
+  <Declaration><Class URI="&csc;Maraton"/></Declaration>
+  <Declaration><Class URI="&csc;Rack"/></Declaration>
+
+
 <!-- property declarations -->
 
   <Declaration><ObjectProperty URI="&csc;triggerPath"/></Declaration>
@@ -136,6 +141,10 @@
   <Declaration><DataProperty URI="&csc;isOn"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasFMM"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasHVChannel"/></Declaration>
+  <Declaration><DataProperty URI="&csc;hasPositionInRack"/></Declaration>
+  <Declaration><DataProperty URI="&csc;hasELMBId"/></Declaration>
+  <Declaration><DataProperty URI="&csc;hasDCSCrateNumber"/></Declaration>
+  
 
 
 <!-- class and property relations -->
@@ -182,12 +191,17 @@
   <SubClassOf><Class URI="&csc;HVPrimary"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;HVMaster"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;HVDistribution"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;Maraton"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;Rack"/><Class URI="&csc;Device"/></SubClassOf>
 
   <!-- HV -->
   <SubClassOf><Class URI="&csc;HVPrimary"/><Class URI="&csc;HV"/></SubClassOf>
   <SubClassOf><Class URI="&csc;HVMaster"/><Class URI="&csc;HV"/></SubClassOf>
   <SubClassOf><Class URI="&csc;HVDistribution"/><Class URI="&csc;HV"/></SubClassOf>
   <SubClassOf><Class URI="&csc;HVSegment"/><Class URI="&csc;HV"/></SubClassOf>
+
+  <!-- LV -->
+  <SubClassOf><Class URI="&csc;Maraton"/><Class URI="&csc;LV"/></SubClassOf>
 
   <!-- Trigger -->
   <SubClassOf><Class URI="&csc;SectorProcessor"/><Class URI="&csc;Trigger"/></SubClassOf>
