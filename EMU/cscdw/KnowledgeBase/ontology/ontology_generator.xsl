@@ -576,21 +576,21 @@
       <DataPropertyAssertion><DataProperty URI="&csc;hasName"/><Individual URI="&csc;{$HVPRIMARY}"/><Constant datatypeURI="&xsd;string"><xsl:value-of select="@id"/></Constant></DataPropertyAssertion>
       <xsl:for-each select="hvMaster">
 	<!-- HV Master -->
-	<xsl:variable name="PADDED_MASTER">Master<xsl:value-of select="format-number(@id,'00')"/></xsl:variable>
-	<Declaration><Individual URI="&csc;{$HVPRIMARY}/{$PADDED_MASTER}"/></Declaration>
-	<ClassAssertion><Class URI="&csc;HVMaster"/><Individual URI="&csc;{$HVPRIMARY}/{$PADDED_MASTER}"/></ClassAssertion>
-	<DataPropertyAssertion><DataProperty URI="&csc;hasInstance"/><Individual URI="&csc;{$HVPRIMARY}/{$PADDED_MASTER}"/><Constant datatypeURI="&xsd;integer"><xsl:value-of select="number(@id)"/></Constant></DataPropertyAssertion>
+	<xsl:variable name="PADDED_MASTER">HVMaster<xsl:value-of select="format-number(@id,'00')"/></xsl:variable>
+	<Declaration><Individual URI="&csc;{$PADDED_MASTER}"/></Declaration>
+	<ClassAssertion><Class URI="&csc;HVMaster"/><Individual URI="&csc;{$PADDED_MASTER}"/></ClassAssertion>
+	<DataPropertyAssertion><DataProperty URI="&csc;hasInstance"/><Individual URI="&csc;{$PADDED_MASTER}"/><Constant datatypeURI="&xsd;integer"><xsl:value-of select="number(@id)"/></Constant></DataPropertyAssertion>
 	<ObjectPropertyAssertion>
-	  <ObjectProperty URI="&csc;getsHVFrom"/><Individual URI="&csc;{$HVPRIMARY}/{$PADDED_MASTER}"/><Individual URI="&csc;{$HVPRIMARY}"/>
+	  <ObjectProperty URI="&csc;getsHVFrom"/><Individual URI="&csc;{$PADDED_MASTER}"/><Individual URI="&csc;{$HVPRIMARY}"/>
 	</ObjectPropertyAssertion>
 	<xsl:for-each select="hvDistribution">
 	  <!-- HV Distribution Board -->
-	  <xsl:variable name="PADDED_DISTRIBUTION">Distribution<xsl:value-of select="format-number(@id,'000')"/></xsl:variable>
-	  <Declaration><Individual URI="&csc;{$HVPRIMARY}/{$PADDED_MASTER}/{$PADDED_DISTRIBUTION}"/></Declaration>
-	  <ClassAssertion><Class URI="&csc;HVDistribution"/><Individual URI="&csc;{$HVPRIMARY}/{$PADDED_MASTER}/{$PADDED_DISTRIBUTION}"/></ClassAssertion>
-	  <DataPropertyAssertion><DataProperty URI="&csc;hasInstance"/><Individual URI="&csc;{$HVPRIMARY}/{$PADDED_MASTER}/{$PADDED_DISTRIBUTION}"/><Constant datatypeURI="&xsd;integer"><xsl:value-of select="number(@id)"/></Constant></DataPropertyAssertion>
+	  <xsl:variable name="PADDED_DISTRIBUTION">HVDistribution<xsl:value-of select="format-number(@id,'000')"/></xsl:variable>
+	  <Declaration><Individual URI="&csc;{$PADDED_DISTRIBUTION}"/></Declaration>
+	  <ClassAssertion><Class URI="&csc;HVDistribution"/><Individual URI="&csc;{$PADDED_DISTRIBUTION}"/></ClassAssertion>
+	  <DataPropertyAssertion><DataProperty URI="&csc;hasInstance"/><Individual URI="&csc;{$PADDED_DISTRIBUTION}"/><Constant datatypeURI="&xsd;integer"><xsl:value-of select="number(@id)"/></Constant></DataPropertyAssertion>
 	  <ObjectPropertyAssertion>
-	    <ObjectProperty URI="&csc;getsHVFrom"/><Individual URI="&csc;{$HVPRIMARY}/{$PADDED_MASTER}/{$PADDED_DISTRIBUTION}"/><Individual URI="&csc;{$HVPRIMARY}/{$PADDED_MASTER}"/>
+	    <ObjectProperty URI="&csc;getsHVFrom"/><Individual URI="&csc;{$PADDED_DISTRIBUTION}"/><Individual URI="&csc;{$PADDED_MASTER}"/>
 	  </ObjectPropertyAssertion>
 	  <xsl:for-each select="hvSegment">
 	    <xsl:variable name="CHANNEL" select="@moduleChannel"/>
@@ -606,7 +606,7 @@
 	      <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;{@isInChamber}/{$LAYER}/HVSegment{$SEGMENT}"/><Individual URI="&csc;{@isInChamber}/{$LAYER}"/>
 	    </ObjectPropertyAssertion>
 	    <ObjectPropertyAssertion>
-	      <ObjectProperty URI="&csc;getsHVFrom"/><Individual URI="&csc;{@isInChamber}/{$LAYER}/HVSegment{$SEGMENT}"/><Individual URI="&csc;{$HVPRIMARY}/{$PADDED_MASTER}/{$PADDED_DISTRIBUTION}"/>
+	      <ObjectProperty URI="&csc;getsHVFrom"/><Individual URI="&csc;{@isInChamber}/{$LAYER}/HVSegment{$SEGMENT}"/><Individual URI="&csc;{$PADDED_DISTRIBUTION}"/>
 	    </ObjectPropertyAssertion>
 	  </xsl:for-each>
 	</xsl:for-each>
