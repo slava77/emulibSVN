@@ -1,0 +1,1138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Author: Sean Bechhofer and Daniele Turi, IMG, University of Manchester-->
+<!--$Id: dig-1.1.xsd,v 1.1 2009/10/26 12:39:35 evka Exp $ -->
+<xs:schema targetNamespace="http://dl.kr.org/dig/2003/02/lang" 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    xmlns="http://dl.kr.org/dig/2003/02/lang" elementFormDefault="qualified" 
+    attributeFormDefault="unqualified">
+    <xs:element name="newKB"/>
+    <xs:element name="releaseKB">
+        <xs:complexType>
+            <xs:attribute name="uri" type="xs:anyURI" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="kb">
+        <xs:complexType>
+            <xs:attribute name="uri" type="xs:anyURI" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="error">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="message" type="xs:string" 
+                        use="optional"/>
+                    <xs:attribute name="code" type="xs:integer" use="optional"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="warning">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="message" type="xs:string"/>
+                    <xs:attribute name="code" type="xs:integer"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ok">
+        <xs:complexType>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="warning"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="response" type="idRespType"/>
+    <xs:complexType name="idRespType">
+        <xs:group ref="idRespGroup"/>
+    </xs:complexType>
+    <xs:group name="idRespGroup">
+        <xs:choice>
+            <xs:element ref="ok"/>
+            <xs:element ref="kb"/>
+            <xs:element ref="error"/>
+        </xs:choice>
+    </xs:group>                
+    <!-- * Concept Language * -->
+    <xs:complexType name="concepts">
+        <xs:sequence >
+            <xs:group ref="conceptGroup" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="conceptPair">
+        <xs:sequence>
+            <xs:group ref="conceptGroup"/>
+            <xs:group ref="conceptGroup"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="rolePair">
+        <xs:sequence>
+            <xs:group ref="roleGroup" minOccurs="2" maxOccurs="2"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="concept">
+        <xs:group ref="conceptGroup"/>
+    </xs:complexType>
+    <xs:complexType name="individuals">
+        <xs:sequence >
+            <xs:element ref="individual" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="individualPairType">
+        <xs:sequence>
+            <xs:element ref="individual"/>
+            <xs:element ref="individual"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="named">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:group name="atomicConceptGroup">
+        <xs:choice>
+            <xs:element ref="catom"/>
+            <xs:element ref="top"/>
+            <xs:element ref="bottom"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="compoundConceptGroup">
+        <xs:choice>
+            <xs:element ref="and"/>
+            <xs:element ref="or"/>
+            <xs:element ref="not"/>
+            <xs:element ref="some"/>
+            <xs:element ref="all"/>
+            <xs:element ref="atmost"/>
+            <xs:element ref="atleast"/>
+            <xs:element ref="iset"/>
+            <xs:group ref="concreteDomainsGroup"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="concreteDomainsGroup">
+        <xs:choice>
+            <xs:element ref="defined"/>
+            <xs:element ref="stringmin"/>
+            <xs:element ref="stringmax"/>
+            <xs:element ref="stringequals"/>
+            <xs:element ref="stringrange"/>
+            <xs:element ref="intmin"/>
+            <xs:element ref="intmax"/>
+            <xs:element ref="intequals"/>
+            <xs:element ref="intrange"/>
+        </xs:choice>
+    </xs:group>
+    <xs:element name="defined" type="attributeType">
+        <xs:annotation>
+            <xs:documentation>The class of things for which the given attribute 
+                is defined.</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="stringmin">
+        <xs:annotation>
+            <xs:documentation>Min value on a string valued 
+                attribute</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="attributeType">
+                    <xs:attribute name="val" type="xs:string" use="required"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="stringmax">
+        <xs:annotation>
+            <xs:documentation>Max value on a string valued 
+                attribute</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="attributeType">
+                    <xs:attribute name="val" type="xs:string" use="required"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="stringequals">
+        <xs:annotation>
+            <xs:documentation>Exact string value</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="attributeType">
+                    <xs:attribute name="val" type="xs:string" use="required"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="stringrange">
+        <xs:annotation>
+            <xs:documentation>String range</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="attributeType">
+                    <xs:attribute name="min" type="xs:string" use="required"/>
+                    <xs:attribute name="max" type="xs:string" use="required"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="intmin">
+        <xs:annotation>
+            <xs:documentation>minimum integer value</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="attributeType">
+                    <xs:attribute name="min" type="xs:integer" use="required"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="intmax">
+        <xs:annotation>
+            <xs:documentation>maximum integer value</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="attributeType">
+                    <xs:attribute name="max" type="xs:integer" use="required"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="intequals">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="attributeType">
+                    <xs:attribute name="val" type="xs:integer" use="required"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="intrange">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="attributeType">
+                    <xs:attribute name="min" type="xs:integer" use="required"/>
+                    <xs:attribute name="max" type="xs:integer" use="required"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="chain" type="chainType"/>
+    <xs:complexType name="chainType">
+        <xs:sequence>
+            <xs:element ref="feature" maxOccurs="unbounded"/>
+            <xs:element ref="attribute"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string"/>
+    </xs:complexType>
+    <xs:complexType name="attributeType">
+        <xs:group ref="attributeTypeGroup"/>
+    </xs:complexType>
+    <xs:group name="attributeTypeGroup">
+        <xs:choice>
+            <xs:element ref="attribute"/>
+            <xs:element ref="chain"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="conceptGroup">
+        <xs:choice>
+            <xs:group ref="atomicConceptGroup"/>
+            <xs:group ref="compoundConceptGroup"/>
+        </xs:choice>
+    </xs:group>
+    <xs:complexType name="roles">
+        <xs:sequence >
+            <xs:group ref="roleGroup" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="role">
+        <xs:group ref="roleGroup"/>
+    </xs:complexType>
+    <!--xs:group name="compoundRoleGroup">
+		<xs:element ref="inverse"/>
+    </xs:group-->
+    <xs:group name="atomicRoleGroup">
+        <xs:choice>
+            <xs:element ref="ratom"/>
+            <xs:element ref="feature"/>
+            <xs:element ref="attribute"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="roleGroup">
+        <xs:choice>
+            <xs:group ref="atomicRoleGroup"/>
+            <xs:element ref="inverse"/>
+            <xs:element ref="chain"/>
+            <!--xs:group ref="compoundRoleGroup"/-->
+        </xs:choice>
+    </xs:group>
+    <xs:complexType name="roleConceptPair">
+        <xs:sequence>
+            <xs:group ref="roleGroup"/>
+            <xs:group ref="conceptGroup"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="numRoleConceptPair">
+        <xs:complexContent>
+            <xs:extension base="roleConceptPair">
+                <xs:attribute name="num" type="xs:integer" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!--xs:element name="conceptElement" type="concept" abstract="true"/-->
+    <xs:element name="bottom"/>
+    <xs:element name="top"/>
+    <xs:element name="catom" type="named"/>
+    <xs:element name="conceptSequence" type="concepts" abstract="true"/>
+    <xs:element name="and" type="concepts" substitutionGroup="conceptSequence"/>
+    <xs:element name="or" type="concepts" substitutionGroup="conceptSequence"/>
+    <xs:element name="not" type="concept"/>
+    <xs:element name="some" type="roleConceptPair"/>
+    <xs:element name="all" type="roleConceptPair"/>
+    <xs:element name="atmost" type="numRoleConceptPair"/>
+    <xs:element name="atleast" type="numRoleConceptPair"/>
+    <xs:element name="iset" type="individuals"/>
+    <xs:element name="ratom" type="named"/>
+    <xs:element name="feature" type="named"/>
+    <xs:element name="attribute" type="named"/>
+    <xs:element name="inverse" type="role"/>
+    <xs:element name="individual" type="named"/>
+    <!-- * Tell Language * -->
+    <xs:element name="tells" >
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="axioms">
+                    <xs:attribute name="uri" type="xs:anyURI" use="required"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="axiom">
+        <xs:group ref="axiomGroup"/>
+    </xs:complexType>
+    <xs:complexType name="axioms">
+        <xs:sequence>
+            <xs:group ref="axiomGroup" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:group name="primitiveConceptIntroductionGroup">
+        <xs:choice>
+            <xs:element ref="defconcept"/>
+            <xs:element ref="defrole"/>
+            <xs:element ref="deffeature"/>
+            <xs:element ref="defattribute"/>
+            <xs:element ref="defindividual"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="conceptAxiomGroup">
+        <xs:choice>
+            <xs:element ref="impliesc"/>
+            <xs:element ref="equalc"/>
+            <xs:element name="disjoint" type="concepts"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="roleAxiomGroup">
+        <xs:choice>
+            <xs:element ref="impliesr"/>
+            <xs:element ref="equalr"/>
+            <xs:element ref="domain"/>
+            <xs:element ref="range"/>
+            <xs:element ref="rangeint"/>
+            <xs:element ref="rangestring"/>
+            <xs:element ref="transitive"/>
+            <xs:element ref="functional"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="individualAxiomGroup">
+        <xs:choice>
+            <xs:element ref="instanceof"/>
+            <xs:element ref="related"/>
+            <xs:element ref="value"/>
+        </xs:choice>
+    </xs:group>
+    <xs:element name="related">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="individual"/>
+                <xs:group ref="roleGroup"/>
+                <xs:element ref="individual"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="instanceof">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="individual"/>
+                <xs:group ref="conceptGroup"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:group name="valueGroup">
+        <xs:choice>
+            <xs:element name="sval" type="xs:string"/>
+            <xs:element name="ival" type="xs:integer"/>
+        </xs:choice>
+    </xs:group>
+    <xs:element name="value">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="individual"/>
+                <xs:group ref="attributeTypeGroup"/>
+                <xs:group ref="valueGroup"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:group name="axiomGroup">
+        <xs:choice>
+            <xs:group ref="primitiveConceptIntroductionGroup"/>
+            <xs:group ref="conceptAxiomGroup"/>
+            <xs:group ref="roleAxiomGroup"/>
+            <xs:group ref="individualAxiomGroup"/>
+        </xs:choice>
+    </xs:group>
+    <xs:element name="defconcept" type="named"/>
+    <xs:element name="defrole" type="named"/>
+    <xs:element name="deffeature" type="named"/>
+    <xs:element name="defattribute" type="named"/>
+    <xs:element name="defindividual" type="named"/>
+    <xs:element name="impliesc" type="conceptPair"/>
+    <xs:element name="equalc" type="conceptPair"/>
+    <xs:element name="domain" type="roleConceptPair"/>
+    <xs:element name="range" type="roleConceptPair"/>
+    <xs:element name="transitive" type="role"/>
+    <xs:element name="functional" type="role"/>
+    <xs:element name="impliesr" type="rolePair"/>
+    <xs:element name="equalr" type="rolePair"/>
+    <xs:element name="rangeint" type="attributeType"/>
+    <xs:element name="rangestring" type="attributeType"/>
+    <!-- * Ask Language * -->
+    <xs:element name="asks">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="ask">
+                    <xs:attribute name="uri" type="xs:anyURI" use="required"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <!--xs:attribute name="id" type="xs:ID"/-->
+    <xs:complexType name="idType">
+        <!--xs:attribute ref="id" use="required"/-->
+        <xs:attribute name="id" type="xs:ID" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="conceptId">
+        <xs:complexContent>
+            <xs:extension base="concept">
+                <!--xs:attribute ref="id" use="required"/-->
+                <xs:attribute name="id" type="xs:ID" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="conceptPairId">
+        <xs:complexContent>
+            <xs:extension base="conceptPair">
+                <!--xs:attribute ref="id" use="required"/-->
+                <xs:attribute name="id" type="xs:ID" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="roleId">
+        <xs:complexContent>
+            <xs:extension base="role">
+                <!--xs:attribute ref="id" use="required"/-->
+                <xs:attribute name="id" type="xs:ID" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ask">
+        <xs:sequence>
+            <xs:group ref="queryGroup" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:group name="queryGroup">
+        <xs:choice>
+            <xs:group ref="primitiveConceptRetrievalGroup"/>
+            <xs:group ref="satisfiabilityGroup"/>
+            <xs:group ref="conceptHierarchyGroup"/>
+            <xs:group ref="roleHierarchyGroup"/>
+            <xs:group ref="individualQueries"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="primitiveConceptRetrievalGroup">
+        <xs:choice>
+            <xs:element ref="allConceptNames"/>
+            <xs:element ref="allRoleNames"/>
+            <xs:element ref="allIndividuals"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="satisfiabilityGroup">
+        <xs:choice>
+            <xs:element ref="satisfiable"/>
+            <xs:element ref="subsumes"/>
+            <xs:element ref="disjoint"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="conceptHierarchyGroup">
+        <xs:choice>
+            <xs:element ref="parents"/>
+            <xs:element ref="children"/>
+            <xs:element ref="ancestors"/>
+            <xs:element ref="descendants"/>
+            <xs:element ref="equivalents"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="roleHierarchyGroup">
+        <xs:choice>
+            <xs:element ref="rparents"/>
+            <xs:element ref="rchildren"/>
+            <xs:element ref="rancestors"/>
+            <xs:element ref="rdescendants"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="individualQueries">
+        <xs:choice>
+            <xs:element ref="instances"/>
+            <xs:element ref="instance"/>
+            <xs:element ref="roleFillers"/>
+            <xs:element ref="relatedIndividuals"/>
+            <xs:element ref="toldValues"/>
+        </xs:choice>
+    </xs:group>
+    <xs:element name="instances" type="conceptId"/>
+    <xs:element name="instance">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="individual"/>
+                <xs:group ref="conceptGroup"/>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:ID" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="types">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="individual"/>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:ID" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="roleFillers">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="individual"/>
+                <xs:group ref="roleGroup"/>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:ID" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="toldValues">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="individual"/>
+                <xs:group ref="attributeTypeGroup"/>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:ID" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="relatedIndividuals">
+        <xs:complexType>
+            <xs:group ref="roleGroup"/>
+            <xs:attribute name="id" type="xs:ID" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="allConceptNames" type="idType"/>
+    <xs:element name="allRoleNames" type="idType"/>
+    <xs:element name="allIndividuals" type="idType"/>
+    <xs:element name="satisfiable" type="conceptId"/>
+    <xs:element name="subsumes" type="conceptPairId"/>
+    <xs:element name="disjoint" type="conceptPairId"/>
+    <xs:element name="parents" type="conceptId"/>
+    <xs:element name="children" type="conceptId"/>
+    <xs:element name="ancestors" type="conceptId"/>
+    <xs:element name="descendants" type="conceptId"/>
+    <xs:element name="equivalents" type="conceptId"/>
+    <xs:element name="rparents" type="roleId"/>
+    <xs:element name="rchildren" type="roleId"/>
+    <xs:element name="rancestors" type="roleId"/>
+    <xs:element name="rdescendants" type="roleId"/>
+    <!-- * Responses Language * -->
+    <xs:element name="responses" type="responseType"/>
+    <xs:complexType name="responseType">
+        <xs:sequence>
+            <xs:group ref="responseGroup" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:group name="responseGroup">
+        <xs:choice>
+            <xs:element name="error">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="id" type="xs:ID" 
+                                use="required"/>
+                            <xs:attribute name="message" type="xs:string" 
+                                use="optional"/>
+                            <xs:attribute name="code" type="xs:integer" 
+                                use="optional"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="true" type="idType"/>
+            <xs:element name="false" type="idType"/>
+            <xs:element ref="conceptSet"/>
+            <xs:element ref="roleSet"/>
+            <xs:element ref="individualSet"/>
+            <xs:group ref="valueGroupId"/>
+        </xs:choice>
+    </xs:group>
+    <xs:element name="conceptSet" type="csynonyms"/>
+    <xs:complexType name="csynonyms">
+        <xs:sequence minOccurs="0">
+            <xs:element name="synonyms" maxOccurs="unbounded" type="concepts"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:ID" use="required"/>
+    </xs:complexType>
+    <xs:element name="roleSet" type="rsynonyms"/>
+    <xs:complexType name="rsynonyms">
+        <xs:sequence>
+            <xs:element name="synonyms" maxOccurs="unbounded" type="roles"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:ID" use="required"/>
+    </xs:complexType>
+    <xs:element name="individualSet">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="individuals">
+                    <xs:attribute name="id" type="xs:ID" use="required"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="individualPairSet">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="individualPairs">
+                    <xs:attribute name="id" type="xs:ID" use="required"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:group name="valueGroupId">
+        <xs:choice>
+            <xs:element name="sval">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="id" type="xs:ID" 
+                                use="required"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ival">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:integer">
+                            <xs:attribute name="id" type="xs:ID" 
+                                use="required"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:group>
+    <xs:element name="individualPair" type="individualPairType"/>
+    <xs:complexType name="individualPairs">
+        <xs:sequence>
+            <xs:element ref="individualPair" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!--Identifier-->
+    <xs:element name="getIdentifier"/>
+    <xs:element name="identifier">
+        <xs:annotation>
+            <xs:documentation>Identification of a server. The server must 
+                provide its name, version, and a description of the language 
+                that it supports.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="supports" type="supportsType"/>
+            </xs:sequence>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:attribute name="version" use="required">
+                <xs:annotation>
+                    <xs:documentation>Version should be a sequence of integers, 
+                        separated by the "." character.</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:pattern value="[0-9](\.?[0-9]+)*"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="message" type="xs:string" use="optional"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="supportsType">
+        <xs:sequence>
+            <xs:element name="language">
+                <xs:annotation>
+                    <xs:documentation>Describes the concept language that the 
+                        reasoner knows about.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence maxOccurs="unbounded">
+                        <xs:choice>
+                            <xs:element name="top"/>
+                            <xs:element name="bottom"/>
+                            <xs:element name="catom"/>
+                            <xs:element name="ratom"/>
+                            <xs:element name="intmin"/>
+                            <xs:element name="intmax"/>
+                            <xs:element name="intrange"/>
+                            <xs:element name="intequals"/>
+                            <xs:element name="stringequals"/>
+                            <xs:element name="defined"/>
+                            <xs:element name="and">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        language that the reasoner supports 
+                                        includes conjunction.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="or">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        language that the reasoner supports 
+                                        includes disjunction.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="not">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        language that the reasoner supports 
+                                        includes negation.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="some">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        language that the reasoner supports 
+                                        includes existential 
+                                        quantification.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="all">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        language that the reasoner supports 
+                                        includes universal 
+                                        quantification.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="atmost">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        language that the reasoner supports 
+                                        includes atmost 
+                                        restrictions.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="atleast">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        language that the reasoner supports 
+                                        includes atleast 
+                                        restricitions</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="iset">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        language that the reasoner supports 
+                                        includes the one-of construct. This in 
+                                        turn implies that individuals are 
+                                        supported.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="concrete">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        language that the reasoner supports 
+                                        includes concrete domains. In the 
+                                        current specification, this amounts to 
+                                        supporting strings and integers, along 
+                                        with min, max, equals and range 
+                                        predicates.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="individual">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        language that the reasoner supports 
+                                        includes individuals (i.e. some A-box 
+                                        functionality).</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="feature">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        language that the reasoner supports 
+                                        includes features, i.e. functional 
+                                        roles.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="attribute">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        language that the reasoner supports 
+                                        includes attributes (i.e. relationships 
+                                        whose domain is a concrete domain). 
+                                        This in turn implies that concrete 
+                                        domains are 
+                                        supported.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="chain">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        language that the reasoner supports 
+                                        includes feature chains, i.e. chains of 
+                                        functional roles followed by an 
+                                        attribute. This in turn implies that 
+                                        concrete domains are 
+                                        supported</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="inverse">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        language that the reasoner supports 
+                                        includes inverse roles. 
+                                        </xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                        </xs:choice>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="tell">
+                <xs:annotation>
+                    <xs:documentation>Describes the tell language that the 
+                        reasoner supports.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence maxOccurs="unbounded">
+                        <xs:choice>
+                            <xs:element name="defconcept"/>
+                            <xs:element name="defrole"/>
+                            <xs:element name="deffeature"/>
+                            <xs:element name="defattribute"/>
+                            <xs:element name="defindividual"/>
+                            <xs:element name="impliesc">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        assertion language that the reasoner 
+                                        supports includes concept 
+                                        implications.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="impliesr">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        assertion language that the reasoner 
+                                        supports includes role 
+                                        implications.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="equalc">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        assertion language that the reasoner 
+                                        supports includes concept 
+                                        equaility.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="equalr">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        assertion language that the reasoner 
+                                        supports includes role 
+                                        equality.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="domain">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        assertion language that the reasoner 
+                                        supports includes domain 
+                                        restrictions.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="range">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        assertion language that the reasoner 
+                                        supports includes range 
+                                        restrictions.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="rangeint">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        assertion language that the reasoner 
+                                        supports includes integer range 
+                                        restrictions.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="rangestring">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        assertion language that the reasoner 
+                                        supports includes string range 
+                                        restrictions.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="transitive">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        assertion language that the reasoner 
+                                        supports includes assertions about 
+                                        transitive roles.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="functional">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        assertion language that the reasoner 
+                                        supports includes assertions about 
+                                        functional roles.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="disjoint">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        assertion language that the reasoner 
+                                        supports includes disjointness 
+                                        axioms.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="instanceof">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        assertion language that the reasoner 
+                                        supports includes instanceof 
+                                        assertions.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="related">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        assertion language that the reasoner 
+                                        supports includes relationships between 
+                                        individuals.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="value">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the 
+                                        assertion language that the reasoner 
+                                        supports includes association of 
+                                        concrete domain values with 
+                                        individuals. </xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                        </xs:choice>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ask">
+                <xs:annotation>
+                    <xs:documentation>Describes the query language that the 
+                        reasoner supports.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence maxOccurs="unbounded">
+                        <xs:choice>
+                            <xs:element name="allConceptNames">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the query 
+                                        language that the reasoner supports 
+                                        includes asking for all 
+                                        concepts.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="allRoleNames">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the query 
+                                        language that the reasoner supports 
+                                        includes asking for all 
+                                        roles.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="allIndividuals">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the query 
+                                        language that the reasoner supports 
+                                        includes asking for all 
+                                        individuals.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="satisfiable">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the query 
+                                        language that the reasoner supports 
+                                        includes satisfiability 
+                                        testing.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="subsumes">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the query 
+                                        language that the reasoner supports 
+                                        includes concept subsumption 
+                                        testing.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="disjoint">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the query 
+                                        language that the reasoner supports 
+                                        includes disjointness 
+                                        testing.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="parents">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the query 
+                                        language that the reasoner supports 
+                                        includes querying for 
+                                        parents.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="children">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the query 
+                                        language that the reasoner supports 
+                                        includes querying for 
+                                        children</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="ancestors">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the query 
+                                        language that the reasoner supports 
+                                        includes querying for 
+                                        ancestors.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="descendants">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the query 
+                                        language that the reasoner supports 
+                                        includes querying for 
+                                        descendants.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="equivalents">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the query 
+                                        language that the reasoner supports 
+                                        includes querying for equivalent 
+                                        concepts.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="rparents">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the query 
+                                        language that the reasoner supports 
+                                        includes querying for role 
+                                        parents.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="rchildren">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the query 
+                                        language that the reasoner supports 
+                                        includes querying for role 
+                                        children.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="rancestors">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the query 
+                                        language that the reasoner supports 
+                                        includes querying for role 
+                                        ancestors.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="rdescendants">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the query 
+                                        language that the reasoner supports 
+                                        includes querying for role 
+                                        descendants.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="instances">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the query 
+                                        language that the reasoner supports 
+                                        includes querying for 
+                                        instances.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="types">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the query 
+                                        language that the reasoner supports 
+                                        includes querying for known types of an 
+                                        individual.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="roleFillers">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the query 
+                                        language that the reasoner supports 
+                                        includes querying for known role 
+                                        fillers of an individual. 
+                                        </xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="values">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the query 
+                                        language that the reasoner supports 
+                                        includes querying for known concrete 
+                                        values associated with an 
+                                        individual.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="relatedIndividuals">
+                                <xs:annotation>
+                                    <xs:documentation>Indicates that the query 
+                                        language that the reasoner supports 
+                                        includes querying for all pairs of 
+                                        related individuals. </xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                        </xs:choice>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="uniqueNameAssumption" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Indicates that the reasoner employs the 
+                        UNA for individuals.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>
