@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<metadatadoc version="2.0">
+	<object type="FKIndexAssociation" id="4A16CF3B-4686-078E-705E-C7770BE55A7C" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="true" tableid="D165DCF8-2672-B73E-C6C6-C52F63B5E822" reftableid="0C130FE7-1B5A-D1BB-27CC-5AD0C83A29B7" references="A056AD8F-24A9-A94C-4878-F4A26FFE00F0" localindexid="F60129C3-8218-B270-B048-C54B3D9898DA" delrule="RESTRICT" mandatory="true" transferable="true" use_default_color="true" background_color="null" foreground_color="null">
+		<name>CDW_DOM_FTY_FK</name>
+		<comment></comment>
+		<notes></notes>
+		<alter type="created">
+			<user>valdo</user>
+			<timestamp>2009-10-20 10:18:27</timestamp>
+		</alter>
+		<alter type="changed">
+			<user>valdo</user>
+			<timestamp>2009-10-20 10:18:27</timestamp>
+		</alter>
+		<generator>5CF64230-3E21-4127-B549-F0324521284F</generator>
+		<properties>
+			<parameter name="design.owner" value="cdw_model" />
+			<parameter name="object.existsinrepository" value="true" />
+			<parameter name="property.comment.rdbms" value="" />
+		</properties>
+		<engineering should="true" />
+		<des_obj_version version="1.0" />
+		<documents />
+		<parties />
+		<changerequests />
+		<measurements />
+	</object>
+</metadatadoc>

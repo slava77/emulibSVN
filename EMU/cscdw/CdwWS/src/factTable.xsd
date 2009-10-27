@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <xsd:schema elementFormDefault="qualified" targetNamespace="http://j2ee.netbeans.org/xsd/tableSchema" xmlns="http://j2ee.netbeans.org/xsd/tableSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:element name="CDW_FACTS" type="CDW_FACTS"></xsd:element>
+    <xsd:complexType name="CDW_FACTS">
+      <xsd:sequence>
+        <xsd:element maxOccurs="unbounded" ref="CDW_FACTS_Record"></xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="CLOB">
+      <xsd:restriction base="xsd:string">
+        <xsd:maxLength value="1073741824"></xsd:maxLength>
+      </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:element name="CDW_FACTS_Record">
+      <xsd:complexType>
+        <xsd:sequence>
+          <xsd:element name="FCT_SRC_ID">
+            <xsd:complexType>
+              <xsd:simpleContent>
+                <xsd:extension base="xsd:string">
+                  <xsd:attribute name="isNull" type="xsd:boolean"></xsd:attribute>
+                </xsd:extension>
+              </xsd:simpleContent>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="FCT_VALUE">
+            <xsd:complexType>
+              <xsd:simpleContent>
+                <xsd:extension base="xsd:decimal">
+                  <xsd:attribute name="isNull" type="xsd:boolean"></xsd:attribute>
+                </xsd:extension>
+              </xsd:simpleContent>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="FCT_ID">
+            <xsd:complexType>
+              <xsd:simpleContent>
+                <xsd:extension base="xsd:decimal">
+                  <xsd:attribute name="isNull" type="xsd:boolean"></xsd:attribute>
+                </xsd:extension>
+              </xsd:simpleContent>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="FCT_FRACTION">
+            <xsd:complexType>
+              <xsd:simpleContent>
+                <xsd:extension base="xsd:decimal">
+                  <xsd:attribute name="isNull" type="xsd:boolean"></xsd:attribute>
+                </xsd:extension>
+              </xsd:simpleContent>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="FCT_LOWER_THRESHOLD">
+            <xsd:complexType>
+              <xsd:simpleContent>
+                <xsd:extension base="xsd:decimal">
+                  <xsd:attribute name="isNull" type="xsd:boolean"></xsd:attribute>
+                </xsd:extension>
+              </xsd:simpleContent>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="FCT_COMPONENT_ID">
+            <xsd:complexType>
+              <xsd:simpleContent>
+                <xsd:extension base="xsd:string">
+                  <xsd:attribute name="isNull" type="xsd:boolean"></xsd:attribute>
+                </xsd:extension>
+              </xsd:simpleContent>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="FCT_UPPER_THRESHOLD">
+            <xsd:complexType>
+              <xsd:simpleContent>
+                <xsd:extension base="xsd:decimal">
+                  <xsd:attribute name="isNull" type="xsd:boolean"></xsd:attribute>
+                </xsd:extension>
+              </xsd:simpleContent>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="FCT_SEV_ID">
+            <xsd:complexType>
+              <xsd:simpleContent>
+                <xsd:extension base="xsd:string">
+                  <xsd:attribute name="isNull" type="xsd:boolean"></xsd:attribute>
+                </xsd:extension>
+              </xsd:simpleContent>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="FCT_CREATE_TIME">
+            <xsd:complexType>
+              <xsd:simpleContent>
+                <xsd:extension base="xsd:string">
+                  <xsd:attribute name="isNull" type="xsd:boolean"></xsd:attribute>
+                </xsd:extension>
+              </xsd:simpleContent>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="FCT_FTY_ID">
+            <xsd:complexType>
+              <xsd:simpleContent>
+                <xsd:extension base="xsd:string">
+                  <xsd:attribute name="isNull" type="xsd:boolean"></xsd:attribute>
+                </xsd:extension>
+              </xsd:simpleContent>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="FCT_DESCR">
+            <xsd:complexType>
+              <xsd:simpleContent>
+                <xsd:extension base="CLOB">
+                  <xsd:attribute name="isNull" type="xsd:boolean"></xsd:attribute>
+                </xsd:extension>
+              </xsd:simpleContent>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="FCT_SOURCE_TIME">
+            <xsd:complexType>
+              <xsd:simpleContent>
+                <xsd:extension base="xsd:string">
+                  <xsd:attribute name="isNull" type="xsd:boolean"></xsd:attribute>
+                </xsd:extension>
+              </xsd:simpleContent>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="FCT_STA_ID">
+            <xsd:complexType>
+              <xsd:simpleContent>
+                <xsd:extension base="xsd:string">
+                  <xsd:attribute name="isNull" type="xsd:boolean"></xsd:attribute>
+                </xsd:extension>
+              </xsd:simpleContent>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>

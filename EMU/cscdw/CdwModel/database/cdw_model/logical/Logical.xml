@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<design version="2.0" id="8DDE0C4A-D06E-7D56-4660-6DA8B3CD4B9C">
+	<ref>
+		<objectid role="contains" type="Entity" oid="D2BB092D-3864-5521-0261-48EB98F3E88E" />
+		<objectid role="contains" type="Entity" oid="6DC5E7FE-5A5A-1949-5D93-D9307CB16AF1" />
+		<objectid role="contains" type="Entity" oid="E75E9744-BD2E-8B99-B8A5-2009483C45FE" />
+		<objectid role="contains" type="Entity" oid="73AAB2FE-6351-B270-8EAE-988ADD234929" />
+		<objectid role="contains" type="Entity" oid="C6C90637-8A51-B9E4-5E30-A5F53F4CED1F" />
+		<objectid role="contains" type="Entity" oid="11C5135A-F96E-A262-E24C-66EEF5651DC1" />
+		<objectid role="contains" type="Relation" oid="5CF64230-3E21-4127-B549-F0324521284F" />
+		<objectid role="contains" type="Relation" oid="B5E030D6-5D2D-0E6C-676B-281D84DA06A7" />
+		<objectid role="contains" type="Relation" oid="55368F33-1A3F-5732-CA35-DB8010AC599C" />
+		<objectid role="contains" type="Relation" oid="9FBC6587-8360-1F43-2EA5-164FF7052698" />
+		<objectid role="contains" type="Relation" oid="8CBFB021-B3E3-6B82-7745-65B94DD75E32" />
+	</ref>
+	<type_substitutions />
+	<ext_sub_views_collection>
+		<sub_view subview_name="Logical" id="DB7D1FEB-87C6-F67B-17AF-DBCDEF6903A3" sv_type="main_view" visible="true" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" />
+	</ext_sub_views_collection>
+	<documents />
+	<parties />
+	<naming_options>
+		<naming_option class_name="oracle.dbtools.crest.model.design.logical.Entity" max_name_length="254" case_type="2" valid_characters="" all_valid="true" />
+		<naming_option class_name="oracle.dbtools.crest.model.design.logical.Attribute" max_name_length="254" case_type="2" valid_characters="" all_valid="true" />
+		<naming_option class_name="oracle.dbtools.crest.model.design.logical.EntityView" max_name_length="254" case_type="2" valid_characters="" all_valid="true" />
+	</naming_options>
+</design>

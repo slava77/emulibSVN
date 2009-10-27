@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Reverse Engineer DB objects" default="reveng" basedir=".">
+
+  <property name="build" location="../build"/>
+  <property name="src" location="org/cern/cms/csc/cdw/dev"/>
+  <property name="lib" location="../../lib/jdbc/oracle" />
+  <property name="devlib" location="../../lib/devonly/" />
+
+  <target name="reveng" description="Regenerate model classes from the database">
+
+    <mkdir dir="${build}"/>
+
+    <path id="cp">
+      <fileset dir="${lib}">
+        <include name="*.jar"/>
+      </fileset>
+      <fileset dir="${devlib}">
+        <include name="*.jar"/>
+      </fileset>
+    </path>
+
+    <echo message="Libraries from ${lib} and ${devlib} initialized"/>
+
+    <javac srcdir="${src}" destdir="${build}">
+      <compilerarg value="-Xlint"/>
+      <classpath>
+        <path refid="cp"/>
+      </classpath>
+    </javac>
+
+    <taskdef name="hibernatetool"
+      classname="org.hibernate.tool.ant.HibernateToolTask"
+      classpathref="cp" />
+
+    <hibernatetool destdir=".">
+      <classpath>
+        <path refid="cp" />
+        <pathelement location="${build}" />
+      </classpath>
+      <jdbcconfiguration
+        propertyfile="hibernate.properties"
+        configurationfile="hibernate.cfg.xml"
+        reversestrategy="org.cern.cms.csc.cdw.dev.RevEngStrategy"
+        packagename="org.cern.cms.csc.cdw.model"
+        revengfile="hibernate.reveng.xml"
+        detectmanytomany="false">
+      </jdbcconfiguration>
+      <hbm2java jdk5="true"/>
+      <hbm2hbmxml/>
+    </hibernatetool>
+    
+  </target>
+
+</project>

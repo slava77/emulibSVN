@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.cern.ch/cms/csc"
+    xmlns:tns="http://www.cern.ch/cms/csc"
+    elementFormDefault="qualified">
+        <xsd:complexType name="factCollection">
+            <xsd:sequence>
+                <xsd:element name="fact" type="tns:factType" maxOccurs="unbounded"></xsd:element>
+            </xsd:sequence>
+            <xsd:attribute name="source" type="tns:sourceType"/>
+        </xsd:complexType>
+    <xsd:complexType name="factType">
+        <xsd:sequence>
+            <xsd:element name="time" type="xsd:dateTime"></xsd:element>
+            <xsd:element name="type" type="xsd:string"></xsd:element>
+            <xsd:element name="component" type="xsd:string"></xsd:element>
+            <xsd:element name="value" type="xsd:decimal" minOccurs="0"></xsd:element>
+            <xsd:element name="lowerThreshold" type="xsd:double" minOccurs="0"></xsd:element>
+            <xsd:element name="upperThreshold" type="xsd:double" minOccurs="0"></xsd:element>
+            <xsd:element name="fraction" type="xsd:float" minOccurs="0"></xsd:element>
+            <xsd:element name="severity" type="tns:severityType" minOccurs="0"></xsd:element>
+            <xsd:element name="status" type="tns:statusType" minOccurs="0"></xsd:element>
+            <xsd:element name="descr" type="xsd:string" minOccurs="0"></xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="severityType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="info"/>
+            <xsd:enumeration value="warning"/>
+            <xsd:enumeration value="error"/>
+            <xsd:enumeration value="fatal"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="sourceType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="DCS"/>
+            <xsd:enumeration value="DQM"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="statusType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="stop"/>
+            <xsd:enumeration value="ok"/>
+            <xsd:enumeration value="halt"/>
+            <xsd:enumeration value="error"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+</xsd:schema>

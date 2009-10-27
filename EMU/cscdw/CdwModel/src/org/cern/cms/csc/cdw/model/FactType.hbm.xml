@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Oct 27, 2009 3:17:29 AM by Hibernate Tools 3.2.4.GA -->
+<hibernate-mapping>
+    <class name="org.cern.cms.csc.cdw.model.FactType" table="CDW_FACT_TYPES">
+        <id name="id" type="string">
+            <column name="FTY_ID" length="30" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="domain" class="org.cern.cms.csc.cdw.model.Domain" fetch="select">
+            <column name="FTY_DOM_ID" length="10" not-null="true" />
+        </many-to-one>
+        <property name="descr" type="string">
+            <column name="FTY_DESCR" length="512" not-null="true" />
+        </property>
+        <set name="facts" inverse="true" lazy="true" table="CDW_FACTS" fetch="select">
+            <key>
+                <column name="FCT_FTY_ID" length="30" not-null="true" />
+            </key>
+            <one-to-many class="org.cern.cms.csc.cdw.model.Fact" />
+        </set>
+    </class>
+</hibernate-mapping>
