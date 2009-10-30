@@ -3,7 +3,7 @@ V 10
 LANG:1 9 do_config
 PANEL,-1 -1 547 502 N "_3DFace" 0
 "bool isBanner;
-int one_crate_configuration_time=10; // 6-7 according to Jinghua + 1-2 minutes for all
+int one_crate_configuration_time=11; // 6-7 according to Jinghua + 1-2 minutes for all
 
 main()
 {
@@ -32,6 +32,8 @@ main()
   ds1=dpNames(\"*:CMS_CSC_LV_CRB*\",\"MUDCS_STRING\");  
   ds2=strsplit(ds1[1],\":\");
   system_crb=  ds2[1]; 
+dpGet(system_crb+\":\"+\"db_pcmb.list\",db_pcmb);
+dpGet(system_crb+\":\"+\"db_pcmb_geographic.list\",db_pcmb_g);  
  /* 
 int i, n;
 string valid;
@@ -61,12 +63,22 @@ string valid;
          
   while(1){
   s1=s2=add1=add2=\"\";
+  
+  /*
   if(system_minus!=\"\")dpGet(system_minus+\":STOP_SLOW_CONTROL.value\",s1);
   if(system_plus!=\"\")dpGet(system_plus+\":STOP_SLOW_CONTROL.value\",s2);
 
   if(strpos(s1,\"RESUME\")<0)add1=\"-Z side: \";
   if(strpos(s2,\"RESUME\")<0)add2=\"+Z side: \";
    
+  */
+  
+  if(system_minus!=\"\")dpGet(system_minus+\":SPECIAL_STOP_SC.value\",s1);
+  if(system_plus!=\"\")dpGet(system_plus+\":SPECIAL_STOP_SC.value\",s2);
+
+  if(strpos(s1,\"RESUME\")<0)add1=\"-Z side: \";
+  if(strpos(s2,\"RESUME\")<0)add2=\"+Z side: \"; 
+  
   if(add1!=\"\" || add2!=\"\"){
 //    getValue(\"stop_banner\",\"text\",banner_text);
     //mudcsDebug(banner_text);
@@ -93,8 +105,16 @@ banner_text+=\"Resume Peripheral Crate Slow Control button\";
     periodic_read();
   } // else
 
-  
-  time current_time=getCurrentTime();
+bool ret=  time_out_refresh();
+   if(ret) setValue(\"CRATES_ARE_NOT_CONFIGURED\",\"backCol\",\"{255,48,49}\");
+   else setValue(\"CRATES_ARE_NOT_CONFIGURED\",\"backCol\",\"FwStateOKNotPhysics\"); 
+  } // while
+
+}
+//==============================================================
+bool time_out_refresh(){
+
+ time current_time=getCurrentTime();
   time last_set_buffer;
   dyn_string power_up_buffer;
   dpGet(system_crb+\":PREPARE_POWER_UP_BUFFER.:_online.._stime\",last_set_buffer);
@@ -107,25 +127,37 @@ banner_text+=\"Resume Peripheral Crate Slow Control button\";
      && time_out>(dynlen(power_up_buffer)*one_crate_configuration_time +120)){
     setValue(\"time_out\",\"backCol\",\"{255,48,49}\");
    setValue(\"do_config\",\"visible\",true); 
+   return true;
   }
   else  {
     setValue(\"time_out\",\"backCol\",\"{202,202,202}\");
-    setValue(\"do_config\",\"visible\",false);    
+    setValue(\"do_config\",\"visible\",false);
+    return false;
   }
-  } // while
-
 }
-
 //==============================================================
 update_prepare_power_up(string dpName,dyn_string value){
-
+  
+  int i;
+  bool ret=time_out_refresh();
+  
+  dyn_string value_vme=makeDynString();
+  for(i=1;i<=dynlen(value);i++){
+    dynAppend(value_vme,mudcsCrb_getVmeById(value[i]) );
+  }
+  value=value_vme;
+  
   if(dynlen(value) >= 1  ){
    
  //  isBanner=false;
    setValue(\"PREPARE_POWER_UP\",\"visible\",true);      
    setValue(\"PREPARE_POWER_UP\",\"items\",value); 
-   
+ 
+   if(ret) setValue(\"CRATES_ARE_NOT_CONFIGURED\",\"backCol\",\"{255,48,49}\");
+   else setValue(\"CRATES_ARE_NOT_CONFIGURED\",\"backCol\",\"FwStateOKNotPhysics\");
+       
    setValue(\"CRATES_ARE_NOT_CONFIGURED\",\"visible\",true);
+   setValue(\"CONFIGURATION_IS_DONE\",\"visible\",false);      
   }
   else{
     
@@ -136,6 +168,7 @@ update_prepare_power_up(string dpName,dyn_string value){
    
   }
   
+
 }
 
 
@@ -191,36 +224,75 @@ int main_mode=0;
  int frozen=0;
 
  
+  dyn_string db_pcmb;
+ dyn_string db_pcmb_g;
+ 
+//===========================================
+string mudcsCrb_getVmeById(string id){
+
+
+int i;
+dyn_string dps, dps1;
+int coord_int, pos;
+string coord_s;
+for(i=1;i<=dynlen(db_pcmb);i++){
+ dps=strsplit(db_pcmb[i],\";\");
+ sscanf(dps[2],\"%x\",coord_int);
+ coord_s=coord_int;
+ if(id==coord_int){
+  dps1=strsplit(db_pcmb_g[i],\";\");
+  return \"VME\"+strtolower(substr(dps[1],0,2))+\"_\"+dps1[2];
+ }
+}  // i 
+
+ return \"\";
+}
+
+//=========================================== 
 //============================================================================ 
  do_configuration(){
  
   int i, coord_int;
   dyn_string buffer,ds1;
+  string coord_s;
   
-  dpGet(system_crb+\":PREPARE_POWER_UP_BUFFER.\",ds1);
+  dpGet(system_crb+\":PREPARE_POWER_UP_BUFFER.\",buffer);
+  dpSetWait(system_crb+\":PREPARE_POWER_UP_BUFFER.\",buffer);
+  
+  bool plus=false, minus=false;
   for(i=1;i<=dynlen(buffer);i++){
-      ds1=strsplit(buffer[i],\";\");
-      if(dynlen(ds1)==2){
-        coord_int=ds1[2];
+     // ds1=strsplit(buffer[i],\";\");
+     // if(dynlen(ds1)==2){
+        coord_int=coord_s=buffer[i];//ds1[2];
         if(coord_int<=30){
-          dpSet(system_plus+\":STOP_SLOW_CONTROL.value\",\"PREPARE_POWER_UP;\"+coord_id);
-          dpSet(system_plus+\":LV_1_COM.command\",\"PREPARE_POWER_UP;\"+coord_id);
+          plus=true;
+          dpSet(system_plus+\":STOP_SLOW_CONTROL.value\",\"PREPARE_POWER_UP;\"+mudcsCrb_getVmeById(coord_s));
+          dpSet(system_plus+\":LV_1_COM.command\",\"PREPARE_POWER_UP;\"+mudcsCrb_getVmeById(coord_s));
         }
         else{
-          dpSet(system_minus+\":STOP_SLOW_CONTROL.value\",\"PREPARE_POWER_UP;\"+coord_id);
-          dpSet(system_minus+\":LV_1_COM.command\",\"PREPARE_POWER_UP;\"+coord_id);          
+          minus=true;
+          dpSet(system_minus+\":STOP_SLOW_CONTROL.value\",\"PREPARE_POWER_UP;\"+mudcsCrb_getVmeById(coord_s));
+          dpSet(system_minus+\":LV_1_COM.command\",\"PREPARE_POWER_UP;\"+mudcsCrb_getVmeById(coord_s));          
           
         }
         
-      }
+     // }
     
   } // for
- 
+  
+  if(plus){
+    dpSet(system_plus+\":STOP_SLOW_CONTROL.value\",\"EXECUTE_POWER_UP\");
+    dpSet(system_plus+\":LV_1_COM.command\",\"EXECUTE_POWER_UP\"); 
+   }
+  if(minus){
+    dpSet(system_minus+\":STOP_SLOW_CONTROL.value\",\"EXECUTE_POWER_UP\");
+    dpSet(system_minus+\":LV_1_COM.command\",\"EXECUTE_POWER_UP\");     
+  }
+  
 }
 
 
 //==============================================================
-  
 //========================================================================================     
 mudcsErrorMrtnDisplay(string type, string type1, string type2, string current_type=\"\"){
   
@@ -296,6 +368,10 @@ sys_name1=sys_name;
     
     status_com=false;
     if(state==\"ERROR\" || state==\"DEAD\")status_com=true;
+    
+//?
+ //   if(strpos(dps[i],\"P11_C11\")>=0)status_com=true;    
+    
     
 if(type!=\"\"){
 //  if(i==124 || i==1)status_com=true;
@@ -771,7 +847,7 @@ string mode_en;
 
   }
   else{
-    if(flags[i]==0){
+   if(flags[i]==0){
      
     if(strpos(chs[i],\"::\")>=0){
        split[1]=substr(chs[i],0,strpos(chs[i],\"::\") );
@@ -780,11 +856,16 @@ string mode_en;
     else{
         split[1]=domain;
      }  
+   
     chs1=fwFsmUi_getAllChildren(split[1],chs[i],flags1);
+//    if(strpos(chs[i],\"CRB\" )>=0 )     
+//   mudcsDebug(\"0>>> \"+chs[i]+\" \"+dynlen(chs1)+\"  >> \"+split[1]);   
    }
    else{ 
     split=strsplit(chs[i],\":\");
     chs1=fwFsmUi_getAllChildren(split[1],split[1],flags1);
+//    if(strpos(chs[i],\"CRB\" )>=0 )     
+//   mudcsDebug(\"0>>> \"+chs[i]+\" \"+dynlen(chs1)+\"  >> \"+split[1]);          
    }
 
    if(dynlen(chs1)>=1)getch(mode,split[1],chs1,flags1);
@@ -863,6 +944,26 @@ LAYER, 0
 1
 LANG:1 0 
 2 13
+"CONFIGURATION_IS_DONE"
+""
+1 40 110 E E E 1 E 0 E N "_Window" E N "_ETM" E E
+ E E
+29 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 40 110 294 136
+0 2 2 "0s" 0 0 0 192 0 0  40 110 1
+1
+LANG:1 92 -*-helvetica-*-r-normal-*-17-*-100-100-*-*-iso8859-1|-17,0,0,0,505,0,0,0,0,0,0,0,0,helvetica
+0 ""
+1
+LANG:1 33 Switched on crates are configured
+2 0
 "stop_banner"
 ""
 1 10 10 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
@@ -897,7 +998,7 @@ LANG:1 108 -*-Bitstream Charter-*-r-normal-*-15-*-100-100-*-*-iso8859-1|-15,0,0,
 0 ""
 1
 LANG:1 45 "Resume Peripheral Crate Slow Control" button
-25 4
+25 1
 "table"
 ""
 1 10 140 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
@@ -918,8 +1019,7 @@ LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,
    setValue(\"\",\"tableMode\",TABLE_SELECT_BROWSE);
 setValue(\"\",\"selectByClick\",1); 
 }" 0
-"
-main(int row, string column, string value)
+"main(int row, string column, string value)
 {
 
   
@@ -1078,8 +1178,7 @@ string LVModule=\"Summary_Module\";
 return;
 
   
-}
-" 0
+}" 0
  1 0 1 2 0 "Item" 24 1 0 "s" 1
 LANG:1 4 Item
 E
@@ -1099,49 +1198,7 @@ LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,
 0 ""
 0 1 1 1 7
 1 0
-13 5
-"hv_errors"
-""
-1 440 140 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-5 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 438 138 542.0000000000001 182
-
-T 
-1
-LANG:1 17 HV ERRORS
-SUMMARY
-"main()
-{
- flag_press=1;
-frozen=0;
-  string type;
-  type_save=type=\"HV_1\";
-  string type1=\"_HV\";
-  g_type1=type1;
-  string type2=\"HV\";
-        g_panel=\"CMS_CSCfw_HV_CC/emuDevHV_1Browser.pnl\";
-    bool ischeck;
-    getValue(\"check1\",\"state\",0,ischeck);
-    
-  if(!ischeck)mudcsErrorDisplay(type,type1,type2,\"\");
-  else mudcsDisbledDevicesDisplay();
-
-}
-
-
-" 0
- E E E
-13 6
+13 3
 "crb_errors"
 ""
 1 440 280 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
@@ -1183,7 +1240,7 @@ SUMMARY
 
 }" 0
  E E E
-13 7
+13 4
 "lv_errors"
 ""
 1 440 330 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
@@ -1223,7 +1280,7 @@ SUMMARY
   else mudcsDisbledDevicesDisplay();
 }" 0
  E E E
-13 8
+13 5
 "temp_errors"
 ""
 1 440 380 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
@@ -1264,7 +1321,7 @@ SUMMARY
 
 }" 0
  E E E
-20 9
+20 6
 "check1"
 ""
 1 10 90 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
@@ -1292,7 +1349,7 @@ E E
 0 0 0 0 0
 1
 E E
-EE13 14
+EE13 7
 "PCRATE"
 ""
 1 440 450 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
@@ -1353,10 +1410,10 @@ Reading Problem
 
 }" 0
  E E E
-14 15
+14 8
 "current_time"
 ""
-1 10 110 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 320 147 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 19 0 0 0 0 0
 E E E
@@ -1368,9 +1425,9 @@ LANG:1 0
 1
 LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
 0 ""
- 8 108 162 132
+ 318 145 472 169
 3 "0s" 0 0 0 0 0 -1  E E E
-13 17
+13 9
 "mrtn_errors"
 ""
 1 440 230 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
@@ -1410,7 +1467,7 @@ SUMMARY
 
 }" 0
  E E E
-13 18
+13 10
 "dubna_errors"
 ""
 1 440 180 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
@@ -1457,10 +1514,10 @@ SUMMARY
 
 }" 0
  E E E
-17 19
-"prepare_power_up"
+17 11
+"PREPARE_POWER_UP"
 ""
-1 470 0 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+1 459.9999999999999 0 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
  E E
 26 0 0 0 0 0
 E E E
@@ -1470,9 +1527,9 @@ LANG:1 0
 
 0
 1
-LANG:1 92 -*-helvetica-*-r-normal-*-17-*-100-100-*-*-iso8859-1|-17,0,0,0,505,0,0,0,0,0,0,0,0,helvetica
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-*-90-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
 0 ""
- 468 -2 542 142
+ 457.9999999999999 -2 542 142
 1
 1
 LANG:1 3 ???
@@ -1484,10 +1541,10 @@ E
 E
 
 0 0
-2 21
+2 12
 "CRATES_ARE_NOT_CONFIGURED"
 ""
-1 190 110 E E E 1 E 0 E N "_Window" E N "alertCamAckn" E E
+1 40 110 E E E 1 E 0 E N "_Window" E N "alertCamAckn" E E
  E E
 28 0 0 0 0 0
 E E E
@@ -1497,37 +1554,17 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 190 110 380 136
-0 2 2 "0s" 0 0 0 192 0 0  190 110 1
+E E 0 1 1 2 1 E U  1 E 40 110 327 136
+0 2 2 "0s" 0 0 0 192 0 0  40 110 1
 1
 LANG:1 92 -*-helvetica-*-r-normal-*-17-*-100-100-*-*-iso8859-1|-17,0,0,0,505,0,0,0,0,0,0,0,0,helvetica
 0 ""
 1
-LANG:1 25 Crates are not configured
-2 22
-"CONFIGURATION_IS_DONE"
-""
-1 250 110 E E E 1 E 0 E N "_Window" E N "_ETM" E E
- E E
-29 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 250 110 408 136
-0 2 2 "0s" 0 0 0 192 0 0  250 110 1
-1
-LANG:1 92 -*-helvetica-*-r-normal-*-17-*-100-100-*-*-iso8859-1|-17,0,0,0,505,0,0,0,0,0,0,0,0,helvetica
-0 ""
-1
-LANG:1 21 Configuration is done
-14 23
+LANG:1 37 Crates are not configured: SC stopped
+14 14
 "time_out"
 ""
-1 390 114 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 340 110 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 30 0 0 0 0 0
 E E E
@@ -1537,14 +1574,14 @@ LANG:1 0
 
 0
 1
-LANG:1 92 -*-helvetica-*-r-normal-*-17-*-100-100-*-*-iso8859-1|-17,0,0,0,505,0,0,0,0,0,0,0,0,helvetica
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-15-*-100-100-*-*-iso8859-1|-15,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
 0 ""
- 388 112 472 136
+ 338 108 462 142
 3 "0s" 0 0 0 0 0 -1  E E E
-13 24
-"PUSH_BUTTON1"
+13 15
+"do_config"
 ""
-1 390 90 E E E 1 E 0 E N "_Window" E N "_ETM" E E
+1 380 90 E E E 1 E 0 E N "_Window" E N "_ETM" E E
  E E
 31 0 0 0 0 0
 E E E
@@ -1556,7 +1593,7 @@ LANG:1 0
 1
 LANG:1 108 -*-Bitstream Charter-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
 0 ""
- 388 88 472 112
+ 378 88 462 112
 
 T 
 1
@@ -1565,6 +1602,48 @@ LANG:1 9 do config
 {
   do_configuration();
 }" 0
+ E E E
+13 2
+"hv_errors"
+""
+1 440 140 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 438 138 542.0000000000001 182
+
+T 
+1
+LANG:1 17 HV ERRORS
+SUMMARY
+"main()
+{
+ flag_press=1;
+frozen=0;
+  string type;
+  type_save=type=\"HV_1\";
+  string type1=\"_HV\";
+  g_type1=type1;
+  string type2=\"HV\";
+        g_panel=\"CMS_CSCfw_HV_CC/emuDevHV_1Browser.pnl\";
+    bool ischeck;
+    getValue(\"check1\",\"state\",0,ischeck);
+    
+  if(!ischeck)mudcsErrorDisplay(type,type1,type2,\"\");
+  else mudcsDisbledDevicesDisplay();
+
+}
+
+
+" 0
  E E E
 0
 LAYER, 1 

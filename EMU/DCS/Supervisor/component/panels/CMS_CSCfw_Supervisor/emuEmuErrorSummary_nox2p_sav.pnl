@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 565 568 N "_3DFace" 0
+PANEL,-1 -1 565 535 N "_3DFace" 0
 "main()
 {
   addGlobal(\"CSC_fwGSuper_g_TimerSwitch\",TIME_VAR);
@@ -48,7 +48,7 @@ LANG:1 0
 1
 LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
 0 ""
- 8 18 562 552
+ 8 18 562 522
 "main()
 {
 

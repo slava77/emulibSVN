@@ -1,7 +1,7 @@
  <component>
 	<name>CMS_CSCfw_Supervisor_MONITOR</name>
-	<version>1.0.1</version>
-	<date> 04/05/2007 </date>
+	<version>2.1.0</version>
+	<date> 29/10/2009 </date>
 	<config>./config/CMS_CSCfw_Supervisor.config</config>
 	<dplist>./dplist/CMS_CSCfw_Supervisor/CMS_CSCfw_Supervisor.dpl</dplist>
 	<dplist>./dplist/CMS_CSCfw_Supervisor/CMS_CSCfw_Supervisor2.dpl</dplist>

@@ -1,22 +1,16 @@
 V 10
 1
-LANG:1 9 do_config
-PANEL,-1 -1 547 502 N "_3DFace" 0
-"bool isBanner;
-int one_crate_configuration_time=11; // 6-7 according to Jinghua + 1-2 minutes for all
-
-main()
+LANG:1 0 
+PANEL,-1 -1 549 472 N "_3DFace" 0
+"main()
 {
 
   int i, n;
   int m_max=0;
   int p_min=10;
   
-  isBanner=true;
-  
-  system_crb=\"\";
-  system_plus=\"\";
-  system_minus=\"\";
+  string system_plus=\"\";
+  string system_minus=\"\";
   dyn_string ds1,ds2,ds3;
   string valid;
   ds1=dpNames(\"*:CMS_CSC_HV_CC_*\",\"MUDCS_STRING\");
@@ -27,13 +21,8 @@ main()
     ds3=strsplit(ds2[dynlen(ds2)],\"_\");
     n=ds3[dynlen(ds3)];
     if(n<=4 && n > m_max){system_minus=ds2[1];m_max=n;}
-    else if(n>=5 && n < p_min){system_plus=ds2[1];p_min=n;} 
+    else if(n>=5 && n < p_min){system_plus=ds2[1];p_min=n;}
   }  
-  ds1=dpNames(\"*:CMS_CSC_LV_CRB*\",\"MUDCS_STRING\");  
-  ds2=strsplit(ds1[1],\":\");
-  system_crb=  ds2[1]; 
-dpGet(system_crb+\":\"+\"db_pcmb.list\",db_pcmb);
-dpGet(system_crb+\":\"+\"db_pcmb_geographic.list\",db_pcmb_g);  
  /* 
 int i, n;
 string valid;
@@ -51,11 +40,7 @@ string valid;
     else system_plus=ds2[1];
   }  
 */  
-  //=================
-    dpConnect(\"update_prepare_power_up\",system_crb+\":PREPARE_POWER_UP_BUFFER.\");
-    dpConnect(\"update_prepare_power_up_1\",system_plus+\":STOP_SLOW_CONTROL.value\");
-    dpConnect(\"update_prepare_power_up_1\",system_minus+\":STOP_SLOW_CONTROL.value\");    
-  //=================
+  
  string s1,s2,add1,add2,banner_text;
   type_save=\"HV_1\"; // current page
   g_type1=\"_HV\"; // current page
@@ -64,22 +49,12 @@ string valid;
          
   while(1){
   s1=s2=add1=add2=\"\";
-  
-  /*
   if(system_minus!=\"\")dpGet(system_minus+\":STOP_SLOW_CONTROL.value\",s1);
   if(system_plus!=\"\")dpGet(system_plus+\":STOP_SLOW_CONTROL.value\",s2);
 
-  if(strpos(s1,\"RESUME\")<0)add1=\"-Z side: \";
-  if(strpos(s2,\"RESUME\")<0)add2=\"+Z side: \";
+  if(strpos(s1,\"STOP\")>=0)add1=\"-Z side: \";
+  if(strpos(s2,\"STOP\")>=0)add2=\"+Z side: \";
    
-  */
-  
-  if(system_minus!=\"\")dpGet(system_minus+\":SPECIAL_STOP_SC.value\",s1);
-  if(system_plus!=\"\")dpGet(system_plus+\":SPECIAL_STOP_SC.value\",s2);
-
-  if(strpos(s1,\"RESUME\")<0)add1=\"-Z side: \";
-  if(strpos(s2,\"RESUME\")<0)add2=\"+Z side: \"; 
-  
   if(add1!=\"\" || add2!=\"\"){
 //    getValue(\"stop_banner\",\"text\",banner_text);
     //mudcsDebug(banner_text);
@@ -92,153 +67,21 @@ banner_text+=\"Resume Peripheral Crate Slow Control button\";
    banner_text=add1+add2+banner_text; 
     setValue(\"stop_banner\",\"text\",banner_text);
      setValue(\"stop_banner\",\"backCol\",\"{255,48,49}\"); 
-    if(isBanner)setValue(\"stop_banner\",\"visible\",\"true\");
+    setValue(\"stop_banner\",\"visible\",\"true\");
     delay(1);
   setValue(\"stop_banner\",\"backCol\",\"{202,202,202}\");
     delay(1);    
  setValue(\"stop_banner\",\"backCol\",\"{255,48,49}\");
     delay(3);
+  
     periodic_read();
   }  
-  else {
-    setValue(\"stop_banner\",\"visible\",\"false\"); 
-    delay(5);      
+  else setValue(\"stop_banner\",\"visible\",\"false\"); 
+   delay(5);
     periodic_read();
-  } // else
-
-// string stop_slow_control_value_minus;
-// dpGet(system_minus+\":STOP_SLOW_CONTROL.value\",stop_slow_control_value_minus);
-// dpGet(system_plus+\":STOP_SLOW_CONTROL.value\",stop_slow_control_value_plus); 
-bool ret=  time_out_refresh();
-string crates_are_not_configured_text;
-  string special_stop_value_minus ,special_stop_value_plus;  
-    dpGet(system_minus+\":SPECIAL_STOP_SC.value\",special_stop_value_minus);//   
-    dpGet(system_plus+\":SPECIAL_STOP_SC.value\",special_stop_value_plus);// 
-    
-   if(ret) {
-     setValue(\"CRATES_ARE_NOT_CONFIGURED\",\"backCol\",\"{255,48,49}\");
-     getValue(\"CRATES_ARE_NOT_CONFIGURED\",\"text\",crates_are_not_configured_text);
-     if(crates_are_not_configured_text != \"Crates are not configured\"){
-         setValue(\"CRATES_ARE_NOT_CONFIGURED\",\"text\",\"Crates are not configured\");
-         if(special_stop_value_minus!=\"STOP\"){
-           dpSetWait(system_minus+\":STOP_SLOW_CONTROL.value\",\"RESUME_SLOW_CONTROL\");
-           dpSetWait(system_minus+\":LV_1_COM.command\",\"RESUME_SLOW_CONTROL\"); 
-         }
-         if(special_stop_value_plus!=\"STOP\"){
-           dpSetWait(system_plus+\":STOP_SLOW_CONTROL.value\",\"RESUME_SLOW_CONTROL\");
-           dpSetWait(system_plus+\":LV_1_COM.command\",\"RESUME_SLOW_CONTROL\"); 
-         }
-                  
-     }
-     
-     setValue(\"LV_IS_BEING_ON\",\"visible\",false);  
-   }
-   else{
-     setValue(\"CRATES_ARE_NOT_CONFIGURED\",\"backCol\",\"FwStateOKNotPhysics\"); 
-     setValue(\"CRATES_ARE_NOT_CONFIGURED\",\"text\",\"Crates are not configured, SC stopped\");    
-   }
-  } // while
-
-}
-//==============================================================
-bool time_out_refresh(){
-
- time current_time=getCurrentTime();
-  time last_set_buffer;
-  dyn_string power_up_buffer;
-  dpGet(system_crb+\":PREPARE_POWER_UP_BUFFER.:_online.._stime\",last_set_buffer);
-  dpGet(system_crb+\":PREPARE_POWER_UP_BUFFER.\",power_up_buffer); 
-  int time_out;
-  time_out=  current_time-last_set_buffer;
-  
-  setValue(\"time_out\",\"text\",time_out+\" sec\");
-  if(dynlen(power_up_buffer)>=1 
-     && time_out>(dynlen(power_up_buffer)*one_crate_configuration_time +120)){
-    setValue(\"time_out\",\"backCol\",\"{255,48,49}\");
-   setValue(\"do_config\",\"visible\",true); 
-   return true;
-  }
-  else  {
-    setValue(\"time_out\",\"backCol\",\"{202,202,202}\");
-    setValue(\"do_config\",\"visible\",false);
-    return false;
   }
 }
-//==============================================================
-update_prepare_power_up(string dpName,dyn_string value){
-  
-  int i;
-  bool ret=time_out_refresh();
-  
-  string special_stop_value_minus ,special_stop_value_plus;
- //string stop_value_minus ,stop_value_plus;  
-    dpGet(system_minus+\":SPECIAL_STOP_SC.value\",special_stop_value_minus);//   
-    dpGet(system_plus+\":SPECIAL_STOP_SC.value\",special_stop_value_plus);//       
-   // dpGet(system_minus+\":STOP_SLOW_CONTROL.value\",stop_value_minus);//   
-   // dpGet(system_plus+\":STOP_SLOW_CONTROL.value\",stop_value_plus);//       
-        
-    
-  dyn_string value_vme=makeDynString();
-  for(i=1;i<=dynlen(value);i++){
-    dynAppend(value_vme,mudcsCrb_getVmeById(value[i]) );
-  }
-  value=value_vme;
-  
-  if(dynlen(value) >= 1  ){
-    
-   setValue(\"LV_IS_BEING_ON\",\"visible\",false);  
-    
- //  isBanner=false;
-   setValue(\"PREPARE_POWER_UP\",\"visible\",true);      
-   setValue(\"PREPARE_POWER_UP\",\"items\",value); 
- 
-   if(ret){
-     setValue(\"CRATES_ARE_NOT_CONFIGURED\",\"text\",\"Crates are not configured\");
-     setValue(\"CRATES_ARE_NOT_CONFIGURED\",\"backCol\",\"{255,48,49}\");
-         if(special_stop_value_minus!=\"STOP\"){
-           dpSetWait(system_minus+\":STOP_SLOW_CONTROL.value\",\"RESUME_SLOW_CONTROL\");
-           dpSetWait(system_minus+\":LV_1_COM.command\",\"RESUME_SLOW_CONTROL\"); 
-         }
-         if(special_stop_value_plus!=\"STOP\"){
-           dpSetWait(system_plus+\":STOP_SLOW_CONTROL.value\",\"RESUME_SLOW_CONTROL\");
-           dpSetWait(system_plus+\":LV_1_COM.command\",\"RESUME_SLOW_CONTROL\"); 
-         }     
-   }
-   else{
-     setValue(\"CRATES_ARE_NOT_CONFIGURED\",\"text\",\"Crates are not configured, SC stopped\");      
-     setValue(\"CRATES_ARE_NOT_CONFIGURED\",\"backCol\",\"FwStateOKNotPhysics\");    
-   }
-       
-   setValue(\"CRATES_ARE_NOT_CONFIGURED\",\"visible\",true);
-   setValue(\"CONFIGURATION_IS_DONE\",\"visible\",false);      
-  }
-  else{
-    
- //  isBanner=true;
-   setValue(\"PREPARE_POWER_UP\",\"visible\",false);    
-   setValue(\"CRATES_ARE_NOT_CONFIGURED\",\"visible\",false);    
-   if(dynlen(value)==0)setValue(\"CONFIGURATION_IS_DONE\",\"visible\",true);   
-   
-  }
-  
 
-}
-
-//==============================================================
-update_prepare_power_up_1(string dpName,string value){
-  
-  int i;
-  
-  if(strpos(value,\"PREPARE_POWER_UP\")>=0){
-     setValue(\"LV_IS_BEING_ON\",\"visible\",true);  
-    
-  }
-  else{
-     setValue(\"LV_IS_BEING_ON\",\"visible\",false);  
-  }
-  
-}
-//==============================================================
 
 periodic_read(){
   int i;
@@ -271,9 +114,7 @@ periodic_read(){
 }" 0
  E E E E 1 -1 -1 0  80 40
 ""0  1
-E "  string system_crb;
-  string system_plus;
-  string system_minus;
+E "
 
 int main_mode=0;
   
@@ -288,77 +129,7 @@ int main_mode=0;
  dyn_string dps_en;
  
  int frozen=0;
-
  
-  dyn_string db_pcmb;
- dyn_string db_pcmb_g;
- 
-//===========================================
-string mudcsCrb_getVmeById(string id){
-
-
-int i;
-dyn_string dps, dps1;
-int coord_int, pos;
-string coord_s;
-for(i=1;i<=dynlen(db_pcmb);i++){
- dps=strsplit(db_pcmb[i],\";\");
- sscanf(dps[2],\"%x\",coord_int);
- coord_s=coord_int;
- if(id==coord_int){
-  dps1=strsplit(db_pcmb_g[i],\";\");
-  return \"VME\"+strtolower(substr(dps[1],0,2))+\"_\"+dps1[2];
- }
-}  // i 
-
- return \"\";
-}
-
-//=========================================== 
-//============================================================================ 
- do_configuration(){
- 
-  int i, coord_int;
-  dyn_string buffer,ds1;
-  string coord_s;
-  
-  dpGet(system_crb+\":PREPARE_POWER_UP_BUFFER.\",buffer);
-  dpSetWait(system_crb+\":PREPARE_POWER_UP_BUFFER.\",buffer);
-  
-  bool plus=false, minus=false;
-  for(i=1;i<=dynlen(buffer);i++){
-     // ds1=strsplit(buffer[i],\";\");
-     // if(dynlen(ds1)==2){
-        coord_int=coord_s=buffer[i];//ds1[2];
-        if(coord_int<=30){
-          plus=true;
-          dpSet(system_plus+\":STOP_SLOW_CONTROL.value\",\"PREPARE_POWER_UP;\"+mudcsCrb_getVmeById(coord_s));
-          dpSet(system_plus+\":LV_1_COM.command\",\"PREPARE_POWER_UP;\"+mudcsCrb_getVmeById(coord_s));
-        }
-        else{
-          minus=true;
-          dpSet(system_minus+\":STOP_SLOW_CONTROL.value\",\"PREPARE_POWER_UP;\"+mudcsCrb_getVmeById(coord_s));
-          dpSet(system_minus+\":LV_1_COM.command\",\"PREPARE_POWER_UP;\"+mudcsCrb_getVmeById(coord_s));          
-          
-        }
-        
-     // }
-    
-  } // for
-  
-  if(plus){
-    dpSet(system_plus+\":STOP_SLOW_CONTROL.value\",\"EXECUTE_POWER_UP\");
-    dpSet(system_plus+\":LV_1_COM.command\",\"EXECUTE_POWER_UP\"); 
-   }
-  if(minus){
-    dpSet(system_minus+\":STOP_SLOW_CONTROL.value\",\"EXECUTE_POWER_UP\");
-    dpSet(system_minus+\":LV_1_COM.command\",\"EXECUTE_POWER_UP\");     
-  }
-  
-}
-
-
-//==============================================================
 //========================================================================================     
 mudcsErrorMrtnDisplay(string type, string type1, string type2, string current_type=\"\"){
   
@@ -386,7 +157,7 @@ mudcsErrorMrtnDisplay(string type, string type1, string type2, string current_ty
   dps=dpNames(\"*:*_CR*_LV_MRTN\",\"_FwFsmObject\");
  else if(type==\"Dubna\"){dps=dpNames(\"*:CSC_ME_*11_C*_HV\",\"_FwFsmObject\");}
  
- 
+
   for(i=1;i<=dynlen(dps);i++){
 
 
@@ -755,8 +526,9 @@ DomainName=substr(split3[1],(strpos(split3[1],\":\")+1));
     else if(status==-1)status_com=true;
             
     
-    
-    
+//?
+//   if(type==\"HV_1\" && strpos(dps[i],\"P21_C11\")>=0)status_com=true;        
+//  if(type==\"HV_1\" && strpos(dps[i],\"P22_C12\")>=0)status_com=true;      
     
     
  ///  if(type==\"fwCrb_CSC_LV\")  status_com=true;  
@@ -1010,26 +782,6 @@ LAYER, 0
 1
 LANG:1 0 
 2 13
-"CONFIGURATION_IS_DONE"
-""
-1 10 110 E E E 1 E 0 E N "_Window" E N "_ETM" E E
- E E
-29 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 110 264 136
-0 2 2 "0s" 0 0 0 192 0 0  10 110 1
-1
-LANG:1 92 -*-helvetica-*-r-normal-*-17-*-100-100-*-*-iso8859-1|-17,0,0,0,505,0,0,0,0,0,0,0,0,helvetica
-0 ""
-1
-LANG:1 33 Switched on crates are configured
-2 0
 "stop_banner"
 ""
 1 10 10 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
@@ -1064,10 +816,10 @@ LANG:1 108 -*-Bitstream Charter-*-r-normal-*-15-*-100-100-*-*-iso8859-1|-15,0,0,
 0 ""
 1
 LANG:1 45 "Resume Peripheral Crate Slow Control" button
-25 1
+25 4
 "table"
 ""
-1 10 140 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 10 110 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 4 0 0 0 0 0
 E E E
@@ -1079,7 +831,7 @@ LANG:1 0
 1
 LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
 0 ""
- 8 138 441.9999999999998 492
+ 8 108 441.9999999999998 462
 "main()
 {
    setValue(\"\",\"tableMode\",TABLE_SELECT_BROWSE);
@@ -1264,10 +1016,52 @@ LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,
 0 ""
 0 1 1 1 7
 1 0
-13 3
+13 5
+"hv_errors"
+""
+1 440 110 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 438 108 542.0000000000001 152
+
+T 
+1
+LANG:1 17 HV ERRORS
+SUMMARY
+"main()
+{
+ flag_press=1;
+frozen=0;
+  string type;
+  type_save=type=\"HV_1\";
+  string type1=\"_HV\";
+  g_type1=type1;
+  string type2=\"HV\";
+        g_panel=\"CMS_CSCfw_HV_CC/emuDevHV_1Browser.pnl\";
+    bool ischeck;
+    getValue(\"check1\",\"state\",0,ischeck);
+    
+  if(!ischeck)mudcsErrorDisplay(type,type1,type2,\"\");
+  else mudcsDisbledDevicesDisplay();
+
+}
+
+
+" 0
+ E E E
+13 6
 "crb_errors"
 ""
-1 440 280 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 440 250 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 7 0 0 0 0 0
 E E E
@@ -1279,7 +1073,7 @@ LANG:1 0
 1
 LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
 0 ""
- 438 278 542 332
+ 438 248 542 302
 
 T 
 1
@@ -1306,10 +1100,10 @@ SUMMARY
 
 }" 0
  E E E
-13 4
+13 7
 "lv_errors"
 ""
-1 440 330 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 440 300 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 9 0 0 0 0 0
 E E E
@@ -1321,7 +1115,7 @@ LANG:1 0
 1
 LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
 0 ""
- 438 328 542 382
+ 438 298 542 352
 
 T 
 1
@@ -1346,10 +1140,10 @@ SUMMARY
   else mudcsDisbledDevicesDisplay();
 }" 0
  E E E
-13 5
+13 8
 "temp_errors"
 ""
-1 440 380 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 440 350 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 11 0 0 0 0 0
 E E E
@@ -1361,7 +1155,7 @@ LANG:1 0
 1
 LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
 0 ""
- 438 378 542 452
+ 438 348 542 422
 
 T 
 1
@@ -1387,10 +1181,10 @@ SUMMARY
 
 }" 0
  E E E
-20 6
+20 9
 "check1"
 ""
-1 10 90 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+1 290 90 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
  E E
 12 0 0 0 0 0
 E E E
@@ -1402,7 +1196,7 @@ LANG:1 0
 1
 LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
 0 ""
- 8 88 172 112
+ 288 88 452 112
 1
 T 
 1
@@ -1415,10 +1209,10 @@ E E
 0 0 0 0 0
 1
 E E
-EE13 7
+EE13 14
 "PCRATE"
 ""
-1 440 450 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 440 420 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  "main()
 {
         flag_press=1;
@@ -1451,7 +1245,7 @@ LANG:1 99 Yellow color indicates a bad status in one or more VME controllers: ca
 1
 LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
 0 ""
- 438 448 542 491.9999999999999
+ 438 418 542 461.9999999999999
 
 T 
 1
@@ -1476,10 +1270,10 @@ Reading Problem
 
 }" 0
  E E E
-14 8
+14 15
 "current_time"
 ""
-1 320 147 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 390 50 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 19 0 0 0 0 0
 E E E
@@ -1491,12 +1285,12 @@ LANG:1 0
 1
 LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
 0 ""
- 318 145 472 169
+ 388 48 542 72
 3 "0s" 0 0 0 0 0 -1  E E E
-13 9
+13 17
 "mrtn_errors"
 ""
-1 440 230 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 440 200 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 23 0 0 0 0 0
 E E E
@@ -1508,7 +1302,7 @@ LANG:1 0
 1
 LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
 0 ""
- 438 228 542 282
+ 438 198 542 252
 
 T 
 1
@@ -1533,10 +1327,10 @@ SUMMARY
 
 }" 0
  E E E
-13 10
+13 18
 "dubna_errors"
 ""
-1 440 180 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 440 150 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 25 0 0 0 0 0
 E E E
@@ -1548,7 +1342,7 @@ LANG:1 0
 1
 LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
 0 ""
- 438 178 542 232
+ 438 148 542 202
 
 T 
 1
@@ -1558,10 +1352,6 @@ SUMMARY
 "main()
 {
   
-  
-  
-   
-  flag_press=1; 
   flag_press=1;
   frozen=0;
   string type;
@@ -1575,162 +1365,9 @@ SUMMARY
    
     
   mudcsErrorMrtnDisplay(type,type1,type2,\"\");
-  
- 
 
 }" 0
  E E E
-17 11
-"PREPARE_POWER_UP"
-""
-1 439.9999999999998 0 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
- E E
-26 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
- 437.9999999999998 -2 542 142
-1
-1
-LANG:1 3 ???
-
-0
-
-E
-E
-E
-
-0 0
-2 12
-"CRATES_ARE_NOT_CONFIGURED"
-""
-1 10 110 E E E 1 E 0 E N "_Window" E N "alertCamAckn" E E
- E E
-28 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1.003436426116838 0 1 10 0 1 E 0 110 287 136
-0 2 2 "0s" 0 0 0 192 0 0  0 110 1
-1
-LANG:1 92 -*-helvetica-*-r-normal-*-17-*-100-100-*-*-iso8859-1|-17,0,0,0,505,0,0,0,0,0,0,0,0,helvetica
-0 ""
-1
-LANG:1 37 Crates are not configured: SC stopped
-14 14
-"time_out"
-""
-1 330 110 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
- E E
-30 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 108 -*-Bitstream Charter-*-r-normal-*-15-*-100-100-*-*-iso8859-1|-15,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
- 328 108 442 142
-3 "0s" 0 0 0 0 0 -1  E E E
-13 15
-"do_config"
-""
-1 360 90 E E E 1 E 0 E N "_Window" E N "_ETM" E E
- E E
-31 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 108 -*-Bitstream Charter-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
- 358 88 442 112
-
-T 
-1
-LANG:1 9 do config
-"main()
-{
-  do_configuration();
-}" 0
- E E E
-13 2
-"hv_errors"
-""
-1 440 140 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-5 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 438 138 542.0000000000001 182
-
-T 
-1
-LANG:1 17 HV ERRORS
-SUMMARY
-"main()
-{
- flag_press=1;
-frozen=0;
-  string type;
-  type_save=type=\"HV_1\";
-  string type1=\"_HV\";
-  g_type1=type1;
-  string type2=\"HV\";
-        g_panel=\"CMS_CSCfw_HV_CC/emuDevHV_1Browser.pnl\";
-    bool ischeck;
-    getValue(\"check1\",\"state\",0,ischeck);
-    
-  if(!ischeck)mudcsErrorDisplay(type,type1,type2,\"\");
-  else mudcsDisbledDevicesDisplay();
-
-}
-
-
-" 0
- E E E
-2 16
-"LV_IS_BEING_ON"
-""
-1 10 110 E E E 1 E 0 E N "_Window" E N "_ETM" E E
- E E
-33 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 110 307 136
-0 2 2 "0s" 0 0 0 192 0 0  10 110 1
-1
-LANG:1 92 -*-helvetica-*-r-normal-*-17-*-100-100-*-*-iso8859-1|-17,0,0,0,505,0,0,0,0,0,0,0,0,helvetica
-0 ""
-1
-LANG:1 41       LV IS BEING TURNED ON              
 0
 LAYER, 1 
 1

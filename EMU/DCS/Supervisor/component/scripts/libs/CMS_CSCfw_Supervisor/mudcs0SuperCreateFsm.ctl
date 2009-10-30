@@ -18,6 +18,15 @@ string parent_domain;
 if(!dpExists("PROJECT_SYSTEM"))dpCreate("PROJECT_SYSTEM","MUDCS_STRING");
   
 int i,j;
+
+for(i=1;i<=15;i++){
+dpCreate("PROJECT_SYSTEM_"+i,"MUDCS_STRING");
+}
+for(i=1;i<=15;i++){
+dpCreate("PROJECT_SYSTEM_TIME_"+i,"MUDCS_TIME");
+}
+
+
 dyn_string disk_db, disk_db2, disk_db3;
 dyn_string ds_split, ds_split2;
    
@@ -186,6 +195,17 @@ mudcsSuper_removeNode(){
 
 mudcsSuper_addNode(){
 
+
+  int pos_doublecolon=strpos(CSC_fwGSuper_g_EmuCmsGlobalNode,"::");
+  int pos_colon=strpos(CSC_fwGSuper_g_EmuCmsGlobalNode,":");
+  int is_exists;
+
+  string just_node=CSC_fwGSuper_g_EmuCmsGlobalNode;
+  if(pos_doublecolon>=0)just_node=substr(CSC_fwGSuper_g_EmuCmsGlobalNode,pos_doublecolon+2);
+  
+  is_exists= fwFsmTree_isNode(just_node);
+  if(is_exists)return;
+  if(pos_colon >=0 && pos_colon==(strlen(CSC_fwGSuper_g_EmuCmsGlobalNode)-1))return;
 
   
  int cu_flag;

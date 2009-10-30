@@ -1,7 +1,6 @@
 int mode=2; // mode =2 is browsing with all CSC panels
             // mode=0 only FSM panel browsing
             // mode=1  : is browsing with all CSC panels besides some
-            // mode=3 easy mode
 
 string Component;
 string ProjectHome;
@@ -14,19 +13,17 @@ main()
 {
 
   
-DebugTN("Super Component Creation");
+
 mudcsSuperInit();
-DebugTN("Super Component Creation 2");
 mudcsSupeComponentrCreate(1);
 mudcsSupeComponentrCreate(2);
-mudcsSupeComponentrCreate(3);
 
 }
 
 mudcsSupeComponentrCreate(int mode_par){
 
 mode=mode_par;
-DebugTN("Super Component Creation "+mode);
+
 
 
 string oper_system=getenv("OS");
@@ -45,14 +42,12 @@ dir_init=Component+"/init";
 
 string dir_dubna="CMS_ME11";
 
-string key_add;
-if(mode==2)key_add="";
-else if(mode==1)key_add="_MINI";
-else if(mode==3)key_add="_EASY";
+string key_add="";
+if(mode==1)key_add="_MINI";
 
 Component+=key_add;
 
-DebugTN("Super Component Creation "+mode);
+
 
 //---forming package: EMU DCS components------------
 mudcsSynchSystemPoratbleOS(oper_system,"rm -rf "+CSC_fwGSuper_g_HOME+"/"+Component);
@@ -88,8 +83,8 @@ mudcsSynchSystemPoratbleOS(oper_system,"mkdir "+CSC_fwGSuper_g_HOME+"/"+Componen
 mudcsSynchSystemPoratbleOS(oper_system,"cp "+ProjectHome+"/scripts/libs/"+dir_oper+"/*mu*.ctl"+" "+CSC_fwGSuper_g_HOME+"/"+Component+"/scripts/libs/"+dir_oper+"/.");
 mudcsSynchSystemPoratbleOS(oper_system,"cp -rp "+ProjectHome+"/scripts/"+dir_oper+"/*.ctl"+" "+CSC_fwGSuper_g_HOME+"/"+Component+"/scripts/"+dir_oper+"/.");  
 
-//if(mode==2)
-  mudcsSynchSystemPoratbleOS(oper_system,"cp -rp "+ProjectHome+"/scripts/"+dir_oper+"/*.postInstall"+" "+CSC_fwGSuper_g_HOME+"/"+Component+"/scripts/"+dir_oper+"/."); 
+if(mode==2)
+  mudcsSynchSystemPoratbleOS(oper_system,"cp -rp "+ProjectHome+"/scripts/"+dir_oper+"/"+dir_oper+".postInstall"+" "+CSC_fwGSuper_g_HOME+"/"+Component+"/scripts/"+dir_oper+"/."); 
 
 
 mudcsSynchSystemPoratbleOS(oper_system,"cp "+ProjectHome+"/panels/"+dir_oper+"/*.pnl"+" "+CSC_fwGSuper_g_HOME+"/"+Component+"/panels/"+dir_oper+"/.");
@@ -107,22 +102,14 @@ mudcsSynchSystemPoratbleOS(oper_system,"cp -rp "+ProjectHome+"/panels/"+dir_init
 mudcsSynchSystemPoratbleOS(oper_system,"cp "+ProjectHome+"/source/"+dir_oper+"/config/"+dir_oper+".config "+
                                   +CSC_fwGSuper_g_HOME+"/"+Component+"/config/.");
 
-if(mode==2){
-mudcsSynchSystemPoratbleOS(oper_system,"cp "+ProjectHome+"/source/"+dir_oper+"/config/"+dir_oper+".xml "+CSC_fwGSuper_g_HOME+"/"+Component+"/"+dir_oper+".xml");
-mudcsSynchSystemPoratbleOS(oper_system,"cp "+ProjectHome+"/source/"+dir_oper+"/config/"+dir_oper+"_short.xml "+CSC_fwGSuper_g_HOME+"/"+Component+"/"+dir_oper+"_MONITOR.xml");  
-mudcsSynchSystemPoratbleOS(oper_system,"cp "+ProjectHome+"/source/"+dir_oper+"/config/"+dir_oper+"_easy.xml "+CSC_fwGSuper_g_HOME+"/"+Component+"/"+dir_oper+"_MINI.xml");  
-
-}
+if(mode==2)
+mudcsSynchSystemPoratbleOS(oper_system,"cp "+ProjectHome+"/source/"+dir_oper+"/config/"+dir_oper+".xml "+CSC_fwGSuper_g_HOME+"/"+Component+"/"+".");
 else if(mode==1)
-mudcsSynchSystemPoratbleOS(oper_system,"cp "+ProjectHome+"/source/"+dir_oper+"/config/"+dir_oper+"_short_mode1.xml "+CSC_fwGSuper_g_HOME+"/"+Component+"/"+dir_oper+".xml");  
-else if(mode==3)
-mudcsSynchSystemPoratbleOS(oper_system,"cp "+ProjectHome+"/source/"+dir_oper+"/config/"+dir_oper+"_easy_mode3.xml "+CSC_fwGSuper_g_HOME+"/"+Component+"/"+dir_oper+".xml");  
+mudcsSynchSystemPoratbleOS(oper_system,"cp "+ProjectHome+"/source/"+dir_oper+"/config/"+dir_oper+"_short.xml "+CSC_fwGSuper_g_HOME+"/"+Component+"/"+".");  
 
-
-if(mode!=3){
 dplist();
 dplist2();
-}
+
 
 mudcsSynchSystemPoratbleOS(oper_system,"cp -rp "+ProjectHome+"/source/"+dir_oper+"/config"+" "+CSC_fwGSuper_g_HOME+"/"+Component+"/source/"+dir_oper+"/.");
 
