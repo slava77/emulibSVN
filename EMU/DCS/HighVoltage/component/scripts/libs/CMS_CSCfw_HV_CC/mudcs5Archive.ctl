@@ -1,7 +1,11 @@
 #uses "fwRDBArchiving/fwRDBConfig.ctl"
 
-void setupArchiving (dyn_int projectStations) {
+void setupArchiving (dyn_int projectStations, bool deleteFirst = true) {
   DebugTN("Post install: configuring RDB");
+  if (deleteFirst) {    
+    deleteArchiving();
+  }
+  
   string accountName, databaseName;
   accountName = "cms_csc_pvss_cond";
   databaseName = "cms_pvss_cond";
@@ -16,6 +20,18 @@ void setupArchiving (dyn_int projectStations) {
   DebugTN("Post install: please restart the project when ready");
 }
 
+void deleteArchiving() {
+  DebugTN("Deleting existing archiving setup");
+  dyn_string archivingDpTypes = makeDynString("CSC_HV_I_DATA", "CSC_HV_V_DATA", "CSC_HV_M_DATA", "CSC_LV_I_DATA", "CSC_LV_V_DATA", "CSC_TEMP_DATA");
+  for (int i=1; i <= dynlen(archivingDpTypes); i++) {
+    dyn_string dps = dpNames(getSystemName() + "*", archivingDpTypes[i]);
+    for (int j=1; j <= dynlen(dps); j++) {
+      dpDelete(dps[j]);
+    }
+    dpTypeDelete(archivingDpTypes[i]);
+  }
+  DebugTN("Archiving setup deleted");
+}
 
 //Create special data points for csc project using for RDB archiving
 //mapping original data point elements by dp_fct
@@ -118,11 +134,10 @@ createArchivingDPs(dyn_int stations)
        DebugN ("CSC_LV_V_DATA type Created, result: ",n); 
  // Create LV_I datapoint type
        n = dpTypeCreate(dsLV_Idpes,diLV_Idpes);
-       DebugN ("CSC_LV_I_DATA type Created, result: ",n);      
+       DebugN ("CSC_LV_I_DATA type Created, result: ",n);     
   // Create TEMP datapoint type
        n = dpTypeCreate(dsTEMPdpes,diTEMPdpes);
        DebugN ("CSC_TEMP_DATA type Created, result: ",n);   
-   return;
    }
    if ((sProjectName == " ME+1") || (sProjectName == " ME-1"))
   {
@@ -149,10 +164,7 @@ createArchivingDPs(dyn_int stations)
    // Create FED_T datapoint type
        n = dpTypeCreate(dsFED_Tdpes,diFED_Tdpes);
        DebugN ("CSC_FED_T_DATA type created, result: ",n);
-       return;     
    }        
-   else
-     return;
    
    // create archiving dp and fct  
    if (sProjectName == " ME+1")
@@ -342,6 +354,7 @@ void Create_archiving_dp_HV(string sCSC_Station,int iChamberNumbers,int iChannel
        int k;
        for (k=1;k<=dynlen(dCSC_Chambers);k++)
        { 
+         DebugTN("Creating HV archiving DP for chamber " + dCSC_Chambers[k] + ". number of channels: " + iChannelNumbers);
          int i;
          for (i=1;i<=iChannelNumbers;i++)  //create dp for HV 
          {
@@ -388,6 +401,7 @@ void Create_archiving_dp_LV_TEMP(string sCSC_Station,int iChamberNumbers,int iCf
    int k;
     for (k=1;k<=dynlen(dCSC_Chambers);k++)
     {
+      DebugTN("Creating LV & TEMP archiving DPs for chamber " + dCSC_Chambers[k] + ". number of CFEBs: " + iCfebNumbers);
       int i;
        for (i=1;i<=iCfebNumbers;i++)  
         {
@@ -425,6 +439,7 @@ void Create_archiving_dp_HV_Master(string sCSC_Station)
        int k;
        for (k=1;k<=dynlen(dHV_Master);k++)
        { 
+         DebugTN("Creating HV Master archiving DP for master " + dHV_Master[k]);
          int i;
          for (i=1;i<=8;i++)  //create dp for HV master channel
          {
@@ -458,6 +473,7 @@ void Create_archiving_dp_FED(string sCSC_FED)
        int k;
        for (k=1;k<=dynlen(dsFED_DDUs);k++)
        { 
+           DebugTN("Creating FED archiving DP for DDU " + dsFED_DDUs[k]);
            FED_DDU_dp_setup(dsFED_DDUs[k]);    //create FED DDU dp
        }
 }
