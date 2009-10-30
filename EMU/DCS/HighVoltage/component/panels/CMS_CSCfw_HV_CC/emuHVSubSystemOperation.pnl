@@ -1,7 +1,7 @@
 V 10
 1
 LANG:1 0 
-PANEL,-1 -1 577 505 N "_3DFace" 4
+PANEL,-1 -1 573 505 N "_3DFace" 4
 "$obj"
 "$project_station"
 "$project_system"
@@ -15,7 +15,7 @@ PANEL,-1 -1 577 505 N "_3DFace" 4
 MODE_SLOW=true; // only true tested 
 // !!!!! mudcsIsEnabled(dps_global[i]); not tested  
 
-MODE_PR=true;    
+MODE_PR=false;//true;    
 
 
 graphics_init();
@@ -94,6 +94,8 @@ E "#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
 #uses \"CMS_CSCfw_HV_CC/emuAlert.ctl\"
 #uses \"CMS_CSCfw_HV_CC/emufw.ctl\"
 
+bool isDelay=true;
+
 // !!!!! mudcsIsEnabled(dps_global[i]); not tested 
 bool MODE_SLOW;
 bool MODE_PR;
@@ -110,6 +112,7 @@ int mem12=1;
 int mem13=2;
 int mem22=3;
 int mem32=4;
+int mem42=10;
 
 int mep21=5;
 int mep31=6;
@@ -118,6 +121,7 @@ int mep12=5;
 int mep13=6;
 int mep22=7;
 int mep32=8;
+int mep42=11;
 
 int all_mode=0;
 int inner_mode=1;
@@ -239,6 +243,7 @@ mudcsGetAllCoordForHvType(dyn_string &sets){
     else if(strpos(sm2,\"M13\")>=0){w_pos=4; radius=3;}        
     else if(strpos(sm2,\"M32\")>=0){w_pos=2; radius=2;}   
     else if(strpos(sm2,\"M22\")>=0){w_pos=3; radius=2;}
+    else if(strpos(sm2,\"M42\")>=0){w_pos=1; radius=2;}    
     
     else if(strpos(sm2,\"P41\")>=0){w_pos=8; radius=1;}
     else if(strpos(sm2,\"P31\")>=0){w_pos=7; radius=1;}       
@@ -247,6 +252,7 @@ mudcsGetAllCoordForHvType(dyn_string &sets){
     else if(strpos(sm2,\"P13\")>=0){w_pos=5; radius=3;}        
     else if(strpos(sm2,\"P32\")>=0){w_pos=7; radius=2;}   
     else if(strpos(sm2,\"P22\")>=0){w_pos=6; radius=2;}
+    else if(strpos(sm2,\"P42\")>=0){w_pos=8; radius=2;}    
     
     ich_s=substr(sm1,1);
     ich=ich_s;
@@ -336,7 +342,8 @@ mudcsButtonFine(string button){
    mudcsHVFineGroup(outer_mode, mem12,on_mode); // me12
    mudcsHVFineGroup(outer_mode, mem13,on_mode); // me13
    mudcsHVFineGroup(outer_mode, mem22,on_mode); // me22
-   mudcsHVFineGroup(outer_mode, mem32,on_mode); // me23      
+   mudcsHVFineGroup(outer_mode, mem32,on_mode); // me32
+   mudcsHVFineGroup(outer_mode, mem42,on_mode); // me42         
   }  
   //===============================
   else if(button==\"on_p1\"){
@@ -354,7 +361,8 @@ mudcsButtonFine(string button){
    mudcsHVFineGroup(outer_mode, mep12,on_mode); // me12
    mudcsHVFineGroup(outer_mode, mep13,on_mode); // me13
    mudcsHVFineGroup(outer_mode, mep22,on_mode); // me22
-   mudcsHVFineGroup(outer_mode, mep32,on_mode); // me23      
+   mudcsHVFineGroup(outer_mode, mep32,on_mode); // me32
+   mudcsHVFineGroup(outer_mode, mep42,on_mode); // me42         
   }  
   
 //===================================================  
@@ -374,7 +382,8 @@ mudcsButtonFine(string button){
    mudcsHVFineGroup(outer_mode, mem12,off_mode); // me12
    mudcsHVFineGroup(outer_mode, mem13,off_mode); // me13
    mudcsHVFineGroup(outer_mode, mem22,off_mode); // me22
-   mudcsHVFineGroup(outer_mode, mem32,off_mode); // me23      
+   mudcsHVFineGroup(outer_mode, mem32,off_mode); // me32 
+   mudcsHVFineGroup(outer_mode, mem42,off_mode); // me42         
   }  
   //===============================
   else if(button==\"off_p1\"){
@@ -392,7 +401,8 @@ mudcsButtonFine(string button){
    mudcsHVFineGroup(outer_mode, mep12,off_mode); // me12
    mudcsHVFineGroup(outer_mode, mep13,off_mode); // me13
    mudcsHVFineGroup(outer_mode, mep22,off_mode); // me22
-   mudcsHVFineGroup(outer_mode, mep32,off_mode); // me23      
+   mudcsHVFineGroup(outer_mode, mep32,off_mode); // me32 
+   mudcsHVFineGroup(outer_mode, mep42,off_mode); // me42         
   }  
   
 //===================================================  
@@ -404,7 +414,7 @@ mudcsButtonFine(string button){
 mudcsHVFineGroup(int mode, int submode, int mode_action, float vset=0){
   
   
-  
+dyn_string dps_global;  
  
 
    int chamber_status;   
@@ -465,6 +475,10 @@ mudcsHVFineGroup(int mode, int submode, int mode_action, float vset=0){
    dps=dpNames(\"*:*CSC_ME_M32*\",\"HV_1\"); 
    dynAppend(dps_global,dps);
   }
+  else if(submode==mem42){  
+   dps=dpNames(\"*:*CSC_ME_M42*\",\"HV_1\"); 
+   dynAppend(dps_global,dps);
+  }  
   else if(submode==mep12){
    dps=dpNames(\"*:*CSC_ME_P12*\",\"HV_1\");
    dynAppend(dps_global,dps);
@@ -479,6 +493,10 @@ mudcsHVFineGroup(int mode, int submode, int mode_action, float vset=0){
   }
   else if(submode==mep32){  
    dps=dpNames(\"*:*CSC_ME_P32*\",\"HV_1\"); 
+   dynAppend(dps_global,dps);
+  }
+   else if(submode==mep42){  
+   dps=dpNames(\"*:*CSC_ME_P42*\",\"HV_1\"); 
    dynAppend(dps_global,dps);
   }
    
@@ -501,6 +519,20 @@ mudcsHVFineGroup(int mode, int submode, int mode_action, float vset=0){
  }
  //===================================
  for(i=1;i<=dynlen(dps_global);i++){
+   
+   //delay(0,50);
+dyn_string split2= strsplit(dps_global[i],\":\");
+string DpNameFsm2=split2[2];
+dyn_string split1=strsplit(DpNameFsm2,\"/\");
+string DomainName=substr(split1[2],0, strlen(\"CSC_ME_\")+2);
+string isEnabled=fwFsmUi_getDUMode(DomainName,DpNameFsm2);
+
+//if(strpos(dps_global[i],\"ME_M32_C27_HV\") >=0){
+// mudcsDebug(DpNameFsm2);
+//   mudcsDebug(DomainName);
+//    mudcsDebug(isEnabled); 
+//}   
+
     dpGet(dps_global[i]+\".status\",chamber_status);
    DebugTN(dps_global[i]);
    
@@ -509,23 +541,25 @@ mudcsHVFineGroup(int mode, int submode, int mode_action, float vset=0){
    }
    else if(mode_action==on_mode){
       
-    
+  if(isDelay) delay(0,100);   
      
    // mudcsConvertData2FsmOne(\"HV_1\",dps_global[i],fsm);
    // DebugTN(fsm);
+     if(strpos(isEnabled,\"Disabled\")<0)
       if(MODE_SLOW)
    dpSetWait(dps_global[i]+\".status\",2);
-      else
-    command_group_of_chambers(7);     
+  //    else
+  //  command_group_of_chambers(7);     
       
    }
    else if(mode_action==off_mode){
       
-    
+       if(isDelay) delay(0,20);   
      
    // mudcsConvertData2FsmOne(\"HV_1\",dps_global[i],fsm);
    // DebugTN(fsm);
-    if(chamber_status >=2) 
+        if(strpos(isEnabled,\"Disabled\")<0)
+    if(chamber_status >=2 || chamber_status ==-1) 
    dpSetWait(dps_global[i]+\".status\",0);
    }   
    
@@ -543,7 +577,7 @@ mudcsHVFineGroup(int mode, int submode, int mode_action, float vset=0){
 
 mudcsHVGroup(int mode, int mode_action, float vset=0){
   
-  
+ dyn_string dps_global; 
   
   	dyn_string exceptionInfo; 
 	g_busyThread = -1; 
@@ -589,7 +623,9 @@ mudcsHVGroup(int mode, int mode_action, float vset=0){
   dps=dpNames(\"*:*CSC_ME_M22*\",\"HV_1\"); 
   dynAppend(dps_global,dps);
   dps=dpNames(\"*:*CSC_ME_M32*\",\"HV_1\"); 
-  dynAppend(dps_global,dps);  
+  dynAppend(dps_global,dps); 
+  dps=dpNames(\"*:*CSC_ME_M42*\",\"HV_1\"); 
+  dynAppend(dps_global,dps);    
 
   dps=dpNames(\"*:*CSC_ME_P12*\",\"HV_1\");
   dynAppend(dps_global,dps);  
@@ -599,7 +635,8 @@ mudcsHVGroup(int mode, int mode_action, float vset=0){
   dynAppend(dps_global,dps);
   dps=dpNames(\"*:*CSC_ME_P32*\",\"HV_1\"); 
   dynAppend(dps_global,dps);       
-   
+  dps=dpNames(\"*:*CSC_ME_P42*\",\"HV_1\"); 
+  dynAppend(dps_global,dps);     
  }
  
  //===== primaries ===================
@@ -648,6 +685,14 @@ mudcsHVGroup(int mode, int mode_action, float vset=0){
  }
  //===================================
  for(i=1;i<=dynlen(dps_global);i++){
+   
+  
+dyn_string split2= strsplit(dps_global[i],\":\");
+string DpNameFsm2=split2[2];
+dyn_string split1=strsplit(DpNameFsm2,\"/\");
+string DomainName=substr(split1[2],0, strlen(\"CSC_ME_\")+2);
+string isEnabled=fwFsmUi_getDUMode(DomainName,DpNameFsm2);
+   
     dpGet(dps_global[i]+\".status\",chamber_status);
    DebugTN(dps_global[i]);
    
@@ -656,22 +701,24 @@ mudcsHVGroup(int mode, int mode_action, float vset=0){
    }
    else if(mode_action==on_mode){
       
-    
+   if(isDelay) delay(0,100);      
      
    // mudcsConvertData2FsmOne(\"HV_1\",dps_global[i],fsm);
    // DebugTN(fsm);
+           if(strpos(isEnabled,\"Disabled\")<0) 
       if(MODE_SLOW)
        dpSetWait(dps_global[i]+\".status\",2);
-      else
-       command_group_of_chambers(7);       
+   //   else
+   //    command_group_of_chambers(7);       
    }
    else if(mode_action==off_mode){
       
-    
+  if(isDelay)  delay(0,20);      
      
    // mudcsConvertData2FsmOne(\"HV_1\",dps_global[i],fsm);
    // DebugTN(fsm);
-     if(chamber_status >=2)
+            if(strpos(isEnabled,\"Disabled\")<0)
+     if(chamber_status >=2 || chamber_status ==-1)
    dpSetWait(dps_global[i]+\".status\",0);
    }   
    
@@ -736,6 +783,8 @@ mudcsHVGroupNew(int mode, int mode_action, float vset=0){
   dynAppend(dps_global,dps);
   dps=dpNames(\"*:*CSC_ME_M32*\",\"HV_1\"); 
   dynAppend(dps_global,dps);  
+  dps=dpNames(\"*:*CSC_ME_M42*\",\"HV_1\"); 
+  dynAppend(dps_global,dps);    
 
   dps=dpNames(\"*:*CSC_ME_P12*\",\"HV_1\");
   dynAppend(dps_global,dps);  
@@ -744,7 +793,9 @@ mudcsHVGroupNew(int mode, int mode_action, float vset=0){
   dps=dpNames(\"*:*CSC_ME_P22*\",\"HV_1\"); 
   dynAppend(dps_global,dps);
   dps=dpNames(\"*:*CSC_ME_P32*\",\"HV_1\"); 
-  dynAppend(dps_global,dps);       
+  dynAppend(dps_global,dps); 
+  dps=dpNames(\"*:*CSC_ME_P42*\",\"HV_1\"); 
+  dynAppend(dps_global,dps);         
    
  }
  
@@ -1679,7 +1730,7 @@ LANG:1 6 ME-4/1
 13 50
 "on_m4"
 ""
-1 161 410 E E E 1 E 1 E N "_ButtonText" E N "_ETM" E E
+1 160 410 E E E 1 E 1 E N "_ButtonText" E N "_ETM" E E
  E E
 68 0 0 0 0 0
 E E E
@@ -1691,7 +1742,7 @@ LANG:1 0
 1
 LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
 0 ""
- 159 408 190 432
+ 158 408 189 432
 
 T 
 1
@@ -1733,7 +1784,7 @@ LANG:1 3 OFF
 2 53
 "PRIMITIVE_TEXT16"
 ""
-1 52.00000000000001 412 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 27 412 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 74 0 0 0 0 0
 E E E
@@ -1743,13 +1794,13 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 52.00000000000001 412 158 428
-0 2 2 "0s" 0 0 0 192 0 0  52.00000000000001 412 1
+E E 0 1 1 2 1 E U  1 E 27 412 155 428
+0 2 2 "0s" 0 0 0 192 0 0  27 412 1
 1
 LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
 0 ""
 1
-LANG:1 18 ME-1/2,1/3,2/2,3/2
+LANG:1 22 ME-1/2,1/3,2/2,3/2,4/2
 2 74
 "st_m1"
 ""
@@ -2109,7 +2160,7 @@ LANG:1 3 OFF
 2 89
 "PRIMITIVE_TEXT36"
 ""
-1 303 412 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 284 412 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 144 0 0 0 0 0
 E E E
@@ -2119,13 +2170,13 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 303 412 413 428
-0 2 2 "0s" 0 0 0 192 0 0  303 412 1
+E E 0 1 1 2 1 E U  1 E 284 412 416 428
+0 2 2 "0s" 0 0 0 192 0 0  284 412 1
 1
 LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
 0 ""
 1
-LANG:1 18 ME+1/2,1/3,2/2,3/2
+LANG:1 22 ME+1/2,1/3,2/2,3/2,4/2
 2 90
 "st_p1"
 ""
@@ -2669,6 +2720,37 @@ set(int mode){
  }
   
   
+}" 0
+ E E E
+13 135
+"PUSH_BUTTON11"
+""
+1 50 170 E E E 1 E 1 E N "_ButtonText" E N "_ETM" E E
+ E E
+180 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 112 -*-Bitstream Charter-bold-r-normal-*-*-120-100-100-*-*-iso8859-1|-17,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+ 48 168 222 252
+
+T 
+1
+LANG:1 13 INIT
+HV SCAN 
+"main()
+{
+      float vset;
+  //getValue(\"\",\"text\",vset);
+  mudcsHVGroup(0, 2, vset);
+ // mudcsDubna(2);
+  
+    mudcsDubna(2);
 }" 0
  E E E
 0

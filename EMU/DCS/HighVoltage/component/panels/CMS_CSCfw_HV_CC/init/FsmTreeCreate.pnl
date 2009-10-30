@@ -1,7 +1,7 @@
-V 10
+V 11
 1
 LANG:1 0 
-PANEL,-1 -1 617 525 N "_3DFace" 0
+PANEL,-1 -1 617 585 N "_3DFace" 0
 "main()
 {
   mudcsInit();
@@ -21,7 +21,8 @@ E "#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
 #uses \"CMS_CSCfw_HV_CC/mudcs1DbCreate.ctl\"
 #uses \"CMS_CSCfw_HV_CC/mudcs2FsmCreate.ctl\"
 #uses \"CMS_CSCfw_HV_CC/mudcs3AlertCreate.ctl\"
-#uses \"CMS_CSCfw_HV_CC/mudcs4SetFsmPanels.ctl\"" 0
+#uses \"CMS_CSCfw_HV_CC/mudcs4SetFsmPanels.ctl\"
+#uses \"CMS_CSCfw_HV_CC/mudcs5Archive.ctl\"" 0
  2
 "CBRef" "1"
 "EClose" E
@@ -33,7 +34,7 @@ LANG:1 0
 13 0
 "redraw_all_temp"
 ""
-1 8.373983739837369 319.913043478261 E E E 1 E 1 E N "_ButtonText" E N "_ETM" E E
+1 8.373983739837371 347.913043478261 E E E 1 E 1 E N "_ButtonText" E N "_ETM" E E
  E E
 1 0 0 0 0 0
 E E E
@@ -43,9 +44,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 8.000000000000011 320 212 348
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  8 348 212 376
 
 T 
 1
@@ -91,9 +91,8 @@ LANG:1 0
 
 0
 1
-LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
- 298 288 422 312
+LANG:1 38 Bitstream Charter,-1,14,5,75,0,0,0,0,0
+0  298 288 422 312
 
 T 
 1
@@ -137,9 +136,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 118 288 212 312
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  118 288 212 312
 
 T 
 1
@@ -168,9 +166,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 438 288 556 315
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  438 288 556 315
 
 T 
 1
@@ -201,44 +198,43 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 20 370 35
+E E 0 1 1 2 1 E U  1 E 10 20 413 35
 1 2 2 "0s" 0 0 0 192 0 0  10 20 1
 1
-LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
-1
+LANG:1 38 Bitstream Charter,-1,12,5,75,0,0,0,0,0
+0 1
 LANG:1 65 the wiener comp must be intalled (for panels/object/wiener dir  )
-1 82 2 "" 0
+1 118 2 "" 0
 0
-1 83 2 "" 1
+1 119 2 "" 1
 0
-1 84 2 "" 2
+1 120 2 "" 2
 0
-1 85 2 "" 3
+1 121 2 "" 3
 0
-1 86 2 "" 4
+1 122 2 "" 4
 0
-1 87 2 "" 5
+1 123 2 "" 5
 0
-1 88 2 "" 6
+1 124 2 "" 6
 0
-1 89 2 "" 7
+1 125 2 "" 7
 0
-1 90 2 "" 8
+1 126 2 "" 8
 0
-1 91 2 "" 9
+1 127 2 "" 9
 0
-1 92 2 "" 10
+1 128 2 "" 10
 0
-1 93 2 "" 11
+1 129 2 "" 11
 0
-1 94 2 "" 12
+1 130 2 "" 12
 0
-1 95 2 "" 13
+1 131 2 "" 13
 0
-1 96 4 "" 0
+1 132 4 "" 0
 0
-1 97 6 "" 0
+1 133 6 "" 0
 0
 2 21
 "PRIMITIVE_TEXT2"
@@ -253,14 +249,13 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 20 272 253 285
+E E 0 1 1 2 1 E U  1 E 20 272 236 285
 0 2 2 "0s" 0 0 0 192 0 0  20 272 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-10-*-100-100-*-*-iso8859-1|-10,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
+LANG:1 25 Sans,-1,10,5,50,0,0,0,0,0
+0 1
 LANG:1 40 CALL DB : CONFIGURE MASTERS PROPERLY !!!
-1 98 7 "" 0
+1 134 7 "" 0
 0
 13 57
 "PUSH_BUTTON15"
@@ -275,9 +270,8 @@ LANG:1 0
 
 0
 1
-LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
- 298 408 462 442
+LANG:1 38 Bitstream Charter,-1,13,5,75,0,0,0,0,0
+0  298 408 462 442
 
 T 
 1
@@ -804,9 +798,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 8 68 212 102
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  8 68 212 102
 
 T 
 1
@@ -830,9 +823,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 8 218 212 252
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  8 218 212 252
 
 T 
 1
@@ -856,9 +848,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 8.000000000000002 288 112 312
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  8 288 112 312
 
 T 
 1
@@ -872,7 +863,7 @@ LANG:1 10 Fsm Create
 13 80
 "PUSH_BUTTON21"
 ""
-1 10 359.9999999999999 E E E 1 E 1 E N "_Window" E N "_ETM" E E
+1 10 388 E E E 1 E 1 E N "_Window" E N "_ETM" E E
  E E
 28 0 0 0 0 0
 E E E
@@ -882,9 +873,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 8 357.9999999999999 212 381.9999999999999
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  8 386 212 410
 
 T 
 1
@@ -898,7 +888,7 @@ LANG:1 28 Config Alert For All Devices
 13 81
 "PUSH_BUTTON22"
 ""
-1 10 410 E E E 1 E 1 E N "_Window" E N "_ETM" E E
+1 10 438 E E E 1 E 1 E N "_Window" E N "_ETM" E E
  E E
 30 0 0 0 0 0
 E E E
@@ -908,9 +898,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 8 408 212 432
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  8 436 212 460
 
 T 
 1
@@ -918,6 +907,57 @@ LANG:1 14 Set Fsm Panels
 "main()
 {
   mudcsSetFsmPanelsMain();
+    mudcsDebug(\"done\");
+}" 0
+ E E E
+13 99
+"PUSH_BUTTON23"
+""
+1 10 310 E E E 1 E 1 E N "_Window" E N "_AlertPanelBackground" E E
+ E E
+32 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  8 308 112 332
+
+T 
+1
+LANG:1 10 FED Create
+"main()
+{
+  
+    mudcsCreateFED_add();
+    mudcsDebug(\"done\");
+}" 0
+ E E E
+13 117
+"PUSH_BUTTON24"
+""
+1 10 480 E E E 1 E 1 E N "_Window" E N "_ETM" E E
+ E E
+34 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  8 478 212 502
+
+T 
+1
+LANG:1 9 Archiving
+"main()
+{
+ mudcsArchiveMain(true);
     mudcsDebug(\"done\");
 }" 0
  E E E
@@ -950,16 +990,16 @@ LAYER, 7
 1
 LANG:1 0 
 0
-3 2 "PANEL_REF3"
-"CMS_CSCfw_HV_CC/init/MULTYcreate.pnl" 80 69 T 11 1 0 1 230 -10
+3 2 "PANEL_REF3" -1
+"CMS_CSCfw_HV_CC\\init\\MULTYcreate.pnl" 80 69 T 11 1 0 1 230 -10
 0
-3 4 "PANEL_REF5"
-"CMS_CSCfw_HV_CC/init/FsmPanelSettingRedev.pnl" 121 363 T 13 0.8333333333333334 0 1 -56.66666666666667 170
+3 4 "PANEL_REF5" -1
+"CMS_CSCfw_HV_CC\\init\\FsmPanelSettingRedev.pnl" 121 363 T 13 0.833333333333333 0 1 -56.6666666666666 240
 0
-3 6 "PANEL_REF7"
-"CMS_CSCfw_HV_CC/config/emuDevAllAlert.pnl" 180 390 T 15 1 0 1 230 60
+3 6 "PANEL_REF7" -1
+"CMS_CSCfw_HV_CC\\config\\emuDevAllAlert.pnl" 180 390 T 15 1 0 1 230 60
 0
-3 7 "PANEL_REF8"
-"CMS_CSCfw_HV_CC/config/emuDbCreate.pnl" 69 328 T 17 1 0 1 280 0
+3 7 "PANEL_REF8" -1
+"CMS_CSCfw_HV_CC\\config\\emuDbCreate.pnl" 69 328 T 17 1 0 1 280 0
 0
 0

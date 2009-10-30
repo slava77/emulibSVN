@@ -1,4 +1,4 @@
-V 10
+V 11
 1
 LANG:1 0 
 PANEL,-1 -1 313 167 N "_3DFace" 0
@@ -72,9 +72,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 28 18 282 62
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  28 18 282 62
 
 T 
 1
@@ -195,7 +194,7 @@ LANG:1 25 Set All Remote Fsm Panels
 
    gas=substr(gas,0,strpos(gas,\":\")); 
    gas +=\":\";   
-      mudcsGasFsmPanelsAndFsmAliasesSetMain(gas) ;   
+      if(isFunctionDefined(\"mudcsGasFsmPanelsAndFsmAliasesSetMain\"))mudcsGasFsmPanelsAndFsmAliasesSetMain(gas) ;   
          
  }
   if(super !=\"\"){
@@ -248,9 +247,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 28 78 282 122
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  28 78 282 122
 
 T 
 1

@@ -234,11 +234,39 @@ else if(type_par=="PT100"){
  return;
 }
 //---------
+else if(type_par=="FED_1"){
+ // DebugTN(broker);
+  int fed_number;
+  dyn_string fed_split;
+      
+  setList="CoordFromDpName";
+  for(i=1;i<=dynlen(CSC_fwG_g_PCRATE_ID2PC_NAME);i++){
+    fed_split=strsplit(broker,"U");
+    fed_number=fed_split[2];
+   //DebugTN("================= "+broker +" ==== "+pc +" === "+i+" == "+ fed_number+" ==== "+CSC_fwG_g_PCRATE_ID2PC_NAME[i]);
+    if(i==1 && fed_number > 18){continue;} 
+    if(i==2 && fed_number < 19){continue;}    
+
+    
+   test_dyn=strsplit(CSC_fwG_g_PCRATE_ID2PC_NAME[i],";");
+   if(test_dyn[2]==pc){pc_id=test_dyn[1];break;} 
+  }
+ }
+//---------
 else if(type_par=="LV_1" || type_par=="TEMP_1" || type_par=="CHIP_1"){
   DebugTN(broker);
   setList="DynatemAndSetNumberList";
   for(i=1;i<=dynlen(CSC_fwG_g_PCRATE_ID2PC_NAME);i++){
+    
+   if(strpos(broker,"LV_CONFIRMATION_SERVICE")<0){ 
+     if(i==1 && strpos(broker,"ME_P") <0){continue;} 
+     if(i==2 && strpos(broker,"ME_M") <0){continue;} 
+   }    
+
+       
    test_dyn=strsplit(CSC_fwG_g_PCRATE_ID2PC_NAME[i],";");
+
+      
    if(test_dyn[2]==pc){pc_id=test_dyn[1];break;} 
   }
  }
@@ -290,11 +318,11 @@ retrieveCoordinateSet(type_par, broker, setList, w_pos, radius, ich, type, set);
 if(broker=="LV_CONFIRMATION_SERVICE")set="LV_CONFIRMATION_SERVICE";
 //-------------------
 /*
-if(type_par=="CRB_1"||type_par=="MRTN_1"){
-dyn_string dyn_debug1;
-dpGet("dyn_debug1.",dyn_debug1);
-dynAppend(dyn_debug1,type_par+"> "+ broker+">>"+mudcs_alias+"--"+ setList+ ">>set="+set+"w_pos="+w_pos);
-dpSetWait("dyn_debug1.",dyn_debug1);
+if(type_par=="FED_1"){
+dyn_string dyn_debug2;
+//dpGet("dyn_debug2.",dyn_debug2);
+dynAppend(dyn_debug2,type_par+"> "+ broker+">>"+mudcs_alias+"--"+ setList+ ">>set="+set+"w_pos="+w_pos);
+dpSetWait("dyn_debug2.",dyn_debug2);
 }
 */
 //---------------------------------------------------------------------
@@ -322,7 +350,7 @@ else if(pc_id != "all" && (strpos(pc_id,coord[1]) < 0 /*&& strpos(coord[1], pc_i
 //---------------------------------------------------------------------
 
 if(type_par=="LV_1" || type_par=="TEMP_1" || type_par=="CHIP_1" || type_par=="CRB_1"
- || type_par=="MRTN_1" || type_par=="WNR12_1" || type_par=="ALNM_1"  ){
+ || type_par=="MRTN_1" || type_par=="WNR12_1" || type_par=="ALNM_1" ||  type_par=="FED_1"){
 
 if(broker=="LV_CONFIRMATION_SERVICE")service="LV_CONFIRMATION_SERVICE";
 else if(dynlen(coord)>=2)service=type_par + "_"+coord[1]+"_"+coord[2];
@@ -432,7 +460,7 @@ string fsm1=mudcs_alias;
   new_system=1;
  }
 
- if(strpos(fsm,"CoolingCMS")>=0 || strpos(fsm,"GasCMS")>=0){
+ if(strpos(fsm[1],"CoolingCMS")>=0 || strpos(fsm[1],"GasCMS")>=0 || strpos(fsm[1],"Fed")>=0){
   new_system=1;
  }
  
@@ -490,7 +518,7 @@ int new_system=0;
   new_system=1;
  }
 
- if(strpos(fsm,"CoolingCMS")>=0 || strpos(fsm,"GasCMS")>=0){
+ if(strpos(fsm,"CoolingCMS")>=0 || strpos(fsm,"GasCMS")>=0 || strpos(fsm,"Fed")>=0 ){
   new_system=1;
  }
  
@@ -581,6 +609,10 @@ type_short="GasCMS";
  else if(strpos(type_par,"fwCooling_CSC_COOLING")>=0){
   type="CoolingCMS/";
 type_short="CoolingCMS";
+ }   
+ else if(strpos(type_par,"FED_1")>=0){
+  type="Fed/";
+type_short="FED";
  }   
 
  for(i=1;i<=dynlen(list);i++){
@@ -675,7 +707,10 @@ type_short="GasCMS";
   type="CoolingCMS/";
 type_short="CoolingCMS";
  }   
- 
+ else if(strpos(type_par,"FED_1")>=0){
+  type="Fed/";
+type_short="FED";
+ }    
   test2=strsplit(data,".");   // to cut an element
   test1=strsplit(test2[1],":");
   test=strsplit(test1[dynlen(test1)],"/");

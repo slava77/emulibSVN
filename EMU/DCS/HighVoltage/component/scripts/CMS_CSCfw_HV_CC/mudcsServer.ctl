@@ -4,7 +4,7 @@
 // is_newPRFSM
 // is_GasMatrix
 // is_CoolingMatrix (should not use -- alert config. should be used instead)
-
+ 
 bool is_x2p=true;
 bool is_newPRFSM=true;
 bool is_GasMatrix=true;
@@ -573,6 +573,8 @@ else if(service == "HV_PR"){
         else if(service=="fwCooling_CSC_COOLING")
            dpConnect(update_fun,FALSE,datapoints_d[i]+".Flowmeter_EndCap_Cooling_YE_Plus_1");
         else dpConnect(update_fun,datapoints_d[i]+".update_value");
+        
+        if(strpos(datapoints_d[i],"FED")>=0)DebugTN("1mudcsUpdateMonitor_FED_1_new "+ update_fun+" "+datapoints_d[i]+".update_value");;
 /*
     dynAppend(d_s1,update_fun+">>>>>>>"+datapoints_d[i]+".update_value");
     dpSetWait("dyn_debug1.",d_s1);
@@ -716,11 +718,11 @@ dpGet(substr(dpName,0,strpos(dpName,"."))+".chamber_state",state_save);
 
 if(value == 2 || (value==-1 && index >=1) /*|| (value==-2 && state_destin==true && index >=1)*/){  // -1, -2  is to initialize the state at start  
  mudcsCommandCscLevel(dpName,"power_on","HV_1");
- mudcsSetRampUpRateForAllChambers(substr(dpName,0,strpos(dpName,".")), 10);
+ if(CSC_fwG_g_IS_IMAX_SET)mudcsSetRampUpRateForAllChambers(substr(dpName,0,strpos(dpName,".")), 10); //imax
 }
 else if(value == 1 || (value==-1 && index >=1) /*|| (value==-2 && state_destin==true && index >=1)*/){  // -1, -2  is to initialize the state at start  
  mudcsCommandCscLevel(dpName,"standby","HV_1");
-  mudcsSetRampUpRateForAllChambers(substr(dpName,0,strpos(dpName,".")), 10);
+ if(CSC_fwG_g_IS_IMAX_SET)mudcsSetRampUpRateForAllChambers(substr(dpName,0,strpos(dpName,".")), 10); //imax
 }
 else if(value == 0 /*|| (value==-2 && state_destin==false && index >=1)*/){ //  -2  is to initialize the state at start  
  if(state_save ==-2)dpSetWait(substr(dpName,0,strpos(dpName,"."))+".status",-2);
@@ -871,7 +873,7 @@ if(value == 2 || (value==-1 && index >=1) /*|| (value==-2 && state_destin==true 
  
  if(MULTY_MODE && MULTY_MODE_DONE == "FALSE")mudcsCommand("HV","all;all","power_on");
  else if(!MULTY_MODE)mudcsCommand("HV",dpName,"power_on");
- mudcsHVCommand(substr(dpName,0,strpos(dpName,".")), 6, 10); // set 10mkA for Imax
+ if(CSC_fwG_g_IS_IMAX_SET)mudcsHVCommand(substr(dpName,0,strpos(dpName,".")), 6, 10); // set 10mkA for Imax
 //// moved: mudcsAlertSetActive(dpName,true); 
 
 DebugN("mudcsServer::mudcsUpdateMonitor_HV_1_status == 2++***************************"+dpName+value);
@@ -1647,7 +1649,33 @@ CSC_fwG_g_BLOCK_NEXT_DPCONNECT=0;
 //============================================================================================
 //============================================================================================
 
+mudcsUpdateMonitor_FED_1_status(string dpName, int value){
 
+string data;
+  
+int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
+ if(index >=1 ){ // first call of handler
+  DebugN("mudcsUpdateMonitor_FED_1_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER FED");
+  dynRemove(CSC_fwG_g_STATUS_HANDLERS_FIRST,index);
+/// !!!! the return below is commented out because the last status (remained at server interruption) SHOULD BE "EXECUTED" 
+// to restore the previous system state JUST IN CASE
+//  return;
+ }
+
+ if(value==-2){
+  mudcsConvertFsm2DataOne(dpName, data);
+  mudcsAlertSetActive(data,true);
+ }
+ 
+int state_save;
+dpGet(substr(dpName,0,strpos(dpName,"."))+".chamber_state",state_save);
+//if(value==-2)dpSetWait(substr(dpName,0,strpos(dpName,"."))+".chamber_state",-2);
+//DebugTN("mudcsUpdateMonitor_FED_1_status:++++++++++++ "+data+ " "+ dpName+" "+value);
+mudcsUpdateStatusForDevicesWithoutNonDeFactoStatus(dpName, value, state_save);
+
+CSC_fwG_g_BLOCK_NEXT_DPCONNECT=0;
+}
+//============================================================================================
 
 mudcsUpdateMonitor_TEMP_1_status(string dpName, int value){
 
@@ -1983,9 +2011,10 @@ dpGet(test_string+".data.chamber_complex_status",chamber_complex_status);
   }
   */
   
-  if(chamber_index>=1 && primary_status<2 && current_status==3 && update_mode ==2
+  if(chamber_index>=1  && current_status==3 && update_mode ==2
     /* &&  last_set_primary_status > (CSC_fwG_so_get_chambers_time[chamber_index]-200 )*/ ){
-     mudcsHVCommand(test_string_status, 6, 1);
+    if(CSC_fwG_g_IS_IMAX_SET)if(primary_status<2)mudcsHVCommand(test_string_status, 6, 1); // imax
+   //\\ else mudcsHVCommand(test_string_status, 6, 10);
    }
 
 //--------------------- cause simetimes the status ON comes form server before the ramping !!!!! -------------
@@ -1994,7 +2023,7 @@ dpGet(test_string+".data.chamber_complex_status",chamber_complex_status);
 
    if(current_status == 2 && chamber_complex_status == 1){
      if((getCurrentTime()-last_set_status) > 30){
-      mudcsHVCommand(test_string_status, 6, 1); // set 1mkA for Imax 
+       if(CSC_fwG_g_IS_IMAX_SET)if(primary_status<2)mudcsHVCommand(test_string_status, 6, 1); // set 1mkA for Imax 
       dpSetWait(test_string_status+".status",3);
 
      }
@@ -2022,7 +2051,9 @@ dpGet(test_string+".data.chamber_complex_status",chamber_complex_status);
 ////// dpGet(test_string+".module_state",status_destin);                           // attention: different from other types (without de-facto status)
 
 // -------------  attention: different from other types (without de-facto status) -------------------------
- if(status_source > 0 && status_source != status_destin){
+
+if(status_source==5)adjust_to_control_part(test_string_status, current_status, status_source);
+else if(status_source > 0 && status_source != status_destin){
                                           if(current_status != 0){ // case of sombody switch the electronics by standalone or other tool
                                                              mudcsAlertSetActive(test_string,true);
                                                          dpSetWait(test_string_status+".module_state",status_source);
@@ -3175,16 +3206,16 @@ mudcsUpdateMonitor_LV_1_new(string dpName, string value){
 
 //============================================================================================
 //============================================================================================
-mudcsUpdateMonitor_LV_1_new_alive(string dpName){
+mudcsUpdateMonitor_TYPE_1_new_alive(string dpName, string type, string type1){
 
-   int pos1=strpos(dpName,"CSC_ME_M");
-   int pos2=strpos(dpName,"CSC_ME_P");
+//   int pos1=strpos(dpName,"CSC_ME_M");
+//   int pos2=strpos(dpName,"CSC_ME_P");
  
  string coord;
  string fsm, sTest,data;
  dyn_string d_coord, dsTest;
- mudcsConvertData2FsmOne("LV_1", dpName, fsm);
- sTest=substr(fsm,0,strpos(fsm,"_LV"));
+ mudcsConvertData2FsmOne(type, dpName, fsm);
+ sTest=substr(fsm,0,strpos(fsm,type1));
   dsTest=strsplit(sTest,":");
   sTest=dsTest[dynlen(dsTest)];
 
@@ -3269,7 +3300,7 @@ test_string2=test_string2+";"+test_int;
 if(strpos(test_string2,"00:00:00:00") <0 
 && strpos(test_string2,"10.0.0.") <0 && strpos(test_string2,"LVCB"))return; // not to receive a corrupted data !!!!!!!
 
-mudcsUpdateMonitor_LV_1_new_alive(dpName);
+mudcsUpdateMonitor_TYPE_1_new_alive(dpName,"LV_1","_LV");
 
 //=====================================================
 if(is_x2p){
@@ -3594,6 +3625,88 @@ DebugN("mudcsServer::mudcsUpdateMonitor_TEMP_N_new *****************************
 
 //============================================================================================
 //============================================================================================
+
+//============================================================================================
+//============================================================================================
+
+mudcsUpdateMonitor_FED_1_new(string dpName, string value){
+while(CSC_g_BLOCK_WATCHDOG_THREAD){}
+int index=dynContains(CSC_fwG_g_BROKER_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
+ if(index >=1 ){ // first call of handler
+  DebugN("mudcsUpdateMonitor_FED_N_new:------------------------------------------------FIRST CALL OF HANDLER FED");
+  dynRemove(CSC_fwG_g_BROKER_HANDLERS_FIRST,index);
+  return;
+ }
+
+
+int w_pos,radius;
+string label,subtype="FED_1";
+
+int ret,i;
+dyn_string test_dyn_string;
+string test_string, t_string, test_string2;
+
+string test_string_status; // ***
+
+int test_int;
+bool found;
+int index;
+
+
+//------- // ***
+
+int pos;
+
+ dyn_string d_test=strsplit(dpName,".");
+ test_string=d_test[1];
+ if((pos=strpos(dpName,":"))>=0){
+
+  test_string_status=CSC_fwG_g_SYSTEM_NAME+":"+"Fed/"+substr(d_test[1],pos+1);
+
+ }
+
+ string coord;
+ dyn_string d_coord;
+ dpGet(test_string_status+".coord",coord);
+
+//-------
+
+  dpGet(test_string+".quality", test_string2);
+
+if(strpos(test_string2,"DDU") <0 )return; // not to receive a corrupted data !!!!!!!
+DebugTN("mudcsServer::mudcsUpdateMonitor_FED_1_new 22222222222222222222222222222222222222222222"+ test_int+" "+test_string2);
+
+mudcsUpdateMonitor_TYPE_1_new_alive(dpName,"FED_1","_FED");
+//=====================================================
+if(is_x2p){
+    time current_time=getCurrentTime();
+    int time_stamp_i;
+    dpGet(test_string+".update_value",time_stamp_i);
+    time time_stamp_t=time_stamp_i;
+    int time_dif=current_time-time_stamp_t;
+
+    if(time_dif>watch_dog_delay)return;
+}
+//=====================================================
+//////mudcsDebug(test_string);
+
+int status_save;
+ dpGet(test_string_status+".chamber_state",status_save);
+ if(status_save==-2)dpSetWait(test_string_status+".chamber_state",-22);// this all is to allow to switch off from error state and differ -2 and -1
+
+// ======== 10/16/2004 ====== it is needed when the pvss runs, control app. runs then quits, the starts up again  
+
+
+//------------------------------------------------------------------------------------------------
+checkOfLinkWithControlProgram(test_string_status); // must be before the mudcsFsmErrorSet
+mudcsFsmErrorSet(subtype, test_string_status, test_string); // moved up (before CONFIRMATION) 10/05/2004
+//-----------------------------------------------------------------------------------------------------
+
+
+DebugN("mudcsServer::mudcsUpdateMonitor_FED_1_new ********************************FED_1"+ test_string);
+
+ 
+}
 
 
 //============================================================================================

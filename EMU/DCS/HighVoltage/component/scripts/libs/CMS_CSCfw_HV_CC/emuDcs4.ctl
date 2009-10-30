@@ -1,4 +1,52 @@
-//------------------------------------
+//=============================
+mudcsDebug_dyn5(dyn_string dps){
+  
+ dyn_string dps1; 
+ if(dpExists("cms_csc_dcs_05:dyn_debug5"))
+ dpGet("cms_csc_dcs_05:dyn_debug5.",dps1);
+ dynAppend(dps1,"--------");
+ dynAppend(dps1,dps);
+ if(dpExists("cms_csc_dcs_05:dyn_debug5"))
+ dpSetWait("cms_csc_dcs_05:dyn_debug5.",dps1);  
+  
+
+}
+//==============================  
+  string mudcsGetPvssVersion(){
+    
+  string s, version;    
+    
+  file f=fopen(getPath(CONFIG_REL_PATH)+"config","r");
+  DebugTN(f);
+  int i,n1,n2,count;
+  dyn_string ds;
+  if(f){
+    while(1){ //1
+    n1=fgets (s, 300, f);
+    if(n1==EOF || n1==-1)break;
+    //DebugTN(s);
+    n2=sscanf(s,"%s %s %s %s",ds[1],ds[2],ds[3],ds[4]); 
+    
+    //if(n2==EOF || n2==-1)break;
+    if(strpos(ds[1],"pvss_path")>=0 ){
+     for(i=2;i<=4;i++){
+       if(strpos(ds[i],"3.8")>=0){version="";break;}
+       else if(strpos(ds[i],"3.6")>=0){version="";break;} 
+        
+     }
+     //mudcsDebug(version);
+     return version; 
+    }    
+   
+    
+    } // while 1 
+    return "";   
+    
+    
+  }
+  
+}  
+//================================  
 mudcsCheckDistConnections(){
 
 dyn_int dist_connections;
@@ -293,10 +341,11 @@ mudcsInitServer(){
   if(dynlen(local_primary_fsm)>=1)chambers_fsm= dpNames("*:*","HV_1"); // ++
   else chambers_fsm= dpNames("*","HV_1"); // ++
      CSC_fwG_so_chambers_fsm=chambers_fsm;
+   if(!CSC_fwG_g_904)
     for(i=1;i<=dynlen(chambers_fsm);i++){
 //  mudcsGetMasterForChamber(chambers_fsm[i], master_id, master_chan, master_index, coord_master); //++
     int ret=mudcsGetMasterForChamberGlobal(chambers_fsm[i], master_id, master_chan, coord_master);  // ++
-    if(ret){
+    if(ret==1){
   
   
   system_master=substr(chambers_fsm[i],0,strpos(chambers_fsm[i],":" ));
@@ -347,6 +396,20 @@ int mudcsGetMasterForChamberGlobal(string fsm, int &master_id, int &master_chan,
  dynClear(coord_master);
     dyn_string dyn_debug;
 
+    if(CSC_fwG_g_904 || CSC_fwG_g_P5_SIM_AT_904){
+      master_chan=0;
+      master_id=0;
+      dynAppend(coord_master,0);
+      dynAppend(coord_master,0);
+      dynAppend(coord_master,0);
+////// dynAppend(CSC_fwG_g_dyn_debug1,fsm+" "+master_id);
+
+   return 2;      
+      
+      
+    } 
+    
+    
 int status;
 int i;
 string data;

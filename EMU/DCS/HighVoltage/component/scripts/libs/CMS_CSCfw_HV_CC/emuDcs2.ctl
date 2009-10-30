@@ -26,13 +26,24 @@ mudcsProjectConnect(){
 //if($project_system=="")mudcsInit(); // commented out as everything should be defined for when connection via PVSS00ui//  if the remote UI (PVSS00ui) is used (to define globals in particular)
 
 string local_system=fwFsm_getSystemName();
-if(local_system != CSC_fwG_g_SUPERVISOR_SYSTEM)return; // we do not have to close panels called from middleware project
-  
-  
-if(dpExists(CSC_fwG_g_SUPERVISOR_SYSTEM+":"+ "PROJECT_SYSTEM")){
-dpSetWait(CSC_fwG_g_SUPERVISOR_SYSTEM+":"+ "PROJECT_SYSTEM.value",$project_system);  
-  dpConnect("mudcsProjectMonitor",CSC_fwG_g_SUPERVISOR_SYSTEM+":"+ "PROJECT_SYSTEM.value");
+if(local_system != CSC_fwG_g_SUPERVISOR_SYSTEM && (strpos(local_system,"cms_csc_dcs_")>=0 ) )return; // we do not have to close panels called from middleware project
 
+string project_system_dp;  
+//mudcsDebug(CSC_fwG_g_PROJECT_SYSTEM_DP);
+if(globalExists("CSC_fwG_g_PROJECT_SYSTEM_DP") ){
+  project_system_dp=CSC_fwG_g_PROJECT_SYSTEM_DP;
+}
+else{
+  project_system_dp=CSC_fwG_g_SUPERVISOR_SYSTEM+":"+ "PROJECT_SYSTEM";
+}
+  
+if(dpExists(project_system_dp) ){
+dpSetWait(project_system_dp+".value",$project_system);  
+  dpConnect("mudcsProjectMonitor",project_system_dp+".value");
+
+}
+else{
+  mudcsDebug("RESTART SESSION (UI)"); 
 }
 
 }
@@ -115,13 +126,21 @@ mudcsInit_p4p3(){
 //=================================================================================================
 mudcsInit(string project_station_fwUi="",dyn_int project_station_set_par=makeDynInt()){
 
-  bool retieve_project_from_system_name=false;
+  bool retieve_project_from_system_name=true;       // supposed to be true at P5 Windows XP, no matter at 904
   bool temporary_windows_pc_for_hv_cc_project=false;
-
+  bool P5_SIM_AT_904=false;                          // no matter at P5, supposed to be true for P5 SIM mode at 904
+  
+  
+addGlobal("CSC_fwG_g_P5_SIM_AT_904",STRING_VAR);  
+CSC_fwG_g_P5_SIM_AT_904=P5_SIM_AT_904;
+     
 string os=getenv("OS");
 addGlobal("CSC_fwG_g_OS",STRING_VAR);
 CSC_fwG_g_OS=os;
-   
+
+addGlobal("CSC_fwG_g_PVSS_VERSION",STRING_VAR);  
+CSC_fwG_g_PVSS_VERSION= mudcsGetPvssVersion();
+
 //-------- instruction for installation of new project before the tree creation: -----
 //--------- a) copy (if not present) the emuDcs2.ctl (with this function) to the project libs (no need if functions mudcsInit_m4m3 ... are used) 
 //--------- b) change the following one variable
@@ -133,6 +152,26 @@ string project_suffix="";
 int project_station_from_host;
 
 dyn_int project_station_set;
+//-----
+addGlobal("CSC_fwG_g_IS_IMAX_SET",BOOL_VAR);
+CSC_fwG_g_IS_IMAX_SET=false;
+//-----
+addGlobal("CSC_fwG_g_904_MACHINE",STRING_VAR);
+addGlobal("CSC_fwG_g_904_HV_MACHINE",STRING_VAR);
+addGlobal("CSC_fwG_g_904",BOOL_VAR);
+CSC_fwG_g_904_MACHINE="emu-dcs-dev1";//"dcspcS2G19-01";
+CSC_fwG_g_904_HV_MACHINE="137.138.15.212";//"10.176.11.103";
+sTest=getHostname();
+dsTest=strsplit(sTest,"."); // just in case
+if(CSC_fwG_g_904_MACHINE==dsTest[1]){
+  if(!P5_SIM_AT_904)CSC_fwG_g_904=true;
+  else CSC_fwG_g_904=false;
+  retieve_project_from_system_name=true;
+}
+else CSC_fwG_g_904=false;
+//dsTest=strsplit(dsTest[1],"-");
+
+//------
 ////if(dynlen(project_station_set_par)==0)project_station_set=makeDynInt(5); // no matter: redefined below for call from  native project: once from VisualServer
 ////else project_station_set=project_station_set_par;
 
@@ -156,31 +195,44 @@ fwCU_getDp(project_station_with_hw_new,project_station_with_hw_new);
 //- new organization: the below piece works for below only in local project! (from VisualServer) ----------------------------------------------
 if(project_station_fwUi==""){ // case of call not from FSM panel, so definetly from native project: once from VisualServer
 
+
 //-----
-  if(retieve_project_from_system_name){
+if(CSC_fwG_g_904 || retieve_project_from_system_name){ //retieve_project_from_system_name)
+  if(CSC_fwG_g_904 && CSC_fwG_g_904_MACHINE=="dcspcS2G19-01"){
+    project_station_from_host=5; //just as the test
+  }
+  else{
 sTest=getSystemName();
 strreplace(sTest,":","");
 dsTest=strsplit(sTest,"_");
+project_station_from_host=dsTest[dynlen(dsTest)];
+//if(substr(dsTest[dynlen(dsTest)],0,2)=="m3")project_station_from_host=2;
+//else if(substr(dsTest[dynlen(dsTest)],0,2)=="m2")project_station_from_host=3;
+//else if(substr(dsTest[dynlen(dsTest)],0,2)=="m1")project_station_from_host=4;
+//else if(substr(dsTest[dynlen(dsTest)],0,2)=="p1")project_station_from_host=5;
+//else if(substr(dsTest[dynlen(dsTest)],0,2)=="p2")project_station_from_host=6;
+//else if(substr(dsTest[dynlen(dsTest)],0,2)=="p3")project_station_from_host=7;
   }
-  else{
+} // if(CSC_fwG_g_904)
+else{
 sTest=getHostname();
 dsTest=strsplit(sTest,"."); // just in case
 dsTest=strsplit(dsTest[1],"-");
-  }
-//----
-
-  
 project_station_from_host=dsTest[dynlen(dsTest)];
+}
+//----
+  
+//project_station_from_host=dsTest[dynlen(dsTest)];
 //if(project_station_from_host==1)project_station_set=makeDynInt(1,2);
 
-if(project_station_from_host==1){project_station_set=makeDynInt(1,2,3,4);project_suffix="_m1";}  // temporal
+if(project_station_from_host==1){project_station_set=makeDynInt(3,5,6);project_suffix="_m1";}  // temporal
 
-if(project_station_from_host==2){project_station_set=makeDynInt(1,2);project_suffix="_m3m4";}
+     if(project_station_from_host==2){project_station_set=makeDynInt(1,2,3);project_suffix="_m3m4";}
 else if(project_station_from_host==3){project_station_set=makeDynInt(1,2,3);project_suffix="_m2";}
 else if(project_station_from_host==4){project_station_set=makeDynInt(4);project_suffix="_m1";}
-else if(project_station_from_host==5){project_station_set=makeDynInt(5);project_suffix="_p1";}
+else if(project_station_from_host==5){project_station_set=makeDynInt(5,6);project_suffix="_p1";}
 else if(project_station_from_host==6){project_station_set=makeDynInt(6,7,8);project_suffix="_p2";}
-else if(project_station_from_host==7){project_station_set=makeDynInt(7,8);project_suffix="_p3p4";}
+else if(project_station_from_host==7){project_station_set=makeDynInt(6,7,8);project_suffix="_p3p4";}
 //else if(project_station_from_host==8)       
 if(temporary_windows_pc_for_hv_cc_project){project_station_set=makeDynInt(6,7);project_suffix="_p2";}
 
@@ -191,7 +243,8 @@ if(temporary_windows_pc_for_hv_cc_project){project_station_set=makeDynInt(6,7);p
 
 //------------------------------------------------
 
-
+addGlobal("CSC_fwG_g_PCRATES_MAP",MAPPING_VAR);
+mudcsPcCratesMapping();
 
 addGlobal("CSC_fwG_g_HOME",STRING_VAR);
 if (os =="Linux")CSC_fwG_g_HOME = getenv("HOME");//"/nfshome0/cscdcsdev"; 
@@ -344,14 +397,14 @@ addGlobal("CSC_fwG_g_Dubna_System_Name",STRING_VAR);
     CSC_fwG_g_CRB_SYSTEM_NAME=s_split[1];//dpSubStr(systemNamesDps[1], DPSUB_SYS);
    }
    CSC_fwG_g_MRTN_SYSTEM_NAME_P="";
-   systemNamesDps=dpNames("*:CMS_CSC_LV_MRTN_P");
+   systemNamesDps=dpNames("*:CMS_CSC_LV_MRTN");
    if(dynlen(systemNamesDps)==0)DebugTN("MRTN_P SYSTEM NAME NOT DEFINED !");
    else{
     s_split=strsplit(systemNamesDps[1],":"); 
     CSC_fwG_g_MRTN_SYSTEM_NAME_P=s_split[1];//dpSubStr(systemNamesDps[1], DPSUB_SYS);
    }
    CSC_fwG_g_MRTN_SYSTEM_NAME_M="";
-   systemNamesDps=dpNames("*:CMS_CSC_LV_MRTN_M");
+   systemNamesDps=dpNames("*:CMS_CSC_LV_MRTN");
    if(dynlen(systemNamesDps)==0)DebugTN("MRTN_M SYSTEM NAME NOT DEFINED !");
    else{
     s_split=strsplit(systemNamesDps[1],":"); 
@@ -454,6 +507,8 @@ addGlobal("CSC_fwG_g_BLOCK_NEXT_DPCONNECT", INT_VAR);
 addGlobal("CSC_fwG_g_wheel_labels", DYN_STRING_VAR);
 addGlobal("CSC_fwG_g_radius_labels", DYN_STRING_VAR);
 addGlobal("CSC_fwG_g_project_name_home", STRING_VAR);
+addGlobal("CSC_fwG_g_jcop_dim_home", STRING_VAR);
+
 addGlobal("CSC_fwG_CSC_fwG_g_radius_labels_short", STRING_VAR);
 addGlobal("CSC_fwG_g_WHEELS",DYN_STRING_VAR);
 addGlobal("CSC_fwG_g_RADIUSES",DYN_STRING_VAR);
@@ -530,7 +585,16 @@ CSC_fwG_g_dyn_debug2=makeDynString();
 CSC_fwG_g_master2chamber=makeDynString();
 
 
-//g_HV_ID2PC_NAME=makeDynString("500;ufcmshv2","100;ufcmspc02);
+
+
+if(CSC_fwG_g_904){
+g_HV_ID2PC_NAME=makeDynString("700_part1;"+CSC_fwG_g_904_HV_MACHINE+"_part1",
+                              "700_part2;"+CSC_fwG_g_904_HV_MACHINE+"_part2",
+                              "700_part3;"+CSC_fwG_g_904_HV_MACHINE+"_part3",
+                              "700_part4;"+CSC_fwG_g_904_HV_MACHINE+"_part4",
+                              "800;fake"); // ufcmshv2 & ufcmshv1 (for primaries)
+}
+else{
 if(CSC_fwG_g_idisk_cross_numbers[1]>=5 && CSC_fwG_g_idisk_cross_numbers[1]<=8){
 g_HV_ID2PC_NAME=makeDynString("600_part1;10.176.11.103_part1","600_part2;10.176.11.103_part2",
                               "600_part3;10.176.11.103_part3","600_part4;10.176.11.103_part4",
@@ -541,13 +605,25 @@ g_HV_ID2PC_NAME=makeDynString("500_part1;10.176.11.67_part1","500_part2;10.176.1
                               "500_part3;10.176.11.67_part3","500_part4;10.176.11.67_part4",
                               "700;fake"); // ufcmshv2  
 }
+}
 //CSC_fwG_g_PCRATE_ID2PC_NAME=makeDynString("02:00:00:00:00:05 02:00:00:00:00:03 02:00:00:00:00:0f 02:00:00:00:00:1a;dcspcs2g19-06");
+
+if(CSC_fwG_g_904)
+CSC_fwG_g_PCRATE_ID2PC_NAME=makeDynString("all;"+CSC_fwG_g_904_MACHINE);
+else  
 CSC_fwG_g_PCRATE_ID2PC_NAME=makeDynString("all;dcspcS2G19-06","all;dcspcS2G19-04");
 
 // the CSC_fwG_g_BROKER_DNS_MACHINE_NAMES is used in:
 //    to configure services for broker dps and commands (function: mudcsDimConfigOneManager)
 //    to configure general dps (WTH, PT100 etc) (function mudcsDimConfigOneManagerNew)
-
+if(CSC_fwG_g_904)
+  CSC_fwG_g_BROKER_DNS_MACHINE_NAMES=makeDynString
+    ("all;"+CSC_fwG_g_904_MACHINE,
+    "LV_1;"+CSC_fwG_g_904_MACHINE,
+    "HV_PR;"+CSC_fwG_g_904_HV_MACHINE+"_part4", // ufcmshv2: for primary commands only  +Z
+    "HV_1;"+CSC_fwG_g_904_HV_MACHINE+"_part4"   // ufcmshv2: for primary commands only +Z
+     ); 
+else
 CSC_fwG_g_BROKER_DNS_MACHINE_NAMES=makeDynString
     ("all;dcspcS2G19-06",
     "LV_1;dcspcS2G19-06",
@@ -561,7 +637,11 @@ CSC_fwG_g_BROKER_DNS_MACHINE_NAMES=makeDynString
 //    "HV_1;ufcmspc02"
      ); // HV_1 is needed for HV_1_COMMAND so that they are configured on all machines (not only on dcspcs2g19-06)
 
+if(CSC_fwG_g_904)
+CSC_fwG_g_STATIONS_DNS_MACHINE_NAMES=makeDynString("all;"+CSC_fwG_g_904_MACHINE);
+else
 CSC_fwG_g_STATIONS_DNS_MACHINE_NAMES=makeDynString("all;dcspcs2g19-06");
+
 
 CSC_fwG_g_FsmPanelMaxSizeX=1200;
 CSC_fwG_g_FsmPanelMaxSizeY=760;
@@ -860,6 +940,14 @@ dsTest=dpNames("*","LV_1");
   dsTest[i]=dsTest2[dynlen(dsTest2)];
   dynAppend(CSC_fwG_g_watch_mask,dsTest[i]);
  }
+
+ dsTest=dpNames("*","FED_1");
+ for(i=1;i<=dynlen(dsTest);i++){
+  dsTest[i]=substr(dsTest[i],0,strpos(dsTest[i],"_FED"));
+  dsTest2=strsplit(dsTest[i],":");
+  dsTest[i]=dsTest2[dynlen(dsTest2)];
+  dynAppend(CSC_fwG_g_watch_mask,dsTest[i]);
+ }
  
  dyn_string dyn_debug22;
  dpSetWait("dyn_debug1.",CSC_fwG_g_watch_mask);
@@ -902,8 +990,11 @@ CSC_fwG_g_radius_labels = makeDynString("r1","r2","r3"); // fsm: ("inn","out");
 
 //if (os =="Linux")CSC_fwG_g_project_name_home = CSC_fwG_g_HOME+"/csc_station"+project_suffix; // fsm: "/home/fast/pvss_dcs8"; 
 //else CSC_fwG_g_project_name_home = CSC_fwG_g_HOME+"\\csc_station"+project_suffix;
+//--------------
 
+dpGet("fwInstallation_fwDIM.installationDirectory",CSC_fwG_g_jcop_dim_home);
 
+//--------------
 string project_path=getPath("");  // get absolute home path of the project 
 project_path=substr(project_path,0,strlen(project_path)-1); // to get rid of the last "/"
 
@@ -1061,10 +1152,10 @@ test_string=service+"_COM_CONF";
          dpCreate(test_string,"MUDCS_DIMCOM");
          while(!(dpExists(test_string))){delay(0,50);}
      }
-
+      if(strpos(manager,"_DimClient_4")<0 || service!="LV_1"){
      mudcsDimConfig(false,service+"_COM"+".command,"+service+"_COMMAND", manager, exceptionInfo);
      mudcsDimConfig(false,service+"_COM_CONF"+".command,"+service+"_COMMAND_CONFIRMATION", manager, exceptionInfo);
-
+      }
 	if(dynlen(exceptionInfo)>0){ return;}
 
     } // for over BrokerList)
@@ -1102,6 +1193,7 @@ dpGet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_o.PCToManID"),pcs);
    pc=pcs[i+1];
    if(pc=="" || i > (dynlen(pcs)-1)) continue;
    mudcsDimConfigOneManager(dpPointList[i],pc,exceptionInfo);
+   mudcsDimConfigOneManagerNew("FED_1",pc,dpPointList[i],exceptionInfo);
    mudcsDimConfigOneManagerNew("fwWnrCr_CSC_LV",pc,dpPointList[i],exceptionInfo);
    mudcsDimConfigOneManagerNew("fwWnrCh_CSC_LV",pc,dpPointList[i],exceptionInfo);   
    mudcsDimConfigOneManagerNew("HV_1",pc,dpPointList[i],exceptionInfo);
@@ -1184,7 +1276,7 @@ operating_system=getenv("OS");
        test_dyn_string2[i]=substr(test_dyn_string2[i],0,pos_part);
       
      test_string="_DimClient_"+i;
-         test_string2=CSC_fwG_g_project_name_home + "/bin/PVSS00dim "+" -num "+i+" -dim_dp_config "+test_string+
+         test_string2=CSC_fwG_g_jcop_dim_home/*CSC_fwG_g_project_name_home*/ + "/bin/PVSS00dim"+CSC_fwG_g_PVSS_VERSION+" -num "+i+" -dim_dp_config "+test_string+
          " -dim_dns_node "+ test_dyn_string2[i]; 
          if(CSC_fwG_g_FSM_V24R09)test_string2 = "export DIM_DNS_NODE="+test_dyn_string2[i]+";"+test_string2;
 operating_system=getenv("OS");
@@ -1309,6 +1401,7 @@ dpGet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_o.PCToManID"),pcs);
 
      test_string="_DimClient_"+i;
      mudcsDimConfigOneManager(test_string,pc,exceptionInfo);
+    mudcsDimConfigOneManagerNew("FED_1",pc,test_string,exceptionInfo); 
    mudcsDimConfigOneManagerNew("fwWnrCr_CSC_LV",pc,test_string,exceptionInfo);
    mudcsDimConfigOneManagerNew("fwWnrCh_CSC_LV",pc,test_string,exceptionInfo);     
      mudcsDimConfigOneManagerNew("HV_1",pc,test_string,exceptionInfo);
@@ -1327,7 +1420,7 @@ dpGet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_o.PCToManID"),pcs);
      if((pos_part=strpos(PCName,"_part"))>=0)
        PCName=substr(PCName,0,pos_part);
        
-         test_string2=CSC_fwG_g_project_name_home + "/bin/PVSS00dim "+" -num "+i+" -dim_dp_config "+test_string+
+         test_string2=CSC_fwG_g_jcop_dim_home/*CSC_fwG_g_project_name_home*/ + "/bin/PVSS00dim"+CSC_fwG_g_PVSS_VERSION+" -num "+i+" -dim_dp_config "+test_string+
          " -dim_dns_node "+ PCName; 
          if(CSC_fwG_g_FSM_V24R09)test_string2 = "export DIM_DNS_NODE="+PCName+";"+test_string2;
 operating_system=getenv("OS");
@@ -1373,6 +1466,7 @@ operating_system=getenv("OS");
      pc=pcs[newId];
 
      mudcsDimConfigOneManager(test_string,pc,exceptionInfo);
+   mudcsDimConfigOneManagerNew("FED_1",pc,test_string,exceptionInfo);     
    mudcsDimConfigOneManagerNew("fwWnrCr_CSC_LV",pc,test_string,exceptionInfo);
    mudcsDimConfigOneManagerNew("fwWnrCh_CSC_LV",pc,test_string,exceptionInfo);          
     mudcsDimConfigOneManagerNew("HV_1",pc,test_string,exceptionInfo);
@@ -1400,7 +1494,7 @@ operating_system=getenv("OS");
        if((pos_part=strpos(PCName,"_part"))>=0)
        PCName=substr(PCName,0,pos_part);
              
-         test_string2=CSC_fwG_g_project_name_home + "/bin/PVSS00dim "+" -num "+newId+" -dim_dp_config "+test_string+
+         test_string2=CSC_fwG_g_jcop_dim_home/*CSC_fwG_g_project_name_home*/ + "/bin/PVSS00dim"+CSC_fwG_g_PVSS_VERSION+" -num "+newId+" -dim_dp_config "+test_string+
          " -dim_dns_node "+PCName; 
          if(CSC_fwG_g_FSM_V24R09)test_string2 = "export DIM_DNS_NODE="+PCName+";"+test_string2;
 operating_system=getenv("OS");
@@ -2034,6 +2128,7 @@ else if(type_par=="CRB")setList="DiskLevelDevicesCoordinates";
 else if(type_par=="MRTN")setList="CscLevelDevicesCoordinates";
 else if(type_par=="WNR12")setList="CscLevelDevicesCoordinates";
 else if(type_par=="ALNM")setList="DiskLevelDevicesCoordinates";
+else if(type_par=="FED")setList="CoordFromDpName";
 
  dynClear(command_list);
 
@@ -2120,7 +2215,7 @@ if(set=="")return;
                                 dpGet(mudcsAddSystem(DpNameFsm+".last_vset"),last_vset);
                             subcommand=subcommand  +"|"+   "HVCMD;"+coords[2]+";"+coords[3]+";"+chamber_depend_all_channels+"7;"+last_vset+";"+"-1";// vset
                             subcommand=subcommand  +"|"+   "HVCMD;"+coords[2]+";"+coords[3]+";"+chamber_depend_all_channels+"3;"+"6"+";"+"-1"; // ramp_up
-                            subcommand=subcommand  +"|"+   "HVCMD;"+coords[2]+";"+coords[3]+";"+chamber_depend_all_channels+"6;"+"10"+";"+"-1"; //imax
+                            /*if(CSC_fwG_g_IS_IMAX_SET)*/subcommand=subcommand  +"|"+   "HVCMD;"+coords[2]+";"+coords[3]+";"+chamber_depend_all_channels+"6;"+"1"+";"+"-1"; //imax
                             subcommand=subcommand  +"|"+   "HVCMD;"+coords[2]+";"+coords[3]+";"+chamber_depend_all_channels+"38;"+"500"+";"+"-1"; //trip_dl
                             mudcsHVMasterChannelSwitch(dp_name, true);
 
@@ -2317,7 +2412,10 @@ string DpNameFsm=substr(DpNameFsmStatus,0,strpos(DpNameFsmStatus,".status"));
  mudcsGetMasterForChamber(DpNameFsm, master_id, 
                          master_chan, master_index, coord_master);
 
+DebugTN("coord_master");
+DebugTN(coord_master);
 
+if(master_id==0)return;
 
  dpGet(mudcsAddSystem(DpNameFsm+".status"),current_status);
 
@@ -2370,9 +2468,21 @@ dyn_string list;
 int i;
   bool found;
   string fsm, t_string1;
-  int pos;
+  int pos,pos1, pos2;
 
 //DebugN("retrieveCoordinateSet:>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "+ type+" sent "+ dp_name);
+//-----------------------------------------------------------------------------------
+if(setList == "CoordFromDpName"){  
+  if(type_par=="FED_1"){
+   pos=strpos(dp_name,"_FED");
+   pos1=strpos(dp_name,"DDU0");
+   pos2=strpos(dp_name,"DDU");
+   if(pos1>=0)set=substr(dp_name,pos2,3)+substr(dp_name,pos2+4,1);
+   else set=substr(dp_name,pos2,5);
+   //set=substr(dp_name, pos1,pos-(pos1));
+  } 
+  return;
+}  
 //-----------------------------------------------------------------------------------
  if(setList == "CscLevelDevicesCoordinates"){  
   dpGet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_o."+setList),list);
@@ -2841,7 +2951,7 @@ dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_o.DimBrokerList_old"), BrokerLis
      if((pos_part=strpos(test_dyn_string[i],"_part"))>=0)
      test_dyn_string[i]=substr(test_dyn_string[i],0,pos_part);
                
-         test_string2=CSC_fwG_g_project_name_home + "/bin/PVSS00dim "+" -num "+i+" -dim_dp_config "+test_string+
+         test_string2=CSC_fwG_g_jcop_dim_home/*CSC_fwG_g_project_name_home*/ + "/bin/PVSS00dim"+CSC_fwG_g_PVSS_VERSION+" -num "+i+" -dim_dp_config "+test_string+
          " -dim_dns_node "+test_dyn_string[i]; 
          if(CSC_fwG_g_FSM_V24R09)test_string2 = "export DIM_DNS_NODE="+test_dyn_string[i]+";"+test_string2;
 operating_system=getenv("OS");
@@ -3245,4 +3355,107 @@ currentDpLabel_d = "Csc1";
 */
 
 
+}
+mudcsPcCratesMapping(){
+    
+dyn_string ds, ds2;
+  
+  //    bool is=patternMatch("*_C0[34]_TEMP","_C05_TEMP");
+  //    ds=dpNames("*_C0[3]_TEMP","TEMP_1");
+  
+//  ds2=dynPatternMatch("*_C0[345]_TEMP",ds);
+
+dyn_string sides=makeDynString("P","M");
+dyn_string stations=makeDynString("2","3","4"); 
+string side;
+string station;
+
+//side="P";
+//  ds=dpNames("*_"+side+"*_C*_TEMP","TEMP_1_d");
+//  CSC_fwG_g_PCRATES_MAP[side+"1_PC1A"]=dynPatternMatch("*_C0[345]_TEMP",ds);  
+// DebugTN(CSC_fwG_g_PCRATES_MAP[side+"1_PC1A"]); 
+ //  DebugTN(ds); 
+//return;
+    
+ int i,j;   
+for(i=1;i<=2;i++){
+ side=sides[i];
+      
+  station="1";
+            
+ ds=dpNames("*ME_"+side+"*_C*_TEMP","TEMP_1_d");
+  CSC_fwG_g_PCRATES_MAP[side+"1_PC1A"]=dynPatternMatch("*"+side+"1?_C0[345]_TEMP",ds); 
+  CSC_fwG_g_PCRATES_MAP[side+"1_PC1B"]=dynPatternMatch("*"+side+"1?_C0[678]_TEMP",ds);
+  CSC_fwG_g_PCRATES_MAP[side+"1_PC2A"]=dynPatternMatch("*"+side+"1?_C1[234]_TEMP",ds);
+  
+  ds2=dynPatternMatch("*"+side+"1?_C09_TEMP",ds); dynAppend(ds2,dynPatternMatch("*"+side+"1?_C1[01]_TEMP",ds));
+  dynSortAsc(ds2);
+  CSC_fwG_g_PCRATES_MAP[side+"1_PC2B"]=ds2;
+  
+//  CSC_fwG_g_PCRATES_MAP[side+"1_PC3A"]=dynPatternMatch("*"+side+"1?_C1[89]_TEMP",ds)+dynPatternMatch("*"+side+"1?_C20_TEMP",ds);
+  ds2=dynPatternMatch("*"+side+"1?_C1[89]_TEMP",ds);dynAppend(ds2,dynPatternMatch("*"+side+"1?_C20_TEMP",ds));
+  dynSortAsc(ds2);
+  CSC_fwG_g_PCRATES_MAP[side+"1_PC3A"]=ds2;
+      
+  CSC_fwG_g_PCRATES_MAP[side+"1_PC3B"]=dynPatternMatch("*"+side+"1?_C1[567]_TEMP",ds);
+  CSC_fwG_g_PCRATES_MAP[side+"1_PC4A"]=dynPatternMatch("*"+side+"1?_C2[456]_TEMP",ds);    
+  CSC_fwG_g_PCRATES_MAP[side+"1_PC4B"]=dynPatternMatch("*"+side+"1?_C2[123]_TEMP",ds); 
+  CSC_fwG_g_PCRATES_MAP[side+"1_PC5A"]=dynPatternMatch("*"+side+"1?_C2[789]_TEMP",ds);     
+  CSC_fwG_g_PCRATES_MAP[side+"1_PC5B"]=dynPatternMatch("*"+side+"1?_C3[012]_TEMP",ds); 
+  CSC_fwG_g_PCRATES_MAP[side+"1_PC6A"]=dynPatternMatch("*"+side+"1?_C3[345]_TEMP",ds);     
+  
+//  CSC_fwG_g_PCRATES_MAP[side+"1_PC6B"]=dynPatternMatch("*"+side+"1?_C36TEMP",ds)+dynPatternMatch("*"+side+"1?_C0[12]TEMP",ds);
+  ds2=dynPatternMatch("*11_C36_TEMP",ds);dynAppend(ds2,dynPatternMatch("*11_C0[12]_TEMP",ds));
+  dynAppend(ds2,dynPatternMatch("*12_C36_TEMP",ds));dynAppend(ds2,dynPatternMatch("*12_C0[12]_TEMP",ds));
+  dynAppend(ds2,dynPatternMatch("*13_C36_TEMP",ds));dynAppend(ds2,dynPatternMatch("*13_C0[12]_TEMP",ds));
+    
+//  dynSortAsc(ds2);  
+  CSC_fwG_g_PCRATES_MAP[side+"1_PC6B"]=ds2;
+  
+  for(j=1;j<=3;j++){  
+  station=stations[j];
+  
+  //CSC_fwG_g_PCRATES_MAP[side+station+"_PC1"]=dynPatternMatch("*_?"+station+"1_C0[234]_TEMP",ds)+dynPatternMatch("*_?"+station+"2_C0[345678]_TEMP",ds); 
+  ds2=dynPatternMatch("*_?"+station+"1_C0[234]_TEMP",ds);
+  dynAppend(ds2,dynPatternMatch("*_?"+station+"2_C0[345678]_TEMP",ds));
+  CSC_fwG_g_PCRATES_MAP[side+station+"_PC1"]=ds2;
+    
+  //CSC_fwG_g_PCRATES_MAP[side+station+"_PC2"]=dynPatternMatch("*_?"+station+"1_C0[567]_TEMP",ds)+
+  //                    dynPatternMatch("*_?"+station+"2_C09_TEMP",ds)+dynPatternMatch("*_?"+station+"2_C1[01234]_TEMP",ds);      
+  ds2=dynPatternMatch("*_?"+station+"1_C0[567]_TEMP",ds);
+  dynAppend(ds2,dynPatternMatch("*_?"+station+"2_C09_TEMP",ds));
+  dynAppend(ds2,dynPatternMatch("*_?"+station+"2_C1[01234]_TEMP",ds)); 
+ CSC_fwG_g_PCRATES_MAP[side+station+"_PC2"]=ds2;
+   
+ // CSC_fwG_g_PCRATES_MAP[side+station+"_PC3"]=dynPatternMatch("*_?"+station+"1_C0[89]_TEMP",ds)+   dynPatternMatch("*_?"+station+"1_C10_TEMP",ds)+
+ //                     dynPatternMatch("*_?"+station+"2_C1[56789]_TEMP",ds)+dynPatternMatch("*_?"+station+"2_C20_TEMP",ds);                
+  ds2=dynPatternMatch("*_?"+station+"1_C0[89]_TEMP",ds);
+  dynAppend(ds2,dynPatternMatch("*_?"+station+"1_C10_TEMP",ds));
+  dynAppend(ds2,dynPatternMatch("*_?"+station+"2_C1[56789]_TEMP",ds)); 
+  dynAppend(ds2,dynPatternMatch("*_?"+station+"2_C20_TEMP",ds));
+  CSC_fwG_g_PCRATES_MAP[side+station+"_PC3"]= ds2;
+  
+ // CSC_fwG_g_PCRATES_MAP[side+station+"_PC4"]=dynPatternMatch("*_?"+station+"1_C1[123]_TEMP",ds)+dynPatternMatch("*_?"+station+"2_C2[123456]_TEMP",ds);                
+   ds2=dynPatternMatch("*_?"+station+"1_C1[123]_TEMP",ds);
+  dynAppend(ds2,dynPatternMatch("*_?"+station+"2_C2[123456]_TEMP",ds));
+ CSC_fwG_g_PCRATES_MAP[side+station+"_PC4"]=ds2;
+  
+ // CSC_fwG_g_PCRATES_MAP[side+station+"_PC5"]=dynPatternMatch("*_?"+station+"1_C1[456]_TEMP",ds)+
+ //                     dynPatternMatch("*_?"+station+"2_C2[789]_TEMP",ds)+dynPatternMatch("*_?"+station+"2_C3[012]_TEMP",ds);        
+   ds2=dynPatternMatch("*_?"+station+"1_C1[456]_TEMP",ds);
+  dynAppend(ds2,dynPatternMatch("*_?"+station+"2_C2[789]_TEMP",ds));
+  dynAppend(ds2,dynPatternMatch("*_?"+station+"2_C3[012]_TEMP",ds)); 
+CSC_fwG_g_PCRATES_MAP[side+station+"_PC5"]=ds2;
+    
+ // CSC_fwG_g_PCRATES_MAP[side+station+"_PC6"]=dynPatternMatch("*_?"+station+"1_C1[78]_TEMP",ds)+   dynPatternMatch("*_?"+station+"1_C01_TEMP",ds)+
+ //                     dynPatternMatch("*_?"+station+"2_C3[3456]_TEMP",ds)+dynPatternMatch("*_?"+station+"2_C0[12]_TEMP",ds); 
+  ds2=dynPatternMatch("*_?"+station+"1_C1[78]_TEMP",ds);
+  dynAppend(ds2,dynPatternMatch("*_?"+station+"1_C01_TEMP",ds));
+  dynAppend(ds2,dynPatternMatch("*_?"+station+"2_C3[3456]_TEMP",ds)); 
+  dynAppend(ds2,dynPatternMatch("*_?"+station+"2_C0[12]_TEMP",ds));
+ CSC_fwG_g_PCRATES_MAP[side+station+"_PC6"]= ds2;
+} // j  
+  
+}
+  
 }

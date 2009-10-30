@@ -211,6 +211,18 @@ p="emuDev"+s+"Operation.pnl";
   dpSet(objs[i]+".ui.label:_original.._value",label);  
   continue;
  }
+ 
+s="_FED";
+s1="FED_1";
+ if((pos=strpos(o,s))>=0){
+p="emuDev"+s1+"Operation.pnl"; 
+  dynAppend(panels,dir_oper+"/"+p);
+//  mudcsDebug(o+" "+panels[dynlen(panels)]);
+  dpSet(objs[i]+".ui.panels:_original.._value",panels);
+    label=substr(o_cut,0);
+  dpSet(objs[i]+".ui.label:_original.._value",label);  
+  continue;
+ }
 
 s="CHIP_1";
  if((pos=strpos(o,s))>=0){
@@ -304,6 +316,23 @@ p="emuEmuOperationST.pnl";
 
 
 //return;
+  s="FED_M";
+  s1="FED_P";
+  s2="CSC_FED";
+ if( ((pos=strpos(o,s))>=0 && pos==(strlen(o)-strlen(s)))
+  || ((pos=strpos(o,s1))>=0 && pos==(strlen(o)-strlen(s1)))
+   || ((pos=strpos(o,s2))>=0 && pos==(strlen(o)-strlen(s2))) ){
+//panels=makeDynString("fwFSMuser/fwUi.pnl");
+//p="emuLVSubSystemOperation.pnl";
+ p="emuEmptyOperation.pnl";  
+
+  dynAppend(panels,dir_oper+"/"+p);
+//  mudcsDebug(o+" "+panels[dynlen(panels)]);
+  dpSet(objs[i]+".ui.panels:_original.._value",panels);
+    label=o_cut;
+  dpSet(objs[i]+".ui.label:_original.._value",label);
+  continue;
+ }  
   
 s="_PSU";
  if((pos=strpos(o,s))>=0 && pos==(strlen(o)-strlen(s))){

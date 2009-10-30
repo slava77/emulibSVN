@@ -115,6 +115,18 @@ alias=dps[dynlen(dps)];
 
   dyn_string emu_name_aliases;
   dpGet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":"+"EMUNAMEALIASES."),emu_name_aliases);
+  //-------------------------------------
+  
+  if(dynlen(emu_name_aliases)==0){
+    dyn_string dyn_debug5;
+    dynAppend(dyn_debug5,"mudcsNameByAliasGet: "+CSC_fwG_g_SYSTEM_NAME+":"+"EMUNAMEALIASES.");
+    dynAppend(dyn_debug5,"mudcsNameByAliasGet: "+alias);    
+    mudcsDebug_dyn5(dyn_debug5); 
+  }
+  
+  //--------------------------------------  
+  
+  
   for(i=1;i<=dynlen(emu_name_aliases);i++){
    pos=strpos(emu_name_aliases[i],"#"+alias);
    if(pos>=0){
@@ -135,7 +147,7 @@ string mudcsAliasNameGet(string fdpname){
 
 int i;
 string alias="";
-
+//DebugTN("+++"+fdpname);
 dyn_string dps=strsplit(fdpname,".");
 
 dps=strsplit(dps[1],":");
@@ -147,11 +159,23 @@ dps=strsplit(dps[dynlen(dps)],"/");
 
 
 string dpname=dps[dynlen(dps)];
-
+//DebugTN("+++"+dpname);
 bool found=false;
 
   dyn_string emu_name_aliases;
   dpGet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":"+"EMUNAMEALIASES."),emu_name_aliases);
+  //-------------------------------------
+  
+  if(dynlen(emu_name_aliases)==0){
+    dyn_string dyn_debug5;
+    dynAppend(dyn_debug5,"mudcsAliasNameGet: "+CSC_fwG_g_SYSTEM_NAME+":"+"EMUNAMEALIASES.");
+    dynAppend(dyn_debug5,"mudcsAliasNameGet: "+dpname);    
+    mudcsDebug_dyn5(dyn_debug5); 
+  }
+  
+  //--------------------------------------
+//  DebugTN("+++"+mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":"+"EMUNAMEALIASES."));
+//  DebugTN("+++"+emu_name_aliases[1]);
   for(i=1;i<=dynlen(emu_name_aliases);i++){
    if(strpos(emu_name_aliases[i],dpname+"#")>=0){
      found=true;
@@ -161,7 +185,7 @@ bool found=false;
   }   
 
  if(found)strreplace(fdpname,dpname,alias);
- alias=fdpname;
+ alias=fdpname; // returns the same if there is no alias (FED)
  return alias;
 
 }
@@ -329,6 +353,19 @@ mudcsNameCompose(string type, string station_label, string emu_system_side, int 
 
   dyn_string emu_name_aliases;
   dpGet(mudcsAddSystem("EMUNAMEALIASES."),emu_name_aliases);
+
+//-------------------------------------
+  
+  if(dynlen(emu_name_aliases)==0){
+    dyn_string dyn_debug5;
+    dynAppend(dyn_debug5,"mudcsNameCompose: "+CSC_fwG_g_SYSTEM_NAME+":"+"EMUNAMEALIASES.");
+    dynAppend(dyn_debug5,"mudcsNameCompose: "+name);    
+    mudcsDebug_dyn5(dyn_debug5); 
+  }
+  
+//--------------------------------------  
+  
+  
   if(!dynContains(emu_name_aliases,name +"#"+ alias))dynAppend(emu_name_aliases, name +"#"+ alias);
   dpSetWait(mudcsAddSystem("EMUNAMEALIASES."),emu_name_aliases);
 

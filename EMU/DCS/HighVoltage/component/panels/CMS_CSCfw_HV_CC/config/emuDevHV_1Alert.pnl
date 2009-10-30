@@ -11,7 +11,9 @@ PANEL,-1 -1 507 341 N "_3DFace" 1
 //=================================================================" 0
  E E E E 1 -1 -1 0  420 39
 ""0  1
-E "hv_set_d(bool isSet, string device_type)
+E "#uses \"CMS_CSCfw_LV_CRB/mudcs9XAlertReconfigAllSlowControls.ctl\"
+
+hv_set_d(bool isSet, string device_type)
 {
 
 int i;
@@ -58,7 +60,7 @@ s2=\"5000\";   // alarm
 }
 
 value=value+\".data.module_status|\"; 
-dynAppend(limits_s,\"0|5\");  // 0 is OK
+dynAppend(limits_s,\"-2|5\");  // -2 is OK
                             // 5 is alarm
 
 
@@ -197,7 +199,12 @@ string device_type=\"HV_1\";
 //string device_type1=\"HV_PR\";
 //  hv_set_pr(true,device_type1);
 
+  
+  mudcsAlertReconfig(\"HV_1\", \".off_channels\", true);
+ 
 		fwBusyBarButton_std_stopBusy(exceptionInfo);
+                
+                
 
 }
 

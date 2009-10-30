@@ -52,8 +52,8 @@ string os=getenv(\"OS\");
 
 DebugTN(\"1\");  
 
-if (os ==\"Linux\")system(\"PVSS00ctrl -num 15 CMS_CSCfw_HV_CC/mudcsComponent.ctl &\");
-else system(\"cmd /c PVSS00ctrl -num 15 CMS_CSCfw_HV_CC/mudcsComponent.ctl\");
+if (os ==\"Linux\")system(\"PVSS00ctrl -num 16 CMS_CSCfw_HV_CC/mudcsComponent.ctl &\");
+else system(\"cmd /c PVSS00ctrl -num 16 CMS_CSCfw_HV_CC/mudcsComponent.ctl\");
 DebugTN(\"11\"); 
   return; // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
   

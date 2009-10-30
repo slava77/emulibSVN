@@ -43,6 +43,10 @@ mudcsPostCreateConfig(){
  dps_lv=dpNames("*","TEMP_1");
   for(i=1;i<=dynlen(dps_lv);i++){
     dpSet(mudcsAddSystem(dps_lv[i]+".status"),2);   
+  }  
+ dps_lv=dpNames("*","FED_1");
+  for(i=1;i<=dynlen(dps_lv);i++){
+    dpSet(mudcsAddSystem(dps_lv[i]+".status"),2);   
   }   
 }
 
@@ -89,6 +93,11 @@ dpSetWait(mudcsAddSystem("EMUNAMEALIASES."),makeDynString());
   if(strpos(dps_to_delete[i],"DimBroker") >=0 )continue;
   dpDelete(dps_to_delete[i]);
  }
+ dps_to_delete=dpNames("*","FED_1_d");
+ for(i=1;i<=dynlen(dps_to_delete);i++){
+  if(strpos(dps_to_delete[i],"DimBroker") >=0 )continue;
+  dpDelete(dps_to_delete[i]);
+ } 
  dps_to_delete=dpNames("*","CHIP_1_d");
  for(i=1;i<=dynlen(dps_to_delete);i++){
   if(strpos(dps_to_delete[i],"DimBroker") >=0 )continue;
@@ -170,6 +179,7 @@ mudcs_deleteHardwareDevices("ALNM");
 */
 mudcs_deleteHardwareDevices("LV_1");
 mudcs_deleteHardwareDevices("TEMP_1");
+mudcs_deleteHardwareDevices("FED_1");
 mudcs_deleteHardwareDevices("CHIP_1");
 mudcs_deleteHardwareDevices("GAS_SX5");
 mudcs_deleteHardwareDevices("HV_1");
@@ -355,9 +365,24 @@ _fwTree_askRemoveNode(CSC_fwG_EmuCmsGlobalParent, EmuCmsGlobalNode, redo);
 //=========================================================================
 
 mudcs_addNode(){
+  
+  int pos_doublecolon=strpos(EmuCmsGlobalNode,"::");
+  int pos_colon=strpos(EmuCmsGlobalNode,":");
+  int is_exists;
 
+  string just_node=EmuCmsGlobalNode;
+  if(pos_doublecolon>=0)just_node=substr(EmuCmsGlobalNode,pos_doublecolon+2);
+  
+  is_exists= fwFsmTree_isNode(just_node);
+  if(is_exists)return;
+  if(pos_colon >=0 && pos_colon==(strlen(EmuCmsGlobalNode)-1))return;
+  //mudcsDebug(just_node);
+  //if(strpos(EmuCmsGlobalNode,"CRB")>=0 )
+  
 
 if(mode_tree_creation){
+  
+  
  int cu_flag;
  if(CSC_fwG_EmuCmsGlobalCu=="0")cu_flag=0;
  else cu_flag=1;
@@ -833,9 +858,12 @@ CSC_fwG_EmuCmsGlobalType="CMS_CSC_ME11_HV_Type";
 CSC_fwG_EmuCmsGlobalCu="0";cu_flag = 0; // logical unit
 CSC_fwG_EmuCmsGlobalParent=parent_node_me11;
 
-EmuCmsGlobalNode=CSC_fwG_g_Dubna_System_Name+":CSC_ME_11_HV::"+"CSC_ME_N11_HV";
+dyn_string dubna_db;
+dubna_db=dpNames(CSC_fwG_g_Dubna_System_Name+":*CSC_ME_N11_HV","_FwFsmObject");
+EmuCmsGlobalNode=dubna_db[1];//CSC_fwG_g_Dubna_System_Name+":CSC_ME_11_HV::"+"CSC_ME_N11_HV";
 mudcs_addNode();
-EmuCmsGlobalNode=CSC_fwG_g_Dubna_System_Name+":CSC_ME_11_HV::"+"CSC_ME_P11_HV";
+dubna_db=dpNames(CSC_fwG_g_Dubna_System_Name+":*CSC_ME_P11_HV","_FwFsmObject");
+EmuCmsGlobalNode=dubna_db[1];//CSC_fwG_g_Dubna_System_Name+":CSC_ME_11_HV::"+"CSC_ME_P11_HV";
 mudcs_addNode();
 //==============================
 /// dynRemove(panels,2);
@@ -1291,6 +1319,113 @@ mudcs_addNode();
  /////dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_o"+".CscLevelDevicesCoordinates"), CscLevelDevices);
 
 }
+//====================================================================
+//====================================================================
+//====================================================================
+//====================================================================
+mudcsCreateFED_add(){
+  
+string parent_node_test;
+mudcsCreateHardwareBranch(1, "FED", parent_node_test);
+mudcsCreateFED("p",parent_node_test);
+mudcsCreateFED("m",parent_node_test);
+
+}
+mudcsCreateFED(string emu_system_side, string parent_node_test)
+{
+
+dyn_string CscLevelDevices;
+string parent_domain;
+string Node_save;
+string dpN;
+int cu_flag;
+dyn_string panels;
+string parent_node;
+
+
+CSC_fwG_EmuCmsSpecialMode=1;
+panels=makeDynString("fwFSMuser/fwUi.pnl");
+
+int i;
+string fed_side_folder;
+
+int i_db;
+ dyn_string emu_db;
+ string s_test;
+ dyn_string s_split;
+
+ 
+
+//================= DB ============================================================
+for(i=1;i<=36;i++){
+  
+   sprintf(s_test,"%02d",i);
+ if(emu_system_side=="p"){
+  if(i<=18)dynAppend(emu_db,"DDU"+s_test+"_FED");  
+ }
+ else if(emu_system_side=="m"){
+  if(i>18)dynAppend(emu_db,"DDU"+s_test+"_FED");    
+ }
+
+}
+//==================================================================================
+
+     
+if(dynlen(emu_db)==0)return;     
+
+//---------------------
+parent_domain=parent_node_test;
+
+CSC_fwG_EmuCmsGlobalType=CSC_fwG_g_NodeLogicalFsmType;
+if(emu_system_side == "p")fed_side_folder=EmuCmsGlobalNode="CSC_FED_P";
+else if(emu_system_side == "m")fed_side_folder=EmuCmsGlobalNode="CSC_FED_M";
+ parent_node=EmuCmsGlobalNode;
+
+CSC_fwG_EmuCmsGlobalCu="0";cu_flag = 0; // logical unit
+CSC_fwG_EmuCmsGlobalParent=parent_domain;
+
+ mudcs_addLogical(false, CSC_fwG_g_csc_part+"/"+parent_node_test, 
+ EmuCmsGlobalNode, CSC_fwG_EmuCmsGlobalType,
+ Component+"/"+dir_config+"/emuEmptyConfig", Component+"/emuEmptyOperation");
+ 
+mudcs_addNode();
+//------------------------
+
+
+
+
+ for(i=1;i<=dynlen(emu_db);i++){ 
+
+//-----
+ parent_domain=parent_node;
+
+ CSC_fwG_EmuCmsGlobalType="FED_1";
+ EmuCmsGlobalNode=emu_db[i];// 
+ //EmuCmsGlobalNode= "CSC"+"HV_PR_"+CSC_fwG_g_all_primary[i]; 
+ Node_save=EmuCmsGlobalNode;
+ CSC_fwG_EmuCmsGlobalCu="0";cu_flag = 0;
+ CSC_fwG_EmuCmsGlobalParent=parent_domain;
+
+ mudcs_addHardwareDevice(EmuCmsGlobalNode,CSC_fwG_EmuCmsGlobalType,"",dpN);
+ EmuCmsGlobalNode=dpN;
+
+ mudcs_addLogical(true, CSC_fwG_g_csc_part+"/"+"CSC_FED/"+fed_side_folder, 
+ Node_save, CSC_fwG_EmuCmsGlobalType,
+ Component+"/"+dir_config+"/emuDevFED_1Config", Component+"/emuDevFED_1Operation");
+
+ mudcs_addNode();
+
+
+    
+ } // for 
+
+
+
+
+
+ 
+
+}
 
 //====================================================================
 //====================================================================
@@ -1419,8 +1554,8 @@ int i;
      emu_db=dpNames(CSC_fwG_g_CRB_SYSTEM_NAME+":*_LV_CR*_PSU","_FwFsmObject");      
  
   for(i_db=1;i_db<=dynlen(emu_db);i_db++){
-   s_split=strsplit(emu_db[i_db],"|");
-   emu_db[i_db]=CSC_fwG_g_CRB_SYSTEM_NAME+":"+CSC_fwG_g_CRB_DOMAIN+"::"+s_split[dynlen(s_split)];
+  // s_split=strsplit(emu_db[i_db],"|");
+  // emu_db[i_db]=CSC_fwG_g_CRB_SYSTEM_NAME+":"+CSC_fwG_g_CRB_DOMAIN+"::"+s_split[dynlen(s_split)];
   } // for
    
 //==================================================================================
@@ -1512,15 +1647,21 @@ if(custom_lv){
 } // if custom_lv
 else{
 
+       
  if(isWholeCrbFolderAdd)disk_db=dpNames(CSC_fwG_g_CRB_SYSTEM_NAME+":*"+EMU_SYSTEM_SIDE+idisk+"_LV_CRB","_FwFsmObject"); // 
  else disk_db=dpNames(CSC_fwG_g_CRB_SYSTEM_NAME+":*"+EMU_SYSTEM_SIDE+idisk+"_PC*_LV_CRB","_FwFsmDevice");//"fwCrb_CSC_LV"); // 
  
  for(i_db=1;i_db<=dynlen(disk_db);i_db++){
-//   s_split=strsplit(disk_db[i_db],":");
-   s_split=strsplit(disk_db[i_db],"|");
-   disk_db[i_db]=CSC_fwG_g_CRB_SYSTEM_NAME+":"+CSC_fwG_g_CRB_DOMAIN+"::"+s_split[dynlen(s_split)];
+
+//   s_split=strsplit(disk_db[i_db],"|");
+//   disk_db[i_db]=CSC_fwG_g_CRB_SYSTEM_NAME+":"+CSC_fwG_g_CRB_DOMAIN+"::"+s_split[dynlen(s_split)];
    
  } // for
+// DebugTN(">>>>>>>>>>>>>>>>>>> "+EMU_SYSTEM_SIDE+idisk);
+//  DebugTN(">>>>>>>>>>>>>>>>>>> "+CSC_fwG_g_CRB_SYSTEM_NAME+":"+CSC_fwG_g_CRB_DOMAIN);
+//  DebugTN(">>>>>>>>>>>>>>>>>>> "+ dynlen(disk_db)+" >> "+ disk_db[1]);
+//   DebugTN(">>>>>>>>>>>>>>>>>>> ");
+//   DebugTN(">>>>>>>>>>>>>>>>>>> ");  
 } // else if custom_lv
 
   
@@ -1904,6 +2045,7 @@ mudcs_selectParent(1, isFilled, CSC_fwG_g_csc_part,"DCSNodes",1, parent_domain);
 ///////////type =CSC_fwG_g_NodeLogicalFsmType;
 cu_flag = 1;
 if(subsystem=="LV")CSC_fwG_EmuCmsGlobalType=CSC_fwG_g_NodeStbyFsmType;
+else if(subsystem=="FED")CSC_fwG_EmuCmsGlobalType="EMUFEDNodes";
 else CSC_fwG_EmuCmsGlobalType=CSC_fwG_g_NodeLogicalFsmType;
 //mudcsNameCompose("", station_label, emu_system_side, idisk, "", "", EmuCmsGlobalNode);
 EmuCmsGlobalNode="CSC_"+subsystem;
@@ -1980,10 +2122,10 @@ mudcs_addNode();
 mudcsCreateAllTrees(int CreateLevel)
 {
 
- if(fwFsmTree_isNode(CSC_fwG_g_csc_part)>0){
-   DebugTN("++++++++++ TREE ALREADY EXISTS ++++++++++++++++");
-   return; 
- } 
+// if(fwFsmTree_isNode(CSC_fwG_g_csc_part)>0){
+//   DebugTN("++++++++++ TREE ALREADY EXISTS ++++++++++++++++");
+//   return; 
+// } 
   
     
 custom_lv=CSC_fwG_g_CUSTOM_LV;
@@ -2217,6 +2359,11 @@ mudcsCreateAtlasPsu(parent_node_test);
 
 mudcsCreateHardwareBranch(1, "HV", parent_node_test);
 mudcsCreateHV_PR(parent_node_test);
+
+mudcsCreateHardwareBranch(1, "FED", parent_node_test);
+mudcsCreateFED("p",parent_node_test);
+mudcsCreateFED("m",parent_node_test);
+
 mudcsSupervisorRole();
 //return;
 ////  mudcsCreateHardwareBranch(1, "WTH", parent_node_test);
@@ -2753,9 +2900,9 @@ string C0_DUBNA;
 if(i100<=9)C0_DUBNA="C0";
 else C0_DUBNA="C";
 
-//EmuCmsGlobalNode=CSC_fwG_g_Dubna_System_Name+":CMS_ME11P_HV::"+"ME11"+EMU_SYSTEM_SIDE+i100+"HV";
-//EmuCmsGlobalNode=CSC_fwG_g_Dubna_System_Name+":CMS_CSC_ME11P_HV::"+"ME11"+EMU_SYSTEM_SIDE+i100+"HV";
-EmuCmsGlobalNode=CSC_fwG_g_Dubna_System_Name+":CSC_ME_11_HV::"+"CSC_ME_"+EMU_SYSTEM_SIDE+"11_"+C0_DUBNA+i100+"_HV";
+dyn_string dubna_db=dpNames(CSC_fwG_g_Dubna_System_Name+":*"+"CSC_ME_"+EMU_SYSTEM_SIDE+"11_"+C0_DUBNA+i100+"_HV","_FwFsmObject");
+
+EmuCmsGlobalNode=dubna_db[1];//CSC_fwG_g_Dubna_System_Name+":CSC_ME_11_HV::"+"CSC_ME_"+EMU_SYSTEM_SIDE+"11_"+C0_DUBNA+i100+"_HV";
 
 CSC_fwG_EmuCmsGlobalCu="0";cu_flag = 0; // logical unit
 CSC_fwG_EmuCmsGlobalParent=parent_domain;
@@ -2959,6 +3106,15 @@ else if(strpos(deviceType,"TEMP")>=0){
   if(strpos(deviceType,"TEMP_1")>=0)deviceType = "Temperature Device (1)";
 
 }
+else if(strpos(deviceType,"FED")>=0){
+  if(strpos(deviceType,"FED_1")>=0){
+    dpCreate(deviceName,"FED_1_d");       // !!!!!!!!!!!!!!!!!!!!!
+  }
+
+  generalDeviceType = "Fed";
+  if(strpos(deviceType,"FED_1")>=0)deviceType = "Fed Device (1)";
+
+}
 else if(strpos(deviceType,"CHIP")>=0){
   if(strpos(deviceType,"CHIP_1")>=0){
     dpCreate(deviceName,"CHIP_1_d");       // !!!!!!!!!!!!!!!!!!!!!
@@ -3088,6 +3244,11 @@ else if(strpos(deviceType,"HV")>=0){
 else if(strpos(deviceType,"TEMP")>=0){
   generalDeviceType = "Temperature";
   if(strpos(deviceType,"TEMP_1")>=0)deviceType = "Temperature Device (1)";
+
+}
+else if(strpos(deviceType,"FED")>=0){
+  generalDeviceType = "Fed";
+  if(strpos(deviceType,"FED_1")>=0)deviceType = "Fed Device (1)";
 
 }
 else if(strpos(deviceType,"CHIP")>=0){

@@ -98,15 +98,24 @@ else if(mode==plus_mode)
  
  
 //  DebugTN(dps[i]+\".fsm.sendCommand\");
+  int is_enabled=0;
+  dpGet(dps[i]+\".mode.enabled\",is_enabled);
   if(mode_action==on_mode){
-  fwCU_sendCommand(DomainName+\"::\"+split3[dynlen(split3)],\"ON\");
+   if(is_enabled){ 
+   //  fwCU_sendCommand(DomainName+\"::\"+split3[dynlen(split3)],\"ON\");
+     dpSet(dps[i]+\".fsm.sendCommand\",\"ON\");
      DebugTN(DomainName+\"::\"+split3[dynlen(split3)]);
- // dpSet(dps[i]+\".fsm.sendCommand\",\"ON\");
+   }
+  //   DebugTN(dps[i]+\".mode.enabled\");
+ // 
   }
   else if(mode_action==off_mode){
-  fwCU_sendCommand(DomainName+\"::\"+split3[dynlen(split3)],\"OFF\");
+   if(is_enabled){     
+   //  fwCU_sendCommand(DomainName+\"::\"+split3[dynlen(split3)],\"OFF\");
+     dpSet(dps[i]+\".fsm.sendCommand\",\"OFF\");
      DebugTN(DomainName+\"::\"+split3[dynlen(split3)]);
- // dpSet(dps[i]+\".fsm.sendCommand\",\"OFF\");
+   }
+ // 
   }
     
     
@@ -147,45 +156,6 @@ E E 0 0 0 0 1 E 1 0 0.8095238095238095 -3 50.52380952380952 1 E 100 50 380 260
 0
 1 34 1 "" 15
 0
-13 8
-"stop_m"
-""
-1 100 270 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-1 0 0 0 0 0
-E E E
-0
-1
-LANG:1 29 e.g. for firmware downloading
-
-0
-1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 98 268 242 332
-
-T 
-1
-LANG:1 38 -Z
-Stop Peripheral 
-Crate Slow Control
-"main()
-{
-  
-  string last_command;
-  dpGet(system_minus+\":STOP_SLOW_CONTROL.value\",last_command);
-  
-  if(strpos(last_command,\"PREPARE_POWER_UP\")<0){
-   dpSet(system_minus+\":LV_1_COM.command\",\"STOP_SLOW_CONTROL\");
-   dpSet(system_minus+\":STOP_SLOW_CONTROL.value\",\"STOP_SLOW_CONTROL\"); 
-       dpSet(system_minus+\":SPECIAL_STOP_SC.value\",\"STOP\");
-  }
-  else{
-   mudcsDebug(\"LV IS POWERED UP: \\n TRY TO DO IT LATER (in 1 minute)\");
-  }
-  
-}" 0
- E E E
 13 9
 "PUSH_BUTTON2"
 ""
@@ -211,131 +181,6 @@ Crate Slow Control
 {
   dpSet(CSC_fwG_g_HW_SYSTEM_NAME+\":LV_1_COM.command\",\"RESUME_SLOW_CONTROL\");
   dpSet(CSC_fwG_g_HW_SYSTEM_NAME+\":STOP_SLOW_CONTROL.value\",\"RESUME_SLOW_CONTROL\");
-}" 0
- E E E
-13 14
-"resume_m"
-""
-1 100 330 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-5 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 98 328 242 432
-
-T 
-1
-LANG:1 102 -Z
-Resume Peripheral 
-Crate Slow Control:
-(after click: wait for 
-for five minutes 
-for data to come) 
-"main()
-{
-  
-    string last_command;
-  dpGet(system_minus+\":STOP_SLOW_CONTROL.value\",last_command);
-  
-  if(strpos(last_command,\"PREPARE_POWER_UP\")<0){
-   dpSetWait(system_minus+\":LV_1_COM.command\",\"EXIT_SLOW_CONTROL\");
-   dpSetWait(system_minus+\":LV_1_COM.command\",\"RESUME_SLOW_CONTROL\"); //for x2p
-   dpSet(system_minus+\":STOP_SLOW_CONTROL.value\",\"RESUME_SLOW_CONTROL\");
-    dpSet(system_minus+\":SPECIAL_STOP_SC.value\",\"RESUME\");
-  }
-   else{
-   mudcsDebug(\"LV IS POWERED UP: \\n TRY TO DO IT LATER (in 1 minute)\");
-  }
-  
-}" 0
- E E E
-13 21
-"stop_p"
-""
-1 240 270 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-11 0 0 0 0 0
-E E E
-0
-1
-LANG:1 29 e.g. for firmware downloading
-
-0
-1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 238 268 382 332
-
-T 
-1
-LANG:1 38 +Z
-Stop Peripheral 
-Crate Slow Control
-"main()
-{
-  
-
- string last_command;
-  dpGet(system_plus+\":STOP_SLOW_CONTROL.value\",last_command);
-  
-  if(strpos(last_command,\"PREPARE_POWER_UP\")<0){
-   dpSet(system_plus+\":LV_1_COM.command\",\"STOP_SLOW_CONTROL\");
-   dpSet(system_plus+\":STOP_SLOW_CONTROL.value\",\"STOP_SLOW_CONTROL\");  
-      dpSet(system_plus+\":SPECIAL_STOP_SC.value\",\"STOP\");
-  }
-  else{
-   mudcsDebug(\"LV IS POWERED UP: \\n TRY TO DO IT LATER (in 1 minute)\");
-  }  
-   
-}" 0
- E E E
-13 22
-"resume_p"
-""
-1 240 330 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-13 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 238 328 382 432
-
-T 
-1
-LANG:1 102 +Z
-Resume Peripheral 
-Crate Slow Control:
-(after click: wait for 
-for five minutes 
-for data to come) 
-"main()
-{
- string last_command;
-  dpGet(system_plus+\":STOP_SLOW_CONTROL.value\",last_command);
-  
-  if(strpos(last_command,\"PREPARE_POWER_UP\")<0){  
-   dpSetWait(system_plus+\":LV_1_COM.command\",\"EXIT_SLOW_CONTROL\");
-   dpSetWait(system_plus+\":LV_1_COM.command\",\"RESUME_SLOW_CONTROL\"); // for x2p 
-   dpSet(system_plus+\":STOP_SLOW_CONTROL.value\",\"RESUME_SLOW_CONTROL\");
-       dpSet(system_plus+\":SPECIAL_STOP_SC.value\",\"RESUME\");
-  }
-  else{
-   mudcsDebug(\"LV IS POWERED UP: \\n TRY TO DO IT LATER (in 1 minute)\");
-  }    
-   
 }" 0
  E E E
 13 27
@@ -436,6 +281,170 @@ LANG:1 9 +Z CRB ON
 "main()
 {
   mudcsCrbSwitch(1,2);
+}" 0
+ E E E
+13 35
+"stop_m"
+""
+1 100 270 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+22 0 0 0 0 0
+E E E
+0
+1
+LANG:1 29 e.g. for firmware downloading
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 98 268 242 332
+
+T 
+1
+LANG:1 38 -Z
+Stop Peripheral 
+Crate Slow Control
+"main()
+{
+  
+  string last_command;
+  dpGet(system_minus+\":STOP_SLOW_CONTROL.value\",last_command);
+  
+  if(strpos(last_command,\"PREPARE_POWER_UP\")<0){
+   dpSet(system_minus+\":LV_1_COM.command\",\"STOP_SLOW_CONTROL\");
+   dpSet(system_minus+\":STOP_SLOW_CONTROL.value\",\"STOP_SLOW_CONTROL\"); 
+       dpSet(system_minus+\":SPECIAL_STOP_SC.value\",\"STOP\");
+  }
+  else{
+   mudcsDebug(\"LV IS POWERED UP: \\n TRY TO DO IT LATER (in 1 minute)\");
+  }
+  
+}" 0
+ E E E
+13 36
+"resume_m"
+""
+1 100 330 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+24 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 98 328 242 432
+
+T 
+1
+LANG:1 102 -Z
+Resume Peripheral 
+Crate Slow Control:
+(after click: wait for 
+for five minutes 
+for data to come) 
+"main()
+{
+  
+    string last_command;
+  dpGet(system_minus+\":STOP_SLOW_CONTROL.value\",last_command);
+  
+  if(strpos(last_command,\"PREPARE_POWER_UP\")<0){
+   dpSetWait(system_minus+\":LV_1_COM.command\",\"EXIT_SLOW_CONTROL\");
+   dpSetWait(system_minus+\":LV_1_COM.command\",\"RESUME_SLOW_CONTROL\"); //for x2p
+   dpSet(system_minus+\":STOP_SLOW_CONTROL.value\",\"RESUME_SLOW_CONTROL\");
+    dpSet(system_minus+\":SPECIAL_STOP_SC.value\",\"RESUME\");
+  }
+   else{
+   mudcsDebug(\"LV IS POWERED UP: \\n TRY TO DO IT LATER (in 1 minute)\");
+  }
+  
+}" 0
+ E E E
+13 37
+"stop_p"
+""
+1 240 270 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+26 0 0 0 0 0
+E E E
+0
+1
+LANG:1 29 e.g. for firmware downloading
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 238 268 382 332
+
+T 
+1
+LANG:1 38 +Z
+Stop Peripheral 
+Crate Slow Control
+"main()
+{
+  
+
+ string last_command;
+  dpGet(system_plus+\":STOP_SLOW_CONTROL.value\",last_command);
+  
+  if(strpos(last_command,\"PREPARE_POWER_UP\")<0){
+   dpSet(system_plus+\":LV_1_COM.command\",\"STOP_SLOW_CONTROL\");
+   dpSet(system_plus+\":STOP_SLOW_CONTROL.value\",\"STOP_SLOW_CONTROL\");  
+      dpSet(system_plus+\":SPECIAL_STOP_SC.value\",\"STOP\");
+  }
+  else{
+   mudcsDebug(\"LV IS POWERED UP: \\n TRY TO DO IT LATER (in 1 minute)\");
+  }  
+   
+}" 0
+ E E E
+13 38
+"resume_p"
+""
+1 240 330 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+28 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 238 328 382 432
+
+T 
+1
+LANG:1 102 +Z
+Resume Peripheral 
+Crate Slow Control:
+(after click: wait for 
+for five minutes 
+for data to come) 
+"main()
+{
+ string last_command;
+  dpGet(system_plus+\":STOP_SLOW_CONTROL.value\",last_command);
+  
+  if(strpos(last_command,\"PREPARE_POWER_UP\")<0){  
+   dpSetWait(system_plus+\":LV_1_COM.command\",\"EXIT_SLOW_CONTROL\");
+   dpSetWait(system_plus+\":LV_1_COM.command\",\"RESUME_SLOW_CONTROL\"); // for x2p 
+   dpSet(system_plus+\":STOP_SLOW_CONTROL.value\",\"RESUME_SLOW_CONTROL\");
+       dpSet(system_plus+\":SPECIAL_STOP_SC.value\",\"RESUME\");
+  }
+  else{
+   mudcsDebug(\"LV IS POWERED UP: \\n TRY TO DO IT LATER (in 1 minute)\");
+  }    
+   
 }" 0
  E E E
 0

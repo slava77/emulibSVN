@@ -33,7 +33,7 @@ LANG:1 0
 LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
 0 ""
  10 10 694 466
-E13 "ALL" 1
+E15 "ALL" 1
 LANG:1 3 ALL
 1 "CMS_CSCfw_HV_CC/config/emuDevAllAlert.pnl" 1
 LANG:1 0 
@@ -76,6 +76,18 @@ LANG:1 0
 "Snmp" 1
 LANG:1 4 Snmp
 1 "CMS_CSCfw_HV_CC/config/emuDevSnmpAlert.pnl" 1
+LANG:1 0 
+0
+
+"Fed" 1
+LANG:1 3 Fed
+1 "CMS_CSCfw_HV_CC/config/emuDevFED_1Alert.pnl" 1
+LANG:1 0 
+0
+
+"DMB" 1
+LANG:1 3 DMB
+1 "CMS_CSCfw_HV_CC/config/emuDevfwLvCr_CSC_TEMPAlert.pnl" 1
 LANG:1 0 
 0
 

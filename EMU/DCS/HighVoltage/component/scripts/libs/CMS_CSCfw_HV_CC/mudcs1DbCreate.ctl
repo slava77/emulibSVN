@@ -48,9 +48,9 @@ db_set_emu_level();
 for(i=1;i<=8;i++){
  
   dpSet("Db_o.Wheels_o.Wheel"+i+".InDynatemAndSetNumberList",CC_IN[i]); 
-  if(i!=1 & i!=8)dpSet("Db_o.Wheels_o.Wheel"+i+".OutDynatemAndSetNumberList",CC_OUT[i]);
+  /*if(i!=1 & i!=8)*/dpSet("Db_o.Wheels_o.Wheel"+i+".OutDynatemAndSetNumberList",CC_OUT[i]);
   dpSet("Db_o.Wheels_o.Wheel"+i+".InHVsetList",HV_IN[i]); 
-  if(i!=1 & i!=8)dpSet("Db_o.Wheels_o.Wheel"+i+".OutHVsetList",HV_OUT[i]);   
+  /*if(i!=1 & i!=8)*/dpSet("Db_o.Wheels_o.Wheel"+i+".OutHVsetList",HV_OUT[i]);   
      
   dpSet("Db_o.Wheels_o.Wheel"+i+".DiskLevelDevicesCoordinates",DISK_LEVEL[i]); 
 } // for
@@ -513,6 +513,42 @@ int i;
   CC_IN[i][17]="dummy";
   CC_IN[i][18]="dummy";                    
   
+  CC_OUT[i][1]=""; //sector 6 
+  CC_OUT[i][2]=""; //sector 6 
+  CC_OUT[i][3]=""; //sector 1 
+  CC_OUT[i][4]="";//sector 1
+  CC_OUT[i][5]="";//sector 1
+  CC_OUT[i][6]="";//sector 1
+  CC_OUT[i][7]="";//sector 1
+  CC_OUT[i][8]="";//sector 1
+  CC_OUT[i][9]="dummy"; ////sector  2
+  CC_OUT[i][10]="dummy";////sector  2
+  CC_OUT[i][11]="dummy";///sector  2
+  CC_OUT[i][12]="dummy";////sector  2
+  CC_OUT[i][13]="dummy";////sector  2  
+  CC_OUT[i][14]="";////sector  2
+  CC_OUT[i][15]="";////sector  3
+  CC_OUT[i][16]="";////sector  3
+  CC_OUT[i][17]="";////sector  3
+  CC_OUT[i][18]="";////sector  3     
+  CC_OUT[i][19]="";////sector  3
+  CC_OUT[i][20]="";////sector  3
+  CC_OUT[i][21]="";////sector  4  
+  CC_OUT[i][22]="";////sector  4 
+  CC_OUT[i][23]="";////sector  4 
+  CC_OUT[i][24]="";////sector  4 
+  CC_OUT[i][25]="";////sector  4   
+  CC_OUT[i][26]="";////sector  4 
+  CC_OUT[i][27]="";///sector  5  
+  CC_OUT[i][28]="";////sector  5
+  CC_OUT[i][29]="";////sector  5
+  CC_OUT[i][30]="";////sector  5
+  CC_OUT[i][31]="";////sector  5   
+  CC_OUT[i][32]="";////sector  5
+  CC_OUT[i][33]=""; //sector 6   
+  CC_OUT[i][34]=""; //sector 6 
+  CC_OUT[i][35]=""; //sector 6 
+  CC_OUT[i][36]=""; //sector 6   
 
 
 //======== ME-1 (DUBNA) =============================  
@@ -636,15 +672,15 @@ int i;
   HV_IN[i][5]="500;7;6;2";
   HV_IN[i][6]="500;7;7;2";
   HV_IN[i][7]="500;7;8;2";
-  HV_IN[i][8]="500;11;4;1";
-  HV_IN[i][9]="500;11;5;2"; 
-  HV_IN[i][10]="500;11;5;1";
-  HV_IN[i][11]="500;11;6;2";
-  HV_IN[i][12]="500;11;6;1";
-  HV_IN[i][13]="500;11;7;2"; 
-  HV_IN[i][14]="500;11;7;1";
-  HV_IN[i][15]="500;11;8;2";
-  HV_IN[i][16]="500;11;8;1";
+  HV_IN[i][8]="500;11;4;2"; //11.4.1
+  HV_IN[i][9]="500;11;5;1"; 
+  HV_IN[i][10]="500;11;5;2";
+  HV_IN[i][11]="500;11;6;1";
+  HV_IN[i][12]="500;11;6;2";
+  HV_IN[i][13]="500;11;7;1"; 
+  HV_IN[i][14]="500;11;7;2";
+  HV_IN[i][15]="500;11;8;1";
+  HV_IN[i][16]="500;11;8;2";
   HV_IN[i][17]="500;7;15;2";
   HV_IN[i][18]="500;7;1;2";  
   
@@ -695,15 +731,15 @@ int i;
   HV_IN[i][5]="500;7;6;1";
   HV_IN[i][6]="500;7;7;1";
   HV_IN[i][7]="500;7;8;1";
-  HV_IN[i][8]="500;11;15;2";
-  HV_IN[i][9]="500;11;15;1";
-  HV_IN[i][10]="500;11;1;2";
-  HV_IN[i][11]="500;11;1;1";
-  HV_IN[i][12]="500;11;2;2";
-  HV_IN[i][13]="500;11;2;1"; 
+  HV_IN[i][8]="500;11;15;1";
+  HV_IN[i][9]="500;11;15;2";
+  HV_IN[i][10]="500;11;1;1";
+  HV_IN[i][11]="500;11;1;2";
+  HV_IN[i][12]="500;11;2;1";
+  HV_IN[i][13]="500;11;2;2"; 
   HV_IN[i][14]="500;11;3;1";
   HV_IN[i][15]="500;11;3;2";
-  HV_IN[i][16]="500;11;4;2";
+  HV_IN[i][16]="500;11;4;1"; // 11,4,2
   HV_IN[i][17]="500;7;15;1";
   HV_IN[i][18]="500;7;1;1";  
   
@@ -904,7 +940,8 @@ int i;
   i=6;
   
   HV_IN[i][1]="600;5;2;2"; //sector 6
-  HV_IN[i][2]="600;5;3;1";//sector 1
+  if(CSC_fwG_g_904)HV_IN[i][2]="700;0;4;1"; //sector 1  
+  else HV_IN[i][2]="600;5;3;1";//sector 1
   HV_IN[i][3]="600;5;4;2";//sector 1
   HV_IN[i][4]="600;5;5;1";//sector 1
   HV_IN[i][5]="600;5;6;2";
@@ -1040,8 +1077,47 @@ int i;
   HV_IN[i][16]="600;13;7;1";
   HV_IN[i][17]="600;13;8;2";
   HV_IN[i][18]="600;13;8;1";
-  HV_IN[i][19]="";
+//  HV_IN[i][19]="";
 
+  HV_OUT[i][1]="";//"600;6;14;0"; //sector 6
+  HV_OUT[i][2]="";//"600;6;15;0"; //sector 6
+  HV_OUT[i][3]="";//"600;5;12;0";//sector 1
+  HV_OUT[i][4]="";//"600;5;13;0";//sector 1
+  HV_OUT[i][5]="";//"600;5;14;0";//sector 1
+  HV_OUT[i][6]="";//"600;7;10;0";//sector 1
+  HV_OUT[i][7]="";//"600;7;11;0";//sector 1
+  HV_OUT[i][8]="";//"600;7;12;0";//sector 1
+  
+  HV_OUT[i][9]="600;13;14;0";
+  HV_OUT[i][10]="600;13;11;0";
+  HV_OUT[i][11]="600;13;12;0";
+  HV_OUT[i][12]="600;13;13;0";
+  HV_OUT[i][13]="600;13;10;0"; 
+  
+  HV_OUT[i][14]="";//"600;5;11;0";
+  HV_OUT[i][15]="";//"600;10;15;0";
+  HV_OUT[i][16]="";//"600;10;14;0";
+  HV_OUT[i][17]="";//"600;10;13;0";
+  HV_OUT[i][18]="";//"600;10;12;0";   
+  HV_OUT[i][19]="";//"600;10;11;0";
+  HV_OUT[i][20]="";//"600;10;10;0";
+  HV_OUT[i][21]="";//"600;9;10;0";
+  HV_OUT[i][22]="";//"600;9;11;0";
+  HV_OUT[i][23]="";//"600;9;12;0";
+  HV_OUT[i][24]="";//"600;11;9;0";
+  HV_OUT[i][25]="";//"600;11;8;0";
+  HV_OUT[i][26]="";//"600;11;7;0";
+  HV_OUT[i][27]="";//"600;11;6;0";
+  HV_OUT[i][28]="";//"600;11;5;0";
+  HV_OUT[i][29]="";//"600;11;4;0";
+  HV_OUT[i][30]="";//"600;11;3;0";
+  HV_OUT[i][31]="";//"600;11;2;0"; 
+  HV_OUT[i][32]="";//"600;11;1;0";
+  HV_OUT[i][33]="";//"600;6;10;0"; //sector 6
+  HV_OUT[i][34]="";//"600;6;11;0"; //sector 6
+  HV_OUT[i][35]="";//"600;6;12;0"; //sector 6
+  HV_OUT[i][36]="";//"600;6;13;0"; //sector 6    
+  
 //======== ME-1 (DUBNA) =============================  // that is dummy: used for the FSM tree creation
   
   
@@ -1134,8 +1210,13 @@ int i;
 
 //======= ME-4 ===============================  
   i=1;
+  if(!CSC_fwG_g_904){
   dynAppend(DISK_LEVEL[i],"master500_12_0");
   dynAppend(DISK_LEVEL[i],"master500_12_1");
+  }
+  else{
+  dynAppend(DISK_LEVEL[i],"master0_0_0");    
+  }
   dynAppend(DISK_LEVEL[i],"");
   dynAppend(DISK_LEVEL[i],"");
   dynAppend(DISK_LEVEL[i],"");
@@ -1170,6 +1251,7 @@ int i;
   i=2;
  // dynAppend(DISK_LEVEL[i],"CRB/CSC_ME_M3_PC3_LV_CRB LVCB_1.ELMB_15;0");//600;;;"; PC1 is Periph crate 1
 
+  if(!CSC_fwG_g_904){  
   dynAppend(DISK_LEVEL[i],"master500_4_0");
   dynAppend(DISK_LEVEL[i],"master500_4_1");
   dynAppend(DISK_LEVEL[i],"master500_4_2");
@@ -1182,6 +1264,10 @@ int i;
   dynAppend(DISK_LEVEL[i],"master500_8_3");
   dynAppend(DISK_LEVEL[i],"master500_8_4");
   dynAppend(DISK_LEVEL[i],"master500_8_5");
+  }
+  else{
+  dynAppend(DISK_LEVEL[i],"master0_0_0");    
+  }  
   dynAppend(DISK_LEVEL[i],"");
   dynAppend(DISK_LEVEL[i],"");
   dynAppend(DISK_LEVEL[i],"");
@@ -1205,6 +1291,7 @@ int i;
 //======= ME-2 ===============================  
   i=3;
 //  dynAppend(DISK_LEVEL[i],"CRB/CSC_ME_M2_PC3_LV_CRB LVCB_1.ELMB_0f;0");//600;;;"; PC1 is Periph crate 1
+  if(!CSC_fwG_g_904){
   dynAppend(DISK_LEVEL[i],"master500_4_0");
   dynAppend(DISK_LEVEL[i],"master500_4_1");
   dynAppend(DISK_LEVEL[i],"master500_4_2");
@@ -1215,6 +1302,10 @@ int i;
   dynAppend(DISK_LEVEL[i],"master500_8_2");
   dynAppend(DISK_LEVEL[i],"master500_8_4");
   dynAppend(DISK_LEVEL[i],"master500_8_5");
+  }
+  else{
+  dynAppend(DISK_LEVEL[i],"master0_0_0");    
+  }  
   dynAppend(DISK_LEVEL[i],"");
   dynAppend(DISK_LEVEL[i],"");
   dynAppend(DISK_LEVEL[i],"");
@@ -1239,12 +1330,17 @@ int i;
   dynAppend(DISK_LEVEL[i],"");       
 //======= ME-1 ===============================  
   i=4;
+  if(!CSC_fwG_g_904){
   dynAppend(DISK_LEVEL[i],"master500_0_0");
   dynAppend(DISK_LEVEL[i],"master500_0_1");
   dynAppend(DISK_LEVEL[i],"master500_0_2");
   dynAppend(DISK_LEVEL[i],"master500_0_3");
   dynAppend(DISK_LEVEL[i],"master500_0_4");
   dynAppend(DISK_LEVEL[i],"master500_0_5");
+  }
+  else{
+  dynAppend(DISK_LEVEL[i],"master0_0_0");    
+  }  
   dynAppend(DISK_LEVEL[i],"");
   dynAppend(DISK_LEVEL[i],"");
   dynAppend(DISK_LEVEL[i],"");
@@ -1273,6 +1369,7 @@ int i;
   dynAppend(DISK_LEVEL[i],"");      
 //======= ME+1 ===============================  
   i=5;
+  if(!CSC_fwG_g_904){  
   dynAppend(DISK_LEVEL[i],"master600_0_0");
   dynAppend(DISK_LEVEL[i],"master600_0_1");
   dynAppend(DISK_LEVEL[i],"master600_0_2");
@@ -1281,6 +1378,10 @@ int i;
   dynAppend(DISK_LEVEL[i],"master600_0_5");
   dynAppend(DISK_LEVEL[i],"CRB/CSC_ME_P1_PC9_LV_CRB LVCB_1.ELMB_28;0");
   dynAppend(DISK_LEVEL[i],"CRB/CSC_ME_P1_PC10_LV_CRB LVCB_1.ELMB_29;0");
+  }
+  else{
+  dynAppend(DISK_LEVEL[i],"master0_0_0");    
+  }  
   dynAppend(DISK_LEVEL[i],"");
   dynAppend(DISK_LEVEL[i],"");
   dynAppend(DISK_LEVEL[i],"");
@@ -1307,6 +1408,7 @@ int i;
   dynAppend(DISK_LEVEL[i],"");      
 //======= ME+2 ===============================  
   i=6;
+  if(!CSC_fwG_g_904){  
   dynAppend(DISK_LEVEL[i],"master600_4_0");
   dynAppend(DISK_LEVEL[i],"master600_4_1");
   dynAppend(DISK_LEVEL[i],"master600_4_2");
@@ -1318,7 +1420,11 @@ int i;
   dynAppend(DISK_LEVEL[i],"master600_8_2");
   dynAppend(DISK_LEVEL[i],"master600_8_3");
   dynAppend(DISK_LEVEL[i],"master600_8_4");
-  dynAppend(DISK_LEVEL[i],"master600_8_5");  
+  dynAppend(DISK_LEVEL[i],"master600_8_5");
+  }
+  else{
+  dynAppend(DISK_LEVEL[i],"master0_0_0");    
+  }    
   dynAppend(DISK_LEVEL[i],"");
   dynAppend(DISK_LEVEL[i],"");
   dynAppend(DISK_LEVEL[i],"");
@@ -1341,6 +1447,7 @@ int i;
   dynAppend(DISK_LEVEL[i],"");      
 //======= ME+3 ===============================  
   i=7;
+  if(!CSC_fwG_g_904){  
   dynAppend(DISK_LEVEL[i],"master600_4_0");
   dynAppend(DISK_LEVEL[i],"master600_4_1");
   dynAppend(DISK_LEVEL[i],"master600_4_2");
@@ -1353,6 +1460,10 @@ int i;
   dynAppend(DISK_LEVEL[i],"master600_8_3");
   dynAppend(DISK_LEVEL[i],"master600_8_4");
   dynAppend(DISK_LEVEL[i],"master600_8_5");
+  }
+  else{
+  dynAppend(DISK_LEVEL[i],"master0_0_0");    
+  }  
   dynAppend(DISK_LEVEL[i],"");
   dynAppend(DISK_LEVEL[i],"");
   dynAppend(DISK_LEVEL[i],"");
@@ -1375,8 +1486,13 @@ int i;
   dynAppend(DISK_LEVEL[i],"");      
 //======= ME+4 ===============================  
   i=8;
+  if(!CSC_fwG_g_904){  
   dynAppend(DISK_LEVEL[i],"master600_12_0");
   dynAppend(DISK_LEVEL[i],"master600_12_1");
+  }
+  else{
+  dynAppend(DISK_LEVEL[i],"master0_0_0");    
+  }  
   dynAppend(DISK_LEVEL[i],"");
   dynAppend(DISK_LEVEL[i],"");
   dynAppend(DISK_LEVEL[i],"");
@@ -1425,7 +1541,11 @@ int i;
 //============================================  
 
 db_set_emu_level(){
-  
+
+ if(CSC_fwG_g_904){
+  dynAppend(EMU_LEVEL,"HighVoltage/HV_PR_primary700_0_1 HV_PRIMARY;700;0;1");   
+ }
+ else{     
   dynAppend(EMU_LEVEL,"GasMonitoring/GAS_MIXERS LVCB_1.ELMB_3F;0");
   dynAppend(EMU_LEVEL,"WeatherStation/WEATHER_SX5 WEATHERSTATION;0");
   dynAppend(EMU_LEVEL,"HighVoltage/HV_PR_primary600_1_1 HV_PRIMARY;600;1;1");
@@ -1439,7 +1559,8 @@ db_set_emu_level(){
   dynAppend(EMU_LEVEL,"MRTN/MRTN_maraton01 WIENER.CAN0.Crate1;0");
   dynAppend(EMU_LEVEL,"MRTN/MRTN_maraton02 WIENER.CAN0.Crate2;0"); 
   dynAppend(EMU_LEVEL,"WIENER_CRATE_SNMP_600 SNMP;600");//600;;;"; not coordinate is needed
-  dynAppend(EMU_LEVEL,"WIENER_CRATE_SNMP_500 SNMP;500");//600;;;"; not coordinate is needed  
+  dynAppend(EMU_LEVEL,"WIENER_CRATE_SNMP_500 SNMP;500");//600;;;"; not coordinate is needed 
+ } 
   dynAppend(EMU_LEVEL,"");
   dynAppend(EMU_LEVEL,"");
   dynAppend(EMU_LEVEL,"");
@@ -1466,29 +1587,41 @@ db_set_emu_level(){
   
   DimServerComputerList[1]="smi";
   if(CSC_fwG_g_idisk_cross_numbers[1]>=5 && CSC_fwG_g_idisk_cross_numbers[1]<=8){
-  DimServerComputerList[2]="dcspcS2G19-06";
+    if(CSC_fwG_g_904) DimServerComputerList[2]=CSC_fwG_g_904_MACHINE;
+    else DimServerComputerList[2]="dcspcS2G19-06";
   }
   else {
-  DimServerComputerList[2]="dcspcS2G19-04";    
+   if(CSC_fwG_g_904)DimServerComputerList[2]=CSC_fwG_g_904_MACHINE;    
+   else DimServerComputerList[2]="dcspcS2G19-04";    
   }
   
-    
+if(CSC_fwG_g_904){
+  DimServerComputerList[3]= CSC_fwG_g_904_HV_MACHINE+"_part1";
+  DimServerComputerList[4]= CSC_fwG_g_904_HV_MACHINE+"_part2";
+  DimServerComputerList[5]= CSC_fwG_g_904_HV_MACHINE+"_part3";
+  DimServerComputerList[6]= CSC_fwG_g_904_HV_MACHINE+"_part4";
+  DimServerComputerList[7]="";    
+}
+else{    
   if(CSC_fwG_g_idisk_cross_numbers[1]>=5 && CSC_fwG_g_idisk_cross_numbers[1]<=8){
   DimServerComputerList[3]="10.176.11.103_part1"; // ufcmshv2--cms
   DimServerComputerList[4]="10.176.11.103_part2";
   DimServerComputerList[5]="10.176.11.103_part3";
   DimServerComputerList[6]="10.176.11.103_part4";
+  if(CSC_fwG_g_idisk_cross_numbers[1]==CSC_fwG_g_StationWithFsmHwTree)DimServerComputerList[4]="dcspcS2G19-04"; 
   }
   else{
   DimServerComputerList[3]="10.176.11.67_part1"; // ufcmshv1--cms
   DimServerComputerList[4]="10.176.11.67_part2";
   DimServerComputerList[5]="10.176.11.67_part3";
-  DimServerComputerList[6]="10.176.11.67_part4";   
+  DimServerComputerList[6]="10.176.11.67_part4"; 
+ if(CSC_fwG_g_idisk_cross_numbers[1]==CSC_fwG_g_StationWithFsmHwTree)DimServerComputerList[4]="dcspcS2G19-06";  
   }
   if(dynContains(CSC_fwG_g_idisk_cross_numbers,CSC_fwG_g_StationWithFsmHwTree)){  
   DimServerComputerList[7]="10.176.11.67_part4";  
   }
   else DimServerComputerList[7]="";
+}
   
   DimServerComputerList[8]="";
   DimServerComputerList[9]="";      

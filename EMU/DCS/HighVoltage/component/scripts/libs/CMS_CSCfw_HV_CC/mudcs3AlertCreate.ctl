@@ -7,7 +7,8 @@ mudcsAlertCreateMain()
   mudcsInit();
   
   DpNameStartForAlertConfig=CSC_fwG_g_csc_part;
-      
+
+  FED_1_alert_main(true);    
   HV_1_alert_main();
   CRB_1_alert_main();
   MRTN_1_alert_main();
@@ -28,7 +29,7 @@ mudcsAlertCreateMain()
   mudcsAlertReconfig("LV_1;.data.Cfeb_o.c50", ".noalert_channels", true); 
   mudcsAlertReconfig("LV_1;.data.Cfeb_o.c60", ".noalert_channels", true);
  
-  
+  fwLvCr_CSC_TEMP_alert_main(true);  
 }
 
 //CSC_fwG_g_csc_part
@@ -46,8 +47,265 @@ float dmb_min, dmb_max;
 float alct_min, alct_max;
 float cfebs_min, cfebs_max;
 //-------------------------
+//===================================================================================
+
+fwLvCr_CSC_TEMP_alert_main(bool isSet){
 
 
+
+ bool isAck=false;
+ mudcsfwLvCr_CSC_TEMPSummaryAlertSet(isSet);
+       
+
+
+}
+
+//===================================================================================
+//===================================================================================
+mudcsfwLvCr_CSC_TEMPSummaryAlertSet(bool isCreateConfig){
+//==================================
+//=== SUMMARY ALERT ================
+//==================================
+
+
+dyn_string dps, dps1, dps2, dps3, side_stations;
+int i,j,i10 , p1,p2;
+dyn_string exceptionInfo, s1;  
+string coord, side_station;
+
+//dyn_string fed_er_dpe=makeDynString(
+//".data.v15",".data.v25a",".data.v25b",".data.v33",
+//".data.td1",".data.td2",".data.td3",".data.td4"
+//);
+
+dyn_string temp_er_dpe=makeDynString(
+"data.t_dmb.v1"
+);
+
+dps1=dpNames("*","TEMP_1_d");
+
+for(i=1;i<=dynlen(dps1);i++){
+   p1=strpos(dps1[i],"ME_");
+   p2=strpos(dps1[i],"_C");
+  if(p1>=0 && p2>=0){
+   side_station= substr(dps1[i],p1+3,p2-1-(p1+3) );
+    if(!dynContains(side_stations,side_station))dynAppend(side_stations,side_station);
+  } 
+} // i
+
+
+dps=dpNames("*","fwLvCr_CSC_TEMP");
+for(i=1;i<=dynlen(dps);i++){
+  dpDelete(dps[i]);
+}
+
+for(i=1;i<=dynlen(side_stations);i++){
+ 
+    for(j=1;j<=6;j++){ 
+       if(strpos(side_stations[i],"1")>=0){
+     dpCreate(side_stations[i]+"_PC"+j+"A","fwLvCr_CSC_TEMP"); 
+     dpCreate(side_stations[i]+"_PC"+j+"B","fwLvCr_CSC_TEMP");
+       }
+      else{
+     dpCreate(side_stations[i]+"_PC"+j,"fwLvCr_CSC_TEMP"); 
+      }        
+    }    
+  
+
+} // i
+
+dps=dpNames("*","fwLvCr_CSC_TEMP");
+
+//-----------------------------------
+//------------------------------------------------------------  
+int type;
+
+//==================================
+for(i=1;i<=dynlen(dps);i++){
+  dynClear(dps2);
+  
+ dps3=CSC_fwG_g_PCRATES_MAP[mudcsRemoveSystem(dps[i])];
+ if(strpos(dps[i],"DimBroker")>=0)continue; 
+  //  DebugTN("+=++  "+dps[i]);
+//dps1=dpNames(dps[i]+".Status.*Failure*");  
+ for(i10=1;i10<=dynlen(dps3);i10++){ 
+ for(j=1;j<=dynlen(temp_er_dpe);j++){
+  dpGet(dps3[i10]+"."+temp_er_dpe[j]+":_alert_hdl.._type",type);
+  DebugTN(dps3[i10]+"."+temp_er_dpe[j]+":_alert_hdl.._type"+">>"+type);
+  if(type > 0)dynAppend(dps2,dps3[i10]+"."+temp_er_dpe[j]);
+ } //j
+ } // i10
+//----------------------------------------------------------- 
+  if(isCreateConfig){
+   fwAlertConfig_createSummary( mudcsRemoveSystem(dps[i])+".",
+   makeDynString("","") , dps2 ,"", makeDynString(),"",exceptionInfo);
+   dpSet(mudcsRemoveSystem(dps[i])+"."+":_alert_hdl.._active", true);
+  }
+  else{
+   fwAlertConfig_deleteSummary( mudcsRemoveSystem(dps[i])+".",exceptionInfo);        
+  }
+
+dyn_string s1;
+//dpSetWait(mudcsRemoveSystem(dps[i])+"."+":_alert_hdl.._ack_state",DPATTR_ACKTYPE_SINGLE );//"_fwErrorAck");
+dpGet(mudcsRemoveSystem(dps[i])+"."+":_alert_hdl.._dp_list",s1);
+DebugTN(s1);    
+
+
+//  dpSet(mudcsRemoveSystem(dps[i])+"."+":_alert_hdl.._active", true);
+ } // for i    
+
+// TestDP_1.element:_alert_hdl.1._class", alertclass[1],   
+
+}
+//===================================================================================
+//===================================================================================
+//===================================================================================
+
+FED_1_alert_main(bool isSet){
+
+
+
+ bool isAck=false;
+ mudcsFedAlertSet(isSet, isAck);     
+ mudcsFedSummaryAlertSet(isSet);
+       
+
+
+}
+//===================================================================================
+mudcsFedAlertSet(bool isCreateConfig, bool isAck){
+  
+  
+
+  
+  
+dyn_float limits_s;
+string value;
+dyn_string dps;
+int i,j;
+
+    
+dyn_string fed_er_dpe=makeDynString(
+"data.v15","data.v25a","data.v25b","data.v33",
+"data.td1","data.td2","data.td3","data.td4"
+);
+
+limits_s = makeDynFloat();
+
+// s1 is OK
+// s2 is ALARM
+
+
+dps=dpNames("*","FED_1_d");
+//==================================
+for(i=1;i<=dynlen(dps);i++){
+
+  if(strpos(dps[i],"DimBroker")>=0)continue;  
+DebugTN("=============="+dps[i]);
+    
+ DebugTN(">>>>> alerting ....."+dps[i]+" "+dynlen(fed_er_dpe));
+  
+for(j=1;j<=dynlen(fed_er_dpe);j++){  
+  
+  if(strpos(fed_er_dpe[j],"v")>=0){
+   string volt=substr(fed_er_dpe[j],strpos(fed_er_dpe[j],"v")+1,2);
+   float volt_f=volt;
+   volt_f=volt_f/10.;
+  limits_s=makeDynFloat(volt_f-volt_f*0.2,volt_f+volt_f*0.2);// that gives an alarm if the value < v1 and >= v2    
+  }
+  else if(strpos(fed_er_dpe[j],"t")>=0){
+  limits_s=makeDynFloat(0,35);// that gives an alarm if the value < v1 and >= v2    
+  }
+  
+value=mudcsRemoveSystem(dps[i]+"."+fed_er_dpe[j]); 
+DebugTN("alerting ....."+value);
+mudcsAlertConfig(false, isCreateConfig, value, limits_s, isAck);  
+  
+} // j
+
+
+
+//value=mudcsRemoveSystem(dps[i]+".Status.OutputFailure"); // commented as OutputFailure is always TRUE while the maraton works OK
+//mudcsAlertConfig(false, isCreateConfig, value, limits_s, isAck);
+//value=mudcsRemoveSystem(dps[i]+".Status.CrateStatus");
+//mudcsAlertConfig(false, isCreateConfig, value, limits_s, isAck);
+
+
+} // for i
+
+}
+
+//===================================================================================
+//===================================================================================
+//===================================================================================
+//===================================================================================
+mudcsFedSummaryAlertSet(bool isCreateConfig){
+//==================================
+//=== SUMMARY ALERT ================
+//==================================
+
+  
+  
+dyn_string dps, dps1, dps2, dps3;
+int i,j,i10;
+dyn_string exceptionInfo, s1;  
+string coord;
+
+//dyn_string fed_er_dpe=makeDynString(
+//".data.v15",".data.v25a",".data.v25b",".data.v33",
+//".data.td1",".data.td2",".data.td3",".data.td4"
+//);
+
+dyn_string fed_er_dpe=makeDynString(
+"data.v15","data.v25a","data.v25b","data.v33",
+"data.td1","data.td2","data.td3","data.td4"
+);
+dps=dpNames("*","FED_1_d");
+
+//-----------------------------------
+//------------------------------------------------------------  
+int type;
+  
+
+//==================================
+for(i=1;i<=dynlen(dps);i++){
+  
+ dynClear(dps2); 
+ if(strpos(dps[i],"DimBroker")>=0)continue; 
+  //  DebugTN("+=++  "+dps[i]);
+//dps1=dpNames(dps[i]+".Status.*Failure*");  
+ for(j=1;j<=dynlen(fed_er_dpe);j++){
+  dpGet(dps[i]+"."+fed_er_dpe[j]+":_alert_hdl.._type",type);
+  DebugTN(dps[i]+"."+fed_er_dpe[j]+":_alert_hdl.._type"+">>"+type);
+  if(type > 0)dynAppend(dps2,dps[i]+"."+fed_er_dpe[j]);
+ } //j
+
+
+
+//----------------------------------------------------------- 
+  if(isCreateConfig){
+   fwAlertConfig_createSummary( mudcsRemoveSystem(dps[i])+".",
+   makeDynString("","") , dps2 ,"", makeDynString(),"",exceptionInfo);
+   dpSet(mudcsRemoveSystem(dps[i])+"."+":_alert_hdl.._active", true);
+  }
+  else{
+   fwAlertConfig_deleteSummary( mudcsRemoveSystem(dps[i])+".",exceptionInfo);        
+  }
+
+dyn_string s1;
+//dpSetWait(mudcsRemoveSystem(dps[i])+"."+":_alert_hdl.._ack_state",DPATTR_ACKTYPE_SINGLE );//"_fwErrorAck");
+dpGet(mudcsRemoveSystem(dps[i])+"."+":_alert_hdl.._dp_list",s1);
+DebugTN(s1);    
+
+
+//  dpSet(mudcsRemoveSystem(dps[i])+"."+":_alert_hdl.._active", true);
+ } // for i    
+
+// TestDP_1.element:_alert_hdl.1._class", alertclass[1],   
+
+}
+//===================================================================================
+//===================================================================================
 //===============================================================================
 LV_1_alert_main()
 {

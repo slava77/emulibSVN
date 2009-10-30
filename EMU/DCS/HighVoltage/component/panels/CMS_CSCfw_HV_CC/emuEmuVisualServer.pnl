@@ -1,4 +1,4 @@
-V 10
+V 11
 1
 LANG:1 18 emuEmuVisualServer
 PANEL,-1 -1 372 46 N "_3DFace" 0
@@ -76,7 +76,7 @@ mudcsDimConfigAllManagers(exceptionInfo);
 if(dynlen(exceptionInfo)>0){mudcsDebug(exceptionInfo);return;}
 
 delay(5);
-mudcsAllDimManagersStart();
+//\\\\mudcsAllDimManagersStart();
 
 mudcsFsmPanelsCheck();
 ///// remporat comment: should be set the top node for each station project: dpConnect(\"update_csc_current_state\",CSC_fwG_g_SYSTEM_NAME+\":\"+CSC_fwG_g_csc_part+\"|\"+CSC_fwG_g_csc_part+\".fsm.currentState\");
@@ -92,8 +92,14 @@ DebugTN(\"----------------- START SERVERS -------------------\");
 DebugTN(\"----------------- START SERVERS -------------------\");
 DebugTN(\"----------------- START SERVERS -------------------\");
 
-if (os ==\"Linux\")system(CSC_fwG_g_project_name_home+\"/bin/start_servers \"+CSC_fwG_g_project_name_home+\" &\"); // moved to postinstall (or to progs)
-else system(\"start /b PVSS00ctrl -num 12 CMS_CSCfw_HV_CC/mudcsServer.ctl\");
+string postinstall_state;
+dpGet(CSC_fwG_g_SYSTEM_NAME+\":MYWARNING.value\",postinstall_state);
+if(postinstall_state!=\"postinstall_start\"){
+
+ if (os ==\"Linux\")system(CSC_fwG_g_project_name_home+\"/bin/start_servers \"+CSC_fwG_g_project_name_home+\" &\"); // moved to postinstall (or to progs)
+ else system(\"start /b PVSS00ctrl -num 12 CMS_CSCfw_HV_CC/mudcsServer.ctl\");
+
+}
 //PVSS00ctrl -num 11 CMS_CSCfw_HV_CC/delete_old_lib_versions.ctl &
 //PVSS00ctrl -num 12 CMS_CSCfw_HV_CC/mudcsServer.ctl &
 
@@ -115,11 +121,34 @@ mudcsServerCheck(){
 //========================================================================================
 mudcsServerCheckIsRun(string dpName, dyn_string ctrl_mans){
 
+ // dyn_int drivers;
+ // dpGet(CSC_fwG_g_SYSTEM_NAME+\":_Connections.Driver.ManNums\",drivers);
+ // if(!dynContains(drivers,1))return;
+  
+string postinstall_state;
+dpGet(CSC_fwG_g_SYSTEM_NAME+\":MYWARNING.value\",postinstall_state);
+if(postinstall_state==\"postinstall_start\")return;
+  
+ dyn_int dists;
+ dpGet(CSC_fwG_g_SYSTEM_NAME+\":_Connections.Dist.ManNums\",dists);
+ if(dynlen(dists)==0)return;  
+  
 //dpGet(CSC_fwG_g_SYSTEM_NAME+\":_Connections.Ctrl.ManNums\",ctrl_mans);
  if(!dynContains(ctrl_mans,12)){ // 12 is mudcsServer number
-   delay(20);
+   delay(30);//delay(20);
+ 
+ // dpGet(CSC_fwG_g_SYSTEM_NAME+\":_Connections.Driver.ManNums\",drivers);
+ // if(!dynContains(drivers,1))return;
+   
+ dpGet(CSC_fwG_g_SYSTEM_NAME+\":_Connections.Dist.ManNums\",dists);
+ if(dynlen(dists)==0)return;  
+     
+ dpGet(CSC_fwG_g_SYSTEM_NAME+\":_Connections.Ctrl.ManNums\",ctrl_mans);
+ if(dynContains(ctrl_mans,12))return;     
+ 
   if (os ==\"Linux\")system(CSC_fwG_g_project_name_home+\"/bin/start_servers \"+CSC_fwG_g_project_name_home+\" &\"); // moved to postinstall (or to progs)
   else system(\"start /b PVSS00ctrl -num 12 CMS_CSCfw_HV_CC/mudcsServer.ctl\");  
+  
  }
   
 }
@@ -417,7 +446,7 @@ string obj_found=dps[1];
    if(FIRST_FSM_PANELS)delay(80); // wait until fsm generation is over
    FIRST_FSM_PANELS=1;   
    mudcsSetFsmPanelsMain();
-   mudcsGasFsmPanelsAndFsmAliasesSetMain() ; 
+    if(isFunctionDefined(\"mudcsGasFsmPanelsAndFsmAliasesSetMain\"))mudcsGasFsmPanelsAndFsmAliasesSetMain() ; 
  }
  
 
@@ -495,12 +524,11 @@ main()
 {
 
 }" 0
- E 0 0 0 0 1 E U  1 E 20 10 284 33
+ E 0 0 0 0 1 E U  1 E 20 10 284 34
 1 2 2 "0s" 0 0 0 192 0 0  20 10 1
 1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
-1
+LANG:1 36 Courier [Adobe],-1,20,5,75,0,0,0,0,0
+0 1
 LANG:1 22  EMU-DCS Visual Server
 0
 LAYER, 1 

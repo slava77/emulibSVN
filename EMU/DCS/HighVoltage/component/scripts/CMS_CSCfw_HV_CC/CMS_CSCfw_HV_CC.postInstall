@@ -26,7 +26,7 @@ while(1){
    break;
   }
  }
- DebugTN("NOT ENOUGH DISTANT CONNECTIONS: CHECK THE CHILD PROJECTS ARE RUNNING  ========================== "+ dist_connections);   
+ DebugTN("postinstall: NOT ENOUGH DISTANT CONNECTIONS: CHECK THE CHILD PROJECTS ARE RUNNING  ========================== "+ dist_connections);   
   
 }
 //-------------------------------------
@@ -69,10 +69,13 @@ for(i=1;i<=dynlen(CSC_fwG_g_idisk_cross_numbers);i++){
   
 //------------------------------------------------------
 
-  mudcsSynchSystemPoratbleOS(os,"cat "+CSC_fwG_g_project_name_home+"/source/"+CSC_fwG_g_Component+"/config/CMS_CSCfw_HV_CC_add.config >> "+CSC_fwG_g_project_name_home+"/config/config");
- if(!dynContains(disk_numbers,CSC_fwG_g_StationWithFsmHwTree)){
-  mudcsSynchSystemPoratbleOS(os,"cat "+CSC_fwG_g_project_name_home+"/source/"+CSC_fwG_g_Component+"/config/CMS_CSCfw_HV_CC_add2.config >> "+CSC_fwG_g_project_name_home+"/config/config");
- }
+//  mudcsSynchSystemPoratbleOS(os,"cat "+CSC_fwG_g_project_name_home+"/source/"+CSC_fwG_g_Component+"/config/CMS_CSCfw_HV_CC_add.config >> "+CSC_fwG_g_project_name_home+"/config/config");
+// if(!dynContains(disk_numbers,CSC_fwG_g_StationWithFsmHwTree)){
+//   if(!CSC_fwG_g_904)   
+//  mudcsSynchSystemPoratbleOS(os,"cat "+CSC_fwG_g_project_name_home+"/source/"+CSC_fwG_g_Component+"/config/CMS_CSCfw_HV_CC_add2.config >> "+CSC_fwG_g_project_name_home+"/config/config");
+//   else 
+//  mudcsSynchSystemPoratbleOS(os,"cat "+CSC_fwG_g_project_name_home+"/source/"+CSC_fwG_g_Component+"/config/CMS_CSCfw_HV_CC_add2_904.config >> "+CSC_fwG_g_project_name_home+"/config/config");     
+// }
 
 dpDelete("CMS_CSC_GAS");
  

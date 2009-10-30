@@ -402,17 +402,33 @@ mudcsSynchSystemPoratbleOS(oper_system,"cp -rp "+CSC_fwG_g_project_name_home+"/p
 ////////#########mudcsSynchSystemPoratbleOS(oper_system,"cp "+CSC_fwG_g_project_name_home+"/CSCfw/scripts/libs/* "+" "+CSC_fwG_g_HOME+"/"+Component+"/scripts/libs/CMS_CSCfw/.");
 ///////##########mudcsSynchSystemPoratbleOS(oper_system,"cp "+CSC_fwG_g_project_name_home+"/CSCfw/panels/* "+" "+CSC_fwG_g_HOME+"/"+Component+"/panels/"+dir_oper+"/.");
 
-if(!mode)mudcsSynchSystemPoratbleOS(oper_system,"cp "+CSC_fwG_g_project_name_home+"/source/"+dir_oper+"/config/"+dir_oper+"_short.config "+
+if(mode<=1)mudcsSynchSystemPoratbleOS(oper_system,"cp "+CSC_fwG_g_project_name_home+"/source/"+dir_oper+"/config/"+dir_oper+"_short.config "+
                                   " "+CSC_fwG_g_HOME+"/"+Component+"/config/"+dir_oper+".config");
-else mudcsSynchSystemPoratbleOS(oper_system,"cp "+CSC_fwG_g_project_name_home+"/source/"+dir_oper+"/config/"+dir_oper+"_long.config "+
+else {
+  mudcsSynchSystemPoratbleOS(oper_system,"cp "+CSC_fwG_g_project_name_home+"/source/"+dir_oper+"/config/"+dir_oper+"_long.config "+
                                   " "+CSC_fwG_g_HOME+"/"+Component+"/config/"+dir_oper+".config");
+  mudcsSynchSystemPoratbleOS(oper_system,"cp "+CSC_fwG_g_project_name_home+"/source/"+dir_oper+"/config/"+dir_oper+"_short.config "+
+                                  " "+CSC_fwG_g_HOME+"/"+Component+"/config/"+dir_oper+"_MINI.config");
+}
 
-if(mode==2)
-mudcsSynchSystemPoratbleOS(oper_system,"cp "+CSC_fwG_g_project_name_home+"/source/"+dir_oper+"/config/"+dir_oper+"_long.xml "+" "+CSC_fwG_g_HOME+"/"+Component+"/"+dir_oper+".xml");
-else mudcsSynchSystemPoratbleOS(oper_system,"cp "+CSC_fwG_g_project_name_home+"/source/"+dir_oper+"/config/"+dir_oper+"_short.xml "+" "+CSC_fwG_g_HOME+"/"+Component+"/"+dir_oper+".xml");
+if(mode==2){
+ mudcsSynchSystemPoratbleOS(oper_system,"cp "+CSC_fwG_g_project_name_home+"/source/"+dir_oper+"/config/"+dir_oper+"_long.xml "+" "+CSC_fwG_g_HOME+"/"+Component+"/"+dir_oper+".xml");
+ mudcsSynchSystemPoratbleOS(oper_system,"cp "+CSC_fwG_g_project_name_home+"/source/"+dir_oper+"/config/"+dir_oper+"_short.xml "+" "+CSC_fwG_g_HOME+"/"+Component+"/"+dir_oper+"_MINI.xml");
+}
+else mudcsSynchSystemPoratbleOS(oper_system,"cp "+CSC_fwG_g_project_name_home+"/source/"+dir_oper+"/config/"+dir_oper+"_short_mode1.xml "+" "+CSC_fwG_g_HOME+"/"+Component+"/"+dir_oper+".xml");
 
-dplist();
-if(mode==2)dplist2();
+
+if(mode==2){
+  dplist(1);
+  dplist(2);
+  dplist2();
+  mudcsSynchSystemPoratbleOS(oper_system,"cp "+CSC_fwG_g_project_name_home+"/dplist/"+dir_oper+"/"+dir_oper+"_ARCHIVE.dpl "+
+                                  " "+CSC_fwG_g_HOME+"/"+Component+"/dplist/"+dir_oper+"/"+dir_oper+"_ARCHIVE.dpl");  
+}
+else{
+  dplist(mode);
+}
+
 if(oper_system=="Linux")mudcsSynchSystemPoratbleOS(oper_system,"cd "+CSC_fwG_g_project_name_home+"/source/"+dir_oper+"/unix2dos; ./macro_unix2dos "+Component);
 //=================================================================================================
 if(mode==2){
@@ -427,7 +443,7 @@ mudcsSynchSystemPoratbleOS(oper_system,"cp -rp "+CSC_fwG_g_project_name_home+"/s
 
 //======================================
 
-dplist(){
+dplist(int mode){
 
 dyn_string all_dps, dps;
 int i;
@@ -458,6 +474,14 @@ dynAppend(all_dps,dps);
 
 dynAppend(all_dps,"fwOT_EMUTREENodes_MAJOR");
 dps=dpNames("fwOT_EMUTREENodes_MAJOR.*");
+dynAppend(all_dps,dps);
+
+dynAppend(all_dps,"fwOT_EMUTREENodes_MAJOR_CMS");
+dps=dpNames("fwOT_EMUTREENodes_MAJOR_CMS.*");
+dynAppend(all_dps,dps);
+
+dynAppend(all_dps,"fwOT_EMUFEDNodes");
+dps=dpNames("fwOT_EMUFEDNodes.*");
 dynAppend(all_dps,dps);
 
 if(mode==2){
@@ -518,13 +542,22 @@ dynAppend(all_dps,dps);
 dynAppend(all_dps,"fwOT_HV_1");
 dps=dpNames("fwOT_HV_1.*");
 dynAppend(all_dps,dps);
+
+dynAppend(all_dps,"fwOT_FED_1");
+dps=dpNames("fwOT_FED_1.*");
+dynAppend(all_dps,dps);
 }
 //all_dps=makeDynString();
 
 //=================
 
 //string command="PVSS00ascii -out dplist/migr_to_new_project.dpl ";
-string command="PVSS00ascii -out "+CSC_fwG_g_HOME+"/"+Component+"/dplist/"+dir_oper+"/"+dir_oper+".dpl -filterDpType _FwFsmObjectType ";
+string command;
+    
+if(mode==2)
+command="PVSS00ascii -out "+CSC_fwG_g_HOME+"/"+Component+"/dplist/"+dir_oper+"/"+dir_oper+".dpl -filterDpType _FwFsmObjectType ";
+else
+command="PVSS00ascii -out "+CSC_fwG_g_HOME+"/"+Component+"/dplist/"+dir_oper+"/"+dir_oper+"_MINI.dpl -filterDpType _FwFsmObjectType ";
 
  for(i=1;i<=dynlen(all_dps);i++){
 

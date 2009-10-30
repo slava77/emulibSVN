@@ -4,6 +4,9 @@ mudcsCreateAllTypesMain()
 // !!!!!! ATTENTION : the script must not contain mudcsDebug() in the middle of running: otherwise it is interrupts there   
 // !!!!!!
      mudcsInit();
+  FED_1_main(); 
+  fwLvCr_CSC_TEMP();
+     
   LV_1_main();
   TEMP_1_main();
   CHIP_1_main();
@@ -21,6 +24,183 @@ mudcsCreateAllTypesMain()
 // !!!!!!               
        
 }
+fwLvCr_CSC_TEMP(){
+  
+string dtype="fwLvCr_CSC_TEMP";
+      
+dyn_dyn_string xxdepes;
+dyn_dyn_int xxdepei;
+
+xxdepes[1] = makeDynString (dtype,"");
+xxdepes[2] = makeDynString ("","reserve1");
+xxdepes[3] = makeDynString ("","reserve2");
+xxdepes[4] = makeDynString ("","reserve3");
+
+xxdepei[1]=makeDynInt (DPEL_STRUCT);
+xxdepei[2]=makeDynInt (0,DPEL_STRING);
+xxdepei[3]=makeDynInt (0,DPEL_STRING);
+xxdepei[4]=makeDynInt (0,DPEL_STRING);
+
+dpTypeCreate(xxdepes,xxdepei);
+  
+  
+}
+//=============================
+FED_1_main(){
+int i;
+
+
+FED_1_create_data("FED_1_data");
+FED_1_create_d("FED_1_d");
+FED_1_create("FED_1");
+DebugTN("types: FED_1 created");
+//---------
+dpCreate("FED_1_DimBroker_o","FED_1_d");
+DebugTN("dp: FED_1_DimBroker_o created");
+//---------
+dpCreate("FED_1Info","_FwDeviceDefinition");
+dpSet("FED_1Info.type","Fed Device (1)");
+dpSet("FED_1Info.dpType","FED_1");
+DebugTN("FED_1Info created");
+//----------
+dpCreate("Fed","FwNode");
+dpSet("Fed.type","VENDOR");
+dpSet("Fed.dpTypes",makeDynString("FED_1"));
+dpSet("Fed.navigatorPanels",makeDynString("fwDevice/fwDeviceManage"));
+dpSet("Fed.editorPanels",makeDynString("fwDevice/fwDeviceManage"));
+dpSet("Fed.model","Fed");
+dpSet("Fed.fsmState",0);
+dpSet("Fed.fsmCommand",0);
+DebugTN("types: Fed of FwNode created");
+
+mudcsInit();
+
+//-----------
+mudcs_setBrokerList();
+DebugTN("mudcs_setBrokerList()");
+//------------
+//FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+dyn_string device_list;
+string device_info;
+
+mudcsGetDeviceList(device_list);
+for(int i=1;i<=dynlen(device_list);i++){
+
+
+
+  
+  device_info= device_list[i]+"Info.panels.editor.hardware";
+  if(dpExists(device_list[i]+"Info"))dpSet(device_info,CSC_fwG_g_Component+"/config/emuDev" + device_list[i]+"Config");
+
+  device_info= device_list[i]+"Info.panels.navigator.hardware";
+  if(dpExists(device_list[i]+"Info"))dpSet(device_info,CSC_fwG_g_Component+"/emuDev" + device_list[i]+"Operation");
+    
+}
+DebugTN("panels set");
+//FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+
+
+//mudcsDebug("done");
+DebugTN("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++TEMP done");
+}
+//============================
+
+
+
+//============================
+FED_1_create(string dtype)
+{
+
+dyn_dyn_string xxdepes;
+dyn_dyn_int xxdepei;
+
+xxdepes[1] = makeDynString (dtype,"");
+xxdepes[2] = makeDynString ("","chamber_state");
+xxdepes[3] = makeDynString ("","coord");
+xxdepes[4] = makeDynString ("","status");
+xxdepes[5] = makeDynString ("","off_channels");
+
+xxdepei[1]=makeDynInt (DPEL_STRUCT);
+xxdepei[2]=makeDynInt (0,DPEL_INT);
+xxdepei[3]=makeDynInt (0,DPEL_STRING);
+xxdepei[4]=makeDynInt (0,DPEL_INT);
+xxdepei[5]=makeDynInt (0,DPEL_DYN_INT);
+
+dpTypeCreate(xxdepes,xxdepei);
+
+}
+
+//=============================
+//============================
+FED_1_create_d(string dtype)
+{
+
+dyn_dyn_string xxdepes;
+dyn_dyn_int xxdepei;
+
+xxdepes[1] = makeDynString (dtype,"");
+
+xxdepes[2] = makeDynString ("","data","FED_1_data");
+xxdepes[3] = makeDynString ("","update_value");
+xxdepes[4] = makeDynString ("","status");
+xxdepes[5] = makeDynString ("","quality");
+
+xxdepei[1]=makeDynInt (DPEL_STRUCT);
+
+xxdepei[2]=makeDynInt (0,DPEL_TYPEREF);
+xxdepei[3]=makeDynInt (0,DPEL_INT);
+xxdepei[4]=makeDynInt (0,DPEL_INT);
+xxdepei[5]=makeDynInt (0,DPEL_STRING);
+
+
+dpTypeCreate(xxdepes,xxdepei);
+
+}
+
+//=============================
+FED_1_create_data(string dtype)
+{
+
+
+char a;
+a=50;
+
+int b=a;
+
+dyn_dyn_string xxdepes;
+dyn_dyn_int xxdepei;
+int i,i1;
+
+
+xxdepes[1] = makeDynString (dtype,"");
+
+xxdepes[2] = makeDynString ("","v15");
+xxdepes[3] = makeDynString ("","v25a");
+xxdepes[4] = makeDynString ("","v25b");
+xxdepes[5] = makeDynString ("","v33");
+
+xxdepes[6] = makeDynString ("","td1");
+xxdepes[7] = makeDynString ("","td2");
+xxdepes[8] = makeDynString ("","td3");
+xxdepes[9] = makeDynString ("","td4");
+//--------------
+
+xxdepei[1]=makeDynInt (DPEL_STRUCT);
+xxdepei[2]=makeDynInt (0,DPEL_FLOAT);
+xxdepei[3]=makeDynInt (0,DPEL_FLOAT);
+xxdepei[4]=makeDynInt (0,DPEL_FLOAT);
+xxdepei[5]=makeDynInt (0,DPEL_FLOAT);
+
+xxdepei[6]=makeDynInt (0,DPEL_FLOAT);
+xxdepei[7]=makeDynInt (0,DPEL_FLOAT);
+xxdepei[8]=makeDynInt (0,DPEL_FLOAT);
+xxdepei[9]=makeDynInt (0,DPEL_FLOAT);
+
+dpTypeCreate(xxdepes,xxdepei);
+
+
+}
+//============================
 
 LV_1_main(){
 int i;

@@ -15,16 +15,24 @@
 #uses "CMS_CSCfw_HV_CC/mudcs5Archive.ctl"
 
  #uses "CMS_CSCfw_LV_CRB/mudcs9XAlertReconfigAllSlowControls.ctl"
+#uses "aes.ctl"
 
 main(){
   mudcsInit();
-  dpSetWait(CSC_fwG_g_SYSTEM_NAME+":MYWARNING.value","postinstall_start");  
+  dpSetWait(CSC_fwG_g_SYSTEM_NAME+":MYWARNING.value","postinstall_start");
+  
+//int is_exist=fwFsmTree_isNode(CSC_fwG_g_csc_part);
+//if(is_exist)
+mudcsDeleteAllTrees();
+
   mudcsCreateAllTypesMain();
   mudcsDbCreateMain(); 
   mudcsFsmCreateMain();
   mudcsAlertCreateMain(); 
   mudcsSetFsmPanelsMain();
-/////  mudcsArchiveMain();
+//  mudcsArchiveMain(true);
+//\\  setupArchiving(CSC_fwG_g_idisk_cross_numbers); // Xiaofeng+Evaldas Archiving
+
   dpSetWait(CSC_fwG_g_SYSTEM_NAME+":MYWARNING.value","postinstall_finish");
   exit(0); 
 }

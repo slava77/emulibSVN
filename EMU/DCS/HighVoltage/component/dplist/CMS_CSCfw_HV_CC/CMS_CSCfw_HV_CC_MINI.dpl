@@ -1,0 +1,147 @@
+# ascii dump of database
+
+# DpType
+TypeName
+_FwFsmObjectType._FwFsmObjectType	1#1
+	panel	25#6
+	components	9#7
+	states	9#8
+	actions	9#9
+	parameters	9#11
+
+# Datapoint/DpId
+DpName	TypeName	ID
+fwOT_EMUNodes	_FwFsmObjectType	69001
+fwOT_EMUTREENodes	_FwFsmObjectType	69002
+fwOT_EMUSTBYNodes	_FwFsmObjectType	119792
+fwOT_EMUTREESTBYNodes	_FwFsmObjectType	120600
+fwOT_CMS_CSC_ME11_HV_Type	_FwFsmObjectType	175179
+fwOT_CSC_LV_HV	_FwFsmObjectType	175604
+fwOT_EMUTREENodes_MAJOR	_FwFsmObjectType	391952
+fwOT_EMUTREENodes_MAJOR_CMS	_FwFsmObjectType	391954
+fwOT_EMUFEDNodes	_FwFsmObjectType	395062
+
+# DpValue
+ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
+fwOT_EMUNodes.panel	_FwFsmObjectType	"EMUNodes.pnl"	0x101	20.10.2009 11:02:06.511
+fwOT_EMUNodes.components	_FwFsmObjectType		0x141	20.10.2009 11:02:06.542
+fwOT_EMUNodes.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ANY$FwCHILDREN in_state STANDBY)  move_to STANDBY|", "", "", "ERROR", "FwStateAttention3", "when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,OFF,RAMP} )  move_to OFF|when ( $ALL$FwCHILDREN in_state {ON,OFF,RAMP,STANDBY} )  move_to STANDBY|", "", "", "ON", "FwStateOKPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|when ( $ANY$FwCHILDREN in_state STANDBY)  move_to STANDBY|when ( $ANY$FwCHILDREN in_state {OFF,RAMP} )  move_to OFF|", "", "", "STANDBY", "FwStateAttention1", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,OFF,RAMP} )  move_to OFF|", "", ""	0x101	20.10.2009 11:05:00.448
+fwOT_EMUNodes.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "OFF/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
+do STANDBY $ALL$CMS_CSC_ME11_HV_Type
+do RAMP $ALL$HV_1", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "ERROR/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
+do STANDBY $ALL$CMS_CSC_ME11_HV_Type
+do RAMP $ALL$HV_1", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
+do STANDBY $ALL$CMS_CSC_ME11_HV_Type
+do RAMP $ALL$HV_1", "0", "ON/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
+do STANDBY $ALL$CMS_CSC_ME11_HV_Type
+do RAMP $ALL$HV_1", "0"	0x101	20.10.2009 11:05:00.448
+fwOT_EMUNodes.parameters	_FwFsmObjectType		0x141	20.10.2009 11:02:06.636
+fwOT_EMUTREENodes.panel	_FwFsmObjectType	"EMUTREENodes.pnl"	0x101	20.10.2009 11:02:06.667
+fwOT_EMUTREENodes.components	_FwFsmObjectType		0x141	20.10.2009 11:02:06.698
+fwOT_EMUTREENodes.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,STANDBY} )  move_to STANDBY|", "", "", "ERROR", "FwStateAttention3", "when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,STANDBY} )  move_to STANDBY|when ( $ALL$FwCHILDREN in_state {ON,OFF,RAMP,STANDBY} )  move_to OFF|", "", "", "ON", "FwStateOKPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|when ( $ANY$FwCHILDREN in_state {OFF,RAMP} )  move_to OFF|when ( $ANY$FwCHILDREN in_state STANDBY )  move_to STANDBY|", "", "", "STANDBY", "FwStateAttention1", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ANY$FwCHILDREN in_state {OFF,RAMP} )  move_to OFF|", "", ""	0x101	20.10.2009 11:05:00.995
+fwOT_EMUTREENodes.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "OFF/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "ERROR/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "ON/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0"	0x101	20.10.2009 11:05:00.995
+fwOT_EMUTREENodes.parameters	_FwFsmObjectType		0x141	20.10.2009 11:02:06.792
+fwOT_EMUSTBYNodes.panel	_FwFsmObjectType	"EMUSTBYNodes.pnl"	0x101	20.10.2009 11:02:07.136
+fwOT_EMUSTBYNodes.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|", "", "", "ERROR", "FwStateAttention3", "        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|        when ( $ALL$FwCHILDREN in_state {ON,OFF,RAMP,STANDBY} )  move_to OFF|", "", "", "ON", "FwStateOKPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|   when ( $ANY$FwCHILDREN in_state {OFF,RAMP,STANDBY} )  move_to OFF|", "", ""	0x101	20.10.2009 11:05:00.714
+fwOT_EMUSTBYNodes.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "OFF/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "ERROR/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0"	0x101	20.10.2009 11:05:00.714
+fwOT_EMUSTBYNodes.parameters	_FwFsmObjectType		0x141	20.10.2009 11:02:07.229
+fwOT_EMUTREESTBYNodes.panel	_FwFsmObjectType	"EMUTREESTBYNodes.pnl"	0x101	20.10.2009 11:02:07.261
+fwOT_EMUTREESTBYNodes.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR|        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ANY$FwCHILDREN in_state STANDBY )  move_to STANDBY|", "", "", "ERROR", "FwStateAttention3", "        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|        when ( $ALL$FwCHILDREN in_state {ON,OFF} )  move_to OFF|when ( $ALL$FwCHILDREN in_state {ON,OFF,STANDBY} )  move_to STANDBY|", "", "", "ON", "FwStateOKPhysics", "   when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|when ( $ANY$FwCHILDREN in_state STANDBY )  move_to STANDBY|when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|", "", "", "STANDBY", "FwStateAttention1", "when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,OFF} )  move_to OFF|", "", ""	0x101	20.10.2009 11:05:01.823
+fwOT_EMUTREESTBYNodes.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "OFF/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "ERROR/STANDBY", "", "1", "do  STANDBY $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN
+move_to OFF", "0", "STANDBY/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0"	0x101	20.10.2009 11:05:01.823
+fwOT_EMUTREESTBYNodes.parameters	_FwFsmObjectType		0x141	20.10.2009 11:02:07.354
+fwOT_CMS_CSC_ME11_HV_Type.panel	_FwFsmObjectType	"CMS_ME11/ME11PN.pnl"	0x101	20.10.2009 11:02:07.386
+fwOT_CMS_CSC_ME11_HV_Type.components	_FwFsmObjectType		0x141	20.10.2009 11:02:07.417
+fwOT_CMS_CSC_ME11_HV_Type.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ANY$FwCHILDREN in_state STANDBY )  move_to STANDBY|", "", "", "ON", "FwStateOKPhysics", "when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|when ( $ANY$FwCHILDREN in_state STANDBY )  move_to STANDBY|when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|", "", "", "ERROR", "FwStateAttention3", "when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,OFF} )  move_to OFF|when ( $ALL$FwCHILDREN in_state {ON,OFF,STANDBY} )  move_to STANDBY|", "", "", "STANDBY", "FwStateAttention1", "when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,OFF} )  move_to OFF|", "", ""	0x101	20.10.2009 11:04:59.104
+fwOT_CMS_CSC_ME11_HV_Type.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "ON/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0"	0x101	20.10.2009 11:04:59.104
+fwOT_CMS_CSC_ME11_HV_Type.parameters	_FwFsmObjectType		0x141	20.10.2009 11:02:07.511
+fwOT_CSC_LV_HV.panel	_FwFsmObjectType	"CSC_LV_HV.pnl"	0x101	20.10.2009 11:02:07.542
+fwOT_CSC_LV_HV.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ANY$FwCHILDREN in_state STANDBY)  move_to STANDBY|", "", "", "ERROR", "FwStateAttention3", "when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,OFF,RAMP} )  move_to OFF|when ( $ALL$FwCHILDREN in_state {ON,OFF,RAMP,STANDBY} )  move_to STANDBY|", "", "", "ON", "FwStateOKPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|when ( $ANY$FwCHILDREN in_state STANDBY)  move_to STANDBY|when ( $ANY$FwCHILDREN in_state {OFF,RAMP} )  move_to OFF|", "", "", "STANDBY", "FwStateAttention1", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,OFF,RAMP} )  move_to OFF|", "", ""	0x101	20.10.2009 11:04:59.386
+fwOT_CSC_LV_HV.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "OFF/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
+do STANDBY $ALL$CMS_CSC_ME11_HV_Type
+do RAMP $ALL$HV_1", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "ERROR/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
+do STANDBY $ALL$CMS_CSC_ME11_HV_Type
+do RAMP $ALL$HV_1", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
+do STANDBY $ALL$CMS_CSC_ME11_HV_Type
+do RAMP $ALL$HV_1", "0"	0x101	20.10.2009 11:04:59.386
+fwOT_CSC_LV_HV.parameters	_FwFsmObjectType		0x141	20.10.2009 11:02:07.636
+fwOT_EMUTREENodes_MAJOR.panel	_FwFsmObjectType	"EMUTREENodes_MAJOR.pnl"	0x101	20.10.2009 11:02:07.667
+fwOT_EMUTREENodes_MAJOR.components	_FwFsmObjectType		0x141	20.10.2009 11:02:07.698
+fwOT_EMUTREENodes_MAJOR.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( ( $ANY$FwCHILDREN in_state {DEAD} ) or
+       ( $ALL$FwDevMajority in_state MAJORITY_ERROR ) )  move_to ERROR|when ( ( $ALL$FwDevMajority in_state MAJORITY_OK ) and
+       ( $ANY$FwCHILDREN in_state STANDBY ) and
+       ( $ALL$FwCHILDREN not_in_state OFF ) )  move_to STANDBY|when ( ( $ALL$FwDevMajority in_state MAJORITY_OK ) and
+       ( $ALL$FwCHILDREN not_in_state OFF ) )  move_to ON|", "", "", "ERROR", "FwStateAttention3", "when ( ( $ALL$FwDevMajority in_state MAJORITY_OK ) and
+       ( $ANY$FwCHILDREN in_state OFF ) )  move_to OFF|when ( ( $ALL$FwDevMajority in_state MAJORITY_OK ) and
+       ( $ANY$FwCHILDREN in_state STANDBY ) )  move_to STANDBY|when ( $ALL$FwDevMajority in_state MAJORITY_OK )  move_to ON|", "", "", "ON", "FwStateOKPhysics", "when ( ( $ANY$FwCHILDREN in_state {DEAD} ) or
+       ( $ALL$FwDevMajority in_state MAJORITY_ERROR ) )  move_to ERROR|when ( ( $ALL$FwDevMajority in_state MAJORITY_OK ) and
+       ( $ANY$FwCHILDREN in_state OFF ) )  move_to OFF|when ( ( $ALL$FwDevMajority in_state MAJORITY_OK ) and
+       ( $ANY$FwCHILDREN in_state STANDBY ) )  move_to STANDBY|", "", "", "STANDBY", "FwStateAttention1", "when ( ( $ANY$FwCHILDREN in_state {DEAD} ) or
+       ( $ALL$FwDevMajority in_state MAJORITY_ERROR ) )  move_to ERROR|when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|when ( ( $ALL$FwDevMajority in_state MAJORITY_OK ) and
+       ( $ALL$FwCHILDREN not_in_state STANDBY ) )  move_to ON|", "", ""	0x101	20.10.2009 11:05:01.276
+fwOT_EMUTREENodes_MAJOR.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "OFF/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "ERROR/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "ON/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0"	0x101	20.10.2009 11:05:01.276
+fwOT_EMUTREENodes_MAJOR.parameters	_FwFsmObjectType		0x141	20.10.2009 11:02:07.792
+fwOT_EMUTREENodes_MAJOR_CMS.panel	_FwFsmObjectType	"EMUTREENodes_MAJOR_CMS.pnl"	0x101	20.10.2009 11:02:07.823
+fwOT_EMUTREENodes_MAJOR_CMS.components	_FwFsmObjectType		0x141	20.10.2009 11:02:07.854
+fwOT_EMUTREENodes_MAJOR_CMS.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( ( $ANY$FwCHILDREN in_state {DEAD} ) or
+       ( $ALL$majority in_state MAJORITY_ERROR ) )  move_to ERROR|when ( ( $ALL$majority in_state MAJORITY_OK ) and
+       ( $ANY$FwCHILDREN in_state STANDBY ) and
+       ( $ALL$FwCHILDREN not_in_state OFF ) )  move_to STANDBY|when ( ( $ALL$majority in_state MAJORITY_OK ) and
+       ( $ALL$FwCHILDREN not_in_state OFF ) )  move_to ON|", "", "", "ERROR", "FwStateAttention3", "when ( ( $ALL$majority in_state MAJORITY_OK ) and
+       ( $ANY$FwCHILDREN in_state OFF ) )  move_to OFF|when ( ( $ALL$majority in_state MAJORITY_OK ) and
+       ( $ANY$FwCHILDREN in_state STANDBY ) )  move_to STANDBY|when ( $ALL$majority in_state MAJORITY_OK )  move_to ON|", "", "", "ON", "FwStateOKPhysics", "when ( ( $ANY$FwCHILDREN in_state {DEAD} ) or
+       ( $ALL$majority in_state MAJORITY_ERROR ) )  move_to ERROR|when ( ( $ALL$majority in_state MAJORITY_OK ) and
+       ( $ANY$FwCHILDREN in_state OFF ) )  move_to OFF|when ( ( $ALL$majority in_state MAJORITY_OK ) and
+       ( $ANY$FwCHILDREN in_state STANDBY ) )  move_to STANDBY|", "", "", "STANDBY", "FwStateAttention1", "when ( ( $ANY$FwCHILDREN in_state {DEAD} ) or
+       ( $ALL$majority in_state MAJORITY_ERROR ) )  move_to ERROR|when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|when ( ( $ALL$majority in_state MAJORITY_OK ) and
+       ( $ALL$FwCHILDREN not_in_state STANDBY ) )  move_to ON|", "", ""	0x101	20.10.2009 11:05:01.542
+fwOT_EMUTREENodes_MAJOR_CMS.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "OFF/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "ERROR/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "ON/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0"	0x101	20.10.2009 11:05:01.542
+fwOT_EMUTREENodes_MAJOR_CMS.parameters	_FwFsmObjectType		0x141	20.10.2009 11:02:07.948
+fwOT_EMUFEDNodes.panel	_FwFsmObjectType	"EMUFEDNodes.pnl"	0x101	20.10.2009 11:02:08.136
+fwOT_EMUFEDNodes.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,STANDBY} )  move_to STANDBY|", "", "", "ERROR", "FwStateAttention3", "when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,STANDBY} )  move_to STANDBY|when ( $ALL$FwCHILDREN in_state {ON,OFF,RAMP,STANDBY} )  move_to OFF|", "", "", "ON", "FwStateOKPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|when ( $ANY$FwCHILDREN in_state {OFF,RAMP} )  move_to OFF|when ( $ANY$FwCHILDREN in_state STANDBY )  move_to STANDBY|", "", "", "STANDBY", "FwStateAttention1", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ANY$FwCHILDREN in_state {OFF,RAMP} )  move_to OFF|", "", ""	0x101	20.10.2009 11:05:00.182
+fwOT_EMUFEDNodes.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "OFF/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "ERROR/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "ON/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN
+do RAMP $ALL$HV_1", "0"	0x101	20.10.2009 11:05:00.182
+fwOT_EMUFEDNodes.parameters	_FwFsmObjectType		0x141	20.10.2009 11:02:08.229

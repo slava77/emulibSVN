@@ -266,13 +266,13 @@ mudcsCommand(\"LV\",DpName,\"get_data\");
 update_dpoints_not_controlled(string dpName, string value){
 
  if(strpos(value,DpNameFsm) <0){
-  if(is_local_sys)setValue(\"POWER_ON\",\"enabled\",TRUE);
-  else setValue(\"POWER_ON\",\"enabled\",FALSE);
+ ///\\\\ if(is_local_sys)setValue(\"POWER_ON\",\"enabled\",TRUE);
+ ///\\\\ else setValue(\"POWER_ON\",\"enabled\",FALSE);
   
   setValue(\"NOT_CONNECTED\",\"visible\",FALSE);
   }
  else  {
-  setValue(\"POWER_ON\",\"enabled\",FALSE);
+ ///\\\\ setValue(\"POWER_ON\",\"enabled\",FALSE);
   setValue(\"NOT_CONNECTED\",\"visible\",TRUE);
  }
 
@@ -1863,7 +1863,7 @@ LANG:1 103 -*-Times [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0
 13 4
 "POWER_ON"
 ""
-1 418 342 E E E 1 E 1 E N {255,255,153} E N {255,0,0} E E
+1 418 342 E E E 0 E 1 E N {255,255,153} E N {255,0,0} E E
  E E
 13 0 0 0 0 0
 E E E
@@ -2384,7 +2384,7 @@ LANG:1 13 exclude_alert
 13 33
 "FPOWER_OFF"
 ""
-1 298 310 E E E 1 E 1 E N {255,255,153} E N {0,149,255} E E
+1 298 310 E E E 0 E 1 E N {255,255,153} E N {0,149,255} E E
  E E
 109 0 0 0 0 0
 E E E
@@ -2431,7 +2431,7 @@ dpGet(DpNameFsm+\".status\",current_status);
 13 34
 "FPOWER_ON"
 ""
-1 298 342 E E E 1 E 1 E N {255,255,153} E N {0,149,149} E E
+1 298 342 E E E 0 E 1 E N {255,255,153} E N {0,149,149} E E
  E E
 111 0 0 0 0 0
 E E E
