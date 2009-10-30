@@ -183,12 +183,14 @@ else system("cmd /c cp "+ProjectHome+"\\scripts\\libs\\"+dir+"/emufw.ctl "+
 
 //system("cmd /c cp "+ProjectHome+"\\"+LV_PROJECT+"\\panels/* "+" \\home\\fast\\"+LV_PROJECT+"\\panels\\"+dir+"\\.");
 //=========== CONFIG ===============================================================================================
-
 if(!mode || mode==1)system("cmd /c cp "+ProjectHome+"\\source\\"+dir+"\\config\\"+dir+"_short.config "+
                 ProjectHome+"\\"+LV_PROJECT+"\\config\\"+dir+".config");
-else system("cmd /c cp "+ProjectHome+"\\source\\"+dir+"\\config\\"+dir+"_long.config "+
+else {              system("cmd /c cp "+ProjectHome+"\\source\\"+dir+"\\config\\"+dir+"_long.config "+
                 ProjectHome+"\\"+LV_PROJECT+"\\config\\"+dir+".config");
-
+                    system("cmd /c cp "+ProjectHome+"\\source\\"+dir+"\\config\\"+dir+"_short.config "+
+                ProjectHome+"\\"+LV_PROJECT+"\\config\\"+dir+"_MINI.config");
+  
+}  
 if(mode==2){
   system("cmd /c cp "+ProjectHome+"\\source\\"+dir+"\\config/"+dir+"*.config "+
                 ProjectHome+"\\"+LV_PROJECT+"\\source\\"+dir+"\\config/.");  
@@ -213,14 +215,21 @@ if(mode==2){
 //============= XML ================================================================================================
 if(mode==2){
 system("cmd /c cp "+ProjectHome+"\\source\\"+dir+"\\config\\"+dir+"_long.xml "+ProjectHome+"\\"+LV_PROJECT+"\\"+dir+".xml");
+system("cmd /c cp "+ProjectHome+"\\source\\"+dir+"\\config\\"+dir+"_short.xml "+ProjectHome+"\\"+LV_PROJECT+"\\"+dir+"_MINI.xml");
 }
-else system("cmd /c cp "+ProjectHome+"\\source\\"+dir+"\\config\\"+dir+"_short.xml "+ProjectHome+"\\"+LV_PROJECT+"\\"+dir+".xml");
+else system("cmd /c cp "+ProjectHome+"\\source\\"+dir+"\\config\\"+dir+"_short_mode1.xml "+ProjectHome+"\\"+LV_PROJECT+"\\"+dir+".xml");
 
 if(mode==2){
 system("cmd /c cp "+ProjectHome+"\\source\\"+dir+"\\config/*.xml "+ProjectHome+"\\"+LV_PROJECT+"\\source\\"+dir+"\\config/.");
 }
 //===================================================================================================================
+if(mode==2){
+dplist(1, ProjectHome, LV_PROJECT, dir);
+dplist(2, ProjectHome, LV_PROJECT, dir);
+}
+else
 dplist(mode, ProjectHome, LV_PROJECT, dir);
+
 //DebugTN("done");
 }
 
@@ -283,7 +292,12 @@ dynAppend(all_dps,dps);
 //=================
 
 //string command="PVSS00ascii -out dplist\\migr_to_new_project.dpl ";
-string command="cmd /c PVSS00ascii -out "+ProjectHome+"\\"+LV_PROJECT+"\\dplist\\"+dir+"\\"+dir+".dpl -filterDpType _FwFsmObjectType ";
+string command;
+
+if(mode==2)
+command="cmd /c PVSS00ascii -out "+ProjectHome+"\\"+LV_PROJECT+"\\dplist\\"+dir+"\\"+dir+".dpl -filterDpType _FwFsmObjectType ";
+else
+command="cmd /c PVSS00ascii -out "+ProjectHome+"\\"+LV_PROJECT+"\\dplist\\"+dir+"\\"+dir+"_MINI.dpl -filterDpType _FwFsmObjectType ";
 
  for(i=1;i<=dynlen(all_dps);i++){
    command += " -filterDp "+all_dps[i];
