@@ -1,0 +1,8 @@
+<component>
+<name>CMS_ME11_MINI</name>
+<version>1.0.0</version>
+<date>2008/04/04</date>
+<file>./panels/CMS_ME11/*.pnl</file>
+<file>./panels/objects/fwCaenBoardSY1527SingleSymbolA1733BP.pnl</file>
+<file>./CMS_ME11_MINI.xml</file>
+</component>
