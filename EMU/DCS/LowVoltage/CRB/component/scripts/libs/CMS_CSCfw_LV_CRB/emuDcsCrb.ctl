@@ -873,7 +873,7 @@ mudcsCrb_resume_slow_control(){ //x2p
   if(two_way_communications_x2p){  
   
   current_time=getCurrentTime();
-     
+     DebugTN(CSC_fwCAN1_g_MINUS_SYSTEM_NAME+","+CSC_fwCAN1_g_PLUS_SYSTEM_NAME);
   for(i=1;i<=2;i++){
    if(i==1)remote_system=CSC_fwCAN1_g_MINUS_SYSTEM_NAME;
    else if(i==2)remote_system=CSC_fwCAN1_g_PLUS_SYSTEM_NAME;

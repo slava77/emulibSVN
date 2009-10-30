@@ -1,4 +1,4 @@
-V 10
+V 11
 1
 LANG:1 0 
 PANEL,-1 -1 403 564 N "_3DFace" 0
@@ -47,9 +47,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 278 428 432 462
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  278 428 432 462
 
 T 
 1
@@ -234,9 +233,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 58 48 212 72
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  58 48 212 72
 
 T 
 1
@@ -261,9 +259,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 58 28 212 52
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  58 28 212 52
 
 T 
 1
@@ -287,9 +284,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 208 28 322 52
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  208 28 322 52
 
 T 
 1
@@ -319,9 +315,8 @@ LANG:1 55 affected bt HW CREATION, DB CREATION, CREATE CRB_2 TYPE
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 60 170 214 204
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  60 170 214 204
 
 T 
 1
@@ -353,9 +348,8 @@ LANG:1 32 affected by LOGICAL FSM CREATION
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 58 338 212 382
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  58 338 212 382
 
 T 
 1
@@ -385,9 +379,8 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 62 152 314 166
 0 2 2 "0s" 0 0 0 192 0 0  62 152 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0 1
 LANG:1 51 Not forget to import FSM Domain types from pvss_fsm
 13 9
 "PUSH_BUTTON7"
@@ -402,9 +395,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 210 170 324 204
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  210 170 324 204
 
 T 
 1
@@ -433,9 +425,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 328 98 382 132
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  328 98 382 132
 
 T 
 1
@@ -550,9 +541,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 58 98 212 132
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  58 98 212 132
 
 T 
 1
@@ -580,9 +570,8 @@ LANG:1 32 affected by LOGICAL FSM CREATION
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 58 238 212 282
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  58 238 212 282
 
 T 
 1
@@ -609,9 +598,8 @@ LANG:1 32 affected by LOGICAL FSM CREATION
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 58 278 212 312
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  58 278 212 312
 
 T 
 1
@@ -639,9 +627,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 208 278 322 312
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  208 278 322 312
 
 T 
 1
@@ -678,9 +665,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 58 418 212 472
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  58 418 212 472
 
 T 
 1
@@ -709,9 +695,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 58 388 212 422
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  58 388 212 422
 
 T 
 1
@@ -747,9 +732,8 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 60 10 182 24
 0 2 2 "0s" 0 0 0 192 0 0  60 10 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0 1
 LANG:1 23 PVSS00opc -7 should run
 13 18
 "PUSH_BUTTON15"
@@ -764,9 +748,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 208 48 322 72
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  208 48 322 72
 
 T 
 1
@@ -825,9 +808,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 208 98 322 132
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  208 98 322 132
 
 T 
 1
@@ -864,9 +846,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 58 68 212 92
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  58 68 212 92
 
 T 
 1
@@ -891,9 +872,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 208 68 322 92
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  208 68 322 92
 
 T 
 1
@@ -968,9 +948,8 @@ LANG:1 32 affected by LOGICAL FSM CREATION
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 58 308 212 342
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  58 308 212 342
 
 T 
 1
@@ -998,9 +977,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 208 308 322 342
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  208 308 322 342
 
 T 
 1
@@ -1035,9 +1013,8 @@ LANG:1 32 affected by LOGICAL FSM CREATION
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 58 478 172 512
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  58 478 172 512
 
 T 
 1
@@ -1064,9 +1041,8 @@ LANG:1 32 affected by LOGICAL FSM CREATION
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 168 478 272 512
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  168 478 272 512
 
 T 
 1

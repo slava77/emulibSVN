@@ -54,10 +54,21 @@ main(){
   //  fwFsm_restartAllDomains(); 
   startThread("mudcsCrb_threadWatchForTimeouts");
 dpConnect("alert_config_changed_dp","ALERT_CONFIG_CHANGED_DP.");  
+dpConnect("dist_connections_detect","_DistConnections.Dist.ManNums");
 //  while(1){delay(0,1000)};
 }
-
-
+//========================================================
+dist_connections_detect(string dpName, dyn_int dists){
+  DebugTN("dist_connections_detect");
+  if(CSC_fwCAN1_g_PLUS_SYSTEM_NAME==""||CSC_fwCAN1_g_MINUS_SYSTEM_NAME==""){
+    DebugTN("_DistConnections.Dist.ManNums");
+    DebugTN(dists);
+    mudcsCrbPnlInit();
+    DebugTN("CSC_fwCAN1_g_PLUS_SYSTEM_NAME="+CSC_fwCAN1_g_PLUS_SYSTEM_NAME);
+    DebugTN("CSC_fwCAN1_g_MINUS_SYSTEM_NAME="+CSC_fwCAN1_g_MINUS_SYSTEM_NAME);
+  }
+  
+}
 
 //========================================================
 alert_config_changed_dp(string dpName, string value){
