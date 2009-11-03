@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 713 660 N "_3DFace" 2
+PANEL,-1 -1 649 555 N "_3DFace" 2
 "$deviceParams"
 "$mrtnDp"
 "main()
@@ -95,7 +95,7 @@ void channelMeasurementChangedCB(dyn_string dps, dyn_float measurements) {
     sprintf(currentStr, \"%.2f\", current);
     channelsTable.cellValueRC(i, \"measurement\", voltageStr + \" V         \" + currentStr + \" A\");
     string color = \"FwStateOKPhysics\";
-    if (voltage < 0.01) {
+    if (voltage < 0.1) {
       color = \"FwStateOKNotPhysics\";
     }
     channelsTable.cellBackColRC(i, \"measurement\", color);
@@ -109,7 +109,7 @@ void channelVoltageSettingChangedCB(dyn_string dps, dyn_float voltages) {
     channelsTable.cellValueRC(i - 1, \"voltageSetting\", voltageStr + \" V\");
     string color = \"FwStateOKPhysics\";
     bool isOn = true;
-    if (voltages[i] < 0.01) {
+    if (voltages[i] < 0.1) {
       color = \"FwStateOKNotPhysics\";
       isOn = false;
     }
@@ -204,7 +204,7 @@ LANG:1 8 Turn OFF
 25 4
 "channelsTable"
 ""
-1 161 132 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 30 140 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 4 0 0 0 0 0
 E E E
@@ -215,20 +215,20 @@ LANG:1 0
 0
 1
 LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
-0  159 130 663 267
-EE 1 0 1 4 0 "channelNum" 4 1 0 "s" 1
+0  28 138 532 277
+EE 1 0 1 4 0 "channelNum" 5 1 0 "s" 1
 LANG:1 9 Channel #
 E
 1
 LANG:1 0 
 
-72 "measurement" 11 1 0 "s" 1
+72 "measurement" 13 1 0 "s" 1
 LANG:1 20 Measurement Readback
 E
 1
 LANG:1 0 
 
-153 "voltageSetting" 12 1 0 "s" 1
+153 "voltageSetting" 14 1 0 "s" 1
 LANG:1 24 Voltage Setting Readback
 E
 1
@@ -297,303 +297,15 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 1 0 1 E 1.196428571428571 0 1.385542168674699 -1.96428571428571 -12.53012048192774 0 E 10 74 571 241
+E E 0 0 1 0 1 E 1.089285714285713 0 2.409638554216869 -0.8928571428571397 -88.31325301204821 0 E 10 74 571 241
 1
 LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 8 Channels
-13 28
-"btnChannel1On"
-""
-1 61 59 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-28 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
-0  88 153 162 175
-
-T 
-1
-LANG:1 7 Turn ON
-"main()
-{
-  turnChannel(1, true);
-}" 0
- E E E
-13 29
-"btnChannel1Off"
-""
-1 19 152 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-29 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
-0  17 153 91 175
-
-T 
-1
-LANG:1 8 Turn OFF
-"main()
-{
-  turnChannel(1, false);
-}" 0
- E E E
-13 31
-"btnChannel2On"
-""
-1 69 166 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-31 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
-0  88 171 162 193
-
-T 
-1
-LANG:1 7 Turn ON
-"main()
-{
-  turnChannel(2, true);
-}" 0
- E E E
-13 32
-"btnChannel3On"
-""
-1 69 180 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-32 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
-0  88 189 162 211
-
-T 
-1
-LANG:1 7 Turn ON
-"main()
-{
-  turnChannel(3, true);
-}" 0
- E E E
-13 33
-"btnChannel4On"
-""
-1 69 194 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-33 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
-0  88 207 162 229
-
-T 
-1
-LANG:1 7 Turn ON
-"main()
-{
-  turnChannel(4, true);
-}" 0
- E E E
-13 34
-"btnChannel5On"
-""
-1 69 208 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-34 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
-0  88 225 162 247
-
-T 
-1
-LANG:1 7 Turn ON
-"main()
-{
-  turnChannel(5, true);
-}" 0
- E E E
-13 35
-"btnChannel6On"
-""
-1 69 222 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-35 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
-0  88 243 162 265
-
-T 
-1
-LANG:1 7 Turn ON
-"main()
-{
-  turnChannel(6, true);
-}" 0
- E E E
-13 36
-"btnChannel2Off"
-""
-1 19 166 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-36 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
-0  17 171 91 193
-
-T 
-1
-LANG:1 8 Turn OFF
-"main()
-{
-  turnChannel(2, false);
-}" 0
- E E E
-13 37
-"btnChannel3Off"
-""
-1 19 180 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-37 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
-0  17 189 91 211
-
-T 
-1
-LANG:1 8 Turn OFF
-"main()
-{
-  turnChannel(3, false);
-}" 0
- E E E
-13 38
-"btnChannel4Off"
-""
-1 19 194 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-38 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
-0  17 207 91 229
-
-T 
-1
-LANG:1 8 Turn OFF
-"main()
-{
-  turnChannel(4, false);
-}" 0
- E E E
-13 39
-"btnChannel5Off"
-""
-1 19 208 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-39 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
-0  17 225 91 247
-
-T 
-1
-LANG:1 8 Turn OFF
-"main()
-{
-  turnChannel(5, false);
-}" 0
- E E E
-13 40
-"btnChannel6Off"
-""
-1 19 222 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-40 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
-0  17 243 91 265
-
-T 
-1
-LANG:1 8 Turn OFF
-"main()
-{
-  turnChannel(6, false);
-}" 0
- E E E
 13 42
 "PUSH_BUTTON13"
 ""
-1 160 280 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 30.00000000000002 419.9999999999999 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 42 0 0 0 0 0
 E E E
@@ -604,7 +316,7 @@ LANG:1 0
 0
 1
 LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
-0  158 278 402 312
+0  28 418 212 472
 
 T 
 1
@@ -619,7 +331,7 @@ LANG:1 21 Turn all channels OFF
 13 45
 "PUSH_BUTTON16"
 ""
-1 420 280 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 230 419.9999999999999 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 45 0 0 0 0 0
 E E E
@@ -630,7 +342,7 @@ LANG:1 0
 0
 1
 LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
-0  418 278 662 312
+0  228 418 412 472
 
 T 
 1
@@ -645,7 +357,7 @@ LANG:1 20 Turn all channels ON
 2 46
 "PRIMITIVE_TEXT5"
 ""
-1 90 110 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 20 110 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 46 0 0 0 0 0
 E E E
@@ -655,212 +367,12 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 90 110 665 126
-0 2 2 "0s" 0 0 0 192 0 0  90 110 1
+E E 0 1 1 2 1 E U  0 E 20 110 595 126
+0 2 2 "0s" 0 0 0 192 0 0  20 110 1
 1
 LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 97 Note: the readback values are read from hardware, so please be patient and push buttons only once
-30 48
-"FRAME2"
-""
-1 20 254 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
- E E
-48 0 0 0 0 0
-E E E
-1
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 0 1 0 1 E 1.027027027027027 0 2.169811320754718 -10.54054054054054 -151.1320754716983 0 E 20 254 391 361
-1
-LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
-0 1
-LANG:1 52 Advanced Channel Control (combined control possible)
-2 51
-"PRIMITIVE_TEXT7"
-""
-1 20 425.9999999999999 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
- E E
-51 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 20 425.9999999999999 141 441.9999999999999
-0 2 2 "0s" 0 0 0 192 0 0  20 425.9999999999999 1
-1
-LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
-0 1
-LANG:1 21 Channel(s) selection:
-13 52
-"btnSelectedChannelsOff"
-""
-1 160 450 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-52 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
-0  158 448 372 502
-
-T 
-1
-LANG:1 26 Turn Selected Channels OFF
-"main()
-{
-  dyn_int selection = tableChannelControl.getSelectedLines();
-  for (int i=1; i <= dynlen(selection); i++) {
-    turnChannel(selection[i] + 1, false);
-  }
-}" 0
- E E E
-13 55
-"btnSelectedChannelsOn"
-""
-1 160 510 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-55 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
-0  158 508 372 562
-
-T 
-1
-LANG:1 25 Turn Selected Channels ON
-"main()
-{
-  dyn_int selection = tableChannelControl.getSelectedLines();
-  for (int i=1; i <= dynlen(selection); i++) {
-    turnChannel(selection[i] + 1, true);
-  }
-}" 0
- E E E
-25 56
-"tableChannelControl"
-""
-1 20 385.9999999999999 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
- E E
-56 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  18 444 142 559
-"main()
-{
-  this.tableMode = TABLE_SELECT_MULTIPLE;
-  this.selectByClick = TABLE_SELECT_LINE;
-}" 0
-E 0 0 1 1 0 "channel" 11 1 0 "s" 1
-LANG:1 7 Channel
-E
-1
-LANG:1 0 
-
-130 
-18 18 10 10
-1
-LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0 0 1 0 1 7
-1 0
-13 57
-"PUSH_BUTTON21"
-""
-1 20 569.9999999999999 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-57 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
-0  18 568 142 592
-
-T 
-1
-LANG:1 10 Select All
-"main()
-{
-  tableChannelControl.deleteSelection();
-  int lineCount = tableChannelControl.lineCount;
-  dyn_int selection;
-  for (int i=0; i < lineCount; i++) {
-    dynAppend(selection, i);
-  }
-  tableChannelControl.addSelectLines(selection);
-}" 0
- E E E
-13 58
-"PUSH_BUTTON22"
-""
-1 19.99999999999997 599.9999999999999 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-58 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
-0  18 598 142 622
-
-T 
-1
-LANG:1 15 Clear Selection
-"main()
-{
-  tableChannelControl.deleteSelection();
-}" 0
- E E E
-2 59
-"PRIMITIVE_TEXT8"
-""
-1 12 352 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
- E E
-59 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 12 352 691 388
-0 2 2 "0s" 0 0 0 64 0 0  12 352 2
-1
-LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
-0 1
-LANG:1 85 If you need to switch some channels ON or OFF simultaneously, use the controls below 
-1
-LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
-0 1
-LANG:1 116 (you can select more than one channel in the "channel(s) selection" table by holding CTRL and clicking on a channel)
 2 61
 "lblMrtnName"
 ""
@@ -880,6 +392,156 @@ E E 0 1 1 2 1 E U  0 E 10 10 101 26
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 12 Maraton name
+13 62
+"PUSH_BUTTON17"
+""
+1 230 330 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+62 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  228 328 412 362
+
+T 
+1
+LANG:1 24 Turn ON channels 0 and 3
+"main()
+{
+  turnChannel(1, true);
+  turnChannel(3, true);
+}" 0
+ E E E
+13 63
+"PUSH_BUTTON18"
+""
+1 30 330 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+63 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  28 328 212 362
+
+T 
+1
+LANG:1 25 Turn OFF channels 0 and 3
+"main()
+{
+  turnChannel(1, false);
+  turnChannel(3, false);
+}" 0
+ E E E
+13 66
+"PUSH_BUTTON21"
+""
+1 230 290 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+66 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  228 288 412 322
+
+T 
+1
+LANG:1 24 Turn ON channels 1 and 5
+"main()
+{
+  turnChannel(5, true);
+  turnChannel(2, true);
+}" 0
+ E E E
+13 67
+"PUSH_BUTTON22"
+""
+1 30 290 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+67 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  28 288 212 322
+
+T 
+1
+LANG:1 25 Turn OFF channels 1 and 5
+"main()
+{
+  turnChannel(5, false);
+  turnChannel(2, false);
+}" 0
+ E E E
+13 68
+"PUSH_BUTTON23"
+""
+1 230 370 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+68 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  228 368 412 402
+
+T 
+1
+LANG:1 24 Turn ON channels 4 and 7
+"main()
+{
+  turnChannel(4, true);
+  turnChannel(6, true);
+}" 0
+ E E E
+13 69
+"PUSH_BUTTON24"
+""
+1 30 370 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+69 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  28 368 212 402
+
+T 
+1
+LANG:1 25 Turn OFF channels 4 and 7
+"main()
+{
+  turnChannel(4, false);
+  turnChannel(6, false);
+}" 0
+ E E E
 0
 LAYER, 1 
 1
