@@ -22,6 +22,7 @@ const mapping emuui_dummyMapping;
 
 global mapping emuui_g_mappingCache;
 global mapping emuui_g_arrayCache;
+global string emuui_g_cscSystemNamesPattern;
 global dyn_string emuui_g_lvSystemNames;
 global mapping emuui_g_mapPcmbDb = emuui_dummyMapping;
 global mapping emuui_g_mapPcmbDbById = emuui_dummyMapping;
@@ -220,7 +221,8 @@ dyn_string emuui_getDpNames(string type, mapping parameters, dyn_string &excepti
   if (strpos(dp, ":") >= 0) { // if system name is included
     ret = dpNames(dp);
   } else {                    // if there's no sys name (most of the time this is the case) then search accross all connected systems
-    ret = dpNames("*:" + dp);
+    ret = dpNames(emuui_getCscSystemNamesPattern(exceptionInfo) + ":" + dp);
+    if (emu_checkException(exceptionInfo)) { return makeDynString(); }
   }
   
   return ret;
@@ -511,4 +513,26 @@ mapping emuui_getMaratonToPcmbsMap(dyn_string &exceptionInfo) {
   emuui_g_mapMaratonToPcmbs = ret; // cache it
   
   return ret;
+}
+
+string emuui_getCscSystemNamesPattern(dyn_string &exceptionInfo) {
+  if (strlen(emuui_g_cscSystemNamesPattern) == 0) {
+    mapping dcsProjects = emuui_getMapping("dcsProjectSystemNames", exceptionInfo);
+    if (emu_checkException(exceptionInfo)) { return ""; }
+    emuui_g_cscSystemNamesPattern = "{";
+    for (int i=1; i <= mappinglen(dcsProjects); i++) {
+      string sysName = mappingGetValue(dcsProjects, i);
+      if (i > 1) {
+        emuui_g_cscSystemNamesPattern += ",";
+      }
+      emuui_g_cscSystemNamesPattern += sysName;
+    }
+    if (!mappingHasKey(dcsProjects, getSystemId())) {
+      string mySysName = getSystemName();
+      strreplace(mySysName, ":", "");
+      emuui_g_cscSystemNamesPattern += "," + mySysName;
+    }
+    emuui_g_cscSystemNamesPattern += "}";
+  }
+  return emuui_g_cscSystemNamesPattern;  
 }

@@ -32,7 +32,8 @@ emuui_array_elmb_VCC_v_channels	CSC_UI_array	391975
 emuui_array_elmb_CCB_MPC_v_channels	CSC_UI_array	391976
 emuui_map_dpStringValueColors	CSC_UI_mapping	392035
 emuui_map_sysNameToSide	CSC_UI_mapping	392038
-emuui_map_dcsProjects	CSC_UI_mapping	392040
+emuui_map_dcsProjectDescriptions	CSC_UI_mapping	392285
+emuui_map_dcsProjectSystemNames	CSC_UI_mapping	392286
 
 # DpValue
 ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
@@ -58,5 +59,6 @@ emuui_map_elmbStateMeaning.map	CSC_UI_mapping	"4;STOPPED", "5;OPERATIONAL", "127
 emuui_array_elmb_VCC_v_channels.array	CSC_UI_array	"35", "19"	0x101	25.09.2009 12:58:30.390
 emuui_array_elmb_CCB_MPC_v_channels.array	CSC_UI_array	"34", "57"	0x101	25.09.2009 12:58:30.421
 emuui_map_dpStringValueColors.map	CSC_UI_mapping	"OK;FwStateOKPhysics", "ALL OK;FwStateOKPhysics"	0x101	25.09.2009 12:58:30.453
-emuui_map_sysNameToSide.map	CSC_UI_mapping	"cms_csc_dcs_03;M", "cms_csc_dcs_04;M", "cms_csc_dcs_05;P", "cms_csc_dcs_06;P"	0x101	25.09.2009 12:58:30.484
-emuui_map_dcsProjects.map	CSC_UI_mapping	"164;Supervisor", "153;Middle Layer for ME -2,-3,-4", "154;Middle Layer for -1", "155;Middle Layer for ME +1", "156;Middle Layer for ME +2,+3,+4", "165;ME1/1 (Dubna) High Voltage", "163;Low Voltage"	0x101	25.09.2009 12:58:30.515
+emuui_map_sysNameToSide.map	CSC_UI_mapping	"cms_csc_dcs_02;M", "cms_csc_dcs_03;M", "cms_csc_dcs_04;M", "cms_csc_dcs_05;P", "cms_csc_dcs_06;P", "cms_csc_dcs_07;P"	0x101	30.10.2009 11:36:48.031
+emuui_map_dcsProjectDescriptions.map	CSC_UI_mapping	"164;Supervisor", "153;Middle Layer for ME -2,-3,-4", "154;Middle Layer for -1", "155;Middle Layer for ME +1", "156;Middle Layer for ME +2,+3,+4", "165;ME1/1 (Dubna) High Voltage", "163;Low Voltage"	0x101	02.11.2009 18:52:48.718
+emuui_map_dcsProjectSystemNames.map	CSC_UI_mapping	"164;cms_csc_dcs_09", "153;cms_csc_dcs_03", "154;cms_csc_dcs_04", "155;cms_csc_dcs_05", "156;cms_csc_dcs_06", "165;cms_csc_dcs_01", "163;csc_dcs_lv1"	0x101	02.11.2009 18:53:51.515

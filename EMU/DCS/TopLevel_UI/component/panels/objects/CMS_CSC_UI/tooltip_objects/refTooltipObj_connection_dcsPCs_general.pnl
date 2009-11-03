@@ -6,7 +6,7 @@ PANEL,-1 -1 373 314 N "_3DFace" 0
 {
   // get the names and system numbers of required systems
   dyn_string ex;
-  dyn_string projects = emuui_getMappingAsCSV(\"dcsProjects\", ex);
+  dyn_string projects = emuui_getMappingAsCSV(\"dcsProjectDescriptions\", ex);
   if (emu_checkException(ex)) { return; }
   for (int i=1; i <= dynlen(projects); i++) {
     dyn_string split = strsplit(projects[i], \";\");
@@ -83,13 +83,13 @@ LANG:1 0
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0  8 8 312 152
-EE 1 0 1 2 0 "computer" 16 1 0 "s" 1
+EE 1 0 1 2 0 "computer" 18 1 0 "s" 1
 LANG:1 8 Computer
 E
 1
 LANG:1 0 
 
-170 "status" 11 1 0 "s" 1
+170 "status" 13 1 0 "s" 1
 LANG:1 6 Status
 E
 1
