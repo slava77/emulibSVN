@@ -1,0 +1,10 @@
+<component>
+<name>CMS_CSC_majority</name>
+<version>1.0.0</version>
+<date>2009/11/06</date>
+<required>majority_treeCache=1.2.10</required>
+<init>./scripts/CMS_CSC_majority/CMS_CSC_majority.init</init>
+<file>./scripts/CMS_CSC_majority/majority.ctl</file>
+<file>./scripts/libs/CMS_CSC_majority/majorityUser.ctl</file>
+<file>./CMS_CSC_majority.xml</file>
+</component>
