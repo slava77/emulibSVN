@@ -32,7 +32,7 @@ dyn_int majorityUser_stateCounts(string device, dyn_anytype values, // informati
 
   DebugTN("maj device: " + device);
   DebugTN("maj all: " + all);
-  return 18;
+  return makeDynInt(18, 0, 0);
 }
 
 // translates fsm device dp to the dp, where the configured dpes are located.
