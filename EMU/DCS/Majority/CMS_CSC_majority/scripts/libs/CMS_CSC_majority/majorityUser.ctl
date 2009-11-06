@@ -30,8 +30,8 @@ dyn_int majorityUser_stateCounts(string device, dyn_anytype values, // informati
      
   // values are returned in the same order you defined in the majority_addDevice function. 
 
-  emu_info("device: " + device);
-  emu_info("all: " + all);
+  DebugTN("maj device: " + device);
+  DebugTN("maj all: " + all);
   return 18;
 }
 
