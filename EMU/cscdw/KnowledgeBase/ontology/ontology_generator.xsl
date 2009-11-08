@@ -651,4 +651,18 @@
     </xsl:for-each>
   </xsl:template>
 
+  <!-- Gas -->
+  <xsl:template match="templ:Gas">
+    <xsl:text>&LF;</xsl:text>
+    <xsl:comment>Gas</xsl:comment>
+    <xsl:text>&LF;</xsl:text>
+    <xsl:variable name="SOURCE" select="@source"/>
+    <xsl:for-each select="document($SOURCE)/GasSystem/gasChannel">
+      <xsl:variable name="GAS_RACK_NUMBER" select="@rackNumber"/>
+      <Declaration><Individual URI="&csc;GasChannel{@number}"/></Declaration>
+      <ClassAssertion><Class URI="&csc;GasChannel"/><Individual URI="&csc;GasRack{@rackNumber}Channel{@number}"/></ClassAssertion>
+      
+    </xsl:for-each>
+  </xsl:template>
+
 </xsl:transform>

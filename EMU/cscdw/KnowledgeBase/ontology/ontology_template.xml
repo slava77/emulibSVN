@@ -37,6 +37,7 @@
     <templ:HV source="mappings/hvMapping.xml"/>
     <templ:HVSegments source="mappings/HVChannelToSegment.xml"/>
     <templ:LV source="mappings/lvMapping.xml"/>
+    <templ:Gas source="mappings/GasSystem.xml"/>
   </templ:individuals>
 
 
@@ -68,6 +69,7 @@
   <Declaration><Class URI="&csc;DAQ"/></Declaration>
   <Declaration><Class URI="&csc;HV"/></Declaration>
   <Declaration><Class URI="&csc;LV"/></Declaration>
+  <Declaration><Class URI="&csc;GasSystem"/></Declaration>
   <Declaration><Class URI="&csc;LocalDAQ"/></Declaration>
   <Declaration><Class URI="&csc;GlobalDAQ"/></Declaration>
 
@@ -100,6 +102,10 @@
 
   <Declaration><Class URI="&csc;Maraton"/></Declaration>
   <Declaration><Class URI="&csc;Rack"/></Declaration>
+
+  <Declaration><Class URI="&csc;GasRack"/></Declaration>
+  <Declaration><Class URI="&csc;GasChannel"/></Declaration>
+
 
 
 <!-- property declarations -->
@@ -134,7 +140,9 @@
   <Declaration><ObjectProperty URI="&csc;deliversLVTo"/></Declaration>
   <Declaration><ObjectProperty URI="&csc;getsLVFrom"/></Declaration>
 
-
+  <Declaration><ObjectProperty URI="&csc;gasSupplyPath"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;deliversGasTo"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;getsGasFrom"/></Declaration>
 
   <Declaration><DataProperty URI="&csc;hasInstance"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasName"/></Declaration>
@@ -153,6 +161,7 @@
   <SubClassOf><Class URI="&csc;DAQ"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
   <SubClassOf><Class URI="&csc;LV"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
   <SubClassOf><Class URI="&csc;HV"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;GasSystem"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
 
   <SubClassOf><Class URI="&csc;Local"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
   <SubClassOf><Class URI="&csc;Global"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
@@ -239,6 +248,10 @@
   <SubClassOf><Class URI="&csc;DDU"/><Class URI="&csc;GlobalDAQ"/></SubClassOf>
   <SubClassOf><Class URI="&csc;DCC"/><Class URI="&csc;GlobalDAQ"/></SubClassOf>
 
+  <!-- Gas -->
+  <SubClassOf><Class URI="&csc;GasRack"/><Class URI="&csc;GasSystem"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;GasChannel"/><Class URI="&csc;GasSystem"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;Chamber"/><Class URI="&csc;GasSystem"/></SubClassOf>
 
   <!-- LogicalComponent -->
   <SubClassOf><Class URI="&csc;TriggerSector"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
@@ -280,6 +293,8 @@
   <SubObjectPropertyOf><ObjectProperty URI="&csc;deliversLVTo"/><ObjectProperty URI="&csc;powerSupplyPath"/></SubObjectPropertyOf>
   <SubObjectPropertyOf><ObjectProperty URI="&csc;getsLVFrom"/><ObjectProperty URI="&csc;powerSupplyPath"/></SubObjectPropertyOf>
 
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;deliversGasTo"/><ObjectProperty URI="&csc;gasSupplyPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;getsGasFrom"/><ObjectProperty URI="&csc;gasSupplyPath"/></SubObjectPropertyOf>
 
   <!-- InverseObjectProperties -->
   <InverseObjectProperties><ObjectProperty URI="&csc;sendsDataTo"/><ObjectProperty URI="&csc;receivesDataFrom"/></InverseObjectProperties>
@@ -291,6 +306,7 @@
   <InverseObjectProperties><ObjectProperty URI="&csc;monitors"/><ObjectProperty URI="&csc;isMonitoredBy"/></InverseObjectProperties>
   <InverseObjectProperties><ObjectProperty URI="&csc;deliversHVTo"/><ObjectProperty URI="&csc;getsHVFrom"/></InverseObjectProperties>
   <InverseObjectProperties><ObjectProperty URI="&csc;deliversLVTo"/><ObjectProperty URI="&csc;getsLVFrom"/></InverseObjectProperties>
+  <InverseObjectProperties><ObjectProperty URI="&csc;deliversGasTo"/><ObjectProperty URI="&csc;getsGasFrom"/></InverseObjectProperties>
 
 
   <!-- TransitiveObjectProperty -->
@@ -308,6 +324,8 @@
   <TransitiveObjectProperty><ObjectProperty URI="&csc;getsHVFrom"/></TransitiveObjectProperty>
   <TransitiveObjectProperty><ObjectProperty URI="&csc;deliversLVTo"/></TransitiveObjectProperty>
   <TransitiveObjectProperty><ObjectProperty URI="&csc;getsLVFrom"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;deliversGasTo"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;getsGasFrom"/></TransitiveObjectProperty>
 
 
   <!-- DataPropertyRange -->
