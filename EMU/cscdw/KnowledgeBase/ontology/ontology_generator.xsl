@@ -657,11 +657,38 @@
     <xsl:comment>Gas</xsl:comment>
     <xsl:text>&LF;</xsl:text>
     <xsl:variable name="SOURCE" select="@source"/>
-    <xsl:for-each select="document($SOURCE)/GasSystem/gasChannel">
+    <!-- gas mixer input lines -->
+    <Declaration><Individual URI="&csc;GasMixerInputLine1"/></Declaration>
+    <Declaration><Individual URI="&csc;GasMixerInputLine2"/></Declaration>
+    <Declaration><Individual URI="&csc;GasMixerInputLine3"/></Declaration>
+    <ClassAssertion><Class URI="&csc;GasMixerInputLine"/><Individual URI="&csc;GasMixerInputLine1"/></ClassAssertion>
+    <ClassAssertion><Class URI="&csc;GasMixerInputLine"/><Individual URI="&csc;GasMixerInputLine2"/></ClassAssertion>
+    <ClassAssertion><Class URI="&csc;GasMixerInputLine"/><Individual URI="&csc;GasMixerInputLine3"/></ClassAssertion>
+    <DataPropertyAssertion><DataProperty URI="&csc;hasGas"/><Individual URI="&csc;GasMixerInputLine1"/><Constant datatypeURI="&xsd;string">CO2</Constant></DataPropertyAssertion>
+    <DataPropertyAssertion><DataProperty URI="&csc;hasGas"/><Individual URI="&csc;GasMixerInputLine2"/><Constant datatypeURI="&xsd;string">Ar</Constant></DataPropertyAssertion>
+    <DataPropertyAssertion><DataProperty URI="&csc;hasGas"/><Individual URI="&csc;GasMixerInputLine3"/><Constant datatypeURI="&xsd;string">CF4</Constant></DataPropertyAssertion>
+    <ObjectPropertyAssertion><ObjectProperty URI="&csc;deliversGasTo"/><Individual URI="&csc;GasMixerInputLine1"/><Individual URI="&csc;GasMixer"/></ObjectPropertyAssertion>
+    <ObjectPropertyAssertion><ObjectProperty URI="&csc;deliversGasTo"/><Individual URI="&csc;GasMixerInputLine2"/><Individual URI="&csc;GasMixer"/></ObjectPropertyAssertion>
+    <ObjectPropertyAssertion><ObjectProperty URI="&csc;deliversGasTo"/><Individual URI="&csc;GasMixerInputLine3"/><Individual URI="&csc;GasMixer"/></ObjectPropertyAssertion>
+    <!-- gas mixer -->
+    <Declaration><Individual URI="&csc;GasMixer"/></Declaration>
+    <ClassAssertion><Class URI="&csc;GasDevice"/><Individual URI="&csc;GasMixer"/></ClassAssertion>
+    <xsl:for-each select="document($SOURCE)/gasSystem/gasChannel">
+      <!-- gas racks -->
       <xsl:variable name="GAS_RACK_NUMBER" select="@rackNumber"/>
-      <Declaration><Individual URI="&csc;GasChannel{@number}"/></Declaration>
-      <ClassAssertion><Class URI="&csc;GasChannel"/><Individual URI="&csc;GasRack{@rackNumber}Channel{@number}"/></ClassAssertion>
-      
+      <xsl:if test="not(preceding-sibling::gasChannel[@rackNumber=$GAS_RACK_NUMBER])">
+	<Declaration><Individual URI="&csc;GasRack{$GAS_RACK_NUMBER}"/></Declaration>
+	<ClassAssertion><Class URI="&csc;GasRack"/><Individual URI="&csc;GasRack{$GAS_RACK_NUMBER}"/></ClassAssertion>
+	<ObjectPropertyAssertion><ObjectProperty URI="&csc;deliversGasTo"/><Individual URI="&csc;GasMixer"/><Individual URI="&csc;GasRack{$GAS_RACK_NUMBER}"/></ObjectPropertyAssertion>
+      </xsl:if>
+      <!-- gas channels -->
+      <Declaration><Individual URI="&csc;GasRack{$GAS_RACK_NUMBER}Channel{@number}"/></Declaration>
+      <ClassAssertion><Class URI="&csc;GasChannel"/><Individual URI="&csc;GasRack{$GAS_RACK_NUMBER}Channel{@number}"/></ClassAssertion>
+      <ObjectPropertyAssertion><ObjectProperty URI="&csc;deliversGasTo"/><Individual URI="&csc;GasRack{$GAS_RACK_NUMBER}"/><Individual URI="&csc;GasRack{$GAS_RACK_NUMBER}Channel{@number}"/></ObjectPropertyAssertion>
+      <ObjectPropertyAssertion><ObjectProperty URI="&csc;deliversGasTo"/><Individual URI="&csc;GasRack{$GAS_RACK_NUMBER}Channel{@number}"/><Individual URI="&csc;{chamber[1]/@name}"/></ObjectPropertyAssertion>
+      <xsl:for-each select="chamber[position()!=last()]">
+	<ObjectPropertyAssertion><ObjectProperty URI="&csc;deliversGasTo"/><Individual URI="&csc;{@name}"/><Individual URI="&csc;{following-sibling::chamber/@name}"/></ObjectPropertyAssertion>
+      </xsl:for-each>
     </xsl:for-each>
   </xsl:template>
 

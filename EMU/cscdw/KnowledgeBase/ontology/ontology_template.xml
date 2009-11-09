@@ -103,6 +103,7 @@
   <Declaration><Class URI="&csc;Maraton"/></Declaration>
   <Declaration><Class URI="&csc;Rack"/></Declaration>
 
+  <Declaration><Class URI="&csc;GasMixerInputLine"/></Declaration>
   <Declaration><Class URI="&csc;GasRack"/></Declaration>
   <Declaration><Class URI="&csc;GasChannel"/></Declaration>
 
@@ -183,6 +184,10 @@
     <Class URI="&csc;TriggerDevice"/>
     <ObjectIntersectionOf><Class URI="&csc;Trigger"/><Class URI="&csc;Device"/></ObjectIntersectionOf>
   </EquivalentClasses>
+  <EquivalentClasses>
+    <Class URI="&csc;GasDevice"/>
+    <ObjectIntersectionOf><Class URI="&csc;GasSystem"/><Class URI="&csc;Device"/></ObjectIntersectionOf>
+  </EquivalentClasses>
 
 
   <SubClassOf><Class URI="&csc;RUI"/><Class URI="&csc;Software"/></SubClassOf>
@@ -249,9 +254,10 @@
   <SubClassOf><Class URI="&csc;DCC"/><Class URI="&csc;GlobalDAQ"/></SubClassOf>
 
   <!-- Gas -->
-  <SubClassOf><Class URI="&csc;GasRack"/><Class URI="&csc;GasSystem"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;GasChannel"/><Class URI="&csc;GasSystem"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;Chamber"/><Class URI="&csc;GasSystem"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;GasMixerInputLine"/><Class URI="&csc;GasDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;GasRack"/><Class URI="&csc;GasDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;GasChannel"/><Class URI="&csc;GasDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;Chamber"/><Class URI="&csc;GasDevice"/></SubClassOf>
 
   <!-- LogicalComponent -->
   <SubClassOf><Class URI="&csc;TriggerSector"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
