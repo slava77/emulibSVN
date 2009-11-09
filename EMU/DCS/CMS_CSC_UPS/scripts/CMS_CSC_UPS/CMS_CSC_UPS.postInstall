@@ -31,4 +31,6 @@ main()
    
    fwDIP_subscribeStructure(item,dpes,tags,dipConfigDp,exInfo,overwrite);
    
+   // add the auto-action script
+   fwInstallation_appendManager(TRUE, "Please give a friendly name", "PVSS00ctrl", "always", 30, 2, 2, "CMS_CSC_UPS/emuUpsAutoAction.ctl");   
 }
