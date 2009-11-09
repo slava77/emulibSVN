@@ -154,6 +154,7 @@
   <Declaration><DataProperty URI="&csc;hasPositionInRack"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasELMBId"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasDCSCrateNumber"/></Declaration>
+  <Declaration><DataProperty URI="&csc;hasGas"/></Declaration>
   
 
 
@@ -339,6 +340,7 @@
   <DataPropertyRange><DataProperty URI="&csc;hasName"/><Datatype URI="&xsd;string"/></DataPropertyRange>
   <DataPropertyRange><DataProperty URI="&csc;isOn"/><Datatype URI="&xsd;boolean"/></DataPropertyRange>
   <DataPropertyRange><DataProperty URI="&csc;hasFMM"/><Datatype URI="&xsd;integer"/></DataPropertyRange>
+  <DataPropertyRange><DataProperty URI="&csc;hasGas"/><Datatype URI="&xsd;string"/></DataPropertyRange>
 
 
   <!-- FunctionalDataProperty -->
