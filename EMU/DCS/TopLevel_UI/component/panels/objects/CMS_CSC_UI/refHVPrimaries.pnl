@@ -297,7 +297,7 @@ E E 0 1 1 2 1 E U  1 E 0 31 61 61
 2 18
 "PRIMITIVE_TEXT5"
 ""
-1 8 38 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 6 38 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 20 0 0 0 0 0
 E E E
@@ -307,8 +307,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 8 38 56 54
-0 2 2 "0s" 0 0 0 192 0 0  8 38 1
+E E 0 1 1 2 1 E U  1 E 6 38 54 54
+0 2 2 "0s" 0 0 0 192 0 0  6 38 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -316,7 +316,7 @@ LANG:1 9 Station 1
 2 19
 "PRIMITIVE_TEXT6"
 ""
-1 8 68 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 6 68 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 22 0 0 0 0 0
 E E E
@@ -326,16 +326,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 8 68 56 84
-0 2 2 "0s" 0 0 0 192 0 0  8 68 1
+E E 0 1 1 2 1 E U  1 E 6 68 51 84
+0 2 2 "0s" 0 0 0 192 0 0  6 68 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 9 Station 2
+LANG:1 9 St.2,3 -X
 2 20
 "PRIMITIVE_TEXT7"
 ""
-1 8 98 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 6 98 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 24 0 0 0 0 0
 E E E
@@ -345,16 +345,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 8 98 56 114
-0 2 2 "0s" 0 0 0 192 0 0  8 98 1
+E E 0 1 1 2 1 E U  1 E 6 98 54 114
+0 2 2 "0s" 0 0 0 192 0 0  6 98 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 9 Station 3
+LANG:1 9 St.2,3 +X
 2 21
 "PRIMITIVE_TEXT8"
 ""
-1 8 128 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 6 128 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 26 0 0 0 0 0
 E E E
@@ -364,8 +364,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 8 128 56 144
-0 2 2 "0s" 0 0 0 192 0 0  8 128 1
+E E 0 1 1 2 1 E U  1 E 6 128 54 144
+0 2 2 "0s" 0 0 0 192 0 0  6 128 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1

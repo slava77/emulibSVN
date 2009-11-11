@@ -12,27 +12,26 @@ PANEL,-1 -1 557 460 N "_3DFace" 1
 void drawDDUs() {
   dyn_string ex;
 
-  int width = getVerticalLinePosX(\"M1\") - getVerticalLinePosX(\"M2\") + 1;
+  int width = getVerticalLinePosX(3) - getVerticalLinePosX(4) + 1;
   int topY = getHorizontalLinePosY(0);
   
   for (int i=1; i <= 36; i++) {
-    string side = \"M\";
-    int crateNum = 1;
+    string side = \"P\";
+    int crateNum = ceil((float)i / 9);
     int dduNum = i;
     string id;
     sprintf(id, \"%02d\", i); // two digit ID (string)
     if (dduNum > 18) { 
-      side = \"P\";
+      side = \"M\";
       dduNum -= 18;
     }
     
     if (dduNum > 9) {
-      crateNum = 2;
       dduNum -= 9;
     }
         
-    // draw the Maratons
-    int x = getVerticalLinePosX(side + crateNum);
+    // draw the DDUs
+    int x = getVerticalLinePosX(crateNum);
     int y = topY + ((EMUUI_DDU_HEIGHT - 1) * (dduNum - 1));
     
     string deviceParamsDollar = \"$deviceParams:\" + \"side=\" + side +
@@ -57,9 +56,9 @@ void drawDDUs() {
 }
 
 // returns X coordinate of the requested vertical line position
-int getVerticalLinePosX(string lineName) {
+int getVerticalLinePosX(int crateNum) {
   int posX, posY;
-  getValue(\"lineVertical\" + lineName, \"position\", posX, posY);
+  getValue(\"lineVertical_crate\" + crateNum, \"position\", posX, posY);
   return posX;
 }
 
@@ -186,7 +185,7 @@ LANG:1 0
 "dashclr"N "_Transparent"
 E E 0 1 1 2 1 E  0 29 164 29
 4 17
-"lineVerticalP1"
+"lineVertical_crate1"
 ""
 1 82 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
  E E
@@ -200,7 +199,7 @@ LANG:1 0
 "dashclr"N "_Transparent"
 E E 0 1 1 2 1 E  82 30 82 50
 4 1
-"lineVerticalM1"
+"lineVertical_crate3"
 ""
 1 41 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
  E E
@@ -214,7 +213,7 @@ LANG:1 0
 "dashclr"N "_Transparent"
 E E 0 1 1 2 1 E  41 30 41 50
 4 6
-"lineVerticalM2"
+"lineVertical_crate4"
 ""
 1 0 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
  E E
@@ -245,9 +244,9 @@ E E 0 1 1 2 1 E U  1 E 5 7 38 23
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 7 -Z cr.2
+LANG:1 6 #4(-Z)
 4 36
-"lineVerticalP2"
+"lineVertical_crate2"
 ""
 1 123 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
  E E
@@ -278,11 +277,11 @@ E E 0 1 1 2 1 E U  1 E 45 7 78 23
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 7 -Z cr.1
+LANG:1 6 #3(-Z)
 2 42
 "PRIMITIVE_TEXT4"
 ""
-1 84 7 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 85 7 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 65 0 0 0 0 0
 E E E
@@ -292,12 +291,12 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 84 7 120 23
-0 2 2 "0s" 0 0 0 192 0 0  84 7 1
+E E 0 1 1 2 1 E U  1 E 85 7 121 23
+0 2 2 "0s" 0 0 0 192 0 0  85 7 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 7 +Z cr.1
+LANG:1 6 #1(+Z)
 4 44
 "lineEnd"
 ""
@@ -315,7 +314,7 @@ E E 0 1 1 2 1 E  164 29 164 49
 2 45
 "PRIMITIVE_TEXT5"
 ""
-1 124 7 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 126 7 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 71 0 0 0 0 0
 E E E
@@ -325,12 +324,12 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 124 7 160 23
-0 2 2 "0s" 0 0 0 192 0 0  124 7 1
+E E 0 1 1 2 1 E U  1 E 126 7 162 23
+0 2 2 "0s" 0 0 0 192 0 0  126 7 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 7 +Z cr.2
+LANG:1 6 #2(+Z)
 0
 LAYER, 1 
 1
