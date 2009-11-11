@@ -227,6 +227,11 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
       }
       // ---=== if this is a chamber - register to background checks ===---
       if ($deviceType == \"chamber\" || $deviceType == \"DDU\") {
+        string fsmNodeForReg = node;
+        if ($deviceType == \"DDU\") {
+          strreplace(fsmNodeForReg, \"_FED\", \"\");
+          strreplace(fsmNodeForReg, \"Fed/\", \"\");
+        }
         emuuibc_registerChamberViewFsmNode($refName, node, deviceParams);
       }
       
@@ -829,7 +834,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 0 10 3 34
+E E 0 1 1 2 1 E U  1 E 0 10 6 35
 0 2 2 "0s" 0 0 0 192 0 0  0 10 1
 1
 LANG:1 33 MS Shell Dlg,-1,19,5,75,0,0,0,0,0
@@ -899,7 +904,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 4 3 16 15
+E E 0 1 1 2 1 E U  1 E 1 3 19 19
 0 2 2 "0s" 0 0 0 193 0 0  10 3 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
