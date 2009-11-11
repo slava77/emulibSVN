@@ -51,7 +51,10 @@ void emucdb_getConnectionDetails(string &connectString, string &dbType, string &
         fwException_raise(exceptionInfo,"ERROR","Could not get Configuration Tool setup  "+setupName,"");
         return;
     }
-    
+    if (dbConnectionName=="(none)") {
+        emu_addError("No default database connection is set up for the configuration DB",exceptionInfo);
+        return;
+    }
     string DPName = fwConfigurationDB_ConnectionNamePrefix + dbConnectionName;
     if (!dpExists(DPName)) {
 	fwException_raise(exceptionInfo,"ERROR","DB Connection: "+dbConnectionName+" does not exist","");
