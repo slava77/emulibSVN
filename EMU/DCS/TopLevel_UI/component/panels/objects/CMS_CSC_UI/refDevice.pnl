@@ -232,7 +232,7 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
           strreplace(fsmNodeForReg, \"_FED\", \"\");
           strreplace(fsmNodeForReg, \"Fed/\", \"\");
         }
-        emuuibc_registerChamberViewFsmNode($refName, node, deviceParams);
+        emuuibc_registerChamberViewFsmNode($refName, fsmNodeForReg, deviceParams);
       }
       
       // ---=== connect state ===---
