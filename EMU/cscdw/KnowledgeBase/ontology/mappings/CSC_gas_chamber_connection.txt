@@ -1,0 +1,160 @@
+'''Configuration of chamber gas connection'''
+
+'''Station''' '''Chambers''' '''Position''' '''Pipeline''' '''Rack''' '''inner chamber''' '''Position''' '''Pipeline''' '''Rack''' 
+
+-4 3 Supply ME-4/1/17 -4/01 Sup 17A A#01 ME-4/1/18 Return ME-4/1/01 -4/01 Ret 01A B#01         65
+-4 3 Supply ME-4/1/02 -4/04 Sup 02A A#04 ME-4/1/03 Return ME-4/1/04 -4/04 Ret 04A B#04 	       65
+-4 3 Supply ME-4/1/05 -4/07 Sup 05A A#07 ME-4/1/06 Return ME-4/1/07 -4/07 Ret 07A B#07 	       65
+-4 3 Supply ME-4/1/08 -4/10 Sup 08A A#10 ME-4/1/09 Return ME-4/1/10 -4/10 Ret 10A B#10 	       65
+-4 3 Supply ME-4/1/11 -4/13 Sup 11A A#13 ME-4/1/12 Return ME-4/1/13 -4/13 Ret 13A B#13 	       65
+-4 3 Supply ME-4/1/14 -4/16 Sup 14A A#16 ME-4/1/15 Return ME-4/1/16 -4/16 Ret 16A B#16 	       65
+											         
+-3 3 Supply ME-3/2/33 -3/02 Sup 17b C#02 ME-3/2/34 Return ME-3/2/35 -3/02 Ret 18a D#02 	       64
+-3 3 Supply ME-3/2/36 -3/03 Sup 18b C#03 ME-3/2/01 Return ME-3/2/02 -3/03 Ret 01b D#03 	       64
+-3 3 Supply ME-3/2/03 -3/05 Sup 02b C#05 ME-3/2/04 Return ME-3/2/05 -3/05 Ret 03a D#05 	       64
+-3 3 Supply ME-3/2/06 -3/06 Sup 03b C#06 ME-3/2/07 Return ME-3/2/08 -3/06 Ret 04b D#06 	       64
+-3 3 Supply ME-3/2/09 -3/08 Sup 05b C#08 ME-3/2/10 Return ME-3/2/11 -3/08 Ret 06a D#08 	       64
+-3 3 Supply ME-3/2/12 -3/09 Sup 06b C#09 ME-3/2/13 Return ME-3/2/14 -3/09 Ret 07b D#09 	       64
+-3 3 Supply ME-3/2/15 -3/11 Sup 08b C#11 ME-3/2/16 Return ME-3/2/17 -3/11 Ret 09a D#11 	       64
+-3 3 Supply ME-3/2/18 -3/12 Sup 09b C#12 ME-3/2/19 Return ME-3/2/20 -3/12 Ret 10b D#12 	       64
+-3 3 Supply ME-3/2/21 -3/14 Sup 11b C#14 ME-3/2/22 Return ME-3/2/23 -3/14 Ret 12a D#14 	       64
+-3 3 Supply ME-3/2/24 -3/15 Sup 12b C#15 ME-3/2/25 Return ME-3/2/26 -3/15 Ret 13b D#15 	       64
+-3 3 Supply ME-3/2/27 -3/17 Sup 14b C#17 ME-3/2/28 Return ME-3/2/29 -3/17 Ret 15a D#17 	       64
+-3 3 Supply ME-3/2/30 -3/18 Sup 15b C#18 ME-3/2/31 Return ME-3/2/32 -3/18 Ret 16b D#18 	       64
+											         
+-3 3 Supply ME-3/1/17 -3/01 Sup 17A C#01 ME-3/1/18 Return ME-3/1/01 -3/01 Ret 01A D#01 	       64
+-3 3 Supply ME-3/1/02 -3/04 Sup 02A C#04 ME-3/1/03 Return ME-3/1/04 -3/04 Ret 04A D#04 	       64
+-3 3 Supply ME-3/1/05 -3/07 Sup 05A C#07 ME-3/1/06 Return ME-3/1/07 -3/07 Ret 07A D#07 	       64
+-3 3 Supply ME-3/1/08 -3/10 Sup 08A C#10 ME-3/1/09 Return ME-3/1/10 -3/10 Ret 10A D#10 	       64
+-3 3 Supply ME-3/1/11 -3/13 Sup 11A C#13 ME-3/1/12 Return ME-3/1/13 -3/13 Ret 13A D#13 	       64
+-3 3 Supply ME-3/1/14 -3/16 Sup 14A C#16 ME-3/1/15 Return ME-3/1/16 -3/16 Ret 16A D#16 	       64
+											         
+-2 3 Supply ME-2/2/33 -2/02 Sup 17b A#02 ME-2/2/34 Return ME-2/2/35 -2/02 Ret 18a B#02 	       63
+-2 3 Supply ME-2/2/36 -2/03 Sup 18b A#03 ME-2/2/01 Return ME-2/2/02 -2/03 Ret 01b B#03 	       63
+-2 3 Supply ME-2/2/03 -2/05 Sup 02b A#05 ME-2/2/04 Return ME-2/2/05 -2/05 Ret 03a B#05 	       63
+-2 3 Supply ME-2/2/06 -2/06 Sup 03b A#06 ME-2/2/07 Return ME-2/2/08 -2/06 Ret 04b B#06 	       63
+-2 3 Supply ME-2/2/09 -2/08 Sup 05b A#08 ME-2/2/10 Return ME-2/2/11 -2/08 Ret 06a B#08 	       63
+-2 3 Supply ME-2/2/12 -2/09 Sup 06b A#09 ME-2/2/13 Return ME-2/2/14 -2/09 Ret 07b B#09 	       63
+-2 3 Supply ME-2/2/15 -2/11 Sup 08b A#11 ME-2/2/16 Return ME-2/2/17 -2/11 Ret 09a B#11 	       63
+-2 3 Supply ME-2/2/18 -2/12 Sup 09b A#12 ME-2/2/19 Return ME-2/2/20 -2/12 Ret 10b B#12 	       63
+-2 3 Supply ME-2/2/21 -2/14 Sup 11b A#14 ME-2/2/22 Return ME-2/2/23 -2/14 Ret 12a B#14 	       63
+-2 3 Supply ME-2/2/24 -2/15 Sup 12b A#15 ME-2/2/25 Return ME-2/2/26 -2/15 Ret 13b B#15 	       63
+-2 3 Supply ME-2/2/27 -2/17 Sup 14b A#17 ME-2/2/28 Return ME-2/2/29 -2/17 Ret 15a B#17 	       63
+-2 3 Supply ME-2/2/30 -2/18 Sup 15b A#18 ME-2/2/31 Return ME-2/2/32 -2/18 Ret 16b B#18 	       63
+											         
+-2 3 Supply ME-2/1/17 -2/01 Sup 17A A#01 ME-2/1/18 Return ME-2/1/01 -2/01 Ret 01A B#01 	       63
+-2 3 Supply ME-2/1/02 -2/04 Sup 02A A#04 ME-2/1/03 Return ME-2/1/04 -2/04 Ret 04A B#04 	       63
+-2 3 Supply ME-2/1/05 -2/07 Sup 05A A#07 ME-2/1/06 Return ME-2/1/07 -2/07 Ret 07A B#07 	       63
+-2 3 Supply ME-2/1/08 -2/10 Sup 08A A#10 ME-2/1/09 Return ME-2/1/10 -2/10 Ret 10A B#10 	       63
+-2 3 Supply ME-2/1/11 -2/13 Sup 11A A#13 ME-2/1/12 Return ME-2/1/13 -2/13 Ret 13A B#13 	       63
+-2 3 Supply ME-2/1/14 -2/16 Sup 14A A#16 ME-2/1/15 Return ME-2/1/16 -2/16 Ret 16A B#16 	       63
+											         
+-1 4 Supply ME-1/3/35 -1/02 Sup 18c A#02 ME-1/3/36-01 Return ME-1/3/02 -1/02 Ret 01c B#02      62
+-1 4 Supply ME-1/3/03 -1/04 Sup 02c A#04 ME-1/3/04-05 Return ME-1/3/06 -1/04 Ret 03c B#04      62
+-1 4 Supply ME-1/3/07 -1/06 Sup 04c A#06 ME-1/3/08-09 Return ME-1/3/10 -1/06 Ret 05c B#06      62
+-1 4 Supply ME-1/3/11 -1/08 Sup 06c A#08 ME-1/3/12-13 Return ME-1/3/14 -1/08 Ret 07c B#08      62
+-1 4 Supply ME-1/3/15 -1/10 Sup 08c A#10 ME-1/3/16-17 Return ME-1/3/18 -1/10 Ret 09c B#10      62
+-1 4 Supply ME-1/3/19 -1/12 Sup 10c A#12 ME-1/3/20-21 Return ME-1/3/22 -1/12 Ret 11c B#12      62
+-1 4 Supply ME-1/3/23 -1/14 sub 12c A#14 ME-1/3/24-25 Return ME-1/3/26 -1/14 Ret 13c B#14      62
+-1 4 Supply ME-1/3/27 -1/16 Sup 14c A#16 ME-1/3/28-29 Return ME-1/3/30 -1/16 Ret 15c B#16      62
+-1 4 Supply ME-1/3/31 -1/18 Sup 16c A#18 ME-1/3/32-33 Return ME-1/3/34 -1/18 Ret 17c B#18      62
+
+-1 4 Supply ME-1/2/35 -1/01 Sup 18b A#01 ME-1/2/36-01 Return ME-1/2/02 -1/01 Ret 01b B#01      62
+-1 4 Supply ME-1/2/03 -1/03 Sup 02b A#03 ME-1/2/04-05 Return ME-1/2/06 -1/03 Ret 03b B#03      62
+-1 4 Supply ME-1/2/07 -1/05 Sup 04b A#05 ME-1/2/08-09 Return ME-1/2/10 -1/05 Ret 05b B#05      62
+-1 4 Supply ME-1/2/11 -1/07 Sup 06b A#07 ME-1/2/12-13 Return ME-1/2/14 -1/07 Ret 07b B#07      62
+-1 4 Supply ME-1/2/15 -1/09 Sup 08b A#09 ME-1/2/16-17 Return ME-1/2/18 -1/09 Ret 09b B#09      62
+-1 4 Supply ME-1/2/19 -1/11 Sup 10b A#11 ME-1/2/20-21 Return ME-1/2/22 -1/11 Ret 11b B#11      62
+-1 4 Supply ME-1/2/23 -1/13 sub 12b A#13 ME-1/2/24-25 Return ME-1/2/26 -1/13 Ret 13b B#13      62
+-1 4 Supply ME-1/2/27 -1/15 Sup 14b A#15 ME-1/2/28-29 Return ME-1/2/30 -1/15 Ret 15b B#15      62
+-1 4 Supply ME-1/2/31 -1/17 Sup 16b A#17 ME-1/2/32-33 Return ME-1/2/34 -1/17 Ret 17b B#17      62
+
+-1 4 Supply ME-1/1/01 -1/19 Sup 18a C#01 ME-1/1/36-02 Return ME-1/1/03 -1/19 Ret 01a D#01      61
+-1 4 Supply ME-1/1/05 -1/20 Sup 02a C#02 ME-1/1/04-06 Return ME-1/1/07 -1/20 Ret 03a D#02      61
+-1 4 Supply ME-1/1/09 -1/21 Sup 04a C#03 ME-1/1/08-10 Return ME-1/1/11 -1/21 Ret 05a D#03      61
+-1 4 Supply ME-1/1/13 -1/22 Sup 06a C#04 ME-1/1/12-14 Return ME-1/1/15 -1/22 Ret 07a D#04      61
+-1 4 Supply ME-1/1/17 -1/23 Sup 08a C#05 ME-1/1/16-18 Return ME-1/1/19 -1/23 Ret 09a D#05      61
+-1 4 Supply ME-1/1/21 -1/24 Sup 10a C#06 ME-1/1/20-22 Return ME-1/1/23 -1/24 Ret 11a D#06      61
+-1 4 Supply ME-1/1/25 -1/25 Sup 12a C#07 ME-1/1/24-26 Return ME-1/1/27 -1/25 Ret 13a D#07      61
+-1 4 Supply ME-1/1/29 -1/26 Sup 14a C#08 ME-1/1/28-30 Return ME-1/1/31 -1/26 Ret 15a D#08      61
+-1 4 Supply ME-1/1/33 -1/27 Sup 16a C#09 ME-1/1/32-34 Return ME-1/1/35 -1/27 Ret 17a D#09      61
+
++4 3 Supply ME+4/2/09 +4/08 Sup 05b A#08 ME+4/2/10 Return ME+4/2/11 +4/08 Ret 06a B#08 	       70
++4 3 Supply ME+4/2/12 +4/09 Sup 06b A#09 _         Return ME+4/2/13 +4/09 Ret 07b B#09 	       70
+
++4 3 Supply ME+4/1/17 +4/01 Sup 17A A#01 ME+4/1/18 Return ME+4/1/01 +4/01 Ret 01A B#01         70
++4 3 Supply ME+4/1/02 +4/04 Sup 02A A#04 ME+4/1/03 Return ME+4/1/04 +4/04 Ret 04A B#04 	       70
++4 3 Supply ME+4/1/05 +4/07 Sup 05A A#07 ME+4/1/06 Return ME+4/1/07 +4/07 Ret 07A B#07 	       70
++4 3 Supply ME+4/1/08 +4/10 Sup 08A A#10 ME+4/1/09 Return ME+4/1/10 +4/10 Ret 10A B#10 	       70
++4 3 Supply ME+4/1/11 +4/13 Sup 11A A#13 ME+4/1/12 Return ME+4/1/13 +4/13 Ret 13A B#13 	       70
++4 3 Supply ME+4/1/14 +4/16 Sup 14A A#16 ME+4/1/15 Return ME+4/1/16 +4/16 Ret 16A B#16 	       70
+											         
++3 3 Supply ME+3/2/33 +3/02 Sup 17b C#02 ME+3/2/34 Return ME+3/2/35 +3/02 Ret 18a D#02 	       69
++3 3 Supply ME+3/2/36 +3/03 Sup 18b C#03 ME+3/2/01 Return ME+3/2/02 +3/03 Ret 01b D#03 	       69
++3 3 Supply ME+3/2/03 +3/05 Sup 02b C#05 ME+3/2/04 Return ME+3/2/05 +3/05 Ret 03a D#05 	       69
++3 3 Supply ME+3/2/06 +3/06 Sup 03b C#06 ME+3/2/07 Return ME+3/2/08 +3/06 Ret 04b D#06 	       69
++3 3 Supply ME+3/2/09 +3/08 Sup 05b C#08 ME+3/2/10 Return ME+3/2/11 +3/08 Ret 06a D#08 	       69
++3 3 Supply ME+3/2/12 +3/09 Sup 06b C#09 ME+3/2/13 Return ME+3/2/14 +3/09 Ret 07b D#09 	       69
++3 3 Supply ME+3/2/15 +3/11 Sup 08b C#11 ME+3/2/16 Return ME+3/2/17 +3/11 Ret 09a D#11 	       69
++3 3 Supply ME+3/2/18 +3/12 Sup 09b C#12 ME+3/2/19 Return ME+3/2/20 +3/12 Ret 10b D#12 	       69
++3 3 Supply ME+3/2/21 +3/14 Sup 11b C#14 ME+3/2/22 Return ME+3/2/23 +3/14 Ret 12a D#14 	       69
++3 3 Supply ME+3/2/24 +3/15 Sup 12b C#15 ME+3/2/25 Return ME+3/2/26 +3/15 Ret 13b D#15 	       69
++3 3 Supply ME+3/2/27 +3/17 Sup 14b C#17 ME+3/2/28 Return ME+3/2/29 +3/17 Ret 15a D#17 	       69
++3 3 Supply ME+3/2/30 +3/18 Sup 15b C#18 ME+3/2/31 Return ME+3/2/32 +3/18 Ret 16b D#18 	       69
+											         
++3 3 Supply ME+3/1/17 +3/01 Sup 17A C#01 ME+3/1/18 Return ME+3/1/01 +3/01 Ret 01A D#01 	       69
++3 3 Supply ME+3/1/02 +3/04 Sup 02A C#04 ME+3/1/03 Return ME+3/1/04 +3/04 Ret 04A D#04 	       69
++3 3 Supply ME+3/1/05 +3/07 Sup 05A C#07 ME+3/1/06 Return ME+3/1/07 +3/07 Ret 07A D#07 	       69
++3 3 Supply ME+3/1/08 +3/10 Sup 08A C#10 ME+3/1/09 Return ME+3/1/10 +3/10 Ret 10A D#10 	       69
++3 3 Supply ME+3/1/11 +3/13 Sup 11A C#13 ME+3/1/12 Return ME+3/1/13 +3/13 Ret 13A D#13 	       69
++3 3 Supply ME+3/1/14 +3/16 Sup 14A C#16 ME+3/1/15 Return ME+3/1/16 +3/16 Ret 16A D#16 	       69
+											         
++2 3 Supply ME+2/2/33 +2/02 Sup 17b A#02 ME+2/2/34 Return ME+2/2/35 +2/02 Ret 18a B#02 	       68
++2 3 Supply ME+2/2/36 +2/03 Sup 18b A#03 ME+2/2/01 Return ME+2/2/02 +2/03 Ret 01b B#03 	       68
++2 3 Supply ME+2/2/03 +2/05 Sup 02b A#05 ME+2/2/04 Return ME+2/2/05 +2/05 Ret 03a B#05 	       68
++2 3 Supply ME+2/2/06 +2/06 Sup 03b A#06 ME+2/2/07 Return ME+2/2/08 +2/06 Ret 04b B#06 	       68
++2 3 Supply ME+2/2/09 +2/08 Sup 05b A#08 ME+2/2/10 Return ME+2/2/11 +2/08 Ret 06a B#08 	       68
++2 3 Supply ME+2/2/12 +2/09 Sup 06b A#09 ME+2/2/13 Return ME+2/2/14 +2/09 Ret 07b B#09 	       68
++2 3 Supply ME+2/2/15 +2/11 Sup 08b A#11 ME+2/2/16 Return ME+2/2/17 +2/11 Ret 09a B#11 	       68
++2 3 Supply ME+2/2/18 +2/12 Sup 09b A#12 ME+2/2/19 Return ME+2/2/20 +2/12 Ret 10b B#12	       68
++2 3 Supply ME+2/2/21 +2/14 Sup 11b A#14 ME+2/2/22 Return ME+2/2/23 +2/14 Ret 12a B#14 	       68
++2 3 Supply ME+2/2/24 +2/15 Sup 12b A#15 ME+2/2/25 Return ME+2/2/26 +2/15 Ret 13b B#15 	       68
++2 3 Supply ME+2/2/27 +2/17 Sup 14b A#17 ME+2/2/28 Return ME+2/2/29 +2/17 Ret 15a B#17 	       68
++2 3 Supply ME+2/2/30 +2/18 Sup 15b A#18 ME+2/2/31 Return ME+2/2/32 +2/18 Ret 16b B#18 	       68
+											         
++2 3 Supply ME+2/1/17 +2/01 Sup 17A A#01 ME+2/1/18 Return ME+2/1/01 +2/01 Ret 01A B#01 	       68
++2 3 Supply ME+2/1/02 +2/04 Sup 02A A#04 ME+2/1/03 Return ME+2/1/04 +2/04 Ret 04A B#04 	       68
++2 3 Supply ME+2/1/05 +2/07 Sup 05A A#07 ME+2/1/06 Return ME+2/1/07 +2/07 Ret 07A B#07 	       68
++2 3 Supply ME+2/1/08 +2/10 Sup 08A A#10 ME+2/1/09 Return ME+2/1/10 +2/10 Ret 10A B#10 	       68
++2 3 Supply ME+2/1/11 +2/13 Sup 11A A#13 ME+2/1/12 Return ME+2/1/13 +2/13 Ret 13A B#13 	       68
++2 3 Supply ME+2/1/14 +2/16 Sup 14A A#16 ME+2/1/15 Return ME+2/1/16 +2/16 Ret 16A B#16 	       68
+
++1 4 Supply ME+1/3/35 +1/02 Sup 18c A#02 ME+1/3/36-01 Return ME+1/3/02 +1/02 Ret 01c B#02      67
++1 4 Supply ME+1/3/03 +1/04 Sup 02c A#04 ME+1/3/04-05 Return ME+1/3/06 +1/04 Ret 03c B#04      67
++1 4 Supply ME+1/3/07 +1/06 Sup 04c A#06 ME+1/3/08-09 Return ME+1/3/10 +1/06 Ret 05c B#06      67
++1 4 Supply ME+1/3/11 +1/08 Sup 06c A#08 ME+1/3/12-13 Return ME+1/3/14 +1/08 Ret 07c B#08      67
++1 4 Supply ME+1/3/15 +1/10 Sup 08c A#10 ME+1/3/16-17 Return ME+1/3/18 +1/10 Ret 09c B#10      67
++1 4 Supply ME+1/3/19 +1/12 Sup 10c A#12 ME+1/3/20-21 Return ME+1/3/22 +1/12 Ret 11c B#12      67
++1 4 Supply ME+1/3/23 +1/14 sub 12c A#14 ME+1/3/24-25 Return ME+1/3/26 +1/14 Ret 13c B#14      67
++1 4 Supply ME+1/3/27 +1/16 Sup 14c A#16 ME+1/3/28-29 Return ME+1/3/30 +1/16 Ret 15c B#16      67
++1 4 Supply ME+1/3/31 +1/18 Sup 16c A#18 ME+1/3/32-33 Return ME+1/3/34 +1/18 Ret 17c B#18      67
+
++1 4 Supply ME+1/2/35 +1/01 Sup 18b A#01 ME+1/2/36-01 Return ME+1/2/02 +1/01 Ret 01b B#01      67
++1 4 Supply ME+1/2/03 +1/03 Sup 02b A#03 ME+1/2/04-05 Return ME+1/2/06 +1/03 Ret 03b B#03      67
++1 4 Supply ME+1/2/07 +1/05 Sup 04b A#05 ME+1/2/08-09 Return ME+1/2/10 +1/05 Ret 05b B#05      67
++1 4 Supply ME+1/2/11 +1/07 Sup 06b A#07 ME+1/2/12-13 Return ME+1/2/14 +1/07 Ret 07b B#07      67
++1 4 Supply ME+1/2/15 +1/09 Sup 08b A#09 ME+1/2/16-17 Return ME+1/2/18 +1/09 Ret 09b B#09      67
++1 4 Supply ME+1/2/19 +1/11 Sup 10b A#11 ME+1/2/20-21 Return ME+1/2/22 +1/11 Ret 11b B#11      67
++1 4 Supply ME+1/2/23 +1/13 sub 12b A#13 ME+1/2/24-25 Return ME+1/2/26 +1/13 Ret 13b B#13      67
++1 4 Supply ME+1/2/27 +1/15 Sup 14b A#15 ME+1/2/28-29 Return ME+1/2/30 +1/15 Ret 15b B#15      67
++1 4 Supply ME+1/2/31 +1/17 Sup 16b A#17 ME+1/2/32-33 Return ME+1/2/34 +1/17 Ret 17b B#17      67
+
++1 4 Supply ME+1/1/01 +1/19 Sup 18a C#01 ME+1/1/36-02 Return ME+1/1/03 +1/19 Ret 01a D#01      66
++1 4 Supply ME+1/1/05 +1/20 Sup 02a C#02 ME+1/1/04-06 Return ME+1/1/07 +1/20 Ret 03a D#02      66
++1 4 Supply ME+1/1/09 +1/21 Sup 04a C#03 ME+1/1/08-10 Return ME+1/1/11 +1/21 Ret 05a D#03      66
++1 4 Supply ME+1/1/13 +1/22 Sup 06a C#04 ME+1/1/12-14 Return ME+1/1/15 +1/22 Ret 07a D#04      66
++1 4 Supply ME+1/1/17 +1/23 Sup 08a C#05 ME+1/1/16-18 Return ME+1/1/19 +1/23 Ret 09a D#05      66
++1 4 Supply ME+1/1/21 +1/24 Sup 10a C#06 ME+1/1/20-22 Return ME+1/1/23 +1/24 Ret 11a D#06      66
++1 4 Supply ME+1/1/25 +1/25 Sup 12a C#07 ME+1/1/24-26 Return ME+1/1/27 +1/25 Ret 13a D#07      66
++1 4 Supply ME+1/1/29 +1/26 Sup 14a C#08 ME+1/1/28-30 Return ME+1/1/31 +1/26 Ret 15a D#08      66
++1 4 Supply ME+1/1/33 +1/27 Sup 16a C#09 ME+1/1/32-34 Return ME+1/1/35 +1/27 Ret 17a D#09      66
