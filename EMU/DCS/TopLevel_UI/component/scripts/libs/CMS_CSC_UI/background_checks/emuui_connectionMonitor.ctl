@@ -40,8 +40,11 @@ void emuuibc_chamberViewReset() {
 
 /** This function is called when a DP of disconnected devices list is updated. */
 void emuuibc_disconnectedDevicesUpdatedCB(string dp, string disconnectedDevices) {
-  emuuibc_g_disconnectedDevices[dp] = disconnectedDevices;
-  emuuibc_checkAllForNoCommunication();
+  // if something has changed here
+  if (emuuibc_g_disconnectedDevices[dp] != disconnectedDevices) {
+    emuuibc_g_disconnectedDevices[dp] = disconnectedDevices;
+    emuuibc_checkAllForNoCommunication();
+  }
 }
 
 /** This function is called when a DP of disconnected devices list is updated. */
