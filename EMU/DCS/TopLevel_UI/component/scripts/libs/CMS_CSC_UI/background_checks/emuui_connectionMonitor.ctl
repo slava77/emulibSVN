@@ -41,7 +41,7 @@ void emuuibc_chamberViewReset() {
 /** This function is called when a DP of disconnected devices list is updated. */
 void emuuibc_disconnectedDevicesUpdatedCB(string dp, string disconnectedDevices) {
   // if something has changed here
-  if (mappingHasKey(emuuibc_g_disconnectedDevices, dp) || 
+  if (!mappingHasKey(emuuibc_g_disconnectedDevices, dp) || 
       (emuuibc_g_disconnectedDevices[dp] != disconnectedDevices)) {
     emuuibc_g_disconnectedDevices[dp] = disconnectedDevices;
     emuuibc_checkAllForNoCommunication();
