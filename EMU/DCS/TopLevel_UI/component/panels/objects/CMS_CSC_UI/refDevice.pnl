@@ -226,7 +226,7 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
         }
       }
       // ---=== if this is a chamber - register to background checks ===---
-      if ($deviceType == \"chamber\" || $deviceType == \"DDU\") {
+      if ($deviceType == \"chamber\") {// || $deviceType == \"DDU\") {
         string fsmNodeForReg = node;
         if ($deviceType == \"DDU\") {
           strreplace(fsmNodeForReg, \"_FED\", \"\");
