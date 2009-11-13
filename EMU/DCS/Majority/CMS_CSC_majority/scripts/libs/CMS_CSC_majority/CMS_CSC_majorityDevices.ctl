@@ -130,16 +130,6 @@ dyn_int emumaj_lvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
     noCommunication = weight;
   }
   
-  //check the FSM state - if it's ERROR or DEAD then check the channel alert statuses, if not then do not
-  string fsmDp = treeCache_getFsmInternalDp(node);
-  string fsmState;
-  dpGet(fsmDp + ".fsm.currentState", fsmState);
-  bool checkChannelAlarms = false;
-//  if ((fsmState == "ERROR") || (fsmState == "DEAD") || (status < 0)) {
-  if ((fsmState == "DEAD") || (status < 0)) {
-    checkChannelAlarms = true;
-  }
-  
   // go through all the channels (except the masked ones) and collect their states
   string dataDp = node;
   strreplace(dataDp, "LowVoltage/", "");
@@ -206,6 +196,74 @@ dyn_int emumaj_lvAlctChannelStates(string dataDp, string voltageLine) {
   }
   
   return makeDynInt(on, error);
+}
+
+/** values here are ".status", ".chamber_state", ".off_channels". States are OK, ALERT and NO_COMMUNICATION */
+dyn_int emumaj_temperatureStateCounts(dyn_anytype values, int &weight, bool calcTotal, string node) {
+  mapping deviceParams = emumaj_getChamberDeviceParams(node);
+  dyn_int excludedChannels = values[3];
+  int status = values[1];
+  int chamberState = values[2];
+  int channelCount;
+  if ((deviceParams["station"] == 1) && (deviceParams["ring"] == 3)) {
+    channelCount = 6; // ME1/3 chambers have 4 CFEBs, all other chambers have 5
+    int idx = dynContains(excludedChannels, 5);
+    if (idx > 0) {
+      dynRemove(excludedChannels, idx);
+    }
+  } else {
+    channelCount = 7;
+  }
+
+  weight = channelCount - dynlen(excludedChannels);
+  
+  int ok = 0,
+      alert = 0,
+      noCommunication = 0;
+  
+  if ((chamberState == -2) || (status == -2)) {
+    noCommunication = weight;
+  }
+  
+  // go through all the channels (except the masked ones) and collect their states
+  string dataDp = node;
+  strreplace(dataDp, "Temperature/", "");
+  for (int i=1; i <= 7; i++) {
+    if (dynContains(excludedChannels, i)) { continue; }
+    // CFEB5 doesn't exist in ME1/3 chambers so don't care about this one
+    if ((deviceParams["station"] == 1) && (deviceParams["ring"] == 3) && (i == 5)) { continue; }
+    
+    if (i < 6) { //CFEB
+      int alert;
+      dpGet(dataDp + ".data.t_cfeb.v" + i + ":_alert_hdl.._act_state", alert);
+      if (alert > 0) {
+        error++;
+      } else {
+        ok++;
+      }
+    } else if (i == 6) { // ALCT
+      int alert;
+      dpGet(dataDp + ".data.t_alct.v1:_alert_hdl.._act_state", alert);
+      if (alert > 0) {
+        error++;
+      } else {
+        ok++;
+      }
+    } else if (i == 7) { // DMB
+      int alert;
+      dpGet(dataDp + ".data.t_cfeb.v1:_alert_hdl.._act_state", alert);
+      if (alert > 0) {
+        error++;
+      } else {
+        ok++;
+      }
+    }
+  }
+  
+  /** if fsm is in ERROR, but channels don't have any alarms - it means that there is a more general problem 
+      (perhaps a master channel trip), in which case all channels should be marked with error. */
+  
+  return makeDynInt(ok, alert, noCommunication);
 }
 
 /** Takes any kind of chamber device (HV, LV, TEMP) and returns a mapping with elements:

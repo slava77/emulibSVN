@@ -23,6 +23,8 @@ dyn_int majorityUser_stateCounts(string device, dyn_anytype values, // informati
       return emumaj_ufpnpiStateCounts(values, all, calcTotal, node);
     case "LV":
       return emumaj_lvStateCounts(values, all, calcTotal, node);
+    case "TEMP":
+      return emumaj_temperatureStateCounts(values, all, calcTotal, node);
     default:
       break;
   }
