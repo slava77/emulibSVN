@@ -251,7 +251,7 @@ dyn_int emumaj_temperatureStateCounts(dyn_anytype values, int &weight, bool calc
       }
     } else if (i == 7) { // DMB
       int alert;
-      dpGet(dataDp + ".data.t_cfeb.v1:_alert_hdl.._act_state", alert);
+      dpGet(dataDp + ".data.t_dmb.v1:_alert_hdl.._act_state", alert);
       if (alert > 0) {
         error++;
       } else {
