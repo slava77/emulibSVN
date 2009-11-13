@@ -5,6 +5,7 @@ global const int EMUMAJ_UFPNPI_STANDBY_VOLTAGE = 3000;
 dyn_int emumaj_ufpnpiStateCounts(dyn_anytype values, int &weight, bool calcTotal, string node) {
   mapping deviceParams = emumaj_getChamberDeviceParams(node);
   dyn_int excludedChannels = values[2];
+  int status = values[1];
   int channelCount;
   if ((deviceParams["station"] == 1) || (deviceParams["ring"] == 1)) {
     channelCount = 18;
@@ -38,7 +39,8 @@ dyn_int emumaj_ufpnpiStateCounts(dyn_anytype values, int &weight, bool calcTotal
   dpGet(fsmDp + ".fsm.currentState", fsmState);
   DebugTN("fsm state of " + deviceParams["side"] + deviceParams["station"] + deviceParams["ring"] + "_" + deviceParams["chamberNumber"] + ": " + fsmState);
   bool checkChannelAlarms = false;
-  if ((fsmState == "ERROR") || (fsmState == "DEAD")) {
+//  if ((fsmState == "ERROR") || (fsmState == "DEAD") || (status < 0)) {
+  if ((fsmState == "DEAD") || (status < 0)) {
     checkChannelAlarms = true;
   }
   
@@ -57,7 +59,8 @@ dyn_int emumaj_ufpnpiStateCounts(dyn_anytype values, int &weight, bool calcTotal
   
   /** if fsm is in ERROR, but channels don't have any alarms - it means that there is a more general problem 
       (perhaps a master channel trip), in which case all channels should be marked with error. */
-  if ((fsmState == "ERROR") && (error == 0)) {
+//  if (((fsmState == "ERROR") && (error == 0)) || (status == -2)) {
+  if ((status == -2) || ((status < 0) && (error == 0))){
     error = weight;
   }
   
