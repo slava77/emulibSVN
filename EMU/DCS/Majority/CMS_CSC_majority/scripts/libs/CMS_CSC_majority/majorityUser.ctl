@@ -21,6 +21,8 @@ dyn_int majorityUser_stateCounts(string device, dyn_anytype values, // informati
   switch (device) {
     case "UFPNPI_HV":
       return emumaj_ufpnpiStateCounts(values, all, calcTotal, node);
+    case "LV":
+      return emumaj_lvStateCounts(values, all, calcTotal, node);
     default:
       break;
   }
