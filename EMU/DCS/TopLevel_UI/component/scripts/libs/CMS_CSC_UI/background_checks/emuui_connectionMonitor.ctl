@@ -44,7 +44,7 @@ void emuuibc_disconnectedDevicesUpdatedCB(string dp, string disconnectedDevices)
   if (!mappingHasKey(emuuibc_g_disconnectedDevices, dp) || 
       (emuuibc_g_disconnectedDevices[dp] != disconnectedDevices)) {
     emuuibc_g_disconnectedDevices[dp] = disconnectedDevices;
-    emuuibc_checkAllForNoCommunication();
+    startThread("emuuibc_checkAllForNoCommunication");
   }
 }
 
@@ -77,6 +77,18 @@ bool emuuibc_checkForNoCommunication(string chamberRefName, string chamberFsmNod
 
 /** Calls emuuibc_checkForNoCommunication(...) for all registered chambers. */
 void emuuibc_checkAllForNoCommunication() {
+  mapping currentSnapshot = emuuibc_g_disconnectedDevices;
+  delay(0, 500);
+  //check if the current version is consistent with the global one
+  //if not - that means it has been updated once more, so this thread can exit
+  //and let it be handled by the next thread
+  for (int i=1; i <= mappinglen(currentSnapshot); i++) {
+    string key = mappingGetKey(currentSnapshot, i);
+    if (currentSnapshot[key] != emuuibc_g_disconnectedDevices[key]) {
+      return;
+    }
+  }
+  
   for (int i=1; i <= mappinglen(emuuibc_g_chamberRefNameToFsmNode); i++) {
     string refName = mappingGetKey(emuuibc_g_chamberRefNameToFsmNode, i);
     string fsmNode = emuuibc_g_chamberRefNameToFsmNode[refName];
