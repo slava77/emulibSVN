@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.cern.ch/cms/csc/exsys/data"
+    xmlns:tns="http://www.cern.ch/cms/csc/exsys/data"
+    elementFormDefault="qualified">
+
+    <xsd:simpleType name="parameterIdType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="HV_CURRENT"/>
+            <xsd:enumeration value="LV_CURRENT"/>
+            <xsd:enumeration value="DATA_EVENTS"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="unitType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="AMPER"/>
+            <xsd:enumeration value="VOLT"/>
+            <xsd:enumeration value="METER"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="severityType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="DEBUG"/>
+            <xsd:enumeration value="INFO"/>
+            <xsd:enumeration value="WARN"/>
+            <xsd:enumeration value="ERROR"/>
+            <xsd:enumeration value="FATAL"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="sourceType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="DCS"/>
+            <xsd:enumeration value="LOCAL_DQM"/>
+            <xsd:enumeration value="FED"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+</xsd:schema>

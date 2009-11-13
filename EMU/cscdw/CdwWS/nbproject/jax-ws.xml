@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jax-ws xmlns="http://www.netbeans.org/ns/jax-ws/1">
+  <services>
+    <service name="getParameter">
+      <implementation-class>org.cern.cms.csc.cdw.web.ParameterSaver</implementation-class>
+      <wsdl-url>file:/home/valdo/Documents/CSCDW/EMU/cscdw/CdwBpel/src/getParameter.wsdl</wsdl-url>
+      <local-wsdl-file>getParameterWrapper.wsdl</local-wsdl-file>
+      <service-name>getParameterService</service-name>
+      <port-name>getParameterPort</port-name>
+      <package-name>ch.cern.cms.csc.exsys.wsdl</package-name>
+      <catalog-file>catalog.xml</catalog-file>
+      <use-provider>false</use-provider>
+      <wsimport-options>
+        <wsimport-option>
+          <wsimport-option-name>extension</wsimport-option-name>
+          <wsimport-option-value>true</wsimport-option-value>
+        </wsimport-option>
+        <wsimport-option>
+          <wsimport-option-name>verbose</wsimport-option-name>
+          <wsimport-option-value>true</wsimport-option-value>
+        </wsimport-option>
+        <wsimport-option>
+          <wsimport-option-name>xnocompile</wsimport-option-name>
+          <wsimport-option-value>true</wsimport-option-value>
+        </wsimport-option>
+      </wsimport-options>
+    </service>
+  </services>
+  <clients/>
+</jax-ws>

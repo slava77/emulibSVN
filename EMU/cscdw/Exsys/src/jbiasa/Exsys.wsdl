@@ -9,12 +9,12 @@
              xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
              xmlns:xsd="http://www.w3.org/2001/XMLSchema"
              targetNamespace="Exsys"
-             xmlns:tns="Exsys" xmlns:ns="http://j2ee.netbeans.org/wsdl/CdwBpel/FactInput" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
-    <import namespace="http://j2ee.netbeans.org/wsdl/CdwBpel/FactInput" location="../jbiServiceUnits/CdwWS/FactInput.wsdl"/>
+             xmlns:tns="Exsys" xmlns:ns="http://www.cern.ch/cms/csc/exsys/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+    <import namespace="http://www.cern.ch/cms/csc/exsys/wsdl" location="../jbiServiceUnits/CdwBpel/getParameterCollection.wsdl"/>
     <portType name="dummyCasaPortType"/>
-    <binding name="casaBinding1" type="ns:FactInputPortType">
+    <binding name="casaBinding1" type="ns:getParameterCollectionPortType">
         <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
-        <operation name="FactInputOperation">
+        <operation name="getParameterCollectionOperation">
             <soap:operation/>
             <input name="input1">
                 <soap:body use="literal" namespace="Exsys"/>
@@ -25,8 +25,8 @@
         </operation>
     </binding>
     <service name="casaService1">
-        <port name="postFact" binding="tns:casaBinding1">
-            <soap:address location="http://localhost:${HttpDefaultPort}/cdw/postFact"/>
+        <port name="getParameterCollection" binding="tns:casaBinding1">
+            <soap:address location="http://localhost:${HttpDefaultPort}/cdw/getParameterCollection"/>
         </port>
     </service>
 </definitions>

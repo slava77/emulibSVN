@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
-    <nextCatalog catalog="nbproject/private/cache/retriever/catalog.xml"/>
+    <system systemId="file:/home/valdo/Documents/CSCDW/EMU/cscdw/CdwWS/../CdwBpel/src/getParameter.wsdl" uri="src/conf/xml-resources/jaxb/getParameter/getParameter.wsdl"/>
+    <system systemId="file:/home/valdo/Documents/CSCDW/EMU/cscdw/CdwWS/../CdwBpel/src/parameter.xsd" uri="src/conf/xml-resources/jaxb/getParameter/parameter.xsd"/>
+    <system systemId="file:/home/valdo/Documents/CSCDW/EMU/cscdw/CdwBpel/src/getParameter.wsdl" uri="src/conf/xml-resources/web-services/getParameter/wsdl/getParameter.wsdl"/>
+    <system systemId="file:/home/valdo/Documents/CSCDW/EMU/cscdw/CdwBpel/src/parameter.xsd" uri="src/conf/xml-resources/web-services/getParameter/wsdl/parameter.xsd"/>
+    <system systemId="file:/home/valdo/Documents/CSCDW/EMU/cscdw/CdwBpel/src/parameterClassifiers.xsd" uri="src/conf/xml-resources/web-services/getParameter/wsdl/parameterClassifiers.xsd"/>
 </catalog>

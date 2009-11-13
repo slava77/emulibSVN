@@ -109,9 +109,9 @@
         COMPILATION SECTION
     -->
     <target name="deps-jar" depends="init" unless="${no.dependencies}">
-        <ant target="dist_se" inheritall="false" antfile="${project.CdwWS}/build.xml"/>
-        <property name="CdwWS.su.name" value="CdwWS"/>
-        <unzip src="${reference.CdwWS.dist_se}" dest="${src.dir}/../jbiServiceUnits/${CdwWS.su.name}">
+        <ant target="dist_se" inheritall="false" antfile="${project.CdwBpel}/build.xml"/>
+        <property name="CdwBpel.su.name" value="CdwBpel"/>
+        <unzip src="${reference.CdwBpel.dist_se}" dest="${src.dir}/../jbiServiceUnits/${CdwBpel.su.name}">
             <patternset>
                 <include name="**/*.wsdl"/>
                 <include name="**/*.WSDL"/>
@@ -121,13 +121,32 @@
                 <include name="META-INF/catalog.xml"/>
             </patternset>
         </unzip>
-        <property name="CdwWS.su.dir" value="${src.dir}/../jbiServiceUnits/${CdwWS.su.name}"/>
-        <move file="${CdwWS.su.dir}/META-INF/jbi.xml" todir="${CdwWS.su.dir}"/>
-        <move todir="${src.dir}/../jbiServiceUnits/META-INF/${CdwWS.su.name}">
-            <fileset dir="${CdwWS.su.dir}/META-INF"/>
+        <property name="CdwBpel.su.dir" value="${src.dir}/../jbiServiceUnits/${CdwBpel.su.name}"/>
+        <move file="${CdwBpel.su.dir}/META-INF/jbi.xml" todir="${CdwBpel.su.dir}"/>
+        <move todir="${src.dir}/../jbiServiceUnits/META-INF/${CdwBpel.su.name}">
+            <fileset dir="${CdwBpel.su.dir}/META-INF"/>
         </move>
     </target>
-    <target name="deps-javaee-jar" depends="init" unless="${no.dependencies}"/>
+    <target name="deps-javaee-jar" depends="init" unless="${no.dependencies}">
+        <ant target="dist" inheritall="false" antfile="${project.CdwWS}/build.xml"/>
+        <basename property="CdwWS.su.name" file="${project.CdwWS}"/>
+        <property name="CdwWS.su.dir" value="${src.dir}/../jbiServiceUnits/${CdwWS.su.name}"/>
+        <unzip src="${reference.CdwWS.dist}" dest="${src.dir}/../jbiServiceUnits/${CdwWS.su.name}">
+            <patternset>
+                <include name="**/*.wsdl"/>
+                <include name="**/*.WSDL"/>
+                <include name="**/*.xsd"/>
+                <include name="**/*.XSD"/>
+                <include name="META-INF/jbi.xml"/>
+            </patternset>
+        </unzip>
+        <unzip src="${reference.CdwWS.dist}" dest="${src.dir}/../jbiServiceUnits/META-INF/CdwWS">
+            <patternset>
+                <include name="META-INF/catalog.xml"/>
+            </patternset>
+        </unzip>
+        <jbi-javaee-dist projectName="CdwWS" subprojJar="${reference.CdwWS.dist}" subprojDir="${project.CdwWS}" suExtractDir="${CdwWS.su.dir}" subprojResource="${resource.CdwWS}"/>
+    </target>
     <target name="pre-pre-compile" depends="init,deps-jar">
         <mkdir dir="${build.classes.dir}"/>
     </target>
@@ -136,13 +155,13 @@
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target name="library-inclusion-in-archive" depends="compile">
-        <unjar dest="${build.classes.dir}" src="${reference.CdwWS.dist_se}"/>
+        <unjar dest="${build.classes.dir}" src="${reference.CdwWS.dist}"/>
     </target>
     <target name="library-inclusion-in-manifest" depends="compile">
-        <basename property="included.lib.reference.CdwWS.dist_se" file="${reference.CdwWS.dist_se}"/>
-        <copy todir="${build.classes.dir}" file="${reference.CdwWS.dist_se}"/>
+        <basename property="included.lib.reference.CdwWS.dist" file="${reference.CdwWS.dist}"/>
+        <copy todir="${build.classes.dir}" file="${reference.CdwWS.dist}"/>
         <manifest file="${build.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${included.lib.reference.CdwWS.dist_se}"/>
+            <attribute name="Class-Path" value="${included.lib.reference.CdwWS.dist}"/>
         </manifest>
     </target>
     <target name="do-compile" depends="init,deps-jar,pre-pre-compile,pre-compile"/>
@@ -234,6 +253,7 @@
         CLEANUP SECTION
     -->
     <target name="deps-clean" depends="init" unless="${no.dependencies}">
+        <ant target="clean" inheritall="false" antfile="${project.CdwBpel}/build.xml"/>
         <ant target="clean" inheritall="false" antfile="${project.CdwWS}/build.xml"/>
     </target>
     <target name="do-clean" depends="init">

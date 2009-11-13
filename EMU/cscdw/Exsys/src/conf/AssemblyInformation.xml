@@ -12,6 +12,16 @@
             </identification>
             <target>
                 <artifacts-zip>CdwWS.jar</artifacts-zip>
+                <component-name>sun-javaee-engine</component-name>
+            </target>
+        </service-unit>
+        <service-unit>
+            <identification>
+                <name>Exsys-CdwBpel</name>
+                <description>Represents this Service Unit</description>
+            </identification>
+            <target>
+                <artifacts-zip>CdwBpel.jar</artifacts-zip>
                 <component-name>sun-bpel-engine</component-name>
             </target>
         </service-unit>
