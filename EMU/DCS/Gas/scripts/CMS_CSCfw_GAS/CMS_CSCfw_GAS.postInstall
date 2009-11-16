@@ -1,7 +1,0 @@
-main(){
-  
-  
- dpCreate("CMS_CSC_GAS","MUDCS_STRING"); 
-  fwInstallation_appendManager(TRUE, "EMU dip manager", "PVSS00dip", 
-"always", 30, 2, 2, "-dns cms-cent-dcs-01");
-}
