@@ -6,10 +6,12 @@ PANEL,-1 -1 373 314 N "_3DFace" 0
 {
   // get the names and system numbers of required systems
   dyn_string ex;
+  mapping projectsInSearchPath = emuui_getMapping(\"dcsProjectSystemNames\", ex);
   dyn_string projects = emuui_getMappingAsCSV(\"dcsProjectDescriptions\", ex);
   if (emu_checkException(ex)) { return; }
   for (int i=1; i <= dynlen(projects); i++) {
     dyn_string split = strsplit(projects[i], \";\");
+    if (!mappingHasKey(projectsInSearchPath, split[1])) { continue; }
     requiredSystemNums[i] = split[1];
     requiredSystemNames[i] = split[2];
   }

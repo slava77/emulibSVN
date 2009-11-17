@@ -184,7 +184,7 @@ void emuuibc_checkXmasConnectionState(string side) {
 
 void emuuibc_checkComputersConnectionStatusCB(string dp, dyn_string systemNums) {
   dyn_string ex;
-  mapping requiredSystems = emuui_getMapping("dcsProjectDescriptions", ex);
+  mapping requiredSystems = emuui_getMapping("dcsProjectSystemNames", ex);
   if (emu_checkException(ex)) { return; }
   
   int missingCount = 0;
