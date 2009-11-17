@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<process
+    name="pullTmbTriggerCounters"
+    targetNamespace="http://www.cern.ch/cms/csc/exsys/pullTmbTriggerCounters"
+    xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:sxt="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Trace" 
+    xmlns:sxed="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Editor"
+    xmlns:sxat="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Attachment"
+    xmlns:sxeh="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/ErrorHandling"
+    xmlns:tns="http://www.cern.ch/cms/csc/exsys/pullTmbTriggerCounters" xmlns:sxed2="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Editor2" xmlns:ns0="http://www.cern.ch/cms/csc/exsys">
+    <import namespace="http://j2ee.netbeans.org/wsdl/CdwWS/pullTmbTriggerCountersScheduler" location="pullTmbTriggerCountersScheduler.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://enterprise.netbeans.org/bpel/HttpProxyWSServiceWrapper" location="HttpProxyWSServiceWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://ws.exsys.csc.cms.cern.org/" location="ExSysWS/wsdl/HttpProxy/HttpProxyWSService.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <partnerLinks>
+        <partnerLink name="TmbTriggerCountersPartner" xmlns:tns="http://enterprise.netbeans.org/bpel/HttpProxyWSServiceWrapper" partnerLinkType="tns:HttpProxyWSLinkType" partnerRole="HttpProxyWSRole"/>
+        <partnerLink name="TmbPullSchedulerPartner" xmlns:tns="http://j2ee.netbeans.org/wsdl/CdwWS/pullTmbTriggerCountersScheduler" partnerLinkType="tns:pullTmbTriggerCountersScheduler" myRole="TriggerPortTypeRole"/>
+    </partnerLinks>
+    <variables>
+        <variable name="TmbTriggerCounters" xmlns:tns="http://ws.exsys.csc.cms.cern.org/" messageType="tns:requestXmlResponse"/>
+        <variable name="TmbTriggerCountersUrl" xmlns:tns="http://ws.exsys.csc.cms.cern.org/" messageType="tns:requestXml"/>
+        <variable name="FireTriggerOperationIn" xmlns:tns="http://j2ee.netbeans.org/wsdl/CdwWS/pullTmbTriggerCountersScheduler" messageType="tns:TriggerEventMessage"/>
+    </variables>
+    <sequence>
+        <receive name="ReceivePullTrigger" createInstance="yes" partnerLink="TmbPullSchedulerPartner" operation="FireTriggerOperation" xmlns:tns="http://j2ee.netbeans.org/wsdl/CdwWS/pullTmbTriggerCountersScheduler" portType="tns:TriggerPortType" variable="FireTriggerOperationIn"/>
+        <assign name="Assign3">
+            <copy>
+                <from>'http://macfrank:20044/urn:xdaq-application:lid=30/XmlOutput'</from>
+                <to>$TmbTriggerCountersUrl.parameters/url</to>
+            </copy>
+        </assign>
+        <invoke name="pullTmbTriggerCounters" partnerLink="TmbTriggerCountersPartner" operation="requestXml" xmlns:tns="http://ws.exsys.csc.cms.cern.org/" portType="tns:HttpProxyWS" inputVariable="TmbTriggerCountersUrl" outputVariable="TmbTriggerCounters"/>
+        <assign name="Assign2">
+            <sxt:trace>
+                <sxt:log level="info" location="onComplete">
+                    <from>concat('Trigger Counters: ', $TmbTriggerCounters.parameters/return)</from>
+                </sxt:log>
+            </sxt:trace>
+            <copy>
+                <from variable="FireTriggerOperationIn" part="schedPart"/>
+                <to variable="FireTriggerOperationIn" part="schedPart"/>
+            </copy>
+        </assign>
+    </sequence>
+</process>
