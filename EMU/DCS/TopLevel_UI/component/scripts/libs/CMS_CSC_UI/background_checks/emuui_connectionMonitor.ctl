@@ -16,7 +16,7 @@ All functions have prefix emuuibc_ where bc stands for Background Checks.
 #uses "CMS_CSC_UI/emuui_utils.ctl"
 
 const string EMUUIBC_NO_COMMUNICATION_ICON_NAME = "imgNoCommunication";
-const int EMUUIBC_MAX_XMAS_ERROR_COUNT = 6;
+const int EMUUIBC_MAX_XMAS_ERROR_COUNT = 9;
 
 global mapping emuuibc_g_chamberRefNameToFsmNode; // map of chamber reference name to its' fsm node
 global mapping emuuibc_g_disconnectedDevices; // map of disconnected devices dp name to its' value
