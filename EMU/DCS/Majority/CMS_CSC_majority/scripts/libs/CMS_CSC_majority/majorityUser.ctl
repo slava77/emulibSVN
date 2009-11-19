@@ -27,7 +27,7 @@ dyn_int majorityUser_stateCounts(string device, dyn_anytype values, // informati
       return emumaj_temperatureStateCounts(values, all, calcTotal, node);
     case "CRB":
       return emumaj_onOffErrorFsmStateCounts(values, all, calcTotal, node);
-    case "MRTN":
+    case "MrtnChannel":
       return emumaj_onOffErrorFsmStateCounts(values, all, calcTotal, node);
     default:
       break;
