@@ -26,7 +26,9 @@ dyn_int majorityUser_stateCounts(string device, dyn_anytype values, // informati
     case "TEMP":
       return emumaj_temperatureStateCounts(values, all, calcTotal, node);
     case "CRB":
-      return emumaj_crbStateCounts(values, all, calcTotal, node);
+      return emumaj_onOffErrorFsmStateCounts(values, all, calcTotal, node);
+    case "MRTN":
+      return emumaj_onOffErrorFsmStateCounts(values, all, calcTotal, node);
     default:
       break;
   }
@@ -42,8 +44,6 @@ string majorityUser_dpTranslation(string fsmDevDp) {
 // majStates: contains mapping with fulfill status of devices:states
 // mapPercentages: contains mapping with exact percentages (should not be needed normally)
 string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string node) {
-  DebugTN("majStates: " + majStates);
-  DebugTN("majPercentages: " + mapPercentages);
   // majStates and mapPercentages contain a map from device:state to the majority states or to the percentages
      if (    ( majStates["UFPNPI_HV:error"]   >= majority_ON  ) ) return "ERROR";
      else if ( majStates["UFPNPI_HV:on"]      >= majority_ON    ) return "ON";
@@ -64,12 +64,11 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
 // Two additional user functions can be defined to modify the behaviour of the majority
 // Normally you do not need to define them
 
-      
 // This function can be used to connect to the FSM state of the DUs (and not to the related data point)
 // in this case you have to specify makeDynString(".fsm.currentState") in the list of the elements (during the configuration)
 string majorityUser_nodeTranslation(string node) {
   string type = treeCache_getType(node);
-  if (type == "fwCrb_CSC_LV") {
+  if ((type == "fwCrb_CSC_LV") || (type == "FwWienerMarathon")) {
     return treeCache_getFsmInternalDp(node);
   } else {
     return treeCache_getFsmDevDp(node);
@@ -79,7 +78,6 @@ string majorityUser_nodeTranslation(string node) {
      // if you want to get the name of the related data point (this is the default if this function is not defined) use
      // return treeCache_getFsmDevDp(node);
 }
-
 
 /*
 // This function allows you to decide to which data point element the majority should connect 
