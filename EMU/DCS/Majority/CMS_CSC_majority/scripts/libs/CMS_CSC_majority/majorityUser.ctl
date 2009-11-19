@@ -55,7 +55,7 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
      // for the meaning of majority_ON, majority_MIXED etc. see library majorityLib.ctl or http://lomasett.web.cern.ch/lomasett/treeCache_Majority/
 }
 
-/*
+
 //     Examples of advanced configuration
 //     ==================================
 
@@ -66,14 +66,22 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
 // This function can be used to connect to the FSM state of the DUs (and not to the related data point)
 // in this case you have to specify makeDynString(".fsm.currentState") in the list of the elements (during the configuration)
 string majorityUser_nodeTranslation(string node) {
-     return treeCache_getFsmInternalDp(node);
+  string type = treeCache_getType(node);
+  if (type == "fwCrb_CSC_LV") {
+    DebugTN("majorityUser_nodeTranslation(): Found CRB device - translating to FSM internal DP");
+    return treeCache_getFsmInternalDp(node);
+  } else {
+    DebugTN("majorityUser_nodeTranslation(): Found a non CRB device - returning device DP, not the FSM DP");
+    return treeCache_getFsmInternalDp(node);
+  }
+     
      // if you want to distinguish between different types you can get the FSM type with treeCache_getType(node);
      // if you want to get the name of the related data point (this is the default if this function is not defined) use
      // return treeCache_getFsmDevDp(node);
 }
 
 
-
+/*
 // This function allows you to decide to which data point element the majority should connect 
 // (independently from the configuration) to compute the state of one device
 // use it only if you are sure that you need it 

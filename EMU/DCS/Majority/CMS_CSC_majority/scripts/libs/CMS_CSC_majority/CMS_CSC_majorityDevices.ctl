@@ -290,3 +290,18 @@ mapping emumaj_getChamberDeviceParams(string nodeName) {
   
   return deviceParams;
 }
+
+/** value here is ".fsm.currentState" (internal FSM DPE). States are ON and ERROR */
+dyn_int emumaj_crbStateCounts(dyn_anytype values, int &weight, bool calcTotal, string node) {
+  string state = values[1];
+  int on = 0,
+      error = 0;
+  
+  if (state == "ON") {
+    on = 1;
+  }
+  if (state == "ERROR") {
+    error = 1;
+  }
+  return makeDynInt(on, error);
+}
