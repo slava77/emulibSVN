@@ -107,7 +107,8 @@
   <Declaration><Class URI="&csc;GasRack"/></Declaration>
   <Declaration><Class URI="&csc;GasChannel"/></Declaration>
 
-
+  <Declaration><Class URI="&csc;RackTurbine"/></Declaration>
+  <Declaration><Class URI="&csc;CoolingCircuit"/></Declaration>
 
 <!-- property declarations -->
 
@@ -145,6 +146,10 @@
   <Declaration><ObjectProperty URI="&csc;deliversGasTo"/></Declaration>
   <Declaration><ObjectProperty URI="&csc;getsGasFrom"/></Declaration>
 
+  <Declaration><ObjectProperty URI="&csc;coolingPath"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;cools"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;isCooledBy"/></Declaration>
+
   <Declaration><DataProperty URI="&csc;hasInstance"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasName"/></Declaration>
   <Declaration><DataProperty URI="&csc;isOn"/></Declaration>
@@ -164,6 +169,7 @@
   <SubClassOf><Class URI="&csc;LV"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
   <SubClassOf><Class URI="&csc;HV"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
   <SubClassOf><Class URI="&csc;GasSystem"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;Cooling"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
 
   <SubClassOf><Class URI="&csc;Local"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
   <SubClassOf><Class URI="&csc;Global"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
@@ -210,14 +216,22 @@
   <SubClassOf><Class URI="&csc;Maraton"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;Rack"/><Class URI="&csc;Device"/></SubClassOf>
 
+  <!-- Rack -->
+  <SubClassOf><Class URI="&csc;HVRack"/><Class URI="&csc;Rack"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;LVRack"/><Class URI="&csc;Rack"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;PCRack"/><Class URI="&csc;Rack"/></SubClassOf>
+ 
+
   <!-- HV -->
   <SubClassOf><Class URI="&csc;HVPrimary"/><Class URI="&csc;HV"/></SubClassOf>
   <SubClassOf><Class URI="&csc;HVMaster"/><Class URI="&csc;HV"/></SubClassOf>
   <SubClassOf><Class URI="&csc;HVDistribution"/><Class URI="&csc;HV"/></SubClassOf>
   <SubClassOf><Class URI="&csc;HVSegment"/><Class URI="&csc;HV"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVRack"/><Class URI="&csc;HV"/></SubClassOf>
 
   <!-- LV -->
   <SubClassOf><Class URI="&csc;Maraton"/><Class URI="&csc;LV"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;LVRack"/><Class URI="&csc;LV"/></SubClassOf>
 
   <!-- Trigger -->
   <SubClassOf><Class URI="&csc;SectorProcessor"/><Class URI="&csc;Trigger"/></SubClassOf>
@@ -229,6 +243,7 @@
   <SubClassOf><Class URI="&csc;TMB"/><Class URI="&csc;Trigger"/></SubClassOf>
   <SubClassOf><Class URI="&csc;LTC"/><Class URI="&csc;Trigger"/></SubClassOf>
   <SubClassOf><Class URI="&csc;TTC"/><Class URI="&csc;Trigger"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;PCRack"/><Class URI="&csc;Trigger"/></SubClassOf>
 
   <!-- DAQ -->
   <SubClassOf><Class URI="&csc;DDU"/><Class URI="&csc;DAQ"/></SubClassOf>
@@ -238,6 +253,7 @@
   <SubClassOf><Class URI="&csc;RAT"/><Class URI="&csc;DAQ"/></SubClassOf>
   <SubClassOf><Class URI="&csc;TMB"/><Class URI="&csc;DAQ"/></SubClassOf>
   <SubClassOf><Class URI="&csc;DMB"/><Class URI="&csc;DAQ"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;PCRack"/><Class URI="&csc;DAQ"/></SubClassOf>
 
   <!-- Local -->
   <SubClassOf><Class URI="&csc;TTC"/><Class URI="&csc;Local"/></SubClassOf>
@@ -259,6 +275,13 @@
   <SubClassOf><Class URI="&csc;GasRack"/><Class URI="&csc;GasDevice"/></SubClassOf>
   <SubClassOf><Class URI="&csc;GasChannel"/><Class URI="&csc;GasDevice"/></SubClassOf>
   <SubClassOf><Class URI="&csc;Chamber"/><Class URI="&csc;GasDevice"/></SubClassOf>
+
+  <!-- Cooling -->
+  <SubClassOf><Class URI="&csc;Chamber"/><Class URI="&csc;Cooling"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;Rack"/><Class URI="&csc;Cooling"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;CoolingCircuit"/><Class URI="&csc;Cooling"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;RackTurbine"/><Class URI="&csc;Cooling"/></SubClassOf>
+
 
   <!-- LogicalComponent -->
   <SubClassOf><Class URI="&csc;TriggerSector"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
@@ -303,6 +326,9 @@
   <SubObjectPropertyOf><ObjectProperty URI="&csc;deliversGasTo"/><ObjectProperty URI="&csc;gasSupplyPath"/></SubObjectPropertyOf>
   <SubObjectPropertyOf><ObjectProperty URI="&csc;getsGasFrom"/><ObjectProperty URI="&csc;gasSupplyPath"/></SubObjectPropertyOf>
 
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;cools"/><ObjectProperty URI="&csc;coolingPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;isCooledBy"/><ObjectProperty URI="&csc;coolingPath"/></SubObjectPropertyOf>
+
   <!-- InverseObjectProperties -->
   <InverseObjectProperties><ObjectProperty URI="&csc;sendsDataTo"/><ObjectProperty URI="&csc;receivesDataFrom"/></InverseObjectProperties>
   <InverseObjectProperties><ObjectProperty URI="&csc;sendsTriggerTo"/><ObjectProperty URI="&csc;receivesTriggerFrom"/></InverseObjectProperties>
@@ -314,6 +340,7 @@
   <InverseObjectProperties><ObjectProperty URI="&csc;deliversHVTo"/><ObjectProperty URI="&csc;getsHVFrom"/></InverseObjectProperties>
   <InverseObjectProperties><ObjectProperty URI="&csc;deliversLVTo"/><ObjectProperty URI="&csc;getsLVFrom"/></InverseObjectProperties>
   <InverseObjectProperties><ObjectProperty URI="&csc;deliversGasTo"/><ObjectProperty URI="&csc;getsGasFrom"/></InverseObjectProperties>
+  <InverseObjectProperties><ObjectProperty URI="&csc;cools"/><ObjectProperty URI="&csc;isCooledBy"/></InverseObjectProperties>
 
 
   <!-- TransitiveObjectProperty -->
@@ -333,6 +360,8 @@
   <TransitiveObjectProperty><ObjectProperty URI="&csc;getsLVFrom"/></TransitiveObjectProperty>
   <TransitiveObjectProperty><ObjectProperty URI="&csc;deliversGasTo"/></TransitiveObjectProperty>
   <TransitiveObjectProperty><ObjectProperty URI="&csc;getsGasFrom"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;cools"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;isCooledBy"/></TransitiveObjectProperty>
 
 
   <!-- DataPropertyRange -->
