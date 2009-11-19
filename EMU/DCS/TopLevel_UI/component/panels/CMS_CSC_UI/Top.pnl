@@ -23,13 +23,16 @@ void initConstants() {
   emuui_g_topFsmNodesRightX = 390;
   emuui_g_topFsmNodesHeight = 220;
   hostsToKillAllPvss = makeDynString(\"SCX5SCR05\", \"SCX5SCR06\");
+  hostsToReleaseFsmOnExit = makeDynString(\"SCX5SCR05\");
   developmentHosts = makeDynString(\"macfrank\", \"hp-evka\");
 }" 0
  "main()
 {
   exiting = true;
-  fwCU_releaseFullTree(\"CMS_CSC\");
   string hostname = getHostname();
+  if (dynContains(hostsToReleaseFsmOnExit, hostname)) {
+    fwCU_releaseFullTree(\"CMS_CSC\");
+  }
   if (dynContains(developmentHosts, hostname)) {
     PanelOff();
   } else {
@@ -70,6 +73,7 @@ int chamberViewModeTimerThreadId = -1;
 
 dyn_string hostsToKillAllPvss;
 dyn_string developmentHosts;
+dyn_string hostsToReleaseFsmOnExit;
 
 void waitForEmuUiInitialize() {
   while(!emuui_isInitialized()) { // wait for the emuui initialization
@@ -196,9 +200,11 @@ void killAllPvss() {
 "CBRef" "1"
 "EClose" "main()
 {
-  exiting = true;    
-  fwCU_releaseFullTree(\"CMS_CSC\");
+  exiting = true;
   string hostname = getHostname();
+  if (dynContains(hostsToReleaseFsmOnExit, hostname)) {
+    fwCU_releaseFullTree(\"CMS_CSC\");
+  }
   if (dynContains(developmentHosts, hostname)) {
     PanelOff();
   } else {
@@ -949,7 +955,7 @@ E E 0 1 1 2 1 E 1 0 1 0 4 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4294
 2 48
 "PRIMITIVE_TEXT3"
 ""
-1 2623.418797685841 140 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 2682.22755842079 145 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
