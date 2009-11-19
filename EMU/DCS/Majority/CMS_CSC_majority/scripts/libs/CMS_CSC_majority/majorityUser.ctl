@@ -25,6 +25,8 @@ dyn_int majorityUser_stateCounts(string device, dyn_anytype values, // informati
       return emumaj_lvStateCounts(values, all, calcTotal, node);
     case "TEMP":
       return emumaj_temperatureStateCounts(values, all, calcTotal, node);
+    case "CRB":
+      return emumaj_crbStateCounts(values, all, calcTotal, node);
     default:
       break;
   }
@@ -68,11 +70,9 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
 string majorityUser_nodeTranslation(string node) {
   string type = treeCache_getType(node);
   if (type == "fwCrb_CSC_LV") {
-    DebugTN("majorityUser_nodeTranslation(): Found CRB device - translating to FSM internal DP");
     return treeCache_getFsmInternalDp(node);
   } else {
-    DebugTN("majorityUser_nodeTranslation(): Found a non CRB device - returning device DP, not the FSM DP");
-    return treeCache_getFsmInternalDp(node);
+    return treeCache_getFsmDevDp(node);
   }
      
      // if you want to distinguish between different types you can get the FSM type with treeCache_getType(node);
