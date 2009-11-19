@@ -1,6 +1,6 @@
 <component>
 <name>CMS_CSC_majority</name>
-<version>1.4.1</version>
+<version>1.4.2</version>
 <date>2009/11/19</date>
 <required>majority_treeCache=1.2.10</required>
 <dontRestartProject>yes</dontRestartProject>
