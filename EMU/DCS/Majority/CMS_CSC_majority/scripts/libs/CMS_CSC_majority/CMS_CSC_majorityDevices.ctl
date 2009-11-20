@@ -42,7 +42,6 @@ dyn_int emumaj_ufpnpiStateCounts(dyn_anytype values, int &weight, bool calcTotal
   string fsmState;
   dpGet(fsmDp + ".fsm.currentState", fsmState);
   bool checkChannelAlarms = false;
-//  if ((fsmState == "ERROR") || (fsmState == "DEAD") || (status < 0)) {
   if ((fsmState == "DEAD") || (status < 0)) {
     checkChannelAlarms = true;
   }
@@ -51,10 +50,10 @@ dyn_int emumaj_ufpnpiStateCounts(dyn_anytype values, int &weight, bool calcTotal
   string dataDp = node;
   strreplace(dataDp, "HighVoltage/", "");
   for (int i = 1 + channelsOffset; i <= channelsOffset + channelCount; i++) {
-    if (dynContains(excludedChannels, i)) { continue; }
+    if (dynContains(excludedChannels, i) && !calcTotal) { continue; }
     dyn_int chStates = emumaj_ufpnpiChannelStates(dataDp + ".data.v" + i, 
                                                   vset, EMUMAJ_UFPNPI_STANDBY_VOLTAGE,
-                                                  checkChannelAlarms);
+                                                  true);
     on += chStates[1];
     standby += chStates[2];
     error += chStates[3];
@@ -141,7 +140,7 @@ dyn_int emumaj_lvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
   string dataDp = node;
   strreplace(dataDp, "LowVoltage/", "");
   for (int i=1; i <= 6; i++) {
-    if (dynContains(excludedChannels, i)) { continue; }
+    if (dynContains(excludedChannels, i) && !calcTotal) { continue; }
     // CFEB5 doesn't exist in ME1/3 chambers so don't care about this one
     if ((deviceParams["station"] == 1) && (deviceParams["ring"] == 3) && (i == 5)) { continue; }
     
@@ -240,7 +239,7 @@ dyn_int emumaj_temperatureStateCounts(dyn_anytype values, int &weight, bool calc
   string dataDp = node;
   strreplace(dataDp, "Temperature/", "");
   for (int i=1; i <= 7; i++) {
-    if (dynContains(excludedChannels, i)) { continue; }
+    if (dynContains(excludedChannels, i) && !calcTotal) { continue; }
     // CFEB5 doesn't exist in ME1/3 chambers so don't care about this one
     if ((deviceParams["station"] == 1) && (deviceParams["ring"] == 3) && (i == 5)) { continue; }
     
