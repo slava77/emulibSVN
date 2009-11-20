@@ -12,7 +12,11 @@ dyn_int emumaj_ufpnpiStateCounts(dyn_anytype values, int &weight, bool calcTotal
   } else {
     channelCount = 30;
   }
-  weight = channelCount - dynlen(excludedChannels);
+  if (calcTotal) {
+    weight = channelCount;
+  } else {
+    weight = channelCount - dynlen(excludedChannels);
+  }
   
   int vset = values[3];
   int on = 0,
@@ -119,8 +123,11 @@ dyn_int emumaj_lvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
       excludedChannelCount += 4;
     }
   }
-  
-  weight = channelCount - excludedChannelCount;
+  if (calcTotal) {
+    weight = channelCount;
+  } else {
+    weight = channelCount - excludedChannelCount;
+  }
   
   int on = 0,
       error = 0,
@@ -215,7 +222,11 @@ dyn_int emumaj_temperatureStateCounts(dyn_anytype values, int &weight, bool calc
     channelCount = 7;
   }
 
-  weight = channelCount - dynlen(excludedChannels);
+  if (calcTotal) {
+    weight = channelCount;
+  } else {
+    weight = channelCount - dynlen(excludedChannels);
+  }
   
   int ok = 0,
       alert = 0,
