@@ -228,7 +228,7 @@ dyn_int emumaj_temperatureStateCounts(dyn_anytype values, int &weight, bool calc
   }
   
   int ok = 0,
-      alert = 0,
+      error = 0,
       noCommunication = 0;
   
   if ((chamberState == -2) || (status == -2)) {
@@ -273,7 +273,7 @@ dyn_int emumaj_temperatureStateCounts(dyn_anytype values, int &weight, bool calc
   /** if fsm is in ERROR, but channels don't have any alarms - it means that there is a more general problem 
       (perhaps a master channel trip), in which case all channels should be marked with error. */
   
-  return makeDynInt(ok, alert, noCommunication);
+  return makeDynInt(ok, error, noCommunication);
 }
 
 /** Takes any kind of chamber device (HV, LV, TEMP) and returns a mapping with elements:
