@@ -634,14 +634,14 @@
       <xsl:for-each select="peripheralCrate">
 	<xsl:variable name="PADDED_VME_NAME"><xsl:value-of select="substring(@id,1,6)"/><xsl:if test="string-length(@id)=7">0</xsl:if><xsl:value-of select="substring(@id,7,string-length(@id)-6)"/></xsl:variable>
 	<ObjectPropertyAssertion><ObjectProperty URI="&csc;getsLVFrom"/><Individual URI="&csc;{$PADDED_VME_NAME}"/><Individual URI="&csc;Maraton{$PADDED_MARATON_INSTANCE}"/></ObjectPropertyAssertion>
-	<!-- LV Racks -->
+	<!-- PCrate Racks -->
 	<xsl:variable name="RACK_NAME" select="@rackName"/>
 	<!-- <xsl:message><xsl:value-of select="$RACK_NAME"/>: <xsl:value-of select="count(preceding::peripheralCrate[@rackName = $RACK_NAME])"/>/<xsl:value-of select="count(//peripheralCrate)"/></xsl:message> -->
 	<xsl:if test="not(preceding::peripheralCrate[@rackName = $RACK_NAME])">
 	  <Declaration><Individual URI="&csc;Rack{$RACK_NAME}"/></Declaration>
-	  <ClassAssertion><Class URI="&csc;LVRack"/><Individual URI="&csc;Rack{$RACK_NAME}"/></ClassAssertion>
+	  <ClassAssertion><Class URI="&csc;PCrateRack"/><Individual URI="&csc;Rack{$RACK_NAME}"/></ClassAssertion>
 	  <DataPropertyAssertion><DataProperty URI="&csc;hasName"/><Individual URI="&csc;Rack{$RACK_NAME}"/><Constant datatypeURI="&xsd;string"><xsl:value-of select="$RACK_NAME"/></Constant></DataPropertyAssertion>
-	  <!-- LV Rack Cooling -->
+	  <!-- PCrate Rack Cooling -->
 	  <xsl:call-template name="RackCooling">
 	    <xsl:with-param name="RACK_NAME_" select="$RACK_NAME"/>
 	  </xsl:call-template>

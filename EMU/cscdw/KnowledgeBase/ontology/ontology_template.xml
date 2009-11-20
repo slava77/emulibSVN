@@ -219,7 +219,7 @@
   <!-- Rack -->
   <SubClassOf><Class URI="&csc;HVRack"/><Class URI="&csc;Rack"/></SubClassOf>
   <SubClassOf><Class URI="&csc;LVRack"/><Class URI="&csc;Rack"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;PCRack"/><Class URI="&csc;Rack"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;PCrateRack"/><Class URI="&csc;Rack"/></SubClassOf>
  
 
   <!-- HV -->
@@ -243,7 +243,7 @@
   <SubClassOf><Class URI="&csc;TMB"/><Class URI="&csc;Trigger"/></SubClassOf>
   <SubClassOf><Class URI="&csc;LTC"/><Class URI="&csc;Trigger"/></SubClassOf>
   <SubClassOf><Class URI="&csc;TTC"/><Class URI="&csc;Trigger"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;PCRack"/><Class URI="&csc;Trigger"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;PCrateRack"/><Class URI="&csc;Trigger"/></SubClassOf>
 
   <!-- DAQ -->
   <SubClassOf><Class URI="&csc;DDU"/><Class URI="&csc;DAQ"/></SubClassOf>
@@ -253,7 +253,7 @@
   <SubClassOf><Class URI="&csc;RAT"/><Class URI="&csc;DAQ"/></SubClassOf>
   <SubClassOf><Class URI="&csc;TMB"/><Class URI="&csc;DAQ"/></SubClassOf>
   <SubClassOf><Class URI="&csc;DMB"/><Class URI="&csc;DAQ"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;PCRack"/><Class URI="&csc;DAQ"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;PCrateRack"/><Class URI="&csc;DAQ"/></SubClassOf>
 
   <!-- Local -->
   <SubClassOf><Class URI="&csc;TTC"/><Class URI="&csc;Local"/></SubClassOf>
