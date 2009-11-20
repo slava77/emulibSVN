@@ -330,26 +330,28 @@
 
 	<xsl:choose>
 	  <!-- TF -->
-	  <xsl:when test="../../@instance=0 and SectorProcessor/@id!=''">
-	    <xsl:variable name="PADDED_SP_INSTANCE" select="format-number(SectorProcessor/@id,'00')"/>
-	    <ObjectPropertyAssertion>
-	      <ObjectProperty URI="&csc;receivesTriggerFrom"/>
-	      <Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/>
-	      <Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}"/>
-	    </ObjectPropertyAssertion>
-	    <DataPropertyAssertion>
-	      <DataProperty URI="&csc;hasDDUInput"/><Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}"/>
-	      <Constant datatypeURI="&xsd;integer"><xsl:value-of select="$DDU_INPUT"/></Constant>
-	    </DataPropertyAssertion>
-            
-	    <xsl:for-each select="SectorProcessor/PeripheralCrate">
-	      <xsl:variable name="PADDED_VME_NUMBER" select="format-number(@VMEcrate,'00')"/>
+	  <xsl:when test="../../@instance=0">
+	    <xsl:if test="SectorProcessor/@id!=''">
+	      <xsl:variable name="PADDED_SP_INSTANCE" select="format-number(SectorProcessor/@id,'00')"/>
 	      <ObjectPropertyAssertion>
 		<ObjectProperty URI="&csc;receivesTriggerFrom"/>
+		<Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/>
 		<Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}"/>
-		<Individual URI="&csc;VME{@endcap}{@station}/{$PADDED_VME_NUMBER}/MPC"/>
 	      </ObjectPropertyAssertion>
-	    </xsl:for-each>
+	      <DataPropertyAssertion>
+		<DataProperty URI="&csc;hasDDUInput"/><Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}"/>
+		<Constant datatypeURI="&xsd;integer"><xsl:value-of select="$DDU_INPUT"/></Constant>
+	      </DataPropertyAssertion>
+
+	      <xsl:for-each select="SectorProcessor/PeripheralCrate">
+		<xsl:variable name="PADDED_VME_NUMBER" select="format-number(@VMEcrate,'00')"/>
+		<ObjectPropertyAssertion>
+		  <ObjectProperty URI="&csc;receivesTriggerFrom"/>
+		  <Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}"/>
+		  <Individual URI="&csc;VME{@endcap}{@station}/{$PADDED_VME_NUMBER}/MPC"/>
+		</ObjectPropertyAssertion>
+	      </xsl:for-each>
+	    </xsl:if>
 	  </xsl:when>
 	  <!-- chambers -->
 	  <xsl:otherwise>
