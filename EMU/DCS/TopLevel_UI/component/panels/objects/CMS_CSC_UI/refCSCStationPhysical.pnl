@@ -396,7 +396,7 @@ void initParams() {
     
     emuui_init();
     paramGroup = emuui_getSessionDp(\"mainChamberView\");
-    paramSide = \"P\";
+    paramSide = \"M\";
     paramStation = 2;
     paramRadius = 300;
   } else { // copy from dollar params
