@@ -47,7 +47,7 @@ void initConstants() {
 }" 0
  E E E E 1 -1 -1 0  60 60
 ""0  1
-E "const string systemName = \"cms_csc_dcs_02\";
+E "const string systemName = \"CMS_CSC_DCS_01\";
 int settingCounter = 0;
 dyn_string channelDps;
 dyn_string tableColumns;
