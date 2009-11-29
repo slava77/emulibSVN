@@ -47,7 +47,7 @@ void initConstants() {
 }" 0
  E E E E 1 -1 -1 0  60 60
 ""0  1
-E "const string systemName = \"CMS_CSC_DCS_01\";
+E "const string systemName = \"cms_csc_dcs_02\";
 int settingCounter = 0;
 dyn_string channelDps;
 dyn_string tableColumns;
@@ -256,7 +256,7 @@ LANG:1 0
 
 0
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0  8 280 932 904
 "main()
 {
@@ -320,7 +320,7 @@ LANG:1 0
 80 
 14 14 10 10
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0 0 1 1 1 7
 1 0
 13 0
@@ -336,7 +336,7 @@ LANG:1 0
 
 0
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0  220 172 404 199
 
 T 
@@ -360,7 +360,7 @@ LANG:1 0
 
 0
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0  698 40 932 234
 "main()
 {
@@ -377,7 +377,7 @@ LANG:1 0
 210 
 14 14 10 10
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0 0 1 1 1 7
 1 0
 2 3
@@ -397,16 +397,16 @@ LANG:1 0
 {
   this.text = \"PVSS System Name: \" + systemName;
 }" 0
- E 0 1 1 2 1 E U  0 E 10 40 106 54
+ E 0 1 1 2 1 E U  0 E 10 40 110 55
 0 2 2 "0s" 0 0 0 192 0 0  10 40 1
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 17 PVSS System Name:
 2 4
 "lblError"
 ""
-1 450 40 E E E 1 E 0 E N "_WindowText" E N "FwStateAttention3" E E
+1 470 40 E E E 1 E 0 E N "_WindowText" E N "FwStateAttention3" E E
  E E
 4 0 0 0 0 0
 E E E
@@ -416,10 +416,10 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 450 40 489 54
-0 2 2 "0s" 0 0 0 192 0 0  450 40 1
+E E 0 1 1 2 1 E U  1 E 470 40 508 55
+0 2 2 "0s" 0 0 0 192 0 0  470 40 1
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 6 ERROR:
 2 5
@@ -435,10 +435,10 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 22 174 70 188
+E E 0 1 1 2 1 E U  0 E 22 174 70 189
 0 2 2 "0s" 0 0 0 192 0 0  22 174 1
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 10 Voltage 1:
 21 6
@@ -454,7 +454,7 @@ LANG:1 0
 
 0
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0  80 172 204 195
 0
 
@@ -476,10 +476,10 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 22 204 70 218
+E E 0 1 1 2 1 E U  0 E 22 204 70 219
 0 2 2 "0s" 0 0 0 192 0 0  22 204 1
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 10 Voltage 2:
 21 8
@@ -495,7 +495,7 @@ LANG:1 0
 
 0
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0  80 202 204 225
 0
 
@@ -517,7 +517,7 @@ LANG:1 0
 
 0
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0  220 202 404 229
 
 T 
@@ -531,7 +531,7 @@ LANG:1 36 Set this voltage (2) on all channels
 2 10
 "PRIMITIVE_TEXT5"
 ""
-1 210 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 230 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 10 0 0 0 0 0
 E E E
@@ -541,16 +541,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 210 40 291 54
-0 2 2 "0s" 0 0 0 192 0 0  210 40 1
+E E 0 1 1 2 1 E U  0 E 230 40 309 55
+0 2 2 "0s" 0 0 0 192 0 0  230 40 1
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 17 Setting counter: 
 2 11
 "lblSettingCounter"
 ""
-1 290 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 310 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 11 0 0 0 0 0
 E E E
@@ -564,16 +564,16 @@ LANG:1 0
 {
   this.text = settingCounter;
 }" 0
- E 0 1 1 2 1 E U  0 E 290 40 298 54
-0 2 2 "0s" 0 0 0 192 0 0  290 40 1
+ E 0 1 1 2 1 E U  0 E 310 40 316 55
+0 2 2 "0s" 0 0 0 192 0 0  310 40 1
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 1 #
 13 12
 "btnResetCounter"
 ""
-1 330 40 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 350 40 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 12 0 0 0 0 0
 E E E
@@ -583,8 +583,8 @@ LANG:1 0
 
 0
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
-0  328 38 422 65
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0  348 38 442 65
 
 T 
 1
@@ -607,10 +607,10 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 22 83.99999999999997 237 98
+E E 0 1 1 2 1 E U  0 E 22 83.99999999999997 237 99
 0 2 2 "0s" 0 0 0 192 0 0  22 83.99999999999997 1
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 43 Delay between channel voltage setting (ms):
 21 14
@@ -648,7 +648,7 @@ LANG:1 0
 
 0
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0  18 112 262 134
 1
 T 
@@ -679,10 +679,10 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 270 117 394 131
+E E 0 1 1 2 1 E U  0 E 270 117 393 132
 0 2 2 "0s" 0 0 0 192 0 0  270 117 1
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 26 delay after OPC poll (ms):
 21 20
@@ -722,7 +722,7 @@ LANG:1 0
 "dashclr"N "_Transparent"
 E E 0 0 1 0 1 E 1.34 0 1.403508771929825 -16.8 -208.8771929824561 0 E 20 193 521 251
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 16 General Settings
 30 22
@@ -740,7 +740,7 @@ LANG:1 0
 "dashclr"N "_Transparent"
 E E 0 0 1 0 1 E 1.634146341463415 0 1.379310344827586 -6.341463414634141 -59.03448275862073 0 E 10 153 421 241
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 15 Voltage setting
 13 25
@@ -756,7 +756,7 @@ LANG:1 0
 
 0
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0  18 240 192 267
 
 T 
@@ -794,10 +794,10 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 200 242 335 256
+E E 0 1 1 2 1 E U  0 E 200 242 338 257
 0 2 2 "0s" 0 0 0 192 0 0  200 242 1
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 26 Delay between bounces (s):
 21 28
@@ -835,7 +835,7 @@ LANG:1 0
 
 0
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0  448 240 592 262
 1
 T 
@@ -865,7 +865,7 @@ LANG:1 0
 
 0
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0  588 240 672 267
 
 T 
@@ -928,10 +928,10 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 710 252 740 266
+E E 0 1 1 2 1 E U  0 E 710 252 739 267
 0 2 2 "0s" 0 0 0 192 0 0  710 252 1
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 5 vMax:
 2 34
@@ -947,10 +947,10 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 810 252 836 266
+E E 0 1 1 2 1 E U  0 E 810 252 835 267
 0 2 2 "0s" 0 0 0 192 0 0  810 252 1
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 5 vMin:
 2 35
@@ -966,10 +966,10 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 750 252 762 266
+E E 0 1 1 2 1 E U  0 E 750 252 764 267
 0 2 2 "0s" 0 0 0 192 0 0  750 252 1
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 2 0V
 2 36
@@ -985,10 +985,10 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 840 252 852 266
+E E 0 1 1 2 1 E U  0 E 840 252 854 267
 0 2 2 "0s" 0 0 0 192 0 0  840 252 1
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 2 0V
 13 37
@@ -1004,7 +1004,7 @@ LANG:1 0
 
 0
 1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0  418 170 512 224
 
 T 
