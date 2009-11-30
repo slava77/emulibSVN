@@ -100,6 +100,7 @@ void setVoltage(int voltage, bool callFromOpcUpdateCB = false) {
   for (int i=1; i <= dynlen(channelDps); i++) {
     if (cancelVSet) { return; settingVoltage = false; }
     dpSetWait(channelDps[i] + \".settings.v0\", voltage);
+    dpSetWait(channelDps[i] + \".settings.onOff\", TRUE);
     delay(0, spinDelay.text);
   }
   increaseSettingCounter();  
