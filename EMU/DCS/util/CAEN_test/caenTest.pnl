@@ -153,7 +153,7 @@ void waitForVoltageStabilization(int voltage) {
       float actualVoltage;
       int status;
       dpGet(channelDps[i] + \".actual.vMon\", actualVoltage, channelDps[i] + \".actual.status\", status);
-//      if (actualVoltage < 1) { continue; } // fake channel (stable anyway)
+      if (actualVoltage < 1) { continue; } // fake channel (stable anyway)
       if ((status != 0) && (status != 1)) { // ramping
         stable = false;
         break;
