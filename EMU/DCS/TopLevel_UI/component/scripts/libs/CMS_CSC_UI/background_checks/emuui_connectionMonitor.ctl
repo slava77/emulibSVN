@@ -78,7 +78,7 @@ bool emuuibc_checkForNoCommunication(string chamberRefName, string chamberFsmNod
 /** Calls emuuibc_checkForNoCommunication(...) for all registered chambers. */
 void emuuibc_checkAllForNoCommunication() {
   mapping currentSnapshot = emuuibc_g_disconnectedDevices;
-  delay(0, 500);
+  delay(0, 2000);
   //check if the current version is consistent with the global one
   //if not - that means it has been updated once more, so this thread can exit
   //and let it be handled by the next thread
