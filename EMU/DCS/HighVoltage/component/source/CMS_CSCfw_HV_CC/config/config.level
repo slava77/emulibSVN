@@ -1,6 +1,0 @@
-
-[ctrl]
- 
-CtrlDLL = "CtrlHTTP" 
-LoadCtrlLibs = "http.ctl, proj_http.ctl, as.ctl, es.ctl, dpGroups.ctl"
- 

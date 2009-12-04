@@ -1,3 +1,0 @@
-24168 pts/2    S+     0:00 delete_processes_by_name Xvnc
-24169 pts/2    S+     0:00 sh -c ps -ax | grep Xvnc > temp.txt 
-24171 pts/2    R+     0:00 grep Xvnc
