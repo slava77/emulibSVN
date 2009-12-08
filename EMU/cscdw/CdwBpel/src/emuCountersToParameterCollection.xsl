@@ -22,14 +22,15 @@
 
     <!-- parameter collection -->
     <xsl:template match="/">
+        <xsl:variable name="countersTimestamp" select="child::*[1]/@dateTime"/>
         <tns:parameterCollection>
             <tns:source>
                 <xsl:value-of select="$sourceName"/>
             </tns:source>
-            <xsl:for-each select="emuCounters/sample/count/@*">
+            <xsl:for-each select="//sample/count/@*">
                 <xsl:if test="local-name() != 'chamber'">
                     <xsl:call-template name="createParameter">
-                        <xsl:with-param name="timestamp" select="/emuCounters/@dateTime"/>
+                        <xsl:with-param name="timestamp" select="$countersTimestamp"/>
                         <xsl:with-param name="paramId"
                                         select="translate(concat(../../@name, '_', local-name(), '_counter'), $lowercase, $uppercase)"/>
                         <xsl:with-param name="component" select="../@chamber"/>
