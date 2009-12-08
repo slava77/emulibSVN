@@ -5,6 +5,14 @@
       <xsd:enumeration value="HV_CURRENT"/>
       <xsd:enumeration value="LV_CURRENT"/>
       <xsd:enumeration value="DATA_EVENTS"/>
+      <xsd:enumeration value="CUMULATIVE_ALCT_COUNTER"/>
+      <xsd:enumeration value="CUMULATIVE_CLCT_COUNTER"/>
+      <xsd:enumeration value="CUMULATIVE_LCT_COUNTER"/>
+      <xsd:enumeration value="CUMULATIVE_L1A_COUNTER"/>
+      <xsd:enumeration value="SLIDING_ALCT_COUNTER"/>
+      <xsd:enumeration value="SLIDING_CLCT_COUNTER"/>
+      <xsd:enumeration value="SLIDING_LCT_COUNTER"/>
+      <xsd:enumeration value="SLIDING_L1A_COUNTER"/>
     </xsd:restriction>
   </xsd:simpleType>
   <xsd:simpleType name="unitType">
@@ -28,6 +36,7 @@
       <xsd:enumeration value="DCS"/>
       <xsd:enumeration value="LOCAL_DQM"/>
       <xsd:enumeration value="FED"/>
+      <xsd:enumeration value="Xmas"/>
     </xsd:restriction>
   </xsd:simpleType>
 </xsd:schema>
