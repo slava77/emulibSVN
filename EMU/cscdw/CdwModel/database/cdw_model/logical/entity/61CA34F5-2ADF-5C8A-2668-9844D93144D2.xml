@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <metadatadoc version="2.0">
-	<object type="Entity" id="11C5135A-F96E-A262-E24C-66EEF5651DC1" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="true" entitytype="2" allow_type_substitution="true" strategy="Single Table" minVolumes="0" expectedVolumes="0" maxVolumes="9999999" growthPercent="0" growthType="Year" normalForm="Third" adequatelyNormalized="NO" use_default_color="true" background_color="null" foreground_color="null">
-		<name>CDW_STATUSES</name>
+	<object type="Entity" id="61CA34F5-2ADF-5C8A-2668-9844D93144D2" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="true" entitytype="" allow_type_substitution="true" strategy="Single Table" minVolumes="0" expectedVolumes="0" maxVolumes="9999999" growthPercent="0" growthType="Year" normalForm="Third" adequatelyNormalized="NO" use_default_color="true" background_color="null" foreground_color="null">
+		<name>CDW_SOURCES</name>
 		<comment></comment>
 		<notes></notes>
 		<alter type="created">
 			<user>valdo</user>
-			<timestamp>2009-10-20 09:47:34</timestamp>
+			<timestamp>2009-12-09 12:54:46</timestamp>
 		</alter>
 		<alter type="changed">
 			<user>valdo</user>
-			<timestamp>2009-10-20 10:16:26</timestamp>
+			<timestamp>2009-12-09 12:54:46</timestamp>
 		</alter>
+		<generator>0F1EBEE2-A38B-8875-C34D-ACC4750E3513</generator>
 		<properties>
 			<parameter name="design.owner" value="cdw_model" />
 			<parameter name="object.existsinrepository" value="true" />
@@ -85,32 +86,74 @@
 		<changerequests />
 		<measurements />
 		<contained>
-			<object type="Attribute" id="06531134-B9E6-27C4-8F52-DEF99AFE2F76" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" use_default_color="true" background_color="null" foreground_color="null" unique="false" allownull="false" usedomainconstraints="true" is_oid="false" structured_attribute_id="" fk="false">
-				<name>STA_ID</name>
+			<object type="Attribute" id="3F584E20-D2CF-89B3-B2F0-4D1A3DE75AEC" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" use_default_color="true" background_color="null" foreground_color="null" unique="false" allownull="false" usedomainconstraints="true" is_oid="false" structured_attribute_id="" fk="false">
+				<name>SRC_ID</name>
 				<comment></comment>
 				<notes></notes>
 				<alter type="created">
 					<user>valdo</user>
-					<timestamp>2009-10-20 09:47:54</timestamp>
+					<timestamp>2009-12-09 12:54:46</timestamp>
 				</alter>
 				<alter type="changed">
 					<user>valdo</user>
-					<timestamp>2009-10-20 10:16:26</timestamp>
+					<timestamp>2009-12-09 12:54:46</timestamp>
 				</alter>
+				<generator>CE3E2640-4243-271C-6676-8DAEC86B5AF2</generator>
 				<properties>
 					<parameter name="design.owner" value="cdw_model" />
 					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="object.property.defaultvalue" value="" />
+					<parameter name="object.property.usesdefault" value="false" />
 					<parameter name="property.comment.rdbms" value="" />
 				</properties>
 				<engineering>
 					<relational_design id="C063120B-1E3E-B2B4-6158-37687F00CF7F" should="true" />
 				</engineering>
 				<des_obj_version version="1.0" />
-				<domain oid="DOM3000004" file="defaultdomains" />
+				<domain oid="A3868C96-ACEE-3EE0-D069-2AA9278A17DF" file="cdw_model_Domains" />
 				<datatype dttype="var" size="10" typename="VARCHAR2" />
 				<reference value="false" />
 				<logicaltype dttype="VARCHAR" oid="LOGDT024" />
-				<use value="logical type" />
+				<use value="domain" />
+				<sourcetype sort="" />
+				<formula desc="" />
+				<subtypeSubstitution value="true" />
+				<restricted_substitution value="false" />
+				<source value="" />
+				<documents />
+				<parties />
+				<changerequests />
+				<measurements />
+			</object>
+			<object type="Attribute" id="38DC8065-7C11-0039-7EF9-43D79D20FAD2" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" use_default_color="true" background_color="null" foreground_color="null" unique="false" allownull="true" usedomainconstraints="true" is_oid="false" structured_attribute_id="" fk="false">
+				<name>SRC_NAME</name>
+				<comment></comment>
+				<notes></notes>
+				<alter type="created">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<alter type="changed">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<generator>BC592762-B923-572C-E363-075947522B75</generator>
+				<properties>
+					<parameter name="design.owner" value="cdw_model" />
+					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="object.property.defaultvalue" value="" />
+					<parameter name="object.property.usesdefault" value="false" />
+					<parameter name="property.comment.rdbms" value="" />
+				</properties>
+				<engineering>
+					<relational_design id="C063120B-1E3E-B2B4-6158-37687F00CF7F" should="true" />
+				</engineering>
+				<des_obj_version version="1.0" />
+				<domain oid="88EAD71B-B41E-C782-C234-DC9CAF12D007" file="cdw_model_Domains" />
+				<datatype dttype="var" size="128" typename="VARCHAR2" />
+				<reference value="false" />
+				<logicaltype dttype="VARCHAR" oid="LOGDT024" />
+				<use value="domain" />
 				<sourcetype sort="" />
 				<formula desc="" />
 				<subtypeSubstitution value="true" />
@@ -123,27 +166,29 @@
 			</object>
 		</contained>
 		<key>
-			<object type="Candidate Key" id="4F083C6C-AD61-4EF4-F962-DCC9AE77D026" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" use_default_color="true" background_color="null" foreground_color="null" pk="true" keystate="Primary Key" synonym="">
-				<name>CDW_STA_PK</name>
+			<object type="Candidate Key" id="5B067B7F-A6A4-CA8B-9228-310D99B8F8F3" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" use_default_color="true" background_color="null" foreground_color="null" pk="true" keystate="Primary Key" synonym="">
+				<name>CDW_SRC_PK</name>
 				<comment></comment>
 				<notes></notes>
 				<alter type="created">
 					<user>valdo</user>
-					<timestamp>2009-10-20 09:48:10</timestamp>
+					<timestamp>2009-12-09 12:54:46</timestamp>
 				</alter>
 				<alter type="changed">
 					<user>valdo</user>
-					<timestamp>2009-10-20 10:16:24</timestamp>
+					<timestamp>2009-12-09 12:54:46</timestamp>
 				</alter>
+				<generator>0AD660A4-9BA1-E872-A397-ED9C954AB1CC</generator>
 				<properties>
 					<parameter name="design.owner" value="cdw_model" />
 					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="property.comment.rdbms" value="" />
 				</properties>
 				<engineering>
 					<relational_design id="C063120B-1E3E-B2B4-6158-37687F00CF7F" should="true" />
 				</engineering>
 				<des_obj_version version="1.0" />
-				<contains type="Attribute">06531134-B9E6-27C4-8F52-DEF99AFE2F76</contains>
+				<contains type="Attribute">3F584E20-D2CF-89B3-B2F0-4D1A3DE75AEC</contains>
 				<documents />
 				<parties />
 				<changerequests />

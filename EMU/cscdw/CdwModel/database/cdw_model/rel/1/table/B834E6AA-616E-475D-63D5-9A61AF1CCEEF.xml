@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<metadatadoc version="2.0">
+	<object type="Table" id="B834E6AA-616E-475D-63D5-9A61AF1CCEEF" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="true" imported_id="9E5D5C55-3732-BB91-60B2-F9173D9CDF09" entitytype="" splittedTableID="" allow_type_substitution="true" minVolumes="0" expectedVolumes="0" maxVolumes="9999999" growthPercent="0" growthType="Year" normalForm="Third" adequatelyNormalized="NO" abbreviation="" oid_is_pk="false" use_default_color="true" background_color="null" foreground_color="null">
+		<name>CDW_UNITS</name>
+		<comment></comment>
+		<notes></notes>
+		<alter type="created">
+			<user>valdo</user>
+			<timestamp>2009-12-09 12:53:27</timestamp>
+		</alter>
+		<alter type="changed">
+			<user>valdo</user>
+			<timestamp>2009-12-09 12:53:27</timestamp>
+		</alter>
+		<properties>
+			<parameter name="design.owner" value="cdw_model" />
+			<parameter name="object.existsinrepository" value="true" />
+			<parameter name="property.comment.rdbms" value="" />
+		</properties>
+		<include_in_ddl value="false" />
+		<beforeDrop value="" />
+		<beforeCreate value="" />
+		<beforeAlter value="" />
+		<afterCreate value="" />
+		<afterAlter value="" />
+		<endOfScript value="" />
+		<spatial_table value="false" />
+		<oid_pk_columns />
+		<engineering should="true" />
+		<des_obj_version version="1.0" />
+		<fonts>
+			<font_object>
+				<parameter name="fo_type" value="Title" />
+				<parameter name="font_color" value="-16776961" />
+				<parameter name="font_name" value="Dialog" />
+				<parameter name="font_size" value="10" />
+				<parameter name="font_style" value="1" />
+			</font_object>
+			<font_object>
+				<parameter name="fo_type" value="Column" />
+				<parameter name="font_color" value="-16777216" />
+				<parameter name="font_name" value="Dialog" />
+				<parameter name="font_size" value="10" />
+				<parameter name="font_style" value="0" />
+			</font_object>
+			<font_object>
+				<parameter name="fo_type" value="Datatype" />
+				<parameter name="font_color" value="-16744448" />
+				<parameter name="font_name" value="Dialog" />
+				<parameter name="font_size" value="10" />
+				<parameter name="font_style" value="0" />
+			</font_object>
+			<font_object>
+				<parameter name="fo_type" value="PK Element" />
+				<parameter name="font_color" value="-16776961" />
+				<parameter name="font_name" value="Dialog" />
+				<parameter name="font_size" value="10" />
+				<parameter name="font_style" value="0" />
+			</font_object>
+			<font_object>
+				<parameter name="fo_type" value="FK Element" />
+				<parameter name="font_color" value="-16777216" />
+				<parameter name="font_name" value="Dialog" />
+				<parameter name="font_size" value="10" />
+				<parameter name="font_style" value="0" />
+			</font_object>
+			<font_object>
+				<parameter name="fo_type" value="UK Element" />
+				<parameter name="font_color" value="-16776961" />
+				<parameter name="font_name" value="Dialog" />
+				<parameter name="font_size" value="10" />
+				<parameter name="font_style" value="0" />
+			</font_object>
+			<font_object>
+				<parameter name="fo_type" value="Not Null" />
+				<parameter name="font_color" value="-65536" />
+				<parameter name="font_name" value="Dialog" />
+				<parameter name="font_size" value="10" />
+				<parameter name="font_style" value="0" />
+			</font_object>
+			<font_object>
+				<parameter name="fo_type" value="Key" />
+				<parameter name="font_color" value="-16777216" />
+				<parameter name="font_name" value="Dialog" />
+				<parameter name="font_size" value="10" />
+				<parameter name="font_style" value="0" />
+			</font_object>
+		</fonts>
+		<documents />
+		<parties />
+		<changerequests />
+		<measurements />
+		<contained>
+			<object type="Column" id="1CF8DDF0-C01F-9945-DEF1-A5CA0FAD1679" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" imported_id="55C71982-0EA2-ECDF-B842-1B84D49ACB4D" use_default_color="true" background_color="null" foreground_color="null" unique="false" allownull="false" usedomainconstraints="true" is_oid="false" structured_attribute_id="" fk="false">
+				<name>UNI_ID</name>
+				<comment></comment>
+				<notes></notes>
+				<alter type="created">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:53:27</timestamp>
+				</alter>
+				<alter type="changed">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:53:27</timestamp>
+				</alter>
+				<properties>
+					<parameter name="design.owner" value="cdw_model" />
+					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="object.property.defaultvalue" value="" />
+					<parameter name="object.property.usesdefault" value="false" />
+					<parameter name="property.comment.rdbms" value="" />
+				</properties>
+				<engineering should="true" />
+				<des_obj_version version="1.0" />
+				<domain oid="264308F0-ECBA-A31F-F442-7E512DB9FF55" file="cdw_model_Domains" />
+				<datatype dttype="var" size="30" typename="VARCHAR2" />
+				<abbreviation />
+				<reference value="false" />
+				<logicaltype dttype="VARCHAR" oid="LOGDT024" />
+				<use value="domain" />
+				<sourcetype sort="" />
+				<formula desc="" />
+				<subtypeSubstitution value="true" />
+				<restricted_substitution value="false" />
+				<security />
+				<ui_defaults readOnly="false" displayedOnReports="true" displayedOnForms="true" displayAs="Text" />
+				<eng_attribute_id eng_id="0B270B1C-DF13-3B31-16B9-396EED2A2B9E" />
+				<documents />
+				<parties />
+				<changerequests />
+				<measurements />
+			</object>
+			<object type="Column" id="9411B4F9-3467-9CF9-1123-0748EC2890F4" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" imported_id="1F98A62E-EB0F-4F76-1CBD-CF4D0A064679" use_default_color="true" background_color="null" foreground_color="null" unique="false" allownull="true" usedomainconstraints="true" is_oid="false" structured_attribute_id="" fk="false">
+				<name>UNI_RATE</name>
+				<comment></comment>
+				<notes></notes>
+				<alter type="created">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:53:27</timestamp>
+				</alter>
+				<alter type="changed">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:53:27</timestamp>
+				</alter>
+				<properties>
+					<parameter name="design.owner" value="cdw_model" />
+					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="object.property.defaultvalue" value="1" />
+					<parameter name="object.property.usesdefault" value="false" />
+					<parameter name="property.comment.rdbms" value="" />
+				</properties>
+				<engineering should="true" />
+				<des_obj_version version="1.0" />
+				<domain oid="80A89501-DEFB-9225-A0D7-0801467F35F9" file="cdw_model_Domains" />
+				<datatype dttype="packed" precision="" scale="" typename="NUMBER" />
+				<abbreviation />
+				<reference value="false" />
+				<logicaltype dttype="NUMERIC" oid="LOGDT019" />
+				<use value="domain" />
+				<sourcetype sort="" />
+				<formula desc="" />
+				<subtypeSubstitution value="true" />
+				<restricted_substitution value="false" />
+				<security />
+				<ui_defaults readOnly="false" displayedOnReports="true" displayedOnForms="true" displayAs="Text" />
+				<eng_attribute_id eng_id="8EDADFE4-8A03-2CB3-6DB5-852042BD1354" />
+				<documents />
+				<parties />
+				<changerequests />
+				<measurements />
+			</object>
+			<object type="Column" id="93C430D6-87FC-C51A-3FE0-D6EB24128E02" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" imported_id="605E4637-3E61-C54F-0A66-29A702A4C6DD" use_default_color="true" background_color="null" foreground_color="null" unique="false" allownull="true" usedomainconstraints="true" is_oid="false" structured_attribute_id="" fk="true" beforeDrop="">
+				<name>UNI_BUN_ID</name>
+				<comment></comment>
+				<notes></notes>
+				<alter type="created">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:53:27</timestamp>
+				</alter>
+				<alter type="changed">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:53:27</timestamp>
+				</alter>
+				<properties>
+					<parameter name="design.owner" value="cdw_model" />
+					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="object.property.defaultvalue" value="" />
+					<parameter name="object.property.usesdefault" value="false" />
+					<parameter name="property.comment.rdbms" value="" />
+				</properties>
+				<engineering should="true" />
+				<des_obj_version version="1.0" />
+				<domain oid="264308F0-ECBA-A31F-F442-7E512DB9FF55" file="cdw_model_Domains" />
+				<datatype dttype="var" size="30" typename="VARCHAR2" />
+				<abbreviation />
+				<reference value="false" />
+				<logicaltype dttype="VARCHAR" oid="LOGDT024" />
+				<use value="domain" />
+				<sourcetype sort="" />
+				<formula desc="" />
+				<subtypeSubstitution value="true" />
+				<restricted_substitution value="false" />
+				<security />
+				<ui_defaults readOnly="false" displayedOnReports="true" displayedOnForms="true" displayAs="Text" />
+				<eng_attribute_id eng_id="84DF9A4B-B40B-EC4B-35FB-FC8CDCFC9B71" />
+				<is_previous_column value="true" />
+				<associations>
+					<associated tableid="B1BF1742-8629-DEE0-5877-E21D3869505F" indexid="C5D1AF6C-5F48-00FA-4F8E-839B1D9C20CC" references="A99BA327-9A9B-9FD7-4610-E14DFA8086FA" fkassid="BA977114-C507-78C0-2A3C-AD3A9CC08545" />
+				</associations>
+				<documents />
+				<parties />
+				<changerequests />
+				<measurements />
+			</object>
+		</contained>
+		<key>
+			<object type="Index" id="BC1C9844-BBBB-0CC0-77DD-A383175B8BF6" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" imported_id="C63E6167-7C59-6E0E-D8A0-B10A99202212" use_default_color="true" background_color="null" foreground_color="null" pk="true" indexstate="Primary Constraint">
+				<name>CDW_UNITS_PK</name>
+				<comment></comment>
+				<notes></notes>
+				<alter type="created">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:53:27</timestamp>
+				</alter>
+				<alter type="changed">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:53:27</timestamp>
+				</alter>
+				<properties>
+					<parameter name="design.owner" value="cdw_model" />
+					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="property.comment.rdbms" value="" />
+				</properties>
+				<engineering should="true" />
+				<des_obj_version version="1.0" />
+				<functional></functional>
+				<contains type="Column" sortorder="ASC">1CF8DDF0-C01F-9945-DEF1-A5CA0FAD1679</contains>
+				<documents />
+				<parties />
+				<changerequests />
+				<measurements />
+			</object>
+			<object type="Index" id="D3572AA5-3EAC-AF77-3EA1-2F651FEEEE0B" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" use_default_color="true" background_color="null" foreground_color="null" pk="false" indexstate="Plain Index">
+				<name>RELATION_10</name>
+				<comment></comment>
+				<notes></notes>
+				<alter type="created">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:53:27</timestamp>
+				</alter>
+				<alter type="changed">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:53:27</timestamp>
+				</alter>
+				<properties>
+					<parameter name="design.owner" value="cdw_model" />
+					<parameter name="object.existsinrepository" value="true" />
+				</properties>
+				<engineering should="true" />
+				<des_obj_version version="1.0" />
+				<functional></functional>
+				<contains type="Column">93C430D6-87FC-C51A-3FE0-D6EB24128E02</contains>
+				<documents />
+				<parties />
+				<changerequests />
+				<measurements />
+			</object>
+		</key>
+	</object>
+</metadatadoc>

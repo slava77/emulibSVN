@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <metadatadoc version="2.0">
-	<object type="Relation" id="5CF64230-3E21-4127-B549-F0324521284F" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="true" use_default_color="true" background_color="null" foreground_color="null">
+	<object type="Relation" id="2BD17BF1-7278-4240-4289-6BF00EBD87C8" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="true" use_default_color="true" background_color="null" foreground_color="null">
 		<name>CDW_DOM_FTY_FK</name>
 		<comment></comment>
 		<notes></notes>
 		<alter type="created">
 			<user>valdo</user>
-			<timestamp>2009-10-20 09:57:09</timestamp>
+			<timestamp>2009-12-09 12:54:46</timestamp>
 		</alter>
 		<alter type="changed">
 			<user>valdo</user>
-			<timestamp>2009-10-20 10:12:40</timestamp>
+			<timestamp>2009-12-09 12:54:46</timestamp>
 		</alter>
+		<generator>D613D97E-A4C9-9F59-5A95-677216B38A39</generator>
 		<properties>
 			<parameter name="design.owner" value="cdw_model" />
 			<parameter name="object.existsinrepository" value="true" />
-			<parameter name="object.property.relation.connection.src.name" value="" />
-			<parameter name="object.property.relation.connection.tgt.name" value="" />
 			<parameter name="property.comment.rdbms" value="" />
 		</properties>
-		<connection endpoint="source" card="1" entity="D2BB092D-3864-5521-0261-48EB98F3E88E" allownull="true" />
-		<connection endpoint="target" card="*" entity="E75E9744-BD2E-8B99-B8A5-2009483C45FE" allownull="false" />
+		<connection endpoint="source" card="1" entity="61297918-C11E-4B38-316D-EFA1424FA0F2" allownull="true" />
+		<connection endpoint="target" card="*" entity="322D2BD8-E63C-3752-E1D1-2A9EE864DF77" allownull="true" />
 		<dominant_role>null</dominant_role>
 		<identifying>false</identifying>
 		<engineering>

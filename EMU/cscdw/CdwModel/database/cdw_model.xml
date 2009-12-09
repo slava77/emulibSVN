@@ -10,7 +10,7 @@
 		</alter>
 		<alter type="changed">
 			<user>valdo</user>
-			<timestamp>2009-10-20 09:28:17</timestamp>
+			<timestamp>2009-12-09 12:53:27</timestamp>
 		</alter>
 	</object>
 	<engineering_params delete_without_origin="false" engineer_coordinates="true" engineer_generated="true" show_engineering_intree="false" apply_naming_std="false" use_pref_abbreviation="true" upload_directory="" />
@@ -100,6 +100,7 @@
 		<notes></notes>
 	</design>
 	<domains>
+		<domain name="cdw_model_Domains" role="contains" />
 		<domain name="defaultdomains" role="uses" />
 	</domains>
 </model>

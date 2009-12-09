@@ -1,0 +1,749 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<metadatadoc version="2.0">
+	<object type="Entity" id="60445B3E-A7C5-F3CF-B88C-A8A2EB2C071D" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="true" entitytype="" allow_type_substitution="true" strategy="Single Table" minVolumes="0" expectedVolumes="0" maxVolumes="9999999" growthPercent="0" growthType="Year" normalForm="Third" adequatelyNormalized="NO" use_default_color="true" background_color="null" foreground_color="null">
+		<name>CDW_PARAM_VALUES</name>
+		<comment></comment>
+		<notes></notes>
+		<alter type="created">
+			<user>valdo</user>
+			<timestamp>2009-12-09 12:54:46</timestamp>
+		</alter>
+		<alter type="changed">
+			<user>valdo</user>
+			<timestamp>2009-12-09 12:54:46</timestamp>
+		</alter>
+		<generator>B82F695A-96D5-9D3A-C718-809190414FE7</generator>
+		<properties>
+			<parameter name="design.owner" value="cdw_model" />
+			<parameter name="object.existsinrepository" value="true" />
+			<parameter name="property.comment.rdbms" value="" />
+		</properties>
+		<parent inherits="false" />
+		<engineering>
+			<relational_design id="C063120B-1E3E-B2B4-6158-37687F00CF7F" should="true" />
+		</engineering>
+		<des_obj_version version="1.0" />
+		<fonts>
+			<font_object>
+				<parameter name="fo_type" value="Title" />
+				<parameter name="font_color" value="-16776961" />
+				<parameter name="font_name" value="Dialog" />
+				<parameter name="font_size" value="10" />
+				<parameter name="font_style" value="1" />
+			</font_object>
+			<font_object>
+				<parameter name="fo_type" value="Attribute" />
+				<parameter name="font_color" value="-16777216" />
+				<parameter name="font_name" value="Dialog" />
+				<parameter name="font_size" value="10" />
+				<parameter name="font_style" value="0" />
+			</font_object>
+			<font_object>
+				<parameter name="fo_type" value="Datatype" />
+				<parameter name="font_color" value="-16744448" />
+				<parameter name="font_name" value="Dialog" />
+				<parameter name="font_size" value="10" />
+				<parameter name="font_style" value="0" />
+			</font_object>
+			<font_object>
+				<parameter name="fo_type" value="PK Element" />
+				<parameter name="font_color" value="-16776961" />
+				<parameter name="font_name" value="Dialog" />
+				<parameter name="font_size" value="10" />
+				<parameter name="font_style" value="0" />
+			</font_object>
+			<font_object>
+				<parameter name="fo_type" value="FK Element" />
+				<parameter name="font_color" value="-16777216" />
+				<parameter name="font_name" value="Dialog" />
+				<parameter name="font_size" value="10" />
+				<parameter name="font_style" value="0" />
+			</font_object>
+			<font_object>
+				<parameter name="fo_type" value="UK Element" />
+				<parameter name="font_color" value="-16776961" />
+				<parameter name="font_name" value="Dialog" />
+				<parameter name="font_size" value="10" />
+				<parameter name="font_style" value="0" />
+			</font_object>
+			<font_object>
+				<parameter name="fo_type" value="Not Null" />
+				<parameter name="font_color" value="-65536" />
+				<parameter name="font_name" value="Dialog" />
+				<parameter name="font_size" value="10" />
+				<parameter name="font_style" value="0" />
+			</font_object>
+			<font_object>
+				<parameter name="fo_type" value="Key" />
+				<parameter name="font_color" value="-16777216" />
+				<parameter name="font_name" value="Dialog" />
+				<parameter name="font_size" value="10" />
+				<parameter name="font_style" value="0" />
+			</font_object>
+		</fonts>
+		<documents />
+		<parties />
+		<changerequests />
+		<measurements />
+		<contained>
+			<object type="Attribute" id="C4D1C562-9DDA-0C25-8EC8-5A5F7E218E73" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" use_default_color="true" background_color="null" foreground_color="null" unique="false" allownull="false" usedomainconstraints="true" is_oid="false" structured_attribute_id="" fk="false">
+				<name>PVA_ID</name>
+				<comment></comment>
+				<notes></notes>
+				<alter type="created">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<alter type="changed">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<generator>C4C573BA-2903-5950-9D90-25D0397E5290</generator>
+				<properties>
+					<parameter name="design.owner" value="cdw_model" />
+					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="object.property.defaultvalue" value="" />
+					<parameter name="object.property.usesdefault" value="false" />
+					<parameter name="property.comment.rdbms" value="" />
+				</properties>
+				<engineering>
+					<relational_design id="C063120B-1E3E-B2B4-6158-37687F00CF7F" should="true" />
+				</engineering>
+				<des_obj_version version="1.0" />
+				<domain oid="2FC3C1A7-43C3-AE5D-D0EE-3FDBC614010B" file="cdw_model_Domains" />
+				<datatype dttype="packed" precision="20" scale="0" typename="NUMBER" />
+				<reference value="false" />
+				<logicaltype dttype="NUMERIC" oid="LOGDT019" />
+				<use value="domain" />
+				<sourcetype sort="" />
+				<formula desc="" />
+				<subtypeSubstitution value="true" />
+				<restricted_substitution value="false" />
+				<source value="" />
+				<documents />
+				<parties />
+				<changerequests />
+				<measurements />
+			</object>
+			<object type="Attribute" id="A45269EF-7D5A-A876-D48A-61BBFB7651B3" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" use_default_color="true" background_color="null" foreground_color="null" unique="false" allownull="true" usedomainconstraints="true" is_oid="false" structured_attribute_id="" fk="true" references="3F584E20-D2CF-89B3-B2F0-4D1A3DE75AEC">
+				<name>PVA_SRC_ID</name>
+				<comment></comment>
+				<notes></notes>
+				<alter type="created">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<alter type="changed">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<generator>F42D94ED-8677-8CC3-D202-5DD3F02FAAF2</generator>
+				<properties>
+					<parameter name="design.owner" value="cdw_model" />
+					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="object.property.defaultvalue" value="" />
+					<parameter name="object.property.usesdefault" value="false" />
+					<parameter name="property.comment.rdbms" value="" />
+					<parameter name="refers.attribute" value="3F584E20-D2CF-89B3-B2F0-4D1A3DE75AEC" />
+				</properties>
+				<engineering>
+					<relational_design id="C063120B-1E3E-B2B4-6158-37687F00CF7F" should="true" />
+				</engineering>
+				<des_obj_version version="1.0" />
+				<domain oid="A3868C96-ACEE-3EE0-D069-2AA9278A17DF" file="cdw_model_Domains" />
+				<datatype dttype="var" size="10" typename="VARCHAR2" />
+				<reference value="false" />
+				<logicaltype dttype="VARCHAR" oid="LOGDT024" />
+				<use value="domain" />
+				<sourcetype sort="" />
+				<formula desc="" />
+				<subtypeSubstitution value="true" />
+				<restricted_substitution value="false" />
+				<source value="" />
+				<documents />
+				<parties />
+				<changerequests />
+				<measurements />
+			</object>
+			<object type="Attribute" id="51A9FD09-9305-6A7F-E4AE-B2230FFF6EEA" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" use_default_color="true" background_color="null" foreground_color="null" unique="false" allownull="true" usedomainconstraints="true" is_oid="false" structured_attribute_id="" fk="false">
+				<name>PVA_SOURCE_TIME</name>
+				<comment></comment>
+				<notes></notes>
+				<alter type="created">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<alter type="changed">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<generator>65044641-E6D1-B1C7-AC46-420DDE71A686</generator>
+				<properties>
+					<parameter name="design.owner" value="cdw_model" />
+					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="object.property.defaultvalue" value="" />
+					<parameter name="object.property.usesdefault" value="false" />
+					<parameter name="property.comment.rdbms" value="" />
+				</properties>
+				<engineering>
+					<relational_design id="C063120B-1E3E-B2B4-6158-37687F00CF7F" should="true" />
+				</engineering>
+				<des_obj_version version="1.0" />
+				<domain oid="90AA5EA3-262B-48F4-8AF7-EC475BBE7EC0" file="cdw_model_Domains" />
+				<datatype dttype="builtin" typename="DATE" />
+				<reference value="false" />
+				<logicaltype dttype="Date" oid="LOGDT007" />
+				<use value="domain" />
+				<sourcetype sort="" />
+				<formula desc="" />
+				<subtypeSubstitution value="true" />
+				<restricted_substitution value="false" />
+				<source value="" />
+				<documents />
+				<parties />
+				<changerequests />
+				<measurements />
+			</object>
+			<object type="Attribute" id="C2731CFA-1234-B039-39D4-73FEFF4B332C" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" use_default_color="true" background_color="null" foreground_color="null" unique="false" allownull="true" usedomainconstraints="true" is_oid="false" structured_attribute_id="" fk="true" references="9024BA26-0ED5-32F6-B49D-B74D90075E79">
+				<name>PVA_PAR_ID</name>
+				<comment></comment>
+				<notes></notes>
+				<alter type="created">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<alter type="changed">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<generator>EC416729-6A99-C18F-54E8-5CBAE4AB2EBF</generator>
+				<properties>
+					<parameter name="design.owner" value="cdw_model" />
+					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="object.property.defaultvalue" value="" />
+					<parameter name="object.property.usesdefault" value="false" />
+					<parameter name="property.comment.rdbms" value="" />
+					<parameter name="refers.attribute" value="9024BA26-0ED5-32F6-B49D-B74D90075E79" />
+				</properties>
+				<engineering>
+					<relational_design id="C063120B-1E3E-B2B4-6158-37687F00CF7F" should="true" />
+				</engineering>
+				<des_obj_version version="1.0" />
+				<domain oid="264308F0-ECBA-A31F-F442-7E512DB9FF55" file="cdw_model_Domains" />
+				<datatype dttype="var" size="30" typename="VARCHAR2" />
+				<reference value="false" />
+				<logicaltype dttype="VARCHAR" oid="LOGDT024" />
+				<use value="domain" />
+				<sourcetype sort="" />
+				<formula desc="" />
+				<subtypeSubstitution value="true" />
+				<restricted_substitution value="false" />
+				<source value="" />
+				<documents />
+				<parties />
+				<changerequests />
+				<measurements />
+			</object>
+			<object type="Attribute" id="D3DCD0C7-1217-ABA9-0803-03830CAC272B" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" use_default_color="true" background_color="null" foreground_color="null" unique="false" allownull="true" usedomainconstraints="true" is_oid="false" structured_attribute_id="" fk="false">
+				<name>PVA_CREATE_TIME</name>
+				<comment></comment>
+				<notes></notes>
+				<alter type="created">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<alter type="changed">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<generator>21FB7DCD-53AF-D7FC-A751-0D2FCDB00E3A</generator>
+				<properties>
+					<parameter name="design.owner" value="cdw_model" />
+					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="object.property.defaultvalue" value="" />
+					<parameter name="object.property.usesdefault" value="false" />
+					<parameter name="property.comment.rdbms" value="" />
+				</properties>
+				<engineering>
+					<relational_design id="C063120B-1E3E-B2B4-6158-37687F00CF7F" should="true" />
+				</engineering>
+				<des_obj_version version="1.0" />
+				<domain oid="90AA5EA3-262B-48F4-8AF7-EC475BBE7EC0" file="cdw_model_Domains" />
+				<datatype dttype="builtin" typename="DATE" />
+				<reference value="false" />
+				<logicaltype dttype="Date" oid="LOGDT007" />
+				<use value="domain" />
+				<sourcetype sort="" />
+				<formula desc="" />
+				<subtypeSubstitution value="true" />
+				<restricted_substitution value="false" />
+				<source value="" />
+				<documents />
+				<parties />
+				<changerequests />
+				<measurements />
+			</object>
+			<object type="Attribute" id="832ECFE3-A250-1E6F-57B9-050EAEE220B6" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" use_default_color="true" background_color="null" foreground_color="null" unique="false" allownull="true" usedomainconstraints="true" is_oid="false" structured_attribute_id="" fk="true" references="7B022A1A-6656-5103-3E46-E268EFC941BF">
+				<name>PVA_BUN_ID</name>
+				<comment></comment>
+				<notes></notes>
+				<alter type="created">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<alter type="changed">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<generator>1311A7DA-D0F0-7048-A5EB-8E8CEB131627</generator>
+				<properties>
+					<parameter name="design.owner" value="cdw_model" />
+					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="object.property.defaultvalue" value="" />
+					<parameter name="object.property.usesdefault" value="false" />
+					<parameter name="property.comment.rdbms" value="" />
+					<parameter name="refers.attribute" value="7B022A1A-6656-5103-3E46-E268EFC941BF" />
+				</properties>
+				<engineering>
+					<relational_design id="C063120B-1E3E-B2B4-6158-37687F00CF7F" should="true" />
+				</engineering>
+				<des_obj_version version="1.0" />
+				<domain oid="264308F0-ECBA-A31F-F442-7E512DB9FF55" file="cdw_model_Domains" />
+				<datatype dttype="var" size="30" typename="VARCHAR2" />
+				<reference value="false" />
+				<logicaltype dttype="VARCHAR" oid="LOGDT024" />
+				<use value="domain" />
+				<sourcetype sort="" />
+				<formula desc="" />
+				<subtypeSubstitution value="true" />
+				<restricted_substitution value="false" />
+				<source value="" />
+				<documents />
+				<parties />
+				<changerequests />
+				<measurements />
+			</object>
+			<object type="Attribute" id="D4A09AA0-1299-9618-E484-AD4FD9CFC1C1" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" use_default_color="true" background_color="null" foreground_color="null" unique="false" allownull="true" usedomainconstraints="true" is_oid="false" structured_attribute_id="" fk="false">
+				<name>PVA_COMPONENT_ID</name>
+				<comment></comment>
+				<notes></notes>
+				<alter type="created">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<alter type="changed">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<generator>A3665D26-A37C-0E58-EC6A-95A8CCEF7080</generator>
+				<properties>
+					<parameter name="design.owner" value="cdw_model" />
+					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="object.property.defaultvalue" value="" />
+					<parameter name="object.property.usesdefault" value="false" />
+					<parameter name="property.comment.rdbms" value="" />
+				</properties>
+				<engineering>
+					<relational_design id="C063120B-1E3E-B2B4-6158-37687F00CF7F" should="true" />
+				</engineering>
+				<des_obj_version version="1.0" />
+				<domain oid="264308F0-ECBA-A31F-F442-7E512DB9FF55" file="cdw_model_Domains" />
+				<datatype dttype="var" size="30" typename="VARCHAR2" />
+				<reference value="false" />
+				<logicaltype dttype="VARCHAR" oid="LOGDT024" />
+				<use value="domain" />
+				<sourcetype sort="" />
+				<formula desc="" />
+				<subtypeSubstitution value="true" />
+				<restricted_substitution value="false" />
+				<source value="" />
+				<documents />
+				<parties />
+				<changerequests />
+				<measurements />
+			</object>
+			<object type="Attribute" id="1E3EC922-80D5-DDF8-EF54-F09B9821851A" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" use_default_color="true" background_color="null" foreground_color="null" unique="false" allownull="true" usedomainconstraints="true" is_oid="false" structured_attribute_id="" fk="false">
+				<name>PVA_RUN_NUMBER</name>
+				<comment></comment>
+				<notes></notes>
+				<alter type="created">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<alter type="changed">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<generator>2AC41011-A8C8-46BC-DAAA-52124854F903</generator>
+				<properties>
+					<parameter name="design.owner" value="cdw_model" />
+					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="object.property.defaultvalue" value="" />
+					<parameter name="object.property.usesdefault" value="false" />
+					<parameter name="property.comment.rdbms" value="" />
+				</properties>
+				<engineering>
+					<relational_design id="C063120B-1E3E-B2B4-6158-37687F00CF7F" should="true" />
+				</engineering>
+				<des_obj_version version="1.0" />
+				<domain oid="36C78390-FECF-9384-DF76-EED7C8DD2DD9" file="cdw_model_Domains" />
+				<datatype dttype="packed" precision="10" scale="0" typename="NUMBER" />
+				<reference value="false" />
+				<logicaltype dttype="NUMERIC" oid="LOGDT019" />
+				<use value="domain" />
+				<sourcetype sort="" />
+				<formula desc="" />
+				<subtypeSubstitution value="true" />
+				<restricted_substitution value="false" />
+				<source value="" />
+				<documents />
+				<parties />
+				<changerequests />
+				<measurements />
+			</object>
+			<object type="Attribute" id="B3C08AA1-2E96-E5DE-DDBE-E6BA90938D12" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" use_default_color="true" background_color="null" foreground_color="null" unique="false" allownull="true" usedomainconstraints="true" is_oid="false" structured_attribute_id="" fk="false">
+				<name>PVA_STRING_VALUE</name>
+				<comment></comment>
+				<notes></notes>
+				<alter type="created">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<alter type="changed">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<generator>FDEAD68E-B1B8-CE41-4931-0F3724B0CC44</generator>
+				<properties>
+					<parameter name="design.owner" value="cdw_model" />
+					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="object.property.defaultvalue" value="" />
+					<parameter name="object.property.usesdefault" value="false" />
+					<parameter name="property.comment.rdbms" value="" />
+				</properties>
+				<engineering>
+					<relational_design id="C063120B-1E3E-B2B4-6158-37687F00CF7F" should="true" />
+				</engineering>
+				<des_obj_version version="1.0" />
+				<domain oid="546810B9-9BA5-2984-AE5A-A83B395D579E" file="cdw_model_Domains" />
+				<datatype dttype="var" size="4000" typename="VARCHAR2" />
+				<reference value="false" />
+				<logicaltype dttype="VARCHAR" oid="LOGDT024" />
+				<use value="domain" />
+				<sourcetype sort="" />
+				<formula desc="" />
+				<subtypeSubstitution value="true" />
+				<restricted_substitution value="false" />
+				<source value="" />
+				<documents />
+				<parties />
+				<changerequests />
+				<measurements />
+			</object>
+			<object type="Attribute" id="F5867F55-49E1-0E50-41DA-18872DB36C11" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" use_default_color="true" background_color="null" foreground_color="null" unique="false" allownull="true" usedomainconstraints="true" is_oid="false" structured_attribute_id="" fk="false">
+				<name>PVA_NUMERIC_VALUE</name>
+				<comment></comment>
+				<notes></notes>
+				<alter type="created">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<alter type="changed">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<generator>6AFB92C6-9A02-7774-B7F9-DDE4901B7913</generator>
+				<properties>
+					<parameter name="design.owner" value="cdw_model" />
+					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="object.property.defaultvalue" value="" />
+					<parameter name="object.property.usesdefault" value="false" />
+					<parameter name="property.comment.rdbms" value="" />
+				</properties>
+				<engineering>
+					<relational_design id="C063120B-1E3E-B2B4-6158-37687F00CF7F" should="true" />
+				</engineering>
+				<des_obj_version version="1.0" />
+				<domain oid="80A89501-DEFB-9225-A0D7-0801467F35F9" file="cdw_model_Domains" />
+				<datatype dttype="packed" precision="" scale="" typename="NUMBER" />
+				<reference value="false" />
+				<logicaltype dttype="NUMERIC" oid="LOGDT019" />
+				<use value="domain" />
+				<sourcetype sort="" />
+				<formula desc="" />
+				<subtypeSubstitution value="true" />
+				<restricted_substitution value="false" />
+				<source value="" />
+				<documents />
+				<parties />
+				<changerequests />
+				<measurements />
+			</object>
+			<object type="Attribute" id="B595A709-9A8A-69ED-386A-B3FA5F85A9F1" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" use_default_color="true" background_color="null" foreground_color="null" unique="false" allownull="true" usedomainconstraints="true" is_oid="false" structured_attribute_id="" fk="false">
+				<name>PVA_BOOLEAN_VALUE</name>
+				<comment></comment>
+				<notes></notes>
+				<alter type="created">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<alter type="changed">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<generator>95FCE76C-F147-37CA-CF8F-0E44A1CCC057</generator>
+				<properties>
+					<parameter name="design.owner" value="cdw_model" />
+					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="object.property.defaultvalue" value="" />
+					<parameter name="object.property.usesdefault" value="false" />
+					<parameter name="property.comment.rdbms" value="" />
+				</properties>
+				<engineering>
+					<relational_design id="C063120B-1E3E-B2B4-6158-37687F00CF7F" should="true" />
+				</engineering>
+				<des_obj_version version="1.0" />
+				<domain oid="82B5C692-095B-2A15-DF4F-FB361672ED53" file="cdw_model_Domains" />
+				<datatype dttype="packed" precision="1" scale="0" typename="NUMBER" />
+				<reference value="false" />
+				<logicaltype dttype="NUMERIC" oid="LOGDT019" />
+				<use value="domain" />
+				<sourcetype sort="" />
+				<formula desc="" />
+				<subtypeSubstitution value="true" />
+				<restricted_substitution value="false" />
+				<source value="" />
+				<documents />
+				<parties />
+				<changerequests />
+				<measurements />
+			</object>
+			<object type="Attribute" id="C66482C9-FF38-A33E-D42B-61341F27141C" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" use_default_color="true" background_color="null" foreground_color="null" unique="false" allownull="true" usedomainconstraints="true" is_oid="false" structured_attribute_id="" fk="false">
+				<name>PVA_LOWER_THRESHOLD</name>
+				<comment></comment>
+				<notes></notes>
+				<alter type="created">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<alter type="changed">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<generator>C26DED91-F0D8-D874-5426-2719A5538725</generator>
+				<properties>
+					<parameter name="design.owner" value="cdw_model" />
+					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="object.property.defaultvalue" value="" />
+					<parameter name="object.property.usesdefault" value="false" />
+					<parameter name="property.comment.rdbms" value="" />
+				</properties>
+				<engineering>
+					<relational_design id="C063120B-1E3E-B2B4-6158-37687F00CF7F" should="true" />
+				</engineering>
+				<des_obj_version version="1.0" />
+				<domain oid="B7371C94-316D-B395-4372-65F4166C5357" file="cdw_model_Domains" />
+				<datatype dttype="packed" precision="20" scale="10" typename="NUMBER" />
+				<reference value="false" />
+				<logicaltype dttype="NUMERIC" oid="LOGDT019" />
+				<use value="domain" />
+				<sourcetype sort="" />
+				<formula desc="" />
+				<subtypeSubstitution value="true" />
+				<restricted_substitution value="false" />
+				<source value="" />
+				<documents />
+				<parties />
+				<changerequests />
+				<measurements />
+			</object>
+			<object type="Attribute" id="2B1077E2-B7E4-5441-3BA1-6BB6B036872C" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" use_default_color="true" background_color="null" foreground_color="null" unique="false" allownull="true" usedomainconstraints="true" is_oid="false" structured_attribute_id="" fk="false">
+				<name>PVA_UPPER_THRESHOLD</name>
+				<comment></comment>
+				<notes></notes>
+				<alter type="created">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<alter type="changed">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<generator>059FF98D-9105-4A0E-E325-B281A4BC59D9</generator>
+				<properties>
+					<parameter name="design.owner" value="cdw_model" />
+					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="object.property.defaultvalue" value="" />
+					<parameter name="object.property.usesdefault" value="false" />
+					<parameter name="property.comment.rdbms" value="" />
+				</properties>
+				<engineering>
+					<relational_design id="C063120B-1E3E-B2B4-6158-37687F00CF7F" should="true" />
+				</engineering>
+				<des_obj_version version="1.0" />
+				<domain oid="B7371C94-316D-B395-4372-65F4166C5357" file="cdw_model_Domains" />
+				<datatype dttype="packed" precision="20" scale="10" typename="NUMBER" />
+				<reference value="false" />
+				<logicaltype dttype="NUMERIC" oid="LOGDT019" />
+				<use value="domain" />
+				<sourcetype sort="" />
+				<formula desc="" />
+				<subtypeSubstitution value="true" />
+				<restricted_substitution value="false" />
+				<source value="" />
+				<documents />
+				<parties />
+				<changerequests />
+				<measurements />
+			</object>
+			<object type="Attribute" id="04F71114-E883-1A21-1578-000BB504CCE7" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" use_default_color="true" background_color="null" foreground_color="null" unique="false" allownull="true" usedomainconstraints="true" is_oid="false" structured_attribute_id="" fk="false">
+				<name>PVA_FRACTION</name>
+				<comment></comment>
+				<notes></notes>
+				<alter type="created">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<alter type="changed">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<generator>C275ECB9-D030-A581-2D7E-48CC58092220</generator>
+				<properties>
+					<parameter name="design.owner" value="cdw_model" />
+					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="object.property.defaultvalue" value="" />
+					<parameter name="object.property.usesdefault" value="false" />
+					<parameter name="property.comment.rdbms" value="" />
+				</properties>
+				<engineering>
+					<relational_design id="C063120B-1E3E-B2B4-6158-37687F00CF7F" should="true" />
+				</engineering>
+				<des_obj_version version="1.0" />
+				<domain oid="882F851D-0E0F-B6CD-6167-778888AF7517" file="cdw_model_Domains" />
+				<datatype dttype="packed" precision="10" scale="9" typename="NUMBER" />
+				<reference value="false" />
+				<logicaltype dttype="NUMERIC" oid="LOGDT019" />
+				<use value="domain" />
+				<sourcetype sort="" />
+				<formula desc="" />
+				<subtypeSubstitution value="true" />
+				<restricted_substitution value="false" />
+				<source value="" />
+				<documents />
+				<parties />
+				<changerequests />
+				<measurements />
+			</object>
+			<object type="Attribute" id="105CFFFF-AB6C-FBE7-B0C1-3FAECC684DFD" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" use_default_color="true" background_color="null" foreground_color="null" unique="false" allownull="true" usedomainconstraints="true" is_oid="false" structured_attribute_id="" fk="true" references="50BEA683-7FE5-8FB2-2F96-14AE73B5B584">
+				<name>PVA_SEV_ID</name>
+				<comment></comment>
+				<notes></notes>
+				<alter type="created">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<alter type="changed">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<generator>03317A34-1AAF-23A2-8DF5-99FA7C2B0AD1</generator>
+				<properties>
+					<parameter name="design.owner" value="cdw_model" />
+					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="object.property.defaultvalue" value="" />
+					<parameter name="object.property.usesdefault" value="false" />
+					<parameter name="property.comment.rdbms" value="" />
+					<parameter name="refers.attribute" value="50BEA683-7FE5-8FB2-2F96-14AE73B5B584" />
+				</properties>
+				<engineering>
+					<relational_design id="C063120B-1E3E-B2B4-6158-37687F00CF7F" should="true" />
+				</engineering>
+				<des_obj_version version="1.0" />
+				<domain oid="A3868C96-ACEE-3EE0-D069-2AA9278A17DF" file="cdw_model_Domains" />
+				<datatype dttype="var" size="10" typename="VARCHAR2" />
+				<reference value="false" />
+				<logicaltype dttype="VARCHAR" oid="LOGDT024" />
+				<use value="domain" />
+				<sourcetype sort="" />
+				<formula desc="" />
+				<subtypeSubstitution value="true" />
+				<restricted_substitution value="false" />
+				<source value="" />
+				<documents />
+				<parties />
+				<changerequests />
+				<measurements />
+			</object>
+			<object type="Attribute" id="C0C121F6-420F-AC72-961E-0C1300D8C734" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" use_default_color="true" background_color="null" foreground_color="null" unique="false" allownull="true" usedomainconstraints="true" is_oid="false" structured_attribute_id="" fk="false">
+				<name>PVA_DESCR</name>
+				<comment></comment>
+				<notes></notes>
+				<alter type="created">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<alter type="changed">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<generator>EE024EB0-8791-9899-B8FB-774959C4DB6E</generator>
+				<properties>
+					<parameter name="design.owner" value="cdw_model" />
+					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="object.property.defaultvalue" value="" />
+					<parameter name="object.property.usesdefault" value="false" />
+					<parameter name="property.comment.rdbms" value="" />
+				</properties>
+				<engineering>
+					<relational_design id="C063120B-1E3E-B2B4-6158-37687F00CF7F" should="true" />
+				</engineering>
+				<des_obj_version version="1.0" />
+				<domain oid="FF08A978-49DE-4F53-6F40-8DCCE6B480BE" file="cdw_model_Domains" />
+				<datatype dttype="builtin" typename="CLOB" />
+				<reference value="false" />
+				<logicaltype dttype="CLOB" oid="LOGDT028" />
+				<use value="domain" />
+				<sourcetype sort="" />
+				<formula desc="" />
+				<subtypeSubstitution value="true" />
+				<restricted_substitution value="false" />
+				<source value="" />
+				<documents />
+				<parties />
+				<changerequests />
+				<measurements />
+			</object>
+		</contained>
+		<key>
+			<object type="Candidate Key" id="E42481EF-2987-D958-4E33-B21E28D6C50B" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="false" use_default_color="true" background_color="null" foreground_color="null" pk="true" keystate="Primary Key" synonym="">
+				<name>CDW_PVA_PK</name>
+				<comment></comment>
+				<notes></notes>
+				<alter type="created">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<alter type="changed">
+					<user>valdo</user>
+					<timestamp>2009-12-09 12:54:46</timestamp>
+				</alter>
+				<generator>63A0AE15-B742-817A-AABC-E9F172B2A2E1</generator>
+				<properties>
+					<parameter name="design.owner" value="cdw_model" />
+					<parameter name="object.existsinrepository" value="true" />
+					<parameter name="property.comment.rdbms" value="" />
+				</properties>
+				<engineering>
+					<relational_design id="C063120B-1E3E-B2B4-6158-37687F00CF7F" should="true" />
+				</engineering>
+				<des_obj_version version="1.0" />
+				<contains type="Attribute">C4D1C562-9DDA-0C25-8EC8-5A5F7E218E73</contains>
+				<documents />
+				<parties />
+				<changerequests />
+				<measurements />
+			</object>
+		</key>
+	</object>
+</metadatadoc>

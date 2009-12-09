@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<metadatadoc version="2.0">
+	<object type="Sequence" id="F0BBB4B9-73A6-3A4F-8CCA-F204C7C6D547">
+		<name>CDW_PVA_ID_SEQ</name>
+		<comment></comment>
+		<notes></notes>
+		<alter type="created">
+			<user>valdo</user>
+			<timestamp>2009-12-09 12:53:27</timestamp>
+		</alter>
+		<alter type="changed">
+			<user>valdo</user>
+			<timestamp>2009-12-09 12:53:27</timestamp>
+		</alter>
+		<properties>
+			<parameter name="object.property.auto.Cache" value="20" />
+			<parameter name="object.property.auto.Cycle" value="NO" />
+			<parameter name="object.property.auto.GeneratedInRDBMS" value="false" />
+			<parameter name="object.property.auto.IncrementBy" value="1" />
+			<parameter name="object.property.auto.LongName" value="CDW_PVA_ID_SEQ" />
+			<parameter name="object.property.auto.MarkedGenerate" value="true" />
+			<parameter name="object.property.auto.MaxValue" value="99999999999999999999" />
+			<parameter name="object.property.auto.MinValue" value="1" />
+			<parameter name="object.property.auto.Name" value="CDW_PVA_ID_SEQ" />
+			<parameter name="object.property.auto.NameHasQuotes" value="false" />
+			<parameter name="object.property.auto.Order" value="NO" />
+			<parameter name="object.property.auto.RawObject" value="false" />
+			<parameter name="object.property.auto.StartWith" value="1" />
+			<parameter name="object.property.auto.User" value="NO_OBJECT" />
+			<parameter name="design.owner" value="cdw_model" />
+			<parameter name="object.existsinrepository" value="true" />
+		</properties>
+	</object>
+</metadatadoc>

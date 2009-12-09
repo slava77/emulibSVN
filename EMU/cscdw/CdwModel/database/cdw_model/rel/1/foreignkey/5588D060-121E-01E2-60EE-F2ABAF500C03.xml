@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<metadatadoc version="2.0">
+	<object type="FKIndexAssociation" id="5588D060-121E-01E2-60EE-F2ABAF500C03" rep_oid="null" rep_ovid="null" is_checkedout="false" checkedout_by="" visible_in_main_view="true" imported_id="DE68F425-AAD3-3A28-BEC3-F1A994DC8699" tableid="B82F695A-96D5-9D3A-C718-809190414FE7" reftableid="B1BF1742-8629-DEE0-5877-E21D3869505F" references="C5D1AF6C-5F48-00FA-4F8E-839B1D9C20CC" localindexid="A9BB5750-9E4E-6B76-A4B3-9AB9B1E5B9CC" delrule="SET NULL ENABLE" mandatory="false" transferable="true" use_default_color="true" background_color="null" foreground_color="null">
+		<name>RELATION_12</name>
+		<comment></comment>
+		<notes></notes>
+		<alter type="created">
+			<user>valdo</user>
+			<timestamp>2009-12-09 12:53:27</timestamp>
+		</alter>
+		<alter type="changed">
+			<user>valdo</user>
+			<timestamp>2009-12-09 12:53:27</timestamp>
+		</alter>
+		<properties>
+			<parameter name="design.owner" value="cdw_model" />
+			<parameter name="object.existsinrepository" value="true" />
+			<parameter name="property.comment.rdbms" value="" />
+		</properties>
+		<engineering should="true" />
+		<des_obj_version version="1.0" />
+		<documents />
+		<parties />
+		<changerequests />
+		<measurements />
+	</object>
+</metadatadoc>
