@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns0:factCollection  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+   xmlns:ns0='http://www.cern.ch/cms/csc/exsys/data'
+   xsi:schemaLocation='http://www.cern.ch/cms/csc/exsys/data fact.xsd'>
+    <ns0:source>Xmas</ns0:source>
+    <ns0:slidingTmbTriggerCounterFact>
+        <ns0:time>2009-12-04T14:51:29.100102Z</ns0:time>
+        <ns0:component>ME+1/1/1</ns0:component>
+        <ns0:severity>INFO</ns0:severity>
+        <ns0:alctCount>1</ns0:alctCount>
+        <ns0:clctCount>2</ns0:clctCount>
+        <ns0:lctCount>3</ns0:lctCount>
+        <ns0:l1aCount>4</ns0:l1aCount>
+        <ns0:windowWidth>30</ns0:windowWidth>
+    </ns0:slidingTmbTriggerCounterFact>
+    <ns0:cumulativeTmbTriggerCounterFact>
+        <ns0:time>2009-12-04T14:51:29.100102Z</ns0:time>
+        <ns0:component>ME+1/1/1</ns0:component>
+        <ns0:severity>INFO</ns0:severity>
+        <ns0:alctCount>1</ns0:alctCount>
+        <ns0:clctCount>2</ns0:clctCount>
+        <ns0:lctCount>3</ns0:lctCount>
+        <ns0:l1aCount>4</ns0:l1aCount>
+    </ns0:cumulativeTmbTriggerCounterFact>
+</ns0:factCollection>
