@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ns0:factCollection  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
-   xmlns:ns0='http://www.cern.ch/cms/csc/exsys/data'
-   xsi:schemaLocation='http://www.cern.ch/cms/csc/exsys/data fact.xsd'>
+   xmlns:ns0='http://www.cern.ch/cms/csc/cdw/data'
+   xsi:schemaLocation='http://www.cern.ch/cms/csc/cdw/data fact.xsd'>
     <ns0:source>Xmas</ns0:source>
     <ns0:slidingTmbTriggerCounterFact>
         <ns0:time>2009-12-04T14:51:29.100102Z</ns0:time>
