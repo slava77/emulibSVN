@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" targetNamespace="http://ws.dw.csc.cms.cern.org/" xmlns:ns1="http://www.cern.org/cms/csc/dw/model" xmlns:tns="http://ws.dw.csc.cms.cern.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:import namespace="http://www.cern.org/cms/csc/dw/model" schemaLocation="FactCollectionInputService_schema1.xsd"/>
+
+  <xs:element name="getFactCollection" type="tns:getFactCollection"/>
+
+  <xs:element name="getFactCollectionResponse" type="tns:getFactCollectionResponse"/>
+
+  <xs:complexType name="getFactCollection">
+    <xs:sequence>
+      <xs:element name="factCollection" type="ns1:factCollectionType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getFactCollectionResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:int" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+
