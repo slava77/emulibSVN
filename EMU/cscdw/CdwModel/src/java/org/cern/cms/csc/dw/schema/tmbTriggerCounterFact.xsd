@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    targetNamespace="http://www.cern.org/cms/csc/dw/model"
-    xmlns:tns="http://www.cern.org/cms/csc/dw/model"
-    elementFormDefault="qualified">
+    targetNamespace="http://www.cern.ch/cms/csc/dw/model"
+    xmlns:tns="http://www.cern.ch/cms/csc/dw/model"
+    elementFormDefault="qualified"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+	xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+	jaxb:extensionBindingPrefixes="xjc orm hj"
+	jaxb:version="2.0">
 
     <xsd:element name="slidingTmbTriggerCounterFact"
                  type="tns:slidingTmbTriggerCounterFactType"
@@ -13,6 +19,14 @@
                  substitutionGroup="tns:fact"/>
 
     <xsd:complexType name="slidingTmbTriggerCounterFactType">
+      	<xsd:annotation>
+    		<xsd:appinfo>
+                <jaxb:class name="SlidingTmbTriggerCounterFact" />
+                <hj:entity>
+                    <orm:table name="CDW_TMB_TRG_CNT_SLIDING_FACTS"/>
+                </hj:entity>
+            </xsd:appinfo>
+        </xsd:annotation>
         <xsd:complexContent>
             <xsd:extension base="tns:factType">
                 <xsd:sequence>
@@ -27,6 +41,14 @@
     </xsd:complexType>
 
     <xsd:complexType name="cumulativeTmbTriggerCounterFactType">
+      	<xsd:annotation>
+    		<xsd:appinfo>
+                <jaxb:class name="CumulativeTmbTriggerCounterFact" />
+                <hj:entity>
+                    <orm:table name="CDW_TMB_TRG_CNT_CUMUL_FACTS"/>
+                </hj:entity>
+            </xsd:appinfo>
+        </xsd:annotation>
         <xsd:complexContent>
             <xsd:extension base="tns:factType">
                 <xsd:sequence>

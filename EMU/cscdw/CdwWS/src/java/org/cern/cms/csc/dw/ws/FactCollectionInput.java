@@ -5,7 +5,7 @@
 
 package org.cern.cms.csc.dw.ws;
 
-import org.cern.cms.csc.dw.model.FactCollectionType;
+import org.cern.cms.csc.dw.model.FactCollection;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
@@ -29,7 +29,7 @@ public class FactCollectionInput {
      */
     @WebMethod(operationName = "getFactCollection")
     public Integer getFactCollection(@WebParam(name = "factCollection")
-    final FactCollectionType factCollection) {
+    final FactCollection factCollection) {
         if (factCollection == null) {
             return 0;
         }

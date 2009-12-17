@@ -1,9 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    targetNamespace="http://www.cern.org/cms/csc/dw/model"
-    xmlns:tns="http://www.cern.org/cms/csc/dw/model"
-    elementFormDefault="qualified">
+    targetNamespace="http://www.cern.ch/cms/csc/dw/model"
+    elementFormDefault="qualified"
+    xmlns:tns="http://www.cern.ch/cms/csc/dw/model"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+	xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+	jaxb:extensionBindingPrefixes="xjc orm hj"
+	jaxb:version="2.0">
+
+    <xsd:annotation>
+        <xsd:appinfo>
+            <jaxb:globalBindings
+                fixedAttributeAsConstantProperty="true"
+                collectionType="java.util.Vector"
+                typesafeEnumBase="xsd:NCName"
+                choiceContentProperty="false"
+                typesafeEnumMemberName="generateError"
+                enableFailFastCheck="false"
+                generateIsSetMethod="false"
+                underscoreBinding="asCharInWord"/>
+            <jaxb:schemaBindings>
+                <jaxb:package name="org.cern.cms.csc.dw.model"/>
+            </jaxb:schemaBindings>
+        </xsd:appinfo>
+    </xsd:annotation>
 
     <xsd:include schemaLocation="factClassifiers.xsd"/>
     <xsd:include schemaLocation="tmbTriggerCounterFact.xsd"/>
@@ -12,6 +35,14 @@
     <xsd:element name="fact" type="tns:factType"/>
 
     <xsd:complexType name="factCollectionType">
+      	<xsd:annotation>
+    		<xsd:appinfo>
+                <jaxb:class name="FactCollection" />
+                <hj:entity>
+                    <orm:table name="CDW_FACT_COLLECTIONS"/>
+                </hj:entity>
+            </xsd:appinfo>
+        </xsd:annotation>
         <xsd:sequence>
             <xsd:element name="source" type="tns:sourceType"/>
             <xsd:element name="requestId" type="xsd:long" minOccurs="0"/>
@@ -20,9 +51,23 @@
     </xsd:complexType>
 
     <xsd:complexType name="factType" abstract="true">
+      	<xsd:annotation>
+    		<xsd:appinfo>
+                <jaxb:class name="Fact" />
+                <hj:entity>
+                    <orm:table name="CDW_FACTS"/>
+                </hj:entity>
+            </xsd:appinfo>
+        </xsd:annotation>
         <xsd:sequence>
             <xsd:element name="time" type="xsd:dateTime"/>
-            <xsd:element name="component" type="xsd:string"/>
+            <xsd:element name="component" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <jaxb:property name="componentName"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
             <xsd:element name="severity" type="tns:severityType" minOccurs="0"/>
             <xsd:element name="descr" type="xsd:string" minOccurs="0"/>
         </xsd:sequence>

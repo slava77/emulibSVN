@@ -10,6 +10,12 @@
 <project name="CdwModel" default="default" basedir="." xmlns:ejbjarproject="http://www.netbeans.org/ns/j2ee-ejbjarproject/3">
     <description>Builds, tests, and runs the project CdwModel.</description>
     <import file="nbproject/build-impl.xml"/>
+
+    <import file="hyperjaxb.xml"/>
+    <target name="-pre-compile" depends="hj-generate-sources">
+    </target>
+
+
     <!--
 
     There exist several targets which are by default empty and which can be 

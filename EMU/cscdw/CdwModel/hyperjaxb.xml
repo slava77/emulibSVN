@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 
-<project name="hyperjaxb3-hibernate-ant" default="generate-sources">
+<project name="hyperjaxb3-hibernate-ant" default="hj-generate-sources">
 
 	<property name="artifactId" value="hyperjaxb3-po-initial-ant"/>
 	<property name="version" value="0.5.4"/>
-    <property name="libs" location="${basedir}/../../../lib/hyperjaxb3" />
-    <property name="srcs" location="${basedir}/../java" />
+    <property name="libs" location="${basedir}/../lib/hyperjaxb3" />
+    <property name="srcs" location="${basedir}/src/java" />
 
     <path id="compile.path">
 		<fileset dir="${libs}">
@@ -75,13 +75,14 @@
 		</fileset>
 	</path>
 
-    <target name="clean">
+    <target name="hj-clean">
         <delete>
             <fileset dir="${srcs}/org/cern/cms/csc/dw/model" includes="**/*.java"/>
         </delete>
 	</target>
 
-	<target name="generate-sources" depends="clean">
+	<target name="hj-generate-sources" depends="hj-clean">
+
 		<taskdef name="xjc" classname="org.jvnet.jaxb2_commons.xjc.XJC2Task">
 			<!-- XJC2 Task classpath -->
 			<classpath>
@@ -103,6 +104,7 @@
 				</fileset>
 			</classpath>
 		</taskdef>
+
 		<!--mkdir dir="${basedir}/target/generated-sources/xjc"/-->
 		<xjc destdir="${srcs}" extension="true">
 			<arg line="
@@ -124,8 +126,15 @@
 				</fileset>
 			</classpath>
 		</xjc>
+
+        <!-- Apply specific fixes -->
+        
+        <replace file="${srcs}/org/cern/cms/csc/dw/model/FactCollection.java" 
+            token="FACTCOLLECTIONFACTITEM"
+            value="CDW_FACT_COLLECTION_ITEMS"/>
+
 	</target>
-	<target name="compile" depends="generate-sources">
+	<target name="hj-compile" depends="hj-generate-sources">
 		<mkdir dir="${basedir}/target/classes"/>
 		<javac
 			destdir="${basedir}/../../build"
@@ -135,7 +144,7 @@
 			target="1.5">
 		</javac>
 	</target>
-	<target name="test-compile" depends="compile">
+	<target name="hj-test-compile" depends="hj-compile">
 		<mkdir dir="${basedir}/target/test-classes"/>
 		<javac
 			destdir="${basedir}/target/test-classes"
@@ -151,7 +160,7 @@
 			</fileset>
 		</copy>
 	</target>
-	<target name="test" depends="test-compile">
+	<target name="hj-test" depends="hj-test-compile">
 		<mkdir dir="${basedir}/target/junit-reports"/>
 		<junit printsummary="yes" haltonfailure="yes">
 			<classpath>
@@ -175,10 +184,10 @@
 			</batchtest>
 		</junit>
 	</target>
-	<target name="package" depends="test">
+	<target name="hj-package" depends="hj-test">
 		<mkdir dir="${basedir}/target"/>
 		<jar destfile="${basedir}/target/${artifactId}-${version}.jar"
 			basedir="${basedir}/target/classes"/>
 	</target>
-	<target name="install" depends="package"/>
+	<target name="hj-install" depends="hj-package"/>
 </project>

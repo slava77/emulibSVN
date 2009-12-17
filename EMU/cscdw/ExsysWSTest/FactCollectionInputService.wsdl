@@ -11,7 +11,7 @@
   </ns1:Policy>
   <types>
     <xsd:schema>
-      <xsd:import namespace="http://www.cern.org/cms/csc/dw/model" schemaLocation="FactCollectionInputService_schema1.xsd"/>
+      <xsd:import namespace="http://www.cern.ch/cms/csc/dw/model" schemaLocation="FactCollectionInputService_schema1.xsd"/>
     </xsd:schema>
     <xsd:schema>
       <xsd:import namespace="http://ws.dw.csc.cms.cern.org/" schemaLocation="FactCollectionInputService_schema2.xsd"/>

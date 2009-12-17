@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    targetNamespace="http://www.cern.org/cms/csc/dw/model"
-    xmlns:tns="http://www.cern.org/cms/csc/dw/model"
-    elementFormDefault="qualified">
+    targetNamespace="http://www.cern.ch/cms/csc/dw/model"
+    xmlns:tns="http://www.cern.ch/cms/csc/dw/model"
+    elementFormDefault="qualified"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+	xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+	jaxb:extensionBindingPrefixes="xjc orm hj"
+	jaxb:version="2.0">
 
   <xsd:simpleType name="unitType">
+    <xsd:annotation>
+        <xsd:appinfo>
+            <jaxb:typesafeEnumClass/>
+        </xsd:appinfo>
+    </xsd:annotation>
     <xsd:restriction base="xsd:token">
       <xsd:enumeration value="AMPER"/>
       <xsd:enumeration value="VOLT"/>
@@ -14,6 +25,11 @@
   </xsd:simpleType>
 
   <xsd:simpleType name="severityType">
+    <xsd:annotation>
+        <xsd:appinfo>
+            <jaxb:typesafeEnumClass/>
+        </xsd:appinfo>
+    </xsd:annotation>
     <xsd:restriction base="xsd:token">
       <xsd:enumeration value="DEBUG"/>
       <xsd:enumeration value="INFO"/>
@@ -24,6 +40,11 @@
   </xsd:simpleType>
 
   <xsd:simpleType name="sourceType">
+    <xsd:annotation>
+        <xsd:appinfo>
+            <jaxb:typesafeEnumClass/>
+        </xsd:appinfo>
+    </xsd:annotation>
     <xsd:restriction base="xsd:token">
       <xsd:enumeration value="DCS"/>
       <xsd:enumeration value="LOCAL_DQM"/>
@@ -33,6 +54,11 @@
   </xsd:simpleType>
 
   <xsd:simpleType name="factTypeType">
+    <xsd:annotation>
+        <xsd:appinfo>
+            <jaxb:typesafeEnumClass/>
+        </xsd:appinfo>
+    </xsd:annotation>
     <xsd:restriction base="xsd:token">
       <xsd:enumeration value="slidingTmbTriggerCounterFact"/>
       <xsd:enumeration value="cumulativeTmbTriggerCounterFact"/>
