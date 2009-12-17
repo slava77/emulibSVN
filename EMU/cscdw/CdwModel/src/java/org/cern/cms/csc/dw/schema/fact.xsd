@@ -11,23 +11,7 @@
 	jaxb:extensionBindingPrefixes="xjc orm hj"
 	jaxb:version="2.0">
 
-    <xsd:annotation>
-        <xsd:appinfo>
-            <jaxb:globalBindings
-                fixedAttributeAsConstantProperty="true"
-                collectionType="java.util.Vector"
-                typesafeEnumBase="xsd:NCName"
-                choiceContentProperty="false"
-                typesafeEnumMemberName="generateError"
-                enableFailFastCheck="false"
-                generateIsSetMethod="false"
-                underscoreBinding="asCharInWord"/>
-            <jaxb:schemaBindings>
-                <jaxb:package name="org.cern.cms.csc.dw.model"/>
-            </jaxb:schemaBindings>
-        </xsd:appinfo>
-    </xsd:annotation>
-
+    <xsd:include schemaLocation="component.xsd"/>
     <xsd:include schemaLocation="factClassifiers.xsd"/>
     <xsd:include schemaLocation="tmbTriggerCounterFact.xsd"/>
 
@@ -61,10 +45,17 @@
         </xsd:annotation>
         <xsd:sequence>
             <xsd:element name="time" type="xsd:dateTime"/>
-            <xsd:element name="component" type="xsd:string">
+            <xsd:element name="component_id" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo>
-                        <jaxb:property name="componentName"/>
+                        <jaxb:property name="componentId"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="component" type="tns:componentType" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <jaxb:property name="component"/>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>

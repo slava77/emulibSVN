@@ -118,7 +118,7 @@
 			 	<include name="*.xjb"/>
 			</binding>
             <schema dir="${srcs}">
-			 	<include name="**/fact.xsd"/>
+			 	<include name="**/cdw.xsd"/>
 			</schema>
 			<classpath>
 				<fileset dir="${libs}">
@@ -132,6 +132,10 @@
         <replace file="${srcs}/org/cern/cms/csc/dw/model/FactCollection.java" 
             token="FACTCOLLECTIONFACTITEM"
             value="CDW_FACT_COLLECTION_ITEMS"/>
+
+        <replace file="${srcs}/org/cern/cms/csc/dw/model/Component.java"
+            token="COMPONENTSYNONYMSITEM"
+            value="CDW_COMPONENT_SYNONYMS"/>
 
 	</target>
 	<target name="hj-compile" depends="hj-generate-sources">

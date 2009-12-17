@@ -80,6 +80,8 @@
   <xs:element name="cumulativeTmbTriggerCounterFact" nillable="true" type="tns:cumulativeTmbTriggerCounterFactType"/>
   <xs:element name="fact" nillable="true" type="tns:factType"/>
   <xs:element name="factCollection" nillable="true" type="tns:factCollectionType"/>
+  <xs:element name="factRequest" nillable="true" type="tns:factRequestType"/>
+  <xs:element name="factRequestCollection" nillable="true" type="tns:factRequestCollectionType"/>
   <xs:element name="slidingTmbTriggerCounterFact" nillable="true" type="tns:slidingTmbTriggerCounterFactType"/>
   <xs:complexType name="factCollectionType">
     <xs:sequence>
@@ -87,32 +89,23 @@
       <xs:element name="requestId" type="xs:long" minOccurs="0"/>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element ref="tns:fact"/>
-        <xs:element ref="tns:cumulativeTmbTriggerCounterFact"/>
         <xs:element ref="tns:slidingTmbTriggerCounterFact"/>
+        <xs:element ref="tns:cumulativeTmbTriggerCounterFact"/>
       </xs:choice>
     </xs:sequence>
     <xs:attribute name="Hjid" type="xs:long"/>
   </xs:complexType>
-  <xs:complexType name="cumulativeTmbTriggerCounterFactType">
-    <xs:complexContent>
-      <xs:extension base="tns:factType">
-        <xs:sequence>
-          <xs:element name="alctCount" type="xs:decimal"/>
-          <xs:element name="clctCount" type="xs:decimal"/>
-          <xs:element name="lctCount" type="xs:decimal"/>
-          <xs:element name="l1aCount" type="xs:decimal"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:complexType name="factType" abstract="true">
+  <xs:complexType name="factRequestCollectionType">
     <xs:sequence>
-      <xs:element name="time" type="xs:dateTime"/>
-      <xs:element name="component" type="xs:string"/>
-      <xs:element name="severity" type="tns:severityType" minOccurs="0"/>
-      <xs:element name="descr" type="xs:string" minOccurs="0"/>
+      <xs:element name="requestId" type="xs:long"/>
+      <xs:element name="factRequest" type="tns:factRequestType" maxOccurs="unbounded"/>
     </xs:sequence>
-    <xs:attribute name="Hjid" type="xs:long"/>
+  </xs:complexType>
+  <xs:complexType name="factRequestType">
+    <xs:sequence>
+      <xs:element name="component" type="xs:string" minOccurs="0"/>
+      <xs:element name="factType" type="tns:factTypeType" minOccurs="0"/>
+    </xs:sequence>
   </xs:complexType>
   <xs:complexType name="slidingTmbTriggerCounterFactType">
     <xs:complexContent>
@@ -127,12 +120,45 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  <xs:complexType name="factType" abstract="true">
+    <xs:sequence>
+      <xs:element name="time" type="xs:dateTime"/>
+      <xs:element name="component_id" type="xs:string"/>
+      <xs:element name="component" type="tns:componentType" minOccurs="0"/>
+      <xs:element name="severity" type="tns:severityType" minOccurs="0"/>
+      <xs:element name="descr" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="Hjid" type="xs:long"/>
+  </xs:complexType>
+  <xs:complexType name="componentType">
+    <xs:sequence>
+      <xs:element name="id" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="cumulativeTmbTriggerCounterFactType">
+    <xs:complexContent>
+      <xs:extension base="tns:factType">
+        <xs:sequence>
+          <xs:element name="alctCount" type="xs:decimal"/>
+          <xs:element name="clctCount" type="xs:decimal"/>
+          <xs:element name="lctCount" type="xs:decimal"/>
+          <xs:element name="l1aCount" type="xs:decimal"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
   <xs:simpleType name="sourceType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="DCS"/>
       <xs:enumeration value="LOCAL_DQM"/>
       <xs:enumeration value="FED"/>
       <xs:enumeration value="Xmas"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="factTypeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="slidingTmbTriggerCounterFact"/>
+      <xs:enumeration value="cumulativeTmbTriggerCounterFact"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="severityType">
@@ -158,7 +184,7 @@
       <xs:element name="return" type="xs:int" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
-</xs:schema>]]></con:content><con:type>http://www.w3.org/2001/XMLSchema</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://cms-uflap03:8080/FactCollectionInputService/FactCollectionInput</con:endpoint></con:endpoints><con:operation isOneWay="false" action="" name="getFactCollection" bindingOperationName="getFactCollection" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://cms-uflap03:8080/FactCollectionInputService/FactCollectionInput</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://ws.dw.csc.cms.cern.org/" xmlns:mod="http://www.cern.ch/cms/csc/dw/model">
+</xs:schema>]]></con:content><con:type>http://www.w3.org/2001/XMLSchema</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/FactCollectionInputService/FactCollectionInput</con:endpoint></con:endpoints><con:operation isOneWay="false" action="" name="getFactCollection" bindingOperationName="getFactCollection" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/FactCollectionInputService/FactCollectionInput</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://ws.dw.csc.cms.cern.org/" xmlns:mod="http://www.cern.ch/cms/csc/dw/model">
    <soapenv:Header/>
    <soapenv:Body>
       <ws:getFactCollection>
@@ -170,27 +196,23 @@
             <!--You have a CHOICE of the next 3 items at this level-->
             <mod:fact Hjid="?">
                <mod:time>?</mod:time>
-               <mod:component>?</mod:component>
+               <mod:component_id>?</mod:component_id>
+               <!--Optional:-->
+               <mod:component>
+                  <mod:id>?</mod:id>
+               </mod:component>
                <!--Optional:-->
                <mod:severity>?</mod:severity>
                <!--Optional:-->
                <mod:descr>?</mod:descr>
             </mod:fact>
-            <mod:cumulativeTmbTriggerCounterFact Hjid="?">
-               <mod:time>?</mod:time>
-               <mod:component>?</mod:component>
-               <!--Optional:-->
-               <mod:severity>?</mod:severity>
-               <!--Optional:-->
-               <mod:descr>?</mod:descr>
-               <mod:alctCount>?</mod:alctCount>
-               <mod:clctCount>?</mod:clctCount>
-               <mod:lctCount>?</mod:lctCount>
-               <mod:l1aCount>?</mod:l1aCount>
-            </mod:cumulativeTmbTriggerCounterFact>
             <mod:slidingTmbTriggerCounterFact Hjid="?">
                <mod:time>?</mod:time>
-               <mod:component>?</mod:component>
+               <mod:component_id>?</mod:component_id>
+               <!--Optional:-->
+               <mod:component>
+                  <mod:id>?</mod:id>
+               </mod:component>
                <!--Optional:-->
                <mod:severity>?</mod:severity>
                <!--Optional:-->
@@ -201,36 +223,52 @@
                <mod:l1aCount>?</mod:l1aCount>
                <mod:windowWidth>?</mod:windowWidth>
             </mod:slidingTmbTriggerCounterFact>
+            <mod:cumulativeTmbTriggerCounterFact Hjid="?">
+               <mod:time>?</mod:time>
+               <mod:component_id>?</mod:component_id>
+               <!--Optional:-->
+               <mod:component>
+                  <mod:id>?</mod:id>
+               </mod:component>
+               <!--Optional:-->
+               <mod:severity>?</mod:severity>
+               <!--Optional:-->
+               <mod:descr>?</mod:descr>
+               <mod:alctCount>?</mod:alctCount>
+               <mod:clctCount>?</mod:clctCount>
+               <mod:lctCount>?</mod:lctCount>
+               <mod:l1aCount>?</mod:l1aCount>
+            </mod:cumulativeTmbTriggerCounterFact>
          </factCollection>
       </ws:getFactCollection>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://ws.dw.csc.cms.cern.org/FactCollectionInput/getFactCollectionRequest"/></con:call></con:operation></con:interface><con:testSuite name="FactCollectionInputPortBinding TestSuite"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="getFactCollection TestCase" searchProperties="true"><con:settings/><con:testStep type="request" name="getFactCollection"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>FactCollectionInputPortBinding</con:interface><con:operation>getFactCollection</con:operation><con:request name="getFactCollection"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://cms-uflap03:8080/FactCollectionInputService/FactCollectionInput</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://ws.dw.csc.cms.cern.org/" xmlns:mod="http://www.cern.ch/cms/csc/dw/model">
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://ws.dw.csc.cms.cern.org/FactCollectionInput/getFactCollectionRequest"/></con:call></con:operation></con:interface><con:testSuite name="FactCollectionInputPortBinding TestSuite"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="getFactCollection TestCase" searchProperties="true"><con:settings/><con:testStep type="request" name="getFactCollection"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>FactCollectionInputPortBinding</con:interface><con:operation>getFactCollection</con:operation><con:request name="getFactCollection"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/FactCollectionInputService/FactCollectionInput</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://ws.dw.csc.cms.cern.org/" xmlns:mod="http://www.cern.ch/cms/csc/dw/model">
    <soapenv:Header/>
    <soapenv:Body>
       <ws:getFactCollection>
          <factCollection>
             <mod:source>Xmas</mod:source>
             <mod:requestId>1</mod:requestId>
-            <mod:cumulativeTmbTriggerCounterFact>
+            <mod:slidingTmbTriggerCounterFact>
                <mod:time>2009-12-12T12:12:12</mod:time>
-               <mod:component>ME+1/1/1</mod:component>
+               <mod:component_id>ME-1/1/1</mod:component_id>
                <mod:severity>INFO</mod:severity>
                <mod:alctCount>123</mod:alctCount>
                <mod:clctCount>234</mod:clctCount>
                <mod:lctCount>345</mod:lctCount>
                <mod:l1aCount>456</mod:l1aCount>
-            </mod:cumulativeTmbTriggerCounterFact>
-            <mod:slidingTmbTriggerCounterFact>
-               <mod:time>2009-12-13T12:12:13</mod:time>
-               <mod:component>ME-1/1/1</mod:component>
-               <mod:severity>INFO</mod:severity>
-               <mod:descr>Sliding Window Counter</mod:descr>
-               <mod:alctCount>567</mod:alctCount>
-               <mod:clctCount>678</mod:clctCount>
-               <mod:lctCount>789</mod:lctCount>
-               <mod:l1aCount>890</mod:l1aCount>
                <mod:windowWidth>1</mod:windowWidth>
             </mod:slidingTmbTriggerCounterFact>
+            <mod:cumulativeTmbTriggerCounterFact>
+               <mod:time>2009-12-13T12:12:13</mod:time>
+               <mod:component_id>ME+1/1/1</mod:component_id>
+               <mod:severity>INFO</mod:severity>
+               <mod:descr>Cumulative counter</mod:descr>
+               <mod:alctCount>123</mod:alctCount>
+               <mod:clctCount>234</mod:clctCount>
+               <mod:lctCount>456</mod:lctCount>
+               <mod:l1aCount>678</mod:l1aCount>
+            </mod:cumulativeTmbTriggerCounterFact>
          </factCollection>
       </ws:getFactCollection>
    </soapenv:Body>

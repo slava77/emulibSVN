@@ -65,4 +65,108 @@
     </xsd:restriction>
   </xsd:simpleType>
 
+  <xsd:simpleType name="componentClass">
+    <xsd:annotation>
+        <xsd:appinfo>
+            <jaxb:typesafeEnumClass/>
+        </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:token">
+        <xsd:enumeration value="LogicalDomain"/>
+        <xsd:enumeration value="LogicalComponent"/>
+        <xsd:enumeration value="Local"/>
+        <xsd:enumeration value="Global"/>
+        <xsd:enumeration value="CSC"/>
+        <xsd:enumeration value="Endcap"/>
+        <xsd:enumeration value="Station"/>
+        <xsd:enumeration value="Ring"/>
+        <xsd:enumeration value="Chamber"/>
+        <xsd:enumeration value="Layer"/>
+        <xsd:enumeration value="PeripheralCrate"/>
+        <xsd:enumeration value="FEDCrate"/>
+        <xsd:enumeration value="Computer"/>
+        <xsd:enumeration value="/dev/schar"/>
+        <xsd:enumeration value="Software"/>
+        <xsd:enumeration value="TriggerSector"/>
+        <xsd:enumeration value="Trigger"/>
+        <xsd:enumeration value="DAQ"/>
+        <xsd:enumeration value="HV"/>
+        <xsd:enumeration value="LV"/>
+        <xsd:enumeration value="GasSystem"/>
+        <xsd:enumeration value="LocalDAQ"/>
+        <xsd:enumeration value="GlobalDAQ"/>
+        <xsd:enumeration value="RUI"/>
+        <xsd:enumeration value="TFRUI"/>
+        <xsd:enumeration value="Device"/>
+        <xsd:enumeration value="DAQDevice"/>
+        <xsd:enumeration value="TriggerDevice"/>
+        <xsd:enumeration value="DDU"/>
+        <xsd:enumeration value="DCC"/>
+        <xsd:enumeration value="Slink"/>
+        <xsd:enumeration value="DMB"/>
+        <xsd:enumeration value="SectorProcessor"/>
+        <xsd:enumeration value="ALCT"/>
+        <xsd:enumeration value="RAT"/>
+        <xsd:enumeration value="TMB"/>
+        <xsd:enumeration value="CFEB"/>
+        <xsd:enumeration value="DMB"/>
+        <xsd:enumeration value="VCC"/>
+        <xsd:enumeration value="CCB"/>
+        <xsd:enumeration value="MPC"/>
+        <xsd:enumeration value="TTC"/>
+        <xsd:enumeration value="LTC"/>
+        <xsd:enumeration value="HVPrimary"/>
+        <xsd:enumeration value="HVMaster"/>
+        <xsd:enumeration value="HVDistribution"/>
+        <xsd:enumeration value="HVSegment"/>
+        <xsd:enumeration value="Maraton"/>
+        <xsd:enumeration value="Rack"/>
+        <xsd:enumeration value="GasMixerInputLine"/>
+        <xsd:enumeration value="GasRack"/>
+        <xsd:enumeration value="GasChannel"/>
+        <xsd:enumeration value="RackTurbine"/>
+        <xsd:enumeration value="CoolingCircuit"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="componentLinkClass">
+    <xsd:annotation>
+        <xsd:appinfo>
+            <jaxb:typesafeEnumClass/>
+        </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:token">
+        <xsd:enumeration value="consistsOf"/>
+        <xsd:enumeration value="contains"/>
+        <xsd:enumeration value="controlPath"/>
+        <xsd:enumeration value="controls"/>
+        <xsd:enumeration value="coolingPath"/>
+        <xsd:enumeration value="cools"/>
+        <xsd:enumeration value="dataPath"/>
+        <xsd:enumeration value="deliversGasTo"/>
+        <xsd:enumeration value="deliversHVTo"/>
+        <xsd:enumeration value="deliversLVTo"/>
+        <xsd:enumeration value="gasSupplyPath"/>
+        <xsd:enumeration value="getsGasFrom"/>
+        <xsd:enumeration value="getsHVFrom"/>
+        <xsd:enumeration value="getsLVFrom"/>
+        <xsd:enumeration value="isControlledBy"/>
+        <xsd:enumeration value="isCooledBy"/>
+        <xsd:enumeration value="isIn"/>
+        <xsd:enumeration value="isMonitoredBy"/>
+        <xsd:enumeration value="isPartOf"/>
+        <xsd:enumeration value="locationPath"/>
+        <xsd:enumeration value="logicalComposition"/>
+        <xsd:enumeration value="monitors"/>
+        <xsd:enumeration value="powerSupplyPath"/>
+        <xsd:enumeration value="receivesDataFrom"/>
+        <xsd:enumeration value="receivesL1AFrom"/>
+        <xsd:enumeration value="receivesTriggerFrom"/>
+        <xsd:enumeration value="sendsDataTo"/>
+        <xsd:enumeration value="sendsL1ATo"/>
+        <xsd:enumeration value="sendsTriggerTo"/>
+        <xsd:enumeration value="triggerPath"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
 </xsd:schema>

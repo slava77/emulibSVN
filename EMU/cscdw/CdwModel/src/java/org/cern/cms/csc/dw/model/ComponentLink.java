@@ -8,7 +8,6 @@
 
 package org.cern.cms.csc.dw.model;
 
-import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -23,22 +22,14 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.datatype.XMLGregorianCalendar;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XMLGregorianCalendarAsDateTime;
-import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.HashCode;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -48,20 +39,18 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 
 
 /**
- * <p>Java class for factType complex type.
+ * <p>Java class for componentLinkType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="factType">
+ * &lt;complexType name="componentLinkType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="time" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
- *         &lt;element name="component_id" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="component" type="{http://www.cern.ch/cms/csc/dw/model}componentType" minOccurs="0"/>
- *         &lt;element name="severity" type="{http://www.cern.ch/cms/csc/dw/model}severityType" minOccurs="0"/>
- *         &lt;element name="descr" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="type" type="{http://www.cern.ch/cms/csc/dw/model}componentLinkClass"/>
+ *         &lt;element name="reverseType" type="{http://www.cern.ch/cms/csc/dw/model}componentLinkClass" minOccurs="0"/>
+ *         &lt;element name="component" type="{http://www.cern.ch/cms/csc/dw/model}componentType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -71,83 +60,78 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "factType", propOrder = {
-    "time",
-    "componentId",
-    "component",
-    "severity",
-    "descr"
+@XmlType(name = "componentLinkType", propOrder = {
+    "type",
+    "reverseType",
+    "component"
 })
-@XmlSeeAlso({
-    SlidingTmbTriggerCounterFact.class,
-    CumulativeTmbTriggerCounterFact.class
-})
-@Entity(name = "org.cern.cms.csc.dw.model.Fact")
-@Table(name = "CDW_FACTS")
+@Entity(name = "org.cern.cms.csc.dw.model.ComponentLink")
+@Table(name = "CDW_COMPONENT_LINKS")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Fact implements Equals, HashCode, ToString
+public class ComponentLink
+    implements Equals, HashCode, ToString
 {
 
     @XmlElement(required = true)
-    @XmlSchemaType(name = "dateTime")
-    protected XMLGregorianCalendar time;
-    @XmlElement(name = "component_id", required = true)
-    protected String componentId;
+    protected ComponentLinkClass type;
+    protected ComponentLinkClass reverseType;
+    @XmlElement(required = true)
     protected Component component;
-    protected SeverityType severity;
-    protected String descr;
     @XmlAttribute(name = "Hjid")
     protected Long hjid;
 
     /**
-     * Gets the value of the time property.
+     * Gets the value of the type property.
      * 
      * @return
      *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    @Transient
-    public XMLGregorianCalendar getTime() {
-        return time;
-    }
-
-    /**
-     * Sets the value of the time property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    public void setTime(XMLGregorianCalendar value) {
-        this.time = value;
-    }
-
-    /**
-     * Gets the value of the componentId property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
+     *     {@link ComponentLinkClass }
      *     
      */
     @Basic
-    @Column(name = "COMPONENTID", length = 255)
-    public String getComponentId() {
-        return componentId;
+    @Column(name = "TYPE_", length = 255)
+    @Enumerated(EnumType.STRING)
+    public ComponentLinkClass getType() {
+        return type;
     }
 
     /**
-     * Sets the value of the componentId property.
+     * Sets the value of the type property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link ComponentLinkClass }
      *     
      */
-    public void setComponentId(String value) {
-        this.componentId = value;
+    public void setType(ComponentLinkClass value) {
+        this.type = value;
+    }
+
+    /**
+     * Gets the value of the reverseType property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link ComponentLinkClass }
+     *     
+     */
+    @Basic
+    @Column(name = "REVERSETYPE", length = 255)
+    @Enumerated(EnumType.STRING)
+    public ComponentLinkClass getReverseType() {
+        return reverseType;
+    }
+
+    /**
+     * Sets the value of the reverseType property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link ComponentLinkClass }
+     *     
+     */
+    public void setReverseType(ComponentLinkClass value) {
+        this.reverseType = value;
     }
 
     /**
@@ -161,7 +145,7 @@ public abstract class Fact implements Equals, HashCode, ToString
     @ManyToOne(targetEntity = Component.class, cascade = {
         CascadeType.ALL
     })
-    @JoinColumn(name = "COMPONENT_FACT_HJID")
+    @JoinColumn(name = "COMPONENT_COMPONENTLINK_HJID")
     public Component getComponent() {
         return component;
     }
@@ -176,59 +160,6 @@ public abstract class Fact implements Equals, HashCode, ToString
      */
     public void setComponent(Component value) {
         this.component = value;
-    }
-
-    /**
-     * Gets the value of the severity property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link SeverityType }
-     *     
-     */
-    @Basic
-    @Column(name = "SEVERITY", length = 255)
-    @Enumerated(EnumType.STRING)
-    public SeverityType getSeverity() {
-        return severity;
-    }
-
-    /**
-     * Sets the value of the severity property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link SeverityType }
-     *     
-     */
-    public void setSeverity(SeverityType value) {
-        this.severity = value;
-    }
-
-    /**
-     * Gets the value of the descr property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    @Basic
-    @Column(name = "DESCR", length = 255)
-    public String getDescr() {
-        return descr;
-    }
-
-    /**
-     * Sets the value of the descr property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setDescr(String value) {
-        this.descr = value;
     }
 
     /**
@@ -258,35 +189,22 @@ public abstract class Fact implements Equals, HashCode, ToString
         this.hjid = value;
     }
 
-    @Basic
-    @Column(name = "TIMEITEM")
-    @Temporal(TemporalType.TIMESTAMP)
-    public Date getTimeItem() {
-        return XmlAdapterUtils.unmarshall(XMLGregorianCalendarAsDateTime.class, this.getTime());
-    }
-
-    public void setTimeItem(Date target) {
-        setTime(XmlAdapterUtils.marshall(XMLGregorianCalendarAsDateTime.class, target));
-    }
-
     public void equals(Object object, EqualsBuilder equalsBuilder) {
-        if (!(object instanceof Fact)) {
+        if (!(object instanceof ComponentLink)) {
             equalsBuilder.appendSuper(false);
             return ;
         }
         if (this == object) {
             return ;
         }
-        final Fact that = ((Fact) object);
-        equalsBuilder.append(this.getTime(), that.getTime());
-        equalsBuilder.append(this.getComponentId(), that.getComponentId());
+        final ComponentLink that = ((ComponentLink) object);
+        equalsBuilder.append(this.getType(), that.getType());
+        equalsBuilder.append(this.getReverseType(), that.getReverseType());
         equalsBuilder.append(this.getComponent(), that.getComponent());
-        equalsBuilder.append(this.getSeverity(), that.getSeverity());
-        equalsBuilder.append(this.getDescr(), that.getDescr());
     }
 
     public boolean equals(Object object) {
-        if (!(object instanceof Fact)) {
+        if (!(object instanceof ComponentLink)) {
             return false;
         }
         if (this == object) {
@@ -298,11 +216,9 @@ public abstract class Fact implements Equals, HashCode, ToString
     }
 
     public void hashCode(HashCodeBuilder hashCodeBuilder) {
-        hashCodeBuilder.append(this.getTime());
-        hashCodeBuilder.append(this.getComponentId());
+        hashCodeBuilder.append(this.getType());
+        hashCodeBuilder.append(this.getReverseType());
         hashCodeBuilder.append(this.getComponent());
-        hashCodeBuilder.append(this.getSeverity());
-        hashCodeBuilder.append(this.getDescr());
     }
 
     public int hashCode() {
@@ -313,29 +229,19 @@ public abstract class Fact implements Equals, HashCode, ToString
 
     public void toString(ToStringBuilder toStringBuilder) {
         {
-            XMLGregorianCalendar theTime;
-            theTime = this.getTime();
-            toStringBuilder.append("time", theTime);
+            ComponentLinkClass theType;
+            theType = this.getType();
+            toStringBuilder.append("type", theType);
         }
         {
-            String theComponentId;
-            theComponentId = this.getComponentId();
-            toStringBuilder.append("componentId", theComponentId);
+            ComponentLinkClass theReverseType;
+            theReverseType = this.getReverseType();
+            toStringBuilder.append("reverseType", theReverseType);
         }
         {
             Component theComponent;
             theComponent = this.getComponent();
             toStringBuilder.append("component", theComponent);
-        }
-        {
-            SeverityType theSeverity;
-            theSeverity = this.getSeverity();
-            toStringBuilder.append("severity", theSeverity);
-        }
-        {
-            String theDescr;
-            theDescr = this.getDescr();
-            toStringBuilder.append("descr", theDescr);
         }
     }
 
