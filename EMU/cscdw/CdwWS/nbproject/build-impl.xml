@@ -16,8 +16,8 @@ is divided into following sections:
 
         -->
 <project xmlns:ejbjarproject1="http://www.netbeans.org/ns/j2ee-ejbjarproject/1" xmlns:ejbjarproject2="http://www.netbeans.org/ns/j2ee-ejbjarproject/2" xmlns:ejbjarproject3="http://www.netbeans.org/ns/j2ee-ejbjarproject/3" basedir=".." default="default" name="CdwWS-impl">
-    <import file="jaxws-build.xml"/>
     <import file="xml_binding_build.xml"/>
+    <import file="jaxws-build.xml"/>
     <import file="ant-deploy.xml"/>
     <target depends="dist,javadoc" description="Build whole project." name="default"/>
     <!-- 
@@ -306,14 +306,8 @@ exists or setup the property manually. For example like this:
     <!--
                 COMPILATION SECTION
             -->
-    <target depends="init" if="no.dist.ear.dir" name="-deps-module-jar" unless="no.deps">
-        <ant antfile="${project.CdwModel}/build.xml" inheritall="false" target="dist"/>
-    </target>
-    <target depends="init" if="dist.ear.dir" name="-deps-ear-jar" unless="no.deps">
-        <ant antfile="${project.CdwModel}/build.xml" inheritall="false" target="dist-ear">
-            <property location="${build.dir}" name="dist.ear.dir"/>
-        </ant>
-    </target>
+    <target depends="init" if="no.dist.ear.dir" name="-deps-module-jar" unless="no.deps"/>
+    <target depends="init" if="dist.ear.dir" name="-deps-ear-jar" unless="no.deps"/>
     <target depends="init, -deps-module-jar, -deps-ear-jar" name="deps-jar"/>
     <target depends="init,deps-jar,jaxb-code-generation" name="-pre-pre-compile">
         <mkdir dir="${build.classes.dir}"/>
@@ -324,14 +318,16 @@ exists or setup the property manually. For example like this:
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target depends="compile" name="library-inclusion-in-archive">
-        <copyfiles files="${reference.CdwModel.dist}" todir="${build.classes.dir}"/>
         <copyfiles files="${libs.hyperjaxb3.classpath}" todir="${build.classes.dir}"/>
+        <copyfiles files="${libs.jaxb.classpath}" todir="${build.classes.dir}"/>
+        <copyfiles files="${libs.hibernate-persistence.classpath}" todir="${build.classes.dir}"/>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
-        <copyfiles files="${reference.CdwModel.dist}" manifestproperty="manifest.reference.CdwModel.dist" todir="${dist.ear.dir}"/>
         <copyfiles files="${libs.hyperjaxb3.classpath}" manifestproperty="manifest.libs.hyperjaxb3.classpath" todir="${dist.ear.dir}"/>
+        <copyfiles files="${libs.jaxb.classpath}" manifestproperty="manifest.libs.jaxb.classpath" todir="${dist.ear.dir}"/>
+        <copyfiles files="${libs.hibernate-persistence.classpath}" manifestproperty="manifest.libs.hibernate-persistence.classpath" todir="${dist.ear.dir}"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${manifest.reference.CdwModel.dist} ${manifest.libs.hyperjaxb3.classpath} "/>
+            <attribute name="Class-Path" value="${manifest.libs.hyperjaxb3.classpath} ${manifest.libs.jaxb.classpath} ${manifest.libs.hibernate-persistence.classpath} "/>
         </manifest>
     </target>
     <target name="-copy-meta-inf">
@@ -588,9 +584,7 @@ exists or setup the property manually. For example like this:
     <!--
                 CLEANUP SECTION
             -->
-    <target depends="init" if="no.dist.ear.dir" name="deps-clean" unless="no.deps">
-        <ant antfile="${project.CdwModel}/build.xml" inheritall="false" target="clean"/>
-    </target>
+    <target depends="init" if="no.dist.ear.dir" name="deps-clean" unless="no.deps"/>
     <target depends="init" name="-do-clean">
         <delete dir="${build.dir}"/>
         <delete dir="${dist.dir}"/>

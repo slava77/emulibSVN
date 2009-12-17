@@ -317,11 +317,15 @@ exists or setup the property manually. For example like this:
     </target>
     <target depends="compile" name="library-inclusion-in-archive">
         <copyfiles files="${libs.hyperjaxb3.classpath}" todir="${build.classes.dir}"/>
+        <copyfiles files="${libs.hibernate-persistence.classpath}" todir="${build.classes.dir}"/>
+        <copyfiles files="${libs.hibernate-support.classpath}" todir="${build.classes.dir}"/>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
         <copyfiles files="${libs.hyperjaxb3.classpath}" manifestproperty="manifest.libs.hyperjaxb3.classpath" todir="${dist.ear.dir}"/>
+        <copyfiles files="${libs.hibernate-persistence.classpath}" manifestproperty="manifest.libs.hibernate-persistence.classpath" todir="${dist.ear.dir}"/>
+        <copyfiles files="${libs.hibernate-support.classpath}" manifestproperty="manifest.libs.hibernate-support.classpath" todir="${dist.ear.dir}"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${manifest.libs.hyperjaxb3.classpath} "/>
+            <attribute name="Class-Path" value="${manifest.libs.hyperjaxb3.classpath} ${manifest.libs.hibernate-persistence.classpath} ${manifest.libs.hibernate-support.classpath} "/>
         </manifest>
     </target>
     <target name="-copy-meta-inf">
