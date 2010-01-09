@@ -2,12 +2,17 @@
 
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     targetNamespace="http://www.cern.ch/cms/csc/dw/model"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:tns="http://www.cern.ch/cms/csc/dw/model"
     elementFormDefault="qualified"
     xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
 	xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
 	xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
 	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+    xsi:schemaLocation="
+        http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
+        http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
+        http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
 	jaxb:extensionBindingPrefixes="xjc orm hj"
 	jaxb:version="2.0">
 

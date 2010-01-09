@@ -12,7 +12,7 @@
     <import file="nbproject/build-impl.xml"/>
 
     <import file="hyperjaxb.xml"/>
-    <target name="-pre-compile" depends="hj-generate-sources">
+    <target name="-pre-compile" depends="generate-model">
     </target>
 
 

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
+  <persistence-unit name="CdwUtilPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <!--jta-data-source>jdbc/sample</jta-data-source-->
+    <class>org.cern.cms.csc.dw.model.fact.CumulativeTmbTriggerCounterFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.Fact</class>
+    <class>org.cern.cms.csc.dw.model.fact.FactCollection</class>
+    <class>org.cern.cms.csc.dw.model.fact.FactCollectionFactsItem</class>
+    <class>org.cern.cms.csc.dw.model.fact.SlidingTmbTriggerCounterFact</class>
+    <class>org.cern.cms.csc.dw.model.ontology.Component</class>
+    <class>org.cern.cms.csc.dw.model.ontology.ComponentClass</class>
+    <class>org.cern.cms.csc.dw.model.ontology.ComponentGraphLink</class>
+    <class>org.cern.cms.csc.dw.model.ontology.ComponentLink</class>
+    <class>org.cern.cms.csc.dw.model.ontology.ComponentLinkClass</class>
+    <class>org.cern.cms.csc.dw.model.ontology.ComponentSynonym</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <properties>
+      <property name="hibernate.hbm2ddl.auto" value="update"/>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect"/>
+      <property name="hibernate.connection.driver_class" value="oracle.jdbc.OracleDriver"/>
+      <!--
+      <property name="hibernate.connection.username" value="cms_csc_dw"/>
+      <property name="hibernate.connection.password" value="dw"/>
+      <property name="hibernate.connection.url" value="jdbc:oracle:thin:@localhost:1521:XE"/>
+      -->
+      <property name="hibernate.connection.url" value="jdbc:oracle:thin:@oradev10.cern.ch:10520:D10"/>
+      <property name="hibernate.connection.username" value="cms_valdas"/>
+      <property name="hibernate.connection.password" value="cms08valdas"/>
+      <property name="hibernate.max_fetch_depth" value="3"/>
+    </properties>
+  </persistence-unit>
+</persistence>
