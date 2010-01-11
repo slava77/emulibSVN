@@ -10,7 +10,7 @@ import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
 import javax.ejb.Stateless;
-import org.cern.cms.csc.dw.model.FactType;
+import org.cern.cms.csc.dw.model.Fact;
 import org.cern.cms.csc.exsys.re.conclusion.maker.ConclusionMaker;
 import org.cern.cms.csc.exsys.re.conclusion.maker.DefaultConclusionMaker;
 
@@ -26,7 +26,7 @@ public class RuleEngineBean implements RuleEngineLocal, RuleEngineRemote {
 
     public RuleEngineBean() {}
 
-    public void sendFact(FactType fact) {
+    public void sendFact(Fact fact) {
         getEpService().getEPRuntime().sendEvent(fact);
         System.out.println("ExsysRE: received a fact of type " + fact.getClass().getName() + " and sent to CEP");
     }

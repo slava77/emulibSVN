@@ -6,7 +6,7 @@
 package org.cern.cms.csc.exsys.re;
 
 import javax.ejb.Local;
-import org.cern.cms.csc.dw.model.FactType;
+import org.cern.cms.csc.dw.model.Fact;
 import org.cern.cms.csc.exsys.re.conclusion.maker.ConclusionMaker;
 
 /**
@@ -16,7 +16,7 @@ import org.cern.cms.csc.exsys.re.conclusion.maker.ConclusionMaker;
 @Local
 public interface RuleEngineLocal {
 
-    void sendFact(FactType fact);
+    void sendFact(Fact fact);
 
     void addRule(String rule, String ruleName, ConclusionMaker conclusionMaker);
     

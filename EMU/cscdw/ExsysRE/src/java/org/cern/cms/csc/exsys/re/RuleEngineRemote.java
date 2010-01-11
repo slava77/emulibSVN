@@ -6,7 +6,7 @@
 package org.cern.cms.csc.exsys.re;
 
 import javax.ejb.Remote;
-import org.cern.cms.csc.dw.model.FactType;
+import org.cern.cms.csc.dw.model.Fact;
 
 /**
  *
@@ -15,6 +15,6 @@ import org.cern.cms.csc.dw.model.FactType;
 @Remote
 public interface RuleEngineRemote {
 
-    void sendFact(FactType fact);
+    void sendFact(Fact fact);
     
 }
