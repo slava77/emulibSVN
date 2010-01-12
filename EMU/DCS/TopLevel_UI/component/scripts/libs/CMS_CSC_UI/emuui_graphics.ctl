@@ -219,3 +219,27 @@ string emuui_correctAlarmColor(string color, string noAlarmColor = "FwStateOKPhy
   
   return color;
 }
+
+/** Fills the given table with "???" and optionally makes the background grey (if greyOut is true).
+    This is used to indicate that there's no communication. */
+void emuui_questionOutTable(string tableName, bool greyOut = true, 
+                            dyn_int excludeColumns = makeDynInt(),
+                            dyn_int excludeRows = makeDynInt()) {
+  int rowCount;
+  int columnCount;
+  shape table = getShape(tableName);
+  getValue(table, "lineCount", rowCount);
+  getValue(table, "columnCount", columnCount);
+  for (int row=0; row < rowCount; row++) {
+    if (dynContains(excludeRows, row)) { continue; }
+    for (int col=0; col < columnCount; col++) {
+      if (dynContains(excludeColumns, col)) { continue; }
+      string columnName;
+      getValue(table, "columnToName", col, columnName);
+      setValue(table, "cellValueRC", row, columnName, "???");
+      if (greyOut) {
+        setValue(table, "cellBackColRC", row, columnName, "FwEquipmentDisabled");
+      }
+    }
+  }
+}
