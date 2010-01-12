@@ -113,12 +113,15 @@ dyn_string references;
 dyn_string channelStates;
 dyn_string allWarningShapes; // must be exactly at the same order as they are connected to the updateWarningsCB function!!!
 dyn_string channelVMonDps, channelIMonDps;
+bool noCommunication;
 
 // current status variables
 string currentState;
 
 /** Update voltage reading */
 void updateVMonCB(dyn_string dpList, dyn_float voltages){
+  if (noCommunication) { return; } // don't update the table - let the \"???\" and grey color stay there
+  
   for (int i=1; i <= dynlen(voltages); i++) {
     string strVoltage;
     sprintf(strVoltage, \"%.2f V\", voltages[i]);
@@ -138,6 +141,8 @@ void updateVMonCB(dyn_string dpList, dyn_float voltages){
 
 /** Update current reading */
 void updateIMonCB(dyn_string dpList, dyn_float currents){
+  if (noCommunication) { return; } // don't update the table - let the \"???\" and grey color stay there
+  
   for (int i=1; i <= dynlen(currents); i++) {
     string strCurrent;
     sprintf(strCurrent, \"%.2f A\", currents[i]);
@@ -167,6 +172,8 @@ void updateVSetCB(dyn_string dpList, dyn_float voltages){
 }
 
 void updateChannelStateCB(dyn_string tripDps, dyn_bool trips) {
+  if (noCommunication) { return; }
+  
   dyn_bool ovt, ovc, ovv, tovv; // overtemperature, overcurrent, overvoltage, terminal overvoltage
   int channels = dynlen(trips) / 4;
   for (int i=1; i <= channels; i++) {
@@ -217,6 +224,8 @@ void updateFSMStateCB(string fsmNode, string state) {
 
 /** Show/hide warnings about various problems. */
 void updateWarningsCB(dyn_string dpList, dyn_bool problems) {
+  noCommunication = problems[1];
+  
   for (int i=1; i <= dynlen(problems); i++) {
     if (problems[i]) {
       emuui_showTooltipWarning(getShape(\"refPoint\"),
@@ -227,6 +236,11 @@ void updateWarningsCB(dyn_string dpList, dyn_bool problems) {
                                getShape(\"maraton_general_tooltipBack\"),
                                allWarningShapes);
     }  
+  }
+  
+  // no communication - display ??? for all values
+  if (noCommunication) {
+    emuui_questionOutTable(tableChannels.name(), true, makeDynInt(), makeDynInt(3));
   }
 }
 " 0

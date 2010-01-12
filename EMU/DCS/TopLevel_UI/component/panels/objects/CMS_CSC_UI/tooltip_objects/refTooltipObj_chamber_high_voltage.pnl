@@ -93,6 +93,7 @@ PANEL,-1 -1 420 255 N "_3DFace" 1
     dynAppend(statusDps, channelDps[i] + \".status\");
   }
   
+  dpConnect(\"updateDisconnectedWarningCB\", true, disconnectedDevicesDp);
   dpConnect(\"updateVMonCB\", true, vMonDps);
   dpConnect(\"updateStatusCB\", true, statusDps);
   if (!allGrayMode) {
@@ -100,7 +101,6 @@ PANEL,-1 -1 420 255 N "_3DFace" 1
   }
   dpConnect(\"updateModuleStatusCB\", true, moduleStatusDp);
   dpConnect(\"updateMasterChannelStatusCB\", true, masterChannelStatusDp);
-  dpConnect(\"updateDisconnectedWarningCB\", true, disconnectedDevicesDp);
   dpConnect(\"updateModuleTypeCB\", true, moduleTypeDp);
 }
 
@@ -178,8 +178,11 @@ dyn_string references;
 int posX, posY;
 dyn_string shapesBelowTable;
 bool allGrayMode; // this flag is true when the whole LV FSM node is disabled - then back color of the tables is always gray
+bool noCommunication;
 
 void updateVMonCB(dyn_string dpList, dyn_float voltages) {
+  if (noCommunication) { return; } // don't update the table - let the \"???\" stay there
+  
   int rowCount = ceil(dynlen(voltages) / 6);
   
   for (int i=0; i < rowCount; i++) {
@@ -196,6 +199,8 @@ void updateVMonCB(dyn_string dpList, dyn_float voltages) {
 }
 
 void updateStatusCB(dyn_string dpList, dyn_int statuses) {
+  if (noCommunication) { return; } // don't update the table - let the \"???\" and grey color stay there
+  
   currentStatuses = statuses;
   int rowCount = ceil(dynlen(statuses) / 6);
   
@@ -243,7 +248,8 @@ void updateDisabledChannelsCB(string dpName, dyn_string disabledChannelsParam) {
 
 /** if disconnectedDevices contains hvFsmNode then \"no communication\" warning is shown, otherwise it's hidden. */
 void updateDisconnectedWarningCB(string dpName, string disconnectedDevices) {
-  if (strpos(disconnectedDevices, hvFsmNode) >= 0) {
+  noCommunication = (strpos(disconnectedDevices, hvFsmNode) >= 0);
+  if (noCommunication) {
     emuui_showTooltipWarning(getShape(\"refPoint\"),
                            getShape(\"warnNoHvCommunication\"), 
                            getShape(\"chamber_high_voltage_tooltipBack\"));
@@ -251,6 +257,11 @@ void updateDisconnectedWarningCB(string dpName, string disconnectedDevices) {
     emuui_hideTooltipWarning(getShape(\"warnNoHvCommunication\"), 
                              getShape(\"chamber_high_voltage_tooltipBack\"),
                              makeDynString(\"warnLV\"));
+  }
+  
+  // no communication - display ??? for all values
+  if (noCommunication) {
+    emuui_questionOutTable(tableVoltages.name());
   }
 }
 
@@ -688,7 +699,7 @@ LANG:1 33 host=###; slot=#; addr=#; part=#,
 2 30
 "lblMasterInfo"
 ""
-1 338.861130453457 240 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 349.1160900801193 260 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 43 0 0 0 0 0
 E E E

@@ -178,6 +178,8 @@ dyn_int disabledDmbTempChannels;
 
 /** Update voltage reading */
 void updateVMonCB(string aiValueDpe, float voltage){
+  if (noCommunication) { return; } // don't update the table - let the \"???\" and grey color stay there
+  
   string dp = dpSubStr(aiValueDpe, DPSUB_SYS_DP);
   int channel = dpToChannel[dp];
   
@@ -195,6 +197,8 @@ void updateVMonCB(string aiValueDpe, float voltage){
 
 /** Update voltage background color */
 void updateVMonBackColorCB(string alarmColDp, string alarmColor){
+  if (noCommunication) { return; } // don't update the table - let the \"???\" and grey color stay there
+  
   string dp = dpSubStr(alarmColDp, DPSUB_SYS_DP);
   int channel = dpToChannel[dp];
   
@@ -234,6 +238,8 @@ void updateDisabledDmbTempsCB(dyn_string dps, dyn_dyn_int offChannels) {
 
 /** Update DMB temperature. */
 void updateDmbTemperatureCB(string dp, float temperature) {
+  if (noCommunication) { return; } // don't update the table - let the \"???\" and grey color stay there
+  
   dp = dpSubStr(dp, DPSUB_SYS_DP_EL);
   int dmbIndex = dynContains(dmbTempDps, dp);
   string strTemperature;
@@ -249,6 +255,8 @@ void updateDmbTemperatureCB(string dp, float temperature) {
 
 /** Update DMB temperature color. */
 void updateDmbTemperatureBackColorCB(string alarmColDp, string alarmColor) {
+  if (noCommunication) { return; } // don't update the table - let the \"???\" and grey color stay there
+  
   string dp = dpSubStr(alarmColDp, DPSUB_SYS_DP_EL);
   int dmbIndex = dynContains(dmbTempDps, dp);
   
@@ -302,6 +310,13 @@ void updatePCrateErrorStatusCB(string dpName, int errorStatus) {
                              getShape(\"peripheralCrate_general_tooltipBack\"));
   }
   updateCrbSwitch();
+  
+  // no communication - display ??? for all values
+  if (noCommunication) {
+    emuui_questionOutTable(pairsTable.name(), true, makeDynInt(0, 1));
+    emuui_questionOutTable(tableOther.name());
+    emuui_questionOutTable(tableStandby.name(), false);
+  }
 }
 
 // Valeri convention (1-9 is one TMB/DMB pair disabled, 10 - CCB/MPC disabled, 11 - VCC disabled, 12 - both 1.5V lines disabled)

@@ -127,6 +127,7 @@ string fsmNode;
 dyn_string references;
 int posX, posY;
 bool allGrayMode; // this flag is true when the whole LV FSM node is disabled - then back color of the tables is always gray
+bool noCommunication;
 
 dyn_string alarmColorDps;
 dyn_int disabledChannels;
@@ -136,6 +137,8 @@ void positionChangedCB(string dummyDpName, int dummyValue) {
 }
 
 void updateTemperatureCB(dyn_string dps, dyn_float temperatures) {
+  if (noCommunication) { return; } // don't update the table - let the \"???\" and grey color stay there
+
   for (int i=1; i <= dynlen(columnNames); i++) {
     int index = dynPartiallyContains(dps, columnNames[i]);
     if (index > 0) {
@@ -162,6 +165,8 @@ void updateDisabledChannelsCB(string dp, dyn_int disabledChannelsParam) {
 }
 
 void updateTemperatureAlarmColorsCB(dyn_string dps, dyn_string alarmColors) {
+  if (noCommunication) { return; } // don't update the table - let the \"???\" and grey color stay there
+
   for (int i=1; i <= dynlen(columnNames); i++) {
     int index = dynPartiallyContains(dps, columnNames[i]);
     if (index > 0) {
@@ -188,13 +193,19 @@ int dynPartiallyContains(dyn_string container, string searchString) {
 
 /** if disconnectedDevices contains hvFsmNode then \"no communication\" warning is shown, otherwise it's hidden. */
 void updateDisconnectedWarningCB(string dpName, string disconnectedDevices) {
-  if (strpos(disconnectedDevices, fsmNode) >= 0) {
+  noCommunication = (strpos(disconnectedDevices, fsmNode) >= 0);
+  if (noCommunication) {
     emuui_showTooltipWarning(getShape(\"refPoint\"),
                            getShape(\"warnNoTempCommunication\"), 
                            getShape(\"chamber_temperature_tooltipBack\"));
   } else {
     emuui_hideTooltipWarning(getShape(\"warnNoTempCommunication\"), 
                              getShape(\"chamber_temperature_tooltipBack\"));
+  }
+  
+  // no communication - display ??? for all values
+  if (noCommunication) {
+    emuui_questionOutTable(tableTemp.name());
   }
 }
 " 0
