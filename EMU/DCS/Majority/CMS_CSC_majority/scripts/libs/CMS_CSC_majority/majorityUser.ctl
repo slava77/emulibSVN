@@ -19,8 +19,8 @@ dyn_int majorityUser_stateCounts(string device, dyn_anytype values, // informati
   // values are returned in the same order you defined in the majority_addDevice function. 
 
   switch (device) {
-    case "UFPNPI_HV":
-      return emumaj_ufpnpiStateCounts(values, all, calcTotal, node);
+    case "HV":
+      return emumaj_hvStateCounts(values, all, calcTotal, node);
     case "LV":
       return emumaj_lvStateCounts(values, all, calcTotal, node);
     case "TEMP":
@@ -45,9 +45,9 @@ string majorityUser_dpTranslation(string fsmDevDp) {
 // mapPercentages: contains mapping with exact percentages (should not be needed normally)
 string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string node) {
   // majStates and mapPercentages contain a map from device:state to the majority states or to the percentages
-     if (    ( majStates["UFPNPI_HV:error"]   >= majority_ON  ) ) return "ERROR";
-     else if ( majStates["UFPNPI_HV:on"]      >= majority_ON    ) return "ON";
-     else if ( majStates["UFPNPI_HV:on"]      == majority_MIXED ) return "MIXED";
+     if (    ( majStates["HV:error"]   >= majority_ON  ) ) return "ERROR";
+     else if ( majStates["HV:on"]      >= majority_ON    ) return "ON";
+     else if ( majStates["HV:on"]      == majority_MIXED ) return "MIXED";
      else                                                       return "OFF";
 
      // example -> if more than the defined percentage of channels are in error then the state is ERROR

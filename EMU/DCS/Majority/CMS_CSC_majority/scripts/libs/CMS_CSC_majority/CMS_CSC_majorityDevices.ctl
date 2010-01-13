@@ -1,8 +1,8 @@
-global const int EMUMAJ_UFPNPI_STATE_ON_VMON_ACCURACY = 50;
-global const int EMUMAJ_UFPNPI_STANDBY_VOLTAGE = 3000;
+global const int EMUMAJ_HV_STATE_ON_VMON_ACCURACY = 50;
+global const int EMUMAJ_HV_STANDBY_VOLTAGE = 3000;
 
 /** values here are ".status",".off_channels", ".last_vset". States are ON, STANDBY and ERROR */
-dyn_int emumaj_ufpnpiStateCounts(dyn_anytype values, int &weight, bool calcTotal, string node) {
+dyn_int emumaj_hvStateCounts(dyn_anytype values, int &weight, bool calcTotal, string node) {
   mapping deviceParams = emumaj_getChamberDeviceParams(node);
   dyn_int excludedChannels = values[2];
   int status = values[1];
@@ -51,8 +51,8 @@ dyn_int emumaj_ufpnpiStateCounts(dyn_anytype values, int &weight, bool calcTotal
   strreplace(dataDp, "HighVoltage/", "");
   for (int i = 1 + channelsOffset; i <= channelsOffset + channelCount; i++) {
     if (dynContains(excludedChannels, i) && !calcTotal) { continue; }
-    dyn_int chStates = emumaj_ufpnpiChannelStates(dataDp + ".data.v" + i, 
-                                                  vset, EMUMAJ_UFPNPI_STANDBY_VOLTAGE,
+    dyn_int chStates = emumaj_hvChannelStates(dataDp + ".data.v" + i, 
+                                                  vset, EMUMAJ_HV_STANDBY_VOLTAGE,
                                                   true);
     on += chStates[1];
     standby += chStates[2];
@@ -69,7 +69,7 @@ dyn_int emumaj_ufpnpiStateCounts(dyn_anytype values, int &weight, bool calcTotal
   return makeDynInt(on, standby, error);
 }
 
-dyn_int emumaj_ufpnpiChannelStates(string dp, int onVoltage, int standbyVoltage, bool checkForAlerts = true) {
+dyn_int emumaj_hvChannelStates(string dp, int onVoltage, int standbyVoltage, bool checkForAlerts = true) {
   float vmon;
   int alert = 0;
   dpGet(dp + ".vmon", vmon);
@@ -85,11 +85,11 @@ dyn_int emumaj_ufpnpiChannelStates(string dp, int onVoltage, int standbyVoltage,
     error = 1;
   }  
   
-  if ((vmon > onVoltage - EMUMAJ_UFPNPI_STATE_ON_VMON_ACCURACY) && 
-      (vmon < onVoltage + EMUMAJ_UFPNPI_STATE_ON_VMON_ACCURACY)) {
+  if ((vmon > onVoltage - EMUMAJ_HV_STATE_ON_VMON_ACCURACY) && 
+      (vmon < onVoltage + EMUMAJ_HV_STATE_ON_VMON_ACCURACY)) {
     on = 1;
-  } else if ((vmon > standbyVoltage - EMUMAJ_UFPNPI_STATE_ON_VMON_ACCURACY) && 
-            (vmon < standbyVoltage + EMUMAJ_UFPNPI_STATE_ON_VMON_ACCURACY)){
+  } else if ((vmon > standbyVoltage - EMUMAJ_HV_STATE_ON_VMON_ACCURACY) && 
+            (vmon < standbyVoltage + EMUMAJ_HV_STATE_ON_VMON_ACCURACY)){
     standby = 1;
   }
   
