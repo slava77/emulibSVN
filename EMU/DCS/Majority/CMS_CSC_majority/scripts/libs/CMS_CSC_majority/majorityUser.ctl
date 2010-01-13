@@ -47,9 +47,9 @@ string majorityUser_dpTranslation(string fsmDevDp) {
 // mapPercentages: contains mapping with exact percentages (should not be needed normally)
 string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string node) {
   // majStates and mapPercentages contain a map from device:state to the majority states or to the percentages
-     if (    ( majStates["HV:error"]   >= majority_ON  ) ) return "ERROR";
-     else if ( majStates["HV:on"]      >= majority_ON    ) return "ON";
-     else if ( majStates["HV:on"]      == majority_MIXED ) return "MIXED";
+     if (    ( majStates["HV_OUTER:error"]   >= majority_ON  ) ) return "ERROR";
+     else if ( majStates["HV_OUTER:on"]      >= majority_ON    ) return "ON";
+     else if ( majStates["HV_OUTER:on"]      == majority_MIXED ) return "MIXED";
      else                                                       return "OFF";
 
      // example -> if more than the defined percentage of channels are in error then the state is ERROR
