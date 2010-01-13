@@ -19,7 +19,9 @@ dyn_int majorityUser_stateCounts(string device, dyn_anytype values, // informati
   // values are returned in the same order you defined in the majority_addDevice function. 
 
   switch (device) {
-    case "HV":
+    case "HV_OUTER":
+      return emumaj_hvStateCounts(values, all, calcTotal, node);
+    case "HV_INNER":
       return emumaj_hvStateCounts(values, all, calcTotal, node);
     case "LV":
       return emumaj_lvStateCounts(values, all, calcTotal, node);
