@@ -20,9 +20,9 @@ dyn_int majorityUser_stateCounts(string device, dyn_anytype values, // informati
 
   switch (device) {
     case "HV_OUTER":
-      return emumaj_hvStateCounts(values, all, calcTotal, node);
+      return emumaj_hvStateCounts(values, all, calcTotal, node, device);
     case "HV_INNER":
-      return emumaj_hvStateCounts(values, all, calcTotal, node);
+      return emumaj_hvStateCounts(values, all, calcTotal, node, device);
     case "LV":
       return emumaj_lvStateCounts(values, all, calcTotal, node);
     case "TEMP":

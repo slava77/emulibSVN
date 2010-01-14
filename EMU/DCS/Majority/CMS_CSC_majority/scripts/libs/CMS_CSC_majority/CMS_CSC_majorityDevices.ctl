@@ -7,9 +7,9 @@ dyn_int emumaj_hvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
 
   // check if the real type (outer or inner) of the given device is equal to the expected majority type
   // if not - return total = 0. This way we differenciate inner and outer chambers without two different DU types
-  string type = "HV_1_OUTER";
+  string type = "HV_OUTER";
   if (deviceParams["ring"] == 1) {
-    type = "HV_1_INNER";
+    type = "HV_INNER";
   }
   if (type != majType) {
     weight = 0;
