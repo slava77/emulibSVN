@@ -92,15 +92,24 @@ string majorityUser_nodeTranslation(string node) {
 // @return list of data point elements to connect to compute the state of node (the length of the array should match the configuration of the device)
 //         the elements can belong to different data points (this is a case when this function may be needed) but should all belong to the same PVSS system
 //         (in principle not necessarily to the system where the majority script is running, even if this is reccomended)
+  */
 dyn_string majorityUser_nodeTranslationToDpes(string dev, string node, bool& use_it) {
    use_it = false;
-   if (dev == "...") {
-      use_it = true;
-      return makeDynString(....);             
+   if ((dev == "HV_OUTER") || (dev == "HV_INNER")) {
+      mapping deviceParams = emumaj_getChamberDeviceParams(node);
+      string hvType = "HV_OUTER";
+      if (deviceParams["ring"] == 1) {
+        hvType = "HV_INNER";
+      }
+      if (dev != hvType) {
+        DebugTN("returning 0 DPs to connect to for majority type " + dev + " for node " + node);
+        use_it = true;
+        return makeDynString("dummyMajorityConnect.");
+      }
    }
    return makeDynString(); // if use_it is false you can return any value, it will not be taken into account  
 }
 
 
 
-*/
+/**/
