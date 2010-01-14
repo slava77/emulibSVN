@@ -104,7 +104,7 @@ dyn_string majorityUser_nodeTranslationToDpes(string dev, string node, bool& use
       if (dev != hvType) {
         DebugTN("returning 0 DPs to connect to for majority type " + dev + " for node " + node);
         use_it = true;
-        return makeDynString("dummyMajorityConnect.");
+        return makeDynString();
       }
    }
    return makeDynString(); // if use_it is false you can return any value, it will not be taken into account  
