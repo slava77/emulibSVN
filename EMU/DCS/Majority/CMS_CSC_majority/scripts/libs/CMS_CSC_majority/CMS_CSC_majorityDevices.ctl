@@ -2,8 +2,21 @@ global const int EMUMAJ_HV_STATE_ON_VMON_ACCURACY = 50;
 global const int EMUMAJ_HV_STANDBY_VOLTAGE = 3000;
 
 /** values here are ".status",".off_channels", ".last_vset". States are ON, STANDBY and ERROR */
-dyn_int emumaj_hvStateCounts(dyn_anytype values, int &weight, bool calcTotal, string node) {
+dyn_int emumaj_hvStateCounts(dyn_anytype values, int &weight, bool calcTotal, string node, string majType) {
   mapping deviceParams = emumaj_getChamberDeviceParams(node);
+
+  // check if the real type (outer or inner) of the given device is equal to the expected majority type
+  // if not - return total = 0. This way we differenciate inner and outer chambers without two different DU types
+  string type = "HV_1_OUTER";
+  if (deviceParams["ring"] == 1) {
+    type = "HV_1_INNER";
+  }
+  if (type != majType) {
+    weight = 0;
+    return makeDynInt(0, 0, 0);
+  }
+  //----------------------------------------------------------------------------------------------------
+  
   dyn_int excludedChannels = values[2];
   int status = values[1];
   int channelCount;
