@@ -53,6 +53,8 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
       (majStates["HV_INNER:error"] >= majority_ON) ||
       (majStates["LV:error"] >= majority_ON) ||
       (majStates["TEMP:alert"] >= majority_ON) ||
+      (majStates["LV:no_communication"] >= majority_ON) ||
+      (majStates["TEMP:no_communication"] >= majority_ON) ||
       (majStates["CRB:error"] >= majority_ON) ||
       (majStates["MrtnChannel:error"] >= majority_ON)) {
     return "ERROR";
