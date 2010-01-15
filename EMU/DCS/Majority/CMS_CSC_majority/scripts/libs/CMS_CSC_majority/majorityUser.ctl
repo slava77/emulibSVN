@@ -47,25 +47,54 @@ string majorityUser_dpTranslation(string fsmDevDp) {
 // mapPercentages: contains mapping with exact percentages (should not be needed normally)
 string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string node) {
   // majStates and mapPercentages contain a map from device:state to the majority states or to the percentages
+  
+  //ERROR state
   if ((majStates["HV_OUTER:error"] >= majority_ON) || 
-      (majStates["HV_INNER:error"] >= majority_ON)) {
+      (majStates["HV_INNER:error"] >= majority_ON) ||
+      (majStates["LV:error"] >= majority_ON) ||
+      (majStates["TEMP:error"] >= majority_ON) ||
+      (majStates["CRB:error"] >= majority_ON) ||
+      (majStates["MrtnChannel:error"] >= majority_ON)) {
     return "ERROR";
-  } else if (majStates["HV_OUTER:on"] >= majority_ON) {
+    
+  // ON and OUTER_ON states
+  } else if ((majStates["HV_OUTER:on"] >= majority_ON) &&
+             (majStates["LV:on"] >= majority_ON) &&
+             (majStates["TEMP:ok"] >= majority_ON) &&
+             (majStates["CRB:on"] >= majority_ON) &&
+             (majStates["MrtnChannel:on"] >= majority_ON)) {
+    
+    // ON state
     if (majStates["HV_INNER:on"] >= majority_ON) {
       return "ON";
+    // OUTER_ON state
     } else if (majStates["HV_INNER:standby"] >= majority_ON) {
       return "OUTER_ON";
     }
+    
+  // STANDBY state
   } else if ((majStates["HV_OUTER:standby"] >= majority_ON) &&
              (majStates["HV_INNER:standby"] >= majority_ON) &&
              (majStates["HV_OUTER:on"] == majority_OFF) &&
-             (majStates["HV_INNER:on"] == majority_OFF)) {
+             (majStates["HV_INNER:on"] == majority_OFF) &&
+             (majStates["LV:on"] >= majority_ON) &&
+             (majStates["TEMP:ok"] >= majority_ON) &&
+             (majStates["CRB:on"] >= majority_ON) &&
+             (majStates["MrtnChannel:on"] >= majority_ON)) {
     return "STANDBY";
+    
+  // OFF state
   } else if ((majStates["HV_OUTER:on"] == majority_OFF) &&
              (majStates["HV_INNER:on"] == majority_OFF) &&
              (majStates["HV_OUTER:standby"] == majority_OFF) &&
-             (majStates["HV_INNER:standby"] == majority_OFF)) {
+             (majStates["HV_INNER:standby"] == majority_OFF) &&
+//              (majStates["LV:on"] >= majority_ON) &&
+//              (majStates["TEMP:ok"] >= majority_ON) &&
+             (majStates["CRB:on"] == majority_OFF) &&
+             (majStates["MrtnChannel:on"] == majority_OFF)) {
     return "OFF";
+    
+  // everything else - NOT-READY
   } else {
     return "NOT-READY";
   }
