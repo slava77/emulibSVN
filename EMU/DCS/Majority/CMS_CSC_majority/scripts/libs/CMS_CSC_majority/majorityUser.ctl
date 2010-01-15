@@ -63,8 +63,8 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
     return "STANDBY";
   } else if ((majStates["HV_OUTER:on"] == majority_OFF) &&
              (majStates["HV_INNER:on"] == majority_OFF) &&
-             (majStates["HV_OUTER:standby"] >= majority_OFF) &&
-             (majStates["HV_INNER:standby"] >= majority_OFF)) {
+             (majStates["HV_OUTER:standby"] == majority_OFF) &&
+             (majStates["HV_INNER:standby"] == majority_OFF)) {
     return "OFF";
   } else {
     return "NOT-READY";
