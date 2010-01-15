@@ -47,11 +47,30 @@ string majorityUser_dpTranslation(string fsmDevDp) {
 // mapPercentages: contains mapping with exact percentages (should not be needed normally)
 string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string node) {
   // majStates and mapPercentages contain a map from device:state to the majority states or to the percentages
-     if (    ( majStates["HV_OUTER:error"]   >= majority_ON  ) ) return "ERROR";
-     else if ( majStates["HV_OUTER:on"]      >= majority_ON    ) return "ON";
-     else if ( majStates["HV_OUTER:on"]      == majority_MIXED ) return "MIXED";
-     else                                                       return "OFF";
-
+  if ((majStates["HV_OUTER:error"] >= majority_ON) || 
+      (majStates["HV_INNER:error"] >= majority_ON)) {
+    return "ERROR";
+  } else if (majStates["HV_OUTER:on"] >= majority_ON) {
+    if (majStates["HV_INNER:on"] >= majority_ON) {
+      return "ON";
+    } else if (majStates["HV_INNER:standby"] >= majority_ON) {
+      return "OUTER_ON";
+    }
+  } else if ((majStates["HV_OUTER:standby"] >= majority_ON) &&
+             (majStates["HV_INNER:standby"] >= majority_ON)) {
+    return "STANDBY";
+  } else if ((majStates["HV_OUTER:on"] == majority_OFF) &&
+             (majStates["HV_INNER:on"] == majority_OFF)) {
+    return "OFF";
+  } else {
+    return "NOT-READY";
+  }
+  
+//      if (    ( majStates["HV_OUTER:error"]   >= majority_ON  ) ) return "ERROR";
+//      else if ( majStates["HV_OUTER:on"]      >= majority_ON    ) return "ON";
+//      else if ( majStates["HV_OUTER:on"]      == majority_MIXED ) return "MIXED";
+//      else                                                       return "OFF";
+// 
      // example -> if more than the defined percentage of channels are in error then the state is ERROR
      //            otherwise if more than the defined percentage of channels is on then ON
      //            otherwise MIXED or OFF
