@@ -87,6 +87,7 @@
                     <include name="*.jar"/>
                 </fileset>
             </classpath>
+            <transaction src="src/java/org/cern/cms/csc/dw/dev/sql/cdw_utility.sql"/>
             <transaction src="src/java/org/cern/cms/csc/dw/dev/sql/cdw_ontology_pre_import.sql"/>
         </sql>
 

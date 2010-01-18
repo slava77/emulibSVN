@@ -1,5 +1,5 @@
 begin
-    cdw_ontology.disable_foreign_key('CDW_FACTS', 'FCT_CMP_ID');
+    cdw_utility.disable_foreign_key('CDW_FACTS', 'FCT_CMP_ID');
 end;
 /
 
