@@ -5,27 +5,31 @@
 
 package org.cern.cms.csc.dw.ws;
 
+import javax.ejb.EJB;
 import org.cern.cms.csc.dw.model.fact.FactCollection;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.dw.model.fact.FactCollectionFactsItem;
 import org.cern.cms.csc.dw.model.ontology.Component;
+import org.cern.cms.csc.dw.dao.FactDaoLocal;
+import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
 
 /**
  *
  * @author evka
  */
-@WebService(serviceName="factcollection",name="input")
+@WebService(serviceName="cdw", name="factcollection")
 @Stateless()
 public class FactCollectionInput {
 
-    @PersistenceContext(name="CdwPU")
-    private EntityManager em;
+    @EJB
+    private OntologyDaoLocal ontologyDao;
+
+    @EJB
+    private FactDaoLocal factDao;
 
     /**
      * Receive and save fact collection
@@ -33,7 +37,7 @@ public class FactCollectionInput {
      * @return
      * @throws java.lang.IllegalArgumentException
      */
-    @WebMethod(operationName = "set")
+    @WebMethod(operationName = "input")
     public Integer getFactCollection(@WebParam(name = "factCollection")
     final FactCollection factCollection) throws Exception {
 
@@ -49,7 +53,7 @@ public class FactCollectionInput {
                 Fact fact = fi.getItem().getValue();
 
                 // Get ontology component object from fact component id
-                Component component = Component.getComponentById(em, fact.getComponentId());
+                Component component = ontologyDao.getComponentById(fact.getComponentId());
 
                 // If not found - throw exception
                 if (component == null) {
@@ -63,7 +67,7 @@ public class FactCollectionInput {
             }
 
             // Persist collection
-            em.persist(factCollection);
+            factDao.saveFactCollection(factCollection);
 
         } catch (Exception ex) {
 

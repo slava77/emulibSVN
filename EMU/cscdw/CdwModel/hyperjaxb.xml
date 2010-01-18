@@ -56,7 +56,7 @@
     <target name="generate-ontology-schema">
 
         <delete file="src/java/org/cern/cms/csc/dw/schema/ontologyClassifiers.xsd" failonerror="false" />
-        <xslt style="src/java/org/cern/cms/csc/dw/util/template/ontologyClassifiers.xsl"
+        <xslt style="src/java/org/cern/cms/csc/dw/dev/template/ontologyClassifiers.xsl"
               in="../KnowledgeBase/ontology/csc-ontology.owl"
               out="src/java/org/cern/cms/csc/dw/schema/ontologyClassifiers.xsd"/>
 
@@ -70,7 +70,7 @@
 
         <!-- Create database properties file -->
         <delete file="build/jar/META-INF/persistence.properties" failonerror="false" />
-        <xslt style="src/java/org/cern/cms/csc/dw/util/template/persistenceProperties.xsl"
+        <xslt style="src/java/org/cern/cms/csc/dw/dev/template/persistenceProperties.xsl"
               in="build/jar/META-INF/persistence.xml"
               out="build/jar/META-INF/persistence.properties"/>
 
@@ -87,11 +87,11 @@
                     <include name="*.jar"/>
                 </fileset>
             </classpath>
-            <transaction src="src/java/org/cern/cms/csc/dw/util/sql/cdw_ontology_pre_import.sql"/>
+            <transaction src="src/java/org/cern/cms/csc/dw/dev/sql/cdw_ontology_pre_import.sql"/>
         </sql>
 
         <!-- Execute main data import procedure -->
-        <java classname="org.cern.cms.csc.dw.util.ComponentImporter" fork="true" failonerror="true">
+        <java classname="org.cern.cms.csc.dw.dev.ComponentImporter" fork="true" failonerror="true">
             <jvmarg line="-Xmn100M -Xms500M -Xmx500M -Xss100M"/>
             <arg value="../KnowledgeBase/ontology/csc-ontology.owl"/>
             <classpath>
@@ -111,9 +111,12 @@
                     <include name="*.jar"/>
                 </fileset>
             </classpath>
-            <transaction src="src/java/org/cern/cms/csc/dw/util/sql/cdw_ontology_indexes.sql"/>
-            <transaction src="src/java/org/cern/cms/csc/dw/util/sql/cdw_ontology.sql"/>
-            <transaction src="src/java/org/cern/cms/csc/dw/util/sql/cdw_ontology_post_import.sql"/>
+            <transaction src="src/java/org/cern/cms/csc/dw/dev/sql/cdw_ontology_indexes.sql"/>
+            <transaction src="src/java/org/cern/cms/csc/dw/dev/sql/cdw_ontology.sql"/>
+            <transaction src="src/java/org/cern/cms/csc/dw/dev/sql/cdw_ontology_post_import.sql"/>
+            <transaction>
+                select count(*) as "ORPHAN FACTS LEFT" from cdw_facts where fct_cmp_id is null
+            </transaction>
         </sql>
 
     </target>
@@ -134,7 +137,8 @@
 				-Xinheritance
 				-XhashCode
 				-XtoString
-                -Xsuperclass"/>
+                -Xsuperclass
+                -Xhibernate"/>
 			<binding dir="${basedir}">
 			 	<include name="*.xjb"/>
 			</binding>
@@ -148,6 +152,11 @@
 		</xjc>
 
         <!-- Fix ontology classes -->
+
+        <replace file="${srcs}/org/cern/cms/csc/dw/model/ontology/ComponentClass.java">
+            <replacefilter token="PARENT_COMPONENTCLASS_IDITEM" value="CCP_PARENT_CCL_ID"/>
+            <replacefilter token="CHILD_COMPONENTCLASS_IDITEM" value="CCP_CHILD_CCL_ID"/>
+        </replace>
 
         <replace file="${srcs}/org/cern/cms/csc/dw/model/fact/FactCollection.java"
             token="FACTSITEMS_FACTCOLLECTION_ID"

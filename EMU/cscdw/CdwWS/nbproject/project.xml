@@ -11,9 +11,9 @@
         <data xmlns="http://www.netbeans.org/ns/j2ee-ejbjarproject/3">
             <name>CdwWS</name>
             <minimum-ant-version>1.6.5</minimum-ant-version>
-            <included-library>libs.hyperjaxb3.classpath</included-library>
+            <included-library>reference.CdwModel.dist</included-library>
             <included-library>libs.jaxb.classpath</included-library>
-            <included-library>libs.hibernate-persistence.classpath</included-library>
+            <included-library>libs.hyperjaxb3.classpath</included-library>
             <source-roots>
                 <root id="src.dir"/>
             </source-roots>
@@ -24,6 +24,15 @@
         <libraries xmlns="http://www.netbeans.org/ns/ant-project-libraries/1">
             <definitions>../lib/nblibraries.properties</definitions>
         </libraries>
-        <references xmlns="http://www.netbeans.org/ns/ant-project-references/1"/>
+        <references xmlns="http://www.netbeans.org/ns/ant-project-references/1">
+            <reference>
+                <foreign-project>CdwModel</foreign-project>
+                <artifact-type>jar</artifact-type>
+                <script>build.xml</script>
+                <target>dist</target>
+                <clean-target>clean</clean-target>
+                <id>dist</id>
+            </reference>
+        </references>
     </configuration>
 </project>

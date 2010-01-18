@@ -8,8 +8,6 @@ package org.cern.cms.csc.dw.model.base;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.EntityManager;
-import org.cern.cms.csc.dw.model.ontology.Component;
 import org.cern.cms.csc.dw.model.ontology.ComponentClass;
 import org.cern.cms.csc.dw.model.ontology.ComponentLink;
 import org.cern.cms.csc.dw.model.ontology.ComponentLinkClass;
@@ -97,23 +95,6 @@ public abstract class ComponentBase {
             }
         }
         return links;
-    }
-
-    /**
-     * Finds and returns a components with appropriate id or (if not found) synonym. Otherwise returns null
-     * @param em
-     * @param id
-     * @return
-     */
-    public static Component getComponentById(EntityManager em, String id) {
-        Component c = em.find(Component.class, id);
-        if (c == null) {
-            ComponentSynonym cs = em.find(ComponentSynonym.class, id);
-            if (cs != null) {
-                c = (Component) em.createQuery("select c from org.cern.cms.csc.dw.model.ontology.Component as c where ? = any elements(c.synonyms)").setParameter(1, cs).getSingleResult();
-            }
-        }
-        return c;
     }
 
 }

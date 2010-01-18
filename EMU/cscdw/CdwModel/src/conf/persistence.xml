@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
+  <persistence-unit name="CdwPU" transaction-type="JTA">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <jta-data-source>jdbc/devdb10</jta-data-source>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <properties>
+      <property name="hibernate.hbm2ddl.auto" value="update"/>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect"/>
+      <property name="hibernate.cache.provider_class" value="net.sf.ehcache.hibernate.SingletonEhCacheProvider"/>
+      <property name="net.sf.ehcache.configurationResourceName" value="ehcache.xml"/>
+      <property name="hibernate.cache.use_query_cache" value="true"/>
+      <property name="hibernate.cache.use_second_level_cache" value="true"/>
+      <property name="hibernate.generate_statistics" value="true"/>
+    </properties>
+  </persistence-unit>
   <persistence-unit name="CdwUtilPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
-    <!--jta-data-source>jdbc/sample</jta-data-source-->
     <class>org.cern.cms.csc.dw.model.fact.CumulativeTmbTriggerCounterFact</class>
     <class>org.cern.cms.csc.dw.model.fact.Fact</class>
     <class>org.cern.cms.csc.dw.model.fact.FactCollection</class>
@@ -28,6 +41,11 @@
       <property name="hibernate.connection.username" value="cms_valdas"/>
       <property name="hibernate.connection.password" value="cms08valdas"/>
       <property name="hibernate.max_fetch_depth" value="3"/>
+      <property name="hibernate.cache.provider_class" value="net.sf.ehcache.hibernate.NoCacheProvider"/>
+      <property name="net.sf.ehcache.configurationResourceName" value="ehcache.xml"/>
+      <property name="hibernate.cache.use_query_cache" value="false"/>
+      <property name="hibernate.cache.use_second_level_cache" value="false"/>
+      <property name="hibernate.generate_statistics" value="false"/>
     </properties>
   </persistence-unit>
 </persistence>

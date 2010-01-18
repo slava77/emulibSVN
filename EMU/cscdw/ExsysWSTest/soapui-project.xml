@@ -336,7 +336,7 @@
       <xs:enumeration value="FATAL"/>
     </xs:restriction>
   </xs:simpleType>
-</xs:schema>]]></con:content><con:type>http://www.w3.org/2001/XMLSchema</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://cms-uflap03:8080/factcollection/input</con:endpoint></con:endpoints><con:operation isOneWay="false" action="" name="set" bindingOperationName="set" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://cms-uflap03:8080/factcollection/input</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://ws.dw.csc.cms.cern.org/" xmlns:mod="http://www.cern.ch/cms/csc/dw/model" xmlns:ont="http://www.cern.ch/cms/csc/dw/ontology">
+</xs:schema>]]></con:content><con:type>http://www.w3.org/2001/XMLSchema</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://emuslice12:28080/cdw/factcollection</con:endpoint></con:endpoints><con:operation isOneWay="false" action="" name="set" bindingOperationName="set" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://emuslice12:28080/cdw/factcollection</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://ws.dw.csc.cms.cern.org/" xmlns:mod="http://www.cern.ch/cms/csc/dw/model" xmlns:ont="http://www.cern.ch/cms/csc/dw/ontology">
    <soapenv:Header/>
    <soapenv:Body>
       <ws:set>
@@ -457,10 +457,10 @@
          </factCollection>
       </ws:set>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://ws.dw.csc.cms.cern.org/input/setRequest"/></con:call></con:operation></con:interface><con:testSuite name="inputPortBinding TestSuite"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="set TestCase" searchProperties="true"><con:settings/><con:testStep type="request" name="set"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>inputPortBinding</con:interface><con:operation>set</con:operation><con:request name="set"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://cms-uflap03:8080/factcollection/input</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://ws.dw.csc.cms.cern.org/" xmlns:mod="http://www.cern.ch/cms/csc/dw/model" xmlns:ont="http://www.cern.ch/cms/csc/dw/ontology">
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://ws.dw.csc.cms.cern.org/input/setRequest"/></con:call></con:operation></con:interface><con:testSuite name="inputPortBinding TestSuite"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="set TestCase" searchProperties="true"><con:settings/><con:testStep type="request" name="set"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>inputPortBinding</con:interface><con:operation>set</con:operation><con:request name="set"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://emuslice12:28080/cdw/factcollection</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://ws.dw.csc.cms.cern.org/" xmlns:mod="http://www.cern.ch/cms/csc/dw/model" xmlns:ont="http://www.cern.ch/cms/csc/dw/ontology">
    <soapenv:Header/>
    <soapenv:Body>
-      <ws:set>
+      <ws:input>
          <factCollection>
             <mod:source>LOCAL_DQM</mod:source>
             <!--mod:requestId>123</mod:requestId-->
@@ -496,6 +496,6 @@
                <mod:l1aCount>7654321</mod:l1aCount>
             </mod:cumulativeTmbTriggerCounterFact>
          </factCollection>
-      </ws:set>
+      </ws:input>
    </soapenv:Body>
 </soapenv:Envelope>]]></con:request><con:wsaConfig action="http://ws.dw.csc.cms.cern.org/input/setRequest" mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:properties/></con:testCase><con:properties/></con:testSuite><con:properties/><con:wssContainer/></con:soapui-project>
