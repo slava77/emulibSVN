@@ -153,14 +153,14 @@ void waitForVoltageStabilization(int voltage) {
       float actualVoltage;
       int status;
       dpGet(channelDps[i] + \".actual.vMon\", actualVoltage, channelDps[i] + \".actual.status\", status);
-      if (actualVoltage < 1) { continue; } // fake channel (stable anyway)
+      if (actualVoltage < 2) { continue; } // fake channel (stable anyway)
       if ((status != 0) && (status != 1)) { // ramping
         stable = false;
         break;
       }
       float voltageDiff = voltage - actualVoltage;
       if (voltageDiff < 0) { voltageDiff *= -1; }
-      if (voltageDiff > 5) {
+      if (voltageDiff > 20) {
         stable = false;
         break;
       }
@@ -227,6 +227,20 @@ void updateStatus(string msg) {
 
 void myLog(string msg) {
   DebugTN(\"ME11 HV test: \" + msg);
+}
+
+void resetCrate(string dp, int delayTime) {
+  
+  updateStatus(\"Reseting crate \" + dp);
+  dpSetWait(dp + \".Information.GenSignCfg\", 769);
+  delay(0, 500);
+  dpSetWait(dp + \".Information.GenSignCfg\", 771);
+  delay(0, delayTime);
+  dpSetWait(dp + \".Information.GenSignCfg\", 769);
+  delay(0, 500);
+  dpSetWait(dp + \".Information.GenSignCfg\", 1);
+  updateStatus(\"idle\");
+  
 }" 0
  2
 "CBRef" "1"
@@ -256,55 +270,55 @@ LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
   this.tableMode = TABLE_SELECT_MULTIPLE;
   this.selectByClick = TABLE_SELECT_LINE;
 }" 0
-E 1 0 1 9 0 "channel" 20 1 0 "s" 1
+E 1 0 1 9 0 "channel" 18 1 0 "s" 1
 LANG:1 7 Channel
 E
 1
 LANG:1 0 
 
-170 "setting" 11 1 0 "s" 1
+170 "setting" 10 1 0 "s" 1
 LANG:1 10 v0 Setting
 E
 1
 LANG:1 0 
 
-100 "setting_timestamp" 12 1 0 "s" 1
+100 "setting_timestamp" 11 1 0 "s" 1
 LANG:1 20 v0 Setting Timestamp
 E
 1
 LANG:1 0 
 
-110 "readback" 12 1 0 "s" 1
+110 "readback" 11 1 0 "s" 1
 LANG:1 19 v0 Readback Setting
 E
 1
 LANG:1 0 
 
-110 "readback_timestamp" 16 1 0 "s" 1
+110 "readback_timestamp" 14 1 0 "s" 1
 LANG:1 24 v0 Readback S. Timestamp
 E
 1
 LANG:1 0 
 
-140 "status" 5 1 0 "s" 1
+140 "status" 4 1 0 "s" 1
 LANG:1 6 Status
 E
 1
 LANG:1 0 
 
-50 "status_timestamp" 9 1 0 "s" 1
+50 "status_timestamp" 8 1 0 "s" 1
 LANG:1 11 Status time
 E
 1
 LANG:1 0 
 
-80 "vmon" 5 1 0 "s" 1
+80 "vmon" 4 1 0 "s" 1
 LANG:1 4 vMon
 E
 1
 LANG:1 0 
 
-50 "vmon_timestamp" 9 1 0 "s" 1
+50 "vmon_timestamp" 8 1 0 "s" 1
 LANG:1 9 vMon time
 E
 1
@@ -354,14 +368,14 @@ LANG:1 0
 0
 1
 LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
-0  698 40 932 272
+0  698 40 932 212
 "main()
 {
   this.tableMode = TABLE_SELECT_MULTIPLE;
   this.selectByClick = TABLE_SELECT_LINE;
 }
 " 0
-E 1 0 1 1 0 "update_time" 25 1 0 "s" 1
+E 1 0 1 1 0 "update_time" 22 1 0 "s" 1
 LANG:1 18 OPC Server Updates
 E
 1
@@ -390,7 +404,7 @@ LANG:1 0
 {
   this.text = \"PVSS System Name: \" + systemName;
 }" 0
- E 0 1 1 2 1 E U  0 E 10 40 110 55
+ E 0 1 1 2 1 E U  0 E 10 40 113 55
 0 2 2 "0s" 0 0 0 192 0 0  10 40 1
 1
 LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
@@ -409,7 +423,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 470 40 508 55
+E E 0 1 1 2 1 E U  1 E 470 40 513 55
 0 2 2 "0s" 0 0 0 192 0 0  470 40 1
 1
 LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
@@ -428,7 +442,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 22 174 70 189
+E E 0 1 1 2 1 E U  0 E 22 174 71 189
 0 2 2 "0s" 0 0 0 192 0 0  22 174 1
 1
 LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
@@ -455,7 +469,7 @@ E
 E
 E
 
-N 0 3000 1 2600 1 1
+N 0 3000 1 2300 1 1
 2 7
 "PRIMITIVE_TEXT4"
 ""
@@ -469,7 +483,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 22 204 70 219
+E E 0 1 1 2 1 E U  0 E 22 204 71 219
 0 2 2 "0s" 0 0 0 192 0 0  22 204 1
 1
 LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
@@ -496,7 +510,7 @@ E
 E
 E
 
-N 0 3000 1 2900 1 1
+N 0 3000 1 2600 1 1
 13 9
 "btnSetV2"
 ""
@@ -534,7 +548,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 230 40 309 55
+E E 0 1 1 2 1 E U  0 E 230 40 307 55
 0 2 2 "0s" 0 0 0 192 0 0  230 40 1
 1
 LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
@@ -557,7 +571,7 @@ LANG:1 0
 {
   this.text = settingCounter;
 }" 0
- E 0 1 1 2 1 E U  0 E 310 40 316 55
+ E 0 1 1 2 1 E U  0 E 310 40 318 55
 0 2 2 "0s" 0 0 0 192 0 0  310 40 1
 1
 LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
@@ -673,7 +687,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 270 117 393 132
+E E 0 1 1 2 1 E U  0 E 270 117 397 132
 0 2 2 "0s" 0 0 0 192 0 0  270 117 1
 1
 LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
@@ -789,7 +803,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 200 242 425 257
+E E 0 1 1 2 1 E U  0 E 200 242 424 257
 0 2 2 "0s" 0 0 0 192 0 0  200 242 1
 1
 LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
@@ -855,7 +869,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 22 12 64 29
+E E 0 1 1 2 1 E U  0 E 22 12 63 29
 0 2 2 "0s" 0 0 0 192 0 0  22 12 1
 1
 LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
@@ -874,7 +888,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 70 10 97 30
+E E 0 1 1 2 1 E U  0 E 70 10 98 32
 0 2 2 "0s" 0 0 0 192 0 0  70 10 1
 1
 LANG:1 26 Arial,12,-1,5,75,0,0,0,0,0
@@ -910,6 +924,95 @@ LANG:1 6 Cancel
   }
 }" 0
  E E E
+13 38
+"PUSH_BUTTON1"
+""
+1 700 250 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+38 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  698 248 812 272
+
+T 
+1
+LANG:1 16 Reset Plus Crate
+"main()
+{
+  resetCrate(systemName + \":CAEN/HVME11N\", spinResetDelay.text);
+}" 0
+ E E E
+21 39
+"spinResetDelay"
+""
+1 820 220 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+39 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  818 218 912 242
+0
+
+E
+E
+E
+
+N 0 10000 1 1500 1 1
+13 40
+"PUSH_BUTTON2"
+""
+1 820 250 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+40 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  818 248 932 272
+
+T 
+1
+LANG:1 17 Reset Minus Crate
+"main()
+{
+  resetCrate(systemName + \":CAEN/HVME11P\", spinResetDelay.text);
+}" 0
+ E E E
+2 42
+"PRIMITIVE_TEXT13"
+""
+1 690 220 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+42 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 690 220 811 235
+0 2 2 "0s" 0 0 0 192 0 0  690 220 1
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 25 Reset signal length (ms):
 0
 LAYER, 1 
 1
