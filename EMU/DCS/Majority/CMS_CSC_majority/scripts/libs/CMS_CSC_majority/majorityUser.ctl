@@ -70,20 +70,23 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
       (majStates["MrtnChannel:error"] >= majority_ON)) {
     return "ERROR";
     
-  // ON and OUTER_ON states
+  // ON state
   } else if (((majStates["HV_OUTER:on"] >= majority_ON) || (majStates["HV_OUTER:on"] == majority_TOTALZERO)) &&
+             ((majStates["HV_INNER:on"] >= majority_ON) || (majStates["HV_INNER:on"] == majority_TOTALZERO)) &&
+             ((majStates["LV:on"] >= majority_ON) || (majStates["LV:on"] == majority_TOTALZERO)) &&
+             ((majStates["TEMP:ok"] >= majority_ON) || (majStates["TEMP:ok"] == majority_TOTALZERO)) &&
+             ((majStates["CRB:on"] >= majority_ON) || (majStates["CRB:on"] == majority_TOTALZERO)) &&
+             ((majStates["MrtnChannel:on"] >= majority_ON) || (majStates["MrtnChannel:on"] == majority_TOTALZERO))) {    
+      return "ON";
+      
+  // OUTER_ON state
+  } else if ((majStates["HV_OUTER:on"] >= majority_ON) &&
+             (majStates["HV_INNER:on"] == majority_OFF) &&
              ((majStates["LV:on"] >= majority_ON) || (majStates["LV:on"] == majority_TOTALZERO)) &&
              ((majStates["TEMP:ok"] >= majority_ON) || (majStates["TEMP:ok"] == majority_TOTALZERO)) &&
              ((majStates["CRB:on"] >= majority_ON) || (majStates["CRB:on"] == majority_TOTALZERO)) &&
              ((majStates["MrtnChannel:on"] >= majority_ON) || (majStates["MrtnChannel:on"] == majority_TOTALZERO))) {
-    
-    // ON state
-    if ((majStates["HV_INNER:on"] >= majority_ON) || (majStates["HV_INNER:on"] == majority_TOTALZERO)) {
-      return "ON";
-    // OUTER_ON state
-    } else if ((majStates["HV_INNER:on"] == majority_OFF) && (majStates["HV_OUTER:on"] >= majority_ON)) {
-      return "OUTER_ON";
-    }
+    return "OUTER_ON";
     
   // STANDBY state
   } else if (((majStates["HV_OUTER:standby"] >= majority_ON) || (majStates["HV_OUTER:standby"] == majority_TOTALZERO)) &&
