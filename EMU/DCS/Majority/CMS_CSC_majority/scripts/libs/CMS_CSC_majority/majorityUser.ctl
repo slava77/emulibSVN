@@ -81,7 +81,7 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
     if ((majStates["HV_INNER:on"] >= majority_ON) || (majStates["HV_INNER:on"] == majority_TOTALZERO)) {
       return "ON";
     // OUTER_ON state
-    } else if (majStates["HV_INNER:on"] == majority_OFF) {
+    } else if ((majStates["HV_INNER:on"] == majority_OFF) && (majStates["HV_OUTER:on"] >= majority_ON)) {
       return "OUTER_ON";
     }
     
