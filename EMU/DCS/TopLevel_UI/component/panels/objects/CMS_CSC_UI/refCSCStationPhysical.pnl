@@ -9,6 +9,10 @@ PANEL,-1 -1 864 683 N "_3DFace" 4
 "main()
 {
   initParams();
+  string sideSignStr = \"-\";
+  if (paramSide == \"P\") { sideSignStr = \"+\"; }
+  caption.toolTipText = \"Station ME\" + sideSignStr + paramStation + \". Double click for more information and control.\";
+  
   int totalRadius = paramRadius + paramPCrateHeight + EMUUI_STATION_PCRATE_DISTANCE_FROM_DISK;
   int totalSize = totalRadius * 2;
   
@@ -520,14 +524,31 @@ E E 0 1 1 2 1 E 1 0 1 -140 -110 1 E 140 110 10 10
 {
   showPopupMenu();
 }" 0
- E
+ "main()
+{
+  dyn_string ex;
+  mapping deviceParams;
+  deviceParams[\"side\"] = paramSide;
+  deviceParams[\"station\"] = paramStation;
+  string fsmNode = emuui_getFsmNode(\"station\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // convert node to domain + object combo
+  string domain = fsmNode;
+  string object = _fwCU_getNodeObj(domain);
+
+  // open the panel
+  fwFsmUi_ObjButtonDoubleClick(domain, object, domain);      
+}" 0
+
 4 0 0 0 0 0
 E E E
 0
 1
 LANG:1 0 
 
-1
+2
+"hoverfclr" "N \"black_yellow\""
 "dashclr"N "_Transparent"
 E E 0 1 1 2 1 E U  1 E 140 440 200 460
 0 2 2 "0s" 0 0 0 192 0 0  140 440 1
