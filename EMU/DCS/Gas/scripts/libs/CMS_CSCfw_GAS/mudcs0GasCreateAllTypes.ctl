@@ -1,3 +1,6 @@
+
+
+
 //=============================
 GasSystem_main(){
 int i;
@@ -6,7 +9,9 @@ create_MUDCS_STRING(); // just in case
 dpCreate("CMS_CSC_GAS","MUDCS_STRING");
 
 DeviceType_create("fwCooling_CSC_COOLING");
-CscCooling_create_data();
+CscCooling_create_data(); // water cooling
+CscCooling_turbines_create_data(); // turbines cooling
+CscCooling_turbines_create_summary();
 
 DeviceType_create("fwGasSystem_CSC_GAS");
 GasSystem_create_data();
@@ -61,9 +66,11 @@ dpSet("GasCMS.fsmState",0);
 dpSet("GasCMS.fsmCommand",0);
 DebugTN("types: GasCMS of FwNode created");
 
+//if(isStandalone)return;
 mudcsInit();
-
+DebugTN("mudcsInit()");
 //-----------
+if(!(dpExists("Db_o")) )return;
 mudcs_setBrokerList();
 DebugTN("mudcs_setBrokerList()");
 //------------
@@ -139,6 +146,97 @@ dpTypeCreate(xxdepes,xxdepei);
 
 }
 //=============================
+CscCooling_turbines_create_data()
+{
+
+
+string dtype= "fwCooling_CSC_TURBINES_data";
+dyn_dyn_string xxdepes;
+dyn_dyn_int xxdepei;
+int i,i1;
+
+
+xxdepes[1] = makeDynString (dtype,"");
+//xxdepes[2] = makeDynString ("","value");
+//xxdepes[3] = makeDynString ("","Temperature1");
+//xxdepes[4] = makeDynString ("","TurbineCurrent1");
+//xxdepes[5] = makeDynString ("","TurbineCurrent2");
+//xxdepes[6] = makeDynString ("","off_channels");
+//--------------
+
+xxdepei[1]=makeDynInt (DPEL_FLOAT);
+//xxdepei[1]=makeDynInt (DPEL_STRUCT);
+//xxdepei[2]=makeDynInt (0,DPEL_FLOAT);
+//xxdepei[3]=makeDynInt (0,DPEL_FLOAT);
+//xxdepei[4]=makeDynInt (0,DPEL_FLOAT);
+//xxdepei[5]=makeDynInt (0,DPEL_FLOAT);
+//xxdepei[6]=makeDynInt (0,DPEL_DYN_INT);
+
+dpTypeCreate(xxdepes,xxdepei);
+
+}
+//=============================
+
+CscCooling_turbines_create_summary()
+{
+
+
+string dtype= "fwCooling_CSC_TURBINES_summary";
+dyn_dyn_string xxdepes;
+dyn_dyn_int xxdepei;
+int i,i1;
+
+
+xxdepes[1] = makeDynString (dtype,"");
+xxdepes[2] = makeDynString ("","value");
+//--------------
+
+xxdepei[1]=makeDynInt (DPEL_STRUCT);
+xxdepei[2]=makeDynInt (0,DPEL_FLOAT);
+
+dpTypeCreate(xxdepes,xxdepei);
+
+dpCreate("mrtn_racks_summary","fwCooling_CSC_TURBINES_summary");
+dpCreate("hv_racks_summary","fwCooling_CSC_TURBINES_summary");
+dpCreate("pc_racks_summary","fwCooling_CSC_TURBINES_summary");
+dpCreate("align_racks_summary","fwCooling_CSC_TURBINES_summary");
+dpCreate("water_summary","fwCooling_CSC_TURBINES_summary");
+}
+
+//=============================
+//=============================
+/*
+CscCooling_turbines_create_data()
+{
+
+
+string dtype= "fwCooling_CSC_TURBINES_data";
+dyn_dyn_string xxdepes;
+dyn_dyn_int xxdepei;
+int i,i1;
+
+
+xxdepes[1] = makeDynString (dtype,"");
+xxdepes[2] = makeDynString ("","Temperature2");
+xxdepes[3] = makeDynString ("","Temperature1");
+xxdepes[4] = makeDynString ("","TurbineCurrent1");
+xxdepes[5] = makeDynString ("","TurbineCurrent2");
+xxdepes[6] = makeDynString ("","off_channels");
+//--------------
+
+xxdepei[1]=makeDynInt (DPEL_STRUCT);
+xxdepei[2]=makeDynInt (0,DPEL_FLOAT);
+xxdepei[3]=makeDynInt (0,DPEL_FLOAT);
+xxdepei[4]=makeDynInt (0,DPEL_FLOAT);
+xxdepei[5]=makeDynInt (0,DPEL_FLOAT);
+xxdepei[6]=makeDynInt (0,DPEL_DYN_INT);
+
+dpTypeCreate(xxdepes,xxdepei);
+
+}
+*/
+//=============================
+
 CscCooling_create_data()
 {
 
@@ -166,7 +264,7 @@ xxdepei[4]=makeDynInt (0,DPEL_FLOAT);
 xxdepei[5]=makeDynInt (0,DPEL_FLOAT);
 xxdepei[6]=makeDynInt (0,DPEL_FLOAT);
 xxdepei[7]=makeDynInt (0,DPEL_FLOAT);
-xxdepei[8]=makeDynInt (0,DPEL_DYN_INT);
+xxdepei[8]=makeDynInt (0,DPEL_DYN_STRING);
 
 dpTypeCreate(xxdepes,xxdepei);
 
@@ -464,3 +562,47 @@ dpTypeCreate(xxdepes,xxdepei);
   
 }
 
+//=======================
+mudcsDeleteGas_dps( bool isDelete_types=false){
+  
+  
+  int i; 
+  dyn_string ds;
+ //====================== COOLING ===================================================  
+  
+  ds=dpNames("*","fwCooling_CSC_COOLING_d"); for(i=1;i<=dynlen(ds);i++)dpDelete(ds[i]);
+  ds=dpNames("*","fwCooling_CSC_TURBINES_data"); for(i=1;i<=dynlen(ds);i++)dpDelete(ds[i]);
+  ds=dpNames("*","fwCooling_CSC_TURBINES_summary"); for(i=1;i<=dynlen(ds);i++)dpDelete(ds[i]);  
+  //dpTypeDelete("fwCooling_CSC_COOLING");  
+  
+  if(isDelete_types){
+  dpTypeDelete("fwCooling_CSC_COOLING_d");
+  dpTypeDelete("fwCooling_CSC_TURBINES_data");  
+  dpTypeDelete("fwCooling_CSC_TURBINES_summary");    
+  }
+//====================== GAS =========================================================  
+  
+  ds=dpNames("*","fwGasSystem_CSC_GAS_d"); for(i=1;i<=dynlen(ds);i++)dpDelete(ds[i]);
+ 
+  ds=dpNames("*","fwGasMixer_CSC_GAS_data"); for(i=1;i<=dynlen(ds);i++)dpDelete(ds[i]);
+  ds=dpNames("*","fwGasDistribution_CSC_GAS_data");for(i=1;i<=dynlen(ds);i++)dpDelete(ds[i]);
+  ds=dpNames("*","fwGasDistributionRack_CSC_GAS_data");for(i=1;i<=dynlen(ds);i++)dpDelete(ds[i]);
+  ds=dpNames("*","fwGasDistributionChannel_CSC_GAS_data");for(i=1;i<=dynlen(ds);i++)dpDelete(ds[i]);
+  ds=dpNames("*","fwGasPreDistribution_CSC_GAS_data");for(i=1;i<=dynlen(ds);i++)dpDelete(ds[i]);
+  ds=dpNames("*","fwGasPump_CSC_GAS_data");for(i=1;i<=dynlen(ds);i++)dpDelete(ds[i]);
+  ds=dpNames("*","fwGasExhaust_CSC_GAS_data");for(i=1;i<=dynlen(ds);i++)dpDelete(ds[i]);
+  ds=dpNames("*","fwGasPurifier_CSC_GAS_data");  for(i=1;i<=dynlen(ds);i++)dpDelete(ds[i]); 
+  
+    if(isDelete_types){
+  //dpTypeDelete("fwGasSystem_CSC_GAS");
+  dpTypeDelete("fwGasSystem_CSC_GAS_d");      
+  dpTypeDelete("fwGasMixer_CSC_GAS_data"); 
+  dpTypeDelete("fwGasDistribution_CSC_GAS_data");
+  dpTypeDelete("fwGasDistributionRack_CSC_GAS_data");
+  dpTypeDelete("fwGasDistributionChannel_CSC_GAS_data");
+  dpTypeDelete("fwGasPreDistribution_CSC_GAS_data");
+  dpTypeDelete("fwGasPump_CSC_GAS_data");
+  dpTypeDelete("fwGasExhaust_CSC_GAS_data");
+  dpTypeDelete("fwGasPurifier_CSC_GAS_data");
+  }
+}

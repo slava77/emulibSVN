@@ -99,7 +99,9 @@ p="emuDev"+"fwCooling_CSC_COOLING"+"Operation.pnl";
 //  mudcsDebug(o+" "+panels[dynlen(panels)]);
   dpSet(objs[i]+".ui.panels:_original.._value",panels);
 //  mudcsDebug(o_cut);
-  label=o_cut;
+ //\\ label=o_cut;
+  label="WATER_and_AIR_COOLING";
+  
   //label=substr(o_cut,strlen("CSC_"));
 
   

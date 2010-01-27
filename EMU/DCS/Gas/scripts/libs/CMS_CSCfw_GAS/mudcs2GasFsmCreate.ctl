@@ -1,28 +1,54 @@
 mudcsGasFsmDelete(){
 
+  int i;
   int cu_flag;
     
 mudcsInit(); // especially needed for addLogical
 mudcsGasInit();
 
+mudcs_deleteHardwareDevices("fwGasSystem_CSC_GAS");
+mudcs_deleteHardwareDevices("fwCooling_CSC_COOLING");
+/*
+EmuCmsGlobalNode="CSC_MONITOR";
+CSC_fwG_EmuCmsGlobalType=CSC_fwG_g_NodeLogicalFsmType;
+CSC_fwG_EmuCmsGlobalCu="1";cu_flag = 1;
+CSC_fwG_EmuCmsGlobalParent="FSM";
+mudcs_removeNode();
+*/
 
 EmuCmsGlobalNode="CSC_GAS";
 CSC_fwG_EmuCmsGlobalType=CSC_fwG_g_NodeLogicalFsmType;
 CSC_fwG_EmuCmsGlobalCu="1";cu_flag = 1;
-CSC_fwG_EmuCmsGlobalParent="CSC_fwG_g_csc_part";
+CSC_fwG_EmuCmsGlobalParent=CSC_fwG_g_csc_part;
 mudcs_removeNode();
 //fwFsmTree_removeNode(CSC_fwG_EmuCmsGlobalParent,EmuCmsGlobalNode);
 
 EmuCmsGlobalNode="CSC_COOLING";
 CSC_fwG_EmuCmsGlobalType=CSC_fwG_g_NodeLogicalFsmType;
 CSC_fwG_EmuCmsGlobalCu="1";cu_flag = 1;
-CSC_fwG_EmuCmsGlobalParent="CSC_fwG_g_csc_part";
+CSC_fwG_EmuCmsGlobalParent=CSC_fwG_g_csc_part;
 mudcs_removeNode();
 //fwFsmTree_removeNode(CSC_fwG_EmuCmsGlobalParent,EmuCmsGlobalNode);
 
-mudcs_deleteHardwareDevices("fwGasSystem_CSC_GAS");
-mudcs_deleteHardwareDevices("fwCooling_CSC_COOLING");
-  
+
+
+
+dyn_string fwTN_names=dpNames("*GAS*","_FwTreeNode");
+for(i=1;i<=dynlen(fwTN_names);i++){
+  if(strpos(fwTN_names[i],"TrendTree")>=0)continue;
+  if(strpos(fwTN_names[i],"FSM")>=0)continue;  
+dpDelete(fwTN_names[i]);
+}       
+ dyn_string fwTN_names=dpNames("*COOLING*","_FwTreeNode");
+for(i=1;i<=dynlen(fwTN_names);i++){
+  if(strpos(fwTN_names[i],"TrendTree")>=0)continue;
+  if(strpos(fwTN_names[i],"FSM")>=0)continue;  
+dpDelete(fwTN_names[i]);
+}       
+   
+
+
+
 }
 
 
@@ -59,7 +85,11 @@ CSC_fwG_EmuCmsGlobalParent=parent_domain;
  mudcs_addLogical(false, CSC_fwG_g_csc_part, 
  EmuCmsGlobalNode, CSC_fwG_EmuCmsGlobalType,
  Component+"/"+dir_config+"/emuGASConfig", Component+"/emuGASOperation");
- 
+
+ DebugTN(CSC_fwG_EmuCmsGlobalParent);
+  DebugTN(EmuCmsGlobalNode);
+  DebugTN(CSC_fwG_EmuCmsGlobalType);
+   
 mudcs_addNode();
 
 //------- add devices -----------
@@ -204,7 +234,7 @@ for(i=1;i<=dynlen(maraton_racks);i++){
  
 //========================================================================== 
  
-/////fwFsmTree_generateAll();
+fwFsmTree_generateAll();
 
 
 }

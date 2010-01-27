@@ -70,7 +70,13 @@ T
 LANG:1 10 DIP CONFIG
 "main(){
  
-  mudcsDipConfig(); 
+  bool subscribe;  
+    getValue(\"issubscribe\",\"state\",0,subscribe);
+    subscribe=!subscribe;  
+  
+  mudcsDipConfig(subscribe); 
+
+  
 }
 
 " 0
@@ -147,42 +153,16 @@ LANG:1 9 del types
 "main()
 {
  
-  int i; 
-  dyn_string ds;
- 
-  ds=dpNames(\"*\",\"fwCooling_CSC_COOLING_d\"); for(i=1;i<=dynlen(ds);i++)dpDelete(ds[i]);
-  
-  ds=dpNames(\"*\",\"fwGasSystem_CSC_GAS_d\"); for(i=1;i<=dynlen(ds);i++)dpDelete(ds[i]);
- 
-  ds=dpNames(\"*\",\"fwGasMixer_CSC_GAS_data\"); for(i=1;i<=dynlen(ds);i++)dpDelete(ds[i]);
-  ds=dpNames(\"*\",\"fwGasDistribution_CSC_GAS_data\");for(i=1;i<=dynlen(ds);i++)dpDelete(ds[i]);
-  ds=dpNames(\"*\",\"fwGasDistributionRack_CSC_GAS_data\");for(i=1;i<=dynlen(ds);i++)dpDelete(ds[i]);
-  ds=dpNames(\"*\",\"fwGasDistributionChannel_CSC_GAS_data\");for(i=1;i<=dynlen(ds);i++)dpDelete(ds[i]);
-  ds=dpNames(\"*\",\"fwGasPreDistribution_CSC_GAS_data\");for(i=1;i<=dynlen(ds);i++)dpDelete(ds[i]);
-  ds=dpNames(\"*\",\"fwGasPump_CSC_GAS_data\");for(i=1;i<=dynlen(ds);i++)dpDelete(ds[i]);
-  ds=dpNames(\"*\",\"fwGasExhaust_CSC_GAS_data\");for(i=1;i<=dynlen(ds);i++)dpDelete(ds[i]);
-  ds=dpNames(\"*\",\"fwGasPurifier_CSC_GAS_data\");  for(i=1;i<=dynlen(ds);i++)dpDelete(ds[i]);
-  
-  //dpTypeDelete(\"fwCooling_CSC_COOLING\");
-  dpTypeDelete(\"fwCooling_CSC_COOLING_d\");
-  
-  //dpTypeDelete(\"fwGasSystem_CSC_GAS\");
-  dpTypeDelete(\"fwGasSystem_CSC_GAS_d\");      
-  dpTypeDelete(\"fwGasMixer_CSC_GAS_data\"); 
-  dpTypeDelete(\"fwGasDistribution_CSC_GAS_data\");
-  dpTypeDelete(\"fwGasDistributionRack_CSC_GAS_data\");
-  dpTypeDelete(\"fwGasDistributionChannel_CSC_GAS_data\");
-  dpTypeDelete(\"fwGasPreDistribution_CSC_GAS_data\");
-  dpTypeDelete(\"fwGasPump_CSC_GAS_data\");
-  dpTypeDelete(\"fwGasExhaust_CSC_GAS_data\");
-  dpTypeDelete(\"fwGasPurifier_CSC_GAS_data\");
-  
-}" 0
+  mudcsDeleteGas_dps(true);
+}
+
+
+" 0
  E E E
 20 3
 "issubscribe"
 ""
-1 156.7901234567901 108 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+1 156.79012345679 108 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
  E E
 7 0 0 0 0 0
 E E E
@@ -783,7 +763,7 @@ T
 LANG:1 8 setAlert
 "main()
 {
-  mudcsGasAlertCreatMain(true);
+  mudcsGasAlertCreateMain(true);
 }" 0
  E E E
 13 13
@@ -808,7 +788,7 @@ T
 LANG:1 10 unsetAlert
 "main()
 {
-  mudcsGasAlertCreatMain(false);
+  mudcsGasAlertCreateMain(false);
 }" 0
  E E E
 13 14
@@ -864,7 +844,7 @@ LANG:1 10 FSM DELETE
 13 16
 "redraw_all_temp"
 ""
-1 18.37398373983736 187.913043478261 E E E 1 E 1 E N "_ButtonText" E N "_ETM" E E
+1 18.3739837398374 187.913043478261 E E E 1 E 1 E N "_ButtonText" E N "_ETM" E E
  E E
 27 0 0 0 0 0
 E E E
@@ -897,6 +877,32 @@ fwFsmTree_refreshTree();
 }
 
 " 0
+ E E E
+13 17
+"PUSH_BUTTON16"
+""
+1 350 230 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+29 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 348 228 482 272
+
+T 
+1
+LANG:1 8 setAlert
+"main()
+{
+  Cooling_alert_main();
+//  mudcsGasAlertCreatMain(true);
+}" 0
  E E E
 0
 LAYER, 1 

@@ -1,4 +1,60 @@
-mudcsDipConfig()
+mudcsTurbineConfig(dyn_string crates,bool issubscribe){
+
+string colling_crate_dp;
+string area;
+
+int i,j;
+dyn_string dpes; 
+dyn_string tags; 
+
+//DebugTN(crates);
+
+for(i=1;i<=dynlen(crates);i++){
+//  colling_crate_dp="CoolingTurbinesRack"+crates[i]+"_o";
+
+  area=substr(crates[i],0,2);  
+  
+string item="dip/CMS/RACK/"+area+"/"+crates[i]+"/Sensors";    
+
+//=======================
+dyn_string childName;
+dyn_int childType;
+dyn_string fieldName;
+dyn_int fieldType;
+dyn_string exceptionInfo;
+
+  int ret=fwDIP_DipQuery("DIPConfig_1",item,childName, childType,fieldName, fieldType,exceptionInfo);  
+//========================
+
+ // fieldName=makeDynString("Temperature1","Temerature2","TurbineCurrent","TurbineCurrent2");
+  
+dynClear(dpes);
+dynClear(tags);
+
+for(j=1;j<=dynlen(fieldName);j++){
+  
+  DebugTN("CoolingTurbinesRack/"+crates[i]+"/"+fieldName[j]);
+  
+colling_crate_dp="CoolingTurbinesRack/"+crates[i]+"/"+fieldName[j];
+strreplace(colling_crate_dp,"Temerature","Temperature");
+
+
+if(strpos(colling_crate_dp,"Temperature")<0 && strpos(colling_crate_dp,"Current")<0)colling_crate_dp="x"+colling_crate_dp;
+dpCreate(colling_crate_dp,"fwCooling_CSC_TURBINES_data");
+
+dynAppend(dpes,colling_crate_dp+".");  //float
+dynAppend(tags,fieldName[j]); 
+
+} //for j
+
+mudcs_dip_config(issubscribe,item, dpes, tags);
+
+} // for i
+
+}
+//===================================================================
+
+mudcsDipConfig(bool issubscribe)
 {
  
 /*
@@ -28,6 +84,18 @@ dyn_string item;
 dyn_string dpes; 
 dyn_string tags; 
 
+
+
+//===================================================================
+mudcsTurbinesInit();
+    
+mudcsTurbineConfig(turbine_crates,issubscribe);
+mudcsTurbineConfig(hv_racks,issubscribe);
+mudcsTurbineConfig(pc_racks,issubscribe);
+//mudcsTurbineConfig(align_racks,issubscribe);
+
+//===================================================================
+
 /*
 dip/CMSX/DSS/AI_Flowmeter_EndCap_Cooling_YE_Minus_1/DipData
 dip/CMSX/DSS/AI_Flowmeter_EndCap_Cooling_YE_Plus_1/DipData
@@ -46,7 +114,7 @@ dynClear(tags);
 dynAppend(dpes,"CSC_WATER_COOLING.Flowmeter_EndCap_Cooling_YE_Minus_1");  //float
 
 dynAppend(tags,"__DIP_DEFAULT__");
-mudcs_dip_config(item, dpes, tags);
+mudcs_dip_config(issubscribe,item, dpes, tags);
 //==================================
 item="dip/CMSX/DSS/AI_Flowmeter_EndCap_Cooling_YE_Plus";
 dynClear(dpes);
@@ -55,7 +123,7 @@ dynClear(tags);
 dynAppend(dpes,"CSC_WATER_COOLING.Flowmeter_EndCap_Cooling_YE_Plus_1");  //float
 
 dynAppend(tags,"__DIP_DEFAULT__");
-mudcs_dip_config(item, dpes, tags);
+mudcs_dip_config(issubscribe,item, dpes, tags);
 //==================================
 item="dip/CMSX/DSS/AI_Flowmeter_Rack_EndCap_Cooling_Far_Side_YE_Minus_1";
 dynClear(dpes);
@@ -64,7 +132,7 @@ dynClear(tags);
 dynAppend(dpes,"CSC_WATER_COOLING.Flowmeter_Rack_EndCap_Cooling_Far_Side_YE_Minus_1");  //float
 
 dynAppend(tags,"__DIP_DEFAULT__");
-mudcs_dip_config(item, dpes, tags);
+mudcs_dip_config(issubscribe,item, dpes, tags);
 //==================================
 item="dip/CMSX/DSS/AI_Flowmeter_Rack_EndCap_Cooling_Near_Side_YE_Minus_1";
 dynClear(dpes);
@@ -73,7 +141,7 @@ dynClear(tags);
 dynAppend(dpes,"CSC_WATER_COOLING.Flowmeter_Rack_EndCap_Cooling_Near_Side_YE_Minus_1");  //float
 
 dynAppend(tags,"__DIP_DEFAULT__");
-mudcs_dip_config(item, dpes, tags);
+mudcs_dip_config(issubscribe,item, dpes, tags);
 //==================================
 item="dip/CMSX/DSS/AI_Flowmeter_Rack_EndCap_Cooling_Far_Side_YE_Plus_1";
 dynClear(dpes);
@@ -82,7 +150,7 @@ dynClear(tags);
 dynAppend(dpes,"CSC_WATER_COOLING.Flowmeter_Rack_EndCap_Cooling_Far_Side_YE_Plus_1");  //float
 
 dynAppend(tags,"__DIP_DEFAULT__");
-mudcs_dip_config(item, dpes, tags);
+mudcs_dip_config(issubscribe,item, dpes, tags);
 //==================================
 item="dip/CMSX/DSS/AI_Flowmeter_Rack_EndCap_Cooling_Near_Side_YE_Plus_1";
 dynClear(dpes);
@@ -91,7 +159,7 @@ dynClear(tags);
 dynAppend(dpes,"CSC_WATER_COOLING.Flowmeter_Rack_EndCap_Cooling_Near_Side_YE_Plus_1");  //float
 
 dynAppend(tags,"__DIP_DEFAULT__");
-mudcs_dip_config(item, dpes, tags);
+mudcs_dip_config(issubscribe,item, dpes, tags);
 //==================================
 
 //===================================================================
@@ -105,7 +173,7 @@ dynAppend(dpes,"CSC_GAS_MONITOR.Status");  //bool|c:1
 
 dynAppend(tags,"State(GsStepWS)");
 dynAppend(tags,"Status(GSY0505)");
-mudcs_dip_config(item, dpes, tags);
+mudcs_dip_config(issubscribe,item, dpes, tags);
 
 
 //===================================================================
@@ -149,7 +217,7 @@ for(i=1;i<=3;i++){
 //  dynAppend(tags,"Line"+i+"HFmfcFeedback(XMFC1"+i+"09F)");
 //  dynAppend(tags,"Line"+i+"WaterTankLevel(L"+i+"WaterLevAS)");
 }
-mudcs_dip_config(item, dpes, tags);
+mudcs_dip_config(issubscribe,item, dpes, tags);
 
 //===================================================================
 dpCreate("GasDistribution_o","fwGasDistribution_CSC_GAS_data");
@@ -164,7 +232,7 @@ dynAppend(dpes,"GasDistribution_o.State"); // int
 dynAppend(tags,"State(ModStepWS)");
 //dynAppend(tags,"BUSource(PSL5508)");
 //dynAppend(tags,"TotalInputFlow(Tot-FlowAS)");
-mudcs_dip_config(item, dpes, tags);
+mudcs_dip_config(issubscribe,item, dpes, tags);
 //===================================================================
 
 for(i=1;i<=10;i++){
@@ -188,7 +256,7 @@ dynAppend(tags,"RegPressure(PT"+xx+"26)");
 dynAppend(tags,"State(Rack"+xx+"StepWS)");
 dynAppend(tags,"InPressure(PT"+xx+"24)");
 //dynAppend(tags,"OutManifoldPressure(PDT"+xx+"25)");
-mudcs_dip_config(item, dpes, tags);
+mudcs_dip_config(issubscribe,item, dpes, tags);
 }
 
 
@@ -223,7 +291,7 @@ dynAppend(dpes,"GasDistributionRack"+xx+"Channel"+yy+"_o.OutFlow");
 dynAppend(tags,"InFlow(FE"+xx+"02Ch"+yy+")"); //float
 dynAppend(tags,"OutFlow(FE"+xx+"06Ch"+yy+")");//float
 //dynAppend(tags,"Isolation-Valve(YY"+xx+"03Ch"+yy+")");//bool
-mudcs_dip_config(item, dpes, tags);
+mudcs_dip_config(issubscribe,item, dpes, tags);
 } //j
 } //i
 
@@ -240,7 +308,7 @@ dynAppend(dpes,"GasPreDistribution_o.OutPressure"); //float
 dynAppend(tags,"State(StepperWS)");
 dynAppend(tags,"InPressure(PT6119)");
 dynAppend(tags,"OutPressure(PT6139)");
-mudcs_dip_config(item, dpes, tags);
+mudcs_dip_config(issubscribe,item, dpes, tags);
 //===================================================================
 dpCreate("GasPump_o","fwGasPump_CSC_GAS_data");
 item="dip/CMS/GCS/CMSCSC/Pump";
@@ -280,7 +348,7 @@ for(i=1;i<=2;i++){
 //  dynAppend(tags,"Pump"+i+"OutTemperature(TE4"+i+"01_3)");
 //  dynAppend(tags,"Pump"+i+"EngineTemperature(TE4"+i+"01_4)");  
 }
-mudcs_dip_config(item, dpes, tags);
+mudcs_dip_config(issubscribe,item, dpes, tags);
 //===================================================================
 dpCreate("GasExhaust_o","fwGasExhaust_CSC_GAS_data");
 item="dip/CMS/GCS/CMSCSC/Exhaust";
@@ -299,7 +367,7 @@ dynAppend(tags,"BufferPressure(PT5005)");
 dynAppend(tags,"CirculationPressure(PT5011)");
 dynAppend(tags,"CirculationFlow(FIT5010)");
 
-mudcs_dip_config(item, dpes, tags);
+mudcs_dip_config(issubscribe,item, dpes, tags);
 //===================================================================
 
 dpCreate("GasPurifier_o","fwGasPurifier_CSC_GAS_data");
@@ -338,7 +406,7 @@ for(i=1;i<=2;i++){
   dynAppend(tags,"Col"+AorB+"OutPressure(PT2"+s1or2+"08)");
 
 }
- mudcs_dip_config(item, dpes, tags);
+ mudcs_dip_config(issubscribe,item, dpes, tags);
 //===================================================================
 /*
 //===================================================================
@@ -396,7 +464,7 @@ dynAppend(tags,"");
 
 */
 
-mudcsDebug("DONE");
+//mudcsDebug("DONE");
 
 }  
 //====================================================================================
@@ -404,18 +472,29 @@ mudcsDebug("DONE");
 
 
 //====================================================================================
-mudcs_dip_config(string item, dyn_string dpes, dyn_string tags){
+mudcs_dip_config(bool subscribe, string item, dyn_string dpes, dyn_string tags){
 
-bool subscribe;  
-    getValue("issubscribe","state",0,subscribe);
-    subscribe=!subscribe;
+//bool subscribe;  
+//    getValue("issubscribe","state",0,subscribe);
+//    subscribe=!subscribe;
     
 dyn_string exceptionInfo;
 string configDp="DIPConfig_1";
 
-if(subscribe)
+DebugTN(subscribe);
+
+if(subscribe){
+  
+ // DebugTN(item);
+  // DebugTN(dpes);
+// DebugTN(tags);
+  // DebugTN("====");
   fwDIP_subscribeStructure(item, dpes, 
-            tags, configDp, exceptionInfo, true);// this inserts the ->
+            tags, configDp, exceptionInfo, true);
+
+  if(dynlen(exceptionInfo)>0)DebugTN(exceptionInfo);
+  
+  }// this inserts the ->
   // -> dcspcS2G19_06:dip_test_structure.field1
   //->      dcspcS2G19_06:dip_test_structure.field2 into the dyn_string "DIPConfig_1.clientConfig" 
 else 

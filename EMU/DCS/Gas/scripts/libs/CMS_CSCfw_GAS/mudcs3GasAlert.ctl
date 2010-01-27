@@ -1,12 +1,21 @@
+//bool isStandalone=true;
 
 mudcsGasAlertCreateMain(bool isSet)
 {
-  
-  mudcsInit();
+//======  
+ 
+ // if(isStandalone){
+ // addGlobal("CSC_fwG_g_SYSTEM_NAME",STRING_VAR);
+// CSC_fwG_g_SYSTEM_NAME = "CSC_MONITOR"; // fsm: "mudcs"
+ 
+ // }
+ // else 
+    mudcsInit();
+//=====
   mudcsGasInit();
  
       
-  GAS_alert_main();
+  GAS_alert_main(isSet);
  
 }
 
@@ -19,71 +28,319 @@ GAS_alert_main(bool isSet){
 string device_type="fwGasSystem_CSC_GAS_d";
   GAS_alert_set(isSet,device_type);
 
-  device_type="fwCooling_CSC_COOLING_d";
-  COOLING_alert_set(isSet,device_type);
-
+  Cooling_alert_main();
 }
 //==========================================================
 
-//==========================================================
-COOLING_alert_set(bool isSet, string device_type)
-{
+//===================================================================================
+Cooling_alert_main(){
 
+
+
+ bool isAck=false;
+ mudcsTurbinesInit();
+ mudcsCoolingAlertSet(true, isAck);     
+ mudcsCoolingTurbinesAlertSet(true,isAck) ;
+ mudcsCoolingSummaryAlertSet(true);
+ mudcsCoolingRacksSummary(true);       
+
+
+}
+//===================================================================================
+mudcsCoolingAlertSet(bool isCreateConfig, bool isAck){
   
-dyn_string limits_s;
+dyn_float limits_s;
 string value;
 dyn_string dps;
 int i,j;
-    
 
-limits_s = makeDynString();
+    
+dyn_string cool_er_dpe=makeDynString(
+//"mainOn",
+//"mainInhibit",
+//"localControlOnly",
+"Flowmeter_EndCap_Cooling_YE_Minus_1",
+"Flowmeter_EndCap_Cooling_YE_Plus_1",
+"Flowmeter_Rack_EndCap_Cooling_Far_Side_YE_Minus_1",
+"Flowmeter_Rack_EndCap_Cooling_Near_Side_YE_Minus_1",
+"Flowmeter_Rack_EndCap_Cooling_Far_Side_YE_Plus_1",
+"Flowmeter_Rack_EndCap_Cooling_Near_Side_YE_Plus_1");
+
+limits_s = makeDynFloat();
 
 // s1 is OK
 // s2 is ALARM
-/*
-Flowmeter_EndCAp_Cooling_YE_Moims_1
-Flowmeter_EndCap_Cooling_YE_Plus_1
-Flowmeter_Rack_EndCAp_Cooling_Far_Side_YE_Moins_1
-Flowmeter_Rack_EndCAp_Cooling_Near_Side_YE_Moins_1
-Flowmeter_Rack_EndCap_Cooling_Far_Side_YE_Plus_1
-Flowmeter_Rack_EndCap_Cooling_Near_Side_YE_Plus_1
-*/
 
-dps=dpNames("*","device_type");
+
+dps=dpNames("*","fwCooling_CSC_COOLING_d");
 //==================================
 for(i=1;i<=dynlen(dps);i++){
 
+  if(strpos(dps[i],"DimBroker")>=0)continue;  
+DebugTN("=============="+dps[i]);
+    
+ DebugTN(">>>>> alerting ....."+dps[i]+" "+dynlen(cool_er_dpe));
   
-limits_s=makeDynString("0,100"); //
-value=mudcsRemoveSystem(dps[i]+".Flowmeter_EndCAp_Cooling_YE_Moims_1");
-mudcsGasAlertConfig(false, true, value, limits_s);
-
-limits_s=makeDynString("0,100"); //
-value=mudcsRemoveSystem(dps[i]+".Flowmeter_EndCap_Cooling_YE_Plus_1");
-mudcsGasAlertConfig(false, true, value, limits_s);
-
-limits_s=makeDynString("0,100"); //
-value=mudcsRemoveSystem(dps[i]+".Flowmeter_Rack_EndCAp_Cooling_Far_Side_YE_Moins_1");
-mudcsGasAlertConfig(false, true, value, limits_s);
-
-limits_s=makeDynString("0,100"); //
-value=mudcsRemoveSystem(dps[i]+".Flowmeter_Rack_EndCAp_Cooling_Near_Side_YE_Moins_1");
-mudcsGasAlertConfig(false, true, value, limits_s);
-
-limits_s=makeDynString("0,100"); //
-value=mudcsRemoveSystem(dps[i]+".Flowmeter_Rack_EndCap_Cooling_Far_Side_YE_Plus_1");
-mudcsGasAlertConfig(false, true, value, limits_s);
-
-limits_s=makeDynString("0,100"); //
-value=mudcsRemoveSystem(dps[i]+".Flowmeter_Rack_EndCap_Cooling_Near_Side_YE_Plus_1");
-mudcsGasAlertConfig(false, true, value, limits_s);
-
-} // for i  
+for(j=1;j<=dynlen(cool_er_dpe);j++){  
   
+  if(strpos(cool_er_dpe[j],"Side") <0 )limits_s=makeDynFloat(200,100000);// that gives an alarm if the value < 200 and >= 100000 
+  else limits_s=makeDynFloat(20,100000); //// that gives an alarm if the value < 20 and >= 100000    
   
+value=mudcsRemoveSystem(dps[i]+"."+cool_er_dpe[j]); 
+DebugTN("alerting ....."+value);
+mudcsAlertConfig(false, isCreateConfig, value, limits_s, isAck);  
+  
+} // j
+
+//value=mudcsRemoveSystem(dps[i]+".Status.OutputFailure"); // commented as OutputFailure is always TRUE while the maraton works OK
+//mudcsAlertConfig(false, isCreateConfig, value, limits_s, isAck);
+//value=mudcsRemoveSystem(dps[i]+".Status.CrateStatus");
+//mudcsAlertConfig(false, isCreateConfig, value, limits_s, isAck);
+
+
+} // for i
 
 }
+//===================================================================================
+//===================================================================================
+//===================================================================================
+mudcsCoolingTurbinesAlertSet(bool isCreateConfig, bool isAck){
+  
+dyn_float limits_s;
+string value;
+dyn_string dps;
+int i,j;
 
+
+limits_s = makeDynFloat();
+
+// s1 is OK
+// s2 is ALARM
+
+
+dps=dpNames("*","fwCooling_CSC_TURBINES_data");
+//==================================
+for(i=1;i<=dynlen(dps);i++){
+
+  if(strpos(dps[i],"DimBroker")>=0)continue;  
+DebugTN("=============="+dps[i]);
+
+  if(strpos(dps[i],"Current") <0 && strpos(dps[i],"Temperature") <0)continue; // TMP items not calibrated yet
+    
+  if(strpos(dps[i],"Current") <0)limits_s=makeDynFloat(10,32);// that gives an alarm if the value < 200 and >= 100000 
+  else limits_s=makeDynFloat(0.5,1.4); //// that gives an alarm if the value < 20 and >= 100000     
+  
+//  if(strpos(dps[i],"Temperature") <0 && strpos(dps[i],"Temerature") <0)limits_s=makeDynFloat(0.5,1.4);// that gives an alarm if the value < 200 and >= 100000 
+//  else limits_s=makeDynFloat(10,32); //// that gives an alarm if the value < 20 and >= 100000    
+  
+value=mudcsRemoveSystem(dps[i]+"."); 
+DebugTN("alerting ....."+value);
+mudcsAlertConfig(false, isCreateConfig, value, limits_s, isAck);  
+  
+
+/*
+for(j=1;j<=dynlen(cool_er_dpe);j++){  
+  
+  if(strpos(cool_er_dpe[j],"Temperature") <0 )limits_s=makeDynFloat(0.5,1.4);// that gives an alarm if the value < 200 and >= 100000 
+  else limits_s=makeDynFloat(10,32); //// that gives an alarm if the value < 20 and >= 100000    
+  
+value=mudcsRemoveSystem(dps[i]+"."+cool_er_dpe[j]); 
+DebugTN("alerting ....."+value);
+mudcsAlertConfig(false, isCreateConfig, value, limits_s, isAck);  
+  
+} // j
+*/
+
+//value=mudcsRemoveSystem(dps[i]+".Status.OutputFailure"); // commented as OutputFailure is always TRUE while the maraton works OK
+//mudcsAlertConfig(false, isCreateConfig, value, limits_s, isAck);
+//value=mudcsRemoveSystem(dps[i]+".Status.CrateStatus");
+//mudcsAlertConfig(false, isCreateConfig, value, limits_s, isAck);
+
+
+} // for i
+
+}
+//===================================================================================
+//===================================================================================
+
+//===================================================================================
+
+mudcsCoolingSummaryAlertSet(bool isCreateConfig){
+//==================================
+//=== SUMMARY ALERT ================
+//==================================
+
+  
+  
+dyn_string dps, dps1, dps2,dps3,dps_t;
+int i,j,i10;
+dyn_string exceptionInfo, s1;  
+string coord;
+
+dyn_string cool_er_dpe=makeDynString(
+//"mainOn",
+//"mainInhibit",
+//"localControlOnly",
+"Flowmeter_EndCap_Cooling_YE_Minus_1",
+"Flowmeter_EndCap_Cooling_YE_Plus_1",
+"Flowmeter_Rack_EndCap_Cooling_Far_Side_YE_Minus_1",
+"Flowmeter_Rack_EndCap_Cooling_Near_Side_YE_Minus_1",
+"Flowmeter_Rack_EndCap_Cooling_Far_Side_YE_Plus_1",
+"Flowmeter_Rack_EndCap_Cooling_Near_Side_YE_Plus_1");
+ 
+dyn_string cool_er_dpe_t=makeDynString(
+"Temperature2",
+"Temperature1",
+"TurbineCurrent1",
+"TurbineCurrent2");
+
+dps=dpNames("*","fwCooling_CSC_COOLING_d");
+dps_t=dpNames("*","fwCooling_CSC_TURBINES_data");
+//-----------------------------------
+//------------------------------------------------------------  
+int type;
+  
+
+//==================================
+for(i=1;i<=dynlen(dps);i++){
+  
+ if(strpos(dps[i],"DimBroker")>=0)continue; 
+  //  DebugTN("+=++  "+dps[i]);
+//dps1=dpNames(dps[i]+".Status.*Failure*");  
+ for(j=1;j<=dynlen(cool_er_dpe);j++){
+  dpGet(dps[i]+"."+cool_er_dpe[j]+":_alert_hdl.._type",type);
+  DebugTN(dps[i]+"."+cool_er_dpe[j]+":_alert_hdl.._type"+">>"+type);
+  if(type > 0)dynAppend(dps2,dps[i]+"."+cool_er_dpe[j]);
+ } //j
+
+   for(i10=1;i10<=dynlen(dps_t);i10++){
+    //for(j=1;j<=dynlen(cool_er_dpe_t);j++){
+     dpGet(dps_t[i10]+"."+":_alert_hdl.._type",type);
+     DebugTN(dps_t[i10]+"."+":_alert_hdl.._type"+">>"+type);
+     if(type > 0)dynAppend(dps2,dps_t[i10]+".");
+    //} //j
+   }
+
+//----------------------------------------------------------- 
+  if(isCreateConfig){
+   fwAlertConfig_createSummary( mudcsRemoveSystem(dps[i])+".",
+   makeDynString("","") , dps2 ,"", makeDynString(),"",exceptionInfo);
+   dpSet(mudcsRemoveSystem(dps[i])+"."+":_alert_hdl.._active", true);
+  }
+  else{
+   fwAlertConfig_deleteSummary( mudcsRemoveSystem(dps[i])+".",exceptionInfo);        
+  }
+
+dyn_string s1;
+//dpSetWait(mudcsRemoveSystem(dps[i])+"."+":_alert_hdl.._ack_state",DPATTR_ACKTYPE_SINGLE );//"_fwErrorAck");
+dpGet(mudcsRemoveSystem(dps[i])+"."+":_alert_hdl.._dp_list",s1);
+DebugTN(s1);    
+
+
+//  dpSet(mudcsRemoveSystem(dps[i])+"."+":_alert_hdl.._active", true);
+ } // for i    
+
+// TestDP_1.element:_alert_hdl.1._class", alertclass[1],   
+
+}
+//===================================================================================
+mudcsCoolingRacksSummary(bool isCreateConfig){
+//==================================
+//=== SUMMARY ALERT ================
+//==================================
+  
+dyn_string dps, dps1, dps2,dps3,dps_t, dps_w;
+int i,j,i10;
+dyn_string exceptionInfo, s1;  
+string coord;
+
+dyn_string cool_er_dpe=makeDynString(
+//"mainOn",
+//"mainInhibit",
+//"localControlOnly",
+"Flowmeter_EndCap_Cooling_YE_Minus_1",
+"Flowmeter_EndCap_Cooling_YE_Plus_1",
+"Flowmeter_Rack_EndCap_Cooling_Far_Side_YE_Minus_1",
+"Flowmeter_Rack_EndCap_Cooling_Near_Side_YE_Minus_1",
+"Flowmeter_Rack_EndCap_Cooling_Far_Side_YE_Plus_1",
+"Flowmeter_Rack_EndCap_Cooling_Near_Side_YE_Plus_1");
+
+
+dps_w=dpNames("*","fwCooling_CSC_COOLING_d");
+dps=dpNames("*","fwCooling_CSC_TURBINES_summary");
+dps_t=dpNames("*","fwCooling_CSC_TURBINES_data");
+//-----------------------------------
+//------------------------------------------------------------  
+int type;
+dyn_string racks;
+    
+//==================================
+for(i=1;i<=dynlen(dps);i++){
+
+   // mudcsDebug(dps[i]);      
+  dynClear(dps2);
+  dynClear(racks);  
+ if(strpos(dps[i],"DimBroker")>=0)continue;
+ if(strpos(dps[i],"mrtn_racks")>=0)racks=turbine_crates; 
+ else  if(strpos(dps[i],"hv_racks")>=0)racks=hv_racks;
+ else  if(strpos(dps[i],"pc_racks")>=0)racks=pc_racks;
+ else  if(strpos(dps[i],"align_racks")>=0)racks=align_racks; 
+
+  
+ 
+ if(dynlen(racks)>=1){ 
+  for(j=1;j<=dynlen(racks);j++){
+   for(i10=1;i10<=dynlen(dps_t);i10++){    
+    if(strpos(dps_t[i10],racks[j])>=0)dynAppend(dps2,dps_t[i10]+".");
+  //   DebugTN("++++++++++++"+dps_t[i10]); 
+   } // i10
+  }  // j
+ 
+ }
+ else if(strpos(dps[i],"water")>=0){ 
+   // water
+  for(i10=1;i10<=dynlen(dps_w);i10++){ 
+   if(strpos(dps_w[i10],"DimBroker")>=0)continue;       
+  for(j=1;j<=dynlen(cool_er_dpe);j++){
+   dpGet(dps_w[i10]+"."+cool_er_dpe[j]+":_alert_hdl.._type",type);
+   DebugTN(dps_w[i10]+"."+cool_er_dpe[j]+":_alert_hdl.._type"+">>"+type);
+   if(type > 0)dynAppend(dps2,dps_w[i10]+"."+cool_er_dpe[j]);
+  } //j   
+  } // i10
+ } // else
+ 
+  if(isCreateConfig){
+  DebugTN(dps2);   
+  DebugTN(dps[i]);
+  if(dynlen(dps2)<=0)continue;
+  
+   fwAlertConfig_createSummary( mudcsRemoveSystem(dps[i])+".",
+   makeDynString("","") , dps2 ,"", makeDynString(),"",exceptionInfo);
+   dpSet(mudcsRemoveSystem(dps[i])+"."+":_alert_hdl.._active", true);
+  }
+  else{
+   fwAlertConfig_deleteSummary( mudcsRemoveSystem(dps[i])+".",exceptionInfo);        
+  }
+
+dyn_string s1;
+//dpSetWait(mudcsRemoveSystem(dps[i])+"."+":_alert_hdl.._ack_state",DPATTR_ACKTYPE_SINGLE );//"_fwErrorAck");
+dpGet(mudcsRemoveSystem(dps[i])+"."+":_alert_hdl.._dp_list",s1);
+DebugTN(s1);      
+  
+  
+} // i
+
+//----------------------------------------------------------- 
+
+
+
+//  dpSet(mudcsRemoveSystem(dps[i])+"."+":_alert_hdl.._active", true);
+ } // for i    
+
+// TestDP_1.element:_alert_hdl.1._class", alertclass[1],   
+
+
+//===================================================================================
 
 
 //===================================================================================
@@ -325,3 +582,111 @@ DebugTN("++++++++++++++++++++++++++++++++++++++++++++++++++++++11111");
 
 
 }
+
+
+//===================
+mudcsCoolingChannelExclude(string box_name, bool isEnabled){
+  
+  
+     mudcsGasInit();
+   mudcsTurbinesInit();  
+
+dyn_string off_channels;
+int pos;
+bool isexclude =! isEnabled;
+dyn_string split1=strsplit(m_exclude[box_name],"/"); 
+string rack=split1[dynlen(split1)-1];
+
+dpGet(DpName+".off_channels",off_channels);
+
+ if(isexclude){
+  if(dynContains(off_channels,m_exclude[box_name])==0)dynAppend(off_channels,m_exclude[box_name]);
+  //DebugTN(off_channels);
+ }
+ else{
+  pos=dynContains(off_channels,m_exclude[box_name]);
+  if(pos)dynRemove(off_channels,pos);
+
+ }
+ dpSetWait(DpName+".off_channels",off_channels);
+ mudcsCoolingChannelExclude_alert_reconfig(m_exclude[box_name], isexclude); 
+ /*
+  mudcsCoolingChannelExclude_alert_reconfig(DpName,m_exclude[box_name], isexclude);   
+
+
+  string dpname;
+  if(dynContains(align_racks,rack)>0)dpname=mudcsGasAddSystem("align_racks_summary");
+  else if(dynContains(pc_racks,rack)>0)dpname=mudcsGasAddSystem("pc_racks_summary");
+  else if(dynContains(turbine_crates,rack)>0)dpname=mudcsGasAddSystem("mrtn_racks_summary");
+  else if(dynContains(hv_racks,rack)>0)dpname=mudcsGasAddSystem("hv_racks_summary");
+ // else if(dynContains(,m_exclude[box_name])>=0)dpname=mudcsGasAddSystem("water_summary");
+  
+
+  
+  mudcsCoolingChannelExclude_alert_reconfig(dpname,m_exclude[box_name], isexclude);    
+  
+  dpSetWait(mudcsGasAddSystem("cooling_alert_update.value"),"update");
+  */
+ 
+}
+
+//====================================
+mudcsCoolingChannelExclude_alert_reconfig(string dpname, int isexclude){
+ if(!isexclude){
+   dpSetWait(mudcsGasAddSystem( dpname + ":_alert_hdl.._active"), true);
+ }
+ else{
+   dpSetWait(mudcsGasAddSystem( dpname + ":_alert_hdl.._active"),false);
+   
+ } 
+}
+
+//=====================================
+mudcsCoolingChannelExclude_alert_reconfig_old(string dpname, string dp_frag, int isexclude){
+
+bool configExists;
+dyn_string alertTexts;
+dyn_string ilist;
+string alertPanel;
+dyn_string alertPanelParameters;
+string alertHelp;
+bool isActive;
+dyn_string exceptionInfo;
+int pos;
+
+int i,j;
+
+fwAlertConfig_getSummary(dpname+".",configExists,alertTexts,ilist,
+	alertPanel,alertPanelParameters,alertHelp,isActive,exceptionInfo);
+
+//DebugTN(dp_frag+"=========");
+
+if(!isexclude){
+  if(dynContains(ilist,dp_frag) == 0)dynAppend(ilist,dp_frag);
+ 
+// DebugTN(ilist);
+// mudcsDebug(dp_frag);
+}
+else{
+ if((pos=dynContains(ilist,dp_frag)) > 0)dynRemove(ilist,pos);
+//DebugTN(ilist);
+ 
+}
+
+//=====
+							
+ fwAlertConfig_createSummary(dpname+".",makeDynString("","") , ilist ,"", 
+                              makeDynString(),"",exceptionInfo);
+
+ /* 
+fwAlertConfig_getSummary(dpname+".",configExists,alertTexts,ilist,
+	alertPanel,alertPanelParameters,alertHelp,isActive,exceptionInfo);
+
+ if((pos=dynContains(ilist,dp_frag)) > 0)mudcsDebug("V");
+ */
+//======
+
+}
+//====================================
+
+

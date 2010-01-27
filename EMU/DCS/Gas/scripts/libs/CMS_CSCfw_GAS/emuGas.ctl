@@ -75,6 +75,79 @@ string mudcsGasAddSystem(string dp){
 
 
 
+dyn_string    turbine_crates, pc_racks, hv_racks, align_racks;
+mapping rack_mrtn;    
+
+mudcsTurbinesInit(){
+      turbine_crates=makeDynString(
+"X4S51","X2V52", 
+
+"X4V41","X4S41","X2S41", "X2V42", 
+
+"X4V31", "X4S31","X2S33","X2V31",
+
+"X4J31","X4A31","X2A33","X2J31",
+
+"X4J41","X4A41","X2A41", "X2J42",  
+
+"X4A51","X2J52");
+      
+   
+rack_mrtn["X4S51"]=makeDynInt(37);
+rack_mrtn["X2V52"]=makeDynInt(38); 
+
+rack_mrtn["X4V41"]=makeDynInt(29,30);
+rack_mrtn["X4S41"]=makeDynInt(31,32);
+rack_mrtn["X2S41"]=makeDynInt(33,34); 
+rack_mrtn["X2V42"]=makeDynInt(35,36); 
+
+rack_mrtn["X4V31"]=makeDynInt(21,22); 
+rack_mrtn["X4S31"]=makeDynInt(23,24);
+rack_mrtn["X2S33"]=makeDynInt(25,26);
+rack_mrtn["X2V31"]=makeDynInt(27,28);
+
+rack_mrtn["X4J31"]=makeDynInt(1,2);
+rack_mrtn["X4A31"]=makeDynInt(3,4);
+rack_mrtn["X2A33"]=makeDynInt(5,6);
+rack_mrtn["X2J31"]=makeDynInt(7,8);
+
+rack_mrtn["X4J41"]=makeDynInt(9,10);
+rack_mrtn["X4A41"]=makeDynInt(11,12);
+rack_mrtn["X2A41"]=makeDynInt(13,14); 
+rack_mrtn["X2J42"]=makeDynInt(15,16);  
+
+rack_mrtn["X4A51"]=makeDynInt(17,19);
+rack_mrtn["X2J52"]=makeDynInt(18);      
+      
+      
+  hv_racks=makeDynString(
+ 
+      "X4V33","X4V41","X4V51","X2S41",  // -Z 
+      "X4J33","X4J41","X4J51","X2A41"  // +Z
+    
+              
+      
+       );
+  pc_racks=makeDynString(
+      
+//             -X                       +X
+     "X1L31","X3S31","X5L31", "X1E31","X3V31","X5E31", // -Z
+     "X1L41","X3S41","X5L41", "X1E41","X3V41","X5E41",
+     "X1L51","X3S51","X5L51", "X1E51","X3V51","X5E51",    
+     
+     "X1R31","X3A31","X5R31", "X1U31","X3J31","X5U31", // +Z
+     "X1R41","X3A41","X5R41", "X1U41","X3J41","X5U41",
+     "X1R51","X3A51","X5R51", "X1U51","X3J51","X5U51"            
+       );         
+  align_racks=makeDynString(
+
+   );         
+      
+    }
+
+ 
+   
+
 dyn_int GasSystem_State;
 dyn_int GasSystem_Status;
 dyn_string GasSystem_State_meaning;  // int
