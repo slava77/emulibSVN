@@ -842,7 +842,7 @@ LANG:1 46 Switching back to "General state" mode in 300s
 2 32
 "lblLegend"
 ""
-1 1060 20 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+1 980 20 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
  E E
 44 0 0 0 0 0
 E E E
@@ -852,8 +852,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1060 20 1105 36
-0 2 2 "0s" 0 0 0 192 0 0  1060 20 1
+E E 0 1 1 2 1 E U  1 E 980 20 1025 36
+0 2 2 "0s" 0 0 0 192 0 0  980 20 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -880,7 +880,7 @@ LANG:1 29 UI Version 1.0.0 (2009/07/22)
 2 38
 "lblNewVersion"
 ""
-1 860 10 E E E 1 E 0 E N "_WindowText" E N "warningWentUna" E E
+1 690 10 E E E 1 E 0 E N "_WindowText" E N "warningWentUna" E E
  E E
 51 0 0 0 0 0
 E E E
@@ -890,8 +890,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 860 10 1038 44
-1 2 2 "0s" 0 0 0 192 0 0  860 10 2
+E E 0 1 1 2 1 E U  1 E 690 10 868 44
+1 2 2 "0s" 0 0 0 192 0 0  690 10 2
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -903,7 +903,7 @@ LANG:1 28 Restart the UI when possible
 2 39
 "PRIMITIVE_TEXT1"
 ""
-1 1130 35 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 1050 35 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 52 0 0 0 0 0
 E E E
@@ -913,8 +913,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1130 35 1368 51
-0 2 2 "0s" 0 0 0 192 0 0  1130 35 1
+E E 0 1 1 2 1 E U  1 E 1050 35 1288 51
+0 2 2 "0s" 0 0 0 192 0 0  1050 35 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -922,7 +922,7 @@ LANG:1 39 Known problem (something is masked out)
 2 40
 "PRIMITIVE_TEXT2"
 ""
-1 1120 34 E E E 1 E 1 E N "white" E N "_3DText" E E
+1 1040 34 E E E 1 E 1 E N "white" E N "_3DText" E E
  E E
 53 0 0 0 0 0
 E E E
@@ -932,8 +932,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1120 34 1124 51
-0 2 2 "0s" 0 0 0 192 0 0  1120 34 1
+E E 0 1 1 2 1 E U  1 E 1040 34 1044 51
+0 2 2 "0s" 0 0 0 192 0 0  1040 34 1
 1
 LANG:1 33 MS Shell Dlg,-1,13,5,75,0,0,0,0,0
 0 1
@@ -951,11 +951,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1 0 1 0 4 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4294967295 E 1424 40 10 10
+E E 0 1 1 2 1 E 1 0 1 -80 4 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4294967295 E 1424 40 10 10
 2 48
 "PRIMITIVE_TEXT3"
 ""
-1 2682.22755842079 145 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 2660.511240934891 150 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -965,7 +965,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 0.9910714285714291 0 1 82.23214285714232 5 1 E 1370 30 1507 46
+E E 0 1 1 2 1 E 0.9910714285714291 0 1 2.232142857142321 5 1 E 1370 30 1507 46
 0 2 2 "0s" 0 0 0 192 0 0  1370 30 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -974,7 +974,7 @@ LANG:1 21 Communication problem
 4 49
 "LINE1"
 ""
-1 1108 4 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+1 1028 4 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
  E E
 63 0 0 0 0 0
 E E E
@@ -984,11 +984,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E  1108 4 1108 54
+E E 0 1 1 2 1 E  1028 4 1028 54
 4 50
 "LINE2"
 ""
-1 1108 3 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+1 1028 3 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
  E E
 64 0 0 0 0 0
 E E E
@@ -998,11 +998,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E  1108 3 1118 3
+E E 0 1 1 2 1 E  1028 3 1038 3
 4 51
 "LINE3"
 ""
-1 1108 54 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+1 1028 54 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
  E E
 65 0 0 0 0 0
 E E E
@@ -1012,7 +1012,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E  1108 54 1118 54
+E E 0 1 1 2 1 E  1028 54 1038 54
 2 54
 "PRIMITIVE_TEXT4"
 ""
