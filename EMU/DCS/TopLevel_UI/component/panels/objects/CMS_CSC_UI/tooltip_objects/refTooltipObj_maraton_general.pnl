@@ -73,12 +73,17 @@ PANEL,-1 -1 404 367 N "_3DFace" 1
   dynAppend(maratonProblemDps, inputFailureDp);
   dynAppend(maratonProblemDps, outputFailureDp);
   
+  // Get the Maraton temperature sensor DPs
+  dyn_string temperatureDps = emuui_getDpNames(\"maraton_temperature\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
   fwCU_connectState(\"updateFSMStateCB\", fsmNode);
   dpConnect(\"updateWarningsCB\", true, maratonProblemDps);
   dpConnect(\"updateChannelStateCB\", true, tripDps);
   dpConnect(\"updateVMonCB\", false, channelVMonDps);
   dpConnect(\"updateIMonCB\", false, channelIMonDps);
   dpConnect(\"updateVSetCB\", true, channelVSetDps);
+  dpConnect(\"updateTemperatureCB\", true, temperatureDps);
   
   //Show which crates are supplied by this Maraton
   mapping maratonToPCrates = emuui_getMaratonToPcmbsMap(ex);
@@ -243,7 +248,30 @@ void updateWarningsCB(dyn_string dpList, dyn_bool problems) {
     emuui_questionOutTable(tableChannels.name(), true, makeDynInt(), makeDynInt(3));
   }
 }
-" 0
+
+void updateTemperatureCB(dyn_string dpList, dyn_float temperatures) {
+  dyn_float validTemperatures;
+  for (int i=1; i <= dynlen(temperatures); i++) {
+    if (temperatures[i] > -128) {
+      dynAppend(validTemperatures, temperatures[i]);
+    }
+  }
+  
+  if (dynlen(validTemperatures) == 0) {
+    lblTemperature.text = \"N/A\";
+  } else {
+    string strTemperatures;
+    for (int i=1; i <= dynlen(validTemperatures); i++) {
+      if (i > 1) {
+        strTemperatures += \",\";
+      }
+      string strTemperature;
+      sprintf(strTemperature, \"%.1f °C\", validTemperatures[i]);
+      strTemperatures += strTemperature; 
+    }
+    lblTemperature.text = strTemperatures;
+  }
+}" 0
  2
 "CBRef" "1"
 "EClose" "main()
@@ -574,6 +602,44 @@ E E 0 1 1 2 1 E U  1 E 10 150 60 166
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 10 loading...
+2 58
+"lblForTemperature"
+""
+1 220 150 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+88 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 220 150 292 166
+0 2 2 "0s" 0 0 0 192 0 0  220 150 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 12 Temperature:
+2 59
+"lblTemperature"
+""
+1 300 150 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+89 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 300 150 319 166
+0 2 2 "0s" 0 0 0 192 0 0  300 150 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 3 N/A
 0
 LAYER, 1 
 1
