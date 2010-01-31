@@ -38,6 +38,7 @@
     <templ:HVSegments source="mappings/HVChannelToSegment.xml"/>
     <templ:LV source="mappings/lvMapping.xml"/>
     <templ:Gas source="mappings/GasSystem.xml"/>
+    <templ:CoolingCircuits/>
   </templ:individuals>
 
 
