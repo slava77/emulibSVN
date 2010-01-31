@@ -353,17 +353,20 @@
 	      </xsl:for-each>
 	    </xsl:if>
 	  </xsl:when>
-	  <!-- chambers -->
+	  <!-- chambers (only those in PCrate source xml file, i.e., already installed) -->
 	  <xsl:otherwise>
-	    <ObjectPropertyAssertion>
-	      <ObjectProperty URI="&csc;receivesDataFrom"/>
-	      <Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/>
-	      <Individual URI="&csc;ME{Chamber/@endcap}{Chamber/@station}/{Chamber/@type}/{Chamber/@number}/DMB"/>
-	    </ObjectPropertyAssertion>
-	    <DataPropertyAssertion>
-	      <DataProperty URI="&csc;hasDDUInput"/><Individual URI="&csc;ME{Chamber/@endcap}{Chamber/@station}/{Chamber/@type}/{Chamber/@number}/DMB"/>
-	      <Constant datatypeURI="&xsd;integer"><xsl:value-of select="$DDU_INPUT"/></Constant>
-	    </DataPropertyAssertion>
+	    <xsl:variable name="UNPADDED_CHAMBER">ME<xsl:value-of select="Chamber/@endcap"/><xsl:value-of select="Chamber/@station"/>/<xsl:value-of select="Chamber/@type"/>/<xsl:value-of select="number(Chamber/@number)"/></xsl:variable>
+	    <xsl:if test="document(document('ontology_template.xml')//templ:PSidePCrates/@source)//CSC[@label=$UNPADDED_CHAMBER] | document(document('ontology_template.xml')//templ:MSidePCrates/@source)//CSC[@label=$UNPADDED_CHAMBER]">
+	      <ObjectPropertyAssertion>
+		<ObjectProperty URI="&csc;receivesDataFrom"/>
+		<Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/>
+		<Individual URI="&csc;ME{Chamber/@endcap}{Chamber/@station}/{Chamber/@type}/{Chamber/@number}/DMB"/>
+	      </ObjectPropertyAssertion>
+	      <DataPropertyAssertion>
+		<DataProperty URI="&csc;hasDDUInput"/><Individual URI="&csc;ME{Chamber/@endcap}{Chamber/@station}/{Chamber/@type}/{Chamber/@number}/DMB"/>
+		<Constant datatypeURI="&xsd;integer"><xsl:value-of select="$DDU_INPUT"/></Constant>
+	      </DataPropertyAssertion>
+	    </xsl:if>
 	  </xsl:otherwise>
 	</xsl:choose>
 
@@ -700,12 +703,15 @@
 
   <!-- Cooling -->
   <xsl:template match="templ:CoolingCircuits">
+    <xsl:text>&LF;</xsl:text>
+    <xsl:comment>Cooling</xsl:comment>
+    <xsl:text>&LF;</xsl:text>
     <Declaration><Individual URI="&csc;CoolingCircuit1"/></Declaration>
     <Declaration><Individual URI="&csc;CoolingCircuit2"/></Declaration>
     <ClassAssertion><Class URI="&csc;CoolingCircuit"/><Individual URI="&csc;CoolingCircuit1"/></ClassAssertion>
     <ClassAssertion><Class URI="&csc;CoolingCircuit"/><Individual URI="&csc;CoolingCircuit2"/></ClassAssertion>
-    <DataPropertyAssertion><DataProperty URI="&csc;hasName"/><Individual URI="CoolingCircuit1"/><Constant datatypeURI="&xsd;string">RacksCircuit</Constant></DataPropertyAssertion>
-    <DataPropertyAssertion><DataProperty URI="&csc;hasName"/><Individual URI="CoolingCircuit2"/><Constant datatypeURI="&xsd;string">EndcapCircuit</Constant></DataPropertyAssertion>
+    <DataPropertyAssertion><DataProperty URI="&csc;hasName"/><Individual URI="CoolingCircuit1"/><Constant datatypeURI="&xsd;string">Racks Circuit</Constant></DataPropertyAssertion>
+    <DataPropertyAssertion><DataProperty URI="&csc;hasName"/><Individual URI="CoolingCircuit2"/><Constant datatypeURI="&xsd;string">Endcap Circuit</Constant></DataPropertyAssertion>
   </xsl:template>
 
   <xsl:template name="RackCooling">
