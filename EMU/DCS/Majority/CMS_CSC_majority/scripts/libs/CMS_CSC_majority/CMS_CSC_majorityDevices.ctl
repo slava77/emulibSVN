@@ -289,6 +289,26 @@ dyn_int emumaj_temperatureStateCounts(dyn_anytype values, int &weight, bool calc
   return makeDynInt(ok, error, noCommunication);
 }
 
+/** standard .status DP. 2 means ON, 0 means OFF, -1 means ERROR, -2 means NO_COMMUNICATION.
+  values here are ".status". States are ON, ERROR and NO_COMMUNICATION */
+void emumaj_onOffErrorNoCommStatusDpCounts(dyn_anytype values, int &weight, bool calcTotal, string node, bool noCommMeansOn) {
+  int status = values[1];
+  int on = 0,
+      error = 0,
+      noCommunication = 0;
+  if (status > 1) {
+    on = 1;
+  } else if (status == -1) {
+    on = 1;
+    error = 1;
+  } else if (status == -2) {
+    if (noCommMeansOn) {
+      on = 1;
+    }
+    noCommunication = 1;
+  }
+}
+
 /** Takes any kind of chamber device (HV, LV, TEMP) and returns a mapping with elements:
                                                    dataDp, side, station, ring, chamberNumber.
 */
