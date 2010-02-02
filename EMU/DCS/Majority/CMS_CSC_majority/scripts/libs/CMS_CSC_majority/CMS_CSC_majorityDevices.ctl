@@ -359,6 +359,7 @@ dyn_int emumaj_onOffErrorFsmStateCounts(dyn_anytype values, int &weight, bool ca
   
   if (state == "ON") {
     on = 1;
+  } else if (state == "OFF") {
   } else if ((state == "ERROR") || (state == "DEAD")) {
     error = 1;
   } else {
@@ -379,6 +380,7 @@ dyn_int emumaj_onOffStandbyErrorFsmStateCounts(dyn_anytype values, int &weight, 
     on = 1;
   } else if (state == "STANDBY") {
     standby = 1;
+  } else if (state == "OFF") {
   } else if ((state == "ERROR") || (state == "DEAD")) {
     error = 1;
   } else {
