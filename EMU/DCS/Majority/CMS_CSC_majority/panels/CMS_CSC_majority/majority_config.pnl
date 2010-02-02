@@ -99,6 +99,21 @@ void configureMaratonChannel(string topNode) {
   majority_addPercentages(topNode, \"MrtnChannel\", makeDynFloat(100, 0)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
 }
 
+void configureMaratonCrate(string topNode) {
+  majority_addDevice(\"MrtnCrate\", // this defines the internal name of the device for the majority
+  \"FwWienerMarathon\", // this is the corresponding Device Unit Type
+  makeDynString(\".fsm.currentState\"), // define the datapoint elements you need to connect
+  makeDynString(\"on\", \"error\"), // these are the basic device states for this device
+  1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  );
+ 
+  // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
+  majority_addColors(\"MrtnCrate\", \"on\", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
+  majority_addColors(\"MrtnCrate\", \"error\", majority_getStandardColorsError() );    
+
+  majority_addPercentages(topNode, \"MrtnCrate\", makeDynFloat(100, 0)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+}
+
 void configureDDU(string topNode) {
   majority_addDevice(\"DDU\", // this defines the internal name of the device for the majority
   \"FED_1\", // this is the corresponding Device Unit Type
@@ -177,7 +192,57 @@ void configureHVPrimaries(string topNode) {
   majority_addColors(\"HV_Primary\", \"error\", majority_getStandardColorsError() );    
 
   majority_addPercentages(topNode, \"HV_Primary\", makeDynFloat(100, 100, 0)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
-}" 0
+}
+
+void configureME11Hv(string topNode) {
+  // ME1/1 HV
+  majority_addDevice(\"HV_ME11\", // this defines the internal name of the device for the majority
+  \"FwCaenChannel\", // this is the corresponding Device Unit Type
+  makeDynString(\".fsm.currentState\"), // define the datapoint elements you need to connect
+  makeDynString(\"on\", \"standby\", \"error\"), // these are the basic device states for this device
+  1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  );
+ 
+  // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
+  majority_addColors(\"HV_ME11\", \"on\", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
+  majority_addColors(\"HV_ME11\", \"standby\", makeDynString(\"_Window\",\"FwStateAttention1\",\"yellow\",\"yellow\",\"yellow\"));    
+  majority_addColors(\"HV_ME11\", \"error\", majority_getStandardColorsError() );    
+
+  majority_addPercentages(topNode, \"HV_ME11\", makeDynFloat(95, 95, 5)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+}
+
+void configureGas(string topNode) {
+  //GAS - top (global) device only
+  majority_addDevice(\"Gas\", // this defines the internal name of the device for the majority
+  \"fwGasSystem_CSC_GAS\", // this is the corresponding Device Unit Type
+  makeDynString(\".status\"), // define the datapoint elements you need to connect
+  makeDynString(\"on\", \"error\"), // these are the basic device states for this device
+  1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  );
+ 
+  // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
+  majority_addColors(\"Gas\", \"on\", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
+  majority_addColors(\"Gas\", \"error\", majority_getStandardColorsError() );    
+
+  majority_addPercentages(topNode, \"Gas\", makeDynFloat(100, 0)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+}
+
+void configureCooling(string topNode) {
+  //GAS - top (global) device only
+  majority_addDevice(\"Cooling\", // this defines the internal name of the device for the majority
+  \"fwCooling_CSC_COOLING\", // this is the corresponding Device Unit Type
+  makeDynString(\".status\"), // define the datapoint elements you need to connect
+  makeDynString(\"on\", \"error\"), // these are the basic device states for this device
+  1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  );
+ 
+  // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
+  majority_addColors(\"Cooling\", \"on\", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
+  majority_addColors(\"Cooling\", \"error\", majority_getStandardColorsError() );    
+
+  majority_addPercentages(topNode, \"Cooling\", makeDynFloat(100, 0)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+}
+" 0
  2
 "CBRef" "1"
 "EClose" E
@@ -213,6 +278,8 @@ LANG:1 18 Configure Majority
 
   DebugTN(\"Creating HV majority\");
   configureHv(majorityTopNode);
+  DebugTN(\"Creating ME1/1 HV majority\");
+  configureME11Hv(majorityTopNode);
   DebugTN(\"Creating HV Primary majority\");
   configureHVPrimaries(majorityTopNode);
   DebugTN(\"Creating LV majority\");
@@ -223,12 +290,18 @@ LANG:1 18 Configure Majority
   configureCrb(majorityTopNode);
   DebugTN(\"Creating Maraton Channel majority\");
   configureMaratonChannel(majorityTopNode);
+  DebugTN(\"Creating Maraton Crate majority\");
+  configureMaratonCrate(majorityTopNode);
   DebugTN(\"Creating DDU majority\");
   configureDDU(majorityTopNode);
   DebugTN(\"Creating LV for HV majority\");
   configureLvForHv(majorityTopNode);
   DebugTN(\"Creating Atlas PSU branch majority\");
   configureAtlasPSU(majorityTopNode);
+  DebugTN(\"Creating GAS majority (top device only)\");
+  configureGas(majorityTopNode);
+  DebugTN(\"Creating COOLING majority (top device only)\");
+  configureCooling(majorityTopNode);
 
   DebugTN(\"Creating general majority parameters\");
   
