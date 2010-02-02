@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 500 402 N "_3DFace" 1
+PANEL,-1 -1 1014 402 N "_3DFace" 1
 "$1"
 "#uses \"majority_treeCache/majorityLib.ctl\"
 
@@ -11,7 +11,8 @@ main()
   string node = $1;//\"CMS_CSC_majorTest\";
   string topNode = \"CMS_CSC_majorTest\";
 //  majority_ui_setTableMode(\"absolute\");
-  majority_ui_addTable(node, topNode); 
+  majority_ui_addTable(node, topNode, 
+                       \"\", \"\", makeDynString(), makeDynString(), 40, TRUE, TRUE, -1, -1, FALSE, \"\");
 }" 0
  E E E E 1 -1 -1 0  40 30
 ""0  1

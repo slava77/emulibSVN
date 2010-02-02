@@ -31,6 +31,8 @@ dyn_int majorityUser_stateCounts(string device, dyn_anytype values, // informati
       return emumaj_onOffErrorFsmStateCounts(values, all, calcTotal, node);
     case "MrtnChannel":
       return emumaj_onOffErrorFsmStateCounts(values, all, calcTotal, node);
+    case "AtlasPSU_Branch":
+      return emumaj_onOffErrorFsmStateCounts(values, all, calcTotal, node);
     case "DDU":
       return emumaj_onOffErrorNoCommStatusDpCounts(values, all, calcTotal, node, true);
     case "LvForHv_Cr":

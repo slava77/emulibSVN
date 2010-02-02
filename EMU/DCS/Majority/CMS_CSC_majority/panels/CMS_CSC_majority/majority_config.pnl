@@ -102,7 +102,7 @@ void configureMaratonChannel(string topNode) {
 void configureDDU(string topNode) {
   majority_addDevice(\"DDU\", // this defines the internal name of the device for the majority
   \"FED_1\", // this is the corresponding Device Unit Type
-  makeDynString(\".status\", \"off_channels\"), // define the datapoint elements you need to connect
+  makeDynString(\".status\", \".off_channels\"), // define the datapoint elements you need to connect
   makeDynString(\"on\", \"error\", \"no_communication\"), // these are the basic device states for this device
   1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
   );
@@ -146,6 +146,22 @@ void configureLvForHv(string topNode) {
   majority_addColors(\"LvForHv_Ch\", \"no_communication\", majority_getStandardColorsError() );    
 
   majority_addPercentages(topNode, \"LvForHv_Ch\", makeDynFloat(95, 5, 90)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+}
+
+void configureAtlasPSU(string topNode) {
+  // Atlas PSU branch
+  majority_addDevice(\"AtlasPSU_Branch\", // this defines the internal name of the device for the majority
+  \"FwElmbPSUBranch\", // this is the corresponding Device Unit Type
+  makeDynString(\".fsm.currentState\"), // define the datapoint elements you need to connect
+  makeDynString(\"on\", \"error\"), // these are the basic device states for this device
+  1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  );
+ 
+  // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
+  majority_addColors(\"AtlasPSU_Branch\", \"on\", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
+  majority_addColors(\"AtlasPSU_Branch\", \"error\", majority_getStandardColorsError() );    
+
+  majority_addPercentages(topNode, \"AtlasPSU_Branch\", makeDynFloat(100, 0)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
 }" 0
  2
 "CBRef" "1"
@@ -194,6 +210,8 @@ LANG:1 18 Configure Majority
   configureDDU(majorityTopNode);
   DebugTN(\"Creating LV for HV majority\");
   configureLvForHv(majorityTopNode);
+  DebugTN(\"Creating Atlas PSU branch majority\");
+  configureAtlasPSU(majorityTopNode);
 
   DebugTN(\"Creating general majority parameters\");
   
