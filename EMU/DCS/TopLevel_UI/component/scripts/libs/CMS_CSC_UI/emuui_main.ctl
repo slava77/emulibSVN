@@ -96,3 +96,24 @@ string emuui_mappingToParameterString(mapping params) {
   
   return ret;
 }
+
+void fwFsmUser_nodeDoubleClicked(string domain, string obj, string parent = "") {
+  if ((domain == "CMS_CSC") && (obj == "CMS_CSC")) {
+    emuui_showInfoMessage("'Old' UI is no longer supported." +
+                          "\nIf you want e.g. to disable stations - double click on the station label and the station panel will open which will allow you to disable it.",
+                          "Info - old UI is no longer available");
+    return;
+  }
+  
+  // FROM ORIGINAL fwFSM  
+  int openSingle;
+  int cursor;
+  dpGet("ToDo.openOnSingleClick", openSingle);
+  if(!openSingle)
+  {
+    cursor = this.cursor;
+    this.cursor = CURSOR_WAIT;
+    fwUi_showFsmObject(domain, obj, parent); 
+    this.cursor = cursor;
+  }
+}

@@ -129,3 +129,9 @@ string emuui_capitalizeFirstLetters(string str) {
   }
   return ret;
 }
+
+void emuui_showInfoMessage(string message, string title = "Info") {
+  ChildPanelOnCentralModal("objects/" + EMUUI_COMPONENT_NAME + "/refMessage.pnl", 
+                           title, 
+                           makeDynString("$message:" + message));
+}

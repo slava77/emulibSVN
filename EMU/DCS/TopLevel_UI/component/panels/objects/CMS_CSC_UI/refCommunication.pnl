@@ -1,20 +1,24 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 1600 247 N "_3DFace" 1
+PANEL,-1 -1 1600 247 N "_3DFace" 2
 "$group"
+"$width"
 "main()
 {
   initParams();
-  drawCommunicationDevices();
+  drawCommunicationDevices(paramWidth);
 }
 
-void drawCommunicationDevices() {
+void drawCommunicationDevices(int width) {
   int posX, posY;
   getValue(\"refPoint\", \"position\", posX, posY); 
   int lblWidth = 57;
-  int xGapSize = 93;
-
+  int xGapSize = (width - (7 * lblWidth)) / 7;
+  if (xGapSize < 93) {
+    xGapSize = 93; // minimum x gap size
+  }
+  
   lblXmasP.position(posX, posY);
   posX += lblWidth;
   drawConnectionDevice(posX, posY, \"xmas\", \"side=P\");
@@ -80,6 +84,7 @@ void drawConnectionDevice(int x, int y, string connectionDeviceType, string addi
 ""0  1
 E "// init parameters
 string paramGroup;
+int paramWidth;
 
 // some panel-wide constants and variables
 dyn_string references;
@@ -98,12 +103,15 @@ void initParams() {
     runningLocal = true;
     
     paramGroup = emuui_getSessionDp(\"communicationMonitor\");
+    paramWidth = 1060;
   } else { // copy from dollar params
     runningLocal = false;
     
     paramGroup = $group;
+    paramWidth = $width;
   }
-}" 0
+}
+" 0
  2
 "CBRef" "1"
 "EClose" "main()
