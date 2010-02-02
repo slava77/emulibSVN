@@ -289,28 +289,6 @@ dyn_int emumaj_temperatureStateCounts(dyn_anytype values, int &weight, bool calc
   return makeDynInt(ok, error, noCommunication);
 }
 
-/** standard .status DP. 2 means ON, 0 means OFF, -1 means ERROR, -2 means NO_COMMUNICATION.
-  values here are ".status". States are ON, ERROR and NO_COMMUNICATION */
-dyn_int emumaj_onOffErrorNoCommStatusDpCounts(dyn_anytype values, int &weight, bool calcTotal, string node, bool noCommMeansOn) {
-  int status = values[1];
-  int on = 0,
-      error = 0,
-      noCommunication = 0;
-  if (status > 1) {
-    on = 1;
-  } else if (status == -1) {
-    on = 1;
-    error = 1;
-  } else if (status == -2) {
-    if (noCommMeansOn) {
-      on = 1;
-    }
-    noCommunication = 1;
-  }
-  
-  return makeDynInt(on, error, noCommunication);
-}
-
 /** Takes any kind of chamber device (HV, LV, TEMP) and returns a mapping with elements:
                                                    dataDp, side, station, ring, chamberNumber.
 */
@@ -336,6 +314,43 @@ mapping emumaj_getChamberDeviceParams(string nodeName) {
   return deviceParams;
 }
 
+/** standard .status DP. > 1 means ON, < 0 means ERROR, -2 means NO_COMMUNICATION, else means OFF.
+  values here are ".status". States are ON, ERROR and NO_COMMUNICATION */
+dyn_int emumaj_onOffErrorNoCommStatusDpCounts(dyn_anytype values, int &weight, bool calcTotal, string node, bool noCommMeansOn) {
+  int status = values[1];
+  int on = 0,
+      error = 0,
+      noCommunication = 0;
+  if (status > 1) {
+    on = 1;
+  } else if (status == -2) {
+    if (noCommMeansOn) {
+      on = 1;
+    }
+    noCommunication = 1;
+  } else if (status < 0) {
+    on = 1;
+    error = 1;
+  }
+  
+  return makeDynInt(on, error, noCommunication);
+}
+
+/** standard .status DP. > 1 means ON, < 0 means ERROR, else means OFF.
+  values here are ".status". States are ON, ERROR and NO_COMMUNICATION */
+dyn_int emumaj_onOffErrorStatusDpCounts(dyn_anytype values, int &weight, bool calcTotal, string node) {
+  int status = values[1];
+  int on = 0,
+      error = 0;
+  if (status > 1) {
+    on = 1;
+  } else if (status < 0) {
+    error = 1;
+  }
+  
+  return makeDynInt(on, error, noCommunication);
+}
+
 /** value here is ".fsm.currentState" (internal FSM DPE). States are ON and ERROR */
 dyn_int emumaj_onOffErrorFsmStateCounts(dyn_anytype values, int &weight, bool calcTotal, string node) {
   string state = values[1];
@@ -344,10 +359,31 @@ dyn_int emumaj_onOffErrorFsmStateCounts(dyn_anytype values, int &weight, bool ca
   
   if (state == "ON") {
     on = 1;
-  }
-  if ((state == "ERROR") || (state == "DEAD")) {
+  } else if ((state == "ERROR") || (state == "DEAD")) {
+    error = 1;
+  } else {
     error = 1;
   }
   
   return makeDynInt(on, error);
+}
+
+/** value here is ".fsm.currentState" (internal FSM DPE). States are ON, STANDBY and ERROR */
+dyn_int emumaj_onOffStandbyErrorFsmStateCounts(dyn_anytype values, int &weight, bool calcTotal, string node) {
+  string state = values[1];
+  int on = 0,
+      standby = 0,
+      error = 0;
+  
+  if (state == "ON") {
+    on = 1;
+  } else if (state == "STANDBY") {
+    standby = 1;
+  } else if ((state == "ERROR") || (state == "DEAD")) {
+    error = 1;
+  } else {
+    error = 1;
+  }
+  
+  return makeDynInt(on, standby, error);
 }
