@@ -325,8 +325,13 @@
 	<Individual URI="&csc;FEDCrate{DDU/@crate}"/>
       </ObjectPropertyAssertion>
 
+      <!-- DDU inputs -->
       <xsl:for-each select="DDU/input">
 	<xsl:variable name="DDU_INPUT" select="@id"/>
+
+	<Declaration><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$DDU_INPUT}"/></Declaration>
+	<ClassAssertion><Class URI="&csc;DDUInput"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$DDU_INPUT}"/></ClassAssertion>
+	<ObjectPropertyAssertion><ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$DDU_INPUT}"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/></ObjectPropertyAssertion>
 
 	<xsl:choose>
 	  <!-- TF -->
@@ -335,13 +340,9 @@
 	      <xsl:variable name="PADDED_SP_INSTANCE" select="format-number(SectorProcessor/@id,'00')"/>
 	      <ObjectPropertyAssertion>
 		<ObjectProperty URI="&csc;receivesTriggerFrom"/>
-		<Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/>
+		<Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$DDU_INPUT}"/>
 		<Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}"/>
 	      </ObjectPropertyAssertion>
-	      <DataPropertyAssertion>
-		<DataProperty URI="&csc;hasDDUInput"/><Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}"/>
-		<Constant datatypeURI="&xsd;integer"><xsl:value-of select="$DDU_INPUT"/></Constant>
-	      </DataPropertyAssertion>
 
 	      <xsl:for-each select="SectorProcessor/PeripheralCrate">
 		<xsl:variable name="PADDED_VME_NUMBER" select="format-number(@VMEcrate,'00')"/>
@@ -359,13 +360,9 @@
 	    <xsl:if test="document(document('ontology_template.xml')//templ:PSidePCrates/@source)//CSC[@label=$UNPADDED_CHAMBER] | document(document('ontology_template.xml')//templ:MSidePCrates/@source)//CSC[@label=$UNPADDED_CHAMBER]">
 	      <ObjectPropertyAssertion>
 		<ObjectProperty URI="&csc;receivesDataFrom"/>
-		<Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/>
+		<Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$DDU_INPUT}"/>
 		<Individual URI="&csc;ME{Chamber/@endcap}{Chamber/@station}/{Chamber/@type}/{Chamber/@number}/DMB"/>
 	      </ObjectPropertyAssertion>
-	      <DataPropertyAssertion>
-		<DataProperty URI="&csc;hasDDUInput"/><Individual URI="&csc;ME{Chamber/@endcap}{Chamber/@station}/{Chamber/@type}/{Chamber/@number}/DMB"/>
-		<Constant datatypeURI="&xsd;integer"><xsl:value-of select="$DDU_INPUT"/></Constant>
-	      </DataPropertyAssertion>
 	    </xsl:if>
 	  </xsl:otherwise>
 	</xsl:choose>
@@ -438,9 +435,6 @@
 	  <ObjectProperty URI="&csc;getsLVFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/DMB"/><Individual URI="&csc;{$PADDED_VME_NAME}"/>
 	</ObjectPropertyAssertion>
 	<ObjectPropertyAssertion>
-	  <ObjectProperty URI="&csc;receivesDataFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/ALCT"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}"/>
-	</ObjectPropertyAssertion>
-	<ObjectPropertyAssertion>
 	  <ObjectProperty URI="&csc;receivesDataFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/RAT"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/ALCT"/>
 	</ObjectPropertyAssertion>
 	<ObjectPropertyAssertion>
@@ -449,9 +443,9 @@
 	<ObjectPropertyAssertion>
 	  <ObjectProperty URI="&csc;receivesDataFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/DMB"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/TMB"/>
 	</ObjectPropertyAssertion>
-	<ObjectPropertyAssertion>
-	  <ObjectProperty URI="&csc;receivesTriggerFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/ALCT"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}"/>
-	</ObjectPropertyAssertion>
+<!-- 	<ObjectPropertyAssertion> -->
+<!-- 	  <ObjectProperty URI="&csc;receivesTriggerFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/ALCT"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}"/> -->
+<!-- 	</ObjectPropertyAssertion> -->
 	<ObjectPropertyAssertion>
 	  <ObjectProperty URI="&csc;receivesTriggerFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/RAT"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/ALCT"/>
 	</ObjectPropertyAssertion>
@@ -461,8 +455,29 @@
 	<ObjectPropertyAssertion>
 	  <ObjectProperty URI="&csc;receivesTriggerFrom"/><Individual URI="&csc;{$PADDED_VME_NAME}/MPC"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/TMB"/>
 	</ObjectPropertyAssertion>
+
+	<!-- AFEB -->
+	<xsl:for-each select="TMB/ALCT/AnodeChannel">
+	  <Declaration><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{@afeb_number}"/></Declaration>
+	  <ClassAssertion><Class URI="&csc;AFEB"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{@afeb_number}"/></ClassAssertion>
+	  <DataPropertyAssertion>
+	    <DataProperty URI="&csc;hasInstance"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{@afeb_number}"/>
+	    <Constant datatypeURI="&xsd;integer"><xsl:value-of select="@afeb_number"/></Constant>
+	  </DataPropertyAssertion>
+	  <ObjectPropertyAssertion>
+	    <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{@afeb_number}"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}"/>
+	  </ObjectPropertyAssertion>
+	  <ObjectPropertyAssertion>
+	    <ObjectProperty URI="&csc;receivesDataFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{@afeb_number}"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}"/>
+	  </ObjectPropertyAssertion>
+	  <ObjectPropertyAssertion>
+	    <ObjectProperty URI="&csc;receivesDataFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/ALCT"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{@afeb_number}"/>
+	  </ObjectPropertyAssertion>
+	  
+	</xsl:for-each>
+
+	<!-- CFEB -->
 	<xsl:for-each select="DAQMB/CFEB">
-	  <!-- CFEB -->
 	  <Declaration><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/CFEB{@cfeb_number}"/></Declaration>
 	  <ClassAssertion><Class URI="&csc;CFEB"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/CFEB{@cfeb_number}"/></ClassAssertion>
 	  <DataPropertyAssertion>

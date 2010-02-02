@@ -77,10 +77,12 @@
   <Declaration><Class URI="&csc;RUI"/></Declaration>
   <Declaration><Class URI="&csc;TFRUI"/></Declaration>
 
+  <Declaration><Class URI="&csc;Channel"/></Declaration>
   <Declaration><Class URI="&csc;Device"/></Declaration>
   <Declaration><Class URI="&csc;DAQDevice"/></Declaration>
   <Declaration><Class URI="&csc;TriggerDevice"/></Declaration>
   <Declaration><Class URI="&csc;DDU"/></Declaration>
+  <Declaration><Class URI="&csc;DDUInput"/></Declaration>
   <Declaration><Class URI="&csc;DCC"/></Declaration>
   <Declaration><Class URI="&csc;Slink"/></Declaration>
   <Declaration><Class URI="&csc;DMB"/></Declaration>
@@ -154,7 +156,6 @@
   <Declaration><DataProperty URI="&csc;hasInstance"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasName"/></Declaration>
   <Declaration><DataProperty URI="&csc;isOn"/></Declaration>
-  <Declaration><DataProperty URI="&csc;hasDDUInput"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasFMM"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasHVChannel"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasPositionInRack"/></Declaration>
@@ -200,8 +201,13 @@
 
   <SubClassOf><Class URI="&csc;RUI"/><Class URI="&csc;Software"/></SubClassOf>
 
+  <!-- Channel -->
+  <SubClassOf><Class URI="&csc;DDUInput"/><Class URI="&csc;Channel"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;Slink"/><Class URI="&csc;Channel"/></SubClassOf>
+
   <!-- Device -->
   <SubClassOf><Class URI="&csc;ALCT"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;AFEB"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;CFEB"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;RAT"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;TMB"/><Class URI="&csc;Device"/></SubClassOf>
