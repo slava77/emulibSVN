@@ -23,6 +23,8 @@ dyn_int majorityUser_stateCounts(string device, dyn_anytype values, // informati
       return emumaj_hvStateCounts(values, all, calcTotal, node, device);
     case "HV_INNER":
       return emumaj_hvStateCounts(values, all, calcTotal, node, device);
+    case "HV_ME11":
+      return emumaj_onOffStandbyErrorFsmStateCounts(values, all, calcTotal, node, device);
     case "HV_Primary":
       return emumaj_onOffStandbyErrorFsmStateCounts(values, all, calcTotal, node, device);
     case "LV":
@@ -38,9 +40,13 @@ dyn_int majorityUser_stateCounts(string device, dyn_anytype values, // informati
     case "DDU":
       return emumaj_onOffErrorNoCommStatusDpCounts(values, all, calcTotal, node, true);
     case "LvForHv_Cr":
-      return emumaj_onOffErrorStatusDpCounts(values, all, calcTotal, node);
+      return emumaj_onOffErrorStatusDpCounts(values, all, calcTotal, node, false);
     case "LvForHv_Ch":
-      return emumaj_onOffErrorStatusDpCounts(values, all, calcTotal, node);
+      return emumaj_onOffErrorStatusDpCounts(values, all, calcTotal, node, false);
+    case "Gas":
+      return emumaj_onOffErrorStatusDpCounts(values, all, calcTotal, node, true);
+    case "Cooling":
+      return emumaj_onOffErrorStatusDpCounts(values, all, calcTotal, node, true);
     default:
       break;
   }
@@ -139,8 +145,10 @@ string majorityUser_nodeTranslation(string node) {
   string type = treeCache_getType(node);
   if ((type == "fwCrb_CSC_LV") || 
       (type == "FwWienerMarathonChannel") || 
+      (type == "FwWienerMarathon") || 
       (type == "FwElmbPSUBranch") ||
-      (type == "HV_PR")) {
+      (type == "HV_PR") ||
+      (type == "FwCaenChannel")) {
     return treeCache_getFsmInternalDp(node);
   } else {
     return treeCache_getFsmDevDp(node);
