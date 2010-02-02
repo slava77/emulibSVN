@@ -135,7 +135,7 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
 // in this case you have to specify makeDynString(".fsm.currentState") in the list of the elements (during the configuration)
 string majorityUser_nodeTranslation(string node) {
   string type = treeCache_getType(node);
-  if ((type == "fwCrb_CSC_LV") || (type == "FwWienerMarathonChannel")) {
+  if ((type == "fwCrb_CSC_LV") || (type == "FwWienerMarathonChannel") || (type == "FwElmbPSUBranch")) {
     return treeCache_getFsmInternalDp(node);
   } else {
     return treeCache_getFsmDevDp(node);
