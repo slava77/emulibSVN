@@ -348,7 +348,7 @@ dyn_int emumaj_onOffErrorStatusDpCounts(dyn_anytype values, int &weight, bool ca
     error = 1;
   }
   
-  return makeDynInt(on, error, noCommunication);
+  return makeDynInt(on, error);
 }
 
 /** value here is ".fsm.currentState" (internal FSM DPE). States are ON and ERROR */

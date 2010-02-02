@@ -23,6 +23,8 @@ dyn_int majorityUser_stateCounts(string device, dyn_anytype values, // informati
       return emumaj_hvStateCounts(values, all, calcTotal, node, device);
     case "HV_INNER":
       return emumaj_hvStateCounts(values, all, calcTotal, node, device);
+    case "HV_Primary":
+      return emumaj_onOffStandbyErrorFsmStateCounts(values, all, calcTotal, node, device);
     case "LV":
       return emumaj_lvStateCounts(values, all, calcTotal, node);
     case "TEMP":
@@ -36,9 +38,9 @@ dyn_int majorityUser_stateCounts(string device, dyn_anytype values, // informati
     case "DDU":
       return emumaj_onOffErrorNoCommStatusDpCounts(values, all, calcTotal, node, true);
     case "LvForHv_Cr":
-      return emumaj_onOffErrorNoCommStatusDpCounts(values, all, calcTotal, node, false);
+      return emumaj_onOffErrorStatusDpCounts(values, all, calcTotal, node);
     case "LvForHv_Ch":
-      return emumaj_onOffErrorNoCommStatusDpCounts(values, all, calcTotal, node, false);
+      return emumaj_onOffErrorStatusDpCounts(values, all, calcTotal, node);
     default:
       break;
   }
@@ -135,7 +137,10 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
 // in this case you have to specify makeDynString(".fsm.currentState") in the list of the elements (during the configuration)
 string majorityUser_nodeTranslation(string node) {
   string type = treeCache_getType(node);
-  if ((type == "fwCrb_CSC_LV") || (type == "FwWienerMarathonChannel") || (type == "FwElmbPSUBranch")) {
+  if ((type == "fwCrb_CSC_LV") || 
+      (type == "FwWienerMarathonChannel") || 
+      (type == "FwElmbPSUBranch") ||
+      (type == "HV_PR")) {
     return treeCache_getFsmInternalDp(node);
   } else {
     return treeCache_getFsmDevDp(node);
