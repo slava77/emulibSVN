@@ -34,8 +34,8 @@ PANEL,-1 -1 944 915 N "_3DFace" 0
 }
 
 void initConstants() {
-  channelDps = dpNames(systemName + \":*HVME11N*\", \"FwCaenChannel\");
-  crateDps = dpNames(systemName + \":*HVME11P*\", \"FwCaenCrateSY1527\");
+  channelDps = dpNames(systemName + \":*HVME11{N/board02,N/board04,N/board06,P/board12,P/board14}*\", \"FwCaenChannel\");
+  crateDps = dpNames(systemName + \":*HVME11*\", \"FwCaenCrateSY1527\");
       
   dynAppend(tableColumns, \"setting\");
   dynAppend(tableColumns, \"setting_timestamp\");
@@ -380,7 +380,7 @@ LANG:1 36 Set this voltage (1) on all channels
 25 2
 "tableOpcUpdates"
 ""
-1 700 42.00000000000004 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 700 10.00000000000004 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 2 0 0 0 0 0
 E E E
@@ -391,7 +391,7 @@ LANG:1 0
 0
 1
 LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
-0  698 40 932 212
+0  698 8 932 180
 "main()
 {
   this.tableMode = TABLE_SELECT_MULTIPLE;
@@ -950,7 +950,7 @@ LANG:1 6 Cancel
 13 38
 "PUSH_BUTTON1"
 ""
-1 700 250 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 700 220 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 38 0 0 0 0 0
 E E E
@@ -961,7 +961,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  698 248 812 272
+0  698 218 812 242
 
 T 
 1
@@ -974,7 +974,7 @@ LANG:1 16 Reset Plus Crate
 21 39
 "spinResetDelay"
 ""
-1 820 220 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 820 190 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 39 0 0 0 0 0
 E E E
@@ -985,7 +985,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  818 218 912 242
+0  818 188 912 212
 0
 
 E
@@ -996,7 +996,7 @@ N 0 10000 1 1500 1 1
 13 40
 "PUSH_BUTTON2"
 ""
-1 820 250 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 820 220 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 40 0 0 0 0 0
 E E E
@@ -1007,7 +1007,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  818 248 932 272
+0  818 218 932 242
 
 T 
 1
@@ -1020,7 +1020,7 @@ LANG:1 17 Reset Minus Crate
 2 42
 "PRIMITIVE_TEXT13"
 ""
-1 690 220 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 690 190 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 42 0 0 0 0 0
 E E E
@@ -1030,8 +1030,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 690 220 809 235
-0 2 2 "0s" 0 0 0 192 0 0  690 220 1
+E E 0 1 1 2 1 E U  0 E 690 190 809 205
+0 2 2 "0s" 0 0 0 192 0 0  690 190 1
 1
 LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0 1
@@ -1067,6 +1067,36 @@ E"main(int button, int state)
   useGenSignalForVSetting = state;
   DebugTN(\"Use Hardware signal to change voltage: \" + useGenSignalForVSetting);
 }" 0
+13 44
+"PUSH_BUTTON6"
+""
+1 700 250 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+44 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  698 248 932 272
+
+T 
+1
+LANG:1 18 Show as plain text
+"main()
+{
+  string text;
+  for (int i=0; i < tableChannels.lineCount(); i++) {
+    text += tableChannels.getLineN(i) + \"\\n\";
+  }
+  
+  ChildPanelOnCentralModal(\"CMS_CSC_UI/util/textEditor.pnl\", \"textEdit_excludedChannels\", 
+                           makeDynString(\"$text:\" + text));
+}" 0
+ E E E
 0
 LAYER, 1 
 1
