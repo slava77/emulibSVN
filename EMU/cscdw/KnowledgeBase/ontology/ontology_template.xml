@@ -17,6 +17,7 @@
 	  xmlns:xsd="&xsd;"
 	  xmlns:csc="&csc;"
 	  xmlns:rdfs="&rdfs;"
+	  xmlns:dc="http://purl.org/dc/elements/1.1/"
 	  xmlns:templ="http://www.cern.ch/cms/csc/owl-template"
 	  URI="http://www.cern.ch/cms/csc.owl">
 
@@ -65,7 +66,7 @@
 
   <Declaration><Class URI="&csc;Software"/></Declaration>
 
-  <Declaration><Class URI="&csc;TriggerSector"/></Declaration>
+<!--   <Declaration><Class URI="&csc;TriggerSector"/></Declaration> -->
   <Declaration><Class URI="&csc;Trigger"/></Declaration>
   <Declaration><Class URI="&csc;DAQ"/></Declaration>
   <Declaration><Class URI="&csc;HV"/></Declaration>
@@ -90,11 +91,14 @@
   <Declaration><Class URI="&csc;ALCT"/></Declaration>
   <Declaration><Class URI="&csc;RAT"/></Declaration>
   <Declaration><Class URI="&csc;TMB"/></Declaration>
+  <Declaration><Class URI="&csc;AFEB"/></Declaration>
   <Declaration><Class URI="&csc;CFEB"/></Declaration>
-  <Declaration><Class URI="&csc;DMB"/></Declaration>
   <Declaration><Class URI="&csc;VCC"/></Declaration>
   <Declaration><Class URI="&csc;CCB"/></Declaration>
   <Declaration><Class URI="&csc;MPC"/></Declaration>
+  <Declaration><Class URI="&csc;Rack"/></Declaration>
+  <Declaration><Class URI="&csc;PCrateRack"/></Declaration>
+
   <Declaration><Class URI="&csc;TTC"/></Declaration>
   <Declaration><Class URI="&csc;LTC"/></Declaration>
 
@@ -102,9 +106,10 @@
   <Declaration><Class URI="&csc;HVMaster"/></Declaration>
   <Declaration><Class URI="&csc;HVDistribution"/></Declaration>
   <Declaration><Class URI="&csc;HVSegment"/></Declaration>
+  <Declaration><Class URI="&csc;HVRack"/></Declaration>
 
   <Declaration><Class URI="&csc;Maraton"/></Declaration>
-  <Declaration><Class URI="&csc;Rack"/></Declaration>
+<!--   <Declaration><Class URI="&csc;LVRack"/></Declaration> -->
 
   <Declaration><Class URI="&csc;GasMixerInputLine"/></Declaration>
   <Declaration><Class URI="&csc;GasRack"/></Declaration>
@@ -112,6 +117,81 @@
 
   <Declaration><Class URI="&csc;RackTurbine"/></Declaration>
   <Declaration><Class URI="&csc;CoolingCircuit"/></Declaration>
+
+<!-- class descriptions -->
+  <EntityAnnotation><Class URI="&csc;LogicalDomain"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A set of items that logically belong together.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;LogicalComponent"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A set of components that logically belong together.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;Local"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An item for local running.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;Global"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An item for global running.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;CSC"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Cathode Strip Chambers, the totality of the endcap muon cathode strip chambers. Naming: ME</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;Endcap"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">The collection of all the endcap muon cathode strip chambers on one side. Naming: ME&lt;e&gt;, e: endcap [+-]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;Station"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">The collection of all the endcap muon cathode strip chambers in one station. Naming: ME&lt;e&gt;&lt;s&gt;, e: endcap [+-], s: station [1..4]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;Ring"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">The collection of all the endcap muon cathode strip chambers in one ring. Naming: ME&lt;e&gt;&lt;s&gt;/&lt;r&gt;, e: endcap [+-], s: station [1..4], r: ring [1..3]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;Chamber"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A cathode strip chamber. Naming: ME&lt;e&gt;&lt;s&gt;/&lt;r&gt;/&lt;c&gt;, e: endcap [+-], s: station [1..4], r: ring [1..3], c: chamber [01..36]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;Layer"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A layer in a cathode strip chamber. Naming: ME&lt;e&gt;&lt;s&gt;/&lt;r&gt;/&lt;c&gt;/&lt;l&gt;, e: endcap [+-], s: station [1..4], r: ring [1..3], c: chamber [01..36], l: layer [1..6]</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;PeripheralCrate"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A peripheral crate (mounted on the periphery of the detector). Naming: VME&lt;e&gt;&lt;s&gt;/&lt;v&gt; or VME&lt;e&gt;&lt;s&gt;_&lt;v&gt;, e: endcap [+-] or [pm], s: station [1..4], v: VME (or sector) number [01..12] or [1..12]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;FEDCrate"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A crate hosting Front End Drivers (DDUs, DCCs). Naming: FEDCrate&lt;n&gt;, n: crate number</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;Computer"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">The alias of a computer.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;/dev/schar"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A simple character device used for reading out a hardware component (e.g. DDU). Naming: /dev/schar&lt;n&gt;, n: device number [1..4]</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;Software"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A software application.</Constant></Annotation></EntityAnnotation>
+
+<!--   <EntityAnnotation><Class URI="&csc;TriggerSector"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A group of chambers (forming a sector) read out by the same Peripheral Crate.</Constant></Annotation></EntityAnnotation> -->
+  <EntityAnnotation><Class URI="&csc;Trigger"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An item for the trigger.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;DAQ"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An item for data acquisition.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;HV"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An item for high voltage supply or monitoring.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;LV"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An item for low voltage supply or monitoring.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;GasSystem"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An item in the gas system.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;LocalDAQ"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An item for local data acquisition.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;GlobalDAQ"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An item for global data acquisition.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;RUI"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Readout Unit Input is a software application reading out the DDU of the same instance. Naming: RUI&lt;i&gt;, i: zero-padded instance number [00..36].</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;TFRUI"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">TrackFinder Readout Unit Input is a software application reading out the TrackFinder DDU. It is the RUI of instance 0. Naming: RUI00</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;Channel"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An input or output channel.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;Device"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A hardware device.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;DAQDevice"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A hardware device for data acquisition.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;TriggerDevice"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A hardware device for the trigger.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;DDU"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Device Dependent Unit (a.k.a. Front End Driver, a VME board). Naming: DDU&lt;n&gt;, n: DDU number [00-36]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;DDUInput"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An input channel to a Device Dependent Unit. Naming: DDU&lt;n&gt;Input&lt;i&gt;, n: DDU number [00-36] or [0-36], i: input channel number [0-14]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;DCC"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Data Concentrator Card (a VME board). Naming: DCC&lt;f&gt;, f: FMM id [750..760]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;Slink"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An output channel from the DCC to the global DAQ. Naming: Slink&lt;f&gt;, f: FMM id [750..760]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;DMB"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">DAQ Motherboard. Naming: ME&lt;e&gt;&lt;s&gt;/&lt;r&gt;/&lt;c&gt;/DMB, e: endcap [+-], s: station [1..4], r: ring [1..3], c: chamber [01..36]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;SectorProcessor"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Sector Processor. Naming: SectorProcessor&lt;n&gt;, n: sector processor number [01..12]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;ALCT"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Anode Local Charged Track. Naming: ME&lt;e&gt;&lt;s&gt;/&lt;r&gt;/&lt;c&gt;/ALCT, e: endcap [+-], s: station [1..4], r: ring [1..3], c: chamber [01..36]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;RAT"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">RPC and ALCT interface card. Naming: ME&lt;e&gt;&lt;s&gt;/&lt;r&gt;/&lt;c&gt;/RAT, e: endcap [+-], s: station [1..4], r: ring [1..3], c: chamber [01..36]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;TMB"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Trigger Motherboard. Naming: ME&lt;e&gt;&lt;s&gt;/&lt;r&gt;/&lt;c&gt;/TMB, e: endcap [+-], s: station [1..4], r: ring [1..3], c: chamber [01..36]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;AFEB"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Anode Front End Board. Naming: ME&lt;e&gt;&lt;s&gt;/&lt;r&gt;/&lt;c&gt;/AFEB&lt;a&gt;, e: endcap [+-], s: station [1..4], r: ring [1..3], c: chamber [01..36], a: AFEB number [1..42]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;CFEB"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Cathode Front End Board. Naming: ME&lt;e&gt;&lt;s&gt;/&lt;r&gt;/&lt;c&gt;/CFEB&lt;n&gt;, e: endcap [+-], s: station [1..4], r: ring [1..3], c: chamber [01..36], n: CFEB number [0..4]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;VCC"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">VME Crate Controller. Naming: VME&lt;e&gt;&lt;s&gt;/&lt;v&gt;/VCC, e: endcap [+-], s: station [1..4], v: VME (or sector) number [01..12]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;CCB"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Clock and Control Board. Naming: VME&lt;e&gt;&lt;s&gt;/&lt;v&gt;/CCB, e: endcap [+-], s: station [1..4], v: VME (or sector) number [01..12]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;MPC"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Muon Port Card. Naming: VME&lt;e&gt;&lt;s&gt;/&lt;v&gt;/MPC, e: endcap [+-], s: station [1..4], v: VME (or sector) number [01..12]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;Rack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Any rack.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;PCrateRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Peropheral crate rack. Naming: Rack&lt;rn&gt;, rn: rack name</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;TTC"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Timing, Trigger and Control</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;LTC"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Local Trigger Control</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;HVPrimary"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">High voltage primary. Naming: HVPrimary&lt;id&gt;, id: id (&lt;hostId&gt;_&lt;port&gt;_&lt;address&gt;)</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;HVMaster"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">High voltage master. Naming: HVMaster&lt;i&gt;, i: id number</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;HVDistribution"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV distribution board. Naming: HVDistribution&lt;i&gt;, i: id number</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;HVSegment"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV segment. Naming: &lt;layer&gt;/HVSegment&lt;s&gt;, layer: full name of layer, s: HV segment [1..5]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;HVRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string"></Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;Maraton"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Maraton low voltage power supply. Naming: Maraton&lt;i&gt;, i: Maraton id [01..38]</Constant></Annotation></EntityAnnotation>
+<!--   <EntityAnnotation><Class URI="&csc;LVRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Low voltage rack.</Constant></Annotation></EntityAnnotation> -->
+
+  <EntityAnnotation><Class URI="&csc;GasMixerInputLine"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Input line to the cas mixer. Naming: GasMixerInputLine&lt;i&gt;, i: input line number (1: CO2, 2: Ar, 3: CF4)</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;GasRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Gas rack. Naming: GasRack&lt;r&gt;, r: gas rack number [61..70]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;GasChannel"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Gas channel from supply gas rack to chambers to return gas rack. Naming: GasRack&lt;r&gt;Channel&lt;c&gt;, r: gas rack number [61..70], c: gas channel number [01..18]</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;RackTurbine"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Cooling turbine for Peripheral Crate Rack. Naming: Rack&lt;rn&gt;Turbine&lt;t&gt;, rn: rack name, t: turbine number [1..2]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;CoolingCircuit"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A cooling circuit. Naming: CoolingCircuit1 ("Racks Circuit") or CoolingCircuit2 ("Endcap Circuit")</Constant></Annotation></EntityAnnotation>
+
 
 <!-- property declarations -->
 
@@ -204,6 +284,7 @@
   <!-- Channel -->
   <SubClassOf><Class URI="&csc;DDUInput"/><Class URI="&csc;Channel"/></SubClassOf>
   <SubClassOf><Class URI="&csc;Slink"/><Class URI="&csc;Channel"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;/dev/schar"/><Class URI="&csc;Channel"/></SubClassOf>
 
   <!-- Device -->
   <SubClassOf><Class URI="&csc;ALCT"/><Class URI="&csc;Device"/></SubClassOf>
@@ -215,6 +296,9 @@
   <SubClassOf><Class URI="&csc;DDU"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;DCC"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;SectorProcessor"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;VCC"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;CCB"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;MPC"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;LTC"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;TTC"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;HVPrimary"/><Class URI="&csc;Device"/></SubClassOf>
@@ -222,10 +306,13 @@
   <SubClassOf><Class URI="&csc;HVDistribution"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;Maraton"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;Rack"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;FEDCrate"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;PeripheralCrate"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;Computer"/><Class URI="&csc;Device"/></SubClassOf>
 
   <!-- Rack -->
   <SubClassOf><Class URI="&csc;HVRack"/><Class URI="&csc;Rack"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;LVRack"/><Class URI="&csc;Rack"/></SubClassOf>
+<!--   <SubClassOf><Class URI="&csc;LVRack"/><Class URI="&csc;Rack"/></SubClassOf> -->
   <SubClassOf><Class URI="&csc;PCrateRack"/><Class URI="&csc;Rack"/></SubClassOf>
  
 
@@ -238,29 +325,29 @@
 
   <!-- LV -->
   <SubClassOf><Class URI="&csc;Maraton"/><Class URI="&csc;LV"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;LVRack"/><Class URI="&csc;LV"/></SubClassOf>
+<!--   <SubClassOf><Class URI="&csc;LVRack"/><Class URI="&csc;LV"/></SubClassOf> -->
 
   <!-- Trigger -->
-  <SubClassOf><Class URI="&csc;SectorProcessor"/><Class URI="&csc;Trigger"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;TriggerSector"/><Class URI="&csc;Trigger"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;SectorProcessor"/><Class URI="&csc;TriggerDevice"/></SubClassOf>
+<!--   <SubClassOf><Class URI="&csc;TriggerSector"/><Class URI="&csc;Trigger"/></SubClassOf> -->
   <SubClassOf><Class URI="&csc;TFRUI"/><Class URI="&csc;Trigger"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;TFDDU"/><Class URI="&csc;Trigger"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;ALCT"/><Class URI="&csc;Trigger"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;RAT"/><Class URI="&csc;Trigger"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;TMB"/><Class URI="&csc;Trigger"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;LTC"/><Class URI="&csc;Trigger"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;TTC"/><Class URI="&csc;Trigger"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;PCrateRack"/><Class URI="&csc;Trigger"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;TFDDU"/><Class URI="&csc;TriggerDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;ALCT"/><Class URI="&csc;TriggerDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;RAT"/><Class URI="&csc;TriggerDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;TMB"/><Class URI="&csc;TriggerDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;LTC"/><Class URI="&csc;TriggerDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;TTC"/><Class URI="&csc;TriggerDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;PCrateRack"/><Class URI="&csc;TriggerDevice"/></SubClassOf>
 
   <!-- DAQ -->
-  <SubClassOf><Class URI="&csc;DDU"/><Class URI="&csc;DAQ"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;DCC"/><Class URI="&csc;DAQ"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;ALCT"/><Class URI="&csc;DAQ"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;CFEB"/><Class URI="&csc;DAQ"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;RAT"/><Class URI="&csc;DAQ"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;TMB"/><Class URI="&csc;DAQ"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;DMB"/><Class URI="&csc;DAQ"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;PCrateRack"/><Class URI="&csc;DAQ"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;DDU"/><Class URI="&csc;DAQDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;DCC"/><Class URI="&csc;DAQDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;ALCT"/><Class URI="&csc;DAQDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;CFEB"/><Class URI="&csc;DAQDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;RAT"/><Class URI="&csc;DAQDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;TMB"/><Class URI="&csc;DAQDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;DMB"/><Class URI="&csc;DAQDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;PCrateRack"/><Class URI="&csc;DAQDevice"/></SubClassOf>
 
   <!-- Local -->
   <SubClassOf><Class URI="&csc;TTC"/><Class URI="&csc;Local"/></SubClassOf>
@@ -291,7 +378,7 @@
 
 
   <!-- LogicalComponent -->
-  <SubClassOf><Class URI="&csc;TriggerSector"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
+<!--   <SubClassOf><Class URI="&csc;TriggerSector"/><Class URI="&csc;LogicalComponent"/></SubClassOf> -->
   <SubClassOf><Class URI="&csc;CSC"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
   <SubClassOf><Class URI="&csc;Endcap"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
   <SubClassOf><Class URI="&csc;Station"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
