@@ -12,6 +12,7 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
     xmlns:templ="http://www.cern.ch/cms/csc/owl-template"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
     version="1.0">
  
   <xsl:output method="xml" encoding="UTF-8" indent="yes"/>
@@ -289,16 +290,21 @@
     <xsl:comment>DDU readout</xsl:comment>
     <xsl:text>&LF;</xsl:text>
     <xsl:for-each select="document($SOURCE)//RUI">
+      <xsl:variable name="RUI_INSTANCE" select="@instance"/>
       <xsl:variable name="PADDED_RUI_INSTANCE" select="format-number(@instance,'00')"/>
 
+      <Declaration><Individual URI="&csc;RUI{$RUI_INSTANCE}"/></Declaration>
       <Declaration><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/></Declaration>
+      <SameIndividuals><Individual URI="&csc;RUI{$RUI_INSTANCE}"/><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/></SameIndividuals>
       <ClassAssertion><Class URI="&csc;RUI"/><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/></ClassAssertion>
       <DataPropertyAssertion>
 	<DataProperty URI="&csc;hasInstance"/><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/>
 	<Constant datatypeURI="&xsd;integer"><xsl:value-of select="@instance"/></Constant>
       </DataPropertyAssertion>
 
+      <Declaration><Individual URI="&csc;DDU{$RUI_INSTANCE}"/></Declaration>
       <Declaration><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/></Declaration>
+      <SameIndividuals><Individual URI="&csc;DDU{$RUI_INSTANCE}"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/></SameIndividuals>
       <ClassAssertion><Class URI="&csc;DDU"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/></ClassAssertion>
       <DataPropertyAssertion>
 	<DataProperty URI="&csc;hasInstance"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/>
@@ -328,8 +334,16 @@
       <!-- DDU inputs -->
       <xsl:for-each select="DDU/input">
 	<xsl:variable name="DDU_INPUT" select="@id"/>
+	<xsl:variable name="PADDED_DDU_INPUT" select="format-number(@id,'00')"/>
 
 	<Declaration><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$DDU_INPUT}"/></Declaration>
+	<Declaration><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$PADDED_DDU_INPUT}"/></Declaration>
+	<Declaration><Individual URI="&csc;DDU{$RUI_INSTANCE}Input{$DDU_INPUT}"/></Declaration>
+	<Declaration><Individual URI="&csc;DDU{$RUI_INSTANCE}Input{$PADDED_DDU_INPUT}"/></Declaration>
+	<SameIndividuals><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$PADDED_DDU_INPUT}"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$DDU_INPUT}"/></SameIndividuals>
+	<SameIndividuals><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$PADDED_DDU_INPUT}"/><Individual URI="&csc;DDU{$RUI_INSTANCE}Input{$DDU_INPUT}"/></SameIndividuals>
+	<SameIndividuals><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$PADDED_DDU_INPUT}"/><Individual URI="&csc;DDU{$RUI_INSTANCE}Input{$PADDED_DDU_INPUT}"/></SameIndividuals>
+
 	<ClassAssertion><Class URI="&csc;DDUInput"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$DDU_INPUT}"/></ClassAssertion>
 	<ObjectPropertyAssertion><ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$DDU_INPUT}"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/></ObjectPropertyAssertion>
 
@@ -458,20 +472,23 @@
 
 	<!-- AFEB -->
 	<xsl:for-each select="TMB/ALCT/AnodeChannel">
+	  <xsl:variable name="PADDED_AFEB_NUMBER" select="format-number(@afeb_number,'00')"/>
+	  <Declaration><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{$PADDED_AFEB_NUMBER}"/></Declaration>
 	  <Declaration><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{@afeb_number}"/></Declaration>
-	  <ClassAssertion><Class URI="&csc;AFEB"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{@afeb_number}"/></ClassAssertion>
+	  <SameIndividuals><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{$PADDED_AFEB_NUMBER}"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{@afeb_number}"/></SameIndividuals>
+	  <ClassAssertion><Class URI="&csc;AFEB"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{$PADDED_AFEB_NUMBER}"/></ClassAssertion>
 	  <DataPropertyAssertion>
-	    <DataProperty URI="&csc;hasInstance"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{@afeb_number}"/>
+	    <DataProperty URI="&csc;hasInstance"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{$PADDED_AFEB_NUMBER}"/>
 	    <Constant datatypeURI="&xsd;integer"><xsl:value-of select="@afeb_number"/></Constant>
 	  </DataPropertyAssertion>
 	  <ObjectPropertyAssertion>
-	    <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{@afeb_number}"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}"/>
+	    <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{$PADDED_AFEB_NUMBER}"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}"/>
 	  </ObjectPropertyAssertion>
 	  <ObjectPropertyAssertion>
-	    <ObjectProperty URI="&csc;receivesDataFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{@afeb_number}"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}"/>
+	    <ObjectProperty URI="&csc;receivesDataFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{$PADDED_AFEB_NUMBER}"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}"/>
 	  </ObjectPropertyAssertion>
 	  <ObjectPropertyAssertion>
-	    <ObjectProperty URI="&csc;receivesDataFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/ALCT"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{@afeb_number}"/>
+	    <ObjectProperty URI="&csc;receivesDataFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/ALCT"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{$PADDED_AFEB_NUMBER}"/>
 	  </ObjectPropertyAssertion>
 	  
 	</xsl:for-each>
@@ -725,6 +742,8 @@
     <Declaration><Individual URI="&csc;CoolingCircuit2"/></Declaration>
     <ClassAssertion><Class URI="&csc;CoolingCircuit"/><Individual URI="&csc;CoolingCircuit1"/></ClassAssertion>
     <ClassAssertion><Class URI="&csc;CoolingCircuit"/><Individual URI="&csc;CoolingCircuit2"/></ClassAssertion>
+<!--     <xsl:call-template name="Annotate"><xsl:with-param name="CLASS">CoolingCircuit</xsl:with-param><xsl:with-param name="INDIVIDUAL">CoolingCircuit1</xsl:with-param></xsl:call-template> -->
+<!--     <xsl:call-template name="Annotate"><xsl:with-param name="CLASS">CoolingCircuit</xsl:with-param><xsl:with-param name="INDIVIDUAL">CoolingCircuit2</xsl:with-param></xsl:call-template> -->
     <DataPropertyAssertion><DataProperty URI="&csc;hasName"/><Individual URI="CoolingCircuit1"/><Constant datatypeURI="&xsd;string">Racks Circuit</Constant></DataPropertyAssertion>
     <DataPropertyAssertion><DataProperty URI="&csc;hasName"/><Individual URI="CoolingCircuit2"/><Constant datatypeURI="&xsd;string">Endcap Circuit</Constant></DataPropertyAssertion>
   </xsl:template>
@@ -750,6 +769,15 @@
 	<ObjectPropertyAssertion><ObjectProperty URI="&csc;cools"/><Individual URI="&csc;CoolingCircuit2"/><Individual URI="&csc;Rack{$RACK_NAME_}"/></ObjectPropertyAssertion>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="Annotate">
+    <!-- Copies the class annotation to the individual  -->
+    <xsl:param name="CLASS"/>
+    <xsl:param name="INDIVIDUAL"/>
+    <EntityAnnotation>
+      <Individual URI="&csc;{$INDIVIDUAL}"/><xsl:copy-of select="document('ontology_template.xml')//owl2xml:EntityAnnotation[substring-after(owl2xml:Class/@URI,'#')=$CLASS]/owl2xml:Annotation"/>
+    </EntityAnnotation>
   </xsl:template>
 
 </xsl:transform>
