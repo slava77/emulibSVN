@@ -32,9 +32,12 @@ void emuui_initSession() {
   
   string user;
   fwAccessControl_getUserName(user);
-  emuui_g_sessionId = "session_" + getHostname() + "_" + user;
-  strreplace(emuui_g_sessionId, " ", "_");
-  strreplace(emuui_g_sessionId, "-", "_");
+  string hostname = getHostname();
+  string sessionId = emuui_makeSessionIdString(hostname, user);
+  if (dynlen(dpNames(sessionId, "CSC_UI_sessionState")) == 0) {
+    sessionId = emuui_makeSessionIdString(hostname, "anyuser");
+  }
+  emuui_g_sessionId = sessionId;
   
   dyn_string sessionDps = dpNames(emuui_g_sessionId, "CSC_UI_sessionState");
   // should never happen, but just in case
@@ -92,11 +95,11 @@ void emuui_applySessionDefaults(string sessionDp, bool forceRewrite = false) {
   dpSetWait(sessionDp + ".hostname", getHostname());
 }
 
-emuui_sessionRegisterActiveTooltip(string refName) {
+void emuui_sessionRegisterActiveTooltip(string refName) {
   dynAppend(emuui_g_activeTooltips, refName);
 }
 
-emuui_sessionKillAllActiveTooltips() {
+void emuui_sessionKillAllActiveTooltips() {
   dyn_string refNames;
   emu_dynAppend(refNames, emuui_g_activeTooltips);
   for (int i=1; i <= dynlen(refNames); i++) {
@@ -108,9 +111,17 @@ bool emuui_isTooltipActive(string refName) {
   return dynContains(emuui_g_activeTooltips, refName);
 }
 
-emuui_tooltipClosed(string refName) {
+void emuui_tooltipClosed(string refName) {
   int index = dynContains(emuui_g_activeTooltips, refName);
   if (index > 0) {
     dynRemove(emuui_g_activeTooltips, index);
   }
+}
+
+string emuui_makeSessionIdString(string hostname, string user) {
+  string sessionId = "session_" + hostname + "_" + user;
+  sessionId = strtolower(sessionId);
+  strreplace(sessionId, " ", "_");
+  strreplace(sessionId, "-", "_");
+  return sessionId;
 }
