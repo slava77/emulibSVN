@@ -87,7 +87,7 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
                                  "HV_ME11:error",
                                  "HV_Primary:error",
                                  "LV:error",
-                                 "TEMP:error",
+                                 "TEMP:alert",
                                  "CRB:error",
                                  "MrtnChannel:error",
                                  "MrtnCrate:error",
