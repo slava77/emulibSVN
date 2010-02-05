@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 373 314 N "_3DFace" 0
+PANEL,-1 -1 335 211 N "_3DFace" 0
 "main()
 {
   // get the names and system numbers of required systems
@@ -69,7 +69,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1.095890410958904 0 1.560283687943263 0 0 1 E 0 0 292 141
+E E 0 1 1 2 1 E 1.095890410958904 0 1.134751773049646 0 0 1 E 0 0 292 141
 25 4
 "tableComputers"
 ""
@@ -84,7 +84,7 @@ LANG:1 0
 0
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
-0  8 8 312 212
+0  8 8 312 152
 EE 1 0 1 2 0 "computer" 18 1 0 "s" 1
 LANG:1 8 Computer
 E
