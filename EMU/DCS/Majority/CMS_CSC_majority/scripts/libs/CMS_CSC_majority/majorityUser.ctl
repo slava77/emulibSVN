@@ -64,74 +64,109 @@ string majorityUser_dpTranslation(string fsmDevDp) {
 // majStates: contains mapping with fulfill status of devices:states
 // mapPercentages: contains mapping with exact percentages (should not be needed normally)
 string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string node) {
-  // majStates and mapPercentages contain a map from device:state to the majority states or to the percentages
 
-  // OFF state  
-  if (((majStates["HV_OUTER:on"] == majority_OFF) || (majStates["HV_OUTER:on"] == majority_TOTALZERO)) &&
-      ((majStates["HV_INNER:on"] == majority_OFF) || (majStates["HV_INNER:on"] == majority_TOTALZERO)) &&
-      ((majStates["HV_OUTER:standby"] == majority_OFF) || (majStates["HV_OUTER:standby"] == majority_TOTALZERO)) &&
-      ((majStates["HV_INNER:standby"] == majority_OFF) || (majStates["HV_INNER:standby"] == majority_TOTALZERO)) &&
-//      ((majStates["LV:on"] == majority_OFF) || (majStates["LV:on"] == majority_TOTALZERO)) &&
-//      ((majStates["TEMP:ok"] == majority_OFF) || (majStates["TEMP:ok"] == majority_TOTALZERO)) &&
-      ((majStates["CRB:on"] == majority_OFF) || (majStates["CRB:on"] == majority_TOTALZERO)) &&
-      ((majStates["MrtnChannel:on"] == majority_OFF) || (majStates["MrtnChannel:on"] == majority_TOTALZERO))) {
+  // OFF state
+  if (emumaj_allOFF(majStates, true,
+                    makeDynString("HV_OUTER:on",
+                                  "HV_OUTER:standby",
+                                  "HV_INNER:on",
+                                  "HV_INNER:standby",
+                                  "HV_ME11:on",
+                                  "HV_ME11:standby",
+                                  "HV_Primary:on",
+                                  "HV_Primary:standby",
+                                  "CRB:on",
+                                  "MrtnChannel:on",
+                                  "MrtnCrate:on"))) {
     return "OFF";
     
-  //ERROR state
-  } else if ((majStates["HV_OUTER:error"] >= majority_ON) || 
-      (majStates["HV_INNER:error"] >= majority_ON) ||
-      (majStates["LV:error"] >= majority_ON) ||
-      (majStates["TEMP:alert"] >= majority_ON) ||
-      (majStates["LV:no_communication"] >= majority_ON) ||
-      (majStates["TEMP:no_communication"] >= majority_ON) ||
-      (majStates["CRB:error"] >= majority_ON) ||
-      (majStates["MrtnChannel:error"] >= majority_ON)) {
+  // ERROR state
+  } else if (emumaj_anyON(majStates,
+                   makeDynString("HV_OUTER:error",
+                                 "HV_INNER:error",
+                                 "HV_ME11:error",
+                                 "HV_Primary:error",
+                                 "LV:error",
+                                 "TEMP:error",
+                                 "CRB:error",
+                                 "MrtnChannel:error",
+                                 "MrtnCrate:error",
+                                 "DDU:error",
+                                 "LvForHv_Cr:error",
+                                 "LvForHv_Ch:error",
+                                 "AtlasPSU_Branch:error",
+                                 "Gas:error",
+                                 "Cooling:error"))) {
     return "ERROR";
     
   // ON state
-  } else if (((majStates["HV_OUTER:on"] >= majority_ON) || (majStates["HV_OUTER:on"] == majority_TOTALZERO)) &&
-             ((majStates["HV_INNER:on"] >= majority_ON) || (majStates["HV_INNER:on"] == majority_TOTALZERO)) &&
-             ((majStates["LV:on"] >= majority_ON) || (majStates["LV:on"] == majority_TOTALZERO)) &&
-             ((majStates["TEMP:ok"] >= majority_ON) || (majStates["TEMP:ok"] == majority_TOTALZERO)) &&
-             ((majStates["CRB:on"] >= majority_ON) || (majStates["CRB:on"] == majority_TOTALZERO)) &&
-             ((majStates["MrtnChannel:on"] >= majority_ON) || (majStates["MrtnChannel:on"] == majority_TOTALZERO))) {    
-      return "ON";
-      
+  } else if (emumaj_allON(majStates, true,
+                   makeDynString("HV_OUTER:on",
+                                 "HV_INNER:on",
+                                 "HV_ME11:on",
+                                 "HV_Primary:on",
+                                 "LV:on",
+                                 "TEMP:ok",
+                                 "CRB:on",
+                                 "MrtnChannel:on",
+                                 "MrtnCrate:on",
+                                 "DDU:on",
+                                 "LvForHv_Cr:on",
+                                 "LvForHv_Ch:on",
+                                 "AtlasPSU_Branch:on",
+                                 "Gas:on",
+                                 "Cooling:on"))) {
+    return "ON";
+
   // OUTER_ON state
-  } else if ((majStates["HV_OUTER:on"] >= majority_ON) &&
-             (majStates["HV_INNER:on"] == majority_OFF) &&
-             ((majStates["LV:on"] >= majority_ON) || (majStates["LV:on"] == majority_TOTALZERO)) &&
-             ((majStates["TEMP:ok"] >= majority_ON) || (majStates["TEMP:ok"] == majority_TOTALZERO)) &&
-             ((majStates["CRB:on"] >= majority_ON) || (majStates["CRB:on"] == majority_TOTALZERO)) &&
-             ((majStates["MrtnChannel:on"] >= majority_ON) || (majStates["MrtnChannel:on"] == majority_TOTALZERO))) {
+  } else if ((majStates["HV_OUTER:on"] >= majority_ON) && // HV_OUTER must exist and be ON
+             ((majStates["HV_INNER:on"] != majority_TOTALZERO) || (majStates["HV_ME11:on"] != majority_TOTALZERO)) && // and at least one of either HV_INNER or HV_ME11 must exist
+             emumaj_allOFF(majStates, true, // but in any case if they exist (HV_INNER or HV_ME11), they must NOT be ON
+                   makeDynString("HV_INNER:on",
+                                 "HV_ME11:on")) &&
+             emumaj_allON(majStates, true,
+                   makeDynString("HV_Primary:on",
+                                 "LV:on",
+                                 "TEMP:ok",
+                                 "CRB:on",
+                                 "MrtnChannel:on",
+                                 "MrtnCrate:on",
+                                 "DDU:on",
+                                 "LvForHv_Cr:on",
+                                 "LvForHv_Ch:on",
+                                 "AtlasPSU_Branch:on",
+                                 "Gas:on",
+                                 "Cooling:on"))){
     return "OUTER_ON";
-    
-  // STANDBY state
-  } else if (((majStates["HV_OUTER:standby"] >= majority_ON) || (majStates["HV_OUTER:standby"] == majority_TOTALZERO)) &&
-             ((majStates["HV_INNER:standby"] >= majority_ON) || (majStates["HV_INNER:standby"] == majority_TOTALZERO)) &&
-             ((majStates["HV_OUTER:on"] == majority_OFF) || (majStates["HV_OUTER:on"] == majority_TOTALZERO)) &&
-             ((majStates["HV_INNER:on"] == majority_OFF) || (majStates["HV_INNER:on"] == majority_TOTALZERO)) &&
-             ((majStates["LV:on"] >= majority_ON) || (majStates["LV:on"] == majority_TOTALZERO)) &&
-             ((majStates["TEMP:ok"] >= majority_ON) || (majStates["TEMP:ok"] == majority_TOTALZERO)) &&
-             ((majStates["CRB:on"] >= majority_ON) || (majStates["CRB:on"] == majority_TOTALZERO)) &&
-             ((majStates["MrtnChannel:on"] >= majority_ON) || (majStates["MrtnChannel:on"] == majority_TOTALZERO))) {
+
+  // STANDBY state    
+  } else if (emumaj_allON(majStates, true,
+                   makeDynString("HV_OUTER:standby",
+                                 "HV_INNER:standby",
+                                 "HV_ME11:standby",
+                                 "HV_Primary:standby",
+                                 "LV:on",
+                                 "TEMP:ok",
+                                 "CRB:on",
+                                 "MrtnChannel:on",
+                                 "MrtnCrate:on",
+                                 "DDU:on",
+                                 "LvForHv_Cr:on",
+                                 "LvForHv_Ch:on",
+                                 "AtlasPSU_Branch:on",
+                                 "Gas:on",
+                                 "Cooling:on")) &&
+             emumaj_allOFF(majStates, true,
+                   makeDynString("HV_OUTER:on",
+                                 "HV_INNER:on",
+                                 "HV_ME11:on",
+                                 "HV_Primary:on"))) {
     return "STANDBY";
     
-  // everything else - NOT-READY
+  // NOT-READY state
   } else {
     return "NOT-READY";
   }
-  
-//      if (    ( majStates["HV_OUTER:error"]   >= majority_ON  ) ) return "ERROR";
-//      else if ( majStates["HV_OUTER:on"]      >= majority_ON    ) return "ON";
-//      else if ( majStates["HV_OUTER:on"]      == majority_MIXED ) return "MIXED";
-//      else                                                       return "OFF";
-// 
-     // example -> if more than the defined percentage of channels are in error then the state is ERROR
-     //            otherwise if more than the defined percentage of channels is on then ON
-     //            otherwise MIXED or OFF
-
-     // for the meaning of majority_ON, majority_MIXED etc. see library majorityLib.ctl or http://lomasett.web.cern.ch/lomasett/treeCache_Majority/
 }
 
 
@@ -193,3 +228,65 @@ dyn_string majorityUser_nodeTranslationToDpes(string dev, string node, bool& use
 
 
 /**/
+
+/** 
+  Parameter majStates is a mapping of "device:state" to majority range (you get this mapping in function majorityUser_calcFsmState).
+  Parameter checkStates is a list of majStates keys to be checked i.e. "deviceName:stateName".
+  This function checks if ALL of the device states in checkStates are 0% - returns true if it's true and false if it's false.
+  If parameter okIfDoesntExist is set to true then each of the device states in checkStates can either not exist or be 0%.
+*/
+bool emumaj_allOFF(mapping majStates, bool okIfDoesntExist, dyn_string checkStates) {
+  for (int i=1; i <= dynlen(checkStates); i++) {
+    string deviceState = checkStates[i];
+    if (majStates[deviceState] != majority_OFF) {
+      if (!okIfDoesntExist) {
+        return false;
+      } else {
+        if (majStates[deviceState] != majority_TOTALZERO) {
+          return false;
+        }
+      }
+    }
+  }
+  
+  return true;
+}
+
+/** 
+  Parameter majStates is a mapping of "device:state" to majority range (you get this mapping in function majorityUser_calcFsmState).
+  Parameter checkStates is a list of majStates keys to be checked i.e. "deviceName:stateName".
+  This function checks if ALL of the device states in checkStates are more than threshold% - returns true if it's true and false if it's false.
+  If parameter okIfDoesntExist is set to true then each of the device states in checkStates can either not exist or be more than threshold%.
+*/
+bool emumaj_allON(mapping majStates, bool okIfDoesntExist, dyn_string checkStates) {
+  for (int i=1; i <= dynlen(checkStates); i++) {
+    string deviceState = checkStates[i];
+    if (majStates[deviceState] < majority_ON) {
+      if (!okIfDoesntExist) {
+        return false;
+      } else {
+        if (majStates[deviceState] != majority_TOTALZERO) {
+          return false;
+        }
+      }
+    }
+  }
+  
+  return true;
+}
+
+/** 
+  Parameter majStates is a mapping of "device:state" to majority range (you get this mapping in function majorityUser_calcFsmState).
+  Parameter checkStates is a list of majStates keys to be checked i.e. "deviceName:stateName".
+  This function checks if ANY of the device states in checkStates are more than threshold% - returns true if it's true and false if it's false.
+*/
+bool emumaj_anyON(mapping majStates, dyn_string checkStates) {
+  for (int i=1; i <= dynlen(checkStates); i++) {
+    string deviceState = checkStates[i];
+    if (majStates[deviceState] >= majority_ON) {
+      return true;
+    }
+  }
+  
+  return false;
+}
