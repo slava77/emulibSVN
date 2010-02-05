@@ -77,7 +77,16 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
                                   "HV_Primary:standby",
                                   "CRB:on",
                                   "MrtnChannel:on",
-                                  "MrtnCrate:on"))) {
+                                  "MrtnCrate:on"),
+                    true) || // at least one of those must exist (but don't care about the devices listed below), if none of those exist - see below.
+      emumaj_allOFF(majStates, true,
+                    makeDynString("LV:on",
+                                  "DDU:on",
+                                  "LvForHv_Cr:on",
+                                  "LvForHv_Ch:on",
+                                  "AtlasPSU_Branch",
+                                  "Gas:on",
+                                  "Cooling:on"))) {
     return "OFF";
     
   // ERROR state
@@ -234,8 +243,11 @@ dyn_string majorityUser_nodeTranslationToDpes(string dev, string node, bool& use
   Parameter checkStates is a list of majStates keys to be checked i.e. "deviceName:stateName".
   This function checks if ALL of the device states in checkStates are 0% - returns true if it's true and false if it's false.
   If parameter okIfDoesntExist is set to true then each of the device states in checkStates can either not exist or be 0%.
+  If parameter atLeastOneMustExist is set to true then it is additionally required that at least one of the device states must exist for fuction to return true.
+  atLeastOneMustExist parameter can only be used with okIfDoesntExist = true.
 */
-bool emumaj_allOFF(mapping majStates, bool okIfDoesntExist, dyn_string checkStates) {
+bool emumaj_allOFF(mapping majStates, bool okIfDoesntExist, dyn_string checkStates, bool atLeastOneMustExist = false) {
+  int notExistsCounter = 0;
   for (int i=1; i <= dynlen(checkStates); i++) {
     string deviceState = checkStates[i];
     if (majStates[deviceState] != majority_OFF) {
@@ -244,10 +256,16 @@ bool emumaj_allOFF(mapping majStates, bool okIfDoesntExist, dyn_string checkStat
       } else {
         if (majStates[deviceState] != majority_TOTALZERO) {
           return false;
+        } else if (atLeastOneMustExist) {
+          notExistsCounter++;
         }
       }
     }
   }
+
+  if (okIfDoesntExist && atLeastOneMustExist && (notExistsCounter == 0)) {
+    return false;
+  }  
   
   return true;
 }
