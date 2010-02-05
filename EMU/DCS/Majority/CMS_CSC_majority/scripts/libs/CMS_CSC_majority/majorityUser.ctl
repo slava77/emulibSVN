@@ -79,14 +79,26 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
                                   "MrtnChannel:on",
                                   "MrtnCrate:on"),
                     true) || // at least one of those must exist (but don't care about the devices listed below), if none of those exist - see below.
-      emumaj_allOFF(majStates, true,
+      (!emumaj_anyExist(majStates,
+                    makeDynString("HV_OUTER:on",
+                                  "HV_OUTER:standby",
+                                  "HV_INNER:on",
+                                  "HV_INNER:standby",
+                                  "HV_ME11:on",
+                                  "HV_ME11:standby",
+                                  "HV_Primary:on",
+                                  "HV_Primary:standby",
+                                  "CRB:on",
+                                  "MrtnChannel:on",
+                                  "MrtnCrate:on")) &&
+       emumaj_allOFF(majStates, true,
                     makeDynString("LV:on",
                                   "DDU:on",
                                   "LvForHv_Cr:on",
                                   "LvForHv_Ch:on",
                                   "AtlasPSU_Branch:on",
                                   "Gas:on",
-                                  "Cooling:on"))) {
+                                  "Cooling:on")))) {
     return "OFF";
     
   // ERROR state
@@ -263,7 +275,7 @@ bool emumaj_allOFF(mapping majStates, bool okIfDoesntExist, dyn_string checkStat
     }
   }
 
-  if (okIfDoesntExist && atLeastOneMustExist && (notExistsCounter == 0)) {
+  if (okIfDoesntExist && atLeastOneMustExist && (notExistsCounter >= dynlen(checkStates))) {
     return false;
   }  
   
@@ -291,6 +303,22 @@ bool emumaj_allON(mapping majStates, bool okIfDoesntExist, dyn_string checkState
   }
   
   return true;
+}
+
+/** 
+  Parameter majStates is a mapping of "device:state" to majority range (you get this mapping in function majorityUser_calcFsmState).
+  Parameter checkStates is a list of majStates keys to be checked i.e. "deviceName:stateName".
+  This function checks if ANY of the device states in checkStates exist i.e. != majority_TOTALZERO.
+*/
+bool emumaj_anyExist(mapping majStates, dyn_string checkStates) {
+  for (int i=1; i <= dynlen(checkStates); i++) {
+    string deviceState = checkStates[i];
+    if (majStates[deviceState] != majority_TOTALZERO) {
+      return true;
+    }
+  }
+  
+  return false;
 }
 
 /** 
