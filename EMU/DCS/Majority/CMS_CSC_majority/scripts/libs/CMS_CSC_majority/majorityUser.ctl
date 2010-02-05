@@ -84,7 +84,7 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
                                   "DDU:on",
                                   "LvForHv_Cr:on",
                                   "LvForHv_Ch:on",
-                                  "AtlasPSU_Branch",
+                                  "AtlasPSU_Branch:on",
                                   "Gas:on",
                                   "Cooling:on"))) {
     return "OFF";
