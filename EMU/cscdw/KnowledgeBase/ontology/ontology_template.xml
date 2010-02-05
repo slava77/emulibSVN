@@ -83,6 +83,7 @@
   <Declaration><Class URI="&csc;DAQDevice"/></Declaration>
   <Declaration><Class URI="&csc;TriggerDevice"/></Declaration>
   <Declaration><Class URI="&csc;DDU"/></Declaration>
+  <Declaration><Class URI="&csc;TFDDU"/></Declaration>
   <Declaration><Class URI="&csc;DDUInput"/></Declaration>
   <Declaration><Class URI="&csc;DCC"/></Declaration>
   <Declaration><Class URI="&csc;Slink"/></Declaration>
@@ -106,7 +107,7 @@
   <Declaration><Class URI="&csc;HVMaster"/></Declaration>
   <Declaration><Class URI="&csc;HVDistribution"/></Declaration>
   <Declaration><Class URI="&csc;HVSegment"/></Declaration>
-  <Declaration><Class URI="&csc;HVRack"/></Declaration>
+<!--   <Declaration><Class URI="&csc;HVRack"/></Declaration> -->
 
   <Declaration><Class URI="&csc;Maraton"/></Declaration>
 <!--   <Declaration><Class URI="&csc;LVRack"/></Declaration> -->
@@ -157,6 +158,7 @@
   <EntityAnnotation><Class URI="&csc;DAQDevice"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A hardware device for data acquisition.</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;TriggerDevice"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A hardware device for the trigger.</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;DDU"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Device Dependent Unit (a.k.a. Front End Driver, a VME board). Naming: DDU&lt;n&gt;, n: DDU number [00-36]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;TFDDU"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Device Dependent Unit (a.k.a. Front End Driver, a VME board) reading Track Finder's Sector Processors' data. Naming: DDU00</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;DDUInput"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An input channel to a Device Dependent Unit. Naming: DDU&lt;n&gt;Input&lt;i&gt;, n: DDU number [00-36] or [0-36], i: input channel number [0-14]</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;DCC"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Data Concentrator Card (a VME board). Naming: DCC&lt;f&gt;, f: FMM id [750..760]</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;Slink"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An output channel from the DCC to the global DAQ. Naming: Slink&lt;f&gt;, f: FMM id [750..760]</Constant></Annotation></EntityAnnotation>
@@ -171,7 +173,7 @@
   <EntityAnnotation><Class URI="&csc;CCB"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Clock and Control Board. Naming: VME&lt;e&gt;&lt;s&gt;/&lt;v&gt;/CCB, e: endcap [+-], s: station [1..4], v: VME (or sector) number [01..12]</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;MPC"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Muon Port Card. Naming: VME&lt;e&gt;&lt;s&gt;/&lt;v&gt;/MPC, e: endcap [+-], s: station [1..4], v: VME (or sector) number [01..12]</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;Rack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Any rack.</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><Class URI="&csc;PCrateRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Peropheral crate rack. Naming: Rack&lt;rn&gt;, rn: rack name</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;PCrateRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Peripheral crate rack. Naming: Rack&lt;rn&gt;, rn: rack name</Constant></Annotation></EntityAnnotation>
 
   <EntityAnnotation><Class URI="&csc;TTC"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Timing, Trigger and Control</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;LTC"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Local Trigger Control</Constant></Annotation></EntityAnnotation>
@@ -180,12 +182,12 @@
   <EntityAnnotation><Class URI="&csc;HVMaster"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">High voltage master. Naming: HVMaster&lt;i&gt;, i: id number</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;HVDistribution"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV distribution board. Naming: HVDistribution&lt;i&gt;, i: id number</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;HVSegment"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV segment. Naming: &lt;layer&gt;/HVSegment&lt;s&gt;, layer: full name of layer, s: HV segment [1..5]</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><Class URI="&csc;HVRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string"></Constant></Annotation></EntityAnnotation>
+<!--   <EntityAnnotation><Class URI="&csc;HVRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string"></Constant></Annotation></EntityAnnotation> -->
 
   <EntityAnnotation><Class URI="&csc;Maraton"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Maraton low voltage power supply. Naming: Maraton&lt;i&gt;, i: Maraton id [01..38]</Constant></Annotation></EntityAnnotation>
 <!--   <EntityAnnotation><Class URI="&csc;LVRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Low voltage rack.</Constant></Annotation></EntityAnnotation> -->
 
-  <EntityAnnotation><Class URI="&csc;GasMixerInputLine"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Input line to the cas mixer. Naming: GasMixerInputLine&lt;i&gt;, i: input line number (1: CO2, 2: Ar, 3: CF4)</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;GasMixerInputLine"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Input line to the gas mixer. Naming: GasMixerInputLine&lt;i&gt;, i: input line number (1: CO2, 2: Ar, 3: CF4)</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;GasRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Gas rack. Naming: GasRack&lt;r&gt;, r: gas rack number [61..70]</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;GasChannel"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Gas channel from supply gas rack to chambers to return gas rack. Naming: GasRack&lt;r&gt;Channel&lt;c&gt;, r: gas rack number [61..70], c: gas channel number [01..18]</Constant></Annotation></EntityAnnotation>
 
@@ -216,6 +218,8 @@
   <Declaration><ObjectProperty URI="&csc;controlPath"/></Declaration>
   <Declaration><ObjectProperty URI="&csc;isControlledBy"/></Declaration>
   <Declaration><ObjectProperty URI="&csc;controls"/></Declaration>
+
+  <Declaration><ObjectProperty URI="&csc;monitorPath"/></Declaration>
   <Declaration><ObjectProperty URI="&csc;isMonitoredBy"/></Declaration>
   <Declaration><ObjectProperty URI="&csc;monitors"/></Declaration>
 
@@ -233,15 +237,66 @@
   <Declaration><ObjectProperty URI="&csc;cools"/></Declaration>
   <Declaration><ObjectProperty URI="&csc;isCooledBy"/></Declaration>
 
-  <Declaration><DataProperty URI="&csc;hasInstance"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasName"/></Declaration>
-  <Declaration><DataProperty URI="&csc;isOn"/></Declaration>
+  <Declaration><DataProperty URI="&csc;isInConfiguration"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasFMM"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasHVChannel"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasPositionInRack"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasELMBId"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasDCSCrateNumber"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasGas"/></Declaration>
+  
+
+<!-- property descriptions -->
+
+  <EntityAnnotation><ObjectProperty URI="&csc;triggerPath"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'triggerPath' B, then A sends or receives trigger to/from B directly or indirectly.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;receivesTriggerFrom"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'receivesTriggerFrom' B, then A receives trigger from B directly or indirectly. It is a transitive relation. Its inverse is 'sendsTriggerTo'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;sendsTriggerTo"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'sendsTriggerTo' B, then A sends trigger to B directly or indirectly. It is a transitive relation. Its inverse is 'receivesTriggerFrom'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;receivesL1AFrom"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'receivesL1AFrom' B, then A receives L1A from B directly or indirectly. It is a transitive relation. Its inverse is 'sendsL1ATo'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;sendsL1ATo"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'sendsL1ATo' B, then A sends L1A to B directly or indirectly. It is a transitive relation. Its inverse is 'receivesL1AFrom'.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><ObjectProperty URI="&csc;dataPath"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'dataPath' B, then A sends or receives data to/from B directly or indirectly.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;receivesDataFrom"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'receivesDataFrom' B, then A receives data from B directly or indirectly. It is a transitive relation. Its inverse is 'sendsDataTo'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;sendsDataTo"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'sendsDataTo' B, then A sends data to B directly or indirectly. It is a transitive relation. Its inverse is 'receivesDataFrom'.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><ObjectProperty URI="&csc;locationPath"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'locationPath' B, then A contains, or is in, B directly or indirectly.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;isIn"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'isIn' B, then A is in B directly or indirectly. It is a transitive relation. Its inverse is 'contains'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;contains"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'contains' B, then A contains B directly or indirectly. It is a transitive relation. Its inverse is 'isIn'.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><ObjectProperty URI="&csc;logicalComposition"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'logicalComposition' B, then A constists of, or is part of, B directly or indirectly.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;isPartOf"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'isPartOf' B, then A is a part of B directly or indirectly. It is a transitive relation. Its inverse is 'consistsOf'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;consistsOf"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'consistsOf' B, then A consists exclusively or inclusively of B directly or indirectly. It is a transitive relation. Its inverse is 'isPartOf'.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><ObjectProperty URI="&csc;controlPath"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'controlPath' B, then A controls, or is controlled by, B directly or indirectly.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;isControlledBy"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'isControlledBy' B, then A is controlled by B directly or indirectly. It is a transitive relation. Its inverse is 'controls'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;controls"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'controls' B, then A controls B directly or indirectly. It is a transitive relation. Its inverse is 'isControlledBy'.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><ObjectProperty URI="&csc;monitorPath"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'monitorPath' B, then A monitors, or is monitored by, B directly or indirectly.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;isMonitoredBy"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'isMonitoredBy' B, then A is monitored by B directly or indirectly. It is a transitive relation. Its inverse is 'monitors'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;monitors"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'monitors' B, then A monitors B directly or indirectly. It is a transitive relation. Its inverse is 'isMonitoredBy'.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><ObjectProperty URI="&csc;powerSupplyPath"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'powerSupplyPath' B, then A delivers or gets high or low voltage to/from B directly or indirectly.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;deliversHVTo"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'deliversHVTo' B, then A delivers high voltage to B directly or indirectly. It is a transitive relation. Its inverse is 'getsHVFrom'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;getsHVFrom"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'getsHVFrom' B, then A gets high voltage from B directly or indirectly. It is a transitive relation. Its inverse is 'deliversHVTo'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;deliversLVTo"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'deliversLVTo' B, then A delivers low voltage to B directly or indirectly. It is a transitive relation. Its inverse is 'getsLVFrom'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;getsLVFrom"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'getsLVFrom' B, then A gets low voltage B directly or indirectly. It is a transitive relation. Its inverse is 'deliversLVTo'.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><ObjectProperty URI="&csc;gasSupplyPath"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'gasSupplyPath' B, then A delivers or gets gas to/from B directly or indirectly.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;deliversGasTo"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'deliversGasTo' B, then A delivers gas to B directly or indirectly. It is a transitive relation. Its inverse is 'getsGasFrom'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;getsGasFrom"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'getsGasFrom' B, then A gets gas from B directly or indirectly. It is a transitive relation. Its inverse is 'deliversGasTo'.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><ObjectProperty URI="&csc;coolingPath"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'coolingPath' B, then A cools, or is cooled by, B directly or indirectly.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;cools"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'cools' B, then A cools B directly or indirectly. It is a transitive relation. Its inverse is 'isCooledBy'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;isCooledBy"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'isCooledBy' B, then A is cooled by B directly or indirectly. It is a transitive relation. Its inverse is 'cools'.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><DataProperty URI="&csc;hasName"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'hasName' B, then A is also known as B.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;isInConfiguration"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'isInConfiguration' is TRUE, then A is part of the configuration, otherwise it is excluded.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;hasFMM"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'hasFMM' B, then A has FMM (Fast Merging Module) number B assigned to it.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;hasHVChannel"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If a HV segment 'hasHVChannel' C, then it is supplied HV through channel number C.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;hasPositionInRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A peripheral crate 'hasPositionInRack' 'top' or 'bottom'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;hasELMBId"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If a peripheral crate 'hasELMBId' I, its ELMB id number is I.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;hasDCSCrateNumber"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If a peripheral crate 'hasDCSCrateNumber' N, it is known by DCS by number N.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;hasGas"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'hasGas' B, then A has gas B (e.g., CO2) in it.</Constant></Annotation></EntityAnnotation>
   
 
 
@@ -311,7 +366,7 @@
   <SubClassOf><Class URI="&csc;Computer"/><Class URI="&csc;Device"/></SubClassOf>
 
   <!-- Rack -->
-  <SubClassOf><Class URI="&csc;HVRack"/><Class URI="&csc;Rack"/></SubClassOf>
+<!--   <SubClassOf><Class URI="&csc;HVRack"/><Class URI="&csc;Rack"/></SubClassOf> -->
 <!--   <SubClassOf><Class URI="&csc;LVRack"/><Class URI="&csc;Rack"/></SubClassOf> -->
   <SubClassOf><Class URI="&csc;PCrateRack"/><Class URI="&csc;Rack"/></SubClassOf>
  
@@ -321,7 +376,7 @@
   <SubClassOf><Class URI="&csc;HVMaster"/><Class URI="&csc;HV"/></SubClassOf>
   <SubClassOf><Class URI="&csc;HVDistribution"/><Class URI="&csc;HV"/></SubClassOf>
   <SubClassOf><Class URI="&csc;HVSegment"/><Class URI="&csc;HV"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;HVRack"/><Class URI="&csc;HV"/></SubClassOf>
+<!--   <SubClassOf><Class URI="&csc;HVRack"/><Class URI="&csc;HV"/></SubClassOf> -->
 
   <!-- LV -->
   <SubClassOf><Class URI="&csc;Maraton"/><Class URI="&csc;LV"/></SubClassOf>
@@ -409,8 +464,9 @@
 
   <SubObjectPropertyOf><ObjectProperty URI="&csc;isControlledBy"/><ObjectProperty URI="&csc;controlPath"/></SubObjectPropertyOf>
   <SubObjectPropertyOf><ObjectProperty URI="&csc;controls"/><ObjectProperty URI="&csc;controlPath"/></SubObjectPropertyOf>
-  <SubObjectPropertyOf><ObjectProperty URI="&csc;isMonitoredBy"/><ObjectProperty URI="&csc;controlPath"/></SubObjectPropertyOf>
-  <SubObjectPropertyOf><ObjectProperty URI="&csc;monitors"/><ObjectProperty URI="&csc;controlPath"/></SubObjectPropertyOf>
+
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;isMonitoredBy"/><ObjectProperty URI="&csc;monitorPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;monitors"/><ObjectProperty URI="&csc;monitorPath"/></SubObjectPropertyOf>
 
   <SubObjectPropertyOf><ObjectProperty URI="&csc;deliversHVTo"/><ObjectProperty URI="&csc;powerSupplyPath"/></SubObjectPropertyOf>
   <SubObjectPropertyOf><ObjectProperty URI="&csc;getsHVFrom"/><ObjectProperty URI="&csc;powerSupplyPath"/></SubObjectPropertyOf>
@@ -459,15 +515,14 @@
 
 
   <!-- DataPropertyRange -->
-  <DataPropertyRange><DataProperty URI="&csc;hasInstance"/><Datatype URI="&xsd;integer"/></DataPropertyRange>
   <DataPropertyRange><DataProperty URI="&csc;hasName"/><Datatype URI="&xsd;string"/></DataPropertyRange>
-  <DataPropertyRange><DataProperty URI="&csc;isOn"/><Datatype URI="&xsd;boolean"/></DataPropertyRange>
+  <DataPropertyRange><DataProperty URI="&csc;isInConfiguration"/><Datatype URI="&xsd;boolean"/></DataPropertyRange>
   <DataPropertyRange><DataProperty URI="&csc;hasFMM"/><Datatype URI="&xsd;integer"/></DataPropertyRange>
   <DataPropertyRange><DataProperty URI="&csc;hasGas"/><Datatype URI="&xsd;string"/></DataPropertyRange>
 
 
   <!-- FunctionalDataProperty -->
-  <FunctionalDataProperty><DataProperty URI="&csc;isOn"/></FunctionalDataProperty>
+  <FunctionalDataProperty><DataProperty URI="&csc;isInConfiguration"/></FunctionalDataProperty>
 
 
 </Ontology>
