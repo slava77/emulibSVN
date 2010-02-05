@@ -1,7 +1,7 @@
 <component>
 <name>CMS_CSC_majority</name>
 <version>2.15.1</version>
-<date>2010/02/02</date>
+<date>2010/02/05</date>
 <required>majority_treeCache=1.2.11</required>
 <dontRestartProject>yes</dontRestartProject>
 <init>./scripts/CMS_CSC_majority/CMS_CSC_majority.init</init>
