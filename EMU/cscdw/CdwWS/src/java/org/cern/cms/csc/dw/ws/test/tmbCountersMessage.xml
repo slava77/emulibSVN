@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://ws.dw.csc.cms.cern.org/" xmlns:ser="http://www.cern.ch/cms/csc/dw/service" xmlns:mod="http://www.cern.ch/cms/csc/dw/model">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ws:input>
+         <factCollection>
+            <ser:serviceInstructions async="false" strict="true" persist="true"/>
+            <mod:source>FED</mod:source>
+            <!--mod:requestId>?</mod:requestId-->
+            <mod:slidingTmbTriggerCounterFact>
+               <mod:time>2010-01-01T01:01:01</mod:time>
+               <mod:component_id>ME-1/1/01</mod:component_id>
+               <mod:severity>INFO</mod:severity>
+               <mod:alctCount>123</mod:alctCount>
+               <mod:clctCount>234</mod:clctCount>
+               <mod:lctCount>345</mod:lctCount>
+               <mod:l1aCount>456</mod:l1aCount>
+               <mod:windowWidth>567</mod:windowWidth>
+            </mod:slidingTmbTriggerCounterFact>
+            <mod:cumulativeTmbTriggerCounterFact>
+               <mod:time>2010-01-02T01:01:02</mod:time>
+               <mod:component_id>ME+1/1/02</mod:component_id>
+               <mod:severity>INFO</mod:severity>
+               <mod:alctCount>987</mod:alctCount>
+               <mod:clctCount>876</mod:clctCount>
+               <mod:lctCount>765</mod:lctCount>
+               <mod:l1aCount>654</mod:l1aCount>
+            </mod:cumulativeTmbTriggerCounterFact>
+            <mod:slidingTmbTriggerCounterFact>
+               <mod:time>2010-01-01T01:01:01</mod:time>
+               <mod:component_id>ME-1/1/03</mod:component_id>
+               <mod:severity>INFO</mod:severity>
+               <mod:alctCount>123</mod:alctCount>
+               <mod:clctCount>234</mod:clctCount>
+               <mod:lctCount>345</mod:lctCount>
+               <mod:l1aCount>456</mod:l1aCount>
+               <mod:windowWidth>567</mod:windowWidth>
+            </mod:slidingTmbTriggerCounterFact>
+            <mod:cumulativeTmbTriggerCounterFact>
+               <mod:time>2010-01-02T01:01:02</mod:time>
+               <mod:component_id>ME+1/1/04</mod:component_id>
+               <mod:severity>INFO</mod:severity>
+               <mod:alctCount>987</mod:alctCount>
+               <mod:clctCount>876</mod:clctCount>
+               <mod:lctCount>765</mod:lctCount>
+               <mod:l1aCount>654</mod:l1aCount>
+            </mod:cumulativeTmbTriggerCounterFact>
+        </factCollection>
+      </ws:input>
+   </soapenv:Body>
+</soapenv:Envelope>
