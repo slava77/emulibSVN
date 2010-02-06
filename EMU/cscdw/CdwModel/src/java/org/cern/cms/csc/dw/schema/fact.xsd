@@ -9,16 +9,21 @@
 	xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
 	xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
     xmlns:ont="http://www.cern.ch/cms/csc/dw/ontology"
+    xmlns:ser="http://www.cern.ch/cms/csc/dw/service"
+    xmlns:ccp="http://hyperjaxb3.jvnet.org/ejb/schemas/customcode"
     xsi:schemaLocation="
         http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
         http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
         http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
-	jaxb:extensionBindingPrefixes="orm hj"
+	jaxb:extensionBindingPrefixes="orm hj ccp"
 	jaxb:version="2.0">
 
     <xsd:include schemaLocation="factClassifiers.xsd"/>
     <xsd:include schemaLocation="tmbTriggerCounterFact.xsd"/>
+    <xsd:include schemaLocation="dqmFact.xsd"/>
+
     <xsd:import namespace="http://www.cern.ch/cms/csc/dw/ontology" schemaLocation="ontology.xsd"/>
+    <xsd:import namespace="http://www.cern.ch/cms/csc/dw/service" schemaLocation="service.xsd"/>
 
     <xsd:element name="factCollection" type="tns:factCollectionType"/>
     <xsd:element name="fact" type="tns:factType"/>
@@ -38,6 +43,14 @@
             </xsd:appinfo>
         </xsd:annotation>
         <xsd:sequence>
+            <xsd:element ref="ser:serviceInstructions" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+                        <hj:ignored/>
+                        <jaxb:property name="serviceInstructions"/>
+					</xsd:appinfo>
+				</xsd:annotation>
+            </xsd:element>
             <xsd:element name="source" type="tns:sourceType">
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -101,6 +114,16 @@
                             <orm:column name="FCT_COMPONENT_ID"/>
                         </hj:basic>
                         <jaxb:property name="componentId"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="run" type="xsd:long" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="FCT_RUN"/>
+                        </hj:basic>
+                        <jaxb:property name="run"/>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>

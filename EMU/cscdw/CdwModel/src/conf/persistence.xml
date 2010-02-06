@@ -17,6 +17,13 @@
   <persistence-unit name="CdwUtilPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <class>org.cern.cms.csc.dw.model.fact.CumulativeTmbTriggerCounterFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DqmCscAfebFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DqmCscCfebFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DqmCscFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DqmCscHvSegmentFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DqmDduFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DqmDduInputFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DqmEmuFact</class>
     <class>org.cern.cms.csc.dw.model.fact.Fact</class>
     <class>org.cern.cms.csc.dw.model.fact.FactCollection</class>
     <class>org.cern.cms.csc.dw.model.fact.FactCollectionFactsItem</class>
@@ -32,19 +39,14 @@
       <property name="hibernate.hbm2ddl.auto" value="update"/>
       <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect"/>
       <property name="hibernate.connection.driver_class" value="oracle.jdbc.OracleDriver"/>
-      <!--
-
-      <property name="hibernate.connection.username" value="cms_csc_dw"/>
+      <!--property name="hibernate.connection.username" value="cms_csc_dw"/>
       <property name="hibernate.connection.password" value="dw"/>
-      <property name="hibernate.connection.url" value="jdbc:oracle:thin:@localhost:1521:XE"/>
-
+      <property name="hibernate.connection.url" value="jdbc:oracle:thin:@localhost:1521:XE"/-->
       <property name="hibernate.connection.username" value="cms_valdas"/>
       <property name="hibernate.connection.password" value="cms08valdas"/>
-
-      -->
       <property name="hibernate.connection.url" value="jdbc:oracle:thin:@oradev10.cern.ch:10520:D10"/>
-      <property name="hibernate.connection.username" value="CMS_MUON_ENDCAP_EVKA"/>
-      <property name="hibernate.connection.password" value="cms08evka"/>
+      <!--property name="hibernate.connection.username" value="CMS_MUON_ENDCAP_EVKA"/>
+      <property name="hibernate.connection.password" value="cms08evka"/-->
       <property name="hibernate.max_fetch_depth" value="3"/>
       <property name="hibernate.cache.provider_class" value="net.sf.ehcache.hibernate.NoCacheProvider"/>
       <property name="net.sf.ehcache.configurationResourceName" value="ehcache.xml"/>

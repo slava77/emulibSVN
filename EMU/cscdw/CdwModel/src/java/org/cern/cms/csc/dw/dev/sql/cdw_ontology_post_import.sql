@@ -6,7 +6,7 @@ begin
     cdw_utility.enable_foreign_key('CDW_FACTS', 'FCT_CMP_ID');
 
     -- Takes quite a long time, needs optimisation
-    cdw_ontology.update_graph_links;
+    -- cdw_ontology.update_graph_links;
 
 end;
 /

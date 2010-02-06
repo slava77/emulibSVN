@@ -41,7 +41,12 @@ public class ComponentImporter {
     static Logger log = Logger.getLogger(ComponentImporter.class.getName());
     private static final String OWL_URI = "http://www.w3.org/2006/12/owl2-xml#";
     private static final String DEFAULT_OWL_FILE = "../KnowledgeBase/ontology/csc-ontology.owl";
+    private static final String [] uriNames = new String [] { "URI", "annotationURI", "datatypeURI" };
     
+    enum AnnotationType {
+        DESCRIPTION
+    };
+
     private Map<String, Component> components = new HashMap<String, Component>();
     private Map<String, ComponentClass> componentClasses = new HashMap<String, ComponentClass>();
     private Map<String, ComponentLinkClass> componentLinkClasses = new HashMap<String, ComponentLinkClass>();
@@ -128,6 +133,8 @@ public class ComponentImporter {
         em.flush();
 
         processContentHandler(parser, filename, new SameIndividualsHandler());
+
+        processContentHandler(parser, filename, new AnnotationHandler());
 
     }
 
@@ -219,6 +226,8 @@ public class ComponentImporter {
     private abstract class OntologyHandler extends DefaultHandler {
 
         private String blockName = null;
+        private String localName = null;
+        private String uriName = null;
         private Set<String> blockNames;
 
         public OntologyHandler(String... blockNames) {
@@ -231,6 +240,9 @@ public class ComponentImporter {
         public void blockElement(String blockName, String localName, String name) {
         }
 
+        public void elementText(String blockName, String localName, String name, String text) {
+        }
+        
         public void blockStart(String blockName) {
         }
 
@@ -245,6 +257,8 @@ public class ComponentImporter {
             if (blockNames.contains(localName)) {
                 blockEnd(blockName);
                 blockName = null;
+                uriName = null;
+                localName = null;
             }
         }
 
@@ -258,17 +272,44 @@ public class ComponentImporter {
                 blockStart(blockName);
                 return;
             }
-            String name = getUri(attributes);
-            if (name != null && blockName != null) {
-                blockElement(blockName, localName, name);
+            if (blockName != null) {
+                uriName = getUri(attributes);
+                if (uriName != null) {
+                    this.localName = localName;
+                    blockElement(blockName, localName, uriName);
+                }
+            }
+        }
+
+        @Override
+        public void characters(char[] ch, int start, int length) throws SAXException {
+            if (blockName != null && localName != null && uriName != null) {
+                String text = new String(ch, start, length);
+                if (text != null) {
+                    elementText(blockName, localName, uriName, text);
+                }
             }
         }
 
         public String getUri(Attributes attributes) {
-            String cname = attributes.getValue("URI");
-            if (cname != null && cname.contains("#")) {
-                cname = cname.substring(cname.indexOf("#") + 1);
+            String cname = null;
+
+            for (String uriName: uriNames) {
+                cname = attributes.getValue(uriName);
+                if (cname != null) {
+                    break;
+                }
             }
+
+            if (cname != null) {
+                if (cname.contains("#")) {
+                    cname = cname.substring(cname.indexOf("#") + 1);
+                }
+                if (cname.contains(":")) {
+                    cname = cname.substring(cname.indexOf(":") + 1);
+                }
+            }
+
             return cname;
         }
     }
@@ -563,5 +604,69 @@ public class ComponentImporter {
             }
         }
     }
+
+    /*
+        <EntityAnnotation>
+            <Class URI="http://www.cern.ch/cms/csc.owl#Chamber"/>
+            <Annotation annotationURI="dc:description">
+                <Constant datatypeURI="xsd:string">A cathode strip chamber. Naming: ME&lt;e&gt;&lt;s&gt;/&lt;r&gt;/&lt;c&gt;, e: endcap [+-], s: station [1..4], r: ring [1..3], c: chamber [01..36]</Constant>
+            </Annotation>
+        </EntityAnnotation>
+    */
+    private class AnnotationHandler extends OntologyHandler {
+
+        ComponentClass componentClass = null;
+        String value = null;
+        AnnotationType type = null;
+
+        public AnnotationHandler() {
+            super("EntityAnnotation");
+        }
+
+        @Override
+        public void blockEnd(String blockName) {
+            if (componentClass != null && value != null && type != null) {
+                switch (type) {
+                    case DESCRIPTION:
+                        componentClass.setDescription(value);
+                        break;
+                }
+            }
+            componentClass = null;
+            value = null;
+            type = null;
+        }
+
+        @Override
+        public void blockElement(String blockName, String localName, String name) {
+            if (localName.equals("Class")) {
+                try {
+                    getComponentClasses().get(name).getId();
+                    componentClass = getComponentClasses().get(name);
+                } catch (NullPointerException e) {
+                    log.warn("Component class [" + name + "] not defined but found in " + blockName + ". Skipping..");
+                }
+            }
+            if (localName.equals("Annotation")) {
+                if (name.equals("description")) {
+                    type = AnnotationType.DESCRIPTION;
+                } else {
+                    log.warn("Annotation type [" + name + "] not supported but found in " + blockName + ". Skipping..");
+                }
+            }
+            if (localName.equals("Constant") && name != null) {
+                value = null;
+            }
+        }
+
+        @Override
+        public void elementText(String blockName, String localName, String name, String text) {
+            if (localName.equals("Constant") && name.equals("string") && type != null) {
+                value = (value == null ? text : value.concat(text));
+            }
+        }
+
+    }
+
 
 }

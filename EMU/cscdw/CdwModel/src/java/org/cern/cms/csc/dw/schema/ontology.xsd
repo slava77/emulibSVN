@@ -33,9 +33,9 @@
       	<xsd:annotation>
     		<xsd:appinfo>
                 <jaxb:class name="Component"/>
+                <xjc:superClass name="org.cern.cms.csc.dw.model.base.ComponentBase"/>
                 <hj:entity>
                     <orm:table name="CDW_COMPONENTS"/>
-                    <xjc:superClass name="org.cern.cms.csc.dw.model.base.ComponentBase"/>
                     <hip:cache usage="READ_WRITE"/>
                 </hj:entity>
             </xsd:appinfo>
@@ -59,6 +59,15 @@
                         </hj:id>
 					</xsd:appinfo>
 				</xsd:annotation>
+            </xsd:element>
+            <xsd:element name="description" type="xsd:string" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="CMP_DESCR" length="2000"/>
+                        </hj:basic>
+                    </xsd:appinfo>
+                </xsd:annotation>
             </xsd:element>
             <xsd:element name="synonym" type="tns:componentSynonymType" minOccurs="0" maxOccurs="unbounded">
 				<xsd:annotation>
@@ -106,6 +115,15 @@
                         <jaxb:property name="id"/>
 					</xsd:appinfo>
 				</xsd:annotation>
+            </xsd:element>
+            <xsd:element name="description" type="xsd:string" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="CCL_DESCR" length="2000"/>
+                        </hj:basic>
+                    </xsd:appinfo>
+                </xsd:annotation>
             </xsd:element>
             <xsd:element name="parent" type="tns:componentClassType" minOccurs="0" maxOccurs="unbounded">
                 <xsd:annotation>
@@ -176,6 +194,15 @@
 					</xsd:appinfo>
 				</xsd:annotation>
             </xsd:element>
+            <xsd:element name="description" type="xsd:string" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="LIN_DESCR" length="2000"/>
+                        </hj:basic>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
         </xsd:sequence>
     </xsd:complexType>
 
@@ -226,6 +253,15 @@
                     <xsd:appinfo>
                         <hj:basic>
                             <orm:column name="LCL_TRANSITIVE"/>
+                        </hj:basic>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="description" type="xsd:string" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="LCL_DESCR" length="2000"/>
                         </hj:basic>
                     </xsd:appinfo>
                 </xsd:annotation>

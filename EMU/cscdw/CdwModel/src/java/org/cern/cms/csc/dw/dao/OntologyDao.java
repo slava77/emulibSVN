@@ -10,6 +10,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.cern.cms.csc.dw.ComponentNotFoundException;
 import org.cern.cms.csc.dw.model.ontology.Component;
 import org.cern.cms.csc.dw.model.ontology.ComponentClass;
 import org.cern.cms.csc.dw.model.ontology.ComponentLink;
@@ -26,7 +27,7 @@ public class OntologyDao implements OntologyDaoLocal, Serializable {
     @PersistenceContext(unitName="CdwPU")
     private EntityManager em;
 
-    public Component getComponentById(String id, boolean eager) {
+    public Component getComponentById(String id, boolean eager) throws ComponentNotFoundException {
         Component c = em.find(Component.class, id);
 
         if (c == null) {
@@ -40,9 +41,13 @@ public class OntologyDao implements OntologyDaoLocal, Serializable {
         }
 
         // Fetch collections if needed (if eager)
-        if (c != null && eager) {
-            c.getLinks().iterator();
-            c.getSynonyms().iterator();
+        if (c == null) {
+            throw new ComponentNotFoundException(id);
+        } else {
+            if (eager) {
+                c.getLinks().iterator();
+                c.getSynonyms().iterator();
+            }
         }
 
         return c;
@@ -53,7 +58,7 @@ public class OntologyDao implements OntologyDaoLocal, Serializable {
      * @param id
      * @return
      */
-    public Component getComponentById(String id) {
+    public Component getComponentById(String id) throws ComponentNotFoundException {
         return getComponentById(id, false);
     }
 

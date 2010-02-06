@@ -9,7 +9,9 @@ import java.io.Serializable;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.dw.model.fact.FactCollection;
+import org.cern.cms.csc.dw.model.fact.FactCollectionFactsItem;
 
 /**
  *
@@ -23,6 +25,10 @@ public class FactDao implements FactDaoLocal, Serializable {
 
     public void saveFactCollection(final FactCollection factCollection) throws Exception {
         em.persist(factCollection);
+        for (FactCollectionFactsItem fi: factCollection.getFactsItems()) {
+            Fact fact = fi.getItem().getValue();
+            em.persist(fact);
+        }
     }
  
 }

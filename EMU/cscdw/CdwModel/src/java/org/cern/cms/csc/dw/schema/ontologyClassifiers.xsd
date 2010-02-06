@@ -8,10 +8,12 @@
 </xsd:annotation>
 <xsd:restriction base="xsd:string">
 <xsd:enumeration value="/dev/schar"/>
+<xsd:enumeration value="AFEB"/>
 <xsd:enumeration value="ALCT"/>
 <xsd:enumeration value="CCB"/>
 <xsd:enumeration value="CFEB"/>
 <xsd:enumeration value="Chamber"/>
+<xsd:enumeration value="Channel"/>
 <xsd:enumeration value="Computer"/>
 <xsd:enumeration value="Cooling"/>
 <xsd:enumeration value="CoolingCircuit"/>
@@ -20,6 +22,7 @@
 <xsd:enumeration value="DAQDevice"/>
 <xsd:enumeration value="DCC"/>
 <xsd:enumeration value="DDU"/>
+<xsd:enumeration value="DDUInput"/>
 <xsd:enumeration value="Device"/>
 <xsd:enumeration value="DMB"/>
 <xsd:enumeration value="Endcap"/>
@@ -44,7 +47,6 @@
 <xsd:enumeration value="LogicalDomain"/>
 <xsd:enumeration value="LTC"/>
 <xsd:enumeration value="LV"/>
-<xsd:enumeration value="LVRack"/>
 <xsd:enumeration value="Maraton"/>
 <xsd:enumeration value="MPC"/>
 <xsd:enumeration value="PCrateRack"/>
@@ -63,7 +65,6 @@
 <xsd:enumeration value="TMB"/>
 <xsd:enumeration value="Trigger"/>
 <xsd:enumeration value="TriggerDevice"/>
-<xsd:enumeration value="TriggerSector"/>
 <xsd:enumeration value="TTC"/>
 <xsd:enumeration value="VCC"/>
 </xsd:restriction>

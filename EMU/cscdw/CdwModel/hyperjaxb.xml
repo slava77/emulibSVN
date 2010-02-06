@@ -53,13 +53,18 @@
 		</taskdef>
     </target>
 
-    <target name="generate-ontology-schema">
+    <target name="prepare-ontology">
+        <delete file="../KnowledgeBase/ontology/csc-ontology.owl" failonerror="false" />
+        <xslt style="../KnowledgeBase/ontology/ontology_generator.xsl"
+              in="../KnowledgeBase/ontology/ontology_template.xml"
+              out="../KnowledgeBase/ontology/csc-ontology.owl"/>
+    </target>
 
+    <target name="generate-ontology-schema">
         <delete file="src/java/org/cern/cms/csc/dw/schema/ontologyClassifiers.xsd" failonerror="false" />
         <xslt style="src/java/org/cern/cms/csc/dw/dev/template/ontologyClassifiers.xsl"
               in="../KnowledgeBase/ontology/csc-ontology.owl"
               out="src/java/org/cern/cms/csc/dw/schema/ontologyClassifiers.xsd"/>
-
     </target>
 
     <target name="import-ontology">
@@ -122,13 +127,14 @@
 
     </target>
 
-    <target name="generate-model" depends="generate-ontology-schema,hj-taskdef">
+    <target name="generate-fact-schema">
+        <delete file="src/java/org/cern/cms/csc/dw/schema/dqmFact.xsd" failonerror="false" />
+        <xslt style="src/java/org/cern/cms/csc/dw/dev/template/dqmFactSchema.xsl"
+              in="src/java/org/cern/cms/csc/dw/dev/xml/dqmParameters.xml"
+              out="src/java/org/cern/cms/csc/dw/schema/dqmFact.xsd"/>
+    </target>
 
-        <delete failonerror="false">
-            <fileset dir="${srcs}/org/cern/cms/csc/dw/model/ontology" includes="**/*.java"/>
-            <fileset dir="${srcs}/org/cern/cms/csc/dw/model/fact" includes="**/*.java"/>
-            <fileset dir="${srcs}/org/cern/cms/csc/dw/model/test" includes="**/*.java"/>
-        </delete>
+    <target name="generate-model" depends="generate-ontology-schema,generate-fact-schema,hj-taskdef">
 
 		<xjc destdir="${srcs}" extension="true">
 			<arg line="
@@ -139,6 +145,8 @@
 				-XhashCode
 				-XtoString
                 -Xsuperclass
+                -simple-preserve
+                -Xcustomcode
                 -Xhibernate"/>
 			<binding dir="${basedir}">
 			 	<include name="*.xjb"/>
@@ -171,6 +179,10 @@
             <replacefilter token="ITEMNAME" value="FIT_TYPE"/>
             <replacefilter token="ITEMVALUE_FACTCOLLECTIONFACT_0" value="FIT_FCT_ID"/>
         </replace>
+
+        <delete failonerror="false">
+            <fileset dir="${srcs}/org/cern/cms/csc/dw/model" includes="**/*.java.backup"/>
+        </delete>
 
     </target>
 
