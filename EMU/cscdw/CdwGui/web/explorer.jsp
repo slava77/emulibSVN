@@ -90,6 +90,9 @@
                                     </ice:panelSeries>
                                 </ice:panelGroup>
 
+                                <ice:outputLabel value="Description:"/>
+                                <ice:outputText value="#{ComponentClassTreeController.selectedClass.description}"/>
+
                             </ice:panelGrid>
 
                             <ice:panelGroup rendered="#{!ComponentClassTreeController.componentsSet}">

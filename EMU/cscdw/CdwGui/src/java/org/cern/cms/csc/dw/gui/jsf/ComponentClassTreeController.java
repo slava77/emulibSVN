@@ -12,6 +12,7 @@ import javax.ejb.EJB;
 import javax.faces.event.ActionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import org.cern.cms.csc.dw.ComponentNotFoundException;
 import org.cern.cms.csc.dw.model.ontology.ComponentClass;
 import org.cern.cms.csc.dw.util.JsfBeanBase;
 import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
@@ -105,7 +106,7 @@ public class ComponentClassTreeController extends JsfBeanBase {
         return selectedComponent;
     }
 
-    public void setSelectedComponentId(String componentId) {
+    public void setSelectedComponentId(String componentId) throws ComponentNotFoundException {
         this.selectedComponent = ontologyDao.getComponentById(componentId, true);
     }
 
