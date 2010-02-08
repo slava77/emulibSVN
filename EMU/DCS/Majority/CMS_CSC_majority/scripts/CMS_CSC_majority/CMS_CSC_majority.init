@@ -53,7 +53,11 @@ main()
     DebugTN("Majority installation: majority configuration created OK");
     updateInstallationDp("Supervisor DONE");
   } else {
-
+                  updateInstallationDp("Exiting - only supervisor is adding FED to its FSM now");
+                  return;
+                  
+                  
+                  
     // wait for supervisor machine to finish it's installation part first  
     bool install = false;
     while (!install) {
