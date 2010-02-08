@@ -28,14 +28,14 @@ main()
   } else {
 
     // wait for supervisor machine to finish it's installation part first  
-    dyn_string installationDps = dpNames("*:MAJORITY_INSTALLATION", "MUDCS_STRING");
     bool install = false;
     while (!install) {
       DebugTN("Majority installation: Waiting for supervisor to finish...");
       delay(5);
+      dyn_string installationDps = dpNames("*:MAJORITY_INSTALLATION", "MUDCS_STRING");
       for (int i=1; i <= dynlen(installationDps); i++) {
         string message;
-        dpGet(installationDps[i], message);
+        dpGet(installationDps[i] + ".value", message);
         if (message == "Supervisor DONE") {
           updateInstallationDp("installation started");
           install = true;
