@@ -5,6 +5,7 @@ string majorityTopNode = "CMS_CSC_majorTest";
 
 main()
 {
+  fwFsm_stopAllDomains();
   if (isSupervisor()) {
     updateInstallationDp("installation started");
     DebugTN("Majority installation: creating tree cache");
