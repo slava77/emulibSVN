@@ -4,6 +4,7 @@
 <date>2010/02/08</date>
 <required>majority_treeCache=1.2.11</required>
 <dontRestartProject>yes</dontRestartProject>
+<dplist>./dplist/majorityInstallationDp.dpl</dplist>
 <init>./scripts/CMS_CSC_majority/CMS_CSC_majority.init</init>
 <file>./scripts/CMS_CSC_majority/majority.ctl</file>
 <file>./scripts/libs/CMS_CSC_majority/CMS_CSC_majorityDevices.ctl</file>

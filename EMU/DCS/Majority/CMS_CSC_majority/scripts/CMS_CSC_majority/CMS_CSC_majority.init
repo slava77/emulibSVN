@@ -31,6 +31,7 @@ main()
     dyn_string installationDps = dpNames("*:MAJORITY_INSTALLATION", "MUDCS_STRING");
     bool install = false;
     while (!install) {
+      DebugTN("Waiting for supervisor to finish...");
       delay(5);
       for (int i=1; i <= dynlen(installationDps); i++) {
         string message;
