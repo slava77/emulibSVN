@@ -586,7 +586,11 @@ T
 LANG:1 27 Check if this is supervisor
 "main()
 {
-  bool isSupervisor = fwFsmTree_isNode(majorityTopNode);
+  dyn_string children;
+  dyn_string ex;
+  fwTree_getChildren(\"FSM\", children, ex);
+  
+  bool isSupervisor = dynContains(children, majorityTopNode);
   lblSupervisor.text = isSupervisor;
 }" 0
  E E E
