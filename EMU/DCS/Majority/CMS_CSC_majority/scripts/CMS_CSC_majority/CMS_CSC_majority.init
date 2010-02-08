@@ -6,7 +6,8 @@ string majorityTopNode = "CMS_CSC_majorTest";
 main()
 {
   fwFsm_stopAllDomains();
-  if (isSupervisor()) {
+  bool isSupervisor = isSupervisor();
+  if (isSupervisor) {
     updateInstallationDp("installation started");
     DebugTN("Majority installation: creating tree cache");
     bool ok = emumaj_createTreeCache();
@@ -32,12 +33,9 @@ main()
     while (!install) {
       DebugTN("Majority installation: Waiting for supervisor to finish...");
       delay(5);
-      dyn_string installationDps = dpNames("*:MAJORITY_INSTALLATION", "MUDCS_STRING");
+      dyn_string installationDps = dpNames("*:MAJORITY_INSTALLATION", "MUDCS_MAJORITY_STRING");
       for (int i=1; i <= dynlen(installationDps); i++) {
         string message;
-        if (!dpExists(installationDps[i] + ".value")) {
-          continue;
-        }
         dpGet(installationDps[i] + ".value", message);
         if (message == "Supervisor DONE") {
           updateInstallationDp("installation started");
@@ -54,6 +52,10 @@ main()
   DebugTN("Majority installation: adding majority manager");
   fwInstallation_appendManager(TRUE, "Majority", "PVSS00ctrl", "always", 30, 2, 2, "CMS_CSC_majority/majority.ctl");
   DebugTN("Majority installation: majority manager added OK");
+  
+  if (!isSupervisor) {
+    updateInstallationDp("installation finished");
+  }
 }
 
 void updateInstallationDp(string msg) {
