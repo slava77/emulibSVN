@@ -240,7 +240,8 @@ void emumaj_updateFsmTypes() {
                                            "EMUFEDNodes",
                                            "EMUNodes",
                                            "EMUSTBYNodes",
-                                           "EMUTREENodes");
+                                           "EMUTREENodes",
+                                           "CMS_CSC_ME11_HV_Type");
   
   for (int i=1; i <= dynlen(typesToUpdate); i++) {
     string typeDp = "fwOT_" + typesToUpdate[i];
