@@ -49,6 +49,10 @@ main()
   createMajorityDUs();
   DebugTN("Majority installation: majority DUs created OK");
   
+  DebugTN("Majority installation: Updating FSM types");
+  emumaj_updateFsmTypes();
+  DebugTN("Majority installation: FSM types updated OK");
+  
   DebugTN("Majority installation: adding majority manager");
   fwInstallation_appendManager(TRUE, "Majority", "PVSS00ctrl", "always", 30, 2, 2, "CMS_CSC_majority/majority.ctl");
   DebugTN("Majority installation: majority manager added OK");
@@ -200,7 +204,57 @@ bool emu_checkException(dyn_string &exceptionInfo, string higherLevelMsg = "") {
   return false;
 }
 
-
+void emumaj_updateFsmTypes() {
+  dyn_string typesToUpdate = makeDynString("CSC_LV_NODES",
+                                           "CSC_LV_TREE_NODES",
+                                           "EMUFEDNodes",
+                                           "EMUNodes",
+                                           "EMUSTBYNodes",
+                                           "EMUTREENodes");
+  
+  for (int i=1; i <= dynlen(typesToUpdate); i++) {
+    string typeDp = "fwOT_" + typesToUpdate[i];
+    if (!dpExists(typeDp)) {
+      continue;
+    }
+    if (!dpExists(typeDp + "_majBackup")) {
+      int error;
+      dpCopy(typeDp, typeDp + "_majBackup", error);
+    }
+    
+    dyn_string states = makeDynString("OFF",
+                                      "FwStateOKNotPhysics",
+                                      "when ( $ALL$majority in_state ON )  move_to ON|when ( $ALL$majority in_state OUTER_ON )  move_to OUTER_ON|when ( $ALL$majority in_state STANDBY )  move_to STANDBY|when ( $ALL$majority in_state ERROR )  move_to ERROR|when ( $ALL$majority in_state NOT-READY )  move_to NOT-READY|",
+                                      "",
+                                      "",
+                                      "ERROR",
+                                      "FwStateAttention3",
+                                      "when ( $ALL$majority in_state ON )  move_to ON|when ( $ALL$majority in_state OUTER_ON )  move_to OUTER_ON|when ( $ALL$majority in_state STANDBY )  move_to STANDBY|when ( $ALL$majority in_state OFF )  move_to OFF|when ( $ALL$majority in_state NOT-READY )  move_to NOT-READY|",
+                                      "",
+                                      "",
+                                      "ON",
+                                      "FwStateOKPhysics",
+                                      "when ( $ALL$majority in_state OUTER_ON )  move_to OUTER_ON|when ( $ALL$majority in_state STANDBY )  move_to STANDBY|when ( $ALL$majority in_state OFF )  move_to OFF|when ( $ALL$majority in_state ERROR )  move_to ERROR|when ( $ALL$majority in_state NOT-READY )  move_to NOT-READY|",
+                                      "",
+                                      "",
+                                      "STANDBY",
+                                      "FwStateAttention1",
+                                      "when ( $ALL$majority in_state ON )  move_to ON|when ( $ALL$majority in_state OUTER_ON )  move_to OUTER_ON|when ( $ALL$majority in_state OFF )  move_to OFF|when ( $ALL$majority in_state ERROR )  move_to ERROR|when ( $ALL$majority in_state NOT-READY )  move_to NOT-READY|",
+                                      "",
+                                      "",
+                                      "OUTER_ON",
+                                      "FwStateAttention1",
+                                      "when ( $ALL$majority in_state ON )  move_to ON|when ( $ALL$majority in_state STANDBY )  move_to STANDBY|when ( $ALL$majority in_state OFF )  move_to OFF|when ( $ALL$majority in_state ERROR )  move_to ERROR|when ( $ALL$majority in_state NOT-READY )  move_to NOT-READY|",
+                                      "",
+                                      "",
+                                      "NOT-READY",
+                                      "FwStateAttention1",
+                                      "when ( $ALL$majority in_state ON )  move_to ON|when ( $ALL$majority in_state OUTER_ON )  move_to OUTER_ON|when ( $ALL$majority in_state STANDBY )  move_to STANDBY|when ( $ALL$majority in_state OFF )  move_to OFF|when ( $ALL$majority in_state ERROR )  move_to ERROR|",
+                                      "",
+                                      "");
+    dpSetWait(typeDp + ".states", states);
+  }
+}
 
 
 // CSC majority configuration
