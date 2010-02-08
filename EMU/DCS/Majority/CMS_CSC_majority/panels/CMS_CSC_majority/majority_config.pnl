@@ -50,7 +50,7 @@ void configureLv(string topNode) {
   majority_addColors(\"LV\", \"error\", majority_getStandardColorsError() );    
   majority_addColors(\"LV\", \"no_communication\", majority_getStandardColorsError() );    
 
-  majority_addPercentages(topNode, \"LV\", makeDynFloat(95, 5, 90)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+  majority_addPercentages(topNode, \"LV\", makeDynFloat(95, 5, 40)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
 }
 
 void configureTemp(string topNode) {
@@ -66,7 +66,7 @@ void configureTemp(string topNode) {
   majority_addColors(\"TEMP\", \"alert\", majority_getStandardColorsError() );    
   majority_addColors(\"TEMP\", \"no_communication\", majority_getStandardColorsError() );    
 
-  majority_addPercentages(topNode, \"TEMP\", makeDynFloat(95, 5, 90)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+  majority_addPercentages(topNode, \"TEMP\", makeDynFloat(95, 5, 40)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
 }
 
 void configureCrb(string topNode) {
@@ -127,7 +127,7 @@ void configureDDU(string topNode) {
   majority_addColors(\"DDU\", \"error\", majority_getStandardColorsError() );    
   majority_addColors(\"DDU\", \"no_communication\", majority_getStandardColorsError() );    
 
-  majority_addPercentages(topNode, \"DDU\", makeDynFloat(95, 6, 90)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+  majority_addPercentages(topNode, \"DDU\", makeDynFloat(95, 6, 40)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
 }
 
 void configureLvForHv(string topNode) {
@@ -565,6 +565,69 @@ void _removeFromFwTreeNodesAsChildren() {
   DebugTN(\"DONE\");
 }" 0
  E E E
+13 6
+"PUSH_BUTTON7"
+""
+1 40 210 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  38 208 202 235
+
+T 
+1
+LANG:1 27 Check if this is supervisor
+"main()
+{
+  bool isSupervisor = fwFsmTree_isNode(majorityTopNode);
+  lblSupervisor.text = isSupervisor;
+}" 0
+ E E E
+2 7
+"PRIMITIVE_TEXT1"
+""
+1 40 250 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 40 250 134 264
+0 2 2 "0s" 0 0 0 192 0 0  40 250 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 21 is this a supervisor?
+2 8
+"lblSupervisor"
+""
+1 150 250 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 150 250 197 264
+0 2 2 "0s" 0 0 0 192 0 0  150 250 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 10 true/false
 0
 LAYER, 1 
 1
