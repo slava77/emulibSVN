@@ -161,18 +161,18 @@ dyn_int emumaj_lvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
       dyn_int v33States = emumaj_lvCfebChannelStates(dataDp, i, "33");
       dyn_int v50States = emumaj_lvCfebChannelStates(dataDp, i, "50");
       dyn_int v60States = emumaj_lvCfebChannelStates(dataDp, i, "60");
-      if (noCommunication == 0) {
+//      if (noCommunication == 0) {
         on += v33States[1] + v50States[1] + v60States[1];
-      }
+//      }
       error += v33States[2] + v50States[2] + v60States[2];
     } else { // ALCT
       dyn_int v18States = emumaj_lvAlctChannelStates(dataDp, "18");
       dyn_int v33States = emumaj_lvAlctChannelStates(dataDp, "33");
       dyn_int v55States = emumaj_lvAlctChannelStates(dataDp, "55");
       dyn_int v56States = emumaj_lvAlctChannelStates(dataDp, "56");
-      if (noCommunication == 0) {
+//      if (noCommunication == 0) {
         on += v18States[1] + v33States[1] + v55States[1] + v56States[1];
-      }
+//      }
       error += v18States[2] + v33States[2] + v55States[2] + v56States[2];
     }
   }
