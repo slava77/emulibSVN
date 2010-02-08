@@ -220,6 +220,18 @@ void emumaj_updateFsmTypes() {
     if (!dpExists(typeDp + "_majBackup")) {
       int error;
       dpCopy(typeDp, typeDp + "_majBackup", error);
+      string panel;
+      dyn_string components, states, actions, parameters;
+      dpGet(typeDp + ".panel", panel,
+            typeDp + ".components", components,
+            typeDp + ".states", states,
+            typeDp + ".actions", actions,
+            typeDp + ".parameters", parameters);
+      dpSetWait(typeDp + "_majBackup.panel", panel,
+                typeDp + "_majBackup.components", components,
+                typeDp + "_majBackup.states", states,
+                typeDp + "_majBackup.actions", actions,
+                typeDp + "_majBackup.parameters", parameters);
     }
     
     dyn_string states = makeDynString("OFF",
