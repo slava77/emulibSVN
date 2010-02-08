@@ -3,37 +3,11 @@
 
 string majorityTopNode = "CMS_CSC";
 
-void mudcsSuper_createFsmReferenceNode(string parent, string nodeName, int cuFlag) {
-  string type;
-  fwCU_getType(nodeName, type);
-  if (strlen(type) == 0) {
-    DebugTN("ERROR: Cannot determine type of node " + nodeName + ". Node is not created.");
-    return;
-  }
-  mudcsSuper_createFsmNode(parent, nodeName, type, cuFlag);
-}
-
-void mudcsSuper_createFsmNode(string parent, string nodeName, string type, int cuFlag) {
-  DebugTN("===== creating " + nodeName + " of type " + type + " to " + parent);
-  fwFsmTree_addNode(parent, nodeName, type, cuFlag);
-}
-
-
 main()
 {
   fwFsm_stopAllDomains();
   bool isSupervisor = isSupervisor();
   if (isSupervisor) {
-                      mudcsSuper_createFsmReferenceNode("CMS_CSC", "CSC_FED", 1);
-  
-                      fwFsmTree_generateAll();
-                      fwFsmTree_refreshTree();  
-  
-                      DebugTN("DONE");
-                      updateInstallationDp("FED added");
-                      return;
-    
-    
     updateInstallationDp("installation started");
     DebugTN("Majority installation: creating tree cache");
     bool ok = emumaj_createTreeCache();
@@ -53,11 +27,6 @@ main()
     DebugTN("Majority installation: majority configuration created OK");
     updateInstallationDp("Supervisor DONE");
   } else {
-                  updateInstallationDp("Exiting - only supervisor is adding FED to its FSM now");
-                  return;
-                  
-                  
-                  
     // wait for supervisor machine to finish it's installation part first  
     bool install = false;
     while (!install) {
