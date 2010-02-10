@@ -6,6 +6,14 @@ PANEL,-1 -1 1331 1129 N "_3DFace" 0
 
 main()
 {
+  // hide standard FSM panel labels if they exist
+  if (shapeExists(\"topLabel1\")) {
+    setValue(\"topLabel1\", \"visible\", false);
+  }
+  if (shapeExists(\"topLabel2\")) {
+    setValue(\"topLabel2\", \"visible\", false);
+  }
+  
   emuui_init();
   lblVersion.text = \"UI Version \" + EMUUI_COMPONENT_VERSION + \" (\" + EMUUI_COMPONENT_DATE + \")\";
   initConstants();
@@ -748,7 +756,7 @@ E E 0 1 1 2 1 E 1 0 1 -397 6 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4
 2 48
 "PRIMITIVE_TEXT3"
 ""
-1 26.64575540628329 295 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -606.5264387467475 315 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -767,7 +775,7 @@ LANG:1 21 Communication problem
 2 57
 "upsOnBatteryBack"
 ""
-1 43.87136236146537 158.6010217959998 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 46.45626064151774 158.7680892484413 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
