@@ -210,6 +210,7 @@ void emumaj_updateFsmTypes() {
                                            "EMUFEDNodes",
                                            "EMUNodes",
                                            "EMUSTBYNodes",
+                                           "EMUTREESTBYNodes",
                                            "EMUTREENodes",
                                            "EMUTREENodes_I",
                                            "EMUTREENodes_O",
