@@ -210,6 +210,9 @@ void emumaj_updateFsmTypes() {
                                            "EMUNodes",
                                            "EMUSTBYNodes",
                                            "EMUTREENodes",
+                                           "EMUTREENodes_I",
+                                           "EMUTREENodes_O",
+                                           "EMUTREENodes_S",
                                            "CMS_CSC_ME11_HV_Type");
   
   for (int i=1; i <= dynlen(typesToUpdate); i++) {
