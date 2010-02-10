@@ -205,6 +205,7 @@ bool emu_checkException(dyn_string &exceptionInfo, string higherLevelMsg = "") {
 
 void emumaj_updateFsmTypes() {
   dyn_string typesToUpdate = makeDynString("CSC_LV_NODES",
+                                           "CSC_LV_HV",
                                            "CSC_LV_TREE_NODES",
                                            "EMUFEDNodes",
                                            "EMUNodes",
