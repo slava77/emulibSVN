@@ -1,12 +1,14 @@
 #uses "majority_treeCache/treeCache.ctl"
 #uses "majority_treeCache/majorityLib.ctl"
 
-const string majorityTopNode = "CMS_CSC";
+dyn_string majorityTopNodes = makeDynString("CMS_CSC");
 
-const bool EMUMAJ_CREATE_TREE_CACHE = true;
-const bool EMUMAJ_CREATE_MAJORITY_CONF = true;
-const bool EMUMAJ_CREATE_MAJORITY_DUS = true;
-const bool EMUMAJ_UPDATE_FSM_TYPES = true;
+const bool EMUMAJ_CREATE_TREE_CACHE = false;
+const bool EMUMAJ_CREATE_MAJORITY_CONF = false;
+const bool EMUMAJ_DELETE_MAJORITY_DUS = true;
+const bool EMUMAJ_CREATE_MAJORITY_DUS = false;
+const bool EMUMAJ_UPDATE_FSM_TYPES = false;
+const bool EMUMAJ_RESTORE_FSM_TYPES = true;
 
 main()
 {
@@ -14,7 +16,7 @@ main()
   return;  
   
   // stop FSM if it's going to be modified
-  if (EMUMAJ_CREATE_MAJORITY_DUS || EMUMAJ_UPDATE_FSM_TYPES) {
+  if (EMUMAJ_CREATE_MAJORITY_DUS || EMUMAJ_DELETE_MAJORITY_DUS || EMUMAJ_UPDATE_FSM_TYPES) {
     fwFsm_stopAllDomains();
   }
 
@@ -26,11 +28,13 @@ main()
     // TREE CACHE    
     if (EMUMAJ_CREATE_TREE_CACHE) {
       DebugTN("Majority installation: creating tree cache");
-      bool ok = emumaj_createTreeCache();
-      if (!ok) {
-        DebugTN("Majority installation: Aborting installation due to error whil creating tree cache");
-        updateInstallationDp("Aborting installation due to error whil creating tree cache");
-        return;
+      for (int i=1; i <= dynlen(majorityTopNodes); i++) {
+        bool ok = emumaj_createTreeCache(majorityTopNodes[i]);
+        if (!ok) {
+          DebugTN("Majority installation: Aborting installation due to error whil creating tree cache for " + majorityTopNodes[i]);
+          updateInstallationDp("Aborting installation due to error whil creating tree cache for " + majorityTopNodes[i]);
+          return;
+        }
       }
       DebugTN("Majority installation: tree cache created OK");
     }
@@ -38,11 +42,15 @@ main()
     // MAJORITY CONF.
     if (EMUMAJ_CREATE_MAJORITY_CONF) {
       DebugTN("Majority installation: deleting majority configuration");
-      majority_deleteConfig(majorityTopNode);  
+      for (int i=1; i <= dynlen(majorityTopNodes); i++) {
+        majority_deleteConfig(majorityTopNodes[i]);
+      }
       DebugTN("Majority installation: majority configuration deleted OK");
 
       DebugTN("Majority installation: creating majority configuration");
-      emumaj_createMajorityConfiguration();
+      for (int i=1; i <= dynlen(majorityTopNodes); i++) {
+        emumaj_createMajorityConfiguration(majorityTopNodes[i]);
+      }
       DebugTN("Majority installation: majority configuration created OK");
     }
     
@@ -68,12 +76,24 @@ main()
     }
   }
   
+  if (EMUMAJ_DELETE_MAJORITY_DUS) {
+    DebugTN("Majority installation: deleting majority DUs");
+    emumaj_deleteMajorityDUs();
+    DebugTN("Majority installation: majority DUs deleted OK");
+  }
+  
   if (EMUMAJ_CREATE_MAJORITY_DUS) {
     DebugTN("Majority installation: creating majority DUs");
     createMajorityDUs();
     DebugTN("Majority installation: majority DUs created OK");
   }
 
+  if (EMUMAJ_RESTORE_FSM_TYPES) {
+    DebugTN("Majority installation: Restoring FSM types");
+    emumaj_restoreFsmTypes();
+    DebugTN("Majority installation: FSM types restored OK");
+  }
+  
   if (EMUMAJ_UPDATE_FSM_TYPES) {
     DebugTN("Majority installation: Updating FSM types");
     emumaj_updateFsmTypes();
@@ -98,11 +118,51 @@ bool isSupervisor() {
   dyn_string ex;
   fwTree_getChildren("FSM", children, ex);
   
-  bool isSupervisor = dynContains(children, majorityTopNode);
+  bool isSupervisor = false;
+  for (int i=1; i <= dynlen(majorityTopNodes); i++) {
+    if (dynContains(children, majorityTopNodes[i])) {
+      isSupervisor = true;
+    }
+  }
   return isSupervisor;
 }
 
-bool emumaj_createTreeCache() {
+void emumaj_deleteMajorityDUs() { 
+
+//   _removeFromFwTreeNodesAsChildren();
+//   return;
+   
+  dyn_string ex;
+  dyn_string nodes;
+  dyn_string allTypes;  
+  
+    
+  fwTree_getAllTreeNodes("FSM", nodes, ex);
+  if (emu_checkException(ex)) { return; }  
+  for(int i=1; i <= dynlen(nodes); i++) {
+    if (strpos(nodes[i], "&") >= 0) { continue; }
+    string type;
+    fwCU_getType(nodes[i], type);
+    if (type == "majority") {
+      DebugTN("   Deleting " + nodes[i] + "...");
+//       string domain = nodes[i];
+//       string object = _fwCU_getNodeObj(domain);
+      string parent;
+      fwTree_getParent(nodes[i], parent, ex);
+      if (emu_checkException(ex)) { return; }  
+      fwFsmTree_removeNode(parent, nodes[i], 0);
+//       fwTree_removeNode(parent, nodes[i], ex);
+//       if (emu_checkException(ex)) { return; }  
+    }
+  }  
+  
+  fwFsmTree_generateAll();
+  fwFsmTree_refreshTree();  
+  
+  DebugTN("DONE");
+}
+
+bool emumaj_createTreeCache(string majorityTopNode) {
   dyn_string exceptionInfo;
   treeCache_create(majorityTopNode, makeDynString(), exceptionInfo); // give the top node of your hierarchy here
 
@@ -123,7 +183,7 @@ bool emumaj_createTreeCache() {
   return true;
 }
 
-void emumaj_createMajorityConfiguration() {
+void emumaj_createMajorityConfiguration(string majorityTopNode) {
   majority_new(majorityTopNode); // you may want to pass a second parameter that is the treeCache topNode if you need to use 
   //  the same treeCache but with different topNodes for different majorities
   majority_deleteConfig(majorityTopNode);  
@@ -301,6 +361,43 @@ void emumaj_updateFsmTypes() {
   }
 }
 
+void emumaj_restoreFsmTypes() {
+  dyn_string typesToUpdate = makeDynString("CSC_LV_NODES",
+                                           "CSC_LV_HV",
+                                           "CSC_LV_TREE_NODES",
+                                           "EMUFEDNodes",
+                                           "EMUNodes",
+                                           "EMUSTBYNodes",
+                                           "EMUTREESTBYNodes",
+                                           "EMUTREENodes",
+                                           "EMUTREENodes_I",
+                                           "EMUTREENodes_O",
+                                           "EMUTREENodes_S",
+                                           "CMS_CSC_ME11_HV_Type");
+  
+  for (int i=1; i <= dynlen(typesToUpdate); i++) {
+    string typeDp = "fwOT_" + typesToUpdate[i];
+    if (!dpExists(typeDp)) {
+      continue;
+    }
+    if (dpExists(typeDp + "_majBackup")) {
+//      int error;
+//      dpCopy(typeDp + "_majBackup", typeDp, error);
+      string panel;
+      dyn_string components, states, actions, parameters;
+      dpGet(typeDp + "_majBackup.panel", panel,
+            typeDp + "_majBackup.components", components,
+            typeDp + "_majBackup.states", states,
+            typeDp + "_majBackup.actions", actions,
+            typeDp + "_majBackup.parameters", parameters);
+      dpSetWait(typeDp + ".panel", panel,
+                typeDp + ".components", components,
+                typeDp + ".states", states,
+                typeDp + ".actions", actions,
+                typeDp + ".parameters", parameters);
+    }
+  }
+}
 
 // CSC majority configuration
 void configureHv(string topNode) {
