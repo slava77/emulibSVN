@@ -1,20 +1,20 @@
 #uses "majority_treeCache/treeCache.ctl"
 #uses "majority_treeCache/majorityLib.ctl"
 
-dyn_string majorityTopNodes = makeDynString("CMS_CSC");
+dyn_string majorityTopNodes = makeDynString("CMS_CSC", "CMS_CSC_PLUS", "CMS_CSC_MINUS");
 
-const bool EMUMAJ_CREATE_TREE_CACHE = false;
-const bool EMUMAJ_CREATE_MAJORITY_CONF = false;
-const bool EMUMAJ_DELETE_MAJORITY_DUS = true;
+const bool EMUMAJ_CREATE_TREE_CACHE = true;
+const bool EMUMAJ_CREATE_MAJORITY_CONF = true;
+const bool EMUMAJ_DELETE_MAJORITY_DUS = false;
 const bool EMUMAJ_CREATE_MAJORITY_DUS = false;
 const bool EMUMAJ_UPDATE_FSM_TYPES = false;
-const bool EMUMAJ_RESTORE_FSM_TYPES = true;
+const bool EMUMAJ_RESTORE_FSM_TYPES = false;
 
 main()
 {
 
   // stop FSM if it's going to be modified
-  if (EMUMAJ_CREATE_MAJORITY_DUS || EMUMAJ_DELETE_MAJORITY_DUS || EMUMAJ_UPDATE_FSM_TYPES) {
+  if (EMUMAJ_CREATE_MAJORITY_DUS || EMUMAJ_DELETE_MAJORITY_DUS || EMUMAJ_UPDATE_FSM_TYPES || EMUMAJ_RESTORE_FSM_TYPES) {
     fwFsm_stopAllDomains();
   }
 
@@ -53,7 +53,7 @@ main()
     }
     
     updateInstallationDp("Supervisor DONE");
-  } else {
+  } else if (EMUMAJ_CREATE_MAJORITY_DUS || EMUMAJ_UPDATE_FSM_TYPES){
     // wait for supervisor machine to finish it's installation part first  
     bool install = false;
     while (!install) {
@@ -99,7 +99,7 @@ main()
   }
 
     
-  if (EMUMAJ_CREATE_MAJORITY_DUS || EMUMAJ_DELETE_MAJORITY_DUS || EMUMAJ_UPDATE_FSM_TYPES) {
+  if (EMUMAJ_CREATE_MAJORITY_DUS || EMUMAJ_DELETE_MAJORITY_DUS || EMUMAJ_UPDATE_FSM_TYPES || EMUMAJ_RESTORE_FSM_TYPES) {
     fwFsmTree_generateAll();
     fwFsmTree_refreshTree();
   }  
