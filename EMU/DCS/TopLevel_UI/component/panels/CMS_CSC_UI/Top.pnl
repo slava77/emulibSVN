@@ -21,7 +21,7 @@ PANEL,-1 -1 1600 1175 N "_3DFace" 0
 
 void initConstants() {
   emuui_g_topFsmNodesRightX = 390;
-  emuui_g_topFsmNodesHeight = 280;
+  emuui_g_topFsmNodesHeight = 230; // not including emuui_g_topMajorityTableHeight
   emuui_g_topMajorityTableHeight = 50;
   hostsToKillAllPvss = makeDynString(\"SCX5SCR05\", \"SCX5SCR06\");
   hostsToReleaseFsmOnExit = makeDynString(\"SCX5SCR05\");
@@ -914,7 +914,7 @@ E E 0 1 1 2 1 E 1 0 1 11 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4
 2 48
 "PRIMITIVE_TEXT3"
 ""
-1 2796.854990398502 110 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 2864.115213698516 90 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -952,7 +952,7 @@ LANG:1 75 Under development, but coming soon!  Will show PCrate configuration pr
 2 57
 "upsOnBatteryBack"
 ""
-1 10 49.91960627689453 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 49.8806294996987 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
