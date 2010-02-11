@@ -33,6 +33,7 @@ global mapping emuui_g_mapMaratonDbSwapped = emuui_dummyMapping;
 global dyn_string emuui_g_maratonDbArray = makeDynString();
 global int emuui_g_topFsmNodesRightX = 0; // this is the right edge of the FSM nodes - area that should be avoided by tooltips. This is only initialized by Top.pnl because only this one has those evil FSM nodes
 global int emuui_g_topFsmNodesHeight = 0; // this is the height of the box where the FSM nodes are in top.pnl - area that should be avoided by tooltips. This is only initialized by Top.pnl because only this one has those evil FSM nodes
+global int emuui_g_topMajorityTableHeight = 0; // this is the height of the box where the majority summary table is in top.pnl - area that should be avoided by tooltips. This is only initialized by Top.pnl because only this one has those evil FSM nodes
 const string emuui_g_version = ""; // default version is empty, if any other version is specified then you have to make sure that you have all the datapoints available i.e. CSC_UI_mapping and CSC_UI_array with appendix "_<version>"
 
 /** @return a mapping of a given name (the mapping is retrieved from configuration DPs). */

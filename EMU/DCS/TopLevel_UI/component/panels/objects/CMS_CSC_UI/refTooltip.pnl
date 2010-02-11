@@ -1,4 +1,4 @@
-V 10
+V 11
 1
 LANG:1 0 
 PANEL,-1 -1 388 123 N "_3DFace" 5
@@ -149,7 +149,7 @@ void updateTooltipSizeVariables(string objType) {
 /** if the tooltip hides over the edge of the panel - this function corrects that. */
 void moveAwayFromEdge() {
   int myScreenSizeX = screenSizeX;
-  int myScreenSizeY = screenSizeY;
+  int myScreenSizeY = screenSizeY - emuui_g_topMajorityTableHeight;
   
   //avoid the FSM area
   if (tooltipX <= emuui_g_topFsmNodesRightX) { // make the screen size smaller in Y in the are where tooltip X overlaps with FSM nodes X
@@ -229,9 +229,8 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 30 40 335 54
 0 2 2 "0s" 0 0 0 192 0 0  30 40 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0 1
 LANG:1 66 Content is dynamically generated - see initialize event & scopeLib
 2 2
 "lblError"
@@ -249,9 +248,8 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 0 0 375 14
 0 2 2 "0s" 0 0 0 192 0 0  0 0 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0 1
 LANG:1 85 Error - tooltip file for this type of device is missing! Please inform DCS developers
 0
 LAYER, 1 
