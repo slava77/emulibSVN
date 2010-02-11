@@ -8,7 +8,7 @@
 
 main() {
   majority_debug4("Starting majority on system " + getSystemName());
-  string topNode = "CMS_CSC_majorTest"; // set your top node here    <==== PLEASE CHANGE!!
+  string topNode = "CMS_CSC"; // set your top node here    <==== PLEASE CHANGE!!
   majority_setForceValid(true); 
   majority_start(topNode,1 // debug level
 		 );
