@@ -3,8 +3,8 @@
 
 dyn_string majorityTopNodes;
 
-const bool EMUMAJ_CREATE_TREE_CACHE = true;
-const bool EMUMAJ_CREATE_MAJORITY_CONF = true;
+const bool EMUMAJ_CREATE_TREE_CACHE = false;
+const bool EMUMAJ_CREATE_MAJORITY_CONF = false;
 const bool EMUMAJ_DELETE_MAJORITY_DUS = false;
 const bool EMUMAJ_CREATE_MAJORITY_DUS = false;
 const bool EMUMAJ_UPDATE_FSM_TYPES = false;
