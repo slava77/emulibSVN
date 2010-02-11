@@ -1,30 +1,51 @@
 #uses "majority_treeCache/treeCache.ctl"
 #uses "majority_treeCache/majorityLib.ctl"
 
-string majorityTopNode = "CMS_CSC";
+const string majorityTopNode = "CMS_CSC";
+
+const bool EMUMAJ_CREATE_TREE_CACHE = true;
+const bool EMUMAJ_CREATE_MAJORITY_CONF = true;
+const bool EMUMAJ_CREATE_MAJORITY_DUS = true;
+const bool EMUMAJ_UPDATE_FSM_TYPES = true;
 
 main()
 {
-  fwFsm_stopAllDomains();
+
+  return;  
+  
+  // stop FSM if it's going to be modified
+  if (EMUMAJ_CREATE_MAJORITY_DUS || EMUMAJ_UPDATE_FSM_TYPES) {
+    fwFsm_stopAllDomains();
+  }
+
   bool isSupervisor = isSupervisor();
+  // supervisor stuff
   if (isSupervisor) {
     updateInstallationDp("installation started");
-    DebugTN("Majority installation: creating tree cache");
-    bool ok = emumaj_createTreeCache();
-    if (!ok) {
-      DebugTN("Majority installation: Aborting installation due to error whil creating tree cache");
-      updateInstallationDp("Aborting installation due to error whil creating tree cache");
-      return;
-    }
-    DebugTN("Majority installation: tree cache created OK");
-  
-    DebugTN("Majority installation: deleting majority configuration");
-    majority_deleteConfig(majorityTopNode);  
-    DebugTN("Majority installation: majority configuration deleted OK");
 
-    DebugTN("Majority installation: creating majority configuration");
-    emumaj_createMajorityConfiguration();
-    DebugTN("Majority installation: majority configuration created OK");
+    // TREE CACHE    
+    if (EMUMAJ_CREATE_TREE_CACHE) {
+      DebugTN("Majority installation: creating tree cache");
+      bool ok = emumaj_createTreeCache();
+      if (!ok) {
+        DebugTN("Majority installation: Aborting installation due to error whil creating tree cache");
+        updateInstallationDp("Aborting installation due to error whil creating tree cache");
+        return;
+      }
+      DebugTN("Majority installation: tree cache created OK");
+    }
+    
+    // MAJORITY CONF.
+    if (EMUMAJ_CREATE_MAJORITY_CONF) {
+      DebugTN("Majority installation: deleting majority configuration");
+      majority_deleteConfig(majorityTopNode);  
+      DebugTN("Majority installation: majority configuration deleted OK");
+
+      DebugTN("Majority installation: creating majority configuration");
+      emumaj_createMajorityConfiguration();
+      DebugTN("Majority installation: majority configuration created OK");
+    }
+    
     updateInstallationDp("Supervisor DONE");
   } else {
     // wait for supervisor machine to finish it's installation part first  
@@ -39,18 +60,25 @@ main()
         if (message == "Supervisor DONE") {
           updateInstallationDp("installation started");
           install = true;
+        } else if (message == "CANCEL") {
+          updateInstallationDp("installation canceled");
+          return;
         }
       }
     }
   }
   
-  DebugTN("Majority installation: creating majority DUs");
-  createMajorityDUs();
-  DebugTN("Majority installation: majority DUs created OK");
-  
-  DebugTN("Majority installation: Updating FSM types");
-  emumaj_updateFsmTypes();
-  DebugTN("Majority installation: FSM types updated OK");
+  if (EMUMAJ_CREATE_MAJORITY_DUS) {
+    DebugTN("Majority installation: creating majority DUs");
+    createMajorityDUs();
+    DebugTN("Majority installation: majority DUs created OK");
+  }
+
+  if (EMUMAJ_UPDATE_FSM_TYPES) {
+    DebugTN("Majority installation: Updating FSM types");
+    emumaj_updateFsmTypes();
+    DebugTN("Majority installation: FSM types updated OK");
+  }
   
   DebugTN("Majority installation: adding majority manager");
   fwInstallation_appendManager(TRUE, "Majority", "PVSS00ctrl", "always", 30, 2, 2, "CMS_CSC_majority/majority.ctl");

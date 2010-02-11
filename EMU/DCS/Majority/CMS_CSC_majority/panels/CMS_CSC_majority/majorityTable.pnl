@@ -9,7 +9,7 @@ main()
 {
   DebugTN(\"Opening Majority table\");
   string node = $1;//\"CMS_CSC_majorTest\";
-  string topNode = \"CMS_CSC_majorTest\";
+  string topNode = \"CMS_CSC\";
 //  majority_ui_setTableMode(\"absolute\");
   majority_ui_addTable(node, topNode, 
                        \"\", \"\", makeDynString(), makeDynString(), 35, TRUE, TRUE, -1, -1, FALSE, \"\");

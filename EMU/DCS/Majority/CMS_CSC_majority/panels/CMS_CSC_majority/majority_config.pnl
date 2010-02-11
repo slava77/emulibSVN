@@ -6,7 +6,7 @@ E E E E E 1 -1 -1 0  30 20
 ""0  1
 E "#uses \"majority_treeCache/majorityLib.ctl\"
 
-string majorityTopNode = \"CMS_CSC_majorTest\";
+string majorityTopNode = \"CMS_CSC\";
 
 void configureHv(string topNode) {
   majority_addDevice(\"HV_OUTER\", // this defines the internal name of the device for the majority
@@ -632,6 +632,163 @@ E E 0 1 1 2 1 E U  0 E 150 250 197 264
 LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 10 true/false
+13 9
+"PUSH_BUTTON8"
+""
+1 260 210 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  258 208 382 235
+
+T 
+1
+LANG:1 8 Stop FSM
+"main()
+{
+  fwFsm_stopAllDomains();
+}" 0
+ E E E
+13 11
+"PUSH_BUTTON10"
+""
+1 40 280 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  38 278 162 305
+
+T 
+1
+LANG:1 16 Update FSM types
+"main()
+{
+  dyn_string typesToUpdate = makeDynString(\"CSC_LV_NODES\",
+                                           \"CSC_LV_TREE_NODES\",
+                                           \"EMUFEDNodes\",
+                                           \"EMUNodes\",
+                                           \"EMUSTBYNodes\",
+                                           \"EMUTREENodes\",
+                                           \"TEST\");
+  
+  for (int i=1; i <= dynlen(typesToUpdate); i++) {
+    string typeDp = \"fwOT_\" + typesToUpdate[i];
+    if (!dpExists(typeDp)) {
+      continue;
+    }
+    if (!dpExists(typeDp + \"_majBackup\")) {
+      int error;
+      dpCopy(typeDp, typeDp + \"_majBackup\", error);
+      string panel;
+      dyn_string components, states, actions, parameters;
+      dpGet(typeDp + \".panel\", panel,
+            typeDp + \".components\", components,
+            typeDp + \".states\", states,
+            typeDp + \".actions\", actions,
+            typeDp + \".parameters\", parameters);
+      dpSetWait(typeDp + \"_majBackup.panel\", panel,
+                typeDp + \"_majBackup.components\", components,
+                typeDp + \"_majBackup.states\", states,
+                typeDp + \"_majBackup.actions\", actions,
+                typeDp + \"_majBackup.parameters\", parameters);
+    }
+    
+    dyn_string states = makeDynString(\"OFF\",
+                                      \"FwStateOKNotPhysics\",
+                                      \"when ( $ALL$majority in_state ON )  move_to ON|when ( $ALL$majority in_state OUTER_ON )  move_to OUTER_ON|when ( $ALL$majority in_state STANDBY )  move_to STANDBY|when ( $ALL$majority in_state ERROR )  move_to ERROR|when ( $ALL$majority in_state NOT-READY )  move_to NOT-READY|\",
+                                      \"\",
+                                      \"\",
+                                      \"ERROR\",
+                                      \"FwStateAttention3\",
+                                      \"when ( $ALL$majority in_state ON )  move_to ON|when ( $ALL$majority in_state OUTER_ON )  move_to OUTER_ON|when ( $ALL$majority in_state STANDBY )  move_to STANDBY|when ( $ALL$majority in_state OFF )  move_to OFF|when ( $ALL$majority in_state NOT-READY )  move_to NOT-READY|\",
+                                      \"\",
+                                      \"\",
+                                      \"ON\",
+                                      \"FwStateOKPhysics\",
+                                      \"when ( $ALL$majority in_state OUTER_ON )  move_to OUTER_ON|when ( $ALL$majority in_state STANDBY )  move_to STANDBY|when ( $ALL$majority in_state OFF )  move_to OFF|when ( $ALL$majority in_state ERROR )  move_to ERROR|when ( $ALL$majority in_state NOT-READY )  move_to NOT-READY|\",
+                                      \"\",
+                                      \"\",
+                                      \"STANDBY\",
+                                      \"FwStateAttention1\",
+                                      \"when ( $ALL$majority in_state ON )  move_to ON|when ( $ALL$majority in_state OUTER_ON )  move_to OUTER_ON|when ( $ALL$majority in_state OFF )  move_to OFF|when ( $ALL$majority in_state ERROR )  move_to ERROR|when ( $ALL$majority in_state NOT-READY )  move_to NOT-READY|\",
+                                      \"\",
+                                      \"\",
+                                      \"OUTER_ON\",
+                                      \"FwStateAttention1\",
+                                      \"when ( $ALL$majority in_state ON )  move_to ON|when ( $ALL$majority in_state STANDBY )  move_to STANDBY|when ( $ALL$majority in_state OFF )  move_to OFF|when ( $ALL$majority in_state ERROR )  move_to ERROR|when ( $ALL$majority in_state NOT-READY )  move_to NOT-READY|\",
+                                      \"\",
+                                      \"\",
+                                      \"NOT-READY\",
+                                      \"FwStateAttention1\",
+                                      \"when ( $ALL$majority in_state ON )  move_to ON|when ( $ALL$majority in_state OUTER_ON )  move_to OUTER_ON|when ( $ALL$majority in_state STANDBY )  move_to STANDBY|when ( $ALL$majority in_state OFF )  move_to OFF|when ( $ALL$majority in_state ERROR )  move_to ERROR|\",
+                                      \"\",
+                                      \"\");
+    dpSetWait(typeDp + \".states\", states);
+  }
+  
+  DebugTN(\"DONE\");
+}" 0
+ E E E
+13 12
+"PUSH_BUTTON11"
+""
+1 250 280 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  248 278 372 305
+
+T 
+1
+LANG:1 7 Add FED
+"main()
+{
+    fwFsm_stopAllDomains();
+  mudcsSuper_createFsmReferenceNode(\"CMS_CSC\", \"CSC_FED\", 1);
+  
+  fwFsmTree_generateAll();
+  fwFsmTree_refreshTree();  
+  
+  DebugTN(\"DONE\");
+}
+
+void mudcsSuper_createFsmReferenceNode(string parent, string nodeName, int cuFlag) {
+  string type;
+  fwCU_getType(nodeName, type);
+  if (strlen(type) == 0) {
+    DebugTN(\"ERROR: Cannot determine type of node \" + nodeName + \". Node is not created.\");
+    return;
+  }
+  mudcsSuper_createFsmNode(parent, nodeName, type, cuFlag);
+}
+
+void mudcsSuper_createFsmNode(string parent, string nodeName, string type, int cuFlag) {
+  DebugTN(\"===== creating \" + nodeName + \" of type \" + type + \" to \" + parent);
+  fwFsmTree_addNode(parent, nodeName, type, cuFlag);
+}
+" 0
+ E E E
 0
 LAYER, 1 
 1
