@@ -97,10 +97,16 @@ main()
     emumaj_updateFsmTypes();
     DebugTN("Majority installation: FSM types updated OK");
   }
+
+    
+  if (EMUMAJ_CREATE_MAJORITY_DUS || EMUMAJ_DELETE_MAJORITY_DUS || EMUMAJ_UPDATE_FSM_TYPES) {
+    fwFsmTree_generateAll();
+    fwFsmTree_refreshTree();
+  }  
   
   DebugTN("Majority installation: adding majority manager");
   fwInstallation_appendManager(TRUE, "Majority", "PVSS00ctrl", "always", 30, 2, 2, "CMS_CSC_majority/majority.ctl");
-  DebugTN("Majority installation: majority manager added OK");
+  DebugTN("Majority installation: majority manager added OK");  
   
   if (!isSupervisor) {
     updateInstallationDp("installation finished");
@@ -153,9 +159,6 @@ void emumaj_deleteMajorityDUs() {
 //       if (emu_checkException(ex)) { return; }  
     }
   }  
-  
-  fwFsmTree_generateAll();
-  fwFsmTree_refreshTree();  
   
   DebugTN("DONE");
 }
@@ -272,9 +275,6 @@ void createMajorityDUs() {
   for (int i=1; i <= dynlen(allTypes); i++) {
     DebugTN("    " + allTypes[i]);
   }
-  
-  fwFsmTree_generateAll();
-  fwFsmTree_refreshTree();  
   
   DebugTN("DONE");
 }
@@ -394,7 +394,7 @@ void emumaj_restoreFsmTypes() {
                 typeDp + ".actions", actions,
                 typeDp + ".parameters", parameters);
     }
-  }
+  }  
 }
 
 // CSC majority configuration
