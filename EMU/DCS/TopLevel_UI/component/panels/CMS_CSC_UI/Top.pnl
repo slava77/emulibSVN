@@ -1312,16 +1312,18 @@ LANG:1 0
   posY += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y;
   
   majority_ui_setTableMode(\"ratio\");
-  majority_ui_addTable(\"CMS_CSC_majorTest\", \"CMS_CSC_majorTest\", \"\", \"\", 
+  majority_ui_addTable(\"CMS_CSC\", \"CMS_CSC\", \"\", \"\", 
                        makeDynString(\"HV_OUTER:on\", \"HV_OUTER:standby\", \"HV_OUTER:error\", 
                                      \"HV_INNER:on\", \"HV_INNER:standby\", \"HV_INNER:error\",
+                                     \"HV_ME11:on\", \"HV_ME11:standby\", \"HV_ME11:error\",
                                      \"LV:on\", \"LV:error\", \"LV:no_communication\",
                                      \"TEMP:ok\", \"TEMP:alert\", \"TEMP:no_communication\"),
                        makeDynString(\"HV_OUTER:on\", \"HV_OUTER:standby\", \"HV_OUTER:error\", 
                                      \"HV_INNER:on\", \"HV_INNER:standby\", \"HV_INNER:error\",
+                                     \"HV_ME11:on\", \"HV_ME11:standby\", \"HV_ME11:error\",
                                      \"LV:on\", \"LV:error\", \"LV:no comm.\",
                                      \"TEMP:ok\", \"TEMP:alert\", \"TEMP:no comm.\"),
-                       100, false, true, 
+                       107, false, true, 
                        posX, posY, false, \"\");
   majority_ui_setTableMode(\"percentage\"); // set it back to default not to affect other tables  
 }" 0

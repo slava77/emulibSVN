@@ -756,7 +756,7 @@ E E 0 1 1 2 1 E 1 0 1 -397 6 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4
 2 48
 "PRIMITIVE_TEXT3"
 ""
-1 -918.8788812579383 325 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -1228.442462675279 335 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -775,7 +775,7 @@ LANG:1 21 Communication problem
 2 57
 "upsOnBatteryBack"
 ""
-1 47.40994847738801 158.825971625358 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 48.19128308990824 158.8715135970437 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
@@ -1055,16 +1055,18 @@ LANG:1 0
   posY += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y;
   
   majority_ui_setTableMode(\"ratio\");
-  majority_ui_addTable(\"CMS_CSC_majorTest\", \"CMS_CSC_majorTest\", \"\", \"\", 
+  majority_ui_addTable(\"CMS_CSC\", \"CMS_CSC\", \"\", \"\", 
                        makeDynString(\"HV_OUTER:on\", \"HV_OUTER:standby\", \"HV_OUTER:error\", 
                                      \"HV_INNER:on\", \"HV_INNER:standby\", \"HV_INNER:error\",
+                                     \"HV_ME11:on\", \"HV_ME11:standby\", \"HV_ME11:error\",
                                      \"LV:on\", \"LV:error\", \"LV:no_communication\",
                                      \"TEMP:ok\", \"TEMP:alert\", \"TEMP:no_communication\"),
                        makeDynString(\"HV_OUTER:on\", \"HV_OUTER:standby\", \"HV_OUTER:error\", 
                                      \"HV_INNER:on\", \"HV_INNER:standby\", \"HV_INNER:error\",
+                                     \"HV_ME11:on\", \"HV_ME11:standby\", \"HV_ME11:error\",
                                      \"LV:on\", \"LV:error\", \"LV:no comm.\",
                                      \"TEMP:ok\", \"TEMP:alert\", \"TEMP:no comm.\"),
-                       100, false, true, 
+                       87, false, true, 
                        posX, posY, false, \"\");
   majority_ui_setTableMode(\"percentage\"); // set it back to default not to affect other tables  
 }" 0
@@ -1294,25 +1296,6 @@ E E 0 1 1 2 1 E U  1 E 839.9999999999996 772 913 788
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 13 Value Monitor
-2 94
-"PRIMITIVE_TEXT13"
-""
-1 30 1080 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
- E E
-108 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 30 1080 89 1094
-0 2 2 "0s" 0 0 0 192 0 0  30 1080 1
-1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
-0 1
-LANG:1 13 Not installed
 0
 LAYER, 1 
 1
