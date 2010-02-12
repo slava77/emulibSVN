@@ -2,7 +2,7 @@
 <persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
   <persistence-unit name="CdwPU" transaction-type="JTA">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
-    <jta-data-source>jdbc/devdb10</jta-data-source>
+    <jta-data-source>jdbc/cdw</jta-data-source>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="hibernate.hbm2ddl.auto" value="update"/>
@@ -42,11 +42,15 @@
       <!--property name="hibernate.connection.username" value="cms_csc_dw"/>
       <property name="hibernate.connection.password" value="dw"/>
       <property name="hibernate.connection.url" value="jdbc:oracle:thin:@localhost:1521:XE"/-->
-      <property name="hibernate.connection.username" value="cms_valdas"/>
+      <!--property name="hibernate.connection.username" value="cms_valdas"/>
       <property name="hibernate.connection.password" value="cms08valdas"/>
-      <property name="hibernate.connection.url" value="jdbc:oracle:thin:@oradev10.cern.ch:10520:D10"/>
+      <property name="hibernate.connection.url" value="jdbc:oracle:thin:@oradev10.cern.ch:10520:D10"/-->
       <!--property name="hibernate.connection.username" value="CMS_MUON_ENDCAP_EVKA"/>
-      <property name="hibernate.connection.password" value="cms08evka"/-->
+      <property name="hibernate.connection.password" value="cms08evka"/>
+      <property name="hibernate.connection.url" value="jdbc:oracle:thin:@oradev10.cern.ch:10520:D10"/-->
+      <property name="hibernate.connection.username" value="CMS_ALCT"/>
+      <property name="hibernate.connection.password" value="emualct678"/>
+      <property name="hibernate.connection.url" value="jdbc:oracle:thin:@oradev10.cern.ch:10520:D10"/>
       <property name="hibernate.max_fetch_depth" value="3"/>
       <property name="hibernate.cache.provider_class" value="net.sf.ehcache.hibernate.NoCacheProvider"/>
       <property name="net.sf.ehcache.configurationResourceName" value="ehcache.xml"/>
