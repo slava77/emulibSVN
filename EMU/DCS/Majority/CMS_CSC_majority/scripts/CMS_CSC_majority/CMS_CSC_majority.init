@@ -163,10 +163,10 @@ void emumaj_deleteTreeCacheAndMajorityDps(dyn_string systemNamesToDelete, dyn_st
 
   string searchPattern = "{";
   for (int i=1; i <= dynlen(systemNamesToDelete); i++) {
-    searchPattern += systemNamesToDelete[i];
     if (i > 1) {
       searchPattern += ",";
     }
+    searchPattern += systemNamesToDelete[i];
   }
   searchPattern += "}:*";
   
