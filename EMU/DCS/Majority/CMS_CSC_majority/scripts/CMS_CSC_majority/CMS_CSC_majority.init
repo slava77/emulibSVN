@@ -13,15 +13,20 @@ const bool EMUMAJ_RESTORE_FSM_TYPES = false;
 main()
 {
 
-  if (isSupervisor()) {
-    dpCreate("labas", "MUDCS_MAJORITY_STRING", 163);
-    dpCreate("labas", "MUDCS_MAJORITY_STRING", 300);
-    updateInstallationDp("done");
-  }
-  return;
-  
   // define the top nodes
   majorityTopNodes = makeDynString("CMS_CSC", "CMS_CSC_PLUS", "CMS_CSC_MINUS");
+
+  
+  
+  
+                if (isSupervisor()) {
+                  dpCreate("labas", "MUDCS_MAJORITY_STRING", 163);
+                  dpCreate("labas", "MUDCS_MAJORITY_STRING", 300);
+                  updateInstallationDp("done");
+                }
+                return;
+
+
   
   
   // stop FSM if it's going to be modified
