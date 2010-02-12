@@ -3,8 +3,9 @@
 
 dyn_string majorityTopNodes;
 
-const bool EMUMAJ_CREATE_TREE_CACHE = true;
-const bool EMUMAJ_CREATE_MAJORITY_CONF = true;
+const bool EMUMAJ_DELETE_TREE_CACHE_AND_MAJORITY_CONF = true;
+const bool EMUMAJ_CREATE_TREE_CACHE = false;
+const bool EMUMAJ_CREATE_MAJORITY_CONF = false;
 const bool EMUMAJ_DELETE_MAJORITY_DUS = false;
 const bool EMUMAJ_CREATE_MAJORITY_DUS = false;
 const bool EMUMAJ_UPDATE_FSM_TYPES = false;
@@ -13,8 +14,18 @@ const bool EMUMAJ_RESTORE_FSM_TYPES = false;
 main()
 {
 
+  dyn_string ex;
+  
   // define the top nodes
   majorityTopNodes = makeDynString("CMS_CSC");//, "CMS_CSC_PLUS", "CMS_CSC_MINUS");
+  // system names used by supervisor to delete tree cache and majority conf DPs
+  dyn_string sysNames = makeDynString("cms_csc_dcs_09",
+                                      "cms_csc_dcs_00",
+                                      "cms_csc_dcs_02",
+                                      "cms_csc_dcs_07",
+                                      "cms_csc_dcs_08",
+                                      "CMS_CSC_DCS_01",
+                                      "csc_dcs_lv1");
   
   // stop FSM if it's going to be modified
   if (EMUMAJ_CREATE_MAJORITY_DUS || EMUMAJ_DELETE_MAJORITY_DUS || EMUMAJ_UPDATE_FSM_TYPES || EMUMAJ_RESTORE_FSM_TYPES) {
@@ -24,53 +35,59 @@ main()
   bool isSupervisor = isSupervisor();
   // supervisor stuff
   if (isSupervisor) {
-    updateInstallationDp("installation started");
+    updateInstallationDp("Installation started");
 
+    // DELETE TREE CACHE + MAJORITY DPs
+    if (EMUMAJ_DELETE_TREE_CACHE_AND_MAJORITY_CONF) {
+      emumaj_debug("Deleting tree cache and majority DPs", true);
+      emumaj_deleteTreeCacheAndMajorityDps(sysNames, ex);
+      if (emu_checkException(ex)) {
+        emumaj_debug("Error while deleting tree cache and majority DPs: " + ex[1], true);
+        return;
+      }
+    }
+    
     // TREE CACHE    
     if (EMUMAJ_CREATE_TREE_CACHE) {
-      DebugTN("Majority installation: creating tree cache");
+      emumaj_debug("Creating tree cache", true);
       for (int i=1; i <= dynlen(majorityTopNodes); i++) {
         bool ok = emumaj_createTreeCache(majorityTopNodes[i]);
         if (!ok) {
-          DebugTN("Majority installation: Aborting installation due to error whil creating tree cache for " + majorityTopNodes[i]);
-          updateInstallationDp("Aborting installation due to error whil creating tree cache for " + majorityTopNodes[i]);
+          emumaj_debug("Aborting installation due to error whil creating tree cache for " + majorityTopNodes[i], true);
           return;
         }
       }
-      DebugTN("Majority installation: tree cache created OK");
     }
     
     // MAJORITY CONF.
     if (EMUMAJ_CREATE_MAJORITY_CONF) {
-      DebugTN("Majority installation: deleting majority configuration");
+      emumaj_debug("Deleting majority configuration", true);
       for (int i=1; i <= dynlen(majorityTopNodes); i++) {
         majority_deleteConfig(majorityTopNodes[i]);
       }
-      DebugTN("Majority installation: majority configuration deleted OK");
 
-      DebugTN("Majority installation: creating majority configuration");
+      emumaj_debug("Creating majority configuration", true);
       for (int i=1; i <= dynlen(majorityTopNodes); i++) {
         emumaj_createMajorityConfiguration(majorityTopNodes[i]);
       }
-      DebugTN("Majority installation: majority configuration created OK");
     }
     
-    updateInstallationDp("Supervisor DONE");
+    emumaj_debug("Supervisor DONE", true);
   } else if (EMUMAJ_CREATE_MAJORITY_DUS || EMUMAJ_UPDATE_FSM_TYPES){
     // wait for supervisor machine to finish it's installation part first  
     bool install = false;
     while (!install) {
-      DebugTN("Majority installation: Waiting for supervisor to finish...");
+      emumaj_debug("Waiting for supervisor to finish...", true);
       delay(5);
       dyn_string installationDps = dpNames("*:MAJORITY_INSTALLATION", "MUDCS_MAJORITY_STRING");
       for (int i=1; i <= dynlen(installationDps); i++) {
         string message;
         dpGet(installationDps[i] + ".value", message);
         if (message == "Supervisor DONE") {
-          updateInstallationDp("installation started");
+          emumaj_debug("installation started", true);
           install = true;
         } else if (message == "CANCEL") {
-          updateInstallationDp("installation canceled");
+          emumaj_debug("installation canceled", true);
           return;
         }
       }
@@ -78,27 +95,23 @@ main()
   }
   
   if (EMUMAJ_DELETE_MAJORITY_DUS) {
-    DebugTN("Majority installation: deleting majority DUs");
+    emumaj_debug("Deleting majority DUs");
     emumaj_deleteMajorityDUs();
-    DebugTN("Majority installation: majority DUs deleted OK");
   }
   
   if (EMUMAJ_CREATE_MAJORITY_DUS) {
-    DebugTN("Majority installation: creating majority DUs");
+    emumaj_debug("Creating majority DUs");
     createMajorityDUs();
-    DebugTN("Majority installation: majority DUs created OK");
   }
 
   if (EMUMAJ_RESTORE_FSM_TYPES) {
-    DebugTN("Majority installation: Restoring FSM types");
+    emumaj_debug("Restoring FSM types");
     emumaj_restoreFsmTypes();
-    DebugTN("Majority installation: FSM types restored OK");
   }
   
   if (EMUMAJ_UPDATE_FSM_TYPES) {
-    DebugTN("Majority installation: Updating FSM types");
+    emumaj_debug("Updating FSM types");
     emumaj_updateFsmTypes();
-    DebugTN("Majority installation: FSM types updated OK");
   }
 
     
@@ -107,12 +120,18 @@ main()
     fwFsmTree_refreshTree();
   }  
   
-  DebugTN("Majority installation: adding majority manager");
+  emumaj_debug("Adding majority manager");
   fwInstallation_appendManager(TRUE, "Majority", "PVSS00ctrl", "always", 30, 2, 2, "CMS_CSC_majority/majority.ctl");
-  DebugTN("Majority installation: majority manager added OK");  
   
   if (!isSupervisor) {
-    updateInstallationDp("installation finished");
+    emumaj_debug("installation finished", true);
+  }
+}
+
+void emumaj_debug(string msg, bool putToInstallationDp = false) {
+  DebugTN("Majority installation: " + msg);
+  if (putToInstallationDp) {
+    updateInstallationDp(msg);
   }
 }
 
@@ -132,6 +151,36 @@ bool isSupervisor() {
     }
   }
   return isSupervisor;
+}
+
+void emumaj_deleteTreeCacheAndMajorityDps(dyn_string systemNamesToDelete, dyn_string &exception_info) {
+  dyn_string dpTypesToDelete = makeDynString("majority",
+                                             "majorityConfig",
+                                             "majorityCounts",
+                                             "majorityStruct",
+                                             "treeCache",
+                                             "treeCache_included");
+
+  string searchPattern = "{";
+  for (int i=1; i <= dynlen(systemNamesToDelete); i++) {
+    searchPattern += systemNamesToDelete[i];
+    if (i > 1) {
+      searchPattern += ",";
+    }
+  }
+  searchPattern += "}:*";
+  
+  for (int i=1; i <= dynlen(dpTypesToDelete); i++) {
+    dyn_string dpsToDelete = dpNames(searchPattern, dpTypesToDelete[i]);
+    emumaj_debug("Deleting DPs of type " + dpTypesToDelete[i] + " (" + dynlen(dpsToDelete) + ")", true);
+    for (int j=1; j <= dynlen(dpsToDelete); j++) {
+      int rc = dpDelete(dpsToDelete[j]);
+      if (rc < 0) {
+        dynAppend(exception_info, "Error while deleting " + dpsToDelete[j] + " (of type " + dpTypesToDelete[i] + ")");
+        return;
+      }
+    }
+  }
 }
 
 void emumaj_deleteMajorityDUs() { 
