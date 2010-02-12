@@ -49,8 +49,8 @@ main()
     
     // TREE CACHE    
     if (EMUMAJ_CREATE_TREE_CACHE) {
-      emumaj_debug("Creating tree cache", true);
       for (int i=1; i <= dynlen(majorityTopNodes); i++) {
+        emumaj_debug("Creating tree cache for " + majorityTopNodes[i], true);
         bool ok = emumaj_createTreeCache(majorityTopNodes[i]);
         if (!ok) {
           emumaj_debug("Aborting installation due to error whil creating tree cache for " + majorityTopNodes[i], true);
@@ -61,13 +61,13 @@ main()
     
     // MAJORITY CONF.
     if (EMUMAJ_CREATE_MAJORITY_CONF) {
-      emumaj_debug("Deleting majority configuration", true);
       for (int i=1; i <= dynlen(majorityTopNodes); i++) {
+        emumaj_debug("Deleting majority configuration for " + majorityTopNodes[i], true);
         majority_deleteConfig(majorityTopNodes[i]);
       }
 
-      emumaj_debug("Creating majority configuration", true);
       for (int i=1; i <= dynlen(majorityTopNodes); i++) {
+        emumaj_debug("Creating majority configuration for " + majorityTopNodes[i], true);
         emumaj_createMajorityConfiguration(majorityTopNodes[i]);
       }
     }
