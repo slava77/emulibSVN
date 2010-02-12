@@ -63,6 +63,9 @@ E "// Common libs
 #uses \"CMS_CSC_UI/emuui_graphics.ctl\"
 #uses \"CMS_CSC_UI/background_checks/emuui_backgroundChecksMain.ctl\"
 
+// Majority library
+#uses \"majority_treeCache/majorityLib.ctl\"
+
 // some panel-wide constants and variables
 const int EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_X = 10;
 const int EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y = 20;
