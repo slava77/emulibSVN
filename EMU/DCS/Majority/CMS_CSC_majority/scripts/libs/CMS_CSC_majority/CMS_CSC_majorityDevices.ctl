@@ -1,5 +1,5 @@
-global const int EMUMAJ_HV_STATE_ON_VMON_ACCURACY = 50;
-global const int EMUMAJ_HV_STANDBY_VOLTAGE = 3000;
+global int EMUMAJ_HV_STATE_ON_VMON_ACCURACY = 50;
+global int EMUMAJ_HV_STANDBY_VOLTAGE = 3000;
 
 /** values here are ".status",".off_channels", ".last_vset". States are ON, STANDBY and ERROR */
 dyn_int emumaj_hvStateCounts(dyn_anytype values, int &weight, bool calcTotal, string node, string majType) {
@@ -376,6 +376,7 @@ dyn_int emumaj_onOffErrorFsmStateCounts(dyn_anytype values, int &weight, bool ca
 
 /** value here is ".fsm.currentState" (internal FSM DPE). States are ON, STANDBY and ERROR */
 dyn_int emumaj_onOffStandbyErrorFsmStateCounts(dyn_anytype values, int &weight, bool calcTotal, string node) {
+  DebugTN("=========================== jou: " + EMUMAJ_HV_STATE_ON_VMON_ACCURACY + ", " + EMUMAJ_HV_STANDBY_VOLTAGE);
   string state = values[1];
   int on = 0,
       standby = 0,
