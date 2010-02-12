@@ -17,7 +17,7 @@ main()
   dyn_string ex;
   
   // define the top nodes
-  majorityTopNodes = makeDynString("CMS_CSC");//, "CMS_CSC_PLUS", "CMS_CSC_MINUS");
+  majorityTopNodes = makeDynString("CMS_CSC", "CMS_CSC_PLUS", "CMS_CSC_MINUS");
   // system names used by supervisor to delete tree cache and majority conf DPs
   dyn_string sysNames = makeDynString("cms_csc_dcs_09",
                                       "cms_csc_dcs_00",
