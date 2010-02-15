@@ -3,12 +3,12 @@
 
 dyn_string majorityTopNodes;
 
-const bool EMUMAJ_DELETE_TREE_CACHE_AND_MAJORITY_CONF = true;
-const bool EMUMAJ_CREATE_TREE_CACHE = true;
+const bool EMUMAJ_DELETE_TREE_CACHE_AND_MAJORITY_CONF = false;
+const bool EMUMAJ_CREATE_TREE_CACHE = false;
 const bool EMUMAJ_CREATE_MAJORITY_CONF = true;
-const bool EMUMAJ_DELETE_MAJORITY_DUS = true;
-const bool EMUMAJ_CREATE_MAJORITY_DUS = true;
-const bool EMUMAJ_UPDATE_FSM_TYPES = true;
+const bool EMUMAJ_DELETE_MAJORITY_DUS = false;
+const bool EMUMAJ_CREATE_MAJORITY_DUS = false;
+const bool EMUMAJ_UPDATE_FSM_TYPES = false;
 const bool EMUMAJ_RESTORE_FSM_TYPES = false;
 
 main()
@@ -61,11 +61,6 @@ main()
     
     // MAJORITY CONF.
     if (EMUMAJ_CREATE_MAJORITY_CONF) {
-      for (int i=1; i <= dynlen(majorityTopNodes); i++) {
-        emumaj_debug("Deleting majority configuration for " + majorityTopNodes[i], true);
-        majority_deleteConfig(majorityTopNodes[i]);
-      }
-
       for (int i=1; i <= dynlen(majorityTopNodes); i++) {
         emumaj_debug("Creating majority configuration for " + majorityTopNodes[i], true);
         emumaj_createMajorityConfiguration(majorityTopNodes[i]);
@@ -453,14 +448,14 @@ void emumaj_restoreFsmTypes() {
 void configureHv(string topNode) {
   majority_addDevice("HV_OUTER", // this defines the internal name of the device for the majority
   "HV_1", // this is the corresponding Device Unit Type
-  makeDynString(".status",".off_channels", ".last_vset"), // define the datapoint elements you need to connect
+  makeDynString(".status",".off_channels", ".last_vset", ".reserve1"), // define the datapoint elements you need to connect
   makeDynString("on","standby","error"), // these are the basic device states for this device
   18 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
   );
             
   majority_addDevice("HV_INNER", // this defines the internal name of the device for the majority
   "HV_1", // this is the corresponding Device Unit Type
-  makeDynString(".status",".off_channels", ".last_vset"), // define the datapoint elements you need to connect
+  makeDynString(".status",".off_channels", ".last_vset", ".reserve1"), // define the datapoint elements you need to connect
   makeDynString("on","standby","error"), // these are the basic device states for this device
   18 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
   );
