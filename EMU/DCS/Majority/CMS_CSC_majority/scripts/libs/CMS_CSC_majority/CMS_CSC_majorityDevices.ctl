@@ -147,6 +147,7 @@ dyn_int emumaj_lvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
   
   if ((chamberState == -2) || (status == -2)) {
     noCommunication = weight;
+    return makeDynInt(on, error, noCommunication);
   }
   
   // go through all the channels (except the masked ones) and collect their states
@@ -161,18 +162,16 @@ dyn_int emumaj_lvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
       dyn_int v33States = emumaj_lvCfebChannelStates(dataDp, i, "33");
       dyn_int v50States = emumaj_lvCfebChannelStates(dataDp, i, "50");
       dyn_int v60States = emumaj_lvCfebChannelStates(dataDp, i, "60");
-//      if (noCommunication == 0) {
-        on += v33States[1] + v50States[1] + v60States[1];
-//      }
+      
+      on += v33States[1] + v50States[1] + v60States[1];
       error += v33States[2] + v50States[2] + v60States[2];
     } else { // ALCT
       dyn_int v18States = emumaj_lvAlctChannelStates(dataDp, "18");
       dyn_int v33States = emumaj_lvAlctChannelStates(dataDp, "33");
       dyn_int v55States = emumaj_lvAlctChannelStates(dataDp, "55");
       dyn_int v56States = emumaj_lvAlctChannelStates(dataDp, "56");
-//      if (noCommunication == 0) {
-        on += v18States[1] + v33States[1] + v55States[1] + v56States[1];
-//      }
+
+      on += v18States[1] + v33States[1] + v55States[1] + v56States[1];
       error += v18States[2] + v33States[2] + v55States[2] + v56States[2];
     }
   }
@@ -246,6 +245,7 @@ dyn_int emumaj_temperatureStateCounts(dyn_anytype values, int &weight, bool calc
   
   if ((chamberState == -2) || (status == -2)) {
     noCommunication = weight;
+    return makeDynInt(ok, error, noCommunication);
   }
   
   // go through all the channels (except the masked ones) and collect their states
@@ -259,7 +259,7 @@ dyn_int emumaj_temperatureStateCounts(dyn_anytype values, int &weight, bool calc
     if (i < 6) { //CFEB
       int alert;
       dpGet(dataDp + ".data.t_cfeb.v" + i + ":_alert_hdl.._act_state", alert);
-      if (alert > 0) {
+      if ((alert > 0) && (status < 0)) {
         error++;
       } else {
         ok++;
@@ -267,7 +267,7 @@ dyn_int emumaj_temperatureStateCounts(dyn_anytype values, int &weight, bool calc
     } else if (i == 6) { // ALCT
       int alert;
       dpGet(dataDp + ".data.t_alct.v1:_alert_hdl.._act_state", alert);
-      if (alert > 0) {
+      if ((alert > 0) && (status < 0)) {
         error++;
       } else {
         ok++;
@@ -275,7 +275,7 @@ dyn_int emumaj_temperatureStateCounts(dyn_anytype values, int &weight, bool calc
     } else if (i == 7) { // DMB
       int alert;
       dpGet(dataDp + ".data.t_dmb.v1:_alert_hdl.._act_state", alert);
-      if (alert > 0) {
+      if ((alert > 0) && (status < 0)) {
         error++;
       } else {
         ok++;
