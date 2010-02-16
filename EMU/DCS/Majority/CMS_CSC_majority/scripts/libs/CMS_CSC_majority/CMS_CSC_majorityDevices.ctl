@@ -82,7 +82,7 @@ dyn_int emumaj_hvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
   return makeDynInt(on, standby, error);
 }
 
-dyn_int emumaj_hvChannelStates(string dp, int onVoltage, int standbyVoltage, bool checkForAlerts = true) {
+dyn_int emumaj_hvChannelStates(string dp, int vset, int standbyVoltage, bool checkForAlerts = true) {
   float vmon;
   int alert = 0;
   dpGet(dp + ".vmon", vmon);
@@ -99,10 +99,10 @@ dyn_int emumaj_hvChannelStates(string dp, int onVoltage, int standbyVoltage, boo
   }  
 
   if ((vmon > standbyVoltage - EMUMAJ_HV_STATE_ON_VMON_ACCURACY) && 
-            (vmon < standbyVoltage + EMUMAJ_HV_STATE_ON_VMON_ACCURACY)){
+      (vmon < standbyVoltage + EMUMAJ_HV_STATE_ON_VMON_ACCURACY)){
     standby = 1;
-  } else if ((vmon > onVoltage - EMUMAJ_HV_STATE_ON_VMON_ACCURACY) && 
-      (vmon < onVoltage + EMUMAJ_HV_STATE_ON_VMON_ACCURACY)) {
+  } else if ((vmon > vset - EMUMAJ_HV_STATE_ON_VMON_ACCURACY) && 
+      (vmon < vset + EMUMAJ_HV_STATE_ON_VMON_ACCURACY)) {
     on = 1;
   }
   
