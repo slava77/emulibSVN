@@ -243,7 +243,7 @@ LANG:1 0
 {
   lblLoading.visible = true;
   waitForEmuUiInitialize();
-  delay(27); // wait a bit till everything else is more or less initialized (in particular the chambers are drawn)
+  delay(30); // wait a bit till everything else is more or less initialized (in particular the chambers are drawn)
   lblLoading.visible = false;
   
   int width, height;

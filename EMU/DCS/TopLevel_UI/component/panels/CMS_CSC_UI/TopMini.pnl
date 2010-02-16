@@ -756,7 +756,7 @@ E E 0 1 1 2 1 E 1 0 1 -397 6 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4
 2 48
 "PRIMITIVE_TEXT3"
 ""
-1 -1839.302422084036 355 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -2140.647936172573 365 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -775,7 +775,7 @@ LANG:1 21 Communication problem
 2 57
 "upsOnBatteryBack"
 ""
-1 49.35585614860437 158.9355392090195 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 49.7855207000614 158.9577215943408 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
@@ -1125,7 +1125,7 @@ LANG:1 0
 {
   lblLoading.visible = true;
   waitForEmuUiInitialize();
-  delay(27); // wait a bit till everything else is more or less initialized (in particular the chambers are drawn)
+  delay(30); // wait a bit till everything else is more or less initialized (in particular the chambers are drawn)
   lblLoading.visible = false;
   
   int width, height;
