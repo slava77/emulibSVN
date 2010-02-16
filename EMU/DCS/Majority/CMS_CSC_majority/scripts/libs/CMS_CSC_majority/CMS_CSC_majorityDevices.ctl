@@ -98,12 +98,20 @@ dyn_int emumaj_hvChannelStates(string dp, int vset, int standbyVoltage, bool che
     error = 1;
   }  
 
-  if ((vmon > standbyVoltage - EMUMAJ_HV_STATE_ON_VMON_ACCURACY) && 
-      (vmon < standbyVoltage + EMUMAJ_HV_STATE_ON_VMON_ACCURACY)){
-    standby = 1;
-  } else if ((vmon > vset - EMUMAJ_HV_STATE_ON_VMON_ACCURACY) && 
-      (vmon < vset + EMUMAJ_HV_STATE_ON_VMON_ACCURACY)) {
-    on = 1;
+  if (vset > standbyVoltage + EMUMAJ_HV_STATE_ON_VMON_ACCURACY) { // going to ON
+    if (vmon > vset - EMUMAJ_HV_STATE_ON_VMON_ACCURACY) { // it's ON
+      on = 1;
+    } else if (vmon > standbyVoltage - EMUMAJ_HV_STATE_ON_VMON_ACCURACY) { // it's passed standby voltage - keep in standby
+      standby = 1;
+    } // else it's off
+  } else {
+    // it's in standby
+    if ((vmon <= standbyVoltage + EMUMAJ_HV_STATE_ON_VMON_ACCURACY) && 
+        (vmon >= standbyVoltage - EMUMAJ_HV_STATE_ON_VMON_ACCURACY)){
+      standby = 1;
+    } else if (vmon > standbyVoltage + EMUMAJ_HV_STATE_ON_VMON_ACCURACY) {
+      on = 1;
+    }
   }
   
   return makeDynInt(on, standby, error);
