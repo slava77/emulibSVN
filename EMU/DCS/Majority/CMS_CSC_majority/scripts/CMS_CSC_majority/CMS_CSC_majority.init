@@ -74,7 +74,7 @@ main()
     bool install = false;
     while (!install) {
       emumaj_debug("Waiting for supervisor to finish...", true);
-      delay(5);
+      delay(30);
       dyn_string installationDps = dpNames("*:MAJORITY_INSTALLATION", "MUDCS_MAJORITY_STRING");
       for (int i=1; i <= dynlen(installationDps); i++) {
         string message;
