@@ -30,8 +30,17 @@ main()
                                       "csc_dcs_lv1");
 
   if (isSupervisor()) {
-    fwFsmTree_removeNode("FSM", "CMS_CSC_PLUS");
-    fwFsmTree_removeNode("FSM", "CMS_CSC_MINUS");
+    dyn_string dps = dpNames("*", "_FwTreeNode");
+    for (int i=1; i <= dynlen(dps); i++) {
+      string parent;
+      dpGet(dps[i] + ".parent", parent);
+      if ((parent == "fwTN_CSC_HV_PLUS") || (parent == "fwTN_CSC_HV_MINUS")) {
+        dpDelete(dps[i]);
+      }
+    }
+    emumaj_debug("DONE deleting, take a look, sleeping 60s", true);
+    delay(60);
+    mudcsSuper_createCentralDcsFsm();
     emumaj_debug("DONE", true);
   }
   return;
