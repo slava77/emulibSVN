@@ -4,9 +4,9 @@
 
 dyn_string majorityTopNodes;
 
-const bool EMUMAJ_DELETE_TREE_CACHE_AND_MAJORITY_CONF = false;
-const bool EMUMAJ_CREATE_TREE_CACHE = false;
-const bool EMUMAJ_CREATE_MAJORITY_CONF = false;
+const bool EMUMAJ_DELETE_TREE_CACHE_AND_MAJORITY_CONF = true;
+const bool EMUMAJ_CREATE_TREE_CACHE = true;
+const bool EMUMAJ_CREATE_MAJORITY_CONF = true;
 const bool EMUMAJ_DELETE_MAJORITY_DUS = false;
 const bool EMUMAJ_CREATE_MAJORITY_DUS = false;
 const bool EMUMAJ_UPDATE_FSM_TYPES = false;
@@ -28,32 +28,6 @@ main()
                                       "cms_csc_dcs_08",
                                       "CMS_CSC_DCS_01",
                                       "csc_dcs_lv1");
-
-  if (isSupervisor()) {
-    fwFsmTree_removeNode("FSM", "CMS_CSC_PLUS");
-    fwFsmTree_removeNode("FSM", "CMS_CSC_MINUS");
-
-    dyn_string dps = dpNames("*", "_FwTreeNode");
-    for (int i=1; i <= dynlen(dps); i++) {
-      string parent;
-      dpGet(dps[i] + ".parent", parent);
-      if ((parent == "fwTN_CSC_HV_PLUS") || 
-          (parent == "fwTN_CSC_HV_MINUS") ||
-          (parent == "fwTN_CMS_CSC_PLUS") ||
-          (parent == "fwTN_CMS_CSC_MINUS") ||
-          (strpos(dps[i], "fwTN_CMS_CSC_PLUS") >= 0) ||
-          (strpos(dps[i], "fwTN_CMS_CSC_MINUS") >= 0) ||
-          (strpos(dps[i], "fwTN_CSC_HV_PLUS") >= 0) ||
-          (strpos(dps[i], "fwTN_CSC_HV_MINUS") >= 0)) {
-        dpDelete(dps[i]);
-      }
-    }
-    emumaj_debug("DONE deleting, take a look, sleeping 90s", true);
-    delay(90);
-    mudcsSuper_createCentralDcsFsm();
-    emumaj_debug("DONE", true);
-  }
-  return;
   
   // stop FSM if it's going to be modified
   if (EMUMAJ_CREATE_MAJORITY_DUS || EMUMAJ_DELETE_MAJORITY_DUS || EMUMAJ_UPDATE_FSM_TYPES || EMUMAJ_RESTORE_FSM_TYPES) {
