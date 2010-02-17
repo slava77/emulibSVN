@@ -1,4 +1,4 @@
-V 10
+V 11
 1
 LANG:1 0 
 PANEL,-1 -1 248 69 N "_3DFace" 0
@@ -535,7 +535,7 @@ limits_s = makeDynString();
 // s2 is ALARM
 
 s1=\"0\";
-s2=\"5\";
+s2=\"4\";
 
 //	HV_STATE_ILOCK		= 5,
 //	HV_STATE_INT_TRIP	= 6,
@@ -926,8 +926,7 @@ cr_er_dpe=makeDynString(
 \"outputFailure\",
 \"fantrayFailure\",
 \"sensorFailure\",
-\"VmeSysfail\",
-\"mainOn\");
+\"VmeSysfail\");
     
 
 limits_s = makeDynString();
@@ -986,8 +985,7 @@ ch_er_dpe=makeDynString(
 \"outputFailureMaxTerminalVoltage\",
 \"outputFailureMaxCurrent\",
 \"outputFailureMaxTemperature\",
-\"outputFailureMaxPower\",
-\"out_switch\");
+\"outputFailureMaxPower\");
 
 limits_s = makeDynString();
 
@@ -1045,8 +1043,7 @@ cr_er_dpe=makeDynString(
 \"outputFailure\",
 \"fantrayFailure\",
 \"sensorFailure\",
-\"VmeSysfail\",
-\"mainOn\");
+\"VmeSysfail\");
  
 ch_er_dpe=makeDynString(
 //\"out_switch\",
@@ -1057,8 +1054,7 @@ ch_er_dpe=makeDynString(
 \"outputFailureMaxTerminalVoltage\",
 \"outputFailureMaxCurrent\",
 \"outputFailureMaxTemperature\",
-\"outputFailureMaxPower\",
-\"out_switch\");
+\"outputFailureMaxPower\");
 
 dps=dpNames(\"*\",\"fwWnrCr_CSC_LV_d\");
 
@@ -1232,9 +1228,8 @@ LANG:1 0
 
 0
 1
-LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
- 8 8 222 52
+LANG:1 38 Bitstream Charter,-1,12,5,75,0,0,0,0,0
+0  8 8 222 52
 
 T 
 1
@@ -1254,7 +1249,7 @@ LANG:1 28 CONFIG ALERT FOR ALL DEVICES
   LV_1_alert_main();
   TEMP_1_alert_main();  
   Snmp_alert_main();
-  Cooling_alert_main(); 
+  /////////////////// no way to call here: Cooling_alert_main(); 
   
    mudcsAlertReconfig(\"TEMP_1\", \".off_channels\", true);
 

@@ -483,6 +483,30 @@ dynAppend(all_dps,dps);
 dynAppend(all_dps,"fwOT_EMUFEDNodes");
 dps=dpNames("fwOT_EMUFEDNodes.*");
 dynAppend(all_dps,dps);
+//--
+dynAppend(all_dps,"fwOT_EMUTREENodes_S"); // sector 
+dps=dpNames("fwOT_EMUTREENodes_S.*");
+dynAppend(all_dps,dps);
+
+dynAppend(all_dps,"fwOT_EMUTREENodes_S_save"); // sector 
+dps=dpNames("fwOT_EMUTREENodes_S_save.*");
+dynAppend(all_dps,dps);
+
+dynAppend(all_dps,"fwOT_EMUTREENodes_I");  // inner chambers
+dps=dpNames("fwOT_EMUTREENodes_I.*");
+dynAppend(all_dps,dps);
+
+dynAppend(all_dps,"fwOT_EMUTREENodes_O");  // outer chambers
+dps=dpNames("fwOT_EMUTREENodes_O.*");
+dynAppend(all_dps,dps);
+
+dynAppend(all_dps,"fwOT_HV_1");
+dps=dpNames("fwOT_HV_1.*");
+dynAppend(all_dps,dps);
+
+dynAppend(all_dps,"fwOT_HV_PR");
+dps=dpNames("fwOT_HV_PR.*");
+dynAppend(all_dps,dps);
 
 if(mode==2){
 /*
@@ -511,9 +535,9 @@ dynAppend(all_dps,"fwOT_WNR12_1");
 dps=dpNames("fwOT_WNR12_1.*");
 dynAppend(all_dps,dps);
 */
-dynAppend(all_dps,"fwOT_HV_PR");
-dps=dpNames("fwOT_HV_PR.*");
-dynAppend(all_dps,dps);
+//dynAppend(all_dps,"fwOT_HV_PR");
+//dps=dpNames("fwOT_HV_PR.*");
+//dynAppend(all_dps,dps);
 
 dynAppend(all_dps,"fwOT_WTH_SX5");
 dps=dpNames("fwOT_WTH_SX5.*");
@@ -539,9 +563,9 @@ dynAppend(all_dps,"fwOT_LV_1");
 dps=dpNames("fwOT_LV_1.*");
 dynAppend(all_dps,dps);
 
-dynAppend(all_dps,"fwOT_HV_1");
-dps=dpNames("fwOT_HV_1.*");
-dynAppend(all_dps,dps);
+//dynAppend(all_dps,"fwOT_HV_1");
+//dps=dpNames("fwOT_HV_1.*");
+//dynAppend(all_dps,dps);
 
 dynAppend(all_dps,"fwOT_FED_1");
 dps=dpNames("fwOT_FED_1.*");

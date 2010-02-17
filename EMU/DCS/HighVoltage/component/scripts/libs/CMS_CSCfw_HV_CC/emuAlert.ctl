@@ -848,8 +848,13 @@ else setList="";
 
 if(setList != ""){
  mudcs_alias=mudcsAliasNameGet(child_s3);
- mudcsNameToPosConvert(mudcs_alias/*child_s3*/, w_pos_return, radius_return, ich_return, type_return);
- retrieveCoordinateSet("", child_s3, setList , w_pos_return, radius_return, ich_return, type_return, set_return);
+ if( strpos(child_s3,"master")>=0 ){
+  mudcsGetCoordForDp("any", child_s3, set_return); 
+ }
+ else{
+  mudcsNameToPosConvert(mudcs_alias/*child_s3*/, w_pos_return, radius_return, ich_return, type_return);
+  retrieveCoordinateSet("", child_s3, setList , w_pos_return, radius_return, ich_return, type_return, set_return);
+ }
 }
 
 

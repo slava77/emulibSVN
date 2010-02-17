@@ -13,7 +13,9 @@ bool is_CoolingMatrix=false; // (should not use -- alert config. should be used 
 int CSC_g_BLOCK_WATCHDOG_THREAD=0;
 int watch_dog_delay;
 
-
+bool no_auto_restor=TRUE;
+bool no_auto_restor_add=TRUE;//FALSE;
+bool no_auto_restor_add2=TRUE;//
 
 threadWatchForWatch(){
   
@@ -77,8 +79,8 @@ string eemessage;
  /////// dpGet(CSC_fwG_g_SYSTEM_NAME+":WATCH_FOR_TIMEOUTS.",watch_array);
  /////dpGet(CSC_fwG_g_SYSTEM_NAME+":WATCH_TIMES.",watch_times);
     femessage=0;
-    femessage=fopen(CSC_fwG_g_project_name_home+"/source/"+CSC_fwG_g_Component+"/text/alive_emessage","w");
-    if(!femessage)continue;
+//    femessage=fopen(CSC_fwG_g_project_name_home+"/source/"+CSC_fwG_g_Component+"/text/alive_emessage","w");
+//    if(femessage==0)continue;
     int was=0;
         DebugTN("ALIVETHREAD "+dynlen(CSC_fwG_g_watch_mask));
     
@@ -93,19 +95,19 @@ string eemessage;
        DebugTN("WATCH FOR SUBSYSTEM ALIVE: TIMEOUT IN: "+CSC_fwG_g_watch_mask[j]);
        if(!was){
         if(watch_array[j]==0){        
-        fputs(emessage+"WATCH FOR SUBSYSTEM ALIVE: TIMEOUT IN: "+CSC_fwG_g_watch_mask[j]+"-->"+CSC_fwG_g_SYSTEM_NAME+"\n",femessage);
+//        fputs(emessage+"WATCH FOR SUBSYSTEM ALIVE: TIMEOUT IN: "+CSC_fwG_g_watch_mask[j]+"-->"+CSC_fwG_g_SYSTEM_NAME+"\n",femessage);
 //        eemessage += emessage+"WATCH FOR SUBSYSTEM ALIVE: TIMEOUT IN: "+CSC_fwG_g_watch_mask[j]+"-->"+CSC_fwG_g_SYSTEM_NAME+"\n";
 setDevicesNotConnected(CSC_fwG_g_watch_mask[j]);
         }
        }
        else{ 
         if(watch_array[j]==0){
-        fputs("WATCH FOR SUBSYSTEM ALIVE: TIMEOUT IN: "+CSC_fwG_g_watch_mask[j]+"-->"+CSC_fwG_g_SYSTEM_NAME+"\n",femessage);
+//        fputs("WATCH FOR SUBSYSTEM ALIVE: TIMEOUT IN: "+CSC_fwG_g_watch_mask[j]+"-->"+CSC_fwG_g_SYSTEM_NAME+"\n",femessage);
 //        eemessage += "WATCH FOR SUBSYSTEM ALIVE: TIMEOUT IN: "+CSC_fwG_g_watch_mask[j]+"-->"+CSC_fwG_g_SYSTEM_NAME+"\n";
 setDevicesNotConnected(CSC_fwG_g_watch_mask[j]);
         }
        }
-       fflush(femessage); // write buffer immediately
+//       fflush(femessage); // write buffer immediately
       if(watch_array[j]==0)was=1; // to format email 
 //       watch_array[j]--; // not to set alarm again 
      }
@@ -118,7 +120,7 @@ setDevicesNotConnected(CSC_fwG_g_watch_mask[j]);
 
     } // for
 
-       fclose(femessage);
+//       fclose(femessage);
       //if(was)system("mail "+CSC_fwG_g_EMAILS_GENERAL+" < "+CSC_fwG_g_project_name_home+"/source/"+CSC_fwG_g_Component+"/text/alive_emessage");
 
 
@@ -294,11 +296,17 @@ int status_get;
 //     }  
    }
   }
-  else {  // LV_1, TEMP_1
+  else {  // LV_1, TEMP_1, FED_1
 
-    dsTemp=strsplit(sample,"/");    
-    dynAppend(dps,"LowVoltage/"+dsTemp[dynlen(dsTemp)]+"_LV");
-    dynAppend(dps,"Temperature/"+dsTemp[dynlen(dsTemp)]+"_TEMP");
+    if(strpos(sample,"LowVoltage")>=0){
+     dsTemp=strsplit(sample,"/");    
+     dynAppend(dps,"LowVoltage/"+dsTemp[dynlen(dsTemp)]+"_LV");
+     dynAppend(dps,"Temperature/"+dsTemp[dynlen(dsTemp)]+"_TEMP");
+    }
+    else if(strpos(sample,"Fed")>=0){
+     dsTemp=strsplit(sample,"/");    
+     dynAppend(dps,"Fed/"+dsTemp[dynlen(dsTemp)]+"_FED");
+    }
     for(j=1;j<=dynlen(dps);j++){
      dps[j]=mudcsAddSystem(dps[j]);
      dpGet(dps[j]+".status",status_get);  
@@ -598,7 +606,22 @@ if(service == "HV_1")get_master_data();  //
 ///// DebugN("-----------"+  datapoints[i]  +" ------------");
 
         CSC_fwG_g_BLOCK_NEXT_DPCONNECT=1;
-        dpConnect(update_fun_status,datapoints[i]+".status");
+        
+        int current_status;
+        string data;
+        if(no_auto_restor_add && (service == "HV_1" || service == "HV_PR")){
+         dpGet(datapoints[i]+".status",current_status);
+         if(current_status!=-2)
+          dpSetWait(datapoints[i]+".status",0);
+         else{
+          mudcsConvertFsm2DataOne(datapoints[i],data);
+          dpSetWait(data+".:_alert_hdl.._active",0);           
+         } 
+         //if(service == "HV_PR")dpSetWait(datapoints[i]+".chamber_state",0);
+         //else dpSetWait(datapoints[i]+".module_state",0);
+        }
+          dpConnect(update_fun_status,TRUE,datapoints[i]+".status");
+        
 /*
     dynAppend(d_s1,datapoints[i]);
     dpSetWait("dyn_debug1.",d_s1);
@@ -1949,7 +1972,7 @@ DebugTN("mudcsServer::mudcsUpdateMonitor_HV_N_new 222222222222222222222222222222
  dpGet(test_string_status+".status",current_status);
  dpGet(test_string+".update_value",update_mode);
  if(update_mode !=1 && update_mode !=2)update_mode=2; // very temporal (server is not restarted after change) 
- if(dpExists(test_string_status+".reserve1") && update_mode ==2)dpSet(test_string_status+".reserve1", update_mode);
+ if(dpExists(test_string_status+".reserve1") /*&& update_mode ==2*/)dpSet(test_string_status+".reserve1", update_mode);
  
  
  
@@ -2024,13 +2047,15 @@ dpGet(test_string+".data.chamber_complex_status",chamber_complex_status);
    if(current_status == 2 && chamber_complex_status == 1){
      if((getCurrentTime()-last_set_status) > 30){
        if(CSC_fwG_g_IS_IMAX_SET)if(primary_status<2)mudcsHVCommand(test_string_status, 6, 1); // set 1mkA for Imax 
-      dpSetWait(test_string_status+".status",3);
+      if(no_auto_restor_add2 && status_source==5){}
+      else dpSetWait(test_string_status+".status",3);
 
      }
      else mudcsCommand("HV",test_string_status,"get_data");
    }
    else if(current_status == 3 && chamber_complex_status != 1){
-      dpSetWait(test_string_status+".status",2); // sometime the first data received after switching ON contains status ON in all channels -- then channels go to the RAMP_UP
+      if(no_auto_restor_add2 && status_source==5){}      
+      else dpSetWait(test_string_status+".status",2); // sometime the first data received after switching ON contains status ON in all channels -- then channels go to the RAMP_UP
 
    }
 
@@ -2086,7 +2111,7 @@ int copy_error;
        
 
 } //  if(current_status != -2) 
-
+else if(status_source==5 && no_auto_restor)adjust_to_control_part(test_string_status, current_status, status_source);
 //------------------------------------------------------------------------------------------------
 checkOfLinkWithControlProgram(test_string_status); // must be before the mudcsFsmErrorSet
 mudcsFsmErrorSet(subtype, test_string_status, test_string); // moved up (before CONFIRMATION) 10/05/2004
@@ -2263,7 +2288,8 @@ if(is_newPRFSM){
  }
 
  } //  if(current_status != -2)
-
+ else if(status_source==5 && no_auto_restor)adjust_to_control_part(fsm, current_status, status_source);
+ 
 //--- step2:it is to switch on alert if the primary is switched on but sends the 0 as output -------------
 //////////////////// if(isPrSwitchedTo0 && (current_status == 2 || current_status == -1) && status_source == 0){
 ////////////////////   mudcsAlertSetActive(test_string,true);
@@ -4487,7 +4513,15 @@ checkOfLinkWithControlProgram(string &dpName){
 */
 
  }
-
+//----- 
+ else{
+ 
+  string dps_not_controlled;
+  dpGet(CSC_fwG_g_SYSTEM_NAME+":DPOINTS_NOT_CONTROLLED.value",dps_not_controlled);
+  if(strpos(dps_not_controlled,dpName)>=0)setDpointsNotControlled("");
+  
+ }
+ //----- 
 }
 
 //=======================================================================================
@@ -4589,17 +4623,40 @@ adjust_to_control_part(string fsm, int current_status, int status_source){
 // attention: this fuction may not do adjusting if
 // 1) the control (setting of fsm.status goes from both sides at the same time: control and pvss )
 // 2) a control from control side (e.g. power on/off) happens more often than "interval" (in seconds) 
-
-
+/*
+ if(strpos(fsm,"21_C02_HV")>=0 && status_source == 5){
+   dyn_string dyn_debug4;
+    dpGet("dyn_debug4.",dyn_debug4); 
+    dynAppend(dyn_debug4,fsm+" "+status_source);
+    dpSetWait("dyn_debug4.",dyn_debug4);
+  
+ } 
+*/
 int interval=30;
+string data;
+
 //---------------------------------------------------------------
 if(status_source == -1){ // the case is control server is started
     if(current_status != 0)dpSetWait(fsm+".status",2);
     else if(current_status == 0)dpSetWait(fsm+".status",0);
 }
 else if(status_source == 5 && strpos(fsm,"HV")>=0){ // the case is control server is started: for HV as two ccsc is decoded inone module
-    if(current_status != 0)dpSetWait(fsm+".status",2);
-    else if(current_status == 0)dpSetWait(fsm+".status",0);
+  if(no_auto_restor){
+
+   if(current_status!=-2){
+//    if(strpos(fsm,"primary")>=0)dpSetWait(fsm+".chamber_state",status_source);
+//    else dpSetWait(fsm+".module_state",status_source);
+    dpSetWait(fsm+".status",0);
+   }
+   else{
+    mudcsConvertFsm2DataOne(fsm,data);
+    dpSetWait(data+".:_alert_hdl.._active",0);         
+   }
+  }
+  else{
+   if(current_status != 0)dpSetWait(fsm+".status",2);
+   else if(current_status == 0)dpSetWait(fsm+".status",0);
+  }
 }
 else if(current_status != status_source && CSC_fwG_g_IS_ADJUST_TO_CONTROL_SIDE){ // case of control on the control side
 

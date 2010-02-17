@@ -1,11 +1,11 @@
-V 10
+V 11
 1
 LANG:1 12 EmuConfigPCs
 PANEL,-1 -1 487 396 N "_3DFace" 0
 "main()
 {
 
- //  mudcsInit();
+   mudcsInit();
 dyn_string list;
 
  dpGet(CSC_fwG_g_SYSTEM_NAME+\":Db_o.DimServerComputerList\",list);
@@ -34,9 +34,8 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 50.00000000000001 160 390 374
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  50 160 390 374
 0
 
 E
@@ -65,9 +64,8 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 48 78 198 112
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  48 78 198 112
 
 T 
 1
@@ -152,9 +150,8 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 218 78 387 112
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  218 78 387 112
 
 T 
 1
@@ -233,9 +230,8 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 50 50 389.9999999999999 77
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  50 50 390 77
 3 "0s" 0 0 0 0 0 -1  E E E
 13 4
 "PUSH_BUTTON1"
@@ -250,9 +246,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 88 128 292 162
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  88 128 292 162
 
 T 
 1
@@ -264,6 +259,7 @@ LANG:1 15 all dim restart
   mudcsInit();
   //mudcsDebug(CSC_fwG_g_project_name_home);
   mudcsAllDimManagersStop();
+  //return;
   mudcsDimConfigAllManagers(exceptionInfo);
 
 if(dynlen(exceptionInfo)>0){mudcsDebug(exceptionInfo);return;}

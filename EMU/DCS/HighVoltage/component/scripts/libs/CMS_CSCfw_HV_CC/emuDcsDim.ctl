@@ -28,8 +28,10 @@ mudcsDimConfigOneManagerNew(string type_par, string pc, string manager, dyn_stri
 
  
  BrokerList=dpNames("*",type_par+"_d");
- if(type_par=="LV_1")dynAppend(BrokerList,"LV_CONFIRMATION_SERVICE");
- 
+
+ if(strpos(manager,"_DimClient_4")<0){
+  if(type_par=="LV_1")dynAppend(BrokerList,"LV_CONFIRMATION_SERVICE");
+ }
    for(j=1; j<= dynlen(BrokerList); j++){
     command="no_command";
  
@@ -911,7 +913,7 @@ string data;
     dpSetWait(mudcsAddSystem("dyn_debug2."),dyn_debug);
 */
 
-  if(/*coord_master[1]==coord[1] &&*/ master_module_id==master_id && master_id !=0 ){ /*pvss36*/
+  if(/*coord_master[1]==coord[1] &&*/ master_module_id==master_id && (master_id !=0 || CSC_fwG_g_904) ){ /*pvss36*/
   
    master_index=i;
 ////   if(dynlen(CSC_fwG_g_master2chamber)>=master_index)   // pvss36

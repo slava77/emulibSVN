@@ -1,4 +1,5 @@
- #uses "CMS_CSCfw_LV_CRB/mudcs9XAlertReconfigAllSlowControls.ctl"
+#uses "aes.ctl"
+#uses "CMS_CSCfw_LV_CRB/mudcs9XAlertReconfigAllSlowControls.ctl"
 
 
 
@@ -58,7 +59,7 @@ limits_s = makeDynString();
 // s2 is ALARM
 
 s1="0";
-s2="5";
+s2="4";
 
 //	HV_STATE_ILOCK		= 5,
 //	HV_STATE_INT_TRIP	= 6,

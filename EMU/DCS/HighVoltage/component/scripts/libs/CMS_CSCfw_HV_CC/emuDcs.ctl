@@ -3988,7 +3988,7 @@ mudcsMasterChannelSwitch(int isOn, dyn_string coord, int channel, string fsm){
     subcommand="HVCMD;"+coord[2]+";"+coord[3]+";"+channel_s+";"+7+";"+voltage_s+";"+"-1";
     dpSetWait(mudcsAddSystem("HV_1_COM"+".command"),coord[1]+"|"+subcommand);
     
-    subcommand="HVCMD;"+coord[2]+";"+coord[3]+";"+channel_s+";"+3+";10;"+"-1"; //ramp_up for masters
+    subcommand="HVCMD;"+coord[2]+";"+coord[3]+";"+channel_s+";"+3+";12;"+"-1"; //ramp_up for masters
     dpSetWait(mudcsAddSystem("HV_1_COM"+".command"),coord[1]+"|"+subcommand);    
     
   }

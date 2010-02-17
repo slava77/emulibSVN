@@ -8,6 +8,12 @@ bool isWholeCrbFolderAdd=true;
 bool isWholeMrtnFolderAdd=true;
 dyn_string project_stations=makeDynString("M4","M3","M2","M1","P1","P2","P3","P4"); 
 bool isMajority_official=false;
+
+bool OUTER_ON=true;
+
+string SECTOR_FSM_TYPE="EMUTREENodes_S";
+string CH_OUTER_FSM_TYPE="EMUTREENodes_O";
+string CH_INNER_FSM_TYPE="EMUTREENodes_I"; 
 //
 mudcsPostCreateConfig(){
  
@@ -2082,6 +2088,8 @@ int cu_flag;
 string fsm_type; 
 string sys_name=getSystemName();
 
+//mudcsDebug(dynlen(project_stations));
+
 for(i=1;i<=dynlen(project_stations);i++){
 
 disk_db=dpNames("*:CSC_ME_"+project_stations[i]+"|CSC_ME_"+project_stations[i],"_FwFsmObject"); //
@@ -2121,6 +2129,10 @@ mudcs_addNode();
 
 mudcsCreateAllTrees(int CreateLevel)
 {
+
+  
+dyn_string outer_rings=makeDynString("ME_M12","ME_M13","ME_M22","ME_M32","ME_M42",
+                                     "ME_P12","ME_P13","ME_P22","ME_P32","ME_P42");
 
 // if(fwFsmTree_isNode(CSC_fwG_g_csc_part)>0){
 //   DebugTN("++++++++++ TREE ALREADY EXISTS ++++++++++++++++");
@@ -2641,7 +2653,9 @@ if(!found_sec)continue;
 
 mudcs_selectParent(2, i10-1+(iring-iringB), station_parent_node,"DCSNodes",1, parent_domain);
 
-CSC_fwG_EmuCmsGlobalType=CSC_fwG_g_NodeLogicalFsmType;
+if(OUTER_ON)CSC_fwG_EmuCmsGlobalType=SECTOR_FSM_TYPE;
+else CSC_fwG_EmuCmsGlobalType=CSC_fwG_g_NodeLogicalFsmType;
+
 if(isMajority_official)CSC_fwG_EmuCmsGlobalType=CSC_fwG_EmuCmsGlobalType+"_MAJOR";
 mudcsNameCompose("", station_label, emu_system_side, idisk, s_sec, "", EmuCmsGlobalNode);
  sector_parent_node=EmuCmsGlobalNode;
@@ -2707,8 +2721,22 @@ i100=ch_numbers[i10];
 if(i100<=9)c0="c0";
 else c0="c";
 
-CSC_fwG_EmuCmsGlobalType=CSC_fwG_g_NodeLogicalFsmType;
+
+
 mudcsNameCompose("", station_label, emu_system_side, idisk, disk_rad, c0+i100, EmuCmsGlobalNode);
+if(OUTER_ON){
+  if(dynContains(outer_rings,substr(EmuCmsGlobalNode,strpos(EmuCmsGlobalNode,"ME_"),6) ) )
+  CSC_fwG_EmuCmsGlobalType=CH_OUTER_FSM_TYPE;
+  else {CSC_fwG_EmuCmsGlobalType=CH_INNER_FSM_TYPE;
+     //if(strpos(EmuCmsGlobalNode,"ME_P22")>=0){
+     // DebugTN(outer_rings);
+    //  mudcsDebug(EmuCmsGlobalNode);
+    // mudcsDebug(substr(EmuCmsGlobalNode,strpos(EmuCmsGlobalNode,"ME_"),6)+"*");
+                                                     }
+     // }
+}
+else CSC_fwG_EmuCmsGlobalType=CSC_fwG_g_NodeLogicalFsmType;
+
  parent_node=EmuCmsGlobalNode;
 //EmuCmsGlobalNode="CSC"+station_label+emu_system_side+idisk+disk_rad+c0+i100; //r2
 CSC_fwG_EmuCmsGlobalCu="0";cu_flag = 0; // logical unit

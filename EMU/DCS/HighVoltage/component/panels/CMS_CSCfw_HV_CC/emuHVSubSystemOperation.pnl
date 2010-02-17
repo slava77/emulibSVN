@@ -1,4 +1,4 @@
-V 10
+V 11
 1
 LANG:1 0 
 PANEL,-1 -1 573 505 N "_3DFace" 4
@@ -23,12 +23,13 @@ graphics_init();
 
 
   int i;
-  dyn_string found_systems=dpNames(\"*:CMS_CSC_GAS\");
+  dyn_string found_systems=dpNames(\"*:CSC_HV|CSC_HV\");
   dyn_string dps;
   
   if(dynlen(found_systems)>=1)
   csc_hw_system=substr(found_systems[1],0,strpos(found_systems[1],\":\")+1);
-  //mudcsDebug(csc_hw_system);
+//  csc_hw_system=\"cms_csc_dcs_05:\";
+//  mudcsDebug(csc_hw_system);
   
 //========= // dubna_system
     string dp_dubna;
@@ -96,11 +97,13 @@ E "#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
 
 bool isDelay=true;
 
+bool global_busy=false;
+
 // !!!!! mudcsIsEnabled(dps_global[i]); not tested 
 bool MODE_SLOW;
 bool MODE_PR;
 
-dyn_string dps_global;
+//dyn_string dps_global;
 int g_busyThread;
 int vset_all, vset_inner, vset_outer, vset_dubna;
 string csc_hw_system, dubna_system;
@@ -320,7 +323,12 @@ for(i=1;i<=dynlen(sets);i++){
 
 //======================================================================
 mudcsButtonFine(string button){
- 
+  
+  if(!global_busy){
+   global_busy=true; 
+    expertHvPanelEnable(false);
+  }
+  else return;
   
  	dyn_string exceptionInfo; 
 	g_busyThread = -1; 
@@ -408,6 +416,8 @@ mudcsButtonFine(string button){
 //===================================================  
      fwBusyBarButton_std_stopBusy(exceptionInfo);
   
+    global_busy=false; 
+    expertHvPanelEnable(true);  
 }
 //======================================================================
 
@@ -506,8 +516,26 @@ dyn_string dps_global;
  if(mode_action==on_mode){
    int get_primary_status;
    
+
+if(submode ==  mem21 ||
+submode ==  mem31 ||
+submode ==  mem41 ||
+submode ==  mem12 ||
+submode ==  mem13 ||
+submode ==  mem22 ||
+submode ==  mem32 ||
+submode ==  mem42)dps_primary=dpNames(\"*:*500*\",\"HV_PR\");
+
+else if(submode ==  mep21 ||
+submode ==  mep31 ||
+submode ==  mep41 ||
+submode ==  mep12 ||
+submode ==  mep13 ||
+submode ==  mep22 ||
+submode ==  mep32 ||
+submode ==  mep42)dps_primary=dpNames(\"*:*600*\",\"HV_PR\");
    
-   dps_primary=dpNames(\"*:*\",\"HV_PR\");
+ //  dps_primary=dpNames(\"*:*\",\"HV_PR\");
    
    for(i=1;i<=dynlen(dps_primary);i++){
       DebugTN(dps_primary[i]);
@@ -576,7 +604,14 @@ string isEnabled=fwFsmUi_getDUMode(DomainName,DpNameFsm2);
 //===================================================
 
 mudcsHVGroup(int mode, int mode_action, float vset=0){
+
   
+  if(!global_busy){
+   global_busy=true; 
+    expertHvPanelEnable(false);
+  }
+  else return;
+    
  dyn_string dps_global; 
   
   	dyn_string exceptionInfo; 
@@ -584,6 +619,8 @@ mudcsHVGroup(int mode, int mode_action, float vset=0){
 	fwBusyBarButton_std_startBusy(exceptionInfo); 
 
 
+        
+        
    int chamber_status;   
   //---------------
  int i;
@@ -726,6 +763,9 @@ string isEnabled=fwFsmUi_getDUMode(DomainName,DpNameFsm2);
  
    fwBusyBarButton_std_stopBusy(exceptionInfo);
                 
+    global_busy=false; 
+    expertHvPanelEnable(true);  
+   
 //---------------
 }
 //===================================================
@@ -876,7 +916,53 @@ mudcsHVGroupNew(int mode, int mode_action, float vset=0){
 //===========================================================
 
 mudcsDubna(int mode_action, int mode=dubna_all_mode){
+
+  if(!global_busy){
+   global_busy=true; 
+    expertHvPanelEnable(false);
+  }
+  else return; 
+   
+    	dyn_string exceptionInfo; 
+	g_busyThread = -1; 
+	fwBusyBarButton_std_startBusy(exceptionInfo); 
   
+   
+int i;  
+dyn_string dps;
+
+if(mode==dubna_all_mode)
+  dps=dpNames(dubna_system+\"*HVME11*\",\"FwCaenChannel\");  
+else if(mode==dubna_minus_mode)
+  dps=dpNames(dubna_system+\"*HVME11N*\",\"FwCaenChannel\");   
+else if(mode==dubna_plus_mode)
+  dps=dpNames(dubna_system+\"*HVME11P*\",\"FwCaenChannel\");  
+///if((strpos(DomainName,\"CSC_LV\"))!=0)continue;
+//-------------------
+int caen_delay;
+ dpGet(dubna_system+\"caen_delay.\",caen_delay);    
+//-----------------     
+ for(i=1;i<=dynlen(dps);i++){
+   
+ delay(0,caen_delay);
+ 
+  if(mode_action==on_mode){
+   dpSetWait(dps[i]+\".settings.onOff\",TRUE); 
+  }
+  else   if(mode_action==off_mode){
+   dpSetWait(dps[i]+\".settings.onOff\",FALSE); 
+  }
+   
+ } // for
+  
+    fwBusyBarButton_std_stopBusy(exceptionInfo);
+    
+     global_busy=false; 
+    expertHvPanelEnable(true);  
+    
+return;
+
+//=========================  
 int i;  
 dyn_string dps, dps1, split3;
 string DomainName;
@@ -921,6 +1007,18 @@ else if(mode==dubna_plus_mode)
 
 mudcsDubnaVset(int vset, int mode=0){
   
+   if(!global_busy){
+   global_busy=true; 
+    expertHvPanelEnable(false);
+  }
+   
+  else return;
+  
+    	dyn_string exceptionInfo; 
+	g_busyThread = -1; 
+	fwBusyBarButton_std_startBusy(exceptionInfo); 
+  
+  
 int i;  
 dyn_string dps;
 
@@ -931,14 +1029,24 @@ else if(mode==dubna_minus_mode)
 else if(mode==dubna_plus_mode)
   dps=dpNames(dubna_system+\"*HVME11P*\",\"FwCaenChannel\");  
 ///if((strpos(DomainName,\"CSC_LV\"))!=0)continue;
-
+//-------------------
+int caen_delay;
+ dpGet(dubna_system+\"caen_delay.\",caen_delay);   
+// mudcsDebug(dubna_system+\"caen_delay\"); 
+// mudcsDebug(caen_delay);
+// return;
+//-----------------     
  for(i=1;i<=dynlen(dps);i++){
+   
+  delay(0,caen_delay);
    
   dpSetWait(dps[i]+\".settings.v0\",vset); 
    
  
  }
-  
+   fwBusyBarButton_std_stopBusy(exceptionInfo); 
+   global_busy=false; 
+    expertHvPanelEnable(true);    
 }
 //===============
 graphics_init(){
@@ -1008,6 +1116,42 @@ else return true;
 
 
 }
+
+//========================
+
+expertHvPanelEnable(bool isd){
+
+  setValue(\"vset_dubna\",\"enabled\",isd); 
+  setValue(\"on_dubna\",\"enabled\",isd);
+   setValue(\"off_dubna\",\"enabled\",isd);
+      
+setValue(\"on_m1\",\"enabled\",isd); 
+  setValue(\"on_m2\",\"enabled\",isd);
+ setValue(\"on_m3\",\"enabled\",isd);
+ setValue(\"on_m4\",\"enabled\",isd);
+  setValue(\"on_p1\",\"enabled\",isd);
+ setValue(\"on_p2\",\"enabled\",isd);
+ setValue(\"on_p3\",\"enabled\",isd);
+  setValue(\"on_p4\",\"enabled\",isd);
+ setValue(\"on_all\",\"enabled\",isd);
+ setValue(\"on_inner\",\"enabled\",isd);
+  setValue(\"on_outer\",\"enabled\",isd);
+ setValue(\"vset_all\",\"enabled\",isd);
+ setValue(\"vset_inner\",\"enabled\",isd);
+ setValue(\"vset_outer\",\"enabled\",isd);
+        
+  setValue(\"off_m1\",\"enabled\",isd);
+  setValue(\"off_m2\",\"enabled\",isd);
+   setValue(\"off_m3\",\"enabled\",isd);
+  setValue(\"off_m4\",\"enabled\",isd);
+   setValue(\"off_p1\",\"enabled\",isd);
+  setValue(\"off_p2\",\"enabled\",isd);
+    setValue(\"off_p3\",\"enabled\",isd);
+  setValue(\"off_p4\",\"enabled\",isd);
+ setValue(\"off_all\",\"enabled\",isd);
+  setValue(\"off_inner\",\"enabled\",isd);    
+ setValue(\"off_outer\",\"enabled\",isd);
+}
 " 0
  2
 "CBRef" "1"
@@ -1030,14 +1174,14 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E 0.6071428571428571 0 0.2857142857142857 -10.71428571428571 75.71428571428571 1 E 100 50 380 260
-1 131 1 "" 0
+E E 0 0 0 0 1 E 0.6071428571428571 0 0.2857142857142857 -10.71428571428571 85.71428571428571 1 E 100 50 380 260
+1 136 1 "" 0
 0
-1 132 1 "" 13
+1 137 1 "" 13
 0
-1 133 1 "" 14
+1 138 1 "" 14
 0
-1 134 1 "" 15
+1 139 1 "" 15
 0
 14 8
 "vset_all"
@@ -1052,9 +1196,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 366 168 430 192
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  366 168 430 192
 3 "0s" 0 0 0 0 0 -1  "main()
 {
  
@@ -1090,9 +1233,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 366 198 430 222
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  366 198 430 222
 3 "0s" 0 0 0 0 0 -1  "main()
 {
 
@@ -1120,9 +1262,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 368 228 430 252
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  368 228 430 252
 3 "0s" 0 0 0 0 0 -1  "main()
 {
 }" 0
@@ -1149,9 +1290,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 436 168 480 192
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  436 168 480 192
 
 T 
 1
@@ -1177,9 +1317,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 438 198 482 222
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  438 198 482 222
 
 T 
 1
@@ -1205,9 +1344,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 436 228 480 252
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  436 228 480 252
 
 T 
 1
@@ -1222,7 +1360,7 @@ LANG:1 2 ON
 2 17
 "PRIMITIVE_TEXT4"
 ""
-1 232 172 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 188 172 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 17 0 0 0 0 0
 E E E
@@ -1232,17 +1370,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 232 172 356 188
-0 2 2 "0s" 0 0 0 192 0 0  232 172 1
+E E 0 1 1 2 1 E U  1 E 188 172 355 189
+0 2 2 "0s" 0 0 0 192 0 0  188 172 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
-LANG:1 17 ALL Chambers VSET
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
+LANG:1 25 ALL UF/PNPI Chambers VSET
 2 18
 "PRIMITIVE_TEXT5"
 ""
-1 232 202 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 180 202 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 18 0 0 0 0 0
 E E E
@@ -1252,17 +1389,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 232 202 361 218
-0 2 2 "0s" 0 0 0 192 0 0  232 202 1
+E E 0 1 1 2 1 E U  1 E 180 202 357 219
+0 2 2 "0s" 0 0 0 192 0 0  180 202 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
-LANG:1 19 Inner Chambers VSET
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
+LANG:1 27 Inner UF/PNPI Chambers VSET
 2 19
 "PRIMITIVE_TEXT6"
 ""
-1 232 234 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 180 232 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 19 0 0 0 0 0
 E E E
@@ -1272,13 +1408,12 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 232 234 365 250
-0 2 2 "0s" 0 0 0 192 0 0  232 234 1
+E E 0 1 1 2 1 E U  1 E 180 232 359 249
+0 2 2 "0s" 0 0 0 192 0 0  180 232 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
-LANG:1 19 Outer Chambers VSET
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
+LANG:1 27 Outer UF/PNPI Chambers VSET
 10 20
 "Polyline1"
 ""
@@ -1354,9 +1489,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 476 168 520 192
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  476 168 520 192
 
 T 
 1
@@ -1382,9 +1516,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 476 198 520 222
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  476 198 520 222
 
 T 
 1
@@ -1410,9 +1543,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 476 228 520 252
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  476 228 520 252
 
 T 
 1
@@ -1425,7 +1557,7 @@ LANG:1 3 OFF
 }" 0
  E E E
 13 28
-"PUSH_BUTTON7"
+"on_dubna"
 ""
 1 440 132 E E E 1 E 1 E N "_ButtonText" E N "_ETM" E E
  E E
@@ -1437,9 +1569,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 438 130 482 154
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  438 130 482 154
 
 T 
 1
@@ -1451,7 +1582,7 @@ LANG:1 2 ON
 }" 0
  E E E
 13 29
-"PUSH_BUTTON8"
+"off_dubna"
 ""
 1 480 132 E E E 1 E 1 E N "_ButtonText" E N "FwStateOKNotPhysics" E E
  E E
@@ -1463,9 +1594,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 478 130 522 154
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  478 130 522 154
 
 T 
 1
@@ -1490,12 +1620,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 232 132 366 148
+E E 0 1 1 2 1 E U  1 E 232 132 362 149
 0 2 2 "0s" 0 0 0 192 0 0  232 132 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 20 ME 1/1 HV (Dubna HV)
 13 36
 "on_m1"
@@ -1510,9 +1639,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 153 288 186 312
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  153 288 186 312
 
 T 
 1
@@ -1539,9 +1667,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 183 288 216 312
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  183 288 216 312
 
 T 
 1
@@ -1566,12 +1693,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 114 292 155 308
+E E 0 1 1 2 1 E U  1 E 114 292 155 309
 0 2 2 "0s" 0 0 0 192 0 0  114 292 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 6 ME-1/1
 13 42
 "on_m2"
@@ -1586,9 +1712,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 153 318 184 342
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  153 318 184 342
 
 T 
 1
@@ -1616,9 +1741,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 183 318 217 342
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  183 318 217 342
 
 T 
 1
@@ -1643,12 +1767,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 92 322 155 338
+E E 0 1 1 2 1 E U  1 E 92 322 160 339
 0 2 2 "0s" 0 0 0 192 0 0  92 322 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 11 ME-2/1,3/1 
 13 46
 "on_m3"
@@ -1663,9 +1786,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 156 348 187 372
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  156 348 187 372
 
 T 
 1
@@ -1693,9 +1815,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 183 348 217 372
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  183 348 217 372
 
 T 
 1
@@ -1720,12 +1841,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 114 352 155 368
+E E 0 1 1 2 1 E U  1 E 114 352 155 369
 0 2 2 "0s" 0 0 0 192 0 0  114 352 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 6 ME-4/1
 13 50
 "on_m4"
@@ -1740,9 +1860,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 158 408 189 432
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  158 408 189 432
 
 T 
 1
@@ -1767,9 +1886,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 186 408 220 432
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  186 408 220 432
 
 T 
 1
@@ -1794,12 +1912,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 27 412 155 428
+E E 0 1 1 2 1 E U  1 E 27 412 160 429
 0 2 2 "0s" 0 0 0 192 0 0  27 412 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 22 ME-1/2,1/3,2/2,3/2,4/2
 2 74
 "st_m1"
@@ -1814,12 +1931,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 215 292 252 308
+E E 0 1 1 2 1 E U  1 E 215 292 251 309
 0 2 2 "0s" 0 0 0 192 0 0  215 292 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 6 Status
 2 75
 "st_m2"
@@ -1834,12 +1950,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 217 322 254 338
+E E 0 1 1 2 1 E U  1 E 217 322 253 339
 0 2 2 "0s" 0 0 0 192 0 0  217 322 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 6 Status
 2 76
 "st_m3"
@@ -1854,12 +1969,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 217 352 254 368
+E E 0 1 1 2 1 E U  1 E 217 352 253 369
 0 2 2 "0s" 0 0 0 192 0 0  217 352 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 6 Status
 2 77
 "st_m4"
@@ -1874,12 +1988,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 220 412 257 428
+E E 0 1 1 2 1 E U  1 E 220 412 256 429
 0 2 2 "0s" 0 0 0 192 0 0  220 412 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 6 Status
 13 78
 "on_p1"
@@ -1894,9 +2007,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 419 288 452 312
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  419 288 452 312
 
 T 
 1
@@ -1921,9 +2033,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 448 288 481 312
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  448 288 481 312
 
 T 
 1
@@ -1948,12 +2059,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 370 290 415 306
+E E 0 1 1 2 1 E U  1 E 370 290 414 307
 0 2 2 "0s" 0 0 0 192 0 0  370 290 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 6 ME+1/1
 13 81
 "on_p2"
@@ -1968,9 +2078,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 421 318 452 342
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  421 318 452 342
 
 T 
 1
@@ -1995,9 +2104,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 448 318 482 342
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  448 318 482 342
 
 T 
 1
@@ -2022,12 +2130,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 348 320 415 336
+E E 0 1 1 2 1 E U  1 E 348 320 419 337
 0 2 2 "0s" 0 0 0 192 0 0  348 320 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 11 ME+2/1,3/1 
 13 84
 "on_p3"
@@ -2042,9 +2149,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 421 348 452 372
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  421 348 452 372
 
 T 
 1
@@ -2069,9 +2175,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 448 348 482 372
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  448 348 482 372
 
 T 
 1
@@ -2096,12 +2201,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 370 350 415 366
+E E 0 1 1 2 1 E U  1 E 370 350 414 367
 0 2 2 "0s" 0 0 0 192 0 0  370 350 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 6 ME+4/1
 13 87
 "on_p4"
@@ -2116,9 +2220,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 419 408 450 432
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  419 408 450 432
 
 T 
 1
@@ -2143,9 +2246,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 446 408 480 432
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  446 408 480 432
 
 T 
 1
@@ -2170,12 +2272,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 284 412 416 428
+E E 0 1 1 2 1 E U  1 E 284 412 420 429
 0 2 2 "0s" 0 0 0 192 0 0  284 412 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 22 ME+1/2,1/3,2/2,3/2,4/2
 2 90
 "st_p1"
@@ -2190,12 +2291,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 480 292 517 308
+E E 0 1 1 2 1 E U  1 E 480 292 516 309
 0 2 2 "0s" 0 0 0 192 0 0  480 292 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 6 Status
 2 91
 "st_p2"
@@ -2210,12 +2310,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 482 322 519 338
+E E 0 1 1 2 1 E U  1 E 482 322 518 339
 0 2 2 "0s" 0 0 0 192 0 0  482 322 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 6 Status
 2 92
 "st_p3"
@@ -2230,12 +2329,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 482 352 519 368
+E E 0 1 1 2 1 E U  1 E 482 352 518 369
 0 2 2 "0s" 0 0 0 192 0 0  482 352 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 6 Status
 2 93
 "st_p4"
@@ -2250,12 +2348,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 480 412 517 428
+E E 0 1 1 2 1 E U  1 E 480 412 516 429
 0 2 2 "0s" 0 0 0 192 0 0  480 412 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 6 Status
 4 94
 "LINE1"
@@ -2298,12 +2395,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 260 272 300 288
+E E 0 1 1 2 1 E U  1 E 260 272 295 289
 0 2 2 "0s" 0 0 0 192 0 0  260 272 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 5 INNER
 2 97
 "PRIMITIVE_TEXT42"
@@ -2318,12 +2414,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 260 380 306 396
+E E 0 1 1 2 1 E U  1 E 260 380 300 397
 0 2 2 "0s" 0 0 0 192 0 0  260 380 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 5 OUTER
 14 98
 "vset_dubna"
@@ -2338,9 +2433,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 370 130 432 154
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  370 130 432 154
 3 "0s" 0 0 0 0 0 -1  "main()
 {
 }" 0
@@ -2367,12 +2461,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 231 452 368 472
+E E 0 1 1 2 1 E U  1 E 231 452 371 472
 0 2 2 "0s" 0 0 0 192 0 0  231 452 1
 1
-LANG:1 108 -*-Bitstream Charter-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
-1
+LANG:1 38 Bitstream Charter,-1,16,5,50,0,0,0,0,0
+0 1
 LANG:1 20 Result of HV setting
 4 105
 "LINE3"
@@ -2401,9 +2494,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 48 448 122 482
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  48 448 122 482
 
 T 
 1
@@ -2481,9 +2573,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 366 88 430 112
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  366 88 430 112
 3 "0s" 0 0 0 0 0 -1  "main()
 {
  
@@ -2520,9 +2611,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 436 88 480 112
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  436 88 480 112
 
 T 
 1
@@ -2548,12 +2638,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 232 92 346 108
+E E 0 1 1 2 1 E U  1 E 232 92 343 109
 0 2 2 "0s" 0 0 0 192 0 0  232 92 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 20 All Vset via Primary
 13 118
 "off_pr"
@@ -2568,9 +2657,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 476 88 520 112
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  476 88 520 112
 
 T 
 1
@@ -2610,9 +2698,8 @@ LANG:1 17 primary or normal
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 440 468 534 492
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  440 468 534 492
 3 "0s" 0 0 0 0 0 -1  E E "main()
 {
   string text;
@@ -2635,12 +2722,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 402 472 439 488
+E E 0 1 1 2 1 E U  1 E 402 472 436 489
 0 2 2 "0s" 0 0 0 192 0 0  402 472 1
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
-1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 4 MODE
 13 130
 "PUSH_BUTTON10"
@@ -2655,9 +2741,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 118 448 192 482
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  118 448 192 482
 
 T 
 1
@@ -2725,7 +2810,7 @@ set(int mode){
 13 135
 "PUSH_BUTTON11"
 ""
-1 50 170 E E E 1 E 1 E N "_ButtonText" E N "_ETM" E E
+1 48 170 E E E 1 E 0 E N "_ButtonText" E N "_ETM" E E
  E E
 180 0 0 0 0 0
 E E E
@@ -2735,9 +2820,8 @@ LANG:1 0
 
 0
 1
-LANG:1 112 -*-Bitstream Charter-bold-r-normal-*-*-120-100-100-*-*-iso8859-1|-17,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
- 48 168 222 252
+LANG:1 38 Bitstream Charter,-1,17,5,75,0,0,0,0,0
+0  46 168 180 252
 
 T 
 1
@@ -2782,8 +2866,8 @@ LAYER, 7
 1
 LANG:1 0 
 0
-3 1 "PANEL_REF2"
-"CMS_CSCfw_HV_CC/genericSubSystemOperation.pnl" 166 103 T 2 1 0 1 -86 -4
+3 1 "PANEL_REF2" -1
+"CMS_CSCfw_HV_CC\\genericSubSystemOperation.pnl" 166 103 T 2 1 0 1 -86 6
 4
 "$obj""$obj"
 "$project_station""$project_station"

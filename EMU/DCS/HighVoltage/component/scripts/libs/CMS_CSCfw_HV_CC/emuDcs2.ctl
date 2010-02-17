@@ -225,15 +225,15 @@ project_station_from_host=dsTest[dynlen(dsTest)];
 //project_station_from_host=dsTest[dynlen(dsTest)];
 //if(project_station_from_host==1)project_station_set=makeDynInt(1,2);
 
-if(project_station_from_host==1){project_station_set=makeDynInt(3,5,6);project_suffix="_m1";}  // temporal
-
-     if(project_station_from_host==2){project_station_set=makeDynInt(1,2,3);project_suffix="_m3m4";}
+if(project_station_from_host==0){project_station_set=makeDynInt(4);project_suffix="_m1";}  // temporal
+else if(project_station_from_host==2){project_station_set=makeDynInt(1,2,3);project_suffix="_m3m4";}
 else if(project_station_from_host==3){project_station_set=makeDynInt(1,2,3);project_suffix="_m2";}
 else if(project_station_from_host==4){project_station_set=makeDynInt(4);project_suffix="_m1";}
 else if(project_station_from_host==5){project_station_set=makeDynInt(5,6);project_suffix="_p1";}
 else if(project_station_from_host==6){project_station_set=makeDynInt(6,7,8);project_suffix="_p2";}
 else if(project_station_from_host==7){project_station_set=makeDynInt(6,7,8);project_suffix="_p3p4";}
-//else if(project_station_from_host==8)       
+else if(project_station_from_host==8){project_station_set=makeDynInt(5);project_suffix="_p3p4";}
+
 if(temporary_windows_pc_for_hv_cc_project){project_station_set=makeDynInt(6,7);project_suffix="_p2";}
 
 }
@@ -588,11 +588,11 @@ CSC_fwG_g_master2chamber=makeDynString();
 
 
 if(CSC_fwG_g_904){
-g_HV_ID2PC_NAME=makeDynString("700_part1;"+CSC_fwG_g_904_HV_MACHINE+"_part1",
-                              "700_part2;"+CSC_fwG_g_904_HV_MACHINE+"_part2",
-                              "700_part3;"+CSC_fwG_g_904_HV_MACHINE+"_part3",
-                              "700_part4;"+CSC_fwG_g_904_HV_MACHINE+"_part4",
-                              "800;fake"); // ufcmshv2 & ufcmshv1 (for primaries)
+g_HV_ID2PC_NAME=makeDynString("800_part1;"+CSC_fwG_g_904_HV_MACHINE+"_part1",
+                              "800_part2;"+CSC_fwG_g_904_HV_MACHINE+"_part2",
+                              "800_part3;"+CSC_fwG_g_904_HV_MACHINE+"_part3",
+                              "800_part4;"+CSC_fwG_g_904_HV_MACHINE+"_part4",
+                              "400;fake"); // ufcmshv2 & ufcmshv1 (for primaries)
 }
 else{
 if(CSC_fwG_g_idisk_cross_numbers[1]>=5 && CSC_fwG_g_idisk_cross_numbers[1]<=8){
@@ -603,7 +603,7 @@ g_HV_ID2PC_NAME=makeDynString("600_part1;10.176.11.103_part1","600_part2;10.176.
 else{
 g_HV_ID2PC_NAME=makeDynString("500_part1;10.176.11.67_part1","500_part2;10.176.11.67_part2",
                               "500_part3;10.176.11.67_part3","500_part4;10.176.11.67_part4",
-                              "700;fake"); // ufcmshv2  
+                              "400;fake"); // ufcmshv2  
 }
 }
 //CSC_fwG_g_PCRATE_ID2PC_NAME=makeDynString("02:00:00:00:00:05 02:00:00:00:00:03 02:00:00:00:00:0f 02:00:00:00:00:1a;dcspcs2g19-06");
@@ -1231,7 +1231,7 @@ dpGet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_o.PCToManID"),pcs);
 // usage: panels/mudcsEmuConfig.pnl
 // usage: panels/mudcsEmuOperation.pnl
 
-mudcsAllDimManagersStart(){
+mudcsAllDimManagersStart(bool restore=false){
 
 //
 // starts all managers from CSC_fwG_CSC_fwG_g_SYSTEM_NAME2:Db_o.PCToManID list by 
@@ -1246,6 +1246,8 @@ mudcsAllDimManagersStart(){
  string test_string, test_string2;
  bool found;
  string info;
+ 
+ dyn_int dim_csc_connections=makeDynInt();
 //----
 
   test_string="~/bin/delete_processes_by_name bin/PVSS00dim";
@@ -1290,10 +1292,12 @@ operating_system=getenv("OS");
 //-------  
       if(!isManagerEmpty){
          if(operating_system=="Linux")system(test_string2+" &");
-         else system("start /b "+test_string2);  
+         else system("start /b "+test_string2);
+         dynAppend(dim_csc_connections,i);
+         mudcsDebug(test_string2);         
       }
  info +=  test_string2 + "\n";
- mudcsDebug(test_string2);
+ //mudcsDebug(test_string2);
 //// mudcsDebug(""+connectedApiIds[i]+ " "+i);
 	}
 
@@ -1305,6 +1309,7 @@ operating_system=getenv("OS");
 
 
   } // for
+  //if(!restore)dpSetWait("DIM_CSC_CONNECTIONS.",dim_csc_connections);
 //////// mudcsDebug(info);
 
 }
@@ -1389,8 +1394,11 @@ dpGet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_o.PCToManID"),pcs);
 
 	if(dynContains(connectedApiIds, i)>0)
 	{
+  if(isFunctionDefined("fwExceptionHandling_display")){  
 		fwException_raise(exceptionInfo, "INFO", "Manager ID "+i+" is connected","");
 		fwExceptionHandling_display(exceptionInfo);
+  }
+  else mudcsEmuMessages("Manager ID "+i+" is connected");
 		return;
 	}
 
@@ -1485,10 +1493,13 @@ operating_system=getenv("OS");
 
 	if(dynContains(connectedApiIds, newId)>0)
 	{
+  if(isFunctionDefined("fwExceptionHandling_display")){ 
 		fwException_raise(exceptionInfo, "INFO", "Manager ID "+newId+" is connected","");
 		fwExceptionHandling_display(exceptionInfo);
+  }
+  else mudcsEmuMessages("Manager ID "+newId+" is connected");
 		return;
-        }
+  }
 
        int pos_part;
        if((pos_part=strpos(PCName,"_part"))>=0)
@@ -1532,8 +1543,11 @@ operating_system=getenv("OS");
 	dpGet(mudcsAddSystem("_Connections.Device.ManNums:_original.._value"),connectedApiIds);
 	if(dynContains(connectedApiIds, i)<=0)
 	{
+  if(isFunctionDefined("fwExceptionHandling_display")){  
 		fwException_raise(exceptionInfo, "INFO", "Manager ID "+i+" is not connected","");
 		fwExceptionHandling_display(exceptionInfo);
+  }
+  else mudcsEmuMessages("Manager ID "+i+" is not connected");
 //		return;
 	}
         else {
@@ -1751,12 +1765,15 @@ string error_message;
 //============================================================================================
 
 mudcsDebug(string string_to_debug){
-
+  
 dyn_string test_dyn_string;
 
+if(isFunctionDefined("fwExceptionHandling_display")){
+  DebugTN("defined!");
  fwException_raise(test_dyn_string, "MYDEBUG", string_to_debug, "");
  fwExceptionHandling_display(test_dyn_string);
-
+}
+else mudcsEmuMessages(string_to_debug);
 
 }
 //============================================================================================
@@ -1764,8 +1781,11 @@ mudcsDebug2(string string_to_debug){
 
 dyn_string test_dyn_string;
 
+if(isFunctionDefined("fwExceptionHandling_display")){
  fwException_raise(test_dyn_string, "MYDEBUG", string_to_debug, "");
  mudcsExceptionHandling_display(test_dyn_string);
+}
+else mudcsEmuMessages(string_to_debug);
 
 }
 //============================================================================================
@@ -2214,7 +2234,7 @@ if(set=="")return;
                                 // DpNameFsm=substr(dp_name,0,strpos(dp_name,".status"));
                                 dpGet(mudcsAddSystem(DpNameFsm+".last_vset"),last_vset);
                             subcommand=subcommand  +"|"+   "HVCMD;"+coords[2]+";"+coords[3]+";"+chamber_depend_all_channels+"7;"+last_vset+";"+"-1";// vset
-                            subcommand=subcommand  +"|"+   "HVCMD;"+coords[2]+";"+coords[3]+";"+chamber_depend_all_channels+"3;"+"6"+";"+"-1"; // ramp_up
+                            subcommand=subcommand  +"|"+   "HVCMD;"+coords[2]+";"+coords[3]+";"+chamber_depend_all_channels+"3;"+"11"+";"+"-1"; // ramp_up
                             /*if(CSC_fwG_g_IS_IMAX_SET)*/subcommand=subcommand  +"|"+   "HVCMD;"+coords[2]+";"+coords[3]+";"+chamber_depend_all_channels+"6;"+"1"+";"+"-1"; //imax
                             subcommand=subcommand  +"|"+   "HVCMD;"+coords[2]+";"+coords[3]+";"+chamber_depend_all_channels+"38;"+"500"+";"+"-1"; //trip_dl
                             mudcsHVMasterChannelSwitch(dp_name, true);

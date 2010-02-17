@@ -33,7 +33,7 @@ mudcsDbCreateMain()
 
   mudcsInit();
   
-int i;  
+int i,j;  
   
 for(i=1;i<=8;i++)dynClear(DISK_LEVEL[i]);
 dynClear(EMU_LEVEL);    
@@ -45,8 +45,66 @@ db_set_disk_level();
 db_set_emu_level();  
 
 
+    int i10_i=1;
+    int i10_o=1;
+    int j10_i=0;
+    int j10_o=6;
+    int ipart;
+
 for(i=1;i<=8;i++){
  
+  if(CSC_fwG_g_904 && i==6){
+       
+     
+    
+     for(j=1;j<=dynlen(HV_IN[i]);j++){
+      if(j<2 || j>7)continue; // two sectors       
+//     strreplace(HV_IN[i][j],"600;","800;");
+       if(j%2)ipart=1;
+       else ipart=2;
+       HV_IN[i][j]="800;"+i10_i+";"+j10_i+";"+ipart; 
+      
+      if(ipart==2)j10_i++;
+      if(j10_i>5){i10_i++;j10_i=0;}
+    }
+  
+
+   
+   
+   if(i!=5){     
+    for(j=1;j<=dynlen(HV_OUT[i]);j++){
+      if(j<3 || j>20)continue; // two sectors
+    // strreplace(HV_OUT[i][j],"600;","800;");
+ 
+       HV_OUT[i][j]="800;"+i10_o+";"+j10_o+";0"; 
+      
+      j10_o++;
+      if(j10_o>15){i10_o++;j10_o=6;}   
+   
+    }
+   } // i!=5
+   else{
+     for(j=1;j<=dynlen(HV_OUT[i]);j++){
+//     strreplace(HV_IN[i][j],"600;","800;");
+       if(j%2)ipart=1;
+       else ipart=2;
+       HV_OUT[i][j]="800;"+i10_i+";"+j10_i+";"+ipart; 
+      
+      if(ipart==2)j10_i++;
+      if(j10_i>5){i10_i++;j10_i=0;}
+    }    
+     
+     
+   }
+     
+     
+     
+   
+   
+   
+  }
+    
+  
   dpSet("Db_o.Wheels_o.Wheel"+i+".InDynatemAndSetNumberList",CC_IN[i]); 
   /*if(i!=1 & i!=8)*/dpSet("Db_o.Wheels_o.Wheel"+i+".OutDynatemAndSetNumberList",CC_OUT[i]);
   dpSet("Db_o.Wheels_o.Wheel"+i+".InHVsetList",HV_IN[i]); 
@@ -939,12 +997,12 @@ int i;
 //======== ME+2 =============================  
   i=6;
   
-  HV_IN[i][1]="600;5;2;2"; //sector 6
-  if(CSC_fwG_g_904)HV_IN[i][2]="700;0;4;1"; //sector 1  
+  HV_IN[i][1]="600;5;6;2"; //sector 6
+  if(CSC_fwG_g_904)HV_IN[i][2]="800;0;4;1"; //sector 1  
   else HV_IN[i][2]="600;5;3;1";//sector 1
   HV_IN[i][3]="600;5;4;2";//sector 1
   HV_IN[i][4]="600;5;5;1";//sector 1
-  HV_IN[i][5]="600;5;6;2";
+  HV_IN[i][5]="600;5;2;2";
   HV_IN[i][6]="600;5;7;1";
   HV_IN[i][7]="600;5;8;2";
   HV_IN[i][8]="600;9;1;1";
@@ -1543,7 +1601,7 @@ int i;
 db_set_emu_level(){
 
  if(CSC_fwG_g_904){
-  dynAppend(EMU_LEVEL,"HighVoltage/HV_PR_primary700_0_1 HV_PRIMARY;700;0;1");   
+  dynAppend(EMU_LEVEL,"HighVoltage/HV_PR_primary800_0_1 HV_PRIMARY;800;0;1");   
  }
  else{     
   dynAppend(EMU_LEVEL,"GasMonitoring/GAS_MIXERS LVCB_1.ELMB_3F;0");

@@ -571,7 +571,20 @@ p="emuChamberOperation.pnl";
   continue;
  }
 
+s="HV_ME11";
+ if((pos=strpos(o,s))>=0 && pos==(strlen(o)-strlen(s))){
+//panels=makeDynString("fwFSMuser/fwUi.pnl");
+p="emuME11Operation.pnl";
 
+  dynAppend(panels,dir_oper+"/"+p);
+//  mudcsDebug(o+" "+panels[dynlen(panels)]);
+  dpSet(objs[i]+".ui.panels:_original.._value",panels);
+  
+ // label=s;
+ // if((pos=strpos(o,"_PC"))>=0) label=substr(o_cut,strlen("CSC_")+6); // case of reference from CRB project
+ // dpSet(objs[i]+".ui.label:_original.._value",label);  
+  continue;
+ }
 
 
 

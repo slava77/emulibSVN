@@ -30,8 +30,8 @@ mudcsDeleteAllTrees();
   mudcsFsmCreateMain();
   mudcsAlertCreateMain(); 
   mudcsSetFsmPanelsMain();
-//  mudcsArchiveMain(true);
-//\\  setupArchiving(CSC_fwG_g_idisk_cross_numbers); // Xiaofeng+Evaldas Archiving
+// obsolete: mudcsArchiveMain(true);
+//  setupArchiving(CSC_fwG_g_idisk_cross_numbers); // Xiaofeng+Evaldas Archiving
 
   dpSetWait(CSC_fwG_g_SYSTEM_NAME+":MYWARNING.value","postinstall_finish");
   exit(0); 

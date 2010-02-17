@@ -15,7 +15,7 @@ mudcsAlertCreateMain()
   LV_1_alert_main();
   TEMP_1_alert_main();  
   Snmp_alert_main();
-  Cooling_alert_main();  
+ // should be called in GAS/Cooling component: Cooling_alert_main();  
   
     mudcsAlertReconfig("TEMP_1", ".off_channels", true);
 
@@ -948,8 +948,7 @@ cr_er_dpe=makeDynString(
 "outputFailure",
 "fantrayFailure",
 "sensorFailure",
-"VmeSysfail",
-"mainOn");
+"VmeSysfail");
     
 
 limits_s = makeDynString();
@@ -1008,8 +1007,7 @@ ch_er_dpe=makeDynString(
 "outputFailureMaxTerminalVoltage",
 "outputFailureMaxCurrent",
 "outputFailureMaxTemperature",
-"outputFailureMaxPower",
-"out_switch");
+"outputFailureMaxPower");
 
 limits_s = makeDynString();
 
@@ -1067,8 +1065,7 @@ cr_er_dpe=makeDynString(
 "outputFailure",
 "fantrayFailure",
 "sensorFailure",
-"VmeSysfail",
-"mainOn");
+"VmeSysfail");
  
 ch_er_dpe=makeDynString(
 //"out_switch",
@@ -1079,8 +1076,7 @@ ch_er_dpe=makeDynString(
 "outputFailureMaxTerminalVoltage",
 "outputFailureMaxCurrent",
 "outputFailureMaxTemperature",
-"outputFailureMaxPower",
-"out_switch");
+"outputFailureMaxPower");
 
 dps=dpNames("*","fwWnrCr_CSC_LV_d");
 

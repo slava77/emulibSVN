@@ -1,4 +1,15 @@
 //=============================
+mudcsEmuMessages(string s){
+  
+ dyn_string dps; 
+ dpGet("EMU_MESSAGES.",dps);
+ dynAppend(dps,"--------");
+ dynAppend(dps,s);
+ dpSet("EMU_MESSAGES.",dps);
+
+}
+//==============================  
+//=============================
 mudcsDebug_dyn5(dyn_string dps){
   
  dyn_string dps1; 
@@ -355,7 +366,10 @@ mudcsInitServer(){
    //   DebugTN(master_index);
     //    DebugTN(coord_master);
   master=system_master+":master"+coord_master[1]+"_"+coord_master[2]+"_"+coord_master[3];
-   dpGet(master+".data.master_hostid",coord_primary[1]); 
+  
+  if(!dpExists(master))continue;
+    
+  dpGet(master+".data.master_hostid",coord_primary[1]); 
   dpGet(master+".data.master_busaddr",coord_primary[2]);
   dpGet(master+".data.master_hvcard",coord_primary[3]);
   primary="HV_PR_primary"+coord_primary[1]+"_"+coord_primary[2]+"_"+coord_primary[3];
@@ -395,7 +409,9 @@ int mudcsGetMasterForChamberGlobal(string fsm, int &master_id, int &master_chan,
 
  dynClear(coord_master);
     dyn_string dyn_debug;
-
+string system_master,master;    
+    
+/*
     if(CSC_fwG_g_904 || CSC_fwG_g_P5_SIM_AT_904){
       master_chan=0;
       master_id=0;
@@ -406,9 +422,8 @@ int mudcsGetMasterForChamberGlobal(string fsm, int &master_id, int &master_chan,
 
    return 2;      
       
-      
     } 
-    
+*/    
     
 int status;
 int i;
@@ -451,6 +466,16 @@ dpGet(data+".data.master_busaddr",master_busaddr);
  dynAppend(coord_master,master_hvcard);
  dynAppend(coord_master,master_busaddr);
 ////// dynAppend(CSC_fwG_g_dyn_debug1,fsm+" "+master_id);
+ 
+ if(master_hostid < 200 || master_hostid >2000){
+      master_chan=0;
+      master_id=0;
+      dynAppend(coord_master,0);
+      dynAppend(coord_master,0);
+      dynAppend(coord_master,0);
+      
+   return 2; 
+ }
 
    return 1;
 

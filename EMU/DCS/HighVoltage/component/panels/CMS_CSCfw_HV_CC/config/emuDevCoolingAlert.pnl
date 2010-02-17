@@ -1,7 +1,7 @@
-V 10
+V 11
 1
 LANG:1 0 
-PANEL,-1 -1 400 270 N "_3DFace" 0
+PANEL,-1 -1 401 293 N "_3DFace" 0
 E E E E E 1 -1 -1 0  0 0
 ""0  1
 E "//#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
@@ -186,9 +186,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 58 148 108 172
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  58 148 108 172
 
 T 
 1
@@ -226,9 +225,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 288 148 338 172
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  288 148 338 172
 
 T 
 1
@@ -331,13 +329,35 @@ LANG:1 0
 {
 	this.text = \"\";
 }" 0
- E 0 1 1 0 1 E U  0 E 120 180 260 205
+ E 0 1 1 0 1 E U  0 E 120 180 258 199
 0 2 0 "0s" 0 0 0 192 0 0  120 180 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,16,5,40,0,0,0,0,0
+0 1
 LANG:1 23 result of alert setting
+2 7
+"PRIMITIVE_TEXT1"
+""
+1 20 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 20 60 364 100
+0 2 2 "0s" 0 0 0 192 0 0  20 60 2
+1
+LANG:1 35 MS Shell Dlg 2,11,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 21 No way to call here: 
+1
+LANG:1 35 MS Shell Dlg 2,11,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 43 should be called from GAS/Cooling component
 0
 LAYER, 1 
 1

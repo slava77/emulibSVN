@@ -276,7 +276,10 @@ int dist_trip=0;
 time current_time;
 string current_time_s;
 
-current_time=getCurrentTime();
+//current_time=getCurrentTime();
+//current_time_s=formatTime(\"%H:%M:%S\",current_time);
+
+dpGet(DpName+\".update_value:_online.._stime\",current_time);
 current_time_s=formatTime(\"%H:%M:%S\",current_time);
 
 //setValue(\"update_time\",\"backCol\",\"{0,153,153}\");
@@ -641,12 +644,7 @@ update_enabled(string dp, int state){
   }
 }
 //==========================================" 0
- "
-main()
-{
-
-}" 0
- E E E 1 -1 -1 0  406 39
+ E E E E 1 -1 -1 0  406 39
 ""0  1
 E "
 
@@ -1016,12 +1014,7 @@ bool found=false;
 }" 0
  2
 "CBRef" "1"
-"EClose" "
-main()
-{
-
-}" 0
-
+"EClose" E
 ""
 DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
 LAYER, 0 
