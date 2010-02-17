@@ -72,6 +72,7 @@ const int EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y = 20;
 const int EMUUI_TOP_CHAMBER_VIEW_MODE_TIMEOUT = 300;
 
 bool exiting = false;
+bool releaseControl = false;
 bool topPanelInitialized;
 int chamberViewModeTimerThreadId = -1;
 
@@ -176,7 +177,7 @@ void drawLegend(dyn_string &ex, bool vertical = false) {
 
 /** This is called when Top FSM node (CMS_CSC) operation mode has changed. If it's detected that it's excluded - take the whole FSM tree. */
 void updateTopFsmNodeOperationModeCB(string fsmNode, int operationFlag) {
-  if (exiting) { return; }
+  if (exiting || releaseControl) { return; }
   if (operationFlag == 0) { // not controllable
     string domain = fsmNode;
     string object = _fwCU_getNodeObj(domain);
@@ -315,7 +316,7 @@ LANG:1 0
 1
 LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
 0 1
-LANG:1 24 Peripheral Crates Status
+LANG:1 14 Summary Panels
 6 72
 "RECTANGLE8"
 ""
@@ -917,7 +918,7 @@ E E 0 1 1 2 1 E 1 0 1 11 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4
 2 48
 "PRIMITIVE_TEXT3"
 ""
-1 2930.774899290494 70 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 2996.839409118258 50 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -933,29 +934,10 @@ E E 0 1 1 2 1 E 0.9910714285714291 0 1 92.23214285714232 -20 1 E 1370 30 1507 46
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 21 Communication problem
-2 54
-"PRIMITIVE_TEXT4"
-""
-1 1120 850 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
- E E
-68 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1120 850 1551 866
-0 2 2 "0s" 0 0 0 192 0 0  1120 850 1
-1
-LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
-0 1
-LANG:1 75 Under development, but coming soon!  Will show PCrate configuration process
 2 57
 "upsOnBatteryBack"
 ""
-1 10 49.84244412914644 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 49.80503409606732 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
@@ -1244,12 +1226,12 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1110 830 1245 846
+E E 0 1 1 2 1 E U  1 E 1110 830 1204 846
 0 2 2 "0s" 0 0 0 192 0 0  1110 830 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 24 Peripheral Crates Status
+LANG:1 14 Summary panels
 2 31
 "lblChamberViewModeTimer"
 ""
@@ -1371,7 +1353,7 @@ LANG:1 16 Majority Summary
 13 79
 "btnOpenErrorSummary"
 ""
-1 19.99999999999999 1080 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 1110 850 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 93 0 0 0 0 0
 E E E
@@ -1382,7 +1364,7 @@ LANG:1 0
 0
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
-0  18 1078 192 1105
+0  1108 848 1312 875
 
 T 
 1
@@ -1395,9 +1377,59 @@ LANG:1 18 Open Error Summary
 13 80
 "btnOpenExcludedSummary"
 ""
-1 200 1080 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 1380 850 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 94 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0  1378 848 1582 875
+
+T 
+1
+LANG:1 25 Open Excluded Ch. Summary
+"main()
+{
+  ChildPanelOnCentralModal(\"CMS_CSCfw_Supervisor/emuEmuExcludedSummary.pnl\", \"Excluded Channels Summary\", makeDynString());
+}" 0
+ E E E
+13 81
+"PUSH_BUTTON1"
+""
+1 19.99999999999999 1080 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+95 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0  18 1078 192 1105
+
+T 
+1
+LANG:1 15 Release Control
+"main()
+{
+  emu_info(\"Releasing control.\");
+  releaseControl = true;
+  fwCU_releaseFullTree(\"CMS_CSC\");
+}" 0
+ E E E
+13 82
+"PUSH_BUTTON2"
+""
+1 200 1080 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+96 0 0 0 0 0
 E E E
 0
 1
@@ -1410,10 +1442,13 @@ LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 
 T 
 1
-LANG:1 25 Open Excluded Ch. Summary
+LANG:1 18 Take Local Control
 "main()
 {
-  ChildPanelOnCentralModal(\"CMS_CSCfw_Supervisor/emuEmuExcludedSummary.pnl\", \"Excluded Channels Summary\", makeDynString());
+
+  emu_info(\"Taking local control.\");
+  fwCU_takeTree(\"CMS_CSC\");
+  releaseControl = false;
 }" 0
  E E E
 0
