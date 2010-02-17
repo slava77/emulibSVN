@@ -30,10 +30,8 @@ main()
                                       "csc_dcs_lv1");
 
   if (isSupervisor()) {
-    //mudcsSuper_createCentralDcsFsm();
-    string hvType;
-    fwCU_getType("CSC_HV", hvType);
-    emumaj_debug("CSC_HV type is: " + hvType, true);
+    mudcsSuper_createCentralDcsFsm();
+    emumaj_debug("DONE", true);
   }
   return;
   
