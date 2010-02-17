@@ -1,11 +1,12 @@
 #uses "majority_treeCache/treeCache.ctl"
 #uses "majority_treeCache/majorityLib.ctl"
+#uses "CMS_CSCfw_Supervisor/mudcs3SuperCreateCentralDcsFsm.ctl"
 
 dyn_string majorityTopNodes;
 
-const bool EMUMAJ_DELETE_TREE_CACHE_AND_MAJORITY_CONF = true;
-const bool EMUMAJ_CREATE_TREE_CACHE = true;
-const bool EMUMAJ_CREATE_MAJORITY_CONF = true;
+const bool EMUMAJ_DELETE_TREE_CACHE_AND_MAJORITY_CONF = false;
+const bool EMUMAJ_CREATE_TREE_CACHE = false;
+const bool EMUMAJ_CREATE_MAJORITY_CONF = false;
 const bool EMUMAJ_DELETE_MAJORITY_DUS = false;
 const bool EMUMAJ_CREATE_MAJORITY_DUS = false;
 const bool EMUMAJ_UPDATE_FSM_TYPES = false;
@@ -27,6 +28,11 @@ main()
                                       "cms_csc_dcs_08",
                                       "CMS_CSC_DCS_01",
                                       "csc_dcs_lv1");
+
+  if (isSupervisor()) {
+    mudcsSuper_createCentralDcsFsm();
+     emumaj_debug("Done creating plus/minus trees", true);
+  }
   
   // stop FSM if it's going to be modified
   if (EMUMAJ_CREATE_MAJORITY_DUS || EMUMAJ_DELETE_MAJORITY_DUS || EMUMAJ_UPDATE_FSM_TYPES || EMUMAJ_RESTORE_FSM_TYPES) {
