@@ -30,7 +30,8 @@ main()
                                       "csc_dcs_lv1");
 
   if (isSupervisor()) {
-    mudcsSuper_createCentralDcsFsm();
+    fwFsmTree_removeNode("FSM", "CMS_CSC_PLUS");
+    fwFsmTree_removeNode("FSM", "CMS_CSC_MINUS");
     emumaj_debug("DONE", true);
   }
   return;
