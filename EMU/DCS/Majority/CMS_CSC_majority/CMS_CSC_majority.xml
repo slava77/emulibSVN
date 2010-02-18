@@ -6,7 +6,6 @@
 <dontRestartProject>yes</dontRestartProject>
 <dplist>./dplist/majorityInstallationDp.dpl</dplist>
 <dplist>./dplist/majorityDUType.dpl</dplist>
-<dplist>./dplist/CMS_CSCfw_HV_CC.dpl</dplist>
 <init>./scripts/CMS_CSC_majority/CMS_CSC_majority.init</init>
 <file>./scripts/CMS_CSC_majority/majority.ctl</file>
 <file>./scripts/libs/CMS_CSC_majority/CMS_CSC_majorityDevices.ctl</file>
