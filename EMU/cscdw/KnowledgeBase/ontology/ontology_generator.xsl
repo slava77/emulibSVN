@@ -94,47 +94,48 @@
 		</ObjectPropertyAssertion>
 		
 		<xsl:for-each select="document($SOURCE)//Chamber[@endcap=$ENDCAP and @station=$STATION and @type=$RING]">
-		  <xsl:sort select="@number"/>
-		  <xsl:variable name="CHAMBER" select="@number"/>
+		  <xsl:sort data-type="number" select="@number"/>
+		  <xsl:variable name=       "CHAMBER" select=              "@number"/>
+		  <xsl:variable name="PADDED_CHAMBER" select="format-number(@number,'00')"/>
 		  <xsl:if test="not(preceding::Chamber[@endcap=$ENDCAP and @station=$STATION and @type=$RING]/@number=$CHAMBER)">
 
 		    <!-- Chambers -->
-		    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/></Declaration>
-		    <ClassAssertion><Class URI="&csc;Chamber"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/></ClassAssertion>
-		    <ObjectPropertyAssertion><ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}"/></ObjectPropertyAssertion>
+		    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/></Declaration>
+		    <ClassAssertion><Class URI="&csc;Chamber"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/></ClassAssertion>
+		    <ObjectPropertyAssertion><ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}"/></ObjectPropertyAssertion>
 		    <!-- Chamber's Cooling -->
-		    <ObjectPropertyAssertion><ObjectProperty URI="&csc;cools"/><Individual URI="&csc;CoolingCircuit2"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/></ObjectPropertyAssertion>
+		    <ObjectPropertyAssertion><ObjectProperty URI="&csc;cools"/><Individual URI="&csc;CoolingCircuit2"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/></ObjectPropertyAssertion>
 
 		    <!-- Layers -->
-		    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/1"/></Declaration>
-		    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/2"/></Declaration>
-		    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/3"/></Declaration>
-		    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/4"/></Declaration>
-		    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/5"/></Declaration>
-		    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/6"/></Declaration>
-		    <ClassAssertion><Class URI="&csc;Layer"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/1"/></ClassAssertion>
-		    <ClassAssertion><Class URI="&csc;Layer"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/2"/></ClassAssertion>
-		    <ClassAssertion><Class URI="&csc;Layer"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/3"/></ClassAssertion>
-		    <ClassAssertion><Class URI="&csc;Layer"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/4"/></ClassAssertion>
-		    <ClassAssertion><Class URI="&csc;Layer"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/5"/></ClassAssertion>
-		    <ClassAssertion><Class URI="&csc;Layer"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/6"/></ClassAssertion>
+		    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/1"/></Declaration>
+		    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/2"/></Declaration>
+		    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/3"/></Declaration>
+		    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/4"/></Declaration>
+		    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/5"/></Declaration>
+		    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/6"/></Declaration>
+		    <ClassAssertion><Class URI="&csc;Layer"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/1"/></ClassAssertion>
+		    <ClassAssertion><Class URI="&csc;Layer"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/2"/></ClassAssertion>
+		    <ClassAssertion><Class URI="&csc;Layer"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/3"/></ClassAssertion>
+		    <ClassAssertion><Class URI="&csc;Layer"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/4"/></ClassAssertion>
+		    <ClassAssertion><Class URI="&csc;Layer"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/5"/></ClassAssertion>
+		    <ClassAssertion><Class URI="&csc;Layer"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/6"/></ClassAssertion>
 		    <ObjectPropertyAssertion>
-		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/1"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/>
+		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/1"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/>
 		    </ObjectPropertyAssertion>
 		    <ObjectPropertyAssertion>
-		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/2"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/>
+		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/2"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/>
 		    </ObjectPropertyAssertion>
 		    <ObjectPropertyAssertion>
-		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/3"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/>
+		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/3"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/>
 		    </ObjectPropertyAssertion>
 		    <ObjectPropertyAssertion>
-		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/4"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/>
+		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/4"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/>
 		    </ObjectPropertyAssertion>
 		    <ObjectPropertyAssertion>
-		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/5"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/>
+		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/5"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/>
 		    </ObjectPropertyAssertion>
 		    <ObjectPropertyAssertion>
-		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/6"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/>
+		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/6"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/>
 		    </ObjectPropertyAssertion>
 		  </xsl:if>
 		</xsl:for-each>
@@ -349,12 +350,13 @@
 	  </xsl:when>
 	  <!-- chambers (only those in PCrate source xml file, i.e., already installed) -->
 	  <xsl:otherwise>
-	    <xsl:variable name="UNPADDED_CHAMBER">ME<xsl:value-of select="Chamber/@endcap"/><xsl:value-of select="Chamber/@station"/>/<xsl:value-of select="Chamber/@type"/>/<xsl:value-of select="number(Chamber/@number)"/></xsl:variable>
-	    <xsl:if test="document(document('ontology_template.xml')//templ:PSidePCrates/@source)//CSC[@label=$UNPADDED_CHAMBER] | document(document('ontology_template.xml')//templ:MSidePCrates/@source)//CSC[@label=$UNPADDED_CHAMBER]">
+	    <xsl:variable name=       "CHAMBER_NAME">ME<xsl:value-of select="Chamber/@endcap"/><xsl:value-of select="Chamber/@station"/>/<xsl:value-of select="Chamber/@type"/>/<xsl:value-of select=              "Chamber/@number"/></xsl:variable>
+	    <xsl:variable name="PADDED_CHAMBER_NAME">ME<xsl:value-of select="Chamber/@endcap"/><xsl:value-of select="Chamber/@station"/>/<xsl:value-of select="Chamber/@type"/>/<xsl:value-of select="format-number(Chamber/@number,'00')"/></xsl:variable>
+	    <xsl:if test="document(document('ontology_template.xml')//templ:PSidePCrates/@source)//CSC[@label=$CHAMBER_NAME] | document(document('ontology_template.xml')//templ:MSidePCrates/@source)//CSC[@label=$CHAMBER_NAME]">
 	      <ObjectPropertyAssertion>
 		<ObjectProperty URI="&csc;receivesDataFrom"/>
 		<Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$DDU_INPUT}"/>
-		<Individual URI="&csc;ME{Chamber/@endcap}{Chamber/@station}/{Chamber/@type}/{Chamber/@number}/DMB"/>
+		<Individual URI="&csc;{$PADDED_CHAMBER_NAME}/DMB"/>
 	      </ObjectPropertyAssertion>
 	    </xsl:if>
 	  </xsl:otherwise>
