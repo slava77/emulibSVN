@@ -89,6 +89,7 @@
   <Declaration><Class URI="&csc;Slink"/></Declaration>
   <Declaration><Class URI="&csc;DMB"/></Declaration>
   <Declaration><Class URI="&csc;SectorProcessor"/></Declaration>
+  <Declaration><Class URI="&csc;SectorProcessorInput"/></Declaration>
   <Declaration><Class URI="&csc;ALCT"/></Declaration>
   <Declaration><Class URI="&csc;RAT"/></Declaration>
   <Declaration><Class URI="&csc;TMB"/></Declaration>
@@ -164,6 +165,7 @@
   <EntityAnnotation><Class URI="&csc;Slink"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An output channel from the DCC to the global DAQ. Naming: Slink&lt;f&gt;, f: FMM id [750..760]</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;DMB"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">DAQ Motherboard. Naming: ME&lt;e&gt;&lt;s&gt;/&lt;r&gt;/&lt;c&gt;/DMB, e: endcap [+-], s: station [1..4], r: ring [1..3], c: chamber [01..36]</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;SectorProcessor"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Sector Processor. Naming: SectorProcessor&lt;n&gt;, n: sector processor number [01..12]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;SectorProcessorInput"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Input to Sector Processor. Naming: SectorProcessor&lt;n&gt;InputF&lt;f&gt;/M&lt;m&gt;, n: sector processor number [01..12], f: front FPGA [1..5], m: muon [1..3]</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;ALCT"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Anode Local Charged Track. Naming: ME&lt;e&gt;&lt;s&gt;/&lt;r&gt;/&lt;c&gt;/ALCT, e: endcap [+-], s: station [1..4], r: ring [1..3], c: chamber [01..36]</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;RAT"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">RPC and ALCT interface card. Naming: ME&lt;e&gt;&lt;s&gt;/&lt;r&gt;/&lt;c&gt;/RAT, e: endcap [+-], s: station [1..4], r: ring [1..3], c: chamber [01..36]</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;TMB"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Trigger Motherboard. Naming: ME&lt;e&gt;&lt;s&gt;/&lt;r&gt;/&lt;c&gt;/TMB, e: endcap [+-], s: station [1..4], r: ring [1..3], c: chamber [01..36]</Constant></Annotation></EntityAnnotation>
@@ -340,6 +342,7 @@
   <SubClassOf><Class URI="&csc;DDUInput"/><Class URI="&csc;Channel"/></SubClassOf>
   <SubClassOf><Class URI="&csc;Slink"/><Class URI="&csc;Channel"/></SubClassOf>
   <SubClassOf><Class URI="&csc;/dev/schar"/><Class URI="&csc;Channel"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;SectorProcessorInput"/><Class URI="&csc;Channel"/></SubClassOf>
 
   <!-- Device -->
   <SubClassOf><Class URI="&csc;ALCT"/><Class URI="&csc;Device"/></SubClassOf>
@@ -384,6 +387,7 @@
 
   <!-- Trigger -->
   <SubClassOf><Class URI="&csc;SectorProcessor"/><Class URI="&csc;TriggerDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;SectorProcessorInput"/><Class URI="&csc;TriggerDevice"/></SubClassOf>
 <!--   <SubClassOf><Class URI="&csc;TriggerSector"/><Class URI="&csc;Trigger"/></SubClassOf> -->
   <SubClassOf><Class URI="&csc;TFRUI"/><Class URI="&csc;Trigger"/></SubClassOf>
   <SubClassOf><Class URI="&csc;TFDDU"/><Class URI="&csc;TriggerDevice"/></SubClassOf>
@@ -396,7 +400,10 @@
 
   <!-- DAQ -->
   <SubClassOf><Class URI="&csc;DDU"/><Class URI="&csc;DAQDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;DDUInput"/><Class URI="&csc;DAQDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;/dev/schar"/><Class URI="&csc;DAQDevice"/></SubClassOf>
   <SubClassOf><Class URI="&csc;DCC"/><Class URI="&csc;DAQDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;Slink"/><Class URI="&csc;DAQDevice"/></SubClassOf>
   <SubClassOf><Class URI="&csc;ALCT"/><Class URI="&csc;DAQDevice"/></SubClassOf>
   <SubClassOf><Class URI="&csc;CFEB"/><Class URI="&csc;DAQDevice"/></SubClassOf>
   <SubClassOf><Class URI="&csc;RAT"/><Class URI="&csc;DAQDevice"/></SubClassOf>

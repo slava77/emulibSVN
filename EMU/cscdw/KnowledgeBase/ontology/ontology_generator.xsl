@@ -186,6 +186,20 @@
 	  <Individual URI="&csc;VME{$PM_ENDCAP}{@station}_{$PADDED_VME_NUMBER}"/>
 	</SameIndividuals>
 	<ClassAssertion><Class URI="&csc;PeripheralCrate"/><Individual URI="&csc;VME{@endcap}{@station}/{$PADDED_VME_NUMBER}"/></ClassAssertion>
+	<!-- SectorProcessor inputs -->
+	<xsl:variable name="FPGA" select="position()"/>
+	<Declaration><Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}InputF{$FPGA}/M1"/></Declaration>
+	<Declaration><Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}InputF{$FPGA}/M2"/></Declaration>
+	<Declaration><Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}InputF{$FPGA}/M3"/></Declaration>
+	<ClassAssertion><Class URI="&csc;SectorProcessorInput"/><Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}InputF{$FPGA}/M1"/></ClassAssertion>
+	<ClassAssertion><Class URI="&csc;SectorProcessorInput"/><Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}InputF{$FPGA}/M2"/></ClassAssertion>
+	<ClassAssertion><Class URI="&csc;SectorProcessorInput"/><Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}InputF{$FPGA}/M3"/></ClassAssertion>
+	<ObjectPropertyAssertion><ObjectProperty URI="&csc;receivesTriggerFrom"/><Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}"/><Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}InputF{$FPGA}/M1"/></ObjectPropertyAssertion>
+	<ObjectPropertyAssertion><ObjectProperty URI="&csc;receivesTriggerFrom"/><Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}"/><Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}InputF{$FPGA}/M2"/></ObjectPropertyAssertion>
+	<ObjectPropertyAssertion><ObjectProperty URI="&csc;receivesTriggerFrom"/><Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}"/><Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}InputF{$FPGA}/M3"/></ObjectPropertyAssertion>
+	<ObjectPropertyAssertion><ObjectProperty URI="&csc;receivesTriggerFrom"/><Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}InputF{$FPGA}/M1"/><Individual URI="&csc;VME{@endcap}{@station}/{$PADDED_VME_NUMBER}/MPC"/></ObjectPropertyAssertion>
+	<ObjectPropertyAssertion><ObjectProperty URI="&csc;receivesTriggerFrom"/><Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}InputF{$FPGA}/M2"/><Individual URI="&csc;VME{@endcap}{@station}/{$PADDED_VME_NUMBER}/MPC"/></ObjectPropertyAssertion>
+	<ObjectPropertyAssertion><ObjectProperty URI="&csc;receivesTriggerFrom"/><Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}InputF{$FPGA}/M3"/><Individual URI="&csc;VME{@endcap}{@station}/{$PADDED_VME_NUMBER}/MPC"/></ObjectPropertyAssertion>
       </xsl:for-each>
 
     </xsl:for-each>
@@ -337,15 +351,6 @@
 		<Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$DDU_INPUT}"/>
 		<Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}"/>
 	      </ObjectPropertyAssertion>
-
-	      <xsl:for-each select="SectorProcessor/PeripheralCrate">
-		<xsl:variable name="PADDED_VME_NUMBER" select="format-number(@VMEcrate,'00')"/>
-		<ObjectPropertyAssertion>
-		  <ObjectProperty URI="&csc;receivesTriggerFrom"/>
-		  <Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}"/>
-		  <Individual URI="&csc;VME{@endcap}{@station}/{$PADDED_VME_NUMBER}/MPC"/>
-		</ObjectPropertyAssertion>
-	      </xsl:for-each>
 	    </xsl:if>
 	  </xsl:when>
 	  <!-- chambers (only those in PCrate source xml file, i.e., already installed) -->
