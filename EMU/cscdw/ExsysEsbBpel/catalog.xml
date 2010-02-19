@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <nextCatalog catalog="nbproject/private/cache/retriever/catalog.xml"/>
+    <system systemId="ExsysEsbEjb/wsdl/HttpProxy/HttpProxyWSService.wsdl" uri="nb-uri:ExsysEsbEjb#src/conf/wsdl/HttpProxy/HttpProxyWSService.wsdl"/>
+    <system systemId="CdwModel/org/cern/cms/csc/dw/schema/fact.xsd" uri="nb-uri:CdwModel#src/java/org/cern/cms/csc/dw/schema/fact.xsd"/>
+</catalog>
+
+
+
+
+
+
+
+
+
