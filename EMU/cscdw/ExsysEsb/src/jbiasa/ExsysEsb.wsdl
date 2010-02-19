@@ -9,11 +9,10 @@
              xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
              xmlns:xsd="http://www.w3.org/2001/XMLSchema"
              targetNamespace="ExsysEsb"
-             xmlns:tns="ExsysEsb" xmlns:ns="http://www.cern.ch/cms/csc/exsys/wsdl/getFactCollection" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://ws.dw.csc.cms.cern.org/">
-    <import namespace="http://www.cern.ch/cms/csc/exsys/wsdl/getFactCollection" location="../jbiServiceUnits/ExsysEsbBpel/tmbCounters/getFactCollection.wsdl"/>
+             xmlns:tns="ExsysEsb" xmlns:ns="http://ws.dw.csc.cms.cern.org/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
     <import namespace="http://ws.dw.csc.cms.cern.org/" location="../jbiServiceUnits/ExsysEsbBpel/CdwWS/Cdw.wsdl"/>
     <portType name="dummyCasaPortType"/>
-    <binding name="casaBinding1" type="ns1:factcollection">
+    <binding name="casaBinding1" type="ns:factcollection">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
         <operation name="input">
             <soap:operation/>
@@ -29,8 +28,8 @@
         </operation>
     </binding>
     <service name="ExsysEsbService1">
-        <port name="casaPort1" binding="tns:casaBinding1">
-            <soap:address location="http://localhost:18080/cdw/factcollection"/>
+        <port name="cdwFactCollectionInputPort" binding="tns:casaBinding1">
+            <soap:address location="http://macfrank:18080/cdw/factcollection"/>
         </port>
     </service>
 </definitions>

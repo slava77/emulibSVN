@@ -146,16 +146,16 @@
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target name="library-inclusion-in-archive" depends="compile">
-        <unjar dest="${build.classes.dir}" src="${reference.ExsysEsbEjb.dist}"/>
         <unjar dest="${build.classes.dir}" src="${reference.ExsysEsbBpel.dist_se}"/>
+        <unjar dest="${build.classes.dir}" src="${reference.ExsysEsbEjb.dist}"/>
     </target>
     <target name="library-inclusion-in-manifest" depends="compile">
-        <basename property="included.lib.reference.ExsysEsbEjb.dist" file="${reference.ExsysEsbEjb.dist}"/>
-        <copy todir="${build.classes.dir}" file="${reference.ExsysEsbEjb.dist}"/>
         <basename property="included.lib.reference.ExsysEsbBpel.dist_se" file="${reference.ExsysEsbBpel.dist_se}"/>
         <copy todir="${build.classes.dir}" file="${reference.ExsysEsbBpel.dist_se}"/>
+        <basename property="included.lib.reference.ExsysEsbEjb.dist" file="${reference.ExsysEsbEjb.dist}"/>
+        <copy todir="${build.classes.dir}" file="${reference.ExsysEsbEjb.dist}"/>
         <manifest file="${build.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${included.lib.reference.ExsysEsbEjb.dist},${included.lib.reference.ExsysEsbBpel.dist_se}"/>
+            <attribute name="Class-Path" value="${included.lib.reference.ExsysEsbBpel.dist_se},${included.lib.reference.ExsysEsbEjb.dist}"/>
         </manifest>
     </target>
     <target name="do-compile" depends="init,deps-jar,pre-pre-compile,pre-compile"/>

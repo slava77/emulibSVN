@@ -5,8 +5,8 @@
         <data xmlns="http://www.netbeans.org/ns/j2ee-jbi/1">
             <name>ExsysEsb</name>
             <minimum-ant-version>1.6</minimum-ant-version>
-            <included-library>reference.ExsysEsbEjb.dist</included-library>
             <included-library>reference.ExsysEsbBpel.dist_se</included-library>
+            <included-library>reference.ExsysEsbEjb.dist</included-library>
         </data>
         <references xmlns="http://www.netbeans.org/ns/ant-project-references/1">
             <reference>
