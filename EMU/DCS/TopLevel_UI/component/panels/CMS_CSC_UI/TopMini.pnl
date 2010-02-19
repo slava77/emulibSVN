@@ -350,7 +350,7 @@ LANG:1 0
 //   posX += 350;  
 //   emuui_addFsmNode(\"CSC_HV\", posX, posY, references);
    
-  fwCU_connectOperationMode(\"updateTopFsmNodeOperationModeCB\", \"CMS_CSC\");
+//  fwCU_connectOperationMode(\"updateTopFsmNodeOperationModeCB\", \"CMS_CSC\");
 }
 " 0
  E 0 0 1 0 1 E 5.954545454545448 0 0.3694267515923544 -406.8181818181814 676.8789808917217 0 E 70 853 291 1011
@@ -681,7 +681,7 @@ LANG:1 29 UI Version 1.0.0 (2009/07/22)
 2 38
 "lblNewVersion"
 ""
-1 1140 10 E E E 1 E 0 E N "_WindowText" E N "warningWentUna" E E
+1 1150 2 E E E 1 E 0 E N "_WindowText" E N "yellow" E E
  E E
 51 0 0 0 0 0
 E E E
@@ -691,8 +691,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1140 10 1318 44
-1 2 2 "0s" 0 0 0 192 0 0  1140 10 2
+E E 0 1 1 2 1 E U  1 E 1150 2 1328 36
+1 2 2 "0s" 0 0 0 192 0 0  1150 2 2
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -756,7 +756,7 @@ E E 0 1 1 2 1 E 1 0 1 -397 6 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4
 2 48
 "PRIMITIVE_TEXT3"
 ""
-1 -2140.647936172573 365 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -2439.302865313891 375 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -775,7 +775,7 @@ LANG:1 21 Communication problem
 2 57
 "upsOnBatteryBack"
 ""
-1 49.7855207000614 158.9577215943408 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 50.13753503137559 158.975174740152 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E

@@ -23,25 +23,31 @@ void initConstants() {
   emuui_g_topFsmNodesRightX = 390;
   emuui_g_topFsmNodesHeight = 230; // not including emuui_g_topMajorityTableHeight
   emuui_g_topMajorityTableHeight = 50;
-  hostsToKillAllPvss = makeDynString(\"SCX5SCR05\", \"SCX5SCR06\");
-  hostsToReleaseFsmOnExit = makeDynString(\"SCX5SCR05\");
-  developmentHosts = makeDynString(\"macfrank\", \"hp-evka\");
+  
+  dyn_string hostsToAutoTakeControl = makeDynString(\"scx5scr05\", \"scx5scr06\");
+  dyn_string hostsToReleaseFsmOnExit = makeDynString(\"scx5scr05\");
+  dyn_string developmentHosts = makeDynString(\"macfrank\", \"hp-evka\");
+  
+  string hostname = getHostname();
+  hostname = strtolower(hostname);
+  
+  autoTakeControl = dynContains(hostsToAutoTakeControl, hostname);
+  releaseFsmOnExit = dynContains(hostsToReleaseFsmOnExit, hostname);
+  developmentHost = dynContains(developmentHosts, hostname);
 }" 0
  "main()
 {
   exiting = true;
-  string hostname = getHostname();
-  if (dynContains(hostsToReleaseFsmOnExit, hostname)) {
+  if (releaseFsmOnExit) {
     fwCU_releaseFullTree(\"CMS_CSC\");
   }
-  if (dynContains(developmentHosts, hostname)) {
+  if (developmentHost) {
     PanelOff();
   } else {
     exit();
   }
-  
-//   string hostname = getHostname();
-//   if (dynContains(hostsToKillAllPvss, hostname)) {
+
+//   if (killAllPvss) {
 //     emu_info(\"Killing all PVSS processes\");
 //     killAllPvss();
 //   }
@@ -76,9 +82,9 @@ bool releaseControl = false;
 bool topPanelInitialized;
 int chamberViewModeTimerThreadId = -1;
 
-dyn_string hostsToKillAllPvss;
-dyn_string developmentHosts;
-dyn_string hostsToReleaseFsmOnExit;
+bool developmentHost = false;
+bool releaseFsmOnExit = true;
+bool autoTakeControl = false;
 
 void waitForEmuUiInitialize() {
   while(!emuui_isInitialized()) { // wait for the emuui initialization
@@ -205,18 +211,16 @@ void killAllPvss() {
 "EClose" "main()
 {
   exiting = true;
-  string hostname = getHostname();
-  if (dynContains(hostsToReleaseFsmOnExit, hostname)) {
+  if (releaseFsmOnExit) {
     fwCU_releaseFullTree(\"CMS_CSC\");
   }
-  if (dynContains(developmentHosts, hostname)) {
+  if (developmentHost) {
     PanelOff();
   } else {
     exit();
   }
 
-//   string hostname = getHostname();
-//   if (dynContains(hostsToKillAllPvss, hostname)) {
+//   if (killAllPvss) {
 //     emu_info(\"Killing all PVSS processes\");
 //     killAllPvss();
 //   }
@@ -458,7 +462,9 @@ LANG:1 0
   emuui_addFsmNode(\"CSC_HV\", posX, posY, references);
   posY += 30;
   
-  fwCU_connectOperationMode(\"updateTopFsmNodeOperationModeCB\", \"CMS_CSC\");
+  if (autoTakeControl) {
+    fwCU_connectOperationMode(\"updateTopFsmNodeOperationModeCB\", \"CMS_CSC\");
+  }
 }
 " 0
  E 0 0 1 0 1 E 1.68181818181818 0 1.40127388535031 -107.7272727272726 -305.2866242038144 0 E 70 853 291 1011
@@ -936,7 +942,7 @@ E E 0 1 1 2 1 E 1 0 1 11 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 3062.314057251132 30 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 3127.204110311391 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -955,7 +961,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 49.76838365756849 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 49.73247739040974 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
