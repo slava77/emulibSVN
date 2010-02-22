@@ -260,7 +260,7 @@ LANG:1 0
 "dashclr"N "_Transparent"
 E "main()
 {
-  ChildPanelOnCentralModal(\"CMS_CSCfw_Supervisor/emuEmuErrorSummarySub.pnl\", \"Error Summary\", makeDynString());
+  ChildPanelOnCentral(\"CMS_CSCfw_Supervisor/emuEmuErrorSummarySub.pnl\", \"Error Summary\", makeDynString());
 }" 0
  0 1 1 2 1 E 2 0 1 389.9999999999998 790 1 E 360 60 470 83
 30 0
@@ -1442,7 +1442,7 @@ LANG:1 0
 "dashclr"N "_Transparent"
 E "main()
 {
-  ChildPanelOnCentralModal(\"CMS_CSCfw_Supervisor/emuEmuErrorSummarySub.pnl\", \"Error Summary\", makeDynString());
+  ChildPanelOnCentral(\"CMS_CSCfw_Supervisor/emuEmuErrorSummarySub.pnl\", \"Error Summary\", makeDynString());
 }" 0
  0 1 1 2 1 E U  1 E 1110 854 1325 867
 0 2 2 "0s" 0 0 0 65 0 0  1110 854 1
@@ -1465,7 +1465,7 @@ LANG:1 0
 "dashclr"N "_Transparent"
 E "main()
 {
-  ChildPanelOnCentralModal(\"CMS_CSCfw_Supervisor/emuEmuExcludedSummary.pnl\", \"Excluded Channels Summary\", makeDynString());
+  ChildPanelOnCentral(\"CMS_CSCfw_Supervisor/emuEmuExcludedSummary.pnl\", \"Excluded Channels Summary\", makeDynString());
 }" 0
  0 1 1 2 1 E 2 0 1 639.9999999999999 790 1 E 360 60 470 83
 2 86
@@ -1483,7 +1483,7 @@ LANG:1 0
 "dashclr"N "_Transparent"
 E "main()
 {
-  ChildPanelOnCentralModal(\"CMS_CSCfw_Supervisor/emuEmuExcludedSummary.pnl\", \"Excluded Channels Summary\", makeDynString());
+  ChildPanelOnCentral(\"CMS_CSCfw_Supervisor/emuEmuExcludedSummary.pnl\", \"Excluded Channels Summary\", makeDynString());
 }" 0
  0 1 1 2 1 E U  1 E 1360 854 1575 867
 0 2 2 "0s" 0 0 0 65 0 0  1360 854 1
