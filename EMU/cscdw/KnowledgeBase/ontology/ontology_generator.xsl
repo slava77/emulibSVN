@@ -101,11 +101,13 @@
 
 		    <!-- Chambers -->
 		    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/></Declaration>
-		    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"       /></Declaration>
-		    <SameIndividuals>
-		      <Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/>
-		      <Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"       />
-		    </SameIndividuals>
+		    <xsl:if test="$CHAMBER != $PADDED_CHAMBER">
+		      <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"/></Declaration>
+		      <SameIndividuals>
+			<Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/>
+			<Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"       />
+		      </SameIndividuals>
+		    </xsl:if>
 		    <ClassAssertion><Class URI="&csc;Chamber"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/></ClassAssertion>
 		    <ObjectPropertyAssertion><ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}"/></ObjectPropertyAssertion>
 		    <!-- Chamber's Cooling -->
@@ -118,6 +120,20 @@
 		    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/4"/></Declaration>
 		    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/5"/></Declaration>
 		    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/6"/></Declaration>
+		    <xsl:if test="$CHAMBER != $PADDED_CHAMBER">
+		      <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/1"/></Declaration>
+		      <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/2"/></Declaration>
+		      <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/3"/></Declaration>
+		      <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/4"/></Declaration>
+		      <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/5"/></Declaration>
+		      <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/6"/></Declaration>
+		      <SameIndividuals><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/1"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/1"/></SameIndividuals>
+		      <SameIndividuals><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/2"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/2"/></SameIndividuals>
+		      <SameIndividuals><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/3"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/3"/></SameIndividuals>
+		      <SameIndividuals><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/4"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/4"/></SameIndividuals>
+		      <SameIndividuals><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/5"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/5"/></SameIndividuals>
+		      <SameIndividuals><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}/6"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/6"/></SameIndividuals>
+		    </xsl:if>
 		    <ClassAssertion><Class URI="&csc;Layer"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/1"/></ClassAssertion>
 		    <ClassAssertion><Class URI="&csc;Layer"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/2"/></ClassAssertion>
 		    <ClassAssertion><Class URI="&csc;Layer"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/3"/></ClassAssertion>
@@ -180,16 +196,22 @@
 	<xsl:sort select="@VMEcrate"/>
 	<xsl:variable name="PM_ENDCAP"><xsl:choose><xsl:when test="@endcap = '+'">p</xsl:when><xsl:otherwise>m</xsl:otherwise></xsl:choose></xsl:variable>
 	<xsl:variable name="PADDED_VME_NUMBER" select="format-number(@VMEcrate,'00')"/>
-	<Declaration><Individual URI="&csc;VME{@endcap}{@station}/{@VMEcrate}"/></Declaration>
-	<Declaration><Individual URI="&csc;VME{$PM_ENDCAP}{@station}_{@VMEcrate}"/></Declaration>
+	<xsl:variable name="VME_NUMBER" select="@VMEcrate"/>
 	<Declaration><Individual URI="&csc;VME{@endcap}{@station}/{$PADDED_VME_NUMBER}"/></Declaration>
 	<Declaration><Individual URI="&csc;VME{$PM_ENDCAP}{@station}_{$PADDED_VME_NUMBER}"/></Declaration>
 	<SameIndividuals>
-	  <Individual URI="&csc;VME{@endcap}{@station}/{@VMEcrate}"/>
-	  <Individual URI="&csc;VME{$PM_ENDCAP}{@station}_{@VMEcrate}"/>
 	  <Individual URI="&csc;VME{@endcap}{@station}/{$PADDED_VME_NUMBER}"/>
 	  <Individual URI="&csc;VME{$PM_ENDCAP}{@station}_{$PADDED_VME_NUMBER}"/>
 	</SameIndividuals>
+	<xsl:if test="$VME_NUMBER != $PADDED_VME_NUMBER">
+	  <Declaration><Individual URI="&csc;VME{@endcap}{@station}/{$VME_NUMBER}"/></Declaration>
+	  <Declaration><Individual URI="&csc;VME{$PM_ENDCAP}{@station}_{$VME_NUMBER}"/></Declaration>
+	  <SameIndividuals>
+	    <Individual URI="&csc;VME{@endcap}{@station}/{$PADDED_VME_NUMBER}"/>
+	    <Individual URI="&csc;VME{@endcap}{@station}/{$VME_NUMBER}"/>
+	    <Individual URI="&csc;VME{$PM_ENDCAP}{@station}_{$VME_NUMBER}"/>
+	  </SameIndividuals>
+	</xsl:if>
 	<ClassAssertion><Class URI="&csc;PeripheralCrate"/><Individual URI="&csc;VME{@endcap}{@station}/{$PADDED_VME_NUMBER}"/></ClassAssertion>
 	<!-- SectorProcessor inputs -->
 	<xsl:variable name="FPGA" select="position()"/>
@@ -301,13 +323,14 @@
       <xsl:variable name="PADDED_RUI_INSTANCE" select="format-number(@instance,'00')"/>
 
       <Declaration><Individual URI="&csc;RUI{$RUI_INSTANCE}"/></Declaration>
-      <Declaration><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/></Declaration>
-      <SameIndividuals><Individual URI="&csc;RUI{$RUI_INSTANCE}"/><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/></SameIndividuals>
-      <ClassAssertion><Class URI="&csc;RUI"/><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/></ClassAssertion>
-
       <Declaration><Individual URI="&csc;DDU{$RUI_INSTANCE}"/></Declaration>
-      <Declaration><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/></Declaration>
-      <SameIndividuals><Individual URI="&csc;DDU{$RUI_INSTANCE}"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/></SameIndividuals>
+      <xsl:if test="$RUI_INSTANCE != $PADDED_RUI_INSTANCE">
+	<Declaration><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/></Declaration>
+	<Declaration><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/></Declaration>
+	<SameIndividuals><Individual URI="&csc;RUI{$RUI_INSTANCE}"/><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/></SameIndividuals>
+	<SameIndividuals><Individual URI="&csc;DDU{$RUI_INSTANCE}"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/></SameIndividuals>
+      </xsl:if>
+      <ClassAssertion><Class URI="&csc;RUI"/><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/></ClassAssertion>
       <ClassAssertion><Class URI="&csc;DDU"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/></ClassAssertion>
 
       <xsl:choose>
@@ -335,16 +358,21 @@
 	<xsl:variable name="DDU_INPUT" select="@id"/>
 	<xsl:variable name="PADDED_DDU_INPUT" select="format-number(@id,'00')"/>
 
-	<Declaration><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$DDU_INPUT}"/></Declaration>
 	<Declaration><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$PADDED_DDU_INPUT}"/></Declaration>
-	<Declaration><Individual URI="&csc;DDU{$RUI_INSTANCE}Input{$DDU_INPUT}"/></Declaration>
-	<Declaration><Individual URI="&csc;DDU{$RUI_INSTANCE}Input{$PADDED_DDU_INPUT}"/></Declaration>
-	<SameIndividuals><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$PADDED_DDU_INPUT}"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$DDU_INPUT}"/></SameIndividuals>
-	<SameIndividuals><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$PADDED_DDU_INPUT}"/><Individual URI="&csc;DDU{$RUI_INSTANCE}Input{$DDU_INPUT}"/></SameIndividuals>
-	<SameIndividuals><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$PADDED_DDU_INPUT}"/><Individual URI="&csc;DDU{$RUI_INSTANCE}Input{$PADDED_DDU_INPUT}"/></SameIndividuals>
-
+	<xsl:if test="$DDU_INPUT != $PADDED_DDU_INPUT">
+	  <Declaration><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$DDU_INPUT}"/></Declaration>
+	  <SameIndividuals><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$PADDED_DDU_INPUT}"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$DDU_INPUT}"/></SameIndividuals>
+	</xsl:if>
+	<xsl:if test="$RUI_INSTANCE != $PADDED_RUI_INSTANCE">
+	  <Declaration><Individual URI="&csc;DDU{$RUI_INSTANCE}Input{$PADDED_DDU_INPUT}"/></Declaration>
+	  <SameIndividuals><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$PADDED_DDU_INPUT}"/><Individual URI="&csc;DDU{$RUI_INSTANCE}Input{$PADDED_DDU_INPUT}"/></SameIndividuals>
+	  <xsl:if test="$DDU_INPUT != $PADDED_DDU_INPUT">
+	    <Declaration><Individual URI="&csc;DDU{$RUI_INSTANCE}Input{$DDU_INPUT}"/></Declaration>
+	    <SameIndividuals><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$PADDED_DDU_INPUT}"/><Individual URI="&csc;DDU{$RUI_INSTANCE}Input{$DDU_INPUT}"/></SameIndividuals>
+	  </xsl:if>
+	</xsl:if>
 	<ClassAssertion><Class URI="&csc;DDUInput"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$DDU_INPUT}"/></ClassAssertion>
-	<ObjectPropertyAssertion><ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$DDU_INPUT}"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/></ObjectPropertyAssertion>
+	<ObjectPropertyAssertion><ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$PADDED_DDU_INPUT}"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/></ObjectPropertyAssertion>
 
 	<xsl:choose>
 	  <!-- TF -->
@@ -406,11 +434,22 @@
       <!-- ALCT, RAT, TMB, DMB -->
       <xsl:for-each select="CSC">
 	<xsl:variable name="PADDED_CHAMBER_NAME"><xsl:value-of select="substring(@label,1,7)"/><xsl:if test="string-length(@label)=8">0</xsl:if><xsl:value-of select="substring(@label,8,string-length(@label)-7)"/></xsl:variable>
+	<xsl:variable name="CHAMBER_NAME"><xsl:value-of select="@label"/></xsl:variable>
 	<!-- 	<xsl:message><xsl:value-of select="@label"/><xsl:text>  </xsl:text><xsl:value-of select="$PADDED_CHAMBER_NAME"/></xsl:message> -->
 	<Declaration><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/ALCT"/></Declaration>
-	<Declaration><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/RAT"/> </Declaration>
-	<Declaration><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/TMB"/> </Declaration>
-	<Declaration><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/DMB"/> </Declaration>
+	<Declaration><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/RAT" /></Declaration>
+	<Declaration><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/TMB" /></Declaration>
+	<Declaration><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/DMB" /></Declaration>
+	<xsl:if test="$CHAMBER_NAME != $PADDED_CHAMBER_NAME">
+	  <Declaration><Individual URI="&csc;{$CHAMBER_NAME}/ALCT"/></Declaration>
+	  <Declaration><Individual URI="&csc;{$CHAMBER_NAME}/RAT" /></Declaration>
+	  <Declaration><Individual URI="&csc;{$CHAMBER_NAME}/TMB" /></Declaration>
+	  <Declaration><Individual URI="&csc;{$CHAMBER_NAME}/DMB" /></Declaration>
+	  <SameIndividuals><Individual URI="&csc;{$CHAMBER_NAME}/ALCT"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/ALCT"/></SameIndividuals>
+	  <SameIndividuals><Individual URI="&csc;{$CHAMBER_NAME}/RAT" /><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/RAT" /></SameIndividuals>
+	  <SameIndividuals><Individual URI="&csc;{$CHAMBER_NAME}/TMB" /><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/TMB" /></SameIndividuals>
+	  <SameIndividuals><Individual URI="&csc;{$CHAMBER_NAME}/DMB" /><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/DMB" /></SameIndividuals>
+	</xsl:if>
 	<ClassAssertion><Class URI="&csc;ALCT"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/ALCT"/></ClassAssertion>
 	<ClassAssertion><Class URI="&csc;RAT"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/RAT"/> </ClassAssertion>
 	<ClassAssertion><Class URI="&csc;TMB"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/TMB"/> </ClassAssertion>
@@ -464,9 +503,29 @@
 	<!-- AFEB -->
 	<xsl:for-each select="TMB/ALCT/AnodeChannel">
 	  <xsl:variable name="PADDED_AFEB_NUMBER" select="format-number(@afeb_number,'00')"/>
+	  <xsl:variable name="AFEB_NUMBER" select="@afeb_number"/>
 	  <Declaration><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{$PADDED_AFEB_NUMBER}"/></Declaration>
-	  <Declaration><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{@afeb_number}"/></Declaration>
-	  <SameIndividuals><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{$PADDED_AFEB_NUMBER}"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{@afeb_number}"/></SameIndividuals>
+	  <xsl:if test="$AFEB_NUMBER != $PADDED_AFEB_NUMBER">
+	    <Declaration><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{$AFEB_NUMBER}"/></Declaration>
+	    <SameIndividuals>
+	      <Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{$AFEB_NUMBER}"/>
+	      <Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{$PADDED_AFEB_NUMBER}"/>
+	    </SameIndividuals>
+	  </xsl:if>
+	  <xsl:if test="$CHAMBER_NAME != $PADDED_CHAMBER_NAME">
+	    <Declaration><Individual URI="&csc;{$CHAMBER_NAME}/AFEB{$PADDED_AFEB_NUMBER}"/></Declaration>
+	    <SameIndividuals>
+	      <Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{$PADDED_AFEB_NUMBER}"/>
+	      <Individual URI="&csc;{$CHAMBER_NAME}/AFEB{$PADDED_AFEB_NUMBER}"/>
+	    </SameIndividuals>
+	    <xsl:if test="$AFEB_NUMBER != $PADDED_AFEB_NUMBER">
+	      <Declaration><Individual URI="&csc;{$CHAMBER_NAME}/AFEB{$AFEB_NUMBER}"/></Declaration>
+	      <SameIndividuals>
+		<Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{$PADDED_AFEB_NUMBER}"/>
+		<Individual URI="&csc;{$CHAMBER_NAME}/AFEB{$AFEB_NUMBER}"/>
+	      </SameIndividuals>
+	    </xsl:if>
+	  </xsl:if>
 	  <ClassAssertion><Class URI="&csc;AFEB"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{$PADDED_AFEB_NUMBER}"/></ClassAssertion>
 	  <ObjectPropertyAssertion>
 	    <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/AFEB{$PADDED_AFEB_NUMBER}"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}"/>
@@ -483,6 +542,10 @@
 	<!-- CFEB -->
 	<xsl:for-each select="DAQMB/CFEB">
 	  <Declaration><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/CFEB{@cfeb_number}"/></Declaration>
+	  <xsl:if test="$CHAMBER_NAME != $PADDED_CHAMBER_NAME">
+	    <Declaration><Individual URI="&csc;{$CHAMBER_NAME}/CFEB{@cfeb_number}"/></Declaration>
+	    <SameIndividuals><Individual URI="&csc;{$CHAMBER_NAME}/CFEB{@cfeb_number}"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/CFEB{@cfeb_number}"/></SameIndividuals>
+	  </xsl:if>
 	  <ClassAssertion><Class URI="&csc;CFEB"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/CFEB{@cfeb_number}"/></ClassAssertion>
 	  <ObjectPropertyAssertion>
 	    <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/CFEB{@cfeb_number}"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}"/>
@@ -611,14 +674,21 @@
 	    <xsl:variable name="LAYER" select="document($SOURCE_SEGMENT)/HV/chamber[@type=$CHAMBER_TYPE]/channel[@OUT=$CHANNEL or @OUT1=$CHANNEL or @OUT2=$CHANNEL]/@layer"/>
             <xsl:variable name="SEGMENT" select="document($SOURCE_SEGMENT)/HV/chamber[@type=$CHAMBER_TYPE]/channel[@OUT=$CHANNEL or @OUT1=$CHANNEL or @OUT2=$CHANNEL]/@segment"/>
 	    <!-- HV Segment -->
-	    <Declaration><Individual URI="&csc;{@isInChamber}/{$LAYER}/HVSegment{$SEGMENT}"/></Declaration>
-	    <ClassAssertion><Class URI="&csc;HVSegment"/><Individual URI="&csc;{@isInChamber}/{$LAYER}/HVSegment{$SEGMENT}"/></ClassAssertion>
-	    <DataPropertyAssertion><DataProperty URI="&csc;hasHVChannel"/><Individual URI="&csc;{@isInChamber}/{$LAYER}/HVSegment{$SEGMENT}"/><Constant datatypeURI="&xsd;integer"><xsl:value-of select="$CHANNEL"/></Constant></DataPropertyAssertion>
+	    <xsl:variable name="PADDED_CHAMBER_NAME" select="@isInChamber"/>
+	    <xsl:variable name=       "CHAMBER_NAME" select="concat(substring(@isInChamber,1,7),number(substring(@isInChamber,8,2)))"/>
+	    <!-- <xsl:message><xsl:value-of select="$PADDED_CHAMBER_NAME"/><xsl:text>  </xsl:text><xsl:value-of select="$CHAMBER_NAME"/></xsl:message> -->
+	    <Declaration><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/{$LAYER}/HVSegment{$SEGMENT}"/></Declaration>
+	    <xsl:if test="$CHAMBER_NAME != $PADDED_CHAMBER_NAME">
+	      <Declaration><Individual URI="&csc;{$CHAMBER_NAME}/{$LAYER}/HVSegment{$SEGMENT}"/></Declaration>
+	      <SameIndividuals><Individual URI="&csc;{$CHAMBER_NAME}/{$LAYER}/HVSegment{$SEGMENT}"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/{$LAYER}/HVSegment{$SEGMENT}"/></SameIndividuals>
+	    </xsl:if>
+	    <ClassAssertion><Class URI="&csc;HVSegment"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/{$LAYER}/HVSegment{$SEGMENT}"/></ClassAssertion>
+	    <DataPropertyAssertion><DataProperty URI="&csc;hasHVChannel"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/{$LAYER}/HVSegment{$SEGMENT}"/><Constant datatypeURI="&xsd;integer"><xsl:value-of select="$CHANNEL"/></Constant></DataPropertyAssertion>
 	    <ObjectPropertyAssertion>
-	      <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;{@isInChamber}/{$LAYER}/HVSegment{$SEGMENT}"/><Individual URI="&csc;{@isInChamber}/{$LAYER}"/>
+	      <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/{$LAYER}/HVSegment{$SEGMENT}"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/{$LAYER}"/>
 	    </ObjectPropertyAssertion>
 	    <ObjectPropertyAssertion>
-	      <ObjectProperty URI="&csc;getsHVFrom"/><Individual URI="&csc;{@isInChamber}/{$LAYER}/HVSegment{$SEGMENT}"/><Individual URI="&csc;{$PADDED_DISTRIBUTION}"/>
+	      <ObjectProperty URI="&csc;getsHVFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/{$LAYER}/HVSegment{$SEGMENT}"/><Individual URI="&csc;{$PADDED_DISTRIBUTION}"/>
 	    </ObjectPropertyAssertion>
 	  </xsl:for-each>
 	</xsl:for-each>
