@@ -101,6 +101,11 @@
 
 		    <!-- Chambers -->
 		    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/></Declaration>
+		    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"       /></Declaration>
+		    <SameIndividuals>
+		      <Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/>
+		      <Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$CHAMBER}"       />
+		    </SameIndividuals>
 		    <ClassAssertion><Class URI="&csc;Chamber"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/></ClassAssertion>
 		    <ObjectPropertyAssertion><ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}"/></ObjectPropertyAssertion>
 		    <!-- Chamber's Cooling -->
@@ -709,10 +714,8 @@
     <Declaration><Individual URI="&csc;CoolingCircuit2"/></Declaration>
     <ClassAssertion><Class URI="&csc;CoolingCircuit"/><Individual URI="&csc;CoolingCircuit1"/></ClassAssertion>
     <ClassAssertion><Class URI="&csc;CoolingCircuit"/><Individual URI="&csc;CoolingCircuit2"/></ClassAssertion>
-<!--     <xsl:call-template name="Annotate"><xsl:with-param name="CLASS">CoolingCircuit</xsl:with-param><xsl:with-param name="INDIVIDUAL">CoolingCircuit1</xsl:with-param></xsl:call-template> -->
-<!--     <xsl:call-template name="Annotate"><xsl:with-param name="CLASS">CoolingCircuit</xsl:with-param><xsl:with-param name="INDIVIDUAL">CoolingCircuit2</xsl:with-param></xsl:call-template> -->
-    <DataPropertyAssertion><DataProperty URI="&csc;hasName"/><Individual URI="CoolingCircuit1"/><Constant datatypeURI="&xsd;string">Racks Circuit</Constant></DataPropertyAssertion>
-    <DataPropertyAssertion><DataProperty URI="&csc;hasName"/><Individual URI="CoolingCircuit2"/><Constant datatypeURI="&xsd;string">Endcap Circuit</Constant></DataPropertyAssertion>
+    <DataPropertyAssertion><DataProperty URI="&csc;hasName"/><Individual URI="&csc;CoolingCircuit1"/><Constant datatypeURI="&xsd;string">Racks Circuit</Constant></DataPropertyAssertion>
+    <DataPropertyAssertion><DataProperty URI="&csc;hasName"/><Individual URI="&csc;CoolingCircuit2"/><Constant datatypeURI="&xsd;string">Endcap Circuit</Constant></DataPropertyAssertion>
   </xsl:template>
 
   <xsl:template name="RackCooling">
