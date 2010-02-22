@@ -279,6 +279,10 @@
 	<ObjectProperty URI="&csc;isIn"/>
 	<Individual URI="&csc;DCC{DCC/@FMM_ID}"/><Individual URI="&csc;FEDCrate{@CRATE_NUMBER}"/>
       </ObjectPropertyAssertion>
+      <ObjectPropertyAssertion>
+	<ObjectProperty URI="&csc;receivesL1AFrom"/>
+	<Individual URI="&csc;DCC{DCC/@FMM_ID}"/><Individual URI="&csc;TTC"/>
+      </ObjectPropertyAssertion>
       <DataPropertyAssertion>
 	<DataProperty URI="&csc;hasFMM"/><Individual URI="&csc;DCC{DCC/@FMM_ID}"/>
 	<Constant datatypeURI="&xsd;integer"><xsl:value-of select="DCC/@FMM_ID"/></Constant>
@@ -287,6 +291,10 @@
       <!-- DDUs -->
       <xsl:for-each select="DDU">
 	<xsl:variable name="PADDED_RUI_INSTANCE" select="format-number(@RUI,'00')"/>
+	<ObjectPropertyAssertion>
+	  <ObjectProperty URI="&csc;receivesL1AFrom"/>
+	  <Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/><Individual URI="&csc;DCC{../DCC/@FMM_ID}"/>
+	</ObjectPropertyAssertion>
  	<DataPropertyAssertion>
 	  <DataProperty URI="&csc;hasFMM"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/>
 	  <Constant datatypeURI="&xsd;integer"><xsl:value-of select="@FMM_ID"/></Constant>
@@ -303,6 +311,10 @@
     <xsl:comment>FMMs of TF DDU</xsl:comment>
     <xsl:text>&LF;</xsl:text>
     <xsl:variable name="SOURCE" select="@source"/>
+<!--     <ObjectPropertyAssertion> -->
+<!--       <ObjectProperty URI="&csc;receivesL1AFrom"/> -->
+<!--       <Individual URI="&csc;DDU00"/><Individual URI="&csc;TODO"/> -->
+<!--     </ObjectPropertyAssertion> -->
     <DataPropertyAssertion>
       <DataProperty URI="&csc;hasFMM"/><Individual URI="&csc;DDU00"/>
       <Constant datatypeURI="&xsd;integer"><xsl:value-of select="document($SOURCE)//DDU/@FMM_ID"/></Constant>
@@ -431,6 +443,7 @@
       <ObjectPropertyAssertion><ObjectProperty URI="&csc;getsLVFrom"/><Individual URI="&csc;{$PADDED_VME_NAME}/VCC"/><Individual URI="&csc;{$PADDED_VME_NAME}"/></ObjectPropertyAssertion>
       <ObjectPropertyAssertion><ObjectProperty URI="&csc;getsLVFrom"/><Individual URI="&csc;{$PADDED_VME_NAME}/CCB"/><Individual URI="&csc;{$PADDED_VME_NAME}"/></ObjectPropertyAssertion>
       <ObjectPropertyAssertion><ObjectProperty URI="&csc;getsLVFrom"/><Individual URI="&csc;{$PADDED_VME_NAME}/MPC"/><Individual URI="&csc;{$PADDED_VME_NAME}"/></ObjectPropertyAssertion>
+      <ObjectPropertyAssertion><ObjectProperty URI="&csc;receivesL1AFrom"/><Individual URI="&csc;{$PADDED_VME_NAME}/CCB"/><Individual URI="&csc;TTC"/></ObjectPropertyAssertion>
       <!-- ALCT, RAT, TMB, DMB -->
       <xsl:for-each select="CSC">
 	<xsl:variable name="PADDED_CHAMBER_NAME"><xsl:value-of select="substring(@label,1,7)"/><xsl:if test="string-length(@label)=8">0</xsl:if><xsl:value-of select="substring(@label,8,string-length(@label)-7)"/></xsl:variable>
@@ -499,6 +512,18 @@
 	<ObjectPropertyAssertion>
 	  <ObjectProperty URI="&csc;receivesTriggerFrom"/><Individual URI="&csc;{$PADDED_VME_NAME}/MPC"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/TMB"/>
 	</ObjectPropertyAssertion>
+	<ObjectPropertyAssertion>
+	  <ObjectProperty URI="&csc;receivesL1AFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/TMB"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/CCB"/>
+	</ObjectPropertyAssertion>
+	<ObjectPropertyAssertion>
+	  <ObjectProperty URI="&csc;receivesL1AFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/RAT"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/TMB"/>
+	</ObjectPropertyAssertion>
+	<ObjectPropertyAssertion>
+	  <ObjectProperty URI="&csc;receivesL1AFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/ALCT"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/RAT"/>
+	</ObjectPropertyAssertion>
+	<ObjectPropertyAssertion>
+	  <ObjectProperty URI="&csc;receivesL1AFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/DMB"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/CCB"/>
+	</ObjectPropertyAssertion>
 
 	<!-- AFEB -->
 	<xsl:for-each select="TMB/ALCT/AnodeChannel">
@@ -561,6 +586,9 @@
 	  </ObjectPropertyAssertion>
 	  <ObjectPropertyAssertion>
 	    <ObjectProperty URI="&csc;receivesTriggerFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/CFEB{@cfeb_number}"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}"/>
+	  </ObjectPropertyAssertion>
+	  <ObjectPropertyAssertion>
+	    <ObjectProperty URI="&csc;receivesL1AFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/CFEB{@cfeb_number}"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/DMB"/>
 	  </ObjectPropertyAssertion>
 	</xsl:for-each>
       </xsl:for-each>
