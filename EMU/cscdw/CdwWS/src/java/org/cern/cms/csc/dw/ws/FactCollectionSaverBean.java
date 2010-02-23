@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.xml.bind.JAXBElement;
 import org.cern.cms.csc.dw.ComponentTypeNotAllowedInFactException;
 import org.cern.cms.csc.dw.dao.FactDaoLocal;
 import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
@@ -29,14 +30,17 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
 
     public void saveFactCollection(FactCollection factCollection) throws Exception {
 
-        Set<FactCollectionFactsItem> toRemove = new HashSet<FactCollectionFactsItem>();
+        Set<JAXBElement<? extends Fact>> toRemove = new HashSet<JAXBElement<? extends Fact>>();
         ServiceInstructions instructions = factCollection.getServiceInstructions();
 
+        // Clean factCollectionFactsItems
+        factCollection.getFactsItems().clear();
+
         // Loop over collection facts
-        for (FactCollectionFactsItem fi: factCollection.getFactsItems()) {
+        for (JAXBElement<? extends Fact> fi: factCollection.getFacts()) {
 
             // Get a fact
-            Fact fact = fi.getItem().getValue();
+            Fact fact = fi.getValue();
 
             // Get ontology component object from fact component id
             try {
@@ -47,6 +51,11 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
                 }
                 fact.setComponent(component);
                 fact.setComponentId(component.getId());
+
+                // This fact is OK so we add it to factItems
+                FactCollectionFactsItem fcfi = new FactCollectionFactsItem();
+                fcfi.setItemValue(fact);
+                factCollection.getFactsItems().add(fcfi);
 
             } catch (Exception ex) {
                 if (instructions.isStrict()) {
@@ -60,8 +69,8 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
         }
 
         // Remove facts what need to be removed
-        for (FactCollectionFactsItem fi: toRemove) {
-            factCollection.getFactsItems().remove(fi);
+        for (JAXBElement<? extends Fact> fi: toRemove) {
+            factCollection.getFacts().remove(fi);
         }
 
         if (!factCollection.isSetFacts()) {
