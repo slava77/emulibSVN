@@ -32,11 +32,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 0.864864864864865 0 0.92 -1.72972972972973 -4.6 1 E 2 5 76 30
+E E 0 1 1 2 1 E 1 0 1 0 3 1 E 0 0 17 17
 2 2
 "lblCaption"
 ""
-1 0 4 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 21 5 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 2 0 0 0 0 0
 E E E
@@ -46,8 +46,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 0 4 60 18
-0 2 2 "0s" 0 0 0 65 0 0  0 4 1
+E E 0 1 1 2 1 E U  1 E 21 5 81 19
+0 2 2 "0s" 0 0 0 64 0 0  21 5 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
