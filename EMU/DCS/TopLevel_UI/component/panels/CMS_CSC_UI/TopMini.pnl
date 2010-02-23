@@ -179,7 +179,7 @@ void drawLegend(dyn_string &ex, bool vertical = false) {
     if (vertical) {
       posY += 27;
     } else {
-      posX += 80;
+      posX += 90;
     }
   }
 }
@@ -756,7 +756,7 @@ E E 0 1 1 2 1 E 1 0 1 -397 6 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4
 2 48
 "PRIMITIVE_TEXT3"
 ""
-1 -2439.302865313891 375 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -2735.291232587876 385 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -775,7 +775,7 @@ LANG:1 21 Communication problem
 2 57
 "upsOnBatteryBack"
 ""
-1 50.13753503137559 158.975174740152 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 50.42593231486192 158.9889069107141 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E

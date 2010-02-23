@@ -176,7 +176,7 @@ void drawLegend(dyn_string &ex, bool vertical = false) {
     if (vertical) {
       posY += 27;
     } else {
-      posX += 80;
+      posX += 90;
     }
   }
 }
@@ -852,7 +852,7 @@ LANG:1 11 Change Mode
 2 24
 "lblLegend"
 ""
-1 610 10 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+1 650 10 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
  E E
 44 0 0 0 0 0
 E E E
@@ -862,8 +862,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 610 10 655 26
-0 2 2 "0s" 0 0 0 192 0 0  610 10 1
+E E 0 1 1 2 1 E U  1 E 650 10 695 26
+0 2 2 "0s" 0 0 0 192 0 0  650 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -890,7 +890,7 @@ LANG:1 29 UI Version 1.0.0 (2009/07/22)
 2 26
 "PRIMITIVE_TEXT1"
 ""
-1 1240 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 1330 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 52 0 0 0 0 0
 E E E
@@ -900,16 +900,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1240 10 1406 26
-0 2 2 "0s" 0 0 0 192 0 0  1240 10 1
+E E 0 1 1 2 1 E U  1 E 1330 10 1417 26
+0 2 2 "0s" 0 0 0 192 0 0  1330 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 27 Known problem (mask inside)
+LANG:1 13 Known problem
 2 27
 "PRIMITIVE_TEXT2"
 ""
-1 1230 10 E E E 1 E 1 E N "white" E N "_3DText" E E
+1 1320 10 E E E 1 E 1 E N "white" E N "_3DText" E E
  E E
 53 0 0 0 0 0
 E E E
@@ -919,8 +919,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1230 10 1234 27
-0 2 2 "0s" 0 0 0 192 0 0  1230 10 1
+E E 0 1 1 2 1 E U  1 E 1320 10 1324 27
+0 2 2 "0s" 0 0 0 192 0 0  1320 10 1
 1
 LANG:1 33 MS Shell Dlg,-1,13,5,75,0,0,0,0,0
 0 1
