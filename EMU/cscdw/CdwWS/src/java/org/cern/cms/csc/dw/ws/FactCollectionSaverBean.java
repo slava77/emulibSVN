@@ -52,6 +52,8 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
                 fact.setComponent(component);
                 fact.setComponentId(component.getId());
 
+                fact.preSaveProcess();
+
                 // This fact is OK so we add it to factItems
                 FactCollectionFactsItem fcfi = new FactCollectionFactsItem();
                 fcfi.setItemValue(fact);
