@@ -4,15 +4,27 @@ LANG:1 26 CMS Endcap Muon System DCS
 PANEL,-1 -1 1600 1175 N "_3DFace" 0
 "main()
 {
+  dyn_string ex;
+  
   emuui_init();
+  
+  // access control
+  enableDisableControl(false);
+  fwAccessControl_setupPanel(\"accessPrivilegesChangedCB\", ex);
+  if (emu_checkException(ex)) { return; }
+  fwFsmUi_addUserLogin(1380, 0);
+  
+  // UI stuff
   lblVersion.text = \"UI Version \" + EMUUI_COMPONENT_VERSION + \" (\" + EMUUI_COMPONENT_DATE + \")\";
   initConstants();
   resetToDefaultChamberViewMode();
-  dyn_string ex;
   drawLegend(ex);
   if (emu_checkException(ex)) { return; }
-  topPanelInitialized = true;
   
+  // global part is now officially initialized - let other parts of the UI start initialization now
+  topPanelInitialized = true;
+      
+  // listen for UI version change
   string dp = \"fwInstallation_\" + EMUUI_COMPONENT_NAME;
   if (dpExists(dp)) {
     dpConnect(\"updateVersionCB\", false, dp + \".componentVersionString\");
@@ -178,6 +190,47 @@ void drawLegend(dyn_string &ex, bool vertical = false) {
     } else {
       posX += 90;
     }
+  }
+}
+
+// Disables all control possibilities in the panel - called before enabling control using access control
+void enableDisableControl(bool enable) {
+  releaseControl = !enable;
+  btnReleaseControl.enabled = enable;
+  btnTakeControl.enabled = enable;
+  
+  if (enable) {
+    fwCU_takeTree(\"CMS_CSC\");
+  } else {
+    fwCU_releaseFullTree(\"CMS_CSC\");
+  }
+  
+  string actionString = \"disabled\";
+  if (enable) { actionString = \"enabled\"; }
+  emu_info(\"All control features \" + actionString);
+}
+
+// This function is called by fwAccessControl framework whenever access privileges have changed
+void accessPrivilegesChangedCB(string dummy1, string dummy2) {
+  string user;
+  fwAccessControl_getUserName(user);
+  emu_info(\"Access privileges have changed - user \" + user + \" has logged in\");
+  
+  enableDisableControl(false);
+  
+  dyn_string ex;
+  bool hasControl, isExpert;
+  
+  fwAccessControl_isGranted(\"CMS_CSC:Control\", hasControl, ex);
+  if (emu_checkException(ex)) { return; }
+  fwAccessControl_isGranted(\"CMS_CSC:Debug\", isExpert, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  emu_info(\"Has \" + user + \" CSC control privilege? \" + hasControl);
+  emu_info(\"Has \" + user + \" CSC expert privileges? \" + isExpert);
+  
+  if (hasControl) {
+    enableDisableControl(true);
   }
 }
 
@@ -453,13 +506,13 @@ LANG:1 0
   posY += 40;
 
   posX += 20;  
-  emuui_addFsmNode(\"CSC_GAS\", posX, posY, references);
+  emuui_addFsmNode(\"CSC_GAS\", posX, posY, references, false, \"CMS_CSC\");
   posY += 30;
-  emuui_addFsmNode(\"CSC_COOLING\", posX, posY, references);
+  emuui_addFsmNode(\"CSC_COOLING\", posX, posY, references, false, \"CMS_CSC\");
   posY += 30;
-  emuui_addFsmNode(\"CSC_LV\", posX, posY, references);
+  emuui_addFsmNode(\"CSC_LV\", posX, posY, references, false, \"CMS_CSC\");
   posY += 30;
-  emuui_addFsmNode(\"CSC_HV\", posX, posY, references);
+  emuui_addFsmNode(\"CSC_HV\", posX, posY, references, false, \"CMS_CSC\");
   posY += 30;
   
   if (autoTakeControl) {
@@ -942,7 +995,7 @@ E E 0 1 1 2 1 E 1 0 1 11 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 3127.204110311391 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 3318.4186624434 -50 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -961,7 +1014,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 49.73247739040974 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 49.62907404398279 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
@@ -1320,6 +1373,7 @@ LANG:1 0
   posX += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_X + 10;
   posY += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y;
   
+  majority_setAccessControl_required_privilege(\"CMS_CSC\", \"CMS_CSC:Debug\");
   majority_ui_setTableMode(\"ratio\");
   majority_ui_addTable(\"CMS_CSC\", \"CMS_CSC\", \"\", \"\", 
                        makeDynString(\"HV_OUTER:on\", \"HV_OUTER:standby\", \"HV_OUTER:error\", 
@@ -1375,7 +1429,7 @@ LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 16 Majority Summary
 13 47
-"PUSH_BUTTON1"
+"btnReleaseControl"
 ""
 1 19.99999999999999 1080 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
@@ -1401,7 +1455,7 @@ LANG:1 15 Release Control
 }" 0
  E E E
 13 48
-"PUSH_BUTTON2"
+"btnTakeControl"
 ""
 1 200 1080 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
@@ -1491,6 +1545,30 @@ E "main()
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 30 Open Excluded Channels Summary
+13 87
+"btnLogout"
+""
+1 1010 20 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+101 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0  1008 18 1062 45
+
+T 
+1
+LANG:1 6 Logout
+"main()
+{
+  fwAccessControl_logout();
+}" 0
+ E E E
 0
 LAYER, 1 
 1
