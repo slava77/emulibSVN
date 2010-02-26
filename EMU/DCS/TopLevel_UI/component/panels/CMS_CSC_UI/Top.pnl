@@ -1548,7 +1548,7 @@ LANG:1 30 Open Excluded Channels Summary
 13 87
 "btnLogout"
 ""
-1 1010 20 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 1540 40 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 101 0 0 0 0 0
 E E E
@@ -1559,7 +1559,7 @@ LANG:1 0
 0
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
-0  1008 18 1062 45
+0  1538 38 1592 65
 
 T 
 1
