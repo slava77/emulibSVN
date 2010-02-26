@@ -26,9 +26,15 @@ const int EMUUI_BIG_FSM_POSITION_FIX_OFFSET_X = 18;
 const int EMUUI_BIG_FSM_POSITION_FIX_OFFSET_Y = 82;
 
 /** Adds FSM node at the specified location and adds the reference names of the included objects to the "references" array. */
-void emuui_addFsmNode(string node, int x, int y, dyn_string &references, bool smallVersion = false) {
-  string object = _fwCU_getNodeObj(node);
-  
+void emuui_addFsmNode(string node, int x, int y, dyn_string &references, bool smallVersion = false, string parent = "") {
+  string object;
+  if ((parent == "") || (parent == node)) {
+    object = _fwCU_getNodeObj(node);
+  } else {
+    object = node + "::" + node;
+    node = parent;
+  }
+
   if (!smallVersion) { // full button
     y += EMUUI_BIG_FSM_POSITION_FIX_OFFSET_Y;  // hmm positioning is screwed up somewhere
     x += EMUUI_BIG_FSM_POSITION_FIX_OFFSET_X;

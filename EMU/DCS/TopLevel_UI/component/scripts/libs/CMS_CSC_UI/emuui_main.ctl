@@ -36,7 +36,7 @@ void emuui_init() {
   emuui_initSession();
   emu_info("Session ID: " + emuui_getSessionId());
   fwFsmUi_init("CMS_CSC", "CMS_CSC");
-  fwCU_takeTree("CMS_CSC");
+  //fwCU_takeTree("CMS_CSC");
   
   emuui_g_initialized = true;
   emuuibc_startBackgroundChecks(); // in emuui_backgroundChecks.ctl
