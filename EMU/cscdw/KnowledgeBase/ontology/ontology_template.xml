@@ -37,6 +37,7 @@
     <templ:LTCandTTC/>
     <templ:HV source="mappings/hvMapping.xml"/>
     <templ:HVSegments source="mappings/HVChannelToSegment.xml"/>
+    <templ:HVDubna source="mappings/CAEN_HV_ME11.xml"/>
     <templ:LV source="mappings/lvMapping.xml"/>
     <templ:Gas source="mappings/GasSystem.xml"/>
     <templ:CoolingCircuits/>
@@ -108,10 +109,14 @@
   <Declaration><Class URI="&csc;HVMaster"/></Declaration>
   <Declaration><Class URI="&csc;HVDistribution"/></Declaration>
   <Declaration><Class URI="&csc;HVSegment"/></Declaration>
-<!--   <Declaration><Class URI="&csc;HVRack"/></Declaration> -->
+
+  <Declaration><Class URI="&csc;HVCrate"/></Declaration>
+  <Declaration><Class URI="&csc;HVBoard"/></Declaration>
+  <Declaration><Class URI="&csc;HVChannel"/></Declaration>
+
 
   <Declaration><Class URI="&csc;Maraton"/></Declaration>
-<!--   <Declaration><Class URI="&csc;LVRack"/></Declaration> -->
+
 
   <Declaration><Class URI="&csc;GasMixerInputLine"/></Declaration>
   <Declaration><Class URI="&csc;GasRack"/></Declaration>
@@ -184,10 +189,12 @@
   <EntityAnnotation><Class URI="&csc;HVMaster"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">High voltage master. Naming: HVMaster&lt;i&gt;, i: id number</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;HVDistribution"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV distribution board. Naming: HVDistribution&lt;i&gt;, i: id number</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;HVSegment"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV segment. Naming: &lt;layer&gt;/HVSegment&lt;s&gt;, layer: full name of layer, s: HV segment [1..5]</Constant></Annotation></EntityAnnotation>
-<!--   <EntityAnnotation><Class URI="&csc;HVRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string"></Constant></Annotation></EntityAnnotation> -->
+
+  <EntityAnnotation><Class URI="&csc;HVCrate"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV crate for Dubna (ME1/1) chambers. Naming: CAEN/HVME11&lt;side&gt;, side: plus or minus endcap [PN]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;HVBoard"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV board for Dubna (ME1/1) chambers. Naming: CAEN/HVME11&lt;side&gt;/Board&lt;b&gt;, side: plus or minus endcap [PN], b: board number [00..14]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;HVChannel"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV channel for Dubna (ME1/1) chambers. Naming: CAEN/HVME11&lt;side&gt;/Board&lt;b&gt;/Channel&lt;c&gt;, side: plus or minus endcap [PN], b: board number [00..14], c: channel number [001..027]</Constant></Annotation></EntityAnnotation>
 
   <EntityAnnotation><Class URI="&csc;Maraton"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Maraton low voltage power supply. Naming: Maraton&lt;i&gt;, i: Maraton id [01..38]</Constant></Annotation></EntityAnnotation>
-<!--   <EntityAnnotation><Class URI="&csc;LVRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Low voltage rack.</Constant></Annotation></EntityAnnotation> -->
 
   <EntityAnnotation><Class URI="&csc;GasMixerInputLine"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Input line to the gas mixer. Naming: GasMixerInputLine&lt;i&gt;, i: input line number (1: CO2, 2: Ar, 3: CF4)</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;GasRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Gas rack. Naming: GasRack&lt;r&gt;, r: gas rack number [61..70]</Constant></Annotation></EntityAnnotation>
@@ -362,6 +369,9 @@
   <SubClassOf><Class URI="&csc;HVPrimary"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;HVMaster"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;HVDistribution"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVCrate"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVBoard"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVChannel"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;Maraton"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;Rack"/><Class URI="&csc;Device"/></SubClassOf>
   <SubClassOf><Class URI="&csc;FEDCrate"/><Class URI="&csc;Device"/></SubClassOf>
@@ -379,11 +389,14 @@
   <SubClassOf><Class URI="&csc;HVMaster"/><Class URI="&csc;HV"/></SubClassOf>
   <SubClassOf><Class URI="&csc;HVDistribution"/><Class URI="&csc;HV"/></SubClassOf>
   <SubClassOf><Class URI="&csc;HVSegment"/><Class URI="&csc;HV"/></SubClassOf>
-<!--   <SubClassOf><Class URI="&csc;HVRack"/><Class URI="&csc;HV"/></SubClassOf> -->
+
+  <SubClassOf><Class URI="&csc;HVCrate"/><Class URI="&csc;HV"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVBoard"/><Class URI="&csc;HV"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVChannel"/><Class URI="&csc;HV"/></SubClassOf>
 
   <!-- LV -->
   <SubClassOf><Class URI="&csc;Maraton"/><Class URI="&csc;LV"/></SubClassOf>
-<!--   <SubClassOf><Class URI="&csc;LVRack"/><Class URI="&csc;LV"/></SubClassOf> -->
+
 
   <!-- Trigger -->
   <SubClassOf><Class URI="&csc;SectorProcessor"/><Class URI="&csc;TriggerDevice"/></SubClassOf>

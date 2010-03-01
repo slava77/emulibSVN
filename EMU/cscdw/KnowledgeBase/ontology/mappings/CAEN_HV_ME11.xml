@@ -1,0 +1,441 @@
+<!-- Dubna HV system -->
+<HV>
+  <rack name="S1G10">
+    <crate name="CAEN/HVME11P" ringName="ME+1/1">
+      <connection board= "0" channel= "0" chamber="36" layer="1"/>
+      <connection board= "0" channel= "1" chamber="36" layer="2"/>
+      <connection board= "0" channel= "2" chamber="36" layer="3"/>
+      <connection board= "0" channel= "3" chamber="36" layer="4"/>
+      <connection board= "0" channel= "4" chamber="36" layer="5"/>
+      <connection board= "0" channel= "5" chamber="36" layer="6"/>
+      <connection board= "0" channel= "6" chamber= "1" layer="1"/>
+      <connection board= "0" channel= "7" chamber= "1" layer="2"/>
+      <connection board= "0" channel= "8" chamber= "1" layer="3"/>
+      <connection board= "0" channel= "9" chamber= "1" layer="4"/>
+      <connection board= "0" channel="10" chamber= "1" layer="5"/>
+      <connection board= "0" channel="11" chamber= "1" layer="6"/>
+      <connection board= "0" channel="12" chamber= "2" layer="1"/>
+      <connection board= "0" channel="13" chamber= "2" layer="2"/>
+      <connection board= "0" channel="14" chamber= "2" layer="3"/>
+      <connection board= "0" channel="15" chamber= "2" layer="4"/>
+      <connection board= "0" channel="16" chamber= "2" layer="5"/>
+      <connection board= "0" channel="17" chamber= "2" layer="6"/>
+      <connection board= "0" channel="18" chamber= "3" layer="1"/>
+      <connection board= "0" channel="19" chamber= "3" layer="2"/>
+      <connection board= "0" channel="20" chamber= "3" layer="3"/>
+      <connection board= "0" channel="21" chamber= "3" layer="4"/>
+      <connection board= "0" channel="22" chamber= "3" layer="5"/>
+      <connection board= "0" channel="23" chamber= "3" layer="6"/>
+      <connection board= "0" channel="24" chamber= "4" layer="1"/>
+      <connection board= "0" channel="25" chamber= "4" layer="2"/>
+      <connection board= "0" channel="26" chamber= "4" layer="3"/>
+      <connection board= "0" channel="27" chamber= "4" layer="4"/>
+      <connection board= "2" channel= "0" chamber= "4" layer="5"/>
+      <connection board= "2" channel= "1" chamber= "4" layer="6"/>
+      <connection board= "2" channel= "2" chamber= "5" layer="1"/>
+      <connection board= "2" channel= "3" chamber= "5" layer="2"/>
+      <connection board= "2" channel= "4" chamber= "5" layer="3"/>
+      <connection board= "2" channel= "5" chamber= "5" layer="4"/>
+      <connection board= "2" channel= "6" chamber= "5" layer="5"/>
+      <connection board= "2" channel= "7" chamber= "5" layer="6"/>
+      <connection board= "2" channel= "8" chamber= "6" layer="1"/>
+      <connection board= "2" channel= "9" chamber= "6" layer="2"/>
+      <connection board= "2" channel="10" chamber= "6" layer="3"/>
+      <connection board= "2" channel="11" chamber= "6" layer="4"/>
+      <connection board= "2" channel="12" chamber= "6" layer="5"/>
+      <connection board= "2" channel="13" chamber= "6" layer="6"/>
+      <connection board= "2" channel="14" chamber= "7" layer="1"/>
+      <connection board= "2" channel="15" chamber= "7" layer="2"/>
+      <connection board= "2" channel="16" chamber= "7" layer="3"/>
+      <connection board= "2" channel="17" chamber= "7" layer="4"/>
+      <connection board= "2" channel="18" chamber= "7" layer="5"/>
+      <connection board= "2" channel="19" chamber= "7" layer="6"/>
+      <connection board= "2" channel="20" chamber= "8" layer="1"/>
+      <connection board= "2" channel="21" chamber= "8" layer="2"/>
+      <connection board= "2" channel="22" chamber= "8" layer="3"/>
+      <connection board= "2" channel="23" chamber= "8" layer="4"/>
+      <connection board= "2" channel="24" chamber= "8" layer="5"/>
+      <connection board= "2" channel="25" chamber= "8" layer="6"/>
+      <connection board= "2" channel="26" chamber= "9" layer="1"/>
+      <connection board= "2" channel="27" chamber= "9" layer="2"/>
+      <connection board= "4" channel= "0" chamber= "9" layer="3"/>
+      <connection board= "4" channel= "1" chamber= "9" layer="4"/>
+      <connection board= "4" channel= "2" chamber= "9" layer="5"/>
+      <connection board= "4" channel= "3" chamber= "9" layer="6"/>
+      <connection board= "4" channel= "4" chamber="10" layer="1"/>
+      <connection board= "4" channel= "5" chamber="10" layer="2"/>
+      <connection board= "4" channel= "6" chamber="10" layer="3"/>
+      <connection board= "4" channel= "7" chamber="10" layer="4"/>
+      <connection board= "4" channel= "8" chamber="10" layer="5"/>
+      <connection board= "4" channel= "9" chamber="10" layer="6"/>
+      <connection board= "4" channel="10" chamber="11" layer="1"/>
+      <connection board= "4" channel="11" chamber="11" layer="2"/>
+      <connection board= "4" channel="12" chamber="11" layer="3"/>
+      <connection board= "4" channel="13" chamber="11" layer="4"/>
+      <connection board= "4" channel="14" chamber="11" layer="5"/>
+      <connection board= "4" channel="15" chamber="11" layer="6"/>
+      <connection board= "4" channel="16" chamber="12" layer="1"/>
+      <connection board= "4" channel="17" chamber="12" layer="2"/>
+      <connection board= "4" channel="18" chamber="12" layer="3"/>
+      <connection board= "4" channel="19" chamber="12" layer="4"/>
+      <connection board= "4" channel="20" chamber="12" layer="5"/>
+      <connection board= "4" channel="21" chamber="12" layer="6"/>
+      <connection board= "4" channel="22" chamber="13" layer="1"/>
+      <connection board= "4" channel="23" chamber="13" layer="2"/>
+      <connection board= "4" channel="24" chamber="13" layer="3"/>
+      <connection board= "4" channel="25" chamber="13" layer="4"/>
+      <connection board= "4" channel="26" chamber="13" layer="5"/>
+      <connection board= "4" channel="27" chamber="13" layer="6"/>
+      <connection board= "6" channel= "0" chamber="14" layer="1"/>
+      <connection board= "6" channel= "1" chamber="14" layer="2"/>
+      <connection board= "6" channel= "2" chamber="14" layer="3"/>
+      <connection board= "6" channel= "3" chamber="14" layer="4"/>
+      <connection board= "6" channel= "4" chamber="14" layer="5"/>
+      <connection board= "6" channel= "5" chamber="14" layer="6"/>
+      <connection board= "6" channel= "6" chamber="15" layer="1"/>
+      <connection board= "6" channel= "7" chamber="15" layer="2"/>
+      <connection board= "6" channel= "8" chamber="15" layer="3"/>
+      <connection board= "6" channel= "9" chamber="15" layer="4"/>
+      <connection board= "6" channel="10" chamber="15" layer="5"/>
+      <connection board= "6" channel="11" chamber="15" layer="6"/>
+      <connection board= "6" channel="12" chamber="16" layer="1"/>
+      <connection board= "6" channel="13" chamber="16" layer="2"/>
+      <connection board= "6" channel="14" chamber="16" layer="3"/>
+      <connection board= "6" channel="15" chamber="16" layer="4"/>
+      <connection board= "6" channel="16" chamber="16" layer="5"/>
+      <connection board= "6" channel="17" chamber="16" layer="6"/>
+      <connection board= "6" channel="18" chamber="17" layer="1"/>
+      <connection board= "6" channel="19" chamber="17" layer="2"/>
+      <connection board= "6" channel="20" chamber="17" layer="3"/>
+      <connection board= "6" channel="21" chamber="17" layer="4"/>
+      <connection board= "6" channel="22" chamber="17" layer="5"/>
+      <connection board= "6" channel="23" chamber="17" layer="6"/>
+      <connection board= "8" channel= "0" chamber="18" layer="1"/>
+      <connection board= "8" channel= "1" chamber="18" layer="2"/>
+      <connection board= "8" channel= "2" chamber="18" layer="3"/>
+      <connection board= "8" channel= "3" chamber="18" layer="4"/>
+      <connection board= "8" channel= "4" chamber="18" layer="5"/>
+      <connection board= "8" channel= "5" chamber="18" layer="6"/>
+      <connection board= "8" channel= "6" chamber="19" layer="1"/>
+      <connection board= "8" channel= "7" chamber="19" layer="2"/>
+      <connection board= "8" channel= "8" chamber="19" layer="3"/>
+      <connection board= "8" channel= "9" chamber="19" layer="4"/>
+      <connection board= "8" channel="10" chamber="19" layer="5"/>
+      <connection board= "8" channel="11" chamber="19" layer="6"/>
+      <connection board= "8" channel="12" chamber="20" layer="1"/>
+      <connection board= "8" channel="13" chamber="20" layer="2"/>
+      <connection board= "8" channel="14" chamber="20" layer="3"/>
+      <connection board= "8" channel="15" chamber="20" layer="4"/>
+      <connection board= "8" channel="16" chamber="20" layer="5"/>
+      <connection board= "8" channel="17" chamber="20" layer="6"/>
+      <connection board= "8" channel="18" chamber="21" layer="1"/>
+      <connection board= "8" channel="19" chamber="21" layer="2"/>
+      <connection board= "8" channel="20" chamber="21" layer="3"/>
+      <connection board= "8" channel="21" chamber="21" layer="4"/>
+      <connection board= "8" channel="22" chamber="21" layer="5"/>
+      <connection board= "8" channel="23" chamber="21" layer="6"/>
+      <connection board= "8" channel="24" chamber="22" layer="1"/>
+      <connection board= "8" channel="25" chamber="22" layer="2"/>
+      <connection board= "8" channel="26" chamber="22" layer="3"/>
+      <connection board= "8" channel="27" chamber="22" layer="4"/>
+      <connection board="10" channel= "0" chamber="22" layer="5"/>
+      <connection board="10" channel= "1" chamber="22" layer="6"/>
+      <connection board="10" channel= "2" chamber="23" layer="1"/>
+      <connection board="10" channel= "3" chamber="23" layer="2"/>
+      <connection board="10" channel= "4" chamber="23" layer="3"/>
+      <connection board="10" channel= "5" chamber="23" layer="4"/>
+      <connection board="10" channel= "6" chamber="23" layer="5"/>
+      <connection board="10" channel= "7" chamber="23" layer="6"/>
+      <connection board="10" channel= "8" chamber="24" layer="1"/>
+      <connection board="10" channel= "9" chamber="24" layer="2"/>
+      <connection board="10" channel="10" chamber="24" layer="3"/>
+      <connection board="10" channel="11" chamber="24" layer="4"/>
+      <connection board="10" channel="12" chamber="24" layer="5"/>
+      <connection board="10" channel="13" chamber="24" layer="6"/>
+      <connection board="10" channel="14" chamber="25" layer="1"/>
+      <connection board="10" channel="15" chamber="25" layer="2"/>
+      <connection board="10" channel="16" chamber="25" layer="3"/>
+      <connection board="10" channel="17" chamber="25" layer="4"/>
+      <connection board="10" channel="18" chamber="25" layer="5"/>
+      <connection board="10" channel="19" chamber="25" layer="6"/>
+      <connection board="10" channel="20" chamber="26" layer="1"/>
+      <connection board="10" channel="21" chamber="26" layer="2"/>
+      <connection board="10" channel="22" chamber="26" layer="3"/>
+      <connection board="10" channel="23" chamber="26" layer="4"/>
+      <connection board="10" channel="24" chamber="26" layer="5"/>
+      <connection board="10" channel="25" chamber="26" layer="6"/>
+      <connection board="10" channel="26" chamber="27" layer="1"/>
+      <connection board="10" channel="27" chamber="27" layer="2"/>
+      <connection board="12" channel= "0" chamber="27" layer="3"/>
+      <connection board="12" channel= "1" chamber="27" layer="4"/>
+      <connection board="12" channel= "2" chamber="27" layer="5"/>
+      <connection board="12" channel= "3" chamber="27" layer="6"/>
+      <connection board="12" channel= "4" chamber="28" layer="1"/>
+      <connection board="12" channel= "5" chamber="28" layer="2"/>
+      <connection board="12" channel= "6" chamber="28" layer="3"/>
+      <connection board="12" channel= "7" chamber="28" layer="4"/>
+      <connection board="12" channel= "8" chamber="28" layer="5"/>
+      <connection board="12" channel= "9" chamber="28" layer="6"/>
+      <connection board="12" channel="10" chamber="29" layer="1"/>
+      <connection board="12" channel="11" chamber="29" layer="2"/>
+      <connection board="12" channel="12" chamber="29" layer="3"/>
+      <connection board="12" channel="13" chamber="29" layer="4"/>
+      <connection board="12" channel="14" chamber="29" layer="5"/>
+      <connection board="12" channel="15" chamber="29" layer="6"/>
+      <connection board="12" channel="16" chamber="30" layer="1"/>
+      <connection board="12" channel="17" chamber="30" layer="2"/>
+      <connection board="12" channel="18" chamber="30" layer="3"/>
+      <connection board="12" channel="19" chamber="30" layer="4"/>
+      <connection board="12" channel="20" chamber="30" layer="5"/>
+      <connection board="12" channel="21" chamber="30" layer="6"/>
+      <connection board="12" channel="22" chamber="31" layer="1"/>
+      <connection board="12" channel="23" chamber="31" layer="2"/>
+      <connection board="12" channel="24" chamber="31" layer="3"/>
+      <connection board="12" channel="25" chamber="31" layer="4"/>
+      <connection board="12" channel="26" chamber="31" layer="5"/>
+      <connection board="12" channel="27" chamber="31" layer="6"/>
+      <connection board="14" channel= "0" chamber="32" layer="1"/>
+      <connection board="14" channel= "1" chamber="32" layer="2"/>
+      <connection board="14" channel= "2" chamber="32" layer="3"/>
+      <connection board="14" channel= "3" chamber="32" layer="4"/>
+      <connection board="14" channel= "4" chamber="32" layer="5"/>
+      <connection board="14" channel= "5" chamber="32" layer="6"/>
+      <connection board="14" channel= "6" chamber="33" layer="1"/>
+      <connection board="14" channel= "7" chamber="33" layer="2"/>
+      <connection board="14" channel= "8" chamber="33" layer="3"/>
+      <connection board="14" channel= "9" chamber="33" layer="4"/>
+      <connection board="14" channel="10" chamber="33" layer="5"/>
+      <connection board="14" channel="11" chamber="33" layer="6"/>
+      <connection board="14" channel="12" chamber="34" layer="1"/>
+      <connection board="14" channel="13" chamber="34" layer="2"/>
+      <connection board="14" channel="14" chamber="34" layer="3"/>
+      <connection board="14" channel="15" chamber="34" layer="4"/>
+      <connection board="14" channel="16" chamber="34" layer="5"/>
+      <connection board="14" channel="17" chamber="34" layer="6"/>
+      <connection board="14" channel="18" chamber="35" layer="1"/>
+      <connection board="14" channel="19" chamber="35" layer="2"/>
+      <connection board="14" channel="20" chamber="35" layer="3"/>
+      <connection board="14" channel="21" chamber="35" layer="4"/>
+      <connection board="14" channel="22" chamber="35" layer="5"/>
+      <connection board="14" channel="23" chamber="35" layer="6"/>
+    </crate>
+    <crate name="CAEN/HVME11N" ringName="ME-1/1">
+      <connection board= "0" channel= "0" chamber="36" layer="1"/>
+      <connection board= "0" channel= "1" chamber="36" layer="2"/>
+      <connection board= "0" channel= "2" chamber="36" layer="3"/>
+      <connection board= "0" channel= "3" chamber="36" layer="4"/>
+      <connection board= "0" channel= "4" chamber="36" layer="5"/>
+      <connection board= "0" channel= "5" chamber="36" layer="6"/>
+      <connection board= "0" channel= "6" chamber= "1" layer="1"/>
+      <connection board= "0" channel= "7" chamber= "1" layer="2"/>
+      <connection board= "0" channel= "8" chamber= "1" layer="3"/>
+      <connection board= "0" channel= "9" chamber= "1" layer="4"/>
+      <connection board= "0" channel="10" chamber= "1" layer="5"/>
+      <connection board= "0" channel="11" chamber= "1" layer="6"/>
+      <connection board= "0" channel="12" chamber= "2" layer="1"/>
+      <connection board= "0" channel="13" chamber= "2" layer="2"/>
+      <connection board= "0" channel="14" chamber= "2" layer="3"/>
+      <connection board= "0" channel="15" chamber= "2" layer="4"/>
+      <connection board= "0" channel="16" chamber= "2" layer="5"/>
+      <connection board= "0" channel="17" chamber= "2" layer="6"/>
+      <connection board= "0" channel="18" chamber= "3" layer="1"/>
+      <connection board= "0" channel="19" chamber= "3" layer="2"/>
+      <connection board= "0" channel="20" chamber= "3" layer="3"/>
+      <connection board= "0" channel="21" chamber= "3" layer="4"/>
+      <connection board= "0" channel="22" chamber= "3" layer="5"/>
+      <connection board= "0" channel="23" chamber= "3" layer="6"/>
+      <connection board= "0" channel="24" chamber= "4" layer="1"/>
+      <connection board= "0" channel="25" chamber= "4" layer="2"/>
+      <connection board= "0" channel="26" chamber= "4" layer="3"/>
+      <connection board= "0" channel="27" chamber= "4" layer="4"/>
+      <connection board= "2" channel= "0" chamber= "4" layer="5"/>
+      <connection board= "2" channel= "1" chamber= "4" layer="6"/>
+      <connection board= "2" channel= "2" chamber= "5" layer="1"/>
+      <connection board= "2" channel= "3" chamber= "5" layer="2"/>
+      <connection board= "2" channel= "4" chamber= "5" layer="3"/>
+      <connection board= "2" channel= "5" chamber= "5" layer="4"/>
+      <connection board= "2" channel= "6" chamber= "5" layer="5"/>
+      <connection board= "2" channel= "7" chamber= "5" layer="6"/>
+      <connection board= "2" channel= "8" chamber= "6" layer="1"/>
+      <connection board= "2" channel= "9" chamber= "6" layer="2"/>
+      <connection board= "2" channel="10" chamber= "6" layer="3"/>
+      <connection board= "2" channel="11" chamber= "6" layer="4"/>
+      <connection board= "2" channel="12" chamber= "6" layer="5"/>
+      <connection board= "2" channel="13" chamber= "6" layer="6"/>
+      <connection board= "2" channel="14" chamber= "7" layer="1"/>
+      <connection board= "2" channel="15" chamber= "7" layer="2"/>
+      <connection board= "2" channel="16" chamber= "7" layer="3"/>
+      <connection board= "2" channel="17" chamber= "7" layer="4"/>
+      <connection board= "2" channel="18" chamber= "7" layer="5"/>
+      <connection board= "2" channel="19" chamber= "7" layer="6"/>
+      <connection board= "2" channel="20" chamber= "8" layer="1"/>
+      <connection board= "2" channel="21" chamber= "8" layer="2"/>
+      <connection board= "2" channel="22" chamber= "8" layer="3"/>
+      <connection board= "2" channel="23" chamber= "8" layer="4"/>
+      <connection board= "2" channel="24" chamber= "8" layer="5"/>
+      <connection board= "2" channel="25" chamber= "8" layer="6"/>
+      <connection board= "2" channel="26" chamber= "9" layer="1"/>
+      <connection board= "2" channel="27" chamber= "9" layer="2"/>
+      <connection board= "4" channel= "0" chamber= "9" layer="3"/>
+      <connection board= "4" channel= "1" chamber= "9" layer="4"/>
+      <connection board= "4" channel= "2" chamber= "9" layer="5"/>
+      <connection board= "4" channel= "3" chamber= "9" layer="6"/>
+      <connection board= "4" channel= "4" chamber="10" layer="1"/>
+      <connection board= "4" channel= "5" chamber="10" layer="2"/>
+      <connection board= "4" channel= "6" chamber="10" layer="3"/>
+      <connection board= "4" channel= "7" chamber="10" layer="4"/>
+      <connection board= "4" channel= "8" chamber="10" layer="5"/>
+      <connection board= "4" channel= "9" chamber="10" layer="6"/>
+      <connection board= "4" channel="10" chamber="11" layer="1"/>
+      <connection board= "4" channel="11" chamber="11" layer="2"/>
+      <connection board= "4" channel="12" chamber="11" layer="3"/>
+      <connection board= "4" channel="13" chamber="11" layer="4"/>
+      <connection board= "4" channel="14" chamber="11" layer="5"/>
+      <connection board= "4" channel="15" chamber="11" layer="6"/>
+      <connection board= "4" channel="16" chamber="12" layer="1"/>
+      <connection board= "4" channel="17" chamber="12" layer="2"/>
+      <connection board= "4" channel="18" chamber="12" layer="3"/>
+      <connection board= "4" channel="19" chamber="12" layer="4"/>
+      <connection board= "4" channel="20" chamber="12" layer="5"/>
+      <connection board= "4" channel="21" chamber="12" layer="6"/>
+      <connection board= "4" channel="22" chamber="13" layer="1"/>
+      <connection board= "4" channel="23" chamber="13" layer="2"/>
+      <connection board= "4" channel="24" chamber="13" layer="3"/>
+      <connection board= "4" channel="25" chamber="13" layer="4"/>
+      <connection board= "4" channel="26" chamber="13" layer="5"/>
+      <connection board= "4" channel="27" chamber="13" layer="6"/>
+      <connection board= "6" channel= "0" chamber="14" layer="1"/>
+      <connection board= "6" channel= "1" chamber="14" layer="2"/>
+      <connection board= "6" channel= "2" chamber="14" layer="3"/>
+      <connection board= "6" channel= "3" chamber="14" layer="4"/>
+      <connection board= "6" channel= "4" chamber="14" layer="5"/>
+      <connection board= "6" channel= "5" chamber="14" layer="6"/>
+      <connection board= "6" channel= "6" chamber="15" layer="1"/>
+      <connection board= "6" channel= "7" chamber="15" layer="2"/>
+      <connection board= "6" channel= "8" chamber="15" layer="3"/>
+      <connection board= "6" channel= "9" chamber="15" layer="4"/>
+      <connection board= "6" channel="10" chamber="15" layer="5"/>
+      <connection board= "6" channel="11" chamber="15" layer="6"/>
+      <connection board= "6" channel="12" chamber="16" layer="1"/>
+      <connection board= "6" channel="13" chamber="16" layer="2"/>
+      <connection board= "6" channel="14" chamber="16" layer="3"/>
+      <connection board= "6" channel="15" chamber="16" layer="4"/>
+      <connection board= "6" channel="16" chamber="16" layer="5"/>
+      <connection board= "6" channel="17" chamber="16" layer="6"/>
+      <connection board= "6" channel="18" chamber="17" layer="1"/>
+      <connection board= "6" channel="19" chamber="17" layer="2"/>
+      <connection board= "6" channel="20" chamber="17" layer="3"/>
+      <connection board= "6" channel="21" chamber="17" layer="4"/>
+      <connection board= "6" channel="22" chamber="17" layer="5"/>
+      <connection board= "6" channel="23" chamber="17" layer="6"/>
+      <connection board= "8" channel= "0" chamber="18" layer="1"/>
+      <connection board= "8" channel= "1" chamber="18" layer="2"/>
+      <connection board= "8" channel= "2" chamber="18" layer="3"/>
+      <connection board= "8" channel= "3" chamber="18" layer="4"/>
+      <connection board= "8" channel= "4" chamber="18" layer="5"/>
+      <connection board= "8" channel= "5" chamber="18" layer="6"/>
+      <connection board= "8" channel= "6" chamber="19" layer="1"/>
+      <connection board= "8" channel= "7" chamber="19" layer="2"/>
+      <connection board= "8" channel= "8" chamber="19" layer="3"/>
+      <connection board= "8" channel= "9" chamber="19" layer="4"/>
+      <connection board= "8" channel="10" chamber="19" layer="5"/>
+      <connection board= "8" channel="11" chamber="19" layer="6"/>
+      <connection board= "8" channel="12" chamber="20" layer="1"/>
+      <connection board= "8" channel="13" chamber="20" layer="2"/>
+      <connection board= "8" channel="14" chamber="20" layer="3"/>
+      <connection board= "8" channel="15" chamber="20" layer="4"/>
+      <connection board= "8" channel="16" chamber="20" layer="5"/>
+      <connection board= "8" channel="17" chamber="20" layer="6"/>
+      <connection board= "8" channel="18" chamber="21" layer="1"/>
+      <connection board= "8" channel="19" chamber="21" layer="2"/>
+      <connection board= "8" channel="20" chamber="21" layer="3"/>
+      <connection board= "8" channel="21" chamber="21" layer="4"/>
+      <connection board= "8" channel="22" chamber="21" layer="5"/>
+      <connection board= "8" channel="23" chamber="21" layer="6"/>
+      <connection board= "8" channel="24" chamber="22" layer="1"/>
+      <connection board= "8" channel="25" chamber="22" layer="2"/>
+      <connection board= "8" channel="26" chamber="22" layer="3"/>
+      <connection board= "8" channel="27" chamber="22" layer="4"/>
+      <connection board="10" channel= "0" chamber="22" layer="5"/>
+      <connection board="10" channel= "1" chamber="22" layer="6"/>
+      <connection board="10" channel= "2" chamber="23" layer="1"/>
+      <connection board="10" channel= "3" chamber="23" layer="2"/>
+      <connection board="10" channel= "4" chamber="23" layer="3"/>
+      <connection board="10" channel= "5" chamber="23" layer="4"/>
+      <connection board="10" channel= "6" chamber="23" layer="5"/>
+      <connection board="10" channel= "7" chamber="23" layer="6"/>
+      <connection board="10" channel= "8" chamber="24" layer="1"/>
+      <connection board="10" channel= "9" chamber="24" layer="2"/>
+      <connection board="10" channel="10" chamber="24" layer="3"/>
+      <connection board="10" channel="11" chamber="24" layer="4"/>
+      <connection board="10" channel="12" chamber="24" layer="5"/>
+      <connection board="10" channel="13" chamber="24" layer="6"/>
+      <connection board="10" channel="14" chamber="25" layer="1"/>
+      <connection board="10" channel="15" chamber="25" layer="2"/>
+      <connection board="10" channel="16" chamber="25" layer="3"/>
+      <connection board="10" channel="17" chamber="25" layer="4"/>
+      <connection board="10" channel="18" chamber="25" layer="5"/>
+      <connection board="10" channel="19" chamber="25" layer="6"/>
+      <connection board="10" channel="20" chamber="26" layer="1"/>
+      <connection board="10" channel="21" chamber="26" layer="2"/>
+      <connection board="10" channel="22" chamber="26" layer="3"/>
+      <connection board="10" channel="23" chamber="26" layer="4"/>
+      <connection board="10" channel="24" chamber="26" layer="5"/>
+      <connection board="10" channel="25" chamber="26" layer="6"/>
+      <connection board="10" channel="26" chamber="27" layer="1"/>
+      <connection board="10" channel="27" chamber="27" layer="2"/>
+      <connection board="12" channel= "0" chamber="27" layer="3"/>
+      <connection board="12" channel= "1" chamber="27" layer="4"/>
+      <connection board="12" channel= "2" chamber="27" layer="5"/>
+      <connection board="12" channel= "3" chamber="27" layer="6"/>
+      <connection board="12" channel= "4" chamber="28" layer="1"/>
+      <connection board="12" channel= "5" chamber="28" layer="2"/>
+      <connection board="12" channel= "6" chamber="28" layer="3"/>
+      <connection board="12" channel= "7" chamber="28" layer="4"/>
+      <connection board="12" channel= "8" chamber="28" layer="5"/>
+      <connection board="12" channel= "9" chamber="28" layer="6"/>
+      <connection board="12" channel="10" chamber="29" layer="1"/>
+      <connection board="12" channel="11" chamber="29" layer="2"/>
+      <connection board="12" channel="12" chamber="29" layer="3"/>
+      <connection board="12" channel="13" chamber="29" layer="4"/>
+      <connection board="12" channel="14" chamber="29" layer="5"/>
+      <connection board="12" channel="15" chamber="29" layer="6"/>
+      <connection board="12" channel="16" chamber="30" layer="1"/>
+      <connection board="12" channel="17" chamber="30" layer="2"/>
+      <connection board="12" channel="18" chamber="30" layer="3"/>
+      <connection board="12" channel="19" chamber="30" layer="4"/>
+      <connection board="12" channel="20" chamber="30" layer="5"/>
+      <connection board="12" channel="21" chamber="30" layer="6"/>
+      <connection board="12" channel="22" chamber="31" layer="1"/>
+      <connection board="12" channel="23" chamber="31" layer="2"/>
+      <connection board="12" channel="24" chamber="31" layer="3"/>
+      <connection board="12" channel="25" chamber="31" layer="4"/>
+      <connection board="12" channel="26" chamber="31" layer="5"/>
+      <connection board="12" channel="27" chamber="31" layer="6"/>
+      <connection board="14" channel= "0" chamber="32" layer="1"/>
+      <connection board="14" channel= "1" chamber="32" layer="2"/>
+      <connection board="14" channel= "2" chamber="32" layer="3"/>
+      <connection board="14" channel= "3" chamber="32" layer="4"/>
+      <connection board="14" channel= "4" chamber="32" layer="5"/>
+      <connection board="14" channel= "5" chamber="32" layer="6"/>
+      <connection board="14" channel= "6" chamber="33" layer="1"/>
+      <connection board="14" channel= "7" chamber="33" layer="2"/>
+      <connection board="14" channel= "8" chamber="33" layer="3"/>
+      <connection board="14" channel= "9" chamber="33" layer="4"/>
+      <connection board="14" channel="10" chamber="33" layer="5"/>
+      <connection board="14" channel="11" chamber="33" layer="6"/>
+      <connection board="14" channel="12" chamber="34" layer="1"/>
+      <connection board="14" channel="13" chamber="34" layer="2"/>
+      <connection board="14" channel="14" chamber="34" layer="3"/>
+      <connection board="14" channel="15" chamber="34" layer="4"/>
+      <connection board="14" channel="16" chamber="34" layer="5"/>
+      <connection board="14" channel="17" chamber="34" layer="6"/>
+      <connection board="14" channel="18" chamber="35" layer="1"/>
+      <connection board="14" channel="19" chamber="35" layer="2"/>
+      <connection board="14" channel="20" chamber="35" layer="3"/>
+      <connection board="14" channel="21" chamber="35" layer="4"/>
+      <connection board="14" channel="22" chamber="35" layer="5"/>
+      <connection board="14" channel="23" chamber="35" layer="6"/>
+    </crate>
+  </rack>
+</HV>

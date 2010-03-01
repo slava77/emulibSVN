@@ -725,6 +725,43 @@
   </xsl:template>
 
 
+  <!-- HV for Dubna chambers -->
+  <xsl:template match="templ:HVDubna">
+    <xsl:text>&LF;</xsl:text>
+    <xsl:comment>HV for Dubna chambers</xsl:comment>
+    <xsl:text>&LF;</xsl:text>
+    <xsl:variable name="SOURCE" select="@source"/>
+    <xsl:for-each select="document($SOURCE)/HV/rack">
+      <!-- Rack -->
+      <xsl:variable name="RACK">Rack<xsl:value-of select="@name"/></xsl:variable>
+      <Declaration><Individual URI="&csc;{$RACK}"/></Declaration>
+      <ClassAssertion><Class URI="&csc;Rack"/><Individual URI="&csc;{$RACK}"/></ClassAssertion>
+      <DataPropertyAssertion><DataProperty URI="&csc;hasName"/><Individual URI="&csc;{$RACK}"/><Constant datatypeURI="&xsd;string"><xsl:value-of select="@name"/></Constant></DataPropertyAssertion>
+      <xsl:for-each select="crate">
+	<!-- HV Crate -->
+	<xsl:variable name="CRATE_NAME"><xsl:value-of select="@name"/></xsl:variable>
+	<Declaration><Individual URI="&csc;{$CRATE_NAME}"/></Declaration>
+	<ClassAssertion><Class URI="&csc;HVCrate"/><Individual URI="&csc;{$CRATE_NAME}"/></ClassAssertion>
+	<ObjectPropertyAssertion><ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;{$CRATE_NAME}"/><Individual URI="&csc;{$RACK}"/></ObjectPropertyAssertion>
+	<xsl:for-each select="connection">
+	  <!-- HV Board and Channel -->
+	  <xsl:variable name="PADDED_BOARD_NAME"><xsl:value-of select="$CRATE_NAME"/>/Board<xsl:value-of select="format-number(@board,'00')"/></xsl:variable>
+	  <xsl:variable name="PADDED_CHANNEL_NAME"><xsl:value-of select="$PADDED_BOARD_NAME"/>/Channel<xsl:value-of select="format-number(@channel,'000')"/></xsl:variable>
+	  <xsl:variable name="PADDED_LAYER_NAME"><xsl:value-of select="../@ringName"/>/<xsl:value-of select="format-number(@chamber,'00')"/>/<xsl:value-of select="@layer"/></xsl:variable>
+	  <Declaration><Individual URI="&csc;{$PADDED_BOARD_NAME}"/></Declaration>
+	  <Declaration><Individual URI="&csc;{$PADDED_CHANNEL_NAME}"/></Declaration>
+	  <ClassAssertion><Class URI="&csc;HVBoard"/><Individual URI="&csc;{$PADDED_BOARD_NAME}"/></ClassAssertion>
+	  <ClassAssertion><Class URI="&csc;HVChannel"/><Individual URI="&csc;{$PADDED_CHANNEL_NAME}"/></ClassAssertion>
+	  <ObjectPropertyAssertion><ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;{$PADDED_BOARD_NAME}"/><Individual URI="&csc;{$CRATE_NAME}"/></ObjectPropertyAssertion>
+	  <ObjectPropertyAssertion><ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;{$PADDED_CHANNEL_NAME}"/><Individual URI="&csc;{$PADDED_BOARD_NAME}"/></ObjectPropertyAssertion>
+	  <!-- Chamber layer -->
+	  <ObjectPropertyAssertion><ObjectProperty URI="&csc;getsHVFrom"/><Individual URI="&csc;{$PADDED_LAYER_NAME}"/><Individual URI="&csc;{$PADDED_CHANNEL_NAME}"/></ObjectPropertyAssertion>
+	</xsl:for-each>
+      </xsl:for-each>
+    </xsl:for-each>
+  </xsl:template>
+
+
   <!-- LV -->
   <xsl:template match="templ:LV">
     <xsl:text>&LF;</xsl:text>
