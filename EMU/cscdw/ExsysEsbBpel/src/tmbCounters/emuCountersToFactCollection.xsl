@@ -25,29 +25,26 @@
     <xsl:template match="/">
         <xsl:variable name="countersTimestamp" select="child::*[1]/@dateTime"/>
         <tns:factCollection>
-            <ser:serviceInstructions async="false" strict="false" persist="true"/>
+            <!--ser:serviceInstructions async="false" strict="false" persist="true"/-->
             <tns:source>
                 <xsl:value-of select="$sourceName"/>
             </tns:source>
             <xsl:for-each select="//sample/count">
-                <xsl:if test="local-name() != 'chamber'">
+                <xsl:variable name="component" select="concat(@chamber, '/TMB')"/>
+                <!-- Sliding Tmb Trigger Counters fact -->
+                <xsl:if test="../@name = 'sliding'">
+                    <xsl:call-template name="slidingTmbTriggerCounterFact">
+                        <xsl:with-param name="timestamp" select="$countersTimestamp"/>
+                        <xsl:with-param name="component" select="$component"/>
+                    </xsl:call-template>
+                </xsl:if>
 
-                    <xsl:variable name="component" select="@chamber"/>
-                    <!-- Sliding Tmb Trigger Counters fact -->
-                    <xsl:if test="../@name = 'sliding'">
-                        <xsl:call-template name="slidingTmbTriggerCounterFact">
-                            <xsl:with-param name="timestamp" select="$countersTimestamp"/>
-                            <xsl:with-param name="component" select="$component"/>
-                        </xsl:call-template>
-                    </xsl:if>
-
-                    <!-- Cumulative Tmb Trigger Counters fact -->
-                    <xsl:if test="../@name = 'cumulative'">
-                        <xsl:call-template name="cumulativeTmbTriggerCounterFact">
-                            <xsl:with-param name="timestamp" select="$countersTimestamp"/>
-                            <xsl:with-param name="component" select="$component"/>
-                        </xsl:call-template>
-                    </xsl:if>
+                <!-- Cumulative Tmb Trigger Counters fact -->
+                <xsl:if test="../@name = 'cumulative'">
+                    <xsl:call-template name="cumulativeTmbTriggerCounterFact">
+                        <xsl:with-param name="timestamp" select="$countersTimestamp"/>
+                        <xsl:with-param name="component" select="$component"/>
+                    </xsl:call-template>
                 </xsl:if>
             </xsl:for-each>
         </tns:factCollection>

@@ -51,7 +51,7 @@
         </assign>
 
         <!-- log the outcome of the transformation - for testing only -->
-        <assign name="LogFactCollection">
+        <!--assign name="LogFactCollection">
             <sxt:trace>
                 <sxt:log level="info" location="onComplete">
                     <ns1:from variable="factCollection" part="parameters"/>
@@ -61,7 +61,7 @@
                 <from variable="pullUrl" part="schedPart"/>
                 <to variable="pullUrl" part="schedPart"/>
             </copy>
-        </assign>
+        </assign-->
 
         <!-- Send to Cdw and log the response -->
         <invoke name="SendToCdw" partnerLink="CdwPartner" operation="input" xmlns:tns="http://ws.dw.csc.cms.cern.org/" portType="tns:factcollection" inputVariable="factCollection" outputVariable="numberSaved"/>

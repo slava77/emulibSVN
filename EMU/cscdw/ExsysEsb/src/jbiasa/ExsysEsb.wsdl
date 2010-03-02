@@ -27,10 +27,34 @@
             </fault>
         </operation>
     </binding>
+    <binding name="casaBinding2" type="ns:factcollection">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="input">
+            <soap:operation/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="Exception">
+                <soap:fault name="Exception" use="literal"/>
+            </fault>
+        </operation>
+    </binding>
+    <!--
     <service name="ExsysEsbService1">
-        <port name="cdwFactCollectionInputPort" binding="tns:casaBinding1">
+        <port name="cdwFCInput_dev" binding="tns:casaBinding1">
             <soap:address location="http://macfrank:18080/cdw/factcollection"/>
         </port>
     </service>
+    -->
+    <service name="ExsysEsbService2">
+        <port name="cdwFCInput" binding="tns:casaBinding2">
+            <soap:address location="http://localhost:8080/cdw/factcollection"/>
+        </port>
+    </service>
 </definitions>
+
+
 
