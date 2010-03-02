@@ -71,6 +71,8 @@
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="SlidingTmbTriggerCounterFact"/>
       <xsd:enumeration value="CumulativeTmbTriggerCounterFact"/>
+      <xsd:enumeration value="TmbCounterFact"/>
+      <xsd:enumeration value="TmbCounterDescriptionFact"/>
       <xsd:enumeration value="DqmCscAfebFact"/>
       <xsd:enumeration value="DqmCscCfebFact"/>
       <xsd:enumeration value="DqmCscFact"/>

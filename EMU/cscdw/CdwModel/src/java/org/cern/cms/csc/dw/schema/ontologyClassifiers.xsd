@@ -38,7 +38,6 @@
 <xsd:enumeration value="HVDistribution"/>
 <xsd:enumeration value="HVMaster"/>
 <xsd:enumeration value="HVPrimary"/>
-<xsd:enumeration value="HVRack"/>
 <xsd:enumeration value="HVSegment"/>
 <xsd:enumeration value="Layer"/>
 <xsd:enumeration value="Local"/>
@@ -57,6 +56,7 @@
 <xsd:enumeration value="Ring"/>
 <xsd:enumeration value="RUI"/>
 <xsd:enumeration value="SectorProcessor"/>
+<xsd:enumeration value="SectorProcessorInput"/>
 <xsd:enumeration value="Slink"/>
 <xsd:enumeration value="Software"/>
 <xsd:enumeration value="Station"/>
@@ -97,6 +97,7 @@
 <xsd:enumeration value="isPartOf"/>
 <xsd:enumeration value="locationPath"/>
 <xsd:enumeration value="logicalComposition"/>
+<xsd:enumeration value="monitorPath"/>
 <xsd:enumeration value="monitors"/>
 <xsd:enumeration value="powerSupplyPath"/>
 <xsd:enumeration value="receivesDataFrom"/>
