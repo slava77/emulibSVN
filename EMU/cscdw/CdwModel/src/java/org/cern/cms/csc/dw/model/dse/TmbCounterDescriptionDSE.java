@@ -6,12 +6,13 @@
 //
 
 
-package org.cern.cms.csc.dw.model.fact;
+package org.cern.cms.csc.dw.model.dse;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -30,14 +31,14 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 
 
 /**
- * <p>Java class for tmbCounterDescriptionFactType complex type.
+ * <p>Java class for tmbCounterDescriptionDSEType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="tmbCounterDescriptionFactType">
+ * &lt;complexType name="tmbCounterDescriptionDSEType">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.cern.ch/cms/csc/dw/model}factType">
+ *     &lt;extension base="{http://www.cern.ch/cms/csc/dw/model/dse}dataServiceEntityType">
  *       &lt;sequence>
  *         &lt;element name="version" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="tc00description" type="{http://www.w3.org/2001/XMLSchema}string"/>
@@ -137,7 +138,7 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tmbCounterDescriptionFactType", propOrder = {
+@XmlType(name = "tmbCounterDescriptionDSEType", propOrder = {
     "version",
     "tc00Description",
     "tc01Description",
@@ -228,10 +229,10 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
     "tc86Description",
     "tc87Description"
 })
-@Entity(name = "org.cern.cms.csc.dw.model.fact.TmbCounterDescriptionFact")
-@Table(name = "CDW_TMB_CNT_DESCRIPTION_FACTS")
-public class TmbCounterDescriptionFact
-    extends Fact
+@Entity(name = "org.cern.cms.csc.dw.model.dse.TmbCounterDescriptionDSE")
+@Table(name = "CDW_DSE_TMB_CNT_DESCRIPTION")
+public class TmbCounterDescriptionDSE
+    extends DataServiceEntity
     implements Serializable, Equals, HashCode, ToString
 {
 
@@ -422,8 +423,8 @@ public class TmbCounterDescriptionFact
      *     {@link String }
      *     
      */
-    @Basic
-    @Column(name = "FCT_VERSION", length = 255)
+    @Id
+    @Column(name = "FCT_VERSION")
     public String getVersion() {
         return version;
     }
@@ -3174,7 +3175,7 @@ public class TmbCounterDescriptionFact
     }
 
     public void equals(Object object, EqualsBuilder equalsBuilder) {
-        if (!(object instanceof TmbCounterDescriptionFact)) {
+        if (!(object instanceof TmbCounterDescriptionDSE)) {
             equalsBuilder.appendSuper(false);
             return ;
         }
@@ -3182,7 +3183,7 @@ public class TmbCounterDescriptionFact
             return ;
         }
         super.equals(object, equalsBuilder);
-        final TmbCounterDescriptionFact that = ((TmbCounterDescriptionFact) object);
+        final TmbCounterDescriptionDSE that = ((TmbCounterDescriptionDSE) object);
         equalsBuilder.append(this.getVersion(), that.getVersion());
         equalsBuilder.append(this.getTc00Description(), that.getTc00Description());
         equalsBuilder.append(this.getTc01Description(), that.getTc01Description());
@@ -3275,7 +3276,7 @@ public class TmbCounterDescriptionFact
     }
 
     public boolean equals(Object object) {
-        if (!(object instanceof TmbCounterDescriptionFact)) {
+        if (!(object instanceof TmbCounterDescriptionDSE)) {
             return false;
         }
         if (this == object) {
@@ -3839,14 +3840,5 @@ public class TmbCounterDescriptionFact
         toString(toStringBuilder);
         return toStringBuilder.toString();
     }
-    
-//--simple--preserve
-
-    @Override
-    public boolean checkComponentClassType(org.cern.cms.csc.dw.model.ontology.ComponentClassType componentClassType) {
-        return componentClassType.equals(org.cern.cms.csc.dw.model.ontology.ComponentClassType.TMB);
-    }
-
-//--simple--preserve
 
 }

@@ -5,5 +5,5 @@
 // Generated on: 2010.03.03 at 03:10:26 PM CET 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.cern.ch/cms/csc/dw/ontology", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
-package org.cern.cms.csc.dw.model.ontology;
+@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.cern.ch/cms/csc/dw/model/dse", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+package org.cern.cms.csc.dw.model.dse;

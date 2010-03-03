@@ -6,25 +6,25 @@
 //
 
 
-package org.cern.cms.csc.dw.model.ontology;
+package org.cern.cms.csc.dw.model.dse;
 
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.HashCode;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -34,17 +34,14 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 
 
 /**
- * <p>Java class for componentSynonymType complex type.
+ * <p>Java class for dataServiceEntityType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="componentSynonymType">
+ * &lt;complexType name="dataServiceEntityType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="synonym" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -53,65 +50,60 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "componentSynonymType", propOrder = {
-    "synonym"
+@XmlType(name = "dataServiceEntityType")
+@XmlSeeAlso({
+    TmbCounterDescriptionDSE.class
 })
-@Entity(name = "org.cern.cms.csc.dw.model.ontology.ComponentSynonym")
-@Table(name = "CDW_COMPONENT_SYNONYMS")
-@Inheritance(strategy = InheritanceType.JOINED)
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "")
-public class ComponentSynonym
+//@Entity(name = "org.cern.cms.csc.dw.model.dse.DataServiceEntity")
+//@Table(name = "DATASERVICEENTITY")
+//@Inheritance(strategy = InheritanceType.JOINED)
+public class DataServiceEntity
     implements Serializable, Equals, HashCode, ToString
 {
 
-    @XmlElement(required = true)
-    protected String synonym;
+    @XmlAttribute(name = "Hjid")
+    protected Long hjid;
 
     /**
-     * Gets the value of the synonym property.
+     * Gets the value of the hjid property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link Long }
      *     
      */
-    @Id
-    @Column(name = "SYN_SYNONYM", length = 512)
-    public String getSynonym() {
-        return synonym;
+    //@Id
+    //@Column(name = "HJID")
+    //@GeneratedValue(strategy = GenerationType.AUTO)
+    public Long getHjid() {
+        return hjid;
     }
 
     /**
-     * Sets the value of the synonym property.
+     * Sets the value of the hjid property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link Long }
      *     
      */
-    public void setSynonym(String value) {
-        this.synonym = value;
-    }
-
-    @Transient
-    public boolean isSetSynonym() {
-        return (this.synonym!= null);
+    public void setHjid(Long value) {
+        this.hjid = value;
     }
 
     public void equals(Object object, EqualsBuilder equalsBuilder) {
-        if (!(object instanceof ComponentSynonym)) {
+        if (!(object instanceof DataServiceEntity)) {
             equalsBuilder.appendSuper(false);
             return ;
         }
         if (this == object) {
             return ;
         }
-        final ComponentSynonym that = ((ComponentSynonym) object);
-        equalsBuilder.append(this.getSynonym(), that.getSynonym());
+        final DataServiceEntity that = ((DataServiceEntity) object);
     }
 
     public boolean equals(Object object) {
-        if (!(object instanceof ComponentSynonym)) {
+        if (!(object instanceof DataServiceEntity)) {
             return false;
         }
         if (this == object) {
@@ -123,7 +115,6 @@ public class ComponentSynonym
     }
 
     public void hashCode(HashCodeBuilder hashCodeBuilder) {
-        hashCodeBuilder.append(this.getSynonym());
     }
 
     public int hashCode() {
@@ -133,11 +124,6 @@ public class ComponentSynonym
     }
 
     public void toString(ToStringBuilder toStringBuilder) {
-        {
-            String theSynonym;
-            theSynonym = this.getSynonym();
-            toStringBuilder.append("synonym", theSynonym);
-        }
     }
 
     public String toString() {
