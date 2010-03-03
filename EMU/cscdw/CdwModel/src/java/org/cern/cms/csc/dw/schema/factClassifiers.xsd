@@ -23,7 +23,7 @@
         </xsd:appinfo>
     </xsd:annotation>
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="AMPER"/>
+      <xsd:enumeration value="AMPERE"/>
       <xsd:enumeration value="VOLT"/>
       <xsd:enumeration value="METER"/>
     </xsd:restriction>
