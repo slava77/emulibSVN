@@ -67,7 +67,7 @@ public class FactCollectionInput {
                 saver.saveFactCollection(factCollection);
             }
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, (String) null, ex);
+            logger.log(Level.SEVERE, "Error while saving Fact Collection", ex);
             throw ex;
         }
 
