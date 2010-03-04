@@ -48,8 +48,8 @@ void emuui_tableCompact(string tableShapeName, int numOfRows = -1) {
   table.size(newTableWidth, newTableHeight);
 }
 
-/** returns stime of a given datapoint in string. So this is the only place if you need to change the date format everywhere. */
-string emuui_getLastUpdateTime(string dp) {
+/** returns stime of a given datapoint (as type time). */
+string emuui_getLastUpdateTimeAsTime(string dp) {
   time stime;
   string dpSTime = dpSubStr(dp, DPSUB_SYS_DP_EL) + ":_online.._stime";
   if (!dpExists(dpSTime)) {
@@ -57,8 +57,13 @@ string emuui_getLastUpdateTime(string dp) {
   }
   dpGet(dpSTime, stime);
 
-  string timeStr = emuui_formatTime(stime);
+  return stime;
+}
 
+/** returns stime of a given datapoint in string. So this is the only place if you need to change the date format everywhere. */
+string emuui_getLastUpdateTime(string dp) {
+  time stime = emuui_getLastUpdateTimeAsTime(dp);
+  string timeStr = emuui_formatTime(stime);
   return (string) timeStr;
 }
 
