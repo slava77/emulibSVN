@@ -10,9 +10,9 @@ PANEL,-1 -1 1600 1175 N "_3DFace" 0
   
   // access control
   enableDisableControl(false);
+  fwFsmUi_addUserLogin(1380, -5);
   fwAccessControl_setupPanel(\"accessPrivilegesChangedCB\", ex);
   if (emu_checkException(ex)) { return; }
-  fwFsmUi_addUserLogin(1380, 0);
   
   // UI stuff
   lblVersion.text = \"UI Version \" + EMUUI_COMPONENT_VERSION + \" (\" + EMUUI_COMPONENT_DATE + \")\";
@@ -228,6 +228,18 @@ void accessPrivilegesChangedCB(string dummy1, string dummy2) {
   
   emu_info(\"Has \" + user + \" CSC control privilege? \" + hasControl);
   emu_info(\"Has \" + user + \" CSC expert privileges? \" + isExpert);
+
+  string loginColor;
+  if (hasControl) {
+    loginColor = \"FwStateOKPhysics\";
+  } else {
+    if (user == \"NO USER\") {
+      loginColor = \"FwStateAttention2\";
+    } else {
+      loginColor = \"FwStateAttention1\";
+    }
+  }
+  setValue(\"user.CurrentUser\", \"backCol\", loginColor);
   
   if (hasControl) {
     enableDisableControl(true);
@@ -298,24 +310,6 @@ LANG:1 0
 1
 "dashclr"N "_Transparent"
 E E 0 1 1 2 1 E 2.722222222222223 0 0.5 -941.6666666666674 380 1 E 750 920 930 1000
-6 50
-"RECTANGLE13"
-""
-1 830 600 E E E 1 E 1 E N {0,0,0} E N "_Button" E E
- E E
-98 0 0 0 0 0
-E E E
-4
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E "main()
-{
-  ChildPanelOnCentral(\"CMS_CSCfw_Supervisor/emuEmuErrorSummarySub.pnl\", \"Error Summary\", makeDynString());
-}" 0
- 0 1 1 2 1 E 2 0 1 389.9999999999998 790 1 E 360 60 470 83
 30 0
 "frameTemperatureMonitor"
 ""
@@ -905,7 +899,7 @@ LANG:1 11 Change Mode
 2 24
 "lblLegend"
 ""
-1 650 10 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+1 420 10 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
  E E
 44 0 0 0 0 0
 E E E
@@ -915,35 +909,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 650 10 695 26
-0 2 2 "0s" 0 0 0 192 0 0  650 10 1
+E E 0 1 1 2 1 E U  1 E 420 10 465 26
+0 2 2 "0s" 0 0 0 192 0 0  420 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 7 Legend:
-2 25
-"lblVersion"
-""
-1 400 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
- E E
-45 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 400 10 559 26
-1 2 2 "0s" 0 0 0 192 0 0  400 10 1
-1
-LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
-0 1
-LANG:1 29 UI Version 1.0.0 (2009/07/22)
 2 26
 "PRIMITIVE_TEXT1"
 ""
-1 1330 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 1100 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 52 0 0 0 0 0
 E E E
@@ -953,8 +928,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1330 10 1417 26
-0 2 2 "0s" 0 0 0 192 0 0  1330 10 1
+E E 0 1 1 2 1 E U  1 E 1100 10 1187 26
+0 2 2 "0s" 0 0 0 192 0 0  1100 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -962,7 +937,7 @@ LANG:1 13 Known problem
 2 27
 "PRIMITIVE_TEXT2"
 ""
-1 1320 10 E E E 1 E 1 E N "white" E N "_3DText" E E
+1 1090 10 E E E 1 E 1 E N "white" E N "_3DText" E E
  E E
 53 0 0 0 0 0
 E E E
@@ -972,8 +947,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1320 10 1324 27
-0 2 2 "0s" 0 0 0 192 0 0  1320 10 1
+E E 0 1 1 2 1 E U  1 E 1090 10 1094 27
+0 2 2 "0s" 0 0 0 192 0 0  1090 10 1
 1
 LANG:1 33 MS Shell Dlg,-1,13,5,75,0,0,0,0,0
 0 1
@@ -991,11 +966,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1 0 1 11 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4294967295 E 1424 40 10 10
+E E 0 1 1 2 1 E 1 0 1 -219 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4294967295 E 1424 40 10 10
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 3318.4186624434 -50 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 2923.075638671585 -70 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -1005,7 +980,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 0.9910714285714291 0 1 92.23214285714232 -20 1 E 1370 30 1507 46
+E E 0 1 1 2 1 E 0.9910714285714291 0 1 -137.7678571428577 -20 1 E 1370 30 1507 46
 0 2 2 "0s" 0 0 0 192 0 0  1370 30 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -1014,7 +989,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 49.62907404398279 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 49.59599639841969 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
@@ -1130,33 +1105,6 @@ LANG:1 0
 LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
 0 1
 LANG:1 0 
-2 31
-"lblUpsOnBattery"
-""
-1 690 420 E E E 1 E 0 E N "_WindowText" E N "FwStateAttention3" E E
- E E
-69 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 690 420 897 481
-1 2 2 "0s" 0 0 0 192 0 0  690 420 3
-1
-LANG:1 26 Arial,11,-1,5,75,0,0,0,0,0
-0 1
-LANG:1 30 Atention: UPS is on battery !!
-1
-LANG:1 26 Arial,11,-1,5,75,0,0,0,0,0
-0 1
-LANG:1 26 All LV is being turned OFF
-1
-LANG:1 26 Arial,11,-1,5,75,0,0,0,0,0
-0 1
-LANG:1 29 Make sure it is and stays OFF
 2 32
 "PRIMITIVE_TEXT5"
 ""
@@ -1312,7 +1260,7 @@ LANG:1 14 Summary panels
 2 40
 "lblChamberViewModeTimer"
 ""
-1 400 10 E E E 1 E 0 E N "_WindowText" E N "white" E E
+1 280 30 E E E 1 E 0 E N "_WindowText" E N "white" E E
  E E
 43 0 0 0 0 0
 E E E
@@ -1322,35 +1270,12 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 400 10 600 26
-1 2 2 "0s" 0 0 0 192 0 0  400 10 1
+E E 0 1 1 2 1 E U  1 E 280 30 480 46
+1 2 2 "0s" 0 0 0 192 0 0  280 30 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 35 Switching to "General" mode in 300s
-2 41
-"lblNewVersion"
-""
-1 400 10 E E E 1 E 0 E N "_WindowText" E N "warningWentUna" E E
- E E
-51 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 400 10 578 44
-1 2 2 "0s" 0 0 0 192 0 0  400 10 2
-1
-LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
-0 1
-LANG:1 33 New version (1.0.22) is available
-1
-LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
-0 1
-LANG:1 28 Restart the UI when possible
 30 42
 "FRAME7"
 ""
@@ -1481,12 +1406,163 @@ LANG:1 18 Take Local Control
   releaseControl = false;
 }" 0
  E E E
-2 49
+13 87
+"btnLogout"
+""
+1 1540 10 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+101 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0  1538 8 1592 35
+
+T 
+1
+LANG:1 6 Logout
+"main()
+{
+  fwAccessControl_logout();
+}" 0
+ E E E
+2 25
+"lblVersion"
+""
+1 720 58 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+45 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 720 58 879 74
+1 2 2 "0s" 0 0 0 192 0 0  720 58 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 29 UI Version 1.0.0 (2009/07/22)
+2 41
+"lblNewVersion"
+""
+1 710 40 E E E 1 E 0 E N "_WindowText" E N "yellow" E E
+ E E
+51 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 710 40 888 74
+1 2 2 "0s" 0 0 0 192 0 0  710 40 2
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 33 New version (1.0.22) is available
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 28 Restart the UI when possible
+2 31
+"lblUpsOnBattery"
+""
+1 700 400 E E E 1 E 0 E N "_WindowText" E N "FwStateAttention3" E E
+ E E
+69 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 700 400 907 461
+1 2 2 "0s" 0 0 0 192 0 0  700 400 3
+1
+LANG:1 26 Arial,11,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 30 Atention: UPS is on battery !!
+1
+LANG:1 26 Arial,11,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 26 All LV is being turned OFF
+1
+LANG:1 26 Arial,11,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 29 Make sure it is and stays OFF
+26 88
+"btnExpertActions"
+""
+1 150.7692307692308 990 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+102 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0  18 1048 192 1075
+ 0 1
+LANG:1 14 Expert Actions
+"" 0 0 0 0 0
+ 2 1 1
+LANG:1 36 Open Excluded Channels Summary Panel
+"1" 0 0 0 0 0
+ 1 1
+LANG:1 34 Open Xmas Monitoring Control Panel
+"2" 0 0 0 0 0
+ E "main(string id)
+{
+  emu_info(\"Executing expert action: \" + this.textItemId(id));
+  switch (id) {
+    case 1:
+      ChildPanelOnCentral(\"CMS_CSCfw_Supervisor/emuEmuExcludedSummary.pnl\", \"Excluded Channels Summary\", makeDynString());
+      break;
+    case 2:
+//      ChildPanelOnCentral(\"CMS_CSCfw_HV_CC/emuLVSubSystemOperation.pnl\", \"Xmas Monitoring Control Panel\", makeDynString());
+      ChildPanelOnCentral(\"CMS_CSC_UI/XmasMonitoringControl.pnl\", \"Xmas Monitoring Control Panel\", makeDynString());
+      break;
+    default:
+      break;
+  }
+}" 0
+0 
+6 89
+"RECTANGLE13"
+""
+1 830 600 E E E 1 E 1 E N {0,0,0} E N "_Button" E E
+ E E
+103 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E "main()
+{
+  ChildPanelOnCentral(\"CMS_CSCfw_Supervisor/emuEmuErrorSummarySub.pnl\", \"Error Summary\", makeDynString());
+}" 0
+ 0 1 1 2 1 E 4.272727272727273 0 1 -428.1818181818181 790 1 E 360 60 470 83
+2 90
 "PRIMITIVE_TEXT14"
 ""
 1 1110 854 E E E 1 E 1 E N "_ButtonText" E N "_Transparent" E E
  E E
-97 0 0 0 0 0
+104 0 0 0 0 0
 E E E
 0
 1
@@ -1498,77 +1574,12 @@ E "main()
 {
   ChildPanelOnCentral(\"CMS_CSCfw_Supervisor/emuEmuErrorSummarySub.pnl\", \"Error Summary\", makeDynString());
 }" 0
- 0 1 1 2 1 E U  1 E 1110 854 1325 867
+ 0 1 1 2 1 E U  1 E 1110 854 1576 867
 0 2 2 "0s" 0 0 0 65 0 0  1110 854 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 18 Open Error Summary
-6 85
-"RECTANGLE14"
-""
-1 830 600 E E E 1 E 1 E N {0,0,0} E N "_Button" E E
- E E
-99 0 0 0 0 0
-E E E
-4
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E "main()
-{
-  ChildPanelOnCentral(\"CMS_CSCfw_Supervisor/emuEmuExcludedSummary.pnl\", \"Excluded Channels Summary\", makeDynString());
-}" 0
- 0 1 1 2 1 E 2 0 1 639.9999999999999 790 1 E 360 60 470 83
-2 86
-"PRIMITIVE_TEXT15"
-""
-1 1360 854 E E E 1 E 1 E N "_ButtonText" E N "_Transparent" E E
- E E
-100 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E "main()
-{
-  ChildPanelOnCentral(\"CMS_CSCfw_Supervisor/emuEmuExcludedSummary.pnl\", \"Excluded Channels Summary\", makeDynString());
-}" 0
- 0 1 1 2 1 E U  1 E 1360 854 1575 867
-0 2 2 "0s" 0 0 0 65 0 0  1360 854 1
-1
-LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
-0 1
-LANG:1 30 Open Excluded Channels Summary
-13 87
-"btnLogout"
-""
-1 1540 40 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-101 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
-0  1538 38 1592 65
-
-T 
-1
-LANG:1 6 Logout
-"main()
-{
-  fwAccessControl_logout();
-}" 0
- E E E
+LANG:1 51 Open Error & Peripheral Crate configuration Summary
 0
 LAYER, 1 
 1
