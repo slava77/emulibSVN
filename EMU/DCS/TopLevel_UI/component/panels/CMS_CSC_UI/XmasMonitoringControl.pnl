@@ -1,0 +1,503 @@
+V 11
+1
+LANG:1 29 Xmas Monitoring Control Panel
+PANEL,-1 -1 400 408 N "_3DFace" 0
+"main()
+{
+    emuui_init();
+  dyn_string ex;
+  dyn_string xmasControlDPs = emuui_getDpNames(\"xmas_control\", emuui_dummyMapping, ex);
+  if (emu_checkException(ex)) { return; }
+  for (int i=1; i <= dynlen(xmasControlDPs); i++) {
+    // connect the DPs to listen for last command
+    string side = emuui_getMappingValue(\"sysNameToSide\", emuui_getSystemName(xmasControlDPs[i]), ex);
+    if (emu_checkException(ex)) { return; }
+    dpConnect(\"xmasControlUpdated\" + side + \"CB\", true, xmasControlDPs[i]);
+    
+    // check if the project is valid, if so, then assign it for a control DP
+    dyn_string validDps = dpNames(dpSubStr(xmasControlDPs[i], DPSUB_SYS) + \"CMS_CSC_HV_CC_*\",\"MUDCS_STRING\");
+    for (int j=1; j <= dynlen(validDps); j++) {
+      string isValid;
+      dpGet(validDps[j] + \".value\", isValid);
+      if (isValid == \"valid\") {
+        if (side == \"P\") {
+          controlSystemPlus = dpSubStr(xmasControlDPs[i], DPSUB_SYS);
+          btnStopPlus.enabled = true;
+          btnResumePlus.enabled = true;
+        } else if (side == \"M\") {
+          controlSystemMinus = dpSubStr(xmasControlDPs[i], DPSUB_SYS);
+          btnStopMinus.enabled = true;
+          btnResumeMinus.enabled = true;
+        }
+        break;
+      }
+    }
+  }
+  
+  if (controlSystemPlus == \"\") {
+    lblPlusNotValid.visible = true;
+  }
+  if (controlSystemMinus == \"\") {
+    lblMinusNotValid.visible = true;
+  }
+}
+" 0
+ E E E E 1 -1 -1 0  100 30
+""0  1
+E "string controlSystemPlus, controlSystemMinus;
+
+void xmasControlUpdatedPCB(dyn_string dp, dyn_string command) {
+  lblLastActionPlus.text = getCommandMeaning(command);
+  lblLastActionTimePlus.text = emuui_getLastUpdateTime(dp);
+}
+
+void xmasControlUpdatedMCB(dyn_string dp, dyn_string command) {
+  lblLastActionMinus.text = getCommandMeaning(command);
+  lblLastActionTimeMinus.text = emuui_getLastUpdateTime(dp);
+}
+
+string getCommandMeaning(string command) {
+  if (strpos(command, \"SLOW_CONTROL\") >= 0) {
+    dyn_string commandSplit = strsplit(command, \"_\");
+    if (dynlen(commandSplit) > 0) {
+      return commandSplit[1];
+    }
+  }
+  return command;
+}" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+2 0
+"lblTitle"
+""
+1 0 10 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 0 10 395 28
+0 2 2 "0s" 0 0 0 65 0 0  0 10 1
+1
+LANG:1 26 Arial,11,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 29 Xmas Monitoring Control Panel
+2 1
+"lblTitle2"
+""
+1 0 30 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 0 30 395 45
+0 2 2 "0s" 0 0 0 65 0 0  0 30 1
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 21 Expert operation only
+30 2
+"framePlusSide"
+""
+1 20 73 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+2 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 2.25 0 0.7614213197969543 -25 14.41624365482233 0 E 20 73 181 271
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 9 Plus Side
+30 4
+"frameMinusSide"
+""
+1 20 73 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+4 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 2.25 0 0.7614213197969543 -25 184.4162436548223 0 E 20 73 181 271
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 10 Minus Side
+13 5
+"btnStopPlus"
+""
+1 30 150 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0  28 148 372 175
+
+T 
+1
+LANG:1 25 Stop Plus Side Monitoring
+"main()
+{
+  string last_command;
+  dpGet(controlSystemPlus + \"STOP_SLOW_CONTROL.value\", last_command);
+  
+  if(strpos(last_command, \"PREPARE_POWER_UP\") < 0){
+    dpSet(controlSystemPlus + \"LV_1_COM.command\", \"STOP_SLOW_CONTROL\"); 
+    dpSet(controlSystemPlus + \"STOP_SLOW_CONTROL.value\", \"STOP_SLOW_CONTROL\"); 
+    dpSet(controlSystemPlus + \"SPECIAL_STOP_SC.value\", \"STOP\");
+  } else {
+    mudcsDebug(\"LV IS PREPARING TO POWER UP: \\n TRY TO DO IT LATER (in 1 minute)\");
+  }
+}" 0
+ E E E
+2 6
+"lblForLastActionPlus"
+""
+1 30 100 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 30 100 92 116
+0 2 2 "0s" 0 0 0 192 0 0  30 100 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 12 Last Action:
+2 7
+"lblLastActionPlus"
+""
+1 100 100 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 100 100 150 116
+0 2 2 "0s" 0 0 0 192 0 0  100 100 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 7 unknown
+2 8
+"lblForLastActionMinus"
+""
+1 30 270 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 30 270 92 286
+0 2 2 "0s" 0 0 0 192 0 0  30 270 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 12 Last Action:
+2 9
+"lblLastActionMinus"
+""
+1 100 270 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 100 270 150 286
+0 2 2 "0s" 0 0 0 192 0 0  100 270 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 7 unknown
+13 10
+"btnResumePlus"
+""
+1 30 180 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0  28 178 372 205
+
+T 
+1
+LANG:1 27 Resume Plus Side Monitoring
+"main()
+{
+  string last_command;
+  dpGet(controlSystemPlus + \"STOP_SLOW_CONTROL.value\", last_command);
+  
+  if(strpos(last_command, \"PREPARE_POWER_UP\") < 0){
+    dpSetWait(controlSystemPlus + \"LV_1_COM.command\", \"EXIT_SLOW_CONTROL\");
+    dpSetWait(controlSystemPlus + \"LV_1_COM.command\", \"RESUME_SLOW_CONTROL\"); //for x2p
+    dpSet(controlSystemPlus + \"STOP_SLOW_CONTROL.value\", \"RESUME_SLOW_CONTROL\");
+    dpSet(controlSystemPlus + \"SPECIAL_STOP_SC.value\", \"RESUME\");
+  } else {
+    mudcsDebug(\"LV IS PREPARING TO POWER UP: \\n TRY TO DO IT LATER (in 1 minute)\");
+  }
+}" 0
+ E E E
+13 11
+"btnStopMinus"
+""
+1 30 320 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0  28 318 372 345
+
+T 
+1
+LANG:1 26 Stop Minus Side Monitoring
+"main()
+{
+  string last_command;
+  dpGet(controlSystemMinus + \"STOP_SLOW_CONTROL.value\", last_command);
+  
+  if(strpos(last_command, \"PREPARE_POWER_UP\") < 0){
+    dpSet(controlSystemMinus + \"LV_1_COM.command\", \"STOP_SLOW_CONTROL\");
+    dpSet(controlSystemMinus + \"STOP_SLOW_CONTROL.value\", \"STOP_SLOW_CONTROL\"); 
+    dpSet(controlSystemMinus + \"SPECIAL_STOP_SC.value\", \"STOP\");
+  } else {
+    mudcsDebug(\"LV IS PREPARING TO POWER UP: \\n TRY TO DO IT LATER (in 1 minute)\");
+  }
+}" 0
+ E E E
+13 12
+"btnResumeMinus"
+""
+1 30 350 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0  28 348 372 375
+
+T 
+1
+LANG:1 28 Resume Minus Side Monitoring
+"main()
+{
+  string last_command;
+  dpGet(controlSystemMinus + \"STOP_SLOW_CONTROL.value\", last_command);
+  
+  if(strpos(last_command, \"PREPARE_POWER_UP\") < 0){
+    dpSetWait(controlSystemMinus + \"LV_1_COM.command\", \"EXIT_SLOW_CONTROL\");
+    dpSetWait(controlSystemMinus + \"LV_1_COM.command\", \"RESUME_SLOW_CONTROL\"); //for x2p
+    dpSet(controlSystemMinus + \"STOP_SLOW_CONTROL.value\", \"RESUME_SLOW_CONTROL\");
+    dpSet(controlSystemMinus + \"SPECIAL_STOP_SC.value\", \"RESUME\");
+  } else {
+    mudcsDebug(\"LV IS PREPARING TO POWER UP: \\n TRY TO DO IT LATER (in 1 minute)\");
+  }
+}" 0
+ E E E
+2 13
+"lblForLastActionTimePlus"
+""
+1 30 120 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+13 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 30 120 157 136
+0 2 2 "0s" 0 0 0 192 0 0  30 120 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 22 Last Action Timestamp:
+2 14
+"lblLastActionTimePlus"
+""
+1 160 120 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 160 120 219 136
+0 2 2 "0s" 0 0 0 192 0 0  160 120 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 9 timestamp
+2 17
+"lblForLastActionTimeMinus"
+""
+1 30 290 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 30 290 157 306
+0 2 2 "0s" 0 0 0 192 0 0  30 290 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 22 Last Action Timestamp:
+2 18
+"lblLastActionTimeMinus"
+""
+1 160 290 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 160 290 219 306
+0 2 2 "0s" 0 0 0 192 0 0  160 290 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 9 timestamp
+2 19
+"lblPlusNotValid"
+""
+1 100 70 E E E 1 E 0 E N "_WindowText" E N "FwStateAttention3" E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 100 70 357 86
+0 2 2 "0s" 0 0 0 192 0 0  100 70 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 50 Plus side DCS are not ready for control, try later
+2 20
+"lblMinusNotValid"
+""
+1 100 240 E E E 1 E 0 E N "_WindowText" E N "FwStateAttention3" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 100 240 365 256
+0 2 2 "0s" 0 0 0 192 0 0  100 240 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 51 Minus side DCS are not ready for control, try later
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
