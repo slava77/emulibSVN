@@ -6,6 +6,9 @@ PANEL,-1 -1 400 408 N "_3DFace" 0
 {
     emuui_init();
   dyn_string ex;
+  int minMidLayerNumP = 10,  // used to get the lowest mid. layer num for plus side
+      maxMidLayerNumM = -1; // used to get the highest mid. layer num for minus side
+  
   dyn_string xmasControlDPs = emuui_getDpNames(\"xmas_control\", emuui_dummyMapping, ex);
   if (emu_checkException(ex)) { return; }
   for (int i=1; i <= dynlen(xmasControlDPs); i++) {
@@ -20,14 +23,22 @@ PANEL,-1 -1 400 408 N "_3DFace" 0
       string isValid;
       dpGet(validDps[j] + \".value\", isValid);
       if (isValid == \"valid\") {
+        dyn_string split = strsplit(validDps[j], \"_\");
+        int sysNum = split[dynlen(split)];
         if (side == \"P\") {
-          controlSystemPlus = dpSubStr(xmasControlDPs[i], DPSUB_SYS);
-          btnStopPlus.enabled = true;
-          btnResumePlus.enabled = true;
+          if (sysNum < minMidLayerNumP) {
+            controlSystemPlus = dpSubStr(xmasControlDPs[i], DPSUB_SYS);
+            btnStopPlus.enabled = true;
+            btnResumePlus.enabled = true;
+            minMidLayerNumP = sysNum;
+          }
         } else if (side == \"M\") {
-          controlSystemMinus = dpSubStr(xmasControlDPs[i], DPSUB_SYS);
-          btnStopMinus.enabled = true;
-          btnResumeMinus.enabled = true;
+          if (sysNum > maxMidLayerNumM) {
+            controlSystemMinus = dpSubStr(xmasControlDPs[i], DPSUB_SYS);
+            btnStopMinus.enabled = true;
+            btnResumeMinus.enabled = true;
+            maxMidLayerNumM = sysNum;
+          }
         }
         break;
       }
@@ -40,6 +51,9 @@ PANEL,-1 -1 400 408 N "_3DFace" 0
   if (controlSystemMinus == \"\") {
     lblMinusNotValid.visible = true;
   }
+  
+  emu_info(\"Control System for Plus: \" + controlSystemPlus);
+  emu_info(\"Control System for Minus: \" + controlSystemMinus);
 }
 " 0
  E E E E 1 -1 -1 0  100 30
