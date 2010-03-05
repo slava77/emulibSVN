@@ -22,8 +22,8 @@
     <xsd:element name="factRequest" type="tns:factRequestType"/>
 
     <xsd:complexType name="factRequestCollectionType">
-      	<xsd:annotation>
-    		<xsd:appinfo>
+        <xsd:annotation>
+            <xsd:appinfo>
                 <jaxb:class name="FactRequestCollection" />
                 <hj:ignored/>
             </xsd:appinfo>
@@ -35,8 +35,8 @@
     </xsd:complexType>
 
     <xsd:complexType name="factRequestType">
-      	<xsd:annotation>
-    		<xsd:appinfo>
+        <xsd:annotation>
+            <xsd:appinfo>
                 <jaxb:class name="FactRequest" />
                 <hj:ignored/>
             </xsd:appinfo>

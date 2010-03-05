@@ -30,6 +30,7 @@
         <xsd:annotation>
             <xsd:appinfo>
                 <jaxb:class name="DataServiceEntity"/>
+                <xjc:superClass name="org.cern.cms.csc.dw.model.base.EntityBase"/>
                 <hj:ignored/>
             </xsd:appinfo>
         </xsd:annotation>

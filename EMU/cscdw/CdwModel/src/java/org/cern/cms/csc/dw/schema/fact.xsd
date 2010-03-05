@@ -8,6 +8,7 @@
 	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
 	xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
 	xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+        xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
     xmlns:ont="http://www.cern.ch/cms/csc/dw/ontology"
     xmlns:ser="http://www.cern.ch/cms/csc/dw/service"
     xmlns:ccp="http://hyperjaxb3.jvnet.org/ejb/schemas/customcode"
@@ -15,7 +16,7 @@
         http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
         http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
         http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
-	jaxb:extensionBindingPrefixes="orm hj ccp"
+	jaxb:extensionBindingPrefixes="xjc orm hj ccp"
 	jaxb:version="2.0">
 
     <xsd:include schemaLocation="factClassifiers.xsd"/>
@@ -33,6 +34,7 @@
         <xsd:annotation>
             <xsd:appinfo>
                 <jaxb:class name="FactCollection" />
+                <xjc:superClass name="org.cern.cms.csc.dw.model.base.EntityBase"/>
                 <hj:entity>
                     <orm:table name="CDW_FACT_COLLECTIONS"/>
                 </hj:entity>
@@ -87,6 +89,7 @@
         <xsd:annotation>
             <xsd:appinfo>
                 <jaxb:class name="Fact"/>
+                <xjc:superClass name="org.cern.cms.csc.dw.model.base.EntityBase"/>
                 <hj:entity>
                     <orm:table name="CDW_FACTS"/>
                     <orm:inheritance strategy="JOINED"/>
