@@ -37,55 +37,55 @@
             <xsd:extension base="tns:factType">
                 <xsd:sequence>
 
-                    <xsd:element name="alctCount" type="xsd:decimal">
+                    <xsd:element name="alctCount" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_ALCT_COUNT"/>
+                                    <orm:column name="FCT_ALCT_COUNT" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="alctCount"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="clctCount" type="xsd:decimal">
+                    <xsd:element name="clctCount" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_CLCT_COUNT"/>
+                                    <orm:column name="FCT_CLCT_COUNT" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="clctCount"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="lctCount" type="xsd:decimal">
+                    <xsd:element name="lctCount" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_LCT_COUNT"/>
+                                    <orm:column name="FCT_LCT_COUNT" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="lctCount"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="l1aCount" type="xsd:decimal">
+                    <xsd:element name="l1aCount" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_L1A_COUNT"/>
+                                    <orm:column name="FCT_L1A_COUNT" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="l1aCount"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="windowWidth" type="xsd:decimal">
+                    <xsd:element name="windowWidth" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_WINDOW_WIDTH"/>
+                                    <orm:column name="FCT_WINDOW_WIDTH" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="windowWidth"/>
                             </xsd:appinfo>
@@ -110,44 +110,44 @@
             <xsd:extension base="tns:factType">
                 <xsd:sequence>
 
-                    <xsd:element name="alctCount" type="xsd:decimal">
+                    <xsd:element name="alctCount" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_ALCT_COUNT"/>
+                                    <orm:column name="FCT_ALCT_COUNT" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="alctCount"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="clctCount" type="xsd:decimal">
+                    <xsd:element name="clctCount" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_CLCT_COUNT"/>
+                                    <orm:column name="FCT_CLCT_COUNT" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="clctCount"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="lctCount" type="xsd:decimal">
+                    <xsd:element name="lctCount" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_LCT_COUNT"/>
+                                    <orm:column name="FCT_LCT_COUNT" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="lctCount"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="l1aCount" type="xsd:decimal">
+                    <xsd:element name="l1aCount" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_L1A_COUNT"/>
+                                    <orm:column name="FCT_L1A_COUNT" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="l1aCount"/>
                             </xsd:appinfo>

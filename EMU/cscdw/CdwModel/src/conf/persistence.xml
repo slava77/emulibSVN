@@ -29,13 +29,13 @@
     <class>org.cern.cms.csc.dw.model.fact.FactCollectionFactsItem</class>
     <class>org.cern.cms.csc.dw.model.fact.SlidingTmbTriggerCounterFact</class>
     <class>org.cern.cms.csc.dw.model.fact.TmbCounterFact</class>
-    <class>org.cern.cms.csc.dw.model.fact.TmbCounterDescriptionFact</class>
     <class>org.cern.cms.csc.dw.model.ontology.Component</class>
     <class>org.cern.cms.csc.dw.model.ontology.ComponentClass</class>
     <class>org.cern.cms.csc.dw.model.ontology.ComponentGraphLink</class>
     <class>org.cern.cms.csc.dw.model.ontology.ComponentLink</class>
     <class>org.cern.cms.csc.dw.model.ontology.ComponentLinkClass</class>
     <class>org.cern.cms.csc.dw.model.ontology.ComponentSynonym</class>
+    <class>org.cern.cms.csc.dw.model.dse.TmbCounterDescriptionDSE</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="hibernate.hbm2ddl.auto" value="update"/>

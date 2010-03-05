@@ -35,6 +35,9 @@
 <xsd:enumeration value="Global"/>
 <xsd:enumeration value="GlobalDAQ"/>
 <xsd:enumeration value="HV"/>
+<xsd:enumeration value="HVBoard"/>
+<xsd:enumeration value="HVChannel"/>
+<xsd:enumeration value="HVCrate"/>
 <xsd:enumeration value="HVDistribution"/>
 <xsd:enumeration value="HVMaster"/>
 <xsd:enumeration value="HVPrimary"/>

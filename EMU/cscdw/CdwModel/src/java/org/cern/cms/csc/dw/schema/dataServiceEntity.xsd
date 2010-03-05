@@ -26,12 +26,11 @@
 
     <xsd:include schemaLocation="tmbCounterDescriptionDSE.xsd"/>
 
-    <xsd:element name="dataServiceEntity" type="tns:dataServiceEntityType"/>
     <xsd:complexType name="dataServiceEntityType">
         <xsd:annotation>
             <xsd:appinfo>
                 <jaxb:class name="DataServiceEntity"/>
-                <!--hj:ignored/-->
+                <hj:ignored/>
             </xsd:appinfo>
         </xsd:annotation>
     </xsd:complexType>

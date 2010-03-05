@@ -3,6 +3,7 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     targetNamespace="http://www.cern.ch/cms/csc/dw/model"
     xmlns:tns="http://www.cern.ch/cms/csc/dw/model"
+    xmlns:dse="http://www.cern.ch/cms/csc/dw/model/dse"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     elementFormDefault="qualified"
 	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
@@ -15,6 +16,8 @@
         http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
 	jaxb:extensionBindingPrefixes="xjc orm hj"
 	jaxb:version="2.0">
+
+    <xsd:import namespace="http://www.cern.ch/cms/csc/dw/model/dse" schemaLocation="dataServiceEntity.xsd"/>
 
     <xsd:element name="tmbCounterFact"
                  type="tns:tmbCounterFactType"
@@ -37,14 +40,14 @@
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_VERSION"/>
+                                    <orm:column name="FCT_VERSION" length="4"/>
                                 </hj:basic>
                                 <jaxb:property name="version"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="descriptions" type="tns:tmbCounterDescriptionFactType" minOccurs="0">
+                    <xsd:element name="descriptions" type="dse:tmbCounterDescriptionDSEType" minOccurs="0">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:many-to-one>
@@ -55,1971 +58,970 @@
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc00" type="xsd:decimal">
+                    <xsd:element name="tc00" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC00"/>
+                                    <orm:column name="FCT_TC00" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc00"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc01" type="xsd:decimal">
+                    <xsd:element name="tc01" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC01"/>
+                                    <orm:column name="FCT_TC01" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc01"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc02" type="xsd:decimal">
+                    <xsd:element name="tc02" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC02"/>
+                                    <orm:column name="FCT_TC02" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc02"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc03" type="xsd:decimal">
+                    <xsd:element name="tc03" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC03"/>
+                                    <orm:column name="FCT_TC03" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc03"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc04" type="xsd:decimal">
+                    <xsd:element name="tc04" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC04"/>
+                                    <orm:column name="FCT_TC04" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc04"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc05" type="xsd:decimal">
+                    <xsd:element name="tc05" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC05"/>
+                                    <orm:column name="FCT_TC05" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc05"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc06" type="xsd:decimal">
+                    <xsd:element name="tc06" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC06"/>
+                                    <orm:column name="FCT_TC06" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc06"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc07" type="xsd:decimal">
+                    <xsd:element name="tc07" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC07"/>
+                                    <orm:column name="FCT_TC07" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc07"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc08" type="xsd:decimal">
+                    <xsd:element name="tc08" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC08"/>
+                                    <orm:column name="FCT_TC08" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc08"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc09" type="xsd:decimal">
+                    <xsd:element name="tc09" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC09"/>
+                                    <orm:column name="FCT_TC09" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc09"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc10" type="xsd:decimal">
+                    <xsd:element name="tc10" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC10"/>
+                                    <orm:column name="FCT_TC10" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc10"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc11" type="xsd:decimal">
+                    <xsd:element name="tc11" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC11"/>
+                                    <orm:column name="FCT_TC11" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc11"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc12" type="xsd:decimal">
+                    <xsd:element name="tc12" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC12"/>
+                                    <orm:column name="FCT_TC12" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc12"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc13" type="xsd:decimal">
+                    <xsd:element name="tc13" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC13"/>
+                                    <orm:column name="FCT_TC13" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc13"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc14" type="xsd:decimal">
+                    <xsd:element name="tc14" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC14"/>
+                                    <orm:column name="FCT_TC14" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc14"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc15" type="xsd:decimal">
+                    <xsd:element name="tc15" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC15"/>
+                                    <orm:column name="FCT_TC15" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc15"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc16" type="xsd:decimal">
+                    <xsd:element name="tc16" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC16"/>
+                                    <orm:column name="FCT_TC16" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc16"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc17" type="xsd:decimal">
+                    <xsd:element name="tc17" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC17"/>
+                                    <orm:column name="FCT_TC17" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc17"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc18" type="xsd:decimal">
+                    <xsd:element name="tc18" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC18"/>
+                                    <orm:column name="FCT_TC18" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc18"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc19" type="xsd:decimal">
+                    <xsd:element name="tc19" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC19"/>
+                                    <orm:column name="FCT_TC19" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc19"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc20" type="xsd:decimal">
+                    <xsd:element name="tc20" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC20"/>
+                                    <orm:column name="FCT_TC20" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc20"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc21" type="xsd:decimal">
+                    <xsd:element name="tc21" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC21"/>
+                                    <orm:column name="FCT_TC21" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc21"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc22" type="xsd:decimal">
+                    <xsd:element name="tc22" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC22"/>
+                                    <orm:column name="FCT_TC22" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc22"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc23" type="xsd:decimal">
+                    <xsd:element name="tc23" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC23"/>
+                                    <orm:column name="FCT_TC23" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc23"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc24" type="xsd:decimal">
+                    <xsd:element name="tc24" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC24"/>
+                                    <orm:column name="FCT_TC24" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc24"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc25" type="xsd:decimal">
+                    <xsd:element name="tc25" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC25"/>
+                                    <orm:column name="FCT_TC25" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc25"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc26" type="xsd:decimal">
+                    <xsd:element name="tc26" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC26"/>
+                                    <orm:column name="FCT_TC26" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc26"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc27" type="xsd:decimal">
+                    <xsd:element name="tc27" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC27"/>
+                                    <orm:column name="FCT_TC27" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc27"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc28" type="xsd:decimal">
+                    <xsd:element name="tc28" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC28"/>
+                                    <orm:column name="FCT_TC28" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc28"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc29" type="xsd:decimal">
+                    <xsd:element name="tc29" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC29"/>
+                                    <orm:column name="FCT_TC29" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc29"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc30" type="xsd:decimal">
+                    <xsd:element name="tc30" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC30"/>
+                                    <orm:column name="FCT_TC30" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc30"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc31" type="xsd:decimal">
+                    <xsd:element name="tc31" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC31"/>
+                                    <orm:column name="FCT_TC31" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc31"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc32" type="xsd:decimal">
+                    <xsd:element name="tc32" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC32"/>
+                                    <orm:column name="FCT_TC32" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc32"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc33" type="xsd:decimal">
+                    <xsd:element name="tc33" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC33"/>
+                                    <orm:column name="FCT_TC33" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc33"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc34" type="xsd:decimal">
+                    <xsd:element name="tc34" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC34"/>
+                                    <orm:column name="FCT_TC34" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc34"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc35" type="xsd:decimal">
+                    <xsd:element name="tc35" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC35"/>
+                                    <orm:column name="FCT_TC35" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc35"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc36" type="xsd:decimal">
+                    <xsd:element name="tc36" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC36"/>
+                                    <orm:column name="FCT_TC36" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc36"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc37" type="xsd:decimal">
+                    <xsd:element name="tc37" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC37"/>
+                                    <orm:column name="FCT_TC37" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc37"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc38" type="xsd:decimal">
+                    <xsd:element name="tc38" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC38"/>
+                                    <orm:column name="FCT_TC38" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc38"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc39" type="xsd:decimal">
+                    <xsd:element name="tc39" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC39"/>
+                                    <orm:column name="FCT_TC39" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc39"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc40" type="xsd:decimal">
+                    <xsd:element name="tc40" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC40"/>
+                                    <orm:column name="FCT_TC40" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc40"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc41" type="xsd:decimal">
+                    <xsd:element name="tc41" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC41"/>
+                                    <orm:column name="FCT_TC41" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc41"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc42" type="xsd:decimal">
+                    <xsd:element name="tc42" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC42"/>
+                                    <orm:column name="FCT_TC42" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc42"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc43" type="xsd:decimal">
+                    <xsd:element name="tc43" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC43"/>
+                                    <orm:column name="FCT_TC43" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc43"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc44" type="xsd:decimal">
+                    <xsd:element name="tc44" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC44"/>
+                                    <orm:column name="FCT_TC44" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc44"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc45" type="xsd:decimal">
+                    <xsd:element name="tc45" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC45"/>
+                                    <orm:column name="FCT_TC45" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc45"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc46" type="xsd:decimal">
+                    <xsd:element name="tc46" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC46"/>
+                                    <orm:column name="FCT_TC46" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc46"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc47" type="xsd:decimal">
+                    <xsd:element name="tc47" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC47"/>
+                                    <orm:column name="FCT_TC47" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc47"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc48" type="xsd:decimal">
+                    <xsd:element name="tc48" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC48"/>
+                                    <orm:column name="FCT_TC48" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc48"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc49" type="xsd:decimal">
+                    <xsd:element name="tc49" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC49"/>
+                                    <orm:column name="FCT_TC49" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc49"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc50" type="xsd:decimal">
+                    <xsd:element name="tc50" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC50"/>
+                                    <orm:column name="FCT_TC50" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc50"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc51" type="xsd:decimal">
+                    <xsd:element name="tc51" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC51"/>
+                                    <orm:column name="FCT_TC51" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc51"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc52" type="xsd:decimal">
+                    <xsd:element name="tc52" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC52"/>
+                                    <orm:column name="FCT_TC52" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc52"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc53" type="xsd:decimal">
+                    <xsd:element name="tc53" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC53"/>
+                                    <orm:column name="FCT_TC53" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc53"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc54" type="xsd:decimal">
+                    <xsd:element name="tc54" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC54"/>
+                                    <orm:column name="FCT_TC54" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc54"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc55" type="xsd:decimal">
+                    <xsd:element name="tc55" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC55"/>
+                                    <orm:column name="FCT_TC55" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc55"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc56" type="xsd:decimal">
+                    <xsd:element name="tc56" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC56"/>
+                                    <orm:column name="FCT_TC56" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc56"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc57" type="xsd:decimal">
+                    <xsd:element name="tc57" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC57"/>
+                                    <orm:column name="FCT_TC57" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc57"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc58" type="xsd:decimal">
+                    <xsd:element name="tc58" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC58"/>
+                                    <orm:column name="FCT_TC58" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc58"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc59" type="xsd:decimal">
+                    <xsd:element name="tc59" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC59"/>
+                                    <orm:column name="FCT_TC59" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc59"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc60" type="xsd:decimal">
+                    <xsd:element name="tc60" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC60"/>
+                                    <orm:column name="FCT_TC60" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc60"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc61" type="xsd:decimal">
+                    <xsd:element name="tc61" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC61"/>
+                                    <orm:column name="FCT_TC61" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc61"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc62" type="xsd:decimal">
+                    <xsd:element name="tc62" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC62"/>
+                                    <orm:column name="FCT_TC62" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc62"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc63" type="xsd:decimal">
+                    <xsd:element name="tc63" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC63"/>
+                                    <orm:column name="FCT_TC63" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc63"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc64" type="xsd:decimal">
+                    <xsd:element name="tc64" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC64"/>
+                                    <orm:column name="FCT_TC64" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc64"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc65" type="xsd:decimal">
+                    <xsd:element name="tc65" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC65"/>
+                                    <orm:column name="FCT_TC65" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc65"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc66" type="xsd:decimal">
+                    <xsd:element name="tc66" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC66"/>
+                                    <orm:column name="FCT_TC66" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc66"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc67" type="xsd:decimal">
+                    <xsd:element name="tc67" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC67"/>
+                                    <orm:column name="FCT_TC67" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc67"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc68" type="xsd:decimal">
+                    <xsd:element name="tc68" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC68"/>
+                                    <orm:column name="FCT_TC68" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc68"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc69" type="xsd:decimal">
+                    <xsd:element name="tc69" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC69"/>
+                                    <orm:column name="FCT_TC69" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc69"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc70" type="xsd:decimal">
+                    <xsd:element name="tc70" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC70"/>
+                                    <orm:column name="FCT_TC70" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc70"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc71" type="xsd:decimal">
+                    <xsd:element name="tc71" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC71"/>
+                                    <orm:column name="FCT_TC71" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc71"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc72" type="xsd:decimal">
+                    <xsd:element name="tc72" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC72"/>
+                                    <orm:column name="FCT_TC72" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc72"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc73" type="xsd:decimal">
+                    <xsd:element name="tc73" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC73"/>
+                                    <orm:column name="FCT_TC73" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc73"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc74" type="xsd:decimal">
+                    <xsd:element name="tc74" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC74"/>
+                                    <orm:column name="FCT_TC74" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc74"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc75" type="xsd:decimal">
+                    <xsd:element name="tc75" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC75"/>
+                                    <orm:column name="FCT_TC75" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc75"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc76" type="xsd:decimal">
+                    <xsd:element name="tc76" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC76"/>
+                                    <orm:column name="FCT_TC76" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc76"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc77" type="xsd:decimal">
+                    <xsd:element name="tc77" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC77"/>
+                                    <orm:column name="FCT_TC77" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc77"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc78" type="xsd:decimal">
+                    <xsd:element name="tc78" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC78"/>
+                                    <orm:column name="FCT_TC78" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc78"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc79" type="xsd:decimal">
+                    <xsd:element name="tc79" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC79"/>
+                                    <orm:column name="FCT_TC79" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc79"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc80" type="xsd:decimal">
+                    <xsd:element name="tc80" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC80"/>
+                                    <orm:column name="FCT_TC80" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc80"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc81" type="xsd:decimal">
+                    <xsd:element name="tc81" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC81"/>
+                                    <orm:column name="FCT_TC81" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc81"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc82" type="xsd:decimal">
+                    <xsd:element name="tc82" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC82"/>
+                                    <orm:column name="FCT_TC82" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc82"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc83" type="xsd:decimal">
+                    <xsd:element name="tc83" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC83"/>
+                                    <orm:column name="FCT_TC83" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc83"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc84" type="xsd:decimal">
+                    <xsd:element name="tc84" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC84"/>
+                                    <orm:column name="FCT_TC84" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc84"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc85" type="xsd:decimal">
+                    <xsd:element name="tc85" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC85"/>
+                                    <orm:column name="FCT_TC85" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc85"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc86" type="xsd:decimal">
+                    <xsd:element name="tc86" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC86"/>
+                                    <orm:column name="FCT_TC86" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc86"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="tc87" type="xsd:decimal">
+                    <xsd:element name="tc87" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_TC87"/>
+                                    <orm:column name="FCT_TC87" precision="10" scale="0"/>
                                 </hj:basic>
                                 <jaxb:property name="tc87"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                </xsd:sequence>
-            </xsd:extension>
-        </xsd:complexContent>
-    </xsd:complexType>
-
-    <xsd:element name="tmbCounterDescriptionFact"
-                 type="tns:tmbCounterDescriptionFactType"
-                 substitutionGroup="tns:fact"/>
-
-    <xsd:complexType name="tmbCounterDescriptionFactType">
-        <xsd:annotation>
-            <xsd:appinfo>
-                <jaxb:class name="TmbCounterDescriptionFact"/>
-                <hj:entity>
-                    <orm:table name="CDW_TMB_CNT_DESCRIPTION_FACTS"/>
-                </hj:entity>
-            </xsd:appinfo>
-        </xsd:annotation>
-        <xsd:complexContent>
-            <xsd:extension base="tns:factType">
-                <xsd:sequence>
-
-                    <xsd:element name="version" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_VERSION"/>
-                                </hj:basic>
-                                <jaxb:property name="version"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc00description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC00_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc00description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc01description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC01_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc01description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc02description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC02_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc02description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc03description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC03_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc03description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc04description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC04_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc04description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc05description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC05_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc05description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc06description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC06_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc06description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc07description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC07_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc07description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc08description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC08_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc08description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc09description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC09_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc09description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc10description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC10_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc10description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc11description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC11_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc11description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc12description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC12_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc12description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc13description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC13_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc13description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc14description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC14_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc14description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc15description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC15_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc15description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc16description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC16_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc16description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc17description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC17_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc17description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc18description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC18_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc18description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc19description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC19_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc19description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc20description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC20_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc20description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc21description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC21_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc21description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc22description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC22_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc22description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc23description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC23_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc23description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc24description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC24_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc24description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc25description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC25_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc25description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc26description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC26_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc26description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc27description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC27_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc27description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc28description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC28_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc28description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc29description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC29_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc29description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc30description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC30_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc30description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc31description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC31_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc31description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc32description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC32_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc32description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc33description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC33_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc33description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc34description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC34_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc34description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc35description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC35_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc35description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc36description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC36_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc36description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc37description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC37_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc37description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc38description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC38_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc38description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc39description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC39_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc39description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc40description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC40_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc40description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc41description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC41_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc41description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc42description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC42_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc42description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc43description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC43_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc43description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc44description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC44_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc44description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc45description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC45_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc45description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc46description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC46_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc46description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc47description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC47_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc47description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc48description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC48_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc48description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc49description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC49_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc49description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc50description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC50_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc50description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc51description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC51_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc51description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc52description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC52_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc52description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc53description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC53_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc53description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc54description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC54_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc54description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc55description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC55_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc55description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc56description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC56_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc56description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc57description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC57_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc57description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc58description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC58_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc58description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc59description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC59_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc59description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc60description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC60_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc60description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc61description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC61_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc61description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc62description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC62_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc62description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc63description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC63_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc63description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc64description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC64_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc64description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc65description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC65_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc65description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc66description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC66_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc66description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc67description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC67_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc67description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc68description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC68_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc68description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc69description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC69_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc69description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc70description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC70_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc70description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc71description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC71_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc71description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc72description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC72_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc72description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc73description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC73_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc73description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc74description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC74_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc74description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc75description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC75_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc75description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc76description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC76_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc76description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc77description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC77_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc77description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc78description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC78_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc78description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc79description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC79_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc79description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc80description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC80_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc80description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc81description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC81_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc81description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc82description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC82_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc82description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc83description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC83_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc83description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc84description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC84_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc84description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc85description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC85_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc85description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc86description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC86_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc86description"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="tc87description" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_TC87_DESC"/>
-                                </hj:basic>
-                                <jaxb:property name="tc87description"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>

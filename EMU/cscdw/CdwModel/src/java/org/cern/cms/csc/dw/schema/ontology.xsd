@@ -30,8 +30,8 @@
     </xsd:annotation>
 
     <xsd:complexType name="componentType">
-      	<xsd:annotation>
-    		<xsd:appinfo>
+        <xsd:annotation>
+            <xsd:appinfo>
                 <jaxb:class name="Component"/>
                 <xjc:superClass name="org.cern.cms.csc.dw.model.base.ComponentBase"/>
                 <hj:entity>
@@ -42,23 +42,23 @@
         </xsd:annotation>
         <xsd:sequence>
             <xsd:element name="componentClass" type="tns:componentClassType">
-				<xsd:annotation>
-					<xsd:appinfo>
+                <xsd:annotation>
+                    <xsd:appinfo>
                         <hj:many-to-one fetch="EAGER">
                             <orm:join-column name="CMP_CCL_ID"/>
                         </hj:many-to-one>
                         <jaxb:property name="componentClass"/>
-					</xsd:appinfo>
-				</xsd:annotation>
+                    </xsd:appinfo>
+                </xsd:annotation>
             </xsd:element>
             <xsd:element name="id" type="xsd:string">
-				<xsd:annotation>
-					<xsd:appinfo>
+                <xsd:annotation>
+                    <xsd:appinfo>
                         <hj:id>
-                            <orm:column name="CMP_ID" length="255"/>
+                            <orm:column name="CMP_ID" length="32"/>
                         </hj:id>
-					</xsd:appinfo>
-				</xsd:annotation>
+                    </xsd:appinfo>
+                </xsd:annotation>
             </xsd:element>
             <xsd:element name="description" type="xsd:string" minOccurs="0">
                 <xsd:annotation>
@@ -70,31 +70,31 @@
                 </xsd:annotation>
             </xsd:element>
             <xsd:element name="synonym" type="tns:componentSynonymType" minOccurs="0" maxOccurs="unbounded">
-				<xsd:annotation>
-					<xsd:appinfo>
+                <xsd:annotation>
+                    <xsd:appinfo>
                         <hj:one-to-many fetch="LAZY">
                             <orm:join-column name="SYN_CMP_ID"/>
                         </hj:one-to-many>
                         <jaxb:property name="synonyms"/>
-					</xsd:appinfo>
-				</xsd:annotation>
+                    </xsd:appinfo>
+                </xsd:annotation>
             </xsd:element>
             <xsd:element name="link" type="tns:componentLinkType" minOccurs="0" maxOccurs="unbounded">
-				<xsd:annotation>
-					<xsd:appinfo>
+                <xsd:annotation>
+                    <xsd:appinfo>
                         <hj:one-to-many fetch="LAZY">
                             <orm:join-column name="LIN_CMP_ID"/>
                         </hj:one-to-many>
                         <jaxb:property name="links"/>
-					</xsd:appinfo>
-				</xsd:annotation>
+                    </xsd:appinfo>
+                </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
     </xsd:complexType>
 
     <xsd:complexType name="componentClassType">
-      	<xsd:annotation>
-    		<xsd:appinfo>
+        <xsd:annotation>
+            <xsd:appinfo>
                 <jaxb:class name="ComponentClass" />
                 <hj:entity>
                     <orm:table name="CDW_COMPONENT_CLASSES"/>
@@ -104,17 +104,17 @@
         </xsd:annotation>
         <xsd:sequence>
             <xsd:element name="id" type="tns:componentClassIdType">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<hj:id>
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:id>
                             <orm:column name="CCL_ID"/>
                         </hj:id>
                         <hj:basic>
                             <hj:enumerated-value/>
                         </hj:basic>
                         <jaxb:property name="id"/>
-					</xsd:appinfo>
-				</xsd:annotation>
+                    </xsd:appinfo>
+                </xsd:annotation>
             </xsd:element>
             <xsd:element name="description" type="xsd:string" minOccurs="0">
                 <xsd:annotation>
@@ -139,8 +139,8 @@
     </xsd:complexType>
 
     <xsd:complexType name="componentSynonymType">
-      	<xsd:annotation>
-    		<xsd:appinfo>
+        <xsd:annotation>
+            <xsd:appinfo>
                 <jaxb:class name="ComponentSynonym" />
                 <hj:entity>
                     <orm:table name="CDW_COMPONENT_SYNONYMS"/>
@@ -150,20 +150,20 @@
         </xsd:annotation>
         <xsd:sequence>
             <xsd:element name="synonym" type="xsd:string">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<hj:id>
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:id>
                             <orm:column name="SYN_SYNONYM" length="512"/>
                         </hj:id>
-					</xsd:appinfo>
-				</xsd:annotation>
+                    </xsd:appinfo>
+                </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
     </xsd:complexType>
 
     <xsd:complexType name="componentLinkType">
-      	<xsd:annotation>
-    		<xsd:appinfo>
+        <xsd:annotation>
+            <xsd:appinfo>
                 <jaxb:class name="ComponentLink" />
                 <hj:entity>
                     <orm:table name="CDW_COMPONENT_LINKS"/>
@@ -177,22 +177,22 @@
         </xsd:annotation>
         <xsd:sequence>
             <xsd:element name="componentLinkClass" type="tns:componentLinkClassType">
-				<xsd:annotation>
-					<xsd:appinfo>
+                <xsd:annotation>
+                    <xsd:appinfo>
                         <hj:many-to-one fetch="EAGER">
                             <orm:join-column name="LIN_LCL_ID"/>
                         </hj:many-to-one>
-					</xsd:appinfo>
-				</xsd:annotation>
+                    </xsd:appinfo>
+                </xsd:annotation>
             </xsd:element>
             <xsd:element name="component" type="tns:componentType">
-				<xsd:annotation>
-					<xsd:appinfo>
+                <xsd:annotation>
+                    <xsd:appinfo>
                         <hj:many-to-one fetch="EAGER">
                             <orm:join-column name="LIN_LINKED_CMP_ID"/>
                         </hj:many-to-one>
-					</xsd:appinfo>
-				</xsd:annotation>
+                    </xsd:appinfo>
+                </xsd:annotation>
             </xsd:element>
             <xsd:element name="description" type="xsd:string" minOccurs="0">
                 <xsd:annotation>
@@ -207,8 +207,8 @@
     </xsd:complexType>
 
     <xsd:complexType name="componentLinkClassType">
-      	<xsd:annotation>
-    		<xsd:appinfo>
+        <xsd:annotation>
+            <xsd:appinfo>
                 <jaxb:class name="ComponentLinkClass" />
                 <hj:entity>
                     <orm:table name="CDW_COMPONENT_LINK_CLASSES"/>
@@ -218,17 +218,17 @@
         </xsd:annotation>
         <xsd:sequence>
             <xsd:element name="id" type="tns:componentLinkClassIdType">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<hj:id>
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:id>
                             <orm:column name="LCL_ID"/>
                         </hj:id>
                         <hj:basic>
                             <hj:enumerated-value/>
                         </hj:basic>
                         <jaxb:property name="id"/>
-					</xsd:appinfo>
-				</xsd:annotation>
+                    </xsd:appinfo>
+                </xsd:annotation>
             </xsd:element>
             <xsd:element name="inverse" type="tns:componentLinkClassType" minOccurs="0">
                 <xsd:annotation>
@@ -270,8 +270,8 @@
     </xsd:complexType>
 
     <xsd:complexType name="componentGraphLinkType">
-      	<xsd:annotation>
-    		<xsd:appinfo>
+        <xsd:annotation>
+            <xsd:appinfo>
                 <jaxb:class name="ComponentGraphLink" />
                 <hj:entity>
                     <orm:table name="CDW_COMPONENT_GRAPH_LINKS"/>

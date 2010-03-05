@@ -180,17 +180,6 @@
             <replacefilter token="ITEMVALUE_FACTCOLLECTIONFACT_0" value="FIT_FCT_ID"/>
         </replace>
 
-        <!-- make this class not an entity
-        (if you put <hj:ignore/> then all subclasses are also made POJOS which is not the desired effect)-->
-        <replace file="${srcs}/org/cern/cms/csc/dw/model/dse/DataServiceEntity.java">
-            <replacefilter token="@Entity" value="//@Entity"/>
-            <replacefilter token="@Table" value="//@Table"/>
-            <replacefilter token="@Inheritance" value="//@Inheritance"/>
-            <replacefilter token="@Id" value="//@Id"/>
-            <replacefilter token="@Column" value="//@Column"/>
-            <replacefilter token="@GeneratedValue" value="//@GeneratedValue"/>
-        </replace>
-
         <delete failonerror="false">
             <fileset dir="${srcs}/org/cern/cms/csc/dw/model" includes="**/*.java.backup"/>
         </delete>

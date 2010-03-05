@@ -37,6 +37,5 @@
 
     <xsd:include schemaLocation="fact.xsd"/>
     <xsd:include schemaLocation="factRequest.xsd"/>
-    <xsd:import namespace="http://www.cern.ch/cms/csc/dw/model/dse" schemaLocation="dataServiceEntity.xsd"/>
     
 </xsd:schema>
