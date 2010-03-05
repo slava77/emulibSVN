@@ -12,7 +12,8 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.ejb.Stateless;
-import org.cern.cms.csc.dw.dao.DataServiceEntityDaoLocal;
+import org.cern.cms.csc.dw.dao.PersistDaoLocal;
+import org.cern.cms.csc.dw.exception.PersistException;
 import org.cern.cms.csc.dw.model.dse.DataServiceEntity;
 
 /**
@@ -25,7 +26,7 @@ public class DataServiceEntityInput {
 
     private static Logger logger = Logger.getLogger(DataServiceEntityInput.class.getName());
     @EJB
-    private DataServiceEntityDaoLocal dseDao;
+    private PersistDaoLocal persistDao;
 
     /**
      * Web service operation
@@ -33,8 +34,8 @@ public class DataServiceEntityInput {
     @WebMethod(operationName = "getDataServiceEntity")
     public Boolean getDataServiceEntity(@WebParam(name = "dataServiceEntity") final DataServiceEntity dataServiceEntity) throws Exception {
         try {
-            dseDao.saveDataServiceEntity(dataServiceEntity);
-        } catch (Exception ex) {
+            persistDao.persist(dataServiceEntity);
+        } catch (PersistException ex) {
             logger.log(Level.SEVERE, "Error while saving DataServiceEntity", ex);
             throw ex;
         }

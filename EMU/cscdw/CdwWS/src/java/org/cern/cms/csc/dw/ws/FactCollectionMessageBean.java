@@ -10,7 +10,7 @@ import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 import org.cern.cms.csc.dw.model.fact.FactCollection;
 
-@MessageDriven(mappedName = "jms/factCollestionQueue", activationConfig =  {
+@MessageDriven(mappedName = "jms/factCollectionQueue", activationConfig =  {
         @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge"),
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue")
     })

@@ -8,9 +8,9 @@ import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.xml.bind.JAXBElement;
-import org.cern.cms.csc.dw.ComponentTypeNotAllowedInFactException;
-import org.cern.cms.csc.dw.dao.FactDaoLocal;
+import org.cern.cms.csc.dw.exception.ComponentTypeNotAllowedInFactException;
 import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
+import org.cern.cms.csc.dw.dao.PersistDaoLocal;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.dw.model.fact.FactCollection;
 import org.cern.cms.csc.dw.model.fact.FactCollectionFactsItem;
@@ -26,7 +26,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
     private OntologyDaoLocal ontologyDao;
 
     @EJB
-    private FactDaoLocal factDao;
+    private PersistDaoLocal persistDao;
 
     public void saveFactCollection(FactCollection factCollection) throws Exception {
 
@@ -81,7 +81,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
 
         // Persist collection
         if (instructions.isPersist()) {
-            factDao.saveFactCollection(factCollection);
+            persistDao.persist(factCollection);
         }
 
     }

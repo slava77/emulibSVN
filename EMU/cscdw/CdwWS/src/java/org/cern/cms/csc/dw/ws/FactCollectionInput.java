@@ -24,9 +24,9 @@ public class FactCollectionInput {
     private static Logger logger = Logger.getLogger(FactCollectionInput.class.getName());
     @EJB
     FactCollectionSaverLocal saver;
-    @Resource(mappedName = "jms/factCollestionQueue")
+    @Resource(mappedName = "jms/factCollectionQueue")
     private Queue queue;
-    @Resource(mappedName = "jms/factCollestionQueueFactory")
+    @Resource(mappedName = "jms/factCollectionQueueFactory")
     private QueueConnectionFactory queueConnectionFactory;
 
     /**
