@@ -256,6 +256,15 @@ void updateTopFsmNodeOperationModeCB(string fsmNode, int operationFlag) {
     string object = _fwCU_getNodeObj(domain);
     string mode = fwFsmUi_getCUMode(domain, object);
     if (mode == \"Excluded\") {
+      // check user privileges
+      dyn_string ex;
+      bool hasControl;  
+      fwAccessControl_isGranted(\"CMS_CSC:Control\", hasControl, ex);
+      if (emu_checkException(ex)) { return; }
+      if (!hasControl) {
+        return;
+      }
+      
       emu_info(\"Detected that top fsm node (CMS_CSC) is excluded - taking the tree back.\");
       fwCU_takeTree(fsmNode);
     }
