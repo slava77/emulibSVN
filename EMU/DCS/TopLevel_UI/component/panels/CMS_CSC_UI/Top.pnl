@@ -500,15 +500,15 @@ LANG:1 0
   posY += 40;
 
   posX += 20;  
-  emuui_addFsmNode(\"CSC_GAS\", posX, posY, references, false, \"CMS_CSC\");
+  emuui_addFsmNode(\"CMS_CSC_PLUS\", posX, posY, references);
   posY += 30;
-  emuui_addFsmNode(\"CSC_COOLING\", posX, posY, references, false, \"CMS_CSC\");
+  emuui_addFsmNode(\"CMS_CSC_MINUS\", posX, posY, references);
   posY += 30;
-  emuui_addFsmNode(\"CSC_LV\", posX, posY, references, false, \"CMS_CSC\");
-  posY += 30;
-  emuui_addFsmNode(\"CSC_HV\", posX, posY, references, false, \"CMS_CSC\");
-  posY += 30;
-  
+//   emuui_addFsmNode(\"CSC_GAS\", posX, posY, references);
+//   posY += 30;
+//   emuui_addFsmNode(\"CSC_COOLING\", posX, posY, references);
+//   posY += 30;
+   
   if (autoTakeControl) {
     fwCU_connectOperationMode(\"updateTopFsmNodeOperationModeCB\", \"CMS_CSC\");
   }
@@ -970,7 +970,7 @@ E E 0 1 1 2 1 E 1 0 1 -219 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png"
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 2923.075638671585 -70 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 2759.208891897732 -90 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -989,7 +989,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 49.59599639841969 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 49.56359038017767 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
