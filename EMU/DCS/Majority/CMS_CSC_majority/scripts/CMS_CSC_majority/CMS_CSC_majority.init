@@ -16,6 +16,10 @@ const bool EMUMAJ_RESTORE_FSM_TYPES = false;
 main()
 {
 
+  setFsmAccessControl();
+  emumaj_debug("Access Control has been set.", true);
+  return;
+  
   dyn_string ex;
   
   // define the top nodes
@@ -123,6 +127,17 @@ main()
   if (!isSupervisor) {
     emumaj_debug("installation finished", true);
   }
+}
+
+void setFsmAccessControl() {
+  dyn_string rootNodes, ex;
+  fwTree_getChildren("FSM", rootNodes, ex);
+  if (dynlen(ex) > 0) { DebugTN("ERROR: " + ex); return; }
+  for (int i=1; i <= dynlen(rootNodes); i++) {
+    DebugTN("Setting access control for " + rootNodes[i]);
+    fwFsmTree_accessTreeNodeRec(rootNodes[i], "CMS_CSC:Control|CMS_CSC:Debug", 1);
+  }
+  DebugTN("DONE setting FSM access control");
 }
 
 void emumaj_debug(string msg, bool putToInstallationDp = false) {
