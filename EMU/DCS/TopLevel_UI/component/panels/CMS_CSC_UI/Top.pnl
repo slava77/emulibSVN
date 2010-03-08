@@ -36,8 +36,8 @@ void initConstants() {
   emuui_g_topFsmNodesHeight = 230; // not including emuui_g_topMajorityTableHeight
   emuui_g_topMajorityTableHeight = 50;
   
-  dyn_string hostsToAutoTakeControl = makeDynString(\"scx5scr05\");
-  dyn_string hostsToReleaseFsmOnExit = makeDynString(\"scx5scr05\");
+  dyn_string hostsToAutoTakeControl = makeDynString(\"scx5scr05\");//, \"macfrank\");
+  dyn_string hostsToReleaseFsmOnExit = makeDynString(\"scx5scr05\");//, \"macfrank\");
   dyn_string developmentHosts = makeDynString(\"macfrank\", \"hp-evka\");
   
   string hostname = getHostname();
@@ -195,13 +195,14 @@ void drawLegend(dyn_string &ex, bool vertical = false) {
 
 // Disables all control possibilities in the panel - called before enabling control using access control
 void enableDisableControl(bool enable) {
-  releaseControl = !enable;
   btnReleaseControl.enabled = enable;
   btnTakeControl.enabled = enable;
   
   if (enable) {
     fwCU_takeTree(\"CMS_CSC\");
+    releaseControl = false;
   } else {
+    releaseControl = true;
     fwCU_releaseFullTree(\"CMS_CSC\");
   }
   
@@ -248,6 +249,7 @@ void accessPrivilegesChangedCB(string dummy1, string dummy2) {
 
 /** This is called when Top FSM node (CMS_CSC) operation mode has changed. If it's detected that it's excluded - take the whole FSM tree. */
 void updateTopFsmNodeOperationModeCB(string fsmNode, int operationFlag) {
+  delay(2);
   if (exiting || releaseControl) { return; }
   if (operationFlag == 0) { // not controllable
     string domain = fsmNode;
@@ -970,7 +972,7 @@ E E 0 1 1 2 1 E 1 0 1 -219 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png"
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 2596.805241077217 -110 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 2435.851622853314 -130 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -989,7 +991,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 49.53184235215376 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 49.50073895414048 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
