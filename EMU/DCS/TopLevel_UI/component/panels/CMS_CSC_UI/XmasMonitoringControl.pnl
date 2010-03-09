@@ -58,7 +58,10 @@ PANEL,-1 -1 400 408 N "_3DFace" 0
 " 0
  E E E E 1 -1 -1 0  100 30
 ""0  1
-E "string controlSystemPlus, controlSystemMinus;
+E "// Common libs
+#uses \"CMS_CSC_common/emu_common.ctl\"
+
+string controlSystemPlus, controlSystemMinus;
 
 void xmasControlUpdatedPCB(dyn_string dp, dyn_string command) {
   lblLastActionPlus.text = getCommandMeaning(command);
@@ -189,6 +192,7 @@ LANG:1 25 Stop Plus Side Monitoring
     dpSet(controlSystemPlus + \"LV_1_COM.command\", \"STOP_SLOW_CONTROL\"); 
     dpSet(controlSystemPlus + \"STOP_SLOW_CONTROL.value\", \"STOP_SLOW_CONTROL\"); 
     dpSet(controlSystemPlus + \"SPECIAL_STOP_SC.value\", \"STOP\");
+    emu_info(\"Xmas monitoring STOPPED on PLUS side\");
   } else {
     mudcsDebug(\"LV IS PREPARING TO POWER UP: \\n TRY TO DO IT LATER (in 1 minute)\");
   }
@@ -299,6 +303,7 @@ LANG:1 27 Resume Plus Side Monitoring
     dpSetWait(controlSystemPlus + \"LV_1_COM.command\", \"RESUME_SLOW_CONTROL\"); //for x2p
     dpSet(controlSystemPlus + \"STOP_SLOW_CONTROL.value\", \"RESUME_SLOW_CONTROL\");
     dpSet(controlSystemPlus + \"SPECIAL_STOP_SC.value\", \"RESUME\");
+    emu_info(\"Xmas monitoring RESUMED on PLUS side\");
   } else {
     mudcsDebug(\"LV IS PREPARING TO POWER UP: \\n TRY TO DO IT LATER (in 1 minute)\");
   }
@@ -332,6 +337,7 @@ LANG:1 26 Stop Minus Side Monitoring
     dpSet(controlSystemMinus + \"LV_1_COM.command\", \"STOP_SLOW_CONTROL\");
     dpSet(controlSystemMinus + \"STOP_SLOW_CONTROL.value\", \"STOP_SLOW_CONTROL\"); 
     dpSet(controlSystemMinus + \"SPECIAL_STOP_SC.value\", \"STOP\");
+    emu_info(\"Xmas monitoring STOPPED on MINUS side\");
   } else {
     mudcsDebug(\"LV IS PREPARING TO POWER UP: \\n TRY TO DO IT LATER (in 1 minute)\");
   }
@@ -366,6 +372,7 @@ LANG:1 28 Resume Minus Side Monitoring
     dpSetWait(controlSystemMinus + \"LV_1_COM.command\", \"RESUME_SLOW_CONTROL\"); //for x2p
     dpSet(controlSystemMinus + \"STOP_SLOW_CONTROL.value\", \"RESUME_SLOW_CONTROL\");
     dpSet(controlSystemMinus + \"SPECIAL_STOP_SC.value\", \"RESUME\");
+    emu_info(\"Xmas monitoring RESUMED on MINUS side\");
   } else {
     mudcsDebug(\"LV IS PREPARING TO POWER UP: \\n TRY TO DO IT LATER (in 1 minute)\");
   }
