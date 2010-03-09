@@ -24,7 +24,7 @@ PANEL,-1 -1 1331 1129 N "_3DFace" 0
   
   // access control
   enableDisableControl(false);
-  fwFsmUi_addUserLogin(1380, -5);
+//  fwFsmUi_addUserLogin(1380, -5);
   fwAccessControl_setupPanel(\"accessPrivilegesChangedCB\", ex);
   if (emu_checkException(ex)) { return; }
   
