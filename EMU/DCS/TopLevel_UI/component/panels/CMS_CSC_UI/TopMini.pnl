@@ -2,10 +2,10 @@ V 11
 1
 LANG:1 26 CMS Endcap Muon System DCS
 PANEL,-1 -1 1331 1129 N "_3DFace" 0
-"#uses \"majority_treeCache/majorityLib.ctl\"
-
-main()
+"main()
 {
+  dyn_string ex;
+
   // hide standard FSM panel labels if they exist
   if (shapeExists(\"topLabel1\")) {
     setValue(\"topLabel1\", \"visible\", false);
@@ -13,47 +13,71 @@ main()
   if (shapeExists(\"topLabel2\")) {
     setValue(\"topLabel2\", \"visible\", false);
   }
+  if (shapeExists(\"label1\")) {
+    setValue(\"label1\", \"visible\", false);
+  }
+  if (shapeExists(\"label2\")) {
+    setValue(\"label2\", \"visible\", false);
+  }
   
   emuui_init();
+  
+  // access control
+  enableDisableControl(false);
+  fwFsmUi_addUserLogin(1380, -5);
+  fwAccessControl_setupPanel(\"accessPrivilegesChangedCB\", ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // UI stuff
   lblVersion.text = \"UI Version \" + EMUUI_COMPONENT_VERSION + \" (\" + EMUUI_COMPONENT_DATE + \")\";
   initConstants();
   resetToDefaultChamberViewMode();
-  dyn_string ex;
   drawLegend(ex);
   if (emu_checkException(ex)) { return; }
-  topPanelInitialized = true;
   
+  // global part is now officially initialized - let other parts of the UI start initialization now
+  topPanelInitialized = true;
+      
+  // listen for UI version change
   string dp = \"fwInstallation_\" + EMUUI_COMPONENT_NAME;
   if (dpExists(dp)) {
     dpConnect(\"updateVersionCB\", false, dp + \".componentVersionString\");
   }
   
-//   fwAccessControl_setupPanel(\"accessPriviligesChanged\", ex);
-//   if (emu_checkException(ex)) { return; }
+  fwFsmUi_addLogo(\"CERN\", 715, 780);
+  fwFsmUi_addLogo(\"CMS\", 718, 910);
 }
 
 void initConstants() {
   emuui_g_topFsmNodesRightX = 1600;
-  emuui_g_topFsmNodesHeight = 127;
-  hostsToKillAllPvss = makeDynString(\"SCX5SCR05\", \"SCX5SCR06\");
-  hostsToReleaseFsmOnExit = makeDynString(\"SCX5SCR05\");
-  developmentHosts = makeDynString(\"macfrank\", \"hp-evka\");
-}" 0
+  emuui_g_topFsmNodesHeight = 77; // not including emuui_g_topMajorityTableHeight
+  emuui_g_topMajorityTableHeight = 50;
+  
+  dyn_string hostsToAutoTakeControl = makeDynString(\"scx5scr05\");//, \"macfrank\");
+  dyn_string hostsToReleaseFsmOnExit = makeDynString(\"scx5scr05\");//, \"macfrank\");
+  dyn_string developmentHosts = makeDynString(\"macfrank\", \"hp-evka\");
+  
+  string hostname = getHostname();
+  hostname = strtolower(hostname);
+  
+  autoTakeControl = dynContains(hostsToAutoTakeControl, hostname);
+  releaseFsmOnExit = dynContains(hostsToReleaseFsmOnExit, hostname);
+  developmentHost = dynContains(developmentHosts, hostname);
+}
+" 0
  "main()
 {
   exiting = true;
-  string hostname = getHostname();
-  if (dynContains(hostsToReleaseFsmOnExit, hostname)) {
+  if (releaseFsmOnExit) {
     fwCU_releaseFullTree(\"CMS_CSC\");
   }
-  if (dynContains(developmentHosts, hostname)) {
+  if (developmentHost) {
     PanelOff();
   } else {
     exit();
   }
-  
-//   string hostname = getHostname();
-//   if (dynContains(hostsToKillAllPvss, hostname)) {
+
+//   if (killAllPvss) {
 //     emu_info(\"Killing all PVSS processes\");
 //     killAllPvss();
 //   }
@@ -75,18 +99,22 @@ E "// Common libs
 #uses \"CMS_CSC_UI/emuui_graphics.ctl\"
 #uses \"CMS_CSC_UI/background_checks/emuui_backgroundChecksMain.ctl\"
 
+// Majority library
+#uses \"majority_treeCache/majorityLib.ctl\"
+
 // some panel-wide constants and variables
 const int EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_X = 10;
 const int EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y = 20;
 const int EMUUI_TOP_CHAMBER_VIEW_MODE_TIMEOUT = 300;
 
 bool exiting = false;
+bool releaseControl = false;
 bool topPanelInitialized;
 int chamberViewModeTimerThreadId = -1;
 
-dyn_string hostsToKillAllPvss;
-dyn_string developmentHosts;
-dyn_string hostsToReleaseFsmOnExit;
+bool developmentHost = false;
+bool releaseFsmOnExit = true;
+bool autoTakeControl = false;
 
 void waitForEmuUiInitialize() {
   while(!emuui_isInitialized()) { // wait for the emuui initialization
@@ -138,7 +166,7 @@ void chamberViewModeTimerThread() {
   
   for (int i = EMUUI_TOP_CHAMBER_VIEW_MODE_TIMEOUT; i > 0; i--) {
     delay(1);
-    lblChamberViewModeTimer.text = \"Switching back to \\\"General state\\\" mode in \" + i + \"s\";
+    lblChamberViewModeTimer.text = \"Switching to \\\"General\\\" mode in \" + i + \"s\";
   }
   chamberViewModeTimerThreadId = -1;
   resetToDefaultChamberViewMode();
@@ -159,7 +187,6 @@ void drawLegend(dyn_string &ex, bool vertical = false) {
     posY += 25;
   } else {
     posX += 60;
-    //posY -= 10;
   }
   
   // use array instead of mapping to preserve the ordering
@@ -179,19 +206,83 @@ void drawLegend(dyn_string &ex, bool vertical = false) {
     if (vertical) {
       posY += 27;
     } else {
-      posX += 90;
+      posX += 95;
     }
+  }
+}
+
+// Disables all control possibilities in the panel - called before enabling control using access control
+void enableDisableControl(bool enable) {
+//  btnReleaseControl.enabled = enable;
+//  btnTakeControl.enabled = enable;
+  
+  if (enable) {
+    fwCU_takeTree(\"CMS_CSC\");
+    releaseControl = false;
+  } else {
+    releaseControl = true;
+    fwCU_releaseFullTree(\"CMS_CSC\");
+  }
+  
+  string actionString = \"disabled\";
+  if (enable) { actionString = \"enabled\"; }
+  emu_info(\"All control features \" + actionString);
+}
+
+// This function is called by fwAccessControl framework whenever access privileges have changed
+void accessPrivilegesChangedCB(string dummy1, string dummy2) {
+  string user;
+  fwAccessControl_getUserName(user);
+  emu_info(\"Access privileges have changed - user \" + user + \" has logged in\");
+  
+  enableDisableControl(false);
+  
+  dyn_string ex;
+  bool hasControl, isExpert;
+  
+  fwAccessControl_isGranted(\"CMS_CSC:Control\", hasControl, ex);
+  if (emu_checkException(ex)) { return; }
+  fwAccessControl_isGranted(\"CMS_CSC:Debug\", isExpert, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  emu_info(\"Has \" + user + \" CSC control privilege? \" + hasControl);
+  emu_info(\"Has \" + user + \" CSC expert privileges? \" + isExpert);
+
+  string loginColor;
+  if (hasControl) {
+    loginColor = \"FwStateOKPhysics\";
+  } else {
+    if (user == \"NO USER\") {
+      loginColor = \"FwStateAttention2\";
+    } else {
+      loginColor = \"FwStateAttention1\";
+    }
+  }
+  setValue(\"user.CurrentUser\", \"backCol\", loginColor);
+  
+  if (hasControl) {
+    enableDisableControl(true);
   }
 }
 
 /** This is called when Top FSM node (CMS_CSC) operation mode has changed. If it's detected that it's excluded - take the whole FSM tree. */
 void updateTopFsmNodeOperationModeCB(string fsmNode, int operationFlag) {
-  if (exiting) { return; }
+  delay(2);
+  if (exiting || releaseControl) { return; }
   if (operationFlag == 0) { // not controllable
     string domain = fsmNode;
     string object = _fwCU_getNodeObj(domain);
     string mode = fwFsmUi_getCUMode(domain, object);
     if (mode == \"Excluded\") {
+      // check user privileges
+      dyn_string ex;
+      bool hasControl;  
+      fwAccessControl_isGranted(\"CMS_CSC:Control\", hasControl, ex);
+      if (emu_checkException(ex)) { return; }
+      if (!hasControl) {
+        return;
+      }
+      
       emu_info(\"Detected that top fsm node (CMS_CSC) is excluded - taking the tree back.\");
       fwCU_takeTree(fsmNode);
     }
@@ -203,33 +294,22 @@ void updateVersionCB(string dpName, string version) {
     lblNewVersion.text = \"New version (\" + version + \") is available\\nRestart the UI when possible\";
     lblNewVersion.visible = true;
   }
-}
-
-void killAllPvss() {
-  system(\"pkill PVSS\");
-  system(\"pkill lm_ip\");
-}
-
-void accessPriviligesChanged(string dp, string role) {
-}
-" 0
+}" 0
  2
 "CBRef" "1"
 "EClose" "main()
 {
   exiting = true;
-  string hostname = getHostname();
-  if (dynContains(hostsToReleaseFsmOnExit, hostname)) {
+  if (releaseFsmOnExit) {
     fwCU_releaseFullTree(\"CMS_CSC\");
   }
-  if (dynContains(developmentHosts, hostname)) {
+  if (developmentHost) {
     PanelOff();
   } else {
     exit();
   }
 
-//   string hostname = getHostname();
-//   if (dynContains(hostsToKillAllPvss, hostname)) {
+//   if (killAllPvss) {
 //     emu_info(\"Killing all PVSS processes\");
 //     killAllPvss();
 //   }
@@ -342,9 +422,9 @@ LANG:1 0
   emuui_addFsmNode(\"CMS_CSC\", posX, posY, references);
 
   posX += 475;  
-  emuui_addFsmNode(\"CSC_GAS\", posX, posY, references);
+  emuui_addFsmNode(\"CMS_CSC_PLUS\", posX, posY, references);
   posX += 475;  
-  emuui_addFsmNode(\"CSC_COOLING\", posX, posY, references);
+  emuui_addFsmNode(\"CMS_CSC_MINUS\", posX, posY, references);
 //  posX += 350;  
 //   emuui_addFsmNode(\"CSC_LV\", posX, posY, references);
 //   posX += 350;  
@@ -756,7 +836,7 @@ E E 0 1 1 2 1 E 1 0 1 -397 6 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4
 2 48
 "PRIMITIVE_TEXT3"
 ""
-1 -2735.291232587876 385 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -3319.363303309572 405 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -775,7 +855,7 @@ LANG:1 21 Communication problem
 2 57
 "upsOnBatteryBack"
 ""
-1 50.42593231486192 158.9889069107141 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 50.85578618434045 159.0082124126819 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
@@ -1296,6 +1376,25 @@ E E 0 1 1 2 1 E U  1 E 839.9999999999996 772 913 788
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 13 Value Monitor
+2 94
+"lblCscTitle"
+""
+1 740 880 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+108 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 740 880 775 900
+0 2 2 "0s" 0 0 0 192 0 0  740 880 1
+1
+LANG:1 26 Arial,12,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 3 CSC
 0
 LAYER, 1 
 1
