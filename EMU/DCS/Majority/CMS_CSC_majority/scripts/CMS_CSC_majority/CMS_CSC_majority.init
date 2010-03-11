@@ -18,7 +18,6 @@ main()
 
   setFsmAccessControl();
   emumaj_debug("Access Control has been set.", true);
-  return;
   
   dyn_string ex;
   
