@@ -98,6 +98,10 @@ bool developmentHost = false;
 bool releaseFsmOnExit = true;
 bool autoTakeControl = false;
 
+// access control stuff
+string currentUser;
+bool hasControlPrivilege, hasExpertPrivilege;
+
 void waitForEmuUiInitialize() {
   while(!emuui_isInitialized()) { // wait for the emuui initialization
     delay(0, 200);
@@ -216,9 +220,7 @@ void accessPrivilegesChangedCB(string dummy1, string dummy2) {
   string user;
   fwAccessControl_getUserName(user);
   emu_info(\"Access privileges have changed - user \" + user + \" has logged in\");
-  
-  enableDisableControl(false);
-  
+    
   dyn_string ex;
   bool hasControl, isExpert;
   
@@ -227,11 +229,21 @@ void accessPrivilegesChangedCB(string dummy1, string dummy2) {
   fwAccessControl_isGranted(\"CMS_CSC:Debug\", isExpert, ex);
   if (emu_checkException(ex)) { return; }
   
-  emu_info(\"Has \" + user + \" CSC control privilege? \" + hasControl);
-  emu_info(\"Has \" + user + \" CSC expert privileges? \" + isExpert);
+  if ((user == currentUser) && (hasControl == hasControlPrivilege) && (isExpert == hasExpertPrivilege)) {
+    emu_info(\"accessPrivilegesChangedCB called, but the user and the privileges are the same - ignoring\");
+    return;
+  }
+
+  hasControlPrivilege = hasControl;
+  hasExpertPrivilege = isExpert;
+  currentUser = user;
+  enableDisableControl(false);  
+  
+  emu_info(\"Has \" + user + \" CSC control privilege? \" + hasControlPrivilege);
+  emu_info(\"Has \" + user + \" CSC expert privileges? \" + hasExpertPrivilege);
 
   string loginColor;
-  if (hasControl) {
+  if (hasControlPrivilege) {
     loginColor = \"FwStateOKPhysics\";
   } else {
     if (user == \"NO USER\") {
@@ -242,7 +254,7 @@ void accessPrivilegesChangedCB(string dummy1, string dummy2) {
   }
   setValue(\"user.CurrentUser\", \"backCol\", loginColor);
   
-  if (hasControl) {
+  if (hasControlPrivilege) {
     enableDisableControl(true);
   }
 }
@@ -981,7 +993,7 @@ E E 0 1 1 2 1 E 1 0 1 -219 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png"
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 2435.851622853314 -130 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 2276.33509050641 -150 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -1000,7 +1012,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 49.50073895414048 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 49.47026709720362 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
