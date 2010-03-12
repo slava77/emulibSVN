@@ -136,7 +136,7 @@ void confRectShape(mapping shapeParams) {
 ""0  1
 E "//some panel-wide constants
 const string EMUUI_REFDEV_TOOLTIP_REF_NAME = \"refTooltip\";
-const int EMUUI_REFDEV_TOOLTIP_ON_DELAY_MS = 600;
+const int EMUUI_REFDEV_TOOLTIP_ON_DELAY_MS = 1000;
 const int EMUUI_REFDEV_TOOLTIP_OFF_DELAY_MS = 200;
 string tooltipRefName;
 bool tooltipVisible;
@@ -167,6 +167,9 @@ bool me11HasDisabledChannels;
 string me11HvFsmNode;
 bool deviceIncomplete; // when device has disabled children or PNPI HV channels (which are not in FSM) - show the incompleteWarning and set this flag
 bool greyOut; // when device is disabled or excluded - this is set to true and color always stays grey
+
+// local tooltip semaphore to synchronize showTooltip and hideTooltip functions
+int tooltipSemaphore = 0;
 
 void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string connectionType) {
   dyn_string ex;
@@ -558,9 +561,10 @@ void setColor(string color) {
   setValue(shapeName, \"backCol\", color);
 }
 
-void showTooltip() {
+void showTooltip() synchronized (tooltipSemaphore) {
   if (currentConnectionMode == \"busy\") { return; } // in the process of connecting, don't show any tooltips while in that mode
 
+  if (tooltipVisible || !isMouseOver()) { return; }
   delay(0, EMUUI_REFDEV_TOOLTIP_ON_DELAY_MS);  
   if (tooltipVisible || !isMouseOver()) { return; }
   
@@ -586,8 +590,10 @@ void showTooltip() {
 }
 
 void hideTooltip() {
+  //if (!tooltipVisible || isMouseOver()) { return; }
   delay(0, EMUUI_REFDEV_TOOLTIP_OFF_DELAY_MS);
-  if (!tooltipVisible || isMouseOver()) { return; }
+  if (isMouseOver()) { return; }
+  //if (!tooltipVisible || isMouseOver()) { return; }
   
   emuui_sessionKillAllActiveTooltips();
   tooltipVisible = false;
@@ -753,8 +759,11 @@ E E "main(bool enter)
   getValue(\"\", \"name\", name);
   mouseOverObjects[name] = enter;
   if (enter) {
+    emuui_highlightThisShapeOnly($refName + \".\" + shapeName);
+    //setValue(shapeName, \"foreCol\", \"black_yellow\");
     showTooltip();
   } else {
+    setValue(shapeName, \"foreCol\", \"\");
     hideTooltip();
   }
 }" 0
@@ -767,7 +776,7 @@ LANG:1 0
 "hoverfclr" "N \"black_yellow\""
 "dashclr"N "_Transparent"
 "selectable" ""
-E E 0 1 1 1 1 E 0.774020156774913 0 1.02222222222222 -15.4642777155655 -30.6666666666667 1 E 4 19.9791666666667 30.0000000000001
+E E 0 1 1 1 1 E 0.774020156774913 0 1.02222222222222 -15.46427771556547 -30.6666666666667 1 E 4 19.9791666666667 30.0000000000001
 19.9791666666667 69.1304347826089
 109.041666666667 61.3043478260871
 109.041666666667 39.7826086956523
@@ -792,8 +801,11 @@ E E "main(bool enter)
   getValue(\"\", \"name\", name);
   mouseOverObjects[name] = enter;
   if (enter) {
+    emuui_highlightThisShapeOnly($refName + \".\" + shapeName);
+    //setValue(shapeName, \"foreCol\", \"black_yellow\");
     showTooltip();
   } else {
+    setValue(shapeName, \"foreCol\", \"\");
     hideTooltip();
   }
 }" 0
@@ -826,7 +838,8 @@ E E "main(bool enter)
   getValue(\"\", \"name\", name);
   mouseOverObjects[name] = enter;
   if (enter) {
-    setValue(shapeName, \"foreCol\", \"black_yellow\");
+    emuui_highlightThisShapeOnly($refName + \".\" + shapeName);
+    //setValue(shapeName, \"foreCol\", \"black_yellow\");
     showTooltip();
   } else {
     setValue(shapeName, \"foreCol\", \"\");
@@ -866,8 +879,11 @@ E E "main(bool enter)
   getValue(\"\", \"name\", name);
   mouseOverObjects[name] = enter;
   if (enter) {
+    emuui_highlightThisShapeOnly($refName + \".\" + shapeName);
+    //setValue(shapeName, \"foreCol\", \"black_yellow\");
     showTooltip();
   } else {
+    setValue(shapeName, \"foreCol\", \"\");
     hideTooltip();
   }
 }" 0
@@ -900,7 +916,8 @@ E E "main(bool enter)
   getValue(\"\", \"name\", name);
   mouseOverObjects[name] = enter;
   if (enter) {
-    setValue(shapeName, \"foreCol\", \"black_yellow\");
+    emuui_highlightThisShapeOnly($refName + \".\" + shapeName);
+    //setValue(shapeName, \"foreCol\", \"black_yellow\");
     showTooltip();
   } else {
     setValue(shapeName, \"foreCol\", \"\");
@@ -940,7 +957,8 @@ E E "main(bool enter)
   getValue(\"\", \"name\", name);
   mouseOverObjects[name] = enter;
   if (enter) {
-    setValue(shapeName, \"foreCol\", \"black_yellow\");
+    emuui_highlightThisShapeOnly($refName + \".\" + shapeName);
+    //setValue(shapeName, \"foreCol\", \"black_yellow\");
     showTooltip();
   } else {
     setValue(shapeName, \"foreCol\", \"\");

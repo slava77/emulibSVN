@@ -221,11 +221,11 @@ void enableDisableControl(bool enable) {
 //  btnTakeControl.enabled = enable;
   
   if (enable) {
-    fwCU_takeTree(\"CMS_CSC\");
+//    fwCU_takeTree(\"CMS_CSC\");
     releaseControl = false;
   } else {
     releaseControl = true;
-    fwCU_releaseFullTree(\"CMS_CSC\");
+//    fwCU_releaseFullTree(\"CMS_CSC\");
   }
   
   string actionString = \"disabled\";
@@ -848,7 +848,7 @@ E E 0 1 1 2 1 E 1 0 1 -397 6 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4
 2 48
 "PRIMITIVE_TEXT3"
 ""
-1 -3319.363303309572 405 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -3607.493988101453 415 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -867,7 +867,7 @@ LANG:1 21 Communication problem
 2 57
 "upsOnBatteryBack"
 ""
-1 50.85578618434045 159.0082124126819 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 51.01437904259217 159.0149010185422 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E

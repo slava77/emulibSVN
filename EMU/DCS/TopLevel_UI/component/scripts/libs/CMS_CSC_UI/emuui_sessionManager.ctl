@@ -19,6 +19,7 @@ This package contains functions for session management.
 
 global string emuui_g_sessionId;
 global dyn_string emuui_g_activeTooltips;
+global dyn_string emuui_g_highlightedShapes;
 
 /** Initializes a session (creates a new DP or registers an already existing one. */
 void emuui_initSession() {
@@ -116,6 +117,15 @@ void emuui_tooltipClosed(string refName) {
   if (index > 0) {
     dynRemove(emuui_g_activeTooltips, index);
   }
+}
+
+void emuui_highlightThisShapeOnly(string shapeName) synchronized (emuui_g_highlightedShapes) {
+  for (int i=1; i <= dynlen(emuui_g_highlightedShapes); i++) {
+    setValue(emuui_g_highlightedShapes[i], "foreCol", "");
+  }
+  dynClear(emuui_g_highlightedShapes);
+  dynAppend(emuui_g_highlightedShapes, shapeName);
+  setValue(shapeName, "foreCol", "black_yellow");
 }
 
 string emuui_makeSessionIdString(string hostname, string user) {
