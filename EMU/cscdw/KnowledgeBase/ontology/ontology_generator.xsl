@@ -324,6 +324,14 @@
 
   <xsl:template match="templ:lDAQChain">
     <xsl:text>&LF;</xsl:text>
+    <xsl:comment>DAQ Manager</xsl:comment>
+    <xsl:text>&LF;</xsl:text>
+    <Declaration><Individual URI="&csc;emu::daq::manager::Application"/></Declaration>
+    <Declaration><Individual URI="&csc;DAQManager"/></Declaration>
+    <SameIndividuals><Individual URI="&csc;emu::daq::manager::Application"/><Individual URI="&csc;DAQManager"/></SameIndividuals>
+    <ClassAssertion><Class URI="&csc;LocalDAQ"/><Individual URI="&csc;DAQManager"/></ClassAssertion>
+    <ClassAssertion><Class URI="&csc;Software"/><Individual URI="&csc;DAQManager"/></ClassAssertion>    
+    <xsl:text>&LF;</xsl:text>
     <xsl:comment>declaration of RUIs and DDUs and their relation to chambers</xsl:comment>
     <xsl:text>&LF;</xsl:text>
     <xsl:variable name="SOURCE" select="@source"/>
@@ -334,16 +342,25 @@
       <xsl:variable name="RUI_INSTANCE" select="@instance"/>
       <xsl:variable name="PADDED_RUI_INSTANCE" select="format-number(@instance,'00')"/>
 
-      <Declaration><Individual URI="&csc;RUI{$RUI_INSTANCE}"/></Declaration>
-      <Declaration><Individual URI="&csc;DDU{$RUI_INSTANCE}"/></Declaration>
+      <Declaration><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/></Declaration>
+      <Declaration><Individual URI="&csc;emu::daq::rui::Application{$PADDED_RUI_INSTANCE}"/></Declaration>
+      <Declaration><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/></Declaration>
+      <SameIndividuals><Individual URI="&csc;RUI{$RUI_INSTANCE}"/><Individual URI="&csc;emu::daq::rui::Application{$PADDED_RUI_INSTANCE}"/></SameIndividuals>
       <xsl:if test="$RUI_INSTANCE != $PADDED_RUI_INSTANCE">
-	<Declaration><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/></Declaration>
-	<Declaration><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/></Declaration>
+	<Declaration><Individual URI="&csc;RUI{$RUI_INSTANCE}"/></Declaration>
+	<Declaration><Individual URI="&csc;DDU{$RUI_INSTANCE}"/></Declaration>
 	<SameIndividuals><Individual URI="&csc;RUI{$RUI_INSTANCE}"/><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/></SameIndividuals>
 	<SameIndividuals><Individual URI="&csc;DDU{$RUI_INSTANCE}"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/></SameIndividuals>
       </xsl:if>
       <ClassAssertion><Class URI="&csc;RUI"/><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/></ClassAssertion>
       <ClassAssertion><Class URI="&csc;DDU"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/></ClassAssertion>
+
+      <ObjectPropertyAssertion>
+	<ObjectProperty URI="&csc;controls"/><Individual URI="&csc;DAQManager"/><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/>
+      </ObjectPropertyAssertion>
+      <ObjectPropertyAssertion>
+	<ObjectProperty URI="&csc;monitors"/><Individual URI="&csc;DAQManager"/><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/>
+      </ObjectPropertyAssertion>
 
       <xsl:choose>
 	<xsl:when test="@instance=0">
@@ -352,17 +369,13 @@
 	</xsl:when>
 	<xsl:otherwise>
 	  <ObjectPropertyAssertion>
-	    <ObjectProperty URI="&csc;receivesDataFrom"/>
-	    <Individual URI="&csc;Slink{DCC/@slink}"/>
-	    <Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/>
+	    <ObjectProperty URI="&csc;receivesDataFrom"/><Individual URI="&csc;Slink{DCC/@slink}"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/>
 	  </ObjectPropertyAssertion>
 	</xsl:otherwise>
       </xsl:choose>
 
       <ObjectPropertyAssertion>
-	<ObjectProperty URI="&csc;isIn"/>
-	<Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/>
-	<Individual URI="&csc;FEDCrate{DDU/@crate}"/>
+	<ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/><Individual URI="&csc;FEDCrate{DDU/@crate}"/>
       </ObjectPropertyAssertion>
 
       <!-- DDU inputs -->

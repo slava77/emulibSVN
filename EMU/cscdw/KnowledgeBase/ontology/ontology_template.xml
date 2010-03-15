@@ -472,7 +472,6 @@
   <SubObjectPropertyOf><ObjectProperty URI="&csc;sendsTriggerTo"/><ObjectProperty URI="&csc;triggerPath"/></SubObjectPropertyOf>
   <SubObjectPropertyOf><ObjectProperty URI="&csc;receivesL1AFrom"/><ObjectProperty URI="&csc;triggerPath"/></SubObjectPropertyOf>
   <SubObjectPropertyOf><ObjectProperty URI="&csc;sendsL1ATo"/><ObjectProperty URI="&csc;triggerPath"/></SubObjectPropertyOf>
-
   <SubObjectPropertyOf><ObjectProperty URI="&csc;receivesDataFrom"/><ObjectProperty URI="&csc;dataPath"/></SubObjectPropertyOf>
   <SubObjectPropertyOf><ObjectProperty URI="&csc;sendsDataTo"/><ObjectProperty URI="&csc;dataPath"/></SubObjectPropertyOf>
 
