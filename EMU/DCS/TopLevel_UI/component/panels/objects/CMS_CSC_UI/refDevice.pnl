@@ -561,7 +561,7 @@ void setColor(string color) {
   setValue(shapeName, \"backCol\", color);
 }
 
-void showTooltip() synchronized (tooltipSemaphore) {
+void showTooltip() {//synchronized (tooltipSemaphore) {
   if (currentConnectionMode == \"busy\") { return; } // in the process of connecting, don't show any tooltips while in that mode
 
   if (tooltipVisible || !isMouseOver()) { return; }

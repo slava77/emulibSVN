@@ -84,6 +84,9 @@ E "// Common libs
 // Majority library
 #uses \"majority_treeCache/majorityLib.ctl\"
 
+// Central DCS libs
+#uses \"fwAccessControl/cmsAccessControlSettings.ctc\"
+
 // some panel-wide constants and variables
 const int EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_X = 10;
 const int EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y = 20;
@@ -993,7 +996,7 @@ E E 0 1 1 2 1 E 1 0 1 -219 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png"
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 2118.242812912603 -170 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 1961.562073511598 -190 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -1012,7 +1015,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 49.4404139581741 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 49.41116697425178 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
