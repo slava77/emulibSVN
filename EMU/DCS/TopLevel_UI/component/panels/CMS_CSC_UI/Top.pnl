@@ -205,14 +205,14 @@ void enableDisableControl(bool enable) {
   btnReleaseControl.enabled = enable;
   btnTakeControl.enabled = enable;
   
-  if (enable) {
-    fwCU_takeTree(\"CMS_CSC\");
-    releaseControl = false;
-  } else {
-    releaseControl = true;
-    fwCU_releaseFullTree(\"CMS_CSC\");
-  }
-  
+   if (enable) {
+//     fwCU_takeTree(\"CMS_CSC\");
+     releaseControl = false;
+   } else {
+     releaseControl = true;
+//     fwCU_releaseFullTree(\"CMS_CSC\");
+   }
+
   string actionString = \"disabled\";
   if (enable) { actionString = \"enabled\"; }
   emu_info(\"All control features \" + actionString);
