@@ -51,7 +51,8 @@
     -->
     <service name="ExsysEsbService2">
         <port name="cdwFCInput" binding="tns:casaBinding2">
-            <soap:address location="http://localhost:8080/cdw/factcollection"/>
+            <!--soap:address location="http://localhost:8080/cdw/factcollection"/-->
+            <soap:address location="http://macfrank:18080/cdw/factcollection"/>
         </port>
     </service>
 </definitions>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tns:factCollection xmlns:tns="http://www.cern.ch/cms/csc/dw/model" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.cern.ch/cms/csc/dw/model ../../../CdwModel/src/java/org/cern/cms/csc/dw/schema/fact.xsd">
-    <tns:serviceInstructions async="false" strict="true" persist="true"/>
+<tns:factCollection xmlns:tns="http://www.cern.ch/cms/csc/dw/model" xmlns:ser="http://www.cern.ch/cms/csc/dw/service" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.cern.ch/cms/csc/dw/model ../../../../CdwModel/src/java/org/cern/cms/csc/dw/schema/fact.xsd">
+    <ser:serviceInstructions async="false" strict="true" persist="true"/>
     <tns:source>Xmas</tns:source>
     <tns:slidingTmbTriggerCounterFact>
         <tns:time>2010-02-19T16:01:51.804564Z</tns:time>

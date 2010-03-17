@@ -29,24 +29,39 @@
             <tns:source>
                 <xsl:value-of select="$sourceName"/>
             </tns:source>
-            <xsl:for-each select="//sample/count">
-                <xsl:variable name="component" select="concat(@chamber, '/TMB')"/>
-                <!-- Sliding Tmb Trigger Counters fact -->
-                <xsl:if test="../@name = 'sliding'">
-                    <xsl:call-template name="slidingTmbTriggerCounterFact">
-                        <xsl:with-param name="timestamp" select="$countersTimestamp"/>
-                        <xsl:with-param name="component" select="$component"/>
-                    </xsl:call-template>
-                </xsl:if>
+            <xsl:choose>
+                <xsl:when test="//sample">
+                    <!-- these are TMB trigger counters -->
+                    <xsl:for-each select="//sample/count">
+                        <xsl:variable name="component" select="concat(@chamber, '/TMB')"/>
+                        <!-- Sliding Tmb Trigger Counters fact -->
+                        <xsl:if test="../@name = 'sliding'">
+                            <xsl:call-template name="slidingTmbTriggerCounterFact">
+                                <xsl:with-param name="timestamp" select="$countersTimestamp"/>
+                                <xsl:with-param name="component" select="$component"/>
+                            </xsl:call-template>
+                        </xsl:if>
 
-                <!-- Cumulative Tmb Trigger Counters fact -->
-                <xsl:if test="../@name = 'cumulative'">
-                    <xsl:call-template name="cumulativeTmbTriggerCounterFact">
-                        <xsl:with-param name="timestamp" select="$countersTimestamp"/>
-                        <xsl:with-param name="component" select="$component"/>
-                    </xsl:call-template>
-                </xsl:if>
-            </xsl:for-each>
+                        <!-- Cumulative Tmb Trigger Counters fact -->
+                        <xsl:if test="../@name = 'cumulative'">
+                            <xsl:call-template name="cumulativeTmbTriggerCounterFact">
+                                <xsl:with-param name="timestamp" select="$countersTimestamp"/>
+                                <xsl:with-param name="component" select="$component"/>
+                            </xsl:call-template>
+                        </xsl:if>
+                    </xsl:for-each>
+                </xsl:when>
+                <xsl:otherwise>
+                    <!-- these are TMB non-trigger counters -->
+                    <xsl:for-each select="/emuCounters/count">
+                        <xsl:variable name="component" select="concat(@chamber, '/TMB')"/>
+                        <xsl:call-template name="tmbTriggerCounterFact">
+                            <xsl:with-param name="timestamp" select="$countersTimestamp"/>
+                            <xsl:with-param name="component" select="$component"/>
+                        </xsl:call-template>
+                    </xsl:for-each>
+                </xsl:otherwise>
+            </xsl:choose>
         </tns:factCollection>
     </xsl:template>
 
@@ -113,6 +128,35 @@
                 <xsl:value-of select="@l1a"/>
             </tns:l1aCount>
         </tns:cumulativeTmbTriggerCounterFact>
+    </xsl:template>
+
+    <!-- All Tmb Counters fact -->
+    <xsl:template name="tmbTriggerCounterFact">
+        <xsl:param name="component"/>
+        <xsl:param name="timestamp"/>
+
+        <tns:tmbCounterFact>
+            <!-- general part -->
+            <tns:time>
+                <xsl:value-of select="$timestamp"/>
+            </tns:time>
+            <tns:component_id>
+                <xsl:value-of select="$component"/>
+            </tns:component_id>
+            <tns:severity>INFO</tns:severity>
+
+            <!-- concrete part -->
+            <tns:version>
+                <xsl:value-of select="../@version"/>
+            </tns:version>
+            <xsl:for-each select="@*">
+                <xsl:if test="contains(local-name(), 'TC')">
+                    <xsl:element name="{concat('tns:', translate(local-name(), $uppercase, $lowercase))}">
+                        <xsl:value-of select="."/>
+                    </xsl:element>
+                </xsl:if>
+            </xsl:for-each>
+        </tns:tmbCounterFact>
     </xsl:template>
 
 </xsl:stylesheet>

@@ -9,17 +9,17 @@
         <endpoint endpoint-name="javaee_HttpProxyWSPort" interface-name="ns5:HttpProxyWS" name="endpoint6" service-name="ns5:HttpProxyWSService"/>
     </endpoints>
     <service-units>
-        <service-engine-service-unit artifacts-zip="ExsysEsbBpel.jar" component-name="sun-bpel-engine" defined="true" description="Represents this Service Unit" internal="true" name="ExsysEsb-ExsysEsbBpel" unit-name="ExsysEsbBpel" unknown="false" x="33" y="39">
+        <service-engine-service-unit artifacts-zip="ExsysEsbBpel.jar" component-name="sun-bpel-engine" defined="true" description="Represents this Service Unit" internal="true" name="ExsysEsb-ExsysEsbBpel" unit-name="ExsysEsbBpel" unknown="false" x="48" y="80">
             <provides endpoint="endpoint3"/>
             <consumes endpoint="endpoint4"/>
             <consumes endpoint="endpoint5"/>
         </service-engine-service-unit>
-        <service-engine-service-unit artifacts-zip="ExsysEsbEjb.jar" component-name="sun-javaee-engine" defined="true" description="Represents this Service Unit" internal="true" name="ExsysEsb-ExsysEsbEjb" unit-name="ExsysEsbEjb" unknown="false" x="286" y="39">
+        <service-engine-service-unit artifacts-zip="ExsysEsbEjb.jar" component-name="sun-javaee-engine" defined="true" description="Represents this Service Unit" internal="true" name="ExsysEsb-ExsysEsbEjb" unit-name="ExsysEsbEjb" unknown="false" x="278" y="88">
             <provides endpoint="endpoint6"/>
         </service-engine-service-unit>
         <binding-component-service-unit artifacts-zip="sun-http-binding.jar" component-name="sun-http-binding" description="Represents this Service Unit" name="ExsysEsb-sun-http-binding" unit-name="sun-http-binding">
             <ports>
-                <port x="67" y="265">
+                <port x="67" y="365">
                     <link xlink:href="../jbiasa/ExsysEsb.wsdl#xpointer(/definitions/service[@name='ExsysEsbService2']/port[@name='cdwFCInput'])" xlink:type="simple"/>
                     <consumes endpoint="endpoint2"/>
                     <provides endpoint="endpoint2"/>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:tmbCounterDescriptionDSE xmlns:tns="http://www.cern.ch/cms/csc/dw/model/dse"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.cern.ch/cms/csc/dw/model/dse ../../../../CdwModel/src/java/org/cern/cms/csc/dw/schema/dataServiceEntity.xsd">
+<tns:version>1.0</tns:version>
+<tns:tc00description>ALCT: alct0 valid pattern flag received</tns:tc00description>
+<tns:tc01description>ALCT: alct1 valid pattern flag received</tns:tc01description>
+<tns:tc02description>ALCT: alct data structure Error</tns:tc02description>
+<tns:tc03description>ALCT: trigger path ECC; 1 bit Error corrected</tns:tc03description>
+<tns:tc04description>ALCT: trigger path ECC; 2 bit Error uncorrected</tns:tc04description>
+<tns:tc05description>ALCT: trigger path ECC; &gt; 2 bit Error uncorrected</tns:tc05description>
+<tns:tc06description>ALCT: trigger path ECC; &gt; 2 bit Error blanked</tns:tc06description>
+<tns:tc07description>ALCT: alct replied ECC; 1 bit Error corrected</tns:tc07description>
+<tns:tc08description>ALCT: alct replied ECC; 2 bit Error uncorrected</tns:tc08description>
+<tns:tc09description>ALCT: alct replied ECC; &gt; 2 bit Error uncorrected</tns:tc09description>
+<tns:tc10description>ALCT: raw hits readout</tns:tc10description>
+<tns:tc11description>ALCT: raw hits readout - CRC Error</tns:tc11description>
+<tns:tc12description>RESERVED</tns:tc12description>
+<tns:tc13description>CLCT: Pretrigger</tns:tc13description>
+<tns:tc14description>CLCT: Pretrigger on CFEB0</tns:tc14description>
+<tns:tc15description>CLCT: Pretrigger on CFEB1</tns:tc15description>
+<tns:tc16description>CLCT: Pretrigger on CFEB2</tns:tc16description>
+<tns:tc17description>CLCT: Pretrigger on CFEB3</tns:tc17description>
+<tns:tc18description>CLCT: Pretrigger on CFEB4</tns:tc18description>
+<tns:tc19description>CLCT: Pretrigger on ME1A CFEB 4 only</tns:tc19description>
+<tns:tc20description>CLCT: Pretrigger on ME1B CFEBs 0-3 only</tns:tc20description>
+<tns:tc21description>CLCT: Discarded, no wrbuf available, buffer stalled</tns:tc21description>
+<tns:tc22description>CLCT: Discarded, no ALCT in window</tns:tc22description>
+<tns:tc23description>CLCT: Discarded, CLCT0 invalid pattern after drift</tns:tc23description>
+<tns:tc24description>CLCT: CLCT0 pass hit thresh, fail pid_thresh_postdrift</tns:tc24description>
+<tns:tc25description>CLCT: CLCT1 pass hit thresh, fail pid_thresh_postdrift</tns:tc25description>
+<tns:tc26description>CLCT: BX pretrig waiting for triads to dissipate</tns:tc26description>
+<tns:tc27description>CLCT: clct0 sent to TMB matching section</tns:tc27description>
+<tns:tc28description>CLCT: clct1 sent to TMB matching section</tns:tc28description>
+<tns:tc29description>TMB: TMB accepted alct*clct, alct-only, or clct-only</tns:tc29description>
+<tns:tc30description>TMB: TMB clct*alct matched trigger</tns:tc30description>
+<tns:tc31description>TMB: TMB alct-only trigger</tns:tc31description>
+<tns:tc32description>TMB: TMB clct-only trigger</tns:tc32description>
+<tns:tc33description>TMB: TMB match reject event</tns:tc33description>
+<tns:tc34description>TMB: TMB match reject event, queued for nontrig readout</tns:tc34description>
+<tns:tc35description>TMB: TMB matching discarded an ALCT pair</tns:tc35description>
+<tns:tc36description>TMB: TMB matching discarded a CLCT pair</tns:tc36description>
+<tns:tc37description>TMB: TMB matching discarded CLCT0 from ME1A</tns:tc37description>
+<tns:tc38description>TMB: TMB matching discarded CLCT1 from ME1A</tns:tc38description>
+<tns:tc39description>TMB: Matching found no ALCT</tns:tc39description>
+<tns:tc40description>TMB: Matching found no CLCT</tns:tc40description>
+<tns:tc41description>TMB: Matching found one ALCT</tns:tc41description>
+<tns:tc42description>TMB: Matching found one CLCT</tns:tc42description>
+<tns:tc43description>TMB: Matching found two ALCTs</tns:tc43description>
+<tns:tc44description>TMB: Matching found two CLCTs</tns:tc44description>
+<tns:tc45description>TMB: ALCT0 copied into ALCT1 to make 2nd LCT</tns:tc45description>
+<tns:tc46description>TMB: CLCT0 copied into CLCT1 to make 2nd LCT</tns:tc46description>
+<tns:tc47description>TMB: LCT1 has higher quality than LCT0 (ranking Error)</tns:tc47description>
+<tns:tc48description>TMB: Transmitted LCT0 to MPC</tns:tc48description>
+<tns:tc49description>TMB: Transmitted LCT1 to MPC</tns:tc49description>
+<tns:tc50description>TMB: MPC accepted LCT0</tns:tc50description>
+<tns:tc51description>TMB: MPC accepted LCT1</tns:tc51description>
+<tns:tc52description>TMB: MPC rejected both LCT0 and LCT1</tns:tc52description>
+<tns:tc53description>L1A: L1A received</tns:tc53description>
+<tns:tc54description>L1A: L1A received, TMB in L1A window</tns:tc54description>
+<tns:tc55description>L1A: L1A received, no TMB in window</tns:tc55description>
+<tns:tc56description>L1A: TMB triggered, no L1A in window</tns:tc56description>
+<tns:tc57description>L1A: TMB readouts completed</tns:tc57description>
+<tns:tc58description>STAT: CLCT Triads skipped</tns:tc58description>
+<tns:tc59description>STAT: Raw hits buffer had to be reset</tns:tc59description>
+<tns:tc60description>STAT: TTC Resyncs received</tns:tc60description>
+<tns:tc61description>STAT: Sync Error, BC0/BXN=offset mismatch</tns:tc61description>
+<tns:tc62description>STAT: Parity Error in CFEB or RPC raw hits RAM</tns:tc62description>
+<tns:tc63description>HDR: Pretrigger counter</tns:tc63description>
+<tns:tc64description>HDR: CLCT counter</tns:tc64description>
+<tns:tc65description>HDR: TMB trigger counter</tns:tc65description>
+<tns:tc66description>HDR: ALCTs received counter</tns:tc66description>
+<tns:tc67description>HDR: L1As received counter (12 bits)</tns:tc67description>
+<tns:tc68description>HDR: Readout counter (12 bits)</tns:tc68description>
+<tns:tc69description>HDR: Orbit counter</tns:tc69description>
+<tns:tc70description>ALCT:Struct Error, expect ALCT0[10:1]=0 when alct0vpf=0</tns:tc70description>
+<tns:tc71description>ALCT:Struct Error, expect ALCT1[10:1]=0 when alct1vpf=0</tns:tc71description>
+<tns:tc72description>ALCT:Struct Error, expect ALCT0vpf=1 when alct1vpf=1</tns:tc72description>
+<tns:tc73description>ALCT:Struct Error, expect ALCT0[10:1]&gt;0 when alct0vpf=1</tns:tc73description>
+<tns:tc74description>ALCT:Struct Error, expect ALCT1[10:1]=0 when alct1vpf=1</tns:tc74description>
+<tns:tc75description>ALCT:Struct Error, expect ALCT1!=alct0 when alct0vpf=1</tns:tc75description>
+<tns:tc76description>CCB: TTCrx lock lost</tns:tc76description>
+<tns:tc77description>CCB: qPLL lock lost</tns:tc77description>
+<tns:tc78description>TMB: CFEB Bad Bits Control</tns:tc78description>
+<tns:tc79description>TMB: CFEB Bad Bits Pattern 1</tns:tc79description>
+<tns:tc80description>TMB: CFEB Bad Bits Pattern 2</tns:tc80description>
+<tns:tc81description>TMB: CFEB Bad Bits Pattern 3</tns:tc81description>
+<tns:tc82description>TMB: CFEB Bad Bits Pattern 4</tns:tc82description>
+<tns:tc83description>TMB: CFEB Bad Bits Pattern 5</tns:tc83description>
+<tns:tc84description>TMB: CFEB Bad Bits Pattern 6</tns:tc84description>
+<tns:tc85description>TMB: CFEB Bad Bits Pattern 7</tns:tc85description>
+<tns:tc86description>TMB: CFEB Bad Bits Pattern 8</tns:tc86description>
+<tns:tc87description>TMB: Time since last Hard Reset</tns:tc87description>
+</tns:tmbCounterDescriptionDSE>

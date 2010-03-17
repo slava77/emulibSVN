@@ -32,7 +32,7 @@
         <assign name="SetXmasUrl">
             <sxt:trace>
                 <sxt:log level="info" location="onComplete">
-                    <from>concat('Pulling TMB trigger counters from: ', $pullUrl.schedPart)</from>
+                    <from>concat('Pulling TMB counters from: ', $pullUrl.schedPart)</from>
                 </sxt:log>
             </sxt:trace>
             <copy>
