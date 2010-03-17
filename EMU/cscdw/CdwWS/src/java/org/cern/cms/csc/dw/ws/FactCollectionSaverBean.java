@@ -1,6 +1,7 @@
 
 package org.cern.cms.csc.dw.ws;
 
+import org.cern.cms.csc.dw.ws.exception.EmptyListReceivedException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -19,6 +20,7 @@ import javax.jms.Session;
 import javax.xml.bind.JAXBElement;
 import org.cern.cms.csc.dw.exception.ComponentTypeNotAllowedInFactException;
 import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
+import org.cern.cms.csc.dw.dao.PersistDaoLocal;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.dw.model.fact.FactCollection;
@@ -62,7 +64,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
                 fact.setComponent(component);
                 fact.setComponentId(component.getId());
 
-                fact.preSaveProcess();
+                fact.onReceive();
 
                 // This fact is OK so we add it to factItems
                 FactCollectionFactsItem fcfi = new FactCollectionFactsItem();

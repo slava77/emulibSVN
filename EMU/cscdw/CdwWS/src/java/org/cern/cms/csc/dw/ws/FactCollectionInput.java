@@ -1,5 +1,7 @@
 package org.cern.cms.csc.dw.ws;
 
+import org.cern.cms.csc.dw.ws.exception.NullArgumentReceivedException;
+import org.cern.cms.csc.dw.ws.exception.EmptyListReceivedException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
@@ -37,7 +39,6 @@ public class FactCollectionInput {
      */
     @WebMethod(operationName = "input")
     public Integer getFactCollection(@WebParam(name = "factCollection") FactCollection factCollection) throws Exception {
-
         try {
 
             if (factCollection == null) {

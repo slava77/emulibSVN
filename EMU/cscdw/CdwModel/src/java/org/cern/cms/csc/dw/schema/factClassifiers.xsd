@@ -57,6 +57,7 @@
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="DCS"/>
       <xsd:enumeration value="LOCAL_DQM"/>
+      <xsd:enumeration value="LOCAL_DAQ"/>
       <xsd:enumeration value="FED"/>
       <xsd:enumeration value="Xmas"/>
     </xsd:restriction>

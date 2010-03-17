@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
 import javax.persistence.PersistenceContext;
 import org.cern.cms.csc.dw.exception.PersistException;
 import org.cern.cms.csc.dw.model.base.EntityBase;
@@ -25,15 +26,22 @@ public class PersistDao implements PersistDaoLocal {
     private EntityManager em;
 
     public void persist(EntityBase cdwEntityObject) throws PersistException, Exception {
-        cdwEntityObject.prePersist();
+
+        // is it null by any chance? if yes - then be angry about it
+        if (cdwEntityObject == null) {
+            throw new Exception("null was passed to PersistDao.persist(EntityBase cdwEntityObject) method!");
+        }
+
+        // call an onSave trigger method to give the entity the last chance to prepare itself for persistance
+        cdwEntityObject.onSave(em);
+
+        // persist the entity
         try {
             em.persist(cdwEntityObject);
         } catch (Exception ex) {
-            String className = "null";
-            if (cdwEntityObject != null) {
-                className = cdwEntityObject.getClass().getCanonicalName();
-            }
-            logger.log(Level.SEVERE, "Error while persisting an entity of class " + className, ex);
+            String className = cdwEntityObject.getClass().getCanonicalName();
+            logger.log(Level.SEVERE, "Error while persisting an entity of class " + className + ".\n toString(): " + cdwEntityObject.toString(), ex);
+
             throw new PersistException(ex);
         }
     }

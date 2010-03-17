@@ -3,15 +3,13 @@
  * and open the template in the editor.
  */
 
-package org.cern.cms.csc.dw.ws;
-
-import org.apache.commons.lang.NullArgumentException;
+package org.cern.cms.csc.dw.ws.exception;
 
 /**
  *
  * @author valdo
  */
-public class NullArgumentReceivedException extends NullArgumentException {
+public class NullArgumentReceivedException extends Exception {
 
     /**
      * Constructs an instance of <code>NullArgumentReceivedException</code> with the specified detail message.

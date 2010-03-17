@@ -3,11 +3,11 @@
 <resources>
   <admin-object-resource enabled="true" jndi-name="jms/factCollectionQueue" object-type="user" res-adapter="jmsra" res-type="javax.jms.Queue">
     <description/>
-    <property name="Name" value="PhysicalQueue"/>
+    <property name="Name" value="FactCollectionPhysicalQueue"/>
   </admin-object-resource>
   <admin-object-resource enabled="true" jndi-name="jms/entitySaverQueue" object-type="user" res-adapter="jmsra" res-type="javax.jms.Queue">
     <description/>
-    <property name="Name" value="PhysicalQueue"/>
+    <property name="Name" value="EntitySaverPhysicalQueue"/>
   </admin-object-resource>
   <connector-resource enabled="true" jndi-name="jms/factCollectionQueueFactory" object-type="user" pool-name="jms/factCollectionQueueFactoryPool">
     <description/>

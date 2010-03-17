@@ -6,6 +6,9 @@
 package org.cern.cms.csc.dw.model.base;
 
 import java.io.Serializable;
+import javax.persistence.EntityManager;
+import org.cern.cms.csc.dw.exception.OnReceiveProcessingException;
+import org.cern.cms.csc.dw.exception.OnSaveProcessingException;
 
 /**
  *
@@ -13,5 +16,6 @@ import java.io.Serializable;
  */
 public class EntityBase implements Serializable {
 
-    public void prePersist() throws Exception {}
+    public void onSave(EntityManager em) throws OnSaveProcessingException { }
+    public void onReceive() throws OnReceiveProcessingException { }
 }

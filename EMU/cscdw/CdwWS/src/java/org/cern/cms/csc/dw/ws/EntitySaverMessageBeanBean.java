@@ -51,7 +51,8 @@ public class EntitySaverMessageBeanBean implements MessageListener {
             }
         } catch (PersistException pex) {
             logger.log(Level.WARNING, "Cannot persist entity, stopping persistance queue. ", pex);
-            throw new NotImplementedException("Queue stopping is not yet implemented!");
+            logger.log(Level.WARNING, "Queue stopping is not yet implemented. ", pex);
+            //throw new NotImplementedException("Queue stopping is not yet implemented!");
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "Exception while persisting an entity: ", ex);
         }

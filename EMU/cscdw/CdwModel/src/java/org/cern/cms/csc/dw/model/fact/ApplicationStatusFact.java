@@ -30,17 +30,16 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 
 
 /**
- * <p>Java class for DqmCscHvSegmentFactType complex type.
+ * <p>Java class for applicationStatusFactType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="DqmCscHvSegmentFactType">
+ * &lt;complexType name="applicationStatusFactType">
  *   &lt;complexContent>
  *     &lt;extension base="{http://www.cern.ch/cms/csc/dw/model}factType">
  *       &lt;sequence>
- *         &lt;element name="online" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
- *         &lt;element name="CSC_NO_HV_SEGMENT" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
+ *         &lt;element name="state" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -50,77 +49,52 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DqmCscHvSegmentFactType", propOrder = {
-    "online",
-    "noHvSegment"
+@XmlType(name = "applicationStatusFactType", propOrder = {
+    "state"
 })
-@Entity(name = "org.cern.cms.csc.dw.model.fact.DqmCscHvSegmentFact")
-@Table(name = "CDW_DQM_CSC_HV_SEGMENT_FACTS")
-public class DqmCscHvSegmentFact
+@Entity(name = "org.cern.cms.csc.dw.model.fact.ApplicationStatusFact")
+@Table(name = "CDW_APP_STATUS_FACTS")
+public class ApplicationStatusFact
     extends Fact
     implements Serializable, Equals, HashCode, ToString
 {
 
-    protected boolean online;
-    @XmlElement(name = "CSC_NO_HV_SEGMENT")
-    protected Long noHvSegment;
+    @XmlElement(required = true)
+    protected String state;
 
     /**
-     * Gets the value of the online property.
-     * 
-     */
-    @Basic
-    @Column(name = "FCT_ONLINE")
-    public boolean isOnline() {
-        return online;
-    }
-
-    /**
-     * Sets the value of the online property.
-     * 
-     */
-    public void setOnline(boolean value) {
-        this.online = value;
-    }
-
-    @Transient
-    public boolean isSetOnline() {
-        return true;
-    }
-
-    /**
-     * Gets the value of the noHvSegment property.
+     * Gets the value of the state property.
      * 
      * @return
      *     possible object is
-     *     {@link Long }
+     *     {@link String }
      *     
      */
     @Basic
-    @Column(name = "FCT_NO_HV_SEGMENT", precision = 20, scale = 10)
-    public Long getNoHvSegment() {
-        return noHvSegment;
+    @Column(name = "FCT_STATE", length = 16)
+    public String getState() {
+        return state;
     }
 
     /**
-     * Sets the value of the noHvSegment property.
+     * Sets the value of the state property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Long }
+     *     {@link String }
      *     
      */
-    public void setNoHvSegment(Long value) {
-        this.noHvSegment = value;
+    public void setState(String value) {
+        this.state = value;
     }
 
     @Transient
-    public boolean isSetNoHvSegment() {
-        return (this.noHvSegment!= null);
+    public boolean isSetState() {
+        return (this.state!= null);
     }
 
     public void equals(Object object, EqualsBuilder equalsBuilder) {
-        if (!(object instanceof DqmCscHvSegmentFact)) {
+        if (!(object instanceof ApplicationStatusFact)) {
             equalsBuilder.appendSuper(false);
             return ;
         }
@@ -128,13 +102,12 @@ public class DqmCscHvSegmentFact
             return ;
         }
         super.equals(object, equalsBuilder);
-        final DqmCscHvSegmentFact that = ((DqmCscHvSegmentFact) object);
-        equalsBuilder.append(this.isOnline(), that.isOnline());
-        equalsBuilder.append(this.getNoHvSegment(), that.getNoHvSegment());
+        final ApplicationStatusFact that = ((ApplicationStatusFact) object);
+        equalsBuilder.append(this.getState(), that.getState());
     }
 
     public boolean equals(Object object) {
-        if (!(object instanceof DqmCscHvSegmentFact)) {
+        if (!(object instanceof ApplicationStatusFact)) {
             return false;
         }
         if (this == object) {
@@ -147,8 +120,7 @@ public class DqmCscHvSegmentFact
 
     public void hashCode(HashCodeBuilder hashCodeBuilder) {
         super.hashCode(hashCodeBuilder);
-        hashCodeBuilder.append(this.isOnline());
-        hashCodeBuilder.append(this.getNoHvSegment());
+        hashCodeBuilder.append(this.getState());
     }
 
     public int hashCode() {
@@ -160,14 +132,9 @@ public class DqmCscHvSegmentFact
     public void toString(ToStringBuilder toStringBuilder) {
         super.toString(toStringBuilder);
         {
-            boolean theOnline;
-            theOnline = this.isOnline();
-            toStringBuilder.append("online", theOnline);
-        }
-        {
-            Long theNoHvSegment;
-            theNoHvSegment = this.getNoHvSegment();
-            toStringBuilder.append("noHvSegment", theNoHvSegment);
+            String theState;
+            theState = this.getState();
+            toStringBuilder.append("state", theState);
         }
     }
 
@@ -181,9 +148,10 @@ public class DqmCscHvSegmentFact
 
     @Override
     public boolean checkComponentClassType(org.cern.cms.csc.dw.model.ontology.ComponentClassType componentClassType) {
-        return componentClassType.equals(org.cern.cms.csc.dw.model.ontology.ComponentClassType.HV_SEGMENT);
+        return (componentClassType.equals(org.cern.cms.csc.dw.model.ontology.ComponentClassType.SOFTWARE) ||
+                componentClassType.equals(org.cern.cms.csc.dw.model.ontology.ComponentClassType.RUI) ||
+                componentClassType.equals(org.cern.cms.csc.dw.model.ontology.ComponentClassType.TFRUI));
     }
-
 
 //--simple--preserve
 

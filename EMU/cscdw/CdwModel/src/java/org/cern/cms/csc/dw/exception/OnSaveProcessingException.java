@@ -9,9 +9,9 @@ package org.cern.cms.csc.dw.exception;
  *
  * @author valdo
  */
-public class PreSaveProcessingException extends Exception {
+public class OnSaveProcessingException extends Exception {
 
-    public PreSaveProcessingException(Throwable cause) {
+    public OnSaveProcessingException(Throwable cause) {
         super(cause);
     }
 

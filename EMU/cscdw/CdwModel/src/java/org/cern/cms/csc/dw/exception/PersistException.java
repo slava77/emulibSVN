@@ -14,4 +14,12 @@ public class PersistException extends Exception {
     public PersistException(Throwable cause) {
         super(cause);
     }
+
+    public PersistException(String msg) {
+        super(msg);
+    }
+
+    public PersistException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 }
