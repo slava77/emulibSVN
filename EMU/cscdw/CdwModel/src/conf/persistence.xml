@@ -48,7 +48,7 @@
       <property name="hibernate.connection.password" value="******"/>
       <property name="hibernate.connection.url" value="jdbc:oracle:thin:@oradev10.cern.ch:10520:D10"/-->
       <property name="hibernate.connection.username" value="CMS_MUON_ENDCAP_EVKA"/>
-      <property name="hibernate.connection.password" value="******"/>
+      <property name="hibernate.connection.password" value="cms08evka"/>
       <property name="hibernate.connection.url" value="jdbc:oracle:thin:@oradev10.cern.ch:10520:D10"/>
       <!--property name="hibernate.connection.username" value="CMS_ALCT"/>
       <property name="hibernate.connection.password" value="******"/>
