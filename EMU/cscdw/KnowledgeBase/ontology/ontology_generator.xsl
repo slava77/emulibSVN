@@ -345,7 +345,7 @@
       <Declaration><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/></Declaration>
       <Declaration><Individual URI="&csc;emu::daq::rui::Application{$PADDED_RUI_INSTANCE}"/></Declaration>
       <Declaration><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/></Declaration>
-      <SameIndividuals><Individual URI="&csc;RUI{$RUI_PADDED_INSTANCE}"/><Individual URI="&csc;emu::daq::rui::Application{$PADDED_RUI_INSTANCE}"/></SameIndividuals>
+      <SameIndividuals><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/><Individual URI="&csc;emu::daq::rui::Application{$PADDED_RUI_INSTANCE}"/></SameIndividuals>
       <xsl:if test="$RUI_INSTANCE != $PADDED_RUI_INSTANCE">
 	<Declaration><Individual URI="&csc;RUI{$RUI_INSTANCE}"/></Declaration>
 	<Declaration><Individual URI="&csc;DDU{$RUI_INSTANCE}"/></Declaration>
