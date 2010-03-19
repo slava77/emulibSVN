@@ -526,7 +526,7 @@
 	  <ObjectProperty URI="&csc;receivesTriggerFrom"/><Individual URI="&csc;{$PADDED_VME_NAME}/MPC"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/TMB"/>
 	</ObjectPropertyAssertion>
 	<ObjectPropertyAssertion>
-	  <ObjectProperty URI="&csc;receivesL1AFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/TMB"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/CCB"/>
+	  <ObjectProperty URI="&csc;receivesL1AFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/TMB"/><Individual URI="&csc;{$PADDED_VME_NAME}/CCB"/>
 	</ObjectPropertyAssertion>
 	<ObjectPropertyAssertion>
 	  <ObjectProperty URI="&csc;receivesL1AFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/RAT"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/TMB"/>
@@ -535,7 +535,7 @@
 	  <ObjectProperty URI="&csc;receivesL1AFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/ALCT"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/RAT"/>
 	</ObjectPropertyAssertion>
 	<ObjectPropertyAssertion>
-	  <ObjectProperty URI="&csc;receivesL1AFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/DMB"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/CCB"/>
+	  <ObjectProperty URI="&csc;receivesL1AFrom"/><Individual URI="&csc;{$PADDED_CHAMBER_NAME}/DMB"/><Individual URI="&csc;{$PADDED_VME_NAME}/CCB"/>
 	</ObjectPropertyAssertion>
 
 	<!-- AFEB -->
