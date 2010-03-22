@@ -24,20 +24,20 @@ import org.xml.sax.SAXParseException;
  *
  * @author valdo
  */
-public class XjcSuperClassPlugin extends Plugin {
+public class XjcIgnoreOnlyThisPlugin extends Plugin {
 
     private static final String xjcNs = "http://java.sun.com/xml/ns/jaxb/xjc";
-    private static final QName xjcSuperClass = new QName(xjcNs, "superClass");
+    private static final QName xjcIgnoreOnlyThis = new QName(xjcNs, "ignoreOnlyThis");
 
 
     @Override
     public String getOptionName() {
-        return "Xsuperclass";
+        return "Xignoreonlythis";
     }
 
     @Override
     public String getUsage() {
-        return "  -Xsuperclass        :  enable generation of specific super-classes";
+        return "  -Xignoreonlythis        :  enable ignoring classes as entities but without affecting the subclasses";
     }
 
     @Override
@@ -48,7 +48,7 @@ public class XjcSuperClassPlugin extends Plugin {
     @Override
     public boolean isCustomizationTagName(String nsUri, String localName) {
         if (nsUri.equals(xjcNs)) {
-            if (localName.equals(xjcSuperClass.getLocalPart())) return true;
+            if (localName.equals(xjcIgnoreOnlyThis.getLocalPart())) return true;
         }
         return false;
     }
@@ -56,22 +56,21 @@ public class XjcSuperClassPlugin extends Plugin {
     @Override
     public boolean run(Outline outline, Options options, ErrorHandler errorHandler) throws SAXException {
         for (ClassOutline classOutline : outline.getClasses()) {
-
-            CPluginCustomization cstSuperClass = CustomizationUtils.findCustomization(classOutline, xjcSuperClass);
-            if (cstSuperClass != null) {
-                System.out.println("Found superclass customization tag");
-                Element elSC = cstSuperClass.element;
-                String superClassName = elSC.getAttribute("name");
-                if (superClassName != null) {
-                    JClass dc = outline.getCodeModel().directClass(superClassName);
-                    if (dc != null) {
-                        classOutline.implClass._extends(dc);
-                    } else {
-                        errorHandler.fatalError(
-                            new SAXParseException("Super class " + superClassName + " not defined/not found for class " + classOutline.target.fullName(),
-                            cstSuperClass.locator));
-                    }
-                }
+            CPluginCustomization cstIgnoreOnlyThis = CustomizationUtils.findCustomization(classOutline, xjcIgnoreOnlyThis);
+            if (cstIgnoreOnlyThis != null) {
+                System.out.println("Found ignoreOnlyThis customization tag");
+//                Element elSC = cstSuperClass.element;
+//                String superClassName = elSC.getAttribute("name");
+//                if (superClassName != null) {
+//                    JClass dc = outline.getCodeModel().directClass(superClassName);
+//                    if (dc != null) {
+//                        classOutline.implClass._extends(dc);
+//                    } else {
+//                        errorHandler.fatalError(
+//                            new SAXParseException("Super class " + superClassName + " not defined/not found for class " + classOutline.target.fullName(),
+//                            cstSuperClass.locator));
+//                    }
+//                }
             }
 
         }

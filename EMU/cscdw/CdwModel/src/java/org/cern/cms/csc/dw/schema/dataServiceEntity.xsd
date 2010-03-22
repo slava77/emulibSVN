@@ -26,12 +26,34 @@
 
     <xsd:include schemaLocation="tmbCounterDescriptionDSE.xsd"/>
 
+    <xsd:element name="dataServiceEntity" type="tns:dataServiceEntityType"/>
+    <xsd:element name="dataServiceEntityCollection" type="tns:dataServiceEntityCollectionType"/>
+
+    <xsd:complexType name="dataServiceEntityCollectionType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="DataServiceEntityCollection"/>
+                <hj:ignored/>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element ref="tns:dataServiceEntity" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <jaxb:property name="dataServiceEntities"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
     <xsd:complexType name="dataServiceEntityType">
         <xsd:annotation>
             <xsd:appinfo>
                 <jaxb:class name="DataServiceEntity"/>
                 <xjc:superClass name="org.cern.cms.csc.dw.model.base.EntityBase"/>
-                <hj:ignored/>
+                <!--xjc:ignoreOnlyThis/-->
+                <!--hj:ignored/-->
             </xsd:appinfo>
         </xsd:annotation>
     </xsd:complexType>

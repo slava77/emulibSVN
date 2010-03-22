@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import org.cern.cms.csc.dw.model.fact.FactCollection;
+import org.cern.cms.csc.dw.model.fact.Fact;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
@@ -17,9 +18,10 @@ import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
+import javax.xml.bind.JAXBElement;
 import org.cern.cms.csc.dw.service.ServiceInstructions;
 
-@WebService(serviceName = "cdw", name = "factcollection")
+@WebService(serviceName = "cdw", name = "factcollection", targetNamespace="http://www.cern.ch/cms/csc/dw/ws/factCollectionInput")
 @Stateless()
 public class FactCollectionInput {
 
@@ -45,6 +47,15 @@ public class FactCollectionInput {
                 throw new NullArgumentReceivedException("factCollection");
             }
 
+            // some debug information
+            logger.fine("FCinput WS: fc with " + factCollection.getFacts().size() + " facts " +
+                        " and " + factCollection.getFactsItems().size() + " fact collection items");
+            logger.finest("FCinput WS: fc.toString(): " + factCollection.toString());
+            for (JAXBElement<? extends Fact> fi : factCollection.getFacts()) {
+                logger.finest("FCinput WS: fact: " + fi.getValue());
+            }
+            // -------------
+
             if (factCollection.getFactsItems().isEmpty()) {
                 throw new EmptyListReceivedException("factCollection", "Fact");
             }
@@ -65,6 +76,7 @@ public class FactCollectionInput {
                 session.close();
                 connection.close();
             } else {
+                logger.info("FCinput WS: serviceInstructions.isAsync() = false, sending this fact collection directly to FactCollectionSaverBean");
                 saver.saveFactCollection(factCollection);
             }
         } catch (Exception ex) {

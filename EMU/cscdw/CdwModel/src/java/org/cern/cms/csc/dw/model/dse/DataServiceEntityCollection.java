@@ -6,14 +6,15 @@
 //
 
 
-package org.cern.cms.csc.dw.model.fact;
+package org.cern.cms.csc.dw.model.dse;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Vector;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlType;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -27,17 +28,16 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 
 
 /**
- * <p>Java class for factRequestCollectionType complex type.
+ * <p>Java class for dataServiceEntityCollectionType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="factRequestCollectionType">
+ * &lt;complexType name="dataServiceEntityCollectionType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="requestId" type="{http://www.w3.org/2001/XMLSchema}long"/>
- *         &lt;element ref="{http://www.cern.ch/cms/csc/dw/model}factRequest" maxOccurs="unbounded"/>
+ *         &lt;element ref="{http://www.cern.ch/cms/csc/dw/model/dse}dataServiceEntity" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -47,98 +47,76 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "factRequestCollectionType", propOrder = {
-    "requestId",
-    "factRequest"
+@XmlType(name = "dataServiceEntityCollectionType", propOrder = {
+    "dataServiceEntities"
 })
-public class FactRequestCollection
+public class DataServiceEntityCollection
     implements Serializable, Equals, HashCode, ToString
 {
 
-    protected long requestId;
-    @XmlElement(required = true)
-    protected List<FactRequest> factRequest = new Vector<FactRequest>();
+    @XmlElementRef(name = "dataServiceEntity", namespace = "http://www.cern.ch/cms/csc/dw/model/dse", type = JAXBElement.class)
+    protected List<JAXBElement<? extends DataServiceEntity>> dataServiceEntities = new Vector<JAXBElement<? extends DataServiceEntity>>();
 
     /**
-     * Gets the value of the requestId property.
-     * 
-     */
-    public long getRequestId() {
-        return requestId;
-    }
-
-    /**
-     * Sets the value of the requestId property.
-     * 
-     */
-    public void setRequestId(long value) {
-        this.requestId = value;
-    }
-
-    public boolean isSetRequestId() {
-        return true;
-    }
-
-    /**
-     * Gets the value of the factRequest property.
+     * Gets the value of the dataServiceEntities property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the factRequest property.
+     * This is why there is not a <CODE>set</CODE> method for the dataServiceEntities property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getFactRequest().add(newItem);
+     *    getDataServiceEntities().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link FactRequest }
+     * {@link JAXBElement }{@code <}{@link TmbCounterDescriptionDSE }{@code >}
+     * {@link JAXBElement }{@code <}{@link DataServiceEntity }{@code >}
      * 
      * 
      */
-    public List<FactRequest> getFactRequest() {
-        if (factRequest == null) {
-            factRequest = new Vector<FactRequest>();
+    public List<JAXBElement<? extends DataServiceEntity>> getDataServiceEntities() {
+        if (dataServiceEntities == null) {
+            dataServiceEntities = new Vector<JAXBElement<? extends DataServiceEntity>>();
         }
-        return this.factRequest;
+        return this.dataServiceEntities;
     }
 
     /**
      * 
      * 
      */
-    public void setFactRequest(List<FactRequest> factRequest) {
-        this.factRequest = factRequest;
+    public void setDataServiceEntities(List<JAXBElement<? extends DataServiceEntity>> dataServiceEntities) {
+        this.dataServiceEntities = dataServiceEntities;
     }
 
-    public boolean isSetFactRequest() {
-        return ((this.factRequest!= null)&&(!this.factRequest.isEmpty()));
+    public boolean isSetDataServiceEntities() {
+        return ((this.dataServiceEntities!= null)&&(!this.dataServiceEntities.isEmpty()));
     }
 
-    public void unsetFactRequest() {
-        this.factRequest = null;
+    public void unsetDataServiceEntities() {
+        this.dataServiceEntities = null;
     }
 
     public void equals(Object object, EqualsBuilder equalsBuilder) {
-        if (!(object instanceof FactRequestCollection)) {
+        if (!(object instanceof DataServiceEntityCollection)) {
             equalsBuilder.appendSuper(false);
             return ;
         }
         if (this == object) {
             return ;
         }
-        final FactRequestCollection that = ((FactRequestCollection) object);
-        equalsBuilder.append(this.getRequestId(), that.getRequestId());
-        equalsBuilder.append(this.getFactRequest(), that.getFactRequest());
+        final DataServiceEntityCollection that = ((DataServiceEntityCollection) object);
+        equalsBuilder.append(this.getDataServiceEntities(), that.getDataServiceEntities());
     }
 
     public boolean equals(Object object) {
-        if (!(object instanceof FactRequestCollection)) {
+        if (!(object instanceof DataServiceEntityCollection)) {
             return false;
         }
         if (this == object) {
@@ -150,8 +128,7 @@ public class FactRequestCollection
     }
 
     public void hashCode(HashCodeBuilder hashCodeBuilder) {
-        hashCodeBuilder.append(this.getRequestId());
-        hashCodeBuilder.append(this.getFactRequest());
+        hashCodeBuilder.append(this.getDataServiceEntities());
     }
 
     public int hashCode() {
@@ -162,14 +139,9 @@ public class FactRequestCollection
 
     public void toString(ToStringBuilder toStringBuilder) {
         {
-            long theRequestId;
-            theRequestId = this.getRequestId();
-            toStringBuilder.append("requestId", theRequestId);
-        }
-        {
-            List<FactRequest> theFactRequest;
-            theFactRequest = this.getFactRequest();
-            toStringBuilder.append("factRequest", theFactRequest);
+            List<JAXBElement<? extends DataServiceEntity>> theDataServiceEntities;
+            theDataServiceEntities = this.getDataServiceEntities();
+            toStringBuilder.append("dataServiceEntities", theDataServiceEntities);
         }
     }
 

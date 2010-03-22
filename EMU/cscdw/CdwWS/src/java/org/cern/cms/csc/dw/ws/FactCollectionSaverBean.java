@@ -20,7 +20,6 @@ import javax.jms.Session;
 import javax.xml.bind.JAXBElement;
 import org.cern.cms.csc.dw.exception.ComponentTypeNotAllowedInFactException;
 import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
-import org.cern.cms.csc.dw.dao.PersistDaoLocal;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.dw.model.fact.FactCollection;
@@ -41,6 +40,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
     private OntologyDaoLocal ontologyDao;
 
     public void saveFactCollection(FactCollection factCollection) throws Exception {
+        logger.finest("FC Saver bean: at start, number of facts: " + factCollection.getFacts().size() + ", number of fis: " + factCollection.getFactsItems().size());
 
         Set<JAXBElement<? extends Fact>> toRemove = new HashSet<JAXBElement<? extends Fact>>();
         ServiceInstructions instructions = factCollection.getServiceInstructions();
@@ -53,6 +53,8 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
 
             // Get a fact
             Fact fact = fi.getValue();
+            
+            logger.finest("FC Saver bean: Processing fact: " + fact.toString());
 
             // Get ontology component object from fact component id
             try {
@@ -83,9 +85,11 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
         }
 
         // Remove facts what need to be removed
+        logger.finest("FC Saver bean: number of facts after processing but before removing: " + factCollection.getFacts().size());
         for (JAXBElement<? extends Fact> fi: toRemove) {
             factCollection.getFacts().remove(fi);
         }
+        logger.finest("FC Saver bean: number of facts after processing and after removing: " + factCollection.getFacts().size());
 
         if (!factCollection.isSetFacts()) {
             throw new EmptyListReceivedException("factCollection", "Fact");
@@ -93,6 +97,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
 
         // Persist collection
         if (instructions.isPersist()) {
+            logger.finest("FC Saver bean: serviceInstructions.isPersist() = true, so sending this fact collection to entity saver queue");
             sendJMSMessageToEntitySaverQueue(factCollection);
         }
 

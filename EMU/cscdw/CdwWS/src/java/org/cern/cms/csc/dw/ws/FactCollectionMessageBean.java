@@ -27,6 +27,7 @@ public class FactCollectionMessageBean implements MessageListener {
         try {
             ObjectMessage omessage = (ObjectMessage) message;
             FactCollection fc = (FactCollection) omessage.getObject();
+            logger.finest("FC message bean: got a fact collection to message bean, sending to FactCollectionSaver");
             saver.saveFactCollection(fc);
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "Exception in FactCollectionMessageBean", ex);

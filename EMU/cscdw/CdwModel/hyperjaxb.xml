@@ -135,7 +135,7 @@
     </target>
 
     <target name="generate-model" depends="generate-ontology-schema,generate-fact-schema,hj-taskdef">
-
+        
 		<xjc destdir="${srcs}" extension="true">
 			<arg line="
 				-Xhyperjaxb3-ejb
@@ -145,6 +145,7 @@
 				-XhashCode
 				-XtoString
                 -Xsuperclass
+                -Xignoreonlythis
                 -simple-preserve
                 -Xcustomcode
                 -Xhibernate"/>
@@ -159,6 +160,16 @@
                 <pathelement location="${plugin-dir}"/>
 			</classpath>
 		</xjc>
+
+        <!-- Make DataServiceEntity not an entity (cannot use <hj:ignore>, because that also affects subclasses) -->
+        <replace file="${srcs}/org/cern/cms/csc/dw/model/dse/DataServiceEntity.java">
+            <replacefilter token="@Entity" value="//@Entity"/>
+            <replacefilter token="@Table" value="//@Table"/>
+            <replacefilter token="@Inheritance" value="//@Inheritance"/>
+            <replacefilter token="@Id" value="//@Id"/>
+            <replacefilter token="@Column" value="//@Column"/>
+            <replacefilter token="@GeneratedValue" value="//@GeneratedValue"/>
+        </replace>
 
         <!-- Fix ontology classes -->
 

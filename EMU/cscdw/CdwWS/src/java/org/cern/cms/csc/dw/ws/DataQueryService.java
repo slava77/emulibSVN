@@ -5,7 +5,6 @@
 
 package org.cern.cms.csc.dw.ws;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.jws.WebMethod;
@@ -19,7 +18,7 @@ import org.cern.cms.csc.dw.exception.InvalidEntityClassException;
  *
  * @author Evka
  */
-@WebService()
+@WebService(serviceName="cdw", name="dataqueryservice", targetNamespace="http://www.cern.ch/cms/csc/dw/ws/dataQueryService")
 @Stateless()
 public class DataQueryService {
 
@@ -33,7 +32,9 @@ public class DataQueryService {
      */
     @WebMethod(operationName = "entityExists")
     public Boolean entityExists(@WebParam(name = "className") final String className, @WebParam(name = "id") String id) throws InvalidEntityClassException {
-        return (entityDao.getEntityById(className, id) != null);
+        boolean ret = (entityDao.getEntityById(className, id) != null);
+        logger.fine("Data query service: got an entityExists query for class " + className + " with ID=" + id + ". Answer:" + ret);
+        return ret;
     }
 
 }
