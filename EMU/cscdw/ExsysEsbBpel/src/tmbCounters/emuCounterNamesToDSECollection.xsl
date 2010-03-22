@@ -20,18 +20,20 @@
     <xsl:template match="/emuCounterNames">
         <xsl:variable name="countersTimestamp" select="@dateTime"/>
         <xsl:variable name="countersVersion" select="@version"/>
-        <tns:tmbCounterDescriptionDSE>
-            <tns:version>
-                <xsl:value-of select="$countersVersion"/>
-            </tns:version>
-            <xsl:for-each select="count">
-                <xsl:if test="contains(@name, 'TC')">
-                    <xsl:element name="{concat('tns:', translate(@name, $uppercase, $lowercase), 'description')}">
-                        <xsl:value-of select="normalize-space(.)"/>
-                    </xsl:element>
-                </xsl:if>
-            </xsl:for-each>
-        </tns:tmbCounterDescriptionDSE>
+        <tns:dataServiceEntityCollection>
+            <tns:tmbCounterDescriptionDSE>
+                <tns:version>
+                    <xsl:value-of select="$countersVersion"/>
+                </tns:version>
+                <xsl:for-each select="count">
+                    <xsl:if test="contains(@name, 'TC')">
+                        <xsl:element name="{concat('tns:', translate(@name, $uppercase, $lowercase), 'description')}">
+                            <xsl:value-of select="normalize-space(.)"/>
+                        </xsl:element>
+                    </xsl:if>
+                </xsl:for-each>
+            </tns:tmbCounterDescriptionDSE>
+        </tns:dataServiceEntityCollection>
     </xsl:template>
 
 </xsl:stylesheet>

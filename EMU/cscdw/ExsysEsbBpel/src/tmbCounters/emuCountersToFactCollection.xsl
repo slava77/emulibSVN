@@ -34,13 +34,13 @@
                     <!-- these are TMB trigger counters -->
                     <xsl:for-each select="//sample/count">
                         <xsl:variable name="component" select="concat(@chamber, '/TMB')"/>
-                        <!-- Sliding Tmb Trigger Counters fact -->
-                        <xsl:if test="../@name = 'sliding'">
+                        <!-- Sliding Tmb Trigger Counters fact (DROPPED) -->
+                        <!--xsl:if test="../@name = 'sliding'">
                             <xsl:call-template name="slidingTmbTriggerCounterFact">
                                 <xsl:with-param name="timestamp" select="$countersTimestamp"/>
                                 <xsl:with-param name="component" select="$component"/>
                             </xsl:call-template>
-                        </xsl:if>
+                        </xsl:if-->
 
                         <!-- Cumulative Tmb Trigger Counters fact -->
                         <xsl:if test="../@name = 'cumulative'">
