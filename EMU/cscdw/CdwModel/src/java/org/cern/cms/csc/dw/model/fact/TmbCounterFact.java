@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.cern.cms.csc.dw.exception.InvalidEntityClassException;
 import org.cern.cms.csc.dw.model.dse.TmbCounterDescriptionDSE;
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.HashCode;
@@ -3895,9 +3896,26 @@ public class TmbCounterFact
         return componentClassType.equals(org.cern.cms.csc.dw.model.ontology.ComponentClassType.TMB);
     }
 
-    public void onReceive() throws org.cern.cms.csc.dw.exception.OnReceiveProcessingException {
+    @Override
+    public void onReceive(org.cern.cms.csc.dw.dao.EntityDaoLocal eDao) throws org.cern.cms.csc.dw.exception.OnReceiveProcessingException {
+        super.onReceive(eDao);
+        try {
+            setDescriptions(eDao.getEntityById(TmbCounterDescriptionDSE.class, getVersion()));
+        } catch (org.cern.cms.csc.dw.exception.InvalidEntityClassException iecEx) {
+            throw new org.cern.cms.csc.dw.exception.OnReceiveProcessingException(iecEx);
+        }
+    }
 
-        //setDescriptions()
+    @Override
+    public void onSave(org.cern.cms.csc.dw.dao.EntityDaoLocal eDao) throws org.cern.cms.csc.dw.exception.OnSaveProcessingException {
+        super.onSave(eDao);
+        try {
+            if (isSetDescriptions()) {
+                setDescriptions(eDao.getEntityById(TmbCounterDescriptionDSE.class, getVersion()));
+            }
+        } catch (org.cern.cms.csc.dw.exception.InvalidEntityClassException iecEx) {
+            throw new org.cern.cms.csc.dw.exception.OnSaveProcessingException(iecEx);
+        }
     }
 //--simple--preserve
 

@@ -17,5 +17,6 @@ import org.cern.cms.csc.dw.model.base.EntityBase;
 public interface EntityDaoLocal {
 
     EntityBase getEntityById(final String entityClassName, String id) throws InvalidEntityClassException;
+    <T extends EntityBase> T getEntityById(final Class<T> entityClass, final Object id) throws InvalidEntityClassException;
     
 }

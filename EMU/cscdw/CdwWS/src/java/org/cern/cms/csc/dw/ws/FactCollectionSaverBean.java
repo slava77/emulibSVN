@@ -18,6 +18,7 @@ import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.xml.bind.JAXBElement;
+import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.exception.ComponentTypeNotAllowedInFactException;
 import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
 import org.cern.cms.csc.dw.model.base.EntityBase;
@@ -38,6 +39,8 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
 
     @EJB
     private OntologyDaoLocal ontologyDao;
+    @EJB
+    private EntityDaoLocal entityDao;
 
     public void saveFactCollection(FactCollection factCollection) throws Exception {
         logger.finest("FC Saver bean: at start, number of facts: " + factCollection.getFacts().size() + ", number of fis: " + factCollection.getFactsItems().size());
@@ -66,7 +69,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
                 fact.setComponent(component);
                 fact.setComponentId(component.getId());
 
-                fact.onReceive();
+                fact.onReceive(entityDao);
 
                 // This fact is OK so we add it to factItems
                 FactCollectionFactsItem fcfi = new FactCollectionFactsItem();

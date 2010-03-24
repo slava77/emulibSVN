@@ -30,7 +30,7 @@ public class EntityDao implements EntityDaoLocal {
      * @return entity that you asked for or null if it doesn't exist
      * @throws InvalidEntityClassException this is thrown when the given class is not a subclass of EntityBase
      */
-    public EntityBase getEntityById(final Class entityClass, final Object id) throws InvalidEntityClassException {
+    public <T extends EntityBase> T getEntityById(final Class<T> entityClass, final Object id) throws InvalidEntityClassException {
         // check all the superclasses to see if it's a subclass of EntityBase, if not - throw InvalidEntityClassException
         boolean isEntity = EntityBase.class.isAssignableFrom(entityClass);
         if (!isEntity) {
@@ -38,11 +38,8 @@ public class EntityDao implements EntityDaoLocal {
         }
 
         // get the entity using the EntityManager
-        Object ret = em.find(entityClass, id);
-        if (ret instanceof EntityBase) {
-            return (EntityBase) ret;
-        }
-        return null;
+        T ret = em.find(entityClass, id);
+        return ret;
     }
 
     /**

@@ -7,6 +7,7 @@ package org.cern.cms.csc.dw.dao;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.FlushModeType;
@@ -24,6 +25,8 @@ public class PersistDao implements PersistDaoLocal {
     private static Logger logger = Logger.getLogger(PersistDao.class.getName());
     @PersistenceContext(unitName="CdwPU")
     private EntityManager em;
+    @EJB
+    private EntityDaoLocal entityDao;
 
     public void persist(EntityBase cdwEntityObject) throws PersistException, Exception {
 
@@ -33,7 +36,7 @@ public class PersistDao implements PersistDaoLocal {
         }
 
         // call an onSave trigger method to give the entity the last chance to prepare itself for persistance
-        cdwEntityObject.onSave(em);
+        cdwEntityObject.onSave(entityDao);
 
         // persist the entity
         try {

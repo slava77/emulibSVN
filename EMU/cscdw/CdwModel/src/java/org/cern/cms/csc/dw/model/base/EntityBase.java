@@ -6,7 +6,7 @@
 package org.cern.cms.csc.dw.model.base;
 
 import java.io.Serializable;
-import javax.persistence.EntityManager;
+import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.exception.OnReceiveProcessingException;
 import org.cern.cms.csc.dw.exception.OnSaveProcessingException;
 
@@ -16,6 +16,7 @@ import org.cern.cms.csc.dw.exception.OnSaveProcessingException;
  */
 public class EntityBase implements Serializable {
 
-    public void onSave(EntityManager em) throws OnSaveProcessingException { }
-    public void onReceive() throws OnReceiveProcessingException { }
+    public void onSave(EntityDaoLocal eDao) throws OnSaveProcessingException { }
+    public void onReceive(EntityDaoLocal eDao) throws OnReceiveProcessingException { }
+    
 }

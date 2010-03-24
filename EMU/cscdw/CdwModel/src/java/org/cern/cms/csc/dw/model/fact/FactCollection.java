@@ -382,11 +382,11 @@ public class FactCollection
 //--simple--preserve
 
     @Override
-    public void onSave(javax.persistence.EntityManager em) throws org.cern.cms.csc.dw.exception.OnSaveProcessingException {
+    public void onSave(org.cern.cms.csc.dw.dao.EntityDaoLocal eDao) throws org.cern.cms.csc.dw.exception.OnSaveProcessingException {
         factsItems = new ArrayList<FactCollectionFactsItem>();
         for (JAXBElement<? extends Fact> fi: getFacts()) {
             Fact fact = fi.getValue();
-            fact.onSave(em);
+            fact.onSave(eDao);
             FactCollectionFactsItem fcfi = new FactCollectionFactsItem();
             fcfi.setItemValue(fact);
             factsItems.add(fcfi);

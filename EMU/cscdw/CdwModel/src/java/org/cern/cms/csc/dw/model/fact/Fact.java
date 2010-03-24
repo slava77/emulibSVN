@@ -37,6 +37,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.cern.cms.csc.dw.exception.InvalidEntityClassException;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.model.ontology.Component;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XMLGregorianCalendarAsDateTime;
@@ -439,9 +440,13 @@ public abstract class Fact
     public abstract boolean checkComponentClassType(org.cern.cms.csc.dw.model.ontology.ComponentClassType componentClassType);
 
     @Override
-    public void onSave(javax.persistence.EntityManager em) throws org.cern.cms.csc.dw.exception.OnSaveProcessingException {
+    public void onSave(org.cern.cms.csc.dw.dao.EntityDaoLocal eDao) throws org.cern.cms.csc.dw.exception.OnSaveProcessingException {
         if (component != null) {
-            component = em.find(Component.class, component.getId());
+            try {
+                component = eDao.getEntityById(Component.class, component.getId());
+            } catch (org.cern.cms.csc.dw.exception.InvalidEntityClassException iecEx) {
+                throw new org.cern.cms.csc.dw.exception.OnSaveProcessingException(iecEx);
+            }
         } else {
             throw new org.cern.cms.csc.dw.exception.OnSaveProcessingException(new org.cern.cms.csc.dw.exception.ComponentNotFoundException(componentId));
         }

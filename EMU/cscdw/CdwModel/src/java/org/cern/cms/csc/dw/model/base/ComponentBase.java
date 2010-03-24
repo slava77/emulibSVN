@@ -17,7 +17,7 @@ import org.cern.cms.csc.dw.model.ontology.ComponentSynonym;
  * Ontology Component Base class
  * @author valdo
  */
-public abstract class ComponentBase {
+public abstract class ComponentBase extends EntityBase {
 
     /**
      * Component Class
