@@ -1,0 +1,910 @@
+# ascii dump of database
+
+# Datapoint/DpId
+DpName	TypeName	ID
+fwOT_FwCaenChannel	_FwFsmObjectType	102993
+fwTN_CSC_ME_N11_HV	_FwTreeNode	110702
+fwTN_CSC_ME_N11_C01_HV	_FwTreeNode	110956
+fwTN_CAEN/HVME11N/board00/channel006	_FwTreeNode	110957
+fwTN_CAEN/HVME11N/board00/channel007	_FwTreeNode	110958
+fwTN_CAEN/HVME11N/board00/channel008	_FwTreeNode	110959
+fwTN_CAEN/HVME11N/board00/channel009	_FwTreeNode	110960
+fwTN_CAEN/HVME11N/board00/channel010	_FwTreeNode	110961
+fwTN_CAEN/HVME11N/board00/channel011	_FwTreeNode	110962
+fwTN_CSC_ME_N11_C02_HV	_FwTreeNode	110963
+fwTN_CAEN/HVME11N/board00/channel012	_FwTreeNode	110964
+fwTN_CAEN/HVME11N/board00/channel013	_FwTreeNode	110965
+fwTN_CAEN/HVME11N/board00/channel014	_FwTreeNode	110966
+fwTN_CAEN/HVME11N/board00/channel015	_FwTreeNode	110967
+fwTN_CAEN/HVME11N/board00/channel016	_FwTreeNode	110968
+fwTN_CAEN/HVME11N/board00/channel017	_FwTreeNode	110969
+fwTN_CSC_ME_N11_C03_HV	_FwTreeNode	110970
+fwTN_CAEN/HVME11N/board00/channel018	_FwTreeNode	110971
+fwTN_CAEN/HVME11N/board00/channel019	_FwTreeNode	110972
+fwTN_CAEN/HVME11N/board00/channel020	_FwTreeNode	110973
+fwTN_CAEN/HVME11N/board00/channel021	_FwTreeNode	110974
+fwTN_CAEN/HVME11N/board00/channel022	_FwTreeNode	110975
+fwTN_CAEN/HVME11N/board00/channel023	_FwTreeNode	110976
+fwTN_CSC_ME_N11_C04_HV	_FwTreeNode	110977
+fwTN_CAEN/HVME11N/board00/channel024	_FwTreeNode	110978
+fwTN_CAEN/HVME11N/board00/channel025	_FwTreeNode	110979
+fwTN_CAEN/HVME11N/board00/channel026	_FwTreeNode	110980
+fwTN_CAEN/HVME11N/board00/channel027	_FwTreeNode	110981
+fwTN_CAEN/HVME11N/board02/channel000	_FwTreeNode	110982
+fwTN_CAEN/HVME11N/board02/channel001	_FwTreeNode	110983
+fwTN_CSC_ME_N11_C05_HV	_FwTreeNode	110984
+fwTN_CAEN/HVME11N/board02/channel002	_FwTreeNode	110985
+fwTN_CAEN/HVME11N/board02/channel003	_FwTreeNode	110986
+fwTN_CAEN/HVME11N/board02/channel004	_FwTreeNode	110987
+fwTN_CAEN/HVME11N/board02/channel005	_FwTreeNode	110988
+fwTN_CAEN/HVME11N/board02/channel006	_FwTreeNode	110989
+fwTN_CAEN/HVME11N/board02/channel007	_FwTreeNode	110990
+fwTN_CSC_ME_N11_C06_HV	_FwTreeNode	110991
+fwTN_CAEN/HVME11N/board02/channel008	_FwTreeNode	110992
+fwTN_CAEN/HVME11N/board02/channel009	_FwTreeNode	110993
+fwTN_CAEN/HVME11N/board02/channel010	_FwTreeNode	110994
+fwTN_CAEN/HVME11N/board02/channel011	_FwTreeNode	110995
+fwTN_CAEN/HVME11N/board02/channel012	_FwTreeNode	110996
+fwTN_CAEN/HVME11N/board02/channel013	_FwTreeNode	110997
+fwTN_CSC_ME_N11_C07_HV	_FwTreeNode	110998
+fwTN_CAEN/HVME11N/board02/channel014	_FwTreeNode	110999
+fwTN_CAEN/HVME11N/board02/channel015	_FwTreeNode	111000
+fwTN_CAEN/HVME11N/board02/channel016	_FwTreeNode	111001
+fwTN_CAEN/HVME11N/board02/channel017	_FwTreeNode	111002
+fwTN_CAEN/HVME11N/board02/channel018	_FwTreeNode	111003
+fwTN_CAEN/HVME11N/board02/channel019	_FwTreeNode	111004
+fwTN_CSC_ME_N11_C08_HV	_FwTreeNode	111005
+fwTN_CAEN/HVME11N/board02/channel020	_FwTreeNode	111006
+fwTN_CAEN/HVME11N/board02/channel021	_FwTreeNode	111007
+fwTN_CAEN/HVME11N/board02/channel022	_FwTreeNode	111008
+fwTN_CAEN/HVME11N/board02/channel023	_FwTreeNode	111009
+fwTN_CAEN/HVME11N/board02/channel024	_FwTreeNode	111010
+fwTN_CAEN/HVME11N/board02/channel025	_FwTreeNode	111011
+fwTN_CSC_ME_N11_C09_HV	_FwTreeNode	111012
+fwTN_CAEN/HVME11N/board02/channel026	_FwTreeNode	111013
+fwTN_CAEN/HVME11N/board02/channel027	_FwTreeNode	111014
+fwTN_CAEN/HVME11N/board04/channel000	_FwTreeNode	111015
+fwTN_CAEN/HVME11N/board04/channel001	_FwTreeNode	111016
+fwTN_CAEN/HVME11N/board04/channel002	_FwTreeNode	111017
+fwTN_CAEN/HVME11N/board04/channel003	_FwTreeNode	111018
+fwTN_CSC_ME_N11_C10_HV	_FwTreeNode	111019
+fwTN_CAEN/HVME11N/board04/channel004	_FwTreeNode	111020
+fwTN_CAEN/HVME11N/board04/channel005	_FwTreeNode	111021
+fwTN_CAEN/HVME11N/board04/channel006	_FwTreeNode	111022
+fwTN_CAEN/HVME11N/board04/channel007	_FwTreeNode	111023
+fwTN_CAEN/HVME11N/board04/channel008	_FwTreeNode	111024
+fwTN_CAEN/HVME11N/board04/channel009	_FwTreeNode	111025
+fwTN_CSC_ME_N11_C11_HV	_FwTreeNode	111026
+fwTN_CAEN/HVME11N/board04/channel010	_FwTreeNode	111027
+fwTN_CAEN/HVME11N/board04/channel011	_FwTreeNode	111028
+fwTN_CAEN/HVME11N/board04/channel012	_FwTreeNode	111029
+fwTN_CAEN/HVME11N/board04/channel013	_FwTreeNode	111030
+fwTN_CAEN/HVME11N/board04/channel014	_FwTreeNode	111031
+fwTN_CAEN/HVME11N/board04/channel015	_FwTreeNode	111032
+fwTN_CSC_ME_N11_C12_HV	_FwTreeNode	111033
+fwTN_CAEN/HVME11N/board04/channel016	_FwTreeNode	111034
+fwTN_CAEN/HVME11N/board04/channel017	_FwTreeNode	111035
+fwTN_CAEN/HVME11N/board04/channel018	_FwTreeNode	111036
+fwTN_CAEN/HVME11N/board04/channel019	_FwTreeNode	111037
+fwTN_CAEN/HVME11N/board04/channel020	_FwTreeNode	111038
+fwTN_CAEN/HVME11N/board04/channel021	_FwTreeNode	111039
+fwTN_CSC_ME_N11_C13_HV	_FwTreeNode	111040
+fwTN_CAEN/HVME11N/board04/channel022	_FwTreeNode	111041
+fwTN_CAEN/HVME11N/board04/channel023	_FwTreeNode	111042
+fwTN_CAEN/HVME11N/board04/channel024	_FwTreeNode	111043
+fwTN_CAEN/HVME11N/board04/channel025	_FwTreeNode	111044
+fwTN_CAEN/HVME11N/board04/channel026	_FwTreeNode	111045
+fwTN_CAEN/HVME11N/board04/channel027	_FwTreeNode	111046
+fwTN_CSC_ME_N11_C14_HV	_FwTreeNode	111047
+fwTN_CAEN/HVME11N/board06/channel000	_FwTreeNode	111048
+fwTN_CAEN/HVME11N/board06/channel001	_FwTreeNode	111049
+fwTN_CAEN/HVME11N/board06/channel002	_FwTreeNode	111050
+fwTN_CAEN/HVME11N/board06/channel003	_FwTreeNode	111051
+fwOT_FwCaenCrateSY1527	_FwFsmObjectType	115405
+fwOT_CMS_CSC_ME11_HV_Type	_FwFsmObjectType	397878
+
+# DpValue
+ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
+fwOT_FwCaenChannel.panel	_FwFsmObjectType	"CMS_CSCfw_ME11HV/ME11_HV_Channel.pnl"	0x101	02.03.2010 10:26:13.032
+fwOT_FwCaenChannel.components	_FwFsmObjectType	"", "", "FwCaenChannel_initialize(string domain, string device)
+{
+    
+         
+          dyn_string dpNames;
+     
+        dpNames[1] = device + \".actual.status:_online.._value\";  
+        dpNames[2] = device + \".actual.slotStatus:_online.._value\";               
+                 
+  	dpConnect(\"Check_Status\", TRUE, dpNames);  
+  
+}
+Check_Status(dyn_string dp, dyn_int qval)
+{  
+ //============================================================== 
+  
+   dyn_string split;
+    string LogName, domain, device;
+    string sdp;
+    sdp = dp;
+    int colon, dot, slash;
+    colon = strpos(sdp, \":\");
+    dot = strpos(sdp, \".\");
+    device = substr(sdp, colon + 1, dot - colon - 1);
+    LogName = fwDU_getLogicalName( device);
+    split=strsplit(LogName,\"/\");
+    domain=split[1];
+    //slash = strpos(LogName, \"/\");
+   // domain = substr(LogName, 0, slash);
+ 
+ 
+ //===============================================================    
+ bool onOff;
+ int vset,status_qual;
+ float vmon;
+ int actual_dot_status=qval[1];
+        dpGet(device+\".settings.onOff\",onOff);
+        dpGet(device+\".settings.v0\",vset);
+        dpGet(device+\".actual.vMon\",vmon);
+        dpGet(device+\".actual.vMon:_online.._invalid\",status_qual);
+
+int on_voltage;
+dpGet(\"on_voltage.\",on_voltage);        
+                
+	if ((actual_dot_status & 0xFFF8)!=0 || status_qual)
+	{
+                if (actual_dot_status == 33) { // to avoid flickering undervoltage state when using hardware signal (v0 -> v1)
+                  delay(60);
+                  int newStatus;
+                  dpGet(dp[1], newStatus);
+                  if (newStatus != actual_dot_status) {
+                    return;
+                  }
+                }
+		fwDU_setState(domain, device, \"ERROR\");//fwState = \"ERROR\";
+	}        
+	else if((actual_dot_status == 1 || actual_dot_status == 3)&& vset > (on_voltage-100) && vmon > (on_voltage-50))
+	{
+		fwDU_setState(domain, device, \"ON\");//fwState = \"ON\";
+	}
+	else if((actual_dot_status == 1 || actual_dot_status == 5 || actual_dot_status == 3)
+                 && onOff && vset > 2290 /*&& vset < 2610*/ && vmon > 2250)
+	{// this state is reached when switching ON->STANDBY 
+		fwDU_setState(domain, device, \"STANDBY\");//fwState = \"STANDBY\";
+	}
+ 	else if(actual_dot_status == 3 && vset > (on_voltage-100) && vmon > 2250)
+	{// this state is reached when switching STANDBY->ON
+		fwDU_setState(domain, device, \"STANDBY\");//fwState = \"STANDBY\";
+	}       
+	else
+	{
+		fwDU_setState(domain, device, \"OFF\");//fwState = \"OFF\";
+	}  
+    
+    
+  //===============================================================
+ 
+}
+", "FwCaenChannel_valueChanged( string domain, string device, string &fwState)
+{
+}
+", "FwCaenChannel_doCommand(string domain, string device, string command)
+{
+   int Time=60;
+//-----  
+  int status, status_new;
+  int vset;
+  bool isOn;
+//-----
+
+  int i;
+  time set_time;
+  int time_diff;
+  while(1){
+   dpGet(device+\".settings.v0:_online.._stime\",set_time); // important to do in the loop!
+   time_diff=getCurrentTime()-set_time;   
+   if(time_diff<15)delay(0,200);
+   else break;
+  } // while
+
+  int on_voltage;
+  dpGet(\"on_voltage.\",on_voltage);
+  
+//-----
+	if (command == \"ON\")
+	{
+                delay(0, 550);
+                dpGet(device+\".readBackSettings.v0\",vset);          
+                dpGet(device+\".actual.status\",status);          
+                dpGet(device+\".actual.isOn\",isOn);          
+        //-----------------------------------------  
+                if (vset != on_voltage) {
+                  dpSetWait(device+\".settings.v0\",on_voltage);
+                }
+                //if(vset > (on_voltage-50) && status==1)dpSetWait(device+\".actual.status\",status);  
+                //if(status==3)dpSetWait(device+\".actual.slotStatus\",false);  //\\\\
+                dpSetWait(device+\".actual.slotStatus\",false); // refresh state
+                if (!isOn) {
+                  dpSetWait(device+\".settings.onOff\",TRUE);
+                }
+        //-----------------------------------------  
+////                if(vset > 2950 && status==1)dpSetWait(device+\".actual.status\",status);                   
+	}
+	if (command == \"STANDBY\")
+	{
+                delay(0, 550);
+                dpGet(device+\".readBackSettings.v1\",vset);          
+                dpGet(device+\".actual.status\",status);          
+                dpGet(device+\".actual.isOn\",isOn);          
+        //-----------------------------------------                                  
+       //-----------------------------------------      
+                if (vset != 2300) {
+                  dpSetWait(device+\".settings.v1\",2300);
+                }
+                //if(status==1)dpSetWait(device+\".actual.status\",status);
+                //if(status==3)dpSetWait(device+\".actual.slotStatus\",false);//\\\\
+                dpSetWait(device+\".actual.slotStatus\",false); // refresh state
+                if (!isOn) {                
+                  dpSetWait(device+\".settings.onOff\",TRUE);
+                }
+/////                if(status==1)dpSetWait(device+\".actual.status\",status);
+        //-----------------------------------------                
+                                                           
+	}
+        if (command == \"OFF\")
+	{          
+                delay(0, 550);
+//                 dpGet(device+\".settings.v0\",vset);
+//                 dpSetWait(device+\".settings.v0\",vset); 
+                                            
+                dpGet(device+\".actual.status\",status); 
+                //if(status==0)dpSetWait(device+\".actual.status\",status);  
+                dpSetWait(device+\".actual.slotStatus\",false); // refresh state
+                
+                if((status & 0xFFF8)!=0){
+                 dpSetWait(device+\".settings.onOff\",TRUE);
+                 for(i=1;i<=15;i++){
+                  delay(1);
+                  dpGet(device+\".actual.status\",status_new);
+                  if((status_new & 0xFFF8)==0){
+                    dpSetWait(device+\".settings.onOff\",FALSE);
+                    break;
+                  }
+                 } 
+                } // if((status & 0xFFF8)!=0)
+		else dpSetWait(device+\".settings.onOff\",FALSE);
+              
+	}   
+  
+}
+
+
+
+// untouched backup
+// FwCaenChannel_doCommand(string domain, string device, string command)
+// {
+//    int Time=60;
+//-----  
+//   int status, status_new;
+//   int vset;
+//-----
+// 
+//   int i;
+//   time set_time;
+//   int time_diff;
+//   while(1){
+//    dpGet(device+\".settings.v0:_online.._stime\",set_time); // important to do in the loop!
+//    time_diff=getCurrentTime()-set_time;   
+//    if(time_diff<15)delay(0,200);
+//    else break;
+//   } // while
+// 
+//   int on_voltage;
+//   dpGet(\"on_voltage.\",on_voltage);
+//   
+//-----
+// 	if (command == \"ON\")
+// 	{
+//                 dpGet(device+\".settings.v0\",vset);          
+//                 dpGet(device+\".actual.status\",status);          
+        //-----------------------------------------  
+//                 dpSetWait(device+\".settings.v0\",on_voltage);
+//                 if(vset > (on_voltage-50) && status==1)dpSetWait(device+\".actual.status\",status);  
+//                 if(status==3)dpSetWait(device+\".actual.slotStatus\",false);  //\\\\
+// 		dpSetWait(device+\".settings.onOff\",TRUE);
+        //-----------------------------------------  
+////                if(vset > 2950 && status==1)dpSetWait(device+\".actual.status\",status);                   
+// 	}
+// 	if (command == \"STANDBY\")
+// 	{
+//                 dpGet(device+\".settings.v0\",vset);          
+//                 dpGet(device+\".actual.status\",status);          
+        //-----------------------------------------                                  
+       //-----------------------------------------                       
+//                 dpSetWait(device+\".settings.v0\",2600);
+//                 if(status==1)dpSetWait(device+\".actual.status\",status);
+//                 if(status==3)dpSetWait(device+\".actual.slotStatus\",false);//\\\\
+// 		dpSetWait(device+\".settings.onOff\",TRUE);
+/////                if(status==1)dpSetWait(device+\".actual.status\",status);
+        //-----------------------------------------                
+//                                                            
+// 	}
+//         if (command == \"OFF\")
+// 	{
+//                 dpGet(device+\".settings.v0\",vset);
+//                 dpSetWait(device+\".settings.v0\",vset); 
+//                                             
+//                 dpGet(device+\".actual.status\",status); 
+//                 if(status==0)dpSetWait(device+\".actual.status\",status);  
+//                 
+//                 if((status & 0xFFF8)!=0){
+//                  dpSetWait(device+\".settings.onOff\",TRUE);
+//                  for(i=1;i<=15;i++){
+//                   delay(1);
+//                   dpGet(device+\".actual.status\",status_new);
+//                   if((status_new & 0xFFF8)==0){
+//                     dpSetWait(device+\".settings.onOff\",FALSE);
+//                     break;
+//                   }
+//                  } 
+//                 } // if((status & 0xFFF8)!=0)
+// 		else dpSetWait(device+\".settings.onOff\",FALSE);
+//               
+// 	}   
+//   
+// }
+
+"	0x101	02.03.2010 10:26:13.063
+fwOT_FwCaenChannel.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "STANDBY", "FwStateAttention1", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	02.03.2010 10:26:13.063
+fwOT_FwCaenChannel.actions	_FwFsmObjectType	"ON/OFF", "", "1", "", "0", "ON/STANDBY", "", "1", "", "0", "ON/ON", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "OFF/STANDBY", "", "1", "", "0", "OFF/OFF", "", "1", "", "0", "STANDBY/OFF", "", "1", "", "0", "STANDBY/STANDBY", "", "1", "", "0", "STANDBY/ON", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0"	0x101	02.03.2010 10:26:13.063
+fwTN_CSC_ME_N11_HV.children	_FwTreeNode	"fwTN_CSC_ME_N11_C01_HV", "fwTN_CSC_ME_N11_C02_HV", "fwTN_CSC_ME_N11_C03_HV", "fwTN_CSC_ME_N11_C04_HV", "fwTN_CSC_ME_N11_C05_HV", "fwTN_CSC_ME_N11_C06_HV", "fwTN_CSC_ME_N11_C07_HV", "fwTN_CSC_ME_N11_C08_HV", "fwTN_CSC_ME_N11_C09_HV", "fwTN_CSC_ME_N11_C10_HV", "fwTN_CSC_ME_N11_C11_HV", "fwTN_CSC_ME_N11_C12_HV", "fwTN_CSC_ME_N11_C13_HV", "fwTN_CSC_ME_N11_C14_HV", "fwTN_CSC_ME_N11_C15_HV", "fwTN_CSC_ME_N11_C16_HV", "fwTN_CSC_ME_N11_C17_HV", "fwTN_CSC_ME_N11_C18_HV", "fwTN_CSC_ME_N11_C19_HV", "fwTN_CSC_ME_N11_C20_HV", "fwTN_CSC_ME_N11_C21_HV", "fwTN_CSC_ME_N11_C22_HV", "fwTN_CSC_ME_N11_C23_HV", "fwTN_CSC_ME_N11_C24_HV", "fwTN_CSC_ME_N11_C25_HV", "fwTN_CSC_ME_N11_C26_HV", "fwTN_CSC_ME_N11_C27_HV", "fwTN_CSC_ME_N11_C28_HV", "fwTN_CSC_ME_N11_C29_HV", "fwTN_CSC_ME_N11_C30_HV", "fwTN_CSC_ME_N11_C31_HV", "fwTN_CSC_ME_N11_C32_HV", "fwTN_CSC_ME_N11_C33_HV", "fwTN_CSC_ME_N11_C34_HV", "fwTN_CSC_ME_N11_C35_HV", "fwTN_CSC_ME_N11_C36_HV", "fwTN_CAEN/HVME11N"	0x101	01.03.2010 21:31:56.265
+fwTN_CSC_ME_N11_HV.device	_FwTreeNode	"System1:CSC_ME_N11_HV"	0x101	01.03.2010 09:22:39.761
+fwTN_CSC_ME_N11_HV.type	_FwTreeNode	"CMS_CSC_ME11_HV_Type"	0x101	01.03.2010 09:17:06.493
+fwTN_CSC_ME_N11_HV.parent	_FwTreeNode	"fwTN_CSC_ME_11_HV"	0x101	01.03.2010 09:17:06.493
+fwTN_CSC_ME_N11_HV.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.493
+fwTN_CSC_ME_N11_HV.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_HV", "CMS_CSCfw_ME11HV/ME11PN.pnl"	0x101	02.03.2010 09:56:06.611
+fwTN_CSC_ME_N11_C01_HV.children	_FwTreeNode	"fwTN_CAEN/HVME11N/board00/channel006", "fwTN_CAEN/HVME11N/board00/channel007", "fwTN_CAEN/HVME11N/board00/channel008", "fwTN_CAEN/HVME11N/board00/channel009", "fwTN_CAEN/HVME11N/board00/channel010", "fwTN_CAEN/HVME11N/board00/channel011"	0x101	01.03.2010 22:47:18.281
+fwTN_CSC_ME_N11_C01_HV.device	_FwTreeNode	"System1:CSC_ME_N11_C01_HV"	0x101	01.03.2010 09:22:39.761
+fwTN_CSC_ME_N11_C01_HV.type	_FwTreeNode	"CMS_CSC_ME11_HV_Type"	0x101	01.03.2010 09:17:06.493
+fwTN_CSC_ME_N11_C01_HV.parent	_FwTreeNode	"fwTN_CSC_ME_N11_HV"	0x101	01.03.2010 09:17:06.493
+fwTN_CSC_ME_N11_C01_HV.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.508
+fwTN_CSC_ME_N11_C01_HV.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C01_HV", "CMS_CSCfw_ME11HV/ME11PN.pnl"	0x101	02.03.2010 09:59:18.619
+fwTN_CAEN/HVME11N/board00/channel006.device	_FwTreeNode	"System1:CAEN/HVME11N/board00/channel006"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board00/channel006.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.508
+fwTN_CAEN/HVME11N/board00/channel006.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C01_HV"	0x101	01.03.2010 09:17:06.508
+fwTN_CAEN/HVME11N/board00/channel006.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.508
+fwTN_CAEN/HVME11N/board00/channel006.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C01_HV/P1", "CMS_CSCfw_ME11HV/ME11_HV_Channel.pnl"	0x101	02.03.2010 10:00:00.339
+fwTN_CAEN/HVME11N/board00/channel007.device	_FwTreeNode	"System1:CAEN/HVME11N/board00/channel007"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board00/channel007.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.524
+fwTN_CAEN/HVME11N/board00/channel007.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C01_HV"	0x101	01.03.2010 09:17:06.524
+fwTN_CAEN/HVME11N/board00/channel007.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.524
+fwTN_CAEN/HVME11N/board00/channel007.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C01_HV/P2", "CMS_CSCfw_ME11HV/ME11_HV_Channel.pnl"	0x101	02.03.2010 10:00:22.949
+fwTN_CAEN/HVME11N/board00/channel008.device	_FwTreeNode	"System1:CAEN/HVME11N/board00/channel008"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board00/channel008.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.524
+fwTN_CAEN/HVME11N/board00/channel008.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C01_HV"	0x101	01.03.2010 09:17:06.524
+fwTN_CAEN/HVME11N/board00/channel008.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.524
+fwTN_CAEN/HVME11N/board00/channel008.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C01_HV/P3", "CMS_CSCfw_ME11HV/ME11_HV_Channel.pnl"	0x101	02.03.2010 10:00:43.949
+fwTN_CAEN/HVME11N/board00/channel009.device	_FwTreeNode	"System1:CAEN/HVME11N/board00/channel009"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board00/channel009.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.540
+fwTN_CAEN/HVME11N/board00/channel009.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C01_HV"	0x101	01.03.2010 09:17:06.540
+fwTN_CAEN/HVME11N/board00/channel009.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.540
+fwTN_CAEN/HVME11N/board00/channel009.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C01_HV/P4", "CMS_CSCfw_ME11HV/ME11_HV_Channel.pnl"	0x101	02.03.2010 10:01:01.168
+fwTN_CAEN/HVME11N/board00/channel010.device	_FwTreeNode	"System1:CAEN/HVME11N/board00/channel010"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board00/channel010.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.540
+fwTN_CAEN/HVME11N/board00/channel010.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C01_HV"	0x101	01.03.2010 09:17:06.555
+fwTN_CAEN/HVME11N/board00/channel010.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.555
+fwTN_CAEN/HVME11N/board00/channel010.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C01_HV/P5", "CMS_CSCfw_ME11HV/ME11_HV_Channel.pnl"	0x101	02.03.2010 10:01:23.231
+fwTN_CAEN/HVME11N/board00/channel011.device	_FwTreeNode	"System1:CAEN/HVME11N/board00/channel011"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board00/channel011.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.555
+fwTN_CAEN/HVME11N/board00/channel011.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C01_HV"	0x101	01.03.2010 09:17:06.555
+fwTN_CAEN/HVME11N/board00/channel011.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.555
+fwTN_CAEN/HVME11N/board00/channel011.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C01_HV/P6", "CMS_CSCfw_ME11HV/ME11_HV_Channel.pnl"	0x101	02.03.2010 10:01:38.622
+fwTN_CSC_ME_N11_C02_HV.children	_FwTreeNode	"fwTN_CAEN/HVME11N/board00/channel012", "fwTN_CAEN/HVME11N/board00/channel013", "fwTN_CAEN/HVME11N/board00/channel014", "fwTN_CAEN/HVME11N/board00/channel015", "fwTN_CAEN/HVME11N/board00/channel016", "fwTN_CAEN/HVME11N/board00/channel017"	0x101	01.03.2010 22:47:54.359
+fwTN_CSC_ME_N11_C02_HV.device	_FwTreeNode	"System1:CSC_ME_N11_C02_HV"	0x101	01.03.2010 09:22:39.761
+fwTN_CSC_ME_N11_C02_HV.type	_FwTreeNode	"CMS_CSC_ME11_HV_Type"	0x101	01.03.2010 09:17:06.571
+fwTN_CSC_ME_N11_C02_HV.parent	_FwTreeNode	"fwTN_CSC_ME_N11_HV"	0x101	01.03.2010 09:17:06.571
+fwTN_CSC_ME_N11_C02_HV.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.571
+fwTN_CSC_ME_N11_C02_HV.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C02_HV", ""	0x101	01.03.2010 09:22:45.745
+fwTN_CAEN/HVME11N/board00/channel012.device	_FwTreeNode	"System1:CAEN/HVME11N/board00/channel012"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board00/channel012.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.571
+fwTN_CAEN/HVME11N/board00/channel012.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C02_HV"	0x101	01.03.2010 09:17:06.586
+fwTN_CAEN/HVME11N/board00/channel012.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.586
+fwTN_CAEN/HVME11N/board00/channel012.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C02_HV/P1", ""	0x101	01.03.2010 09:22:45.761
+fwTN_CAEN/HVME11N/board00/channel013.device	_FwTreeNode	"System1:CAEN/HVME11N/board00/channel013"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board00/channel013.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.586
+fwTN_CAEN/HVME11N/board00/channel013.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C02_HV"	0x101	01.03.2010 09:17:06.586
+fwTN_CAEN/HVME11N/board00/channel013.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.586
+fwTN_CAEN/HVME11N/board00/channel013.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C02_HV/P2", ""	0x101	01.03.2010 09:22:45.761
+fwTN_CAEN/HVME11N/board00/channel014.device	_FwTreeNode	"System1:CAEN/HVME11N/board00/channel014"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board00/channel014.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.602
+fwTN_CAEN/HVME11N/board00/channel014.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C02_HV"	0x101	01.03.2010 09:17:06.602
+fwTN_CAEN/HVME11N/board00/channel014.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.602
+fwTN_CAEN/HVME11N/board00/channel014.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C02_HV/P3", ""	0x101	01.03.2010 09:22:45.777
+fwTN_CAEN/HVME11N/board00/channel015.device	_FwTreeNode	"System1:CAEN/HVME11N/board00/channel015"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board00/channel015.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.602
+fwTN_CAEN/HVME11N/board00/channel015.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C02_HV"	0x101	01.03.2010 09:17:06.602
+fwTN_CAEN/HVME11N/board00/channel015.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.618
+fwTN_CAEN/HVME11N/board00/channel015.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C02_HV/P4", ""	0x101	01.03.2010 09:22:45.792
+fwTN_CAEN/HVME11N/board00/channel016.device	_FwTreeNode	"System1:CAEN/HVME11N/board00/channel016"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board00/channel016.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.618
+fwTN_CAEN/HVME11N/board00/channel016.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C02_HV"	0x101	01.03.2010 09:17:06.618
+fwTN_CAEN/HVME11N/board00/channel016.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.618
+fwTN_CAEN/HVME11N/board00/channel016.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C02_HV/P5", ""	0x101	01.03.2010 09:22:45.808
+fwTN_CAEN/HVME11N/board00/channel017.device	_FwTreeNode	"System1:CAEN/HVME11N/board00/channel017"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board00/channel017.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.633
+fwTN_CAEN/HVME11N/board00/channel017.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C02_HV"	0x101	01.03.2010 09:17:06.633
+fwTN_CAEN/HVME11N/board00/channel017.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.633
+fwTN_CAEN/HVME11N/board00/channel017.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C02_HV/P6", ""	0x101	01.03.2010 09:22:45.823
+fwTN_CSC_ME_N11_C03_HV.children	_FwTreeNode	"fwTN_CAEN/HVME11N/board00/channel018", "fwTN_CAEN/HVME11N/board00/channel019", "fwTN_CAEN/HVME11N/board00/channel020", "fwTN_CAEN/HVME11N/board00/channel021", "fwTN_CAEN/HVME11N/board00/channel022", "fwTN_CAEN/HVME11N/board00/channel023"	0x101	01.03.2010 22:48:41.781
+fwTN_CSC_ME_N11_C03_HV.device	_FwTreeNode	"System1:CSC_ME_N11_C03_HV"	0x101	01.03.2010 09:22:39.761
+fwTN_CSC_ME_N11_C03_HV.type	_FwTreeNode	"CMS_CSC_ME11_HV_Type"	0x101	01.03.2010 09:17:06.633
+fwTN_CSC_ME_N11_C03_HV.parent	_FwTreeNode	"fwTN_CSC_ME_N11_HV"	0x101	01.03.2010 09:17:06.633
+fwTN_CSC_ME_N11_C03_HV.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.649
+fwTN_CSC_ME_N11_C03_HV.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C03_HV", ""	0x101	01.03.2010 09:22:45.855
+fwTN_CAEN/HVME11N/board00/channel018.device	_FwTreeNode	"System1:CAEN/HVME11N/board00/channel018"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board00/channel018.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.649
+fwTN_CAEN/HVME11N/board00/channel018.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C03_HV"	0x101	01.03.2010 09:17:06.649
+fwTN_CAEN/HVME11N/board00/channel018.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.649
+fwTN_CAEN/HVME11N/board00/channel018.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C03_HV/P1", ""	0x101	01.03.2010 09:22:45.870
+fwTN_CAEN/HVME11N/board00/channel019.device	_FwTreeNode	"System1:CAEN/HVME11N/board00/channel019"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board00/channel019.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.665
+fwTN_CAEN/HVME11N/board00/channel019.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C03_HV"	0x101	01.03.2010 09:17:06.665
+fwTN_CAEN/HVME11N/board00/channel019.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.665
+fwTN_CAEN/HVME11N/board00/channel019.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C03_HV/P2", ""	0x101	01.03.2010 09:22:45.886
+fwTN_CAEN/HVME11N/board00/channel020.device	_FwTreeNode	"System1:CAEN/HVME11N/board00/channel020"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board00/channel020.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.665
+fwTN_CAEN/HVME11N/board00/channel020.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C03_HV"	0x101	01.03.2010 09:17:06.665
+fwTN_CAEN/HVME11N/board00/channel020.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.665
+fwTN_CAEN/HVME11N/board00/channel020.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C03_HV/P3", ""	0x101	01.03.2010 09:22:45.886
+fwTN_CAEN/HVME11N/board00/channel021.device	_FwTreeNode	"System1:CAEN/HVME11N/board00/channel021"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board00/channel021.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.680
+fwTN_CAEN/HVME11N/board00/channel021.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C03_HV"	0x101	01.03.2010 09:17:06.680
+fwTN_CAEN/HVME11N/board00/channel021.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.680
+fwTN_CAEN/HVME11N/board00/channel021.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C03_HV/P4", ""	0x101	01.03.2010 09:22:45.902
+fwTN_CAEN/HVME11N/board00/channel022.device	_FwTreeNode	"System1:CAEN/HVME11N/board00/channel022"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board00/channel022.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.680
+fwTN_CAEN/HVME11N/board00/channel022.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C03_HV"	0x101	01.03.2010 09:17:06.696
+fwTN_CAEN/HVME11N/board00/channel022.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.696
+fwTN_CAEN/HVME11N/board00/channel022.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C03_HV/P5", ""	0x101	01.03.2010 09:22:45.917
+fwTN_CAEN/HVME11N/board00/channel023.device	_FwTreeNode	"System1:CAEN/HVME11N/board00/channel023"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board00/channel023.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.696
+fwTN_CAEN/HVME11N/board00/channel023.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C03_HV"	0x101	01.03.2010 09:17:06.696
+fwTN_CAEN/HVME11N/board00/channel023.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.696
+fwTN_CAEN/HVME11N/board00/channel023.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C03_HV/P6", ""	0x101	01.03.2010 09:22:45.933
+fwTN_CSC_ME_N11_C04_HV.children	_FwTreeNode	"fwTN_CAEN/HVME11N/board00/channel024", "fwTN_CAEN/HVME11N/board00/channel025", "fwTN_CAEN/HVME11N/board00/channel026", "fwTN_CAEN/HVME11N/board00/channel027", "fwTN_CAEN/HVME11N/board02/channel000", "fwTN_CAEN/HVME11N/board02/channel001"	0x101	01.03.2010 22:49:17.328
+fwTN_CSC_ME_N11_C04_HV.device	_FwTreeNode	"System1:CSC_ME_N11_C04_HV"	0x101	01.03.2010 09:22:39.761
+fwTN_CSC_ME_N11_C04_HV.type	_FwTreeNode	"CMS_CSC_ME11_HV_Type"	0x101	01.03.2010 09:17:06.711
+fwTN_CSC_ME_N11_C04_HV.parent	_FwTreeNode	"fwTN_CSC_ME_N11_HV"	0x101	01.03.2010 09:17:06.711
+fwTN_CSC_ME_N11_C04_HV.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.711
+fwTN_CSC_ME_N11_C04_HV.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C04_HV", ""	0x101	01.03.2010 09:22:45.964
+fwTN_CAEN/HVME11N/board00/channel024.device	_FwTreeNode	"System1:CAEN/HVME11N/board00/channel024"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board00/channel024.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.711
+fwTN_CAEN/HVME11N/board00/channel024.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C04_HV"	0x101	01.03.2010 09:17:06.727
+fwTN_CAEN/HVME11N/board00/channel024.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.727
+fwTN_CAEN/HVME11N/board00/channel024.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C04_HV/P1", ""	0x101	01.03.2010 09:22:45.964
+fwTN_CAEN/HVME11N/board00/channel025.device	_FwTreeNode	"System1:CAEN/HVME11N/board00/channel025"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board00/channel025.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.727
+fwTN_CAEN/HVME11N/board00/channel025.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C04_HV"	0x101	01.03.2010 09:17:06.727
+fwTN_CAEN/HVME11N/board00/channel025.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.727
+fwTN_CAEN/HVME11N/board00/channel025.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C04_HV/P2", ""	0x101	01.03.2010 09:22:45.980
+fwTN_CAEN/HVME11N/board00/channel026.device	_FwTreeNode	"System1:CAEN/HVME11N/board00/channel026"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board00/channel026.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.743
+fwTN_CAEN/HVME11N/board00/channel026.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C04_HV"	0x101	01.03.2010 09:17:06.743
+fwTN_CAEN/HVME11N/board00/channel026.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.743
+fwTN_CAEN/HVME11N/board00/channel026.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C04_HV/P3", ""	0x101	01.03.2010 09:22:45.995
+fwTN_CAEN/HVME11N/board00/channel027.device	_FwTreeNode	"System1:CAEN/HVME11N/board00/channel027"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board00/channel027.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.743
+fwTN_CAEN/HVME11N/board00/channel027.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C04_HV"	0x101	01.03.2010 09:17:06.743
+fwTN_CAEN/HVME11N/board00/channel027.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.758
+fwTN_CAEN/HVME11N/board00/channel027.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C04_HV/P4", ""	0x101	01.03.2010 09:22:45.995
+fwTN_CAEN/HVME11N/board02/channel000.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel000"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel000.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.758
+fwTN_CAEN/HVME11N/board02/channel000.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C04_HV"	0x101	01.03.2010 09:17:06.758
+fwTN_CAEN/HVME11N/board02/channel000.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.758
+fwTN_CAEN/HVME11N/board02/channel000.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C04_HV/P5", ""	0x101	01.03.2010 09:22:46.011
+fwTN_CAEN/HVME11N/board02/channel001.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel001"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel001.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.774
+fwTN_CAEN/HVME11N/board02/channel001.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C04_HV"	0x101	01.03.2010 09:17:06.774
+fwTN_CAEN/HVME11N/board02/channel001.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.774
+fwTN_CAEN/HVME11N/board02/channel001.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C04_HV/P6", ""	0x101	01.03.2010 09:22:46.027
+fwTN_CSC_ME_N11_C05_HV.children	_FwTreeNode	"fwTN_CAEN/HVME11N/board02/channel002", "fwTN_CAEN/HVME11N/board02/channel003", "fwTN_CAEN/HVME11N/board02/channel004", "fwTN_CAEN/HVME11N/board02/channel005", "fwTN_CAEN/HVME11N/board02/channel006", "fwTN_CAEN/HVME11N/board02/channel007"	0x101	01.03.2010 22:49:55.109
+fwTN_CSC_ME_N11_C05_HV.device	_FwTreeNode	"System1:CSC_ME_N11_C05_HV"	0x101	01.03.2010 09:22:39.761
+fwTN_CSC_ME_N11_C05_HV.type	_FwTreeNode	"CMS_CSC_ME11_HV_Type"	0x101	01.03.2010 09:17:06.774
+fwTN_CSC_ME_N11_C05_HV.parent	_FwTreeNode	"fwTN_CSC_ME_N11_HV"	0x101	01.03.2010 09:17:06.774
+fwTN_CSC_ME_N11_C05_HV.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.789
+fwTN_CSC_ME_N11_C05_HV.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C05_HV", ""	0x101	01.03.2010 09:22:46.073
+fwTN_CAEN/HVME11N/board02/channel002.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel002"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel002.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.789
+fwTN_CAEN/HVME11N/board02/channel002.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C05_HV"	0x101	01.03.2010 09:17:06.789
+fwTN_CAEN/HVME11N/board02/channel002.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.789
+fwTN_CAEN/HVME11N/board02/channel002.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C05_HV/P1", ""	0x101	01.03.2010 09:22:46.073
+fwTN_CAEN/HVME11N/board02/channel003.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel003"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel003.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.805
+fwTN_CAEN/HVME11N/board02/channel003.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C05_HV"	0x101	01.03.2010 09:17:06.805
+fwTN_CAEN/HVME11N/board02/channel003.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.805
+fwTN_CAEN/HVME11N/board02/channel003.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C05_HV/P2", ""	0x101	01.03.2010 09:22:46.089
+fwTN_CAEN/HVME11N/board02/channel004.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel004"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel004.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.805
+fwTN_CAEN/HVME11N/board02/channel004.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C05_HV"	0x101	01.03.2010 09:17:06.805
+fwTN_CAEN/HVME11N/board02/channel004.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.805
+fwTN_CAEN/HVME11N/board02/channel004.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C05_HV/P3", ""	0x101	01.03.2010 09:22:46.105
+fwTN_CAEN/HVME11N/board02/channel005.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel005"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel005.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.821
+fwTN_CAEN/HVME11N/board02/channel005.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C05_HV"	0x101	01.03.2010 09:17:06.821
+fwTN_CAEN/HVME11N/board02/channel005.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.821
+fwTN_CAEN/HVME11N/board02/channel005.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C05_HV/P4", ""	0x101	01.03.2010 09:22:46.120
+fwTN_CAEN/HVME11N/board02/channel006.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel006"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel006.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.821
+fwTN_CAEN/HVME11N/board02/channel006.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C05_HV"	0x101	01.03.2010 09:17:06.836
+fwTN_CAEN/HVME11N/board02/channel006.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.836
+fwTN_CAEN/HVME11N/board02/channel006.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C05_HV/P5", ""	0x101	01.03.2010 09:22:46.120
+fwTN_CAEN/HVME11N/board02/channel007.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel007"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel007.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.836
+fwTN_CAEN/HVME11N/board02/channel007.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C05_HV"	0x101	01.03.2010 09:17:06.836
+fwTN_CAEN/HVME11N/board02/channel007.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.836
+fwTN_CAEN/HVME11N/board02/channel007.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C05_HV/P6", ""	0x101	01.03.2010 09:22:46.136
+fwTN_CSC_ME_N11_C06_HV.children	_FwTreeNode	"fwTN_CAEN/HVME11N/board02/channel008", "fwTN_CAEN/HVME11N/board02/channel009", "fwTN_CAEN/HVME11N/board02/channel010", "fwTN_CAEN/HVME11N/board02/channel011", "fwTN_CAEN/HVME11N/board02/channel012", "fwTN_CAEN/HVME11N/board02/channel013"	0x101	01.03.2010 22:50:31.906
+fwTN_CSC_ME_N11_C06_HV.device	_FwTreeNode	"System1:CSC_ME_N11_C06_HV"	0x101	01.03.2010 09:22:39.761
+fwTN_CSC_ME_N11_C06_HV.type	_FwTreeNode	"CMS_CSC_ME11_HV_Type"	0x101	01.03.2010 09:17:06.852
+fwTN_CSC_ME_N11_C06_HV.parent	_FwTreeNode	"fwTN_CSC_ME_N11_HV"	0x101	01.03.2010 09:17:06.852
+fwTN_CSC_ME_N11_C06_HV.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.852
+fwTN_CSC_ME_N11_C06_HV.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C06_HV", ""	0x101	01.03.2010 09:22:46.183
+fwTN_CAEN/HVME11N/board02/channel008.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel008"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel008.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.852
+fwTN_CAEN/HVME11N/board02/channel008.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C06_HV"	0x101	01.03.2010 09:17:06.868
+fwTN_CAEN/HVME11N/board02/channel008.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.868
+fwTN_CAEN/HVME11N/board02/channel008.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C06_HV/P1", ""	0x101	01.03.2010 09:22:46.198
+fwTN_CAEN/HVME11N/board02/channel009.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel009"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel009.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.868
+fwTN_CAEN/HVME11N/board02/channel009.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C06_HV"	0x101	01.03.2010 09:17:06.868
+fwTN_CAEN/HVME11N/board02/channel009.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.868
+fwTN_CAEN/HVME11N/board02/channel009.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C06_HV/P2", ""	0x101	01.03.2010 09:22:46.214
+fwTN_CAEN/HVME11N/board02/channel010.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel010"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel010.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.883
+fwTN_CAEN/HVME11N/board02/channel010.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C06_HV"	0x101	01.03.2010 09:17:06.883
+fwTN_CAEN/HVME11N/board02/channel010.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.883
+fwTN_CAEN/HVME11N/board02/channel010.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C06_HV/P3", ""	0x101	01.03.2010 09:22:46.230
+fwTN_CAEN/HVME11N/board02/channel011.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel011"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel011.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.883
+fwTN_CAEN/HVME11N/board02/channel011.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C06_HV"	0x101	01.03.2010 09:17:06.883
+fwTN_CAEN/HVME11N/board02/channel011.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.899
+fwTN_CAEN/HVME11N/board02/channel011.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C06_HV/P4", ""	0x101	01.03.2010 09:22:46.245
+fwTN_CAEN/HVME11N/board02/channel012.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel012"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel012.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.899
+fwTN_CAEN/HVME11N/board02/channel012.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C06_HV"	0x101	01.03.2010 09:17:06.899
+fwTN_CAEN/HVME11N/board02/channel012.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.899
+fwTN_CAEN/HVME11N/board02/channel012.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C06_HV/P5", ""	0x101	01.03.2010 09:22:46.261
+fwTN_CAEN/HVME11N/board02/channel013.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel013"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel013.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.914
+fwTN_CAEN/HVME11N/board02/channel013.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C06_HV"	0x101	01.03.2010 09:17:06.914
+fwTN_CAEN/HVME11N/board02/channel013.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.914
+fwTN_CAEN/HVME11N/board02/channel013.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C06_HV/P6", ""	0x101	01.03.2010 09:22:46.276
+fwTN_CSC_ME_N11_C07_HV.children	_FwTreeNode	"fwTN_CAEN/HVME11N/board02/channel014", "fwTN_CAEN/HVME11N/board02/channel015", "fwTN_CAEN/HVME11N/board02/channel016", "fwTN_CAEN/HVME11N/board02/channel017", "fwTN_CAEN/HVME11N/board02/channel018", "fwTN_CAEN/HVME11N/board02/channel019"	0x101	01.03.2010 22:51:21.765
+fwTN_CSC_ME_N11_C07_HV.device	_FwTreeNode	"System1:CSC_ME_N11_C07_HV"	0x101	01.03.2010 09:22:39.761
+fwTN_CSC_ME_N11_C07_HV.type	_FwTreeNode	"CMS_CSC_ME11_HV_Type"	0x101	01.03.2010 09:17:06.914
+fwTN_CSC_ME_N11_C07_HV.parent	_FwTreeNode	"fwTN_CSC_ME_N11_HV"	0x101	01.03.2010 09:17:06.914
+fwTN_CSC_ME_N11_C07_HV.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.930
+fwTN_CSC_ME_N11_C07_HV.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C07_HV", ""	0x101	01.03.2010 09:22:46.308
+fwTN_CAEN/HVME11N/board02/channel014.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel014"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel014.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.930
+fwTN_CAEN/HVME11N/board02/channel014.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C07_HV"	0x101	01.03.2010 09:17:06.930
+fwTN_CAEN/HVME11N/board02/channel014.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.930
+fwTN_CAEN/HVME11N/board02/channel014.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C07_HV/P1", ""	0x101	01.03.2010 09:22:46.323
+fwTN_CAEN/HVME11N/board02/channel015.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel015"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel015.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.946
+fwTN_CAEN/HVME11N/board02/channel015.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C07_HV"	0x101	01.03.2010 09:17:06.946
+fwTN_CAEN/HVME11N/board02/channel015.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.946
+fwTN_CAEN/HVME11N/board02/channel015.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C07_HV/P2", ""	0x101	01.03.2010 09:22:46.339
+fwTN_CAEN/HVME11N/board02/channel016.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel016"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel016.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.946
+fwTN_CAEN/HVME11N/board02/channel016.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C07_HV"	0x101	01.03.2010 09:17:06.946
+fwTN_CAEN/HVME11N/board02/channel016.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.946
+fwTN_CAEN/HVME11N/board02/channel016.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C07_HV/P3", ""	0x101	01.03.2010 09:22:46.355
+fwTN_CAEN/HVME11N/board02/channel017.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel017"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel017.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.961
+fwTN_CAEN/HVME11N/board02/channel017.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C07_HV"	0x101	01.03.2010 09:17:06.961
+fwTN_CAEN/HVME11N/board02/channel017.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.961
+fwTN_CAEN/HVME11N/board02/channel017.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C07_HV/P4", ""	0x101	01.03.2010 09:22:46.355
+fwTN_CAEN/HVME11N/board02/channel018.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel018"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel018.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.961
+fwTN_CAEN/HVME11N/board02/channel018.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C07_HV"	0x101	01.03.2010 09:17:06.977
+fwTN_CAEN/HVME11N/board02/channel018.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.977
+fwTN_CAEN/HVME11N/board02/channel018.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C07_HV/P5", ""	0x101	01.03.2010 09:22:46.370
+fwTN_CAEN/HVME11N/board02/channel019.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel019"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel019.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.977
+fwTN_CAEN/HVME11N/board02/channel019.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C07_HV"	0x101	01.03.2010 09:17:06.977
+fwTN_CAEN/HVME11N/board02/channel019.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.977
+fwTN_CAEN/HVME11N/board02/channel019.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C07_HV/P6", ""	0x101	01.03.2010 09:22:46.386
+fwTN_CSC_ME_N11_C08_HV.children	_FwTreeNode	"fwTN_CAEN/HVME11N/board02/channel020", "fwTN_CAEN/HVME11N/board02/channel021", "fwTN_CAEN/HVME11N/board02/channel022", "fwTN_CAEN/HVME11N/board02/channel023", "fwTN_CAEN/HVME11N/board02/channel024", "fwTN_CAEN/HVME11N/board02/channel025"	0x101	01.03.2010 22:51:54.406
+fwTN_CSC_ME_N11_C08_HV.device	_FwTreeNode	"System1:CSC_ME_N11_C08_HV"	0x101	01.03.2010 09:22:39.761
+fwTN_CSC_ME_N11_C08_HV.type	_FwTreeNode	"CMS_CSC_ME11_HV_Type"	0x101	01.03.2010 09:17:06.993
+fwTN_CSC_ME_N11_C08_HV.parent	_FwTreeNode	"fwTN_CSC_ME_N11_HV"	0x101	01.03.2010 09:17:06.993
+fwTN_CSC_ME_N11_C08_HV.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:06.993
+fwTN_CSC_ME_N11_C08_HV.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C08_HV", ""	0x101	01.03.2010 09:22:46.401
+fwTN_CAEN/HVME11N/board02/channel020.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel020"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel020.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:06.993
+fwTN_CAEN/HVME11N/board02/channel020.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C08_HV"	0x101	01.03.2010 09:17:07.008
+fwTN_CAEN/HVME11N/board02/channel020.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.008
+fwTN_CAEN/HVME11N/board02/channel020.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C08_HV/P1", ""	0x101	01.03.2010 09:22:46.417
+fwTN_CAEN/HVME11N/board02/channel021.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel021"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel021.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.008
+fwTN_CAEN/HVME11N/board02/channel021.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C08_HV"	0x101	01.03.2010 09:17:07.008
+fwTN_CAEN/HVME11N/board02/channel021.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.008
+fwTN_CAEN/HVME11N/board02/channel021.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C08_HV/P2", ""	0x101	01.03.2010 09:22:46.433
+fwTN_CAEN/HVME11N/board02/channel022.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel022"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel022.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.024
+fwTN_CAEN/HVME11N/board02/channel022.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C08_HV"	0x101	01.03.2010 09:17:07.024
+fwTN_CAEN/HVME11N/board02/channel022.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.024
+fwTN_CAEN/HVME11N/board02/channel022.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C08_HV/P3", ""	0x101	01.03.2010 09:22:46.448
+fwTN_CAEN/HVME11N/board02/channel023.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel023"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel023.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.024
+fwTN_CAEN/HVME11N/board02/channel023.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C08_HV"	0x101	01.03.2010 09:17:07.024
+fwTN_CAEN/HVME11N/board02/channel023.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.039
+fwTN_CAEN/HVME11N/board02/channel023.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C08_HV/P4", ""	0x101	01.03.2010 09:22:46.448
+fwTN_CAEN/HVME11N/board02/channel024.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel024"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel024.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.039
+fwTN_CAEN/HVME11N/board02/channel024.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C08_HV"	0x101	01.03.2010 09:17:07.039
+fwTN_CAEN/HVME11N/board02/channel024.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.039
+fwTN_CAEN/HVME11N/board02/channel024.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C08_HV/P5", ""	0x101	01.03.2010 09:22:46.464
+fwTN_CAEN/HVME11N/board02/channel025.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel025"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel025.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.055
+fwTN_CAEN/HVME11N/board02/channel025.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C08_HV"	0x101	01.03.2010 09:17:07.055
+fwTN_CAEN/HVME11N/board02/channel025.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.055
+fwTN_CAEN/HVME11N/board02/channel025.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C08_HV/P6", ""	0x101	01.03.2010 09:22:46.480
+fwTN_CSC_ME_N11_C09_HV.children	_FwTreeNode	"fwTN_CAEN/HVME11N/board02/channel026", "fwTN_CAEN/HVME11N/board02/channel027", "fwTN_CAEN/HVME11N/board04/channel000", "fwTN_CAEN/HVME11N/board04/channel001", "fwTN_CAEN/HVME11N/board04/channel002", "fwTN_CAEN/HVME11N/board04/channel003"	0x101	01.03.2010 22:52:28.437
+fwTN_CSC_ME_N11_C09_HV.device	_FwTreeNode	"System1:CSC_ME_N11_C09_HV"	0x101	01.03.2010 09:22:39.761
+fwTN_CSC_ME_N11_C09_HV.type	_FwTreeNode	"CMS_CSC_ME11_HV_Type"	0x101	01.03.2010 09:17:07.055
+fwTN_CSC_ME_N11_C09_HV.parent	_FwTreeNode	"fwTN_CSC_ME_N11_HV"	0x101	01.03.2010 09:17:07.055
+fwTN_CSC_ME_N11_C09_HV.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.071
+fwTN_CSC_ME_N11_C09_HV.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C09_HV", ""	0x101	01.03.2010 09:22:46.511
+fwTN_CAEN/HVME11N/board02/channel026.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel026"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel026.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.071
+fwTN_CAEN/HVME11N/board02/channel026.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C09_HV"	0x101	01.03.2010 09:17:07.071
+fwTN_CAEN/HVME11N/board02/channel026.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.071
+fwTN_CAEN/HVME11N/board02/channel026.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C09_HV/P1", ""	0x101	01.03.2010 09:22:46.526
+fwTN_CAEN/HVME11N/board02/channel027.device	_FwTreeNode	"System1:CAEN/HVME11N/board02/channel027"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board02/channel027.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.086
+fwTN_CAEN/HVME11N/board02/channel027.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C09_HV"	0x101	01.03.2010 09:17:07.086
+fwTN_CAEN/HVME11N/board02/channel027.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.086
+fwTN_CAEN/HVME11N/board02/channel027.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C09_HV/P2", ""	0x101	01.03.2010 09:22:46.542
+fwTN_CAEN/HVME11N/board04/channel000.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel000"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel000.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.086
+fwTN_CAEN/HVME11N/board04/channel000.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C09_HV"	0x101	01.03.2010 09:17:07.086
+fwTN_CAEN/HVME11N/board04/channel000.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.086
+fwTN_CAEN/HVME11N/board04/channel000.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C09_HV/P3", ""	0x101	01.03.2010 09:22:46.558
+fwTN_CAEN/HVME11N/board04/channel001.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel001"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel001.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.102
+fwTN_CAEN/HVME11N/board04/channel001.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C09_HV"	0x101	01.03.2010 09:17:07.102
+fwTN_CAEN/HVME11N/board04/channel001.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.102
+fwTN_CAEN/HVME11N/board04/channel001.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C09_HV/P4", ""	0x101	01.03.2010 09:22:46.558
+fwTN_CAEN/HVME11N/board04/channel002.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel002"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel002.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.102
+fwTN_CAEN/HVME11N/board04/channel002.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C09_HV"	0x101	01.03.2010 09:17:07.118
+fwTN_CAEN/HVME11N/board04/channel002.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.118
+fwTN_CAEN/HVME11N/board04/channel002.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C09_HV/P5", ""	0x101	01.03.2010 09:22:46.573
+fwTN_CAEN/HVME11N/board04/channel003.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel003"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel003.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.118
+fwTN_CAEN/HVME11N/board04/channel003.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C09_HV"	0x101	01.03.2010 09:17:07.118
+fwTN_CAEN/HVME11N/board04/channel003.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.118
+fwTN_CAEN/HVME11N/board04/channel003.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C09_HV/P6", ""	0x101	01.03.2010 09:22:46.589
+fwTN_CSC_ME_N11_C10_HV.children	_FwTreeNode	"fwTN_CAEN/HVME11N/board04/channel004", "fwTN_CAEN/HVME11N/board04/channel005", "fwTN_CAEN/HVME11N/board04/channel006", "fwTN_CAEN/HVME11N/board04/channel007", "fwTN_CAEN/HVME11N/board04/channel008", "fwTN_CAEN/HVME11N/board04/channel009"	0x101	01.03.2010 22:52:57.140
+fwTN_CSC_ME_N11_C10_HV.device	_FwTreeNode	"System1:CSC_ME_N11_C10_HV"	0x101	01.03.2010 09:22:39.761
+fwTN_CSC_ME_N11_C10_HV.type	_FwTreeNode	"CMS_CSC_ME11_HV_Type"	0x101	01.03.2010 09:17:07.133
+fwTN_CSC_ME_N11_C10_HV.parent	_FwTreeNode	"fwTN_CSC_ME_N11_HV"	0x101	01.03.2010 09:17:07.133
+fwTN_CSC_ME_N11_C10_HV.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.133
+fwTN_CSC_ME_N11_C10_HV.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C10_HV", ""	0x101	01.03.2010 09:22:46.620
+fwTN_CAEN/HVME11N/board04/channel004.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel004"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel004.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.133
+fwTN_CAEN/HVME11N/board04/channel004.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C10_HV"	0x101	01.03.2010 09:17:07.149
+fwTN_CAEN/HVME11N/board04/channel004.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.149
+fwTN_CAEN/HVME11N/board04/channel004.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C10_HV/P1", ""	0x101	01.03.2010 09:22:46.620
+fwTN_CAEN/HVME11N/board04/channel005.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel005"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel005.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.149
+fwTN_CAEN/HVME11N/board04/channel005.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C10_HV"	0x101	01.03.2010 09:17:07.149
+fwTN_CAEN/HVME11N/board04/channel005.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.149
+fwTN_CAEN/HVME11N/board04/channel005.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C10_HV/P2", ""	0x101	01.03.2010 09:22:46.636
+fwTN_CAEN/HVME11N/board04/channel006.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel006"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel006.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.164
+fwTN_CAEN/HVME11N/board04/channel006.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C10_HV"	0x101	01.03.2010 09:17:07.164
+fwTN_CAEN/HVME11N/board04/channel006.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.164
+fwTN_CAEN/HVME11N/board04/channel006.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C10_HV/P3", ""	0x101	01.03.2010 09:22:46.651
+fwTN_CAEN/HVME11N/board04/channel007.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel007"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel007.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.164
+fwTN_CAEN/HVME11N/board04/channel007.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C10_HV"	0x101	01.03.2010 09:17:07.164
+fwTN_CAEN/HVME11N/board04/channel007.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.180
+fwTN_CAEN/HVME11N/board04/channel007.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C10_HV/P4", ""	0x101	01.03.2010 09:22:46.651
+fwTN_CAEN/HVME11N/board04/channel008.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel008"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel008.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.180
+fwTN_CAEN/HVME11N/board04/channel008.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C10_HV"	0x101	01.03.2010 09:17:07.180
+fwTN_CAEN/HVME11N/board04/channel008.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.180
+fwTN_CAEN/HVME11N/board04/channel008.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C10_HV/P5", ""	0x101	01.03.2010 09:22:46.667
+fwTN_CAEN/HVME11N/board04/channel009.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel009"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel009.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.196
+fwTN_CAEN/HVME11N/board04/channel009.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C10_HV"	0x101	01.03.2010 09:17:07.196
+fwTN_CAEN/HVME11N/board04/channel009.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.196
+fwTN_CAEN/HVME11N/board04/channel009.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C10_HV/P6", ""	0x101	01.03.2010 09:22:46.683
+fwTN_CSC_ME_N11_C11_HV.children	_FwTreeNode	"fwTN_CAEN/HVME11N/board04/channel010", "fwTN_CAEN/HVME11N/board04/channel011", "fwTN_CAEN/HVME11N/board04/channel012", "fwTN_CAEN/HVME11N/board04/channel013", "fwTN_CAEN/HVME11N/board04/channel014", "fwTN_CAEN/HVME11N/board04/channel015"	0x101	01.03.2010 22:53:27.343
+fwTN_CSC_ME_N11_C11_HV.device	_FwTreeNode	"System1:CSC_ME_N11_C11_HV"	0x101	01.03.2010 09:22:39.761
+fwTN_CSC_ME_N11_C11_HV.type	_FwTreeNode	"CMS_CSC_ME11_HV_Type"	0x101	01.03.2010 09:17:07.196
+fwTN_CSC_ME_N11_C11_HV.parent	_FwTreeNode	"fwTN_CSC_ME_N11_HV"	0x101	01.03.2010 09:17:07.196
+fwTN_CSC_ME_N11_C11_HV.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.211
+fwTN_CSC_ME_N11_C11_HV.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C11_HV", ""	0x101	01.03.2010 09:22:46.714
+fwTN_CAEN/HVME11N/board04/channel010.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel010"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel010.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.211
+fwTN_CAEN/HVME11N/board04/channel010.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C11_HV"	0x101	01.03.2010 09:17:07.211
+fwTN_CAEN/HVME11N/board04/channel010.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.211
+fwTN_CAEN/HVME11N/board04/channel010.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C11_HV/P1", ""	0x101	01.03.2010 09:22:46.714
+fwTN_CAEN/HVME11N/board04/channel011.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel011"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel011.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.227
+fwTN_CAEN/HVME11N/board04/channel011.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C11_HV"	0x101	01.03.2010 09:17:07.227
+fwTN_CAEN/HVME11N/board04/channel011.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.227
+fwTN_CAEN/HVME11N/board04/channel011.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C11_HV/P2", ""	0x101	01.03.2010 09:22:46.730
+fwTN_CAEN/HVME11N/board04/channel012.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel012"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel012.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.227
+fwTN_CAEN/HVME11N/board04/channel012.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C11_HV"	0x101	01.03.2010 09:17:07.227
+fwTN_CAEN/HVME11N/board04/channel012.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.227
+fwTN_CAEN/HVME11N/board04/channel012.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C11_HV/P3", ""	0x101	01.03.2010 09:22:46.745
+fwTN_CAEN/HVME11N/board04/channel013.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel013"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel013.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.243
+fwTN_CAEN/HVME11N/board04/channel013.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C11_HV"	0x101	01.03.2010 09:17:07.243
+fwTN_CAEN/HVME11N/board04/channel013.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.243
+fwTN_CAEN/HVME11N/board04/channel013.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C11_HV/P4", ""	0x101	01.03.2010 09:22:46.745
+fwTN_CAEN/HVME11N/board04/channel014.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel014"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel014.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.243
+fwTN_CAEN/HVME11N/board04/channel014.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C11_HV"	0x101	01.03.2010 09:17:07.258
+fwTN_CAEN/HVME11N/board04/channel014.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.258
+fwTN_CAEN/HVME11N/board04/channel014.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C11_HV/P5", ""	0x101	01.03.2010 09:22:46.761
+fwTN_CAEN/HVME11N/board04/channel015.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel015"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel015.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.258
+fwTN_CAEN/HVME11N/board04/channel015.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C11_HV"	0x101	01.03.2010 09:17:07.258
+fwTN_CAEN/HVME11N/board04/channel015.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.258
+fwTN_CAEN/HVME11N/board04/channel015.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C11_HV/P6", ""	0x101	01.03.2010 09:22:46.776
+fwTN_CSC_ME_N11_C12_HV.children	_FwTreeNode	"fwTN_CAEN/HVME11N/board04/channel016", "fwTN_CAEN/HVME11N/board04/channel017", "fwTN_CAEN/HVME11N/board04/channel018", "fwTN_CAEN/HVME11N/board04/channel019", "fwTN_CAEN/HVME11N/board04/channel020", "fwTN_CAEN/HVME11N/board04/channel021"	0x101	01.03.2010 22:53:54.843
+fwTN_CSC_ME_N11_C12_HV.device	_FwTreeNode	"System1:CSC_ME_N11_C12_HV"	0x101	01.03.2010 09:22:39.761
+fwTN_CSC_ME_N11_C12_HV.type	_FwTreeNode	"CMS_CSC_ME11_HV_Type"	0x101	01.03.2010 09:17:07.274
+fwTN_CSC_ME_N11_C12_HV.parent	_FwTreeNode	"fwTN_CSC_ME_N11_HV"	0x101	01.03.2010 09:17:07.274
+fwTN_CSC_ME_N11_C12_HV.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.274
+fwTN_CSC_ME_N11_C12_HV.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C12_HV", ""	0x101	01.03.2010 09:22:46.792
+fwTN_CAEN/HVME11N/board04/channel016.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel016"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel016.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.274
+fwTN_CAEN/HVME11N/board04/channel016.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C12_HV"	0x101	01.03.2010 09:17:07.289
+fwTN_CAEN/HVME11N/board04/channel016.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.289
+fwTN_CAEN/HVME11N/board04/channel016.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C12_HV/P1", ""	0x101	01.03.2010 09:22:46.808
+fwTN_CAEN/HVME11N/board04/channel017.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel017"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel017.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.289
+fwTN_CAEN/HVME11N/board04/channel017.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C12_HV"	0x101	01.03.2010 09:17:07.289
+fwTN_CAEN/HVME11N/board04/channel017.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.289
+fwTN_CAEN/HVME11N/board04/channel017.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C12_HV/P2", ""	0x101	01.03.2010 09:22:46.823
+fwTN_CAEN/HVME11N/board04/channel018.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel018"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel018.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.305
+fwTN_CAEN/HVME11N/board04/channel018.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C12_HV"	0x101	01.03.2010 09:17:07.305
+fwTN_CAEN/HVME11N/board04/channel018.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.305
+fwTN_CAEN/HVME11N/board04/channel018.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C12_HV/P3", ""	0x101	01.03.2010 09:22:46.839
+fwTN_CAEN/HVME11N/board04/channel019.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel019"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel019.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.305
+fwTN_CAEN/HVME11N/board04/channel019.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C12_HV"	0x101	01.03.2010 09:17:07.305
+fwTN_CAEN/HVME11N/board04/channel019.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.321
+fwTN_CAEN/HVME11N/board04/channel019.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C12_HV/P4", ""	0x101	01.03.2010 09:22:46.839
+fwTN_CAEN/HVME11N/board04/channel020.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel020"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel020.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.321
+fwTN_CAEN/HVME11N/board04/channel020.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C12_HV"	0x101	01.03.2010 09:17:07.321
+fwTN_CAEN/HVME11N/board04/channel020.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.321
+fwTN_CAEN/HVME11N/board04/channel020.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C12_HV/P5", ""	0x101	01.03.2010 09:22:46.855
+fwTN_CAEN/HVME11N/board04/channel021.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel021"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel021.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:07.336
+fwTN_CAEN/HVME11N/board04/channel021.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C12_HV"	0x101	01.03.2010 09:17:07.336
+fwTN_CAEN/HVME11N/board04/channel021.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:07.336
+fwTN_CAEN/HVME11N/board04/channel021.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C12_HV/P6", ""	0x101	01.03.2010 09:22:46.870
+fwTN_CSC_ME_N11_C13_HV.children	_FwTreeNode	"fwTN_CAEN/HVME11N/board04/channel022", "fwTN_CAEN/HVME11N/board04/channel023", "fwTN_CAEN/HVME11N/board04/channel024", "fwTN_CAEN/HVME11N/board04/channel025", "fwTN_CAEN/HVME11N/board04/channel026", "fwTN_CAEN/HVME11N/board04/channel027"	0x101	01.03.2010 22:54:26.343
+fwTN_CSC_ME_N11_C13_HV.device	_FwTreeNode	"System1:CSC_ME_N11_C13_HV"	0x101	01.03.2010 09:22:39.761
+fwTN_CSC_ME_N11_C13_HV.type	_FwTreeNode	"CMS_CSC_ME11_HV_Type"	0x101	01.03.2010 09:17:08.539
+fwTN_CSC_ME_N11_C13_HV.parent	_FwTreeNode	"fwTN_CSC_ME_N11_HV"	0x101	01.03.2010 09:17:08.555
+fwTN_CSC_ME_N11_C13_HV.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:08.555
+fwTN_CSC_ME_N11_C13_HV.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C13_HV", ""	0x101	01.03.2010 09:22:46.901
+fwTN_CAEN/HVME11N/board04/channel022.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel022"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel022.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:08.555
+fwTN_CAEN/HVME11N/board04/channel022.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C13_HV"	0x101	01.03.2010 09:17:08.555
+fwTN_CAEN/HVME11N/board04/channel022.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:08.555
+fwTN_CAEN/HVME11N/board04/channel022.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C13_HV/P1", ""	0x101	01.03.2010 09:22:46.917
+fwTN_CAEN/HVME11N/board04/channel023.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel023"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel023.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:08.570
+fwTN_CAEN/HVME11N/board04/channel023.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C13_HV"	0x101	01.03.2010 09:17:08.570
+fwTN_CAEN/HVME11N/board04/channel023.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:08.570
+fwTN_CAEN/HVME11N/board04/channel023.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C13_HV/P2", ""	0x101	01.03.2010 09:22:46.933
+fwTN_CAEN/HVME11N/board04/channel024.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel024"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel024.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:08.570
+fwTN_CAEN/HVME11N/board04/channel024.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C13_HV"	0x101	01.03.2010 09:17:08.570
+fwTN_CAEN/HVME11N/board04/channel024.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:08.586
+fwTN_CAEN/HVME11N/board04/channel024.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C13_HV/P3", ""	0x101	01.03.2010 09:22:46.933
+fwTN_CAEN/HVME11N/board04/channel025.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel025"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel025.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:08.586
+fwTN_CAEN/HVME11N/board04/channel025.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C13_HV"	0x101	01.03.2010 09:17:08.586
+fwTN_CAEN/HVME11N/board04/channel025.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:08.586
+fwTN_CAEN/HVME11N/board04/channel025.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C13_HV/P4", ""	0x101	01.03.2010 09:22:46.948
+fwTN_CAEN/HVME11N/board04/channel026.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel026"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel026.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:08.602
+fwTN_CAEN/HVME11N/board04/channel026.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C13_HV"	0x101	01.03.2010 09:17:08.602
+fwTN_CAEN/HVME11N/board04/channel026.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:08.602
+fwTN_CAEN/HVME11N/board04/channel026.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C13_HV/P5", ""	0x101	01.03.2010 09:22:46.964
+fwTN_CAEN/HVME11N/board04/channel027.device	_FwTreeNode	"System1:CAEN/HVME11N/board04/channel027"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board04/channel027.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:08.602
+fwTN_CAEN/HVME11N/board04/channel027.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C13_HV"	0x101	01.03.2010 09:17:08.602
+fwTN_CAEN/HVME11N/board04/channel027.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:08.602
+fwTN_CAEN/HVME11N/board04/channel027.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C13_HV/P6", ""	0x101	01.03.2010 09:22:46.980
+fwTN_CSC_ME_N11_C14_HV.children	_FwTreeNode	"fwTN_CAEN/HVME11N/board06/channel000", "fwTN_CAEN/HVME11N/board06/channel001", "fwTN_CAEN/HVME11N/board06/channel002", "fwTN_CAEN/HVME11N/board06/channel003", "fwTN_CAEN/HVME11N/board06/channel004", "fwTN_CAEN/HVME11N/board06/channel005"	0x101	01.03.2010 22:55:02.406
+fwTN_CSC_ME_N11_C14_HV.device	_FwTreeNode	"System1:CSC_ME_N11_C14_HV"	0x101	01.03.2010 09:22:39.761
+fwTN_CSC_ME_N11_C14_HV.type	_FwTreeNode	"CMS_CSC_ME11_HV_Type"	0x101	01.03.2010 09:17:08.617
+fwTN_CSC_ME_N11_C14_HV.parent	_FwTreeNode	"fwTN_CSC_ME_N11_HV"	0x101	01.03.2010 09:17:08.617
+fwTN_CSC_ME_N11_C14_HV.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:08.617
+fwTN_CSC_ME_N11_C14_HV.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C14_HV", ""	0x101	01.03.2010 09:22:47.011
+fwTN_CAEN/HVME11N/board06/channel000.device	_FwTreeNode	"System1:CAEN/HVME11N/board06/channel000"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board06/channel000.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:08.633
+fwTN_CAEN/HVME11N/board06/channel000.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C14_HV"	0x101	01.03.2010 09:17:08.633
+fwTN_CAEN/HVME11N/board06/channel000.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:08.633
+fwTN_CAEN/HVME11N/board06/channel000.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C14_HV/P1", ""	0x101	01.03.2010 09:22:47.011
+fwTN_CAEN/HVME11N/board06/channel001.device	_FwTreeNode	"System1:CAEN/HVME11N/board06/channel001"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board06/channel001.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:08.633
+fwTN_CAEN/HVME11N/board06/channel001.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C14_HV"	0x101	01.03.2010 09:17:08.633
+fwTN_CAEN/HVME11N/board06/channel001.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:08.633
+fwTN_CAEN/HVME11N/board06/channel001.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C14_HV/P2", ""	0x101	01.03.2010 09:22:47.026
+fwTN_CAEN/HVME11N/board06/channel002.device	_FwTreeNode	"System1:CAEN/HVME11N/board06/channel002"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board06/channel002.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:08.648
+fwTN_CAEN/HVME11N/board06/channel002.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C14_HV"	0x101	01.03.2010 09:17:08.648
+fwTN_CAEN/HVME11N/board06/channel002.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:08.648
+fwTN_CAEN/HVME11N/board06/channel002.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C14_HV/P3", ""	0x101	01.03.2010 09:22:47.042
+fwTN_CAEN/HVME11N/board06/channel003.device	_FwTreeNode	"System1:CAEN/HVME11N/board06/channel003"	0x101	01.03.2010 09:22:39.761
+fwTN_CAEN/HVME11N/board06/channel003.type	_FwTreeNode	"FwCaenChannel"	0x101	01.03.2010 09:17:08.648
+fwTN_CAEN/HVME11N/board06/channel003.parent	_FwTreeNode	"fwTN_CSC_ME_N11_C14_HV"	0x101	01.03.2010 09:17:08.664
+fwTN_CAEN/HVME11N/board06/channel003.cu	_FwTreeNode	0	0x101	01.03.2010 09:17:08.664
+fwTN_CAEN/HVME11N/board06/channel003.userdata	_FwTreeNode	"1", "1", "CSC_ME_N11_C14_HV/P4", ""	0x101	01.03.2010 09:22:47.042
+fwOT_FwCaenCrateSY1527.panel	_FwFsmObjectType	"FwCaenCrateSY1527.pnl"	0x101	01.03.2010 09:17:07.336
+fwOT_FwCaenCrateSY1527.components	_FwFsmObjectType	"", "", "FwCaenCrateSY1527_initialize(string domain, string device)
+{
+  fwDU_setState(domain, device, \"ON\");
+}
+", "FwCaenCrateSY1527_valueChanged( string domain, string device, string &fwState )
+{
+}
+
+", "FwCaenCrateSY1527_doCommand(string domain, string device, string command)
+{
+	if (command == \"ON\")
+	{
+          DebugTN(\"Setting gen to false, device: \" + device);
+          setGenSignalStatus(device, false);
+          fwDU_setState(domain, device, \"ON\");
+	}
+	if (command == \"STANDBY\")
+	{
+          DebugTN(\"Setting gen to true, device: \" + device);
+          setGenSignalStatus(device, true);
+          fwDU_setState(domain, device, \"STANDBY\");
+	}
+	if (command == \"OFF\")
+	{
+          DebugTN(\"Setting gen to false, device: \" + device);
+          setGenSignalStatus(device, false);
+          fwDU_setState(domain, device, \"OFF\");
+	}
+	if (command == \"RESET\")
+	{
+	}
+}
+
+void setGenSignalStatus(string crateDp, bool onOff) {
+  if (onOff) {
+    dpSetWait(crateDp + \".Information.GenSignCfg\", 769);
+    delay(0, 500);
+    dpSetWait(crateDp + \".Information.GenSignCfg\", 771);
+  } else {
+    dpSetWait(crateDp + \".Information.GenSignCfg\", 769);
+    delay(0, 500);
+    dpSetWait(crateDp + \".Information.GenSignCfg\", 1);
+  }      
+}"	0x101	02.03.2010 10:01:46.607
+fwOT_FwCaenCrateSY1527.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "STANDBY", "FwStateAttention1", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	02.03.2010 10:01:46.591
+fwOT_FwCaenCrateSY1527.actions	_FwFsmObjectType	"ON/ON", "", "1", "", "0", "ON/STANDBY", "", "1", "", "0", "ON/OFF", "", "1", "", "0", "ON/RESET", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "OFF/STANDBY", "", "1", "", "0", "OFF/OFF", "", "1", "", "0", "OFF/RESET", "", "1", "", "0", "STANDBY/ON", "", "1", "", "0", "STANDBY/STANDBY", "", "1", "", "0", "STANDBY/OFF", "", "1", "", "0", "STANDBY/RESET", "", "1", "", "0", "ERROR/ON", "", "1", "", "0", "ERROR/STANDBY", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0", "ERROR/RESET", "", "1", "", "0"	0x101	02.03.2010 10:01:46.591
+fwOT_CMS_CSC_ME11_HV_Type.panel	_FwFsmObjectType	"CMS_CSCfw_ME11HV/ME11PN.pnl"	0x101	02.03.2010 10:26:34.204
+fwOT_CMS_CSC_ME11_HV_Type.components	_FwFsmObjectType		0x141	01.03.2010 22:03:05.375
+fwOT_CMS_CSC_ME11_HV_Type.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,STANDBY} )  move_to STANDBY|", "", "", "ON", "FwStateOKPhysics", "when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|when ( $ANY$FwCHILDREN in_state STANDBY )  move_to STANDBY|", "", "", "ERROR", "FwStateAttention3", "when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,STANDBY} )  move_to STANDBY|when ( $ALL$FwCHILDREN in_state {ON,OFF,STANDBY} )  move_to OFF|", "", "", "STANDBY", "FwStateAttention1", "when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|", "", ""	0x101	02.03.2010 10:26:34.235
+fwOT_CMS_CSC_ME11_HV_Type.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "ON/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0"	0x101	02.03.2010 10:26:34.235
+fwOT_CMS_CSC_ME11_HV_Type.parameters	_FwFsmObjectType		0x101	01.03.2010 22:03:05.390
