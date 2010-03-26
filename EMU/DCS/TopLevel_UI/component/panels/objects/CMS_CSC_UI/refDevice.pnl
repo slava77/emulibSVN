@@ -755,9 +755,7 @@ LANG:1 0
 0 0 0 0 0 0
 E E "main(bool enter)
 {
-  string name;
-  getValue(\"\", \"name\", name);
-  mouseOverObjects[name] = enter;
+  mouseOverObjects[this.name] = enter;
   if (enter) {
     emuui_highlightThisShapeOnly($refName + \".\" + shapeName);
     //setValue(shapeName, \"foreCol\", \"black_yellow\");
@@ -797,9 +795,7 @@ E E 0 1 1 1 1 E 0.774020156774913 0 1.02222222222222 -15.46427771556547 -30.6666
 2 0 0 0 0 0
 E E "main(bool enter)
 {
-  string name;
-  getValue(\"\", \"name\", name);
-  mouseOverObjects[name] = enter;
+  mouseOverObjects[this.name] = enter;
   if (enter) {
     emuui_highlightThisShapeOnly($refName + \".\" + shapeName);
     //setValue(shapeName, \"foreCol\", \"black_yellow\");
@@ -834,9 +830,7 @@ E E 0 1 1 2 1 E 1 0 1 -90 -10 1 E 90 10 110 30
 9 0 0 0 0 0
 E E "main(bool enter)
 {
-  string name;
-  getValue(\"\", \"name\", name);
-  mouseOverObjects[name] = enter;
+  mouseOverObjects[this.name] = enter;
   if (enter) {
     emuui_highlightThisShapeOnly($refName + \".\" + shapeName);
     //setValue(shapeName, \"foreCol\", \"black_yellow\");
@@ -875,9 +869,7 @@ LANG:1 1 !
 11 0 0 0 0 0
 E E "main(bool enter)
 {
-  string name;
-  getValue(\"\", \"name\", name);
-  mouseOverObjects[name] = enter;
+  mouseOverObjects[this.name] = enter;
   if (enter) {
     emuui_highlightThisShapeOnly($refName + \".\" + shapeName);
     //setValue(shapeName, \"foreCol\", \"black_yellow\");
@@ -912,9 +904,7 @@ E E 0 1 1 2 1 E 1 0 1 -100 -10 1 E 90 10 110 30
 1 0 0 0 0 0
 E E "main(bool enter)
 {
-  string name;
-  getValue(\"\", \"name\", name);
-  mouseOverObjects[name] = enter;
+  mouseOverObjects[this.name] = enter;
   if (enter) {
     emuui_highlightThisShapeOnly($refName + \".\" + shapeName);
     //setValue(shapeName, \"foreCol\", \"black_yellow\");
@@ -953,9 +943,7 @@ LANG:1 2 me
 14 0 0 0 0 0
 E E "main(bool enter)
 {
-  string name;
-  getValue(\"\", \"name\", name);
-  mouseOverObjects[name] = enter;
+  mouseOverObjects[this.name] = enter;
   if (enter) {
     emuui_highlightThisShapeOnly($refName + \".\" + shapeName);
     //setValue(shapeName, \"foreCol\", \"black_yellow\");
