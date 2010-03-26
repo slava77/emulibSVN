@@ -140,3 +140,13 @@ void emuui_showInfoMessage(string message, string title = "Info") {
                            title, 
                            makeDynString("$message:" + message));
 }
+
+void emuui_openBrowser(string url) {
+  if (_WIN32) {
+    system("start firefox.exe " + url + "\"");
+  }else if (_UNIX) {
+    system("firefox " + url);
+  } else {
+    emu_error("Unknown operating system - cannot start firefox");
+  }
+}

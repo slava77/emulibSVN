@@ -29,6 +29,8 @@ PANEL,-1 -1 1600 1175 N "_3DFace" 0
   if (dpExists(dp)) {
     dpConnect(\"updateVersionCB\", false, dp + \".componentVersionString\");
   }
+  dpConnect(\"pcratePowerUpBufferChangedCB\", true, emuui_getDpName(\"peripheralCrate_powerUpBuffer\", emuui_dummyMapping, ex));
+  if (emu_checkException(ex)) { return; }
 }
 
 void initConstants() {
@@ -97,7 +99,7 @@ bool releaseControl = false;
 bool topPanelInitialized;
 int chamberViewModeTimerThreadId = -1;
 
-bool developmentHost = false;
+bool developmentHost = true;
 bool releaseFsmOnExit = true;
 bool autoTakeControl = false;
 
@@ -264,6 +266,7 @@ void accessPrivilegesChangedCB(string dummy1, string dummy2) {
 
 /** This is called when Top FSM node (CMS_CSC) operation mode has changed. If it's detected that it's excluded - take the whole FSM tree. */
 void updateTopFsmNodeOperationModeCB(string fsmNode, int operationFlag) {
+  // auto take control
   delay(2);
   if (exiting || releaseControl) { return; }
   if (operationFlag == 0) { // not controllable
@@ -286,9 +289,88 @@ void updateTopFsmNodeOperationModeCB(string fsmNode, int operationFlag) {
   }
 }
 
+/** This one is connected to:
+      CMS_CSC|CMS_CSC_PLUS_FWM.fsm.currentState which tells us if plus side is in local i.e. CMS_CSC node
+      CMS_CSC|CMS_CSC_PLUS|CMS_CSC_PLUS_FWM.fsm.currentState which tells us if plus side is included anywhere
+      CMS_CSC|CMS_CSC_MINUS_FWM.fsm.currentState which tells us if minus side is in local i.e. CMS_CSC node
+      CMS_CSC|CMS_CSC_MINUS|CMS_CSC_MINUS_FWM.fsm.currentState which tells us if minus side is included anywhere
+      fwCU_CMS_CSC_PLUS.mode.owner - owner of the plus partition
+      fwCU_CMS_CSC_MINUS.mode.owner - owner of the minus partition
+*/      
+void updatePlusMinusNodesOperationModeCB(dyn_string dpNames, dyn_string includedExcludedInfo) {
+  bool plusInLocal = includedExcludedInfo[1] == \"INCLUDED\";
+  bool plusIncluded = includedExcludedInfo[2] == \"INCLUDED\";
+  bool minusInLocal = includedExcludedInfo[3] == \"INCLUDED\";
+  bool minusIncluded = includedExcludedInfo[4] == \"INCLUDED\";
+  string plusUser = includedExcludedInfo[5];
+  string minusUser = includedExcludedInfo[6];
+  strreplace(plusUser, \"cmsdcs:\", \"\");
+  strreplace(minusUser, \"cmsdcs:\", \"\");
+  bool showUsernames = true;
+  
+  // local or global?
+  if (plusInLocal && minusInLocal) { // local control
+    lblOwner.backCol = \"white\";
+    lblOwner.text = \"Control Owner - Local\";
+  } else if (!plusInLocal && plusIncluded && !minusInLocal && minusIncluded) { // central control
+    lblOwner.backCol = \"white\";
+    lblOwner.text = \"Control Owner - Central DCS\";
+  } else if (!plusIncluded && !minusIncluded) { // both excluded - nobody controls the system
+    lblOwner.backCol = \"advanceAlarmCamUna\";
+    lblOwner.text = \"NOBODY controls the system!\";
+    showUsernames = false;
+  } else if (plusIncluded && minusIncluded) { // both included - mixed control
+    lblOwner.backCol = \"yellow\";
+    lblOwner.text = \"Mixed Control Ownership\";
+  } else {
+    lblOwner.backCol = \"yellow\";
+    lblOwner.text = \"Partial Control\";
+    if (plusInLocal || minusInLocal) {
+      lblOwner.text = lblOwner.text + \" - Local\";
+    } else {
+      lblOwner.text = lblOwner.text + \" - Central DCS\";
+    }        
+  } 
+  
+  if (!lblOwner.visible) { lblOwner.visible = true; }
+
+  if (!showUsernames) {
+    return;
+  }
+  
+  // determine user names
+  string userFullName, description, userId, enabled, groupNames;
+  dyn_string ex;
+  fwAccessControl_getUser(plusUser, userFullName, description, userId, enabled, groupNames, ex);
+  plusUser = userFullName;
+  fwAccessControl_getUser(minusUser, userFullName, description, userId, enabled, groupNames, ex);
+  minusUser = userFullName;
+  if (emu_checkException(ex)) { 
+    emu_errorHandled(ex, \"updateTopFsmNodeOperationModeCB\");
+    plusUser = \"Cannot determine user - call expert\";
+    minusUser = plusUser;
+  }
+  
+  if (plusUser == \"\") plusUser = \"No User\";
+  if (minusUser == \"\") minusUser = \"No User\";
+  string users = plusUser;
+  if (plusUser != minusUser) {
+    users = plusUser + \" and \" + minusUser;
+  }
+  lblOwner.text = lblOwner.text + \" (\" + users + \")\";  
+}
+
+void pcratePowerUpBufferChangedCB(string dpName, dyn_string buffer) {
+  if (dynlen(buffer) > 0) {
+    btnErrorSummaryBack.backCol = \"advanceAlarmCamUna\";
+  } else {
+    btnErrorSummaryBack.backCol = \"_Button\";
+  }      
+}
+
 void updateVersionCB(string dpName, string version) {
   if (version != EMUUI_COMPONENT_VERSION) {
-    lblNewVersion.text = \"New version (\" + version + \") is available\\nRestart the UI when possible\";
+    lblNewVersion.text = \"New version (\" + version + \") is available\\nRestart the UI when possible\\nClick for info about UI versions\";
     lblNewVersion.visible = true;
   }
 }
@@ -530,14 +612,17 @@ LANG:1 0
   posY += 30;
   emuui_addFsmNode(\"CMS_CSC_MINUS\", posX, posY, references);
   posY += 30;
-//   emuui_addFsmNode(\"CSC_GAS\", posX, posY, references);
-//   posY += 30;
-//   emuui_addFsmNode(\"CSC_COOLING\", posX, posY, references);
-//   posY += 30;
    
   if (autoTakeControl) {
     fwCU_connectOperationMode(\"updateTopFsmNodeOperationModeCB\", \"CMS_CSC\");
   }
+  dpConnect(\"updatePlusMinusNodesOperationModeCB\", true,
+            \"CMS_CSC|CMS_CSC_PLUS_FWM.fsm.currentState\",
+            \"CMS_CSC|CMS_CSC_PLUS|CMS_CSC_PLUS_FWM.fsm.currentState\",
+            \"CMS_CSC|CMS_CSC_MINUS_FWM.fsm.currentState\",
+            \"CMS_CSC|CMS_CSC_MINUS|CMS_CSC_MINUS_FWM.fsm.currentState\",
+            \"fwCU_CMS_CSC_PLUS.mode.owner\",
+            \"fwCU_CMS_CSC_MINUS.mode.owner\");
 }
 " 0
  E 0 0 1 0 1 E 1.68181818181818 0 1.40127388535031 -107.7272727272726 -305.2866242038144 0 E 70 853 291 1011
@@ -996,7 +1081,7 @@ E E 0 1 1 2 1 E 1 0 1 -219 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png"
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 1961.562073511598 -190 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 1050.421990932297 -310 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -1015,7 +1100,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 49.41116697425178 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 49.24774230768362 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
@@ -1478,7 +1563,7 @@ LANG:1 29 UI Version 1.0.0 (2009/07/22)
 2 41
 "lblNewVersion"
 ""
-1 710 40 E E E 1 E 0 E N "_WindowText" E N "yellow" E E
+1 714 40 E E E 1 E 0 E N "_WindowText" E N "yellow" E E
  E E
 51 0 0 0 0 0
 E E E
@@ -1488,8 +1573,13 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 710 40 888 74
-1 2 2 "0s" 0 0 0 192 0 0  710 40 2
+E "main()
+{
+  string url = \"https://twiki.cern.ch/twiki/bin/view/CMS/CSCDCS\";
+  emuui_openBrowser(url);
+}" 0
+ 0 1 1 2 1 E U  1 E 714 40 892 92
+1 2 2 "0s" 0 0 0 192 0 0  714 40 3
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -1498,6 +1588,110 @@ LANG:1 33 New version (1.0.22) is available
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 28 Restart the UI when possible
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 32 Click for info about UI versions
+26 88
+"btnExpertActions"
+""
+1 330.7692307692308 990 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+102 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0  198 1048 372 1075
+ 0 1
+LANG:1 14 Expert Actions
+"" 0 0 0 0 0
+ 2 1 1
+LANG:1 36 Open Excluded Channels Summary Panel
+"1" 0 0 0 0 0
+ 1 1
+LANG:1 34 Open Xmas Monitoring Control Panel
+"2" 0 0 0 0 0
+ E "main(string id)
+{
+  emu_info(\"Executing expert action: \" + this.textItemId(id));
+  switch (id) {
+    case 1:
+      ChildPanelOnCentral(\"CMS_CSCfw_Supervisor/emuEmuExcludedSummary.pnl\", \"Excluded Channels Summary\", makeDynString());
+      break;
+    case 2:
+//      ChildPanelOnCentral(\"CMS_CSCfw_HV_CC/emuLVSubSystemOperation.pnl\", \"Xmas Monitoring Control Panel\", makeDynString());
+      ChildPanelOnCentral(\"CMS_CSC_UI/XmasMonitoringControl.pnl\", \"Xmas Monitoring Control Panel\", makeDynString());
+      break;
+    default:
+      break;
+  }
+}" 0
+0 
+6 89
+"btnErrorSummaryBack"
+""
+1 830 600 E E E 1 E 1 E N {0,0,0} E N "_Button" E E
+ E E
+103 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E "main()
+{
+  ChildPanelOnCentral(\"CMS_CSCfw_Supervisor/emuEmuErrorSummarySub.pnl\", \"Error Summary\", makeDynString());
+}" 0
+ 0 1 1 2 1 E 4.272727272727273 0 1 -428.1818181818181 790 1 E 360 60 470 83
+2 90
+"btnErrorSummaryLabel"
+""
+1 1110 854 E E E 1 E 1 E N "_ButtonText" E N "_Transparent" E E
+ E E
+104 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E "main()
+{
+  ChildPanelOnCentral(\"CMS_CSCfw_Supervisor/emuEmuErrorSummarySub.pnl\", \"Error Summary\", makeDynString());
+}" 0
+ 0 1 1 2 1 E U  1 E 1110 854 1576 867
+0 2 2 "0s" 0 0 0 65 0 0  1110 854 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 51 Open Error & Peripheral Crate configuration Summary
+2 91
+"lblOwner"
+""
+1 800 425 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+105 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 615 425 985 448
+1 2 2 "0s" 0 0 0 193 0 0  800 425 1
+1
+LANG:1 26 Arial,14,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 42 Control owner: Central DCS (Evaldas Juska)
 2 31
 "lblUpsOnBattery"
 ""
@@ -1525,12 +1719,12 @@ LANG:1 26 All LV is being turned OFF
 LANG:1 26 Arial,11,-1,5,75,0,0,0,0,0
 0 1
 LANG:1 29 Make sure it is and stays OFF
-26 88
-"btnExpertActions"
+13 93
+"PUSH_BUTTON1"
 ""
-1 150.7692307692308 990 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 19.99999999999999 1050 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
-102 0 0 0 0 0
+107 0 0 0 0 0
 E E E
 0
 1
@@ -1540,72 +1734,16 @@ LANG:1 0
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0  18 1048 192 1075
- 0 1
-LANG:1 14 Expert Actions
-"" 0 0 0 0 0
- 2 1 1
-LANG:1 36 Open Excluded Channels Summary Panel
-"1" 0 0 0 0 0
- 1 1
-LANG:1 34 Open Xmas Monitoring Control Panel
-"2" 0 0 0 0 0
- E "main(string id)
-{
-  emu_info(\"Executing expert action: \" + this.textItemId(id));
-  switch (id) {
-    case 1:
-      ChildPanelOnCentral(\"CMS_CSCfw_Supervisor/emuEmuExcludedSummary.pnl\", \"Excluded Channels Summary\", makeDynString());
-      break;
-    case 2:
-//      ChildPanelOnCentral(\"CMS_CSCfw_HV_CC/emuLVSubSystemOperation.pnl\", \"Xmas Monitoring Control Panel\", makeDynString());
-      ChildPanelOnCentral(\"CMS_CSC_UI/XmasMonitoringControl.pnl\", \"Xmas Monitoring Control Panel\", makeDynString());
-      break;
-    default:
-      break;
-  }
-}" 0
-0 
-6 89
-"RECTANGLE13"
-""
-1 830 600 E E E 1 E 1 E N {0,0,0} E N "_Button" E E
- E E
-103 0 0 0 0 0
-E E E
-4
-1
-LANG:1 0 
 
+T 
 1
-"dashclr"N "_Transparent"
-E "main()
+LANG:1 22 Operation Help (twiki)
+"main()
 {
-  ChildPanelOnCentral(\"CMS_CSCfw_Supervisor/emuEmuErrorSummarySub.pnl\", \"Error Summary\", makeDynString());
+  string url = \"https://twiki.cern.ch/twiki/bin/view/CMS/CSCOperationsDCS\";
+  emuui_openBrowser(url);
 }" 0
- 0 1 1 2 1 E 4.272727272727273 0 1 -428.1818181818181 790 1 E 360 60 470 83
-2 90
-"PRIMITIVE_TEXT14"
-""
-1 1110 854 E E E 1 E 1 E N "_ButtonText" E N "_Transparent" E E
- E E
-104 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E "main()
-{
-  ChildPanelOnCentral(\"CMS_CSCfw_Supervisor/emuEmuErrorSummarySub.pnl\", \"Error Summary\", makeDynString());
-}" 0
- 0 1 1 2 1 E U  1 E 1110 854 1576 867
-0 2 2 "0s" 0 0 0 65 0 0  1110 854 1
-1
-LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
-0 1
-LANG:1 51 Open Error & Peripheral Crate configuration Summary
+ E E E
 0
 LAYER, 1 
 1
