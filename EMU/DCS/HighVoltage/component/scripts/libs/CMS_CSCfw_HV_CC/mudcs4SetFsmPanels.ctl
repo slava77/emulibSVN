@@ -343,7 +343,7 @@ s="_PSU";
   dynAppend(panels,dir_oper+"/"+p);
 //  mudcsDebug(o+" "+panels[dynlen(panels)]);
   dpSet(objs[i]+".ui.panels:_original.._value",panels);
-    label=o_cut;
+    label=substr(o_cut,strlen("CSC_ME_"));
   dpSet(objs[i]+".ui.label:_original.._value",label);
   continue;
  }  
@@ -411,8 +411,8 @@ s="_WIENER_CRATE_SNMP";
 //  mudcsDebug(o+" "+panels[dynlen(panels)]);
   dpSet(objs[i]+".ui.panels:_original.._value",panels);
     label=substr(o_cut,strpos(o_cut,"CRATE"));
-    if(strpos(label,"500")>=0)label="CRATE_MINUS";
-    else if(strpos(label,"600")>=0)label="CRATE_PLUS";   
+    if(strpos(label,"500")>=0)label="LV_HV_CRATE_MINUS";
+    else if(strpos(label,"600")>=0)label="LV_HV_CRATE_PLUS";   
   dpSet(objs[i]+".ui.label:_original.._value",label);
   continue;
  }

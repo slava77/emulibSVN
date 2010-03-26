@@ -14,6 +14,9 @@
 #uses "CMS_CSCfw_HV_CC/mudcs4SetFsmPanels.ctl"
 #uses "CMS_CSCfw_HV_CC/mudcs5Archive.ctl"
 
+#uses "CMS_CSCfw_GAS/emuGas.ctl"
+#uses "CMS_CSCfw_GAS/mudcs5GasSetPanels.ctl"
+
  #uses "CMS_CSCfw_LV_CRB/mudcs9XAlertReconfigAllSlowControls.ctl"
 #uses "aes.ctl"
 
@@ -93,7 +96,7 @@ mudcsDimConfigAllManagers(exceptionInfo);
 if(dynlen(exceptionInfo)>0){mudcsEmuMessages("vs:"+exceptionInfo[1]);return;}
 
 delay(5);
-mudcsAllDimManagersStart();
+if(!CSC_fwG_g_P5_SIM_AT_904)mudcsAllDimManagersStart();
 
 
 mudcsFsmPanelsCheck();
@@ -140,7 +143,7 @@ mudcsServerCheck(){
 mudcsDimCheckIsRun(string dpName, dyn_int ctrl_mans){
 
 delay(5);
-mudcsAllDimManagersStart(true);
+if(!CSC_fwG_g_P5_SIM_AT_904)mudcsAllDimManagersStart(true);
 
   
 }

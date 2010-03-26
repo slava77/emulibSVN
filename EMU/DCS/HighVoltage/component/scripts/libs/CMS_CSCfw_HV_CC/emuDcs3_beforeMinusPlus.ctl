@@ -661,67 +661,6 @@ dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_o.Wheels_o.Ring_DUBNA.HVsetList"
 
 }
 
-
-//====================================================================
-
-
-mudcsAddReference(string type, string side, string  parent_node_test)
-{
-
-
-dyn_string ds;  
-string search_fsm;
-string type_fsm;
-
-if(type=="ME11"){
- type_fsm="CMS_CSC_ME11_HV_Type"; 
- if(side=="m")search_fsm=CSC_fwG_g_Dubna_System_Name+":*CSC_ME_N11_HV";
- else if(side=="p")search_fsm=CSC_fwG_g_Dubna_System_Name+":*CSC_ME_P11_HV";  
-  
-}
-else if(type=="HV_PR"){
- type_fsm=CSC_fwG_g_NodeLogicalFsmType;
- if(side=="m")search_fsm="*CSC_HV_HOST_500";
- else if(side=="p")search_fsm="*CSC_HV_HOST_600";    
-}
-else if(type=="PSU"){
- type_fsm="CSC_LV_TREE_NODES";
- if(side=="m")search_fsm=CSC_fwG_g_CRB_SYSTEM_NAME+":*LV_CR1_MINUS_PSU";  
- else if(side=="p")search_fsm=CSC_fwG_g_CRB_SYSTEM_NAME+":*LV_CR1_PLUS_PSU";  
-}
-else if(type=="LV_HV"){
- type_fsm=CSC_fwG_g_NodeLogicalFsmType;  
- if(side=="m")search_fsm="*CRATE_SNMP_500";
- else if(side=="p")search_fsm="*CRATE_SNMP_600";    
-}
-else if(type=="FED"){
- type_fsm=CSC_fwG_g_NodeLogicalFsmType; 
- if(side=="m")search_fsm="*CSC_FED_M";
- else if(side=="p")search_fsm="*CSC_FED_P";    
-}
-
-CSC_fwG_EmuCmsGlobalType=type_fsm;
-
-CSC_fwG_EmuCmsGlobalCu="0";//cu_flag = 0; // logical unit
-CSC_fwG_EmuCmsGlobalParent=parent_node_test;
-
-
-ds=dpNames(search_fsm,"_FwFsmObject");
-if(dynlen(ds)==0){
-  mudcsDebug("not found: "+search_fsm);
-  return;
-}
-  
-EmuCmsGlobalNode=ds[1];
-mudcs_addNode();
-
-
-
-
-//-----------------------
-
-}
-
 //====================================================================
 //====================================================================
 //====================================================================
@@ -1174,7 +1113,7 @@ dpN=fwFsm_getLogicalDeviceName(EmuCmsGlobalNode);
 //====================================================================
 
 
-mudcsCreateMRTN(int idisk, int idisk_cross, string emu_system_side, string parent_node_test, bool isNew=false)
+mudcsCreateMRTN(int idisk, int idisk_cross, string emu_system_side, string parent_node_test)
 {
 
 dyn_string CscLevelDevices;
@@ -1274,14 +1213,8 @@ if(idisk == -1 || idisk == -2){ // i.e. hardware tree folder: CSC_LV
 mudcs_selectParent(2, -1, parent_node_test, "DCSNodes",1, parent_domain);
 
 CSC_fwG_EmuCmsGlobalType=CSC_fwG_g_NodeLogicalFsmType;
-if(idisk == -1){
-  mudcsNameCompose("LV_MRTN_P", "", "", 0, "", "", EmuCmsGlobalNode);
-  if(isNew)EmuCmsGlobalNode="LV_MRTN_PLUS";
-}
-else if(idisk == -2){
-  mudcsNameCompose("LV_MRTN_M", "", "", 0, "", "", EmuCmsGlobalNode);
-  if(isNew)EmuCmsGlobalNode="LV_MRTN_MINUS"; 
-}
+if(idisk == -1)mudcsNameCompose("LV_MRTN_P", "", "", 0, "", "", EmuCmsGlobalNode);
+else if(idisk == -2)mudcsNameCompose("LV_MRTN_M", "", "", 0, "", "", EmuCmsGlobalNode);
  parent_node=EmuCmsGlobalNode;
 //EmuCmsGlobalNode="CSC"+"LV_MRTN"; //r2
 CSC_fwG_EmuCmsGlobalCu="0";cu_flag = 0; // logical unit
@@ -1404,7 +1337,7 @@ mudcsCreateFED("p",parent_node_test);
 mudcsCreateFED("m",parent_node_test);
 
 }
-mudcsCreateFED(string emu_system_side, string parent_node_test, bool isNew=false)
+mudcsCreateFED(string emu_system_side, string parent_node_test)
 {
 
 dyn_string CscLevelDevices;
@@ -1446,11 +1379,7 @@ for(i=1;i<=36;i++){
      
 if(dynlen(emu_db)==0)return;     
 
-
-
 //---------------------
-if(!isNew){
-
 parent_domain=parent_node_test;
 
 CSC_fwG_EmuCmsGlobalType=CSC_fwG_g_NodeLogicalFsmType;
@@ -1466,8 +1395,6 @@ CSC_fwG_EmuCmsGlobalParent=parent_domain;
  Component+"/"+dir_config+"/emuEmptyConfig", Component+"/emuEmptyOperation");
  
 mudcs_addNode();
-
-}
 //------------------------
 
 
@@ -1476,8 +1403,7 @@ mudcs_addNode();
  for(i=1;i<=dynlen(emu_db);i++){ 
 
 //-----
-   if(isNew)parent_domain=parent_node_test;
-   else parent_domain=parent_node;
+ parent_domain=parent_node;
 
  CSC_fwG_EmuCmsGlobalType="FED_1";
  EmuCmsGlobalNode=emu_db[i];// 
@@ -2124,8 +2050,8 @@ mudcs_selectParent(1, isFilled, CSC_fwG_g_csc_part,"DCSNodes",1, parent_domain);
 ///////////domain = "DISK"+disk_numbers[i];
 ///////////type =CSC_fwG_g_NodeLogicalFsmType;
 cu_flag = 1;
-if(strpos(subsystem,"LV")>=0)CSC_fwG_EmuCmsGlobalType=CSC_fwG_g_NodeStbyFsmType;
-else if(strpos(subsystem,"FED")>=0)CSC_fwG_EmuCmsGlobalType="EMUFEDNodes";
+if(subsystem=="LV")CSC_fwG_EmuCmsGlobalType=CSC_fwG_g_NodeStbyFsmType;
+else if(subsystem=="FED")CSC_fwG_EmuCmsGlobalType="EMUFEDNodes";
 else CSC_fwG_EmuCmsGlobalType=CSC_fwG_g_NodeLogicalFsmType;
 //mudcsNameCompose("", station_label, emu_system_side, idisk, "", "", EmuCmsGlobalNode);
 EmuCmsGlobalNode="CSC_"+subsystem;
@@ -2443,46 +2369,12 @@ mudcsCreateMRTN(-2,-2,"",parent_node_test);
 mudcsCreateWNR_SNMP(parent_node_test);
 mudcsCreateAtlasPsu(parent_node_test);
 
-fwFsmTree_generateTreeNode("CSC_LV");
-
-mudcsCreateHardwareBranch(1, "LV_M", parent_node_test);
-mudcsCreateMRTN(-2,-2,"",parent_node_test,true);
-mudcsAddReference("LV_HV","m", parent_node_test);
-mudcsAddReference("PSU","m", parent_node_test);
-
-mudcsCreateHardwareBranch(1, "LV_P", parent_node_test);
-mudcsCreateMRTN(-1,-1,"",parent_node_test,true);
-mudcsAddReference("LV_HV","p", parent_node_test);
-mudcsAddReference("PSU","p", parent_node_test);
-//---
 mudcsCreateHardwareBranch(1, "HV", parent_node_test);
 mudcsCreateHV_PR(parent_node_test);
 
-fwFsmTree_generateTreeNode("CSC_HV");
-
-mudcsCreateHardwareBranch(1, "HV_M", parent_node_test);
-mudcsAddReference("HV_PR","m", parent_node_test);
-mudcsAddReference("ME11","m", parent_node_test);
-
-mudcsCreateHardwareBranch(1, "HV_P", parent_node_test);
-mudcsAddReference("HV_PR","p", parent_node_test);
-mudcsAddReference("ME11","p", parent_node_test);
-//---
-/*
 mudcsCreateHardwareBranch(1, "FED", parent_node_test);
 mudcsCreateFED("p",parent_node_test);
 mudcsCreateFED("m",parent_node_test);
-
-fwFsmTree_generateTreeNode("CSC_FED");
-*/
-
-mudcsCreateHardwareBranch(1, "FED_M", parent_node_test);
-mudcsCreateFED("m",parent_node_test,true);
-//\\mudcsAddReference("FED","m", parent_node_test);
-
-mudcsCreateHardwareBranch(1, "FED_P", parent_node_test);
-mudcsCreateFED("p",parent_node_test,true);
-//\\mudcsAddReference("FED","p", parent_node_test);
 
 mudcsSupervisorRole();
 //return;
