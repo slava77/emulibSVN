@@ -13,7 +13,7 @@ PANEL,-1 -1 1600 1175 N "_3DFace" 0
   fwFsmUi_addUserLogin(1380, -5);
   fwAccessControl_setupPanel(\"accessPrivilegesChangedCB\", ex);
   if (emu_checkException(ex)) { return; }
-  
+
   // UI stuff
   lblVersion.text = \"UI Version \" + EMUUI_COMPONENT_VERSION + \" (\" + EMUUI_COMPONENT_DATE + \")\";
   initConstants();
