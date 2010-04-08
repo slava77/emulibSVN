@@ -608,9 +608,9 @@ LANG:1 0
   posY += 40;
 
   posX += 20;  
-  emuui_addFsmNode(\"CMS_CSC_PLUS\", posX, posY, references);
+  emuui_addFsmNode(\"CMS_CSC_PLUS\", posX, posY, references, false, \"CMS_CSC\");
   posY += 30;
-  emuui_addFsmNode(\"CMS_CSC_MINUS\", posX, posY, references);
+  emuui_addFsmNode(\"CMS_CSC_MINUS\", posX, posY, references, false, \"CMS_CSC\");
   posY += 30;
    
   if (autoTakeControl) {
@@ -1081,7 +1081,7 @@ E E 0 1 1 2 1 E 1 0 1 -219 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png"
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 1050.421990932297 -310 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 903.2753660132586 -330 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -1100,7 +1100,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 49.24774230768362 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 49.22240743849208 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E

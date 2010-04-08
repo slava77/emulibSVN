@@ -1,7 +1,7 @@
 <component>
 <name>CMS_CSC_UI</name>
-<version>3.1.1</version>
-<date>2010/04/01</date>
+<version>3.1.2</version>
+<date>2010/04/08</date>
 <required>CMS_CSC_common=1.0.1</required>
 <required>CMS_CSCfw_Supervisor=2.0.0</required>
 <required>fwCore=4.0.0</required>
@@ -11,7 +11,6 @@
 <required>fwGeneral=4.0.0</required>
 <required>fwNode=4.0.0</required>
 <dontRestartProject>yes</dontRestartProject>
-<config>./config/CMS_CSC_UI.config</config>
 <dplist>./dplist/CMS_CSC_UI_sessionStateDPT.dpl</dplist>
 <dplist>./dplist/CMS_CSC_UI_settings.dpl</dplist>
 <file>./panels/CMS_CSC_UI/*.pnl</file>
