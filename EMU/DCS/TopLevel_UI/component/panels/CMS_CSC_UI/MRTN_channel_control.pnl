@@ -21,7 +21,7 @@ PANEL,-1 -1 752 726 N "_3DFace" 0
     strreplace(name, \"Wiener/\", \"\");
     tabs.insertRegister(i);
     tabs.registerHeader(i, name);
-    tabs.registerPanel(i, \"objects/CMS_CSC_UI/refMrtnControl.pnl\", 
+    tabs.registerPanel(i, EMUUI_OBJECTS_DIR + \"/refMrtnControl.pnl\", 
                        makeDynString(\"$mrtnDp:\" + mrtnDps[i]));
   }
   tabs.deleteRegister(0);
@@ -30,7 +30,7 @@ PANEL,-1 -1 752 726 N "_3DFace" 0
   int confTabIndex = dynlen(mrtnDps);
   tabs.insertRegister(confTabIndex);
   tabs.registerHeader(confTabIndex, \"Configuration - experts only\");
-  tabs.registerPanel(confTabIndex, \"objects/CMS_CSC_UI/refMrtnChannelControlConfig.pnl\", 
+  tabs.registerPanel(confTabIndex, EMUUI_OBJECTS_DIR + \"/refMrtnChannelControlConfig.pnl\", 
                      makeDynString(\"$lvSystemName:\" + lvSystemName, \"$lvSystemId:\" + lvSystemId));
   
 }" 0

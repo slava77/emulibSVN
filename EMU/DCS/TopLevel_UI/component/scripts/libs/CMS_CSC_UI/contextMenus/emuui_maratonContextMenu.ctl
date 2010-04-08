@@ -32,7 +32,7 @@ void emuuicm_openChannelControlPanel(mapping deviceParams) {
   mrtnDp = dpSubStr(mrtnDp, DPSUB_SYS_DP);
   string deviceParamsStr = emuui_deviceParamsToString(deviceParams);
   
-  ChildPanelOnCentral("objects/" + EMUUI_COMPONENT_NAME + "/refMrtnControl.pnl", 
+  ChildPanelOnCentral(EMUUI_OBJECTS_DIR + "/refMrtnControl.pnl", 
                       "MaratonChannelControlPanel" + deviceParams,
                       makeDynString("$mrtnDp:" + mrtnDp, "$deviceParams:" + deviceParamsStr));
 }

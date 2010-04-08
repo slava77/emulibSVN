@@ -203,7 +203,7 @@ void drawLegend(dyn_string &ex, bool vertical = false) {
     
     string refName = \"LegendaryItem_\" + state;
     addSymbol(myModuleName(), myPanelName(),
-              \"objects/\" + EMUUI_COMPONENT_NAME + \"/refLegendItem.pnl\",
+              EMUUI_OBJECTS_DIR + \"/refLegendItem.pnl\",
               refName,
               makeDynString(\"$caption:\" + state, \"$color:\" + color),
               posX, posY, 0, 1, 1);
@@ -359,7 +359,7 @@ LANG:1 0
   string group = emuui_getSessionDp(\"mainChamberView\");          //group name
   string refName = \"MainChamberView_EMU\";
   addSymbol(myModuleName(), myPanelName(),
-            \"objects/\" + EMUUI_COMPONENT_NAME + \"/refEMUPhysical.pnl\",
+            EMUUI_OBJECTS_DIR + \"/refEMUPhysical.pnl\",
             refName,
             makeDynString(\"$group:\" + group, \"$width:\" + width),
             posX, posY, 0, 1, 1);
@@ -398,7 +398,7 @@ LANG:1 0
   string refName = \"CommunicationStatusView_EMU\";
   string group = emuui_getSessionDp(\"communicationMonitor\");
   addSymbol(myModuleName(), myPanelName(),
-            \"objects/\" + EMUUI_COMPONENT_NAME + \"/refCommunication.pnl\",
+            EMUUI_OBJECTS_DIR + \"/refCommunication.pnl\",
             refName,
             makeDynString(\"$group:\" + group, \"$width:\" + (sizeX - EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_X)),
             posX, posY, 0, 1, 1);
@@ -475,7 +475,7 @@ LANG:1 0
   string group = emuui_getSessionDp(\"hvPrimaryView\");          //group name
   string refName = \"HV_PrimaryView_EMU\";
   addSymbol(myModuleName(), myPanelName(),
-            \"objects/\" + EMUUI_COMPONENT_NAME + \"/refHVPrimaries.pnl\",
+            EMUUI_OBJECTS_DIR + \"/refHVPrimaries.pnl\",
             refName,
             makeDynString(\"$group:\" + group),
             posX, posY, 0, 1, 1);
@@ -510,7 +510,7 @@ LANG:1 0
   string refName = \"FedView_EMU\";
   string group = emuui_getSessionDp(\"fedView\");
   addSymbol(myModuleName(), myPanelName(),
-            \"objects/\" + EMUUI_COMPONENT_NAME + \"/refFED.pnl\",
+            EMUUI_OBJECTS_DIR + \"/refFED.pnl\",
             refName,
             makeDynString(\"$group:\" + group),
             posX, posY, 0, 1, 1);
@@ -559,7 +559,7 @@ LANG:1 0
   string group = emuui_getSessionDp(\"maratonView\");          //group name
   string refName = \"MaratonView_EMU\";
   addSymbol(myModuleName(), myPanelName(),
-            \"objects/\" + EMUUI_COMPONENT_NAME + \"/refMaratons.pnl\",
+            EMUUI_OBJECTS_DIR + \"/refMaratons.pnl\",
             refName,
             makeDynString(\"$group:\" + group),
             posX, posY, 0, 1, 1);
@@ -1231,7 +1231,7 @@ LANG:1 0
   string group = emuui_getSessionDp(\"valueMonitor\");          //group name
   string refName = \"ValueMonitor_EMU\";
   addSymbol(myModuleName(), myPanelName(),
-            \"objects/\" + EMUUI_COMPONENT_NAME + \"/refEMUPlot.pnl\",
+            EMUUI_OBJECTS_DIR + \"/refEMUPlot.pnl\",
             refName,
             makeDynString(\"$group:\" + group, \"$width:\" + width),
             posX, posY, 0, 1, 1);   
@@ -1271,7 +1271,7 @@ LANG:1 35 Detach and zoom temperature monitor
 E "main()
 {
   // old width was 780
-  ChildPanelOn(\"objects/\" + EMUUI_COMPONENT_NAME + \"/refEMUPlot.pnl\", \"panelMiniMonitor\", 
+  ChildPanelOn(EMUUI_OBJECTS_DIR + \"/refEMUPlot.pnl\", \"panelMiniMonitor\", 
                makeDynString(\"$group:\" + emuui_getSessionDp(\"valueMonitor\"), \"$width:1200\"), 200, 200);
 }
 " 0

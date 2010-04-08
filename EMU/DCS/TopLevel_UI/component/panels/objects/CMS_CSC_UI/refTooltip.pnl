@@ -97,7 +97,7 @@ string getTooltipObjFile(string type) {
   bool fileFound = false;
   string filename = \"refTooltipObj_\" + type + \".pnl\";
   for (int i=1; i <= SEARCH_PATH_LEN; i++) {
-    string test = getPath(PANELS_REL_PATH, \"objects/\" + EMUUI_COMPONENT_NAME + \"/tooltip_objects\", filename, i);
+    string test = getPath(PANELS_REL_PATH, EMUUI_OBJECTS_DIR + \"/tooltip_objects\", filename, i);
     if (strlen(test) > 0) { 
       fileFound = true; 
       break;
@@ -105,7 +105,7 @@ string getTooltipObjFile(string type) {
   }
   
   if (fileFound) {
-    return \"objects/\" + EMUUI_COMPONENT_NAME + \"/tooltip_objects/\" + filename;
+    return EMUUI_OBJECTS_DIR + \"/tooltip_objects/\" + filename;
   }
   return \"\";
 }

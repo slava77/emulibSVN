@@ -16,6 +16,7 @@ This package contains the main top level functions of the UI.
 */
 
 const string EMUUI_COMPONENT_NAME = "CMS_CSC_UI";
+const string EMUUI_OBJECTS_DIR = "objects/CMS_CSC_UI";
 global string EMUUI_COMPONENT_VERSION;
 global string EMUUI_COMPONENT_DATE;
                                     

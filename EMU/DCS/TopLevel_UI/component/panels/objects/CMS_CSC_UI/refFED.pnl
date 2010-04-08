@@ -46,7 +46,7 @@ void drawDDUs() {
     if (shapeExists(refName)) { refName += \"_duplicate\"; }
     dynAppend(references, refName);
     addSymbol(myModuleName(), myPanelName(),
-              \"objects/\" + EMUUI_COMPONENT_NAME + \"/refDevice.pnl\",
+              EMUUI_OBJECTS_DIR + \"/refDevice.pnl\",
               refName,
               makeDynString(\"$caption:VALUE\", \"$deviceType:DDU\",
                             deviceParamsDollar, shapeParamsDollar, \"$group:\" + paramGroup,

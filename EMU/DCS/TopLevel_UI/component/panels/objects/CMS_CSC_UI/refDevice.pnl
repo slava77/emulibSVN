@@ -581,7 +581,7 @@ void showTooltip() {//synchronized (tooltipSemaphore) {
   emuui_sessionRegisterActiveTooltip(refName);
   bool showInfo = (currentConnectionType == \"FSM\");
   addSymbol(myModuleName(), myPanelName(),
-            \"objects/\" + EMUUI_COMPONENT_NAME + \"/refTooltip.pnl\",
+            EMUUI_OBJECTS_DIR + \"/refTooltip.pnl\",
             refName,
             makeDynString(\"$deviceParams:\" + deviceParamsStr, \"$deviceType:\" + $deviceType, 
                           \"$mode:\" + mode, \"$showInfo:\" + showInfo, \"$refName:\" + refName),

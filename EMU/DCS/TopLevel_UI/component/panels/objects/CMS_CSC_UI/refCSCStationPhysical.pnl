@@ -129,7 +129,7 @@ void drawPeripheralCrates(int x, int y, int radius, string side, int station, dy
     dynAppend(references, refName);
     dynAppend(crateRefs, refName);
     addSymbol(myModuleName(), myPanelName(),
-              \"objects/\" + EMUUI_COMPONENT_NAME + \"/refDevice.pnl\",
+              EMUUI_OBJECTS_DIR + \"/refDevice.pnl\",
               refName,
               makeDynString(\"$caption:VALUE\", \"$deviceType:peripheralCrate\",
                             deviceParamsDollar, shapeParamsDollar, \"$group:\" + pcGroup,
@@ -226,7 +226,7 @@ void drawTriggerSectors(int centerX, int centerY, int radius) {
     string refName = \"triggerSectorSeparator_\" + paramSide + paramStation + i;
     while (shapeExists(refName)) { refName += \"_duplicate\"; }
     dynAppend(references, refName);
-    addSymbol(myModuleName(), myPanelName(), \"objects/\" + EMUUI_COMPONENT_NAME + \"/refTriggerSectorSeparator.pnl\", 
+    addSymbol(myModuleName(), myPanelName(), EMUUI_OBJECTS_DIR + \"/refTriggerSectorSeparator.pnl\", 
               refName, makeDynString(), 0, 0, 0, 1, 1);
     setValue(refName + \".separator\", \"position\", centerX, centerY);
     setValue(refName + \".separator\", \"rotation\", angle);
@@ -330,7 +330,7 @@ void drawRing(int x, int y, int innerRadius, int outerRadius, int chamberCount, 
     //import the chamber panel (no changes in the panel orientation; position - [0,0])
     dynAppend(references, refName);
     addSymbol(myModuleName(), myPanelName(),
-              \"objects/\" + EMUUI_COMPONENT_NAME + \"/refDevice.pnl\",
+              EMUUI_OBJECTS_DIR + \"/refDevice.pnl\",
               refName,
               makeDynString(\"$caption:\" + chamberName, \"$deviceType:chamber\",
                             deviceParamsDollar, shapeParamsDollar, \"$group:\" + paramGroup,

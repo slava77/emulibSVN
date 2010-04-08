@@ -43,7 +43,7 @@ void emuui_addFsmNode(string node, int x, int y, dyn_string &references, bool sm
     while (shapeExists(refName)) { refName += "_duplicate_1"; }
     dynAppend(references, refName);
 
-    addSymbol(myModuleName(), myPanelName(), "objects/CMS_CSC_UI/refFSMobj.pnl", 
+    addSymbol(myModuleName(), myPanelName(), EMUUI_OBJECTS_DIR + "/refFSMobj.pnl", 
               refName, makeDynString("$node:" + node, "$obj:" + object), x, y, 0, 1, 1);
   } else {
     y += EMUUI_SMALL_FSM_POSITION_FIX_OFFSET_Y;  // hmm positioning is screwed up somewhere

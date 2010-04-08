@@ -67,7 +67,7 @@ void drawConnectionDevice(int x, int y, string connectionDeviceType, string addi
   }
   
   addSymbol(myModuleName(), myPanelName(),
-            \"objects/\" + EMUUI_COMPONENT_NAME + \"/refDevice.pnl\",
+            EMUUI_OBJECTS_DIR + \"/refDevice.pnl\",
             refName,
             makeDynString(\"$caption:VALUE\", \"$deviceType:connection_\" + connectionDeviceType,
                           deviceParamsDollar, shapeParamsDollar, \"$group:\" + paramGroup,
