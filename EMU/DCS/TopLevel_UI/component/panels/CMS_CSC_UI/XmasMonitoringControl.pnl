@@ -4,7 +4,17 @@ LANG:1 29 Xmas Monitoring Control Panel
 PANEL,-1 -1 400 408 N "_3DFace" 0
 "main()
 {
-    emuui_init();
+  emuui_init();
+  
+  // ==== access control ====
+  if (isFunctionDefined(\"fwAccessControl_setupPanel\")) {
+    initAcConstants();
+    dyn_string ex;
+    fwAccessControl_setupPanel(\"accessPrivilegesChangedCB\", ex);
+    if (emu_checkException(ex)) { return; }
+  }
+  //=========================
+  
   dyn_string ex;
   int minMidLayerNumP = 10,  // used to get the lowest mid. layer num for plus side
       maxMidLayerNumM = -1; // used to get the highest mid. layer num for minus side
@@ -55,11 +65,23 @@ PANEL,-1 -1 400 408 N "_3DFace" 0
   emu_info(\"Control System for Plus: \" + controlSystemPlus);
   emu_info(\"Control System for Minus: \" + controlSystemMinus);
 }
+
+/** initialize constants required for access control - basically just fill in the arrays of control and expert control button names. */
+void initAcConstants() {
+  controlButtons = makeDynString(\"btnStopPlus\", \"btnResumePlus\",    // stop/resume plus side
+                                 \"btnStopMinus\", \"btnResumeMinus\"); // stop/resume minus side
+  expertControlButtons = makeDynString();
+}
 " 0
  E E E E 1 -1 -1 0  100 30
 ""0  1
 E "// Common libs
 #uses \"CMS_CSC_common/emu_common.ctl\"
+#uses \"CMS_CSC_common/emu_accessControl.ctl\"
+
+/** for access control - arrays of control and expert control buttons which should be under access control */
+dyn_string controlButtons;
+dyn_string expertControlButtons;
 
 string controlSystemPlus, controlSystemMinus;
 
@@ -81,7 +103,13 @@ string getCommandMeaning(string command) {
     }
   }
   return command;
-}" 0
+}
+
+/** This function is called whenever the user privileges change and just passes that to emu_enableDisableControl() which takes care of enabling/disabling buttons. */
+void accessPrivilegesChangedCB(string dummy1, string dummy2) {
+  emu_enableDisableControl(controlButtons, true, \"lblNoControl\", expertControlButtons, true);
+}
+" 0
  2
 "CBRef" "1"
 "EClose" E
@@ -492,6 +520,25 @@ E E 0 1 1 2 1 E U  1 E 100 240 365 256
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 51 Minus side DCS are not ready for control, try later
+2 21
+"lblNoControl"
+""
+1 625 -391 E E E 1 E 1 E N "_3DText" E N "_Window" E E
+ E E
+21 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 97 47 295 64
+1 2 2 "0s" 0 0 0 192 0 0  97 47 1
+1
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0 1
+LANG:1 32 You don't have control privilege
 0
 LAYER, 1 
 1
