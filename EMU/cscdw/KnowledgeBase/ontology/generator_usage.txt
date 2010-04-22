@@ -1,2 +1,1 @@
-Use this to generate CSC ontology by issuing
 xsltproc ontology_generator.xsl ontology_template.xml > csc-ontology.owl
