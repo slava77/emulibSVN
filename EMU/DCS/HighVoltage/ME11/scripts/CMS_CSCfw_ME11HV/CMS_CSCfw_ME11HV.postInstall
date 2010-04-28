@@ -1,0 +1,39 @@
+#uses "fwInstallation.ctl"
+#uses "fwRDBArchiving/fwRDBConfig.ctl"
+#uses "CMS_CSCfw_ME11HV/CMS_CSCfw_ME11HV.ctl"
+#uses "CMSfwInstallUtils/CMSfwInstallUtils.ctl"
+#uses "CMSfw_CAENOPCConfigurator/CMSfw_CAENOPCConfiguratorLib.ctl"
+
+
+main()
+{
+  // ***** Setup RDB Archive *****
+  emudcsME11_createDbConfig();
+  DebugN("RDB configured");
+   
+  // **** Set all the drivers to manual ****
+  DebugN("Setting OPC to simulator. Result = "+
+  CMSfwInstallUtils_switchSimDriver(FALSE,"PVSS00opc", 6));
+
+// **** import the ascii file of the datapoints with an OPC address ****
+  CMSfwInstallUtils_importAsciiFile("CMS_CSCfw_ME11HV/CMS_CSCfw_ME11HV_CAENsys.dpl");
+
+// **** Set all the drivers to always ****
+  DebugN("Setting back OPC to driver. Result = "+
+  CMSfwInstallUtils_switchSimDriver(TRUE,"PVSS00opc", 6));
+  
+   // ***** Setup OPC config *****
+  CMSfwCAENOPCConfiguration_setConfigurationForSystem(makeDynString("HVME11N","HVME11P"),
+                                                      makeDynString("10.176.62.126","10.176.11.54"));
+  dyn_string exc;
+  int res  = CMSfwCAENOPCConfiguration_applyConfigurationForSystem(exc);
+  DebugN("OPC configured if res = 1 or 2, res = "+res);
+  
+// **** set FSM archiving ****
+  emudcsME11_setFsmArchiving();
+  DebugN("FSM archiving done");    
+
+// **** Send a final info message ****
+  CMSfwInstallUtils_endPostInstall("CMS_CSCfw_ME11HV");
+       	
+}

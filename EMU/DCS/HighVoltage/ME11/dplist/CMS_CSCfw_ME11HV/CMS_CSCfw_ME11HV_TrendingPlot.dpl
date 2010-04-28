@@ -1,0 +1,33 @@
+# ascii dump of database
+
+# Datapoint/DpId
+DpName	TypeName	ID
+ME11_HV_Channel	FwTrendingPlot	112642
+
+# DpValue
+ElementName	TypeName	_original.._value	_original.._status	_original.._stime
+ME11_HV_Channel.plotTitle	FwTrendingPlot	"ME11_HV_Channel"	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.dpes	FwTrendingPlot	"{dp}.actual.vMon", "{dp}.actual.iMon", "", "", "", "", "", ""	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.legendTexts	FwTrendingPlot	"vMon", "iMon", "", "", "", "", "", ""	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.colors	FwTrendingPlot	"FwTrendingCurve1", "FwTrendingCurve2", "FwTrendingCurve3", "FwTrendingCurve4", "FwTrendingCurve5", "FwTrendingCurve6", "FwTrendingCurve7", "FwTrendingCurve8"	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.axii	FwTrendingPlot	1, 1, 0, 0, 0, 0, 0, 0	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.plotBackColor	FwTrendingPlot	"FwTrendingTrendBackground"	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.legend	FwTrendingPlot	1	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.isTemplate	FwTrendingPlot	0	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.curvesHidden	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.yRangeMin	FwTrendingPlot	0, -1, 0, 0, 0, 0, 0, 0	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.yRangeMax	FwTrendingPlot	3500, 10, 0, 0, 0, 0, 0, 0	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.plotType	FwTrendingPlot	1	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.templateName	FwTrendingPlot	""	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.timeRange	FwTrendingPlot	28800	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.isLogarithmic	FwTrendingPlot	0	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.curveTypes	FwTrendingPlot	1, 1, 1, 1, 1, 1, 1, 1	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.plotForeColor	FwTrendingPlot	"FwTrendingTrendForeground"	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.grid	FwTrendingPlot	1	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.model	FwTrendingPlot	"Value over time"	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.xAxii	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.xDpes	FwTrendingPlot	"", "", "", "", "", "", "", ""	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.xRangeMin	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.xRangeMax	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.xLegendTexts	FwTrendingPlot	"", "", "", "", "", "", "", ""	0x101	06.08.2009 13:14:13.219
+ME11_HV_Channel.markerType	FwTrendingPlot	0	0x101	06.08.2009 13:14:13.219

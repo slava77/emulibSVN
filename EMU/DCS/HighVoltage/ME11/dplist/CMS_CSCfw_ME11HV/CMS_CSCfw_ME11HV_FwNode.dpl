@@ -1,0 +1,393 @@
+# ascii dump of database
+
+# Datapoint/DpId
+DpName	TypeName	ID
+CAEN	FwNode	8225
+FwNode000001	FwNode	110626
+FwNode000002	FwNode	110627
+FwNode000003	FwNode	110628
+FwNode000004	FwNode	110629
+FwNode000005	FwNode	110630
+FwNode000006	FwNode	110631
+FwNode000007	FwNode	110632
+FwNode000008	FwNode	110633
+FwNode000009	FwNode	110634
+FwNode000010	FwNode	110635
+FwNode000011	FwNode	110636
+FwNode000012	FwNode	110637
+FwNode000013	FwNode	110638
+FwNode000014	FwNode	110639
+FwNode000015	FwNode	110640
+FwNode000016	FwNode	110641
+FwNode000017	FwNode	110642
+FwNode000018	FwNode	110643
+FwNode000019	FwNode	110644
+FwNode000020	FwNode	110645
+FwNode000021	FwNode	110646
+FwNode000022	FwNode	110647
+FwNode000023	FwNode	110648
+FwNode000024	FwNode	110649
+FwNode000025	FwNode	110650
+FwNode000026	FwNode	110651
+FwNode000027	FwNode	110652
+FwNode000028	FwNode	110653
+FwNode000029	FwNode	110654
+FwNode000030	FwNode	110655
+FwNode000031	FwNode	110656
+FwNode000032	FwNode	110657
+FwNode000033	FwNode	110658
+FwNode000034	FwNode	110659
+FwNode000035	FwNode	110660
+FwNode000036	FwNode	110661
+FwNode000037	FwNode	110662
+FwNode000038	FwNode	110663
+FwNode000039	FwNode	110664
+FwNode000040	FwNode	110665
+FwNode000041	FwNode	110666
+FwNode000042	FwNode	110667
+FwNode000043	FwNode	110668
+FwNode000044	FwNode	110669
+FwNode000045	FwNode	110670
+FwNode000046	FwNode	110671
+FwNode000047	FwNode	110672
+FwNode000048	FwNode	110673
+FwNode000049	FwNode	110674
+FwNode000050	FwNode	110675
+FwNode000051	FwNode	110676
+FwNode000052	FwNode	110677
+FwNode000053	FwNode	110678
+FwNode000054	FwNode	110679
+FwNode000055	FwNode	110680
+FwNode000056	FwNode	110681
+FwNode000057	FwNode	110682
+FwNode000058	FwNode	110683
+FwNode000059	FwNode	110684
+FwNode000060	FwNode	110685
+FwNode000061	FwNode	110686
+FwNode000062	FwNode	110687
+FwNode000063	FwNode	110688
+FwNode000064	FwNode	110689
+FwNode000065	FwNode	110690
+FwNode000066	FwNode	110691
+FwNode000067	FwNode	110692
+FwNode000068	FwNode	110693
+FwNode000069	FwNode	110694
+FwNode000070	FwNode	110695
+FwNode000071	FwNode	110696
+FwNode000072	FwNode	110697
+FwNode000073	FwNode	110698
+FwNode000074	FwNode	110699
+FwNode000075	FwNode	110700
+
+# Aliases/Comments
+AliasId	AliasName	CommentName
+FwNode000001.	"CSC_ME_11_HV"	lt:1 LANG:1 ""
+FwNode000002.	"CSC_ME_11_HV/CSC_ME_P11_HV"	lt:1 LANG:1 ""
+FwNode000003.	"CSC_ME_11_HV/CSC_ME_N11_HV"	lt:1 LANG:1 ""
+FwNode000004.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C01_HV"	lt:1 LANG:1 ""
+FwNode000005.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C02_HV"	lt:1 LANG:1 ""
+FwNode000006.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C03_HV"	lt:1 LANG:1 ""
+FwNode000007.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C04_HV"	lt:1 LANG:1 ""
+FwNode000008.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C05_HV"	lt:1 LANG:1 ""
+FwNode000009.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C06_HV"	lt:1 LANG:1 ""
+FwNode000010.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C07_HV"	lt:1 LANG:1 ""
+FwNode000011.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C08_HV"	lt:1 LANG:1 ""
+FwNode000012.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C09_HV"	lt:1 LANG:1 ""
+FwNode000013.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C10_HV"	lt:1 LANG:1 ""
+FwNode000014.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C11_HV"	lt:1 LANG:1 ""
+FwNode000015.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C12_HV"	lt:1 LANG:1 ""
+FwNode000016.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C13_HV"	lt:1 LANG:1 ""
+FwNode000017.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C14_HV"	lt:1 LANG:1 ""
+FwNode000018.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C15_HV"	lt:1 LANG:1 ""
+FwNode000019.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C16_HV"	lt:1 LANG:1 ""
+FwNode000020.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C17_HV"	lt:1 LANG:1 ""
+FwNode000021.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C18_HV"	lt:1 LANG:1 ""
+FwNode000022.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C19_HV"	lt:1 LANG:1 ""
+FwNode000023.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C20_HV"	lt:1 LANG:1 ""
+FwNode000024.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C21_HV"	lt:1 LANG:1 ""
+FwNode000025.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C22_HV"	lt:1 LANG:1 ""
+FwNode000026.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C23_HV"	lt:1 LANG:1 ""
+FwNode000027.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C24_HV"	lt:1 LANG:1 ""
+FwNode000028.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C25_HV"	lt:1 LANG:1 ""
+FwNode000029.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C26_HV"	lt:1 LANG:1 ""
+FwNode000030.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C27_HV"	lt:1 LANG:1 ""
+FwNode000031.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C28_HV"	lt:1 LANG:1 ""
+FwNode000032.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C29_HV"	lt:1 LANG:1 ""
+FwNode000033.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C30_HV"	lt:1 LANG:1 ""
+FwNode000034.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C31_HV"	lt:1 LANG:1 ""
+FwNode000035.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C32_HV"	lt:1 LANG:1 ""
+FwNode000036.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C33_HV"	lt:1 LANG:1 ""
+FwNode000037.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C34_HV"	lt:1 LANG:1 ""
+FwNode000038.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C35_HV"	lt:1 LANG:1 ""
+FwNode000039.	"CSC_ME_11_HV/CSC_ME_P11_HV/CSC_ME_P11_C36_HV"	lt:1 LANG:1 ""
+FwNode000040.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C01_HV"	lt:1 LANG:1 ""
+FwNode000041.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C02_HV"	lt:1 LANG:1 ""
+FwNode000042.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C03_HV"	lt:1 LANG:1 ""
+FwNode000043.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C04_HV"	lt:1 LANG:1 ""
+FwNode000044.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C05_HV"	lt:1 LANG:1 ""
+FwNode000045.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C06_HV"	lt:1 LANG:1 ""
+FwNode000046.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C07_HV"	lt:1 LANG:1 ""
+FwNode000047.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C08_HV"	lt:1 LANG:1 ""
+FwNode000048.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C09_HV"	lt:1 LANG:1 ""
+FwNode000049.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C10_HV"	lt:1 LANG:1 ""
+FwNode000050.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C11_HV"	lt:1 LANG:1 ""
+FwNode000051.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C12_HV"	lt:1 LANG:1 ""
+FwNode000052.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C13_HV"	lt:1 LANG:1 ""
+FwNode000053.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C14_HV"	lt:1 LANG:1 ""
+FwNode000054.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C15_HV"	lt:1 LANG:1 ""
+FwNode000055.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C16_HV"	lt:1 LANG:1 ""
+FwNode000056.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C17_HV"	lt:1 LANG:1 ""
+FwNode000057.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C18_HV"	lt:1 LANG:1 ""
+FwNode000058.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C19_HV"	lt:1 LANG:1 ""
+FwNode000059.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C20_HV"	lt:1 LANG:1 ""
+FwNode000060.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C21_HV"	lt:1 LANG:1 ""
+FwNode000061.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C22_HV"	lt:1 LANG:1 ""
+FwNode000062.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C23_HV"	lt:1 LANG:1 ""
+FwNode000063.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C24_HV"	lt:1 LANG:1 ""
+FwNode000064.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C25_HV"	lt:1 LANG:1 ""
+FwNode000065.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C26_HV"	lt:1 LANG:1 ""
+FwNode000066.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C27_HV"	lt:1 LANG:1 ""
+FwNode000067.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C28_HV"	lt:1 LANG:1 ""
+FwNode000068.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C29_HV"	lt:1 LANG:1 ""
+FwNode000069.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C30_HV"	lt:1 LANG:1 ""
+FwNode000070.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C31_HV"	lt:1 LANG:1 ""
+FwNode000071.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C32_HV"	lt:1 LANG:1 ""
+FwNode000072.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C33_HV"	lt:1 LANG:1 ""
+FwNode000073.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C34_HV"	lt:1 LANG:1 ""
+FwNode000074.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C35_HV"	lt:1 LANG:1 ""
+FwNode000075.	"CSC_ME_11_HV/CSC_ME_N11_HV/CSC_ME_N11_C36_HV"	lt:1 LANG:1 ""
+
+# DpValue
+ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
+CAEN.type	FwNode	"VENDOR"	0x101	04.03.2010 11:02:30.358
+CAEN.dpTypes	FwNode	"FwCaenCrateSY1527", "FwCaenCrateSY127", "FwCaenCrateSY403", "FwCaenCrateSY527"	0x101	04.03.2010 11:02:30.358
+CAEN.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.358
+CAEN.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.358
+CAEN.model	FwNode	"CAEN"	0x101	04.03.2010 11:02:30.374
+CAEN.fsmState	FwNode	0	0x101	04.03.2010 11:02:30.374
+CAEN.fsmCommand	FwNode	0	0x101	04.03.2010 11:02:30.374
+FwNode000001.type	FwNode	"LOGICAL ROOT"	0x101	04.03.2010 11:02:30.374
+FwNode000001.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.374
+FwNode000001.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.374
+FwNode000002.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.374
+FwNode000002.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.374
+FwNode000002.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.390
+FwNode000003.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.390
+FwNode000003.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.390
+FwNode000003.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.390
+FwNode000004.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.390
+FwNode000004.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.390
+FwNode000004.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.390
+FwNode000005.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.390
+FwNode000005.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.405
+FwNode000005.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.405
+FwNode000006.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.405
+FwNode000006.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.405
+FwNode000006.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.405
+FwNode000007.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.405
+FwNode000007.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.405
+FwNode000007.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.405
+FwNode000008.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.421
+FwNode000008.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.421
+FwNode000008.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.421
+FwNode000009.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.421
+FwNode000009.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.421
+FwNode000009.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.421
+FwNode000010.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.421
+FwNode000010.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.436
+FwNode000010.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.436
+FwNode000011.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.436
+FwNode000011.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.436
+FwNode000011.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.436
+FwNode000012.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.436
+FwNode000012.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.436
+FwNode000012.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.452
+FwNode000013.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.452
+FwNode000013.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.452
+FwNode000013.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.452
+FwNode000014.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.452
+FwNode000014.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.452
+FwNode000014.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.452
+FwNode000015.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.452
+FwNode000015.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.468
+FwNode000015.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.468
+FwNode000016.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.468
+FwNode000016.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.468
+FwNode000016.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.468
+FwNode000017.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.468
+FwNode000017.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.468
+FwNode000017.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.468
+FwNode000018.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.483
+FwNode000018.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.483
+FwNode000018.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.483
+FwNode000019.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.483
+FwNode000019.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.483
+FwNode000019.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.483
+FwNode000020.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.483
+FwNode000020.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.483
+FwNode000020.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.499
+FwNode000021.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.499
+FwNode000021.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.499
+FwNode000021.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.499
+FwNode000022.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.499
+FwNode000022.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.499
+FwNode000022.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.499
+FwNode000023.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.499
+FwNode000023.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.515
+FwNode000023.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.515
+FwNode000024.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.515
+FwNode000024.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.515
+FwNode000024.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.515
+FwNode000025.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.515
+FwNode000025.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.515
+FwNode000025.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.515
+FwNode000026.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.530
+FwNode000026.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.530
+FwNode000026.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.530
+FwNode000027.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.530
+FwNode000027.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.530
+FwNode000027.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.530
+FwNode000028.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.530
+FwNode000028.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.546
+FwNode000028.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.546
+FwNode000029.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.546
+FwNode000029.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.546
+FwNode000029.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.546
+FwNode000030.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.546
+FwNode000030.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.546
+FwNode000030.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.546
+FwNode000031.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.561
+FwNode000031.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.561
+FwNode000031.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.561
+FwNode000032.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.561
+FwNode000032.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.561
+FwNode000032.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.561
+FwNode000033.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.561
+FwNode000033.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.561
+FwNode000033.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.577
+FwNode000034.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.577
+FwNode000034.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.577
+FwNode000034.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.577
+FwNode000035.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.577
+FwNode000035.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.577
+FwNode000035.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.577
+FwNode000036.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.577
+FwNode000036.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.593
+FwNode000036.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.593
+FwNode000037.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.593
+FwNode000037.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.593
+FwNode000037.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.593
+FwNode000038.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.593
+FwNode000038.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.593
+FwNode000038.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.593
+FwNode000039.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.608
+FwNode000039.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.608
+FwNode000039.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.608
+FwNode000040.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.608
+FwNode000040.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.608
+FwNode000040.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.608
+FwNode000041.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.608
+FwNode000041.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.608
+FwNode000041.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.624
+FwNode000042.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.624
+FwNode000042.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.624
+FwNode000042.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.624
+FwNode000043.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.624
+FwNode000043.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.624
+FwNode000043.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.624
+FwNode000044.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.624
+FwNode000044.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.640
+FwNode000044.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.640
+FwNode000045.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.640
+FwNode000045.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.640
+FwNode000045.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.640
+FwNode000046.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.640
+FwNode000046.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.640
+FwNode000046.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.640
+FwNode000047.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.655
+FwNode000047.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.655
+FwNode000047.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.655
+FwNode000048.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.655
+FwNode000048.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.655
+FwNode000048.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.655
+FwNode000049.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.655
+FwNode000049.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.655
+FwNode000049.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.671
+FwNode000050.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.671
+FwNode000050.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.671
+FwNode000050.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.671
+FwNode000051.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.671
+FwNode000051.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.671
+FwNode000051.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.671
+FwNode000052.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.671
+FwNode000052.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.686
+FwNode000052.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.686
+FwNode000053.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.686
+FwNode000053.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.686
+FwNode000053.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.686
+FwNode000054.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.686
+FwNode000054.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.686
+FwNode000054.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.686
+FwNode000055.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.702
+FwNode000055.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.702
+FwNode000055.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.702
+FwNode000056.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.702
+FwNode000056.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.702
+FwNode000056.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.702
+FwNode000057.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.702
+FwNode000057.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.702
+FwNode000057.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.718
+FwNode000058.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.718
+FwNode000058.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.718
+FwNode000058.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.718
+FwNode000059.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.718
+FwNode000059.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.718
+FwNode000059.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.718
+FwNode000060.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.718
+FwNode000060.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.733
+FwNode000060.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.733
+FwNode000061.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.733
+FwNode000061.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.733
+FwNode000061.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.733
+FwNode000062.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.733
+FwNode000062.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.733
+FwNode000062.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.733
+FwNode000063.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.749
+FwNode000063.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.749
+FwNode000063.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.749
+FwNode000064.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.749
+FwNode000064.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.749
+FwNode000064.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.749
+FwNode000065.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.749
+FwNode000065.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.749
+FwNode000065.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.765
+FwNode000066.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.765
+FwNode000066.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.765
+FwNode000066.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.765
+FwNode000067.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.765
+FwNode000067.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.765
+FwNode000067.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.765
+FwNode000068.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.765
+FwNode000068.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.780
+FwNode000068.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.780
+FwNode000069.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.780
+FwNode000069.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.780
+FwNode000069.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.780
+FwNode000070.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.780
+FwNode000070.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.780
+FwNode000070.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.780
+FwNode000071.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.796
+FwNode000071.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.796
+FwNode000071.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.796
+FwNode000072.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.796
+FwNode000072.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.796
+FwNode000072.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.796
+FwNode000073.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.796
+FwNode000073.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.796
+FwNode000073.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.811
+FwNode000074.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.811
+FwNode000074.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.811
+FwNode000074.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.811
+FwNode000075.type	FwNode	"LOGICAL"	0x101	04.03.2010 11:02:30.811
+FwNode000075.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.811
+FwNode000075.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	04.03.2010 11:02:30.811
