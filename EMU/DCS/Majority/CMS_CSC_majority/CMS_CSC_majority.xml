@@ -4,8 +4,8 @@
 <date>2010/04/27</date>
 <required>majority_treeCache=1.2.11</required>
 <dontRestartProject>yes</dontRestartProject>
-<dplist>./dplist/majorityInstallationDp.dpl</dplist>
-<dplist>./dplist/majorityDUType.dpl</dplist>
+<dplist>./dplist/CMS_CSC_majority/majorityInstallationDp.dpl</dplist>
+<dplist>./dplist/CMS_CSC_majority/majorityDUType.dpl</dplist>
 <init>./scripts/CMS_CSC_majority/CMS_CSC_majority.init</init>
 <file>./scripts/CMS_CSC_majority/majority.ctl</file>
 <file>./scripts/libs/CMS_CSC_majority/CMS_CSC_majorityDevices.ctl</file>
