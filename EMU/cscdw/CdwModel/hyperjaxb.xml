@@ -153,6 +153,7 @@
 			 	<include name="*.xjb"/>
 			</binding>
             <schema file="${srcs}/org/cern/cms/csc/dw/schema/cdw.xsd"/>
+            <schema file="${srcs}/org/cern/cms/csc/exsys/re/schema/re.xsd"/>
 			<classpath>
 				<fileset dir="${libs}">
 					<include name="*.jar"/>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.cern.ch/cms/csc/exsys/re/model"
+    xmlns:tns="http://www.cern.ch/cms/csc/exsys/re/model"
+    elementFormDefault="qualified"
+    xmlns:fct="http://www.cern.ch/cms/csc/dw/model"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+    xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
+                        http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
+                        http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
+    jaxb:extensionBindingPrefixes="orm hj xjc"
+    jaxb:version="2.0">
+
+    <xsd:include schemaLocation="conclusionFactory.xsd"/>
+
+    <xsd:element name="action" type="tns:actionType"/>
+    <xsd:element name="actionFactory" type="tns:actionFactoryType"/>
+
+    <xsd:complexType name="actionType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="Action"/>
+                <xjc:superClass name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+                <hj:entity>
+                    <orm:table name="RE_ACTIONS"/>
+                </hj:entity>
+                <hj:generated-id name="id">
+                    <orm:column name="REA_ID"/>
+                    <orm:sequence-generator name="RE_ACTION_ID_SEQ" sequence-name="RE_ACTION_ID_SEQ"/>
+                </hj:generated-id>
+
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="timeScheduled" type="xsd:dateTime" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REA_TIME_SCHEDULED"/>
+                        </hj:basic>
+                        <jaxb:property name="timeScheduled"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="timeDone" type="xsd:dateTime" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REA_TIME_DONE"/>
+                        </hj:basic>
+                        <jaxb:property name="timeDone"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="actionFactory" type="tns:actionFactoryType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-one>
+                            <orm:join-column name="REA_ACTION_FACTORY_ID"/>
+                        </hj:many-to-one>
+                        <jaxb:property name="actionFactory"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="actionFactoryType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="ActionFactory"/>
+                <xjc:superClass name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+                <hj:entity>
+                    <orm:table name="RE_ACTION_FACTORIES"/>
+                </hj:entity>
+                <hj:generated-id name="id">
+                    <orm:column name="REAF_ID"/>
+                    <orm:sequence-generator name="RE_ACTION_FACTORY_ID_SEQ" sequence-name="RE_ACTION_FACTORY_ID_SEQ"/>
+                </hj:generated-id>
+
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="executionDelay" type="xsd:integer">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REAF_EXECUTION_DELAY" precision="10" scale="0"/>
+                        </hj:basic>
+                        <jaxb:property name="executionDelay"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="conclusionFactory" type="tns:conclusionFactoryType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-one>
+                            <orm:join-column name="REAF_CONCLUSION_FACTORY_ID"/>
+                        </hj:many-to-one>
+                        <jaxb:property name="conclusionFactory"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+</xsd:schema>

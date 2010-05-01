@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.cern.ch/cms/csc/exsys/re/model"
+    xmlns:tns="http://www.cern.ch/cms/csc/exsys/re/model"
+    elementFormDefault="qualified"
+    xmlns:fct="http://www.cern.ch/cms/csc/dw/model"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+    xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
+                        http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
+                        http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
+    jaxb:extensionBindingPrefixes="orm hj xjc"
+    jaxb:version="2.0">
+
+    <xsd:import namespace="http://www.cern.ch/cms/csc/dw/model" schemaLocation="../../../dw/schema/fact.xsd"/>
+    <xsd:include schemaLocation="rule.xsd"/>
+
+    <xsd:element name="conclusion" type="tns:conclusionType"/>
+
+    <xsd:complexType name="conclusionType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="Conclusion"/>
+                <xjc:superClass name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+                <hj:entity>
+                    <orm:table name="RE_CONCLUSIONS"/>
+                </hj:entity>
+                <hj:generated-id name="id">
+                    <orm:column name="REC_ID"/>
+                    <orm:sequence-generator name="RE_CONCLUSION_ID_SEQ" sequence-name="RE_CONCLUSION_ID_SEQ"/>
+                </hj:generated-id>
+
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="name" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REC_NAME" length="64"/>
+                        </hj:basic>
+                        <jaxb:property name="name"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="title" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REC_TITLE" length="512"/>
+                        </hj:basic>
+                        <jaxb:property name="title"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="description" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REC_DESCRIPTION" length="2048"/>
+                        </hj:basic>
+                        <jaxb:property name="description"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="severity" type="fct:severityType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REC_SEVERITY" length="10"/>
+                            <hj:enumerated-value/>
+                        </hj:basic>
+                        <jaxb:property name="severity"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="certainty" type="xsd:integer">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REC_CERTAINTY" precision="3" scale="0"/>
+                        </hj:basic>
+                        <jaxb:property name="certainty"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="timestamp" type="xsd:dateTime">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REC_TIMESTAMP"/>
+                        </hj:basic>
+                        <jaxb:property name="timestamp"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="rule" type="tns:ruleType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-one>
+                            <orm:join-column name="RECM_RULE_ID"/>
+                        </hj:many-to-one>
+                        <jaxb:property name="rule"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="usedConclusions" type="tns:conclusionType" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-many>
+                            <orm:join-table name="RE_CONCL_TO_USED_CONCL"/>
+                        </hj:many-to-many>
+                        <jaxb:property name="usedConclusions"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="derivedConclusions" type="tns:conclusionType" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-many mapped-by="usedConclusions">
+                            <!--orm:join-table name="RE_CONCL_TO_USED_CONCL"/-->
+                        </hj:many-to-many>
+                        <jaxb:property name="derivedConclusions"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="usedFacts" type="fct:factType" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-many>
+                            <orm:join-table name="RE_CONCLUSIONS_TO_USED_FACTS"/>
+                        </hj:many-to-many>
+                        <jaxb:property name="usedFacts"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+</xsd:schema>
