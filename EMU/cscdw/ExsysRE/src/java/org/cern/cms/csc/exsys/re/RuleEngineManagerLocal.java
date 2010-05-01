@@ -5,8 +5,8 @@
 
 package org.cern.cms.csc.exsys.re;
 
+import com.espertech.esper.client.EPRuntime;
 import javax.ejb.Local;
-import org.cern.cms.csc.dw.model.Fact;
 import org.cern.cms.csc.exsys.re.conclusion.maker.ConclusionMaker;
 
 /**
@@ -14,10 +14,8 @@ import org.cern.cms.csc.exsys.re.conclusion.maker.ConclusionMaker;
  * @author evka
  */
 @Local
-public interface RuleEngineLocal {
+public interface RuleEngineManagerLocal {
 
-    void sendFact(Fact fact);
-
-    void addRule(String rule, String ruleName, ConclusionMaker conclusionMaker);
+    EPRuntime getEsperRuntime();
     
 }

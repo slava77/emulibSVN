@@ -6,15 +6,13 @@
 package org.cern.cms.csc.exsys.re;
 
 import javax.ejb.Remote;
-import org.cern.cms.csc.dw.model.Fact;
 
 /**
  *
  * @author evka
  */
 @Remote
-public interface RuleEngineRemote {
+public interface RuleEngineManagerRemote {
 
-    void sendFact(Fact fact);
-    
+
 }
