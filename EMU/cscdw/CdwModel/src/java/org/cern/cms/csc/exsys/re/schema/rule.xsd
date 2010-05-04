@@ -89,6 +89,16 @@
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
+            <xsd:element name="conclusionType" type="tns:conclusionTypeType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-one>
+                            <orm:join-column name="RER_CONCLUSION_TYPE_ID"/>
+                        </hj:many-to-one>
+                        <jaxb:property name="conclusionType"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
             <xsd:element name="conclusionFactory" type="tns:conclusionFactoryType">
                 <xsd:annotation>
                     <xsd:appinfo>

@@ -3,6 +3,7 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     targetNamespace="http://www.cern.ch/cms/csc/exsys/re/model"
     xmlns:tns="http://www.cern.ch/cms/csc/exsys/re/model"
+    xmlns:fct="http://www.cern.ch/cms/csc/dw/model"
     elementFormDefault="qualified"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
@@ -13,6 +14,8 @@
                         http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
     jaxb:extensionBindingPrefixes="orm hj"
     jaxb:version="2.0">
+
+    <xsd:import namespace="http://www.cern.ch/cms/csc/dw/model" schemaLocation="../../../dw/schema/fact.xsd"/>
 
     <xsd:annotation>
         <xsd:appinfo>

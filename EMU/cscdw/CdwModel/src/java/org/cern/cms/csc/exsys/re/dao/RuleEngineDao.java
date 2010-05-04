@@ -22,7 +22,7 @@ public class RuleEngineDao implements RuleEngineDaoLocal {
     private EntityManager em;
 
     public List<Rule> getAllRules() {
-        List<Rule> rules = em.createQuery("select * from Rule").getResultList();
+        List<Rule> rules = em.createQuery("select r from org.cern.cms.csc.exsys.re.model.Rule as r").getResultList();
         return rules;
     }
 

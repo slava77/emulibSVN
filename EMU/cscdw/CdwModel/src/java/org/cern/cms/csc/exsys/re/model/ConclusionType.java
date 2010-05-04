@@ -9,10 +9,8 @@
 package org.cern.cms.csc.exsys.re.model;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,15 +18,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -40,6 +34,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.cern.cms.csc.dw.model.base.EntityBase;
+import org.cern.cms.csc.dw.model.fact.SeverityType;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XMLGregorianCalendarAsDateTime;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 import org.jvnet.jaxb2_commons.lang.Equals;
@@ -51,22 +46,20 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
 
 
 /**
- * <p>Java class for ruleType complex type.
+ * <p>Java class for conclusionTypeType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ruleType">
+ * &lt;complexType name="conclusionTypeType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="version" type="{http://www.w3.org/2001/XMLSchema}integer"/>
  *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="title" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="severity" type="{http://www.cern.ch/cms/csc/dw/model}severityType"/>
  *         &lt;element name="timeCreated" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
- *         &lt;element name="ruleDefinition" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="conclusionType" type="{http://www.cern.ch/cms/csc/exsys/re/model}conclusionTypeType"/>
- *         &lt;element name="conclusionFactory" type="{http://www.cern.ch/cms/csc/exsys/re/model}conclusionFactoryType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -76,75 +69,34 @@ import org.jvnet.jaxb2_commons.lang.builder.JAXBToStringBuilder;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ruleType", propOrder = {
-    "version",
+@XmlType(name = "conclusionTypeType", propOrder = {
     "name",
-    "timeCreated",
-    "ruleDefinition",
+    "title",
     "description",
-    "conclusionType",
-    "conclusionFactory"
+    "severity",
+    "timeCreated"
 })
-@Entity(name = "org.cern.cms.csc.exsys.re.model.Rule")
-@Table(name = "RE_RULES", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {
-        "RER_NAME",
-        "RER_VERSION"
-    })
-})
+@Entity(name = "org.cern.cms.csc.exsys.re.model.ConclusionType")
+@Table(name = "RE_CONCLUSION_TYPES")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Rule
+public class ConclusionType
     extends EntityBase
     implements Serializable, Equals, HashCode, ToString
 {
 
     @XmlElement(required = true)
-    protected BigInteger version;
-    @XmlElement(required = true)
     protected String name;
+    @XmlElement(required = true)
+    protected String title;
+    @XmlElement(required = true)
+    protected String description;
+    @XmlElement(required = true)
+    protected SeverityType severity;
     @XmlElement(required = true)
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar timeCreated;
-    @XmlElement(required = true)
-    protected String ruleDefinition;
-    protected String description;
-    @XmlElement(required = true)
-    protected ConclusionType conclusionType;
-    @XmlElement(required = true)
-    protected ConclusionFactory conclusionFactory;
     @XmlAttribute(name = "id")
     protected Long id;
-
-    /**
-     * Gets the value of the version property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
-     */
-    @Basic
-    @Column(name = "RER_VERSION", precision = 20, scale = 10)
-    public BigInteger getVersion() {
-        return version;
-    }
-
-    /**
-     * Sets the value of the version property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setVersion(BigInteger value) {
-        this.version = value;
-    }
-
-    @Transient
-    public boolean isSetVersion() {
-        return (this.version!= null);
-    }
 
     /**
      * Gets the value of the name property.
@@ -155,7 +107,7 @@ public class Rule
      *     
      */
     @Basic
-    @Column(name = "RER_NAME", length = 128)
+    @Column(name = "RECT_NAME", length = 64)
     public String getName() {
         return name;
     }
@@ -175,6 +127,98 @@ public class Rule
     @Transient
     public boolean isSetName() {
         return (this.name!= null);
+    }
+
+    /**
+     * Gets the value of the title property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Basic
+    @Column(name = "RECT_TITLE", length = 512)
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * Sets the value of the title property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setTitle(String value) {
+        this.title = value;
+    }
+
+    @Transient
+    public boolean isSetTitle() {
+        return (this.title!= null);
+    }
+
+    /**
+     * Gets the value of the description property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Basic
+    @Column(name = "RECT_DESCRIPTION", length = 2048)
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Sets the value of the description property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setDescription(String value) {
+        this.description = value;
+    }
+
+    @Transient
+    public boolean isSetDescription() {
+        return (this.description!= null);
+    }
+
+    /**
+     * Gets the value of the severity property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link SeverityType }
+     *     
+     */
+    @Transient
+    public SeverityType getSeverity() {
+        return severity;
+    }
+
+    /**
+     * Sets the value of the severity property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link SeverityType }
+     *     
+     */
+    public void setSeverity(SeverityType value) {
+        this.severity = value;
+    }
+
+    @Transient
+    public boolean isSetSeverity() {
+        return (this.severity!= null);
     }
 
     /**
@@ -208,134 +252,6 @@ public class Rule
     }
 
     /**
-     * Gets the value of the ruleDefinition property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    @Basic
-    @Column(name = "RER_RULE_DEF", length = 1024)
-    public String getRuleDefinition() {
-        return ruleDefinition;
-    }
-
-    /**
-     * Sets the value of the ruleDefinition property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setRuleDefinition(String value) {
-        this.ruleDefinition = value;
-    }
-
-    @Transient
-    public boolean isSetRuleDefinition() {
-        return (this.ruleDefinition!= null);
-    }
-
-    /**
-     * Gets the value of the description property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    @Basic
-    @Column(name = "RER_DESCRIPTION", length = 1024)
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Sets the value of the description property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setDescription(String value) {
-        this.description = value;
-    }
-
-    @Transient
-    public boolean isSetDescription() {
-        return (this.description!= null);
-    }
-
-    /**
-     * Gets the value of the conclusionType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ConclusionType }
-     *     
-     */
-    @ManyToOne(targetEntity = ConclusionType.class, cascade = {
-        CascadeType.ALL
-    })
-    @JoinColumn(name = "RER_CONCLUSION_TYPE_ID")
-    public ConclusionType getConclusionType() {
-        return conclusionType;
-    }
-
-    /**
-     * Sets the value of the conclusionType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ConclusionType }
-     *     
-     */
-    public void setConclusionType(ConclusionType value) {
-        this.conclusionType = value;
-    }
-
-    @Transient
-    public boolean isSetConclusionType() {
-        return (this.conclusionType!= null);
-    }
-
-    /**
-     * Gets the value of the conclusionFactory property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ConclusionFactory }
-     *     
-     */
-    @OneToOne(targetEntity = ConclusionFactory.class, cascade = {
-        CascadeType.ALL
-    })
-    @JoinColumn(name = "RER_CONCLUSION_FACTORY_ID")
-    public ConclusionFactory getConclusionFactory() {
-        return conclusionFactory;
-    }
-
-    /**
-     * Sets the value of the conclusionFactory property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ConclusionFactory }
-     *     
-     */
-    public void setConclusionFactory(ConclusionFactory value) {
-        this.conclusionFactory = value;
-    }
-
-    @Transient
-    public boolean isSetConclusionFactory() {
-        return (this.conclusionFactory!= null);
-    }
-
-    /**
      * Gets the value of the id property.
      * 
      * @return
@@ -344,9 +260,9 @@ public class Rule
      *     
      */
     @Id
-    @Column(name = "RER_ID")
+    @Column(name = "RECT_ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @SequenceGenerator(name = "RE_RULE_ID_SEQ", sequenceName = "RE_RULE_ID_SEQ")
+    @SequenceGenerator(name = "RE_CONCLUSION_TYPE_ID_SEQ", sequenceName = "RE_CONCLUSION_TYPE_ID_SEQ")
     public Long getid() {
         return id;
     }
@@ -364,7 +280,17 @@ public class Rule
     }
 
     @Basic
-    @Column(name = "RER_TIME_CREATED")
+    @Column(name = "RECT_SEVERITY", length = 10)
+    public String getSeverityItem() {
+        return ((this.getSeverity() == null)?null:this.getSeverity().value());
+    }
+
+    public void setSeverityItem(String target) {
+        setSeverity(((target == null)?null:SeverityType.fromValue(target)));
+    }
+
+    @Basic
+    @Column(name = "REC_TIME_CREATED")
     @Temporal(TemporalType.TIMESTAMP)
     public Date getTimeCreatedItem() {
         return XmlAdapterUtils.unmarshall(XMLGregorianCalendarAsDateTime.class, this.getTimeCreated());
@@ -375,25 +301,23 @@ public class Rule
     }
 
     public void equals(Object object, EqualsBuilder equalsBuilder) {
-        if (!(object instanceof Rule)) {
+        if (!(object instanceof ConclusionType)) {
             equalsBuilder.appendSuper(false);
             return ;
         }
         if (this == object) {
             return ;
         }
-        final Rule that = ((Rule) object);
-        equalsBuilder.append(this.getVersion(), that.getVersion());
+        final ConclusionType that = ((ConclusionType) object);
         equalsBuilder.append(this.getName(), that.getName());
-        equalsBuilder.append(this.getTimeCreated(), that.getTimeCreated());
-        equalsBuilder.append(this.getRuleDefinition(), that.getRuleDefinition());
+        equalsBuilder.append(this.getTitle(), that.getTitle());
         equalsBuilder.append(this.getDescription(), that.getDescription());
-        equalsBuilder.append(this.getConclusionType(), that.getConclusionType());
-        equalsBuilder.append(this.getConclusionFactory(), that.getConclusionFactory());
+        equalsBuilder.append(this.getSeverity(), that.getSeverity());
+        equalsBuilder.append(this.getTimeCreated(), that.getTimeCreated());
     }
 
     public boolean equals(Object object) {
-        if (!(object instanceof Rule)) {
+        if (!(object instanceof ConclusionType)) {
             return false;
         }
         if (this == object) {
@@ -405,13 +329,11 @@ public class Rule
     }
 
     public void hashCode(HashCodeBuilder hashCodeBuilder) {
-        hashCodeBuilder.append(this.getVersion());
         hashCodeBuilder.append(this.getName());
-        hashCodeBuilder.append(this.getTimeCreated());
-        hashCodeBuilder.append(this.getRuleDefinition());
+        hashCodeBuilder.append(this.getTitle());
         hashCodeBuilder.append(this.getDescription());
-        hashCodeBuilder.append(this.getConclusionType());
-        hashCodeBuilder.append(this.getConclusionFactory());
+        hashCodeBuilder.append(this.getSeverity());
+        hashCodeBuilder.append(this.getTimeCreated());
     }
 
     public int hashCode() {
@@ -422,24 +344,14 @@ public class Rule
 
     public void toString(ToStringBuilder toStringBuilder) {
         {
-            BigInteger theVersion;
-            theVersion = this.getVersion();
-            toStringBuilder.append("version", theVersion);
-        }
-        {
             String theName;
             theName = this.getName();
             toStringBuilder.append("name", theName);
         }
         {
-            XMLGregorianCalendar theTimeCreated;
-            theTimeCreated = this.getTimeCreated();
-            toStringBuilder.append("timeCreated", theTimeCreated);
-        }
-        {
-            String theRuleDefinition;
-            theRuleDefinition = this.getRuleDefinition();
-            toStringBuilder.append("ruleDefinition", theRuleDefinition);
+            String theTitle;
+            theTitle = this.getTitle();
+            toStringBuilder.append("title", theTitle);
         }
         {
             String theDescription;
@@ -447,14 +359,14 @@ public class Rule
             toStringBuilder.append("description", theDescription);
         }
         {
-            ConclusionType theConclusionType;
-            theConclusionType = this.getConclusionType();
-            toStringBuilder.append("conclusionType", theConclusionType);
+            SeverityType theSeverity;
+            theSeverity = this.getSeverity();
+            toStringBuilder.append("severity", theSeverity);
         }
         {
-            ConclusionFactory theConclusionFactory;
-            theConclusionFactory = this.getConclusionFactory();
-            toStringBuilder.append("conclusionFactory", theConclusionFactory);
+            XMLGregorianCalendar theTimeCreated;
+            theTimeCreated = this.getTimeCreated();
+            toStringBuilder.append("timeCreated", theTimeCreated);
         }
     }
 

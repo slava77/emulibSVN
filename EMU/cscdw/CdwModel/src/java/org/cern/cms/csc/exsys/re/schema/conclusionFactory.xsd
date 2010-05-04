@@ -29,7 +29,7 @@
                 <hj:entity>
                     <orm:table name="RE_CONCLUSION_FACTORIES">
                         <orm:unique-constraint>
-                            <orm:column-name>RECF_CONCL_NAME</orm:column-name>
+                            <orm:column-name>RECF_NAME</orm:column-name>
                         </orm:unique-constraint>
                     </orm:table>
                 </hj:entity>
@@ -40,54 +40,23 @@
             </xsd:appinfo>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="conclusionName" type="xsd:string">
+            <xsd:element name="name" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="RECF_CONCL_NAME" length="64"/>
+                            <orm:column name="RECF_NAME" length="64"/>
                         </hj:basic>
-                        <jaxb:property name="conclusionName"/>
+                        <jaxb:property name="name"/>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
-            <xsd:element name="conclusionTitle" type="xsd:string">
+            <xsd:element name="certainty" type="xsd:integer">
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="RECF_CONCL_TITLE" length="512"/>
+                            <orm:column name="RECF_CERTAINTY" precision="3" scale="0"/>
                         </hj:basic>
-                        <jaxb:property name="conclusionTitle"/>
-                    </xsd:appinfo>
-                </xsd:annotation>
-            </xsd:element>
-            <xsd:element name="conclusionDescription" type="xsd:string">
-                <xsd:annotation>
-                    <xsd:appinfo>
-                        <hj:basic>
-                            <orm:column name="RECF_CONCL_DESCRIPTION" length="2048"/>
-                        </hj:basic>
-                        <jaxb:property name="description"/>
-                    </xsd:appinfo>
-                </xsd:annotation>
-            </xsd:element>
-            <xsd:element name="conclusionSeverity" type="fct:severityType">
-                <xsd:annotation>
-                    <xsd:appinfo>
-                        <hj:basic>
-                            <orm:column name="REC_CONCL_SEVERITY" length="10"/>
-                            <hj:enumerated-value/>
-                        </hj:basic>
-                        <jaxb:property name="conclusionSeverity"/>
-                    </xsd:appinfo>
-                </xsd:annotation>
-            </xsd:element>
-            <xsd:element name="conclusionCertainty" type="xsd:integer">
-                <xsd:annotation>
-                    <xsd:appinfo>
-                        <hj:basic>
-                            <orm:column name="RECF_CONCL_CERTAINTY" precision="3" scale="0"/>
-                        </hj:basic>
-                        <jaxb:property name="conclusionCertainty"/>
+                        <jaxb:property name="certainty"/>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -99,7 +68,6 @@
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
-
         </xsd:sequence>
     </xsd:complexType>
 
