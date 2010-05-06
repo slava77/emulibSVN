@@ -6,22 +6,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageProducer;
-import javax.jms.ObjectMessage;
-import javax.jms.Queue;
-import javax.jms.Session;
 import javax.xml.bind.JAXBElement;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.exception.ComponentTypeNotAllowedInFactException;
 import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
-import org.cern.cms.csc.dw.model.base.EntityBase;
+import org.cern.cms.csc.dw.dao.PersistDaoLocal;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.dw.model.fact.FactCollection;
 import org.cern.cms.csc.dw.model.fact.FactCollectionFactsItem;
@@ -30,15 +21,15 @@ import org.cern.cms.csc.dw.service.ServiceInstructions;
 
 @Stateless
 public class FactCollectionSaverBean implements FactCollectionSaverLocal {
-    @Resource(name = "jms/entitySaverQueue")
-    private Queue entitySaverQueue;
-    @Resource(name = "jms/entitySaverQueueFactory")
-    private ConnectionFactory entitySaverQueueFactory;
 
     private static Logger logger = Logger.getLogger(FactCollectionSaverBean.class.getName());
 
     @EJB
+    private PersistDaoLocal persistDao;
+
+    @EJB
     private OntologyDaoLocal ontologyDao;
+
     @EJB
     private EntityDaoLocal entityDao;
 
@@ -100,38 +91,10 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
 
         // Persist collection
         if (instructions.isPersist()) {
-            logger.finest("FC Saver bean: serviceInstructions.isPersist() = true, so sending this fact collection to entity saver queue");
-            sendJMSMessageToEntitySaverQueue(factCollection);
+            logger.finest("FC Saver bean: serviceInstructions.isPersist() = true, so sending this fact collection to entity saver");
+            persistDao.persist(factCollection);
         }
 
-    }
-
-    private Message createJMSMessageForjmsEntitySaverQueue(Session session, EntityBase entity) throws JMSException {
-        ObjectMessage om = session.createObjectMessage();
-        om.setObject(entity);
-        return om;
-    }
-
-    private void sendJMSMessageToEntitySaverQueue(EntityBase entity) throws JMSException {
-        Connection connection = null;
-        Session session = null;
-        try {
-            connection = entitySaverQueueFactory.createConnection();
-            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            MessageProducer messageProducer = session.createProducer(entitySaverQueue);
-            messageProducer.send(createJMSMessageForjmsEntitySaverQueue(session, entity));
-        } finally {
-            if (session != null) {
-                try {
-                    session.close();
-                } catch (JMSException e) {
-                    Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot close session", e);
-                }
-            }
-            if (connection != null) {
-                connection.close();
-            }
-        }
     }
 
 }

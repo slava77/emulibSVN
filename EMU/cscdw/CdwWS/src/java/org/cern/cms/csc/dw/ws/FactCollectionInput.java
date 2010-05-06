@@ -28,8 +28,10 @@ public class FactCollectionInput {
     private static Logger logger = Logger.getLogger(FactCollectionInput.class.getName());
     @EJB
     FactCollectionSaverLocal saver;
+
     @Resource(mappedName = "jms/factCollectionQueue")
     private Queue queue;
+
     @Resource(mappedName = "jms/factCollectionQueueFactory")
     private QueueConnectionFactory queueConnectionFactory;
 
@@ -79,6 +81,7 @@ public class FactCollectionInput {
                 logger.info("FCinput WS: serviceInstructions.isAsync() = false, sending this fact collection directly to FactCollectionSaverBean");
                 saver.saveFactCollection(factCollection);
             }
+
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "Error while saving Fact Collection", ex);
             throw ex;
