@@ -1,4 +1,2 @@
-org.jvnet.jaxb2_commons.plugin.XjcIgnoreOnlyThisPlugin
 org.jvnet.jaxb2_commons.plugin.XjcSuperClassPlugin
-org.jvnet.jaxb2_commons.plugin.XjcHibernatePlugin
-org.jvnet.jaxb2_commons.plugin.XjcCustomCodePlugin
+org.jvnet.jaxb2_commons.plugin.XjcAnnotatePlugin

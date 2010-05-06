@@ -8,16 +8,16 @@
     elementFormDefault="qualified"
 
     xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
-	xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
-	xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+    xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
     xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
-    xmlns:hip="http://jaxb.dev.java.net/plugin/hibernate"
+    xmlns:ann="http://jaxb.dev.java.net/plugin/annotate"
     xsi:schemaLocation="
         http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
         http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
         http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
-	jaxb:extensionBindingPrefixes="xjc orm hj hip"
-	jaxb:version="2.0">
+    jaxb:extensionBindingPrefixes="xjc orm hj ann"
+    jaxb:version="2.0">
 
     <xsd:include schemaLocation="ontologyClassifiers.xsd"/>
 
@@ -36,8 +36,10 @@
                 <xjc:superClass name="org.cern.cms.csc.dw.model.base.ComponentBase"/>
                 <hj:entity>
                     <orm:table name="CDW_COMPONENTS"/>
-                    <hip:cache usage="READ_WRITE"/>
                 </hj:entity>
+                <ann:annotate xmlns:a="org.hibernate.annotations">
+                    <a:Cache usage="READ_WRITE"/>
+                </ann:annotate>
             </xsd:appinfo>
         </xsd:annotation>
         <xsd:sequence>
@@ -98,8 +100,10 @@
                 <jaxb:class name="ComponentClass" />
                 <hj:entity>
                     <orm:table name="CDW_COMPONENT_CLASSES"/>
-                    <hip:cache usage="READ_WRITE"/>
                 </hj:entity>
+                <ann:annotate xmlns:a="org.hibernate.annotations">
+                    <a:Cache usage="READ_WRITE"/>
+                </ann:annotate>
             </xsd:appinfo>
         </xsd:annotation>
         <xsd:sequence>
@@ -144,8 +148,10 @@
                 <jaxb:class name="ComponentSynonym" />
                 <hj:entity>
                     <orm:table name="CDW_COMPONENT_SYNONYMS"/>
-                    <hip:cache usage="READ_WRITE"/>
                 </hj:entity>
+                <ann:annotate xmlns:a="org.hibernate.annotations">
+                    <a:Cache usage="READ_WRITE"/>
+                </ann:annotate>
             </xsd:appinfo>
         </xsd:annotation>
         <xsd:sequence>
@@ -167,12 +173,14 @@
                 <jaxb:class name="ComponentLink" />
                 <hj:entity>
                     <orm:table name="CDW_COMPONENT_LINKS"/>
-                    <hip:cache usage="READ_WRITE"/>
                 </hj:entity>
                 <hj:generated-id name="Id">
                     <orm:column name="LIN_ID"/>
                     <orm:sequence-generator name="CDW_LIN_ID_SEQ" sequence-name="CDW_LIN_ID_SEQ"/>
                 </hj:generated-id>
+                <ann:annotate xmlns:a="org.hibernate.annotations">
+                    <a:Cache usage="READ_WRITE"/>
+                </ann:annotate>
             </xsd:appinfo>
         </xsd:annotation>
         <xsd:sequence>
@@ -212,8 +220,10 @@
                 <jaxb:class name="ComponentLinkClass" />
                 <hj:entity>
                     <orm:table name="CDW_COMPONENT_LINK_CLASSES"/>
-                    <hip:cache usage="READ_WRITE"/>
                 </hj:entity>
+                <ann:annotate xmlns:a="org.hibernate.annotations">
+                    <a:Cache usage="READ_WRITE"/>
+                </ann:annotate>
             </xsd:appinfo>
         </xsd:annotation>
         <xsd:sequence>
@@ -275,12 +285,14 @@
                 <jaxb:class name="ComponentGraphLink" />
                 <hj:entity>
                     <orm:table name="CDW_COMPONENT_GRAPH_LINKS"/>
-                    <hip:cache usage="READ_WRITE"/>
                 </hj:entity>
                 <hj:generated-id name="Id">
                     <orm:column name="CGL_ID"/>
                     <orm:sequence-generator name="CDW_CGL_ID_SEQ"/>
                 </hj:generated-id>
+                <ann:annotate xmlns:a="org.hibernate.annotations">
+                    <a:Cache usage="READ_WRITE"/>
+                </ann:annotate>
             </xsd:appinfo>
         </xsd:annotation>
         <xsd:sequence>

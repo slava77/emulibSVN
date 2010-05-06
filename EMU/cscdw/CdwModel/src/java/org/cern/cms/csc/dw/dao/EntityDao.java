@@ -49,6 +49,7 @@ public class EntityDao implements EntityDaoLocal {
      * @return entity that you asked for or null if it doesn't exist
      * @throws InvalidEntityClassException thrown in many cases e.g. class doesn't exist, doesnt extend EntityBase or ID method is not found or ID cast exception
      */
+    @SuppressWarnings("unchecked")
     public EntityBase getEntityById(final String entityClassName, String id) throws InvalidEntityClassException {
         try {
             // get the class

@@ -5,16 +5,17 @@
     xmlns:tns="http://www.cern.ch/cms/csc/dw/model/dse"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     elementFormDefault="qualified"
-	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
-	xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
-	xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
-	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+    xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+    xmlns:ann="http://jaxb.dev.java.net/plugin/annotate"
     xsi:schemaLocation="
         http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
         http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
         http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
-	jaxb:extensionBindingPrefixes="xjc orm hj"
-	jaxb:version="2.0">
+    jaxb:extensionBindingPrefixes="xjc orm hj ann"
+    jaxb:version="2.0">
 
     <xsd:annotation>
         <xsd:appinfo>
@@ -52,8 +53,6 @@
             <xsd:appinfo>
                 <jaxb:class name="DataServiceEntity"/>
                 <xjc:superClass name="org.cern.cms.csc.dw.model.base.EntityBase"/>
-                <!--xjc:ignoreOnlyThis/-->
-                <!--hj:ignored/-->
             </xsd:appinfo>
         </xsd:annotation>
     </xsd:complexType>

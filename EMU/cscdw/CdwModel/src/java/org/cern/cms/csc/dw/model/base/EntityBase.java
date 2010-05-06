@@ -16,7 +16,8 @@ import org.cern.cms.csc.dw.exception.OnSaveProcessingException;
  */
 public class EntityBase implements Serializable {
 
-    public void onSave(EntityDaoLocal eDao) throws OnSaveProcessingException { }
+    public void onSave(EntityDaoLocal eDao, boolean queued) throws OnSaveProcessingException { }
+
     public void onReceive(EntityDaoLocal eDao) throws OnReceiveProcessingException { }
     
 }

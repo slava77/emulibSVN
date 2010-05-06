@@ -2,10 +2,11 @@
 
 <project name="hyperjaxb3-hibernate-ant" default="generate-model">
 
-	<property name="artifactId" value="hyperjaxb3-po-initial-ant"/>
-	<property name="version" value="0.5.4"/>
+    <property name="artifactId" value="hyperjaxb3-po-initial-ant"/>
+    <property name="version" value="0.5.4"/>
     <property name="libs" location="${basedir}/../lib/hyperjaxb3" />
     <property name="plugin-dir" location="${basedir}/build/plugin"/>
+    <property name="jar-dir" location="${basedir}/build/jar"/>
     <property name="srcs" location="${basedir}/src/java" />
 
     <target name="build-plugins">
@@ -18,9 +19,9 @@
             <include name="org/jvnet/**"/>
             <exclude name="org/cern/**"/>
             <classpath>
-				<fileset dir="${libs}">
-					<include name="*.jar"/>
-				</fileset>
+                <fileset dir="${libs}">
+                    <include name="*.jar"/>
+                </fileset>
             </classpath>
         </javac>
 
@@ -31,26 +32,26 @@
     </target>
 
     <target name="hj-taskdef" depends="build-plugins">
-		<taskdef name="xjc" classname="org.jvnet.jaxb2_commons.xjc.XJC2Task">
-			<classpath>
-				<fileset dir="${libs}">
-					<include name="activation-*.jar"/>
-					<include name="jaxb-api-*.jar"/>
-					<include name="jaxb-impl-*.jar"/>
-					<include name="jsr173_api-*.jar"/>
-					<include name="stax-api-*.jar"/>
-					<include name="jaxb-xjc-*.jar"/>
-					<include name="codemodel-*.jar"/>
-					<include name="dtd-parser-*.jar"/>
-					<include name="istack-commons-tools-*.jar"/>
-					<include name="relaxngDatatype-*.jar"/>
-					<include name="resolver-*.jar"/>
-					<include name="rngom-*.jar"/>
-					<include name="xsom-*.jar"/>
-					<include name="jaxb2-basics-ant-*.jar"/>
-				</fileset>
-			</classpath>
-		</taskdef>
+        <taskdef name="xjc" classname="org.jvnet.jaxb2_commons.xjc.XJC2Task">
+            <classpath>
+                <fileset dir="${libs}">
+                    <include name="activation-*.jar"/>
+                    <include name="jaxb-api-*.jar"/>
+                    <include name="jaxb-impl-*.jar"/>
+                    <include name="jsr173_api-*.jar"/>
+                    <include name="stax-api-*.jar"/>
+                    <include name="jaxb-xjc-*.jar"/>
+                    <include name="codemodel-*.jar"/>
+                    <include name="dtd-parser-*.jar"/>
+                    <include name="istack-commons-tools-*.jar"/>
+                    <include name="relaxngDatatype-*.jar"/>
+                    <include name="resolver-*.jar"/>
+                    <include name="rngom-*.jar"/>
+                    <include name="xsom-*.jar"/>
+                    <include name="jaxb2-basics-ant-*.jar"/>
+                </fileset>
+            </classpath>
+        </taskdef>
     </target>
 
     <target name="prepare-ontology">
@@ -135,32 +136,30 @@
     </target>
 
     <target name="generate-model" depends="generate-ontology-schema,generate-fact-schema,hj-taskdef">
-        
-		<xjc destdir="${srcs}" extension="true">
-			<arg line="
-				-Xhyperjaxb3-ejb
-				-Xhyperjaxb3-ejb-roundtripTestClassName=org.cern.cms.csc.dw.model.test.RoundtripTest
-				-Xequals
-				-Xinheritance
-				-XhashCode
-				-XtoString
+
+        <xjc destdir="${srcs}" extension="true">
+            <arg line="
+                -Xhyperjaxb3-ejb
+                -Xhyperjaxb3-ejb-roundtripTestClassName=org.cern.cms.csc.dw.model.test.RoundtripTest
+                -Xequals
+                -Xinheritance
+                -XhashCode
+                -XtoString
                 -Xsuperclass
-                -Xignoreonlythis
-                -simple-preserve
-                -Xcustomcode
-                -Xhibernate"/>
-			<binding dir="${basedir}">
-			 	<include name="*.xjb"/>
-			</binding>
+                -XAnnotate
+                -simple-preserve"/>
+            <!--binding dir="${basedir}">
+                <include name="*.xjb"/>
+            </binding-->
             <schema file="${srcs}/org/cern/cms/csc/dw/schema/cdw.xsd"/>
-            <schema file="${srcs}/org/cern/cms/csc/exsys/re/schema/re.xsd"/>
-			<classpath>
-				<fileset dir="${libs}">
-					<include name="*.jar"/>
-				</fileset>
+            <classpath>
+                <fileset dir="${libs}">
+                    <include name="*.jar"/>
+                </fileset>
                 <pathelement location="${plugin-dir}"/>
-			</classpath>
-		</xjc>
+                <pathelement location="${jar-dir}"/>
+            </classpath>
+        </xjc>
 
         <!-- Make DataServiceEntity not an entity (cannot use <hj:ignore>, because that also affects subclasses) -->
         <replace file="${srcs}/org/cern/cms/csc/dw/model/dse/DataServiceEntity.java">

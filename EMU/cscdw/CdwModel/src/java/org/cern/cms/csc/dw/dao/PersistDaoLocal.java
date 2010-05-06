@@ -16,6 +16,7 @@ import org.cern.cms.csc.dw.model.base.EntityBase;
 @Local
 public interface PersistDaoLocal {
 
-    void persist(EntityBase cdwEntityObject) throws PersistException, Exception;
-    
+    public void persist(EntityBase cdwEntityObject) throws PersistException, Exception;
+    public void persist(EntityBase cdwEntityObject, boolean queued) throws PersistException, java.lang.Exception;
+   
 }

@@ -59,7 +59,6 @@ public class XjcSuperClassPlugin extends Plugin {
 
             CPluginCustomization cstSuperClass = CustomizationUtils.findCustomization(classOutline, xjcSuperClass);
             if (cstSuperClass != null) {
-                System.out.println("Found superclass customization tag");
                 Element elSC = cstSuperClass.element;
                 String superClassName = elSC.getAttribute("name");
                 if (superClassName != null) {
