@@ -105,6 +105,7 @@ void confChamberShape(mapping shapeParams) {
   setValue(shapeName, \"points\", points);
   
   if (outerWidth < 15) { caption.visible = false; }
+  if (height < 50) { canDisplayFullStandbyLabel = false; }
 }
 
 void confRectShape(mapping shapeParams) {
@@ -145,6 +146,7 @@ mapping mouseOverObjects;
 mapping deviceParams;
 string deviceParamsStr;
 string shapeName;
+bool canDisplayFullStandbyLabel = true;
 
 int fsmStatePollingThreadId = -1;
 string multipleConnectionFunction;
@@ -363,9 +365,21 @@ void updateFSMStateCB(string node, string state) {
   lastFsmState = state;
   emu_debug(\"state update came for \" + node + \": \" + state);
   // update text
-  if (showValueOnCaption) {
+  
+  caption.foreCol(\"\");
+  if (state == \"STANDBY\") {
+    caption.foreCol(\"yellow\");
+    string captionText = \"STANDBY\";
+    if (!canDisplayFullStandbyLabel) { // shorten the text because there's not enough room for full \"STANDBY\" label
+      captionText = \"STBY\";
+    }
+    caption.text = captionText;
+  } else if (showValueOnCaption) {
     caption.text = state;
+  } else {
+    caption.text = $caption;
   }
+  
   if (greyOut) {
     setColor(\"FwEquipmentDisabled\");
     return;
@@ -960,7 +974,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 0.666666666666667 0 0.666666666666667 23.3333333333333 -123.333333333333 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4294967295 E 85 215 15 15
+E E 0 1 1 2 1 E 0.666666666666667 0 0.666666666666667 23.3333333333333 -123.3333333333334 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4294967295 E 85 215 15 15
 0
 LAYER, 1 
 1
