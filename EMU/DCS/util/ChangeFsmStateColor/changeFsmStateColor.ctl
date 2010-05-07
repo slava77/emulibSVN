@@ -1,8 +1,8 @@
 global const string state = "STANDBY";
-global const string color = "FwStateOKNotPhysics"; //FwStateAttention1;
+global const string color = "FwStateOKNotPhysics"; //"FwStateAttention1";
 
 main() {
-  dyn_string fsmTypeDps = dpNames("*:*", "_FwFsmObjectType");
+  dyn_string fsmTypeDps = dpNames("{cms_csc_dcs_*,csc_dcs_*}:*", "_FwFsmObjectType");
   for (int typeIndex=1; typeIndex <= dynlen(fsmTypeDps); typeIndex++) {
     dyn_string states;
     dpGet(fsmTypeDps[typeIndex] + ".states", states);
@@ -10,7 +10,7 @@ main() {
       if (states[i] == state) {
         DebugTN("Setting standby color to " + color + " for FSM type " + fsmTypeDps[typeIndex]);
         states[i+1] = color;
-        //dpSetWait(fsmTypeDps[typeIndex] + ".states", states);
+        dpSetWait(fsmTypeDps[typeIndex] + ".states", states);
         
 //         DebugTN(states);
 //         DebugTN("");
