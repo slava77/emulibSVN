@@ -1,9 +1,0 @@
-namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
-namespace rng = "http://relaxng.org/ns/structure/1.0"
-namespace tns = "http://www.cern.ch/cms/csc/exsys/data"
-namespace xsd = "http://www.w3.org/2001/XMLSchema"
-
-parameterIdType = "HV_CURRENT" | "LV_CURRENT" | "DATA_EVENTS"
-unitType = "AMPER" | "VOLT" | "METER"
-severityType = "DEBUG" | "INFO" | "WARN" | "ERROR" | "FATAL"
-sourceType = "DCS" | "LOCAL_DQM" | "FED"
