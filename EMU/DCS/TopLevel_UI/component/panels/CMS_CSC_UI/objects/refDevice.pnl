@@ -104,7 +104,7 @@ void confChamberShape(mapping shapeParams) {
   
   setValue(shapeName, \"points\", points);
   
-  if (outerWidth < 15) { caption.visible = false; }
+  if (outerWidth < 15) { caption.visible = false; captionDoesntFit = true; }
   if (height < 50) { canDisplayFullStandbyLabel = false; }
 }
 
@@ -136,41 +136,70 @@ void confRectShape(mapping shapeParams) {
  E E E E 1 -1 -1 0  0 0
 ""0  1
 E "//some panel-wide constants
+
+/** Tooltip reference name - this one is used as a starting point, however it is appended with some postfixes if this name is already in use. */
 const string EMUUI_REFDEV_TOOLTIP_REF_NAME = \"refTooltip\";
+/** A constant telling how long a tooltip show-up should be delayed after the mouse has gone over this device/shape. */
 const int EMUUI_REFDEV_TOOLTIP_ON_DELAY_MS = 1000;
+/** A constant telling how long a tooltip hiding should be delayed after the mouse has gone away from the device/shape. */
 const int EMUUI_REFDEV_TOOLTIP_OFF_DELAY_MS = 200;
+/** Tooltip reference name. */
 string tooltipRefName;
+/** Flag saying if tooltip is now visible or not. */
 bool tooltipVisible;
+/** Objects which currently have the mouse over them. */
 mapping mouseOverObjects;
 
+/** Device parameter string decoded into a map[devParam]=value. */
 mapping deviceParams;
+/** \"CSC DCS UI standard\" device parameter string (format: devParam1=value1;devParam2=value2..). */
 string deviceParamsStr;
+/** Name of the shape that is chosen to be used e.g. chamber, rectangle, rectangle_mid_ref_point). */
 string shapeName;
+/** This is set to false when a chamber is too small in height to fit a whole \"STANDBY\" label - it is then replaced with \"STBY\". */
 bool canDisplayFullStandbyLabel = true;
+/** this is set to true (during shapeInit()) when the shape is too small to fit the caption label. */
+bool captionDoesntFit = false;
 
+/** There's a thread that polls FSM state on a scheduled basis - this is only to protect against a lost FSM state update callback (which happens sometimes). This is the ID of that thread. */
 int fsmStatePollingThreadId = -1;
+/** If this device uses a multiple connection e.g. average of multiple temperature values - this tells which algorithm to apply e.g. average, min, max. */
 string multipleConnectionFunction;
+/** A list of DPs to which this device is connected right now (used only for multiple connection type). */
 dyn_string currentConnectionMultiple;
+/** For a multiple connection actually there is only one dpConnect created to  avoid very big number of dpConnects (which is bad). So only one of the DPs must be chosen as a trigger - this variable holds a name of that DP. */
 string currentMultipleConnectionRepresentative;
+/** Connection type that's used right now e.g. FSM, DP, DPs. */
 string currentConnectionType;
+/** Connection mode that's used right now e.g. general, high_voltage, HV_vMon... 
+*   This one is prefixed with $device_type and together with deviceParams is passed to emuui_getFsmNode() or emuui_getDpName(s)() which look up the actual DP or FSM node to which this device will connect to. */
 string currentConnectionMode;
+/** DP or FSM node to which this device is currently connected (for multiple DP connections, currentConnectionMultiple is used instead). */
 string currentConnection;
+/** For numeric DP connections, this tells what is the minimum value this DP can have (used for temperature plot color calculation). */
 float currentDpValueRangeMin;
+/** For numeric DP connections, this tells what is the maximum value this DP can have (used for temperature plot color calculation). */
 float currentDpValueRangeMax;
+/** Used only for FSM connections - describe the FSM node that this device is connected to in FSM terms - domain + object. */
 string currentDomain, currentObject;
+/** If true, then value of the connection (e.g. FSM state for FSM node connection) is displayed on the caption label. */
 bool showValueOnCaption;
+/** Some special treatment is needed for ME1/1 chambers...... this flag tells if this is an ME1/1 chamber. */
 bool me11;
+/** Last FSM state that we got (used only in FSM node connection type). */
 string lastFsmState;
 
-// operation mode related variabled
+// operation mode related variables
 bool hvOffChannelsWarningEnabled;
 dyn_int disabledHvChannels;
 bool me11HasDisabledChannels;
 string me11HvFsmNode;
-bool deviceIncomplete; // when device has disabled children or PNPI HV channels (which are not in FSM) - show the incompleteWarning and set this flag
-bool greyOut; // when device is disabled or excluded - this is set to true and color always stays grey
+/** when device has disabled children or PNPI HV channels (which are not in FSM) - show the incompleteWarning and set this flag */
+bool deviceIncomplete;
+/** when device is disabled or excluded - this is set to true and color always stays grey */
+bool greyOut;
 
-// local tooltip semaphore to synchronize showTooltip and hideTooltip functions
+/** local tooltip semaphore to synchronize showTooltip and hideTooltip functions */
 int tooltipSemaphore = 0;
 
 void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string connectionType) {
@@ -367,13 +396,18 @@ void updateFSMStateCB(string node, string state) {
   // update text
   
   caption.foreCol(\"\");
+  if (captionDoesntFit) { caption.visible = false; }
   if (state == \"STANDBY\") {
     caption.foreCol(\"yellow\");
     string captionText = \"STANDBY\";
     if (!canDisplayFullStandbyLabel) { // shorten the text because there's not enough room for full \"STANDBY\" label
       captionText = \"STBY\";
     }
+    if (captionDoesntFit) { // the device is so small that the caption is considered to not fit in.. For standby we'll still show an \"s\" letter.
+      captionText = \"stby\";
+    }
     caption.text = captionText;
+    if (captionDoesntFit) { caption.visible = true; }
   } else if (showValueOnCaption) {
     caption.text = state;
   } else {
