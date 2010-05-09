@@ -20,6 +20,8 @@
     <xsd:include schemaLocation="rule.xsd"/>
 
     <xsd:element name="conclusion" type="tns:conclusionType"/>
+    <xsd:element name="conclusionType" type="tns:conclusionTypeType"/>
+    <xsd:element name="conclusionSourceRelation" type="tns:conclusionSourceRelationType"/>
 
     <xsd:complexType name="conclusionTypeType">
         <xsd:annotation>
@@ -40,7 +42,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="RECT_NAME" length="64"/>
+                            <orm:column name="RECT_NAME" length="64" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="name"/>
                     </xsd:appinfo>
@@ -50,7 +52,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="RECT_TITLE" length="512"/>
+                            <orm:column name="RECT_TITLE" length="512" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="title"/>
                     </xsd:appinfo>
@@ -60,7 +62,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="RECT_DESCRIPTION" length="2048"/>
+                            <orm:column name="RECT_DESCRIPTION" length="2048" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="description"/>
                     </xsd:appinfo>
@@ -70,7 +72,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="RECT_SEVERITY" length="10"/>
+                            <orm:column name="RECT_SEVERITY" length="10" nullable="false"/>
                             <hj:enumerated-value/>
                         </hj:basic>
                         <jaxb:property name="severity"/>
@@ -81,7 +83,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="REC_TIME_CREATED"/>
+                            <orm:column name="REC_TIME_CREATED" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="timeCreated"/>
                     </xsd:appinfo>
@@ -89,7 +91,7 @@
             </xsd:element>
         </xsd:sequence>
     </xsd:complexType>
-
+    
     <xsd:complexType name="conclusionType">
         <xsd:annotation>
             <xsd:appinfo>
@@ -109,7 +111,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="REC_TITLE" length="512"/>
+                            <orm:column name="REC_TITLE" length="512" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="title"/>
                     </xsd:appinfo>
@@ -119,7 +121,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="REC_DESCRIPTION" length="2048"/>
+                            <orm:column name="REC_DESCRIPTION" length="2048" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="description"/>
                     </xsd:appinfo>
@@ -129,7 +131,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="REC_SEVERITY" length="10"/>
+                            <orm:column name="REC_SEVERITY" length="10" nullable="false"/>
                             <hj:enumerated-value/>
                         </hj:basic>
                         <jaxb:property name="severity"/>
@@ -140,7 +142,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="REC_CERTAINTY" precision="3" scale="0"/>
+                            <orm:column name="REC_CERTAINTY" precision="3" scale="0" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="certainty"/>
                     </xsd:appinfo>
@@ -150,7 +152,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="REC_TIMESTAMP"/>
+                            <orm:column name="REC_TIMESTAMP" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="timestamp"/>
                     </xsd:appinfo>
@@ -160,7 +162,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="REC_LAST_HIT_TIME"/>
+                            <orm:column name="REC_LAST_HIT_TIME" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="lastHitTime"/>
                     </xsd:appinfo>
@@ -170,7 +172,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="REC_HIT_COUNT"/>
+                            <orm:column name="REC_HIT_COUNT" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="hitCount"/>
                     </xsd:appinfo>
@@ -180,7 +182,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="REC_IS_CLOSED"/>
+                            <orm:column name="REC_IS_CLOSED" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="isClosed"/>
                     </xsd:appinfo>
@@ -200,7 +202,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:many-to-one>
-                            <orm:join-column name="REC_CONCLUSION_TYPE_ID"/>
+                            <orm:join-column name="REC_CONCLUSION_TYPE_ID" nullable="false"/>
                         </hj:many-to-one>
                         <jaxb:property name="type"/>
                     </xsd:appinfo>
@@ -210,7 +212,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:many-to-one>
-                            <orm:join-column name="REC_RULE_ID"/>
+                            <orm:join-column name="REC_RULE_ID" nullable="false"/>
                         </hj:many-to-one>
                         <jaxb:property name="rule"/>
                     </xsd:appinfo>
@@ -254,7 +256,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="REC_IS_CLOSING"/>
+                            <orm:column name="REC_IS_CLOSING" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="isClosing"/>
                     </xsd:appinfo>
@@ -264,7 +266,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="RECR_TIMESTAMP"/>
+                            <orm:column name="RECR_TIMESTAMP" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="timestamp"/>
                     </xsd:appinfo>
@@ -274,7 +276,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:many-to-one>
-                            <orm:join-column name="RECR_PARENT_ID"/>
+                            <orm:join-column name="RECR_PARENT_ID" nullable="false"/>
                         </hj:many-to-one>
                         <jaxb:property name="parent"/>
                     </xsd:appinfo>

@@ -43,7 +43,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="RER_VERSION"/>
+                            <orm:column name="RER_VERSION" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="version"/>
                     </xsd:appinfo>
@@ -53,7 +53,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="RER_NAME" length="128"/>
+                            <orm:column name="RER_NAME" length="128" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="name"/>
                     </xsd:appinfo>
@@ -63,7 +63,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="RER_TIME_CREATED"/>
+                            <orm:column name="RER_TIME_CREATED" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="timeCreated"/>
                     </xsd:appinfo>
@@ -73,7 +73,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="RER_RULE_DEF" length="1024"/>
+                            <orm:column name="RER_RULE_DEF" length="1024" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="ruleDefinition"/>
                     </xsd:appinfo>
@@ -93,7 +93,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:many-to-one>
-                            <orm:join-column name="RER_CONCLUSION_TYPE_ID"/>
+                            <orm:join-column name="RER_CONCLUSION_TYPE_ID" nullable="false"/>
                         </hj:many-to-one>
                         <jaxb:property name="conclusionType"/>
                     </xsd:appinfo>
@@ -103,7 +103,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:one-to-one>
-                            <orm:join-column name="RER_CONCLUSION_FACTORY_ID"/>
+                            <orm:join-column name="RER_CONCLUSION_FACTORY_ID" nullable="false"/>
                         </hj:one-to-one>
                         <jaxb:property name="conclusionFactory"/>
                     </xsd:appinfo>

@@ -44,7 +44,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="RECF_NAME" length="64"/>
+                            <orm:column name="RECF_NAME" length="64" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="name"/>
                     </xsd:appinfo>
@@ -54,7 +54,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="RECF_CERTAINTY" precision="3" scale="0"/>
+                            <orm:column name="RECF_CERTAINTY" precision="3" scale="0" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="certainty"/>
                     </xsd:appinfo>

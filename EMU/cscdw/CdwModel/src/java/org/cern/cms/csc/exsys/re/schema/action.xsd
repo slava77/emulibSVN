@@ -61,7 +61,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:many-to-one>
-                            <orm:join-column name="REA_ACTION_FACTORY_ID"/>
+                            <orm:join-column name="REA_ACTION_FACTORY_ID" nullable="false"/>
                         </hj:many-to-one>
                         <jaxb:property name="actionFactory"/>
                     </xsd:appinfo>
@@ -82,7 +82,6 @@
                     <orm:column name="REAF_ID"/>
                     <orm:sequence-generator name="RE_ACTION_FACTORY_ID_SEQ" sequence-name="RE_ACTION_FACTORY_ID_SEQ"/>
                 </hj:generated-id>
-
             </xsd:appinfo>
         </xsd:annotation>
         <xsd:sequence>
@@ -90,7 +89,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="REAF_EXECUTION_DELAY" precision="10" scale="0"/>
+                            <orm:column name="REAF_EXECUTION_DELAY" precision="10" scale="0" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="executionDelay"/>
                     </xsd:appinfo>
@@ -100,7 +99,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:many-to-one>
-                            <orm:join-column name="REAF_CONCLUSION_FACTORY_ID"/>
+                            <orm:join-column name="REAF_CONCLUSION_FACTORY_ID" nullable="false"/>
                         </hj:many-to-one>
                         <jaxb:property name="conclusionFactory"/>
                     </xsd:appinfo>
