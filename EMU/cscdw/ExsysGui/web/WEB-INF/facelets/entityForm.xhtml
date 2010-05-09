@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    
+    <body>
+        <ui:composition>
+            <ice:dataTable var="propMeta" value="#{entity.propertyMetadata}">
+                <ice:column>
+                    <ice:outputLabel for="input">
+                        <ice:outputText value="#{propMeta.title}: "/>
+                    </ice:outputLabel>
+                </ice:column>
+                <ice:column>
+                    <ice:inputText id="input" value="" partialSubmit="true"
+                                   validator="#{propMeta.validate}" required="#{propMeta.isMandatory}"/>
+                    <h:message for="input" styleClass="error"/>
+                </ice:column>
+                <ice:column>
+                    <ice:outputText value="*" rendered="#{!propMeta.isMandatory}" styleClass="requiredFieldIndicator"/>
+                </ice:column>
+            </ice:dataTable>
+
+            <!--
+            <ice:panelGrid columns="2">
+                <ui:repeat value="#{entity.propertyMetadata}" var="propMeta">
+                    <ice:outputLabel for="#{propMeta.name}_input">
+                        <ice:outputText value="#{propMeta.title}: "/>
+                    </ice:outputLabel>
+                    <ice:inputText id="#{propMeta.name}_input" value=""/>
+                </ui:repeat>
+            </ice:panelGrid>
+            -->
+
+            <!--
+            <ice:panelGrid columns="4">
+                <ice:outputText value="jou"/>
+                <ice:outputText value="jou"/>
+                <ice:outputText value="  #{entity.propertyMetadata[0].name}  "/>
+                <ice:outputText value="jou"/>
+                <ui:repeat value="#{entity.propertyMetadata}" var="propMeta">
+                    <ice:panelGroup>
+                        <ice:outputText value="Property title: "/>
+                        <ice:outputText value="#{propMeta.title}"/>
+                        <br/>
+                        <ice:outputText value="Property name: "/>
+                        <ice:outputText value="#{propMeta.name}      "/>
+                        <br/>
+                        <ice:outputText value="Property type: "/>
+                        <ice:outputText value="#{propMeta.type.name}"/>
+                        <br/>
+                        <br/>
+                        <br/>
+                    </ice:panelGroup>
+                </ui:repeat>
+            </ice:panelGrid>
+            -->
+        </ui:composition>
+        
+    </body>
+</html>

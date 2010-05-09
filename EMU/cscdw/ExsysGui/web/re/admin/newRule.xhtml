@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:exs="http://www.cern.ch/cms/csc/exsys/gui">
+    
+    <body>
+        
+        <ui:composition template="/WEB-INF/layout/main.xhtml">
+            
+            <ui:define name="content">
+
+                <ice:form id="actionsForm">
+                    <ice:commandLink value="Back" action="back"/>
+                </ice:form>
+
+                <p><h1>Create New Rule</h1></p>
+                <ice:form id="newRuleForm">
+                    <exs:entityForm entity="#{CreateRule.rule}"/>
+                    <ice:commandButton value="Create" action="#{CreateRule.doSave}"/>
+                </ice:form>
+                
+<!--
+                <p><h1>Create New Rule</h1></p>
+                <ice:form id="newRuleForm">
+                    <ice:panelGrid id="newRulePanel" columns="2">
+                        <f:facet name="header">
+                            <ice:outputText value="New Rule"/>
+                        </f:facet>
+
+                        <ice:outputLabel for="editName">
+                            <ice:outputText value="Name:"/>
+                        </ice:outputLabel>
+                        <ice:panelGroup>
+                            <ice:inputText id="editName" value="#{CreateRule.rule.name}"
+                                           validator="#{CreateRule.validateEmail}" partialSubmit="true"
+                                           required="true">
+                            </ice:inputText>
+                            <ice:outputText value="*" styleClass="requiredFieldIndicator"/>
+                        </ice:panelGroup>
+                        <ice:panelGroup/>
+                        <h:message for="editName" styleClass="error" />
+
+                        <ice:outputLabel for="editRuleDef">
+                            <ice:outputText value="Rule Definition: "/>
+                        </ice:outputLabel>
+                        <ice:panelGroup>
+                            <ice:inputText id="editRuleDef" value="#{CreateRule.rule.ruleDefinition}" partialSubmit="true"
+                                           validator="#{CreateRule.validateEmail}" required="true"/>
+                            <ice:outputText value="*" styleClass="requiredFieldIndicator"/>
+                        </ice:panelGroup>
+                        <ice:panelGroup/>
+                        <h:message for="editRuleDef" styleClass="error" />
+
+                        <ice:outputLabel for="editDescription">
+                            <ice:outputText value="Description: "/>
+                        </ice:outputLabel>
+                        <ice:inputText id="editDescription" value="#{CreateRule.rule.description}" partialSubmit="true"/>
+
+                        <ice:commandButton value="Create" action="#{CreateRule.doSave}"/>
+                    </ice:panelGrid>
+                </ice:form>
+-->
+            </ui:define>
+        </ui:composition>
+        
+    </body>
+</html>

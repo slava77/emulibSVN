@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ice:outputHtml>
+
+        <ice:outputHead>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <link href="/ExsysGui/css/default.css" rel="stylesheet" type="text/css" />
+            <link href="/ExsysGui/css/cssLayout.css" rel="stylesheet" type="text/css" />
+            <link href="/ExsysGui/css/rime/rime.css" rel="stylesheet" type="text/css" />
+            <title>CSC Expert System</title>
+        </ice:outputHead>
+
+        <ice:outputBody>
+
+            <div id="top">
+                <ui:insert name="top"><h1>CSC Expert System</h1></ui:insert>
+            </div>
+            <div>
+                <div id="left">
+                    <ui:insert name="left">
+                        <ui:include src="menu.xhtml"/>
+                    </ui:insert>
+                </div>
+                <div id="content" class="left_content">
+                    <ui:insert name="content">Content</ui:insert>
+                </div>
+            </div>
+            <div id="bottom">
+                <ui:insert name="bottom">CERN 2010</ui:insert>
+            </div>
+
+        </ice:outputBody>
+            
+    </ice:outputHtml>
+</f:view>
