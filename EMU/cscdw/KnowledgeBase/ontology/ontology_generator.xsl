@@ -396,7 +396,7 @@
 	    <SameIndividuals><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$PADDED_DDU_INPUT}"/><Individual URI="&csc;DDU{$RUI_INSTANCE}Input{$DDU_INPUT}"/></SameIndividuals>
 	  </xsl:if>
 	</xsl:if>
-	<ClassAssertion><Class URI="&csc;DDUInput"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$DDU_INPUT}"/></ClassAssertion>
+	<ClassAssertion><Class URI="&csc;DDUInput"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$PADDED_DDU_INPUT}"/></ClassAssertion>
 	<ObjectPropertyAssertion><ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$PADDED_DDU_INPUT}"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/></ObjectPropertyAssertion>
 
 	<xsl:choose>
@@ -406,7 +406,7 @@
 	      <xsl:variable name="PADDED_SP_INSTANCE" select="format-number(SectorProcessor/@id,'00')"/>
 	      <ObjectPropertyAssertion>
 		<ObjectProperty URI="&csc;receivesTriggerFrom"/>
-		<Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$DDU_INPUT}"/>
+		<Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$PADDED_DDU_INPUT}"/>
 		<Individual URI="&csc;SectorProcessor{$PADDED_SP_INSTANCE}"/>
 	      </ObjectPropertyAssertion>
 	    </xsl:if>
@@ -418,7 +418,7 @@
 	    <xsl:if test="document(document('ontology_template.xml')//templ:PSidePCrates/@source)//CSC[@label=$CHAMBER_NAME] | document(document('ontology_template.xml')//templ:MSidePCrates/@source)//CSC[@label=$CHAMBER_NAME]">
 	      <ObjectPropertyAssertion>
 		<ObjectProperty URI="&csc;receivesDataFrom"/>
-		<Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$DDU_INPUT}"/>
+		<Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}Input{$PADDED_DDU_INPUT}"/>
 		<Individual URI="&csc;{$PADDED_CHAMBER_NAME}/DMB"/>
 	      </ObjectPropertyAssertion>
 	    </xsl:if>
