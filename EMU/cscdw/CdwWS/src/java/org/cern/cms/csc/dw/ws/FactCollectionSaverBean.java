@@ -53,12 +53,12 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
             // Get ontology component object from fact component id
             try {
 
-                Component component = ontologyDao.getComponentById(fact.getComponentId());
-                if (!fact.checkComponentClassType(component.getComponentClass().getId())) {
-                    throw new ComponentTypeNotAllowedInFactException(component.getComponentClass().getId(), fact.getClass());
+                Component component = ontologyDao.getComponentByName(fact.getComponentId());
+                if (!fact.checkComponentClassType(component.getComponentClass().getName())) {
+                    throw new ComponentTypeNotAllowedInFactException(component.getComponentClass().getName(), fact.getClass());
                 }
                 fact.setComponent(component);
-                fact.setComponentId(component.getId());
+                fact.setComponentId(component.getName());
 
                 fact.onReceive(entityDao);
 

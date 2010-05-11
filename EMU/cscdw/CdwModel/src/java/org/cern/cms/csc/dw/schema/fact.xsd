@@ -115,9 +115,7 @@
             <xsd:element name="component_id" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo>
-                        <hj:basic>
-                            <orm:column name="FCT_COMPONENT_ID" length="32"/>
-                        </hj:basic>
+                        <hj:ignored/>
                         <jaxb:property name="componentId"/>
                     </xsd:appinfo>
                 </xsd:annotation>

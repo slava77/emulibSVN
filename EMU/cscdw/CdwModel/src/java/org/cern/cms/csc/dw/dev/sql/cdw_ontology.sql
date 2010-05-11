@@ -21,20 +21,17 @@ PACKAGE BODY CDW_ONTOLOGY AS
     i number := 0;
   BEGIN
 
-    dbms_output.enable(2000);
-
     delete from CDW_COMPONENT_GRAPH_LINKS;
 
     -- Adding direct links; i = 0
-    insert into cdw_component_graph_links g (CGL_ID, CGL_PARENT_CMP_ID, CGL_CHILD_CMP_ID, CGL_LCL_ID, CGL_LEVEL)
+    insert into cdw_component_graph_links /*+ append */ g (CGL_ID, CGL_PARENT_CMP_ID, CGL_CHILD_CMP_ID, CGL_LCL_ID, CGL_LEVEL)
     select cdw_cgl_id_seq.nextval, l.lin_cmp_id, l.lin_linked_cmp_id, l.lin_lcl_id, 1 from cdw_component_links l;
 
     loop
 
-      dbms_output.put_line('Processed i = ' || to_char(i) || ', count = ' || SQL%ROWCOUNT);
       i := i + 1;
 
-      insert into cdw_component_graph_links (
+      insert into cdw_component_graph_links /*+ append */ (
         CGL_ID,
         CGL_LEVEL,
         CGL_PARENT_CMP_ID,

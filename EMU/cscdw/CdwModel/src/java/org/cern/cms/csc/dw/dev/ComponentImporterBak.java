@@ -4,8 +4,6 @@
  */
 package org.cern.cms.csc.dw.dev;
 
-import java.io.File;
-import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -36,14 +34,13 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author valdo
  */
-public class ComponentImporter {
+public class ComponentImporterBak {
 
-    static Logger log = Logger.getLogger(ComponentImporter.class.getName());
+    static Logger log = Logger.getLogger(ComponentImporterBak.class.getName());
     private static final String OWL_URI = "http://www.w3.org/2006/12/owl2-xml#";
     private static final String DEFAULT_OWL_FILE = "../KnowledgeBase/ontology/csc-ontology.owl";
     private static final String [] uriNames = new String [] { "URI", "annotationURI", "datatypeURI" };
-    private static final String LIN_INSERT = "insert into CDW_COMPONENT_LINKS /*+ append */ (LIN_ID, LIN_CMP_ID, LIN_LINKED_CMP_ID, LIN_LCL_ID) VALUES (%1$d, %2$d, %3$d, %4$d)\n/";
-    private static final String LIN_FILE = "cmp_links.tmp.sql";
+    private static int flushNumber = 0;
     
     private EntityManager em = null;
     
@@ -85,6 +82,14 @@ public class ComponentImporter {
         parser.parse(filename);
     }
 
+    private void flush() {
+        log.info("Intermediate flush (" + String.valueOf(++flushNumber) + ")..");
+        em.flush();
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+        log.info("Intermediate flush (" + String.valueOf(flushNumber) + ") done");
+    }
+
     /**
      * Import OWL XML file to ontology model
      * @param filename OWL file to import
@@ -99,68 +104,46 @@ public class ComponentImporter {
         processContentHandler(parser, filename, new ClassAssertionHandler());
         processContentHandler(parser, filename, new LinkClassHandler());
 
-        em.getTransaction().begin();
-
         log.info("Persisting component classes..");
-        {
-            long id = 1;
-            for (ComponentClass c : getComponentClasses().values()) {
-                c.setId(id++);
-                em.persist(c);
-            }
+        for (ComponentClass c : getComponentClasses().values()) {
+            log.debug(c.toString());
+            em.persist(c);
         }
 
         log.info("Persisting component link classes..");
-        {
-            long id = 1;
-            for (ComponentLinkClass c : getComponentLinkClasses().values()) {
-                c.setId(id++);
-                em.persist(c);
-            }
+        for (ComponentLinkClass c : getComponentLinkClasses().values()) {
+            log.debug(c.toString());
+            em.persist(c);
         }
 
         log.info("Persisting components..");
-        {
-            long id = 1;
-            for (Component c : getComponents().values()) {
-                if (c.isSetComponentClass()) {
-                    c.setId(id++);
-                    em.persist(c);
-                }
+        for (Component c : getComponents().values()) {
+            log.debug(c.toString());
+            if (c.isSetComponentClass()) {
+                em.persist(c);
             }
         }
 
         processContentHandler(parser, filename, new SubClassOfHandler());
         processContentHandler(parser, filename, new LinkUpdateHandler());
 
-        processContentHandler(parser, filename, new SameIndividualsHandler());
-        processContentHandler(parser, filename, new AnnotationHandler());
+        flush();
 
-        log.info("Commit..");
-        em.getTransaction().commit();
-        em.getTransaction().begin();
-        
         processContentHandler(parser, filename, new ObjectPropertyAssertionHandler(false));
+
+        flush();
+
         processContentHandler(parser, filename, new ObjectPropertyAssertionHandler(true));
 
-        {
-            File f = new File(LIN_FILE);
-            PrintStream out = new PrintStream(f);
-            long id = 1;
-            log.info("Dumping component links to SQL file (" + LIN_FILE + ")..");
-            for (Component c : getComponents().values()) {
-                for (ComponentLink link: c.getLinks()) {
-                    if (link.getId() == null) {
-                        link.setId(id++);
-                        out.println(String.format(LIN_INSERT, link.getId(), c.getId(), link.getComponent().getId(), link.getComponentLinkClass().getId()));
-                    }
-                }
-            }
-        }
+        flush();
 
+        processContentHandler(parser, filename, new SameIndividualsHandler());
+
+        processContentHandler(parser, filename, new AnnotationHandler());
+        
     }
 
-    public ComponentImporter(EntityManager em) {
+    public ComponentImporterBak(EntityManager em) {
         this.em = em;
     }
 
@@ -192,10 +175,15 @@ public class ComponentImporter {
 
             EntityManagerFactory emf = Persistence.createEntityManagerFactory("CdwUtilPU");
             EntityManager em = emf.createEntityManager();
+            em.getTransaction().begin();
 
-            ComponentImporter importer = new ComponentImporter(em);
+            ComponentImporterBak importer = new ComponentImporterBak(em);
             importer.process(ontology_file);
 
+            log.info("Final ontology model flush..");
+            em.flush();
+
+            em.getTransaction().commit();
             em.close();
             emf.close();
 
@@ -211,6 +199,13 @@ public class ComponentImporter {
         private String localName = null;
         private String uriName = null;
         private Set<String> blockNames;
+        private long flushFrequency = 0;
+        private long flushCounter = 0;
+
+        public OntologyHandler(long flushFrequency, String... blockNames) {
+            this(blockNames);
+            this.flushFrequency = flushFrequency;
+        }
 
         public OntologyHandler(String... blockNames) {
             this.blockNames = new HashSet<String>(blockNames.length);
@@ -243,6 +238,13 @@ public class ComponentImporter {
                 blockName = null;
                 uriName = null;
                 localName = null;
+
+                if (flushFrequency > 0) {
+                    flushCounter += 1;
+                    if ((flushCounter % flushFrequency) == 0) {
+                        flush();
+                    }
+                }
             }
             
         }
@@ -482,9 +484,10 @@ public class ComponentImporter {
         Component comps[] = {null, null};
         ComponentLinkClass linkClass = null;
         boolean checkInverse = false;
+        private static final int FLUSH_INTERVAL = 3000;
 
         public ObjectPropertyAssertionHandler(boolean checkInverse) {
-            super("ObjectPropertyAssertion");
+            super(FLUSH_INTERVAL, "ObjectPropertyAssertion");
             this.checkInverse = checkInverse;
         }
 

@@ -70,6 +70,8 @@
 
     <target name="import-ontology">
 
+        <property name="sqlbase" location="src/java/org/cern/cms/csc/dw/dev/sql/"/>
+
         <!-- Copy over persistence configuration -->
         <delete file="build/jar/META-INF/persistence.xml"/>
         <copy file="src/conf/persistence.xml" todir="build/jar/META-INF"/>
@@ -93,8 +95,8 @@
                     <include name="*.jar"/>
                 </fileset>
             </classpath>
-            <transaction src="src/java/org/cern/cms/csc/dw/dev/sql/cdw_utility.sql"/>
-            <transaction src="src/java/org/cern/cms/csc/dw/dev/sql/cdw_ontology_pre_import.sql"/>
+            <transaction src="${sqlbase}/cdw_utility.sql"/>
+            <transaction src="${sqlbase}/cdw_ontology_pre_import.sql"/>
         </sql>
 
         <!-- Execute main data import procedure -->
@@ -111,6 +113,17 @@
 
         <!-- Execute SQL files -->
         <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
+            delimiter="/" keepformat="true" delimitertype="row" autocommit="true" onerror="continue" output="false">
+            <classpath>
+                <pathelement path="build/jar"/>
+                <fileset dir="build/jar">
+                    <include name="*.jar"/>
+                </fileset>
+            </classpath>
+            <transaction src="cmp_links.tmp.sql"/>
+        </sql>
+
+        <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
             delimiter="/" keepformat="true" delimitertype="row" autocommit="true" onerror="continue">
             <classpath>
                 <pathelement path="build/jar"/>
@@ -118,13 +131,15 @@
                     <include name="*.jar"/>
                 </fileset>
             </classpath>
-            <transaction src="src/java/org/cern/cms/csc/dw/dev/sql/cdw_ontology_indexes.sql"/>
-            <transaction src="src/java/org/cern/cms/csc/dw/dev/sql/cdw_ontology.sql"/>
-            <transaction src="src/java/org/cern/cms/csc/dw/dev/sql/cdw_ontology_post_import.sql"/>
+            <transaction src="${sqlbase}/cdw_ontology_indexes.sql"/>
+            <transaction src="${sqlbase}/cdw_ontology.sql"/>
+            <transaction src="${sqlbase}/cdw_ontology_post_import.sql"/>
             <transaction>
                 select count(*) as "ORPHAN FACTS LEFT" from cdw_facts where fct_cmp_id is null
             </transaction>
         </sql>
+
+        <delete file="cmp_links.tmp.sql"/>
 
     </target>
 

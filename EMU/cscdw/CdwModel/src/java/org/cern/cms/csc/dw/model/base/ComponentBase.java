@@ -29,7 +29,7 @@ public abstract class ComponentBase extends EntityBase {
      * Component Id
      * @return
      */
-    public abstract String getId();
+    public abstract Long getId();
 
     /**
      * Links to other components
@@ -53,7 +53,9 @@ public abstract class ComponentBase extends EntityBase {
      * Id is not null ?
      * @return
      */
-    public abstract boolean isSetId();
+    public boolean isSetId() {
+        return (getId() != null);
+    }
 
     /**
      * Links is not null and exists at least one item?
