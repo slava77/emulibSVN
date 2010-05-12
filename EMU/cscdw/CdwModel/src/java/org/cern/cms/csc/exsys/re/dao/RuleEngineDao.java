@@ -21,6 +21,7 @@ public class RuleEngineDao implements RuleEngineDaoLocal {
     @PersistenceContext(unitName="CdwPU")
     private EntityManager em;
 
+    @SuppressWarnings("unchecked")
     public List<Rule> getAllRules() {
         List<Rule> rules = em.createQuery("select r from org.cern.cms.csc.exsys.re.model.Rule as r").getResultList();
         return rules;

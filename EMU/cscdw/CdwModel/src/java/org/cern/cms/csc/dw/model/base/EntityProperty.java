@@ -6,18 +6,22 @@
 package org.cern.cms.csc.dw.model.base;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Logger;
 
 /**
  * Objects of this class represent a property of an entity instance - can set and get it and also return metadata about it.
  * @author Evka
  */
 public class EntityProperty {
+
+    private static Logger logger = Logger.getLogger(EntityProperty.class.getName());
+
     /** Reference to the entity instance. */
     private EntityBase entity;
     /** Property metadata. */
-    private EntityPropertyMetadata metadata;
+    private EntityPropertyMD metadata;
 
-    public EntityProperty(EntityBase entity, EntityPropertyMetadata metadata) {
+    public EntityProperty(EntityBase entity, EntityPropertyMD metadata) {
         this.entity = entity;
         this.metadata = metadata;
     }
@@ -26,7 +30,7 @@ public class EntityProperty {
      * Get the property value.
      * @return the property value.
      */
-    public Object getProperty() throws IllegalAccessException, InvocationTargetException {
+    public Object getValue() throws IllegalAccessException, InvocationTargetException {
         return getMetadata().getGetterMethod().invoke(getEntity());
     }
 
@@ -34,7 +38,12 @@ public class EntityProperty {
      * Set the property value.
      * @param value the property value.
      */
-    public void setProperty(Object value) throws IllegalAccessException, InvocationTargetException {
+    public void setValue(Object value) throws IllegalAccessException, InvocationTargetException {
+        if (value instanceof String) {
+            if (((String) value).isEmpty()) {
+                value = null;
+            }
+        }
         getMetadata().getSetterMethod().invoke(getEntity(), value);
     }
 
@@ -58,7 +67,7 @@ public class EntityProperty {
      * Get property metadata.
      * @return property metadata.
      */
-    public EntityPropertyMetadata getMetadata() {
+    public EntityPropertyMD getMetadata() {
         return metadata;
     }
 
@@ -66,7 +75,7 @@ public class EntityProperty {
      * Set property metadata.
      * @param metadata property metadata.
      */
-    public void setMetadata(EntityPropertyMetadata metadata) {
+    public void setMetadata(EntityPropertyMD metadata) {
         this.metadata = metadata;
     }
 }

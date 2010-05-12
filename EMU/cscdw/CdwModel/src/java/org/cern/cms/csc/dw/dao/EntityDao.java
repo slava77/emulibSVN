@@ -7,6 +7,7 @@ package org.cern.cms.csc.dw.dao;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -88,5 +89,25 @@ public class EntityDao implements EntityDaoLocal {
             throw new InvalidEntityClassException(invTargetEx);
         }
     }
- 
+
+    /**
+     * Get all entities of the specified class
+     * @param <T> Class of the entities you want to get
+     * @param entityClass Class of the entities you want to get
+     * @return A full list of entities of the given class
+     * @throws InvalidEntityClassException this is thrown when the given class is not a subclass of EntityBase
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends EntityBase> List<T> getAllEntitiesByClass(final Class<T> entityClass) throws InvalidEntityClassException {
+        // check all the superclasses to see if it's a subclass of EntityBase, if not - throw InvalidEntityClassException
+        boolean isEntity = EntityBase.class.isAssignableFrom(entityClass);
+        if (!isEntity) {
+            throw new InvalidEntityClassException(entityClass.getCanonicalName());
+        }
+
+        // get the entities using the EntityManager
+        List<T> ret = em.createQuery("select ent from " + entityClass.getCanonicalName() + " as ent").getResultList();
+        return ret;
+    }
+
 }
