@@ -28,8 +28,8 @@
                     
                     <h1>
                         <ice:outputFormat value="Component {0} (class: {1})">
-                            <f:param value="#{ComponentClassTreeController.selectedComponent.id}" />
-                            <f:param value="#{ComponentClassTreeController.selectedComponent.componentClass.idItem}" />
+                            <f:param value="#{ComponentClassTreeController.selectedComponent.name}" />
+                            <f:param value="#{ComponentClassTreeController.selectedComponent.componentClass.nameItem}" />
                         </ice:outputFormat>
                     </h1>
 
@@ -68,7 +68,7 @@
                                         <ice:outputText value="To Component"/>
                                     </ice:column>
                                     <ice:column>
-                                        <ice:outputText value="To Component Class"/>
+                                        <ice:outputText value="To Class"/>
                                     </ice:column>
                                 </ice:headerRow>
                             </ice:columnGroup>
@@ -78,7 +78,7 @@
                             <cdw:componentLink value="#{ComponentClassTreeController.selectedComponent}" />
                         </ice:column>
                         <ice:column>
-                            <ice:outputText value="#{link.componentLinkClass.idItem}"/>
+                            <ice:outputText value="#{link.componentLinkClass.nameItem}"/>
                         </ice:column>
                         <ice:column>
                             <cdw:componentLink value="#{link.component}" />

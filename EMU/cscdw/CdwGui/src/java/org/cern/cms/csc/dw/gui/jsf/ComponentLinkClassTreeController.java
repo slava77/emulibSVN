@@ -82,7 +82,7 @@ public class ComponentLinkClassTreeController extends JsfBeanBase {
         if (id == null) {
             selectedLinkClass = null;
         } else {
-            selectedLinkClass = ontologyDao.getComponentLinkClassById(id);
+            selectedLinkClass = ontologyDao.getComponentLinkClassByName(id);
             if (selectedLinkClass != null) {
                 componentLinks = ontologyDao.getComponentLinks(selectedLinkClass);
             }
@@ -106,7 +106,7 @@ public class ComponentLinkClassTreeController extends JsfBeanBase {
     }
 
     public void setSelectedComponentLinkId(String componentId) {
-        this.selectedComponentLink = ontologyDao.getComponentLinkById(componentId);
+        this.selectedComponentLink = ontologyDao.getComponentLinkByName(componentId);
     }
 
 }

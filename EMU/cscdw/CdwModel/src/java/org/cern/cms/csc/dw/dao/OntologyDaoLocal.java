@@ -20,9 +20,10 @@ import org.cern.cms.csc.dw.model.ontology.ComponentLinkClass;
 @Local
 public interface OntologyDaoLocal {
 
-    ComponentClass getComponentClassByName(String id);
+    ComponentClass getComponentClassById(Long id);
     List<ComponentClass> getComponentClasses(ComponentClass parent);
 
+    Component getComponentById(Long id, boolean eager) throws ComponentNotFoundException;
     Component getComponentByName(String id) throws ComponentNotFoundException;
     Component getComponentByName(String id, boolean eager) throws ComponentNotFoundException;
     List<Component> getComponents(ComponentClass componentClass);

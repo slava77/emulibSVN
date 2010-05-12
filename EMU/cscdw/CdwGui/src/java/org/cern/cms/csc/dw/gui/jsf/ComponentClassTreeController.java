@@ -79,11 +79,11 @@ public class ComponentClassTreeController extends JsfBeanBase {
     }
 
     public void componentClassNodeSelectedAction(ActionEvent event) {
-        String id = (String) getParameter("componentClassId");
-        if (id == null) {
+        String strId = (String) getParameter("componentClassId");
+        if (strId == null) {
             selectedClass = null;
         } else {
-            selectedClass = ontologyDao.getComponentClassById(id);
+            selectedClass = ontologyDao.getComponentClassById(Long.parseLong(strId));
             if (selectedClass != null) {
                 components = ontologyDao.getComponents(selectedClass);
             }
@@ -106,7 +106,7 @@ public class ComponentClassTreeController extends JsfBeanBase {
         return selectedComponent;
     }
 
-    public void setSelectedComponentId(String componentId) throws ComponentNotFoundException {
+    public void setSelectedComponentId(Long componentId) throws ComponentNotFoundException {
         this.selectedComponent = ontologyDao.getComponentById(componentId, true);
     }
 

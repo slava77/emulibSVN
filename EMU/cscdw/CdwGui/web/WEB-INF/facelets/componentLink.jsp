@@ -4,7 +4,6 @@
     title="Click for details"
     action="component">
     <f:setPropertyActionListener target="#{ComponentClassTreeController.selectedComponentId}" value="#{value.id}"/>
-    <f:param name="componentClassId" value="#{value.id}" />
-    <ice:outputText value="#{value.id}"/>
+    <ice:outputText value="#{value.name}"/>
 </ice:commandLink>
 

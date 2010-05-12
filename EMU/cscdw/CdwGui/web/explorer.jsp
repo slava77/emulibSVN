@@ -75,8 +75,8 @@
                         <ice:panelGroup rendered="#{ComponentClassTreeController.selectedClass != null}">
                             
                             <h2>
-                                <ice:outputFormat value="Component Class {0}">
-                                    <f:param value="#{ComponentClassTreeController.selectedClass.idItem}"/>
+                                <ice:outputFormat value="Component Class: {0}">
+                                    <f:param value="#{ComponentClassTreeController.selectedClass.nameItem}"/>
                                 </ice:outputFormat>
                             </h2>
 
@@ -107,7 +107,10 @@
                                         <ice:columnGroup>
                                             <ice:headerRow>
                                                 <ice:column>
-                                                    <ice:outputText value="Component"/>
+                                                    <ice:outputText value="ID"/>
+                                                </ice:column>
+                                                <ice:column>
+                                                    <ice:outputText value="Name"/>
                                                 </ice:column>
                                                 <ice:column>
                                                     <ice:outputText value="Class"/>
@@ -116,6 +119,9 @@
                                         </ice:columnGroup>
                                     </f:facet>
 
+                                    <ice:column>
+                                        <ice:outputText value="#{comp.id}"/>
+                                    </ice:column>
                                     <ice:column>
                                         <cdw:componentLink value="#{comp}" />
                                     </ice:column>
