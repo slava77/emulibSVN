@@ -5,6 +5,7 @@
 
 package org.cern.cms.csc.dw.model.base;
 
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.logging.Level;
@@ -28,10 +29,10 @@ public class EntityManyToOnePropertyMD extends EntityPropertyMD {
 
     static private Class[] mandatoryAnnotations = {ManyToOne.class, JoinColumn.class};
 
-    public EntityManyToOnePropertyMD(Method getter) throws InvalidEntityBeanPropertyException {
-        super(getter, mandatoryAnnotations);
+    public EntityManyToOnePropertyMD(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
+        super(prop, mandatoryAnnotations);
 
-        JoinColumn joinColumn = getter.getAnnotation(JoinColumn.class);
+        JoinColumn joinColumn = prop.getReadMethod().getAnnotation(JoinColumn.class);
         setIsMandatory(joinColumn.nullable());
 
         entityDao = lookupEntityDao();

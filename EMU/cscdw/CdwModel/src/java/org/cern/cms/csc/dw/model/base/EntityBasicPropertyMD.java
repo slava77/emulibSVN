@@ -5,7 +5,7 @@
 
 package org.cern.cms.csc.dw.model.base;
 
-import java.lang.reflect.Method;
+import java.beans.PropertyDescriptor;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
@@ -21,10 +21,10 @@ public class EntityBasicPropertyMD extends EntityPropertyMD {
     /** Value length limitation (e.g. for String values). */
     private int length = -1;
 
-    public EntityBasicPropertyMD(Method getter) throws InvalidEntityBeanPropertyException {
-        super(getter, mandatoryAnnotations);
+    public EntityBasicPropertyMD(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
+        super(prop, mandatoryAnnotations);
         
-        Column column = getter.getAnnotation(Column.class);
+        Column column = prop.getReadMethod().getAnnotation(Column.class);
         setIsMandatory(column.nullable());
         this.length = column.length();
     }

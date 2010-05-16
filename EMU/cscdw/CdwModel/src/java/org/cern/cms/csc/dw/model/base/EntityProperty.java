@@ -7,6 +7,7 @@ package org.cern.cms.csc.dw.model.base;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
+import org.apache.commons.beanutils.PropertyUtils;
 
 /**
  * Objects of this class represent a property of an entity instance - can set and get it and also return metadata about it.

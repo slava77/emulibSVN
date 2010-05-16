@@ -5,6 +5,7 @@
 
 package org.cern.cms.csc.dw.model.base;
 
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.logging.Logger;
@@ -30,34 +31,23 @@ public abstract class EntityPropertyMD {
 
     private static Logger logger = Logger.getLogger(EntityPropertyMD.class.getName());
 
-    public static Pattern getterPattern = Pattern.compile("(get|is)(\\p{Upper}.+)");
     private static Pattern camelCasePattern = Pattern.compile("(\\p{Upper}\\p{Lower}*)");
 
-    /** Name of the property. */
-    private String name;
-    /** Human readable title of the property (one that can be put into GUI). */
-    private String title;
+    /** Object describing the bean property (things like name, display name, setter, getter, etc.). */
+    private PropertyDescriptor propertyDescriptor;
     /** Flag telling if the property is mandatory or optional. */
     private boolean isMandatory;
     /** Class of the entity whose property this object is describing. */
     private Class entityClass;
-    /** Type of the property (java class). */
-    private Class type;
-    /** Setter method. */
-    private Method setterMethod;
-    /** Getter method. */
-    private Method getterMethod;
     /** This is used to supply info and perform certain tasks for GUI (like tell what kind of input to use, validate user input, supply a value converter). */
     private EntityPropertyGuiHandler guiHandler;
-    /** Input type - used by GUI to decide on what type of input component to render. */
-    private String inputType = "default";
-
 
     @SuppressWarnings("unchecked")
-    public EntityPropertyMD(Method getterMethod, Class[] mandatoryAnnotations) throws InvalidEntityBeanPropertyException {
-        this(getterMethod);
+    public EntityPropertyMD(PropertyDescriptor prop, Class[] mandatoryAnnotations) throws InvalidEntityBeanPropertyException {
+        this(prop);
 
         // check if all the annotations mentioned in mandatoryAnnotations list are present on the getter method
+        Method getterMethod = prop.getReadMethod();
         for (Class annotation: mandatoryAnnotations) {
             if (getterMethod.getAnnotation(annotation) == null) {
                 throw new InvalidEntityBeanPropertyException("Attempting to create an " + this.getClass().getName() + " for a property which doesn't have " + annotation.getName() + " annotation: " + getterMethod.toGenericString());
@@ -69,31 +59,18 @@ public abstract class EntityPropertyMD {
      * Constructor.
      */
     @SuppressWarnings("unchecked")
-    public EntityPropertyMD(Method getterMethod) throws InvalidEntityBeanPropertyException {
-        Matcher m = getterPattern.matcher(getterMethod.getName());
-        if (!m.matches()) {
-            throw new InvalidEntityBeanPropertyException("Given getter name doesn't comply with a getter name convention: " + getterMethod.getName());
-        }
-
-        this.getterMethod = getterMethod;
-        String propName = m.group(2);
-        this.name = propName.substring(0, 1).toLowerCase() + propName.substring(1);
-        this.title = nameToTitle(propName);
-        this.type = getterMethod.getReturnType();
-        this.entityClass = getterMethod.getDeclaringClass();
-        try {
-            Method setter = entityClass.getMethod("set" + propName, this.type);
-            this.setterMethod = setter;
-        } catch (NoSuchMethodException ex) {
-            throw new InvalidEntityBeanPropertyException("Cannot find a setter method for property " + this.name + " in class " + entityClass.getName());
-        }
+    public EntityPropertyMD(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
+        prop.setDisplayName(nameToTitle(prop.getName()));
+        this.entityClass = prop.getReadMethod().getDeclaringClass();
+        this.propertyDescriptor = prop;
     }
 
     /** Converts property name to title. */
     private String nameToTitle(String propName) {
+        propName = propName.substring(0, 1).toUpperCase() + propName.substring(1); // upper case the first letter
         String ret = "";
         boolean firstMatch = true;
-        String word = null;
+        String word = "";
         int retLength = 0;
         Matcher m = camelCasePattern.matcher(propName);
         while(m.find()) {
@@ -117,15 +94,7 @@ public abstract class EntityPropertyMD {
      * @return getter method.
      */
     public Method getGetterMethod() {
-        return getterMethod;
-    }
-
-    /**
-     * Set getter method.
-     * @param getterMethod getter method.
-     */
-    public void setGetterMethod(Method getterMethod) {
-        this.getterMethod = getterMethod;
+        return propertyDescriptor.getReadMethod();
     }
 
     /**
@@ -149,15 +118,7 @@ public abstract class EntityPropertyMD {
      * @return name of the property.
      */
     public String getName() {
-        return name;
-    }
-
-    /**
-     * Set name of the property.
-     * @param name name of the property.
-     */
-    public void setName(String name) {
-        this.name = name;
+        return propertyDescriptor.getName();
     }
 
     /**
@@ -165,32 +126,18 @@ public abstract class EntityPropertyMD {
      * @return setter method.
      */
     public Method getSetterMethod() {
-        return setterMethod;
+        return propertyDescriptor.getWriteMethod();
     }
 
-    /**
-     * Set setter method.
-     * @param setterMethod setter method.
-     */
-    public void setSetterMethod(Method setterMethod) {
-        this.setterMethod = setterMethod;
-    }
 
     /**
      * Get type of the property (java class).
      * @return type of the property (java class).
      */
     public Class getType() {
-        return type;
+        return propertyDescriptor.getPropertyType();
     }
 
-    /**
-     * Set type of the property (java class).
-     * @param type type of the property (java class).
-     */
-    public void setType(Class type) {
-        this.type = type;
-    }
 
     /**
      * Get class of the entity whose property this object is describing.
@@ -205,15 +152,15 @@ public abstract class EntityPropertyMD {
      * @return human readable title of the property (one that can be put into GUI).
      */
     public String getTitle() {
-        return title;
+        return propertyDescriptor.getDisplayName();
     }
 
     /**
-     * Set human readable title of the property (one that can be put into GUI).
-     * @param title human readable title of the property (one that can be put into GUI).
+     * Get object describing the bean property (things like name, display name, setter, getter, etc.).
+     * @return object describing the bean property (things like name, display name, setter, getter, etc.).
      */
-    public void setTitle(String title) {
-        this.title = title;
+    public PropertyDescriptor getPropertyDescriptor() {
+        return propertyDescriptor;
     }
 
     /**
@@ -243,24 +190,8 @@ public abstract class EntityPropertyMD {
     }
 
     /**
-     * Get input type - used by GUI to decide on what type of input component to render.
-     * @return input type - used by GUI to decide on what type of input component to render.
-     */
-    public String getInputType() {
-        return inputType;
-    }
-
-    /**
-     * Set input type - used by GUI to decide on what type of input component to render.
-     * @param inputType input type - used by GUI to decide on what type of input component to render.
-     */
-    public void setInputType(String inputType) {
-        this.inputType = inputType;
-    }
-
-    /**
-     * Get this is used to supply info and perform certain tasks for GUI (like tell what kind of input to use, validate user input, supply a value converter).
-     * @return this is used to supply info and perform certain tasks for GUI (like tell what kind of input to use, validate user input, supply a value converter).
+     * Get an object which is used to supply info and perform certain tasks for GUI (like tell what kind of input to use, validate user input, supply a value converter).
+     * @return an object which is used to supply info and perform certain tasks for GUI (like tell what kind of input to use, validate user input, supply a value converter).
      */
     public EntityPropertyGuiHandler getGuiHandler() {
         if (guiHandler == null) {
