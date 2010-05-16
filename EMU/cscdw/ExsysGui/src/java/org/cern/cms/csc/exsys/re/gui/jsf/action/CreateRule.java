@@ -6,6 +6,7 @@
 package org.cern.cms.csc.exsys.re.gui.jsf.action;
 
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
@@ -18,6 +19,7 @@ import org.cern.cms.csc.exsys.re.model.Rule;
  * @author Evka
  */
 
+@EJB(name="ejb/EntityDao", beanInterface=org.cern.cms.csc.dw.dao.EntityDaoLocal.class)
 public class CreateRule {
 
     private static Logger logger = Logger.getLogger(CreateRule.class.getName());

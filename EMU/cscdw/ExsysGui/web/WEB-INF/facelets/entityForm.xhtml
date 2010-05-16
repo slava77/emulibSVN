@@ -5,23 +5,49 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ice="http://www.icesoft.com/icefaces/component"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:c="http://java.sun.com/jsp/jstl/core">
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:exs="http://www.cern.ch/cms/csc/exsys/gui"
+      xmlns:u1="http://www.cern.ch/cms/csc/exsys/gui">
     
     <body>
         <ui:composition>
-            <ice:dataTable var="propMeta" value="#{entity.propertyMetadata}">
+            <ice:dataTable var="prop" value="#{entity.properties}" varStatus="statusVar">
                 <ice:column>
                     <ice:outputLabel for="input">
-                        <ice:outputText value="#{propMeta.title}: "/>
+                        <ice:outputText value="#{prop.metadata.title}: "/>
                     </ice:outputLabel>
                 </ice:column>
                 <ice:column>
-                    <ice:inputText id="input" value="" partialSubmit="true"
-                                   validator="#{propMeta.validate}" required="#{propMeta.isMandatory}"/>
+                    <ice:inputText id="input" value="#{prop.value}" partialSubmit="true"
+                                   converter="#{prop.metadata.guiHandler.jsfConverter}"
+                                   validator="#{prop.metadata.guiHandler.validate}"
+                                   required="#{prop.metadata.isMandatory}"
+                                   requiredMessage="This field is mandatory - value cannot be blank"
+                                   rendered="#{prop.metadata.guiHandler.inputType == 'DEFAULT'}"/>
+                    <ice:inputTextarea id="input" value="#{prop.value}" partialSubmit="true"
+                                       converter="#{prop.metadata.guiHandler.jsfConverter}"
+                                       validator="#{prop.metadata.guiHandler.validate}"
+                                       required="#{prop.metadata.isMandatory}"
+                                       requiredMessage="This field is mandatory - value cannot be blank"
+                                       rendered="#{prop.metadata.guiHandler.inputType == 'TEXT_AREA'}"/>
+                    <ice:selectInputDate id="input" value="#{prop.value}" partialSubmit="true"
+                                         validator="#{prop.metadata.guiHandler.validate}"
+                                         required="#{prop.metadata.isMandatory}"
+                                         requiredMessage="This field is mandatory - value cannot be blank"
+                                         renderAsPopup="true"
+                                         rendered="#{prop.metadata.guiHandler.inputType == 'DATE_PICKER'}"/>
+                    <ice:selectOneMenu id="input" value="#{prop.value}" partialSubmit="true"
+
+                                       validator="#{prop.metadata.guiHandler.validate}"
+                                       required="#{prop.metadata.isMandatory}"
+                                       requiredMessage="This field is mandatory - value cannot be blank"
+                                       rendered="#{prop.metadata.guiHandler.inputType == 'SELECT_ONE_MENU'}">
+                        <f:selectItems value="#{prop.metadata.guiHandler.listOfValues}"/>
+                    </ice:selectOneMenu>
                     <h:message for="input" styleClass="error"/>
                 </ice:column>
                 <ice:column>
-                    <ice:outputText value="*" rendered="#{!propMeta.isMandatory}" styleClass="requiredFieldIndicator"/>
+                    <ice:outputText value="*" rendered="#{!prop.metadata.isMandatory}" styleClass="requiredFieldIndicator"/>
                 </ice:column>
             </ice:dataTable>
 
