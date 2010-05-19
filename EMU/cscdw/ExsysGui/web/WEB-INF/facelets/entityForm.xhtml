@@ -13,43 +13,50 @@
         <ui:composition>
             <ice:dataTable var="prop" value="#{entity.properties}" varStatus="statusVar">
                 <ice:column>
-                    <ice:outputLabel for="input">
+                    <ice:outputLabel for="input_#{prop.editor.inputType}">
                         <ice:outputText value="#{prop.metadata.title}: "/>
                     </ice:outputLabel>
                 </ice:column>
                 <ice:column>
-                    <ice:inputText id="input" value="#{prop.value}" partialSubmit="true"
-                                   converter="#{prop.metadata.guiHandler.jsfConverter}"
-                                   validator="#{prop.metadata.guiHandler.validate}"
+                    <!-- DEFAULT editor - simple inputText -->
+                    <ice:inputText id="input_DEFAULT" value="#{prop.value}" partialSubmit="true"
+                                   converter="#{prop.editor.jsfConverter}"
+                                   validator="#{prop.editor.validate}"
                                    required="#{prop.metadata.isMandatory}"
                                    requiredMessage="This field is mandatory - value cannot be blank"
-                                   rendered="#{prop.metadata.guiHandler.inputType == 'DEFAULT'}"/>
-                    <ice:inputTextarea id="input" value="#{prop.value}" partialSubmit="true"
-                                       converter="#{prop.metadata.guiHandler.jsfConverter}"
-                                       validator="#{prop.metadata.guiHandler.validate}"
+                                   rendered="#{prop.editor.inputType == 'DEFAULT'}"/>
+                    <!-- TEXT_AREA editor - used for larger string properties -->
+                    <ice:inputTextarea id="input_TEXT_AREA" value="#{prop.value}" partialSubmit="true"
+                                       converter="#{prop.editor.jsfConverter}"
+                                       validator="#{prop.editor.validate}"
                                        required="#{prop.metadata.isMandatory}"
                                        requiredMessage="This field is mandatory - value cannot be blank"
-                                       rendered="#{prop.metadata.guiHandler.inputType == 'TEXT_AREA'}"/>
-                    <ice:selectInputDate id="input" value="#{prop.value}" partialSubmit="true"
-                                         validator="#{prop.metadata.guiHandler.validate}"
+                                       rendered="#{prop.editor.inputType == 'TEXT_AREA'}"/>
+                    <!-- DATE_PICKER editor - used for date properties -->
+                    <ice:selectInputDate id="input_DATE_PICKER" value="#{prop.value}" partialSubmit="true"
+                                         validator="#{prop.editor.validate}"
                                          required="#{prop.metadata.isMandatory}"
                                          requiredMessage="This field is mandatory - value cannot be blank"
                                          renderAsPopup="true"
-                                         rendered="#{prop.metadata.guiHandler.inputType == 'DATE_PICKER'}"/>
-                    <ice:selectOneMenu id="input" value="#{prop.value}" partialSubmit="true"
-
-                                       validator="#{prop.metadata.guiHandler.validate}"
+                                         rendered="#{prop.editor.inputType == 'DATE_PICKER'}"/>
+                    <!-- SELECT_ONE_MENU editor - used for enumerated properties and many-to-one relations -->
+                    <ice:selectOneMenu id="input_SELECT_ONE_MENU" value="#{prop.value}" partialSubmit="true"
+                                       converter="#{prop.editor.jsfConverter}"
+                                       validator="#{prop.editor.validate}"
                                        required="#{prop.metadata.isMandatory}"
                                        requiredMessage="This field is mandatory - value cannot be blank"
-                                       rendered="#{prop.metadata.guiHandler.inputType == 'SELECT_ONE_MENU'}">
-                        <f:selectItems value="#{prop.metadata.guiHandler.listOfValues}"/>
+                                       rendered="#{prop.editor.inputType == 'SELECT_ONE_MENU'}">
+                        <f:selectItems value="#{prop.editor.listOfValues}"/>
                     </ice:selectOneMenu>
-                    <h:message for="input" styleClass="error"/>
+                    <!-- Error messages here -->
+                    <h:message for="input_#{prop.editor.inputType}" styleClass="error"/>
                 </ice:column>
                 <ice:column>
                     <ice:outputText value="*" rendered="#{!prop.metadata.isMandatory}" styleClass="requiredFieldIndicator"/>
                 </ice:column>
             </ice:dataTable>
+
+        </ui:composition>
 
             <!--
             <ice:panelGrid columns="2">
@@ -85,7 +92,5 @@
                 </ui:repeat>
             </ice:panelGrid>
             -->
-        </ui:composition>
-        
     </body>
 </html>

@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<faces-config version="1.2"  xmlns="http://java.sun.com/xml/ns/javaee"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd">
+<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd">
     <application>
         <view-handler>com.icesoft.faces.facelets.D2DFaceletViewHandler</view-handler>
     </application>
@@ -17,6 +17,11 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http:
         <navigation-case>
             <from-outcome>navRules</from-outcome>
             <to-view-id>/re/admin/rules.jsf</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>navRuleEngineStatus</from-outcome>
+            <to-view-id>/re/status.jsf</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>
@@ -49,6 +54,14 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http:
         <managed-bean-class>org.cern.cms.csc.exsys.re.gui.jsf.action.CreateRule</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
+    <managed-bean>
+        <managed-bean-name>RuleEngineRuntime</managed-bean-name>
+        <managed-bean-class>org.cern.cms.csc.exsys.re.gui.jsf.action.RuleEngineRuntime</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
 </faces-config>
+
+
+
 
 
