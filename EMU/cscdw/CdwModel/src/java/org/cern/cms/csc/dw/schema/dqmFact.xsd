@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dqm="http://www.cern.ch/cms/csc/dw/model/dqm" xmlns:orm="http://java.sun.com/xml/ns/persistence/orm" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" xmlns:tns="http://www.cern.ch/cms/csc/dw/model" targetNamespace="http://www.cern.ch/cms/csc/dw/model" elementFormDefault="qualified" xsi:schemaLocation="                 http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd                 http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd                 http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd" jaxb:extensionBindingPrefixes="xjc orm hj" jaxb:version="2.0">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ann="http://jaxb.dev.java.net/plugin/annotate" xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dqm="http://www.cern.ch/cms/csc/dw/model/dqm" xmlns:orm="http://java.sun.com/xml/ns/persistence/orm" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" xmlns:tns="http://www.cern.ch/cms/csc/dw/model" targetNamespace="http://www.cern.ch/cms/csc/dw/model" elementFormDefault="qualified" xsi:schemaLocation="                 http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd                 http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd                 http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd" jaxb:extensionBindingPrefixes="xjc orm hj ann" jaxb:version="2.0">
 <xsd:element name="DqmEmuFact" type="tns:DqmEmuFactType" substitutionGroup="tns:fact"/>
 <xsd:complexType name="DqmEmuFactType">
 <xsd:annotation>
@@ -8,6 +8,9 @@
 <hj:entity>
 <orm:table name="CDW_DQM_EMU_FACTS"/>
 </hj:entity>
+<ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:FactAnn limitComponents="CSC"/>
+</ann:annotate>
 </xsd:appinfo>
 </xsd:annotation>
 <xsd:complexContent>
@@ -294,6 +297,9 @@
 <hj:entity>
 <orm:table name="CDW_DQM_DDU_FACTS"/>
 </hj:entity>
+<ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:FactAnn limitComponents="DDU"/>
+</ann:annotate>
 </xsd:appinfo>
 </xsd:annotation>
 <xsd:complexContent>
@@ -360,6 +366,9 @@
 <hj:entity>
 <orm:table name="CDW_DQM_DDU_INPUT_FACTS"/>
 </hj:entity>
+<ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:FactAnn limitComponents="DDUInput"/>
+</ann:annotate>
 </xsd:appinfo>
 </xsd:annotation>
 <xsd:complexContent>
@@ -416,6 +425,9 @@
 <hj:entity>
 <orm:table name="CDW_DQM_CSC_FACTS"/>
 </hj:entity>
+<ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:FactAnn limitComponents="Chamber"/>
+</ann:annotate>
 </xsd:appinfo>
 </xsd:annotation>
 <xsd:complexContent>
@@ -1022,6 +1034,9 @@
 <hj:entity>
 <orm:table name="CDW_DQM_CSC_AFEB_FACTS"/>
 </hj:entity>
+<ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:FactAnn limitComponents="AFEB"/>
+</ann:annotate>
 </xsd:appinfo>
 </xsd:annotation>
 <xsd:complexContent>
@@ -1068,6 +1083,9 @@
 <hj:entity>
 <orm:table name="CDW_DQM_CSC_CFEB_FACTS"/>
 </hj:entity>
+<ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:FactAnn limitComponents="CFEB"/>
+</ann:annotate>
 </xsd:appinfo>
 </xsd:annotation>
 <xsd:complexContent>
@@ -1114,6 +1132,9 @@
 <hj:entity>
 <orm:table name="CDW_DQM_CSC_HV_SEGMENT_FACTS"/>
 </hj:entity>
+<ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:FactAnn limitComponents="HVSegment"/>
+</ann:annotate>
 </xsd:appinfo>
 </xsd:annotation>
 <xsd:complexContent>

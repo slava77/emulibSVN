@@ -43,18 +43,25 @@ public class OntologyDao implements OntologyDaoLocal, Serializable {
         return c;
     }
 
+    @SuppressWarnings("unchecked")
     public Component getComponentByName(String name, boolean eager) throws ComponentNotFoundException {
-        Component c = (Component) em.createQuery("select c from org.cern.cms.csc.dw.model.ontology.Component as c where name = ?")
-                .setParameter("name", name)
-                //.setHint("org.hibernate.cacheable", new Boolean(true))
-                .getSingleResult();
+        Component c = null;
+        List<Component> resultList = null;
 
-        if (c == null) {
-            ComponentSynonym cs = em.find(ComponentSynonym.class, name);
+        resultList = em.createQuery("select c from org.cern.cms.csc.dw.model.ontology.Component as c where name = ?")
+                .setParameter(1, name)
+                .setMaxResults(1)
+                .setHint("org.hibernate.cacheable", new Boolean(true))
+                .getResultList();
+
+        if (resultList != null && !resultList.isEmpty()) {
+            c = resultList.get(0);
+        } else {
+            ComponentSynonym cs = (ComponentSynonym) em.find(ComponentSynonym.class, name);
             if (cs != null) {
                 c = (Component) em.createQuery("select c from org.cern.cms.csc.dw.model.ontology.Component as c where ? = any elements(c.synonyms)")
                         .setParameter(1, cs)
-                        //.setHint("org.hibernate.cacheable", new Boolean(true))
+                        .setHint("org.hibernate.cacheable", new Boolean(true))
                         .getSingleResult();
             }
         }
@@ -93,12 +100,12 @@ public class OntologyDao implements OntologyDaoLocal, Serializable {
     public List<ComponentClass> getComponentClasses(ComponentClass parent) {
         if (parent == null) {
             return em.createQuery("select c from org.cern.cms.csc.dw.model.ontology.ComponentClass as c where size(c.parents) = 0 order by c.nameItem")
-                    //.setHint("org.hibernate.cacheable", new Boolean(true))
+                    .setHint("org.hibernate.cacheable", new Boolean(true))
                     .getResultList();
         } else {
             return em.createQuery("select c from org.cern.cms.csc.dw.model.ontology.ComponentClass as c where ? = any elements(c.parents) order by c.nameItem")
                     .setParameter(1, parent)
-                    //.setHint("org.hibernate.cacheable", new Boolean(true))
+                    .setHint("org.hibernate.cacheable", new Boolean(true))
                     .getResultList();
         }
         }
@@ -107,7 +114,7 @@ public class OntologyDao implements OntologyDaoLocal, Serializable {
     public List<Component> getComponents(ComponentClass componentClass) {
         return em.createQuery("select c from org.cern.cms.csc.dw.model.ontology.Component as c where c.componentClass = ? order by c.name")
                 .setParameter(1, componentClass)
-                //.setHint("org.hibernate.cacheable", new Boolean(true))
+                .setHint("org.hibernate.cacheable", new Boolean(true))
                 .getResultList();
     }
 
@@ -115,12 +122,12 @@ public class OntologyDao implements OntologyDaoLocal, Serializable {
     public List<ComponentLinkClass> getComponentLinkClasses(ComponentLinkClass parent) {
         if (parent == null) {
             return em.createQuery("select c from org.cern.cms.csc.dw.model.ontology.ComponentLinkClass as c where c.parent is null order by c.nameItem")
-                    //.setHint("org.hibernate.cacheable", new Boolean(true))
+                    .setHint("org.hibernate.cacheable", new Boolean(true))
                     .getResultList();
         } else {
             return em.createQuery("select c from org.cern.cms.csc.dw.model.ontology.ComponentLinkClass as c where c.parent = ? order by c.nameItem")
                     .setParameter(1, parent)
-                    //.setHint("org.hibernate.cacheable", new Boolean(true))
+                    .setHint("org.hibernate.cacheable", new Boolean(true))
                     .getResultList();
         }
     }
@@ -137,7 +144,7 @@ public class OntologyDao implements OntologyDaoLocal, Serializable {
     public List<ComponentLink> getComponentLinks(ComponentLinkClass componentLinkClass) {
         return em.createQuery("select c from org.cern.cms.csc.dw.model.ontology.ComponentLink as c where c.componentLinkClass = ? order by c.nameItem")
                 .setParameter(1, componentLinkClass)
-                //.setHint("org.hibernate.cacheable", new Boolean(true))
+                .setHint("org.hibernate.cacheable", new Boolean(true))
                 .getResultList();
     }
 

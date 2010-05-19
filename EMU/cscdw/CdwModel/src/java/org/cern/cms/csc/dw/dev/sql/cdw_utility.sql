@@ -14,17 +14,20 @@ CREATE TABLE CDW_DDL (
 )
 /
 
-CREATE OR REPLACE PACKAGE CDW_UTILITY AS
+create or replace PACKAGE CDW_UTILITY AS
 
     procedure disable_foreign_key(p_table_name varchar2, p_column_name varchar2);
     procedure enable_foreign_key(p_table_name varchar2, p_column_name varchar2);
     procedure disable_table_constraints(p_table varchar);
     procedure enable_table_constraints(p_table varchar);
-    
+
     function get_object_grants(p_object_name varchar2) return clob;
     procedure generate_ddl;
 
+    function partition_table_ddl(p_table_name varchar2, p_date_column varchar2, p_months_forward number) return varchar2;
+
 END CDW_UTILITY;
+
 /
 
 create or replace PACKAGE BODY CDW_UTILITY AS
@@ -85,7 +88,7 @@ create or replace PACKAGE BODY CDW_UTILITY AS
             object_type,
             object_name,
             DBMS_METADATA.GET_DDL(object_type, object_name, user),
-            DBMS_METADATA.GET_DEPENDENT_DDL('OBJECT_GRANT', object_name, user)
+            cdw_utility.get_object_grants('OBJECT_GRANT')
         from
             SYS.user_objects
         where
@@ -112,6 +115,40 @@ create or replace PACKAGE BODY CDW_UTILITY AS
         for cur in (select owner, constraint_name, table_name, decode(constraint_type, 'R', 0, 'U', 1, 'C', 5, 'P', 100, 10) ord from all_constraints where OWNER = user and TABLE_NAME = p_table order by ord desc) loop
             execute immediate 'ALTER TABLE ' || cur.owner || '.' || cur.table_name || ' MODIFY CONSTRAINT "' || cur.constraint_name || '" ENABLE';
         end loop;
+    end;
+
+    function partition_table_ddl(p_table_name varchar2, p_date_column varchar2, p_months_forward number) return varchar2 as
+      par_sql   varchar2(32000) := null;
+      par_now   date := TO_DATE(TO_CHAR(sysdate, 'YYYY-MM') || '-01', 'YYYY-MM-DD');
+      par_date  date := par_now;
+      par_first number := 1;
+    begin
+
+      DBMS_METADATA.SET_TRANSFORM_PARAM(DBMS_METADATA.SESSION_TRANSFORM, 'STORAGE', false);
+      DBMS_METADATA.SET_TRANSFORM_PARAM(DBMS_METADATA.SESSION_TRANSFORM, 'TABLESPACE', false);
+      DBMS_METADATA.SET_TRANSFORM_PARAM(DBMS_METADATA.SESSION_TRANSFORM, 'SEGMENT_ATTRIBUTES', false);
+      par_sql := DBMS_METADATA.GET_DDL('TABLE', p_table_name, user);
+      DBMS_METADATA.SET_TRANSFORM_PARAM(DBMS_METADATA.SESSION_TRANSFORM,'DEFAULT');
+
+      par_sql := par_sql || ' partition by range(' || p_date_column || ') (';
+      par_date := par_now;
+
+      while par_date < ADD_MONTHS(par_now, 6) loop
+        if par_first = 0 then
+          par_sql := par_sql || ',';
+        end if;
+        par_sql := par_sql || '   ';
+        par_sql := par_sql || 'partition P' || TO_CHAR(par_date, 'YYYYMM') || ' values less than (to_date(''' || TO_CHAR(ADD_MONTHS(par_date, 1), 'YYYY-MM-DD') || ''', ''YYYY-MM-DD''))';
+        par_date := ADD_MONTHS(par_date, 1);
+        par_first := 0;
+      end loop;
+
+      par_sql := par_sql || ')';
+
+      par_sql := 'drop table ' || p_table_name || ' cascade constraints purge' || CHR(10) || CHR(13) || '/' || par_sql || CHR(10) || CHR(13) || '/';
+
+      return par_sql;
+
     end;
 
 END CDW_UTILITY;

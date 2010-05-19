@@ -39,10 +39,10 @@
                 <hj:entity>
                     <orm:table name="CDW_FACT_COLLECTIONS"/>
                 </hj:entity>
-                <hj:generated-id name="Id">
+                <hj:generated-id name="id" javaType="java.lang.Long">
                     <orm:column name="FCO_ID"/>
-                    <hj:generated-value strategy="SEQUENCE" generator="CDW_FCO_ID_SEQ"/>
-                    <orm:sequence-generator name="CDW_FCO_ID_SEQ" sequence-name="CDW_FCO_ID_SEQ" initial-value="1" />
+                    <orm:generated-value strategy="SEQUENCE" generator="CDW_FCO_ID_SEQ"/>
+                    <orm:sequence-generator name="CDW_FCO_ID_SEQ" sequence-name="CDW_FCO_ID_SEQ"/>
                 </hj:generated-id>
             </xsd:appinfo>
         </xsd:annotation>
@@ -93,10 +93,11 @@
                 <xjc:superClass name="org.cern.cms.csc.dw.model.base.EntityBase"/>
                 <hj:entity>
                     <orm:table name="CDW_FACTS"/>
-                    <orm:inheritance strategy="JOINED"/>
+                    <orm:inheritance strategy="TABLE_PER_CLASS"/>
                 </hj:entity>
-                <hj:generated-id name="Id">
+                <hj:generated-id name="id" javaType="java.lang.Long">
                     <orm:column name="FCT_ID"/>
+                    <orm:generated-value strategy="SEQUENCE" generator="CDW_FCT_ID_SEQ"/>
                     <orm:sequence-generator name="CDW_FCT_ID_SEQ" sequence-name="CDW_FCT_ID_SEQ"/>
                 </hj:generated-id>
             </xsd:appinfo>

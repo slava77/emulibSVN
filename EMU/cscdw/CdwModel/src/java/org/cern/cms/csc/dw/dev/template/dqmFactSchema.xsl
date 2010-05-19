@@ -6,6 +6,7 @@
     xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
     xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
     xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+    xmlns:ann="http://jaxb.dev.java.net/plugin/annotate"
     xmlns:tns="http://www.cern.ch/cms/csc/dw/model"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:dqm="http://www.cern.ch/cms/csc/dw/model/dqm"
@@ -22,7 +23,7 @@
                 http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
                 http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
                 http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
-            jaxb:extensionBindingPrefixes="xjc orm hj"
+            jaxb:extensionBindingPrefixes="xjc orm hj ann"
             jaxb:version="2.0">
 
             <xsl:apply-templates select="/dqm:classes/dqm:class"/>
@@ -44,6 +45,9 @@
                     <hj:entity>
                         <orm:table name="{substring(@table,1,30)}"/>
                     </hj:entity>
+                    <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                        <a:FactAnn limitComponents="{@componentClass}"/>
+                    </ann:annotate>
                 </xsd:appinfo>
             </xsd:annotation>
             <xsd:complexContent>

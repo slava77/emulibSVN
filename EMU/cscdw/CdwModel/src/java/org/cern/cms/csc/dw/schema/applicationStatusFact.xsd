@@ -9,11 +9,12 @@
 	xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
 	xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
 	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+        xmlns:ann="http://jaxb.dev.java.net/plugin/annotate"
     xsi:schemaLocation="
         http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
         http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
         http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
-	jaxb:extensionBindingPrefixes="xjc orm hj"
+	jaxb:extensionBindingPrefixes="xjc orm hj ann"
 	jaxb:version="2.0">
 
     <xsd:element name="applicationStatusFact"
@@ -27,6 +28,9 @@
                 <hj:entity>
                     <orm:table name="CDW_APP_STATUS_FACTS"/>
                 </hj:entity>
+                <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                    <a:FactAnn limitComponents="Software" limitComponentsRecursive="true"/>
+                </ann:annotate>
             </xsd:appinfo>
         </xsd:annotation>
         <xsd:complexContent>

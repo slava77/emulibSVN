@@ -5,9 +5,11 @@
 
 package org.jvnet.jaxb2_commons.plugin;
 
+import com.sun.codemodel.JAnnotationArrayMember;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JType;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.Plugin;
 import com.sun.tools.xjc.model.CPluginCustomization;
@@ -162,49 +164,121 @@ public class XjcAnnotatePlugin extends Plugin {
 
         @SuppressWarnings("unchecked")
         public void apply(JAnnotationUse ann) throws ClassNotFoundException {
+
+            // Array
+            if (type.isArray()) {
+
+                JAnnotationArrayMember arrayMember = ann.paramArray(name);
+                for (String avalue: this.value.split(",")) {
+                    AnnotationParamData p = new AnnotationParamData(this.name, avalue, this.type.getComponentType());
+                    p.apply(arrayMember);
+                }
+                return;
+
+            // Simple type
+            } else
+
             // Enum
             if (type.isEnum()) {
+                
                 ann.param(name, Enum.valueOf(type, value));
+                return;
+
             } else
 
             // String
             if (type.equals(String.class)) {
+                
                 ann.param(name, value);
+                return;
+
             } else
 
             // Class
             if (type.equals(Class.class)) {
+                
                 ann.param(name, this.getClass().getClassLoader().loadClass(value));
+                return;
+
             } else
 
             // Primitives
             if (type.isPrimitive()) {
 
+                // int
                 if (type.getSimpleName().equals("int")) {
+
                     ann.param(name, Integer.parseInt(value));
+                    return;
+
                 } else
 
+                // boolean
                 if (type.getSimpleName().equals("boolean")) {
-                    ann.param(name, Boolean.parseBoolean(value));
-                } else
 
-                {
-                    throwException();
+                    ann.param(name, Boolean.parseBoolean(value));
+                    return;
+
                 }
+            }
+
+            throw new ClassNotFoundException("Parameter type " + type.toString() + " is not supported by plugin.");
+
+        }
+
+        @SuppressWarnings("unchecked")
+        private void apply(JAnnotationArrayMember arr) throws ClassNotFoundException {
+
+            // Enum
+            if (type.isEnum()) {
+
+                //arr.param(Enum.valueOf(type, value));
+                return;
 
             } else
 
-            // Type is not supported!
-            {
-                throwException();
+            // String
+            if (type.equals(String.class)) {
+
+                arr.param(value);
+                return;
+
+            } else
+
+            // Class
+            if (type.equals(Class.class)) {
+
+                arr.param(this.getClass().getClassLoader().loadClass(value));
+                return;
+
+            } else
+
+            // Primitives
+            if (type.isPrimitive()) {
+
+                // int
+                if (type.getSimpleName().equals("int")) {
+
+                    arr.param(Integer.parseInt(value));
+                    return;
+
+                } else
+
+                // boolean
+                if (type.getSimpleName().equals("boolean")) {
+
+                    arr.param(Boolean.parseBoolean(value));
+                    return;
+
+                }
             }
 
+            throw new ClassNotFoundException("Parameter type " + type.toString() + " is not supported by plugin.");
+
         }
 
-        private void throwException() throws ClassNotFoundException {
-            throw new ClassNotFoundException("Parameter type " + type.toString() + " is not supported by plugin.");
-        }
 
     }
+
 
 }
