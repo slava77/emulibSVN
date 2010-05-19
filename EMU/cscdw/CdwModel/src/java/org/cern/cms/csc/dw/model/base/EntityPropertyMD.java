@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.beanutils.BeanUtils;
 import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 
 /**
@@ -39,8 +38,6 @@ public abstract class EntityPropertyMD {
     private boolean isMandatory;
     /** Class of the entity whose property this object is describing. */
     private Class entityClass;
-    /** This is used to supply info and perform certain tasks for GUI (like tell what kind of input to use, validate user input, supply a value converter). */
-    private EntityPropertyGuiHandler guiHandler;
 
     @SuppressWarnings("unchecked")
     public EntityPropertyMD(PropertyDescriptor prop, Class[] mandatoryAnnotations) throws InvalidEntityBeanPropertyException {
@@ -190,14 +187,11 @@ public abstract class EntityPropertyMD {
     }
 
     /**
-     * Get an object which is used to supply info and perform certain tasks for GUI (like tell what kind of input to use, validate user input, supply a value converter).
-     * @return an object which is used to supply info and perform certain tasks for GUI (like tell what kind of input to use, validate user input, supply a value converter).
+     * Get new value of the type appropriate for this type of property.
+     * @return new value of the type appropriate for this type of property.
      */
-    public EntityPropertyGuiHandler getGuiHandler() {
-        if (guiHandler == null) {
-            guiHandler = new EntityPropertyGuiHandler(this);
-        }
-        return guiHandler;
+    public Object getNewValue() throws InstantiationException, IllegalAccessException {
+        return getType().newInstance();
     }
 
     /**

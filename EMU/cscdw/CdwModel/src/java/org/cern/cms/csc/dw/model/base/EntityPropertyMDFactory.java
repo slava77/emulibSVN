@@ -28,7 +28,7 @@ public class EntityPropertyMDFactory {
 
     private static Logger logger = Logger.getLogger(EntityPropertyMDFactory.class.getName());
 
-    private static Pattern ignoredPropertiesPattern = Pattern.compile("(set|id|class|propertyMetadata|properties)(.*)");
+    private static Pattern ignoredPropertiesPattern = Pattern.compile("(set|id|class|propertyMetadata|properties|entityTitle)(.*)");
     private static Pattern itemPropertyPattern = Pattern.compile("(\\p{Lower}.+)Item");
 
     public static List<EntityPropertyMD> createMetadataForEntity(Class entityClass) throws InvalidEntityClassException, InvalidEntityBeanPropertyException {
@@ -54,10 +54,6 @@ public class EntityPropertyMDFactory {
             }
         }
 
-
-        for (PropertyDescriptor prop: props) {
-            logger.info("property: " + prop.getName());
-        }
 
         List<EntityPropertyMD> metadata = new ArrayList<EntityPropertyMD>();
         // Go through all properties and make property metadata objects out of them
