@@ -4,7 +4,7 @@
  */
 package org.cern.cms.csc.dw.util;
 
-import com.icesoft.faces.context.effects.JavascriptContext;
+//import com.icesoft.faces.context.effects.JavascriptContext;
 import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
 import javax.faces.application.ViewHandler;
@@ -149,7 +149,7 @@ public class JsfBeanBase {
         return null;
     }
 
-    public static void addJavascript(String script) {
-        JavascriptContext.addJavascriptCall(FacesContext.getCurrentInstance(), script);
-    }
+//    public static void addJavascript(String script) {
+//        JavascriptContext.addJavascriptCall(FacesContext.getCurrentInstance(), script);
+//    }
 }

@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.cern.cms.csc.dw.model.base;
+package org.cern.cms.csc.dw.model.base.metadata;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
@@ -16,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.persistence.Basic;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.cern.cms.csc.dw.exception.InvalidEntityClassException;
 import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
@@ -31,6 +32,13 @@ public class EntityPropertyMDFactory {
     private static Pattern ignoredPropertiesPattern = Pattern.compile("(set|id|class|propertyMetadata|properties|entityTitle)(.*)");
     private static Pattern itemPropertyPattern = Pattern.compile("(\\p{Lower}.+)Item");
 
+    /**
+     * Creates metadata for all the properties of the given entity class (which must be a subclass of EntityBase)
+     * @param entityClass entity class you want the metadata for
+     * @return list of EntityPropertyMD for all the properties of the given entity class
+     * @throws InvalidEntityClassException thrown if the given entityClass is not a subclass of EntityBase
+     * @throws InvalidEntityBeanPropertyException thrown if there's a property for which it's not possible to create an EntityPropertyMD object (or at least it's not defined how to create it)
+     */
     public static List<EntityPropertyMD> createMetadataForEntity(Class entityClass) throws InvalidEntityClassException, InvalidEntityBeanPropertyException {
         // get all properties
         PropertyDescriptor[] allProps = PropertyUtils.getPropertyDescriptors(entityClass);
@@ -69,6 +77,12 @@ public class EntityPropertyMDFactory {
         return metadata;
     }
 
+    /**
+     * Create metadata for a given property
+     * @param prop property for which you want the metadata object to be created
+     * @return EntityPropertyMD for a given property
+     * @throws InvalidEntityBeanPropertyException thrown if it's not possible to create an EntityPropertyMD object for the given property (or at least it's not defined how to create it)
+     */
     public static EntityPropertyMD createMetadataForProperty(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
         // process the annotations and decide what type of EntityPropertyMD object to create
         Method getter = prop.getReadMethod();
@@ -80,6 +94,11 @@ public class EntityPropertyMDFactory {
         ManyToOne manyToOneA = getter.getAnnotation(ManyToOne.class);
         if (manyToOneA != null) {
             return new EntityManyToOnePropertyMD(prop);
+        }
+
+        OneToOne oneToOneA = getter.getAnnotation(OneToOne.class);
+        if (oneToOneA != null) {
+            return new EntityOneToOnePropertyMD(prop);
         }
 
         throw new InvalidEntityBeanPropertyException("Don't know what type of property metadata to create for " + getter.toGenericString());

@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.cern.cms.csc.dw.model.base;
+package org.cern.cms.csc.dw.model.base.metadata;
 
 import java.beans.PropertyDescriptor;
 import javax.persistence.Basic;
@@ -16,7 +16,7 @@ import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
  */
 public class EntityBasicPropertyMD extends EntityPropertyMD {
 
-    static private Class[] mandatoryAnnotations = {Basic.class, Column.class};
+    private static Class[] mandatoryAnnotations = {Basic.class, Column.class};
 
     /** Value length limitation (e.g. for String values). */
     private int length = -1;
@@ -25,7 +25,7 @@ public class EntityBasicPropertyMD extends EntityPropertyMD {
         super(prop, mandatoryAnnotations);
         
         Column column = prop.getReadMethod().getAnnotation(Column.class);
-        setIsMandatory(column.nullable());
+        setIsMandatory(!column.nullable());
         this.length = column.length();
     }
 
@@ -35,23 +35,6 @@ public class EntityBasicPropertyMD extends EntityPropertyMD {
      */
     public int getLength() {
         return length;
-    }
-
-    // ================ implementation of the abstract methods (and overriding some) ================
-
-    @Override
-    public boolean getIsCollection() {
-        return false;
-    }
-
-    @Override
-    public boolean getIsTypeBasic() {
-        return true;
-    }
-
-    @Override
-    public PropertyRelationType getRelationType() {
-        return PropertyRelationType.BASIC;
     }
 
     /**

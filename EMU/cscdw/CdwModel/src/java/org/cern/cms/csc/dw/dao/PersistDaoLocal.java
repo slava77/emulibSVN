@@ -6,6 +6,7 @@
 package org.cern.cms.csc.dw.dao;
 
 import javax.ejb.Local;
+import org.cern.cms.csc.dw.exception.OnSaveProcessingException;
 import org.cern.cms.csc.dw.exception.PersistException;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 
@@ -16,7 +17,7 @@ import org.cern.cms.csc.dw.model.base.EntityBase;
 @Local
 public interface PersistDaoLocal {
 
-    public void persist(EntityBase cdwEntityObject) throws PersistException, Exception;
-    public void persist(EntityBase cdwEntityObject, boolean queued) throws PersistException, java.lang.Exception;
+    public void persist(EntityBase cdwEntityObject) throws PersistException, OnSaveProcessingException;
+    public void persist(EntityBase cdwEntityObject, boolean queued) throws PersistException, OnSaveProcessingException;
    
 }

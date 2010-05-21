@@ -3,10 +3,9 @@
  * and open the template in the editor.
  */
 
-package org.cern.cms.csc.dw.model.base;
+package org.cern.cms.csc.dw.model.base.metadata;
 
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.exception.InvalidEntityClassException;
+import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 
 /**
@@ -25,57 +25,23 @@ import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
  */
 public class EntityManyToOnePropertyMD extends EntityPropertyMD {
 
-    private EntityDaoLocal entityDao;
+    private static Logger logger = Logger.getLogger(EntityManyToOnePropertyMD.class.getName());
+    private static Class[] mandatoryAnnotations = {ManyToOne.class, JoinColumn.class};
 
-    static private Class[] mandatoryAnnotations = {ManyToOne.class, JoinColumn.class};
+    private EntityDaoLocal entityDao;
 
     public EntityManyToOnePropertyMD(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
         super(prop, mandatoryAnnotations);
 
         JoinColumn joinColumn = prop.getReadMethod().getAnnotation(JoinColumn.class);
-        setIsMandatory(joinColumn.nullable());
+        setIsMandatory(!joinColumn.nullable());
 
         entityDao = lookupEntityDao();
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public List<Object> getListOfValues() throws InvalidEntityClassException {
         return entityDao.getAllEntitiesByClass(getType());
-    }
-
-    // ================ implementation of the abstract methods (and overriding some) ================
-
-    @Override
-    public boolean getIsCollection() {
-        return false;
-    }
-
-    @Override
-    public boolean getIsTypeBasic() {
-        return false;
-    }
-
-    @Override
-    public PropertyRelationType getRelationType() {
-        return PropertyRelationType.MANY_TO_ONE;
-    }
-
-    /**
-     * Validates a given value and returns an error message if the value is not valid, otherwise returns null.
-     * @param value value to be validated
-     * @return an error message if the value is not valid, otherwise - null is returned.
-     */
-    @Override
-    public String validate(Object value) {
-        // super validation
-        String msg = super.validate(value);
-        if (msg != null) {
-            return msg;
-        }
-
-        // validation successful
-        return null;
     }
 
     private EntityDaoLocal lookupEntityDao() {

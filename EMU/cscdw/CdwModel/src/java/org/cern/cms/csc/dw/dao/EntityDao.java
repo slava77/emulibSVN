@@ -8,6 +8,7 @@ package org.cern.cms.csc.dw.dao;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -20,6 +21,9 @@ import org.cern.cms.csc.dw.model.base.EntityBase;
  */
 @Stateless
 public class EntityDao implements EntityDaoLocal {
+
+    @EJB
+    private PersistDaoLocal persistDao;
 
     @PersistenceContext(unitName="CdwPU")
     private EntityManager em;
@@ -108,6 +112,14 @@ public class EntityDao implements EntityDaoLocal {
         // get the entities using the EntityManager
         List<T> ret = em.createQuery("select ent from " + entityClass.getCanonicalName() + " as ent").getResultList();
         return ret;
+    }
+
+    /**
+     * Get PersistDao Bean
+     * @return PersistDao Bean
+     */
+    public PersistDaoLocal getPersistDao() {
+        return persistDao;
     }
 
 }

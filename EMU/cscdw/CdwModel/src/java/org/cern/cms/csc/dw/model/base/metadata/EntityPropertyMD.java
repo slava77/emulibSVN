@@ -3,14 +3,15 @@
  * and open the template in the editor.
  */
 
-package org.cern.cms.csc.dw.model.base;
+package org.cern.cms.csc.dw.model.base.metadata;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
-import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 
 /**
@@ -19,14 +20,6 @@ import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
  * @author Evka
  */
 public abstract class EntityPropertyMD {
-
-    public enum PropertyRelationType {
-        BASIC,
-        MANY_TO_ONE,
-        MANY_TO_MANY,
-        ONE_TO_ONE,
-        ONE_TO_MANY
-    }
 
     private static Logger logger = Logger.getLogger(EntityPropertyMD.class.getName());
 
@@ -106,7 +99,7 @@ public abstract class EntityPropertyMD {
      * Set flag telling if the property is mandatory or optional.
      * @param isMandatory flag telling if the property is mandatory or optional.
      */
-    public void setIsMandatory(boolean isMandatory) {
+    protected void setIsMandatory(boolean isMandatory) {
         this.isMandatory = isMandatory;
     }
 
@@ -161,32 +154,6 @@ public abstract class EntityPropertyMD {
     }
 
     /**
-     * Get relation type (e.g. basic, one-to-one, many-to-one, one-to-many, many-to-many).
-     * @return relation type (e.g. basic, one-to-one, many-to-one, one-to-many, many-to-many).
-     */
-    public abstract PropertyRelationType getRelationType();
-
-    /**
-     * Get flag telling if this property is actually a collection.
-     * @return flag telling if this property is actually a collection.
-     */
-    public abstract boolean getIsCollection();
-
-    /**
-     * Get flag telling if the type is basic java type (e.g. boolean, String, Integer...) or a pointer to another class.
-     * @return flag telling if the type is basic java type (e.g. boolean, String, Integer...) or a pointer to another class.
-     */
-    public abstract boolean getIsTypeBasic();
-
-    /**
-     * Get list of available values. By default returns null. Applicable for e.g. enum or many-to-one type properties
-     * @return
-     */
-    public List<Object> getListOfValues() throws Exception {
-        return null;
-    }
-
-    /**
      * Get new value of the type appropriate for this type of property.
      * @return new value of the type appropriate for this type of property.
      */
@@ -202,15 +169,33 @@ public abstract class EntityPropertyMD {
     @SuppressWarnings("unchecked")
     public String validate(Object value) {
         // mandatory field == null ?
+        logger.info("EntityPropertyMD.validate() is value for " + getName() + " null? " + (value == null) + ", is value mandatory? " + getIsMandatory());
         if ((value == null) && getIsMandatory()) {
-            return "This field is mandatory - value cannot be blank";
+            logger.info("EntityPropertyMD.validate() - cccomplaining about a null & mandatory value for " + getName());
+            return getTitle() + " is mandatory - value cannot be blank";
         }
 
         // is type of the value compatible with the property type?
-        if (!getType().isAssignableFrom(value.getClass())) {
+        if ((value != null) && (!getType().isAssignableFrom(value.getClass()))) {
             String msgStr = "Wrong value type: expected " + getType().getName() + ", got " + value.getClass().getName();
             logger.severe("Serious validation error for property " + getName() + " of class " + getGetterMethod().getDeclaringClass().getName() + ": " + msgStr);
             return msgStr;
+        }
+
+        // if the value is of type EntityBase, then run validation on all of it's properties and if that fails - reply that there's a validation error with the values properties
+        if (value instanceof EntityBase) {
+            EntityBase entityValue = (EntityBase) value;
+            try {
+                for (EntityPropertyMD propMetadata: entityValue.getPropertyMetadata()) {
+                    String propValidationMsg = propMetadata.validate(propMetadata.getGetterMethod().invoke(value));
+                    if (propValidationMsg != null) {
+                        return "This object has invalid properties";
+                    }
+                }
+            } catch (Exception ex) {
+                logger.log(Level.SEVERE, "Exception while validating a many-to-one relation value", ex);
+                throw new RuntimeException("Exception while validating a many-to-one relation value", ex);
+            }
         }
 
         // validation successful

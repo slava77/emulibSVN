@@ -20,6 +20,7 @@ import javax.jms.Queue;
 import javax.jms.Session;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.cern.cms.csc.dw.exception.OnSaveProcessingException;
 import org.cern.cms.csc.dw.exception.PersistException;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 
@@ -55,15 +56,15 @@ public class PersistDao implements PersistDaoLocal {
         // entitySaverConnection = entitySaverQueueFactory.createConnection();
     }
 
-    public void persist(EntityBase cdwEntityObject) throws PersistException, Exception {
+    public void persist(EntityBase cdwEntityObject) throws PersistException, OnSaveProcessingException {
         persist(cdwEntityObject, false);
     }
 
-    public void persist(EntityBase cdwEntityObject, boolean queued) throws PersistException, Exception {
+    public void persist(EntityBase cdwEntityObject, boolean queued) throws PersistException, OnSaveProcessingException {
 
         // is it null by any chance? if yes - then be angry about it
         if (cdwEntityObject == null) {
-            throw new Exception("null was passed to PersistDao.persist(EntityBase cdwEntityObject) method!");
+            throw new IllegalArgumentException("null was passed to PersistDao.persist(EntityBase cdwEntityObject) method!");
         }
 
         if (!queued && queueMode) {
