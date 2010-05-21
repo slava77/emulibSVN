@@ -5,7 +5,7 @@
 
 package org.cern.cms.csc.exsys.re.gui.jsf.editor;
 
-import org.cern.cms.csc.exsys.re.gui.jsf.editor.complex.EntityEditor;
+import org.cern.cms.csc.exsys.re.gui.jsf.editor.base.EntityEditor;
 
 /**
  * This bean is used by the generic entity editor facelet.

@@ -10,49 +10,73 @@
       xmlns:u1="http://www.cern.ch/cms/csc/exsys/gui">
     
     <body>
+
         <ui:composition>
-            <ice:dataTable var="prop" value="#{entity.properties}" varStatus="statusVar">
+            <ice:commandButton value="up" action="#{CreateRule.goUp}" 
+                               rendered="#{editor.parentEditor != null}"
+                               immediate="true"/>
+
+            <ice:dataTable var="propEditor" value="#{editor.propertyEditors}" varStatus="statusVar">
                 <ice:column>
-                    <ice:outputLabel for="input_#{prop.editor.inputType}">
-                        <ice:outputText value="#{prop.metadata.title}: "/>
+                    <ice:outputLabel for="input_#{propEditor.inputType}">
+                        <ice:outputText value="#{propEditor.metadata.title}: "/>
                     </ice:outputLabel>
                 </ice:column>
                 <ice:column>
                     <!-- DEFAULT editor - simple inputText -->
-                    <ice:inputText id="input_DEFAULT" value="#{prop.value}" partialSubmit="true"
-                                   converter="#{prop.editor.jsfConverter}"
-                                   validator="#{prop.editor.validate}"
-                                   required="#{prop.metadata.isMandatory}"
+                    <ice:inputText id="input_DEFAULT" value="#{propEditor.value}" partialSubmit="true"
+                                   converter="#{propEditor.converter}"
+                                   validator="#{propEditor.validate}"
+                                   required="#{propEditor.metadata.isMandatory}"
                                    requiredMessage="This field is mandatory - value cannot be blank"
-                                   rendered="#{prop.editor.inputType == 'DEFAULT'}"/>
+                                   rendered="#{propEditor.inputType == 'DEFAULT'}"/>
                     <!-- TEXT_AREA editor - used for larger string properties -->
-                    <ice:inputTextarea id="input_TEXT_AREA" value="#{prop.value}" partialSubmit="true"
-                                       converter="#{prop.editor.jsfConverter}"
-                                       validator="#{prop.editor.validate}"
-                                       required="#{prop.metadata.isMandatory}"
+                    <ice:inputTextarea id="input_TEXT_AREA" value="#{propEditor.value}" partialSubmit="true"
+                                       converter="#{propEditor.converter}"
+                                       validator="#{propEditor.validate}"
+                                       required="#{propEditor.metadata.isMandatory}"
                                        requiredMessage="This field is mandatory - value cannot be blank"
-                                       rendered="#{prop.editor.inputType == 'TEXT_AREA'}"/>
+                                       rendered="#{propEditor.inputType == 'TEXT_AREA'}"/>
                     <!-- DATE_PICKER editor - used for date properties -->
-                    <ice:selectInputDate id="input_DATE_PICKER" value="#{prop.value}" partialSubmit="true"
-                                         validator="#{prop.editor.validate}"
-                                         required="#{prop.metadata.isMandatory}"
+                    <ice:selectInputDate id="input_DATE_PICKER" value="#{propEditor.value}" partialSubmit="true"
+                                         validator="#{propEditor.validate}"
+                                         required="#{propEditor.metadata.isMandatory}"
                                          requiredMessage="This field is mandatory - value cannot be blank"
                                          renderAsPopup="true"
-                                         rendered="#{prop.editor.inputType == 'DATE_PICKER'}"/>
+                                         rendered="#{propEditor.inputType == 'DATE_PICKER'}"/>
                     <!-- SELECT_ONE_MENU editor - used for enumerated properties and many-to-one relations -->
-                    <ice:selectOneMenu id="input_SELECT_ONE_MENU" value="#{prop.value}" partialSubmit="true"
-                                       converter="#{prop.editor.jsfConverter}"
-                                       validator="#{prop.editor.validate}"
-                                       required="#{prop.metadata.isMandatory}"
+                    <ice:selectOneMenu id="input_SELECT_ONE_MENU" value="#{propEditor.value}" partialSubmit="true"
+                                       converter="#{propEditor.converter}"
+                                       validator="#{propEditor.validate}"
+                                       required="#{propEditor.metadata.isMandatory}"
                                        requiredMessage="This field is mandatory - value cannot be blank"
-                                       rendered="#{prop.editor.inputType == 'SELECT_ONE_MENU'}">
-                        <f:selectItems value="#{prop.editor.listOfValues}"/>
+                                       rendered="#{propEditor.inputType == 'SELECT_ONE_MENU'}">
+                        <f:selectItems value="#{propEditor.listOfValues}"/>
+
                     </ice:selectOneMenu>
+                    <ice:commandButton type="submit" value="Create / Edit"
+                                       rendered="#{propEditor.inputType == 'SELECT_ONE_MENU'}"
+                                       immediate="true">
+                        <f:setPropertyActionListener target="#{CreateRule.editor}" value="#{propEditor}"/>
+                    </ice:commandButton>
+                    <!-- ONE-TO-ONE editor - input text just so that validation would be applied -->
+                    <ice:inputText id="input_ONE_TO_ONE" value="#{propEditor.value.entityTitle}"
+                                    rendered="#{propEditor.inputType == 'ONE_TO_ONE'}"
+                                    required="#{propEditor.metadata.isMandatory}"
+                                    requiredMessage="This field is mandatory - value cannot be blank"
+                                    validator="#{propEditor.validate}"
+                                    readonly="true"
+                                    partialSubmit="true"/>
+                    <ice:commandButton type="submit" value="Edit"
+                                       rendered="#{propEditor.inputType == 'ONE_TO_ONE'}"
+                                       immediate="true">
+                        <f:setPropertyActionListener target="#{CreateRule.editor}" value="#{propEditor}"/>
+                    </ice:commandButton>
                     <!-- Error messages here -->
-                    <h:message for="input_#{prop.editor.inputType}" styleClass="error"/>
+                    <h:message for="input_#{propEditor.inputType}" styleClass="error"/>
                 </ice:column>
                 <ice:column>
-                    <ice:outputText value="*" rendered="#{!prop.metadata.isMandatory}" styleClass="requiredFieldIndicator"/>
+                    <ice:outputText value="*" rendered="#{propEditor.metadata.isMandatory}" styleClass="requiredFieldIndicator"/>
                 </ice:column>
             </ice:dataTable>
 

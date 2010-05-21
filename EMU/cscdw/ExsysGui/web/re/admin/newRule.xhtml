@@ -13,14 +13,10 @@
             
             <ui:define name="content">
 
-                <ice:form id="actionsForm">
-                    <ice:commandLink value="Back" action="back"/>
-                </ice:form>
-
                 <p><h1>Create New Rule</h1></p>
                 <ice:form id="newRuleForm">
-                    <exs:entityForm entity="#{CreateRule.rule}"/>
-                    <ice:commandButton value="Create" action="#{CreateRule.doSave}"/>
+                    <exs:entityForm editor="#{CreateRule.editor}"/>
+                    <ice:commandButton type="submit" value="Create" action="#{CreateRule.doSave}"/>
                 </ice:form>
                 
 <!--
