@@ -25,9 +25,9 @@ import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
  *
  * @author Evka
  */
-public class EntityPropertyMDFactory {
+public class EntityPropertyMdFactory {
 
-    private static Logger logger = Logger.getLogger(EntityPropertyMDFactory.class.getName());
+    private static Logger logger = Logger.getLogger(EntityPropertyMdFactory.class.getName());
 
     private static Pattern ignoredPropertiesPattern = Pattern.compile("(set|id|class|propertyMetadata|properties|entityTitle)(.*)");
     private static Pattern itemPropertyPattern = Pattern.compile("(\\p{Lower}.+)Item");
@@ -35,11 +35,11 @@ public class EntityPropertyMDFactory {
     /**
      * Creates metadata for all the properties of the given entity class (which must be a subclass of EntityBase)
      * @param entityClass entity class you want the metadata for
-     * @return list of EntityPropertyMD for all the properties of the given entity class
+     * @return list of PropertyMd for all the properties of the given entity class
      * @throws InvalidEntityClassException thrown if the given entityClass is not a subclass of EntityBase
-     * @throws InvalidEntityBeanPropertyException thrown if there's a property for which it's not possible to create an EntityPropertyMD object (or at least it's not defined how to create it)
+     * @throws InvalidEntityBeanPropertyException thrown if there's a property for which it's not possible to create an PropertyMd object (or at least it's not defined how to create it)
      */
-    public static List<EntityPropertyMD> createMetadataForEntity(Class entityClass) throws InvalidEntityClassException, InvalidEntityBeanPropertyException {
+    public static List<PropertyMd> createMetadataForEntity(Class entityClass) throws InvalidEntityClassException, InvalidEntityBeanPropertyException {
         // get all properties
         PropertyDescriptor[] allProps = PropertyUtils.getPropertyDescriptors(entityClass);
         // Filter out all unwanted properties:
@@ -63,11 +63,11 @@ public class EntityPropertyMDFactory {
         }
 
 
-        List<EntityPropertyMD> metadata = new ArrayList<EntityPropertyMD>();
+        List<PropertyMd> metadata = new ArrayList<PropertyMd>();
         // Go through all properties and make property metadata objects out of them
         for (PropertyDescriptor prop: props) {
             try {
-                EntityPropertyMD propMeta = createMetadataForProperty(prop);
+                PropertyMd propMeta = createMetadataForProperty(prop);
                 metadata.add(propMeta);
             } catch (InvalidEntityBeanPropertyException ex) {
                 logger.log(Level.SEVERE, "Exception while constructing entity bean " + entityClass.getName() + "properties metadata - skipping this property", ex);
@@ -80,25 +80,25 @@ public class EntityPropertyMDFactory {
     /**
      * Create metadata for a given property
      * @param prop property for which you want the metadata object to be created
-     * @return EntityPropertyMD for a given property
-     * @throws InvalidEntityBeanPropertyException thrown if it's not possible to create an EntityPropertyMD object for the given property (or at least it's not defined how to create it)
+     * @return PropertyMd for a given property
+     * @throws InvalidEntityBeanPropertyException thrown if it's not possible to create an PropertyMd object for the given property (or at least it's not defined how to create it)
      */
-    public static EntityPropertyMD createMetadataForProperty(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
-        // process the annotations and decide what type of EntityPropertyMD object to create
+    public static PropertyMd createMetadataForProperty(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
+        // process the annotations and decide what type of PropertyMd object to create
         Method getter = prop.getReadMethod();
         Basic basicA = getter.getAnnotation(Basic.class);
         if (basicA != null) {
-            return new EntityBasicPropertyMD(prop);
+            return new BasicPropertyMd(prop);
         }
 
         ManyToOne manyToOneA = getter.getAnnotation(ManyToOne.class);
         if (manyToOneA != null) {
-            return new EntityManyToOnePropertyMD(prop);
+            return new ManyToOnePropertyMd(prop);
         }
 
         OneToOne oneToOneA = getter.getAnnotation(OneToOne.class);
         if (oneToOneA != null) {
-            return new EntityOneToOnePropertyMD(prop);
+            return new OneToOnePropertyMd(prop);
         }
 
         throw new InvalidEntityBeanPropertyException("Don't know what type of property metadata to create for " + getter.toGenericString());

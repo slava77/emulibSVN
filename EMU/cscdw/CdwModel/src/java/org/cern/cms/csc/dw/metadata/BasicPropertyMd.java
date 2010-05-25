@@ -14,14 +14,14 @@ import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
  *
  * @author Evka
  */
-public class EntityBasicPropertyMD extends EntityPropertyMD {
+public class BasicPropertyMd extends PropertyMd {
 
     private static Class[] mandatoryAnnotations = {Basic.class, Column.class};
 
     /** Value length limitation (e.g. for String values). */
     private int length = -1;
 
-    public EntityBasicPropertyMD(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
+    public BasicPropertyMd(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
         super(prop, mandatoryAnnotations);
         
         Column column = prop.getReadMethod().getAnnotation(Column.class);

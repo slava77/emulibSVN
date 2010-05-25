@@ -5,8 +5,8 @@
 
 package org.cern.cms.csc.dw.model.base;
 
-import org.cern.cms.csc.dw.metadata.EntityPropertyMD;
-import org.cern.cms.csc.dw.metadata.EntityPropertyMDFactory;
+import org.cern.cms.csc.dw.metadata.PropertyMd;
+import org.cern.cms.csc.dw.metadata.EntityPropertyMdFactory;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -33,7 +33,7 @@ public class EntityBase implements Serializable {
     private static Logger logger = Logger.getLogger(EntityBase.class.getName());
 
     /** Class property metadata cache. */
-    private static Map<Class, List<EntityPropertyMD>> propertyMetadataCache = new HashMap<Class, List<EntityPropertyMD>>();
+    private static Map<Class, List<PropertyMd>> propertyMetadataCache = new HashMap<Class, List<PropertyMd>>();
     /** Cache of class -> names of the fields annotated by @UseInTitle. */
     private static Map<Class, List<String>> titleFieldNamesCache = new HashMap<Class, List<String>>();
 
@@ -44,11 +44,11 @@ public class EntityBase implements Serializable {
      * Get entity class property metadata (it's cached in a static map called propertyMetadataCache).
      * @return entity class property metadata (it's cached in a static map called propertyMetadataCache).
      */
-    public List<EntityPropertyMD> getPropertyMetadata() throws InvalidEntityBeanPropertyException {
+    public List<PropertyMd> getPropertyMetadata() throws InvalidEntityBeanPropertyException {
         Class myClass = this.getClass();
         if (!propertyMetadataCache.containsKey(myClass)) {
             try {
-                propertyMetadataCache.put(myClass, EntityPropertyMDFactory.createMetadataForEntity(myClass));
+                propertyMetadataCache.put(myClass, EntityPropertyMdFactory.createMetadataForEntity(myClass));
             } catch(InvalidEntityClassException ex) {} // will never happen
         }
 

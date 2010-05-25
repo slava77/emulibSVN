@@ -19,9 +19,9 @@ import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
  * All entities which are subclasses of EntityBase class can return a list of these objects corresponding to their attributes.
  * @author Evka
  */
-public abstract class EntityPropertyMD {
+public abstract class PropertyMd {
 
-    private static Logger logger = Logger.getLogger(EntityPropertyMD.class.getName());
+    private static Logger logger = Logger.getLogger(PropertyMd.class.getName());
 
     private static Pattern camelCasePattern = Pattern.compile("(\\p{Upper}\\p{Lower}*)");
 
@@ -33,7 +33,7 @@ public abstract class EntityPropertyMD {
     private Class entityClass;
 
     @SuppressWarnings("unchecked")
-    public EntityPropertyMD(PropertyDescriptor prop, Class[] mandatoryAnnotations) throws InvalidEntityBeanPropertyException {
+    public PropertyMd(PropertyDescriptor prop, Class[] mandatoryAnnotations) throws InvalidEntityBeanPropertyException {
         this(prop);
 
         // check if all the annotations mentioned in mandatoryAnnotations list are present on the getter method
@@ -49,7 +49,7 @@ public abstract class EntityPropertyMD {
      * Constructor.
      */
     @SuppressWarnings("unchecked")
-    public EntityPropertyMD(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
+    public PropertyMd(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
         prop.setDisplayName(nameToTitle(prop.getName()));
         this.entityClass = prop.getReadMethod().getDeclaringClass();
         this.propertyDescriptor = prop;
@@ -186,7 +186,7 @@ public abstract class EntityPropertyMD {
         if (value instanceof EntityBase) {
             EntityBase entityValue = (EntityBase) value;
             try {
-                for (EntityPropertyMD propMetadata: entityValue.getPropertyMetadata()) {
+                for (PropertyMd propMetadata: entityValue.getPropertyMetadata()) {
                     String propValidationMsg = propMetadata.validate(propMetadata.getGetterMethod().invoke(value));
                     if (propValidationMsg != null) {
                         return "This object has invalid properties";

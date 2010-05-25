@@ -23,14 +23,14 @@ import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
  *
  * @author Evka
  */
-public class EntityManyToOnePropertyMD extends EntityPropertyMD {
+public class ManyToOnePropertyMd extends PropertyMd {
 
-    private static Logger logger = Logger.getLogger(EntityManyToOnePropertyMD.class.getName());
+    private static Logger logger = Logger.getLogger(ManyToOnePropertyMd.class.getName());
     private static Class[] mandatoryAnnotations = {ManyToOne.class, JoinColumn.class};
 
     private EntityDaoLocal entityDao;
 
-    public EntityManyToOnePropertyMD(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
+    public ManyToOnePropertyMd(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
         super(prop, mandatoryAnnotations);
 
         JoinColumn joinColumn = prop.getReadMethod().getAnnotation(JoinColumn.class);
