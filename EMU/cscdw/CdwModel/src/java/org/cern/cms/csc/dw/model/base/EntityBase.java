@@ -5,6 +5,8 @@
 
 package org.cern.cms.csc.dw.model.base;
 
+import org.cern.cms.csc.dw.model.base.metadata.EntityPropertyMD;
+import org.cern.cms.csc.dw.model.base.metadata.EntityPropertyMDFactory;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -32,33 +34,11 @@ public class EntityBase implements Serializable {
 
     /** Class property metadata cache. */
     private static Map<Class, List<EntityPropertyMD>> propertyMetadataCache = new HashMap<Class, List<EntityPropertyMD>>();
-    /** Entity instance properties. */
-    private List<EntityProperty> properties = null;
     /** Cache of class -> names of the fields annotated by @UseInTitle. */
     private static Map<Class, List<String>> titleFieldNamesCache = new HashMap<Class, List<String>>();
 
     public void onSave(EntityDaoLocal eDao, boolean queued) throws OnSaveProcessingException { }
     public void onReceive(EntityDaoLocal eDao) throws OnReceiveProcessingException { }
-
-    /**
-     * Get entity properties - a list of objects of class EntityProperty representing properties of this particular instance.
-     * @return entity properties - a list of objects of class EntityProperty representing properties of this particular instance.
-     * @see org.cern.cms.csc.dw.model.base.EntityProperty
-     */
-    public List<EntityProperty> getProperties() throws InvalidEntityBeanPropertyException {
-        logger.finest("Getting properties of " + this.getClass().getName());
-        // lazy initialization
-        if (properties == null) {
-            List<EntityProperty> props = new ArrayList<EntityProperty>();
-            List<EntityPropertyMD> propertyMetadata = getPropertyMetadata();
-            for (EntityPropertyMD metadataRecord: propertyMetadata) {
-                EntityProperty prop = new EntityProperty(this, metadataRecord);
-                props.add(prop);
-            }
-            this.properties = props;
-        }
-        return properties;
-    }
 
     /**
      * Get entity class property metadata (it's cached in a static map called propertyMetadataCache).

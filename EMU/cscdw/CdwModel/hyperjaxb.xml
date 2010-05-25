@@ -230,6 +230,7 @@
     <target name="generate-model" depends="generate-ontology-schema,generate-fact-schema,hj-taskdef">
 
         <xjc destdir="${srcs}" extension="true">
+            <!-- -XhashCode and -Xequals taken out -->
             <arg line="
                 -Xhyperjaxb3-ejb
                 -Xhyperjaxb3-ejb-roundtripTestClassName=org.cern.cms.csc.dw.model.test.RoundtripTest

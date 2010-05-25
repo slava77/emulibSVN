@@ -360,7 +360,6 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.ojdbc6.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${file.reference.orai18n.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${libs.Xerces.classpath}" todir="${build.classes.dir}"/>
-        <copyfiles files="${libs.Icefaces.classpath}" todir="${build.classes.dir}"/>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
         <copyfiles files="${libs.hyperjaxb3.classpath}" manifestproperty="manifest.libs.hyperjaxb3.classpath" todir="${dist.ear.dir}"/>
@@ -372,9 +371,8 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.ojdbc6.jar}" manifestproperty="manifest.file.reference.ojdbc6.jar" todir="${dist.ear.dir}"/>
         <copyfiles files="${file.reference.orai18n.jar}" manifestproperty="manifest.file.reference.orai18n.jar" todir="${dist.ear.dir}"/>
         <copyfiles files="${libs.Xerces.classpath}" manifestproperty="manifest.libs.Xerces.classpath" todir="${dist.ear.dir}"/>
-        <copyfiles files="${libs.Icefaces.classpath}" manifestproperty="manifest.libs.Icefaces.classpath" todir="${dist.ear.dir}"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${manifest.libs.hyperjaxb3.classpath} ${manifest.libs.ejb3-persistence.classpath} ${manifest.libs.hibernate-support.classpath} ${manifest.file.reference.owlapi-bin.jar} ${manifest.file.reference.commons-cli-1.2.jar} ${manifest.file.reference.derbyclient.jar} ${manifest.file.reference.ojdbc6.jar} ${manifest.file.reference.orai18n.jar} ${manifest.libs.Xerces.classpath} ${manifest.libs.Icefaces.classpath} "/>
+            <attribute name="Class-Path" value="${manifest.libs.hyperjaxb3.classpath} ${manifest.libs.ejb3-persistence.classpath} ${manifest.libs.hibernate-support.classpath} ${manifest.file.reference.owlapi-bin.jar} ${manifest.file.reference.commons-cli-1.2.jar} ${manifest.file.reference.derbyclient.jar} ${manifest.file.reference.ojdbc6.jar} ${manifest.file.reference.orai18n.jar} ${manifest.libs.Xerces.classpath} "/>
         </manifest>
     </target>
     <target name="-copy-meta-inf">
