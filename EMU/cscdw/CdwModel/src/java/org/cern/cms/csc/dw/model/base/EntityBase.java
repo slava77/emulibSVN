@@ -5,8 +5,8 @@
 
 package org.cern.cms.csc.dw.model.base;
 
-import org.cern.cms.csc.dw.model.base.metadata.EntityPropertyMD;
-import org.cern.cms.csc.dw.model.base.metadata.EntityPropertyMDFactory;
+import org.cern.cms.csc.dw.metadata.EntityPropertyMD;
+import org.cern.cms.csc.dw.metadata.EntityPropertyMDFactory;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

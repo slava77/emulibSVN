@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.cern.cms.csc.dw.model.base.metadata;
+package org.cern.cms.csc.dw.metadata;
 
 import java.beans.PropertyDescriptor;
 import javax.persistence.Basic;
