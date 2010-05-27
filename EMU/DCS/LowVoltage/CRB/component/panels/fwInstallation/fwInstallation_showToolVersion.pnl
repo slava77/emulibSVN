@@ -1,0 +1,143 @@
+V 10
+1
+LANG:1 8 (NoName)
+PANEL,284 201 407 229 N "_3DFace" 2
+"$message"
+"$systems"
+EEE E E 1 0 0 0  20 30
+"" 0 1
+EE 2
+"CBRef""1"
+"EClose"E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 2
+"Text1"
+""
+1 20 15 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+3 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+"main()
+{
+  if(isDollarDefined(\"$message\"))
+    this.text = $message;
+  else
+    this.text = \"FW Installation Tool Versions\";
+}" 0
+ E 0 1 1 0 1 E U  0 E 22 17 368 60
+0 2 0 "s" 0 0 0 64 0 0  22 17
+ 1
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 8 $message
+25 1
+"tblSystems"
+""
+1 -9 -20 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 106 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,0,0,0,0,Arial
+0 ""
+18 58 374 192
+"main()
+{
+  dyn_string ds;
+  dyn_uint ids;
+  string version;
+  
+  if(isDollarDefined(\"$systems\"))
+  {
+    ds = strsplit($systems, \"|\");
+    for(int i =1; i <=dynlen(ds); i++){
+      strreplace(ds[i], \" \", \"\");
+
+      if(!patternMatch(\"*:\", ds[i]))
+        ds[i] += \":\";
+        
+      ids[i] = getSystemId(ds[i]);
+    }
+  }
+  else{
+    getSystemNames(ds, ids);
+  }
+  
+  for(int i = 1; i <= dynlen(ds); i++){
+    //DebugN(ds[i]);
+    fwInstallation_getToolVersion(version, ds[i]);
+    if(version = \"\")
+      version = \"N/A\";
+    
+    this.appendLine(\"system\", ds[i], \"number\", ids[i], \"tool\", version);
+    
+  }
+}" 0
+ E 1 0 1 4 1 "system" 0 1 0 "s" 1
+LANG:1 4 Name
+E1
+LANG:1 0 
+ 154 "number" 0 1 0 "s" 1
+LANG:1 2 Nr
+E1
+LANG:1 0 
+ 50 "project" 0 0 0 "s" 1
+LANG:1 7 Project
+E1
+LANG:1 0 
+ 128 "tool" 0 -1 0 "s" 1
+LANG:1 16 FW Inst. Version
+E1
+LANG:1 28 FW Installation Tool Version
+ 128 26 26 "" 1 1
+LANG:1 2 #1
+8 30 1
+LANG:1 106 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,0,0,0,0,Arial
+0 ""
+0 1 1 3 0
+1 0
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0

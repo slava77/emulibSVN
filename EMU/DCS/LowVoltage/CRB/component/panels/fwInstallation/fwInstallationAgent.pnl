@@ -1,0 +1,506 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 467 337 N "_3DFace" 0
+"main()
+{
+  //force panel to be always on top of other panels
+  stayOnTop(1);
+  
+  if(fwInstallationDB_connect() != 0)
+  {
+    ChildPanelOnCentralModal(\"vision/MessageInfo1\", \"DB Connection Error\", makeDynString(\"$1:Could not connect to System Configuration DB.\\nCheck connection parameters\"));
+    fwInstallationDBAgent_setMessage(\"ERROR: Could not establish connection with System Configuration DB\");
+    return;
+  }
+  
+  //refresh();
+  dpSet(\"fwInstallation_agentPendingRequests.execute\", 0);
+  dpConnect(\"agentEnableCB\", getSystemName() + \"fwInstallation_agentPendingRequests.execute\");
+  startTimer();
+  
+
+}
+
+" 0
+ E E E E 1 -1 -1 0  0 0
+""0  1
+E "#uses \"fwInstallationDBAgent.ctl\"
+
+bool timerActive;
+   
+agentEnableCB(string dpe, int value)
+{
+  if(value == 1){
+    btnSync.enabled = false;
+    btnRemind.enabled = false;
+  }
+  else
+  {
+    btnSync.enabled = true;
+    btnRemind.enabled = true;
+  }
+  refreshPanel();
+  
+}
+
+ 
+int startTimer()
+{
+  int timeout;
+  int execute;
+  
+  timerActive = true;
+  timeout = fwInstallationDBAgent_getTimeout(); 
+  
+  for(int i = timeout; i > 0; i--)
+  {
+    if(!timerActive)
+      break;
+    
+    fwInstallationDBAgent_setMessage(\"Project-DB Synchronization will start in \" + i + \" seconds\");
+    delay(1);
+  }
+  timerActive = false;
+  
+  dpGet(\"fwInstallation_agentPendingRequests.execute\", execute);
+  if(execute == 0)
+  {
+    fwInstallationDBAgent_setMessage(\"PVSS-System Configuration DB synchronization in progress. Please wait...\");  
+    return fwInstallationDBAgent_execute();  
+  }
+  
+  return 0;
+}    
+
+refreshPanel()
+{
+  
+  int projectRestart;
+  dyn_dyn_mixed pvssInstallComponents, pvssDeleteComponents, dbInstallComponents, dbDeleteComponents;
+  bool setTimer = false;
+  int err;
+  dyn_int options;
+  int restartProject;
+  int error = 0;
+  dyn_anytype tmp;
+  
+//  if(fwInstallationDB_connect() != 0)
+//  {
+//    ChildPanelOnCentralModal(\"vision/MessageInfo1\", \"DB Connection Error\", makeDynString(\"$1:Could not connect to System Configuration DB.\\nCheck connection parameters\"));
+//    return;
+//  }
+  if(fwInstallationDB_getCentrallyManaged() == 0)
+  {
+    //DebugN(\"Locally managed project. This panel should have been opened\");
+    PanelOff();
+  }
+  setMultiValue(\"tbInstall\", \"deleteAllLines\",
+                \"tbDelete\", \"deleteAllLines\");
+  
+  //Set synchronization lock:
+  error = fwInstallationDBAgent_getSynchronizationLock();
+   
+  fwInstallationDBAgent_getComponentPendingActions(restartProject, pvssInstallComponents, pvssDeleteComponents, dbInstallComponents, dbDeleteComponents);
+//  DebugN(\"****\", projectRestart, pvssInstallComponents, pvssDeleteComponents, dbInstallComponents, dbDeleteComponents);
+//  fwInstallationDBAgent_getDpComponentPendingActions(projectRestart, pvssInstallComponents, pvssDeleteComponents, dbInstallComponents, dbDeleteComponents);
+
+  
+    txManagement.text = \"Centrally managed project - System Configuration DB is the master\";
+    txInstall.text = \"Components to be installed in PVSS\";
+    txDelete.text = \"Components to be removed from PVSS\";
+    
+
+    if(dynlen(pvssInstallComponents) <= 0 && dynlen(pvssDeleteComponents) <= 0)
+    {
+      
+      fwInstallationDBAgent_setMessage(\"PVSS contents are up-to-date.\");
+      //txSyncRequired.foreCol = \"black\";
+      //btnSync.enabled = false;
+      
+//DebugN(\">>>>Agent panel, fwInstallationDBAgent_isProjectRestartRequired() \", fwInstallationDBAgent_isProjectRestartRequired());
+      
+      if(fwInstallationDBAgent_isProjectRestartRequired())
+      {
+        btnSync.text = \"Restart now\";
+        btnRemind.text = \"Cancel restart\";
+      }
+      else
+      {
+        btnSync.enabled = false;
+        btnRemind.text = \"Close\";
+        for(int i = 10; i >= 0; i--)
+        {
+          fwInstallationDBAgent_setMessage(\"This panel will close in \" + i + \"s.\");  
+          delay(1);
+          PanelOff();
+        }
+      }
+      
+      btnRemind.enabled = true;
+      
+      return;
+    }
+    //else
+    //  startTimer();
+ 
+                    
+    //Centrally managed project: 
+    if(dynlen(pvssInstallComponents) > 0){
+      for(int i =1; i <= dynlen(pvssInstallComponents); i++){
+        setMultiValue(\"tbInstall\", \"appendLine\", \"component\", pvssInstallComponents[i][1], \"version\", pvssInstallComponents[i][2]);
+      }//end of loop
+    } 
+  
+//    DebugN(\"pvssDeleteComponents: \", pvssDeleteComponents);
+    if(dynlen(pvssDeleteComponents) > 0){
+      for(int i =1; i <= dynlen(pvssDeleteComponents); i++){
+        if(pvssDeleteComponents[i][1] != \"\")
+        {
+          setMultiValue(\"tbDelete\", \"appendLine\", \"component\", pvssDeleteComponents[i][1], \"version\", pvssDeleteComponents[i][2]);
+        }
+      }//end of loop
+    }
+  
+} 
+
+
+
+" 0
+ 2
+"CBRef" "1"
+"EClose" "main()
+{
+  fwInstallationDBAgent_releaseSynchronizationLock();
+}" 0
+
+""
+NC
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+2 0
+"Text1"
+""
+1 12 11 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 10 6 296 29
+0 2 0 "0s" 0 0 0 192 0 0  10 6 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-19-*-100-100-*-*-iso8859-1|-19,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 33 Framework Installation Tool Agent
+25 6
+"tbInstall"
+""
+1 12 94 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 10 92 222 258
+EE 1 0 1 2 0 "component" 13 1 0 "s" 1
+LANG:1 9 Component
+E
+1
+LANG:1 0 
+
+127 "version" 5 1 0 "s" 1
+LANG:1 7 Version
+E
+1
+LANG:1 0 
+
+60 
+14 14 10 10
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+0 2 1 1 7
+1 0
+25 8
+"tbDelete"
+""
+1 248 92 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+15 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 246 90 458 256
+EE 1 0 1 2 0 "component" 13 1 0 "s" 1
+LANG:1 9 Component
+E
+1
+LANG:1 0 
+
+127 "version" 5 1 0 "s" 1
+LANG:1 7 Version
+E
+1
+LANG:1 0 
+
+60 
+14 14 10 10
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+0 2 1 1 7
+1 0
+2 11
+"txSyncRequired"
+""
+1 42 68 E E E 1 E 1 E N "Blue" E N "_3DFace" E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"// SimpleCtrlScriptStart {valid}
+main()
+{
+  dpConnect(\"EP_textFieldInCB\",
+            \"fwInstallation_agentPendingRequests.msg:_online.._value\");
+
+}
+
+
+EP_textFieldInCB(string dp, string sNewValue)
+{
+  setValue(\"\", \"text\", dpValToString(dp, sNewValue, TRUE) );
+}
+
+" 0
+ E 0 1 1 2 1 E U  1 E 68 264 428 294
+0 2 2 "0s" 0 0 0 64 0 0  68 264 1
+1
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 42 Initializing DB connection. Please wait...
+2 12
+"txManagement"
+""
+1 42 68 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+21 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 14 40 374 70
+0 2 2 "0s" 0 0 0 64 0 0  14 40 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 42 Initializing DB connection. Please wait...
+2 13
+"txInstall"
+""
+1 66 134 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+22 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 14 76 49 90
+0 2 2 "0s" 0 0 0 192 0 0  14 76 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 9 txInstall
+2 14
+"txDelete"
+""
+1 66 134 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+24 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 252 76 291 90
+0 2 2 "0s" 0 0 0 192 0 0  252 76 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 8 txDelete
+13 15
+"btnRemind"
+""
+1 312 290 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+25 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 310 288 454 324
+
+T 
+1
+LANG:1 15 Remind me later
+"main()
+{
+  if(this.text == \"Cancel restart\")
+    fwInstallationDBAgent_setProjectRestart(0);
+  
+  fwInstallationDBAgent_releaseSynchronizationLock();
+    
+  PanelOff();
+}" 0
+ E E E
+13 16
+"btnSync"
+""
+1 160 290 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+27 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 158 288 302 324
+
+T 
+1
+LANG:1 15 Synchronize Now
+"main()
+{
+  timerActive = false;  
+  
+  if(this.text == \"Restart now\")
+  {
+    btnRemind.enabled = false;
+    btnSync.enabled = false;
+    
+    if(fwInstallation_forceProjectRestart() == 0)
+    {
+      DebugN(\"INFO: Restarting the project\");
+      fwInstallationDBAgent_setProjectRestart(0);
+    }else
+    {
+      //DebugN(\"Could not restart the project\");
+      timerActive = false;
+      fwInstallationDBAgent_setProjectRestart(0);
+      delay(1, 500);
+      fwInstallationDBAgent_setMessage(\"Failed to restart the project. Manual restart required\");
+      DebugN(\"ERROR: Failed to restart the project. Manual restart required\");
+      btnRemind.text = \"Close\";
+      btnRemind.enabled = true;
+      btnSync.enabled = false;
+    }
+  }
+  else
+  {
+    btnRemind.enabled = false;
+    fwInstallationDBAgent_setMessage(\"PVSS-System Configuration DB synchronization in progress. Please wait...\");
+    fwInstallationDBAgent_execute();  
+  } 
+}" 0
+ E E "main()
+{
+}
+
+" 0
+
+2 19
+"PRIMITIVE_TEXT2"
+""
+1 4 264 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+31 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 12 264 62 278
+0 2 2 "0s" 0 0 0 64 0 0  12 264 1
+1
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 7 Status:
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

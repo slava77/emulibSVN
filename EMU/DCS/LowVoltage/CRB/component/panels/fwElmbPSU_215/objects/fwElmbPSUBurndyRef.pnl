@@ -1,0 +1,181 @@
+V 10
+1
+LANG:1 8 (NoName)
+PANEL,-1 -1 166 96 N "_3DFace" 1
+"$sDpName"
+E E E E E 1 -1 -1 0  31 31
+""0  1
+E E 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+7 0
+"burndyConnector"
+""
+1 31 31 E E E 1 E 1 E N "_Transparent" E N "_Transparent" E E
+ "main()
+{
+// Local Variables
+// ---------------
+  int iReturn;
+	
+  string sPowerDpe;
+  string sControlledBus;
+	
+  dyn_string dsMenu;
+
+// Executable Code
+// ---------------
+  // Check whether a controlled bus has been assigned
+  dpGet($sDpName + \".bus\", sControlledBus);
+	
+  // Create the dyn_string required for the popup menu
+  if (strlen(sControlledBus) > 0) {
+    dsMenu = makeDynString(\"PUSH_BUTTON, Switch ON, 1, 1\",
+                           \"PUSH_BUTTON, Switch OFF, 2, 1\",
+                           \"PUSH_BUTTON, Show Trend, 3, 1\",
+                           \"CASCADE_BUTTON, Send Command, 1\",
+                           \"Send Command\",
+                           \"PUSH_BUTTON, Start, 4, 1\",
+                           \"PUSH_BUTTON, Stop, 5, 1\",
+                           \"PUSH_BUTTON, Reset, 6, 1\");
+  } else {
+    dsMenu = makeDynString(\"PUSH_BUTTON, Switch ON, 1, 1\",
+                           \"PUSH_BUTTON, Switch OFF, 2, 1\",
+                           \"PUSH_BUTTON, Show Trend, 3, 1\",
+                           \"CASCADE_BUTTON, Send Command, 1\",
+                           \"Send Command\",
+                           \"PUSH_BUTTON, Bus not assigned, 7, 0\");
+  }
+
+  // Display the popup menu
+  if (popupMenu(dsMenu, iReturn) == 0) {
+	
+    // Action the required selection
+    switch (iReturn) {
+      case 1:  // Switch ON power
+        fwElmbPSU_switchPower($sDpName);
+        break;
+      case 2:	// Switch OFF power
+        fwElmbPSU_switchPower($sDpName, false);
+        break;
+      case 3:	// Display trend for the four values associated with the bus
+        showModuleTrend();
+        break;
+      case 4:	// Send NMT Start command to bus
+        dpSet(sControlledBus + \".management\", 1);
+        break;
+      case 5:	// Send NMT Stop command to bus
+        dpSet(sControlledBus + \".management\", 2);
+        break;
+      case 6:	// Send NMT Reset command to bus
+        dpSet(sControlledBus + \".management\", 129);
+        break;
+    }
+  }
+
+  // Return to calling routine
+  return;
+}
+
+void showModuleTrend()
+{
+// Local Variables
+// ---------------
+  int i;
+  int iLength;
+  
+  string sTemplateParameters;
+  string sBranchDp;
+  string sSystem;
+  string sCANCurrentDp;
+  string sCANVoltsDp;
+  string sADCurrentDp;
+  string sADVoltsDp;
+  
+  dyn_string dsExceptionInfo;
+  dyn_string dsDollarParameters;
+  dyn_string dsDpeList;
+  
+  dyn_dyn_string ddsPlotData;
+
+// Executable Code
+// ---------------
+  sSystem = dpSubStr($sDpName, DPSUB_SYS);
+  sBranchDp = dpSubStr($sDpName, DPSUB_SYS_DP);
+  dpGet(sBranchDp + \".CAN.current\", sCANCurrentDp,
+        sBranchDp + \".CAN.volts\", sCANVoltsDp,
+        sBranchDp + \".AD.current\", sADCurrentDp,
+        sBranchDp + \".AD.volts\", sADVoltsDp);
+  dsDpeList = makeDynString(sSystem + sCANCurrentDp,
+                            sSystem + sCANVoltsDp,
+                            sSystem + sADCurrentDp,
+                            sSystem + sADVoltsDp);
+  
+  fwTrending_getPlotExtended(\"_FwTrendingQuickPlotDefaults\", \"\", ddsPlotData, dsExceptionInfo, TRUE);
+  ddsPlotData[fwTrending_PLOT_OBJECT_TITLE][1] = \"TrendingPlot\";
+  for (i = 1; i <= dynlen(ddsPlotData[fwTrending_PLOT_OBJECT_AXII]); i++)
+    ddsPlotData[fwTrending_PLOT_OBJECT_AXII][i] = \"TRUE\";
+  _fwTrending_convertPlotDataToDollars(ddsPlotData, dsDollarParameters, dsExceptionInfo);
+  
+  iLength = dynlen(dsDpeList);
+  for (i = 1; i <= fwTrending_MAX_NUM_CURVES; i++) {
+    if (i <= iLength)
+      sTemplateParameters += \"dpe\" + i + \"=\" + dsDpeList[i] + \",\";
+    else
+      sTemplateParameters += \"dpe\" + i + \"= ,\";
+  }
+
+  dynAppend(dsDollarParameters, \"$sDpName:\");
+  dynAppend(dsDollarParameters, \"$sRefName:\");
+  dynAppend(dsDollarParameters, \"$templateParameters:\" + sTemplateParameters);
+
+  ChildPanelOnCentral(fwTrending_PANEL_PLOT_ZOOMED, \"Trending Plot\", dsDollarParameters);  
+  
+  // Return to calling routine
+  return;
+}" 0
+ E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 31 Right click for control options
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E 1 0 1 -3 -2 2  0 3  "pictures/fwElmbPSU_burndy.bmp" 13434828 E 33 32 23 22
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0

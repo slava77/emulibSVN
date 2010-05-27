@@ -1,0 +1,458 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 221 305 N "_3DFace" 0
+E E E E E 1 -1 -1 0  30 30
+""0  1
+E "#uses \"CMS_CSCfw_LV_CRB/emuDcsLv.ctl\"
+#uses \"CMS_CSCfw_LV_CRB/emuDcsCrb.ctl\"
+//#uses \"CMS_CSCfw_LV_CRB/emuDcsMrtn.ctl\"
+#uses \"CMS_CSCfw_LV_CRB/emuDcsLvAlert.ctl\"
+#uses \"CMS_CSCfw_LV_CRB/emuDcsCrbAlert.ctl\"
+//#uses \"CMS_CSCfw_LV_CRB/emuDcsMrtnAlert.ctl\"
+#uses \"CMS_CSCfw_LV_CRB/emufw.ctl\"" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"PUSH_BUTTON1"
+""
+1 30 30 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  28 28 92 52
+
+T 
+1
+LANG:1 12 PUSH_BUTTON1
+"main()
+{
+  mudcsCrbPnlInit();
+  mudcsLvDebug(CSC_fwCAN1_g_PLUS_SYSTEM_NAME);
+  mudcsLvDebug(CSC_fwCAN1_g_MINUS_SYSTEM_NAME);
+}" 0
+ E E E
+13 1
+"PUSH_BUTTON2"
+""
+1 30 70 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  28 68 92 92
+
+T 
+1
+LANG:1 12 PUSH_BUTTON2
+"main()
+{
+        int inv;
+     string device=\"Wiener/CAN0/Crate10/Channel0\";
+//     dpGet(device + \".MeasurementSenseVoltage:_online.._value\",MeasurementSenseVoltage);         
+     dpGet(device + \".MeasurementCurrent:_online.._invalid\", inv);
+     mudcsLvDebug(inv);
+     DebugTN(inv);
+}" 0
+ E E E
+13 2
+"PUSH_BUTTON3"
+""
+1 30 110 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  28 108 92 142
+
+T 
+1
+LANG:1 12 PUSH_BUTTON3
+"main()
+{
+ int ret=  fwFsmTree_isNode(\"CMS_CSC_LV_CAN2\");
+  
+ mudcsLvDebug(ret);
+  fwFsmTree_removeNode(\"FSM\",\"CMS_CSC_LV_CAN2\",1);
+}" 0
+ E E E
+13 3
+"PUSH_BUTTON4"
+""
+1 110 110 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  108 108 172 142
+
+T 
+1
+LANG:1 12 PUSH_BUTTON3
+"main()
+{
+  
+  dyn_string ds=dpNames(\"*\",\"_FwFsmObject\");
+  for(int i=1;i<=dynlen(ds);i++){
+   dpDelete(ds[i]);
+  
+  }  
+  
+ds=dpNames(\"*\",\"_FwFsmDevice\");
+  for(int i=1;i<=dynlen(ds);i++){
+   dpDelete(ds[i]);
+  
+  }    
+}" 0
+ E E E
+13 4
+"PUSH_BUTTON5"
+""
+1 30 150 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  28 148 92 182
+
+T 
+1
+LANG:1 12 PUSH_BUTTON5
+"main()
+{
+  
+  
+  
+  
+dyn_string  argdsExceptionInfo; 
+  
+string sElmb=\"csc_lv_test:ELMB/LVCB_1/ELMB_3f\";
+string s=\"C;0\";
+
+
+//string sElmb=\"csc_lv_test:ELMB/LVCB_1/ELMB_0d\";
+//string s=\"C;0\";
+
+//  fwElmbUser_setDoBit(sElmb,s,TRUE,argdsExceptionInfo);
+fwElmbUser_setDoBit(sElmb,s,TRUE,argdsExceptionInfo);
+}" 0
+ E E E
+13 5
+"PUSH_BUTTON6"
+""
+1 20 180 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  18 178 82 212
+
+T 
+1
+LANG:1 12 PUSH_BUTTON5
+"main()
+{
+  
+dyn_string  argdsExceptionInfo; 
+  
+string s=\"csc_lv_test:ELMB/LVCB_1/ELMB_0d/DO/do_Bytes.do_C_read\";
+//string s=\"C;0\";
+
+
+//string sElmb=\"csc_lv_test:ELMB/LVCB_1/ELMB_0d\";
+//string s=\"C;0\";
+
+//  fwElmbUser_setDoBit(sElmb,s,TRUE,argdsExceptionInfo);
+//fwElmbUser_setDoBit(sElmb,s,TRUE,argdsExceptionInfo);
+
+
+bool inv;
+int v;
+dpGet(s,v);
+dpGet(s + \":_online.._invalid\", inv); 
+
+mudcsLvDebug(inv);
+
+}" 0
+ E E E
+13 6
+"PUSH_BUTTON7"
+""
+1 110 150 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  108 148 172 182
+
+T 
+1
+LANG:1 12 PUSH_BUTTON5
+"main()
+{
+  
+  
+  
+  
+dyn_string  argdsExceptionInfo; 
+  
+string s=\"csc_lv_test:ELMB/LVCB_1/ELMB_3f/DO/do_C_1.value\";
+
+dpSet(s,true);
+
+//string s=\"C;0\";
+
+
+//string sElmb=\"csc_lv_test:ELMB/LVCB_1/ELMB_0d\";
+//string s=\"C;0\";
+
+//  fwElmbUser_setDoBit(sElmb,s,TRUE,argdsExceptionInfo);
+//fwElmbUser_setDoBit(sElmb,s,TRUE,argdsExceptionInfo);
+}" 0
+ E E E
+13 7
+"PUSH_BUTTON8"
+""
+1 30 220 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  28 218 82 252
+
+T 
+1
+LANG:1 12 PUSH_BUTTON8
+"main()
+{
+  
+  
+  int i;
+  dyn_string ds1,ds2;
+string s1,s2;  
+  
+   ds1=dpNames(\"*\",\"FwElmbPSUBranch\");    
+   for(i=1;i<=dynlen(ds1);i++){   
+    dpGet(ds1[i]+\".power\",s1);
+    ds2=strsplit(s1,\":\");
+    dpSet(ds1[i]+\".power\",ds2[2]);
+    
+    
+    dpGet(ds1[i]+\".CAN.current\",s1);
+    ds2=strsplit(s1,\":\");    
+    dpSet(ds1[i]+\".CAN.current\",ds2[2]);
+    
+    
+    dpGet(ds1[i]+\".CAN.volts\",s1);
+    ds2=strsplit(s1,\":\");    
+    dpSet(ds1[i]+\".CAN.volts\",ds2[2]);
+    
+    
+    dpGet(ds1[i]+\".AD.current\",s1);
+    ds2=strsplit(s1,\":\");    
+    dpSet(ds1[i]+\".AD.current\",ds2[2]);
+    
+    
+    dpGet(ds1[i]+\".AD.volts\",s1);
+    ds2=strsplit(s1,\":\");    
+    dpSet(ds1[i]+\".AD.volts\",ds2[2]);
+                          
+   }  
+}" 0
+ E E E
+13 9
+"PUSH_BUTTON10"
+""
+1 100 220 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  98 218 152 252
+
+T 
+1
+LANG:1 12 PUSH_BUTTON8
+"main()
+{
+  
+  
+  int i;
+  dyn_string ds1;
+  
+   ds1=dpNames(\"*\",\"FwElmbPSUBranch\");    
+   for(i=1;i<=dynlen(ds1);i++){   
+    dpGet(ds1[i]+\".power\",s1);
+    dpSet(ds1[i]+\".power\",mudcsLvRemoveSystem(s1));
+    dpGet(ds1[i]+\".CAN.current\",s1);
+    dpSet(ds1[i]+\".CAN.current\",mudcsLvRemoveSystem(s1));
+    dpGet(ds1[i]+\".CAN.volts\",s1);
+    dpSet(ds1[i]+\".CAN.volts\",mudcsLvRemoveSystem(s1));
+    dpGet(ds1[i]+\".AD.current\",s1);
+    dpSet(ds1[i]+\".AD.current\",mudcsLvRemoveSystem(s1));
+    dpGet(ds1[i]+\".AD.volts\",s1);
+    dpSet(ds1[i]+\".AD.volts\",mudcsLvRemoveSystem(s1));
+                          
+   }  
+}" 0
+ E E E
+13 10
+"PUSH_BUTTON11"
+""
+1 40 260 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  38 258 82 282
+
+T 
+1
+LANG:1 13 PUSH_BUTTON11
+"main()
+{
+  
+string s=\"1\";
+
+int i=s;
+
+mudcsLvDebug(i);
+  
+}" 0
+ E E E
+13 11
+"PUSH_BUTTON12"
+""
+1 100 260 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  98 258 152 292
+
+T 
+1
+LANG:1 12 PUSH_BUTTON8
+"main()
+{
+  
+ 
+   
+   
+  int i;
+  dyn_string ds1,ds2;
+string s1,s2;  
+  
+   ds1=dpNames(\"*\",\"FwElmbPSUBranch\");    
+   for(i=1;i<=dynlen(ds1);i++){   
+    dpGet(ds1[i]+\".power\",s1);
+    if(true)s1+=\".value\";
+    dpSet(s1,EPSU_POWER_ON_VALUE);
+                          
+   }     
+   
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

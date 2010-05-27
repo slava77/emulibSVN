@@ -1,0 +1,135 @@
+V 10
+1
+LANG:1 0 
+PANEL,307 235 308 124 N "_3DFace" 0
+EEE E E 1 -1 -1 0  20 50
+"" 0 1
+EE 2
+"CBRef""1"
+"EClose"E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 2
+"PRIMITIVE_TEXT2"
+""
+1 20 70 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+2 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 22 42 253 55
+0 2 2 "0s" 0 0 0 192 0 0  22 42
+ 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 50 Do you want to install the FW Installlation Agent?
+13 3
+"PUSH_BUTTON1"
+""
+1 42 82 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+3 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+40 80 154 114
+T 
+1
+LANG:1 2 OK
+"main()
+{
+  PanelOffReturn(makeDynFloat(1.0), makeDynString(\"OK\"));
+}" 0
+ E E E
+13 4
+"PUSH_BUTTON2"
+""
+1 172 82 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+5 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+170 80 284 114
+T 
+1
+LANG:1 6 Cancel
+"main()
+{
+  PanelOffReturn(makeDynFloat(0.0), makeDynString(\"Cancel\"));
+}" 0
+ E E E
+13 5
+"Button2"
+""
+1 270 10 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+7 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+268 8 298 36
+P 
+0
+"pictures/help_2.xpm"
+1
+LANG:1 0 
+"main()
+{
+	std_help(\"fwInstallation/fwInstallation_agentInstallation.html\");
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0

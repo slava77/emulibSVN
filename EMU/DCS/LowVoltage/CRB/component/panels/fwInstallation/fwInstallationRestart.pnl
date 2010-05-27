@@ -1,0 +1,187 @@
+V 10
+1
+LANG:1 21 fwInstallationRestart
+PANEL,-1 -1 591 220 N "_3DFace" 0
+"main()
+{
+
+  const int timeout = 300;
+ 
+  for(int i = timeout; i > 0; i--)
+  {
+    txTimer.text = \"The project will restart automatically in \" + i + \" seconds\";
+    delay(1);
+  }
+  fwInstallationDBAgent_releaseSynchronizationLock();		
+  fwInstallation_forceProjectRestart();
+
+}" 0
+ "main()
+{
+ int i;
+}" 0
+ E E E 1 -1 -1 0  30 20
+""0  1
+E E 2
+"CBRef" "1"
+"EClose" "main()
+{
+  int i = 1;
+}" 0
+
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 4
+"Text1"
+""
+1 10 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 12 578 128
+0 2 0 "0s" 0 0 0 64 0 0  12 12 7
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 96 The JCOP Framework Installation Tool has performed steps that require a restart of the complete 
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 9 project. 
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 0 
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 32 Please restart your project now!
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 0 
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 72 Until you restart your project, the installed JCOP Framework Components 
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 56 will not work properly and your system might be damaged.
+13 0
+"btnOKtoInstall"
+""
+1 368 184 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 366 182 480 212
+
+T 
+1
+LANG:1 15 Restart Project
+"main()
+{
+  fwInstallationDBAgent_releaseSynchronizationLock();
+  fwInstallation_forceProjectRestart();
+}" 0
+ E E E
+13 1
+"btnCancel"
+""
+1 488 184 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 486 182 581 212
+
+T 
+1
+LANG:1 5 Close
+"main()
+{
+  PanelOff();
+}" 0
+ E E E
+2 5
+"txTimer"
+""
+1 14 148 E E E 1 E 1 E N "red" E N "_3DFace" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 14 148 38 162
+0 2 2 "0s" 0 0 0 192 0 0  14 148 1
+1
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 4 xxxx
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0

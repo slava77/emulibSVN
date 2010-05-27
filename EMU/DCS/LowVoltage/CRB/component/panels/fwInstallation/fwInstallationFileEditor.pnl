@@ -1,0 +1,313 @@
+V 10
+2
+LANG:1 24 fwInstallationFileEditor
+LANG:5 24 fwInstallationFileEditor
+PANEL,284 129 747 386 N "_3DFace" 1
+"$sFile"
+EEE E E 1 -1 -1 0  120 30
+"" 0 1
+EE 2
+"CBRef""0"
+"EClose"E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 6
+"txtDelComponents"
+""
+1 60 20 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+6 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+"main()
+{
+	this.text = \"Simple Editor (\" + $sFile + \")\";
+}" 0
+ E 0 1 1 0 1 E U  0 E 62 22 418 58
+0 2 0 "s" 0 0 0 64 0 0  62 22
+ 1
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-190-100-100-*-*-iso8859-1|-23,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-190-100-100-*-*-iso8859-1|-23,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 13 Simple Editor
+LANG:5 13 Simple Editor
+25 4
+"tblConfig"
+""
+1 70 80 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ "main()
+{
+	int xpos;
+	string columnName;
+	int columnNr;
+	shape tab=getShape(\"tblConfig\");
+
+	
+	getValue(tab, \"currentCell\", xpos, columnNr);
+	
+	tab.insertLineN(xpos);
+	tab.currentCell(xpos ,columnNr);
+	
+	
+	// Debug(\"rightClick xpos: \" + xpos + \" col: \" + columnNr);
+	
+	
+}" 0
+ E
+5 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+2
+LANG:1 106 -microsoft windows-Arial-normal-r-normal-*-*-140-100-100-*-*-iso8859-1|-17,0,0,0,400,0,0,0,0,0,0,0,0,Arial
+LANG:5 106 -microsoft windows-Arial-normal-r-normal-*-*-140-100-100-*-*-iso8859-1|-17,0,0,0,400,0,0,0,0,0,0,0,0,Arial
+0 ""
+68 78 692 292
+"main()
+{
+	string configPath = getPath(CONFIG_REL_PATH);
+	string configFile = configPath + $sFile;
+
+	dyn_string linesConfigFile;
+	
+	bool fileLoaded = false;
+	string strConfigFile;
+	int i ;
+	
+	fileLoaded = fileToString(configFile, strConfigFile);
+	
+	if (! fileLoaded )
+	{
+	
+		Debug(\"Cannot load \" + configFile + \" file \");
+	}
+	else 
+	{
+		Debug(configFile + \" - file loaded\");
+	}
+	
+	// Debug(strConfigFile);
+	linesConfigFile = strsplit(strConfigFile, \"\\n\");
+	
+	for(i = 1; i <= dynlen(linesConfigFile); i++)
+	{
+		tblConfig.appendLine(\"colLines\", linesConfigFile[i]);
+	}
+}" 0
+ "main(int xpos, string columnName, string value)
+{
+	
+	// Debug(\"EventColumnCommand\");
+	
+	// Debug(\"tblConfig xpos: \" + xpos + \" col: \" + columnName + \" value: \" + value);
+	
+		if (columnName == \"colStatus\") {
+			if (value == \"Delete\") {
+				setValue(\"\",\"cellValueRC\",xpos,\"colStatus\",\" \");
+				tblConfig.cellBackCol(\"white\");
+			}
+			else {
+				setValue(\"\",\"cellValueRC\",xpos,\"colStatus\",\"Delete\");
+				tblConfig.cellBackCol(\"red\");
+			}
+		}
+		if (columnName == \"colLines\")
+		{
+			setValue(\"\", \"cellValueRC\", xpos, \"colLines\", value);
+		//	setValue(\"\", \"cellValueRC\", xpos, \"colStatus\", \"Changed\");
+			
+		//	Debug(\"EventColumnCommand on Lines column\");
+		}
+}" 0
+ 1 0 1 2 1 "colLines" 0 1 -1 "s" 1
+LANG:1 5 Lines
+E1
+LANG:1 0 
+ 530 "colStatus" 0 1 0 "s" 1
+LANG:1 6 Status
+E1
+LANG:1 0 
+ 64 30 30 "" 1 1
+LANG:1 2 #1
+8 30 2
+LANG:1 106 -microsoft windows-Arial-normal-r-normal-*-*-140-100-100-*-*-iso8859-1|-17,0,0,0,400,0,0,0,0,0,0,0,0,Arial
+LANG:5 106 -microsoft windows-Arial-normal-r-normal-*-*-140-100-100-*-*-iso8859-1|-17,0,0,0,400,0,0,0,0,0,0,0,0,Arial
+0 ""
+0 1 1 3 0
+1 0
+13 5
+"btnApply"
+""
+1 470 310 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+6 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-140-100-100-*-*-iso8859-1|-17,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-140-100-100-*-*-iso8859-1|-17,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+468 308 592 342
+T 
+2
+LANG:1 13 Apply Changes
+LANG:5 13 Apply Changes
+"main()
+{
+	int i;
+	dyn_string dynLinesToSave;
+	string strLinesToSave;
+	
+	dyn_int idxLinesToDelete;
+	string configPath = getPath(CONFIG_REL_PATH);
+	string configFile = configPath + $sFile;
+	file fileHdlConfig;
+	
+	int canWriteConfig;
+	int writeResult;
+		
+	// Debug(\"Delete button clicked\");
+	// Debug(\"table has \" + tblConfig.lineCount() + \" lines\");
+	
+	for(  i = 0 ; i < tblConfig.lineCount(); i++)
+	{
+		
+		
+		if(tblConfig.cellValueRC(i, \"colStatus\") == \"Delete\")
+		{
+	//		Debug(\"Adding line\" + i + \" to lines to be deleted\");
+			
+			dynAppend(idxLinesToDelete, i);
+		}
+		else
+		{
+			dynAppend(dynLinesToSave, tblConfig.cellValueRC(i, \"colLines\"));
+		}		
+	}
+	
+
+//		Debug(\"saving the lines \\n\" + dynLinesToSave);
+		
+//		Debug(\"saving everything to \" + configFile);
+
+		canWriteConfig = access(configFile, F_OK);
+//		Debug(\"value of canWriteConfig: \" + canWriteConfig + \" \\n\");
+		
+		if(canWriteConfig == 0) 
+		{
+			fileHdlConfig = fopen(configFile, \"w\");
+			if(fileHdlConfig == 0)
+			{
+				Debug(\"File could not opened ;-(\");
+			}
+			else
+			{
+					for(i = 1; i <= dynlen(dynLinesToSave); i++)
+					{
+						strLinesToSave += dynLinesToSave[i] + \"\\n\";
+					}
+					writeResult = fputs(strLinesToSave , fileHdlConfig);
+			
+					if (writeResult == 0)
+					{
+						Debug(configFile + \" - the file has been saved\");
+					}
+					
+					fclose(fileHdlConfig);
+		
+			//	Debug(\"there are \" + dynlen(idxLinesToDelete) + \" lines to be deleted \");
+	
+				for ( i = dynlen(idxLinesToDelete) ; i > 0; i--)
+				{
+			//		Debug(\"index from tabe lines:\" + i );
+			//		Debug(\"deleting :\" + idxLinesToDelete[i] + \"row\");
+					tblConfig.deleteLineN(idxLinesToDelete[i]);
+				}
+			
+			}
+			
+			
+
+		}
+		else
+		{
+			Debug(\"\\nCan not write into the \" + configFile + \"file\");
+		}
+
+		
+}" 0
+ E E E
+13 7
+"Button1"
+""
+1 600 310 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+7 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-140-100-100-*-*-iso8859-1|-17,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-140-100-100-*-*-iso8859-1|-17,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+598 308 692 342
+T 
+2
+LANG:1 5 Close
+LANG:5 5 Close
+"main()
+{
+  EP_moduleOff();
+}
+
+EP_moduleOff()
+{
+  ModuleOff(myModuleName());
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0

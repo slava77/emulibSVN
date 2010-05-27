@@ -1,0 +1,320 @@
+V 10
+1
+LANG:1 8 (NoName)
+PANEL,-1 -1 132 265 N "_3DFace" 1
+"$sDpName"
+E E E E E 1 -1 -1 0  0 0
+""0  1
+E E 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 11
+"txtBranch"
+""
+1 10 230 E E E 1 E 1 E N "_WindowText" E N "Weiss" E E
+ "main()
+{
+// Local Variables
+// ---------------
+	int iReturn;
+	int iBranch;
+	
+	string sLabel;
+	
+	dyn_float df;
+	
+	dyn_string dsMenu;
+	dyn_string ds;
+
+// Executable Code
+// ---------------
+	// Create the dyn_string required for the popup menu
+	dsMenu = makeDynString(	\"PUSH_BUTTON, Information, 1, 1\",
+													\"PUSH_BUTTON, Calibration, 2, 1\",
+													\"PUSH_BUTTON, Change Text, 3, 1\");/*,
+													\"PUSH_BUTTON, Switch OFF, 2, 1\",
+													\"PUSH_BUTTON, Show States, 3, 1\",
+													\"CASCADE_BUTTON, Send Command, 1\",
+													\"Send Command\",
+													\"PUSH_BUTTON, Start, 4, 1\",
+													\"PUSH_BUTTON, Stop, 5, 1\",
+													\"PUSH_BUTTON, Reset, 6, 1\");*/
+
+	// Display the popup menu
+	if (popupMenu(dsMenu, iReturn) == 0) {
+	
+		// Action the required selection
+		switch (iReturn) {
+			case 1:	// Show information panel
+//				dpGet($sDpName + \".power\", sPowerDpe);
+//				dpSet(sPowerDpe, 0);
+				ChildPanelOnCentral(\"fwElmbPSU/fwElmbPSUBranchInfo.pnl\",
+														\"Branch Information\",
+														makeDynString(\"$sDpName:\" + $sDpName));
+				break;
+			case 2:	// Show calibration panel
+				ChildPanelOnCentral(\"fwElmbPSU/objects/fwElmbPSUBranchCalibrationRef.pnl\",
+														\"Branch Calibration\",
+														makeDynString(\"$sDpName:\" + $sDpName));
+				break;
+			case 3:	// Change Text displayed
+				sLabel = this.text;
+				ChildPanelOnCentralReturn(\"vision/MessageInput\",
+																	\"Change Text\",
+																	makeDynString(\"$1:Please enter the text to be displayed for this branch\", \"$2:%s\", \"$3:\" + sLabel),
+																	df, ds);
+				sLabel = ds[1];
+				dpSet($sDpName + \".label\", sLabel);
+	
+				// Format the caption
+				if (strlen(sLabel) == 0) {
+					dpGet($sDpName + \".id\", iBranch);
+					sprintf(sLabel, \"BRANCH %d\", iBranch);
+				}
+				this.text = sLabel;
+				break;
+/*
+			case 2:	// Switch OFF power
+				dpGet($sDpName + \".power\", sPowerDpe);
+				dpSet(sPowerDpe, 1);
+				break;
+			case 3:	// Display panel showing the states of each ELMB on the bus
+				break;
+			case 4:	// Send NMT Start command to bus
+				dpGet($sDpName + \".bus\", sControlledBus);
+				dpSet(sControlledBus + \".management\", 1);
+				break;
+			case 5:	// Send NMT Stop command to bus
+				dpGet($sDpName + \".bus\", sControlledBus);
+				dpSet(sControlledBus + \".management\", 2);
+				break;
+			case 6:	// Send NMT Reset command to bus
+				dpGet($sDpName + \".bus\", sControlledBus);
+				dpSet(sControlledBus + \".management\", 129);
+				break;
+*/
+		}
+	}
+
+	// Return to calling routine
+	return;
+}" 0
+ E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+// Local Variables
+// ---------------
+  int iBranch;
+
+  string sCaption;
+
+// Executable Code
+// ---------------
+  // Get the branch ID
+  dpGet($sDpName + \".id\", iBranch,
+        $sDpName + \".label\", sCaption);
+
+  // Format the caption
+  if (strlen(sCaption) == 0)
+    sprintf(sCaption, \"BRANCH %d\", iBranch);
+
+  // Display the text
+  this.text = sCaption;
+
+  // Return to calling routine
+  return;
+}" 0
+ E 0 5 1 0 1 E U  1 E 12 232 118 248
+1 2 0 "0s" 0 0 0 65 0 0  12 232 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-15-*-100-100-*-*-iso8859-1|-15,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 6 BRANCH
+6 37
+"Border1"
+""
+1 8 253 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 8 10 122 253
+1 69 4 "" 0
+0
+1 70 7 "" 0
+0
+1 71 7 "" 1
+0
+1 72 7 "" 2
+0
+1 73 7 "" 4
+0
+1 74 8 "" 0
+0
+1 75 8 "" 1
+0
+1 76 8 "" 2
+0
+1 77 8 "" 4
+0
+2 68
+"txtPowerOnOff"
+""
+1 10 204 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+// Local Variables
+// ---------------
+  string sPowerDp;
+  string sPortDpe;
+  string sId;
+  string sDoConfig;
+  string sSystem;
+      
+  dyn_string dsExceptionInfo;
+
+// Executable Code
+// ---------------
+  // Get the DPE of the element to connect to
+  dpGet($sDpName + \".power\", sPowerDp);
+  sSystem = dpSubStr($sDpName, DPSUB_SYS);
+  
+  // Get the ID of the port and the parent of the port
+  dpGet(sSystem + sPowerDp + \".id\", sId);
+  fwDevice_getParent(sSystem + sPowerDp, sDoConfig, dsExceptionInfo);
+  if (patternMatch(\"A;*\", sId))
+    sPortDpe = sDoConfig + fwDevice_HIERARCHY_SEPARATOR + ELMB_DO_PREFIX + \"Bytes.\" + ELMB_DO_PREFIX + \"A_read\";
+  else
+    sPortDpe = sDoConfig + fwDevice_HIERARCHY_SEPARATOR + ELMB_DO_PREFIX + \"Bytes.\" + ELMB_DO_PREFIX + \"C_read\";
+	
+  // Connect to the required elements
+  dpConnect(\"cbkPowerOnOff\",
+            sPortDpe,
+            sPortDpe + \":_online.._invalid\");	
+	
+  // Return to calling routine
+  return;
+}
+
+void cbkPowerOnOff(string sValueDpe, unsigned arguValue,
+                   string sInvalidConfig, bool argbInvalid)
+{
+// Local Variables
+// ---------------
+  bool bPower;
+  
+  int iBit;
+  
+  string sPowerDp;
+  string sId;
+  string sElementColour;
+  string sSystem;
+  
+  dyn_string dsTemp;
+  dyn_string dsExceptionInfo;
+
+// Executable Code
+// ---------------
+  if (argbInvalid) {
+    fwColour_convertStatusToColour(sElementColour, \"\", false, argbInvalid, dsExceptionInfo);  
+    this.foreCol = sElementColour;
+    this.text = \"Power UNKNOWN\";
+  } else {
+    dpGet($sDpName + \".power\", sPowerDp);
+    sSystem = dpSubStr($sDpName, DPSUB_SYS);
+    dpGet(sSystem + sPowerDp + \".id\", sId);
+    dsTemp = strsplit(sId, \";\");
+    iBit = dsTemp[2];
+    bPower = ((1 << iBit) & arguValue) > 0 ? true : false;
+    if (bPower == EPSU_POWER_ON_VALUE) {
+      this.foreCol = \"FwStateOKPhysics\";
+      this.text = \"Power ON\";
+    } else {
+      this.foreCol = \"FwStateOKNotPhysics\";
+      this.text = \"Power OFF\";
+    }
+  }
+
+  // Return to calling routine
+  return;
+}
+" 0
+ E 0 1 1 0 1 E U  0 E 12 206 118 222
+0 2 0 "0s" 0 0 0 65 0 0  12 206 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 0 
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+3 4 ""
+"fwElmbPSU\\objects\\fwElmbPSUBurndyRef.pnl" 10 100 T 12 1 0 1 54 77
+1
+"$sDpName""$sDpName"
+3 7 ""
+"fwElmbPSU\\objects\\fwElmbPSULedRef.pnl" 60 100 T 15 1 0 1 5 -45
+2
+"$sDpName""$sDpName"
+"$sPower""\"CAN\""
+3 8 ""
+"fwElmbPSU\\objects\\fwElmbPSULedRef.pnl" 10 100 T 16 1 0 1 55 25
+2
+"$sDpName""$sDpName"
+"$sPower""\"AD\""
+0

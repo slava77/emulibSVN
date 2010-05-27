@@ -1,0 +1,96 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 120 85 N "_3DFace" 2
+"$obj"
+"$sDpName"
+"main()
+{
+  mudcsCrbPnlInit(); 
+ init_dp_switch();
+// DebugTN(DpName); 
+ int x,y;
+// panelPosition(myModuleName(),myPanelName()/* \"emufwUi_v24r9\"*/, x, y);
+ 
+// mudcsLvDebug(myPanelName());
+//     mudcsLvDebug(x);
+addSymbol(myModuleName(),myPanelName(),\"CMS_CSCfw_LV_CRB/emuCrbCrateList.pnl\",\"specific\",          
+makeDynString(\"$DpName:\"+DpName),   //+, \"$obj:\"+dev,\"$sDpName:\"+dev), // my_corr++
+  330, 100,  0,1,1); 
+ 
+//if(strpos(DpName,\"ME_P1\")>=0)setValue(\"sectors_1\",\"visible\", true);
+//else setValue(\"sectors_2\",\"visible\", true);
+}
+
+//============================================================
+
+
+init_dp_switch(){
+  
+//mudcsLvDebug($node);
+//mudcsLvDebug($obj);
+   
+ if($obj != \"\"){   // the panel is called from FSM
+    DpName=$obj;
+ } 
+ else{
+    DpName=$sDpName; // the panel is called from LOGICAL TREE
+ }
+
+DpName=mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME);
+
+
+
+}
+
+//============================================================
+/*
+addSymbol(myModuleName(),myPanelName(),panel_path,\"specific\",          
+makeDynString(\"$node:\"+node, \"$obj:\"+dev,\"$sDpName:\"+dev, \"$project_station:\"+
+   project_station, \"$project_system:\"+project_system), // my_corr++
+   x+x_add, y+y_add, 0,1,1);
+*/                    
+
+	" 0
+ E E E E 1 -1 -1 0  30 20
+""0  1
+E "
+string DpName;" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

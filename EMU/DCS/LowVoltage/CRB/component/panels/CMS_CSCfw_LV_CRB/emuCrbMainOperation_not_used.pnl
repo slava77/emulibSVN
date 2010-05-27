@@ -1,0 +1,179 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 209 121 N "_3DFace" 0
+"int FIRST_FSM_PANELS=0;
+
+main()
+{
+   mudcsCrbPnlInit(); 
+ mudcsFsmPanelsCheck(); 
+}
+
+
+mudcsFsmPanelsCheck(){
+
+
+//=================================================================
+
+dyn_string os;
+string o,s, s1, s2, s3;
+int i,j, pos;
+///dyn_string panels;
+string p;
+
+  dyn_string d_string1, d_string2;
+  string label, o_cut;
+//----------------------------------------------------------------- 
+ 
+dyn_string objs;
+string obj_found;
+//==================================================================
+
+objs=dpNames(\"*\",\"_FwFsmObject\");
+
+
+for(i=1;i<=dynlen(objs);i++){
+
+d_string1=strsplit(objs[i],\"|\");
+d_string2=strsplit(d_string1[dynlen(d_string1)],\"/\");
+o_cut=d_string2[dynlen(d_string2)];
+    
+///  panels=makeDynString(fwUiPnl);
+
+
+//mudcsDebug(objs[i]);
+os=strsplit(objs[i],\"|\");
+o=os[dynlen(os)];
+
+////////DebugTN(o);
+
+
+
+ 
+
+  s=\"_CAN1\";
+ if((pos=strpos(o,s))>=0 && pos==(strlen(o)-strlen(s))){
+   
+   obj_found=objs[i];
+   break;
+
+ } 
+
+
+
+} //for
+
+if(obj_found!=\"\"){
+  
+  dpConnect(\"check_fsm_generated\",true,obj_found+\".ui.label\");
+////  mudcsDebug2(obj_found+\".ui.label\");
+  
+}
+}
+
+//=================================================================
+check_fsm_generated(string dpName, string value){
+
+dyn_string panels;
+string dir_oper;
+string Component;
+Component=\"CMS_CSCfw_LV_CRB\"; 
+dir_oper=Component;   
+//=================================
+string fwUiPnl;
+ fwUiPnl=dir_oper+\"/emufwUi.pnl\";
+
+
+dyn_string dps=strsplit(dpName,\".\");
+string obj_found=dps[1];
+///mudcsDebug(\"updated\");
+
+ dpGet(obj_found+\".ui.panels:_original.._value\",panels);
+ if(!dynContains(panels,fwUiPnl) || !FIRST_FSM_PANELS){
+   if(FIRST_FSM_PANELS)delay(180);
+   DebugTN(\"FSM PANELS ARE SET\");
+     mudcsLvCrbFsmPanelsAndFsmAliasesSet();
+ }
+ 
+FIRST_FSM_PANELS=1;  
+}
+
+" 0
+ E E E E 1 -1 -1 0  80 50
+""0  1
+E "#uses \"CMS_CSCfw_LV_CRB/emuDcsLv.ctl\"
+#uses \"CMS_CSCfw_LV_CRB/emuDcsCrb.ctl\"
+//#uses \"CMS_CSCfw_LV_CRB/emuDcsMrtn.ctl\"
+#uses \"CMS_CSCfw_LV_CRB/emuDcsLvAlert.ctl\"
+#uses \"CMS_CSCfw_LV_CRB/emuDcsCrbAlert.ctl\"
+//#uses \"CMS_CSCfw_LV_CRB/emuDcsMrtnAlert.ctl\"
+#uses \"CMS_CSCfw_LV_CRB/emufw.ctl\"
+
+
+
+#uses \"CMS_CSCfw_LV_CRB/mudcs8SetPanelsCrb.ctl\"
+" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+2 1
+"PRIMITIVE_TEXT1"
+""
+1 40 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 40 40 168 70
+0 2 2 "0s" 0 0 0 192 0 0  40 40 2
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 20 CRB: AUTO-FSM PANELS
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-*-80-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 13 CONFIGURATION
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

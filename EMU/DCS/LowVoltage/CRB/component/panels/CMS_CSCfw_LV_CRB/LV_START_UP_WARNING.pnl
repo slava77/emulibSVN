@@ -1,0 +1,126 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 432 184 N "_3DFace" 0
+"main()
+{
+  //dpConnect(\"update_function\",\"LV_START_UP_CHAMBER.\");
+  
+  mudcsCrbPnlInit();
+  string crate;
+  dyn_string split1, split2;
+  int i;   
+  int time_update;
+  int current_time, remaining_time;
+  dpGet(mudcsLvAddSystem(\"LV_START_UP_CHAMBER.\"),crate); 
+  split1=strsplit(crate,\".\");
+  string fsm=split1[1];
+    dpGet(mudcsLvAddSystem(\"LV_START_UP_CHAMBER.:_online.._stime\"),time_update); 
+//====
+int delay_all, delay_s, delay_ms;    
+i=dynContains(CSC_fwCAN1_g_CRB_DPS, fsm);
+if(i>=1){
+  if(CSC_fwCAN1_g_CRB_DPS_SWITCH_DELAY[i] !=0 ){
+    delay_all=CSC_fwCAN1_g_CRB_DPS_SWITCH_DELAY[i];
+    delay_s=delay_all/1000;
+    delay_ms=delay_all%1000;
+  }
+//         DebugTN(\"PUT DELAY\");
+//       DebugTN(fsm +\" delay=\"+CSC_fwCAN1_g_CRB_DPS_SWITCH_DELAY[i]+\" \"+delay_s+\" \"+delay_ms);
+       
+         }
+else{
+  DebugTN(\"PUT DELAY NOT FOUND\");
+}    
+    
+    
+//=====        
+  split2=strsplit(split1[1],\"/\");
+     remaining_time=delay_s+3;
+  while(1){
+    setValue(\"current_board\",\"text\",\"board: \"+split2[dynlen(split2)]+\"\\n power up is in process: \\n remaining time (sec) \"+remaining_time);
+    delay(1);
+    remaining_time--; 
+    
+  //   dpGet(\"LV_START_UP_CHAMBER.:_online.._stime\",time_update); 
+  //   current_time=getCurrentTime();
+  //   if(current_time-time_update > 7)PanelOff();
+    if(remaining_time<=0)PanelOff();
+    
+  }
+  
+}
+
+//=====
+
+update_function(string dp, string value){
+  
+//beep(400,250);
+  if(strpos(value,\"finish\")<0)
+  setValue(\"current_board\",\"text\",value+\" is being powered up\");
+  else
+  setValue(\"current_board\",\"text\",value);    
+  
+  
+  
+}" 0
+ E E E E 1 -1 -1 0  50 80
+""0  1
+E E 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+2 0
+"current_board"
+""
+1 50 80 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 50 80 202 97
+0 2 2 "0s" 0 0 0 192 0 0  50 80 1
+1
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 20 current_board_______
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
