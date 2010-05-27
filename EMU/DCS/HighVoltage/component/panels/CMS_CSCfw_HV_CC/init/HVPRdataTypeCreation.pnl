@@ -1,0 +1,250 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 422 188 N "_3DFace" 0
+"main(){
+
+
+create_data(\"HV_PR_data\");
+create(\"HV_PR\");
+create_broker(\"HV_PR_d\");
+
+
+dpCreate(\"HV_PR_DimBroker_o\",\"HV_PR_d\");
+
+
+
+// all other datapoints are created via the mudcsCreateHV_PR() (emuDcs3.ctl)
+
+
+//---------
+dpCreate(\"HV_PRInfo\",\"_FwDeviceDefinition\");
+dpSet(\"HV_PRInfo.type\",\"High Voltage Device (PR)\");
+dpSet(\"HV_PRInfo.dpType\",\"HV_PR\");
+DebugTN(\"HV_PRInfo created\");
+//----------
+
+dpSet(\"HighVoltage.dpTypes\",makeDynString(\"HV_1\",\"HV_PR\"));
+
+DebugTN(\"types: HighVoltage of FwNode created\");
+
+
+
+//----------
+
+mudcsInit();
+
+
+//-----------
+mudcs_setBrokerList();
+DebugTN(\"mudcs_setBrokerList()\");
+//------------
+//FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+dyn_string device_list;
+string device_info;
+
+mudcsGetDeviceList(device_list);
+for(int i=1;i<=dynlen(device_list);i++){
+
+  device_info= device_list[i]+\"Info.panels.editor.hardware\";
+  dpSet(device_info,\"emu_config/emuDev\" + device_list[i]+\"Config\");
+
+  device_info= device_list[i]+\"Info.panels.navigator.hardware\";
+  dpSet(device_info,\"emu/emuDev\" + device_list[i]+\"Operation\");
+
+}
+DebugTN(\"panels set\");
+//FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+
+
+
+
+}
+
+//================================================================
+create_broker(string dtype)
+{
+
+
+dyn_dyn_string xxdepes;
+dyn_dyn_int xxdepei;
+int i,i1;
+
+
+
+xxdepes[1] = makeDynString (dtype,\"\");
+xxdepes[2] = makeDynString (\"\",\"data\",\"HV_PR_data\");
+
+xxdepes[3] = makeDynString (\"\",\"update_value\");
+xxdepes[4] = makeDynString (\"\",\"status\");
+
+
+//--------------
+
+xxdepei[1]=makeDynInt (DPEL_STRUCT);
+xxdepei[2]=makeDynInt (0,DPEL_TYPEREF);
+
+xxdepei[3]=makeDynInt (0,DPEL_INT);
+xxdepei[4]=makeDynInt (0,DPEL_INT);
+
+
+dpTypeCreate(xxdepes,xxdepei);
+
+
+}
+
+//====================================================================
+
+create_data(string dtype)
+{
+
+
+dyn_dyn_string xxdepes;
+dyn_dyn_int xxdepei;
+int i,i1;
+
+
+
+xxdepes[1] = makeDynString (dtype,\"\");
+
+
+
+xxdepes[2] = makeDynString (\"\",\"hostid\");
+
+xxdepes[3] = makeDynString (\"\",\"port\");
+xxdepes[4] = makeDynString (\"\",\"addr\");
+
+xxdepes[5] = makeDynString (\"\",\"polarity\");
+
+xxdepes[6] = makeDynString (\"\",\"outset\");
+xxdepes[7] = makeDynString (\"\",\"output\");
+xxdepes[8] = makeDynString (\"\",\"control\");
+
+xxdepes[9] = makeDynString (\"\",\"imax\");
+
+xxdepes[10] = makeDynString (\"\",\"vset\");
+xxdepes[11] = makeDynString (\"\",\"imon\");
+xxdepes[12] = makeDynString (\"\",\"vmon\");
+xxdepes[13] = makeDynString (\"\",\"vcur\");
+xxdepes[14] = makeDynString (\"\",\"rampup\");
+xxdepes[15] = makeDynString (\"\",\"rampdown\");
+
+////xxdepes[16] = makeDynString (\"\",\"update_value\");
+////xxdepes[17] = makeDynString (\"\",\"status\");
+
+
+//--------------
+
+xxdepei[1]=makeDynInt (DPEL_STRUCT);
+
+
+xxdepei[2]=makeDynInt (0,DPEL_INT);
+
+xxdepei[3]=makeDynInt (0,DPEL_INT);
+xxdepei[4]=makeDynInt (0,DPEL_INT);
+
+xxdepei[5]=makeDynInt (0,DPEL_INT);
+xxdepei[6]=makeDynInt (0,DPEL_INT);
+xxdepei[7]=makeDynInt (0,DPEL_INT);
+xxdepei[8]=makeDynInt (0,DPEL_INT);
+
+xxdepei[9]=makeDynInt (0,DPEL_INT);  // FLOAT
+
+xxdepei[10]=makeDynInt (0,DPEL_INT);
+
+xxdepei[11]=makeDynInt (0,DPEL_INT); // FLOAT
+xxdepei[12]=makeDynInt (0,DPEL_INT); // FLOAT
+
+xxdepei[13]=makeDynInt (0,DPEL_INT);
+xxdepei[14]=makeDynInt (0,DPEL_INT);
+xxdepei[15]=makeDynInt (0,DPEL_INT);
+////xxdepei[16]=makeDynInt (0,DPEL_INT);
+////xxdepei[17]=makeDynInt (0,DPEL_INT);
+
+
+dpTypeCreate(xxdepes,xxdepei);
+
+
+
+
+
+//dpSet(\"HVcmdBroker1.data\",a);
+//dpSet(\"HVcmdBroker1.size\",1);
+//dpSet(parent_domain+\"|\"+dpN+\".ui.panels:_original.._value\",panels);
+}
+
+//====================================================================
+
+create(string dtype)
+{
+
+
+dyn_dyn_string xxdepes;
+dyn_dyn_int xxdepei;
+int i,i1;
+
+xxdepes[1] = makeDynString (dtype,\"\");
+////xxdepes[2] = makeDynString (\"\",\"data\",\"HV_PR_data\");
+
+xxdepes[2] = makeDynString (\"\",\"chamber_state\");
+xxdepes[3] = makeDynString (\"\",\"coord\");
+xxdepes[4] = makeDynString (\"\",\"last_vset\");
+xxdepes[5] = makeDynString (\"\",\"status\");
+
+//--------------
+
+xxdepei[1]=makeDynInt (DPEL_STRUCT);
+/////xxdepei[2]=makeDynInt (0,DPEL_TYPEREF);
+
+xxdepei[2]=makeDynInt (0,DPEL_INT);
+xxdepei[3]=makeDynInt (0,DPEL_STRING);
+xxdepei[4]=makeDynInt (0,DPEL_INT);
+xxdepei[5]=makeDynInt (0,DPEL_INT);
+
+
+dpTypeCreate(xxdepes,xxdepei);
+
+
+}
+
+//====================================================================" 0
+ E E E E 1 -1 -1 0  -1 -1
+""0  1
+E E 2
+"CBRef""1"
+"EClose"E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
