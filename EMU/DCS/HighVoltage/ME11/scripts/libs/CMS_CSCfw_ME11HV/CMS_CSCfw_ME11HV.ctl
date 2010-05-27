@@ -20,7 +20,7 @@ This library contains function associated with the CSC ME11 component:
 */
 //define constant for archiving dp
 //    const int       iTimeInt     = 7200;    //time interval for voltage/current
-//    const float     fTolCur      = 0.1;     // tol for current
+//    const float     fTolCur      = 0.5;     // tol for current
 //    const float     fTolVolt     = 10;      // tol for voltage
 //-----------------------------------------------------------------------------------------------------------------------------------------------
 //this function to get system name where the component(CMS_CSCfw_ME11HV) installed 
