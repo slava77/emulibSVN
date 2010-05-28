@@ -2,6 +2,11 @@
 	<name>CMS_CSCfw_GAS</name>
 	<version>4.1.7</version>
 	<date> 20/01/2010 </date>
+	<required>fwCore=4.0.0</required>
+	<required>fwAnalogDigital=4.0.0</required>
+	<required>fwAccessControl=3.2.7</required>
+	<required>fwTrending=3.2.1</required>
+	<required>fwDIP=3.3.1</required>
 	<config>./config/CMS_CSCfw_GAS.config</config>
     <dplist>./dplist/CMS_CSCfw_GAS/CMS_CSCfw_GAS.dpl</dplist>
     <postInstall>./scripts/CMS_CSCfw_GAS/CMS_CSCfw_GAS.postInstall</postInstall>                   

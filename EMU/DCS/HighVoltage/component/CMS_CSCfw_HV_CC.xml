@@ -7,7 +7,6 @@
 	<required>fwAccessControl=3.2.7</required>
 	<required>fwTrending=3.2.1</required>
 	<required>fwDIM=18.06.0</required>
-	<required>fwDIP=3.3.1</required>
 	<!--required>CMS_CSCfw_LV_CRB_MINI=1.0.1</required--> <!-- no need at P5 since all the libraries are accessible from the cDCS repository anyway - only needed for local installations ->
 	<!--required>CMS_CSCfw_LV_MRTN=1.0.1</required--> <!-- no need at P5 since all the libraries are accessible from the cDCS repository anyway - only needed for local installations ->
 		<!--required>fwElmbPSU=2.1.5</required--> <!-- needed for FSM panels only - so only needed when you're going to open them locally - no need at P5 -->
