@@ -350,7 +350,10 @@ else{
 //========================================
 if(automatic_stop_pcrate_slow_control){
   if(isOn)mudcsCrb_stop_slow_control(fsm);
-  if(!isOn)mudcsCrb_remove_id(fsm);
+  if(!isOn) {
+    mudcsCrb_remove_id(fsm);
+    mudcsCrb_sendToX2P("CRATEOFF", fsm);
+  }
 }  
 //=========================================
 //===== reserved new power up sequence ========
@@ -1200,3 +1203,57 @@ mudcsCrbGetDmbTempAlerts(string DpName, dyn_string &ds_alerts, dyn_int &alert_ch
  
 }
 //MAPPING_VAR
+
+// ----==== Evaldas code ====----
+
+/**
+  * Sends the given command for the given crate to X2P.
+  * @param command command you wish to send.
+  * @param crateFsmDp FSM DP of the crate for which the command is dedicated.
+  */
+void mudcsCrb_sendToX2P(string command, string crateFsmDp) {
+  if(two_way_communications_x2p){
+    int crateId = mudcsCrb_getCrateId(crateFsmDp);
+    string midLayerSystem = mudcsCrb_getMidLayerSystemForCrateId(crateId);
+    string crateVmeId = mudcsCrb_getVmeById(crateId);
+    dpSetWait(midLayerSystem + ":LV_1_COM.command", command + ";" + crateVmeId);
+    DebugTN("Sent command to X2P: " + command + ";" + crateVmeId);
+  }
+}
+
+/**
+  * Get numeric crate ID.
+  * @param crateFsmDp FSM DP of the crate for which you want to obtain the ID.
+  * @return numeric crate ID.
+  */
+int mudcsCrb_getCrateId(string crateFsmDp) {
+  string coord;
+  int coord_int;  
+
+  dpGet(crateFsmDp + ".coord", coord); 
+  sscanf(coord, "%x", coord_int);
+  
+  return coord_int;
+}
+
+/**
+  * Get the corresponding middle layer system name for a given crate (identified by numeric ID).
+  * @param numeric ID of the crate for which you want to look up middle layer sys. name.
+  * @return the corresponding middle layer system name for the given crate.
+  */
+string mudcsCrb_getMidLayerSystemForCrateId(int crateId) {
+  if(crateId <=30) {
+    return CSC_fwCAN1_g_PLUS_SYSTEM_NAME;
+  } else {
+    return CSC_fwCAN1_g_MINUS_SYSTEM_NAME;
+  }
+}
+
+/**
+  * Get the corresponding middle layer system name for a given crate (identified by FSM DP).
+  * @param FSM DP of the crate for which you want to look up middle layer sys. name.
+  * @return the corresponding middle layer system name for the given crate.
+  */
+string mudcsCrb_getMidLayerSystemForCrateFsmDp(int crateFsmDp) {
+  return mudcsCrb_getMidLayerSystemForCrateId(mudcsCrb_getCrateId(crateFsmDp));
+}
