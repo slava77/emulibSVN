@@ -113,7 +113,7 @@ addGlobal("CSC_fwCAN1_g_904_MACHINE", BOOL_VAR); // corr++
 CSC_fwCAN1_g_904_MACHINE=false;
 
  string hostname1=getHostname();
-  if(hostname1=="EMU-DCS-DEV1" || hostname1=="emu-dcs-dev1"){ //  DEV machine  // corr++
+  if((strpos(hostname1, "EMU-DCS-DEV") >= 0) || (strpos(hostname1, "emu-dcs-dev") >= 0)){ //  DEV machine  // corr++
    CSC_fwCAN1_g_904_MACHINE=true;  
   }
   else CSC_fwCAN1_g_DEV_MODE=false;

@@ -159,11 +159,13 @@ CSC_fwG_g_IS_IMAX_SET=false;
 addGlobal("CSC_fwG_g_904_MACHINE",STRING_VAR);
 addGlobal("CSC_fwG_g_904_HV_MACHINE",STRING_VAR);
 addGlobal("CSC_fwG_g_904",BOOL_VAR);
-CSC_fwG_g_904_MACHINE="emu-dcs-dev1";//"dcspcS2G19-01";
+string emu904HostnamePrefix = "emu-dcs-dev";
+string emu904MainMachine = "1";
+CSC_fwG_g_904_MACHINE = emu904HostnamePrefix + emu904MainMachine;
 CSC_fwG_g_904_HV_MACHINE="137.138.15.212";//"10.176.11.103";
 sTest=getHostname();
 dsTest=strsplit(sTest,"."); // just in case
-if(CSC_fwG_g_904_MACHINE==dsTest[1]){
+if(strpos(dsTest[1], emu904HostnamePrefix) == 0){
   if(!P5_SIM_AT_904)CSC_fwG_g_904=true;
   else CSC_fwG_g_904=false;
   retieve_project_from_system_name=true;
@@ -248,7 +250,7 @@ mudcsPcCratesMapping();
 
 addGlobal("CSC_fwG_g_HOME",STRING_VAR);
 if (os =="Linux")CSC_fwG_g_HOME = getenv("HOME");//"/nfshome0/cscdcsdev"; 
-else CSC_fwG_g_HOME = "c:\\pvss_project_36";
+else CSC_fwG_g_HOME = "c:\\pvss\\components";
 //------------------------------------------------
 
 int i; 
