@@ -16,7 +16,7 @@ const int emu_DEBUG_DETAIL = 4;
   1 - general debug messages
   2 - function start/stop messages
 */
-global int g_emu_Debug = 5;//emu_DEBUG_GENERAL | emu_DEBUG_FUNC_START_STOP;
+global int g_emu_Debug = 0;//emu_DEBUG_GENERAL | emu_DEBUG_FUNC_START_STOP;
 
 global dyn_string g_emu_debugBacktrace;
 global dyn_int g_emu_reportingThreads;
