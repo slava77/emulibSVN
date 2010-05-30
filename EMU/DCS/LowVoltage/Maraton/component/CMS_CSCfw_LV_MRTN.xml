@@ -2,6 +2,7 @@
         <name>CMS_CSCfw_LV_MRTN</name>
         <version>1.1.0</version>
         <date>2010/05/30</date>
+		<required>CMS_CSC_common=1.1.0</required>
 		<required>fwCore=4.0.0</required>
 		<required>fwAnalogDigital=4.0.0</required>
 		<required>fwWiener=3.2.4</required>
