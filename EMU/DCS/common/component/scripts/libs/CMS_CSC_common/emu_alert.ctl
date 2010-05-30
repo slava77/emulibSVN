@@ -6,6 +6,8 @@ This package contains general purpose functions for handling alerts.
 @date   May 2010
 */
 
+#uses "CMS_CSC_common/emu_common.ctl"
+
 /**
  * Get alert class descriptor DP for a given DP type. This descriptor DP carries information like alert class, alert texts, etc.
  * @param dpType datapoint type that you want to get the alert class descriptor for (if the class in concern is not for a summary alert, then you can specify dpe like that: <dpType>[.dpe])
