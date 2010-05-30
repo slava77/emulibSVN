@@ -613,7 +613,7 @@ g_HV_ID2PC_NAME=makeDynString("500_part1;10.176.11.67_part1","500_part2;10.176.1
 if(CSC_fwG_g_904)
 CSC_fwG_g_PCRATE_ID2PC_NAME=makeDynString("all;"+CSC_fwG_g_904_MACHINE);
 else  
-CSC_fwG_g_PCRATE_ID2PC_NAME=makeDynString("all;dcspcS2G19-06","all;dcspcS2G19-04");
+CSC_fwG_g_PCRATE_ID2PC_NAME=makeDynString("all;csc-dcs-pc1","all;csc-dcs-pc2");
 
 // the CSC_fwG_g_BROKER_DNS_MACHINE_NAMES is used in:
 //    to configure services for broker dps and commands (function: mudcsDimConfigOneManager)
@@ -627,10 +627,10 @@ if(CSC_fwG_g_904)
      ); 
 else
 CSC_fwG_g_BROKER_DNS_MACHINE_NAMES=makeDynString
-    ("all;dcspcS2G19-06",
-    "LV_1;dcspcS2G19-06",
-    "LV_1;dcspcS2G19-04",
-    "LV_SX5;dcspcS2G19-06",
+    ("all;csc-dcs-pc1",
+    "LV_1;csc-dcs-pc1",
+    "LV_1;csc-dcs-pc2",
+    "LV_SX5;csc-dcs-pc1",
     "HV_PR;10.176.11.103_part4", // ufcmshv2: for primary commands only  +Z
     "HV_PR;10.176.11.67_part4", // ufcmshv1: for primary commands only   -Z   
     "HV_1;10.176.11.103_part4",   // ufcmshv2: for primary commands only +Z
@@ -642,7 +642,7 @@ CSC_fwG_g_BROKER_DNS_MACHINE_NAMES=makeDynString
 if(CSC_fwG_g_904)
 CSC_fwG_g_STATIONS_DNS_MACHINE_NAMES=makeDynString("all;"+CSC_fwG_g_904_MACHINE);
 else
-CSC_fwG_g_STATIONS_DNS_MACHINE_NAMES=makeDynString("all;dcspcs2g19-06");
+CSC_fwG_g_STATIONS_DNS_MACHINE_NAMES=makeDynString("all;csc-dcs-pc1");
 
 
 CSC_fwG_g_FsmPanelMaxSizeX=1200;

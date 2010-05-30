@@ -1653,11 +1653,11 @@ db_set_emu_level(){
   DimServerComputerList[1]="smi";
   if(CSC_fwG_g_idisk_cross_numbers[1]>=5 && CSC_fwG_g_idisk_cross_numbers[1]<=8){
     if(CSC_fwG_g_904) DimServerComputerList[2]=CSC_fwG_g_904_MACHINE;
-    else DimServerComputerList[2]="dcspcS2G19-06";
+    else DimServerComputerList[2]="csc-dcs-pc1";
   }
   else {
    if(CSC_fwG_g_904)DimServerComputerList[2]=CSC_fwG_g_904_MACHINE;    
-   else DimServerComputerList[2]="dcspcS2G19-04";    
+   else DimServerComputerList[2]="csc-dcs-pc2";    
   }
   
 if(CSC_fwG_g_904){
@@ -1673,14 +1673,14 @@ else{
   DimServerComputerList[4]="10.176.11.103_part2";
   DimServerComputerList[5]="10.176.11.103_part3";
   DimServerComputerList[6]="10.176.11.103_part4";
-  if(CSC_fwG_g_idisk_cross_numbers[1]==CSC_fwG_g_StationWithFsmHwTree)DimServerComputerList[4]="dcspcS2G19-04"; 
+  if(CSC_fwG_g_idisk_cross_numbers[1]==CSC_fwG_g_StationWithFsmHwTree)DimServerComputerList[4]="csc-dcs-pc2"; 
   }
   else{
   DimServerComputerList[3]="10.176.11.67_part1"; // ufcmshv1--cms
   DimServerComputerList[4]="10.176.11.67_part2";
   DimServerComputerList[5]="10.176.11.67_part3";
   DimServerComputerList[6]="10.176.11.67_part4"; 
- if(CSC_fwG_g_idisk_cross_numbers[1]==CSC_fwG_g_StationWithFsmHwTree)DimServerComputerList[4]="dcspcS2G19-06";  
+ if(CSC_fwG_g_idisk_cross_numbers[1]==CSC_fwG_g_StationWithFsmHwTree)DimServerComputerList[4]="csc-dcs-pc1";  
   }
   if(dynContains(CSC_fwG_g_idisk_cross_numbers,CSC_fwG_g_StationWithFsmHwTree)){  
   DimServerComputerList[7]="10.176.11.67_part4";  
