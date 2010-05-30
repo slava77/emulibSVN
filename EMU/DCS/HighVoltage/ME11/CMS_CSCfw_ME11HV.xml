@@ -1,7 +1,8 @@
 <component>
 <name>CMS_CSCfw_ME11HV</name>
-<version>1.0.1</version>
-<date>2010/05/18</date>
+<version>1.0.2</version>
+<date>2010/05/30</date>
+<required>CMS_CSC_common=1.1.0</required>
 <required>CMSfw_CAENOPCConfigurator=1.0.6</required>
 <required>CMSfwInstallUtils=1.0.0</required>
 <required>fwAccessControl=3.2.7</required>
