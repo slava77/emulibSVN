@@ -1,4 +1,4 @@
-V 10
+V 11
 1
 LANG:1 8 (NoName)
 PANEL,-1 -1 769 526 N "_3DFace" 2
@@ -23,8 +23,16 @@ string get_geographic(string DpName){
 }
 
 main()
-{
+{  
 //--- my_corr--------------------------- 
+  // ==== access control ====
+  if (isFunctionDefined(\"fwAccessControl_setupPanel\")) {
+    initAcConstants();
+    dyn_string ex;
+    fwAccessControl_setupPanel(\"accessPrivilegesChangedCB\", ex);
+    if (emu_checkException(ex)) { return; }
+  }
+  //=========================
   
   mudcsMrtnPnlInit($node);  
   DpName=mudcsLvAddSystem($sDpName, CSC_fwCAN2_g_SYSTEM_NAME);
@@ -91,14 +99,32 @@ else{
 	
 	dpConnect(\"_fwOperatingTimeCB\", TRUE, $sDpName + \".UpTime:_online.._value\");
 	dpConnect(\"_fwOperatingTimeCB\", TRUE, $sDpName + \".OperatingTime:_online.._value\");
+}
+
+/** initialize constants required for access control - basically just fill in the arrays of control and expert control button names. */
+void initAcConstants() {
+  controlButtons = makeDynString(\"onButton\", \"offButton\", \"Text3\"); // on/off
+  expertControlButtons = makeDynString();
 }" 0
  E E E E 1 -1 -1 0  15 70
 ""0  1
-E "string DpName; // my_corr
+E "#uses \"CMS_CSC_common/emu_accessControl.ctl\"
+
+/** for access control - arrays of control and expert control buttons which should be under access control */
+dyn_string controlButtons;
+dyn_string expertControlButtons;
+
+string DpName; // my_corr
 string g_Model;
 
 
 //-------- my_corr---------------------------
+
+/** This function is called whenever the user privileges change and just passes that to emu_enableDisableControl() which takes care of enabling/disabling buttons. */
+void accessPrivilegesChangedCB(string dummy1, string dummy2) {
+  emu_enableDisableControl(controlButtons, true, \"lblNoControl\", expertControlButtons, true);
+}
+
 trending(string DpName) 
 { 
 
@@ -249,13 +275,12 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 10 10 277 33
 0 0 0 "0s" 0 0 0 192 0 0  10 10 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-19-*-100-100-*-*-iso8859-1|-19,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,19,5,40,0,0,0,0,0
+0 1
 LANG:1 28 PL508 Power Supply Operation
-1 369 13 "" 19
+1 399 13 "" 19
 0
-1 370 13 "" 18
+1 400 13 "" 18
 0
 2 170
 "Text6"
@@ -273,9 +298,8 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 12 53 134 70
 0 2 0 "0s" 0 0 0 192 0 0  12 53 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 18 Power Supply Name:
 2 171
 "Text1"
@@ -293,9 +317,8 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 492 52 531 69
 0 2 0 "0s" 0 0 0 192 0 0  492 52 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 6 Model:
 2 172
 "NameText"
@@ -313,9 +336,8 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 12 87 81 104
 0 2 2 "0s" 0 0 0 192 0 0  12 87 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 12 Description:
 30 177
 "Frame2"
@@ -332,9 +354,8 @@ LANG:1 0
 "dashclr"N "_Transparent"
 E E 0 1 1 0 1 E 1 0 1 0 80 0 E 10 370 215 440
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 8 Commands
 2 181
 "Text5"
@@ -375,9 +396,8 @@ EP_textFieldInCB(string dp, bool boNewValue)
  E 0 1 1 0 1 E U  0 E 45.6666666666665 194.333333333335 103 211
 0 2 0 "0s" 0 0 0 192 0 0  45.6666666666665 194.333333333335 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 8 (ON/OFF)
 2 188
 "Text2"
@@ -392,12 +412,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 17 259.000000000001 69 276
+E E 0 1 1 0 1 E U  0 E 17 259.000000000001 68 276
 0 2 2 "0s" 0 0 0 192 0 0  17 259.000000000001 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 8 Up Time:
 2 191
 "Text3"
@@ -415,9 +434,8 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 22 479 62 496
 0 2 2 "0s" 0 0 0 192 0 0  22 479 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 6 Power:
 2 192
 "Text4"
@@ -435,9 +453,8 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 17 225.000000000001 118 242
 0 2 0 "0s" 0 0 0 192 0 0  17 225.000000000001 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 16 Output Channels:
 2 201
 "Text9"
@@ -455,9 +472,8 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 12 121 121 138
 0 2 2 "0s" 0 0 0 192 0 0  12 121 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 19 Device Information:
 2 218
 "psId"
@@ -475,9 +491,8 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 492 121 524 138
 0 2 2 "0s" 0 0 0 192 0 0  492 121 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 6 (psId)
 28 210
 "Tab1"
@@ -492,9 +507,8 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 248 158 769 452
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  248 158 769 452
 E2 "channels" 1
 LANG:1 8 Channels
 1 "objects\\fwWiener\\fwWienerChannelsOverview.pnl" 1
@@ -525,9 +539,8 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 658 474 742 508
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  658 474 742 508
 
 T 
 1
@@ -537,11 +550,11 @@ LANG:1 5 Close
 	PanelOff();
 }" 0
  E E E
-1 371 14 "" 0
+1 401 14 "" 0
 0
-1 372 15 "" 0
+1 402 15 "" 0
 0
-1 373 15 "" 1
+1 403 15 "" 1
 0
 14 173
 "sBusId"
@@ -556,9 +569,8 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 534 48 702 75
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  534 48 702 75
 2 "0s" 0 0 0 0 0 -1  E "main()
 {
 	string modelName;
@@ -591,9 +603,8 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 138 48 482 75
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  138 48 482 75
 2 "0s" 0 0 0 0 0 -1  E "main()
 {
 	this.text = $sDpName;
@@ -612,9 +623,8 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 138 81 482 108
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  138 81 482 108
 2 "0s" 0 0 0 0 0 -1  E "main()
 {
 	this.text = dpGetDescription($sDpName + \".\");
@@ -634,9 +644,8 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 71 469 128 503
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  71 469 128 503
 
 T 
 1
@@ -677,9 +686,8 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 142 469 199 503
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  142 469 199 503
 
 T 
 1
@@ -702,9 +710,8 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 70 252.000000000001 207 279.000000000001
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  70 252 207 279
 2 "0s" 0 0 0 2 0 -1  "main()
 {
 	dyn_string exceptionInfo;
@@ -729,9 +736,8 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 123 219.000000000001 207 246.000000000001
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  123 219 207 246
 2 "0s" 0 0 0 0 0 -1  "main()
 {
 	dyn_string exceptionInfo;
@@ -773,9 +779,8 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 138 115 482 142
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  138 115 482 142
 2 "0s" 0 0 0 0 0 -1  E "main()
 {
   EP_textFieldIn();
@@ -828,9 +833,8 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 568 115 702 142
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  568 115 702 142
 2 "0s" 0 0 0 0 0 -1  E "main()
 {
 	string model;
@@ -857,9 +861,8 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 238 478 362 512
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  238 478 362 512
 
 T 
 1
@@ -894,9 +897,8 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 562 462 608 508
 1 2 0 "0s" 0 0 0 64 0 0  562 462 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,11,5,40,0,0,0,0,0
+0 1
 LANG:1 8 TRENDING
 14 259
 "operatingTimeField"
@@ -911,9 +913,8 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 70 302.000000000001 207 329.000000000001
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  70 302 207 329
 2 "0s" 0 0 0 2 0 -1  "main()
 {
 	dyn_string exceptionInfo;
@@ -941,14 +942,12 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 17 287.000000000001 157 323
 0 2 2 "0s" 0 0 0 192 0 0  17 287.000000000001 2
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 22 Power Supply Operating
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 5 Time:
 30 262
 "Frame1"
@@ -963,11 +962,10 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E 0.999902448541609 0 1.54437869822485 0.000975514583914094 -77.1005917159755 0 E 10 160 215 330
+E E 0 1 1 0 1 E 0.999902448541609 0 1.54437869822485 0.0009755145839140941 -77.1005917159755 0 E 10 160 215 330
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 6 Status
 2 267
 "inhibitText"
@@ -985,9 +983,8 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 153.666666666667 194.333333333335 188 211
 0 2 0 "0s" 0 0 0 192 0 0  153.666666666667 194.333333333335 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 7 Inhibit
 2 286
 "PRIMITIVE_TEXT4"
@@ -1005,9 +1002,8 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 43.6666666666669 341.333333333334 112 358
 0 2 0 "0s" 0 0 0 192 0 0  43.6666666666669 341.333333333334 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 11 Input Power
 2 291
 "PRIMITIVE_TEXT5"
@@ -1022,12 +1018,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 43.6666666666669 372.333333333334 123 389
+E E 0 1 1 0 1 E U  0 E 43.6666666666669 372.333333333334 121 389
 0 2 0 "0s" 0 0 0 192 0 0  43.6666666666669 372.333333333334 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 12 Temperatures
 2 296
 "PRIMITIVE_TEXT6"
@@ -1045,9 +1040,8 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 43.6666666666669 404.333333333334 89 421
 0 2 0 "0s" 0 0 0 192 0 0  43.6666666666669 404.333333333334 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 6 System
 2 301
 "PRIMITIVE_TEXT7"
@@ -1065,9 +1059,8 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 123.666666666667 404.333333333334 201 421
 0 2 0 "0s" 0 0 0 192 0 0  123.666666666667 404.333333333334 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 13 Write Protect
 13 302
 "outputInhibits"
@@ -1082,9 +1075,8 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 378 478 502 512
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  378 478 502 512
 
 T 
 1
@@ -1127,9 +1119,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 218 218 252 242
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  218 218 252 242
 
 T 
 1
@@ -1165,9 +1156,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 218 248 252 272
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  218 248 252 272
 
 T 
 1
@@ -1203,9 +1193,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 218 298 252 322
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  218 298 252 322
 
 T 
 1
@@ -1241,9 +1230,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 218 328 252 352
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  218 328 252 352
 
 T 
 1
@@ -1279,9 +1267,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 218 348 252 372
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  218 348 252 372
 
 T 
 1
@@ -1317,9 +1304,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 218 398 252 422
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  218 398 252 422
 
 T 
 1
@@ -1355,9 +1341,8 @@ LANG:1 53 check Trend and click Vmon or Imon box of the channel
 
 0
 1
-LANG:1 88 -*-Courier-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,505,0,0,0,0,0,0,0,0,Courier
-0 ""
- 218 448 303 478
+LANG:1 28 Courier,-1,16,5,50,0,0,0,0,0
+0  218 448 303 478
 1
 T 
 1
@@ -1386,9 +1371,8 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 312 452 313 473
 0 2 2 "0s" 0 0 0 192 0 0  312 452 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,16,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 2 398
 "NOT_CONNECTED"
@@ -1406,66 +1390,83 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 2 142 242 172
 0 2 2 "0s" 0 0 0 64 0 0  2 142 2
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,11,5,75,0,0,0,0,0
+0 1
 LANG:1 33 CAN BUS PROBLEM: CHECK OPFC is ON
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,11,5,75,0,0,0,0,0
+0 1
 LANG:1 14 CALL LV EXPERT
+2 428
+"lblNoControl"
+""
+1 538 42 E E E 1 E 1 E N "_3DText" E N "_Window" E E
+ E E
+156 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 10 480 208 497
+1 2 2 "0s" 0 0 0 192 0 0  10 480 1
+1
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0 1
+LANG:1 32 You don't have control privilege
 0
 LAYER, 1 
 1
 LANG:1 6 Layer2
-1 378 17 "" 4
+1 408 17 "" 4
 0
-1 379 17 "" 0
+1 409 17 "" 0
 0
-1 380 17 "" 3
+1 410 17 "" 3
 0
-1 381 17 "" 1
+1 411 17 "" 1
 0
-1 374 16 "" 4
+1 404 16 "" 4
 0
-1 375 16 "" 0
+1 405 16 "" 0
 0
-1 376 16 "" 3
+1 406 16 "" 3
 0
-1 377 16 "" 1
+1 407 16 "" 1
 0
-1 382 18 "" 4
+1 412 18 "" 4
 0
-1 383 18 "" 0
+1 413 18 "" 0
 0
-1 384 18 "" 3
+1 414 18 "" 3
 0
-1 385 18 "" 1
+1 415 18 "" 1
 0
-1 386 19 "" 4
+1 416 19 "" 4
 0
-1 387 19 "" 0
+1 417 19 "" 0
 0
-1 388 19 "" 3
+1 418 19 "" 3
 0
-1 389 19 "" 1
+1 419 19 "" 1
 0
-1 390 20 "" 4
+1 420 20 "" 4
 0
-1 391 20 "" 0
+1 421 20 "" 0
 0
-1 392 20 "" 3
+1 422 20 "" 3
 0
-1 393 20 "" 1
+1 423 20 "" 1
 0
-1 394 21 "" 4
+1 424 21 "" 4
 0
-1 395 21 "" 0
+1 425 21 "" 0
 0
-1 396 21 "" 3
+1 426 21 "" 3
 0
-1 397 21 "" 1
+1 427 21 "" 1
 0
 0
 LAYER, 2 
@@ -1506,54 +1507,54 @@ LAYER, 7
 1
 LANG:1 6 Layer8
 0
-3 13 "Group13"
-"fwDeviceEditorNavigator/fwActionButton.pnl" 551 10 T 77 1 0 1 -71 -12
+3 13 "Group13" -1
+"fwDeviceEditorNavigator\\fwActionButton.pnl" 551 10 T 77 1 0 1 -71 -12
 1
 "$sDpName""$sDpName"
-3 14 "Group14"
+3 14 "Group14" -1
 "objects\\fwGeneral\\fwHelpButton.pnl" 604 10 T 80 1 0 1 82 0
 1
 "$sPanelRelativePath""fwWiener/fwWienerMarathonOperation"
-3 15 ""
+3 15 "" -1
 "objects\\fwConfigs\\fwAlarmSummaryButton.pnl" 190 40 T 80 1 0 1 706 -20
 1
 "$sDpName""$sDpName"
-3 16 "Group16"
+3 16 "Group16" -1
 "objects\\fwGeneral\\fwLedWithAlert.pnl" 20 40 T 91 0.666666666666667 0 0.666666666666667 -1.00000000000006 157.666666666668
 4
 "$color0""_3DFace"
 "$color1""FwStateOKPhysics"
 "$sDpName""$sDpName"
 "$sDpSubName"".Status.On"
-3 17 "inhibit"
+3 17 "inhibit" -1
 "objects\\fwGeneral\\fwLedWithAlert.pnl" 20 40 T 120 0.666666666666667 0 0.666666666666667 110 157.666666666668
 4
 "$color0""_3DFace"
 "$color1""FwAlarmWarnAck"
 "$sDpName""$sDpName"
 "$sDpSubName"".Status.Inhibit"
-3 18 "PANEL_REF19"
+3 18 "PANEL_REF19" -1
 "objects\\fwGeneral\\fwLedWithAlert.pnl" 20 40 T 124 0.666666666666667 0 0.666666666666667 -5.6843418860808e-014 304.666666666667
 4
 "$color0"""
 "$color1"""
 "$sDpName""$sDpName"
 "$sDpSubName"".Status.InputFailure"
-3 19 "PANEL_REF20"
+3 19 "PANEL_REF20" -1
 "objects\\fwGeneral\\fwLedWithAlert.pnl" 20 40 T 127 0.666666666666667 0 0.666666666666667 -6.3948846218409e-014 335.666666666667
 4
 "$color0"""
 "$color1"""
 "$sDpName""$sDpName"
 "$sDpSubName"".Status.SensorFailure"
-3 20 "PANEL_REF21"
+3 20 "PANEL_REF21" -1
 "objects\\fwGeneral\\fwLedWithAlert.pnl" 20 40 T 130 0.666666666666667 0 0.666666666666667 -6.3948846218409e-014 367.666666666667
 4
 "$color0"""
 "$color1"""
 "$sDpName""$sDpName"
 "$sDpSubName"".Status.SystemFailure"
-3 21 "PANEL_REF22"
+3 21 "PANEL_REF22" -1
 "objects\\fwGeneral\\fwLedWithAlert.pnl" 20 40 T 133 0.666666666666667 0 0.666666666666667 79.9999999999999 367.666666666667
 4
 "$color0""_3DFace"
