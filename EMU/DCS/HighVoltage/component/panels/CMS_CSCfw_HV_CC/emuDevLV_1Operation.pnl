@@ -1,4 +1,4 @@
-V 10
+V 11
 1
 LANG:1 0 
 PANEL,-1 -1 681 485 N "_3DFace" 6
@@ -10,6 +10,15 @@ PANEL,-1 -1 681 485 N "_3DFace" 6
 "$sParentReference"
 "main()
 {
+  // ==== access control ====
+  if (isFunctionDefined(\"fwAccessControl_setupPanel\")) {
+    initAcConstants();
+    dyn_string ex;
+    fwAccessControl_setupPanel(\"accessPrivilegesChangedCB\", ex);
+    if (emu_checkException(ex)) { return; }
+  }
+  //=========================
+
 $project_station;
 $project_system;
   
@@ -36,7 +45,17 @@ $pars_parent;
 
 //===============================================
 
-}" 0
+}
+
+/** initialize constants required for access control - basically just fill in the arrays of control and expert control button names. */
+void initAcConstants() {
+  controlButtons = makeDynString(\"isDeviceEnabledCheck\",                               // device enable/disable
+                                 \"cfeb01\", \"cfeb02\", \"cfeb03\", \"cfeb04\", \"cfeb05\",     // enable/disable CFEBs
+                                 \"t_cfeb1\", \"t_cfeb2\", \"t_cfeb3\", \"t_cfeb4\", \"t_cfeb5\",// labels for CFEB enable/disable
+                                 \"alct\", \"t_alct\");                                    // enable/disable ALCT checkbox and label
+  expertControlButtons = makeDynString(\"FPOWER_OFF\", \"FPOWER_ON\", \"POWER_ON\", \"LINE1\", \"LINE2\", \"LINE3\", \"TWO_DP\"); // some not used buttons
+}
+" 0
  E E E E 1 -1 -1 0  10 10
 ""0  1
 E "#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
@@ -45,7 +64,18 @@ E "#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
 #uses \"CMS_CSCfw_HV_CC/emuDcs4.ctl\"
 #uses \"CMS_CSCfw_HV_CC/emuDcsDim.ctl\"
 #uses \"CMS_CSCfw_HV_CC/emuAlert.ctl\"
-#uses \"CMS_CSCfw_HV_CC/emufw.ctl\"" 0
+#uses \"CMS_CSCfw_HV_CC/emufw.ctl\"
+#uses \"CMS_CSC_common/emu_accessControl.ctl\"
+
+/** for access control - arrays of control and expert control buttons which should be under access control */
+dyn_string controlButtons;
+dyn_string expertControlButtons;
+
+/** This function is called whenever the user privileges change and just passes that to emu_enableDisableControl() which takes care of enabling/disabling buttons. */
+void accessPrivilegesChangedCB(string dummy1, string dummy2) {
+  emu_enableDisableControl(controlButtons, true, \"lblNoControl\", expertControlButtons, true);
+}
+" 0
  2
 "CBRef" "1"
 "EClose" E
@@ -67,9 +97,8 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 10 10 674 462
+LANG:1 26 Arial,-1,16,5,40,0,0,0,0,0
+0  10 10 674 462
 "main()
 {
 	//this code is used to ensure that all $ parameters are received by this panel

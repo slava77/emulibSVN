@@ -1,4 +1,4 @@
-V 10
+V 11
 1
 LANG:1 17 DevHV_PRoperation
 PANEL,-1 -1 809 143 N "_3DFace" 4
@@ -38,6 +38,15 @@ mudcsApplyPanelAccessControl(string s1,string s2){
 //=============================================
 main()
 {
+  // ==== access control ====
+  if (isFunctionDefined(\"fwAccessControl_setupPanel\")) {
+    initAcConstants();
+    dyn_string ex;
+    fwAccessControl_setupPanel(\"accessPrivilegesChangedCB\", ex);
+    if (emu_checkException(ex)) { return; }
+  }
+  //=========================
+  
 rootButtons=makeDynString(\"test\",\"\");  
  
 string fsm; 
@@ -368,7 +377,12 @@ init_dp_switch(){
    mudcsDebug(DpName+\".:_alert_hdl\" + \"is not configured\");  
   }
 }
-" 0
+
+/** initialize constants required for access control - basically just fill in the arrays of control and expert control button names. */
+void initAcConstants() {
+  controlButtons = makeDynString(\"primaryOn\", \"primaryOFF\"); // on/off
+  expertControlButtons = makeDynString();
+}" 0
  E E E E 1 -1 -1 0  -9 10
 ""0  1
 E "#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
@@ -378,6 +392,11 @@ E "#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
 #uses \"CMS_CSCfw_HV_CC/emuDcsDim.ctl\"
 #uses \"CMS_CSCfw_HV_CC/emuAlert.ctl\"
 #uses \"CMS_CSCfw_HV_CC/emufw.ctl\"
+#uses \"CMS_CSC_common/emu_accessControl.ctl\"
+
+/** for access control - arrays of control and expert control buttons which should be under access control */
+dyn_string controlButtons;
+dyn_string expertControlButtons;
 
 string project_station;
 string project_system;
@@ -393,6 +412,10 @@ string current_chamber_set;
 int requested_primary_state, primary_status;
 int requested_module_state, summary_channel_status;
 
+/** This function is called whenever the user privileges change and just passes that to emu_enableDisableControl() which takes care of enabling/disabling buttons. */
+void accessPrivilegesChangedCB(string dummy1, string dummy2) {
+  emu_enableDisableControl(controlButtons, true, \"lblNoControl\", expertControlButtons, true);
+}
 
 //===================================================
 
@@ -464,9 +487,8 @@ LANG:1 0
 
 0
 1
-LANG:1 111 -*-Helvetica [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 561 110 681 131.521739130435
+LANG:1 38 Helvetica [Adobe],-1,14,5,75,0,0,0,0,0
+0  561 110 681 132
 
 T 
 1
@@ -506,9 +528,8 @@ LANG:1 0
 
 0
 1
-LANG:1 100 -*-Times [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Times [Adobe]
-0 ""
- 13 12 576 80
+LANG:1 34 Times [Adobe],-1,14,5,50,0,0,0,0,0
+0  13 12 576 80
 "
 main()
 {
@@ -593,9 +614,8 @@ LANG:1 0
 58 
 18 18 "20" 0 20 164
 1
-LANG:1 100 -*-Times [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Times [Adobe]
-0 ""
-0 1 1 1 7
+LANG:1 34 Times [Adobe],-1,14,5,50,0,0,0,0,0
+0 0 1 1 1 7
 1 0
 13 3
 "primaryOFF"
@@ -610,9 +630,8 @@ LANG:1 0
 
 0
 1
-LANG:1 111 -*-Helvetica [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 681 110 801 131.521739130435
+LANG:1 38 Helvetica [Adobe],-1,14,5,75,0,0,0,0,0
+0  681 110 801 132
 
 T 
 1
@@ -649,9 +668,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 11 102 81 128
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  11 102 81 128
 3 "0s" 0 0 0 0 0 -1  E E "main()
 {
 
@@ -679,9 +697,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 81 102 151 128
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  81 102 151 128
 3 "0s" 0 0 0 0 0 -1  E E "main()
 {
 
@@ -702,9 +719,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 151 102 221 128
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  151 102 221 128
 3 "0s" 0 0 0 0 0 -1  E E "main()
 {
 primary_box_command(\"pr_rmpDn\", 4);
@@ -723,9 +739,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 221 102 291 128
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  221 102 291 128
 3 "0s" 0 0 0 0 0 -1  E E "main()
 {
 primary_box_command(\"pr_imax\",6);
@@ -744,12 +759,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 31 82 60 104
+E E 0 0 0 0 1 E U  1 E 31 82 62 99
 1 2 2 "0s" 0 0 0 192 0 0  31 82 1
 1
-LANG:1 111 -*-Helvetica [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,14,5,75,0,0,0,0,0
+0 1
 LANG:1 4 vset
 2 9
 "PRIMITIVE_TEXT1"
@@ -764,12 +778,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 91 82 142 104
+E E 0 0 0 0 1 E U  1 E 91 82 145 99
 1 2 2 "0s" 0 0 0 192 0 0  91 82 1
 1
-LANG:1 111 -*-Helvetica [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,14,5,75,0,0,0,0,0
+0 1
 LANG:1 6 rampUp
 2 10
 "PRIMITIVE_TEXT1"
@@ -784,12 +797,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 161 82 212 104
+E E 0 0 0 0 1 E U  1 E 161 82 215 99
 1 2 2 "0s" 0 0 0 192 0 0  161 82 1
 1
-LANG:1 111 -*-Helvetica [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,14,5,75,0,0,0,0,0
+0 1
 LANG:1 6 rampDn
 2 11
 "PRIMITIVE_TEXT1"
@@ -804,12 +816,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 241 82 272 104
+E E 0 0 0 0 1 E U  1 E 241 82 273 99
 1 2 2 "0s" 0 0 0 192 0 0  241 82 1
 1
-LANG:1 111 -*-Helvetica [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,14,5,75,0,0,0,0,0
+0 1
 LANG:1 4 imax
 22 21
 "primary_number"
@@ -824,9 +835,8 @@ LANG:1 0
 
 0
 1
-LANG:1 103 -*-Times [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Times [Adobe]
-0 ""
- 471 80 541 108
+LANG:1 34 Times [Adobe],-1,14,5,75,0,0,0,0,0
+0  471 80 541 108
 2
 1
 LANG:1 1 1
@@ -867,12 +877,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 720 40 736 61
+E E 0 0 0 0 1 E U  1 E 720 40 737 57
 1 2 2 "0s" 0 0 0 192 0 0  720 40 1
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0 1
 LANG:1 2 V2
 14 24
 "module_status"
@@ -887,9 +896,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 350 100 430 126
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  350 100 430 126
 3 "0s" 0 0 0 0 0 -1  E E "main()
 {
 
@@ -911,13 +919,31 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 342 82 430 97
+E E 0 0 0 0 1 E U  1 E 342 82 438 97
 1 2 2 "0s" 0 0 0 192 0 0  342 82 1
 1
-LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
-1
+LANG:1 38 Bitstream Charter,-1,12,5,75,0,0,0,0,0
+0 1
 LANG:1 13 MODULE Status
+2 26
+"lblNoControl"
+""
+1 1110 -426 E E E 1 E 1 E N "_3DText" E N "_Window" E E
+ E E
+51 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 582 12 780 29
+1 2 2 "0s" 0 0 0 192 0 0  582 12 1
+1
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0 1
+LANG:1 32 You don't have control privilege
 0
 LAYER, 1 
 1
