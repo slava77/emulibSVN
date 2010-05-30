@@ -17,6 +17,9 @@
  #uses "CMS_CSCfw_LV_CRB/mudcs9XAlertReconfigAllSlowControls.ctl"
 #uses "aes.ctl"
 
+#uses "CMS_CSC_common/emu_common.ctl"
+#uses "CMS_CSC_common/emu_alert.ctl"
+
 /** if this flag is set to true the full component installation is performed, otherwise only patch() is called. */
 global const bool EMU_HVCC_INSTALLATION_FULL = false;
 
@@ -51,5 +54,7 @@ mudcsDeleteAllTrees();
   * This function is called when EMU_HVCC_INSTALLATION_FULL is FALSE. Put the desired patch actions here.
   */
 void patch() {
+  emu_info("Updating all alert classes");
   emuAlert_updateAllAlertClasses();
+  emu_info("Done updating alert classes");
 }
