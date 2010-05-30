@@ -60,6 +60,7 @@ void emuAlert_updateAlertClass(string dpe, string dpType = "") {
   
   // set class
   string alertClass = emuAlert_getClass(dpType);
+  alertClass = dpSubStr(alertClass, DPSUB_DP_EL);
   if (strpos(dpe, ".") < 0) { dpe += "."; }
   emu_debug("Setting alert class of " + dpe + " to " + alertClass, emu_DEBUG_DETAIL);
   dpSet(dpe + ":_alert_hdl.._class", alertClass);
