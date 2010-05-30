@@ -1,7 +1,7 @@
 <component>
 <name>CMS_CSC_common</name>
-<version>1.0.1</version>
-<date>2009/04/21</date>
+<version>1.1.0</version>
+<date>2010/05/30</date>
 <required>fwConfigurationDB=3.3.53</required>
 <required>fwCore=4.0.0</required>
 <required>fwDevice=4.0.0</required>

@@ -13,10 +13,17 @@ const int emu_DEBUG_FUNC_START_STOP = 2;
 const int emu_DEBUG_DETAIL = 4;
 
 /** Debug level (bitmask)
+  0 - nothing
   1 - general debug messages
   2 - function start/stop messages
+  4 - detailed debug messgaes
+  
+  combos:
+  3 - general + function start/stop messages
+  5 - general + detailed messages
+  7 - general + function start/stop + detailed messages
 */
-global int g_emu_Debug = 0;//emu_DEBUG_GENERAL | emu_DEBUG_FUNC_START_STOP;
+global int g_emu_Debug = 0;
 
 global dyn_string g_emu_debugBacktrace;
 global dyn_int g_emu_reportingThreads;
