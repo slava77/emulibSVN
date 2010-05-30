@@ -40,9 +40,13 @@ dynClear(EMU_LEVEL);
 
 db_set_cc();
 db_set_cc_new(); // postpone
-db_set_hv();
 db_set_disk_level();
 db_set_emu_level();  
+
+if (CSC_fwG_g_904) {
+  db_set_hv(); // not used at P5 anymore - only imported through DP list (which is generated using HV map import utility
+}
+
 
 
     int i10_i=1;
@@ -107,8 +111,11 @@ for(i=1;i<=8;i++){
   
   dpSet("Db_o.Wheels_o.Wheel"+i+".InDynatemAndSetNumberList",CC_IN[i]); 
   /*if(i!=1 & i!=8)*/dpSet("Db_o.Wheels_o.Wheel"+i+".OutDynatemAndSetNumberList",CC_OUT[i]);
+
+if (CSC_fwG_g_904) { // not used at P5 anymore - only imported through DP list (which is generated using HV map import utility               
   dpSet("Db_o.Wheels_o.Wheel"+i+".InHVsetList",HV_IN[i]); 
   /*if(i!=1 & i!=8)*/dpSet("Db_o.Wheels_o.Wheel"+i+".OutHVsetList",HV_OUT[i]);   
+}
      
   dpSet("Db_o.Wheels_o.Wheel"+i+".DiskLevelDevicesCoordinates",DISK_LEVEL[i]); 
 } // for

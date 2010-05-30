@@ -1,4 +1,5 @@
-
+#uses "CMS_CSC_common/emu_common.ctl"
+#uses "CMS_CSC_common/emu_alert.ctl"
 
 string DpNameStartForAlertConfig;
 mudcsAlertCreateMain()
@@ -30,6 +31,10 @@ mudcsAlertCreateMain()
   mudcsAlertReconfig("LV_1;.data.Cfeb_o.c60", ".noalert_channels", true);
  
   fwLvCr_CSC_TEMP_alert_main(true);  
+  
+  emu_info("Updating all alert classes");
+  emuAlert_updateAllAlertClasses();
+  emu_info("Done updating alert classes");
 }
 
 //CSC_fwG_g_csc_part
