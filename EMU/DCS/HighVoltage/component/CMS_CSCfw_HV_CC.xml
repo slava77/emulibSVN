@@ -1,6 +1,6 @@
  <component>
 	<name>CMS_CSCfw_HV_CC</name>
-	<version>1.0.1</version>
+	<version>2.7.0</version>
 	<date>2010/05/30</date>
 	<required>CMS_CSC_common=1.1.0</required>
 	<required>fwCore=4.0.0</required>
