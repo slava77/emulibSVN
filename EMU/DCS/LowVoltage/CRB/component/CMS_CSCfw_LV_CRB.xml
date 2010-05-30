@@ -1,7 +1,7 @@
  <component>
         <name>CMS_CSCfw_LV_CRB</name>
         <version>1.1.0</version>
-        <date>2010/05/30</date>
+        <date>2010/05/30</date> 
 		<required>fwCore=4.0.0</required>
 		<required>fwAnalogDigital=4.0.0</required>
 		<required>fwElmb=3.5.3</required>

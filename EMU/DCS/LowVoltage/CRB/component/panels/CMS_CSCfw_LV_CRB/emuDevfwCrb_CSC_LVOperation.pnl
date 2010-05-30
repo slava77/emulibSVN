@@ -1,4 +1,4 @@
-V 10
+V 11
 1
 LANG:1 27 emuDevfwCrb_CSC_LVOperation
 PANEL,-1 -1 694 494 N "_3DFace" 3
@@ -12,6 +12,14 @@ PANEL,-1 -1 694 494 N "_3DFace" 3
 
 main()
 {
+  // ==== access control ====
+  if (isFunctionDefined(\"fwAccessControl_setupPanel\")) {
+    initAcConstants();
+    dyn_string ex;
+    fwAccessControl_setupPanel(\"accessPrivilegesChangedCB\", ex);
+    if (emu_checkException(ex)) { return; }
+  }
+  //=========================
   
 //mudcsLvDebug($node);
 //mudcsLvDebug($obj);  
@@ -517,7 +525,18 @@ else setValue(\"t_\"+i,\"backCol\",\"White\");
   
 }
 //====================================================
-" 0
+
+/** initialize constants required for access control - basically just fill in the arrays of control and expert control button names. */
+void initAcConstants() {
+  controlButtons = makeDynString(\"enable_disable\", \"lblOnOff\", \"isDeviceEnabledCheck\",                   // on/off and enable/disable whole crate
+                                 \"off1\", \"off2\", \"off3\", \"off4\", \"off5\", \"off6\", \"off7\", \"off8\", \"off9\", // TMB+DMB on
+                                 \"on1\", \"on2\", \"on3\", \"on4\", \"on5\", \"on6\", \"on7\", \"on8\", \"on9\",          // TMB+DMB off
+                                 \"ch01\", \"ch02\", \"ch03\", \"ch04\", \"ch05\", \"ch06\", \"ch07\", \"ch08\", \"ch09\", // TMB+DMB enable/disable
+                                 \"te_1\", \"te_2\", \"te_3\", \"te_4\", \"te_5\", \"te_6\", \"te_7\", \"te_8\", \"te_9\", // DMB temperature enable/disable
+                                 \"on10\", \"on11\", \"on12\", \"off10\", \"off11\", \"off12\",                      // CCB, VCC, 1.5V on/off
+                                 \"ccb\", \"cc\", \"1.5\");                                                    // CCB, VCC, 1.5V enable/disable
+  expertControlButtons = makeDynString();
+}" 0
  E E E E 1 -1 -1 0  10 10
 ""0  1
 E "#uses \"CMS_CSCfw_LV_CRB/emuDcsLv.ctl\"
@@ -527,6 +546,11 @@ E "#uses \"CMS_CSCfw_LV_CRB/emuDcsLv.ctl\"
 #uses \"CMS_CSCfw_LV_CRB/emuDcsCrbAlert.ctl\"
 //#uses \"CMS_CSCfw_LV_CRB/emuDcsMrtnAlert.ctl\"
 #uses \"CMS_CSCfw_LV_CRB/emufw.ctl\"
+#uses \"CMS_CSC_common/emu_accessControl.ctl\"
+
+/** for access control - arrays of control and expert control buttons which should be under access control */
+dyn_string controlButtons;
+dyn_string expertControlButtons;
 
 dyn_string g_dps2;
 
@@ -881,6 +905,11 @@ else{
 
 }
 //====================================
+
+/** This function is called whenever the user privileges change and just passes that to emu_enableDisableControl() which takes care of enabling/disabling buttons. */
+void accessPrivilegesChangedCB(string dummy1, string dummy2) {
+  emu_enableDisableControl(controlButtons, true, \"lblNoControl\", expertControlButtons, true);
+}
 " 0
  2
 "CBRef" "1"
@@ -917,9 +946,8 @@ LANG:1 0
 
 0
 1
-LANG:1 111 -*-Helvetica [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 62 88 132 117
+LANG:1 38 Helvetica [Adobe],-1,14,5,75,0,0,0,0,0
+0  62 88 132 117
 3 "0s" 0 0 0 0 0 -1  "main()
 {
   string name;
@@ -954,12 +982,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 90 52 107
+E E 0 0 0 0 1 E U  1 E 12 90 52 109
 1 2 2 "0s" 0 0 0 192 0 0  12 90 1
 1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
-1
+LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
+0 1
 LANG:1 4 ch01
 14 9
 "34_1"
@@ -974,9 +1001,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 132 88 202 114
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  132 88 202 114
 3 "0s" 0 0 0 0 0 -1  E E E
 13 20
 "enable_disable"
@@ -991,9 +1017,8 @@ LANG:1 0
 
 0
 1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
- 352 418 562 450
+LANG:1 36 Courier [Adobe],-1,20,5,75,0,0,0,0,0
+0  352 418 562 450
 
 T 
 1
@@ -1029,46 +1054,9 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 202 88 272 114
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  202 88 272 114
 3 "0s" 0 0 0 0 0 -1  E E E
-13 29
-"refresh_data"
-""
-1 132 418 E E E 1 E 0 E N "_3DText" E N {0,153,153} E E
- E E
-57 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
- 132 418 302 450
-
-T 
-1
-LANG:1 12 refresh_data
-"main()
-{
-
-int current_status;
-
-
-
-//// does nmatter for OPC client:  mudcsCommand(\"CRB\",DpNameFsm,\"get_data\");
-
-}" 0
- E E "
-main(){
-
-
-}" 0
-
 2 31
 "ch02_t"
 ""
@@ -1082,12 +1070,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 113 52 130
+E E 0 0 0 0 1 E U  1 E 12 113 52 132
 1 2 2 "0s" 0 0 0 192 0 0  12 113 1
 1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
-1
+LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
+0 1
 LANG:1 4 ch02
 2 35
 "ch03_t"
@@ -1102,12 +1089,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 133 52 150
+E E 0 0 0 0 1 E U  1 E 12 133 52 152
 1 2 2 "0s" 0 0 0 192 0 0  12 133 1
 1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
-1
+LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
+0 1
 LANG:1 4 ch03
 2 39
 "ch04_t"
@@ -1122,12 +1108,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 153 52 170
+E E 0 0 0 0 1 E U  1 E 12 153 52 172
 1 2 2 "0s" 0 0 0 192 0 0  12 153 1
 1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
-1
+LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
+0 1
 LANG:1 4 ch04
 2 43
 "ch05_t"
@@ -1142,12 +1127,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 173 52 190
+E E 0 0 0 0 1 E U  1 E 12 173 52 192
 1 2 2 "0s" 0 0 0 192 0 0  12 173 1
 1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
-1
+LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
+0 1
 LANG:1 4 ch05
 2 47
 "ch06_t"
@@ -1162,12 +1146,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 193 52 210
+E E 0 0 0 0 1 E U  1 E 12 193 52 212
 1 2 2 "0s" 0 0 0 192 0 0  12 193 1
 1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
-1
+LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
+0 1
 LANG:1 4 ch06
 2 51
 "ch07_t"
@@ -1182,12 +1165,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 213 52 230
+E E 0 0 0 0 1 E U  1 E 12 213 52 232
 1 2 2 "0s" 0 0 0 192 0 0  12 213 1
 1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
-1
+LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
+0 1
 LANG:1 4 ch07
 2 55
 "ch08_t"
@@ -1202,12 +1184,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 233 52 250
+E E 0 0 0 0 1 E U  1 E 12 233 52 252
 1 2 2 "0s" 0 0 0 192 0 0  12 233 1
 1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
-1
+LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
+0 1
 LANG:1 4 ch08
 2 59
 "ch09_t"
@@ -1222,12 +1203,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 253 52 270
+E E 0 0 0 0 1 E U  1 E 12 253 52 272
 1 2 2 "0s" 0 0 0 192 0 0  12 253 1
 1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
-1
+LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
+0 1
 LANG:1 4 ch09
 2 63
 "PRIMITIVE_TEXT1"
@@ -1242,12 +1222,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 22 293 42 310
+E E 0 0 0 0 1 E U  1 E 22 293 42 312
 1 2 2 "0s" 0 0 0 192 0 0  22 293 1
 1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
-1
+LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
+0 1
 LANG:1 2 in
 14 82
 "cc_33"
@@ -1262,9 +1241,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 332 331 402 357
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  332 331 402 357
 3 "0s" 0 0 0 0 0 -1  E E E
 2 83
 "cc_t"
@@ -1279,12 +1257,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 304 335 334 352
+E E 0 0 0 0 1 E U  1 E 304 335 334 354
 1 2 2 "0s" 0 0 0 192 0 0  304 335 1
 1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
-1
+LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
+0 1
 LANG:1 3 vcc
 14 84
 "cc_50"
@@ -1299,9 +1276,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 402 331 472 357
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  402 331 472 357
 3 "0s" 0 0 0 0 0 -1  E E E
 14 86
 "ccb_33"
@@ -1316,9 +1292,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 332 308 402 334
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  332 308 402 334
 3 "0s" 0 0 0 0 0 -1  E E E
 2 87
 "ccb_t"
@@ -1333,12 +1308,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 304 312 334 329
+E E 0 0 0 0 1 E U  1 E 304 312 334 331
 1 2 2 "0s" 0 0 0 192 0 0  304 312 1
 1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
-1
+LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
+0 1
 LANG:1 3 ccb
 14 88
 "ccb_50"
@@ -1353,9 +1327,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 402 308 472 334
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  402 308 472 334
 3 "0s" 0 0 0 0 0 -1  E E E
 14 90
 "15_1"
@@ -1370,14 +1343,13 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 332 353 402 379
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  332 353 402 379
 3 "0s" 0 0 0 0 0 -1  E E E
 2 91
 "1.5_t"
 ""
-1 4 205.850340136055 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+1 8 142.8907708208015 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
  E E
 181 0 0 0 0 0
 E E E
@@ -1387,12 +1359,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E 1 0 1.23809523809524 2 -77.1428571428572 1 E 302 347 332 364
+E E 0 0 0 0 1 E 1 0 1.23809523809524 2 -77.1428571428572 1 E 302 347 332 366
 1 2 2 "0s" 0 0 0 192 0 0  302 347 1
 1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
-1
+LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
+0 1
 LANG:1 3 1.5
 14 92
 "15_2"
@@ -1407,9 +1378,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 402 353 472 379
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  402 353 472 379
 3 "0s" 0 0 0 0 0 -1  E E E
 14 98
 "33_2"
@@ -1424,9 +1394,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 62 108 132 134
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  62 108 132 134
 3 "0s" 0 0 0 0 0 -1  "main()
 {
     string name;
@@ -1460,9 +1429,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 132 108 202 134
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  132 108 202 134
 3 "0s" 0 0 0 0 0 -1  E E E
 14 100
 "50_2"
@@ -1477,9 +1445,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 202 108 272 134
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  202 108 272 134
 3 "0s" 0 0 0 0 0 -1  E E E
 14 101
 "33_3"
@@ -1494,9 +1461,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 62 128 132 154
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  62 128 132 154
 3 "0s" 0 0 0 0 0 -1  "main()
 {
     string name;
@@ -1530,9 +1496,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 132 128 202 154
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  132 128 202 154
 3 "0s" 0 0 0 0 0 -1  E E E
 14 103
 "50_3"
@@ -1547,9 +1512,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 202 128 272 154
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  202 128 272 154
 3 "0s" 0 0 0 0 0 -1  E E E
 14 104
 "33_4"
@@ -1564,9 +1528,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 62 148 132 174
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  62 148 132 174
 3 "0s" 0 0 0 0 0 -1  "main()
 {
     string name;
@@ -1600,9 +1563,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 132 148 202 174
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  132 148 202 174
 3 "0s" 0 0 0 0 0 -1  E E E
 14 106
 "50_4"
@@ -1617,9 +1579,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 202 148 272 174
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  202 148 272 174
 3 "0s" 0 0 0 0 0 -1  E E E
 14 107
 "33_5"
@@ -1634,9 +1595,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 62 168 132 194
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  62 168 132 194
 3 "0s" 0 0 0 0 0 -1  "main()
 {
     string name;
@@ -1670,9 +1630,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 132 168 202 194
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  132 168 202 194
 3 "0s" 0 0 0 0 0 -1  E E E
 14 109
 "50_5"
@@ -1687,9 +1646,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 202 168 272 194
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  202 168 272 194
 3 "0s" 0 0 0 0 0 -1  E E E
 14 110
 "33_6"
@@ -1704,9 +1662,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 62 188 132 214
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  62 188 132 214
 3 "0s" 0 0 0 0 0 -1  "main()
 {
     string name;
@@ -1740,9 +1697,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 132 188 202 214
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  132 188 202 214
 3 "0s" 0 0 0 0 0 -1  E E E
 14 112
 "50_6"
@@ -1757,9 +1713,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 202 188 272 214
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  202 188 272 214
 3 "0s" 0 0 0 0 0 -1  E E E
 14 113
 "33_7"
@@ -1774,9 +1729,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 62 208 132 234
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  62 208 132 234
 3 "0s" 0 0 0 0 0 -1  "main()
 {
     string name;
@@ -1810,9 +1764,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 132 208 202 234
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  132 208 202 234
 3 "0s" 0 0 0 0 0 -1  E E E
 14 115
 "50_7"
@@ -1827,9 +1780,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 202 208 272 234
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  202 208 272 234
 3 "0s" 0 0 0 0 0 -1  E E E
 14 116
 "33_8"
@@ -1844,9 +1796,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 62 228 132 254
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  62 228 132 254
 3 "0s" 0 0 0 0 0 -1  "main()
 {
     string name;
@@ -1880,9 +1831,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 132 228 202 254
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  132 228 202 254
 3 "0s" 0 0 0 0 0 -1  E E E
 14 118
 "50_8"
@@ -1897,9 +1847,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 202 228 272 254
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  202 228 272 254
 3 "0s" 0 0 0 0 0 -1  E E E
 14 119
 "33_9"
@@ -1914,9 +1863,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 62 248 132 274
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  62 248 132 274
 3 "0s" 0 0 0 0 0 -1  "main()
 {
     string name;
@@ -1950,9 +1898,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 132 248 202 274
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  132 248 202 274
 3 "0s" 0 0 0 0 0 -1  E E E
 14 121
 "50_9"
@@ -1967,9 +1914,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 202 248 272 274
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  202 248 272 274
 3 "0s" 0 0 0 0 0 -1  E E E
 14 125
 "45"
@@ -1984,9 +1930,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 70 288 140 314
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  70 288 140 314
 3 "0s" 0 0 0 0 0 -1  E E E
 14 126
 "55"
@@ -2001,9 +1946,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 138 288 208 314
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  138 288 208 314
 3 "0s" 0 0 0 0 0 -1  E E E
 14 127
 "5stby"
@@ -2018,9 +1962,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 206 288 276 314
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  206 288 276 314
 3 "0s" 0 0 0 0 0 -1  E E E
 14 128
 "exclude"
@@ -2035,9 +1978,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 500 448 610 474
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  500 448 610 474
 3 "0s" 0 0 0 0 0 -1  E E "main()
 {
 
@@ -2200,9 +2142,8 @@ LANG:1 0
 E E 0 0 0 0 1 E U  1 E 302 450 358 467
 1 2 2 "0s" 0 0 0 192 0 0  302 450 1
 1
-LANG:1 111 -*-Helvetica [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,14,5,75,0,0,0,0,0
+0 1
 LANG:1 7 exclude
 2 130
 "exclude_text2"
@@ -2220,34 +2161,28 @@ LANG:1 0
 E E 0 0 0 0 1 E U  1 E 362 450 570 556
 1 2 2 "0s" 0 0 0 192 0 0  362 450 6
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,12,5,50,0,0,0,0,0
+0 1
 LANG:1 36 examples: exclude ch03, include ch03
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,12,5,50,0,0,0,0,0
+0 1
 LANG:1 6 Use it
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,12,5,50,0,0,0,0,0
+0 1
 LANG:1 33 a) to keep excluded channels off 
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,12,5,50,0,0,0,0,0
+0 1
 LANG:1 25    at the module power on
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,12,5,50,0,0,0,0,0
+0 1
 LANG:1 32 b) for excluded channels not to 
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,12,5,50,0,0,0,0,0
+0 1
 LANG:1 38    affect a error status of the module
 20 131
 "isTrending"
@@ -2262,9 +2197,8 @@ LANG:1 53 check Trend and click Vmon or Imon box of the channel
 
 0
 1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
- 40 420 125 450
+LANG:1 36 Courier [Adobe],-1,20,5,75,0,0,0,0,0
+0  40 420 125 450
 1
 T 
 1
@@ -2290,9 +2224,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 70 364 284 388
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  70 364 284 388
 0
 
 E
@@ -2312,12 +2245,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 370 72 387
+E E 0 0 0 0 1 E U  1 E 12 370 72 389
 1 2 2 "0s" 0 0 0 192 0 0  12 370 1
 1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
-1
+LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
+0 1
 LANG:1 6 errors
 2 136
 "fsm_label"
@@ -2335,9 +2267,8 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 62 30 81 51
 0 2 2 "0s" 0 0 0 192 0 0  62 30 1
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,16,5,75,0,0,0,0,0
+0 1
 LANG:1 2 ID
 2 21
 "NOT_CONNECTED"
@@ -2352,17 +2283,15 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 60 50 360 86
+E E 0 0 0 0 1 E U  1 E 60 50 360 90
 1 2 2 "0s" 0 0 0 192 0 0  60 50 2
 1
-LANG:1 91 -*-Courier-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier
-0 ""
-1
+LANG:1 28 Courier,-1,16,5,75,0,0,0,0,0
+0 1
 LANG:1 25    DEVICE HAS PROBLEMS   
 1
-LANG:1 91 -*-Courier-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier
-0 ""
-1
+LANG:1 28 Courier,-1,16,5,75,0,0,0,0,0
+0 1
 LANG:1 30    WITH CAN BUS COMMUNICATION 
 6 139
 "3_13_33_43"
@@ -2608,7 +2537,7 @@ vme_crate_draw(sname);
 2 152
 "PRIMITIVE_TEXT5"
 ""
-1 1245.99821968235 514.229315361369 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 1619.748504038641 676.4704663800396 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 295 0 0 0 0 0
 E E E
@@ -2621,14 +2550,13 @@ LANG:1 0
 E E 0 1 1 2 1 E 0.916666666666667 0 0.916666666666667 298.833333333333 127.5 1 E 310 30 330 50
 0 2 2 "0s" 0 0 0 64 0 0  310 30 1
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,75,0,0,0,0,0
+0 1
 LANG:1 2  1
 2 155
 "PRIMITIVE_TEXT8"
 ""
-1 1421.6959916731 514.229315361369 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 1836.383437447536 676.4704663800396 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 301 0 0 0 0 0
 E E E
@@ -2641,14 +2569,13 @@ LANG:1 0
 E E 0 1 1 2 1 E 0.916666666666667 0 0.916666666666667 334.833333333333 127.5 1 E 310 30 330 50
 0 2 2 "0s" 0 0 0 64 0 0  310 30 1
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,75,0,0,0,0,0
+0 1
 LANG:1 2  2
 2 156
 "PRIMITIVE_TEXT9"
 ""
-1 1524.18635866769 645.189228743355 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 1962.753815269379 837.9437269301801 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 303 0 0 0 0 0
 E E E
@@ -2661,14 +2588,13 @@ LANG:1 0
 E E 0 1 1 2 1 E 0.916666666666667 0 0.916666666666667 355.833333333333 154.333333333333 1 E 310 30 330 50
 0 2 2 "0s" 0 0 0 64 0 0  310 30 1
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,75,0,0,0,0,0
+0 1
 LANG:1 2  3
 2 157
 "PRIMITIVE_TEXT10"
 ""
-1 1421.6959916731 777.77597334748 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 1836.383437447536 1001.422866493369 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 305 0 0 0 0 0
 E E E
@@ -2681,14 +2607,13 @@ LANG:1 0
 E E 0 1 1 2 1 E 0.916666666666667 0 0.916666666666667 334.833333333333 181.5 1 E 310 30 330 50
 0 2 2 "0s" 0 0 0 64 0 0  310 30 1
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,75,0,0,0,0,0
+0 1
 LANG:1 2  4
 2 158
 "PRIMITIVE_TEXT11"
 ""
-1 1255.75920701518 777.77597334748 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 1631.783778116922 1001.422866493369 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 307 0 0 0 0 0
 E E E
@@ -2701,14 +2626,13 @@ LANG:1 0
 E E 0 1 1 2 1 E 0.916666666666667 0 0.916666666666667 300.833333333333 181.5 1 E 310 30 330 50
 0 2 2 "0s" 0 0 0 64 0 0  310 30 1
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,75,0,0,0,0,0
+0 1
 LANG:1 2  5
 2 159
 "PRIMITIVE_TEXT12"
 ""
-1 1153.26884002058 645.189228743355 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 1505.413400295071 837.9437269301801 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 309 0 0 0 0 0
 E E E
@@ -2721,9 +2645,8 @@ LANG:1 0
 E E 0 1 1 2 1 E 0.916666666666667 0 0.916666666666667 279.833333333333 154.333333333333 1 E 310 30 330 50
 0 2 2 "0s" 0 0 0 64 0 0  310 30 1
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,75,0,0,0,0,0
+0 1
 LANG:1 2  6
 13 160
 "off11"
@@ -2738,9 +2661,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 470 331 504 355
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  470 331 504 355
 
 T 
 1
@@ -2767,9 +2689,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 500 331 534 355
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  500 331 534 355
 
 T 
 1
@@ -2796,9 +2717,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 470 308 504 332
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  470 308 504 332
 
 T 
 1
@@ -2825,9 +2745,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 500 308 534 332
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  500 308 534 332
 
 T 
 1
@@ -2854,9 +2773,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 470 353 504 377
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  470 353 504 377
 
 T 
 1
@@ -2883,9 +2801,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 500 353 534 377
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  500 353 534 377
 
 T 
 1
@@ -2912,9 +2829,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 270 88 304 112
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  270 88 304 112
 
 T 
 1
@@ -2941,9 +2857,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 300 88 334 112
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  300 88 334 112
 
 T 
 1
@@ -2970,9 +2885,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 270 108 304 132
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  270 108 304 132
 
 T 
 1
@@ -2999,9 +2913,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 300 108 334 132
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  300 108 334 132
 
 T 
 1
@@ -3028,9 +2941,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 270 128 304 152
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  270 128 304 152
 
 T 
 1
@@ -3057,9 +2969,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 300 128 334 152
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  300 128 334 152
 
 T 
 1
@@ -3086,9 +2997,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 270 148 304 172
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  270 148 304 172
 
 T 
 1
@@ -3115,9 +3025,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 300 148 334 172
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  300 148 334 172
 
 T 
 1
@@ -3144,9 +3053,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 270 168 304 192
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  270 168 304 192
 
 T 
 1
@@ -3173,9 +3081,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 300 168 334 192
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  300 168 334 192
 
 T 
 1
@@ -3202,9 +3109,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 270 188 304 212
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  270 188 304 212
 
 T 
 1
@@ -3231,9 +3137,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 300 188 334 212
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  300 188 334 212
 
 T 
 1
@@ -3260,9 +3165,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 270 208 304 232
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  270 208 304 232
 
 T 
 1
@@ -3289,9 +3193,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 300 208 334 232
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  300 208 334 232
 
 T 
 1
@@ -3318,9 +3221,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 270 228 304 252
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  270 228 304 252
 
 T 
 1
@@ -3347,9 +3249,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 300 228 334 252
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  300 228 334 252
 
 T 
 1
@@ -3376,9 +3277,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 270 248 304 272
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  270 248 304 272
 
 T 
 1
@@ -3405,9 +3305,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 300 248 334 272
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  300 248 334 272
 
 T 
 1
@@ -3434,9 +3333,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 340 88 402 112
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0  340 88 402 112
 1
 T 
 1
@@ -3466,9 +3364,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 340 108 402 132
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0  340 108 402 132
 1
 T 
 1
@@ -3498,9 +3395,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 340 128 402 152
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0  340 128 402 152
 1
 T 
 1
@@ -3530,9 +3426,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 340 148 402 172
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0  340 148 402 172
 1
 T 
 1
@@ -3562,9 +3457,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 340 168 402 192
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0  340 168 402 192
 1
 T 
 1
@@ -3594,9 +3488,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 340 188 402 212
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0  340 188 402 212
 1
 T 
 1
@@ -3626,9 +3519,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 340 208 402 232
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0  340 208 402 232
 1
 T 
 1
@@ -3658,9 +3550,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 340 228 402 252
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0  340 228 402 252
 1
 T 
 1
@@ -3690,9 +3581,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 340 248 402 272
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0  340 248 402 272
 1
 T 
 1
@@ -3722,9 +3612,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 530 308 624 332
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0  530 308 624 332
 1
 T 
 1
@@ -3754,9 +3643,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 530 331 624 355
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0  530 331 624 355
 1
 T 
 1
@@ -3786,9 +3674,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 530 353 624 377
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0  530 353 624 377
 1
 T 
 1
@@ -3818,17 +3705,15 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 500 50 630 86
+E E 0 0 0 0 1 E U  1 E 500 50 630 90
 1 2 2 "0s" 0 0 0 192 0 0  500 50 2
 1
-LANG:1 91 -*-Courier-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier
-0 ""
-1
+LANG:1 28 Courier,-1,16,5,75,0,0,0,0,0
+0 1
 LANG:1 13   DEVICE IS  
 1
-LANG:1 91 -*-Courier-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier
-0 ""
-1
+LANG:1 28 Courier,-1,16,5,75,0,0,0,0,0
+0 1
 LANG:1 12    DISABLED 
 2 200
 "bus_number"
@@ -3846,12 +3731,11 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 62 6 109 27
 0 2 2 "0s" 0 0 0 192 0 0  62 6 1
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,16,5,75,0,0,0,0,0
+0 1
 LANG:1 4 BUS#
 2 201
-"PRIMITIVE_TEXT13"
+"lblOnOff"
 ""
 1 350 400 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
@@ -3866,9 +3750,8 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 350 400 556 417
 0 2 2 "0s" 0 0 0 192 0 0  350 400 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0 1
 LANG:1 50                   switch with no delay            
 20 203
 "isDeviceEnabledCheck"
@@ -3883,9 +3766,8 @@ LANG:1 0
 
 0
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 78 318 222 342
+LANG:1 33 MS Shell Dlg,-1,16,5,75,0,0,0,0,0
+0  78 318 222 342
 1
 T 
 1
@@ -3921,9 +3803,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 400 90 454 116
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  400 90 454 116
 3 "0s" 0 0 0 0 0 -1  E E E
 14 206
 "t_2"
@@ -3938,9 +3819,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 400 110 454 136
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  400 110 454 136
 3 "0s" 0 0 0 0 0 -1  E E E
 14 207
 "t_3"
@@ -3955,9 +3835,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 400 130 454 156
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  400 130 454 156
 3 "0s" 0 0 0 0 0 -1  E E E
 14 208
 "t_4"
@@ -3972,9 +3851,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 400 150 454 176
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  400 150 454 176
 3 "0s" 0 0 0 0 0 -1  E E E
 14 209
 "t_5"
@@ -3989,9 +3867,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 400 170 454 196
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  400 170 454 196
 3 "0s" 0 0 0 0 0 -1  E E E
 14 210
 "t_6"
@@ -4006,9 +3883,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 400 190 454 216
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  400 190 454 216
 3 "0s" 0 0 0 0 0 -1  E E E
 14 211
 "t_7"
@@ -4023,9 +3899,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 400 210 454 236
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  400 210 454 236
 3 "0s" 0 0 0 0 0 -1  E E E
 14 212
 "t_8"
@@ -4040,9 +3915,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 400 230 454 256
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  400 230 454 256
 3 "0s" 0 0 0 0 0 -1  E E E
 14 213
 "t_9"
@@ -4057,9 +3931,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 400 250 454 272
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  400 250 454 272
 3 "0s" 0 0 0 0 0 -1  E E E
 2 214
 "PRIMITIVE_TEXT14"
@@ -4077,9 +3950,8 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 402 72 452 92
 0 2 2 "0s" 0 0 0 64 0 0  402 72 1
 1
-LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,11,5,75,0,0,0,0,0
+0 1
 LANG:1 7   DMB T
 20 215
 "te_1"
@@ -4094,9 +3966,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 452 88 514 112
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0  452 88 514 112
 1
 T 
 1
@@ -4126,9 +3997,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 452 108 514 132
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0  452 108 514 132
 1
 T 
 1
@@ -4158,9 +4028,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 452 128 514 152
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0  452 128 514 152
 1
 T 
 1
@@ -4190,9 +4059,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 452 148 514 172
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0  452 148 514 172
 1
 T 
 1
@@ -4222,9 +4090,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 452 168 514 192
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0  452 168 514 192
 1
 T 
 1
@@ -4254,9 +4121,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 452 188 514 212
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0  452 188 514 212
 1
 T 
 1
@@ -4286,9 +4152,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 452 208 514 232
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0  452 208 514 232
 1
 T 
 1
@@ -4318,9 +4183,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 452 248 514 272
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0  452 248 514 272
 1
 T 
 1
@@ -4350,9 +4214,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 452 228 514 252
+LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
+0  452 228 514 252
 1
 T 
 1
@@ -4369,6 +4232,25 @@ E"main(int button, int state)
 {
   dmb_t_exclude();
 }" 0
+2 226
+"lblNoControl"
+""
+1 1018 -428 E E E 1 E 1 E N "_3DText" E N "_Window" E E
+ E E
+436 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 490 10 688 27
+1 2 2 "0s" 0 0 0 192 0 0  490 10 1
+1
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0 1
+LANG:1 32 You don't have control privilege
 0
 LAYER, 1 
 1
