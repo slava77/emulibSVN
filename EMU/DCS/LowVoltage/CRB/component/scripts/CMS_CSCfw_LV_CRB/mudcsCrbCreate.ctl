@@ -20,11 +20,21 @@
 
 #uses "CMS_CSCfw_LV_CRB/mudcs9XAlertReconfigAllSlowControls.ctl"
 
+#uses "CMS_CSC_common/emu_common.ctl"
+#uses "CMS_CSC_common/emu_alert.ctl"
+
 #uses "aes.ctl"
 
+/** if this flag is set to true the full component installation is performed, otherwise only patch() is called. */
+global const bool EMU_CRB_INSTALLATION_FULL = false;
 
 main(){
   
+  if (!EMU_CRB_INSTALLATION_FULL) {
+    patch();
+    exit(0); 
+  }
+
  int state, count=0;
  while(1){
  DebugTN("POSTINSTALLING IS RUNNING: please wait");
@@ -57,8 +67,17 @@ delay(5);
 // mudcsArchiveCrbMain(); 
  
   mudcsAlertReconfig("fwCrb_CSC_LV", ".off_channels", true);
-
+  emu_info("Updating all alert classes");
+  emuAlert_updateAllAlertClasses();
+  emu_info("Done updating alert classes");
+  
   mudcsCrbDistConfig();
     
  exit(0);
+}
+
+void patch() {
+  emu_info("Updating all alert classes");
+  emuAlert_updateAllAlertClasses();
+  emu_info("Done updating alert classes");
 }

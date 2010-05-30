@@ -20,10 +20,23 @@
 #uses "fwDeviceEditorNavigator/fwDeviceEditorNavigator.ctl"
 #uses "fwDeviceEditorNavigator/fwDeviceEditorNavigatorClipboard.ctl"
 
+#uses "CMS_CSC_common/emu_common.ctl"
+#uses "CMS_CSC_common/emu_alert.ctl"
+
 #uses "aes.ctl"
+
+/** if this flag is set to true the full component installation is performed, otherwise only patch() is called. */
+global const bool EMU_MRTN_INSTALLATION_FULL = false;
 
 
 main(){
+  
+  if (!EMU_MRTN_INSTALLATION_FULL) {
+    patch();
+    exit(0); 
+  }
+  
+  
  int state, state1, count=0;
  while(1){
  
@@ -52,4 +65,10 @@ delay(5);
   mudcsLvMrtnFsmPanelsAndFsmAliasesSetMain();  
 //  mudcsArchiveMrtnMain();   
   exit(0);
+}
+
+void patch() {
+  emu_info("Updating all alert classes");
+  emuAlert_updateAllAlertClasses();
+  emu_info("Done updating alert classes");
 }
