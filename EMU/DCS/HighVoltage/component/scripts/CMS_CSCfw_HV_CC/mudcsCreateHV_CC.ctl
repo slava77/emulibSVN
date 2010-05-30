@@ -57,4 +57,32 @@ void patch() {
   emu_info("Updating all alert classes");
   emuAlert_updateAllAlertClasses();
   emu_info("Done updating alert classes");
+  
+  dyn_string list;
+  dpGet("Db_o.PCToManID", list);
+  for (int i=1; i <= dynlen(list); i++) {
+    string host = list[i];
+    host = strtolower(host);
+    if (host == "dcspcs2g19-06") {
+      list[i] = "csc-dcs-pc1";
+    }
+    if (host == "dcspcs2g19-04") {
+      list[i] = "csc-dcs-pc2";
+    }
+  }
+  dpSet("Db_o.PCToManID", list);
+  
+  dpGet("Db_o.DimServerComputerList", list);
+  for (int i=1; i <= dynlen(list); i++) {
+    string host = list[i];
+    host = strtolower(host);
+    if (host == "dcspcs2g19-06") {
+      list[i] = "csc-dcs-pc1";
+    }
+    if (host == "dcspcs2g19-04") {
+      list[i] = "csc-dcs-pc2";
+    }
+  }
+  dpSet("Db_o.DimServerComputerList", list);
+  
 }
