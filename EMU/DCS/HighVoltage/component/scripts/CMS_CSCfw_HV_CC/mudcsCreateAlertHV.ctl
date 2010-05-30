@@ -1,5 +1,6 @@
 #uses "aes.ctl"
 #uses "CMS_CSCfw_LV_CRB/mudcs9XAlertReconfigAllSlowControls.ctl"
+#uses "CMS_CSC_common/emu_alert.ctl"
 
 
 
@@ -16,6 +17,9 @@ main()
       
   HV_1_alert_main();
      mudcsAlertReconfig("HV_1", ".off_channels", true);
+  emu_info("Updating all alert classes");
+  emuAlert_updateAllAlertClasses();
+  emu_info("Done updating alert classes");     
 }
 
 
