@@ -19,6 +19,7 @@ CscAlertClass_TEMP_1_d	CscConf_alertClassDescriptors	530970
 CscAlertClass_FwElmbPSUBranch	CscConf_alertClassDescriptors	530971
 CscAlertClass_FwWienerMarathon	CscConf_alertClassDescriptors	530972
 CscAlertClass_fwCrb_CSC_LV	CscConf_alertClassDescriptors	530973
+CscAlertClass_FwCaenCrateSY1527	CscConf_alertClassDescriptors	530975
 
 # DpValue
 ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
@@ -26,7 +27,7 @@ CscAlertClass_HV_1_d.class	CscConf_alertClassDescriptors	_fwErrorNack_70.	0x101	
 CscAlertClass_HV_1_d.alertTexts	CscConf_alertClassDescriptors	"HV OK", "HV ERROR"	0x101	30.05.2010 15:29:58.953
 CscAlertClass_HV_PR_d.class	CscConf_alertClassDescriptors	_fwFatalAck_90.	0x101	30.05.2010 12:36:31.890
 CscAlertClass_HV_PR_d.alertTexts	CscConf_alertClassDescriptors	"HV PRIMARY PSU OK", "HV PRIMARY PSU ERROR"	0x101	30.05.2010 15:30:07.562
-CscAlertClass_FED_1_d.class	CscConf_alertClassDescriptors	_fwWarningNack_41.	0x101	30.05.2010 13:37:58.031
+CscAlertClass_FED_1_d.class	CscConf_alertClassDescriptors	_fwWarningNack_41.	0x101	30.05.2010 15:42:05.234
 CscAlertClass_FED_1_d.alertTexts	CscConf_alertClassDescriptors	"DDU OK", "DDU ERROR"	0x101	30.05.2010 15:28:40.750
 CscAlertClass_fwCooling_CSC_COOLING_d.class	CscConf_alertClassDescriptors	_fwFatalAck_90.	0x101	30.05.2010 13:44:14.421
 CscAlertClass_fwCooling_CSC_COOLING_d.alertTexts	CscConf_alertClassDescriptors	"CSC Cooling OK", "CSC Cooling ERROR"	0x101	30.05.2010 15:28:51.218
@@ -44,3 +45,5 @@ CscAlertClass_FwWienerMarathon.class	CscConf_alertClassDescriptors	_fwFatalAck_9
 CscAlertClass_FwWienerMarathon.alertTexts	CscConf_alertClassDescriptors	"Maraton PSU OK", "Maraton PSU ERROR"	0x101	30.05.2010 15:29:39.312
 CscAlertClass_fwCrb_CSC_LV.class	CscConf_alertClassDescriptors	_fwErrorAck_70.	0x101	30.05.2010 14:55:40.609
 CscAlertClass_fwCrb_CSC_LV.alertTexts	CscConf_alertClassDescriptors	"PCrate OK", "PCrate ERROR"	0x101	30.05.2010 15:29:05.593
+CscAlertClass_FwCaenCrateSY1527.class	CscConf_alertClassDescriptors	_fwErrorNack_70.	0x101	30.05.2010 16:04:49.343
+CscAlertClass_FwCaenCrateSY1527.alertTexts	CscConf_alertClassDescriptors	"ME1/1 HV OK", "ME1/1 HV ERROR"	0x101	30.05.2010 16:05:18.734
