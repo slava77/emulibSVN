@@ -6,7 +6,7 @@ main()
    DebugTN("Post install: config archiving DPs... This can take awhile");
    DebugTN("please wait for a message saying that it's completed");
 
-//  emudcsArchive_configAllArchivingDps();
+  emudcsArchive_configAllArchivingDps();
 
 //----special to set archiving for HV primary ----------------------------------
 
