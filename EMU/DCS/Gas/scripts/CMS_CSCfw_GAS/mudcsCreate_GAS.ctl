@@ -1,5 +1,7 @@
 #uses "CMS_CSCfw_HV_CC/emuDcs.ctl"
 #uses "CMS_CSCfw_HV_CC/emuDcs2.ctl"
+#uses "CMS_CSCfw_HV_CC/emuDcs3.ctl"
+#uses "CMS_CSCfw_HV_CC/emuDcs4.ctl"
 
  #uses "CMS_CSCfw_LV_CRB/mudcs9XAlertReconfigAllSlowControls.ctl"
 
@@ -15,6 +17,9 @@
 
 
 main(){
+  mudcsDipConfig(true); 
+return;
+
   
   if (!dpExists("MYWARNING_GAS")) {
     dpCreate("MYWARNING_GAS", "MUDCS_STRING");
