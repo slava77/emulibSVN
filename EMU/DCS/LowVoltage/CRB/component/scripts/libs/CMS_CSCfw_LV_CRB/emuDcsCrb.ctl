@@ -54,8 +54,8 @@ mudcsCrbInitDelays(int mode){ // used as additional init for server
   else  {
     if(new_lv_power_up_sequence){
      if(!new_lv_power_up_sequence_2){ 
-      if(j>0)CSC_fwCAN1_g_CRB_DPS_SWITCH_DELAY[i]=1000+(j-1)*1300; // in milliseconds
-      else CSC_fwCAN1_g_CRB_DPS_SWITCH_DELAY[i]=1000+(i-1)*1300; // in milliseconds
+      if(j>0)CSC_fwCAN1_g_CRB_DPS_SWITCH_DELAY[i]=5000+(j-1)*1300; // in milliseconds
+      else CSC_fwCAN1_g_CRB_DPS_SWITCH_DELAY[i]=5000+(i-1)*1300; // in milliseconds
      }
      else{
       if(!new_lv_power_up_sequence_test){
@@ -63,8 +63,8 @@ mudcsCrbInitDelays(int mode){ // used as additional init for server
        else CSC_fwCAN1_g_CRB_DPS_SWITCH_DELAY[i]=5000+(i-1)*1450; // in milliseconds 
       }
       else{
-       if(j>0)CSC_fwCAN1_g_CRB_DPS_SWITCH_DELAY[i]=1000+(j-1)*42000; // in milliseconds
-       else CSC_fwCAN1_g_CRB_DPS_SWITCH_DELAY[i]=1000+(i-1)*42000; // in milliseconds         
+       if(j>0)CSC_fwCAN1_g_CRB_DPS_SWITCH_DELAY[i]=5000+(j-1)*42000; // in milliseconds
+       else CSC_fwCAN1_g_CRB_DPS_SWITCH_DELAY[i]=5000+(i-1)*42000; // in milliseconds         
       }
      }
      
