@@ -1,5 +1,7 @@
 global int EMUMAJ_HV_STATE_ON_VMON_ACCURACY = 50;
+global int EMUMAJ_HV_STATE_STANDBY_VMON_ACCURACY = 60;
 global int EMUMAJ_HV_STANDBY_VOLTAGE = 3000;
+global mapping hvParts;
 
 /** values here are ".status",".off_channels", ".last_vset". States are ON, STANDBY and ERROR */
 dyn_int emumaj_hvStateCounts(dyn_anytype values, int &weight, bool calcTotal, string node, string majType) {
@@ -38,24 +40,17 @@ dyn_int emumaj_hvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
   
   // determine the channel offset
   int channelsOffset = 0;
-  string coord;
-  dpGet(node + ".coord", coord);
-  dyn_string coordSplit = strsplit(coord, ";");
-  if (dynlen(coordSplit) < 4) {
+  int part = getHvPart(node);
+  if (part < 0) {
     error = weight;
     return makeDynInt(on, standby, error);
   }
-  int part = strsplit(coord, ";")[4];
   if (part == 2) {
     channelsOffset = 18;
   }
 
-  //check the FSM state - if it's ERROR or DEAD then check the channel alert statuses, if not then do not
-  string fsmDp = treeCache_getFsmInternalDp(node);
-  string fsmState;
-  dpGet(fsmDp + ".fsm.currentState", fsmState);
   bool checkChannelAlarms = false;
-  if ((fsmState == "DEAD") || (status < 0)) {
+  if (status < 0) {
     checkChannelAlarms = true;
   }
   
@@ -106,8 +101,8 @@ dyn_int emumaj_hvChannelStates(string dp, int vset, int standbyVoltage, bool che
     } // else it's off
   } else {
     // it's in standby
-    if ((vmon <= standbyVoltage + EMUMAJ_HV_STATE_ON_VMON_ACCURACY) && 
-        (vmon >= standbyVoltage - EMUMAJ_HV_STATE_ON_VMON_ACCURACY)){
+    if ((vmon <= standbyVoltage + EMUMAJ_HV_STATE_STANDBY_VMON_ACCURACY) && 
+        (vmon >= standbyVoltage - EMUMAJ_HV_STATE_STANDBY_VMON_ACCURACY)){
       standby = 1;
     } else if (vmon > standbyVoltage + EMUMAJ_HV_STATE_ON_VMON_ACCURACY) {
       on = 1;
@@ -401,4 +396,18 @@ dyn_int emumaj_onOffStandbyErrorFsmStateCounts(dyn_anytype values, int &weight, 
   }
   
   return makeDynInt(on, standby, error);
+}
+
+int getHvPart(string node) {
+  if (!mappingHasKey(hvParts, node)) {
+    string coord;
+    dpGet(node + ".coord", coord);
+    dyn_string coordSplit = strsplit(coord, ";");
+    if (dynlen(coordSplit) < 4) {
+      return -1;
+    }
+    hvParts[node] = strsplit(coord, ";")[4];
+  }
+  
+  return hvParts[node];
 }
