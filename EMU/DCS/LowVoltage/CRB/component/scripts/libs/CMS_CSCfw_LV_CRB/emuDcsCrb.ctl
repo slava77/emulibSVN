@@ -352,7 +352,7 @@ if(automatic_stop_pcrate_slow_control){
   if(isOn)mudcsCrb_stop_slow_control(fsm);
   if(!isOn) {
     mudcsCrb_remove_id(fsm);
-    mudcsCrb_sendToX2P("CRATEOFF", fsm);
+    mudcsCrb_sendToX2P("CRATE_POWER_OFF", fsm);
   }
 }  
 //=========================================
