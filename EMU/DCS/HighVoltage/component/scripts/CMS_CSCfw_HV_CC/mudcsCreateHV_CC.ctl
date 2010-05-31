@@ -21,7 +21,7 @@
 #uses "CMS_CSC_common/emu_alert.ctl"
 
 /** if this flag is set to true the full component installation is performed, otherwise only patch() is called. */
-global const bool EMU_HVCC_INSTALLATION_FULL = false;
+global const bool EMU_HVCC_INSTALLATION_FULL = true;
 
 main(){
   mudcsInit();
