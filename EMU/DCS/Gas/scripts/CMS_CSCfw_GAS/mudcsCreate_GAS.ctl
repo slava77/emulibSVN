@@ -16,6 +16,12 @@
 
 main(){
   
+  if (!dpExists("MYWARNING_GAS")) {
+    dpCreate("MYWARNING_GAS", "MUDCS_STRING");
+  }
+
+  dpSet("MYWARNING_GAS.value", "postinstall started");
+  
   //=== deletion =============
   mudcsGasFsmDelete();
    mudcsDipConfig(false); 
@@ -30,6 +36,8 @@ main(){
   mudcsGasArchiveMain(true);
   mudcsGasFsmPanelsAndFsmAliasesSetMain();  
  
+  dpSet("MYWARNING_GAS.value", "postinstall finished");
+
   exit(0);
    
 }
