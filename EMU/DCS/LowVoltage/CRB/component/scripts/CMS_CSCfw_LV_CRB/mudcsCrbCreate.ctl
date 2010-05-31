@@ -26,7 +26,7 @@
 #uses "aes.ctl"
 
 /** if this flag is set to true the full component installation is performed, otherwise only patch() is called. */
-global const bool EMU_CRB_INSTALLATION_FULL = false;
+global const bool EMU_CRB_INSTALLATION_FULL = true;
 
 main(){
   

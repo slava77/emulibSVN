@@ -17,9 +17,6 @@
 
 
 main(){
-  mudcsDipConfig(true); 
-return;
-
   
   if (!dpExists("MYWARNING_GAS")) {
     dpCreate("MYWARNING_GAS", "MUDCS_STRING");
