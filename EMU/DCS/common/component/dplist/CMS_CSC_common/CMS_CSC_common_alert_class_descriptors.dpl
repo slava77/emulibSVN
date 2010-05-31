@@ -20,6 +20,7 @@ CscAlertClass_FwElmbPSUBranch	CscConf_alertClassDescriptors	530971
 CscAlertClass_FwWienerMarathon	CscConf_alertClassDescriptors	530972
 CscAlertClass_fwCrb_CSC_LV	CscConf_alertClassDescriptors	530973
 CscAlertClass_FwCaenCrateSY1527	CscConf_alertClassDescriptors	530975
+CscAlertClass_fwCooling_CSC_TURBINES_summary	CscConf_alertClassDescriptors	534484
 
 # DpValue
 ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
@@ -47,3 +48,5 @@ CscAlertClass_fwCrb_CSC_LV.class	CscConf_alertClassDescriptors	_fwErrorAck_70.	0
 CscAlertClass_fwCrb_CSC_LV.alertTexts	CscConf_alertClassDescriptors	"PCrate OK", "PCrate ERROR"	0x101	30.05.2010 15:29:05.593
 CscAlertClass_FwCaenCrateSY1527.class	CscConf_alertClassDescriptors	_fwErrorNack_70.	0x101	30.05.2010 16:04:49.343
 CscAlertClass_FwCaenCrateSY1527.alertTexts	CscConf_alertClassDescriptors	"ME1/1 HV OK", "ME1/1 HV ERROR"	0x101	30.05.2010 16:05:18.734
+CscAlertClass_fwCooling_CSC_TURBINES_summary.class	CscConf_alertClassDescriptors	_fwFatalAck_90.	0x101	31.05.2010 22:14:48.062
+CscAlertClass_fwCooling_CSC_TURBINES_summary.alertTexts	CscConf_alertClassDescriptors	"CSC Rack Turbine OK", "CSC Rack Turbine ALERT"	0x101	31.05.2010 22:14:34.906
