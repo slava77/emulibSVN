@@ -115,13 +115,13 @@ for(i=1;i<=8;i++){
 if (CSC_fwG_g_904) { // not used at P5 anymore - only imported through DP list (which is generated using HV map import utility               
   dpSet("Db_o.Wheels_o.Wheel"+i+".InHVsetList",HV_IN[i]); 
   /*if(i!=1 & i!=8)*/dpSet("Db_o.Wheels_o.Wheel"+i+".OutHVsetList",HV_OUT[i]);   
+  dpSet("Db_o.Wheels_o.Ring_DUBNA.HVsetList",HV_DUBNA);  
 }
      
   dpSet("Db_o.Wheels_o.Wheel"+i+".DiskLevelDevicesCoordinates",DISK_LEVEL[i]); 
 } // for
 
   dpSet("Db_o.Wheels_o.Ring_DUBNA.DynatemAndSetNumberList",CC_DUBNA);
-  dpSet("Db_o.Wheels_o.Ring_DUBNA.HVsetList",HV_DUBNA);  
   dpSet("Db_o.Wheels_o.Ring_DUBNA.DiskLevelDevicesCoordinates",DISK_DUBNA); 
 
   dpSet("Db_o.CscLevelDevicesCoordinates",EMU_LEVEL);    
