@@ -23,17 +23,26 @@ main(){
   dpSet("MYWARNING_GAS.value", "postinstall started");
   
   //=== deletion =============
+  dpSet("MYWARNING_GAS.value", "starting mudcsGasFsmDelete()");
   mudcsGasFsmDelete();
+  dpSet("MYWARNING_GAS.value", "starting mudcsDipConfig(false)");
    mudcsDipConfig(false); 
+  dpSet("MYWARNING_GAS.value", "starting mudcsDeleteGas_dps(true)");
   mudcsDeleteGas_dps(true);
  
   //=== creation ==============
   
+  dpSet("MYWARNING_GAS.value", "starting GasSystem_main()");
   GasSystem_main();
+  dpSet("MYWARNING_GAS.value", "starting mudcsDipConfig(true)");
   mudcsDipConfig(true); 
+  dpSet("MYWARNING_GAS.value", "starting mudcsGasCreateFsmMain()");
   mudcsGasCreateFsmMain();
+  dpSet("MYWARNING_GAS.value", "starting mudcsGasAlertCreateMain(true)");
   mudcsGasAlertCreateMain(true);
+  dpSet("MYWARNING_GAS.value", "starting mudcsGasArchiveMain(true)");
   mudcsGasArchiveMain(true);
+  dpSet("MYWARNING_GAS.value", "starting mudcsGasFsmPanelsAndFsmAliasesSetMain()");
   mudcsGasFsmPanelsAndFsmAliasesSetMain();  
  
   dpSet("MYWARNING_GAS.value", "postinstall finished");
