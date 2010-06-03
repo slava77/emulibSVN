@@ -1,24 +1,24 @@
 /**@file
 
-This package contains a framework for performance studies and benchmarking.
+This package contains a debugging framework component called profiler - it can be used for performance studies and benchmarking.
 
-@author Evaldas Juska (PH/UCM)
+@author Evaldas Juska (CMS/CSC, Fermilab)
 @date   June 2010
 */
 
-private const int EMUPERF_FLUSH_INTERVAL_MS = 2000;
+private const int EMUPROF_FLUSH_INTERVAL_MS = 2000;
 
 /** A map of "filename;funcName" -> total time spent. */
-private mapping emuperf_funcTotalTimes;
-private bool emuperf_isInitialized = false;
-private string emuperf_dataDp;
-private int emuperf_flushThreadId = 0;
+private mapping emuprof_funcTotalTimes;
+private bool emuprof_isInitialized = false;
+private string emuprof_dataDp;
+private int emuprof_flushThreadId = 0;
 
 /** Initializes EMU PERF framework. */
-private void emuperf_init() {
-  emuperf_isInitialized = true;
+private void emuprof_init() {
+  emuprof_isInitialized = true;
   
-  emu_info("emuperf: initializing emuPerf framework");
+  emu_info("emuprof: initializing emu profiler");
   
   int managerId = myManId();
   char manType, manNum;
@@ -35,16 +35,16 @@ private void emuperf_init() {
       manTypeStr = "OTHER";
   }
   
-  emuperf_dataDp = "emuPerf_data_" + managerId + "_" + manTypeStr + "_num" + (int)manNum;
-  if (!dpExists(emuperf_dataDp)) {
-    dpCreate(emuperf_dataDp, "emuPerf_data");
+  emuprof_dataDp = "emuprof_data_" + managerId + "_" + manTypeStr + "_num" + (int)manNum;
+  if (!dpExists(emuprof_dataDp)) {
+    dpCreate(emuprof_dataDp, "emuDbg_profiler_data");
   }
   
-  if (emuperf_flushThreadId == 0) {
-    emuperf_flushThreadId = startThread("emuperf_flushThread");
+  if (emuprof_flushThreadId == 0) {
+    emuprof_flushThreadId = startThread("emuprof_flushThread");
   }
   
-  emu_info("emuperf: emuPerf initialized");  
+  emu_info("emuprof: emu profiler initialized");  
 }
 
 /**
@@ -55,47 +55,47 @@ private void emuperf_init() {
   * @param timeStart time at the begining of the function execution
   * @param timeEnd time at the end of the function execution.
   */
-public void emuperf_funcEnd(string filename, string funcName, time timeStart, time timeEnd) {
-  if (!emuperf_isInitialized) {
-    emuperf_init();
+public void emuprof_funcEnd(string filename, string funcName, time timeStart, time timeEnd) {
+  if (!emuprof_isInitialized) {
+    emuprof_init();
   }
   
   string funcId = filename + ";" + funcName;
   time timeSpent = timeEnd - timeStart;
   
-  synchronized(emuperf_funcTotalTimes) {
-    if (!mappingHasKey(emuperf_funcTotalTimes, funcId)) {
-      emuperf_funcTotalTimes[funcId] = timeSpent;
+  synchronized(emuprof_funcTotalTimes) {
+    if (!mappingHasKey(emuprof_funcTotalTimes, funcId)) {
+      emuprof_funcTotalTimes[funcId] = timeSpent;
     } else {
-      emuperf_funcTotalTimes[funcId] += timeSpent;
+      emuprof_funcTotalTimes[funcId] += timeSpent;
     }
   }
 }
 
 /** Flushes EMU PERF data to DP. */
-private void emuperf_flush() {
-  dpSet(emuperf_dataDp + ".timestamp", getCurrentTime());
-  mapping totalTimes = emuperf_funcTotalTimes;
+private void emuprof_flush() {
+  dpSet(emuprof_dataDp + ".timestamp", getCurrentTime());
+  mapping totalTimes = emuprof_funcTotalTimes;
   dyn_string totalTimesDynStr = makeDynString();
   for (int i=1; i <= mappinglen(totalTimes); i++) {
     string func = mappingGetKey(totalTimes, i);
     time totalTime = mappingGetValue(totalTimes, i);
-    string strValue = func + ";" + emuperf_getPeriodMillis(totalTime);
+    string strValue = func + ";" + emuprof_getPeriodMillis(totalTime);
     dynAppend(totalTimesDynStr, strValue);
   }
-  dpSet(emuperf_dataDp + ".totalTimes", totalTimesDynStr);
+  dpSet(emuprof_dataDp + ".totalTimes", totalTimesDynStr);
 }
 
-/** Calls emuperf_flush() in every EMUPERF_FLUSH_INTERVAL_MS milliseconds. */
-private void emuperf_flushThread() {
-  emu_info("emuperf: starting flush thread with interval: " + EMUPERF_FLUSH_INTERVAL_MS + "ms");
+/** Calls emuprof_flush() in every EMUPROF_FLUSH_INTERVAL_MS milliseconds. */
+private void emuprof_flushThread() {
+  emu_info("emuprof: starting flush thread with interval: " + EMUPROF_FLUSH_INTERVAL_MS + "ms");
   while(true) {
-    emuperf_flush();
-    delay(0, EMUPERF_FLUSH_INTERVAL_MS);
+    emuprof_flush();
+    delay(0, EMUPROF_FLUSH_INTERVAL_MS);
   }
 }
 
 /** @return time period in milliseconds (period() only returns seconds). */
-public int emuperf_getPeriodMillis(time periodTime) {
+public int emuprof_getPeriodMillis(time periodTime) {
   return period(periodTime) * 1000 + milliSecond(periodTime);
 }
