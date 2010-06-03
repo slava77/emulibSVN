@@ -4,7 +4,7 @@ LANG:1 0
 PANEL,-1 -1 500 400 N "_3DFace" 0
 E E E E E 1 -1 -1 0  80 70
 ""0  1
-E "#uses \"CMS_CSC_common/emu_perf.ctl\"
+E "#uses \"CMS_CSC_debug/emudbg_profiler.ctl\"
 
 private dyn_string dataDps;
 private string currentDataDp;
@@ -14,7 +14,7 @@ private dyn_string currentSummaryDps = makeDynString();
 public void systemChanged(string sys) {
   //update manager list
   comboManager.deleteAllItems();
-  dataDps = dpNames(sys + \":*\", \"emuPerf_data\");
+  dataDps = dpNames(sys + \":*\", \"emuDbg_profiler_data\");
   for (int i=1; i <= dynlen(dataDps); i++) {
     string manName;
     dyn_string dataDpSplit = strsplit(dpSubStr(dataDps[i], DPSUB_DP), \"_\");
@@ -137,19 +137,19 @@ LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
   this.tableMode = TABLE_SELECT_MULTIPLE;
   this.selectByClick = TABLE_SELECT_LINE;
 }" 0
-E 1 0 1 3 0 "filename" 6 1 0 "s" 1
+E 1 0 1 3 0 "filename" 11 1 0 "s" 1
 LANG:1 8 Filename
 E
 1
 LANG:1 0 
 
-100 "funcName" 6 1 0 "s" 1
+170 "funcName" 17 1 0 "s" 1
 LANG:1 13 Function name
 E
 1
 LANG:1 0 
 
-150 "totalTime" 6 1 0 "[0d,False,False,ALIGNMENT_BEGINNING,False]" 1
+170 "totalTime" 15 1 0 "[0d,False,False,ALIGNMENT_BEGINNING,False]" 1
 LANG:1 21 Total Time Spent (ms)
 E
 1
@@ -199,7 +199,7 @@ LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
 
 "main()
 {
-  dyn_string emuperfDps = dpNames(\"*:*\", \"emuPerf_data\");
+  dyn_string emuperfDps = dpNames(\"*:*\", \"emuDbg_profiler_data\");
   dyn_string systems;
   for (int i=1; i <= dynlen(emuperfDps); i++) {
     string sys = dpSubStr(emuperfDps[i], DPSUB_SYS);
@@ -296,7 +296,7 @@ void myFunction() {
   
   delay(0, 50);
   
-  emuperf_funcEnd(\"emuperf_monitor.pnl\", \"myFunction\", t0, getCurrentTime());
+  emuprof_funcEnd(\"emuDbg_profilerMonitor.pnl\", \"myFunction\", t0, getCurrentTime());
 }
 " 0
  E E E
