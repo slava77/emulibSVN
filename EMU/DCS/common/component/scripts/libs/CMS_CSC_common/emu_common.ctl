@@ -36,6 +36,12 @@ void emu_errorSingle(string msg) {
   emu_error(makeDynString(msg));
 }
 
+/** Throw NotImplemented exception.
+    @param functionName name of the function that this exception is refering to.
+*/
+void emu_notImplementedError(string functionName) {
+  emu_errorSingle("Function \"" + functionName + "\" is not implemented yet");
+}
 
 /** Register an EMU error. 
     Appends EMU initials, skips identical consecutive errors (happens often when the same exception travels through different procedures), 
