@@ -2,6 +2,6 @@
 
 # DpType
 TypeName
-emuPerf_data.emuPerf_data	1#1
+emuDbg_profiler_data.emuDbg_profiler_data	1#1
 	totalTimes	9#2
 	timestamp	26#3
