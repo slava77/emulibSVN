@@ -4,9 +4,11 @@
 <date>2010/06/03</date> 
 <required>CMS_CSC_common=1.2.2</required>
 <required>fwCore=4.0.0</required>
-<config>./config/CMS_CSC_common.config</config>
-<dplist>./dplist/CMS_CSC_debug/CMS_CSC_debug_types.dpl</dplist>
+<config>./config/CMS_CSC_debug.config</config>
+<dplist>./dplist/CMS_CSC_debug/profiler/CMS_CSC_debug_types.dpl</dplist>
 <file>./panels/CMS_CSC_debug/*.pnl</file>
+<file>./panels/CMS_CSC_debug/profiler/*.pnl</file>
 <file>./scripts/libs/CMS_CSC_debug/*.ctl</file>
+<file>./scripts/libs/CMS_CSC_debug/profiler/*.ctl</file>
 <file>./CMS_CSC_debug.xml</file>
 </component>
