@@ -1,0 +1,332 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 500 400 N "_3DFace" 0
+E E E E E 1 -1 -1 0  80 70
+""0  1
+E "#uses \"CMS_CSC_common/emu_perf.ctl\"
+
+private dyn_string dataDps;
+private string currentDataDp;
+private dyn_string currentSummaryDps = makeDynString();
+
+/** Called when user chooses a system. */
+public void systemChanged(string sys) {
+  //update manager list
+  comboManager.deleteAllItems();
+  dataDps = dpNames(sys + \":*\", \"emuPerf_data\");
+  for (int i=1; i <= dynlen(dataDps); i++) {
+    string manName;
+    dyn_string dataDpSplit = strsplit(dpSubStr(dataDps[i], DPSUB_DP), \"_\");
+    manName = dataDpSplit[4] + \" \" + dataDpSplit[5] + \" (id=\" + dataDpSplit[3] + \")\";
+    comboManager.appendItem(manName);
+  }
+  comboManager.appendItem(\"Summary of all managers\");
+  comboManager.selectedPos = 0;
+}
+
+/** Called when user chooses a manager. */
+public void managerChanged(int manNum) {
+  disconnect();
+  
+  if (manNum < 1) { return; }
+  // a real manager has been chosen
+  if (manNum <= dynlen(dataDps)) {
+    string dataDp = dataDps[manNum];
+    connect(dataDp);
+    emu_info(\"data DP changed to: \" + dataDp);
+  } else { // summary of all managers has been chosen (at least assume so)
+    connectSummary(dataDps);
+    emu_info(\"connected to summary of : \" + dataDps);
+  }  
+}
+
+/** Disconnects from whatever we're listening to right now. */
+private void disconnect() {
+  if (currentDataDp != \"\") {
+    dpDisconnect(\"totalTimesUpdatedCB\", currentDataDp + \".totalTimes\");
+    currentDataDp = \"\";
+    resetUi();
+  } else if (dynlen(currentSummaryDps) > 0) {
+    dpDisconnect(\"totalTimesSummaryUpdateCB\", currentSummaryDps);
+  }
+}
+
+/** Resets (or clears out) the UI. */
+private void resetUi() {
+  tableTimes.deleteAllLines();
+}
+
+/** Connects the UI to the given dataDp. */
+private void connect(string dataDp) {
+  dpConnect(\"totalTimesUpdatedCB\", true, dataDp + \".totalTimes\");
+  currentDataDp = dataDp;
+}
+
+private void connectSummary(dyn_string dataDps) {
+  dyn_string totalTimeDps;
+  for (int i=1; i <= dynlen(dataDps); i++) {
+    dynAppend(totalTimeDps, dataDps[i] + \".totalTimes\");
+  }
+  dpConnect(\"totalTimesSummaryUpdateCB\", true, totalTimeDps);
+  currentSummaryDps = totalTimeDps;
+}
+
+private void totalTimesSummaryUpdateCB(dyn_string dps, dyn_dyn_string times) {
+  // sum up everything into a map <file;function> -> <time>
+  mapping allTimes;
+  for (int man=1; man <= dynlen(times); man++) {
+    for (int func=1; func <= dynlen(times[man]); func++) {
+      dyn_string dataSplit = strsplit(times[man][func], \";\");
+      string id = dataSplit[1] + \";\" + dataSplit[2];
+      int t = (int)dataSplit[3];
+      if (mappingHasKey(allTimes, id)) {
+        allTimes[id] += t;
+      } else {
+        allTimes[id] = t;
+      }
+    }
+  }
+  
+  // convert the map back to dyn_string
+  dyn_string allData;
+  for (int i=1; i <= mappinglen(allTimes); i++) {
+    dynAppend(allData, mappingGetKey(allTimes, i) + \";\" + mappingGetValue(allTimes, i));
+  }
+  
+  // call totalTimesUpdatedCB to update the UI with the summed up data
+  totalTimesUpdatedCB(\"\", allData);
+}
+
+/** Call back for total times change - updates the UI with the data. */
+private void totalTimesUpdatedCB(string dp, dyn_string times) {
+  tableTimes.deleteAllLines();
+  for (int i=1; i <= dynlen(times); i++) {
+    dyn_string timeData = strsplit(times[i], \";\");
+    tableTimes.appendLine(\"filename\", timeData[1],
+                          \"funcName\", timeData[2],
+                          \"totalTime\", (int)timeData[3]);
+  }
+  tableTimes.sort(false, \"totalTime\");
+}" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+25 1
+"tableTimes"
+""
+1 10.00000000000001 70 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  8 68 492 392
+"main()
+{
+  this.tableMode = TABLE_SELECT_MULTIPLE;
+  this.selectByClick = TABLE_SELECT_LINE;
+}" 0
+E 1 0 1 3 0 "filename" 6 1 0 "s" 1
+LANG:1 8 Filename
+E
+1
+LANG:1 0 
+
+100 "funcName" 6 1 0 "s" 1
+LANG:1 13 Function name
+E
+1
+LANG:1 0 
+
+150 "totalTime" 6 1 0 "[0d,False,False,ALIGNMENT_BEGINNING,False]" 1
+LANG:1 21 Total Time Spent (ms)
+E
+1
+LANG:1 0 
+
+130 
+14 14 10 10
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 0 1 1 1 7
+1 0
+2 3
+"lblSystem"
+""
+1 10 10 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 10 10 49 24
+0 2 2 "0s" 0 0 0 192 0 0  10 10 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 7 System:
+22 4
+"comboSystem"
+""
+1 60 10 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  58 8 222 31
+0
+
+"main()
+{
+  dyn_string emuperfDps = dpNames(\"*:*\", \"emuPerf_data\");
+  dyn_string systems;
+  for (int i=1; i <= dynlen(emuperfDps); i++) {
+    string sys = dpSubStr(emuperfDps[i], DPSUB_SYS);
+    strreplace(sys, \":\", \"\");
+    if (!dynContains(systems, sys)) {
+      dynAppend(systems, sys);
+    }
+  }
+
+  for (int i=1; i <= dynlen(systems); i++) {
+    comboSystem.appendItem(systems[i]);
+  }
+  
+  systemChanged(comboSystem.text);
+}" 0
+
+"main()
+{
+  systemChanged(comboSystem.text);
+}" 0
+
+E
+ 0 0
+2 5
+"lblManager"
+""
+1 10 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 10 40 56 54
+0 2 2 "0s" 0 0 0 192 0 0  10 40 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 8 Manager:
+22 6
+"comboManager"
+""
+1 60 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  58 38 222 61
+0
+
+E
+"main()
+{
+  managerChanged(comboManager.selectedPos);
+}" 0
+
+E
+ 0 0
+13 7
+"PUSH_BUTTON3"
+""
+1 280 30 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  278 28 402 55
+
+T 
+1
+LANG:1 4 test
+"main()
+{
+  myFunction();
+}
+
+void myFunction() {
+  time t0 = getCurrentTime();
+  
+  delay(0, 50);
+  
+  emuperf_funcEnd(\"emuperf_monitor.pnl\", \"myFunction\", t0, getCurrentTime());
+}
+" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
