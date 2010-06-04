@@ -12,6 +12,9 @@ const int emu_DEBUG_GENERAL = 1;
 const int emu_DEBUG_FUNC_START_STOP = 2;
 const int emu_DEBUG_DETAIL = 4;
 
+/** Useful sometimes, when you want to return an empty mapping. */
+const mapping EMU_DUMMY_MAPPING;
+
 /** Debug level (bitmask)
   0 - nothing
   1 - general debug messages
