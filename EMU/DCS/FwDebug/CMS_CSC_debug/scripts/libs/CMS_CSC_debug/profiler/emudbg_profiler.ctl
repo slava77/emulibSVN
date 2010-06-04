@@ -10,6 +10,9 @@ private const int EMUPROF_FLUSH_INTERVAL_MS = 2000;
 
 /** A map of "filename;funcName" -> total time spent. */
 private mapping emuprof_funcTotalTimes;
+private mapping emuprof_funcTotalRunCounts;
+
+
 private bool emuprof_isInitialized = false;
 private string emuprof_dataDp;
 private int emuprof_flushThreadId = 0;
@@ -70,17 +73,25 @@ public void emuprof_funcEnd(string filename, string funcName, time timeStart, ti
       emuprof_funcTotalTimes[funcId] += timeSpent;
     }
   }
+  synchronized(emuprof_funcTotalRunCounts) {
+    if (!mappingHasKey(emuprof_funcTotalRunCounts, funcId)) {
+      emuprof_funcTotalRunCounts[funcId] = 1;
+    } else {
+      emuprof_funcTotalRunCounts[funcId]++;
+    }
+  }
 }
 
 /** Flushes EMU PERF data to DP. */
 private void emuprof_flush() {
   dpSet(emuprof_dataDp + ".timestamp", getCurrentTime());
   mapping totalTimes = emuprof_funcTotalTimes;
+  mapping totalRunCounts = emuprof_funcTotalRunCounts;
   dyn_string totalTimesDynStr = makeDynString();
   for (int i=1; i <= mappinglen(totalTimes); i++) {
     string func = mappingGetKey(totalTimes, i);
     time totalTime = mappingGetValue(totalTimes, i);
-    string strValue = func + ";" + emuprof_getPeriodMillis(totalTime);
+    string strValue = func + ";" + emuprof_getPeriodMillis(totalTime) + ";" + totalRunCounts[func];
     dynAppend(totalTimesDynStr, strValue);
   }
   dpSet(emuprof_dataDp + ".totalTimes", totalTimesDynStr);
