@@ -600,11 +600,11 @@ else{
 if(CSC_fwG_g_idisk_cross_numbers[1]>=5 && CSC_fwG_g_idisk_cross_numbers[1]<=8){
 g_HV_ID2PC_NAME=makeDynString("600_part1;10.176.11.103_part1","600_part2;10.176.11.103_part2",
                               "600_part3;10.176.11.103_part3","600_part4;10.176.11.103_part4",
-                              "500_part4;10.176.11.67_part4"); // ufcmshv2 & ufcmshv1 (for primaries)
+                              "500_part4;137.138.132.81_part4"); // ufcmshv2 & ufcmshv1 (for primaries)
 }
 else{
-g_HV_ID2PC_NAME=makeDynString("500_part1;10.176.11.67_part1","500_part2;10.176.11.67_part2",
-                              "500_part3;10.176.11.67_part3","500_part4;10.176.11.67_part4",
+g_HV_ID2PC_NAME=makeDynString("500_part1;137.138.132.81_part1","500_part2;137.138.132.81_part2",
+                              "500_part3;137.138.132.81_part3","500_part4;137.138.132.81_part4",
                               "400;fake"); // ufcmshv2  
 }
 }
@@ -632,9 +632,9 @@ CSC_fwG_g_BROKER_DNS_MACHINE_NAMES=makeDynString
     "LV_1;csc-dcs-pc2",
     "LV_SX5;csc-dcs-pc1",
     "HV_PR;10.176.11.103_part4", // ufcmshv2: for primary commands only  +Z
-    "HV_PR;10.176.11.67_part4", // ufcmshv1: for primary commands only   -Z   
+    "HV_PR;137.138.132.81_part4", // ufcmshv1: for primary commands only   -Z   
     "HV_1;10.176.11.103_part4",   // ufcmshv2: for primary commands only +Z
-    "HV_1;10.176.11.67_part4"   // ufcmshv1: for primary commands only   -Z
+    "HV_1;137.138.132.81_part4"   // ufcmshv1: for primary commands only   -Z
 //    "HV_PR;ufcmspc02",
 //    "HV_1;ufcmspc02"
      ); // HV_1 is needed for HV_1_COMMAND so that they are configured on all machines (not only on dcspcs2g19-06)
