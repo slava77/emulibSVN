@@ -108,17 +108,17 @@ private void totalTimesSummaryUpdateCB(dyn_string dps, dyn_dyn_string times) {
 
 /** Call back for total times change - updates the UI with the data. */
 private void totalTimesUpdatedCB(string dp, dyn_string times) {
-  tableTimes.deleteAllLines();
   for (int i=1; i <= dynlen(times); i++) {
     dyn_string timeData = strsplit(times[i], \";\");
+    string filename = timeData[1];
+    string funcName = timeData[2];
     float averageTime = (float)timeData[3] / (float)timeData[4];
-    tableTimes.appendLine(\"filename\", timeData[1],
-                          \"funcName\", timeData[2],
+    tableTimes.updateLine(2, \"filename\", filename, \"funcName\", funcName, 
                           \"totalTime\", (int)timeData[3],
                           \"runCount\", (int)timeData[4],
                           \"averageTime\", averageTime);
   }
-  tableTimes.sort(false, \"totalTime\");
+  tableTimes.sort(false, \"totalTime\");  
 }" 0
  2
 "CBRef" "1"
@@ -402,7 +402,7 @@ E E 0 0 1 0 1 E 1.227272727272727 0 1 -168.1818181818182 0 0 E 520 3 741 61
 1
 LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 4 Save
+LANG:1 13 Save Snapshot
 2 10
 "PRIMITIVE_TEXT1"
 ""
