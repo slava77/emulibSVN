@@ -15,6 +15,7 @@ private mapping emuprof_funcTotalRunCounts;
 
 private bool emuprof_isInitialized = false;
 private string emuprof_dataDp;
+private string emuprof_controlDp;
 private int emuprof_flushThreadId = 0;
 
 /** Initializes EMU PERF framework. */
@@ -42,6 +43,11 @@ private void emuprof_init() {
   if (!dpExists(emuprof_dataDp)) {
     dpCreate(emuprof_dataDp, "emuDbg_profiler_data");
   }
+  emuprof_controlDp = "emuprof_control_" + managerId + "_" + manTypeStr + "_num" + (int)manNum;
+  if (!dpExists(emuprof_controlDp)) {
+    dpCreate(emuprof_controlDp, "emuDbg_profiler_control");
+  }
+  dpConnect("emuprof_commandReceivedCB", false, emuprof_controlDp + ".command");
   
   if (emuprof_flushThreadId == 0) {
     emuprof_flushThreadId = startThread("emuprof_flushThread");
@@ -106,7 +112,31 @@ private void emuprof_flushThread() {
   }
 }
 
+/** Callback function which is called when a command to the profiler instance is received (through emuDbg_profiler_control DPs). */
+private void emuprof_commandReceivedCB(string commandDp, string command) {
+  if (command == "reset") {
+    mappingClear(emuprof_funcTotalTimes);
+    mappingClear(emuprof_funcTotalRunCounts);
+  }
+}
+
 /** @return time period in milliseconds (period() only returns seconds). */
 public int emuprof_getPeriodMillis(time periodTime) {
   return period(periodTime) * 1000 + milliSecond(periodTime);
+}
+
+/**
+  * Constructs a human readable manager name out of the provided profiler data DP.
+  * @param profilerDataDp profiler data DP out of which you want to construct the manager name.
+  * @return human readable manager name for the provided profiler data DP.
+  */
+public string emuprof_getManagerNameFromDataDp(string profilerDataDp) {
+    string manName;
+    dyn_string dataDpSplit = strsplit(dpSubStr(profilerDataDp, DPSUB_DP), "_");
+    if (dataDpSplit[2] == "data") { // live manager
+      manName = dataDpSplit[4] + " " + dataDpSplit[5] + " (id=" + dataDpSplit[3] + ")";
+    } else if (dataDpSplit[2] == "save") { // save
+      manName = dataDpSplit[6] + " (" + dataDpSplit[4] + " " + dataDpSplit[5] + ")";
+    }
+    return manName;
 }
