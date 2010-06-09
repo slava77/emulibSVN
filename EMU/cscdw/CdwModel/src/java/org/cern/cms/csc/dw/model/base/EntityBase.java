@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import javax.naming.Context;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.exception.InvalidEntityClassException;
@@ -98,4 +99,5 @@ public class EntityBase implements Serializable {
 
         return titleFieldNamesCache.get(myClass);
     }
+
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xsd:schema targetNamespace="http://www.cern.ch/cms/csc/dw/ontology" xsi:schemaLocation="                 http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd                 http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd                 http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd" elementFormDefault="qualified" jaxb:extensionBindingPrefixes="xjc orm hj" jaxb:version="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations" xmlns:tns="http://www.cern.ch/cms/csc/dw/ontology" xmlns:orm="http://java.sun.com/xml/ns/persistence/orm" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<xsd:schema targetNamespace="http://www.cern.ch/cms/csc/dw/ontology" xsi:schemaLocation="                 http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd                 http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd                 http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd" elementFormDefault="qualified" jaxb:extensionBindingPrefixes="xjc orm hj cu" jaxb:version="2.0" xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:cu="http://jaxb.dev.java.net/plugin/classutils" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:orm="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" xmlns:tns="http://www.cern.ch/cms/csc/dw/ontology">
 <xsd:simpleType name="componentClassIdType">
 <xsd:annotation>
 <xsd:appinfo>
@@ -76,6 +76,7 @@
 <xsd:annotation>
 <xsd:appinfo>
 <jaxb:typesafeEnumClass name="ComponentLinkClassType"/>
+<cu:implements name="org.neo4j.graphdb.RelationshipType"/>
 </xsd:appinfo>
 </xsd:annotation>
 <xsd:restriction base="xsd:string">

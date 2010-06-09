@@ -1,19 +1,4 @@
 
-drop package CDW_UTILITY
-/
-
-drop table CDW_DDL
-/
-
-CREATE TABLE CDW_DDL (
-    OBJECT_TYPE VARCHAR2(30 BYTE) NOT NULL ENABLE,
-    OBJECT_NAME VARCHAR2(30 BYTE) NOT NULL ENABLE,
-    DDL CLOB NOT NULL ENABLE,
-    GRANTS CLOB,
-    CONSTRAINT CDW_DDL_PK PRIMARY KEY (OBJECT_TYPE, OBJECT_NAME)
-)
-/
-
 create or replace PACKAGE CDW_UTILITY AS
 
     procedure disable_foreign_key(p_table_name varchar2, p_column_name varchar2);
@@ -103,18 +88,50 @@ create or replace PACKAGE BODY CDW_UTILITY AS
 
     end;
 
+    procedure modify_table_contraints(p_table varchar, p_action varchar) as
+        l_ord_remote_fk number;
+        l_ord_local_fk  number;
+        l_ord_local_pk  number;
+        l_ord_local_ot  number;
+    begin
+
+        if p_action = 'DISABLE' then
+            l_ord_remote_fk := 1;
+            l_ord_local_fk  := 2;
+            l_ord_local_ot  := 3;
+            l_ord_local_pk  := 4;
+        end if;
+
+        if p_action = 'ENABLE' then
+            l_ord_local_pk  := 1;
+            l_ord_local_ot  := 2;
+            l_ord_local_fk  := 3;
+            l_ord_remote_fk := 4;
+        end if;
+
+        for cur in (
+            select owner, constraint_name, table_name, ord from (
+                select owner, constraint_name, table_name, l_ord_remote_fk ord from ALL_CONSTRAINTS
+                    where r_constraint_name in (select constraint_name from ALL_CONS_COLUMNS where OWNER = user and TABLE_NAME = p_table)
+                union
+                select owner, constraint_name, table_name, decode(constraint_type, 'R', l_ord_local_fk, 'P', l_ord_local_pk, l_ord_local_ot) ord from ALL_CONSTRAINTS
+                    where OWNER = user and TABLE_NAME = p_table)
+            order by ord asc) loop
+
+            execute immediate 'ALTER TABLE ' || cur.owner || '.' || cur.table_name || ' MODIFY CONSTRAINT "' || cur.constraint_name || '" ' || p_action;
+
+        end loop;
+
+    end;
+
     procedure disable_table_constraints(p_table varchar) as
     begin
-        for cur in (select owner, constraint_name, table_name, decode(constraint_type, 'R', 0, 'U', 1, 'C', 5, 'P', 100, 10) ord from all_constraints where OWNER = user and TABLE_NAME = p_table order by ord asc) loop
-            execute immediate 'ALTER TABLE ' || cur.owner || '.' || cur.table_name || ' MODIFY CONSTRAINT "' || cur.constraint_name || '" DISABLE';
-        end loop;
+        modify_table_contraints(p_table, 'DISABLE');
     end;
 
     procedure enable_table_constraints(p_table varchar) as
     begin
-        for cur in (select owner, constraint_name, table_name, decode(constraint_type, 'R', 0, 'U', 1, 'C', 5, 'P', 100, 10) ord from all_constraints where OWNER = user and TABLE_NAME = p_table order by ord desc) loop
-            execute immediate 'ALTER TABLE ' || cur.owner || '.' || cur.table_name || ' MODIFY CONSTRAINT "' || cur.constraint_name || '" ENABLE';
-        end loop;
+        modify_table_contraints(p_table, 'ENABLE');
     end;
 
     function partition_table_ddl(p_table_name varchar2, p_date_column varchar2, p_months_forward number) return varchar2 as
@@ -152,4 +169,7 @@ create or replace PACKAGE BODY CDW_UTILITY AS
     end;
 
 END CDW_UTILITY;
+/
+
+ALTER PACKAGE CDW_UTILITY COMPILE BODY
 /

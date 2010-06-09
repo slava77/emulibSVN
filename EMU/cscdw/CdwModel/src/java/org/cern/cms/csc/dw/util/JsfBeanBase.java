@@ -15,9 +15,6 @@ import javax.faces.context.FacesContextFactory;
 import javax.faces.event.ActionEvent;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,30 +25,6 @@ import javax.servlet.http.HttpSession;
  * @author valdo
  */
 public class JsfBeanBase {
-
-    private Context jniContext;
-
-    /**
-     * Constructor. Initialize naming context
-     * @throws javax.naming.NamingException
-     */
-    public JsfBeanBase() throws NamingException {
-        jniContext = new InitialContext();
-    }
-
-    /**
-     * Get EJB from same module or app. This is GF2.x way of getting EJB.
-     * You need to hook EJB name in your consumer object by adding anotation (name injection)
-     * i.e. @EJB(name="MyBeanRef", beanInterface=MyBeanLocal.class)
-     * Then call
-     * MyBeanLocal myBean = (MyBeanLocal) getEjb("MyBeanRef");
-     * @param name Ejb name as defined in name injection
-     * @return object found (please cast)
-     * @throws javax.naming.NamingException (not found?)
-     */
-    protected Object getEjb(String name) throws NamingException {
-        return jniContext.lookup("java:comp/env/" + name);
-    }
 
     public static FacesContext getFacesContext(HttpServletRequest request, HttpServletResponse response, String lifecycleId) {
         FacesContext facesContext = FacesContext.getCurrentInstance();

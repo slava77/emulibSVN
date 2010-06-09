@@ -5,12 +5,12 @@
 
 package org.cern.cms.csc.dw.dao;
 
-import java.util.List;
 import javax.ejb.Local;
+import org.cern.cms.csc.dw.exception.ComponentClassNotFoundException;
+import org.cern.cms.csc.dw.exception.ComponentLinkClassNotFoundException;
 import org.cern.cms.csc.dw.exception.ComponentNotFoundException;
 import org.cern.cms.csc.dw.model.ontology.Component;
 import org.cern.cms.csc.dw.model.ontology.ComponentClass;
-import org.cern.cms.csc.dw.model.ontology.ComponentLink;
 import org.cern.cms.csc.dw.model.ontology.ComponentLinkClass;
 
 /**
@@ -18,19 +18,10 @@ import org.cern.cms.csc.dw.model.ontology.ComponentLinkClass;
  * @author valdo
  */
 @Local
-public interface OntologyDaoLocal {
+public interface OntologyDaoLocal extends GOntologyDaoLocal {
 
-    ComponentClass getComponentClassById(Long id);
-    List<ComponentClass> getComponentClasses(ComponentClass parent);
-
-    Component getComponentById(Long id, boolean eager) throws ComponentNotFoundException;
-    Component getComponentByName(String id) throws ComponentNotFoundException;
-    Component getComponentByName(String id, boolean eager) throws ComponentNotFoundException;
-    List<Component> getComponents(ComponentClass componentClass);
-    
-    List<ComponentLinkClass> getComponentLinkClasses(ComponentLinkClass parent);
-    ComponentLinkClass getComponentLinkClassByName(String id);
-    List<ComponentLink> getComponentLinks(ComponentLinkClass componentLinkClass);
-    ComponentLink getComponentLinkByName(String id);
+    ComponentClass getComponentClassById(Long id) throws ComponentClassNotFoundException;
+    Component getComponentById(Long id) throws ComponentNotFoundException;
+    ComponentLinkClass getComponentLinkClassById(Long id) throws ComponentLinkClassNotFoundException;
     
 }

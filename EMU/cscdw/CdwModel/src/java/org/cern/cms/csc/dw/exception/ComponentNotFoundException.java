@@ -1,15 +1,16 @@
 package org.cern.cms.csc.dw.exception;
 
-/**
- *
- * @author valdo
- */
-public class ComponentNotFoundException extends Exception {
+public class ComponentNotFoundException extends OntologyException {
 
-    private final static String msg = "Component for id = [%s] not found in Knowledge Base";
+    private final static String smsg = "Component for name = [%s] not found in Knowledge Base";
+    private final static String dmsg = "Component for id = [%d] not found in Knowledge Base";
 
-    public ComponentNotFoundException(String componentId) {
-        super(String.format(msg, componentId));
+    public ComponentNotFoundException(OntologySource source, Long id) {
+        super(source, String.format(dmsg, id));
+    }
+
+    public ComponentNotFoundException(OntologySource source, String name) {
+        super(source, String.format(smsg, name));
     }
 
 }

@@ -23,8 +23,6 @@ public class DatabaseUpdater {
     @SuppressWarnings({"static-access","unchecked"})
     public static void main(String[] args) {
 
-        MetadataManager mm = new MetadataManager();
-
         try {
 
             // create the command line parser
@@ -46,7 +44,7 @@ public class DatabaseUpdater {
             em.flush();
 
             // Write current fact metadata
-            for (FactMd f: mm.getFactClasses()) {
+            for (FactMd f: (new MetadataManager()).getFactClasses()) {
                 em.persist(f);
             }
 

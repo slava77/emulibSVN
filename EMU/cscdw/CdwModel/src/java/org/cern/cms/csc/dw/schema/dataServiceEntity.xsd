@@ -10,11 +10,12 @@
     xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
     xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
     xmlns:ann="http://jaxb.dev.java.net/plugin/annotate"
+    xmlns:cu="http://jaxb.dev.java.net/plugin/classutils"
     xsi:schemaLocation="
         http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
         http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
         http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
-    jaxb:extensionBindingPrefixes="xjc orm hj ann"
+    jaxb:extensionBindingPrefixes="xjc orm hj ann cu"
     jaxb:version="2.0">
 
     <xsd:annotation>
@@ -52,7 +53,7 @@
         <xsd:annotation>
             <xsd:appinfo>
                 <jaxb:class name="DataServiceEntity"/>
-                <xjc:superClass name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+                <cu:extends name="org.cern.cms.csc.dw.model.base.EntityBase"/>
             </xsd:appinfo>
         </xsd:annotation>
     </xsd:complexType>

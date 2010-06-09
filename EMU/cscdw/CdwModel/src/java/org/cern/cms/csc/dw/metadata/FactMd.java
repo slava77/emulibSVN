@@ -1,8 +1,8 @@
 package org.cern.cms.csc.dw.metadata;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,8 +21,8 @@ public class FactMd extends EntityBase implements Serializable {
     private Class<?extends Fact> factClass;
     private String tableName;
     private Integer daysToStore;
-    private List<ComponentClassType> limitComponents = new ArrayList<ComponentClassType>();
-    private boolean limitComponentsRecursive;
+    private Set<ComponentClassType> limitComponents = new LinkedHashSet<ComponentClassType>();
+    private boolean limitComponentsRecursive = false;
 
     public FactMd() {
     }
@@ -33,10 +33,10 @@ public class FactMd extends EntityBase implements Serializable {
         this.tableName = t.name();
         FactAnn ann = factClass.getAnnotation(FactAnn.class);
         this.daysToStore = ann.daysToStore();
-        this.limitComponentsRecursive = ann.limitComponentsRecursive();
         for (String componentClassTypeName: ann.limitComponents()) {
             limitComponents.add(ComponentClassType.fromValue(componentClassTypeName));
         }
+        this.limitComponentsRecursive = ann.limitComponentsRecursive();
     }
 
     @Transient
@@ -64,16 +64,14 @@ public class FactMd extends EntityBase implements Serializable {
         this.daysToStore = daysToStore;
     }
 
-    /**
-     * TODO: implement recursive check!
-     * @param type
-     * @return
-     */
-    public boolean checkComponentClassType(ComponentClassType type) {
-        if (!limitComponentsRecursive) {
-            return limitComponents.contains(type);
-        }
-        return true;
+    @Transient
+    public Set<ComponentClassType> getLimitComponents() {
+        return limitComponents;
+    }
+
+    @Transient
+    public boolean isLimitComponentsRecursive() {
+        return limitComponentsRecursive;
     }
 
 }

@@ -9,11 +9,12 @@
 	xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
 	xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
 	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+        xmlns:cu="http://jaxb.dev.java.net/plugin/classutils"
     xsi:schemaLocation="
         http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
         http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
         http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
-	jaxb:extensionBindingPrefixes="xjc orm hj"
+	jaxb:extensionBindingPrefixes="xjc orm hj cu"
 	jaxb:version="2.0">
 
     <xsd:element name="tmbCounterDescriptionDSE"
@@ -24,7 +25,7 @@
         <xsd:annotation>
             <xsd:appinfo>
                 <jaxb:class name="TmbCounterDescriptionDSE"/>
-                <xjc:superClass name="org.cern.cms.csc.dw.model.dse.DataServiceEntity"/>
+                <cu:extends name="org.cern.cms.csc.dw.model.dse.DataServiceEntity"/>
                 <hj:entity>
                     <orm:table name="CDW_DSE_TMB_CNT_DESCRIPTIONS"/>
                 </hj:entity>

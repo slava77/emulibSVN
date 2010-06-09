@@ -28,13 +28,14 @@
             xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
             xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
             xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+            xmlns:cu="http://jaxb.dev.java.net/plugin/classutils"
             xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
             xsi:schemaLocation="
                 http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
                 http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
                 http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
             elementFormDefault="qualified"
-            jaxb:extensionBindingPrefixes="xjc orm hj"
+            jaxb:extensionBindingPrefixes="xjc orm hj cu"
             jaxb:version="2.0">
 
           <xsd:simpleType name="componentClassIdType">
@@ -55,6 +56,7 @@
             <xsd:annotation>
                 <xsd:appinfo>
                     <jaxb:typesafeEnumClass name="ComponentLinkClassType"/>
+                    <cu:implements name="org.neo4j.graphdb.RelationshipType"/>
                 </xsd:appinfo>
             </xsd:annotation>
             <xsd:restriction base="xsd:string">

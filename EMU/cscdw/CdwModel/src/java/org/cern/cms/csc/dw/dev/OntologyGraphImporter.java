@@ -1,19 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.cern.cms.csc.dw.dev;
 
-import java.io.File;
-import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.OptionBuilder;
@@ -21,63 +12,33 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.PosixParser;
 import org.apache.log4j.Logger;
 import org.apache.xerces.parsers.SAXParser;
-import org.cern.cms.csc.dw.model.ontology.Component;
-import org.cern.cms.csc.dw.model.ontology.ComponentClass;
 import org.cern.cms.csc.dw.model.ontology.ComponentClassType;
-import org.cern.cms.csc.dw.model.ontology.ComponentLink;
-import org.cern.cms.csc.dw.model.ontology.ComponentLinkClass;
 import org.cern.cms.csc.dw.model.ontology.ComponentLinkClassType;
-import org.cern.cms.csc.dw.model.ontology.ComponentSynonym;
+import org.cern.cms.csc.dw.model.ontology.graph.GComponentClass;
+import org.cern.cms.csc.dw.model.ontology.graph.GComponentLinkClass;
+import org.cern.cms.csc.dw.model.ontology.graph.GComponentSynonym;
+import org.cern.cms.csc.dw.model.ontology.graph.GComponent;
+import org.cern.cms.csc.dw.dao.GOntologyFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-/**
- *
- * @author valdo
- */
-public class ComponentImporter {
+public class OntologyGraphImporter {
 
-    static Logger log = Logger.getLogger(ComponentImporter.class.getName());
+    static Logger log = Logger.getLogger(OntologyGraphImporter.class.getName());
     private static final String OWL_URI = "http://www.w3.org/2006/12/owl2-xml#";
     private static final String DEFAULT_OWL_FILE = "../KnowledgeBase/ontology/csc-ontology.owl";
     private static final String [] uriNames = new String [] { "URI", "annotationURI", "datatypeURI" };
-    private static final String LIN_INSERT = "insert into CDW_COMPONENT_LINKS /*+ append */ (LIN_ID, LIN_CMP_ID, LIN_LINKED_CMP_ID, LIN_LCL_ID) VALUES (%1$d, %2$d, %3$d, %4$d)\n/";
-    private static final String LIN_FILE = "cmp_links.tmp.sql";
-    
-    private EntityManager em = null;
+
+    private GOntologyFactory gFactory;
     
     enum AnnotationType {
         DESCRIPTION
     };
 
-    private Map<String, Component> components = new HashMap<String, Component>();
-    private Map<String, ComponentClass> componentClasses = new HashMap<String, ComponentClass>();
-    private Map<String, ComponentLinkClass> componentLinkClasses = new HashMap<String, ComponentLinkClass>();
-
-    /**
-     *
-     * @return
-     */
-    public Map<String, Component> getComponents() {
-        return components;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public Map<String, ComponentClass> getComponentClasses() {
-        return componentClasses;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public Map<String, ComponentLinkClass> getComponentLinkClasses() {
-        return componentLinkClasses;
-    }
+    private Map<String, GComponent> components = new HashMap<String, GComponent>();
+    private Map<String, GComponentClass> componentClasses = new HashMap<String, GComponentClass>();
+    private Map<String, GComponentLinkClass> componentLinkClasses = new HashMap<String, GComponentLinkClass>();
 
     private void processContentHandler(SAXParser parser, String filename, OntologyHandler handler) throws Exception {
         parser.setContentHandler(handler);
@@ -99,82 +60,37 @@ public class ComponentImporter {
         processContentHandler(parser, filename, new ClassAssertionHandler());
         processContentHandler(parser, filename, new LinkClassHandler());
 
-        em.getTransaction().begin();
-
-        log.info("Persisting component classes..");
-        {
-            long id = 1;
-            for (ComponentClass c : getComponentClasses().values()) {
-                c.setId(id++);
-                em.persist(c);
-            }
-        }
-
-        log.info("Persisting component link classes..");
-        {
-            long id = 1;
-            for (ComponentLinkClass c : getComponentLinkClasses().values()) {
-                c.setId(id++);
-                em.persist(c);
-            }
-        }
-
-        log.info("Persisting components..");
-        {
-            long id = 1;
-            for (Component c : getComponents().values()) {
-                if (c.isSetComponentClass()) {
-                    c.setId(id++);
-                    em.persist(c);
-                }
-            }
-        }
-
         processContentHandler(parser, filename, new SubClassOfHandler());
         processContentHandler(parser, filename, new LinkUpdateHandler());
+
+        gFactory.intermediateCommit();
 
         processContentHandler(parser, filename, new SameIndividualsHandler());
         processContentHandler(parser, filename, new AnnotationHandler());
 
-        log.info("Commit..");
-        em.getTransaction().commit();
-        em.getTransaction().begin();
-        
+        gFactory.intermediateCommit();
+
         processContentHandler(parser, filename, new ObjectPropertyAssertionHandler(false));
         processContentHandler(parser, filename, new ObjectPropertyAssertionHandler(true));
 
-        {
-            File f = new File(LIN_FILE);
-            PrintStream out = new PrintStream(f);
-            long id = 1;
-            log.info("Dumping component links to SQL file (" + LIN_FILE + ")..");
-            for (Component c : getComponents().values()) {
-                for (ComponentLink link: c.getLinks()) {
-                    if (link.getId() == null) {
-                        link.setId(id++);
-                        out.println(String.format(LIN_INSERT, link.getId(), c.getId(), link.getComponent().getId(), link.getComponentLinkClass().getId()));
-                    }
-                }
+        // Removing components without types (synonyms)
+        log.info("Removing synonym components..");
+        for (GComponent gc: components.values()) {
+            if (!gc.isSetType()) {
+                gFactory.removeGComponent(gc);
             }
         }
 
+        log.info("Commit..");
+        gFactory.close();
+
     }
 
-    public ComponentImporter(EntityManager em) {
-        this.em = em;
+    public OntologyGraphImporter() {
+        gFactory = new GOntologyFactory();
     }
 
-    /**
-     *
-     * @throws java.lang.Throwable
-     */
-    @Override
-    protected void finalize() throws Throwable {
-    }
 
-    /**
-     * @param args the command line arguments
-     */
     @SuppressWarnings("static-access")
     public static void main(String[] args) {
 
@@ -190,14 +106,8 @@ public class ComponentImporter {
 
             String ontology_file = cmdLine.getOptionValue("owl", DEFAULT_OWL_FILE);
 
-            EntityManagerFactory emf = Persistence.createEntityManagerFactory("CdwUtilPU");
-            EntityManager em = emf.createEntityManager();
-
-            ComponentImporter importer = new ComponentImporter(em);
+            OntologyGraphImporter importer = new OntologyGraphImporter();
             importer.process(ontology_file);
-
-            em.close();
-            emf.close();
 
         } catch (Exception e) {
             log.fatal(e);
@@ -308,11 +218,11 @@ public class ComponentImporter {
         @Override
         public void blockElement(String blockName, String localName, String name) {
             if (localName.equals("Class")) {
-                if (!getComponentClasses().containsKey(name)) {
+                if (!componentClasses.containsKey(name)) {
                     try {
-                        ComponentClass c = new ComponentClass();
-                        c.setName(ComponentClassType.fromValue(name));
-                        getComponentClasses().put(name, c);
+                        GComponentClass c = gFactory.createGComponentClass();
+                        c.setType(ComponentClassType.fromValue(name));
+                        componentClasses.put(name, c);
                     } catch (IllegalArgumentException e) {
                         log.warn("Component class type [" + name + "] not defined in schema. Skipping..");
                     }
@@ -320,10 +230,10 @@ public class ComponentImporter {
                     log.warn("Double component class [" + name + "] declaration. Ignoring..");
                 }
             } else if (localName.equals("Individual")) {
-                if (!getComponents().containsKey(name)) {
-                    Component c = new Component();
+                if (!components.containsKey(name)) {
+                    GComponent c = gFactory.createGComponent();
                     c.setName(name);
-                    getComponents().put(name, c);
+                    components.put(name, c);
                 } else {
                     log.warn("Double component [" + name + "] declaration. Ignoring..");
                 }
@@ -333,8 +243,8 @@ public class ComponentImporter {
 
     private class ClassAssertionHandler extends OntologyHandler {
 
-        private Component component = null;
-        private ComponentClass componentClass = null;
+        private GComponent component = null;
+        private GComponentClass componentClass = null;
 
         public ClassAssertionHandler() {
             super("ClassAssertion");
@@ -343,7 +253,9 @@ public class ComponentImporter {
         @Override
         public void blockEnd(String blockName) {
             if (component != null && componentClass != null) {
-                component.setComponentClass(componentClass);
+                if (!component.isSetType()) {
+                    component.setType(componentClass);
+                }
             }
         }
 
@@ -356,12 +268,12 @@ public class ComponentImporter {
         @Override
         public void blockElement(String blockName, String localName, String name) {
             if (localName.equals("Class")) {
-                componentClass = getComponentClasses().get(name);
+                componentClass = componentClasses.get(name);
                 if (componentClass == null) {
                     log.warn("Component class [" + name + "] not declared but found in " + blockName + ". Skipping..");
                 }
             } else if (localName.equals("Individual")) {
-                component = getComponents().get(name);
+                component = components.get(name);
                 if (component == null) {
                     log.warn("Component [" + name + "] not declared but found in " + blockName + ". Skipping..");
                 }
@@ -378,12 +290,12 @@ public class ComponentImporter {
         @Override
         public void blockElement(String blockName, String localName, String name) {
             if (localName.equals("ObjectProperty")) {
-                if (!getComponentLinkClasses().containsKey(name)) {
+                if (!componentLinkClasses.containsKey(name)) {
                     try {
-                        ComponentLinkClass clc = new ComponentLinkClass();
-                        clc.setName(ComponentLinkClassType.fromValue(name));
+                        GComponentLinkClass clc = gFactory.createGComponentLinkClass();
+                        clc.setType(ComponentLinkClassType.fromValue(name));
                         clc.setTransitive(false);
-                        getComponentLinkClasses().put(name, clc);
+                        componentLinkClasses.put(name, clc);
                     } catch (IllegalArgumentException e) {
                         log.warn("Component link class type [" + name + "] not defined in schema but found in " + blockName + ". Skipping..");
                     }
@@ -394,7 +306,7 @@ public class ComponentImporter {
 
     private class LinkUpdateHandler extends OntologyHandler {
 
-        ComponentLinkClass links[] = {null, null};
+        GComponentLinkClass links[] = {null, null};
 
         public LinkUpdateHandler() {
             super("TransitiveObjectProperty", "InverseObjectProperties", "SubObjectPropertyOf");
@@ -423,14 +335,14 @@ public class ComponentImporter {
             if (localName.equals("ObjectProperty")) {
                 try {
                     if (blockName.equals("TransitiveObjectProperty")) {
-                        getComponentLinkClasses().get(name).setTransitive(true);
+                        componentLinkClasses.get(name).setTransitive(true);
                     } else {
 
                         if (links[0] == null) {
-                            links[0] = getComponentLinkClasses().get(name);
+                            links[0] = componentLinkClasses.get(name);
                             links[0].getId();
                         } else {
-                            links[1] = getComponentLinkClasses().get(name);
+                            links[1] = componentLinkClasses.get(name);
                             links[1].getId();
                         }
                     }
@@ -444,8 +356,8 @@ public class ComponentImporter {
 
     private class SubClassOfHandler extends OntologyHandler {
 
-        ComponentClass parent = null;
-        ComponentClass child = null;
+        GComponentClass parent = null;
+        GComponentClass child = null;
 
         public SubClassOfHandler() {
             super("SubClassOf");
@@ -454,7 +366,7 @@ public class ComponentImporter {
         @Override
         public void blockEnd(String blockName) {
             if (parent != null && child != null) {
-                child.getParents().add(parent);
+                child.addParent(parent);
             }
             parent = null;
             child = null;
@@ -464,11 +376,11 @@ public class ComponentImporter {
         public void blockElement(String blockName, String localName, String name) {
             if (localName.equals("Class")) {
                 try {
-                    getComponentClasses().get(name).getId();
+                    componentClasses.get(name).getId();
                     if (child == null) {
-                        child = getComponentClasses().get(name);
+                        child = componentClasses.get(name);
                     } else {
-                        parent = getComponentClasses().get(name);
+                        parent = componentClasses.get(name);
                     }
                 } catch (NullPointerException e) {
                     log.warn("Component class [" + name + "] not defined but found in " + blockName + ". Skipping..");
@@ -479,8 +391,8 @@ public class ComponentImporter {
 
     private class ObjectPropertyAssertionHandler extends OntologyHandler {
 
-        Component comps[] = {null, null};
-        ComponentLinkClass linkClass = null;
+        GComponent comps[] = { null, null };
+        GComponentLinkClass linkClass = null;
         boolean checkInverse = false;
 
         public ObjectPropertyAssertionHandler(boolean checkInverse) {
@@ -488,13 +400,8 @@ public class ComponentImporter {
             this.checkInverse = checkInverse;
         }
 
-        private boolean isLinkExists(Component component, Component toComponent, ComponentLinkClass checkLinkClass) {
-            for (ComponentLink link : component.getLinks()) {
-                if (link.getComponent().equals(toComponent) && link.getComponentLinkClass().equals(checkLinkClass)) {
-                    return true;
-                }
-            }
-            return false;
+        private boolean isLinkExists(GComponent component, GComponent toComponent, GComponentLinkClass checkLinkClass) {
+            return component.getGComponentLinks().hasLink(component, checkLinkClass.getType());
         }
 
         @Override
@@ -502,41 +409,37 @@ public class ComponentImporter {
             if (comps[0] != null && comps[1] != null && linkClass != null && !comps[0].equals(comps[1])) {
 
                 if (!isLinkExists(comps[0], comps[1], linkClass)) {
-                    ComponentLink link = new ComponentLink();
-                    link.setComponent(comps[1]);
-                    link.setComponentLinkClass(linkClass);
-                    comps[0].getLinks().add(link);
+                    comps[0].getGComponentLinks().addLink(comps[1], linkClass.getType());
                 }
 
                 if (checkInverse && linkClass.getInverse() != null) {
                     if (!isLinkExists(comps[1], comps[0], linkClass.getInverse())) {
-                        ComponentLink link = new ComponentLink();
-                        link.setComponent(comps[0]);
-                        link.setComponentLinkClass(linkClass.getInverse());
-                        comps[1].getLinks().add(link);
+                        comps[1].getGComponentLinks().addLink(comps[0], linkClass.getInverse().getType());
                     }
                 }
 
             }
+
             comps[0] = null;
             comps[1] = null;
             linkClass = null;
+            
         }
 
         @Override
         public void blockElement(String blockName, String localName, String name) {
             if (localName.equals("ObjectProperty")) {
-                if (getComponentLinkClasses().containsKey(name)) {
-                    linkClass = getComponentLinkClasses().get(name);
+                if (componentLinkClasses.containsKey(name)) {
+                    linkClass = componentLinkClasses.get(name);
                 } else {
                     log.warn("Component link class [" + name + "] not defined but found in " + blockName + ". Skipping..");
                 }
             } else if (localName.equals("Individual")) {
-                if (getComponents().containsKey(name)) {
+                if (components.containsKey(name)) {
                     if (comps[0] == null) {
-                        comps[0] = getComponents().get(name);
+                        comps[0] = components.get(name);
                     } else {
-                        comps[1] = getComponents().get(name);
+                        comps[1] = components.get(name);
                     }
                 } else {
                     log.warn("Component [" + name + "] not defined but found in " + blockName + ". Skipping..");
@@ -558,13 +461,13 @@ public class ComponentImporter {
         public void blockEnd(String blockName) {
             if (syns.size() > 0) {
                 for (String s1: syns) {
-                    Component c = getComponents().get(s1);
-                    if (c.isSetComponentClass()) {
+                    GComponent c = components.get(s1);
+                    if (c.isSetType()) {
                         for (String s2: syns) {
                             if (!s1.equals(s2)) {
-                                ComponentSynonym synonym = new ComponentSynonym();
-                                synonym.setSynonym(s2);
-                                c.getSynonyms().add(synonym);
+                                GComponentSynonym syn = gFactory.createGComponentSynonym();
+                                syn.setName(s2);
+                                c.addSynonym(syn);
                             }
                         }
                     }
@@ -576,7 +479,7 @@ public class ComponentImporter {
         @Override
         public void blockElement(String blockName, String localName, String name) {
             if (localName.equals("Individual")) {
-                if (getComponents().containsKey(name)) {
+                if (components.containsKey(name)) {
                     if (!unique.contains(name)) {
                        syns.add(name);
                        unique.add(name);
@@ -600,7 +503,7 @@ public class ComponentImporter {
     */
     private class AnnotationHandler extends OntologyHandler {
 
-        ComponentClass componentClass = null;
+        GComponentClass componentClass = null;
         String value = null;
         AnnotationType type = null;
 
@@ -626,8 +529,8 @@ public class ComponentImporter {
         public void blockElement(String blockName, String localName, String name) {
             if (localName.equals("Class")) {
                 try {
-                    getComponentClasses().get(name).getId();
-                    componentClass = getComponentClasses().get(name);
+                    componentClasses.get(name).getId();
+                    componentClass = componentClasses.get(name);
                 } catch (NullPointerException e) {
                     log.warn("Component class [" + name + "] not defined but found in " + blockName + ". Skipping..");
                 }
@@ -652,6 +555,5 @@ public class ComponentImporter {
         }
 
     }
-
 
 }

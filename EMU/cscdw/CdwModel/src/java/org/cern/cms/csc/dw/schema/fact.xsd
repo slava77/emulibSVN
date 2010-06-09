@@ -11,11 +11,12 @@
     xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
     xmlns:ont="http://www.cern.ch/cms/csc/dw/ontology"
     xmlns:ser="http://www.cern.ch/cms/csc/dw/service"
+    xmlns:cu="http://jaxb.dev.java.net/plugin/classutils"
     xsi:schemaLocation="
         http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
         http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
         http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
-    jaxb:extensionBindingPrefixes="xjc orm hj"
+    jaxb:extensionBindingPrefixes="xjc orm hj cu"
     jaxb:version="2.0">
 
     <xsd:include schemaLocation="factClassifiers.xsd"/>
@@ -35,7 +36,7 @@
         <xsd:annotation>
             <xsd:appinfo>
                 <jaxb:class name="FactCollection" />
-                <xjc:superClass name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+                <cu:extends name="org.cern.cms.csc.dw.model.base.EntityBase"/>
                 <hj:entity>
                     <orm:table name="CDW_FACT_COLLECTIONS"/>
                 </hj:entity>
@@ -76,6 +77,16 @@
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
+            <xsd:element name="time" type="xsd:dateTime" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="FCO_TIME"/>
+                        </hj:basic>
+                        <jaxb:property name="time"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
             <xsd:element ref="tns:fact" maxOccurs="unbounded">
                 <xsd:annotation>
                     <xsd:appinfo>
@@ -90,7 +101,7 @@
         <xsd:annotation>
             <xsd:appinfo>
                 <jaxb:class name="Fact"/>
-                <xjc:superClass name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+                <cu:extends name="org.cern.cms.csc.dw.model.base.EntityBase"/>
                 <hj:entity>
                     <orm:table name="CDW_FACTS"/>
                     <orm:inheritance strategy="TABLE_PER_CLASS"/>

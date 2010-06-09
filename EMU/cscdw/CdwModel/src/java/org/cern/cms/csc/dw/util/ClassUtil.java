@@ -33,6 +33,7 @@ public class ClassUtil {
 
             tempf.setAccessible(true);
         } catch (Throwable t) {
+            t.printStackTrace(System.err);
             failure = t;
         }
         CLASSES_VECTOR_FIELD = tempf;
@@ -78,6 +79,7 @@ public class ClassUtil {
         try {
             final Vector<Class<?>> classes =
                     (Vector<Class<?>>) CLASSES_VECTOR_FIELD.get(loader);
+
             if (classes == null) {
                 return EMPTY_CLASS_ARRAY;
             }
@@ -249,8 +251,8 @@ public class ClassUtil {
     }
 
     public static Class[] getLoadedClasses() {
-         ClassLoader[] loaders = new ClassLoader[] { ClassLoader.getSystemClassLoader(), ClassUtil.class.getClassLoader() };
-         return ClassUtil.getLoadedClasses(loaders);
+        ClassLoader[] loaders = new ClassLoader[] { ClassLoader.getSystemClassLoader(), ClassUtil.class.getClassLoader() };
+        return ClassUtil.getLoadedClasses(loaders);
     }
 
     private static final Field CLASSES_VECTOR_FIELD; // set in <clinit> [can be

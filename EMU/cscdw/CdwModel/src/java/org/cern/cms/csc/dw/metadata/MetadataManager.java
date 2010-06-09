@@ -12,14 +12,16 @@ import org.cern.cms.csc.dw.model.fact.Fact;
 @SuppressWarnings("unchecked")
 public class MetadataManager {
 
-    private static Map<Class, FactMd> factClasses;
+    private static Map<Class, FactMd> factClasses = null;
 
-    static {
-        factClasses = new HashMap<Class, FactMd>();
-        for (Class c: ClassUtil.getLoadedClasses()) {
-            if (c.getSuperclass() != null) {
-                if (c.getSuperclass().equals(Fact.class) && c.isAnnotationPresent(Entity.class) && c.isAnnotationPresent(FactAnn.class)) {
-                    factClasses.put(c, new FactMd(c));
+    public MetadataManager() {
+        if (factClasses == null) {
+            factClasses = new HashMap<Class, FactMd>();
+            for (Class c: ClassUtil.getLoadedClasses()) {
+                if (c.getSuperclass() != null) {
+                    if (c.getSuperclass().equals(Fact.class) && c.isAnnotationPresent(Entity.class) && c.isAnnotationPresent(FactAnn.class)) {
+                        factClasses.put(c, new FactMd(c));
+                    }
                 }
             }
         }
