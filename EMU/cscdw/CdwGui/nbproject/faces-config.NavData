@@ -3,8 +3,8 @@
     <Scope Scope="Faces Configuration Only"/>
     <Scope Scope="Project">
         <Node id="component.jsp" x="419" y="200" zoom="true"/>
-        <Node id="index.jsp" x="90" y="85" zoom="false"/>
         <Node id="component.iface" x="483" y="356" zoom="true"/>
+        <Node id="index.jsp" x="90" y="85" zoom="false"/>
         <Node id="explorer.iface" x="101" y="271" zoom="true"/>
         <Node id="explorer.jsp" x="161" y="197" zoom="false"/>
     </Scope>

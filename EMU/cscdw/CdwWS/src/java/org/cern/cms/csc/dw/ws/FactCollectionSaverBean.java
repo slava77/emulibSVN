@@ -15,8 +15,7 @@ import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
 import org.cern.cms.csc.dw.dao.PersistDaoLocal;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.dw.model.fact.FactCollection;
-import org.cern.cms.csc.dw.model.fact.FactCollectionFactsItem;
-import org.cern.cms.csc.dw.model.ontology.Component;
+import org.cern.cms.csc.dw.model.ontology.graph.GComponent;
 import org.cern.cms.csc.dw.service.ServiceInstructions;
 
 @Stateless
@@ -39,8 +38,10 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
         Set<JAXBElement<? extends Fact>> toRemove = new HashSet<JAXBElement<? extends Fact>>();
         ServiceInstructions instructions = factCollection.getServiceInstructions();
 
-        // Clean factCollectionFactsItems
-        factCollection.getFactsItems().clear();
+        logger.info("FC Saver bean: received: " + factCollection.toString());
+
+        // Performing on receive operations
+        factCollection.onReceive(entityDao);
 
         // Loop over collection facts
         for (JAXBElement<? extends Fact> fi: factCollection.getFacts()) {
@@ -48,24 +49,30 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
             // Get a fact
             Fact fact = fi.getValue();
             
-            logger.finest("FC Saver bean: Processing fact: " + fact.toString());
+            logger.info("FC Saver bean: Processing fact: " + fact.toString());
 
             // Get ontology component object from fact component id
             try {
 
-                Component component = ontologyDao.getComponentByName(fact.getComponentId());
-                if (!fact.checkComponentClassType(component.getComponentClass().getName())) {
-                    throw new ComponentTypeNotAllowedInFactException(component.getComponentClass().getName(), fact.getClass());
+                GComponent gcomponent = ontologyDao.getGComponentByName(fact.getComponentId());
+                logger.info("FC Saver bean: found gcomponent: " + gcomponent.getName());
+
+                if (!ontologyDao.isGComponentClassParent(
+                        fact.getMetadata().getLimitComponents(),
+                        gcomponent.getType(),
+                        fact.getMetadata().isLimitComponentsRecursive())) {
+                    throw new ComponentTypeNotAllowedInFactException(gcomponent.getType().getType(), fact.getClass());
                 }
-                fact.setComponent(component);
-                fact.setComponentId(component.getName());
+
+                fact.setComponent(ontologyDao.getComponentById(gcomponent.getId()));
+                fact.setComponentId(gcomponent.getName());
 
                 fact.onReceive(entityDao);
 
                 // This fact is OK so we add it to factItems
-                FactCollectionFactsItem fcfi = new FactCollectionFactsItem();
-                fcfi.setItemValue(fact);
-                factCollection.getFactsItems().add(fcfi);
+                //FactCollectionFactsItem fcfi = new FactCollectionFactsItem();
+                //fcfi.setItemValue(fact);
+                //factCollection.getFactsItems().add(fcfi);
 
             } catch (Exception ex) {
                 if (instructions.isStrict()) {

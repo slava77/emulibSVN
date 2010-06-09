@@ -71,4 +71,14 @@
     nbproject/build-impl.xml file. 
 
     -->
+
+    <target name="-pre-dist">
+
+        <copy
+            failonerror="false"
+            file="src/graphdb/graphdb.zip"
+            tofile="${build.classes.dir}/org/cern/cms/csc/dw/model/graphdb.zip"/>
+
+    </target>
+
 </project>

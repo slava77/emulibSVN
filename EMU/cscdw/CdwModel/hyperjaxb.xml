@@ -103,6 +103,17 @@
         </java>
 
         <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
+            delimiter="/" keepformat="true" delimitertype="row" onerror="continue">
+            <classpath>
+                <pathelement path="build/jar"/>
+                <fileset dir="build/jar">
+                    <include name="*.jar"/>
+                </fileset>
+            </classpath>
+            <transaction src="${sqlbase}/cdw_updatedb_stage01.sql"/>
+        </sql>
+
+        <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
             delimiter="/" keepformat="true" delimitertype="row" onerror="abort">
             <classpath>
                 <pathelement path="build/jar"/>
@@ -121,7 +132,7 @@
                     <include name="*.jar"/>
                 </fileset>
             </classpath>
-            <transaction src="${sqlbase}/cdw_updatedb_stage01.sql"/>
+            <transaction src="${sqlbase}/cdw_updatedb_stage02.sql"/>
         </sql>
 
         <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
@@ -157,12 +168,34 @@
                     <include name="*.jar"/>
                 </fileset>
             </classpath>
-            <transaction src="${sqlbase}/cdw_updatedb_stage02.sql"/>
+            <transaction src="${sqlbase}/cdw_updatedb_stage03.sql"/>
         </sql>
 
     </target>
 
-    <target name="import-ontology" depends="db-properties">
+    <target name="ontology-graph">
+
+        <!-- Remove graph db -->
+        <delete dir="src/graphdb" includeemptydirs="true" includes="**/*" excludes="CVS"/>
+
+        <!-- Execute main data import procedure -->
+        <java classname="org.cern.cms.csc.dw.dev.OntologyGraphImporter" fork="true" failonerror="true">
+            <jvmarg line="-Xmn100M -Xms500M -Xmx500M -Xss100M"/>
+            <arg value="../KnowledgeBase/ontology/csc-ontology.owl"/>
+            <classpath>
+                <pathelement path="build/jar"/>
+                <fileset dir="build/jar">
+                    <include name="*.jar"/>
+                </fileset>
+            </classpath>
+        </java>
+
+        <zip destfile="graphdb.zip" basedir="src/graphdb"/>
+        <move file="graphdb.zip" tofile="src/graphdb/graphdb.zip"/>
+
+    </target>
+
+    <target name="ontology-graph-to-database" depends="db-properties">
 
         <!-- Execute SQL files -->
         <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
@@ -177,9 +210,8 @@
         </sql>
 
         <!-- Execute main data import procedure -->
-        <java classname="org.cern.cms.csc.dw.dev.ComponentImporter" fork="true" failonerror="true">
+        <java classname="org.cern.cms.csc.dw.dev.OntologyGraphToDatabaseImporter" fork="true" failonerror="true">
             <jvmarg line="-Xmn100M -Xms500M -Xmx500M -Xss100M"/>
-            <arg value="../KnowledgeBase/ontology/csc-ontology.owl"/>
             <classpath>
                 <pathelement path="build/jar"/>
                 <fileset dir="build/jar">
@@ -187,18 +219,6 @@
                 </fileset>
             </classpath>
         </java>
-
-        <!-- Execute SQL files -->
-        <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
-            delimiter="/" keepformat="true" delimitertype="row" autocommit="true" onerror="continue" output="false">
-            <classpath>
-                <pathelement path="build/jar"/>
-                <fileset dir="build/jar">
-                    <include name="*.jar"/>
-                </fileset>
-            </classpath>
-            <transaction src="cmp_links.tmp.sql"/>
-        </sql>
 
         <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
             delimiter="/" keepformat="true" delimitertype="row" autocommit="true" onerror="continue">
@@ -208,15 +228,8 @@
                     <include name="*.jar"/>
                 </fileset>
             </classpath>
-            <transaction src="${sqlbase}/cdw_ontology_indexes.sql"/>
-            <transaction src="${sqlbase}/cdw_ontology.sql"/>
             <transaction src="${sqlbase}/cdw_ontology_post_import.sql"/>
-            <transaction>
-                select count(*) as "ORPHAN FACTS LEFT" from cdw_facts where fct_cmp_id is null
-            </transaction>
         </sql>
-
-        <delete file="cmp_links.tmp.sql"/>
 
     </target>
 
@@ -235,7 +248,7 @@
                 -Xhyperjaxb3-ejb
                 -Xhyperjaxb3-ejb-roundtripTestClassName=org.cern.cms.csc.dw.model.test.RoundtripTest
                 -Xinheritance
-                -Xsuperclass
+                -XClassUtils
                 -XAnnotate
                 -simple-preserve"/>
             <!--binding dir="${basedir}">

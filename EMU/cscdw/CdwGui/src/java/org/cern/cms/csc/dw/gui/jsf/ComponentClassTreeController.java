@@ -1,46 +1,49 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.cern.cms.csc.dw.gui.jsf;
 
+import com.icesoft.faces.component.selectinputtext.SelectInputText;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.SelectItem;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import org.cern.cms.csc.dw.exception.ComponentClassNotFoundException;
 import org.cern.cms.csc.dw.exception.ComponentNotFoundException;
-import org.cern.cms.csc.dw.model.ontology.ComponentClass;
 import org.cern.cms.csc.dw.util.JsfBeanBase;
 import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
-import org.cern.cms.csc.dw.model.ontology.Component;
+import org.cern.cms.csc.dw.model.ontology.graph.GComponent;
+import org.cern.cms.csc.dw.model.ontology.graph.GComponentClass;
+import org.cern.cms.csc.dw.util.ServiceLocator;
 
-/**
- *
- * @author valdo
- */
 @EJB(name="OntologyDaoRef", beanInterface=OntologyDaoLocal.class)
 public class ComponentClassTreeController extends JsfBeanBase {
 
-    private OntologyDaoLocal ontologyDao;
-
+    private OntologyDaoLocal ontologyDao;  
     private DefaultTreeModel model;
+
+    private GComponentClass selectedComponentClass = null;
+    private GComponent selectedComponent = null;
+    private String selectedComponentName = null;
+    private List<SelectItem> componentMatches;
+    private static final int componentMatchesToDisplay = 15;
 
     public DefaultTreeModel getModel() {
         return model;
     }
 
-    private ComponentClass selectedClass;
-
-    public ComponentClass getSelectedClass() {
-        return selectedClass;
+    public GComponentClass getSelectedComponentClass() {
+        return selectedComponentClass;
     }
 
     public ComponentClassTreeController() throws Exception {
-        ontologyDao = (OntologyDaoLocal) getEjb("OntologyDaoRef");
+        ontologyDao = (OntologyDaoLocal) ServiceLocator.getInstance().getEnvService("OntologyDaoRef");
         init();
     }
 
@@ -60,10 +63,22 @@ public class ComponentClassTreeController extends JsfBeanBase {
                 DefaultMutableTreeNode currentNode = hListIt.next();
                 hListIt.remove();
                 ComponentClassTreeNode currentCctn = (ComponentClassTreeNode) currentNode.getUserObject();
-                List<ComponentClass> tlist = ontologyDao.getComponentClasses(currentCctn == null ? null : currentCctn.getComponentClass());
-                for (Iterator<ComponentClass> tIt = tlist.iterator(); tIt.hasNext(); ) {
+                Collection<GComponentClass> tlist = null;
+                if (currentCctn == null || currentCctn.getComponentClass() == null) {
+                    tlist = ontologyDao.getGComponentClasses();
+                    Collection<GComponentClass> toRemove = new HashSet<GComponentClass>();
+                    for (GComponentClass c: tlist) {
+                        if (!c.getParents().isEmpty()) {
+                            toRemove.add(c);
+                        }
+                    }
+                    tlist.removeAll(toRemove);
+                } else {
+                    tlist = currentCctn.getComponentClass().getChildren();
+                }
+                for (GComponentClass c: tlist) {
                     DefaultMutableTreeNode node = new DefaultMutableTreeNode();
-                    ComponentClassTreeNode child = new ComponentClassTreeNode(node, tIt.next());
+                    ComponentClassTreeNode child = new ComponentClassTreeNode(node, c);
                     child.setLeaf(true);
                     node.setUserObject(child);
                     currentNode.add(node);
@@ -81,33 +96,90 @@ public class ComponentClassTreeController extends JsfBeanBase {
     public void componentClassNodeSelectedAction(ActionEvent event) {
         String strId = (String) getParameter("componentClassId");
         if (strId == null) {
-            selectedClass = null;
+            selectedComponentClass = null;
         } else {
-            selectedClass = ontologyDao.getComponentClassById(Long.parseLong(strId));
-            if (selectedClass != null) {
-                components = ontologyDao.getComponents(selectedClass);
+            try {
+                selectedComponentClass = ontologyDao.getGComponentClassById(Long.parseLong(strId));
+            } catch (ComponentClassNotFoundException ex) {
+                Logger.getLogger(ComponentClassTreeController.class.getName()).log(Level.SEVERE, null, ex);
+                selectedComponentClass = null;
             }
         }
     }
 
-    private List<Component> components = null;
-
-    public List<Component> getComponents() {
-        return components;
-    }
-
-    public boolean getComponentsSet() {
-        return (components != null && components.size() > 0);
-    }
-
-    private Component selectedComponent = null;
-
-    public Component getSelectedComponent() {
+    public GComponent getSelectedComponent() {
         return selectedComponent;
     }
 
+    public void setSelectedComponent(GComponent selectedComponent) {
+        this.selectedComponent = selectedComponent;
+    }
+
+    public void setSelectedComponentName(String selectedComponentName) {
+        this.selectedComponentName = selectedComponentName;
+    }
+
+    public String getSelectedComponentName() {
+        return selectedComponentName;
+    }
+
     public void setSelectedComponentId(Long componentId) throws ComponentNotFoundException {
-        this.selectedComponent = ontologyDao.getComponentById(componentId, true);
+        this.selectedComponent = ontologyDao.getGComponentById(componentId);
+    }
+
+    public void resetAction(ActionEvent event) {
+        selectedComponentClass = null;
+        selectedComponent = null;
+    }
+
+    public void componentInputValueChanged(ValueChangeEvent event) {
+
+        if (event.getComponent() instanceof SelectInputText) {
+
+            // get the number of displayable records from the component
+            SelectInputText autoComplete = (SelectInputText) event.getComponent();
+            // get the new value typed by component user.
+            String newWord = (String) event.getNewValue();
+
+            componentMatches = new ArrayList<SelectItem>();
+            selectedComponent = null;
+
+            if (newWord != null && newWord.length() > 0) {
+
+                for (GComponent gc: ontologyDao.getGComponentsByNameMatches(newWord, getComponentMatchesToDisplay())) {
+                    componentMatches.add(new SelectItem(gc, gc.getName()));
+                }
+
+                // if there is a selected item then find the object of the
+                // same name
+                if (autoComplete.getSelectedItem() != null) {
+                    selectedComponent = (GComponent) autoComplete.getSelectedItem().getValue();
+                }
+
+                // if there was no selection we still want to see if a proper
+                // object was typed and update our selectedObject instance.
+                else {
+                    if (componentMatches != null) {
+                        GComponent tmp;
+                        for(int i = 0, max = componentMatches.size(); i < max; i++){
+                            tmp = (GComponent) componentMatches.get(i).getValue();
+                            if (tmp.getName().compareToIgnoreCase(newWord) == 0) {
+                                selectedComponent = tmp;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public List<SelectItem> getComponentMatches() {
+        return componentMatches;
+    }
+
+    public int getComponentMatchesToDisplay() {
+        return componentMatchesToDisplay;
     }
 
 }

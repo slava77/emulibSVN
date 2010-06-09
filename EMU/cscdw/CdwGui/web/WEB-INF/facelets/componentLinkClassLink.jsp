@@ -5,6 +5,6 @@
     action="explorer"
     actionListener="#{ComponentLinkClassTreeController.componentLinkClassNodeSelectedAction}">
     <f:param name="componentLinkClassId" value="#{value.id}" />
-    <ice:outputText value="#{value.nameItem}"/>
+    <ice:outputText value="#{value.type.value}"/>
 </ice:commandLink>
 

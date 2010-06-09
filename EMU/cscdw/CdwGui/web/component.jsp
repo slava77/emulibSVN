@@ -29,14 +29,14 @@
                     <h1>
                         <ice:outputFormat value="Component {0} (class: {1})">
                             <f:param value="#{ComponentClassTreeController.selectedComponent.name}" />
-                            <f:param value="#{ComponentClassTreeController.selectedComponent.componentClass.nameItem}" />
+                            <f:param value="#{ComponentClassTreeController.selectedComponent.type.type.value}" />
                         </ice:outputFormat>
                     </h1>
 
                     <ice:panelGrid columns="2">
 
                         <ice:outputLabel value="Class:"/>
-                        <cdw:componentClassLink value="#{ComponentClassTreeController.selectedComponent.componentClass}" />
+                        <cdw:componentClassLink value="#{ComponentClassTreeController.selectedComponent.type}" />
 
                         <ice:outputLabel value="Component:"/>
                         <cdw:componentLink value="#{ComponentClassTreeController.selectedComponent}" />
@@ -44,7 +44,7 @@
                         <ice:outputLabel value="Synonyms:"/>
                         <ice:panelGroup>
                             <ice:panelSeries value="#{ComponentClassTreeController.selectedComponent.synonyms}" var="synonym" varStatus="status">
-                                <ice:outputText value="#{synonym.synonym}"/>
+                                <ice:outputText value="#{synonym.name}"/>
                                 <ice:outputText value="," rendered="#{!(status.index == status.end)}"/>
                             </ice:panelSeries>
                         </ice:panelGroup>
@@ -58,6 +58,9 @@
                         <f:facet name="header">
                             <ice:columnGroup>
                                 <ice:headerRow>
+                                    <ice:column>
+                                        <ice:outputText value="ID"/>
+                                    </ice:column>
                                     <ice:column>
                                         <ice:outputText value="From Component"/>
                                     </ice:column>
@@ -75,16 +78,19 @@
                         </f:facet>
 
                         <ice:column>
+                            <ice:outputText value="#{link.id}"/>
+                        </ice:column>
+                        <ice:column>
                             <cdw:componentLink value="#{ComponentClassTreeController.selectedComponent}" />
                         </ice:column>
                         <ice:column>
-                            <ice:outputText value="#{link.componentLinkClass.nameItem}"/>
+                            <ice:outputText value="#{link.type.value}"/>
                         </ice:column>
                         <ice:column>
                             <cdw:componentLink value="#{link.component}" />
                         </ice:column>
                         <ice:column>
-                            <cdw:componentClassLink value="#{link.component.componentClass}" />
+                            <cdw:componentClassLink value="#{link.component.type}" />
                         </ice:column>
 
                     </ice:dataTable>

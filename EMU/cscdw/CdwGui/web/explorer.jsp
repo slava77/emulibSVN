@@ -28,6 +28,8 @@
 
                     <ice:panelGroup>
 
+                        <ice:commandLink action="explorer" value="Reset" actionListener="#{ComponentClassTreeController.resetAction}"/>
+                        
                         <h4><ice:outputText value="Component Classes" /></h4>
                         <ice:tree id="componentClassTree"
                             value="#{ComponentClassTreeController.model}"
@@ -72,11 +74,32 @@
 
                     <ice:panelGroup>
 
-                        <ice:panelGroup rendered="#{ComponentClassTreeController.selectedClass != null}">
+                        <ice:panelGrid columns="2">
+                            <ice:selectInputText id="AutoCmpTxtFace"
+                                rows="#{ComponentClassTreeController.componentMatchesToDisplay}"
+                                width="300"
+                                value="#{ComponentClassTreeController.selectedComponentName}"
+                                valueChangeListener="#{ComponentClassTreeController.componentInputValueChanged}"
+                                listVar="cmp"
+                                listValue="#{ComponentClassTreeController.componentMatches}">
+                                <f:facet name="selectInputText">
+                                    <ice:panelGrid columns="3">
+                                        <ice:outputText id="CmpName" value="#{cmp.name}"/>
+                                        <ice:outputText id="CmpClass" value="#{cmp.type.type.value}"/>
+                                        <ice:outputText id="CmpId" value="#{cmp.id}"/>
+                                    </ice:panelGrid>
+                                </f:facet>
+                            </ice:selectInputText>
+                            <ice:commandButton 
+                                value="Details"
+                                disabled="#{ComponentClassTreeController.selectedComponent == null}"/>
+                        </ice:panelGrid>
+
+                        <ice:panelGroup rendered="#{ComponentClassTreeController.selectedComponentClass != null}">
                             
                             <h2>
                                 <ice:outputFormat value="Component Class: {0}">
-                                    <f:param value="#{ComponentClassTreeController.selectedClass.nameItem}"/>
+                                    <f:param value="#{ComponentClassTreeController.selectedComponentClass.type.value}"/>
                                 </ice:outputFormat>
                             </h2>
 
@@ -84,24 +107,24 @@
 
                                 <ice:outputLabel value="Subclass Of:"/>
                                 <ice:panelGroup>
-                                    <ice:panelSeries value="#{ComponentClassTreeController.selectedClass.parents}" var="parent" varStatus="status">
+                                    <ice:panelSeries value="#{ComponentClassTreeController.selectedComponentClass.parents}" var="parent" varStatus="status">
                                         <cdw:componentClassLink value="#{parent}" />
                                         <ice:outputText value="," rendered="#{!(status.index == status.end)}"/>
                                     </ice:panelSeries>
                                 </ice:panelGroup>
 
                                 <ice:outputLabel value="Description:"/>
-                                <ice:outputText value="#{ComponentClassTreeController.selectedClass.description}"/>
+                                <ice:outputText value="#{ComponentClassTreeController.selectedComponentClass.description}"/>
 
                             </ice:panelGrid>
 
-                            <ice:panelGroup rendered="#{!ComponentClassTreeController.componentsSet}">
+                            <ice:panelGroup rendered="#{!ComponentClassTreeController.selectedComponentClass.hasComponents}">
                                 <ice:outputText value="Components not found"/>
                             </ice:panelGroup>
 
-                            <ice:panelGroup rendered="#{ComponentClassTreeController.componentsSet}">
+                            <ice:panelGroup rendered="#{ComponentClassTreeController.selectedComponentClass.hasComponents}">
                                 <ice:dataTable id="componentTable"
-                                    value="#{ComponentClassTreeController.components}" var="comp" rows="15">
+                                    value="#{ComponentClassTreeController.selectedComponentClass.components}" var="comp" rows="15">
 
                                     <f:facet name="header">
                                         <ice:columnGroup>
@@ -126,7 +149,7 @@
                                         <cdw:componentLink value="#{comp}" />
                                     </ice:column>
                                     <ice:column>
-                                        <cdw:componentClassLink value="#{comp.componentClass}" />
+                                        <cdw:componentClassLink value="#{comp.type}" />
                                     </ice:column>
 
                                 </ice:dataTable>

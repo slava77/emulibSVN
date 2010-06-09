@@ -1,23 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.cern.cms.csc.dw.gui.jsf;
 
 import com.icesoft.faces.component.tree.IceUserObject;
 import javax.swing.tree.DefaultMutableTreeNode;
-import org.cern.cms.csc.dw.model.ontology.ComponentLinkClass;
+import org.cern.cms.csc.dw.model.ontology.graph.GComponentLinkClass;
 
-/**
- *
- * @author valdo
- */
 public class ComponentLinkClassTreeNode extends IceUserObject {
 
-    private  ComponentLinkClass componentLinkClass = null;
+    private  GComponentLinkClass componentLinkClass = null;
 
-    public ComponentLinkClass getComponentLinkClass() {
+    public GComponentLinkClass getComponentLinkClass() {
         return componentLinkClass;
     }
 
@@ -25,7 +16,7 @@ public class ComponentLinkClassTreeNode extends IceUserObject {
         super(wrapper);
     }
 
-    public ComponentLinkClassTreeNode(DefaultMutableTreeNode wrapper, ComponentLinkClass componentLinkClass) {
+    public ComponentLinkClassTreeNode(DefaultMutableTreeNode wrapper, GComponentLinkClass componentLinkClass) {
         super(wrapper);
         this.componentLinkClass = componentLinkClass;
         setLeafIcon("tree_document.gif");

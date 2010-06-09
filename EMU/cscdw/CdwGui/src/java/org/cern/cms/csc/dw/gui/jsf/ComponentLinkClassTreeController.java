@@ -1,26 +1,22 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.cern.cms.csc.dw.gui.jsf;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.event.ActionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import org.cern.cms.csc.dw.model.ontology.ComponentLinkClass;
+import org.cern.cms.csc.dw.exception.ComponentLinkClassNotFoundException;
 import org.cern.cms.csc.dw.util.JsfBeanBase;
 import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
-import org.cern.cms.csc.dw.model.ontology.ComponentLink;
+import org.cern.cms.csc.dw.model.ontology.graph.GComponentLinkClass;
+import org.cern.cms.csc.dw.util.ServiceLocator;
 
-/**
- *
- * @author valdo
- */
 @EJB(name="OntologyDaoRef", beanInterface=OntologyDaoLocal.class)
 public class ComponentLinkClassTreeController extends JsfBeanBase {
 
@@ -32,14 +28,14 @@ public class ComponentLinkClassTreeController extends JsfBeanBase {
         return model;
     }
 
-    private ComponentLinkClass selectedLinkClass;
+    private GComponentLinkClass selectedLinkClass;
 
-    public ComponentLinkClass getSelectedLinkClass() {
+    public GComponentLinkClass getSelectedLinkClass() {
         return selectedLinkClass;
     }
 
     public ComponentLinkClassTreeController() throws Exception {
-        ontologyDao = (OntologyDaoLocal) getEjb("OntologyDaoRef");
+        ontologyDao = (OntologyDaoLocal) ServiceLocator.getInstance().getEnvService("OntologyDaoRef");
         init();
     }
 
@@ -59,10 +55,22 @@ public class ComponentLinkClassTreeController extends JsfBeanBase {
                 DefaultMutableTreeNode currentNode = hListIt.next();
                 hListIt.remove();
                 ComponentLinkClassTreeNode currentCctn = (ComponentLinkClassTreeNode) currentNode.getUserObject();
-                List<ComponentLinkClass> tlist = ontologyDao.getComponentLinkClasses(currentCctn == null ? null : currentCctn.getComponentLinkClass());
-                for (Iterator<ComponentLinkClass> tIt = tlist.iterator(); tIt.hasNext(); ) {
+                Collection<GComponentLinkClass> tlist;
+                if (currentCctn == null || currentCctn.getComponentLinkClass() == null) {
+                    tlist = ontologyDao.getGComponentLinkClasses();
+                    Collection<GComponentLinkClass> toRemove = new HashSet<GComponentLinkClass>();
+                    for (GComponentLinkClass c: tlist) {
+                        if (c.getParent() != null) {
+                            toRemove.add(c);
+                        }
+                    }
+                    tlist.removeAll(toRemove);
+                } else {
+                    tlist = currentCctn.getComponentLinkClass().getChildren();
+                }
+                for (GComponentLinkClass c: tlist) {
                     DefaultMutableTreeNode node = new DefaultMutableTreeNode();
-                    ComponentLinkClassTreeNode child = new ComponentLinkClassTreeNode(node, tIt.next());
+                    ComponentLinkClassTreeNode child = new ComponentLinkClassTreeNode(node, c);
                     child.setLeaf(true);
                     node.setUserObject(child);
                     currentNode.add(node);
@@ -78,35 +86,17 @@ public class ComponentLinkClassTreeController extends JsfBeanBase {
     }
 
     public void componentLinkClassNodeSelectedAction(ActionEvent event) {
-        String id = (String) getParameter("componentLinkClassId");
-        if (id == null) {
+        String strId = (String) getParameter("componentLinkClassId");
+        if (strId == null) {
             selectedLinkClass = null;
         } else {
-            selectedLinkClass = ontologyDao.getComponentLinkClassByName(id);
-            if (selectedLinkClass != null) {
-                componentLinks = ontologyDao.getComponentLinks(selectedLinkClass);
+            try {
+                selectedLinkClass = ontologyDao.getGComponentLinkClassById(Long.parseLong(strId));
+            } catch (ComponentLinkClassNotFoundException ex) {
+                Logger.getLogger(ComponentLinkClassTreeController.class.getName()).log(Level.SEVERE, null, ex);
+                selectedLinkClass = null;
             }
         }
-    }
-
-    private List<ComponentLink> componentLinks = null;
-
-    public List<ComponentLink> getComponents() {
-        return componentLinks;
-    }
-
-    public boolean getComponentsSet() {
-        return (componentLinks != null && componentLinks.size() > 0);
-    }
-
-    private ComponentLink selectedComponentLink = null;
-
-    public ComponentLink getSelectedComponentLink() {
-        return selectedComponentLink;
-    }
-
-    public void setSelectedComponentLinkId(String componentId) {
-        this.selectedComponentLink = ontologyDao.getComponentLinkByName(componentId);
     }
 
 }

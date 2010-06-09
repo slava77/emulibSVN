@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
-    <nextCatalog catalog="nbproject/private/cache/retriever/catalog.xml"/>
     <system systemId="http://ehcache.org/ehcache.xsd" uri="nbproject/private/cache/retriever/ehcache.org/ehcache.xsd"/>
+    <nextCatalog catalog="nbproject/private/cache/retriever/catalog.xml"/>
 </catalog>
