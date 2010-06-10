@@ -13,7 +13,7 @@ import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import org.cern.cms.csc.dw.model.base.EntityBase;
-import org.cern.cms.csc.dw.model.base.metadata.EntityPropertyMD;
+import org.cern.cms.csc.dw.metadata.PropertyMd;
 import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 
 /**
@@ -37,7 +37,7 @@ public abstract class Editor {
     /** Reference to the entity instance. */
     private EntityBase entity;
     /** Property metadata. */
-    private EntityPropertyMD metadata;
+    private PropertyMd metadata;
     /** Tells what kind of input to use in the GUI (e.g. default, textArea, date). */
     private InputType inputType = null;
     /** JSF converter for this property type. */
@@ -50,13 +50,17 @@ public abstract class Editor {
      * @param parentEditor parent editor that this editor belongs to.
      * @throws InvalidEntityBeanPropertyException thrown if property is incompatible with this kind of editor
      */
-    public Editor(EntityBase entity, EntityPropertyMD metadata, Editor parentEditor) throws InvalidEntityBeanPropertyException {
+    public Editor(EntityBase entity, PropertyMd metadata, Editor parentEditor) throws InvalidEntityBeanPropertyException {
         if (entity == null) {
             throw new NullPointerException("Trying to create a property editor for a null entity");
         }
         this.entity = entity;
         this.metadata = metadata;
         this.parentEditor = parentEditor;
+    }
+
+    public int getId() {
+        return this.toString().hashCode();
     }
 
     /**
@@ -87,7 +91,7 @@ public abstract class Editor {
      * Get property metadata.
      * @return property metadata.
      */
-    public EntityPropertyMD getMetadata() {
+    public PropertyMd getMetadata() {
         return metadata;
     }
 
@@ -110,6 +114,10 @@ public abstract class Editor {
         return converter;
     }
 
+    protected void resetConverter() {
+        converter = null;
+    }
+
     /**
      * Get what kind of input to use in the GUI (e.g. default, textArea, date).
      * @return kind of input to use in the GUI (e.g. default, textArea, date).
@@ -122,7 +130,7 @@ public abstract class Editor {
     }
 
     /**
-     * Validation method for JSF. Uses EntityPropertyMD.validate(Object value) to validate and form an error message.
+     * Validation method for JSF. Uses PropertyMd.validate(Object value) to validate and form an error message.
      * @param context JSF context
      * @param validate UIComponent to be validated
      * @param value value to be validated
@@ -130,6 +138,7 @@ public abstract class Editor {
     public void validate(FacesContext context, UIComponent validate, Object value) {
         String errorMsg = getMetadata().validate(value);
         if (errorMsg != null) {
+            logger.info("!!!! Editor: validation error: " + errorMsg);
             FacesMessage msg = new FacesMessage(errorMsg);
             ((UIInput)validate).setValid(false);
             context.addMessage(validate.getClientId(context), msg);
@@ -148,5 +157,5 @@ public abstract class Editor {
      * @return JSF converter for this property type.
      */
     protected abstract Converter createConverter();
-    
+
 }

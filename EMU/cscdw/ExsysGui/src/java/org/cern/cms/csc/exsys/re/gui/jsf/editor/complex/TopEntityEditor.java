@@ -7,8 +7,9 @@ package org.cern.cms.csc.exsys.re.gui.jsf.editor.complex;
 
 import java.lang.reflect.InvocationTargetException;
 import javax.faces.convert.Converter;
+import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.model.base.EntityBase;
-import org.cern.cms.csc.dw.model.base.metadata.EntityPropertyMD;
+import org.cern.cms.csc.dw.metadata.PropertyMd;
 import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.base.Editor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.base.Editor.InputType;
@@ -25,16 +26,16 @@ public class TopEntityEditor extends EntityEditor {
      * @param entity entity that the property to be edited belongs to.
      * @throws InvalidEntityBeanPropertyException thrown if property is incompatible with this kind of editor
      */
-    public TopEntityEditor(EntityBase entity) throws InvalidEntityBeanPropertyException {
-            super(entity, null, null);
+    public TopEntityEditor(EntityBase entity, EntityDaoLocal entityDao) throws InvalidEntityBeanPropertyException {
+            super(entity, null, null, entityDao);
     }
 
     /**
      * This constructor is hidden because parameter metadata doesn't apply to objects of this class.
      * Use TopEntityEditor(EntityBase entity) instead.
      */
-    private TopEntityEditor(EntityBase entity, EntityPropertyMD metadata, Editor parentEditor) throws InvalidEntityBeanPropertyException {
-        super(entity, null, null);
+    private TopEntityEditor(EntityBase entity, PropertyMd metadata, Editor parentEditor, EntityDaoLocal entityDao) throws InvalidEntityBeanPropertyException {
+        super(entity, null, null, entityDao);
     }
 
     @Override

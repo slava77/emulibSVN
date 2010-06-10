@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.naming.NamingException;
-import org.cern.cms.csc.dw.util.JsfBeanBase;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
+import org.cern.cms.csc.exsys.re.gui.jsf.util.JsfBeanBase;
 import org.cern.cms.csc.exsys.re.model.Rule;
 
 /**
@@ -26,7 +26,7 @@ public class RuleEngineFacade extends JsfBeanBase {
     RuleEngineDaoLocal reDao;
 
     /** Creates a new instance of RuleEngineFacade */
-    public RuleEngineFacade() throws NamingException {
+    public RuleEngineFacade() {
         super();
     }
 

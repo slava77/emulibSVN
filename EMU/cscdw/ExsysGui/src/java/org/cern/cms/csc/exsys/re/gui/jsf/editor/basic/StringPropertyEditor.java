@@ -8,7 +8,7 @@ package org.cern.cms.csc.exsys.re.gui.jsf.editor.basic;
 import java.lang.reflect.InvocationTargetException;
 import javax.faces.convert.Converter;
 import org.cern.cms.csc.dw.model.base.EntityBase;
-import org.cern.cms.csc.dw.model.base.metadata.EntityPropertyMD;
+import org.cern.cms.csc.dw.metadata.PropertyMd;
 import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.base.BasicEditor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.base.Editor;
@@ -26,7 +26,7 @@ public class StringPropertyEditor extends BasicEditor {
      * @param parentEditor parent editor that this editor belongs to.
      * @throws InvalidEntityBeanPropertyException thrown if property is incompatible with this kind of editor
      */
-    public StringPropertyEditor(EntityBase entity, EntityPropertyMD metadata, Editor parentEditor) throws InvalidEntityBeanPropertyException {
+    public StringPropertyEditor(EntityBase entity, PropertyMd metadata, Editor parentEditor) throws InvalidEntityBeanPropertyException {
         super(entity, metadata, parentEditor);
     }
 

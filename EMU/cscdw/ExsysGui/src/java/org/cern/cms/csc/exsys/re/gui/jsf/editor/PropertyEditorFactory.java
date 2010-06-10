@@ -9,15 +9,19 @@ import java.util.ArrayList;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.base.Editor;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
+import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.model.base.EntityBase;
-import org.cern.cms.csc.dw.model.base.metadata.EntityBasicPropertyMD;
-import org.cern.cms.csc.dw.model.base.metadata.EntityManyToOnePropertyMD;
-import org.cern.cms.csc.dw.model.base.metadata.EntityOneToOnePropertyMD;
-import org.cern.cms.csc.dw.model.base.metadata.EntityPropertyMD;
+import org.cern.cms.csc.dw.metadata.BasicPropertyMd;
+import org.cern.cms.csc.dw.metadata.EnumPropertyMd;
+import org.cern.cms.csc.dw.metadata.ManyToOnePropertyMd;
+import org.cern.cms.csc.dw.metadata.OneToOnePropertyMd;
+import org.cern.cms.csc.dw.metadata.PropertyMd;
 import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.basic.DatePropertyEditor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.basic.NumberPropertyEditor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.basic.StringPropertyEditor;
+import org.cern.cms.csc.exsys.re.gui.jsf.editor.complex.EnumValueEditor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.complex.ManyToOneEditor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.complex.OneToOneEditor;
 
@@ -27,18 +31,32 @@ import org.cern.cms.csc.exsys.re.gui.jsf.editor.complex.OneToOneEditor;
  */
 public class PropertyEditorFactory {
 
+    private static Logger logger = Logger.getLogger(PropertyEditorFactory.class.getName());
+
     /**
      * Create property editors for all properties of the given entity
      * @param entity entity whose properties are to be edited
      * @param parentEditor editor the returned editors should belong to.
      * @return a list of property editors for all properties of the given entity
      */
-    public static List<Editor> createPropertyEditors(EntityBase entity, Editor parentEditor) {
+    public static List<Editor> createPropertyEditors(EntityBase entity, Editor parentEditor, EntityDaoLocal entityDao) {
         try {
             List<Editor> ret = new ArrayList<Editor>();
-            List<EntityPropertyMD> propsMetadata = entity.getPropertyMetadata();
-            for (EntityPropertyMD propMetadata: propsMetadata) {
-                ret.add(createPropertyEditor(entity, propMetadata, parentEditor));
+            List<PropertyMd> propsMetadata = entity.getPropertyMetadata();
+            for (PropertyMd propMetadata: propsMetadata) {
+                if (propMetadata.getIsManualInputAllowed()) {
+                    ret.add(createPropertyEditor(entity, propMetadata, parentEditor, entityDao));
+                } else if (propMetadata.getIsCreateDefaultValue()) {
+                    try {
+                        Object defValue = propMetadata.getType().newInstance();
+                        propMetadata.getSetterMethod().invoke(entity, defValue);
+                    } catch (Exception ex) {
+                        throw new InvalidEntityBeanPropertyException("Could not create default value for " +
+                                                                      propMetadata.getEntityClass().getName() +
+                                                                      " property " +
+                                                                      propMetadata.getName());
+                    }
+                }
             }
             return ret;
         } catch (InvalidEntityBeanPropertyException ex) {
@@ -53,11 +71,11 @@ public class PropertyEditorFactory {
      * @param parentEditor editor the returned editor should belong to.
      * @return property editor for the given property
      */
-    public static Editor createPropertyEditor(EntityBase entity, EntityPropertyMD propMetadata, Editor parentEditor) {
+    public static Editor createPropertyEditor(EntityBase entity, PropertyMd propMetadata, Editor parentEditor, EntityDaoLocal entityDao) {
         try {
             Class propType = propMetadata.getType();
             // basic property
-            if (propMetadata instanceof EntityBasicPropertyMD) {
+            if (propMetadata instanceof BasicPropertyMd) {
                 if (Date.class.isAssignableFrom(propType)) {
                     return new DatePropertyEditor(entity, propMetadata, parentEditor);
                 } else if (Number.class.isAssignableFrom(propType)) {
@@ -65,10 +83,12 @@ public class PropertyEditorFactory {
                 } else if (String.class.isAssignableFrom(propType)) {
                     return new StringPropertyEditor(entity, propMetadata, parentEditor);
                 }
-            } else if (propMetadata instanceof EntityManyToOnePropertyMD) { // many to one property
-                return new ManyToOneEditor(entity, propMetadata, parentEditor);
-            } else if (propMetadata instanceof EntityOneToOnePropertyMD) { // one to one property
-                return new OneToOneEditor(entity, propMetadata, parentEditor);
+            } else if (propMetadata instanceof ManyToOnePropertyMd) { // many to one property
+                return new ManyToOneEditor(entity, propMetadata, parentEditor, entityDao);
+            } else if (propMetadata instanceof OneToOnePropertyMd) { // one to one property
+                return new OneToOneEditor(entity, propMetadata, parentEditor, entityDao);
+            } else if (propMetadata instanceof EnumPropertyMd) { // enum property
+                return new EnumValueEditor(entity, propMetadata, parentEditor, entityDao);
             }
             return null;
         } catch (InvalidEntityBeanPropertyException ex) {

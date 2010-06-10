@@ -7,8 +7,8 @@ package org.cern.cms.csc.exsys.re.gui.jsf.action;
 
 import javax.ejb.EJB;
 import javax.naming.NamingException;
-import org.cern.cms.csc.dw.util.JsfBeanBase;
 import org.cern.cms.csc.exsys.re.RuleEngineManagerLocal;
+import org.cern.cms.csc.exsys.re.gui.jsf.util.JsfBeanBase;
 
 /**
  *
@@ -23,6 +23,7 @@ public class RuleEngineRuntime extends JsfBeanBase {
 
     /** Creates a new instance of RuleEngineRuntime */
     public RuleEngineRuntime() throws NamingException {
+        super();
         reManager = (RuleEngineManagerLocal) getEjb("ejb/RuleEngineManager");
     }
 

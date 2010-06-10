@@ -6,29 +6,21 @@
 package org.cern.cms.csc.exsys.re.gui.jsf.editor.complex;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-import javax.faces.convert.Converter;
-import javax.faces.model.SelectItem;
+import org.cern.cms.csc.dw.dao.EntityDaoLocal;
+import org.cern.cms.csc.dw.metadata.EnumPropertyMd;
 import org.cern.cms.csc.dw.model.base.EntityBase;
-import org.cern.cms.csc.dw.model.base.metadata.EntityManyToOnePropertyMD;
-import org.cern.cms.csc.dw.model.base.metadata.EntityPropertyMD;
+import org.cern.cms.csc.dw.metadata.ManyToOnePropertyMd;
+import org.cern.cms.csc.dw.metadata.PropertyMd;
 import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.base.Editor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.base.Editor.InputType;
-import org.cern.cms.csc.exsys.re.gui.jsf.editor.base.EntityEditor;
-import org.cern.cms.csc.exsys.re.gui.jsf.editor.convert.LovConverter;
+import org.cern.cms.csc.exsys.re.gui.jsf.editor.base.RestrictedEntityEditor;
 
 /**
  * This type of editor is used for many-to-one relations between entities.
  * @author Evka
  */
-public class ManyToOneEditor extends EntityEditor {
-
-    /** Cache of list of available values (used only for enum, many-to-one and many-to-many properties). */
-    private List<Object> lovCache = null;
-    /** Cache of list of available select items (used only for enum, many-to-one and many-to-many properties). */
-    private List<SelectItem> lovSelectItemsCache = null;
+public class ManyToOneEditor extends RestrictedEntityEditor {
 
     /**
      * Constructor
@@ -37,9 +29,9 @@ public class ManyToOneEditor extends EntityEditor {
      * @param parentEditor parent editor that this editor belongs to.
      * @throws InvalidEntityBeanPropertyException thrown if property is incompatible with this kind of editor
      */
-    public ManyToOneEditor(EntityBase entity, EntityPropertyMD metadata, Editor parentEditor) throws InvalidEntityBeanPropertyException {
-        super(entity, metadata, parentEditor);
-        if (!(metadata instanceof EntityManyToOnePropertyMD)) {
+    public ManyToOneEditor(EntityBase entity, PropertyMd metadata, Editor parentEditor, EntityDaoLocal entityDao) throws InvalidEntityBeanPropertyException {
+        super(entity, metadata, parentEditor, entityDao);
+        if (!(metadata instanceof ManyToOnePropertyMd) && !(metadata instanceof EnumPropertyMd)) {
             throw new InvalidEntityBeanPropertyException("Attempt to create a ManyToOneEditor for a property which is not a many-to-one relation: " + metadata.getName());
         }
     }
@@ -51,31 +43,12 @@ public class ManyToOneEditor extends EntityEditor {
     @Override
     public Object getValue() throws IllegalAccessException, InvocationTargetException {
         Object value = super.getValue();
-        if ((value == null) && (lovCache != null)) {
-            if (lovCache.size() > 0) {
-                return lovCache.get(0);
+        if ((value == null) && (getLovCache() != null)) {
+            if (getLovCache().size() > 0) {
+                return getLovCache().get(0);
             }
         }
         return value;
-    }
-
-
-
-    @Override
-    public EntityManyToOnePropertyMD getMetadata() {
-        return (EntityManyToOnePropertyMD) super.getMetadata();
-    }
-
-    @Override
-    protected Converter createConverter() {
-        if (lovCache == null) {
-            try {
-                getListOfValues();
-            } catch(Exception ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-        return new LovConverter(lovCache);
     }
 
     @Override
@@ -83,47 +56,9 @@ public class ManyToOneEditor extends EntityEditor {
         return InputType.SELECT_ONE_MENU;
     }
 
-    /**
-     * Get list of available values as List<SelectItem> (this is cached, to refresh cache use refreshListOfValues())
-     * @return list of available values as List<SelectItem> (this is cached, to refresh cache use refreshListOfValues())
-     * @throws Exception rethrown from EntityPropertyMD.getListOfValues()
-     * @see org.cern.cms.csc.dw.model.base.EntityPropertyMD.getListOfValues()
-     */
-    public List<SelectItem> getListOfValues() throws Exception {
-        if (lovSelectItemsCache == null) {
-            refreshListOfValues(true);
-        }
-        return lovSelectItemsCache;
-    }
-
-    /**
-     * Get list of available values as List<SelectItem>
-     * @param includeNewValue if this is set to true, then a new value is also included in the list
-     * @return list of available values as List<SelectItem>
-     * @throws Exception rethrown from EntityPropertyMD.getListOfValues()
-     * @see org.cern.cms.csc.dw.model.base.EntityPropertyMD.getListOfValues()
-     */
-    public void refreshListOfValues(boolean includeNewValue) throws Exception {
-        lovCache = getMetadata().getListOfValues();
-        if (lovCache != null) {
-            List<SelectItem> ret = new ArrayList<SelectItem>();
-            for (Object lovObject: lovCache) {
-                SelectItem lovItem;
-                if (lovObject instanceof EntityBase) {
-                    EntityBase lovEntityObj = (EntityBase) lovObject;
-                    lovItem = new SelectItem(lovObject, lovEntityObj.getEntityTitle());
-                } else {
-                    lovItem = new SelectItem(lovObject, lovObject.toString());
-                }
-                ret.add(lovItem);
-            }
-            if (includeNewValue) {
-                lovCache.add(0, getMetadata().getNewValue());
-                SelectItem createNewSI = new SelectItem(getMetadata().getNewValue(), "Create New...");
-                ret.add(0, createNewSI);
-            }
-            lovSelectItemsCache = ret;
-        }
+    @Override
+    public boolean isRestrictionStrict() {
+        return false;
     }
 
 }

@@ -6,8 +6,8 @@
 package org.cern.cms.csc.exsys.re.gui.jsf.editor.base;
 
 import org.cern.cms.csc.dw.model.base.EntityBase;
-import org.cern.cms.csc.dw.model.base.metadata.EntityBasicPropertyMD;
-import org.cern.cms.csc.dw.model.base.metadata.EntityPropertyMD;
+import org.cern.cms.csc.dw.metadata.BasicPropertyMd;
+import org.cern.cms.csc.dw.metadata.PropertyMd;
 import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 
 /**
@@ -23,9 +23,9 @@ public abstract class BasicEditor extends Editor {
      * @param parentEditor parent editor that this editor belongs to.
      * @throws InvalidEntityBeanPropertyException thrown if property is incompatible with this kind of editor
      */
-    public BasicEditor(EntityBase entity, EntityPropertyMD metadata, Editor parentEditor) throws InvalidEntityBeanPropertyException {
+    public BasicEditor(EntityBase entity, PropertyMd metadata, Editor parentEditor) throws InvalidEntityBeanPropertyException {
         super(entity, metadata, parentEditor);
-        if (!(metadata instanceof EntityBasicPropertyMD)) {
+        if (!(metadata instanceof BasicPropertyMd)) {
             throw new InvalidEntityBeanPropertyException("Attempt to create a BasicEditor for a property which is not basic: " + metadata.getName());
         }
         if (! getValidValueClass().isAssignableFrom(metadata.getType())) {
@@ -44,7 +44,7 @@ public abstract class BasicEditor extends Editor {
 
     @Override
     @SuppressWarnings("unchecked")
-    public EntityBasicPropertyMD getMetadata() {
-        return (EntityBasicPropertyMD) super.getMetadata();
+    public BasicPropertyMd getMetadata() {
+        return (BasicPropertyMd) super.getMetadata();
     }
 }

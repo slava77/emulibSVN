@@ -7,9 +7,10 @@ package org.cern.cms.csc.exsys.re.gui.jsf.editor.complex;
 
 import java.util.logging.Level;
 import javax.faces.convert.Converter;
+import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.model.base.EntityBase;
-import org.cern.cms.csc.dw.model.base.metadata.EntityOneToOnePropertyMD;
-import org.cern.cms.csc.dw.model.base.metadata.EntityPropertyMD;
+import org.cern.cms.csc.dw.metadata.OneToOnePropertyMd;
+import org.cern.cms.csc.dw.metadata.PropertyMd;
 import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.base.Editor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.base.EntityEditor;
@@ -27,9 +28,9 @@ public class OneToOneEditor extends EntityEditor {
      * @param parentEditor parent editor that this editor belongs to.
      * @throws InvalidEntityBeanPropertyException thrown if property is incompatible with this kind of editor
      */
-    public OneToOneEditor(EntityBase entity, EntityPropertyMD metadata, Editor parentEditor) throws InvalidEntityBeanPropertyException {
-        super(entity, metadata, parentEditor);
-        if (!(metadata instanceof EntityOneToOnePropertyMD)) {
+    public OneToOneEditor(EntityBase entity, PropertyMd metadata, Editor parentEditor, EntityDaoLocal entityDao) throws InvalidEntityBeanPropertyException {
+        super(entity, metadata, parentEditor, entityDao);
+        if (!(metadata instanceof OneToOnePropertyMd)) {
             throw new InvalidEntityBeanPropertyException("Attempt to create a OneToOneEditor for a property which is not a one-to-one relation: " + metadata.getName());
         }
 

@@ -16,7 +16,7 @@
                 <p><h1>Create New Rule</h1></p>
                 <ice:form id="newRuleForm">
                     <exs:entityForm editor="#{CreateRule.editor}"/>
-                    <ice:commandButton type="submit" value="Create" action="#{CreateRule.doSave}"/>
+                    <ice:commandButton type="submit" value="Create" action="#{CreateRule.doSave}" rendered="#{CreateRule.editor.parentEditor == null}"/>
                 </ice:form>
                 
 <!--
