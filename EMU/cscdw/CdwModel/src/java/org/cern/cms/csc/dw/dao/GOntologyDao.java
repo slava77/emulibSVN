@@ -163,5 +163,10 @@ public class GOntologyDao implements GOntologyDaoLocal {
 
         return res;
     }
+
+    public GComponentClass getGComponentClassByType(ComponentClassType type) {
+        GServices gsvc = gdao.getServices();
+        return gsvc.getGComponentClass(type);
+    }
  
 }

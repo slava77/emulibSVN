@@ -82,6 +82,36 @@
                                 <f:setPropertyActionListener target="#{CreateRule.editor}" value="#{propEditor}"/>
                             </ice:commandButton>
                         </ice:panelGroup>
+                        <!-- COMPONENT editor - select input text -->
+                        <ice:panelGrid columns="2"
+                                       rendered="#{propEditor.inputType == 'COMPONENT'}">
+                            <ice:panelGrid columns="1">
+                                <ice:selectInputText id="input_#{propEditor.id}"
+                                    rows="#{propEditor.matchesToDisplay}"
+                                    width="300"
+                                    value="#{propEditor.componentName}"
+                                    valueChangeListener="#{propEditor.componentInputValueChanged}"
+                                    listVar="cmp"
+                                    required="#{propEditor.metadata.isMandatory}"
+                                    requiredMessage="This field is mandatory - value cannot be blank"
+                                    listValue="#{propEditor.componentMatches}">
+                                    <f:facet name="selectInputText">
+                                        <ice:panelGrid columns="2" columnClasses="componentMatchesName componentMatchesType">
+                                            <ice:outputText value="#{cmp.name}"/>
+                                            <ice:outputText value="#{cmp.type.type.value}" style="font-style: italic" />
+                                        </ice:panelGrid>
+                                    </f:facet>
+                                </ice:selectInputText>
+                                <ice:panelGroup rendered="#{propEditor.componentClassLimited}">
+                                    <h:outputText value="Limited to class "/>
+                                    <ice:panelSeries value="#{propEditor.componentClassLimit}" var="cc" varStatus="status">
+                                        <h:outputText value="#{cc.type.value} "/>
+                                        <ice:outputText value="," rendered="#{!(status.index == status.end)}"/>
+                                    </ice:panelSeries>
+                                </ice:panelGroup>
+                            </ice:panelGrid>
+                        </ice:panelGrid>
+
                         <!-- Error messages here -->
                         <h:message for="input_#{propEditor.id}" styleClass="error"/>
                     </ice:panelGrid>

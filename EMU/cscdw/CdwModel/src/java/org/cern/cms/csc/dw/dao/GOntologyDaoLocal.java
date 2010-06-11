@@ -20,6 +20,7 @@ public interface GOntologyDaoLocal {
     Collection<GComponent> getGComponentsByNameMatches(String query, final Collection<GComponentClass> types, long numResults);
 
     GComponentClass getGComponentClassById(Long id) throws ComponentClassNotFoundException;
+    GComponentClass getGComponentClassByType(ComponentClassType type);
     Collection<GComponentClass> getGComponentClasses();
 
     GComponentLinkClass getGComponentLinkClassById(Long id) throws ComponentLinkClassNotFoundException;

@@ -17,11 +17,15 @@ import org.cern.cms.csc.dw.metadata.EnumPropertyMd;
 import org.cern.cms.csc.dw.metadata.ManyToOnePropertyMd;
 import org.cern.cms.csc.dw.metadata.OneToOnePropertyMd;
 import org.cern.cms.csc.dw.metadata.PropertyMd;
+import org.cern.cms.csc.dw.model.fact.Fact;
+import org.cern.cms.csc.dw.model.ontology.Component;
 import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
+import org.cern.cms.csc.exsys.re.gui.jsf.editor.complex.ComponentEditor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.basic.DatePropertyEditor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.basic.NumberPropertyEditor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.basic.StringPropertyEditor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.complex.EnumValueEditor;
+import org.cern.cms.csc.exsys.re.gui.jsf.editor.complex.FactComponentEditor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.complex.ManyToOneEditor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.complex.OneToOneEditor;
 
@@ -84,6 +88,13 @@ public class PropertyEditorFactory {
                     return new StringPropertyEditor(entity, propMetadata, parentEditor);
                 }
             } else if (propMetadata instanceof ManyToOnePropertyMd) { // many to one property
+                if (propMetadata.getType().equals(Component.class)) {
+                    if (entity instanceof Fact) {
+                        return new FactComponentEditor(entity, propMetadata, parentEditor, entityDao);
+                    } else {
+                        return new ComponentEditor(entity, propMetadata, parentEditor, entityDao);
+                    }
+                }
                 return new ManyToOneEditor(entity, propMetadata, parentEditor, entityDao);
             } else if (propMetadata instanceof OneToOnePropertyMd) { // one to one property
                 return new OneToOneEditor(entity, propMetadata, parentEditor, entityDao);

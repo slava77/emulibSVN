@@ -25,6 +25,9 @@ public class EntityDao implements EntityDaoLocal {
     @EJB
     private PersistDaoLocal persistDao;
 
+    @EJB
+    private OntologyDaoLocal ontologyDao;
+
     @PersistenceContext(unitName="CdwPU")
     private EntityManager em;
 
@@ -120,6 +123,14 @@ public class EntityDao implements EntityDaoLocal {
      */
     public PersistDaoLocal getPersistDao() {
         return persistDao;
+    }
+
+    /**
+     * Ontology stuff
+     * @return
+     */
+    public OntologyDaoLocal getOntologyDao() {
+        return ontologyDao;
     }
 
 }

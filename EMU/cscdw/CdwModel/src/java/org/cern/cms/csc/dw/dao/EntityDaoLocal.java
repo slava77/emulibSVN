@@ -20,6 +20,8 @@ public interface EntityDaoLocal {
     EntityBase getEntityById(final String entityClassName, String id) throws InvalidEntityClassException;
     <T extends EntityBase> T getEntityById(final Class<T> entityClass, final Object id) throws InvalidEntityClassException;
     <T extends EntityBase> List<T> getAllEntitiesByClass(final Class<T> entityClass) throws InvalidEntityClassException;
+    
     PersistDaoLocal getPersistDao();
+    OntologyDaoLocal getOntologyDao();
 
 }

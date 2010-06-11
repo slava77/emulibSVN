@@ -59,7 +59,13 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http:/
         <managed-bean-class>org.cern.cms.csc.exsys.re.gui.jsf.action.RuleEngineRuntime</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
+    <managed-bean>
+        <managed-bean-name>CreateFact</managed-bean-name>
+        <managed-bean-class>org.cern.cms.csc.exsys.re.gui.jsf.action.CreateFact</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
 </faces-config>
+
 
 
 

@@ -29,7 +29,8 @@ public abstract class Editor {
         TEXT_AREA,
         DATE_PICKER,
         SELECT_ONE_MENU,
-        ONE_TO_ONE
+        ONE_TO_ONE,
+        COMPONENT
     }
 
     /** Parent editor that this editor belongs to. */
