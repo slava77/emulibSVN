@@ -74,8 +74,8 @@
 
                     <ice:panelGroup>
 
-                        <ice:panelGrid columns="2">
-                            <ice:selectInputText id="AutoCmpTxtFace"
+                        <ice:panelGrid columns="2" columnClasses="componentMatchesSelect componentMatchesButton">
+                            <ice:selectInputText
                                 rows="#{ComponentClassTreeController.componentMatchesToDisplay}"
                                 width="300"
                                 value="#{ComponentClassTreeController.selectedComponentName}"
@@ -83,15 +83,15 @@
                                 listVar="cmp"
                                 listValue="#{ComponentClassTreeController.componentMatches}">
                                 <f:facet name="selectInputText">
-                                    <ice:panelGrid columns="3">
+                                    <ice:panelGrid columns="2" columnClasses="componentMatchesName componentMatchesType">
                                         <ice:outputText id="CmpName" value="#{cmp.name}"/>
-                                        <ice:outputText id="CmpClass" value="#{cmp.type.type.value}"/>
-                                        <ice:outputText id="CmpId" value="#{cmp.id}"/>
+                                        <ice:outputText id="CmpClass" value="(#{cmp.type.type.value})" style="font-size: small;" />
                                     </ice:panelGrid>
                                 </f:facet>
                             </ice:selectInputText>
                             <ice:commandButton 
                                 value="Details"
+                                action="component"
                                 disabled="#{ComponentClassTreeController.selectedComponent == null}"/>
                         </ice:panelGrid>
 

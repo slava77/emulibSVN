@@ -1,4 +1,15 @@
 td {
-	vertical-align: top;
+    vertical-align: top;
 }
 
+.componentMatchesName {
+    width: 200px;
+}
+
+.componentMatchesType {
+    width: 100px;
+}
+
+.componentMatchesSelect .componentMatchesButton {
+    vertical-align: bottom;
+}
