@@ -52,7 +52,7 @@ public class GUtility {
      * @return Collection
      */
     public static <T extends GNode> Collection<T> wrap(GServices gservices, Class<T> ifClass, Class implClass, Iterator<Node> it) {
-        return wrap(gservices, ifClass, implClass, it, 0);
+        return wrap(gservices, ifClass, implClass, it, new DefaultNodeFilter(), 0);
     }
 
     /**
@@ -66,9 +66,10 @@ public class GUtility {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static <T extends GNode> Collection<T> wrap(GServices gservices, Class<T> ifClass, Class implClass, Iterator<Node> it, long limitResults) {
+    public static <T extends GNode> Collection<T> wrap(GServices gservices, Class<T> ifClass, Class implClass, Iterator<Node> it, GNodeFilter filter, long limitResults) {
         long c = limitResults;
         try {
+            
             Constructor constr = implClass.getConstructor(GServices.class, Node.class);
             Collection<T>  ret = new LinkedList<T>();
 
@@ -76,18 +77,24 @@ public class GUtility {
             if (limitResults > 0) {
 
                 while (it.hasNext()) {
-                    ret.add((T) constr.newInstance(gservices, it.next()));
-                    if (c == 0) {
-                        break;
+                    T gnode = (T) constr.newInstance(gservices, it.next());
+                    if (filter.filter(gnode)) {
+                        ret.add(gnode);
+                        if (c == 0) {
+                            break;
+                        }
+                        c -= 1;
                     }
-                    c -= 1;
                 }
 
             // If all to be returned
             } else {
 
                 while (it.hasNext()) {
-                    ret.add((T) constr.newInstance(gservices, it.next()));
+                    T gnode = (T) constr.newInstance(gservices, it.next());
+                    if (filter.filter(gnode)) {
+                        ret.add(gnode);
+                    }
                 }
                 
             }
@@ -148,7 +155,5 @@ public class GUtility {
             tx.finish();
         }
     }
-
-
 
 }

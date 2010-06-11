@@ -13,8 +13,11 @@ public interface GComponentClass extends GNode {
 
     void addParent(GComponentClass parent);
     Collection<GComponentClass> getParents();
+    Collection<GComponentClass> getParentsRecursive();
+    Collection<GComponentClass> getParentsRecursive(boolean returnSelf);
     Collection<GComponentClass> getChildren();
-    Collection<GComponentClass> getChildrenTransient();
+    Collection<GComponentClass> getChildrenRecursive();
+    Collection<GComponentClass> getChildrenRecursive(boolean returnSelf);
 
     Collection<GComponent> getComponents();
     void addComponent(GComponent component);

@@ -116,10 +116,10 @@ public abstract class GServices extends GServicesBase {
     }
 
     public <T extends GNode> Collection<T> getGNodesByPropertyFT(Class<T> ifClass, Class implClass, GNode.PropertyType property, String query) {
-        return getGNodesByPropertyFT(ifClass, implClass, property, query, 0);
+        return getGNodesByPropertyFT(ifClass, implClass, property, query, new DefaultNodeFilter(), 0);
     }
 
-    public <T extends GNode> Collection<T> getGNodesByPropertyFT(Class<T> ifClass, Class implClass, GNode.PropertyType property, String query, long numResults) {
+    public <T extends GNode> Collection<T> getGNodesByPropertyFT(Class<T> ifClass, Class implClass, GNode.PropertyType property, String query, GNodeFilter filter, long numResults) {
         Transaction tx = beginTx();
         try {
 
@@ -130,7 +130,9 @@ public abstract class GServices extends GServicesBase {
                         GNodeImpl.getPropertyKey(ifClass, property),
                         query,
                         Sort.RELEVANCE),
+                    filter,
                     numResults);
+            
         } catch (Exception e) {
             e.printStackTrace(System.err);
             return null;

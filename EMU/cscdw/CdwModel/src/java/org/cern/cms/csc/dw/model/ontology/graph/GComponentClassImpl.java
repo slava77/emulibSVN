@@ -4,6 +4,8 @@ import java.util.Collection;
 import org.cern.cms.csc.dw.model.ontology.ComponentClassType;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.ReturnableEvaluator;
+import org.neo4j.graphdb.StopEvaluator;
 import org.neo4j.graphdb.Transaction;
 
 public class GComponentClassImpl extends GNodeImpl implements GComponentClass {
@@ -44,6 +46,20 @@ public class GComponentClassImpl extends GNodeImpl implements GComponentClass {
                 Direction.OUTGOING);
     }
 
+    public Collection<GComponentClass> getParentsRecursive() {
+        return getParentsRecursive(false);
+    }
+
+    public Collection<GComponentClass> getParentsRecursive(boolean returnSelf) {
+        return getRelatedGNodeCollection(
+                GComponentClass.class,
+                GComponentClassImpl.class,
+                GLinkType.CLASS_TO_PARENT,
+                Direction.OUTGOING,
+                StopEvaluator.END_OF_GRAPH,
+                (returnSelf ? ReturnableEvaluator.ALL : ReturnableEvaluator.ALL_BUT_START_NODE));
+    }
+
     public void addParent(GComponentClass parent) {
         if (!getParents().contains(parent)) {
             setRelationship(parent, GLinkType.CLASS_TO_PARENT);
@@ -74,12 +90,18 @@ public class GComponentClassImpl extends GNodeImpl implements GComponentClass {
         }
     }
 
-    public Collection<GComponentClass> getChildrenTransient() {
+    public Collection<GComponentClass> getChildrenRecursive() {
+        return getChildrenRecursive(false);
+    }
+
+    public Collection<GComponentClass> getChildrenRecursive(boolean returnSelf) {
         return getRelatedGNodeCollection(
                 GComponentClass.class,
                 GComponentClassImpl.class,
                 GLinkType.CLASS_TO_PARENT,
-                Direction.INCOMING);
+                Direction.INCOMING,
+                StopEvaluator.END_OF_GRAPH,
+                (returnSelf ? ReturnableEvaluator.ALL : ReturnableEvaluator.ALL_BUT_START_NODE));
     }
 
 }

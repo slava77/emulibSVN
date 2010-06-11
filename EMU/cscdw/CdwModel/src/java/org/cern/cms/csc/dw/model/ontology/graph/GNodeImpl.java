@@ -89,11 +89,11 @@ public abstract class GNodeImpl extends GBase implements GNode {
         return node.hashCode();
     }
 
-    protected void setProperty(PropertyType prop, Object value) {
+    public void setProperty(PropertyType prop, Object value) {
         setProperty(prop, value, false);
     }
 
-    protected void setProperty(PropertyType prop, Object value, boolean indexMe) {
+    public void setProperty(PropertyType prop, Object value, boolean indexMe) {
         Transaction tx = gservices.beginTx();
         try {
             node.setProperty(getPropertyKey(prop), value);

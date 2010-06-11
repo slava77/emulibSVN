@@ -1,7 +1,6 @@
 package org.cern.cms.csc.dw.dao;
 
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.annotation.Resource;
@@ -18,8 +17,10 @@ import org.cern.cms.csc.dw.model.ontology.graph.GComponentLinkClass;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentLinkClassImpl;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentSynonym;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentSynonymImpl;
+import org.cern.cms.csc.dw.model.ontology.graph.GNode;
 import org.cern.cms.csc.dw.model.ontology.graph.GNode.PropertyType;
 import org.cern.cms.csc.dw.model.ontology.graph.GServices;
+import org.cern.cms.csc.dw.model.ontology.graph.GNodeFilter;
 import org.neo4j.graphdb.Transaction;
 
 public class GOntologyDao implements GOntologyDaoLocal {
@@ -120,41 +121,47 @@ public class GOntologyDao implements GOntologyDaoLocal {
 
     public boolean isGComponentClassParent(Set<ComponentClassType> parents, GComponentClass toCheck, boolean recursive) {
 
-        if (parents.isEmpty()) {
+        if (parents.isEmpty() || parents.contains(toCheck.getType())) {
             return true;
         }
-        
+
         if (recursive) {
-            for (GComponentClass parent: toCheck.getParents()) {
+            for (GComponentClass parent: toCheck.getParentsRecursive()) {
                 if (parents.contains(parent.getType())) {
                     return true;
                 }
             }
-            return false;
         }
         
-        return parents.contains(toCheck.getType());
+        return false;
 
     }
 
-    public Collection<GComponent> getGComponentsByNameMatches(String query, long numResults) {
+    public Collection<GComponent> getGComponentsByNameMatches(String query, final Collection<GComponentClass> types, long numResults) {
         GServices gsvc = gdao.getServices();
         Collection<GComponent> res = new TreeSet<GComponent>();
         
         GComponent direct = getGComponentByNameSilent(query);
         if (direct != null) {
-            res.add(direct);
+            if (types.isEmpty() || types.contains(direct.getType())) {
+                res.add(direct);
+            }
         }
 
-        res.addAll(gsvc.getGNodesByPropertyFT(
+        res.addAll(
+            gsvc.getGNodesByPropertyFT(
                 GComponent.class,
                 GComponentImpl.class,
                 PropertyType.NAME,
                 query.concat("*"),
+                new GNodeFilter() {
+                    public boolean filter(GNode node) {
+                        return (types.isEmpty() || types.contains(((GComponent) node).getType()));
+                    }
+                },
                 numResults - res.size()));
 
         return res;
-        
     }
  
 }
