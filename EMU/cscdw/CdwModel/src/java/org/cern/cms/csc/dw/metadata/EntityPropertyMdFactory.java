@@ -9,12 +9,15 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -42,6 +45,11 @@ public class EntityPropertyMdFactory {
     public static List<PropertyMd> createMetadataForEntity(Class entityClass) throws InvalidEntityClassException, InvalidEntityBeanPropertyException {
         // get all properties
         PropertyDescriptor[] allProps = PropertyUtils.getPropertyDescriptors(entityClass);
+        Map<String, PropertyDescriptor>  allPropsMap = new HashMap<String, PropertyDescriptor>();
+        for (PropertyDescriptor prop: allProps) {
+            allPropsMap.put(prop.getName(), prop);
+        }
+
         // Filter out all unwanted properties:
         // * Remove all properties which have an equivalent "[propertyName]Item" property
         // * all those which match ignoredPropertyPattern
@@ -49,7 +57,18 @@ public class EntityPropertyMdFactory {
         for (PropertyDescriptor prop: allProps) {
             Matcher m = itemPropertyPattern.matcher(prop.getName());
             if (m.matches()) {
-                propNamesToRemove.add(m.group(1));
+                String nonItemPropName = m.group(1);
+                // for enums take the simple property, for others, take the *Item property
+                if ((allPropsMap.containsKey(nonItemPropName)) && (allPropsMap.get(nonItemPropName).getPropertyType().isEnum())) {
+                    propNamesToRemove.add(prop.getName());
+                    // determine if it's mandatory (I know - it's ugly, but I just can't think of a nicer way right now...
+                    Column columnA = allPropsMap.get(prop.getName()).getReadMethod().getAnnotation(Column.class);
+                    if ((columnA != null) && (!columnA.nullable())) {
+                        allPropsMap.get(nonItemPropName).setShortDescription("mandatory");
+                    }
+                } else {
+                    propNamesToRemove.add(m.group(1));
+                }
             }
         }
 
@@ -58,10 +77,9 @@ public class EntityPropertyMdFactory {
             if (!propNamesToRemove.contains(prop.getName()) &&
                 !ignoredPropertiesPattern.matcher(prop.getName()).matches()) {
 
-                props.add(prop);
+                props.add(allPropsMap.get(prop.getName()));
             }
         }
-
 
         List<PropertyMd> metadata = new ArrayList<PropertyMd>();
         // Go through all properties and make property metadata objects out of them
@@ -89,6 +107,11 @@ public class EntityPropertyMdFactory {
         Basic basicA = getter.getAnnotation(Basic.class);
         if (basicA != null) {
             return new BasicPropertyMd(prop);
+        }
+
+        if (prop.getPropertyType().isEnum()) {
+            boolean isMandatory = prop.getShortDescription().equals("mandatory");
+            return new EnumPropertyMd(prop, isMandatory);
         }
 
         ManyToOne manyToOneA = getter.getAnnotation(ManyToOne.class);

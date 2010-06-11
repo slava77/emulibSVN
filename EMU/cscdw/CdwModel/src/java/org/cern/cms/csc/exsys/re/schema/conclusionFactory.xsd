@@ -9,11 +9,11 @@
     xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
     xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
     xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
-    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+    xmlns:cu="http://jaxb.dev.java.net/plugin/classutils"
     xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
                         http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
                         http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
-    jaxb:extensionBindingPrefixes="orm hj xjc"
+    jaxb:extensionBindingPrefixes="orm hj cu"
     jaxb:version="2.0">
 
     <xsd:import namespace="http://www.cern.ch/cms/csc/dw/model" schemaLocation="../../../dw/schema/factClassifiers.xsd"/>
@@ -25,7 +25,7 @@
         <xsd:annotation>
             <xsd:appinfo>
                 <jaxb:class name="ConclusionFactory"/>
-                <xjc:superClass name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+                <cu:extends name="org.cern.cms.csc.dw.model.base.EntityBase"/>
                 <hj:entity>
                     <orm:table name="RE_CONCLUSION_FACTORIES">
                         <orm:unique-constraint>

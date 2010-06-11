@@ -57,10 +57,14 @@ public class PersistDao implements PersistDaoLocal {
     }
 
     public void persist(EntityBase cdwEntityObject) throws PersistException, OnSaveProcessingException {
-        persist(cdwEntityObject, false);
+        persist(cdwEntityObject, false, false);
     }
 
-    public void persist(EntityBase cdwEntityObject, boolean queued) throws PersistException, OnSaveProcessingException {
+    public void merge(EntityBase cdwEntityObject) throws PersistException, OnSaveProcessingException {
+        persist(cdwEntityObject, false, true);
+    }
+
+    public void persist(EntityBase cdwEntityObject, boolean queued, boolean useMerge) throws PersistException, OnSaveProcessingException {
 
         // is it null by any chance? if yes - then be angry about it
         if (cdwEntityObject == null) {
@@ -77,7 +81,11 @@ public class PersistDao implements PersistDaoLocal {
 
         // persist the entity
         try {
-            em.persist(cdwEntityObject);
+            if (useMerge) {
+                em.merge(cdwEntityObject);
+            } else {
+                em.persist(cdwEntityObject);
+            }
         } catch (Exception ex) {
             String className = cdwEntityObject.getClass().getCanonicalName();
             logger.log(Level.SEVERE, "Error while persisting an entity of class " + className + ".\n toString(): " + cdwEntityObject.toString(), ex);

@@ -6,11 +6,13 @@
 package org.cern.cms.csc.dw.metadata;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.cern.cms.csc.dw.model.annotation.NoManualInput;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 
@@ -24,11 +26,17 @@ public abstract class PropertyMd {
     private static Logger logger = Logger.getLogger(PropertyMd.class.getName());
 
     private static Pattern camelCasePattern = Pattern.compile("(\\p{Upper}\\p{Lower}*)");
+    private static Pattern itemPropertyPattern = Pattern.compile("(.+)Item");
 
     /** Object describing the bean property (things like name, display name, setter, getter, etc.). */
     private PropertyDescriptor propertyDescriptor;
     /** Flag telling if the property is mandatory or optional. */
     private boolean isMandatory;
+    /** Flag telling if manual input of this property is allowed or not. */
+    private boolean isManualInputAllowed;
+    /** Flag telling if a default value should be created
+     * (this is determined from the annotation NoManualInput, so it can only be true if no manual inuput is allowed for this property) */
+    private boolean createDefaultValue;
     /** Class of the entity whose property this object is describing. */
     private Class entityClass;
 
@@ -53,6 +61,37 @@ public abstract class PropertyMd {
         prop.setDisplayName(nameToTitle(prop.getName()));
         this.entityClass = prop.getReadMethod().getDeclaringClass();
         this.propertyDescriptor = prop;
+        Field f = getField();
+        isManualInputAllowed = true;
+        if (f != null) {
+            NoManualInput noManualInputA = f.getAnnotation(NoManualInput.class);
+            if (noManualInputA != null) {
+                isManualInputAllowed = false;
+                createDefaultValue = noManualInputA.createDefaultValue();
+            }
+        }
+    }
+    
+    /**
+     * Get a flag telling if a default value should be created
+     * (this is determined from the annotation NoManualInput, so it can only be true if no manual inuput is allowed for this property)
+     * @return a flag telling if a default value should be created.
+     */
+    public boolean getIsCreateDefaultValue() {
+        return createDefaultValue;
+    }
+
+    private Field getField() {
+        try {
+            String fieldName = getPropertyDescriptor().getName();
+            Matcher m = itemPropertyPattern.matcher(fieldName);
+            if (m.matches()) {
+                fieldName = m.group(1);
+            }
+            return getEntityClass().getDeclaredField(fieldName);
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     /** Converts property name to title. */
@@ -154,6 +193,14 @@ public abstract class PropertyMd {
     }
 
     /**
+     * Get a flag telling if manual input of this property is allowed or not.
+     * @return a flag telling if manual input of this property is allowed or not.
+     */
+    public boolean getIsManualInputAllowed() {
+        return isManualInputAllowed;
+    }
+
+    /**
      * Get new value of the type appropriate for this type of property.
      * @return new value of the type appropriate for this type of property.
      */
@@ -169,9 +216,7 @@ public abstract class PropertyMd {
     @SuppressWarnings("unchecked")
     public String validate(Object value) {
         // mandatory field == null ?
-        logger.info("EntityPropertyMD.validate() is value for " + getName() + " null? " + (value == null) + ", is value mandatory? " + getIsMandatory());
         if ((value == null) && getIsMandatory()) {
-            logger.info("EntityPropertyMD.validate() - cccomplaining about a null & mandatory value for " + getName());
             return getTitle() + " is mandatory - value cannot be blank";
         }
 

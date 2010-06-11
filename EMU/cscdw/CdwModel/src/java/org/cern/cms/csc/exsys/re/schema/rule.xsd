@@ -8,12 +8,12 @@
     xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
     xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
     xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
-    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+    xmlns:cu="http://jaxb.dev.java.net/plugin/classutils"
     xmlns:ann="http://jaxb.dev.java.net/plugin/annotate"
     xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
                         http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
                         http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
-    jaxb:extensionBindingPrefixes="orm hj xjc ann"
+    jaxb:extensionBindingPrefixes="orm hj cu ann"
     jaxb:version="2.0">
 
     <xsd:include schemaLocation="conclusionFactory.xsd"/>
@@ -24,7 +24,7 @@
         <xsd:annotation>
             <xsd:appinfo>
                 <jaxb:class name="Rule"/>
-                <xjc:superClass name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+                <cu:extends name="org.cern.cms.csc.dw.model.base.EntityBase"/>
                 <hj:entity>
                     <orm:table name="RE_RULES">
                         <orm:unique-constraint>
@@ -47,6 +47,9 @@
                             <orm:column name="RER_VERSION" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="version"/>
+                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                            <a:NoManualInput/>
+                        </ann:annotate>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -67,6 +70,9 @@
                             <orm:column name="RER_TIME_CREATED" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="timeCreated"/>
+                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                            <a:NoManualInput createDefaultValue="true"/>
+                        </ann:annotate>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
