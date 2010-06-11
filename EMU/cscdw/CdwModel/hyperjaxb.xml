@@ -180,7 +180,7 @@
 
         <!-- Execute main data import procedure -->
         <java classname="org.cern.cms.csc.dw.dev.OntologyGraphImporter" fork="true" failonerror="true">
-            <jvmarg line="-Xmn100M -Xms500M -Xmx500M -Xss100M"/>
+            <jvmarg line="-Xmn100M -Xms500M -Xmx500M -Xss50M"/>
             <arg value="../KnowledgeBase/ontology/csc-ontology.owl"/>
             <classpath>
                 <pathelement path="build/jar"/>
