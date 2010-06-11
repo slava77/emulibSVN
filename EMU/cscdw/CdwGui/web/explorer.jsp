@@ -75,20 +75,25 @@
                     <ice:panelGroup>
 
                         <ice:panelGrid columns="2" columnClasses="componentMatchesSelect componentMatchesButton">
-                            <ice:selectInputText
-                                rows="#{ComponentClassTreeController.componentMatchesToDisplay}"
-                                width="300"
-                                value="#{ComponentClassTreeController.selectedComponentName}"
-                                valueChangeListener="#{ComponentClassTreeController.componentInputValueChanged}"
-                                listVar="cmp"
-                                listValue="#{ComponentClassTreeController.componentMatches}">
-                                <f:facet name="selectInputText">
-                                    <ice:panelGrid columns="2" columnClasses="componentMatchesName componentMatchesType">
-                                        <ice:outputText id="CmpName" value="#{cmp.name}"/>
-                                        <ice:outputText id="CmpClass" value="(#{cmp.type.type.value})" style="font-size: small;" />
-                                    </ice:panelGrid>
-                                </f:facet>
-                            </ice:selectInputText>
+                            <ice:panelGrid columns="1">
+                                <ice:selectInputText
+                                    rows="#{ComponentClassTreeController.componentMatchesToDisplay}"
+                                    width="300"
+                                    value="#{ComponentClassTreeController.selectedComponentName}"
+                                    valueChangeListener="#{ComponentClassTreeController.componentInputValueChanged}"
+                                    listVar="cmp"
+                                    listValue="#{ComponentClassTreeController.componentMatches}">
+                                    <f:facet name="selectInputText">
+                                        <ice:panelGrid columns="2" columnClasses="componentMatchesName componentMatchesType">
+                                            <ice:outputText value="#{cmp.name}"/>
+                                            <ice:outputText value="#{cmp.type.type.value}" style="font-style: italic" />
+                                        </ice:panelGrid>
+                                    </f:facet>
+                                </ice:selectInputText>
+                                <ice:outputFormat value="Limited to class {0}" rendered="#{ComponentClassTreeController.selectedComponentClass != null}">
+                                    <f:param value="#{ComponentClassTreeController.selectedComponentClass.type.value}"/>
+                                </ice:outputFormat>
+                            </ice:panelGrid>
                             <ice:commandButton 
                                 value="Details"
                                 action="component"

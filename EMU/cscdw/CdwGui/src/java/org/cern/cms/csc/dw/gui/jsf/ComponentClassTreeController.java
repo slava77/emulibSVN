@@ -3,9 +3,11 @@ package org.cern.cms.csc.dw.gui.jsf;
 import com.icesoft.faces.component.selectinputtext.SelectInputText;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -29,6 +31,7 @@ public class ComponentClassTreeController extends JsfBeanBase {
     private DefaultTreeModel model;
 
     private GComponentClass selectedComponentClass = null;
+    private Collection<GComponentClass> componentMatchClasses = Collections.EMPTY_SET;
     private GComponent selectedComponent = null;
     private String selectedComponentName = null;
     private List<SelectItem> componentMatches;
@@ -97,12 +100,15 @@ public class ComponentClassTreeController extends JsfBeanBase {
         String strId = (String) getParameter("componentClassId");
         if (strId == null) {
             selectedComponentClass = null;
+            componentMatchClasses = Collections.EMPTY_SET;
         } else {
             try {
                 selectedComponentClass = ontologyDao.getGComponentClassById(Long.parseLong(strId));
+                componentMatchClasses = selectedComponentClass.getChildrenRecursive(true);
             } catch (ComponentClassNotFoundException ex) {
                 Logger.getLogger(ComponentClassTreeController.class.getName()).log(Level.SEVERE, null, ex);
                 selectedComponentClass = null;
+                componentMatchClasses = Collections.EMPTY_SET;
             }
         }
     }
@@ -146,7 +152,7 @@ public class ComponentClassTreeController extends JsfBeanBase {
 
             if (newWord != null && newWord.length() > 0) {
 
-                for (GComponent gc: ontologyDao.getGComponentsByNameMatches(newWord, getComponentMatchesToDisplay())) {
+                for (GComponent gc: ontologyDao.getGComponentsByNameMatches(newWord, componentMatchClasses, getComponentMatchesToDisplay())) {
                     componentMatches.add(new SelectItem(gc, gc.getName()));
                 }
 
