@@ -13,11 +13,11 @@ public class GComponentClassImpl extends GNodeImpl implements GComponentClass {
     }
 
     public void setType(ComponentClassType type) {
-        setProperty(PropertyType.CLASS_TYPE, type.value(), true);
+        setProperty(PropertyType.TYPE, type.value(), true);
     }
 
     public ComponentClassType getType() {
-        return ComponentClassType.fromValue((String) getProperty(PropertyType.CLASS_TYPE));
+        return ComponentClassType.fromValue((String) getProperty(PropertyType.TYPE));
     }
 
     public void setDescription(String description) {

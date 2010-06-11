@@ -7,7 +7,6 @@ public enum GLinkType implements RelationshipType {
     // Links to reference node
     TYPE_COMPONENT_CLASS,
     TYPE_COMPONENT_LINK_CLASS,
-    TYPE_COMPONENT_LINKS,
     TYPE_COMPONENT,
     TYPE_COMPONENT_SYNONYM,
     
@@ -16,6 +15,7 @@ public enum GLinkType implements RelationshipType {
     LINK_TO_PARENT,
     LINK_TO_INVERSE,
     COMPONENT_TO_CLASS,
-    COMPONENT_TO_SYNONYM
+    COMPONENT_TO_SYNONYM,
+    COMPONENT_TO_LINKS
 
 }

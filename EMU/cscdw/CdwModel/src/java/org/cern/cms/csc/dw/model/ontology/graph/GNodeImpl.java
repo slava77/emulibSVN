@@ -216,4 +216,11 @@ public abstract class GNodeImpl extends GBase implements GNode {
                 returnable);
     }
 
+    public int compareTo(Object o) {
+        if (o instanceof GNode) {
+            return this.getId().compareTo(((GNode) o).getId());
+        }
+        return 2;
+    }
+
 }

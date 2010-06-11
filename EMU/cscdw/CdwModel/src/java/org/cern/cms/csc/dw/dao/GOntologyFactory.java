@@ -88,7 +88,7 @@ public class GOntologyFactory {
             setObjectType(node, GComponent.class);
 
             Node linksNode = gservices.getDBSrv().createNode();
-            node.createRelationshipTo(linksNode, GLinkType.TYPE_COMPONENT_LINKS);
+            node.createRelationshipTo(linksNode, GLinkType.COMPONENT_TO_LINKS);
             setObjectType(node, GComponentLinks.class);
             
             return new GComponentImpl(gservices, node);

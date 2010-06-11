@@ -12,11 +12,11 @@ public class GComponentLinkClassImpl extends GNodeImpl implements GComponentLink
     }
 
     public void setType(ComponentLinkClassType type) {
-        setProperty(PropertyType.CLASS_TYPE, type.value(), true);
+        setProperty(PropertyType.TYPE, type.value(), true);
     }
 
     public ComponentLinkClassType getType() {
-        return ComponentLinkClassType.fromValue((String) getProperty(PropertyType.CLASS_TYPE));
+        return ComponentLinkClassType.fromValue((String) getProperty(PropertyType.TYPE));
     }
 
     public void setDescription(String description) {

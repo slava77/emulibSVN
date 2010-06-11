@@ -56,7 +56,7 @@ public class GComponentImpl extends GNodeImpl implements GComponent {
         return getRelatedGNode(
                 GComponentLinks.class,
                 GComponentLinksImpl.class,
-                GLinkType.TYPE_COMPONENT_LINKS,
+                GLinkType.COMPONENT_TO_LINKS,
                 Direction.OUTGOING);
     }
 

@@ -3,6 +3,7 @@ package org.cern.cms.csc.dw.dao;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Set;
+import java.util.TreeSet;
 import javax.annotation.Resource;
 import org.cern.cms.csc.dw.exception.ComponentClassNotFoundException;
 import org.cern.cms.csc.dw.exception.ComponentLinkClassNotFoundException;
@@ -138,19 +139,22 @@ public class GOntologyDao implements GOntologyDaoLocal {
 
     public Collection<GComponent> getGComponentsByNameMatches(String query, long numResults) {
         GServices gsvc = gdao.getServices();
-
-        Collection<GComponent> res = new LinkedList<GComponent>();
+        Collection<GComponent> res = new TreeSet<GComponent>();
+        
         GComponent direct = getGComponentByNameSilent(query);
         if (direct != null) {
             res.add(direct);
         }
 
-        return gsvc.getGNodesByPropertyFT(
+        res.addAll(gsvc.getGNodesByPropertyFT(
                 GComponent.class,
                 GComponentImpl.class,
                 PropertyType.NAME,
-                query,
-                numResults - res.size());
+                query.concat("*"),
+                numResults - res.size()));
+
+        return res;
+        
     }
  
 }

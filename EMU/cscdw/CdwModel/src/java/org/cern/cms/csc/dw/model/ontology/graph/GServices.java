@@ -21,7 +21,7 @@ public abstract class GServices extends GServicesBase {
         Transaction tx = beginTx();
         try {
             Node node = getIdxSrv().getSingleNode(
-                    GNodeImpl.getPropertyKey(GComponentClass.class, GNode.PropertyType.CLASS_TYPE),
+                    GNodeImpl.getPropertyKey(GComponentClass.class, GNode.PropertyType.TYPE),
                     type.value());
             if (node != null) {
                     return new GComponentClassImpl(this, node);
