@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.xml.bind.JAXBElement;
+import org.apache.commons.lang.NullArgumentException;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.exception.ComponentTypeNotAllowedInFactException;
 import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
@@ -51,10 +52,19 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
             
             logger.info("FC Saver bean: Processing fact: " + fact.toString());
 
-            // Get ontology component object from fact component id
+            // Get ontology component object from fact component id or component.getId
             try {
 
-                GComponent gcomponent = ontologyDao.getGComponentByName(fact.getComponentId());
+                GComponent gcomponent = null;
+                if (fact.getComponent() != null) {
+                    gcomponent = ontologyDao.getGComponentById(fact.getComponent().getId());
+                } else if (fact.getComponentId() != null) {
+                    gcomponent = ontologyDao.getGComponentByName(fact.getComponentId());
+                }
+
+                if (gcomponent == null) {
+                    throw new NullArgumentException("Valid component id and/or component is not provided for Fact!");
+                }
                 logger.info("FC Saver bean: found gcomponent: " + gcomponent.getName());
 
                 if (!ontologyDao.isGComponentClassParent(
