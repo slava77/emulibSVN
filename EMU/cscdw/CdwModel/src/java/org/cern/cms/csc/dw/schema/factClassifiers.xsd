@@ -48,21 +48,6 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:simpleType name="sourceType">
-    <xsd:annotation>
-        <xsd:appinfo>
-            <jaxb:typesafeEnumClass name="SourceType"/>
-        </xsd:appinfo>
-    </xsd:annotation>
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="DCS"/>
-      <xsd:enumeration value="LOCAL_DQM"/>
-      <xsd:enumeration value="LOCAL_DAQ"/>
-      <xsd:enumeration value="FED"/>
-      <xsd:enumeration value="Xmas"/>
-    </xsd:restriction>
-  </xsd:simpleType>
-
   <xsd:simpleType name="factTypeType">
     <xsd:annotation>
         <xsd:appinfo>

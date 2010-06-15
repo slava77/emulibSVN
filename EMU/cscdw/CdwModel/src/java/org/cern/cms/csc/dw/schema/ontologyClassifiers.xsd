@@ -26,6 +26,7 @@
 <xsd:enumeration value="Device"/>
 <xsd:enumeration value="DMB"/>
 <xsd:enumeration value="Endcap"/>
+<xsd:enumeration value="FactProvider"/>
 <xsd:enumeration value="FEDCrate"/>
 <xsd:enumeration value="GasChannel"/>
 <xsd:enumeration value="GasDevice"/>

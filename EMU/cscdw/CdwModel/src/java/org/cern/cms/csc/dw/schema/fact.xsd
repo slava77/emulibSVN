@@ -56,13 +56,10 @@
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
-            <xsd:element name="source" type="tns:sourceType">
+            <xsd:element name="source" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo>
-                        <hj:basic>
-                            <orm:column name="FCO_SOURCE" length="16"/>
-                            <hj:enumerated-value/>
-                        </hj:basic>
+                        <hj:ignored/>
                         <jaxb:property name="source"/>
                     </xsd:appinfo>
                 </xsd:annotation>
@@ -84,6 +81,16 @@
                             <orm:column name="FCO_TIME"/>
                         </hj:basic>
                         <jaxb:property name="time"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="component" type="ont:componentType" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-one>
+                            <orm:join-column name="FCO_CMP_ID"/>
+                        </hj:many-to-one>
+                        <jaxb:property name="component"/>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>

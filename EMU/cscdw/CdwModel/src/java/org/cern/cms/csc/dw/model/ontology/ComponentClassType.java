@@ -39,6 +39,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;enumeration value="Device"/>
  *     &lt;enumeration value="DMB"/>
  *     &lt;enumeration value="Endcap"/>
+ *     &lt;enumeration value="FactProvider"/>
  *     &lt;enumeration value="FEDCrate"/>
  *     &lt;enumeration value="GasChannel"/>
  *     &lt;enumeration value="GasDevice"/>
@@ -121,6 +122,8 @@ public enum ComponentClassType {
     DMB("DMB"),
     @XmlEnumValue("Endcap")
     ENDCAP("Endcap"),
+    @XmlEnumValue("FactProvider")
+    FACT_PROVIDER("FactProvider"),
     @XmlEnumValue("FEDCrate")
     FED_CRATE("FEDCrate"),
     @XmlEnumValue("GasChannel")

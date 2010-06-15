@@ -14,16 +14,16 @@ import org.cern.cms.csc.dw.model.ontology.graph.GComponentLinkClass;
 @Local
 public interface GOntologyDaoLocal {
 
-    GComponent getGComponentById(Long id) throws ComponentNotFoundException;
-    GComponent getGComponentByName(String name) throws ComponentNotFoundException;
-    GComponent getGComponentByNameSilent(String name);
+    GComponent getGComponent(Long id) throws ComponentNotFoundException;
+    GComponent getGComponent(String name) throws ComponentNotFoundException;
+    GComponent getGComponentSilent(String name);
     Collection<GComponent> getGComponentsByNameMatches(String query, final Collection<GComponentClass> types, long numResults);
 
-    GComponentClass getGComponentClassById(Long id) throws ComponentClassNotFoundException;
-    GComponentClass getGComponentClassByType(ComponentClassType type);
+    GComponentClass getGComponentClass(Long id) throws ComponentClassNotFoundException;
+    GComponentClass getGComponentClass(ComponentClassType type);
     Collection<GComponentClass> getGComponentClasses();
 
-    GComponentLinkClass getGComponentLinkClassById(Long id) throws ComponentLinkClassNotFoundException;
+    GComponentLinkClass getGComponentLinkClass(Long id) throws ComponentLinkClassNotFoundException;
     Collection<GComponentLinkClass> getGComponentLinkClasses();
 
     boolean isGComponentClassParent(Set<ComponentClassType> parents, GComponentClass toCheck, boolean recursive);

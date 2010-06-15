@@ -1,6 +1,7 @@
 
 package org.cern.cms.csc.dw.ws;
 
+import java.util.Collections;
 import org.cern.cms.csc.dw.ws.exception.EmptyListReceivedException;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,8 +15,10 @@ import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.exception.ComponentTypeNotAllowedInFactException;
 import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
 import org.cern.cms.csc.dw.dao.PersistDaoLocal;
+import org.cern.cms.csc.dw.exception.WrongFactSourceException;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.dw.model.fact.FactCollection;
+import org.cern.cms.csc.dw.model.ontology.ComponentClassType;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponent;
 import org.cern.cms.csc.dw.service.ServiceInstructions;
 
@@ -44,6 +47,30 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
         // Performing on receive operations
         factCollection.onReceive(entityDao);
 
+        // Retrieving source gcomponent, checking its parents
+        {
+
+            GComponent gsource = null;
+            if (factCollection.isSetComponent()) {
+                gsource = ontologyDao.getGComponent(factCollection.getComponent().getId());
+            } else if (factCollection.getSource() != null) {
+                gsource = ontologyDao.getGComponent(factCollection.getSource());
+            }
+
+            if (gsource == null) {
+                throw new NullArgumentException("Fact collection source not provided!");
+            }
+
+            if (!ontologyDao.isGComponentClassParent(
+                    Collections.singleton(ComponentClassType.FACT_PROVIDER),
+                    gsource.getType(),
+                    true)) {
+                throw new WrongFactSourceException(gsource);
+            }
+            factCollection.setComponent(ontologyDao.getComponent(gsource));
+            
+        }
+
         // Loop over collection facts
         for (JAXBElement<? extends Fact> fi: factCollection.getFacts()) {
 
@@ -57,9 +84,9 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
 
                 GComponent gcomponent = null;
                 if (fact.getComponent() != null) {
-                    gcomponent = ontologyDao.getGComponentById(fact.getComponent().getId());
+                    gcomponent = ontologyDao.getGComponent(fact.getComponent().getId());
                 } else if (fact.getComponentId() != null) {
-                    gcomponent = ontologyDao.getGComponentByName(fact.getComponentId());
+                    gcomponent = ontologyDao.getGComponent(fact.getComponentId());
                 }
 
                 if (gcomponent == null) {
@@ -74,7 +101,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
                     throw new ComponentTypeNotAllowedInFactException(gcomponent.getType().getType(), fact.getClass());
                 }
 
-                fact.setComponent(ontologyDao.getComponentById(gcomponent.getId()));
+                fact.setComponent(ontologyDao.getComponent(gcomponent));
                 fact.setComponentId(gcomponent.getName());
 
                 fact.onReceive(entityDao);

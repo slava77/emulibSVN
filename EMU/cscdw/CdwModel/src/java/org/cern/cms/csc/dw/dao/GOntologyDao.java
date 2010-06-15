@@ -31,7 +31,7 @@ public class GOntologyDao implements GOntologyDaoLocal {
     public GOntologyDao() {
     }
 
-    public GComponent getGComponentById(Long id) throws ComponentNotFoundException {
+    public GComponent getGComponent(Long id) throws ComponentNotFoundException {
         GServices gsvc = gdao.getServices();
         GComponent c = null;
         Transaction tx = gsvc.beginTx();
@@ -49,8 +49,8 @@ public class GOntologyDao implements GOntologyDaoLocal {
         return c;
     }
 
-    public GComponent getGComponentByName(String name) throws ComponentNotFoundException {
-        GComponent c = getGComponentByNameSilent(name);
+    public GComponent getGComponent(String name) throws ComponentNotFoundException {
+        GComponent c = getGComponentSilent(name);
 
         if (c == null) {
             throw new ComponentNotFoundException(OntologySource.GRAPH_DATABASE, name);
@@ -59,7 +59,7 @@ public class GOntologyDao implements GOntologyDaoLocal {
         return c;
     }
 
-    public GComponent getGComponentByNameSilent(String name) {
+    public GComponent getGComponentSilent(String name) {
         GServices gsvc = gdao.getServices();
         GComponent c = gsvc.getGNodeByProperty(GComponent.class, GComponentImpl.class, PropertyType.NAME, name);
 
@@ -73,7 +73,7 @@ public class GOntologyDao implements GOntologyDaoLocal {
         return c;
     }
 
-    public GComponentClass getGComponentClassById(Long id) throws ComponentClassNotFoundException {
+    public GComponentClass getGComponentClass(Long id) throws ComponentClassNotFoundException {
         GServices gsvc = gdao.getServices();
         GComponentClass c = null;
         Transaction tx = gsvc.beginTx();
@@ -96,7 +96,7 @@ public class GOntologyDao implements GOntologyDaoLocal {
         return gsvc.getGComponentClasses();
     }
 
-    public GComponentLinkClass getGComponentLinkClassById(Long id) throws ComponentLinkClassNotFoundException {
+    public GComponentLinkClass getGComponentLinkClass(Long id) throws ComponentLinkClassNotFoundException {
         GServices gsvc = gdao.getServices();
         GComponentLinkClass c = null;
         Transaction tx = gsvc.beginTx();
@@ -141,7 +141,7 @@ public class GOntologyDao implements GOntologyDaoLocal {
         GServices gsvc = gdao.getServices();
         Collection<GComponent> res = new TreeSet<GComponent>();
         
-        GComponent direct = getGComponentByNameSilent(query);
+        GComponent direct = getGComponentSilent(query);
         if (direct != null) {
             if (types.isEmpty() || types.contains(direct.getType())) {
                 res.add(direct);
@@ -164,7 +164,7 @@ public class GOntologyDao implements GOntologyDaoLocal {
         return res;
     }
 
-    public GComponentClass getGComponentClassByType(ComponentClassType type) {
+    public GComponentClass getGComponentClass(ComponentClassType type) {
         GServices gsvc = gdao.getServices();
         return gsvc.getGComponentClass(type);
     }

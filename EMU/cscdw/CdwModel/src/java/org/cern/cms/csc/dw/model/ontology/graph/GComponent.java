@@ -6,6 +6,7 @@ public interface GComponent extends GNode {
 
     void setName(String name);
     String getName();
+    boolean isSetName();
 
     void setType(GComponentClass type);
     GComponentClass getType();

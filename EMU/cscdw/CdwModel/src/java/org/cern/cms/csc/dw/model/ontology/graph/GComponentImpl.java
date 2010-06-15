@@ -64,4 +64,8 @@ public class GComponentImpl extends GNodeImpl implements GComponent {
         return getGComponentLinks().getLinks();
     }
 
+    public boolean isSetName() {
+        return (getName() != null);
+    }
+
 }

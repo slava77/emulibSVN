@@ -54,7 +54,7 @@
         </taskdef>
     </target>
 
-    <target name="prepare-ontology">
+    <target name="01-prepare-ontology">
         <delete file="../KnowledgeBase/ontology/csc-ontology.owl" failonerror="false" />
         <xslt style="../KnowledgeBase/ontology/ontology_generator.xsl"
               in="../KnowledgeBase/ontology/ontology_template.xml"
@@ -88,7 +88,7 @@
 
     </target>
 
-    <target name="upgrade-db" depends="db-properties">
+    <target name="03-upgrade-db" depends="db-properties">
 
         <!-- 1st STAGE -->
 
@@ -161,7 +161,7 @@
         </java>
         
         <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
-            delimiter="/" keepformat="true" delimitertype="row" onerror="abort">
+            delimiter="/" keepformat="true" delimitertype="row" onerror="continue">
             <classpath>
                 <pathelement path="build/jar"/>
                 <fileset dir="build/jar">
@@ -173,7 +173,7 @@
 
     </target>
 
-    <target name="ontology-graph">
+    <target name="04-ontology-graph">
 
         <!-- Remove graph db -->
         <delete dir="src/graphdb" includeemptydirs="true" includes="**/*" excludes="CVS"/>
@@ -195,7 +195,7 @@
 
     </target>
 
-    <target name="ontology-graph-to-database" depends="db-properties">
+    <target name="05-ontology-graph-to-database" depends="db-properties">
 
         <!-- Execute SQL files -->
         <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
@@ -240,7 +240,7 @@
               out="src/java/org/cern/cms/csc/dw/schema/dqmFact.xsd"/>
     </target>
 
-    <target name="generate-model" depends="generate-ontology-schema,generate-fact-schema,hj-taskdef">
+    <target name="02-generate-model" depends="generate-ontology-schema,generate-fact-schema,hj-taskdef">
 
         <xjc destdir="${srcs}" extension="true">
             <!-- -XhashCode and -Xequals taken out -->
@@ -250,6 +250,7 @@
                 -Xinheritance
                 -XClassUtils
                 -XAnnotate
+                -XEnumValueGetter
                 -simple-preserve"/>
             <!--binding dir="${basedir}">
                 <include name="*.xjb"/>

@@ -78,4 +78,8 @@ public enum FactType {
         throw new IllegalArgumentException(v);
     }
 
+    public String getValue() {
+        return value;
+    }
+
 }

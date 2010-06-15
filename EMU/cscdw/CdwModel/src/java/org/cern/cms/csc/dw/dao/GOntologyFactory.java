@@ -1,6 +1,8 @@
 package org.cern.cms.csc.dw.dao;
 
 import java.util.Collection;
+import org.cern.cms.csc.dw.model.ontology.ComponentClassType;
+import org.cern.cms.csc.dw.model.ontology.ComponentLinkClassType;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponent;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentClass;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentClassImpl;
@@ -53,33 +55,37 @@ public class GOntologyFactory {
         return gservices.getGComponents();
     }
 
-    public GComponentClass createGComponentClass() {
+    public GComponentClass createGComponentClass(ComponentClassType type) {
         Transaction tx = gservices.beginTx();
         try {
             Node node = gservices.getDBSrv().createNode();
             gservices.getDBSrv().getReferenceNode().createRelationshipTo(node, GLinkType.TYPE_COMPONENT_CLASS);
             setObjectType(node, GComponentClass.class);
-            return new GComponentClassImpl(gservices, node);
+            GComponentClass gcc = new GComponentClassImpl(gservices, node);
+            gcc.setType(type);
+            return gcc;
         } finally {
             tx.success();
             tx.finish();
         }
     }
 
-    public GComponentLinkClass createGComponentLinkClass() {
+    public GComponentLinkClass createGComponentLinkClass(ComponentLinkClassType type) {
         Transaction tx = gservices.beginTx();
         try {
             Node node = gservices.getDBSrv().createNode();
             gservices.getDBSrv().getReferenceNode().createRelationshipTo(node, GLinkType.TYPE_COMPONENT_LINK_CLASS);
             setObjectType(node, GComponentLinkClass.class);
-            return new GComponentLinkClassImpl(gservices, node);
+            GComponentLinkClass gclc = new GComponentLinkClassImpl(gservices, node);
+            gclc.setType(type);
+            return gclc;
         } finally {
             tx.success();
             tx.finish();
         }
     }
 
-    public GComponent createGComponent() {
+    public GComponent createGComponent(String name) {
         Transaction tx = gservices.beginTx();
         try {
 
@@ -91,7 +97,11 @@ public class GOntologyFactory {
             node.createRelationshipTo(linksNode, GLinkType.COMPONENT_TO_LINKS);
             setObjectType(node, GComponentLinks.class);
             
-            return new GComponentImpl(gservices, node);
+            GComponent gc = new GComponentImpl(gservices, node);
+            gc.setName(name);
+            
+            return gc;
+
         } finally {
             tx.success();
             tx.finish();
@@ -120,13 +130,15 @@ public class GOntologyFactory {
         }
     }
 
-    public GComponentSynonym createGComponentSynonym() {
+    public GComponentSynonym createGComponentSynonym(String name) {
         Transaction tx = gservices.beginTx();
         try {
             Node node = gservices.getDBSrv().createNode();
             gservices.getDBSrv().getReferenceNode().createRelationshipTo(node, GLinkType.TYPE_COMPONENT_SYNONYM);
             setObjectType(node, GComponentSynonym.class);
-            return new GComponentSynonymImpl(gservices, node);
+            GComponentSynonym gcs = new GComponentSynonymImpl(gservices, node);
+            gcs.setName(name);
+            return gcs;
         } finally {
             tx.success();
             tx.finish();

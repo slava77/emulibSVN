@@ -12,6 +12,7 @@ import org.cern.cms.csc.dw.exception.ComponentNotFoundException;
 import org.cern.cms.csc.dw.model.ontology.Component;
 import org.cern.cms.csc.dw.model.ontology.ComponentClass;
 import org.cern.cms.csc.dw.model.ontology.ComponentLinkClass;
+import org.cern.cms.csc.dw.model.ontology.graph.GComponent;
 
 /**
  *
@@ -22,6 +23,7 @@ public interface OntologyDaoLocal extends GOntologyDaoLocal {
 
     ComponentClass getComponentClassById(Long id) throws ComponentClassNotFoundException;
     Component getComponentById(Long id) throws ComponentNotFoundException;
+    Component getComponent(GComponent gcomp) throws ComponentNotFoundException;
     ComponentLinkClass getComponentLinkClassById(Long id) throws ComponentLinkClassNotFoundException;
     
 }

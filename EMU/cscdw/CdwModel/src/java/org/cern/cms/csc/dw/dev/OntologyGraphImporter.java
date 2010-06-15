@@ -73,10 +73,10 @@ public class OntologyGraphImporter {
         processContentHandler(parser, filename, new ObjectPropertyAssertionHandler(false));
         processContentHandler(parser, filename, new ObjectPropertyAssertionHandler(true));
 
-        // Removing components without types (synonyms)
+        // Removing components without types and/or names (synonyms)
         log.info("Removing synonym components..");
         for (GComponent gc: components.values()) {
-            if (!gc.isSetType()) {
+            if (!gc.isSetType() || !gc.isSetName()) {
                 gFactory.removeGComponent(gc);
             }
         }
@@ -220,8 +220,7 @@ public class OntologyGraphImporter {
             if (localName.equals("Class")) {
                 if (!componentClasses.containsKey(name)) {
                     try {
-                        GComponentClass c = gFactory.createGComponentClass();
-                        c.setType(ComponentClassType.fromValue(name));
+                        GComponentClass c = gFactory.createGComponentClass(ComponentClassType.fromValue(name));
                         componentClasses.put(name, c);
                     } catch (IllegalArgumentException e) {
                         log.warn("Component class type [" + name + "] not defined in schema. Skipping..");
@@ -231,8 +230,7 @@ public class OntologyGraphImporter {
                 }
             } else if (localName.equals("Individual")) {
                 if (!components.containsKey(name)) {
-                    GComponent c = gFactory.createGComponent();
-                    c.setName(name);
+                    GComponent c = gFactory.createGComponent(name);
                     components.put(name, c);
                 } else {
                     log.warn("Double component [" + name + "] declaration. Ignoring..");
@@ -292,8 +290,7 @@ public class OntologyGraphImporter {
             if (localName.equals("ObjectProperty")) {
                 if (!componentLinkClasses.containsKey(name)) {
                     try {
-                        GComponentLinkClass clc = gFactory.createGComponentLinkClass();
-                        clc.setType(ComponentLinkClassType.fromValue(name));
+                        GComponentLinkClass clc = gFactory.createGComponentLinkClass(ComponentLinkClassType.fromValue(name));
                         clc.setTransitive(false);
                         componentLinkClasses.put(name, clc);
                     } catch (IllegalArgumentException e) {
@@ -465,8 +462,7 @@ public class OntologyGraphImporter {
                     if (c.isSetType()) {
                         for (String s2: syns) {
                             if (!s1.equals(s2)) {
-                                GComponentSynonym syn = gFactory.createGComponentSynonym();
-                                syn.setName(s2);
+                                GComponentSynonym syn = gFactory.createGComponentSynonym(s2);
                                 c.addSynonym(syn);
                             }
                         }

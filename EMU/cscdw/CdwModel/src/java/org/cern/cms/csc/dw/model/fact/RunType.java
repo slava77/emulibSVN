@@ -119,4 +119,8 @@ public enum RunType {
         throw new IllegalArgumentException(v);
     }
 
+    public String getValue() {
+        return value;
+    }
+
 }

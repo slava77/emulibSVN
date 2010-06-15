@@ -22,6 +22,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -55,9 +56,10 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element ref="{http://www.cern.ch/cms/csc/dw/service}serviceInstructions" minOccurs="0"/>
- *         &lt;element name="source" type="{http://www.cern.ch/cms/csc/dw/model}sourceType"/>
+ *         &lt;element name="source" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="requestId" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
  *         &lt;element name="time" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
+ *         &lt;element name="component" type="{http://www.cern.ch/cms/csc/dw/ontology}componentType" minOccurs="0"/>
  *         &lt;element ref="{http://www.cern.ch/cms/csc/dw/model}fact" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -73,6 +75,7 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
     "source",
     "request",
     "time",
+    "component",
     "facts"
 })
 @Entity(name = "org.cern.cms.csc.dw.model.fact.FactCollection")
@@ -86,11 +89,12 @@ public class FactCollection
     @XmlElement(namespace = "http://www.cern.ch/cms/csc/dw/service")
     protected ServiceInstructions serviceInstructions;
     @XmlElement(required = true)
-    protected SourceType source;
+    protected String source;
     @XmlElement(name = "requestId")
     protected Long request;
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar time;
+    protected org.cern.cms.csc.dw.model.ontology.Component component;
     @XmlElementRef(name = "fact", namespace = "http://www.cern.ch/cms/csc/dw/model", type = JAXBElement.class)
     protected List<JAXBElement<? extends Fact>> facts = new Vector<JAXBElement<? extends Fact>>();
     @XmlAttribute(name = "id")
@@ -132,11 +136,11 @@ public class FactCollection
      * 
      * @return
      *     possible object is
-     *     {@link SourceType }
+     *     {@link String }
      *     
      */
     @Transient
-    public SourceType getSource() {
+    public String getSource() {
         return source;
     }
 
@@ -145,10 +149,10 @@ public class FactCollection
      * 
      * @param value
      *     allowed object is
-     *     {@link SourceType }
+     *     {@link String }
      *     
      */
-    public void setSource(SourceType value) {
+    public void setSource(String value) {
         this.source = value;
     }
 
@@ -219,6 +223,39 @@ public class FactCollection
     }
 
     /**
+     * Gets the value of the component property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link org.cern.cms.csc.dw.model.ontology.Component }
+     *     
+     */
+    @ManyToOne(targetEntity = org.cern.cms.csc.dw.model.ontology.Component.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "FCO_CMP_ID")
+    public org.cern.cms.csc.dw.model.ontology.Component getComponent() {
+        return component;
+    }
+
+    /**
+     * Sets the value of the component property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link org.cern.cms.csc.dw.model.ontology.Component }
+     *     
+     */
+    public void setComponent(org.cern.cms.csc.dw.model.ontology.Component value) {
+        this.component = value;
+    }
+
+    @Transient
+    public boolean isSetComponent() {
+        return (this.component!= null);
+    }
+
+    /**
      * Gets the value of the facts property.
      * 
      * <p>
@@ -236,19 +273,19 @@ public class FactCollection
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link JAXBElement }{@code <}{@link LocalDAQStatusFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link DqmCscCfebFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link SlidingTmbTriggerCounterFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link DqmDduFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link TmbCounterFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link DqmCscHvSegmentFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link ApplicationStatusFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link DqmEmuFact }{@code >}
      * {@link JAXBElement }{@code <}{@link DqmCscFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link DqmCscHvSegmentFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link DqmDduFact }{@code >}
      * {@link JAXBElement }{@code <}{@link DqmCscAfebFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link DqmDduInputFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link CumulativeTmbTriggerCounterFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link TmbCounterFact }{@code >}
      * {@link JAXBElement }{@code <}{@link Fact }{@code >}
+     * {@link JAXBElement }{@code <}{@link ApplicationStatusFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link LocalDAQStatusFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link SlidingTmbTriggerCounterFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link DqmDduInputFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link DqmEmuFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link DqmCscCfebFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link CumulativeTmbTriggerCounterFact }{@code >}
      * 
      * 
      */
@@ -303,16 +340,6 @@ public class FactCollection
      */
     public void setid(Long value) {
         this.id = value;
-    }
-
-    @Basic
-    @Column(name = "FCO_SOURCE", length = 16)
-    public String getSourceItem() {
-        return ((this.getSource() == null)?null:this.getSource().value());
-    }
-
-    public void setSourceItem(String target) {
-        setSource(((target == null)?null:SourceType.fromValue(target)));
     }
 
     @Basic

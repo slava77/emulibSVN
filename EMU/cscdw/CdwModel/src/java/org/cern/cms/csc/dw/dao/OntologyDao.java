@@ -11,6 +11,7 @@ import org.cern.cms.csc.dw.exception.OntologyException.OntologySource;
 import org.cern.cms.csc.dw.model.ontology.Component;
 import org.cern.cms.csc.dw.model.ontology.ComponentClass;
 import org.cern.cms.csc.dw.model.ontology.ComponentLinkClass;
+import org.cern.cms.csc.dw.model.ontology.graph.GComponent;
 
 @Stateless
 @SuppressWarnings("unchecked")
@@ -43,6 +44,10 @@ public class OntologyDao extends GOntologyDao implements OntologyDaoLocal, Seria
         }
         cc.getParent();
         return cc;
+    }
+
+    public Component getComponent(GComponent gcomp) throws ComponentNotFoundException {
+        return getComponentById(gcomp.getId());
     }
 
 }
