@@ -31,7 +31,10 @@ public class GComponentImpl extends GNodeImpl implements GComponent {
     }
 
     public GComponentClass getType() {
-        return getRelatedGNode(GComponentClass.class, GComponentClassImpl.class, GLinkType.COMPONENT_TO_CLASS, Direction.OUTGOING);
+        return getRelatedGNode(
+                GComponentClass.class,
+                GLinkType.COMPONENT_TO_CLASS,
+                Direction.OUTGOING);
     }
 
     public void addSynonym(GComponentSynonym synonym) {
@@ -43,7 +46,6 @@ public class GComponentImpl extends GNodeImpl implements GComponent {
     public Collection<GComponentSynonym> getSynonyms() {
         return getRelatedGNodeCollection(
                 GComponentSynonym.class,
-                GComponentSynonymImpl.class,
                 GLinkType.COMPONENT_TO_SYNONYM,
                 Direction.OUTGOING);
     }
@@ -55,7 +57,6 @@ public class GComponentImpl extends GNodeImpl implements GComponent {
     public GComponentLinks getGComponentLinks() {
         return getRelatedGNode(
                 GComponentLinks.class,
-                GComponentLinksImpl.class,
                 GLinkType.COMPONENT_TO_LINKS,
                 Direction.OUTGOING);
     }

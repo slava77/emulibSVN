@@ -11,17 +11,12 @@ import org.cern.cms.csc.dw.exception.OntologyException.OntologySource;
 import org.cern.cms.csc.dw.model.ontology.ComponentClassType;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponent;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentClass;
-import org.cern.cms.csc.dw.model.ontology.graph.GComponentClassImpl;
-import org.cern.cms.csc.dw.model.ontology.graph.GComponentImpl;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentLinkClass;
-import org.cern.cms.csc.dw.model.ontology.graph.GComponentLinkClassImpl;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentSynonym;
-import org.cern.cms.csc.dw.model.ontology.graph.GComponentSynonymImpl;
 import org.cern.cms.csc.dw.model.ontology.graph.GNode;
 import org.cern.cms.csc.dw.model.ontology.graph.GNode.PropertyType;
 import org.cern.cms.csc.dw.model.ontology.graph.GServices;
 import org.cern.cms.csc.dw.model.ontology.graph.GNodeFilter;
-import org.neo4j.graphdb.Transaction;
 
 public class GOntologyDao implements GOntologyDaoLocal {
 
@@ -33,15 +28,9 @@ public class GOntologyDao implements GOntologyDaoLocal {
 
     public GComponent getGComponent(Long id) throws ComponentNotFoundException {
         GServices gsvc = gdao.getServices();
-        GComponent c = null;
-        Transaction tx = gsvc.beginTx();
-        try {
-            c = new GComponentImpl(gsvc, gsvc.getDBSrv().getNodeById(id));
-            tx.success();
-        } finally {
-            tx.finish();
-        }
-
+        
+        GComponent c = gsvc.getGNodeById(GComponent.class, id);
+        
         if (c == null) {
             throw new ComponentNotFoundException(OntologySource.GRAPH_DATABASE, id);
         }
@@ -61,10 +50,10 @@ public class GOntologyDao implements GOntologyDaoLocal {
 
     public GComponent getGComponentSilent(String name) {
         GServices gsvc = gdao.getServices();
-        GComponent c = gsvc.getGNodeByProperty(GComponent.class, GComponentImpl.class, PropertyType.NAME, name);
+        GComponent c = gsvc.getGNodeByProperty(GComponent.class, PropertyType.NAME, name);
 
         if (c == null) {
-            GComponentSynonym cs = gsvc.getGNodeByProperty(GComponentSynonym.class, GComponentSynonymImpl.class, PropertyType.NAME, name);
+            GComponentSynonym cs = gsvc.getGNodeByProperty(GComponentSynonym.class, PropertyType.NAME, name);
             if (cs != null) {
                 c = cs.getComponent();
             }
@@ -75,14 +64,8 @@ public class GOntologyDao implements GOntologyDaoLocal {
 
     public GComponentClass getGComponentClass(Long id) throws ComponentClassNotFoundException {
         GServices gsvc = gdao.getServices();
-        GComponentClass c = null;
-        Transaction tx = gsvc.beginTx();
-        try {
-            c = new GComponentClassImpl(gsvc, gsvc.getDBSrv().getNodeById(id));
-            tx.success();
-        } finally {
-            tx.finish();
-        }
+        
+        GComponentClass c = gsvc.getGNodeById(GComponentClass.class, id);
 
         if (c == null) {
             throw new ComponentClassNotFoundException(OntologySource.GRAPH_DATABASE, id);
@@ -98,14 +81,7 @@ public class GOntologyDao implements GOntologyDaoLocal {
 
     public GComponentLinkClass getGComponentLinkClass(Long id) throws ComponentLinkClassNotFoundException {
         GServices gsvc = gdao.getServices();
-        GComponentLinkClass c = null;
-        Transaction tx = gsvc.beginTx();
-        try {
-            c = new GComponentLinkClassImpl(gsvc, gsvc.getDBSrv().getNodeById(id));
-            tx.success();
-        } finally {
-            tx.finish();
-        }
+        GComponentLinkClass c = gsvc.getGNodeById(GComponentLinkClass.class, id);
 
         if (c == null) {
             throw new ComponentLinkClassNotFoundException(OntologySource.GRAPH_DATABASE, id);
@@ -151,7 +127,6 @@ public class GOntologyDao implements GOntologyDaoLocal {
         res.addAll(
             gsvc.getGNodesByPropertyFT(
                 GComponent.class,
-                GComponentImpl.class,
                 PropertyType.NAME,
                 query.concat("*"),
                 new GNodeFilter() {

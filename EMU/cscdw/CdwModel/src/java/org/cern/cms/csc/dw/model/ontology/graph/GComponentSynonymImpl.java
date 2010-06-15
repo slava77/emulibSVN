@@ -18,7 +18,10 @@ public class GComponentSynonymImpl extends GNodeImpl implements GComponentSynony
     }
 
     public GComponent getComponent() {
-        return getRelatedGNode(GComponent.class, GComponentImpl.class, GLinkType.COMPONENT_TO_SYNONYM, Direction.INCOMING);
+        return getRelatedGNode(
+                GComponent.class,
+                GLinkType.COMPONENT_TO_SYNONYM,
+                Direction.INCOMING);
     }
 
     public void setComponent(GComponent component) {

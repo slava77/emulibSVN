@@ -42,7 +42,6 @@ public class GComponentLinkClassImpl extends GNodeImpl implements GComponentLink
     public GComponentLinkClass getParent() {
         return getRelatedGNode(
                 GComponentLinkClass.class,
-                GComponentLinkClassImpl.class,
                 GLinkType.LINK_TO_PARENT,
                 Direction.OUTGOING);
     }
@@ -50,7 +49,6 @@ public class GComponentLinkClassImpl extends GNodeImpl implements GComponentLink
     public Collection<GComponentLinkClass> getChildren() {
         return getRelatedGNodeCollection(
             GComponentLinkClass.class,
-            GComponentLinkClassImpl.class,
             GLinkType.LINK_TO_PARENT,
             Direction.INCOMING);
     }
@@ -62,7 +60,6 @@ public class GComponentLinkClassImpl extends GNodeImpl implements GComponentLink
     public GComponentLinkClass getInverse() {
         return getRelatedGNode(
                 GComponentLinkClass.class,
-                GComponentLinkClassImpl.class,
                 GLinkType.LINK_TO_INVERSE,
                 Direction.OUTGOING);
     }

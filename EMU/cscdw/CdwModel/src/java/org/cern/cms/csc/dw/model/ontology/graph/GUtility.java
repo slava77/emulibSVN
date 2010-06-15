@@ -15,9 +15,10 @@ import org.neo4j.graphdb.Traverser;
 public class GUtility {
 
     @SuppressWarnings("unchecked")
-    public static <T extends GNode> T wrap(GServices gservices, Class<T> ifClass, Class implClass, Node node) {
+    public static <T extends GNode> T wrap(GServices gservices, Class<T> ifClass, Node node) {
         try {
-            if (node != null) {
+            if (node != null && isGNodeObjectType(gservices, node, ifClass)) {
+                Class implClass = GBase.implClass(ifClass);
                 Constructor constr = implClass.getConstructor(GServices.class, Node.class);
                 return (T) constr.newInstance(gservices, node);
             } else {
@@ -38,8 +39,8 @@ public class GUtility {
      * @param traverser Traverser to process
      * @return Collection
      */
-    public static <T extends GNode> Collection<T> wrap(GServices gservices, Class<T> ifClass, Class implClass, Traverser traverser) {
-        return wrap(gservices, ifClass, implClass, traverser.iterator());
+    public static <T extends GNode> Collection<T> wrap(GServices gservices, Class<T> ifClass, Traverser traverser) {
+        return wrap(gservices, ifClass, traverser.iterator());
     }
 
     /**
@@ -51,8 +52,8 @@ public class GUtility {
      * @param it Iterator to process
      * @return Collection
      */
-    public static <T extends GNode> Collection<T> wrap(GServices gservices, Class<T> ifClass, Class implClass, Iterator<Node> it) {
-        return wrap(gservices, ifClass, implClass, it, new DefaultNodeFilter(), 0);
+    public static <T extends GNode> Collection<T> wrap(GServices gservices, Class<T> ifClass, Iterator<Node> it) {
+        return wrap(gservices, ifClass, it, new DefaultNodeFilter(), 0);
     }
 
     /**
@@ -66,10 +67,11 @@ public class GUtility {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static <T extends GNode> Collection<T> wrap(GServices gservices, Class<T> ifClass, Class implClass, Iterator<Node> it, GNodeFilter filter, long limitResults) {
+    public static <T extends GNode> Collection<T> wrap(GServices gservices, Class<T> ifClass, Iterator<Node> it, GNodeFilter filter, long limitResults) {
         long c = limitResults;
         try {
             
+            Class implClass = GBase.implClass(ifClass);
             Constructor constr = implClass.getConstructor(GServices.class, Node.class);
             Collection<T>  ret = new LinkedList<T>();
 
@@ -77,13 +79,16 @@ public class GUtility {
             if (limitResults > 0) {
 
                 while (it.hasNext()) {
-                    T gnode = (T) constr.newInstance(gservices, it.next());
-                    if (filter.filter(gnode)) {
-                        ret.add(gnode);
-                        if (c == 0) {
-                            break;
+                    Node n = it.next();
+                    if (isGNodeObjectType(gservices, n, ifClass)) {
+                        T gnode = (T) constr.newInstance(gservices, n);
+                        if (filter.filter(gnode)) {
+                            ret.add(gnode);
+                            if (c == 0) {
+                                break;
+                            }
+                            c -= 1;
                         }
-                        c -= 1;
                     }
                 }
 
@@ -91,9 +96,12 @@ public class GUtility {
             } else {
 
                 while (it.hasNext()) {
-                    T gnode = (T) constr.newInstance(gservices, it.next());
-                    if (filter.filter(gnode)) {
-                        ret.add(gnode);
+                    Node n = it.next();
+                    if (isGNodeObjectType(gservices, n, ifClass)) {
+                        T gnode = (T) constr.newInstance(gservices, n);
+                        if (filter.filter(gnode)) {
+                            ret.add(gnode);
+                        }
                     }
                 }
                 
@@ -117,16 +125,19 @@ public class GUtility {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static <T extends GNode> T getRelatedGNode(GServices gservices, Node node, Class<T> ifClass, Class implClass, GLinkType type, Direction dir) {
+    public static <T extends GNode> T getRelatedGNode(GServices gservices, Node node, Class<T> ifClass, GLinkType type, Direction dir) {
         Transaction tx = gservices.beginTx();
         try {
+            Class implClass = GBase.implClass(ifClass);
             Constructor constr = implClass.getConstructor(GServices.class, Node.class);
             Relationship rel = node.getSingleRelationship(type, dir);
             if (rel != null) {
-                return (T) constr.newInstance(gservices, rel.getOtherNode(node));
-            } else {
-                return null;
+                Node n = rel.getOtherNode(node);
+                if (isGNodeObjectType(gservices, n, ifClass)) {
+                    return (T) constr.newInstance(gservices, n);
+                }
             }
+            return null;
         } catch (Exception e) {
             e.printStackTrace(System.err);
             return null;
@@ -136,13 +147,12 @@ public class GUtility {
         }
     }
 
-    public static <T extends GNode> Collection<T> getRelatedGNodeCollection(GServices gservices, Node node, Class<T> ifClass, Class implClass, GLinkType type, Direction dir, StopEvaluator stop, ReturnableEvaluator returnable) {
+    public static <T extends GNode> Collection<T> getRelatedGNodeCollection(GServices gservices, Node node, Class<T> ifClass, GLinkType type, Direction dir, StopEvaluator stop, ReturnableEvaluator returnable) {
         Transaction tx = gservices.beginTx();
         try {
             return wrap(
                 gservices,
                 ifClass,
-                implClass,
                 node.traverse(
                     Traverser.Order.BREADTH_FIRST,
                     stop,
@@ -155,5 +165,37 @@ public class GUtility {
             tx.finish();
         }
     }
+
+    public static <T extends GNode> Collection<T> getRelatedGNodeCollection(GServices gservices, Node node, Class<T> ifClass, StopEvaluator stop, ReturnableEvaluator returnable, Object... typesAndDirections) {
+        Transaction tx = gservices.beginTx();
+        try {
+            return wrap(
+                gservices,
+                ifClass,
+                node.traverse(
+                    Traverser.Order.BREADTH_FIRST,
+                    stop,
+                    returnable,
+                    typesAndDirections)
+                );
+        } finally {
+            tx.success();
+            tx.finish();
+        }
+    }
+
+
+    @SuppressWarnings("unchecked")
+    public static boolean isGNodeObjectType(GServices gservices, Node n, Class<? extends GNode> classToCheck) throws ClassNotFoundException {
+        Transaction tx = gservices.beginTx();
+        try {
+            return n.getProperty(GNode.KEY_OBJECT_TYPE).equals(classToCheck.getName());
+        }
+        finally {
+            tx.success();
+            tx.finish();
+        }
+    }
+
 
 }

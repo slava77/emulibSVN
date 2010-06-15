@@ -52,28 +52,12 @@ public abstract class GNodeImpl extends GBase implements GNode {
         return node;
     }
 
-    /**
-     * Wrap traverser output to Object collection
-     * @param <T> Type to wrap objects to
-     * @param ifClass Interface class of collection objects
-     * @param implClass Implementation class of collection objects
-     * @param traverser Traverser to process
-     * @return Collection
-     */
-    protected <T extends GNode> Collection<T> wrap(Class<T> ifClass, Class implClass, Traverser traverser) {
-        return wrap(ifClass, implClass, traverser.iterator());
+    protected <T extends GNode> Collection<T> wrap(Class<T> ifClass, Traverser traverser) {
+        return wrap(ifClass, traverser.iterator());
     }
 
-    /**
-     * Wrap iterator items to Object collection
-     * @param <T> Type to wrap objects to
-     * @param ifClass Interface class of collection objects
-     * @param implClass Implementation class of collection objects
-     * @param it Iterator to process
-     * @return Collection
-     */
-    protected <T extends GNode> Collection<T> wrap(Class<T> ifClass, Class implClass, Iterator<Node> it) {
-        return GUtility.wrap(gservices, ifClass, implClass, it);
+    protected <T extends GNode> Collection<T> wrap(Class<T> ifClass, Iterator<Node> it) {
+        return GUtility.wrap(gservices, ifClass, it);
     }
 
     @Override
@@ -171,49 +155,39 @@ public abstract class GNodeImpl extends GBase implements GNode {
         }
     }
 
-    /**
-     * Get GNode object by using some relationship
-     * @param <T>
-     * @param ifClass
-     * @param implClass
-     * @param type
-     * @param dir
-     * @return
-     */
     @SuppressWarnings("unchecked")
-    protected <T extends GNode> T getRelatedGNode(Class<T> ifClass, Class implClass, GLinkType type, Direction dir) {
-        return GUtility.getRelatedGNode(gservices, node, ifClass, implClass, type, dir);
+    protected <T extends GNode> T getRelatedGNode(Class<T> ifClass, GLinkType type, Direction dir) {
+        return GUtility.getRelatedGNode(gservices, node, ifClass, type, dir);
     }
 
-    /**
-     * Get a collection of GNode objects by using some relationships wrt this node
-     * @param <T>
-     * @param ifClass
-     * @param implClass
-     * @param type
-     * @param dir
-     * @return
-     */
-    protected <T extends GNode> Collection<T> getRelatedGNodeCollection(Class<T> ifClass, Class implClass, GLinkType type, Direction dir) {
+    protected <T extends GNode> Collection<T> getRelatedGNodeCollection(Class<T> ifClass, GLinkType type, Direction dir) {
         return getRelatedGNodeCollection(
                     ifClass,
-                    implClass,
                     type,
                     dir,
                     StopEvaluator.DEPTH_ONE,
                     ReturnableEvaluator.ALL_BUT_START_NODE);
     }
 
-    protected <T extends GNode> Collection<T> getRelatedGNodeCollection(Class<T> ifClass, Class implClass, GLinkType type, Direction dir, StopEvaluator stop, ReturnableEvaluator returnable) {
+    protected <T extends GNode> Collection<T> getRelatedGNodeCollection(Class<T> ifClass, GLinkType type, Direction dir, StopEvaluator stop, ReturnableEvaluator returnable) {
         return GUtility.getRelatedGNodeCollection(
                 gservices,
                 node,
                 ifClass,
-                implClass,
                 type,
                 dir,
                 stop,
                 returnable);
+    }
+
+    protected <T extends GNode> Collection<T> getRelatedGNodeCollection(Class<T> ifClass, StopEvaluator stop, ReturnableEvaluator returnable, Object... typesAndDirections) {
+        return GUtility.getRelatedGNodeCollection(
+                gservices,
+                node,
+                ifClass,
+                stop,
+                returnable,
+                typesAndDirections);
     }
 
     public int compareTo(Object o) {

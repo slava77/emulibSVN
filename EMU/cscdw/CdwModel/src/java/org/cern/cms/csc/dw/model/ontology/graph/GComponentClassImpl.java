@@ -33,7 +33,6 @@ public class GComponentClassImpl extends GNodeImpl implements GComponentClass {
     public Collection<GComponentClass> getChildren() {
         return getRelatedGNodeCollection(
                 GComponentClass.class,
-                GComponentClassImpl.class,
                 GLinkType.CLASS_TO_PARENT,
                 Direction.INCOMING);
     }
@@ -41,7 +40,6 @@ public class GComponentClassImpl extends GNodeImpl implements GComponentClass {
     public Collection<GComponentClass> getParents() {
         return getRelatedGNodeCollection(
                 GComponentClass.class,
-                GComponentClassImpl.class,
                 GLinkType.CLASS_TO_PARENT,
                 Direction.OUTGOING);
     }
@@ -53,7 +51,6 @@ public class GComponentClassImpl extends GNodeImpl implements GComponentClass {
     public Collection<GComponentClass> getParentsRecursive(boolean returnSelf) {
         return getRelatedGNodeCollection(
                 GComponentClass.class,
-                GComponentClassImpl.class,
                 GLinkType.CLASS_TO_PARENT,
                 Direction.OUTGOING,
                 StopEvaluator.END_OF_GRAPH,
@@ -75,7 +72,6 @@ public class GComponentClassImpl extends GNodeImpl implements GComponentClass {
     public Collection<GComponent> getComponents() {
         return getRelatedGNodeCollection(
                 GComponent.class,
-                GComponentImpl.class,
                 GLinkType.COMPONENT_TO_CLASS,
                 Direction.INCOMING);
     }
@@ -97,11 +93,21 @@ public class GComponentClassImpl extends GNodeImpl implements GComponentClass {
     public Collection<GComponentClass> getChildrenRecursive(boolean returnSelf) {
         return getRelatedGNodeCollection(
                 GComponentClass.class,
-                GComponentClassImpl.class,
                 GLinkType.CLASS_TO_PARENT,
                 Direction.INCOMING,
                 StopEvaluator.END_OF_GRAPH,
                 (returnSelf ? ReturnableEvaluator.ALL : ReturnableEvaluator.ALL_BUT_START_NODE));
+    }
+
+    public Collection<GComponent> getComponentsRecursive() {
+        return getRelatedGNodeCollection(
+                GComponent.class,
+                StopEvaluator.END_OF_GRAPH,
+                ReturnableEvaluator.ALL,
+                GLinkType.CLASS_TO_PARENT,
+                Direction.INCOMING,
+                GLinkType.COMPONENT_TO_CLASS,
+                Direction.INCOMING);
     }
 
 }
