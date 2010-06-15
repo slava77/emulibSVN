@@ -16,7 +16,7 @@ public class RoundtripTest
 
 
     public String getContextPath() {
-        return "org.cern.cms.csc.exsys.re.model:org.cern.cms.csc.dw.model.fact:org.cern.cms.csc.dw.service:org.cern.cms.csc.dw.model.ontology:org.cern.cms.csc.dw.model.dse";
+        return "org.cern.cms.csc.exsys.re.model:org.cern.cms.csc.dw.model.dse:org.cern.cms.csc.dw.model.fact:org.cern.cms.csc.dw.model.ontology:org.cern.cms.csc.dw.service";
     }
 
 }

@@ -123,7 +123,7 @@ public class GUtility {
             Constructor constr = implClass.getConstructor(GServices.class, Node.class);
             Relationship rel = node.getSingleRelationship(type, dir);
             if (rel != null) {
-                return (T) constr.newInstance(gservices, rel.getEndNode());
+                return (T) constr.newInstance(gservices, rel.getOtherNode(node));
             } else {
                 return null;
             }
