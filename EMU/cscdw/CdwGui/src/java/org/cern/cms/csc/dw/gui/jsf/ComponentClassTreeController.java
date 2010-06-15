@@ -103,7 +103,7 @@ public class ComponentClassTreeController extends JsfBeanBase {
             componentMatchClasses = Collections.EMPTY_SET;
         } else {
             try {
-                selectedComponentClass = ontologyDao.getGComponentClassById(Long.parseLong(strId));
+                selectedComponentClass = ontologyDao.getGComponentClass(Long.parseLong(strId));
                 componentMatchClasses = selectedComponentClass.getChildrenRecursive(true);
             } catch (ComponentClassNotFoundException ex) {
                 Logger.getLogger(ComponentClassTreeController.class.getName()).log(Level.SEVERE, null, ex);
@@ -130,7 +130,7 @@ public class ComponentClassTreeController extends JsfBeanBase {
     }
 
     public void setSelectedComponentId(Long componentId) throws ComponentNotFoundException {
-        this.selectedComponent = ontologyDao.getGComponentById(componentId);
+        this.selectedComponent = ontologyDao.getGComponent(componentId);
     }
 
     public void resetAction(ActionEvent event) {

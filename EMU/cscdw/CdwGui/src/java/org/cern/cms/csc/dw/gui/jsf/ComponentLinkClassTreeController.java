@@ -91,7 +91,7 @@ public class ComponentLinkClassTreeController extends JsfBeanBase {
             selectedLinkClass = null;
         } else {
             try {
-                selectedLinkClass = ontologyDao.getGComponentLinkClassById(Long.parseLong(strId));
+                selectedLinkClass = ontologyDao.getGComponentLinkClass(Long.parseLong(strId));
             } catch (ComponentLinkClassNotFoundException ex) {
                 Logger.getLogger(ComponentLinkClassTreeController.class.getName()).log(Level.SEVERE, null, ex);
                 selectedLinkClass = null;
