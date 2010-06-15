@@ -889,6 +889,19 @@
     </xsl:choose>
   </xsl:template>
 
+  <!-- FactProviders -->
+  <xsl:template match="templ:FactProviders">
+    <xsl:text>&LF;</xsl:text>
+    <xsl:comment>FactProviders</xsl:comment>
+    <xsl:text>&LF;</xsl:text>
+    <xsl:variable name="SOURCE" select="@source"/>
+    <xsl:for-each select="document($SOURCE)/FactProviders/Provider">
+      <xsl:variable name="provider" select="text()"/>
+      <Declaration><Individual URI="&csc;{$provider}"/></Declaration>
+      <ClassAssertion><Class URI="&csc;FactProvider"/><Individual URI="&csc;{$provider}"/></ClassAssertion>
+    </xsl:for-each>
+  </xsl:template>
+
   <xsl:template name="Annotate">
     <!-- Copies the class annotation to the individual  -->
     <xsl:param name="CLASS"/>

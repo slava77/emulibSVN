@@ -40,6 +40,7 @@
     <templ:HVDubna source="mappings/CAEN_HV_ME11.xml"/>
     <templ:LV source="mappings/lvMapping.xml"/>
     <templ:Gas source="mappings/GasSystem.xml"/>
+    <templ:FactProviders source="mappings/fact_providers.xml"/>
     <templ:CoolingCircuits/>
   </templ:individuals>
 
@@ -48,6 +49,7 @@
 <!-- class declarations -->
   <Declaration><Class URI="&csc;LogicalDomain"/></Declaration>
   <Declaration><Class URI="&csc;LogicalComponent"/></Declaration>
+  <Declaration><Class URI="&csc;FactProvider"/></Declaration>
 
   <Declaration><Class URI="&csc;Local"/></Declaration>
   <Declaration><Class URI="&csc;Global"/></Declaration>
@@ -128,6 +130,7 @@
 <!-- class descriptions -->
   <EntityAnnotation><Class URI="&csc;LogicalDomain"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A set of items that logically belong together.</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;LogicalComponent"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A set of components that logically belong together.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;FactProvider"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Fact providing SW/HV components. Only these components that belog to FactProvider class can act as a source of Facts in Expert System.</Constant></Annotation></EntityAnnotation>
 
   <EntityAnnotation><Class URI="&csc;Local"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An item for local running.</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;Global"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An item for global running.</Constant></Annotation></EntityAnnotation>
@@ -344,6 +347,7 @@
 
 
   <SubClassOf><Class URI="&csc;RUI"/><Class URI="&csc;Software"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;FactProvider"/><Class URI="&csc;Software"/></SubClassOf>
 
   <!-- Channel -->
   <SubClassOf><Class URI="&csc;DDUInput"/><Class URI="&csc;Channel"/></SubClassOf>
