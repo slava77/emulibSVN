@@ -12,6 +12,14 @@
         <message-destination-ref-name>jms/entitySaverQueue</message-destination-ref-name>
         <jndi-name>jms/entitySaverQueue</jndi-name>
       </message-destination-ref-->
+      <resource-ref>
+        <res-ref-name>jms/ruleEngineInputQueueFactory</res-ref-name>
+        <jndi-name>jms/ruleEngineInputQueueFactory</jndi-name>
+      </resource-ref>
+      <message-destination-ref>
+        <message-destination-ref-name>jms/ruleEngineInputQueue</message-destination-ref-name>
+        <jndi-name>jms/ruleEngineInputQueue</jndi-name>
+      </message-destination-ref>
     </ejb>
   </enterprise-beans>
 </sun-ejb-jar>

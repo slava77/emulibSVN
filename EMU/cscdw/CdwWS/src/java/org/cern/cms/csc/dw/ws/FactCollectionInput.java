@@ -23,7 +23,7 @@ import org.cern.cms.csc.dw.service.ServiceInstructions;
 
 @WebService(serviceName = "cdw", name = "factcollection", targetNamespace="http://www.cern.ch/cms/csc/dw/ws/factCollectionInput")
 @Stateless()
-public class FactCollectionInput {
+public class FactCollectionInput implements FactCollectionInputLocal {
 
     private static Logger logger = Logger.getLogger(FactCollectionInput.class.getName());
     @EJB

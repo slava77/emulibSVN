@@ -1,7 +1,16 @@
 
 package org.cern.cms.csc.dw.ws;
 
+import java.io.Serializable;
 import java.util.Collections;
+import javax.annotation.Resource;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageProducer;
+import javax.jms.Queue;
+import javax.jms.Session;
 import org.cern.cms.csc.dw.ws.exception.EmptyListReceivedException;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.jms.ObjectMessage;
 import javax.xml.bind.JAXBElement;
 import org.apache.commons.lang.NullArgumentException;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
@@ -35,6 +45,12 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
 
     @EJB
     private EntityDaoLocal entityDao;
+
+    // rule engine queue stuff
+    @Resource(name = "jms/ruleEngineInputQueue")
+    private Queue ruleEngineInputQueue;
+    @Resource(name = "jms/ruleEngineInputQueueFactory")
+    private ConnectionFactory ruleEngineInputQueueFactory;
 
     public void saveFactCollection(FactCollection factCollection) throws Exception {
         logger.finest("FC Saver bean: at start, number of facts: " + factCollection.getFacts().size() + ", number of fis: " + factCollection.getFactsItems().size());
@@ -139,6 +155,42 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
             persistDao.persist(factCollection);
         }
 
+        try {
+            for (JAXBElement<? extends Fact> factEl: factCollection.getFacts()) {
+                sendJMSMessageToRuleEngineInputQueue(factEl.getValue());
+            }
+        } catch (JMSException jmsEx) {
+            logger.log(Level.SEVERE, "Exception while sending fact to rule engine input queue", jmsEx);
+        }
+    }
+
+    private Message createJMSMessageForjmsRuleEngineInputQueue(Session session, Serializable messageData) throws JMSException {
+        // TODO create and populate message to send
+        ObjectMessage om = session.createObjectMessage();
+        om.setObject(messageData);
+        return om;
+    }
+
+    private void sendJMSMessageToRuleEngineInputQueue(Serializable messageData) throws JMSException {
+        Connection connection = null;
+        Session session = null;
+        try {
+            connection = ruleEngineInputQueueFactory.createConnection();
+            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            MessageProducer messageProducer = session.createProducer(ruleEngineInputQueue);
+            messageProducer.send(createJMSMessageForjmsRuleEngineInputQueue(session, messageData));
+        } finally {
+            if (session != null) {
+                try {
+                    session.close();
+                } catch (JMSException e) {
+                    Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot close session", e);
+                }
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
     }
 
 }
