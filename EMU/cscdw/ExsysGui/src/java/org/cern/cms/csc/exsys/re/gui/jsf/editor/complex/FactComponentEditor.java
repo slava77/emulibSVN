@@ -28,7 +28,7 @@ public class FactComponentEditor extends ComponentEditor {
         super(entity, metadata, parentEditor, entityDao);
         limitComponentClasses = new TreeSet<GComponentClass>();
         for (ComponentClassType ct: ((Fact) getEntity()).getMetadata().getLimitComponents()) {
-            limitComponentClasses.add(entityDao.getOntologyDao().getGComponentClassByType(ct));
+            limitComponentClasses.addAll(entityDao.getOntologyDao().getGComponentClass(ct).getChildrenRecursive(true));
         }
     }
 
