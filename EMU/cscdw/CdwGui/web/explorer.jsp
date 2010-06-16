@@ -112,8 +112,16 @@
 
                                 <ice:outputLabel value="Subclass Of:"/>
                                 <ice:panelGroup>
-                                    <ice:panelSeries value="#{ComponentClassTreeController.selectedComponentClass.parents}" var="parent" varStatus="status">
+                                    <ice:panelSeries value="#{ComponentClassTreeController.selectedComponentClass.parentsRecursive}" var="parent" varStatus="status">
                                         <cdw:componentClassLink value="#{parent}" />
+                                        <ice:outputText value="," rendered="#{!(status.index == status.end)}"/>
+                                    </ice:panelSeries>
+                                </ice:panelGroup>
+
+                                <ice:outputLabel value="Has subclasses:"/>
+                                <ice:panelGroup>
+                                    <ice:panelSeries value="#{ComponentClassTreeController.selectedComponentClass.childrenRecursive}" var="child" varStatus="status">
+                                        <cdw:componentClassLink value="#{child}" />
                                         <ice:outputText value="," rendered="#{!(status.index == status.end)}"/>
                                     </ice:panelSeries>
                                 </ice:panelGroup>
@@ -123,13 +131,14 @@
 
                             </ice:panelGrid>
 
-                            <ice:panelGroup rendered="#{!ComponentClassTreeController.selectedComponentClass.hasComponents}">
+                            <ice:panelGroup rendered="#{!ComponentClassTreeController.selectedComponentClass.hasComponentsRecursive}">
                                 <ice:outputText value="Components not found"/>
                             </ice:panelGroup>
 
-                            <ice:panelGroup rendered="#{ComponentClassTreeController.selectedComponentClass.hasComponents}">
+                            <ice:panelGroup rendered="#{ComponentClassTreeController.selectedComponentClass.hasComponentsRecursive}">
                                 <ice:dataTable id="componentTable"
-                                    value="#{ComponentClassTreeController.selectedComponentClass.components}" var="comp" rows="15">
+                                    value="#{ComponentClassTreeController.selectedComponentClass.componentsRecursive}"
+                                    var="comp" rows="15">
 
                                     <f:facet name="header">
                                         <ice:columnGroup>

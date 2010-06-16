@@ -35,8 +35,16 @@
 
                     <ice:panelGrid columns="2">
 
-                        <ice:outputLabel value="Class:"/>
+                        <ice:outputLabel value="Direct class:"/>
                         <cdw:componentClassLink value="#{ComponentClassTreeController.selectedComponent.type}" />
+
+                        <ice:outputLabel value="All classes:"/>
+                        <ice:panelGroup>
+                            <ice:panelSeries value="#{ComponentClassTreeController.selectedComponent.types}" var="type" varStatus="status">
+                                <cdw:componentClassLink value="#{type}" />
+                                <ice:outputText value="," rendered="#{!(status.index == status.end)}"/>
+                            </ice:panelSeries>
+                        </ice:panelGroup>
 
                         <ice:outputLabel value="Component:"/>
                         <cdw:componentLink value="#{ComponentClassTreeController.selectedComponent}" />
