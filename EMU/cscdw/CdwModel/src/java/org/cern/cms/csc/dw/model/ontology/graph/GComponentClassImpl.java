@@ -110,4 +110,13 @@ public class GComponentClassImpl extends GNodeImpl implements GComponentClass {
                 ReturnableEvaluator.ALL_BUT_START_NODE);
     }
 
+    public boolean isHasComponentsRecursive() {
+        for (GComponentClass cc: getChildrenRecursive(true)) {
+            if (cc.isHasComponents()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

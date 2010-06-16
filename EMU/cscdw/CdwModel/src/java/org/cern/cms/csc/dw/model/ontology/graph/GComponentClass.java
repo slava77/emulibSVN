@@ -23,5 +23,6 @@ public interface GComponentClass extends GNode {
     Collection<GComponent> getComponentsRecursive();
     void addComponent(GComponent component);
     boolean isHasComponents();
+    boolean isHasComponentsRecursive();
 
 }
