@@ -60,6 +60,9 @@
                             <orm:column name="RER_NAME" length="128" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="name"/>
+                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                            <a:UseInTitle order="1"/>
+                        </ann:annotate>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -106,7 +109,7 @@
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
-            <xsd:element name="conclusionFactory" type="tns:conclusionFactoryType">
+            <!--xsd:element name="conclusionFactory" type="tns:conclusionFactoryType">
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:one-to-one>
@@ -115,7 +118,7 @@
                         <jaxb:property name="conclusionFactory"/>
                     </xsd:appinfo>
                 </xsd:annotation>
-            </xsd:element>
+            </xsd:element-->
         </xsd:sequence>
     </xsd:complexType>
 

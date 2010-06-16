@@ -25,7 +25,7 @@ public abstract class PropertyMd {
 
     private static Logger logger = Logger.getLogger(PropertyMd.class.getName());
 
-    private static Pattern camelCasePattern = Pattern.compile("(\\p{Upper}\\p{Lower}*)");
+    private static Pattern camelCasePattern = Pattern.compile("(\\p{Upper}[\\p{Lower}\\d]*)");
     private static Pattern itemPropertyPattern = Pattern.compile("(.+)Item");
 
     /** Object describing the bean property (things like name, display name, setter, getter, etc.). */
@@ -220,8 +220,8 @@ public abstract class PropertyMd {
             return getTitle() + " is mandatory - value cannot be blank";
         }
 
-        // is type of the value compatible with the property type?
-        if ((value != null) && (!getType().isAssignableFrom(value.getClass()))) {
+        // is type of the value compatible with the property type? (skip primitive types, since e.g. boolean.class.isAssignableFrom(Boolean.class) returns false, which is not actually true..
+        if ((value != null) && (!getType().isAssignableFrom(value.getClass()) && (!getType().isPrimitive()))) {
             String msgStr = "Wrong value type: expected " + getType().getName() + ", got " + value.getClass().getName();
             logger.severe("Serious validation error for property " + getName() + " of class " + getGetterMethod().getDeclaringClass().getName() + ": " + msgStr);
             return msgStr;

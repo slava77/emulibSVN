@@ -32,7 +32,7 @@ public class EntityPropertyMdFactory {
 
     private static Logger logger = Logger.getLogger(EntityPropertyMdFactory.class.getName());
 
-    private static Pattern ignoredPropertiesPattern = Pattern.compile("(set|id|class|propertyMetadata|properties|entityTitle)(.*)");
+    private static Pattern ignoredPropertiesPattern = Pattern.compile("(set|id|class|propertyMetadata|properties|entityTitle|metadata|componentId)(.*)");
     private static Pattern itemPropertyPattern = Pattern.compile("(\\p{Lower}.+)Item");
 
     /**
