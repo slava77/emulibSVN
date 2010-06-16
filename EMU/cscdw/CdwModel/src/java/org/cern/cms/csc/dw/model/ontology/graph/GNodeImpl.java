@@ -1,7 +1,6 @@
 package org.cern.cms.csc.dw.model.ontology.graph;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.neo4j.graphdb.Direction;
@@ -9,7 +8,6 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.ReturnableEvaluator;
 import org.neo4j.graphdb.StopEvaluator;
 import org.neo4j.graphdb.Transaction;
-import org.neo4j.graphdb.Traverser;
 
 public abstract class GNodeImpl extends GBase implements GNode {
 
@@ -52,12 +50,8 @@ public abstract class GNodeImpl extends GBase implements GNode {
         return node;
     }
 
-    protected <T extends GNode> Collection<T> wrap(Class<T> ifClass, Traverser traverser) {
-        return wrap(ifClass, traverser.iterator());
-    }
-
-    protected <T extends GNode> Collection<T> wrap(Class<T> ifClass, Iterator<Node> it) {
-        return GUtility.wrap(gservices, ifClass, it);
+    protected  <T extends GNode> GQuery<T> getGQuery(Class<T> ifClass) {
+        return new GQuery<T>(gservices, ifClass);
     }
 
     @Override
@@ -115,12 +109,6 @@ public abstract class GNodeImpl extends GBase implements GNode {
         }
     }
 
-    /**
-     * Get graph node property. If not exists return default value
-     * @param name
-     * @param defaultValue
-     * @return
-     */
     protected Object getProperty(PropertyType prop, Object defaultValue) {
         Transaction tx = gservices.beginTx();
         try {
@@ -131,20 +119,10 @@ public abstract class GNodeImpl extends GBase implements GNode {
         }
     }
 
-    /**
-     * Create relationship to some object
-     * @param toNode
-     * @param type
-     */
     protected void setRelationship(GNode toNode, GLinkType type) {
         setRelationship(toNode.getNode(), type);
     }
 
-    /**
-     * Create relationship to some node
-     * @param toNode
-     * @param type
-     */
     protected void setRelationship(Node toNode, GLinkType type) {
         Transaction tx = gservices.beginTx();
         try {
@@ -157,37 +135,32 @@ public abstract class GNodeImpl extends GBase implements GNode {
 
     @SuppressWarnings("unchecked")
     protected <T extends GNode> T getRelatedGNode(Class<T> ifClass, GLinkType type, Direction dir) {
-        return GUtility.getRelatedGNode(gservices, node, ifClass, type, dir);
+        GQuery q = new GQuery(gservices, ifClass);
+        q.addGLinkTypeDirection(type, dir);
+        return (T) q.getRelatedGNode(node);
     }
 
     protected <T extends GNode> Collection<T> getRelatedGNodeCollection(Class<T> ifClass, GLinkType type, Direction dir) {
-        return getRelatedGNodeCollection(
-                    ifClass,
-                    type,
-                    dir,
-                    StopEvaluator.DEPTH_ONE,
-                    ReturnableEvaluator.ALL_BUT_START_NODE);
+        return getRelatedGNodeCollection(ifClass, type, dir, StopEvaluator.DEPTH_ONE, ReturnableEvaluator.ALL_BUT_START_NODE);
     }
 
+    @SuppressWarnings("unchecked")
     protected <T extends GNode> Collection<T> getRelatedGNodeCollection(Class<T> ifClass, GLinkType type, Direction dir, StopEvaluator stop, ReturnableEvaluator returnable) {
-        return GUtility.getRelatedGNodeCollection(
-                gservices,
-                node,
-                ifClass,
-                type,
-                dir,
-                stop,
-                returnable);
+        GQuery q = new GQuery(gservices, ifClass);
+        q.addGLinkTypeDirection(type, dir);
+        q.setStop(stop);
+        q.setReturnable(returnable);
+        return q.getRelatedGNodeCollection(node);
     }
 
-    protected <T extends GNode> Collection<T> getRelatedGNodeCollection(Class<T> ifClass, StopEvaluator stop, ReturnableEvaluator returnable, Object... typesAndDirections) {
-        return GUtility.getRelatedGNodeCollection(
-                gservices,
-                node,
-                ifClass,
-                stop,
-                returnable,
-                typesAndDirections);
+    @SuppressWarnings("unchecked")
+    protected <T extends GNode> Collection<T> getRelatedGNodeCollection(Class<T> ifClass, GLinkType type1, Direction dir1, GLinkType type2, Direction dir2, StopEvaluator stop, ReturnableEvaluator returnable) {
+        GQuery q = new GQuery(gservices, ifClass);
+        q.addGLinkTypeDirection(type1, dir1);
+        q.addGLinkTypeDirection(type2, dir2);
+        q.setStop(stop);
+        q.setReturnable(returnable);
+        return q.getRelatedGNodeCollection(node);
     }
 
     public int compareTo(Object o) {

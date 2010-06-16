@@ -69,4 +69,8 @@ public class GComponentImpl extends GNodeImpl implements GComponent {
         return (getName() != null);
     }
 
+    public Collection<GComponentClass> getTypes() {
+        return getType().getParentsRecursive(true);
+    }
+
 }

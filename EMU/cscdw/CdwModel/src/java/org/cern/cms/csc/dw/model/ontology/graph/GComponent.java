@@ -11,6 +11,7 @@ public interface GComponent extends GNode {
     void setType(GComponentClass type);
     GComponentClass getType();
     boolean isSetType();
+    Collection<GComponentClass> getTypes();
 
     void setDescription(String description);
     String getDescription();

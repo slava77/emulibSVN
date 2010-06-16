@@ -1,13 +1,10 @@
 package org.cern.cms.csc.dw.model.ontology.graph;
 
 import java.util.Collection;
-import org.apache.lucene.search.Sort;
 import org.cern.cms.csc.dw.model.ontology.ComponentClassType;
 import org.neo4j.graphdb.Direction;
-import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.ReturnableEvaluator;
 import org.neo4j.graphdb.StopEvaluator;
-import org.neo4j.graphdb.Transaction;
 
 public abstract class GServices extends GServicesBase {
 
@@ -19,132 +16,61 @@ public abstract class GServices extends GServicesBase {
         return getGNodeByProperty(GComponentClass.class, GNode.PropertyType.TYPE, type.getValue());
     }
 
+    @SuppressWarnings("unchecked")
     public Collection<GComponentClass> getGComponentClasses() {
-        return GUtility.getRelatedGNodeCollection(
-                this,
-                getReferenceNode(),
-                GComponentClass.class,
-                GLinkType.TYPE_COMPONENT_CLASS,
-                Direction.OUTGOING,
-                StopEvaluator.DEPTH_ONE,
-                ReturnableEvaluator.ALL_BUT_START_NODE);
+        GQuery q = new GQuery(this, GComponentClass.class);
+        q.addGLinkTypeDirection(GLinkType.TYPE_COMPONENT_CLASS, Direction.OUTGOING);
+        q.setStop(StopEvaluator.DEPTH_ONE);
+        q.setReturnable(ReturnableEvaluator.ALL_BUT_START_NODE);
+        return q.getRelatedGNodeCollection(getReferenceNode());
     }
 
+    @SuppressWarnings("unchecked")
     public Collection<GComponentLinkClass> getGComponentLinkClasses() {
-        return GUtility.getRelatedGNodeCollection(
-                this,
-                getReferenceNode(),
-                GComponentLinkClass.class,
-                GLinkType.TYPE_COMPONENT_LINK_CLASS,
-                Direction.OUTGOING,
-                StopEvaluator.DEPTH_ONE,
-                ReturnableEvaluator.ALL_BUT_START_NODE);
+        GQuery q = new GQuery(this, GComponentLinkClass.class);
+        q.addGLinkTypeDirection(GLinkType.TYPE_COMPONENT_LINK_CLASS, Direction.OUTGOING);
+        q.setStop(StopEvaluator.DEPTH_ONE);
+        q.setReturnable(ReturnableEvaluator.ALL_BUT_START_NODE);
+        return q.getRelatedGNodeCollection(getReferenceNode());
     }
 
+    @SuppressWarnings("unchecked")
     public Collection<GComponent> getGComponents() {
-        return GUtility.getRelatedGNodeCollection(
-                this,
-                getReferenceNode(),
-                GComponent.class,
-                GLinkType.TYPE_COMPONENT,
-                Direction.OUTGOING,
-                StopEvaluator.DEPTH_ONE,
-                ReturnableEvaluator.ALL_BUT_START_NODE);
+        GQuery q = new GQuery(this, GComponent.class);
+        q.addGLinkTypeDirection(GLinkType.TYPE_COMPONENT, Direction.OUTGOING);
+        q.setStop(StopEvaluator.DEPTH_ONE);
+        q.setReturnable(ReturnableEvaluator.ALL_BUT_START_NODE);
+        return q.getRelatedGNodeCollection(getReferenceNode());
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends GNode> T getGNodeById(Class<T> ifClass, Long id) {
-        Transaction tx = beginTx();
-        try {
-            return GUtility.wrap(this,
-                    ifClass,
-                    getDBSrv().getNodeById(id));
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
-            return null;
-        }
-        finally {
-            tx.success();
-            tx.finish();
-        }
+        GQuery q = new GQuery(this, ifClass);
+        return (T) q.getGNode(id);
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends GNode> Collection<T> getGNodesByProperty(Class<T> ifClass, GNode.PropertyType property, Object value) {
-        Transaction tx = beginTx();
-        try {
-            return GUtility.wrap(this,
-                    ifClass,
-                    getIdxSrv().getNodes(
-                        GNodeImpl.getPropertyKey(ifClass, property),
-                        value));
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
-            return null;
-        }
-        finally {
-            tx.success();
-            tx.finish();
-        }
+        GQuery q = new GQuery(this, ifClass);
+        return q.getGNodes(property, value);
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends GNode> T getGNodeByProperty(Class<T> ifClass, GNode.PropertyType property, Object value) {
-        Transaction tx = beginTx();
-        try {
-            String pname = GNodeImpl.getPropertyKey(ifClass, property);
-            return GUtility.wrap(
-                    this,
-                    ifClass,
-                    getIdxSrv().getSingleNode(
-                        pname,
-                        value)
-                    );
-            
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
-            return null;
-        }
-        finally {
-            tx.success();
-            tx.finish();
-        }
+        GQuery q = new GQuery(this, ifClass);
+        return (T) q.getGNode(property, value);
     }
 
     public <T extends GNode> Collection<T> getGNodesByPropertyFT(Class<T> ifClass, GNode.PropertyType property, String query) {
         return getGNodesByPropertyFT(ifClass, property, query, new DefaultNodeFilter(), 0);
     }
 
-    public <T extends GNode> Collection<T> getGNodesByPropertyFT(Class<T> ifClass, GNode.PropertyType property, String query, GNodeFilter filter, long numResults) {
-        Transaction tx = beginTx();
-        try {
-
-            return GUtility.wrap(this,
-                    ifClass,
-                    getFTQueryIdxSrv().getNodes(
-                        GNodeImpl.getPropertyKey(ifClass, property),
-                        query,
-                        Sort.RELEVANCE),
-                    filter,
-                    numResults);
-            
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
-            return null;
-        }
-        finally {
-            tx.success();
-            tx.finish();
-        }
-    }
-
     @SuppressWarnings("unchecked")
-    public Class<? extends GNode> getGNodeType(Node n) throws ClassNotFoundException {
-        Transaction tx = beginTx();
-        try {
-            return (Class<? extends GNode>) ClassLoader.getSystemClassLoader().loadClass((String) n.getProperty(GNode.KEY_OBJECT_TYPE));
-        }
-        finally {
-            tx.success();
-            tx.finish();
-        }
+    public <T extends GNode> Collection<T> getGNodesByPropertyFT(Class<T> ifClass, GNode.PropertyType property, String query, GNodeFilter filter, long numResults) {
+        GQuery q = new GQuery(this, ifClass);
+        q.setFilter(filter);
+        q.setLimitResults(numResults);
+        return q.getGNodesFT(property, query);
     }
 
 }

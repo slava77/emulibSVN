@@ -102,12 +102,12 @@ public class GComponentClassImpl extends GNodeImpl implements GComponentClass {
     public Collection<GComponent> getComponentsRecursive() {
         return getRelatedGNodeCollection(
                 GComponent.class,
-                StopEvaluator.END_OF_GRAPH,
-                ReturnableEvaluator.ALL,
                 GLinkType.CLASS_TO_PARENT,
                 Direction.INCOMING,
                 GLinkType.COMPONENT_TO_CLASS,
-                Direction.INCOMING);
+                Direction.INCOMING,
+                StopEvaluator.END_OF_GRAPH,
+                ReturnableEvaluator.ALL_BUT_START_NODE);
     }
 
 }
