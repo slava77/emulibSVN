@@ -11,7 +11,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
  * @author evka
  * This class is abstract conclusion maker which is used to make conclusions out
  * of the results of the rules. The generated conclusions can be displayable or

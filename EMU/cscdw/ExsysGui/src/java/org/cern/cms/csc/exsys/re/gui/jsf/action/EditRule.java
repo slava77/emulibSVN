@@ -7,8 +7,10 @@ package org.cern.cms.csc.exsys.re.gui.jsf.action;
 
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.logging.Logger;
 import org.cern.cms.csc.dw.exception.OnSaveProcessingException;
 import org.cern.cms.csc.dw.exception.PersistException;
+import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.EntityEditorManager;
 import org.cern.cms.csc.exsys.re.model.Rule;
 
@@ -18,10 +20,16 @@ import org.cern.cms.csc.exsys.re.model.Rule;
  * @author Evka
  */
 
-public class CreateRule extends EntityEditorManager {
+public class EditRule extends EntityEditorManager {
+    private static Logger logger = Logger.getLogger(EditRule.class.getName());
 
-    public CreateRule() {
-        super(new Rule());
+    public EditRule() {
+        super();
+    }
+
+    @Override
+    protected EntityBase createEntity() {
+        return new Rule();
     }
 
     @Override

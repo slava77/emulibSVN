@@ -13,7 +13,7 @@ import org.cern.cms.csc.exsys.re.model.Conclusion;
  *
  * @author Evka
  */
-@Remote
+//@Remote
 public interface RuleEngineInputRemote {
 
     void receiveFact(Fact fact);

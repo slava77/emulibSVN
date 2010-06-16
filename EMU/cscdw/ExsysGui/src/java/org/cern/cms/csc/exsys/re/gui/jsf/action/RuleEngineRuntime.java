@@ -31,4 +31,8 @@ public class RuleEngineRuntime extends JsfBeanBase {
         return reManager.getEsperRuntime().getNumEventsEvaluated();
     }
 
+    public String reconfigure() {
+        reManager.reconfigureEsper();
+        return "";
+    }
 }

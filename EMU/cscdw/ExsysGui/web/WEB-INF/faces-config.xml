@@ -20,6 +20,11 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http:/
             <redirect/>
         </navigation-case>
         <navigation-case>
+            <from-outcome>navCreateFact</from-outcome>
+            <to-view-id>/re/test/newFact.jsf</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
             <from-outcome>navRuleEngineStatus</from-outcome>
             <to-view-id>/re/status.jsf</to-view-id>
             <redirect/>
@@ -31,6 +36,10 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http:/
             <from-outcome>newRule</from-outcome>
             <to-view-id>/re/admin/newRule.jsf</to-view-id>
             <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>editRule</from-outcome>
+            <to-view-id>/re/admin/editRule.jsf</to-view-id>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
@@ -50,8 +59,8 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http:/
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
-        <managed-bean-name>CreateRule</managed-bean-name>
-        <managed-bean-class>org.cern.cms.csc.exsys.re.gui.jsf.action.CreateRule</managed-bean-class>
+        <managed-bean-name>EditRule</managed-bean-name>
+        <managed-bean-class>org.cern.cms.csc.exsys.re.gui.jsf.action.EditRule</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
@@ -60,11 +69,13 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http:/
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
-        <managed-bean-name>CreateFact</managed-bean-name>
-        <managed-bean-class>org.cern.cms.csc.exsys.re.gui.jsf.action.CreateFact</managed-bean-class>
+        <managed-bean-name>NewFact</managed-bean-name>
+        <managed-bean-class>org.cern.cms.csc.exsys.re.gui.jsf.action.NewFact</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
 </faces-config>
+
+
 
 
 

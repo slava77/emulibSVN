@@ -20,6 +20,7 @@ import org.cern.cms.csc.dw.metadata.PropertyMd;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.dw.model.ontology.Component;
 import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
+import org.cern.cms.csc.exsys.re.gui.jsf.editor.basic.BooleanPropertyEditor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.complex.ComponentEditor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.basic.DatePropertyEditor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.basic.NumberPropertyEditor;
@@ -82,6 +83,8 @@ public class PropertyEditorFactory {
             if (propMetadata instanceof BasicPropertyMd) {
                 if (Date.class.isAssignableFrom(propType)) {
                     return new DatePropertyEditor(entity, propMetadata, parentEditor);
+                } else if (Boolean.class.isAssignableFrom(propType) || boolean.class.isAssignableFrom(propType)) {
+                    return new BooleanPropertyEditor(entity, propMetadata, parentEditor);
                 } else if (Number.class.isAssignableFrom(propType)) {
                     return new NumberPropertyEditor(entity, propMetadata, parentEditor);
                 } else if (String.class.isAssignableFrom(propType)) {
@@ -91,6 +94,7 @@ public class PropertyEditorFactory {
                 if (propMetadata.getType().equals(Component.class)) {
                     if (entity instanceof Fact) {
                         return new FactComponentEditor(entity, propMetadata, parentEditor, entityDao);
+                        //return new ComponentEditor(entity, propMetadata, parentEditor, entityDao);
                     } else {
                         return new ComponentEditor(entity, propMetadata, parentEditor, entityDao);
                     }

@@ -19,9 +19,9 @@ public class LovConverter implements Converter {
 
     private static Logger logger = Logger.getLogger(LovConverter.class.getName());
 
-    private List<Object> lov = null;
+    private List lov = null;
 
-    public LovConverter(List<Object> lov) {
+    public LovConverter(List lov) {
         this.lov = lov;
     }
 

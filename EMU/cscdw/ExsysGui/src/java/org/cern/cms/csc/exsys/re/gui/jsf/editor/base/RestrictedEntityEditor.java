@@ -111,6 +111,7 @@ public abstract class RestrictedEntityEditor extends EntityEditor {
             List<SelectItem> ret = new ArrayList<SelectItem>();
             for (Object lovObject: lovCache) {
                 SelectItem lovItem;
+
                 if (lovObject instanceof EntityBase) {
                     EntityBase lovEntityObj = (EntityBase) lovObject;
                     String title = lovEntityObj.getEntityTitle();
@@ -118,6 +119,14 @@ public abstract class RestrictedEntityEditor extends EntityEditor {
                         title = "New";
                     }
                     lovItem = new SelectItem(lovObject, title);
+                } else if (lovObject.getClass().isEnum()) {
+                    String label;
+                    try {
+                        label = (String) lovObject.getClass().getMethod("value").invoke(lovObject);
+                    } catch (Exception ex) {
+                        label = lovObject.toString();
+                    }
+                    lovItem = new SelectItem(lovObject, label);
                 } else {
                     lovItem = new SelectItem(lovObject, lovObject.toString());
                 }

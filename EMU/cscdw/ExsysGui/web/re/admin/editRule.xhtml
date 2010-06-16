@@ -13,10 +13,10 @@
             
             <ui:define name="content">
 
-                <p><h1>Create New Fact</h1></p>
-                <ice:form id="newFactForm">
-                    <exs:entityForm editor="#{CreateFact.editor}"/>
-                    <ice:commandButton type="submit" value="Create" action="#{CreateFact.doSave}" rendered="#{CreateFact.editor.parentEditor == null}"/>
+                <p><h1>Edit Rule</h1></p>
+                <ice:form id="editRuleForm">
+                    <exs:entityForm editor="#{EditRule.editor}" manager="#{EditRule}"/>
+                    <ice:commandButton type="submit" value="Save" action="#{EditRule.doSave}" rendered="#{EditRule.editor.parentEditor == null}"/>
                 </ice:form>
                 
             </ui:define>

@@ -28,6 +28,7 @@ public abstract class Editor {
         DEFAULT,
         TEXT_AREA,
         DATE_PICKER,
+        CHECKBOX,
         SELECT_ONE_MENU,
         ONE_TO_ONE,
         COMPONENT

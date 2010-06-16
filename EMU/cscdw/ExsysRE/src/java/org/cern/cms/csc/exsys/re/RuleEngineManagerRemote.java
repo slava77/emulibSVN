@@ -11,8 +11,9 @@ import javax.ejb.Remote;
  *
  * @author evka
  */
-@Remote
+//@Remote
 public interface RuleEngineManagerRemote {
 
+    void reconfigureEsper();
 
 }

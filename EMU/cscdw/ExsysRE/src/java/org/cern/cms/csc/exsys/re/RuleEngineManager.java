@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import org.cern.cms.csc.exsys.re.conclusion.factory.ConclusionFactory;
+import org.cern.cms.csc.exsys.re.conclusion.factory.DefaultConclusionFactory;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
 import org.cern.cms.csc.exsys.re.model.Rule;
 
@@ -27,7 +29,7 @@ public class RuleEngineManager implements RuleEngineManagerLocal, RuleEngineMana
     private static Logger logger = Logger.getLogger(RuleEngineManager.class.getName());
 
     private final String DEFAULT_EP_URI = "exsys";
-    private final String FACTS_PACKAGE = "org.cern.cms.csc.dw.model";
+    private final String FACTS_PACKAGE = "org.cern.cms.csc.dw.model.fact";
     private final String CONCLUSION_PACKAGE = "org.cern.cms.csc.exsys.re.model";
     private EPServiceProvider epService;
 
@@ -35,12 +37,6 @@ public class RuleEngineManager implements RuleEngineManagerLocal, RuleEngineMana
     private RuleEngineDaoLocal reDao;
 
     public RuleEngineManager() {}
-
-//    public void addRule(String rule, String ruleName, ConclusionMaker conclusionMaker) {
-//        EPStatement statement = getEpService().getEPAdministrator().createEPL(rule, ruleName);
-//        statement.addListener(conclusionMaker);
-//    }
-
 
     private EPServiceProvider getEpService() {
         return getEpService(DEFAULT_EP_URI);
@@ -88,6 +84,16 @@ public class RuleEngineManager implements RuleEngineManagerLocal, RuleEngineMana
         logger.info("These are the rules to be loaded: ");
         for (Rule rule: rules) {
             logger.info("Rule: " + rule.getName());
+            ConclusionFactory factory = new DefaultConclusionFactory(rule.getConclusionType());
+            EPStatement statement = epService.getEPAdministrator().createEPL(rule.getRuleDefinition(), rule.getName());
+            statement.addListener(factory);
+        }
+    }
+
+    public void reconfigureEsper() {
+        if (epService != null) {
+            epService.getEPAdministrator().destroyAllStatements();
+            configureEsper(epService);
         }
     }
 

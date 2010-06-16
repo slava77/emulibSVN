@@ -5,6 +5,7 @@
 
 package org.cern.cms.csc.exsys.re.gui.jsf.editor;
 
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.naming.NamingException;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
@@ -23,35 +24,93 @@ import org.cern.cms.csc.exsys.re.gui.jsf.util.JsfBeanBase;
 @EJB(name="ejb/EntityDao", beanInterface=org.cern.cms.csc.dw.dao.EntityDaoLocal.class)
 public abstract class EntityEditorManager extends JsfBeanBase {
 
+    private static Logger logger = Logger.getLogger(EntityEditorManager.class.getName());
+
     /** Top level editor. */
     private TopEntityEditor topEditor;
     /** Editor that's currently displayed. */
     private Editor currentEditor;
+    /** Entity that is being edited by this editor manager. */
+    private EntityBase entity;
     /** Entity DAO. */
     private EntityDaoLocal entityDao;
 
     /**
      * Constructor
-     * @param topEditor - top level editor to be used
+     * @param entityToEdit - entity to be edited by this editor manager
      */
     public EntityEditorManager(EntityBase entityToEdit) {
+        this();
+        this.entity = entityToEdit;
+    }
+
+    /**
+     * Constructor
+     */
+    public EntityEditorManager() {
         super();
         try {
             this.entityDao = (EntityDaoLocal) getEjb("ejb/EntityDao");
-            this.topEditor = new TopEntityEditor(entityToEdit, entityDao);
-            this.currentEditor = topEditor;
         } catch (NamingException nex) {
             throw new RuntimeException("Failed to instantiate EntityEditorManager - exception while looking up EntityDao EJB", nex);
-        } catch (InvalidEntityBeanPropertyException iepex) {
-            throw new RuntimeException("Failed to instantiate EntityEditorManager - invalid entity bean property exception thrown while creating TopEntityEditor", iepex);
         }
     }
+
+    /**
+     * Get entity that is being edited by this editor manager.
+     * @return entity that is being edited by this editor manager.
+     */
+    public EntityBase getEntity() {
+        return entity;
+    }
+
+    /**
+     * Set entity that is being edited by this editor manager.
+     * @param entity entity that is being edited by this editor manager.
+     */
+    public void setEntity(EntityBase entity) {
+        if (((entity != null) && !entity.equals(this.entity)) ||
+            ((this.entity != null) && !this.entity.equals(entity))) {
+            reset();
+        }
+        this.entity = entity;
+    }
+
+    /** Resets the manager. */
+    public void reset() {
+        this.entity = null;
+        this.topEditor = null;
+        this.currentEditor = null;
+    }
+
+    /**
+     * Creates a new instance of the entity to be edited. 
+     * You must override this method and return a new instance of the entity class that you want your EditorManager to be editing.
+     * @return a new instance of the entity to be edited
+     */
+    protected abstract EntityBase createEntity() throws Exception;
 
     /**
      * Get top level editor.
      * @return top level editor.
      */
     public TopEntityEditor getTopEditor() {
+        if (topEditor == null) {
+            try {
+                if (entity == null) {
+                    entity = createEntity();
+                }
+                if (entity == null) {
+                    return null;
+                }
+                topEditor = new TopEntityEditor(entity, entityDao);
+                currentEditor = topEditor;
+            } catch (InvalidEntityBeanPropertyException iepex) {
+                throw new RuntimeException("Failed to instantiate EntityEditorManager topEditor - invalid entity bean property exception thrown while creating TopEntityEditor", iepex);
+            } catch (Exception ex) {
+                throw new RuntimeException("Exception while creating a new entity in EntityEditorManager.createEntity()", ex);
+            }
+        }
         return topEditor;
     }
 
@@ -60,6 +119,9 @@ public abstract class EntityEditorManager extends JsfBeanBase {
      * @return the current editor that's actually being used (displayed) right now.
      */
     public Editor getEditor() {
+        if (currentEditor == null) {
+            getTopEditor(); // this will trigger creation of a new top editor if it doesn't exist and currentEditor will be assigned with that one as well
+        }
         return currentEditor;
     }
 

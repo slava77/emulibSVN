@@ -12,13 +12,16 @@
 
             <ui:define name="content">
 
-                <ice:form id="actionsForm">
+                <ice:form id="linksForm">
                     <ice:commandLink value="Create New Rule" action="newRule"/>
                 </ice:form>
 
                 <p><h1>Rule Engine Status</h1></p>
                 <h:outputText value="Number of facts processed since last restart: #{RuleEngineRuntime.numEventsEvaluated}"/>
 
+                <ice:form id="actionsForm">
+                    <ice:commandButton value="Reconfigure Rule Engine" action="#{RuleEngineRuntime.reconfigure}"/>
+                </ice:form>
             </ui:define>
 
         </ui:composition>

@@ -22,10 +22,11 @@ public class RuleEngineInput implements RuleEngineInputRemote, RuleEngineInputLo
 
     public void receiveFact(Fact fact) {
         reManager.getEsperRuntime().sendEvent(fact);
-        //System.out.println("ExsysRE: received a fact of type " + fact.getClass().getName() + " and sent to CEP");
+        System.out.println("ExsysRE: received a fact of type " + fact.getClass().getName() + " and sent to Esper");
     }
 
     public void receiveConclusion(Conclusion conclusion) {
+        throw new UnsupportedOperationException("Receiving conclusions in the rule engine is not yet implemented");
         //getEpService().getEPRuntime().sendEvent(conclusion);
         //System.out.println("ExsysRE: received a fact of type " + fact.getClass().getName() + " and sent to CEP");
     }

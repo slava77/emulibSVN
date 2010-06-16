@@ -7,7 +7,6 @@ package org.cern.cms.csc.exsys.re;
 
 import com.espertech.esper.client.EPRuntime;
 import javax.ejb.Local;
-import org.cern.cms.csc.exsys.re.conclusion.maker.ConclusionMaker;
 
 /**
  *
@@ -17,5 +16,6 @@ import org.cern.cms.csc.exsys.re.conclusion.maker.ConclusionMaker;
 public interface RuleEngineManagerLocal {
 
     EPRuntime getEsperRuntime();
+    void reconfigureEsper();
     
 }

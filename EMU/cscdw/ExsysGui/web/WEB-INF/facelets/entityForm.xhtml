@@ -12,25 +12,28 @@
     <body>
 
         <ui:composition>
-            <ice:commandButton value="Discard new value" action="#{CreateRule.discardAndGoBack}"
+            <ice:commandButton value="Discard new value" action="#{manager.discardAndGoBack}"
                                rendered="#{(editor.inputType == 'SELECT_ONE_MENU') and (editor.valueNew)}"
                                immediate="true"/>
-            <ice:commandButton value="Go back" action="#{CreateRule.goBack}"
+            <ice:commandButton value="Go back" action="#{manager.goBack}"
                                rendered="#{editor.parentEditor != null}"/>
 
-            <ice:panelGrid columns="3">
+            <p><h2><ice:outputText value="#{editor.metadata.title}:" rendered="#{editor.parentEditor != null}"/></h2></p>
+
+            <ice:panelGrid columns="3" styleClass="editorTable">
                 <c:forEach var="propEditor" items="#{editor.propertyEditors}">
 
                     <ice:outputLabel for="input_#{propEditor.id}">
                         <ice:outputText value="#{propEditor.metadata.title}: "/>
                     </ice:outputLabel>
-                    <ice:panelGrid columns="1">
+                    <ice:panelGrid columns="1" style="width: 100%">
                         <!-- DEFAULT editor - simple inputText -->
                         <ice:inputText id="input_#{propEditor.id}" value="#{propEditor.value}" partialSubmit="true"
                                        converter="#{propEditor.converter}"
                                        validator="#{propEditor.validate}"
                                        required="#{propEditor.metadata.isMandatory}"
                                        requiredMessage="This field is mandatory - value cannot be blank"
+                                       styleClass="simpleEditor"
                                        rendered="#{propEditor.inputType == 'DEFAULT'}"/>
                         <!-- TEXT_AREA editor - used for larger string properties -->
                         <ice:inputTextarea id="input_#{propEditor.id}" value="#{propEditor.value}" partialSubmit="true"
@@ -38,7 +41,16 @@
                                            validator="#{propEditor.validate}"
                                            required="#{propEditor.metadata.isMandatory}"
                                            requiredMessage="This field is mandatory - value cannot be blank"
+                                           styleClass="simpleEditor"
+                                           style="height: 100px"
                                            rendered="#{propEditor.inputType == 'TEXT_AREA'}"/>
+                        <!-- CHECKBOX editor - used for boolean properties -->
+                        <ice:selectBooleanCheckbox id="input_#{propEditor.id}" value="#{propEditor.value}" partialSubmit="true"
+                                                   converter="#{propEditor.converter}"
+                                                   validator="#{propEditor.validate}"
+                                                   required="#{propEditor.metadata.isMandatory}"
+                                                   requiredMessage="This field is mandatory - value cannot be blank"
+                                                   rendered="#{propEditor.inputType == 'CHECKBOX'}"/>
                         <!-- DATE_PICKER editor - used for date properties -->
                         <ice:selectInputDate id="input_#{propEditor.id}" value="#{propEditor.value}" partialSubmit="true"
                                              validator="#{propEditor.validate}"
@@ -52,19 +64,20 @@
                                                converter="#{propEditor.converter}"
                                                validator="#{propEditor.validate}"
                                                required="#{propEditor.metadata.isMandatory}"
-                                               requiredMessage="This field is mandatory - value cannot be blank">
+                                               requiredMessage="This field is mandatory - value cannot be blank"
+                                               styleClass="simpleEditor">
                                 <f:selectItems value="#{propEditor.listOfValues}"/>
                             </ice:selectOneMenu>
                             <ice:commandButton value="Edit"
                                                immediate="true"
                                                rendered="#{!propEditor.restrictionStrict}">
-                                <f:setPropertyActionListener target="#{CreateRule.editor}" value="#{propEditor}"/>
+                                <f:setPropertyActionListener target="#{manager.editor}" value="#{propEditor}"/>
                             </ice:commandButton>
                             <ice:commandButton value="Create New"
                                                immediate="true"
                                                actionListener="#{propEditor.createAndAssignNewLovItem}"
                                                rendered="#{!propEditor.restrictionStrict}">
-                                <f:setPropertyActionListener target="#{CreateRule.editor}" value="#{propEditor}"/>
+                                <f:setPropertyActionListener target="#{manager.editor}" value="#{propEditor}"/>
                             </ice:commandButton>
                         </ice:panelGroup>
                         <!-- ONE-TO-ONE editor - input text just so that validation would be applied -->
@@ -75,11 +88,12 @@
                                            requiredMessage="This field is mandatory - value cannot be blank"
                                            validator="#{propEditor.validate}"
                                            readonly="true"
+                                           styleClass="simpleEditor"
                                            partialSubmit="true"/>
                             <ice:commandButton type="submit" value="Edit"
                                                rendered="#{propEditor.inputType == 'ONE_TO_ONE'}"
                                                immediate="true">
-                                <f:setPropertyActionListener target="#{CreateRule.editor}" value="#{propEditor}"/>
+                                <f:setPropertyActionListener target="#{manager.editor}" value="#{propEditor}"/>
                             </ice:commandButton>
                         </ice:panelGroup>
                         <!-- COMPONENT editor - select input text -->
@@ -123,110 +137,6 @@
                 </c:forEach>
             </ice:panelGrid>
         </ui:composition>
-
-        <ice:commandButton value="up" action="#{CreateRule.goUp}"
-                           rendered="#{editor.parentEditor != null}"
-                           immediate="true"/>
-
-        <ice:dataTable var="propEditor" value="#{editor.propertyEditors}" varStatus="statusVar">
-            <ice:column>
-                <ice:outputLabel for="input_#{propEditor.inputType}">
-                    <ice:outputText value="#{propEditor.metadata.title}: "/>
-                </ice:outputLabel>
-            </ice:column>
-            <ice:column>
-                <ice:outputText value="#{propEditor.id}"/>
-            </ice:column>
-            <ice:column>
-                <!-- DEFAULT editor - simple inputText -->
-                <ice:inputText id="input_DEFAULT" value="#{propEditor.value}" partialSubmit="true"
-                               converter="#{propEditor.converter}"
-                               validator="#{propEditor.validate}"
-                               required="#{propEditor.metadata.isMandatory}"
-                               requiredMessage="This field is mandatory - value cannot be blank"
-                               rendered="#{propEditor.inputType == 'DEFAULT'}"/>
-                <!-- TEXT_AREA editor - used for larger string properties -->
-                <ice:inputTextarea id="input_TEXT_AREA" value="#{propEditor.value}" partialSubmit="true"
-                                   converter="#{propEditor.converter}"
-                                   validator="#{propEditor.validate}"
-                                   required="#{propEditor.metadata.isMandatory}"
-                                   requiredMessage="This field is mandatory - value cannot be blank"
-                                   rendered="#{propEditor.inputType == 'TEXT_AREA'}"/>
-                <!-- DATE_PICKER editor - used for date properties -->
-                <ice:selectInputDate id="input_DATE_PICKER" value="#{propEditor.value}" partialSubmit="true"
-                                     validator="#{propEditor.validate}"
-                                     required="#{propEditor.metadata.isMandatory}"
-                                     requiredMessage="This field is mandatory - value cannot be blank"
-                                     renderAsPopup="true"
-                                     rendered="#{propEditor.inputType == 'DATE_PICKER'}"/>
-                <!-- SELECT_ONE_MENU editor - used for enumerated properties and many-to-one relations -->
-                <ice:selectOneMenu id="input_SELECT_ONE_MENU" value="#{propEditor.value}" partialSubmit="true"
-                                   converter="#{propEditor.converter}"
-                                   validator="#{propEditor.validate}"
-                                   required="#{propEditor.metadata.isMandatory}"
-                                   requiredMessage="This field is mandatory - value cannot be blank"
-                                   rendered="#{propEditor.inputType == 'SELECT_ONE_MENU'}">
-                    <f:selectItems value="#{propEditor.listOfValues}"/>
-                </ice:selectOneMenu>
-                <ice:commandButton value="Create / Edit"
-                                   rendered="#{propEditor.inputType == 'SELECT_ONE_MENU'}"
-                                   immediate="true">
-                    <f:setPropertyActionListener target="#{CreateRule.editor}" value="#{propEditor}"/>
-                </ice:commandButton>
-                <!-- ONE-TO-ONE editor - input text just so that validation would be applied -->
-                <ice:inputText id="input_ONE_TO_ONE" value="#{propEditor.value.entityTitle}"
-                               rendered="#{propEditor.inputType == 'ONE_TO_ONE'}"
-                               required="#{propEditor.metadata.isMandatory}"
-                               requiredMessage="This field is mandatory - value cannot be blank"
-                               validator="#{propEditor.validate}"
-                               readonly="true"
-                               partialSubmit="true"/>
-                <ice:commandButton type="submit" value="Edit"
-                                   rendered="#{propEditor.inputType == 'ONE_TO_ONE'}"
-                                   immediate="true">
-                    <f:setPropertyActionListener target="#{CreateRule.editor}" value="#{propEditor}"/>
-                </ice:commandButton>
-                <!-- Error messages here -->
-                <h:message for="input_#{propEditor.inputType}" styleClass="error"/>
-            </ice:column>
-            <ice:column>
-                <ice:outputText value="*" rendered="#{propEditor.metadata.isMandatory}" styleClass="requiredFieldIndicator"/>
-            </ice:column>
-        </ice:dataTable>
-
-        <!--
-        <ice:panelGrid columns="2">
-            <ui:repeat value="#{entity.propertyMetadata}" var="propMeta">
-                <ice:outputLabel for="#{propMeta.name}_input">
-                    <ice:outputText value="#{propMeta.title}: "/>
-                </ice:outputLabel>
-                <ice:inputText id="#{propMeta.name}_input" value=""/>
-            </ui:repeat>
-        </ice:panelGrid>
-        -->
-
-        <!--
-        <ice:panelGrid columns="4">
-            <ice:outputText value="jou"/>
-            <ice:outputText value="jou"/>
-            <ice:outputText value="  #{entity.propertyMetadata[0].name}  "/>
-            <ice:outputText value="jou"/>
-            <ui:repeat value="#{entity.propertyMetadata}" var="propMeta">
-                <ice:panelGroup>
-                    <ice:outputText value="Property title: "/>
-                    <ice:outputText value="#{propMeta.title}"/>
-                    <br/>
-                    <ice:outputText value="Property name: "/>
-                    <ice:outputText value="#{propMeta.name}      "/>
-                    <br/>
-                    <ice:outputText value="Property type: "/>
-                    <ice:outputText value="#{propMeta.type.name}"/>
-                    <br/>
-                    <br/>
-                    <br/>
-                </ice:panelGroup>
-            </ui:repeat>
-        </ice:panelGrid>
-        -->
+                        
     </body>
 </html>
