@@ -1,0 +1,3 @@
+org.jvnet.jaxb2_commons.plugin.XjcClassUtilsPlugin
+org.jvnet.jaxb2_commons.plugin.XjcAnnotatePlugin
+org.jvnet.jaxb2_commons.plugin.XjcEnumValueGetterPlugin
