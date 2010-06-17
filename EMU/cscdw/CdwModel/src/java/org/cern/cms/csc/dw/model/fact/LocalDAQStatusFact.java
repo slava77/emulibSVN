@@ -11,8 +11,6 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -157,9 +155,7 @@ public class LocalDAQStatusFact
      *     {@link RunType }
      *     
      */
-    @Basic
-    @Column(name = "FCT_RUN_TYPE", length = 32)
-    @Enumerated(EnumType.STRING)
+    @Transient
     public RunType getRunType() {
         return runType;
     }
@@ -210,6 +206,16 @@ public class LocalDAQStatusFact
     @Transient
     public boolean isSetState() {
         return (this.state!= null);
+    }
+
+    @Basic
+    @Column(name = "FCT_RUN_TYPE", length = 32)
+    public String getRunTypeItem() {
+        return ((this.getRunType() == null)?null:this.getRunType().value());
+    }
+
+    public void setRunTypeItem(String target) {
+        setRunType(((target == null)?null:RunType.fromValue(target)));
     }
 
 }

@@ -26,8 +26,8 @@ public class GOntologyFactory {
     private final GServices gservices;
     private Transaction gtx;
 
-    public GOntologyFactory() {
-         gservices = new GraphDevServices();
+    public GOntologyFactory(String destFolder) {
+         gservices = new GraphDevServices(destFolder);
          gtx = gservices.beginTx();
     }
 
