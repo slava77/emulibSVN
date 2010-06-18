@@ -23,7 +23,7 @@ public class MeasureDef extends ColumnDef {
     public Element getElement(Document doc) {
         Element el = doc.createElement("Measure");
         el.setAttribute("name", olapMeasure.name());
-        el.setAttribute("column", column.name());
+        el.setAttribute("column", columnName);
         el.setAttribute("datatype", type.getTypeName());
         if (!olapMeasure.formatString().equals("")) {
             el.setAttribute("formatString", olapMeasure.formatString());

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<schema name="CSC-EXSYS">
+
+    <Dimension name="Component" type="StandardDimension">
+        <Hierarchy hasAll="true" name="Component" primaryKey="CMP_ID">
+            <Table name="CDW_COMPONENTS" schema="CMS_VALDAS"/>
+            <Level column="CMP_NAME" hideMemberIf="Never" levelType="Regular" name="Component" type="Component" uniqueMembers="true"/>
+        </Hierarchy>
+    </Dimension>
+    
+</schema>

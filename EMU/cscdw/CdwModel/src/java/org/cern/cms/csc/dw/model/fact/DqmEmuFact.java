@@ -192,6 +192,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_CH_EVENTS_AVERAGE", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.AVG, name = "chamberEventsAverage")
     public Long getChamberEventsAverage() {
         return chamberEventsAverage;
     }
@@ -223,6 +224,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_CH_EVENTS_COUNTER", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "chamberEventsCounter")
     public Long getChamberEventsCounter() {
         return chamberEventsCounter;
     }
@@ -254,6 +256,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_CH_WITH_BWORDS", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "chambersWithBwords")
     public Long getChambersWithBwords() {
         return chambersWithBwords;
     }
@@ -285,6 +288,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_CH_WITH_FORMAT_ERRORS", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "chambersWithFormatErrors")
     public Long getChambersWithFormatErrors() {
         return chambersWithFormatErrors;
     }
@@ -316,6 +320,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_CH_WITH_INPUT_FIFO_FULL", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "chambersWithInputFifoFull")
     public Long getChambersWithInputFifoFull() {
         return chambersWithInputFifoFull;
     }
@@ -347,6 +352,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_CHA_WITH_INPUT_TIMEOUT", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "chambersWithInputTimeout")
     public Long getChambersWithInputTimeout() {
         return chambersWithInputTimeout;
     }
@@ -378,6 +384,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_CH_WITH_L1A_OUT_OF_SYNC", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "chambersWithL1aOutOfSync")
     public Long getChambersWithL1AOutOfSync() {
         return chambersWithL1AOutOfSync;
     }
@@ -409,6 +416,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_CH_WITHOUT_ALCT", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "chambersWithoutAlct")
     public Long getChambersWithoutAlct() {
         return chambersWithoutAlct;
     }
@@ -440,6 +448,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_CH_WITHOUT_CFEB", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "chambersWithoutCfeb")
     public Long getChambersWithoutCfeb() {
         return chambersWithoutCfeb;
     }
@@ -471,6 +480,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_CH_WITHOUT_CLCT", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "chambersWithoutClct")
     public Long getChambersWithoutClct() {
         return chambersWithoutClct;
     }
@@ -502,6 +512,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_CH_WITHOUT_DATA", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "chambersWithoutData")
     public Long getChambersWithoutData() {
         return chambersWithoutData;
     }
@@ -533,6 +544,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_DDU_EVENTS_AVERAGE", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.AVG, name = "dduEventsAverage")
     public Long getDduEventsAverage() {
         return dduEventsAverage;
     }
@@ -564,6 +576,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_DDU_EVENTS_COUNTER", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "dduEventsCounter")
     public Long getDduEventsCounter() {
         return dduEventsCounter;
     }
@@ -595,6 +608,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_DDU_IN_READOUT", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "dduInReadout")
     public Long getDduInReadout() {
         return dduInReadout;
     }
@@ -626,6 +640,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_DDU_INPUT_IN_ERROR_STATE", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "dduInputInErrorState")
     public Long getDduInputInErrorState() {
         return dduInputInErrorState;
     }
@@ -657,6 +672,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_DDU_INPUT_IN_WARNING_STATE", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "dduInputInWarningState")
     public Long getDduInputInWarningState() {
         return dduInputInWarningState;
     }
@@ -688,6 +704,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_DDU_WITH_DATA", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "dduWithData")
     public Long getDduWithData() {
         return dduWithData;
     }
@@ -719,6 +736,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_DDU_WITH_FORMAT_ERRORS", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "dduWithFormatErrors")
     public Long getDduWithFormatErrors() {
         return dduWithFormatErrors;
     }
@@ -750,6 +768,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_DDU_WITH_INPUT_IN_ERROR_ST", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "dduWithInputInErrorState")
     public Long getDduWithInputInErrorState() {
         return dduWithInputInErrorState;
     }
@@ -781,6 +800,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_DDU_WITH_INPUT_IN_WARN_STA", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "dduWithInputInWarningState")
     public Long getDduWithInputInWarningState() {
         return dduWithInputInWarningState;
     }
@@ -812,6 +832,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_DDU_WITH_LIVE_INPUTS", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "dduWithLiveInputs")
     public Long getDduWithLiveInputs() {
         return dduWithLiveInputs;
     }
@@ -843,6 +864,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_HOT_CHAMBERS", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "chambersHot")
     public Long getChambersHot() {
         return chambersHot;
     }
@@ -874,6 +896,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_HOT_DDU_IN_READOUT", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "dduInReadoutHot")
     public Long getDduInReadoutHot() {
         return dduInReadoutHot;
     }
@@ -905,6 +928,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_LOW_DDU_IN_READOUT", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "dduInReadoutLow")
     public Long getDduInReadoutLow() {
         return dduInReadoutLow;
     }
@@ -936,6 +960,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_LOW_EFF_CHAMBERS", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "chambersLowEfficiency")
     public Long getChambersLowEfficiency() {
         return chambersLowEfficiency;
     }
@@ -967,6 +992,7 @@ public class DqmEmuFact
      */
     @Basic
     @Column(name = "FCT_NO_DDU_IN_READOUT", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "dduNotInReadout")
     public Long getDduNotInReadout() {
         return dduNotInReadout;
     }

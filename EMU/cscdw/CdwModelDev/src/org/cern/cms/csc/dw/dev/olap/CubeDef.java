@@ -4,11 +4,9 @@ import java.beans.PropertyDescriptor;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.persistence.Column;
-import javax.persistence.Table;
+import javax.persistence.JoinColumn;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.cern.cms.csc.dw.metadata.FactMd;
 import org.cern.cms.csc.dw.model.annotation.OlapDimension;
@@ -30,7 +28,8 @@ public class CubeDef {
         for (PropertyDescriptor prop : utils.getPropertyUtils().getPropertyDescriptors(fact.getFactClass())) {
             Method m = prop.getReadMethod();
 
-            if (m.isAnnotationPresent(Column.class)) {
+            if (m.isAnnotationPresent(Column.class) || m.isAnnotationPresent(JoinColumn.class)) {
+
                 if (m.isAnnotationPresent(OlapMeasure.class)) {
                     measures.add(new MeasureDef(m));
                 }
@@ -38,17 +37,14 @@ public class CubeDef {
                 if (m.isAnnotationPresent(OlapDimension.class)) {
                     dimensions.add(new DimensionDef(m, this));
                 }
+                
             }
 
         }
     }
 
     private String getCubeTableName() {
-        String tname = fact.getTableName();
-        if (tname.length() > 25) {
-            tname = tname.substring(0, 25);
-        }
-        return tname.concat("$CUBE");
+        return fact.getTableName();
     }
 
     public FactMd getFact() {
@@ -108,39 +104,6 @@ public class CubeDef {
     @SuppressWarnings(value = "unchecked")
     public void generateDDL(PrintWriter out) {
         
-        Table t = (Table) fact.getTableAnn();
-        out.println("\nDROP MATERIALIZED VIEW " + getCubeTableName() + ";");
-        out.println("\nCREATE MATERIALIZED VIEW " + getCubeTableName() + " AS");
-        out.println("SELECT");
-        boolean firstCol = true;
-
-        Set<ColumnDef> allColumns = new HashSet<ColumnDef>();
-        for (MeasureDef m : measures) {
-            allColumns.add(m);
-        }
-        for (DimensionDef d : dimensions) {
-            allColumns.add(d);
-        }
-
-        for (ColumnDef col : allColumns) {
-            out.print("\t");
-            if (!firstCol) {
-                out.print(", ");
-            } else {
-                out.print("  ");
-                firstCol = false;
-            }
-            if (col.getType().getType().equals(Boolean.class)) {
-                out.print("DECODE(" + col.getColumn().name() + ", 1, \'true\', \'false\')");
-            } else {
-                out.print(col.getColumn().name());
-            }
-            out.println(" \"" + col.getColumn().name() + "\"");
-        }
-
-        out.println("FROM");
-        out.println("\t" + t.name() + ";");
-
         for (DimensionDef dim : dimensions) {
             dim.getDDL(out, this);
         }

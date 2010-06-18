@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import org.cern.cms.csc.dw.model.annotation.FactAnn;
+import org.cern.cms.csc.dw.model.annotation.OlapMeasure;
 
 
 /**
@@ -96,6 +97,7 @@ public class DqmCscCfebFact
      */
     @Basic
     @Column(name = "FCT_WITH_LOW_CFEB_DAV_EFF", precision = 20, scale = 10)
+    @OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "withLowCfebDavEfficiency")
     public Long getWithLowCfebDavEfficiency() {
         return withLowCfebDavEfficiency;
     }

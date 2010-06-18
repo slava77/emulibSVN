@@ -2,16 +2,25 @@ package org.cern.cms.csc.dw.dev.olap;
 
 import java.lang.reflect.Method;
 import javax.persistence.Column;
+import javax.persistence.JoinColumn;
 
 public abstract class ColumnDef {
 
     protected Method method;
-    protected Column column;
+    protected String columnName;
     protected DataTypeDef type;
 
     protected ColumnDef(Method method) {
         this.method = method;
-        this.column = method.getAnnotation(Column.class);
+
+        if (method.isAnnotationPresent(Column.class)) {
+            this.columnName = method.getAnnotation(Column.class).name();
+        } else
+
+        if (method.isAnnotationPresent(JoinColumn.class)) {
+            this.columnName = method.getAnnotation(JoinColumn.class).name();
+        }
+
         this.type = new DataTypeDef(method.getReturnType());
     }
 
@@ -19,8 +28,8 @@ public abstract class ColumnDef {
         return type;
     }
 
-    public Column getColumn() {
-        return column;
+    public String getColumnName() {
+        return columnName;
     }
 
     public Method getMethod() {

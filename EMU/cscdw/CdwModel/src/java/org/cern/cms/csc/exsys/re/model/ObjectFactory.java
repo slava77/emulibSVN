@@ -46,43 +46,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ConclusionSourceRelation }
+     * Create an instance of {@link Rule }
      * 
      */
-    public ConclusionSourceRelation createConclusionSourceRelation() {
-        return new ConclusionSourceRelation();
-    }
-
-    /**
-     * Create an instance of {@link ConclusionFactory }
-     * 
-     */
-    public ConclusionFactory createConclusionFactory() {
-        return new ConclusionFactory();
-    }
-
-    /**
-     * Create an instance of {@link Conclusion }
-     * 
-     */
-    public Conclusion createConclusion() {
-        return new Conclusion();
-    }
-
-    /**
-     * Create an instance of {@link ConclusionType }
-     * 
-     */
-    public ConclusionType createConclusionType() {
-        return new ConclusionType();
-    }
-
-    /**
-     * Create an instance of {@link ActionFactory }
-     * 
-     */
-    public ActionFactory createActionFactory() {
-        return new ActionFactory();
+    public Rule createRule() {
+        return new Rule();
     }
 
     /**
@@ -94,11 +62,43 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Rule }
+     * Create an instance of {@link ConclusionSourceRelation }
      * 
      */
-    public Rule createRule() {
-        return new Rule();
+    public ConclusionSourceRelation createConclusionSourceRelation() {
+        return new ConclusionSourceRelation();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionType }
+     * 
+     */
+    public ConclusionType createConclusionType() {
+        return new ConclusionType();
+    }
+
+    /**
+     * Create an instance of {@link Conclusion }
+     * 
+     */
+    public Conclusion createConclusion() {
+        return new Conclusion();
+    }
+
+    /**
+     * Create an instance of {@link ActionFactory }
+     * 
+     */
+    public ActionFactory createActionFactory() {
+        return new ActionFactory();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionFactory }
+     * 
+     */
+    public ConclusionFactory createConclusionFactory() {
+        return new ConclusionFactory();
     }
 
     /**

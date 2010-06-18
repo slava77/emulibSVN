@@ -320,6 +320,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_FORMAT_ERRORS_BIT1", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "formatErrorDmbTrailerMissing")
     public Long getFormatErrorDmbTrailerMissing() {
         return formatErrorDmbTrailerMissing;
     }
@@ -382,6 +383,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_FORMAT_ERRORS_BIT10", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "formatErrorTmbWordCountError")
     public Long getFormatErrorTmbWordCountError() {
         return formatErrorTmbWordCountError;
     }
@@ -444,6 +446,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_FORMAT_ERRORS_BIT11", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "formatErrorTmbCrcError")
     public Long getFormatErrorTmbCrcError() {
         return formatErrorTmbCrcError;
     }
@@ -506,6 +509,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_FORMAT_ERRORS_BIT12", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "formatErrorCfebWordCountPerSampleError")
     public Long getFormatErrorCfebWordCountPerSampleError() {
         return formatErrorCfebWordCountPerSampleError;
     }
@@ -568,6 +572,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_FORMAT_ERRORS_BIT13", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "formatErrorCfebSampleCountError")
     public Long getFormatErrorCfebSampleCountError() {
         return formatErrorCfebSampleCountError;
     }
@@ -630,6 +635,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_FORMAT_ERRORS_BIT14", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "formatErrorCfebCrcError")
     public Long getFormatErrorCfebCrcError() {
         return formatErrorCfebCrcError;
     }
@@ -692,6 +698,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_FORMAT_ERRORS_BIT15", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "formatErrorDduEventSizeLimitError")
     public Long getFormatErrorDduEventSizeLimitError() {
         return formatErrorDduEventSizeLimitError;
     }
@@ -754,6 +761,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_FORMAT_ERRORS_BIT16", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "formatErrorC-Words")
     public Long getFormatErrorCWords() {
         return formatErrorCWords;
     }
@@ -816,6 +824,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_FORMAT_ERRORS_BIT17", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "formatErrorAlctDavError")
     public Long getFormatErrorAlctDavError() {
         return formatErrorAlctDavError;
     }
@@ -878,6 +887,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_FORMAT_ERRORS_BIT18", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "formatErrorTmbDavError")
     public Long getFormatErrorTmbDavError() {
         return formatErrorTmbDavError;
     }
@@ -940,6 +950,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_FORMAT_ERRORS_BIT19", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "formatErrorCfebDavError")
     public Long getFormatErrorCfebDavError() {
         return formatErrorCfebDavError;
     }
@@ -1002,6 +1013,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_FORMAT_ERRORS_BIT2", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "formatErrorDmbHeaderMissing")
     public Long getFormatErrorDmbHeaderMissing() {
         return formatErrorDmbHeaderMissing;
     }
@@ -1064,6 +1076,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_FORMAT_ERRORS_BIT3", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "formatErrorAlctTrailerMissing")
     public Long getFormatErrorAlctTrailerMissing() {
         return formatErrorAlctTrailerMissing;
     }
@@ -1126,6 +1139,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_FORMAT_ERRORS_BIT4", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "formatErrorAlctHeaderMissing")
     public Long getFormatErrorAlctHeaderMissing() {
         return formatErrorAlctHeaderMissing;
     }
@@ -1188,6 +1202,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_FORMAT_ERRORS_BIT5", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "formatErrorAlctWordCountError")
     public Long getFormatErrorAlctWordCountError() {
         return formatErrorAlctWordCountError;
     }
@@ -1250,6 +1265,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_FORMAT_ERRORS_BIT6", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "formatErrorAlctCrcError")
     public Long getFormatErrorAlctCrcError() {
         return formatErrorAlctCrcError;
     }
@@ -1312,6 +1328,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_FORMAT_ERRORS_BIT7", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "formatErrorAlctTrailerBitError")
     public Long getFormatErrorAlctTrailerBitError() {
         return formatErrorAlctTrailerBitError;
     }
@@ -1374,6 +1391,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_FORMAT_ERRORS_BIT8", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "formatErrorTmbTrailerMissing")
     public Long getFormatErrorTmbTrailerMissing() {
         return formatErrorTmbTrailerMissing;
     }
@@ -1436,6 +1454,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_FORMAT_ERRORS_BIT9", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "formatErrorTmbHeaderMissing")
     public Long getFormatErrorTmbHeaderMissing() {
         return formatErrorTmbHeaderMissing;
     }
@@ -1498,6 +1517,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_HOT_CHAMBER", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "hotChamber")
     public Long getHotChamber() {
         return hotChamber;
     }
@@ -1560,6 +1580,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_LOW_EFF_CHAMBER", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "lowEfficiencyChamber")
     public Long getLowEfficiencyChamber() {
         return lowEfficiencyChamber;
     }
@@ -1622,6 +1643,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_WITH_BWORDS", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "withBwords")
     public Long getWithBwords() {
         return withBwords;
     }
@@ -1684,6 +1706,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_WITH_FORMAT_ERRORS", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "withFormatErrors")
     public Long getWithFormatErrors() {
         return withFormatErrors;
     }
@@ -1746,6 +1769,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_WITH_INPUT_FIFO_FULL", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "withInputFifoFull")
     public Long getWithInputFifoFull() {
         return withInputFifoFull;
     }
@@ -1808,6 +1832,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_WITH_INPUT_TIMEOUT", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "withInputTimeout")
     public Long getWithInputTimeout() {
         return withInputTimeout;
     }
@@ -1870,6 +1895,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_WITH_L1A_OUT_OF_SYNC", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "withL1aOutOfSync")
     public Long getWithL1AOutOfSync() {
         return withL1AOutOfSync;
     }
@@ -1932,6 +1958,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_WITHOUT_ALCT", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "withoutAlct")
     public Long getWithoutAlct() {
         return withoutAlct;
     }
@@ -1994,6 +2021,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_WITHOUT_CFEB", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "withoutCfeb")
     public Long getWithoutCfeb() {
         return withoutCfeb;
     }
@@ -2056,6 +2084,7 @@ public class DqmCscFact
      */
     @Basic
     @Column(name = "FCT_WITHOUT_CLCT", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "withoutClct")
     public Long getWithoutClct() {
         return withoutClct;
     }

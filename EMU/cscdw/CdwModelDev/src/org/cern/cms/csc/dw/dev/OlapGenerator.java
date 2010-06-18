@@ -3,6 +3,7 @@ package org.cern.cms.csc.dw.dev;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +26,13 @@ import org.cern.cms.csc.dw.metadata.MetadataManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 public class OlapGenerator {
 
     private static final String OPTION_DB = "db";
     private static final String OPTION_DEST = "dest";
+    private static final String OPTION_XML_BASE = "base";
     private static final String FILENAME_SQL = "olap.sql";
     private static final String FILENAME_XML = "olap.xml";
 
@@ -65,12 +68,10 @@ public class OlapGenerator {
         out.close();
     }
 
-    public void generateSchemas(File file) throws TransformerException {
+    public void generateSchemas(File file, File base) throws TransformerException, SAXException, IOException {
         
-        Document doc = docBuilder.newDocument();
-        Element schemaEl = doc.createElement("schema");
-        schemaEl.setAttribute("name", "CSC-EXSYS");
-        Node rootNode = doc.appendChild(schemaEl);
+        Document doc = docBuilder.parse(base);
+        Node rootNode = doc.getDocumentElement();
         for (CubeDef cube : cubes) {
             if (cube.hasColumns()) {
                 cube.generateSchema(doc, rootNode, dbSchema);
@@ -96,16 +97,18 @@ public class OlapGenerator {
             CommandLineParser clparser = new PosixParser();
             Options opts = new Options();
             opts.addOption(OptionBuilder.hasArg().withDescription("DB schema").isRequired().create(OPTION_DB));
+            opts.addOption(OptionBuilder.hasArg().withDescription("XML base").isRequired().create(OPTION_XML_BASE));
             opts.addOption(OptionBuilder.hasArg().withDescription("Destination directory").isRequired().create(OPTION_DEST));
             CommandLine cmdLine = clparser.parse(opts, args);
 
             String dbSchema = cmdLine.getOptionValue(OPTION_DB);
             File destDir = new File(cmdLine.getOptionValue(OPTION_DEST));
+            File baseXml = new File(cmdLine.getOptionValue(OPTION_XML_BASE));
 
             OlapGenerator generator = new OlapGenerator(dbSchema);
             
             generator.generateDDL(new File(destDir, FILENAME_SQL));
-            generator.generateSchemas(new File(destDir, FILENAME_XML));
+            generator.generateSchemas(new File(destDir, FILENAME_XML), baseXml);
             
         } catch (Exception e) {
             e.printStackTrace(System.err);

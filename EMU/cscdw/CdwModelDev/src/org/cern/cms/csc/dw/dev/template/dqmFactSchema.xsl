@@ -84,6 +84,11 @@
                         <orm:column name="{substring(@column,1,30)}"/>
                     </hj:basic>
                     <jaxb:property name="{@property}"/>
+                    <xsl:if test="@measure != ''">
+                        <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                            <a:OlapMeasure name="{@property}" aggregator="{@measure}"/>
+                        </ann:annotateGet>
+                    </xsl:if>
                 </xsd:appinfo>
             </xsd:annotation>
         </xsd:element>

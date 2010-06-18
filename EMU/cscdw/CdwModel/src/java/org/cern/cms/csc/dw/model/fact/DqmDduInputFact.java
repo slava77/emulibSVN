@@ -100,6 +100,7 @@ public class DqmDduInputFact
      */
     @Basic
     @Column(name = "FCT_INPUT_IN_ERROR_STATE", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "inputInErrorState")
     public Long getInputInErrorState() {
         return inputInErrorState;
     }
@@ -131,6 +132,7 @@ public class DqmDduInputFact
      */
     @Basic
     @Column(name = "FCT_INPUT_IN_WARN_STATE", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "inputInWarningState")
     public Long getInputInWarningState() {
         return inputInWarningState;
     }
@@ -162,6 +164,7 @@ public class DqmDduInputFact
      */
     @Basic
     @Column(name = "FCT_NO_INPUT_DATA", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "inputNoData")
     public Long getInputNoData() {
         return inputNoData;
     }

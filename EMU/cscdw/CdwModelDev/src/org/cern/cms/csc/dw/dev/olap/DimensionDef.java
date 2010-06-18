@@ -20,7 +20,7 @@ class DimensionDef extends ColumnDef {
         this.olapDimension = method.getAnnotation(OlapDimension.class);
 
         if (method.getReturnType().equals(Date.class)) {
-            setTableName(cube.getFact().getTableName() + "$" + column.name());
+            setTableName(cube.getFact().getTableName() + "$" + columnName);
             this.timeDimension = true;
         }
 
@@ -55,14 +55,14 @@ class DimensionDef extends ColumnDef {
                 out.println("\t, to_number(TO_CHAR(a.time_data, \'D\')) \"WEEKDAY\"");
                 out.println("\t, initcap(trim(TO_CHAR(a.time_data, \'DAY\'))) \"WEEKDAY_NAME\"");
                 out.println("FROM");
-                out.println("\t(SELECT DISTINCT " + column.name() + " as time_data FROM " + cube.getFact().getTableName() + ") a;");
+                out.println("\t(SELECT DISTINCT " + columnName + " as time_data FROM " + cube.getFact().getTableName() + ") a;");
             }
         } else {
             if (shared && baseField) {
                 out.println("\nDROP MATERIALIZED VIEW " + tableName + ";");
                 out.println("\nCREATE MATERIALIZED VIEW " + tableName + " AS");
                 out.println("SELECT DISTINCT");
-                out.println("\t  " + column.name());
+                out.println("\t  " + columnName);
                 out.println("FROM");
                 out.println("\t" + cube.getFact().getTableName() + ";");
             }
@@ -81,7 +81,7 @@ class DimensionDef extends ColumnDef {
             usageEl = doc.createElement("DimensionUsage");
             usageEl.setAttribute("name", olapDimension.name());
             usageEl.setAttribute("source", olapDimension.name());
-            usageEl.setAttribute("foreignKey", column.name());
+            usageEl.setAttribute("foreignKey", columnName);
         }
         return usageEl;
     }
@@ -138,7 +138,7 @@ class DimensionDef extends ColumnDef {
             hierarchyEl.setAttribute("primaryKey", "TIME");
 
             if (!shared) {
-                dimEl.setAttribute("foreignKey", column.name());
+                dimEl.setAttribute("foreignKey", columnName);
             }
 
             Element yEl = doc.createElement("Level");
@@ -172,12 +172,12 @@ class DimensionDef extends ColumnDef {
         } else {
 
             if (shared) {
-                hierarchyEl.setAttribute("primaryKey", column.name());
+                hierarchyEl.setAttribute("primaryKey", columnName);
             }
 
             Element el = doc.createElement("Level");
             el.setAttribute("name", olapDimension.name());
-            el.setAttribute("column", column.name());
+            el.setAttribute("column", columnName);
             el.setAttribute("type", type.getTypeName());
             el.setAttribute("uniqueMembers", "true");
             el.setAttribute("levelType", "Regular");

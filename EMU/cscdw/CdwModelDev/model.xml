@@ -267,6 +267,7 @@
             <jvmarg line="-Xmn100M -Xms500M -Xmx500M -Xss50M"/>
             <arg value="--db=${hibernate.connection.username}"/>
             <arg value="--dest=${model}/src/olap"/>
+            <arg value="--base=src/org/cern/cms/csc/dw/dev/olap/olapBase.xml"/>
         </java>
 
     </target>

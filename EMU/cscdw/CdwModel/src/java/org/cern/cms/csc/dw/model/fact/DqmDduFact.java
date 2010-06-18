@@ -104,6 +104,7 @@ public class DqmDduFact
      */
     @Basic
     @Column(name = "FCT_WITH_FORMAT_ERRORS", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "withFormatErrors")
     public Long getWithFormatErrors() {
         return withFormatErrors;
     }
@@ -166,6 +167,7 @@ public class DqmDduFact
      */
     @Basic
     @Column(name = "FCT_WITH_TRAILER_ERRORS", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "withTrailerErrors")
     public Long getWithTrailerErrors() {
         return withTrailerErrors;
     }

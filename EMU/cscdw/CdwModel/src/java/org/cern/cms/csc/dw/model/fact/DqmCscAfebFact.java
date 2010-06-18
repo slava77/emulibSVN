@@ -96,6 +96,7 @@ public class DqmCscAfebFact
      */
     @Basic
     @Column(name = "FCT_ALCT_AFEB_NOISY", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "alctAfebNoisy")
     public Long getAlctAfebNoisy() {
         return alctAfebNoisy;
     }
@@ -127,6 +128,7 @@ public class DqmCscAfebFact
      */
     @Basic
     @Column(name = "FCT_ALCT_NO_ANODE_DATA", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "alctNoAnodeData")
     public Long getAlctNoAnodeData() {
         return alctNoAnodeData;
     }
