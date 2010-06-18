@@ -11,8 +11,10 @@
     <description>Builds, tests, and runs the project CdwGui.</description>
     <import file="nbproject/build-impl.xml"/>
 
-    <import file="../CdwModel/refreshModel.xml"/>
+    <import file="../CdwModelDev/refreshModel.xml"/>
+
     <property name="dst_schema" location="web/schema" />
+    
     <target name="-pre-compile" depends="copy-schema-strip">
     </target>
 

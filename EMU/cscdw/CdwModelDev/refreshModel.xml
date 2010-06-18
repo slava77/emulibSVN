@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="changeme" default="refreshModel" basedir=".">
+
+    <property name="src_schema" location="../CdwModel/src/java/org/cern/cms/csc/dw/schema" />
+    <property name="src_dev"   location="../CdwModelDev/src/org/cern/cms/csc/dw/dev" />
+    <!--property name="dst_schema" location="src/java/org/cern/cms/csc/dw/schema"/-->
+
+    <target name="copy-schema-strip">
+          <mkdir dir="${dst_schema}"/>
+          <delete>
+            <fileset dir="${dst_schema}" includes="**/*" defaultexcludes="true" />
+          </delete>
+          <xslt style="${src_dev}/template/copySchemaOnly.xsl"
+            basedir="${src_schema}"
+            destdir="${dst_schema}"
+            includes="*.xsd"
+            extension=".xsd"/>
+    </target>
+    
+</project>
