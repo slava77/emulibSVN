@@ -56,7 +56,7 @@ import org.cern.cms.csc.dw.model.annotation.FactAnn;
 @Table(name = "CDW_TMB_TRG_CNT_SLIDING_FACTS")
 @FactAnn(limitComponents = {
     "TMB"
-})
+}, title = "Sliding TMB Trigger Counters")
 public class SlidingTmbTriggerCounterFact
     extends Fact
     implements Serializable

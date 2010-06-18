@@ -12,11 +12,12 @@
     xmlns:ont="http://www.cern.ch/cms/csc/dw/ontology"
     xmlns:ser="http://www.cern.ch/cms/csc/dw/service"
     xmlns:cu="http://jaxb.dev.java.net/plugin/classutils"
+    xmlns:ann="http://jaxb.dev.java.net/plugin/annotate"
     xsi:schemaLocation="
         http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
         http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
         http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
-    jaxb:extensionBindingPrefixes="xjc orm hj cu"
+    jaxb:extensionBindingPrefixes="xjc orm hj cu ann"
     jaxb:version="2.0">
 
     <xsd:include schemaLocation="factClassifiers.xsd"/>
@@ -128,6 +129,9 @@
                             <orm:column name="FCT_TIME"/>
                         </hj:basic>
                         <jaxb:property name="time"/>
+                        <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                            <a:OlapDimension name="Time"/>
+                        </ann:annotateGet>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -146,6 +150,9 @@
                             <orm:column name="FCT_RUN"/>
                         </hj:basic>
                         <jaxb:property name="run"/>
+                        <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                            <a:OlapDimension name="Run"/>
+                        </ann:annotateGet>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -157,6 +164,9 @@
                             <hj:enumerated-value/>
                         </hj:basic>
                         <jaxb:property name="severity"/>
+                        <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                            <a:OlapDimension name="Severity"/>
+                        </ann:annotateGet>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -177,6 +187,9 @@
                             <orm:join-column name="FCT_CMP_ID"/>
                         </hj:many-to-one>
                         <jaxb:property name="component"/>
+                        <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                            <a:OlapDimension name="Component"/>
+                        </ann:annotateGet>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>

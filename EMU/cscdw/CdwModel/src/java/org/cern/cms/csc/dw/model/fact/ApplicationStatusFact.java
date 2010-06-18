@@ -47,7 +47,7 @@ import org.cern.cms.csc.dw.model.annotation.FactAnn;
 @Table(name = "CDW_APP_STATUS_FACTS")
 @FactAnn(limitComponents = {
     "Software"
-}, limitComponentsRecursive = true)
+}, limitComponentsRecursive = true, title = "Application Status")
 public class ApplicationStatusFact
     extends Fact
     implements Serializable

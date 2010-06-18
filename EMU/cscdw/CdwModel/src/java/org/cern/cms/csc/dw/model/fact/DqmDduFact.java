@@ -55,7 +55,7 @@ import org.cern.cms.csc.dw.model.annotation.FactAnn;
 @Table(name = "CDW_DQM_DDU_FACTS")
 @FactAnn(limitComponents = {
     "DDU"
-})
+}, title = "DQM DDU")
 public class DqmDduFact
     extends Fact
     implements Serializable

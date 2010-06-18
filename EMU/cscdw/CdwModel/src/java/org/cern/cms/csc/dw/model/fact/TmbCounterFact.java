@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import org.cern.cms.csc.dw.model.annotation.FactAnn;
+import org.cern.cms.csc.dw.model.annotation.OlapDimension;
 
 
 /**
@@ -229,7 +230,7 @@ import org.cern.cms.csc.dw.model.annotation.FactAnn;
 @Table(name = "CDW_TMB_CNT_FACTS")
 @FactAnn(limitComponents = {
     "TMB"
-})
+}, title = "TMB Counters")
 public class TmbCounterFact
     extends Fact
     implements Serializable
@@ -425,6 +426,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_VERSION", length = 4)
+    @OlapDimension(name = "version")
     public String getVersion() {
         return version;
     }
@@ -489,6 +491,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC00", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC00")
     public BigInteger getTc00() {
         return tc00;
     }
@@ -520,6 +523,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC01", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC01")
     public BigInteger getTc01() {
         return tc01;
     }
@@ -551,6 +555,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC02", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC02")
     public BigInteger getTc02() {
         return tc02;
     }
@@ -582,6 +587,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC03", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC03")
     public BigInteger getTc03() {
         return tc03;
     }
@@ -613,6 +619,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC04", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC04")
     public BigInteger getTc04() {
         return tc04;
     }
@@ -644,6 +651,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC05", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC05")
     public BigInteger getTc05() {
         return tc05;
     }
@@ -675,6 +683,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC06", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC06")
     public BigInteger getTc06() {
         return tc06;
     }
@@ -706,6 +715,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC07", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC07")
     public BigInteger getTc07() {
         return tc07;
     }
@@ -737,6 +747,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC08", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC08")
     public BigInteger getTc08() {
         return tc08;
     }
@@ -768,6 +779,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC09", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC09")
     public BigInteger getTc09() {
         return tc09;
     }
@@ -799,6 +811,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC10", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC10")
     public BigInteger getTc10() {
         return tc10;
     }
@@ -830,6 +843,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC11", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC11")
     public BigInteger getTc11() {
         return tc11;
     }
@@ -861,6 +875,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC12", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC12")
     public BigInteger getTc12() {
         return tc12;
     }
@@ -892,6 +907,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC13", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC13")
     public BigInteger getTc13() {
         return tc13;
     }
@@ -923,6 +939,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC14", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC14")
     public BigInteger getTc14() {
         return tc14;
     }
@@ -954,6 +971,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC15", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC15")
     public BigInteger getTc15() {
         return tc15;
     }
@@ -985,6 +1003,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC16", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC16")
     public BigInteger getTc16() {
         return tc16;
     }
@@ -1016,6 +1035,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC17", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC17")
     public BigInteger getTc17() {
         return tc17;
     }
@@ -1047,6 +1067,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC18", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC18")
     public BigInteger getTc18() {
         return tc18;
     }
@@ -1078,6 +1099,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC19", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC19")
     public BigInteger getTc19() {
         return tc19;
     }
@@ -1109,6 +1131,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC20", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC20")
     public BigInteger getTc20() {
         return tc20;
     }
@@ -1140,6 +1163,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC21", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC21")
     public BigInteger getTc21() {
         return tc21;
     }
@@ -1171,6 +1195,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC22", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC22")
     public BigInteger getTc22() {
         return tc22;
     }
@@ -1202,6 +1227,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC23", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC23")
     public BigInteger getTc23() {
         return tc23;
     }
@@ -1233,6 +1259,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC24", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC24")
     public BigInteger getTc24() {
         return tc24;
     }
@@ -1264,6 +1291,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC25", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC25")
     public BigInteger getTc25() {
         return tc25;
     }
@@ -1295,6 +1323,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC26", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC26")
     public BigInteger getTc26() {
         return tc26;
     }
@@ -1326,6 +1355,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC27", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC27")
     public BigInteger getTc27() {
         return tc27;
     }
@@ -1357,6 +1387,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC28", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC28")
     public BigInteger getTc28() {
         return tc28;
     }
@@ -1388,6 +1419,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC29", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC29")
     public BigInteger getTc29() {
         return tc29;
     }
@@ -1419,6 +1451,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC30", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC30")
     public BigInteger getTc30() {
         return tc30;
     }
@@ -1450,6 +1483,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC31", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC31")
     public BigInteger getTc31() {
         return tc31;
     }
@@ -1481,6 +1515,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC32", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC32")
     public BigInteger getTc32() {
         return tc32;
     }
@@ -1512,6 +1547,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC33", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC33")
     public BigInteger getTc33() {
         return tc33;
     }
@@ -1543,6 +1579,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC34", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC34")
     public BigInteger getTc34() {
         return tc34;
     }
@@ -1574,6 +1611,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC35", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC35")
     public BigInteger getTc35() {
         return tc35;
     }
@@ -1605,6 +1643,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC36", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC36")
     public BigInteger getTc36() {
         return tc36;
     }
@@ -1636,6 +1675,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC37", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC37")
     public BigInteger getTc37() {
         return tc37;
     }
@@ -1667,6 +1707,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC38", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC38")
     public BigInteger getTc38() {
         return tc38;
     }
@@ -1698,6 +1739,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC39", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC39")
     public BigInteger getTc39() {
         return tc39;
     }
@@ -1729,6 +1771,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC40", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC40")
     public BigInteger getTc40() {
         return tc40;
     }
@@ -1760,6 +1803,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC41", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC41")
     public BigInteger getTc41() {
         return tc41;
     }
@@ -1791,6 +1835,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC42", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC42")
     public BigInteger getTc42() {
         return tc42;
     }
@@ -1822,6 +1867,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC43", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC43")
     public BigInteger getTc43() {
         return tc43;
     }
@@ -1853,6 +1899,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC44", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC44")
     public BigInteger getTc44() {
         return tc44;
     }
@@ -1884,6 +1931,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC45", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC45")
     public BigInteger getTc45() {
         return tc45;
     }
@@ -1915,6 +1963,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC46", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC46")
     public BigInteger getTc46() {
         return tc46;
     }
@@ -1946,6 +1995,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC47", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC47")
     public BigInteger getTc47() {
         return tc47;
     }
@@ -1977,6 +2027,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC48", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC48")
     public BigInteger getTc48() {
         return tc48;
     }
@@ -2008,6 +2059,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC49", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC49")
     public BigInteger getTc49() {
         return tc49;
     }
@@ -2039,6 +2091,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC50", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC50")
     public BigInteger getTc50() {
         return tc50;
     }
@@ -2070,6 +2123,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC51", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC51")
     public BigInteger getTc51() {
         return tc51;
     }
@@ -2101,6 +2155,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC52", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC52")
     public BigInteger getTc52() {
         return tc52;
     }
@@ -2132,6 +2187,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC53", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC53")
     public BigInteger getTc53() {
         return tc53;
     }
@@ -2163,6 +2219,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC54", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC54")
     public BigInteger getTc54() {
         return tc54;
     }
@@ -2194,6 +2251,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC55", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC55")
     public BigInteger getTc55() {
         return tc55;
     }
@@ -2225,6 +2283,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC56", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC56")
     public BigInteger getTc56() {
         return tc56;
     }
@@ -2256,6 +2315,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC57", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC57")
     public BigInteger getTc57() {
         return tc57;
     }
@@ -2287,6 +2347,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC58", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC58")
     public BigInteger getTc58() {
         return tc58;
     }
@@ -2318,6 +2379,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC59", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC59")
     public BigInteger getTc59() {
         return tc59;
     }
@@ -2349,6 +2411,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC60", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC60")
     public BigInteger getTc60() {
         return tc60;
     }
@@ -2380,6 +2443,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC61", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC61")
     public BigInteger getTc61() {
         return tc61;
     }
@@ -2411,6 +2475,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC62", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC62")
     public BigInteger getTc62() {
         return tc62;
     }
@@ -2442,6 +2507,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC63", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC63")
     public BigInteger getTc63() {
         return tc63;
     }
@@ -2473,6 +2539,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC64", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC64")
     public BigInteger getTc64() {
         return tc64;
     }
@@ -2504,6 +2571,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC65", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC65")
     public BigInteger getTc65() {
         return tc65;
     }
@@ -2535,6 +2603,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC66", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC66")
     public BigInteger getTc66() {
         return tc66;
     }
@@ -2566,6 +2635,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC67", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC67")
     public BigInteger getTc67() {
         return tc67;
     }
@@ -2597,6 +2667,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC68", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC68")
     public BigInteger getTc68() {
         return tc68;
     }
@@ -2628,6 +2699,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC69", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC69")
     public BigInteger getTc69() {
         return tc69;
     }
@@ -2659,6 +2731,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC70", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC70")
     public BigInteger getTc70() {
         return tc70;
     }
@@ -2690,6 +2763,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC71", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC71")
     public BigInteger getTc71() {
         return tc71;
     }
@@ -2721,6 +2795,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC72", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC72")
     public BigInteger getTc72() {
         return tc72;
     }
@@ -2752,6 +2827,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC73", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC73")
     public BigInteger getTc73() {
         return tc73;
     }
@@ -2783,6 +2859,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC74", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC74")
     public BigInteger getTc74() {
         return tc74;
     }
@@ -2814,6 +2891,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC75", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC75")
     public BigInteger getTc75() {
         return tc75;
     }
@@ -2845,6 +2923,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC76", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC76")
     public BigInteger getTc76() {
         return tc76;
     }
@@ -2876,6 +2955,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC77", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC77")
     public BigInteger getTc77() {
         return tc77;
     }
@@ -2907,6 +2987,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC78", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC78")
     public BigInteger getTc78() {
         return tc78;
     }
@@ -2938,6 +3019,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC79", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC79")
     public BigInteger getTc79() {
         return tc79;
     }
@@ -2969,6 +3051,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC80", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC80")
     public BigInteger getTc80() {
         return tc80;
     }
@@ -3000,6 +3083,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC81", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC81")
     public BigInteger getTc81() {
         return tc81;
     }
@@ -3031,6 +3115,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC82", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC82")
     public BigInteger getTc82() {
         return tc82;
     }
@@ -3062,6 +3147,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC83", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC83")
     public BigInteger getTc83() {
         return tc83;
     }
@@ -3093,6 +3179,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC84", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC84")
     public BigInteger getTc84() {
         return tc84;
     }
@@ -3124,6 +3211,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC85", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC85")
     public BigInteger getTc85() {
         return tc85;
     }
@@ -3155,6 +3243,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC86", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC86")
     public BigInteger getTc86() {
         return tc86;
     }
@@ -3186,6 +3275,7 @@ public class TmbCounterFact
      */
     @Basic
     @Column(name = "FCT_TC87", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC87")
     public BigInteger getTc87() {
         return tc87;
     }

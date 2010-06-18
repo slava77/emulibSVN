@@ -7,6 +7,7 @@ import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -248,6 +249,42 @@ public class ClassUtil {
                 resultSet.add(loader);
             }
         }
+    }
+
+    public static Collection<Class> packageClassses(String pckgname) {
+
+        Collection<Class> ret = new LinkedList<Class>();
+
+        // Translate the package name into an absolute path
+        String name = new String(pckgname);
+        if (!name.startsWith("/")) {
+            name = "/" + name;
+        }
+        name = name.replace('.','/');
+
+        // Get a File object for the package
+        URL url = ClassUtil.class.getResource(name);
+        File directory = new File(url.getFile());
+
+        if (directory.exists()) {
+            // Get the list of the files contained in the package
+            String [] files = directory.list();
+            for (int i = 0; i<files.length;i++) {
+
+                // we are only interested in .class files
+                if (files[i].endsWith(".class")) {
+                    // removes the .class extension
+                    String classname = files[i].substring(0, files[i].length() - 6);
+                    try {
+                        ret.add(Class.forName(pckgname + "." + classname));
+                    } catch (ClassNotFoundException ex) {
+                    }
+                }
+            }
+        }
+
+        return ret;
+        
     }
 
     public static Class[] getLoadedClasses() {

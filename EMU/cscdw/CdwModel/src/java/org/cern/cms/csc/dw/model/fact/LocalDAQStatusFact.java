@@ -55,7 +55,7 @@ import org.cern.cms.csc.dw.model.annotation.FactAnn;
 @Table(name = "CDW_LOCAL_DAQ_STATUS_FACTS")
 @FactAnn(limitComponents = {
     "Software"
-})
+}, title = "Local DAQ Status")
 public class LocalDAQStatusFact
     extends Fact
     implements Serializable

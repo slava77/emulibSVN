@@ -9,7 +9,7 @@
 <orm:table name="CDW_DQM_EMU_FACTS"/>
 </hj:entity>
 <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
-<a:FactAnn limitComponents="CSC"/>
+<a:FactAnn limitComponents="CSC" title="DQM EMU"/>
 </ann:annotate>
 </xsd:appinfo>
 </xsd:annotation>
@@ -298,7 +298,7 @@
 <orm:table name="CDW_DQM_DDU_FACTS"/>
 </hj:entity>
 <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
-<a:FactAnn limitComponents="DDU"/>
+<a:FactAnn limitComponents="DDU" title="DQM DDU"/>
 </ann:annotate>
 </xsd:appinfo>
 </xsd:annotation>
@@ -367,7 +367,7 @@
 <orm:table name="CDW_DQM_DDU_INPUT_FACTS"/>
 </hj:entity>
 <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
-<a:FactAnn limitComponents="DDUInput"/>
+<a:FactAnn limitComponents="DDUInput" title="DQM DDU Input"/>
 </ann:annotate>
 </xsd:appinfo>
 </xsd:annotation>
@@ -426,7 +426,7 @@
 <orm:table name="CDW_DQM_CSC_FACTS"/>
 </hj:entity>
 <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
-<a:FactAnn limitComponents="Chamber"/>
+<a:FactAnn limitComponents="Chamber" title="DQM Chamber"/>
 </ann:annotate>
 </xsd:appinfo>
 </xsd:annotation>
@@ -1035,7 +1035,7 @@
 <orm:table name="CDW_DQM_CSC_AFEB_FACTS"/>
 </hj:entity>
 <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
-<a:FactAnn limitComponents="AFEB"/>
+<a:FactAnn limitComponents="AFEB" title="DQM AFEB"/>
 </ann:annotate>
 </xsd:appinfo>
 </xsd:annotation>
@@ -1084,7 +1084,7 @@
 <orm:table name="CDW_DQM_CSC_CFEB_FACTS"/>
 </hj:entity>
 <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
-<a:FactAnn limitComponents="CFEB"/>
+<a:FactAnn limitComponents="CFEB" title="DQM CFEB"/>
 </ann:annotate>
 </xsd:appinfo>
 </xsd:annotation>
@@ -1133,7 +1133,7 @@
 <orm:table name="CDW_DQM_CSC_HV_SEGMENT_FACTS"/>
 </hj:entity>
 <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
-<a:FactAnn limitComponents="HVSegment"/>
+<a:FactAnn limitComponents="HVSegment" title="DQM HV Segment"/>
 </ann:annotate>
 </xsd:appinfo>
 </xsd:annotation>

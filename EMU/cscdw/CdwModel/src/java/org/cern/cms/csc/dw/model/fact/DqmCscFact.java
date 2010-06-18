@@ -163,7 +163,7 @@ import org.cern.cms.csc.dw.model.annotation.FactAnn;
 @Table(name = "CDW_DQM_CSC_FACTS")
 @FactAnn(limitComponents = {
     "Chamber"
-})
+}, title = "DQM Chamber")
 public class DqmCscFact
     extends Fact
     implements Serializable

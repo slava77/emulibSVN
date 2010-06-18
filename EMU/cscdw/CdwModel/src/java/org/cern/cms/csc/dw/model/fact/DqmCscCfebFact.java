@@ -51,7 +51,7 @@ import org.cern.cms.csc.dw.model.annotation.FactAnn;
 @Table(name = "CDW_DQM_CSC_CFEB_FACTS")
 @FactAnn(limitComponents = {
     "CFEB"
-})
+}, title = "DQM CFEB")
 public class DqmCscCfebFact
     extends Fact
     implements Serializable

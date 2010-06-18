@@ -55,19 +55,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link FactCollection }
+     * Create an instance of {@link FactRequestCollection }
      * 
      */
-    public FactCollection createFactCollection() {
-        return new FactCollection();
-    }
-
-    /**
-     * Create an instance of {@link DqmCscFact }
-     * 
-     */
-    public DqmCscFact createDqmCscFact() {
-        return new DqmCscFact();
+    public FactRequestCollection createFactRequestCollection() {
+        return new FactRequestCollection();
     }
 
     /**
@@ -79,59 +71,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link DqmDduInputFact }
+     * Create an instance of {@link FactCollection }
      * 
      */
-    public DqmDduInputFact createDqmDduInputFact() {
-        return new DqmDduInputFact();
-    }
-
-    /**
-     * Create an instance of {@link LocalDAQStatusFact }
-     * 
-     */
-    public LocalDAQStatusFact createLocalDAQStatusFact() {
-        return new LocalDAQStatusFact();
-    }
-
-    /**
-     * Create an instance of {@link FactRequestCollection }
-     * 
-     */
-    public FactRequestCollection createFactRequestCollection() {
-        return new FactRequestCollection();
-    }
-
-    /**
-     * Create an instance of {@link SlidingTmbTriggerCounterFact }
-     * 
-     */
-    public SlidingTmbTriggerCounterFact createSlidingTmbTriggerCounterFact() {
-        return new SlidingTmbTriggerCounterFact();
-    }
-
-    /**
-     * Create an instance of {@link TmbCounterFact }
-     * 
-     */
-    public TmbCounterFact createTmbCounterFact() {
-        return new TmbCounterFact();
-    }
-
-    /**
-     * Create an instance of {@link DqmCscHvSegmentFact }
-     * 
-     */
-    public DqmCscHvSegmentFact createDqmCscHvSegmentFact() {
-        return new DqmCscHvSegmentFact();
-    }
-
-    /**
-     * Create an instance of {@link DqmDduFact }
-     * 
-     */
-    public DqmDduFact createDqmDduFact() {
-        return new DqmDduFact();
+    public FactCollection createFactCollection() {
+        return new FactCollection();
     }
 
     /**
@@ -143,11 +87,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CumulativeTmbTriggerCounterFact }
+     * Create an instance of {@link DqmEmuFact }
      * 
      */
-    public CumulativeTmbTriggerCounterFact createCumulativeTmbTriggerCounterFact() {
-        return new CumulativeTmbTriggerCounterFact();
+    public DqmEmuFact createDqmEmuFact() {
+        return new DqmEmuFact();
     }
 
     /**
@@ -159,19 +103,75 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link SlidingTmbTriggerCounterFact }
+     * 
+     */
+    public SlidingTmbTriggerCounterFact createSlidingTmbTriggerCounterFact() {
+        return new SlidingTmbTriggerCounterFact();
+    }
+
+    /**
+     * Create an instance of {@link CumulativeTmbTriggerCounterFact }
+     * 
+     */
+    public CumulativeTmbTriggerCounterFact createCumulativeTmbTriggerCounterFact() {
+        return new CumulativeTmbTriggerCounterFact();
+    }
+
+    /**
+     * Create an instance of {@link LocalDAQStatusFact }
+     * 
+     */
+    public LocalDAQStatusFact createLocalDAQStatusFact() {
+        return new LocalDAQStatusFact();
+    }
+
+    /**
+     * Create an instance of {@link TmbCounterFact }
+     * 
+     */
+    public TmbCounterFact createTmbCounterFact() {
+        return new TmbCounterFact();
+    }
+
+    /**
+     * Create an instance of {@link DqmCscFact }
+     * 
+     */
+    public DqmCscFact createDqmCscFact() {
+        return new DqmCscFact();
+    }
+
+    /**
+     * Create an instance of {@link DqmDduInputFact }
+     * 
+     */
+    public DqmDduInputFact createDqmDduInputFact() {
+        return new DqmDduInputFact();
+    }
+
+    /**
+     * Create an instance of {@link DqmDduFact }
+     * 
+     */
+    public DqmDduFact createDqmDduFact() {
+        return new DqmDduFact();
+    }
+
+    /**
+     * Create an instance of {@link DqmCscHvSegmentFact }
+     * 
+     */
+    public DqmCscHvSegmentFact createDqmCscHvSegmentFact() {
+        return new DqmCscHvSegmentFact();
+    }
+
+    /**
      * Create an instance of {@link FactRequest }
      * 
      */
     public FactRequest createFactRequest() {
         return new FactRequest();
-    }
-
-    /**
-     * Create an instance of {@link DqmEmuFact }
-     * 
-     */
-    public DqmEmuFact createDqmEmuFact() {
-        return new DqmEmuFact();
     }
 
     /**

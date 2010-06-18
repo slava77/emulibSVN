@@ -19,7 +19,7 @@ import org.cern.cms.csc.dw.model.ontology.ComponentClassType;
 public class FactMd extends EntityBase implements Serializable {
 
     private Class<?extends Fact> factClass;
-    private String tableName;
+    private Table table;
     private Integer daysToStore;
     private Set<ComponentClassType> limitComponents = new LinkedHashSet<ComponentClassType>();
     private boolean limitComponentsRecursive = false;
@@ -29,8 +29,7 @@ public class FactMd extends EntityBase implements Serializable {
 
     public FactMd(Class<? extends Fact> factClass) {
         this.factClass = factClass;
-        Table t = factClass.getAnnotation(Table.class);
-        this.tableName = t.name();
+        this.table = factClass.getAnnotation(Table.class);
         FactAnn ann = factClass.getAnnotation(FactAnn.class);
         this.daysToStore = ann.daysToStore();
         for (String componentClassTypeName: ann.limitComponents()) {
@@ -47,11 +46,10 @@ public class FactMd extends EntityBase implements Serializable {
     @Id
     @Column(name="FMD_TABLE_NAME")
     public String getTableName() {
-        return tableName;
+        return table.name();
     }
 
     public void setTableName(String tableName) {
-        this.tableName = tableName;
     }
 
     @Basic
@@ -72,6 +70,11 @@ public class FactMd extends EntityBase implements Serializable {
     @Transient
     public boolean isLimitComponentsRecursive() {
         return limitComponentsRecursive;
+    }
+
+    @Transient
+    public Table getTableAnn() {
+        return table;
     }
 
 }

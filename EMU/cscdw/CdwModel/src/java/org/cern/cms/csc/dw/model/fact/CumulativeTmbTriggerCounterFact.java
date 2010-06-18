@@ -54,7 +54,7 @@ import org.cern.cms.csc.dw.model.annotation.FactAnn;
 @Table(name = "CDW_TMB_TRG_CNT_CUMUL_FACTS")
 @FactAnn(limitComponents = {
     "TMB"
-})
+}, title = "Cumulative TMB Trigger Counters")
 public class CumulativeTmbTriggerCounterFact
     extends Fact
     implements Serializable

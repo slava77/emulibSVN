@@ -49,7 +49,7 @@ import org.cern.cms.csc.dw.model.annotation.FactAnn;
 @Table(name = "CDW_DQM_CSC_HV_SEGMENT_FACTS")
 @FactAnn(limitComponents = {
     "HVSegment"
-})
+}, title = "DQM HV Segment")
 public class DqmCscHvSegmentFact
     extends Fact
     implements Serializable

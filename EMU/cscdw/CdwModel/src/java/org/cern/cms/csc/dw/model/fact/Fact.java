@@ -175,6 +175,7 @@ public abstract class Fact
      */
     @Basic
     @Column(name = "FCT_RUN", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapDimension(name = "Run")
     public Long getRun() {
         return run;
     }
@@ -269,6 +270,7 @@ public abstract class Fact
         CascadeType.ALL
     })
     @JoinColumn(name = "FCT_CMP_ID")
+    @org.cern.cms.csc.dw.model.annotation.OlapDimension(name = "Component")
     public org.cern.cms.csc.dw.model.ontology.Component getComponent() {
         return component;
     }
@@ -321,6 +323,7 @@ public abstract class Fact
     @Basic
     @Column(name = "FCT_TIME")
     @Temporal(TemporalType.TIMESTAMP)
+    @org.cern.cms.csc.dw.model.annotation.OlapDimension(name = "Time")
     public Date getTimeItem() {
         return XmlAdapterUtils.unmarshall(XMLGregorianCalendarAsDateTime.class, this.getTime());
     }
@@ -331,6 +334,7 @@ public abstract class Fact
 
     @Basic
     @Column(name = "FCT_SEVERITY", length = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapDimension(name = "Severity")
     public String getSeverityItem() {
         return ((this.getSeverity() == null)?null:this.getSeverity().value());
     }

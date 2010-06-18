@@ -48,24 +48,4 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:simpleType name="factTypeType">
-    <xsd:annotation>
-        <xsd:appinfo>
-            <jaxb:typesafeEnumClass name="FactType" />
-        </xsd:appinfo>
-    </xsd:annotation>
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="SlidingTmbTriggerCounterFact"/>
-      <xsd:enumeration value="CumulativeTmbTriggerCounterFact"/>
-      <xsd:enumeration value="TmbCounterFact"/>
-      <xsd:enumeration value="DqmCscAfebFact"/>
-      <xsd:enumeration value="DqmCscCfebFact"/>
-      <xsd:enumeration value="DqmCscFact"/>
-      <xsd:enumeration value="DqmCscHvSegmentFact"/>
-      <xsd:enumeration value="DqmDduFact"/>
-      <xsd:enumeration value="DqmDduInputFact"/>
-      <xsd:enumeration value="DqmEmuFact"/>
-    </xsd:restriction>
-  </xsd:simpleType>
-
 </xsd:schema>

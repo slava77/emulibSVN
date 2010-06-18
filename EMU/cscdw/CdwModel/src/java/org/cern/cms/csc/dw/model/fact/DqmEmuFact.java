@@ -99,7 +99,7 @@ import org.cern.cms.csc.dw.model.annotation.FactAnn;
 @Table(name = "CDW_DQM_EMU_FACTS")
 @FactAnn(limitComponents = {
     "CSC"
-})
+}, title = "DQM EMU")
 public class DqmEmuFact
     extends Fact
     implements Serializable

@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="component_id" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;element name="factType" type="{http://www.cern.ch/cms/csc/dw/model}factTypeType" minOccurs="0"/>
+ *         &lt;element name="factType" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -47,7 +47,7 @@ public class FactRequest
 
     @XmlElement(name = "component_id")
     protected List<String> componentId = new Vector<String>();
-    protected FactType factType;
+    protected String factType;
 
     /**
      * Gets the value of the componentId property.
@@ -99,10 +99,10 @@ public class FactRequest
      * 
      * @return
      *     possible object is
-     *     {@link FactType }
+     *     {@link String }
      *     
      */
-    public FactType getFactType() {
+    public String getFactType() {
         return factType;
     }
 
@@ -111,10 +111,10 @@ public class FactRequest
      * 
      * @param value
      *     allowed object is
-     *     {@link FactType }
+     *     {@link String }
      *     
      */
-    public void setFactType(FactType value) {
+    public void setFactType(String value) {
         this.factType = value;
     }
 

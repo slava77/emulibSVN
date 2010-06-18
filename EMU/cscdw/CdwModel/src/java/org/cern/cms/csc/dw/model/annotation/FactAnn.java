@@ -10,6 +10,12 @@ import java.lang.annotation.Target;
 public @interface FactAnn {
 
     /**
+     * Fact title. Used in OLAP Cube name and elsewhere
+     * @return
+     */
+    String title();
+
+    /**
      * Types of component classes this fact can have. Empty for any.
      * List of strings should refer to org.cern.cms.csc.dw.model.ontology.ComponentClassType!!!
      * Array of enums is not supported by JAXB?
@@ -17,7 +23,7 @@ public @interface FactAnn {
     String [] limitComponents() default {};
 
     /**
-     * Should limitComponents be looked at recurvively?
+     * Should limitComponents be looked at recursively?
      */
     boolean limitComponentsRecursive() default false;
 

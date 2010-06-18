@@ -43,7 +43,7 @@
         </xsd:annotation>
         <xsd:sequence>
             <xsd:element name="component_id" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
-            <xsd:element name="factType" type="tns:factTypeType" minOccurs="0"/>
+            <xsd:element name="factType" type="xsd:string" minOccurs="0"/>
         </xsd:sequence>
     </xsd:complexType>
 

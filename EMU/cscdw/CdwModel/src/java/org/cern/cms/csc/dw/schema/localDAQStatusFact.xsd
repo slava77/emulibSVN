@@ -28,7 +28,7 @@
                     <orm:table name="CDW_LOCAL_DAQ_STATUS_FACTS"/>
                 </hj:entity>
                 <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
-                    <a:FactAnn limitComponents="Software"/>
+                    <a:FactAnn title="Local DAQ Status" limitComponents="Software"/>
                 </ann:annotate>
             </xsd:appinfo>
         </xsd:annotation>
