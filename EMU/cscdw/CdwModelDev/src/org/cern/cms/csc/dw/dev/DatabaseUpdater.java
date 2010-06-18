@@ -44,7 +44,7 @@ public class DatabaseUpdater {
             em.flush();
 
             // Write current fact metadata
-            for (FactMd f: (new MetadataManager()).getFactClasses()) {
+            for (FactMd f: (new MetadataManager()).getFactMDs()) {
                 em.persist(f);
             }
 

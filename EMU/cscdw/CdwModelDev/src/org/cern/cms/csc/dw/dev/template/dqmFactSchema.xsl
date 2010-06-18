@@ -46,7 +46,7 @@
                         <orm:table name="{substring(@table,1,30)}"/>
                     </hj:entity>
                     <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
-                        <a:FactAnn limitComponents="{@componentClass}"/>
+                        <a:FactAnn limitComponents="{@componentClass}" title="{@factTitle}"/>
                     </ann:annotate>
                 </xsd:appinfo>
             </xsd:annotation>

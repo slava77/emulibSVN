@@ -224,6 +224,7 @@
             <substitution expression=""/>
             <fileset dir="${model}/src/java/org/cern/cms/csc">
                 <include name="dw/model/**/*.java"/>
+                <include name="dw/service/**/*.java"/>
                 <include name="exsys/re/model/**/*.java"/>
             </fileset>
         </replaceregexp>
@@ -250,8 +251,23 @@
 
         <delete failonerror="false">
             <fileset dir="${model}/src/java/org/cern/cms/csc/dw/model" includes="**/*.java.backup"/>
+            <fileset dir="${model}/src/java/org/cern/cms/csc/dw/service" includes="**/*.java.backup"/>
             <fileset dir="${model}/src/java/org/cern/cms/csc/exsys/re/model" includes="**/*.java.backup"/>
         </delete>
+
+    </target>
+
+    <target name="06-olap-definitions" depends="db-properties">
+
+        <delete dir="${model}/src/olap" includeemptydirs="true" includes="**/*" excludes="CVS"/>
+        <mkdir dir="${model}/src/olap"/>
+
+        <!-- Execute main olap definition generation procedure -->
+        <java classname="org.cern.cms.csc.dw.dev.OlapGenerator" fork="true" failonerror="true" classpathref="classpath">
+            <jvmarg line="-Xmn100M -Xms500M -Xmx500M -Xss50M"/>
+            <arg value="--db=${hibernate.connection.username}"/>
+            <arg value="--dest=${model}/src/olap"/>
+        </java>
 
     </target>
 

@@ -8,11 +8,16 @@ package org.jvnet.jaxb2_commons.plugin;
 import com.sun.codemodel.JAnnotationArrayMember;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JClass;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JType;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.Plugin;
 import com.sun.tools.xjc.model.CPluginCustomization;
 import com.sun.tools.xjc.outline.ClassOutline;
+import com.sun.tools.xjc.outline.EnumOutline;
 import com.sun.tools.xjc.outline.FieldOutline;
 import com.sun.tools.xjc.outline.Outline;
 import java.lang.reflect.Method;
@@ -35,7 +40,9 @@ import org.xml.sax.SAXParseException;
 public class XjcAnnotatePlugin extends Plugin {
 
     private static final String annoNS = "http://jaxb.dev.java.net/plugin/annotate";
-    private static final QName  annoQN = new QName(annoNS, "annotate");
+    private static final QName  annoDefaultQN = new QName(annoNS, "annotate");
+    private static final QName  annoGetQN = new QName(annoNS, "annotateGet");
+    private static final QName  annoSetQN = new QName(annoNS, "annotateSet");
 
     @Override
     public String getOptionName() {
@@ -49,12 +56,15 @@ public class XjcAnnotatePlugin extends Plugin {
 
     @Override
     public List<String> getCustomizationURIs() {
-        return Collections.singletonList(annoQN.getNamespaceURI());
+        return Collections.singletonList(annoDefaultQN.getNamespaceURI());
     }
 
     @Override
     public boolean isCustomizationTagName(String nsUri, String localName) {
-        return nsUri.equals(annoQN.getNamespaceURI()) && localName.equals(annoQN.getLocalPart());
+        return nsUri.equals(annoDefaultQN.getNamespaceURI()) && 
+                (localName.equals(annoDefaultQN.getLocalPart()) ||
+                 localName.equals(annoGetQN.getLocalPart()) ||
+                 localName.equals(annoSetQN.getLocalPart()));
     }
 
     @SuppressWarnings("unchecked")
@@ -68,7 +78,7 @@ public class XjcAnnotatePlugin extends Plugin {
             try {
 
                 // Annotate class
-                cs = CustomizationUtils.findCustomization(classOutline, annoQN);
+                cs = CustomizationUtils.findCustomization(classOutline, annoDefaultQN);
                 if (cs != null) {
                     List<AnnotationData> data = getAnnotation(outline, cs, errorHandler);
                     for (AnnotationData annData: data) {
@@ -81,13 +91,76 @@ public class XjcAnnotatePlugin extends Plugin {
                 // Annotate field
                 for (FieldOutline fieldOutline: classOutline.getDeclaredFields()) {
                     String name = fieldOutline.getPropertyInfo().getName(false);
-                    cs = fieldOutline.getPropertyInfo().getCustomizations().find(annoQN.getNamespaceURI());
+                    cs = fieldOutline.getPropertyInfo().getCustomizations().find(annoDefaultQN.getNamespaceURI(), annoDefaultQN.getLocalPart());
                     if (cs != null) {
                         List<AnnotationData> data = getAnnotation(outline, cs, errorHandler);
                         for (AnnotationData annData: data) {
                             JFieldVar f = classOutline.implClass.fields().get(name);
                             JAnnotationUse ann = f.annotate(annData.getJClass());
                             annData.applyParams(ann);
+                        }
+                        cs.markAsAcknowledged();
+                    }
+                }
+
+                // Annotate getter
+                for (FieldOutline fieldOutline: classOutline.getDeclaredFields()) {
+                    String name = fieldOutline.getPropertyInfo().getName(true);
+                    cs = fieldOutline.getPropertyInfo().getCustomizations().find(annoGetQN.getNamespaceURI(), annoGetQN.getLocalPart());
+                    if (cs != null) {
+                        List<AnnotationData> data = getAnnotation(outline, cs, errorHandler);
+                        JType rawType = fieldOutline.getRawType();
+
+                        boolean isItem = false;
+
+                        if (rawType instanceof JDefinedClass) {
+                            for (EnumOutline eo: outline.getEnums()) {
+                                if (rawType.fullName().equals(eo.clazz.fullName())) {
+                                    isItem = true;
+                                    break;
+                                }
+                            }
+                        } else {
+                            if (rawType.fullName().equals("javax.xml.datatype.XMLGregorianCalendar")) {
+                                isItem = true;
+                            }
+                        }
+
+                        JMethod m = null;
+
+                        if (isItem) {
+                            m = classOutline.implClass.getMethod("get" + name + "Item", new JType[0]);
+                        }
+
+                        if (m == null) {
+                            m = classOutline.implClass.getMethod("get" + name, new JType[0]);
+                        }
+
+                        for (AnnotationData annData: data) {
+                            
+                            if (m != null) {
+                                JAnnotationUse ann = m.annotate(annData.getJClass());
+                                annData.applyParams(ann);
+                            }
+                        }
+                        cs.markAsAcknowledged();
+                    }
+                }
+
+                // Annotate setter
+                for (FieldOutline fieldOutline: classOutline.getDeclaredFields()) {
+                    String name = fieldOutline.getPropertyInfo().getName(true);
+                    cs = fieldOutline.getPropertyInfo().getCustomizations().find(annoSetQN.getNamespaceURI(), annoSetQN.getLocalPart());
+                    if (cs != null) {
+                        List<AnnotationData> data = getAnnotation(outline, cs, errorHandler);
+                        for (AnnotationData annData: data) {
+                            JType [] mtypes = new JType[1];
+                            mtypes[0] = fieldOutline.getRawType();
+                            JMethod m = classOutline.implClass.getMethod("set" + name, mtypes );
+                            if (m != null) {
+                                JAnnotationUse ann = m.annotate(annData.getJClass());
+                                annData.applyParams(ann);
+                            }
                         }
                         cs.markAsAcknowledged();
                     }

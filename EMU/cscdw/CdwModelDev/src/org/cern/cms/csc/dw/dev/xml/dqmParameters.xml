@@ -2,7 +2,7 @@
 
 <classes xmlns="http://www.cern.ch/cms/csc/dw/model/dqm">
 
-    <class name="DqmEmuFact" table="CDW_DQM_EMU_FACTS" componentClass="CSC">
+    <class name="DqmEmuFact" table="CDW_DQM_EMU_FACTS" componentClass="CSC" factTitle="DQM EMU">
         <param property="chambersWithBwords" column="FCT_CH_WITH_BWORDS">ALL_CHAMBERS_WITH_BWORDS</param>
         <param property="chambersWithFormatErrors" column="FCT_CH_WITH_FORMAT_ERRORS">ALL_CHAMBERS_WITH_FORMAT_ERRORS</param>
         <param property="chambersWithInputFifoFull" column="FCT_CH_WITH_INPUT_FIFO_FULL">ALL_CHAMBERS_WITH_INPUT_FIFO_FULL</param>
@@ -37,18 +37,18 @@
         <param property="dduNotInReadout" column="FCT_NO_DDU_IN_READOUT">ALL_NO_DDU_IN_READOUT</param>
     </class>
 
-    <class name="DqmDduFact" table="CDW_DQM_DDU_FACTS" componentClass="DDU">
+    <class name="DqmDduFact" table="CDW_DQM_DDU_FACTS" componentClass="DDU" factTitle="DQM DDU">
         <param fraction="1" property="withFormatErrors" column="FCT_WITH_FORMAT_ERRORS">DDU_WITH_FORMAT_ERRORS</param>
         <param fraction="1" property="withTrailerErrors" column="FCT_WITH_TRAILER_ERRORS">DDU_WITH_TRAILER_ERRORS</param>
     </class>
 
-    <class name="DqmDduInputFact" table="CDW_DQM_DDU_INPUT_FACTS" componentClass="DDUInput">
+    <class name="DqmDduInputFact" table="CDW_DQM_DDU_INPUT_FACTS" componentClass="DDUInput" factTitle="DQM DDU Input">
         <param property="inputInErrorState" column="FCT_INPUT_IN_ERROR_STATE">DDU_INPUT_IN_ERROR_STATE</param>
         <param property="inputInWarningState" column="FCT_INPUT_IN_WARN_STATE">DDU_INPUT_IN_WARNING_STATE</param>
         <param property="inputNoData" column="FCT_NO_INPUT_DATA">DDU_NO_INPUT_DATA</param>
     </class>
 
-    <class name="DqmCscFact" table="CDW_DQM_CSC_FACTS" componentClass="Chamber">
+    <class name="DqmCscFact" table="CDW_DQM_CSC_FACTS" componentClass="Chamber" factTitle="DQM Chamber">
         <param fraction="1" property="hotChamber" column="FCT_HOT_CHAMBER">CSC_HOT_CHAMBER</param>
         <param fraction="1" property="lowEfficiencyChamber" column="FCT_LOW_EFF_CHAMBER">CSC_LOW_EFF_CHAMBER</param>
         <param fraction="1" property="withBwords" column="FCT_WITH_BWORDS">CSC_WITH_BWORDS</param>
@@ -82,12 +82,12 @@
         <param fraction="1" property="withoutClct" column="FCT_WITHOUT_CLCT">CSC_WITHOUT_CLCT</param>
     </class>
 
-    <class name="DqmCscAfebFact" table="CDW_DQM_CSC_AFEB_FACTS" componentClass="AFEB">
+    <class name="DqmCscAfebFact" table="CDW_DQM_CSC_AFEB_FACTS" componentClass="AFEB" factTitle="DQM AFEB">
         <param property="alctAfebNoisy" column="FCT_ALCT_AFEB_NOISY">CSC_ALCT_AFEB_NOISY</param>
         <param property="alctNoAnodeData" column="FCT_ALCT_NO_ANODE_DATA">CSC_ALCT_NO_ANODE_DATA</param>
     </class>
 
-    <class name="DqmCscCfebFact" table="CDW_DQM_CSC_CFEB_FACTS" componentClass="CFEB">
+    <class name="DqmCscCfebFact" table="CDW_DQM_CSC_CFEB_FACTS" componentClass="CFEB" factTitle="DQM CFEB">
         <param fraction="1" property="withLowCfebDavEfficiency" column="FCT_WITH_LOW_CFEB_DAV_EFF">CSC_WITH_LOW_CFEB_DAV_EFF</param>
     </class>
 
@@ -107,7 +107,7 @@
     </class>
     -->
 
-    <class name="DqmCscHvSegmentFact" table="CDW_DQM_CSC_HV_SEGMENT_FACTS" componentClass="HVSegment">
+    <class name="DqmCscHvSegmentFact" table="CDW_DQM_CSC_HV_SEGMENT_FACTS" componentClass="HVSegment" factTitle="DQM HV Segment">
         <param property="noHvSegment" column="FCT_NO_HV_SEGMENT">CSC_NO_HV_SEGMENT</param>
     </class>
 
