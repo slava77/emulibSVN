@@ -1,6 +1,7 @@
 package org.cern.cms.csc.dw.dev.olap;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 public class DataTypeDef {
 
@@ -11,7 +12,7 @@ public class DataTypeDef {
         this.type = type;
         this.typeName = type.getSimpleName();
         
-        if (type.equals(Long.class)) {
+        if (type.equals(Long.class) || type.equals(BigInteger.class)) {
             typeName = "Integer";
         }
 

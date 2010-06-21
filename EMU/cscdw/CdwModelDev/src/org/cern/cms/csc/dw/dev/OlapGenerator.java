@@ -101,7 +101,7 @@ public class OlapGenerator {
             opts.addOption(OptionBuilder.hasArg().withDescription("Destination directory").isRequired().create(OPTION_DEST));
             CommandLine cmdLine = clparser.parse(opts, args);
 
-            String dbSchema = cmdLine.getOptionValue(OPTION_DB);
+            String dbSchema = cmdLine.getOptionValue(OPTION_DB).toUpperCase();
             File destDir = new File(cmdLine.getOptionValue(OPTION_DEST));
             File baseXml = new File(cmdLine.getOptionValue(OPTION_XML_BASE));
 

@@ -272,4 +272,13 @@
 
     </target>
 
+    <target name="07-olap-database" depends="db-properties">
+
+        <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
+            delimiter="/" keepformat="true" delimitertype="row" onerror="continue" classpathref="classpath">
+            <transaction src="${model}/src/olap/olap.sql"/>
+        </sql>
+
+    </target>
+
 </project>

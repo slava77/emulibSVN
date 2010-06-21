@@ -52,7 +52,7 @@ public class CubeDef {
     }
 
     public boolean hasColumns() {
-        return (measures.size() > 0 || dimensions.size() > 0);
+        return (measures.size() > 0 && dimensions.size() > 0);
     }
 
     public void generateSchema(Document doc, Node schemaNd, String dbSchema) {

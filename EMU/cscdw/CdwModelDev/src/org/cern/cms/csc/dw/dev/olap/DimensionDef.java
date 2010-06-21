@@ -40,9 +40,13 @@ class DimensionDef extends ColumnDef {
     }
 
     public void getDDL(PrintWriter out, CubeDef cube) {
+
         if (timeDimension) {
             if (!shared || (shared && baseField)) {
-                out.println("\nDROP MATERIALIZED VIEW " + tableName + ";");
+
+                out.println("DROP MATERIALIZED VIEW " + tableName);
+                out.print(SQL_ENDL);
+
                 out.println("\nCREATE MATERIALIZED VIEW " + tableName + " AS");
                 out.println("SELECT");
                 out.println("\t  a.time_data \"TIME\"");
@@ -55,16 +59,23 @@ class DimensionDef extends ColumnDef {
                 out.println("\t, to_number(TO_CHAR(a.time_data, \'D\')) \"WEEKDAY\"");
                 out.println("\t, initcap(trim(TO_CHAR(a.time_data, \'DAY\'))) \"WEEKDAY_NAME\"");
                 out.println("FROM");
-                out.println("\t(SELECT DISTINCT " + columnName + " as time_data FROM " + cube.getFact().getTableName() + ") a;");
+                out.println("\t(SELECT DISTINCT " + columnName + " as time_data FROM " + cube.getFact().getTableName() + ") a");
+                out.print(SQL_ENDL);
+
             }
         } else {
             if (shared && baseField) {
-                out.println("\nDROP MATERIALIZED VIEW " + tableName + ";");
+
+                out.println("DROP MATERIALIZED VIEW " + tableName);
+                out.print(SQL_ENDL);
+
                 out.println("\nCREATE MATERIALIZED VIEW " + tableName + " AS");
                 out.println("SELECT DISTINCT");
                 out.println("\t  " + columnName);
                 out.println("FROM");
-                out.println("\t" + cube.getFact().getTableName() + ";");
+                out.println("\t" + cube.getFact().getTableName());
+                out.print(SQL_ENDL);
+                
             }
         }
     }
