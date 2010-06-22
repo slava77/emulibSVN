@@ -15,12 +15,13 @@ class DimensionDef extends ColumnDef {
     private boolean baseField = false;
     private boolean shared = false;
 
-    public DimensionDef(Method method, CubeDef cube) {
-        super(method);
+    public DimensionDef(CubeDef cube, Method method) {
+        super(cube, method);
+        
         this.olapDimension = method.getAnnotation(OlapDimension.class);
 
         if (method.getReturnType().equals(Date.class)) {
-            setTableName(cube.getFact().getTableName() + "$" + columnName);
+            setTableName(cube.getFact().getTableName(), cube.getTableSuffix());
             this.timeDimension = true;
         }
 
@@ -33,13 +34,21 @@ class DimensionDef extends ColumnDef {
     }
 
     private void setTableName(String tableName) {
-        if (tableName.length() > 30) {
-            tableName = tableName.substring(0, 30);
-        }
-        this.tableName = tableName;
+        setTableName(tableName, "");
     }
 
-    public void getDDL(PrintWriter out, CubeDef cube) {
+    private void setTableName(String tableName, String suffix) {
+        if (!suffix.equals("")) {
+            suffix = "$".concat(suffix);
+        }
+        if ((tableName.length() + suffix.length()) > 30) {
+            tableName = tableName.substring(0, 30 - suffix.length());
+        }
+        this.tableName = tableName + suffix;
+    }
+
+    @Override
+    public void getDDL(PrintWriter out) {
 
         if (timeDimension) {
             if (!shared || (shared && baseField)) {
@@ -120,7 +129,8 @@ class DimensionDef extends ColumnDef {
      * @param doc
      * @return XML element
      */
-    public Element getElement(Document doc, String dbSchema) {
+    @Override
+    public Element getElement(Document doc) {
 
         Element dimEl = doc.createElement("Dimension");
         dimEl.setAttribute("name", olapDimension.name());
@@ -139,7 +149,7 @@ class DimensionDef extends ColumnDef {
         if (shared || timeDimension) {
             Element dateTableEl = doc.createElement("Table");
             dateTableEl.setAttribute("name", tableName);
-            dateTableEl.setAttribute("schema", dbSchema);
+            dateTableEl.setAttribute("schema", cube.getDbSchema());
             hierarchyEl.appendChild(dateTableEl);
         }
 

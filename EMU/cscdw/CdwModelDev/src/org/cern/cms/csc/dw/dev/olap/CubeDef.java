@@ -18,24 +18,31 @@ import org.w3c.dom.Node;
 public class CubeDef {
 
     private FactMd fact;
-    private List<MeasureDef> measures = new ArrayList<MeasureDef>();
-    private List<DimensionDef> dimensions = new ArrayList<DimensionDef>();
+    private List<ColumnDef> columns = new ArrayList<ColumnDef>();
     private BeanUtilsBean utils = BeanUtilsBean.getInstance();
+    private boolean hasMeasure = false;
+    private boolean hasDimension = false;
+    private final String dbSchema;
 
-    public CubeDef(FactMd fact) {
+    private int tableSuffixNumber = 1;
+
+    public CubeDef(FactMd fact, String dbSchema) {
         this.fact = fact;
-        
+        this.dbSchema = dbSchema;
+
         for (PropertyDescriptor prop : utils.getPropertyUtils().getPropertyDescriptors(fact.getFactClass())) {
             Method m = prop.getReadMethod();
 
             if (m.isAnnotationPresent(Column.class) || m.isAnnotationPresent(JoinColumn.class)) {
 
                 if (m.isAnnotationPresent(OlapMeasure.class)) {
-                    measures.add(new MeasureDef(m));
+                    columns.add(new MeasureDef(this, m));
+                    hasMeasure = true;
                 }
 
                 if (m.isAnnotationPresent(OlapDimension.class)) {
-                    dimensions.add(new DimensionDef(m, this));
+                    columns.add(new DimensionDef(this, m));
+                    hasDimension = true;
                 }
                 
             }
@@ -51,11 +58,19 @@ public class CubeDef {
         return fact;
     }
 
-    public boolean hasColumns() {
-        return (measures.size() > 0 && dimensions.size() > 0);
+    public String getDbSchema() {
+        return dbSchema;
     }
 
-    public void generateSchema(Document doc, Node schemaNd, String dbSchema) {
+    public boolean hasMeasureAndDimension() {
+        return (hasMeasure && hasDimension);
+    }
+
+    public String getTableSuffix() {
+        return "D" + String.valueOf(tableSuffixNumber++);
+    }
+
+    public void generateSchema(Document doc, Node schemaNd) {
 
         Element cubeEl = doc.createElement("Cube");
         cubeEl.setAttribute("name", fact.getTableName());
@@ -78,14 +93,17 @@ public class CubeDef {
             }
         }
 
-        for (DimensionDef dim : dimensions) {
-            if (dim.isShared()) {
-                if (dim.isBaseField()) {
-                    schemaNd.insertBefore(dim.getElement(doc, dbSchema), firstCubeNd);
+        for (ColumnDef col : columns) {
+            if (col instanceof DimensionDef) {
+                DimensionDef dim = (DimensionDef) col;
+                if (dim.isShared()) {
+                    if (dim.isBaseField()) {
+                        schemaNd.insertBefore(dim.getElement(doc), firstCubeNd);
+                    }
+                    cubeNd.appendChild(dim.getUsageElement(doc));
+                } else {
+                    cubeNd.appendChild(dim.getElement(doc));
                 }
-                cubeNd.appendChild(dim.getUsageElement(doc));
-            } else {
-                cubeNd.appendChild(dim.getElement(doc, dbSchema));
             }
         }
 
@@ -95,17 +113,21 @@ public class CubeDef {
          * <Measure name="Dataset Id" column="RDA_ID" datatype="Integer" formatString="###" aggregator="distinct-count" visible="true"></Measure>
          *
          */
-        for (MeasureDef meas : measures) {
-            Element el = meas.getElement(doc);
-            cubeNd.appendChild(el);
+        for (ColumnDef col : columns) {
+            if (col instanceof MeasureDef) {
+                MeasureDef meas = (MeasureDef) col;
+                Element el = meas.getElement(doc);
+                cubeNd.appendChild(el);
+            }
         }
+        
     }
 
     @SuppressWarnings(value = "unchecked")
     public void generateDDL(PrintWriter out) {
         
-        for (DimensionDef dim : dimensions) {
-            dim.getDDL(out, this);
+        for (ColumnDef col : columns) {
+            col.getDDL(out);
         }
         
     }

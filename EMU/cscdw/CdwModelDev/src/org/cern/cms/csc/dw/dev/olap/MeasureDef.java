@@ -9,8 +9,8 @@ public class MeasureDef extends ColumnDef {
 
     private OlapMeasure olapMeasure;
 
-    public MeasureDef(Method method) {
-        super(method);
+    public MeasureDef(CubeDef cube, Method method) {
+        super(cube, method);
         this.olapMeasure = method.getAnnotation(OlapMeasure.class);
     }
 
@@ -20,6 +20,7 @@ public class MeasureDef extends ColumnDef {
      * @param doc
      * @return XML element
      */
+    @Override
     public Element getElement(Document doc) {
         Element el = doc.createElement("Measure");
         el.setAttribute("name", olapMeasure.name());

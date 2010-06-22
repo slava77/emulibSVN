@@ -1,8 +1,11 @@
 package org.cern.cms.csc.dw.dev.olap;
 
+import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public abstract class ColumnDef {
 
@@ -10,8 +13,11 @@ public abstract class ColumnDef {
     protected Method method;
     protected String columnName;
     protected DataTypeDef type;
+    protected CubeDef cube;
 
-    protected ColumnDef(Method method) {
+    protected ColumnDef(CubeDef cube, Method method) {
+
+        this.cube = cube;
         this.method = method;
 
         if (method.isAnnotationPresent(Column.class)) {
@@ -35,6 +41,13 @@ public abstract class ColumnDef {
 
     public Method getMethod() {
         return method;
+    }
+
+    public Element getElement(Document doc) {
+        return null;
+    }
+
+    public void getDDL(PrintWriter out) {       
     }
 
 }

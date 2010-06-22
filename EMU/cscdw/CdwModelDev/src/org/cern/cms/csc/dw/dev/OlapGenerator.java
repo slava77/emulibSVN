@@ -24,7 +24,6 @@ import org.cern.cms.csc.dw.dev.olap.CubeDef;
 import org.cern.cms.csc.dw.metadata.FactMd;
 import org.cern.cms.csc.dw.metadata.MetadataManager;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
@@ -36,7 +35,6 @@ public class OlapGenerator {
     private static final String FILENAME_SQL = "olap.sql";
     private static final String FILENAME_XML = "olap.xml";
 
-    private final String dbSchema;
     private TransformerFactory transFactory;
     private DocumentBuilderFactory docFactory;
     private DocumentBuilder docBuilder;
@@ -48,9 +46,8 @@ public class OlapGenerator {
         transFactory = TransformerFactory.newInstance();
         this.docFactory = DocumentBuilderFactory.newInstance();
         this.docBuilder = this.docFactory.newDocumentBuilder();
-        this.dbSchema = dbSchema;
         for (FactMd fact: mm.getFactMDs()) {
-            cubes.add(new CubeDef(fact));
+            cubes.add(new CubeDef(fact, dbSchema));
         }
     }
 
@@ -59,7 +56,7 @@ public class OlapGenerator {
         PrintWriter out = new PrintWriter(fout);
 
         for (CubeDef cube : cubes) {
-            if (cube.hasColumns()) {
+            if (cube.hasMeasureAndDimension()) {
                 cube.generateDDL(out);
             }
         }
@@ -73,8 +70,8 @@ public class OlapGenerator {
         Document doc = docBuilder.parse(base);
         Node rootNode = doc.getDocumentElement();
         for (CubeDef cube : cubes) {
-            if (cube.hasColumns()) {
-                cube.generateSchema(doc, rootNode, dbSchema);
+            if (cube.hasMeasureAndDimension()) {
+                cube.generateSchema(doc, rootNode);
             }
         }
 
