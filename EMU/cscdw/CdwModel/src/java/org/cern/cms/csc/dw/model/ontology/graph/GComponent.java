@@ -1,6 +1,8 @@
 package org.cern.cms.csc.dw.model.ontology.graph;
 
 import java.util.Collection;
+import org.cern.cms.csc.dw.model.ontology.ComponentLinkClassType;
+import org.neo4j.graphdb.Direction;
 
 public interface GComponent extends GNode {
 
@@ -21,5 +23,11 @@ public interface GComponent extends GNode {
 
     GComponentLinks getGComponentLinks();
     Collection<GComponentLink> getLinks();
+
+    Collection<GComponent> getRelatedGComponents(ComponentLinkClassType type);
+    Collection<GComponent> getRelatedGComponents(ComponentLinkClassType type, Direction dir);
+
+    boolean hasRelatedGComponents(ComponentLinkClassType type);
+    boolean hasRelatedGComponents(ComponentLinkClassType type, Direction dir);
 
 }

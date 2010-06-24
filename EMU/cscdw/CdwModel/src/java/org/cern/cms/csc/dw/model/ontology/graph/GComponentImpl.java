@@ -1,6 +1,8 @@
 package org.cern.cms.csc.dw.model.ontology.graph;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
+import org.cern.cms.csc.dw.model.ontology.ComponentLinkClassType;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 
@@ -71,6 +73,46 @@ public class GComponentImpl extends GNodeImpl implements GComponent {
 
     public Collection<GComponentClass> getTypes() {
         return getType().getParentsRecursive(true);
+    }
+
+    public Collection<GComponent> getRelatedGComponents(ComponentLinkClassType type, Direction dir) {
+        Collection<GComponent> ret = new LinkedHashSet<GComponent>();
+
+        if (dir.equals(Direction.OUTGOING) || dir.equals(Direction.BOTH)) {
+            ret.addAll(getGComponentLinks().getRelatedGComponents(type));
+        }
+
+        if (dir.equals(Direction.INCOMING) || dir.equals(Direction.BOTH)) {
+            for (GComponentLinks links: getRelatedGNodeCollection(
+                                            GComponentLinks.class,
+                                            type, Direction.INCOMING)) {
+                ret.add(links.getGComponent());
+            }
+        }
+
+        return ret;
+    }
+
+    public boolean hasRelatedGComponents(ComponentLinkClassType type, Direction dir) {
+        boolean ret = false;
+
+        if (dir.equals(Direction.OUTGOING) || dir.equals(Direction.BOTH)) {
+            ret = getGComponentLinks().hasLink(type);
+        }
+
+        if (!ret && (dir.equals(Direction.INCOMING) || dir.equals(Direction.BOTH))) {
+            ret = ! getRelatedGNodeCollection(GComponentLinks.class, type, Direction.INCOMING).isEmpty();
+        }
+
+        return ret;
+    }
+
+    public Collection<GComponent> getRelatedGComponents(ComponentLinkClassType type) {
+        return getRelatedGComponents(type, Direction.OUTGOING);
+    }
+
+    public boolean hasRelatedGComponents(ComponentLinkClassType type) {
+        return hasRelatedGComponents(type, Direction.OUTGOING);
     }
 
 }

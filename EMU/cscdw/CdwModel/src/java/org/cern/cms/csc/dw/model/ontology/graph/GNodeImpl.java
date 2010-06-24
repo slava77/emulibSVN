@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.ReturnableEvaluator;
 import org.neo4j.graphdb.StopEvaluator;
 import org.neo4j.graphdb.Transaction;
@@ -119,11 +120,11 @@ public abstract class GNodeImpl extends GBase implements GNode {
         }
     }
 
-    protected void setRelationship(GNode toNode, GLinkType type) {
+    protected void setRelationship(GNode toNode, RelationshipType type) {
         setRelationship(toNode.getNode(), type);
     }
 
-    protected void setRelationship(Node toNode, GLinkType type) {
+    protected void setRelationship(Node toNode, RelationshipType type) {
         Transaction tx = gservices.beginTx();
         try {
             node.createRelationshipTo(toNode, type);
@@ -134,18 +135,18 @@ public abstract class GNodeImpl extends GBase implements GNode {
     }
 
     @SuppressWarnings("unchecked")
-    protected <T extends GNode> T getRelatedGNode(Class<T> ifClass, GLinkType type, Direction dir) {
+    protected <T extends GNode> T getRelatedGNode(Class<T> ifClass, RelationshipType type, Direction dir) {
         GQuery q = new GQuery(gservices, ifClass);
         q.addGLinkTypeDirection(type, dir);
         return (T) q.getRelatedGNode(node);
     }
 
-    protected <T extends GNode> Collection<T> getRelatedGNodeCollection(Class<T> ifClass, GLinkType type, Direction dir) {
+    protected <T extends GNode> Collection<T> getRelatedGNodeCollection(Class<T> ifClass, RelationshipType type, Direction dir) {
         return getRelatedGNodeCollection(ifClass, type, dir, StopEvaluator.DEPTH_ONE, ReturnableEvaluator.ALL_BUT_START_NODE);
     }
 
     @SuppressWarnings("unchecked")
-    protected <T extends GNode> Collection<T> getRelatedGNodeCollection(Class<T> ifClass, GLinkType type, Direction dir, StopEvaluator stop, ReturnableEvaluator returnable) {
+    protected <T extends GNode> Collection<T> getRelatedGNodeCollection(Class<T> ifClass, RelationshipType type, Direction dir, StopEvaluator stop, ReturnableEvaluator returnable) {
         GQuery q = new GQuery(gservices, ifClass);
         q.addGLinkTypeDirection(type, dir);
         q.setStop(stop);
@@ -154,7 +155,7 @@ public abstract class GNodeImpl extends GBase implements GNode {
     }
 
     @SuppressWarnings("unchecked")
-    protected <T extends GNode> Collection<T> getRelatedGNodeCollection(Class<T> ifClass, GLinkType type1, Direction dir1, GLinkType type2, Direction dir2, StopEvaluator stop, ReturnableEvaluator returnable) {
+    protected <T extends GNode> Collection<T> getRelatedGNodeCollection(Class<T> ifClass, RelationshipType type1, Direction dir1, RelationshipType type2, Direction dir2, StopEvaluator stop, ReturnableEvaluator returnable) {
         GQuery q = new GQuery(gservices, ifClass);
         q.addGLinkTypeDirection(type1, dir1);
         q.addGLinkTypeDirection(type2, dir2);

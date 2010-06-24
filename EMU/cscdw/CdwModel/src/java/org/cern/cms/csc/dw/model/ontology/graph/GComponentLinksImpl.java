@@ -56,4 +56,22 @@ public class GComponentLinksImpl extends GNodeImpl implements GComponentLinks {
         return false;
     }
 
+    public boolean hasLink(ComponentLinkClassType type) {
+        Transaction tx = gservices.beginTx();
+        try {
+            return node.hasRelationship(type, Direction.OUTGOING);
+        } finally {
+            tx.success();
+            tx.finish();
+        }
+    }
+
+    public GComponent getGComponent() {
+        return getRelatedGNode(GComponent.class, GLinkType.COMPONENT_TO_LINKS, Direction.INCOMING);
+    }
+
+    public Collection<GComponent> getRelatedGComponents(ComponentLinkClassType type) {
+        return getRelatedGNodeCollection(GComponent.class, type, Direction.OUTGOING);
+    }
+
 }

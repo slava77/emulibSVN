@@ -7,7 +7,11 @@ public interface GComponentLinks extends GNode {
 
     void addLink(GComponent component, ComponentLinkClassType type);
     Collection<GComponentLink> getLinks();
+    GComponent getGComponent();
 
     boolean hasLink(GComponent component, ComponentLinkClassType type);
+    boolean hasLink(ComponentLinkClassType type);
+
+    Collection<GComponent> getRelatedGComponents(ComponentLinkClassType type);
 
 }

@@ -13,6 +13,7 @@ import org.apache.lucene.search.Sort;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.ReturnableEvaluator;
 import org.neo4j.graphdb.StopEvaluator;
 import org.neo4j.graphdb.Transaction;
@@ -46,7 +47,7 @@ public class GQuery <T extends GNode> {
         }
     }
 
-    public void addGLinkTypeDirection(GLinkType type, Direction dir) {
+    public void addGLinkTypeDirection(RelationshipType type, Direction dir) {
         linkTypesDirections.add(type, dir);
     }
 
@@ -138,6 +139,28 @@ public class GQuery <T extends GNode> {
             e.printStackTrace(System.err);
             return null;
         }
+    }
+
+    public Iterator<T> wrapIterator(final Iterator<Node> it) {
+
+        return new Iterator<T>() {
+            
+            private final Iterator<Node> iterator = it;
+
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+
+            public T next() {
+                return wrap(iterator.next());
+            }
+
+            public void remove() {
+                iterator.remove();
+            }
+            
+        };
+        
     }
 
     public T getGNode(Long id) {
@@ -257,7 +280,7 @@ public class GQuery <T extends GNode> {
     public boolean isGNodeObjectType(Node n) {
         Transaction tx = gservices.beginTx();
         try {
-            return n.getProperty(GNode.KEY_OBJECT_TYPE).equals(ifClass.getName());
+            return n.getProperty(GNode.KEY_OBJECT_TYPE, "").equals(ifClass.getName());
         }
         finally {
             tx.success();
@@ -269,7 +292,7 @@ public class GQuery <T extends GNode> {
 
         private List<GLinkTypeDirection> values = new ArrayList<GLinkTypeDirection>();
 
-        public void add(GLinkType type, Direction dir) {
+        public void add(RelationshipType type, Direction dir) {
             this.values.add(new GLinkTypeDirection(type, dir));
         }
 
@@ -297,10 +320,10 @@ public class GQuery <T extends GNode> {
 
         private class GLinkTypeDirection implements Comparable {
 
-            private GLinkType type;
+            private RelationshipType type;
             private Direction dir;
 
-            public GLinkTypeDirection(GLinkType type, Direction dir) {
+            public GLinkTypeDirection(RelationshipType type, Direction dir) {
                 this.type = type;
                 this.dir = dir;
             }
@@ -309,7 +332,7 @@ public class GQuery <T extends GNode> {
                 return dir;
             }
 
-            public GLinkType getType() {
+            public RelationshipType getType() {
                 return type;
             }
 

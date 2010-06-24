@@ -2,6 +2,7 @@ package org.cern.cms.csc.dw.model.ontology.graph;
 
 import java.util.Collection;
 import org.cern.cms.csc.dw.model.ontology.ComponentClassType;
+import org.cern.cms.csc.dw.model.ontology.ComponentLinkClassType;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.ReturnableEvaluator;
 import org.neo4j.graphdb.StopEvaluator;
@@ -14,6 +15,10 @@ public abstract class GServices extends GServicesBase {
 
     public GComponentClass getGComponentClass(ComponentClassType type) {
         return getGNodeByProperty(GComponentClass.class, GNode.PropertyType.TYPE, type.getValue());
+    }
+
+    public GComponentLinkClass getGComponentLinkClass(ComponentLinkClassType type) {
+        return getGNodeByProperty(GComponentLinkClass.class, GNode.PropertyType.TYPE, type.getValue());
     }
 
     @SuppressWarnings("unchecked")
