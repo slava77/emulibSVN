@@ -3,6 +3,7 @@ package org.cern.cms.csc.dw.dev.olap;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.Date;
+import org.cern.cms.csc.dw.dev.OlapGenerator;
 import org.cern.cms.csc.dw.model.annotation.OlapDimension;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -54,7 +55,7 @@ class DimensionDef extends ColumnDef {
             if (!shared || (shared && baseField)) {
 
                 out.println("DROP MATERIALIZED VIEW " + tableName);
-                out.print(SQL_ENDL);
+                out.print(OlapGenerator.SQL_ENDL);
 
                 out.println("\nCREATE MATERIALIZED VIEW " + tableName + " AS");
                 out.println("SELECT");
@@ -69,21 +70,21 @@ class DimensionDef extends ColumnDef {
                 out.println("\t, initcap(trim(TO_CHAR(a.time_data, \'DAY\'))) \"WEEKDAY_NAME\"");
                 out.println("FROM");
                 out.println("\t(SELECT DISTINCT " + columnName + " as time_data FROM " + cube.getFact().getTableName() + ") a");
-                out.print(SQL_ENDL);
+                out.print(OlapGenerator.SQL_ENDL);
 
             }
         } else {
             if (shared && baseField) {
 
                 out.println("DROP MATERIALIZED VIEW " + tableName);
-                out.print(SQL_ENDL);
+                out.print(OlapGenerator.SQL_ENDL);
 
                 out.println("\nCREATE MATERIALIZED VIEW " + tableName + " AS");
                 out.println("SELECT DISTINCT");
                 out.println("\t  " + columnName);
                 out.println("FROM");
                 out.println("\t" + cube.getFact().getTableName());
-                out.print(SQL_ENDL);
+                out.print(OlapGenerator.SQL_ENDL);
                 
             }
         }

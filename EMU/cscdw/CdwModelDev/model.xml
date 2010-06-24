@@ -266,6 +266,7 @@
         <java classname="org.cern.cms.csc.dw.dev.OlapGenerator" fork="true" failonerror="true" classpathref="classpath">
             <jvmarg line="-Xmn100M -Xms500M -Xmx500M -Xss50M"/>
             <arg value="--db=${hibernate.connection.username}"/>
+            <arg value="--gdb=${model}/src/graphdb"/>
             <arg value="--dest=${model}/src/olap"/>
             <arg value="--base=src/org/cern/cms/csc/dw/dev/olap/olapBase.xml"/>
         </java>

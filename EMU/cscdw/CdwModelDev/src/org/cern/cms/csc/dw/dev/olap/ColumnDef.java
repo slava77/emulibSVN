@@ -9,7 +9,6 @@ import org.w3c.dom.Element;
 
 public abstract class ColumnDef {
 
-    protected final static String SQL_ENDL = "\n/\n";
     protected Method method;
     protected String columnName;
     protected DataTypeDef type;

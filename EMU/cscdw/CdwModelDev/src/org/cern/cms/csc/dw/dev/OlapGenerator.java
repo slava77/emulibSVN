@@ -21,19 +21,24 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.PosixParser;
 import org.cern.cms.csc.dw.dev.olap.CubeDef;
+import org.cern.cms.csc.dw.dev.olap.OlapHierarchy;
 import org.cern.cms.csc.dw.metadata.FactMd;
 import org.cern.cms.csc.dw.metadata.MetadataManager;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 public class OlapGenerator {
 
+    public final static String SQL_ENDL = "\n/\n";
+    
     private static final String OPTION_DB = "db";
+    private static final String OPTION_GDB = "gdb";
     private static final String OPTION_DEST = "dest";
-    private static final String OPTION_XML_BASE = "base";
+    private static final String OPTION_HIERARCHIES_XML = "hxml";
+
     private static final String FILENAME_SQL = "olap.sql";
-    private static final String FILENAME_XML = "olap.xml";
+    private static final String FILENAME_XML = "OlapExsys.xml";
 
     private TransformerFactory transFactory;
     private DocumentBuilderFactory docFactory;
@@ -41,19 +46,39 @@ public class OlapGenerator {
     private final MetadataManager mm = new MetadataManager();
 
     private List<CubeDef> cubes = new ArrayList<CubeDef>();
+    private List<OlapHierarchy> componentHierarchies = new ArrayList<OlapHierarchy>();
 
-    public OlapGenerator(String dbSchema) throws ParserConfigurationException {
-        transFactory = TransformerFactory.newInstance();
+    public OlapGenerator(String dbSchema, String graphdb, File hierarchiesXml) throws ParserConfigurationException, SAXException, IOException {
+
+        this.transFactory = TransformerFactory.newInstance();
         this.docFactory = DocumentBuilderFactory.newInstance();
         this.docBuilder = this.docFactory.newDocumentBuilder();
+
         for (FactMd fact: mm.getFactMDs()) {
             cubes.add(new CubeDef(fact, dbSchema));
+        }
+
+        Document doc = docBuilder.parse(hierarchiesXml);
+        for (Element el: OlapHierarchy.getElementsByTagName(doc.getDocumentElement(), "Hierarchy")) {
+            OlapHierarchy h = new OlapHierarchy(graphdb, el, dbSchema);
+            componentHierarchies.add(h);
+        }
+
+    }
+
+    protected void close() {
+        for (OlapHierarchy h: componentHierarchies) {
+            h.close();
         }
     }
 
     public void generateDDL(File file) throws FileNotFoundException {
         FileOutputStream fout = new FileOutputStream(file);
         PrintWriter out = new PrintWriter(fout);
+
+        for (OlapHierarchy h: componentHierarchies) {
+            h.generateDDL(out);
+        }
 
         for (CubeDef cube : cubes) {
             if (cube.hasMeasureAndDimension()) {
@@ -65,13 +90,20 @@ public class OlapGenerator {
         out.close();
     }
 
-    public void generateSchemas(File file, File base) throws TransformerException, SAXException, IOException {
+    public void generateSchemas(File file) throws TransformerException, SAXException, IOException {
         
-        Document doc = docBuilder.parse(base);
-        Node rootNode = doc.getDocumentElement();
+        Document doc = docBuilder.newDocument();
+        Element rootEl = doc.createElement("schema");
+        rootEl.setAttribute("name", "CSC-EXSYS");
+        doc.appendChild(rootEl);
+
+        for (OlapHierarchy h: componentHierarchies) {
+            rootEl.appendChild(h.getElement(doc));
+        }
+
         for (CubeDef cube : cubes) {
             if (cube.hasMeasureAndDimension()) {
-                cube.generateSchema(doc, rootNode);
+                cube.generateSchema(doc, rootEl);
             }
         }
 
@@ -88,27 +120,35 @@ public class OlapGenerator {
     @SuppressWarnings("static-access")
     public static void main(String[] args) {
 
+        OlapGenerator generator = null;
+
         try {
             
             // create the command line parser
             CommandLineParser clparser = new PosixParser();
             Options opts = new Options();
             opts.addOption(OptionBuilder.hasArg().withDescription("DB schema").isRequired().create(OPTION_DB));
-            opts.addOption(OptionBuilder.hasArg().withDescription("XML base").isRequired().create(OPTION_XML_BASE));
+            opts.addOption(OptionBuilder.hasArg().withDescription("Path to graphdb").isRequired().create(OPTION_GDB));
+            opts.addOption(OptionBuilder.hasArg().withDescription("Path to hierarchies xml").isRequired().create(OPTION_HIERARCHIES_XML));
             opts.addOption(OptionBuilder.hasArg().withDescription("Destination directory").isRequired().create(OPTION_DEST));
             CommandLine cmdLine = clparser.parse(opts, args);
 
             String dbSchema = cmdLine.getOptionValue(OPTION_DB).toUpperCase();
+            String graphdb = cmdLine.getOptionValue(OPTION_GDB);
             File destDir = new File(cmdLine.getOptionValue(OPTION_DEST));
-            File baseXml = new File(cmdLine.getOptionValue(OPTION_XML_BASE));
+            File hierXml = new File(cmdLine.getOptionValue(OPTION_HIERARCHIES_XML));
 
-            OlapGenerator generator = new OlapGenerator(dbSchema);
-            
+            generator = new OlapGenerator(dbSchema, graphdb, hierXml);
+
             generator.generateDDL(new File(destDir, FILENAME_SQL));
-            generator.generateSchemas(new File(destDir, FILENAME_XML), baseXml);
+            generator.generateSchemas(new File(destDir, FILENAME_XML));
             
         } catch (Exception e) {
             e.printStackTrace(System.err);
+        } finally {
+            if (generator != null) {
+                generator.close();
+            }
         }
             
     }
