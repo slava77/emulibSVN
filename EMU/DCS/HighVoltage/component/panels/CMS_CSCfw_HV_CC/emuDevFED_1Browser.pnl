@@ -699,7 +699,7 @@ LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
 2 3
 "PRIMITIVE_TEXT1"
 ""
-1 101.2387543252595 157 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+1 125.7400773458172 191 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
  E E
 5 0 0 0 0 0
 E E E
@@ -1844,7 +1844,7 @@ E E
 EE2 68
 "lblNoControl"
 ""
-1 728 -388 E E E 1 E 1 E N "_3DText" E N "_Window" E E
+1 728 -388 E E E 1 E 1 E N "_3DText" E N "FwStateAttention1" E E
  E E
 131 0 0 0 0 0
 E E E
