@@ -14,7 +14,7 @@
     <xsl:output method="xml" encoding="UTF-8" indent="yes"/>
     
     <!-- ======= config ======= -->
-    <xsl:variable name="sourceName" select="'Xmas'"/>
+    <xsl:variable name="sourceName" select="'XmasFactService'"/>
     <!-- ====================== -->
 
     <!-- workaround for lack of upper-case and lower-case functions in XSLT 1.0 -->
