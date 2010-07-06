@@ -19,6 +19,14 @@
                     <file>${reference.CdwGui.dist-ear}</file>
                     <path-in-war>/</path-in-war>
                 </library>
+                <library>
+                    <file>${reference.ExsysRE.dist-ear}</file>
+                    <path-in-war>/</path-in-war>
+                </library>
+                <library>
+                    <file>${reference.ExsysGui.dist-ear}</file>
+                    <path-in-war>/</path-in-war>
+                </library>
             </web-module-additional-libraries>
         </data>
         <libraries xmlns="http://www.netbeans.org/ns/ant-project-libraries/1">
@@ -43,6 +51,22 @@
             </reference>
             <reference>
                 <foreign-project>CdwWS</foreign-project>
+                <artifact-type>j2ee_ear_archive</artifact-type>
+                <script>build.xml</script>
+                <target>dist-ear</target>
+                <clean-target>clean-ear</clean-target>
+                <id>dist-ear</id>
+            </reference>
+            <reference>
+                <foreign-project>ExsysGui</foreign-project>
+                <artifact-type>j2ee_ear_archive</artifact-type>
+                <script>build.xml</script>
+                <target>dist-ear</target>
+                <clean-target>clean-ear</clean-target>
+                <id>dist-ear</id>
+            </reference>
+            <reference>
+                <foreign-project>ExsysRE</foreign-project>
                 <artifact-type>j2ee_ear_archive</artifact-type>
                 <script>build.xml</script>
                 <target>dist-ear</target>
