@@ -2,6 +2,8 @@
 package org.cern.cms.csc.dw.ws;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import javax.annotation.Resource;
 import javax.jms.Connection;
@@ -58,7 +60,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
         Set<JAXBElement<? extends Fact>> toRemove = new HashSet<JAXBElement<? extends Fact>>();
         ServiceInstructions instructions = factCollection.getServiceInstructions();
 
-        logger.info("FC Saver bean: received: " + factCollection.toString());
+        logger.info("FC Saver bean: received fact collection with " + factCollection.getFacts().size() + " facts");
 
         // Performing on receive operations
         factCollection.onReceive(entityDao);
@@ -93,7 +95,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
             // Get a fact
             Fact fact = fi.getValue();
             
-            logger.info("FC Saver bean: Processing fact: " + fact.toString());
+            logger.fine("FC Saver bean: Processing fact: " + fact.toString());
 
             // Get ontology component object from fact component id or component.getId
             try {
@@ -108,7 +110,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
                 if (gcomponent == null) {
                     throw new NullArgumentException("Valid component id and/or component is not provided for Fact!");
                 }
-                logger.info("FC Saver bean: found gcomponent: " + gcomponent.getName());
+                logger.fine("FC Saver bean: found gcomponent: " + gcomponent.getName());
 
                 if (!ontologyDao.isGComponentClassParent(
                         fact.getMetadata().getLimitComponents(),
@@ -156,9 +158,11 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
         }
 
         try {
+            Collection<Fact> factsToSendToRE = new ArrayList<Fact>();
             for (JAXBElement<? extends Fact> factEl: factCollection.getFacts()) {
-                sendJMSMessageToRuleEngineInputQueue(factEl.getValue());
+                factsToSendToRE.add(factEl.getValue());
             }
+            sendFactsToRuleEngineInputQueue(factsToSendToRE);
         } catch (JMSException jmsEx) {
             logger.log(Level.SEVERE, "Exception while sending fact to rule engine input queue", jmsEx);
         }
@@ -171,14 +175,16 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
         return om;
     }
 
-    private void sendJMSMessageToRuleEngineInputQueue(Serializable messageData) throws JMSException {
+    private void sendFactsToRuleEngineInputQueue(Collection<Fact> facts) throws JMSException {
         Connection connection = null;
         Session session = null;
         try {
             connection = ruleEngineInputQueueFactory.createConnection();
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             MessageProducer messageProducer = session.createProducer(ruleEngineInputQueue);
-            messageProducer.send(createJMSMessageForjmsRuleEngineInputQueue(session, messageData));
+            for (Serializable fact: facts) {
+                messageProducer.send(createJMSMessageForjmsRuleEngineInputQueue(session, fact));
+            }
         } finally {
             if (session != null) {
                 try {

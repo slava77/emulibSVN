@@ -4,10 +4,10 @@
   <enterprise-beans>
     <ejb>
       <ejb-name>FactCollectionSaverBean</ejb-name>
-      <resource-ref>
+      <!--resource-ref>
         <res-ref-name>jms/entitySaverQueueFactory</res-ref-name>
         <jndi-name>jms/entitySaverQueueFactory</jndi-name>
-      </resource-ref>
+      </resource-ref-->
       <!--message-destination-ref>
         <message-destination-ref-name>jms/entitySaverQueue</message-destination-ref-name>
         <jndi-name>jms/entitySaverQueue</jndi-name>
