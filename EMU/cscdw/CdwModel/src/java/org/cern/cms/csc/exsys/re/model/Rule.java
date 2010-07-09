@@ -56,6 +56,7 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
  *         &lt;element name="ruleDefinition" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="conclusionType" type="{http://www.cern.ch/cms/csc/exsys/re/model}conclusionTypeType"/>
+ *         &lt;element name="isEnabled" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -71,7 +72,8 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
     "timeCreated",
     "ruleDefinition",
     "description",
-    "conclusionType"
+    "conclusionType",
+    "isEnabled"
 })
 @Entity(name = "org.cern.cms.csc.exsys.re.model.Rule")
 @Table(name = "RE_RULES", uniqueConstraints = {
@@ -101,6 +103,7 @@ public class Rule
     protected String description;
     @XmlElement(required = true)
     protected org.cern.cms.csc.exsys.re.model.ConclusionType conclusionType;
+    protected boolean isEnabled;
     @XmlAttribute(name = "id")
     protected Long id;
 
@@ -289,6 +292,29 @@ public class Rule
     @Transient
     public boolean isSetConclusionType() {
         return (this.conclusionType!= null);
+    }
+
+    /**
+     * Gets the value of the isEnabled property.
+     * 
+     */
+    @Basic
+    @Column(name = "REC_IS_ENABLED", nullable = false)
+    public boolean isIsEnabled() {
+        return isEnabled;
+    }
+
+    /**
+     * Sets the value of the isEnabled property.
+     * 
+     */
+    public void setIsEnabled(boolean value) {
+        this.isEnabled = value;
+    }
+
+    @Transient
+    public boolean isSetIsEnabled() {
+        return true;
     }
 
     /**

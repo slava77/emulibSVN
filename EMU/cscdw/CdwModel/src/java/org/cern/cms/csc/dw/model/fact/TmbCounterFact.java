@@ -3322,6 +3322,36 @@ public class TmbCounterFact
             }
         }
     }
+
+    @javax.xml.bind.annotation.XmlTransient
+    private java.util.Map<String, BigInteger> counters;
+    @javax.xml.bind.annotation.XmlTransient
+    private static java.util.regex.Pattern counterPropertyPattern = java.util.regex.Pattern.compile("tc\\d\\d");
+
+    @Transient
+    public java.util.Map<String, BigInteger> getCounters() {
+        if (counters == null) {
+            try {
+                counters = new java.util.HashMap<String, BigInteger>();
+                org.cern.cms.csc.dw.model.dse.TmbCounterDescriptionDSE counterNames = getDescriptions();
+                java.util.Map<String, Object> propertyValues = new java.util.HashMap<String, Object>();
+                org.apache.commons.beanutils.BeanUtils.populate(this, propertyValues); // get a property name to value map for all properties of this bean
+                for (java.util.Map.Entry<String, Object> entry: propertyValues.entrySet()) {
+                    if (counterPropertyPattern.matcher(entry.getKey()).matches()) { // this is a counter property - that's what we're interested in
+                        String counterName = org.apache.commons.beanutils.BeanUtils.getProperty(counterNames, entry.getKey() + "Description"); // get description for this name
+                        counters.put(counterName, (BigInteger) entry.getValue());
+                    }
+                }
+            } catch (IllegalAccessException iaex) {
+                throw new RuntimeException(iaex);
+            } catch (java.lang.reflect.InvocationTargetException itex) {
+                throw new RuntimeException(itex);
+            } catch (NoSuchMethodException nsmex) {
+                throw new RuntimeException(nsmex);
+            }
+        }
+        return counters;
+    }
     
 //--simple--preserve
 

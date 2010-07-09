@@ -109,6 +109,16 @@
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
+            <xsd:element name="isEnabled" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REC_IS_ENABLED" nullable="false"/>
+                        </hj:basic>
+                        <jaxb:property name="isEnabled"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
             <!--xsd:element name="conclusionFactory" type="tns:conclusionFactoryType">
                 <xsd:annotation>
                     <xsd:appinfo>
