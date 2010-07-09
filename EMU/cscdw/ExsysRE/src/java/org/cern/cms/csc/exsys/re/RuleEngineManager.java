@@ -10,10 +10,17 @@ import com.espertech.esper.client.EPRuntime;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import org.cern.cms.csc.exsys.re.conclusion.factory.ConclusionFactory;
 import org.cern.cms.csc.exsys.re.conclusion.factory.DefaultConclusionFactory;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
@@ -22,50 +29,45 @@ import org.cern.cms.csc.exsys.re.model.Rule;
 /**
  *
  * @author evka
+ * This is a bean dealing with Esper runtime (e.g. configuring it with rules.
  */
 @Stateless
-public class RuleEngineManager implements RuleEngineManagerLocal, RuleEngineManagerRemote {
+public class RuleEngineManager implements RuleEngineManagerLocal {
 
     private static Logger logger = Logger.getLogger(RuleEngineManager.class.getName());
 
-    private final String DEFAULT_EP_URI = "exsys";
-    private final String FACTS_PACKAGE = "org.cern.cms.csc.dw.model.fact";
-    private final String CONCLUSION_PACKAGE = "org.cern.cms.csc.exsys.re.model";
-    private EPServiceProvider epService;
+    public static final String DEFAULT_EP_URI = "exsys";
+    public static final String FACTS_PACKAGE = "org.cern.cms.csc.dw.model.fact";
+    public static final String CONCLUSION_PACKAGE = "org.cern.cms.csc.exsys.re.model";
 
+    @Resource(name="EsperServiceProvider")
+    private EsperServiceProvider epProvider;
+
+    private EPServiceProvider defaultEpServiceCache;
+    
     @EJB
     private RuleEngineDaoLocal reDao;
 
-    public RuleEngineManager() {}
+    public RuleEngineManager() {
+    }
 
     private EPServiceProvider getEpService() {
-        return getEpService(DEFAULT_EP_URI);
+        if (defaultEpServiceCache == null) {
+            defaultEpServiceCache = getEpService(DEFAULT_EP_URI);
+        }
+        return defaultEpServiceCache;
     }
 
     private EPServiceProvider getEpService(String uri) {
-        if (epService == null) {
-            String[] uris = EPServiceProviderManager.getProviderURIs();
-            boolean serviceExists = false;
-            for (String currentUri: uris) {
-                if (currentUri.equals(uri)) {
-                    serviceExists = true;
-                    break;
-                }
-            }
+        boolean needsConfiguration = !epProvider.epServiceExists(uri);
+        EPServiceProvider epService = epProvider.getEpService(uri);
+        if (needsConfiguration) {
+            configure(epService);
+        }
+        return epService;
 
-            if (serviceExists) { // Esper service already exists so just and return it
-                epService = EPServiceProviderManager.getProvider(uri);
-            } else { // create and configure the Esper service
-                logger.info("Creating and configuring Esper service");
-                Configuration conf = new Configuration();
-                conf.addEventTypeAutoName(FACTS_PACKAGE);
-                conf.addEventTypeAutoName(CONCLUSION_PACKAGE);
-                epService = EPServiceProviderManager.getProvider(uri, conf);
-                configureEsper(epService);
-                logger.info("Esper service initialized and configured");
-            }
 
-            //TODO revisit rule setup at startup
+// example configuration
 //            String rule = "select component from SlidingTmbTriggerCounterFactType where alctCount < 1";
 //            String ruleName ="testRule";
 //            String title = "Alct trigger rate is very low for $component";
@@ -75,13 +77,12 @@ public class RuleEngineManager implements RuleEngineManagerLocal, RuleEngineMana
 //            statement.addListener(conclusionMaker);
 //
 //            System.out.println("ExsysRE: Rules registered: " + epService.getEPAdministrator().getStatementNames());
-        }
-        return epService;
     }
 
-    private void configureEsper(EPServiceProvider epService) {
+    /** Configures the given EPServiceProvider i.e. gets all the rules from DB and registers them with the given EPServiceProvider. */
+    private void configure(EPServiceProvider epService) {
         List<Rule> rules = reDao.getAllRules();
-        logger.info("These are the rules to be loaded: ");
+        logger.info("Configuring rules engine... Loading these rules: ");
         for (Rule rule: rules) {
             logger.info("Rule: " + rule.getName());
             ConclusionFactory factory = new DefaultConclusionFactory(rule.getConclusionType());
@@ -90,11 +91,24 @@ public class RuleEngineManager implements RuleEngineManagerLocal, RuleEngineMana
         }
     }
 
-    public void reconfigureEsper() {
-        if (epService != null) {
-            epService.getEPAdministrator().destroyAllStatements();
-            configureEsper(epService);
-        }
+
+    /**
+     * Calls reconfigure() for the default EPServiceProvider.
+     * @see reconfigure(String uri)
+     */
+    public void reconfigure() {
+        reconfigure(DEFAULT_EP_URI);
+    }
+
+    /**
+     * Removes all rules from the EPServiceProvider with the given uri and calls configure (which adds all the rules from DB).
+     * @see configure(EPServiceProvider epService)
+     */
+    public void reconfigure(String uri) {
+        logger.info("Reconfiguring Esper Runtime for URI=" + uri);
+        EPServiceProvider epService = getEpService(uri);
+        epService.getEPAdministrator().destroyAllStatements();
+        configure(epService);
     }
 
     /**

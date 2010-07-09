@@ -6,16 +6,34 @@
 package org.cern.cms.csc.exsys.re;
 
 import com.espertech.esper.client.EPRuntime;
+import com.espertech.esper.client.EPServiceProvider;
 import javax.ejb.Local;
 
 /**
  *
- * @author evka
+ * @author Evka
  */
 @Local
 public interface RuleEngineManagerLocal {
 
+    /**
+     * @return Esper Runtime (EPRuntime) which can be used to send facts into rule engine.
+     */
     EPRuntime getEsperRuntime();
-    void reconfigureEsper();
-    
+
+    /**
+     * Calls reconfigure() for the default EPServiceProvider.
+     * @see reconfigure(String uri)
+     */
+    void reconfigure();
+
+    /**
+     * Removes all rules from the EPServiceProvider with the given uri and calls configure (which adds all the rules from DB).
+     * @see configure(EPServiceProvider epService)
+     */
+    void reconfigure(String uri);
+
+//    /** Configures the given EPServiceProvider i.e. gets all the rules from DB and registers them with the given EPServiceProvider. */
+//    void configure(EPServiceProvider epService);
+
 }
