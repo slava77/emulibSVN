@@ -92,7 +92,7 @@ public class NewFact extends EntityEditorManager {
 
     public List<SelectItem> getFactClassList() {
         if (factClassesSI == null) {
-            Collection<FactMd> factClassMds = factMdManager.getFactClasses();
+            Collection<FactMd> factClassMds = factMdManager.getFactMDs();
             List<Object> factClasses = new ArrayList<Object>();
             factClassesSI = new ArrayList<SelectItem>();
             for (FactMd factClassMd: factClassMds) {
