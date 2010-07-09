@@ -51,7 +51,8 @@
                 <to>$xmasUrl.parameters/url</to>
             </copy>
             <copy>
-                <from>'http://macfrank:20044/urn:xdaq-application:lid=30/EmuCounterNames'</from>
+                <from>'http://localhost:20044/urn:xdaq-application:lid=30/EmuCounterNames'</from> <!-- for development -->
+                <!--from>'http://csc-dcs-pc1:20040/urn:xdaq-application:lid=30/EmuCounterNames'</from--> <!-- production - P5 -->
                 <to>$counterNamesUrl.parameters/url</to>
             </copy>
         </assign>
@@ -74,6 +75,11 @@
             <sxt:trace>
                 <sxt:log level="info" location="onComplete">
                     <ns1:from variable="factCollection" part="parameters"/>
+                </sxt:log>
+            </sxt:trace>
+            <sxt:trace>
+                <sxt:log level="info" location="onComplete">
+                    <ns1:from>concat('Version: ', $namingVersion)</ns1:from>
                 </sxt:log>
             </sxt:trace>
             <copy>
@@ -139,6 +145,8 @@
         </assign>
     </sequence>
 </process>
+
+
 
 
 
