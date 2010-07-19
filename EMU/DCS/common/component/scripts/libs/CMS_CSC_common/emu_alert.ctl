@@ -126,7 +126,7 @@ void emuAlert_updateAllAlertClasses(bool onlyInLocalSystem = true) {
   }
 }
 
-
+/** Creates a summary alert and sets the right alert class. */
 void emuAlert_createSummary(string dpe,
 							dyn_string alertTexts,
 							dyn_string dpelementList,      
