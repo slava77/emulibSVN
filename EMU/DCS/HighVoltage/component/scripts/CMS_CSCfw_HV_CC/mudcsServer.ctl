@@ -1,3 +1,7 @@
+// EMU common libs
+#uses "CMS_CSC_common/emu_common.ctl"
+
+
 // x2p
 // _smiDeviceDummy
 // mudcsFsmErrorSet: { and } in commented piece (do not care) 
@@ -82,7 +86,7 @@ string eemessage;
 //    femessage=fopen(CSC_fwG_g_project_name_home+"/source/"+CSC_fwG_g_Component+"/text/alive_emessage","w");
 //    if(femessage==0)continue;
     int was=0;
-        DebugTN("ALIVETHREAD "+dynlen(CSC_fwG_g_watch_mask));
+        emu_debug("ALIVETHREAD "+dynlen(CSC_fwG_g_watch_mask), emu_DEBUG_DETAIL);
     
 
     for(j=1; j<= dynlen(CSC_fwG_g_watch_mask); j++){
@@ -92,7 +96,7 @@ string eemessage;
 /////     if(watch_array[j] == 0)
        watch_array[j]--; // not to set alarm again 
 
-       DebugTN("WATCH FOR SUBSYSTEM ALIVE: TIMEOUT IN: "+CSC_fwG_g_watch_mask[j]);
+       emu_info("WATCH FOR SUBSYSTEM ALIVE: TIMEOUT IN: "+CSC_fwG_g_watch_mask[j]);
        if(!was){
         if(watch_array[j]==0){        
 //        fputs(emessage+"WATCH FOR SUBSYSTEM ALIVE: TIMEOUT IN: "+CSC_fwG_g_watch_mask[j]+"-->"+CSC_fwG_g_SYSTEM_NAME+"\n",femessage);
@@ -112,7 +116,7 @@ setDevicesNotConnected(CSC_fwG_g_watch_mask[j]);
 //       watch_array[j]--; // not to set alarm again 
      }
      else {
-       DebugTN("WATCH FOR SUBSYSTEM ALIVE: THE SUBSYSTEM "+CSC_fwG_g_watch_mask[j]+" IS ALIVE");  
+       emu_info("WATCH FOR SUBSYSTEM ALIVE: THE SUBSYSTEM "+CSC_fwG_g_watch_mask[j]+" IS ALIVE");  
        watch_array[j]=1;   
      }
 
@@ -371,7 +375,7 @@ dpConnect("mudcsserver_update_mywarning",TRUE,CSC_fwG_g_SYSTEM_NAME+":MYWARNING.
 //dpConnect("mudcsUpdate_test",CSC_fwG_g_SYSTEM_NAME+":Db_o.Wheels_o.Wheel1.InRadDeviceList:_online.._value");
 //dpConnect("mudcsUpdate_test1",CSC_fwG_g_SYSTEM_NAME+":Db_o.Wheels_o.Wheel1.InRadDeviceList");
 
-DebugTN("delay started to let dim services start up (configured)");
+emu_info("delay started to let dim services start up (configured)");
 waiting_for_dim_configured();
 // delay(60*4); // to let pvss-dim servers to start up (the dim servers are launched by the operation tab of Editor-Navigator)
 // DebugTN("delay ended");
@@ -506,7 +510,7 @@ for(j=1; j<= dynlen(CSC_fwG_g_watch_mask); j++){
 //dpSet("dyn_debug2.",makeDynString());
 
 
-DebugN(" INFO, mudcsServer: init start***************************");
+emu_info(" INFO, mudcsServer: init start***************************");
 
  dyn_string BrokerList,BrokerList_old;
  string service,update_fun,update_fun_status;
@@ -525,29 +529,31 @@ DebugN(" INFO, mudcsServer: init start***************************");
     CSC_fwG_g_CopyDimBrokerList=BrokerList;
     for(j=1; j<= dynlen(BrokerList); j++){
 
- ///    dynAppend(watch_array,0);     
 
+      // -----========= REMOVING ALL X2P DATA HANDLING (it's now handled in emu_x2pDataProcessing.ctl)===========----
+      if ((strpos(BrokerList[j], "LV_1") >= 0) ||
+          (strpos(BrokerList[j], "TEMP_1") >= 0) ||
+          (strpos(BrokerList[j], "FED_1") >= 0)) {
+        continue;
+      }
+      // ------------------====================================================---------------------------------------
+      
+      
+      
      if(!g_FIRST && BrokerList[j] == BrokerList_old[j])continue;
-///      if(!g_FIRST)dpSet(CSC_fwG_g_SYSTEM_NAME+":treeBrowser_control_resp.","third");   
        service=substr(BrokerList[j],0,strpos(BrokerList[j],"_DimBroker"));
        update_fun="mudcsUpdateMonitor_"+service+"_new";
  
 
  if(service == "GAS_SX5"){        
-// if(service != "WTH_SX5" && service != "PT100"){ 
        dynAppend(CSC_fwG_g_BROKER_HANDLERS_FIRST,CSC_fwG_g_SYSTEM_NAME+":"+BrokerList[j]+"_o");
        dpConnect(update_fun,CSC_fwG_g_SYSTEM_NAME+":"+BrokerList[j]+"_o.update_value");
-/*
-    dynAppend(d_s1,update_fun+">>>"+CSC_fwG_g_SYSTEM_NAME+":"+BrokerList[j]+"_o.update_value");
-    dpSetWait("dyn_debug1.",d_s1);
-*/
-
  }
 
 
 
 
-DebugN("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&  "+update_fun + "  "+ CSC_fwG_g_SYSTEM_NAME+":"+BrokerList[j]+"_o.update_value");
+emu_debug("Connecting "+update_fun + " to "+ CSC_fwG_g_SYSTEM_NAME+":"+BrokerList[j]+"_o.update_value");
 
 //////dpSet(CSC_fwG_g_SYSTEM_NAME+":treeBrowser_control_resp.",update_fun+"___"+CSC_fwG_g_SYSTEM_NAME+":"+BrokerList[j]+"_o.update_value");
 
@@ -561,14 +567,6 @@ dyn_string datapoints_d;
        datapoints_d = dpNames("*",service+"_d");
 
 
-////////////////// if(  service == "GAS_SX5")dynAppend(datapoints,CSC_fwG_g_SYSTEM_NAME+":"+"GasMonitoring/CSCGAS_SX5");
-/*
-else if(service == "HV_PR"){
- datapoints_d = makeDynString();
-
-}
-*/
-//-----
 
        for(int i=1;i<=dynlen(datapoints_d);i++){
 
@@ -582,7 +580,6 @@ else if(service == "HV_PR"){
            dpConnect(update_fun,FALSE,datapoints_d[i]+".Flowmeter_EndCap_Cooling_YE_Plus_1");
         else dpConnect(update_fun,datapoints_d[i]+".update_value");
         
-        if(strpos(datapoints_d[i],"FED")>=0)DebugTN("1mudcsUpdateMonitor_FED_1_new "+ update_fun+" "+datapoints_d[i]+".update_value");;
 /*
     dynAppend(d_s1,update_fun+">>>>>>>"+datapoints_d[i]+".update_value");
     dpSetWait("dyn_debug1.",d_s1);
@@ -638,7 +635,6 @@ if(service == "HV_1")get_master_data();  //
 //  get_master_data();
 //  get_primary_data();
 
-
  g_FIRST=false;
  dpSet(CSC_fwG_g_SYSTEM_NAME+":Db_o.DimBrokerList_old", BrokerList);
 
@@ -665,7 +661,7 @@ if(service == "HV_1")get_master_data();  //
 //-------------------------------------------
   dpSet(CSC_fwG_g_SYSTEM_NAME+":RUNCONTROL_FLAG.",1);
 //-------------------------------------------
-DebugN("mudcsServer: init end***************************");
+emu_info("mudcsServer: init end***************************");
 
 }	
 //============================================================================================
@@ -676,13 +672,16 @@ mudcs_update_run_control_command(string dpName, string value){
 int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
 //dpSet("h2.",CSC_fwG_g_STATUS_HANDLERS_FIRST);
-  DebugN("mudcs_update_run_control_command:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER RUN_CONTROL");
+  emu_info("mudcs_update_run_control_command:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER RUN_CONTROL");
   dynRemove(CSC_fwG_g_STATUS_HANDLERS_FIRST,index);
  //dpSet("h2.",CSC_fwG_g_STATUS_HANDLERS_FIRST);
   return;
 
  }
 
+ 
+emu_info("SHOULD NOT SEE THIS (shouldn't be called)  YOOOU mudcs_update_run_control_command");
+ 
 // dpSet("h1.",CSC_fwG_g_STATUS_HANDLERS_FIRST);
 
 if(strpos(value,";dp")>=0)strreplace(value,";dp",";sp");
@@ -723,12 +722,13 @@ mudcsUpdateMonitor_HV_PR_status(string dpName, int value){
 
 int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_HV_PR_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER HV_PR");
   dynRemove(CSC_fwG_g_STATUS_HANDLERS_FIRST,index);
 /// !!!! the return below is commented out because the last status (remained at server interruption) SHOULD BE "EXECUTED" 
 // to restore the previous system state JUST IN CASE
 //  return;
- }
+  } else {
+    emu_info("Status update HV Primary: " + dpName + "=" + value);
+  }
 // else{if(CSC_fwG_g_CSC_INTERLOCK_FLAG)return;}
 
 int state_save;
@@ -763,7 +763,6 @@ CSC_fwG_g_BLOCK_NEXT_DPCONNECT=0;
 //============================================================================================
 mudcsUpdateMonitor_HV_1_status(string dpName, int value){
 
-
 string mudcs_alias;
 
 /*
@@ -781,12 +780,13 @@ string test_string;
 
 int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_HV_1_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER HV");
   dynRemove(CSC_fwG_g_STATUS_HANDLERS_FIRST,index);
 /// !!!! the return below is commented out because the last status (remained at server interruption) SHOULD BE "EXECUTED" 
 // to restore the previous system state JUST IN CASE
 //  return;
- }
+  } else {
+    emu_info("Status update HV: " + dpName + "=" + value);
+  }
 // else{if(CSC_fwG_g_CSC_INTERLOCK_FLAG)return;}
 
 //----
@@ -804,7 +804,6 @@ int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dp
 //----
 
 
-DebugN("mudcsServer::mudcsUpdateMonitor_HV_1_status ***************************"+dpName+" = "+value);
 /////DebugN("mudcsServer:mudcsUpdateMonitor_HV_1_status-> ***************************"+substr(dpName,0,strpos(dpName,".")));
 
 // !!!! COMMENT: MULTY_MODE_DONE.value is set true when MUDCS_DOMAIN.value is defined
@@ -859,7 +858,6 @@ mudcs_alias=mudcsAliasNameGet(domain);
 
 //////DebugN("mudcsUpdateMonitor_HV_1_status:%%%%%%%%%%%%%%%% " +type + " %%%%%%%%%%%%%%%%% " + ich + " "+ MULTY_MODE + " "+domain + " %%%%%%%%%%%%%%%%% ");
 //////DebugN("mudcsUpdateMonitor_HV_1_status:%%%%%%%%%%%%%%%% " +CSC_fwG_g_SYSTEM_NAME+":MUDCS_DOMAIN.value" + " %%%%%%%%%%%%%%%%%11 ");
-DebugN("mudcsUpdateMonitor_HV_1_status:%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% " +dpName);
 
 mudcs_alias=mudcsAliasNameGet(dpName);
 mudcsNameToPosConvert(mudcs_alias/*dpName*/, w_pos, radius, ich, type); // to determine ich
@@ -891,7 +889,6 @@ if(value == 3 && index >=1){ // works only the the start
 }
 //--------------------------------------------------------
 
-
 if(value == 2 || (value==-1 && index >=1) /*|| (value==-2 && state_destin==true && index >=1)*/){  // -1, -2  is to initialize the state at start
  
  if(MULTY_MODE && MULTY_MODE_DONE == "FALSE")mudcsCommand("HV","all;all","power_on");
@@ -899,7 +896,7 @@ if(value == 2 || (value==-1 && index >=1) /*|| (value==-2 && state_destin==true 
  if(CSC_fwG_g_IS_IMAX_SET)mudcsHVCommand(substr(dpName,0,strpos(dpName,".")), 6, 10); // set 10mkA for Imax
 //// moved: mudcsAlertSetActive(dpName,true); 
 
-DebugN("mudcsServer::mudcsUpdateMonitor_HV_1_status == 2++***************************"+dpName+value);
+  emu_info("mudcsServer::mudcsUpdateMonitor_HV_1_status, sending ON command to HV: " + dpName + "=" + value);
 }
 else if(value == 0 /*|| (value==-2 && state_destin==false && index >=1)*/){ //  -2  is to initialize the state at start  
 
@@ -909,7 +906,7 @@ else if(value == 0 /*|| (value==-2 && state_destin==false && index >=1)*/){ //  
  if(state_save ==-2)dpSetWait(substr(dpName,0,strpos(dpName,"."))+".status",-2);// this all is to allow to switch off from error state and differ -2 and -1
  else if(!MULTY_MODE)mudcsCommand("HV",dpName,"power_off");
 
-DebugN("mudcsServer::mudcsUpdateMonitor_HV_1_status == 0++***************************"+dpName+value);
+  emu_info("mudcsServer::mudcsUpdateMonitor_HV_1_status, sending OFF command to HV: " + dpName + "=" + value);
 }
 
 
@@ -939,16 +936,17 @@ CSC_fwG_g_BLOCK_NEXT_DPCONNECT=0;
 //============================================================================================
 //============================================================================================
 mudcsUpdateMonitor_LV_1_status(string dpName, int value){
+return;
 
 string mudcs_alias;
 string data;
 
 // attention :: the order of power/on/off and setting alarm is essential !!! 
-DebugN("mudcsUpdateMonitor_LV_1_status:&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_LV_1_status:&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
 
 int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_LV_1_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER LV"+" "+dpName);
+  DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_LV_1_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER LV"+" "+dpName);
   dynRemove(CSC_fwG_g_STATUS_HANDLERS_FIRST,index);
   
 
@@ -958,7 +956,7 @@ int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dp
  }
 // else{if(CSC_fwG_g_CSC_INTERLOCK_FLAG)return;}
 
-DebugN("mudcsServer::mudcsUpdateMonitor_LV_1_status ***************************"+dpName+" = "+value);
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_LV_1_status ***************************"+dpName+" = "+value);
 /////DebugN("mudcsServer:mudcsUpdateMonitor_LV_1_status-> ***************************"+substr(dpName,0,strpos(dpName,".")));
 
 // !!!! COMMENT: MULTY_MODE_DONE.value is set true when MUDCS_DOMAIN.value is defined
@@ -1014,7 +1012,7 @@ mudcs_alias=mudcsAliasNameGet(domain);
 ////DebugN("mudcsUpdateMonitor_LV_1_status:%%%%%%%%%%%%%%%% " +type + " %%%%%%%%%%%%%%%%% " + ich + " "+ MULTY_MODE + " "+domain + " %%%%%%%%%%%%%%%%% ");
 ////DebugN("mudcsUpdateMonitor_LV_1_status:%%%%%%%%%%%%%%%% " +CSC_fwG_g_SYSTEM_NAME+":MUDCS_DOMAIN.value" + " %%%%%%%%%%%%%%%%%11 ");
 
-DebugN("mudcsUpdateMonitor_LV_1_status:%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% " +dpName);
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_LV_1_status:%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% " +dpName);
 
 
 mudcs_alias=mudcsAliasNameGet(dpName);
@@ -1039,7 +1037,7 @@ if(value == 2 || (value==-1 && index >=1) /*|| (value==-2 && state_destin==true 
 
 //// moved: mudcsAlertSetActive(dpName,true); 
 
-DebugN("mudcsServer::mudcsUpdateMonitor_LV_1_status == 2++***************************"+dpName+value);
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_LV_1_status == 2++***************************"+dpName+value);
 }
 else if(value == 0 /*|| (value==-2 && state_destin==false && index >=1)*/){ //  -2  is to initialize the state at start  
 
@@ -1049,7 +1047,7 @@ else if(value == 0 /*|| (value==-2 && state_destin==false && index >=1)*/){ //  
  if(state_save ==-2)dpSetWait(substr(dpName,0,strpos(dpName,"."))+".status",-2);// this all is to allow to switch off from error state and differ -2 and -1
  else if(!MULTY_MODE)mudcsCommand("LV",dpName,"power_off");
 
-DebugN("mudcsServer::mudcsUpdateMonitor_LV_1_status == 0++***************************"+dpName+value);
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_LV_1_status == 0++***************************"+dpName+value);
 }
 
 
@@ -1081,11 +1079,11 @@ mudcsUpdateMonitor_CRB_1_status(string dpName, int value){
 string mudcs_alias;
 
 // attention :: the order of power/on/off and setting alarm is essential !!! 
-DebugN("mudcsUpdateMonitor_CRB_1_status:&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_CRB_1_status:&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
 
 int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_CRB_1_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER CRB_1"+" "+dpName);
+  DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_CRB_1_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER CRB_1"+" "+dpName);
   dynRemove(CSC_fwG_g_STATUS_HANDLERS_FIRST,index);
   
 
@@ -1095,7 +1093,7 @@ int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dp
  }
 // else{if(CSC_fwG_g_CSC_INTERLOCK_FLAG)return;}
 
-DebugN("mudcsServer::mudcsUpdateMonitor_CRB_1_status ***************************"+dpName+" = "+value);
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_CRB_1_status ***************************"+dpName+" = "+value);
 /////DebugN("mudcsServer:mudcsUpdateMonitor_CRB_1_status-> ***************************"+substr(dpName,0,strpos(dpName,".")));
 
 // !!!! COMMENT: MULTY_MODE_DONE.value is set true when MUDCS_DOMAIN.value is defined
@@ -1135,7 +1133,7 @@ mudcs_alias=mudcsAliasNameGet(domain);
 ////DebugN("mudcsUpdateMonitor_CRB_1_status:%%%%%%%%%%%%%%%% " +type + " %%%%%%%%%%%%%%%%% " + ich + " "+ MULTY_MODE + " "+domain + " %%%%%%%%%%%%%%%%% ");
 ////DebugN("mudcsUpdateMonitor_CRB_1_status:%%%%%%%%%%%%%%%% " +CSC_fwG_g_SYSTEM_NAME+":MUDCS_DOMAIN.value" + " %%%%%%%%%%%%%%%%%11 ");
 
-DebugN("mudcsUpdateMonitor_CRB_1_status:%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% " +dpName);
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_CRB_1_status:%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% " +dpName);
 
 
 mudcs_alias=mudcsAliasNameGet(dpName);
@@ -1165,7 +1163,7 @@ if(value == 2 || (value==-1 && index >=1) /*|| (value==-2 && state_destin==true 
 
 //// moved: mudcsAlertSetActive(dpName,true); 
 
-DebugN("mudcsServer::mudcsUpdateMonitor_CRB_1_status == 2++***************************"+dpName+value);
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_CRB_1_status == 2++***************************"+dpName+value);
 }
 else if(value == 0 /*|| (value==-2 && state_destin==false && index >=1)*/){ //  -2  is to initialize the state at start  
 
@@ -1175,7 +1173,7 @@ else if(value == 0 /*|| (value==-2 && state_destin==false && index >=1)*/){ //  
  if(state_save ==-2)dpSetWait(substr(dpName,0,strpos(dpName,"."))+".status",-2);// this all is to allow to switch off from error state and differ -2 and -1
  else if(!MULTY_MODE)mudcsCommand("CRB",dpName,"power_off");
 
-DebugN("mudcsServer::mudcsUpdateMonitor_CRB_1_status == 0++***************************"+dpName+value);
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_CRB_1_status == 0++***************************"+dpName+value);
 }
 
 
@@ -1212,21 +1210,18 @@ mudcsUpdateMonitor_fwWnrCh_CSC_LV_status(string dpName, int value){
 string mudcs_alias;
 
 // attention :: the order of power/on/off and setting alarm is essential !!! 
-DebugN("mudcsUpdateMonitor_fwWnrCh_CSC_LV_status:&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+emu_info("mudcsUpdateMonitor_fwWnrCh_CSC_LV_status: status update: " + dpName + "=" + value);
 
 int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_fwWnrCh_CSC_LV_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER fwWnrCh_CSC_LV"+" "+dpName);
   dynRemove(CSC_fwG_g_STATUS_HANDLERS_FIRST,index);
   
 
 /// !!!! the return below is commented out because the last status (remained at server interruption) SHOULD BE "EXECUTED" 
 // to restore the previous system state JUST IN CASE
 /////  return;
- }
+  }
 
-DebugN("mudcsServer::mudcsUpdateMonitor_fwWnrCh_CSC_LV_status ***************************"+dpName+" = "+value);
-DebugN("mudcsUpdateMonitor_fwWnrCh_CSC_LV_status:%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% " +dpName);
 
 /*
    dyn_string d_s2;
@@ -1245,14 +1240,14 @@ if(value == 2 || (value==-1 && index >=1) /*|| (value==-2 && state_destin==true 
  
  // mudcsSnmpCommand("fwWnrCh_CSC_LV",dpName,"power_on");
 
-DebugN("mudcsServer::mudcsUpdateMonitor_fwWnrCh_CSC_LV_status == 2++***************************"+dpName+value);
+emu_info("mudcsServer::mudcsUpdateMonitor_fwWnrCh_CSC_LV_status command: " + dpName + "=" + value);
 }
 else if(value == 0 /*|| (value==-2 && state_destin==false && index >=1)*/){ //  -2  is to initialize the state at start  
 
  if(state_save ==-2)dpSetWait(substr(dpName,0,strpos(dpName,"."))+".status",-2);// this all is to allow to switch off from error state and differ -2 and -1
  else {/*mudcsSnmpCommand("fwWnrCh_CSC_LV",dpName,"power_off");*/}
 
-DebugN("mudcsServer::mudcsUpdateMonitor_fwWnrCh_CSC_LV_status == 0++***************************"+dpName+value);
+emu_info("mudcsServer::mudcsUpdateMonitor_fwWnrCh_CSC_LV_status command: " + dpName + "=" + value);
 }
 
 
@@ -1284,11 +1279,10 @@ mudcsUpdateMonitor_fwWnrCr_CSC_LV_status(string dpName, int value){
 string mudcs_alias;
 
 // attention :: the order of power/on/off and setting alarm is essential !!! 
-DebugN("mudcsUpdateMonitor_fwWnrCr_CSC_LV_status:&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+emu_info("mudcsUpdateMonitor_fwWnrCr_CSC_LV_status: status update: " + dpName + "=" + value);
 
 int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_fwWnrCr_CSC_LV_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER fwWnrCr_CSC_LV"+" "+dpName);
   dynRemove(CSC_fwG_g_STATUS_HANDLERS_FIRST,index);
   
 
@@ -1297,8 +1291,6 @@ int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dp
 /////  return;
  }
 
-DebugN("mudcsServer::mudcsUpdateMonitor_fwWnrCr_CSC_LV_status ***************************"+dpName+" = "+value);
-DebugN("mudcsUpdateMonitor_fwWnrCr_CSC_LV_status:%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% " +dpName);
 
 /*
    dyn_string d_s2;
@@ -1319,20 +1311,20 @@ if(value == 2 || (value==-1 && index >=1) /*|| (value==-2 && state_destin==true 
  
  mudcsSnmpCommand("fwWnrCr_CSC_LV",dpName,"power_on");
 
-DebugN("mudcsServer::mudcsUpdateMonitor_fwWnrCr_CSC_LV_status == 2++***************************"+dpName+value);
+emu_info("mudcsServer::mudcsUpdateMonitor_fwWnrCr_CSC_LV_status command ON: " + dpName + "=" + value);
 }
 else if(value == 3 || (value==-1 && index >=1) /*|| (value==-2 && state_destin==true && index >=1)*/){  // -1, -2  is to initialize the state at start  
  
  mudcsSnmpCommand("fwWnrCr_CSC_LV",dpName,"power_on_all");
 
-DebugN("mudcsServer::mudcsUpdateMonitor_fwWnrCr_CSC_LV_status == 3++***************************"+dpName+value);
+emu_info("mudcsServer::mudcsUpdateMonitor_fwWnrCr_CSC_LV_status command ALL ON: " + dpName + "=" + value);
 }
 else if(value == 0 /*|| (value==-2 && state_destin==false && index >=1)*/){ //  -2  is to initialize the state at start  
 
  if(state_save ==-2)dpSetWait(substr(dpName,0,strpos(dpName,"."))+".status",-2);// this all is to allow to switch off from error state and differ -2 and -1
  else mudcsSnmpCommand("fwWnrCr_CSC_LV",dpName,"power_off");
 
-DebugN("mudcsServer::mudcsUpdateMonitor_fwWnrCr_CSC_LV_status == 0++***************************"+dpName+value);
+emu_info("mudcsServer::mudcsUpdateMonitor_fwWnrCr_CSC_LV_status command OFF: " + dpName + "=" + value);
 }
 
 
@@ -1365,11 +1357,11 @@ mudcsUpdateMonitor_MRTN_1_status(string dpName, int value){
 string mudcs_alias;
 
 // attention :: the order of power/on/off and setting alarm is essential !!! 
-DebugN("mudcsUpdateMonitor_MRTN_1_status:&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_MRTN_1_status:&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
 
 int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_MRTN_1_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER MRTN_1"+" "+dpName);
+  DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_MRTN_1_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER MRTN_1"+" "+dpName);
   dynRemove(CSC_fwG_g_STATUS_HANDLERS_FIRST,index);
   
 
@@ -1379,7 +1371,7 @@ int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dp
  }
 // else{if(CSC_fwG_g_CSC_INTERLOCK_FLAG)return;}
 
-DebugN("mudcsServer::mudcsUpdateMonitor_MRTN_1_status ***************************"+dpName+" = "+value);
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_MRTN_1_status ***************************"+dpName+" = "+value);
 /////DebugN("mudcsServer:mudcsUpdateMonitor_MRTN_1_status-> ***************************"+substr(dpName,0,strpos(dpName,".")));
 
 // !!!! COMMENT: MULTY_MODE_DONE.value is set true when MUDCS_DOMAIN.value is defined
@@ -1419,7 +1411,7 @@ mudcs_alias=mudcsAliasNameGet(domain);
 ////DebugN("mudcsUpdateMonitor_MRTN_1_status:%%%%%%%% " +type + " %%%%%% " + ich + " "+ MULTY_MODE + " "+domain + " %%%%");
 ////DebugN("mudcsUpdateMonitor_MRTN_1_status:%%%%%%%% " +CSC_fwG_g_SYSTEM_NAME+":MUDCS_DOMAIN.value" + " %%%%%%%%%%%11 ");
 
-DebugN("mudcsUpdateMonitor_MRTN_1_status:%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% " +dpName);
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_MRTN_1_status:%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% " +dpName);
 
 
 
@@ -1447,7 +1439,7 @@ if(value == 2 || (value==-1 && index >=1) /*|| (value==-2 && state_destin==true 
 
 //// moved: mudcsAlertSetActive(dpName,true); 
 
-DebugN("mudcsServer::mudcsUpdateMonitor_MRTN_1_status == 2++***************************"+dpName+value);
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_MRTN_1_status == 2++***************************"+dpName+value);
 }
 else if(value == 0 /*|| (value==-2 && state_destin==false && index >=1)*/){ //  -2  is to initialize the state at start  
 
@@ -1458,7 +1450,7 @@ else if(value == 0 /*|| (value==-2 && state_destin==false && index >=1)*/){ //  
  if(state_save ==-2)dpSetWait(substr(dpName,0,strpos(dpName,"."))+".status",-2);// this all is to allow to switch off from error state and differ -2 and -1
  else if(!MULTY_MODE)mudcsCommand("MRTN",dpName,"power_off");
 
-DebugN("mudcsServer::mudcsUpdateMonitor_MRTN_1_status == 0++***************************"+dpName+value);
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_MRTN_1_status == 0++***************************"+dpName+value);
 }
 
 
@@ -1482,11 +1474,10 @@ mudcsUpdateMonitor_WNR12_1_status(string dpName, int value){
 string mudcs_alias;
 
 // attention :: the order of power/on/off and setting alarm is essential !!! 
-DebugN("mudcsUpdateMonitor_WNR12_1_status:&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_WNR12_1_status:&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
 
 int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_WNR12_1_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER WNR12_1"+" "+dpName);
   dynRemove(CSC_fwG_g_STATUS_HANDLERS_FIRST,index);
   
 
@@ -1496,7 +1487,7 @@ int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dp
  }
 // else{if(CSC_fwG_g_CSC_INTERLOCK_FLAG)return;}
 
-DebugN("mudcsServer::mudcsUpdateMonitor_WNR12_1_status ***************************"+dpName+" = "+value);
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_WNR12_1_status ***************************"+dpName+" = "+value);
 /////DebugN("mudcsServer:mudcsUpdateMonitor_WNR12_1_status-> ***************************"+substr(dpName,0,strpos(dpName,".")));
 
 // !!!! COMMENT: MULTY_MODE_DONE.value is set true when MUDCS_DOMAIN.value is defined
@@ -1536,7 +1527,7 @@ mudcs_alias=mudcsAliasNameGet(domain);
 ////DebugN("mudcsUpdateMonitor_WNR12_1_status:%%%%%%%% " +type + " %%%%%% " + ich + " "+ MULTY_MODE + " "+domain + " %%%%");
 ////DebugN("mudcsUpdateMonitor_WNR12_1_status:%%%%%%%% " +CSC_fwG_g_SYSTEM_NAME+":MUDCS_DOMAIN.value" + " %%%%%%%%%%%11 ");
 
-DebugN("mudcsUpdateMonitor_WNR12_1_status:%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% " +dpName);
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_WNR12_1_status:%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% " +dpName);
 
 
 mudcs_alias=mudcsAliasNameGet(dpName);
@@ -1556,7 +1547,7 @@ if(value == 2 || (value==-1 && index >=1) /*|| (value==-2 && state_destin==true 
 
 //// moved: mudcsAlertSetActive(dpName,true); 
 
-DebugN("mudcsServer::mudcsUpdateMonitor_WNR12_1_status == 2++***************************"+dpName+value);
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_WNR12_1_status == 2++***************************"+dpName+value);
 }
 else if(value == 0 /*|| (value==-2 && state_destin==false && index >=1)*/){ //  -2  is to initialize the state at start  
 
@@ -1566,7 +1557,7 @@ else if(value == 0 /*|| (value==-2 && state_destin==false && index >=1)*/){ //  
  if(state_save ==-2)dpSetWait(substr(dpName,0,strpos(dpName,"."))+".status",-2);// this all is to allow to switch off from error state and differ -2 and -1
  else if(!MULTY_MODE)mudcsCommand("WNR12",dpName,"power_off");
 
-DebugN("mudcsServer::mudcsUpdateMonitor_WNR12_1_status == 0++***************************"+dpName+value);
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_WNR12_1_status == 0++***************************"+dpName+value);
 }
 
 
@@ -1588,12 +1579,13 @@ mudcsUpdateMonitor_fwGasSystem_CSC_GAS_status(string dpName, int value){
 
 int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_fwGasSystem_CSC_GAS_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER ALNM_1");
   dynRemove(CSC_fwG_g_STATUS_HANDLERS_FIRST,index);
 /// !!!! the return below is commented out because the last status (remained at server interruption) SHOULD BE "EXECUTED" 
 // to restore the previous system state JUST IN CASE
 //  return;
- }
+  } else {
+    emu_info("mudcsUpdateMonitor_fwGasSystem_CSC_GAS_status: status update: " + dpName + "=" + value);
+  }
 
 int state_save;
 dpGet(substr(dpName,0,strpos(dpName,"."))+".chamber_state",state_save);
@@ -1617,12 +1609,13 @@ mudcsUpdateMonitor_fwCooling_CSC_COOLING_status(string dpName, int value){
 
 int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_fwCooling_CSC_COOLING_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER ALNM_1");
   dynRemove(CSC_fwG_g_STATUS_HANDLERS_FIRST,index);
 /// !!!! the return below is commented out because the last status (remained at server interruption) SHOULD BE "EXECUTED" 
 // to restore the previous system state JUST IN CASE
 //  return;
- }
+  } else {
+    emu_info("mudcsUpdateMonitor_fwCooling_CSC_COOLING_status: status update: " + dpName + "=" + value);
+  }
 
 int state_save;
 dpGet(substr(dpName,0,strpos(dpName,"."))+".chamber_state",state_save);
@@ -1646,7 +1639,7 @@ mudcsUpdateMonitor_ALNM_1_status(string dpName, int value){
 
 int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_ALNM_1_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER ALNM_1");
+  DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_ALNM_1_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER ALNM_1");
   dynRemove(CSC_fwG_g_STATUS_HANDLERS_FIRST,index);
 /// !!!! the return below is commented out because the last status (remained at server interruption) SHOULD BE "EXECUTED" 
 // to restore the previous system state JUST IN CASE
@@ -1678,7 +1671,7 @@ string data;
   
 int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_FED_1_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER FED");
+  DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_FED_1_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER FED");
   dynRemove(CSC_fwG_g_STATUS_HANDLERS_FIRST,index);
 /// !!!! the return below is commented out because the last status (remained at server interruption) SHOULD BE "EXECUTED" 
 // to restore the previous system state JUST IN CASE
@@ -1706,7 +1699,7 @@ string data;
   
 int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_TEMP_1_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER TEMP");
+  DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_TEMP_1_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER TEMP");
   dynRemove(CSC_fwG_g_STATUS_HANDLERS_FIRST,index);
 /// !!!! the return below is commented out because the last status (remained at server interruption) SHOULD BE "EXECUTED" 
 // to restore the previous system state JUST IN CASE
@@ -1731,7 +1724,7 @@ mudcsUpdateMonitor_CHIP_1_status(string dpName, int value){
 
 int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_CHIP_1_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER CHIP");
+  DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_CHIP_1_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER CHIP");
   dynRemove(CSC_fwG_g_STATUS_HANDLERS_FIRST,index);
 /// !!!! the return below is commented out because the last status (remained at server interruption) SHOULD BE "EXECUTED" 
 // to restore the previous system state JUST IN CASE
@@ -1752,7 +1745,7 @@ mudcsUpdateMonitor_GAS_SX5_status(string dpName, int value){
 
 int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_GAS_SX5_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER GAS_SX5");
+  DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_GAS_SX5_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER GAS_SX5");
   dynRemove(CSC_fwG_g_STATUS_HANDLERS_FIRST,index);
 /// !!!! the return below is commented out because the last status (remained at server interruption) SHOULD BE "EXECUTED" 
 // to restore the previous system state JUST IN CASE
@@ -1775,7 +1768,7 @@ mudcsUpdateMonitor_WTH_SX5_status(string dpName, int value){
 
 int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_WTH_SX5_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER WTH_SX5");
+  DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_WTH_SX5_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER WTH_SX5");
   dynRemove(CSC_fwG_g_STATUS_HANDLERS_FIRST,index);
 /// !!!! the return below is commented out because the last status (remained at server interruption) SHOULD BE "EXECUTED" 
 // to restore the previous system state JUST IN CASE
@@ -1800,7 +1793,7 @@ mudcsUpdateMonitor_PT100_status(string dpName, int value){
 
 int index=dynContains(CSC_fwG_g_STATUS_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_PT100_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER PT100");
+  DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_PT100_status:+++++++++++++++++++++++++++++++++++++++++++++++++++++++FIRST CALL OF HANDLER PT100");
   dynRemove(CSC_fwG_g_STATUS_HANDLERS_FIRST,index);
 /// !!!! the return below is commented out because the last status (remained at server interruption) SHOULD BE "EXECUTED" 
 // to restore the previous system state JUST IN CASE
@@ -1836,12 +1829,11 @@ while(CSC_g_BLOCK_WATCHDOG_THREAD){}
   
 int index=dynContains(CSC_fwG_g_BROKER_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_HV_PR_new:------------------------------------------------FIRST CALL OF HANDLER HV_PR");
   dynRemove(CSC_fwG_g_BROKER_HANDLERS_FIRST,index);
   return;
  }
 
-DebugN("******************** mudcsUpdateMonitor_HV_PR_new ******************");
+emu_info("mudcsUpdateMonitor_HV_PR_new: status update: " + dpName + "=" + value);
 
 // ---------------
 //DebugN("******************** HV_PR PVSS CONFIRMATION******************");
@@ -1851,8 +1843,6 @@ DebugN("******************** mudcsUpdateMonitor_HV_PR_new ******************");
 // ---------------
 
 HV_primary_data_handler(dpName);
-
-DebugN("******************** mudcsUpdateMonitor_HV_PR_new ******************");
 
 }
 //============================================================================================
@@ -1889,15 +1879,12 @@ mudcsUpdateMonitor_HV_N_new(string subtype, string dpName, string value, string 
 int status_source, status_destin;
 int chamber_complex_status;
 bool isDpNameActive;
-//  DebugN("mudcsUpdateMonitor_HV_N_new: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 int index=dynContains(CSC_fwG_g_BROKER_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_HV_N_new: ------------------------------------------------FIRST CALL OF HANDLER HV"+" "+dpName);
   dynRemove(CSC_fwG_g_BROKER_HANDLERS_FIRST,index);
   return;
  }
-
-DebugTN("5555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555"+" "+dpName);
+emu_info("mudcsUpdateMonitor_HV_N_new: status update: " + dpName + "=" + value + ", subtype=" + subtype + ", isconf=" + isconf);
 
 
 int pos;
@@ -1948,7 +1935,7 @@ test_string1=test_string1+";"+test_int;
   dpGet(test_string+".data.module_type", test_int);
   module_type=test_int;
 
- DebugN("MODULE TYPE "+module_type);
+ emu_debug("mudcsUpdateMonitor_HV_N_new: MODULE TYPE "+module_type, emu_DEBUG_DETAIL);
   if(module_type==1){
 
     return; // if master we do not go further 
@@ -1960,8 +1947,6 @@ test_string1=test_string1+";"+test_int;
 
  if(module_type == 3)test_string2=test_string1+";"+i_module_part;
  else if(module_type == 2){test_string2=test_string1+";"+"0";i_module_part=2;}
-
-DebugTN("mudcsServer::mudcsUpdateMonitor_HV_N_new 22222222222222222222222222222222222222222222"+" "+test_string2);
 
 //---
 //---
@@ -2129,7 +2114,6 @@ if(previous_status >=0 && current_status == -1){
 //////} // for(i_module_part=1;i_module_part<=2;i_module_part++)
 
 CSC_fwG_so_get_chambers_time[chamber_index]=getCurrentTime();
-DebugTN("mudcsServer::mudcsUpdateMonitor_HV_N_new BROKER ********************************"+"HV_N"+" "+subtype+ test_string);
 
 
 
@@ -2197,9 +2181,9 @@ string test_string2="HV_PRIMARY"+";"+hostid;
 watch_for_alive(test_string);
 //-------------------------------------------------
 
-DebugTN("test_string2 ="+test_string2);
-DebugTN("test_string ="+test_string);
-DebugTN("fsm ="+fsm);
+emu_debug("HV_primary_data_handler: test_string2 ="+test_string2, emu_DEBUG_DETAIL);
+emu_debug("HV_primary_data_handler: test_string ="+test_string, emu_DEBUG_DETAIL);
+emu_debug("HV_primary_data_handler: fsm ="+fsm, emu_DEBUG_DETAIL);
 
 string t_string=CSC_fwG_g_SYSTEM_NAME+":Db_o.CscLevelDevicesCoordinates";
   dpGet(t_string,test_dyn_string);
@@ -2218,7 +2202,7 @@ string t_string=CSC_fwG_g_SYSTEM_NAME+":Db_o.CscLevelDevicesCoordinates";
  } // for
 
  if(!found)return;
-DebugTN("found");
+emu_debug("HV_primary_data_handler: found", emu_DEBUG_DETAIL);
 
 
 //-------------------------------------------------
@@ -2240,7 +2224,7 @@ if(is_newPRFSM){
      || (status_real == 2 || status_real == 3))dpSetWait(fsm+".chamber_state",status_destin);
     dpSet(fsm+".coord",status_real);//
   
-  DebugTN("----------->newPRFSM<---------------");
+  emu_debug("HV_primary_data_handler: ----------->newPRFSM<---------------", emu_DEBUG_DETAIL);
 }
 
 //------------------------------------------------------------------------------------------------
@@ -2315,7 +2299,7 @@ int status_source, status_destin;
 
 int index=dynContains(CSC_fwG_g_BROKER_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_CRB_1_new: ------------------------------------------------FIRST CALL OF HANDLER CRB"+" "+dpName);
+  DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_CRB_1_new: ------------------------------------------------FIRST CALL OF HANDLER CRB"+" "+dpName);
   dynRemove(CSC_fwG_g_BROKER_HANDLERS_FIRST,index);
   return;
  }
@@ -2358,7 +2342,7 @@ int pos;
 test_string2=test_string2+";"+test_int;
   if(strpos(test_string2,"LVCB") <0 )return; // not to receive a corrupted data !!!!!!!
 
-DebugTN("mudcsServer::mudcsUpdateMonitor_CRB_1_new 22222222222222222222222222222222222222222222"+ test_int+" "+test_string2);
+DebugTN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_CRB_1_new 22222222222222222222222222222222222222222222"+ test_int+" "+test_string2);
 
 //////mudcsDebug(test_string);
 
@@ -2417,7 +2401,7 @@ mudcsFsmErrorSet(subtype, fsm, test_string); // moved up (before CONFIRMATION) 1
 
 
 watch_for_alive("CRB_1_DimBroker");
-DebugTN("mudcsServer::mudcsUpdateMonitor_CRB_1_new BROKER ********************************"+"CRB_1"+" "+subtype+ test_string);
+DebugTN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_CRB_1_new BROKER ********************************"+"CRB_1"+" "+subtype+ test_string);
 
 
 
@@ -2433,10 +2417,11 @@ int status_source, status_destin;
 
 int index=dynContains(CSC_fwG_g_BROKER_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_fwWnrCh_CSC_LV_new: ------------------------------------------------FIRST CALL OF HANDLER MRTN"+" "+dpName);
   dynRemove(CSC_fwG_g_BROKER_HANDLERS_FIRST,index);
   return;
- }
+} else {
+  emu_info("mudcsUpdateMonitor_fwWnrCh_CSC_LV_new: status update: " + dpName + "=" + value);
+}
 
 
 int w_pos,radius;
@@ -2475,7 +2460,6 @@ int pos;
 
   if(max_sense_volt <=0 || max_sense_volt > 20)return; // not to receive a corrupted data !!!!!!!
 
-DebugTN("mudcsServer::mudcsUpdateMonitor_fwWnrCh_CSC_LV_new 22222222222222222222222222222222222222222222"+ test_int+" "+test_string2);
 
 //////mudcsDebug(test_string);
 
@@ -2535,7 +2519,6 @@ mudcsFsmErrorSet(subtype, fsm, test_string); // moved up (before CONFIRMATION) 1
 
 
 watch_for_alive("fwWnrCh_CSC_LV_DimBroker");
-DebugTN("mudcsServer::mudcsUpdateMonitor_fwWnrCh_CSC_LV_new BROKER ********************************"+"fwWnrCh_CSC_LV"+" "+subtype+ test_string);
 
 
 //--------------
@@ -2552,9 +2535,10 @@ int status_source, status_destin;
 
 int index=dynContains(CSC_fwG_g_BROKER_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_fwWnrCr_CSC_LV_new: ------------------------------------------------FIRST CALL OF HANDLER MRTN"+" "+dpName);
   dynRemove(CSC_fwG_g_BROKER_HANDLERS_FIRST,index);
   return;
+ } else {
+  emu_info("mudcsUpdateMonitor_fwWnrCr_CSC_LV_new: status update: " + dpName + "=" + value);
  }
 
 
@@ -2594,7 +2578,6 @@ int pos;
 
   if(strpos(sysDescr,"WIENER")<0)return; // not to receive a corrupted data !!!!!!!
 
-DebugTN("mudcsServer::mudcsUpdateMonitor_fwWnrCr_CSC_LV_new 22222222222222222222222222222222222222222222"+ test_int+" "+test_string2);
 
 //////mudcsDebug(test_string);
 
@@ -2654,7 +2637,6 @@ mudcsFsmErrorSet(subtype, fsm, test_string); // moved up (before CONFIRMATION) 1
 
 
 watch_for_alive("fwWnrCr_CSC_LV_DimBroker");
-DebugTN("mudcsServer::mudcsUpdateMonitor_fwWnrCr_CSC_LV_new BROKER ********************************"+"fwWnrCr_CSC_LV"+" "+subtype+ test_string);
 
 
 //--------------
@@ -2671,7 +2653,7 @@ int status_source, status_destin;
 
 int index=dynContains(CSC_fwG_g_BROKER_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_MRTN_1_new: ------------------------------------------------FIRST CALL OF HANDLER MRTN"+" "+dpName);
+  DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_MRTN_1_new: ------------------------------------------------FIRST CALL OF HANDLER MRTN"+" "+dpName);
   dynRemove(CSC_fwG_g_BROKER_HANDLERS_FIRST,index);
   return;
  }
@@ -2717,7 +2699,7 @@ test_string2=test_string2+";"+test_int;
 
   if(strpos(test_string2,"WIENER") <0 )return; // not to receive a corrupted data !!!!!!!
 
-DebugTN("mudcsServer::mudcsUpdateMonitor_MRTN_1_new 22222222222222222222222222222222222222222222"+ test_int+" "+test_string2);
+DebugTN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_MRTN_1_new 22222222222222222222222222222222222222222222"+ test_int+" "+test_string2);
 
 //////mudcsDebug(test_string);
 
@@ -2785,7 +2767,7 @@ mudcsFsmErrorSet(subtype, fsm, test_string); // moved up (before CONFIRMATION) 1
 
 
 watch_for_alive("MRTN_1_DimBroker");
-DebugTN("mudcsServer::mudcsUpdateMonitor_MRTN_1_new BROKER ********************************"+"MRTN_1"+" "+subtype+ test_string);
+DebugTN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_MRTN_1_new BROKER ********************************"+"MRTN_1"+" "+subtype+ test_string);
 
 
 //--------------
@@ -2836,7 +2818,7 @@ int status_source, status_destin;
 
 int index=dynContains(CSC_fwG_g_BROKER_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_WNR12_1_new: ------------------------------------------------FIRST CALL OF HANDLER WNR12"+" "+dpName);
+  DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_WNR12_1_new: ------------------------------------------------FIRST CALL OF HANDLER WNR12"+" "+dpName);
   dynRemove(CSC_fwG_g_BROKER_HANDLERS_FIRST,index);
   return;
  }
@@ -2879,7 +2861,7 @@ test_string2=test_string2+";"+test_int;
 
   if(strpos(test_string2,"WIENER") <0 )return; // not to receive a corrupted data !!!!!!!
 
-DebugTN("mudcsServer::mudcsUpdateMonitor_WNR12_1_new 22222222222222222222222222222222222222222222"+ test_int+" "+test_string2);
+DebugTN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_WNR12_1_new 22222222222222222222222222222222222222222222"+ test_int+" "+test_string2);
 
 //////mudcsDebug(test_string);
 
@@ -2939,7 +2921,7 @@ mudcsFsmErrorSet(subtype, fsm, test_string); // moved up (before CONFIRMATION) 1
 
 
 watch_for_alive("WNR12_1_DimBroker");
-DebugTN("mudcsServer::mudcsUpdateMonitor_WNR12_1_new BROKER ********************************"+"WNR12_1"+" "+subtype+ test_string);
+DebugTN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_WNR12_1_new BROKER ********************************"+"WNR12_1"+" "+subtype+ test_string);
 
 
 
@@ -3125,7 +3107,7 @@ mudcsUpdateMonitor_ALNM_1_new(string dpName, string value){
 while(CSC_g_BLOCK_WATCHDOG_THREAD){}
 int index=dynContains(CSC_fwG_g_BROKER_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_ALNM_1_new:------------------------------------------------FIRST CALL OF HANDLER ALNM");
+  DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_ALNM_1_new:------------------------------------------------FIRST CALL OF HANDLER ALNM");
   dynRemove(CSC_fwG_g_BROKER_HANDLERS_FIRST,index);
   return;
  }
@@ -3157,7 +3139,7 @@ int pos;
   test_string_status=CSC_fwG_g_SYSTEM_NAME+":"+"ALNM/"+substr(d_test[1],pos+1);
  }
 
-DebugTN(dpName+">>>>>>>>>>"+test_string+" "+test_string2+" "+test_string_status+" "+d_test[1]);
+DebugTN("SHOULD NOT SEE THIS (shouldn't be called) " + dpName+">>>>>>>>>>"+test_string+" "+test_string2+" "+test_string_status+" "+d_test[1]);
 
  string coord;
  dyn_string d_coord;
@@ -3178,7 +3160,7 @@ DebugTN(dpName+">>>>>>>>>>"+test_string+" "+test_string2+" "+test_string_status+
 
 test_string2=test_string2+";"+test_int;
 if(strpos(test_string2,"me") <0)return; // not to receive a corrupted data !!!!!!!
-DebugTN("mudcsServer::mudcsUpdateMonitor_ALNM_1_new 22222222222222222222222222222222222222222222"+ test_int+" "+test_string2);
+DebugTN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_ALNM_1_new 22222222222222222222222222222222222222222222"+ test_int+" "+test_string2);
 
 
 //////mudcsDebug(test_string);
@@ -3191,7 +3173,7 @@ mudcsFsmErrorSet(subtype, test_string_status, test_string); // moved up (before 
 //-----------------------------------------------------------------------------------------------------
 
 
-DebugN("mudcsServer::mudcsUpdateMonitor_ALNM_1_new ********************************ALNM_1"+ test_string);
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_ALNM_1_new ********************************ALNM_1"+ test_string);
 
 watch_for_alive("ALNM_1_DimBroker");
 
@@ -3210,6 +3192,7 @@ mudcsUpdateMonitor_LV_SX5_new(string dpName, string value){
 
 //============================================================================================
 mudcsUpdateMonitor_LV_1_new(string dpName, string value){
+  return;
  mudcsUpdateMonitor_LV_N_new("LV_1", dpName, value, "");
 /*
    int pos1=strpos(dpName,"CSC_ME_M");
@@ -3280,7 +3263,7 @@ int status_source, status_destin;
 
 int index=dynContains(CSC_fwG_g_BROKER_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_LV_N_new: ------------------------------------------------FIRST CALL OF HANDLER LV"+" "+dpName);
+  DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_LV_N_new: ------------------------------------------------FIRST CALL OF HANDLER LV"+" "+dpName);
   dynRemove(CSC_fwG_g_BROKER_HANDLERS_FIRST,index);
   return;
  }
@@ -3318,14 +3301,6 @@ int pos;
 
 //-------
 
-  dpGet(test_string+".dynatemTcpIp", test_string2);
-  dpGet(test_string+".setNumber", test_int);
-
-test_string2=test_string2+";"+test_int;
-
-if(strpos(test_string2,"00:00:00:00") <0 
-&& strpos(test_string2,"10.0.0.") <0 && strpos(test_string2,"LVCB"))return; // not to receive a corrupted data !!!!!!!
-
 mudcsUpdateMonitor_TYPE_1_new_alive(dpName,"LV_1","_LV");
 
 //=====================================================
@@ -3349,7 +3324,7 @@ if(is_x2p){
     if(time_dif>watch_dog_delay)return;
 }
 //=====================================================
-DebugTN("mudcsServer::mudcsUpdateMonitor_LV_N_new 22222222222222222222222222222222222222222222"+ test_int+" "+test_string2);
+DebugTN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_LV_N_new 22222222222222222222222222222222222222222222"+ test_string);
 
 
 //////mudcsDebug(test_string);
@@ -3425,7 +3400,7 @@ mudcsFsmErrorSet(subtype, test_string_status, test_string); // moved up (before 
 ///////// dpSetWait(CSC_fwG_g_SYSTEM_NAME+":"+subtype+"_COM"+isconf+".command","CONFIRMATION");
 
 
-DebugTN("mudcsServer::mudcsUpdateMonitor_LV_N_new BROKER ********************************"+"LV_N"+" "+subtype+ test_string);
+DebugTN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_LV_N_new BROKER ********************************"+"LV_N"+" "+subtype+ test_string);
 
 
 
@@ -3449,7 +3424,7 @@ while(CSC_g_BLOCK_WATCHDOG_THREAD){}
 
 int index=dynContains(CSC_fwG_g_BROKER_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_CHIP_N_new:------------------------------------------------FIRST CALL OF HANDLER CHIP");
+  DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_CHIP_N_new:------------------------------------------------FIRST CALL OF HANDLER CHIP");
   dynRemove(CSC_fwG_g_BROKER_HANDLERS_FIRST,index);
   return;
  }
@@ -3496,7 +3471,7 @@ test_string2=test_string2+";"+test_int;
 if(strpos(test_string2,"00:00:00:00") <0 
 && strpos(test_string2,"10.0.0.") <0)return; // not to receive a corrupted data !!!!!!!
 
-DebugTN("mudcsServer::mudcsUpdateMonitor_CHIP_N_new 22222222222222222222222222222222222222222222"+ test_int+" "+test_string2);
+DebugTN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_CHIP_N_new 22222222222222222222222222222222222222222222"+ test_int+" "+test_string2);
 
 
 //////mudcsDebug(test_string);
@@ -3523,7 +3498,7 @@ mudcsFsmErrorSet(subtype, test_string_status, test_string); // moved up (before 
 //-----------------------------------------------------------------------------------------------------
 
 
- DebugN("mudcsServer::mudcsUpdateMonitor_CHIP_N_new ********************************CHIP_1"+ test_string);
+ DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_CHIP_N_new ********************************CHIP_1"+ test_string);
 
 
 }
@@ -3547,7 +3522,7 @@ mudcsUpdateMonitor_TEMP_N_new(string subtype, string dpName, string value, strin
 while(CSC_g_BLOCK_WATCHDOG_THREAD){}
 int index=dynContains(CSC_fwG_g_BROKER_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_TEMP_N_new:------------------------------------------------FIRST CALL OF HANDLER TEMP");
+  DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_TEMP_N_new:------------------------------------------------FIRST CALL OF HANDLER TEMP");
   dynRemove(CSC_fwG_g_BROKER_HANDLERS_FIRST,index);
   return;
  }
@@ -3587,13 +3562,7 @@ int pos;
 
 //-------
 
-  dpGet(test_string+".dynatemTcpIp", test_string2);
-  dpGet(test_string+".setNumber", test_int);
-
-test_string2=test_string2+";"+test_int;
-if(strpos(test_string2,"00:00:00:00") <0 
-&& strpos(test_string2,"10.0.0.") <0)return; // not to receive a corrupted data !!!!!!!
-DebugTN("mudcsServer::mudcsUpdateMonitor_TEMP_N_new 22222222222222222222222222222222222222222222"+ test_int+" "+test_string2);
+DebugTN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_TEMP_N_new 22222222222222222222222222222222222222222222"+ test_string);
 
 
 //=====================================================
@@ -3642,7 +3611,7 @@ mudcsFsmErrorSet(subtype, test_string_status, test_string); // moved up (before 
 //-----------------------------------------------------------------------------------------------------
 
 
-DebugN("mudcsServer::mudcsUpdateMonitor_TEMP_N_new ********************************TEMP_1"+ test_string);
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_TEMP_N_new ********************************TEMP_1"+ test_string);
 
  
 }
@@ -3659,7 +3628,7 @@ mudcsUpdateMonitor_FED_1_new(string dpName, string value){
 while(CSC_g_BLOCK_WATCHDOG_THREAD){}
 int index=dynContains(CSC_fwG_g_BROKER_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_FED_N_new:------------------------------------------------FIRST CALL OF HANDLER FED");
+  DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_FED_N_new:------------------------------------------------FIRST CALL OF HANDLER FED");
   dynRemove(CSC_fwG_g_BROKER_HANDLERS_FIRST,index);
   return;
  }
@@ -3697,10 +3666,7 @@ int pos;
 
 //-------
 
-  dpGet(test_string+".quality", test_string2);
-
-if(strpos(test_string2,"DDU") <0 )return; // not to receive a corrupted data !!!!!!!
-DebugTN("mudcsServer::mudcsUpdateMonitor_FED_1_new 22222222222222222222222222222222222222222222"+ test_int+" "+test_string2);
+DebugTN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_FED_1_new 22222222222222222222222222222222222222222222"+ test_string_status);
 
 mudcsUpdateMonitor_TYPE_1_new_alive(dpName,"FED_1","_FED");
 //=====================================================
@@ -3729,7 +3695,7 @@ mudcsFsmErrorSet(subtype, test_string_status, test_string); // moved up (before 
 //-----------------------------------------------------------------------------------------------------
 
 
-DebugN("mudcsServer::mudcsUpdateMonitor_FED_1_new ********************************FED_1"+ test_string);
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_FED_1_new ********************************FED_1"+ test_string);
 
  
 }
@@ -3741,7 +3707,7 @@ mudcsUpdateMonitor_GAS_SX5_new(string dpName, string value){
 while(CSC_g_BLOCK_WATCHDOG_THREAD){}
 int index=dynContains(CSC_fwG_g_BROKER_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_GAS_SX5_new:------------------------------------------------FIRST CALL OF HANDLER GAS_SX5");
+  DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_GAS_SX5_new:------------------------------------------------FIRST CALL OF HANDLER GAS_SX5");
   dynRemove(CSC_fwG_g_BROKER_HANDLERS_FIRST,index);
   return;
  }
@@ -3791,14 +3757,14 @@ test_string=test_string+";"+test_int;
 // } // for
 */
 
-DebugN("mudcsServer::mudcsUpdateMonitor_GAS_SX5_new ********************************GAS_SX5::"+ t_string1);
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_GAS_SX5_new ********************************GAS_SX5::"+ t_string1);
 //DebugN("mudcsServer: ********************************GAS_SX5::"+ t_string2);
 //DebugN("mudcsServer: ********************************GAS_SX5::"+ test_string);
 
 //// if(!found){
  if(strpos(test_string,"LVCB") <0 ){ // not to receive a corrupted data !!!!!!!
 /////////////    mudcsDebug("mudcsUpdateMonitor_"+label+": \n dynatemTcpId;setNumber is not in the database");
-DebugN("mudcsServer::mudcsUpdateMonitor_GAS_SX5_new ********************************GAS_SX5 11::");
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_GAS_SX5_new ********************************GAS_SX5 11::");
 dpSet(CSC_fwG_g_SYSTEM_NAME+":GAS_SX5_COM_CONF.command","CONFIRMATION");
     return;
  }
@@ -3844,23 +3810,23 @@ dpGet(CSC_fwG_g_SYSTEM_NAME+":GAS_SX5_DimBroker_o.data.Mixer2_o.ar",ar_f);
 dpGet(CSC_fwG_g_SYSTEM_NAME+":GAS_SX5_DimBroker_o.data.Mixer2_o.co2",co2_f);
 dpGet(CSC_fwG_g_SYSTEM_NAME+":GAS_SX5_DimBroker_o.data.Mixer2_o.cf4",cf4_f);
 
-DebugTN("GAS:b "+ret);
+DebugTN("SHOULD NOT SEE THIS (shouldn't be called) GAS:b "+ret);
 
 ret=percentage_calculation(ar_f,co2_f,cf4_f);
 
-DebugTN("GAS:a "+ret);
+DebugTN("SHOULD NOT SEE THIS (shouldn't be called) GAS:a "+ret);
  if(ret){
 ///   DebugTN("GAS ALARM");
   if(ar_f > 0.7 || co2_f > 0.7 || cf4_f > 0.5){
-   DebugTN("GAS ALARM: RED LEVEL");
-   DebugTN("HV should be switched?");
+   DebugTN("SHOULD NOT SEE THIS (shouldn't be called) GAS ALARM: RED LEVEL");
+   DebugTN("SHOULD NOT SEE THIS (shouldn't be called) HV should be switched?");
     if(CSC_fwG_g_GAS_ERROR_FLAG)system("mail "+CSC_fwG_g_EMAILS_GAS+" < "+CSC_fwG_g_project_name_home+"/source/"+CSC_fwG_g_Component+"/text/HV_mail_gas_error.txt &");
     CSC_fwG_g_GAS_ERROR_FLAG=0;
     CSC_fwG_g_GAS_WARNING_FLAG=1;
 //////// hv_master_off();
   }
   else{
-    DebugTN("GAS ALARM: YELLOW LEVEL");
+    DebugTN("SHOULD NOT SEE THIS (shouldn't be called) GAS ALARM: YELLOW LEVEL");
     if(CSC_fwG_g_GAS_WARNING_FLAG)system("mail "+CSC_fwG_g_EMAILS_GAS+" < "+CSC_fwG_g_project_name_home+"/source/"+CSC_fwG_g_Component+"/text/HV_mail_gas_warning.txt &");
     CSC_fwG_g_GAS_WARNING_FLAG=0;
     CSC_fwG_g_GAS_ERROR_FLAG=1;
@@ -3889,7 +3855,7 @@ mudcsFsmErrorSet("GAS_SX5", test_string, test_string); // moved up (before CONFI
 
 
 watch_for_alive("GAS_SX5_DimBroker");
-DebugN("mudcsServer::mudcsUpdateMonitor_GAS_SX5_new ********************************GAS_SX5"+ test_string);
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_GAS_SX5_new ********************************GAS_SX5"+ test_string);
 
 
 
@@ -3905,7 +3871,7 @@ mudcsUpdateMonitor_WTH_SX5_new(string dpName, string value){
 while(CSC_g_BLOCK_WATCHDOG_THREAD){}
 int index=dynContains(CSC_fwG_g_BROKER_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_WTH_SX5_new:------------------------------------------------FIRST CALL OF HANDLER WTH_SX5");
+  DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_WTH_SX5_new:------------------------------------------------FIRST CALL OF HANDLER WTH_SX5");
   dynRemove(CSC_fwG_g_BROKER_HANDLERS_FIRST,index);
   return;
  }
@@ -3953,7 +3919,7 @@ int pos;
 
 
 test_string2=test_string2+";"+test_int;
-DebugTN("mudcsServer::mudcsUpdateMonitor_WTH_SX5_new 22222222222222222222222222222222222222222222"+ test_int+" "+test_string2);
+DebugTN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_WTH_SX5_new 22222222222222222222222222222222222222222222"+ test_int+" "+test_string2);
 
 //---
 /*
@@ -4017,7 +3983,7 @@ else if(current_status == 0){
 
 
 watch_for_alive("WTH_SX5_DimBroker");
-DebugN("mudcsServer::mudcsUpdateMonitor_WTH_SX5_new ********************************WTH_SX5"+ test_string);
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_WTH_SX5_new ********************************WTH_SX5"+ test_string);
 
  
 }
@@ -4032,7 +3998,7 @@ mudcsUpdateMonitor_PT100_new(string dpName, string value){
 while(CSC_g_BLOCK_WATCHDOG_THREAD){}
 int index=dynContains(CSC_fwG_g_BROKER_HANDLERS_FIRST, substr(dpName,0,strpos(dpName,".")));
  if(index >=1 ){ // first call of handler
-  DebugN("mudcsUpdateMonitor_PT100_new:------------------------------------------------FIRST CALL OF HANDLER PT100");
+  DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsUpdateMonitor_PT100_new:------------------------------------------------FIRST CALL OF HANDLER PT100");
   dynRemove(CSC_fwG_g_BROKER_HANDLERS_FIRST,index);
   return;
  }
@@ -4080,7 +4046,7 @@ int pos;
 
 
 test_string2=test_string2+";"+test_int;
-DebugTN("mudcsServer::mudcsUpdateMonitor_PT100_new 22222222222222222222222222222222222222222222"+ test_int+" "+test_string2);
+DebugTN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_PT100_new 22222222222222222222222222222222222222222222"+ test_int+" "+test_string2);
 
 //---
 /*
@@ -4145,7 +4111,7 @@ else if(current_status == 0){
 
 
 watch_for_alive("PT100_DimBroker");
-DebugN("mudcsServer::mudcsUpdateMonitor_PT100_new ********************************PT100"+ test_string);
+DebugN("SHOULD NOT SEE THIS (shouldn't be called) mudcsServer::mudcsUpdateMonitor_PT100_new ********************************PT100"+ test_string);
 
  
 }
@@ -4369,7 +4335,7 @@ mudcsFsmErrorSet(string subtype, string test_string, string test_string_d, bool 
  if(current_status == 2 && state_destin != 1)return;
 // ======
 
- DebugN("mudcsFsmErrorSet:?????????????????????????????????????"+error_class_source+" "+error_class_destin+" "+state_destin);
+ emu_info("mudcsFsmErrorSet:?????????????????????????????????????"+error_class_source+" "+error_class_destin+" "+state_destin);
 /*
    dyn_string d_s2;
   if(strpos(test_string,"GAS_MIXERS")>=0){
@@ -4401,7 +4367,7 @@ mudcsFsmErrorSet(string subtype, string test_string, string test_string_d, bool 
    DebugTN("*");
    DebugTN("*");
 */
-   DebugN("mudcsServer::mudcsFsmErrorSet ?????????????????????????????????????????????????????????????? "+subtype+ test_string);
+   emu_info("mudcsServer::mudcsFsmErrorSet ?????????????????????????????????????????????????????????????? "+subtype+ test_string);
   }
   else  if(current_status==-1 && error_class_source != "FwAlarmErrorAck" && error_class_destin != "FwAlarmErrorAck" &&  
                                                            state_destin == true){ // 10/04/2004 
@@ -4726,13 +4692,13 @@ split_list=strsplit(list[dynlen(list)],",");
 count=0;
   for(i=1;i<=dynlen(dps);i++){
 int skip=0;    
-  DebugTN(dynlen(dps)+"----->>>>"+dps[i]);
+  emu_debug("waiting_for_dim_configured: " + dynlen(dps)+"----->>>>"+dps[i]);
    dpGet(dps[i]+".update_value:_online.._stime",last_set_time); // pvss6
    if(strpos(dps[i],"dyn_debug")>=0)skip=1;
    if((last_set_time < start_time) && !skip){
 string t1=start_time;
 string t2=last_set_time;
- DebugTN(t1+"==="+t2);
+ emu_debug("waiting_for_dim_configured: " + t1+"==="+t2);
      break;
    }
    count++;
@@ -4742,7 +4708,7 @@ string t2=last_set_time;
 }
 
  for(i=1;i<=10;i++){
-  DebugTN("==================== DIM CONFIG ended ===================================");
+  emu_info("==================== DIM CONFIG ended ===================================");
  }
 
 }
