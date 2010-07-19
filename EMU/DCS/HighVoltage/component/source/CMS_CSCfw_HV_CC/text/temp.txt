@@ -1,7 +1,0 @@
-18123 pts/5    S     47:57 /home/fast/pvss_fsm/bin/PVSS00dim -num 2 -dim_dp_config _DimClient_2 -dim_dns_node ufcmspc03
-18128 pts/5    R     16:42 /home/fast/pvss_fsm/bin/PVSS00dim -num 3 -dim_dp_config _DimClient_3 -dim_dns_node ufcmspc02
-18133 pts/5    S      5:39 /home/fast/pvss_fsm/bin/PVSS00dim -num 4 -dim_dp_config _DimClient_4 -dim_dns_node pcmsucr2
-18138 pts/5    S      9:56 /home/fast/pvss_fsm/bin/PVSS00dim -num 5 -dim_dp_config _DimClient_5 -dim_dns_node pcmsucr4
-23144 pts/5    S      0:00 /home/fast/pvss_fsm/bin/delete_processes_by_name home/fast/pvss_fsm/bin/PVSS00dim
-23145 pts/5    S      0:00 sh -c ps -ax | grep home/fast/pvss_fsm/bin/PVSS00dim > temp.txt 
-23147 pts/5    S      0:00 grep home/fast/pvss_fsm/bin/PVSS00dim
