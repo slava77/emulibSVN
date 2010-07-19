@@ -1,6 +1,9 @@
 #uses "CMS_CSC_common/emu_common.ctl"
 #uses "CMS_CSC_common/emu_alert.ctl"
 
+
+const float MUDCS_G_ALERT_DEFAULT_TEMPERATURE = 25;
+
 string DpNameStartForAlertConfig;
 mudcsAlertCreateMain()
 {
@@ -322,10 +325,35 @@ mudcsGetAlctAlert(v18,v33,v55,v56,rel_delta_volt,c18,c33,c55,c56,rel_delta_curr)
 mudcsGetCfebAlert(v33_c,v50_c,v60_c,rel_delta_volt_c,c33_c,c50_c,c60_c,rel_delta_curr_c);
 
 lv_set(true);
+lv_setValidRandgeAndDefaultValue();
 
 }
 //=======================================
 
+void lv_setValidRandgeAndDefaultValue() {
+  dyn_string dpes = dpNames("Db_LV_1_alert_o.LV_1_default.**:_original.._value", "Db_LV_1_alert");
+  emu_info(dpes);
+  
+  for (int i=1; i <= dynlen(dpes); i++) {
+    float defaultValue;
+    dpGet(dpes[i], defaultValue);
+    dpes[i] = dpSubStr(dpes[i], DPSUB_SYS_DP_EL);
+    strreplace(dpes[i], "Db_LV_1_alert_o.LV_1_default", "*.data");
+    dyn_string dataDpes = dpNames(dpes[i], "LV_1_d");
+    
+    for (int j=1; j <= dynlen(dataDpes); j++) {
+       dpSetWait(dataDpes[j] + ":_pv_range.._type", DPCONFIG_MINMAX_PVSS_RANGECHECK,
+                 dataDpes[j] + ":_pv_range.._min", -1,
+                 dataDpes[j] + ":_pv_range.._max", maxFLOAT(),
+                 dataDpes[j] + ":_default.._type", DPCONFIG_DEFAULTVALUE,
+                 dataDpes[j] + ":_default.._value", defaultValue,
+                 dataDpes[j] + ":_default.._set_pvrange", true);                 
+    }
+  }
+}
+
+
+//=======================================
 
 lv_set(bool isSet)
 {
@@ -476,8 +504,24 @@ TEMP_1_alert_main()
 mudcsGetAlertTemperatures(dmb_min, alct_min, cfebs_min, dmb_max, alct_max, cfebs_max);
 
 temp_set(true,"TEMP_1");
+temp_setValidRandgeAndDefaultValue();
 
 }
+//==========================================================
+
+void temp_setValidRandgeAndDefaultValue() {
+  dyn_string tempDpes = dpNames("CSC_ME_*.data.**:_original.._value", "TEMP_1_d");
+  for (int j=1; j <= dynlen(tempDpes); j++) {
+     tempDpes[j] = dpSubStr(tempDpes[j], DPSUB_SYS_DP_EL);
+     dpSetWait(tempDpes[j] + ":_pv_range.._type", DPCONFIG_MINMAX_PVSS_RANGECHECK,
+               tempDpes[j] + ":_pv_range.._min", -1,
+               tempDpes[j] + ":_pv_range.._max", maxFLOAT(),
+               tempDpes[j] + ":_default.._type", DPCONFIG_DEFAULTVALUE,
+               tempDpes[j] + ":_default.._value", MUDCS_G_ALERT_DEFAULT_TEMPERATURE,
+               tempDpes[j] + ":_default.._set_pvrange", true);                 
+  }
+}
+
 //=================================================================
 temp_set(bool isSet, string device_type)
 {

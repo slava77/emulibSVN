@@ -1926,14 +1926,49 @@ float c33,float c50,float c60, float rel_delta_curr){
 
  if(dpExists(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o")){
 
+   //voltage
   dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.v33.v1"), v33);
   dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.v50.v1"), v50);
   dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.v60.v1"), v60);
-  
+
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.v33.v2"), v33);
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.v50.v2"), v50);
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.v60.v2"), v60);
+
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.v33.v3"), v33);
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.v50.v3"), v50);
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.v60.v3"), v60);
+
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.v33.v4"), v33);
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.v50.v4"), v50);
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.v60.v4"), v60);
+
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.v33.v5"), v33);
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.v50.v5"), v50);
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.v60.v5"), v60);
+
+  //current
   dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.c33.v1"), c33);
   dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.c50.v1"), c50);
   dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.c60.v1"), c60);
-  
+
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.c33.v2"), c33);
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.c50.v2"), c50);
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.c60.v2"), c60);
+
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.c33.v3"), c33);
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.c50.v3"), c50);
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.c60.v3"), c60);
+
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.c33.v4"), c33);
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.c50.v4"), c50);
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.c60.v4"), c60);
+
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.c33.v5"), c33);
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.c50.v5"), c50);
+  dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.LV_1_default.Cfeb_o.c60.v5"), c60);
+
+  //deltas
    dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.rel_delta_volt_cfeb"), rel_delta_volt); 
    dpSet(mudcsAddSystem(CSC_fwG_g_SYSTEM_NAME+":Db_LV_1_alert_o.rel_delta_curr_cfeb"), rel_delta_curr); 
 

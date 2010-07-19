@@ -326,7 +326,6 @@ xxdepes3[6] = makeDynString ("","c18");
 xxdepes3[7] = makeDynString ("","c33");
 xxdepes3[8] = makeDynString ("","c55");
 xxdepes3[9] = makeDynString ("","c56");
-xxdepes3[10] = makeDynString ("","status");
 //xxdepes3[] = makeDynString ("","");
 
 xxdepei3[1]=makeDynInt (DPEL_STRUCT);
@@ -338,8 +337,6 @@ xxdepei3[6]=makeDynInt (0,DPEL_FLOAT);
 xxdepei3[7]=makeDynInt (0,DPEL_FLOAT);
 xxdepei3[8]=makeDynInt (0,DPEL_FLOAT);
 xxdepei3[9]=makeDynInt (0,DPEL_FLOAT);
-xxdepei3[10]=makeDynInt (0,DPEL_FLOAT);
-//xxdepei3[]=makeDynInt (0,DPEL_FLOAT);
 
 dpTypeCreate(xxdepes3,xxdepei3);
 
@@ -358,7 +355,6 @@ xxdepes4[4] = makeDynString ("","v60","FLOAT_FIVE");
 xxdepes4[5] = makeDynString ("","c33","FLOAT_FIVE");
 xxdepes4[6] = makeDynString ("","c50","FLOAT_FIVE");
 xxdepes4[7] = makeDynString ("","c60","FLOAT_FIVE");
-xxdepes4[8] = makeDynString ("","status","FLOAT_FIVE");
 
 xxdepei4[1]=makeDynInt (DPEL_STRUCT);
 xxdepei4[2]=makeDynInt (0,DPEL_TYPEREF);
@@ -367,7 +363,6 @@ xxdepei4[4]=makeDynInt (0,DPEL_TYPEREF);
 xxdepei4[5]=makeDynInt (0,DPEL_TYPEREF);
 xxdepei4[6]=makeDynInt (0,DPEL_TYPEREF);
 xxdepei4[7]=makeDynInt (0,DPEL_TYPEREF);
-xxdepei4[8]=makeDynInt (0,DPEL_TYPEREF);
 
 dpTypeCreate(xxdepes4,xxdepei4);
 
@@ -415,8 +410,7 @@ xxdepes[1] = makeDynString (dtype,"");
 
 xxdepes[2] = makeDynString ("","data","LV_1_data");
 xxdepes[3] = makeDynString ("","update_value");
-xxdepes[4] = makeDynString ("","setNumber");
-xxdepes[5] = makeDynString ("","dynatemTcpIp");
+xxdepes[4] = makeDynString ("","status");
 
 
 xxdepei[1]=makeDynInt (DPEL_STRUCT);
@@ -424,7 +418,6 @@ xxdepei[1]=makeDynInt (DPEL_STRUCT);
 xxdepei[2]=makeDynInt (0,DPEL_TYPEREF);
 xxdepei[3]=makeDynInt (0,DPEL_INT);
 xxdepei[4]=makeDynInt (0,DPEL_INT);
-xxdepei[5]=makeDynInt (0,DPEL_STRING);
 
 
 dpTypeCreate(xxdepes,xxdepei);
@@ -589,8 +582,7 @@ xxdepes[1] = makeDynString (dtype,"");
 
 xxdepes[2] = makeDynString ("","data","TEMP_1_data");
 xxdepes[3] = makeDynString ("","update_value");
-xxdepes[4] = makeDynString ("","setNumber");
-xxdepes[5] = makeDynString ("","dynatemTcpIp");
+xxdepes[4] = makeDynString ("","status");
 
 
 xxdepei[1]=makeDynInt (DPEL_STRUCT);
@@ -598,7 +590,6 @@ xxdepei[1]=makeDynInt (DPEL_STRUCT);
 xxdepei[2]=makeDynInt (0,DPEL_TYPEREF);
 xxdepei[3]=makeDynInt (0,DPEL_INT);
 xxdepei[4]=makeDynInt (0,DPEL_INT);
-xxdepei[5]=makeDynInt (0,DPEL_STRING);
 
 
 dpTypeCreate(xxdepes,xxdepei);
