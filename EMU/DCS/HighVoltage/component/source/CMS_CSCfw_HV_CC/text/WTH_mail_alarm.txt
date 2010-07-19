@@ -1,8 +1,0 @@
-To: valerii.sytnik@cern.ch
-Subject: possible Humidity alarm at SX5: (humidity>70%)
-
- at least one humidity sensor shows >70%
-
-                   DCS.
-
-
