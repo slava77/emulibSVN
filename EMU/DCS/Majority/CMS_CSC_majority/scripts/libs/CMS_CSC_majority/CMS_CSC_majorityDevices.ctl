@@ -115,9 +115,8 @@ dyn_int emumaj_hvChannelStates(string dp, int vset, int standbyVoltage, bool che
 /** values here are ".status", ".chamber_state", ".noalert_channels". States are ON, ERROR and NO_COMMUNICATION */
 dyn_int emumaj_lvStateCounts(dyn_anytype values, int &weight, bool calcTotal, string node) {
   mapping deviceParams = emumaj_getChamberDeviceParams(node);
-  dyn_int excludedChannels = values[3];
+  dyn_int excludedChannels = values[2];
   int status = values[1];
-  int chamberState = values[2];
   int channelCount;
   if ((deviceParams["station"] == 1) && (deviceParams["ring"] == 3)) {
     channelCount = 16; // ME1/3 chambers have 4 CFEBs, all other chambers have 5
@@ -148,12 +147,23 @@ dyn_int emumaj_lvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
       error = 0,
       noCommunication = 0;
   
-  if ((chamberState == -2) || (status == -2)) {
+  if (status == -2) { // no communication
+    on = weight;
     noCommunication = weight;
     return makeDynInt(on, error, noCommunication);
   }
+  if (status == 2) { // everything is ok
+    on = weight;
+    return makeDynInt(ok, error, noCommunication);
+  }
+  if (status == 0) { // chamber is off - so all 0 (not an error, not ok and communication is fine - because X2P is telling us that)
+    return makeDynInt(ok, error, noCommunication);
+  }
+
+  // everything that's not masked off is on - otherwise it would be in error or off state (in case everything is off).
+  on = weight;
   
-  // go through all the channels (except the masked ones) and collect their states
+  // go through all the channels (except the masked ones) and check how many of them are in error
   string dataDp = node;
   strreplace(dataDp, "LowVoltage/", "");
   for (int i=1; i <= 6; i++) {
@@ -162,20 +172,14 @@ dyn_int emumaj_lvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
     if ((deviceParams["station"] == 1) && (deviceParams["ring"] == 3) && (i == 5)) { continue; }
     
     if (i < 6) { //CFEB
-      dyn_int v33States = emumaj_lvCfebChannelStates(dataDp, i, "33");
-      dyn_int v50States = emumaj_lvCfebChannelStates(dataDp, i, "50");
-      dyn_int v60States = emumaj_lvCfebChannelStates(dataDp, i, "60");
-      
-      on += v33States[1] + v50States[1] + v60States[1];
-      error += v33States[2] + v50States[2] + v60States[2];
+      if (emumaj_lvCfebChannelAlertStatus(dataDp, i, "33")) { error++; }
+      if (emumaj_lvCfebChannelAlertStatus(dataDp, i, "50")) { error++; }
+      if (emumaj_lvCfebChannelAlertStatus(dataDp, i, "60")) { error++; }
     } else { // ALCT
-      dyn_int v18States = emumaj_lvAlctChannelStates(dataDp, "18");
-      dyn_int v33States = emumaj_lvAlctChannelStates(dataDp, "33");
-      dyn_int v55States = emumaj_lvAlctChannelStates(dataDp, "55");
-      dyn_int v56States = emumaj_lvAlctChannelStates(dataDp, "56");
-
-      on += v18States[1] + v33States[1] + v55States[1] + v56States[1];
-      error += v18States[2] + v33States[2] + v55States[2] + v56States[2];
+      if (emumaj_lvAlctChannelAlertStatus(dataDp, "18")) { error++; }
+      if (emumaj_lvAlctChannelAlertStatus(dataDp, "33")) { error++; }
+      if (emumaj_lvAlctChannelAlertStatus(dataDp, "55")) { error++; }
+      if (emumaj_lvAlctChannelAlertStatus(dataDp, "56")) { error++; }
     }
   }
   
@@ -185,46 +189,29 @@ dyn_int emumaj_lvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
   return makeDynInt(on, error, noCommunication);
 }
 
-dyn_int emumaj_lvCfebChannelStates(string dataDp, int cfebNumber, string voltageLine) {
+bool emumaj_lvCfebChannelAlertStatus(string dataDp, int cfebNumber, string voltageLine) {
   int voltageAlert, currentAlert;
-  float voltage;
-  dpGet(dataDp + ".data.Cfeb_o.v" + voltageLine + ".v" + cfebNumber, voltage);
+
   dpGet(dataDp + ".data.Cfeb_o.v" + voltageLine + ".v" + cfebNumber + ":_alert_hdl.._act_state", voltageAlert);
   dpGet(dataDp + ".data.Cfeb_o.c" + voltageLine + ".v" + cfebNumber + ":_alert_hdl.._act_state", currentAlert);
   
-  int on = 0,
-      error = 0;
-  if (voltage > 0.1) { on = 1; }
-  if (voltageAlert + currentAlert > 0) {
-    error = 1;
-  }
-  
-  return makeDynInt(on, error);
+  return (voltageAlert + currentAlert > 0);
 }
     
-dyn_int emumaj_lvAlctChannelStates(string dataDp, string voltageLine) {
+bool emumaj_lvAlctChannelAlertStatus(string dataDp, string voltageLine) {
   int voltageAlert, currentAlert;
-  float voltage;
-  dpGet(dataDp + ".data.Alct_o.v" + voltageLine, voltage);
+
   dpGet(dataDp + ".data.Alct_o.v" + voltageLine + ":_alert_hdl.._act_state", voltageAlert);
   dpGet(dataDp + ".data.Alct_o.c" + voltageLine + ":_alert_hdl.._act_state", currentAlert);
   
-  int on = 0,
-      error = 0;
-  if (voltage > 0.1) { on = 1; }
-  if (voltageAlert + currentAlert > 0) {
-    error = 1;
-  }
-  
-  return makeDynInt(on, error);
+  return (voltageAlert + currentAlert > 0);
 }
 
 /** values here are ".status", ".chamber_state", ".off_channels". States are OK, ALERT and NO_COMMUNICATION */
 dyn_int emumaj_temperatureStateCounts(dyn_anytype values, int &weight, bool calcTotal, string node) {
   mapping deviceParams = emumaj_getChamberDeviceParams(node);
-  dyn_int excludedChannels = values[3];
+  dyn_int excludedChannels = values[2];
   int status = values[1];
-  int chamberState = values[2];
   int channelCount;
   if ((deviceParams["station"] == 1) && (deviceParams["ring"] == 3)) {
     channelCount = 6; // ME1/3 chambers have 4 CFEBs, all other chambers have 5
@@ -246,10 +233,19 @@ dyn_int emumaj_temperatureStateCounts(dyn_anytype values, int &weight, bool calc
       error = 0,
       noCommunication = 0;
   
-  if ((chamberState == -2) || (status == -2)) {
+  if (status == -2) { // no communication
+    ok = weight;
     noCommunication = weight;
     return makeDynInt(ok, error, noCommunication);
   }
+  if (status == 2) { // everything is ok
+    ok = weight;
+    return makeDynInt(ok, error, noCommunication);
+  }
+  if (status == 0) { // chamber is off - so all 0 (not an error, not ok and communication is fine - because X2P is telling us that)
+    return makeDynInt(ok, error, noCommunication);
+  }
+  
   
   // go through all the channels (except the masked ones) and collect their states
   string dataDp = node;

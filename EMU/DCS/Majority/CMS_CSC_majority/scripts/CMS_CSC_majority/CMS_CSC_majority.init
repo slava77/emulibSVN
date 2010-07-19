@@ -496,7 +496,7 @@ void configureHv(string topNode) {
 void configureLv(string topNode) {
   majority_addDevice("LV", // this defines the internal name of the device for the majority
   "LV_1", // this is the corresponding Device Unit Type
-  makeDynString(".status", ".chamber_state", ".noalert_channels"), // define the datapoint elements you need to connect
+  makeDynString(".status", ".noalert_channels"), // define the datapoint elements you need to connect
   makeDynString("on", "error", "no_communication"), // these are the basic device states for this device
   19 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
   );
@@ -512,7 +512,7 @@ void configureLv(string topNode) {
 void configureTemp(string topNode) {
   majority_addDevice("TEMP", // this defines the internal name of the device for the majority
   "TEMP_1", // this is the corresponding Device Unit Type
-  makeDynString(".status", ".chamber_state", ".off_channels"), // define the datapoint elements you need to connect
+  makeDynString(".status", ".off_channels"), // define the datapoint elements you need to connect
   makeDynString("ok", "alert", "no_communication"), // these are the basic device states for this device
   7 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
   );
