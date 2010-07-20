@@ -1,4 +1,0 @@
-main()
-{
-	fwElmbUser_monitorAll();
-}
