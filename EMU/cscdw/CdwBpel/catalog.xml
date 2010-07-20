@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
-    <nextCatalog catalog="nbproject/private/cache/retriever/catalog.xml"/>
-    <system systemId="ExSysWS/org/cern/cms/csc/exsys/ws/wsdl/emuCounters.xsd" uri="nb-uri:ExSysWS#src/java/org/cern/cms/csc/exsys/ws/wsdl/emuCounters.xsd"/>
-    <system systemId="ExSysWS/org/cern/cms/csc/exsys/ws/wsdl/getEmuCounters.wsdl" uri="nb-uri:ExSysWS#src/java/org/cern/cms/csc/exsys/ws/wsdl/getEmuCounters.wsdl"/>
-    <system systemId="ExSysWS/org/cern/cms/csc/exsys/ws/wsdl/simpleException.xsd" uri="nb-uri:ExSysWS#src/java/org/cern/cms/csc/exsys/ws/wsdl/simpleException.xsd"/>
-</catalog>
