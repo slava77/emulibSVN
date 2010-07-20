@@ -1,0 +1,9 @@
+# ascii dump of database
+
+# DpType
+TypeName
+emuDbg_profiler_data.emuDbg_profiler_data	1#1
+	totalTimes	9#2
+	timestamp	26#3
+emuDbg_profiler_control.emuDbg_profiler_control	1#1
+	command	25#2

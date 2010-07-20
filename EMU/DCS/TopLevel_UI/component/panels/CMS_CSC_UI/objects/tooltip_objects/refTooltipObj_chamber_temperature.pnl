@@ -49,7 +49,7 @@ PANEL,-1 -1 405 131 N "_3DFace" 1
   
   // ALARM COLORS
   for (int i=1; i <= dynlen(dps); i++) {
-    dps[i] += \":_alert_hdl.._act_state_color\";
+    dps[i] = dpSubStr(dps[i], DPSUB_SYS_DP_EL) + \":_alert_hdl.._act_state_color\";
   }
   alarmColorDps = dps;
   
@@ -62,9 +62,9 @@ PANEL,-1 -1 405 131 N "_3DFace" 1
   if (dynlen(dps) > 1) {
     deviceParams[\"sysName\"] = emuui_getSystemName(dps[1]);
   }
-  string disconnectedDevicesDp = emuui_getDpName(\"disconnected_devices\", deviceParams, ex);
+  dyn_string disconnectedDevicesDps = emuui_getDpNames(\"disconnected_devices\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
-  dpConnect(\"updateDisconnectedWarningCB\", true, disconnectedDevicesDp);
+  dpConnect(\"updateDisconnectedWarningCB\", true, disconnectedDevicesDps);
 }
 
 void initGui(dyn_string dps) {
@@ -143,7 +143,11 @@ void updateTemperatureCB(dyn_string dps, dyn_float temperatures) {
     int index = dynPartiallyContains(dps, columnNames[i]);
     if (index > 0) {
       string strValue;
-      sprintf(strValue, \"%.1f °C\", temperatures[index]);
+      if ((temperatures[index] == -2) || (temperatures[index] == -3)) {
+        strValue = \"N/A\";
+      } else {
+        sprintf(strValue, \"%.1f °C\", temperatures[index]);
+      }
       tableTemp.cellValueRC(0, columnNames[i], strValue);
     }
   }
@@ -192,8 +196,15 @@ int dynPartiallyContains(dyn_string container, string searchString) {
 }
 
 /** if disconnectedDevices contains hvFsmNode then \"no communication\" warning is shown, otherwise it's hidden. */
-void updateDisconnectedWarningCB(string dpName, string disconnectedDevices) {
-  noCommunication = (strpos(disconnectedDevices, fsmNode) >= 0);
+void updateDisconnectedWarningCB(dyn_string dps, dyn_string disconnectedDevices) {
+  bool isDisconnected = false;
+  for (int i=1; i <= dynlen(disconnectedDevices); i++) {
+    if (strpos(disconnectedDevices[i], fsmNode) >= 0) {
+      isDisconnected = true;
+      break;
+    }
+  }
+  noCommunication = isDisconnected;
   if (noCommunication) {
     emuui_showTooltipWarning(getShape(\"refPoint\"),
                            getShape(\"warnNoTempCommunication\"), 
@@ -249,7 +260,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 10 79 26
+E E 0 1 1 2 1 E U  1 E 10 10 82 25
 0 2 2 "0s" 0 0 0 192 0 0  10 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -325,7 +336,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 270 10 329 26
+E E 0 1 1 2 1 E U  1 E 270 10 328 25
 0 2 2 "0s" 0 0 0 192 0 0  270 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -344,7 +355,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 200 10 268 26
+E E 0 1 1 2 1 E U  1 E 200 10 269 25
 0 2 2 "0s" 0 0 0 192 0 0  200 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0

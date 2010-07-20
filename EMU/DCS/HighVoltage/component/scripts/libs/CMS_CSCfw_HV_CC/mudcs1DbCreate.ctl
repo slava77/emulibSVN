@@ -40,9 +40,13 @@ dynClear(EMU_LEVEL);
 
 db_set_cc();
 db_set_cc_new(); // postpone
-db_set_hv();
 db_set_disk_level();
 db_set_emu_level();  
+
+if (CSC_fwG_g_904) {
+  db_set_hv(); // not used at P5 anymore - only imported through DP list (which is generated using HV map import utility
+}
+
 
 
     int i10_i=1;
@@ -107,14 +111,17 @@ for(i=1;i<=8;i++){
   
   dpSet("Db_o.Wheels_o.Wheel"+i+".InDynatemAndSetNumberList",CC_IN[i]); 
   /*if(i!=1 & i!=8)*/dpSet("Db_o.Wheels_o.Wheel"+i+".OutDynatemAndSetNumberList",CC_OUT[i]);
+
+if (CSC_fwG_g_904) { // not used at P5 anymore - only imported through DP list (which is generated using HV map import utility               
   dpSet("Db_o.Wheels_o.Wheel"+i+".InHVsetList",HV_IN[i]); 
   /*if(i!=1 & i!=8)*/dpSet("Db_o.Wheels_o.Wheel"+i+".OutHVsetList",HV_OUT[i]);   
+  dpSet("Db_o.Wheels_o.Ring_DUBNA.HVsetList",HV_DUBNA);  
+}
      
   dpSet("Db_o.Wheels_o.Wheel"+i+".DiskLevelDevicesCoordinates",DISK_LEVEL[i]); 
 } // for
 
   dpSet("Db_o.Wheels_o.Ring_DUBNA.DynatemAndSetNumberList",CC_DUBNA);
-  dpSet("Db_o.Wheels_o.Ring_DUBNA.HVsetList",HV_DUBNA);  
   dpSet("Db_o.Wheels_o.Ring_DUBNA.DiskLevelDevicesCoordinates",DISK_DUBNA); 
 
   dpSet("Db_o.CscLevelDevicesCoordinates",EMU_LEVEL);    
@@ -1646,11 +1653,11 @@ db_set_emu_level(){
   DimServerComputerList[1]="smi";
   if(CSC_fwG_g_idisk_cross_numbers[1]>=5 && CSC_fwG_g_idisk_cross_numbers[1]<=8){
     if(CSC_fwG_g_904) DimServerComputerList[2]=CSC_fwG_g_904_MACHINE;
-    else DimServerComputerList[2]="dcspcS2G19-06";
+    else DimServerComputerList[2]="csc-dcs-pc1";
   }
   else {
    if(CSC_fwG_g_904)DimServerComputerList[2]=CSC_fwG_g_904_MACHINE;    
-   else DimServerComputerList[2]="dcspcS2G19-04";    
+   else DimServerComputerList[2]="csc-dcs-pc2";    
   }
   
 if(CSC_fwG_g_904){
@@ -1666,14 +1673,14 @@ else{
   DimServerComputerList[4]="10.176.11.103_part2";
   DimServerComputerList[5]="10.176.11.103_part3";
   DimServerComputerList[6]="10.176.11.103_part4";
-  if(CSC_fwG_g_idisk_cross_numbers[1]==CSC_fwG_g_StationWithFsmHwTree)DimServerComputerList[4]="dcspcS2G19-04"; 
+  if(CSC_fwG_g_idisk_cross_numbers[1]==CSC_fwG_g_StationWithFsmHwTree)DimServerComputerList[4]="csc-dcs-pc2"; 
   }
   else{
   DimServerComputerList[3]="10.176.11.67_part1"; // ufcmshv1--cms
   DimServerComputerList[4]="10.176.11.67_part2";
   DimServerComputerList[5]="10.176.11.67_part3";
   DimServerComputerList[6]="10.176.11.67_part4"; 
- if(CSC_fwG_g_idisk_cross_numbers[1]==CSC_fwG_g_StationWithFsmHwTree)DimServerComputerList[4]="dcspcS2G19-06";  
+ if(CSC_fwG_g_idisk_cross_numbers[1]==CSC_fwG_g_StationWithFsmHwTree)DimServerComputerList[4]="csc-dcs-pc1";  
   }
   if(dynContains(CSC_fwG_g_idisk_cross_numbers,CSC_fwG_g_StationWithFsmHwTree)){  
   DimServerComputerList[7]="10.176.11.67_part4";  

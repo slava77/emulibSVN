@@ -12,11 +12,21 @@ const int emu_DEBUG_GENERAL = 1;
 const int emu_DEBUG_FUNC_START_STOP = 2;
 const int emu_DEBUG_DETAIL = 4;
 
+/** Useful sometimes, when you want to return an empty mapping. */
+const mapping EMU_DUMMY_MAPPING;
+
 /** Debug level (bitmask)
+  0 - nothing
   1 - general debug messages
   2 - function start/stop messages
+  4 - detailed debug messgaes
+  
+  combos:
+  3 - general + function start/stop messages
+  5 - general + detailed messages
+  7 - general + function start/stop + detailed messages
 */
-global int g_emu_Debug = 5;//emu_DEBUG_GENERAL | emu_DEBUG_FUNC_START_STOP;
+global int g_emu_Debug = 5;
 
 global dyn_string g_emu_debugBacktrace;
 global dyn_int g_emu_reportingThreads;
@@ -29,6 +39,12 @@ void emu_errorSingle(string msg) {
   emu_error(makeDynString(msg));
 }
 
+/** Throw NotImplemented exception.
+    @param functionName name of the function that this exception is refering to.
+*/
+void emu_notImplementedError(string functionName) {
+  emu_errorSingle("Function \"" + functionName + "\" is not implemented yet");
+}
 
 /** Register an EMU error. 
     Appends EMU initials, skips identical consecutive errors (happens often when the same exception travels through different procedures), 
@@ -403,6 +419,19 @@ string emu_mappingToString(mapping map) {
   return ret;
 }
 
+/** Prints the given array to a string using the provided separator string (default = ";") */
+string emu_arrayToString(dyn_anytype array, string separator = ";") {
+  string ret;
+  for (int i=1; i <= dynlen(array); i++) {
+    if (i > 1) {
+      ret += separator;
+    }
+    ret += array[i];
+  }
+  
+  return ret;
+}
+
 /** Does exactly what dynAppend does provided y as an array. But doesn't do any nonsence emptying array Y stuff like dynAppend does :| */
 int emu_dynAppend(dyn_anytype &x, dyn_anytype y) {
   bool errors;
@@ -414,4 +443,22 @@ int emu_dynAppend(dyn_anytype &x, dyn_anytype y) {
   }
   if (errors) { return -1; }
   return dynlen(x);
+}
+
+/** Does a dpGet, then checks if the value is different from the one provided, if so then does a dpSetWait with the value provided. */
+void emu_dpSetWaitIfDifferent(string dp, anytype value) {
+  anytype currentValue;
+  dpGet(dp, currentValue);
+  if (currentValue != value) {
+    dpSetWait(dp, value);
+  }
+}
+
+/** If this DPT exists already then does dpTypeChange(), if not then dpTypeCreate(). */
+void emu_dpTypeCreateOrChange(dyn_dyn_string elements, dyn_dyn_int types) {
+  if (dynlen(dpTypes(elements[1][1])) > 0) {
+    dpTypeChange(elements, types);
+  } else {
+    dpTypeCreate(elements, types);
+  }
 }

@@ -41,7 +41,7 @@ xxdepei[2]=makeDynInt (0,DPEL_STRING);
 xxdepei[3]=makeDynInt (0,DPEL_STRING);
 xxdepei[4]=makeDynInt (0,DPEL_STRING);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
   
   
 }
@@ -126,7 +126,7 @@ xxdepei[3]=makeDynInt (0,DPEL_STRING);
 xxdepei[4]=makeDynInt (0,DPEL_INT);
 xxdepei[5]=makeDynInt (0,DPEL_DYN_INT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -143,17 +143,15 @@ xxdepes[1] = makeDynString (dtype,"");
 xxdepes[2] = makeDynString ("","data","FED_1_data");
 xxdepes[3] = makeDynString ("","update_value");
 xxdepes[4] = makeDynString ("","status");
-xxdepes[5] = makeDynString ("","quality");
 
 xxdepei[1]=makeDynInt (DPEL_STRUCT);
 
 xxdepei[2]=makeDynInt (0,DPEL_TYPEREF);
 xxdepei[3]=makeDynInt (0,DPEL_INT);
 xxdepei[4]=makeDynInt (0,DPEL_INT);
-xxdepei[5]=makeDynInt (0,DPEL_STRING);
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -196,7 +194,7 @@ xxdepei[7]=makeDynInt (0,DPEL_FLOAT);
 xxdepei[8]=makeDynInt (0,DPEL_FLOAT);
 xxdepei[9]=makeDynInt (0,DPEL_FLOAT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 
 }
@@ -293,7 +291,7 @@ xxdepei[4]=makeDynInt (0,DPEL_FLOAT);
 xxdepei[5]=makeDynInt (0,DPEL_FLOAT);
 xxdepei[6]=makeDynInt (0,DPEL_FLOAT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 //========
 //========
 dyn_dyn_string xxdepes2;
@@ -308,7 +306,7 @@ xxdepei2[1]=makeDynInt (DPEL_STRUCT);
 xxdepei2[2]=makeDynInt (0,DPEL_FLOAT);
 
 
-dpTypeCreate(xxdepes2,xxdepei2);
+emu_dpTypeCreateOrChange(xxdepes2,xxdepei2);
 //========
 //========
 
@@ -326,7 +324,6 @@ xxdepes3[6] = makeDynString ("","c18");
 xxdepes3[7] = makeDynString ("","c33");
 xxdepes3[8] = makeDynString ("","c55");
 xxdepes3[9] = makeDynString ("","c56");
-xxdepes3[10] = makeDynString ("","status");
 //xxdepes3[] = makeDynString ("","");
 
 xxdepei3[1]=makeDynInt (DPEL_STRUCT);
@@ -338,10 +335,8 @@ xxdepei3[6]=makeDynInt (0,DPEL_FLOAT);
 xxdepei3[7]=makeDynInt (0,DPEL_FLOAT);
 xxdepei3[8]=makeDynInt (0,DPEL_FLOAT);
 xxdepei3[9]=makeDynInt (0,DPEL_FLOAT);
-xxdepei3[10]=makeDynInt (0,DPEL_FLOAT);
-//xxdepei3[]=makeDynInt (0,DPEL_FLOAT);
 
-dpTypeCreate(xxdepes3,xxdepei3);
+emu_dpTypeCreateOrChange(xxdepes3,xxdepei3);
 
 //========
 //========
@@ -358,7 +353,6 @@ xxdepes4[4] = makeDynString ("","v60","FLOAT_FIVE");
 xxdepes4[5] = makeDynString ("","c33","FLOAT_FIVE");
 xxdepes4[6] = makeDynString ("","c50","FLOAT_FIVE");
 xxdepes4[7] = makeDynString ("","c60","FLOAT_FIVE");
-xxdepes4[8] = makeDynString ("","status","FLOAT_FIVE");
 
 xxdepei4[1]=makeDynInt (DPEL_STRUCT);
 xxdepei4[2]=makeDynInt (0,DPEL_TYPEREF);
@@ -367,9 +361,8 @@ xxdepei4[4]=makeDynInt (0,DPEL_TYPEREF);
 xxdepei4[5]=makeDynInt (0,DPEL_TYPEREF);
 xxdepei4[6]=makeDynInt (0,DPEL_TYPEREF);
 xxdepei4[7]=makeDynInt (0,DPEL_TYPEREF);
-xxdepei4[8]=makeDynInt (0,DPEL_TYPEREF);
 
-dpTypeCreate(xxdepes4,xxdepei4);
+emu_dpTypeCreateOrChange(xxdepes4,xxdepei4);
 
 
 }
@@ -399,7 +392,7 @@ xxdepei[6]=makeDynInt (0,DPEL_DYN_INT);
 xxdepei[7]=makeDynInt (0,DPEL_INT);
 xxdepei[8]=makeDynInt (0,DPEL_INT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -415,8 +408,7 @@ xxdepes[1] = makeDynString (dtype,"");
 
 xxdepes[2] = makeDynString ("","data","LV_1_data");
 xxdepes[3] = makeDynString ("","update_value");
-xxdepes[4] = makeDynString ("","setNumber");
-xxdepes[5] = makeDynString ("","dynatemTcpIp");
+xxdepes[4] = makeDynString ("","status");
 
 
 xxdepei[1]=makeDynInt (DPEL_STRUCT);
@@ -424,10 +416,9 @@ xxdepei[1]=makeDynInt (DPEL_STRUCT);
 xxdepei[2]=makeDynInt (0,DPEL_TYPEREF);
 xxdepei[3]=makeDynInt (0,DPEL_INT);
 xxdepei[4]=makeDynInt (0,DPEL_INT);
-xxdepei[5]=makeDynInt (0,DPEL_STRING);
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -457,7 +448,7 @@ xxdepei[2]=makeDynInt (0,DPEL_TYPEREF);
 xxdepei[3]=makeDynInt (0,DPEL_TYPEREF);
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 
 }
@@ -488,7 +479,7 @@ xxdepei[6]=makeDynInt (0,DPEL_FLOAT);
 xxdepei[7]=makeDynInt (0,DPEL_FLOAT);
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -573,7 +564,7 @@ xxdepei[3]=makeDynInt (0,DPEL_STRING);
 xxdepei[4]=makeDynInt (0,DPEL_INT);
 xxdepei[5]=makeDynInt (0,DPEL_DYN_INT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -589,8 +580,7 @@ xxdepes[1] = makeDynString (dtype,"");
 
 xxdepes[2] = makeDynString ("","data","TEMP_1_data");
 xxdepes[3] = makeDynString ("","update_value");
-xxdepes[4] = makeDynString ("","setNumber");
-xxdepes[5] = makeDynString ("","dynatemTcpIp");
+xxdepes[4] = makeDynString ("","status");
 
 
 xxdepei[1]=makeDynInt (DPEL_STRUCT);
@@ -598,10 +588,9 @@ xxdepei[1]=makeDynInt (DPEL_STRUCT);
 xxdepei[2]=makeDynInt (0,DPEL_TYPEREF);
 xxdepei[3]=makeDynInt (0,DPEL_INT);
 xxdepei[4]=makeDynInt (0,DPEL_INT);
-xxdepei[5]=makeDynInt (0,DPEL_STRING);
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -635,7 +624,7 @@ xxdepei[4]=makeDynInt (0,DPEL_TYPEREF);
 
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 
 }
@@ -715,7 +704,7 @@ xxdepei[3]=makeDynInt (0,DPEL_STRING);
 xxdepei[4]=makeDynInt (0,DPEL_INT);
 xxdepei[5]=makeDynInt (0,DPEL_DYN_INT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -743,7 +732,7 @@ xxdepei[4]=makeDynInt (0,DPEL_INT);
 xxdepei[5]=makeDynInt (0,DPEL_STRING);
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -772,7 +761,7 @@ xxdepei[2]=makeDynInt (0,DPEL_INT);
 
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 
 }
@@ -862,7 +851,7 @@ xxdepei[1]=makeDynInt (DPEL_STRUCT);
 xxdepei[2]=makeDynInt (0,DPEL_FLOAT);
 xxdepei[3]=makeDynInt (0,DPEL_FLOAT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 //========
 //========
 dyn_dyn_string xxdepes2;
@@ -881,7 +870,7 @@ xxdepei2[3]=makeDynInt (0,DPEL_FLOAT);
 xxdepei2[4]=makeDynInt (0,DPEL_FLOAT);
 
 
-dpTypeCreate(xxdepes2,xxdepei2);
+emu_dpTypeCreateOrChange(xxdepes2,xxdepei2);
 //========
 //========
 
@@ -899,7 +888,6 @@ xxdepes3[6] = makeDynString ("","c18");
 xxdepes3[7] = makeDynString ("","c33");
 xxdepes3[8] = makeDynString ("","c55");
 xxdepes3[9] = makeDynString ("","c56");
-xxdepes3[10] = makeDynString ("","status");
 //xxdepes3[] = makeDynString ("","");
 
 xxdepei3[1]=makeDynInt (DPEL_STRUCT);
@@ -911,10 +899,9 @@ xxdepei3[6]=makeDynInt (0,DPEL_FLOAT);
 xxdepei3[7]=makeDynInt (0,DPEL_FLOAT);
 xxdepei3[8]=makeDynInt (0,DPEL_FLOAT);
 xxdepei3[9]=makeDynInt (0,DPEL_FLOAT);
-xxdepei3[10]=makeDynInt (0,DPEL_FLOAT);
 //xxdepei3[]=makeDynInt (0,DPEL_FLOAT);
 
-dpTypeCreate(xxdepes3,xxdepei3);
+emu_dpTypeCreateOrChange(xxdepes3,xxdepei3);
 
 //========
 //========
@@ -931,7 +918,6 @@ xxdepes4[4] = makeDynString ("","v60","FLOAT_FIVE");
 xxdepes4[5] = makeDynString ("","c33","FLOAT_FIVE");
 xxdepes4[6] = makeDynString ("","c50","FLOAT_FIVE");
 xxdepes4[7] = makeDynString ("","c60","FLOAT_FIVE");
-xxdepes4[8] = makeDynString ("","status","FLOAT_FIVE");
 
 xxdepei4[1]=makeDynInt (DPEL_STRUCT);
 xxdepei4[2]=makeDynInt (0,DPEL_TYPEREF);
@@ -940,9 +926,8 @@ xxdepei4[4]=makeDynInt (0,DPEL_TYPEREF);
 xxdepei4[5]=makeDynInt (0,DPEL_TYPEREF);
 xxdepei4[6]=makeDynInt (0,DPEL_TYPEREF);
 xxdepei4[7]=makeDynInt (0,DPEL_TYPEREF);
-xxdepei4[8]=makeDynInt (0,DPEL_TYPEREF);
 
-dpTypeCreate(xxdepes4,xxdepei4);
+emu_dpTypeCreateOrChange(xxdepes4,xxdepei4);
 
 
 }
@@ -963,7 +948,7 @@ xxdepei[1]=makeDynInt (DPEL_STRUCT);
 xxdepei[2]=makeDynInt (0,DPEL_TYPEREF);
 xxdepei[3]=makeDynInt (0,DPEL_INT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 
 }
@@ -992,7 +977,7 @@ xxdepei[4]=makeDynInt (0,DPEL_INT);
 xxdepei[5]=makeDynInt (0,DPEL_STRING);
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -1022,7 +1007,7 @@ xxdepei[2]=makeDynInt (0,DPEL_TYPEREF);
 xxdepei[3]=makeDynInt (0,DPEL_TYPEREF);
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 
 }
@@ -1046,7 +1031,7 @@ xxdepei[2]=makeDynInt (0,DPEL_TYPEREF);
 xxdepei[3]=makeDynInt (0,DPEL_TYPEREF);
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -1147,7 +1132,7 @@ xxdepei[3]=makeDynInt (0,DPEL_INT);
 xxdepei[4]=makeDynInt (0,DPEL_INT);
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 
 }
@@ -1221,7 +1206,7 @@ xxdepei[15]=makeDynInt (0,DPEL_INT);
 ////xxdepei[17]=makeDynInt (0,DPEL_INT);
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 
 
@@ -1261,7 +1246,7 @@ xxdepei[4]=makeDynInt (0,DPEL_INT);
 xxdepei[5]=makeDynInt (0,DPEL_INT);
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 
 }
@@ -1311,7 +1296,7 @@ xxdepei[5]=makeDynInt (0,DPEL_INT);
 
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -1364,7 +1349,7 @@ xxdepei[16]=makeDynInt (0,DPEL_INT);
 xxdepei[17]=makeDynInt (0,DPEL_INT);
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -1400,7 +1385,7 @@ xxdepei[i]=makeDynInt (0,DPEL_TYPEREF);
 
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 
 
@@ -1496,7 +1481,7 @@ xxdepei[6]=makeDynInt (0,DPEL_DYN_INT);
 xxdepei[7]=makeDynInt (0,DPEL_INT);
 xxdepei[8]=makeDynInt (0,DPEL_INT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -1518,7 +1503,7 @@ xxdepei[1]=makeDynInt (DPEL_STRUCT);
 xxdepei[2]=makeDynInt (0,DPEL_TYPEREF);
 xxdepei[3]=makeDynInt (0,DPEL_INT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -1626,7 +1611,7 @@ xxdepei[62]=makeDynInt (0,DPEL_TYPEREF);
 
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 
 
@@ -1734,7 +1719,7 @@ xxdepei[9]=makeDynInt (0,DPEL_FLOAT);
 xxdepei[10]=makeDynInt (0,DPEL_FLOAT);
 xxdepei[11]=makeDynInt (0,DPEL_FLOAT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 //========
 
 
@@ -1768,7 +1753,7 @@ xxdepei2[9]=makeDynInt (0,DPEL_INT);
 xxdepei2[10]=makeDynInt (0,DPEL_INT);
 
 
-dpTypeCreate(xxdepes2,xxdepei2);
+emu_dpTypeCreateOrChange(xxdepes2,xxdepei2);
 
 }
 
@@ -1793,7 +1778,7 @@ xxdepei[4]=makeDynInt (0,DPEL_INT);
 xxdepei[5]=makeDynInt (0,DPEL_DYN_INT);
 xxdepei[6]=makeDynInt (0,DPEL_DYN_FLOAT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -1820,7 +1805,7 @@ xxdepei[4]=makeDynInt (0,DPEL_INT);
 xxdepei[5]=makeDynInt (0,DPEL_STRING);
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -1867,7 +1852,7 @@ xxdepei[i]=makeDynInt (0,DPEL_INT);
 
 xxdepei[15]=makeDynInt (0,DPEL_INT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 CRB_1_main(){
@@ -1955,7 +1940,7 @@ xxdepei[3]=makeDynInt (0,DPEL_FLOAT);
 xxdepei[4]=makeDynInt (0,DPEL_FLOAT);
 xxdepei[5]=makeDynInt (0,DPEL_FLOAT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 //========
 }
 
@@ -1978,7 +1963,7 @@ xxdepei[3]=makeDynInt (0,DPEL_STRING);
 xxdepei[4]=makeDynInt (0,DPEL_INT);
 xxdepei[5]=makeDynInt (0,DPEL_DYN_INT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -2005,7 +1990,7 @@ xxdepei[4]=makeDynInt (0,DPEL_INT);
 xxdepei[5]=makeDynInt (0,DPEL_STRING);
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -2062,7 +2047,7 @@ xxdepei[18]=makeDynInt (0,DPEL_FLOAT);
 xxdepei[19]=makeDynInt (0,DPEL_FLOAT);
 xxdepei[20]=makeDynInt (0,DPEL_INT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 
 }
@@ -2163,7 +2148,7 @@ xxdepei[9]=makeDynInt (0,DPEL_FLOAT);
 xxdepei[10]=makeDynInt (0,DPEL_FLOAT);
 xxdepei[11]=makeDynInt (0,DPEL_FLOAT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 //========
 
 
@@ -2197,7 +2182,7 @@ xxdepei2[9]=makeDynInt (0,DPEL_INT);
 xxdepei2[10]=makeDynInt (0,DPEL_INT);
 
 
-dpTypeCreate(xxdepes2,xxdepei2);
+emu_dpTypeCreateOrChange(xxdepes2,xxdepei2);
 
 }
 
@@ -2222,7 +2207,7 @@ xxdepei[4]=makeDynInt (0,DPEL_INT);
 xxdepei[5]=makeDynInt (0,DPEL_DYN_INT);
 xxdepei[6]=makeDynInt (0,DPEL_DYN_FLOAT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -2249,7 +2234,7 @@ xxdepei[4]=makeDynInt (0,DPEL_INT);
 xxdepei[5]=makeDynInt (0,DPEL_STRING);
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -2296,7 +2281,7 @@ xxdepei[i]=makeDynInt (0,DPEL_INT);
 
 xxdepei[27]=makeDynInt (0,DPEL_INT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 WTH_SX5_main(){
@@ -2386,7 +2371,7 @@ xxdepei[3]=makeDynInt (0,DPEL_FLOAT);
 xxdepei[4]=makeDynInt (0,DPEL_FLOAT);
 xxdepei[5]=makeDynInt (0,DPEL_FLOAT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 //========
 
 
@@ -2405,7 +2390,7 @@ xxdepei2[2]=makeDynInt (0,DPEL_FLOAT);
 xxdepei2[3]=makeDynInt (0,DPEL_FLOAT);
 xxdepei2[4]=makeDynInt (0,DPEL_FLOAT);
 
-dpTypeCreate(xxdepes2,xxdepei2);
+emu_dpTypeCreateOrChange(xxdepes2,xxdepei2);
 
 //========
 
@@ -2420,7 +2405,7 @@ xxdepes3[2] = makeDynString ("","sensor1");
 xxdepei3[1]=makeDynInt (DPEL_STRUCT);
 xxdepei3[2]=makeDynInt (0,DPEL_FLOAT);
 
-dpTypeCreate(xxdepes3,xxdepei3);
+emu_dpTypeCreateOrChange(xxdepes3,xxdepei3);
 
 
 }
@@ -2444,7 +2429,7 @@ xxdepei[3]=makeDynInt (0,DPEL_STRING);
 xxdepei[4]=makeDynInt (0,DPEL_INT);
 xxdepei[5]=makeDynInt (0,DPEL_DYN_INT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -2470,7 +2455,7 @@ xxdepei[3]=makeDynInt (0,DPEL_INT);
 xxdepei[4]=makeDynInt (0,DPEL_INT);
 xxdepei[5]=makeDynInt (0,DPEL_STRING);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -2503,7 +2488,7 @@ xxdepei[3]=makeDynInt (0,DPEL_TYPEREF);
 xxdepei[4]=makeDynInt (0,DPEL_TYPEREF);
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 
 }
@@ -2577,7 +2562,7 @@ xxdepei[3]=makeDynInt (0,DPEL_STRING);
 xxdepei[4]=makeDynInt (0,DPEL_INT);
 xxdepei[5]=makeDynInt (0,DPEL_DYN_INT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -2603,7 +2588,7 @@ xxdepei[3]=makeDynInt (0,DPEL_INT);
 xxdepei[4]=makeDynInt (0,DPEL_INT);
 xxdepei[5]=makeDynInt (0,DPEL_STRING);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -2631,7 +2616,7 @@ xxdepei[1]=makeDynInt (DPEL_STRUCT);
 xxdepei[2]=makeDynInt (0,DPEL_INT);
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 
 }
@@ -2722,7 +2707,7 @@ xxdepei[4]=makeDynInt (0,DPEL_INT);
 xxdepei[5]=makeDynInt (0,DPEL_DYN_INT);
 xxdepei[6]=makeDynInt (0,DPEL_DYN_FLOAT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -2749,7 +2734,7 @@ xxdepei[4]=makeDynInt (0,DPEL_INT);
 xxdepei[5]=makeDynInt (0,DPEL_STRING);
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -2796,7 +2781,7 @@ xxdepei[i]=makeDynInt (0,DPEL_INT);
 
 xxdepei[STATION_ITEMS_NUMBER+LASERS_NUMBER+2]=makeDynInt (0,DPEL_INT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }Snmp_main(){
 int i;
@@ -2888,7 +2873,7 @@ xxdepei[2]=makeDynInt (0,DPEL_INT);
 xxdepei[3]=makeDynInt (0,DPEL_STRING);
 xxdepei[4]=makeDynInt (0,DPEL_INT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -2914,7 +2899,7 @@ xxdepei[3]=makeDynInt (0,DPEL_STRING);
 xxdepei[4]=makeDynInt (0,DPEL_INT);
 xxdepei[5]=makeDynInt (0,DPEL_FLOAT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -2976,7 +2961,7 @@ xxdepei[16]=makeDynInt (0,DPEL_INT);
 xxdepei[17]=makeDynInt (0,DPEL_INT);
 
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }
 
@@ -3054,6 +3039,6 @@ xxdepei[27]=makeDynInt (0,DPEL_INT);
 
 xxdepei[28]=makeDynInt (0,DPEL_INT);
 
-dpTypeCreate(xxdepes,xxdepei);
+emu_dpTypeCreateOrChange(xxdepes,xxdepei);
 
 }

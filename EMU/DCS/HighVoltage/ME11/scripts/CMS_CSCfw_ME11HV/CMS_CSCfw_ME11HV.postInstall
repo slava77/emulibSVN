@@ -3,7 +3,7 @@
 #uses "CMS_CSCfw_ME11HV/CMS_CSCfw_ME11HV.ctl"
 #uses "CMSfwInstallUtils/CMSfwInstallUtils.ctl"
 #uses "CMSfw_CAENOPCConfigurator/CMSfw_CAENOPCConfiguratorLib.ctl"
-
+#uses "CMS_CSC_common/emu_alert.ctl"
 
 main()
 {
@@ -33,7 +33,11 @@ main()
   emudcsME11_setFsmArchiving();
   DebugN("FSM archiving done");    
 
+// **** Configure alert classes ****
+  emu_info("Updating all alert classes");
+  emuAlert_updateAllAlertClasses();
+  emu_info("Done updating alert classes");
+  
 // **** Send a final info message ****
   CMSfwInstallUtils_endPostInstall("CMS_CSCfw_ME11HV");
-       	
 }

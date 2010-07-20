@@ -159,11 +159,14 @@ CSC_fwG_g_IS_IMAX_SET=false;
 addGlobal("CSC_fwG_g_904_MACHINE",STRING_VAR);
 addGlobal("CSC_fwG_g_904_HV_MACHINE",STRING_VAR);
 addGlobal("CSC_fwG_g_904",BOOL_VAR);
-CSC_fwG_g_904_MACHINE="emu-dcs-dev1";//"dcspcS2G19-01";
+string emu904HostnamePrefix = "emu-dcs-dev";
+string emu904MainMachine = "1";
+//CSC_fwG_g_904_MACHINE = emu904HostnamePrefix + emu904MainMachine;
+CSC_fwG_g_904_MACHINE = "emuslice12"; // location of the DIM tunnel to P5
 CSC_fwG_g_904_HV_MACHINE="137.138.15.212";//"10.176.11.103";
 sTest=getHostname();
 dsTest=strsplit(sTest,"."); // just in case
-if(CSC_fwG_g_904_MACHINE==dsTest[1]){
+if((strpos(dsTest[1], emu904HostnamePrefix) == 0) || (strpos(dsTest[1], "macfrank") >= 0)){
   if(!P5_SIM_AT_904)CSC_fwG_g_904=true;
   else CSC_fwG_g_904=false;
   retieve_project_from_system_name=true;
@@ -248,7 +251,7 @@ mudcsPcCratesMapping();
 
 addGlobal("CSC_fwG_g_HOME",STRING_VAR);
 if (os =="Linux")CSC_fwG_g_HOME = getenv("HOME");//"/nfshome0/cscdcsdev"; 
-else CSC_fwG_g_HOME = "c:\\pvss_project_36";
+else CSC_fwG_g_HOME = "c:\\pvss\\components";
 //------------------------------------------------
 
 int i; 
@@ -611,7 +614,7 @@ g_HV_ID2PC_NAME=makeDynString("500_part1;10.176.11.67_part1","500_part2;10.176.1
 if(CSC_fwG_g_904)
 CSC_fwG_g_PCRATE_ID2PC_NAME=makeDynString("all;"+CSC_fwG_g_904_MACHINE);
 else  
-CSC_fwG_g_PCRATE_ID2PC_NAME=makeDynString("all;dcspcS2G19-06","all;dcspcS2G19-04");
+CSC_fwG_g_PCRATE_ID2PC_NAME=makeDynString("all;csc-dcs-pc1","all;csc-dcs-pc2");
 
 // the CSC_fwG_g_BROKER_DNS_MACHINE_NAMES is used in:
 //    to configure services for broker dps and commands (function: mudcsDimConfigOneManager)
@@ -625,10 +628,10 @@ if(CSC_fwG_g_904)
      ); 
 else
 CSC_fwG_g_BROKER_DNS_MACHINE_NAMES=makeDynString
-    ("all;dcspcS2G19-06",
-    "LV_1;dcspcS2G19-06",
-    "LV_1;dcspcS2G19-04",
-    "LV_SX5;dcspcS2G19-06",
+    ("all;csc-dcs-pc1",
+    "LV_1;csc-dcs-pc1",
+    "LV_1;csc-dcs-pc2",
+    "LV_SX5;csc-dcs-pc1",
     "HV_PR;10.176.11.103_part4", // ufcmshv2: for primary commands only  +Z
     "HV_PR;10.176.11.67_part4", // ufcmshv1: for primary commands only   -Z   
     "HV_1;10.176.11.103_part4",   // ufcmshv2: for primary commands only +Z
@@ -640,7 +643,7 @@ CSC_fwG_g_BROKER_DNS_MACHINE_NAMES=makeDynString
 if(CSC_fwG_g_904)
 CSC_fwG_g_STATIONS_DNS_MACHINE_NAMES=makeDynString("all;"+CSC_fwG_g_904_MACHINE);
 else
-CSC_fwG_g_STATIONS_DNS_MACHINE_NAMES=makeDynString("all;dcspcs2g19-06");
+CSC_fwG_g_STATIONS_DNS_MACHINE_NAMES=makeDynString("all;csc-dcs-pc1");
 
 
 CSC_fwG_g_FsmPanelMaxSizeX=1200;
@@ -933,22 +936,6 @@ CSC_fwG_g_watch_mask=makeDynString("fwGasSystem_CSC_GAS_DimBroker",
 ////dynAppend(CSC_fwG_g_watch_mask,"primary500"); // should be one entry per each machine: otherwise semaphore problem with watch_for_alive 
 for(i=1;i<=dynlen(CSC_fwG_g_all_hosts);i++)dynAppend(CSC_fwG_g_watch_mask,"primary"+CSC_fwG_g_all_hosts[i]);// should be one entry per each machine: otherwise semaphore problem with watch_for_alive 
 
-dsTest=dpNames("*","LV_1");
- for(i=1;i<=dynlen(dsTest);i++){
-  dsTest[i]=substr(dsTest[i],0,strpos(dsTest[i],"_LV"));
-  dsTest2=strsplit(dsTest[i],":");
-  dsTest[i]=dsTest2[dynlen(dsTest2)];
-  dynAppend(CSC_fwG_g_watch_mask,dsTest[i]);
- }
-
- dsTest=dpNames("*","FED_1");
- for(i=1;i<=dynlen(dsTest);i++){
-  dsTest[i]=substr(dsTest[i],0,strpos(dsTest[i],"_FED"));
-  dsTest2=strsplit(dsTest[i],":");
-  dsTest[i]=dsTest2[dynlen(dsTest2)];
-  dynAppend(CSC_fwG_g_watch_mask,dsTest[i]);
- }
- 
  dyn_string dyn_debug22;
  dpSetWait("dyn_debug1.",CSC_fwG_g_watch_mask);
  for(i=1; i<= dynlen(CSC_fwG_g_watch_mask); i++){
@@ -1138,6 +1125,10 @@ if(strpos(BrokerList[j],"WTH_SX5") < 0 && strpos(BrokerList[j],"GAS_SX5") >= 0){
 //---------------------------------------------------------------------------------------
 
 ///     mudcsDimConfig(false,BrokerList[j]+"_o.command,"+service+"_COMMAND", manager, exceptionInfo);
+
+    if (EMU_G_TEST_DIM_SERVICE) { // no commands on a test run please
+      return;
+    }
 
 test_string=service+"_COM";
 
@@ -2178,7 +2169,7 @@ if(strpos(dp_name,"ALNM")>=0){
 */
 
 for(int i=1;i<=dynlen(CSC_fwG_g_DEVICE_LIST);i++){
-  DebugN("mudcsCommand: "+CSC_fwG_g_DEVICE_LIST[i]+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>11");
+//  DebugN("mudcsCommand: "+CSC_fwG_g_DEVICE_LIST[i]+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>11");
   if(strpos(dp_name,CSC_fwG_g_DEVICE_LIST[i])>=0 && strpos(CSC_fwG_g_DEVICE_LIST[i],type_par)>=0)type=CSC_fwG_g_DEVICE_LIST[i];
 }
 DebugN("mudcsCommand:"+type+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>1 "+dp_name +" "+subcommand);
@@ -2661,7 +2652,7 @@ test_list=dpNames(CSC_fwG_g_SYSTEM_NAME+":"+device_type+"*_COM");
  if(dp_name != "all;all"){
 
 
-for(int i=1;i<=dynlen(CSC_fwG_g_DEVICE_LIST);i++)DebugN("mudcsCommandCscLevel: "+CSC_fwG_g_DEVICE_LIST[i]+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>11");
+//for(int i=1;i<=dynlen(CSC_fwG_g_DEVICE_LIST);i++)DebugN("mudcsCommandCscLevel: "+CSC_fwG_g_DEVICE_LIST[i]+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>11");
 DebugN("mudcsCommandCscLevel:"+type+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>1 "+dp_name +" "+subcommand);
 
   if(dynContains(CSC_fwG_g_DEVICE_LIST,device_type)){

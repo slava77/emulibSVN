@@ -1,7 +1,7 @@
-V 10
+V 11
 1
 LANG:1 13 emufwUi_v24r9
-PANEL,-1 -1 1051 685 N "_3DFace" 2
+PANEL,-1 -1 1051 802 N "_3DFace" 2
 "$node"
 "$obj"
 "//string id;
@@ -348,12 +348,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  1 E 142 22 200 44
+E E 0 1 1 0 1 E U  1 E 142 22 205 44
 0 2 2 "0s" 0 0 0 192 0 0  142 22 1
 1
-LANG:1 137 -*-New Century Schoolbook [Adobe]-bold-r-normal-*-17-*-100-100-*-*-iso8859-1|-17,0,0,0,758,0,0,0,0,0,0,0,0,New Century Schoolbook [Adobe]
-0 ""
-1
+LANG:1 51 New Century Schoolbook [Adobe],-1,17,5,75,0,0,0,0,0
+0 1
 LANG:1 6 System
 2 3
 "topLabel2"
@@ -368,12 +367,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  1 E 322 22 363 44
+E E 0 1 1 0 1 E U  1 E 322 22 367 44
 0 2 2 "0s" 0 0 0 192 0 0  322 22 1
 1
-LANG:1 137 -*-New Century Schoolbook [Adobe]-bold-r-normal-*-17-*-100-100-*-*-iso8859-1|-17,0,0,0,758,0,0,0,0,0,0,0,0,New Century Schoolbook [Adobe]
-0 ""
-1
+LANG:1 51 New Century Schoolbook [Adobe],-1,17,5,75,0,0,0,0,0
+0 1
 LANG:1 5 State
 2 4
 "label1"
@@ -388,12 +386,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  1 E 12 92 107 114
+E E 0 1 1 0 1 E U  1 E 12 92 115 114
 0 2 2 "0s" 0 0 0 192 0 0  12 92 1
 1
-LANG:1 137 -*-New Century Schoolbook [Adobe]-bold-r-normal-*-17-*-100-100-*-*-iso8859-1|-17,0,0,0,758,0,0,0,0,0,0,0,0,New Century Schoolbook [Adobe]
-0 ""
-1
+LANG:1 51 New Century Schoolbook [Adobe],-1,17,5,75,0,0,0,0,0
+0 1
 LANG:1 10 Sub-System
 2 6
 "label2"
@@ -408,12 +405,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  1 E 192 92 233 114
+E E 0 1 1 0 1 E U  1 E 192 92 237 114
 0 2 2 "0s" 0 0 0 192 0 0  192 92 1
 1
-LANG:1 137 -*-New Century Schoolbook [Adobe]-bold-r-normal-*-17-*-100-100-*-*-iso8859-1|-17,0,0,0,758,0,0,0,0,0,0,0,0,New Century Schoolbook [Adobe]
-0 ""
-1
+LANG:1 51 New Century Schoolbook [Adobe],-1,17,5,75,0,0,0,0,0
+0 1
 LANG:1 5 State
 13 7
 "panelButton"
@@ -428,9 +424,8 @@ LANG:1 0
 
 0
 1
-LANG:1 111 -*-Helvetica [Adobe]-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 140 68 320 93
+LANG:1 38 Helvetica [Adobe],-1,11,5,75,0,0,0,0,0
+0  140 68 320 93
 
 T 
 1
@@ -497,12 +492,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 32 22 61 49
+E E 0 0 0 0 1 E U  1 E 32 22 61 42
 1 2 2 "0s" 0 0 0 192 0 0  32 22 1
 1
-LANG:1 111 -*-Helvetica [Adobe]-bold-r-normal-*-17-*-100-100-*-*-iso8859-1|-17,0,0,0,758,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,17,5,75,0,0,0,0,0
+0 1
 LANG:1 3 V24
 0
 LAYER, 1 

@@ -56,6 +56,12 @@ fwInstallation_appendManager(TRUE, "fwCMS_CSCfw_HV_CC server", "PVSS00ctrl",
 fwInstallation_appendManager(TRUE, "fwCMS_CSCfw_HV_CC server", "PVSS00ctrl", 
 "manual", 30, 2, 2, "-num 12 CMS_CSCfw_HV_CC/mudcsServer.ctl");
 
+fwInstallation_appendManager(TRUE, "X2P data handler", "PVSS00ctrl", 
+"always", 30, 2, 2, "-num 18 libs/CMS_CSCfw_HV_CC/emu_x2pDataProcessing.ctl");
+
+fwInstallation_appendManager(TRUE, "Communication Timeout Handler", "PVSS00ctrl", 
+"always", 30, 2, 2, "-num 19 libs/CMS_CSCfw_HV_CC/emu_commTimeoutHandling.ctl");
+
 if (os =="Linux")system("cd "+CSC_fwG_g_project_name_home+"/source/"+CSC_fwG_g_Component+"/delete_processes_by_name;make");
 if (os =="Linux")system("dos2unix "+CSC_fwG_g_project_name_home+"/source/"+CSC_fwG_g_Component+"/special_stuff/*");
 if (os =="Linux")system("chmod 755 "+CSC_fwG_g_project_name_home+"/source/"+CSC_fwG_g_Component+"/special_stuff/*");

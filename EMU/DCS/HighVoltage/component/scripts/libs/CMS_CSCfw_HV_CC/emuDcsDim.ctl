@@ -1,4 +1,7 @@
+// EMU common libs
+#uses "CMS_CSC_common/emu_common.ctl"
 
+global const bool EMU_G_TEST_DIM_SERVICE = false; // if this flag is true then all DIM services will be prefixed with "TEST_" - useful when testing new interface (e.g. Jinghua has a mechanism to run a parallel X2P with services prepended with "TEST_")
 
 //=============================
 mudcsDimConfigOneManagerNew(string type_par, string pc, string manager, dyn_string &exceptionInfo){
@@ -166,7 +169,11 @@ mudcsDimConfigOneManagerNew(string type_par, string pc, string manager, dyn_stri
     }
     
 //--------------------------- COMMAND CONFIGURATION ------------------------------
-        
+
+    if (EMU_G_TEST_DIM_SERVICE) { // no commands on a test run please
+      return;
+    }
+    
     for(j=1; j<= dynlen(BrokerList); j++){
 //    if(strpos(BrokerList[j],"Broker")>=0)continue;
 //    if(services[j]=="")continue;
@@ -360,6 +367,10 @@ else service=type_par + "_"+coord[1];
 
 strreplace(service,".","_");
 strreplace(service,":","_");
+
+if (EMU_G_TEST_DIM_SERVICE) {
+  service = "TEST_" + service; // for test DIM server
+}
 
 DebugTN(service+"****************************************************************");
 
@@ -641,6 +652,31 @@ type_short="FED";
 }
 
 //=========================================================================================
+
+/** Converts data Dp to FSM DP, but doesn't need the type parameter - figures it out on it's own (and if not - an exception will be thrown). */
+string mudcsConvertData2FsmOneNoType(string dataDp, dyn_string &exceptionInfo){
+  string dataDpForSplit = dpSubStr(dataDp, DPSUB_DP);
+  dyn_string dataDpSplit = strsplit(dataDpForSplit, "_");
+  string dataDpType = dataDpSplit[dynlen(dataDpSplit)];
+  
+  string type = "";
+  if (dataDpType == "LV") {
+    type = "LV_1";
+  } else if (dataDpType == "TEMP") {
+    type = "TEMP_1";
+  } else if (dataDpType == "FED") {
+    type = "FED_1";
+  } else if (dataDpType == "HV") {
+    type = "HV_1";
+  } else {
+    emu_addError("mudcsConvertData2FsmOne: unrecognized type of the dataDp: " + dataDp, exceptionInfo);
+    return "";
+  }
+  
+  string fsmDp;
+  mudcsConvertData2FsmOne(type, dataDp, fsmDp);
+  return fsmDp;
+}
 
 mudcsConvertData2FsmOne(string type_par, string data, string &fsm){
 

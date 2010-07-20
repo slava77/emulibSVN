@@ -1,4 +1,4 @@
-V 10
+V 11
 1
 LANG:1 0 
 PANEL,-1 -1 681 485 N "_3DFace" 6
@@ -10,7 +10,16 @@ PANEL,-1 -1 681 485 N "_3DFace" 6
 "$sParentReference"
 "main()
 {
-    $project_system;
+  // ==== access control ====
+  if (isFunctionDefined(\"fwAccessControl_setupPanel\")) {
+    initAcConstants();
+    dyn_string ex;
+    fwAccessControl_setupPanel(\"accessPrivilegesChangedCB\", ex);
+    if (emu_checkException(ex)) { return; }
+  }
+  //=========================
+
+  $project_system;
   $project_station;
 //============================
 // 10/06/2004 : commented out 
@@ -25,6 +34,14 @@ $pars_parent;
 */
 //==============================
 
+}
+
+/** initialize constants required for access control - basically just fill in the arrays of control and expert control button names. */
+void initAcConstants() {
+  controlButtons = makeDynString(\"enable_disable\", \"isDeviceEnabledCheck\",            // on/off, device enable/disable
+                                 \"daqmb\", \"alct\",                                     // enable/disable DMB, ALCT
+                                 \"cfeb01\", \"cfeb02\", \"cfeb03\", \"cfeb04\", \"cfeb05\");   // enable/disable CFEBs
+  expertControlButtons = makeDynString();
 }" 0
  E E E E 1 -1 -1 0  10 10
 ""0  1
@@ -34,7 +51,18 @@ E "#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
 #uses \"CMS_CSCfw_HV_CC/emuDcs4.ctl\"
 #uses \"CMS_CSCfw_HV_CC/emuDcsDim.ctl\"
 #uses \"CMS_CSCfw_HV_CC/emuAlert.ctl\"
-#uses \"CMS_CSCfw_HV_CC/emufw.ctl\"" 0
+#uses \"CMS_CSCfw_HV_CC/emufw.ctl\"
+#uses \"CMS_CSC_common/emu_accessControl.ctl\"
+
+/** for access control - arrays of control and expert control buttons which should be under access control */
+dyn_string controlButtons;
+dyn_string expertControlButtons;
+
+/** This function is called whenever the user privileges change and just passes that to emu_enableDisableControl() which takes care of enabling/disabling buttons. */
+void accessPrivilegesChangedCB(string dummy1, string dummy2) {
+  emu_enableDisableControl(controlButtons, true, \"lblNoControl\", expertControlButtons, true);
+}
+" 0
  2
 "CBRef" "1"
 "EClose" E
@@ -56,9 +84,8 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 8 10 672 443
+LANG:1 26 Arial,-1,16,5,40,0,0,0,0,0
+0  8 10 672 443
 "main()
 {
 	//this code is used to ensure that all $ parameters are received by this panel

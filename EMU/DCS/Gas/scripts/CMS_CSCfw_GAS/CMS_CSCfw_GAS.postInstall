@@ -7,7 +7,7 @@ main(){
       dpCreate(configDp, "_FwDipConfig");
   }
   fwInstallation_appendManager(TRUE, "EMU dip manager", "PVSS00dip", 
-"always", 30, 2, 2, "-num 20 -dns cms-cent-dcs-01");
+"always", 30, 2, 2, "-num 20 -dns cms-cent-dcs-17,cms-cent-dcs-18");
   
 //    fwInstallation_appendManager(TRUE, "EMU sim  dip manager", "PVSS00sim", 
 //"always", 30, 2, 2, "-num 13");

@@ -11,7 +11,7 @@ if(node ==""){ // case of call not from FSM panel, so definetly from native proj
   system_dps=dpNames("CMS_CSC_LV_MRTN*","MUDCS_STRING");
  sTest=getHostname();
 // mudcsLvDebug(sTest);
- if(sTest=="EMU-DCS-DEV1" || sTest=="emu-dcs-dev1" ){ //  DEV machine  // corr++
+ if((strpos(sTest, "EMU-DCS-DEV") >= 0) || (strpos(sTest, "emu-dcs-dev") >= 0)){ //  DEV machine  // corr++
 
    CSC_fwCAN2_g_904_MACHINE=true;
    

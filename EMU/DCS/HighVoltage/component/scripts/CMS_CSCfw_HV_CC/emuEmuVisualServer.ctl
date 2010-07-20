@@ -117,7 +117,8 @@ string postinstall_state;
 dpGet(CSC_fwG_g_SYSTEM_NAME+":MYWARNING.value",postinstall_state);
 if(postinstall_state!="postinstall_start"){
 
- if (os =="Linux")system(CSC_fwG_g_project_name_home+"/bin/start_servers "+CSC_fwG_g_project_name_home+" &"); // moved to postinstall (or to progs)
+// if (os =="Linux")system(CSC_fwG_g_project_name_home+"/bin/start_servers "+CSC_fwG_g_project_name_home+" &"); // moved to postinstall (or to progs)
+ if (os =="Linux") system("PVSS00ctrl -num 12 CMS_CSCfw_HV_CC/mudcsServer.ctl &");
  else system("start /b PVSS00ctrl -num 12 CMS_CSCfw_HV_CC/mudcsServer.ctl");
 
 }

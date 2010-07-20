@@ -219,7 +219,12 @@ dyn_string emuui_getDpNames(string type, mapping parameters, dyn_string &excepti
   }
   
   string dp = emuui_fillPattern(pattern, parameters);
-  if (strpos(dp, ":") >= 0) { // if system name is included
+  string dpForSysSearch = dp;
+  bool systemIncluded = false;
+  strreplace(dpForSysSearch, ":_", ""); // to eliminate possible colon used for configs
+  systemIncluded = (strpos(dpForSysSearch, ":") >= 0); // check if system is included - have to do this nasty way because dpSubStr is too smart (if it finds the dp in the local system - gives back the local system name even if it's not included in the dp name..)
+  
+  if (systemIncluded) { // if system name is included
     ret = dpNames(dp);
   } else {                    // if there's no sys name (most of the time this is the case) then search accross all connected systems
     ret = dpNames(emuui_getCscSystemNamesPattern(exceptionInfo) + ":" + dp);

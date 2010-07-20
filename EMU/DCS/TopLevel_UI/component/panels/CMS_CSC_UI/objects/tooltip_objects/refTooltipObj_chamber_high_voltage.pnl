@@ -40,7 +40,7 @@ PANEL,-1 -1 420 255 N "_3DFace" 1
   if (dynlen(channelDps) > 1) {
     deviceParams[\"sysName\"] = emuui_getSystemName(channelDps[1]);
   }
-  string disconnectedDevicesDp = emuui_getDpName(\"disconnected_devices\", deviceParams, ex);
+  dyn_string disconnectedDevicesDps = emuui_getDpNames(\"disconnected_devices\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
   
   // get the FSM node for the HV of this chamber (this will be used in \"no communication\" warning update
@@ -93,7 +93,7 @@ PANEL,-1 -1 420 255 N "_3DFace" 1
     dynAppend(statusDps, channelDps[i] + \".status\");
   }
   
-  dpConnect(\"updateDisconnectedWarningCB\", true, disconnectedDevicesDp);
+  dpConnect(\"updateDisconnectedWarningCB\", true, disconnectedDevicesDps);
   dpConnect(\"updateVMonCB\", true, vMonDps);
   dpConnect(\"updateStatusCB\", true, statusDps);
   if (!allGrayMode) {
@@ -247,8 +247,15 @@ void updateDisabledChannelsCB(string dpName, dyn_string disabledChannelsParam) {
 }
 
 /** if disconnectedDevices contains hvFsmNode then \"no communication\" warning is shown, otherwise it's hidden. */
-void updateDisconnectedWarningCB(string dpName, string disconnectedDevices) {
-  noCommunication = (strpos(disconnectedDevices, hvFsmNode) >= 0);
+void updateDisconnectedWarningCB(dyn_string dps, dyn_string disconnectedDevices) {
+  bool isDisconnected = false;
+  for (int i=1; i <= dynlen(disconnectedDevices); i++) {
+    if (strpos(disconnectedDevices[i], hvFsmNode) >= 0) {
+      isDisconnected = true;
+      break;
+    }
+  }
+  noCommunication = isDisconnected;
   if (noCommunication) {
     emuui_showTooltipWarning(getShape(\"refPoint\"),
                            getShape(\"warnNoHvCommunication\"), 
@@ -344,7 +351,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 12 10 81 26
+E E 0 1 1 2 1 E U  1 E 12 10 85 25
 0 2 2 "0s" 0 0 0 192 0 0  12 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -430,7 +437,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 160 117 176
+E E 0 1 1 2 1 E U  1 E 10 160 117 175
 0 2 2 "0s" 0 0 0 192 0 0  10 160 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -453,7 +460,7 @@ LANG:1 0
 {
   this.text = \"\";
 }" 0
- E 0 1 1 2 1 E U  1 E 120 160 164 176
+ E 0 1 1 2 1 E U  1 E 120 160 165 175
 0 2 2 "0s" 0 0 0 192 0 0  120 160 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -510,7 +517,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 270 10 329 26
+E E 0 1 1 2 1 E U  1 E 270 10 328 25
 0 2 2 "0s" 0 0 0 192 0 0  270 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -529,7 +536,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 200 10 268 26
+E E 0 1 1 2 1 E U  1 E 200 10 269 25
 0 2 2 "0s" 0 0 0 192 0 0  200 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -576,7 +583,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 12 40 93 56
+E E 0 1 1 2 1 E U  1 E 12 40 95 55
 0 2 2 "0s" 0 0 0 192 0 0  12 40 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -595,7 +602,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 173 40 301 56
+E E 0 1 1 2 1 E U  1 E 173 40 302 55
 0 2 2 "0s" 0 0 0 192 0 0  173 40 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -652,7 +659,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 180 79 196
+E E 0 1 1 2 1 E U  1 E 10 180 79 195
 0 2 2 "0s" 0 0 0 192 0 0  10 180 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -671,7 +678,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 262 180 302 196
+E E 0 1 1 2 1 E U  1 E 262 180 304 195
 0 2 2 "0s" 0 0 0 192 0 0  262 180 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -690,7 +697,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 80 180 261 196
+E E 0 1 1 2 1 E U  1 E 80 180 261 195
 0 2 2 "0s" 0 0 0 192 0 0  80 180 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -699,7 +706,7 @@ LANG:1 33 host=###; slot=#; addr=#; part=#,
 2 30
 "lblMasterInfo"
 ""
-1 349.1160900801193 260 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 368.5403439648048 300 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 43 0 0 0 0 0
 E E E
@@ -709,7 +716,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 0.964285714285714 0 1 22.35714285714295 20 1 E 290 160 358 176
+E E 0 1 1 2 1 E 0.964285714285714 0 1 22.35714285714295 20 1 E 290 160 359 175
 0 2 2 "0s" 0 0 0 192 0 0  290 160 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0

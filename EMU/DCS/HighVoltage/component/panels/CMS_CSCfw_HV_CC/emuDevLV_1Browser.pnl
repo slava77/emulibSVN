@@ -1,4 +1,4 @@
-V 10
+V 11
 1
 LANG:1 0 
 PANEL,-1 -1 674 411 N "_3DFace" 4
@@ -981,9 +981,8 @@ LANG:1 0
 
 0
 1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
- 10 11 410 41
+LANG:1 36 Courier [Adobe],-1,13,5,75,0,0,0,0,0
+0  10 11 410 41
  0 1
 LANG:1 29 Please Choose Data to Display
 "" 0 0 0 0 0
@@ -1130,7 +1129,7 @@ string dynatemTcpIp;
           if( test_v > 0.9 ){
 
 setValue(\"power_status\",\"text\",\"ON\");
-setValue(\"power_status\",\"backCol\",\"{255,0,0}\");
+setValue(\"power_status\",\"backCol\",\"{0,153,153}\");
 setValue(\"POWER_ON\",\"text\",\"OFF\");
 setValue(\"POWER_ON\",\"backCol\",\"{255,0,0}\");
 //////////mudcsAlertSetActive(DpName,true);
@@ -1140,7 +1139,7 @@ setValue(\"POWER_ON\",\"backCol\",\"{255,0,0}\");
                 setValue(\"POWER_ON\",\"text\",\"ON\");
 
 setValue(\"power_status\",\"text\",\"OFF\");
-setValue(\"power_status\",\"backCol\",\"{0,153,153}\");
+setValue(\"power_status\",\"backCol\",\"{255,0,0}\");
 setValue(\"POWER_ON\",\"text\",\"ON\");
 setValue(\"POWER_ON\",\"backCol\",\"{0,153,153}\");
 /////////////mudcsAlertSetActive(DpName,false);
@@ -1440,9 +1439,8 @@ LANG:1 0
 
 0
 1
-LANG:1 103 -*-Times [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Times [Adobe]
-0 ""
- 420 10 490 38
+LANG:1 34 Times [Adobe],-1,14,5,75,0,0,0,0,0
+0  420 10 490 38
 5
 1
 LANG:1 1 1
@@ -1788,9 +1786,8 @@ LANG:1 0
 
 0
 1
-LANG:1 103 -*-Times [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Times [Adobe]
-0 ""
- 10 50 280 210
+LANG:1 34 Times [Adobe],-1,14,5,75,0,0,0,0,0
+0  10 50 280 210
 "main()
 {
   
@@ -1809,7 +1806,7 @@ setValue(\"number_combo\",\"visible\",true);
 setValue(\"number_combo\",\"text\",\"1\");
 
 setValue(\"power_status\",\"text\",\"ON\");
-setValue(\"power_status\",\"backCol\",\"{255,0,0}\");
+setValue(\"power_status\",\"backCol\",\"{0,153,153}\");
 setValue(\"POWER_ON\",\"text\",\"OFF\");
 setValue(\"POWER_ON\",\"backCol\",\"{255,0,0}\");
 
@@ -1839,13 +1836,13 @@ setValue(\"POWER_ON\",\"backCol\",\"{255,0,0}\");
             \"value\", \"0.66323\"); 
  }
 }" 0
-E 1 0 1 2 2 "parameter" 10 1 0 "s" 1
+E 1 0 1 2 2 "parameter" 11 1 0 "s" 1
 LANG:1 9 parameter
 E
 1
 LANG:1 0 
 
-150 "value" 4 1 0 "s" 1
+150 "value" 5 1 0 "s" 1
 LANG:1 5 value
 E
 1
@@ -1856,9 +1853,8 @@ LANG:1 0
 LANG:1 0 
 "?" 0 20 168
 1
-LANG:1 103 -*-Times [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Times [Adobe]
-0 ""
-0 1 1 1 7
+LANG:1 34 Times [Adobe],-1,14,5,75,0,0,0,0,0
+0 0 1 1 1 7
 1 0
 13 4
 "POWER_ON"
@@ -1873,9 +1869,8 @@ LANG:1 0
 
 0
 1
-LANG:1 103 -*-Times [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Times [Adobe]
-0 ""
- 418 342 488 366
+LANG:1 34 Times [Adobe],-1,14,5,75,0,0,0,0,0
+0  418 342 488 366
 
 T 
 1
@@ -1970,9 +1965,8 @@ LANG:1 0
 
 0
 1
-LANG:1 103 -*-Times [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Times [Adobe]
-0 ""
- 458 378 528 412
+LANG:1 34 Times [Adobe],-1,14,5,75,0,0,0,0,0
+0  458 378 528 412
 
 T 
 1
@@ -1982,27 +1976,6 @@ LANG:1 7 Dismiss
 	PanelOff();
 }" 0
  E E E
-13 7
-"power_status"
-""
-1 418 290 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-21 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
- 418 290 488 340
-
-T 
-1
-LANG:1 0 
-E E E E
 2 15
 "ch_number"
 ""
@@ -2021,12 +1994,11 @@ main()
 {
 
 }" 0
- E 0 0 0 0 1 E U  1 E 494 10 495 33
+ E 0 0 0 0 1 E U  1 E 494 10 506 34
 1 2 2 "0s" 0 0 0 192 0 0  494 10 1
 1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
-1
+LANG:1 36 Courier [Adobe],-1,20,5,75,0,0,0,0,0
+0 1
 LANG:1 1  
 4 23
 "LINE1"
@@ -2055,7 +2027,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 3 0 0 1 E  518 351 507.898474554478 361.101525445522
+E E 0 3 0 0 1 E  518 351 508 361
 4 25
 "LINE2"
 ""
@@ -2069,7 +2041,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 3 0 0 1 E  518 353 507.898474554478 342.898474554478
+E E 0 3 0 0 1 E  518 353 508 343
 2 26
 "TWO_DP"
 ""
@@ -2083,12 +2055,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 524 342 525 365
+E E 0 0 0 0 1 E U  1 E 524 342 536 366
 1 2 2 "0s" 0 0 0 192 0 0  524 342 1
 1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
-1
+LANG:1 36 Courier [Adobe],-1,20,5,75,0,0,0,0,0
+0 1
 LANG:1 1  
 14 27
 "exclude"
@@ -2103,9 +2074,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 308 378 418 404
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  308 378 418 404
 3 "0s" 0 0 0 0 0 -1  E E "main()
 {
 
@@ -2181,12 +2151,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 260 380 305 399
+E E 0 0 0 0 1 E U  1 E 260 380 305 396
 1 2 2 "0s" 0 0 0 192 0 0  260 380 1
 1
-LANG:1 111 -*-Helvetica [Adobe]-bold-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,758,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,12,5,75,0,0,0,0,0
+0 1
 LANG:1 7 exclude
 2 29
 "exclude_text2"
@@ -2201,37 +2170,31 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 260 390 471 514
+E E 0 0 0 0 1 E U  1 E 260 390 470 496
 1 2 2 "0s" 0 0 0 192 0 0  260 390 6
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,12,5,50,0,0,0,0,0
+0 1
 LANG:1 38 examples: exclude cfeb01, include alct
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,12,5,50,0,0,0,0,0
+0 1
 LANG:1 6 Use it
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,12,5,50,0,0,0,0,0
+0 1
 LANG:1 33 a) to keep excluded channels off 
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,12,5,50,0,0,0,0,0
+0 1
 LANG:1 25    at the module power on
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,12,5,50,0,0,0,0,0
+0 1
 LANG:1 32 b) for excluded channels not to 
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,12,5,50,0,0,0,0,0
+0 1
 LANG:1 38    affect a error status of the module
 14 30
 "noalert"
@@ -2246,9 +2209,8 @@ LANG:1 0
 
 0
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
- 588 378 698 404
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  588 378 698 404
 3 "0s" 0 0 0 0 0 -1  E E "main()
 {
 
@@ -2324,42 +2286,35 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 540 380 696 525
+E E 0 0 0 0 1 E U  1 E 540 380 699 504
 1 2 2 "0s" 0 0 0 192 0 0  540 380 7
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,12,5,50,0,0,0,0,0
+0 1
 LANG:1 10 examples: 
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,12,5,50,0,0,0,0,0
+0 1
 LANG:1 16 exclude cfeb01, 
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,12,5,50,0,0,0,0,0
+0 1
 LANG:1 12 include alct
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,12,5,50,0,0,0,0,0
+0 1
 LANG:1 7 Use it:
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,12,5,50,0,0,0,0,0
+0 1
 LANG:1 30  for excluded channels not to 
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,12,5,50,0,0,0,0,0
+0 1
 LANG:1 23  affect a error status 
 1
-LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,12,5,50,0,0,0,0,0
+0 1
 LANG:1 15   of the module
 2 32
 "noalert_text1"
@@ -2374,12 +2329,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 540 380 618 399
+E E 0 0 0 0 1 E U  1 E 540 380 618 396
 1 2 2 "0s" 0 0 0 192 0 0  540 380 1
 1
-LANG:1 111 -*-Helvetica [Adobe]-bold-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,758,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,12,5,75,0,0,0,0,0
+0 1
 LANG:1 13 exclude_alert
 13 33
 "FPOWER_OFF"
@@ -2394,9 +2348,8 @@ LANG:1 0
 
 0
 1
-LANG:1 103 -*-Times [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Times [Adobe]
-0 ""
- 298 310 408 334
+LANG:1 34 Times [Adobe],-1,14,5,75,0,0,0,0,0
+0  298 310 408 334
 
 T 
 1
@@ -2441,9 +2394,8 @@ LANG:1 0
 
 0
 1
-LANG:1 103 -*-Times [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Times [Adobe]
-0 ""
- 298 342 408 366
+LANG:1 34 Times [Adobe],-1,14,5,75,0,0,0,0,0
+0  298 342 408 366
 
 T 
 1
@@ -2478,7 +2430,7 @@ dpGet(DpNameFsm+\".status\",current_status);
 2 35
 "noalert_channels_text"
 ""
-1 14.8 212 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+1 53.968 196 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
  E E
 112 0 0 0 0 0
 E E E
@@ -2491,14 +2443,13 @@ LANG:1 0
 E E 0 1 1 2 1 E 2.4 0 1 -9.199999999999999 -8 1 E 10 220 11 234
 0 2 2 "0s" 0 0 0 192 0 0  10 220 1
 1
-LANG:1 108 -*-Bitstream Charter-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
-1
+LANG:1 38 Bitstream Charter,-1,11,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 2 36
 "off_channels_text"
 ""
-1 14.8 232 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+1 53.968 216 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
  E E
 114 0 0 0 0 0
 E E E
@@ -2511,14 +2462,13 @@ LANG:1 0
 E E 0 1 1 2 1 E 2.4 0 1 -9.199999999999999 -8 1 E 10 240 11 254
 0 2 2 "0s" 0 0 0 192 0 0  10 240 1
 1
-LANG:1 108 -*-Bitstream Charter-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
-1
+LANG:1 38 Bitstream Charter,-1,11,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 2 40
 "PRIMITIVE_TEXT5"
 ""
-1 367.2357999193284 165 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+1 572.1167934330423 89 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
  E E
 122 0 0 0 0 0
 E E E
@@ -2529,12 +2479,11 @@ LANG:1 0
 2
 "hoverfclr" "N \"_Transparent\""
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E 0.9767441860465116 0 1 112.1860465116279 -38 1 E 10 310 52 324
+E E 0 0 0 0 1 E 0.9767441860465116 0 1 112.1860465116279 -38 1 E 10 310 58 324
 1 2 2 "0s" 0 0 0 192 0 0  10 310 1
 1
-LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
-1
+LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
+0 1
 LANG:1 8 ALCT__  
 2 42
 "PRIMITIVE_TEXT6"
@@ -2552,9 +2501,8 @@ LANG:1 0
 E E 0 0 0 0 1 E U  1 E 12 272 45 286
 1 2 2 "0s" 0 0 0 192 0 0  12 272 1
 1
-LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
-1
+LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
+0 1
 LANG:1 5 CFEB1
 2 43
 "PRIMITIVE_TEXT7"
@@ -2572,9 +2520,8 @@ LANG:1 0
 E E 0 0 0 0 1 E U  1 E 12 292 45 306
 1 2 2 "0s" 0 0 0 192 0 0  12 292 1
 1
-LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
-1
+LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
+0 1
 LANG:1 5 CFEB2
 2 44
 "PRIMITIVE_TEXT8"
@@ -2589,12 +2536,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 312 44 326
+E E 0 0 0 0 1 E U  1 E 12 312 45 326
 1 2 2 "0s" 0 0 0 192 0 0  12 312 1
 1
-LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
-1
+LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
+0 1
 LANG:1 5 CFEB3
 2 45
 "PRIMITIVE_TEXT9"
@@ -2609,12 +2555,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 332 46 346
+E E 0 0 0 0 1 E U  1 E 12 332 45 346
 1 2 2 "0s" 0 0 0 192 0 0  12 332 1
 1
-LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
-1
+LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
+0 1
 LANG:1 5 CFEB4
 2 46
 "PRIMITIVE_TEXT10"
@@ -2632,9 +2577,8 @@ LANG:1 0
 E E 0 0 0 0 1 E U  1 E 12 352 45 366
 1 2 2 "0s" 0 0 0 192 0 0  12 352 1
 1
-LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
-1
+LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
+0 1
 LANG:1 5 CFEB5
 20 52
 "isTrending6"
@@ -2649,9 +2593,8 @@ LANG:1 53 check Trend and click Vmon or Imon box of the channel
 
 0
 1
-LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
- 159.953488372093 268 213.953488372093 290
+LANG:1 38 Bitstream Charter,-1,13,5,50,0,0,0,0,0
+0  160 268 214 290
 1
 T 
 1
@@ -2677,9 +2620,8 @@ LANG:1 53 check Trend and click Vmon or Imon box of the channel
 
 0
 1
-LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
- 50 268 104 302
+LANG:1 38 Bitstream Charter,-1,13,5,50,0,0,0,0,0
+0  50 268 104 302
 1
 T 
 1
@@ -2705,9 +2647,8 @@ LANG:1 53 check Trend and click Vmon or Imon box of the channel
 
 0
 1
-LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
- 50 288 104 310
+LANG:1 38 Bitstream Charter,-1,13,5,50,0,0,0,0,0
+0  50 288 104 310
 1
 T 
 1
@@ -2733,9 +2674,8 @@ LANG:1 53 check Trend and click Vmon or Imon box of the channel
 
 0
 1
-LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
- 50 308 104 330
+LANG:1 38 Bitstream Charter,-1,13,5,50,0,0,0,0,0
+0  50 308 104 330
 1
 T 
 1
@@ -2761,9 +2701,8 @@ LANG:1 53 check Trend and click Vmon or Imon box of the channel
 
 0
 1
-LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
- 50 328 104 350
+LANG:1 38 Bitstream Charter,-1,13,5,50,0,0,0,0,0
+0  50 328 104 350
 1
 T 
 1
@@ -2789,9 +2728,8 @@ LANG:1 53 check Trend and click Vmon or Imon box of the channel
 
 0
 1
-LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
- 50 348 104 370
+LANG:1 38 Bitstream Charter,-1,13,5,50,0,0,0,0,0
+0  50 348 104 370
 1
 T 
 1
@@ -2817,9 +2755,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 118 318 202 372
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  118 318 202 372
 
 T 
 1
@@ -2862,9 +2799,8 @@ LANG:1 0
 
 0
 1
-LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
-0 ""
- 428 138 632 162
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  428 138 632 162
 0
 
 E
@@ -2884,17 +2820,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 430 120 499 139
+E E 0 0 0 0 1 E U  1 E 430 120 495 136
 1 2 2 "0s" 0 0 0 192 0 0  430 120 1
 1
-LANG:1 111 -*-Helvetica [Adobe]-bold-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,758,0,0,0,0,0,0,0,0,Helvetica [Adobe]
-0 ""
-1
+LANG:1 38 Helvetica [Adobe],-1,12,5,75,0,0,0,0,0
+0 1
 LANG:1 10 ERRORS IN:
 2 63
 "t_alct"
 ""
-1 1499.73712874943 -301 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+1 2265.346833485124 -737 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
  E E
 167 0 0 0 0 0
 E E E
@@ -2905,12 +2840,11 @@ LANG:1 0
 2
 "hoverfclr" "N \"_Transparent\""
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E 0.9767441860465116 0 1 422.1860465116279 -218 1 E 10 310 52 324
+E E 0 0 0 0 1 E 0.9767441860465116 0 1 422.1860465116279 -218 1 E 10 310 58 324
 1 2 2 "0s" 0 0 0 192 0 0  10 310 1
 1
-LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
-1
+LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
+0 1
 LANG:1 8 ALCT__  
 2 64
 "t_cfeb1"
@@ -2928,9 +2862,8 @@ LANG:1 0
 E E 0 0 0 0 1 E U  1 E 302 92 335 106
 1 2 2 "0s" 0 0 0 192 0 0  302 92 1
 1
-LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
-1
+LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
+0 1
 LANG:1 5 CFEB1
 2 65
 "t_cfeb2"
@@ -2948,9 +2881,8 @@ LANG:1 0
 E E 0 0 0 0 1 E U  1 E 302 122 335 136
 1 2 2 "0s" 0 0 0 192 0 0  302 122 1
 1
-LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
-1
+LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
+0 1
 LANG:1 5 CFEB2
 2 66
 "t_cfeb3"
@@ -2965,12 +2897,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 302 152 334 166
+E E 0 0 0 0 1 E U  1 E 302 152 335 166
 1 2 2 "0s" 0 0 0 192 0 0  302 152 1
 1
-LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
-1
+LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
+0 1
 LANG:1 5 CFEB3
 2 67
 "t_cfeb4"
@@ -2985,12 +2916,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 302 184 336 198
+E E 0 0 0 0 1 E U  1 E 302 184 335 198
 1 2 2 "0s" 0 0 0 192 0 0  302 184 1
 1
-LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
-1
+LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
+0 1
 LANG:1 5 CFEB4
 2 68
 "t_cfeb5"
@@ -3008,14 +2938,13 @@ LANG:1 0
 E E 0 0 0 0 1 E U  1 E 302 212 335 226
 1 2 2 "0s" 0 0 0 192 0 0  302 212 1
 1
-LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
-1
+LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
+0 1
 LANG:1 5 CFEB5
 20 69
 "alct"
 ""
-1 470.0015159345392 88.61538461538458 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+1 470.0015159345392 88.61538461538459 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
  E E
 179 0 0 0 0 0
 E E E
@@ -3025,9 +2954,8 @@ LANG:1 53 check Trend and click Vmon or Imon box of the channel
 
 0
 1
-LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
- 469.9274418604652 88 551.9274418604651 110
+LANG:1 38 Bitstream Charter,-1,13,5,50,0,0,0,0,0
+0  470 88 552 110
 1
 T 
 1
@@ -3047,7 +2975,7 @@ E"main(int button, int state)
 20 76
 "cfeb01"
 ""
-1 338.074074074074 88.61538461538458 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+1 338.074074074074 88.61538461538459 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
  E E
 193 0 0 0 0 0
 E E E
@@ -3057,9 +2985,8 @@ LANG:1 53 check Trend and click Vmon or Imon box of the channel
 
 0
 1
-LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
- 338 88 420 110
+LANG:1 38 Bitstream Charter,-1,13,5,50,0,0,0,0,0
+0  338 88 420 110
 1
 T 
 1
@@ -3089,9 +3016,8 @@ LANG:1 53 check Trend and click Vmon or Imon box of the channel
 
 0
 1
-LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
- 338 118 420 140
+LANG:1 38 Bitstream Charter,-1,13,5,50,0,0,0,0,0
+0  338 118 420 140
 1
 T 
 1
@@ -3121,9 +3047,8 @@ LANG:1 53 check Trend and click Vmon or Imon box of the channel
 
 0
 1
-LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
- 338 148 420 170
+LANG:1 38 Bitstream Charter,-1,13,5,50,0,0,0,0,0
+0  338 148 420 170
 1
 T 
 1
@@ -3153,9 +3078,8 @@ LANG:1 53 check Trend and click Vmon or Imon box of the channel
 
 0
 1
-LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
- 338 179 420 201
+LANG:1 38 Bitstream Charter,-1,13,5,50,0,0,0,0,0
+0  338 179 420 201
 1
 T 
 1
@@ -3185,9 +3109,8 @@ LANG:1 53 check Trend and click Vmon or Imon box of the channel
 
 0
 1
-LANG:1 108 -*-Bitstream Charter-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
- 338 208 420 230
+LANG:1 38 Bitstream Charter,-1,13,5,50,0,0,0,0,0
+0  338 208 420 230
 1
 T 
 1
@@ -3217,17 +3140,15 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 10 210 178 258
+E E 0 0 0 0 1 E U  1 E 10 210 190 260
 1 2 2 "0s" 0 0 0 192 0 0  10 210 2
 1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
-1
+LANG:1 36 Courier [Adobe],-1,20,5,75,0,0,0,0,0
+0 1
 LANG:1 12    DEVICE IS
 1
-LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
-0 ""
-1
+LANG:1 36 Courier [Adobe],-1,20,5,75,0,0,0,0,0
+0 1
 LANG:1 15  NOT CONNECTED 
 2 82
 "isDeviceEnabled"
@@ -3242,12 +3163,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 480 50 659 70
+E E 0 1 1 2 1 E U  1 E 480 50 681 70
 0 2 2 "0s" 0 0 0 192 0 0  480 50 1
 1
-LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
-1
+LANG:1 38 Bitstream Charter,-1,16,5,75,0,0,0,0,0
+0 1
 LANG:1 22 _DEVICE IS DISABLED_  
 20 83
 "isDeviceEnabledCheck"
@@ -3262,9 +3182,8 @@ LANG:1 53 check Trend and click Vmon or Imon box of the channel
 
 0
 1
-LANG:1 108 -*-Bitstream Charter-*-r-normal-*-19-*-100-100-*-*-iso8859-1|-19,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
-0 ""
- 300 48 484 82
+LANG:1 38 Bitstream Charter,-1,19,5,50,0,0,0,0,0
+0  300 48 484 82
 1
 T 
 1
@@ -3320,6 +3239,63 @@ fwFsmUi_setDUModeByName(DomainName, DpNameFsm2, \"Enable\");
 */
 
 }" 0
+2 84
+"lblNoControl"
+""
+1 828 -198 E E E 1 E 1 E N "_3DText" E N "FwStateAttention1" E E
+ E E
+208 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 300 240 498 257
+1 2 2 "0s" 0 0 0 192 0 0  300 240 1
+1
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0 1
+LANG:1 32 You don't have control privilege
+2 85
+"power_status"
+""
+1 377 270 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+209 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 377 270 443 294
+1 2 2 "0s" 0 0 0 193 0 0  410 270 1
+1
+LANG:1 35 MS Shell Dlg 2,14,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 6 ON/OFF
+2 86
+"PRIMITIVE_TEXT13"
+""
+1 300 275 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+210 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 300 275 368 289
+0 2 2 "0s" 0 0 0 192 0 0  300 275 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 13 Power Status:
 0
 LAYER, 1 
 1
