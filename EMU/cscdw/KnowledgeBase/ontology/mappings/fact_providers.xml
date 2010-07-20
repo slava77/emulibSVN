@@ -1,7 +1,0 @@
-<FactProviders>
-    <Provider>DCSFactService</Provider>
-    <Provider>LocalDQMFactService</Provider>
-    <Provider>LocalDAQFactService</Provider>
-    <Provider>FEDFactService</Provider>
-    <Provider>XmasFactService</Provider>
-</FactProviders>

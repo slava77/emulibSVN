@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<javaee-project xmlns="http://java.sun.com/xml/ns/jbi/javaee/config/1/" xmlns:ns0="http://ws.exsys.csc.cms.cern.org/" name="ExsysEsbEjb">
-    <services>
-        <provides enable-for-javaee-http="true" endpoint-name="javaee_HttpProxyWSPort" interface-name="ns0:HttpProxyWS" service-name="ns0:HttpProxyWSService"/>
-    </services>
-</javaee-project>
