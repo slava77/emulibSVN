@@ -1,3 +1,5 @@
+#uses "CMS_CSC_common/emu_common.ctl"
+
 global int EMUMAJ_HV_STATE_ON_VMON_ACCURACY = 50;
 global int EMUMAJ_HV_STATE_STANDBY_VMON_ACCURACY = 60;
 global int EMUMAJ_HV_STANDBY_VOLTAGE = 3000;
@@ -154,10 +156,10 @@ dyn_int emumaj_lvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
   }
   if (status == 2) { // everything is ok
     on = weight;
-    return makeDynInt(ok, error, noCommunication);
+    return makeDynInt(on, error, noCommunication);
   }
   if (status == 0) { // chamber is off - so all 0 (not an error, not ok and communication is fine - because X2P is telling us that)
-    return makeDynInt(ok, error, noCommunication);
+    return makeDynInt(on, error, noCommunication);
   }
 
   // everything that's not masked off is on - otherwise it would be in error or off state (in case everything is off).
