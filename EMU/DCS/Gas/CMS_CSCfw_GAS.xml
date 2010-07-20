@@ -1,7 +1,7 @@
  <component>
 	<name>CMS_CSCfw_GAS</name>
-	<version>4.2.4</version>
-	<date>2010/05/31</date>
+	<version>4.2.5</version>
+	<date>2010/07/20</date>
 	<required>fwCore=4.0.0</required>
 	<required>fwAnalogDigital=4.0.0</required>
 	<required>fwAccessControl=3.2.7</required>
