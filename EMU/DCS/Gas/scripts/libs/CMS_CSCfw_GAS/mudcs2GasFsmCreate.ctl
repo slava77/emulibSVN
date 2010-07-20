@@ -33,17 +33,52 @@ mudcs_removeNode();
 
 
 
-dyn_string fwTN_names=dpNames("*GAS*","_FwTreeNode");
-for(i=1;i<=dynlen(fwTN_names);i++){
-  if(strpos(fwTN_names[i],"TrendTree")>=0)continue;
-  if(strpos(fwTN_names[i],"FSM")>=0)continue;  
-dpDelete(fwTN_names[i]);
+dyn_string dpsToDelete=dpNames("*GAS*","_FwTreeNode");
+for(i=1;i<=dynlen(dpsToDelete);i++){
+  if(strpos(dpsToDelete[i],"TrendTree")>=0)continue;
+  if(strpos(dpsToDelete[i],"FSM")>=0)continue;  
+  DebugTN("Deleting _FwTreeNode DP: " + dpsToDelete[i]);
+  dpDelete(dpsToDelete[i]);
 }       
- dyn_string fwTN_names=dpNames("*COOLING*","_FwTreeNode");
-for(i=1;i<=dynlen(fwTN_names);i++){
-  if(strpos(fwTN_names[i],"TrendTree")>=0)continue;
-  if(strpos(fwTN_names[i],"FSM")>=0)continue;  
-dpDelete(fwTN_names[i]);
+
+dpsToDelete=dpNames("*COOLING*","_FwTreeNode");
+for(i=1;i<=dynlen(dpsToDelete);i++){
+  if(strpos(dpsToDelete[i],"TrendTree")>=0)continue;
+  if(strpos(dpsToDelete[i],"FSM")>=0)continue;  
+  DebugTN("Deleting _FwTreeNode DP: " + dpsToDelete[i]);
+  dpDelete(dpsToDelete[i]);
+}       
+
+dpsToDelete=dpNames("*GAS*","_FwFsmDevice");
+for(i=1;i<=dynlen(dpsToDelete);i++){
+  if(strpos(dpsToDelete[i],"TrendTree")>=0)continue;
+  if(strpos(dpsToDelete[i],"FSM")>=0)continue;  
+  DebugTN("Deleting _FwFsmDevice DP: " + dpsToDelete[i]);
+  dpDelete(dpsToDelete[i]);
+}       
+
+dpsToDelete=dpNames("*COOLING*","_FwFsmDevice");
+for(i=1;i<=dynlen(dpsToDelete);i++){
+  if(strpos(dpsToDelete[i],"TrendTree")>=0)continue;
+  if(strpos(dpsToDelete[i],"FSM")>=0)continue;  
+  DebugTN("Deleting _FwFsmDevice DP: " + dpsToDelete[i]);
+  dpDelete(dpsToDelete[i]);
+}       
+
+dpsToDelete=dpNames("*GAS*","_FwFsmObject");
+for(i=1;i<=dynlen(dpsToDelete);i++){
+  if(strpos(dpsToDelete[i],"TrendTree")>=0)continue;
+  if(strpos(dpsToDelete[i],"FSM")>=0)continue;  
+  DebugTN("Deleting _FwFsmObject DP: " + dpsToDelete[i]);
+  dpDelete(dpsToDelete[i]);
+}       
+
+dpsToDelete=dpNames("*COOLING*","_FwFsmObject");
+for(i=1;i<=dynlen(dpsToDelete);i++){
+  if(strpos(dpsToDelete[i],"TrendTree")>=0)continue;
+  if(strpos(dpsToDelete[i],"FSM")>=0)continue;  
+  DebugTN("Deleting _FwFsmObject DP: " + dpsToDelete[i]);
+  dpDelete(dpsToDelete[i]);
 }       
    
 
