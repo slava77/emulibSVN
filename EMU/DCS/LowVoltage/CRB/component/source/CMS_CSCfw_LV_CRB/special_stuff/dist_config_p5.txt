@@ -1,9 +1,0 @@
-
-[dist]
-#distPeer = "dcspcS2G19-02.cms" 152
-#distPeer = "dcspcS2G19-03.cms" 153
-#distPeer = "dcspcS2G19-04.cms" 154
-#distPeer = "dcspcS2G19-05.cms" 155
-#distPeer = "dcspcS2G19-06.cms" 156
-#distPeer = "dcspcS2G19-07.cms" 157
-#distPeer = "dcspcS2G19-09.cms" 150
