@@ -17,6 +17,18 @@
 
 
 main(){
+  dpSet("MYWARNING_GAS.value", "starting mudcsDipConfig(true)");
+  mudcsDipConfig(true); 
+  dpSet("MYWARNING_GAS.value", "starting mudcsGasAlertCreateMain(true)");
+  mudcsGasAlertCreateMain(true);
+  dpSet("MYWARNING_GAS.value", "starting mudcsGasArchiveMain(true)");
+  mudcsGasArchiveMain(true);
+  dpSet("MYWARNING_GAS.value", "starting mudcsGasFsmPanelsAndFsmAliasesSetMain()");
+  mudcsGasFsmPanelsAndFsmAliasesSetMain();  
+ 
+  dpSet("MYWARNING_GAS.value", "postinstall finished");
+return;
+
   
   if (!dpExists("MYWARNING_GAS")) {
     dpCreate("MYWARNING_GAS", "MUDCS_STRING");

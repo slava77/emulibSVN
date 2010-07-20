@@ -1,20 +1,12 @@
 # ascii dump of database
 
-# DpType
-TypeName
-_FwFsmObjectType._FwFsmObjectType	1#1
-	panel	25#6
-	components	9#7
-	states	9#8
-	actions	9#9
-	parameters	9#11
-
-# Datapoint/DpId
+# Datapoint/DpId (CMS_CSCfw_GAS.dpl)
 DpName	TypeName	ID
 fwOT_fwCooling_CSC_COOLING	_FwFsmObjectType	159664
 fwOT_fwGasSystem_CSC_GAS	_FwFsmObjectType	159665
 
-# DpValue
+
+# DpValue (CMS_CSCfw_GAS.dpl)
 ElementName	TypeName	_original.._value	_original.._status	_original.._stime
 fwOT_fwCooling_CSC_COOLING.panel	_FwFsmObjectType	"CMS_CSCfw_GAS/emuDevfwCooling_CSC_COOLINGOperation.pnl"	0x101	18.02.2010 14:03:49.993
 fwOT_fwCooling_CSC_COOLING.components	_FwFsmObjectType	"int status
