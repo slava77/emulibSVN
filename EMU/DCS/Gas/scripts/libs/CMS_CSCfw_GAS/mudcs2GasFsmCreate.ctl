@@ -1,4 +1,5 @@
 mudcsGasFsmDelete(){
+DebugTN("mudcsGasFsmDelete() started");
 
   int i;
   int cu_flag;
@@ -82,6 +83,7 @@ for(i=1;i<=dynlen(dpsToDelete);i++){
 }       
    
 
+DebugTN("mudcsGasFsmDelete() finished");
 
 
 }
