@@ -261,3 +261,13 @@ string emuui_getPCrateNameId(string elmbId, dyn_string &exceptionInfo) {
   
   return emuui_getPCrateName(info[1], info[2], info[6]);
 }
+
+/** Returns chamber name (in a standard form e.g. ME+2/2/02) given deviceParams (it should contain at least "side", "station", "ring" and "chamberNumber" params). */
+string emuui_getChamberName(mapping deviceParams) {
+  string strSide = "+";
+  if (deviceParams["side"] == "M") { strSide = "-"; }
+  
+  return "ME" + strSide + 
+         deviceParams["station"] + "/" + deviceParams["ring"] + "/" +
+         deviceParams["chamberNumber"];
+}

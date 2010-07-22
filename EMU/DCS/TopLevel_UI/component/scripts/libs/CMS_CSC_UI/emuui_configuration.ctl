@@ -523,6 +523,12 @@ mapping emuui_getMaratonToPcmbsMap(dyn_string &exceptionInfo) {
 
 string emuui_getCscSystemNamesPattern(dyn_string &exceptionInfo) {
   if (strlen(emuui_g_cscSystemNamesPattern) == 0) {
+
+    if (getHostname() == "macfrank") { // special case for development
+      emuui_g_cscSystemNamesPattern = "*";
+      return emuui_g_cscSystemNamesPattern;
+    }
+
     mapping dcsProjects = emuui_getMapping("dcsProjectSystemNames", exceptionInfo);
     if (emu_checkException(exceptionInfo)) { return ""; }
     emuui_g_cscSystemNamesPattern = "{";
@@ -536,7 +542,9 @@ string emuui_getCscSystemNamesPattern(dyn_string &exceptionInfo) {
     if (!mappingHasKey(dcsProjects, getSystemId())) {
       string mySysName = getSystemName();
       strreplace(mySysName, ":", "");
-      emuui_g_cscSystemNamesPattern += "," + mySysName;
+      if (!strpos(emuui_g_cscSystemNamesPattern, mySysName) < 0) {
+        emuui_g_cscSystemNamesPattern += "," + mySysName;
+      }
     }
     emuui_g_cscSystemNamesPattern += "}";
   }

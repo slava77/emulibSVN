@@ -6,6 +6,8 @@
 #uses "CMS_CSC_UI/emuui_configuration.ctl"
 #uses "CMS_CSC_UI/emuui_sessionManager.ctl"
 #uses "CMS_CSC_UI/background_checks/emuui_backgroundChecksMain.ctl"
+#uses "CMS_CSC_UI/emuui_contextMenu.ctl"
+#uses "CMS_CSC_UI/emuui_utils.ctl"
 
 /**@file
 

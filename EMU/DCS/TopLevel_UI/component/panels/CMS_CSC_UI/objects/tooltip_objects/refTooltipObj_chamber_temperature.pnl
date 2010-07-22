@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 405 131 N "_3DFace" 1
+PANEL,-1 -1 405 293 N "_3DFace" 1
 "$deviceParams"
 "main()
 {
@@ -26,6 +26,17 @@ PANEL,-1 -1 405 131 N "_3DFace" 1
     allGrayMode = true;
   }
   
+  // data status
+  if (isFunctionDefined(\"emux2p_init\")) {
+    initStatusBitMap();
+    string dataStatusDp = emuui_getDpName(\"chamber_temperature_data_status\", deviceParams, ex);
+    dpConnect(\"updateDataStatusCB\", true, dataStatusDp);
+  } else {
+    emuui_showTooltipWarning(getShape(\"refPoint\"),
+                           getShape(\"warnNoLibrary\"), 
+                           getShape(\"chamber_low_voltage_tooltipBack\"));
+  }
+  
   // connect to the temperature    
   dyn_string alctTempDps = emuui_getDpNames(\"chamber_alct_temperature\", deviceParams, ex);
   dyn_string cfebTempDps = emuui_getDpNames(\"chamber_cfeb_temperature\", deviceParams, ex);
@@ -35,7 +46,6 @@ PANEL,-1 -1 405 131 N "_3DFace" 1
   if (emu_checkException(ex)) { return; }
   
   initGui(dps);
-  
   dpConnect(\"updateTemperatureCB\", true, dps);
   
   // connect to last update timestamp
@@ -111,6 +121,15 @@ void initGui(dyn_string dps) {
       tableTemp.cellBackColRC(0, tableTemp.columnToName(j), \"FwEquipmentDisabled\");
     }
   }
+}
+
+void initStatusBitMap() {
+  warningNameToStatusBit[\"warnReadoutProblem\"] = EMU_X2P_STATUS_READOUT_PROBLEM;
+  warningNameToStatusBit[\"warnVccProblem\"] = EMU_X2P_STATUS_VCC_PROBLEM;
+  warningNameToStatusBit[\"warnCorruptedData\"] = EMU_X2P_STATUS_CORRUPTED;
+  warningNameToStatusBit[\"warnUnknownProblem\"] = EMU_X2P_STATUS_OTHER_PROBLEM;
+  warningNameToStatusBit[\"warnChamberOff\"] = EMU_X2P_STATUS_OFF;
+  warningNameToStatusBit[\"warnPCrateOff\"] = EMU_X2P_STATUS_CRATE_OFF;
 }" 0
  "main()
 {
@@ -118,7 +137,9 @@ void initGui(dyn_string dps) {
 }" 0
  E E E 1 -1 -1 0  0 0
 ""0  1
-E "//some panel-wide constants and variables
+E "#uses \"CMS_CSCfw_HV_CC/emu_x2pDataProcessing.ctl\"
+
+//some panel-wide constants and variables
 int cfebCount;
 mapping deviceParams;
 dyn_string columnNames;
@@ -132,8 +153,35 @@ bool noCommunication;
 dyn_string alarmColorDps;
 dyn_int disabledChannels;
 
+mapping warningNameToStatusBit; // map of warning label names to status bits
+int lastStatus = -1;
+
 void positionChangedCB(string dummyDpName, int dummyValue) {
   emuui_alignSmallFsmNodes(references, makeDynString(\"chamber_temperature_fsmRefPoint\"));
+}
+
+// Call-back function which updates the data status and displays an appropriate warning in case of any error. */.
+void updateDataStatusCB(string dp, int status) {
+  if (status == lastStatus) {
+    return;
+  }
+  lastStatus = status;
+  
+  for (int i=1; i <= mappinglen(warningNameToStatusBit); i++) {
+    string warningName = mappingGetKey(warningNameToStatusBit, i);
+    int statusBit = warningNameToStatusBit[warningName];
+    
+    if (status & statusBit) {
+      emuui_showTooltipWarning(getShape(\"refPoint\"),
+                             getShape(warningName), 
+                             getShape(\"chamber_temperature_tooltipBack\"));
+    } else {
+      emuui_hideTooltipWarning(getShape(warningName), 
+                               getShape(\"chamber_temperature_tooltipBack\"));
+    }        
+  }  
+  
+  tableTemp.backCol = \"White\";
 }
 
 void updateTemperatureCB(dyn_string dps, dyn_float temperatures) {
@@ -170,6 +218,7 @@ void updateDisabledChannelsCB(string dp, dyn_int disabledChannelsParam) {
 
 void updateTemperatureAlarmColorsCB(dyn_string dps, dyn_string alarmColors) {
   if (noCommunication) { return; } // don't update the table - let the \"???\" and grey color stay there
+  if (lastStatus != 0) { return; }
 
   for (int i=1; i <= dynlen(columnNames); i++) {
     int index = dynPartiallyContains(dps, columnNames[i]);
@@ -408,6 +457,139 @@ E E 0 1 1 2 1 E U  1 E 10 90 370 104
 LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
 0 1
 LANG:1 54 No Communication - check PCrate LV and Xmas monitoring
+2 11
+"warnNoLibrary"
+""
+1 10 110 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 110 370 124
+1 2 2 "0s" 0 0 0 65 0 0  10 110 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 51 CMS_CSCfw_HV_CC/emu_x2pDataProcessing.ctl not found
+2 12
+"warnChamberOff"
+""
+1 10 210 E E E 1 E 0 E N "_Window" E N "FwStateOKNotPhysics" E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 210 370 224
+1 2 2 "0s" 0 0 0 65 0 0  10 210 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 14 Chamber is OFF
+2 13
+"warnPCrateOff"
+""
+1 10 230 E E E 1 E 0 E N "_Window" E N "FwStateOKNotPhysics" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 230 370 244
+1 2 2 "0s" 0 0 0 65 0 0  10 230 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 23 Peripheral Crate is OFF
+2 14
+"warnReadoutProblem"
+""
+1 10 130 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+21 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 130 370 144
+1 2 2 "0s" 0 0 0 65 0 0  10 130 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 19 DMB readout problem
+2 15
+"warnVccProblem"
+""
+1 10 150 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+22 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 150 370 164
+1 2 2 "0s" 0 0 0 65 0 0  10 150 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 44 VCC problem - power cycling the VCC may help
+2 16
+"warnCorruptedData"
+""
+1 10 170 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+23 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 170 370 184
+1 2 2 "0s" 0 0 0 65 0 0  10 170 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 14 Corrupted Data
+2 17
+"warnUnknownProblem"
+""
+1 10 190 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+24 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 190 370 204
+1 2 2 "0s" 0 0 0 65 0 0  10 190 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 15 Unknown problem
 0
 LAYER, 1 
 1

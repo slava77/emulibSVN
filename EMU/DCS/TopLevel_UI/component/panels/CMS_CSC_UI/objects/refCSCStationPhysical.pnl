@@ -377,7 +377,10 @@ int round(float value) {
 " 0
  E E E 1 -1 -1 0  0 0
 ""0  1
-E "// init parameters
+E "#uses \"CMS_CSC_UI/emuui_main.ctl\"
+#uses \"CMS_CSC_UI/emuui_graphics.ctl\"
+
+// init parameters
 int paramRadius;
 string paramSide;
 int paramStation;
@@ -550,7 +553,7 @@ LANG:1 0
 2
 "hoverfclr" "N \"black_yellow\""
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 140 440 200 460
+E E 0 1 1 2 1 E U  1 E 140 440 201 460
 0 2 2 "0s" 0 0 0 192 0 0  140 440 1
 1
 LANG:1 26 Arial,12,-1,5,75,0,0,0,0,0

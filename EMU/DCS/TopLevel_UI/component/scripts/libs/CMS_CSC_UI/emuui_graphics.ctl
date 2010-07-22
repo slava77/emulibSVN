@@ -231,6 +231,14 @@ string emuui_correctAlarmColor(string color, string noAlarmColor = "FwStateOKPhy
 void emuui_questionOutTable(string tableName, bool greyOut = true, 
                             dyn_int excludeColumns = makeDynInt(),
                             dyn_int excludeRows = makeDynInt()) {
+  emuui_fillTable(tableName, "???", "FwEquipmentDisabled", greyOut, excludeColumns, excludeRows);
+}
+
+/** Fills the given table with provided text and optionally changes the background to a given color (if changeColor is true). 
+    Columns provided in excludeColumns array and rows provided in excludeRows array are not touched */
+void emuui_fillTable(string tableName, string text, string color = "white", bool changeColor = true, 
+                            dyn_int excludeColumns = makeDynInt(),
+                            dyn_int excludeRows = makeDynInt()) {
   int rowCount;
   int columnCount;
   shape table = getShape(tableName);
@@ -242,10 +250,22 @@ void emuui_questionOutTable(string tableName, bool greyOut = true,
       if (dynContains(excludeColumns, col)) { continue; }
       string columnName;
       getValue(table, "columnToName", col, columnName);
-      setValue(table, "cellValueRC", row, columnName, "???");
-      if (greyOut) {
-        setValue(table, "cellBackColRC", row, columnName, "FwEquipmentDisabled");
+      setValue(table, "cellValueRC", row, columnName, text);
+      if (changeColor) {
+        setValue(table, "cellBackColRC", row, columnName, color);
       }
     }
+  }
+}
+
+/** Changes background color of a given row in a table (it's crazy that there's no such function in PVSS, isn't it). */
+void emuui_tableRowBackColor(string tableName, int rowNum, string color) {
+  int columnCount;
+  shape table = getShape(tableName);
+  getValue(table, "columnCount", columnCount);
+  for (int col=0; col < columnCount; col++) {
+    string columnName;
+    getValue(table, "columnToName", col, columnName);
+    setValue(table, "cellBackColRC", rowNum, columnName, color);
   }
 }

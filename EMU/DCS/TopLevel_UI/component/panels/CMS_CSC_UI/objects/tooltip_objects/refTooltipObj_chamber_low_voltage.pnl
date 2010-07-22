@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 441 267 N "_3DFace" 1
+PANEL,-1 -1 417 363 N "_3DFace" 1
 "$deviceParams"
 "main()
 {
@@ -24,6 +24,17 @@ PANEL,-1 -1 441 267 N "_3DFace" 1
   string duMode = fwFsmUi_getDUMode(domain, object);
   if (duMode == \"Disabled\") {
     allGrayMode = true;
+  }
+
+  // data status
+  if (isFunctionDefined(\"emux2p_init\")) {
+    initStatusBitMap();
+    string dataStatusDp = emuui_getDpName(\"chamber_LV_data_status\", deviceParams, ex);
+    dpConnect(\"updateDataStatusCB\", true, dataStatusDp);
+  } else {
+    emuui_showTooltipWarning(getShape(\"refPoint\"),
+                           getShape(\"warnNoLibrary\"), 
+                           getShape(\"chamber_low_voltage_tooltipBack\"));
   }
   
   // -------=========== CFEB ============---------
@@ -101,7 +112,7 @@ PANEL,-1 -1 441 267 N "_3DFace" 1
   dynAppend(values, iMonDps);
 
   dpConnect(\"updateAlctLvCB\", true, values);  
-  
+    
   // ALCT ALARM COLORS
   for (int i=1; i <= dynlen(values); i++) {
     values[i] = dpSubStr(values[i], DPSUB_SYS_DP_EL) + \":_alert_hdl.._act_state_color\";
@@ -153,6 +164,15 @@ void initGui() {
       tableAlct.cellBackColRC(0, tableAlct.columnToName(j), \"FwEquipmentDisabled\");
     }
   }
+}
+
+void initStatusBitMap() {
+  warningNameToStatusBit[\"warnReadoutProblem\"] = EMU_X2P_STATUS_READOUT_PROBLEM;
+  warningNameToStatusBit[\"warnVccProblem\"] = EMU_X2P_STATUS_VCC_PROBLEM;
+  warningNameToStatusBit[\"warnCorruptedData\"] = EMU_X2P_STATUS_CORRUPTED;
+  warningNameToStatusBit[\"warnUnknownProblem\"] = EMU_X2P_STATUS_OTHER_PROBLEM;
+  warningNameToStatusBit[\"warnChamberOff\"] = EMU_X2P_STATUS_OFF;
+  warningNameToStatusBit[\"warnPCrateOff\"] = EMU_X2P_STATUS_CRATE_OFF;
 }" 0
  "main()
 {
@@ -160,9 +180,12 @@ void initGui() {
 }" 0
  E E E 1 -1 -1 0  0 0
 ""0  1
-E "//some panel-wide constants and variables
+E "#uses \"CMS_CSCfw_HV_CC/emu_x2pDataProcessing.ctl\"
+
+//some panel-wide constants and variables
 mapping deviceParams;
 dyn_dyn_mixed dpIndexToTableCell; // map of DP index in the array and coordinates in the Cfeb table where they should be written
+mapping warningNameToStatusBit; // map of warning label names to status bits
 string fsmNode;
 dyn_string references;
 int posX, posY;
@@ -172,8 +195,35 @@ dyn_int disabledChannels;
 dyn_string cfebAlarmColorDps, alctAlarmColorDps;
 bool noCommunication;
 
+int lastStatus = -1;
+
 void positionChangedCB(string dummyDpName, int dummyValue) {
   emuui_alignSmallFsmNodes(references, makeDynString(\"chamber_low_voltage_fsmRefPoint\"));
+}
+
+// Call-back function which updates the data status and displays an appropriate warning in case of any error. */.
+void updateDataStatusCB(string dp, int status) {
+  if (status == lastStatus) {
+    return;
+  }
+  lastStatus = status;
+  
+  for (int i=1; i <= mappinglen(warningNameToStatusBit); i++) {
+    string warningName = mappingGetKey(warningNameToStatusBit, i);
+    int statusBit = warningNameToStatusBit[warningName];
+    
+    if (status & statusBit) {
+      emuui_showTooltipWarning(getShape(\"refPoint\"),
+                             getShape(warningName), 
+                             getShape(\"chamber_low_voltage_tooltipBack\"));
+    } else {
+      emuui_hideTooltipWarning(getShape(warningName), 
+                               getShape(\"chamber_low_voltage_tooltipBack\"));
+    }        
+  }
+  
+  tableAlct.backCol = \"White\";
+  tableCfeb.backCol = \"White\";
 }
 
 /** Call-back function which updates voltages and currents for CFEBs. */
@@ -187,6 +237,7 @@ void updateCfebLvCB(dyn_string dps, dyn_float voltagesAndCurrents) {
     string strToShow;
     if ((voltagesAndCurrents[i] == -2) || (voltagesAndCurrents[i + currentsOffset] == -2)) {
       strToShow = \"N/A\";
+      tableCfeb.cellBackColRC(dpIndexToTableCell[i][1], dpIndexToTableCell[i][2], \"White\");
     } else {
       sprintf(strValue, \"%.1f\", voltagesAndCurrents[i]);
       strToShow += strValue + \"V, \";
@@ -217,7 +268,8 @@ void updateDisabledChannelsCB(string dp, dyn_int disabledChannelsParam) {
 /** Call-back function which updates the background color of the CFEB table cells accordingly to cfeb voltage and current alarm color. */
 void updateCfebAlarmColorsCB(dyn_string dps, dyn_string colors) {
   if (noCommunication) { return; } // don't update the table - let the \"???\" and grey color stay there
-
+  if (lastStatus != 0) { return; }
+  
   int currentsOffset = dynlen(colors) / 2; // the first half of this array is filled with voltage alarm colors, the second one with current alarm colors
   
   for (int i=1; i <= dynlen(colors) / 2; i++) {
@@ -267,6 +319,7 @@ void updateAlctLvCB(dyn_string dps, dyn_float voltagesAndCurrents) {
 /** Call-back function which updates the background color of the ALCT table cells accordingly to ALCT voltage and current alarm color. */
 void updateAlctAlarmColorsCB(dyn_string dps, dyn_string colors) {
   if (noCommunication) { return; } // don't update the table - let the \"???\" and grey color stay there
+  if (lastStatus != 0) { return; }
 
   if (dynContains(disabledChannels, 6)) { // 6 is the channel number for ALCT
     tableAlct.cellBackColRC(0, \"#1\", \"FwEquipmentDisabled\");
@@ -554,6 +607,139 @@ E E 0 1 1 2 1 E U  1 E 10 180 370 194
 LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
 0 1
 LANG:1 54 No Communication - check PCrate LV and Xmas monitoring
+2 13
+"warnNoLibrary"
+""
+1 10 200 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+23 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 200 370 214
+1 2 2 "0s" 0 0 0 65 0 0  10 200 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 51 CMS_CSCfw_HV_CC/emu_x2pDataProcessing.ctl not found
+2 14
+"warnChamberOff"
+""
+1 10 300 E E E 1 E 0 E N "_Window" E N "FwStateOKNotPhysics" E E
+ E E
+24 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 300 370 314
+1 2 2 "0s" 0 0 0 65 0 0  10 300 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 14 Chamber is OFF
+2 15
+"warnPCrateOff"
+""
+1 10 320 E E E 1 E 0 E N "_Window" E N "FwStateOKNotPhysics" E E
+ E E
+25 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 320 370 334
+1 2 2 "0s" 0 0 0 65 0 0  10 320 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 23 Peripheral Crate is OFF
+2 16
+"warnReadoutProblem"
+""
+1 10 220 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+26 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 220 370 234
+1 2 2 "0s" 0 0 0 65 0 0  10 220 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 19 DMB readout problem
+2 17
+"warnVccProblem"
+""
+1 10 240 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+27 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 240 370 254
+1 2 2 "0s" 0 0 0 65 0 0  10 240 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 44 VCC problem - power cycling the VCC may help
+2 18
+"warnCorruptedData"
+""
+1 10 260 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+28 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 260 370 274
+1 2 2 "0s" 0 0 0 65 0 0  10 260 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 14 Corrupted Data
+2 19
+"warnUnknownProblem"
+""
+1 10 280 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+29 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 280 370 294
+1 2 2 "0s" 0 0 0 65 0 0  10 280 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 15 Unknown problem
 0
 LAYER, 1 
 1
