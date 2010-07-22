@@ -16,12 +16,12 @@ Everything that concerns X2P data is here and nowhere else.
 #uses "CMS_CSCfw_HV_CC/emuDcsDim.ctl"
 #uses "CMS_CSCfw_HV_CC/emuDcs2.ctl"
 
-private const int EMU_X2P_STATUS_OFF = 0x2; // chamber is OFF
-private const int EMU_X2P_STATUS_CORRUPTED = 0x4; // corrupted data (probably while sending from Xmas to X2P)
-private const int EMU_X2P_STATUS_VCC_PROBLEM = 0x8; // VME Crate Controller problem
-private const int EMU_X2P_STATUS_READOUT_PROBLEM = 0x10; // board readout problem
-private const int EMU_X2P_STATUS_CRATE_OFF = 0x20; // the PCrate is OFF
-private const int EMU_X2P_STATUS_OTHER_PROBLEM = 0x1; // reserved for an undocumented problem
+public const int EMU_X2P_STATUS_OFF = 0x2; // chamber is OFF
+public const int EMU_X2P_STATUS_CORRUPTED = 0x4; // corrupted data (probably while sending from Xmas to X2P)
+public const int EMU_X2P_STATUS_VCC_PROBLEM = 0x8; // VME Crate Controller problem
+public const int EMU_X2P_STATUS_READOUT_PROBLEM = 0x10; // board readout problem
+public const int EMU_X2P_STATUS_CRATE_OFF = 0x20; // the PCrate is OFF
+public const int EMU_X2P_STATUS_OTHER_PROBLEM = 0x1; // reserved for an undocumented problem
 
 // if any bit in this pattern is set then data should be ignored (and subject to timeout)
 public int EMU_X2P_STATUS_BAD_DATA = EMU_X2P_STATUS_CORRUPTED | EMU_X2P_STATUS_VCC_PROBLEM | EMU_X2P_STATUS_READOUT_PROBLEM | EMU_X2P_STATUS_OTHER_PROBLEM;
