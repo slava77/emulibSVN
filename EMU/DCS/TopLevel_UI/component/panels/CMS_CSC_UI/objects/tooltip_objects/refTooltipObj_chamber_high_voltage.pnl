@@ -172,6 +172,7 @@ mapping hvStatusTexts;
 mapping hvModuleStatusTexts;
 int channelsOffset = 0; // offset in module channels that are used by this chamber (e.g. small chambers use channels 1-18 or 19-36 so offset is either 0 or 18 here)
 dyn_int currentStatuses;
+dyn_float currentVoltages;
 dyn_int disabledChannels;
 string hvFsmNode;
 dyn_string references;
@@ -180,8 +181,12 @@ dyn_string shapesBelowTable;
 bool allGrayMode; // this flag is true when the whole LV FSM node is disabled - then back color of the tables is always gray
 bool noCommunication;
 
+const float EMU_HVTOOLTIP_MIN_NOMINAL_VOLTAGE = 3550;
+
 void updateVMonCB(dyn_string dpList, dyn_float voltages) {
   if (noCommunication) { return; } // don't update the table - let the \"???\" stay there
+
+  currentVoltages = voltages;  
   
   int rowCount = ceil(dynlen(voltages) / 6);
   
@@ -210,6 +215,9 @@ void updateStatusCB(dyn_string dpList, dyn_int statuses) {
       string statusText = hvStatusTexts[(string)statuses[arrayIndex]];
       string statusColor = hvStatusColors[statusText];
       if (!dynContains(disabledChannels, arrayIndex) && !allGrayMode) { // if this channel is disabled - do not update it's color - let it stay gray
+        if ((statusText == \"ON\") && (currentVoltages[arrayIndex] < EMU_HVTOOLTIP_MIN_NOMINAL_VOLTAGE)) { // in case the status is ON, but actually the voltage is too low, paint it yello (majority also sees that and paints the chamber yellow)
+          statusColor = \"FwStateAttention1\";
+        }
         tableVoltages.cellBackColRC(i, \"group\" + j, statusColor);
       }
       if (statuses[arrayIndex] > 3) { // if it's an error state
@@ -706,7 +714,7 @@ LANG:1 33 host=###; slot=#; addr=#; part=#,
 2 30
 "lblMasterInfo"
 ""
-1 368.5403439648048 300 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 377.7353316803474 320 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 43 0 0 0 0 0
 E E E
