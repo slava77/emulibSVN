@@ -27,7 +27,7 @@ PANEL,-1 -1 441 128 N "_3DFace" 1
   
   // find out the \"disconnected devices\" DP to be able to show the \"no communication\" warning
   deviceParams[\"sysName\"] = emuui_getSystemName(hvPrimaryDataDp);
-  string disconnectedDevicesDp = emuui_getDpName(\"disconnected_devices\", deviceParams, ex);
+  dyn_string disconnectedDevicesDps = emuui_getDpNames(\"disconnected_devices\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
   
   // get the FSM node for the HV of this chamber (this will be used in \"no communication\" warning update
@@ -46,7 +46,7 @@ PANEL,-1 -1 441 128 N "_3DFace" 1
   dpConnect(\"updateIMaxCB\", true, iMaxDp);
   dpConnect(\"updateStatusCB\", true, hvPrimaryStatusDp);
   
-  dpConnect(\"updateDisconnectedWarningCB\", true, disconnectedDevicesDp);
+  dpConnect(\"updateDisconnectedWarningCB\", true, disconnectedDevicesDps);
 }" 0
  E E E E 1 -1 -1 0  0 0
 ""0  1
@@ -88,6 +88,30 @@ void updateStatusCB(string dpName, int status) {
   
   lblStatus.text = statusText;
   lblStatus.backCol = statusColor;
+}
+
+/** if disconnectedDevices contains hvFsmNode then \"no communication\" warning is shown, otherwise it's hidden. */
+void updateDisconnectedWarningCB(dyn_string dps, dyn_string disconnectedDevices) {
+  bool isDisconnected = false;
+  for (int i=1; i <= dynlen(disconnectedDevices); i++) {
+    if (strpos(disconnectedDevices[i], fsmNode) >= 0) {
+      isDisconnected = true;
+      break;
+    }
+  }
+  
+  if (isDisconnected) {
+    emuui_showTooltipWarning(getShape(\"refPoint\"),
+                           getShape(\"warnNoHvCommunication\"), 
+                           getShape(\"hvPrimary_general_tooltipBack\"));
+    lblVMon.text = \"???\";
+    lblVSet.text = \"???\";
+    lblIMon.text = \"???\";
+    lblIMax.text = \"???\";
+  } else {
+    emuui_hideTooltipWarning(getShape(\"warnNoHvCommunication\"), 
+                             getShape(\"hvPrimary_general_tooltipBack\"));
+  }  
 }
 
 /** if disconnectedDevices contains hvFsmNode then \"no communication\" warning is shown, otherwise it's hidden. */
@@ -156,7 +180,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 260 10 319 26
+E E 0 1 1 2 1 E U  1 E 260 10 318 25
 0 2 2 "0s" 0 0 0 192 0 0  260 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -175,7 +199,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 190 10 258 26
+E E 0 1 1 2 1 E U  1 E 190 10 259 25
 0 2 2 "0s" 0 0 0 192 0 0  190 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -208,7 +232,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 10 48 26
+E E 0 1 1 2 1 E U  1 E 10 10 49 25
 0 2 2 "0s" 0 0 0 192 0 0  10 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -246,7 +270,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 60 94 76
+E E 0 1 1 2 1 E U  1 E 10 60 98 75
 0 2 2 "0s" 0 0 0 192 0 0  10 60 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -265,7 +289,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 180 60 289 76
+E E 0 1 1 2 1 E U  1 E 180 60 293 75
 0 2 2 "0s" 0 0 0 192 0 0  180 60 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -284,7 +308,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 40 103 56
+E E 0 1 1 2 1 E U  1 E 10 40 107 55
 0 2 2 "0s" 0 0 0 192 0 0  10 40 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -303,7 +327,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 180 40 274 56
+E E 0 1 1 2 1 E U  1 E 180 40 276 55
 0 2 2 "0s" 0 0 0 192 0 0  180 40 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
