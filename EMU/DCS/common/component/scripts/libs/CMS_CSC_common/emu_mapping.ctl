@@ -179,7 +179,14 @@ dyn_string emu_getDpNames(string type, mapping parameters, dyn_string &exception
   }
   
   string dp = emu_fillPattern(pattern, parameters);
-  if ((strpos(dp, ":") >= 0) || localSystemOnly) { // if system name is included or the search is restricted to the local system only
+  bool systemIncluded = false;
+  if (!localSystemOnly) {
+    string dpForSysSearch = dp;
+    strreplace(dpForSysSearch, ":_", ""); // to eliminate possible colon used for configs
+    systemIncluded = (strpos(dpForSysSearch, ":") >= 0); // check if system is included - have to do this nasty way because dpSubStr is too smart (if it finds the dp in the local system - gives back the local system name even if it's not included in the dp name..)
+  }
+  
+  if (localSystemOnly || systemIncluded) { // if system name is included or the search is restricted to the local system only
     ret = dpNames(dp);
   } else {                    // if there's no sys name (most of the time this is the case) then search accross all connected systems
     ret = dpNames(emu_getCscSystemNamesPattern(exceptionInfo) + ":" + dp);

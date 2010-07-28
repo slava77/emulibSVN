@@ -41,8 +41,9 @@ void emu_errorSingle(string msg) {
 
 /** Throw NotImplemented exception.
     @param functionName name of the function that this exception is refering to.
+    @param exceptionInfo the exception will be added here
 */
-void emu_notImplementedError(string functionName) {
+void emu_notImplementedError(string functionName, dyn_string &exceptionInfo) {
   emu_errorSingle("Function \"" + functionName + "\" is not implemented yet");
 }
 
