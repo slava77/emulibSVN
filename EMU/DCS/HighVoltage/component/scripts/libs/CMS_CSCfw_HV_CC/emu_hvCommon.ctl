@@ -6,6 +6,8 @@ This package contains common functions for HV.
 @date   July 2010
 */
 
+private global int emuhv_command_semaphore;
+
 public const int EMUHV_COMMAND_OFF = 0;
 public const int EMUHV_COMMAND_ON = 1;
 //public const int EMUHV_COMMAND_STANDBY = 1;
@@ -101,10 +103,11 @@ void emuhv_sendChannelCommand(mapping channelDeviceParams, int command, dyn_stri
   // HERE WE GO
   
   string host = coords[1];
-  string subcommand = "HVCMD;" + coords[2] + ";" + coords[3] + ";" + channelNumber + ";" + command + ";" + commandValue + ";" + "-1"; //e.g.: 500|HVCMD;6;3;29;1;0;-1 or 500|HVCMD;5;8;10;0;0;-1
+  string commandStr = host + "|" + "HVCMD;" + coords[2] + ";" + coords[3] + ";" + channelNumber + ";" + command + ";" + commandValue + ";" + "-1"; //e.g.: 500|HVCMD;6;3;29;1;0;-1 or 500|HVCMD;5;8;10;0;0;-1
 
-  dpSetWait(dpSubStr(coordsDp, DPSUB_SYS) + "HV_1_COM.command", host + "|" + subcommand);
-//  dpSetWait(mudcsAddSystem("HV_1_COM"+".command",project_system),host+"|"+subcommand);
+  synchronized (emuhv_command_semaphore) {
+    dpSetWait(dpSubStr(coordsDp, DPSUB_SYS) + "HV_1_COM.command", commandStr);
+  }
 
   
   
@@ -134,6 +137,28 @@ return;
 
   //....
 }
+
+/**
+  * Requests data from HV server for a given chamber.
+  * @param chamberDeviceParams device params of a chamber that you want to request data for - has to include side, station, ring and chamberNumber
+  */
+void emuhv_requestData(mapping chamberDeviceParams, dyn_string &exceptionInfo) {
+  string coordsDp = emuui_getDpName("HV_coord", chamberDeviceParams, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  string coordsStr;
+  dpGet(coordsDp, coordsStr);
+  dyn_string coords = strsplit(coordsStr, ";");
+
+  // HERE WE GO
+  
+  string host = coords[1];
+  string commandStr = host + "|" + "HVDATA;" + coords[2] + ";" + coords[3] + ";255;0;0;-1"; //e.g.: 600|HVDATA;2;2;255;0;0;-1
+
+  synchronized (emuhv_command_semaphore) {
+    dpSetWait(dpSubStr(coordsDp, DPSUB_SYS) + "HV_1_COM.command", commandStr);
+  }
+}
+
 
 /** 
   * Enables / disables a given HV channel.
