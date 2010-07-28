@@ -60,7 +60,11 @@ void emumask_getAndSaveChannelMasks(string sourceSysPattern = "", string targetS
 /** gets all FSM masks from the given source systems and saves them to the given target system. */
 void emumask_getAndSaveFsmMasks(string sourceSysPattern = "", string targetSystem = "") {
   dyn_string fsmMasks;
-  dyn_string fsmMaskDps = dpNames(sourceSysPattern + "*.mode.enabled", "_FwFsmObject");
+  dyn_string fsmMaskDps;
+  dyn_string fsmObjectMaskDps = dpNames(sourceSysPattern + "*.mode.enabled", "_FwFsmObject");
+  dyn_string fsmDeviceMaskDps = dpNames(sourceSysPattern + "*.mode.enabled", "_FwFsmDevice");
+  emu_dynAppend(fsmMaskDps, fsmObjectMaskDps);
+  emu_dynAppend(fsmMaskDps, fsmDeviceMaskDps);
   for (int i=1; i <= dynlen(fsmMaskDps); i++) {
     int isEnabled;
     dpGet(fsmMaskDps[i], isEnabled);
