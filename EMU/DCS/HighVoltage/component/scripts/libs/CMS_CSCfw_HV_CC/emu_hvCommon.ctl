@@ -8,6 +8,8 @@ This package contains common functions for HV.
 
 private global int emuhv_command_semaphore;
 
+const float EMUHV_MIN_NOMINAL_VOLTAGE = 3550;
+
 public const int EMUHV_COMMAND_OFF = 0;
 public const int EMUHV_COMMAND_ON = 1;
 //public const int EMUHV_COMMAND_STANDBY = 1;
@@ -173,15 +175,15 @@ public void emuhv_enableDisableChannel(mapping channelDeviceParams, bool isEnabl
   
   // get the necessary DPs  
   
-  string offChannelsDp = emu_getDpName("HV_off_channels", channelDeviceParams, exceptionInfo);
+  string offChannelsDp = emuui_getDpName("HV_off_channels", channelDeviceParams, exceptionInfo);
   if (emu_checkException(exceptionInfo)) { return; }
   dyn_int offChannels;
   dpGet(offChannelsDp, offChannels);
   
-  string moduleDp = emu_getDpName("HV_module", channelDeviceParams, exceptionInfo);
+  string moduleDp = emuui_getDpName("HV_module", channelDeviceParams, exceptionInfo);
   if (emu_checkException(exceptionInfo)) { return; }
   
-  string channelDp = emu_getDpName("HV_channel", channelDeviceParams, exceptionInfo);
+  string channelDp = emuui_getDpName("HV_channel", channelDeviceParams, exceptionInfo);
   if (emu_checkException(exceptionInfo)) { return; }
 
   // showtime
