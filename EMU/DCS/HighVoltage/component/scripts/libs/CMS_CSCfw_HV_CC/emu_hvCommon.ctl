@@ -6,6 +6,9 @@ This package contains common functions for HV.
 @date   July 2010
 */
 
+#uses "CMS_CSC_common/emu_common.ctl"
+#uses "CMS_CSC_common/emu_deviceInfo.ctl"
+
 private global int emuhv_command_semaphore;
 
 const float EMUHV_MIN_NOMINAL_VOLTAGE = 3550;
@@ -103,9 +106,11 @@ void emuhv_sendChannelCommand(mapping channelDeviceParams, int command, dyn_stri
   dyn_string coords = strsplit(coordsStr, ";");
 
   // HERE WE GO
-  
+
   string host = coords[1];
   string commandStr = host + "|" + "HVCMD;" + coords[2] + ";" + coords[3] + ";" + channelNumber + ";" + command + ";" + commandValue + ";" + "-1"; //e.g.: 500|HVCMD;6;3;29;1;0;-1 or 500|HVCMD;5;8;10;0;0;-1
+
+  emu_info("HV: sending command (" + command + ") to HV server for " + emuui_getChamberName(deviceParams) + ", channel number: " + channelNumber + ":" + commandStr);
 
   synchronized (emuhv_command_semaphore) {
     dpSetWait(dpSubStr(coordsDp, DPSUB_SYS) + "HV_1_COM.command", commandStr);
@@ -156,6 +161,7 @@ void emuhv_requestData(mapping chamberDeviceParams, dyn_string &exceptionInfo) {
   string host = coords[1];
   string commandStr = host + "|" + "HVDATA;" + coords[2] + ";" + coords[3] + ";255;0;0;-1"; //e.g.: 600|HVDATA;2;2;255;0;0;-1
 
+  emu_debug("HV: requesting data from HV server for " + emuui_getChamberName(deviceParams), emu_DEBUG_DETAIL);
   synchronized (emuhv_command_semaphore) {
     dpSetWait(dpSubStr(coordsDp, DPSUB_SYS) + "HV_1_COM.command", commandStr);
   }
@@ -189,6 +195,7 @@ public void emuhv_enableDisableChannel(mapping channelDeviceParams, bool isEnabl
   // showtime
   
   if (isEnable) {                               // ------====== INCLUDE ======------
+    emu_info("HV: Enabling channel #" + channelDeviceParams["channelNumber"] + " on chamber " + emuui_getChamberName(channelDeviceParams));
     // turn the channel off
     emuhv_sendChannelCommand(channelDeviceParams, EMUHV_COMMAND_ON, exceptionInfo);
     if (emu_checkException(exceptionInfo)) { return; }
@@ -204,6 +211,8 @@ public void emuhv_enableDisableChannel(mapping channelDeviceParams, bool isEnabl
     fwAlertConfig_addDpInAlertSummary(moduleDp + ".", channelDp + ".status", exceptionInfo, false);
     if (emu_checkException(exceptionInfo)) { return; }
   } else {                                       // ------====== EXCLUDE ======------
+    emu_info("HV: Disabling channel #" + channelDeviceParams["channelNumber"] + " on chamber " + emuui_getChamberName(channelDeviceParams));
+
     // turn the channel on
     emuhv_sendChannelCommand(channelDeviceParams, EMUHV_COMMAND_OFF, exceptionInfo);
     if (emu_checkException(exceptionInfo)) { return; }
