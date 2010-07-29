@@ -730,7 +730,7 @@ LANG:1 33 host=###; slot=#; addr=#; part=#,
 2 30
 "lblMasterInfo"
 ""
-1 3293.220326627786 4962 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 3635.96245781965 5542 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 43 0 0 0 0 0
 E E E
@@ -1021,6 +1021,11 @@ LANG:1 8 Force ON
   // reset the channel selection
   tableChannels.deleteSelection();
   channelSelectionChanged(-1);
+
+  // refresh the data now  
+//  delay(1, 0);
+//  emuhv_requestData(deviceParams, ex);
+//  if (emu_checkException(ex)) { return; }
 }" 0
  E E E
 13 43
@@ -1063,6 +1068,11 @@ LANG:1 7 Disable
   // reset the channel selection
   tableChannels.deleteSelection();
   channelSelectionChanged(-1);
+
+  // refresh the data now  
+  delay(1, 0);
+  emuhv_requestData(deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
 }" 0
  E E E
 30 44
