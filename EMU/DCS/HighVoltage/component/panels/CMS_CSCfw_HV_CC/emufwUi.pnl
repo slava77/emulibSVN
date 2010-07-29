@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 13 emufwUi_v24r9
-PANEL,-1 -1 1051 802 N "_3DFace" 2
+PANEL,-1 -1 928 1000 N "_3DFace" 2
 "$node"
 "$obj"
 "//string id;
@@ -348,7 +348,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  1 E 142 22 205 44
+E E 0 1 1 0 1 E U  1 E 142 22 208 48
 0 2 2 "0s" 0 0 0 192 0 0  142 22 1
 1
 LANG:1 51 New Century Schoolbook [Adobe],-1,17,5,75,0,0,0,0,0
@@ -367,7 +367,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  1 E 322 22 367 44
+E E 0 1 1 0 1 E U  1 E 322 22 369 48
 0 2 2 "0s" 0 0 0 192 0 0  322 22 1
 1
 LANG:1 51 New Century Schoolbook [Adobe],-1,17,5,75,0,0,0,0,0
@@ -386,7 +386,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  1 E 12 92 115 114
+E E 0 1 1 0 1 E U  1 E 12 92 118 118
 0 2 2 "0s" 0 0 0 192 0 0  12 92 1
 1
 LANG:1 51 New Century Schoolbook [Adobe],-1,17,5,75,0,0,0,0,0
@@ -405,7 +405,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  1 E 192 92 237 114
+E E 0 1 1 0 1 E U  1 E 192 92 239 118
 0 2 2 "0s" 0 0 0 192 0 0  192 92 1
 1
 LANG:1 51 New Century Schoolbook [Adobe],-1,17,5,75,0,0,0,0,0
@@ -492,7 +492,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 32 22 61 42
+E E 0 0 0 0 1 E U  1 E 32 22 63 46
 1 2 2 "0s" 0 0 0 192 0 0  32 22 1
 1
 LANG:1 38 Helvetica [Adobe],-1,17,5,75,0,0,0,0,0
