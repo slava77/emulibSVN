@@ -463,3 +463,22 @@ void emu_dpTypeCreateOrChange(dyn_dyn_string elements, dyn_dyn_int types) {
     dpTypeCreate(elements, types);
   }
 }
+
+/** Given an FSM node, this function returns a mapping of device params */
+mapping emu_fsmNodeToDeviceParams(string fsmNode, dyn_string &exceptionInfo) {
+  if (strpos(fsmNode, "CSC_ME_") < 0) {
+    emu_addError("Invalid fsmNode provided to emu_fsmNodeToDeviceParams - this node doesn't comform with the convention (*CSC_ME_*): " + fsmNode, exceptionInfo);
+    return EMU_DUMMY_MAPPING;
+  }
+  
+  fsmNode = substr(fsmNode, strpos(fsmNode, "CSC_ME_"));
+  dyn_string fsmNodeSplit = strsplit(fsmNode, "_");
+  mapping ret;
+  ret["side"] = substr(fsmNodeSplit[3], 0, 1);
+  ret["station"] = substr(fsmNodeSplit[3], 1, 1);
+  ret["ring"] = substr(fsmNodeSplit[3], 2, 1);
+  strreplace(fsmNodeSplit[4], "C", "");
+  ret["chamberNumber"] = fsmNodeSplit[4];
+  
+  return ret;
+}
