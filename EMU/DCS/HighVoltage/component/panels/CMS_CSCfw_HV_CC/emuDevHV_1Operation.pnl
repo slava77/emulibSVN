@@ -1023,9 +1023,9 @@ LANG:1 8 Force ON
   channelSelectionChanged(-1);
 
   // refresh the data now  
-//  delay(1, 0);
-//  emuhv_requestData(deviceParams, ex);
-//  if (emu_checkException(ex)) { return; }
+  delay(1, 0);
+  emuhv_requestData(deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
 }" 0
  E E E
 13 43
