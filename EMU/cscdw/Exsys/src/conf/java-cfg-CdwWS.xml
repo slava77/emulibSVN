@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<javaee-project xmlns="http://java.sun.com/xml/ns/jbi/javaee/config/1/" xmlns:ns0="http://www.cern.ch/cms/csc/exsys/wsdl" name="CdwWS">
-    <services>
-        <provides enable-for-javaee-http="true" endpoint-name="javaee_getParameterPort" interface-name="ns0:getParameterPortType" service-name="ns0:getParameterService"/>
-    </services>
-</javaee-project>
