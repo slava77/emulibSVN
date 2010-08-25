@@ -1,8 +1,7 @@
 <component>
 <name>CMS_CSCfw_RdbArchive</name>
 <version>1.0.9</version>
-<date>2010/7/20</date>
-<required>fwRDBArchiving=1.1.2</required>
+<date>2010/8/25</date>
 <postInstall>./scripts/CMS_CSCfw_RdbArchive/CMS_CSCfw_RdbArchive.postInstall</postInstall>
 <file>./panels/CMS_CSCfw_RdbArchive/CMS_CSCfw_RdbArchiveConfig.pnl</file>
 <file>./scripts/libs/CMS_CSCfw_RdbArchive/CMS_CSCfw_RdbArchiveConfig.ctl</file>

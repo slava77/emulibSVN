@@ -8,6 +8,6 @@ main()
 
   emudcsArchive_configAllArchivingDps();
 
-          
+//-------------------------------------------------------------------------------           
  DebugTN("Post install: DONE creating archiving DPs"); 
 }

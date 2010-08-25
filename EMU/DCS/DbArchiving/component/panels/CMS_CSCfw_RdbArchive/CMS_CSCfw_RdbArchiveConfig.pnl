@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 19 Archiving_dp_config
-PANEL,-1 -1 632 301 N "_3DFace" 0
+PANEL,-1 -1 632 371 N "_3DFace" 0
 E E E E E 1 0 0 0  110 60
 ""0  1
 E "#uses \"CMS_CSCfw_RdbArchive/CMS_CSCfw_RdbArchiveConfig.ctl\"" 0
@@ -241,13 +241,10 @@ void emudcsArchive_removeFsmDpConfig(string sDpName)
                                  sDpName + \".fsm.currentParameters\");
   for (int i=1; i<=dynlen(ds);i++)
   {
-    emudcsArchive_removeFsmDpSmoothing(ds[i]);
+    emudcsArchive_removeDpSmoothing(ds[i]);
   }
 }
-void emudcsArchive_removeFsmDpSmoothing(string sDpName)
-{    
-    dpSetWait (sDpName + \":_archive.._type\",DPCONFIG_NONE);       
-}                    " 0
+                    " 0
  E E E
 13 25
 "set_dp_arch"
@@ -308,6 +305,8 @@ LANG:1 12 set  dp arch
     sArchDptype = \"CSC_MARATON_I_DATA\"; 
   else if(sDptypeName == \" MAR_T\")
     sArchDptype = \"CSC_MARATON_T_DATA\"; 
+  else if(sDptypeName == \" TMB\")
+    sArchDptype = \"CSC_TMB_DATA\"; 
                  
   else if (sDptypeName == \" Dp Type\")
   { 
@@ -459,7 +458,9 @@ LANG:1 14 remove dp arch
   else if(sDptypeName == \" MAR_V\")
     sArchDptype = \"CSC_MARATON_V_DATA\";  
   else if(sDptypeName == \" MAR_I\")
-    sArchDptype = \"CSC_MARATON_I_DATA\";                
+    sArchDptype = \"CSC_MARATON_I_DATA\"; 
+  else if(sDptypeName == \" TMB\")
+    sArchDptype = \"CSC_TMB_DATA\";  
   else if (sDptypeName == \" Dp Type\")
   { 
      ChildPanelOnCentral(\"vision/MessageWarning\",\"warning\",
@@ -475,16 +476,12 @@ LANG:1 14 remove dp arch
   
   for (i=1;i<=imax_dpname;i++)
    {
-    emudcsArchive_removeDpSmoothing(ds_dpname[i]);
+    emudcsArchive_removeDpSmoothing(ds_dpname[i]+\".value\");
    }
   delay(1);
   DebugTN(\"done\");
 }
-//---delete archiving config-----------------------------  
-void emudcsArchive_removeDpSmoothing(string sDpName)
-{
-    dpSetWait (sDpName + \".value:_archive.._type\",DPCONFIG_NONE);       
-}                                      " 0
+                               " 0
  E E E
 30 28
 "FRAME6"
@@ -499,7 +496,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 1 0 1 E 0.931034482758621 0 3.43283582089551 273.448275862069 -1402.0895522388 0 E 50 423 341 491
+E E 0 0 1 0 1 E 0.931034482758621 0 4.477611940298491 273.448275862069 -1844.029850746261 0 E 50 423 341 491
 1
 LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
 0 1
@@ -519,7 +516,7 @@ LANG:1 0
 1
 LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
 0  458 68 552 102
-17
+18
 1
 LANG:1 8  Dp Type
 
@@ -554,6 +551,10 @@ LANG:1 5  LV_V
 0
 1
 LANG:1 5  LV_I
+
+0
+1
+LANG:1 4  TMB
 
 0
 1
@@ -838,7 +839,7 @@ DebugTN(\"Delete dp type \");
 22 56
 "dptype_select"
 ""
-1 50 240 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 50 259.9999999999988 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 84 0 0 0 0 0
 E E E
@@ -849,7 +850,7 @@ LANG:1 0
 0
 1
 LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
-0  48 238 152 272
+0  48 258 152 292
 8
 1
 LANG:1 8  Dp Type
@@ -891,7 +892,7 @@ E
 13 57
 "PUSH_BUTTON1"
 ""
-1 170 240 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 170 259.9999999999988 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 86 0 0 0 0 0
 E E E
@@ -902,7 +903,7 @@ LANG:1 0
 0
 1
 LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
-0  168 238 232 272
+0  168 258 232 292
 
 T 
 1
@@ -1077,7 +1078,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 1 0 1 E 1 0 1.04477611940299 0 -12.5373134328358 0 E 40 213 311 281
+E E 0 0 1 0 1 E 1 0 1.194029850746275 0 -24.32835820895647 0 E 40 213 311 281
 1
 LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
 0 1
@@ -1085,7 +1086,7 @@ LANG:1 38 config individual dp for rdb archiving
 13 60
 "PUSH_BUTTON2"
 ""
-1 240 240 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 240 259.9999999999988 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 91 0 0 0 0 0
 E E E
@@ -1096,7 +1097,7 @@ LANG:1 0
 0
 1
 LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
-0  238 238 302 272
+0  238 258 302 292
 
 T 
 1
@@ -1151,6 +1152,7 @@ main()
   {  
    dyn_string dsDpName_LVV = emudcsArchive_getDpNames(\"*\",\"CSC_LV_V_DATA\");
    dyn_string dsDpName_LVI = emudcsArchive_getDpNames(\"*\",\"CSC_LV_I_DATA\");
+   dyn_string dsDpName_TMB = emudcsArchive_getDpNames(\"*\",\"CSC_TMB_DATA\");
    int iLen_LVV = dynlen(dsDpName_LVV);
    //DebugN(dsDpName_LV);
      DebugTN(\"delete LV archiving dps\");
@@ -1160,7 +1162,14 @@ main()
        dpDelete(dsDpName_LVV[i]);
        DebugN(dsDpName_LVI[i]);
        dpDelete(dsDpName_LVI[i]);
+     }
+    int iLen_TMB = dynlen(dsDpName_TMB);
+    for (i=1;i<=iLen_TMB;i++)
+     {  
+       DebugN(dsDpName_TMB[i]);
+       dpDelete(dsDpName_TMB[i]);
      } 
+    
   }  
   else if(sDptypeName == \" TEMP\")
   {  
@@ -1274,6 +1283,200 @@ EP_textFieldInCB(string dp, string sNewValue)
 // SimpleCtrlScriptEnd {EP_textFieldIn}
 " 0
  E
+13 62
+"set_MA_status"
+""
+1 339.9999999999999 270 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+93 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  338 268 452 302
+
+T 
+1
+LANG:1 13 set MA status
+"main()
+{
+  dyn_string dsDpName_MA;
+  int iLen_MA,i;
+  dsDpName_MA = dpNames( \"*\",\"FwWienerMarathonChannel\");  
+   iLen_MA = dynlen(dsDpName_MA);
+   //DebugN(dsDpName_MA); 
+   if (iLen_MA == 0)
+   {
+     DebugN(\"no Maraton dp at FwWienerMarathonChannel, skip\");
+   }
+   else
+   {
+     DebugTN(\"set archiving config for Maraton channel status\");
+     for (i=1;i<=iLen_MA;i++)
+     {  
+       DebugN(dsDpName_MA[i]);
+         emudcsArchive_setMaStatusConfig(dsDpName_MA[i]); //set config for Maraton status
+       
+     }
+   }
+   delay(1);
+   DebugTN(\"done\");  
+} 
+" 0
+ E E E
+13 63
+"remove_MA_status"
+""
+1 460 270 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+94 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  458 268 572 302
+
+T 
+1
+LANG:1 16 remove MA status
+"main()
+{
+  dyn_string dsDpName_MA;
+  int iLen_MA,i;
+  dsDpName_MA = dpNames( \"*\",\"FwWienerMarathonChannel\");  
+   iLen_MA = dynlen(dsDpName_MA);
+   //DebugN(dsDpName_MA); 
+   if (iLen_MA == 0)
+   {
+     DebugN(\"no Maraton dp at FwWienerMarathonChannel, skip\");
+   }
+   else
+   {
+     DebugTN(\"remove archiving config for Maraton channel status\");
+     for (i=1;i<=iLen_MA;i++)
+     {  
+       DebugN(dsDpName_MA[i]);
+         emudcsArchive_removeMaStatusConfig(dsDpName_MA[i]); //set config for Maraton status
+       
+     }
+   }
+    delay(1);
+    DebugTN(\"done\");
+} 
+
+void emudcsArchive_removeMaStatusConfig(string sDpName)
+{
+  dyn_string ds = makeDynString( sDpName + \".Status.FailureMaxTemperature\",
+                                 sDpName + \".Status.FailureMaxCurrent\",
+                                 sDpName + \".Status.FailureMaxSenseVoltage\",
+                                 sDpName + \".Status.FailureMaxTerminalVoltage\",
+                                 sDpName + \".Status.FailureMinSenseVoltage\");
+  for (int i=1; i<=dynlen(ds);i++)
+  {
+    emudcsArchive_removeDpSmoothing(ds[i]);
+  }
+}  
+
+" 0
+ E E E
+13 64
+"set_LV_status"
+""
+1 339.9999999999999 310 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+95 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  338 308 452 342
+
+T 
+1
+LANG:1 13 set LV status
+"main()
+{
+  dyn_string dsDpName_LV;
+  int iLen_LV,i;
+  dsDpName_LV = dpNames( \"*LV\",\"LV_1_d\");  
+   iLen_LV = dynlen(dsDpName_LV);
+   //DebugN(dsDpName_LV); 
+   if (iLen_LV == 0)
+   {
+     DebugN(\"no LV dp at LV_1_d, skip\");
+   }
+   else
+   {
+     DebugTN(\"set archiving config for LV status\");
+     for (i=1;i<=iLen_LV;i++)
+     {  
+      DebugN(dsDpName_LV[i]);
+      emudcsArchive_setDpSmoothingInt(dsDpName_LV[i]+\".status\",iTolStatus,iTimeStatus); //set archiving for status at LV_1_d       
+     }
+   }
+   delay(1);
+   DebugTN(\"done\");  
+} 
+" 0
+ E E E
+13 65
+"remove_LV_status"
+""
+1 460 310 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+96 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  458 308 572 342
+
+T 
+1
+LANG:1 16 remove LV status
+"main()
+{
+  dyn_string dsDpName_LV;
+  int iLen_LV,i;
+  dsDpName_LV = dpNames( \"*LV\",\"LV_1_d\");  
+   iLen_LV = dynlen(dsDpName_LV);
+   //DebugN(dsDpName_LV); 
+   if (iLen_LV == 0)
+   {
+     DebugN(\"no LV dp at LV_1_d, skip\");
+   }
+   else
+   {
+     DebugTN(\"set archiving config for LV status\");
+     for (i=1;i<=iLen_LV;i++)
+     {  
+      DebugN(dsDpName_LV[i]);
+      emudcsArchive_removeDpSmoothing(dsDpName_LV[i]+\".status\");      
+     }
+   }
+   delay(1);
+   DebugTN(\"done\");  
+}   
+
+
+" 0
+ E E E
 0
 LAYER, 1 
 1

@@ -16,11 +16,13 @@ This library contains function associated with the CSC datapoints archive config
                  -- set archiving for FSM, FwElmb, Cooling dps automatically 	
   05/2010  Xiaofeng Yang(PH-UCM)
                  -- add archiving for HV primary power supply  
+  07/2010  Xiaofeng Yang(PH-UCM)
+                 -- add archiving for maraton status  
 @par Constraints
 	for CSC archiving set only,executing after CSC component installed
 @par Usage
 	Private
-        lib        : emudcs5Archive.ctl
+        lib        : CMS_CSCfw_RdbArchiving.ctl
         main script: emudcsArchive_configAllArchivingDps()
 @par PVSS managers
 	VISION, CTRL
@@ -28,19 +30,20 @@ This library contains function associated with the CSC datapoints archive config
 	Xiaofeng Yang (PH-UCM)
 */
 //-----define constant for archiving dp-----------------------------------
-   const float     fTolHVV     = 20;      //deadband for LV_V/I
+   const float     fTolHVV     = 20;      //deadband for HV_V
    const float     fTolHVI     = 1;       //deadband for HV_I
    const float     fTolHVMV    = 20;      //deadband for HV_MV
-   const float     fTolHVMI    = 10;       //deadband for HV_MI
+   const float     fTolHVMI    = 10;      //deadband for HV_MI
    const float     fTolHVPV    = 20;      //deadband for HV_PV
-   const float     fTolHVPI    = 30;       //deadband for HV_PI
+   const float     fTolHVPI    = 30;      //deadband for HV_PI
    const float     fTolLV      = 0.01;    //deadband for LV_V/I
    const float     fTolTEMP    = 0.1;     //deadband for TEMP
    const float     fTolFEDV    = 0.01;    //deadband for FED_V
    const float     fTolFEDT    = 0.1;     //deadband for FED_T
    const float     fTolMA      = 1;       //deadband for MARATON channel
    const float     fTolElmbAi  = 1;       //deadband for ElmbAi 
-   const float     fTolCooling = 0.1;       //deadband for Cooling
+   const float     fTolCooling = 0.5;     //deadband for Cooling
+   const int       iTolStatus  = 1;       //deadband for status in LV_1_d
    
    const int       iTimeHV     = 7200;    //time interval for HV
    const int       iTimeHVM    = 7200;    //time interval for HVM
@@ -48,9 +51,10 @@ This library contains function associated with the CSC datapoints archive config
    const int       iTimeLV     = 28800;   //time interval for LV
    const int       iTimeTEMP   = 28800;   //time interval for TEMP
    const int       iTimeFED    = 28800;   //time interval for FED
-   const int       iTimeMA     = 7200;   //time interval for MARATON channel
-   const int       iTimeElmbAi = 7200;   //time interval for ElmbAi
-   const int       iTimeCooling= 7200;   //time interval for Cooling
+   const int       iTimeMA     = 7200;    //time interval for MARATON channel
+   const int       iTimeElmbAi = 7200;    //time interval for ElmbAi
+   const int       iTimeCooling= 7200;    //time interval for Cooling
+   const int       iTimeStatus = 7200;    //time interval for status in LV_1_d
    
    const string    sDpTypeHVV  = "CSC_HV_V_DATA";  //channel HV voltage
    const string    sDpTypeHVI  = "CSC_HV_I_DATA";  //channel HV current
@@ -64,20 +68,9 @@ This library contains function associated with the CSC datapoints archive config
    const string    sDpTypeMAV = "CSC_MARATON_V_DATA";
    const string    sDpTypeMAI = "CSC_MARATON_I_DATA";
    const string    sDpTypeMAT = "CSC_MARATON_T_DATA";
-   
-//-------set Oracle database connection(no longer use)-----------------------------------------
-/*   
-void emudcsArchive_setDbConfig() 
-{
-  string accountName, databaseName;
-  accountName = "cms_csc_pvss_cond";
-  databaseName = "cms_pvss_cond";
-  
-
-  fwRDBConfig_setUser(accountName);
-  fwRDBConfig_setHost(databaseName);  
-}
-*/
+   const string    sDpTypeTMB = "CSC_TMB_DATA";       //new data from TMP
+   const bool      bDebug     = true;                 // true  --- enable debug info
+                                                      // false --- disable debug info
 //-------config all archiving dps ---------------------------------------------------  
 void emudcsArchive_configAllArchivingDps()  
 {  
@@ -115,7 +108,7 @@ void emudcsArchive_createDpTypes()
 {
   DebugTN("create archiving dptype"); 
   dyn_string dsArchiveDpTypes = emudcsArchive_defineDpTypes(dsArchiveDpTypes);
-  DebugN(dsArchiveDpTypes);  
+  emudcsArchive_showDebugInfo(bDebug,dsArchiveDpTypes);  
   for (int i=1;i<= dynlen(dsArchiveDpTypes);i++)
   {   
   dyn_dyn_string dsDpes;
@@ -137,7 +130,7 @@ void emudcsArchive_setAllDpConfigs()
    dyn_string dsDpName_HV,dsDpName_LV,dsDpName_TEMP,dsDpName_HVM,dsDpName_FED,dsDpName_MA,dsDpName_HVP; 
    int i, iLen_HV,iLen_LV,iLen_TEMP,iLen_HVM,iLen_FED,iLen_MA,iLen_HVP;
   
-// get dp name for HV channels     
+//------- get dp name for HV channels-------------------------------------     
    dsDpName_HV = emudcsArchive_getDpNames("*HV","HV_1_d");   
    iLen_HV = dynlen(dsDpName_HV);
    //DebugN(dsDpName_HV);
@@ -150,12 +143,12 @@ void emudcsArchive_setAllDpConfigs()
      DebugTN("create archiving dps for HV");
      for (i=1;i<=iLen_HV;i++)
      {  
-       DebugN(dsDpName_HV[i]);
+       emudcsArchive_showDebugInfo(bDebug,dsDpName_HV[i]);
        emudcsArchive_setHvDpConfig(dsDpName_HV[i]);  //set config for HV dp
      }
    } 
   
-// get dp name for LV   
+//--------- get dp name for LV-------------------------------------------------   
    dsDpName_LV = emudcsArchive_getDpNames("*LV","LV_1_d");
    iLen_LV = dynlen(dsDpName_LV);
    //DebugN(dsDpName_LV);
@@ -168,12 +161,11 @@ void emudcsArchive_setAllDpConfigs()
      DebugTN("create archiving dps for LV");
      for (i=1;i<=iLen_LV;i++)
      {  
-       DebugN(dsDpName_LV[i]);
+       emudcsArchive_showDebugInfo(bDebug,dsDpName_LV[i]);
        emudcsArchive_setLvDpConfig(dsDpName_LV[i]);  //set config for LV dp
      }
-   } 
-   
-// get dp for TEMP   
+   }   
+//--------- get dp for TEMP-------------------------------------------------------   
    dsDpName_TEMP = emudcsArchive_getDpNames("*TEMP","TEMP_1_d");
    iLen_TEMP = dynlen(dsDpName_TEMP);
    //DebugN(dsDpName_TEMP); 
@@ -186,12 +178,12 @@ void emudcsArchive_setAllDpConfigs()
      DebugTN("create archiving dps for TEMP");
      for (i=1;i<=iLen_TEMP;i++)
      { 
-       DebugN(dsDpName_TEMP[i]); 
+       emudcsArchive_showDebugInfo(bDebug,dsDpName_TEMP[i]); 
        emudcsArchive_setTempDpConfig(dsDpName_TEMP[i]);  //set config for TEMP dp
      }
    }
         
-// get dp for HV master   
+//----------- get dp for HV master  ----------------------------------------------- 
    dsDpName_HVM = emudcsArchive_getDpNames("master*","HV_1_d");
    iLen_HVM = dynlen(dsDpName_HVM);
    //DebugN(dsDpName_HVM);
@@ -204,12 +196,12 @@ void emudcsArchive_setAllDpConfigs()
      DebugTN("create archiving dps for HV master");
      for (i=1;i<=iLen_HVM;i++)
      {  
-       DebugN(dsDpName_HVM[i]);
+       emudcsArchive_showDebugInfo(bDebug,dsDpName_HVM[i]);
        emudcsArchive_setHvmDpConfig(dsDpName_HVM[i]);  //set config for HVM dp
      }
    }   
  
-// get dp for HV primary   
+//--------------- get dp for HV primary ------------------------------------------  
    dsDpName_HVP = emudcsArchive_getDpNames("HV_PR_primary*","HV_PR_d");
    iLen_HVP = dynlen(dsDpName_HVP);
    //DebugN(dsDpName_HVP);
@@ -222,11 +214,11 @@ void emudcsArchive_setAllDpConfigs()
      DebugTN("create archiving dps for HV primary");
      for (i=1;i<=iLen_HVP;i++)
      {  
-       DebugN(dsDpName_HVP[i]);
+       emudcsArchive_showDebugInfo(bDebug,dsDpName_HVP[i]);
        emudcsArchive_setHvpDpConfig(dsDpName_HVP[i]);  //set config for HVP dp
      }
    }      
-// get dp for FED DDU   
+//------------ get dp for FED DDU ---------------------------------------------  
    dsDpName_FED = emudcsArchive_getDpNames("*FED","FED_1_d");
    iLen_FED = dynlen(dsDpName_FED);
    //DebugN(dsDpName_FED); 
@@ -239,12 +231,12 @@ void emudcsArchive_setAllDpConfigs()
      DebugTN("create archiving dps for FED DDU");
      for (i=1;i<=iLen_FED;i++)
      { 
-       DebugN(dsDpName_FED[i]); 
+       emudcsArchive_showDebugInfo(bDebug,dsDpName_FED[i]); 
        emudcsArchive_setFedDpConfig(dsDpName_FED[i]);  //set config for FED DDU dp
      }
    }   
    
-   // get dp for Wiener Maraton channel   
+   //--------------- get dp for Wiener Maraton channel -----------------------------------  
    dsDpName_MA = emudcsArchive_getDpNames("*","FwWienerMarathonChannel");
    iLen_MA = dynlen(dsDpName_MA);
    //DebugN(dsDpName_MA); 
@@ -257,12 +249,13 @@ void emudcsArchive_setAllDpConfigs()
      DebugTN("create archiving dps for Maraton channel");
      for (i=1;i<=iLen_MA;i++)
      {  
-       DebugN(dsDpName_MA[i]);
+       emudcsArchive_showDebugInfo(bDebug,dsDpName_MA[i]);
        emudcsArchive_setMaDpConfig(dsDpName_MA[i]);  //set config for Maraton dp
+       emudcsArchive_setMaStatusConfig(dsDpName_MA[i]); //set config for Maraton status
      }
    }   
    
-   //get dp  for FSM
+   //---------------get dp  for FSM--------------------------------------------------
   dyn_string dsDpName_FSMdev = emudcsArchive_getDpNames("*","_FwFsmDevice"); 
   //DebugN(dsDpName_FSMdev); 
   int iLen_FSMdev = dynlen(dsDpName_FSMdev);
@@ -275,7 +268,7 @@ void emudcsArchive_setAllDpConfigs()
     DebugTN("config archiving dps for FSM devices");  
      for (i=1;i<=iLen_FSMdev;i++)
    {
-    DebugN(dsDpName_FSMdev[i]);
+    emudcsArchive_showDebugInfo(bDebug,dsDpName_FSMdev[i]);
     emudcsArchive_setFsmDpConfig(dsDpName_FSMdev[i]);
    }  
   } 
@@ -292,12 +285,12 @@ void emudcsArchive_setAllDpConfigs()
     DebugTN("config archiving dps for FSM objects");
     for (i=1;i<=iLen_FSMobj;i++)
     {
-      DebugN(dsDpName_FSMobj[i]);
+      emudcsArchive_showDebugInfo(bDebug,dsDpName_FSMobj[i]);
       emudcsArchive_setFsmDpConfig(dsDpName_FSMobj[i]);
     }  
   }
   
-  //get dp for elmb 
+  //--------------get dp for elmb ---------------------------------------------
   dyn_string dsDpName_FwElmbAi = emudcsArchive_getDpNames("*","FwElmbAi"); 
   //DebugN(dsDpName_FwElmbAi); 
   int iLen_FwElmbAi = dynlen(dsDpName_FwElmbAi);
@@ -310,12 +303,12 @@ void emudcsArchive_setAllDpConfigs()
     DebugTN("config archiving dps for FwElmbAi");
     for(i=1;i<=iLen_FwElmbAi;i++)
     {
-      DebugN(dsDpName_FwElmbAi[i]);
+      emudcsArchive_showDebugInfo(bDebug,dsDpName_FwElmbAi[i]);
       emudcsArchive_setDpSmoothing(dsDpName_FwElmbAi[i],fTolElmbAi,iTimeElmbAi);
     }    
   }       
 
-   //get dp for cooling 
+   //---------------get dp for cooling ---------------------------------------------------
   dyn_string dsDpName_Cooling = emudcsArchive_getDpNames("*","fwCooling_CSC_TURBINES_data"); 
   //DebugN(dsDpName_Cooling); 
   int iLen_Cooling = dynlen(dsDpName_Cooling);
@@ -328,7 +321,7 @@ void emudcsArchive_setAllDpConfigs()
     DebugTN("config archiving dps for CSC Colling");
     for(i=1;i<=iLen_Cooling;i++)
     {
-      DebugN(dsDpName_Cooling[i]);
+      emudcsArchive_showDebugInfo(bDebug,dsDpName_Cooling[i]);
       emudcsArchive_setDpSmoothing(dsDpName_Cooling[i],fTolCooling,iTimeCooling);
     }    
   }          
@@ -415,8 +408,12 @@ void emudcsArchive_setLvDpConfig(string sDpName)
             emudcsArchive_createLvCfebDps(sCscChamber,i);      //create LV dp for cfeb
             emudcsArchive_setLvCfebDpFunction(sCscChamber,i);  //create LV dp fct for cfeb
          } 
-            emudcsArchive_createLvAlctDps(sCscChamber);     //create LV dp for alct
+            emudcsArchive_createLvAlctDps(sCscChamber);       //create LV dp for alct
             emudcsArchive_setLvAlctDpFunction(sCscChamber);   //create LV dp fct for alct
+//new data from Tmb            
+            emudcsArchive_createLvTmbDps(sCscChamber);       //create LV dp for Tmb
+            emudcsArchive_setLvTmbDpFunction(sCscChamber);   //create LV dp fct for Tmb
+            emudcsArchive_setDpSmoothingInt(sCscChamber+"_LV.status",iTolStatus,iTimeStatus); //set archiving for status at LV_1_d
 }
 //---Temp archiving dp configuration-----
 void emudcsArchive_setTempDpConfig(string sDpName)
@@ -516,7 +513,7 @@ void emudcsArchive_setFsmDpConfig(string sDpName)
                                  sDpName + ".fsm.currentParameters");
   for (int i=1; i<=dynlen(ds);i++)
   {
-    emudcsArchive_setFsmDpSmoothing(ds[i]);
+    emudcsArchive_setDpSmoothingBool(ds[i]);
   }
 }
 //----HV archiving dp create------------------------
@@ -597,6 +594,19 @@ void emudcsArchive_createLvAlctDps(string sCscChamber)
       }  
          
 } 
+//--- LV Tmb archiving dp create------------------
+void emudcsArchive_createLvTmbDps(string sCscChamber) 
+{
+
+      dyn_string dsTmb = makeDynString ("_LV_Tmb_v50","_LV_Tmb_v33","_LV_Tmb_v15C","_LV_Tmb_v15T","_LV_Tmb_v10T",
+                                        "_LV_Tmb_c50","_LV_Tmb_c33","_LV_Tmb_c15C","_LV_Tmb_c15T","_LV_Tmb_cRAT",
+                                        "_LV_Tmb_vRAT","_LV_Tmb_vREF","_LV_Tmb_vGND","_LV_Tmb_vMAX");
+      for (int i=1;i<=dynlen(dsTmb);i++)
+      {
+        emudcsArchive_createDp(sCscChamber+dsTmb[i],"TMB");
+        emudcsArchive_setDpSmoothing(sCscChamber+dsTmb[i],fTolLV,iTimeLV);
+      }            
+} 
 //--temp Alct and Dmb archiving dp create---
 void emudcsArchive_createTempAlctDmbDps(string sCscChamber)
 {     
@@ -640,7 +650,7 @@ void emudcsArchive_createMaDps(string sChannelNew,string sChannelOld)
         for(int i=1;i<=dynlen(ds1);i++)
         {
           string sChannel = sChannelNew+"_"+ds1[i];
-          DebugTN(sChannel);
+          emudcsArchive_showDebugInfo(bDebug,sChannel);
           emudcsArchive_createDp(sChannel,"MARATON_"+ds2[i]);
           emudcsArchive_setDpSmoothing(sChannel,fTolMA,iTimeMA);
           emudcsArchive_setMaDpFunction(sChannel,sChannelOld,ds1[i]);
@@ -661,7 +671,19 @@ void emudcsArchive_setDpSmoothing(string sDpName,float fTol,int iTime)
                sDpName + ".value:_archive.1._std_time",iTime);
        
 }
- 
+void emudcsArchive_setDpSmoothingInt(string sDpName,int iTol,int iTime)
+{
+    dpSetWait (sDpName + ":_archive.._type",45,
+               sDpName + ":_archive.._archive",1,
+               sDpName + ":_archive.1._type",3,
+               sDpName + ":_archive.1._class","_EVENT",
+               sDpName + ":_archive.1._interv",0,
+               sDpName + ":_archive.1._interv_type",0,
+               sDpName + ":_archive.1._std_type",2,
+               sDpName + ":_archive.1._std_tol",iTol,
+               sDpName + ":_archive.1._std_time",iTime);
+       
+} 
 //------HV dp_fct setup---------------
 void emudcsArchive_setHvDpFunction(string sCscChamber,string sType,int i)
 {  
@@ -734,7 +756,47 @@ void emudcsArchive_setLvCfebDpFunction(string sCscChamber,int i)
    }  
 } 
 
-//------LV alct dp_fct setup---------------
+//------LV Tmb dp_fct setup---------------
+void emudcsArchive_setLvTmbDpFunction(string sCscChamber)
+{ 
+   string sDpName = sCscChamber+"_LV";
+   dyn_string dsNew = makeDynString(sDpName+"_Tmb_v50",
+                                    sDpName+"_Tmb_v33",
+                                    sDpName+"_Tmb_v15C",
+                                    sDpName+"_Tmb_v15T",
+                                    sDpName+"_Tmb_v10T",
+                                    sDpName+"_Tmb_c50",
+                                    sDpName+"_Tmb_c33",
+                                    sDpName+"_Tmb_c15C",
+                                    sDpName+"_Tmb_c15T",
+                                    sDpName+"_Tmb_cRAT",
+                                    sDpName+"_Tmb_vRAT",
+                                    sDpName+"_Tmb_vREF",
+                                    sDpName+"_Tmb_vGND",
+                                    sDpName+"_Tmb_vMAX");
+   
+   dyn_string dsOld = makeDynString(sDpName+".data.Tmb_o.v50:_original.._value",
+                                    sDpName+".data.Tmb_o.v33:_original.._value",
+                                    sDpName+".data.Tmb_o.v15C:_original.._value",
+                                    sDpName+".data.Tmb_o.v15T:_original.._value",
+                                    sDpName+".data.Tmb_o.v10T:_original.._value",
+                                    sDpName+".data.Tmb_o.c50:_original.._value",
+                                    sDpName+".data.Tmb_o.c33:_original.._value",
+                                    sDpName+".data.Tmb_o.c15C:_original.._value",
+                                    sDpName+".data.Tmb_o.c15T:_original.._value",
+                                    sDpName+".data.Tmb_o.cRAT:_original.._value",
+                                    sDpName+".data.Tmb_o.vRAT:_original.._value",
+                                    sDpName+".data.Tmb_o.vREF:_original.._value",
+                                    sDpName+".data.Tmb_o.vGND:_original.._value",
+                                    sDpName+".data.Tmb_o.vMAX:_original.._value");
+   for(int k=1;k<=dynlen(dsNew);k++)
+   {
+     emudcsArchive_setDpFunction(dsNew[k],dsOld[k]);
+   }  
+   
+   
+}  
+//------LV Alct dp_fct setup---------------
 void emudcsArchive_setLvAlctDpFunction(string sCscChamber)
 { 
    string sDpName = sCscChamber+"_LV";
@@ -762,7 +824,6 @@ void emudcsArchive_setLvAlctDpFunction(string sCscChamber)
    
    
 }  
-
 //------Temp cfeb dp_fct setup---------------
 void emudcsArchive_setTempCfebDpFunction(string sCscChamber,int i)
 {
@@ -826,7 +887,19 @@ void emudcsArchive_setMaDpFunction(string sDpNameNew,string sDpName,string sType
        }      
    emudcsArchive_setDpFunction(sDpNameNew,sDpNameLink);
    
-}  
+}
+void emudcsArchive_setMaStatusConfig(string sDpName)
+{
+  dyn_string ds = makeDynString( sDpName + ".Status.FailureMaxTemperature",
+                                 sDpName + ".Status.FailureMaxCurrent",
+                                 sDpName + ".Status.FailureMaxSenseVoltage",
+                                 sDpName + ".Status.FailureMaxTerminalVoltage",
+                                 sDpName + ".Status.FailureMinSenseVoltage");
+  for (int i=1; i<=dynlen(ds);i++)
+  {
+    emudcsArchive_setDpSmoothingBool(ds[i]);
+  }
+}
   
 void emudcsArchive_setDpFunction(string sDpName,string sDpNameLink)
 { 
@@ -847,18 +920,18 @@ dyn_string emudcsArchive_defineDpTypes(dyn_string &dsArchiveDpTypes)
 {
    dyn_string dsArchiveDpType = makeDynString(sDpTypeHVV, sDpTypeHVI, sDpTypeLVV, sDpTypeLVI,
                                               sDpTypeHVM,sDpTypeTEMP,sDpTypeFEDV,sDpTypeFEDT,
-                                              sDpTypeMAV,sDpTypeMAI,sDpTypeMAT,sDpTypeHVP);
+                                              sDpTypeMAV,sDpTypeMAI,sDpTypeMAT,sDpTypeHVP,sDpTypeTMB);
    return dsArchiveDpType;
    
 }       
-
-void emudcsArchive_setFsmDpSmoothing(string sDpName)
+// old/new comparison
+void emudcsArchive_setDpSmoothingBool(string sDpName)
 {
     dpSetWait (sDpName + ":_archive.._type",45,
                sDpName + ":_archive.._archive",1,
                sDpName + ":_archive.1._type",3,
                sDpName + ":_archive.1._class","_EVENT",
-               sDpName + ":_archive.1._std_type",4);
+               sDpName + ":_archive.1._std_type",4); //  old/new comparison
 }
 
 //-----------new function for recreating Fct after HV_CC component reinstallation and setting archiving for FSM...------
@@ -881,7 +954,7 @@ void emudcsArchive_recreateAllDpFct_Arch()
      DebugTN("recreate dp_fct for HV");
      for (i=1;i<=iLen_HV;i++)
      {  
-       DebugN(dsDpName_HV[i]);
+       emudcsArchive_showDebugInfo(bDebug,dsDpName_HV[i]);
        emudcsArchive_recreateHvDpFct(dsDpName_HV[i]);  //recreate HV dp_fct
      }
    } 
@@ -899,7 +972,7 @@ void emudcsArchive_recreateAllDpFct_Arch()
      DebugTN("recreate dp_fct for LV");
      for (i=1;i<=iLen_LV;i++)
      {  
-       DebugN(dsDpName_LV[i]);
+       emudcsArchive_showDebugInfo(bDebug,dsDpName_LV[i]);
        emudcsArchive_recreateLvDpFct(dsDpName_LV[i]);  //recreate LV dp_fct
      }
    } 
@@ -917,7 +990,7 @@ void emudcsArchive_recreateAllDpFct_Arch()
      DebugTN("recreate dp_fct for TEMP");
      for (i=1;i<=iLen_TEMP;i++)
      { 
-       DebugN(dsDpName_TEMP[i]); 
+       emudcsArchive_showDebugInfo(bDebug,dsDpName_TEMP[i]); 
        emudcsArchive_recreateTempDpFct(dsDpName_TEMP[i]);  //recreate Temp dp_fct
      }
    }
@@ -935,7 +1008,7 @@ void emudcsArchive_recreateAllDpFct_Arch()
      DebugTN("recreate dp_fct for HV master");
      for (i=1;i<=iLen_HVM;i++)
      {  
-       DebugN(dsDpName_HVM[i]);
+       emudcsArchive_showDebugInfo(bDebug,dsDpName_HVM[i]);
        emudcsArchive_recreateHvmDpFct(dsDpName_HVM[i]);  //recreate HVM dp_fct
      }
    }  
@@ -953,7 +1026,7 @@ void emudcsArchive_recreateAllDpFct_Arch()
      DebugTN("create archiving dps for HV primary");
      for (i=1;i<=iLen_HVP;i++)
      {  
-       DebugN(dsDpName_HVP[i]);
+       emudcsArchive_showDebugInfo(bDebug,dsDpName_HVP[i]);
        emudcsArchive_recreateHvpDpFct(dsDpName_HVP[i]);  //set config for HVP dp
      }
    }         
@@ -971,7 +1044,7 @@ void emudcsArchive_recreateAllDpFct_Arch()
      DebugTN("recreate dp_fct for FED DDU");
      for (i=1;i<=iLen_FED;i++)
      { 
-       DebugN(dsDpName_FED[i]); 
+       emudcsArchive_showDebugInfo(bDebug,dsDpName_FED[i]); 
        emudcsArchive_recreateFedDpFct(dsDpName_FED[i]);  //recreate DDU dp_fct
      }
    }   
@@ -989,8 +1062,9 @@ void emudcsArchive_recreateAllDpFct_Arch()
      DebugTN("recreate dp_fct for Maraton channel");
      for (i=1;i<=iLen_MA;i++)
      {  
-       DebugN(dsDpName_MA[i]);
+       emudcsArchive_showDebugInfo(bDebug,dsDpName_MA[i]);
        emudcsArchive_recreateMaDpFct(dsDpName_MA[i]);  //recreate dp_fct for Maraton dp
+       emudcsArchive_setMaStatusConfig(dsDpName_MA[i]); //set config for Maraton status
      }
    }   
    
@@ -1007,7 +1081,7 @@ void emudcsArchive_recreateAllDpFct_Arch()
     DebugTN("reconfig archiving dps for FSM devices");  
      for (i=1;i<=iLen_FSMdev;i++)
    {
-    DebugN(dsDpName_FSMdev[i]);
+    emudcsArchive_showDebugInfo(bDebug,dsDpName_FSMdev[i]);
     emudcsArchive_setFsmDpConfig(dsDpName_FSMdev[i]);
    }  
   } 
@@ -1024,7 +1098,7 @@ void emudcsArchive_recreateAllDpFct_Arch()
     DebugTN("reconfig archiving dps for FSM objects");
     for (i=1;i<=iLen_FSMobj;i++)
     {
-      DebugN(dsDpName_FSMobj[i]);
+      emudcsArchive_showDebugInfo(bDebug,dsDpName_FSMobj[i]);
       emudcsArchive_setFsmDpConfig(dsDpName_FSMobj[i]);
     }  
   }
@@ -1042,7 +1116,7 @@ void emudcsArchive_recreateAllDpFct_Arch()
     DebugTN("reconfig archiving dps for FwElmbAi");
     for(i=1;i<=iLen_FwElmbAi;i++)
     {
-      DebugN(dsDpName_FwElmbAi[i]);
+      emudcsArchive_showDebugInfo(bDebug,dsDpName_FwElmbAi[i]);
       emudcsArchive_setDpSmoothing(dsDpName_FwElmbAi[i],fTolElmbAi,iTimeElmbAi);
     }    
   }       
@@ -1060,7 +1134,7 @@ void emudcsArchive_recreateAllDpFct_Arch()
     DebugTN("reconfig archiving dps for CSC Colling");
     for(i=1;i<=iLen_Cooling;i++)
     {
-      DebugN(dsDpName_Cooling[i]);
+      emudcsArchive_showDebugInfo(bDebug,dsDpName_Cooling[i]);
       emudcsArchive_setDpSmoothing(dsDpName_Cooling[i],fTolCooling,iTimeCooling);
     }    
   }          
@@ -1138,6 +1212,8 @@ void emudcsArchive_recreateLvDpFct(string sDpName)
             emudcsArchive_setLvCfebDpFunction(sCscChamber,i);  //recreate LV dp fct for cfeb
          } 
             emudcsArchive_setLvAlctDpFunction(sCscChamber);   //recreate LV dp fct for alct
+            
+            emudcsArchive_setLvTmbDpFunction(sCscChamber);     //recreate LV dp fct for Tmb
 }
 //----------------------------------------------------------------------------------------------
 void emudcsArchive_recreateTempDpFct(string sDpName)
@@ -1224,8 +1300,21 @@ void emudcsArchive_recreateMaDpFct(string sDpName)
         for(int i=1;i<=dynlen(ds3);i++)
         {
           string sChannel = sChannelNew+"_"+ds3[i];
-          DebugTN(sChannel);
+          emudcsArchive_showDebugInfo(bDebug,sChannel);
           emudcsArchive_setMaDpFunction(sChannel,sChannelOld,ds3[i]);
         } 
 }
-
+void emudcsArchive_removeDpSmoothing(string sDpName)
+{
+    dpSetWait (sDpName + ":_archive.._type",DPCONFIG_NONE);       
+}
+void emudcsArchive_showDebugInfo(bool bDebug, anytype aMessage)
+{
+  if(bDebug)
+  {
+    DebugTN(aMessage);
+  }
+  else
+   return;
+}  
+    
