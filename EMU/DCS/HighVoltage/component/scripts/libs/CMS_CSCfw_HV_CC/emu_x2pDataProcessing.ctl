@@ -16,15 +16,33 @@ Everything that concerns X2P data is here and nowhere else.
 #uses "CMS_CSCfw_HV_CC/emuDcsDim.ctl"
 #uses "CMS_CSCfw_HV_CC/emuDcs2.ctl"
 
-public const int EMU_X2P_STATUS_OFF = 0x2; // chamber is OFF
-public const int EMU_X2P_STATUS_CORRUPTED = 0x4; // corrupted data (probably while sending from Xmas to X2P)
-public const int EMU_X2P_STATUS_VCC_PROBLEM = 0x8; // VME Crate Controller problem
-public const int EMU_X2P_STATUS_READOUT_PROBLEM = 0x10; // board readout problem
-public const int EMU_X2P_STATUS_CRATE_OFF = 0x20; // the PCrate is OFF
+// ============ status bit pattern ====================================================
+// bit 0 (value   1): misc. errors
+// bit 1 (value   2): chamber power off from Configuration DB
+// bit 2 (value   4): data corrupted (in infospace or during transmission)
+// bit 3 (value   8): VCC not accessible
+// bit 4 (value  16): DMB reading error
+// bit 5 (value  32): crate OFF
+// bit 6 (value  64): this DMB module caused VCC reading trouble
+// bit 7 (value 128): TMB reading error
+// bit 8 (value 256): this TMB module caused VCC reading trouble
+// =====================================================================================
 public const int EMU_X2P_STATUS_OTHER_PROBLEM = 0x1; // reserved for an undocumented problem
+public const int EMU_X2P_STATUS_OFF = 0x2; // chamber power off from Configuration DB
+public const int EMU_X2P_STATUS_CORRUPTED = 0x4; // data corrupted (in infospace or during transmission)
+public const int EMU_X2P_STATUS_VCC_NOT_ACCESSIBLE = 0x8; // VME Crate Controller problem (not accessible)
+public const int EMU_X2P_STATUS_DMB_READING_ERROR = 0x10; // DMB reading error
+public const int EMU_X2P_STATUS_CRATE_OFF = 0x20; // the PCrate is OFF
+public const int EMU_X2P_STATUS_DMB_CAUSED_VCC_ERROR = 0x40; // this DMB module caused VCC reading trouble
+public const int EMU_X2P_STATUS_TMB_READING_ERROR = 0x80; // TMB reading error
+public const int EMU_X2P_STATUS_TMB_CAUSED_VCC_ERROR = 0x100; // this TMB module caused VCC reading trouble
 
 // if any bit in this pattern is set then data should be ignored (and subject to timeout)
-public int EMU_X2P_STATUS_BAD_DATA = EMU_X2P_STATUS_CORRUPTED | EMU_X2P_STATUS_VCC_PROBLEM | EMU_X2P_STATUS_READOUT_PROBLEM | EMU_X2P_STATUS_OTHER_PROBLEM;
+public int EMU_X2P_STATUS_BAD_DATA = EMU_X2P_STATUS_OTHER_PROBLEM |
+                                     EMU_X2P_STATUS_CORRUPTED |
+                                     EMU_X2P_STATUS_VCC_NOT_ACCESSIBLE |
+                                     EMU_X2P_STATUS_DMB_READING_ERROR |
+                                     EMU_X2P_STATUS_TMB_READING_ERROR;
 
 void main() {
   mudcsInit();
