@@ -26,7 +26,7 @@ const mapping EMU_DUMMY_MAPPING;
   5 - general + detailed messages
   7 - general + function start/stop + detailed messages
 */
-global int g_emu_Debug = 5;
+global int g_emu_Debug = 0;
 
 global dyn_string g_emu_debugBacktrace;
 global dyn_int g_emu_reportingThreads;
