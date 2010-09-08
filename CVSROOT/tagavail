@@ -16,16 +16,16 @@ avail | cvsadmin cvsemu geurts
 #unavail.dev | manuel reguero defert slopiens | CVSROOT
 
 #EMU/firmware
-avail | hauser rakness bylsma durkin gujh gilmore mmatveev | EMU/firmware
+#avail | hauser rakness bylsma durkin gujh gilmore mmatveev | EMU/firmware
 
 #EMU/HV
-avail | madorsky barvic vavilov | EMU/HV
+#avail | madorsky barvic vavilov | EMU/HV
 
 #EMU/EventDisplay
-avail | golao | EMU/EventDisplay/FastDisplay
+#avail | golao | EMU/EventDisplay/FastDisplay
 
 #EMU/DCS
-avail | evka haryo bclare xyang yangxf sytnik vsytnik brett | EMU/DCS
+#avail | evka haryo bclare xyang yangxf sytnik vsytnik brett | EMU/DCS
 
 #EMU/cscdw
-avail | evka valdo banicz barvic liu | EMU/cscdw
+#avail | evka valdo banicz barvic liu | EMU/cscdw
