@@ -1,0 +1,802 @@
+V 10
+2
+LANG:1 8 (NoName)
+LANG:5 8 (NoName)
+PANEL,644 262 530 530 N "_3DFace" 3
+"$bStandardElmb"
+"$sDeviceList"
+"$sDpName"
+EEE E E 1 -1 -1 0  0 0
+"" 0 1
+EE 2
+"CBRef""0"
+"EClose"E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 3
+"Text3"
+""
+1 10 81 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+4 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 12 272 34
+0 2 0 "s" 0 0 0 64 0 0  12 12
+ 1
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-160-100-100-*-*-iso8859-1|-19,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-160-100-100-*-*-iso8859-1|-19,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 28 Assign IDs to the ELMB nodes
+LANG:5 28 Assign IDs to the ELMB nodes
+2 54
+"txtResultCreationCaption"
+""
+1 0 545 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+52 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 2 502 3 516
+0 2 0 "s" 0 0 0 192 0 0  2 502
+ 1
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-110-100-100-*-*-iso8859-1|-11,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-140-100-100-*-*-iso8859-1|-16,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 0 
+LANG:5 0 
+2 60
+"lblAvailableNodeIds"
+""
+1 450 190 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+57 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 452 192 518 228
+0 2 0 "s" 0 0 0 65 0 0  452 192
+ 2
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 9 Available
+LANG:5 15 Other Available
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 9 node IDs:
+LANG:5 11 node IDs:  
+2 68
+"lblParentLabel"
+""
+1 10 53 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+64 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 55 190 69
+0 2 0 "s" 0 0 0 64 0 0  12 55
+ 1
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 32 Create multiple ELMBs in bus:   
+LANG:5 32 Create multiple ELMBs in bus:   
+2 74
+"lblComment"
+""
+1 10 80 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+70 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 82 118 100
+0 2 0 "s" 0 0 0 64 0 0  12 82
+ 1
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 16 Default comment:
+LANG:5 15 Default comment
+2 137
+"lblElmbNamesAndIds"
+""
+1 10 210 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+132 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 212 148 228
+0 2 0 "s" 0 0 0 64 0 0  12 212
+ 1
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 18 ELMB Names and IDs
+LANG:5 30 Suggested ELMB labels and IDs 
+2 140
+"lblInstructions"
+""
+1 10 140 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+134 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 142 408 208
+0 2 0 "s" 0 0 0 64 0 0  12 142
+ 4
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-110-100-100-*-*-iso8859-1|-12,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 19 To alter a node ID:
+LANG:5 30 Suggested ELMB labels and IDs 
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-110-100-100-*-*-iso8859-1|-12,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 68 1) Select the required ELMB node from the table 'ELMB Names and IDs'
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-110-100-100-*-*-iso8859-1|-12,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 68 2) Select the required node ID from the list of 'Available node IDs'
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-110-100-100-*-*-iso8859-1|-12,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 32 3) Click the button labelled '<'
+13 4
+"closeButton"
+""
+1 430 490 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+5 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+428 488 522 522
+T 
+2
+LANG:1 5 Close
+LANG:5 5 Close
+"main()
+{	
+	PanelOff();
+}" 0
+ E E E
+17 59
+"lstAvailableIds"
+""
+1 450 230 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+56 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+448 228 522 482
+0
+E
+E
+E
+
+3 1
+25 64
+"tblDeviceInfo"
+""
+1 10 230 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+60 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 106 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,0,0,0,0,Arial
+LANG:5 106 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,0,0,0,0,Arial
+0 ""
+8 228 412 481
+"main()
+{
+// Local Variables
+// ---------------
+	bool bStandardElmb = $bStandardElmb;
+	
+	int i;
+	int iDevices;
+	int iLenBefore;
+	int iLenAfter;
+	int iTemp;
+	int iRemove;
+	
+	string sTemp;
+	
+	dyn_bool dbCreate;
+	
+	dyn_int diAvailableNodeIdList;
+	dyn_int diNodeIDsToAdd;
+
+	dyn_string dsAvailableNodeIdList;
+	dyn_string dsDeviceList;
+	dyn_string dsDevicesToAdd;
+	dyn_string dsDevicesToSort;
+
+// Executable Code
+// ---------------
+	// Get list of nodes that are to be created
+	fwGeneral_stringToDynString($sDeviceList, dsDeviceList);
+
+	// Set table mode
+	tblDeviceInfo.selectByClick(TABLE_SELECT_LINE);
+	tblDeviceInfo.tableMode(TABLE_SELECT_BROWSE);
+
+	// Get all available node IDs
+	fwElmb_getAvailableNodeIdList($sDpName, dsAvailableNodeIdList, bStandardElmb);
+	for (i = 1; i <= dynlen(dsAvailableNodeIdList); i++)
+		dynAppend(diAvailableNodeIdList, dsAvailableNodeIdList[i]);
+
+	// For each node to be created, if it ends with a number, then use this
+	// as the node ID (if possible)
+	for (i = 1; i <= dynlen(dsDeviceList); i++) {
+	
+		// Some first investigation to find out whether the name ends with numbers
+		sTemp = dsDeviceList[i];
+		iLenBefore = strlen(sTemp);
+		sTemp = strrtrim(sTemp, \"0123456789\");
+		iLenAfter = strlen(sTemp);
+		
+		// Check if the device name ends with numbers
+		if (iLenBefore > iLenAfter) {
+			sTemp = substr(dsDeviceList[i], iLenAfter, iLenBefore - iLenAfter);
+			iTemp = sTemp;
+			iRemove = dynContains(diAvailableNodeIdList, iTemp);
+			if (iRemove > 0) {
+				// If the node ID is available, add the device name to the list
+				// and make this node ID unavailable
+				dynAppend(dsDevicesToAdd, dsDeviceList[i]);
+				dynAppend(diNodeIDsToAdd, iTemp);
+				dynRemove(diAvailableNodeIdList, iRemove);
+			} else {
+				// If node ID is taken, put this device 'to the side'
+				dynAppend(dsDevicesToSort, dsDeviceList[i]);
+			}
+		} else {
+			// Name does not end with numbers, put this device 'to the side'
+			dynAppend(dsDevicesToSort, dsDeviceList[i]);
+		}
+	}
+
+	// Now add the devices whose node ID was taken
+	dynSortAsc(dsDevicesToSort);
+	for (i = 1; i <= dynlen(dsDevicesToSort); i++) {
+		dynAppend(dsDevicesToAdd, dsDevicesToSort[i]);
+		dynAppend(diNodeIDsToAdd, diAvailableNodeIdList[1]);
+		dynRemove(diAvailableNodeIdList, 1);
+	}
+
+	// Add the devices to the list	
+	for (i = 1; i <= dynlen(dsDevicesToAdd); i++) {
+		tblDeviceInfo.appendLine(\"label\", dsDevicesToAdd[i], \"id\", diNodeIDsToAdd[i]);
+	}
+
+	// Sort the list by name	
+	tblDeviceInfo.sort(\"label\");
+	
+	// Select the first row
+	if (tblDeviceInfo.lineCount > 0)
+		tblDeviceInfo.selectLineN(0);
+	else
+		cmdAssign.enabled = false;
+
+	// Enter the remaining available node IDs to the list
+	dynClear(dsAvailableNodeIdList);
+	for (i = 1; i <= dynlen(diAvailableNodeIdList); i++)
+		dynAppend(dsAvailableNodeIdList, diAvailableNodeIdList[i]);
+ 	lstAvailableIds.items = dsAvailableNodeIdList;
+ 	
+ 	// Return to calling routine
+ 	return;
+}" 0
+ E 0 0 1 2 1 "label" 0 1 0 "s" 1
+LANG:1 5 Label
+E1
+LANG:1 48 To change the node ID, double click on the table
+ 330 "id" 0 1 0 "s" 1
+LANG:1 2 ID
+E1
+LANG:1 48 To change the node ID, double click on the table
+ 50 26 26 "" 1 1
+LANG:1 2 #1
+8 30 2
+LANG:1 106 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,0,0,0,0,Arial
+LANG:5 106 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,0,0,0,0,Arial
+0 ""
+0 1 1 3 0
+1 0
+14 70
+"txtParentLabel"
+""
+1 190 50 E E E 0 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+66 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+188 48 412 75
+3 "s" 0 0 0 0 0 0 
+E
+"main()
+{
+	this.text = $sDpName;
+}" 0
+
+E
+14 71
+"txtDpTypeSelector"
+""
+1 290 10 E E E 0 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+67 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+288 8 412 35
+3 "s" 0 0 0 0 0 0 
+E
+"main()
+{
+	this.text = ELMB_TYPE_NAME;
+}" 0
+
+E
+14 73
+"txtComment"
+""
+1 190 80 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+69 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+188 78 412 105
+3 "s" 0 0 0 0 0 0 
+E
+E
+E
+20 77
+"chbCreateChannels"
+""
+1 190 110 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+73 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+188 108 402 138
+1
+T 
+2
+LANG:1 29 Create ELMB channels as well?
+LANG:5 3 Yes
+ 1
+1
+LANG:1 0 
+ E  E  0 0 0 0 0
+1
+E E 
+E"main(int button, bool state)
+{
+// Local Variables
+// ---------------
+	dyn_float df;
+	dyn_string ds;
+	
+// Executable Code
+// ---------------
+	// Check whether the check-box is ticked or not
+	if (!state) {
+		// Give a warning to the user
+		ChildPanelOnCentralReturn(\"vision/MessageInfo\",
+															\"Question\",
+															makeDynString(\"Unselecting this option you'll have to create\\nthe channels by hand.\\nAre you sure you want to do it?\", \"Yes\", \"No\"),
+															df, ds);
+																
+		// Check whether the user has changed their mind
+		if (df[1] != 1)
+			this.state(button) = true;
+	}
+	
+	return;
+}" 0
+13 136
+"cmdCreateNodes"
+""
+1 330 490 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+131 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+328 488 422 522
+T 
+2
+LANG:1 12 Create Nodes
+LANG:5 6 Next >
+"main()
+{
+// Local Variables
+// ---------------
+	bool bIsRunning;
+	bool bDefaultAddressing;
+	
+	int i;
+	int iDriverNumber;
+	int iDevices;
+	
+	float fAll;
+	float fCompleted;
+	float fPercentage;
+	
+	string sElmbComment;
+	string sDpLabel;
+	string sNodeID;
+	string sElmbLabels = \"\";
+	string sMessage;
+	
+	dyn_float df;
+	
+	dyn_string ds;
+	dyn_string dsExceptionInfo;
+	dyn_string dsElmbNames;
+	dyn_string dsNodeIDs;
+
+// Executable Code
+// ---------------
+	// Disable the button
+	this.enabled = false;
+	
+	// Check correct driver is running
+	bIsRunning = fwElmbUser_checkDefaultDriver(iDriverNumber, dsExceptionInfo);
+	if (dynlen(dsExceptionInfo) > 0) {
+		fwExceptionHandling_display(dsExceptionInfo);
+		this.enabled = true;
+		return;
+	} else if (!bIsRunning) {
+		// Display panel indicating what the problem is and how to fix it
+		ChildPanelOnCentralReturn(\"fwElmb/fwElmbDriverMessage.pnl\", 
+															\"Warning\",
+															makeDynString(\"$drvNum:\" + iDriverNumber),
+															df, ds);
+		this.enabled = true;
+		return;
+	}
+	
+	// Start progress bar to indicate system is busy
+	fwOpenProgressBar(\"Create ELMB Nodes\", \"In progress. Please wait...\", 2);
+	
+	// Get the number of devices
+	iDevices = tblDeviceInfo.lineCount;
+	fAll = iDevices;
+	fCompleted = 0.0;
+	fPercentage = 0.0;
+	bDefaultAddressing = chbOPCAddressing.state(0);
+	sElmbComment = txtComment.text;
+	
+	// Get all information for each device
+	for (i = 0; i < iDevices; i++) {
+		
+		// Get the device label from the table as well as the Node ID entered
+		getMultiValue(\"tblDeviceInfo\", \"cellValueRC\", i, \"label\", sDpLabel,
+									\"tblDeviceInfo\", \"cellValueRC\", i, \"id\", sNodeID);
+									
+		if (strlen(sElmbLabels) == 0)
+			sElmbLabels = sDpLabel;	
+		else
+			sElmbLabels += \"|\" + sDpLabel;	
+		
+		fPercentage = fCompleted * 100.0 / fAll;
+		sMessage = \"Creating \" + sDpLabel;
+		fwShowProgressBar(sMessage, fPercentage);
+	
+		// Create ELMB
+		fwElmbUser_createElmb(sDpLabel,
+													sElmbComment,
+													$sDpName,
+													sNodeID,
+													bDefaultAddressing,
+													dsExceptionInfo);
+		
+		fCompleted += 1.0;
+		
+	}//end on loop on devices.
+	
+	// Display any errors
+	if (dynlen(dsExceptionInfo) > 0) {
+		fwCloseProgressBar(\"ELMB Node creation encountered errors\");
+		fwExceptionHandling_display(dsExceptionInfo);
+	} else {
+		fwCloseProgressBar(\"ELMB Node creation completed successfully\");
+	}	
+	
+	// Re-enable the button
+	this.enabled = true;
+
+	// Display channel create panel if required
+	if (chbCreateChannels.state(0)) {
+		ModuleOn(\"NodeConfigurationModule\", 0,0,600,800, 0,0,\"\");
+		/* JRC Should try to use this panel instead in the future (less panels to maintain!)
+		RootPanelOnModule(\"fwElmb/fwElmbChannelManage.pnl\",
+											\"Create Signals\",
+											\"NodeConfigurationModule\",
+											makeDynString(\"$sElmbLabels:\" + sElmbLabels,
+																		\"$sDpName:\" + $sDpName));
+		*/
+		RootPanelOnModule(\"fwElmb/fwElmbNodeConfiguration.pnl\",
+											\"Create Signals\",
+											\"NodeConfigurationModule\",
+											makeDynString(\"$sElmbLabels:\" + sElmbLabels,
+																		\"$sDpName:\" + $sDpName));
+	}
+	
+	// Close the module
+	ModuleOff(myModuleName());
+
+	// Return to calling routine
+	return;
+}//end of main" 0
+ E E E
+13 139
+"cmdAssign"
+""
+1 420 350 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+133 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-110-100-100-*-*-iso8859-1|-12,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+418 348 442 372
+T 
+1
+LANG:1 1 <
+"main()
+{
+// Local Variables
+// ---------------
+	int iNodeIdPos;
+	int iNodePos;
+	int iNodeId;
+	int iOldId;
+	
+	dyn_int diLines;
+	dyn_int diNodeIds;
+
+// Executable Code
+// ---------------
+	// Get current list of available node IDs
+	diNodeIds = lstAvailableIds.items;
+	
+	// Get selections
+	iNodeIdPos = lstAvailableIds.selectedPos;
+	diLines = tblDeviceInfo.getSelectedLines();
+	
+	// Check that both a node and a node ID have been selected
+	if ((dynlen(diLines) > 0) && (iNodeIdPos > 0)) {
+		// Get old ID to be changed
+		iNodePos = diLines[1];
+		getValue(\"tblDeviceInfo\", \"cellValueRC\", iNodePos, \"id\", iOldId);
+		
+		// Get new ID to be assigned to node
+		iNodeId = diNodeIds[iNodeIdPos];
+		
+		// Remove ID to be assigned from 'available' list
+		dynRemove(diNodeIds, iNodeIdPos);
+		
+		// Add the old ID to the now available list
+		dynAppend(diNodeIds, iOldId);
+		
+		// Sort data and display
+		dynSortAsc(diNodeIds);
+		lstAvailableIds.items = diNodeIds;
+		
+		// Change ID of node
+		tblDeviceInfo.cellValueRC(iNodePos, \"id\", iNodeId);
+	} else {
+		ChildPanelOnCentral(\"vision/MessageInfo1\",
+												\"Information\",
+												makeDynString(\"Please select a Node and a Node ID\"));
+	}
+
+	// Return to calling routine
+	return;
+}" 0
+ E E E
+20 141
+"chbOPCAddressing"
+""
+1 10 500 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+135 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+8 498 180 522
+1
+T 
+1
+LANG:1 23 Default OPC addressing?
+ 1
+1
+LANG:1 0 
+ E  E  0 0 0 0 0
+1
+E E 
+E"main(int button, bool state)
+{
+// Local Variables
+// ---------------
+	dyn_float df;
+	dyn_string ds;
+	
+// Executable Code
+// ---------------
+	// Check state of button
+	if (!state) {
+		// Give warning to user if de-selecting this optyion
+		ChildPanelOnCentralReturn(\"vision/MessageInfo\",
+															\"Question\",
+															makeDynString(\"Unselecting this option you'll have to address\\nyour devices by hand.\\nAre you sure you want to do it?\", \"Yes\", \"No\"),
+															df, ds);
+		if (df[1] != 1.0)
+			this.state(button) = true;
+	}
+	
+	// Return to calling routine
+	return;
+}" 0
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0

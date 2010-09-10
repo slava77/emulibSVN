@@ -1,0 +1,395 @@
+V 10
+1
+LANG:1 25 fwElmbChannelOperationRef
+PANEL,-1 -1 650 350 N "_3DFace" 1
+"$sDpName"
+E E E E E 1 -1 -1 0  0 0
+""0  1
+E E 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+25 0
+"tabStandardChannels"
+""
+1 -6 -48 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 8 8 642 342
+"main()
+{
+// Local Variables
+// ---------------
+  int i, j;
+	
+  dyn_string dsChannels;
+  dyn_string dsChannelTypes = makeDynString(ELMB_AI_CONFIG_NAME, ELMB_AO_CONFIG_NAME, ELMB_DI_CONFIG_NAME, ELMB_DO_CONFIG_NAME, ELMB_DO_CONFIG_NAME);
+  dyn_string dsChannelDPTs = makeDynString(ELMB_AI_TYPE_NAME, ELMB_AO_TYPE_NAME, ELMB_DI_TYPE_NAME, ELMB_DO_TYPE_NAME, ELMB_DO_BYTES_TYPE_NAME);
+
+// Executable Code
+// ---------------
+  // Delete all existing lines in table:
+  this.deleteAllLines();
+
+  // Get all channels defined for this ELMB, a 'type' at a time
+  for (i = 1; i <= dynlen(dsChannelTypes); i++) {	
+	
+    // Get all channels for this type
+    dsChannels = dpNames($sDpName + fwDevice_HIERARCHY_SEPARATOR + dsChannelTypes[i] + fwDevice_HIERARCHY_SEPARATOR + \"*\", dsChannelDPTs[i]);
+		
+    // Get the current values
+    if (dsChannelDPTs[i] == ELMB_AI_TYPE_NAME) {
+      // Connect to all standard analog input channels
+      for (j = 1; j <= dynlen(dsChannels); j++) {
+        dpConnect(\"cbkUpdateAiLine\",
+                  dsChannels[j] + \".value\",
+                  dsChannels[j] + \".value:_online.._stime\",
+                  dsChannels[j] + \".value:_online.._invalid\",
+                  dsChannels[j] + \".type\");
+      }
+    } else if (dsChannelDPTs[i] == ELMB_DO_BYTES_TYPE_NAME) {
+      // Connect to all digital output byte types
+      for (j = 1; j <= dynlen(dsChannels); j++) {
+        dpConnect(\"cbkUpdateDoByteLine\", dsChannels[j] + \".do_C_read\", dsChannels[j] + \".do_C_read:_online.._stime\", dsChannels[j] + \".do_C_read:_online.._invalid\");
+        dpConnect(\"cbkUpdateDoByteLine\", dsChannels[j] + \".do_A_read\", dsChannels[j] + \".do_A_read:_online.._stime\", dsChannels[j] + \".do_A_read:_online.._invalid\");
+        dpConnect(\"cbkUpdateDoByteLine\", dsChannels[j] + \".do_write\", dsChannels[j] + \".do_write:_online.._stime\", dsChannels[j] + \".do_write:_online.._invalid\");
+      } 
+    } else {
+      // Connect to all other channel types
+      for (j = 1; j <= dynlen(dsChannels); j++) {
+        dpConnect(\"cbkUpdateElmbChannelLine\",
+                  dsChannels[j] + \".value\",
+                  dsChannels[j] + \".value:_online.._stime\",
+                  dsChannels[j] + \".value:_online.._invalid\");
+      } 
+    }
+  }
+	
+  // Return to calling routine
+  return;
+}
+				  					   
+void cbkUpdateAiLine(string argsValue, float argfValue,
+                     string argsValueStime, string argsValueTimeStamp,
+                     string argsValueInvalid, bool argbInvalid,
+                     string argsType, string argsTypeValue)
+					
+{
+// Local Variables
+// ---------------
+  bool bActive;
+
+  int iType;
+  int iRowFont;
+  int iDecPlaces = -1;
+
+  string sChannelName;
+  string sChannelDpName;
+  string sElementColour;
+  string sAlertColour;
+  string sType;
+  string sFormat;
+  string sValue;
+  string sDecPlaces;
+
+  langString lsDescription;
+
+  dyn_string dsTemp;
+  dyn_string dsExceptionInfo;
+
+  dyn_anytype daValueInfo;
+	
+// Executable Code
+// ---------------
+  // Get the name of the channel DP
+  sChannelDpName = dpSubStr(argsValue, DPSUB_SYS_DP);
+  lsDescription = dpGetDescription(argsValue);
+	
+  // Get whether alert handling has been defined
+  dpGet(sChannelDpName + \".value:_alert_hdl.._type\", iType);
+  if (iType == DPCONFIG_NONE) {
+    fwColour_convertStatusToColour(sElementColour, \"\", false, argbInvalid, dsExceptionInfo);
+  } else {
+    dpGet(sChannelDpName + \".value:_alert_hdl.._active\", bActive,
+          sChannelDpName + \".value:_alert_hdl.._act_state_color\", sAlertColour);
+    fwColour_convertStatusToColour(sElementColour, sAlertColour, !bActive, argbInvalid, dsExceptionInfo);
+  }
+
+  if (argbInvalid)
+    iRowFont = 3;
+  else
+    iRowFont = 0;
+
+  // Get the channel name
+  dsTemp = strsplit(sChannelDpName, fwDevice_HIERARCHY_SEPARATOR);
+  sChannelName = dsTemp[dynlen(dsTemp)];
+  sType = ELMB_AI_CONFIG_NAME + \">\" + argsTypeValue;
+
+  // Get whether a format has been specified
+  sDecPlaces = lblFormat.text;
+  if (strlen(sDecPlaces) > 0)
+    iDecPlaces = sDecPlaces;
+  if (iDecPlaces >= 0) {
+    sFormat = \"%.\" + sDecPlaces + \"f\";
+    sprintf(sValue, sFormat, argfValue);
+    daValueInfo[1] = sValue;
+  } else {
+    daValueInfo[1] = argfValue;
+  }
+  daValueInfo[2] = sElementColour;
+
+  // Update the information into the row
+  tabStandardChannels.updateLine(1,
+                                 \"channelName\", sChannelName,
+                                 \"comment\", lsDescription,
+                                 \"type\", sType,
+                                 \"value\", daValueInfo,
+                                 \"dpe\", argsValue,
+                                 \"timeStamp\",  argsValueTimeStamp,
+                                 0, iRowFont);
+
+  // Return to calling routine
+  return;
+}
+				  					   
+void cbkUpdateDoByteLine(string argsValue, float argfValue,
+                         string argsValueStime, string argsValueTimeStamp,
+                         string argsValueInvalid, bool argbInvalid)
+					
+{
+// Local Variables
+// ---------------
+  bool bActive;
+	
+  int iType;
+  int iRowFont;
+	
+  string sChannelName;
+  string sChannelDpName;
+  string sElementColour;
+  string sAlertColour;
+  string sType;
+	
+  langString lsDescription;
+	
+  dyn_string dsTemp;
+  dyn_string dsExceptionInfo;
+	
+  dyn_anytype daValueInfo;
+	
+// Executable Code
+// ---------------
+  // Get the name of the channel DP
+  sChannelDpName = dpSubStr(argsValue, DPSUB_SYS_DP_EL);
+  lsDescription = dpGetDescription(argsValue);
+	
+  // Get whether alert handling has been defined
+  dpGet(sChannelDpName + \":_alert_hdl.._type\", iType);
+  if (iType == DPCONFIG_NONE) {
+    fwColour_convertStatusToColour(sElementColour, \"\", false, argbInvalid, dsExceptionInfo);
+  } else {
+    dpGet(sChannelDpName + \":_alert_hdl.._active\", bActive,
+          sChannelDpName + \":_alert_hdl.._act_state_color\", sAlertColour);
+    fwColour_convertStatusToColour(sElementColour, sAlertColour, !bActive, argbInvalid, dsExceptionInfo);
+  }
+	
+  if (argbInvalid)
+    iRowFont = 3;
+  else
+    iRowFont = 0;
+	
+  // Get the channel name
+  dsTemp = strsplit(sChannelDpName, fwDevice_HIERARCHY_SEPARATOR);
+  sType = dsTemp[dynlen(dsTemp) - 1];
+  dsTemp = strsplit(sChannelDpName, \".\");
+  sChannelName = dsTemp[dynlen(dsTemp)];
+  daValueInfo[1] = argfValue;
+  daValueInfo[2] = sElementColour;
+
+  // Update the information into the row
+  tabStandardChannels.updateLine(1,
+                                 \"channelName\", sChannelName,
+                                 \"comment\", lsDescription,
+                                 \"type\", sType,
+                                 \"value\", daValueInfo,
+                                 \"timeStamp\",  argsValueTimeStamp,
+                                 0, iRowFont);
+
+  // Return to calling routine
+  return;
+}
+
+void cbkUpdateElmbChannelLine(string argsValue, float argfValue,
+                              string argsValueStime, string argsValueTimeStamp,
+                              string argsValueInvalid, bool argbInvalid)
+					
+{
+// Local Variables
+// ---------------
+  bool bActive;
+	
+  int iType;
+  int iRowFont;
+	
+  string sChannelName;
+  string sChannelDpName;
+  string sElementColour;
+  string sAlertColour;
+  string sType;
+	
+  langString lsDescription;
+	
+  dyn_string dsTemp;
+  dyn_string dsExceptionInfo;
+	
+  dyn_anytype daValueInfo;
+	
+// Executable Code
+// ---------------
+  // Get the name of the channel DP
+  sChannelDpName = dpSubStr(argsValue, DPSUB_SYS_DP);
+  lsDescription = dpGetDescription(argsValue);
+	
+  // Get whether alert handling has been defined
+  dpGet(sChannelDpName + \".value:_alert_hdl.._type\", iType);
+  if (iType == DPCONFIG_NONE) {
+    fwColour_convertStatusToColour(sElementColour, \"\", false, argbInvalid, dsExceptionInfo);
+  } else {
+    dpGet(sChannelDpName + \".value:_alert_hdl.._active\", bActive,
+          sChannelDpName + \".value:_alert_hdl.._act_state_color\", sAlertColour);
+    fwColour_convertStatusToColour(sElementColour, sAlertColour, !bActive, argbInvalid, dsExceptionInfo);
+  }
+	
+  if (argbInvalid)
+    iRowFont = 3;
+  else
+    iRowFont = 0;
+	
+  // Get the channel name
+  dsTemp = strsplit(sChannelDpName, fwDevice_HIERARCHY_SEPARATOR);
+  sChannelName = dsTemp[dynlen(dsTemp)];
+  sType = dsTemp[dynlen(dsTemp) - 1];
+  daValueInfo[1] = argfValue;
+  daValueInfo[2] = sElementColour;
+
+  // Update the information into the row
+  tabStandardChannels.updateLine(1,
+                                 \"channelName\", sChannelName,
+                                 \"comment\", lsDescription,
+                                 \"type\", sType,
+                                 \"value\", daValueInfo,
+                                 \"timeStamp\",  argsValueTimeStamp,
+                                 0, iRowFont);
+
+  // Return to calling routine
+  return;
+}
+" 0
+E 1 0 1 6 1 "dpe" 13 0 0 "s" 1
+LANG:1 3 dpe
+E
+1
+LANG:1 0 
+
+159 "channelName" 13 1 0 "s" 1
+LANG:1 12 Channel Name
+E
+1
+LANG:1 0 
+
+159 "comment" 13 0 0 "s" 1
+LANG:1 7 Comment
+E
+1
+LANG:1 53 Shows comment for channel if set, otherwise full name
+
+159 "type" 15 1 0 "s" 1
+LANG:1 4 Type
+E
+1
+LANG:1 74 AI: Analog Input; AO: Analog Output; DI: Digital Input; DO: Digital Output
+
+181 "value" 8 1 0 "s" 1
+LANG:1 5 Value
+E
+1
+LANG:1 13 Current value
+
+105 "timeStamp" 14 1 0 "s" 1
+LANG:1 10 Time Stamp
+E
+1
+LANG:1 18 Current time stamp
+
+165 
+26 26 "" 1 1
+LANG:1 2 #1
+8 30
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Arial
+0 ""
+0 1 1 1 7
+1 0
+2 2
+"lblFormat"
+""
+1 170 0 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 170 0 200 10
+0 2 2 "0s" 0 0 0 64 0 0  170 0 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 0 
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

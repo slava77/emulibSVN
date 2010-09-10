@@ -1,0 +1,541 @@
+V 10
+1
+LANG:1 10 rename DPs
+PANEL,-1 -1 809 643 N "_3DFace" 0
+E E E E E 1 -1 -1 0  160 10
+""0  1
+E E 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+2 0
+"PRIMITIVE_TEXT1"
+""
+1 290 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 290 10 445 31
+0 2 2 "0s" 0 0 0 192 0 0  290 10 1
+1
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 18 Rename DPs Utility
+2 1
+"PRIMITIVE_TEXT2"
+""
+1 12 52 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 12 52 95 66
+0 2 2 "0s" 0 0 0 192 0 0  12 52 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 16 DP name pattern:
+14 2
+"editDpPattern"
+""
+1 102 52 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 100 50 312 73
+3 "0s" 0 0 0 0 0 -1  E E E
+2 3
+"PRIMITIVE_TEXT3"
+""
+1 332 52 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 332 52 419 66
+0 2 2 "0s" 0 0 0 192 0 0  332 52 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 19 DP type (optional):
+14 4
+"editDpType"
+""
+1 422 52 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 420 50 622 73
+3 "0s" 0 0 0 0 0 -1  E E E
+13 5
+"btnSearch"
+""
+1 10 80 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 8 78 802 112
+
+T 
+1
+LANG:1 6 Search
+"main()
+{
+  tableDPs.deleteAllLines();
+  
+  string pattern = editDpPattern.text;
+  string type = editDpType.text;
+  if (strlen(pattern) == 0) { return; }
+  
+  dyn_string dps = dpNames(pattern, type);
+  for (int i=1; i <= dynlen(dps); i++) {
+    string type = dpTypeName(dps[i]);
+    tableDPs.appendLine(\"type\", type, \"original\", dps[i], \"renamed\", \"\");
+  }
+  
+  lblResultCount.text = dynlen(dps);
+}" 0
+ E E E
+25 6
+"tableDPs"
+""
+1 10 120 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 8 118 802 482
+"main()
+{
+  this.tableMode = TABLE_SELECT_MULTIPLE;
+  this.selectByClick = TABLE_SELECT_LINE;
+}" 0
+E 1 0 1 3 0 "type" 20 1 0 "s" 1
+LANG:1 7 DP type
+E
+1
+LANG:1 0 
+
+190 "original" 32 1 0 "s" 1
+LANG:1 15 Origial DP name
+E
+1
+LANG:1 0 
+
+297 "renamed" 32 1 0 "s" 1
+LANG:1 15 Renamed DP name
+E
+1
+LANG:1 0 
+
+300 
+14 14 10 10
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+0 1 1 1 7
+1 0
+2 7
+"PRIMITIVE_TEXT4"
+""
+1 12 502 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 12 502 75 516
+0 2 2 "0s" 0 0 0 192 0 0  12 502 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 13 Result count:
+2 8
+"lblResultCount"
+""
+1 82 502 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+  this.text = 0;
+}" 0
+ E 0 1 1 2 1 E U  1 E 82 502 122 516
+0 2 2 "0s" 0 0 0 192 0 0  82 502 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 9 # results
+13 10
+"btnSelectNone"
+""
+1 680 490 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 678 488 802 515
+
+T 
+1
+LANG:1 11 Select None
+"main()
+{
+  tableDPs.deleteSelection();
+}" 0
+ E E E
+13 11
+"btnSelectAll"
+""
+1 550 490 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+13 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 548 488 672 515
+
+T 
+1
+LANG:1 10 Select All
+"main()
+{
+  tableDPs.deleteSelection();
+  int lineCount = tableDPs.lineCount;
+  dyn_int selection;
+  for (int i=0; i < lineCount; i++) {
+    dynAppend(selection, i);
+  }
+  tableDPs.addSelectLines(selection);
+}" 0
+ E E E
+13 12
+"btnReplace"
+""
+1 12 572 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 9.99999999999999 570 802 597
+
+T 
+1
+LANG:1 40 Replace in selected DPs (don't save yet)
+"main()
+{
+  string search = editReplaceWhat.text;
+  string replacement = editReplacement.text;
+  tableDPs.updatesEnabled(true);
+  dyn_int selectedLines = tableDPs.getSelectedLines();
+  for (int i=1; i <= dynlen(selectedLines); i++) {
+    dyn_anytype line = tableDPs.getLineN(selectedLines[i]);
+    string original = line[2];
+    string renamed = line[3];
+    if (strlen(renamed) == 0) {
+      renamed = original;
+    }
+    strreplace(renamed, search, replacement);
+    tableDPs.updateLine(1, \"original\", original, \"renamed\", renamed);
+  }
+}" 0
+ E E E
+2 13
+"PRIMITIVE_TEXT6"
+""
+1 12 542 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 12 542 52 556
+0 2 2 "0s" 0 0 0 192 0 0  12 542 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 7 Replace
+14 14
+"editReplaceWhat"
+""
+1 60 540 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 58 538 412 561
+3 "0s" 0 0 0 0 0 -1  E E E
+2 15
+"PRIMITIVE_TEXT7"
+""
+1 422 542 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 422 542 444 556
+0 2 2 "0s" 0 0 0 192 0 0  422 542 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 5 with:
+14 16
+"editReplacement"
+""
+1 450 540 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+22 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 448 538 802 561
+3 "0s" 0 0 0 0 0 -1  E E E
+13 17
+"btnSave"
+""
+1 10 610 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+23 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 8 608 802 635
+
+T 
+1
+LANG:1 13 Save selected
+"main()
+{
+  lblStatus.text = \"renaming in progress...\";
+  lblStatus.visible = true;
+  dyn_int selectedLines = tableDPs.getSelectedLines();
+  for (int i=1; i <= dynlen(selectedLines); i++) {
+    dyn_anytype line = tableDPs.getLineN(selectedLines[i]);
+    string original = line[2];
+    string renamed = line[3];
+    if ((strlen(renamed) == 0) || (renamed == original)) {
+      continue;
+    }
+    if (!dpExists(original) && dpExists(renamed)) {
+      continue;
+    }
+    
+    int error;
+    dpCopy(original, renamed, error);
+    if (error != 0) {
+      emu_info(\"Error in dpCopy(), error code = \" + error);
+      lblError.text = \"Error in dpCopy(), error code = \" + error;
+      lblError.visible = true;
+      return;
+    }
+    dpCopyBufferClear();
+    dpCopyOriginal(original, renamed, error);
+    if (error != 0) {
+      emu_info(\"Error in dpCopy(), error code = \" + error);
+      lblError.text = \"Error in dpCopy(), error code = \" + error;
+      lblError.visible = true;
+      return;
+    }
+    dpCopyBufferClear();
+    string alias = dpGetAlias(original + \".\");
+    string comment = dpGetComment(original + \".\");
+    
+    dpDelete(original);
+    
+    if (comment == original + \".\") { comment = \"\"; }
+    if (strlen(alias)) { dpSetAlias(renamed + \".\", alias); }
+    dpSetComment(renamed + \".\", comment);
+  }
+  
+  lblStatus.text = \"Done!\";
+  lblStatus.visible = true;
+  emu_info(\"renaming done successfully!\");
+}" 0
+ E E E
+2 18
+"lblStatus"
+""
+1 192 502 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+24 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 192 502 220 516
+0 2 2 "0s" 0 0 0 192 0 0  192 502 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 6 status
+2 19
+"lblError"
+""
+1 280 500 E E E 1 E 0 E N "_WindowText" E N "FwStateAttention3" E E
+ E E
+25 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 280 500 422 514
+0 2 2 "0s" 0 0 0 192 0 0  280 500 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 30 Error! Error code from dpCopy:
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

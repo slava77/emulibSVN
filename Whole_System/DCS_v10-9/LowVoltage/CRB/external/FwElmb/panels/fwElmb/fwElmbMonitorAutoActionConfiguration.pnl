@@ -1,0 +1,336 @@
+V 10
+1
+LANG:1 30 fwElmbNodeMonitorConfiguration
+PANEL,162 219 440 315 N "_3DFace" 1
+"$sDpName"
+EEE E E 1 -1 -1 0  10 10
+"" 0 1
+EE 2
+"CBRef""1"
+"EClose"E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 4
+"lblTitle"
+""
+1 10 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+5 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 12 278 38
+0 2 0 "s" 0 0 0 64 0 0  12 12
+ 1
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-160-100-100-*-*-iso8859-1|-19,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 30 Automatic Action Configuration
+25 0
+"tabMonitorConfiguration"
+""
+1 10 70 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ "main()
+{
+// Local Variables
+// ---------------
+	bool bBus = false;
+	
+	int i;
+	int iRow;
+	int iColumn;
+	int iReturn;
+	
+	string sName = this.name;
+	string sColumnName;
+	string sParameter;
+	string sAction;
+	string sDpt;
+	
+	dyn_int diActions;
+	
+	dyn_string dsMenu;
+
+// Executable Code
+// ---------------
+	// Get the column name that has been clicked
+	getValue(sName, \"currentColumn\", sColumnName);
+	
+	// Check if this column should have a menu
+	if (sColumnName == \"autoAction\") {
+	
+		// Get the row, then the parameter that is to be set
+		getValue(sName, \"currentCell\", iRow, iColumn);
+		getValue(sName, \"cellValueRC\", iRow, \"parameter\", sParameter);
+		
+		if (strlen(sParameter) > 0) {
+			// Get DPT of dollar parameter
+			sDpt = dpTypeName($sDpName);
+			if (sDpt == ELMB_CAN_BUS_TYPE_NAME)
+				bBus = true;
+			
+			// Set the text for the possible actions
+			diActions = fwElmbMonitorAutomaticActions(bBus);
+		
+			// Setup the menu
+			for (i = 1; i <= dynlen(diActions); i++) {
+				sAction = fwElmbMonitorLib_getActionText(diActions[i]);
+				dynAppend(dsMenu, \"PUSH_BUTTON, \" + sAction + \", \" + diActions[i] + \", 1\");
+			}
+
+			// Display the popup menu
+			if (popupMenu(dsMenu, iReturn) == 0) {
+				setValue(sName, \"cellValueRC\", iRow, sColumnName, fwElmbMonitorLib_getActionText(iReturn));
+				setValue(sName, \"cellValueRC\", iRow, \"actionID\", iReturn);
+			}
+		}
+	}
+
+	// Return to calling routine
+	return;
+}" 0
+ E
+1 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 106 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,0,0,0,0,Arial
+0 ""
+8 68 432 272
+"main()
+{
+// Local Variables
+// ---------------
+	int i;
+	
+	string sParameter;
+	string sAction;
+	
+	dyn_int diParameters;
+	dyn_int diActions;
+
+// Executable Code
+// ---------------
+	// Get any actions set already
+	dpGet($sDpName + \".monitoring.autoActions.parameters\", diParameters,
+				$sDpName + \".monitoring.autoActions.actions\", diActions);
+				
+	// Enter the data into the table
+	for (i = 1; i <= dynlen(diParameters); i++) {
+		sParameter = fwElmbMonitorLib_getParameterText(diParameters[i]);
+		if (dynlen(diActions) < i) {
+			sAction = fwElmbMonitorLib_getActionText(ELMB_MONITOR_ACTION_NONE);
+			this.appendLine(\"parameter\", sParameter, \"parameterID\", diParameters[i], \"actionID\", ELMB_MONITOR_ACTION_NONE, \"autoAction\", sAction);
+		} else {
+			sAction = fwElmbMonitorLib_getActionText(diActions[i]);
+			this.appendLine(\"parameter\", sParameter, \"parameterID\", diParameters[i], \"actionID\", diActions[i], \"autoAction\", sAction);
+		}
+	}
+	
+	// Return to calling routine
+	return;
+}" 0
+ E 1 0 1 4 1 "parameter" 0 -1 0 "s" 1
+LANG:1 9 Parameter
+E1
+LANG:1 0 
+ 250 "parameterID" 0 0 0 "s" 1
+LANG:1 11 parameterID
+E1
+LANG:1 0 
+ 100 "actionID" 0 0 0 "s" 1
+LANG:1 8 actionID
+E1
+LANG:1 0 
+ 100 "autoAction" 0 1 0 "s" 1
+LANG:1 16 Automatic Action
+E1
+LANG:1 0 
+ 150 26 26 "" 1 1
+LANG:1 2 #1
+8 30 1
+LANG:1 106 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,0,0,0,0,Arial
+0 ""
+0 1 1 3 0
+1 0
+13 1
+"cmdOK"
+""
+1 230 280 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+2 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+228 278 292 307
+T 
+1
+LANG:1 2 OK
+"main()
+{
+// Local Variables
+// ---------------
+	bool bActive;
+	
+	int i;
+	int iRowCount;
+	
+	dyn_int diParameters;
+	dyn_int diActions;
+	
+	dyn_anytype daLine;
+
+// Executable Code
+// ---------------
+	// Get the number of rows in the table
+	iRowCount = tabMonitorConfiguration.lineCount;
+	
+	// Get all data from the table
+	for (i = 0; i < iRowCount; i++) {
+		// Get the current line
+		daLine = tabMonitorConfiguration.getLineN(i);
+		dynAppend(diParameters, daLine[2]);
+		dynAppend(diActions, daLine[3]);
+	}
+	
+	// Get whether the monitoring should be active
+	bActive = chkAutoActionsActive.state(0);
+	
+	// Set the information into the datapoint
+	dpSetWait($sDpName + \".monitoring.autoActions.active\", bActive,
+						$sDpName + \".monitoring.autoActions.parameters\", diParameters,
+						$sDpName + \".monitoring.autoActions.actions\", diActions);
+				
+	// Close the panel
+	PanelOff();
+}" 0
+ E E E
+13 2
+"cmdApply"
+""
+1 300 280 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+3 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+298 278 362 307
+T 
+1
+LANG:1 5 Apply
+E E E E
+13 3
+"cmdCancel"
+""
+1 370 280 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+4 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+368 278 432 307
+T 
+1
+LANG:1 6 Cancel
+"main()
+{
+	PanelOff();
+}" 0
+ E E E
+20 5
+"chkAutoActionsActive"
+""
+1 10 40 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+6 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+8 38 192 62
+1
+T 
+1
+LANG:1 24 Automatic actions active
+ 0
+1
+LANG:1 0 
+ E  E  0 0 0 0 0
+1
+E E 
+"main()
+{
+// Local Variables
+// ---------------
+	bool bActive;
+
+// Executable Code
+// ---------------
+	// Get whether the automatic actions are currently active
+	dpGet($sDpName + \".monitoring.autoActions.active\", bActive);
+	
+	// Set the checkbox to show this
+	this.state(0) = bActive;
+
+	// Return to calling routine
+	return;
+}" 0
+E0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0

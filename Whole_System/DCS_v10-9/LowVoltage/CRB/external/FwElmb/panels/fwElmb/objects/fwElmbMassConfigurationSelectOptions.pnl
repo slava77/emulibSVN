@@ -1,0 +1,374 @@
+V 10
+1
+LANG:1 8 (NoName)
+PANEL,476 279 329 200 N "_3DFace" 4
+"$sDpName"
+"$sElmbComment"
+"$sElmbLabels"
+"$sNodeIDs"
+EEE E E 1 -1 -1 0  30 162
+"" 0 1
+EE 2
+"CBRef""1"
+"EClose"E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+30 0
+"frmConfigurationOptions"
+""
+1 10 60 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+1 0 0 0 0 0
+EE E
+1
+1
+LANG:1 0 
+0
+E E 0 1 1 0 1 E U  0 E 10 10 320 60
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 21 Configuration Options
+30 68
+"frmOPCAddressing"
+""
+1 10 136 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+67 0 0 0 0 0
+EE E
+1
+1
+LANG:1 0 
+0
+E E 0 1 1 0 1 E U  0 E 10 80 320 136
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 0 
+17 52
+"lstElmbNames"
+""
+1 200 90 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+52 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+198 88 280 122
+0
+"main()
+{
+dyn_string dsElmbLabels;
+
+this.deleteAllItems();
+fwGeneral_stringToDynString($sElmbLabels, dsElmbLabels);
+this.items = dsElmbLabels;
+}" 0
+
+E
+E
+
+3 1
+17 53
+"lstNodeIDs"
+""
+1 230 20 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+53 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+228 18 282 52
+0
+"main()
+{
+dyn_string dsNodeIDs;
+
+this.deleteAllItems();
+fwGeneral_stringToDynString($sNodeIDs, dsNodeIDs);
+this.items = dsNodeIDs;
+}" 0
+
+E
+E
+
+3 1
+20 38
+"chbOPCAddressing"
+""
+1 21 91 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+39 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+19 89 191 133
+1
+T 
+1
+LANG:1 23 Default OPC addressing?
+ 1
+1
+LANG:1 0 
+ E  E  0 0 0 0 0
+1
+E E 
+E"main(int button, bool state)
+{
+	dyn_float df;
+	dyn_string ds;
+	
+	if(!state) {
+		ChildPanelOnCentralReturn(\"vision/MessageInfo3\",
+															\"Question\",
+															makeDynString(\"Unselecting this option you'll have to address\\nyour devices by hand.\\nAre you sure you want to do it?\", \"Yes\", \"No\", \"Cancel\"),
+															df, ds);
+		if (df[1]!= 1.0)
+			this.state(button) = true;
+	}
+	
+	return;
+}" 0
+13 55
+"btnCancel"
+""
+1 260 160 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+55 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+258 158 320 192
+T 
+1
+LANG:1 6 Cancel
+"main()
+{
+	PanelOff();
+}" 0
+ E E E
+13 70
+"btnAction"
+""
+1 190 160 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+69 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+188 158 250 192
+T 
+1
+LANG:1 6 Next >
+"main()
+{
+// Local Variables
+// ---------------
+	bool bIsRunning;
+	bool bDefaultAddressing;
+	
+	int i;
+	int iDriverNumber;
+	
+	float fPercentage;
+	float fAll, fCompleted;
+
+	string sDpName;
+	string sMessage;
+	string sElmbComment;
+	
+	dyn_float df;
+
+	dyn_string dsElmbNames;
+	dyn_string dsNodeIDs;
+	dyn_string dsExceptionInfo;
+	dyn_string ds;
+
+// Executable code
+// ---------------
+	// Disable the button
+	this.enabled = false;
+	
+	// Check correct driver is running
+	bIsRunning = fwElmbUser_checkDefaultDriver(iDriverNumber, dsExceptionInfo);
+	if (dynlen(dsExceptionInfo) > 0) {
+		fwExceptionHandling_display(dsExceptionInfo);
+		return;
+	} else if (!bIsRunning) {
+		// Display panel indicating what the problem is and how to fix it
+		ChildPanelOnCentralReturn(\"fwElmb/fwElmbDriverMessage.pnl\", 
+															\"Warning\",
+															makeDynString(\"$drvNum:\" + iDriverNumber),
+															df, ds);
+		return;
+	}
+
+	// Start progress bar to indicate system is busy
+	fwOpenProgressBar(\"Create ELMB Nodes\", \"In progress. Please wait...\", 2);
+
+	// Get information required								
+	getMultiValue(\"lstElmbNames\", \"items\", dsElmbNames,
+								\"lstNodeIDs\", \"items\", dsNodeIDs);
+	fAll = (float)dynlen(dsElmbNames);
+	fCompleted = 0.0;
+	fPercentage = 0.0;
+	bDefaultAddressing = chbOPCAddressing.state(0);
+	sElmbComment = $sElmbComment;
+
+	for (i = 1; i <= dynlen(dsElmbNames); i++) {
+		
+		fPercentage = fCompleted * 100.0 / fAll;
+		sMessage = \"Creating \" + dsElmbNames[i];
+		fwShowProgressBar(sMessage, fPercentage);
+	
+		// Create ELMB
+		fwElmbUser_createElmb(dsElmbNames[i],
+													sElmbComment,
+													$sDpName,
+													dsNodeIDs[i],
+													bDefaultAddressing,
+													dsExceptionInfo);
+		
+		fCompleted += 1.0;
+		
+	}//end on loop on devices.
+	
+	// Display any errors
+	if (dynlen(dsExceptionInfo) > 0) {
+		fwCloseProgressBar(\"ELMB Node creation encountered errors\");
+		fwExceptionHandling_display(dsExceptionInfo);
+	} else {
+		fwCloseProgressBar(\"ELMB Node creation completed successfully\");
+	}	
+	
+	// Re-enable the button
+	this.enabled = true;
+
+	// Display channel create panel if required
+	if (chkbOnlyElmbs.state(0)) {
+		ModuleOn(\"NodeConfigurationModule\", 0,0,600,800, 0,0,\"\");
+		RootPanelOnModule(\"fwElmb/fwElmbNodeConfiguration.pnl\",
+											\"Create Signals\",
+											\"NodeConfigurationModule\",
+											makeDynString(\"$sElmbLabels:\" + $sElmbLabels,
+																		\"$sDpName:\" + $sDpName));
+	}
+	
+	// Close the module
+	ModuleOff(myModuleName());
+
+	// Return to calling routine
+	return;
+}" 0
+ E E E
+20 86
+"chkbOnlyElmbs"
+""
+1 20 30 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+82 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 109 -microsoft windows-Arial-normal-i-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,255,0,0,0,3,2,1,34,Arial
+0 ""
+18 28 212 52
+1
+T 
+1
+LANG:1 26 Create ELMBs with channels
+ 1
+1
+LANG:1 0 
+ E  E  0 0 0 0 0
+1
+E E 
+E"main(int button, bool state)
+{
+	dyn_float df;
+	dyn_string ds;
+	
+	if (this.state(0) == FALSE) {
+		ChildPanelOnCentralReturn(\"vision/MessageInfo3\",
+															\"Question\",
+															makeDynString(\"This option will create Elmbs without\\ninputs or outputs of any kind!\\nAre you sure you want to continue?\", \"Yes\", \"No\", \"Cancel\"),
+															df, ds);
+		if (df[1] == 1.0) {
+			btnAction.text = \"Create\";
+			btnAction.enabled = TRUE;
+			return;
+		}	
+	}
+	
+	this.state(0) = TRUE;
+	btnAction.enabled = TRUE;
+		
+	if (this.state(0) == TRUE) {
+		btnAction.text = \"Next >\";
+		btnAction.enabled = TRUE;
+		return;
+	}
+}" 0
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0

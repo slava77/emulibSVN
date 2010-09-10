@@ -1,0 +1,5 @@
+
+main()
+{
+fwInstallation_appendManager(TRUE, "PCMB_test", "PVSS00ui", "once", 30, 2, 2, "-p EMU_PCMB_test/PCrateOperation_with_monitoring.pnl");
+}

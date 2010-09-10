@@ -1,0 +1,936 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 579 440 N "_3DFace" 0
+"main()
+{
+    /*
+   string item=\"test.item1\"; // name of DIP publication (simple)
+  string dpe=\"dip_test3.\";  // name of dp to be subscibed to this publicatipn
+  string configDp=\"DIPConfig_CMS_CSCfw_GAS\"; // DIP config to be saved for this configuration (see type _FwDipConfig)
+  dyn_string exceptionInfo;
+  bool overwrite=FALSE;
+  
+//  fwDIP_subscribePrimitive(item,dpe,configDp,exceptionInfo,false); // this inserts the ->
+// -> dcspcS2G19_06:dip_test3. into the dyn_string \"DIPConfig_CMS_CSCfw_GAS.clientConfig\"
+  
+
+  item=\"test.item2\"; // name of DIP publication (complex)
+  string dpe1=\"dip_test_structure.field1\"; // name of dp element to be subscibed to this publication tag
+  string dpe2=\"dip_test_structure.field2\";  // name of dp element to be subscibed to this publication tag
+  string tag1=\"field1\"; // tag (of int type) in the  DIP publication \"test.item2\"
+  string tag2=\"field2\";  // tag (of int type) in the  DIP publication \"test.item2\"
+  configDp=\"DIPConfig_CMS_CSCfw_GAS\"; // DIP config to be saved for this configuration (see type _FwDipConfig)
+  overwrite=FALSE;
+  dyn_string dpes= makeDynString(dpe1,dpe2);
+  dyn_string tags=makeDynString(tag1,tag2);
+  
+  fwDIP_subscribeStructure(item, dpes, 
+            tags, configDp, exceptionInfo, true);// this inserts the ->
+  // -> dcspcS2G19_06:dip_test_structure.field1
+  //->      dcspcS2G19_06:dip_test_structure.field2 into the dyn_string \"DIPConfig_CMS_CSCfw_GAS.clientConfig\"
+*/
+}" 0
+ E E E E 1 -1 -1 0  0 0
+""0  1
+E "#uses \"CMS_CSCfw_GAS/emuGas.ctl\"
+#uses \"CMS_CSCfw_GAS/mudcs0GasCreateAllTypes.ctl\"
+#uses \"CMS_CSCfw_GAS/mudcs1GasDipConfig.ctl\"
+#uses \"CMS_CSCfw_GAS/mudcs2GasFsmCreate.ctl\"
+#uses \"CMS_CSCfw_GAS/mudcs3GasAlert.ctl\"
+#uses \"CMS_CSCfw_GAS/mudcs4GasArchive.ctl\"
+#uses \"CMS_CSCfw_GAS/mudcs5GasSetPanels.ctl\"" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"PUSH_BUTTON3"
+""
+1 20 100 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 18 98 152 142
+
+T 
+1
+LANG:1 10 DIP CONFIG
+"main(){
+ 
+  bool subscribe;  
+    getValue(\"issubscribe\",\"state\",0,subscribe);
+    subscribe=!subscribe;  
+  
+  mudcsDipConfig(subscribe); 
+
+  
+}
+
+" 0
+ E E E
+13 1
+"PUSH_BUTTON4"
+""
+1 20 40 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 18 38 152 82
+
+T 
+1
+LANG:1 8 DP_TYPES
+"main()
+{
+GasSystem_main();
+//GasAllTypesCommonFunction();
+    
+}
+//=====================================================
+/*
+GasAllTypesCommonFunction(){
+  
+ dpSet(\"GasCMS.dpTypes\",makeDynString
+ (\"fwGasSystem_CSC_GAS\"
+// \"fwGasMixer_CSC_GAS\", 
+//  \"fwGasDistribution_CSC_GAS\",
+//  \"fwGasDistributionRack_CSC_GAS\"
+//  \"fwGasDistributionChannel_CSC_GAS\",
+//  \"fwGasPreDistribution_CSC_GAS\",
+//  \"fwGasPump_CSC_GAS\",
+//  \"fwGasExhaust_CSC_GAS\",
+//  \"fwGasPurifier_CSC_GAS\"
+  ));
+  
+
+  
+  
+}
+*/
+" 0
+ E E E
+13 2
+"PUSH_BUTTON5"
+""
+1 170 40 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 168 38 292 82
+
+T 
+1
+LANG:1 9 del types
+"main()
+{
+ 
+  mudcsDeleteGas_dps(true);
+}
+
+
+" 0
+ E E E
+20 3
+"issubscribe"
+""
+1 156.79012345679 108 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+ 158 108 292 138
+1
+T 
+1
+LANG:1 8 unsubscr
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+EE13 4
+"PUSH_BUTTON1"
+""
+1 410 320 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 408 318 542 362
+
+T 
+1
+LANG:1 12 PUSH_BUTTON1
+"main()
+{
+    string s1;
+ dpGet(\"dip_test3.:_address.._reference\",s1);
+ mudcsDebug(s1); // that returns:  \"test.item1\"
+  //dpGet(\"dip_test2.:_distrib.._type\",s1);
+
+   string s1;
+  dpGet(\"dip_test_structure.field1:_address.._reference\",s1);
+  mudcsDebug(s1); // that returns:  \"test.item2 field1\"
+  
+  return;
+}" 0
+ E E E
+13 5
+"PUSH_BUTTON2"
+""
+1 390 380 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 388 378 522 422
+
+T 
+1
+LANG:1 12 PUSH_BUTTON2
+"main()
+{
+  /*
+   string item=\"test.item1\"; // name of DIP publication (simple)
+  string dpe=\"dip_test3.\";  // name of dp to be subscibed to this publicatipn
+  string configDp=\"DIPConfig_CMS_CSCfw_GAS\"; // DIP config to be saved for this configuration (see type _FwDipConfig)
+  dyn_string exceptionInfo;
+  bool overwrite=FALSE;
+  
+  fwDIP_subscribePrimitive(item,dpe,configDp,exceptionInfo,false); // this inserts the ->
+  */
+  
+// -> dcspcS2G19_06:dip_test3. into the dyn_string \"DIPConfig_CMS_CSCfw_GAS.clientConfig\"
+  item=\"test.pub1\"; // name of DIP publication (complex)
+  string dpe1=\"dip_test3.\"; // name of dp element to be subscibed to this publication tag
+  string tag1=\"__DIP_DEFAULT__\"; // tag (of int type) in the  DIP publication \"test.item2\"
+  configDp=\"DIPConfig_CMS_CSCfw_GAS\"; // DIP config to be saved for this configuration (see type _FwDipConfig)
+  overwrite=FALSE;
+  dyn_string dpes= makeDynString(dpe1);
+  dyn_string tags=makeDynString(tag1);
+  
+  fwDIP_subscribeStructure(item, dpes, 
+            tags, configDp, exceptionInfo, true);// this inserts the ->
+  // -> dcspcS2G19_06:dip_test_structure.field1
+  //->      dcspcS2G19_06:dip_test_structure.field2 into the dyn_string \"DIPConfig_CMS_CSCfw_GAS.clientConfig\"
+
+  item=\"test.pub2\"; // name of DIP publication (complex)
+  string dpe1=\"dip_test_structure.field1\"; // name of dp element to be subscibed to this publication tag
+  string dpe2=\"dip_test_structure.field2\";  // name of dp element to be subscibed to this publication tag
+  string tag1=\"field1\"; // tag (of int type) in the  DIP publication \"test.item2\"
+  string tag2=\"field2\";  // tag (of int type) in the  DIP publication \"test.item2\"
+  configDp=\"DIPConfig_CMS_CSCfw_GAS\"; // DIP config to be saved for this configuration (see type _FwDipConfig)
+  overwrite=FALSE;
+  dyn_string dpes= makeDynString(dpe1,dpe2);
+  dyn_string tags=makeDynString(tag1,tag2);
+  
+  fwDIP_subscribeStructure(item, dpes, 
+            tags, configDp, exceptionInfo, true);// this inserts the ->
+  // -> dcspcS2G19_06:dip_test_structure.field1
+  //->      dcspcS2G19_06:dip_test_structure.field2 into the dyn_string \"DIPConfig_CMS_CSCfw_GAS.clientConfig\"
+}  " 0
+ E E E
+13 6
+"PUSH_BUTTON6"
+""
+1 500 180 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+13 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 498 178 632 222
+
+T 
+1
+LANG:1 9 meanings
+
+"
+dyn_int GasSystem_State;
+dyn_int GasSystem_Status;
+dyn_string GasSystem_State_meaning;  // int
+dyn_string GasSystem_Status_meaning;
+//============================
+
+dyn_int GasMixer_State;
+dyn_bool GasMixer_Interlock;
+dyn_string GasMixer_State_meaning;
+dyn_string GasMixer_Interlock_meaning;
+
+string GasMixer_LiquidLevel_units;
+string GasMixer_EvaporatorTemperature_units;
+string GasMixer_OutPressure_units;
+string GasMixer_TotalFlow_units;
+string GasMixer_LineRatio_units;
+string GasMixer_LineInputPressure_units;
+string GasMixer_LineLFmfcFeedback_units;
+string GasMixer_LineHFmfcFeedback_units;
+string GasMixer_LineWaterTankLevel_units;
+
+
+//============================
+
+dyn_int GasDistribution_State;
+dyn_bool GasDistribution_BUSource;
+dyn_string GasDistribution_State_meaning;
+dyn_string GasDistribution_BUSource_meaning;
+
+string GasDistribution_TotalInputFlow_units;
+
+//============================
+
+
+
+dyn_int GasDistributionRack_StateRack;
+dyn_string GasDistributionRack_StateRack_meaning;
+string GasDistributionRack_InPressure22_units;
+string GasDistributionRack_ChPressure_units;
+string GasDistributionRack_RegPressure_units;
+string GasDistributionRack_InPressure24_units;
+string GasDistributionRack_OutManifoldPressure_units;
+
+//============================
+
+
+
+
+
+string GasDistributionChannel_Pressure_units;
+string GasDistributionChannel_InFlow_units;
+string GasDistributionChannel_OutFlow_units;
+string GasDistributionChannel_Isolation_Valve_units;
+
+
+
+
+//============================
+
+
+
+
+dyn_int GasPreDistribution_State;
+dyn_string GasPreDistribution_State_meaning;
+
+string GasPreDistribution_InPressure;
+string GasPreDistribution_OutPressure;
+
+
+
+
+
+//============================
+
+
+
+
+dyn_int GasPump_State;
+dyn_string GasPump_State_meaning;
+
+string GasPump_InPressure_units;
+string GasPump_PressureSetpoint_units;
+string GasPump_OutPressure_units;
+string GasPump_PumpInput_Flow_units;
+string GasPump_PumpCurrent_Speed_units;
+string GasPump_PumpCurrent_Load_units;
+string GasPump_PumpCurrent_Speed2_units;
+string GasPump_PumpCurrent_Load2_units;
+string GasPump_PumpUpperTemperature_units;
+string GasPump_PumpLowerTemperature_units;
+string GasPump_PumpOutTemperature_units;
+string GasPump_PumpEngineTemperature_units;
+
+
+
+//============================
+
+dyn_int GasExhaust_State;
+dyn_string GasExhaust_State_meaning;
+
+string GasExhaust_OutFlow_units;
+string GasExhaust_BufferPressure_units;
+string GasExhaust_CirculationPressure_units;
+string GasExhaust_CirculationFlow_units;
+
+
+
+
+//============================
+
+
+
+dyn_int GasPurifier_State;
+dyn_int GasPurifier_ColState;
+dyn_string GasPurifier_State_meaning;
+dyn_string GasPurifier_ColState_meaning;
+
+string GasPurifier_ColRunVolume_units;
+string GasPurifier_ColInternal_TopTemp_units;
+string GasPurifier_ColInternalMiddle_Temp_units;
+string GasPurifier_ColExternalTemp_units;
+string GasPurifier_ColInFlow_units;
+string GasPurifier_ColOutPressure_units;
+
+
+main(){
+ 
+   mudcsGasSystemMeanings();
+   mudcsDebug(\"done\");
+}
+
+mudcsGasSystemMeanings(){
+
+
+//=============================
+//============================
+
+/*dyn_int*/ GasSystem_State=makeDynInt(100,26,27,28,29,30,31,32,33,34
+                                     ,16,17,18,19,20,21,22,23,24,25  
+                                     ,1,2,3,4,5,6,7,8,9,10 
+                                     ,11,12,13,14,15);  // int
+/*dyn_int*/ GasSystem_Status=makeDynBool(FALSE,TRUE);  // bool
+/*dyn_string*/ GasSystem_State_meaning=makeDynString(\"Stop\",\"Fill Start-Up/Fill1\",\"Fill Start-Up/Fill2\",\"Fill Start-Up/Fill3\",
+                                     \"Fill Start-Up/Fill4\",\"Fill Start-Up/Fill5\",\"Fill Start-Up/Fill6\",\"Fill Start-Up/Fill7\",
+                                     \"Filling/Filling\",\"Filling/FillCompletion\",
+                                     \"Run Start-Up/Run1\",\"Run Start-Up/Run2\",\"Run Start-Up/Run3\",\"Run Start-Up/Run4\",\"Run Start-Up/Run5\",
+                                     \"Run Start-Up/Run6\",\"Run Start-Up/Run61\",\"Run Start-Up/Run62\",\"Run Start-Up/Run7\",  
+                                     \"RunReady/Run\",
+                                     \"Purge Start-Up/Purge1\",\"Purge Start-Up/Purge2\",\"Purge Start-Up/Purge3\",
+                                     \"Purge Start-Up/Purge4\",\"Purge Start-Up/Purge5\",\"Purging/Purging\",
+                                     \"Recuperation Start-Up/Recupe1\",\"Recuperation Start-Up/Recupe2\",\"Recuperation Start-Up/Recupe3\", 
+                                     \"Recuperation Start-Up/Recupe4\",\"Recuperation Start-Up/Recupe5\",\"Recuperation Start-Up/Recupe51\",
+                                     \"Recuperation Start-Up/Recupe52\",\"Recuperation Start-Up/Recupe6\",\"Recuperating/Recuperate\");   // int
+/*dyn_string*/ GasSystem_Status_meaning=makeDynString(\"NOT READY\",\"NOMINAL\");  // bool
+//============================
+
+/*dyn_int*/ GasMixer_State=makeDynInt(1,4,8,12,2,6,10,3,7,
+                                     11,5,9,13);          // int 
+/*dyn_bool*/ GasMixer_Interlock=makeDynBool(FALSE,TRUE);     // bool
+/*dyn_string*/ GasMixer_State_meaning=makeDynString(\"Stop\",\"Run Entry\",\"Run Unstable\",\"Run Stable\",
+                                     \"Fill Entry\",\"Fill Unstable\",\"Fill Stable\",
+                                     \"Purge Entry\",\"Purge Unstable\",\"Purge Stable\",
+                                     \"Direct Entry\",\"Direct Unstable\",\"Direct Stable\");
+/*dyn_string*/ GasMixer_Interlock_meaning=makeDynString(\"Problem\",\"OK\");
+
+/*string*/ GasMixer_LiquidLevel_units=\"%\";
+/*string*/ GasMixer_EvaporatorTemperature_units=\"C\";
+/*string*/ GasMixer_OutPressure_units=\"Bar\";
+/*string*/ GasMixer_TotalFlow_units=\"l/h\";
+/*string*/ GasMixer_LineRatio_units=\"%\";
+/*string*/ GasMixer_LineInputPressure_units=\"Bar\";
+/*string*/ GasMixer_LineLFmfcFeedback_units=\"l/h\";
+/*string*/ GasMixer_LineHFmfcFeedback_units=\"l/h\";
+/*string*/ GasMixer_LineWaterTankLevel_units=\"%\";
+
+
+//============================
+
+/*dyn_int*/ GasDistribution_State=makeDynInt(1,25,30,35,15,20);     // int 
+/*dyn_bool*/ GasDistribution_BUSource=makeDynBool(FALSE,TRUE);   // bool
+/*dyn_string*/ GasDistribution_State_meaning=makeDynString(\"Stop\",\"Starting Run\",\"Run Not Ready\");     // int 
+/*dyn_string*/ GasDistribution_BUSource_meaning=makeDynString(\"Line\",\"Bottle\");   // bool
+
+/*string*/ GasDistribution_TotalInputFlow_units=\"l/h\";
+
+//============================
+
+
+
+/*dyn_int*/ GasDistributionRack_StateRack=makeDynInt(1,25,27,30,35,5,7,10,15,
+                                     17,20); // int
+/*dyn_string*/ GasDistributionRack_StateRack_meaning=makeDynString(\"Stop\",\"Starting Run\",\"Starting Run2\",\"Run Not Ready\",
+                                     \"Run Ready\",\"Starting Individual Purge\",\"Starting Individual Purge2\",\"Individual Purge Ready\",
+                                     \"Start Common Purge\",\"Start Common Purge2\",\"Common Purge Ready\"); // int
+
+/*string*/ GasDistributionRack_InPressure22_units=\"mBar\";
+/*string*/ GasDistributionRack_ChPressure_units=\"mBar\";
+/*string*/ GasDistributionRack_RegPressure_units=\"mBar\";
+/*string*/ GasDistributionRack_InPressure24_units=\"mBar\";
+/*string*/ GasDistributionRack_OutManifoldPressure_units=\"mBar\";
+
+//============================
+
+
+
+
+
+/*string*/ GasDistributionChannel_Pressure_units=\"mBar\";
+/*string*/ GasDistributionChannel_InFlow_units=\"l/h\";
+/*string*/ GasDistributionChannel_OutFlow_units=\"l/h\";
+/*string*/ GasDistributionChannel_Isolation_Valve_units=\"\";
+
+
+
+
+//============================
+
+
+
+
+/*dyn_int*/ GasPreDistribution_State=makeDynInt(1,2,3,4,5);  // int
+/*dyn_string*/ GasPreDistribution_State_meaning=makeDynString(\"Stop\",\"Forward Nominal\",\"Backward Nominal\",\"Forward Exhaust\",\"Backward Exhaust\");  // int
+
+/*string*/ GasPreDistribution_InPressure=\"mBar\";
+/*string*/ GasPreDistribution_OutPressure=\"mBar\";
+
+
+
+
+
+//============================
+
+
+
+
+/*dyn_int*/ GasPump_State=makeDynInt(1,2,3);  // int
+/*dyn_string*/ GasPump_State_meaning=makeDynString(\"Stop\",\"Starting\",\"Run\");  // int
+
+/*string*/ GasPump_InPressure_units=\"mBar\";
+/*string*/ GasPump_PressureSetpoint_units=\"mBar\";
+/*string*/ GasPump_OutPressure_units=\"Bar\";
+/*string*/ GasPump_PumpInput_Flow_units=\"m3/h\";
+/*string*/ GasPump_PumpCurrent_Speed_units=\"Hz\";
+/*string*/ GasPump_PumpCurrent_Load_units=\"A\";
+/*string*/ GasPump_PumpCurrent_Speed2_units=\"Hz\";
+/*string*/ GasPump_PumpCurrent_Load2_units=\"A\";
+/*string*/ GasPump_PumpUpperTemperature_units=\"C\";
+/*string*/ GasPump_PumpLowerTemperature_units=\"C\";
+/*string*/ GasPump_PumpOutTemperature_units=\"C\";
+/*string*/ GasPump_PumpEngineTemperature_units=\"C\";
+
+
+
+//============================
+
+/*dyn_int*/ GasExhaust_State=makeDynInt(1,2,3);   // int
+/*dyn_string*/ GasExhaust_State_meaning=makeDynString(\"Stop\",\"Recirculating\",\"Venting\");   // int
+
+/*string*/ GasExhaust_OutFlow_units=\"l/h\";
+/*string*/ GasExhaust_BufferPressure_units=\"Bar\";
+/*string*/ GasExhaust_CirculationPressure_units=\"Bar\";
+/*string*/ GasExhaust_CirculationFlow_units=\"l/h\";
+
+
+
+
+//============================
+
+
+
+/*dyn_int*/ GasPurifier_State=makeDynInt(100,2,40,20,30,50);   // int
+/*dyn_int*/ GasPurifier_ColState=makeDynInt(100,1,6,7,2,8,3,9,10,
+                                     4,11,5); // int
+/*dyn_string*/ GasPurifier_State_meaning=makeDynString(\"Stop\",\"Nominal Run\",\"Double Column\",
+                                     \"Single Column A\",\"Single Column B\",\"Free Run\");   // int
+/*dyn_string*/ GasPurifier_ColState_meaning=makeDynString(\"Stop\",\"Stand By\",\"Prepare for Run Ph1\",\"Prepare for Run Ph2\",
+                                     \"Run/Nominal Run\",\"Run/Pre-Saturated\",\"Purge Process Gas/Regen.Purge\",\"Heat Up\",
+                                     \"Regeneration\",
+                                     \"Cool Down\",\"Prepare for Stand-By\",\"Column Purge\"); // int
+
+/*string*/ GasPurifier_ColRunVolume_units=\"m3\";
+/*string*/ GasPurifier_ColInternal_TopTemp_units=\"C\";
+/*string*/ GasPurifier_ColInternalMiddle_Temp_units=\"C\";
+/*string*/ GasPurifier_ColExternalTemp_units=\"C\";
+/*string*/ GasPurifier_ColInFlow_units=\"l/h\";
+/*string*/ GasPurifier_ColOutPressure_units=\"Bar\";
+
+
+
+
+
+
+
+  
+}" 0
+ E E E
+13 7
+"PUSH_BUTTON7"
+""
+1 350 180 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+15 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 348 178 482 222
+
+T 
+1
+LANG:1 20 meanings
+(not used)
+
+"
+
+
+main(){
+ 
+   mudcsGasSystemMeanings();
+   mudcsDebug(\"done\");
+}
+" 0
+ E E E
+13 8
+"PUSH_BUTTON8"
+""
+1 20 350 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 18 348 142 402
+
+T 
+1
+LANG:1 17 component 
+create
+"main()
+{
+ string os=getenv(\"OS\");
+
+DebugTN(\"1\");  
+
+if (os ==\"Linux\")system(\"PVSS00ctrl -num 15 CMS_CSCfw_GAS/mudcsGasComponent.ctl &\");
+else system(\"cmd /c PVSS00ctrl -num 15 CMS_CSCfw_GAS/mudcsGasComponent.ctl\");
+DebugTN(\"11\"); 
+  return; // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1 
+}" 0
+ E E E
+13 9
+"PUSH_BUTTON9"
+""
+1 20 150 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 18 148 152 192
+
+T 
+1
+LANG:1 10 FSM CREATE
+"main()
+{
+  mudcsGasCreateFsmMain();
+}" 0
+ E E E
+13 10
+"PUSH_BUTTON10"
+""
+1 20 260 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 18 258 152 302
+
+T 
+1
+LANG:1 10 setArchive
+"main()
+{
+  mudcsGasArchiveMain(true);
+}" 0
+ E E E
+13 11
+"PUSH_BUTTON11"
+""
+1 170 260 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 168 258 302 302
+
+T 
+1
+LANG:1 10 setArchive
+"main()
+{
+  mudcsGasArchiveMain(false);
+}" 0
+ E E E
+13 12
+"PUSH_BUTTON12"
+""
+1 20 220 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+21 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 18 218 152 262
+
+T 
+1
+LANG:1 8 setAlert
+"main()
+{
+  mudcsGasAlertCreateMain(true);
+}" 0
+ E E E
+13 13
+"PUSH_BUTTON13"
+""
+1 170 220 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+23 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 168 218 302 262
+
+T 
+1
+LANG:1 10 unsetAlert
+"main()
+{
+  mudcsGasAlertCreateMain(false);
+}" 0
+ E E E
+13 14
+"PUSH_BUTTON14"
+""
+1 20 300 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+24 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 18 298 152 342
+
+T 
+1
+LANG:1 19 SetFsmPanels&Labels
+"main()
+{
+  mudcsGasFsmPanelsAndFsmAliasesSetMain();
+}" 0
+ E E E
+13 15
+"PUSH_BUTTON15"
+""
+1 170 150 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+25 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 168 148 302 192
+
+T 
+1
+LANG:1 10 FSM DELETE
+"main()
+{
+  mudcsGasFsmDelete();
+}" 0
+ E E E
+13 16
+"redraw_all_temp"
+""
+1 18.3739837398374 187.913043478261 E E E 1 E 1 E N "_ButtonText" E N "_ETM" E E
+ E E
+27 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 18 188 222 216
+
+T 
+1
+LANG:1 18 Redraw log and fsm
+"int id; // important to redraw the tree
+
+main()
+{
+
+// logical tree redraw
+//fwDeviceEditorNavigator_expandTree(1, \"logicalTree.\");
+//fwTreeView_draw(\"logicalTree.\");
+
+// fsm tree redraw
+fwFsmTree_refreshTree();
+ 
+///////	mycorr: PanelOff();
+}
+
+" 0
+ E E E
+13 17
+"PUSH_BUTTON16"
+""
+1 350 230 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+29 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 348 228 482 272
+
+T 
+1
+LANG:1 8 setAlert
+"main()
+{
+  Cooling_alert_main();
+//  mudcsGasAlertCreatMain(true);
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

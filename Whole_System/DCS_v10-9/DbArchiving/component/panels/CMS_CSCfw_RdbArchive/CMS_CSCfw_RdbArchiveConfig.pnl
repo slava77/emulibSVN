@@ -1,0 +1,1509 @@
+V 11
+1
+LANG:1 19 Archiving_dp_config
+PANEL,-1 -1 632 371 N "_3DFace" 0
+E E E E E 1 0 0 0  110 60
+""0  1
+E "#uses \"CMS_CSCfw_RdbArchive/CMS_CSCfw_RdbArchiveConfig.ctl\"" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+13 7
+"create_dp_type"
+""
+1 60 80 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  58 78 172 112
+
+T 
+1
+LANG:1 14 create dp type
+"
+main()
+{        
+  emudcsArchive_createDpTypes();
+  DebugTN(\"done\");                        
+}" 0
+ E E E
+13 8
+"delete_arch_dp"
+""
+1 180 120 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  178 118 292 152
+
+T 
+1
+LANG:1 15 delete arch dps
+"main()
+{
+  DebugTN(\"Deleting existing archiving dps \");
+  dyn_string dsArchiveDpTypes = emudcsArchive_defineDpTypes(dsArchiveDpTypes);
+  for (int i=1; i <= dynlen(dsArchiveDpTypes); i++)
+   {
+     dyn_string dsDps = dpNames(\"*\", dsArchiveDpTypes[i]);
+        for (int j=1; j <= dynlen(dsDps); j++)
+      {
+        dpDelete(dsDps[j]);
+      }
+    }
+  delay(1);
+  DebugTN(\"Archiving dps deleted\");  
+}" 0
+ E E E
+30 11
+"archiving_dp"
+""
+1 200 43 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+12 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 2.67326732673266 0 2.5 -494.653465346532 -57.5000000000001 0 E 200 43 302 104
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0 1
+LANG:1 27 config dp for rdb archiving
+2 17
+"PRIMITIVE_TEXT1"
+""
+1 190 20 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 190 20 463 37
+0 2 2 "0s" 0 0 0 192 0 0  190 20 1
+1
+LANG:1 33 MS Shell Dlg,-1,13,5,75,0,0,0,0,0
+0 1
+LANG:1 37 CSC DP Config Panel for RDB Archiving
+13 20
+"delete_all"
+""
+1 180 160 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+23 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 33 MS Shell Dlg,-1,13,5,75,0,0,0,0,0
+0  178 158 292 192
+
+T 
+1
+LANG:1 10 delete all
+"
+main()
+{
+  DebugTN(\"wait...\");
+  emudcsArchive_cleanAllDps();
+  delay(1);
+  DebugTN(\"done\");
+  
+}  " 0
+ E E E
+13 22
+"FSM_dp_arch"
+""
+1 340 230 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+26 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  338 228 452 262
+
+T 
+1
+LANG:1 15 set FSM dp arch
+"main()
+{
+  DebugTN(\"config archiving dps for FSM\");
+  dyn_string dpname_FSMdev,dpname_FSMobj;
+  dpname_FSMdev = dpNames(\"*\",\"_FwFsmDevice\"); 
+  //DebugN(dpname_FSMdev[1]); 
+  dpname_FSMobj = dpNames(\"*\",\"_FwFsmObject\");
+  //DebugN(dpname_FSMobj[1]);
+  
+  int i,imax_FSMdev,imax_FSMobj;
+  imax_FSMdev = dynlen(dpname_FSMdev);
+  imax_FSMobj = dynlen(dpname_FSMobj);
+  
+  for (i=1;i<=imax_FSMdev;i++)
+   {
+    DebugN(dpname_FSMdev[i]);
+    emudcsArchive_setFsmDpConfig(dpname_FSMdev[i]);
+    }  
+ 
+  for (i=1;i<=imax_FSMobj;i++)
+   {
+    DebugN(dpname_FSMobj[i]);
+    emudcsArchive_setFsmDpConfig(dpname_FSMobj[i]);
+   } 
+   delay(1);
+   DebugTN(\"done\");  
+}  
+
+" 0
+ E E E
+13 23
+"remove_FSM_arch"
+""
+1 459.999999999999 230 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+27 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  458 228 572 262
+
+T 
+1
+LANG:1 15 remove FSM arch
+"main()
+{
+  DebugTN(\"waiting ...\");
+  dyn_string dpname_FSMdev,dpname_FSMobj;
+  dpname_FSMdev = dpNames(\"*\",\"_FwFsmDevice\"); 
+  //DebugN(dpname_FSMdev[1]); 
+  dpname_FSMobj = dpNames(\"*\",\"_FwFsmObject\");
+  //DebugN(dpname_FSMobj[1]);
+  
+  int i,imax_FSMdev,imax_FSMobj;
+  imax_FSMdev = dynlen(dpname_FSMdev);
+  imax_FSMobj = dynlen(dpname_FSMobj);
+  
+  for (i=1;i<=imax_FSMdev;i++)
+   {
+    emudcsArchive_removeFsmDpConfig(dpname_FSMdev[i]);
+    }  
+ 
+  for (i=1;i<=imax_FSMobj;i++)
+   {
+    emudcsArchive_removeFsmDpConfig(dpname_FSMobj[i]);
+    }   
+  delay(1); 
+  DebugTN(\"done\"); 
+}
+void emudcsArchive_removeFsmDpConfig(string sDpName)
+{
+  dyn_string ds = makeDynString( sDpName + \".fsm.currentState\",
+                                 sDpName + \".fsm.sendCommand\",
+                                 sDpName + \".fsm.executingAction\",
+                                 sDpName + \".fsm.currentParameters\");
+  for (int i=1; i<=dynlen(ds);i++)
+  {
+    emudcsArchive_removeDpSmoothing(ds[i]);
+  }
+}
+                    " 0
+ E E E
+13 25
+"set_dp_arch"
+""
+1 340 189.999999999999 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+30 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  338 188 452 222
+
+T 
+1
+LANG:1 12 set  dp arch
+"main()
+{
+  //---------get arch Dp Type--------------------
+  DebugTN(\"waiting ...\");
+  shape cb1=getShape(\"DP_arch_type\");
+  string sDptypeName,sArchDptype;
+  sDptypeName = cb1.selectedText();
+  DebugN(sDptypeName);
+  if (sDptypeName == \" HV_V\")
+    sArchDptype = \"CSC_HV_V_DATA\";
+  else if(sDptypeName == \" HV_I\")
+    sArchDptype = \"CSC_HV_I_DATA\";
+  else if(sDptypeName == \" HV_MV\")
+    sArchDptype = \"CSC_HV_M_DATA\";
+  else if(sDptypeName == \" HV_MI\")
+    sArchDptype = \"CSC_HV_M_DATA\";
+  else if(sDptypeName == \" HV_PV\")
+    sArchDptype = \"CSC_HV_P_DATA\";
+  else if(sDptypeName == \" HV_PI\")
+    sArchDptype = \"CSC_HV_P_DATA\";
+  else if(sDptypeName == \" LV_V\")
+    sArchDptype = \"CSC_LV_V_DATA\";
+  else if(sDptypeName == \" LV_I\")
+    sArchDptype = \"CSC_LV_I_DATA\";
+  else if(sDptypeName == \" TEMP\")
+    sArchDptype = \"CSC_TEMP_DATA\"; 
+  else if(sDptypeName == \" FED_V\")
+    sArchDptype = \"CSC_FED_V_DATA\"; 
+  else if(sDptypeName == \" FED_T\")
+    sArchDptype = \"CSC_FED_T_DATA\"; 
+  else if(sDptypeName == \" Cooling\")
+    sArchDptype = \"fwCooling_CSC_TURBINES_data\";  
+  else if(sDptypeName == \" ELMBAi\")
+    sArchDptype = \"FwElmbAi\";  
+  else if(sDptypeName == \" MAR_V\")
+    sArchDptype = \"CSC_MARATON_V_DATA\";  
+  else if(sDptypeName == \" MAR_I\")
+    sArchDptype = \"CSC_MARATON_I_DATA\"; 
+  else if(sDptypeName == \" MAR_T\")
+    sArchDptype = \"CSC_MARATON_T_DATA\"; 
+  else if(sDptypeName == \" TMB\")
+    sArchDptype = \"CSC_TMB_DATA\"; 
+                 
+  else if (sDptypeName == \" Dp Type\")
+  { 
+     ChildPanelOnCentral(\"vision/MessageWarning\",\"warning\",
+                         makeDynString( \"$1:\"+\"please select a dp type\"));
+     DebugN(\"please select a dp type\");
+     return; 
+   } 
+        
+  //--------get deadband------------------------------
+  shape cb2=getShape(\"DeadBand\");
+  string sDeadBand;
+  float fArchDeadBand;
+  sDeadBand = cb2.selectedText();
+  DebugN(sDeadBand);
+  if (sDeadBand == \" 0.01\")
+    fArchDeadBand = 0.01;
+  else if(sDeadBand == \" 0.05\")
+    fArchDeadBand = 0.05;
+  else if(sDeadBand == \" 0.1\")
+    fArchDeadBand = 0.1; 
+  else if(sDeadBand == \" 1\")
+    fArchDeadBand = 1;  
+  else if(sDeadBand == \" 10\")
+    fArchDeadBand = 10; 
+  else if(sDeadBand == \" 20\")
+    fArchDeadBand = 20; 
+  else if(sDeadBand == \" 30\")
+    fArchDeadBand = 30;  
+  else if (sDeadBand == \" DeadBand\")
+  { 
+     ChildPanelOnCentral(\"vision/MessageWarning\",\"warning\",
+                         makeDynString( \"$1:\"+\"please select a DeadBand\"));
+     DebugN(\"please select a DeadBand\");
+     return; 
+   }  
+  //------get time intervel------   
+  shape cb3=getShape(\"Time_Int\");
+  string sTime_Int;
+  int iArchTime;
+  sTime_Int = cb3.selectedText();
+  DebugN(sTime_Int);
+  if (sTime_Int == \" 600\")
+    iArchTime = 600;
+  else if(sTime_Int == \" 900\")
+    iArchTime = 900;  
+  else if(sTime_Int == \" 3600\")
+    iArchTime = 3600;
+  else if(sTime_Int == \" 7200\")
+    iArchTime = 7200;
+  else if(sTime_Int == \" 28800\")
+    iArchTime = 28800;
+  else if (sTime_Int == \" Time(sec)\")
+  { 
+     ChildPanelOnCentral(\"vision/MessageWarning\",\"warning\",
+                         makeDynString( \"$1:\"+\"please select a time interval\"));
+     DebugN(\"please select a time interval\");
+     return; 
+   }
+    
+  dyn_string ds_dpname;
+  if (sDptypeName == \" HV_MV\")
+  {
+    ds_dpname = dpNames(\"*_VMON\",sArchDptype);
+  }    
+  else if (sDptypeName == \" HV_MI\")
+  {
+    ds_dpname = dpNames(\"*_IMON\",sArchDptype);
+  }
+  else if (sDptypeName == \" HV_PV\")
+  {
+    ds_dpname = dpNames(\"*_VMON\",sArchDptype);
+  }
+  else if (sDptypeName == \" HV_PI\")
+  {
+    ds_dpname = dpNames(\"*_IMON\",sArchDptype);
+  }   
+  else  
+  {   
+    ds_dpname = dpNames(\"*\",sArchDptype);
+  }
+    int i,imax_dpname;
+    imax_dpname = dynlen(ds_dpname);
+  
+  for (i=1;i<=imax_dpname;i++)
+   {
+    emudcsArchive_setDpSmoothing(ds_dpname[i],fArchDeadBand,iArchTime);
+   }  
+  delay(1);
+  DebugTN(\"done\");
+}
+
+
+" 0
+ E E E
+13 26
+"remove_dp_arch"
+""
+1 460 189.999999999999 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+32 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  458 188 572 222
+
+T 
+1
+LANG:1 14 remove dp arch
+"main()
+{
+  DebugTN(\"waiting ...\");
+  //---------get arch Dp Type--------------------
+  shape cb1=getShape(\"DP_arch_type\");
+  string sDptypeName,sArchDptype;
+  sDptypeName = cb1.selectedText();
+  DebugN(sDptypeName);
+  if (sDptypeName == \" HV_V\")
+    sArchDptype = \"CSC_HV_V_DATA\";
+  else if(sDptypeName == \" HV_I\")
+    sArchDptype = \"CSC_HV_I_DATA\";
+  else if(sDptypeName == \" HV_MI\")
+    sArchDptype = \"CSC_HV_M_DATA\";
+  else if(sDptypeName == \" HV_MV\")
+    sArchDptype = \"CSC_HV_M_DATA\";
+  else if(sDptypeName == \" HV_PI\")
+    sArchDptype = \"CSC_HV_P_DATA\";
+  else if(sDptypeName == \" HV_PV\")
+    sArchDptype = \"CSC_HV_P_DATA\";
+  else if(sDptypeName == \" LV_V\")
+    sArchDptype = \"CSC_LV_V_DATA\";
+  else if(sDptypeName == \" LV_I\")
+    sArchDptype = \"CSC_LV_I_DATA\";
+  else if(sDptypeName == \" TEMP\")
+    sArchDptype = \"CSC_TEMP_DATA\"; 
+  else if(sDptypeName == \" FED_V\")
+    sArchDptype = \"CSC_FED_V_DATA\";
+  else if(sDptypeName == \" FED_T\")
+    sArchDptype = \"CSC_FED_T_DATA\"; 
+  else if(sDptypeName == \" Cooling\")
+    sArchDptype = \"fwCooling_CSC_TURBINES_data\";  
+  else if(sDptypeName == \" ELMBAi\")
+    sArchDptype = \"FwElmbAi\";  
+  else if(sDptypeName == \" MAR_V\")
+    sArchDptype = \"CSC_MARATON_V_DATA\";  
+  else if(sDptypeName == \" MAR_I\")
+    sArchDptype = \"CSC_MARATON_I_DATA\"; 
+  else if(sDptypeName == \" TMB\")
+    sArchDptype = \"CSC_TMB_DATA\";  
+  else if (sDptypeName == \" Dp Type\")
+  { 
+     ChildPanelOnCentral(\"vision/MessageWarning\",\"warning\",
+                         makeDynString( \"$1:\"+\"please select a dp type\"));
+     DebugN(\"please select a dp type\");
+     return;
+   } 
+
+  dyn_string ds_dpname;
+  ds_dpname = dpNames(\"*\",sArchDptype);
+  int i,imax_dpname;
+  imax_dpname = dynlen(ds_dpname);
+  
+  for (i=1;i<=imax_dpname;i++)
+   {
+    emudcsArchive_removeDpSmoothing(ds_dpname[i]+\".value\");
+   }
+  delay(1);
+  DebugTN(\"done\");
+}
+                               " 0
+ E E E
+30 28
+"FRAME6"
+""
+1 50 423 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+35 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 0.931034482758621 0 4.477611940298491 273.448275862069 -1844.029850746261 0 E 50 423 341 491
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0 1
+LANG:1 21 modify dp arch-config
+22 29
+"DP_arch_type"
+""
+1 460 69.99999999999849 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+37 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
+0  458 68 552 102
+18
+1
+LANG:1 8  Dp Type
+
+0
+1
+LANG:1 5  HV_V
+
+0
+1
+LANG:1 5  HV_I
+
+0
+1
+LANG:1 6  HV_MV
+
+0
+1
+LANG:1 6  HV_MI
+
+0
+1
+LANG:1 6  HV_PV
+
+0
+1
+LANG:1 6  HV_PI
+
+0
+1
+LANG:1 5  LV_V
+
+0
+1
+LANG:1 5  LV_I
+
+0
+1
+LANG:1 4  TMB
+
+0
+1
+LANG:1 5  TEMP
+
+0
+1
+LANG:1 6  FED_V
+
+0
+1
+LANG:1 6  FED_T
+
+0
+1
+LANG:1 6  MAR_V
+
+0
+1
+LANG:1 6  MAR_I
+
+0
+1
+LANG:1 6  MAR_T
+
+0
+1
+LANG:1 7  ELMBAi
+
+0
+1
+LANG:1 8  Cooling
+
+0
+
+E
+E
+E
+ 1 0
+22 30
+"DeadBand"
+""
+1 460 109.999999999998 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+39 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
+0  458 108 552 142
+8
+1
+LANG:1 9  DeadBand
+
+0
+1
+LANG:1 5  0.01
+
+0
+1
+LANG:1 5  0.05
+
+0
+1
+LANG:1 4  0.1
+
+0
+1
+LANG:1 2  1
+
+0
+1
+LANG:1 3  10
+
+0
+1
+LANG:1 3  20
+
+0
+1
+LANG:1 3  30
+
+0
+
+E
+E
+E
+ 1 0
+2 33
+"PRIMITIVE_TEXT4"
+""
+1 370 79.99999999999849 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+43 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 370 79.99999999999849 407 94
+0 2 2 "0s" 0 0 0 192 0 0  370 79.99999999999849 1
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0 1
+LANG:1 7 Dp type
+2 34
+"PRIMITIVE_TEXT5"
+""
+1 370 119.999999999998 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+45 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 370 119.999999999998 423 134
+0 2 2 "0s" 0 0 0 192 0 0  370 119.999999999998 1
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0 1
+LANG:1 9 Dead band
+2 35
+"PRIMITIVE_TEXT6"
+""
+1 370 159.999999999998 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+47 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 370 159.999999999998 430 174
+0 2 2 "0s" 0 0 0 192 0 0  370 159.999999999998 1
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0 1
+LANG:1 13 Time interval
+22 36
+"Time_Int"
+""
+1 460 149.999999999998 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+49 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
+0  458 148 552 182
+6
+1
+LANG:1 10  Time(sec)
+
+0
+1
+LANG:1 4  600
+
+0
+1
+LANG:1 4  900
+
+0
+1
+LANG:1 5  3600
+
+0
+1
+LANG:1 5  7200
+
+0
+1
+LANG:1 6  28800
+
+0
+
+E
+E
+E
+ 1 0
+13 53
+"ceate_all_dps"
+""
+1 60 120 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+78 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  58 118 172 152
+
+T 
+1
+LANG:1 15 config arch dps
+"main()  
+{  
+   DebugTN(\"please waiting...\");
+//Create all archiving dps
+     emudcsArchive_setAllDpConfigs();
+//     emudcsArchive_configAllArchivingDps();   
+   DebugTN(\"done\");           
+}
+" 0
+ E E E
+13 54
+"create_archive_all"
+""
+1 60 160 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+80 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 33 MS Shell Dlg,-1,13,5,75,0,0,0,0,0
+0  58 158 172 192
+
+T 
+1
+LANG:1 10 config all
+"
+main()  
+{  
+     emudcsArchive_configAllArchivingDps();            
+}
+" 0
+ E E E
+13 55
+"detele_dp_type"
+""
+1 180 80 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+82 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  178 78 292 112
+
+T 
+1
+LANG:1 14 delete dp type
+"
+main()
+{    
+DebugTN(\"Delete dp type \");
+  dyn_string dsArchiveDpTypes = emudcsArchive_defineDpTypes(dsArchiveDpTypes);
+  for (int i=1; i <= dynlen(dsArchiveDpTypes); i++)
+   {     
+        dpTypeDelete(dsArchiveDpTypes[i]);
+   }
+  delay(1);
+  DebugTN(\"done\");
+}    " 0
+ E E E
+22 56
+"dptype_select"
+""
+1 50 259.9999999999988 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+84 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
+0  48 258 152 292
+8
+1
+LANG:1 8  Dp Type
+
+0
+1
+LANG:1 3  HV
+
+0
+1
+LANG:1 7  Master
+
+0
+1
+LANG:1 8  Primary
+
+0
+1
+LANG:1 3  LV
+
+0
+1
+LANG:1 5  TEMP
+
+0
+1
+LANG:1 8  FED_DDU
+
+0
+1
+LANG:1 8  Maraton
+
+0
+
+E
+E
+E
+ 1 0
+13 57
+"PUSH_BUTTON1"
+""
+1 170 259.9999999999988 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+86 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  168 258 232 292
+
+T 
+1
+LANG:1 6 create
+"
+   
+main()  
+{  
+   DebugTN(\"please waiting...\");
+  shape cb1=getShape(\"dptype_select\");
+  string sDptypeName,sArchDptype;
+  dyn_string dsDpName_HV,dsDpName_LV,dsDpName_TEMP,dsDpName_HVM,dsDpName_FED,dsDpName_MA,dsDpName_HVP; 
+  int i, iLen_HV,iLen_LV,iLen_TEMP,iLen_HVM,iLen_FED,iLen_MA,iLen_HVP;
+  sDptypeName = cb1.selectedText();
+  //DebugN(sDptypeName);
+  if (sDptypeName == \" HV\")
+  { 
+   dsDpName_HV = emudcsArchive_getDpNames(\"*HV\",\"HV_1_d\");   
+   iLen_HV = dynlen(dsDpName_HV);
+   //DebugN(dsDpName_HV);
+   if (iLen_HV == 0)
+   {
+     DebugTN(\"no dp at HV_1_d,skip\");
+   }
+   else
+   {
+     DebugTN(\"create archiving dps for HV\");
+     for (i=1;i<=iLen_HV;i++)
+     {  
+       DebugN(dsDpName_HV[i]);
+       emudcsArchive_setHvDpConfig(dsDpName_HV[i]);  //set config for HV dp
+     }
+   } 
+  }  
+  else if(sDptypeName == \" Master\")
+  {  
+   dsDpName_HVM = emudcsArchive_getDpNames(\"master*\",\"HV_1_d\");
+   iLen_HVM = dynlen(dsDpName_HVM);
+   //DebugN(dsDpName_HVM);
+   if (iLen_HVM == 0)
+   {
+     DebugTN(\"no master dp at HV_1_d, skip\");
+   }
+   else
+   {
+     DebugTN(\"create archiving dps for HV master\");
+     for (i=1;i<=iLen_HVM;i++)
+     {  
+       DebugN(dsDpName_HVM[i]);
+       emudcsArchive_setHvmDpConfig(dsDpName_HVM[i]);  //set config for HVM dp
+     }
+   }   
+  }  
+  else if(sDptypeName == \" Primary\")
+  {  
+   dsDpName_HVP = emudcsArchive_getDpNames(\"HV_PR_primary*\",\"HV_PR_d\");
+   iLen_HVP = dynlen(dsDpName_HVP);
+   //DebugN(dsDpName_HVP);
+   if (iLen_HVP == 0)
+   {
+     DebugTN(\"no primary dp at HV_PR_d, skip\");
+   }
+   else
+   {
+     DebugTN(\"create archiving dps for HV primary\");
+     for (i=1;i<=iLen_HVP;i++)
+     {  
+       DebugN(dsDpName_HVP[i]);
+       emudcsArchive_setHvpDpConfig(dsDpName_HVP[i]);  //set config for HVP dp
+     }
+    }
+   }   
+  else if(sDptypeName == \" LV\")
+  {  
+   dsDpName_LV = emudcsArchive_getDpNames(\"*LV\",\"LV_1_d\");
+   iLen_LV = dynlen(dsDpName_LV);
+   //DebugN(dsDpName_LV);
+   if (iLen_LV == 0)
+   {
+     DebugTN(\"no dp at LV_1_d, skip\");
+   }
+   else
+   {
+     DebugTN(\"create archiving dps for LV\");
+     for (i=1;i<=iLen_LV;i++)
+     {  
+       DebugN(dsDpName_LV[i]);
+       emudcsArchive_setLvDpConfig(dsDpName_LV[i]);  //set config for LV dp
+     }
+   } 
+  }  
+  else if(sDptypeName == \" TEMP\")
+  {  
+    dsDpName_TEMP = emudcsArchive_getDpNames(\"*TEMP\",\"TEMP_1_d\");
+   iLen_TEMP = dynlen(dsDpName_TEMP);
+   //DebugN(dsDpName_TEMP); 
+   if (iLen_TEMP == 0)
+   {
+     DebugTN(\"no dp at TEMP_1_d, skip\");
+   }
+   else
+   {
+     DebugTN(\"create archiving dps for TEMP\");
+     for (i=1;i<=iLen_TEMP;i++)
+     { 
+       DebugN(dsDpName_TEMP[i]); 
+       emudcsArchive_setTempDpConfig(dsDpName_TEMP[i]);  //set config for TEMP dp
+     }
+   }
+  }  
+  else if(sDptypeName == \" FED_DDU\")
+  {  
+    dsDpName_FED = emudcsArchive_getDpNames(\"*FED\",\"FED_1_d\");
+   iLen_FED = dynlen(dsDpName_FED);
+   //DebugN(dsDpName_FED); 
+   if (iLen_FED == 0)
+   {
+     DebugTN(\"no DDU dp at FED_1_d, skip\");
+   }
+   else
+   {
+     DebugTN(\"create archiving dps for FED DDU\");
+     for (i=1;i<=iLen_FED;i++)
+     { 
+       DebugN(dsDpName_FED[i]); 
+       emudcsArchive_setFedDpConfig(dsDpName_FED[i]);  //set config for FED DDU dp
+     }
+   }   
+  }  
+  else if(sDptypeName == \" Maraton\")
+  {  
+    dsDpName_MA = emudcsArchive_getDpNames(\"*\",\"FwWienerMarathonChannel\");
+   iLen_MA = dynlen(dsDpName_MA);
+   //DebugN(dsDpName_MA); 
+   if (iLen_MA == 0)
+   {
+     DebugN(\"no Maraton dp at FwWienerMarathonChannel, skip\");
+   }
+   else
+   {
+     DebugTN(\"create archiving dps for Maraton channel\");
+     for (i=1;i<=iLen_MA;i++)
+     {  
+       DebugN(dsDpName_MA[i]);
+       emudcsArchive_setMaDpConfig(dsDpName_MA[i]);  //set config for Maraton dp
+     }
+   }   
+  }  
+  else if (sDptypeName == \" Dp Type\")
+  { 
+     ChildPanelOnCentral(\"vision/MessageWarning\",\"warning\",
+                         makeDynString( \"$1:\"+\"please select a dp type\"));
+     DebugN(\"please select a dp type\");
+     return; 
+   } 
+  
+   delay(1);
+   DebugTN(\"done\");           
+}
+" 0
+ E E E
+30 59
+"FRAME7"
+""
+1 40 213 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+89 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1 0 1.194029850746275 0 -24.32835820895647 0 E 40 213 311 281
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0 1
+LANG:1 38 config individual dp for rdb archiving
+13 60
+"PUSH_BUTTON2"
+""
+1 240 259.9999999999988 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+91 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  238 258 302 292
+
+T 
+1
+LANG:1 6 delete
+"  
+main()  
+{  
+  DebugTN(\"please waiting...\");
+  shape cb1=getShape(\"dptype_select\");
+  string sDptypeName = cb1.selectedText();
+  int i;
+  //DebugN(sDptypeName);
+  if (sDptypeName == \" HV\")
+  { 
+   dyn_string dsDpName_HVV = emudcsArchive_getDpNames(\"*\",\"CSC_HV_V_DATA\");  
+   dyn_string dsDpName_HVI = emudcsArchive_getDpNames(\"*\",\"CSC_HV_I_DATA\"); 
+   int iLen_HVV = dynlen(dsDpName_HVV);
+     DebugTN(\"delete HV archiving dps\");
+     for (i=1;i<=iLen_HVV;i++)
+     {  
+       DebugN(dsDpName_HVV[i]);
+       dpDelete(dsDpName_HVV[i]);
+       DebugN(dsDpName_HVI[i]);
+       dpDelete(dsDpName_HVI[i]);       
+     }
+   }   
+  else if(sDptypeName == \" Master\")
+  {  
+   dyn_string dsDpName_HVM = emudcsArchive_getDpNames(\"*\",\"CSC_HV_M_DATA\");
+   int iLen_HVM = dynlen(dsDpName_HVM);
+   //DebugN(dsDpName_HVM);
+     DebugTN(\"delete HV master archiving dps\");
+     for (i=1;i<=iLen_HVM;i++)
+     {  
+       DebugN(dsDpName_HVM[i]);
+       dpDelete(dsDpName_HVM[i]);
+     }
+   }  
+  else if(sDptypeName == \" Primary\")
+  {  
+   dyn_string dsDpName_HVP = emudcsArchive_getDpNames(\"*\",\"CSC_HV_P_DATA\");
+   int iLen_HVP = dynlen(dsDpName_HVP);
+   //DebugN(dsDpName_HVP);
+     DebugTN(\"delete HV primary archiving dps\");
+     for (i=1;i<=iLen_HVP;i++)
+     {  
+       DebugN(dsDpName_HVP[i]);
+       dpDelete(dsDpName_HVP[i]);
+     }
+   }      
+  else if(sDptypeName == \" LV\")
+  {  
+   dyn_string dsDpName_LVV = emudcsArchive_getDpNames(\"*\",\"CSC_LV_V_DATA\");
+   dyn_string dsDpName_LVI = emudcsArchive_getDpNames(\"*\",\"CSC_LV_I_DATA\");
+   dyn_string dsDpName_TMB = emudcsArchive_getDpNames(\"*\",\"CSC_TMB_DATA\");
+   int iLen_LVV = dynlen(dsDpName_LVV);
+   //DebugN(dsDpName_LV);
+     DebugTN(\"delete LV archiving dps\");
+     for (i=1;i<=iLen_LVV;i++)
+     {  
+       DebugN(dsDpName_LVV[i]);
+       dpDelete(dsDpName_LVV[i]);
+       DebugN(dsDpName_LVI[i]);
+       dpDelete(dsDpName_LVI[i]);
+     }
+    int iLen_TMB = dynlen(dsDpName_TMB);
+    for (i=1;i<=iLen_TMB;i++)
+     {  
+       DebugN(dsDpName_TMB[i]);
+       dpDelete(dsDpName_TMB[i]);
+     } 
+    
+  }  
+  else if(sDptypeName == \" TEMP\")
+  {  
+   dyn_string dsDpName_TEMP = emudcsArchive_getDpNames(\"*\",\"CSC_TEMP_DATA\");
+   int iLen_TEMP = dynlen(dsDpName_TEMP);
+   //DebugN(dsDpName_TEMP); 
+   
+     DebugTN(\"delete TEMP archiving dps\");
+     for (i=1;i<=iLen_TEMP;i++)
+     { 
+       DebugN(dsDpName_TEMP[i]); 
+       dpDelete(dsDpName_TEMP[i]); 
+     }
+  }  
+  else if(sDptypeName == \" FED_DDU\")
+  {  
+   dyn_string dsDpName_FEDV = emudcsArchive_getDpNames(\"*\",\"CSC_FED_V_DATA\");
+   dyn_string dsDpName_FEDT = emudcsArchive_getDpNames(\"*\",\"CSC_FED_T_DATA\");
+   int iLen_FEDV = dynlen(dsDpName_FEDV);
+   //DebugN(dsDpName_FED); 
+     DebugTN(\"delete FED archiving dps\");
+     for (i=1;i<=iLen_FEDV;i++)
+     { 
+       DebugN(dsDpName_FEDV[i]); 
+       dpDelete(dsDpName_FEDV[i]);
+       DebugN(dsDpName_FEDT[i]); 
+       dpDelete(dsDpName_FEDT[i]);
+     }  
+  }  
+  else if(sDptypeName == \" Maraton\")
+  {  
+   dyn_string dsDpName_MAV = emudcsArchive_getDpNames(\"*\",\"CSC_MARATON_V_DATA\");
+   dyn_string dsDpName_MAI = emudcsArchive_getDpNames(\"*\",\"CSC_MARATON_I_DATA\");
+   dyn_string dsDpName_MAT = emudcsArchive_getDpNames(\"*\",\"CSC_MARATON_T_DATA\");
+   int iLen_MAV = dynlen(dsDpName_MAV);
+   //DebugN(dsDpName_MA); 
+     DebugTN(\"delete maraton channel archiving dps\");
+     for (i=1;i<=iLen_MAV;i++)
+     {  
+       DebugN(dsDpName_MAV[i]);
+       dpDelete(dsDpName_MAV[i]);
+       DebugN(dsDpName_MAI[i]);
+       dpDelete(dsDpName_MAI[i]);
+       DebugN(dsDpName_MAT[i]);
+       dpDelete(dsDpName_MAT[i]);
+     }   
+  }  
+  else if (sDptypeName == \" Dp Type\")
+  { 
+     ChildPanelOnCentral(\"vision/MessageWarning\",\"warning\",
+                         makeDynString( \"$1:\"+\"please select a dp type\"));
+     DebugN(\"please select a dp type\");
+     return; 
+   } 
+  
+   delay(1);
+   DebugTN(\"done\");           
+}
+" 0
+ E E E
+14 61
+"TEXT_FIELD1"
+""
+1 520 30 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+92 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+0
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  518 28 592 51
+3 "0s" 0 0 0 0 0 -1  E "// SimpleCtrlScriptStart {invalid}
+main()
+{
+  EP_textFieldIn();
+}
+
+EP_textFieldIn()
+{
+dyn_errClass err;
+
+  if( !dpExists( \"fwInstallation_CMS_CSCfw_RdbArchive.componentVersionString:_online.._value\"))
+  {
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+    return;
+  }
+
+  dpConnect(\"EP_textFieldInCB\",
+            \"fwInstallation_CMS_CSCfw_RdbArchive.componentVersionString:_online.._value\");
+  err = getLastError();
+  if (dynlen(err) > 0)
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+
+}
+
+EP_textFieldInCB(string dp, string sNewValue)
+{
+  setValue(\"\", \"text\", dpValToString(dp, \"Version:\"+sNewValue, FALSE) );
+}
+
+// SimpleCtrlScript {EP_textFieldIn}
+// DP {fwInstallation_CMS_CSCfw_GAS.componentVersionString}
+// DPConfig {:_online.._value}
+// DPType {string}
+// UseDPUnit {FALSE}
+// UseDPFormat {TRUE}
+// SimpleCtrlScriptEnd {EP_textFieldIn}
+" 0
+ E
+13 62
+"set_MA_status"
+""
+1 339.9999999999999 270 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+93 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  338 268 452 302
+
+T 
+1
+LANG:1 13 set MA status
+"main()
+{
+  dyn_string dsDpName_MA;
+  int iLen_MA,i;
+  dsDpName_MA = dpNames( \"*\",\"FwWienerMarathonChannel\");  
+   iLen_MA = dynlen(dsDpName_MA);
+   //DebugN(dsDpName_MA); 
+   if (iLen_MA == 0)
+   {
+     DebugN(\"no Maraton dp at FwWienerMarathonChannel, skip\");
+   }
+   else
+   {
+     DebugTN(\"set archiving config for Maraton channel status\");
+     for (i=1;i<=iLen_MA;i++)
+     {  
+       DebugN(dsDpName_MA[i]);
+         emudcsArchive_setMaStatusConfig(dsDpName_MA[i]); //set config for Maraton status
+       
+     }
+   }
+   delay(1);
+   DebugTN(\"done\");  
+} 
+" 0
+ E E E
+13 63
+"remove_MA_status"
+""
+1 460 270 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+94 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  458 268 572 302
+
+T 
+1
+LANG:1 16 remove MA status
+"main()
+{
+  dyn_string dsDpName_MA;
+  int iLen_MA,i;
+  dsDpName_MA = dpNames( \"*\",\"FwWienerMarathonChannel\");  
+   iLen_MA = dynlen(dsDpName_MA);
+   //DebugN(dsDpName_MA); 
+   if (iLen_MA == 0)
+   {
+     DebugN(\"no Maraton dp at FwWienerMarathonChannel, skip\");
+   }
+   else
+   {
+     DebugTN(\"remove archiving config for Maraton channel status\");
+     for (i=1;i<=iLen_MA;i++)
+     {  
+       DebugN(dsDpName_MA[i]);
+         emudcsArchive_removeMaStatusConfig(dsDpName_MA[i]); //set config for Maraton status
+       
+     }
+   }
+    delay(1);
+    DebugTN(\"done\");
+} 
+
+void emudcsArchive_removeMaStatusConfig(string sDpName)
+{
+  dyn_string ds = makeDynString( sDpName + \".Status.FailureMaxTemperature\",
+                                 sDpName + \".Status.FailureMaxCurrent\",
+                                 sDpName + \".Status.FailureMaxSenseVoltage\",
+                                 sDpName + \".Status.FailureMaxTerminalVoltage\",
+                                 sDpName + \".Status.FailureMinSenseVoltage\");
+  for (int i=1; i<=dynlen(ds);i++)
+  {
+    emudcsArchive_removeDpSmoothing(ds[i]);
+  }
+}  
+
+" 0
+ E E E
+13 64
+"set_LV_status"
+""
+1 339.9999999999999 310 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+95 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  338 308 452 342
+
+T 
+1
+LANG:1 13 set LV status
+"main()
+{
+  dyn_string dsDpName_LV;
+  int iLen_LV,i;
+  dsDpName_LV = dpNames( \"*LV\",\"LV_1_d\");  
+   iLen_LV = dynlen(dsDpName_LV);
+   //DebugN(dsDpName_LV); 
+   if (iLen_LV == 0)
+   {
+     DebugN(\"no LV dp at LV_1_d, skip\");
+   }
+   else
+   {
+     DebugTN(\"set archiving config for LV status\");
+     for (i=1;i<=iLen_LV;i++)
+     {  
+      DebugN(dsDpName_LV[i]);
+      emudcsArchive_setDpSmoothingInt(dsDpName_LV[i]+\".status\",iTolStatus,iTimeStatus); //set archiving for status at LV_1_d       
+     }
+   }
+   delay(1);
+   DebugTN(\"done\");  
+} 
+" 0
+ E E E
+13 65
+"remove_LV_status"
+""
+1 460 310 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+96 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  458 308 572 342
+
+T 
+1
+LANG:1 16 remove LV status
+"main()
+{
+  dyn_string dsDpName_LV;
+  int iLen_LV,i;
+  dsDpName_LV = dpNames( \"*LV\",\"LV_1_d\");  
+   iLen_LV = dynlen(dsDpName_LV);
+   //DebugN(dsDpName_LV); 
+   if (iLen_LV == 0)
+   {
+     DebugN(\"no LV dp at LV_1_d, skip\");
+   }
+   else
+   {
+     DebugTN(\"set archiving config for LV status\");
+     for (i=1;i<=iLen_LV;i++)
+     {  
+      DebugN(dsDpName_LV[i]);
+      emudcsArchive_removeDpSmoothing(dsDpName_LV[i]+\".status\");      
+     }
+   }
+   delay(1);
+   DebugTN(\"done\");  
+}   
+
+
+" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0

@@ -1,0 +1,9 @@
+# ascii dump of database
+
+# DpType
+TypeName
+St_CmsCscUpsStatus.St_CmsCscUpsStatus	23#1
+
+# Datapoint/DpId
+DpName	TypeName	ID
+CMS_CSC_UPS_LV_On_Battery	St_CmsCscUpsStatus	101426

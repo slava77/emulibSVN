@@ -1,0 +1,577 @@
+V 10
+2
+LANG:1 19 fwElmbNodeCreateRef
+LANG:5 19 fwElmbNodeCreateRef
+PANEL,556 267 441 253 N "_3DFace" 4
+"$bModify"
+"$sDpName"
+"$sElmbDp"
+"$sElmbName"
+EEE E E 1 -1 -1 0  0 0
+"" 0 1
+E"// ************************************************************************************
+// Function:		pnlNodeIDSelectorUpdate
+//
+// Description:	Updates the node IDs available from the combo box
+//
+// Returns:			None
+// ************************************************************************************
+void pnlNodeIDSelectorUpdate()
+{
+// Local Variables
+// ---------------
+	bool bStandardElmb;
+	bool bModify;
+	
+	int i;
+	int iNodeId;
+	int iTemp;
+	int iPos = 0;
+	
+	string sNodeId;
+	
+	dyn_string dsNodeIDs;
+
+// Executable Code
+// ---------------
+	// Get whether to limit node IDs to 63
+	bStandardElmb = chkStandardElmb.state(0);
+	
+	// Call function to get all available node IDs
+	fwElmb_getAvailableNodeIdList($sDpName, dsNodeIDs, bStandardElmb);
+	
+	if (isDollarDefined(\"$bModify\")) {
+		bModify = $bModify;
+		if (bModify) {
+			dpGet($sElmbDp + \".id\", sNodeId);
+			iNodeId = sNodeId;
+			for (i = 1; i <= dynlen(dsNodeIDs); i++) {
+				iTemp = dsNodeIDs[i];
+				if (iNodeId < iTemp) {
+					iPos = i;
+					dynInsertAt(dsNodeIDs, sNodeId, iPos);
+					break;
+				}
+			}
+			if (iPos == 0) {
+				dynAppend(dsNodeIDs, sNodeId);
+				iPos = dynlen(dsNodeIDs);
+			}
+		}
+	}
+	
+	// Populate the list
+	cmbNodeIDSelector.items = dsNodeIDs;
+	if (dynlen(dsNodeIDs) > 0) {
+		if (iPos > 0)
+			cmbNodeIDSelector.selectedPos = iPos;
+		else
+			cmbNodeIDSelector.selectedPos = 1;
+	}
+		
+	// Return to calling routine
+	return;
+}
+
+// ************************************************************************************
+// Function:		pnlCreateNode
+//
+// Description:	Creates an ELMB node using the information from the panel
+//
+// Returns:			None
+// ************************************************************************************
+void pnlCreateNode()
+{
+// Local Variables
+// ---------------
+	bool bModify;
+	bool bIsRunning;
+	bool bUseDefaultAddressing;
+	
+	int iDriverNumber;
+
+	string sNodeID;
+	string sUserName;
+	string sComment;
+	
+	dyn_float df;
+	
+	dyn_string dsExceptionInfo;
+	dyn_string ds;
+
+// Executable Code
+// ---------------
+	// Check for modify only
+	if (isDollarDefined(\"$bModify\")) {
+		bModify = $bModify;
+		if (bModify) {
+			sNodeID = cmbNodeIDSelector.text;
+			sComment = txtComment.text;
+			fwElmb_setValuesToElmb($sElmbDp, sComment, sNodeID, dsExceptionInfo);
+			if (dynlen(dsExceptionInfo) > 0)
+				fwExceptionHandling_display(dsExceptionInfo);
+		  pnlNodeIDSelectorUpdate();
+			return;
+		}
+	}
+
+	// Check correct driver is running
+	bIsRunning = fwElmbUser_checkDefaultDriver(iDriverNumber, dsExceptionInfo);
+	if (dynlen(dsExceptionInfo) > 0) {
+		fwExceptionHandling_display(dsExceptionInfo);
+		return;
+	} else if (!bIsRunning) {
+		// Display panel indicating what the problem is and how to fix it
+		ChildPanelOnCentralReturn(\"fwElmb/fwElmbDriverMessage.pnl\", 
+															\"Warning\",
+															makeDynString(\"$drvNum:\" + iDriverNumber),
+															df, ds);
+		return;
+	}
+	
+	// Get information from panel
+ 	sUserName = txtUserName.text;
+	sNodeID = cmbNodeIDSelector.text;
+	sComment = txtComment.text;
+	bUseDefaultAddressing = chbOpcAddressing.state(0);
+
+	// Start progress bar to indicate system is busy
+	fwOpenProgressBar(\"ELMB Node creation\", \"In progress. Please wait...\", 1);
+
+	fwElmbUser_createElmb(sUserName, 
+	                      sComment, 
+	                      $sDpName, 
+	                      sNodeID, 
+	                      bUseDefaultAddressing, 
+	                      dsExceptionInfo);
+	
+	if (dynlen(dsExceptionInfo) > 0) {
+		fwCloseProgressBar(sUserName + \" creation encountered errors\");
+		fwExceptionHandling_display(dsExceptionInfo);
+	} else {
+		fwCloseProgressBar(sUserName + \" creation completed successfully\");
+		lblLastSuccessfulCreate.text = sUserName;
+	}	
+	
+  pnlNodeIDSelectorUpdate();
+
+	// Return to calling routine
+	return;
+}
+" 0
+ 2
+"CBRef""0"
+"EClose"E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 3
+"txtTitle"
+""
+1 10 87 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+5 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+1
+"dashclr"N "_Transparent"
+"main()
+{
+// Local Variables
+// ---------------
+	bool bModify;
+	
+	langString lsComment;
+
+// Executable Code
+// ---------------
+	// Check for 'modify' flag
+	if (isDollarDefined(\"$bModify\")) {
+		bModify = $bModify;
+		if (bModify) {
+			txtTitle.text = \"Modify Elmb Node\";
+			txtUserName.text = $sElmbName;
+			txtUserName.enabled = false;
+			lsComment = dpGetDescription($sElmbDp + \".\");
+			txtComment.text = lsComment;
+			chbOpcAddressing.enabled = false;
+		}
+	}
+
+	// Return to calling routine
+	return;
+}" 0
+ E 0 1 1 0 1 E U  0 E 12 12 278 36
+0 2 0 "s" 0 0 0 64 0 0  12 12
+ 1
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-180-100-100-*-*-iso8859-1|-21,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-180-100-100-*-*-iso8859-1|-21,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 16 Create Elmb Node
+LANG:5 16 Create Elmb Node
+2 2
+"lblUserName"
+""
+1 14 53 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+6 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 16 55 115 73
+0 2 0 "s" 0 0 0 64 0 0  16 55
+ 1
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 10 Elmb Name:
+LANG:5 11 Elmb Label:
+2 16
+"lblNodeID"
+""
+1 290 125 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+15 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 292 127 342 143
+0 2 0 "s" 0 0 0 192 0 0  292 127
+ 1
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 8 Node ID:
+LANG:5 8 Node ID:
+2 17
+"lblComment"
+""
+1 14 87 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+16 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 16 89 115 107
+0 2 0 "s" 0 0 0 64 0 0  16 89
+ 1
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 7 Comment
+LANG:5 7 Comment
+30 22
+"frmOPCAddressing"
+""
+1 14 210 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+19 0 0 0 0 0
+EE E
+1
+2
+LANG:1 0 
+LANG:5 0 
+0
+E E 0 1 1 0 1 E U  0 E 14 150 431 210
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 0 
+LANG:5 0 
+2 32
+"lblLastSuccessfulCreate"
+""
+1 10 220 E E E 1 E 0 E N "_WindowText" E N "_Transparent" E E
+ E E
+26 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 222 198 238
+1 2 0 "s" 0 0 0 64 0 0  12 222
+ 1
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 0 
+22 15
+"cmbNodeIDSelector"
+""
+1 350 124 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+14 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+348 122 432 149
+0
+"main()
+{
+	// Call function to populate the list
+	pnlNodeIDSelectorUpdate();
+}" 0
+
+E
+E
+ 0 0
+14 18
+"txtComment"
+""
+1 130 84 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+17 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+128 82 431 109
+3 "s" 0 0 0 0 0 0 
+E
+E
+E
+20 25
+"chbOpcAddressing"
+""
+1 25 160 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+22 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+23 158 220 202
+1
+T 
+2
+LANG:1 23 Default OPC addressing?
+LANG:5 23 Default OPC addressing?
+ 1
+1
+LANG:1 0 
+ E  E  0 0 0 0 0
+1
+E E 
+E"main(int button, bool state)
+{
+	dyn_string df;
+	dyn_string ds;
+	
+	if (!state) {
+		ChildPanelOnCentralReturn(\"vision/MessageInfo3\",
+															\"Question\",
+															makeDynString(\"Unselecting this option you'll have to address\\nyour devices by hand.\\nAre you sure you want to do it?\", \"Yes\", \"No\", \"Cancel\"), df, ds);
+		if(df[1]!= 1)
+			this.state(button) = true;
+	}
+	
+	return;
+}" 0
+14 29
+"txtUserName"
+""
+1 130 51 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+25 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+128 49 431 76
+3 "s" 0 0 0 0 0 0 
+E
+E
+E
+20 31
+"chkStandardElmb"
+""
+1 20 125 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+26 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+18 123 272 147
+1
+T 
+1
+LANG:1 36 Limit Node IDs to 63 (Standard ELMB)
+ 1
+1
+LANG:1 0 
+ E  E  0 0 0 0 0
+1
+E E 
+E"main(int button, bool state)
+{
+	// Call function to update node IDs
+	pnlNodeIDSelectorUpdate();
+}" 0
+13 33
+"cmdOK"
+""
+1 210 220 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+27 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+208 218 282 245
+T 
+1
+LANG:1 2 OK
+"main()
+{
+	string sText;
+	pnlCreateNode();
+	sText = lblLastSuccessfulCreate.text;
+	if (strlen(sText) > 0)
+		PanelOffReturn(makeDynFloat(1.0), makeDynString(lblLastSuccessfulCreate.text));
+	else
+		PanelOffReturn(makeDynFloat(0.0), makeDynString());
+}" 0
+ E E E
+13 34
+"cmdApply"
+""
+1 285 220 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+28 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+283 218 357 245
+T 
+1
+LANG:1 5 Apply
+"main()
+{
+	pnlCreateNode();
+}" 0
+ E E E
+13 35
+"cmdClose"
+""
+1 360 220 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+29 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+358 218 432 245
+T 
+1
+LANG:1 5 Close
+"main()
+{
+	string sText;
+	sText = lblLastSuccessfulCreate.text;
+	if (strlen(sText) > 0)
+		PanelOffReturn(makeDynFloat(1.0), makeDynString(lblLastSuccessfulCreate.text));
+	else
+		PanelOffReturn(makeDynFloat(0.0), makeDynString());
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0

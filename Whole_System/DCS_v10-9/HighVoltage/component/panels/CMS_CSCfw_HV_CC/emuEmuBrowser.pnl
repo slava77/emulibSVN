@@ -1,0 +1,534 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 449 482 N "_3DFace" 2
+"$project_station"
+"$project_system"
+"main()
+{
+  $project_system;
+  $project_station;
+
+//////////mudcsDebug($sDpName);
+}" 0
+ E E E E 1 -1 -1 0  240 34
+""0  1
+E "#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs2.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs3.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs4.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcsDim.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuAlert.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emufw.ctl\"" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 6
+"RECTANGLE1"
+""
+1 100 100 E E E 1 E 1 E N {0,0,255} E N {0,204,255} E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+/////////   dpConnect(\"update_function\",CSC_fwG_g_SYSTEM_NAME+\":treeBrowser_control_resp.\");
+}
+
+//===========================================
+update_function(string dpName, string value){ 
+
+dyn_string test_dyn_string;
+string test_string;
+
+ dpGet(CSC_fwG_g_SYSTEM_NAME+\":treeBrowser_control_resp.\",test_dyn_string);
+
+ if(test_dyn_string[1] == \"RESULT_FALSE\" && strpos(test_dyn_string[2],\"Wheelm4|\"+CSC_fwG_g_SYSTEM_NAME) >=0 ){
+
+  dpSet(CSC_fwG_g_SYSTEM_NAME+\":treeBrowser_control.\",makeDynString(\"expand1\",\"Csc1|\"+CSC_fwG_g_SYSTEM_NAME+\":Csc_o\"));
+
+ }
+ else if(test_dyn_string[1] == \"RESULT_OK\" && strpos(test_dyn_string[2],\"Csc1|\") >=0 ){
+
+  dpSet(CSC_fwG_g_SYSTEM_NAME+\":treeBrowser_control.\",makeDynString(\"expand1\",\"Wheelm4|\"+CSC_fwG_g_SYSTEM_NAME));
+
+ }
+//===
+
+ }
+//===========================================
+" 0
+ "main()
+{
+   
+/* fsm
+string test_string;
+int pos;
+
+dpSet(CSC_fwG_g_SYSTEM_NAME+\":treeBrowser_control.\", 
+ makeDynString(\"expand1\",\"Diskm4|\"+CSC_fwG_g_SYSTEM_NAME,\"Csc1|\"+CSC_fwG_g_SYSTEM_NAME+\":Csc_o\"));
+
+*/
+
+/* 10/06/2004 commented out: probably to use for fsm browsing
+
+dyn_string params_0,params,params1;
+int i;
+
+//mudcsDebug2($pars_obj);
+params_0=strsplit($pars_obj,\"\\n\");
+
+params=strsplit(params_0[1],\",\");
+//mudcsDebug2(mudcs_parameters_obj[1]);
+
+params1=makeDynString(params[1],params[3],params[2],params[5]);
+
+dpSetWait(\"mudcs_ToDo.params:_original.._value\",params1);
+//makeDynString($domain,$logobj,$obj,$parent));
+dpSetWait(\"mudcs_ToDo.action:_original.._value\",\"double_click_on_objtitle_pnl_child\");
+
+*/
+
+}
+
+" 0
+ 0 2 0 0 1 E 0.75 -4.45806814344369e-23 3.97046694025453e-23 0.842105263157895 -45 -44.2105263157895 1 E 100 100 140 480
+6 10
+"RECTANGLE1"
+""
+1 100 100 E E E 1 E 1 E N {0,0,255} E N {0,204,255} E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E "// SimpleCtrlScriptStart {invalid}
+main()
+{
+/////////////////////  EP_childPanelOn();
+}
+
+/*
+EP_childPanelOn()
+{
+  ChildPanelOnCentral(\"CSCDisk-3.pnl\",
+      \"CSC Disk -3\",
+      makeDynString(WHICH_MODE,WHICH_SYSTEM));
+}
+*/
+
+// SimpleCtrlScript {EP_childPanelOn}
+// Function {ChildPanelOnCentral}
+// File {CSCDisk-3.pnl}
+// Panel {CSC Disk -3}
+// Parent {}
+// Module {}
+// OffsetX {0}
+// OffsetY {0}
+// SimpleCtrlScriptEnd {EP_childPanelOn}
+" 0
+ 0 2 0 0 1 E 0.75 -4.5973827729263e-23 3.97046694025453e-23 0.868421052631579 5 -46.8421052631579 1 E 100 100 140 480
+6 11
+"RECTANGLE1"
+""
+1 100 100 E E E 1 E 1 E N {0,0,255} E N {0,204,255} E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E "main()
+{
+/////////////////////////  EP_childPanelOn();
+}
+/*
+EP_childPanelOn()
+{
+  ChildPanelOnCentral(\"CSCDisk.pnl\",
+      \"CSCDisk\",
+      makeDynString(WHICH_MODE,WHICH_SYSTEM));
+}
+*/" 0
+ 0 2 0 0 1 E 0.75 -4.73669740240892e-23 3.97046694025453e-23 0.8947368421052631 55 -49.4736842105263 1 E 100 100 140 480
+6 12
+"RECTANGLE1"
+""
+1 100 100 E E E 1 E 1 E N {0,0,255} E N {0,204,255} E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+
+}" 0
+ E 0 2 0 0 1 E 0.75 -4.87601203189153e-23 3.97046694025453e-23 0.921052631578947 105 -52.1052631578947 1 E 100 100 140 480
+6 13
+"RECTANGLE1"
+""
+1 100 100 E E E 1 E 1 E N {0,0,255} E N {0,204,255} E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 2 0 0 1 E 0.75 -4.87601203189153e-23 3.97046694025453e-23 0.921052631578947 175 -52.1052631578947 1 E 100 100 140 480
+6 14
+"RECTANGLE1"
+""
+1 100 100 E E E 1 E 1 E N {0,0,255} E N {0,204,255} E E
+ E E
+22 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 2 0 0 1 E 0.75 -4.73669740240892e-23 3.97046694025453e-23 0.8947368421052631 225 -49.4736842105263 1 E 100 100 140 480
+6 15
+"RECTANGLE1"
+""
+1 100 100 E E E 1 E 1 E N {0,0,255} E N {0,204,255} E E
+ E E
+24 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 2 0 0 1 E 0.75 -4.5973827729263e-23 3.97046694025453e-23 0.868421052631579 275 -46.8421052631579 1 E 100 100 140 480
+6 16
+"RECTANGLE1"
+""
+1 100 100 E E E 1 E 1 E N {0,0,255} E N {0,204,255} E E
+ E E
+26 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 2 0 0 1 E 0.75 -4.45806814344369e-23 3.97046694025453e-23 0.842105263157895 325 -44.2105263157895 1 E 100 100 140 480
+15 64
+"CLOCK1"
+""
+1 290 0 E E E 1 E 1 E N "Black" E N {255,255,255} E E
+ E E
+127 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-fixed-*-i-normal-*-15-*-100-100-*-*-iso8859-1|-15,0,0,0,505,1,0,0,0,0,0,0,0,fixed
+0 ""
+ 290 0 411 40
+E 1 1 "%H:%M" "%d.%B %Y"
+1 0 1 1
+1
+LANG:1 84 -*-fixed-*-i-normal-*-15-*-100-100-*-*-iso8859-1|-15,0,0,0,505,1,0,0,0,0,0,0,0,fixed
+0 ""
+ 1
+LANG:1 84 -*-fixed-*-i-normal-*-15-*-100-100-*-*-iso8859-1|-15,0,0,0,505,1,0,0,0,0,0,0,0,fixed
+0 ""
+
+13 118
+"PUSH_BUTTON5"
+""
+1 100 0 E E E 1 E 1 E N "_3DText" E N {255,0,0} E E
+ E E
+223 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 91 -*-courier-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,courier
+0 ""
+ 100 0 180 32
+
+T 
+1
+LANG:1 5 CLOSE
+"// SimpleCtrlScriptStart {valid}
+main()
+{
+  EP_panelOff();
+}
+
+EP_panelOff()
+{
+  PanelOff();
+}
+
+// SimpleCtrlScript {EP_panelOff}
+// Function {PanelOff}
+// Panel {}
+// Module {}
+// SimpleCtrlScriptEnd {EP_panelOff}
+" 0
+ E E E
+4 165
+"LINE2"
+""
+1 230 350 E E E 1 E 1 E N {255,255,255} E N "_3DFace" E E
+ E E
+313 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 4 2 0 1 E  230 350 229.855020959386 49.8643053624582
+13 166
+"back"
+""
+1 10 0 E E E 1 E 1 E N "_3DText" E N {0,153,153} E E
+ E E
+315 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 91 -*-courier-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,courier
+0 ""
+ 10 0 90 32
+
+T 
+1
+LANG:1 4 BACK
+"main()
+{
+/* fsm
+string parent;
+int pos;
+
+pos = strpos($sParentReference,\";\");
+
+parent=substr($sParentReference,0,pos)+\"|\";
+dpSet(CSC_fwG_g_SYSTEM_NAME+\":treeBrowser_control.\",makeDynString(\"back\",parent));
+*/
+
+//=======================================================
+/*
+// 10/06/2004 commented out 
+// probably to use in fsm browsing
+dyn_string params_0,params,params1;
+int i;
+
+///////mudcsDebug2($pars_parent);
+params_0=strsplit($pars_parent,\";\");
+
+params=strsplit(params_0[1],\",\");
+
+
+if(params[1]==\"Super\")fwUi_showFsmObject(\"Super\", \"Super\", \"Super\");
+
+else{
+params1=makeDynString(params[1],params[2],params[3],params[4]);
+//params1=makeDynString(params[1],params[3],params[2],params[5]);
+
+//params1=makeDynString(params[5],params[5]+\"::\"+params[5],params[5]+\"::\"+params[5],params[5]);
+
+dpSetWait(\"mudcs_ToDo.params:_original.._value\",params1);
+//makeDynString($domain,$logobj,$obj,$parent));
+dpSetWait(\"mudcs_ToDo.action:_original.._value\",\"double_click_on_objtitle_pnl_parent\");
+
+
+} // else
+*/
+//===========================================
+}" 0
+ E E E
+13 167
+"rc"
+""
+1 20 440 E E E 1 E 1 E N "_3DText" E N {0,153,153} E E
+ E E
+317 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 91 -*-courier-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,courier
+0 ""
+ 20 440 430 472
+
+T 
+1
+LANG:1 6 RC OFF
+"main()
+{
+
+int flag;
+
+  dpGet(CSC_fwG_g_SYSTEM_NAME+\":RUNCONTROL_FLAG.\",flag);
+
+if(flag){
+ setValue(\"\",\"text\",\"CLICK TO ENABLE DCS HYPERDAQ\");
+ setValue(\"\",\"backCol\",\"{255,0,0}\");
+ dpSet(CSC_fwG_g_SYSTEM_NAME+\":RUNCONTROL_FLAG.\",0);
+}
+else{
+ setValue(\"\",\"text\",\"CLICK TO DISABLE DCS HYPERDAQ\");
+ setValue(\"\",\"backCol\",\"{0,153,153}\");
+ dpSet(CSC_fwG_g_SYSTEM_NAME+\":RUNCONTROL_FLAG.\",1);
+
+}
+
+//===========================================
+}" 0
+ E E "main()
+{
+int flag;
+
+  dpGet(CSC_fwG_g_SYSTEM_NAME+\":RUNCONTROL_FLAG.\",flag);
+
+if(!flag){
+ setValue(\"\",\"text\",\"CLICK TO ENABLE DCS HYPERDAQ\");
+ setValue(\"\",\"backCol\",\"{255,0,0}\");
+}
+else{
+ setValue(\"\",\"text\",\"CLICK TO DISABLE DCS HYPERDAQ\");
+ setValue(\"\",\"backCol\",\"{0,153,153}\");
+
+}
+}" 0
+
+13 168
+"interlock"
+""
+1 20 400 E E E 1 E 0 E N "_3DText" E N {0,153,153} E E
+ E E
+319 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 91 -*-courier-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,courier
+0 ""
+ 20 400 430 432
+
+T 
+1
+LANG:1 12 DCSINTERLOCK
+"main()
+{
+
+int flag;
+
+  dpGet(CSC_fwG_g_SYSTEM_NAME+\":CSC_INTERLOCK_FLAG.\",flag);
+
+if(flag){
+ setValue(\"\",\"text\",\"CLICK TO ENABLE DCS_INTERLOCK\");
+ setValue(\"\",\"backCol\",\"{0,153,153}\");
+ dpSet(CSC_fwG_g_SYSTEM_NAME+\":CSC_INTERLOCK_FLAG.\",0);
+ CSC_fwG_g_CSC_INTERLOCK_FLAG=0;
+}
+else{
+ setValue(\"\",\"text\",\"CLICK TO DISABLE DCS_INTERLOCK\");
+ setValue(\"\",\"backCol\",\"{255,0,0}\");
+ dpSet(CSC_fwG_g_SYSTEM_NAME+\":CSC_INTERLOCK_FLAG.\",1);
+ CSC_fwG_g_CSC_INTERLOCK_FLAG=1;
+}
+
+//===========================================
+}" 0
+ E E "main()
+{
+int flag;
+
+  dpGet(CSC_fwG_g_SYSTEM_NAME+\":CSC_INTERLOCK_FLAG.\",flag);
+ CSC_fwG_g_CSC_INTERLOCK_FLAG=flag;
+
+if(!flag){
+ setValue(\"\",\"text\",\"CLICK TO ENABLE DCS_INTERLOCK\");
+ setValue(\"\",\"backCol\",\"{0,153,153}\");
+}
+else{
+ setValue(\"\",\"text\",\"CLICK TO DISABLE DCS_INTERLOCK\");
+ setValue(\"\",\"backCol\",\"{255,0,0}\");
+
+
+}
+}" 0
+
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

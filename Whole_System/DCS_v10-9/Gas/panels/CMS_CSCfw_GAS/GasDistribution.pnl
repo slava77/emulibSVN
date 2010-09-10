@@ -1,0 +1,854 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 668 571 N "_3DFace" 0
+"dyn_string tableCols;
+
+
+
+main()
+{
+dynAppend(tableCols,\"Pressure\");
+dynAppend(tableCols,\"InFlow\");
+dynAppend(tableCols,\"OutFlow\");
+dynAppend(tableCols,\"Isolation_Valve\");
+dynAppend(tableCols,\"chn\");
+  
+  
+  mudcsGasInit();
+  mudcsGasSystemMeanings();
+ string s_rack1, s_rack2;
+ dyn_string split_rack;
+ getValue(\"rack_number\",\"text\",s_rack1);
+ split_rack=strsplit(s_rack1,\"_\");
+ s_rack1=split_rack[dynlen(split_rack)];
+ rack=s_rack1;  
+   setValue(\"rack\",\"text\",rack);
+  dpConnect(\"update\",mudcsGasAddSystem(\"GasDistribution_o.State\"));
+ 
+
+}
+
+update(string dp, string value){
+
+  int number_of_lines,   line_count;
+dyn_string values;
+
+ setValue(\"table\",\"deleteAllLines\");    
+getValue(\"table\",\"lineCount\",number_of_lines);
+  
+int i,j;  
+    
+int State;
+bool BUSource; 
+float TotalInputFlow;
+ 
+int StateRack;
+float  InPressure22;
+float  ChPressure;
+float  RegPressure;
+float  InPressure24;
+float  OutManifoldPressure;
+
+dyn_float Pressure;
+dyn_float InFlow;
+dyn_float OutFlow;
+dyn_float Isolation_Valve;
+
+int channels_number;
+dyn_int channels_specific=makeDynInt(1,4,7,10,13,16);
+ if(rack==65 || rack==70)channels_number=6;
+ else if(rack==61 || rack==66)channels_number=9;
+ else channels_number=18;
+
+dpGet(mudcsGasAddSystem(\"GasDistribution_o.State\"),State);
+dpGet(mudcsGasAddSystem(\"GasDistribution_o.BUSource\"),BUSource);
+dpGet(mudcsGasAddSystem(\"GasDistribution_o.TotalInputFlow\"),TotalInputFlow);
+
+dpGet(mudcsGasAddSystem(\"GasDistributionRack\"+rack+\"_o.StateRack\"),StateRack);
+dpGet(mudcsGasAddSystem(\"GasDistributionRack\"+rack+\"_o.InPressure22\"),InPressure22);
+dpGet(mudcsGasAddSystem(\"GasDistributionRack\"+rack+\"_o.ChPressure\"),ChPressure);
+dpGet(mudcsGasAddSystem(\"GasDistributionRack\"+rack+\"_o.RegPressure\"),RegPressure);
+dpGet(mudcsGasAddSystem(\"GasDistributionRack\"+rack+\"_o.InPressure24\"),InPressure24);
+dpGet(mudcsGasAddSystem(\"GasDistributionRack\"+rack+\"_o.OutManifoldPressure\"),OutManifoldPressure);
+
+for(i=1;i<=channels_number;i++){
+  j=i;
+   if(rack==65 || rack==70) j=channels_specific[i];
+dpGet(mudcsGasAddSystem(\"GasDistributionRack\"+rack+\"Channel\"+j+\"_o.Pressure\"),Pressure[i]);
+dpGet(mudcsGasAddSystem(\"GasDistributionRack\"+rack+\"Channel\"+j+\"_o.InFlow\"),InFlow[i]);
+dpGet(mudcsGasAddSystem(\"GasDistributionRack\"+rack+\"Channel\"+j+\"_o.OutFlow\"),OutFlow[i]);
+dpGet(mudcsGasAddSystem(\"GasDistributionRack\"+rack+\"Channel\"+j+\"_o.Isolation-Valve\"),Isolation_Valve[i]);
+ 
+}
+
+
+////mudcsDebug(state);
+int i_state=dynContains(GasDistribution_State, State);
+int i_state_rack=dynContains(GasDistributionRack_StateRack, StateRack);
+int i_busource=dynContains(GasDistribution_BUSource, BUSource);
+
+string s_format;
+
+if(i_state >=1){
+  setValue(\"State\",\"text\",GasDistribution_State_meaning[i_state]);
+  setValue(\"BUSource\",\"text\",GasDistribution_BUSource_meaning[i_busource]);
+  setValue(\"StateRack\",\"text\",GasDistributionRack_StateRack_meaning[i_state_rack]);
+    sprintf(s_format,\"%.2f\",TotalInputFlow);   
+  setValue(\"TotalInputFlow\",\"text\",s_format+GasDistribution_TotalInputFlow_units);
+  
+    sprintf(s_format,\"%.2f\",InPressure22);   
+  setValue(\"InPressure22\",\"text\",s_format+GasDistributionRack_InPressure22_units);
+    sprintf(s_format,\"%.2f\",ChPressure);   
+  setValue(\"ChPressure\",\"text\",s_format+GasDistributionRack_ChPressure_units);
+    sprintf(s_format,\"%.2f\",RegPressure);   
+  setValue(\"RegPressure\",\"text\",s_format+GasDistributionRack_RegPressure_units);
+    sprintf(s_format,\"%.2f\",InPressure24);   
+  setValue(\"InPressure24\",\"text\",s_format+GasDistributionRack_InPressure24_units);
+    sprintf(s_format,\"%.2f\",OutManifoldPressure);   
+  setValue(\"OutManifoldPressure\",\"text\",s_format+GasDistributionRack_OutManifoldPressure_units);      
+ 
+ line_count=0;
+
+ for(i=1;i<=channels_number;i++){  
+   line_count++;
+      values[5]= i;
+        j=i;
+   if(rack==65 || rack==70) values[5]=channels_specific[i];
+   
+    sprintf(s_format,\"%.2f\",Pressure[i]);  values[1]= s_format;
+//  setValue(\"Pressure\",\"text\",s_format+GasDistributionRackChannel_Pressure_units);   
+    sprintf(s_format,\"%.2f\",InFlow[i]);   values[2]= s_format;
+//  setValue(\"InFlow\",\"text\",s_format+GasDistributionRackChannel_InFlow_units);
+    sprintf(s_format,\"%.2f\",OutFlow[i]);  values[3]= s_format; 
+//  setValue(\"OutFlow\",\"text\",s_format+GasDistributionRackChannel_OutFlow_units);
+    sprintf(s_format,\"%.2f\",Isolation_Valve[i]);   values[4]= s_format;
+//  setValue(\"Isolation_Valve\",\"text\",s_format+GasDistributionRackChannel_Isolation_Valve_units);                       
+  
+    
+    if(line_count>number_of_lines){
+
+             setValue(\"table\",\"appendLine\",
+            tableCols[5],values[5], // key pair for update: see below
+            tableCols[1],values[1],
+            tableCols[2],values[2],
+            tableCols[3],values[3],
+            tableCols[4],values[4]
+            );                      
+    }
+    else {
+             setValue(\"table\",\"updateLine\",1,
+            tableCols[5],values[5],  // key pair
+            tableCols[1],values[1],
+            tableCols[2],values[2],
+            tableCols[3],values[3],
+            tableCols[4],values[4]
+
+            ); 
+    } // else
+    
+    
+    
+ } // for
+
+}
+else{
+  setValue(\"State\",\"text\",\"no data\");
+  setValue(\"StateRack\",\"text\",\"no data\");   
+  
+}
+  
+
+
+}" 0
+ E E E E 1 -1 -1 0  100 50
+""0  1
+E "#uses \"CMS_CSCfw_GAS/emuGas.ctl\"
+
+int rack;" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+2 2
+"PRIMITIVE_TEXT3"
+""
+1 60 10 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 60 10 430 50
+0 2 2 "0s" 0 0 0 64 0 0  60 10 1
+1
+LANG:1 108 -*-Bitstream Charter-*-i-normal-*-32-*-100-100-*-*-iso8859-1|-32,0,0,0,505,1,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+1
+LANG:1 26           Gas Distribution
+2 7
+"PRIMITIVE_TEXT7"
+""
+1 12 72 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 12 72 43 88
+0 2 2 "0s" 0 0 0 192 0 0  12 72 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 5 State
+2 8
+"PRIMITIVE_TEXT8"
+""
+1 202 72 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 202 72 259 88
+0 2 2 "0s" 0 0 0 192 0 0  202 72 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 8 BUSource
+14 12
+"State"
+""
+1 52 72 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 50 70 194 94
+3 "0s" 0 0 0 0 0 -1  E E E
+14 13
+"BUSource"
+""
+1 270 70 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 268 68 362 92
+3 "0s" 0 0 0 0 0 -1  E E E
+25 56
+"table"
+""
+1 18.95674300254453 198 E E E 1 E 1 E N "_3DText" E N {202,202,202} E E
+ E E
+103 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+ 18 198 432.0000000000001 568
+"
+main()
+{
+//
+// shape table=getShape(\"table\");
+ 
+//...
+ 
+//table.tableMode(TABLE_SELECT_BROWSE);
+// table.selectByClick(TABLE_SELECT_LINE);
+ 
+setValue(\"\",\"tableMode\",TABLE_SELECT_BROWSE);
+setValue(\"\",\"selectByClick\",1);
+
+}" 0
+"main(int row, string column, string value)
+{
+
+int i;
+int j;
+dyn_int lines;
+dyn_anytype line; 
+
+//table_click();
+
+shape table=getShape(\"table\");
+
+dyn_int lines1 = table.getSelectedLines();
+
+////DebugN(table.getSelectedLines());
+
+for(i=1;i<=dynlen(lines1);i++){
+  DebugN(lines1[i]);
+ getValue(\"\",\"getLineN\", lines1[i], line);
+//// DebugN(line);
+
+// DebugN(line[1]+line[2]+line[3]);
+
+
+setValue(\"chn\",\"text\",line[1]);
+setValue(\"vset\",\"text\",line[4]);
+setValue(\"rmpUp\",\"text\",line[6]);
+setValue(\"rmpDn\",\"text\",line[7]);
+setValue(\"vmax\",\"text\",line[8]);
+setValue(\"imax\",\"text\",line[9]);
+setValue(\"state\",\"text\",line[16]);
+setValue(\"tripDl\",\"text\",line[13]);
+
+}
+
+//==== Trending ======
+
+  bool isTrending;
+  getValue(\"isTrending\",\"state\",0,isTrending);
+
+int ch_n;
+string ch_n_text;
+sscanf(line[1], \"%d\", ch_n); 
+ch_n+=channel_numeration_shift;
+ch_n_text=ch_n;
+
+  if(isTrending)hv_trending(DpName+\".data.v\"+ch_n_text);
+
+//====================
+
+ 
+return;
+
+
+
+
+}" 0
+ 1 0 1 5 18 "chn" 3 1 0 "s" 1
+LANG:1 3 ch#
+E
+1
+LANG:1 0 
+
+50 "Pressure" 6 1 0 "s" 1
+LANG:1 8 Pressure
+E
+1
+LANG:1 0 
+
+80 "InFlow" 6 1 0 "s" 1
+LANG:1 6 InFlow
+E
+1
+LANG:1 0 
+
+80 "OutFlow" 6 1 0 "s" 1
+LANG:1 7 OutFlow
+E
+1
+LANG:1 0 
+
+80 "Isolation_Valve" 8 1 0 "s" 1
+LANG:1 15 Isolation_Valve
+E
+1
+LANG:1 0 
+
+105 
+18 18 "3" 1 1
+LANG:1 2 #1
+"?" 1 1
+LANG:1 2 #2
+"4" 1 1
+LANG:1 2 #3
+"5" 1 1
+LANG:1 2 #4
+"6" 1 1
+LANG:1 2 #5
+"7" 1 1
+LANG:1 2 #6
+"8" 1 1
+LANG:1 2 #7
+"9" 1 1
+LANG:1 2 #8
+"10" 1 1
+LANG:1 2 #9
+"11" 1 1
+LANG:1 3 #10
+"12" 1 1
+LANG:1 3 #11
+"13" 1 1
+LANG:1 3 #12
+"14" 1 1
+LANG:1 3 #13
+"15" 1 1
+LANG:1 3 #14
+"16" 1 1
+LANG:1 3 #15
+"17" 1 1
+LANG:1 3 #16
+"18" 1 1
+LANG:1 3 #17
+"19" 1 1
+LANG:1 3 #18
+20 164
+1
+LANG:1 111 -*-Bitstream Charter-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+0 1 1 1 7
+1 0
+2 57
+"PRIMITIVE_TEXT13"
+""
+1 372 72 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+105 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 372 72 459 88
+0 2 2 "0s" 0 0 0 192 0 0  372 72 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 14 TotalInputFlow
+14 58
+"TotalInputFlow"
+""
+1 470 70 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+107 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 468 68 562 92
+3 "0s" 0 0 0 0 0 -1  E E E
+2 59
+"PRIMITIVE_TEXT14"
+""
+1 12 132 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+109 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 12 132 72 148
+0 2 2 "0s" 0 0 0 192 0 0  12 132 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 9 StateRack
+14 60
+"StateRack"
+""
+1 80 130 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+111 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 78 128 222 152
+3 "0s" 0 0 0 0 0 -1  E E E
+2 61
+"PRIMITIVE_TEXT9"
+""
+1 232 132 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+113 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 232 132 305 148
+0 2 2 "0s" 0 0 0 192 0 0  232 132 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 12 InPressure22
+14 62
+"InPressure22"
+""
+1 320 130 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+115 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 318 128 422 152
+3 "0s" 0 0 0 0 0 -1  E E E
+2 63
+"PRIMITIVE_TEXT15"
+""
+1 432.2857142857143 132 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+117 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1.142857142857143 0 1 -15.71428571428569 30 1 E 392 102 458 118
+0 2 2 "0s" 0 0 0 192 0 0  392 102 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 10 ChPressure
+14 64
+"ChPressure"
+""
+1 521.5527950310558 130 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+119 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 519.5527950310558 128 611.9999999999999 152
+3 "0s" 0 0 0 0 0 -1  E E E
+2 65
+"PRIMITIVE_TEXT16"
+""
+1 12 162 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+121 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 12 162 84 178
+0 2 2 "0s" 0 0 0 192 0 0  12 162 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 11 RegPressure
+14 66
+"RegPressure"
+""
+1 90 160 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+123 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 88 158 182 182
+3 "0s" 0 0 0 0 0 -1  E E E
+2 67
+"PRIMITIVE_TEXT17"
+""
+1 192 162 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+125 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 192 162 266 178
+0 2 2 "0s" 0 0 0 192 0 0  192 162 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 12 InPressure24
+14 68
+"InPressure24"
+""
+1 280 160 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+127 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 278 158 382 182
+3 "0s" 0 0 0 0 0 -1  E E E
+2 69
+"PRIMITIVE_TEXT18"
+""
+1 392 162 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+129 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 392 162 512 178
+0 2 2 "0s" 0 0 0 192 0 0  392 162 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 19 OutManifoldPressure
+14 70
+"OutManifoldPressure"
+""
+1 520 160 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+131 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 518 158 612 182
+3 "0s" 0 0 0 0 0 -1  E E E
+22 71
+"rack_number"
+""
+1 436.0606060606061 198 E E E 1 E 1 E N {0,0,0} E N "_Window" E E
+ E E
+133 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 103 -*-Times [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Times [Adobe]
+0 ""
+ 438 198 572 226
+10
+1
+LANG:1 9 ME-1/1_61
+
+0
+1
+LANG:1 13 ME-1/2_1/3_62
+
+0
+1
+LANG:1 7 ME-2_63
+
+0
+1
+LANG:1 7 ME-3_64
+
+0
+1
+LANG:1 7 ME-4_65
+
+0
+1
+LANG:1 9 ME+1/1_66
+
+0
+1
+LANG:1 13 ME+1/2_1/3_67
+
+0
+1
+LANG:1 7 ME+2_68
+
+0
+1
+LANG:1 7 ME+3_69
+
+0
+1
+LANG:1 7 ME+4_70
+
+0
+
+E
+"main()
+{
+ string s_rack1, s_rack2;
+ dyn_string split_rack;
+ getValue(\"\",\"text\",s_rack1);
+ split_rack=strsplit(s_rack1,\"_\");
+ s_rack1=split_rack[dynlen(split_rack)];
+ rack=s_rack1;
+ 
+ setValue(\"rack\",\"text\",rack);
+ int State;
+ dpGet(mudcsGasAddSystem(\"GasDistribution_o.State\"),State);
+ dpSet(mudcsGasAddSystem(\"GasDistribution_o.State\"),State);
+}
+" 0
+
+E
+ 1 0
+2 76
+"PRIMITIVE_TEXT23"
+""
+1 70 100 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+139 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 70 100 440 120
+0 2 2 "0s" 0 0 0 64 0 0  70 100 1
+1
+LANG:1 108 -*-Bitstream Charter-*-i-normal-*-19-*-100-100-*-*-iso8859-1|-19,0,0,0,505,1,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+1
+LANG:1 46                          Gas Distribution Rack
+14 77
+"rack"
+""
+1 520 260 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+140 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 518 258 582 282
+3 "0s" 0 0 0 0 0 -1  E E E
+2 78
+"PRIMITIVE_TEXT24"
+""
+1 440 260 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+141 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 440 260 510 280
+0 2 2 "0s" 0 0 0 64 0 0  440 260 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 6   Rack
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

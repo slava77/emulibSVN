@@ -1,0 +1,17 @@
+To: valerii.sytnik@cern.ch
+Subject: possible GAS alarm: RED LEVEL
+
+Please check the GAS system at SX5:
+         There is a possible GAS system trouble.  
+If it is the HV should be off.
+
+  Possible reasons of the alarm (RED LEVEL):
+
+   1) "bad" gas mixtire of three component mixer
+   2) the cable between the flow meter and the GAS-elmb crate
+       is disconnected
+
+ 
+                   DCS.
+
+

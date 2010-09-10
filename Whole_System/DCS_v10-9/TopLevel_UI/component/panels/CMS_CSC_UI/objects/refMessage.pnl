@@ -1,0 +1,105 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 508 208 N "_3DFace" 1
+"$message"
+E E E E E 1 -1 -1 0  100 60
+""0  1
+E E 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 0
+"RECTANGLE1"
+""
+1 100 60 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 0.5714285714285715 0 0.6666666666666666 -47.14285714285715 -30 2  1 0  "pictures/5.bmp" 4294967295 E 100 60 170 120
+29 4
+"textEdit"
+""
+1 60 10 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"readOnly" "bool TRUE"
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  60 10 490 160
+15 PVSS.TextEdit.1
+0
+"main()
+{
+  this.text = $message;
+}" 0
+13 5
+"PUSH_BUTTON1"
+""
+1 170 170 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  168 168 342 202
+
+T 
+1
+LANG:1 2 OK
+"main()
+{
+  closeDialog();
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

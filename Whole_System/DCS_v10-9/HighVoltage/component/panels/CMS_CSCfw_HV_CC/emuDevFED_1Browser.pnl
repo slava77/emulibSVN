@@ -1,0 +1,1884 @@
+V 11
+1
+LANG:1 15 isDeviceEnabled
+PANEL,-1 -1 600 430 N "_3DFace" 4
+"$obj"
+"$project_station"
+"$project_system"
+"$sDpName"
+"int is_local_sys;
+  
+main()
+{
+   
+int pos, i;
+dyn_string split1;    
+
+$project_station;
+$project_system;      
+  mudcsProjectConnect();
+    
+string local_sys = fwFsm_getSystemName();
+if(strpos(local_sys,\"CSC\")>=0 || strpos(local_sys,\"csc\")>=0
+|| strpos(local_sys,\"EMU\")>=0 || strpos(local_sys,\"emu\")>=0 || strpos(local_sys,\"dcspcS2G19\")>=0 )is_local_sys=1;
+ else is_local_sys=0;
+
+if(is_local_sys){
+// setValue(\"exclude\",\"visible\",true);
+// setValue(\"exclude_text1\",\"visible\",true);
+// setValue(\"exclude_text2\",\"visible\",true);
+
+
+}
+
+string mudcs_alias;
+init_dp_switch();
+mudcs_alias=mudcsAliasNameGet(DpName);
+mudcsNameToPosConvert(mudcs_alias/*DpName*/, disk_number, ring_number, 
+                       chamber_number, device_type);
+
+dpConnect(\"status_monitor\",DpNameFsm+\".status\");
+dpConnect(\"update_dpoints_not_controlled\",CSC_fwG_g_SYSTEM_NAME+\":DPOINTS_NOT_CONTROLLED.value\");
+
+//=============================
+
+  setValue(\"v15\",\"enabled\",true);
+  setValue(\"v15_e\",\"backCol\",\"{0,153,153}\");    
+  setValue(\"v15_e\",\"state\",0,true);
+  
+  setValue(\"v25a\",\"enabled\",true);
+  setValue(\"v25a_e\",\"backCol\",\"{0,153,153}\");    
+  setValue(\"v25a_e\",\"state\",0,true);                    
+
+  setValue(\"v25b\",\"enabled\",true);
+  setValue(\"v25b_e\",\"backCol\",\"{0,153,153}\");    
+  setValue(\"v25b_e\",\"state\",0,true);
+  
+  setValue(\"v33\",\"enabled\",true);
+  setValue(\"v33_e\",\"backCol\",\"{0,153,153}\");    
+  setValue(\"v33_e\",\"state\",0,true);                    
+
+  
+  setValue(\"td1\",\"enabled\",true);
+  setValue(\"td1_e\",\"backCol\",\"{0,153,153}\");
+  setValue(\"td1_e\",\"state\",0,true); 
+   
+  setValue(\"td2\",\"enabled\",true);
+  setValue(\"td2_e\",\"backCol\",\"{0,153,153}\");
+  setValue(\"td2_e\",\"state\",0,true);
+  
+  setValue(\"td3\",\"enabled\",true);
+  setValue(\"td3_e\",\"backCol\",\"{0,153,153}\");
+  setValue(\"td3_e\",\"state\",0,true); 
+   
+  setValue(\"td4\",\"enabled\",true);
+  setValue(\"td4_e\",\"backCol\",\"{0,153,153}\");
+  setValue(\"td4_e\",\"state\",0,true);
+  
+
+
+ 
+
+dyn_int off_channels,off_channels1;
+string isEnabled;
+
+//off_channels=makeDynInt(0,0,0,0,0,0,0);
+dpGet(DpNameFsm+\".off_channels\",off_channels);
+//mudcsDebug(off_channels);
+for(i=1;i<=dynlen(off_channels);i++){
+
+if(off_channels[i]==1){
+  setValue(\"v15\",\"enabled\",false);
+  setValue(\"v15_e\",\"backCol\",\"{202,202,202}\"); 
+  setValue(\"v15_e\",\"state\",0,false);               
+}
+else if(off_channels[i]==2){
+  setValue(\"v25a\",\"enabled\",false);
+  setValue(\"v25a_e\",\"backCol\",\"{202,202,202}\"); 
+  setValue(\"v25a_e\",\"state\",0,false);             
+}
+else if(off_channels[i]==3){
+  setValue(\"v25b\",\"enabled\",false);
+  setValue(\"v25b_e\",\"backCol\",\"{202,202,202}\"); 
+  setValue(\"v25b_e\",\"state\",0,false);                          
+}
+else if(off_channels[i]==4){
+  setValue(\"v33\",\"enabled\",false);
+  setValue(\"v33_e\",\"backCol\",\"{202,202,202}\"); 
+  setValue(\"v33_e\",\"state\",0,false);                          
+}
+else if(off_channels[i]==5){
+  setValue(\"td1\",\"enabled\",false);
+  setValue(\"td1_e\",\"backCol\",\"{202,202,202}\"); 
+  setValue(\"td1_e\",\"state\",0,false);                         
+}
+else if(off_channels[i]==6){
+  setValue(\"td2\",\"enabled\",false);
+  setValue(\"td2_e\",\"backCol\",\"{202,202,202}\"); 
+  setValue(\"td2_e\",\"state\",0,false);                         
+}
+else if(off_channels[i]==7){
+  setValue(\"td3\",\"enabled\",false);
+  setValue(\"td3_e\",\"backCol\",\"{202,202,202}\"); 
+  setValue(\"td3_e\",\"state\",0,false);                         
+}
+else if(off_channels[i]==8){
+  setValue(\"td4\",\"enabled\",false);
+  setValue(\"td4_e\",\"backCol\",\"{202,202,202}\"); 
+  setValue(\"td4_e\",\"state\",0,false);                         
+}
+
+
+
+
+}
+DpNameFsm2=mudcsRemoveSystem(DpNameFsm);
+split1=strsplit(DpNameFsm2,\"/\");
+DomainName=\"CSC_FED\";//substr(split1[2],0, strlen(\"CSC_ME_\")+2);
+isEnabled=fwFsmUi_getDUMode(DomainName,DpNameFsm2);
+if(isEnabled==\"Disabled\"){
+  setValue(\"isDeviceEnabled\",\"visible\",true);
+  setValue(\"isDeviceEnabledCheck\",\"backCol\",\"{202,202,202}\");  
+  setValue(\"isDeviceEnabledCheck\",\"state\",0,0);    
+}
+else {
+  setValue(\"isDeviceEnabled\",\"visible\",false);
+  setValue(\"isDeviceEnabledCheck\",\"backCol\",\"{0,153,153}\");   
+  setValue(\"isDeviceEnabledCheck\",\"state\",0,1);     
+}
+
+g_dps2=dpNames(CSC_fwG_g_SYSTEM_NAME+\":*\"+DpNameFsm2,\"_FwFsmDevice\");
+dpConnect(\"update_enabled\",g_dps2[1]+\".mode.enabled\");
+
+
+
+
+//DebugTN(DomainName+\"                         \"+DpNameFsm2);
+//mudcsDebug(isEnabled);
+
+
+ 
+    
+ 
+      
+  
+ 
+
+
+//=============================
+/* simulation
+setValue(\"t_dmb\",\"text\",\"24.0328\");
+setValue(\"t_alct\",\"text\",\"26.9671\");
+setValue(\"t_cfeb1\",\"text\",\"27.9413\");
+setValue(\"t_cfeb2\",\"text\",\"n/a\");
+setValue(\"t_cfeb3\",\"text\",\"n/a\");
+setValue(\"t_cfeb4\",\"text\",\"n/a\");
+setValue(\"t_cfeb5\",\"text\",\"n/a\");
+
+*/
+//================================
+
+
+
+int j;
+int typ;
+dyn_string dps_s;
+
+
+
+//==================
+dynClear(temp_variables);
+
+dps_s=dpNames(DpName+\".data.\"+\"v15\");
+for(j=1; j<=dynlen(dps_s); j++){
+////mudcsDebug(dps_s[j]);
+typ=dpElementType(dps_s[j]);
+  if(typ != DPEL_STRUCT ){
+  dynAppend(temp_variables,dps_s[j]);
+ } // if
+} // for
+dps_s=dpNames(DpName+\".data.\"+\"v25a\");
+for(j=1; j<=dynlen(dps_s); j++){
+////mudcsDebug(dps_s[j]);
+typ=dpElementType(dps_s[j]);
+  if(typ != DPEL_STRUCT ){
+  dynAppend(temp_variables,dps_s[j]);
+ } // if
+} // for
+dps_s=dpNames(DpName+\".data.\"+\"v25b\");
+for(j=1; j<=dynlen(dps_s); j++){
+////mudcsDebug(dps_s[j]);
+typ=dpElementType(dps_s[j]);
+  if(typ != DPEL_STRUCT ){
+  dynAppend(temp_variables,dps_s[j]);
+ } // if
+} // for
+dps_s=dpNames(DpName+\".data.\"+\"v33\");
+for(j=1; j<=dynlen(dps_s); j++){
+////mudcsDebug(dps_s[j]);
+typ=dpElementType(dps_s[j]);
+  if(typ != DPEL_STRUCT ){
+  dynAppend(temp_variables,dps_s[j]);
+ } // if
+} // for
+dps_s=dpNames(DpName+\".data.\"+\"td1\");
+for(j=1; j<=dynlen(dps_s); j++){
+////mudcsDebug(dps_s[j]);
+typ=dpElementType(dps_s[j]);
+  if(typ != DPEL_STRUCT ){
+  dynAppend(temp_variables,dps_s[j]);
+ } // if
+} // for
+dps_s=dpNames(DpName+\".data.\"+\"td2\");
+for(j=1; j<=dynlen(dps_s); j++){
+////mudcsDebug(dps_s[j]);
+typ=dpElementType(dps_s[j]);
+  if(typ != DPEL_STRUCT ){
+  dynAppend(temp_variables,dps_s[j]);
+ } // if
+} // for
+dps_s=dpNames(DpName+\".data.\"+\"td3\");
+for(j=1; j<=dynlen(dps_s); j++){
+////mudcsDebug(dps_s[j]);
+typ=dpElementType(dps_s[j]);
+  if(typ != DPEL_STRUCT ){
+  dynAppend(temp_variables,dps_s[j]);
+ } // if
+} // for
+dps_s=dpNames(DpName+\".data.\"+\"td4\");
+for(j=1; j<=dynlen(dps_s); j++){
+////mudcsDebug(dps_s[j]);
+typ=dpElementType(dps_s[j]);
+  if(typ != DPEL_STRUCT ){
+  dynAppend(temp_variables,dps_s[j]);
+ } // if
+} // for
+
+
+
+//==================
+
+dpConnect(\"update_monitor\",DpName+\".data.td4\");
+
+///mudcsDebug(\"22\");
+
+
+}
+//==========================================
+update_enabled(string dp, int state){
+  
+  if(state==0){
+      setValue(\"isDeviceEnabledCheck\",\"backCol\",\"{202,202,202}\"); 
+      setValue(\"isDeviceEnabled\",\"visible\",true);
+  setValue(\"isDeviceEnabledCheck\",\"state\",0,0);        
+  }
+  else{
+      setValue(\"isDeviceEnabledCheck\",\"backCol\",\"{0,153,153}\"); 
+    setValue(\"isDeviceEnabled\",\"visible\",false);
+  setValue(\"isDeviceEnabledCheck\",\"state\",0,1);        
+    
+    
+  }
+}
+//==========================================
+
+update_monitor(string dp, string value)
+{
+
+int i;
+float test_v;
+string test_string;
+int ret;
+
+
+     for(i = 1; i <= dynlen(temp_variables); i++) 
+    { 
+          ret=dpGet(mudcsAddSystem(temp_variables[i]),test_v);
+          test_string=test_v;
+          sprintf(test_string,\"%8.2f\",test_v);
+//    mudcsDebug(test_string);
+        if(i==1)setValue(\"v15\",\"text\",test_string);
+        else if(i==2)setValue(\"v25a\",\"text\",test_string);
+        else if(i==3)setValue(\"v25b\",\"text\",test_string);
+        else if(i==4)setValue(\"v33\",\"text\",test_string);                       
+        else if(i==5)setValue(\"td1\",\"text\",test_string);
+        else if(i==6)setValue(\"td2\",\"text\",test_string);        
+        else if(i==7)setValue(\"td3\",\"text\",test_string);        
+        else if(i==8)setValue(\"td4\",\"text\",test_string);        
+ 
+    } // for i
+
+
+
+}
+
+//============================================================
+
+init_dp_switch(){
+ if($obj != \"\"){   // the panel is called from FSM
+    DpName=$obj;
+ } 
+ else{
+    DpName=$sDpName; // the panel is called from LOGICAL TREE
+ }
+
+ DpName=mudcsAddSystem(DpName);
+
+  mudcsConvertData2FsmOne(\"FED_1\",DpName,DpNameFsm);
+  //mudcsDebug(DpNameFsm);
+  mudcsConvertFsm2DataOne(DpNameFsm,DpName);
+
+//mudcsDebug(DpNameFsm);
+//mudcsDebug(DpName);
+
+  dyn_string dps;  
+  dpGet(DpName+\".:_alert_hdl.._dp_list\",dps);
+  if(dynlen(dps) <= 0){
+   mudcsDebug(DpName+\".:_alert_hdl.._active\" + \"is not configured\");  
+  }
+
+}
+
+//============================================================
+//============================================================
+status_monitor(string dp, int status){
+
+ dyn_string ds=makeDynString(
+ \"v15\",
+ \"v25a\",
+ \"v25b\",
+ \"v33\",
+ \"td1\",
+ \"td2\",
+ \"td3\",
+ \"td4\"
+ );
+
+ if(status ==0 ){
+
+  for(int i=1;i<=dynlen(ds);i++)setValue(ds[i],\"enabled\",FALSE);
+setValue(\"enable_disable\",\"text\",\"TO SWITCH ON\");
+setValue(\"enable_disable\",\"backCol\",\"{0,153,153}\");
+ }
+ else{
+  for(int i=1;i<=dynlen(ds);i++)setValue(ds[i],\"enabled\",TRUE);
+setValue(\"enable_disable\",\"text\",\"TO SWITCH OFF\");
+setValue(\"enable_disable\",\"backCol\",\"{255,0,0}\");
+ }
+
+}
+//============================================================ 
+
+  
+update_dpoints_not_controlled(string dpName, string value){
+
+ if(strpos(value,DpNameFsm) <0){
+  if(is_local_sys)setValue(\"enable_disable\",\"enabled\",TRUE);
+  else setValue(\"enable_disable\",\"enabled\",FALSE);
+  setValue(\"NOT_CONNECTED\",\"visible\",FALSE);
+  }
+ else  {
+  setValue(\"enable_disable\",\"enabled\",FALSE);
+  setValue(\"NOT_CONNECTED\",\"visible\",TRUE);
+ }
+
+}
+
+//==================================================================" 0
+ E E E E 1 -1 -1 0  406 39
+""0  1
+E "#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs2.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs3.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs4.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcsDim.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuAlert.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emufw.ctl\"
+
+dyn_string g_dps2;
+string DpNameFsm2, DomainName;
+
+string project_station;
+string project_system;
+
+string DpName;
+string DpNameFsm;
+
+int disk_number;
+int ring_number;
+int chamber_number;
+string device_type;
+
+dyn_string temp_variables;
+
+
+
+
+//======= trending below ============
+
+//string  pnl_channel_prefix;
+
+trending(dyn_bool isTrending) 
+{ 
+
+string dir=\"CMS_CSCfw_HV_CC\";  
+
+dyn_string params_for_trend;
+
+ get_params(isTrending, params_for_trend);
+
+
+string CSCTrendingModule=\"mudcsTrending\";
+
+	if(!isModuleOpen(CSCTrendingModule) ){ 
+		ModuleOn(CSCTrendingModule,1,1,0,0,1,1,1,\"\"); 
+
+	} 
+/////        else PanelOffModule(\"\",MRTNTrendingModule);
+
+	RootPanelOnModule(dir+\"/TrendTEMP_1.pnl\", 
+				\"\",CSCTrendingModule, 
+	params_for_trend);
+
+//for(int i;i<=dynlen(params_for_trend);i++)mudcsDebug(params_for_trend[i]);
+//DebugN(\"+++++++++++++++++++++++++++\"+params_for_trend[1]);
+
+
+} 
+
+//====================
+
+get_params(dyn_bool isTrending, dyn_string &params_for_trend){
+
+dynClear(params_for_trend);
+
+dyn_string s_ch;
+if(isTrending[1])s_ch[1]=\"true\";else s_ch[1]=\"false\";
+if(isTrending[2])s_ch[2]=\"true\";else s_ch[2]=\"false\";
+if(isTrending[3])s_ch[3]=\"true\";else s_ch[3]=\"false\";
+if(isTrending[4])s_ch[4]=\"true\";else s_ch[4]=\"false\";
+if(isTrending[5])s_ch[5]=\"true\";else s_ch[5]=\"false\";
+if(isTrending[6])s_ch[6]=\"true\";else s_ch[6]=\"false\";
+if(isTrending[7])s_ch[7]=\"true\";else s_ch[7]=\"false\";
+if(isTrending[8])s_ch[8]=\"true\";else s_ch[8]=\"false\";
+//dpGet(DpName+\".module_num_chans\");
+//mudcsLvAddSystem(pnl_channel_prefix+CSC_fwCAN1_g_LIST_3V1[i]+\".value\",CSC_fwCAN1_g_SYSTEM_NAME);
+
+   dynAppend(params_for_trend,\"$sDpe:\"+\"\"+DpName);
+
+   dynAppend(params_for_trend, \"$iMinYScaleV:0\");
+   dynAppend(params_for_trend, \"$iMaxYScaleV:45\");
+   dynAppend(params_for_trend, \"$iMinYScaleC:0\");
+   dynAppend(params_for_trend, \"$iMaxYScaleC:45\");
+
+   dynAppend(params_for_trend, \"$channelNumber1:\"+s_ch[1]);
+   dynAppend(params_for_trend, \"$channelNumber2:\"+s_ch[2]);
+   dynAppend(params_for_trend, \"$channelNumber3:\"+s_ch[3]);   
+   dynAppend(params_for_trend, \"$channelNumber4:\"+s_ch[4]);
+   dynAppend(params_for_trend, \"$channelNumber5:\"+s_ch[5]);
+   dynAppend(params_for_trend, \"$channelNumber6:\"+s_ch[6]); 
+   dynAppend(params_for_trend, \"$channelNumber7:\"+s_ch[7]);    
+   dynAppend(params_for_trend, \"$channelNumber8:\"+s_ch[8]);     
+}
+//===========================================================
+//====================================
+alert_reconfig(string dp_frag, int isexclude){
+
+bool configExists;
+dyn_string alertTexts;
+dyn_string ilist, ilist_new;
+string alertPanel;
+dyn_string alertPanelParameters;
+string alertHelp;
+bool isActive;
+dyn_string exceptionInfo;
+int pos;
+
+int i,j;
+dyn_int dplist;
+dyn_string dplist_text;
+/////int current_status;
+
+/////int volts_number;
+string test_s;
+
+//////// dpGet(DpNameFsm+\".status\",current_status);
+
+
+/////for(j=1;j<=volts_number;j++){
+
+
+
+////	alertPanel,alertPanelParameters,alertHelp,isActive,exceptionInfo);
+/////else 
+fwAlertConfig_getSummary(DpName+\".\",configExists,alertTexts,ilist,
+	alertPanel,alertPanelParameters,alertHelp,isActive,exceptionInfo);
+
+//mudcsDebug(dp_frag);
+
+
+for(i=1;i<=dynlen(ilist);i++){ 
+
+ if(strpos(ilist[i],dp_frag) >=0)
+ {
+ dynAppend(dplist,i);
+
+ }
+}
+
+ilist_new=ilist;
+
+
+if(isexclude){
+ dynClear(ilist);
+ for(i=1;i<=dynlen(ilist_new);i++){
+  if(dynContains(dplist,i) == 0)dynAppend(ilist,ilist_new[i]);
+ }
+  
+ ///////if(current_status !=0)dpSet(DpNameFsm+\".status\",2);
+}
+else{
+
+  
+
+/////  else 
+    dplist_text=dpNames(DpName+\".data.\"+\"*\"+dp_frag);
+
+ for(i=1;i<=dynlen(dplist_text);i++){
+  dynAppend(ilist,dplist_text[i]); 
+ }
+ ////if(current_status !=0)dpSet(DpNameFsm+\".status\",2);
+}
+
+//=====
+
+  for(i=1;i<=dynlen(ilist);i++){
+   DebugTN(ilist[i]); 
+  } 
+
+
+  
+  
+ fwAlertConfig_createSummary(DpName+\".\",makeDynString(\"\",\"\") , ilist ,\"\", 
+                              makeDynString(),\"\",exceptionInfo);
+
+//======
+
+
+//////} // for over j
+
+}
+//====================================
+
+//==================================
+exclude(int isexclude, string chn_text, string dp_frag){
+
+int chn=chn_text;
+
+dyn_int off_channels;
+int pos;
+
+dpGet(DpNameFsm+\".off_channels\",off_channels);
+
+ if(isexclude){
+  if(dynContains(off_channels,chn)==0)dynAppend(off_channels,chn);
+ }
+ else{
+  pos=dynContains(off_channels,chn);
+  if(pos)dynRemove(off_channels,pos);
+
+ }
+ 
+dpSetWait(DpNameFsm+\".off_channels\",off_channels);
+  alert_reconfig(dp_frag, isexclude);   
+ 
+}
+
+//===============================================
+
+exclude_main(){
+  string state;
+dyn_string test_dyn, test_dyn2;
+string dp_frag;
+int chn;
+
+string box_name, text_name;
+bool isEnabled;
+
+getValue(\"\",\"name\",box_name);
+getValue(\"\",\"state\",0,isEnabled);
+
+if(box_name==\"v15_e\")text_name=\"v15\";
+else if(box_name==\"v25a_e\")text_name=\"v25a\";
+else if(box_name==\"v25b_e\")text_name=\"v25b\";
+else if(box_name==\"v33_e\")text_name=\"v33\";
+else if(box_name==\"td1_e\")text_name=\"td1\";
+else if(box_name==\"td2_e\")text_name=\"td2\";
+else if(box_name==\"td3_e\")text_name=\"td3\";
+else if(box_name==\"td4_e\")text_name=\"td4\";
+
+if(isEnabled){
+  state=\"include \"+box_name;
+  setValue(text_name,\"enabled\",true);
+  setValue(\"\",\"backCol\",\"{0,153,153}\");  
+}  
+else{
+  state=\"exclude \"+box_name;
+  setValue(text_name,\"enabled\",false);
+  setValue(\"\",\"backCol\",\"{202,202,202}\");  
+}
+  
+test_dyn=strsplit(state,\" \");
+
+
+if(strpos(test_dyn[2],\"15\")>=0){test_dyn2[1]=\"1\"; dp_frag=\"v15\";}
+else if(strpos(test_dyn[2],\"25a\")>=0){test_dyn2[1]=\"2\"; dp_frag=\"v25a\";}
+else if(strpos(test_dyn[2],\"25b\")>=0){test_dyn2[1]=\"3\"; dp_frag=\"v25b\";}
+else if(strpos(test_dyn[2],\"33\")>=0){test_dyn2[1]=\"4\"; dp_frag=\"v33\";}
+else if(strpos(test_dyn[2],\"1\")>=0){test_dyn2[1]=\"5\";dp_frag=\"td1\";}
+else if(strpos(test_dyn[2],\"2\")>=0){test_dyn2[1]=\"6\";dp_frag=\"td2\";}
+else if(strpos(test_dyn[2],\"3\")>=0){test_dyn2[1]=\"7\";dp_frag=\"td3\";}
+else if(strpos(test_dyn[2],\"4\")>=0){test_dyn2[1]=\"8\";dp_frag=\"td4\";}
+
+chn=test_dyn2[1];
+if(chn<1 || chn>8){
+ mudcsDebug(\"wrong format\\n righ format is(1):\");
+ return;
+}
+
+if(strpos(state,\"exclude\")>=0)exclude(1,test_dyn2[1],dp_frag);
+else if(strpos(state,\"include\")>=0)exclude(0,test_dyn2[1],dp_frag);
+else {
+ mudcsDebug(\"wrong format\\n righ format is(2):\");
+ return;
+}
+mudcsCommand(\"FED\",DpName,\"get_data\");
+}" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+14 2
+"v15"
+""
+1 99 112 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  99 112 179 138
+3 "0s" 0 0 0 0 0 -1  "main()
+{
+ /*
+ bool  isTrendingCommon;
+ getValue(\"isTrendingCommon\",\"state\",0,isTrendingCommon);
+  
+ dyn_bool isTrending=makeDynBool(1,0,0,0,0,0,0);
+ if(isTrendingCommon)trending(isTrending);
+*/
+}" 0
+ E E
+2 3
+"PRIMITIVE_TEXT1"
+""
+1 166.434316272695 259 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E 0.882352941176471 0 1 36.4117647058823 34 1 E 12 82 53 102
+1 2 2 "0s" 0 0 0 192 0 0  12 82 1
+1
+LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 4 1.5V
+2 6
+"PRIMITIVE_TEXT1"
+""
+1 110 105 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 322 150 343 170
+1 2 2 "0s" 0 0 0 192 0 0  322 150 1
+1
+LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 2 T2
+14 7
+"td2"
+""
+1 360 146 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+13 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  360 146 440 172
+3 "0s" 0 0 0 0 0 -1  E E E
+2 8
+"PRIMITIVE_TEXT1"
+""
+1 110 95 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+15 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 322 190 343 210
+1 2 2 "0s" 0 0 0 192 0 0  322 190 1
+1
+LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 2 T3
+14 9
+"td3"
+""
+1 360 186 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  360 186 440 212
+3 "0s" 0 0 0 0 0 -1  E E E
+2 10
+"PRIMITIVE_TEXT1"
+""
+1 110 85 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 322 230 343 250
+1 2 2 "0s" 0 0 0 192 0 0  322 230 1
+1
+LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 2 T4
+14 11
+"td4"
+""
+1 360 226 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+21 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  360 226 440 252
+3 "0s" 0 0 0 0 0 -1  E E E
+2 15
+"PRIMITIVE_TEXT1"
+""
+1 110 118 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+29 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 322 116 343 136
+1 2 2 "0s" 0 0 0 192 0 0  322 116 1
+1
+LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 2 T1
+14 16
+"td1"
+""
+1 360 112 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+31 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  360 112 440 138
+3 "0s" 0 0 0 0 0 -1  E E E
+2 17
+"PRIMITIVE_TEXT1"
+""
+1 200 87 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+33 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 200 20 381 45
+1 2 2 "0s" 0 0 0 192 0 0  200 20 1
+1
+LANG:1 28 Courier,-1,20,5,75,1,0,0,0,0
+0 1
+LANG:1 15 FED crate panel
+14 18
+"v25a"
+""
+1 99 146 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+35 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  99 146 179 172
+3 "0s" 0 0 0 0 0 -1  E E E
+2 19
+"PRIMITIVE_TEXT1"
+""
+1 72 157 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+37 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 42 150 84 170
+1 2 2 "0s" 0 0 0 192 0 0  42 150 1
+1
+LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 4 2.5V
+13 20
+"enable_disable"
+""
+1 330 280 E E E 1 E 0 E N "_3DText" E N {0,153,153} E E
+ E E
+39 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 36 Courier [Adobe],-1,20,5,75,0,0,0,0,0
+0  330 280 540 312
+
+T 
+1
+LANG:1 4 ....
+"main()
+{
+
+int current_status;
+
+ dpGet(DpNameFsm+\".status\",current_status);
+ if(current_status==0)dpSet(DpNameFsm+\".status\",2);
+ else /*if(current_status==2)*/dpSet(DpNameFsm+\".status\",0);
+
+}" 0
+ E E "main(){
+
+
+}" 0
+
+2 21
+"NOT_CONNECTED"
+""
+1 40 -5 E E E 1 E 1 E N {255,255,255} E N {255,0,0} E E
+ E E
+41 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 410 10 580 62
+1 2 2 "0s" 0 0 0 192 0 0  410 10 2
+1
+LANG:1 36 Courier [Adobe],-1,20,5,75,0,0,0,0,0
+0 1
+LANG:1 12    DEVICE IS
+1
+LANG:1 36 Courier [Adobe],-1,20,5,75,0,0,0,0,0
+0 1
+LANG:1 15  NOT CONNECTED 
+13 23
+"PUSH_BUTTON1"
+""
+1 40 360 E E E 1 E 0 E N "_ButtonText" E N "_ETM" E E
+ E E
+44 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Sans,-1,13,5,50,0,0,0,0,0
+0  38 358 232 392
+
+T 
+1
+LANG:1 5 TREND
+"main()
+{
+  /*
+string name;
+dyn_string row;
+getValue(\"\",\"name\",name);
+row=strsplit(name,\"_\");
+string ch_n_text=row[2];
+*/
+//==== Trending ======
+
+  dyn_bool isTrending;
+  getValue(\"isTrending1\",\"state\",0,isTrending[1]);
+  getValue(\"isTrending2\",\"state\",0,isTrending[2]);
+  getValue(\"isTrending3\",\"state\",0,isTrending[3]);
+  getValue(\"isTrending4\",\"state\",0,isTrending[4]);
+  getValue(\"isTrending5\",\"state\",0,isTrending[5]);
+  getValue(\"isTrending6\",\"state\",0,isTrending[6]);
+  getValue(\"isTrending7\",\"state\",0,isTrending[7]);          
+  getValue(\"isTrending8\",\"state\",0,isTrending[8]);  
+
+  trending(isTrending);
+
+//====================
+return;
+}" 0
+ E E E
+20 24
+"isTrending1"
+""
+1 78.7654320987654 278.461538461539 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+46 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 38 Bitstream Charter,-1,13,5,50,0,0,0,0,0
+0  78 278 132 302
+1
+T 
+1
+LANG:1 5 trend
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+EE2 34
+"PRIMITIVE_TEXT2"
+""
+1 72 289 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+66 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 42 282 68 299
+1 2 2 "0s" 0 0 0 192 0 0  42 282 1
+1
+LANG:1 28 Courier,-1,13,5,75,0,0,0,0,0
+0 1
+LANG:1 3 15V
+2 35
+"PRIMITIVE_TEXT3"
+""
+1 72 309 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+68 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 42 302 69 319
+1 2 2 "0s" 0 0 0 192 0 0  42 302 1
+1
+LANG:1 28 Courier,-1,13,5,75,0,0,0,0,0
+0 1
+LANG:1 3 25V
+2 36
+"PRIMITIVE_TEXT4"
+""
+1 -170 324 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+70 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 42 322 69 339
+1 2 2 "0s" 0 0 0 192 0 0  42 322 1
+1
+LANG:1 28 Courier,-1,13,5,75,0,0,0,0,0
+0 1
+LANG:1 3 25V
+2 37
+"PRIMITIVE_TEXT5"
+""
+1 -170 297 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+72 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 42 342 69 359
+1 2 2 "0s" 0 0 0 192 0 0  42 342 1
+1
+LANG:1 28 Courier,-1,13,5,75,0,0,0,0,0
+0 1
+LANG:1 3 33V
+2 38
+"PRIMITIVE_TEXT6"
+""
+1 -60 187 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+74 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 152 282 169 299
+1 2 2 "0s" 0 0 0 192 0 0  152 282 1
+1
+LANG:1 28 Courier,-1,13,5,75,0,0,0,0,0
+0 1
+LANG:1 2 T1
+2 39
+"PRIMITIVE_TEXT7"
+""
+1 -60 157 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+76 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 152 302 169 319
+1 2 2 "0s" 0 0 0 192 0 0  152 302 1
+1
+LANG:1 28 Courier,-1,13,5,75,0,0,0,0,0
+0 1
+LANG:1 2 T2
+2 40
+"PRIMITIVE_TEXT8"
+""
+1 -60 127 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+78 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 152 322 169 339
+1 2 2 "0s" 0 0 0 192 0 0  152 322 1
+1
+LANG:1 28 Courier,-1,13,5,75,0,0,0,0,0
+0 1
+LANG:1 2 T3
+20 41
+"isTrending3"
+""
+1 78.7654320987654 318.461538461539 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+80 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 38 Bitstream Charter,-1,13,5,50,0,0,0,0,0
+0  78 318 132 342
+1
+T 
+1
+LANG:1 5 trend
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+EE20 42
+"isTrending4"
+""
+1 78.7654320987654 338.461538461539 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+82 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 38 Bitstream Charter,-1,13,5,50,0,0,0,0,0
+0  78 338 132 362
+1
+T 
+1
+LANG:1 5 trend
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+EE20 43
+"isTrending5"
+""
+1 178.765432098765 278.461538461539 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+84 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 38 Bitstream Charter,-1,13,5,50,0,0,0,0,0
+0  178 278 232 302
+1
+T 
+1
+LANG:1 5 trend
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+EE20 44
+"isTrending6"
+""
+1 178.765432098765 298.461538461539 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+86 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 38 Bitstream Charter,-1,13,5,50,0,0,0,0,0
+0  178 298 232 322
+1
+T 
+1
+LANG:1 5 trend
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+EE20 45
+"isTrending7"
+""
+1 178.765432098765 318.461538461539 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+88 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 38 Bitstream Charter,-1,13,5,50,0,0,0,0,0
+0  178 318 232 342
+1
+T 
+1
+LANG:1 5 trend
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+EE20 46
+"isTrending2"
+""
+1 78.7654320987654 300.461538461539 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+90 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 38 Bitstream Charter,-1,13,5,50,0,0,0,0,0
+0  78 300 132 324
+1
+T 
+1
+LANG:1 5 trend
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+EE20 47
+"v15_e"
+""
+1 186.777777777778 112.461538461539 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+ E E
+92 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 38 Bitstream Charter,-1,16,5,50,0,0,0,0,0
+0  187 112 281 136
+1
+T 
+1
+LANG:1 9 isEnabled
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+exclude_main();
+
+
+}" 0
+20 48
+"v25a_e"
+""
+1 186.777777777778 146.461538461539 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+ E E
+94 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 38 Bitstream Charter,-1,16,5,50,0,0,0,0,0
+0  187 146 281 170
+1
+T 
+1
+LANG:1 9 isEnabled
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+exclude_main();
+
+
+}" 0
+20 49
+"td1_e"
+""
+1 447.777777777778 112.461538461539 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+ E E
+96 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 38 Bitstream Charter,-1,16,5,50,0,0,0,0,0
+0  448 112 542 136
+1
+T 
+1
+LANG:1 9 isEnabled
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+exclude_main();
+
+
+}" 0
+20 50
+"td2_e"
+""
+1 447.777777777778 146.461538461539 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+ E E
+98 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 38 Bitstream Charter,-1,16,5,50,0,0,0,0,0
+0  448 146 542 170
+1
+T 
+1
+LANG:1 9 isEnabled
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+exclude_main();
+
+
+}" 0
+20 51
+"td3_e"
+""
+1 447.777777777778 186.461538461539 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+ E E
+100 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 38 Bitstream Charter,-1,16,5,50,0,0,0,0,0
+0  448 186 542 210
+1
+T 
+1
+LANG:1 9 isEnabled
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+exclude_main();
+
+
+}" 0
+20 52
+"td4_e"
+""
+1 447.777777777778 226.461538461539 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+ E E
+102 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 38 Bitstream Charter,-1,16,5,50,0,0,0,0,0
+0  448 226 542 250
+1
+T 
+1
+LANG:1 9 isEnabled
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+exclude_main();
+
+
+}" 0
+2 56
+"isDeviceEnabled"
+""
+1 0 40 E E E 1 E 1 E N "_Window" E N "AESfgPending" E E
+ E E
+108 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 0 40 185 61
+0 2 2 "0s" 0 0 0 192 0 0  0 40 1
+1
+LANG:1 38 Bitstream Charter,-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 22 _DEVICE IS DESABLED_  
+20 57
+"isDeviceEnabledCheck"
+""
+1 5.55555555555537 7.69230769230768 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+ E E
+110 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 38 Bitstream Charter,-1,19,5,50,0,0,0,0,0
+0  8 8 192 42
+1
+T 
+1
+LANG:1 15 isDeviceEnabled
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+"main()
+{
+
+}" 0
+"main(int button, int state)
+{
+ 
+//string DpNameFsm2;
+// dyn_string  dps2;
+ 
+//DpNameFsm2=mudcsRemoveSystem(DpNameFsm);
+//split1=strsplit(DpNameFsm2,\"/\");
+//DomainName=substr(split1[2],0, strlen(\"CSC_ME_\")+2);
+//isEnabled=fwFsmUi_getDUMode(DomainName,DpNameFsm2);
+  
+//DpNameFsm2=mudcsRemoveSystem(DpNameFsm);
+//dps2=dpNames(CSC_fwG_g_SYSTEM_NAME+\":*\"+DpNameFsm2,\"_FwFsmDevice\");     
+//if(dynlen(dps2)>=1){split3=strsplit(dps2[1],\"|\");
+//DomainName=substr(split3[1],(strpos(split3[1],\":\")+1));
+//    dpGet(dps2[1]+\".mode.enabled\",isEnabled_i);
+//  }
+ // mudcsDebug(DomainName);
+ //  mudcsDebug(DpNameFsm2);
+//dpSet(g_dps2[1]+\".mode.enabled\",state);
+  if(state==0)  
+fwFsmUi_setDUModeByName(DomainName, DpNameFsm2, \"Disable\");
+  else if(state==1)
+fwFsmUi_setDUModeByName(DomainName, DpNameFsm2, \"Enable\"); 
+/*
+  if(state==0){
+      setValue(\"\",\"backCol\",\"{202,202,202}\"); 
+      setValue(\"isDeviceEnabled\",\"visible\",true);
+    
+  }
+  else{
+      setValue(\"\",\"backCol\",\"{0,153,153}\"); 
+    setValue(\"isDeviceEnabled\",\"visible\",false);
+    
+    
+  }
+*/
+
+}" 0
+14 58
+"v25b"
+""
+1 99 186 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+112 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  99 186 179 212
+3 "0s" 0 0 0 0 0 -1  E E E
+2 59
+"PRIMITIVE_TEXT9"
+""
+1 72 197 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+114 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 42 190 84 210
+1 2 2 "0s" 0 0 0 192 0 0  42 190 1
+1
+LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 4 2.5V
+20 60
+"v25b_e"
+""
+1 186.777777777778 186.461538461539 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+ E E
+116 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 38 Bitstream Charter,-1,16,5,50,0,0,0,0,0
+0  187 186 281 210
+1
+T 
+1
+LANG:1 9 isEnabled
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+exclude_main();
+
+
+}" 0
+14 61
+"v33"
+""
+1 99 226 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+118 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0  99 226 179 252
+3 "0s" 0 0 0 0 0 -1  E E E
+2 62
+"PRIMITIVE_TEXT10"
+""
+1 72 237 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+120 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 42 230 83 250
+1 2 2 "0s" 0 0 0 192 0 0  42 230 1
+1
+LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 4 3.3V
+20 63
+"v33_e"
+""
+1 186.777777777778 226.461538461539 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+ E E
+122 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 38 Bitstream Charter,-1,16,5,50,0,0,0,0,0
+0  187 226 281 250
+1
+T 
+1
+LANG:1 9 isEnabled
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+exclude_main();
+
+
+}" 0
+2 64
+"PRIMITIVE_TEXT11"
+""
+1 320 147 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+124 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 320 80 441 100
+1 2 2 "0s" 0 0 0 192 0 0  320 80 1
+1
+LANG:1 36 Courier [Adobe],-1,16,5,75,1,0,0,0,0
+0 1
+LANG:1 12 Temperatures
+2 65
+"PRIMITIVE_TEXT12"
+""
+1 97 149 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+126 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 97 82 178 102
+1 2 2 "0s" 0 0 0 192 0 0  97 82 1
+1
+LANG:1 36 Courier [Adobe],-1,16,5,75,1,0,0,0,0
+0 1
+LANG:1 8 Voltages
+2 66
+"PRIMITIVE_TEXT13"
+""
+1 -60 147 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+128 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 152 342 169 359
+1 2 2 "0s" 0 0 0 192 0 0  152 342 1
+1
+LANG:1 28 Courier,-1,13,5,75,0,0,0,0,0
+0 1
+LANG:1 2 T4
+20 67
+"isTrending8"
+""
+1 178.765432098765 338.461538461539 E E E 1 E 0 E N {0,0,0} E N {0,153,153} E E
+ E E
+130 0 0 0 0 0
+E E E
+0
+1
+LANG:1 53 check Trend and click Vmon or Imon box of the channel
+
+0
+1
+LANG:1 38 Bitstream Charter,-1,13,5,50,0,0,0,0,0
+0  178 338 232 362
+1
+T 
+1
+LANG:1 5 trend
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+EE2 68
+"lblNoControl"
+""
+1 728 -388 E E E 1 E 1 E N "_3DText" E N "FwStateAttention1" E E
+ E E
+131 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 200 50 401 69
+1 2 2 "0s" 0 0 0 192 0 0  200 50 1
+1
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0 1
+LANG:1 32 You don't have control privilege
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

@@ -1,0 +1,27 @@
+ <component>
+        <name>CMS_CSCfw_LV_CRB</name>
+        <version>1.1.0</version>
+        <date>2010/05/30</date> 
+		<required>CMS_CSC_common=1.1.0</required>
+		<required>fwCore=4.0.0</required>
+		<required>fwAnalogDigital=4.0.0</required>
+		<required>fwElmb=3.5.3</required>
+		<required>fwElmbPSU=2.1.5</required>
+		<required>fwAccessControl=3.2.7</required>
+		<required>fwTrending=3.2.1</required>
+        <config>./config/CMS_CSCfw_LV_CRB.config</config>
+        <dplist>./dplist/CMS_CSCfw_LV_CRB/CMS_CSCfw_LV_CRB.dpl</dplist>
+        <postInstall>./scripts/CMS_CSCfw_LV_CRB/CMS_CSCfw_LV_CRB.postInstall</postInstall>                   
+        <file>./CMS_CSCfw_LV_CRB.xml</file> 
+        <file>./source/CMS_CSCfw_LV_CRB/config/CMS_CSCfw_LV_*.xml</file>
+        <file>./source/CMS_CSCfw_LV_CRB/config/CMS_CSCfw_LV_*.config</file>
+        <file>./panels/CMS_CSCfw_LV_CRB/*.pnl</file>
+        <file>./panels/CMS_CSCfw_LV_CRB/config/*.pnl</file>
+        <file>./panels/CMS_CSCfw_LV_CRB/fwElmbPSU/*.pnl</file>
+        <file>./panels/CMS_CSCfw_LV_CRB/fwElmbPSU/objects/*.pnl</file>
+        <file>./scripts/libs/CMS_CSCfw_LV_CRB/*.ctl</file>
+        <file>./scripts/CMS_CSCfw_LV_CRB/*.*</file>
+        <file>./source/CMS_CSCfw_LV_CRB/special_stuff/*</file> 
+        <file>./source/CMS_CSCfw_LV_CRB/special_stuff/csc_dcs_lv1_install/*</file>  
+        <file>./source/CMS_CSCfw_LV_CRB/special_stuff/csc_dcs_lv2_install/*</file> 			
+</component>

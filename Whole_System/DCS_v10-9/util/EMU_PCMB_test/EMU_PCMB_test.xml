@@ -1,0 +1,16 @@
+<component>
+<name>EMU_PCMB_test</name>
+<version>1.0.0</version>
+<date>2009/05/08</date>
+<required>CMS_CSC_common=1.0.0</required>
+<required>fwCore=3.2.0</required>
+<required>fwElmb=3.5.3</required>
+<postInstall>./scripts/EMU_PCMB_test/EMU_PCMB_test.postInstall</postInstall>
+<file>./panels/EMU_PCMB_test/PCrateOperation_with_monitoring.pnl</file>
+<file>./panels/objects/EMU_PCMB_test/refCrateControl.pnl</file>
+<file>./panels/objects/EMU_PCMB_test/refError.pnl</file>
+<file>./panels/objects/EMU_PCMB_test/refMonitor.pnl</file>
+<file>./panels/objects/EMU_PCMB_test/refStatus.pnl</file>
+<file>./scripts/EMU_PCMB_test/PCMB_test_create_HW.ctl</file>
+<file>./EMU_PCMB_test.xml</file>
+</component>

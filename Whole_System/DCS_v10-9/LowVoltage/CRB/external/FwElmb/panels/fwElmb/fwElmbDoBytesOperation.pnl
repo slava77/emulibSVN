@@ -1,0 +1,460 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 357 220 N "_3DFace" 1
+"$sDpName"
+"main()
+{
+  string sId;
+  string sParent;
+  dyn_string dsExceptionInfo;
+  fwDevice_getParent($sDpName, sParent, dsExceptionInfo);
+  fwDevice_getParent(sParent, g_sElmb, dsExceptionInfo);
+}" 0
+ E E E E 1 -1 -1 0  50 60
+""0  1
+E "string g_sElmb = \"\";" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"cmdReadPortA"
+""
+1 40 40 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 38 38 142 62
+
+T 
+1
+LANG:1 11 Read Port A
+"main()
+{
+  unsigned uValue;
+  
+  dyn_string dsExceptionInfo;
+  uValue = fwElmbUser_getDoByte(g_sElmb, \"A\", dsExceptionInfo); 
+  if (dynlen(dsExceptionInfo) > 0) {
+    DebugN(dsExceptionInfo);
+    setValue(\"tglPortA.txtInputValue\", \"text\", \"Invalid\");    
+  } else {
+    setValue(\"tglPortA.txtInputValue\", \"text\", uValue);    
+  }
+  
+}" 0
+ E E E
+13 3
+"cmdReadPortC"
+""
+1 210 40 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 208 38 312 62
+
+T 
+1
+LANG:1 11 Read Port C
+"main()
+{
+  unsigned uValue;
+  
+  dyn_string dsExceptionInfo;
+  uValue = fwElmbUser_getDoByte(g_sElmb, \"C\", dsExceptionInfo); 
+  if (dynlen(dsExceptionInfo) > 0) {
+    DebugN(dsExceptionInfo);
+    setValue(\"tglPortC.txtInputValue\", \"text\", \"Invalid\");    
+  } else {
+    setValue(\"tglPortC.txtInputValue\", \"text\", uValue);    
+  }
+}" 0
+ E E E
+13 4
+"cmdReadBothPorts"
+""
+1 120 10 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 118 8 232 32
+
+T 
+1
+LANG:1 15 Read Both Ports
+"main()
+{
+// Local Variables
+// ---------------
+  unsigned uResult;
+  unsigned uPortA;
+  unsigned uPortC;
+  
+  dyn_string dsExceptionInfo;
+  
+// Executable Code
+// ---------------
+  // Call function to obtain values from ELMB
+  uResult = fwElmbUser_getDoBytes(g_sElmb, dsExceptionInfo); 
+  
+  // Check for errors
+  if (dynlen(dsExceptionInfo) > 0) {
+    setValue(\"tglPortA.txtInputValue\", \"text\", \"Invalid\");
+    setValue(\"tglPortC.txtInputValue\", \"text\", \"Invalid\");
+    fwExceptionHandling_display(dsExceptionInfo);
+  } else {
+    // Extract the individual port values from the two byte result
+    uPortC = uResult & 0xff;
+    uPortA = (uResult & 0xff00) >> 8;
+    
+    // Display values found
+    setValue(\"tglPortA.txtInputValue\", \"text\", uPortA);    
+    setValue(\"tglPortC.txtInputValue\", \"text\", uPortC);    
+  }
+
+  // Return to calling routine
+  return;
+}" 0
+ E E E
+1 127 0 "" 9
+0
+1 128 0 "" 10
+0
+1 129 0 "" 11
+0
+1 130 0 "" 12
+0
+1 131 0 "" 13
+0
+1 132 0 "" 14
+0
+1 133 0 "" 15
+0
+1 134 0 "" 16
+0
+1 135 0 "" 17
+0
+1 136 0 "" 22
+0
+1 137 0 "" 23
+0
+1 138 0 "" 24
+0
+1 139 0 "" 25
+0
+1 140 0 "" 26
+0
+1 141 0 "" 27
+0
+1 142 0 "" 28
+0
+1 143 0 "" 29
+0
+1 144 0 "" 30
+0
+1 145 1 "" 9
+0
+1 146 1 "" 10
+0
+1 147 1 "" 11
+0
+1 148 1 "" 12
+0
+1 149 1 "" 13
+0
+1 150 1 "" 14
+0
+1 151 1 "" 15
+0
+1 152 1 "" 16
+0
+1 153 1 "" 17
+0
+1 154 1 "" 22
+0
+1 155 1 "" 23
+0
+1 156 1 "" 24
+0
+1 157 1 "" 25
+0
+1 158 1 "" 26
+0
+1 159 1 "" 27
+0
+1 160 1 "" 28
+0
+1 161 1 "" 29
+0
+1 162 1 "" 30
+0
+4 44
+"LINE1"
+""
+1 12 110 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  12 110 12 120
+4 45
+"LINE2"
+""
+1 12 120 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+15 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  12 120 172 120
+4 46
+"LINE3"
+""
+1 172 120 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  172 120 172 110
+2 47
+"PRIMITIVE_TEXT1"
+""
+1 12 120 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 12 120 172 140
+0 2 2 "0s" 0 0 0 65 0 0  12 120 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 6 Port A
+4 48
+"LINE4"
+""
+1 182 110 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  182 110 182 120
+4 49
+"LINE5"
+""
+1 182 120 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+21 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  182 120 342 120
+4 50
+"LINE6"
+""
+1 342 120 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+23 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  342 120 342 110
+2 51
+"PRIMITIVE_TEXT2"
+""
+1 182 120 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+25 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 182 120 342 140
+0 2 2 "0s" 0 0 0 65 0 0  182 120 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 6 Port C
+13 88
+"PUSH_BUTTON1"
+""
+1 120 140 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+27 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 118 138 252 162
+
+T 
+1
+LANG:1 13 Write to ELMB
+"main()
+{
+  bool bValid = false;
+  unsigned uResult;
+  unsigned uPortA;
+  unsigned uPortC;
+  string sTemp;
+  dyn_string dsExceptionInfo;
+  
+  setValue(\"tglPortA.txtInputValue\", \"text\", \"\");
+  setValue(\"tglPortC.txtInputValue\", \"text\", \"\");
+  getValue(\"tglPortA.txtOutputValue\", \"text\", sTemp);
+  if (sTemp != \"Invalid\") {
+    uPortA = sTemp;  
+    bValid = true;
+  } else {
+    bValid = false;
+  }
+  
+  if (bValid) {
+    getValue(\"tglPortC.txtOutputValue\", \"text\", sTemp);
+    if (sTemp != \"Invalid\") {
+      uPortC = sTemp;  
+    } else {
+      bValid = false;
+    }
+  }
+  
+  if (bValid)
+    fwElmbUser_setDoBytes(g_sElmb, (uPortA << 8) | uPortC, dsExceptionInfo);
+  else
+    DebugN(\"Values are not valid for writing\");
+}" 0
+ E E E
+13 126
+"cmdClose"
+""
+1 250 180 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+29 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 248 178 342 212
+
+T 
+1
+LANG:1 5 Close
+"main()
+{
+  PanelOff();
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+3 0 "tglPortA"
+"fwElmb/objects/fwElmbToggleByteRef.pnl" 12 120 T 12 1 0 1 8 -50
+1
+"$bShowOutput""true"
+3 1 "tglPortC"
+"fwElmb/objects/fwElmbToggleByteRef.pnl" 12 120 T 12 1 0 1 178 -50
+1
+"$bShowOutput""true"
+0

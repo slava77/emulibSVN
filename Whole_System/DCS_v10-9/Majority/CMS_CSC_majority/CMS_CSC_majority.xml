@@ -1,0 +1,15 @@
+<component>
+<name>CMS_CSC_majority</name>
+<version>4.15.1</version>
+<date>2010/08/19</date>
+<required>majority_treeCache=1.2.11</required>
+<dontRestartProject>yes</dontRestartProject>
+<dplist>./dplist/CMS_CSC_majority/majorityInstallationDp.dpl</dplist>
+<dplist>./dplist/CMS_CSC_majority/majorityDUType.dpl</dplist>
+<init>./scripts/CMS_CSC_majority/CMS_CSC_majority.init</init>
+<file>./scripts/CMS_CSC_majority/majority.ctl</file>
+<file>./scripts/libs/CMS_CSC_majority/CMS_CSC_majorityDevices.ctl</file>
+<file>./scripts/libs/CMS_CSC_majority/majorityUser.ctl</file>
+<file>./panels/CMS_CSC_majority/*.pnl</file>
+<file>./CMS_CSC_majority.xml</file>
+</component>

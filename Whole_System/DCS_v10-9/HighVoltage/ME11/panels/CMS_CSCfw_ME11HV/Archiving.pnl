@@ -1,0 +1,255 @@
+V 10
+1
+LANG:1 8 (NoName)
+PANEL,-1 -1 482 265 N "_3DFace" 0
+E E E E E 1 0 0 0  48 18
+""0  1
+E E 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 7
+"Text1"
+""
+1 38 18 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 40 20 357 40
+0 2 0 "0s" 0 0 0 192 0 0  40 20 1
+1
+LANG:1 87 -*-Arial-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,697,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 34 ADDING/REMOVING ARCHIVING to ME1/1
+13 5
+"Button3"
+""
+1 30 60 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 28 58 152 92
+
+T 
+1
+LANG:1 18 Add Arch to all HV
+"main()
+{
+
+   string s,arch,sx;
+   dyn_string ds;
+   int i,j,k;
+   
+//   s=\"dist_254:aaa1.VV\";
+   
+//   j=110;
+   
+   ds=dpNames(\"*\",\"FwCaenChannel\");
+   j=dynlen(ds);
+   for (i=1; i<j; i++) {
+      s=ds[i];
+      k=(i-1)/64+6;
+      arch=k;
+      arch= \"_ValueArchive_\"+arch;
+      DebugN(i,s,arch);
+      sx=i;
+      sx=sx+\" <\"+s+\"> -> \"+arch;
+      PRIMITIVE_TEXT1.text(sx);
+      setArch(i,s+\".actual.iMon\",arch);
+      setArch(i,s+\".actual.vMon\",arch);
+      setArch(i,s+\".actual.status\",arch);
+//      return; 
+   }
+   DebugN(\"###   Done   ###\");
+      PRIMITIVE_TEXT1.text(\"Done\");
+   
+}
+
+setArch(int ch, string s, string arch)
+{
+   int j;
+   
+   dpSetWait(s+\":_archive.._type\", 45,
+      s+\":_archive.._archive\", TRUE,
+      s+\":_archive.1._type\", 3, //_std_type
+      s+\":_archive.1._std_type\", 4, //_std_type
+      s+\":_archive.1._class\",arch);
+
+
+}" 0
+ E E E
+13 6
+"Button4"
+""
+1 180 60 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 178 58 342 92
+
+T 
+1
+LANG:1 23 Remove Arch from all HV
+"main()
+{
+
+   string s;
+   dyn_string ds;
+   int i;
+   
+   s=\"dist_254:aaa1.VV\";
+   
+   ds=dpNames(\"*\",\"FwCaenChannel\");
+   for (i=1; i<=dynlen(ds); i++) {
+      s=ds[i];
+      DebugN(i,s);
+      setArch(s+\".actual.iMon\");
+      setArch(s+\".actual.vMon\");
+      setArch(s+\".actual.status\");
+      
+   }
+
+   
+}
+
+setArch(string s)
+{
+
+   dpSetWait(s+\":_archive.._type\", 0);
+
+}" 0
+ E E E
+13 9
+"PUSH_BUTTON1"
+""
+1 40 200 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 38 198 162 225
+
+T 
+1
+LANG:1 4 Test
+"main()
+{
+   string s,arch;
+   dyn_string ds;
+   int i,j,k;
+   
+   
+//   ds=dpNames(\"*\",\"FwCaenChannel\");
+
+//   i=100;
+//   s=ds[i];
+//   DebugN(s);
+
+   s=\"CMS_CSC_DCS_01:CAEN/HVME11N/board00/channel007\";
+   k=(i-1)/64+6;
+   arch=k;
+   arch= \"_ValueArchive_\"+arch;
+   DebugN(i,s,arch);
+   setArch(i,s+\".actual.iMon\",arch);
+   setArch(i,s+\".actual.vMon\",arch);
+   setArch(i,s+\".actual.status\",arch);
+   
+}
+
+setArch(int ch, string s, string arch)
+{
+   int j;
+   
+   dpSetWait(s+\":_archive.._type\", 45);
+   dpSetWait(s+\":_archive.._archive\", TRUE);
+   dpSetWait(s+\":_archive.1._type\", 3); //_std_type
+   dpSetWait(s+\":_archive.1._std_type\", 4); //_std_type
+   dpSetWait(s+\":_archive.1._class\",arch);
+
+
+}" 0
+ E E E
+2 10
+"PRIMITIVE_TEXT1"
+""
+1 30 120 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 30 120 102 134
+1 2 2 "0s" 0 0 0 192 0 0  30 120 1
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
+LANG:1 15 Progress status
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0

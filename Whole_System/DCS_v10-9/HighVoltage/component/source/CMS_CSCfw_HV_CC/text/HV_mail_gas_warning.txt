@@ -1,0 +1,17 @@
+To: valerii.sytnik@cern.ch
+Subject: possible GAS alarm: YELLOW LEVEL
+
+Please check the GAS system at SX5:
+         There is a possible GAS system trouble.  
+If it is the HV should be off.
+
+  Possible reasons of the alarm (YELLOW LEVEL):
+
+   1) a gas does not go to flow meter
+   2) a GAS-elmb crate is OFF
+   3) a cable between PC and GAS-elmb crate is disconnected
+
+                   DCS.
+
+
+vandreev@mail.cern.ch, Xiaofeng.Yang@cern.ch,
