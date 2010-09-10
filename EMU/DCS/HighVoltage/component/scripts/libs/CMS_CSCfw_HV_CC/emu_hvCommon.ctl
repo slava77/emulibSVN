@@ -36,7 +36,7 @@ public string emuhv_getHvChannelDp(mapping channelDeviceParams, dyn_string &exce
 private int _emuhv_getModuleHvChannelNum(mapping chamberDeviceParams, int chamberHvChannelNum, dyn_string &exceptionInfo) {
   int channelsOffset = 0;
   
-  string coordDp = emuui_getDpName("HV_coord", deviceParams, exceptionInfo);
+  string coordDp = emuui_getDpName("HV_coord", chamberDeviceParams, exceptionInfo);
   if (emu_checkException(exceptionInfo)) { return -1; }
 
   string coord;
@@ -110,7 +110,7 @@ void emuhv_sendChannelCommand(mapping channelDeviceParams, int command, dyn_stri
   string host = coords[1];
   string commandStr = host + "|" + "HVCMD;" + coords[2] + ";" + coords[3] + ";" + channelNumber + ";" + command + ";" + commandValue + ";" + "-1"; //e.g.: 500|HVCMD;6;3;29;1;0;-1 or 500|HVCMD;5;8;10;0;0;-1
 
-  emu_info("HV: sending command (" + command + ") to HV server for " + emuui_getChamberName(deviceParams) + ", channel number: " + channelNumber + ":" + commandStr);
+  emu_info("HV: sending command (" + command + ") to HV server for " + emuui_getChamberName(channelDeviceParams) + ", channel number: " + channelNumber + ":" + commandStr);
 
   synchronized (emuhv_command_semaphore) {
     dpSetWait(dpSubStr(coordsDp, DPSUB_SYS) + "HV_1_COM.command", commandStr);
@@ -259,4 +259,29 @@ void emuhv_chamberGetHvChannelDetailsDps(mapping deviceParams, dyn_string &chann
     }
     dynAppend(channelDps, dps[index]);
   }
+}
+
+/**
+  * find out a fellow chamber if one exists (one distribution board can handle 2 chambers if they have only 18 channels)
+  * @param hvFsmDp DP of type HV_1 representing the HV of the chamber whose fellow (another chamber hooked up to the same distrib. board) you want to find out
+  * @return if a fellow chamber exists, it's HV_1 DP is returned, if not, empty string is returned
+  */
+string emuhv_getFellowChamber(string hvFsmDp) {
+  int chamber1idx, chamber2idx;
+  string fellowChamberDp;
+  for (i = 1; i <= dynlen(CSC_fwG_g_HV_36CHANNEL_BOARDS_CHAMBER_LIST); i++) {
+    if (dynlen(CSC_fwG_g_HV_36CHANNEL_BOARDS_CHAMBER_LIST[i]) < 2) {
+      continue;
+    }
+    chamber1idx = dynContains(CSC_fwG_g_HV_36CHANNEL_BOARDS_CHAMBER_LIST[i], hvFsmDp);
+    if (chamber1idx < 1) {
+      continue;
+    } else if (chamber1idx == 1) {
+      chamber2idx = 2;
+    } else if (chamber1idx == 2) {
+      chamber2idx = 1;
+    }
+    fellowChamberDp = CSC_fwG_g_HV_36CHANNEL_BOARDS_CHAMBER_LIST[i][chamber2idx];
+  }
+  return fellowChamberDp;
 }

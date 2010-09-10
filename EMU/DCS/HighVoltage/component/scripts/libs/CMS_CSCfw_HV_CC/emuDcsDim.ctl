@@ -1,7 +1,7 @@
 // EMU common libs
 #uses "CMS_CSC_common/emu_common.ctl"
 
-global const bool EMU_G_TEST_DIM_SERVICE = false; // if this flag is true then all DIM services will be prefixed with "TEST_" - useful when testing new interface (e.g. Jinghua has a mechanism to run a parallel X2P with services prepended with "TEST_")
+global const bool EMU_G_TEST_DIM_SERVICE = false; // if this flag is true then all DIM services will be prefixed with "TEST_" and no commands are connected to DIM - useful when testing new interface (e.g. Jinghua has a mechanism to run a parallel X2P with services prepended with "TEST_")
 
 //=============================
 mudcsDimConfigOneManagerNew(string type_par, string pc, string manager, dyn_string &exceptionInfo){

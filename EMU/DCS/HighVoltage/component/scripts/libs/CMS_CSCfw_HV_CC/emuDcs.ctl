@@ -3982,8 +3982,23 @@ mudcsMasterChannelSwitch(int isOn, dyn_string coord, int channel, string fsm){
 */
     dpGet(mudcsAddSystem(fsm+".last_vset"),voltage);
 
-    if(voltage > 3000)voltage_s="4000";
-    else voltage_s=voltage;
+    if (voltage > 3000) { // nominal voltage
+      voltage_s="4000";
+    } else {              // standby voltage
+      // check if a fellow chamber (if one exists) doesn't have a higher voltage setting
+      string fellowChamberDp = emuhv_getFellowChamber(fsm);
+      if (fellowChamberDp != "") {
+        int fellowChamberVoltage;
+        dpGet(mudcsAddSystem(fellowChamberDp + ".last_vset"), fellowChamberVoltage);
+        if (fellowChamberVoltage > 3000) {
+          voltage_s = 4000;
+        } else if (fellowChamberVoltage > voltage) {
+          voltage_s = fellowChamberVoltage;
+        }
+      } else {
+        voltage_s=voltage;
+      }
+    }
 
     subcommand="HVCMD;"+coord[2]+";"+coord[3]+";"+channel_s+";"+7+";"+voltage_s+";"+"-1";
     dpSetWait(mudcsAddSystem("HV_1_COM"+".command"),coord[1]+"|"+subcommand);

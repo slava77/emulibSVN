@@ -2431,40 +2431,22 @@ if(master_id==0)return;
  dpGet(mudcsAddSystem(DpNameFsm+".status"),current_status);
 
 if(current_status != -2){
- if(isOn){
-           mudcsMasterChannelSwitch(1, coord_master, 
-                                    master_chan, DpNameFsm);
- }
- else {
-  int found=false;
-  for(i=1;i<=dynlen(CSC_fwG_g_HV_36CHANNEL_BOARDS_CHAMBER_LIST);i++){
-   if(dynlen(CSC_fwG_g_HV_36CHANNEL_BOARDS_CHAMBER_LIST[i])<2)continue;
-   index1=dynContains(CSC_fwG_g_HV_36CHANNEL_BOARDS_CHAMBER_LIST[i],DpNameFsm);
-   if(index1 < 1)continue;
-   else if(index1==1)index2=2;
-   else if(index1==2)index2=1;
-   if(dynlen(CSC_fwG_g_HV_36CHANNEL_BOARDS_CHAMBER_LIST[i]) < 2)break; // i.e. found will be false
-   dp2=CSC_fwG_g_HV_36CHANNEL_BOARDS_CHAMBER_LIST[i][index2];
-   dpGet(mudcsAddSystem(dp2+".status"),status2);
-   if(status2 == 0)mudcsMasterChannelSwitch(0, coord_master, 
-                                            master_chan, DpNameFsm);
-   else {
-       DebugTN("!!!!!!!!!!! master channel remains ON \n as another chamber is connected !!!!!");
-//DebugTN("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-//DebugTN(CSC_fwG_g_HV_36CHANNEL_BOARDS_CHAMBER_LIST);
-   ////    mudcsDebug(dp2);
-   }
-   found=true;
-   break;
-  } //for
 
-  if(!found){ // i.e. 30 channel board or there is one chamber connected to 36 ch board 
-         mudcsMasterChannelSwitch(0, coord_master, 
-                                             master_chan, DpNameFsm);
-//DebugTN("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-//DebugTN(CSC_fwG_g_HV_36CHANNEL_BOARDS_CHAMBER_LIST);
-  }
-
+  if(isOn){ // switch on
+    mudcsMasterChannelSwitch(1, coord_master, master_chan, DpNameFsm);
+  } else {
+  
+    string fellowChamberDp = emuhv_getFellowChamber(DpNameFsm);
+    int fellowChamberStatus = -99; // not 0 or any other valid status
+    if (fellowChamberDp != "") {
+      dpGet(mudcsAddSystem(fellowChamberDp + ".status"), fellowChamberStatus);
+    }
+    
+    // switch off the master chanel only if the chamber doesn't have a fellow (another chamber hooked up to the same distrib. board) or the fellow chamber is off
+    if ((fellowChamberDp == "") || (fellowChamberStatus == 0)) {
+      mudcsMasterChannelSwitch(0, coord_master, master_chan, DpNameFsm);
+    }
+    
  } // else
 } // if
 
