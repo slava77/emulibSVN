@@ -7,8 +7,6 @@ bool emu_hasControl() {
   fwAccessControl_isGranted("CMS_CSC:Control", hasControl, ex);
   if (emu_checkException(ex)) { return false; }
 
-  //TODO check if this user has FSM control and is the owner of it.  
-  
   return hasControl;
 }
 
