@@ -307,7 +307,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 6 38 54 54
+E E 0 1 1 2 1 E U  1 E 6 38 56 53
 0 2 2 "0s" 0 0 0 192 0 0  6 38 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -326,7 +326,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 6 68 51 84
+E E 0 1 1 2 1 E U  1 E 6 68 54 83
 0 2 2 "0s" 0 0 0 192 0 0  6 68 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -345,7 +345,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 6 98 54 114
+E E 0 1 1 2 1 E U  1 E 6 98 57 113
 0 2 2 "0s" 0 0 0 192 0 0  6 98 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -364,7 +364,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 6 128 54 144
+E E 0 1 1 2 1 E U  1 E 6 128 56 143
 0 2 2 "0s" 0 0 0 192 0 0  6 128 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -411,7 +411,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 145 8 159 24
+E E 0 1 1 2 1 E U  1 E 145 8 161 23
 0 2 2 "0s" 0 0 0 192 0 0  145 8 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -430,7 +430,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 85 8 96 24
+E E 0 1 1 2 1 E U  1 E 85 8 98 23
 0 2 2 "0s" 0 0 0 192 0 0  85 8 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0

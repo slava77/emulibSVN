@@ -12,6 +12,7 @@ PANEL,-1 -1 400 408 N "_3DFace" 0
     dyn_string ex;
     fwAccessControl_setupPanel(\"accessPrivilegesChangedCB\", ex);
     if (emu_checkException(ex)) { return; }
+    fwCU_connectOperationMode(\"accessPrivilegesChangedCB\", \"CMS_CSC::CMS_CSC\");
   }
   //=========================
   
@@ -107,7 +108,7 @@ string getCommandMeaning(string command) {
 
 /** This function is called whenever the user privileges change and just passes that to emu_enableDisableControl() which takes care of enabling/disabling buttons. */
 void accessPrivilegesChangedCB(string dummy1, string dummy2) {
-  emu_enableDisableControl(controlButtons, true, \"lblNoControl\", expertControlButtons, true);
+  emu_enableDisableControl(\"CMS_CSC::CMS_CSC\", controlButtons, true, \"lblNoControl\", expertControlButtons, true);
 }
 " 0
  2
@@ -239,7 +240,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 30 100 92 116
+E E 0 1 1 2 1 E U  0 E 30 100 95 115
 0 2 2 "0s" 0 0 0 192 0 0  30 100 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -258,7 +259,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 100 100 150 116
+E E 0 1 1 2 1 E U  0 E 100 100 151 115
 0 2 2 "0s" 0 0 0 192 0 0  100 100 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -277,7 +278,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 30 270 92 286
+E E 0 1 1 2 1 E U  0 E 30 270 95 285
 0 2 2 "0s" 0 0 0 192 0 0  30 270 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -296,7 +297,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 100 270 150 286
+E E 0 1 1 2 1 E U  0 E 100 270 151 285
 0 2 2 "0s" 0 0 0 192 0 0  100 270 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -419,7 +420,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 30 120 157 136
+E E 0 1 1 2 1 E U  0 E 30 120 158 135
 0 2 2 "0s" 0 0 0 192 0 0  30 120 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -438,7 +439,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 160 120 219 136
+E E 0 1 1 2 1 E U  0 E 160 120 218 135
 0 2 2 "0s" 0 0 0 192 0 0  160 120 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -457,7 +458,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 30 290 157 306
+E E 0 1 1 2 1 E U  0 E 30 290 158 305
 0 2 2 "0s" 0 0 0 192 0 0  30 290 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -476,7 +477,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 160 290 219 306
+E E 0 1 1 2 1 E U  0 E 160 290 218 305
 0 2 2 "0s" 0 0 0 192 0 0  160 290 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -495,12 +496,12 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 100 70 357 86
+E E 0 1 1 2 1 E U  1 E 100 70 350 85
 0 2 2 "0s" 0 0 0 192 0 0  100 70 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 50 Plus side DCS are not ready for control, try later
+LANG:1 49 Plus side DCS is not ready for control, try later
 2 20
 "lblMinusNotValid"
 ""
@@ -514,12 +515,12 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 100 240 365 256
+E E 0 1 1 2 1 E U  1 E 100 240 359 255
 0 2 2 "0s" 0 0 0 192 0 0  100 240 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 51 Minus side DCS are not ready for control, try later
+LANG:1 50 Minus side DCS is not ready for control, try later
 2 21
 "lblNoControl"
 ""
@@ -533,7 +534,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 97 47 295 64
+E E 0 0 0 0 1 E U  1 E 97 47 298 66
 1 2 2 "0s" 0 0 0 192 0 0  97 47 1
 1
 LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0

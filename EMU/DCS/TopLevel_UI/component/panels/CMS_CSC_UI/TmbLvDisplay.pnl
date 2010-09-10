@@ -1,0 +1,183 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 973 550 N "_3DFace" 0
+"main()
+{
+  dyn_string ex;
+  
+  dyn_string dps = dpNames(\"*:CSC_ME*\", \"LV_1_d\");
+  
+  for (int i=1; i <= dynlen(dps); i++) {
+    string chamberName = emuui_getChamberName(emu_fsmNodeToDeviceParams(dpSubStr(dps[i], DPSUB_DP), ex));
+    if (emu_checkException(ex)) { return; }
+    table.appendLine(\"tmb\", chamberName);
+    dpConnect(\"dataUpdatedCB\", true, dpNames(dps[i] + \".data.Tmb_o.*\", \"LV_1_d\"));
+  }
+}
+
+void dataUpdatedCB(dyn_string dps, dyn_float data) {
+  dyn_string ex;
+  string chamberName = emuui_getChamberName(emu_fsmNodeToDeviceParams(dpSubStr(dps[1], DPSUB_DP), ex));
+  if (emu_checkException(ex)) { return; }
+  
+  for (int i=1; i <= dynlen(data); i++) {
+    string column = dpSubStr(dps[i], DPSUB_DP_EL);
+    dyn_string tmpSplit = strsplit(column, \".\");
+    column = tmpSplit[dynlen(tmpSplit)];
+    table.updateLine(1, \"tmb\", chamberName, column, data[i]);
+  }
+}" 0
+ E E E E 1 -1 -1 0  140 60
+""0  1
+E "#uses \"CMS_CSC_common/emu_common.ctl\"
+#uses \"CMS_CSC_UI/emuui_deviceInfo.ctl\"" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+25 0
+"table"
+""
+1 20.00000000000002 20.00000000000001 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  18 18 952 532
+EE 1 0 1 15 0 "tmb" 6 1 0 "s" 1
+LANG:1 3 TMB
+E
+1
+LANG:1 0 
+
+80 "v50" 6 1 0 "[0.2f,False,False,ALIGNMENT_BEGINNING,False]" 1
+LANG:1 4 v5.0
+E
+1
+LANG:1 0 
+
+60 "v33" 6 1 0 "[0.2f,False,False,ALIGNMENT_BEGINNING,False]" 1
+LANG:1 4 v3.3
+E
+1
+LANG:1 0 
+
+60 "v15C" 6 1 0 "[0.2f,False,False,ALIGNMENT_BEGINNING,False]" 1
+LANG:1 9 v1.5 Core
+E
+1
+LANG:1 0 
+
+60 "v15T" 6 1 0 "[0.2f,False,False,ALIGNMENT_BEGINNING,False]" 1
+LANG:1 7 v1.5 TT
+E
+1
+LANG:1 0 
+
+60 "v10T" 6 1 0 "[0.2f,False,False,ALIGNMENT_BEGINNING,False]" 1
+LANG:1 7 v1.0 TT
+E
+1
+LANG:1 0 
+
+60 "c50" 6 1 0 "[0.2f,False,False,ALIGNMENT_BEGINNING,False]" 1
+LANG:1 4 c5.0
+E
+1
+LANG:1 0 
+
+60 "c33" 6 1 0 "[0.2f,False,False,ALIGNMENT_BEGINNING,False]" 1
+LANG:1 4 c3.3
+E
+1
+LANG:1 0 
+
+60 "c15C" 6 1 0 "[0.2f,False,False,ALIGNMENT_BEGINNING,False]" 1
+LANG:1 9 c1.5 Core
+E
+1
+LANG:1 0 
+
+60 "c15T" 6 1 0 "[0.2f,False,False,ALIGNMENT_BEGINNING,False]" 1
+LANG:1 7 c1.5 TT
+E
+1
+LANG:1 0 
+
+60 "vRAT" 6 1 0 "[0.2f,False,False,ALIGNMENT_BEGINNING,False]" 1
+LANG:1 4 vRAT
+E
+1
+LANG:1 0 
+
+60 "cRAT" 6 1 0 "[0.2f,False,False,ALIGNMENT_BEGINNING,False]" 1
+LANG:1 4 cRAT
+E
+1
+LANG:1 0 
+
+60 "vGND" 6 1 0 "[0.2f,False,False,ALIGNMENT_BEGINNING,False]" 1
+LANG:1 4 vGND
+E
+1
+LANG:1 0 
+
+60 "vREF" 6 1 0 "[0.2f,False,False,ALIGNMENT_BEGINNING,False]" 1
+LANG:1 4 vREF
+E
+1
+LANG:1 0 
+
+60 "vMAX" 6 1 0 "[0.2f,False,False,ALIGNMENT_BEGINNING,False]" 1
+LANG:1 4 vMAX
+E
+1
+LANG:1 0 
+
+60 
+16 16 10 10
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 0 1 1 1 7
+1 0
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

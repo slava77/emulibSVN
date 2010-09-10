@@ -12,6 +12,7 @@ PANEL,-1 -1 649 555 N "_3DFace" 2
     dyn_string ex;
     fwAccessControl_setupPanel(\"accessPrivilegesChangedCB\", ex);
     if (emu_checkException(ex)) { return; }
+    fwCU_connectOperationMode(\"accessPrivilegesChangedCB\", \"CMS_CSC::CMS_CSC\");
   }
   //=========================  
   
@@ -154,7 +155,7 @@ void channelOriginalVoltageChangedCB(dyn_string dps, dyn_float voltages) {
 
 /** This function is called whenever the user privileges change and just passes that to emu_enableDisableControl() which takes care of enabling/disabling buttons. */
 void accessPrivilegesChangedCB(string dummy1, string dummy2) {
-  emu_enableDisableControl(controlButtons, false, \"lblNoControl\", expertControlButtons, false);
+  emu_enableDisableControl(\"CMS_CSC::CMS_CSC\", controlButtons, false, \"lblNoControl\", expertControlButtons, false);
 }
 " 0
  2
@@ -202,7 +203,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 10 60 106 77
+E E 0 1 1 2 1 E U  0 E 10 60 106 76
 0 2 2 "0s" 0 0 0 192 0 0  10 60 1
 1
 LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
@@ -290,7 +291,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 10 30 103 47
+E E 0 1 1 2 1 E U  0 E 10 30 103 46
 0 2 2 "0s" 0 0 0 192 0 0  10 30 1
 1
 LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
@@ -398,7 +399,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 20 110 595 127
+E E 0 1 1 2 1 E U  0 E 20 110 599 126
 0 2 2 "0s" 0 0 0 192 0 0  20 110 1
 1
 LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
@@ -417,7 +418,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 10 10 89 26
+E E 0 1 1 2 1 E U  0 E 10 10 98 26
 0 2 2 "0s" 0 0 0 192 0 0  10 10 1
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
@@ -586,7 +587,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 260 30 458 47
+E E 0 0 0 0 1 E U  1 E 260 30 461 49
 1 2 2 "0s" 0 0 0 192 0 0  260 30 1
 1
 LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0

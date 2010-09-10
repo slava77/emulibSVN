@@ -64,7 +64,7 @@ void recreateDbDp() {
 
 /** This function is called whenever the user privileges change and just passes that to emu_enableDisableControl() which takes care of enabling/disabling buttons. */
 void accessPrivilegesChangedCB(string dummy1, string dummy2) {
-  emu_enableDisableControl(controlButtons, false, \"lblNoControl\", expertControlButtons, false);
+  emu_enableDisableControl(\"\", controlButtons, false, \"lblNoControl\", expertControlButtons, false);
 }
 " 0
  2
@@ -112,7 +112,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 150 50 348 67
+E E 0 0 0 0 1 E U  1 E 150 50 351 69
 1 2 2 "0s" 0 0 0 192 0 0  150 50 1
 1
 LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
