@@ -1,0 +1,305 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 1600 247 N "_3DFace" 2
+"$group"
+"$width"
+"main()
+{
+  initParams();
+  drawCommunicationDevices(paramWidth);
+}
+
+void drawCommunicationDevices(int width) {
+  int posX, posY;
+  getValue(\"refPoint\", \"position\", posX, posY); 
+  int lblWidth = 57;
+  int xGapSize = (width - (7 * lblWidth)) / 7;
+  if (xGapSize < 93) {
+    xGapSize = 93; // minimum x gap size
+  }
+  
+  lblXmasP.position(posX, posY);
+  posX += lblWidth;
+  drawConnectionDevice(posX, posY, \"xmas\", \"side=P\");
+  posX += xGapSize;
+  
+  lblXmasM.position(posX, posY);
+  posX += lblWidth;
+  drawConnectionDevice(posX, posY, \"xmas\", \"side=M\");
+  posX += xGapSize;
+  
+  lblHv.position(posX, posY);
+  posX += lblWidth;
+  drawConnectionDevice(posX, posY, \"hv\");
+  posX += xGapSize;
+  
+  lblLvForHv.position(posX, posY);
+  posX += lblWidth;
+  drawConnectionDevice(posX, posY, \"lvForHv\");
+  posX += xGapSize;
+  
+  lblGas.position(posX, posY);
+  posX += lblWidth;
+  drawConnectionDevice(posX, posY, \"gas\");
+  posX += xGapSize;
+  
+  lblCooling.position(posX, posY);
+  posX += lblWidth;
+  drawConnectionDevice(posX, posY, \"cooling\");
+  posX += xGapSize;
+  
+  lblDcsPCs.position(posX, posY);
+  posX += lblWidth;
+  drawConnectionDevice(posX, posY, \"dcsPCs\");
+}
+
+void drawConnectionDevice(int x, int y, string connectionDeviceType, string additionalDeviceParams = \"\" ) {
+  string refName = \"refConnection_\" + connectionDeviceType;
+  string deviceParamsDollar = \"$deviceParams:\" + \"sessionId=\" + emuui_getSessionId();
+  string shapeParamsDollar = \"$shapeParams:\" + \"type=rectangle\" +
+                                               \";width=\" + EMUUI_REFCOMM_DEVICE_WIDTH +
+                                               \";height=\" + EMUUI_REFCOMM_DEVICE_HEIGHT;
+  
+  if (strlen(additionalDeviceParams) > 0) {
+    refName += \"_\" + additionalDeviceParams;
+    deviceParamsDollar += \";\" + additionalDeviceParams;
+  }
+  
+  addSymbol(myModuleName(), myPanelName(),
+            EMUUI_OBJECTS_DIR + \"/refDevice.pnl\",
+            refName,
+            makeDynString(\"$caption:VALUE\", \"$deviceType:connection_\" + connectionDeviceType,
+                          deviceParamsDollar, shapeParamsDollar, \"$group:\" + paramGroup,
+                          \"$refName:\" + refName),
+            x, y, 0, 1, 1);
+}
+" 0
+ "main()
+{
+  emuui_destroyReferences(references);
+}
+" 0
+ E E E 1 -1 -1 0  0 0
+""0  1
+E "// init parameters
+string paramGroup;
+int paramWidth;
+
+// some panel-wide constants and variables
+dyn_string references;
+bool runningLocal; // if true then panel is running localy, if false then panel is a reference
+
+const int EMUUI_REFCOMM_DEVICE_WIDTH = 90;
+const int EMUUI_REFCOMM_DEVICE_HEIGHT = 19;
+
+/** coppies dollar parameters to local variables. If any dollar parameter is missing 
+   then local variable is given a default value to allow to run the panel separatelly for debugging purposes. */
+void initParams() {
+  //default values
+  if (strlen($group) == 0) {
+    
+    emuui_init();
+    runningLocal = true;
+    
+    paramGroup = emuui_getSessionDp(\"communicationMonitor\");
+    paramWidth = 1060;
+  } else { // copy from dollar params
+    runningLocal = false;
+    
+    paramGroup = $group;
+    paramWidth = $width;
+  }
+}
+" 0
+ 2
+"CBRef" "1"
+"EClose" "main()
+{
+  emuui_destroyReferences(references);
+  PanelOff();
+}
+" 0
+
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+2 0
+"lblXmasP"
+""
+1 0 0 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 0 0 55 14
+0 2 2 "0s" 0 0 0 66 0 0  0 0 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 8 Xmas +Z:
+2 1
+"lblXmasM"
+""
+1 0 20 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 0 20 55 34
+0 2 2 "0s" 0 0 0 66 0 0  0 20 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 8 Xmas -Z:
+2 2
+"lblHv"
+""
+1 0 40 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 0 40 55 54
+0 2 2 "0s" 0 0 0 66 0 0  0 40 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 3 HV:
+2 3
+"lblLvForHv"
+""
+1 0 60 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 0 60 55 74
+0 2 2 "0s" 0 0 0 66 0 0  0 60 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 10 LV for HV:
+2 4
+"lblGas"
+""
+1 0 79 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 0 79 55 93
+0 2 2 "0s" 0 0 0 66 0 0  0 79 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 4 Gas:
+2 5
+"lblCooling"
+""
+1 0 100 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 0 100 55 114
+0 2 2 "0s" 0 0 0 66 0 0  0 100 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 8 Cooling:
+2 12
+"lblDcsPCs"
+""
+1 0 120 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 0 120 55 134
+0 2 2 "0s" 0 0 0 66 0 0  0 120 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 8 DCS PCs:
+7 14
+"refPoint"
+""
+1 140 110 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ E E
+24 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -140 -110 1 E 140 110 10 10
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

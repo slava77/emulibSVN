@@ -1,0 +1,331 @@
+V 10
+1
+LANG:1 11 TrendTEMP_1
+PANEL,-1 -1 1006 549 N "_3DFace" 14
+"$channelNumber1"
+"$channelNumber2"
+"$channelNumber3"
+"$channelNumber4"
+"$channelNumber5"
+"$channelNumber6"
+"$channelNumber7"
+"$iMaxYScaleC"
+"$iMaxYScaleV"
+"$iMinYScaleC"
+"$iMinYScaleV"
+"$project_station"
+"$project_system"
+"$sDpe"
+"main()
+{
+
+$project_station;
+$project_system;    
+  mudcsProjectConnect();
+
+int i;
+string i_s;
+
+DpName=$sDpe;
+MaxYScaleV=$iMaxYScaleV;
+MaxYScaleC=$iMaxYScaleC;
+MinYScaleV=$iMinYScaleV;
+MinYScaleC=$iMinYScaleC;
+
+isTrending[1]=$channelNumber1;
+isTrending[2]=$channelNumber2;
+isTrending[3]=$channelNumber3;
+isTrending[4]=$channelNumber4;
+isTrending[5]=$channelNumber5;
+isTrending[6]=$channelNumber6;
+isTrending[7]=$channelNumber7;
+
+//------following line added just for test----can be removed later------
+/*
+isTrending[1]=true;
+isTrending[2]=true;
+isTrending[3]=true;
+isTrending[4]=true;
+isTrending[5]=true;
+isTrending[6]=true;
+isTrending[7]=true;
+string    DpName = \"dist_164:CSC_ME_P31_C02_TEMP\";//should be removed later
+*/
+//-----------adapt to new dpe,xyang Mar,2009--------------------------------
+string sdp1,sdp2,sdp3,sdp4,sdp5,sdp6,sdp7;
+string stx1,stx2,stx3,stx4,stx5,stx6,stx7;
+dyn_string ds,dsDpes,dsTexts;
+string sSystemName,sLegendText,sPlotName; 
+ ds=strsplit(DpName,\":\");
+ sSystemName = ds[1]+\":\";
+ //DebugN(sSystemName);
+ sLegendText = ds[2];
+ //DebugN(sLegendText);
+ sPlotName = sSystemName+\"Temperature1\";
+
+if(isTrending[1])
+       {sdp1=DpName+\"_Dmb__T1.value\"; 
+        stx1=sLegendText+\"_Dmb__T1\"; }       
+else   {sdp1=\"\";   
+        stx1=\"\"; }                      
+if(isTrending[2])
+       {sdp2=DpName+\"_Alct_T1.value\";
+        stx2=sLegendText+\"_Alct_T1\";}
+else   {sdp2=\"\";
+        stx2=\"\";}          
+if(isTrending[3])
+       {sdp3=DpName+\"_Cfeb_T1.value\";
+        stx3=sLegendText+\"_Cfeb_T1\";} 
+else   {sdp3=\"\";
+        stx3=\"\";}
+if(isTrending[4])
+       {sdp4=DpName+\"_Cfeb_T2.value\";
+        stx4=sLegendText+\"_Cfeb_T2\";} 
+else   {sdp4=\"\";
+        stx4=\"\";}
+if(isTrending[5])
+       {sdp5=DpName+\"_Cfeb_T3.value\";
+        stx5=sLegendText+\"_Cfeb_T3\";} 
+else   {sdp5=\"\";
+        stx5=\"\";}
+if(isTrending[6])
+       {sdp6=DpName+\"_Cfeb_T4.value\";
+        stx6=sLegendText+\"_Cfeb_T4\";} 
+else   {sdp6=\"\";}
+if(isTrending[7])
+       {sdp7=DpName+\"_Cfeb_T5.value\";
+        stx7=sLegendText+\"_Cfeb_T5\";} 
+else   {sdp7=\"\";
+        stx7=\"\";}
+
+dsDpes  = makeDynString(sdp1,sdp2,sdp3,sdp4,sdp5,sdp6,sdp7,\"\");
+dsTexts = makeDynString(stx1,stx2,stx3,stx4,stx5,stx6,stx7,\"\");
+Plot_dpes_texts_change(sPlotName,dsDpes,dsTexts);
+}
+
+Plot_dpes_texts_change(string plot_name,dyn_string plot_dpes,dyn_string plot_texts)
+{
+  dpSetWait(plot_name+\".dpes\",plot_dpes);          //set new dpes names
+  dpSetWait(plot_name+\".legendTexts\",plot_texts);  //set new text names
+  
+  return;
+}" 0
+ E E E E 1 -1 -1 0  138 9
+""0  1
+E "#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs2.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs3.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs4.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcsDim.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuAlert.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emufw.ctl\"
+string project_station;
+string project_system;
+
+string DpName;
+float MaxYScaleV;
+float MaxYScaleC;
+float MinYScaleV;
+float MinYScaleC;
+dyn_bool isTrending;" 0
+ 2
+"CBRef" "0"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+1 1 0 "10" 330
+0
+1 2 0 "10" 332
+0
+1 3 0 "10" 333
+0
+1 4 0 "10" 334
+0
+1 5 0 "10" 335
+0
+1 6 0 "10" 347
+0
+1 7 0 "10" 360
+0
+1 8 0 "10" 38
+0
+1 9 0 "10" 363
+0
+1 10 0 "10" 362
+0
+1 11 0 "10" 364
+0
+1 12 0 "10" 365
+0
+1 13 0 "10" 4
+0
+1 14 0 "10" 3
+0
+1 15 0 "10" 359
+0
+1 16 0 "10" 366
+0
+1 17 0 "10" 367
+0
+1 18 0 "9" 56
+0
+1 19 0 "9" 57
+0
+1 20 0 "9" 58
+0
+1 21 0 "9" 59
+0
+1 22 0 "9" 60
+0
+1 23 0 "9" 61
+0
+1 24 0 "9" 62
+0
+1 25 0 "9" 63
+0
+1 26 0 "9" 35
+0
+1 27 0 "9" 36
+0
+1 28 0 "9" 38
+0
+1 29 0 "9" 39
+0
+1 30 0 "9" 40
+0
+1 31 0 "9" 41
+0
+1 32 0 "9" 42
+0
+1 33 0 "9" 43
+0
+1 34 0 "9" 16
+0
+1 35 0 "9" 17
+0
+1 36 0 "9" 18
+0
+1 37 0 "9" 19
+0
+1 38 0 "9" 20
+0
+1 39 0 "9" 21
+0
+1 40 0 "9" 22
+0
+1 41 0 "9" 23
+0
+1 42 0 "9" 24
+0
+1 43 0 "9" 25
+0
+1 44 0 "9" 71
+0
+1 45 0 "9" 12
+0
+1 46 0 "9" 11
+0
+1 47 0 "9" 13
+0
+1 48 0 "9" 14
+0
+1 49 0 "9" 9
+0
+1 50 0 "9" 15
+0
+1 51 0 "9.0" 0
+0
+1 52 0 "5" 22
+0
+1 53 0 "5" 23
+0
+1 54 0 "5" 39
+0
+1 55 0 "5" 34
+0
+1 56 0 "5" 40
+0
+1 57 0 "5" 38
+0
+1 58 0 "5" 29
+0
+1 59 0 "5" 30
+0
+1 60 0 "5" 31
+0
+1 61 0 "5" 32
+0
+1 62 0 "5" 35
+0
+1 63 0 "5" 36
+0
+1 64 0 "5" 37
+0
+1 65 0 "5" 24
+0
+1 66 0 "5" 25
+0
+1 67 0 "5" 26
+0
+1 68 0 "5" 27
+0
+1 69 0 "5" 41
+0
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+3 0 "Temperature1"
+"objects/fwTrending/fwTrendingFaceplate.pnl" 70 30 T 179 1.8252427184466 0 2.06751054852321 -97.766990291262 -32.0253164556963
+22
+"$ZoomWindowTitle"""
+"$bShowGrid"""
+"$bShowLegend"""
+"$bTrendLog"""
+"$dsCurveColor"""
+"$dsCurveDPE"""
+"$dsCurveLegend"""
+"$dsCurveRange"""
+"$dsCurveScaleVisible"""
+"$dsCurveToolTipText"""
+"$dsCurveVisible"""
+"$dsCurvesType"""
+"$dsUnit"""
+"$fMaxPercentageForLog"""
+"$fMinForLog"""
+"$iMarkerType"""
+"$sBackColor"""
+"$sDpName""Temperature1"
+"$sForeColor"""
+"$sRefName""Temperature1."
+"$sTimeRange"""
+"$templateParameters"""
+0

@@ -1,0 +1,296 @@
+V 10
+1
+LANG:1 14 MRTNcreateType
+PANEL,-1 -1 470 188 N "_3DFace" 0
+"main(){
+int i;
+
+
+create_components();
+create_data(\"MRTN_1_data\");
+create_d(\"MRTN_1_d\");
+create(\"MRTN_1\");
+DebugTN(\"types: MRTN_* created\");
+//---------
+dpCreate(\"MRTN_1_DimBroker_o\",\"MRTN_1_d\");
+DebugTN(\"dp: MRTN_1_DimBroker_o created\");
+//---------
+dpCreate(\"MRTN_1Info\",\"_FwDeviceDefinition\");
+dpSet(\"MRTN_1Info.type\",\"MRTN Device (1)\");
+dpSet(\"MRTN_1Info.dpType\",\"MRTN_1\"); //?
+DebugTN(\"MRTN_1Info created\");
+//----------
+//----------
+dpCreate(\"MRTN\",\"FwNode\");
+dpSet(\"MRTN.type\",\"VENDOR\");
+dpSet(\"MRTN.dpTypes\",makeDynString(\"MRTN_1\"));
+dpSet(\"MRTN.navigatorPanels\",makeDynString(\"fwDevice/fwDeviceManage\"));
+dpSet(\"MRTN.editorPanels\",makeDynString(\"fwDevice/fwDeviceManage\"));
+dpSet(\"MRTN.model\",\"MRTN\");
+dpSet(\"MRTN.fsmState\",0);
+dpSet(\"MRTN.fsmCommand\",0);
+DebugTN(\"types: MRTN of FwNode created\");
+
+
+
+DebugTN(\"types: MRTN of FwNode created\");
+mudcsInit();
+
+//-----------
+mudcs_setBrokerList();
+DebugTN(\"mudcs_setBrokerList()\");
+//------------
+//FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+dyn_string device_list;
+string device_info;
+
+mudcsGetDeviceList(device_list);
+for(int i=1;i<=dynlen(device_list);i++){
+
+  device_info= device_list[i]+\"Info.panels.editor.hardware\";
+  dpSet(device_info,\"emu_config/emuDev\" + device_list[i]+\"Config\");
+
+  device_info= device_list[i]+\"Info.panels.navigator.hardware\";
+  dpSet(device_info,\"emu/emuDev\" + device_list[i]+\"Operation\");
+
+}
+DebugTN(\"panels set\");
+//FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+
+
+
+
+}
+//============================
+//============================
+create_components()
+{
+
+string dtype;
+
+//========
+dyn_dyn_string xxdepes;
+dyn_dyn_int xxdepei;
+
+dtype=\"MRTN_Channel\";
+
+xxdepes[1] = makeDynString (dtype,\"\");
+xxdepes[2] = makeDynString (\"\",\"item1\");
+xxdepes[3] = makeDynString (\"\",\"item2\");
+xxdepes[4] = makeDynString (\"\",\"item3\");
+xxdepes[5] = makeDynString (\"\",\"item4\");
+xxdepes[6] = makeDynString (\"\",\"item5\");
+xxdepes[7] = makeDynString (\"\",\"item6\");
+xxdepes[8] = makeDynString (\"\",\"item7\");
+xxdepes[9] = makeDynString (\"\",\"item8\");
+xxdepes[10] = makeDynString (\"\",\"item9\");
+xxdepes[11] = makeDynString (\"\",\"item10\");
+
+xxdepei[1]=makeDynInt (DPEL_STRUCT);
+xxdepei[2]=makeDynInt (0,DPEL_FLOAT);
+xxdepei[3]=makeDynInt (0,DPEL_FLOAT);
+xxdepei[4]=makeDynInt (0,DPEL_FLOAT);
+xxdepei[5]=makeDynInt (0,DPEL_FLOAT);
+xxdepei[6]=makeDynInt (0,DPEL_FLOAT);
+xxdepei[7]=makeDynInt (0,DPEL_FLOAT);
+xxdepei[8]=makeDynInt (0,DPEL_FLOAT);
+xxdepei[9]=makeDynInt (0,DPEL_FLOAT);
+xxdepei[10]=makeDynInt (0,DPEL_FLOAT);
+xxdepei[11]=makeDynInt (0,DPEL_FLOAT);
+
+dpTypeCreate(xxdepes,xxdepei);
+//========
+
+
+
+dyn_dyn_string xxdepes2;
+dyn_dyn_int xxdepei2;
+
+dtype=\"MRTN_Crate\";
+
+xxdepes2[1] = makeDynString (dtype,\"\");
+xxdepes2[2] = makeDynString (\"\",\"item1\");
+xxdepes2[3] = makeDynString (\"\",\"item2\");
+xxdepes2[4] = makeDynString (\"\",\"item3\");
+xxdepes2[5] = makeDynString (\"\",\"item4\");
+xxdepes2[6] = makeDynString (\"\",\"item5\");
+xxdepes2[7] = makeDynString (\"\",\"item6\");
+xxdepes2[8] = makeDynString (\"\",\"item7\");
+xxdepes2[9] = makeDynString (\"\",\"item8\");
+xxdepes2[10] = makeDynString (\"\",\"item9\");
+
+
+xxdepei2[1]=makeDynInt (DPEL_STRUCT);
+xxdepei2[2]=makeDynInt (0,DPEL_INT);
+xxdepei2[3]=makeDynInt (0,DPEL_INT);
+xxdepei2[4]=makeDynInt (0,DPEL_INT);
+xxdepei2[5]=makeDynInt (0,DPEL_INT);
+xxdepei2[6]=makeDynInt (0,DPEL_INT);
+xxdepei2[7]=makeDynInt (0,DPEL_INT);
+xxdepei2[8]=makeDynInt (0,DPEL_INT);
+xxdepei2[9]=makeDynInt (0,DPEL_INT);
+xxdepei2[10]=makeDynInt (0,DPEL_INT);
+
+
+dpTypeCreate(xxdepes2,xxdepei2);
+
+}
+
+//============================
+create(string dtype)
+{
+
+dyn_dyn_string xxdepes;
+dyn_dyn_int xxdepei;
+
+xxdepes[1] = makeDynString (dtype,\"\");
+xxdepes[2] = makeDynString (\"\",\"module_state\");
+xxdepes[3] = makeDynString (\"\",\"coord\");
+xxdepes[4] = makeDynString (\"\",\"status\");
+xxdepes[5] = makeDynString (\"\",\"off_channels\");
+xxdepes[6] = makeDynString (\"\",\"off_channels_volt\");
+
+xxdepei[1]=makeDynInt (DPEL_STRUCT);
+xxdepei[2]=makeDynInt (0,DPEL_INT);
+xxdepei[3]=makeDynInt (0,DPEL_STRING);
+xxdepei[4]=makeDynInt (0,DPEL_INT);
+xxdepei[5]=makeDynInt (0,DPEL_DYN_INT);
+xxdepei[6]=makeDynInt (0,DPEL_DYN_FLOAT);
+
+dpTypeCreate(xxdepes,xxdepei);
+
+}
+
+//=============================
+//============================
+create_d(string dtype)
+{
+
+dyn_dyn_string xxdepes;
+dyn_dyn_int xxdepei;
+
+xxdepes[1] = makeDynString (dtype,\"\");
+xxdepes[2] = makeDynString (\"\",\"data\",\"MRTN_1_data\");
+xxdepes[3] = makeDynString (\"\",\"update_value\");
+xxdepes[4] = makeDynString (\"\",\"setNumber\");
+xxdepes[5] = makeDynString (\"\",\"dynatemTcpIp\");
+
+
+xxdepei[1]=makeDynInt (DPEL_STRUCT);
+
+xxdepei[2]=makeDynInt (0,DPEL_TYPEREF);
+xxdepei[3]=makeDynInt (0,DPEL_INT);
+xxdepei[4]=makeDynInt (0,DPEL_INT);
+xxdepei[5]=makeDynInt (0,DPEL_STRING);
+
+
+dpTypeCreate(xxdepes,xxdepei);
+
+}
+
+//=============================
+create_data(string dtype)
+{
+
+
+char a;
+a=50;
+
+int b=a;
+
+dyn_dyn_string xxdepes;
+dyn_dyn_int xxdepei;
+int i,i1;
+
+
+xxdepes[1] = makeDynString (dtype,\"\");
+
+for(i=2;i<=7;i++){
+i1=i-2+1;
+xxdepes[i] = makeDynString (\"\",\"channel\"+i1,\"MRTN_Channel\");
+}
+xxdepes[8] = makeDynString (\"\",\"crate\",\"MRTN_Crate\");
+
+for(i=9;i<=14;i++){
+i1=i-9+1;
+xxdepes[i] = makeDynString (\"\",\"status\"+i1);
+}
+xxdepes[15] = makeDynString (\"\",\"general_status\");
+//=====================================
+
+xxdepei[1]=makeDynInt (DPEL_STRUCT);
+
+for(i=2;i<=7;i++){
+xxdepei[i]=makeDynInt (0,DPEL_TYPEREF);
+}
+xxdepei[8]=makeDynInt (0,DPEL_TYPEREF);
+
+for(i=9;i<=14;i++){
+xxdepei[i]=makeDynInt (0,DPEL_INT);
+}
+
+xxdepei[15]=makeDynInt (0,DPEL_INT);
+
+dpTypeCreate(xxdepes,xxdepei);
+
+}" 0
+ E E E E 1 -1 -1 0  110 64
+""0  1
+E E 2
+"CBRef""1"
+"EClose"E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+2 0
+"PRIMITIVE_TEXT1"
+""
+1 60 70 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 60 70 434 95
+1 2 2 "0s" 0 0 0 192 0 0  60 70 1
+1
+LANG:1 111 -*-Helvetica [Adobe]-bold-i-normal-*-19-*-100-100-*-*-iso8859-1|-19,0,0,0,758,1,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 40 MARATON type and intinial data creation 
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

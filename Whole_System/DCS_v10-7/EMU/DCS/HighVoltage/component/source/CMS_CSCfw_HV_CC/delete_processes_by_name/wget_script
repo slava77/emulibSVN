@@ -1,0 +1,5 @@
+#!/bin/bash
+
+
+
+wget_script_no_connect_to_terminal &

@@ -1,0 +1,1129 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 944 915 N "_3DFace" 0
+"main()
+{
+  updateStatus(\"Starting up...\");
+  initConstants();
+  
+  //connect to OPC last update time
+  if (!dpExists(systemName + \":\" + \"_CAENOPCServer\")) {
+    showError(\"OPC server DP was not found!\");
+    return;
+  }  
+  dpConnect(\"opcServerUpdatedCB\", true, systemName + \":\" + \"_CAENOPCServer.LastUpdateTime\");
+
+  // populate the channels table and connect to channel data
+  for (int i=1; i <= dynlen(channelDps); i++) {
+    string dpNoSys = dpSubStr(channelDps[i], DPSUB_DP);
+    strreplace(dpNoSys, \"CAEN/\", \"\");
+    tableChannels.appendLine(\"channel\", dpNoSys);
+    dpConnect(\"channelDataUpdatedCB\", true,
+                                      channelDps[i] + \".settings.v0\",
+                                      channelDps[i] + \".settings.v0:_online.._stime\",
+                                      channelDps[i] + \".readBackSettings.v0\",
+                                      channelDps[i] + \".readBackSettings.v0:_online.._stime\",
+                                      channelDps[i] + \".actual.status\",
+                                      channelDps[i] + \".actual.status:_online.._stime\",
+                                      channelDps[i] + \".actual.vMon\",
+                                      channelDps[i] + \".actual.vMon:_online.._stime\"
+                                      );
+  }  
+  updateStatus(\"idle\");
+}
+
+void initConstants() {
+  channelDps = dpNames(systemName + \":*HVME11{N/board00,N/board02,N/board04,N/board06,N/board08,P/board08,P/board10,P/board12,P/board14}*\", \"FwCaenChannel\");
+  crateDps = dpNames(systemName + \":*HVME11*\", \"FwCaenCrateSY1527\");
+      
+  dynAppend(tableColumns, \"setting\");
+  dynAppend(tableColumns, \"setting_timestamp\");
+  dynAppend(tableColumns, \"readback\");
+  dynAppend(tableColumns, \"readback_timestamp\");
+  dynAppend(tableColumns, \"status\");
+  dynAppend(tableColumns, \"status_timestamp\");
+  dynAppend(tableColumns, \"vmon\");
+  dynAppend(tableColumns, \"vmon_timestamp\");
+}" 0
+ E E E E 1 -1 -1 0  60 60
+""0  1
+E "const string systemName = \"CMS_CSC_DCS_01\";
+int settingCounter = 0;
+dyn_string channelDps;
+dyn_string crateDps;
+dyn_string tableColumns;
+bool syncWithOpcPoll = false;
+bool cancelVSet = false;
+bool stopBouncing = false;
+bool bouncing = false;
+bool settingVoltage = false;
+int setVoltageOnOpcUpdate = -1;
+bool useGenSignalForVSetting = false;
+mapping vMons;
+
+void showError(string msg) {
+  lblError.visible = true;
+  string text = lblError.text();
+  lblError.text = text + \"\\n\" + msg;
+}
+
+void setSettingCounter(int count) {
+  settingCounter = count;
+  lblSettingCounter.text = settingCounter;
+}
+
+void increaseSettingCounter() {
+  settingCounter++;
+  lblSettingCounter.text = settingCounter;
+  myLog(\"Setting counter: \" + settingCounter);
+}
+
+void setVoltage(int voltage, bool callFromOpcUpdateCB = false) {
+  cancelVSet = false;
+  if (!bouncing) {
+    controlsAvailable(false, true, false);
+  }
+  if (callFromOpcUpdateCB) {
+    updateStatus(\"OPC updated, waiting \" + delayAfterOpcPoll.text + \"ms to set voltage to \" + voltage + \"V\");
+    delay(0, delayAfterOpcPoll.text);
+  }
+  if (syncWithOpcPoll && !callFromOpcUpdateCB) {
+    setVoltageOnOpcUpdate = voltage;
+    updateStatus(\"Waiting for OPC update to set voltage to \" + voltage + \"V\");
+    return;
+  }
+  if (cancelVSet) { return; settingVoltage = false; }
+  settingVoltage = true;
+  updateStatus(\"Setting voltage to \" + voltage + \"V with delay of \" + 
+                   spinDelay.text + \"ms between channels...\");
+  myLog(\"Setting all channels to voltage: \" + voltage + \"V\");
+  int delayBetweenChannels = spinDelay.text;
+  if (!useGenSignalForVSetting) {
+    for (int i=1; i <= dynlen(channelDps); i++) {
+  //    if (cancelVSet) { return; settingVoltage = false; }
+      delay(0, delayBetweenChannels);
+      dpSetWait(channelDps[i] + \".settings.v0\", voltage);
+  //    dpSetWait(channelDps[i] + \".settings.onOff\", TRUE);
+    }
+  } else {
+    for (int i=1; i <= dynlen(crateDps); i++) {
+      setGenSignalStatus(crateDps[i], !getGenSignalStatus(crateDps[i]));
+    }
+  }
+  increaseSettingCounter();  
+  if (!bouncing) {
+    controlsAvailable(true);
+    updateStatus(\"idle\");
+  }
+  settingVoltage = false;
+}
+
+void startBouncing() {
+  stopBouncing = false;
+  bouncing = true;
+  controlsAvailable(false, true, true);
+  while(!stopBouncing) {
+    setVoltage(spinV1.text);
+    while (settingVoltage || (syncWithOpcPoll && (setVoltageOnOpcUpdate != -1))) { // wait until voltage is set if it's asynchronous
+      delay(0, 100);
+      if (stopBouncing) { break; }
+    }
+    if (stopBouncing) { break; }
+    waitForVoltageStabilization(spinV1.text);
+    updateStatus(\"Voltage is stable on all channels, but just to be sure - waiting some more (\" + spinBounceDelayAfterStable.text + \"ms) and then going to the next round\");
+    if (stopBouncing) { break; }
+    delay(0, spinBounceDelayAfterStable.text);
+
+    if (stopBouncing) { break; }
+    setVoltage(spinV2.text);
+    while (settingVoltage || (syncWithOpcPoll && (setVoltageOnOpcUpdate != -1))) { // wait until voltage is set if it's asynchronous
+      delay(0, 100);
+      if (stopBouncing) { break; }
+    }
+    if (stopBouncing) { break; }
+    waitForVoltageStabilization(spinV2.text);
+    updateStatus(\"Voltage is stable on all channels, but just to be sure - waiting some more (\" + spinBounceDelayAfterStable.text + \"ms) and then going to the next round\");
+    if (stopBouncing) { break; }
+    delay(0, spinBounceDelayAfterStable.text);
+  }
+  bouncing = false;
+  controlsAvailable(true);
+  updateStatus(\"idle\");
+}
+
+void waitForVoltageStabilization(int voltage) {
+  updateStatus(\"Waiting for voltage to stabilize\");
+  bool stable = false;
+  while (!stopBouncing && !stable) {
+    delay(2);
+    stable = true;
+    for (int i=1; i <= dynlen(channelDps); i++) {
+      float actualVoltage;
+      int status;
+      dpGet(channelDps[i] + \".actual.vMon\", actualVoltage, channelDps[i] + \".actual.status\", status);
+      if (actualVoltage < 2) { continue; } // fake channel (stable anyway)
+      if ((status != 0) && (status != 1)) { // ramping
+        stable = false;
+        break;
+      }
+      float voltageDiff = voltage - actualVoltage;
+      if (voltageDiff < 0) { voltageDiff *= -1; }
+      if (voltageDiff > 20) {
+        stable = false;
+        break;
+      }
+    }
+  }
+}
+
+string _formatTime(time t) {
+  return formatTime(\"%H:%M:%S\", t, \".%03d\");
+}
+
+void opcServerUpdatedCB(string dp, time timestamp) {
+  myLog(\"OPC server updated at \" + _formatTime(timestamp));
+  tableOpcUpdates.insertLineN(0);
+  tableOpcUpdates.cellValueRC(0, \"update_time\", _formatTime(timestamp));
+  if (syncWithOpcPoll && (setVoltageOnOpcUpdate != -1)) {
+    tableOpcUpdates.selectLineN(0);
+    myLog(\"Setting voltage to \" + setVoltageOnOpcUpdate + \"V uppon OPC update at \" + _formatTime(timestamp));
+    string voltage = setVoltageOnOpcUpdate;
+    settingVoltage = true;
+    setVoltageOnOpcUpdate = -1;
+    setVoltage(voltage, true);
+  }
+  if (tableOpcUpdates.lineCount() > 50) {
+    tableOpcUpdates.deleteLineN(tableOpcUpdates.lineCount() - 1);
+  }
+}
+
+void channelDataUpdatedCB(dyn_string dpes, dyn_anytype data) {
+  string channel = dpSubStr(dpes[1], DPSUB_SYS_DP);
+  int lineIdx = dynContains(channelDps, channel);
+  if (lineIdx <= 0) {
+    showError(\"channel\" + channel + \" was not found\");
+    return;
+  }
+  
+  lineIdx--;
+  for (int i=1; i <= dynlen(data); i++) {
+    string columnName = tableColumns[i];
+    string dataStr;
+    if (strpos(columnName, \"timestamp\") >= 0) {
+      dataStr = _formatTime(data[i]);
+    } else {
+      dataStr = data[i];
+    }
+    tableChannels.cellValueRC(lineIdx, columnName, dataStr);
+    //myLog(\"channel data update for \" + channel + \" = \" + data);
+  }
+}
+
+void controlsAvailable(bool available, bool cancelVsetAvailable = true, bool stopBouncingAvailable = true) {
+  btnSetV1.enabled = available;
+  btnSetV2.enabled = available;
+  btnResetCounter.enabled = available;
+  btnStartBouncing.enabled = available;
+  btnCancelVSet.enabled = cancelVsetAvailable;
+  btnStopBouncing.enabled = stopBouncingAvailable;
+}
+
+void updateStatus(string msg) {
+  lblStatus.text = msg;
+  myLog(\"status - \" + msg);
+}
+
+void myLog(string msg) {
+  DebugTN(\"ME11 HV test: \" + msg);
+}
+
+void resetCrate(string dp, int delayTime) {
+  
+  updateStatus(\"Reseting crate \" + dp);
+  setGenSignalStatus(dp, true);
+  delay(0, delayTime);
+  setGenSignalStatus(dp, false);
+  updateStatus(\"idle\");
+  
+}
+
+bool getGenSignalStatus(string crateDp) {
+  int genSignCfg;
+  dpGet(crateDp + \".Information.GenSignCfg\", genSignCfg);
+  return (genSignCfg == 771);
+}
+
+void setGenSignalStatus(string crateDp, bool onOff) {
+  if (onOff) {
+    dpSetWait(crateDp + \".Information.GenSignCfg\", 769);
+    delay(0, 500);
+    dpSetWait(crateDp + \".Information.GenSignCfg\", 771);
+  } else {
+    dpSetWait(crateDp + \".Information.GenSignCfg\", 769);
+    delay(0, 500);
+    dpSetWait(crateDp + \".Information.GenSignCfg\", 1);
+  }      
+}" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+25 1
+"tableChannels"
+""
+1 10 282 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0  8 280 932 904
+"main()
+{
+  this.tableMode = TABLE_SELECT_MULTIPLE;
+  this.selectByClick = TABLE_SELECT_LINE;
+}" 0
+E 1 0 1 9 0 "channel" 20 1 0 "s" 1
+LANG:1 7 Channel
+E
+1
+LANG:1 0 
+
+170 "setting" 11 1 0 "s" 1
+LANG:1 10 v0 Setting
+E
+1
+LANG:1 0 
+
+100 "setting_timestamp" 12 1 0 "s" 1
+LANG:1 20 v0 Setting Timestamp
+E
+1
+LANG:1 0 
+
+110 "readback" 12 1 0 "s" 1
+LANG:1 19 v0 Readback Setting
+E
+1
+LANG:1 0 
+
+110 "readback_timestamp" 16 1 0 "s" 1
+LANG:1 24 v0 Readback S. Timestamp
+E
+1
+LANG:1 0 
+
+140 "status" 5 1 0 "s" 1
+LANG:1 6 Status
+E
+1
+LANG:1 0 
+
+50 "status_timestamp" 9 1 0 "s" 1
+LANG:1 11 Status time
+E
+1
+LANG:1 0 
+
+80 "vmon" 5 1 0 "s" 1
+LANG:1 4 vMon
+E
+1
+LANG:1 0 
+
+50 "vmon_timestamp" 9 1 0 "s" 1
+LANG:1 9 vMon time
+E
+1
+LANG:1 0 
+
+80 
+14 14 10 10
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 0 1 1 1 7
+1 0
+13 0
+"btnSetV1"
+""
+1 222 174 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0  220 172 404 199
+
+T 
+1
+LANG:1 36 Set this voltage (1) on all channels
+"main()
+{
+  setVoltage(spinV1.text);
+}" 0
+ E E E
+25 2
+"tableOpcUpdates"
+""
+1 700 10.00000000000004 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0  698 8 932 180
+"main()
+{
+  this.tableMode = TABLE_SELECT_MULTIPLE;
+  this.selectByClick = TABLE_SELECT_LINE;
+}
+" 0
+E 1 0 1 1 0 "update_time" 25 1 0 "s" 1
+LANG:1 18 OPC Server Updates
+E
+1
+LANG:1 0 
+
+210 
+14 14 10 10
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 0 1 1 1 7
+1 0
+2 3
+"PRIMITIVE_TEXT1"
+""
+1 10 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+  this.text = \"PVSS System Name: \" + systemName;
+}" 0
+ E 0 1 1 2 1 E U  0 E 10 40 110 55
+0 2 2 "0s" 0 0 0 192 0 0  10 40 1
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 17 PVSS System Name:
+2 4
+"lblError"
+""
+1 470 40 E E E 1 E 0 E N "_WindowText" E N "FwStateAttention3" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 470 40 508 55
+0 2 2 "0s" 0 0 0 192 0 0  470 40 1
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 6 ERROR:
+2 5
+"PRIMITIVE_TEXT3"
+""
+1 22 174 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 22 174 70 189
+0 2 2 "0s" 0 0 0 192 0 0  22 174 1
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 10 Voltage 1:
+21 6
+"spinV1"
+""
+1 82 174 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0  80 172 204 195
+0
+
+E
+E
+E
+
+N 0 3000 1 2300 1 1
+2 7
+"PRIMITIVE_TEXT4"
+""
+1 22 204 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 22 204 70 219
+0 2 2 "0s" 0 0 0 192 0 0  22 204 1
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 10 Voltage 2:
+21 8
+"spinV2"
+""
+1 82 204 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0  80 202 204 225
+0
+
+E
+E
+E
+
+N 0 3000 1 2600 1 1
+13 9
+"btnSetV2"
+""
+1 222 204 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0  220 202 404 229
+
+T 
+1
+LANG:1 36 Set this voltage (2) on all channels
+"main()
+{
+  setVoltage(spinV2.text);
+}" 0
+ E E E
+2 10
+"PRIMITIVE_TEXT5"
+""
+1 230 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 230 40 309 55
+0 2 2 "0s" 0 0 0 192 0 0  230 40 1
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 17 Setting counter: 
+2 11
+"lblSettingCounter"
+""
+1 310 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+  this.text = settingCounter;
+}" 0
+ E 0 1 1 2 1 E U  0 E 310 40 316 55
+0 2 2 "0s" 0 0 0 192 0 0  310 40 1
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 1 #
+13 12
+"btnResetCounter"
+""
+1 350 40 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0  348 38 442 65
+
+T 
+1
+LANG:1 13 Reset Counter
+"main()
+{
+  setSettingCounter(0);
+  myLog(\"Counter has been reset\");
+}" 0
+ E E E
+2 13
+"PRIMITIVE_TEXT7"
+""
+1 22 83.99999999999997 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+13 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 22 83.99999999999997 237 99
+0 2 2 "0s" 0 0 0 192 0 0  22 83.99999999999997 1
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 43 Delay between channel voltage setting (ms):
+21 14
+"spinDelay"
+""
+1 240 81.99999999999997 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  238 80 362 103
+0
+
+E
+E
+E
+
+N 0 5000 1 50 1 1
+20 15
+"CHECK_BOX1"
+""
+1 20 104 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+15 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0  18 112 262 134
+1
+T 
+1
+LANG:1 40 Synchronize vSet with OPC server updates
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+E"main(int button, int state)
+{
+  syncWithOpcPoll = state;
+  delayAfterOpcPoll.enabled = syncWithOpcPoll;
+}" 0
+2 19
+"PRIMITIVE_TEXT9"
+""
+1 270 117 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 270 117 393 132
+0 2 2 "0s" 0 0 0 192 0 0  270 117 1
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 26 delay after OPC poll (ms):
+21 20
+"delayAfterOpcPoll"
+""
+1 400 117 E E E 0 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  398 115 482 138
+0
+
+E
+E
+E
+
+N 0 100000 1 1990 1 1
+30 21
+"FRAME2"
+""
+1 20 193 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+21 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1.34 0 1.403508771929825 -16.8 -208.8771929824561 0 E 20 193 521 251
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 16 General Settings
+30 22
+"FRAME3"
+""
+1 10 153 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+22 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1.634146341463415 0 1.379310344827586 -6.341463414634141 -59.03448275862073 0 E 10 153 421 241
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 15 Voltage setting
+13 25
+"btnStartBouncing"
+""
+1 20.00000000000001 242 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+25 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0  18 240 192 267
+
+T 
+1
+LANG:1 29 Start bouncing back and forth
+"main()
+{
+  myLog(\"Starting bouncing between \" + spinV1.text + \"V and \" + spinV2.text + \"V\");
+  startBouncing();
+}" 0
+ E E E
+4 26
+"LINE1"
+""
+1 20 232 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+26 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  20 232 670 232
+2 27
+"PRIMITIVE_TEXT10"
+""
+1 200 242 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+27 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 200 242 425 257
+0 2 2 "0s" 0 0 0 192 0 0  200 242 1
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 48 Delay to wait after all channels are stable(ms):
+21 28
+"spinBounceDelayAfterStable"
+""
+1 430 240 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+28 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  428 238 532 261
+0
+
+E
+E
+E
+
+N 0 9999999 1 3000 1 1
+13 30
+"btnStopBouncing"
+""
+1 590 242 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+30 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0  588 240 672 267
+
+T 
+1
+LANG:1 4 STOP
+"main()
+{
+  updateStatus(\"Stopping the bouncing game...\");
+  stopBouncing = true;
+}" 0
+ E E E
+2 31
+"PRIMITIVE_TEXT11"
+""
+1 22 12 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+31 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 22 12 64 29
+0 2 2 "0s" 0 0 0 192 0 0  22 12 1
+1
+LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 7 Status:
+2 32
+"lblStatus"
+""
+1 70 10 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+32 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 70 10 97 30
+0 2 2 "0s" 0 0 0 192 0 0  70 10 1
+1
+LANG:1 26 Arial,12,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 4 idle
+13 37
+"btnCancelVSet"
+""
+1 420 172 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+37 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0  418 170 512 224
+
+T 
+1
+LANG:1 6 Cancel
+"main()
+{
+  myLog(\"Canceling voltage setting\");
+  setVoltageOnOpcUpdate = -1;
+  cancelVSet = true;
+  lblStatus.text = \"idle\";
+  if (!bouncing) {
+    controlsAvailable(true);
+  }
+}" 0
+ E E E
+13 38
+"PUSH_BUTTON1"
+""
+1 700 220 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+38 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  698 218 812 242
+
+T 
+1
+LANG:1 16 Reset Plus Crate
+"main()
+{
+  resetCrate(systemName + \":CAEN/HVME11N\", spinResetDelay.text);
+}" 0
+ E E E
+21 39
+"spinResetDelay"
+""
+1 820 190 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+39 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  818 188 912 212
+0
+
+E
+E
+E
+
+N 0 10000 1 1500 1 1
+13 40
+"PUSH_BUTTON2"
+""
+1 820 220 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+40 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  818 218 932 242
+
+T 
+1
+LANG:1 17 Reset Minus Crate
+"main()
+{
+  resetCrate(systemName + \":CAEN/HVME11P\", spinResetDelay.text);
+}" 0
+ E E E
+2 42
+"PRIMITIVE_TEXT13"
+""
+1 690 190 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+42 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 690 190 809 205
+0 2 2 "0s" 0 0 0 192 0 0  690 190 1
+1
+LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 25 Reset signal length (ms):
+20 43
+"CHECK_BOX2"
+""
+1 540 170 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+43 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  538 168 662 222
+1
+T 
+1
+LANG:1 17 Use HW Gen signal
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+E"main(int button, int state)
+{
+  useGenSignalForVSetting = state;
+  DebugTN(\"Use Hardware signal to change voltage: \" + useGenSignalForVSetting);
+}" 0
+13 44
+"PUSH_BUTTON6"
+""
+1 700 250 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+44 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  698 248 932 272
+
+T 
+1
+LANG:1 18 Show as plain text
+"main()
+{
+  string text;
+  for (int i=0; i < tableChannels.lineCount(); i++) {
+    text += tableChannels.getLineN(i) + \"\\n\";
+  }
+  
+  ChildPanelOnCentralModal(\"CMS_CSC_UI/util/textEditor.pnl\", \"textEdit_excludedChannels\", 
+                           makeDynString(\"$text:\" + text));
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

@@ -1,0 +1,306 @@
+V 10
+1
+LANG:1 8 (NoName)
+PANEL,353 375 540 255 N "_3DFace" 3
+"$sDescriptions"
+"$sFct"
+"$sParams"
+EEE E E 1 -1 -1 0  276 18
+"" 0 1
+EE 2
+"CBRef""1"
+"EClose"E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 0
+"sFct"
+""
+1 60 40 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+1 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+"main()
+{
+	this.text = $sFct;
+}" 0
+ E 0 1 1 0 1 E U  0 E 62 42 528 78
+0 2 0 "s" 0 0 0 64 0 0  62 42
+ 1
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 0 
+2 1
+"lblSensorFormula"
+""
+1 10 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+2 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 12 218 60
+0 2 0 "s" 0 0 0 64 0 0  12 12
+ 3
+1
+LANG:1 105 -microsoft windows-Arial-bold-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,700,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 33 Your sensor template formula is: 
+1
+LANG:1 105 -microsoft windows-Arial-bold-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,700,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 0 
+1
+LANG:1 105 -microsoft windows-Arial-bold-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,700,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 8 f(%c) = 
+2 4
+"lblInstructions"
+""
+1 10 68 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+5 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 70 518 88
+0 2 0 "s" 0 0 0 64 0 0  12 70
+ 1
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 88 Click on the table to enter default values for the %x parameters defined in your formula
+2 9
+"lblImportant"
+""
+1 10 90 E E E 1 E 1 E N {255,0,0} E N "_Transparent" E E
+ E E
+10 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 92 398 115
+0 2 0 "s" 0 0 0 64 0 0  12 92
+ 1
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+1
+LANG:1 65 Important: Do not forget to press ENTER once the value is entered
+13 7
+"cmdOK"
+""
+1 340 220 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+8 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+338 218 432 247
+T 
+1
+LANG:1 2 OK
+"main()
+{
+// Local Variables
+// ---------------
+	int i;
+	
+	anytype atLine;
+	
+	dyn_string dsParameters;
+
+// Executable Code
+// ---------------
+	// Ensure the parameters array is empty to begin with	
+	dynClear(dsParameters);
+	
+	// Loop through all lines
+	for (i = 0; i < tblParameterInfo.lineCount; i++) {
+	
+		// Get the data from the current line
+		atLine = tblParameterInfo.getLineN(i);
+		
+		// Append the data in 'description/value' pairs
+		dynAppend(dsParameters, atLine[2]);
+		dynAppend(dsParameters, atLine[3]);
+	}
+	
+	// Close the panel and return value pairs
+	PanelOffReturn(makeDynFloat(dynlen(dsParameters)), dsParameters);
+}" 0
+ E E E
+13 8
+"cmdCancel"
+""
+1 440 220 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+9 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+438 218 532 247
+T 
+1
+LANG:1 6 Cancel
+"main()
+{
+	PanelOffReturn(makeDynFloat(0.0), makeDynString(\"Cancel\"));
+}" 0
+ E E E
+25 10
+"tblParameterInfo"
+""
+1 -1271 -413 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+11 0 0 0 0 0
+EE E
+0
+1
+LANG:1 0 
+0
+1
+LANG:1 106 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,0,0,0,0,Arial
+0 ""
+8 108 532 214
+"main()
+{
+// Local Variables
+// ---------------
+	const int iParamMax = 20;
+	int i;
+	
+	string sParam;
+	string sDescription;
+	
+	dyn_string dsParams;
+	dyn_string dsDescriptions;
+
+// Executable Code
+// ---------------
+	// Check if the dollar parameters for the parameter values have been given
+	if (isDollarDefined(\"$sParams\")) {
+		fwGeneral_stringToDynString($sParams, dsParams);
+	} else {
+		dynClear(dsParams);
+	}
+	
+	// Check if the dollar parameters for the parameter descriptions have been given
+	if (isDollarDefined(\"$sDescriptions\")) {
+		fwGeneral_stringToDynString($sDescriptions, dsDescriptions, \"|\", false);
+	} else {
+		dynClear(dsDescriptions);
+	}
+	
+	// Get all parameters that need to be defined for the formula
+	for(i = 1; i <= iParamMax; i++) {
+	
+		// See if this parameter exists
+		if (patternMatch(\"*%x\" + i + \"*\", $sFct)) {
+
+			// Check if we already have a parameter value		
+			if (i <= dynlen(dsParams))
+				sParam = dsParams[i];
+			else
+				sParam = \"0.0\";
+
+			// Check if we already have a parameter description
+			if (i <= dynlen(dsDescriptions))
+				sDescription = dsDescriptions[i];
+			else
+				sDescription = \"%x\" + i;
+		
+			// Add a line for this parameter
+			this.appendLine(\"parameter\", \"%x\" + i, \"description\", sDescription, \"value\", sParam);
+			this.cellBackCol(\"_3DFace\");
+		}
+	}
+	
+	// Return to calling routine
+	return;
+}" 0
+ "main(int row, string column, string value)
+{
+	this.cellValueRC(row, column, value);
+}" 0
+ 1 0 1 3 1 "parameter" 0 1 0 "s" 1
+LANG:1 9 Parameter
+E1
+LANG:1 0 
+ 100 "description" 0 1 -1 "s" 1
+LANG:1 11 Description
+E1
+LANG:1 67 Click on the corresponding cell to change the parameter description
+ 325 "value" 0 1 -1 "s" 1
+LANG:1 5 Value
+E1
+LANG:1 44 Click on the cell to enter the default value
+ 80 26 26 "" 1 1
+LANG:1 2 #1
+8 30 1
+LANG:1 106 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,0,0,0,0,Arial
+0 ""
+0 2 0 3 0
+1 0
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0

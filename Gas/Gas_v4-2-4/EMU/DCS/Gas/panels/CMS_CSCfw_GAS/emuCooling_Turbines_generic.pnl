@@ -1,0 +1,1544 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 544 374 N "_3DFace" 1
+"$disk"
+"//int exclusion_effective=false; //ex
+int exclusion_effective=true; //ex
+
+
+main()
+{
+  
+   $disk; 
+   
+     mudcsGasInit();
+   mudcsTurbinesInit();
+DpName=mudcsGasAddSystem(\"CSC_WATER_COOLING\"); //ex   
+ dpConnect(\"cooling_alert_update\",mudcsGasAddSystem(\"cooling_alert_update.value\")); //ex
+
+  while(1){ //ex
+   delay(2);
+   mrtn_racks_summary(\"\",\"\");
+  }  
+}
+//=====
+cooling_alert_update(string dp, string value_s){ //ex
+
+ DebugTN(\"cooling_alert_update\");
+ dpConnect(\"mrtn_racks_summary\",mudcsGasAddSystem(\"mrtn_racks_summary\")+\".:_alert_hdl.._act_state_color\");
+  
+}
+
+//======
+
+
+mrtn_racks_summary(string dp, string value_s){
+  
+  dyn_string off_channels; //ex
+  dpGet(DpName+\".off_channels\",off_channels); //ex
+  
+  int max_items=4; //ex
+   
+ int i,j;
+    string i_s;
+   string j_s;   
+ 
+ 
+ dyn_string racks;
+ string error;
+ 
+ string disk_name=$disk;
+ string disk_name_o=disk_name;
+     strreplace(disk_name,\"p\",\"+\");
+     strreplace(disk_name,\"m\",\"-\");
+        
+
+   
+  setValue(\"disk\",\"text\",disk_name+\" racks\");
+  
+  if(disk_name_o==\"YEm3\") racks=makeDynString(turbine_crates[1],turbine_crates[2]);
+  else if(disk_name_o==\"YEm2\") racks=makeDynString(turbine_crates[3],turbine_crates[4],turbine_crates[5],turbine_crates[6] );
+  else if(disk_name_o==\"YEm1\") racks=makeDynString(turbine_crates[7],turbine_crates[8],turbine_crates[9],turbine_crates[10] );
+  else if(disk_name_o==\"YEp1\") racks=makeDynString(turbine_crates[11],turbine_crates[12],turbine_crates[13],turbine_crates[14] );  
+  else if(disk_name_o==\"YEp2\") racks=makeDynString(turbine_crates[15],turbine_crates[16],turbine_crates[17],turbine_crates[18] );  
+  else if(disk_name_o==\"YEp3\") racks=makeDynString(turbine_crates[19],turbine_crates[20] );      
+ 
+  setValue(\"r1\",\"text\",racks[1]+\", maratons \"+rack_mrtn[racks[1]]);
+  setValue(\"r2\",\"text\",racks[2]+\", maratons \"+rack_mrtn[racks[2]]);
+//  if(disk_name_o!=\"YEm3\" && disk_name_o!=\"YEp3\"){
+  if(dynlen(racks)>2){
+   setValue(\"r3\",\"text\",racks[3]+\", maratons \"+rack_mrtn[racks[3]]); 
+   setValue(\"r4\",\"text\",racks[4]+\", maratons \"+rack_mrtn[racks[4]]);
+  }
+  else{
+ 
+   for(i=3;i<=4;i++){ //ex
+    i_s=i;
+   // setValue(\"r\"+i_s,\"text\",racks[i]);
+     setValue(\"r\"+i_s,\"visible\",false);   
+     for(j=1;j<=max_items;j++){ //ex
+      j_s=j;  
+  //    setValue(\"e\"+j_s+i_s,\"visible\",false); 
+      setValue(j_s+i_s,\"visible\",false); 
+      setValue(\"i\"+j_s+i_s,\"visible\",false); 
+      setValue(\"e\"+j_s+i_s,\"visible\",false); 
+                       
+      setValue(\"e\"+j_s+i_s,\"toolTipText\",\"isEnabled\");       
+     }    
+    
+   }         
+  }
+ //============================
+
+  //============================
+   for(i=1;i<=dynlen(racks);i++){ //ex
+    i_s=i;
+   // setValue(\"r\"+i_s,\"text\",racks[i]);
+    
+     for(j=1;j<=max_items;j++){ //ex
+      j_s=j;  
+  //    setValue(\"e\"+j_s+i_s,\"visible\",false); 
+      setValue(\"e\"+j_s+i_s,\"toolTipText\",\"isEnabled\");       
+     }    
+    
+   }    
+  
+  
+ //=====
+  dyn_float t1,t2,c1,c2;
+  float value;
+  dyn_float values;
+      
+  string s_format, item;
+  dyn_string items, split1;;    
+  
+  for(i=1;i<=dynlen(racks);i++){
+     i_s=i;
+    items=dpNames(mudcsGasAddSystem(\"CoolingTurbinesRack/\"+racks[i]+\"/*\") );
+    
+    //if(racks[i]==\"X4J31\")DebugTN(items);
+    for(j=1;j<=dynlen(items);j++){    
+             if(j>max_items)continue; //ex
+             
+      split1=strsplit(items[j],\"/\");
+      item=split1[dynlen(split1)];
+      //DebugTN(item);
+      //DebugTN(items);
+    //mudcsDebug(mudcsGasAddSystem(\"CoolingTurbinesRack\"+racks[i])+\"_o.Temperature1\");
+
+   dpGet(mudcsGasAddSystem(items[j])+\".\",value);
+   dpGet(mudcsGasAddSystem(items[j])+\".\"+\":_alert_hdl.._act_state_color\",error);  
+//   DebugTN(error+\"===\"); 
+   sprintf(s_format,\"%.2f\",value);        
+  
+   j_s=j;   
+        m_exclude[\"e\"+j_s+i_s]=items[j]+\".\"; //ex 
+        if(dynContains(off_channels,m_exclude[\"e\"+j_s+i_s])==0){//ex
+          setValue(\"e\"+j_s+i_s,\"state\",0,true);
+        }
+        else{//ex
+           setValue(\"e\"+j_s+i_s,\"state\",0,false);         
+        }        
+          
+        setValue(\"i\"+j_s+i_s,\"text\",item);setValue(j_s+i_s,\"text\",s_format);
+        if(error==\"FwAlarmErrorAck\")setValue(j_s+i_s,\"backCol\",\"{255,49,49}\");
+        else setValue(j_s+i_s,\"backCol\",\"{255,255,255}\");
+        
+        if(strpos(item,\"Temperature\")<0 && strpos(item,\"Current\")<0){
+         setValue(j_s+i_s,\"backCol\",\"{220,220,220}\");
+         setValue(\"i\"+j_s+i_s,\"backCol\",\"{220,220,220}\");
+         setValue(\"e\"+j_s+i_s,\"visible\",false); //ex         
+        }  
+        else { //ex          
+          if(exclusion_effective)setValue(\"e\"+j_s+i_s,\"visible\",true);//ex
+          else setValue(\"e\"+j_s+i_s,\"visible\",false); //ex
+        }              
+
+    
+    }// for j
+    
+   // if(racks[i]==\"X4J31\")DebugTN(items);
+    
+//    if(dynlen(items)==0){DebugTN(\"--\"+i_s);DebugTN(i); DebugTN(racks[i]);}
+    for(j=dynlen(items)+1;j<=max_items;j++){    
+     j_s=j;      
+//     if(racks[i]==\"X4J31\")DebugTN(j_s+i_s);
+        setValue(\"i\"+j_s+i_s,\"visible\",false);
+        setValue(j_s+i_s,\"visible\",false);
+        setValue(\"e\"+j_s+i_s,\"visible\",false); //ex
+        //if(racks[i]==\"X1R31\"){DebugTN(\"i\"+j_s+i_s);}
+        // if(racks[i]==\"X3A31\"){DebugTN(\"i\"+j_s+i_s);}
+    }    
+       
+  } // for i 
+  
+  
+  
+  
+  
+  
+}" 0
+ E E E E 1 -1 -1 0  100 50
+""0  1
+E "#uses \"CMS_CSCfw_GAS/emuGas.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs2.ctl\"
+
+    mapping m_exclude;
+    string DpName;" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+2 123
+"i11"
+""
+1 232.980487241928 18 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+237 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1.00031756113052 0 1 9.9872975547793 -30 1 E 42 122 130 139
+0 2 2 "0s" 0 0 0 192 0 0  42 122 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 13 Temperature 1
+14 124
+"11"
+""
+1 160 90 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+239 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 158 88 202 114
+3 "0s" 0 0 0 0 0 -1  E E E
+14 130
+"21"
+""
+1 160 110 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+251 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 158 108 202 132
+3 "0s" 0 0 0 0 0 -1  E E E
+2 133
+"i31"
+""
+1 358.340777724847 378 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+257 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1.04477611940299 0 1 8.20895522388039 10 1 E 42 122 137 139
+0 2 2 "0s" 0 0 0 192 0 0  42 122 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 15 TurbineCurrent1
+14 134
+"31"
+""
+1 160 130 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+259 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 158 128 202 152
+3 "0s" 0 0 0 0 0 -1  E E E
+2 135
+"i41"
+""
+1 358.340777724847 568 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+261 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1.04477611940299 0 1 8.20895522388039 30 1 E 42 122 137 139
+0 2 2 "0s" 0 0 0 192 0 0  42 122 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 15 TurbineCurrent2
+14 136
+"41"
+""
+1 160 150 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+263 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 158 148 202 172
+3 "0s" 0 0 0 0 0 -1  E E E
+2 142
+"i21"
+""
+1 323.067175234066 130 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+275 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1.00031756113052 0 1 9.9872975547792 -10 1 E 42 122 130 139
+0 2 2 "0s" 0 0 0 192 0 0  42 122 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 13 Temperature 2
+14 156
+"r1"
+""
+1 50 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+301 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-15-*-100-100-*-*-iso8859-1|-15,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 48 58 202 84
+3 "0s" 0 0 0 0 0 -1  E E E
+2 157
+"i12"
+""
+1 1203.43787208883 18 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+303 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1.00031756113052 0 1 259.987297554779 -30 1 E 42 122 130 139
+0 2 2 "0s" 0 0 0 192 0 0  42 122 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 13 Temperature 1
+14 158
+"12"
+""
+1 410 90 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+305 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 408 88 452 112
+3 "0s" 0 0 0 0 0 -1  E E E
+14 159
+"22"
+""
+1 410 110 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+307 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 408 108 452 132
+3 "0s" 0 0 0 0 0 -1  E E E
+2 160
+"i32"
+""
+1 1680.72391710455 378 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+309 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1.04477611940299 0 1 258.20895522388 10 1 E 42 122 137 139
+0 2 2 "0s" 0 0 0 192 0 0  42 122 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 15 TurbineCurrent1
+14 161
+"32"
+""
+1 409.999999999999 130 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+311 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 407.999999999999 128 451.999999999999 152
+3 "0s" 0 0 0 0 0 -1  E E E
+2 162
+"i42"
+""
+1 1680.72391710455 568 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+313 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1.04477611940299 0 1 258.20895522388 30 1 E 42 122 137 139
+0 2 2 "0s" 0 0 0 192 0 0  42 122 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 15 TurbineCurrent2
+14 163
+"42"
+""
+1 409.999999999999 150 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+315 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 407.999999999999 148 451.999999999999 172
+3 "0s" 0 0 0 0 0 -1  E E E
+2 164
+"i22"
+""
+1 1533.82956401392 130 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+317 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1.00031756113052 0 1 259.987297554779 -10 1 E 42 122 130 139
+0 2 2 "0s" 0 0 0 192 0 0  42 122 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 13 Temperature 2
+14 165
+"r2"
+""
+1 300 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+319 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-15-*-100-100-*-*-iso8859-1|-15,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 298 58 452 84
+3 "0s" 0 0 0 0 0 -1  E E E
+2 166
+"i13"
+""
+1 232.980487241928 658 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+321 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1.00031756113052 0 1 9.9872975547793 130 1 E 42 122 130 139
+0 2 2 "0s" 0 0 0 192 0 0  42 122 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 13 Temperature 1
+14 167
+"13"
+""
+1 160 250 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+323 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 158 248 202 272
+3 "0s" 0 0 0 0 0 -1  E E E
+14 168
+"23"
+""
+1 160 270 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+325 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 158 268 202 292
+3 "0s" 0 0 0 0 0 -1  E E E
+2 169
+"i33"
+""
+1 358.340777724847 1178 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+327 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1.04477611940299 0 1 8.20895522388039 170 1 E 42 122 137 139
+0 2 2 "0s" 0 0 0 192 0 0  42 122 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 15 TurbineCurrent1
+14 170
+"33"
+""
+1 160 290 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+329 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 158 288 202 312
+3 "0s" 0 0 0 0 0 -1  E E E
+2 171
+"i43"
+""
+1 358.340777724847 1368 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+331 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1.04477611940299 0 1 8.20895522388039 190 1 E 42 122 137 139
+0 2 2 "0s" 0 0 0 192 0 0  42 122 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 15 TurbineCurrent2
+14 172
+"43"
+""
+1 160 310 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+333 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 158 308 202 332
+3 "0s" 0 0 0 0 0 -1  E E E
+2 173
+"i23"
+""
+1 323.067175234066 930 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+335 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1.00031756113052 0 1 9.9872975547792 150 1 E 42 122 130 139
+0 2 2 "0s" 0 0 0 192 0 0  42 122 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 13 Temperature 2
+14 174
+"r3"
+""
+1 50 220 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+337 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-15-*-100-100-*-*-iso8859-1|-15,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 48 218 202 244
+3 "0s" 0 0 0 0 0 -1  E E E
+2 175
+"i14"
+""
+1 1203.43787208883 658 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+339 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1.00031756113052 0 1 259.987297554779 130 1 E 42 122 130 139
+0 2 2 "0s" 0 0 0 192 0 0  42 122 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 13 Temperature 1
+14 176
+"14"
+""
+1 410 250 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+341 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 408 248 452 272
+3 "0s" 0 0 0 0 0 -1  E E E
+14 177
+"24"
+""
+1 409.999999999999 270 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+343 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 407.999999999999 268 451.999999999999 292
+3 "0s" 0 0 0 0 0 -1  E E E
+2 178
+"i34"
+""
+1 1684.81346934336 1178 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+345 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1.04477611940299 0 1 260.20895522388 170 1 E 42 122 137 139
+0 2 2 "0s" 0 0 0 192 0 0  42 122 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 15 TurbineCurrent1
+14 179
+"34"
+""
+1 409.999999999999 290 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+347 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 407.999999999999 288 451.999999999999 312
+3 "0s" 0 0 0 0 0 -1  E E E
+2 180
+"i44"
+""
+1 2085.14038120301 1588 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+349 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1.04477611940299 0 1 258.20895522388 190 1 E 42 122 137 139
+0 2 2 "0s" 0 0 0 192 0 0  42 122 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 15 TurbineCurrent2
+14 181
+"44"
+""
+1 409.999999999999 312 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+351 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ 407.999999999999 310 451.999999999999 334
+3 "0s" 0 0 0 0 0 -1  E E E
+2 182
+"i24"
+""
+1 1537.83019913618 930 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+353 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1.00031756113052 0 1 261.987297554778 150 1 E 42 122 130 139
+0 2 2 "0s" 0 0 0 192 0 0  42 122 1
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 13 Temperature 2
+14 183
+"r4"
+""
+1 300 220 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+355 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-15-*-100-100-*-*-iso8859-1|-15,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 298 218 452 244
+3 "0s" 0 0 0 0 0 -1  E E E
+14 184
+"disk"
+""
+1 210 10 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+357 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Bitstream Charter-*-r-normal-*-17-*-100-100-*-*-iso8859-1|-17,0,0,0,505,0,0,0,0,0,0,0,0,Bitstream Charter
+0 ""
+ 208 8 362 38
+3 "0s" 0 0 0 0 0 -1  E E E
+20 185
+"e11"
+""
+1 200 90 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+359 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 198 88 222 112
+1
+T 
+1
+LANG:1 3 ???
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  string box_name;
+dyn_string text_names;
+bool isEnabled;
+
+getValue(\"\",\"name\",box_name);
+getValue(\"\",\"state\",0,isEnabled);
+
+mudcsCoolingChannelExclude(box_name, isEnabled);
+
+}" 0
+20 186
+"e21"
+""
+1 200 110 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+361 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 198 108 222 132
+1
+T 
+1
+LANG:1 3 ???
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  string box_name;
+dyn_string text_names;
+bool isEnabled;
+
+getValue(\"\",\"name\",box_name);
+getValue(\"\",\"state\",0,isEnabled);
+
+mudcsCoolingChannelExclude(box_name, isEnabled);
+
+}" 0
+20 187
+"e31"
+""
+1 200 130 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+363 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 198 128 222 152
+1
+T 
+1
+LANG:1 3 ???
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  string box_name;
+dyn_string text_names;
+bool isEnabled;
+
+getValue(\"\",\"name\",box_name);
+getValue(\"\",\"state\",0,isEnabled);
+
+mudcsCoolingChannelExclude(box_name, isEnabled);
+
+}" 0
+20 188
+"e41"
+""
+1 200 150 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+365 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 198 148 222 172
+1
+T 
+1
+LANG:1 3 ???
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  string box_name;
+dyn_string text_names;
+bool isEnabled;
+
+getValue(\"\",\"name\",box_name);
+getValue(\"\",\"state\",0,isEnabled);
+
+mudcsCoolingChannelExclude(box_name, isEnabled);
+
+}" 0
+20 189
+"e13"
+""
+1 200 250 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+367 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 198 248 222 272
+1
+T 
+1
+LANG:1 3 ???
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  string box_name;
+dyn_string text_names;
+bool isEnabled;
+
+getValue(\"\",\"name\",box_name);
+getValue(\"\",\"state\",0,isEnabled);
+
+mudcsCoolingChannelExclude(box_name, isEnabled);
+
+}" 0
+20 190
+"e23"
+""
+1 200 270 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+369 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 198 268 222 292
+1
+T 
+1
+LANG:1 3 ???
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  string box_name;
+dyn_string text_names;
+bool isEnabled;
+
+getValue(\"\",\"name\",box_name);
+getValue(\"\",\"state\",0,isEnabled);
+
+mudcsCoolingChannelExclude(box_name, isEnabled);
+
+}" 0
+20 191
+"e33"
+""
+1 200 290 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+371 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 198 288 222 312
+1
+T 
+1
+LANG:1 3 ???
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  string box_name;
+dyn_string text_names;
+bool isEnabled;
+
+getValue(\"\",\"name\",box_name);
+getValue(\"\",\"state\",0,isEnabled);
+
+mudcsCoolingChannelExclude(box_name, isEnabled);
+
+}" 0
+20 192
+"e43"
+""
+1 200 310 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+373 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 198 308 222 332
+1
+T 
+1
+LANG:1 3 ???
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  string box_name;
+dyn_string text_names;
+bool isEnabled;
+
+getValue(\"\",\"name\",box_name);
+getValue(\"\",\"state\",0,isEnabled);
+
+mudcsCoolingChannelExclude(box_name, isEnabled);
+
+}" 0
+20 193
+"e12"
+""
+1 450 90 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+375 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 448 88 472 112
+1
+T 
+1
+LANG:1 3 ???
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  string box_name;
+dyn_string text_names;
+bool isEnabled;
+
+getValue(\"\",\"name\",box_name);
+getValue(\"\",\"state\",0,isEnabled);
+
+mudcsCoolingChannelExclude(box_name, isEnabled);
+
+}" 0
+20 194
+"e22"
+""
+1 450 110 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+377 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 448 108 472 132
+1
+T 
+1
+LANG:1 3 ???
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  string box_name;
+dyn_string text_names;
+bool isEnabled;
+
+getValue(\"\",\"name\",box_name);
+getValue(\"\",\"state\",0,isEnabled);
+
+mudcsCoolingChannelExclude(box_name, isEnabled);
+
+}" 0
+20 195
+"e32"
+""
+1 450 130 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+379 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 448 128 472 152
+1
+T 
+1
+LANG:1 3 ???
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  string box_name;
+dyn_string text_names;
+bool isEnabled;
+
+getValue(\"\",\"name\",box_name);
+getValue(\"\",\"state\",0,isEnabled);
+
+mudcsCoolingChannelExclude(box_name, isEnabled);
+
+}" 0
+20 196
+"e42"
+""
+1 450 150 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+381 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 448 148 472 172
+1
+T 
+1
+LANG:1 3 ???
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  string box_name;
+dyn_string text_names;
+bool isEnabled;
+
+getValue(\"\",\"name\",box_name);
+getValue(\"\",\"state\",0,isEnabled);
+
+mudcsCoolingChannelExclude(box_name, isEnabled);
+
+}" 0
+20 197
+"e14"
+""
+1 450 250 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+383 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 448 248 472 272
+1
+T 
+1
+LANG:1 3 ???
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  string box_name;
+dyn_string text_names;
+bool isEnabled;
+
+getValue(\"\",\"name\",box_name);
+getValue(\"\",\"state\",0,isEnabled);
+
+mudcsCoolingChannelExclude(box_name, isEnabled);
+
+}" 0
+20 198
+"e24"
+""
+1 450 270 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+385 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 448 268 472 292
+1
+T 
+1
+LANG:1 3 ???
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  string box_name;
+dyn_string text_names;
+bool isEnabled;
+
+getValue(\"\",\"name\",box_name);
+getValue(\"\",\"state\",0,isEnabled);
+
+mudcsCoolingChannelExclude(box_name, isEnabled);
+
+}" 0
+20 199
+"e34"
+""
+1 450 290 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+387 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 448 288 472 312
+1
+T 
+1
+LANG:1 3 ???
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  string box_name;
+dyn_string text_names;
+bool isEnabled;
+
+getValue(\"\",\"name\",box_name);
+getValue(\"\",\"state\",0,isEnabled);
+
+mudcsCoolingChannelExclude(box_name, isEnabled);
+
+}" 0
+20 200
+"e44"
+""
+1 450 310 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+389 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 448 308 472 332
+1
+T 
+1
+LANG:1 3 ???
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
+E"main(int button, int state)
+{
+  string box_name;
+dyn_string text_names;
+bool isEnabled;
+
+getValue(\"\",\"name\",box_name);
+getValue(\"\",\"state\",0,isEnabled);
+
+mudcsCoolingChannelExclude(box_name, isEnabled);
+
+}" 0
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

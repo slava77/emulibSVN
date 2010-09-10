@@ -1,0 +1,686 @@
+V 10
+1
+LANG:1 9 EmuCreate
+PANEL,258 100 485 398 N "_3DFace" 1
+"$sTitle"
+E E E E E 1 -1 -1 0  0 0
+""0  1
+E E 2
+"CBRef""0"
+"EClose"E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 3
+"Text3"
+""
+1 20 87 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+	this.text($sTitle);
+}" 0
+ E 0 1 1 0 1 E U  0 E 12 12 88 36
+0 2 0 "s" 0 0 0 192 0 0  12 12 1
+1
+LANG:1 60 -adobe-helvetica-medium-r-normal-*-*-180-75-75-*-*-iso8859-1
+0
+"" 1
+LANG:1 9 ($sTitle)
+10 7
+"Polyline1"
+""
+1 276 1355 E E E 1 E 1 E N "_Window" E N "_Transparent" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 2 1 0 1 E U  0 E 3 179 370
+179 380
+10 380
+ 0
+10 8
+"Polyline2"
+""
+1 127 1365 E E E 1 E 1 E N "_ButtonShadow" E N "_Transparent" E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 2 1 0 1 E U  0 E 3 10 380
+10 370
+178 370
+ 0
+6 9
+"busySize"
+""
+1 145 1359 E E E 1 E 1 E N "_3DFace" E N "_Transparent" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 14 371 172 377
+6 10
+"busyFlag"
+""
+1 140 1363 E E E 1 E 0 E N {0,0,153} E N {0,0,153} E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  1 E 12 372 52 378
+2 11
+"resultCreation"
+""
+1 30 492 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+	this.text = \"\";
+}" 0
+ E 0 1 1 0 1 E U  0 E 12 342 126 360
+0 2 0 "s" 0 0 0 192 0 0  12 342 1
+1
+LANG:1 99 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1|-16,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0
+"" 1
+LANG:1 18 result of creation
+2 19
+"Text1"
+""
+1 30 514 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 20 80 113 98
+0 2 0 "s" 0 0 0 192 0 0  20 80 1
+1
+LANG:1 99 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1|-16,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0
+"" 1
+LANG:1 12 CSC section:
+6 26
+"Border1"
+""
+1 10 330 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+22 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 10 240 480 330
+13 4
+"create_csc"
+""
+1 22 112 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 99 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1|-16,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0
+""  20 110 104 144
+
+T 
+1
+LANG:1 6 Create
+"int g_busyThread;
+
+main()
+{
+	bool secondParentRequired, done = FALSE;
+	int i, length;
+	string dpName, dpType, currentDpLabel, newDpLabel, operationPanel, configPanel, parentDp, userLabel;
+	dyn_string dpTypeList, exceptionInfo, configPanelList;
+
+mudcsInit();
+
+	g_busyThread = -1;
+	
+	//if dp type does not exists, do nothing
+//////setValue(\"treeBrowser\",\"visible\",false);
+/* fsm
+setValue(\"test\",\"text\",\"test1\");
+	dpTypeList = dpTypes();
+	if(dynContains(dpTypeList, \"mudcsCscSection\")<1)
+		return;
+setValue(\"test\",\"text\",\"test2\");
+*/
+/*
+	//if dp name is blank, do nothing
+	dpName = dpNameEntry.text();
+	if(dpName == \"\")
+		return;
+	//if dp label is blank, do nothing
+	newDpLabel = deviceLabel.text();
+	if(newDpLabel == \"\")
+		return;
+*/
+/* fsm
+     dpName = CSC_fwG_g_SYSTEM_NAME+\":Csc_o\";
+     newDpLabel = \"Csc1\";
+setValue(\"test\",\"text\",\"test3\");
+*/
+	//otherwise start busy bar
+	fwBusyBarButton_std_startBusy(exceptionInfo);
+
+	//set progress text
+	resultCreation.text() = \"creating \"+dpName+\" ...\";
+	
+	//get data from panel items
+
+///////	dpType = dpTypeSelector.text();
+///////	currentDpLabel = parentLabel.text();
+///////	parentDp = parentName.text();
+///////	secondParentRequired = secondParent.state(0);
+/* fsm
+  dpType = \"mudcsCscSection\";
+   currentDpLabel = \"Mu1\";
+   parentDp = CSC_fwG_g_SYSTEM_NAME+\":Mu\";
+setValue(\"test\",\"text\",\"test4\");
+*/
+/////////mudcsCscSection_test();
+////////setValue(\"test\",\"text\",\"test41\");
+///////fwBusyBarButton_std_stopBusy(exceptionInfo); 
+//////return;
+
+	//if selected dp type is DeviceDPTypeName (should always be true) then run fwDeviceTemplate_create function
+/* fsm
+    if(dpType ==\"mudcsCscSection\")
+		 mudcsCscSection_create(dpName, newDpLabel, parentDp, currentDpLabel, exceptionInfo);
+*/
+mudcsCscSection_create(exceptionInfo); 
+
+        if(dynlen(exceptionInfo)>0){mudcsDebug(exceptionInfo);return;}
+
+		//dp is created in default view an current parent dp (if different from default view)
+// fsm setValue(\"test\",\"text\",\"test5\");
+/*
+	if(secondParentRequired)
+	{
+		//if additional parents are required we need to get the data (name and label) for any new parents
+		//as many additional parents as required could be added
+		//a new label for the device in each context (as a child of each parent) could be given
+		//in this example, the same child label is used for both parents
+		currentDpLabel = secondParentLabel.text();
+		parentDp = secondParentDpName.text();
+		
+		//call function to add new device to the second parent
+		fwGenericDpFunctions_addChildToParent(getSystemName()+dpName, newDpLabel, parentDp, currentDpLabel,
+												makeDynString(\"fwDeviceTemplateConfiguration\"),
+												makeDynString(\"fwDeviceTemplateOperation\"),
+												exceptionInfo);
+	}
+*/
+	//stop busy bar
+	fwBusyBarButton_std_stopBusy(exceptionInfo);
+
+	//if problems occured, set progress text to show failure and display exceptions then return
+	if(dynlen(exceptionInfo)>0)
+	{
+		resultCreation.text() = \"creating \"+dpName+\" failed.\";
+		fwExceptionHandling_display(exceptionInfo);
+		return;
+	}
+	
+	//if no problems, set progress text to show success
+	resultCreation.text() = dpName+\" created successfully.\";
+
+	//if panel was not called from hierarchy browser, attempt to open config panel for the new device
+
+
+
+
+
+//============ temporal !!!=====   
+
+
+
+/*
+mudcsDimConfigAllManagers(exceptionInfo);
+if(dynlen(exceptionInfo)>0){mudcsDebug(exceptionInfo);return;}
+
+mudcsAllDimManagersStart();
+*/
+
+
+}" 0
+ E E E
+2 31
+"Text2"
+""
+1 142 516 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+27 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 170 80 263 98
+0 2 0 "s" 0 0 0 192 0 0  170 80 1
+1
+LANG:1 99 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1|-16,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0
+"" 1
+LANG:1 12 RPC section:
+2 32
+"Text3"
+""
+1 140 514 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+29 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 320 80 413 98
+0 2 0 "s" 0 0 0 192 0 0  320 80 1
+1
+LANG:1 99 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1|-16,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0
+"" 1
+LANG:1 11 DT section:
+13 34
+"create_rpc"
+""
+1 172 112 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+33 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 99 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1|-16,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0
+""  170 110 254 144
+
+T 
+1
+LANG:1 6 Create
+"main()
+{
+
+dyn_int connectedApiIds;
+int i;
+
+//mudcsDebug(\"\"+i+\"\\n\");
+
+//	dpGet(\"_Connections.Api.ManNums:_original.._value\",connectedApiIds);
+
+dpGet(\"_Connections.Device.ManNums:_original.._value\",connectedApiIds);
+
+///mudcsDebug(\"\");
+
+for(i=1;i<=dynlen(connectedApiIds);i++)
+mudcsDebug(\"::\"+connectedApiIds[i]+\"\\n\");
+
+dpGet(\"_Connections.Ctrl.ManNums:_original.._value\",connectedApiIds);
+
+///mudcsDebug(\"\");
+
+for(i=1;i<=dynlen(connectedApiIds);i++)
+mudcsDebug(\"**\"+connectedApiIds[i]+\"\\n\");
+
+
+string type_name;
+
+type_name=dpTypeName(\"_Connections\");
+
+mudcsDebug(type_name);
+
+}" 0
+ E E E
+13 35
+"create_dt"
+""
+1 322 112 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+35 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 99 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1|-16,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0
+""  320 110 404 144
+
+T 
+1
+LANG:1 6 Create
+"
+
+main()
+{
+mudcsInit();
+mudcsAllDimManagersStart();
+}" 0
+ E E E
+13 36
+"upgrade_csc"
+""
+1 22 212 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+37 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 99 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1|-16,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0
+""  20 210 104 244
+
+T 
+1
+LANG:1 7 Upgrade
+"
+
+main()
+{
+
+}" 0
+ E E E
+13 37
+"upgrade_rpc"
+""
+1 172 172 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+39 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 99 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1|-16,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0
+""  170 170 254 204
+
+T 
+1
+LANG:1 7 Upgrade
+"
+
+main()
+{
+
+}" 0
+ E E E
+13 40
+"upgrade_rpc"
+""
+1 322 172 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+45 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 99 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1|-16,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0
+""  320 170 404 204
+
+T 
+1
+LANG:1 7 Upgrade
+"
+
+main()
+{
+
+}" 0
+ E E E
+13 41
+"create_broker_list"
+""
+1 22.61904761904762 152 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+47 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 99 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1|-16,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0
+""  20 150 130 184
+
+T 
+1
+LANG:1 16 CreateBrokerList
+"int g_busyThread;
+
+main()
+{
+	bool secondParentRequired, done = FALSE;
+	int i, length;
+	string dpName, dpType, currentDpLabel, newDpLabel, operationPanel, configPanel, parentDp, userLabel;
+	dyn_string dpTypeList, exceptionInfo, configPanelList;
+
+mudcsInit();
+
+	g_busyThread = -1;
+	
+	//if dp type does not exists, do nothing
+//////setValue(\"treeBrowser\",\"visible\",false);
+
+	//otherwise start busy bar
+	fwBusyBarButton_std_startBusy(exceptionInfo);
+
+	//set progress text
+	resultCreation.text() = \"creating \"+dpName+\" ...\";
+	
+	//get data from panel items
+
+
+mudcs_setBrokerList(); 
+
+	//stop busy bar
+	fwBusyBarButton_std_stopBusy(exceptionInfo);
+
+	//if problems occured, set progress text to show failure and display exceptions then return
+	if(dynlen(exceptionInfo)>0)
+	{
+		resultCreation.text() = \"creating \"+dpName+\" failed.\";
+		fwExceptionHandling_display(exceptionInfo);
+		return;
+	}
+	
+	//if no problems, set progress text to show success
+	resultCreation.text() = dpName+\" created successfully.\";
+
+	//if panel was not called from hierarchy browser, attempt to open config panel for the new device
+
+
+
+
+
+//============ temporal !!!=====   
+
+
+}" 0
+ E E E
+13 42
+"test"
+""
+1 172.6190476190476 262 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+49 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 99 -adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1|-16,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0
+""  170 260 280 294
+
+T 
+1
+LANG:1 4 test
+"int g_busyThread;
+
+main()
+{
+	bool secondParentRequired, done = FALSE;
+	int i, length;
+	string dpName, dpType, currentDpLabel, newDpLabel, operationPanel, configPanel, parentDp, userLabel;
+	dyn_string dpTypeList, exceptionInfo, configPanelList;
+
+mudcsInit();
+
+	g_busyThread = -1;
+	
+	//if dp type does not exists, do nothing
+//////setValue(\"treeBrowser\",\"visible\",false);
+
+	//otherwise start busy bar
+	fwBusyBarButton_std_startBusy(exceptionInfo);
+
+	//set progress text
+	resultCreation.text() = \"creating \"+dpName+\" ...\";
+	
+	//get data from panel items
+
+
+////mudcs_setBrokerList(); 
+//----
+
+
+string test_string;
+  test_string=CSC_fwG_g_project_name_home + \"/bin/delete_processes_by_name home/fast/pvss_fsm/bin/PVSS00dim\";
+  system(test_string);
+
+//-----
+
+
+	//stop busy bar
+	fwBusyBarButton_std_stopBusy(exceptionInfo);
+
+	//if problems occured, set progress text to show failure and display exceptions then return
+	if(dynlen(exceptionInfo)>0)
+	{
+		resultCreation.text() = \"creating \"+dpName+\" failed.\";
+		fwExceptionHandling_display(exceptionInfo);
+		return;
+	}
+	
+	//if no problems, set progress text to show success
+	resultCreation.text() = dpName+\" created successfully.\";
+
+	//if panel was not called from hierarchy browser, attempt to open config panel for the new device
+
+
+
+
+
+//============ temporal !!!=====   
+
+
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0

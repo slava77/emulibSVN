@@ -1,0 +1,285 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 500 400 N "_3DFace" 0
+E E E E E 1 -1 -1 0  30 60
+""0  1
+E "#uses \"CMS_CSC_common/emu_common.ctl\"
+
+mapping addressToChamberName;
+
+// if justCheck flag is true then it only compares the map in CSV with the one in DCS, if false then the map from CSV is saved to DCS DB
+void emuhv_importHvMapping(string csvFilename, bool justCheck = false) {
+  emu_info(\"importing HV map\");
+  
+  string fullPath = getPath(SCRIPTS_REL_PATH, \"CMS_CSCfw_HV_CC/HV_map/\" + csvFilename);
+  if (fullPath == \"\") {
+    emu_error(\"HV map CSV file \" + csvFilename + \" wasn't found in scripts/CMS_CSCfw_HV_CC/HV_map\");
+    return;
+  }
+  
+  file f;
+  int err;
+  f = fopen(fullPath, \"r\");
+  err = ferror(f);
+  if (err) {
+    emu_error(\"Error while opening file \" + fullPath + \", code = \" + err);
+  }
+  
+  // create HV map variables
+  dyn_dyn_string innerChambers, outerChambers;
+  initMap(innerChambers, outerChambers);
+  
+  string header;
+  fgets(header, 500, f); // read the header line
+  while(!feof(f)) {
+    string line;
+    fgets(line, 50, f);
+    if (line == \"\") { continue; }
+    dyn_string address;
+    address = strsplit(line, \",\");
+    strreplace(address[1], \"'\", \"\");
+    addToMap(address, innerChambers, outerChambers);
+  }
+  
+  fclose(f);
+
+  if (justCheck) {
+    int innerMismatches, outerMismatches;  
+    innerMismatches = checkMap(innerChambers, true);
+    outerMismatches = checkMap(outerChambers, false);  
+    emu_info(\"total mismatches: \" + (innerMismatches + outerMismatches) + 
+             \", number of mismatches in inner chambers: \" + innerMismatches + 
+             \", number of mismatches in outer chambers: \" + outerMismatches);
+  } else {
+    saveMap(innerChambers, true);  
+    saveMap(outerChambers, false);  
+  }
+  
+  emu_info(\"done importing HV map\");
+}
+
+void initMap(dyn_dyn_string &innerChambers, dyn_dyn_string &outerChambers) {
+  innerChambers = makeDynString();
+  outerChambers = makeDynString();
+  // 8 stations
+  for (int i=1; i <= 8; i++) {
+    innerChambers[i] = makeDynString();
+    outerChambers[i] = makeDynString();
+  }
+}
+
+void addToMap(dyn_string address, dyn_dyn_string &innerChambers, dyn_dyn_string &outerChambers) {
+  emu_info(\"importing chamber \" + address[1]);
+  
+  string chamberName = address[1];
+  strreplace(chamberName, \"ME\", \"\");
+  int primaryHost; // 500 for minus side, 600 for plus side
+  int stationNumber = substr(chamberName, 0, 2);
+  // convert to Valeri's station number convention (1-8, where 1 is ME-4 and 8 is ME+4)
+  if (stationNumber < 0) {
+    stationNumber += 5;
+    primaryHost = 500;
+  } else {
+    stationNumber += 4;
+    primaryHost = 600;
+  }
+  // determine if it's \"inner\" or \"outer\"
+  int ring = substr(chamberName, 3, 1);
+  bool isInner = false;
+  if ((((stationNumber == 4) || (stationNumber == 5)) && (ring < 3)) ||
+      (((stationNumber != 4) || (stationNumber != 5)) && (ring < 2))) {
+    
+    isInner = true;
+  }
+  
+  // get the chamber number
+  int chamberNumber = substr(chamberName, 5);
+  
+  // put the address into the map (db here means distribution board)
+  int dbOutput = address[3];
+  if ((!isInner) && (stationNumber != 4) && (stationNumber != 5)) { dbOutput = 0; }
+  int dbHost = address[4];
+  int dbAddress = address[5];
+  
+  string dcsAddressLine = \"\" + primaryHost + \";\" + dbHost + \";\" + dbAddress + \";\" + dbOutput;
+  if (isInner) {
+    innerChambers[stationNumber][chamberNumber] = dcsAddressLine;
+  } else {
+    outerChambers[stationNumber][chamberNumber] = dcsAddressLine;
+  }
+  addressToChamberName[dcsAddressLine] = address[1];
+}
+
+void saveMap(dyn_dyn_string map, bool isInner) {
+  for (int station=1; station <= dynlen(map); station++) {
+    if (dynlen(map[station]) == 0) {
+      continue;
+    }
+    string dpe = \"InHVsetList\";
+    if (!isInner) { dpe = \"OutHVsetList\"; }
+    dpSet(\"Db_o.Wheels_o.Wheel\" + station + \".\" + dpe, map[station]);
+  }
+}
+
+/** returns number of mismatches found */
+int checkMap(dyn_dyn_string map, bool isInner) {
+  int mismatchCount = 0;
+  for (int station=1; station <= dynlen(map); station++) {
+    if (dynlen(map[station]) == 0) {
+      continue;
+    }
+    string dpe = \"InHVsetList\";
+    if (!isInner) { dpe = \"OutHVsetList\"; }
+    dyn_string currentStationMap;
+    dpGet(\"Db_o.Wheels_o.Wheel\" + station + \".\" + dpe, currentStationMap);
+    if (dynlen(map[station]) != dynlen(currentStationMap)) {
+      bool ignore = false;
+      // lets see if the rest of the currently saved map is actually empty - if so, then ignore this error
+      if (dynlen(currentStationMap) > dynlen(map[station])) {
+        ignore = true;
+        for (int i=dynlen(map[station]) + 1; i <= dynlen(currentStationMap); i++) {
+          if (currentStationMap[i] != \"\") {
+            ignore = false;
+          }
+        }
+      }
+      if (!ignore) {
+        emu_error(\"current map length is not equal to the map that has just been read out. Saved length=\" + dynlen(currentStationMap) + \", read out length=\" + dynlen(map[station]) + \". Station=\" + station + \", isInner?\" + isInner);
+        return;
+      }
+    }
+    for (int chamber=1; chamber <= dynlen(map[station]); chamber++) {
+      if (map[station][chamber] != currentStationMap[chamber]) {
+        mismatchCount++;
+        emu_info(\"!!! mismatch for chamber \" + addressToChamberName[map[station][chamber]] + \": value in CSV file=\" + map[station][chamber] + \", value in DCS=\" + currentStationMap[chamber]);
+      }
+    }
+  }
+  return mismatchCount;
+}" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+2 0
+"PRIMITIVE_TEXT1"
+""
+1 30 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 30 60 74 74
+0 2 2 "0s" 0 0 0 192 0 0  30 60 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 9 filename:
+14 1
+"editFilename"
+""
+1 80 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  78 58 202 81
+3 "0s" 0 0 0 0 0 -1  E "main()
+{
+  this.text = \"hvmap+.csv\";
+}" 0
+ E
+13 2
+"btnImport"
+""
+1 360 60 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  358 58 482 85
+
+T 
+1
+LANG:1 6 Import
+"main()
+{
+  emuhv_importHvMapping(editFilename.text);
+}" 0
+ E E E
+13 3
+"btnCheck"
+""
+1 220 60 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  218 58 342 85
+
+T 
+1
+LANG:1 5 Check
+"main()
+{
+  emuhv_importHvMapping(editFilename.text, true);
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

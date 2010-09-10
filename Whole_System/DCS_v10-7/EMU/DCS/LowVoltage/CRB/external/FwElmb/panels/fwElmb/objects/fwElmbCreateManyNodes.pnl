@@ -1,0 +1,1022 @@
+V 10
+2
+LANG:1 8 (NoName)
+LANG:5 8 (NoName)
+PANEL,539 292 630 270 N "_3DFace" 1
+"$sDpName"
+E"main()
+{
+	int i;
+}" 0
+E E E 1 -1 -1 0  499 24
+"" 0 1
+EE 2
+"CBRef""1"
+"EClose""main()
+{
+	int i;
+}" 0
+
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 25
+"lblBus"
+""
+1 10 10 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+14 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+1
+"dashclr"N "_Transparent"
+"main()
+{
+
+}" 0
+ E 0 1 1 0 1 E U  0 E 12 12 188 29
+0 2 0 "s" 0 0 0 64 0 0  12 12
+ 1
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 29 Create multiple ELMBs in bus:
+LANG:5 32 Create multiple ELMBs in bus:   
+2 10
+"lblNameConvention"
+""
+1 11 77 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+15 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 13 79 128 95
+0 2 0 "s" 0 0 0 64 0 0  13 79
+ 1
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 18 Naming Convention:
+LANG:5 24 Label Naming Convention:
+2 1
+"lblBusName"
+""
+1 360 54 E E E 1 E 0 E N {0,0,0} E N "_Transparent" E E
+ E E
+16 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 362 56 427 72
+0 2 0 "s" 0 0 0 64 0 0  362 56
+ 1
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 9 Bus Name:
+LANG:5 9 Bus Name:
+2 21
+"lblDeviceType"
+""
+1 360 80 E E E 1 E 0 E N {0,0,0} E N "_Transparent" E E
+ E E
+17 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 362 82 436 98
+0 2 0 "s" 0 0 0 64 0 0  362 82
+ 1
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 12 Device Type:
+LANG:5 12 Device Type:
+2 2
+"lblFixed1"
+""
+1 120 112 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+18 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 122 114 153 130
+0 2 0 "s" 0 0 0 64 0 0  122 114
+ 1
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 6 fixed 
+LANG:5 6 fixed 
+2 5
+"lblChanging1"
+""
+1 254 110 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+19 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 256 112 308 128
+0 2 0 "s" 0 0 0 64 0 0  256 112
+ 1
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 8 changing
+LANG:5 8 changing
+2 3
+"lblFixed2"
+""
+1 408 110 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+20 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 410 112 441 128
+0 2 0 "s" 0 0 0 64 0 0  410 112
+ 1
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 6 fixed 
+LANG:5 6 fixed 
+2 4
+"lblChanging2"
+""
+1 532 110 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+21 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 534 112 586 128
+0 2 0 "s" 0 0 0 64 0 0  534 112
+ 1
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 8 changing
+LANG:5 8 changing
+2 6
+"lblTo"
+""
+1 10 230 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+22 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 182 30 198
+0 2 0 "s" 0 0 0 64 0 0  12 182
+ 1
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 3 To:
+LANG:5 3 To:
+2 7
+"lblFrom"
+""
+1 10 180 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+23 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 132 46 148
+0 2 0 "s" 0 0 0 64 0 0  12 132
+ 1
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 5 From:
+LANG:5 5 From:
+2 8
+"lblExamples"
+""
+1 10 210 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+24 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 212 110 260
+0 2 0 "s" 0 0 0 64 0 0  12 212
+ 3
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 9 Examples:
+LANG:5 9 Examples:
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 6 ELMB_1
+LANG:5 6 ELMB_1
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+2
+LANG:1 12 ELMB_1_BUS_3
+LANG:5 12 ELMB_1_BUS_3
+1 28 0 "" 0
+0
+1 29 1 "" 0
+0
+1 30 2 "" 0
+0
+1 31 3 "" 0
+0
+1 32 4 "" 0
+0
+1 33 5 "" 0
+0
+13 12
+"createButton"
+""
+1 450 230 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+12 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+448 228 532 262
+T 
+2
+LANG:1 6 Next >
+LANG:5 6 Next >
+"//Create the bunch of dp's specified: range = 'from' -> 'to'.
+
+main()
+{
+// Local Variables
+// ---------------
+	int fromInFirstLoop, fromInSecondLoop, toInFirstLoop, toInSecondLoop;
+	
+	string firstFixedDpNamePart, secondFixedDpNamePart, dpNameToBeCreated;
+	string deviceType;
+	
+	dyn_string devicesToBeCreatedList;
+	
+// Executable Code
+// ---------------
+	//create dynamic field of strings
+	devicesToBeCreatedList = makeDynString();
+	
+	//assign deviceType to the input of the 'shape'
+	deviceType = txtDeviceType.text;
+	
+	//put name of bunch in first slot - HISTORICAL - therefore name of bunch is empty
+	dynAppend(devicesToBeCreatedList, \"\");
+/**************/
+		
+	//Read in (and convert string to int) all necessary values to be used locally
+	fromInFirstLoop = changingDpNameEntry1.text;
+	toInFirstLoop = changingDpNameEntry3.text;
+	
+	fromInSecondLoop = changingDpNameEntry2.text;
+	toInSecondLoop = changingDpNameEntry4.text;
+	
+	//Fixed texts are assigned as follows
+	firstFixedDpNamePart = fixedDpNameEntry1.text;
+	secondFixedDpNamePart = fixedDpNameEntry2.text;
+	
+	
+	//Make sure that the dynamic values are REALLY dynamic - don't need to check for this...
+	//Just check which is larger...
+
+
+	//execute one or two loops. Check changingDpNameEntry1.text and changingDpNameEntry3.text
+	//is not empty (user input error possible eg text!)
+	if ((changingDpNameEntry1.text != \"\") && (changingDpNameEntry2.text != \"\") &&
+			(changingDpNameEntry3.text != \"\") && (changingDpNameEntry4.text != \"\")) {
+		entry1Entry2Exist(fromInFirstLoop, toInFirstLoop,
+											fromInSecondLoop, toInSecondLoop,
+											firstFixedDpNamePart, secondFixedDpNamePart,
+											devicesToBeCreatedList);
+		popUpListPanel(devicesToBeCreatedList, deviceType);
+	} else if (	(changingDpNameEntry1.text != \"\") && (changingDpNameEntry2.text == \"\") &&
+							(changingDpNameEntry3.text != \"\") && (changingDpNameEntry4.text == \"\")) {
+		entry1Exists( fromInFirstLoop, toInFirstLoop,
+									firstFixedDpNamePart, secondFixedDpNamePart,
+									devicesToBeCreatedList);			
+		popUpListPanel(devicesToBeCreatedList, deviceType);
+	} else if (	(changingDpNameEntry1.text == \"\") && (changingDpNameEntry2.text != \"\") &&
+							(changingDpNameEntry3.text == \"\") && (changingDpNameEntry4.text != \"\")) {
+		entry2Exists( fromInSecondLoop, toInSecondLoop,
+									firstFixedDpNamePart, secondFixedDpNamePart,
+									devicesToBeCreatedList);
+		popUpListPanel(devicesToBeCreatedList, deviceType);
+	} else {
+		DebugN(\"\\n\\nExpecting changing fields to have integer values\\n\\n\");
+	}
+	
+/******************************
+	//clean up entries - because they are no longer valid even if visible
+	fixedDpNameEntry1.text=\"\";
+	fixedDpNameEntry2.text=\"\";
+	fixedDpNameEntry3.text=\"\";
+	fixedDpNameEntry4.text=\"\";
+	changingDpNameEntry1.text==\"\";
+	changingDpNameEntry2.text==\"\";
+	changingDpNameEntry3.text==\"\";
+	changingDpNameEntry4.text==\"\";
+**********************************/
+
+	// Return to calling routine
+	return;
+}
+
+//functions-----------------------------------------------------------------------------------
+entry1Entry2Exist( int fromInFirstLoop, int toInFirstLoop,
+					  int fromInSecondLoop, int toInSecondLoop,
+						string firstFixedDpNamePart, string secondFixedDpNamePart,
+							dyn_string &devicesToBeCreatedList)
+{
+	int i, j;
+	string dpNameToBeCreated;
+	
+	//Check which value is larger, the 'from' or the 'to' field
+	if(toInFirstLoop > fromInFirstLoop)
+	{
+		//ascending order
+		for(i = fromInFirstLoop; i <= toInFirstLoop; i++)
+		{
+			//Second loop:
+			//Check which value is larger, the 'from' or the 'to' field
+			if(toInSecondLoop > fromInSecondLoop)
+			{
+				for(j = fromInSecondLoop; j <= toInSecondLoop; j++)
+				{
+					dpNameToBeCreated = firstFixedDpNamePart + i + secondFixedDpNamePart + j;			
+					dynAppend(devicesToBeCreatedList, dpNameToBeCreated);
+					
+				}
+			}
+			else 
+			{
+				//decending order or else equal values
+				for(j = fromInSecondLoop; j >= toInSecondLoop; j--)
+				{
+					dpNameToBeCreated = firstFixedDpNamePart + i + secondFixedDpNamePart + j;
+					dynAppend(devicesToBeCreatedList, dpNameToBeCreated);
+				}
+			}			
+		}
+	}
+	else
+	{
+		//decending order or else equal values
+		for(i = fromInFirstLoop; i >= toInFirstLoop; i--)
+		{
+			//Second loop:
+			//Check which value is larger, the 'from' or the 'to' field
+			if(toInSecondLoop > fromInSecondLoop)
+			{
+				//ascending order
+				for(j = fromInSecondLoop; j <= toInSecondLoop; j++)
+				{
+					dpNameToBeCreated = firstFixedDpNamePart + i + secondFixedDpNamePart + j;
+					dynAppend(devicesToBeCreatedList, dpNameToBeCreated);
+				}
+			}
+			else
+			{
+				//decending order or else equal values
+				for(j = fromInSecondLoop; j >= toInSecondLoop; j--)
+				{
+					dpNameToBeCreated = firstFixedDpNamePart + i + secondFixedDpNamePart + j;
+					dynAppend(devicesToBeCreatedList, dpNameToBeCreated);
+				}
+			}
+			
+		}
+	}
+
+}
+
+//firstFixedDpNamePart or secondFixedDpNamePart may be empty
+entry1Exists( int fromInFirstLoop, int toInFirstLoop,
+					string firstFixedDpNamePart, string secondFixedDpNamePart,
+						dyn_string &devicesToBeCreatedList)
+{
+	int i;
+	string dpNameToBeCreated;
+	
+	//Check which value is larger, the 'from' or the 'to' field
+	if(toInFirstLoop > fromInFirstLoop)
+	{
+		//ascending order
+		for(i = fromInFirstLoop; i <= toInFirstLoop; i++)
+		{
+			dpNameToBeCreated = firstFixedDpNamePart + i + secondFixedDpNamePart;
+			dynAppend(devicesToBeCreatedList, dpNameToBeCreated);				
+		}
+	}
+	else
+	{
+		//decending order or else equal values
+		for(i = fromInFirstLoop; i >= toInFirstLoop; i--)
+		{
+			dpNameToBeCreated = firstFixedDpNamePart + i + secondFixedDpNamePart;
+			dynAppend(devicesToBeCreatedList, dpNameToBeCreated);
+		}
+	}
+}
+
+
+entry2Exists( int fromInSecondLoop, int toInSecondLoop,
+				string firstFixedDpNamePart, string secondFixedDpNamePart,
+					dyn_string &devicesToBeCreatedList)
+{
+	int i;
+	string dpNameToBeCreated;
+
+	//Check which value is larger, the 'from' or the 'to' field
+	if(toInSecondLoop > fromInSecondLoop)
+	{
+		//ascending order
+		for(i = fromInSecondLoop; i <= toInSecondLoop; i++)
+		{
+			dpNameToBeCreated = secondFixedDpNamePart + i;						
+			dynAppend(devicesToBeCreatedList, dpNameToBeCreated);
+					
+		}
+	}
+	else
+	{
+		//decending order or else equal values
+		for(i = fromInSecondLoop; i >= toInSecondLoop; i--)
+		{
+			dpNameToBeCreated = secondFixedDpNamePart + i;
+			dynAppend(devicesToBeCreatedList, dpNameToBeCreated);			
+		}
+	}
+}
+
+popUpListPanel(dyn_string devicesToBeCreatedList, string deviceTypeText )
+{
+	//pop up list of devices in another window. Will be sent as long string delimited by |
+	ModuleOn(\"selectElmbLabelsModule\", 0, 0,600, 800, 0, 0, \"\");
+	RootPanelOnModule(\"fwElmb/objects/fwElmbMassConfigurationListCreateDeviceBunch.pnl\",
+						\"fwElmbMassConfigurationListCreateDeviceBunch\", \"selectElmbLabelsModule\",
+				 		   makeDynString(\"$sDpName:\" + $sDpName, \"$passedPackedString:\" + devicesToBeCreatedList, 
+				 		 					\"$passedDeviceType:\" + deviceTypeText));
+
+	ModuleOff(myModuleName());
+}
+
+
+
+
+" 0
+ E E E
+13 20
+"cancelButton"
+""
+1 540 230 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+13 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+538 228 622 262
+T 
+2
+LANG:1 6 Cancel
+LANG:5 6 Cancel
+"main()
+{	
+	//cancel button has been pressed
+	PanelOff();
+}" 0
+ E E E
+14 17
+"changingDpNameEntry4"
+""
+1 531 180 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+11 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+529 178 603 205
+3 "s" 0 0 0 0 0 0 
+E
+E
+"main()
+{
+
+	string changingString4;
+	int dValue;
+	
+	
+	//changingDpNameEntry4.text = this.text;
+	//DebugN(\"changingDpNameEntry4 =\", changingDpNameEntry4.text);
+	//No need to explicitly set this graphic object's value.
+
+	
+	changingString4 = this.text;
+	
+	//convert changingString4 to integer 
+	if( sscanf( changingString4, \"%d\", dValue)== 0 ||
+		sscanf( changingString4, \"%d\", dValue)== -1)
+	{
+		DebugN(\"Invalid Value - Expecting integer\", changingString4); 
+		createButton.enabled = 0;
+		return;
+	}
+	else
+	{
+		createButton.enabled = 1;
+	}
+	
+}
+" 0
+
+14 19
+"fixedDpNameEntry4"
+""
+1 340 180 E E E 0 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+10 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+338 178 513 205
+3 "s" 0 0 0 0 0 0 
+E
+E
+E
+14 18
+"changingDpNameEntry3"
+""
+1 250 180 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+9 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+248 178 322 205
+3 "4s" 4 0 0 0 0 0 
+E
+E
+"main()
+{
+
+	string changingString3;
+	int dValue;
+	
+	
+	//changingDpNameEntry3.text = this.text;
+	//DebugN(\"changingDpNameEntry3 =\", changingDpNameEntry3.text);
+	//No need to explicitly set this graphic object's value.
+
+	
+	changingString3 = this.text;
+	
+	//convert changingString3 to integer 
+	if( sscanf( changingString3, \"%d\", dValue)== 0 ||
+		sscanf( changingString3, \"%d\", dValue)== -1)
+	{
+		DebugN(\"Invalid Value - Expecting integer\", changingString3); 
+		createButton.enabled = 0;
+		return;
+	}
+	else
+	{
+		createButton.enabled = 1;
+	}
+	
+}
+
+" 0
+
+14 16
+"fixedDpNameEntry3"
+""
+1 60 180 E E E 0 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+8 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+58 178 232 205
+3 "s" 0 0 0 0 0 0 
+E
+E
+E
+14 13
+"changingDpNameEntry2"
+""
+1 530 130 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+7 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+528 128 602 155
+3 "s" 0 0 0 0 0 0 
+E
+E
+"main()
+{
+	string changingString2, changingString4;
+	int dValue;
+	
+	changingString2 = this.text;
+	//DebugN(\"changingString2 =\", changingString2);
+	
+	//convert changingString2 to integer 
+	if( sscanf( changingString2, \"%d\", dValue)== 0 ||
+		sscanf( changingString2, \"%d\", dValue)== -1)
+	{
+		DebugN(\"Invalid Value \", changingString2); 
+		createButton.enabled = 0;
+		return;
+	}
+	else
+	{
+		createButton.enabled = 1;
+	}
+	
+	dValue = dValue + 1;
+	//DebugN( \"dValue= \", dValue);
+	
+	//copy the integer value to the end of sequence changing string field
+	changingString4 = dValue;
+	
+	//CAN'T scan integer to put into a string! sscanf( dValue, \"%s\", changingString2); 
+	//DebugN( \"changingString4= \", changingString4);
+ 	changingDpNameEntry4.text = changingString4;
+}" 0
+
+14 15
+"fixedDpNameEntry2"
+""
+1 340 130 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+6 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+338 128 512 155
+3 "s" 0 0 0 0 0 0 
+E
+E
+"//user has typed in the fixed string, copy this to fixed string at end of sequence
+main()
+{
+	string fixedString2;
+	
+	fixedString2 = this.text;
+	//DebugN(\"fixedString2=\", fixedString2);
+
+	//copy this fixed string to the end of sequence fixed string
+	fixedDpNameEntry4.text = this.text;
+
+}" 0
+
+14 14
+"changingDpNameEntry1"
+""
+1 250 130 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+5 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+248 128 322 155
+3 "s" 0 0 0 0 0 0 
+E
+E
+"
+
+main()
+{
+	string changingString1, changingString3;
+	int dValue;
+	
+	changingString1 = this.text;
+	//DebugN(changingString1);
+	
+	//convert changingString1 to integer 
+	if( sscanf( changingString1, \"%d\", dValue)== 0 ||
+		sscanf( changingString1, \"%d\", dValue)== -1)
+	{
+		DebugN(\"Invalid Value \", changingString1); 
+		createButton.enabled = 0;
+		return;
+	}
+	else
+	{
+		createButton.enabled = 1;
+	}
+	
+	dValue = dValue + 1;
+	//DebugN( \"dValue= \", dValue);
+	
+	//copy the integer value to the end of sequence changing string field
+	changingString3 = dValue;
+	
+	//sscanf( dValue, \"%s\", changingString3); 
+	//DebugN( \"changingString3= \", changingString3);
+ 	changingDpNameEntry3.text = changingString3;
+}
+
+" 0
+
+14 11
+"fixedDpNameEntry1"
+""
+1 60 130 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+4 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+58 128 232 155
+3 "s" 0 0 0 0 0 0 
+E
+E
+"//user has typed in the fixed string, copy this to fixed string at end of sequence
+main()
+{
+	string fixedString1;
+	
+	fixedString1 = this.text;
+	//DebugN( fixedString1);
+
+	//copy this fixed string to the end of sequence fixed string
+	fixedDpNameEntry3.text = this.text;
+
+}" 0
+
+14 22
+"txtDeviceType"
+""
+1 439 76 E E E 0 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+3 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+437 74 561 101
+3 "s" 0 0 0 0 0 0 
+E
+"main()
+{
+// this.text = $sDeviceType;
+	this.text = \"dummy\";
+}" 0
+
+E
+14 0
+"txtBusName"
+""
+1 439 50 E E E 0 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+2 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+437 48 561 75
+3 "s" 0 0 0 0 0 0 
+E
+"main()
+{
+this.text = $sDpName;
+}" 0
+
+E
+14 27
+"txtParentName"
+""
+1 190 10 E E E 0 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+EE E
+0
+2
+LANG:1 0 
+LANG:5 0 
+0
+2
+LANG:1 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+LANG:5 107 -microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1|-13,0,0,0,400,0,0,0,0,3,2,1,34,Arial
+0 ""
+188 8 460 35
+3 "s" 0 0 0 0 0 0 
+E
+"main()
+{
+this.text = $sDpName;
+}" 0
+
+E
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+3 0 "Group2"
+"gedi\\EP_enter.ref" 160 210 T 25 1 0 1  70 -80  
+0
+3 1 "Group4"
+"gedi\\EP_enter.ref" 230 140 T 26 1 0 1  90 -10  
+0
+3 2 "Group6"
+"gedi\\EP_enter.ref" 230 140 T 27 1 0 1  90 40  
+0
+3 3 "Group9"
+"gedi\\EP_enter.ref" 320 130 T 28 1 0 1  284 0  
+0
+3 4 "Group10"
+"gedi\\EP_enter.ref" 320 180 T 29 1 0 1  284 0  
+0
+3 5 "Group12"
+"gedi\\EP_enter.ref" 230 130 T 30 1 0 1  280 0  
+0
+0

@@ -1,0 +1,326 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 1200 540 N "_3DFace" 2
+"$group"
+"$width"
+"main()
+{
+  initParams();
+
+  dyn_string ex;
+  layoutParams = emuui_getMapping(\"chamberLayout\", ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // get connectionType and mode to determine wether gradient scale is necessary or not (and if so also determine min and max values for the gradient scale)  
+  string connectionType, mode;
+  dpGet(paramGroup + \".connectionType\", connectionType);
+  dpGet(paramGroup + \".mode\", mode);
+  
+  // compute the size parameters
+  float paramWidthFloat = paramWidth;
+  chamberWidthHeight;
+  if (strpos(connectionType, \"DP\") >= 0) { // gradient scale is necessary
+    chamberWidthHeight = floor((paramWidthFloat - (float)EMUUI_EMUPLOT_LABEL_WIDTH - (float)EMUUI_EMUPLOT_GRADIENT_LABEL_WIDTH) / 37); // max 36 chambers + gradient scale
+  } else { // gradient scale is NOT necessary
+    chamberWidthHeight = floor((paramWidthFloat - (float)EMUUI_EMUPLOT_LABEL_WIDTH) / 36); // max 36 chambers
+  }
+  height = chamberWidthHeight * 17; // 17 rings
+  
+  int myPosX, myPosY;
+  getValue(\"refPoint\", \"position\", myPosX, myPosY);
+  
+  drawEMU(myPosX, myPosY, chamberWidthHeight);
+  
+  if (strpos(connectionType, \"DP\") >= 0) { // gradient scale is necessary
+    dyn_string ex;
+    float minValue = emuui_getDpValueRangeMin(\"chamber_\" + mode, ex);
+    if (dynlen(ex) > 0) { emu_errorHandled(ex); }
+    float maxValue = emuui_getDpValueRangeMax(\"chamber_\" + mode, ex);
+    if (dynlen(ex) > 0) { emu_errorHandled(ex); }
+
+    gradientScaleX = myPosX + EMUUI_EMUPLOT_LABEL_WIDTH + (chamberWidthHeight * 36) + 1;
+    gradientScaleY = myPosY + height;
+    drawGradientScale(gradientScaleX, gradientScaleY, 
+                      height + 1, chamberWidthHeight, 
+                      minValue, maxValue);
+  }
+  
+  if (strlen($group) > 0) {
+    dpConnect(\"modeChangedCB\", false, $group + \".mode\", $group + \".connectionType\");
+  }
+}
+
+void drawEMU(int x, int y, int chamberWidthHeight) {
+  dyn_string ex;
+  
+  int currentY = y;
+  for (int i=4; i >= -4; i--) {
+    string side = \"P\";
+    if (i < 0) { side = \"M\"; }
+    if (i == 0) { continue; } // no such station
+    int station = emu_abs(i);
+
+    if (side == \"M\") { // count rings increasingly
+      for (int ring = 1; ring <= layoutParams[\"ringCount_ME_\" + side + station]; ring++) {
+        // check if chambersStart and chambersEnd parameters exist in layoutParams - if so then draw only chambers in that range    
+        int chambersStart, chambersEnd;
+        getChambersStartEndParams(side, station, ring, chambersStart, chambersEnd, ex);
+        if (emu_checkException(ex)) { return; }
+        // draw the ring
+        drawStation(x, currentY, side, station, ring, chamberWidthHeight, chambersStart, chambersEnd);
+        currentY += chamberWidthHeight;
+      }
+    } else { // count ring decresingly
+      for (int ring = layoutParams[\"ringCount_ME_\" + side + station]; ring >= 1; ring--) {
+        // check if chambersStart and chambersEnd parameters exist in layoutParams - if so then draw only chambers in that range    
+        int chambersStart, chambersEnd;
+        getChambersStartEndParams(side, station, ring, chambersStart, chambersEnd, ex);
+        if (emu_checkException(ex)) { return; }
+        // draw the ring
+        drawStation(x, currentY, side, station, ring, chamberWidthHeight, chambersStart, chambersEnd);
+        currentY += chamberWidthHeight;
+      }
+    }
+  }
+}
+
+void drawStation(int x, int y, string side, int station, int ring, int chamberWidthHeight, int chambersStart = -1, int chambersEnd = -1) {
+  int chamberCount = 36;
+  int chamberWidth = chamberWidthHeight + 1; // for small chambers (add one to make the border 1 pixed in width between two chambers)
+  int chamberHeight = chamberWidthHeight + 1; //add one to make the border 1 pixed in height between two chambers
+  int xStep = chamberWidthHeight;
+  
+  if ((station > 1) && (ring == 1)) { // if those are big chambers then scale them twice in width
+    chamberCount = 18;
+    chamberWidth *= 2;
+    xStep *= 2;
+  }
+  
+  //draw ring label
+  drawRingLabel(x, y, side, station, ring);
+  x += EMUUI_EMUPLOT_LABEL_WIDTH;
+
+  if ((chambersStart == -1) || (chambersEnd == -1)) { 
+    chambersStart = 1;
+    chambersEnd = chamberCount;
+  }
+  
+  for (int i = chambersStart; i <= chambersEnd; i++) {
+    string chamberName;
+    string strChamberNumber;
+    sprintf(strChamberNumber, \"%02d\", i);
+    chamberName = strChamberNumber;
+    
+    int chamberX = x + (xStep * (i - 1)); // substract 1 from chamberWidth to keep original requested width
+    
+    //import the chamber panel (no changes in the panel shape; position - [0,0])
+    string refName = \"refPlotChamber_\" + side + station + ring + \"_\" + i;
+    if (shapeExists(refName)) { refName += \"_1\"; }
+    dynAppend(references, refName);
+    addSymbol(myModuleName(), myPanelName(),
+              \"objects/\" + EMUUI_COMPONENT_NAME + \"/refDevice.pnl\",
+              refName,
+              makeDynString(\"$caption:VALUE\", \"$deviceType:chamber\",
+                            \"$deviceParams:\" + \"side=\" + side + 
+                                               \";station=\" + station + 
+                                               \";ring=\" + ring + 
+                                               \";chamberNumber=\" + strChamberNumber,
+                            \"$group:\" + paramGroup,
+                            \"$shapeParams:\" + \"type=rectangle\" + 
+                                              \";width=\" + chamberWidth +
+                                              \";height=\" + chamberHeight,
+                            \"$refName:\" + refName),
+              chamberX, y, 0, 1, 1);
+  }
+}
+
+void drawRingLabel(int x, int y, string side, int station, int ring) {
+    //construct the ring label text
+    string ringLabel = \"ME\";
+    if (side == \"P\") {
+      ringLabel += \"+\";
+    } else if (side == \"M\") {
+      ringLabel += \"-\";
+    }
+    ringLabel += station + \"/\" + ring;
+    
+    // add the label
+    string refName = \"ringLabel_\" + ringLabel;
+    dynAppend(references, refName);
+    addSymbol(myModuleName(), myPanelName(), 
+              \"objects/\" + EMUUI_COMPONENT_NAME + \"/refLabel.pnl\", refName, 
+              makeDynString(\"$text:\" + ringLabel),
+              x, y, 0, 1, 1);
+}
+
+void getChambersStartEndParams(string side, int station, int ring, int &chambersStart, int &chambersEnd, dyn_string &exceptionInfo) {
+  mapping layoutParams = emuui_getMapping(\"chamberLayout\", exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  
+  chambersStart = -1;
+  chambersEnd = -1;
+  if (mappingHasKey(layoutParams, \"chambersStart_ME_\" + side + station + ring) &&
+      mappingHasKey(layoutParams, \"chambersEnd_ME_\" + side + station + ring)) {
+    chambersStart = layoutParams[\"chambersStart_ME_\" + side + station + ring];
+    chambersEnd = layoutParams[\"chambersEnd_ME_\" + side + station + ring];
+  }
+}" 0
+ "main()
+{
+  emuui_destroyReferences(references);
+}
+" 0
+ E E E 1 -1 -1 0  0 0
+""0  1
+E "// init parameters
+string paramGroup;
+int paramWidth;
+
+// some panel-wide constants
+const int EMUUI_EMUPLOT_LABEL_WIDTH = 43;
+const int EMUUI_EMUPLOT_GRADIENT_LABEL_WIDTH = 30;
+mapping layoutParams;
+dyn_string references;
+bool runningLocal; // if true then panel is running localy, if false then panel is a reference
+dyn_string gradientScaleRefs, gradientScaleLabelRefs;
+int gradientScaleX, gradientScaleY;
+int height, chamberWidthHeight;
+
+/** coppies dollar parameters to local variables. If any dollar parameter is missing 
+   then local variable is given a default value to allow to run the panel separatelly for debugging purposes. */
+void initParams() {
+  //default values
+  if ((strlen($group) == 0) &&
+      (strlen($width) == 0)) {
+    
+    emuui_init();
+    runningLocal = true;
+    
+    paramGroup = emuui_getSessionDp(\"valueMonitor\");
+    paramWidth = 1200;
+  } else { // copy from dollar params
+    runningLocal = false;
+    
+    paramGroup = $group;
+    paramWidth = $width;
+  }
+}
+
+void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string connectionType) {
+  deleteGradientScaleLabels();
+  if (strpos(connectionType, \"DP\") >= 0) { // gradient scale is necessary
+    dyn_string ex;
+    float minValue = emuui_getDpValueRangeMin(\"chamber_\" + mode, ex);
+    if (dynlen(ex) > 0) { emu_errorHandled(ex); }
+    float maxValue = emuui_getDpValueRangeMax(\"chamber_\" + mode, ex);
+    if (dynlen(ex) > 0) { emu_errorHandled(ex); }
+    drawGradientScaleLabels(gradientScaleX, gradientScaleY, height + 1, chamberWidthHeight, minValue, maxValue);
+  }
+}
+
+
+void drawGradientScale(int bottomLeftX, int bottomLeftY, int height, int width, float minValue, float maxValue) {
+  for (int i=0; i < height; i++) {
+    string refName = \"gradientScaleLine\" + i;
+    if (shapeExists(refName)) { refName += \"_1\"; }
+    dynAppend(references, refName);
+    dynAppend(gradientScaleRefs, refName);
+    addSymbol(myModuleName(), myPanelName(),
+              \"objects/\" + EMUUI_COMPONENT_NAME + \"/refLine.pnl\",
+              refName,
+              makeDynString(),
+              bottomLeftX, bottomLeftY - i, 0, 1, 1);
+    setValue(refName + \".lineHorizontal\", \"foreCol\", emuui_getGradientColor(i, 0, height));
+    setValue(refName + \".lineHorizontal\", \"size\", width, 1);
+  }
+  
+  drawGradientScaleLabels(bottomLeftX, bottomLeftY, height, width, minValue, maxValue);
+}
+
+void drawGradientScaleLabels(int bottomLeftX, int bottomLeftY, int height, int width, float minValue, float maxValue) {
+  for (int i=0; i < height; i++) {
+    // draw values
+    float tmp = ((float)i) / 30;
+    if ((floor(tmp) == tmp) && (height - i > 15) ||    // draw value every 30 pixels, but don't draw if there's only 15 pixels left to the top - to avoid overlapping with the last value
+        (i == height - 1))                             // or if it's the last value
+    {
+      float value = minValue + ((maxValue - minValue) / ((float)height)) * ((float)i);
+      if (i == height -1) { value = maxValue; } // if it's the last one - just set the maxValue to avoid rounding error
+      string strValue;
+      sprintf(strValue, \"%d\", value);
+      // add the label
+      string refName = \"valueLabel_\" + strValue;
+      dynAppend(references, refName);
+      dynAppend(gradientScaleLabelRefs, refName);
+      addSymbol(myModuleName(), myPanelName(), 
+                \"objects/\" + EMUUI_COMPONENT_NAME + \"/refLabel.pnl\", refName, 
+                makeDynString(\"$text:\" + strValue),
+                bottomLeftX + width, bottomLeftY - i - 6, 0, 1, 1); // shift a bit up, because the reference point of the label is in bottom left corner
+    }
+  }
+}
+
+void deleteGradientScaleLabels() {
+  for (int i=1; i <= dynlen(gradientScaleLabelRefs); i++) {
+    removeSymbol(myModuleName(), myPanelName(), gradientScaleLabelRefs[i]);
+  }
+}" 0
+ 2
+"CBRef" "1"
+"EClose" "main()
+{
+  emuui_destroyReferences(references);
+  PanelOff();
+}
+" 0
+
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+7 0
+"refPoint"
+""
+1 140 110 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -140 -110 1 E 140 110 10 10
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

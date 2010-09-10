@@ -1,0 +1,3691 @@
+V 10
+1
+LANG:1 22 emuDevWNR12_1Operation
+PANEL,-1 -1 690 593 N "_3DFace" 4
+"$obj"
+"$project_station"
+"$project_system"
+"$sDpName"
+"int is_local_sys;
+
+main()
+{
+$project_station;
+$project_system;      
+  mudcsProjectConnect();
+    
+string local_sys = fwFsm_getSystemName();
+if(strpos(local_sys,\"CSC\")>=0 || strpos(local_sys,\"csc\")>=0
+|| strpos(local_sys,\"EMU\")>=0 || strpos(local_sys,\"emu\")>=0 || strpos(local_sys,\"dcspcS2G19\")>=0 )is_local_sys=1;
+else is_local_sys=0;
+
+
+init_dp_switch();
+
+dpConnect(\"status_monitor\",DpNameFsm+\".status\");
+
+dpConnect(\"update_dpoints_not_controlled\",CSC_fwG_g_SYSTEM_NAME+\":DPOINTS_NOT_CONTROLLED.value\");
+
+//================================
+
+
+
+//==================
+
+dpConnect(\"update_monitor\",DpName+\".update_value\");
+
+///mudcsDebug(\"22\");
+
+
+}
+
+
+//==========================================
+
+update_monitor(string dp, string value)
+{
+
+int i,j;
+float test_v;
+string test_string;
+int ret;
+string box_name;
+string dpe;
+int test_i;
+
+for(i=1;i<=12;i++){
+for(j=1;j<=10;j++){
+dpe=DpName+\".data.channel\"+i+\".item\"+j;
+ret=dpGet(mudcsAddSystem(dpe),test_v);
+test_string=test_v;
+box_name=i+\"_\"+j;
+setValue(box_name,\"text\",test_string);
+}
+}
+
+
+for(j=1;j<=9;j++){
+dpe=DpName+\".data.crate\"+\".item\"+j;
+ret=dpGet(mudcsAddSystem(dpe),test_i);
+test_string=test_i;
+box_name=\"cr_\"+j;
+setValue(box_name,\"text\",test_string);
+}
+
+
+
+
+}
+
+//============================================================
+
+init_dp_switch(){
+ if($obj != \"\"){   // the panel is called from FSM
+    DpName=$obj;
+ } 
+ else{
+    DpName=$sDpName; // the panel is called from LOGICAL TREE
+ }
+
+ DpName=mudcsAddSystem(DpName);
+
+  mudcsConvertData2FsmOne(\"WNR12_1\",DpName,DpNameFsm);
+  mudcsConvertFsm2DataOne(DpNameFsm,DpName);
+
+/*
+  dyn_string dps;
+  dps=dpNames(DpName+\".:_alert_hdl.._active\");
+/////  DebugTN(dps);
+  if(dynlen(dps)<=0){
+   mudcsDebug(DpName+\".:_alert_hdl.._active\" + \"is not configured\");
+  }
+*/
+
+  dyn_string dps;  
+  dpGet(DpName+\".:_alert_hdl.._dp_list\",dps);
+  if(dynlen(dps) <= 0){
+   mudcsDebug(DpName+\".:_alert_hdl.._active\" + \"is not configured\");  
+  }
+
+}
+
+//============================================================
+//============================================================
+status_monitor(string dp, int status){
+
+string box_name;
+int i,j;
+
+dyn_string ds;
+
+
+for(i=1;i<=12;i++){
+for(j=1;j<=10;j++){
+
+box_name=i+\"_\"+j;
+dynAppend(ds,box_name);
+}
+}
+
+
+for(j=1;j<=9;j++){
+
+box_name=\"cr_\"+j;
+dynAppend(ds,box_name);
+}
+
+
+
+ if(status ==0 ){
+
+  for(int i=1;i<=dynlen(ds);i++)setValue(ds[i],\"enabled\",FALSE);
+setValue(\"enable_disable\",\"text\",\"TO SWITCH ON\");
+setValue(\"enable_disable\",\"backCol\",\"{0,153,153}\");
+ }
+ else{
+  for(int i=1;i<=dynlen(ds);i++)setValue(ds[i],\"enabled\",TRUE);
+setValue(\"enable_disable\",\"text\",\"TO SWITCH OFF\");
+setValue(\"enable_disable\",\"backCol\",\"{255,0,0}\");
+ }
+
+}
+//============================================================ 
+
+  
+update_dpoints_not_controlled(string dpName, string value){
+
+ if(strpos(value,DpNameFsm) <0){
+  if(is_local_sys)setValue(\"enable_disable\",\"enabled\",TRUE);
+  else setValue(\"enable_disable\",\"enabled\",FALSE);
+  setValue(\"NOT_CONNECTED\",\"visible\",FALSE);
+  }
+ else  {
+  setValue(\"enable_disable\",\"enabled\",FALSE);
+  setValue(\"NOT_CONNECTED\",\"visible\",TRUE);
+ }
+
+}
+
+//==================================================================" 0
+ E E E E 1 -1 -1 0  10 10
+""0  1
+E "#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs2.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs3.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs4.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcsDim.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuAlert.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emufw.ctl\"
+
+string DpName;
+string DpNameFsm;
+
+int disk_number;
+int ring_number;
+int chamber_number;
+string device_type;
+
+
+dyn_string temp_variables;
+dyn_string temp_variables_cfeb;
+
+string vset_box_gl;
+float vset_off_gl;
+
+//=================================
+send_set_data_command(){
+
+string box_name;
+int ch, item;
+dyn_string numbers;
+string value_s;
+
+
+getValue(\"\",\"name\",box_name);
+
+
+
+if(box_name==\"exclude\"){
+ box_name=vset_box_gl;
+ value_s=vset_off_gl;
+}
+else{
+ getValue(\"\",\"text\",value_s);
+}
+
+numbers=strsplit(box_name,\"_\");
+
+ch=numbers[1];
+item=numbers[2];
+ch-=1;
+item-=3;
+
+
+//mudcsDebug(box_name);
+//mudcsDebug(\"set_data|\"+ch+\";\"+item+\";\"+value_s);
+
+mudcsCommand(\"MRTN\",DpNameFsm,\"set_data|\"+ch+\";\"+item+\";\"+value_s);
+}
+
+//=============================================" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+14 2
+"1_1"
+""
+1 60 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 111 -*-Helvetica [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 60 40 130 69
+3 "0s" 0 0 0 0 0 -1  E E E
+2 3
+"PRIMITIVE_TEXT1"
+""
+1 42 52 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 12 45 49 64
+1 2 2 "0s" 0 0 0 192 0 0  12 45 1
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 4 ch01
+14 9
+"1_2"
+""
+1 120 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 120 40 190 66
+3 "0s" 0 0 0 0 0 -1  E E E
+13 20
+"enable_disable"
+""
+1 380 550 E E E 1 E 1 E N "_3DText" E N {0,153,153} E E
+ E E
+39 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+ 380 550 590 582
+
+T 
+1
+LANG:1 4 ....
+"main()
+{
+
+int current_status;
+
+ dpGet(DpNameFsm+\".status\",current_status);
+ if(current_status==0)dpSet(DpNameFsm+\".status\",2);
+ else /*if(current_status==2)*/dpSet(DpNameFsm+\".status\",0);
+
+}" 0
+ E E "main(){
+
+
+}" 0
+
+2 21
+"NOT_CONNECTED"
+""
+1 -550 -75 E E E 1 E 1 E N {255,255,255} E N {255,0,0} E E
+ E E
+41 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 110 450 278 498
+1 2 2 "0s" 0 0 0 192 0 0  110 450 2
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 12    DEVICE IS
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 15  NOT CONNECTED 
+14 22
+"1_3"
+""
+1 180 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+43 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 180 40 250 66
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+
+
+}" 0
+
+13 29
+"enable_disable"
+""
+1 180 550 E E E 1 E 1 E N "_3DText" E N {0,153,153} E E
+ E E
+57 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-20-*-100-100-*-*-iso8859-1|-20,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+ 180 550 350 582
+
+T 
+1
+LANG:1 12 refresh_data
+"main()
+{
+
+int current_status;
+
+// mudcsCommandCscLevel(DpNameFsm+\"status\",\"get_data\",\"WTH_SX5\");
+
+mudcsCommand(\"MRTN\",DpNameFsm,\"get_data\");
+
+}" 0
+ E E "
+main(){
+
+
+}" 0
+
+2 31
+"PRIMITIVE_TEXT1"
+""
+1 50 132 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+61 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 12 65 49 84
+1 2 2 "0s" 0 0 0 192 0 0  12 65 1
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 4 ch02
+2 35
+"PRIMITIVE_TEXT1"
+""
+1 42 92 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+69 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 12 85 49 104
+1 2 2 "0s" 0 0 0 192 0 0  12 85 1
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 4 ch03
+2 39
+"PRIMITIVE_TEXT1"
+""
+1 50 172 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+77 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 12 105 49 124
+1 2 2 "0s" 0 0 0 192 0 0  12 105 1
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 4 ch04
+2 43
+"PRIMITIVE_TEXT1"
+""
+1 42 92 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+85 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 12 125 49 144
+1 2 2 "0s" 0 0 0 192 0 0  12 125 1
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 4 ch05
+2 47
+"PRIMITIVE_TEXT1"
+""
+1 50 172 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+93 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 12 145 49 164
+1 2 2 "0s" 0 0 0 192 0 0  12 145 1
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 4 ch06
+14 98
+"2_1"
+""
+1 60 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+195 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 60 60 130 86
+3 "0s" 0 0 0 0 0 -1  E E E
+14 99
+"2_2"
+""
+1 120 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+197 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 120 60 190 86
+3 "0s" 0 0 0 0 0 -1  E E E
+14 100
+"2_3"
+""
+1 180 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+199 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 180 60 250 86
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+}" 0
+
+14 101
+"3_1"
+""
+1 60 80 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+201 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 60 80 130 106
+3 "0s" 0 0 0 0 0 -1  E E E
+14 102
+"3_2"
+""
+1 120 80 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+203 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 120 80 190 106
+3 "0s" 0 0 0 0 0 -1  E E E
+14 103
+"3_3"
+""
+1 180 80 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+205 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 180 80 250 106
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 104
+"4_1"
+""
+1 60 100 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+207 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 60 100 130 126
+3 "0s" 0 0 0 0 0 -1  E E E
+14 105
+"4_2"
+""
+1 120 100 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+209 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 120 100 190 126
+3 "0s" 0 0 0 0 0 -1  E E E
+14 106
+"4_3"
+""
+1 180 100 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+211 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 180 100 250 126
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 107
+"5_1"
+""
+1 60 120 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+213 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 60 120 130 146
+3 "0s" 0 0 0 0 0 -1  E E E
+14 108
+"5_2"
+""
+1 120 120 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+215 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 120 120 190 146
+3 "0s" 0 0 0 0 0 -1  E E E
+14 109
+"5_3"
+""
+1 180 120 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+217 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 180 120 250 146
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 110
+"6_1"
+""
+1 60 140 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+219 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 60 140 130 166
+3 "0s" 0 0 0 0 0 -1  E E E
+14 111
+"6_2"
+""
+1 120 140 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+221 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 120 140 190 166
+3 "0s" 0 0 0 0 0 -1  E E E
+14 112
+"6_3"
+""
+1 180 140 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+223 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 180 140 250 166
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 128
+"exclude"
+""
+1 308 464 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+255 0 0 0 0 0
+E E E
+0
+1
+LANG:1 75 examples: exclude ch03, include ch03 : use it to keep excluded channels off
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 308 464 418 490
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+string state;
+dyn_string test_dyn, test_dyn2;
+string dp_frag;
+int chn;
+
+
+getValue(\"\",\"text\",state);
+
+test_dyn=strsplit(state,\" \");
+test_dyn2=strsplit(test_dyn[2],\"h\");
+
+chn=test_dyn2[2];
+dp_frag=\"pair\"+chn;
+
+
+
+if(strpos(state,\"exclude\")>=0)exclude(1,test_dyn2[2],dp_frag);
+else if(strpos(state,\"include\")>=0)exclude(0,test_dyn2[2],dp_frag);
+else {
+ mudcsDebug(\"wrong format\\n righ format is:\\nexclude ch03\");
+ return;
+}
+chn=test_dyn2[2];
+if(chn<1 || chn>12){
+ mudcsDebug(\"wrong format\\n righ format is:\\nexclude ch03\");
+ return;
+}
+
+}
+
+//==================================
+exclude(int isexclude, string chn_text, string dp_frag){
+
+int chn=chn_text;
+
+dyn_int off_channels;
+dyn_float off_channels_volt;
+int pos;
+
+//---------------------
+string vset_s;
+float vset;
+vset_box_gl=chn+\"_3\";
+
+getValue(vset_box_gl,\"text\",vset_s);
+vset=vset_s;
+///if(strpos(state,\"include\")>=0 && vset==0){
+///  mudcsDebug(\"Vset should be set for this channel\");
+///  return;
+///}
+
+//---------------------
+
+
+dpGet(DpNameFsm+\".off_channels\",off_channels);
+dpGet(DpNameFsm+\".off_channels_volt\",off_channels_volt);
+
+ if(isexclude){
+  if(dynContains(off_channels,chn)==0){
+    dynAppend(off_channels,chn);
+    dynAppend(off_channels_volt,vset);    
+  } 
+ }
+ else{
+  pos=dynContains(off_channels,chn);
+  if(pos){
+   vset_off_gl=off_channels_volt[pos];
+   dynRemove(off_channels,pos);
+   dynRemove(off_channels_volt,pos); 
+   send_set_data_command();   
+  }
+ }
+ 
+dpSetWait(DpNameFsm+\".off_channels\",off_channels);
+dpSetWait(DpNameFsm+\".off_channels_volt\",off_channels_volt);
+//  alert_reconfig(dp_frag, isexclude);   
+//================================
+ int current_status;
+  dpGet(DpNameFsm+\".status\",current_status);
+  
+ if(current_status >=2)dpSet(DpNameFsm+\".status\",2);
+   
+ 
+ 
+ 
+}
+//====================================
+alert_reconfig(string dp_frag, int isexclude){
+
+bool configExists;
+dyn_string alertTexts;
+dyn_string ilist, ilist_new;
+string alertPanel;
+dyn_string alertPanelParameters;
+string alertHelp;
+bool isActive;
+dyn_string exceptionInfo;
+int pos;
+
+int i;
+dyn_int dplist;
+dyn_string dplist_text;
+int current_status;
+ dpGet(DpNameFsm+\".status\",current_status);
+
+
+fwAlertConfig_getSummary(DpName+\".\",configExists,alertTexts,ilist,
+	alertPanel,alertPanelParameters,alertHelp,isActive,exceptionInfo);
+
+
+for(i=1;i<=dynlen(ilist);i++){ 
+ if(strpos(ilist[i],dp_frag)>=0){
+ dynAppend(dplist,i);
+
+ }
+}
+
+ilist_new=ilist;
+
+
+if(isexclude){
+ dynClear(ilist);
+ for(i=1;i<=dynlen(ilist_new);i++){
+  if(dynContains(dplist,i) == 0)dynAppend(ilist,ilist_new[i]);
+ }
+ 
+ 
+ if(current_status !=0)dpSet(DpNameFsm+\".status\",2);
+}
+else{
+
+ 
+ dplist_text=dpNames(DpName+\".**\"+dp_frag+\"**\");
+ for(i=1;i<=dynlen(dplist_text);i++){
+  if(strpos(dplist_text[i],\".v\")>=0)dynAppend(ilist,dplist_text[i]); 
+ }
+ if(current_status !=0)dpSet(DpNameFsm+\".status\",2);
+}
+
+//=====
+
+  for(i=1;i<=dynlen(ilist);i++){
+   DebugTN(ilist[i]); 
+  } 
+							
+ fwAlertConfig_createSummary(DpName+\".\",makeDynString(\"\",\"\") , ilist ,\"\", 
+                              makeDynString(),\"\",exceptionInfo);
+//======
+
+}
+//====================================" 0
+
+2 129
+"PRIMITIVE_TEXT1"
+""
+1 150 632 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+257 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 312 450 401 469
+1 2 2 "0s" 0 0 0 192 0 0  312 450 1
+1
+LANG:1 111 -*-Helvetica [Adobe]-bold-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,758,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 15 exclude/include
+14 172
+"1_4"
+""
+1 240 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+343 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 240 40 310 66
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+
+
+}" 0
+
+14 173
+"2_4"
+""
+1 240 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+345 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 240 60 310 86
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+}" 0
+
+14 174
+"3_4"
+""
+1 240 80 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+347 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 240 80 310 106
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 175
+"4_4"
+""
+1 240 100 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+349 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 240 100 310 126
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 176
+"5_4"
+""
+1 240 120 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+351 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 240 120 310 146
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 177
+"6_4"
+""
+1 240 140 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+353 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 240 140 310 166
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 178
+"1_5"
+""
+1 300 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+355 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 300 40 370 66
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+
+
+}" 0
+
+14 179
+"2_5"
+""
+1 300 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+357 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 300 60 370 86
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+}" 0
+
+14 180
+"3_5"
+""
+1 300 80 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+359 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 300 80 370 106
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 181
+"4_5"
+""
+1 300 100 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+361 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 300 100 370 126
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 182
+"5_5"
+""
+1 300 120 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+363 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 300 120 370 146
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 183
+"6_5"
+""
+1 300 140 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+365 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 300 140 370 166
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 184
+"1_6"
+""
+1 360 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+367 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 360 40 430 66
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+
+
+}" 0
+
+14 185
+"2_6"
+""
+1 360 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+369 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 360 60 430 86
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+}" 0
+
+14 186
+"3_6"
+""
+1 360 80 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+371 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 360 80 430 106
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 187
+"4_6"
+""
+1 360 100 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+373 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 360 100 430 126
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 188
+"5_6"
+""
+1 360 120 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+375 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 360 120 430 146
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 189
+"6_6"
+""
+1 360 140 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+377 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 360 140 430 166
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 190
+"1_7"
+""
+1 420 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+379 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 420 40 490 66
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+
+
+}" 0
+
+14 191
+"2_7"
+""
+1 420 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+381 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 420 60 490 86
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+}" 0
+
+14 192
+"3_7"
+""
+1 420 80 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+383 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 420 80 490 106
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 193
+"4_7"
+""
+1 420 100 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+385 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 420 100 490 126
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 194
+"5_7"
+""
+1 420 120 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+387 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 420 120 490 146
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 195
+"6_7"
+""
+1 420 140 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+389 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 420 140 490 166
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 196
+"1_8"
+""
+1 480 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+391 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 480 40 550 66
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+
+
+}" 0
+
+14 197
+"2_8"
+""
+1 480 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+393 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 480 60 550 86
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+}" 0
+
+14 198
+"3_8"
+""
+1 480 80 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+395 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 480 80 550 106
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 199
+"4_8"
+""
+1 480 100 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+397 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 480 100 550 126
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 200
+"5_8"
+""
+1 480 120 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+399 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 480 120 550 146
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 201
+"6_8"
+""
+1 480 140 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+401 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 480 140 550 166
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 202
+"1_9"
+""
+1 540 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+403 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 540 40 610 66
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+
+
+}" 0
+
+14 203
+"2_9"
+""
+1 540 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+405 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 540 60 610 86
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+}" 0
+
+14 204
+"3_9"
+""
+1 540 80 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+407 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 540 80 610 106
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 205
+"4_9"
+""
+1 540 100 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+409 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 540 100 610 126
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 206
+"5_9"
+""
+1 540 120 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+411 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 540 120 610 146
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 207
+"6_9"
+""
+1 540 140 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+413 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 540 140 610 166
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 208
+"1_10"
+""
+1 600 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+415 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 600 40 670 66
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+
+
+}" 0
+
+14 209
+"2_10"
+""
+1 600 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+417 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 600 60 670 86
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+}" 0
+
+14 210
+"3_10"
+""
+1 600 80 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+419 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 600 80 670 106
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 211
+"4_10"
+""
+1 600 100 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+421 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 600 100 670 126
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 212
+"5_10"
+""
+1 600 120 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+423 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 600 120 670 146
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 213
+"6_10"
+""
+1 600 140 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+425 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 600 140 670 166
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 214
+"cr_1"
+""
+1 60 340 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+427 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 60 340 130 366
+3 "0s" 0 0 0 0 0 -1  E E E
+14 215
+"cr_2"
+""
+1 120 340 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+429 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 120 340 190 366
+3 "0s" 0 0 0 0 0 -1  E E E
+14 216
+"cr_3"
+""
+1 180 340 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+431 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 180 340 250 366
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 217
+"cr_4"
+""
+1 240 340 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+433 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 240 340 310 366
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 218
+"cr_5"
+""
+1 300 340 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+435 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 300 340 370 366
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 219
+"cr_6"
+""
+1 360 340 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+437 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 360 340 430 366
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 220
+"cr_7"
+""
+1 420 340 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+439 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 420 340 490 366
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 221
+"cr_8"
+""
+1 480 340 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+441 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 480 340 550 366
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 222
+"cr_9"
+""
+1 540 340 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+443 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 540 340 610 366
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+2 223
+"PRIMITIVE_TEXT1"
+""
+1 32 154 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+444 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 64 322 624 340
+1 2 2 "0s" 0 0 0 192 0 0  64 322 1
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 115 isNoErrors      IFlags        ACinLimit     OvVprFlags   UnVFlags     OvVFlags   GetPowerOn CrateStatus TrIfAnyErEn
+2 224
+"PRIMITIVE_TEXT1"
+""
+1 62 174 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+446 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 64 22 670 40
+1 2 2 "0s" 0 0 0 192 0 0  64 22 1
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 130    Vmon          Imon              Vset           IlimitSetP     OvVProt    UnVCpSetP  OvVCpSetP MinICpSetP OvICpSetP  VFineAdjust
+2 225
+"PRIMITIVE_TEXT1"
+""
+1 350 192 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+447 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 422 422 629 546
+1 2 2 "0s" 0 0 0 192 0 0  422 422 6
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 36 examples: exclude ch03, include ch03
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 6 Use it
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 33 a) to keep excluded channels off 
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 25    at the module power on
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 28 b) excluded channels do not 
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+1
+LANG:1 38    affect a error status of the module
+14 286
+"7_1"
+""
+1 60 160 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+568 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 111 -*-Helvetica [Adobe]-bold-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,758,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 60 160 130 189
+3 "0s" 0 0 0 0 0 -1  E E E
+2 287
+"PRIMITIVE_TEXT1"
+""
+1 -28 2 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+570 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 12 165 50 184
+1 2 2 "0s" 0 0 0 192 0 0  12 165 1
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 4 ch07
+14 288
+"7_2"
+""
+1 120 160 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+572 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 120 160 190 186
+3 "0s" 0 0 0 0 0 -1  E E E
+14 289
+"7_3"
+""
+1 180 160 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+574 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 180 160 250 186
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+
+
+}" 0
+
+2 290
+"PRIMITIVE_TEXT1"
+""
+1 -20 82 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+576 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 12 185 49 204
+1 2 2 "0s" 0 0 0 192 0 0  12 185 1
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 4 ch08
+2 291
+"PRIMITIVE_TEXT1"
+""
+1 -28 42 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+578 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 12 205 49 224
+1 2 2 "0s" 0 0 0 192 0 0  12 205 1
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 4 ch09
+2 292
+"PRIMITIVE_TEXT1"
+""
+1 -20 122 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+580 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 12 225 49 244
+1 2 2 "0s" 0 0 0 192 0 0  12 225 1
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 4 ch10
+2 293
+"PRIMITIVE_TEXT1"
+""
+1 -28 42 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+582 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 12 245 49 264
+1 2 2 "0s" 0 0 0 192 0 0  12 245 1
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 4 ch11
+2 294
+"PRIMITIVE_TEXT1"
+""
+1 -20 122 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+584 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 12 265 49 284
+1 2 2 "0s" 0 0 0 192 0 0  12 265 1
+1
+LANG:1 107 -*-Courier [Adobe]-bold-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,758,0,0,0,0,0,0,0,0,Courier [Adobe]
+0 ""
+1
+LANG:1 4 ch12
+14 295
+"8_1"
+""
+1 60 180 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+586 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 60 180 130 206
+3 "0s" 0 0 0 0 0 -1  E E E
+14 296
+"8_2"
+""
+1 120 180 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+588 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 120 180 190 206
+3 "0s" 0 0 0 0 0 -1  E E E
+14 297
+"8_3"
+""
+1 180 180 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+590 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 180 180 250 206
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+}" 0
+
+14 298
+"9_1"
+""
+1 60 200 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+592 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 60 200 130 226
+3 "0s" 0 0 0 0 0 -1  E E E
+14 299
+"9_2"
+""
+1 120 200 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+594 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 120 200 190 226
+3 "0s" 0 0 0 0 0 -1  E E E
+14 300
+"9_3"
+""
+1 180 200 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+596 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 180 200 250 226
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 301
+"10_1"
+""
+1 60 220 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+598 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 60 220 130 246
+3 "0s" 0 0 0 0 0 -1  E E E
+14 302
+"10_2"
+""
+1 120 220 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+600 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 120 220 190 246
+3 "0s" 0 0 0 0 0 -1  E E E
+14 303
+"10_3"
+""
+1 180 220 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+602 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 180 220 250 246
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 304
+"11_1"
+""
+1 60 240 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+604 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 60 240 130 266
+3 "0s" 0 0 0 0 0 -1  E E E
+14 305
+"11_2"
+""
+1 120 240 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+606 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 120 240 190 266
+3 "0s" 0 0 0 0 0 -1  E E E
+14 306
+"11_3"
+""
+1 180 240 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+608 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 180 240 250 266
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 307
+"12_1"
+""
+1 60 260 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+610 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 60 260 130 286
+3 "0s" 0 0 0 0 0 -1  E E E
+14 308
+"12_2"
+""
+1 120 260 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+612 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 120 260 190 286
+3 "0s" 0 0 0 0 0 -1  E E E
+14 309
+"12_3"
+""
+1 180 260 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+614 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 180 260 250 286
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 310
+"7_4"
+""
+1 240 160 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+616 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 240 160 310 186
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+
+
+}" 0
+
+14 311
+"8_4"
+""
+1 240 180 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+618 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 240 180 310 206
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+}" 0
+
+14 312
+"9_4"
+""
+1 240 200 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+620 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 240 200 310 226
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 313
+"10_4"
+""
+1 240 220 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+622 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 240 220 310 246
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 314
+"11_4"
+""
+1 240 240 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+624 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 240 240 310 266
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 315
+"12_4"
+""
+1 240 260 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+626 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 240 260 310 286
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 316
+"7_5"
+""
+1 300 160 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+628 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 300 160 370 186
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+
+
+}" 0
+
+14 317
+"8_5"
+""
+1 300 180 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+630 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 300 180 370 206
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+}" 0
+
+14 318
+"9_5"
+""
+1 300 200 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+632 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 300 200 370 226
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 319
+"10_5"
+""
+1 300 220 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+634 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 300 220 370 246
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 320
+"11_5"
+""
+1 300 240 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+636 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 300 240 370 266
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 321
+"12_5"
+""
+1 300 260 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+638 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 300 260 370 286
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 322
+"7_6"
+""
+1 360 160 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+640 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 360 160 430 186
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+
+
+}" 0
+
+14 323
+"8_6"
+""
+1 360 180 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+642 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 360 180 430 206
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+}" 0
+
+14 324
+"9_6"
+""
+1 360 200 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+644 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 360 200 430 226
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 325
+"10_6"
+""
+1 360 220 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+646 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 360 220 430 246
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 326
+"11_6"
+""
+1 360 240 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+648 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 360 240 430 266
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 327
+"12_6"
+""
+1 360 260 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+650 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 360 260 430 286
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 328
+"7_7"
+""
+1 420 160 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+652 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 420 160 490 186
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+
+
+}" 0
+
+14 329
+"8_7"
+""
+1 420 180 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+654 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 420 180 490 206
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+}" 0
+
+14 330
+"9_7"
+""
+1 420 200 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+656 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 420 200 490 226
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 331
+"10_7"
+""
+1 420 220 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+658 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 420 220 490 246
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 332
+"11_7"
+""
+1 420 240 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+660 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 420 240 490 266
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 333
+"12_7"
+""
+1 420 260 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+662 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 420 260 490 286
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 334
+"7_8"
+""
+1 480 160 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+664 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 480 160 550 186
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+
+
+}" 0
+
+14 335
+"8_8"
+""
+1 480 180 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+666 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 480 180 550 206
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+}" 0
+
+14 336
+"9_8"
+""
+1 480 200 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+668 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 480 200 550 226
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 337
+"10_8"
+""
+1 480 220 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+670 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 480 220 550 246
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 338
+"11_8"
+""
+1 480 240 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+672 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 480 240 550 266
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 339
+"12_8"
+""
+1 480 260 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+674 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 480 260 550 286
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 340
+"7_9"
+""
+1 540 160 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+676 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 540 160 610 186
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+
+
+}" 0
+
+14 341
+"8_9"
+""
+1 540 180 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+678 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 540 180 610 206
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+}" 0
+
+14 342
+"9_9"
+""
+1 540 200 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+680 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 540 200 610 226
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 343
+"10_9"
+""
+1 540 220 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+682 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 540 220 610 246
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 344
+"11_9"
+""
+1 540 240 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+684 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 540 240 610 266
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 345
+"12_9"
+""
+1 540 260 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+686 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 540 260 610 286
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 346
+"7_10"
+""
+1 600 160 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+688 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 600 160 670 186
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+
+
+}" 0
+
+14 347
+"8_10"
+""
+1 600 180 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+690 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 600 180 670 206
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+
+send_set_data_command();
+
+}" 0
+
+14 348
+"9_10"
+""
+1 600 200 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+692 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 600 200 670 226
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+14 349
+"10_10"
+""
+1 600 220 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+694 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 600 220 670 246
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 350
+"11_10"
+""
+1 600 240 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+696 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 600 240 670 266
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+}" 0
+
+14 351
+"12_10"
+""
+1 600 260 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+698 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 108 -*-Helvetica [Adobe]-*-r-normal-*-14-*-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 600 260 670 286
+3 "0s" 0 0 0 0 0 -1  E E "main()
+{
+send_set_data_command();
+
+
+}" 0
+
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

@@ -1,0 +1,975 @@
+V 11
+1
+LANG:1 6 Device
+PANEL,-1 -1 120 51 N "_3DFace" 6
+"$caption"
+"$deviceParams"
+"$deviceType"
+"$group"
+"$refName"
+"$shapeParams"
+"main()
+{  
+  dyn_string ex;
+  deviceParams = emuui_parseParameterString($deviceParams, ex);
+  if (emu_checkException(ex)) { return; }  
+  
+  // is it an ME11?
+  if (($deviceType == \"chamber\") && (deviceParams[\"station\"] == 1) && (deviceParams[\"ring\"] == 1)) {
+    me11 = true;
+    //in ME11 project sides are P & N, not P and M like in others.
+    deviceParams[\"side_ME11style\"] = deviceParams[\"side\"];
+    if (deviceParams[\"side_ME11style\"] == \"M\") {
+      deviceParams[\"side_ME11style\"] = \"N\";
+    }
+  }
+  deviceParamsStr = emuui_mappingToParameterString(deviceParams);
+  
+  currentConnectionType = \"\";
+  currentConnectionMode = \"\";
+  currentConnection = \"\";
+  hvOffChannelsWarningEnabled = false;
+  tooltipRefName = \"refTooltip_\" + $deviceParams;
+  
+  initShape(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  //by default the physical chamber shape is used
+  setValue(shapeName, \"visible\", true);
+  if ($caption == \"VALUE\") {
+    caption.text = \"\";
+    showValueOnCaption = true;
+//  } else if (strpos($caption, \"DP=\") == 0) { 
+  }else {
+    caption.text = $caption;
+    showValueOnCaption = false;
+  }
+  
+  if (strlen($group) > 0) {
+    dpConnect(\"modeChangedCB\", true, $group + \".mode\", $group + \".connectionType\");
+  }
+}
+
+void initShape(dyn_string ex) {
+  mapping shapeParams = emuui_parseParameterString($shapeParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  if (!mappingHasKey(shapeParams, \"type\")) { // if parameters do not include the mandatory \"type\" parameter - error
+    emu_addError(\"mandatory 'type' parameter was not found in the $shapeParams parameterString in refDevice.pnl\", ex);
+  }
+  shapeName = shapeParams[\"type\"];
+  
+  switch (shapeName) {
+    case \"chamber\":
+      confChamberShape(shapeParams);
+      break;
+    case \"rectangle\":
+      confRectShape(shapeParams);
+      break;
+    case \"rectangle_middle_ref_point\":
+      confRectShape(shapeParams);
+      break;
+    default:
+      break;
+  }  
+}
+
+void confChamberShape(mapping shapeParams) {
+  //check if relevant parameters are present, if not - leave default shape and return
+  if (!mappingHasKey(shapeParams, \"innerWidth\") || 
+      !mappingHasKey(shapeParams, \"outerWidth\") || 
+      !mappingHasKey(shapeParams, \"height\")) {
+    
+    return;
+  }
+  
+  float innerWidth = shapeParams[\"innerWidth\"],
+        outerWidth = shapeParams[\"outerWidth\"],
+        height     = shapeParams[\"height\"];
+  dyn_dyn_int points; //polygon points
+  
+  //create the points
+  //note: in comments it's assumed that chamber is positioned like this: chamber outer part is on the left and on the right there's inner part of the chamber
+  points[1][1] = 0;                          // the bottom left corner X
+  points[1][2] = floor(outerWidth / 2) * -1; // the bottom left corner Y
+  points[2][1] = 0;                          // the top left corner X
+  points[2][2] = ceil(outerWidth / 2);       // the top left corner Y
+  points[3][1] = height;                     // the top right corner X
+  points[3][2] = ceil(innerWidth / 2);       // the top right corner Y
+  points[4][1] = height;                     // the bottom right corner X
+  points[4][2] = floor(innerWidth / 2) * -1; // the bottom right corner Y
+  
+  points[5][1] = points[1][1]; // just to close the polygon
+  points[5][2] = points[1][2]; // just to close the polygon
+  
+  setValue(shapeName, \"points\", points);
+  
+  if (outerWidth < 15) { caption.visible = false; }
+}
+
+void confRectShape(mapping shapeParams) {
+  //check if relevant parameters are present, if not - leave default shape and return
+  int posX, posY;
+  getValue(shapeParams[\"type\"], \"position\", posX, posY);
+  setValue(\"imgNoCommunication\", \"position\", posX + 10, posY + 10);
+  if (!mappingHasKey(shapeParams, \"width\") || 
+      !mappingHasKey(shapeParams, \"height\")) {
+    
+    setValue(\"caption\", \"position\", posX + 10, posY + 7);
+    return;
+  }
+  
+  posY += ((int)shapeParams[\"height\"]) / 2;
+  posX += ((int)shapeParams[\"width\"]) / 2;
+  setValue(\"caption\", \"position\", posX, posY);
+  
+  int width = shapeParams[\"width\"];
+  int height = shapeParams[\"height\"];
+  setValue(shapeParams[\"type\"], \"size\", width, height); // for some reason a single setSize doesn't set quite the size that you request!!!??? nonsence but it's true - the second setSize does it correctly (discovered when setting size 90px)
+  setValue(shapeParams[\"type\"], \"size\", width, height);
+  if ((width < 17) || (height < 17)) { 
+    caption.visible = false;
+  }
+}
+" 0
+ E E E E 1 -1 -1 0  0 0
+""0  1
+E "//some panel-wide constants
+const string EMUUI_REFDEV_TOOLTIP_REF_NAME = \"refTooltip\";
+const int EMUUI_REFDEV_TOOLTIP_ON_DELAY_MS = 600;
+const int EMUUI_REFDEV_TOOLTIP_OFF_DELAY_MS = 200;
+string tooltipRefName;
+bool tooltipVisible;
+mapping mouseOverObjects;
+
+mapping deviceParams;
+string deviceParamsStr;
+string shapeName;
+
+int fsmStatePollingThreadId = -1;
+string multipleConnectionFunction;
+dyn_string currentConnectionMultiple;
+string currentMultipleConnectionRepresentative;
+string currentConnectionType;
+string currentConnectionMode;
+string currentConnection;
+float currentDpValueRangeMin;
+float currentDpValueRangeMax;
+string currentDomain, currentObject;
+bool showValueOnCaption;
+bool me11;
+string lastFsmState;
+
+// operation mode related variabled
+bool hvOffChannelsWarningEnabled;
+dyn_int disabledHvChannels;
+bool me11HasDisabledChannels;
+string me11HvFsmNode;
+bool deviceIncomplete; // when device has disabled children or PNPI HV channels (which are not in FSM) - show the incompleteWarning and set this flag
+bool greyOut; // when device is disabled or excluded - this is set to true and color always stays grey
+
+void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string connectionType) {
+  dyn_string ex;
+  bool connectSuccessful = false;
+  
+  dynClear(disabledHvChannels);
+  me11HasDisabledChannels = false;
+  deviceIncomplete = false;
+  greyOut = false;
+  me11HvFsmNode = \"\";
+  
+  //special case for ME11 high voltage
+  if (($deviceType == \"chamber\") && me11 && (
+                                              (mode == \"high_voltage\") ||
+                                              (mode == \"HV_vMon\"))) {
+    mode = \"me11_\" + mode;
+    deviceParams = emuui_getME11HVChannelsDeviceParams(deviceParams, ex);
+    if (emu_checkException(ex)) { return; }
+  }
+  
+  mode = $deviceType + \"_\" + mode; // prepend mode with device type
+  
+  if (currentConnectionMode != \"dead\") {
+    setColor(\"white\"); // to indicate busy
+  }
+  currentConnectionMode = \"busy\";
+  lastFsmState = \"UI_initial\";
+  
+  disconnect();  
+    
+  if (connectionType == \"FSM\") { // -----===== FSM CONNECTION =====-----
+    bool nodeFound = false;
+    string node = emuui_getFsmNode(mode, deviceParams, ex);
+    // node hasn't been found
+    if (dynlen(ex) > 0) {
+      emu_errorHandled(ex);
+    } else if (strlen(node) > 0){
+      nodeFound = true;
+    }
+    
+    if (nodeFound) {
+      // ---=== connect mode bits ===---
+      currentDomain = node;
+      currentObject = _fwCU_getNodeObj(currentDomain);
+      int rc1;
+      rc1 = fwFsmUi_connectModeBits(\"updateFSMModeBitsCB\", currentDomain, currentObject);
+      emu_debug(\"RC for connect to mode bits of \" + node + \": \" + rc1, emu_DEBUG_DETAIL);        
+      // for ME11 we have to connect the HV mode bits too because it has also channels as children
+      if (me11 && (mode == \"chamber_general\")) {
+        me11HvFsmNode = emuui_getFsmNode(\"chamber_me11_high_voltage\", deviceParams, ex);
+        if (dynlen(ex) == 0) {
+          string me11HvDomain = me11HvFsmNode;
+          string me11HvObject = _fwCU_getNodeObj(me11HvDomain);
+          fwUi_connectDUModeBits(\"updateME11hvFSMModeBitsCB\", me11HvDomain, me11HvObject);
+        } else {
+          emu_errorHandled(ex);
+        }
+      }
+      // ---=== if this is a chamber - register to background checks ===---
+      if ($deviceType == \"chamber\") {// || $deviceType == \"DDU\") {
+        string fsmNodeForReg = node;
+        if ($deviceType == \"DDU\") {
+          strreplace(fsmNodeForReg, \"_FED\", \"\");
+          strreplace(fsmNodeForReg, \"Fed/\", \"\");
+        }
+        emuuibc_registerChamberViewFsmNode($refName, fsmNodeForReg, deviceParams);
+      }
+      
+      // ---=== connect state ===---
+      int rc2 = fwCU_connectState(\"updateFSMStateCB\", node);
+      emu_debug(\"RC for connect to \" + node + \": \" + rc2, emu_DEBUG_DETAIL);
+      // ---=== check return codes ===---
+      if ((rc1 != 0) && (rc2 != 0)) { 
+        connectSuccessful = true;
+        currentConnectionType = connectionType;
+        currentConnectionMode = mode;
+        currentConnection = node;
+        currentConnectionMultiple = makeDynString();
+        if (EMUUI_FSM_STATE_POLLING_ENABLED) {
+          fsmStatePollingThreadId = startThread(\"pollFsmStateThread\");
+        }
+      }
+    } else {
+      emu_debug(\"FSM node was not found for mode '\" + mode + \"' with deviceParams '\" + deviceParams + \"'\");
+    }
+  } else if (connectionType == \"DP\") { // -----===== DP CONNECTION =====-----
+    bool dpFound = false;
+    
+    string dp = emuui_getDpName(mode, deviceParams, ex);
+    // dp hasn't been found
+    if (dynlen(ex) > 0) {
+      emu_errorHandled(ex);
+    } else if (strlen(dp) > 0){
+      dpFound = true;
+    }
+    
+    if (dpFound) {
+      int type = dpElementType(dp);
+      int rc;
+      if (type == DPEL_FLOAT || type == DPEL_INT) {
+        currentDpValueRangeMin = emuui_getDpValueRangeMin(mode, ex);
+        if (emu_checkException(ex)) { return; }
+        currentDpValueRangeMax = emuui_getDpValueRangeMax(mode, ex);
+        if (emu_checkException(ex)) { return; }
+        rc = dpConnect(\"updateDPStateCB\", true, dp);
+        emu_debug(\"RC for connect to (numerical) DP '\" + dp + \"': \" + rc, emu_DEBUG_DETAIL);
+      } else {
+        rc = dpConnect(\"updateStringDPStateCB\", true, dp);
+        emu_debug(\"RC for connect to (string) DP '\" + dp + \"': \" + rc, emu_DEBUG_DETAIL);
+      }
+      if (rc == 0) {
+        connectSuccessful = true;
+        currentConnectionType = connectionType;
+        currentConnectionMode = mode;
+        currentConnection = dp;
+        currentConnectionMultiple = makeDynString();
+      }
+    } else {
+      emu_debug(\"DP not found, reporting device as dead. \" +
+                \"DP='\" + dp + \"', connection type='\" + connectionType + \"', mode='\" + mode + \"'\", 
+                emu_DEBUG_DETAIL);
+    }
+  } else if (strpos(connectionType, \"DPs_\") >= 0) { // -----===== MULTIPLE DPs CONNECTION =====-----
+    bool dpsFound = false;
+    
+    dyn_string dps = emuui_getDpNames(mode, deviceParams, ex);
+    // dp hasn't been found
+    if (dynlen(ex) > 0) {
+      emu_errorHandled(ex);
+    } else if (dynlen(dps) > 0){
+      dpsFound = true;
+    }
+
+    // find the function to which we want to connect these multiple DPs    
+    string dpsFunction = strsplit(connectionType, \"_\")[2];
+    multipleConnectionFunction = \"updateDPs\" + dpsFunction + \"StateCB\";
+    if (!isFunctionDefined(multipleConnectionFunction)) { // if it's not defined - issue an error and use dpsFound = false
+      emu_errorSingle(\"Connection function for multiple DPs '\" + multipleConnectionFunction + \"' is not defined! Please inform DCS developers\");
+      dpsFound = false;
+    }
+    
+    if (dpsFound) {
+      currentDpValueRangeMin = emuui_getDpValueRangeMin(mode, ex);
+      if (emu_checkException(ex)) { return; }
+      currentDpValueRangeMax = emuui_getDpValueRangeMax(mode, ex);
+      if (emu_checkException(ex)) { return; }
+      currentConnectionMultiple = dps;
+      string connectionDp = emuui_getDpWithLastUpdateTime(dps);
+      int rc = dpConnect(multipleConnectionFunction, true, connectionDp);
+      emu_debug(\"RC for connect to \" + dps + \": \" + rc, emu_DEBUG_DETAIL);
+      if (rc == 0) {
+        connectSuccessful = true;
+        currentConnectionType = connectionType;
+        currentConnectionMode = mode;
+        currentConnection = \"\";
+        currentMultipleConnectionRepresentative = connectionDp;
+      } else {
+        currentConnectionMultiple = makeDynString();
+      }
+    } else {
+      emu_debug(\"DPs not found, reporting device as dead. \" +
+                \"DPs='\" + dps + \"', connection type='\" + connectionType + \"', mode='\" + mode + \"'\", 
+                emu_DEBUG_DETAIL);
+    }
+  }
+  
+  if (!connectSuccessful) {
+    string color = emuui_getMappingValue(\"fsmStateColors\", \"DEAD\", ex);
+    if (emu_checkException(ex)) { return; }
+    setColor(color);
+    currentConnectionType = \"\";
+    currentConnection = \"\";
+    currentConnectionMode = \"dead\";
+    pollMode(); // try to reconnect again in EMUUI_FSM_STATE_POLLING_RATE seconds
+  } else { // connection successful
+    dyn_string modesWithHvDisabledWarning = emuui_getArray(\"modesWithHvDisabledWarning\", ex);
+    if (emu_checkException(ex)) { return; }
+    if (dynContains(modesWithHvDisabledWarning, currentConnectionMode)) {
+      string dpName = emuui_getDpName(\"HV_off_channels\", deviceParams, ex);
+      if (emu_checkException(ex)) { return; }
+      if (dpExists(dpName)) {
+        hvOffChannelsWarningEnabled = true;
+        //TODO need a more generic approach here - probably show the exclamation mark if any (not only HV) channel is excluded (?) i.e. also LV and TEMP, ... maybe also FSM subnodes
+        dpConnect(\"updateHVOffChannels\", true, dpName);
+      }
+    }
+  }
+}
+
+void updateFSMStateCB(string node, string state) {
+  lastFsmState = state;
+  emu_debug(\"state update came for \" + node + \": \" + state);
+  // update text
+  if (showValueOnCaption) {
+    caption.text = state;
+  }
+  if (greyOut) {
+    setColor(\"FwEquipmentDisabled\");
+    return;
+  }
+  // update color
+  if (state == \"\") { state = \"DEAD\"; }
+  dyn_string ex;
+  string color;
+  if (emuui_mappingHasKey(\"fsmStateColors\", state)) {
+    color = emuui_getMappingValue(\"fsmStateColors\", state, ex);
+  } else {
+    color = \"white\";
+  }
+  if (emu_checkException(ex)) { return; }
+  
+//   string color;
+//   fwCU_getStateColor(node, state, color);
+//   if (color == \"\") {
+//     dyn_string ex;
+//     color = emuui_getMappingValue(\"fsmStateColors\", state, ex);
+//     if (emu_checkException(ex)) { return; }
+//   }
+  setColor(color);
+
+}
+
+/** When mode bits for the FSM node have changed - this function is called.
+  This function basically does two things:
+  1. Check if device is incomplete - if so then display the imgDeviceIncomplete warning (exclamation mark).
+  2. If the device is excluded or disabled or for any other reason should be grey - greys it out.
+*/
+void updateFSMModeBitsCB() {
+  bit32 modeBits = fwUi_getModeBits(currentDomain, currentObject);
+  
+  // ---=== Check if device is incomplete ===---
+  deviceIncomplete = getBit(modeBits, FwIncompleteBit) ||
+                     getBit(modeBits, FwIncompleteDevBit);
+  
+  imgDeviceIncomplete.visible = me11HasDisabledChannels || 
+                                deviceIncomplete || 
+                                (dynlen(disabledHvChannels) > 0);
+
+  // --=== Check for grey color ===---
+  greyOut = getBit(modeBits, FwFreeBit) ||
+            (!getBit(modeBits, FwUseStatesBit));
+  if (lastFsmState != \"UI_initial\") {
+    updateFSMStateCB(currentConnection, lastFsmState);
+  }
+}
+
+void updateME11hvFSMModeBitsCB(string dp, bit32 modeBits) {
+  // ---=== Check if device is incomplete ===---
+  me11HasDisabledChannels = getBit(modeBits, FwIncompleteBit) ||
+                            getBit(modeBits, FwIncompleteDevBit);
+  
+  imgDeviceIncomplete.visible = me11HasDisabledChannels || 
+                                deviceIncomplete || 
+                                (dynlen(disabledHvChannels) > 0);
+}
+
+/** This function is used in in DP mode when connection is made to a DP of float or integer types. */
+void updateDPStateCB(string dp, float value) {
+  dyn_string ex;
+  string color = emuui_getGradientColor(value, currentDpValueRangeMin, currentDpValueRangeMax);
+  setColor(color);
+  
+  if (showValueOnCaption) {
+    string captionStr;
+    sprintf(captionStr, \"%d\", value);
+    caption.text = captionStr;
+  }
+}
+
+/** This function is used in in DP mode when connection is made to a DP of string type. */
+void updateStringDPStateCB(string dp, string value) {
+  if (showValueOnCaption) {
+    caption.text = value;
+  }
+  dyn_string ex;
+  string color;
+  // if there's a color for this value in the dpStringValueColor mapping - then use that one, if not - red
+  if (emuui_mappingHasKey(\"dpStringValueColors\", value)) {
+    color = emuui_getMappingValue(\"dpStringValueColors\", value, ex);
+    if (emu_checkException(ex)) { return; }
+  } else {
+    color = \"FwStateAttention3\";
+  }
+  setColor(color);
+}
+
+/** Call-back function to update the state of multiple DPs connection computing the value by taking an average. */
+void updateDPsAverageStateCB(string firstDp, float firstValue) {
+  dyn_float values;
+  for (int i=1; i <= dynlen(currentConnectionMultiple); i++) {
+    dpGet(currentConnectionMultiple[i], values[i]);
+  }
+  // compute the average value
+  int count = 0;
+  float value = 0;
+  for (int i=1; i <= dynlen(values); i++) {
+    if (values[i] != 0) { count++; }
+    value += values[i];
+  }
+  if (count > 0) {
+    value /= count;
+  }
+  
+  string color = emuui_getGradientColor(value, currentDpValueRangeMin, currentDpValueRangeMax);
+  setColor(color);
+  
+  if (showValueOnCaption) {
+    string captionStr;
+    sprintf(captionStr, \"%d\", value);
+    caption.text = captionStr;
+  }
+}
+
+/** Call-back function to update the state of multiple DPs connection computing the value by taking the maximum. */
+void updateDPsMaxStateCB(string firstDp, float firstValue) {
+  dyn_float values;
+  for (int i=1; i <= dynlen(currentConnectionMultiple); i++) {
+    dpGet(currentConnectionMultiple[i], values[i]);
+  }
+  
+  // compute the average value
+  float value = minFLOAT();
+  for (int i=1; i <= dynlen(values); i++) {
+    if (values[i] > value) {
+      value = values[i];
+    }
+  }
+  
+  string color = emuui_getGradientColor(value, currentDpValueRangeMin, currentDpValueRangeMax);
+  setColor(color);
+  
+  if (showValueOnCaption) {
+    string captionStr;
+    sprintf(captionStr, \"%d\", value);
+    caption.text = captionStr;
+  }
+}
+
+/** Updates UF PNPI disabled HV channels. Addition to deviceIncomplete. */
+void updateHVOffChannels(string dpName, dyn_string offChannels) {
+  disabledHvChannels = offChannels;
+  imgDeviceIncomplete.visible = me11HasDisabledChannels || 
+                                deviceIncomplete || 
+                                (dynlen(offChannels) > 0);
+}
+
+void disconnect() {
+  if (hvOffChannelsWarningEnabled) {
+    dyn_string ex;
+    hvOffChannelsWarningEnabled = false;
+    imgDeviceIncomplete.visible = false;
+    if (!me11) {
+      string dpName = emuui_getDpName(\"HV_off_channels\", deviceParams, ex);
+      dpDisconnect(\"updateHVOffChannels\", dpName);
+    } else {
+      dyn_string channelFsmNodes = emuui_getME11HVChannelFsmNodes(deviceParams, ex);
+      for (int i=1; i <= dynlen(channelFsmNodes); i++) {
+        fwCU_disconnectOperationMode(channelFsmNodes[i]);
+      }
+    }
+  }
+  if (currentConnectionType == \"FSM\") {
+    fwCU_disconnectState(currentConnection);
+    string domain = currentConnection;
+    string object = _fwCU_getNodeObj(domain);
+    if (fwFsm_isCU(domain, object)) {
+      fwUi_disconnectCUModeBits(\"updateFSMModeBitsCB\", domain, object, 1);
+    } else {
+      fwUi_disconnectDUModeBits(\"updateFSMModeBitsCB\", domain, object);
+    }
+    if (me11HvFsmNode != \"\") {
+      string me11HvDomain = me11HvFsmNode;
+      string me11HvObject = _fwCU_getNodeObj(me11HvDomain);
+      fwUi_disconnectDUModeBits(\"updateFSMModeBitsCB\", me11HvDomain, me11HvObject);
+    }
+    
+    if (fsmStatePollingThreadId != -1) {
+      stopThread(fsmStatePollingThreadId);
+      fsmStatePollingThreadId = -1;
+    }
+  } else if (currentConnectionType == \"DP\") {
+    dpDisconnect(\"updateDPStateCB\", currentConnection);
+  } else if (strpos(currentConnectionType, \"DPs_\") >= 0) {
+    dpDisconnect(multipleConnectionFunction, currentMultipleConnectionRepresentative);
+  }
+}
+
+void setColor(string color) {
+  setValue(shapeName, \"backCol\", color);
+}
+
+void showTooltip() {
+  if (currentConnectionMode == \"busy\") { return; } // in the process of connecting, don't show any tooltips while in that mode
+
+  delay(0, EMUUI_REFDEV_TOOLTIP_ON_DELAY_MS);  
+  if (tooltipVisible || !isMouseOver()) { return; }
+  
+  int mouseX, mouseY;
+  getCursorPosition(mouseX, mouseY);
+  string refName = tooltipRefName;
+  while (shapeExists(refName) || emuui_isTooltipActive(refName)) { refName += \"_duplicate_1\"; }
+  string mode = currentConnectionMode;
+  // to avoid trying to show a tooltip when the device is DEAD
+  if (currentConnectionType == \"FSM\" && ((lastFsmState == \"\") || (lastFsmState == \"DEAD\"))) {
+    mode = \"dead\";
+  }
+  emuui_sessionKillAllActiveTooltips();
+  emuui_sessionRegisterActiveTooltip(refName);
+  bool showInfo = (currentConnectionType == \"FSM\");
+  addSymbol(myModuleName(), myPanelName(),
+            \"objects/\" + EMUUI_COMPONENT_NAME + \"/refTooltip.pnl\",
+            refName,
+            makeDynString(\"$deviceParams:\" + deviceParamsStr, \"$deviceType:\" + $deviceType, 
+                          \"$mode:\" + mode, \"$showInfo:\" + showInfo, \"$refName:\" + refName),
+            mouseX, mouseY, 0, 1, 1);
+  tooltipVisible = true;
+}
+
+void hideTooltip() {
+  delay(0, EMUUI_REFDEV_TOOLTIP_OFF_DELAY_MS);
+  if (!tooltipVisible || isMouseOver()) { return; }
+  
+  emuui_sessionKillAllActiveTooltips();
+  tooltipVisible = false;
+}
+
+/** If mouse is over any of the objects - this function returns true, if not then false. */
+bool isMouseOver() {
+  for (int i=1; i <= mappinglen(mouseOverObjects); i++) {
+    if (mappingGetValue(mouseOverObjects, i)) {
+      return true;
+    }
+  }
+  
+  setValue(shapeName, \"foreCol\", \"\");
+  return false;
+}
+
+/** this is usually called from a double click on the device or label - opens an FSM node associated with the current device. */
+void openFsmPanel() {
+  dyn_string ex;
+  
+  // if the connection type is anything but FSM - return
+  if (currentConnectionType != \"FSM\") {
+    return;
+  }
+  // get the domain and object
+  string fsmNode = emuui_getFsmNode(currentConnectionMode, deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  string domain = fsmNode;
+  string object = _fwCU_getNodeObj(domain);
+
+  // open the panel
+  fwFsmUi_ObjButtonDoubleClick(domain, object, domain);      
+}
+
+/** Thread that polls FSM state every EMUUI_FSM_STATE_POLLING_RATE seconds and check if it's consistent with the last update (sometimes it's not). */
+void pollFsmStateThread() {
+  while(1) {
+    delay(EMUUI_FSM_STATE_POLLING_RATE);
+    string state;
+    fwCU_getState(currentConnection, state);
+    if (state != lastFsmState) {
+      emu_info(\"ERROR: Found inconsistent FSM state after polling. \" +
+               \"Node = \" + currentConnection + 
+               \"; last FSM state update = \" + lastFsmState + 
+               \"; polled out state = \" + state);
+      updateFSMStateCB(currentConnection, state);
+    }
+  }
+}
+
+/** Polls connection mode. Used ONLY when an initial connection was unsucessful. */
+void pollMode() {
+  delay(EMUUI_FSM_STATE_POLLING_RATE);
+  if (currentConnection == \"\") {
+    string connType, mode;
+    dpGet($group + \".mode\", mode, $group + \".connectionType\", connType);
+    modeChangedCB($group + \".mode\", mode, $group + \".connectionType\", connType);
+  }
+}
+
+
+
+
+
+
+
+
+void showPopupMenu() {
+//  return; // NOT IMPLEMENTED YET
+  
+  dyn_string ex;
+  emuui_openContextMenu($deviceType, deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  return;
+  
+  int answer;
+  dyn_string menu;
+  
+//   example of a menu
+//   dyn_string menu = makeDynString(\"PUSH_BUTTON, text1, 1, 1\", 
+//    \"PUSH_BUTTON, text2, 2, 1\", 
+//    \"SEPARATOR\", // separating line 
+//    \"CASCADE_BUTTON, Level 2, 1\", // branch 
+//    \"PUSH_BUTTON, text3, 3, 1\", 
+//    \"Level 2\", // from here level 2 
+//    \"PUSH_BUTTON, text4, 4, 0\", 
+//    \"PUSH_BUTTON, text5, 5, 1\"); 
+  
+  int canEnable = 0;
+  if (dynlen(disabledHvChannels) > 0) { canEnable = 1; }
+  
+  dynAppend(menu, \"CASCADE_BUTTON, Recover High Voltage, 1\");
+  dynAppend(menu, \"CASCADE_BUTTON, Disable High Voltage Channels, 1\");
+  dynAppend(menu, \"CASCADE_BUTTON, Enable High Voltage Channels, \" + canEnable);
+    
+  // recover submenu
+  dynAppend(menu, \"Recover High Voltage\");
+  dynAppend(menu, \"PUSH_BUTTON, Recover All Tripped Channels, 100, 1\");
+  dynAppend(menu, \"CASCADE_BUTTON, Recover One Channel, 1\");
+  dynAppend(menu, \"Recover One Channel\");
+  dynAppend(menu, \"PUSH_BUTTON, Recover #3, 103, 1\");
+  dynAppend(menu, \"PUSH_BUTTON, Recover #4, 104, 1\");
+
+  //disable submenu
+  dynAppend(menu, \"Disable High Voltage Channels\");
+  dynAppend(menu, \"PUSH_BUTTON, Disable All Tripped Channels, 200, 1\");
+  dynAppend(menu, \"CASCADE_BUTTON, Disable One Channel, 1\");
+  dynAppend(menu, \"Disable One Channel\");
+  dynAppend(menu, \"PUSH_BUTTON, Disable #3, 203, 1\");
+  dynAppend(menu, \"PUSH_BUTTON, Disable #4, 204, 1\");
+    
+  //enable submenu
+  dynAppend(menu, \"Enable High Voltage Channels\");
+  dynAppend(menu, \"PUSH_BUTTON, Enable All Disabled Channels, 300, 1\");
+  dynAppend(menu, \"CASCADE_BUTTON, Enable One Channel, 1\");
+  dynAppend(menu, \"Enable One Channel\");
+  for (int i=1; i <= dynlen(disabledHvChannels); i++) {
+    dynAppend(menu, \"PUSH_BUTTON, Enable #\" + disabledHvChannels[i] + \", 30\" + disabledHvChannels[i] + \", 1\");
+  }
+    
+    
+  string font = \"\";//\"-microsoft windows-Courier New-bold-i-normal-*-*-140-100-100-*-*-iso8859-1\"; //font 
+  string forecolor = \"black\"; //foreground color 
+  string backcolor = \"white\"; //background color 
+
+  int posX, posY;   
+  getCursorPosition(posX, posY);
+  //popupMenuXY(menu, posX, posY, answer, font, forecolor, backcolor);
+  popupMenu(menu, answer);
+  
+  emu_info(\"popupso atsakymas: \" + answer);
+  if (answer != 0) {
+    emu_errorSingle(\"This functionality is not implemented. Please inform DCS expert about this (make sure to describe how you got this message)\");
+  }
+}
+" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+10 0
+"chamber"
+""
+1 19.9791666666667 30.0000000000001 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ "main()
+{
+  showPopupMenu();
+}" 0
+ "main()
+{
+  openFsmPanel();
+}" 0
+
+0 0 0 0 0 0
+E E "main(bool enter)
+{
+  mouseOverObjects[this.name] = enter;
+  if (enter) {
+    showTooltip();
+  } else {
+    hideTooltip();
+  }
+}" 0
+
+0
+1
+LANG:1 0 
+
+3
+"hoverfclr" "N \"black_yellow\""
+"dashclr"N "_Transparent"
+"selectable" ""
+E E 0 1 1 1 1 E 0.774020156774913 0 1.02222222222222 -15.4642777155655 -30.6666666666667 1 E 4 19.9791666666667 30.0000000000001
+19.9791666666667 69.1304347826089
+109.041666666667 61.3043478260871
+109.041666666667 39.7826086956523
+ 1
+6 2
+"rectangle"
+""
+1 90 10 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ "main()
+{
+  showPopupMenu();
+}" 0
+ "main()
+{
+  openFsmPanel();
+}" 0
+
+2 0 0 0 0 0
+E E "main(bool enter)
+{
+  mouseOverObjects[this.name] = enter;
+  if (enter) {
+    showTooltip();
+  } else {
+    hideTooltip();
+  }
+}" 0
+
+0
+1
+LANG:1 0 
+
+2
+"hoverfclr" "N \"black_yellow\""
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -90 -10 1 E 90 10 110 30
+2 8
+"imgDeviceIncomplete"
+""
+1 4 21 E E E 1 E 0 E N "_Window" E N "_Transparent" E E
+ "main()
+{
+  showPopupMenu();
+}" 0
+ "main()
+{
+  openFsmPanel();
+}" 0
+
+9 0 0 0 0 0
+E E "main(bool enter)
+{
+  mouseOverObjects[this.name] = enter;
+  if (enter) {
+    setValue(shapeName, \"foreCol\", \"black_yellow\");
+    showTooltip();
+  } else {
+    setValue(shapeName, \"foreCol\", \"\");
+    hideTooltip();
+  }
+}" 0
+
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 0 10 6 35
+0 2 2 "0s" 0 0 0 192 0 0  0 10 1
+1
+LANG:1 33 MS Shell Dlg,-1,19,5,75,0,0,0,0,0
+0 1
+LANG:1 1 !
+6 9
+"rectangle_middle_ref_point"
+""
+1 100 10 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ "main()
+{
+  showPopupMenu();
+}" 0
+ "main()
+{
+  openFsmPanel();
+}" 0
+
+11 0 0 0 0 0
+E E "main(bool enter)
+{
+  mouseOverObjects[this.name] = enter;
+  if (enter) {
+    showTooltip();
+  } else {
+    hideTooltip();
+  }
+}" 0
+
+0
+1
+LANG:1 0 
+
+2
+"hoverfclr" "N \"black_yellow\""
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -100 -10 1 E 90 10 110 30
+2 1
+"caption"
+""
+1 10 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ "main()
+{
+  showPopupMenu();
+}" 0
+ "main()
+{
+  openFsmPanel();
+}" 0
+
+1 0 0 0 0 0
+E E "main(bool enter)
+{
+  mouseOverObjects[this.name] = enter;
+  if (enter) {
+    setValue(shapeName, \"foreCol\", \"black_yellow\");
+    showTooltip();
+  } else {
+    setValue(shapeName, \"foreCol\", \"\");
+    hideTooltip();
+  }
+}" 0
+
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 1 3 19 19
+0 2 2 "0s" 0 0 0 193 0 0  10 3 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 2 me
+7 11
+"imgNoCommunication"
+""
+1 85 215 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ "main()
+{
+  showPopupMenu();
+}" 0
+ "main()
+{
+  openFsmPanel();
+}" 0
+
+14 0 0 0 0 0
+E E "main(bool enter)
+{
+  mouseOverObjects[this.name] = enter;
+  if (enter) {
+    setValue(shapeName, \"foreCol\", \"black_yellow\");
+    showTooltip();
+  } else {
+    setValue(shapeName, \"foreCol\", \"\");
+    hideTooltip();
+  }
+}" 0
+
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 0.666666666666667 0 0.666666666666667 23.3333333333333 -123.333333333333 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4294967295 E 85 215 15 15
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

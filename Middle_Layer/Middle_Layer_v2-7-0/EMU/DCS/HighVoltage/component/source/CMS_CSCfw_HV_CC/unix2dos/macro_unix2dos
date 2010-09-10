@@ -1,0 +1,52 @@
+#!/bin/bash
+
+
+
+
+
+
+
+#CSC_DIR_REP=/home/fast/pvss_fsm/scripts/libs/emu*.ctl
+#CSC_DIR_REP=/home/fast/pvss_fsm/scripts/libs/fw*
+#CSC_DIR_REP=/home/fast/pvss_fsm/scripts/libs/fw*/fw*.ctl
+
+#CSC_DIR_REP=/home/fast/pvss_fsm/scripts/mudcs*.ctl
+
+#------------------
+
+
+##CSC_DIR_REP=/home/fast/pvss_fsm/panels/*.pnl
+##CSC_DIR_REP=/home/fast/pvss_fsm/panels/emu/*.pnl
+##CSC_DIR_REP=/home/fast/pvss_fsm/panels/emu_config/*.pnl
+
+
+
+HOME1=/home/fast
+#echo ======================================================
+#echo $HOME
+
+
+function fun1(){
+
+echo $CSC_DIR_REP
+#~/bin/file_editing_unix2dos $CSC_DIR_REP
+}
+
+
+#function fun2(){
+
+
+
+CSC_DIR_REP=$HOME/$1/*
+fun1
+CSC_DIR_REP=$HOME/$1/*/*
+fun1
+CSC_DIR_REP=$HOME/$1/*/*/*
+fun1
+CSC_DIR_REP=$HOME/$1/*/*/*/*
+fun1
+
+#}
+
+
+#fun2

@@ -1,0 +1,572 @@
+V 10
+1
+LANG:1 8 (NoName)
+PANEL,-1 -1 430 360 N "_3DFace" 1
+"$sDpName"
+E E E E E 1 -1 -1 0  0 0
+""0  1
+E E 2
+"CBRef" "0"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 1
+"txtTitle"
+""
+1 73 30 E E E 1 E 1 E N "schwarz" E N "_Transparent" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 12 263 37
+0 2 0 "0s" 0 0 0 64 0 0  12 12 1
+2
+LANG:1 84 -*-Arial-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+LANG:0 70 -microsoft windows-arial-medium-r-normal-*-*-160-100-100-*-*-iso8859-1
+0 ""
+2
+LANG:1 24 Elmb DAC Operation Panel
+LANG:0 11 DP-Funktion
+1 56 0 "" 0
+0
+1 57 0 "" 1
+0
+1 58 0 "" 2
+0
+1 59 0 "" 3
+0
+1 60 0 "" 4
+0
+1 61 0 "" 5
+0
+1 62 0 "" 6
+0
+1 63 0 "" 7
+0
+1 64 0 "" 8
+0
+2 39
+"lblNodeID"
+""
+1 10 50 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+26 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 52 58 68
+0 2 0 "0s" 0 0 0 64 0 0  12 52 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 8 Node Id:
+2 40
+"txtNodeID"
+""
+1 70 50 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+28 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+// Local Variables
+// ---------------
+  string sDpName = $sDpName;
+  string nodeId;
+	
+// Executable Code
+// ---------------
+  // Remove the config part from the DP name to get the ELMB DP name
+  strreplace(sDpName, fwDevice_HIERARCHY_SEPARATOR + ELMB_AO_CONFIG_NAME, \"\");
+	
+  // Get the node ID
+  dpGet(sDpName + \".id\", nodeId);
+	
+  // Display the text
+  this.text = nodeId;
+	
+  // Return to calling routine
+  return;
+}" 0
+ E 0 1 1 0 1 E U  0 E 72 52 128 68
+0 2 0 "0s" 0 0 0 64 0 0  72 52 1
+1
+LANG:1 87 -*-Arial-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,697,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 0 
+13 41
+"cmdWrite"
+""
+1 358 280 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+30 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 356 278 422 312
+
+T 
+1
+LANG:1 5 Write
+"main()
+{
+// Local Variables
+// ---------------
+  unsigned uState;
+  unsigned uSclkHigh;
+  
+  int iDACtype;
+
+  string sElmbDpName;
+
+  dyn_float df;
+
+  dyn_string ds;
+  dyn_string dsExceptionInfo;
+
+
+// Executable Code
+// ---------------
+  // Check if values should be saved to EEPROM
+  ChildPanelOnCentralReturn(\"vision/MessageInfo3\",
+                            \"Question\",
+                            makeDynString(\"Save these settings to the EEPROM? \\n(i.e. make default settings)\", \"Yes\", \"No\", \"Cancel\"),
+                            df, ds);
+
+  // If cancel clicked, do not set configuration
+  if (df[1] == 2)
+    return;
+
+  // Disable necessary controls until configuration set
+  this.enabled = false;
+  cmdRead.enabled = false;
+
+  // Get the parent (ELMB) that this config comes from
+  fwDevice_getParent($sDpName, sElmbDpName, dsExceptionInfo);			
+	
+  // Get current state of ELMB
+  dpGet(sElmbDpName + \".state.value\", uState);
+
+  // Set ELMB pre-operational
+  dpSet(sElmbDpName + \".management\", 128);
+
+  txtMessage.text = \"This will take a few seconds. Please wait...\";
+  
+  // DAC type
+  iDACtype = cmbDACtype.selectedPos;
+  if (iDACtype == 1) {
+    dpSet($sDpName + \".dacType.write\", false);
+    delay(0,50);
+  } else if (iDACtype == 2) {
+    dpSet($sDpName + \".dacType.write\", true);
+    delay(0,50);
+  }
+  
+  // SPI SCLK signal high period
+  uSclkHigh = txtSpiSclkSignalHigh.text;
+  if ((uSclkHigh >= 10) && (uSclkHigh <= 255)) {
+    dpSet($sDpName + \".sclkHighPeriod.write\", uSclkHigh);
+    delay(0,50);
+  }
+
+  if (df[1] == 1.0) {
+    dpSet(sElmbDpName + \".eeprom.save\", ELMB_SAVE_EEPROM);
+    delay(0, 50);
+  }
+	
+  // Set the ELMB back to it's original state, but only if it was stopped or operational.
+  // Otherwise, leave it as preoperational
+  if ((uState == 0x84) || (uState == 0x04))
+    dpSet(sElmbDpName + \".management\", 2);
+  else if ((uState  == 0x85) || (uState == 0x05))
+    dpSet(sElmbDpName + \".management\", 1);
+		
+  // Indicate success to user
+  txtMessage.text = \"Info: DAC configuration set\";
+	
+  // Re-enable controls
+  this.enabled = true;
+  cmdRead.enabled = true;
+
+  // Return to calling routine
+  return;
+}" 0
+ E E E
+13 42
+"cmdRead"
+""
+1 290 280 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+32 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 288 278 354 312
+
+T 
+1
+LANG:1 4 Read
+"main()
+{
+// Local Variables
+// ---------------
+  bool bDACtype;
+	
+  int iChannelMax;  // Should be unsigned?
+  int iTemp;
+	
+  unsigned uState;
+  unsigned uSclkHigh;
+	
+  string sElmbName;
+  
+  anytype aValue;
+	
+  dyn_string dsExceptionTemp;
+  dyn_string dsExceptionInfo;
+			
+// Executable Code
+// ---------------
+  // Disable certain controls while the read takes place
+  this.enabled = false;
+  cmdWrite.enabled = false;
+	
+  // Give some information to the user
+  txtMessage.text = \"This may take up to 10 seconds. Please wait...\";
+  fwOpenProgressBar(\"Reading DAC Settings\", \"In progress. Please wait...\", 1);
+
+  // Get the parent (ELMB) that this config comes from
+  fwDevice_getParent($sDpName, sElmbName, dsExceptionInfo);			
+	
+  // Get current state of ELMB
+  dpGet(sElmbName + \".state.value\", uState);
+			
+  // Set node to Pre-Operational:
+  dpSetWait(sElmbName + \".management\", 128);
+  
+  // Max number of output channels
+  fwElmb_elementSQ($sDpName + \".chNumber.read\", 2, aValue, dsExceptionTemp);
+  if (dynlen(dsExceptionTemp) == 0) {
+    iChannelMax = aValue;
+    lblHighestChannelNum.enabled = true;
+    txtHighestChannelNum.text = iChannelMax;
+  } else {
+    lblHighestChannelNum.enabled = false;
+    txtHighestChannelNum.text = \"\";
+    dynAppend(dsExceptionInfo, dsExceptionTemp);
+  }
+  
+  // DAC type
+  fwElmb_elementSQ($sDpName + \".dacType.read\", 2, aValue, dsExceptionTemp);
+  if (dynlen(dsExceptionTemp) == 0) {
+    bDACtype = aValue;
+    lblDACtype.enabled = true;
+    cmbDACtype.enabled = true;
+    if (bDACtype) {
+      cmbDACtype.selectedPos = 2;
+    } else {
+      cmbDACtype.selectedPos = 1;
+    }
+  } else {
+    lblDACtype.enabled = true;
+    cmbDACtype.enabled = false;
+    cmbDACtype.selectedPos = 0;
+    dynAppend(dsExceptionInfo, dsExceptionTemp);
+  }
+  
+  // SPI SCLK Signal High Period
+  fwElmb_elementSQ($sDpName + \".sclkHighPeriod.read\", 2, aValue, dsExceptionTemp);
+  if (dynlen(dsExceptionTemp) == 0) {
+    uSclkHigh = aValue;
+    lblSpiSclkSignalHigh.enabled = true;
+    txtSpiSclkSignalHigh.enabled = true;
+    txtSpiSclkSignalHigh.text = uSclkHigh;
+  } else {
+    lblSpiSclkSignalHigh.enabled = false;
+    txtSpiSclkSignalHigh.enabled = false;
+    txtSpiSclkSignalHigh.text = \"\";
+    dynAppend(dsExceptionInfo, dsExceptionTemp);
+  }
+  
+  fwElmbUser_updateFirmwareInfo(sElmbName);
+
+  // Set the ELMB back to it's original state, but only if it was stopped or operational.
+  // Otherwise, leave it as preoperational
+  if ((uState == 0x84) || (uState == 0x04))
+    dpSet(sElmbName + \".management\", 2);
+  else if ((uState  == 0x85) || (uState == 0x05))
+    dpSet(sElmbName + \".management\", 1);
+
+  // Check for errors
+  if (dynlen(dsExceptionInfo) > 0) {
+    fwCloseProgressBar(\"Problems reading DAC settings\");
+    txtMessage.text = \"Problems reading DAC settings\";
+    fwExceptionHandling_display(dsExceptionInfo);
+  } else {
+    txtMessage.text = \"DAC settings successfully read\";
+    fwCloseProgressBar(\"DAC settings successfully read\");
+  }
+		
+  // Re-enable controls
+  this.enabled = true;
+  cmdWrite.enabled = true;
+
+  // Return to calling routine
+  return;
+}
+" 0
+ E E E
+2 43
+"txtMessage"
+""
+1 10 280 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+34 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 282 278 308
+0 2 0 "0s" 0 0 0 64 0 0  12 282 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 0 
+13 44
+"cmdClose"
+""
+1 290 320 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+36 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 288 318 422 352
+
+T 
+1
+LANG:1 5 Close
+"main()
+{
+  PanelOff(myPanelName());
+}" 0
+ E E E
+22 45
+"cmbDACtype"
+""
+1 200 180 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+38 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 198 178 312 205
+2
+1
+LANG:1 7 MAX5122
+
+0
+1
+LANG:1 6 MAX525
+
+0
+
+E
+E
+E
+ 0 0
+2 48
+"lblDACtype"
+""
+1 20 180 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+44 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 22 182 85 199
+0 2 0 "0s" 0 0 0 64 0 0  22 182 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 9 DAC Type:
+2 49
+"lblSpiSclkSignalHigh"
+""
+1 20 210 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+46 0 0 0 0 0
+E E E
+0
+1
+LANG:1 18 Opto-coupler delay
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 22 212 196 229
+0 2 0 "0s" 0 0 0 64 0 0  22 212 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 28 SPI SCLK Signal High Period:
+2 51
+"lblHighestChannelNum"
+""
+1 20 240 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+50 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 22 242 166 258
+0 2 0 "0s" 0 0 0 64 0 0  22 242 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 23 Highest channel number:
+30 53
+"frmDACSettings"
+""
+1 10 280 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+54 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E 1 0 1 0 -10 0 E 10 170 420 280
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 12 DAC Settings
+14 54
+"txtHighestChannelNum"
+""
+1 200 239.5 E E E 0 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+55 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 198 237.5 262 261.45
+3 "0s" 0 0 0 0 0 -1  E E E
+14 55
+"txtSpiSclkSignalHigh"
+""
+1 200 210 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+57 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 198 208 262 231.95
+3 "3d" 3 0 0 0 0 -1  E E E
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+3 0 ""
+"fwElmb\\objects\\fwElmbVersionsRef.pnl" 240 90 T 24 1 0 1 -60 10
+1
+"$sDpName""$sDpName"
+0

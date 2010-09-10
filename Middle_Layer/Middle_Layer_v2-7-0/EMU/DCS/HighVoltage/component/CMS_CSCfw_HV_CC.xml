@@ -1,0 +1,34 @@
+ <component>
+	<name>CMS_CSCfw_HV_CC</name>
+	<version>2.7.0</version>
+	<date>2010/05/30</date>
+	<required>CMS_CSC_common=1.1.0</required>
+	<required>fwCore=4.0.0</required>
+	<required>fwAnalogDigital=4.0.0</required>
+	<required>fwAccessControl=3.2.7</required>
+	<required>fwTrending=3.2.1</required>
+	<required>fwDIM=18.06.0</required>
+	<!--required>CMS_CSCfw_LV_CRB_MINI=1.0.1</required--> <!-- no need at P5 since all the libraries are accessible from the cDCS repository anyway - only needed for local installations ->
+	<!--required>CMS_CSCfw_LV_MRTN=1.0.1</required--> <!-- no need at P5 since all the libraries are accessible from the cDCS repository anyway - only needed for local installations ->
+		<!--required>fwElmbPSU=2.1.5</required--> <!-- needed for FSM panels only - so only needed when you're going to open them locally - no need at P5 -->
+		<!--required>fwWiener=3.2.4</required--> <!-- needed for FSM panels only - so only needed when you're going to open them locally - no need at P5 -->
+		<!--required>CMS_CSCfw_ME11HV=1.0.1</required--> <!-- needed for FSM panels only - so only needed when you're going to open them locally - no need at P5 -->
+		
+	<config>./config/CMS_CSCfw_HV_CC.config</config>
+	<dplist>./dplist/CMS_CSCfw_HV_CC/CMS_CSCfw_HV_CC.dpl</dplist>
+	<dplist>./dplist/CMS_CSCfw_HV_CC/CMS_CSCfw_HV_CC2.dpl</dplist>	
+        <postInstall>./scripts/CMS_CSCfw_HV_CC/CMS_CSCfw_HV_CC.postInstall</postInstall>
+	<file>./CMS_CSCfw_HV_CC.xml</file>
+	<file>./panels/CMS_CSCfw_HV_CC/*.pnl</file>
+	<file>./panels/CMS_CSCfw_HV_CC/config/*.pnl</file>
+	<file>./panels/CMS_CSCfw_HV_CC/init/*.pnl</file>
+	<file>./scripts/CMS_CSCfw_HV_CC/*</file>
+	<file>./scripts/libs/CMS_CSCfw_HV_CC/*</file>
+        <file>./source/CMS_CSCfw_HV_CC/special_stuff/*</file>
+        <file>./source/CMS_CSCfw_HV_CC/special_stuff/vnc_optimal_usage_SLC3_PVSS36/*</file>
+        <file>./source/CMS_CSCfw_HV_CC/delete_processes_by_name/*</file>
+        <file>./source/CMS_CSCfw_HV_CC/delete_processes_by_name/src/*</file>
+        <file>./source/CMS_CSCfw_HV_CC/text/*</file>
+        <file>./source/CMS_CSCfw_HV_CC/config/*</file>
+        <file>./source/CMS_CSCfw_HV_CC/unix2dos/*</file>
+</component>

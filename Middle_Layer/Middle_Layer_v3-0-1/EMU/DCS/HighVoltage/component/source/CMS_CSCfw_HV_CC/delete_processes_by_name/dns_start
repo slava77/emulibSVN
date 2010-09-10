@@ -1,0 +1,8 @@
+#!/bin/bash
+
+
+  while [ "y" == "y" ]
+  do
+    dns_restart_with_timeout pcmsad02
+    sleep 1
+  done

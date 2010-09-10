@@ -1,0 +1,68 @@
+#!/bin/sh
+
+
+
+
+
+
+
+
+
+####/home/pvss/pvss2_v3.0/bin/PVSStoolLogViewer -single -config /home/fast/pvss_fsm/config/config -lang en_US.iso88591 &
+####/home/pvss/pvss2_v3.0/bin/PVSS00pmon -PROJ pvss_fsm -config /home/fast/pvss_fsm/config/config &
+####/home/pvss/pvss2_v3.0/bin/PVSS00data -PROJ pvss_fsm -pmonIndex 1 &
+####/home/pvss/pvss2_v3.0/bin/PVSS00valarch -PROJ pvss_fsm -pmonIndex 2 -num 0 &
+####/home/pvss/pvss2_v3.0/bin/PVSS00valarch -PROJ pvss_fsm -pmonIndex 3 -num 1 &
+####/home/pvss/pvss2_v3.0/bin/PVSS00valarch -PROJ pvss_fsm -pmonIndex 4 -num 2 &
+####/home/pvss/pvss2_v3.0/bin/PVSS00valarch -PROJ pvss_fsm -pmonIndex 5 -num 3 &
+####/home/pvss/pvss2_v3.0/bin/PVSS00valarch -PROJ pvss_fsm -pmonIndex 6 -num 4 &
+####/home/pvss/pvss2_v3.0/bin/PVSS00valarch -PROJ pvss_fsm -pmonIndex 7 -num 5 &
+####/home/pvss/pvss2_v3.0/bin/PVSS00event -PROJ pvss_fsm -pmonIndex 8 &
+
+####/home/pvss/pvss2_v3.0/bin/PVSS00sim -PROJ pvss_fsm -pmonIndex 9 &
+####/home/pvss/pvss2_v3.0/bin/PVSS00ctrl -PROJ pvss_fsm -pmonIndex 10 -f pvss_scripts.lst &
+####/home/pvss/pvss2_v3.0/bin/PVSS00dist -PROJ pvss_fsm -pmonIndex 11 &
+####/home/pvss/pvss2_v3.0/bin/PVSS00ui -PROJ pvss_fsm -pmonIndex 12 -m vision -p emu/emuEmuVisualServer.pnl &
+#PVSS00blink -display pcmsucr3:0.0 32 4 20 0
+#PVSS00XCheck pcmsucr3:0.0 25526 100
+####/home/pvss/pvss2_v3.0/bin/PVSS00ui -PROJ pvss_fsm -pmonIndex 13 -m gedi &
+#PVSS00blink -display pcmsucr3:0.0 32 4 20 0
+#PVSS00XCheck pcmsucr3:0.0 25530 100
+####/home/pvss/pvss2_v3.0/bin/PVSS00ui -PROJ pvss_fsm -pmonIndex 14 -m vision &
+#PVSS00blink -display pcmsucr3:0.0 32 4 20 0
+#PVSS00XCheck pcmsucr3:0.0 25534 100
+#/home/fast/pvss_fsm/bin/PVSS00dim -num 2 -dim_dp_config _DimClient_2 -dim_dns_node pcmsucr2
+#/home/fast/pvss_fsm/bin/PVSS00dim -num 3 -dim_dp_config _DimClient_3 -dim_dns_node pcmsucr4
+#/home/fast/pvss_fsm/bin/PVSS00dim -num 4 -dim_dp_config _DimClient_4 -dim_dns_node ufcmshv1
+#/home/fast/pvss_fsm/bin/PVSS00dim -num 5 -dim_dp_config _DimClient_5 -dim_dns_node ufcmspc02
+#sh -c start_servers &
+#PVSS00ctrl -num 11 delete_old_lib_versions
+#PVSS00ctrl -num 4 fwFsmSrvr
+#/home/pvss/pvss2_v3.0/bin/PVSS00databg -bgSyncPipeDesc 29 -PROJ pvss_fsm
+
+/home/pvss/pvss2_v3.0/bin/PVSStoolLogViewer -single -config /home/fast/CMS/config/config -lang en_US.iso88591 &
+/home/pvss/pvss2_v3.0/bin/PVSS00pmon -PROJ CMS -config /home/fast/CMS/config/config &
+exit
+/home/pvss/pvss2_v3.0/bin/PVSS00data -PROJ CMS -pmonIndex 1 &
+/home/pvss/pvss2_v3.0/bin/PVSS00valarch -PROJ CMS -pmonIndex 2 -num 0  &
+/home/pvss/pvss2_v3.0/bin/PVSS00valarch -PROJ CMS -pmonIndex 3 -num 1 &
+/home/pvss/pvss2_v3.0/bin/PVSS00valarch -PROJ CMS -pmonIndex 4 -num 2 &
+/home/pvss/pvss2_v3.0/bin/PVSS00valarch -PROJ CMS -pmonIndex 5 -num 3 &
+/home/pvss/pvss2_v3.0/bin/PVSS00valarch -PROJ CMS -pmonIndex 6 -num 4 &
+/home/pvss/pvss2_v3.0/bin/PVSS00valarch -PROJ CMS -pmonIndex 7 -num 5 &
+/home/pvss/pvss2_v3.0/bin/PVSS00event -PROJ CMS -pmonIndex 8 &
+
+/home/pvss/pvss2_v3.0/bin/PVSS00ctrl -PROJ CMS -pmonIndex 9 -f pvss_scripts.lst &
+/home/pvss/pvss2_v3.0/bin/PVSS00sim -PROJ CMS -pmonIndex 10 &
+/home/pvss/pvss2_v3.0/bin/PVSS00dist -PROJ CMS -pmonIndex 11 &
+/home/pvss/pvss2_v3.0/bin/PVSS00ui -PROJ CMS -pmonIndex 12 -m gedi &
+#fast     13792 13790  0 16:40 pts/1    00:00:00 PVSS00blink -display pcmsucr3:0.0 32 8 13 0
+#fast     13793 13790  0 16:40 pts/1    00:00:00 PVSS00XCheck pcmsucr3:0.0 13790 100
+/home/pvss/pvss2_v3.0/bin/PVSS00sim -PROJ CMS -pmonIndex 14 -num 13
+/home/pvss/pvss2_v3.0/bin/PVSS00sim -PROJ CMS -pmonIndex 16 -num 11
+/home/pvss/pvss2_v3.0/bin/PVSS00sim -PROJ CMS -pmonIndex 18 -num 14
+/home/pvss/pvss2_v3.0/bin/PVSS00sim -PROJ CMS -pmonIndex 20 -num 6
+/home/pvss/pvss2_v3.0/bin/PVSS00ctrl -PROJ CMS -pmonIndex 23 fwFsmSrvr &
+#sleep 30
+/home/pvss/pvss2_v3.0/bin/PVSS00ui -PROJ CMS -pmonIndex 26 -m vision -p fwDeviceEditorNavigator/fwDeviceEditorNavigator.pnl &
+

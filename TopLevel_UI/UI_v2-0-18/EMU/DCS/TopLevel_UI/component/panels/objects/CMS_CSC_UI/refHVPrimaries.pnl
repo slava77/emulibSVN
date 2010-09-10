@@ -1,0 +1,468 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 542 314 N "_3DFace" 1
+"$group"
+"main()
+{
+  initParams();
+  drawPrimaries();
+}
+
+void drawPrimaries() {
+  dyn_string ex;
+  
+  for (int i=0; i < 2; i++) { // for each side
+    string side = \"M\";
+    if (i == 1) { side = \"P\"; }
+    int x = getVerticalLinePosX(i);
+    int width = getVerticalLinePosX(i+1) - x + 1;  // plus one to make it overlap the border with the line (to avoid double border)
+    
+    for (int station=1; station <= 4; station++) { // for every station
+      int y = getHorizontalLinePosY(station - 1);
+      int height = getHorizontalLinePosY(station) - y + 1;
+
+      string refName = \"refHvPrimary_\" + side + station;  //reference name
+      if (shapeExists(refName)) { refName += \"_1\"; }
+      
+      string hvAddress = emuui_getMappingValue(\"stationToHvPrimaryAddr\", side + station, ex);
+      if (emu_checkException(ex)) { return; }
+      dyn_string fullHvAddress = strsplit(hvAddress, \"_\");
+      string hostId = fullHvAddress[1];
+      string port = fullHvAddress[2];
+      string addr = fullHvAddress[3];
+    
+      string deviceParamsDollar = \"$deviceParams:\" + \"side=\" + side +
+                                                     \";station=\" + station +
+                                                     \";hostId=\" + hostId +
+                                                     \";port=\" + port +
+                                                     \";address=\" + addr;
+      string shapeParamsDollar = \"$shapeParams:\" + \"type=rectangle\" +
+                                                   \";width=\" + width +
+                                                   \";height=\" + height;
+    
+      //import the chamber panel (no changes in the panel orientation; position - [0,0])
+      dynAppend(references, refName);
+      addSymbol(myModuleName(), myPanelName(),
+                \"objects/\" + EMUUI_COMPONENT_NAME + \"/refDevice.pnl\",
+                refName,
+                makeDynString(\"$caption:VALUE\", \"$deviceType:hvPrimary\",
+                              deviceParamsDollar, shapeParamsDollar, \"$group:\" + paramGroup,
+                              \"$refName:\" + refName),
+                x, y, 0, 1, 1);
+    }
+  }
+}
+
+// returns X coordinate of the requested vertical line position
+int getVerticalLinePosX(int lineNum) {
+  int posX, posY;
+  getValue(\"lineVertical\" + lineNum, \"position\", posX, posY);
+  return posX;
+}
+
+// returns Y coordinate of the requested horizontal line position
+int getHorizontalLinePosY(int lineNum) {
+  int posX, posY;
+  getValue(\"lineHorizontal\" + lineNum, \"position\", posX, posY);
+  return posY;
+}
+" 0
+ "main()
+{
+  emuui_destroyReferences(references);
+}
+" 0
+ E E E 1 -1 -1 0  0 0
+""0  1
+E "// init parameters
+string paramGroup;
+
+// some panel-wide constants and variables
+dyn_string references;
+bool runningLocal; // if true then panel is running localy, if false then panel is a reference
+
+/** coppies dollar parameters to local variables. If any dollar parameter is missing 
+   then local variable is given a default value to allow to run the panel separatelly for debugging purposes. */
+void initParams() {
+  //default values
+  if (strlen($group) == 0) {
+    
+    emuui_init();
+    runningLocal = true;
+    
+    paramGroup = emuui_getSessionDp(\"hvPrimaryView\");
+  } else { // copy from dollar params
+    runningLocal = false;
+    
+    paramGroup = $group;
+  }
+}" 0
+ 2
+"CBRef" "1"
+"EClose" "main()
+{
+  emuui_destroyReferences(references);
+  PanelOff();
+}
+" 0
+
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+4 5
+"lineHorizontal0"
+""
+1 60 30 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  60 30 180 30
+4 17
+"lineVertical2"
+""
+1 180 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  180 30 180 150
+6 23
+"RECTANGLE3"
+""
+1 10 40 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+28 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 0 121 61 151
+6 22
+"RECTANGLE2"
+""
+1 190 10 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+27 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 1 0 1 E 60 0 -1 31
+4 1
+"lineVertical1"
+""
+1 120 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  120 30 120 150
+4 6
+"lineVertical0"
+""
+1 60 30 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  60 30 60 150
+4 13
+"lineHorizontal1"
+""
+1 60 60 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  60 60 180 60
+4 14
+"lineHorizontal2"
+""
+1 60 90 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+15 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  60 90 180 90
+4 15
+"lineHorizontal3"
+""
+1 60 120 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  60 120 180 120
+4 16
+"lineHorizontal4"
+""
+1 60 150 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E  60 150 180 150
+6 27
+"RECTANGLE7"
+""
+1 10 40 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+36 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 0 91 61 121
+6 28
+"RECTANGLE8"
+""
+1 10 40 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+38 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 0 61 61 91
+6 29
+"RECTANGLE9"
+""
+1 10 40 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+40 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 0 31 61 61
+2 18
+"PRIMITIVE_TEXT5"
+""
+1 6 38 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 6 38 54 54
+0 2 2 "0s" 0 0 0 192 0 0  6 38 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 9 Station 1
+2 19
+"PRIMITIVE_TEXT6"
+""
+1 6 68 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+22 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 6 68 51 84
+0 2 2 "0s" 0 0 0 192 0 0  6 68 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 9 St.2,3 -X
+2 20
+"PRIMITIVE_TEXT7"
+""
+1 6 98 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+24 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 6 98 54 114
+0 2 2 "0s" 0 0 0 192 0 0  6 98 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 9 St.2,3 +X
+2 21
+"PRIMITIVE_TEXT8"
+""
+1 6 128 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+26 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 6 128 54 144
+0 2 2 "0s" 0 0 0 192 0 0  6 128 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 9 Station 4
+6 30
+"RECTANGLE10"
+""
+1 190 10 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+42 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 1 0 1 E 120 0 60 31
+6 32
+"RECTANGLE12"
+""
+1 190 10 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+46 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 1 0 1 E 180 0 120 31
+2 2
+"PRIMITIVE_TEXT1"
+""
+1 145 8 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 145 8 159 24
+0 2 2 "0s" 0 0 0 192 0 0  145 8 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 2 +Z
+2 3
+"PRIMITIVE_TEXT2"
+""
+1 85 8 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 85 8 96 24
+0 2 2 "0s" 0 0 0 192 0 0  85 8 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 2 -Z
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

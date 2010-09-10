@@ -1,0 +1,440 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 405 131 N "_3DFace" 1
+"$deviceParams"
+"main()
+{
+  dyn_string ex;
+  deviceParams = emuui_parseParameterString($deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+
+  getValue(\"refPoint\", \"position\", posX, posY);
+  // ----------========== FSM NODE ==========----------
+  fsmNode = emuui_getFsmNode(\"chamber_temperature\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  int fsmX, fsmY;
+  getValue(\"chamber_temperature_fsmRefPoint\", \"position\", fsmX, fsmY);
+  emuui_addFsmNode(fsmNode, fsmX, fsmY, references, true);
+  dpConnect(\"positionChangedCB\", true, emuui_getSessionDp(\"tooltipPositionUpdated\"));  
+  
+  // check if the node is disabled, if so - then paint everything in gray and set allGrayMode to true
+  string domain = fsmNode;
+  string object = _fwCU_getNodeObj(domain);
+  string duMode = fwFsmUi_getDUMode(domain, object);
+  if (duMode == \"Disabled\") {
+    allGrayMode = true;
+  }
+  
+  // connect to the temperature    
+  dyn_string alctTempDps = emuui_getDpNames(\"chamber_alct_temperature\", deviceParams, ex);
+  dyn_string cfebTempDps = emuui_getDpNames(\"chamber_cfeb_temperature\", deviceParams, ex);
+  dyn_string dps;
+  dynAppend(dps, alctTempDps);
+  dynAppend(dps, cfebTempDps);
+  if (emu_checkException(ex)) { return; }
+  
+  initGui(dps);
+  
+  dpConnect(\"updateTemperatureCB\", true, dps);
+  
+  // connect to last update timestamp
+  string timestampDp = emuui_getDpName(\"chamber_temperature_timestamp\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  dpConnect(\"updateLastReadTimestampCB\", true, timestampDp);
+  
+  // DISABLED CHANNELS
+  string disabledChannelsDp = emuui_getDpName(\"chamber_temperature_disabled_channels\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // ALARM COLORS
+  for (int i=1; i <= dynlen(dps); i++) {
+    dps[i] = dpSubStr(dps[i], DPSUB_SYS_DP_EL) + \":_alert_hdl.._act_state_color\";
+  }
+  alarmColorDps = dps;
+  
+  if (!allGrayMode) {
+    dpConnect(\"updateDisabledChannelsCB\", true, disabledChannelsDp);
+    dpConnect(\"updateTemperatureAlarmColorsCB\", false, alarmColorDps);
+  }
+  
+  // ----------========== DISCONNECTED WARNING ==========----------
+  if (dynlen(dps) > 1) {
+    deviceParams[\"sysName\"] = emuui_getSystemName(dps[1]);
+  }
+  dyn_string disconnectedDevicesDps = emuui_getDpNames(\"disconnected_devices\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  dpConnect(\"updateDisconnectedWarningCB\", true, disconnectedDevicesDps);
+}
+
+void initGui(dyn_string dps) {
+  // mapping of [disabled channel numbers (array index)] to [column names in the table]
+  disabledChNumToColumn = makeDynString(\"cfeb.v1\", \"cfeb.v2\", \"cfeb.v3\", \"cfeb.v4\", \"cfeb.v5\", \"alct.v1\", \"dmb.v1\");
+  
+  //special case for ME1/3 - they don't have CFEB5 but it is in DCS for some reason - remove it here
+  if ((deviceParams[\"station\"] == 1) && (deviceParams[\"ring\"] == 3)) {
+    int index = dynPartiallyContains(dps, \"cfeb.v5\");
+    if (index > 0) {
+      dynRemove(dps, index);
+    }
+  }
+  
+  // Fill up the columnNames array. 
+  // And if any column name is not found in part of the DPs name then it's removed (e.g. not all chambers have CFEB5 so it's removed from the table)
+  int columnCount = tableTemp.columnCount();
+  dyn_int columnsToDelete;
+  for (int i=0; i < columnCount; i++) {
+    string columnName = tableTemp.columnToName(i);
+    //check if the column name is part of any dps
+    if (dynPartiallyContains(dps, columnName) > 0) {
+      dynAppend(columnNames, columnName);
+    } else {
+      dynAppend(columnsToDelete, i); // register to be deleted
+    }
+  }
+  
+  //delete unnecessary columns
+  for (int i = dynlen(columnsToDelete); i >=1; i--) {
+    tableTemp.deleteColumn(columnsToDelete[i]);
+  }
+  
+  //set the appropriate width for the table
+  tableTemp.appendLine(columnNames[1], \"\");
+  for (int i=1; i <= dynlen(columnNames); i++) {
+    tableTemp.cellValueRC(0, columnNames[i], \"loading\");
+  }
+  emuui_tableCompact(\"tableTemp\", 1);
+  
+  if (allGrayMode) {
+    // paint everyting gray
+    for (int j=0; j < tableTemp.columnCount(); j++) {
+      tableTemp.cellBackColRC(0, tableTemp.columnToName(j), \"FwEquipmentDisabled\");
+    }
+  }
+}" 0
+ "main()
+{
+  emuui_destroyReferences(references);
+}" 0
+ E E E 1 -1 -1 0  0 0
+""0  1
+E "//some panel-wide constants and variables
+int cfebCount;
+mapping deviceParams;
+dyn_string columnNames;
+dyn_string disabledChNumToColumn;  // mapping of [disabled channel numbers (array index)] to [column names in the table]
+string fsmNode;
+dyn_string references;
+int posX, posY;
+bool allGrayMode; // this flag is true when the whole LV FSM node is disabled - then back color of the tables is always gray
+bool noCommunication;
+
+dyn_string alarmColorDps;
+dyn_int disabledChannels;
+
+void positionChangedCB(string dummyDpName, int dummyValue) {
+  emuui_alignSmallFsmNodes(references, makeDynString(\"chamber_temperature_fsmRefPoint\"));
+}
+
+void updateTemperatureCB(dyn_string dps, dyn_float temperatures) {
+  if (noCommunication) { return; } // don't update the table - let the \"???\" and grey color stay there
+
+  for (int i=1; i <= dynlen(columnNames); i++) {
+    int index = dynPartiallyContains(dps, columnNames[i]);
+    if (index > 0) {
+      string strValue;
+      if ((temperatures[index] == -2) || (temperatures[index] == -3)) {
+        strValue = \"N/A\";
+      } else {
+        sprintf(strValue, \"%.1f °C\", temperatures[index]);
+      }
+      tableTemp.cellValueRC(0, columnNames[i], strValue);
+    }
+  }
+}
+
+/** This function is called when the last reading timestamp changes and it shows that timestamp on the lblLastUpdate label. */
+void updateLastReadTimestampCB(string timestampDp, int timestamp) {
+  time t = timestamp;
+  lblLastUpdate.text = emuui_formatTime(t);
+}
+
+void updateDisabledChannelsCB(string dp, dyn_int disabledChannelsParam) {
+  disabledChannels = disabledChannelsParam;
+  
+  //repaint the colors
+  dyn_anytype values;
+  dpGet(alarmColorDps, values);
+  updateTemperatureAlarmColorsCB(alarmColorDps, values);
+}
+
+void updateTemperatureAlarmColorsCB(dyn_string dps, dyn_string alarmColors) {
+  if (noCommunication) { return; } // don't update the table - let the \"???\" and grey color stay there
+
+  for (int i=1; i <= dynlen(columnNames); i++) {
+    int index = dynPartiallyContains(dps, columnNames[i]);
+    if (index > 0) {
+      alarmColors[index] = emuui_correctAlarmColor(alarmColors[index]);
+      tableTemp.cellBackColRC(0, columnNames[i], alarmColors[index]);
+    }
+  }
+  //gray out the disabled channels
+  for (int i=1; i <= dynlen(disabledChannels); i++) {
+    string column = disabledChNumToColumn[disabledChannels[i]];
+    tableTemp.cellBackColRC(0, column, \"FwEquipmentDisabled\");
+  }
+}
+    
+/** returns index of an element within the container which is first to contain a searchString. -1 is returned if no match is found. */
+int dynPartiallyContains(dyn_string container, string searchString) {
+  for (int i=1; i <= dynlen(container); i++) {
+    if (strpos(container[i], searchString) >= 0) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+/** if disconnectedDevices contains hvFsmNode then \"no communication\" warning is shown, otherwise it's hidden. */
+void updateDisconnectedWarningCB(dyn_string dps, dyn_string disconnectedDevices) {
+  bool isDisconnected = false;
+  for (int i=1; i <= dynlen(disconnectedDevices); i++) {
+    if (strpos(disconnectedDevices[i], fsmNode) >= 0) {
+      isDisconnected = true;
+      break;
+    }
+  }
+  noCommunication = isDisconnected;
+  if (noCommunication) {
+    emuui_showTooltipWarning(getShape(\"refPoint\"),
+                           getShape(\"warnNoTempCommunication\"), 
+                           getShape(\"chamber_temperature_tooltipBack\"));
+  } else {
+    emuui_hideTooltipWarning(getShape(\"warnNoTempCommunication\"), 
+                             getShape(\"chamber_temperature_tooltipBack\"));
+  }
+  
+  // no communication - display ??? for all values
+  if (noCommunication) {
+    emuui_questionOutTable(tableTemp.name());
+  }
+}
+" 0
+ 2
+"CBRef" "1"
+"EClose" "main()
+{
+  emuui_destroyReferences(references);
+  PanelOff();
+}" 0
+
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 10
+"chamber_temperature_tooltipBack"
+""
+1 400 40 E E E 1 E 1 E N {0,0,0} E N {255,255,225} E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 3.454545454545453 0 0.888888888888889 -1381.818181818179 -35.5555555555556 1 E 400 40 510 130
+2 1
+"PRIMITIVE_TEXT1"
+""
+1 10 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 10 82 25
+0 2 2 "0s" 0 0 0 192 0 0  10 10 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 11 Temperature
+25 2
+"tableTemp"
+""
+1 10 30 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0  8 28 372 72
+EE 1 0 1 6 0 "alct.v1" 5 1 0 "s" 1
+LANG:1 4 ALCT
+E
+1
+LANG:1 0 
+
+60 "cfeb.v1" 5 1 0 "s" 1
+LANG:1 6 CFEB 1
+E
+1
+LANG:1 0 
+
+60 "cfeb.v2" 5 1 0 "s" 1
+LANG:1 6 CFEB 2
+E
+1
+LANG:1 0 
+
+60 "cfeb.v3" 5 1 0 "s" 1
+LANG:1 6 CFEB 3
+E
+1
+LANG:1 0 
+
+60 "cfeb.v4" 5 1 0 "s" 1
+LANG:1 6 CFEB 4
+E
+1
+LANG:1 0 
+
+60 "cfeb.v5" 5 1 0 "s" 1
+LANG:1 6 CFEB 5
+E
+1
+LANG:1 0 
+
+59 
+18 18 10 10
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 0 0 0 1 7
+1 0
+2 3
+"lblLastUpdate"
+""
+1 270 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 270 10 328 25
+0 2 2 "0s" 0 0 0 192 0 0  270 10 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 9 timestamp
+2 4
+"PRIMITIVE_TEXT3"
+""
+1 200 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 200 10 269 25
+0 2 2 "0s" 0 0 0 192 0 0  200 10 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 12 Last update:
+7 6
+"refPoint"
+""
+1 140 110 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -140 -110 1 E 140 110 10 10
+6 7
+"chamber_temperature_fsmRefPoint"
+""
+1 110 0 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 2.5 0 1 -185 6 1 E 110 0 130 20
+2 8
+"warnNoTempCommunication"
+""
+1 10 90 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+13 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 90 370 104
+1 2 2 "0s" 0 0 0 65 0 0  10 90 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 54 No Communication - check PCrate LV and Xmas monitoring
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

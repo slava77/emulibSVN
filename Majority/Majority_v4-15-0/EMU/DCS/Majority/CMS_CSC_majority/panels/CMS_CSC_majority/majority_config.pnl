@@ -1,0 +1,821 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 500 400 N "_3DFace" 0
+E E E E E 1 -1 -1 0  30 20
+""0  1
+E "#uses \"majority_treeCache/majorityLib.ctl\"
+
+string majorityTopNode = \"CMS_CSC\";
+
+void configureHv(string topNode) {
+  majority_addDevice(\"HV_OUTER\", // this defines the internal name of the device for the majority
+  \"HV_1\", // this is the corresponding Device Unit Type
+  makeDynString(\".status\",\".off_channels\", \".last_vset\"), // define the datapoint elements you need to connect
+  makeDynString(\"on\",\"standby\",\"error\"), // these are the basic device states for this device
+  18 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  );
+            
+  majority_addDevice(\"HV_INNER\", // this defines the internal name of the device for the majority
+  \"HV_1\", // this is the corresponding Device Unit Type
+  makeDynString(\".status\",\".off_channels\", \".last_vset\"), // define the datapoint elements you need to connect
+  makeDynString(\"on\",\"standby\",\"error\"), // these are the basic device states for this device
+  18 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  );
+ 
+  // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
+            
+  majority_addColors(\"HV_OUTER\", \"on\", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
+  majority_addColors(\"HV_OUTER\", \"standby\", makeDynString(\"_Window\",\"FwStateAttention1\",\"yellow\",\"yellow\",\"yellow\"));    
+  majority_addColors(\"HV_OUTER\", \"error\", majority_getStandardColorsError() );    
+
+  majority_addColors(\"HV_INNER\", \"on\", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
+  majority_addColors(\"HV_INNER\", \"standby\", makeDynString(\"_Window\",\"FwStateAttention1\",\"yellow\",\"yellow\",\"yellow\"));    
+  majority_addColors(\"HV_INNER\", \"error\", majority_getStandardColorsError() );    
+
+  majority_addPercentages(topNode, \"HV_OUTER\", makeDynFloat(95, 95, 5)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+  majority_addPercentages(topNode, \"HV_INNER\", makeDynFloat(95, 95, 5)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+}
+
+void configureLv(string topNode) {
+  majority_addDevice(\"LV\", // this defines the internal name of the device for the majority
+  \"LV_1\", // this is the corresponding Device Unit Type
+  makeDynString(\".status\", \".chamber_state\", \".noalert_channels\"), // define the datapoint elements you need to connect
+  makeDynString(\"on\", \"error\", \"no_communication\"), // these are the basic device states for this device
+  19 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  );
+ 
+  // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
+  majority_addColors(\"LV\", \"on\", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
+  majority_addColors(\"LV\", \"error\", majority_getStandardColorsError() );    
+  majority_addColors(\"LV\", \"no_communication\", majority_getStandardColorsError() );    
+
+  majority_addPercentages(topNode, \"LV\", makeDynFloat(95, 5, 40)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+}
+
+void configureTemp(string topNode) {
+  majority_addDevice(\"TEMP\", // this defines the internal name of the device for the majority
+  \"TEMP_1\", // this is the corresponding Device Unit Type
+  makeDynString(\".status\", \".chamber_state\", \".off_channels\"), // define the datapoint elements you need to connect
+  makeDynString(\"ok\", \"alert\", \"no_communication\"), // these are the basic device states for this device
+  7 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  );
+ 
+  // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
+  majority_addColors(\"TEMP\", \"ok\", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
+  majority_addColors(\"TEMP\", \"alert\", majority_getStandardColorsError() );    
+  majority_addColors(\"TEMP\", \"no_communication\", majority_getStandardColorsError() );    
+
+  majority_addPercentages(topNode, \"TEMP\", makeDynFloat(95, 5, 40)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+}
+
+void configureCrb(string topNode) {
+  majority_addDevice(\"CRB\", // this defines the internal name of the device for the majority
+  \"fwCrb_CSC_LV\", // this is the corresponding Device Unit Type
+  makeDynString(\".fsm.currentState\"), // define the datapoint elements you need to connect
+  makeDynString(\"on\", \"error\"), // these are the basic device states for this device
+  1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  );
+ 
+  // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
+  majority_addColors(\"CRB\", \"on\", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
+  majority_addColors(\"CRB\", \"error\", majority_getStandardColorsError() );    
+
+  majority_addPercentages(topNode, \"CRB\", makeDynFloat(99, 1)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+}
+
+void configureMaratonChannel(string topNode) {
+  majority_addDevice(\"MrtnChannel\", // this defines the internal name of the device for the majority
+  \"FwWienerMarathonChannel\", // this is the corresponding Device Unit Type
+  makeDynString(\".fsm.currentState\"), // define the datapoint elements you need to connect
+  makeDynString(\"on\", \"error\"), // these are the basic device states for this device
+  1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  );
+ 
+  // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
+  majority_addColors(\"MrtnChannel\", \"on\", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
+  majority_addColors(\"MrtnChannel\", \"error\", majority_getStandardColorsError() );    
+
+  majority_addPercentages(topNode, \"MrtnChannel\", makeDynFloat(100, 0)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+}
+
+void configureMaratonCrate(string topNode) {
+  majority_addDevice(\"MrtnCrate\", // this defines the internal name of the device for the majority
+  \"FwWienerMarathon\", // this is the corresponding Device Unit Type
+  makeDynString(\".fsm.currentState\"), // define the datapoint elements you need to connect
+  makeDynString(\"on\", \"error\"), // these are the basic device states for this device
+  1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  );
+ 
+  // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
+  majority_addColors(\"MrtnCrate\", \"on\", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
+  majority_addColors(\"MrtnCrate\", \"error\", majority_getStandardColorsError() );    
+
+  majority_addPercentages(topNode, \"MrtnCrate\", makeDynFloat(100, 0)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+}
+
+void configureDDU(string topNode) {
+  majority_addDevice(\"DDU\", // this defines the internal name of the device for the majority
+  \"FED_1\", // this is the corresponding Device Unit Type
+  makeDynString(\".status\", \".off_channels\"), // define the datapoint elements you need to connect
+  makeDynString(\"on\", \"error\", \"no_communication\"), // these are the basic device states for this device
+  1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  );
+ 
+  // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
+  majority_addColors(\"DDU\", \"on\", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
+  majority_addColors(\"DDU\", \"error\", majority_getStandardColorsError() );    
+  majority_addColors(\"DDU\", \"no_communication\", majority_getStandardColorsError() );    
+
+  majority_addPercentages(topNode, \"DDU\", makeDynFloat(95, 6, 40)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+}
+
+void configureLvForHv(string topNode) {
+  // LV for HV Wiener Crate
+  majority_addDevice(\"LvForHv_Cr\", // this defines the internal name of the device for the majority
+  \"fwWnrCr_CSC_LV\", // this is the corresponding Device Unit Type
+  makeDynString(\".status\"), // define the datapoint elements you need to connect
+  makeDynString(\"on\", \"error\"), // these are the basic device states for this device
+  1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  );
+ 
+  // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
+  majority_addColors(\"LvForHv_Cr\", \"on\", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
+  majority_addColors(\"LvForHv_Cr\", \"error\", majority_getStandardColorsError() );    
+
+  majority_addPercentages(topNode, \"LvForHv_Cr\", makeDynFloat(100, 0)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+
+  
+  // LV for HV Wiener Channel
+  majority_addDevice(\"LvForHv_Ch\", // this defines the internal name of the device for the majority
+  \"fwWnrCh_CSC_LV\", // this is the corresponding Device Unit Type
+  makeDynString(\".status\"), // define the datapoint elements you need to connect
+  makeDynString(\"on\", \"error\"), // these are the basic device states for this device
+  1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  );
+ 
+  // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
+  majority_addColors(\"LvForHv_Ch\", \"on\", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
+  majority_addColors(\"LvForHv_Ch\", \"error\", majority_getStandardColorsError() );    
+
+  majority_addPercentages(topNode, \"LvForHv_Ch\", makeDynFloat(100, 0)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+}
+
+void configureAtlasPSU(string topNode) {
+  // Atlas PSU branch
+  majority_addDevice(\"AtlasPSU_Branch\", // this defines the internal name of the device for the majority
+  \"FwElmbPSUBranch\", // this is the corresponding Device Unit Type
+  makeDynString(\".fsm.currentState\"), // define the datapoint elements you need to connect
+  makeDynString(\"on\", \"error\"), // these are the basic device states for this device
+  1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  );
+ 
+  // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
+  majority_addColors(\"AtlasPSU_Branch\", \"on\", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
+  majority_addColors(\"AtlasPSU_Branch\", \"error\", majority_getStandardColorsError() );    
+
+  majority_addPercentages(topNode, \"AtlasPSU_Branch\", makeDynFloat(100, 0)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+}
+
+void configureHVPrimaries(string topNode) {
+  // HV Primary supplies
+  majority_addDevice(\"HV_Primary\", // this defines the internal name of the device for the majority
+  \"HV_PR\", // this is the corresponding Device Unit Type
+  makeDynString(\".fsm.currentState\"), // define the datapoint elements you need to connect
+  makeDynString(\"on\", \"standby\", \"error\"), // these are the basic device states for this device
+  1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  );
+ 
+  // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
+  majority_addColors(\"HV_Primary\", \"on\", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
+  majority_addColors(\"HV_Primary\", \"standby\", makeDynString(\"_Window\",\"FwStateAttention1\",\"yellow\",\"yellow\",\"yellow\"));    
+  majority_addColors(\"HV_Primary\", \"error\", majority_getStandardColorsError() );    
+
+  majority_addPercentages(topNode, \"HV_Primary\", makeDynFloat(100, 100, 0)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+}
+
+void configureME11Hv(string topNode) {
+  // ME1/1 HV
+  majority_addDevice(\"HV_ME11\", // this defines the internal name of the device for the majority
+  \"FwCaenChannel\", // this is the corresponding Device Unit Type
+  makeDynString(\".fsm.currentState\"), // define the datapoint elements you need to connect
+  makeDynString(\"on\", \"standby\", \"error\"), // these are the basic device states for this device
+  1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  );
+ 
+  // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
+  majority_addColors(\"HV_ME11\", \"on\", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
+  majority_addColors(\"HV_ME11\", \"standby\", makeDynString(\"_Window\",\"FwStateAttention1\",\"yellow\",\"yellow\",\"yellow\"));    
+  majority_addColors(\"HV_ME11\", \"error\", majority_getStandardColorsError() );    
+
+  majority_addPercentages(topNode, \"HV_ME11\", makeDynFloat(95, 95, 5)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+}
+
+void configureGas(string topNode) {
+  //GAS - top (global) device only
+  majority_addDevice(\"Gas\", // this defines the internal name of the device for the majority
+  \"fwGasSystem_CSC_GAS\", // this is the corresponding Device Unit Type
+  makeDynString(\".status\"), // define the datapoint elements you need to connect
+  makeDynString(\"on\", \"error\"), // these are the basic device states for this device
+  1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  );
+ 
+  // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
+  majority_addColors(\"Gas\", \"on\", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
+  majority_addColors(\"Gas\", \"error\", majority_getStandardColorsError() );    
+
+  majority_addPercentages(topNode, \"Gas\", makeDynFloat(100, 0)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+}
+
+void configureCooling(string topNode) {
+  //GAS - top (global) device only
+  majority_addDevice(\"Cooling\", // this defines the internal name of the device for the majority
+  \"fwCooling_CSC_COOLING\", // this is the corresponding Device Unit Type
+  makeDynString(\".status\"), // define the datapoint elements you need to connect
+  makeDynString(\"on\", \"error\"), // these are the basic device states for this device
+  1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  );
+ 
+  // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
+  majority_addColors(\"Cooling\", \"on\", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
+  majority_addColors(\"Cooling\", \"error\", majority_getStandardColorsError() );    
+
+  majority_addPercentages(topNode, \"Cooling\", makeDynFloat(100, 0)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+}
+" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"PUSH_BUTTON1"
+""
+1 30 20 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  28 18 202 62
+
+T 
+1
+LANG:1 18 Configure Majority
+"main() { 
+  
+  majority_new(majorityTopNode); // you may want to pass a second parameter that is the treeCache topNode if you need to use 
+  //  the same treeCache but with different topNodes for different majorities
+  majority_deleteConfig(majorityTopNode);  
+
+  DebugTN(\"Creating HV majority\");
+  configureHv(majorityTopNode);
+  DebugTN(\"Creating ME1/1 HV majority\");
+  configureME11Hv(majorityTopNode);
+  DebugTN(\"Creating HV Primary majority\");
+  configureHVPrimaries(majorityTopNode);
+  DebugTN(\"Creating LV majority\");
+  configureLv(majorityTopNode);
+  DebugTN(\"Creating Temperature majority\");
+  configureTemp(majorityTopNode);
+  DebugTN(\"Creating CRB majority\");
+  configureCrb(majorityTopNode);
+  DebugTN(\"Creating Maraton Channel majority\");
+  configureMaratonChannel(majorityTopNode);
+  DebugTN(\"Creating Maraton Crate majority\");
+  configureMaratonCrate(majorityTopNode);
+  DebugTN(\"Creating DDU majority\");
+  configureDDU(majorityTopNode);
+  DebugTN(\"Creating LV for HV majority\");
+  configureLvForHv(majorityTopNode);
+  DebugTN(\"Creating Atlas PSU branch majority\");
+  configureAtlasPSU(majorityTopNode);
+  DebugTN(\"Creating GAS majority (top device only)\");
+  configureGas(majorityTopNode);
+  DebugTN(\"Creating COOLING majority (top device only)\");
+  configureCooling(majorityTopNode);
+
+  DebugTN(\"Creating general majority parameters\");
+  
+  // Configure the polling: for each node, define the number of polls, the poll_time in milliseconds and the maximum number of polls
+  //  Possible values could be 100,2 
+ 
+  majority_clearPollConfig();
+//  majority_addPollConfig(majorityTopNode, 3, 500, 30);
+
+  // OR: If you want you can try to use the automaticConfig that tries to change the polling time depending on the number of children of each node 
+  //   In this case you define a mean poll time (divided in 1 or 2 polls) and a max number of rejected threads. Possible values  100, 2
+  // IF YOU USE THE AUTOMATIC CONFIGURATION, YOU DO NOT NEED TO CALL THE PREVIOUS TWO FUNCTIONS (majority_clearPollConfig and majority_addPollConfig)
+  majority_automaticConfig(100, 2);
+
+  // this is the refresh of the datapoints from the map in memory (500 ms should be ok)
+  majority_setRefresh(500);
+
+  // then create the majority
+  // to change the configuration you will need to repeat the steps after addPercentages and call again majority_create
+
+  majority_create();
+  
+  DebugTN(\"DONE\");
+}" 0
+ E E E
+13 1
+"PUSH_BUTTON2"
+""
+1 230 20 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  228 18 402 62
+
+T 
+1
+LANG:1 20 Delete Majority Conf
+"main() { 
+  
+  majority_deleteConfig(majorityTopNode);  
+  DebugTN(\"DONE\");
+}" 0
+ E E E
+13 2
+"PUSH_BUTTON3"
+""
+1 20 330 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  18 328 192 372
+
+T 
+1
+LANG:1 27 Open Majority Control Panel
+"main() { 
+  ChildPanelOnCentralModal(\"majority_treeCache/majorityControlPanel.pnl\", \"majority_control_panel\",
+                           makeDynString(\"$treeCache_topNode:\" + majorityTopNode,
+                                         \"$majority_topNode:\" + majorityTopNode));
+}" 0
+ E E E
+13 3
+"PUSH_BUTTON4"
+""
+1 210 330 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  208 328 382 372
+
+T 
+1
+LANG:1 27 Open Majority Details Panel
+"main() { 
+  ChildPanelOnCentralModal(\"majority_treeCache/majorityDetails.pnl\", \"majority_details_panel\",
+                           makeDynString(\"$treeCache_topNode:\" + majorityTopNode,
+                                         \"$majority_topNode:\" + majorityTopNode,
+                                         \"$1:\" + majorityTopNode));
+}" 0
+ E E E
+13 4
+"PUSH_BUTTON5"
+""
+1 30 80 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  28 78 202 122
+
+T 
+1
+LANG:1 20 Add Majority FSM DUs
+"main() { 
+  dyn_string ex;
+  dyn_string nodes;
+  dyn_string allTypes;  
+  
+    
+  fwTree_getAllTreeNodes(\"FSM\", nodes, ex);
+  if (emu_checkException(ex)) { return; }  
+  for(int i=1; i <= dynlen(nodes); i++) {
+    DebugTN(\"  processing node \" + nodes[i]);
+    if (strpos(nodes[i], \"&\") >= 0) { 
+      DebugTN(\"  skipping \" + nodes[i] + \" - reference\");
+      continue;
+    }
+    string type;
+    fwCU_getType(nodes[i], type);
+    string domain = nodes[i];
+    string object = _fwCU_getNodeObj(domain);
+    bool isDU = fwFsm_isDU(domain, object);
+    if (isDU) { continue; }
+    
+    if (fwFsmTree_isNode(\"majority_\" + nodes[i])) { 
+      DebugTN(\"  skipping majority_\" + nodes[i] + \" - node already exists\");
+      continue;
+    }
+    fwFsmTree_addNode(nodes[i], \"majority_\" + nodes[i], \"majority\", 0);   
+    fwFsmTree_setNodeVisibility(\"majority_\" + nodes[i], 0);
+    DebugTN(\"    majority DU created in \" + nodes[i] + \" - \" + type);
+    if (!dynContains(allTypes, type)) {
+      dynAppend(allTypes, type);
+    }
+  }
+
+  DebugTN(\"All non-DU types that were found:\");
+  for (int i=1; i <= dynlen(allTypes); i++) {
+    DebugTN(\"    \" + allTypes[i]);
+  }
+  
+  fwFsmTree_generateAll();
+  fwFsmTree_refreshTree();  
+  
+  DebugTN(\"DONE\");
+}
+
+
+// in case CMS_CSC_common is not installed
+bool emu_checkException(dyn_string &exceptionInfo, string higherLevelMsg = \"\") {
+  if (dynlen(exceptionInfo) > 0) {
+    DebugTN(\"ERROR:\");
+    DebugTN(exceptionInfo);
+    return true;
+  }
+  return false;
+}
+" 0
+ E E E
+13 5
+"PUSH_BUTTON6"
+""
+1 230 80 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  228 78 402 122
+
+T 
+1
+LANG:1 23 Delete Majority FSM DUs
+"main() { 
+
+//   _removeFromFwTreeNodesAsChildren();
+//   return;
+   
+  dyn_string ex;
+  dyn_string nodes;
+  dyn_string allTypes;  
+  
+    
+  fwTree_getAllTreeNodes(\"FSM\", nodes, ex);
+  if (emu_checkException(ex)) { return; }  
+  for(int i=1; i <= dynlen(nodes); i++) {
+    if (strpos(nodes[i], \"&\") >= 0) { continue; }
+    string type;
+    fwCU_getType(nodes[i], type);
+    if (type == \"majority\") {
+      DebugTN(\"   Deleting \" + nodes[i] + \"...\");
+//       string domain = nodes[i];
+//       string object = _fwCU_getNodeObj(domain);
+      string parent;
+      fwTree_getParent(nodes[i], parent, ex);
+      if (emu_checkException(ex)) { return; }  
+      fwFsmTree_removeNode(parent, nodes[i], 0);
+//       fwTree_removeNode(parent, nodes[i], ex);
+//       if (emu_checkException(ex)) { return; }  
+    }
+  }  
+  
+  fwFsmTree_generateAll();
+  fwFsmTree_refreshTree();  
+  
+  DebugTN(\"DONE\");
+}
+
+
+// in case CMS_CSC_common is not installed
+bool emu_checkException(dyn_string &exceptionInfo, string higherLevelMsg = \"\") {
+  if (dynlen(exceptionInfo) > 0) {
+    DebugTN(\"ERROR:\");
+    DebugTN(exceptionInfo);
+    return true;
+  }
+  return false;
+}
+
+
+void _removeFromFwTreeNodesAsChildren() {
+  dyn_string dps = dpNames(\"*\", \"_FwTreeNode\");
+  for (int i=1; i <= dynlen(dps); i++) {
+    DebugTN(\"processing \" + dps[i]);
+    if (strpos(dps[i], \"&\") >= 0) { 
+      DebugTN(\"skipping \" + dps[i] + \" - reference\");
+      continue;
+    }
+    dyn_string children;
+    dpGet(dps[i] + \".children\", children);
+    dyn_string newChildren;
+    for (int j=1; j <= dynlen(children); j++) {
+      if (strpos(children[j], \"majority_\") < 0) {
+        dynAppend(newChildren, children[j]);
+      }
+    }
+    dpSetWait(dps[i] + \".children\", newChildren);
+  }
+  DebugTN(\"DONE\");
+}" 0
+ E E E
+13 6
+"PUSH_BUTTON7"
+""
+1 40 210 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  38 208 202 235
+
+T 
+1
+LANG:1 27 Check if this is supervisor
+"main()
+{
+  dyn_string children;
+  dyn_string ex;
+  fwTree_getChildren(\"FSM\", children, ex);
+  
+  bool isSupervisor = dynContains(children, majorityTopNode);
+  lblSupervisor.text = isSupervisor;
+}" 0
+ E E E
+2 7
+"PRIMITIVE_TEXT1"
+""
+1 40 250 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 40 250 134 264
+0 2 2 "0s" 0 0 0 192 0 0  40 250 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 21 is this a supervisor?
+2 8
+"lblSupervisor"
+""
+1 150 250 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 150 250 197 264
+0 2 2 "0s" 0 0 0 192 0 0  150 250 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 10 true/false
+13 9
+"PUSH_BUTTON8"
+""
+1 260 210 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  258 208 382 235
+
+T 
+1
+LANG:1 8 Stop FSM
+"main()
+{
+  fwFsm_stopAllDomains();
+}" 0
+ E E E
+13 11
+"PUSH_BUTTON10"
+""
+1 40 280 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  38 278 162 305
+
+T 
+1
+LANG:1 16 Update FSM types
+"main()
+{
+  dyn_string typesToUpdate = makeDynString(\"CSC_LV_NODES\",
+                                           \"CSC_LV_TREE_NODES\",
+                                           \"EMUFEDNodes\",
+                                           \"EMUNodes\",
+                                           \"EMUSTBYNodes\",
+                                           \"EMUTREENodes\",
+                                           \"TEST\");
+  
+  for (int i=1; i <= dynlen(typesToUpdate); i++) {
+    string typeDp = \"fwOT_\" + typesToUpdate[i];
+    if (!dpExists(typeDp)) {
+      continue;
+    }
+    if (!dpExists(typeDp + \"_majBackup\")) {
+      int error;
+      dpCopy(typeDp, typeDp + \"_majBackup\", error);
+      string panel;
+      dyn_string components, states, actions, parameters;
+      dpGet(typeDp + \".panel\", panel,
+            typeDp + \".components\", components,
+            typeDp + \".states\", states,
+            typeDp + \".actions\", actions,
+            typeDp + \".parameters\", parameters);
+      dpSetWait(typeDp + \"_majBackup.panel\", panel,
+                typeDp + \"_majBackup.components\", components,
+                typeDp + \"_majBackup.states\", states,
+                typeDp + \"_majBackup.actions\", actions,
+                typeDp + \"_majBackup.parameters\", parameters);
+    }
+    
+    dyn_string states = makeDynString(\"OFF\",
+                                      \"FwStateOKNotPhysics\",
+                                      \"when ( $ALL$majority in_state ON )  move_to ON|when ( $ALL$majority in_state OUTER_ON )  move_to OUTER_ON|when ( $ALL$majority in_state STANDBY )  move_to STANDBY|when ( $ALL$majority in_state ERROR )  move_to ERROR|when ( $ALL$majority in_state NOT-READY )  move_to NOT-READY|\",
+                                      \"\",
+                                      \"\",
+                                      \"ERROR\",
+                                      \"FwStateAttention3\",
+                                      \"when ( $ALL$majority in_state ON )  move_to ON|when ( $ALL$majority in_state OUTER_ON )  move_to OUTER_ON|when ( $ALL$majority in_state STANDBY )  move_to STANDBY|when ( $ALL$majority in_state OFF )  move_to OFF|when ( $ALL$majority in_state NOT-READY )  move_to NOT-READY|\",
+                                      \"\",
+                                      \"\",
+                                      \"ON\",
+                                      \"FwStateOKPhysics\",
+                                      \"when ( $ALL$majority in_state OUTER_ON )  move_to OUTER_ON|when ( $ALL$majority in_state STANDBY )  move_to STANDBY|when ( $ALL$majority in_state OFF )  move_to OFF|when ( $ALL$majority in_state ERROR )  move_to ERROR|when ( $ALL$majority in_state NOT-READY )  move_to NOT-READY|\",
+                                      \"\",
+                                      \"\",
+                                      \"STANDBY\",
+                                      \"FwStateAttention1\",
+                                      \"when ( $ALL$majority in_state ON )  move_to ON|when ( $ALL$majority in_state OUTER_ON )  move_to OUTER_ON|when ( $ALL$majority in_state OFF )  move_to OFF|when ( $ALL$majority in_state ERROR )  move_to ERROR|when ( $ALL$majority in_state NOT-READY )  move_to NOT-READY|\",
+                                      \"\",
+                                      \"\",
+                                      \"OUTER_ON\",
+                                      \"FwStateAttention1\",
+                                      \"when ( $ALL$majority in_state ON )  move_to ON|when ( $ALL$majority in_state STANDBY )  move_to STANDBY|when ( $ALL$majority in_state OFF )  move_to OFF|when ( $ALL$majority in_state ERROR )  move_to ERROR|when ( $ALL$majority in_state NOT-READY )  move_to NOT-READY|\",
+                                      \"\",
+                                      \"\",
+                                      \"NOT-READY\",
+                                      \"FwStateAttention1\",
+                                      \"when ( $ALL$majority in_state ON )  move_to ON|when ( $ALL$majority in_state OUTER_ON )  move_to OUTER_ON|when ( $ALL$majority in_state STANDBY )  move_to STANDBY|when ( $ALL$majority in_state OFF )  move_to OFF|when ( $ALL$majority in_state ERROR )  move_to ERROR|\",
+                                      \"\",
+                                      \"\");
+    dpSetWait(typeDp + \".states\", states);
+  }
+  
+  DebugTN(\"DONE\");
+}" 0
+ E E E
+13 12
+"PUSH_BUTTON11"
+""
+1 250 280 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  248 278 372 305
+
+T 
+1
+LANG:1 7 Add FED
+"main()
+{
+    fwFsm_stopAllDomains();
+  mudcsSuper_createFsmReferenceNode(\"CMS_CSC\", \"CSC_FED\", 1);
+  
+  fwFsmTree_generateAll();
+  fwFsmTree_refreshTree();  
+  
+  DebugTN(\"DONE\");
+}
+
+void mudcsSuper_createFsmReferenceNode(string parent, string nodeName, int cuFlag) {
+  string type;
+  fwCU_getType(nodeName, type);
+  if (strlen(type) == 0) {
+    DebugTN(\"ERROR: Cannot determine type of node \" + nodeName + \". Node is not created.\");
+    return;
+  }
+  mudcsSuper_createFsmNode(parent, nodeName, type, cuFlag);
+}
+
+void mudcsSuper_createFsmNode(string parent, string nodeName, string type, int cuFlag) {
+  DebugTN(\"===== creating \" + nodeName + \" of type \" + type + \" to \" + parent);
+  fwFsmTree_addNode(parent, nodeName, type, cuFlag);
+}
+" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

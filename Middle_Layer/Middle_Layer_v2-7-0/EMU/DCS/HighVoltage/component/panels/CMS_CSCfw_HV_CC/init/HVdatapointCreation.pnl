@@ -1,0 +1,203 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 516 249 N "_3DFace" 0
+"main()
+{
+
+// moved to emuDcs3.ctl
+
+/*
+dpCreate(\"HV_1_DimBroker_o\",\"HV_1_d\");
+dpCreate(\"HV_2_DimBroker_o\",\"HV_1_d\");
+dpCreate(\"HV_3_DimBroker_o\",\"HV_1_d\");
+dpCreate(\"master100_14_15\",\"HV_1_d\");
+dpCreate(\"master100_20_14\",\"HV_1_d\");
+DebugN(\"HV_1_DimBroker_o,HV_2_DimBroker_o and master100_14_15 created\");
+*/
+}" 0
+ E E E E 1 -1 -1 0  40 69
+""0  1
+E E 2
+"CBRef""1"
+"EClose"E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"masters"
+""
+1 40 69 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 109 -*-Helvetica [Adobe]-*-r-normal-*-*-140-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 40 69 410 96
+
+T 
+1
+LANG:1 27 masters create (tempor use)
+"main()
+{
+
+dyn_string masters_old;
+int i;
+string test_string;
+
+ masters_old=dpNames(\"master*\",\"HV_1_d\");
+ for(i=1;i<=dynlen(masters_old);i++){
+   dpDelete(masters_old[i]);
+ }
+ 
+
+  dpCreate(\"master100_2_15\",\"HV_1_d\");
+  dpCreate(\"master100_2_14\",\"HV_1_d\");
+
+
+
+  dpCreate(\"master100_2_15\",\"HV_1_d\");
+  dpCreate(\"master100_2_14\",\"HV_1_d\");
+
+ for(i=0;i<6;i++){
+  test_string=\"master\"+\"200_0_\"+i;
+  dpCreate(test_string,\"HV_1_d\");
+ }
+
+
+}" 0
+ E E E
+13 1
+"db"
+""
+1 40 140 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 109 -*-Helvetica [Adobe]-*-r-normal-*-*-140-100-100-*-*-iso8859-1|-14,0,0,0,505,0,0,0,0,0,0,0,0,Helvetica [Adobe]
+0 ""
+ 40 140 410 167
+
+T 
+1
+LANG:1 22 db change (tempor use)
+"main()
+{
+
+dyn_string coords;
+
+int i;
+string test_string;
+int pos;
+
+test_string=\"Db_o.Wheels_o.Wheel6.InHVsetList\";
+dpGet(test_string,coords);
+replace(test_string,coords);
+//-------------
+test_string=\"Db_o.Wheels_o.Wheel6.OutHVsetList\";
+dpGet(test_string,coords);
+replace(test_string,coords);
+//-------------
+test_string=\"Db_o.Wheels_o.Wheel7.InHVsetList\";
+dpGet(test_string,coords);
+replace(test_string,coords);
+//-------------
+test_string=\"Db_o.Wheels_o.Wheel7.OutHVsetList\";
+dpGet(test_string,coords);
+replace(test_string,coords);
+//-------------
+
+}
+
+//==========================================================
+replace(string test_string, dyn_string &coords){
+
+int i;
+int pos;
+string test;
+
+for(i=1;i<=dynlen(coords);i++){
+
+test=coords[i];
+
+      if(pos=strpos(coords[i],\"100;16\")>=0)strreplace(coords[i],\"100;16\",\"100;0\");
+ else if(pos=strpos(coords[i],\"100;18\")>=0)strreplace(coords[i],\"100;18\",\"100;1\"); 
+ else if(pos=strpos(coords[i],\"200;14\")>=0)strreplace(coords[i],\"200;14\",\"200;1\"); 
+ else if(pos=strpos(coords[i],\"200;16\")>=0)strreplace(coords[i],\"200;16\",\"200;2\"); 
+ else if(pos=strpos(coords[i],\"200;18\")>=0)strreplace(coords[i],\"200;18\",\"200;3\"); 
+
+DebugTN(test+\" \"+coords[i]);
+
+ 
+}
+
+dpSetWait(test_string,coords);
+
+
+}
+" 0
+ E E E
+2 2
+"PRIMITIVE_TEXT1"
+""
+1 60 24 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 60 24 151 49
+0 2 2 "0s" 0 0 0 64 0 0  60 24 1
+1
+LANG:1 83 -*-Sans-*-r-normal-*-*-100-100-100-*-*-iso8859-1|-10,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+1
+LANG:1 8 NOT USED
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

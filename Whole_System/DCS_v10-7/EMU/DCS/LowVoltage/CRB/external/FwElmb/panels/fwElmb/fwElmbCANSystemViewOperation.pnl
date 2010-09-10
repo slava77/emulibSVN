@@ -1,0 +1,766 @@
+V 10
+1
+LANG:1 8 (NoName)
+PANEL,-1 -1 671 546 N "_3DFace" 0
+E "main()
+{
+	int i;
+}" 0
+ E E E 1 -1 -1 0  0 0
+""0  1
+E "void pnlSendBusCommand(int iAction)
+{
+// Local Variables
+// ---------------
+  string sBusName;
+  string sBusDpName;
+  string sDpe = \".management\";
+
+  dyn_int diRows;
+
+// Executable Code
+// ---------------
+  // Before doing anything, check that the action value is valid. If any other commands need
+  // to be allowed, you must add them to this 'list'
+  if ((iAction != 1) && (iAction != 2) && (iAction != 129)) {
+    ChildPanelOnCentral(\"vision/MessageInfo1\",
+                        \"Warning\",
+                        makeDynString(\"Bus command value is invalid. Please contact component developer.\"));
+    return;		
+  }
+	
+  // Get the selected bus name
+  diRows = tabCANSystem.getSelectedLines();
+  if (dynlen(diRows) > 0) {
+    sBusName = tabCANSystem.cellValueRC(diRows[1], \"busName\");
+    sBusDpName = tabCANSystem.cellValueRC(diRows[1], \"busDpName\");
+		
+    // Set value into DP, first find the dp name for the bus (from bus name)
+    dpSet(sBusDpName + sDpe, iAction);
+
+    // Check the correct DP has been found
+    if (dpExists(sBusDpName)) {
+      switch (iAction) {
+        case 129:  // Reset
+          txtBusStatus.text = \"All Elmbs in bus \" + sBusName + \" have been reset\";
+          break;
+        case 1:	// Start/Operational
+          txtBusStatus.text = \"All Elmbs in bus \" + sBusName + \" have been started\";
+          break;
+        case 2:	// Stop
+          txtBusStatus.text = \"All Elmbs in bus \" + sBusName + \" have been stopped\";
+          break;
+      }
+    } else {
+      ChildPanelOnCentral(\"vision/MessageInfo1\",
+                          \"Warning\",
+                          makeDynString(\"Bus \" + sBusName + \" not found in this system.\"));
+    }
+    txtBusStatus.visible = true;
+  } else {
+    ChildPanelOnCentral(\"vision/MessageInfo1\", \"Warning\", makeDynString(\"No bus selected\"));
+  }
+	
+  // Return to calling routine
+  return;
+}
+void pnlSendBusCommandToAll(int iAction)
+{
+// Local Variables
+// ---------------
+  int i;
+  
+  string sBusDpName;
+  string sDpe = \".management\";
+
+  dyn_string dsBuses;
+
+// Executable Code
+// ---------------
+  // Before doing anything, check that the action value is valid. If any other commands need
+  // to be allowed, you must add them to this 'list'
+  if ((iAction != 1) && (iAction != 2) && (iAction != 129)) {
+    ChildPanelOnCentral(\"vision/MessageInfo1\",
+                        \"Warning\",
+                        makeDynString(\"Bus command value is invalid. Please contact component developer.\"));
+    return;		
+  }
+	
+  // Get all buses in this system
+  dsBuses = dpNames(getSystemName() + \"*\", ELMB_CAN_BUS_TYPE_NAME);
+  if (dynlen(dsBuses) > 0) {
+    for (i = 1; i <= dynlen(dsBuses); i++) {
+      sBusDpName = dsBuses[i];
+      dpSet(sBusDpName + sDpe, iAction);
+    }
+
+    switch (iAction) {
+      case 129:  // Reset
+        txtBusStatus.text = \"All buses have been reset\";
+        break;
+      case 1:	// Start/Operational
+        txtBusStatus.text = \"All buses have been started\";
+        break;
+      case 2:	// Stop
+        txtBusStatus.text = \"All buses have been stopped\";
+        break;
+    }
+    txtBusStatus.visible = true;
+  } else {
+    ChildPanelOnCentral(\"vision/MessageInfo1\", \"Warning\", makeDynString(\"No buses in system\"));
+  }
+	
+  // Return to calling routine
+  return;
+}
+" 0
+ 2
+"CBRef" "1"
+"EClose" "main()
+{
+	int i;
+}" 0
+
+""
+NC
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 0
+"txtTitle"
+""
+1 60 40 E E E 1 E 1 E N "schwarz" E N "_Transparent" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 12 22 378 46
+0 2 0 "0s" 0 0 0 64 0 0  12 22 1
+2
+LANG:1 84 -*-Arial-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+LANG:0 70 -microsoft windows-arial-medium-r-normal-*-*-160-100-100-*-*-iso8859-1
+0 ""
+2
+LANG:1 34 Elmb CANbus System Operation Panel
+LANG:0 11 DP-Funktion
+30 1
+"frmSendMessage"
+""
+1 10 470 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+2 0 0 0 0 0
+E E E
+1
+1
+LANG:1 57 Select a CANbus on the table to send a management message
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E 1 0 1 360 0 0 E 10 410 301 470
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 31 Send message to selected CANbus
+2 6
+"txtBusStatus"
+""
+1 370 480 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E 0.822857142857143 0 0.9 116.56 49.8 0 E 310 480 656 496
+0 2 0 "0s" 0 0 0 64 0 0  310 480 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 0 
+30 9
+"frmShowColumns"
+""
+1 490 77 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+8 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 490 10 630 80
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 12 Show Columns
+25 2
+"tabCANSystem"
+""
+1 -10 36 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 8 88 666 402
+"main()
+{
+// Local Variables
+// ---------------
+	int i;
+	
+	string sBusDpName;
+	
+	dyn_string dsChildren;
+	
+// Executable Code
+// ---------------
+	// Connect to the children of the view
+	this.tableMode = TABLE_SELECT_BROWSE;
+	this.selectByClick = 1;
+
+	// Clear table before appending lines
+	this.deleteAllLines();
+
+	// Check if any children exist
+	dsChildren = dpNames(\"*\", ELMB_CAN_BUS_TYPE_NAME);
+	if (dynlen(dsChildren) <= 0)
+		return;
+
+	// Loop through all children
+	for (i = 1; i <= dynlen(dsChildren); i++) {
+	
+		// Get DpName
+		sBusDpName = dsChildren[i];
+				
+		// Connect to required DPs for this bus, according to dp type ** sBusDpName + \".management\",
+		dpConnect(\"cbkUpdateLine\",
+		 			 		sBusDpName + \".syncInterval\",
+							sBusDpName + \".nodeGuardInterval\",
+							sBusDpName + \".busSpeed\",
+							sBusDpName + \".interfacePort\",
+							sBusDpName + \".id\",
+							sBusDpName + \".portError\");
+	}
+	
+	// Return to calling routine
+	return;
+}
+
+void cbkUpdateLine( string argsSyncInterval, int arg_iSyncInterval,
+										string argsNodeGuardInterval, int arg_iNodeGuardInterval,
+										string argsBusSpeed, int arg_iBusSpeed,
+										string argsInterfacePort, string arg_sInterfacePort,
+										string argsInterfaceCard, string arg_sInterfaceCard,
+										string argsPortError, int arg_iPortError)
+					     
+{
+					
+// Local Variables
+// ---------------
+	string sBusDpName;
+	string sBusName;
+	string sElmbCount;
+	string sBusSpeed;
+	string sSyncInterval;
+	string sNodeGuardInterval;
+	string sPortError;
+	
+	langString lsComment;
+		
+	dyn_string dsTemp;
+	
+// Executable Code
+// ---------------
+	// Get the name of the bus DP
+	sBusDpName = dpSubStr(argsSyncInterval, DPSUB_SYS_DP);
+	lsComment = dpGetDescription(sBusDpName + \".\");
+	
+	// Get the bus name
+	dsTemp = strsplit(sBusDpName, fwDevice_HIERARCHY_SEPARATOR);
+	sBusName = dsTemp[dynlen(dsTemp)];
+			
+	// Get the number of Elmbs on this bus
+	dsTemp = dpNames(sBusDpName + \"*\", ELMB_TYPE_NAME);
+			
+	if (dynlen(dsTemp) <= 0) {
+		sElmbCount = \"None\";
+	} else {
+		sprintf(sElmbCount, \"%d\", dynlen(dsTemp));
+	}														
+	
+	// Format information about the bus
+	sprintf(sBusSpeed, \"%d\",  arg_iBusSpeed);
+	sprintf(sSyncInterval, \"%d\", arg_iSyncInterval);
+	sprintf(sNodeGuardInterval, \"%d\", arg_iNodeGuardInterval);
+	sprintf(sPortError, \"%d\", arg_iPortError);
+
+	// Update the information into the relevant row
+	tabCANSystem.updateLine(1,
+													\"busName\", sBusName,
+													\"comment\", lsComment,
+													\"noOfElmbs\", sElmbCount,
+													\"interface\", arg_sInterfaceCard,
+													\"port\", arg_sInterfacePort,
+													\"busSpeed\", sBusSpeed,
+													\"syncInterval\", sSyncInterval,
+													\"nodeGuardInterval\", sNodeGuardInterval,
+													\"portError\", sPortError,
+													\"busDpName\", sBusDpName);
+
+	// Return to calling routine
+	return;
+}
+
+" 0
+"main(int argiRow, string argsColumn, string argsValue)
+{
+// Local Variables
+// ---------------
+	bool bValid = false;
+	
+	int iValue;
+	int i;
+	
+	string sBusName;
+	string sAction;
+	string sActionDPE;
+	string sOriginalValue;
+	string sBusDpName;
+	
+	dyn_float dfReturn;
+	
+	dyn_string dsReturn;
+
+// Executable Code
+// ---------------
+	// Get bus name and bus DP name
+	getMultiValue(\"\", \"cellValueRC\", argiRow, \"busName\", sBusName,
+								\"\", \"cellValueRC\", argiRow, \"busDpName\", sBusDpName);
+							
+	// Check the DP exists
+	if (dpExists(sBusDpName)) {
+		// Check which column has been selected
+		switch (argsColumn) {
+			case \"syncInterval\":
+				sAction = \"Set Sync. Interval\";
+				sActionDPE = \".syncInterval\";
+				bValid = true;
+				getValue(\"\", \"cellValueRC\", argiRow, \"syncInterval\", sOriginalValue);
+				break;
+			case \"nodeGuardInterval\":
+				sAction = \"Set Node Guard Interval\";
+				sActionDPE = \".nodeGuardInterval\";
+				bValid = true;
+				getValue(\"\", \"cellValueRC\", argiRow, \"nodeGuardInterval\", sOriginalValue);
+				break;
+			case \"busSpeed\":
+				sAction = \"Set bus speed\";
+				sActionDPE = \".busSpeed\";
+				bValid = true;
+				getValue(\"\", \"cellValueRC\", argiRow, \"busSpeed\", sOriginalValue);
+				break;
+			default: 
+				break;	
+		}
+	
+		if (bValid) {
+			ChildPanelOnCentralReturn(\"vision/MessageInput\",
+																sAction,
+																makeDynString(\"Press OK for bus \" + sBusName, \"%10d\", sOriginalValue),
+																dfReturn,
+																dsReturn);
+															
+			// Get value returned
+			iValue = dfReturn[1];
+		
+			// Set value into DP
+			dpSet(sBusDpName + sActionDPE, iValue);	
+		}
+	}
+
+	// Return to calling routine
+	return;
+}
+
+" 0
+ 1 0 1 10 1 "busName" 16 1 0 "s" 1
+LANG:1 8 Bus Name
+E
+1
+LANG:1 0 
+
+185 "comment" 16 0 0 "s" 1
+LANG:1 7 Comment
+E
+1
+LANG:1 29 Any comment is displayed here
+
+185 "noOfElmbs" 6 1 0 "s" 1
+LANG:1 10 Elmb Count
+E
+1
+LANG:1 27 Number of ELMBs in this bus
+
+79 "interface" 5 1 0 "s" 1
+LANG:1 9 Interface
+E
+1
+LANG:1 35 Type of interface used for this bus
+
+66 "port" 2 1 0 "s" 1
+LANG:1 4 Port
+E
+1
+LANG:1 44 Port of the interface card used for this bus
+
+39 "busSpeed" 4 1 0 "s" 1
+LANG:1 5 Speed
+E
+1
+LANG:1 27 Bus speed (Click to modify)
+
+53 "syncInterval" 5 1 0 "s" 1
+LANG:1 10 Sync. Int.
+E
+1
+LANG:1 47 SYNC interval or readout rate (Click to modify)
+
+71 "nodeGuardInterval" 5 1 0 "s" 1
+LANG:1 9 Guard Int
+E
+1
+LANG:1 37 Node Guard Interval (Click to modify)
+
+71 "portError" 5 1 0 "s" 1
+LANG:1 10 Port Error
+E
+1
+LANG:1 51 Error code of the interface port (0 means no error)
+
+73 "busDpName" 5 0 0 "s" 1
+LANG:1 9 BusDpName
+E
+1
+LANG:1 0 
+
+73 
+26 26 "" 1 1
+LANG:1 2 #1
+8 30
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+0 1 1 1 7
+1 0
+13 3
+"cmdStart"
+""
+1 381 430 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 57 Select a CANbus on the table to send a management message
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 379 428 463 462
+
+T 
+1
+LANG:1 5 Start
+"main()
+{
+	// Call function to start (set operational) all ELMBs on the selected bus
+	pnlSendBusCommand(1);
+}" 0
+ E E E
+13 4
+"cmdStop"
+""
+1 471 430 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 57 Select a CANbus on the table to send a management message
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 469 428 553 462
+
+T 
+1
+LANG:1 4 Stop
+"main()
+{
+	// Call function to stop all ELMBs on the selected bus
+	pnlSendBusCommand(2);
+}" 0
+ E E E
+13 5
+"cmdReset"
+""
+1 561 430 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 57 Select a CANbus on the table to send a management message
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 559 428 643 462
+
+T 
+1
+LANG:1 5 Reset
+"main()
+{
+	// Call function to reset all ELMBs on the selected bus
+	pnlSendBusCommand(129);
+}" 0
+ E E E
+13 7
+"cmdClose"
+""
+1 580 510 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 578 508 666 538
+
+T 
+1
+LANG:1 5 Close
+"main()
+{
+	PanelOff(myPanelName());
+}" 0
+ E E E
+1 16 0 "" 0
+0
+20 10
+"chkShowDescription"
+""
+1 500 30 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 498 28 622 72
+2
+T 
+1
+LANG:1 8 Bus Name
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 7 Comment
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+2
+E E
+E E
+E"main(int button, bool state)
+{
+	switch (button) {
+		case 0:	// Bus name
+			if (state)
+				tabCANSystem.namedColumnVisibility(\"busName\", true);
+			else
+				tabCANSystem.namedColumnVisibility(\"busName\", false);
+			break;
+		case 1:	// Comment
+			if (state)
+				tabCANSystem.namedColumnVisibility(\"comment\", true);
+			else
+				tabCANSystem.namedColumnVisibility(\"comment\", false);
+			break;
+	}
+}" 0
+30 12
+"frmSendNmtToAll"
+""
+1 10 470 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+11 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 10 410 301 470
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 28 Send message to all CANbuses
+13 13
+"cmdStartAll"
+""
+1 21 430 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+13 0 0 0 0 0
+E E E
+0
+1
+LANG:1 57 Select a CANbus on the table to send a management message
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 19 428 103 462
+
+T 
+1
+LANG:1 5 Start
+"main()
+{
+  // Call function to start (set operational) all buses
+  pnlSendBusCommandToAll(1);
+}" 0
+ E E E
+13 14
+"cmdStopAll"
+""
+1 111 430 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+15 0 0 0 0 0
+E E E
+0
+1
+LANG:1 57 Select a CANbus on the table to send a management message
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 109 428 193 462
+
+T 
+1
+LANG:1 4 Stop
+"main()
+{
+  // Call function to stop all buses
+  pnlSendBusCommandToAll(2);
+}" 0
+ E E E
+13 15
+"cmdResetAll"
+""
+1 201 430 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 57 Select a CANbus on the table to send a management message
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 199 428 283 462
+
+T 
+1
+LANG:1 5 Reset
+"main()
+{
+  // Call function to reset all buses
+  pnlSendBusCommandToAll(129);
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+3 0 "Group2"
+"objects\\fwGeneral\\fwHelpButton.pnl" 405 10 T 8 1 0 1 233 0
+1
+"$sPanelRelativePath""fwElmb/fwElmbCANSystemViewOperation"
+0

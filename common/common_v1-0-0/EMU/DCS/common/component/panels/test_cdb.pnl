@@ -1,0 +1,176 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 500 400 N "_3DFace" 0
+"main()
+{
+  emucdb_initialize();
+}" 0
+ E E E E 1 -1 -1 0  50 50
+""0  1
+E E 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"PUSH_BUTTON1"
+""
+1 50 140 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 48 138 172 165
+
+T 
+1
+LANG:1 19 create elmb devices
+"main()
+{
+  dyn_string ex;
+  emucdb_createCustomHwMain(ex);
+}" 0
+ E E E
+13 2
+"PUSH_BUTTON3"
+""
+1 70 170 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 68 168 192 195
+
+T 
+1
+LANG:1 17 test name parsing
+"main()
+{
+  dyn_string ex;
+  emu_info(\"sending LVCB_3\");
+  int ret = _emucdb_getLastHexNumber(\"LVCB_3\", \"_\", ex);
+  if (emu_checkException(ex)) { return; }
+  emu_info(\"got number: \" + ret);
+  emu_info(\"sending ELMB_3f\");
+  ret = _emucdb_getLastHexNumber(\"ELMB_3f\", \"_\", ex);
+  if (emu_checkException(ex)) { return; }
+  emu_info(\"got number: \" + ret);
+}" 0
+ E E E
+13 3
+"PUSH_BUTTON4"
+""
+1 330 80 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 328 78 452 105
+
+T 
+1
+LANG:1 12 PUSH_BUTTON4
+"main()
+{
+  emu_info(_emucdb_dropLastDevice(\"ELMB/AI/ELMB_01/AI\"));
+}" 0
+ E E E
+13 4
+"PUSH_BUTTON5"
+""
+1 30 10 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 28 8 292 132
+
+T 
+1
+LANG:1 15 Create them all
+"main()
+{
+  dyn_string ex;
+  emucdb_createCustomHwMain(ex);
+  if (emu_checkException(ex)) { return; }
+  emu_info(\"[DONE] Custom devices created\");
+  
+  time validOn = 0;
+  dyn_string deviceList;
+  string confName = \"904_LV\";
+  fwConfigurationDB_updateDeviceConfigurationFromDB(confName, fwDevice_HARDWARE, ex, 
+                                                    validOn, deviceList, getSystemName(), 
+                                                    fwConfigurationDB_deviceConfig_ALLDEVPROPS);
+  if (emu_checkException(ex)) { return; }
+  emu_info(\"[DONE] All hardware devices restored from confDB\");
+
+  fwConfigurationDB_updateDeviceConfigurationFromDB(confName, fwDevice_LOGICAL, ex, 
+                                                    validOn, deviceList, \"\", 
+                                                    fwConfigurationDB_deviceConfig_ALLDEVPROPS);
+  if (emu_checkException(ex)) { return; }
+  emu_info(\"[DONE] Logical tree has been restored from confDB\");
+
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

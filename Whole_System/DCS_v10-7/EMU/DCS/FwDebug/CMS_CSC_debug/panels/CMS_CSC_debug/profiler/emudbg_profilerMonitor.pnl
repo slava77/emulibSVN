@@ -1,0 +1,779 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 755 550 N "_3DFace" 0
+E E E E E 1 -1 -1 0  80 70
+""0  1
+E "#uses \"CMS_CSC_debug/profiler/emudbg_profiler.ctl\"
+
+dyn_string dataDps;
+dyn_string saveDps;
+string currentDataDp;
+dyn_string currentSummaryDps = makeDynString();
+dyn_string currentControlDps = makeDynString();
+
+/** Called when user chooses a manager. */
+public void managerChanged(int manNum, bool isLive = true) {
+  disconnect();
+  
+  if (manNum < 1) { return; }
+    if (isLive) { // live manager
+    // a real manager has been chosen
+    if (manNum <= dynlen(dataDps)) {
+      string dataDp = dataDps[manNum];
+      connect(dataDp);
+      string controlDp = dataDp;
+      strreplace(controlDp, \"emuprof_data\", \"emuprof_control\");
+      currentControlDps = makeDynString(controlDp);
+      enableDisableControl(true);
+      emu_info(\"data DP changed to: \" + dataDp);
+    } else { // summary of all managers has been chosen (at least assume so)
+      connectSummary(dataDps);
+      currentControlDps = makeDynString();
+      for (int i=1; i <= dynlen(dataDps); i++) {
+        string controlDp = dataDps[i];
+        strreplace(controlDp, \"emuprof_data\", \"emuprof_control\");
+        dynAppend(currentControlDps, controlDp);
+      }
+      enableDisableControl(true);
+      emu_info(\"connected to summary of : \" + dataDps);
+    }
+  } else { // save
+    string dataDp = saveDps[manNum];
+    connect(dataDp);
+    enableDisableControl(false);
+    emu_info(\"data DP changed to a save: \" + dataDp);
+  }
+}
+
+/** Disconnects from whatever we're listening to right now. */
+public void disconnect() {
+  if (currentDataDp != \"\") {
+    dpDisconnect(\"totalTimesUpdatedCB\", currentDataDp + \".totalTimes\");
+    currentDataDp = \"\";
+    resetUi();
+  }
+  if (dynlen(currentSummaryDps) > 0) {
+    dpDisconnect(\"totalTimesSummaryUpdateCB\", currentSummaryDps);
+    currentSummaryDps = makeDynString();
+    resetUi();
+  }
+}
+
+/** Resets (or clears out) the UI. */
+private void resetUi() {
+  tableTimes.deleteAllLines();
+  lblConnection.text = \"nothing\";
+}
+
+/** Connects the UI to the given dataDp. */
+private void connect(string dataDp) {
+  dpConnect(\"totalTimesUpdatedCB\", true, dataDp + \".totalTimes\");
+  currentDataDp = dataDp;
+  lblConnection.text = emuprof_getManagerNameFromDataDp(dataDp);
+}
+
+private void connectSummary(dyn_string dataDps) {
+  string connectionTitle = \"\";
+  dyn_string totalTimeDps;
+  for (int i=1; i <= dynlen(dataDps); i++) {
+    dynAppend(totalTimeDps, dataDps[i] + \".totalTimes\");
+    connectionTitle += emuprof_getManagerNameFromDataDp(dataDps[i]);
+    if (i < dynlen(dataDps)) {
+      connectionTitle += \", \";
+    }
+  }
+  dpConnect(\"totalTimesSummaryUpdateCB\", true, totalTimeDps);
+  currentSummaryDps = totalTimeDps;
+  lblConnection.text = connectionTitle;
+}
+
+private void totalTimesSummaryUpdateCB(dyn_string dps, dyn_dyn_string times) {
+  // sum up everything into a map <file;function> -> <time>
+  mapping allTimes;
+  mapping allRunCounts;
+  for (int man=1; man <= dynlen(times); man++) {
+    for (int func=1; func <= dynlen(times[man]); func++) {
+      dyn_string dataSplit = strsplit(times[man][func], \";\");
+      string id = dataSplit[1] + \";\" + dataSplit[2];
+      int t = (int)dataSplit[3];
+      int runCount = (int)dataSplit[4];
+      if (mappingHasKey(allTimes, id)) {
+        allTimes[id] += t;
+      } else {
+        allTimes[id] = t;
+      }
+      if (mappingHasKey(allRunCounts, id)) {
+        allRunCounts[id] += runCount;
+      } else {
+        allRunCounts[id] = runCount;
+      }
+    }
+  }
+  
+  // convert the map back to dyn_string
+  dyn_string allData;
+  for (int i=1; i <= mappinglen(allTimes); i++) {
+    string funcId = mappingGetKey(allTimes, i);
+    dynAppend(allData, funcId + \";\" + mappingGetValue(allTimes, i) + \";\" + allRunCounts[funcId]);
+  }
+  
+  // call totalTimesUpdatedCB to update the UI with the summed up data
+  totalTimesUpdatedCB(\"\", allData);
+}
+
+/** Call back for total times change - updates the UI with the data. */
+private void totalTimesUpdatedCB(string dp, dyn_string times) {
+  if (dynlen(times) < tableTimes.lineCount) {
+    tableTimes.deleteAllLines();
+  }
+  for (int i=1; i <= dynlen(times); i++) {
+    dyn_string timeData = strsplit(times[i], \";\");
+    string filename = timeData[1];
+    string funcName = timeData[2];
+    float averageTime = (float)timeData[3] / (float)timeData[4];
+    tableTimes.updateLine(2, \"filename\", filename, \"funcName\", funcName, 
+                          \"totalTime\", (int)timeData[3],
+                          \"runCount\", (int)timeData[4],
+                          \"averageTime\", averageTime);
+  }
+  tableTimes.sort(false, \"totalTime\");  
+}
+
+// ----==== GUI stuff ====----
+
+/** radioViewMode has been clicked - change between live data and saved data. */
+public void viewModeChanged() {
+  if (radioViewMode.number == 0) {
+    comboManager.enabled = true;
+    comboSave.enabled = false;
+    btnDeleteSave.enabled = false;
+  } else if (radioViewMode.number == 1) {
+    comboManager.enabled = false;
+    comboSave.enabled = true;
+    btnDeleteSave.enabled = true;
+  }
+}
+
+/** Enables or disables the profiler instance control buttons. */
+public void enableDisableControl(bool enable) {
+  btnControlReset.enabled = enable;
+}
+
+public void refreshSystemsCombo() {
+  comboSystem.deleteAllItems();
+  dyn_string emuperfDps = dpNames(\"*:*\", \"emuDbg_profiler_data\");
+  dyn_string systems;
+  for (int i=1; i <= dynlen(emuperfDps); i++) {
+    string sys = dpSubStr(emuperfDps[i], DPSUB_SYS);
+    strreplace(sys, \":\", \"\");
+    if (!dynContains(systems, sys)) {
+      dynAppend(systems, sys);
+    }
+  }
+
+  for (int i=1; i <= dynlen(systems); i++) {
+    comboSystem.appendItem(systems[i]);
+  }
+  
+  refreshManagersCombo();
+  refreshSavesCombo();
+}
+
+public void refreshManagersCombo() {
+  //update manager list
+  string sys = comboSystem.text;
+  comboManager.deleteAllItems();
+  comboManager.appendItem(\"----\");
+  dataDps = dpNames(sys + \":emuprof_data_*\", \"emuDbg_profiler_data\");
+  for (int i=1; i <= dynlen(dataDps); i++) {
+    string manName = emuprof_getManagerNameFromDataDp(dataDps[i]);
+    comboManager.appendItem(manName);
+  }
+  comboManager.appendItem(\"Summary of all managers\");
+  comboManager.selectedPos = 1;
+}
+
+public void refreshSavesCombo() {
+  //update manager list
+  string sys = comboSystem.text;
+  comboSave.deleteAllItems();
+  comboSave.appendItem(\"----\");
+  saveDps = dpNames(sys + \":emuprof_save_*\", \"emuDbg_profiler_data\");
+  for (int i=1; i <= dynlen(saveDps); i++) {
+    string manName = emuprof_getManagerNameFromDataDp(saveDps[i]);
+    comboSave.appendItem(manName);
+  }
+  comboSave.selectedPos = 1;
+}" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+25 1
+"tableTimes"
+""
+1 10.00000000000002 210 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  8 208 742 532
+"main()
+{
+  this.tableMode = TABLE_SELECT_MULTIPLE;
+  this.selectByClick = TABLE_SELECT_LINE;
+}" 0
+E 1 0 1 5 0 "filename" 20 1 0 "s" 1
+LANG:1 8 Filename
+E
+1
+LANG:1 0 
+
+170 "funcName" 20 1 0 "s" 1
+LANG:1 13 Function name
+E
+1
+LANG:1 0 
+
+170 "totalTime" 15 1 0 "[0d,False,False,ALIGNMENT_BEGINNING,False]" 1
+LANG:1 21 Total Time Spent (ms)
+E
+1
+LANG:1 0 
+
+130 "runCount" 13 1 0 "[0d,False,False,ALIGNMENT_BEGINNING,False]" 1
+LANG:1 14 Number of Runs
+E
+1
+LANG:1 0 
+
+114 "averageTime" 16 1 0 "[0d,False,False,ALIGNMENT_BEGINNING,False]" 1
+LANG:1 23 Average Time Spent (ms)
+E
+1
+LANG:1 0 
+
+140 
+14 14 10 10
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 0 1 1 1 7
+1 0
+2 3
+"lblSystem"
+""
+1 20 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 20 40 59 54
+0 2 2 "0s" 0 0 0 192 0 0  20 40 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 7 System:
+22 4
+"comboSystem"
+""
+1 130 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  128 38 292 61
+0
+
+"main()
+{
+  refreshSystemsCombo();
+}" 0
+
+"main()
+{
+  refreshManagersCombo();
+  refreshSavesCombo();
+}" 0
+
+E
+ 0 0
+22 6
+"comboManager"
+""
+1 130 80 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  128 78 292 101
+0
+
+E
+E
+E
+ 0 0
+13 7
+"PUSH_BUTTON3"
+""
+1 400 10 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  398 8 462 35
+
+T 
+1
+LANG:1 4 test
+"main()
+{
+  myFunction1();
+  myFunction2();
+}
+
+void myFunction1() {
+  time t0 = getCurrentTime();
+  
+  for (int i=0; i < 1000; i++) {
+    int jou;
+    dpGet(\"aa\", jou);
+  }
+  
+  emuprof_funcEnd(\"emuDbg_profilerMonitor.pnl\", \"myFunction1\", t0, getCurrentTime());
+}
+
+void myFunction2() {
+  time t0 = getCurrentTime();
+  
+  int value = 123;  
+  
+  for (int i=0; i < 1000; i++) {
+    int jou;
+    jou = value;
+  }
+  
+  emuprof_funcEnd(\"emuDbg_profilerMonitor.pnl\", \"myFunction2\", t0, getCurrentTime());
+}
+" 0
+ E E E
+13 8
+"PUSH_BUTTON4"
+""
+1 650 30 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  648 28 732 55
+
+T 
+1
+LANG:1 4 Save
+"main()
+{   
+  dyn_string dpsToSave = makeDynString();
+  if (currentDataDp != \"\") {
+    dynAppend(dpsToSave, currentDataDp);
+  } else if (dynlen(currentSummaryDps) > 0) {
+    emu_dynAppend(dpsToSave, currentSummaryDps);
+  } else {
+    emu_errorSingle(\"You are not viewing anything - nothing to save\");
+    return;
+  }
+  
+  string saveName = editSaveName.text;
+  if (saveName == \"\") {
+    emu_errorSingle(\"Please enter a save name\");
+    return;
+  }
+  
+  for (int i=1; i <= dynlen(dpsToSave); i++) {
+    emu_info(\"saving \" + dpsToSave[i]);
+    int error;
+    string targetDp = dpSubStr(dpsToSave[i], DPSUB_DP);
+    if (strpos(targetDp, \"emuprof_data_\") < 0) {
+      emu_info(\"not a live profiler data DP, skipping from saving: \" + dpsToSave[i]);
+      continue;
+    }
+    strreplace(targetDp, \"emuprof_data_\", \"emuprof_save_\");
+    targetDp += \"_\" + saveName;
+    dpCreate(targetDp, \"emuDbg_profiler_data\");
+    dpCopyOriginal(dpsToSave[i], targetDp, error);
+    if (error < 0) { emu_info(\"dpCopy error: \" + error); }
+  }
+  
+  editSaveName.text = \"\";
+  refreshSavesCombo();
+}" 0
+ E E E
+30 9
+"FRAME1"
+""
+1 520 3 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+9 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1.227272727272727 0 1 -168.1818181818182 0 0 E 520 3 741 61
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 28 Save Snapshot (to local sys)
+2 10
+"PRIMITIVE_TEXT1"
+""
+1 480 30 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 480 30 511 44
+0 2 2 "0s" 0 0 0 192 0 0  480 30 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 5 Name:
+14 11
+"editSaveName"
+""
+1 520 30 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  518 28 642 51
+3 "0s" 0 0 0 0 0 -1  E E E
+22 13
+"comboSave"
+""
+1 130 110 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+13 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  128 108 292 131
+0
+
+E
+E
+E
+ 0 0
+30 14
+"FRAME2"
+""
+1 10 13 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+14 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 0.9473684210526315 0 1.019108280254777 0.5263157894736845 -3.248407643312101 0 E 10 13 391 171
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 6 Viewer
+19 15
+"radioViewMode"
+""
+1 20 70 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+15 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  18 68 122 132
+2
+T 
+1
+LANG:1 13 Live Manager:
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 11 Saved Data:
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+"main()
+{
+  viewModeChanged();
+}" 0
+ "main(int button)
+{
+  viewModeChanged();
+}" 0
+
+13 17
+"PUSH_BUTTON6"
+""
+1 20 140 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  18 138 122 162
+
+T 
+1
+LANG:1 17 Refresh All Lists
+"main()
+{
+  refreshSystemsCombo();
+  refreshManagersCombo();
+  refreshSavesCombo();
+}" 0
+ E E E
+2 18
+"PRIMITIVE_TEXT3"
+""
+1 10 190 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 10 190 54 204
+0 2 2 "0s" 0 0 0 192 0 0  10 190 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 8 Showing:
+2 19
+"lblConnection"
+""
+1 60 190 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 60 190 96 204
+0 2 2 "0s" 0 0 0 192 0 0  60 190 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 7 nothing
+13 20
+"PUSH_BUTTON7"
+""
+1 130 140 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  128 138 292 162
+
+T 
+1
+LANG:1 5 Apply
+"main()
+{
+  if (comboManager.enabled) {
+    managerChanged(comboManager.selectedPos - 1);
+  } else if (comboSave.enabled) {
+    managerChanged(comboSave.selectedPos - 1, false);
+  }
+}" 0
+ E E E
+13 21
+"btnDeleteSave"
+""
+1 300 110 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+21 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  298 108 362 132
+
+T 
+1
+LANG:1 6 Delete
+"main()
+{
+  string dpToDelete = saveDps[comboSave.selectedPos - 1];
+  dpDelete(dpToDelete);
+  if (dpToDelete == currentDataDp) {
+    disconnect();
+  }
+  refreshSavesCombo();
+}" 0
+ E E E
+30 22
+"FRAME3"
+""
+1 420 63 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+22 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1 0 1 -20 7 0 E 420 63 671 181
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 25 Profiler Instance Control
+13 23
+"btnControlReset"
+""
+1 420 100 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+23 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  418 98 542 125
+
+T 
+1
+LANG:1 5 Reset
+"main()
+{
+  for (int i=1; i <= dynlen(currentControlDps); i++) {
+    dpSet(currentControlDps[i] + \".command\", \"reset\");
+  }
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

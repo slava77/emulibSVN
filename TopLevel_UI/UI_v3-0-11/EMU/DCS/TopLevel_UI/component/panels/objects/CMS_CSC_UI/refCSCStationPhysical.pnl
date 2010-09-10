@@ -1,0 +1,588 @@
+V 11
+1
+LANG:1 7 Station
+PANEL,-1 -1 864 683 N "_3DFace" 4
+"$group"
+"$radius"
+"$side"
+"$station"
+"main()
+{
+  initParams();
+  string sideSignStr = \"-\";
+  if (paramSide == \"P\") { sideSignStr = \"+\"; }
+  caption.toolTipText = \"Station ME\" + sideSignStr + paramStation + \". Double click for more information and control.\";
+  
+  int totalRadius = paramRadius + paramPCrateHeight + EMUUI_STATION_PCRATE_DISTANCE_FROM_DISK;
+  int totalSize = totalRadius * 2;
+  
+  dyn_string ex;
+  int posX, posY;
+  getValue(\"refPoint\", \"position\", posX, posY);
+  background.size(totalSize, totalSize);
+  drawStation(posX + totalRadius, posY + totalRadius, paramRadius, paramSide, paramStation, ex);
+  if (emu_checkException(ex)) { return; }
+}
+
+/** Draws a CSC station. */
+void drawStation(int x, int y, int radius, string side, int station, dyn_string &exceptionInfo){
+  mapping layoutParams = emuui_getMapping(\"chamberLayout\", exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  int gap = layoutParams[\"gapBetweenRings\"];
+  float scale = ((float) radius) / 100; // all parameters in layoutParams are in 100px radius scale
+
+  positionAndNameCaption(x, y, side, station);
+  
+  if (station == 1){ // stations ME +&- 1
+    //ring 1
+    drawRing(x, y, scaleValue(layoutParams[\"innerRadius_ME11\"], scale), 
+                   scaleValue(layoutParams[\"innerRadius_ME12\"], scale) - gap, 36, side, station, 1);
+    //ring 2
+    drawRing(x, y, scaleValue(layoutParams[\"innerRadius_ME12\"], scale), 
+                   scaleValue(layoutParams[\"innerRadius_ME13\"], scale) - scaleValue(layoutParams[\"gapBetweenME12-ME13\"], scale), 
+                   36, side, station, 2);
+    //ring 3
+    drawRing(x, y, scaleValue(layoutParams[\"innerRadius_ME13\"], scale), radius, 36, side, station, 3);
+  } else {    // other stations
+    for (int ring=1; ring <= layoutParams[\"ringCount_ME_\" + side + station]; ring++) {
+      int chamberCount = 18;
+      if (ring > 1) { chamberCount = 36; }
+      int outerRadius = radius; // if it's the last ring then the outer radius equals the radius of the whole station
+      if (ring < 2) { // if it's not the last ring then the outer radius equals inner radius of the next ring minus gap between them
+        outerRadius = scaleValue(layoutParams[\"innerRadius_ME\" + station + (ring + 1)], scale) - gap;
+      }
+      
+      // check if chambersStart and chambersEnd parameters exist in layoutParams - if so then draw only chambers in that range    
+      int chambersStart = -1,
+          chambersEnd = -1;
+      if (mappingHasKey(layoutParams, \"chambersStart_ME_\" + side + station + ring) &&
+          mappingHasKey(layoutParams, \"chambersEnd_ME_\" + side + station + ring)) {
+        chambersStart = layoutParams[\"chambersStart_ME_\" + side + station + ring];
+        chambersEnd = layoutParams[\"chambersEnd_ME_\" + side + station + ring];
+      }
+      
+      drawRing(x, y, scaleValue(layoutParams[\"innerRadius_ME\" + station + ring], scale),
+                     outerRadius,
+                     chamberCount, side, station, ring,
+                     chambersStart, chambersEnd);
+    }
+  }
+  
+  int pcrateRadius = radius;
+//  if (station == 4) { pcrateRadius = scaleValue(layoutParams[\"innerRadius_ME42\"], scale) - gap; }
+  drawPeripheralCrates(x, y, pcrateRadius + EMUUI_STATION_PCRATE_DISTANCE_FROM_DISK, side, station, exceptionInfo);
+  
+  // draw trigger sectors
+//   drawTriggerSectors(x, y, radius);
+}
+
+void drawPeripheralCrates(int x, int y, int radius, string side, int station, dyn_string &exceptionInfo) {
+  dyn_string ex;
+  
+  // shape type used in refDevice.
+  //If it's ME11 then use the rectangle shape which has it's ref point at the corner so that it's simple to position two crates next to each other
+  //if it's any other station use the rectangle_middle_ref_point shape which has it's ref point in the middle so that it's easy to center them
+  string shapeType = \"rectangle_middle_ref_point\";
+  if (station == 1) {
+    shapeType = \"rectangle\";
+  }
+  
+  // get the PCMBs
+  mapping mapPcmbs = emuui_getPcmbDb(exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  
+  string currentStation = paramSide + paramStation + \"_PC\";
+  
+  // create the peripheral crate objects
+  dyn_string crateRefs;
+  string pcGroup = emuui_getSessionDp(\"mainPeripheralCrateView\");
+  for (int i=1; i <= mappinglen(mapPcmbs); i++) {
+    string key = mappingGetKey(mapPcmbs, i);
+    if (strpos(key, currentStation) < 0) {
+      continue;
+    }
+
+    string id = mapPcmbs[key][1];
+    string idHex = strtolower(emu_decToHex(id, 1));
+    string rack = mapPcmbs[key][2];
+    string placeInRack = mapPcmbs[key][3];
+    string crateNumberStd = mapPcmbs[key][4];
+    
+    strreplace(key, currentStation, \"\");
+    string crateNum = key;
+    
+    string deviceParamsDollar = \"$deviceParams:\" + \"side=\" + side +
+                                                   \";station=\" + station +
+                                                   \";crateNum=\" + crateNum +
+                                                   \";crateNumStd=\" + crateNumberStd +
+                                                   \";rack=\" + rack +
+                                                   \";placeInRack=\" + placeInRack +
+                                                   \";id=\" + id +
+                                                   \";idHex=\" + idHex;
+    string shapeParamsDollar = \"$shapeParams:\" + \"type=\" + shapeType +
+                                                 \";width=\" + paramPCrateWidth +
+                                                 \";height=\" + paramPCrateHeight;
+    
+    //import the chamber panel (no changes in the panel orientation; position - [0,0])
+    string refName = \"refPeripheralCrate_\" + side + station + \"_PC\" + crateNum + \"_ID\" + id ;  //reference name
+    if (shapeExists(refName)) { refName += \"_1\"; }
+    dynAppend(references, refName);
+    dynAppend(crateRefs, refName);
+    addSymbol(myModuleName(), myPanelName(),
+              \"objects/\" + EMUUI_COMPONENT_NAME + \"/refDevice.pnl\",
+              refName,
+              makeDynString(\"$caption:VALUE\", \"$deviceType:peripheralCrate\",
+                            deviceParamsDollar, shapeParamsDollar, \"$group:\" + pcGroup,
+                            \"$refName:\" + refName),
+              x, y, 0, 1, 1);
+  }
+
+  delay(0, 80); // give just a little bit of time for the shapes to initialize before moving them around and rotating (they get screwd up if you don't)
+    
+  dynSortAsc(crateRefs);
+  
+  // position the crates around the station
+  float perimeter = 2 * EMUMATH_PI * radius;
+  float angleStep = (2 * EMUMATH_PI) / 6;
+  float angleOffset = EMUMATH_PI - ((2 * EMUMATH_PI) / 6); // start with the first crate which is in the top left
+  bool me11 = (dynlen(crateRefs) == 12); // ME11 stations have 12 crates, all others have 6
+  
+  for (int i=0; i < 6; i++) {
+    //compute the angle and position
+    float angle = angleOffset - i * angleStep;
+    float angleDeg = rad2deg(angle);             //convert angle from radians to degrees
+    float cosValue = cos(angle);
+    float sinValue = sin(angle);
+    int posX = round(-1 * radius * cosValue + x);
+    int posY = round(-1 * radius * sinValue + y);
+    int posXB, posYB; // position for \"B\" crates if it's ME11 station
+    string refName = crateRefs[i + 1],
+           refNameB;
+           
+    if (me11) {
+      int radiusB = radius + paramPCrateHeight - 1;
+      posXB = round(-1 * radiusB * cosValue + x);
+      posYB = round(-1 * radiusB * sinValue + y);
+      refName = crateRefs[(i * 2) + 1];
+      refNameB = crateRefs[(i + 1) * 2];
+    }
+    
+    //position the crate(s)
+    if (!me11) {
+      setValue(refName + \".\" + shapeType, \"position\", posX, posY);
+      setValue(refName + \".\" + shapeType, \"rotation\", -1 * angleDeg - 90);
+    } else {
+      // if it's on the right side of the disk - switch the two crates so that crate A is always at the bottom
+      if ((angleDeg > 90) || (angleDeg < -90)) {
+        string tmp = refNameB;
+        refNameB = refName;
+        refName = tmp;
+      }
+      setValue(refName + \".\" + shapeType, \"position\", posX, posY);
+      setValue(refName + \".\" + shapeType, \"rotation\", -1 * angleDeg - 90);
+      setValue(refNameB + \".\" + shapeType, \"position\", posXB, posYB);
+      setValue(refNameB + \".\" + shapeType, \"rotation\", -1 * angleDeg + 90);
+    }
+    
+    //position the caption(s)
+    if (!me11) {
+      float crateHalfHeight = paramPCrateHeight / 2;
+      float captionOffsetX = -1 * crateHalfHeight * cosValue;
+      float captionOffsetY = -1 * crateHalfHeight * sinValue;
+      setValue(refName + \".caption\", \"position\", posX + captionOffsetX, posY + captionOffsetY);
+    } else {
+      float crateHalfWidth = paramPCrateWidth / 2;
+      float crateHalfHeight = paramPCrateHeight / 2;
+      // move to middle of the crate in width
+      float captionOffsetX1 = crateHalfWidth * sinValue;
+      float captionOffsetY1 = -1 * crateHalfWidth * cosValue;
+      // move to the very center of the crate
+      float captionOffsetX2 = -1 * crateHalfHeight * cosValue;
+      float captionOffsetY2 = -1 * crateHalfHeight * sinValue;
+      
+      setValue(refName + \".caption\", \"position\", posX - captionOffsetX1 + captionOffsetX2, posY - captionOffsetY1 + captionOffsetY2);
+      setValue(refNameB + \".caption\", \"position\", posX + captionOffsetX1 + captionOffsetX2, posY + captionOffsetY1 + captionOffsetY2);
+    }
+    
+    // rotate the caption(s)
+    if (((angleDeg >= 0) && (angleDeg < 180)) || (angleDeg >= 350)){
+      setValue(refName + \".caption\", \"rotation\", -1 * angleDeg + 90);
+      if (me11) {
+        setValue(refNameB + \".caption\", \"rotation\", -1 * angleDeg + 90);
+      }
+    } else {
+      setValue(refName + \".caption\", \"rotation\", -1 * angleDeg - 90);
+      if (me11) {
+        setValue(refNameB + \".caption\", \"rotation\", -1 * angleDeg - 90);
+      }
+    }
+  }
+}
+
+void drawTriggerSectors(int centerX, int centerY, int radius) {
+  float angleStep = 360 / 6;
+  float angle = -1 * ((360 / 36) * 4); // angle at which to start  
+  for (int i=1; i <= 6; i++) {
+    string refName = \"triggerSectorSeparator_\" + paramSide + paramStation + i;
+    while (shapeExists(refName)) { refName += \"_duplicate\"; }
+    dynAppend(references, refName);
+    addSymbol(myModuleName(), myPanelName(), \"objects/\" + EMUUI_COMPONENT_NAME + \"/refTriggerSectorSeparator.pnl\", 
+              refName, makeDynString(), 0, 0, 0, 1, 1);
+    setValue(refName + \".separator\", \"position\", centerX, centerY);
+    setValue(refName + \".separator\", \"rotation\", angle);
+    angle += angleStep;
+  }
+}
+
+/* sets the caption in the right position (also depending on the label size) and sets the proper text for the label. */
+void positionAndNameCaption(int x, int y, string side, int station) {
+  // set the text
+  string name = \"ME\";
+  if (side == \"P\") {
+    name += \"+\";
+  } else {
+    name += \"-\";
+  }
+  name += station;
+  caption.text = name;
+  
+  // set the position
+  int width, height;
+  getValue(\"caption\", \"size\", width, height);
+  
+  int posX, posY;
+  posX = x - ((float) width) / 2 + 3; // +4 is just a correction which is needed for some reason
+  posY = y - ((float) height) / 2 + 3;// +4 is just a correction which is needed for some reason
+  caption.position(posX, posY);  
+}
+
+/** multiplies the value by scale and then rounds the result to the nearest integer. */
+int scaleValue(int value, float scale) {
+  float floatValue = (float) value;
+  int ret = floor(floatValue * scale);
+  
+  if ((floatValue * scale) - ret > 0.5) { // round the value correctly
+    ret++;
+  }
+  
+  return ret;
+}
+
+/** Draws a CSCs ring. You have to provide coordinates where to draw it, then inner and outer radius of the ring and ring parameters:
+        side (\"P\" or \"M\"), station number and ring number.
+    If chambersStart and chamberEnd is provided then only the interval of chambers between these start and end are drawn. */
+void drawRing(int x, int y, int innerRadius, int outerRadius, int chamberCount, string side, int station, int ring, 
+              int chambersStart = -1, int chambersEnd = -1) {
+  
+  float outerPerimeter = 2 * EMUMATH_PI * outerRadius;
+  float innerPerimeter = 2 * EMUMATH_PI * innerRadius;
+  float angleStep = (2 * EMUMATH_PI) / chamberCount;
+  float angleOffset = EMUMATH_PI - ((2 * EMUMATH_PI) / chamberCount) / 2; // to keep the chambers nicely alligned
+  int chamberHeight = outerRadius - innerRadius;
+  int chamberInnerWidth = floor((float)(innerPerimeter / chamberCount));
+  int chamberOuterWidth = floor((float)(outerPerimeter / chamberCount));
+  int captionRadius = outerRadius - (chamberHeight / 2);     // radius of the ring on which chamber captions will be positioned
+  int warningRadius = outerRadius - 4;     // radius of the ring on which chamber warning sign is positioned
+  
+  if ((chambersStart == -1) || (chambersEnd == -1)) { 
+    chambersStart = 0;
+    chambersEnd = chamberCount;
+  } else {
+    chambersStart--;
+  }
+  
+  for (int i=chambersStart; i < chambersEnd; i++) {
+    //compute the angle and position
+    float angle = angleOffset - i * angleStep;
+    float angleDeg = rad2deg(angle);             //convert angle from radians to degrees
+    float cosValue = cos(angle);
+    float sinValue = sin(angle);
+    int posX = round(-1 * outerRadius * cosValue + x);
+    int posY = round(-1 * outerRadius * sinValue + y);
+    int captionPosX = -1 * captionRadius * cosValue + x;
+    int captionPosY = -1 * captionRadius * sinValue + y;
+    int warningPosX = -1 * warningRadius * cosValue + x;
+    int warningPosY = -1 * warningRadius * sinValue + y;
+    
+    //construct a chamber name
+    string chamberName;
+    string strChamberNumber;
+    sprintf(strChamberNumber, \"%02d\", i + 1); // 1-based indexing
+    chamberName = strChamberNumber;
+    //full name could be used (e.g. ME+1/1/1)
+    //string sideSign = \"+\";
+    //if (side == \"M\") { sideSign = \"-\"; }
+    //chamberName = \"ME\" + sideSign + station + \"/\" + ring + \"/\" + (i + 1);
+
+    // setup various parameters (information about device) for refDevice.pnl
+    string refName = \"refChamber_\" + side + station + ring + \"_\" + strChamberNumber;  //reference name
+    if (shapeExists(refName)) { refName += \"_1\"; }
+    
+    string deviceParamsDollar = \"$deviceParams:\" + \"side=\" + side +
+                                                   \";station=\" + station +
+                                                   \";ring=\" + ring +
+                                                   \";chamberNumber=\" + strChamberNumber;
+    string shapeParamsDollar = \"$shapeParams:\" + \"type=chamber\" +
+                                                 \";outerWidth=\" + chamberOuterWidth +
+                                                 \";innerWidth=\" + chamberInnerWidth +
+                                                 \";height=\" + chamberHeight;
+    
+    //import the chamber panel (no changes in the panel orientation; position - [0,0])
+    dynAppend(references, refName);
+    addSymbol(myModuleName(), myPanelName(),
+              \"objects/\" + EMUUI_COMPONENT_NAME + \"/refDevice.pnl\",
+              refName,
+              makeDynString(\"$caption:\" + chamberName, \"$deviceType:chamber\",
+                            deviceParamsDollar, shapeParamsDollar, \"$group:\" + paramGroup,
+                            \"$refName:\" + refName),
+              0, 0, 0, 1, 1);
+    
+//transfer the chamber local coordinate system from the upper left corner to the middle of the outer part (where we think we have the center :) )
+//     posX += sin(angle) * (chamberOuterWidth / 2);
+//     posY -= cos(angle) * (chamberOuterWidth / 2);
+    
+    //position the chamber
+    setValue(refName + \".chamber\", \"position\", posX, posY);
+    setValue(refName + \".chamber\", \"rotation\", -1 * angleDeg);
+
+    //position the caption and other gadgets
+    setValue(refName + \".caption\", \"position\", captionPosX, captionPosY);
+    setValue(refName + \".imgDeviceIncomplete\", \"position\", warningPosX, warningPosY);
+    setValue(refName + \".imgNoCommunication\", \"position\", warningPosX, warningPosY);
+    //setValue(refName + \".imgDeviceIncomplete\", \"rotation\", -1 * angleDeg + 180);
+    if ((angleDeg > 90) || (angleDeg <= -90)){
+      setValue(refName + \".caption\", \"rotation\", -1 * angleDeg + 180);
+      setValue(refName + \".imgDeviceIncomplete\", \"rotation\", -1 * angleDeg + 180);
+//      setValue(refName + \".imgNoCommunication\", \"rotation\", -1 * angleDeg + 180);
+    } else {
+      setValue(refName + \".caption\", \"rotation\", -1 * angleDeg);
+      setValue(refName + \".imgDeviceIncomplete\", \"rotation\", -1 * angleDeg);
+//      setValue(refName + \".imgNoCommunication\", \"rotation\", -1 * angleDeg);
+    }
+  }
+}
+
+int round(float value) {
+  int ret = floor(value);
+  if (value - ret > 0.5) {
+    ret++;
+  }
+  
+  return ret;
+}" 0
+ "main()
+{
+  emuui_destroyReferences(references);
+}
+" 0
+ E E E 1 -1 -1 0  0 0
+""0  1
+E "// init parameters
+int paramRadius;
+string paramSide;
+int paramStation;
+string paramGroup;
+int paramPCrateWidth;
+int paramPCrateHeight;
+
+// some panel-wide constants and variables
+const int EMUUI_STATION_PCRATE_DISTANCE_FROM_DISK = 5;
+dyn_string references;
+
+/** coppies dollar parameters to local variables. If any dollar parameter is missing 
+   then local variable is given a default value to allow to run the panel separatelly for debugging purposes. */
+void initParams() {
+  //default values
+  if ((strlen($group) == 0) &&
+      (strlen($side) == 0) &&
+      (strlen($station) == 0) &&
+      (strlen($radius) == 0)) {
+    
+    emuui_init();
+    paramGroup = emuui_getSessionDp(\"mainChamberView\");
+    paramSide = \"M\";
+    paramStation = 1;
+    paramRadius = 300;
+  } else { // copy from dollar params
+    paramGroup = $group;
+    paramSide = $side;
+    paramStation = $station;
+    paramRadius = $radius;
+  }
+  paramPCrateWidth = paramRadius / 6;
+  paramPCrateHeight = paramRadius / 13;
+  paramRadius -= paramPCrateHeight;
+}
+
+void showPopupMenu() {
+  return; //NOT IMPLEMENTED
+  
+  int answer;
+  dyn_string menu;
+  
+//   example of a menu
+//   dyn_string menu = makeDynString(\"PUSH_BUTTON, text1, 1, 1\", 
+//    \"PUSH_BUTTON, text2, 2, 1\", 
+//    \"SEPARATOR\", // separating line 
+//    \"CASCADE_BUTTON, Level 2, 1\", // branch 
+//    \"PUSH_BUTTON, text3, 3, 1\", 
+//    \"Level 2\", // from here level 2 
+//    \"PUSH_BUTTON, text4, 4, 0\", 
+//    \"PUSH_BUTTON, text5, 5, 1\"); 
+  
+  string stationName = \"ME\";
+  if (paramSide == \"P\") {
+    stationName += \"+\";
+  } else {
+    stationName += \"-\";
+  }
+  stationName += paramStation;
+  
+  dynAppend(menu, \"CASCADE_BUTTON, Command to Whole Station \" + stationName + \", 1\");
+  dynAppend(menu, \"CASCADE_BUTTON, Command to \" + stationName + \" High Voltage, 1\");
+  dynAppend(menu, \"CASCADE_BUTTON, Command to \" + stationName + \" Low Voltage, 1\");
+    
+  // whole station submenu
+  dynAppend(menu, \"Command to Whole Station \" + stationName);
+  dynAppend(menu, \"PUSH_BUTTON, Turn ON, 101, 1\");
+  dynAppend(menu, \"PUSH_BUTTON, Turn OFF, 102, 1\");
+  dynAppend(menu, \"PUSH_BUTTON, Go to STANDBY, 103, 1\");
+
+  // whole station submenu
+  dynAppend(menu, \"Command to \" + stationName + \" High Voltage\");
+  dynAppend(menu, \"PUSH_BUTTON, Turn ON, 201, 1\");
+  dynAppend(menu, \"PUSH_BUTTON, Turn OFF, 202, 1\");
+  dynAppend(menu, \"PUSH_BUTTON, Go to STANDBY, 203, 1\");
+    
+  // whole station submenu
+  dynAppend(menu, \"Command to \" + stationName + \" Low Voltage\");
+  dynAppend(menu, \"PUSH_BUTTON, Turn ON Low Voltage, 301, 1\");
+  dynAppend(menu, \"PUSH_BUTTON, Turn OFF Peripheral Crates, 302, 1\");
+  dynAppend(menu, \"PUSH_BUTTON, Turn OFF Peripheral Crates And Maratons, 303, 1\");
+    
+  string font = \"\";//\"-microsoft windows-Courier New-bold-i-normal-*-*-140-100-100-*-*-iso8859-1\"; //font 
+  string forecolor = \"black\"; //foreground color 
+  string backcolor = \"white\"; //background color 
+
+  int posX, posY;   
+  getCursorPosition(posX, posY);
+  //popupMenuXY(menu, posX, posY, answer, font, forecolor, backcolor);
+  popupMenu(menu, answer);
+  
+  emu_info(\"popupso atsakymas: \" + answer);
+  if (answer != 0) {
+    emu_errorSingle(\"This functionality is not implemented. Please inform DCS expert about this (make sure to describe how you got this message)\");
+  }
+}" 0
+ 2
+"CBRef" "1"
+"EClose" "main()
+{
+  emuui_destroyReferences(references);
+  PanelOff();
+}
+" 0
+
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 2
+"background"
+""
+1 30 30 E E E 1 E 0 E N {0,0,0} E N "_Button" E E
+ E E
+3 0 0 0 0 0
+E E E
+4
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -30 -30 1 E 30 30 480 430
+7 1
+"refPoint"
+""
+1 140 110 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -140 -110 1 E 140 110 10 10
+2 3
+"caption"
+""
+1 140 440 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ "main()
+{
+  showPopupMenu();
+}" 0
+ "main()
+{
+  dyn_string ex;
+  mapping deviceParams;
+  deviceParams[\"side\"] = paramSide;
+  deviceParams[\"station\"] = paramStation;
+  string fsmNode = emuui_getFsmNode(\"station\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // convert node to domain + object combo
+  string domain = fsmNode;
+  string object = _fwCU_getNodeObj(domain);
+
+  // open the panel
+  fwFsmUi_ObjButtonDoubleClick(domain, object, domain);      
+}" 0
+
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+2
+"hoverfclr" "N \"black_yellow\""
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 140 440 200 460
+0 2 2 "0s" 0 0 0 192 0 0  140 440 1
+1
+LANG:1 26 Arial,12,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 7 Caption
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

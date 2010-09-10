@@ -1,0 +1,11 @@
+#!/bin/sh
+
+
+
+
+
+
+
+g++ -o ~/bin/file_editing file_editing.cxx
+g++ -o ~/bin/file_editing_samplefilelist file_editing_samplefilelist.cxx
+g++ -o ~/bin/file_editing_unix2dos file_editing_unix2dos.cxx

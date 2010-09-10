@@ -1,0 +1,32 @@
+#!/bin/sh
+
+
+
+
+
+
+
+
+
+
+cd
+. .bash_profile
+. cern_oracle
+delete_processes_by_name "/home/fast/pvss_fsm/smi"
+delete_processes_by_name "/home/fast/pvss_fsm/bin/PVSS00"
+delete_processes_by_name "PROJ\ pvss_fsm"
+delete_processes_by_name "/home/fast/pvss_fsm/config/config"
+#### only for pvss_fsm 
+delete_processes_by_name "start_servers"
+delete_processes_by_name "delete_old_lib_versions"
+delete_processes_by_name "mudcsServer.ctl"
+delete_processes_by_name "PVSS00ctrl -num 4 fwFsmSrvr"
+delete_processes_by_name "/opt/pvss/pvss2_v3.6/bin/PVSS"
+echo "PLEASE WAIT A FEW SECONDS"
+echo "PLEASE WAIT A FEW SECONDS"
+echo "PLEASE WAIT A FEW SECONDS"
+echo "PLEASE WAIT A FEW SECONDS"
+echo "PLEASE WAIT A FEW SECONDS"
+echo "PLEASE WAIT A FEW SECONDS"
+echo "PLEASE WAIT A FEW SECONDS"
+exit

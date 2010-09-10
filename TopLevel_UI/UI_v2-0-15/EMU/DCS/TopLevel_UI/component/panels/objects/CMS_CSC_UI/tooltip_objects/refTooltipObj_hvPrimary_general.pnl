@@ -1,0 +1,417 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 441 128 N "_3DFace" 1
+"$deviceParams"
+"main()
+{
+  dyn_string ex;
+  deviceParams = emuui_parseParameterString($deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  getValue(\"refPoint\", \"position\", posX, posY);
+
+  // HV status colors and meaning
+  hvStatusColors = emuui_getMapping(\"hvStatusColors\", ex);
+  if (emu_checkException(ex)) { return; }
+  hvModuleStatusTexts = emuui_getMapping(\"hvModuleStatusMeaning\", ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // Module data (vMon, vSet, iMon, iMax and many others are found under this node) */
+  string hvPrimaryDataDp = emuui_getDpName(\"hvPrimary_data\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // Module status
+  string hvPrimaryStatusDp = emuui_getDpName(\"hvPrimary_status\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // find out the \"disconnected devices\" DP to be able to show the \"no communication\" warning
+  deviceParams[\"sysName\"] = emuui_getSystemName(hvPrimaryDataDp);
+  string disconnectedDevicesDp = emuui_getDpName(\"disconnected_devices\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // get the FSM node for the HV of this chamber (this will be used in \"no communication\" warning update
+  fsmNode = emuui_getFsmNode(\"hvPrimary_general\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+
+  string vMonDp = hvPrimaryDataDp + \".vmon\";
+  string vSetDp = hvPrimaryDataDp + \".vset\";
+  string iMonDp = hvPrimaryDataDp + \".imon\";
+  string iMaxDp = hvPrimaryDataDp + \".imax\";
+  
+  // init gui and connect everything
+  dpConnect(\"updateVMonCB\", true, vMonDp);
+  dpConnect(\"updateVSetCB\", true, vSetDp);
+  dpConnect(\"updateIMonCB\", true, iMonDp);
+  dpConnect(\"updateIMaxCB\", true, iMaxDp);
+  dpConnect(\"updateStatusCB\", true, hvPrimaryStatusDp);
+  
+  dpConnect(\"updateDisconnectedWarningCB\", true, disconnectedDevicesDp);
+}" 0
+ E E E E 1 -1 -1 0  0 0
+""0  1
+E "//some panel-wide constants
+mapping deviceParams;
+mapping hvStatusColors;
+mapping hvModuleStatusTexts;
+string fsmNode;
+int posX, posY;
+
+/** Update voltage reading */
+void updateVMonCB(string dpName, int voltage) {
+  lblVMon.text = ((string) voltage) + \" V\";
+  lblLastUpdate.text = emuui_getLastUpdateTime(dpName);
+}
+
+/** Update voltage setting */
+void updateVSetCB(string dpName, int voltage) {
+  lblVSet.text = ((string) voltage) + \" V\";
+  lblLastUpdate.text = emuui_getLastUpdateTime(dpName);
+}
+
+/** Update current reading */
+void updateIMonCB(string dpName, int current) {
+  lblIMon.text = ((string) current) + \" uA\";
+  lblLastUpdate.text = emuui_getLastUpdateTime(dpName);
+}
+
+/** Update max current setting */
+void updateIMaxCB(string dpName, int current) {
+  lblIMax.text = ((string) current) + \" uA\";
+  lblLastUpdate.text = emuui_getLastUpdateTime(dpName);
+}
+
+/** Updates module status. */
+void updateStatusCB(string dpName, int status) {
+  string statusText = hvModuleStatusTexts[(string)status];
+  string statusColor = hvStatusColors[statusText];
+  
+  lblStatus.text = statusText;
+  lblStatus.backCol = statusColor;
+}
+
+/** if disconnectedDevices contains hvFsmNode then \"no communication\" warning is shown, otherwise it's hidden. */
+void updateDisconnectedWarningCB(string dpName, string disconnectedDevices) {
+  if (strpos(disconnectedDevices, fsmNode) >= 0) {
+    emuui_showTooltipWarning(getShape(\"refPoint\"),
+                           getShape(\"warnNoHvCommunication\"), 
+                           getShape(\"hvPrimary_general_tooltipBack\"));
+  } else {
+    emuui_hideTooltipWarning(getShape(\"warnNoHvCommunication\"), 
+                             getShape(\"hvPrimary_general_tooltipBack\"));
+  }
+}
+" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 31
+"hvPrimary_general_tooltipBack"
+""
+1 400 40 E E E 1 E 1 E N {0,0,0} E N {255,255,225} E E
+ E E
+44 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 3.363636363636362 0 1 -1345.454545454543 -40 1 E 400 40 510 130
+2 10
+"warnNoHvCommunication"
+""
+1 10 100 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 100 360 114
+1 2 2 "0s" 0 0 0 65 0 0  10 100 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 33 No Communication with this device
+2 13
+"lblLastUpdate"
+""
+1 260 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 260 10 319 26
+0 2 2 "0s" 0 0 0 192 0 0  260 10 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 9 timestamp
+2 14
+"PRIMITIVE_TEXT6"
+""
+1 190 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 190 10 258 26
+0 2 2 "0s" 0 0 0 192 0 0  190 10 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 12 Last update:
+7 17
+"refPoint"
+""
+1 140 110 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ E E
+26 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -140 -110 1 E 140 110 10 10
+2 18
+"PRIMITIVE_TEXT7"
+""
+1 10 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+27 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 10 48 26
+0 2 2 "0s" 0 0 0 192 0 0  10 10 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 7 Status:
+2 22
+"lblStatus"
+""
+1 110 10 E E E 1 E 1 E N "_WindowText" E N "FwStateOKPhysics" E E
+ E E
+31 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 110 10 170 24
+1 2 2 "0s" 0 0 0 65 0 0  110 10 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 10 LOADING...
+2 32
+"PRIMITIVE_TEXT8"
+""
+1 10 60 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+45 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 60 94 76
+0 2 2 "0s" 0 0 0 192 0 0  10 60 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 16 Voltage Setting:
+2 33
+"PRIMITIVE_TEXT9"
+""
+1 180 60 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+46 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 180 60 289 76
+0 2 2 "0s" 0 0 0 192 0 0  180 60 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 20 Max Current Setting:
+2 34
+"PRIMITIVE_TEXT10"
+""
+1 10 40 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+48 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 40 103 56
+0 2 2 "0s" 0 0 0 192 0 0  10 40 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 16 Voltage Reading:
+2 35
+"PRIMITIVE_TEXT11"
+""
+1 180 40 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+50 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 180 40 274 56
+0 2 2 "0s" 0 0 0 192 0 0  180 40 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 16 Current Reading:
+2 36
+"lblVMon"
+""
+1 110 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+51 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 110 40 170 54
+1 2 2 "0s" 0 0 0 65 0 0  110 40 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 10 LOADING...
+2 37
+"lblVSet"
+""
+1 110 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+53 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 110 60 170 74
+1 2 2 "0s" 0 0 0 65 0 0  110 60 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 10 LOADING...
+2 38
+"lblIMax"
+""
+1 300 60 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+55 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 300 60 360 74
+1 2 2 "0s" 0 0 0 65 0 0  300 60 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 10 LOADING...
+2 39
+"lblIMon"
+""
+1 300 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+57 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 300 40 360 54
+1 2 2 "0s" 0 0 0 65 0 0  300 40 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 10 LOADING...
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

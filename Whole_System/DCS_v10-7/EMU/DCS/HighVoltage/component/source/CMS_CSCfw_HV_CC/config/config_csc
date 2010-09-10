@@ -1,0 +1,490 @@
+[general]
+#begin fwRDBArchiving
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+useRDBArchive = 1
+#end fwRDBArchiving
+
+
+
+pvss_path = "/opt/pvss/pvss2_v3.6"
+###proj_path = "/mnt/central_installation"
+proj_path = "/home/fast/fwComponents_20070111"
+proj_path = "/home/fast/pvss_fsm"
+proj_version = "3.6"
+userName = "root"
+password = ""
+langs = "en_US.iso88591"
+distributed = 1
+eventPort = 43100
+dataPort = 43150
+pmonPort = 43200
+
+[dist]
+distPeer = "centdcs01$centdcs02" 1
+distPeer = "emudcs" 160
+distPort = 43261
+
+[ui]
+#begin fwRDBArchiving
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+queryRDBdirect = 1
+CtrlDLL = "CtrlRDBArchive.dll"
+CtrlDLL = "CtrlRDBCompr.dll"
+#PVSS ADO library
+CtrlDLL = "CtrlADO"
+#end fwRDBArchiving
+
+
+
+
+
+#begin fwFSMConfDB
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwFsmConfDB/fwFsmConfDB.ctl"
+#end fwFSMConfDB
+
+#begin fwConfigurationDB
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+#PVSS ADO library
+CtrlDLL = "CtrlRDBAccess"
+#Configuration Database Tool specific libraries
+LoadCtrlLibs = "fwConfigurationDB/fwConfigurationDB.ctl"
+LoadCtrlLibs = "fwConfigurationDB/fwConfigurationDB_Utils.ctl"
+LoadCtrlLibs = "fwConfigurationDB/fwConfigurationDB_Setup.ctl"
+LoadCtrlLibs = "fwConfigurationDB/fwConfigurationDB_DBAccess.ctl"
+LoadCtrlLibs = "fwConfigurationDB/fwConfigurationDB_Recipes.ctl"
+LoadCtrlLibs = "fwConfigurationDB/fwConfigurationDB_Hierarchies.ctl"
+LoadCtrlLibs = "fwConfigurationDB/fwConfigurationDB_DeviceConfiguration.ctl"
+#end fwConfigurationDB
+
+#begin fwCoolingAndVentilation
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwCoolingAndVentilation/fwCaV.ctl"
+#end fwCoolingAndVentilation
+
+#begin fwAnalogDigital
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+#end fwAnalogDigital
+
+#begin fwTrending
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwTrending/fwTrending.ctl"
+LoadCtrlLibs = "fwTrending/fwTrendingTree.ctl"
+#end fwTrending
+
+#begin fwGenericExternalHandler
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+#end fwGenericExternalHandler
+
+#begin fwDIP
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwDIP/fwDIP.ctl"
+#end fwDIP
+
+#begin fwDIM
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwDIM"
+#end fwDIM
+
+#begin fwAlarmHandling
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwAlarmHandling/fwAlarmHandling.ctl"
+LoadCtrlLibs = "fwAlarmHandling/fwAlarmHandlingScreen.ctl"
+#end fwAlarmHandling
+
+#begin fwDeviceEditorNavigator
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwDeviceEditorNavigator/fwDeviceEditorNavigator.ctl"
+LoadCtrlLibs = "fwDeviceEditorNavigator/fwDeviceEditorNavigatorClipboard.ctl"
+#end fwDeviceEditorNavigator
+
+#begin fwFSM
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwFsm"
+LoadCtrlLibs = "fwCU"
+LoadCtrlLibs = "fwDU"
+LoadCtrlLibs = "fwUi"
+LoadCtrlLibs = "fwTree.ctl"
+LoadCtrlLibs = "fwFsmUtil.ctl"
+LoadCtrlLibs = "fwTreeDisplay.ctl"
+LoadCtrlLibs = "fwFsmTreeDisplay.ctl"
+LoadCtrlLibs = "fwFsmUi.ctl"
+#end fwFSM
+
+#begin fwNode
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwNode/fwNode.ctl"
+#end fwNode
+
+#begin fwTreeView
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwTreeView/fwUtil.ctl"
+LoadCtrlLibs = "fwTreeView/fwTreeView.ctl"
+LoadCtrlLibs = "fwTreeView/fwTreeViewTest.ctl"
+#end fwTreeView
+
+#begin fwDevice
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwDevice/fwDevice.ctl"
+LoadCtrlLibs = "fwDevice/fwDeviceFrontEndConfigFile.ctl"
+#end fwDevice
+
+#begin unDistributedControl
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+#unicos DistributedControl component
+LoadCtrlLibs = "unDistributedControl.ctl"
+#end unDistributedControl
+
+#begin fwConfigs
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwConfigs/fwAlertConfig.ctl"
+LoadCtrlLibs = "fwConfigs/fwArchive.ctl"
+LoadCtrlLibs = "fwConfigs/fwConfigConversion.ctl"
+LoadCtrlLibs = "fwConfigs/fwConfigs.ctl"
+LoadCtrlLibs = "fwConfigs/fwDpFunction.ctl"
+LoadCtrlLibs = "fwConfigs/fwPeriphAddress.ctl"
+LoadCtrlLibs = "fwConfigs/fwPeriphAddressS7.ctl"
+LoadCtrlLibs = "fwConfigs/fwPeriphAddressCMW.ctl"
+LoadCtrlLibs = "fwConfigs/fwOriginal.ctl"
+LoadCtrlLibs = "fwConfigs/fwPvRange.ctl"
+LoadCtrlLibs = "fwConfigs/fwSmoothing.ctl"
+LoadCtrlLibs = "fwConfigs/fwUnit.ctl"
+LoadCtrlLibs = "fwConfigs/fwFormat.ctl"
+LoadCtrlLibs = "fwConfigs/fwConfigConstants.ctl"
+#end fwConfigs
+
+#begin fwGeneral
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+visionResizeMode = "Zoom"
+LoadCtrlLibs = "fwGeneral/fwBusyBarButton.ctl"
+LoadCtrlLibs = "fwGeneral/fwColour.ctl"
+LoadCtrlLibs = "fwGeneral/fwColourTable.ctl"
+LoadCtrlLibs = "fwGeneral/fwException.ctl"
+LoadCtrlLibs = "fwGeneral/fwExceptionHandling.ctl"
+LoadCtrlLibs = "fwGeneral/fwListManipulation.ctl"
+LoadCtrlLibs = "fwGeneral/fwProgressBar.ctl"
+LoadCtrlLibs = "fwGeneral/fwGeneral.ctl"
+#Arial-Regular Fonts
+fontMapping = "-microsoft windows-Arial-normal-r-normal-*-*-100-100-100-*-*-iso8859-1" "-adobe-helvetica-medium-r-normal-*-*-80-100-100-*-*-iso8859-1"
+fontMapping = "-microsoft windows-Arial-normal-r-normal-*-*-110-100-100-*-*-iso8859-1" "-adobe-helvetica-medium-r-normal-*-*-80-100-100-*-*-iso8859-1"
+fontMapping = "-microsoft windows-Arial-normal-r-normal-*-*-120-100-100-*-*-iso8859-1" "-adobe-helvetica-medium-r-normal-*-*-90-100-100-*-*-iso8859-1"
+fontMapping = "-microsoft windows-Arial-normal-r-normal-*-*-130-100-100-*-*-iso8859-1" "-adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1"
+fontMapping = "-microsoft windows-Arial-normal-r-normal-*-*-140-100-100-*-*-iso8859-1" "-adobe-helvetica-medium-r-normal-*-*-100-100-100-*-*-iso8859-1"
+fontMapping = "-microsoft windows-Arial-normal-r-normal-*-*-160-100-100-*-*-iso8859-1" "-adobe-helvetica-medium-r-normal-*-*-160-100-100-*-*-iso8859-1"
+fontMapping = "-microsoft windows-Arial-normal-r-normal-*-*-180-100-100-*-*-iso8859-1" "-adobe-helvetica-medium-r-normal-*-*-160-100-100-*-*-iso8859-1"
+fontMapping = "-microsoft windows-Arial-normal-r-normal-*-*-200-100-100-*-*-iso8859-1" "-adobe-helvetica-medium-r-normal-*-*-180-100-100-*-*-iso8859-1"
+fontMapping = "-microsoft windows-Arial-normal-r-normal-*-*-240-100-100-*-*-iso8859-1" "-adobe-helvetica-medium-r-normal-*-*-240-100-100-*-*-iso8859-1"
+#Courier New-Regular Fonts
+fontMapping = "-microsoft windows-Courier New-normal-r-normal-*-*-110-100-100-*-*-iso8859-1" "-adobe-courier-medium-r-normal-*-*-90-100-100-*-*-iso8859-1"
+fontMapping = "-microsoft windows-Courier New-normal-r-normal-*-*-120-100-100-*-*-iso8859-1" "-adobe-courier-medium-r-normal-*-*-90-100-100-*-*-iso8859-1"
+fontMapping = "-microsoft windows-Courier New-normal-r-normal-*-*-130-100-100-*-*-iso8859-1" "-adobe-courier-medium-r-normal-*-*-100-100-100-*-*-iso8859-1"
+fontMapping = "-microsoft windows-Courier New-normal-r-normal-*-*-140-100-100-*-*-iso8859-1" "-adobe-courier-medium-r-normal-*-*-100-100-100-*-*-iso8859-1"
+fontMapping = "-microsoft windows-Courier New-normal-r-normal-*-*-160-100-100-*-*-iso8859-1" "-adobe-courier-medium-r-normal-*-*-140-100-100-*-*-iso8859-1"
+fontMapping = "-microsoft windows-Courier New-normal-r-normal-*-*-170-100-100-*-*-iso8859-1" "-adobe-courier-medium-r-normal-*-*-140-100-100-*-*-iso8859-1"
+fontMapping = "-microsoft windows-Courier New-normal-r-normal-*-*-200-100-100-*-*-iso8859-1" "-adobe-courier-medium-r-normal-*-*-180-100-100-*-*-iso8859-1"
+#end fwGeneral
+
+#begin fwAccessControl
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwAccessControl/fwAccessControl.ctc"
+#end fwAccessControl
+
+LoadCtrlLibs = "fwInstallation.ctl"
+
+LoadCtrlLibs = "CMS_CSCfw_HV_CC/emuDcs.ctl"
+LoadCtrlLibs = "CMS_CSCfw_HV_CC/emuDcs2.ctl"
+LoadCtrlLibs = "CMS_CSCfw_HV_CC/emuDcs3.ctl"
+LoadCtrlLibs = "CMS_CSCfw_HV_CC/emuDcs4.ctl"
+LoadCtrlLibs = "CMS_CSCfw_HV_CC/emuAlert.ctl"
+LoadCtrlLibs = "CMS_CSCfw_HV_CC/emuDcsDim.ctl"
+LoadCtrlLibs = "CMS_CSCfw_HV_CC/emufw.ctl"
+
+[ctrl]
+#begin fwRDBArchiving
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+queryRDBdirect = 1
+CtrlDLL = "CtrlRDBArchive.dll"
+CtrlDLL = "CtrlRDBCompr.dll"
+#end fwRDBArchiving
+
+
+
+#begin fwFSMConfDB
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwFsmConfDB/fwFsmConfDB.ctl"
+#end fwFSMConfDB
+
+#begin fwConfigurationDB
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+#PVSS ADO library
+CtrlDLL = "CtrlRDBAccess"
+#Configuration Database Tool specific libraries
+LoadCtrlLibs = "fwConfigurationDB/fwConfigurationDB.ctl"
+LoadCtrlLibs = "fwConfigurationDB/fwConfigurationDB_Utils.ctl"
+LoadCtrlLibs = "fwConfigurationDB/fwConfigurationDB_Setup.ctl"
+LoadCtrlLibs = "fwConfigurationDB/fwConfigurationDB_DBAccess.ctl"
+LoadCtrlLibs = "fwConfigurationDB/fwConfigurationDB_Recipes.ctl"
+LoadCtrlLibs = "fwConfigurationDB/fwConfigurationDB_Hierarchies.ctl"
+LoadCtrlLibs = "fwConfigurationDB/fwConfigurationDB_DeviceConfiguration.ctl"
+#end fwConfigurationDB
+
+#begin fwCoolingAndVentilation
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwCoolingAndVentilation/fwCaV.ctl"
+#end fwCoolingAndVentilation
+
+#begin fwAnalogDigital
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+#end fwAnalogDigital
+
+#begin fwTrending
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwTrending/fwTrending.ctl"
+LoadCtrlLibs = "fwTrending/fwTrendingTree.ctl"
+#end fwTrending
+
+#begin fwGenericExternalHandler
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+#end fwGenericExternalHandler
+
+#begin fwDIP
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwDIP/fwDIP.ctl"
+#end fwDIP
+
+#begin fwDIM
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwDIM"
+#end fwDIM
+
+#begin fwAlarmHandling
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwAlarmHandling/fwAlarmHandling.ctl"
+LoadCtrlLibs = "fwAlarmHandling/fwAlarmHandlingScreen.ctl"
+#end fwAlarmHandling
+
+#begin fwFSM
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwFsm"
+LoadCtrlLibs = "fwCU"
+LoadCtrlLibs = "fwDU"
+LoadCtrlLibs = "fwUi"
+LoadCtrlLibs = "fwTree.ctl"
+LoadCtrlLibs = "fwFsmUtil.ctl"
+LoadCtrlLibs = "fwTreeDisplay.ctl"
+LoadCtrlLibs = "fwFsmTreeDisplay.ctl"
+LoadCtrlLibs = "fwFsmUi.ctl"
+#end fwFSM
+
+#begin fwNode
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwNode/fwNode.ctl"
+#end fwNode
+
+#begin fwTreeView
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwTreeView/fwUtil.ctl"
+LoadCtrlLibs = "fwTreeView/fwTreeView.ctl"
+LoadCtrlLibs = "fwTreeView/fwTreeViewTest.ctl"
+#end fwTreeView
+
+#begin fwDevice
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwDevice/fwDevice.ctl"
+LoadCtrlLibs = "fwDevice/fwDeviceFrontEndConfigFile.ctl"
+#end fwDevice
+
+#begin unDistributedControl
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+#unicos DistributedControl component
+LoadCtrlLibs = "unDistributedControl.ctl"
+#end unDistributedControl
+
+#begin fwConfigs
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwConfigs/fwAlertConfig.ctl"
+LoadCtrlLibs = "fwConfigs/fwArchive.ctl"
+LoadCtrlLibs = "fwConfigs/fwConfigConversion.ctl"
+LoadCtrlLibs = "fwConfigs/fwConfigs.ctl"
+LoadCtrlLibs = "fwConfigs/fwDpFunction.ctl"
+LoadCtrlLibs = "fwConfigs/fwPeriphAddress.ctl"
+LoadCtrlLibs = "fwConfigs/fwPeriphAddressS7.ctl"
+LoadCtrlLibs = "fwConfigs/fwPeriphAddressCMW.ctl"
+LoadCtrlLibs = "fwConfigs/fwOriginal.ctl"
+LoadCtrlLibs = "fwConfigs/fwPvRange.ctl"
+LoadCtrlLibs = "fwConfigs/fwSmoothing.ctl"
+LoadCtrlLibs = "fwConfigs/fwUnit.ctl"
+LoadCtrlLibs = "fwConfigs/fwFormat.ctl"
+LoadCtrlLibs = "fwConfigs/fwConfigConstants.ctl"
+#end fwConfigs
+
+#begin fwGeneral
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwGeneral/fwException.ctl"
+LoadCtrlLibs = "fwGeneral/fwListManipulation.ctl"
+LoadCtrlLibs = "fwGeneral/fwGeneral.ctl"
+#end fwGeneral
+
+#begin fwAccessControl
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwAccessControl/fwAccessControl.ctc"
+#end fwAccessControl
+
+LoadCtrlLibs = "fwInstallation.ctl"
+
+
+LoadCtrlLibs = "CMS_CSCfw_HV_CC/emuDcs.ctl"
+LoadCtrlLibs = "CMS_CSCfw_HV_CC/emuDcs2.ctl"
+LoadCtrlLibs = "CMS_CSCfw_HV_CC/emuDcs3.ctl"
+LoadCtrlLibs = "CMS_CSCfw_HV_CC/emuDcs4.ctl"
+LoadCtrlLibs = "CMS_CSCfw_HV_CC/emuAlert.ctl"
+LoadCtrlLibs = "CMS_CSCfw_HV_CC/emuDcsDim.ctl"
+LoadCtrlLibs = "CMS_CSCfw_HV_CC/emufw.ctl"
+
+[valarch]
+#begin fwGeneral
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+deleteNotArchivedFileSets = 0
+#end fwGeneral
+
+[event]
+#begin fwFSM
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+LoadCtrlLibs = "fwFsmEvent.ctl"
+#end fwFSM
+
+[dip_1]
+#begin fwDIP
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+DipConfig = "DIPConfig_1"
+#end fwDIP
+
+[opc_11]
+#begin fwWiener
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+server = "WienerOPCServer" "WienerKVASER.OPC_SERVER"
+#end fwWiener
+
+[opc_14]
+#begin fwWiener
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+server = "WienerMarathonOPCServer" "WIENER.Plein.Baus.OPC.Server.DA"
+#end fwWiener
+
+[opc_6]
+#begin fwCaen
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+server = "CAENOPCServer"  "CAEN.HVOPCServer"
+#end fwCaen
+
+[mod_15]
+#begin fwCoolingAndVentilation
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+tcpServerPort = 502
+plc = "_Mod_Plc_1"
+maxQueueSize = 1000
+#end fwCoolingAndVentilation
+
+[ValueArchiveRDB]
+#begin fwRDBArchiving
+#This should not be edited manually
+#if the component is empty it means that the parametrization is already done in the section
+
+dbtype = "oracle"
+writeWithBulk = 1
+#end fwRDBArchiving
+
+
+
+Dbuser = "cms_csc_dcs"
+db = "omds"

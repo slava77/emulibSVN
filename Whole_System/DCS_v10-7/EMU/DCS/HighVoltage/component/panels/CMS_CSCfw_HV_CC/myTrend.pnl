@@ -1,0 +1,2631 @@
+V 10
+1
+LANG:1 12 myTrendPanel
+PANEL,-1 -1 762 623 N "_3DFace" 15
+"$iMaxYScale1"
+"$iMaxYScale2"
+"$iMaxYScale3"
+"$iMaxYScale4"
+"$iMinYScale1"
+"$iMinYScale2"
+"$iMinYScale3"
+"$iMinYScale4"
+"$project_station"
+"$project_system"
+"$sDp1"
+"$sDp2"
+"$sDp3"
+"$sDp4"
+"$sDpe"
+"main()
+{
+$project_station;
+$project_system;      
+    mudcsProjectConnect();
+	closeButton.visible(TRUE);
+}" 0
+ E E E E 1 -1 -1 0  138 9
+""0  1
+E "#uses \"CMS_CSCfw_HV_CC/emuDcs.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs2.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs3.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcs4.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuDcsDim.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emuAlert.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emufw.ctl\"
+string project_station;
+string project_system;
+
+//int trend1_init = FALSE; 
+//int trend2_init = FALSE; 
+//int trend3_init = FALSE; 
+//int trend4_init = FALSE; " 0
+ 2
+"CBRef""0"
+"EClose"E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 38
+"Text7"
+""
+1 138 30 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ E E
+34 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  1 E 140 32 406 47
+1 2 0 "0s" 0 0 0 192 0 0  140 32 1
+1
+LANG:1 96 -*-Courier New-*-r-normal-*-12-*-100-100-*-*-iso8859-1|-12,0,0,0,404,0,0,0,0,0,0,0,0,Courier New
+0 ""
+1
+LANG:1 38 warning two trends one above the other
+2 3
+"Text1"
+""
+1 562 72 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 250 570 370 591
+0 2 2 "0s" 0 0 0 192 0 0  250 570 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 15 Number of Hours
+2 8
+"Text2"
+""
+1 642 442 E E E 1 E 0 E N "_3DText" E N "_Transparent" E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 642 442 732 463
+0 2 2 "0s" 0 0 0 192 0 0  642 442 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 11 Max Y Value
+2 9
+"Text3"
+""
+1 644 495 E E E 1 E 0 E N "_3DText" E N "_Transparent" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 644 495 730 516
+0 2 2 "0s" 0 0 0 192 0 0  644 495 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 11 Min Y Value
+6 16
+"Border1"
+""
+1 10 322 E E E 1 E 0 E N {0,0,0} E N "_Transparent" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E 1 0 1 290 230 0 E 10 322 270 381
+2 17
+"Text4"
+""
+1 190 542 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  1 E 318 542 370 563
+0 2 2 "0s" 0 0 0 192 0 0  318 542 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 6 Legend
+4 22
+"curveStyle1"
+""
+1 312 572 E E E 1 E 0 E N {0,0,0} E N "Grau" E E
+ E E
+22 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 "main()
+{
+	string colorName;	
+	shape trend1;
+
+	
+	if(dpElementType($sDp1)==DPEL_BOOL)
+		trend1 = getShape(\"digitalTrend\");
+	else
+		trend1 = getShape(\"analogueTrend1\");
+
+	colorName = trend1.curveColor(\"dayTrend\");
+
+	setValue(\"\",\"color\",colorName);
+}" 0
+  337 572 312 572
+4 24
+"curveStyle2"
+""
+1 312 598 E E E 1 E 0 E N {0,0,0} E N "Grau" E E
+ E E
+24 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 "main()
+{
+	string colorName;	
+	shape trend1;
+	
+	if(dpElementType($sDp1)==DPEL_BOOL)
+		trend1 = getShape(\"digitalTrend\");
+	else
+		trend1 = getShape(\"analogueTrend1\");
+
+	colorName = trend1.curveColor(\"upperLimit\");
+
+	setValue(\"\",\"color\",colorName);
+}" 0
+  337 598 312 598
+2 25
+"curveName1"
+""
+1 217 563 E E E 1 E 0 E N "_3DText" E N "_Transparent" E E
+ E E
+25 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+	string unitType;
+	int test;
+
+	dpGet($sDpe +\":_archive.._type\",test);
+	if(test==DPCONFIG_NONE)
+	{
+		setValue(\"\",\"text\",\"Data not found\");
+	}
+	else
+	{
+		unitType = dpGetUnit($sDpe);
+
+		if(unitType==\"\")
+		{
+			unitType = \"no units\";
+		}
+
+		setValue(\"\",\"text\",$sDpe + \" (\" + unitType + \")\");
+	}
+}" 0
+ E 0 1 1 0 1 E U  0 E 345 563 439 584
+0 2 2 "0s" 0 0 0 192 0 0  345 563 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 11 (CurveName)
+2 26
+"curveName2"
+""
+1 216 588 E E E 1 E 0 E N "_3DText" E N "_Transparent" E E
+ E E
+26 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+	int test;
+	bool isDigital;
+	
+	if(dpElementType($sDpe)==DPEL_BOOL)
+		isDigital=TRUE;
+	else
+		isDigital=FALSE;
+
+	dpGet($sDpe +\":_alert_hdl.._type\",test);
+	if((test==DPCONFIG_NONE)||isDigital)
+	{
+		setValue(\"\",\"visible\",FALSE);
+		setValue(\"curveStyle2\",\"visible\",FALSE);
+	}
+}" 0
+ E 0 1 1 0 1 E U  0 E 344 588 423 609
+0 2 2 "0s" 0 0 0 192 0 0  344 588 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 12 Alert Limits
+4 28
+"curveStyle3"
+""
+1 447 598 E E E 1 E 0 E N {0,0,0} E N "Grau" E E
+ E E
+28 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 "main()
+{
+	string colorName, lineType;	
+	shape trend1;
+	
+	if(dpElementType($sDp1)==DPEL_BOOL)
+		trend1 = getShape(\"digitalTrend\");
+	else
+		trend1 = getShape(\"analogueTrend1\");
+
+	colorName = trend1.curveColor(\"upperPvRange\");
+	lineType = trend1.curvePattern(\"upperPvRange\");
+
+	setValue(\"\",\"color\",colorName);
+	setValue(\"\",\"border\",lineType);
+}" 0
+  472 598 447 598
+2 29
+"curveName3"
+""
+1 351 588 E E E 1 E 0 E N "_3DText" E N "_Transparent" E E
+ E E
+29 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+	int test;
+	bool isDigital;
+	string elementName;
+	dyn_string divide1, divide2;
+	
+	if(dpElementType($sDpe)==DPEL_BOOL)
+		isDigital=TRUE;
+	else
+		isDigital=FALSE;
+
+	elementName = $sDpe;
+
+	dpGet(elementName +\":_pv_range.._type\",test);
+	if((test==DPCONFIG_NONE)||isDigital)
+	{
+		setValue(\"\",\"visible\",FALSE);
+		setValue(\"curveStyle3\",\"visible\",FALSE);
+	}
+}" 0
+ E 0 1 1 0 1 E U  0 E 479 588 553 609
+0 2 2 "0s" 0 0 0 192 0 0  479 588 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 8 PV-Range
+2 33
+"Text5"
+""
+1 482 240 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+33 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 610 240 656 261
+0 2 2 "0s" 0 0 0 192 0 0  610 240 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 6 Value:
+2 34
+"Text6"
+""
+1 482 290 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+34 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 610 290 650 311
+0 2 2 "0s" 0 0 0 192 0 0  610 290 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 5 Time:
+2 36
+"title"
+""
+1 158 60 E E E 1 E 1 E N {255,0,0} E N {255,255,255} E E
+ E E
+34 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 140 50 396 76
+0 2 0 "0s" 0 0 0 64 0 0  140 50 1
+1
+LANG:1 95 -*-helvetica-bold-r-normal-*-32-*-100-100-*-*-iso8859-1|-32,0,0,0,758,0,0,0,0,0,0,0,0,helvetica
+0 ""
+1
+LANG:1 18 The Trending Panel
+14 5
+"max"
+""
+1 650 460 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 650 460 721 489
+3 "0s" 0 0 0 0 0 -1  E "main()
+{
+	float maxYScale1;
+	float maxYScale2; 
+	float maxYScale3; 
+	float maxYScale4; 
+
+	bool isDigital;
+	shape trend1;
+	shape trend2; 
+	shape trend3; 
+	shape trend4; 
+	
+	if(dpElementType($sDp1)==DPEL_BOOL)
+	{
+		trend1 = getShape(\"digitalTrend\");
+		isDigital=TRUE;
+	}
+	else
+	{
+		trend1 = getShape(\"analogueTrend1\");
+		trend2 = getShape(\"analogueTrend2\"); 
+		trend3 = getShape(\"analogueTrend3\"); 
+		trend4 = getShape(\"analogueTrend4\"); 
+
+		isDigital=FALSE;
+	}
+
+	maxYScale1=$iMaxYScale1;
+	maxYScale2=$iMaxYScale2; 
+	maxYScale3=$iMaxYScale3; 
+	maxYScale4=$iMaxYScale4; 
+	
+	if(!isDigital)
+	{
+		trend1.curveMax(\"dayTrend\",maxYScale1);
+		trend1.curveMax(\"upperLimit\",maxYScale1);
+		trend1.curveMax(\"lowerLimit\",maxYScale1);
+	
+		trend1.curveMax(\"upperPvRange\",maxYScale1);
+		trend1.curveMax(\"lowerPvRange\",maxYScale1);
+
+		trend2.curveMax(\"dayTrend\",maxYScale2); 
+		trend2.curveMax(\"upperLimit\",maxYScale2); 
+		trend2.curveMax(\"lowerLimit\",maxYScale2); 	 
+		trend2.curveMax(\"upperPvRange\",maxYScale2); 
+		trend2.curveMax(\"lowerPvRange\",maxYScale2); 
+
+		trend3.curveMax(\"dayTrend\",maxYScale3); 
+		trend3.curveMax(\"upperLimit\",maxYScale3); 
+		trend3.curveMax(\"lowerLimit\",maxYScale3); 	 
+		trend3.curveMax(\"upperPvRange\",maxYScale3); 
+		trend3.curveMax(\"lowerPvRange\",maxYScale3); 
+
+		trend4.curveMax(\"dayTrend\",maxYScale4); 
+		trend4.curveMax(\"upperLimit\",maxYScale4); 
+		trend4.curveMax(\"lowerLimit\",maxYScale4); 	 
+		trend4.curveMax(\"upperPvRange\",maxYScale4); 
+		trend4.curveMax(\"lowerPvRange\",maxYScale4); 
+	}
+	else
+		maxYScale1 = 1;
+		
+	setValue(\"\",\"text\",maxYScale1);
+	
+	if(isDigital)
+	{
+		setValue(\"\",\"editable\",FALSE);
+	}
+
+	trend1.trendRefresh(); 
+	trend2.trendRefresh(); 
+	trend3.trendRefresh(); 
+	trend4.trendRefresh(); 
+	
+}" 0
+ "main()
+{
+
+// 04/07/2004 completely removed (as whole) without change
+
+}" 0
+
+14 10
+"min"
+""
+1 650 513 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 650 513 721 542
+3 "0s" 0 0 0 0 0 -1  E "main()
+{
+	float minYScale1;
+	float minYScale2; 
+	float minYScale3; 
+	float minYScale4; 
+	bool isDigital;
+	shape trend1;
+	shape trend2; 
+	shape trend3; 
+	shape trend4; 
+	
+	if(dpElementType($sDp1)==DPEL_BOOL)
+	{
+		trend1 = getShape(\"digitalTrend\");
+		isDigital=TRUE;
+	}
+	else
+	{
+		trend1 = getShape(\"analogueTrend1\");
+		trend2 = getShape(\"analogueTrend2\"); 
+		trend3 = getShape(\"analogueTrend3\"); 
+		trend4 = getShape(\"analogueTrend4\"); 
+		isDigital=FALSE;
+	}
+
+	minYScale1=$iMinYScale1;
+	minYScale2=$iMinYScale2; 
+	minYScale3=$iMinYScale3; 
+	minYScale4=$iMinYScale4; 
+	
+	if(!isDigital)
+	{
+		trend1.curveMin(\"dayTrend\",minYScale1);
+		trend1.curveMin(\"upperLimit\",minYScale1);
+		trend1.curveMin(\"lowerLimit\",minYScale1);
+		trend1.curveMin(\"upperPvRange\",minYScale1);
+		trend1.curveMin(\"lowerPvRange\",minYScale1);
+
+		trend2.curveMin(\"dayTrend\",minYScale2); 
+		trend2.curveMin(\"upperLimit\",minYScale2); 
+		trend2.curveMin(\"lowerLimit\",minYScale2); 
+		trend2.curveMin(\"upperPvRange\",minYScale2); 
+		trend2.curveMin(\"lowerPvRange\",minYScale2); 
+
+		trend3.curveMin(\"dayTrend\",minYScale3); 
+		trend3.curveMin(\"upperLimit\",minYScale3); 
+		trend3.curveMin(\"lowerLimit\",minYScale3); 
+		trend3.curveMin(\"upperPvRange\",minYScale3); 
+		trend3.curveMin(\"lowerPvRange\",minYScale3); 
+
+		trend4.curveMin(\"dayTrend\",minYScale4); 
+		trend4.curveMin(\"upperLimit\",minYScale4); 
+		trend4.curveMin(\"lowerLimit\",minYScale4); 
+		trend4.curveMin(\"upperPvRange\",minYScale4); 
+		trend4.curveMin(\"lowerPvRange\",minYScale4); 
+	}
+	else
+		minYScale1 = 0;
+
+	setValue(\"\",\"text\",minYScale1);
+	
+	if(isDigital)
+	{
+		setValue(\"\",\"editable\",FALSE);
+	}
+	trend1.trendRefresh();
+	trend2.trendRefresh(); 
+	trend3.trendRefresh(); 
+	trend4.trendRefresh(); 
+}" 0
+ "main()
+{
+// 04/07/2004 completely removed (as whole) without change
+
+}" 0
+
+21 13
+"spin1"
+""
+1 370 560 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+13 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 370 560 441 589
+0
+
+"main()
+{
+
+int a;
+/*
+	int dayScale;
+	time currentTime, timeScale;
+
+	shape trend1; 
+	shape trend2; 
+	shape trend3; 
+	shape trend4; 
+*/
+	int dayScale; 
+	time currentTime, timeScale, newStartTime; 
+	float upLimit, lowLimit, pvUpLimit, pvLowLimit; 
+	int test, pvTest, ranges; 
+	string trendStatus, elementName; 
+	bool analogue; 
+	dyn_string divide1, divide2; 
+	shape trend1; 
+	shape trend2; 
+	shape trend3; 
+	shape trend4; 
+
+/////while(!(trend1_init) || !(trend2_init) || !(trend3_init) || !(trend4_init));
+////mudcsDebug(\"\");
+
+	if(dpElementType($sDp1)==DPEL_BOOL)
+	{
+		trend1 = getShape(\"digitalTrend\");
+                analogue=FALSE;
+	}
+	else
+	{
+		trend1 = getShape(\"analogueTrend1\");
+		trend2 = getShape(\"analogueTrend2\"); 
+		trend3 = getShape(\"analogueTrend3\"); 
+		trend4 = getShape(\"analogueTrend4\"); 
+                analogue=TRUE;
+
+	}
+
+	dayScale = 1;
+	
+	currentTime = getCurrentTime();
+
+	timeScale = makeTime(2000,0,0,dayScale)-makeTime(2000,0,0,0);
+
+	trend1.trendStop();
+	trend1.timeInterval(timeScale);
+	trend1.timeBegin(currentTime-timeScale);
+	trend1.trendRun();
+	
+	trend2.trendStop(); 
+	trend2.timeInterval(timeScale); 
+	trend2.timeBegin(currentTime-timeScale); 
+	trend2.trendRun(); 
+
+	trend3.trendStop(); 
+	trend3.timeInterval(timeScale); 
+	trend3.timeBegin(currentTime-timeScale); 
+	trend3.trendRun(); 
+
+	trend4.trendStop(); 
+	trend4.timeInterval(timeScale); 
+	trend4.timeBegin(currentTime-timeScale); 
+	trend4.trendRun(); 
+
+	setValue(\"\",\"text\",dayScale);
+
+
+}" 0
+
+"main()
+{
+	int dayScale;
+	time currentTime, timeScale, newStartTime;
+	float upLimit, lowLimit, pvUpLimit, pvLowLimit;
+	int test, pvTest, ranges;
+	string trendStatus, elementName;
+	bool analogue;
+	dyn_string divide1, divide2;
+	shape trend1;
+	shape trend2; 
+	shape trend3; 
+	shape trend4; 
+	
+	if(dpElementType($sDp1)==DPEL_BOOL)
+	{
+		trend1 = getShape(\"digitalTrend\");
+		analogue=FALSE;
+	}
+	else
+	{
+		trend1 = getShape(\"analogueTrend1\");
+		trend2 = getShape(\"analogueTrend2\"); 
+		trend3 = getShape(\"analogueTrend3\"); 
+		trend4 = getShape(\"analogueTrend4\"); 
+		analogue=TRUE;
+	}
+
+	getValue(\"\",\"text\",dayScale);
+	
+	currentTime = getCurrentTime();
+
+	timeScale = makeTime(2000,0,0,dayScale)-makeTime(2000,0,0,0);
+
+	trend1.trendStop();
+	trend1.timeInterval(timeScale);
+	trend1.timeBegin(currentTime-timeScale);
+
+	trend2.trendStop(); 
+	trend2.timeInterval(timeScale); 
+	trend2.timeBegin(currentTime-timeScale); 
+ 
+	trend3.trendStop(); 
+	trend3.timeInterval(timeScale); 
+	trend3.timeBegin(currentTime-timeScale); 
+ 
+	trend4.trendStop(); 
+	trend4.timeInterval(timeScale); 
+	trend4.timeBegin(currentTime-timeScale); 
+ 
+//------------------------------------------------------------------
+	dpGet($sDp1 +\":_alert_hdl.._type\",test);
+	if((test!=DPCONFIG_NONE)&&analogue)
+	{
+
+		newStartTime = currentTime-timeScale;
+
+		dpGet($sDp1 +\":_alert_hdl.2._l_limit\",lowLimit);
+		trend1.curveVal(\"lowerLimit\",lowLimit,newStartTime);
+
+		dpGet($sDp1 +\":_alert_hdl.._num_ranges\", ranges);
+		if(ranges > 2) {
+			dpGet($sDp1 +\":_alert_hdl.2._u_limit\",upLimit);
+			trend1.curveVal(\"upperLimit\",upLimit,newStartTime);
+		}
+	}
+
+	elementName = $sDp1;
+	dpGet(elementName +\":_pv_range.._type\",pvTest);
+	if((pvTest!=DPCONFIG_NONE)&&analogue)
+	{
+
+		newStartTime = currentTime-timeScale;
+
+		dpGet(elementName +\":_pv_range.._min\",pvLowLimit);
+		trend1.curveVal(\"lowerPvRange\",pvLowLimit,newStartTime);
+
+		dpGet(elementName +\":_pv_range.._max\",pvUpLimit);
+		trend1.curveVal(\"upperPvRange\",pvUpLimit,newStartTime);
+	}
+	getValue(\"stopStartButton\",\"text\",trendStatus);
+//-----------------------------------------------------------------------
+//------------------------------------------------------------------
+	dpGet($sDp2 +\":_alert_hdl.._type\",test); 
+	if((test!=DPCONFIG_NONE)&&analogue) 
+	{ 
+ 
+		newStartTime = currentTime-timeScale; 
+ 
+		dpGet($sDp2 +\":_alert_hdl.2._l_limit\",lowLimit); 
+		trend2.curveVal(\"lowerLimit\",lowLimit,newStartTime); 
+ 
+		dpGet($sDp2 +\":_alert_hdl.._num_ranges\", ranges); 
+		if(ranges > 2) { 
+			dpGet($sDp2 +\":_alert_hdl.2._u_limit\",upLimit); 
+			trend2.curveVal(\"upperLimit\",upLimit,newStartTime); 
+		} 
+	} 
+ 
+	elementName = $sDp2; 
+	dpGet(elementName +\":_pv_range.._type\",pvTest); 
+	if((pvTest!=DPCONFIG_NONE)&&analogue) 
+	{ 
+ 
+		newStartTime = currentTime-timeScale; 
+ 
+		dpGet(elementName +\":_pv_range.._min\",pvLowLimit); 
+		trend2.curveVal(\"lowerPvRange\",pvLowLimit,newStartTime); 
+ 
+		dpGet(elementName +\":_pv_range.._max\",pvUpLimit); 
+		trend2.curveVal(\"upperPvRange\",pvUpLimit,newStartTime); 
+	} 
+	getValue(\"stopStartButton\",\"text\",trendStatus); 
+//-----------------------------------------------------------------------
+//------------------------------------------------------------------
+	dpGet($sDp3 +\":_alert_hdl.._type\",test); 
+	if((test!=DPCONFIG_NONE)&&analogue) 
+	{ 
+ 
+		newStartTime = currentTime-timeScale; 
+ 
+		dpGet($sDp3 +\":_alert_hdl.2._l_limit\",lowLimit); 
+		trend3.curveVal(\"lowerLimit\",lowLimit,newStartTime); 
+ 
+		dpGet($sDp3 +\":_alert_hdl.._num_ranges\", ranges); 
+		if(ranges > 2) { 
+			dpGet($sDp3 +\":_alert_hdl.2._u_limit\",upLimit); 
+			trend3.curveVal(\"upperLimit\",upLimit,newStartTime); 
+		} 
+	} 
+ 
+	elementName = $sDp3; 
+	dpGet(elementName +\":_pv_range.._type\",pvTest); 
+	if((pvTest!=DPCONFIG_NONE)&&analogue) 
+	{ 
+ 
+		newStartTime = currentTime-timeScale; 
+ 
+		dpGet(elementName +\":_pv_range.._min\",pvLowLimit); 
+		trend3.curveVal(\"lowerPvRange\",pvLowLimit,newStartTime); 
+ 
+		dpGet(elementName +\":_pv_range.._max\",pvUpLimit); 
+		trend3.curveVal(\"upperPvRange\",pvUpLimit,newStartTime); 
+	} 
+	getValue(\"stopStartButton\",\"text\",trendStatus); 
+//-----------------------------------------------------------------------
+//------------------------------------------------------------------
+	dpGet($sDp4 +\":_alert_hdl.._type\",test); 
+	if((test!=DPCONFIG_NONE)&&analogue) 
+	{ 
+ 
+		newStartTime = currentTime-timeScale; 
+ 
+		dpGet($sDp4 +\":_alert_hdl.2._l_limit\",lowLimit); 
+		trend4.curveVal(\"lowerLimit\",lowLimit,newStartTime); 
+ 
+		dpGet($sDp4 +\":_alert_hdl.._num_ranges\", ranges); 
+		if(ranges > 2) { 
+			dpGet($sDp4 +\":_alert_hdl.2._u_limit\",upLimit); 
+			trend4.curveVal(\"upperLimit\",upLimit,newStartTime); 
+		} 
+	} 
+ 
+	elementName = $sDp4; 
+	dpGet(elementName +\":_pv_range.._type\",pvTest); 
+	if((pvTest!=DPCONFIG_NONE)&&analogue) 
+	{ 
+ 
+		newStartTime = currentTime-timeScale; 
+ 
+		dpGet(elementName +\":_pv_range.._min\",pvLowLimit); 
+		trend4.curveVal(\"lowerPvRange\",pvLowLimit,newStartTime); 
+ 
+		dpGet(elementName +\":_pv_range.._max\",pvUpLimit); 
+		trend4.curveVal(\"upperPvRange\",pvUpLimit,newStartTime); 
+	} 
+	getValue(\"stopStartButton\",\"text\",trendStatus); 
+//-----------------------------------------------------------------------
+	if(trendStatus==\"Stop Trend\")
+	{
+		trend1.trendRun();
+		trend2.trendRun(); 
+		trend3.trendRun(); 
+		trend4.trendRun(); 
+	}
+}" 0
+
+E
+
+N 1 8800 1 1 1 1
+13 14
+"stopStartButton"
+""
+1 480 560 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 480 560 572 594
+
+T 
+1
+LANG:1 11 Start Trend
+"main()
+{
+
+
+	string buttonStatus, elementName; 
+	int dayScale, ranges; 
+	time currentTime, timeScale, alternativeTimeScale, newStartTime; 
+	float upLimit, lowLimit, pvLowLimit, pvUpLimit; 
+	int test; 
+	bool analogue; 
+	dyn_string divide1, divide2; 
+	shape trend1; 
+	shape trend2; 
+	shape trend3; 
+	shape trend4;
+ 	 
+	if(dpElementType($sDp1)==DPEL_BOOL) 
+	{ 
+		trend1 = getShape(\"digitalTrend\"); 
+		analogue=FALSE; 
+	} 
+	else 
+	{ 
+		trend1 = getShape(\"analogueTrend1\"); 
+		trend2 = getShape(\"analogueTrend2\"); 
+		trend3 = getShape(\"analogueTrend3\"); 
+		trend4 = getShape(\"analogueTrend4\");
+ 
+		analogue=TRUE; 
+	} 
+	 
+	getValue(\"\",\"text\",buttonStatus); 
+
+individual_trend(buttonStatus, $sDp1, trend1);
+individual_trend(buttonStatus, $sDp2, trend2);
+individual_trend(buttonStatus, $sDp3, trend3);
+individual_trend(buttonStatus, $sDp4, trend4);
+
+}
+
+//=======================================================================
+
+individual_trend(string buttonStatus, string DpName, shape trendc){
+
+
+	string elementName; 
+	int dayScale, ranges; 
+	time currentTime, timeScale, alternativeTimeScale, newStartTime; 
+	float upLimit, lowLimit, pvLowLimit, pvUpLimit; 
+	int test; 
+	bool analogue; 
+	dyn_string divide1, divide2;
+	 
+	if(buttonStatus==\"Stop Trend\") 
+	{ 
+		setValue(\"\",\"text\",\"Start Trend\"); 
+ 
+		dayScale = 365; 
+	 
+		currentTime = getCurrentTime(); 
+ 
+		timeScale = makeTime(2000,0,dayScale)-makeTime(2000,0,0); 
+ 
+		trendc.trendStop(); 
+		trendc.timeBegin(currentTime-timeScale); 
+ 
+		getValue(\"spin1\",\"text\",dayScale); 
+ 
+		alternativeTimeScale = makeTime(2000,0,0,dayScale)-makeTime(2000,0,0,0); 
+ 
+		trendc.timeInterval(alternativeTimeScale); 
+		trendc.timeBegin(currentTime-alternativeTimeScale); 
+		setValue(\"setXAxis\",\"enabled\",TRUE); 
+	} 
+	else 
+	{ 
+		setValue(\"\",\"text\",\"Stop Trend\"); 
+ 
+		getValue(\"spin1\",\"text\",dayScale); 
+	 
+		currentTime = getCurrentTime(); 
+ 
+		timeScale = makeTime(2000,0,0,dayScale)-makeTime(2000,0,0,0); 
+ 
+		trendc.trendStop(); 
+		trendc.timeInterval(timeScale); 
+		trendc.timeBegin(currentTime-timeScale); 
+		trendc.trendRun(); 
+		setValue(\"setXAxis\",\"enabled\",FALSE); 
+	} 
+ 
+	dpGet(DpName +\":_alert_hdl.._type\",test); 
+	if((test!=DPCONFIG_NONE)&&analogue) 
+	{ 
+ 
+		newStartTime = currentTime-timeScale; 
+ 
+		dpGet(DpName +\":_alert_hdl.2._l_limit\",lowLimit); 
+		trendc.curveVal(\"lowerLimit\",lowLimit,newStartTime); 
+ 
+		dpGet(DpName +\":_alert_hdl.._num_ranges\", ranges); 
+		if(ranges > 2) { 
+			dpGet(DpName +\":_alert_hdl.2._u_limit\",upLimit); 
+			trendc.curveVal(\"upperLimit\",upLimit,newStartTime); 
+		} 
+	} 
+	 
+	elementName = DpName; 
+	dpGet(elementName +\":_pv_range.._type\",test); 
+	if((test!=DPCONFIG_NONE)&&analogue) 
+	{ 
+ 
+		newStartTime = currentTime-timeScale; 
+ 
+		dpGet(elementName +\":_pv_range.._min\",pvLowLimit); 
+		trendc.curveVal(\"lowerPvRange\",pvLowLimit,newStartTime); 
+ 
+		dpGet(elementName +\":_pv_range.._max\",pvUpLimit); 
+		trendc.curveVal(\"upperPvRange\",pvUpLimit,newStartTime); 
+	} 
+
+
+
+}" 0
+ E E "main()
+{
+	setValue(\"\",\"text\",\"Stop Trend\");
+}" 0
+
+13 15
+"Button2"
+""
+1 20 560 E E E 1 E 1 E N {0,255,255} E N "_Button" E E
+ E E
+15 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 20 560 104 594
+
+T 
+1
+LANG:1 5 Print
+"main()
+{
+	string printer;
+
+	getValue(\"printerSelector\",\"text\",printer);
+
+	if(_UNIX)
+	{
+		printPanel(myModuleName(), myPanelName(), 
+			makeDynString(\"F_PS, [100,100,100], xprint -h -p \" +printer));
+	}
+	if(_WIN32)
+	{
+		printPanel(myModuleName(), myPanelName(), 
+			makeDynString(\"F_BMP, [100,100,100], PrintImg -b -l -p \" +printer +\" %s /\"));
+	}
+}
+" 0
+ E E E
+14 27
+"printerSelector"
+""
+1 120 560 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+27 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 120 560 242 589
+3 "0s" 0 0 0 0 0 -1  E "main()
+{
+	if(_WIN32)
+	{
+		if(!isMotif())
+			this.visible(FALSE);
+	}
+	
+	this.text(\"Printer Name\");
+}" 0
+ E
+13 30
+"setXAxis"
+""
+1 590 570 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+30 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 590 570 714 604
+
+T 
+1
+LANG:1 14 Set Time Range
+"main()
+{
+
+// 04/07/2004 removed for a while
+
+}" 0
+ E E "main()
+{
+	setValue(\"\",\"enabled\",FALSE);
+}" 0
+
+14 31
+"legendValue3"
+""
+1 600 260 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+31 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 600 260 696 289
+2 "0s" 0 0 0 0 0 -1  E E E
+14 32
+"legendTime3"
+""
+1 600 310 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+32 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 600 310 750 339
+2 "0s" 0 0 0 0 0 -1  E E E
+13 37
+"closeButton"
+""
+1 988 744 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+34 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 630 560 714 594
+
+T 
+1
+LANG:1 5 Close
+"main()
+{
+	PanelOff();
+}" 0
+ E E E
+23 39
+"analogueTrend2"
+""
+1 10 130 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+127 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 92 -*-helvetica-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,helvetica
+0 ""
+ 10 130 590 250
+5 "main()
+{
+	float lowLimit, upLimit, pvLowLimit, pvUpLimit;
+	time endTime, pvEndTime;
+	dyn_string divide1, divide2;
+	int test, pvTest;
+	bool analogue;
+	string elementName;
+	int ranges;
+
+	if(dpElementType($sDp2)==DPEL_BOOL)
+	{
+		return;
+	}
+	else
+		analogue=TRUE;
+
+	dpGet($sDp2 +\":_alert_hdl.._type\",test);
+	if((test!=DPCONFIG_NONE)&&analogue)
+	{
+		dpGet($sDp2 +\":_alert_hdl.._num_ranges\", ranges);
+		dpGet($sDp2 +\":_alert_hdl.2._l_limit\",lowLimit);
+		endTime = getCurrentTime();
+		setValue(\"\",\"curveVal\",\"lowerLimit\",lowLimit,endTime);
+		dpConnect(\"updateLow\",$sDp2 +\":_alert_hdl.2._l_limit\");
+		if(ranges > 2) {
+			dpGet($sDp2 +\":_alert_hdl.2._u_limit\",upLimit);
+			setValue(\"\",\"curveVal\",\"upperLimit\",upLimit,endTime);
+			dpConnect(\"updateHigh\",$sDp2 +\":_alert_hdl.2._u_limit\");
+		}
+	}
+
+	elementName = $sDp2;
+
+	dpGet(elementName +\":_pv_range.._type\",pvTest);
+	if((pvTest!=DPCONFIG_NONE)&&analogue)
+	{
+		dpGet(elementName +\":_pv_range.._min\",pvLowLimit);
+		dpGet(elementName +\":_pv_range.._max\",pvUpLimit);
+		endTime = getCurrentTime();
+		setValue(\"\",\"curveVal\",\"lowerPvRange\",pvLowLimit,pvEndTime);
+		setValue(\"\",\"curveVal\",\"upperPvRange\",pvUpLimit,pvEndTime);
+		
+		dpConnect(\"pvUpdateLow\",elementName +\":_pv_range.._min\");
+		dpConnect(\"pvUpdateHigh\",elementName +\":_pv_range.._max\");
+	}
+
+	this.visible(TRUE);
+//trend2_init=TRUE;
+}
+void pvUpdateLow(string dp, float value)
+{
+	setValue(\"\",\"curveVal\",\"lowerPvRange\",value,getCurrentTime());
+}
+
+void pvUpdateHigh(string dp, float value)
+{
+	setValue(\"\",\"curveVal\",\"upperPvRange\",value,getCurrentTime());
+}
+
+void updateLow(string dp, float value)
+{
+	setValue(\"\",\"curveVal\",\"lowerLimit\",value,getCurrentTime());
+}
+
+void updateHigh(string dp, float value)
+{
+	setValue(\"\",\"curveVal\",\"upperLimit\",value,getCurrentTime());
+}
+" 0
+ E E 1 575 N {0,0,0} 0 0 1 0 1 0 5 0 "dayTrend" "" 0 2 0 0 1 "1 0 0.0" "%x" 0 0 2 0 "main()
+{
+   float lowLimit, upLimit;
+   int test;
+   bool analogue; 
+    
+	if(dpElementType($sDp2)==DPEL_BOOL) 
+		analogue=FALSE; 
+	else 
+		analogue=TRUE; 
+
+ if(analogue){
+   dpGet($sDp2 +\":_archive.._type\",test);
+   if(test==DPCONFIG_NONE)
+   {
+      setValue(\"\",\"backCol\",\"_dpdoesnotexist\",\"foreCol\",\"_dpdoesnotexist\");
+      setMultiValue(	\"spin1\", \"enabled\", \"FALSE\",
+			\"min\", \"enabled\", \"FALSE\",
+			\"max\", \"enabled\", \"FALSE\");
+   }
+   else
+   {
+      setValue(\"\",\"connectDirectly\",\"dayTrend\",$sDp2 +\":_original.._value\");
+   }
+
+ } // if(analogue){
+}" 0
+
+E
+1 0 0 3 2
+1
+LANG:1 8 dayTrend
+1
+LANG:1 0 
+0 "legendValue2" "legendTime2"  0 10 80 0 0 1 0 1 N {0,0,0}
+0 0 0 0 0 0 0 0
+0 "upperLimit" "" 0 1 0 0 0 "main()
+{
+   float upLimit;
+
+   time endTime, beginTime, timeScale;
+   int test, ranges;
+   bool analogue;
+   
+	if(dpElementType($sDp2)==DPEL_BOOL)
+		analogue=FALSE;
+	else
+		analogue=TRUE;
+
+	dpGet($sDp2 +\":_alert_hdl.._type\",test);
+	if((test!=DPCONFIG_NONE)&&analogue)
+	{
+		dpGet($sDp2 +\":_alert_hdl.._num_ranges\", ranges);
+		if(ranges > 2) {
+      		dpGet($sDp2 +\":_alert_hdl.2._u_limit\",upLimit);
+
+			endTime = getCurrentTime();
+    		getValue(\"analogueTrend2\",\"timeInterval\",timeScale);
+    		beginTime = (endTime-timeScale);
+
+			setValue(\"\",\"curveVal\",\"upperLimit\",upLimit,endTime);
+			setValue(\"\",\"curveVal\",\"upperLimit\",upLimit,beginTime);
+		}
+   }
+}" 0
+
+E
+0 0 0 3 2
+1
+LANG:1 10 upperLimit
+1
+LANG:1 0 
+0 "" ""  0 10 80 0 0 1 0 1 N {255,0,0}
+0 0 0 0 0 0 0 0
+0 "lowerLimit" "" 0 1 0 0 0 "main()
+{
+   float lowLimit;
+	time beginTime, endTime, timeScale;
+
+   int test;
+   bool analogue;
+   
+	if(dpElementType($sDp2)==DPEL_BOOL)
+		analogue=FALSE;
+	else
+		analogue=TRUE;
+
+   dpGet($sDp2 +\":_alert_hdl.._type\",test);
+   if((test!=DPCONFIG_NONE)&&analogue)
+   {
+      dpGet($sDp2 +\":_alert_hdl.2._l_limit\",lowLimit);
+      
+      endTime = getCurrentTime();
+      getValue(\"analogueTrend2\",\"timeInterval\",timeScale);
+      beginTime = (endTime-timeScale);
+
+      setValue(\"\",\"curveVal\",\"lowerLimit\",lowLimit,endTime);
+      setValue(\"\",\"curveVal\",\"lowerLimit\",lowLimit,beginTime);
+   }
+}" 0
+
+E
+0 0 0 3 2
+1
+LANG:1 10 lowerLimit
+1
+LANG:1 0 
+0 "" ""  0 10 80 0 0 1 0 1 N {255,0,0}
+0 0 0 0 0 0 0 0
+0 "upperPvRange" "" 0 1 0 0 0 "main()
+{
+   float upLimit;
+
+   time endTime, beginTime, timeScale;
+   int test;
+   bool analogue;
+	string elementName;
+	dyn_string divide1, divide2;
+   
+	if(dpElementType($sDp2)==DPEL_BOOL)
+		analogue=FALSE;
+	else
+		analogue=TRUE;
+
+	elementName = $sDp2;
+
+   dpGet(elementName +\":_pv_range.._type\",test);
+   if((test!=DPCONFIG_NONE)&&analogue)
+   {
+      dpGet(elementName +\":_pv_range.._max\",upLimit);
+
+      endTime = getCurrentTime();
+      getValue(\"analogueTrend2\",\"timeInterval\",timeScale);
+      beginTime = (endTime-timeScale);
+
+      setValue(\"\",\"curveVal\",\"upperPvRange\",upLimit,endTime);
+      setValue(\"\",\"curveVal\",\"upperPvRange\",upLimit,beginTime);
+   }
+}" 0
+
+E
+0 0 0 3 2
+1
+LANG:1 12 upperPvRange
+1
+LANG:1 1 ?
+0 "" ""  0 10 80 2 1 1 0 1 N {0,0,0}
+0 0 0 0 0 0 0 0
+0 "lowerPvRange" "" 0 1 0 0 0 "main()
+{
+   float lowLimit;
+
+   time endTime, beginTime, timeScale;
+   int test;
+   bool analogue;
+	string elementName;
+	dyn_string divide1, divide2;
+   
+	if(dpElementType($sDp2)==DPEL_BOOL)
+		analogue=FALSE;
+	else
+		analogue=TRUE;
+
+	elementName = $sDp2;
+
+   dpGet(elementName +\":_pv_range.._type\",test);
+   if((test!=DPCONFIG_NONE)&&analogue)
+   {
+      dpGet(elementName +\":_pv_range.._min\",lowLimit);
+
+      endTime = getCurrentTime();
+      getValue(\"analogueTrend2\",\"timeInterval\",timeScale);
+      beginTime = (endTime-timeScale);
+
+      setValue(\"\",\"curveVal\",\"lowerPvRange\",lowLimit,endTime);
+      setValue(\"\",\"curveVal\",\"lowerPvRange\",lowLimit,beginTime);
+   }
+}" 0
+
+E
+0 0 0 3 2
+1
+LANG:1 12 lowerPvRange
+1
+LANG:1 1 ?
+0 "" ""  0 10 80 2 1 1 0 1 N {0,0,0}
+0 0 0 0 0 0 0 0
+0 
+E 1 0 0 0 10 1 3600 86400
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 100 
+N {0,0,0} 0 0 1 0 1 150 1 5 5 1 2
+0
+23 40
+"analogueTrend3"
+""
+1 10 250 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+128 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 92 -*-helvetica-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,helvetica
+0 ""
+ 10 250 590 370
+5 "main()
+{
+	float lowLimit, upLimit, pvLowLimit, pvUpLimit;
+	time endTime, pvEndTime;
+	dyn_string divide1, divide2;
+	int test, pvTest;
+	bool analogue;
+	string elementName;
+	int ranges;
+
+	if(dpElementType($sDp3)==DPEL_BOOL)
+	{
+		return;
+	}
+	else
+		analogue=TRUE;
+
+	dpGet($sDp3 +\":_alert_hdl.._type\",test);
+	if((test!=DPCONFIG_NONE)&&analogue)
+	{
+		dpGet($sDp3 +\":_alert_hdl.._num_ranges\", ranges);
+		dpGet($sDp3 +\":_alert_hdl.2._l_limit\",lowLimit);
+		endTime = getCurrentTime();
+		setValue(\"\",\"curveVal\",\"lowerLimit\",lowLimit,endTime);
+		dpConnect(\"updateLow\",$sDp3 +\":_alert_hdl.2._l_limit\");
+		if(ranges > 2) {
+			dpGet($sDp3 +\":_alert_hdl.2._u_limit\",upLimit);
+			setValue(\"\",\"curveVal\",\"upperLimit\",upLimit,endTime);
+			dpConnect(\"updateHigh\",$sDp3 +\":_alert_hdl.2._u_limit\");
+		}
+	}
+
+	elementName = $sDp3;
+
+	dpGet(elementName +\":_pv_range.._type\",pvTest);
+	if((pvTest!=DPCONFIG_NONE)&&analogue)
+	{
+		dpGet(elementName +\":_pv_range.._min\",pvLowLimit);
+		dpGet(elementName +\":_pv_range.._max\",pvUpLimit);
+		endTime = getCurrentTime();
+		setValue(\"\",\"curveVal\",\"lowerPvRange\",pvLowLimit,pvEndTime);
+		setValue(\"\",\"curveVal\",\"upperPvRange\",pvUpLimit,pvEndTime);
+		
+		dpConnect(\"pvUpdateLow\",elementName +\":_pv_range.._min\");
+		dpConnect(\"pvUpdateHigh\",elementName +\":_pv_range.._max\");
+	}
+
+	this.visible(TRUE);
+//trend3_init=TRUE;
+}
+void pvUpdateLow(string dp, float value)
+{
+	setValue(\"\",\"curveVal\",\"lowerPvRange\",value,getCurrentTime());
+}
+
+void pvUpdateHigh(string dp, float value)
+{
+	setValue(\"\",\"curveVal\",\"upperPvRange\",value,getCurrentTime());
+}
+
+void updateLow(string dp, float value)
+{
+	setValue(\"\",\"curveVal\",\"lowerLimit\",value,getCurrentTime());
+}
+
+void updateHigh(string dp, float value)
+{
+	setValue(\"\",\"curveVal\",\"upperLimit\",value,getCurrentTime());
+}
+" 0
+ E E 1 575 N {0,0,0} 0 0 1 0 1 0 5 0 "dayTrend" "" 0 2 0 0 1 "1 0 0.0" "%x" 0 0 2 0 "main()
+{
+   float lowLimit, upLimit;
+   int test;
+   bool analogue; 
+    
+	if(dpElementType($sDp3)==DPEL_BOOL) 
+		analogue=FALSE; 
+	else 
+		analogue=TRUE; 
+
+ if(analogue){
+   dpGet($sDp3 +\":_archive.._type\",test);
+   if(test==DPCONFIG_NONE)
+   {
+      setValue(\"\",\"backCol\",\"_dpdoesnotexist\",\"foreCol\",\"_dpdoesnotexist\");
+      setMultiValue(	\"spin1\", \"enabled\", \"FALSE\",
+			\"min\", \"enabled\", \"FALSE\",
+			\"max\", \"enabled\", \"FALSE\");
+   }
+   else
+   {
+      setValue(\"\",\"connectDirectly\",\"dayTrend\",$sDp3 +\":_original.._value\");
+   }
+
+ } // if(analogue){
+}" 0
+
+E
+1 0 0 3 2
+1
+LANG:1 8 dayTrend
+1
+LANG:1 0 
+0 "legendValue3" "legendTime3"  0 10 80 0 0 1 0 1 N {0,0,0}
+0 0 0 0 0 0 0 0
+0 "upperLimit" "" 0 1 0 0 0 "main()
+{
+   float upLimit;
+
+   time endTime, beginTime, timeScale;
+   int test, ranges;
+   bool analogue;
+   
+	if(dpElementType($sDp3)==DPEL_BOOL)
+		analogue=FALSE;
+	else
+		analogue=TRUE;
+
+	dpGet($sDp3 +\":_alert_hdl.._type\",test);
+	if((test!=DPCONFIG_NONE)&&analogue)
+	{
+		dpGet($sDp3 +\":_alert_hdl.._num_ranges\", ranges);
+		if(ranges > 2) {
+      		dpGet($sDp3 +\":_alert_hdl.2._u_limit\",upLimit);
+
+			endTime = getCurrentTime();
+    		getValue(\"analogueTrend3\",\"timeInterval\",timeScale);
+    		beginTime = (endTime-timeScale);
+
+			setValue(\"\",\"curveVal\",\"upperLimit\",upLimit,endTime);
+			setValue(\"\",\"curveVal\",\"upperLimit\",upLimit,beginTime);
+		}
+   }
+}" 0
+
+E
+0 0 0 3 2
+1
+LANG:1 10 upperLimit
+1
+LANG:1 0 
+0 "" ""  0 10 80 0 0 1 0 1 N {255,0,0}
+0 0 0 0 0 0 0 0
+0 "lowerLimit" "" 0 1 0 0 0 "main()
+{
+   float lowLimit;
+	time beginTime, endTime, timeScale;
+
+   int test;
+   bool analogue;
+   
+	if(dpElementType($sDp3)==DPEL_BOOL)
+		analogue=FALSE;
+	else
+		analogue=TRUE;
+
+   dpGet($sDp3 +\":_alert_hdl.._type\",test);
+   if((test!=DPCONFIG_NONE)&&analogue)
+   {
+      dpGet($sDp3 +\":_alert_hdl.2._l_limit\",lowLimit);
+      
+      endTime = getCurrentTime();
+      getValue(\"analogueTrend3\",\"timeInterval\",timeScale);
+      beginTime = (endTime-timeScale);
+
+      setValue(\"\",\"curveVal\",\"lowerLimit\",lowLimit,endTime);
+      setValue(\"\",\"curveVal\",\"lowerLimit\",lowLimit,beginTime);
+   }
+}" 0
+
+E
+0 0 0 3 2
+1
+LANG:1 10 lowerLimit
+1
+LANG:1 0 
+0 "" ""  0 10 80 0 0 1 0 1 N {255,0,0}
+0 0 0 0 0 0 0 0
+0 "upperPvRange" "" 0 1 0 0 0 "main()
+{
+   float upLimit;
+
+   time endTime, beginTime, timeScale;
+   int test;
+   bool analogue;
+	string elementName;
+	dyn_string divide1, divide2;
+   
+	if(dpElementType($sDp3)==DPEL_BOOL)
+		analogue=FALSE;
+	else
+		analogue=TRUE;
+
+	elementName = $sDp3;
+
+   dpGet(elementName +\":_pv_range.._type\",test);
+   if((test!=DPCONFIG_NONE)&&analogue)
+   {
+      dpGet(elementName +\":_pv_range.._max\",upLimit);
+
+      endTime = getCurrentTime();
+      getValue(\"analogueTrend3\",\"timeInterval\",timeScale);
+      beginTime = (endTime-timeScale);
+
+      setValue(\"\",\"curveVal\",\"upperPvRange\",upLimit,endTime);
+      setValue(\"\",\"curveVal\",\"upperPvRange\",upLimit,beginTime);
+   }
+}" 0
+
+E
+0 0 0 3 2
+1
+LANG:1 12 upperPvRange
+1
+LANG:1 1 ?
+0 "" ""  0 10 80 2 1 1 0 1 N {0,0,0}
+0 0 0 0 0 0 0 0
+0 "lowerPvRange" "" 0 1 0 0 0 "main()
+{
+   float lowLimit;
+
+   time endTime, beginTime, timeScale;
+   int test;
+   bool analogue;
+	string elementName;
+	dyn_string divide1, divide2;
+   
+	if(dpElementType($sDp3)==DPEL_BOOL)
+		analogue=FALSE;
+	else
+		analogue=TRUE;
+
+	elementName = $sDp3;
+
+   dpGet(elementName +\":_pv_range.._type\",test);
+   if((test!=DPCONFIG_NONE)&&analogue)
+   {
+      dpGet(elementName +\":_pv_range.._min\",lowLimit);
+
+      endTime = getCurrentTime();
+      getValue(\"analogueTrend3\",\"timeInterval\",timeScale);
+      beginTime = (endTime-timeScale);
+
+      setValue(\"\",\"curveVal\",\"lowerPvRange\",lowLimit,endTime);
+      setValue(\"\",\"curveVal\",\"lowerPvRange\",lowLimit,beginTime);
+   }
+}" 0
+
+E
+0 0 0 3 2
+1
+LANG:1 12 lowerPvRange
+1
+LANG:1 1 ?
+0 "" ""  0 10 80 2 1 1 0 1 N {0,0,0}
+0 0 0 0 0 0 0 0
+0 
+E 1 0 0 0 10 1 3600 86400
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 100 
+N {0,0,0} 0 0 1 0 1 150 1 5 5 1 2
+0
+23 41
+"analogueTrend4"
+""
+1 10 370 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+129 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 92 -*-helvetica-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,helvetica
+0 ""
+ 10 370 590 540
+5 "main()
+{
+	float lowLimit, upLimit, pvLowLimit, pvUpLimit;
+	time endTime, pvEndTime;
+	dyn_string divide1, divide2;
+	int test, pvTest;
+	bool analogue;
+	string elementName;
+	int ranges;
+
+	if(dpElementType($sDp4)==DPEL_BOOL)
+	{
+		return;
+	}
+	else
+		analogue=TRUE;
+
+	dpGet($sDp4 +\":_alert_hdl.._type\",test);
+	if((test!=DPCONFIG_NONE)&&analogue)
+	{
+		dpGet($sDp4 +\":_alert_hdl.._num_ranges\", ranges);
+		dpGet($sDp4 +\":_alert_hdl.2._l_limit\",lowLimit);
+		endTime = getCurrentTime();
+		setValue(\"\",\"curveVal\",\"lowerLimit\",lowLimit,endTime);
+		dpConnect(\"updateLow\",$sDp4 +\":_alert_hdl.2._l_limit\");
+		if(ranges > 2) {
+			dpGet($sDp4 +\":_alert_hdl.2._u_limit\",upLimit);
+			setValue(\"\",\"curveVal\",\"upperLimit\",upLimit,endTime);
+			dpConnect(\"updateHigh\",$sDp4 +\":_alert_hdl.2._u_limit\");
+		}
+	}
+
+	elementName = $sDp4;
+
+	dpGet(elementName +\":_pv_range.._type\",pvTest);
+	if((pvTest!=DPCONFIG_NONE)&&analogue)
+	{
+		dpGet(elementName +\":_pv_range.._min\",pvLowLimit);
+		dpGet(elementName +\":_pv_range.._max\",pvUpLimit);
+		endTime = getCurrentTime();
+		setValue(\"\",\"curveVal\",\"lowerPvRange\",pvLowLimit,pvEndTime);
+		setValue(\"\",\"curveVal\",\"upperPvRange\",pvUpLimit,pvEndTime);
+		
+		dpConnect(\"pvUpdateLow\",elementName +\":_pv_range.._min\");
+		dpConnect(\"pvUpdateHigh\",elementName +\":_pv_range.._max\");
+	}
+
+	this.visible(TRUE);
+//trend4_init=TRUE;
+}
+void pvUpdateLow(string dp, float value)
+{
+	setValue(\"\",\"curveVal\",\"lowerPvRange\",value,getCurrentTime());
+}
+
+void pvUpdateHigh(string dp, float value)
+{
+	setValue(\"\",\"curveVal\",\"upperPvRange\",value,getCurrentTime());
+}
+
+void updateLow(string dp, float value)
+{
+	setValue(\"\",\"curveVal\",\"lowerLimit\",value,getCurrentTime());
+}
+
+void updateHigh(string dp, float value)
+{
+	setValue(\"\",\"curveVal\",\"upperLimit\",value,getCurrentTime());
+}
+" 0
+ E E 1 575 N {0,0,0} 0 0 1 0 1 0 5 0 "dayTrend" "" 0 2 0 0 1 "1 0 0.0" "%x" 0 0 2 0 "main()
+{
+   float lowLimit, upLimit;
+   int test;
+   bool analogue; 
+    
+	if(dpElementType($sDp4)==DPEL_BOOL) 
+		analogue=FALSE; 
+	else 
+		analogue=TRUE; 
+
+ if(analogue){
+   dpGet($sDp4 +\":_archive.._type\",test);
+   if(test==DPCONFIG_NONE)
+   {
+      setValue(\"\",\"backCol\",\"_dpdoesnotexist\",\"foreCol\",\"_dpdoesnotexist\");
+      setMultiValue(	\"spin1\", \"enabled\", \"FALSE\",
+			\"min\", \"enabled\", \"FALSE\",
+			\"max\", \"enabled\", \"FALSE\");
+   }
+   else
+   {
+      setValue(\"\",\"connectDirectly\",\"dayTrend\",$sDp4 +\":_original.._value\");
+   }
+
+ } // if(analogue){
+}" 0
+
+E
+1 0 0 3 2
+1
+LANG:1 8 dayTrend
+1
+LANG:1 0 
+0 "legendValue4" "legendTime4"  0 10 80 0 0 1 0 1 N {0,0,0}
+0 0 0 0 0 0 0 0
+0 "upperLimit" "" 0 1 0 0 0 "main()
+{
+   float upLimit;
+
+   time endTime, beginTime, timeScale;
+   int test, ranges;
+   bool analogue;
+   
+	if(dpElementType($sDp4)==DPEL_BOOL)
+		analogue=FALSE;
+	else
+		analogue=TRUE;
+
+	dpGet($sDp4 +\":_alert_hdl.._type\",test);
+	if((test!=DPCONFIG_NONE)&&analogue)
+	{
+		dpGet($sDp4 +\":_alert_hdl.._num_ranges\", ranges);
+		if(ranges > 2) {
+      		dpGet($sDp4 +\":_alert_hdl.2._u_limit\",upLimit);
+
+			endTime = getCurrentTime();
+    		getValue(\"analogueTrend4\",\"timeInterval\",timeScale);
+    		beginTime = (endTime-timeScale);
+
+			setValue(\"\",\"curveVal\",\"upperLimit\",upLimit,endTime);
+			setValue(\"\",\"curveVal\",\"upperLimit\",upLimit,beginTime);
+		}
+   }
+}" 0
+
+E
+0 0 0 3 2
+1
+LANG:1 10 upperLimit
+1
+LANG:1 0 
+0 "" ""  0 10 80 0 0 1 0 1 N {255,0,0}
+0 0 0 0 0 0 0 0
+0 "lowerLimit" "" 0 1 0 0 0 "main()
+{
+   float lowLimit;
+	time beginTime, endTime, timeScale;
+
+   int test;
+   bool analogue;
+   
+	if(dpElementType($sDp4)==DPEL_BOOL)
+		analogue=FALSE;
+	else
+		analogue=TRUE;
+
+   dpGet($sDp4 +\":_alert_hdl.._type\",test);
+   if((test!=DPCONFIG_NONE)&&analogue)
+   {
+      dpGet($sDp4 +\":_alert_hdl.2._l_limit\",lowLimit);
+      
+      endTime = getCurrentTime();
+      getValue(\"analogueTrend4\",\"timeInterval\",timeScale);
+      beginTime = (endTime-timeScale);
+
+      setValue(\"\",\"curveVal\",\"lowerLimit\",lowLimit,endTime);
+      setValue(\"\",\"curveVal\",\"lowerLimit\",lowLimit,beginTime);
+   }
+}" 0
+
+E
+0 0 0 3 2
+1
+LANG:1 10 lowerLimit
+1
+LANG:1 0 
+0 "" ""  0 10 80 0 0 1 0 1 N {255,0,0}
+0 0 0 0 0 0 0 0
+0 "upperPvRange" "" 0 1 0 0 0 "main()
+{
+   float upLimit;
+
+   time endTime, beginTime, timeScale;
+   int test;
+   bool analogue;
+	string elementName;
+	dyn_string divide1, divide2;
+   
+	if(dpElementType($sDp4)==DPEL_BOOL)
+		analogue=FALSE;
+	else
+		analogue=TRUE;
+
+	elementName = $sDp4;
+
+   dpGet(elementName +\":_pv_range.._type\",test);
+   if((test!=DPCONFIG_NONE)&&analogue)
+   {
+      dpGet(elementName +\":_pv_range.._max\",upLimit);
+
+      endTime = getCurrentTime();
+      getValue(\"analogueTrend4\",\"timeInterval\",timeScale);
+      beginTime = (endTime-timeScale);
+
+      setValue(\"\",\"curveVal\",\"upperPvRange\",upLimit,endTime);
+      setValue(\"\",\"curveVal\",\"upperPvRange\",upLimit,beginTime);
+   }
+}" 0
+
+E
+0 0 0 3 2
+1
+LANG:1 12 upperPvRange
+1
+LANG:1 1 ?
+0 "" ""  0 10 80 2 1 1 0 1 N {0,0,0}
+0 0 0 0 0 0 0 0
+0 "lowerPvRange" "" 0 1 0 0 0 "main()
+{
+   float lowLimit;
+
+   time endTime, beginTime, timeScale;
+   int test;
+   bool analogue;
+	string elementName;
+	dyn_string divide1, divide2;
+   
+	if(dpElementType($sDp4)==DPEL_BOOL)
+		analogue=FALSE;
+	else
+		analogue=TRUE;
+
+	elementName = $sDp4;
+
+   dpGet(elementName +\":_pv_range.._type\",test);
+   if((test!=DPCONFIG_NONE)&&analogue)
+   {
+      dpGet(elementName +\":_pv_range.._min\",lowLimit);
+
+      endTime = getCurrentTime();
+      getValue(\"analogueTrend4\",\"timeInterval\",timeScale);
+      beginTime = (endTime-timeScale);
+
+      setValue(\"\",\"curveVal\",\"lowerPvRange\",lowLimit,endTime);
+      setValue(\"\",\"curveVal\",\"lowerPvRange\",lowLimit,beginTime);
+   }
+}" 0
+
+E
+0 0 0 3 2
+1
+LANG:1 12 lowerPvRange
+1
+LANG:1 1 ?
+0 "" ""  0 10 80 2 1 1 0 1 N {0,0,0}
+0 0 0 0 0 0 0 0
+1 1 "%H:%M" "%x" 0 1 0 0 
+E 1 0 0 0 10 1 3600 86400
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 100 
+N {0,0,0} 0 0 1 0 1 150 1 5 5 1 2
+0
+2 44
+"Text5_p"
+""
+1 -116 342 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+62 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 610 12 656 33
+0 2 2 "0s" 0 0 0 192 0 0  610 12 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 6 Value:
+2 45
+"Text6_p"
+""
+1 26 340 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+64 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 610 62 650 83
+0 2 2 "0s" 0 0 0 192 0 0  610 62 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 5 Time:
+14 46
+"legendValue2"
+""
+1 600 142 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+66 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 600 142 696 171
+2 "0s" 0 0 0 0 0 -1  E E E
+14 47
+"legendTime2"
+""
+1 600 192 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+68 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 600 192 750 221
+2 "0s" 0 0 0 0 0 -1  E E E
+2 48
+"Text5"
+""
+1 -116 680 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+70 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 610 122 656 143
+0 2 2 "0s" 0 0 0 192 0 0  610 122 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 6 Value:
+2 49
+"Text6"
+""
+1 26 678 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+72 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 610 172 650 193
+0 2 2 "0s" 0 0 0 192 0 0  610 172 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 5 Time:
+14 50
+"legendValue4"
+""
+1 600 372 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+74 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 600 372 696 401
+2 "0s" 0 0 0 0 0 -1  E E E
+14 51
+"legendTime4"
+""
+1 600 422 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+76 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 600 422 750 451
+2 "0s" 0 0 0 0 0 -1  E E E
+2 52
+"Text5"
+""
+1 -116 800 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+78 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 610 352 656 373
+0 2 2 "0s" 0 0 0 192 0 0  610 352 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 6 Value:
+2 53
+"Text6"
+""
+1 26 798 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+80 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 610 402 650 423
+0 2 2 "0s" 0 0 0 192 0 0  610 402 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 5 Time:
+23 54
+"analogueTrend1"
+""
+1 10 10 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+126 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 92 -*-helvetica-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,helvetica
+0 ""
+ 10 10 590 130
+5 "main()
+{
+
+	float lowLimit, upLimit, pvLowLimit, pvUpLimit;
+	time endTime, pvEndTime;
+	dyn_string divide1, divide2;
+	int test, pvTest;
+	bool analogue;
+	string elementName;
+	int ranges;
+//mudcsDebug($sDp1);
+
+	if(dpElementType($sDp1)==DPEL_BOOL || 
+           $sDp1 == $sDp2)
+	{
+//mudcsDebug($sDp1+\".....\");
+                setValue(\"legendValue1\",\"visible\",false);
+                setValue(\"legendTime1\",\"visible\",false);
+                setValue(\"Text5_p\",\"visible\",false);
+                setValue(\"Text6_p\",\"visible\",false);
+
+	        this.visible(FALSE); 
+trend1_init=TRUE;
+		return;
+	}
+	else
+		analogue=TRUE;
+
+                setValue(\"legendValue1\",\"visible\",true);
+                setValue(\"legendTime1\",\"visible\",true);
+                setValue(\"Text5_p\",\"visible\",true);
+                setValue(\"Text6_p\",\"visible\",true);
+
+
+	dpGet($sDp1 +\":_alert_hdl.._type\",test);
+
+
+	if((test!=DPCONFIG_NONE)&&analogue)
+	{
+		dpGet($sDp1 +\":_alert_hdl.._num_ranges\", ranges);
+		dpGet($sDp1 +\":_alert_hdl.2._l_limit\",lowLimit);
+		endTime = getCurrentTime();
+		setValue(\"\",\"curveVal\",\"lowerLimit\",lowLimit,endTime);
+		dpConnect(\"updateLow\",$sDp1 +\":_alert_hdl.2._l_limit\");
+		if(ranges > 2) {
+			dpGet($sDp1 +\":_alert_hdl.2._u_limit\",upLimit);
+			setValue(\"\",\"curveVal\",\"upperLimit\",upLimit,endTime);
+			dpConnect(\"updateHigh\",$sDp1 +\":_alert_hdl.2._u_limit\");
+		}
+	}
+
+	elementName = $sDp1;
+
+	dpGet(elementName +\":_pv_range.._type\",pvTest);
+	if((pvTest!=DPCONFIG_NONE)&&analogue)
+	{
+		dpGet(elementName +\":_pv_range.._min\",pvLowLimit);
+		dpGet(elementName +\":_pv_range.._max\",pvUpLimit);
+		endTime = getCurrentTime();
+		setValue(\"\",\"curveVal\",\"lowerPvRange\",pvLowLimit,pvEndTime);
+		setValue(\"\",\"curveVal\",\"upperPvRange\",pvUpLimit,pvEndTime);
+		
+		dpConnect(\"pvUpdateLow\",elementName +\":_pv_range.._min\");
+		dpConnect(\"pvUpdateHigh\",elementName +\":_pv_range.._max\");
+	}
+
+	this.visible(TRUE);
+// trend1_init=TRUE;
+}
+
+void pvUpdateLow(string dp, float value)
+{
+	setValue(\"\",\"curveVal\",\"lowerPvRange\",value,getCurrentTime());
+}
+
+void pvUpdateHigh(string dp, float value)
+{
+	setValue(\"\",\"curveVal\",\"upperPvRange\",value,getCurrentTime());
+}
+
+void updateLow(string dp, float value)
+{
+	setValue(\"\",\"curveVal\",\"lowerLimit\",value,getCurrentTime());
+}
+
+void updateHigh(string dp, float value)
+{
+	setValue(\"\",\"curveVal\",\"upperLimit\",value,getCurrentTime());
+
+}
+" 0
+ E E 1 575 N {0,0,0} 0 0 1 0 1 0 5 0 "dayTrend" "" 0 2 0 0 1 "1 0 0.0" "%x" 0 0 2 0 "main()
+{
+   float lowLimit, upLimit;
+   int test;
+   bool analogue; 
+    
+	if(dpElementType($sDp1)==DPEL_BOOL) 
+		analogue=FALSE; 
+	else 
+		analogue=TRUE; 
+
+ if(analogue){
+   dpGet($sDp1 +\":_archive.._type\",test);
+   if(test==DPCONFIG_NONE)
+   {
+      setValue(\"\",\"backCol\",\"_dpdoesnotexist\",\"foreCol\",\"_dpdoesnotexist\");
+      setMultiValue(	\"spin1\", \"enabled\", \"FALSE\",
+			\"min\", \"enabled\", \"FALSE\",
+			\"max\", \"enabled\", \"FALSE\");
+   }
+   else
+   {
+      setValue(\"\",\"connectDirectly\",\"dayTrend\",$sDp1 +\":_original.._value\");
+   }
+
+ } // if(analogue){
+}" 0
+
+E
+1 0 0 3 2
+1
+LANG:1 8 dayTrend
+1
+LANG:1 0 
+0 "legendValue1" "legendTime1"  0 10 80 0 0 1 0 1 N {0,0,0}
+0 0 0 0 0 0 0 0
+0 "upperLimit" "" 0 1 0 0 0 "main()
+{
+   float upLimit;
+
+   time endTime, beginTime, timeScale;
+   int test, ranges;
+   bool analogue;
+   
+	if(dpElementType($sDp1)==DPEL_BOOL)
+		analogue=FALSE;
+	else
+		analogue=TRUE;
+
+	dpGet($sDp1 +\":_alert_hdl.._type\",test);
+	if((test!=DPCONFIG_NONE)&&analogue)
+	{
+		dpGet($sDp1 +\":_alert_hdl.._num_ranges\", ranges);
+		if(ranges > 2) {
+      		dpGet($sDp1 +\":_alert_hdl.2._u_limit\",upLimit);
+
+			endTime = getCurrentTime();
+    		getValue(\"analogueTrend1\",\"timeInterval\",timeScale);
+    		beginTime = (endTime-timeScale);
+
+			setValue(\"\",\"curveVal\",\"upperLimit\",upLimit,endTime);
+			setValue(\"\",\"curveVal\",\"upperLimit\",upLimit,beginTime);
+		}
+   }
+}" 0
+
+E
+0 0 0 3 2
+1
+LANG:1 10 upperLimit
+1
+LANG:1 0 
+0 "" ""  0 10 80 0 0 1 0 1 N {255,0,0}
+0 0 0 0 0 0 0 0
+0 "lowerLimit" "" 0 1 0 0 0 "main()
+{
+   float lowLimit;
+	time beginTime, endTime, timeScale;
+
+   int test;
+   bool analogue;
+   
+	if(dpElementType($sDp1)==DPEL_BOOL)
+		analogue=FALSE;
+	else
+		analogue=TRUE;
+
+   dpGet($sDp1 +\":_alert_hdl.._type\",test);
+   if((test!=DPCONFIG_NONE)&&analogue)
+   {
+      dpGet($sDp1 +\":_alert_hdl.2._l_limit\",lowLimit);
+      
+      endTime = getCurrentTime();
+      getValue(\"analogueTrend1\",\"timeInterval\",timeScale);
+      beginTime = (endTime-timeScale);
+
+      setValue(\"\",\"curveVal\",\"lowerLimit\",lowLimit,endTime);
+      setValue(\"\",\"curveVal\",\"lowerLimit\",lowLimit,beginTime);
+   }
+}" 0
+
+E
+0 0 0 3 2
+1
+LANG:1 10 lowerLimit
+1
+LANG:1 0 
+0 "" ""  0 10 80 0 0 1 0 1 N {255,0,0}
+0 0 0 0 0 0 0 0
+0 "upperPvRange" "" 0 1 0 0 0 "main()
+{
+   float upLimit;
+
+   time endTime, beginTime, timeScale;
+   int test;
+   bool analogue;
+	string elementName;
+	dyn_string divide1, divide2;
+   
+	if(dpElementType($sDp1)==DPEL_BOOL)
+		analogue=FALSE;
+	else
+		analogue=TRUE;
+
+	elementName = $sDp1;
+
+   dpGet(elementName +\":_pv_range.._type\",test);
+   if((test!=DPCONFIG_NONE)&&analogue)
+   {
+      dpGet(elementName +\":_pv_range.._max\",upLimit);
+
+      endTime = getCurrentTime();
+      getValue(\"analogueTrend1\",\"timeInterval\",timeScale);
+      beginTime = (endTime-timeScale);
+
+      setValue(\"\",\"curveVal\",\"upperPvRange\",upLimit,endTime);
+      setValue(\"\",\"curveVal\",\"upperPvRange\",upLimit,beginTime);
+   }
+}" 0
+
+E
+0 0 0 3 2
+1
+LANG:1 12 upperPvRange
+1
+LANG:1 1 ?
+0 "" ""  0 10 80 2 1 1 0 1 N {0,0,0}
+0 0 0 0 0 0 0 0
+0 "lowerPvRange" "" 0 1 0 0 0 "main()
+{
+   float lowLimit;
+
+   time endTime, beginTime, timeScale;
+   int test;
+   bool analogue;
+	string elementName;
+	dyn_string divide1, divide2;
+   
+	if(dpElementType($sDp1)==DPEL_BOOL)
+		analogue=FALSE;
+	else
+		analogue=TRUE;
+
+	elementName = $sDp1;
+
+   dpGet(elementName +\":_pv_range.._type\",test);
+   if((test!=DPCONFIG_NONE)&&analogue)
+   {
+      dpGet(elementName +\":_pv_range.._min\",lowLimit);
+
+      endTime = getCurrentTime();
+      getValue(\"analogueTrend1\",\"timeInterval\",timeScale);
+      beginTime = (endTime-timeScale);
+
+      setValue(\"\",\"curveVal\",\"lowerPvRange\",lowLimit,endTime);
+      setValue(\"\",\"curveVal\",\"lowerPvRange\",lowLimit,beginTime);
+   }
+}" 0
+
+E
+0 0 0 3 2
+1
+LANG:1 12 lowerPvRange
+1
+LANG:1 1 ?
+0 "" ""  0 10 80 2 1 1 0 1 N {0,0,0}
+0 0 0 0 0 0 0 0
+0 
+E 1 0 0 0 10 1 3600 86400
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 100 
+N {0,0,0} 0 0 1 0 1 150 1 5 5 1 2
+0
+14 55
+"legendValue1"
+""
+1 600 30 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+114 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 600 30 696 59
+2 "0s" 0 0 0 0 0 -1  E E E
+14 56
+"legendTime1"
+""
+1 600 80 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+116 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-16-*-100-100-*-*-iso8859-1|-16,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 600 80 750 109
+2 "0s" 0 0 0 0 0 -1  E E E
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0

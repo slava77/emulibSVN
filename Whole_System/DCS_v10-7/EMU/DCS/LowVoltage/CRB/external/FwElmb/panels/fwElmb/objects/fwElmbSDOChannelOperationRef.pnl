@@ -1,0 +1,332 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 650 350 N "_3DFace" 1
+"$sDpName"
+E E E E E 1 -1 -1 0  0 0
+""0  1
+E E 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+25 1
+"tabSDOChannels"
+""
+1 -6 -48 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 8 8 642 342
+"main()
+{
+// Local Variables
+// ---------------
+  int i;
+	
+  dyn_string dsChannels;
+
+// Executable Code
+// ---------------
+  // Delete all existing lines in table:
+  this.deleteAllLines();
+
+  // Get all SDO channels defined for this ELMB
+  dsChannels = dpNames($sDpName + fwDevice_HIERARCHY_SEPARATOR + ELMB_AI_CONFIG_NAME + fwDevice_HIERARCHY_SEPARATOR + \"*\", ELMB_AI_SDO_TYPE_NAME);
+		
+  // Connect to all SDO analog input channels
+  for (i = 1; i <= dynlen(dsChannels); i++) {
+    /*
+    dpConnect(\"cbkUpdateSDOLine\",
+              dsChannels[j] + \".value\",
+              dsChannels[j] + \".value:_online.._stime\",
+              dsChannels[j] + \".value:_online.._invalid\");
+              */
+    dpConnect(\"cbkUpdateSdoAiLine\",
+              dsChannels[i] + \".rawValue\",
+              dsChannels[i] + \".rawValue:_online.._stime\",
+              dsChannels[i] + \".rawValue:_online.._invalid\",
+              dsChannels[i] + \".value\",
+              dsChannels[i] + \".state\");
+  }
+	
+  // Return to calling routine
+  return;
+}
+
+void cbkUpdateSdoAiLine(string argsRawValue, int argiRawValue,
+                        string argsValueStime, string argsValueTimeStamp,
+                        string argsValueInvalid, bool argbInvalid,
+                        string argsValue, float argfValue,
+                        string argsState, unsigned arguState)
+					
+{
+// Local Variables
+// ---------------
+  bool bActive;
+
+  int iType;
+  int iRowFont;
+  
+  string sChannelDpName;
+  string sChannelName;
+  string sElementColour;
+  string sAlertColour;
+  string sTemp;
+	
+  langString lsDescription;
+  
+  dyn_string dsExceptionInfo;
+  dyn_string dsTemp;
+
+  dyn_anytype daRawValueInfo;
+  dyn_anytype daValueInfo;
+  dyn_anytype daStateInfo;
+
+// Executable Code
+// ---------------
+  // Get the name of the channel DP
+  sChannelDpName = dpSubStr(argsRawValue, DPSUB_SYS_DP);
+  lsDescription = dpGetDescription(argsRawValue);
+
+  if (argbInvalid)
+    iRowFont = 3;
+  else
+    iRowFont = 0;
+	
+  // Get the channel name
+  sChannelName = dpSubStr(argsRawValue, DPSUB_DP);
+  dsTemp = strsplit(sChannelDpName, fwDevice_HIERARCHY_SEPARATOR);
+  sChannelName = dsTemp[dynlen(dsTemp)];
+	
+  // Get whether alert handling has been defined for raw value
+  dpGet(sChannelDpName + \".rawValue:_alert_hdl.._type\", iType);
+  if (iType == DPCONFIG_NONE) {
+    fwColour_convertStatusToColour(sElementColour, \"\", false, argbInvalid, dsExceptionInfo);
+  } else {
+    dpGet(sChannelDpName + \".rawValue:_alert_hdl.._active\", bActive,
+          sChannelDpName + \".rawValue:_alert_hdl.._act_state_color\", sAlertColour);
+    fwColour_convertStatusToColour(sElementColour, sAlertColour, !bActive, argbInvalid, dsExceptionInfo);
+  }
+  sprintf(sTemp, \"0x%08x\", argiRawValue);
+  daRawValueInfo[1] = sTemp;
+  daRawValueInfo[2] = sElementColour;
+	
+  // Get whether alert handling has been defined for calculated value
+  dpGet(sChannelDpName + \".value:_alert_hdl.._type\", iType);
+  if (iType == DPCONFIG_NONE) {
+    fwColour_convertStatusToColour(sElementColour, \"\", false, argbInvalid, dsExceptionInfo);
+  } else {
+    dpGet(sChannelDpName + \".value:_alert_hdl.._active\", bActive,
+          sChannelDpName + \".value:_alert_hdl.._act_state_color\", sAlertColour);
+    fwColour_convertStatusToColour(sElementColour, sAlertColour, !bActive, argbInvalid, dsExceptionInfo);
+  }
+  daValueInfo[1] = argfValue;
+  daValueInfo[2] = sElementColour;
+	
+  // Get whether alert handling has been defined for state
+  dpGet(sChannelDpName + \".state:_alert_hdl.._type\", iType);
+  if (iType == DPCONFIG_NONE) {
+    fwColour_convertStatusToColour(sElementColour, \"\", false, argbInvalid, dsExceptionInfo);
+  } else {
+    dpGet(sChannelDpName + \".state:_alert_hdl.._active\", bActive,
+          sChannelDpName + \".state:_alert_hdl.._act_state_color\", sAlertColour);
+    fwColour_convertStatusToColour(sElementColour, sAlertColour, !bActive, argbInvalid, dsExceptionInfo);
+  }
+  sprintf(sTemp, \"0x%02x\", arguState);
+  daStateInfo[1] = sTemp;
+  daStateInfo[2] = sElementColour;
+
+  // Update the information into the row
+  tabSDOChannels.updateLine(1,
+                            \"channelName\", sChannelName,
+                            \"dpe\", dpSubStr(argsRawValue, DPSUB_SYS_DP_EL),
+                            \"comment\", lsDescription,
+                            \"read\", \"Read\",
+                            \"rawValue\", daRawValueInfo,
+                            \"value\", daValueInfo,
+                            \"state\", daStateInfo,
+                            \"timeStamp\",  argsValueTimeStamp,
+                            0, iRowFont);
+  // This won't work as we don't know the row number just altered
+//  tabSDOChannels.cellWidgetRC(0, \"read\", \"PushButton\", \"Read\");
+
+  // Return to calling routine
+  return;
+}
+
+void cbkUpdateSDOLine(string argsValue, float argfValue,
+                      string argsValueStime, string argsValueTimeStamp,
+                      string argsValueInvalid, bool argbInvalid)
+					
+{
+// Local Variables
+// ---------------
+  bool bActive;
+	
+  int iType;
+  int iRowFont;
+	
+  string sChannelName;
+  string sChannelDpName;
+  string sElementColour;
+  string sAlertColour;
+  string sType;
+	
+  langString lsDescription;
+	
+  dyn_string dsTemp;
+  dyn_string dsExceptionInfo;
+	
+  dyn_anytype daValueInfo;
+	
+// Executable Code
+// ---------------
+  // Get the name of the channel DP
+  sChannelDpName = dpSubStr(argsValue, DPSUB_SYS_DP);
+  lsDescription = dpGetDescription(argsValue);
+	
+  // Get whether alert handling has been defined
+  dpGet(sChannelDpName + \".value:_alert_hdl.._type\", iType);
+  if (iType == DPCONFIG_NONE) {
+    fwColour_convertStatusToColour(sElementColour, \"\", false, argbInvalid, dsExceptionInfo);
+  } else {
+    dpGet(sChannelDpName + \".value:_alert_hdl.._active\", bActive,
+          sChannelDpName + \".value:_alert_hdl.._act_state_color\", sAlertColour);
+    fwColour_convertStatusToColour(sElementColour, sAlertColour, !bActive, argbInvalid, dsExceptionInfo);
+  }
+	
+  if (argbInvalid)
+    iRowFont = 3;
+  else
+    iRowFont = 0;
+	
+  // Get the channel name
+  dsTemp = strsplit(sChannelDpName, fwDevice_HIERARCHY_SEPARATOR);
+  sChannelName = dsTemp[dynlen(dsTemp)];
+  daValueInfo[1] = argfValue;
+  daValueInfo[2] = sElementColour;
+
+  // Update the information into the row
+  tabSDOChannels.updateLine(1,
+                            \"channelName\", sChannelName,
+                            \"comment\", lsDescription,
+//                            \"type\", sType,
+                            \"value\", daValueInfo,
+                            \"timeStamp\",  argsValueTimeStamp,
+                            0, iRowFont);
+
+  // Return to calling routine
+  return;
+}
+" 0
+"main(int row, string column, string value)
+{
+  string sDpe;
+  int iValue;
+  dyn_string dsExceptionInfo;
+  if (column == \"read\") {
+    sDpe = tabSDOChannels.cellValueRC(row, \"dpe\");
+    fwElmb_elementSQ(sDpe, 2, iValue, dsExceptionInfo);
+    if (dynlen(dsExceptionInfo) > 0)
+      DebugN(dsExceptionInfo);
+  }
+}" 0
+ 1 0 1 8 1 "dpe" 13 0 0 "s" 1
+LANG:1 3 dpe
+E
+1
+LANG:1 0 
+
+159 "channelName" 13 1 0 "s" 1
+LANG:1 12 Channel Name
+E
+1
+LANG:1 0 
+
+159 "comment" 13 0 0 "s" 1
+LANG:1 7 Comment
+E
+1
+LANG:1 53 Shows comment for channel if set, otherwise full name
+
+159 "read" 3 1 0 "s" 1
+LANG:1 4 Read
+E
+1
+LANG:1 27 Click to read channel value
+
+50 "rawValue" 6 1 0 "s" 1
+LANG:1 9 Raw Value
+E
+1
+LANG:1 16 4-byte raw value
+
+85 "state" 3 1 0 "s" 1
+LANG:1 5 State
+E
+1
+LANG:1 10 State byte
+
+50 "value" 8 1 0 "s" 1
+LANG:1 5 Value
+E
+1
+LANG:1 13 Current value
+
+100 "timeStamp" 14 1 0 "s" 1
+LANG:1 10 Time Stamp
+E
+1
+LANG:1 18 Current time stamp
+
+163 
+26 26 "" 1 1
+LANG:1 2 #1
+8 30
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+0 1 1 1 7
+1 0
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

@@ -1,0 +1,455 @@
+V 10
+1
+LANG:1 8 (NoName)
+PANEL,-1 -1 624 480 N "_3DFace" 1
+"$sDpName"
+E E E E E 1 -1 -1 0  10 10
+""0  1
+E "dyn_string nodeDpTypes;
+
+updateDeviceListTable()
+{
+// Local Variables
+// ---------------
+  int i;
+
+  string deviceType, deviceName;
+  string sType, sTypeTemp;
+  string sChannel, sChannelTemp;
+  string sDPType;
+
+  langString lsComment;
+
+  dyn_string dsChildren, dsExceptionInfo;
+
+// Executable Code
+// ---------------	
+  // Delete all lines to start with
+  deviceListTable.deleteAllLines();
+
+  // Check DP exists
+  if (dpExists($sDpName)) {
+    // Check type
+    sDPType = dpTypeName($sDpName);
+    if (sDPType == ELMB_AI_CONFIG_TYPE_NAME) {
+      fwDevice_getChildren($sDpName,
+                           fwDevice_HARDWARE,
+                           dsChildren,
+                           dsExceptionInfo);
+    } else if (sDPType == ELMB_TYPE_NAME) {
+      fwDevice_getChildren($sDpName + fwDevice_HIERARCHY_SEPARATOR + ELMB_AI_CONFIG_NAME,
+                           fwDevice_HARDWARE,
+                           dsChildren,
+                           dsExceptionInfo);
+    }
+  }
+
+  // Get all channels defined for this node
+  for (i = 1; i <= dynlen(dsChildren); i++) {
+
+    fwDevice_getName(dsChildren[i], deviceName, dsExceptionInfo);
+
+    if (dpTypeName(dsChildren[i]) == ELMB_AI_SDO_TYPE_NAME) {
+      sType = \"SDO Analog Input\";
+    } else {
+      dpGet(dsChildren[i] + \".type\", sTypeTemp);
+      sType = sTypeTemp;
+    }
+
+    dpGet(dsChildren[i] + \".channel\", sChannelTemp);
+    sChannel = sChannelTemp;
+
+    lsComment = dpGetDescription(dsChildren[i] + \".value\");
+
+    // Populate data into the table
+    deviceListTable.appendLine(\"deviceName\", deviceName,
+                               \"comment\", lsComment,
+                               \"deviceType\", deviceType,
+                               \"datapointName\", dsChildren[i],
+                               \"type\", sType,
+                               \"channelNr\", sChannel);
+  }
+
+  // Return to calling routine
+  return;
+}" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+NC
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+2 7
+"lblTitle"
+""
+1 10 10 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  1 E 12 12 200 35
+0 2 0 "0s" 0 0 0 192 0 0  12 12 1
+1
+LANG:1 84 -*-Arial-*-r-normal-*-19-*-100-100-*-*-iso8859-1|-19,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 20 Manage Analog Inputs
+30 8
+"frmShowColumns"
+""
+1 470 77 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+8 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 0 1 E U  0 E 470 10 610 80
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+1
+LANG:1 12 Show Columns
+25 1
+"deviceListTable"
+""
+1 10 90 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 8 88 616 432
+"main()
+{
+	// Put table in multiple selection mode
+	deviceListTable.tableMode(TABLE_SELECT_MULTIPLE); 
+	deviceListTable.selectByClick(TABLE_SELECT_LINE);
+	updateDeviceListTable();
+}" 0
+E 1 0 1 6 1 "deviceName" 17 1 0 "s" 1
+LANG:1 14 Analog Channel
+E
+1
+LANG:1 0 
+
+200 "comment" 17 0 0 "s" 1
+LANG:1 7 Comment
+E
+1
+LANG:1 0 
+
+200 "deviceType" 17 0 0 "s" 1
+LANG:1 11 Device Type
+E
+1
+LANG:1 0 
+
+200 "datapointName" 22 0 0 "s" 1
+LANG:1 15 Data Point Name
+E
+1
+LANG:1 0 
+
+250 "type" 17 1 0 "s" 1
+LANG:1 4 Type
+E
+1
+LANG:1 0 
+
+200 "channelNr" 8 1 0 "s" 1
+LANG:1 11 Channel Nr.
+E
+1
+LANG:1 0 
+
+100 
+26 26 "" 1 1
+LANG:1 2 #1
+8 30
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+0 1 1 1 7
+1 0
+13 3
+"cmdDelete"
+""
+1 487 440 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 485 438 548 467
+
+T 
+1
+LANG:1 6 Delete
+"main()
+{
+// Local Variables
+// ---------------
+	int i;
+	
+	string sDpName;
+	
+	dyn_int diSelectedLines;
+	
+	dyn_float df;
+	
+	dyn_string dsExceptionInfo;
+	dyn_string ds;
+	
+// Executable Code
+// ---------------
+	// Get the selected lines from the tables
+	diSelectedLines = deviceListTable.getSelectedLines();
+	
+	if (dynlen(diSelectedLines) > 0) {
+	
+		// Give user the chance to cancel
+		if (dynlen(diSelectedLines) == 1)
+			ChildPanelOnCentralReturn(\"vision/MessageInfo\",
+																\"Confirm\",
+																makeDynString(\"Are you sure you want delete this channel?\", \"OK\", \"Cancel\"),
+																df, ds);
+		else
+			ChildPanelOnCentralReturn(\"vision/MessageInfo\",
+																\"Confirm\",
+																makeDynString(\"Are you sure you want delete these \" + dynlen(diSelectedLines) + \" channels?\", \"OK\", \"Cancel\"),
+																df, ds);
+																
+		if (df[1]==1) {
+	
+			// Indicate system is busy
+			fwOpenProgressBar(\"Deleting Analog Inputs\", \"In progress. Please wait...\", 1);
+			
+			// Remove all required devices
+			for (i = 1; i <= dynlen(diSelectedLines); i++) {
+				getValue(\"deviceListTable\", \"cellValueRC\", diSelectedLines[i], \"datapointName\", sDpName);
+				fwDevice_delete(sDpName, dsExceptionInfo);
+			}
+			
+			// Check for errors																
+			if (dynlen(dsExceptionInfo) > 0) {
+				fwCloseProgressBar(\"Analog Input deletion encountered errors\");
+				fwExceptionHandling_display(dsExceptionInfo);
+			} else {
+				fwCloseProgressBar(\"Analog Input deletion completed successfully\");
+			}	
+	
+			// Update the table information
+			updateDeviceListTable();
+		}
+	} else {
+		ChildPanelOnCentral(\"vision/MessageInfo1\",
+												\"Nothing to delete\",
+												makeDynString(\"No channels have been selected to be deleted\"));
+	}
+	
+	// Return to calling routine
+	return;
+}" 0
+ E E E
+13 6
+"cmdClose"
+""
+1 554 440 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 552 438 615 467
+
+T 
+1
+LANG:1 5 Close
+"main()
+{
+	PanelOff();
+}" 0
+ E E E
+20 9
+"chkShowDescription"
+""
+1 480 30 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 478 28 602 72
+2
+T 
+1
+LANG:1 14 Analog Channel
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 7 Comment
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+2
+E E
+E E
+E"main(int button, bool state)
+{
+	switch (button) {
+		case 0:	// ELMB name
+			if (state)
+				deviceListTable.namedColumnVisibility(\"deviceName\", true);
+			else
+				deviceListTable.namedColumnVisibility(\"deviceName\", false);
+			break;
+		case 1:	// Comment
+			if (state)
+				deviceListTable.namedColumnVisibility(\"comment\", true);
+			else
+				deviceListTable.namedColumnVisibility(\"comment\", false);
+			break;
+	}
+}" 0
+26 10
+"cmdCreate"
+""
+1 420 440 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 418 438 481.154929577465 467.161290322581
+ 0 1
+LANG:1 6 Create
+"" 0 0 0 0 0
+ 2 1 1
+LANG:1 8 Standard
+"1" 0 0 0 0 0
+ 1 1
+LANG:1 9 Using SDO
+"2" 0 0 0 0 0
+ E "main(string id)
+{
+// Local Variables
+// ---------------
+  dyn_float df;
+
+  string sSubDpName = dpSubStr($sDpName, DPSUB_DP);
+
+  dyn_string ds;
+  dyn_string dsTemp = strsplit(sSubDpName, fwDevice_HIERARCHY_SEPARATOR);
+  
+// Executable Code
+// ---------------
+  switch (id) {
+    case \"1\":
+      // Display panel to allow creation of analog inputs
+      ChildPanelOnCentralModalReturn(\"fwElmb/fwElmbAiConfigConfiguration.pnl\",
+                                     \"Create Device\",
+                                     makeDynString(\"$sDpName:\" + $sDpName,
+                                                   \"$sElmbLabels:\" + dsTemp[3],
+                                                   \"$sNodeIDs:\" + \"\",
+                                                   \"$sElmbComment:\" + \"\"),
+                                     df, ds);
+      break;
+    case \"2\":
+      // Display panel to allow creation of analog inputs
+      ChildPanelOnCentralModalReturn(\"fwElmb/objects/fwElmbCreateAnalogInputSDO.pnl\",
+                                     \"Create Device\",
+                                     makeDynString(\"$sDpName:\" + $sDpName,
+                                                   \"$sElmbLabels:\" + dsTemp[3],
+                                                   \"$sNodeIDs:\" + \"\",
+                                                   \"$sElmbComment:\" + \"\"),
+                                     df, ds);
+      break;
+  }
+
+  // Update table information
+  updateDeviceListTable();
+
+  // Return to calling routine
+  return;
+}" 0
+0 
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0

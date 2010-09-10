@@ -1,0 +1,92 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 373 30 N "_3DFace" 1
+"$deviceParams"
+"main()
+{
+  dyn_string ex;
+  deviceParams = emuui_parseParameterString($deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  string strSide = \"+\";
+  if (deviceParams[\"side\"] == \"M\") { strSide = \"-\"; }
+  
+  lblDeviceName.text = \"Status of communication with Xmas \" + strSide + \"Z monitoring\";
+}" 0
+ E E E E 1 -1 -1 0  0 0
+""0  1
+E "//some panel-wide constants
+mapping deviceParams;
+" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 3
+"connection_xmas_name_tooltipBack"
+""
+1 0 50 E E E 1 E 1 E N {0,0,0} E N {255,255,225} E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 0 -50 1 E 0 50 300 70
+2 1
+"lblDeviceName"
+""
+1 3 3 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 3 3 289 19
+0 2 2 "0s" 0 0 0 192 0 0  3 3 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 47 Status of communication with Xmas ?Z monitoring
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

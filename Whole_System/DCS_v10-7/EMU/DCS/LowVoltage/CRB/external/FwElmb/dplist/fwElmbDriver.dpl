@@ -1,0 +1,11 @@
+# ascii dump of database		
+
+# Datapoint/DpId		
+DpName	TypeName	ID
+_OPCCANopen	_OPCServer	7674
+_Stat_Configs_driver_7	_Statistics_DriverConfigs	8533
+_Driver7	_DriverCommon	8534
+_Driver7_2	_DriverCommon	8535
+_Stat_2_Configs_driver_7	_Statistics_DriverConfigs	8536
+_Simulator7	_DriverCommon	8537
+_Simulator7_2	_DriverCommon	8538

@@ -1,0 +1,25 @@
+#!/bin/bash
+
+
+
+
+
+
+
+CSC_DIR_REP=/home/fast/pvss_fsm/scripts/libs/emu*.ctl*removed111
+rm -v $CSC_DIR_REP
+CSC_DIR_REP=/home/fast/pvss_fsm/scripts/libs/fw*removed111
+rm -v $CSC_DIR_REP
+CSC_DIR_REP=/home/fast/pvss_fsm/scripts/libs/fw*/fw*.ctl*removed111
+rm -v $CSC_DIR_REP
+CSC_DIR_REP=/home/fast/pvss_fsm/scripts/mudcs*.ctl*removed111
+rm -v $CSC_DIR_REP
+#------------------
+
+
+CSC_DIR_REP=/home/fast/pvss_fsm/panels/*.pnl*removed111
+rm -v $CSC_DIR_REP
+CSC_DIR_REP=/home/fast/pvss_fsm/panels/emu/*.pnl*removed111
+rm -v $CSC_DIR_REP
+CSC_DIR_REP=/home/fast/pvss_fsm/panels/emu_config/*.pnl*removed111
+rm -v $CSC_DIR_REP

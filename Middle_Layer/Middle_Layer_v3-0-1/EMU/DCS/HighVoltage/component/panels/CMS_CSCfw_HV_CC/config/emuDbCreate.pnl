@@ -1,0 +1,1515 @@
+V 10
+1
+LANG:1 0 
+PANEL,-1 -1 228 46 N "_3DFace" 0
+E E E E E 1 -1 -1 0  59 108
+""0  1
+E E 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"PUSH_BUTTON1"
+""
+1 -3.552713678800501e-15 -1.77635683940025e-15 E E E 1 E 1 E N "_ButtonText" E N "_ETM" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 82 -*-Sans-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Sans
+0 ""
+ -2.000000000000004 -2.000000000000002 222 42
+
+T 
+1
+LANG:1 9 DB CREATE
+"bool slice_test=true;
+
+  dyn_dyn_string CC_IN; 
+  dyn_dyn_string CC_OUT;
+  dyn_dyn_string HV_IN;  
+  dyn_dyn_string HV_OUT;   
+  dyn_dyn_string DISK_LEVEL;  
+  
+//  dyn_dyn_string InRadDeviceList;
+//  dyn_dyn_string OutRadDeviceList;
+//  dyn_dyn_string InConfigPanels;
+//  dyn_dyn_string InOperationPanels;
+//  dyn_dyn_string OutConfigPanels;
+//  dyn_dyn_string OutOperationPanels;
+  
+  //=== DUBNA =====
+  dyn_string CC_DUBNA;
+  dyn_string HV_DUBNA;//600;;;\"; that is dummy: used for the FSM tree creation  
+  dyn_string DISK_DUBNA;  
+  
+//  dyn_string DeviceList_DUBNA;
+//  dyn_string ConfigPanels_DUBNA;
+//  dyn_string OperationPanels_DUBNA;
+  //=================
+    
+  dyn_string EMU_LEVEL;
+  dyn_string PCToManID;
+  dyn_string DimServerComputerList;
+
+main()
+{
+
+int i;  
+  
+for(i=1;i<=8;i++)dynClear(DISK_LEVEL[i]);
+dynClear(EMU_LEVEL);    
+
+db_set_cc();
+db_set_hv();
+db_set_disk_level();
+db_set_emu_level();  
+
+
+for(i=1;i<=8;i++){
+ 
+  dpSet(\"Db_o.Wheels_o.Wheel\"+i+\".InDynatemAndSetNumberList\",CC_IN[i]); 
+  if(i!=1 & i!=8)dpSet(\"Db_o.Wheels_o.Wheel\"+i+\".OutDynatemAndSetNumberList\",CC_OUT[i]);
+  dpSet(\"Db_o.Wheels_o.Wheel\"+i+\".InHVsetList\",HV_IN[i]); 
+  if(i!=1 & i!=8)dpSet(\"Db_o.Wheels_o.Wheel\"+i+\".OutHVsetList\",HV_OUT[i]);   
+     
+  dpSet(\"Db_o.Wheels_o.Wheel\"+i+\".DiskLevelDevicesCoordinates\",DISK_LEVEL[i]); 
+} // for
+
+  dpSet(\"Db_o.Wheels_o.Ring_DUBNA.DynatemAndSetNumberList\",CC_DUBNA);
+  dpSet(\"Db_o.Wheels_o.Ring_DUBNA.HVsetList\",HV_DUBNA);  
+  dpSet(\"Db_o.Wheels_o.Ring_DUBNA.DiskLevelDevicesCoordinates\",DISK_DUBNA); 
+
+  dpSet(\"Db_o.CscLevelDevicesCoordinates\",EMU_LEVEL);    
+  dpSet(\"Db_o.PCToManID\",PCToManID); 
+  dpSet(\"Db_o.DimServerComputerList\",DimServerComputerList);   
+
+ mudcsDebug(\"done\");
+  
+}
+
+
+//============================================  
+//======= CRATE CONTROLLERS SECTION ==========
+//============================================  
+  
+db_set_cc(){
+
+int i;  
+  
+//======== ME-4 =============================  
+  i=1;
+  
+  CC_IN[i][1]=\"\";
+  CC_IN[i][2]=\"\";
+  CC_IN[i][3]=\"\";  
+  CC_IN[i][4]=\"\";
+  CC_IN[i][5]=\"\";
+  CC_IN[i][6]=\"\";
+  CC_IN[i][7]=\"\";  
+  CC_IN[i][8]=\"\";
+  CC_IN[i][9]=\"\";  
+  CC_IN[i][10]=\"\";
+  CC_IN[i][11]=\"\";
+  CC_IN[i][12]=\"\";
+  CC_IN[i][13]=\"\";   
+  CC_IN[i][14]=\"\";
+  CC_IN[i][15]=\"\";  
+  CC_IN[i][16]=\"\";
+  CC_IN[i][17]=\"\";
+  CC_IN[i][18]=\"\";  
+
+
+    
+//======== ME-3 =============================  
+  i=2;
+  
+  CC_IN[i][1]=\"\";
+  CC_IN[i][2]=\"\";
+  CC_IN[i][3]=\"\";  
+  CC_IN[i][4]=\"\";
+  CC_IN[i][5]=\"\";
+  CC_IN[i][6]=\"\";
+  CC_IN[i][7]=\"\";  
+  CC_IN[i][8]=\"02:00:00:00:00;47;3\";
+  CC_IN[i][9]=\"02:00:00:00:00;47;5\";  
+  CC_IN[i][10]=\"02:00:00:00:00;47;7\";
+  CC_IN[i][11]=\"\";
+  CC_IN[i][12]=\"\";
+  CC_IN[i][13]=\"\";   
+  CC_IN[i][14]=\"\";
+  CC_IN[i][15]=\"\";  
+  CC_IN[i][16]=\"\";
+  CC_IN[i][17]=\"\";
+  CC_IN[i][18]=\"\";    
+  
+  CC_OUT[i][1]=\"\";
+  CC_OUT[i][2]=\"\";
+  CC_OUT[i][3]=\"\";  
+  CC_OUT[i][4]=\"\";
+  CC_OUT[i][5]=\"\";
+  CC_OUT[i][6]=\"\";
+  CC_OUT[i][7]=\"\";  
+  CC_OUT[i][8]=\"\";
+  CC_OUT[i][9]=\"\";  
+  CC_OUT[i][10]=\"\";
+  CC_OUT[i][11]=\"\";
+  CC_OUT[i][12]=\"\";
+  CC_OUT[i][13]=\"\";   
+  CC_OUT[i][14]=\"\";
+  CC_OUT[i][15]=\"02:00:00:00:00;47;9\";  
+  CC_OUT[i][16]=\"02:00:00:00:00;47;11\";
+  CC_OUT[i][17]=\"02:00:00:00:00;47;15\";
+  CC_OUT[i][18]=\"02:00:00:00:00;47;17\";     
+  CC_OUT[i][19]=\"02:00:00:00:00;47;19\";
+  CC_OUT[i][20]=\"02:00:00:00:00;47;21\";
+  CC_OUT[i][21]=\"\";  
+  CC_OUT[i][22]=\"\";
+  CC_OUT[i][23]=\"\";
+  CC_OUT[i][24]=\"\";
+  CC_OUT[i][25]=\"\";  
+  CC_OUT[i][26]=\"\";
+  CC_OUT[i][27]=\"\";  
+  CC_OUT[i][28]=\"\";
+  CC_OUT[i][29]=\"\";
+  CC_OUT[i][30]=\"\";
+  CC_OUT[i][31]=\"\";   
+  CC_OUT[i][32]=\"\";
+  CC_OUT[i][33]=\"\";  
+  CC_OUT[i][34]=\"\";
+  CC_OUT[i][35]=\"\";
+  CC_OUT[i][36]=\"\";     
+
+//======== ME-2 =============================  
+  i=3;
+  
+  CC_IN[i][1]=\"\";
+  CC_IN[i][2]=\"\";
+  CC_IN[i][3]=\"\";  
+  CC_IN[i][4]=\"\";
+  CC_IN[i][5]=\"\";
+  CC_IN[i][6]=\"\";
+  CC_IN[i][7]=\"\";  
+  CC_IN[i][8]=\"02:00:00:00:00;4a;3\";
+  CC_IN[i][9]=\"02:00:00:00:00;4a;5\";  
+  CC_IN[i][10]=\"02:00:00:00:00;4a;7\";
+  CC_IN[i][11]=\"\";
+  CC_IN[i][12]=\"\";
+  CC_IN[i][13]=\"\";   
+  CC_IN[i][14]=\"\";
+  CC_IN[i][15]=\"\";  
+  CC_IN[i][16]=\"\";
+  CC_IN[i][17]=\"\";
+  CC_IN[i][18]=\"\";    
+  
+  CC_OUT[i][1]=\"\";
+  CC_OUT[i][2]=\"\";
+  CC_OUT[i][3]=\"\";  
+  CC_OUT[i][4]=\"\";
+  CC_OUT[i][5]=\"\";
+  CC_OUT[i][6]=\"\";
+  CC_OUT[i][7]=\"\";  
+  CC_OUT[i][8]=\"\";
+  CC_OUT[i][9]=\"\";  
+  CC_OUT[i][10]=\"\";
+  CC_OUT[i][11]=\"\";
+  CC_OUT[i][12]=\"\";
+  CC_OUT[i][13]=\"\";   
+  CC_OUT[i][14]=\"\";
+  CC_OUT[i][15]=\"02:00:00:00:00;4a;9\";  
+  CC_OUT[i][16]=\"02:00:00:00:00;4a;11\";
+  CC_OUT[i][17]=\"02:00:00:00:00;4a;15\";
+  CC_OUT[i][18]=\"02:00:00:00:00;4a;17\";     
+  CC_OUT[i][19]=\"02:00:00:00:00;4a;19\";
+  CC_OUT[i][20]=\"02:00:00:00:00;4a;21\";
+  CC_OUT[i][21]=\"\";  
+  CC_OUT[i][22]=\"\";
+  CC_OUT[i][23]=\"\";
+  CC_OUT[i][24]=\"\";
+  CC_OUT[i][25]=\"\";  
+  CC_OUT[i][26]=\"\";
+  CC_OUT[i][27]=\"\";  
+  CC_OUT[i][28]=\"\";
+  CC_OUT[i][29]=\"\";
+  CC_OUT[i][30]=\"\";
+  CC_OUT[i][31]=\"\";   
+  CC_OUT[i][32]=\"\";
+  CC_OUT[i][33]=\"\";  
+  CC_OUT[i][34]=\"\";
+  CC_OUT[i][35]=\"\";
+  CC_OUT[i][36]=\"\";     
+
+//======== ME-1 =============================  
+  i=4;
+  
+  CC_IN[i][1]=\"\";
+  CC_IN[i][2]=\"\";
+  CC_IN[i][3]=\"\";  
+  CC_IN[i][4]=\"\";
+  CC_IN[i][5]=\"\";
+  CC_IN[i][6]=\"\";
+  CC_IN[i][7]=\"\";  
+  CC_IN[i][8]=\"\";
+  CC_IN[i][9]=\"\";  
+  CC_IN[i][10]=\"\";
+  CC_IN[i][11]=\"\";
+  CC_IN[i][12]=\"\";
+  CC_IN[i][13]=\"\";   
+  CC_IN[i][14]=\"\";
+  CC_IN[i][15]=\"\";  
+  CC_IN[i][16]=\"\";
+  CC_IN[i][17]=\"\";
+  CC_IN[i][18]=\"\";    
+  
+  CC_OUT[i][1]=\"\";
+  CC_OUT[i][2]=\"\";
+  CC_OUT[i][3]=\"\";  
+  CC_OUT[i][4]=\"\";
+  CC_OUT[i][5]=\"\";
+  CC_OUT[i][6]=\"\";
+  CC_OUT[i][7]=\"\";  
+  CC_OUT[i][8]=\"\";
+  CC_OUT[i][9]=\"\";  
+  CC_OUT[i][10]=\"\";
+  CC_OUT[i][11]=\"\";
+  CC_OUT[i][12]=\"\";
+  CC_OUT[i][13]=\"\";   
+  CC_OUT[i][14]=\"\";
+  CC_OUT[i][15]=\"\";  
+  CC_OUT[i][16]=\"\";
+  CC_OUT[i][17]=\"\";
+  CC_OUT[i][18]=\"\";     
+  CC_OUT[i][19]=\"\";
+  CC_OUT[i][20]=\"\";
+  CC_OUT[i][21]=\"\";  
+  CC_OUT[i][22]=\"\";
+  CC_OUT[i][23]=\"\";
+  CC_OUT[i][24]=\"\";
+  CC_OUT[i][25]=\"\";  
+  CC_OUT[i][26]=\"\";
+  CC_OUT[i][27]=\"\";  
+  CC_OUT[i][28]=\"\";
+  CC_OUT[i][29]=\"\";
+  CC_OUT[i][30]=\"\";
+  CC_OUT[i][31]=\"\";   
+  CC_OUT[i][32]=\"\";
+  CC_OUT[i][33]=\"\";  
+  CC_OUT[i][34]=\"\";
+  CC_OUT[i][35]=\"\";
+  CC_OUT[i][36]=\"\";     
+
+    
+//======== ME+1 =============================  
+  i=5;
+  
+  CC_IN[i][1]=\"\";
+  CC_IN[i][2]=\"\";
+  CC_IN[i][3]=\"\";  
+  CC_IN[i][4]=\"\";
+  CC_IN[i][5]=\"\";
+  CC_IN[i][6]=\"\";
+  CC_IN[i][7]=\"\";  
+  CC_IN[i][8]=\"\";
+  CC_IN[i][9]=\"\";  
+  CC_IN[i][10]=\"\";
+  CC_IN[i][11]=\"\";
+  CC_IN[i][12]=\"\";
+  CC_IN[i][13]=\"\";   
+  CC_IN[i][14]=\"\";
+  CC_IN[i][15]=\"\";  
+  CC_IN[i][16]=\"\";
+  CC_IN[i][17]=\"\";
+  CC_IN[i][18]=\"\";    
+  
+  CC_OUT[i][1]=\"\";
+  CC_OUT[i][2]=\"\";
+  CC_OUT[i][3]=\"\";  
+  CC_OUT[i][4]=\"\";
+  CC_OUT[i][5]=\"\";
+  CC_OUT[i][6]=\"\";
+  CC_OUT[i][7]=\"\";  
+  CC_OUT[i][8]=\"\";
+  CC_OUT[i][9]=\"\";  
+  CC_OUT[i][10]=\"\";
+  CC_OUT[i][11]=\"\";
+  CC_OUT[i][12]=\"\";
+  CC_OUT[i][13]=\"\";   
+  CC_OUT[i][14]=\"\";
+  CC_OUT[i][15]=\"\";  
+  CC_OUT[i][16]=\"\";
+  CC_OUT[i][17]=\"\";
+  CC_OUT[i][18]=\"\";     
+  CC_OUT[i][19]=\"\";
+  CC_OUT[i][20]=\"\";
+  CC_OUT[i][21]=\"\";  
+  CC_OUT[i][22]=\"\";
+  CC_OUT[i][23]=\"\";
+  CC_OUT[i][24]=\"\";
+  CC_OUT[i][25]=\"\";  
+  CC_OUT[i][26]=\"\";
+  CC_OUT[i][27]=\"\";  
+  CC_OUT[i][28]=\"\";
+  CC_OUT[i][29]=\"\";
+  CC_OUT[i][30]=\"\";
+  CC_OUT[i][31]=\"\";   
+  CC_OUT[i][32]=\"\";
+  CC_OUT[i][33]=\"\";  
+  CC_OUT[i][34]=\"\";
+  CC_OUT[i][35]=\"\";
+  CC_OUT[i][36]=\"\";     
+
+//======== ME+2 =============================  
+  i=6;
+  
+  CC_IN[i][1]=\"02:00:00:00:00:0e;7\";//sector 6
+  CC_IN[i][2]=\"02:00:00:00:00:12;3\";//sector 1
+  CC_IN[i][3]=\"02:00:00:00:00:12;5\";//sector 1
+  CC_IN[i][4]=\"02:00:00:00:00:12;7\";//sector 1
+  CC_IN[i][5]=\"\";//\"02:00:00:00:00:;3\";//sector  2
+  CC_IN[i][6]=\"\";//\"02:00:00:00:00:;5\";//sector  2
+  CC_IN[i][7]=\"\";//\"02:00:00:00:00:;7\";//sector  2  
+  CC_IN[i][8]=\"\";//\"02:00:00:00:00:;3\";//sector  3
+  CC_IN[i][9]=\"\";//\"02:00:00:00:00:;5\";//sector  3  
+  CC_IN[i][10]=\"\";//\"02:00:00:00:00:;7\";//sector  3
+  CC_IN[i][11]=\"\";//\"02:00:00:00:00:;3\";//sector  4
+  CC_IN[i][12]=\"\";//\"02:00:00:00:00:;5\";//sector  4
+  CC_IN[i][13]=\"\";//\"02:00:00:00:00:;7\";//sector  4   
+  CC_IN[i][14]=\"\";//\"02:00:00:00:00:;3\";//sector  5
+  CC_IN[i][15]=\"\";//\"02:00:00:00:00:;5\";//sector  5  
+  CC_IN[i][16]=\"\";//\"02:00:00:00:00:;7\";//sector  5
+  CC_IN[i][17]=\"02:00:00:00:00:0e;3\"; //sector 6
+  CC_IN[i][18]=\"02:00:00:00:00:0e;5\"; //sector 6   
+  
+  CC_OUT[i][1]=\"02:00:00:00:00:0e;19\"; //sector 6 
+  CC_OUT[i][2]=\"02:00:00:00:00:0e;21\"; //sector 6 
+  CC_OUT[i][3]=\"02:00:00:00:00:12;9\"; //sector 1 
+  CC_OUT[i][4]=\"02:00:00:00:00:12;11\";//sector 1
+  CC_OUT[i][5]=\"02:00:00:00:00:12;15\";//sector 1
+  CC_OUT[i][6]=\"02:00:00:00:00:12;17\";//sector 1
+  CC_OUT[i][7]=\"02:00:00:00:00:12;19\";//sector 1
+  CC_OUT[i][8]=\"02:00:00:00:00:12;21\";//sector 1
+  CC_OUT[i][9]=\"\"; //\"02:00:00:00:00:;9\";//sector  2
+  CC_OUT[i][10]=\"\";//\"02:00:00:00:00:;11\";//sector  2
+  CC_OUT[i][11]=\"\";//\"02:00:00:00:00:;15\";//sector  2
+  CC_OUT[i][12]=\"\";//\"02:00:00:00:00:;17\";//sector  2
+  CC_OUT[i][13]=\"\";//\"02:00:00:00:00:;19\";//sector  2  
+  CC_OUT[i][14]=\"\";//\"02:00:00:00:00:;21\";//sector  2
+  CC_OUT[i][15]=\"\";//\"02:00:00:00:00:;9\";//sector  3
+  CC_OUT[i][16]=\"\";//\"02:00:00:00:00:;11\";//sector  3
+  CC_OUT[i][17]=\"\";//\"02:00:00:00:00:;15\";//sector  3
+  CC_OUT[i][18]=\"\";//\"02:00:00:00:00:;17\";//sector  3     
+  CC_OUT[i][19]=\"\";//\"02:00:00:00:00:;19\";//sector  3
+  CC_OUT[i][20]=\"\";//\"02:00:00:00:00:;21\";//sector  3
+  CC_OUT[i][21]=\"\";//\"02:00:00:00:00:;9\";//sector  4  
+  CC_OUT[i][22]=\"\";//\"02:00:00:00:00:;11\";//sector  4 
+  CC_OUT[i][23]=\"\";//\"02:00:00:00:00:;15\";//sector  4 
+  CC_OUT[i][24]=\"\";//\"02:00:00:00:00:;17\";//sector  4 
+  CC_OUT[i][25]=\"\";//\"02:00:00:00:00:;19\";//sector  4   
+  CC_OUT[i][26]=\"\";//\"02:00:00:00:00:;21\";//sector  4 
+  CC_OUT[i][27]=\"\";//\"02:00:00:00:00:;9\";//sector  5  
+  CC_OUT[i][28]=\"\";//\"02:00:00:00:00:;11\";//sector  5
+  CC_OUT[i][29]=\"\";//\"02:00:00:00:00:;15\";//sector  5
+  CC_OUT[i][30]=\"\";//\"02:00:00:00:00:;17\";//sector  5
+  CC_OUT[i][31]=\"\";//\"02:00:00:00:00:;19\";//sector  5   
+  CC_OUT[i][32]=\"\";//\"02:00:00:00:00:;21\";//sector  5
+  CC_OUT[i][33]=\"02:00:00:00:00:0e;9\"; //sector 6   
+  CC_OUT[i][34]=\"02:00:00:00:00:0e;11\"; //sector 6 
+  CC_OUT[i][35]=\"02:00:00:00:00:0e;15\"; //sector 6 
+  CC_OUT[i][36]=\"02:00:00:00:00:0e;17\"; //sector 6     
+  
+//======== ME+3 =============================  
+  i=7;
+
+  CC_IN[i][1]=\"02:00:00:00:00:33;7\";//sector 6
+  CC_IN[i][2]=\"02:00:00:00:00:0d;3\";//sector 1
+  CC_IN[i][3]=\"02:00:00:00:00:0d;5\";//sector 1
+  CC_IN[i][4]=\"02:00:00:00:00:0d;7\";//sector 1
+  CC_IN[i][5]=\"\";//\"02:00:00:00:00:;3\";//sector  2
+  CC_IN[i][6]=\"\";//\"02:00:00:00:00:;5\";//sector  2
+  CC_IN[i][7]=\"\";//\"02:00:00:00:00:;7\";//sector  2  
+  CC_IN[i][8]=\"\";//\"02:00:00:00:00:;3\";//sector  3
+  CC_IN[i][9]=\"\";//\"02:00:00:00:00:;5\";//sector  3  
+  CC_IN[i][10]=\"\";//\"02:00:00:00:00:;7\";//sector  3
+  CC_IN[i][11]=\"\";//\"02:00:00:00:00:;3\";//sector  4
+  CC_IN[i][12]=\"\";//\"02:00:00:00:00:;5\";//sector  4
+  CC_IN[i][13]=\"\";//\"02:00:00:00:00:;7\";//sector  4   
+  CC_IN[i][14]=\"\";//\"02:00:00:00:00:;3\";//sector  5
+  CC_IN[i][15]=\"\";//\"02:00:00:00:00:;5\";//sector  5  
+  CC_IN[i][16]=\"\";//\"02:00:00:00:00:;7\";//sector  5
+  CC_IN[i][17]=\"02:00:00:00:00:33;3\"; //sector 6
+  CC_IN[i][18]=\"02:00:00:00:00:33;5\"; //sector 6   
+  
+  CC_OUT[i][1]=\"02:00:00:00:00:;19\"; //sector 6 
+  CC_OUT[i][2]=\"02:00:00:00:00:;21\"; //sector 6 
+  CC_OUT[i][3]=\"02:00:00:00:00:0d;9\"; //sector 1 
+  CC_OUT[i][4]=\"02:00:00:00:00:0d;11\";//sector 1
+  CC_OUT[i][5]=\"02:00:00:00:00:0d;15\";//sector 1
+  CC_OUT[i][6]=\"02:00:00:00:00:0d;17\";//sector 1
+  CC_OUT[i][7]=\"02:00:00:00:00:0d;19\";//sector 1
+  CC_OUT[i][8]=\"02:00:00:00:00:0d;21\";//sector 1
+  CC_OUT[i][9]=\"\"; //\"02:00:00:00:00:;9\";//sector  2
+  CC_OUT[i][10]=\"\";//\"02:00:00:00:00:;11\";//sector  2
+  CC_OUT[i][11]=\"\";//\"02:00:00:00:00:;15\";//sector  2
+  CC_OUT[i][12]=\"\";//\"02:00:00:00:00:;17\";//sector  2
+  CC_OUT[i][13]=\"\";//\"02:00:00:00:00:;19\";//sector  2  
+  CC_OUT[i][14]=\"\";//\"02:00:00:00:00:;21\";//sector  2
+  CC_OUT[i][15]=\"\";//\"02:00:00:00:00:33;9\";//sector  3
+  CC_OUT[i][16]=\"\";//\"02:00:00:00:00:33;11\";//sector  3
+  CC_OUT[i][17]=\"\";//\"02:00:00:00:00:33;15\";//sector  3
+  CC_OUT[i][18]=\"\";//\"02:00:00:00:00:33;17\";//sector  3     
+  CC_OUT[i][19]=\"\";//\"02:00:00:00:00:33;19\";//sector  3
+  CC_OUT[i][20]=\"\";//\"02:00:00:00:00:33;21\";//sector  3
+  CC_OUT[i][21]=\"\";//\"02:00:00:00:00:;9\";//sector  4  
+  CC_OUT[i][22]=\"\";//\"02:00:00:00:00:;11\";//sector  4 
+  CC_OUT[i][23]=\"\";//\"02:00:00:00:00:;15\";//sector  4 
+  CC_OUT[i][24]=\"\";//\"02:00:00:00:00:;17\";//sector  4 
+  CC_OUT[i][25]=\"\";//\"02:00:00:00:00:;19\";//sector  4   
+  CC_OUT[i][26]=\"\";//\"02:00:00:00:00:;21\";//sector  4 
+  CC_OUT[i][27]=\"\";//\"02:00:00:00:00:;9\";//sector  5  
+  CC_OUT[i][28]=\"\";//\"02:00:00:00:00:;11\";//sector  5
+  CC_OUT[i][29]=\"\";//\"02:00:00:00:00:;15\";//sector  5
+  CC_OUT[i][30]=\"\";//\"02:00:00:00:00:;17\";//sector  5
+  CC_OUT[i][31]=\"\";//\"02:00:00:00:00:;19\";//sector  5   
+  CC_OUT[i][32]=\"\";//\"02:00:00:00:00:;21\";//sector  5
+  CC_OUT[i][33]=\"02:00:00:00:00:;9\"; //sector 6   
+  CC_OUT[i][34]=\"02:00:00:00:00:;11\"; //sector 6 
+  CC_OUT[i][35]=\"02:00:00:00:00:;15\"; //sector 6 
+  CC_OUT[i][36]=\"02:00:00:00:00:;17\"; //sector 6    
+ 
+
+//======== ME+4 =============================  
+  i=8;
+  
+  CC_IN[i][1]=\"\";
+  CC_IN[i][2]=\"\";
+  CC_IN[i][3]=\"\";  
+  CC_IN[i][4]=\"\";
+  CC_IN[i][5]=\"\";
+  CC_IN[i][6]=\"\";
+  CC_IN[i][7]=\"\";  
+  CC_IN[i][8]=\"\";
+  CC_IN[i][9]=\"\";  
+  CC_IN[i][10]=\"\";
+  CC_IN[i][11]=\"\";
+  CC_IN[i][12]=\"\";
+  CC_IN[i][13]=\"\";   
+  CC_IN[i][14]=\"\";
+  CC_IN[i][15]=\"\";  
+  CC_IN[i][16]=\"\";
+  CC_IN[i][17]=\"\";
+  CC_IN[i][18]=\"\";                    
+  
+
+
+//======== ME-1 (DUBNA) =============================  
+  
+  
+  CC_DUBNA[1]=\"\";
+  CC_DUBNA[2]=\"\";
+  CC_DUBNA[3]=\"\";  
+  CC_DUBNA[4]=\"\";
+  CC_DUBNA[5]=\"\";
+  CC_DUBNA[6]=\"\";
+  CC_DUBNA[7]=\"\";  
+  CC_DUBNA[8]=\"\";
+  CC_DUBNA[9]=\"\";  
+  CC_DUBNA[10]=\"\";
+  CC_DUBNA[11]=\"\";
+  CC_DUBNA[12]=\"\";
+  CC_DUBNA[13]=\"\";   
+  CC_DUBNA[14]=\"\";
+  CC_DUBNA[15]=\"\";  
+  CC_DUBNA[16]=\"\";
+  CC_DUBNA[17]=\"\";
+  CC_DUBNA[18]=\"\";     
+  CC_DUBNA[19]=\"\";
+  CC_DUBNA[20]=\"\";
+  CC_DUBNA[21]=\"\";  
+  CC_DUBNA[22]=\"\";
+  CC_DUBNA[23]=\"\";
+  CC_DUBNA[24]=\"\";
+  CC_DUBNA[25]=\"\";  
+  CC_DUBNA[26]=\"\";
+  CC_DUBNA[27]=\"\";  
+  CC_DUBNA[28]=\"\";
+  CC_DUBNA[29]=\"\";
+  CC_DUBNA[30]=\"\";
+  CC_DUBNA[31]=\"\";   
+  CC_DUBNA[32]=\"\";
+  CC_DUBNA[33]=\"\";  
+  CC_DUBNA[34]=\"\";
+  CC_DUBNA[35]=\"\";
+  CC_DUBNA[36]=\"\";     
+
+//======== ME+1 (DUBNA) =============================  
+  
+  
+  CC_DUBNA[37]=\"\";
+  CC_DUBNA[38]=\"\";
+  CC_DUBNA[39]=\"\";  
+  CC_DUBNA[40]=\"\";
+  CC_DUBNA[41]=\"\";
+  CC_DUBNA[42]=\"\";
+  CC_DUBNA[43]=\"\";  
+  CC_DUBNA[44]=\"\";
+  CC_DUBNA[45]=\"\";  
+  CC_DUBNA[46]=\"\";
+  CC_DUBNA[47]=\"\";
+  CC_DUBNA[48]=\"\";
+  CC_DUBNA[49]=\"\";   
+  CC_DUBNA[50]=\"\";
+  CC_DUBNA[51]=\"\";  
+  CC_DUBNA[52]=\"\";
+  CC_DUBNA[53]=\"\";
+  CC_DUBNA[54]=\"\";     
+  CC_DUBNA[55]=\"\";
+  CC_DUBNA[56]=\"\";
+  CC_DUBNA[57]=\"\";  
+  CC_DUBNA[58]=\"\";
+  CC_DUBNA[59]=\"\";
+  CC_DUBNA[60]=\"\";
+  CC_DUBNA[61]=\"\";  
+  CC_DUBNA[62]=\"\";
+  CC_DUBNA[63]=\"\";  
+  CC_DUBNA[64]=\"\";
+  CC_DUBNA[65]=\"\";
+  CC_DUBNA[66]=\"\";
+  CC_DUBNA[67]=\"\";   
+  CC_DUBNA[68]=\"\";
+  CC_DUBNA[69]=\"\";  
+  CC_DUBNA[70]=\"\";
+  CC_DUBNA[71]=\"\";
+  CC_DUBNA[72]=\"\";     
+  
+  
+}
+//============================================  
+//======= HV SECTION ==========
+//============================================  
+  
+db_set_hv(){
+
+int i;  
+//======== ME-4 =============================  
+  i=1;
+  
+  HV_IN[i][1]=\"\";//600;;;\";
+  HV_IN[i][2]=\"\";//600;;;\";
+  HV_IN[i][3]=\"\";//600;;;\";
+  HV_IN[i][4]=\"\";//600;;;\";
+  HV_IN[i][5]=\"\";//600;;;\";
+  HV_IN[i][6]=\"\";//600;;;\";
+  HV_IN[i][7]=\"\";//600;;;\";
+  HV_IN[i][8]=\"\";//600;;;\";
+  HV_IN[i][9]=\"\";//600;;;\";
+  HV_IN[i][10]=\"\";//600;;;\";
+  HV_IN[i][11]=\"\";//600;;;\";
+  HV_IN[i][12]=\"\";//600;;;\";
+  HV_IN[i][13]=\"\";//600;;;\"; 
+  HV_IN[i][14]=\"\";//600;;;\";
+  HV_IN[i][15]=\"\";//600;;;\";
+  HV_IN[i][16]=\"\";//600;;;\";
+  HV_IN[i][17]=\"\";//600;;;\";
+  HV_IN[i][18]=\"\";//600;;;\";
+  
+//======== ME-3 =============================  
+  i=2;
+  
+  HV_IN[i][1]=\"\";//600;;;\";
+  HV_IN[i][2]=\"\";//600;;;\";
+  HV_IN[i][3]=\"\";//600;;;\";
+  HV_IN[i][4]=\"\";//600;;;\";
+  HV_IN[i][5]=\"\";//600;;;\";
+  HV_IN[i][6]=\"\";//600;;;\";
+  HV_IN[i][7]=\"\";//600;;;\";
+  HV_IN[i][8]=\"500;0;4;1\";
+  HV_IN[i][9]=\"500;0;5;2\";  
+  HV_IN[i][10]=\"500;0;5;1\";
+  HV_IN[i][11]=\"\";//600;;;\";
+  HV_IN[i][12]=\"\";//600;;;\";
+  HV_IN[i][13]=\"\";//600;;;\"; 
+  HV_IN[i][14]=\"\";//600;;;\";
+  HV_IN[i][15]=\"\";//600;;;\";
+  HV_IN[i][16]=\"\";//600;;;\";
+  HV_IN[i][17]=\"\";//600;;;\";
+  HV_IN[i][18]=\"\";//600;;;\";  
+  
+  HV_OUT[i][1]=\"\";//600;;;\";
+  HV_OUT[i][2]=\"\";//600;;;\";
+  HV_OUT[i][3]=\"\";//600;;;\";
+  HV_OUT[i][4]=\"\";//600;;;\";
+  HV_OUT[i][5]=\"\";//600;;;\";
+  HV_OUT[i][6]=\"\";//600;;;\";
+  HV_OUT[i][7]=\"\";//600;;;\";
+  HV_OUT[i][8]=\"\";//600;;;\";
+  HV_OUT[i][9]=\"\";//600;;;\";
+  HV_OUT[i][10]=\"\";//600;;;\";
+  HV_OUT[i][11]=\"\";//600;;;\";
+  HV_OUT[i][12]=\"\";//600;;;\";
+  HV_OUT[i][13]=\"\";//600;;;\";
+  HV_OUT[i][14]=\"\";//600;;;\";
+  HV_OUT[i][15]=\"500;1;14;0\";  
+  HV_OUT[i][16]=\"500;1;13;0\";
+  HV_OUT[i][17]=\"500;1;12;0\";
+  HV_OUT[i][18]=\"500;1;11;0\";     
+  HV_OUT[i][19]=\"500;1;10;0\";
+  HV_OUT[i][20]=\"500;1;9;0\";
+  HV_OUT[i][21]=\"\";//600;;;\";
+  HV_OUT[i][22]=\"\";//600;;;\";
+  HV_OUT[i][23]=\"\";//600;;;\";
+  HV_OUT[i][24]=\"\";//600;;;\";
+  HV_OUT[i][25]=\"\";//600;;;\";
+  HV_OUT[i][26]=\"\";//600;;;\";
+  HV_OUT[i][27]=\"\";//600;;;\";
+  HV_OUT[i][28]=\"\";//600;;;\";
+  HV_OUT[i][29]=\"\";//600;;;\";
+  HV_OUT[i][30]=\"\";//600;;;\";
+  HV_OUT[i][31]=\"\";//600;;;\"; 
+  HV_OUT[i][32]=\"\";//600;;;\";
+  HV_OUT[i][33]=\"\";//600;;;\";
+  HV_OUT[i][34]=\"\";//600;;;\";
+  HV_OUT[i][35]=\"\";//600;;;\";
+  HV_OUT[i][36]=\"\";//600;;;\";   
+
+//======== ME-2 =============================  
+  i=3;
+  
+  HV_IN[i][1]=\"\";//600;;;\";
+  HV_IN[i][2]=\"\";//600;;;\";
+  HV_IN[i][3]=\"\";//600;;;\";
+  HV_IN[i][4]=\"\";//600;;;\";
+  HV_IN[i][5]=\"\";//600;;;\";
+  HV_IN[i][6]=\"\";//600;;;\";
+  HV_IN[i][7]=\"\";//600;;;\";
+  HV_IN[i][8]=\"500;0;0;2\";//600;;;\";
+  HV_IN[i][9]=\"500;0;0;1\";//600;;;\";
+  HV_IN[i][10]=\"500;0;1;2\";//600;;;\";
+  HV_IN[i][11]=\"\";//600;;;\";
+  HV_IN[i][12]=\"\";//600;;;\";
+  HV_IN[i][13]=\"\";//600;;;\"; 
+  HV_IN[i][14]=\"\";//600;;;\";
+  HV_IN[i][15]=\"\";//600;;;\";
+  HV_IN[i][16]=\"\";//600;;;\";
+  HV_IN[i][17]=\"\";//600;;;\";
+  HV_IN[i][18]=\"\";//600;;;\";  
+  
+  HV_OUT[i][1]=\"\";//600;;;\";
+  HV_OUT[i][2]=\"\";//600;;;\";
+  HV_OUT[i][3]=\"\";//600;;;\";
+  HV_OUT[i][4]=\"\";//600;;;\";
+  HV_OUT[i][5]=\"\";//600;;;\";
+  HV_OUT[i][6]=\"\";//600;;;\";
+  HV_OUT[i][7]=\"\";//600;;;\";
+  HV_OUT[i][8]=\"\";//600;;;\";
+  HV_OUT[i][9]=\"\";//600;;;\";
+  HV_OUT[i][10]=\"\";//600;;;\";
+  HV_OUT[i][11]=\"\";//600;;;\";
+  HV_OUT[i][12]=\"\";//600;;;\";
+  HV_OUT[i][13]=\"\";//600;;;\"; 
+  HV_OUT[i][14]=\"\";//600;;;\";
+  HV_OUT[i][15]=\"500;1;7;0\";//600;;;\";  
+  HV_OUT[i][16]=\"500;1;6;0\";//600;;;\";
+  HV_OUT[i][17]=\"500;1;5;0\";//600;;;\";
+  HV_OUT[i][18]=\"500;1;4;0\";//600;;;\";   
+  HV_OUT[i][19]=\"500;1;3;0\";//600;;;\";
+  HV_OUT[i][20]=\"500;1;2;0\";//600;;;\";
+  HV_OUT[i][21]=\"\";//600;;;\";
+  HV_OUT[i][22]=\"\";//600;;;\";
+  HV_OUT[i][23]=\"\";//600;;;\";
+  HV_OUT[i][24]=\"\";//600;;;\";
+  HV_OUT[i][25]=\"\";//600;;;\";
+  HV_OUT[i][26]=\"\";//600;;;\";
+  HV_OUT[i][27]=\"\";//600;;;\";
+  HV_OUT[i][28]=\"\";//600;;;\";
+  HV_OUT[i][29]=\"\";//600;;;\";
+  HV_OUT[i][30]=\"\";//600;;;\";
+  HV_OUT[i][31]=\"\";//600;;;\"; 
+  HV_OUT[i][32]=\"\";//600;;;\";
+  HV_OUT[i][33]=\"\";//600;;;\";
+  HV_OUT[i][34]=\"\";//600;;;\";
+  HV_OUT[i][35]=\"\";//600;;;\";
+  HV_OUT[i][36]=\"\";//600;;;\";   
+
+//======== ME-1 =============================  
+  i=4;
+  
+  HV_IN[i][1]=\"\";//600;;;\";
+  HV_IN[i][2]=\"\";//600;;;\";
+  HV_IN[i][3]=\"\";//600;;;\";
+  HV_IN[i][4]=\"\";//600;;;\";
+  HV_IN[i][5]=\"\";//600;;;\";
+  HV_IN[i][6]=\"\";//600;;;\";
+  HV_IN[i][7]=\"\";//600;;;\";
+  HV_IN[i][8]=\"\";//600;;;\";
+  HV_IN[i][9]=\"\";//600;;;\";
+  HV_IN[i][10]=\"\";//600;;;\";
+  HV_IN[i][11]=\"\";//600;;;\";
+  HV_IN[i][12]=\"\";//600;;;\";
+  HV_IN[i][13]=\"\";//600;;;\"; 
+  HV_IN[i][14]=\"\";//600;;;\";
+  HV_IN[i][15]=\"\";//600;;;\";
+  HV_IN[i][16]=\"\";//600;;;\";
+  HV_IN[i][17]=\"\";//600;;;\";
+  HV_IN[i][18]=\"\";//600;;;\";  
+  HV_IN[i][19]=\"\";//600;;;\";
+  HV_IN[i][20]=\"\";//600;;;\";
+  HV_IN[i][21]=\"\";//600;;;\";
+  HV_IN[i][22]=\"\";//600;;;\";
+  HV_IN[i][23]=\"\";//600;;;\";
+  HV_IN[i][24]=\"\";//600;;;\";
+  HV_IN[i][25]=\"\";//600;;;\";
+  HV_IN[i][26]=\"\";//600;;;\";
+  HV_IN[i][27]=\"\";//600;;;\";
+  HV_IN[i][28]=\"\";//600;;;\";
+  HV_IN[i][29]=\"\";//600;;;\";
+  HV_IN[i][30]=\"\";//600;;;\";
+  HV_IN[i][31]=\"\";//600;;;\"; 
+  HV_IN[i][32]=\"\";//600;;;\";
+  HV_IN[i][33]=\"\";//600;;;\";
+  HV_IN[i][34]=\"\";//600;;;\";
+  HV_IN[i][35]=\"\";//600;;;\";
+  HV_IN[i][36]=\"\";//600;;;\";  
+  
+    
+  HV_OUT[i][1]=\"\";//600;;;\";
+  HV_OUT[i][2]=\"\";//600;;;\";
+  HV_OUT[i][3]=\"\";//600;;;\";
+  HV_OUT[i][4]=\"\";//600;;;\";
+  HV_OUT[i][5]=\"\";//600;;;\";
+  HV_OUT[i][6]=\"\";//600;;;\";
+  HV_OUT[i][7]=\"\";//600;;;\";
+  HV_OUT[i][8]=\"\";//600;;;\";
+  HV_OUT[i][9]=\"\";//600;;;\";
+  HV_OUT[i][10]=\"\";//600;;;\";
+  HV_OUT[i][11]=\"\";//600;;;\";
+  HV_OUT[i][12]=\"\";//600;;;\";
+  HV_OUT[i][13]=\"\";//600;;;\"; 
+  HV_OUT[i][14]=\"\";//600;;;\";
+  HV_OUT[i][15]=\"\";//600;;;\";
+  HV_OUT[i][16]=\"\";//600;;;\";
+  HV_OUT[i][17]=\"\";//600;;;\";
+  HV_OUT[i][18]=\"\";//600;;;\";   
+  HV_OUT[i][19]=\"\";//600;;;\";
+  HV_OUT[i][20]=\"\";//600;;;\";
+  HV_OUT[i][21]=\"\";//600;;;\";
+  HV_OUT[i][22]=\"\";//600;;;\";
+  HV_OUT[i][23]=\"\";//600;;;\";
+  HV_OUT[i][24]=\"\";//600;;;\";
+  HV_OUT[i][25]=\"\";//600;;;\";
+  HV_OUT[i][26]=\"\";//600;;;\";
+  HV_OUT[i][27]=\"\";//600;;;\";
+  HV_OUT[i][28]=\"\";//600;;;\";
+  HV_OUT[i][29]=\"\";//600;;;\";
+  HV_OUT[i][30]=\"\";//600;;;\";
+  HV_OUT[i][31]=\"\";//600;;;\"; 
+  HV_OUT[i][32]=\"\";//600;;;\";
+  HV_OUT[i][33]=\"\";//600;;;\";
+  HV_OUT[i][34]=\"\";//600;;;\";
+  HV_OUT[i][35]=\"\";//600;;;\";
+  HV_OUT[i][36]=\"\";//600;;;\";   
+
+    
+//======== ME+1 =============================  
+  i=5;
+  
+  HV_IN[i][1]=\"600;3;15;2\";
+  HV_IN[i][2]=\"600;3;15;1\";
+  HV_IN[i][3]=\"600;2;8;2\";
+  HV_IN[i][4]=\"600;2;8;1\";
+  HV_IN[i][5]=\"600;2;7;2\";
+  HV_IN[i][6]=\"600;2;7;1\";
+  HV_IN[i][7]=\"600;2;6;2\";
+  HV_IN[i][8]=\"600;2;6;1\";
+  HV_IN[i][9]=\"600;2;5;2\";
+  HV_IN[i][10]=\"600;2;5;1\";
+  HV_IN[i][11]=\"600;2;4;2\";
+  HV_IN[i][12]=\"600;2;4;1\";
+  HV_IN[i][13]=\"600;2;3;2\"; 
+  HV_IN[i][14]=\"600;2;3;1\";
+  HV_IN[i][15]=\"600;2;2;2\";
+  HV_IN[i][16]=\"600;2;2;1\";
+  HV_IN[i][17]=\"600;2;1;2\";
+  HV_IN[i][18]=\"600;2;1;1\"; 
+  HV_IN[i][19]=\"600;2;15;2\";
+  HV_IN[i][20]=\"600;2;15;1\";
+  HV_IN[i][21]=\"600;3;8;2\";
+  HV_IN[i][22]=\"600;3;8;1\";
+  HV_IN[i][23]=\"600;3;7;2\";
+  HV_IN[i][24]=\"600;3;7;1\";
+  HV_IN[i][25]=\"600;3;6;2\";
+  HV_IN[i][26]=\"600;3;6;1\";
+  HV_IN[i][27]=\"600;3;5;2\";;//  
+  HV_IN[i][28]=\"600;3;5;1\";;//
+  HV_IN[i][29]=\"600;3;4;2\";;//
+  HV_IN[i][30]=\"600;3;4;1\";;//
+  HV_IN[i][31]=\"600;3;3;2\";;// 
+  HV_IN[i][32]=\"600;3;3;1\";;//
+  HV_IN[i][33]=\"600;3;2;2\";
+  HV_IN[i][34]=\"600;3;2;1\";
+  HV_IN[i][35]=\"600;3;1;2\";
+  HV_IN[i][36]=\"600;3;1;1\";    
+  
+  HV_OUT[i][1]=\"600;1;6;2\";
+  HV_OUT[i][2]=\"600;1;6;1\";
+  HV_OUT[i][3]=\"600;2;14;2\";
+  HV_OUT[i][4]=\"600;2;14;1\";
+  HV_OUT[i][5]=\"600;2;13;2\";
+  HV_OUT[i][6]=\"600;2;13;1\";
+  HV_OUT[i][7]=\"600;2;12;2\";
+  HV_OUT[i][8]=\"600;2;12;1\";
+  HV_OUT[i][9]=\"600;2;11;2\";
+  HV_OUT[i][10]=\"600;2;11;1\";
+  HV_OUT[i][11]=\"600;2;10;2\";
+  HV_OUT[i][12]=\"600;2;10;1\";
+  HV_OUT[i][13]=\"600;2;9;2\"; 
+  HV_OUT[i][14]=\"600;2;9;1\";
+  HV_OUT[i][15]=\"600;1;1;2\";
+  HV_OUT[i][16]=\"600;1;1;1\";
+  HV_OUT[i][17]=\"600;1;2;2\";
+  HV_OUT[i][18]=\"600;1;2;1\";   
+  HV_OUT[i][19]=\"600;1;3;2\";
+  HV_OUT[i][20]=\"600;1;3;1\";
+  HV_OUT[i][21]=\"600;3;14;2\";
+  HV_OUT[i][22]=\"600;3;14;1\";
+  HV_OUT[i][23]=\"600;3;13;2\";
+  HV_OUT[i][24]=\"600;3;13;1\";
+  HV_OUT[i][25]=\"600;3;12;2\";
+  HV_OUT[i][26]=\"600;3;12;1\";
+  HV_OUT[i][27]=\"600;3;11;2\";;//  
+  HV_OUT[i][28]=\"600;3;11;1\";;//
+  HV_OUT[i][29]=\"600;3;10;2\";;//
+  HV_OUT[i][30]=\"600;3;10;1\";;//
+  HV_OUT[i][31]=\"600;3;9;2\";;//
+  HV_OUT[i][32]=\"600;3;9;1\";;//
+  HV_OUT[i][33]=\"600;1;4;2\";
+  HV_OUT[i][34]=\"600;1;4;1\";
+  HV_OUT[i][35]=\"600;1;5;2\";
+  HV_OUT[i][36]=\"600;1;5;1\"; 
+
+//======== ME+2 =============================  
+  i=6;
+  
+  HV_IN[i][1]=\"600;5;7;2\"; //sector 6
+  HV_IN[i][2]=\"600;5;7;1\";//sector 1
+  HV_IN[i][3]=\"600;5;6;2\";//sector 1
+  HV_IN[i][4]=\"600;5;6;1\";//sector 1
+  if(!slice_test){
+  HV_IN[i][5]=\"600;5;5;2\";
+  HV_IN[i][6]=\"600;5;5;1\";
+  HV_IN[i][7]=\"600;5;4;2\";
+  HV_IN[i][8]=\"600;9;1;1\";
+  HV_IN[i][9]=\"600;9;2;1\";
+  HV_IN[i][10]=\"600;9;3;1\";
+  HV_IN[i][11]=\"600;9;4;1\";
+  HV_IN[i][12]=\"600;9;5;1\";
+  HV_IN[i][13]=\"600;9;6;1\"; 
+  HV_IN[i][14]=\"600;9;7;1\";
+  HV_IN[i][15]=\"600;9;8;1\";
+  HV_IN[i][16]=\"600;9;9;1\";
+  }
+  HV_IN[i][17]=\"600;5;8;2\"; //sector 6
+  HV_IN[i][18]=\"600;5;8;1\";   //sector 6
+  
+  HV_OUT[i][1]=\"600;6;5;0\"; //sector 6
+  HV_OUT[i][2]=\"600;6;4;0\"; //sector 6
+  HV_OUT[i][3]=\"600;6;3;0\";//sector 1
+  HV_OUT[i][4]=\"600;6;2;0\";//sector 1
+  HV_OUT[i][5]=\"600;6;1;0\";//sector 1
+  HV_OUT[i][6]=\"600;7;9;0\";//sector 1
+  HV_OUT[i][7]=\"600;7;8;0\";//sector 1
+  HV_OUT[i][8]=\"600;7;7;0\";//sector 1
+  if(!slice_test){ 
+  HV_OUT[i][9]=\"600;7;6;0\";
+  HV_OUT[i][10]=\"600;7;5;0\";
+  HV_OUT[i][11]=\"600;7;4;0\";
+  HV_OUT[i][12]=\"600;7;3;0\";
+  HV_OUT[i][13]=\"600;7;2;0\"; 
+  HV_OUT[i][14]=\"600;7;1;0\";
+  HV_OUT[i][15]=\"600;10;9;0\";
+  HV_OUT[i][16]=\"600;10;8;0\";
+  HV_OUT[i][17]=\"600;10;7;0\";
+  HV_OUT[i][18]=\"600;10;6;0\";   
+  HV_OUT[i][19]=\"600;10;5;0\";
+  HV_OUT[i][20]=\"600;10;4;0\";
+  HV_OUT[i][21]=\"600;10;3;0\";
+  HV_OUT[i][22]=\"600;10;2;0\";
+  HV_OUT[i][23]=\"600;10;1;0\";
+  HV_OUT[i][24]=\"600;11;15;0\";
+  HV_OUT[i][25]=\"600;11;14;0\";
+  HV_OUT[i][26]=\"600;11;13;0\";
+  HV_OUT[i][27]=\"600;11;12;0\";
+  HV_OUT[i][28]=\"600;11;11;0\";
+  HV_OUT[i][29]=\"600;11;10;0\";
+  HV_OUT[i][30]=\"600;9;13;0\";
+  HV_OUT[i][31]=\"600;9;14;0\"; 
+  HV_OUT[i][32]=\"600;9;15;0\";
+  }
+  HV_OUT[i][33]=\"600;6;9;0\"; //sector 6
+  HV_OUT[i][34]=\"600;6;8;0\"; //sector 6
+  HV_OUT[i][35]=\"600;6;7;0\"; //sector 6
+  HV_OUT[i][36]=\"600;6;6;0\"; //sector 6 
+
+    
+//======== ME+3 =============================  
+  i=7;
+  
+  HV_IN[i][1]=\"600;5;3;1\"; //sector 6
+  HV_IN[i][2]=\"600;5;2;2\";//sector 1
+  HV_IN[i][3]=\"600;5;2;1\";//sector 1
+  HV_IN[i][4]=\"600;5;1;2\";//sector 1
+  if(!slice_test){  
+  HV_IN[i][5]=\"600;5;1;1\";
+  HV_IN[i][6]=\"600;5;15;2\";
+  HV_IN[i][7]=\"600;5;15;1\";
+  HV_IN[i][8]=\"600;9;1;2\";
+  HV_IN[i][9]=\"600;9;2;2\";
+  HV_IN[i][10]=\"600;9;3;2\";
+  HV_IN[i][11]=\"600;9;4;2\";
+  HV_IN[i][12]=\"600;9;5;2\";
+  HV_IN[i][13]=\"600;9;6;2\"; 
+  HV_IN[i][14]=\"600;9;7;2\";
+  HV_IN[i][15]=\"600;9;8;2\";
+  HV_IN[i][16]=\"600;9;9;2\";
+  }
+  HV_IN[i][17]=\"600;5;4;1\"; //sector 6
+  HV_IN[i][18]=\"600;5;3;2\";  //sector 6 
+  
+  HV_OUT[i][1]=\"600;6;14;0\"; //sector 6
+  HV_OUT[i][2]=\"600;6;15;0\"; //sector 6
+  HV_OUT[i][3]=\"600;5;12;0\";//sector 1
+  HV_OUT[i][4]=\"600;5;13;0\";//sector 1
+  HV_OUT[i][5]=\"600;5;14;0\";//sector 1
+  HV_OUT[i][6]=\"600;7;10;0\";//sector 1
+  HV_OUT[i][7]=\"600;7;11;0\";//sector 1
+  HV_OUT[i][8]=\"600;7;12;0\";//sector 1
+  if(!slice_test){  
+  HV_OUT[i][9]=\"600;7;13;0\";
+  HV_OUT[i][10]=\"600;7;14;0\";
+  HV_OUT[i][11]=\"600;7;15;0\";
+  HV_OUT[i][12]=\"600;5;9;0\";
+  HV_OUT[i][13]=\"600;5;10;0\"; 
+  HV_OUT[i][14]=\"600;5;11;0\";
+  HV_OUT[i][15]=\"600;10;15;0\";
+  HV_OUT[i][16]=\"600;10;14;0\";
+  HV_OUT[i][17]=\"600;10;13;0\";
+  HV_OUT[i][18]=\"600;10;12;0\";   
+  HV_OUT[i][19]=\"600;10;11;0\";
+  HV_OUT[i][20]=\"600;10;10;0\";
+  HV_OUT[i][21]=\"600;9;10;0\";
+  HV_OUT[i][22]=\"600;9;11;0\";
+  HV_OUT[i][23]=\"600;9;12;0\";
+  HV_OUT[i][24]=\"600;11;9;0\";
+  HV_OUT[i][25]=\"600;11;8;0\";
+  HV_OUT[i][26]=\"600;11;7;0\";
+  HV_OUT[i][27]=\"600;11;6;0\";
+  HV_OUT[i][28]=\"600;11;5;0\";
+  HV_OUT[i][29]=\"600;11;4;0\";
+  HV_OUT[i][30]=\"600;11;3;0\";
+  HV_OUT[i][31]=\"600;11;2;0\"; 
+  HV_OUT[i][32]=\"600;11;1;0\";
+  }
+  HV_OUT[i][33]=\"600;6;10;0\"; //sector 6
+  HV_OUT[i][34]=\"600;6;11;0\"; //sector 6
+  HV_OUT[i][35]=\"600;6;12;0\"; //sector 6
+  HV_OUT[i][36]=\"600;6;13;0\"; //sector 6  
+
+//======== ME+4 =============================  
+  i=8;
+  if(!slice_test){
+  HV_IN[i][1]=\"600;13;7;2\";
+  HV_IN[i][2]=\"600;13;7;1\";
+  HV_IN[i][3]=\"600;13;6;2\";
+  HV_IN[i][4]=\"600;13;6;1\";
+  HV_IN[i][5]=\"600;13;5;2\";
+  HV_IN[i][6]=\"600;13;5;1\";
+  HV_IN[i][7]=\"600;13;4;2\";
+  HV_IN[i][8]=\"600;13;4;1\";
+  HV_IN[i][9]=\"600;13;3;2\";
+  HV_IN[i][10]=\"600;13;3;1\";
+  HV_IN[i][11]=\"600;13;2;2\";
+  HV_IN[i][12]=\"600;13;2;1\";
+  HV_IN[i][13]=\"600;13;1;2\"; 
+  HV_IN[i][14]=\"600;13;1;1\";
+  HV_IN[i][15]=\"600;13;9;2\";
+  HV_IN[i][16]=\"600;13;9;1\";
+  HV_IN[i][17]=\"600;13;8;2\";
+  HV_IN[i][18]=\"600;13;8;1\";
+  }
+  HV_IN[i][19]=\"\";
+
+//======== ME-1 (DUBNA) =============================  // that is dummy: used for the FSM tree creation
+  
+  
+  HV_DUBNA[1]=\"\";
+  HV_DUBNA[2]=\"\";
+  HV_DUBNA[3]=\"\";  
+  HV_DUBNA[4]=\"\";
+  HV_DUBNA[5]=\"\";
+  HV_DUBNA[6]=\"\";
+  HV_DUBNA[7]=\"\";  
+  HV_DUBNA[8]=\"\";
+  HV_DUBNA[9]=\"\";  
+  HV_DUBNA[10]=\"\";
+  HV_DUBNA[11]=\"\";
+  HV_DUBNA[12]=\"\";
+  HV_DUBNA[13]=\"\";   
+  HV_DUBNA[14]=\"\";
+  HV_DUBNA[15]=\"\";  
+  HV_DUBNA[16]=\"\";
+  HV_DUBNA[17]=\"\";
+  HV_DUBNA[18]=\"\";     
+  HV_DUBNA[19]=\"\";
+  HV_DUBNA[20]=\"\";
+  HV_DUBNA[21]=\"\";  
+  HV_DUBNA[22]=\"\";
+  HV_DUBNA[23]=\"\";
+  HV_DUBNA[24]=\"\";
+  HV_DUBNA[25]=\"\";  
+  HV_DUBNA[26]=\"\";
+  HV_DUBNA[27]=\"\";  
+  HV_DUBNA[28]=\"\";
+  HV_DUBNA[29]=\"\";
+  HV_DUBNA[30]=\"\";
+  HV_DUBNA[31]=\"\";   
+  HV_DUBNA[32]=\"\";
+  HV_DUBNA[33]=\"\";  
+  HV_DUBNA[34]=\"\";
+  HV_DUBNA[35]=\"\";
+  HV_DUBNA[36]=\"\";     
+
+//======== ME+1 (DUBNA) =============================  // that is dummy: used for the FSM tree creation
+  
+  
+  HV_DUBNA[37]=\"\";
+  HV_DUBNA[38]=\"\";
+  HV_DUBNA[39]=\"\";  
+  HV_DUBNA[40]=\"\";
+  HV_DUBNA[41]=\"\";
+  HV_DUBNA[42]=\"\";
+  HV_DUBNA[43]=\"\";  
+  HV_DUBNA[44]=\"\";
+  HV_DUBNA[45]=\"\";  
+  HV_DUBNA[46]=\"\";
+  HV_DUBNA[47]=\"\";
+  HV_DUBNA[48]=\"\";
+  HV_DUBNA[49]=\"\";   
+  HV_DUBNA[50]=\"\";
+  HV_DUBNA[51]=\"\";  
+  HV_DUBNA[52]=\"\";
+  HV_DUBNA[53]=\"\";
+  HV_DUBNA[54]=\"\";     
+  HV_DUBNA[55]=\"\";
+  HV_DUBNA[56]=\"\";
+  HV_DUBNA[57]=\"\";  
+  HV_DUBNA[58]=\"\";
+  HV_DUBNA[59]=\"\";
+  HV_DUBNA[60]=\"\";
+  HV_DUBNA[61]=\"\";  
+  HV_DUBNA[62]=\"\";
+  HV_DUBNA[63]=\"\";  
+  HV_DUBNA[64]=\"\";
+  HV_DUBNA[65]=\"\";
+  HV_DUBNA[66]=\"\";
+  HV_DUBNA[67]=\"\";   
+  HV_DUBNA[68]=\"\";
+  HV_DUBNA[69]=\"\";  
+  HV_DUBNA[70]=\"\";
+  HV_DUBNA[71]=\"\";
+  HV_DUBNA[72]=\"\";     
+    
+
+      
+}
+//============================================  
+//======= DISK LEVEL SECTION ==========
+//============================================  
+
+db_set_disk_level(){
+int i;  
+
+//======= ME-4 ===============================  
+  i=1;
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");      
+//======= ME-3 ===============================  
+  i=2;
+  dynAppend(DISK_LEVEL[i],\"CRB/CSC_ME_M3_PC3_LV_CRB LVCB_1.ELMB_15;0\");//600;;;\"; PC1 is Periph crate 1
+  dynAppend(DISK_LEVEL[i],\"master500_1_0\");
+  dynAppend(DISK_LEVEL[i],\"master500_1_1\");
+  dynAppend(DISK_LEVEL[i],\"master500_1_2\");
+  dynAppend(DISK_LEVEL[i],\"master500_1_3\");
+  dynAppend(DISK_LEVEL[i],\"master500_1_4\");
+  dynAppend(DISK_LEVEL[i],\"master500_1_5\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");      
+//======= ME-2 ===============================  
+  i=3;
+  dynAppend(DISK_LEVEL[i],\"CRB/CSC_ME_M2_PC3_LV_CRB LVCB_1.ELMB_0f;0\");//600;;;\"; PC1 is Periph crate 1
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");      
+//======= ME-1 ===============================  
+  i=4;
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");      
+//======= ME+1 ===============================  
+  i=5;
+  dynAppend(DISK_LEVEL[i],\"master600_0_0\");
+  dynAppend(DISK_LEVEL[i],\"master600_0_1\");
+  dynAppend(DISK_LEVEL[i],\"master600_0_2\");
+  dynAppend(DISK_LEVEL[i],\"master600_0_3\");
+  dynAppend(DISK_LEVEL[i],\"master600_0_4\");
+  dynAppend(DISK_LEVEL[i],\"master600_0_5\");
+  dynAppend(DISK_LEVEL[i],\"CRB/CSC_ME_P1_PC9_LV_CRB LVCB_1.ELMB_28;0\");
+  dynAppend(DISK_LEVEL[i],\"CRB/CSC_ME_P1_PC10_LV_CRB LVCB_1.ELMB_29;0\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");      
+//======= ME+2 ===============================  
+  i=6;
+  dynAppend(DISK_LEVEL[i],\"master600_4_0\");
+  dynAppend(DISK_LEVEL[i],\"master600_4_1\");
+  dynAppend(DISK_LEVEL[i],\"master600_4_2\");
+  dynAppend(DISK_LEVEL[i],\"master600_4_3\");
+  dynAppend(DISK_LEVEL[i],\"master600_4_4\");
+  dynAppend(DISK_LEVEL[i],\"master600_4_5\");
+  dynAppend(DISK_LEVEL[i],\"master600_8_0\");
+  dynAppend(DISK_LEVEL[i],\"master600_8_1\");
+  dynAppend(DISK_LEVEL[i],\"master600_8_2\");
+  dynAppend(DISK_LEVEL[i],\"master600_8_3\");
+  dynAppend(DISK_LEVEL[i],\"master600_8_4\");
+  dynAppend(DISK_LEVEL[i],\"master600_8_5\");  
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");      
+//======= ME+3 ===============================  
+  i=7;
+  dynAppend(DISK_LEVEL[i],\"master600_4_0\");
+  dynAppend(DISK_LEVEL[i],\"master600_4_1\");
+  dynAppend(DISK_LEVEL[i],\"master600_4_2\");
+  dynAppend(DISK_LEVEL[i],\"master600_4_3\");
+  dynAppend(DISK_LEVEL[i],\"master600_4_4\");
+  dynAppend(DISK_LEVEL[i],\"master600_4_5\");
+  dynAppend(DISK_LEVEL[i],\"master600_8_0\");
+  dynAppend(DISK_LEVEL[i],\"master600_8_1\");
+  dynAppend(DISK_LEVEL[i],\"master600_8_2\");
+  dynAppend(DISK_LEVEL[i],\"master600_8_3\");
+  dynAppend(DISK_LEVEL[i],\"master600_8_4\");
+  dynAppend(DISK_LEVEL[i],\"master600_8_5\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");      
+//======= ME+4 ===============================  
+  i=8;
+  dynAppend(DISK_LEVEL[i],\"master600_12_0\");
+  dynAppend(DISK_LEVEL[i],\"master600_12_1\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+  dynAppend(DISK_LEVEL[i],\"\");
+                
+  
+
+
+//======== ME-1 (DUBNA) =============================  
+ // !!!! in principle in new organization (windows pvss projects) there is no dubna disk level devices in db 
+ DISK_DUBNA[1]=\"\"; 
+ 
+//======== ME+1 (DUBNA) =============================  
+ // !!!! in principle in new organization (windows pvss projects) there is no dubna disk level devices in db 
+ DISK_DUBNA[37]=\"\"; 
+
+}
+//============================================  
+//======= EMU LEVEL SECTION ==========
+//============================================  
+
+db_set_emu_level(){
+  
+  dynAppend(EMU_LEVEL,\"GasMonitoring/GAS_MIXERS LVCB_1.ELMB_3F;0\");
+  dynAppend(EMU_LEVEL,\"WeatherStation/WEATHER_SX5 WEATHERSTATION;0\");
+  dynAppend(EMU_LEVEL,\"HighVoltage/HV_PR_primary600_1_1 HV_PRIMARY;600;1;1\");
+  dynAppend(EMU_LEVEL,\"HighVoltage/HV_PR_primary600_1_2 HV_PRIMARY;600;1;2\");
+  dynAppend(EMU_LEVEL,\"HighVoltage/HV_PR_primary600_1_3 HV_PRIMARY;600;1;3\");
+  dynAppend(EMU_LEVEL,\"HighVoltage/HV_PR_primary600_1_4 HV_PRIMARY;600;1;4\");
+  dynAppend(EMU_LEVEL,\"MRTN/MRTN_maraton01 WIENER.CAN0.Crate1;0\");
+  dynAppend(EMU_LEVEL,\"MRTN/MRTN_maraton02 WIENER.CAN0.Crate2;0\"); 
+  dynAppend(EMU_LEVEL,\"WIENER_CRATE_SNMP_600 SNMP;600\");//600;;;\"; not coordinate is needed
+  dynAppend(EMU_LEVEL,\"\");
+  dynAppend(EMU_LEVEL,\"\");
+  dynAppend(EMU_LEVEL,\"\");
+  dynAppend(EMU_LEVEL,\"\");
+  dynAppend(EMU_LEVEL,\"\"); 
+  dynAppend(EMU_LEVEL,\"\");
+  dynAppend(EMU_LEVEL,\"\");
+  dynAppend(EMU_LEVEL,\"\");
+  dynAppend(EMU_LEVEL,\"\");
+  dynAppend(EMU_LEVEL,\"\");
+  dynAppend(EMU_LEVEL,\"\"); 
+  dynAppend(EMU_LEVEL,\"\");
+  dynAppend(EMU_LEVEL,\"\");
+  dynAppend(EMU_LEVEL,\"\");
+  dynAppend(EMU_LEVEL,\"\");
+  dynAppend(EMU_LEVEL,\"\");
+  dynAppend(EMU_LEVEL,\"\");                
+  
+  
+  // supposedly the PCToManID and DimServerComputerList should be the same in indexes
+
+      
+  
+  DimServerComputerList[1]=\"smi\";
+  DimServerComputerList[2]=\"dcspcS2G19-06\";
+  DimServerComputerList[3]=\"10.176.11.103\"; // ufcmshv2--cms
+  DimServerComputerList[4]=\"\";
+  DimServerComputerList[5]=\"\";
+  DimServerComputerList[6]=\"\";
+  DimServerComputerList[7]=\"\";
+  DimServerComputerList[8]=\"\";
+  DimServerComputerList[9]=\"\";        
+  
+  PCToManID=DimServerComputerList;
+  /*
+  PCToManID[1]=\"smi\";  
+  PCToManID[2]=\"ufcmshv1\";
+  PCToManID[3]=\"emudcs\";
+  PCToManID[4]=\"\";  
+  PCToManID[5]=\"\";
+  PCToManID[6]=\"\";
+  PCToManID[7]=\"\";  
+  PCToManID[8]=\"\";
+  PCToManID[9]=\"\";  
+  */
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

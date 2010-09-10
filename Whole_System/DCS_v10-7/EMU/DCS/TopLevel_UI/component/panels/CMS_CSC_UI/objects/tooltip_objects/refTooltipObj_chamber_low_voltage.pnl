@@ -1,0 +1,586 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 441 267 N "_3DFace" 1
+"$deviceParams"
+"main()
+{
+  dyn_string ex;
+  deviceParams = emuui_parseParameterString($deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+
+  getValue(\"refPoint\", \"position\", posX, posY);
+  // ----------========== FSM NODE ==========----------
+  fsmNode = emuui_getFsmNode(\"chamber_low_voltage\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  int fsmX, fsmY;
+  getValue(\"chamber_low_voltage_fsmRefPoint\", \"position\", fsmX, fsmY);
+  emuui_addFsmNode(fsmNode, fsmX, fsmY, references, true);
+  dpConnect(\"positionChangedCB\", true, emuui_getSessionDp(\"tooltipPositionUpdated\"));
+  
+  // check if the node is disabled, if so - then paint everything in gray and set allGrayMode to true
+  string domain = fsmNode;
+  string object = _fwCU_getNodeObj(domain);
+  string duMode = fwFsmUi_getDUMode(domain, object);
+  if (duMode == \"Disabled\") {
+    allGrayMode = true;
+  }
+  
+  // -------=========== CFEB ============---------
+  
+  //cycle through 5 CFEBs at most, get the datapoints for each board and voltage and fill the dpIndexToTableCell map
+  dyn_string vMonDps, iMonDps;
+  deviceParams[\"boardType\"] = \"Cfeb\";
+  dyn_string voltageLines = makeDynString(\"33\", \"50\", \"60\"); // 3.3V, 5.0V and 6.0V lines
+  int index = 1;
+  for (int i=1; i <= 5; i++) { // cycle through cfeb boards
+    deviceParams[\"boardNumber\"] = i;
+    if ((deviceParams[\"station\"] == 1) && (deviceParams[\"ring\"] == 3) && (deviceParams[\"boardNumber\"] == 5)) {
+      tableCfeb.deleteColumn(i - 1);
+      continue;
+    }
+    for (int j=1; j <= dynlen(voltageLines); j++) { // cycle through voltage lines
+      deviceParams[\"voltageLine\"] = voltageLines[j];
+      string dp = emuui_getDpName(\"chamber_LV_CFEB_vMon\", deviceParams, ex); // get vMon dp
+      if (emu_checkException(ex)) { return; }
+      if (strlen(dp) == 0) { // if that dp does not exist delete the column in the table and break the loop - happens e.g. when CFEB5 does not exist
+        tableCfeb.deleteColumn(i - 1);
+        break;
+      }
+      vMonDps[index] = dp;
+      string dp = emuui_getDpName(\"chamber_LV_CFEB_iMon\", deviceParams, ex); // get iMon dp
+      if (emu_checkException(ex)) { return; }
+      iMonDps[index] = dp;
+      dpIndexToTableCell[index] = makeDynMixed(j - 1, \"Cfeb_\" + i); // location in table is [j; boardType_boardNumber]
+      index++;
+    }
+  }
+  
+  initGui();
+  
+  dyn_string values;
+  dynAppend(values, vMonDps);
+  dynAppend(values, iMonDps);
+
+  dpConnect(\"updateCfebLvCB\", true, values);
+
+  // DISABLED CHANNELS
+  string disabledChannelsDp = emuui_getDpName(\"chamber_LV_disabled_channels\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // CFEB ALARM COLORS
+  for (int i=1; i <= dynlen(values); i++) {
+    values[i] = dpSubStr(values[i], DPSUB_SYS_DP_EL) + \":_alert_hdl.._act_state_color\";
+  }
+  cfebAlarmColorDps = values;
+  
+  if (!allGrayMode) {
+    dpConnect(\"updateCfebAlarmColorsCB\", false, cfebAlarmColorDps);
+  }
+  
+  //----------============= ALCT ================-------------
+  dynClear(vMonDps);
+  dynClear(iMonDps);
+  deviceParams[\"boardType\"] = \"Alct\";
+  deviceParams[\"boardNumber\"] = 1;
+  voltageLines = makeDynString(\"18\", \"33\", \"55\", \"56\"); // 3.3V, 5.0V and 6.0V lines
+  for (int i=1; i <= dynlen(voltageLines); i++) {
+    deviceParams[\"voltageLine\"] = voltageLines[i];
+    string dp = emuui_getDpName(\"chamber_LV_ALCT_vMon\", deviceParams, ex); // get vMon dp
+    if (emu_checkException(ex)) { return; }
+    if (strlen(dp) == 0) { emu_errorSingle(\"vMon dp not found for given deviceParams: \" + emu_mappingToString(deviceParams)); }
+    dynAppend(vMonDps, dp);
+    dp = emuui_getDpName(\"chamber_LV_ALCT_iMon\", deviceParams, ex); // get iMon dp
+    if (emu_checkException(ex)) { return; }
+    if (strlen(dp) == 0) { emu_errorSingle(\"iMon dp not found for given deviceParams: \" + emu_mappingToString(deviceParams)); }
+    dynAppend(iMonDps, dp);
+  }
+
+  dynClear(values);  
+  dynAppend(values, vMonDps);
+  dynAppend(values, iMonDps);
+
+  dpConnect(\"updateAlctLvCB\", true, values);  
+  
+  // ALCT ALARM COLORS
+  for (int i=1; i <= dynlen(values); i++) {
+    values[i] = dpSubStr(values[i], DPSUB_SYS_DP_EL) + \":_alert_hdl.._act_state_color\";
+  }
+  alctAlarmColorDps = values;
+  
+  if (!allGrayMode) {
+    dpConnect(\"updateDisabledChannelsCB\", true, disabledChannelsDp);
+    dpConnect(\"updateAlctAlarmColorsCB\", false, alctAlarmColorDps);
+  }
+  
+  // connect to last update timestamp
+  string timestampDp = emuui_getDpName(\"chamber_LV_timestamp\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  dpConnect(\"updateLastReadTimestampCB\", true, timestampDp);
+  
+  // ----------========== DISCONNECTED WARNING ==========----------
+  if (dynlen(values) > 1) {
+    deviceParams[\"sysName\"] = emuui_getSystemName(values[1]);
+  }
+  dyn_string disconnectedDevicesDps = emuui_getDpNames(\"disconnected_devices\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  dpConnect(\"updateDisconnectedWarningCB\", true, disconnectedDevicesDps);
+}
+
+void initGui() {
+  // -------=========== prepare CFEB Table ============---------
+  tableCfeb.appendLine(\"Cfeb_1\", \"loading\", \"Cfeb_2\", \"loading\", \"Cfeb_3\", \"loading\", \"Cfeb_4\", \"loading\");
+  tableCfeb.appendLine(\"Cfeb_1\", \"loading\", \"Cfeb_2\", \"loading\", \"Cfeb_3\", \"loading\", \"Cfeb_4\", \"loading\");
+  tableCfeb.appendLine(\"Cfeb_1\", \"loading\", \"Cfeb_2\", \"loading\", \"Cfeb_3\", \"loading\", \"Cfeb_4\", \"loading\");
+  tableCfeb.rowHeader(0, \"3.3 V\");
+  tableCfeb.rowHeader(1, \"5 V\");
+  tableCfeb.rowHeader(2, \"6 V\");
+  emuui_tableCompact(\"tableCfeb\", 3);
+  
+  // -------=========== prepare ALCT Table ============---------
+  tableAlct.appendLine(\"#1\", \"loading\", \"#2\", \"loading\", \"#3\", \"loading\", \"#4\", \"loading\");
+  tableAlct.rowHeader(0, \"ALCT\");
+  emuui_tableCompact(\"tableAlct\", 1);
+
+  if (allGrayMode) {
+    // paint everyting gray
+    for (int i=0; i < tableCfeb.lineCount(); i++) {
+      for (int j=0; j < tableCfeb.columnCount(); j++) {
+        tableCfeb.cellBackColRC(i, tableCfeb.columnToName(j), \"FwEquipmentDisabled\");
+      }
+    }
+    for (int j=0; j < tableAlct.columnCount(); j++) {
+      tableAlct.cellBackColRC(0, tableAlct.columnToName(j), \"FwEquipmentDisabled\");
+    }
+  }
+}" 0
+ "main()
+{
+  emuui_destroyReferences(references);
+}" 0
+ E E E 1 -1 -1 0  0 0
+""0  1
+E "//some panel-wide constants and variables
+mapping deviceParams;
+dyn_dyn_mixed dpIndexToTableCell; // map of DP index in the array and coordinates in the Cfeb table where they should be written
+string fsmNode;
+dyn_string references;
+int posX, posY;
+bool allGrayMode; // this flag is true when the whole LV FSM node is disabled - then back color of the tables is always gray
+
+dyn_int disabledChannels;
+dyn_string cfebAlarmColorDps, alctAlarmColorDps;
+bool noCommunication;
+
+void positionChangedCB(string dummyDpName, int dummyValue) {
+  emuui_alignSmallFsmNodes(references, makeDynString(\"chamber_low_voltage_fsmRefPoint\"));
+}
+
+/** Call-back function which updates voltages and currents for CFEBs. */
+void updateCfebLvCB(dyn_string dps, dyn_float voltagesAndCurrents) {
+  if (noCommunication) { return; } // don't update the table - let the \"???\" and grey color stay there
+
+  int currentsOffset = dynlen(voltagesAndCurrents) / 2; // the first half of this array is filled with voltages, the second one with currents
+  
+  for (int i=1; i <= dynlen(voltagesAndCurrents) / 2; i++) {
+    string strValue;
+    string strToShow;
+    if ((voltagesAndCurrents[i] == -2) || (voltagesAndCurrents[i + currentsOffset] == -2)) {
+      strToShow = \"N/A\";
+    } else {
+      sprintf(strValue, \"%.1f\", voltagesAndCurrents[i]);
+      strToShow += strValue + \"V, \";
+      sprintf(strValue, \"%.1f\", voltagesAndCurrents[i + currentsOffset]);
+      strToShow += strValue + \"A\";
+    }
+    tableCfeb.cellValueRC(dpIndexToTableCell[i][1], dpIndexToTableCell[i][2], strToShow);
+  }
+}
+
+/** This function is called when the last reading timestamp changes and it shows that timestamp on the lblLastUpdate label. */
+void updateLastReadTimestampCB(string timestampDp, int timestamp) {
+  time t = timestamp;
+  lblLastUpdate.text = emuui_formatTime(t);
+}
+
+void updateDisabledChannelsCB(string dp, dyn_int disabledChannelsParam) {
+  disabledChannels = disabledChannelsParam;
+  
+  //repaint the colors
+  dyn_anytype values;
+  dpGet(cfebAlarmColorDps, values);
+  updateCfebAlarmColorsCB(cfebAlarmColorDps, values);
+  dpGet(alctAlarmColorDps, values);
+  updateAlctAlarmColorsCB(alctAlarmColorDps, values);
+}
+
+/** Call-back function which updates the background color of the CFEB table cells accordingly to cfeb voltage and current alarm color. */
+void updateCfebAlarmColorsCB(dyn_string dps, dyn_string colors) {
+  if (noCommunication) { return; } // don't update the table - let the \"???\" and grey color stay there
+
+  int currentsOffset = dynlen(colors) / 2; // the first half of this array is filled with voltage alarm colors, the second one with current alarm colors
+  
+  for (int i=1; i <= dynlen(colors) / 2; i++) {
+    string voltageAlarmColor = colors[i];
+    string currentAlarmColor = colors[i + currentsOffset];
+    voltageAlarmColor = emuui_correctAlarmColor(voltageAlarmColor);
+    currentAlarmColor = emuui_correctAlarmColor(currentAlarmColor);
+    string mainColor = voltageAlarmColor;
+    if ((strlen(currentAlarmColor) != 0) && (currentAlarmColor != \"FwStateOKPhysics\")) { // if there's an error in current, put this color in main color
+      mainColor = currentAlarmColor;
+    }
+    
+    tableCfeb.cellBackColRC(dpIndexToTableCell[i][1], dpIndexToTableCell[i][2], mainColor);
+  }
+  
+  // gray out the disabled channels
+  for (int i=1; i <= dynlen(disabledChannels); i++) {
+    if (disabledChannels[i] <= 5) { // if channel number is in [1;5] - it means it's a CFEB
+      tableCfeb.cellBackColRC(0, \"Cfeb_\" + disabledChannels[i], \"FwEquipmentDisabled\");
+      tableCfeb.cellBackColRC(1, \"Cfeb_\" + disabledChannels[i], \"FwEquipmentDisabled\");
+      tableCfeb.cellBackColRC(2, \"Cfeb_\" + disabledChannels[i], \"FwEquipmentDisabled\");
+    }
+  }
+}                             
+                             
+/** Call-back function which updates voltages and currents for ALCT. */
+void updateAlctLvCB(dyn_string dps, dyn_float voltagesAndCurrents) {
+  if (noCommunication) { return; } // don't update the table - let the \"???\" and grey color stay there
+
+  int currentsOffset = dynlen(voltagesAndCurrents) / 2; // the first half of this array is filled with voltages, the second one with currents
+  
+  for (int i=1; i <= dynlen(voltagesAndCurrents) / 2; i++) {
+    string strValue;
+    string strToShow;
+    if ((voltagesAndCurrents[i] == -2) || (voltagesAndCurrents[i + currentsOffset] == -2)) {
+      strToShow = \"N/A\";
+    } else {
+      sprintf(strValue, \"%.1f\", voltagesAndCurrents[i]);
+      strToShow += strValue + \"V, \";
+      sprintf(strValue, \"%.1f\", voltagesAndCurrents[i + currentsOffset]);
+      strToShow += strValue + \"A\";
+    }
+    tableAlct.cellValueRC(0, tableAlct.columnToName(i - 1), strToShow);
+  }
+}
+
+/** Call-back function which updates the background color of the ALCT table cells accordingly to ALCT voltage and current alarm color. */
+void updateAlctAlarmColorsCB(dyn_string dps, dyn_string colors) {
+  if (noCommunication) { return; } // don't update the table - let the \"???\" and grey color stay there
+
+  if (dynContains(disabledChannels, 6)) { // 6 is the channel number for ALCT
+    tableAlct.cellBackColRC(0, \"#1\", \"FwEquipmentDisabled\");
+    tableAlct.cellBackColRC(0, \"#2\", \"FwEquipmentDisabled\");
+    tableAlct.cellBackColRC(0, \"#3\", \"FwEquipmentDisabled\");
+    tableAlct.cellBackColRC(0, \"#4\", \"FwEquipmentDisabled\");
+    return;
+  }
+  
+  int currentsOffset = dynlen(colors) / 2; // the first half of this array is filled with voltage alarm colors, the second one with current alarm colors
+  
+  for (int i=1; i <= dynlen(colors) / 2; i++) {
+    string voltageAlarmColor = colors[i];
+    string currentAlarmColor = colors[i + currentsOffset];
+    if (strlen(voltageAlarmColor) == 0) {
+      voltageAlarmColor = \"FwStateOKPhysics\";
+    }
+    string mainColor = voltageAlarmColor;
+    if ((strlen(currentAlarmColor) != 0) && (currentAlarmColor != \"FwStateOKPhysics\")) { // if there's an error in current, put this color in main color
+      mainColor = currentAlarmColor;
+    }
+    
+    tableAlct.cellBackColRC(0, tableAlct.columnToName(i - 1), mainColor);
+  }
+}
+
+/** if disconnectedDevices contains hvFsmNode then \"no communication\" warning is shown, otherwise it's hidden. */
+void updateDisconnectedWarningCB(dyn_string dps, dyn_string disconnectedDevices) {
+  bool isDisconnected = false;
+  for (int i=1; i <= dynlen(disconnectedDevices); i++) {
+    if (strpos(disconnectedDevices[i], fsmNode) >= 0) {
+      isDisconnected = true;
+      break;
+    }
+  }
+  noCommunication = isDisconnected;
+  if (noCommunication) {
+    emuui_showTooltipWarning(getShape(\"refPoint\"),
+                           getShape(\"warnNoLvCommunication\"), 
+                           getShape(\"chamber_low_voltage_tooltipBack\"));
+  } else {
+    emuui_hideTooltipWarning(getShape(\"warnNoLvCommunication\"), 
+                             getShape(\"chamber_low_voltage_tooltipBack\"));
+  }
+  
+  // no communication - display ??? for all values
+  if (noCommunication) {
+    emuui_questionOutTable(tableCfeb.name());
+    emuui_questionOutTable(tableAlct.name());
+  }
+}
+" 0
+ 2
+"CBRef" "1"
+"EClose" "main()
+{
+  emuui_destroyReferences(references);
+  PanelOff();
+}" 0
+
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 12
+"chamber_low_voltage_tooltipBack"
+""
+1 400 40 E E E 1 E 1 E N {0,0,0} E N {255,255,225} E E
+ E E
+22 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 3.454545454545452 0 1.888888888888891 -1381.818181818181 -75.55555555555564 1 E 400 40 510 130
+2 1
+"PRIMITIVE_TEXT1"
+""
+1 10 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 10 80 25
+0 2 2 "0s" 0 0 0 192 0 0  10 10 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 11 Low Voltage
+2 5
+"PRIMITIVE_TEXT3"
+""
+1 200 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 200 10 269 25
+0 2 2 "0s" 0 0 0 192 0 0  200 10 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 12 Last update:
+2 4
+"lblLastUpdate"
+""
+1 270 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 270 10 328 25
+0 2 2 "0s" 0 0 0 192 0 0  270 10 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 9 timestamp
+25 2
+"tableCfeb"
+""
+1 10 30 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0  8 28 372 112
+EE 1 1 1 5 3 "Cfeb_1" 5 1 0 "s" 1
+LANG:1 6 CFEB 1
+E
+1
+LANG:1 0 
+
+64 "Cfeb_2" 5 1 0 "s" 1
+LANG:1 6 CFEB 2
+E
+1
+LANG:1 0 
+
+64 "Cfeb_3" 5 1 0 "s" 1
+LANG:1 6 CFEB 3
+E
+1
+LANG:1 0 
+
+64 "Cfeb_4" 5 1 0 "s" 1
+LANG:1 6 CFEB 4
+E
+1
+LANG:1 0 
+
+64 "Cfeb_5" 5 1 0 "s" 1
+LANG:1 6 CFEB 5
+E
+1
+LANG:1 0 
+
+64 
+18 18 "" 1 1
+LANG:1 5 3.3 V
+"" 1 1
+LANG:1 3 5 V
+"" 1 1
+LANG:1 3 6 V
+10 38
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 0 0 0 1 7
+1 0
+25 3
+"tableAlct"
+""
+1 10 120 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0  8 118 312 162
+EE 1 1 1 4 1 "#1" 5 1 0 "s" 1
+LANG:1 5 1.8 V
+E
+1
+LANG:1 0 
+
+64 "#2" 5 1 0 "s" 1
+LANG:1 5 3.3 V
+E
+1
+LANG:1 0 
+
+64 "#3" 5 1 0 "s" 1
+LANG:1 5 5.5 V
+E
+1
+LANG:1 0 
+
+64 "#4" 5 1 0 "s" 1
+LANG:1 5 5.6 V
+E
+1
+LANG:1 0 
+
+64 
+18 18 "" 1 1
+LANG:1 4 ALCT
+10 38
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 0 0 0 1 7
+1 0
+7 6
+"refPoint"
+""
+1 140 110 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -140 -110 1 E 140 110 10 10
+6 7
+"chamber_low_voltage_fsmRefPoint"
+""
+1 110 0 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 2.5 0 1 -185 6 1 E 110 0 130 20
+2 8
+"warnNoLvCommunication"
+""
+1 10 180 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 180 370 194
+1 2 2 "0s" 0 0 0 65 0 0  10 180 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 54 No Communication - check PCrate LV and Xmas monitoring
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

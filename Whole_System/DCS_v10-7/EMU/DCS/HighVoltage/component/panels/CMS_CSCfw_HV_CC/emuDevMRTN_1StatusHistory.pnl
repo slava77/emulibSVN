@@ -1,0 +1,268 @@
+V 10
+1
+LANG:1 19 MRTN_STATUS_HISTORY
+PANEL,-1 -1 682 469 N "_3DFace" 4
+"$DpName"
+"$interval"
+"$project_station"
+"$project_system"
+"main()
+{
+$project_station;
+$project_system;      
+    mudcsProjectConnect();
+    
+  
+dyn_string times_hv_c_1;
+dyn_string values_hv_c_1;
+get_maraton_statuses($DpName, $interval, times_hv_c_1, values_hv_c_1);
+}
+
+get_maraton_statuses(string DpName, int interval, dyn_string &times_hv_c_1, dyn_string &values_hv_c_1){
+
+if(interval < 0)interval = 60*60; // 1 hour
+
+//mudcsDebug(DpName+interval);
+
+dyn_dyn_anytype tab;
+int i;
+string text, query_text;
+string text1, text2, text3;
+string text_all;
+
+time current_time, current_time_p;;
+
+string current_time_s, current_time_sp;
+int current_time_i;
+int i10;
+
+current_time=getCurrentTime();
+current_time_i=current_time;
+
+current_time_p=current_time_i-3600;//interval;//86000; // to get information for the last 1500 seconds
+current_time_s=formatTime(\"%Y.%m.%d %H:%M:%S\",current_time);
+current_time_sp=formatTime(\"%Y.%m.%d %H:%M:%S\",current_time_p);
+
+query_text=\"SELECT '_online.._value','_online.._stime' FROM \"+\"'\"+DpName+\"*'\"+ 
+\" WHERE _LEAF AND _ELC = DPEL_INT\"
++\" TIMERANGE(\\\"\"
++ current_time_sp +\"\\\",\\\"\"
++ current_time_s   +\"\\\"\"
++\",1,0)\" + \" ORDER BY 2\";
+
+
+query_text=\"SELECT '_original.._value' FROM \"+\"'*'\"
++\" WHERE _LEAF\"
++\" TIMERANGE(\\\"\"
++ current_time_sp +\"\\\",\\\"\"
++ current_time_s   +\"\\\"\"
++\",1,0)\";// + \" ORDER BY 2\";
+
+//+\" TIMERANGE(\\\"2004.11.22\\\",\\\"2004.11.23\\\",1,0)\";
+//+\" TIMERANGE(\\\"2004.11.23 13:50:00.000\\\",\\\"2004.11.23 23:59:59.000\\\",1,0)\";
+//-----------
+//-----------
+
+
+//mudcsDebug2(query_text);
+DebugTN(query_text);
+dpQuery(query_text, tab);
+DebugTN(query_text+\"=============\");
+
+//return;
+
+time last_time_t;
+int last_time_i;
+int arch_time_i;
+time arch_time_t_max;
+
+/// DebugTN(\"\"+items+\" \"+last_time_i);
+//return(text_all);
+
+
+//text_all=\"<br>\";
+
+dyn_string times_hv_c=makeDynString();
+dyn_string values_hv_c=makeDynString();
+
+
+times_hv_c_1=makeDynString();
+values_hv_c_1=makeDynString();
+
+
+int ttt_i;
+//---
+
+int div=6*2+9; // 6 channels*2(vmon,imon) + 9 statuses are archived
+
+mudcsDebug(dynlen(tab));
+
+//---
+for(i=2;i<=dynlen(tab);i++){
+
+text1=tab[i][1];
+text2=tab[i][2];
+text3=tab[i][3];
+//mudcsDebug(text1);
+string tt;
+tt=tab[i][3];
+
+time ttt;
+ttt=tab[i][3];
+
+ttt_i=ttt;
+
+
+
+////DebugTN(\"\"+t10+\" \"+t11);
+
+//time=f\"%d/%m/%Y\\t%H:%M\"
+
+string time_s;
+time_s=formatTime(\"%d/%m/%Y %H:%M\",ttt);
+//dynAppend(time_ds,time_s);
+
+//dynAppend(values,text2);
+
+
+float c_float;
+
+//------
+
+  if(strpos(text1,\".crate.item1\")>=0 ){
+//   sscanf(text2,\"%f\",c_float);
+//   c_float=c_float/11.;
+//   text2=c_float;  
+
+   values_hv_c[1]=text2;
+   times_hv_c[1]=time_s;
+  }
+  else if(strpos(text1,\".crate.item2\")>=0 ){
+//   sscanf(text2,\"%f\",c_float);
+//   c_float=c_float/11.;
+//   text2=c_float;  
+
+   values_hv_c[2]=text2;
+   times_hv_c[2]=time_s;
+  }
+  else if(strpos(text1,\".crate.item3\")>=0 ){
+//   sscanf(text2,\"%f\",c_float);
+//   c_float=c_float/11.;
+//   text2=c_float;  
+
+   values_hv_c[3]=text2;
+   times_hv_c[3]=time_s;
+  }
+  else if(strpos(text1,\".crate.item4\")>=0 ){
+//   sscanf(text2,\"%f\",c_float);
+//   c_float=c_float/11.;
+//   text2=c_float;  
+
+   values_hv_c[4]=text2;
+   times_hv_c[4]=time_s;
+  }
+  else if(strpos(text1,\".crate.item5\")>=0 ){
+//   sscanf(text2,\"%f\",c_float);
+//   c_float=c_float/11.;
+//   text2=c_float;  
+
+   values_hv_c[5]=text2;
+   times_hv_c[5]=time_s;
+  }
+  else if(strpos(text1,\".crate.item6\")>=0 ){
+//   sscanf(text2,\"%f\",c_float);
+//   c_float=c_float/11.;
+//   text2=c_float;  
+
+   values_hv_c[6]=text2;
+   times_hv_c[6]=time_s;
+  }
+  else if(strpos(text1,\".crate.item7\")>=0 ){
+//   sscanf(text2,\"%f\",c_float);
+//   c_float=c_float/11.;
+//   text2=c_float;  
+
+   values_hv_c[7]=text2;
+   times_hv_c[7]=time_s;
+  }
+  else if(strpos(text1,\".crate.item8\")>=0 ){
+//   sscanf(text2,\"%f\",c_float);
+//   c_float=c_float/11.;
+//   text2=c_float;  
+
+   values_hv_c[8]=text2;
+   times_hv_c[8]=time_s;
+  }
+  else if(strpos(text1,\".crate.item9\")>=0 ){
+//   sscanf(text2,\"%f\",c_float);
+//   c_float=c_float/11.;
+//   text2=c_float;  
+
+   values_hv_c[9]=text2;
+   times_hv_c[9]=time_s;
+  }
+
+
+
+//--------------------------------------------------------
+
+//--------
+//--------
+//--------
+
+
+if(!((i-1)%(div))){
+for(i10=1;i10<=div;i10++){
+ dynAppend(values_hv_c_1,values_hv_c[i10]);
+ dynAppend(times_hv_c_1,times_hv_c[i10]);
+}
+}
+
+} // for i
+
+
+//---
+//---
+
+}
+" 0
+ E E E E 1 -1 -1 0  -1 -1
+""0  1
+E E 2
+"CBRef""1"
+"EClose"E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
