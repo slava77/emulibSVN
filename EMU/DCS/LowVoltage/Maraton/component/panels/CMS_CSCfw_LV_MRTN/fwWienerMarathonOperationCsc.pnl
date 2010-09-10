@@ -1,8 +1,9 @@
 V 11
 1
 LANG:1 8 (NoName)
-PANEL,-1 -1 769 526 N "_3DFace" 2
+PANEL,-1 -1 769 526 N "_3DFace" 3
 "$node"
+"$obj"
 "$sDpName"
 "//=========--- my_corr---------------------------==========================================
 string get_geographic(string DpName){
@@ -31,6 +32,7 @@ main()
     dyn_string ex;
     fwAccessControl_setupPanel(\"accessPrivilegesChangedCB\", ex);
     if (emu_checkException(ex)) { return; }
+    fwCU_connectOperationMode(\"accessPrivilegesChangedCB\", $node + \"::\" + $obj);
   }
   //=========================
   
@@ -122,7 +124,7 @@ string g_Model;
 
 /** This function is called whenever the user privileges change and just passes that to emu_enableDisableControl() which takes care of enabling/disabling buttons. */
 void accessPrivilegesChangedCB(string dummy1, string dummy2) {
-  emu_enableDisableControl(controlButtons, true, \"lblNoControl\", expertControlButtons, true);
+  emu_enableDisableControl($node + \"::\" + $obj, controlButtons, true, \"lblNoControl\", expertControlButtons, true);
 }
 
 trending(string DpName) 
@@ -272,7 +274,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 10 10 277 33
+E E 0 1 1 0 1 E U  0 E 10 10 282 34
 0 0 0 "0s" 0 0 0 192 0 0  10 10 1
 1
 LANG:1 26 Arial,-1,19,5,40,0,0,0,0,0
@@ -295,7 +297,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 12 53 134 70
+E E 0 1 1 0 1 E U  0 E 12 53 134 69
 0 2 0 "0s" 0 0 0 192 0 0  12 53 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -314,7 +316,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 492 52 531 69
+E E 0 1 1 0 1 E U  0 E 492 52 531 68
 0 2 0 "0s" 0 0 0 192 0 0  492 52 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -333,7 +335,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 12 87 81 104
+E E 0 1 1 0 1 E U  0 E 12 87 81 103
 0 2 2 "0s" 0 0 0 192 0 0  12 87 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -393,7 +395,7 @@ EP_textFieldInCB(string dp, bool boNewValue)
 	else
 		this.text = \"Power OFF\";
 }" 0
- E 0 1 1 0 1 E U  0 E 45.6666666666665 194.333333333335 103 211
+ E 0 1 1 0 1 E U  0 E 45.6666666666665 194.333333333335 105 210
 0 2 0 "0s" 0 0 0 192 0 0  45.6666666666665 194.333333333335 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -412,7 +414,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 17 259.000000000001 68 276
+E E 0 1 1 0 1 E U  0 E 17 259.000000000001 70 275
 0 2 2 "0s" 0 0 0 192 0 0  17 259.000000000001 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -431,7 +433,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 22 479 62 496
+E E 0 1 1 0 1 E U  0 E 22 479 62 495
 0 2 2 "0s" 0 0 0 192 0 0  22 479 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -450,7 +452,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 17 225.000000000001 118 242
+E E 0 1 1 0 1 E U  0 E 17 225.000000000001 119 241
 0 2 0 "0s" 0 0 0 192 0 0  17 225.000000000001 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -469,7 +471,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 12 121 121 138
+E E 0 1 1 0 1 E U  0 E 12 121 125 137
 0 2 2 "0s" 0 0 0 192 0 0  12 121 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -488,7 +490,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 492 121 524 138
+E E 0 1 1 0 1 E U  0 E 492 121 527 137
 0 2 2 "0s" 0 0 0 192 0 0  492 121 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -939,7 +941,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 17 287.000000000001 157 323
+E E 0 1 1 2 1 E U  1 E 17 287.000000000001 158 321
 0 2 2 "0s" 0 0 0 192 0 0  17 287.000000000001 2
 1
 LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
@@ -980,7 +982,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 153.666666666667 194.333333333335 188 211
+E E 0 1 1 0 1 E U  0 E 153.666666666667 194.333333333335 190 210
 0 2 0 "0s" 0 0 0 192 0 0  153.666666666667 194.333333333335 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -999,7 +1001,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 43.6666666666669 341.333333333334 112 358
+E E 0 1 1 0 1 E U  0 E 43.6666666666669 341.333333333334 115 357
 0 2 0 "0s" 0 0 0 192 0 0  43.6666666666669 341.333333333334 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -1018,7 +1020,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 43.6666666666669 372.333333333334 121 389
+E E 0 1 1 0 1 E U  0 E 43.6666666666669 372.333333333334 126 388
 0 2 0 "0s" 0 0 0 192 0 0  43.6666666666669 372.333333333334 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -1037,7 +1039,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 43.6666666666669 404.333333333334 89 421
+E E 0 1 1 0 1 E U  0 E 43.6666666666669 404.333333333334 90 420
 0 2 0 "0s" 0 0 0 192 0 0  43.6666666666669 404.333333333334 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -1056,7 +1058,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 123.666666666667 404.333333333334 201 421
+E E 0 1 1 0 1 E U  0 E 123.666666666667 404.333333333334 202 420
 0 2 0 "0s" 0 0 0 192 0 0  123.666666666667 404.333333333334 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -1368,7 +1370,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 312 452 313 473
+E E 0 1 1 2 1 E U  1 E 312 452 313 472
 0 2 2 "0s" 0 0 0 192 0 0  312 452 1
 1
 LANG:1 33 MS Shell Dlg,-1,16,5,50,0,0,0,0,0
@@ -1410,7 +1412,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 10 480 208 497
+E E 0 0 0 0 1 E U  1 E 10 480 211 499
 1 2 2 "0s" 0 0 0 192 0 0  10 480 1
 1
 LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
@@ -1508,54 +1510,54 @@ LAYER, 7
 LANG:1 6 Layer8
 0
 3 13 "Group13" -1
-"fwDeviceEditorNavigator\\fwActionButton.pnl" 551 10 T 77 1 0 1 -71 -12
+"fwDeviceEditorNavigator/fwActionButton.pnl" 551 10 T 77 1 0 1 -71 -12
 1
 "$sDpName""$sDpName"
 3 14 "Group14" -1
-"objects\\fwGeneral\\fwHelpButton.pnl" 604 10 T 80 1 0 1 82 0
+"objects/fwGeneral/fwHelpButton.pnl" 604 10 T 80 1 0 1 82 0
 1
 "$sPanelRelativePath""fwWiener/fwWienerMarathonOperation"
 3 15 "" -1
-"objects\\fwConfigs\\fwAlarmSummaryButton.pnl" 190 40 T 80 1 0 1 706 -20
+"objects/fwConfigs/fwAlarmSummaryButton.pnl" 190 40 T 80 1 0 1 706 -20
 1
 "$sDpName""$sDpName"
 3 16 "Group16" -1
-"objects\\fwGeneral\\fwLedWithAlert.pnl" 20 40 T 91 0.666666666666667 0 0.666666666666667 -1.00000000000006 157.666666666668
+"objects/fwGeneral/fwLedWithAlert.pnl" 20 40 T 91 0.666666666666667 0 0.666666666666667 -1.00000000000006 157.666666666668
 4
 "$color0""_3DFace"
 "$color1""FwStateOKPhysics"
 "$sDpName""$sDpName"
 "$sDpSubName"".Status.On"
 3 17 "inhibit" -1
-"objects\\fwGeneral\\fwLedWithAlert.pnl" 20 40 T 120 0.666666666666667 0 0.666666666666667 110 157.666666666668
+"objects/fwGeneral/fwLedWithAlert.pnl" 20 40 T 120 0.666666666666667 0 0.666666666666667 110 157.666666666668
 4
 "$color0""_3DFace"
 "$color1""FwAlarmWarnAck"
 "$sDpName""$sDpName"
 "$sDpSubName"".Status.Inhibit"
 3 18 "PANEL_REF19" -1
-"objects\\fwGeneral\\fwLedWithAlert.pnl" 20 40 T 124 0.666666666666667 0 0.666666666666667 -5.6843418860808e-014 304.666666666667
+"objects/fwGeneral/fwLedWithAlert.pnl" 20 40 T 124 0.666666666666667 0 0.666666666666667 -5.6843418860808e-14 304.666666666667
 4
 "$color0"""
 "$color1"""
 "$sDpName""$sDpName"
 "$sDpSubName"".Status.InputFailure"
 3 19 "PANEL_REF20" -1
-"objects\\fwGeneral\\fwLedWithAlert.pnl" 20 40 T 127 0.666666666666667 0 0.666666666666667 -6.3948846218409e-014 335.666666666667
+"objects/fwGeneral/fwLedWithAlert.pnl" 20 40 T 127 0.666666666666667 0 0.666666666666667 -6.3948846218409e-14 335.666666666667
 4
 "$color0"""
 "$color1"""
 "$sDpName""$sDpName"
 "$sDpSubName"".Status.SensorFailure"
 3 20 "PANEL_REF21" -1
-"objects\\fwGeneral\\fwLedWithAlert.pnl" 20 40 T 130 0.666666666666667 0 0.666666666666667 -6.3948846218409e-014 367.666666666667
+"objects/fwGeneral/fwLedWithAlert.pnl" 20 40 T 130 0.666666666666667 0 0.666666666666667 -6.3948846218409e-14 367.666666666667
 4
 "$color0"""
 "$color1"""
 "$sDpName""$sDpName"
 "$sDpSubName"".Status.SystemFailure"
 3 21 "PANEL_REF22" -1
-"objects\\fwGeneral\\fwLedWithAlert.pnl" 20 40 T 133 0.666666666666667 0 0.666666666666667 79.9999999999999 367.666666666667
+"objects/fwGeneral/fwLedWithAlert.pnl" 20 40 T 133 0.666666666666667 0 0.666666666666667 79.9999999999999 367.666666666667
 4
 "$color0""_3DFace"
 "$color1""FwStateOKPhysics"
