@@ -998,7 +998,9 @@ LANG:1 13 ALCT voltages
  1 1
 LANG:1 13 ALCT currents
 "4" 0 0 0 0 0
- "int g_busyThread; 
+ "#uses \"CMS_CSCfw_HV_CC/emu_x2pDataProcessing.ctl\"
+
+int g_busyThread; 
 
 
 main()
@@ -1111,42 +1113,26 @@ float test_v;
 string addition;
  int ret;
  int pos, pos1;
-
-string dynatemTcpIp;
- dpGet(DpName+\".dynatemTcpIp\",dynatemTcpIp);
-///mudcsDebug(dynatemTcpIp);
- if(strpos(dynatemTcpIp,\"00:00:00:00\") <0 
-&& strpos(dynatemTcpIp,\".0.0.\") <0 && strpos(dynatemTcpIp,\"LVCB\"))return; // not to receive a corrupted data !!!!!!!
-
-//mudcsDebug(dynatemTcpIp);
+ int lv_status;
 
 
 ///mudcsDebug(Special_Alarm_Mode);
 
 //mudcsDebug(\"1\"+DpNameFsm);
 //mudcsDebug(\"2\"+DpName); 
-          ret=dpGet(DpName+\".data.Alct_o.status\",test_v);
-          if( test_v > 0.9 ){
 
-setValue(\"power_status\",\"text\",\"ON\");
-setValue(\"power_status\",\"backCol\",\"{0,153,153}\");
-setValue(\"POWER_ON\",\"text\",\"OFF\");
-setValue(\"POWER_ON\",\"backCol\",\"{255,0,0}\");
-//////////mudcsAlertSetActive(DpName,true);
-
-          }
-          else {
-                setValue(\"POWER_ON\",\"text\",\"ON\");
-
-setValue(\"power_status\",\"text\",\"OFF\");
-setValue(\"power_status\",\"backCol\",\"{255,0,0}\");
-setValue(\"POWER_ON\",\"text\",\"ON\");
-setValue(\"POWER_ON\",\"backCol\",\"{0,153,153}\");
-/////////////mudcsAlertSetActive(DpName,false);
-
-
-          }
-////mudcsDebug(test_v);
+  ret=dpGet(DpName+\".status\",lv_status);
+  if((lv_status & EMU_X2P_STATUS_OFF) || (lv_status & EMU_X2P_STATUS_CRATE_OFF)){
+    setValue(\"power_status\",\"text\",\"OFF\");
+    setValue(\"power_status\",\"backCol\",\"{255,0,0}\");
+    setValue(\"POWER_ON\",\"text\",\"ON\");
+    setValue(\"POWER_ON\",\"backCol\",\"{0,153,153}\");
+  } else {
+    setValue(\"power_status\",\"text\",\"ON\");
+    setValue(\"power_status\",\"backCol\",\"{0,153,153}\");
+    setValue(\"POWER_ON\",\"text\",\"OFF\");
+    setValue(\"POWER_ON\",\"backCol\",\"{255,0,0}\");
+  }
 
 
  if( table_type==-1 || table_type <= 2)return;
@@ -1211,12 +1197,6 @@ int pos1;
 string cfeb_number_str;
 float test_v;
 
-
-string dynatemTcpIp;
- dpGet(DpName+\".dynatemTcpIp\",dynatemTcpIp);
-///mudcsDebug(dynatemTcpIp+\"  #\");
- if(strpos(dynatemTcpIp,\"00:00:00:00\") <0 
-&& strpos(dynatemTcpIp,\".0.0.\") <0 && strpos(dynatemTcpIp,\"LVCB\"))return; // not to receive a corrupted data !!!!!!!
 
 
 
@@ -1836,13 +1816,13 @@ setValue(\"POWER_ON\",\"backCol\",\"{255,0,0}\");
             \"value\", \"0.66323\"); 
  }
 }" 0
-E 1 0 1 2 2 "parameter" 11 1 0 "s" 1
+E 1 0 1 2 2 "parameter" 10 1 0 "s" 1
 LANG:1 9 parameter
 E
 1
 LANG:1 0 
 
-150 "value" 5 1 0 "s" 1
+150 "value" 4 1 0 "s" 1
 LANG:1 5 value
 E
 1
@@ -1994,7 +1974,7 @@ main()
 {
 
 }" 0
- E 0 0 0 0 1 E U  1 E 494 10 506 34
+ E 0 0 0 0 1 E U  1 E 494 10 496 35
 1 2 2 "0s" 0 0 0 192 0 0  494 10 1
 1
 LANG:1 36 Courier [Adobe],-1,20,5,75,0,0,0,0,0
@@ -2055,7 +2035,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 524 342 536 366
+E E 0 0 0 0 1 E U  1 E 524 342 526 367
 1 2 2 "0s" 0 0 0 192 0 0  524 342 1
 1
 LANG:1 36 Courier [Adobe],-1,20,5,75,0,0,0,0,0
@@ -2151,7 +2131,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 260 380 305 396
+E E 0 0 0 0 1 E U  1 E 260 380 307 397
 1 2 2 "0s" 0 0 0 192 0 0  260 380 1
 1
 LANG:1 38 Helvetica [Adobe],-1,12,5,75,0,0,0,0,0
@@ -2170,7 +2150,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 260 390 470 496
+E E 0 0 0 0 1 E U  1 E 260 390 473 502
 1 2 2 "0s" 0 0 0 192 0 0  260 390 6
 1
 LANG:1 38 Helvetica [Adobe],-1,12,5,50,0,0,0,0,0
@@ -2286,7 +2266,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 540 380 699 504
+E E 0 0 0 0 1 E U  1 E 540 380 698 511
 1 2 2 "0s" 0 0 0 192 0 0  540 380 7
 1
 LANG:1 38 Helvetica [Adobe],-1,12,5,50,0,0,0,0,0
@@ -2329,7 +2309,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 540 380 618 396
+E E 0 0 0 0 1 E U  1 E 540 380 620 397
 1 2 2 "0s" 0 0 0 192 0 0  540 380 1
 1
 LANG:1 38 Helvetica [Adobe],-1,12,5,75,0,0,0,0,0
@@ -2430,7 +2410,7 @@ dpGet(DpNameFsm+\".status\",current_status);
 2 35
 "noalert_channels_text"
 ""
-1 53.968 196 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+1 120.3232 188 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
  E E
 112 0 0 0 0 0
 E E E
@@ -2440,7 +2420,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 2.4 0 1 -9.199999999999999 -8 1 E 10 220 11 234
+E E 0 1 1 2 1 E 2.4 0 1 -9.199999999999999 -8 1 E 10 220 11 235
 0 2 2 "0s" 0 0 0 192 0 0  10 220 1
 1
 LANG:1 38 Bitstream Charter,-1,11,5,50,0,0,0,0,0
@@ -2449,7 +2429,7 @@ LANG:1 0
 2 36
 "off_channels_text"
 ""
-1 53.968 216 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+1 120.3232 208 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
  E E
 114 0 0 0 0 0
 E E E
@@ -2459,7 +2439,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 2.4 0 1 -9.199999999999999 -8 1 E 10 240 11 254
+E E 0 1 1 2 1 E 2.4 0 1 -9.199999999999999 -8 1 E 10 240 11 255
 0 2 2 "0s" 0 0 0 192 0 0  10 240 1
 1
 LANG:1 38 Bitstream Charter,-1,11,5,50,0,0,0,0,0
@@ -2468,7 +2448,7 @@ LANG:1 0
 2 40
 "PRIMITIVE_TEXT5"
 ""
-1 572.1167934330423 89 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+1 670.997798236925 51 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
  E E
 122 0 0 0 0 0
 E E E
@@ -2479,7 +2459,7 @@ LANG:1 0
 2
 "hoverfclr" "N \"_Transparent\""
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E 0.9767441860465116 0 1 112.1860465116279 -38 1 E 10 310 58 324
+E E 0 0 0 0 1 E 0.9767441860465116 0 1 112.1860465116279 -38 1 E 10 310 55 325
 1 2 2 "0s" 0 0 0 192 0 0  10 310 1
 1
 LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
@@ -2498,7 +2478,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 272 45 286
+E E 0 0 0 0 1 E U  1 E 12 272 47 287
 1 2 2 "0s" 0 0 0 192 0 0  12 272 1
 1
 LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
@@ -2517,7 +2497,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 292 45 306
+E E 0 0 0 0 1 E U  1 E 12 292 47 307
 1 2 2 "0s" 0 0 0 192 0 0  12 292 1
 1
 LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
@@ -2536,7 +2516,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 312 45 326
+E E 0 0 0 0 1 E U  1 E 12 312 47 327
 1 2 2 "0s" 0 0 0 192 0 0  12 312 1
 1
 LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
@@ -2555,7 +2535,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 332 45 346
+E E 0 0 0 0 1 E U  1 E 12 332 48 347
 1 2 2 "0s" 0 0 0 192 0 0  12 332 1
 1
 LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
@@ -2574,7 +2554,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 352 45 366
+E E 0 0 0 0 1 E U  1 E 12 352 47 367
 1 2 2 "0s" 0 0 0 192 0 0  12 352 1
 1
 LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
@@ -2820,7 +2800,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 430 120 495 136
+E E 0 0 0 0 1 E U  1 E 430 120 503 137
 1 2 2 "0s" 0 0 0 192 0 0  430 120 1
 1
 LANG:1 38 Helvetica [Adobe],-1,12,5,75,0,0,0,0,0
@@ -2829,7 +2809,7 @@ LANG:1 10 ERRORS IN:
 2 63
 "t_alct"
 ""
-1 2265.346833485124 -737 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+1 2634.850395497098 -955 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
  E E
 167 0 0 0 0 0
 E E E
@@ -2840,7 +2820,7 @@ LANG:1 0
 2
 "hoverfclr" "N \"_Transparent\""
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E 0.9767441860465116 0 1 422.1860465116279 -218 1 E 10 310 58 324
+E E 0 0 0 0 1 E 0.9767441860465116 0 1 422.1860465116279 -218 1 E 10 310 55 325
 1 2 2 "0s" 0 0 0 192 0 0  10 310 1
 1
 LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
@@ -2859,7 +2839,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 302 92 335 106
+E E 0 0 0 0 1 E U  1 E 302 92 337 107
 1 2 2 "0s" 0 0 0 192 0 0  302 92 1
 1
 LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
@@ -2878,7 +2858,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 302 122 335 136
+E E 0 0 0 0 1 E U  1 E 302 122 337 137
 1 2 2 "0s" 0 0 0 192 0 0  302 122 1
 1
 LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
@@ -2897,7 +2877,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 302 152 335 166
+E E 0 0 0 0 1 E U  1 E 302 152 337 167
 1 2 2 "0s" 0 0 0 192 0 0  302 152 1
 1
 LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
@@ -2916,7 +2896,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 302 184 335 198
+E E 0 0 0 0 1 E U  1 E 302 184 338 199
 1 2 2 "0s" 0 0 0 192 0 0  302 184 1
 1
 LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
@@ -2935,7 +2915,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 302 212 335 226
+E E 0 0 0 0 1 E U  1 E 302 212 337 227
 1 2 2 "0s" 0 0 0 192 0 0  302 212 1
 1
 LANG:1 38 Bitstream Charter,-1,11,5,75,0,0,0,0,0
@@ -2944,7 +2924,7 @@ LANG:1 5 CFEB5
 20 69
 "alct"
 ""
-1 470.0015159345392 88.61538461538459 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+1 470.0015159345392 88.61538461538458 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
  E E
 179 0 0 0 0 0
 E E E
@@ -2975,7 +2955,7 @@ E"main(int button, int state)
 20 76
 "cfeb01"
 ""
-1 338.074074074074 88.61538461538459 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
+1 338.074074074074 88.61538461538458 E E E 1 E 1 E N {0,0,0} E N {0,153,153} E E
  E E
 193 0 0 0 0 0
 E E E
@@ -3140,7 +3120,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 10 210 190 260
+E E 0 0 0 0 1 E U  1 E 10 210 180 262
 1 2 2 "0s" 0 0 0 192 0 0  10 210 2
 1
 LANG:1 36 Courier [Adobe],-1,20,5,75,0,0,0,0,0
@@ -3163,7 +3143,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 480 50 681 70
+E E 0 1 1 2 1 E U  1 E 480 50 661 71
 0 2 2 "0s" 0 0 0 192 0 0  480 50 1
 1
 LANG:1 38 Bitstream Charter,-1,16,5,75,0,0,0,0,0
@@ -3252,7 +3232,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 300 240 498 257
+E E 0 0 0 0 1 E U  1 E 300 240 501 259
 1 2 2 "0s" 0 0 0 192 0 0  300 240 1
 1
 LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
@@ -3271,7 +3251,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 377 270 443 294
+E E 0 1 1 2 1 E U  1 E 374 270 446 294
 1 2 2 "0s" 0 0 0 193 0 0  410 270 1
 1
 LANG:1 35 MS Shell Dlg 2,14,-1,5,50,0,0,0,0,0
@@ -3290,7 +3270,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 300 275 368 289
+E E 0 1 1 2 1 E U  0 E 300 275 378 290
 0 2 2 "0s" 0 0 0 192 0 0  300 275 1
 1
 LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0

@@ -1,8 +1,9 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 681 485 N "_3DFace" 6
+PANEL,-1 -1 681 485 N "_3DFace" 7
 "$bHierarchyBrowser"
+"$node"
 "$obj"
 "$project_station"
 "$project_system"
@@ -16,6 +17,7 @@ PANEL,-1 -1 681 485 N "_3DFace" 6
     dyn_string ex;
     fwAccessControl_setupPanel(\"accessPrivilegesChangedCB\", ex);
     if (emu_checkException(ex)) { return; }
+    fwCU_connectOperationMode(\"accessPrivilegesChangedCB\", $node + \"::\" + $obj);
   }
   //=========================
   
@@ -38,7 +40,7 @@ $pars_parent;
 
 /** initialize constants required for access control - basically just fill in the arrays of control and expert control button names. */
 void initAcConstants() {
-  controlButtons = makeDynString(\"enable_disable\", \"isDeviceEnabledCheck\", // on/off, device enable/disable
+  controlButtons = makeDynString(\"isDeviceEnabledCheck\",                   // device enable/disable
                                  \"v15_e\", \"v25a_e\", \"v25b_e\", \"v33_e\",     // enable/disable voltage channels
                                  \"td1_e\", \"td2_e\", \"td3_e\", \"td4_e\");      // enable/disable temperature channels
   expertControlButtons = makeDynString();
@@ -60,7 +62,7 @@ dyn_string expertControlButtons;
 
 /** This function is called whenever the user privileges change and just passes that to emu_enableDisableControl() which takes care of enabling/disabling buttons. */
 void accessPrivilegesChangedCB(string dummy1, string dummy2) {
-  emu_enableDisableControl(controlButtons, true, \"lblNoControl\", expertControlButtons, true);
+  emu_enableDisableControl($node + \"::\" + $obj, controlButtons, true, \"lblNoControl\", expertControlButtons, true);
 }
 " 0
  2

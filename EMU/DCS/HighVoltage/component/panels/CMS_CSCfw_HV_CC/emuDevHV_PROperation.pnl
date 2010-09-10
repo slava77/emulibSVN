@@ -1,7 +1,8 @@
 V 11
 1
 LANG:1 17 DevHV_PRoperation
-PANEL,-1 -1 809 143 N "_3DFace" 4
+PANEL,-1 -1 809 143 N "_3DFace" 5
+"$node"
 "$obj"
 "$project_station"
 "$project_system"
@@ -44,6 +45,7 @@ main()
     dyn_string ex;
     fwAccessControl_setupPanel(\"accessPrivilegesChangedCB\", ex);
     if (emu_checkException(ex)) { return; }
+    fwCU_connectOperationMode(\"accessPrivilegesChangedCB\", $node + \"::\" + $obj);
   }
   //=========================
   
@@ -414,7 +416,7 @@ int requested_module_state, summary_channel_status;
 
 /** This function is called whenever the user privileges change and just passes that to emu_enableDisableControl() which takes care of enabling/disabling buttons. */
 void accessPrivilegesChangedCB(string dummy1, string dummy2) {
-  emu_enableDisableControl(controlButtons, true, \"lblNoControl\", expertControlButtons, true);
+  emu_enableDisableControl($node + \"::\" + $obj, controlButtons, true, \"lblNoControl\", expertControlButtons, true);
 }
 
 //===================================================
@@ -759,7 +761,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 31 82 62 99
+E E 0 0 0 0 1 E U  1 E 31 82 62 102
 1 2 2 "0s" 0 0 0 192 0 0  31 82 1
 1
 LANG:1 38 Helvetica [Adobe],-1,14,5,75,0,0,0,0,0
@@ -778,7 +780,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 91 82 145 99
+E E 0 0 0 0 1 E U  1 E 91 82 146 102
 1 2 2 "0s" 0 0 0 192 0 0  91 82 1
 1
 LANG:1 38 Helvetica [Adobe],-1,14,5,75,0,0,0,0,0
@@ -797,7 +799,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 161 82 215 99
+E E 0 0 0 0 1 E U  1 E 161 82 215 102
 1 2 2 "0s" 0 0 0 192 0 0  161 82 1
 1
 LANG:1 38 Helvetica [Adobe],-1,14,5,75,0,0,0,0,0
@@ -816,7 +818,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 241 82 273 99
+E E 0 0 0 0 1 E U  1 E 241 82 275 102
 1 2 2 "0s" 0 0 0 192 0 0  241 82 1
 1
 LANG:1 38 Helvetica [Adobe],-1,14,5,75,0,0,0,0,0
@@ -877,7 +879,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 720 40 737 57
+E E 0 0 0 0 1 E U  1 E 720 40 739 59
 1 2 2 "0s" 0 0 0 192 0 0  720 40 1
 1
 LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
@@ -919,7 +921,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 342 82 438 97
+E E 0 0 0 0 1 E U  1 E 342 82 432 98
 1 2 2 "0s" 0 0 0 192 0 0  342 82 1
 1
 LANG:1 38 Bitstream Charter,-1,12,5,75,0,0,0,0,0
@@ -938,7 +940,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 582 12 780 29
+E E 0 0 0 0 1 E U  1 E 582 12 783 31
 1 2 2 "0s" 0 0 0 192 0 0  582 12 1
 1
 LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0

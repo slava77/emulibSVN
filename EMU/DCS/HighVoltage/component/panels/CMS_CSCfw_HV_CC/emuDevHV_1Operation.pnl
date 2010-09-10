@@ -1,7 +1,8 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 861 842 N "_3DFace" 1
+PANEL,-1 -1 861 842 N "_3DFace" 2
+"$1"
 "$2"
 "main()
 {
@@ -11,6 +12,7 @@ PANEL,-1 -1 861 842 N "_3DFace" 1
     initAcConstants();
     dyn_string ex;
     fwAccessControl_setupPanel(\"accessPrivilegesChangedCB\", ex);
+    fwCU_connectOperationMode(\"accessPrivilegesChangedCB\", $1 + \"::\" + $2);
     if (emu_checkException(ex)) { return; }
   }
   //=========================  
@@ -249,7 +251,7 @@ const int EMU_HVPANEL_DATA_REFRESH_INTERVAL = 15; // interval of time to wait be
 
 /** This function is called whenever the user privileges change and just passes that to emu_enableDisableControl() which takes care of enabling/disabling buttons. */
 void accessPrivilegesChangedCB(string dummy1, string dummy2) {
-  emu_enableDisableControl(controlButtons, true, \"lblNoControl\", expertControlButtons, true);
+  emu_enableDisableControl($1 + \"::\" + $2, controlButtons, true, \"lblNoControl\", expertControlButtons, true);
 }
 
 
@@ -730,7 +732,7 @@ LANG:1 33 host=###; slot=#; addr=#; part=#,
 2 30
 "lblMasterInfo"
 ""
-1 3635.96245781965 5542 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 3966.463798611804 6122 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 43 0 0 0 0 0
 E E E
