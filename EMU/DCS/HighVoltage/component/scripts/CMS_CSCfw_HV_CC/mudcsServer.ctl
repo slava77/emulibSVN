@@ -1,5 +1,10 @@
 // EMU common libs
 #uses "CMS_CSC_common/emu_common.ctl"
+#uses "CMS_CSCfw_HV_CC/emuDcs2.ctl"
+#uses "CMS_CSCfw_HV_CC/emu_hvCommon.ctl"
+#uses "CMS_CSCfw_HV_CC/emuDcsDim.ctl"
+#uses "CMS_CSCfw_HV_CC/emuAlert.ctl"
+#uses "CMS_CSCfw_HV_CC/emufw.ctl"
 
 
 // x2p

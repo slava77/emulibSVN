@@ -269,7 +269,7 @@ void emuhv_chamberGetHvChannelDetailsDps(mapping deviceParams, dyn_string &chann
 string emuhv_getFellowChamber(string hvFsmDp) {
   int chamber1idx, chamber2idx;
   string fellowChamberDp;
-  for (i = 1; i <= dynlen(CSC_fwG_g_HV_36CHANNEL_BOARDS_CHAMBER_LIST); i++) {
+  for (int i = 1; i <= dynlen(CSC_fwG_g_HV_36CHANNEL_BOARDS_CHAMBER_LIST); i++) {
     if (dynlen(CSC_fwG_g_HV_36CHANNEL_BOARDS_CHAMBER_LIST[i]) < 2) {
       continue;
     }

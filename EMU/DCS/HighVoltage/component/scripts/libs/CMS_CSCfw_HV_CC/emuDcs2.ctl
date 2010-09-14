@@ -1,4 +1,6 @@
-#uses "CMS_CSCfw_HV_CC/emuDcs2.ctl"
+#uses "CMS_CSCfw_HV_CC/emuDcs.ctl"
+#uses "CMS_CSCfw_HV_CC/emuDcs3.ctl"
+#uses "CMS_CSCfw_HV_CC/emuDcs4.ctl"
 
 string operating_system;
 
