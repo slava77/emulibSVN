@@ -47,7 +47,7 @@ void emu_enableDisableControl(string fsmNodeToLookAt, dyn_string controlButtons,
   bool enableExpertControl = false;  
   
   if (!initialDisabling) {
-    enableControl = (emu_hasControl() && emu_hasFsmControl(fsmNodeToLookAt)) || emu_hasExpertControl(); // expert always has control (also regardless if he has FSM control or not)
+    enableControl = (emu_hasControl() && emu_hasFsmControl(fsmNodeToLookAt));
     enableExpertControl = emu_hasExpertControl();
   }
   
