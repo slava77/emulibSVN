@@ -291,8 +291,8 @@ void unpackData(string dp, int inputData, string &column, dyn_int &chNums, dyn_i
     // convert from the packed data DP indexing (crazy..) to actual channel index, which is 2*chNum - 1 & 2*chNum
     chNums = makeDynInt(2 * chNum - 1, 2 * chNum);
     
-    int data1 = (inputData >> 16) & 0x0FFFF;
-    int data2 = inputData & 0x0FFFF;
+    int data1 = inputData & 0x0FFFF;
+    int data2 = (inputData >> 16) & 0x0FFFF;
     unpackedData = makeDynInt(data1, data2);
   } else { // normal data
     int chNum = substr(dpSplit[dynlen(dpSplit) - 1], 1); // take the part that's before the last one (which is channel number in a form like v12, v14..) and remove the v at the front.
@@ -732,7 +732,7 @@ LANG:1 33 host=###; slot=#; addr=#; part=#,
 2 30
 "lblMasterInfo"
 ""
-1 3966.463798611804 6122 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 4285.161520089953 6702 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 43 0 0 0 0 0
 E E E
