@@ -1,3 +1,5 @@
+#uses "CMS_CSCfw_HV_CC/emuDcs2.ctl"
+
 string operating_system;
 
 
