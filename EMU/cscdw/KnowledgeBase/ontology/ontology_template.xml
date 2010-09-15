@@ -64,6 +64,8 @@
   <Declaration><Class URI="&csc;PeripheralCrate"/></Declaration>
   <Declaration><Class URI="&csc;FEDCrate"/></Declaration>
 
+  <Declaration><Class URI="&csc;FEDSystem"/></Declaration>
+
   <Declaration><Class URI="&csc;Computer"/></Declaration>
   <Declaration><Class URI="&csc;/dev/schar"/></Declaration>
 
@@ -144,6 +146,8 @@
 
   <EntityAnnotation><Class URI="&csc;PeripheralCrate"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A peripheral crate (mounted on the periphery of the detector). Naming: VME&lt;e&gt;&lt;s&gt;/&lt;v&gt; or VME&lt;e&gt;&lt;s&gt;_&lt;v&gt;, e: endcap [+-] or [pm], s: station [1..4], v: VME (or sector) number [01..12] or [1..12]</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;FEDCrate"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A crate hosting Front End Drivers (DDUs, DCCs). Naming: FEDCrate&lt;n&gt;, n: crate number</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;FEDSystem"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">FED (sub)sytem. Naming: FED/&lt;s&gt; s: [ME+,ME-,TF]</Constant></Annotation></EntityAnnotation>
 
   <EntityAnnotation><Class URI="&csc;Computer"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">The alias of a computer.</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;/dev/schar"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A simple character device used for reading out a hardware component (e.g. DDU). Naming: /dev/schar&lt;n&gt;, n: device number [1..4]</Constant></Annotation></EntityAnnotation>
@@ -465,6 +469,7 @@
   <SubClassOf><Class URI="&csc;Chamber"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
   <SubClassOf><Class URI="&csc;Layer"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
   <SubClassOf><Class URI="&csc;HVSegment"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;FEDSystem"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
 
 
   <SubClassOf><Class URI="&csc;TFRUI"/><Class URI="&csc;RUI"/></SubClassOf>

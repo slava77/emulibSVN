@@ -259,8 +259,21 @@
     <xsl:text>&LF;</xsl:text>
     <xsl:variable name="SOURCE" select="@source"/>
 
-    <!-- DCC -->
+    <!-- FED system name(s) -->
+    <xsl:variable name="FEDSYSTEM" select="document($SOURCE)/FEDSystem/@NAME"/>
+    <Declaration><Individual URI="&csc;{$FEDSYSTEM}"/></Declaration>
+    <xsl:variable name="FEDSYSTEM_CANONICAL"><xsl:if test="name()='templ:PSideFMM'">FED/ME+</xsl:if><xsl:if test="name()='templ:MSideFMM'">FED/ME-</xsl:if></xsl:variable>
+    <Declaration><Individual URI="&csc;{$FEDSYSTEM_CANONICAL}"/></Declaration>
+    <ClassAssertion><Class URI="&csc;FEDSystem"/><Individual URI="&csc;{$FEDSYSTEM_CANONICAL}"/></ClassAssertion>
+    <SameIndividuals><Individual URI="&csc;{$FEDSYSTEM}"/><Individual URI="&csc;{$FEDSYSTEM_CANONICAL}"/></SameIndividuals>
+
     <xsl:for-each select="document($SOURCE)//FEDCrate">
+      <!-- FED Crate -->
+      <ObjectPropertyAssertion>
+	<ObjectProperty URI="&csc;isPartOf"/>
+	<Individual URI="&csc;FEDCrate{@CRATE_NUMBER}"/><Individual URI="&csc;{$FEDSYSTEM_CANONICAL}"/>
+      </ObjectPropertyAssertion>
+      <!-- DCC -->
       <Declaration><Individual URI="&csc;DCC{DCC/@FMM_ID}"/></Declaration>
       <Declaration><Individual URI="&csc;Slink{DCC/@SLINK1_ID}"/></Declaration>
       <Declaration><Individual URI="&csc;Slink{DCC/@SLINK2_ID}"/></Declaration>
@@ -311,6 +324,23 @@
     <xsl:comment>FMMs of TF DDU</xsl:comment>
     <xsl:text>&LF;</xsl:text>
     <xsl:variable name="SOURCE" select="@source"/>
+
+    <!-- FED system name(s) -->
+    <xsl:variable name="FEDSYSTEM" select="document($SOURCE)/FEDSystem/@NAME"/>
+    <Declaration><Individual URI="&csc;{$FEDSYSTEM}"/></Declaration>
+    <xsl:variable name="FEDSYSTEM_CANONICAL">FED/TF</xsl:variable>
+    <Declaration><Individual URI="&csc;{$FEDSYSTEM_CANONICAL}"/></Declaration>
+    <ClassAssertion><Class URI="&csc;FEDSystem"/><Individual URI="&csc;{$FEDSYSTEM_CANONICAL}"/></ClassAssertion>
+    <SameIndividuals><Individual URI="&csc;{$FEDSYSTEM}"/><Individual URI="&csc;{$FEDSYSTEM_CANONICAL}"/></SameIndividuals>
+
+    <xsl:for-each select="document($SOURCE)//FEDCrate">
+      <!-- FED Crate -->
+      <ObjectPropertyAssertion>
+	<ObjectProperty URI="&csc;isPartOf"/>
+	<Individual URI="&csc;FEDCrate{@CRATE_NUMBER}"/><Individual URI="&csc;{$FEDSYSTEM_CANONICAL}"/>
+      </ObjectPropertyAssertion>
+    </xsl:for-each>
+
 <!--     <ObjectPropertyAssertion> -->
 <!--       <ObjectProperty URI="&csc;receivesL1AFrom"/> -->
 <!--       <Individual URI="&csc;DDU00"/><Individual URI="&csc;TODO"/> -->
@@ -319,6 +349,7 @@
       <DataProperty URI="&csc;hasFMM"/><Individual URI="&csc;DDU00"/>
       <Constant datatypeURI="&xsd;integer"><xsl:value-of select="document($SOURCE)//DDU/@FMM_ID"/></Constant>
     </DataPropertyAssertion>
+
   </xsl:template>
 
 
