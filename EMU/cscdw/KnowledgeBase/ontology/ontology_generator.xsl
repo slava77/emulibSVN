@@ -948,10 +948,6 @@
       <Individual URI="&csc;Test-Crate"/>
       <Individual URI="&csc;Test"/>
     </SameIndividuals>
-    <SameIndividuals>
-      <Individual URI="&csc;Test-Crate"/>
-      <Individual URI="&csc;unnamed"/>
-    </SameIndividuals>
   </xsl:template>
 
   <xsl:template name="Annotate">
