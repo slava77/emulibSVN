@@ -17,6 +17,7 @@
 	<config>./config/CMS_CSCfw_HV_CC.config</config>
 	<dplist>./dplist/CMS_CSCfw_HV_CC/CMS_CSCfw_HV_CC.dpl</dplist>
 	<dplist>./dplist/CMS_CSCfw_HV_CC/CMS_CSCfw_HV_CC2.dpl</dplist>	
+	<dplist>./dplist/CMS_CSCfw_HV_CC/LV_1.dpl</dplist>
         <postInstall>./scripts/CMS_CSCfw_HV_CC/CMS_CSCfw_HV_CC.postInstall</postInstall>
 	<file>./CMS_CSCfw_HV_CC.xml</file>
 	<file>./panels/CMS_CSCfw_HV_CC/*.pnl</file>
