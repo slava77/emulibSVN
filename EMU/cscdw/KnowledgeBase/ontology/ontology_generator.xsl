@@ -941,13 +941,12 @@
     <Declaration><Individual URI="&csc;Test"/></Declaration>
     <ClassAssertion><Class URI="&csc;FEDSystem"/><Individual URI="&csc;Test"/></ClassAssertion>
     <Declaration><Individual URI="&csc;Test-Crate"/></Declaration>
-    <ClassAssertion><Class URI="&csc;FEDSystem"/><Individual URI="&csc;Test-Crate"/></ClassAssertion>
-    <Declaration><Individual URI="&csc;unnamed"/></Declaration>
-    <ClassAssertion><Class URI="&csc;FEDSystem"/><Individual URI="&csc;unnamed"/></ClassAssertion>
     <SameIndividuals>
       <Individual URI="&csc;Test-Crate"/>
       <Individual URI="&csc;Test"/>
     </SameIndividuals>
+    <Declaration><Individual URI="&csc;unnamed"/></Declaration>
+    <ClassAssertion><Class URI="&csc;FEDSystem"/><Individual URI="&csc;unnamed"/></ClassAssertion>
   </xsl:template>
 
   <xsl:template name="Annotate">
