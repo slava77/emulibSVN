@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.cern.ch/cms/csc/dw/model"
+    xmlns:tns="http://www.cern.ch/cms/csc/dw/model"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    elementFormDefault="qualified"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+	xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+        xmlns:ann="http://jaxb.dev.java.net/plugin/annotate"
+    xsi:schemaLocation="
+        http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
+        http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
+        http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
+	jaxb:extensionBindingPrefixes="xjc orm hj ann"
+	jaxb:version="2.0">
+
+    <xsd:element name="DDUFMMResetFact"
+                 type="tns:DDUFMMResetFactType"
+                 substitutionGroup="tns:fact"/>
+
+    <xsd:element name="DDUFMMIRQFact"
+                 type="tns:DDUFMMResetFactType"
+                 substitutionGroup="tns:fact"/>
+
+    <xsd:element name="FEDFSMFact"
+                 type="tns:FEDFSMFactType"
+                 substitutionGroup="tns:fact"/>
+
+    <xsd:complexType name="DDUFMMResetFactType">
+      	<xsd:annotation>
+    		<xsd:appinfo>
+                <jaxb:class name="DduFmmResetFact" />
+                <hj:entity>
+                    <orm:table name="CDW_DDU_FMM_RESET_FACTS"/>
+                </hj:entity>
+                <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                    <a:FactAnn title="FMM IRQ reset detection" limitComponents="FEDCrate"/>
+                </ann:annotate>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:factType">
+                <xsd:sequence>
+
+                    <xsd:element name="crateNumber" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_CRATE_NUMBER" precision="3" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="crateNumber"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                    
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="DDUFMMIRQFactType">
+      	<xsd:annotation>
+    		<xsd:appinfo>
+                <jaxb:class name="DduFmmIrqFact" />
+                <hj:entity>
+                    <orm:table name="CDW_DDU_FMM_IRQ_FACTS"/>
+                </hj:entity>
+                <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                    <a:FactAnn title="DDU FMM IRQ information" limitComponents="DDU"/>
+                </ann:annotate>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:factType">
+                <xsd:sequence>
+
+                    <xsd:element name="crateNumber" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_CRATE_NUMBER" precision="3" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="crateNumber"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="slotNumber" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_SLOT_NUMBER" precision="2" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="slotNumber"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="rui" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_RUI" precision="2" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="rui"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="hardError" type="xsd:boolean">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_HARD_ERROR"/>
+                                </hj:basic>
+                                <jaxb:property name="hardError"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="syncError" type="xsd:boolean">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_SYNC_ERROR"/>
+                                </hj:basic>
+                                <jaxb:property name="syncError"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="resetRequested" type="xsd:boolean">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_RESET_REQUESTED"/>
+                                </hj:basic>
+                                <jaxb:property name="resetRequested"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="fiberStatus" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_FIBER_STATUS" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="fiberStatus"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                    
+                    <xsd:element name="advancedFiberStatus" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_ADVANCED_FIBER_STATUS" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="advancedFiberStatus"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="xorStatus" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_XOR_STATUS" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="xorStatus"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="ddufpgaDebugTrap" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_DDU_FPGA_DEBUG_TRAP"/>
+                                </hj:basic>
+                                <jaxb:property name="ddufpgaDebugTrap"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="infpga0DebugTrap" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_IN_FPGA0_DEBUG_TRAP"/>
+                                </hj:basic>
+                                <jaxb:property name="infpga0DebugTrap"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="infpga1DebugTrap" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_IN_FPGA1_DEBUG_TRAP"/>
+                                </hj:basic>
+                                <jaxb:property name="infpga1DebugTrap"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="FEDFSMFactType">
+      	<xsd:annotation>
+    		<xsd:appinfo>
+                <jaxb:class name="FedFsmFact" />
+                <hj:entity>
+                    <orm:table name="CDW_FED_FSM_FACTS"/>
+                </hj:entity>
+                <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                    <a:FactAnn title="FED FSM state transition" limitComponents="FEDSystem"/>
+                </ann:annotate>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:factType">
+                <xsd:sequence>
+
+                    <xsd:element name="from" type="tns:fedFsmStateType">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_FROM" length="16"/>
+                                    <hj:enumerated-value/>
+                                </hj:basic>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="to" type="tns:fedFsmStateType">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TO" length="16"/>
+                                    <hj:enumerated-value/>
+                                </hj:basic>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="configType" type="tns:fedConfigTypeType">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_CONFIG_TYPE" length="10"/>
+                                    <hj:enumerated-value/>
+                                </hj:basic>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="configValue" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_CONFIG_VALUE"/>
+                                </hj:basic>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="result" type="tns:fedStateTransitionResultType">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_RESULT" length="10"/>
+                                    <hj:enumerated-value/>
+                                </hj:basic>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:simpleType name="fedFsmStateType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:typesafeEnumClass name="FedFsmState" />
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Halted"/>
+            <xsd:enumeration value="Enabled"/>
+            <xsd:enumeration value="Configured"/>
+            <xsd:enumeration value="Failed"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="fedConfigTypeType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:typesafeEnumClass name="FedConfigType" />
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="XML"/>
+            <xsd:enumeration value="Database"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="fedStateTransitionResultType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:typesafeEnumClass name="FedStateTransitionResult" />
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="ok"/>
+            <xsd:enumeration value="failed"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+</xsd:schema>
