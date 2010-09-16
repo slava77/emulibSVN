@@ -945,7 +945,10 @@
     <Declaration><Individual URI="&csc;unnamed"/></Declaration>
     <ClassAssertion><Class URI="&csc;FEDSystem"/><Individual URI="&csc;unnamed"/></ClassAssertion>
     <SameIndividuals>
+      <Individual URI="&csc;Test-Crate"/>
       <Individual URI="&csc;Test"/>
+    </SameIndividuals>
+    <SameIndividuals>
       <Individual URI="&csc;Test-Crate"/>
       <Individual URI="&csc;unnamed"/>
     </SameIndividuals>
