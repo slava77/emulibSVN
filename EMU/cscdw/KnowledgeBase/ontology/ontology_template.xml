@@ -42,6 +42,7 @@
     <templ:Gas source="mappings/GasSystem.xml"/>
     <templ:FactProviders source="mappings/fact_providers.xml"/>
     <templ:CoolingCircuits/>
+    <templ:Dummies/>
   </templ:individuals>
 
 

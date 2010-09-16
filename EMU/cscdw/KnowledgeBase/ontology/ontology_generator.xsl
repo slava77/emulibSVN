@@ -933,6 +933,24 @@
     </xsl:for-each>
   </xsl:template>
 
+  <xsl:template match="templ:Dummies">
+    <xsl:text>&LF;</xsl:text>
+    <xsl:comment>Various dummy individuals</xsl:comment>
+    <xsl:text>&LF;</xsl:text>
+    <!-- of FEDSystem -->
+    <Declaration><Individual URI="&csc;Test"/></Declaration>
+    <ClassAssertion><Class URI="&csc;FEDSystem"/><Individual URI="&csc;Test"/></ClassAssertion>
+    <Declaration><Individual URI="&csc;Test-Crate"/></Declaration>
+    <ClassAssertion><Class URI="&csc;FEDSystem"/><Individual URI="&csc;Test-Crate"/></ClassAssertion>
+    <Declaration><Individual URI="&csc;unnamed"/></Declaration>
+    <ClassAssertion><Class URI="&csc;FEDSystem"/><Individual URI="&csc;unnamed"/></ClassAssertion>
+    <SameIndividuals>
+      <Individual URI="&csc;Test"/>
+      <Individual URI="&csc;Test-Crate"/>
+      <Individual URI="&csc;unnamed"/>
+    </SameIndividuals>
+  </xsl:template>
+
   <xsl:template name="Annotate">
     <!-- Copies the class annotation to the individual  -->
     <xsl:param name="CLASS"/>
