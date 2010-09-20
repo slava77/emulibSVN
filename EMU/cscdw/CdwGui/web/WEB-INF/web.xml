@@ -53,14 +53,6 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>Persistent Faces Servlet</servlet-name>
-        <url-pattern>/xmlhttp/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Persistent Faces Servlet</servlet-name>
-        <url-pattern>*.iface</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.jspx</url-pattern>
     </servlet-mapping>
@@ -75,6 +67,12 @@
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>/faces/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Persistent Faces Servlet</servlet-name>
+        <url-pattern>*.jsf</url-pattern>
+        <url-pattern>/xmlhttp/*</url-pattern>
+        <url-pattern>*.iface</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

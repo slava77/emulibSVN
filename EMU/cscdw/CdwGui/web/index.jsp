@@ -4,6 +4,6 @@
     <title>CMS CSC Data Warehouse (redirector)</title>
   </head>
   <body>
-    <jsp:forward page="index.jsf" />
+    <jsp:forward page="explorer.iface" />
   </body>
 </html>
