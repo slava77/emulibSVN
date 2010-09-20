@@ -113,7 +113,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="REC_IS_ENABLED" nullable="false"/>
+                            <orm:column name="RER_IS_ENABLED" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="isEnabled"/>
                     </xsd:appinfo>

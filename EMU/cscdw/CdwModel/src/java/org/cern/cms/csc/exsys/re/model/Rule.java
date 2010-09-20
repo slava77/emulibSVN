@@ -299,7 +299,7 @@ public class Rule
      * 
      */
     @Basic
-    @Column(name = "REC_IS_ENABLED", nullable = false)
+    @Column(name = "RER_IS_ENABLED", nullable = false)
     public boolean isIsEnabled() {
         return isEnabled;
     }

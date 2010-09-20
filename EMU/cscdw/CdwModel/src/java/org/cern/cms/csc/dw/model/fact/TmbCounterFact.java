@@ -125,6 +125,18 @@ import org.cern.cms.csc.dw.model.annotation.OlapDimension;
  *         &lt;element name="tc85" type="{http://www.w3.org/2001/XMLSchema}integer"/>
  *         &lt;element name="tc86" type="{http://www.w3.org/2001/XMLSchema}integer"/>
  *         &lt;element name="tc87" type="{http://www.w3.org/2001/XMLSchema}integer"/>
+ *         &lt;element name="tc88" type="{http://www.w3.org/2001/XMLSchema}integer"/>
+ *         &lt;element name="tc89" type="{http://www.w3.org/2001/XMLSchema}integer"/>
+ *         &lt;element name="tc90" type="{http://www.w3.org/2001/XMLSchema}integer"/>
+ *         &lt;element name="tc91" type="{http://www.w3.org/2001/XMLSchema}integer"/>
+ *         &lt;element name="tc92" type="{http://www.w3.org/2001/XMLSchema}integer"/>
+ *         &lt;element name="tc93" type="{http://www.w3.org/2001/XMLSchema}integer"/>
+ *         &lt;element name="tc94" type="{http://www.w3.org/2001/XMLSchema}integer"/>
+ *         &lt;element name="tc95" type="{http://www.w3.org/2001/XMLSchema}integer"/>
+ *         &lt;element name="tc96" type="{http://www.w3.org/2001/XMLSchema}integer"/>
+ *         &lt;element name="tc97" type="{http://www.w3.org/2001/XMLSchema}integer"/>
+ *         &lt;element name="tc98" type="{http://www.w3.org/2001/XMLSchema}integer"/>
+ *         &lt;element name="tc99" type="{http://www.w3.org/2001/XMLSchema}integer"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -224,7 +236,19 @@ import org.cern.cms.csc.dw.model.annotation.OlapDimension;
     "tc84",
     "tc85",
     "tc86",
-    "tc87"
+    "tc87",
+    "tc88",
+    "tc89",
+    "tc90",
+    "tc91",
+    "tc92",
+    "tc93",
+    "tc94",
+    "tc95",
+    "tc96",
+    "tc97",
+    "tc98",
+    "tc99"
 })
 @Entity(name = "org.cern.cms.csc.dw.model.fact.TmbCounterFact")
 @Table(name = "CDW_TMB_CNT_FACTS")
@@ -415,6 +439,30 @@ public class TmbCounterFact
     protected BigInteger tc86;
     @XmlElement(required = true)
     protected BigInteger tc87;
+    @XmlElement(required = true)
+    protected BigInteger tc88;
+    @XmlElement(required = true)
+    protected BigInteger tc89;
+    @XmlElement(required = true)
+    protected BigInteger tc90;
+    @XmlElement(required = true)
+    protected BigInteger tc91;
+    @XmlElement(required = true)
+    protected BigInteger tc92;
+    @XmlElement(required = true)
+    protected BigInteger tc93;
+    @XmlElement(required = true)
+    protected BigInteger tc94;
+    @XmlElement(required = true)
+    protected BigInteger tc95;
+    @XmlElement(required = true)
+    protected BigInteger tc96;
+    @XmlElement(required = true)
+    protected BigInteger tc97;
+    @XmlElement(required = true)
+    protected BigInteger tc98;
+    @XmlElement(required = true)
+    protected BigInteger tc99;
 
     /**
      * Gets the value of the version property.
@@ -3295,6 +3343,390 @@ public class TmbCounterFact
     @Transient
     public boolean isSetTc87() {
         return (this.tc87 != null);
+    }
+
+    /**
+     * Gets the value of the tc88 property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link BigInteger }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC88", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC88")
+    public BigInteger getTc88() {
+        return tc88;
+    }
+
+    /**
+     * Sets the value of the tc88 property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link BigInteger }
+     *     
+     */
+    public void setTc88(BigInteger value) {
+        this.tc88 = value;
+    }
+
+    @Transient
+    public boolean isSetTc88() {
+        return (this.tc88 != null);
+    }
+
+    /**
+     * Gets the value of the tc89 property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link BigInteger }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC89", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC89")
+    public BigInteger getTc89() {
+        return tc89;
+    }
+
+    /**
+     * Sets the value of the tc89 property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link BigInteger }
+     *     
+     */
+    public void setTc89(BigInteger value) {
+        this.tc89 = value;
+    }
+
+    @Transient
+    public boolean isSetTc89() {
+        return (this.tc89 != null);
+    }
+
+    /**
+     * Gets the value of the tc90 property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link BigInteger }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC90", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC90")
+    public BigInteger getTc90() {
+        return tc90;
+    }
+
+    /**
+     * Sets the value of the tc90 property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link BigInteger }
+     *     
+     */
+    public void setTc90(BigInteger value) {
+        this.tc90 = value;
+    }
+
+    @Transient
+    public boolean isSetTc90() {
+        return (this.tc90 != null);
+    }
+
+    /**
+     * Gets the value of the tc91 property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link BigInteger }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC91", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC91")
+    public BigInteger getTc91() {
+        return tc91;
+    }
+
+    /**
+     * Sets the value of the tc91 property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link BigInteger }
+     *     
+     */
+    public void setTc91(BigInteger value) {
+        this.tc91 = value;
+    }
+
+    @Transient
+    public boolean isSetTc91() {
+        return (this.tc91 != null);
+    }
+
+    /**
+     * Gets the value of the tc92 property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link BigInteger }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC92", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC92")
+    public BigInteger getTc92() {
+        return tc92;
+    }
+
+    /**
+     * Sets the value of the tc92 property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link BigInteger }
+     *     
+     */
+    public void setTc92(BigInteger value) {
+        this.tc92 = value;
+    }
+
+    @Transient
+    public boolean isSetTc92() {
+        return (this.tc92 != null);
+    }
+
+    /**
+     * Gets the value of the tc93 property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link BigInteger }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC93", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC93")
+    public BigInteger getTc93() {
+        return tc93;
+    }
+
+    /**
+     * Sets the value of the tc93 property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link BigInteger }
+     *     
+     */
+    public void setTc93(BigInteger value) {
+        this.tc93 = value;
+    }
+
+    @Transient
+    public boolean isSetTc93() {
+        return (this.tc93 != null);
+    }
+
+    /**
+     * Gets the value of the tc94 property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link BigInteger }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC94", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC94")
+    public BigInteger getTc94() {
+        return tc94;
+    }
+
+    /**
+     * Sets the value of the tc94 property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link BigInteger }
+     *     
+     */
+    public void setTc94(BigInteger value) {
+        this.tc94 = value;
+    }
+
+    @Transient
+    public boolean isSetTc94() {
+        return (this.tc94 != null);
+    }
+
+    /**
+     * Gets the value of the tc95 property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link BigInteger }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC95", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC95")
+    public BigInteger getTc95() {
+        return tc95;
+    }
+
+    /**
+     * Sets the value of the tc95 property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link BigInteger }
+     *     
+     */
+    public void setTc95(BigInteger value) {
+        this.tc95 = value;
+    }
+
+    @Transient
+    public boolean isSetTc95() {
+        return (this.tc95 != null);
+    }
+
+    /**
+     * Gets the value of the tc96 property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link BigInteger }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC96", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC96")
+    public BigInteger getTc96() {
+        return tc96;
+    }
+
+    /**
+     * Sets the value of the tc96 property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link BigInteger }
+     *     
+     */
+    public void setTc96(BigInteger value) {
+        this.tc96 = value;
+    }
+
+    @Transient
+    public boolean isSetTc96() {
+        return (this.tc96 != null);
+    }
+
+    /**
+     * Gets the value of the tc97 property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link BigInteger }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC97", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC97")
+    public BigInteger getTc97() {
+        return tc97;
+    }
+
+    /**
+     * Sets the value of the tc97 property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link BigInteger }
+     *     
+     */
+    public void setTc97(BigInteger value) {
+        this.tc97 = value;
+    }
+
+    @Transient
+    public boolean isSetTc97() {
+        return (this.tc97 != null);
+    }
+
+    /**
+     * Gets the value of the tc98 property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link BigInteger }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC98", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC98")
+    public BigInteger getTc98() {
+        return tc98;
+    }
+
+    /**
+     * Sets the value of the tc98 property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link BigInteger }
+     *     
+     */
+    public void setTc98(BigInteger value) {
+        this.tc98 = value;
+    }
+
+    @Transient
+    public boolean isSetTc98() {
+        return (this.tc98 != null);
+    }
+
+    /**
+     * Gets the value of the tc99 property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link BigInteger }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC99", precision = 10, scale = 0)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.SUM, name = "TC99")
+    public BigInteger getTc99() {
+        return tc99;
+    }
+
+    /**
+     * Sets the value of the tc99 property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link BigInteger }
+     *     
+     */
+    public void setTc99(BigInteger value) {
+        this.tc99 = value;
+    }
+
+    @Transient
+    public boolean isSetTc99() {
+        return (this.tc99 != null);
     }
     
 //--simple--preserve

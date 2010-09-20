@@ -119,6 +119,18 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="tc85description" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="tc86description" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="tc87description" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="tc88description" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="tc89description" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="tc90description" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="tc91description" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="tc92description" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="tc93description" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="tc94description" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="tc95description" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="tc96description" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="tc97description" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="tc98description" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="tc99description" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -217,7 +229,19 @@ import javax.xml.bind.annotation.XmlType;
     "tc84Description",
     "tc85Description",
     "tc86Description",
-    "tc87Description"
+    "tc87Description",
+    "tc88Description",
+    "tc89Description",
+    "tc90Description",
+    "tc91Description",
+    "tc92Description",
+    "tc93Description",
+    "tc94Description",
+    "tc95Description",
+    "tc96Description",
+    "tc97Description",
+    "tc98Description",
+    "tc99Description"
 })
 @Entity(name = "org.cern.cms.csc.dw.model.dse.TmbCounterDescriptionDSE")
 @Table(name = "CDW_DSE_TMB_CNT_DESCRIPTIONS")
@@ -404,6 +428,30 @@ public class TmbCounterDescriptionDSE
     protected String tc86Description;
     @XmlElement(name = "tc87description", required = true)
     protected String tc87Description;
+    @XmlElement(name = "tc88description", required = true)
+    protected String tc88Description;
+    @XmlElement(name = "tc89description", required = true)
+    protected String tc89Description;
+    @XmlElement(name = "tc90description", required = true)
+    protected String tc90Description;
+    @XmlElement(name = "tc91description", required = true)
+    protected String tc91Description;
+    @XmlElement(name = "tc92description", required = true)
+    protected String tc92Description;
+    @XmlElement(name = "tc93description", required = true)
+    protected String tc93Description;
+    @XmlElement(name = "tc94description", required = true)
+    protected String tc94Description;
+    @XmlElement(name = "tc95description", required = true)
+    protected String tc95Description;
+    @XmlElement(name = "tc96description", required = true)
+    protected String tc96Description;
+    @XmlElement(name = "tc97description", required = true)
+    protected String tc97Description;
+    @XmlElement(name = "tc98description", required = true)
+    protected String tc98Description;
+    @XmlElement(name = "tc99description", required = true)
+    protected String tc99Description;
 
     /**
      * Gets the value of the version property.
@@ -3162,6 +3210,378 @@ public class TmbCounterDescriptionDSE
     @Transient
     public boolean isSetTc87Description() {
         return (this.tc87Description!= null);
+    }
+
+    /**
+     * Gets the value of the tc88Description property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC88_DESC", length = 255)
+    public String getTc88Description() {
+        return tc88Description;
+    }
+
+    /**
+     * Sets the value of the tc88Description property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setTc88Description(String value) {
+        this.tc88Description = value;
+    }
+
+    @Transient
+    public boolean isSetTc88Description() {
+        return (this.tc88Description!= null);
+    }
+
+    /**
+     * Gets the value of the tc89Description property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC89_DESC", length = 255)
+    public String getTc89Description() {
+        return tc89Description;
+    }
+
+    /**
+     * Sets the value of the tc89Description property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setTc89Description(String value) {
+        this.tc89Description = value;
+    }
+
+    @Transient
+    public boolean isSetTc89Description() {
+        return (this.tc89Description!= null);
+    }
+
+    /**
+     * Gets the value of the tc90Description property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC90_DESC", length = 255)
+    public String getTc90Description() {
+        return tc90Description;
+    }
+
+    /**
+     * Sets the value of the tc90Description property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setTc90Description(String value) {
+        this.tc90Description = value;
+    }
+
+    @Transient
+    public boolean isSetTc90Description() {
+        return (this.tc90Description!= null);
+    }
+
+    /**
+     * Gets the value of the tc91Description property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC91_DESC", length = 255)
+    public String getTc91Description() {
+        return tc91Description;
+    }
+
+    /**
+     * Sets the value of the tc91Description property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setTc91Description(String value) {
+        this.tc91Description = value;
+    }
+
+    @Transient
+    public boolean isSetTc91Description() {
+        return (this.tc91Description!= null);
+    }
+
+    /**
+     * Gets the value of the tc92Description property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC92_DESC", length = 255)
+    public String getTc92Description() {
+        return tc92Description;
+    }
+
+    /**
+     * Sets the value of the tc92Description property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setTc92Description(String value) {
+        this.tc92Description = value;
+    }
+
+    @Transient
+    public boolean isSetTc92Description() {
+        return (this.tc92Description!= null);
+    }
+
+    /**
+     * Gets the value of the tc93Description property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC93_DESC", length = 255)
+    public String getTc93Description() {
+        return tc93Description;
+    }
+
+    /**
+     * Sets the value of the tc93Description property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setTc93Description(String value) {
+        this.tc93Description = value;
+    }
+
+    @Transient
+    public boolean isSetTc93Description() {
+        return (this.tc93Description!= null);
+    }
+
+    /**
+     * Gets the value of the tc94Description property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC94_DESC", length = 255)
+    public String getTc94Description() {
+        return tc94Description;
+    }
+
+    /**
+     * Sets the value of the tc94Description property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setTc94Description(String value) {
+        this.tc94Description = value;
+    }
+
+    @Transient
+    public boolean isSetTc94Description() {
+        return (this.tc94Description!= null);
+    }
+
+    /**
+     * Gets the value of the tc95Description property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC95_DESC", length = 255)
+    public String getTc95Description() {
+        return tc95Description;
+    }
+
+    /**
+     * Sets the value of the tc95Description property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setTc95Description(String value) {
+        this.tc95Description = value;
+    }
+
+    @Transient
+    public boolean isSetTc95Description() {
+        return (this.tc95Description!= null);
+    }
+
+    /**
+     * Gets the value of the tc96Description property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC96_DESC", length = 255)
+    public String getTc96Description() {
+        return tc96Description;
+    }
+
+    /**
+     * Sets the value of the tc96Description property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setTc96Description(String value) {
+        this.tc96Description = value;
+    }
+
+    @Transient
+    public boolean isSetTc96Description() {
+        return (this.tc96Description!= null);
+    }
+
+    /**
+     * Gets the value of the tc97Description property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC97_DESC", length = 255)
+    public String getTc97Description() {
+        return tc97Description;
+    }
+
+    /**
+     * Sets the value of the tc97Description property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setTc97Description(String value) {
+        this.tc97Description = value;
+    }
+
+    @Transient
+    public boolean isSetTc97Description() {
+        return (this.tc97Description!= null);
+    }
+
+    /**
+     * Gets the value of the tc98Description property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC98_DESC", length = 255)
+    public String getTc98Description() {
+        return tc98Description;
+    }
+
+    /**
+     * Sets the value of the tc98Description property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setTc98Description(String value) {
+        this.tc98Description = value;
+    }
+
+    @Transient
+    public boolean isSetTc98Description() {
+        return (this.tc98Description!= null);
+    }
+
+    /**
+     * Gets the value of the tc99Description property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Basic
+    @Column(name = "FCT_TC99_DESC", length = 255)
+    public String getTc99Description() {
+        return tc99Description;
+    }
+
+    /**
+     * Sets the value of the tc99Description property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setTc99Description(String value) {
+        this.tc99Description = value;
+    }
+
+    @Transient
+    public boolean isSetTc99Description() {
+        return (this.tc99Description!= null);
     }
 
 }

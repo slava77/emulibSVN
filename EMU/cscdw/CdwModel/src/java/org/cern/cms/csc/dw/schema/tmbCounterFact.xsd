@@ -1297,6 +1297,179 @@
                         </xsd:annotation>
                     </xsd:element>
 
+
+
+
+
+                    <xsd:element name="tc88" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC88" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="tc88"/>
+                                <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                                     <a:OlapMeasure name="TC88" aggregator="SUM"/>
+                                 </ann:annotateGet>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+
+                    <xsd:element name="tc89" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC89" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="tc89"/>
+                                <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                                     <a:OlapMeasure name="TC89" aggregator="SUM"/>
+                                 </ann:annotateGet>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="tc90" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC90" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="tc90"/>
+                                <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                                     <a:OlapMeasure name="TC90" aggregator="SUM"/>
+                                 </ann:annotateGet>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="tc91" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC91" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="tc91"/>
+                                <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                                     <a:OlapMeasure name="TC91" aggregator="SUM"/>
+                                 </ann:annotateGet>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="tc92" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC92" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="tc92"/>
+                                <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                                     <a:OlapMeasure name="TC92" aggregator="SUM"/>
+                                 </ann:annotateGet>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="tc93" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC93" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="tc93"/>
+                                <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                                     <a:OlapMeasure name="TC93" aggregator="SUM"/>
+                                 </ann:annotateGet>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="tc94" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC94" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="tc94"/>
+                                <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                                     <a:OlapMeasure name="TC94" aggregator="SUM"/>
+                                 </ann:annotateGet>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="tc95" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC95" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="tc95"/>
+                                <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                                     <a:OlapMeasure name="TC95" aggregator="SUM"/>
+                                 </ann:annotateGet>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="tc96" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC96" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="tc96"/>
+                                <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                                     <a:OlapMeasure name="TC96" aggregator="SUM"/>
+                                 </ann:annotateGet>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="tc97" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC97" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="tc97"/>
+                                <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                                     <a:OlapMeasure name="TC97" aggregator="SUM"/>
+                                 </ann:annotateGet>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="tc98" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC98" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="tc98"/>
+                                <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                                     <a:OlapMeasure name="TC98" aggregator="SUM"/>
+                                 </ann:annotateGet>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="tc99" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC99" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="tc99"/>
+                                <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                                     <a:OlapMeasure name="TC99" aggregator="SUM"/>
+                                 </ann:annotateGet>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>

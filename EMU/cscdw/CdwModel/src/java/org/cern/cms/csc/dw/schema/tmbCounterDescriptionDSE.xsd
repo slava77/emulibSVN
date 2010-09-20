@@ -1014,6 +1014,138 @@
                         </xsd:annotation>
                     </xsd:element>
 
+                    <xsd:element name="tc88description" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC88_DESC"/>
+                                </hj:basic>
+                                <jaxb:property name="tc88description"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="tc89description" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC89_DESC"/>
+                                </hj:basic>
+                                <jaxb:property name="tc89description"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="tc90description" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC90_DESC"/>
+                                </hj:basic>
+                                <jaxb:property name="tc90description"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="tc91description" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC91_DESC"/>
+                                </hj:basic>
+                                <jaxb:property name="tc91description"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="tc92description" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC92_DESC"/>
+                                </hj:basic>
+                                <jaxb:property name="tc92description"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="tc93description" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC93_DESC"/>
+                                </hj:basic>
+                                <jaxb:property name="tc93description"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="tc94description" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC94_DESC"/>
+                                </hj:basic>
+                                <jaxb:property name="tc94description"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="tc95description" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC95_DESC"/>
+                                </hj:basic>
+                                <jaxb:property name="tc95description"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="tc96description" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC96_DESC"/>
+                                </hj:basic>
+                                <jaxb:property name="tc96description"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="tc97description" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC97_DESC"/>
+                                </hj:basic>
+                                <jaxb:property name="tc97description"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="tc98description" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC98_DESC"/>
+                                </hj:basic>
+                                <jaxb:property name="tc98description"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="tc99description" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_TC99_DESC"/>
+                                </hj:basic>
+                                <jaxb:property name="tc99description"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>
