@@ -1,0 +1,83 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 500 400 N "_3DFace" 0
+E E E E E 1 -1 -1 0  40 50
+""0  1
+E E 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"PUSH_BUTTON1"
+""
+1 40 50 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  38 48 162 77
+
+T 
+1
+LANG:1 12 PUSH_BUTTON1
+"#uses \"CtrlXmlRpc\"
+
+main() {
+  string id = \"CSC_Service_Bus\";
+  string func = \"CERN.LHC.Service.destroy\";
+  dyn_mixed args = makeDynString(\"Universe\");;
+  mixed res;
+  string host = \"localhost\";
+  int port = \"1234\";
+  bool secure = FALSE;
+  xmlrpcClient();
+  xmlrpcConnectToServer(id, host, port, secure);
+  DebugTN(\"calling function '\" + func + \"on server \" + host + port);
+  xmlrpcCall(id, func, args);
+  DebugTN(\"call finished\");
+  //DebugN(\"Result of XmlRpc call\", res);
+  xmlrpcCloseServer(id);
+  DebugTN(\"disconnected\");
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

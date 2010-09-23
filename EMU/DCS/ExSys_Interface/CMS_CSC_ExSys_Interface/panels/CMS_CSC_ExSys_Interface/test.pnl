@@ -1,0 +1,122 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 400 400 N "_3DFace" 0
+E E E E E 1 -1 -1 0  30 30
+""0  1
+E "#uses \"CMS_CSC_ExSys_Interface/exsysInterface.ctl\"" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"PUSH_BUTTON1"
+""
+1 30 30 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  28 28 372 62
+
+T 
+1
+LANG:1 32 Create and print 500 dummy facts
+"main()
+{
+  dyn_string ex;
+  int factCollHdl = exsys_createFactCollection(ex);
+  time t0;
+  emu_debugFuncStart(\"create500DummyFacts\", t0);
+  
+  dyn_string paramNames = makeDynString(\"dummyParam1\", \"dummyParam2\", \"dummyParam3\");
+  dyn_string paramValues = makeDynString(\"dummyValue1\", \"dummyValue2\", \"dummyValue3\");
+  
+  for (int i=0; i < 500; i++) {
+    exsys_createFact(factCollHdl, \"dcsDummyFact\", t0, \"ME+1/1/\" + i, EXSYS_FACT_SEVERITY_DEBUG,
+                     \"dummy fact #\" + i, paramNames, paramValues, ex);
+    if (emu_checkException(ex)) { return; }
+  }
+  
+  exsys_getFactCollection(factCollHdl, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  emu_debugFuncEnd(\"create500DummyFacts\", t0);
+}" 0
+ E E E
+13 2
+"PUSH_BUTTON2"
+""
+1 30 90 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  28 88 372 122
+
+T 
+1
+LANG:1 13 Send one fact
+"main()
+{
+  dyn_string ex;
+  int factCollHdl = exsys_createFactCollection(ex);
+  time t0 = getCurrentTime();
+  
+  dyn_string paramNames = makeDynString(\"crateNumber\");
+  dyn_string paramValues = makeDynString(\"1\");
+  
+  exsys_createFact(factCollHdl, \"DDUFMMResetFact\", t0, \"FEDCrate1\", EXSYS_FACT_SEVERITY_DEBUG,
+                   \"dummy fact\", paramNames, paramValues, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  exsys_sendFactCollection(factCollHdl, ex);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
