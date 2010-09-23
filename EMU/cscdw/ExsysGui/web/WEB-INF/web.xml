@@ -83,8 +83,8 @@
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>index.jsf</welcome-file>
-    </welcome-file-list>
+        <welcome-file>forward.jsp</welcome-file>
+        </welcome-file-list>
 
     <context-param>
         <param-name>facelets.LIBRARIES</param-name>
