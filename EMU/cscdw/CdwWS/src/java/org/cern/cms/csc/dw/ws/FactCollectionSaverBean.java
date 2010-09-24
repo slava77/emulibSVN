@@ -4,7 +4,6 @@ package org.cern.cms.csc.dw.ws;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import javax.annotation.Resource;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -22,16 +21,11 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.jms.ObjectMessage;
 import javax.xml.bind.JAXBElement;
-import org.apache.commons.lang.NullArgumentException;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
-import org.cern.cms.csc.dw.exception.ComponentTypeNotAllowedInFactException;
-import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
 import org.cern.cms.csc.dw.dao.PersistDaoLocal;
-import org.cern.cms.csc.dw.exception.WrongFactSourceException;
+import org.cern.cms.csc.dw.exception.WrongComponentTypeException;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.dw.model.fact.FactCollection;
-import org.cern.cms.csc.dw.model.ontology.ComponentClassType;
-import org.cern.cms.csc.dw.model.ontology.graph.GComponent;
 import org.cern.cms.csc.dw.service.ServiceInstructions;
 
 @Stateless
@@ -43,7 +37,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
     private PersistDaoLocal persistDao;
 
     @EJB
-    private OntologyDaoLocal ontologyDao;
+    private ComponentPropertyResolverLocal componentResolver;
 
     @EJB
     private EntityDaoLocal entityDao;
@@ -66,28 +60,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
         factCollection.onReceive(entityDao);
 
         // Retrieving source gcomponent, checking its parents
-        {
-
-            GComponent gsource = null;
-            if (factCollection.isSetComponent()) {
-                gsource = ontologyDao.getGComponent(factCollection.getComponent().getId());
-            } else if (factCollection.getSource() != null) {
-                gsource = ontologyDao.getGComponent(factCollection.getSource());
-            }
-
-            if (gsource == null) {
-                throw new NullArgumentException("Fact collection source not provided!");
-            }
-
-            if (!ontologyDao.isGComponentClassParent(
-                    Collections.singleton(ComponentClassType.FACT_PROVIDER),
-                    gsource.getType(),
-                    true)) {
-                throw new WrongFactSourceException(gsource);
-            }
-            factCollection.setComponent(ontologyDao.getComponent(gsource));
-            
-        }
+        factCollection = (FactCollection) componentResolver.resolveComponentLinks(factCollection);
 
         // Loop over collection facts
         for (JAXBElement<? extends Fact> fi: factCollection.getFacts()) {
@@ -100,27 +73,14 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
             // Get ontology component object from fact component id or component.getId
             try {
 
-                GComponent gcomponent = null;
-                if (fact.getComponent() != null) {
-                    gcomponent = ontologyDao.getGComponent(fact.getComponent().getId());
-                } else if (fact.getComponentId() != null) {
-                    gcomponent = ontologyDao.getGComponent(fact.getComponentId());
-                }
+                fact = (Fact) componentResolver.resolveComponentLinks(fact);
 
-                if (gcomponent == null) {
-                    throw new NullArgumentException("Valid component id and/or component is not provided for Fact!");
-                }
-                logger.fine("FC Saver bean: found gcomponent: " + gcomponent.getName());
-
-                if (!ontologyDao.isGComponentClassParent(
+                if (!componentResolver.checkComponentType(
+                        fact.getComponent(),
                         fact.getMetadata().getLimitComponents(),
-                        gcomponent.getType(),
                         fact.getMetadata().isLimitComponentsRecursive())) {
-                    throw new ComponentTypeNotAllowedInFactException(gcomponent.getType().getType(), fact.getClass());
+                    throw new WrongComponentTypeException(fact.getComponent(), fact.getClass(), "component");
                 }
-
-                fact.setComponent(ontologyDao.getComponent(gcomponent));
-                fact.setComponentId(gcomponent.getName());
 
                 fact.onReceive(entityDao);
 
