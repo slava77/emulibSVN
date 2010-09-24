@@ -38,6 +38,7 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
+import org.cern.cms.csc.dw.model.annotation.ComponentId;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.service.ServiceInstructions;
 import org.jvnet.hyperjaxb3.item.ItemUtils;
@@ -140,6 +141,9 @@ public class FactCollection
      *     
      */
     @Transient
+    @ComponentId(forProperty = "component", limitComponents = {
+        "FactProvider"
+    }, limitComponentsRecursive = true, required = true)
     public String getSource() {
         return source;
     }
@@ -273,22 +277,22 @@ public class FactCollection
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
+     * {@link JAXBElement }{@code <}{@link DqmDduFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link DqmCscCfebFact }{@code >}
      * {@link JAXBElement }{@code <}{@link ApplicationStatusFact }{@code >}
      * {@link JAXBElement }{@code <}{@link DduFmmResetFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link FedFsmFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link LocalDAQStatusFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link DqmDduFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link SlidingTmbTriggerCounterFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link DqmEmuFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link DqmCscAfebFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link DqmDduInputFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link DqmCscHvSegmentFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link Fact }{@code >}
-     * {@link JAXBElement }{@code <}{@link DqmCscFact }{@code >}
      * {@link JAXBElement }{@code <}{@link TmbCounterFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link DduFmmResetFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link DqmCscFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link DqmEmuFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link SlidingTmbTriggerCounterFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link FedFsmFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link DqmCscHvSegmentFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link LocalDAQStatusFact }{@code >}
      * {@link JAXBElement }{@code <}{@link CumulativeTmbTriggerCounterFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link DqmCscCfebFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link DqmCscAfebFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link DduFmmResetFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link Fact }{@code >}
+     * {@link JAXBElement }{@code <}{@link DqmDduInputFact }{@code >}
      * 
      * 
      */

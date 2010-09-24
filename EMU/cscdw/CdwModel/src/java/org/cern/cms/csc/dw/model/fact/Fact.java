@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
+import org.cern.cms.csc.dw.model.annotation.ComponentId;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XMLGregorianCalendarAsDateTime;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
@@ -147,6 +148,7 @@ public abstract class Fact
      *     
      */
     @Transient
+    @ComponentId(forProperty = "component", required = true)
     public String getComponentId() {
         return componentId;
     }

@@ -13,6 +13,7 @@ public @interface OlapMeasure {
 
         SUM("sum"),
         COUNT("count"),
+        DISTINCT_COUNT("distinct-count"),
         MIN("min"),
         MAX("max"),
         AVG("avg");

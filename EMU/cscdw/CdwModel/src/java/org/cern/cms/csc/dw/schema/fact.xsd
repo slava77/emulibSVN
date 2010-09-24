@@ -63,6 +63,9 @@
                     <xsd:appinfo>
                         <hj:ignored/>
                         <jaxb:property name="source"/>
+                        <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                            <a:ComponentId forProperty="component" limitComponents="FactProvider" limitComponentsRecursive="true" required="true"/>
+                        </ann:annotateGet>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -141,6 +144,9 @@
                     <xsd:appinfo>
                         <hj:ignored/>
                         <jaxb:property name="componentId"/>
+                        <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                            <a:ComponentId forProperty="component" required="true"/>
+                        </ann:annotateGet>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <persistence version="1.0" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd
 http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:orm="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <persistence-unit name="org.cern.cms.csc.exsys.re.model:org.cern.cms.csc.dw.model.ontology:org.cern.cms.csc.dw.model.fact:org.cern.cms.csc.dw.service:org.cern.cms.csc.dw.model.dse">
+    <persistence-unit name="org.cern.cms.csc.dw.model.fact:org.cern.cms.csc.dw.model.dse:org.cern.cms.csc.exsys.re.model:org.cern.cms.csc.dw.service:org.cern.cms.csc.dw.model.ontology">
         <class>org.cern.cms.csc.dw.model.dse.DataServiceEntity</class>
         <class>org.cern.cms.csc.dw.model.dse.TmbCounterDescriptionDSE</class>
         <class>org.cern.cms.csc.dw.model.fact.ApplicationStatusFact</class>
