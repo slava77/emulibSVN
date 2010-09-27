@@ -202,9 +202,6 @@ public class OntologyGraphImporter {
                 if (cname.contains("#")) {
                     cname = cname.substring(cname.indexOf("#") + 1);
                 }
-                if (cname.contains(":")) {
-                    cname = cname.substring(cname.indexOf(":") + 1);
-                }
             }
 
             return cname;
@@ -534,7 +531,7 @@ public class OntologyGraphImporter {
                 }
             }
             if (localName.equals("Annotation")) {
-                if (name.equals("description")) {
+                if (name.contains("description")) {
                     type = AnnotationType.DESCRIPTION;
                 } else {
                     log.warn("Annotation type [" + name + "] not supported but found in " + blockName + ". Skipping..");
