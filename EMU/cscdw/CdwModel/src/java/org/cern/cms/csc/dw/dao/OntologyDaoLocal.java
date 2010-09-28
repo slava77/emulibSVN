@@ -23,6 +23,7 @@ public interface OntologyDaoLocal extends GOntologyDaoLocal {
 
     ComponentClass getComponentClassById(Long id) throws ComponentClassNotFoundException;
     Component getComponentById(Long id) throws ComponentNotFoundException;
+    Component getComponentByName(String name) throws ComponentNotFoundException;
     Component getComponent(GComponent gcomp) throws ComponentNotFoundException;
     ComponentLinkClass getComponentLinkClassById(Long id) throws ComponentLinkClassNotFoundException;
     

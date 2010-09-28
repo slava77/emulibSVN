@@ -47,7 +47,17 @@ public class OntologyDao extends GOntologyDao implements OntologyDaoLocal, Seria
     }
 
     public Component getComponent(GComponent gcomp) throws ComponentNotFoundException {
-        return getComponentById(gcomp.getId());
+        return getComponentByName(gcomp.getName());
+    }
+
+    public Component getComponentByName(String name) throws ComponentNotFoundException {
+        Component c = (Component) em.createQuery("select c from Component c where name = ?")
+                                    .setParameter(0, name)
+                                    .getSingleResult();
+        if (c == null) {
+            throw new ComponentNotFoundException(OntologySource.RELATIONAL_DATABASE, name);
+        }
+        return c;
     }
 
 }
