@@ -159,7 +159,7 @@
 
         <!-- Execute pre-import SQL files -->
         <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
-            delimiter="/" keepformat="true" delimitertype="row" onerror="continue" classpathref="classpath">
+            delimiter="/" keepformat="true" delimitertype="row" onerror="abort" classpathref="classpath">
             <transaction src="${sqlbase}/cdw_ontology_pre_import.sql"/>
         </sql>
 
@@ -171,7 +171,7 @@
 
         <!-- Execute post-import SQL files -->
         <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
-            delimiter="/" keepformat="true" delimitertype="row" autocommit="true" onerror="continue" classpathref="classpath">
+            delimiter="/" keepformat="true" delimitertype="row" autocommit="true" onerror="abort" classpathref="classpath">
             <transaction src="${sqlbase}/cdw_ontology_post_import.sql"/>
         </sql>
 
