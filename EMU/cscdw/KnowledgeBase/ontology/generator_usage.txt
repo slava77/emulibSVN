@@ -1,1 +1,8 @@
+# To create an ontology:
 xsltproc ontology_generator.xsl ontology_template.xml > csc-ontology.owl
+
+# To list class declarations without annotation and annotations without class declaration:
+xsltproc listMissingAnnotations.xsl ontology_template.xml
+
+# To list in alphabetic order all declarations together with their descriptions:
+xsltproc listDescriptions.xsl ontology_template.xml
