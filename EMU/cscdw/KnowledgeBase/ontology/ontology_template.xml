@@ -22,7 +22,7 @@
 	  URI="http://www.cern.ch/cms/csc.owl">
 
 
-<!-- declarations and relations of individuals -->
+  <!-- declarations and relations of individuals -->
   <templ:individuals>
     <templ:chambers source="mappings/RUI-to-chamber_mapping.xml"/>
     <templ:SectorProc source="mappings/RUI-to-chamber_mapping.xml"/>
@@ -47,13 +47,10 @@
 
 
 
-<!-- class declarations -->
+  <!-- class declarations -->
   <Declaration><Class URI="&csc;LogicalDomain"/></Declaration>
   <Declaration><Class URI="&csc;LogicalComponent"/></Declaration>
   <Declaration><Class URI="&csc;FactProvider"/></Declaration>
-
-  <Declaration><Class URI="&csc;Local"/></Declaration>
-  <Declaration><Class URI="&csc;Global"/></Declaration>
 
   <Declaration><Class URI="&csc;CSC"/></Declaration>
   <Declaration><Class URI="&csc;Endcap"/></Declaration>
@@ -62,32 +59,29 @@
   <Declaration><Class URI="&csc;Chamber"/></Declaration>
   <Declaration><Class URI="&csc;Layer"/></Declaration>
 
+  <Declaration><Class URI="&csc;FEDSystem"/></Declaration>
+
+  <Declaration><Class URI="&csc;Device"/></Declaration>
+  <Declaration><Class URI="&csc;DataDevice"/></Declaration>
+  <Declaration><Class URI="&csc;HVDevice"/></Declaration>
+  <Declaration><Class URI="&csc;LVDevice"/></Declaration>
+  <Declaration><Class URI="&csc;GasDevice"/></Declaration>
+  <Declaration><Class URI="&csc;CoolingDevice"/></Declaration>
+  <Declaration><Class URI="&csc;ComputingDevice"/></Declaration>
+
+  <Declaration><Class URI="&csc;DataChannel"/></Declaration>
+
+  <Declaration><Class URI="&csc;Software"/></Declaration>
+
   <Declaration><Class URI="&csc;PeripheralCrate"/></Declaration>
   <Declaration><Class URI="&csc;FEDCrate"/></Declaration>
-
-  <Declaration><Class URI="&csc;FEDSystem"/></Declaration>
 
   <Declaration><Class URI="&csc;Computer"/></Declaration>
   <Declaration><Class URI="&csc;/dev/schar"/></Declaration>
 
-  <Declaration><Class URI="&csc;Software"/></Declaration>
-
-<!--   <Declaration><Class URI="&csc;TriggerSector"/></Declaration> -->
-  <Declaration><Class URI="&csc;Trigger"/></Declaration>
-  <Declaration><Class URI="&csc;DAQ"/></Declaration>
-  <Declaration><Class URI="&csc;HV"/></Declaration>
-  <Declaration><Class URI="&csc;LV"/></Declaration>
-  <Declaration><Class URI="&csc;GasSystem"/></Declaration>
-  <Declaration><Class URI="&csc;LocalDAQ"/></Declaration>
-  <Declaration><Class URI="&csc;GlobalDAQ"/></Declaration>
-
   <Declaration><Class URI="&csc;RUI"/></Declaration>
   <Declaration><Class URI="&csc;TFRUI"/></Declaration>
 
-  <Declaration><Class URI="&csc;Channel"/></Declaration>
-  <Declaration><Class URI="&csc;Device"/></Declaration>
-  <Declaration><Class URI="&csc;DAQDevice"/></Declaration>
-  <Declaration><Class URI="&csc;TriggerDevice"/></Declaration>
   <Declaration><Class URI="&csc;DDU"/></Declaration>
   <Declaration><Class URI="&csc;TFDDU"/></Declaration>
   <Declaration><Class URI="&csc;DDUInput"/></Declaration>
@@ -104,7 +98,6 @@
   <Declaration><Class URI="&csc;VCC"/></Declaration>
   <Declaration><Class URI="&csc;CCB"/></Declaration>
   <Declaration><Class URI="&csc;MPC"/></Declaration>
-  <Declaration><Class URI="&csc;Rack"/></Declaration>
   <Declaration><Class URI="&csc;PCrateRack"/></Declaration>
 
   <Declaration><Class URI="&csc;TTC"/></Declaration>
@@ -114,7 +107,7 @@
   <Declaration><Class URI="&csc;HVMaster"/></Declaration>
   <Declaration><Class URI="&csc;HVDistribution"/></Declaration>
   <Declaration><Class URI="&csc;HVSegment"/></Declaration>
-
+  <Declaration><Class URI="&csc;HVRack"/></Declaration>
   <Declaration><Class URI="&csc;HVCrate"/></Declaration>
   <Declaration><Class URI="&csc;HVBoard"/></Declaration>
   <Declaration><Class URI="&csc;HVChannel"/></Declaration>
@@ -130,13 +123,10 @@
   <Declaration><Class URI="&csc;RackTurbine"/></Declaration>
   <Declaration><Class URI="&csc;CoolingCircuit"/></Declaration>
 
-<!-- class descriptions -->
+  <!-- class descriptions -->
   <EntityAnnotation><Class URI="&csc;LogicalDomain"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A set of items that logically belong together.</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;LogicalComponent"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A set of components that logically belong together.</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><Class URI="&csc;FactProvider"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Fact providing SW/HV components. Only these components that belog to FactProvider class can act as a source of Facts in Expert System.</Constant></Annotation></EntityAnnotation>
-
-  <EntityAnnotation><Class URI="&csc;Local"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An item for local running.</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><Class URI="&csc;Global"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An item for global running.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;FactProvider"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A fact-providing SW component. Only members of this class may act as a source of facts to the Expert System.</Constant></Annotation></EntityAnnotation>
 
   <EntityAnnotation><Class URI="&csc;CSC"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Cathode Strip Chambers, the totality of the endcap muon cathode strip chambers. Naming: ME</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;Endcap"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">The collection of all the endcap muon cathode strip chambers on one side. Naming: ME&lt;e&gt;, e: endcap [+-]</Constant></Annotation></EntityAnnotation>
@@ -155,22 +145,19 @@
 
   <EntityAnnotation><Class URI="&csc;Software"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A software application.</Constant></Annotation></EntityAnnotation>
 
-<!--   <EntityAnnotation><Class URI="&csc;TriggerSector"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A group of chambers (forming a sector) read out by the same Peripheral Crate.</Constant></Annotation></EntityAnnotation> -->
-  <EntityAnnotation><Class URI="&csc;Trigger"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An item for the trigger.</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><Class URI="&csc;DAQ"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An item for data acquisition.</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><Class URI="&csc;HV"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An item for high voltage supply or monitoring.</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><Class URI="&csc;LV"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An item for low voltage supply or monitoring.</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><Class URI="&csc;GasSystem"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An item in the gas system.</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><Class URI="&csc;LocalDAQ"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An item for local data acquisition.</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><Class URI="&csc;GlobalDAQ"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An item for global data acquisition.</Constant></Annotation></EntityAnnotation>
-
   <EntityAnnotation><Class URI="&csc;RUI"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Readout Unit Input is a software application reading out the DDU of the same instance. Naming: RUI&lt;i&gt;, i: zero-padded instance number [00..36].</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;TFRUI"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">TrackFinder Readout Unit Input is a software application reading out the TrackFinder DDU. It is the RUI of instance 0. Naming: RUI00</Constant></Annotation></EntityAnnotation>
 
-  <EntityAnnotation><Class URI="&csc;Channel"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An input or output channel.</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;Device"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A hardware device.</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><Class URI="&csc;DAQDevice"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A hardware device for data acquisition.</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><Class URI="&csc;TriggerDevice"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A hardware device for the trigger.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;DataDevice"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A hardware device for handling trigger information and/or data.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;HVDevice"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A hardware device for high voltage.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;LVDevice"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A hardware device for low voltage.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;GasDevice"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A hardware device for cooling.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;CoolingDevice"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A hardware device for cooling.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;ComputingDevice"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A computer hardware piece.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;DataChannel"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An input or output data or trigger channel.</Constant></Annotation></EntityAnnotation>
+
   <EntityAnnotation><Class URI="&csc;DDU"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Device Dependent Unit (a.k.a. Front End Driver, a VME board). Naming: DDU&lt;n&gt;, n: DDU number [00-36]</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;TFDDU"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Device Dependent Unit (a.k.a. Front End Driver, a VME board) reading Track Finder's Sector Processors' data. Naming: DDU00</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;DDUInput"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An input channel to a Device Dependent Unit. Naming: DDU&lt;n&gt;Input&lt;i&gt;, n: DDU number [00-36] or [0-36], i: input channel number [0-14]</Constant></Annotation></EntityAnnotation>
@@ -187,7 +174,6 @@
   <EntityAnnotation><Class URI="&csc;VCC"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">VME Crate Controller. Naming: VME&lt;e&gt;&lt;s&gt;/&lt;v&gt;/VCC, e: endcap [+-], s: station [1..4], v: VME (or sector) number [01..12]</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;CCB"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Clock and Control Board. Naming: VME&lt;e&gt;&lt;s&gt;/&lt;v&gt;/CCB, e: endcap [+-], s: station [1..4], v: VME (or sector) number [01..12]</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;MPC"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Muon Port Card. Naming: VME&lt;e&gt;&lt;s&gt;/&lt;v&gt;/MPC, e: endcap [+-], s: station [1..4], v: VME (or sector) number [01..12]</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><Class URI="&csc;Rack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Any rack.</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;PCrateRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Peripheral crate rack. Naming: Rack&lt;rn&gt;, rn: rack name</Constant></Annotation></EntityAnnotation>
 
   <EntityAnnotation><Class URI="&csc;TTC"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Timing, Trigger and Control</Constant></Annotation></EntityAnnotation>
@@ -197,7 +183,7 @@
   <EntityAnnotation><Class URI="&csc;HVMaster"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">High voltage master. Naming: HVMaster&lt;i&gt;, i: id number</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;HVDistribution"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV distribution board. Naming: HVDistribution&lt;i&gt;, i: id number</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;HVSegment"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV segment. Naming: &lt;layer&gt;/HVSegment&lt;s&gt;, layer: full name of layer, s: HV segment [1..5]</Constant></Annotation></EntityAnnotation>
-
+  <EntityAnnotation><Class URI="&csc;HVRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV rack.</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;HVCrate"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV crate for Dubna (ME1/1) chambers. Naming: CAEN/HVME11&lt;side&gt;, side: plus or minus endcap [PN]</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;HVBoard"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV board for Dubna (ME1/1) chambers. Naming: CAEN/HVME11&lt;side&gt;/Board&lt;b&gt;, side: plus or minus endcap [PN], b: board number [00..14]</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;HVChannel"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV channel for Dubna (ME1/1) chambers. Naming: CAEN/HVME11&lt;side&gt;/Board&lt;b&gt;/Channel&lt;c&gt;, side: plus or minus endcap [PN], b: board number [00..14], c: channel number [001..027]</Constant></Annotation></EntityAnnotation>
@@ -212,7 +198,7 @@
   <EntityAnnotation><Class URI="&csc;CoolingCircuit"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A cooling circuit. Naming: CoolingCircuit1 ("Racks Circuit") or CoolingCircuit2 ("Endcap Circuit")</Constant></Annotation></EntityAnnotation>
 
 
-<!-- property declarations -->
+  <!-- property declarations -->
 
   <Declaration><ObjectProperty URI="&csc;triggerPath"/></Declaration>
   <Declaration><ObjectProperty URI="&csc;receivesTriggerFrom"/></Declaration>
@@ -264,8 +250,7 @@
   <Declaration><DataProperty URI="&csc;hasGas"/></Declaration>
   
 
-<!-- property descriptions -->
-
+  <!-- property descriptions -->
   <EntityAnnotation><ObjectProperty URI="&csc;triggerPath"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'triggerPath' B, then A sends or receives trigger to/from B directly or indirectly.</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><ObjectProperty URI="&csc;receivesTriggerFrom"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'receivesTriggerFrom' B, then A receives trigger from B directly or indirectly. It is a transitive relation. Its inverse is 'sendsTriggerTo'.</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><ObjectProperty URI="&csc;sendsTriggerTo"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'sendsTriggerTo' B, then A sends trigger to B directly or indirectly. It is a transitive relation. Its inverse is 'receivesTriggerFrom'.</Constant></Annotation></EntityAnnotation>
@@ -317,165 +302,81 @@
   
 
 
-<!-- class and property relations -->
-  <SubClassOf><Class URI="&csc;Trigger"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;DAQ"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;LV"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;HV"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;GasSystem"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;Cooling"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
+  <!-- class and property relations -->
 
-  <SubClassOf><Class URI="&csc;Local"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;Global"/><Class URI="&csc;LogicalDomain"/></SubClassOf>
+  <!-- Devices -->
+  <SubClassOf><Class URI="&csc;DataDevice"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVDevice"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;LVDevice"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;GasDevice"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;CoolingDevice"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;ComputingDevice"/><Class URI="&csc;Device"/></SubClassOf>
 
-  <EquivalentClasses>
-    <Class URI="&csc;LocalDAQ"/>
-    <ObjectIntersectionOf><Class URI="&csc;DAQ"/><Class URI="&csc;Local"/></ObjectIntersectionOf>
-  </EquivalentClasses>
-  <EquivalentClasses>
-    <Class URI="&csc;GlobalDAQ"/>
-    <ObjectIntersectionOf><Class URI="&csc;DAQ"/><Class URI="&csc;Global"/></ObjectIntersectionOf>
-  </EquivalentClasses>
-
-  <EquivalentClasses>
-    <Class URI="&csc;DAQDevice"/>
-    <ObjectIntersectionOf><Class URI="&csc;DAQ"/><Class URI="&csc;Device"/></ObjectIntersectionOf>
-  </EquivalentClasses>
-  <EquivalentClasses>
-    <Class URI="&csc;TriggerDevice"/>
-    <ObjectIntersectionOf><Class URI="&csc;Trigger"/><Class URI="&csc;Device"/></ObjectIntersectionOf>
-  </EquivalentClasses>
-  <EquivalentClasses>
-    <Class URI="&csc;GasDevice"/>
-    <ObjectIntersectionOf><Class URI="&csc;GasSystem"/><Class URI="&csc;Device"/></ObjectIntersectionOf>
-  </EquivalentClasses>
-
-
+  <!-- Software -->
   <SubClassOf><Class URI="&csc;RUI"/><Class URI="&csc;Software"/></SubClassOf>
   <SubClassOf><Class URI="&csc;FactProvider"/><Class URI="&csc;Software"/></SubClassOf>
 
-  <!-- Channel -->
-  <SubClassOf><Class URI="&csc;DDUInput"/><Class URI="&csc;Channel"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;Slink"/><Class URI="&csc;Channel"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;/dev/schar"/><Class URI="&csc;Channel"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;SectorProcessorInput"/><Class URI="&csc;Channel"/></SubClassOf>
+  <!-- Data Channels -->
+  <SubClassOf><Class URI="&csc;DDUInput"/><Class URI="&csc;DataChannel"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;Slink"/><Class URI="&csc;DataChannel"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;/dev/schar"/><Class URI="&csc;DataChannel"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;SectorProcessorInput"/><Class URI="&csc;DataChannel"/></SubClassOf>
 
-  <!-- Device -->
-  <SubClassOf><Class URI="&csc;ALCT"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;AFEB"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;CFEB"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;RAT"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;TMB"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;DMB"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;DDU"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;DCC"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;SectorProcessor"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;VCC"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;CCB"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;MPC"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;LTC"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;TTC"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;HVPrimary"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;HVMaster"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;HVDistribution"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;HVCrate"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;HVBoard"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;HVChannel"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;Maraton"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;Rack"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;FEDCrate"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;PeripheralCrate"/><Class URI="&csc;Device"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;Computer"/><Class URI="&csc;Device"/></SubClassOf>
+  <!-- Data Devices -->
+  <SubClassOf><Class URI="&csc;ALCT"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;AFEB"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;CFEB"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;RAT"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;TMB"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;DMB"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;DDU"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;DCC"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;SectorProcessor"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;VCC"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;CCB"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;MPC"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;LTC"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;TTC"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;FEDCrate"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;PeripheralCrate"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;PCrateRack"/><Class URI="&csc;DataDevice"/></SubClassOf>
 
-  <!-- Rack -->
-<!--   <SubClassOf><Class URI="&csc;HVRack"/><Class URI="&csc;Rack"/></SubClassOf> -->
-<!--   <SubClassOf><Class URI="&csc;LVRack"/><Class URI="&csc;Rack"/></SubClassOf> -->
-  <SubClassOf><Class URI="&csc;PCrateRack"/><Class URI="&csc;Rack"/></SubClassOf>
+  <!-- HV Devices -->
+  <SubClassOf><Class URI="&csc;HVPrimary"/><Class URI="&csc;HVDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVMaster"/><Class URI="&csc;HVDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVDistribution"/><Class URI="&csc;HVDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVCrate"/><Class URI="&csc;HVDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVBoard"/><Class URI="&csc;HVDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVChannel"/><Class URI="&csc;HVDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVSegment"/><Class URI="&csc;HVDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVRack"/><Class URI="&csc;HVDevice"/></SubClassOf>
+
+  <!-- LV Devices -->
+  <SubClassOf><Class URI="&csc;Maraton"/><Class URI="&csc;LVDevice"/></SubClassOf>
+
+  <!-- Computing Devices -->
+  <SubClassOf><Class URI="&csc;Computer"/><Class URI="&csc;ComputingDevice"/></SubClassOf>
  
-
-  <!-- HV -->
-  <SubClassOf><Class URI="&csc;HVPrimary"/><Class URI="&csc;HV"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;HVMaster"/><Class URI="&csc;HV"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;HVDistribution"/><Class URI="&csc;HV"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;HVSegment"/><Class URI="&csc;HV"/></SubClassOf>
-
-  <SubClassOf><Class URI="&csc;HVCrate"/><Class URI="&csc;HV"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;HVBoard"/><Class URI="&csc;HV"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;HVChannel"/><Class URI="&csc;HV"/></SubClassOf>
-
-  <!-- LV -->
-  <SubClassOf><Class URI="&csc;Maraton"/><Class URI="&csc;LV"/></SubClassOf>
-
-
-  <!-- Trigger -->
-  <SubClassOf><Class URI="&csc;SectorProcessor"/><Class URI="&csc;TriggerDevice"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;SectorProcessorInput"/><Class URI="&csc;TriggerDevice"/></SubClassOf>
-<!--   <SubClassOf><Class URI="&csc;TriggerSector"/><Class URI="&csc;Trigger"/></SubClassOf> -->
-  <SubClassOf><Class URI="&csc;TFRUI"/><Class URI="&csc;Trigger"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;TFDDU"/><Class URI="&csc;TriggerDevice"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;ALCT"/><Class URI="&csc;TriggerDevice"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;RAT"/><Class URI="&csc;TriggerDevice"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;TMB"/><Class URI="&csc;TriggerDevice"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;LTC"/><Class URI="&csc;TriggerDevice"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;TTC"/><Class URI="&csc;TriggerDevice"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;PCrateRack"/><Class URI="&csc;TriggerDevice"/></SubClassOf>
-
-  <!-- DAQ -->
-  <SubClassOf><Class URI="&csc;DDU"/><Class URI="&csc;DAQDevice"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;DDUInput"/><Class URI="&csc;DAQDevice"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;/dev/schar"/><Class URI="&csc;DAQDevice"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;DCC"/><Class URI="&csc;DAQDevice"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;Slink"/><Class URI="&csc;DAQDevice"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;ALCT"/><Class URI="&csc;DAQDevice"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;CFEB"/><Class URI="&csc;DAQDevice"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;RAT"/><Class URI="&csc;DAQDevice"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;TMB"/><Class URI="&csc;DAQDevice"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;DMB"/><Class URI="&csc;DAQDevice"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;PCrateRack"/><Class URI="&csc;DAQDevice"/></SubClassOf>
-
-  <!-- Local -->
-  <SubClassOf><Class URI="&csc;TTC"/><Class URI="&csc;Local"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;LTC"/><Class URI="&csc;Local"/></SubClassOf>
-
-  <!-- Global -->
-  <SubClassOf><Class URI="&csc;TTC"/><Class URI="&csc;Global"/></SubClassOf>
-
-  <!-- LocalDAQ -->
-  <SubClassOf><Class URI="&csc;DDU"/><Class URI="&csc;LocalDAQ"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;RUI"/><Class URI="&csc;LocalDAQ"/></SubClassOf>
-
-  <!-- GlobalDAQ -->
-  <SubClassOf><Class URI="&csc;DDU"/><Class URI="&csc;GlobalDAQ"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;DCC"/><Class URI="&csc;GlobalDAQ"/></SubClassOf>
-
-  <!-- Gas -->
+  <!-- Gas Devices -->
   <SubClassOf><Class URI="&csc;GasMixerInputLine"/><Class URI="&csc;GasDevice"/></SubClassOf>
   <SubClassOf><Class URI="&csc;GasRack"/><Class URI="&csc;GasDevice"/></SubClassOf>
   <SubClassOf><Class URI="&csc;GasChannel"/><Class URI="&csc;GasDevice"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;Chamber"/><Class URI="&csc;GasDevice"/></SubClassOf>
 
-  <!-- Cooling -->
-  <SubClassOf><Class URI="&csc;Chamber"/><Class URI="&csc;Cooling"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;Rack"/><Class URI="&csc;Cooling"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;CoolingCircuit"/><Class URI="&csc;Cooling"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;RackTurbine"/><Class URI="&csc;Cooling"/></SubClassOf>
+  <!-- Cooling Devices -->
+  <SubClassOf><Class URI="&csc;CoolingCircuit"/><Class URI="&csc;CoolingDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;RackTurbine"/><Class URI="&csc;CoolingDevice"/></SubClassOf>
 
-
-  <!-- LogicalComponent -->
-<!--   <SubClassOf><Class URI="&csc;TriggerSector"/><Class URI="&csc;LogicalComponent"/></SubClassOf> -->
+  <!-- Logical Components -->
   <SubClassOf><Class URI="&csc;CSC"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
   <SubClassOf><Class URI="&csc;Endcap"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
   <SubClassOf><Class URI="&csc;Station"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
   <SubClassOf><Class URI="&csc;Ring"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
   <SubClassOf><Class URI="&csc;Chamber"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
   <SubClassOf><Class URI="&csc;Layer"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
-  <SubClassOf><Class URI="&csc;HVSegment"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
   <SubClassOf><Class URI="&csc;FEDSystem"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
-
 
   <SubClassOf><Class URI="&csc;TFRUI"/><Class URI="&csc;RUI"/></SubClassOf>
   <SubClassOf><Class URI="&csc;TFDDU"/><Class URI="&csc;DDU"/></SubClassOf>
-
 
   <!-- SubObjectPropertyOf -->
   <SubObjectPropertyOf><ObjectProperty URI="&csc;receivesTriggerFrom"/><ObjectProperty URI="&csc;triggerPath"/></SubObjectPropertyOf>
@@ -521,7 +422,6 @@
   <InverseObjectProperties><ObjectProperty URI="&csc;deliversGasTo"/><ObjectProperty URI="&csc;getsGasFrom"/></InverseObjectProperties>
   <InverseObjectProperties><ObjectProperty URI="&csc;cools"/><ObjectProperty URI="&csc;isCooledBy"/></InverseObjectProperties>
 
-
   <!-- TransitiveObjectProperty -->
   <TransitiveObjectProperty><ObjectProperty URI="&csc;sendsDataTo"/></TransitiveObjectProperty>
   <TransitiveObjectProperty><ObjectProperty URI="&csc;receivesDataFrom"/></TransitiveObjectProperty>
@@ -542,16 +442,13 @@
   <TransitiveObjectProperty><ObjectProperty URI="&csc;cools"/></TransitiveObjectProperty>
   <TransitiveObjectProperty><ObjectProperty URI="&csc;isCooledBy"/></TransitiveObjectProperty>
 
-
   <!-- DataPropertyRange -->
   <DataPropertyRange><DataProperty URI="&csc;hasName"/><Datatype URI="&xsd;string"/></DataPropertyRange>
   <DataPropertyRange><DataProperty URI="&csc;isInConfiguration"/><Datatype URI="&xsd;boolean"/></DataPropertyRange>
   <DataPropertyRange><DataProperty URI="&csc;hasFMM"/><Datatype URI="&xsd;integer"/></DataPropertyRange>
   <DataPropertyRange><DataProperty URI="&csc;hasGas"/><Datatype URI="&xsd;string"/></DataPropertyRange>
 
-
   <!-- FunctionalDataProperty -->
   <FunctionalDataProperty><DataProperty URI="&csc;isInConfiguration"/></FunctionalDataProperty>
-
 
 </Ontology>

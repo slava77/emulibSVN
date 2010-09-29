@@ -360,7 +360,7 @@
     <Declaration><Individual URI="&csc;emu::daq::manager::Application"/></Declaration>
     <Declaration><Individual URI="&csc;DAQManager"/></Declaration>
     <SameIndividuals><Individual URI="&csc;emu::daq::manager::Application"/><Individual URI="&csc;DAQManager"/></SameIndividuals>
-    <ClassAssertion><Class URI="&csc;LocalDAQ"/><Individual URI="&csc;DAQManager"/></ClassAssertion>
+    <!-- <ClassAssertion><Class URI="&csc;LocalDAQ"/><Individual URI="&csc;DAQManager"/></ClassAssertion> -->
     <ClassAssertion><Class URI="&csc;Software"/><Individual URI="&csc;DAQManager"/></ClassAssertion>    
     <xsl:text>&LF;</xsl:text>
     <xsl:comment>declaration of RUIs and DDUs and their relation to chambers</xsl:comment>
@@ -779,7 +779,7 @@
       <!-- Rack -->
       <xsl:variable name="RACK">Rack<xsl:value-of select="@name"/></xsl:variable>
       <Declaration><Individual URI="&csc;{$RACK}"/></Declaration>
-      <ClassAssertion><Class URI="&csc;Rack"/><Individual URI="&csc;{$RACK}"/></ClassAssertion>
+      <ClassAssertion><Class URI="&csc;HVRack"/><Individual URI="&csc;{$RACK}"/></ClassAssertion>
       <DataPropertyAssertion><DataProperty URI="&csc;hasName"/><Individual URI="&csc;{$RACK}"/><Constant datatypeURI="&xsd;string"><xsl:value-of select="@name"/></Constant></DataPropertyAssertion>
       <xsl:for-each select="crate">
 	<!-- HV Crate -->
