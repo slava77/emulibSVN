@@ -42,6 +42,10 @@ CSC_UI_sessionState.CSC_UI_sessionState	1#1
 		configuringCrates	9#41
 		configuredCrates	9#42
 		failedToConfigureCrates	9#43
+	histogram	1#44
+		histogramData	5#45
+		rangeMin	22#46
+		rangeMax	22#47
 
 # Datapoint/DpId
 DpName	TypeName	ID

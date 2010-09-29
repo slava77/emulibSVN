@@ -1,0 +1,61 @@
+# ascii dump of database
+
+# Datapoint/DpId
+DpName	TypeName	ID
+histogramPlot	FwTrendingPlot	544902
+trendPlot	FwTrendingPlot	544904
+
+# DpValue
+ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
+histogramPlot.plotTitle	FwTrendingPlot	"{dataTitle} Plot"	0x300101	28.09.2010 14:24:57.140
+histogramPlot.dpes	FwTrendingPlot	"{histDataDpe}", "", "", "", "", "", "", ""	0x101	28.09.2010 14:24:57.140
+histogramPlot.legendTexts	FwTrendingPlot	"{dataTitle}", "", "", "", "", "", "", ""	0x101	28.09.2010 14:24:57.140
+histogramPlot.colors	FwTrendingPlot	"FwTrendingCurve1", "", "", "", "", "", "", ""	0x101	28.09.2010 14:24:57.140
+histogramPlot.axii	FwTrendingPlot		0x101	28.09.2010 14:24:57.140
+histogramPlot.plotBackColor	FwTrendingPlot	"FwTrendingTrendBackground"	0x101	28.09.2010 14:24:57.140
+histogramPlot.legend	FwTrendingPlot	0	0x101	28.09.2010 14:24:57.140
+histogramPlot.isTemplate	FwTrendingPlot	0	0x101	28.09.2010 14:24:57.140
+histogramPlot.curvesHidden	FwTrendingPlot		0x101	28.09.2010 14:24:57.140
+histogramPlot.yRangeMin	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	28.09.2010 14:24:57.140
+histogramPlot.yRangeMax	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	28.09.2010 14:24:57.140
+histogramPlot.plotType	FwTrendingPlot	0	0x101	28.09.2010 14:24:57.140
+histogramPlot.templateName	FwTrendingPlot	""	0x101	28.09.2010 14:24:57.140
+histogramPlot.timeRange	FwTrendingPlot	0	0x101	28.09.2010 14:24:57.140
+histogramPlot.isLogarithmic	FwTrendingPlot	0	0x101	28.09.2010 14:24:57.140
+histogramPlot.curveTypes	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	28.09.2010 14:24:57.140
+histogramPlot.plotForeColor	FwTrendingPlot	"FwTrendingTrendForeground"	0x101	28.09.2010 14:24:57.140
+histogramPlot.grid	FwTrendingPlot	1	0x101	28.09.2010 14:24:57.140
+histogramPlot.model	FwTrendingPlot	"Histogram"	0x101	28.09.2010 14:24:57.140
+histogramPlot.xAxii	FwTrendingPlot		0x101	28.09.2010 14:24:57.140
+histogramPlot.xDpes	FwTrendingPlot		0x101	28.09.2010 14:24:57.140
+histogramPlot.xRangeMin	FwTrendingPlot	3.0146	0x101	29.09.2010 08:22:39.644
+histogramPlot.xRangeMax	FwTrendingPlot	3.27354	0x101	29.09.2010 08:22:39.644
+histogramPlot.xLegendTexts	FwTrendingPlot		0x101	28.09.2010 14:24:57.140
+histogramPlot.markerType	FwTrendingPlot	0	0x101	28.09.2010 14:24:57.140
+histogramPlot.accessControl.save	FwTrendingPlot	""	0x101	28.09.2010 14:24:57.142
+trendPlot.plotTitle	FwTrendingPlot	"{plotName}"	0x300101	29.09.2010 08:20:26.048
+trendPlot.dpes	FwTrendingPlot	"{dp1}", "{dp2}", "{dp3}", "{dp4}", "{dp5}", "{dp6}", "{dp7}", "{dp8}"	0x101	29.09.2010 08:20:26.048
+trendPlot.legendTexts	FwTrendingPlot	"{dp1}", "{dp2}", "{dp3}", "{dp4}", "{dp5}", "{dp6}", "{dp7}", "{dp8}"	0x101	29.09.2010 08:20:26.048
+trendPlot.colors	FwTrendingPlot	"FwTrendingCurve1", "FwTrendingCurve2", "FwTrendingCurve3", "FwTrendingCurve4", "FwTrendingCurve5", "FwTrendingCurve6", "FwTrendingCurve7", "FwTrendingCurve8"	0x101	29.09.2010 08:20:26.048
+trendPlot.axii	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	29.09.2010 08:20:26.048
+trendPlot.plotBackColor	FwTrendingPlot	"FwTrendingTrendBackground"	0x101	29.09.2010 08:20:26.048
+trendPlot.legend	FwTrendingPlot	0	0x101	29.09.2010 08:20:26.048
+trendPlot.isTemplate	FwTrendingPlot	0	0x101	29.09.2010 08:20:26.048
+trendPlot.curvesHidden	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	29.09.2010 08:20:26.048
+trendPlot.yRangeMin	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	29.09.2010 08:20:26.048
+trendPlot.yRangeMax	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	29.09.2010 08:20:26.048
+trendPlot.plotType	FwTrendingPlot	1	0x101	29.09.2010 08:20:26.048
+trendPlot.templateName	FwTrendingPlot	""	0x101	29.09.2010 08:20:26.048
+trendPlot.timeRange	FwTrendingPlot	3600	0x101	29.09.2010 08:20:26.048
+trendPlot.isLogarithmic	FwTrendingPlot	0	0x101	29.09.2010 08:20:26.048
+trendPlot.curveTypes	FwTrendingPlot	1, 1, 1, 1, 1, 1, 1, 1	0x101	29.09.2010 08:20:26.048
+trendPlot.plotForeColor	FwTrendingPlot	"FwTrendingTrendForeground"	0x101	29.09.2010 08:20:26.048
+trendPlot.grid	FwTrendingPlot	1	0x101	29.09.2010 08:20:26.048
+trendPlot.model	FwTrendingPlot	"Value over time"	0x101	29.09.2010 08:20:26.048
+trendPlot.xAxii	FwTrendingPlot		0x101	29.09.2010 08:20:26.048
+trendPlot.xDpes	FwTrendingPlot		0x101	29.09.2010 08:20:26.048
+trendPlot.xRangeMin	FwTrendingPlot		0x101	29.09.2010 08:20:26.048
+trendPlot.xRangeMax	FwTrendingPlot		0x101	29.09.2010 08:20:26.048
+trendPlot.xLegendTexts	FwTrendingPlot		0x101	29.09.2010 08:20:26.048
+trendPlot.markerType	FwTrendingPlot	0	0x101	29.09.2010 08:20:26.048
+trendPlot.accessControl.save	FwTrendingPlot	""	0x101	29.09.2010 08:20:26.059
