@@ -1,18 +1,38 @@
+-- Creating and populating new components table backup
+create table
+  CDW_COMPONENTS$IDS
+as
+  select
+    CMP_ID as CMP_ID_NEW,
+    CMP_NAME,
+    CMP_ID as CMP_ID_FIN
+  from
+    CDW_COMPONENTS
+/
+
+-- Add index
+CREATE UNIQUE INDEX CDW_COMPONENT_IDS_IDX ON CDW_COMPONENTS$IDS (CMP_ID_NEW, CMP_ID_FIN)
+/
+
+-- Add index
+CREATE UNIQUE INDEX CDW_COMPONENT_IDS_NAME_IDX ON CDW_COMPONENTS$IDS (CMP_NAME)
+/
+
 -- Set all identifiers to NULL
-update CDW_COMPONENTS set CMP_ID = null
+update CDW_COMPONENTS$IDS set CMP_ID_FIN = null
 /
 
 -- Update identifiers to previous id's (where it is possible)
 update
-  CDW_COMPONENTS c
+  CDW_COMPONENTS$IDS ci
 set
-  c.CMP_ID = (
+  ci.CMP_ID_FIN = (
     select
-      ci.CMP_ID
+      co.CMP_ID
     from
-      CDW_COMPONENTS$IMP ci
+      CDW_COMPONENTS$OLD co
     where
-      ci.CMP_NAME = c.CMP_NAME
+      ci.CMP_NAME = co.CMP_NAME
   )
 /
 
@@ -22,29 +42,50 @@ declare
 begin
 
   -- Insert all components that where removed from current ontology
-  for r in (select CMP_ID, CMP_NAME from CDW_COMPONENTS$IMP
+  for r in (select CMP_ID, CMP_NAME from CDW_COMPONENTS$OLD
               where (CMP_NAME) not in
                 (select CMP_NAME from CDW_COMPONENTS)) loop
 
     -- Create a special component class (REMOVED) and attach all removed components to it
     if l_ccl_id = 0 then
-      select max(CCL_ID) + 1 into l_ccl_id from CDW_COMPONENT_CLASSES;
+      select nvl(max(CCL_ID), 0) + 1 into l_ccl_id from CDW_COMPONENT_CLASSES;
       insert into CDW_COMPONENT_CLASSES (CCL_ID, CCL_NAME, CCL_DESCR) values (l_ccl_id, 'REMOVED', 'Automatically added while importing ontology');
     end if;
 
     insert into CDW_COMPONENTS (CMP_ID, CMP_NAME, CMP_CCL_ID) values (r.CMP_ID, r.CMP_NAME, l_ccl_id);
+    insert into CDW_COMPONENTS$IDS (CMP_ID_NEW, CMP_NAME, CMP_ID_FIN) values (r.CMP_ID, r.CMP_NAME, r.CMP_ID);
 
   end loop;
 
   -- Get next component id
-  select max(CMP_ID) + 1 into l_cmp_id from CDW_COMPONENTS where CMP_ID is not null;
+  select nvl(max(CMP_ID_FIN), 0) + 1 into l_cmp_id from CDW_COMPONENTS$IDS where CMP_ID_FIN is not null;
 
   -- Update newly created components with appropriate unique id's
-  for r in (select CMP_NAME from CDW_COMPONENTS where CMP_ID is null) loop
-    update CDW_COMPONENTS set CMP_ID = l_cmp_id where CMP_NAME = r.CMP_NAME;
+  for r in (select CMP_NAME from CDW_COMPONENTS$IDS where CMP_ID_FIN is null) loop
+    update CDW_COMPONENTS$IDS set CMP_ID_FIN = l_cmp_id where CMP_NAME = r.CMP_NAME;
     l_cmp_id := l_cmp_id + 1;
   end loop;
 
+end;
+/
+
+begin
+
+    -- Updating synonyms foreign key
+    update 
+        CDW_COMPONENT_SYNONYMS cs 
+    set 
+        cs.SYN_CMP_ID = (select ci.CMP_ID_FIN
+                         from CDW_COMPONENTS$IDS ci
+                         where ci.CMP_ID_NEW = cs.SYN_CMP_ID);
+
+    -- Updating components
+    update
+        CDW_COMPONENTS c
+    set
+        c.CMP_ID = (select ci.CMP_ID_FIN
+                    from CDW_COMPONENTS$IDS ci
+                    where ci.CMP_ID_NEW = c.CMP_ID);
 end;
 /
 

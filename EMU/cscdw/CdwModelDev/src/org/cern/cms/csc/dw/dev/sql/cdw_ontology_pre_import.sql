@@ -9,15 +9,25 @@ end;
 
 -- Dropping components table backup (if exists)
 begin
-    execute immediate 'drop table CDW_COMPONENTS$IMP';
-exception when others then
-    null;
+
+    begin
+        execute immediate 'drop table CDW_COMPONENTS$OLD';
+    exception when others then
+        null;
+    end;
+
+    begin
+        execute immediate 'drop table CDW_COMPONENTS$IDS';
+    exception when others then
+        null;
+    end;
+
 end;
 /
 
 -- Creating and populating current components table backup
 create table
-  CDW_COMPONENTS$IMP
+  CDW_COMPONENTS$OLD
 as
   select
     CMP_ID,
@@ -27,7 +37,7 @@ as
 /
 
 -- Add index
-CREATE UNIQUE INDEX CDW_COMPONENT_IMP_IDX ON CDW_COMPONENTS$IMP (CMP_NAME)
+CREATE UNIQUE INDEX CDW_COMPONENT_OLD_IDX ON CDW_COMPONENTS$OLD (CMP_NAME)
 /
 
 delete from CDW_COMPONENT_CLASS_PARENTS
