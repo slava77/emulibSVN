@@ -16,6 +16,17 @@ import javax.naming.NamingException;
 import javax.naming.RefAddr;
 import javax.naming.spi.ObjectFactory;
 
+/**
+ * A Custom Resource has to be created!
+ * Edit Custom Resource
+ * JNDI Name: OntologyGraphServices
+ * Resource Type: org.cern.cms.csc.dw.dao.GraphServicesDao
+ * Factory Class: org.cern.cms.csc.dw.util.GenericImmutableSingletonFactory
+ * Description: Ontology Graph Services Dao
+ * Status: Enabled
+ * @author valdo
+ */
+
 public class GenericImmutableSingletonFactory implements ObjectFactory {
 
     private static final Logger log = Logger.getLogger(GenericImmutableSingletonFactory.class.getName());
