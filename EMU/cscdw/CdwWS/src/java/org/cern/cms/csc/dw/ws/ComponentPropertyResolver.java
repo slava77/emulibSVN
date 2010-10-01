@@ -91,7 +91,7 @@ public class ComponentPropertyResolver implements ComponentPropertyResolverLocal
      */
     public boolean checkComponentType(Component component, Set<ComponentClassType> checkParents, boolean checkRecursive)
             throws ComponentNotFoundException {
-        return checkComponentType(ontologyDao.getGComponent(component.getId()), checkParents, checkRecursive);
+        return checkComponentType(ontologyDao.getGComponent(component.getName()), checkParents, checkRecursive);
     }
 
     /**
@@ -184,11 +184,11 @@ public class ComponentPropertyResolver implements ComponentPropertyResolverLocal
             GComponent gcomponent = null;
             Component component = (Component) PropertyUtils.getSimpleProperty(bean, componentProperty);
             if (component != null) {
-                gcomponent = ontologyDao.getGComponent(component.getId());
+                gcomponent = ontologyDao.getGComponent(component.getName());
             } else {
-                String componentId = (String) componentIdMethod.invoke(bean);
-                if (componentId != null) {
-                    gcomponent = ontologyDao.getGComponent(componentId);
+                String componentName = (String) componentIdMethod.invoke(bean);
+                if (componentName != null) {
+                    gcomponent = ontologyDao.getGComponent(componentName);
                 }
             }
 
