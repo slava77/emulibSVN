@@ -89,7 +89,7 @@ public class ComponentEditor extends ManyToOneEditor {
                 // if there is a selected item then find the object of the
                 // same name
                 if (autoComplete.getSelectedItem() != null) {
-                    Component c = getEntityDao().getOntologyDao().getComponentById(((GComponent) autoComplete.getSelectedItem().getValue()).getId());
+                    Component c = getEntityDao().getOntologyDao().getComponentByName(((GComponent) autoComplete.getSelectedItem().getValue()).getName());
                     setValue(c);
                 }
 
@@ -101,7 +101,7 @@ public class ComponentEditor extends ManyToOneEditor {
                         for(int i = 0, max = componentMatches.size(); i < max; i++){
                             tmp = (GComponent) componentMatches.get(i).getValue();
                             if (tmp.getName().compareToIgnoreCase(newWord) == 0) {
-                                setValue(getEntityDao().getOntologyDao().getComponentById(tmp.getId()));
+                                setValue(getEntityDao().getOntologyDao().getComponentByName(tmp.getName()));
                                 break;
                             }
                         }
