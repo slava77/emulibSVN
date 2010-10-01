@@ -3985,6 +3985,7 @@ mudcsMasterChannelSwitch(int isOn, dyn_string coord, int channel, string fsm){
     if (voltage > 3000) { // nominal voltage
       voltage_s="4000";
     } else {              // standby voltage
+      voltage_s=voltage;
       // check if a fellow chamber (if one exists) doesn't have a higher voltage setting
       string fellowChamberDp = emuhv_getFellowChamber(fsm);
       if (fellowChamberDp != "") {
@@ -3995,8 +3996,6 @@ mudcsMasterChannelSwitch(int isOn, dyn_string coord, int channel, string fsm){
         } else if (fellowChamberVoltage > voltage) {
           voltage_s = fellowChamberVoltage;
         }
-      } else {
-        voltage_s=voltage;
       }
     }
 
