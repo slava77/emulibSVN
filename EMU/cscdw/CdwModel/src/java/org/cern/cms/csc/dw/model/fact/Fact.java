@@ -84,6 +84,7 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
     FedFsmFact.class,
     DqmCscAfebFact.class,
     DqmCscHvSegmentFact.class,
+    EmuMonitorFact.class,
     TmbCounterFact.class,
     DqmCscFact.class,
     DqmEmuFact.class,

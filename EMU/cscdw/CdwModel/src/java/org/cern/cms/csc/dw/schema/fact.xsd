@@ -24,6 +24,7 @@
     <xsd:include schemaLocation="tmbTriggerCounterFact.xsd"/>
     <xsd:include schemaLocation="tmbCounterFact.xsd"/>
     <xsd:include schemaLocation="dqmFact.xsd"/>
+    <xsd:include schemaLocation="emuMonitorFact.xsd"/>
     <xsd:include schemaLocation="applicationStatusFact.xsd"/>
     <xsd:include schemaLocation="localDAQStatusFact.xsd"/>
     <xsd:include schemaLocation="fedFacts.xsd"/>

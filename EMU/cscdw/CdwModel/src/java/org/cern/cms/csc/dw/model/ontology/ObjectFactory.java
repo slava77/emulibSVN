@@ -36,19 +36,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Component }
+     * Create an instance of {@link ComponentSynonym }
      * 
      */
-    public Component createComponent() {
-        return new Component();
-    }
-
-    /**
-     * Create an instance of {@link ComponentLinkClass }
-     * 
-     */
-    public ComponentLinkClass createComponentLinkClass() {
-        return new ComponentLinkClass();
+    public ComponentSynonym createComponentSynonym() {
+        return new ComponentSynonym();
     }
 
     /**
@@ -60,11 +52,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ComponentSynonym }
+     * Create an instance of {@link ComponentLinkClass }
      * 
      */
-    public ComponentSynonym createComponentSynonym() {
-        return new ComponentSynonym();
+    public ComponentLinkClass createComponentLinkClass() {
+        return new ComponentLinkClass();
+    }
+
+    /**
+     * Create an instance of {@link Component }
+     * 
+     */
+    public Component createComponent() {
+        return new Component();
     }
 
 }

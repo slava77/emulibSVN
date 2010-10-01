@@ -42,11 +42,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link DataServiceEntity }
+     * Create an instance of {@link DataServiceEntityCollection }
      * 
      */
-    public DataServiceEntity createDataServiceEntity() {
-        return new DataServiceEntity();
+    public DataServiceEntityCollection createDataServiceEntityCollection() {
+        return new DataServiceEntityCollection();
     }
 
     /**
@@ -58,11 +58,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link DataServiceEntityCollection }
+     * Create an instance of {@link DataServiceEntity }
      * 
      */
-    public DataServiceEntityCollection createDataServiceEntityCollection() {
-        return new DataServiceEntityCollection();
+    public DataServiceEntity createDataServiceEntity() {
+        return new DataServiceEntity();
     }
 
     /**

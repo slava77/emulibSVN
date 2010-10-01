@@ -20,14 +20,6 @@ public class OntologyDao extends GOntologyDao implements OntologyDaoLocal, Seria
     @PersistenceContext(unitName="CdwPU")
     private EntityManager em;
 
-    public Component getComponentById(Long id) throws ComponentNotFoundException {
-        Component c = (Component) em.find(Component.class, id);        
-        if (c == null) {
-            throw new ComponentNotFoundException(OntologySource.RELATIONAL_DATABASE, id);
-        }
-        return c;
-    }
-
     public ComponentClass getComponentClassById(Long id) throws ComponentClassNotFoundException {
         ComponentClass cc = em.find(ComponentClass.class, id);
         if (cc == null) {
@@ -51,8 +43,8 @@ public class OntologyDao extends GOntologyDao implements OntologyDaoLocal, Seria
     }
 
     public Component getComponentByName(String name) throws ComponentNotFoundException {
-        Component c = (Component) em.createQuery("select c from Component c where name = ?")
-                                    .setParameter(0, name)
+        Component c = (Component) em.createQuery("select c from org.cern.cms.csc.dw.model.ontology.Component c where name = ?")
+                                    .setParameter(1, name)
                                     .getSingleResult();
         if (c == null) {
             throw new ComponentNotFoundException(OntologySource.RELATIONAL_DATABASE, name);
