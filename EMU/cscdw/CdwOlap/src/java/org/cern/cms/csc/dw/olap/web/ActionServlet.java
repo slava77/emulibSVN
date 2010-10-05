@@ -1,6 +1,7 @@
 package org.cern.cms.csc.dw.olap.web;
 
 import com.tonbeller.jpivot.mondrian.MondrianMdxQuery;
+import com.tonbeller.jpivot.mondrian.MondrianModel;
 import com.tonbeller.jpivot.tags.OlapModelProxy;
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import mondrian.olap.CacheControl;
 import org.json.JSONArray;
 
 public class ActionServlet extends HttpServlet {
@@ -31,6 +33,10 @@ public class ActionServlet extends HttpServlet {
 
             if (id.equalsIgnoreCase("reset")) {
                 request.getSession().invalidate();
+            }
+
+            if (id.equalsIgnoreCase("refresh")) {
+                refreshCache(request.getSession());
             }
 
             if (id.equalsIgnoreCase("select")) {
@@ -69,9 +75,14 @@ public class ActionServlet extends HttpServlet {
         OlapModelProxy query01 = (OlapModelProxy) session.getAttribute("query01");
         MondrianMdxQuery mdxQuery = (MondrianMdxQuery) query01.getExtension("mdxQuery");
         mdxQuery.setMdxQuery(query);
-        //query01.addExtension(mdxQuery);
-        //session.setAttribute("query01", query01);
     }
 
+    private void refreshCache(HttpSession session) {
+        OlapModelProxy query01 = (OlapModelProxy) session.getAttribute("query01");
+        MondrianMdxQuery mdxQuery = (MondrianMdxQuery) query01.getExtension("mdxQuery");
+        MondrianModel mm = (MondrianModel) mdxQuery.getModel();
+        CacheControl cc = mm.getConnection().getCacheControl(null);
+        cc.flushSchema(mm.getConnection().getSchema());
+    }
 
 }

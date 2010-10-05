@@ -6506,11 +6506,11 @@ CREATE TABLE CDW_OLAP$D_COMPONENTS AS
         
 
 /
-DROP VIEW CDW_DQM_CSC_FACTS$D1
+DROP VIEW CDW_TMB_TRG_CNT_SLIDING_FAC$D1
 
 /
 
-CREATE VIEW CDW_DQM_CSC_FACTS$D1 AS
+CREATE VIEW CDW_TMB_TRG_CNT_SLIDING_FAC$D1 AS
 SELECT
 	  a.time_data "TIME"
 	, to_number(TO_CHAR(a.time_data, 'YYYY')) "YEAR"
@@ -6522,7 +6522,47 @@ SELECT
 	, to_number(TO_CHAR(a.time_data, 'D')) "WEEKDAY"
 	, initcap(trim(TO_CHAR(a.time_data, 'DAY'))) "WEEKDAY_NAME"
 FROM
-	(SELECT DISTINCT FCT_TIME as time_data FROM CDW_DQM_CSC_FACTS
+	(SELECT DISTINCT FCT_TIME as time_data FROM CDW_TMB_TRG_CNT_SLIDING_FACTS
+	WHERE FCT_TIME is not null) a
+
+/
+DROP VIEW CDW_DDU_FMM_IRQ_FACTS$D1
+
+/
+
+CREATE VIEW CDW_DDU_FMM_IRQ_FACTS$D1 AS
+SELECT
+	  a.time_data "TIME"
+	, to_number(TO_CHAR(a.time_data, 'YYYY')) "YEAR"
+	, to_number(TO_CHAR(a.time_data, 'MM')) "MONTH"
+	, initcap(trim(TO_CHAR(a.time_data, 'MONTH'))) "MONTH_NAME"
+	, to_number(TO_CHAR(a.time_data, 'W')) "WEEK"
+	, 'Week ' || TO_CHAR(a.time_data, 'W') "WEEK_NAME"
+	, to_number(TO_CHAR(a.time_data, 'DD')) "DAY"
+	, to_number(TO_CHAR(a.time_data, 'D')) "WEEKDAY"
+	, initcap(trim(TO_CHAR(a.time_data, 'DAY'))) "WEEKDAY_NAME"
+FROM
+	(SELECT DISTINCT FCT_TIME as time_data FROM CDW_DDU_FMM_IRQ_FACTS
+	WHERE FCT_TIME is not null) a
+
+/
+DROP VIEW CDW_DQM_DDU_FACTS$D1
+
+/
+
+CREATE VIEW CDW_DQM_DDU_FACTS$D1 AS
+SELECT
+	  a.time_data "TIME"
+	, to_number(TO_CHAR(a.time_data, 'YYYY')) "YEAR"
+	, to_number(TO_CHAR(a.time_data, 'MM')) "MONTH"
+	, initcap(trim(TO_CHAR(a.time_data, 'MONTH'))) "MONTH_NAME"
+	, to_number(TO_CHAR(a.time_data, 'W')) "WEEK"
+	, 'Week ' || TO_CHAR(a.time_data, 'W') "WEEK_NAME"
+	, to_number(TO_CHAR(a.time_data, 'DD')) "DAY"
+	, to_number(TO_CHAR(a.time_data, 'D')) "WEEKDAY"
+	, initcap(trim(TO_CHAR(a.time_data, 'DAY'))) "WEEKDAY_NAME"
+FROM
+	(SELECT DISTINCT FCT_TIME as time_data FROM CDW_DQM_DDU_FACTS
 	WHERE FCT_TIME is not null) a
 
 /
@@ -6566,6 +6606,46 @@ FROM
 	WHERE FCT_TIME is not null) a
 
 /
+DROP VIEW CDW_LOCAL_DAQ_STATUS_FACTS$D1
+
+/
+
+CREATE VIEW CDW_LOCAL_DAQ_STATUS_FACTS$D1 AS
+SELECT
+	  a.time_data "TIME"
+	, to_number(TO_CHAR(a.time_data, 'YYYY')) "YEAR"
+	, to_number(TO_CHAR(a.time_data, 'MM')) "MONTH"
+	, initcap(trim(TO_CHAR(a.time_data, 'MONTH'))) "MONTH_NAME"
+	, to_number(TO_CHAR(a.time_data, 'W')) "WEEK"
+	, 'Week ' || TO_CHAR(a.time_data, 'W') "WEEK_NAME"
+	, to_number(TO_CHAR(a.time_data, 'DD')) "DAY"
+	, to_number(TO_CHAR(a.time_data, 'D')) "WEEKDAY"
+	, initcap(trim(TO_CHAR(a.time_data, 'DAY'))) "WEEKDAY_NAME"
+FROM
+	(SELECT DISTINCT FCT_TIME as time_data FROM CDW_LOCAL_DAQ_STATUS_FACTS
+	WHERE FCT_TIME is not null) a
+
+/
+DROP VIEW CDW_DQM_REPORT_FACTS$D1
+
+/
+
+CREATE VIEW CDW_DQM_REPORT_FACTS$D1 AS
+SELECT
+	  a.time_data "TIME"
+	, to_number(TO_CHAR(a.time_data, 'YYYY')) "YEAR"
+	, to_number(TO_CHAR(a.time_data, 'MM')) "MONTH"
+	, initcap(trim(TO_CHAR(a.time_data, 'MONTH'))) "MONTH_NAME"
+	, to_number(TO_CHAR(a.time_data, 'W')) "WEEK"
+	, 'Week ' || TO_CHAR(a.time_data, 'W') "WEEK_NAME"
+	, to_number(TO_CHAR(a.time_data, 'DD')) "DAY"
+	, to_number(TO_CHAR(a.time_data, 'D')) "WEEKDAY"
+	, initcap(trim(TO_CHAR(a.time_data, 'DAY'))) "WEEKDAY_NAME"
+FROM
+	(SELECT DISTINCT FCT_TIME as time_data FROM CDW_DQM_REPORT_FACTS
+	WHERE FCT_TIME is not null) a
+
+/
 DROP VIEW CDW_DQM_CSC_CFEB_FACTS$D1
 
 /
@@ -6583,46 +6663,6 @@ SELECT
 	, initcap(trim(TO_CHAR(a.time_data, 'DAY'))) "WEEKDAY_NAME"
 FROM
 	(SELECT DISTINCT FCT_TIME as time_data FROM CDW_DQM_CSC_CFEB_FACTS
-	WHERE FCT_TIME is not null) a
-
-/
-DROP VIEW CDW_DQM_CSC_HV_SEGMENT_FACT$D1
-
-/
-
-CREATE VIEW CDW_DQM_CSC_HV_SEGMENT_FACT$D1 AS
-SELECT
-	  a.time_data "TIME"
-	, to_number(TO_CHAR(a.time_data, 'YYYY')) "YEAR"
-	, to_number(TO_CHAR(a.time_data, 'MM')) "MONTH"
-	, initcap(trim(TO_CHAR(a.time_data, 'MONTH'))) "MONTH_NAME"
-	, to_number(TO_CHAR(a.time_data, 'W')) "WEEK"
-	, 'Week ' || TO_CHAR(a.time_data, 'W') "WEEK_NAME"
-	, to_number(TO_CHAR(a.time_data, 'DD')) "DAY"
-	, to_number(TO_CHAR(a.time_data, 'D')) "WEEKDAY"
-	, initcap(trim(TO_CHAR(a.time_data, 'DAY'))) "WEEKDAY_NAME"
-FROM
-	(SELECT DISTINCT FCT_TIME as time_data FROM CDW_DQM_CSC_HV_SEGMENT_FACTS
-	WHERE FCT_TIME is not null) a
-
-/
-DROP VIEW CDW_TMB_CNT_FACTS$D1
-
-/
-
-CREATE VIEW CDW_TMB_CNT_FACTS$D1 AS
-SELECT
-	  a.time_data "TIME"
-	, to_number(TO_CHAR(a.time_data, 'YYYY')) "YEAR"
-	, to_number(TO_CHAR(a.time_data, 'MM')) "MONTH"
-	, initcap(trim(TO_CHAR(a.time_data, 'MONTH'))) "MONTH_NAME"
-	, to_number(TO_CHAR(a.time_data, 'W')) "WEEK"
-	, 'Week ' || TO_CHAR(a.time_data, 'W') "WEEK_NAME"
-	, to_number(TO_CHAR(a.time_data, 'DD')) "DAY"
-	, to_number(TO_CHAR(a.time_data, 'D')) "WEEKDAY"
-	, initcap(trim(TO_CHAR(a.time_data, 'DAY'))) "WEEKDAY_NAME"
-FROM
-	(SELECT DISTINCT FCT_TIME as time_data FROM CDW_TMB_CNT_FACTS
 	WHERE FCT_TIME is not null) a
 
 /
@@ -6646,11 +6686,11 @@ FROM
 	WHERE FCT_TIME is not null) a
 
 /
-DROP VIEW CDW_DQM_DDU_FACTS$D1
+DROP VIEW CDW_FED_FSM_FACTS$D1
 
 /
 
-CREATE VIEW CDW_DQM_DDU_FACTS$D1 AS
+CREATE VIEW CDW_FED_FSM_FACTS$D1 AS
 SELECT
 	  a.time_data "TIME"
 	, to_number(TO_CHAR(a.time_data, 'YYYY')) "YEAR"
@@ -6662,7 +6702,47 @@ SELECT
 	, to_number(TO_CHAR(a.time_data, 'D')) "WEEKDAY"
 	, initcap(trim(TO_CHAR(a.time_data, 'DAY'))) "WEEKDAY_NAME"
 FROM
-	(SELECT DISTINCT FCT_TIME as time_data FROM CDW_DQM_DDU_FACTS
+	(SELECT DISTINCT FCT_TIME as time_data FROM CDW_FED_FSM_FACTS
+	WHERE FCT_TIME is not null) a
+
+/
+DROP VIEW CDW_DQM_CSC_FACTS$D1
+
+/
+
+CREATE VIEW CDW_DQM_CSC_FACTS$D1 AS
+SELECT
+	  a.time_data "TIME"
+	, to_number(TO_CHAR(a.time_data, 'YYYY')) "YEAR"
+	, to_number(TO_CHAR(a.time_data, 'MM')) "MONTH"
+	, initcap(trim(TO_CHAR(a.time_data, 'MONTH'))) "MONTH_NAME"
+	, to_number(TO_CHAR(a.time_data, 'W')) "WEEK"
+	, 'Week ' || TO_CHAR(a.time_data, 'W') "WEEK_NAME"
+	, to_number(TO_CHAR(a.time_data, 'DD')) "DAY"
+	, to_number(TO_CHAR(a.time_data, 'D')) "WEEKDAY"
+	, initcap(trim(TO_CHAR(a.time_data, 'DAY'))) "WEEKDAY_NAME"
+FROM
+	(SELECT DISTINCT FCT_TIME as time_data FROM CDW_DQM_CSC_FACTS
+	WHERE FCT_TIME is not null) a
+
+/
+DROP VIEW CDW_DQM_EMU_FACTS$D1
+
+/
+
+CREATE VIEW CDW_DQM_EMU_FACTS$D1 AS
+SELECT
+	  a.time_data "TIME"
+	, to_number(TO_CHAR(a.time_data, 'YYYY')) "YEAR"
+	, to_number(TO_CHAR(a.time_data, 'MM')) "MONTH"
+	, initcap(trim(TO_CHAR(a.time_data, 'MONTH'))) "MONTH_NAME"
+	, to_number(TO_CHAR(a.time_data, 'W')) "WEEK"
+	, 'Week ' || TO_CHAR(a.time_data, 'W') "WEEK_NAME"
+	, to_number(TO_CHAR(a.time_data, 'DD')) "DAY"
+	, to_number(TO_CHAR(a.time_data, 'D')) "WEEKDAY"
+	, initcap(trim(TO_CHAR(a.time_data, 'DAY'))) "WEEKDAY_NAME"
+FROM
+	(SELECT DISTINCT FCT_TIME as time_data FROM CDW_DQM_EMU_FACTS
 	WHERE FCT_TIME is not null) a
 
 /
@@ -6686,11 +6766,11 @@ FROM
 	WHERE FCT_TIME is not null) a
 
 /
-DROP VIEW CDW_DQM_EMU_FACTS$D1
+DROP VIEW CDW_DDU_FMM_RESET_FACTS$D1
 
 /
 
-CREATE VIEW CDW_DQM_EMU_FACTS$D1 AS
+CREATE VIEW CDW_DDU_FMM_RESET_FACTS$D1 AS
 SELECT
 	  a.time_data "TIME"
 	, to_number(TO_CHAR(a.time_data, 'YYYY')) "YEAR"
@@ -6702,7 +6782,87 @@ SELECT
 	, to_number(TO_CHAR(a.time_data, 'D')) "WEEKDAY"
 	, initcap(trim(TO_CHAR(a.time_data, 'DAY'))) "WEEKDAY_NAME"
 FROM
-	(SELECT DISTINCT FCT_TIME as time_data FROM CDW_DQM_EMU_FACTS
+	(SELECT DISTINCT FCT_TIME as time_data FROM CDW_DDU_FMM_RESET_FACTS
+	WHERE FCT_TIME is not null) a
+
+/
+DROP VIEW CDW_TMB_TRG_CNT_CUMUL_FACTS$D1
+
+/
+
+CREATE VIEW CDW_TMB_TRG_CNT_CUMUL_FACTS$D1 AS
+SELECT
+	  a.time_data "TIME"
+	, to_number(TO_CHAR(a.time_data, 'YYYY')) "YEAR"
+	, to_number(TO_CHAR(a.time_data, 'MM')) "MONTH"
+	, initcap(trim(TO_CHAR(a.time_data, 'MONTH'))) "MONTH_NAME"
+	, to_number(TO_CHAR(a.time_data, 'W')) "WEEK"
+	, 'Week ' || TO_CHAR(a.time_data, 'W') "WEEK_NAME"
+	, to_number(TO_CHAR(a.time_data, 'DD')) "DAY"
+	, to_number(TO_CHAR(a.time_data, 'D')) "WEEKDAY"
+	, initcap(trim(TO_CHAR(a.time_data, 'DAY'))) "WEEKDAY_NAME"
+FROM
+	(SELECT DISTINCT FCT_TIME as time_data FROM CDW_TMB_TRG_CNT_CUMUL_FACTS
+	WHERE FCT_TIME is not null) a
+
+/
+DROP VIEW CDW_TMB_CNT_FACTS$D1
+
+/
+
+CREATE VIEW CDW_TMB_CNT_FACTS$D1 AS
+SELECT
+	  a.time_data "TIME"
+	, to_number(TO_CHAR(a.time_data, 'YYYY')) "YEAR"
+	, to_number(TO_CHAR(a.time_data, 'MM')) "MONTH"
+	, initcap(trim(TO_CHAR(a.time_data, 'MONTH'))) "MONTH_NAME"
+	, to_number(TO_CHAR(a.time_data, 'W')) "WEEK"
+	, 'Week ' || TO_CHAR(a.time_data, 'W') "WEEK_NAME"
+	, to_number(TO_CHAR(a.time_data, 'DD')) "DAY"
+	, to_number(TO_CHAR(a.time_data, 'D')) "WEEKDAY"
+	, initcap(trim(TO_CHAR(a.time_data, 'DAY'))) "WEEKDAY_NAME"
+FROM
+	(SELECT DISTINCT FCT_TIME as time_data FROM CDW_TMB_CNT_FACTS
+	WHERE FCT_TIME is not null) a
+
+/
+DROP VIEW CDW_APP_STATUS_FACTS$D1
+
+/
+
+CREATE VIEW CDW_APP_STATUS_FACTS$D1 AS
+SELECT
+	  a.time_data "TIME"
+	, to_number(TO_CHAR(a.time_data, 'YYYY')) "YEAR"
+	, to_number(TO_CHAR(a.time_data, 'MM')) "MONTH"
+	, initcap(trim(TO_CHAR(a.time_data, 'MONTH'))) "MONTH_NAME"
+	, to_number(TO_CHAR(a.time_data, 'W')) "WEEK"
+	, 'Week ' || TO_CHAR(a.time_data, 'W') "WEEK_NAME"
+	, to_number(TO_CHAR(a.time_data, 'DD')) "DAY"
+	, to_number(TO_CHAR(a.time_data, 'D')) "WEEKDAY"
+	, initcap(trim(TO_CHAR(a.time_data, 'DAY'))) "WEEKDAY_NAME"
+FROM
+	(SELECT DISTINCT FCT_TIME as time_data FROM CDW_APP_STATUS_FACTS
+	WHERE FCT_TIME is not null) a
+
+/
+DROP VIEW CDW_DQM_CSC_HV_SEGMENT_FACT$D1
+
+/
+
+CREATE VIEW CDW_DQM_CSC_HV_SEGMENT_FACT$D1 AS
+SELECT
+	  a.time_data "TIME"
+	, to_number(TO_CHAR(a.time_data, 'YYYY')) "YEAR"
+	, to_number(TO_CHAR(a.time_data, 'MM')) "MONTH"
+	, initcap(trim(TO_CHAR(a.time_data, 'MONTH'))) "MONTH_NAME"
+	, to_number(TO_CHAR(a.time_data, 'W')) "WEEK"
+	, 'Week ' || TO_CHAR(a.time_data, 'W') "WEEK_NAME"
+	, to_number(TO_CHAR(a.time_data, 'DD')) "DAY"
+	, to_number(TO_CHAR(a.time_data, 'D')) "WEEKDAY"
+	, initcap(trim(TO_CHAR(a.time_data, 'DAY'))) "WEEKDAY_NAME"
+FROM
+	(SELECT DISTINCT FCT_TIME as time_data FROM CDW_DQM_CSC_HV_SEGMENT_FACTS
 	WHERE FCT_TIME is not null) a
 
 /

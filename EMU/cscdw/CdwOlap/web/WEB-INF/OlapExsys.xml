@@ -1,414 +1,604 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <schema name="CSC-EXSYS">
-    <Dimension name="Chamber" type="StandardDimension">
-        <Hierarchy hasAll="true" name="Chamber" primaryKey="CMP_ID">
-            <Table name="CDW_OLAP$D_CHAMBERS" schema="CMS_CSC_DW"/>
-            <Level column="ENDCAP" hideMemberIf="Never" levelType="Regular" name="Endcap" type="String" uniqueMembers="true"/>
-            <Level column="STATION" hideMemberIf="Never" levelType="Regular" name="Station" type="String" uniqueMembers="true"/>
-            <Level column="RING" hideMemberIf="Never" levelType="Regular" name="Ring" type="String" uniqueMembers="true"/>
-            <Level column="CHAMBER" hideMemberIf="Never" levelType="Regular" name="Chamber" type="String" uniqueMembers="true"/>
-            <Level column="LAYER" hideMemberIf="Never" levelType="Regular" name="Layer" type="String" uniqueMembers="true"/>
-        </Hierarchy>
-    </Dimension>
-    <Dimension name="Component" type="StandardDimension">
-        <Hierarchy hasAll="true" name="Component" primaryKey="CMP_ID">
-            <Table name="CDW_OLAP$D_COMPONENTS" schema="CMS_CSC_DW"/>
-            <Level column="CLASS" hideMemberIf="Never" levelType="Regular" name="Class" type="String" uniqueMembers="true"/>
-            <Level column="COMPONENT" hideMemberIf="Never" levelType="Regular" name="Component" type="String" uniqueMembers="true"/>
-        </Hierarchy>
-    </Dimension>
-    <Cube cache="false" enabled="true" name="CDW_DQM_CSC_FACTS">
-        <Table name="CDW_DQM_CSC_FACTS" schema="CMS_CSC_DW"/>
-        <DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
-        <Dimension name="Run" type="StandardDimension">
-            <Hierarchy hasAll="true" name="Run">
-                <Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Dimension name="Severity" type="StandardDimension">
-            <Hierarchy hasAll="true" name="Severity">
-                <Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
-            <Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
-                <Table name="CDW_DQM_CSC_FACTS$D1" schema="CMS_CSC_DW"/>
-                <Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
-                <Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
-                <Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
-        <Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT6" datatype="Integer" name="formatErrorAlctCrcError" visible="true"/>
-        <Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT17" datatype="Integer" name="formatErrorAlctDavError" visible="true"/>
-        <Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT4" datatype="Integer" name="formatErrorAlctHeaderMissing" visible="true"/>
-        <Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT7" datatype="Integer" name="formatErrorAlctTrailerBitError" visible="true"/>
-        <Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT3" datatype="Integer" name="formatErrorAlctTrailerMissing" visible="true"/>
-        <Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT5" datatype="Integer" name="formatErrorAlctWordCountError" visible="true"/>
-        <Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT16" datatype="Integer" name="formatErrorC-Words" visible="true"/>
-        <Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT14" datatype="Integer" name="formatErrorCfebCrcError" visible="true"/>
-        <Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT19" datatype="Integer" name="formatErrorCfebDavError" visible="true"/>
-        <Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT13" datatype="Integer" name="formatErrorCfebSampleCountError" visible="true"/>
-        <Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT12" datatype="Integer" name="formatErrorCfebWordCountPerSampleError" visible="true"/>
-        <Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT15" datatype="Integer" name="formatErrorDduEventSizeLimitError" visible="true"/>
-        <Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT2" datatype="Integer" name="formatErrorDmbHeaderMissing" visible="true"/>
-        <Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT1" datatype="Integer" name="formatErrorDmbTrailerMissing" visible="true"/>
-        <Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT11" datatype="Integer" name="formatErrorTmbCrcError" visible="true"/>
-        <Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT18" datatype="Integer" name="formatErrorTmbDavError" visible="true"/>
-        <Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT9" datatype="Integer" name="formatErrorTmbHeaderMissing" visible="true"/>
-        <Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT8" datatype="Integer" name="formatErrorTmbTrailerMissing" visible="true"/>
-        <Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT10" datatype="Integer" name="formatErrorTmbWordCountError" visible="true"/>
-        <Measure aggregator="sum" column="FCT_HOT_CHAMBER" datatype="Integer" name="hotChamber" visible="true"/>
-        <Measure aggregator="sum" column="FCT_LOW_EFF_CHAMBER" datatype="Integer" name="lowEfficiencyChamber" visible="true"/>
-        <Measure aggregator="sum" column="FCT_WITH_BWORDS" datatype="Integer" name="withBwords" visible="true"/>
-        <Measure aggregator="sum" column="FCT_WITH_FORMAT_ERRORS" datatype="Integer" name="withFormatErrors" visible="true"/>
-        <Measure aggregator="sum" column="FCT_WITH_INPUT_FIFO_FULL" datatype="Integer" name="withInputFifoFull" visible="true"/>
-        <Measure aggregator="sum" column="FCT_WITH_INPUT_TIMEOUT" datatype="Integer" name="withInputTimeout" visible="true"/>
-        <Measure aggregator="sum" column="FCT_WITH_L1A_OUT_OF_SYNC" datatype="Integer" name="withL1aOutOfSync" visible="true"/>
-        <Measure aggregator="sum" column="FCT_WITHOUT_ALCT" datatype="Integer" name="withoutAlct" visible="true"/>
-        <Measure aggregator="sum" column="FCT_WITHOUT_CFEB" datatype="Integer" name="withoutCfeb" visible="true"/>
-        <Measure aggregator="sum" column="FCT_WITHOUT_CLCT" datatype="Integer" name="withoutClct" visible="true"/>
-    </Cube>
-    <Cube cache="false" enabled="true" name="CDW_EMU_MONITOR_FACTS">
-        <Table name="CDW_EMU_MONITOR_FACTS" schema="CMS_CSC_DW"/>
-        <DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
-        <Dimension name="Run" type="StandardDimension">
-            <Hierarchy hasAll="true" name="Run">
-                <Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Dimension name="Severity" type="StandardDimension">
-            <Hierarchy hasAll="true" name="Severity">
-                <Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Dimension name="State" type="StandardDimension">
-            <Hierarchy hasAll="true" name="State">
-                <Level column="FCT_STATE" hideMemberIf="Never" levelType="Regular" name="State" type="String" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Dimension foreignKey="FCT_STATE_CHANGE_TIME" name="State Change Time" type="TimeDimension">
-            <Hierarchy allMemberName="All Periods" hasAll="true" name="State Change Time" primaryKey="TIME">
-                <Table name="CDW_EMU_MONITOR_FACTS$D1" schema="CMS_CSC_DW"/>
-                <Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
-                <Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
-                <Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
-            <Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
-                <Table name="CDW_EMU_MONITOR_FACTS$D2" schema="CMS_CSC_DW"/>
-                <Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
-                <Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
-                <Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
-        <Measure aggregator="max" column="FCT_CSC_DETECTED" datatype="Integer" name="CSC Detected" visible="true"/>
-        <Measure aggregator="avg" column="FCT_CSC_RATE" datatype="Integer" name="CSC Rate" visible="true"/>
-        <Measure aggregator="max" column="FCT_CSC_UNPACKED" datatype="Integer" name="CSC Unpacked" visible="true"/>
-        <Measure aggregator="max" column="FCT_DQM_EVENTS" datatype="Integer" name="DQM Events" visible="true"/>
-        <Measure aggregator="avg" column="FCT_DQM_RATE" datatype="Integer" name="DQM Rate" visible="true"/>
-    </Cube>
-    <Cube cache="false" enabled="true" name="CDW_DQM_CSC_CFEB_FACTS">
-        <Table name="CDW_DQM_CSC_CFEB_FACTS" schema="CMS_CSC_DW"/>
-        <DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
-        <Dimension name="Run" type="StandardDimension">
-            <Hierarchy hasAll="true" name="Run">
-                <Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Dimension name="Severity" type="StandardDimension">
-            <Hierarchy hasAll="true" name="Severity">
-                <Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
-            <Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
-                <Table name="CDW_DQM_CSC_CFEB_FACTS$D1" schema="CMS_CSC_DW"/>
-                <Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
-                <Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
-                <Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
-        <Measure aggregator="sum" column="FCT_WITH_LOW_CFEB_DAV_EFF" datatype="Integer" name="withLowCfebDavEfficiency" visible="true"/>
-    </Cube>
-    <Cube cache="false" enabled="true" name="CDW_DQM_CSC_HV_SEGMENT_FACTS">
-        <Table name="CDW_DQM_CSC_HV_SEGMENT_FACTS" schema="CMS_CSC_DW"/>
-        <DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
-        <Dimension name="Run" type="StandardDimension">
-            <Hierarchy hasAll="true" name="Run">
-                <Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Dimension name="Severity" type="StandardDimension">
-            <Hierarchy hasAll="true" name="Severity">
-                <Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
-            <Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
-                <Table name="CDW_DQM_CSC_HV_SEGMENT_FACT$D1" schema="CMS_CSC_DW"/>
-                <Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
-                <Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
-                <Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
-        <Measure aggregator="sum" column="FCT_NO_HV_SEGMENT" datatype="Integer" name="noHvSegment" visible="true"/>
-    </Cube>
-    <Cube cache="false" enabled="true" name="CDW_TMB_CNT_FACTS">
-        <Table name="CDW_TMB_CNT_FACTS" schema="CMS_CSC_DW"/>
-        <DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
-        <Dimension name="Run" type="StandardDimension">
-            <Hierarchy hasAll="true" name="Run">
-                <Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Dimension name="Severity" type="StandardDimension">
-            <Hierarchy hasAll="true" name="Severity">
-                <Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
-            <Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
-                <Table name="CDW_TMB_CNT_FACTS$D1" schema="CMS_CSC_DW"/>
-                <Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
-                <Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
-                <Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Dimension name="version" type="StandardDimension">
-            <Hierarchy hasAll="true" name="version">
-                <Level column="FCT_VERSION" hideMemberIf="Never" levelType="Regular" name="version" type="String" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC00" datatype="Integer" name="TC00" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC01" datatype="Integer" name="TC01" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC02" datatype="Integer" name="TC02" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC03" datatype="Integer" name="TC03" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC04" datatype="Integer" name="TC04" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC05" datatype="Integer" name="TC05" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC06" datatype="Integer" name="TC06" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC07" datatype="Integer" name="TC07" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC08" datatype="Integer" name="TC08" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC09" datatype="Integer" name="TC09" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC10" datatype="Integer" name="TC10" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC11" datatype="Integer" name="TC11" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC12" datatype="Integer" name="TC12" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC13" datatype="Integer" name="TC13" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC14" datatype="Integer" name="TC14" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC15" datatype="Integer" name="TC15" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC16" datatype="Integer" name="TC16" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC17" datatype="Integer" name="TC17" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC18" datatype="Integer" name="TC18" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC19" datatype="Integer" name="TC19" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC20" datatype="Integer" name="TC20" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC21" datatype="Integer" name="TC21" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC22" datatype="Integer" name="TC22" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC23" datatype="Integer" name="TC23" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC24" datatype="Integer" name="TC24" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC25" datatype="Integer" name="TC25" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC26" datatype="Integer" name="TC26" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC27" datatype="Integer" name="TC27" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC28" datatype="Integer" name="TC28" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC29" datatype="Integer" name="TC29" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC30" datatype="Integer" name="TC30" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC31" datatype="Integer" name="TC31" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC32" datatype="Integer" name="TC32" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC33" datatype="Integer" name="TC33" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC34" datatype="Integer" name="TC34" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC35" datatype="Integer" name="TC35" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC36" datatype="Integer" name="TC36" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC37" datatype="Integer" name="TC37" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC38" datatype="Integer" name="TC38" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC39" datatype="Integer" name="TC39" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC40" datatype="Integer" name="TC40" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC41" datatype="Integer" name="TC41" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC42" datatype="Integer" name="TC42" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC43" datatype="Integer" name="TC43" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC44" datatype="Integer" name="TC44" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC45" datatype="Integer" name="TC45" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC46" datatype="Integer" name="TC46" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC47" datatype="Integer" name="TC47" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC48" datatype="Integer" name="TC48" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC49" datatype="Integer" name="TC49" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC50" datatype="Integer" name="TC50" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC51" datatype="Integer" name="TC51" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC52" datatype="Integer" name="TC52" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC53" datatype="Integer" name="TC53" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC54" datatype="Integer" name="TC54" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC55" datatype="Integer" name="TC55" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC56" datatype="Integer" name="TC56" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC57" datatype="Integer" name="TC57" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC58" datatype="Integer" name="TC58" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC59" datatype="Integer" name="TC59" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC60" datatype="Integer" name="TC60" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC61" datatype="Integer" name="TC61" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC62" datatype="Integer" name="TC62" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC63" datatype="Integer" name="TC63" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC64" datatype="Integer" name="TC64" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC65" datatype="Integer" name="TC65" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC66" datatype="Integer" name="TC66" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC67" datatype="Integer" name="TC67" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC68" datatype="Integer" name="TC68" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC69" datatype="Integer" name="TC69" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC70" datatype="Integer" name="TC70" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC71" datatype="Integer" name="TC71" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC72" datatype="Integer" name="TC72" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC73" datatype="Integer" name="TC73" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC74" datatype="Integer" name="TC74" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC75" datatype="Integer" name="TC75" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC76" datatype="Integer" name="TC76" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC77" datatype="Integer" name="TC77" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC78" datatype="Integer" name="TC78" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC79" datatype="Integer" name="TC79" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC80" datatype="Integer" name="TC80" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC81" datatype="Integer" name="TC81" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC82" datatype="Integer" name="TC82" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC83" datatype="Integer" name="TC83" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC84" datatype="Integer" name="TC84" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC85" datatype="Integer" name="TC85" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC86" datatype="Integer" name="TC86" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC87" datatype="Integer" name="TC87" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC88" datatype="Integer" name="TC88" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC89" datatype="Integer" name="TC89" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC90" datatype="Integer" name="TC90" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC91" datatype="Integer" name="TC91" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC92" datatype="Integer" name="TC92" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC93" datatype="Integer" name="TC93" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC94" datatype="Integer" name="TC94" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC95" datatype="Integer" name="TC95" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC96" datatype="Integer" name="TC96" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC97" datatype="Integer" name="TC97" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC98" datatype="Integer" name="TC98" visible="true"/>
-        <Measure aggregator="sum" column="FCT_TC99" datatype="Integer" name="TC99" visible="true"/>
-    </Cube>
-    <Cube cache="false" enabled="true" name="CDW_DQM_CSC_AFEB_FACTS">
-        <Table name="CDW_DQM_CSC_AFEB_FACTS" schema="CMS_CSC_DW"/>
-        <DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
-        <Dimension name="Run" type="StandardDimension">
-            <Hierarchy hasAll="true" name="Run">
-                <Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Dimension name="Severity" type="StandardDimension">
-            <Hierarchy hasAll="true" name="Severity">
-                <Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
-            <Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
-                <Table name="CDW_DQM_CSC_AFEB_FACTS$D1" schema="CMS_CSC_DW"/>
-                <Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
-                <Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
-                <Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
-        <Measure aggregator="sum" column="FCT_ALCT_AFEB_NOISY" datatype="Integer" name="alctAfebNoisy" visible="true"/>
-        <Measure aggregator="sum" column="FCT_ALCT_NO_ANODE_DATA" datatype="Integer" name="alctNoAnodeData" visible="true"/>
-    </Cube>
-    <Cube cache="false" enabled="true" name="CDW_DQM_DDU_FACTS">
-        <Table name="CDW_DQM_DDU_FACTS" schema="CMS_CSC_DW"/>
-        <DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
-        <Dimension name="Run" type="StandardDimension">
-            <Hierarchy hasAll="true" name="Run">
-                <Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Dimension name="Severity" type="StandardDimension">
-            <Hierarchy hasAll="true" name="Severity">
-                <Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
-            <Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
-                <Table name="CDW_DQM_DDU_FACTS$D1" schema="CMS_CSC_DW"/>
-                <Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
-                <Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
-                <Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
-        <Measure aggregator="sum" column="FCT_WITH_FORMAT_ERRORS" datatype="Integer" name="withFormatErrors" visible="true"/>
-        <Measure aggregator="sum" column="FCT_WITH_TRAILER_ERRORS" datatype="Integer" name="withTrailerErrors" visible="true"/>
-    </Cube>
-    <Cube cache="false" enabled="true" name="CDW_DQM_DDU_INPUT_FACTS">
-        <Table name="CDW_DQM_DDU_INPUT_FACTS" schema="CMS_CSC_DW"/>
-        <DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
-        <Dimension name="Run" type="StandardDimension">
-            <Hierarchy hasAll="true" name="Run">
-                <Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Dimension name="Severity" type="StandardDimension">
-            <Hierarchy hasAll="true" name="Severity">
-                <Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
-            <Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
-                <Table name="CDW_DQM_DDU_INPUT_FACTS$D1" schema="CMS_CSC_DW"/>
-                <Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
-                <Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
-                <Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
-        <Measure aggregator="sum" column="FCT_INPUT_IN_ERROR_STATE" datatype="Integer" name="inputInErrorState" visible="true"/>
-        <Measure aggregator="sum" column="FCT_INPUT_IN_WARN_STATE" datatype="Integer" name="inputInWarningState" visible="true"/>
-        <Measure aggregator="sum" column="FCT_NO_INPUT_DATA" datatype="Integer" name="inputNoData" visible="true"/>
-    </Cube>
-    <Cube cache="false" enabled="true" name="CDW_DQM_EMU_FACTS">
-        <Table name="CDW_DQM_EMU_FACTS" schema="CMS_CSC_DW"/>
-        <DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
-        <Dimension name="Run" type="StandardDimension">
-            <Hierarchy hasAll="true" name="Run">
-                <Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Dimension name="Severity" type="StandardDimension">
-            <Hierarchy hasAll="true" name="Severity">
-                <Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
-            <Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
-                <Table name="CDW_DQM_EMU_FACTS$D1" schema="CMS_CSC_DW"/>
-                <Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
-                <Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
-                <Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
-            </Hierarchy>
-        </Dimension>
-        <Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
-        <Measure aggregator="avg" column="FCT_CH_EVENTS_AVERAGE" datatype="Integer" name="chamberEventsAverage" visible="true"/>
-        <Measure aggregator="sum" column="FCT_CH_EVENTS_COUNTER" datatype="Integer" name="chamberEventsCounter" visible="true"/>
-        <Measure aggregator="sum" column="FCT_HOT_CHAMBERS" datatype="Integer" name="chambersHot" visible="true"/>
-        <Measure aggregator="sum" column="FCT_LOW_EFF_CHAMBERS" datatype="Integer" name="chambersLowEfficiency" visible="true"/>
-        <Measure aggregator="sum" column="FCT_CH_WITH_BWORDS" datatype="Integer" name="chambersWithBwords" visible="true"/>
-        <Measure aggregator="sum" column="FCT_CH_WITH_FORMAT_ERRORS" datatype="Integer" name="chambersWithFormatErrors" visible="true"/>
-        <Measure aggregator="sum" column="FCT_CH_WITH_INPUT_FIFO_FULL" datatype="Integer" name="chambersWithInputFifoFull" visible="true"/>
-        <Measure aggregator="sum" column="FCT_CHA_WITH_INPUT_TIMEOUT" datatype="Integer" name="chambersWithInputTimeout" visible="true"/>
-        <Measure aggregator="sum" column="FCT_CH_WITH_L1A_OUT_OF_SYNC" datatype="Integer" name="chambersWithL1aOutOfSync" visible="true"/>
-        <Measure aggregator="sum" column="FCT_CH_WITHOUT_ALCT" datatype="Integer" name="chambersWithoutAlct" visible="true"/>
-        <Measure aggregator="sum" column="FCT_CH_WITHOUT_CFEB" datatype="Integer" name="chambersWithoutCfeb" visible="true"/>
-        <Measure aggregator="sum" column="FCT_CH_WITHOUT_CLCT" datatype="Integer" name="chambersWithoutClct" visible="true"/>
-        <Measure aggregator="sum" column="FCT_CH_WITHOUT_DATA" datatype="Integer" name="chambersWithoutData" visible="true"/>
-        <Measure aggregator="avg" column="FCT_DDU_EVENTS_AVERAGE" datatype="Integer" name="dduEventsAverage" visible="true"/>
-        <Measure aggregator="sum" column="FCT_DDU_EVENTS_COUNTER" datatype="Integer" name="dduEventsCounter" visible="true"/>
-        <Measure aggregator="sum" column="FCT_DDU_IN_READOUT" datatype="Integer" name="dduInReadout" visible="true"/>
-        <Measure aggregator="sum" column="FCT_HOT_DDU_IN_READOUT" datatype="Integer" name="dduInReadoutHot" visible="true"/>
-        <Measure aggregator="sum" column="FCT_LOW_DDU_IN_READOUT" datatype="Integer" name="dduInReadoutLow" visible="true"/>
-        <Measure aggregator="sum" column="FCT_DDU_INPUT_IN_ERROR_STATE" datatype="Integer" name="dduInputInErrorState" visible="true"/>
-        <Measure aggregator="sum" column="FCT_DDU_INPUT_IN_WARNING_STATE" datatype="Integer" name="dduInputInWarningState" visible="true"/>
-        <Measure aggregator="sum" column="FCT_NO_DDU_IN_READOUT" datatype="Integer" name="dduNotInReadout" visible="true"/>
-        <Measure aggregator="sum" column="FCT_DDU_WITH_DATA" datatype="Integer" name="dduWithData" visible="true"/>
-        <Measure aggregator="sum" column="FCT_DDU_WITH_FORMAT_ERRORS" datatype="Integer" name="dduWithFormatErrors" visible="true"/>
-        <Measure aggregator="sum" column="FCT_DDU_WITH_INPUT_IN_ERROR_ST" datatype="Integer" name="dduWithInputInErrorState" visible="true"/>
-        <Measure aggregator="sum" column="FCT_DDU_WITH_INPUT_IN_WARN_STA" datatype="Integer" name="dduWithInputInWarningState" visible="true"/>
-        <Measure aggregator="sum" column="FCT_DDU_WITH_LIVE_INPUTS" datatype="Integer" name="dduWithLiveInputs" visible="true"/>
-    </Cube>
+<Dimension name="Chamber" type="StandardDimension">
+<Hierarchy hasAll="true" name="Chamber" primaryKey="CMP_ID">
+<Table name="CDW_OLAP$D_CHAMBERS" schema="CMS_CSC_DW"/>
+<Level column="ENDCAP" hideMemberIf="Never" levelType="Regular" name="Endcap" type="String" uniqueMembers="true"/>
+<Level column="STATION" hideMemberIf="Never" levelType="Regular" name="Station" type="String" uniqueMembers="true"/>
+<Level column="RING" hideMemberIf="Never" levelType="Regular" name="Ring" type="String" uniqueMembers="true"/>
+<Level column="CHAMBER" hideMemberIf="Never" levelType="Regular" name="Chamber" type="String" uniqueMembers="true"/>
+<Level column="LAYER" hideMemberIf="Never" levelType="Regular" name="Layer" type="String" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension name="Component" type="StandardDimension">
+<Hierarchy hasAll="true" name="Component" primaryKey="CMP_ID">
+<Table name="CDW_OLAP$D_COMPONENTS" schema="CMS_CSC_DW"/>
+<Level column="CLASS" hideMemberIf="Never" levelType="Regular" name="Class" type="String" uniqueMembers="true"/>
+<Level column="COMPONENT" hideMemberIf="Never" levelType="Regular" name="Component" type="String" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Cube cache="true" enabled="true" name="Sliding TMB Trigger Counters">
+<Table name="CDW_TMB_TRG_CNT_SLIDING_FACTS" schema="CMS_CSC_DW"/>
+<DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
+<Dimension name="Run" type="StandardDimension">
+<Hierarchy hasAll="true" name="Run">
+<Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension name="Severity" type="StandardDimension">
+<Hierarchy hasAll="true" name="Severity">
+<Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
+<Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
+<Table name="CDW_TMB_TRG_CNT_SLIDING_FAC$D1" schema="CMS_CSC_DW"/>
+<Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
+<Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
+<Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
+</Cube>
+<Cube cache="true" enabled="true" name="DDU FMM IRQ Information">
+<Table name="CDW_DDU_FMM_IRQ_FACTS" schema="CMS_CSC_DW"/>
+<DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
+<Dimension name="Run" type="StandardDimension">
+<Hierarchy hasAll="true" name="Run">
+<Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension name="Severity" type="StandardDimension">
+<Hierarchy hasAll="true" name="Severity">
+<Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
+<Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
+<Table name="CDW_DDU_FMM_IRQ_FACTS$D1" schema="CMS_CSC_DW"/>
+<Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
+<Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
+<Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
+</Cube>
+<Cube cache="true" enabled="true" name="DQM DDU">
+<Table name="CDW_DQM_DDU_FACTS" schema="CMS_CSC_DW"/>
+<DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
+<Dimension name="Run" type="StandardDimension">
+<Hierarchy hasAll="true" name="Run">
+<Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension name="Severity" type="StandardDimension">
+<Hierarchy hasAll="true" name="Severity">
+<Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
+<Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
+<Table name="CDW_DQM_DDU_FACTS$D1" schema="CMS_CSC_DW"/>
+<Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
+<Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
+<Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
+<Measure aggregator="sum" column="FCT_WITH_FORMAT_ERRORS" datatype="Integer" name="withFormatErrors" visible="true"/>
+<Measure aggregator="sum" column="FCT_WITH_TRAILER_ERRORS" datatype="Integer" name="withTrailerErrors" visible="true"/>
+</Cube>
+<Cube cache="true" enabled="true" name="EMU Monitor">
+<Table name="CDW_EMU_MONITOR_FACTS" schema="CMS_CSC_DW"/>
+<DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
+<Dimension name="Run" type="StandardDimension">
+<Hierarchy hasAll="true" name="Run">
+<Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension name="Severity" type="StandardDimension">
+<Hierarchy hasAll="true" name="Severity">
+<Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension name="State" type="StandardDimension">
+<Hierarchy hasAll="true" name="State">
+<Level column="FCT_STATE" hideMemberIf="Never" levelType="Regular" name="State" type="String" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension foreignKey="FCT_STATE_CHANGE_TIME" name="State Change Time" type="TimeDimension">
+<Hierarchy allMemberName="All Periods" hasAll="true" name="State Change Time" primaryKey="TIME">
+<Table name="CDW_EMU_MONITOR_FACTS$D1" schema="CMS_CSC_DW"/>
+<Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
+<Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
+<Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
+<Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
+<Table name="CDW_EMU_MONITOR_FACTS$D2" schema="CMS_CSC_DW"/>
+<Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
+<Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
+<Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
+<Measure aggregator="max" column="FCT_CSC_DETECTED" datatype="Integer" name="CSC Detected" visible="true"/>
+<Measure aggregator="avg" column="FCT_CSC_RATE" datatype="Integer" name="CSC Rate" visible="true"/>
+<Measure aggregator="max" column="FCT_CSC_UNPACKED" datatype="Integer" name="CSC Unpacked" visible="true"/>
+<Measure aggregator="max" column="FCT_DQM_EVENTS" datatype="Integer" name="DQM Events" visible="true"/>
+<Measure aggregator="avg" column="FCT_DQM_RATE" datatype="Integer" name="DQM Rate" visible="true"/>
+</Cube>
+<Cube cache="true" enabled="true" name="Local DAQ Status">
+<Table name="CDW_LOCAL_DAQ_STATUS_FACTS" schema="CMS_CSC_DW"/>
+<DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
+<Dimension name="Run" type="StandardDimension">
+<Hierarchy hasAll="true" name="Run">
+<Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension name="Severity" type="StandardDimension">
+<Hierarchy hasAll="true" name="Severity">
+<Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
+<Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
+<Table name="CDW_LOCAL_DAQ_STATUS_FACTS$D1" schema="CMS_CSC_DW"/>
+<Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
+<Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
+<Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
+</Cube>
+<Cube cache="true" enabled="true" name="DQM Report">
+<Table name="CDW_DQM_REPORT_FACTS" schema="CMS_CSC_DW"/>
+<DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
+<DimensionUsage foreignKey="FCT_CMP_ID" name="Chamber" source="Chamber"/>
+<Dimension name="Run" type="StandardDimension">
+<Hierarchy hasAll="true" name="Run">
+<Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension name="Severity" type="StandardDimension">
+<Hierarchy hasAll="true" name="Severity">
+<Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension name="Test Id" type="StandardDimension">
+<Hierarchy hasAll="true" name="Test Id">
+<Level column="FCT_TEST_ID" hideMemberIf="Never" levelType="Regular" name="Test Id" type="String" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
+<Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
+<Table name="CDW_DQM_REPORT_FACTS$D1" schema="CMS_CSC_DW"/>
+<Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
+<Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
+<Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
+</Cube>
+<Cube cache="true" enabled="true" name="DQM CFEB">
+<Table name="CDW_DQM_CSC_CFEB_FACTS" schema="CMS_CSC_DW"/>
+<DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
+<Dimension name="Run" type="StandardDimension">
+<Hierarchy hasAll="true" name="Run">
+<Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension name="Severity" type="StandardDimension">
+<Hierarchy hasAll="true" name="Severity">
+<Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
+<Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
+<Table name="CDW_DQM_CSC_CFEB_FACTS$D1" schema="CMS_CSC_DW"/>
+<Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
+<Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
+<Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
+<Measure aggregator="sum" column="FCT_WITH_LOW_CFEB_DAV_EFF" datatype="Integer" name="withLowCfebDavEfficiency" visible="true"/>
+</Cube>
+<Cube cache="true" enabled="true" name="DQM AFEB">
+<Table name="CDW_DQM_CSC_AFEB_FACTS" schema="CMS_CSC_DW"/>
+<DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
+<Dimension name="Run" type="StandardDimension">
+<Hierarchy hasAll="true" name="Run">
+<Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension name="Severity" type="StandardDimension">
+<Hierarchy hasAll="true" name="Severity">
+<Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
+<Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
+<Table name="CDW_DQM_CSC_AFEB_FACTS$D1" schema="CMS_CSC_DW"/>
+<Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
+<Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
+<Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
+<Measure aggregator="sum" column="FCT_ALCT_AFEB_NOISY" datatype="Integer" name="alctAfebNoisy" visible="true"/>
+<Measure aggregator="sum" column="FCT_ALCT_NO_ANODE_DATA" datatype="Integer" name="alctNoAnodeData" visible="true"/>
+</Cube>
+<Cube cache="true" enabled="true" name="FED FSM State Transition">
+<Table name="CDW_FED_FSM_FACTS" schema="CMS_CSC_DW"/>
+<DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
+<Dimension name="Run" type="StandardDimension">
+<Hierarchy hasAll="true" name="Run">
+<Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension name="Severity" type="StandardDimension">
+<Hierarchy hasAll="true" name="Severity">
+<Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
+<Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
+<Table name="CDW_FED_FSM_FACTS$D1" schema="CMS_CSC_DW"/>
+<Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
+<Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
+<Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
+</Cube>
+<Cube cache="true" enabled="true" name="DQM Chamber">
+<Table name="CDW_DQM_CSC_FACTS" schema="CMS_CSC_DW"/>
+<DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
+<Dimension name="Run" type="StandardDimension">
+<Hierarchy hasAll="true" name="Run">
+<Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension name="Severity" type="StandardDimension">
+<Hierarchy hasAll="true" name="Severity">
+<Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
+<Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
+<Table name="CDW_DQM_CSC_FACTS$D1" schema="CMS_CSC_DW"/>
+<Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
+<Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
+<Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
+<Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT6" datatype="Integer" name="formatErrorAlctCrcError" visible="true"/>
+<Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT17" datatype="Integer" name="formatErrorAlctDavError" visible="true"/>
+<Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT4" datatype="Integer" name="formatErrorAlctHeaderMissing" visible="true"/>
+<Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT7" datatype="Integer" name="formatErrorAlctTrailerBitError" visible="true"/>
+<Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT3" datatype="Integer" name="formatErrorAlctTrailerMissing" visible="true"/>
+<Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT5" datatype="Integer" name="formatErrorAlctWordCountError" visible="true"/>
+<Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT16" datatype="Integer" name="formatErrorC-Words" visible="true"/>
+<Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT14" datatype="Integer" name="formatErrorCfebCrcError" visible="true"/>
+<Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT19" datatype="Integer" name="formatErrorCfebDavError" visible="true"/>
+<Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT13" datatype="Integer" name="formatErrorCfebSampleCountError" visible="true"/>
+<Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT12" datatype="Integer" name="formatErrorCfebWordCountPerSampleError" visible="true"/>
+<Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT15" datatype="Integer" name="formatErrorDduEventSizeLimitError" visible="true"/>
+<Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT2" datatype="Integer" name="formatErrorDmbHeaderMissing" visible="true"/>
+<Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT1" datatype="Integer" name="formatErrorDmbTrailerMissing" visible="true"/>
+<Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT11" datatype="Integer" name="formatErrorTmbCrcError" visible="true"/>
+<Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT18" datatype="Integer" name="formatErrorTmbDavError" visible="true"/>
+<Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT9" datatype="Integer" name="formatErrorTmbHeaderMissing" visible="true"/>
+<Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT8" datatype="Integer" name="formatErrorTmbTrailerMissing" visible="true"/>
+<Measure aggregator="sum" column="FCT_FORMAT_ERRORS_BIT10" datatype="Integer" name="formatErrorTmbWordCountError" visible="true"/>
+<Measure aggregator="sum" column="FCT_HOT_CHAMBER" datatype="Integer" name="hotChamber" visible="true"/>
+<Measure aggregator="sum" column="FCT_LOW_EFF_CHAMBER" datatype="Integer" name="lowEfficiencyChamber" visible="true"/>
+<Measure aggregator="sum" column="FCT_WITH_BWORDS" datatype="Integer" name="withBwords" visible="true"/>
+<Measure aggregator="sum" column="FCT_WITH_FORMAT_ERRORS" datatype="Integer" name="withFormatErrors" visible="true"/>
+<Measure aggregator="sum" column="FCT_WITH_INPUT_FIFO_FULL" datatype="Integer" name="withInputFifoFull" visible="true"/>
+<Measure aggregator="sum" column="FCT_WITH_INPUT_TIMEOUT" datatype="Integer" name="withInputTimeout" visible="true"/>
+<Measure aggregator="sum" column="FCT_WITH_L1A_OUT_OF_SYNC" datatype="Integer" name="withL1aOutOfSync" visible="true"/>
+<Measure aggregator="sum" column="FCT_WITHOUT_ALCT" datatype="Integer" name="withoutAlct" visible="true"/>
+<Measure aggregator="sum" column="FCT_WITHOUT_CFEB" datatype="Integer" name="withoutCfeb" visible="true"/>
+<Measure aggregator="sum" column="FCT_WITHOUT_CLCT" datatype="Integer" name="withoutClct" visible="true"/>
+</Cube>
+<Cube cache="true" enabled="true" name="DQM EMU">
+<Table name="CDW_DQM_EMU_FACTS" schema="CMS_CSC_DW"/>
+<DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
+<Dimension name="Run" type="StandardDimension">
+<Hierarchy hasAll="true" name="Run">
+<Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension name="Severity" type="StandardDimension">
+<Hierarchy hasAll="true" name="Severity">
+<Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
+<Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
+<Table name="CDW_DQM_EMU_FACTS$D1" schema="CMS_CSC_DW"/>
+<Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
+<Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
+<Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
+<Measure aggregator="avg" column="FCT_CH_EVENTS_AVERAGE" datatype="Integer" name="chamberEventsAverage" visible="true"/>
+<Measure aggregator="sum" column="FCT_CH_EVENTS_COUNTER" datatype="Integer" name="chamberEventsCounter" visible="true"/>
+<Measure aggregator="sum" column="FCT_HOT_CHAMBERS" datatype="Integer" name="chambersHot" visible="true"/>
+<Measure aggregator="sum" column="FCT_LOW_EFF_CHAMBERS" datatype="Integer" name="chambersLowEfficiency" visible="true"/>
+<Measure aggregator="sum" column="FCT_CH_WITH_BWORDS" datatype="Integer" name="chambersWithBwords" visible="true"/>
+<Measure aggregator="sum" column="FCT_CH_WITH_FORMAT_ERRORS" datatype="Integer" name="chambersWithFormatErrors" visible="true"/>
+<Measure aggregator="sum" column="FCT_CH_WITH_INPUT_FIFO_FULL" datatype="Integer" name="chambersWithInputFifoFull" visible="true"/>
+<Measure aggregator="sum" column="FCT_CHA_WITH_INPUT_TIMEOUT" datatype="Integer" name="chambersWithInputTimeout" visible="true"/>
+<Measure aggregator="sum" column="FCT_CH_WITH_L1A_OUT_OF_SYNC" datatype="Integer" name="chambersWithL1aOutOfSync" visible="true"/>
+<Measure aggregator="sum" column="FCT_CH_WITHOUT_ALCT" datatype="Integer" name="chambersWithoutAlct" visible="true"/>
+<Measure aggregator="sum" column="FCT_CH_WITHOUT_CFEB" datatype="Integer" name="chambersWithoutCfeb" visible="true"/>
+<Measure aggregator="sum" column="FCT_CH_WITHOUT_CLCT" datatype="Integer" name="chambersWithoutClct" visible="true"/>
+<Measure aggregator="sum" column="FCT_CH_WITHOUT_DATA" datatype="Integer" name="chambersWithoutData" visible="true"/>
+<Measure aggregator="avg" column="FCT_DDU_EVENTS_AVERAGE" datatype="Integer" name="dduEventsAverage" visible="true"/>
+<Measure aggregator="sum" column="FCT_DDU_EVENTS_COUNTER" datatype="Integer" name="dduEventsCounter" visible="true"/>
+<Measure aggregator="sum" column="FCT_DDU_IN_READOUT" datatype="Integer" name="dduInReadout" visible="true"/>
+<Measure aggregator="sum" column="FCT_HOT_DDU_IN_READOUT" datatype="Integer" name="dduInReadoutHot" visible="true"/>
+<Measure aggregator="sum" column="FCT_LOW_DDU_IN_READOUT" datatype="Integer" name="dduInReadoutLow" visible="true"/>
+<Measure aggregator="sum" column="FCT_DDU_INPUT_IN_ERROR_STATE" datatype="Integer" name="dduInputInErrorState" visible="true"/>
+<Measure aggregator="sum" column="FCT_DDU_INPUT_IN_WARNING_STATE" datatype="Integer" name="dduInputInWarningState" visible="true"/>
+<Measure aggregator="sum" column="FCT_NO_DDU_IN_READOUT" datatype="Integer" name="dduNotInReadout" visible="true"/>
+<Measure aggregator="sum" column="FCT_DDU_WITH_DATA" datatype="Integer" name="dduWithData" visible="true"/>
+<Measure aggregator="sum" column="FCT_DDU_WITH_FORMAT_ERRORS" datatype="Integer" name="dduWithFormatErrors" visible="true"/>
+<Measure aggregator="sum" column="FCT_DDU_WITH_INPUT_IN_ERROR_ST" datatype="Integer" name="dduWithInputInErrorState" visible="true"/>
+<Measure aggregator="sum" column="FCT_DDU_WITH_INPUT_IN_WARN_STA" datatype="Integer" name="dduWithInputInWarningState" visible="true"/>
+<Measure aggregator="sum" column="FCT_DDU_WITH_LIVE_INPUTS" datatype="Integer" name="dduWithLiveInputs" visible="true"/>
+</Cube>
+<Cube cache="true" enabled="true" name="DQM DDU Input">
+<Table name="CDW_DQM_DDU_INPUT_FACTS" schema="CMS_CSC_DW"/>
+<DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
+<Dimension name="Run" type="StandardDimension">
+<Hierarchy hasAll="true" name="Run">
+<Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension name="Severity" type="StandardDimension">
+<Hierarchy hasAll="true" name="Severity">
+<Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
+<Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
+<Table name="CDW_DQM_DDU_INPUT_FACTS$D1" schema="CMS_CSC_DW"/>
+<Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
+<Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
+<Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
+<Measure aggregator="sum" column="FCT_INPUT_IN_ERROR_STATE" datatype="Integer" name="inputInErrorState" visible="true"/>
+<Measure aggregator="sum" column="FCT_INPUT_IN_WARN_STATE" datatype="Integer" name="inputInWarningState" visible="true"/>
+<Measure aggregator="sum" column="FCT_NO_INPUT_DATA" datatype="Integer" name="inputNoData" visible="true"/>
+</Cube>
+<Cube cache="true" enabled="true" name="FMM IRQ Reset Detection">
+<Table name="CDW_DDU_FMM_RESET_FACTS" schema="CMS_CSC_DW"/>
+<DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
+<Dimension name="Run" type="StandardDimension">
+<Hierarchy hasAll="true" name="Run">
+<Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension name="Severity" type="StandardDimension">
+<Hierarchy hasAll="true" name="Severity">
+<Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
+<Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
+<Table name="CDW_DDU_FMM_RESET_FACTS$D1" schema="CMS_CSC_DW"/>
+<Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
+<Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
+<Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
+</Cube>
+<Cube cache="true" enabled="true" name="Cumulative TMB Trigger Counters">
+<Table name="CDW_TMB_TRG_CNT_CUMUL_FACTS" schema="CMS_CSC_DW"/>
+<DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
+<Dimension name="Run" type="StandardDimension">
+<Hierarchy hasAll="true" name="Run">
+<Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension name="Severity" type="StandardDimension">
+<Hierarchy hasAll="true" name="Severity">
+<Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
+<Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
+<Table name="CDW_TMB_TRG_CNT_CUMUL_FACTS$D1" schema="CMS_CSC_DW"/>
+<Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
+<Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
+<Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
+</Cube>
+<Cube cache="true" enabled="true" name="TMB Counters">
+<Table name="CDW_TMB_CNT_FACTS" schema="CMS_CSC_DW"/>
+<DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
+<Dimension name="Run" type="StandardDimension">
+<Hierarchy hasAll="true" name="Run">
+<Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension name="Severity" type="StandardDimension">
+<Hierarchy hasAll="true" name="Severity">
+<Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
+<Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
+<Table name="CDW_TMB_CNT_FACTS$D1" schema="CMS_CSC_DW"/>
+<Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
+<Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
+<Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension name="version" type="StandardDimension">
+<Hierarchy hasAll="true" name="version">
+<Level column="FCT_VERSION" hideMemberIf="Never" levelType="Regular" name="version" type="String" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC00" datatype="Integer" name="TC00" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC01" datatype="Integer" name="TC01" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC02" datatype="Integer" name="TC02" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC03" datatype="Integer" name="TC03" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC04" datatype="Integer" name="TC04" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC05" datatype="Integer" name="TC05" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC06" datatype="Integer" name="TC06" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC07" datatype="Integer" name="TC07" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC08" datatype="Integer" name="TC08" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC09" datatype="Integer" name="TC09" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC10" datatype="Integer" name="TC10" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC11" datatype="Integer" name="TC11" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC12" datatype="Integer" name="TC12" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC13" datatype="Integer" name="TC13" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC14" datatype="Integer" name="TC14" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC15" datatype="Integer" name="TC15" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC16" datatype="Integer" name="TC16" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC17" datatype="Integer" name="TC17" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC18" datatype="Integer" name="TC18" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC19" datatype="Integer" name="TC19" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC20" datatype="Integer" name="TC20" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC21" datatype="Integer" name="TC21" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC22" datatype="Integer" name="TC22" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC23" datatype="Integer" name="TC23" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC24" datatype="Integer" name="TC24" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC25" datatype="Integer" name="TC25" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC26" datatype="Integer" name="TC26" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC27" datatype="Integer" name="TC27" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC28" datatype="Integer" name="TC28" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC29" datatype="Integer" name="TC29" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC30" datatype="Integer" name="TC30" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC31" datatype="Integer" name="TC31" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC32" datatype="Integer" name="TC32" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC33" datatype="Integer" name="TC33" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC34" datatype="Integer" name="TC34" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC35" datatype="Integer" name="TC35" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC36" datatype="Integer" name="TC36" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC37" datatype="Integer" name="TC37" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC38" datatype="Integer" name="TC38" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC39" datatype="Integer" name="TC39" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC40" datatype="Integer" name="TC40" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC41" datatype="Integer" name="TC41" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC42" datatype="Integer" name="TC42" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC43" datatype="Integer" name="TC43" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC44" datatype="Integer" name="TC44" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC45" datatype="Integer" name="TC45" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC46" datatype="Integer" name="TC46" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC47" datatype="Integer" name="TC47" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC48" datatype="Integer" name="TC48" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC49" datatype="Integer" name="TC49" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC50" datatype="Integer" name="TC50" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC51" datatype="Integer" name="TC51" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC52" datatype="Integer" name="TC52" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC53" datatype="Integer" name="TC53" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC54" datatype="Integer" name="TC54" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC55" datatype="Integer" name="TC55" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC56" datatype="Integer" name="TC56" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC57" datatype="Integer" name="TC57" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC58" datatype="Integer" name="TC58" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC59" datatype="Integer" name="TC59" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC60" datatype="Integer" name="TC60" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC61" datatype="Integer" name="TC61" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC62" datatype="Integer" name="TC62" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC63" datatype="Integer" name="TC63" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC64" datatype="Integer" name="TC64" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC65" datatype="Integer" name="TC65" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC66" datatype="Integer" name="TC66" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC67" datatype="Integer" name="TC67" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC68" datatype="Integer" name="TC68" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC69" datatype="Integer" name="TC69" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC70" datatype="Integer" name="TC70" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC71" datatype="Integer" name="TC71" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC72" datatype="Integer" name="TC72" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC73" datatype="Integer" name="TC73" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC74" datatype="Integer" name="TC74" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC75" datatype="Integer" name="TC75" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC76" datatype="Integer" name="TC76" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC77" datatype="Integer" name="TC77" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC78" datatype="Integer" name="TC78" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC79" datatype="Integer" name="TC79" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC80" datatype="Integer" name="TC80" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC81" datatype="Integer" name="TC81" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC82" datatype="Integer" name="TC82" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC83" datatype="Integer" name="TC83" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC84" datatype="Integer" name="TC84" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC85" datatype="Integer" name="TC85" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC86" datatype="Integer" name="TC86" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC87" datatype="Integer" name="TC87" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC88" datatype="Integer" name="TC88" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC89" datatype="Integer" name="TC89" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC90" datatype="Integer" name="TC90" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC91" datatype="Integer" name="TC91" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC92" datatype="Integer" name="TC92" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC93" datatype="Integer" name="TC93" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC94" datatype="Integer" name="TC94" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC95" datatype="Integer" name="TC95" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC96" datatype="Integer" name="TC96" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC97" datatype="Integer" name="TC97" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC98" datatype="Integer" name="TC98" visible="true"/>
+<Measure aggregator="sum" column="FCT_TC99" datatype="Integer" name="TC99" visible="true"/>
+</Cube>
+<Cube cache="true" enabled="true" name="Application Status">
+<Table name="CDW_APP_STATUS_FACTS" schema="CMS_CSC_DW"/>
+<DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
+<Dimension name="Run" type="StandardDimension">
+<Hierarchy hasAll="true" name="Run">
+<Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension name="Severity" type="StandardDimension">
+<Hierarchy hasAll="true" name="Severity">
+<Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
+<Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
+<Table name="CDW_APP_STATUS_FACTS$D1" schema="CMS_CSC_DW"/>
+<Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
+<Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
+<Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
+</Cube>
+<Cube cache="true" enabled="true" name="DQM HV Segment">
+<Table name="CDW_DQM_CSC_HV_SEGMENT_FACTS" schema="CMS_CSC_DW"/>
+<DimensionUsage foreignKey="FCT_CMP_ID" name="Component" source="Component"/>
+<Dimension name="Run" type="StandardDimension">
+<Hierarchy hasAll="true" name="Run">
+<Level column="FCT_RUN" hideMemberIf="Never" levelType="Regular" name="Run" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension name="Severity" type="StandardDimension">
+<Hierarchy hasAll="true" name="Severity">
+<Level column="FCT_SEVERITY" hideMemberIf="Never" levelType="Regular" name="Severity" type="String" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Dimension foreignKey="FCT_TIME" name="Time" type="TimeDimension">
+<Hierarchy allMemberName="All Periods" hasAll="true" name="Time" primaryKey="TIME">
+<Table name="CDW_DQM_CSC_HV_SEGMENT_FACT$D1" schema="CMS_CSC_DW"/>
+<Level column="YEAR" hideMemberIf="Never" levelType="TimeYears" name="Year" type="Integer" uniqueMembers="true"/>
+<Level column="MONTH" hideMemberIf="Never" levelType="TimeMonths" name="Month" nameColumn="MONTH_NAME" type="Integer" uniqueMembers="true"/>
+<Level column="DAY" hideMemberIf="Never" levelType="TimeDays" name="Day" type="Integer" uniqueMembers="true"/>
+</Hierarchy>
+</Dimension>
+<Measure aggregator="count" column="FCT_ID" datatype="Integer" name="No of Facts" visible="true"/>
+<Measure aggregator="sum" column="FCT_NO_HV_SEGMENT" datatype="Integer" name="noHvSegment" visible="true"/>
+</Cube>
 </schema>

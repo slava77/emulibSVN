@@ -6,8 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -23,7 +24,7 @@ public class ConfigManager {
     private static final String CUBE_NAME_PATTERN = "%CUBE%";
 
     private static String queryPattern = null;
-    private static Set<String> cubes = null;
+    private static SortedSet<String> cubes = null;
 
     public static void init(String homePath) throws FileNotFoundException, IOException, ParserConfigurationException, SAXException {
         {
@@ -44,7 +45,7 @@ public class ConfigManager {
         }
 
         {
-            cubes = new HashSet<String>();
+            cubes = new TreeSet<String>();
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             File f = new File(homePath, SCHEMA_FILE);
@@ -56,6 +57,10 @@ public class ConfigManager {
             }
         }
 
+    }
+
+    public static String getDefaultQuery() throws FileNotFoundException, IOException {
+        return getDefaultQuery(getCubes().iterator().next());
     }
 
     public static String getDefaultQuery(String cube) throws FileNotFoundException, IOException {

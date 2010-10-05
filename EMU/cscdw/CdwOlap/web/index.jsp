@@ -30,7 +30,7 @@
             if (request.getSession().isNew()) {
         %>
             <jp:mondrianQuery id="query01" dataSource="jdbc/cdw" catalogUri="/WEB-INF/OlapExsys.xml">
-                <%=ConfigManager.getDefaultQuery("CDW_EMU_MONITOR_FACTS")%>
+                <%=ConfigManager.getDefaultQuery()%>
             </jp:mondrianQuery>
         <%
             }
@@ -91,6 +91,7 @@
                 <wcf:imgbutton id="printxls" tooltip="PrintXls.button" img="excel" href="./Print?cube=01&type=0"/>
                 <wcf:separator/>
 
+                <wcf:imgbutton id="refresh" tooltip="Refresh.button" img="refresh" href="action?id=refresh"/>
                 <wcf:imgbutton id="reset" tooltip="Reset.button" img="reset" href="action?id=reset"/>
 
             </wcf:toolbar>
