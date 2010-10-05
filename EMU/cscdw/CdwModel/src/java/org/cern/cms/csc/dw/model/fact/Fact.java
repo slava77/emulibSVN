@@ -276,7 +276,7 @@ public abstract class Fact
         CascadeType.ALL
     })
     @JoinColumn(name = "FCT_CMP_ID")
-    @org.cern.cms.csc.dw.model.annotation.OlapDimension(name = "Chambers", sharedTable = "CDW_OLAP$D_CHAMBERS")
+    @org.cern.cms.csc.dw.model.annotation.OlapDimension(name = "Component", sharedTable = "CDW_OLAP$D_COMPONENTS")
     public org.cern.cms.csc.dw.model.ontology.Component getComponent() {
         return component;
     }

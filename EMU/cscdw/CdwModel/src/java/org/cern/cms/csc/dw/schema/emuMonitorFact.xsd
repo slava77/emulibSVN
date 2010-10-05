@@ -28,7 +28,7 @@
                     <orm:table name="CDW_EMU_MONITOR_FACTS"/>
                 </hj:entity>
                 <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
-                    <a:FactAnn title="Emu Monitor fact" limitComponents="EmuMonitor"/>
+                    <a:FactAnn title="EMU Monitor" limitComponents="EmuMonitor"/>
                 </ann:annotate>
             </xsd:appinfo>
         </xsd:annotation>

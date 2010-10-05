@@ -37,7 +37,7 @@
                     <orm:table name="CDW_DDU_FMM_RESET_FACTS"/>
                 </hj:entity>
                 <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
-                    <a:FactAnn title="FMM IRQ reset detection" limitComponents="FEDCrate"/>
+                    <a:FactAnn title="FMM IRQ Reset Detection" limitComponents="FEDCrate"/>
                 </ann:annotate>
             </xsd:appinfo>
         </xsd:annotation>
@@ -69,7 +69,7 @@
                     <orm:table name="CDW_DDU_FMM_IRQ_FACTS"/>
                 </hj:entity>
                 <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
-                    <a:FactAnn title="DDU FMM IRQ information" limitComponents="DDU"/>
+                    <a:FactAnn title="DDU FMM IRQ Information" limitComponents="DDU"/>
                 </ann:annotate>
             </xsd:appinfo>
         </xsd:annotation>
@@ -222,7 +222,7 @@
                     <orm:table name="CDW_FED_FSM_FACTS"/>
                 </hj:entity>
                 <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
-                    <a:FactAnn title="FED FSM state transition" limitComponents="FEDSystem"/>
+                    <a:FactAnn title="FED FSM State Transition" limitComponents="FEDSystem"/>
                 </ann:annotate>
             </xsd:appinfo>
         </xsd:annotation>

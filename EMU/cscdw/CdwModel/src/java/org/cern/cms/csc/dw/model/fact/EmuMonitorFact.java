@@ -66,7 +66,7 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 @Table(name = "CDW_EMU_MONITOR_FACTS")
 @FactAnn(limitComponents = {
     "EmuMonitor"
-}, title = "Emu Monitor fact")
+}, title = "EMU Monitor")
 public class EmuMonitorFact
     extends Fact
     implements Serializable
