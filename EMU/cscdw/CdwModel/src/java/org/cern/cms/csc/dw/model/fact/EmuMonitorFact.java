@@ -9,16 +9,22 @@ package org.cern.cms.csc.dw.model.fact;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.datatype.XMLGregorianCalendar;
 import org.cern.cms.csc.dw.model.annotation.FactAnn;
+import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XMLGregorianCalendarAsDateTime;
+import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 
 
 /**
@@ -31,13 +37,13 @@ import org.cern.cms.csc.dw.model.annotation.FactAnn;
  *   &lt;complexContent>
  *     &lt;extension base="{http://www.cern.ch/cms/csc/dw/model}factType">
  *       &lt;sequence>
- *         &lt;element name="state" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="stateChangeTime" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="dqmEvents" type="{http://www.w3.org/2001/XMLSchema}long"/>
- *         &lt;element name="dqmRate" type="{http://www.w3.org/2001/XMLSchema}long"/>
- *         &lt;element name="cscRate" type="{http://www.w3.org/2001/XMLSchema}long"/>
- *         &lt;element name="cscDetected" type="{http://www.w3.org/2001/XMLSchema}integer"/>
- *         &lt;element name="cscUnpacked" type="{http://www.w3.org/2001/XMLSchema}long"/>
+ *         &lt;element name="state" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="stateChangeTime" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
+ *         &lt;element name="dqmEvents" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
+ *         &lt;element name="dqmRate" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
+ *         &lt;element name="cscRate" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
+ *         &lt;element name="cscDetected" type="{http://www.w3.org/2001/XMLSchema}integer" minOccurs="0"/>
+ *         &lt;element name="cscUnpacked" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -66,16 +72,14 @@ public class EmuMonitorFact
     implements Serializable
 {
 
-    @XmlElement(required = true)
     protected String state;
-    @XmlElement(required = true)
-    protected String stateChangeTime;
-    protected long dqmEvents;
-    protected long dqmRate;
-    protected long cscRate;
-    @XmlElement(required = true)
+    @XmlSchemaType(name = "dateTime")
+    protected XMLGregorianCalendar stateChangeTime;
+    protected Long dqmEvents;
+    protected Long dqmRate;
+    protected Long cscRate;
     protected BigInteger cscDetected;
-    protected long cscUnpacked;
+    protected Long cscUnpacked;
 
     /**
      * Gets the value of the state property.
@@ -87,6 +91,7 @@ public class EmuMonitorFact
      */
     @Basic
     @Column(name = "FCT_STATE", length = 12)
+    @org.cern.cms.csc.dw.model.annotation.OlapDimension(name = "State")
     public String getState() {
         return state;
     }
@@ -113,12 +118,11 @@ public class EmuMonitorFact
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link XMLGregorianCalendar }
      *     
      */
-    @Basic
-    @Column(name = "FCT_STATE_CHANGE_TIME", length = 25)
-    public String getStateChangeTime() {
+    @Transient
+    public XMLGregorianCalendar getStateChangeTime() {
         return stateChangeTime;
     }
 
@@ -127,10 +131,10 @@ public class EmuMonitorFact
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link XMLGregorianCalendar }
      *     
      */
-    public void setStateChangeTime(String value) {
+    public void setStateChangeTime(XMLGregorianCalendar value) {
         this.stateChangeTime = value;
     }
 
@@ -142,70 +146,97 @@ public class EmuMonitorFact
     /**
      * Gets the value of the dqmEvents property.
      * 
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
      */
     @Basic
     @Column(name = "FCT_DQM_EVENTS", precision = 20, scale = 10)
-    public long getDqmEvents() {
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.MAX, name = "DQM Events")
+    public Long getDqmEvents() {
         return dqmEvents;
     }
 
     /**
      * Sets the value of the dqmEvents property.
      * 
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
      */
-    public void setDqmEvents(long value) {
+    public void setDqmEvents(Long value) {
         this.dqmEvents = value;
     }
 
     @Transient
     public boolean isSetDqmEvents() {
-        return true;
+        return (this.dqmEvents!= null);
     }
 
     /**
      * Gets the value of the dqmRate property.
      * 
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
      */
     @Basic
     @Column(name = "FCT_DQM_RATE", precision = 20, scale = 10)
-    public long getDqmRate() {
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.AVG, name = "DQM Rate")
+    public Long getDqmRate() {
         return dqmRate;
     }
 
     /**
      * Sets the value of the dqmRate property.
      * 
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
      */
-    public void setDqmRate(long value) {
+    public void setDqmRate(Long value) {
         this.dqmRate = value;
     }
 
     @Transient
     public boolean isSetDqmRate() {
-        return true;
+        return (this.dqmRate!= null);
     }
 
     /**
      * Gets the value of the cscRate property.
      * 
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
      */
     @Basic
     @Column(name = "FCT_CSC_RATE", precision = 20, scale = 10)
-    public long getCscRate() {
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.AVG, name = "CSC Rate")
+    public Long getCscRate() {
         return cscRate;
     }
 
     /**
      * Sets the value of the cscRate property.
      * 
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
      */
-    public void setCscRate(long value) {
+    public void setCscRate(Long value) {
         this.cscRate = value;
     }
 
     @Transient
     public boolean isSetCscRate() {
-        return true;
+        return (this.cscRate!= null);
     }
 
     /**
@@ -218,6 +249,7 @@ public class EmuMonitorFact
      */
     @Basic
     @Column(name = "FCT_CSC_DETECTED", precision = 20, scale = 10)
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.MAX, name = "CSC Detected")
     public BigInteger getCscDetected() {
         return cscDetected;
     }
@@ -242,24 +274,45 @@ public class EmuMonitorFact
     /**
      * Gets the value of the cscUnpacked property.
      * 
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
      */
     @Basic
     @Column(name = "FCT_CSC_UNPACKED", precision = 20, scale = 10)
-    public long getCscUnpacked() {
+    @org.cern.cms.csc.dw.model.annotation.OlapMeasure(aggregator = org.cern.cms.csc.dw.model.annotation.OlapMeasure.AggregatorType.MAX, name = "CSC Unpacked")
+    public Long getCscUnpacked() {
         return cscUnpacked;
     }
 
     /**
      * Sets the value of the cscUnpacked property.
      * 
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
      */
-    public void setCscUnpacked(long value) {
+    public void setCscUnpacked(Long value) {
         this.cscUnpacked = value;
     }
 
     @Transient
     public boolean isSetCscUnpacked() {
-        return true;
+        return (this.cscUnpacked!= null);
+    }
+
+    @Basic
+    @Column(name = "FCT_STATE_CHANGE_TIME", length = 25)
+    @Temporal(TemporalType.TIMESTAMP)
+    @org.cern.cms.csc.dw.model.annotation.OlapDimension(name = "State Change Time")
+    public Date getStateChangeTimeItem() {
+        return XmlAdapterUtils.unmarshall(XMLGregorianCalendarAsDateTime.class, this.getStateChangeTime());
+    }
+
+    public void setStateChangeTimeItem(Date target) {
+        setStateChangeTime(XmlAdapterUtils.marshall(XMLGregorianCalendarAsDateTime.class, target));
     }
 
 }

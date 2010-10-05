@@ -196,7 +196,7 @@
                         </hj:many-to-one>
                         <jaxb:property name="component"/>
                         <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
-                            <a:OlapDimension name="Chambers" sharedTable="CDW_OLAP$D_CHAMBERS"/>
+                            <a:OlapDimension name="Component" sharedTable="CDW_OLAP$D_COMPONENTS"/>
                         </ann:annotateGet>
                     </xsd:appinfo>
                 </xsd:annotation>
