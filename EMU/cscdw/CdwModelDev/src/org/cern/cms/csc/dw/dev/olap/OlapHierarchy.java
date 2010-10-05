@@ -19,25 +19,34 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class OlapHierarchy extends GServices {
+public class OlapHierarchy {
 
     private final String name;
     private final String tableName;
     private final String dbSchema;
+    private final String sql;
+    private final GServices gdb;
     private Collection<List<GComponent>> components = new LinkedList<List<GComponent>>();
 
     private OlapHierarchyLevel top;
 
-    public OlapHierarchy(String gdb, Element el, String dbSchema) {
-        super(gdb);
+    public OlapHierarchy(GServices gdb, Element el, String dbSchema) {
 
+        this.gdb = gdb;
         this.name = el.getAttribute("name");
         this.tableName = el.getAttribute("table");
         this.dbSchema = dbSchema;
 
+        Collection<Element> sqls = getElementsByTagName(el, "sql");
+        if (sqls.isEmpty()) {
+            this.sql = null;
+        } else {
+            this.sql = sqls.iterator().next().getTextContent();
+        }
+
         Collection<Element> levels = getElementsByTagName(el, "Level");
         if (!levels.isEmpty()) {
-            this.top = new OlapHierarchyLevel(levels.iterator().next());
+            this.top = new OlapHierarchyLevel(levels.iterator().next(), (sql != null));
         }
 
     }
@@ -55,36 +64,49 @@ public class OlapHierarchy extends GServices {
     }
 
     public void generateDDL(PrintWriter out) {
-        out.println("CREATE TABLE " + tableName + " (");
-        out.println("\tCMP_ID NUMBER,");
-        
-        OlapHierarchyLevel h = top;
-        do {
-            out.print("\t" + h.getColumnName() + " VARCHAR2(1000)");
-            if (!h.isSetNextLevel()) {
-                break;
-            }
-            out.println(",");
-            h = h.getNextLevel();
-        } while (true);
-        
-        out.print("\n)");
+
+        out.println("DROP TABLE " + tableName);
         out.print(OlapGenerator.SQL_ENDL);
 
-        for (List<GComponent> cl: components) {
-            out.print("INSERT INTO " + tableName + " VALUES (");
-            out.print(cl.get(cl.size() - 1).getId());
-            out.print(",");
-            boolean first = true;
-            for (GComponent c: cl) {
-                if (!first) out.print(",");
-                out.print("'" + c.getName() + "'");
-                first = false;
-            }
-            out.print(")");
-            out.print(OlapGenerator.SQL_ENDL);
-        }
+        if (sql == null) {
 
+            out.println("CREATE TABLE " + tableName + " (");
+            out.println("\tCMP_ID NUMBER,");
+
+            OlapHierarchyLevel h = top;
+            do {
+                out.print("\t" + h.getColumnName() + " VARCHAR2(1000)");
+                if (!h.isSetNextLevel()) {
+                    break;
+                }
+                out.println(",");
+                h = h.getNextLevel();
+            } while (true);
+
+            out.print("\n)");
+            out.print(OlapGenerator.SQL_ENDL);
+
+            for (List<GComponent> cl: components) {
+                out.print("INSERT INTO " + tableName + " VALUES (");
+                out.print(cl.get(cl.size() - 1).getId());
+                out.print(",");
+                boolean first = true;
+                for (GComponent c: cl) {
+                    if (!first) out.print(",");
+                    out.print("'" + c.getName() + "'");
+                    first = false;
+                }
+                out.print(")");
+                out.print(OlapGenerator.SQL_ENDL);
+            }
+            
+        } else {
+
+            out.println("CREATE TABLE " + tableName + " AS ");
+            out.println(sql);
+            out.print(OlapGenerator.SQL_ENDL);
+
+        }
     }
 
     /*
@@ -137,7 +159,7 @@ public class OlapHierarchy extends GServices {
         private final Set<GComponentClass> componentTypes;
         private OlapHierarchyLevel nextLevel = null;
 
-        public OlapHierarchyLevel(Element el) {
+        public OlapHierarchyLevel(Element el, boolean sqlProvided) {
             this.name = el.getAttribute("name");
             if (el.hasAttribute("column")) {
                 this.columnName = el.getAttribute("column");
@@ -148,7 +170,7 @@ public class OlapHierarchy extends GServices {
             this.componentTypes = new TreeSet<GComponentClass>();
             for (Element ccel: getElementsByTagName(el, "ComponentClass")) {
                 this.componentTypes.add(
-                    getGComponentClass(
+                    gdb.getGComponentClass(
                         ComponentClassType.fromValue(ccel.getAttribute("name"))
                     )
                 );
@@ -157,44 +179,46 @@ public class OlapHierarchy extends GServices {
             this.linkTypes = new LinkedList<GComponentLinkClass>();
             for (Element ccel: getElementsByTagName(el, "ComponentLinkClass")) {
                 this.linkTypes.add(
-                    getGComponentLinkClass(
+                    gdb.getGComponentLinkClass(
                         ComponentLinkClassType.fromValue(ccel.getAttribute("name"))
                     )
                 );
             }
 
-            if (components.isEmpty()) {
-                
-                for (GComponentClass cc: componentTypes) {
-                    for (GComponent c: cc.getComponents()) {
-                        List<GComponent> list = new LinkedList<GComponent>();
-                        list.add(c);
-                        components.add(list);
+            if (!sqlProvided) {
+                if (components.isEmpty()) {
+
+                    for (GComponentClass cc: componentTypes) {
+                        for (GComponent c: cc.getComponents()) {
+                            List<GComponent> list = new LinkedList<GComponent>();
+                            list.add(c);
+                            components.add(list);
+                        }
                     }
-                }
 
-            } else {
+                } else {
 
-                Collection<List<GComponent>> backup = new LinkedList<List<GComponent>>(components);
-                components.clear();
-                for (List<GComponent> cl: backup) {
-                    GComponent cp = cl.get(cl.size() - 1);
-                    for (GComponentLinkClass clc: linkTypes) {
-                        for (GComponent c: cp.getRelatedGComponents(clc.getType(), Direction.INCOMING)) {
-                            if (componentTypes.contains(c.getType()) || componentTypes.isEmpty()) {
-                                List<GComponent> list = new LinkedList<GComponent>(cl);
-                                list.add(c);
-                                components.add(list);
+                    Collection<List<GComponent>> backup = new LinkedList<List<GComponent>>(components);
+                    components.clear();
+                    for (List<GComponent> cl: backup) {
+                        GComponent cp = cl.get(cl.size() - 1);
+                        for (GComponentLinkClass clc: linkTypes) {
+                            for (GComponent c: cp.getRelatedGComponents(clc.getType(), Direction.INCOMING)) {
+                                if (componentTypes.contains(c.getType()) || componentTypes.isEmpty()) {
+                                    List<GComponent> list = new LinkedList<GComponent>(cl);
+                                    list.add(c);
+                                    components.add(list);
+                                }
                             }
                         }
                     }
+
                 }
-                
             }
 
             Collection<Element> levels = getElementsByTagName(el, "Level");
             if (!levels.isEmpty()) {
-                this.nextLevel = new OlapHierarchyLevel(levels.iterator().next());
+                this.nextLevel = new OlapHierarchyLevel(levels.iterator().next(), sqlProvided);
             }
 
         }

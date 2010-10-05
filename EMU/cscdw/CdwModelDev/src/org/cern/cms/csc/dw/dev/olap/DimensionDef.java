@@ -18,7 +18,7 @@ class DimensionDef extends ColumnDef {
 
     public DimensionDef(CubeDef cube, Method method) {
         super(cube, method);
-        
+
         this.olapDimension = method.getAnnotation(OlapDimension.class);
 
         if (method.getReturnType().equals(Date.class)) {
@@ -54,10 +54,10 @@ class DimensionDef extends ColumnDef {
         if (timeDimension) {
             if (!shared || (shared && baseField)) {
 
-                out.println("DROP MATERIALIZED VIEW " + tableName);
+                out.println("DROP VIEW " + tableName);
                 out.print(OlapGenerator.SQL_ENDL);
 
-                out.println("\nCREATE MATERIALIZED VIEW " + tableName + " AS");
+                out.println("\nCREATE VIEW " + tableName + " AS");
                 out.println("SELECT");
                 out.println("\t  a.time_data \"TIME\"");
                 out.println("\t, to_number(TO_CHAR(a.time_data, \'YYYY\')) \"YEAR\"");
@@ -69,17 +69,18 @@ class DimensionDef extends ColumnDef {
                 out.println("\t, to_number(TO_CHAR(a.time_data, \'D\')) \"WEEKDAY\"");
                 out.println("\t, initcap(trim(TO_CHAR(a.time_data, \'DAY\'))) \"WEEKDAY_NAME\"");
                 out.println("FROM");
-                out.println("\t(SELECT DISTINCT " + columnName + " as time_data FROM " + cube.getFact().getTableName() + ") a");
+                out.println("\t(SELECT DISTINCT " + columnName + " as time_data FROM " + cube.getFact().getTableName());
+                out.println("\tWHERE " + columnName + " is not null) a");
                 out.print(OlapGenerator.SQL_ENDL);
 
             }
         } else {
             if (shared && baseField) {
 
-                out.println("DROP MATERIALIZED VIEW " + tableName);
+                out.println("DROP VIEW " + tableName);
                 out.print(OlapGenerator.SQL_ENDL);
 
-                out.println("\nCREATE MATERIALIZED VIEW " + tableName + " AS");
+                out.println("\nCREATE VIEW " + tableName + " AS");
                 out.println("SELECT DISTINCT");
                 out.println("\t  " + columnName);
                 out.println("FROM");

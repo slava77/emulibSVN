@@ -5,6 +5,7 @@
     <property name="artifactId" value="hyperjaxb3-po-initial-ant"/>
     <property name="version" value="0.5.4"/>
     <property name="model" location="${basedir}/../CdwModel" />
+    <property name="olap" location="${basedir}/../CdwOlap" />
     <property name="hj3-libs" location="${basedir}/../lib/hyperjaxb3" />
     <property name="plugin-dir" location="${basedir}/build/plugin"/>
 
@@ -259,16 +260,13 @@
 
     <target name="06-olap-definitions" depends="db-properties">
 
-        <delete dir="${model}/src/olap" includeemptydirs="true" includes="**/*" excludes="CVS"/>
-        <mkdir dir="${model}/src/olap"/>
-
         <!-- Execute main olap definition generation procedure -->
-        <java classname="org.cern.cms.csc.dw.dev.OlapGenerator" fork="true" failonerror="true" classpathref="classpath">
+        <java classname="org.cern.cms.csc.dw.dev.OlapGenerator" fork="false" failonerror="true" classpathref="classpath">
             <jvmarg line="-Xmn100M -Xms500M -Xmx500M -Xss50M"/>
             <arg value="--db=${hibernate.connection.username}"/>
             <arg value="--gdb=${model}/src/graphdb"/>
-            <arg value="--dest=${model}/src/olap"/>
-            <arg value="--base=src/org/cern/cms/csc/dw/dev/olap/olapBase.xml"/>
+            <arg value="--dest=${olap}/web/WEB-INF"/>
+            <arg value="--hxml=src/org/cern/cms/csc/dw/dev/xml/OlapHierarchies.xml"/>
         </java>
 
     </target>
@@ -277,7 +275,7 @@
 
         <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
             delimiter="/" keepformat="true" delimitertype="row" onerror="continue" classpathref="classpath">
-            <transaction src="${model}/src/olap/olap.sql"/>
+            <transaction src="${olap}/web/WEB-INF/olap.sql"/>
         </sql>
 
     </target>

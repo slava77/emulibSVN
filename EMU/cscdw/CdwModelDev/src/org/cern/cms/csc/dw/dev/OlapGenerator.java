@@ -11,6 +11,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -24,6 +25,8 @@ import org.cern.cms.csc.dw.dev.olap.CubeDef;
 import org.cern.cms.csc.dw.dev.olap.OlapHierarchy;
 import org.cern.cms.csc.dw.metadata.FactMd;
 import org.cern.cms.csc.dw.metadata.MetadataManager;
+import org.cern.cms.csc.dw.model.ontology.graph.GServices;
+import org.cern.cms.csc.dw.model.ontology.graph.GraphDevServices;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -44,6 +47,7 @@ public class OlapGenerator {
     private DocumentBuilderFactory docFactory;
     private DocumentBuilder docBuilder;
     private final MetadataManager mm = new MetadataManager();
+    private GServices gdb;
 
     private List<CubeDef> cubes = new ArrayList<CubeDef>();
     private List<OlapHierarchy> componentHierarchies = new ArrayList<OlapHierarchy>();
@@ -59,17 +63,17 @@ public class OlapGenerator {
         }
 
         Document doc = docBuilder.parse(hierarchiesXml);
+        gdb = new GraphDevServices(graphdb);
+        
         for (Element el: OlapHierarchy.getElementsByTagName(doc.getDocumentElement(), "Hierarchy")) {
-            OlapHierarchy h = new OlapHierarchy(graphdb, el, dbSchema);
+            OlapHierarchy h = new OlapHierarchy(gdb, el, dbSchema);
             componentHierarchies.add(h);
         }
 
     }
 
     protected void close() {
-        for (OlapHierarchy h: componentHierarchies) {
-            h.close();
-        }
+        gdb.close();
     }
 
     public void generateDDL(File file) throws FileNotFoundException {
@@ -107,6 +111,11 @@ public class OlapGenerator {
             }
         }
 
+        outputDomToFile(doc, file);
+        
+    }
+
+    private void outputDomToFile(Document doc, File file) throws TransformerConfigurationException, TransformerException {
         DOMSource domSource = new DOMSource(doc);
         StreamResult result = new StreamResult(file);
         Transformer transformer = transFactory.newTransformer();

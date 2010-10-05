@@ -93,6 +93,10 @@ public class CubeDef {
             }
         }
 
+        /**
+         * Generating dimensions
+         */
+
         for (ColumnDef col : columns) {
             if (col instanceof DimensionDef) {
                 DimensionDef dim = (DimensionDef) col;
@@ -105,6 +109,20 @@ public class CubeDef {
                     cubeNd.appendChild(dim.getElement(doc));
                 }
             }
+        }
+
+        /**
+         * Adding special measures
+         */
+
+        {
+            Element el = doc.createElement("Measure");
+            el.setAttribute("name", "No of Facts");
+            el.setAttribute("column", "FCT_ID");
+            el.setAttribute("datatype", "Integer");
+            el.setAttribute("aggregator", "count");
+            el.setAttribute("visible", "true");
+            cubeNd.appendChild(el);
         }
 
         /**
