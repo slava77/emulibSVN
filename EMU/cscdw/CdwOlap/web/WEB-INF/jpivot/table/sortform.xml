@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<xform style="manual" bundle="com.tonbeller.jpivot.table.resources" >
+    <table border="0">
+        <tr>
+            <td>
+                Sort Mode
+            </td>
+            <td>
+                <listBox1 type="int" bookmark="false" modelReference="extensions(sortRank).sortMode" label="fmt:sortform.mode">
+                    <listItem value="1" label="fmt:sortform.hierup"/>
+                    <listItem value="2" label="fmt:sortform.hierdown"/>
+                    <listItem value="3" label="fmt:sortform.flatup"/>
+                    <listItem value="4" label="fmt:sortform.flatdown"/>
+                    <listItem value="5" label="fmt:sortform.topcount"/>
+                    <listItem value="6" label="fmt:sortform.bottomcount"/>
+                </listBox1>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Number of rows for ranking
+            </td>
+            <td>
+                <textField type="posint" bookmark="false" modelReference="extensions(sortRank).topBottomCount" label="fmt:sortform.rowcount" title="fmt:sortform.enternumber"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Show Memberproperties
+            </td>
+            <td>
+                <checkBox modelReference="rowAxisBuilder.axisConfig.propertyConfig.showProperties" label="fmt:sortform.showprops"/>
+            </td>
+        </tr>
+        <tr align="right">
+                <buttons>
+                    <button action="validate" label="Apply" handler="com.tonbeller.wcf.form.ButtonHandler" hide="false"/>
+                    <button action="revert" label="Reset" handler="com.tonbeller.wcf.form.ButtonHandler" hide="false" />
+                </buttons>
+        </tr>
+    </table>
+</xform>

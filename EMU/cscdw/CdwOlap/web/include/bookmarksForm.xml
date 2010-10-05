@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<xform style="manual" bundle="com.tonbeller.jpivot.table.resources">
+<table border="1" cellspacing="0" cellpadding="2" id="queryEnterName" bgcolor="#F7F7F7">
+  <tr>
+    <th colspan="2" class="xform-title">
+      <table border="0" cellspacing="0" cellpadding="0" width="100%">
+        <tr>
+          <th align="left" class="xform-title">Enter query bookmark name</th>
+          <td align="right" class="xform-close-button">
+            <imgButton src="wcf/form/cancel.png" action="revert" label="fmt:mdxedit.close" hide="true" handler="com.tonbeller.wcf.form.ButtonHandler"/>
+          </td>
+        </tr>
+      </table>
+    </th>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <textField type="string" modelReference="saveBookmark" bookmark="false" maxlength="32"/>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <listBox1 type="string" modelReference="saveBookmark" bookmark="false" rows="5"/>
+    </td>
+  </tr>
+  <tr>
+    <td align="left">
+      <span class="xform-error">
+        <error-message/>
+      </span>
+    </td>
+    <td align="right">
+      <div align="right">
+        <button action="validate" label="fmt:mdxedit.apply" handler="com.tonbeller.wcf.form.ButtonHandler" hide="true"/>
+        <button action="close" label="Close" handler="com.tonbeller.wcf.form.ButtonHandler" hide="true" />
+      </div>
+    </td>
+  </tr>
+</table>
+
+</xform>

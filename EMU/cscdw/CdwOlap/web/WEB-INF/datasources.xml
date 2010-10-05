@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<DataSources>
+
+	<DataSource>
+		<DataSourceName>Provider=Mondrian;DataSource=jdbc/cdw;</DataSourceName>
+		<DataSourceDescription>CMS CSC Expert System Data Warehouse</DataSourceDescription>
+		<URL>http://localhost:8080/jpivot/xmla</URL>
+                <Catalogs>
+                    <Catalog name="Exsys" >/WEB-INF/OlapExsys.xml</Catalog>
+                </Catalogs>
+		<ProviderName>Mondrian</ProviderName>
+		<ProviderType>MDP</ProviderType>
+		<AuthenticationMode>Unauthenticated</AuthenticationMode>
+	</DataSource>
+
+</DataSources>

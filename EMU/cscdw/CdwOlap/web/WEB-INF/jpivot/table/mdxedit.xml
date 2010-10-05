@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<xform style="manual" bundle="com.tonbeller.jpivot.table.resources">
+<table border="0" cellspacing="0" cellpadding="2" id="mdxEditForm">
+  <tr>
+    <td colspan="2">
+      <textArea rows="10" cols="40" type="string" modelReference="extensions(mdxQuery).mdxQuery" bookmark="false"/>
+    </td>
+  </tr>
+  <tr>
+    <td align="left">
+      <span class="xform-error">
+        <error-message/>
+      </span>
+    </td>
+    <td align="right">
+      <div align="right">
+        <button action="validate" label="fmt:mdxedit.apply" handler="com.tonbeller.wcf.form.ButtonHandler" hide="false"/>
+        <button action="revert" label="Reset" handler="com.tonbeller.wcf.form.ButtonHandler" hide="false" />
+      </div>
+    </td>
+  </tr>
+</table>
+
+</xform>

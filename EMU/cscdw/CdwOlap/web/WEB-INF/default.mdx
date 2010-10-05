@@ -1,0 +1,5 @@
+select NON EMPTY
+    Crossjoin(Hierarchize({[Component.Component].[All Component.Components]}), {[Measures].[No of Facts]}) ON COLUMNS,
+    {[Time.Time].[All Periods]} ON ROWS
+from
+    [%CUBE%]
