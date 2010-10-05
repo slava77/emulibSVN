@@ -7,11 +7,13 @@ import org.w3c.dom.Element;
 
 public class MeasureDef extends ColumnDef {
 
-    private OlapMeasure olapMeasure;
+    private final OlapMeasure.AggregatorType aggregator;
+    private final String formatString;
 
-    public MeasureDef(CubeDef cube, Method method) {
-        super(cube, method);
-        this.olapMeasure = method.getAnnotation(OlapMeasure.class);
+    public MeasureDef(CubeDef cube, Method method, String name, OlapMeasure.AggregatorType aggregator, String formatString) {
+        super(cube, method, name);
+        this.aggregator = aggregator;
+        this.formatString = formatString;
     }
 
     /**
@@ -23,13 +25,13 @@ public class MeasureDef extends ColumnDef {
     @Override
     public Element getElement(Document doc) {
         Element el = doc.createElement("Measure");
-        el.setAttribute("name", olapMeasure.name());
+        el.setAttribute("name", name);
         el.setAttribute("column", columnName);
         el.setAttribute("datatype", type.getTypeName());
-        if (!olapMeasure.formatString().equals("")) {
-            el.setAttribute("formatString", olapMeasure.formatString());
+        if (!formatString.equals("")) {
+            el.setAttribute("formatString", formatString);
         }
-        el.setAttribute("aggregator", olapMeasure.aggregator().getValue());
+        el.setAttribute("aggregator", aggregator.getValue());
         el.setAttribute("visible", "true");
         return el;
     }

@@ -9,15 +9,17 @@ import org.w3c.dom.Element;
 
 public abstract class ColumnDef {
 
-    protected Method method;
+    protected final CubeDef cube;
+    protected final Method method;
+    protected final String name;
     protected String columnName;
     protected DataTypeDef type;
-    protected CubeDef cube;
 
-    protected ColumnDef(CubeDef cube, Method method) {
+    protected ColumnDef(CubeDef cube, Method method, String name) {
 
         this.cube = cube;
         this.method = method;
+        this.name = name;
 
         if (method.isAnnotationPresent(Column.class)) {
             this.columnName = method.getAnnotation(Column.class).name();

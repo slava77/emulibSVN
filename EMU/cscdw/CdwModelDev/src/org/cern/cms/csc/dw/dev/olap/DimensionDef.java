@@ -4,34 +4,30 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.Date;
 import org.cern.cms.csc.dw.dev.OlapGenerator;
-import org.cern.cms.csc.dw.model.annotation.OlapDimension;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 class DimensionDef extends ColumnDef {
 
-    private OlapDimension olapDimension;
     private boolean timeDimension = false;
     private String tableName = null;
     private boolean baseField = false;
     private boolean shared = false;
 
-    public DimensionDef(CubeDef cube, Method method) {
-        super(cube, method);
-
-        this.olapDimension = method.getAnnotation(OlapDimension.class);
+    public DimensionDef(CubeDef cube, Method method, String name, String sharedTable, boolean baseField) {
+        super(cube, method, name);
 
         if (method.getReturnType().equals(Date.class)) {
             setTableName(cube.getFact().getTableName(), cube.getTableSuffix());
             this.timeDimension = true;
         }
 
-        if (!olapDimension.sharedTable().equals("")) {
-            setTableName(olapDimension.sharedTable());
-            this.baseField = olapDimension.baseField();
+        if (!sharedTable.equals("")) {
+            setTableName(sharedTable);
+            this.baseField = baseField;
             this.shared = true;
         }
-        
+
     }
 
     private void setTableName(String tableName) {
@@ -101,8 +97,8 @@ class DimensionDef extends ColumnDef {
         Element usageEl = null;
         if (shared) {
             usageEl = doc.createElement("DimensionUsage");
-            usageEl.setAttribute("name", olapDimension.name());
-            usageEl.setAttribute("source", olapDimension.name());
+            usageEl.setAttribute("name", name);
+            usageEl.setAttribute("source", name);
             usageEl.setAttribute("foreignKey", columnName);
         }
         return usageEl;
@@ -135,7 +131,7 @@ class DimensionDef extends ColumnDef {
     public Element getElement(Document doc) {
 
         Element dimEl = doc.createElement("Dimension");
-        dimEl.setAttribute("name", olapDimension.name());
+        dimEl.setAttribute("name", name);
         if (timeDimension) {
             dimEl.setAttribute("type", "TimeDimension");
         } else {
@@ -143,7 +139,7 @@ class DimensionDef extends ColumnDef {
         }
 
         Element hierarchyEl = doc.createElement("Hierarchy");
-        hierarchyEl.setAttribute("name", olapDimension.name());
+        hierarchyEl.setAttribute("name", name);
         hierarchyEl.setAttribute("hasAll", "true");
 
         dimEl.appendChild(hierarchyEl);
@@ -199,7 +195,7 @@ class DimensionDef extends ColumnDef {
             }
 
             Element el = doc.createElement("Level");
-            el.setAttribute("name", olapDimension.name());
+            el.setAttribute("name", name);
             el.setAttribute("column", columnName);
             el.setAttribute("type", type.getTypeName());
             el.setAttribute("uniqueMembers", "true");
@@ -215,10 +211,6 @@ class DimensionDef extends ColumnDef {
 
     public boolean isBaseField() {
         return baseField;
-    }
-
-    public OlapDimension getOlapDimension() {
-        return olapDimension;
     }
 
     public boolean isShared() {

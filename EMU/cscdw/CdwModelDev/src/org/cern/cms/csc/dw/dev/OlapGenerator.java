@@ -85,9 +85,7 @@ public class OlapGenerator {
         }
 
         for (CubeDef cube : cubes) {
-            if (cube.hasMeasureAndDimension()) {
-                cube.generateDDL(out);
-            }
+            cube.generateDDL(out);
         }
 
         out.flush();
@@ -106,9 +104,7 @@ public class OlapGenerator {
         }
 
         for (CubeDef cube : cubes) {
-            if (cube.hasMeasureAndDimension()) {
-                cube.generateSchema(doc, rootEl);
-            }
+            cube.generateSchema(doc, rootEl);
         }
 
         outputDomToFile(doc, file);

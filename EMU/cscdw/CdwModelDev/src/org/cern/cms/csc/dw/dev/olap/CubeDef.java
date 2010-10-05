@@ -2,15 +2,20 @@ package org.cern.cms.csc.dw.dev.olap;
 
 import java.beans.PropertyDescriptor;
 import java.io.PrintWriter;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.cern.cms.csc.dw.metadata.FactMd;
 import org.cern.cms.csc.dw.model.annotation.OlapDimension;
+import org.cern.cms.csc.dw.model.annotation.OlapDimensionSetter;
 import org.cern.cms.csc.dw.model.annotation.OlapMeasure;
+import org.cern.cms.csc.dw.model.annotation.OlapMeasureSetter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -20,8 +25,6 @@ public class CubeDef {
     private FactMd fact;
     private List<ColumnDef> columns = new ArrayList<ColumnDef>();
     private BeanUtilsBean utils = BeanUtilsBean.getInstance();
-    private boolean hasMeasure = false;
-    private boolean hasDimension = false;
     private final String dbSchema;
 
     private int tableSuffixNumber = 1;
@@ -30,21 +33,46 @@ public class CubeDef {
         this.fact = fact;
         this.dbSchema = dbSchema;
 
+        Set<OlapDimensionSetter> dimensionSetters = new HashSet<OlapDimensionSetter>();
+        Set<OlapMeasureSetter> measureSetters = new HashSet<OlapMeasureSetter>();
+
+        for (Annotation an: fact.getFactClass().getAnnotations()) {
+
+            if (an.annotationType().equals(OlapDimensionSetter.class)) {
+                dimensionSetters.add((OlapDimensionSetter) an);
+            }
+
+            if (an.annotationType().equals(OlapMeasureSetter.class)) {
+                measureSetters.add((OlapMeasureSetter) an);
+            }
+
+        }
+
         for (PropertyDescriptor prop : utils.getPropertyUtils().getPropertyDescriptors(fact.getFactClass())) {
             Method m = prop.getReadMethod();
 
             if (m.isAnnotationPresent(Column.class) || m.isAnnotationPresent(JoinColumn.class)) {
 
-                if (m.isAnnotationPresent(OlapMeasure.class)) {
-                    columns.add(new MeasureDef(this, m));
-                    hasMeasure = true;
+                for (Annotation an: m.getAnnotations()) {
+
+                    if (an.annotationType().equals(OlapMeasure.class)) {
+                        OlapMeasure measure = (OlapMeasure) an;
+                        columns.add(new MeasureDef(this, m, measure.name(), measure.aggregator(), measure.formatString()));
+                    }
+
+                    if (an.annotationType().equals(OlapDimension.class)) {
+                        OlapDimension dimension = (OlapDimension) an;
+                        columns.add(new DimensionDef(this, m, dimension.name(), dimension.sharedTable(), dimension.baseField()));
+                    }
+
                 }
 
-                if (m.isAnnotationPresent(OlapDimension.class)) {
-                    columns.add(new DimensionDef(this, m));
-                    hasDimension = true;
+                for (OlapDimensionSetter setter: dimensionSetters) {
+                    if (prop.getName().equals(setter.propertyName())) {
+                        columns.add(new DimensionDef(this, m, setter.name(), setter.sharedTable(), setter.baseField()));
+                    }
                 }
-                
+
             }
 
         }
@@ -60,10 +88,6 @@ public class CubeDef {
 
     public String getDbSchema() {
         return dbSchema;
-    }
-
-    public boolean hasMeasureAndDimension() {
-        return (hasMeasure && hasDimension);
     }
 
     public String getTableSuffix() {

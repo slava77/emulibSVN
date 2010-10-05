@@ -48,6 +48,7 @@
                     <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
                         <a:FactAnn limitComponents="{@componentClass}" title="{@factTitle}"/>
                     </ann:annotate>
+                    <xsl:apply-templates select="dqm:annotations"/>
                 </xsd:appinfo>
             </xsd:annotation>
             <xsd:complexContent>
@@ -106,6 +107,12 @@
             </xsd:element>
         </xsl:if>
 
+    </xsl:template>
+
+    <xsl:template match="dqm:annotations">
+      <xsl:copy>
+        <xsl:apply-templates/>
+      </xsl:copy>
     </xsl:template>
 
 </xsl:stylesheet>

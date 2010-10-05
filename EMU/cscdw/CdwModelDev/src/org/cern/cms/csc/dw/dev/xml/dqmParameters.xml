@@ -3,6 +3,7 @@
 <classes xmlns="http://www.cern.ch/cms/csc/dw/model/dqm">
 
     <class name="DqmEmuFact" table="CDW_DQM_EMU_FACTS" componentClass="CSC" factTitle="DQM EMU">
+        <annotations/>
         <param property="chambersWithBwords" column="FCT_CH_WITH_BWORDS" measure="SUM">ALL_CHAMBERS_WITH_BWORDS</param>
         <param property="chambersWithFormatErrors" column="FCT_CH_WITH_FORMAT_ERRORS" measure="SUM">ALL_CHAMBERS_WITH_FORMAT_ERRORS</param>
         <param property="chambersWithInputFifoFull" column="FCT_CH_WITH_INPUT_FIFO_FULL" measure="SUM">ALL_CHAMBERS_WITH_INPUT_FIFO_FULL</param>
@@ -38,17 +39,24 @@
     </class>
 
     <class name="DqmDduFact" table="CDW_DQM_DDU_FACTS" componentClass="DDU" factTitle="DQM DDU">
+        <annotations/>
         <param fraction="1" property="withFormatErrors" column="FCT_WITH_FORMAT_ERRORS" measure="SUM">DDU_WITH_FORMAT_ERRORS</param>
         <param fraction="1" property="withTrailerErrors" column="FCT_WITH_TRAILER_ERRORS" measure="SUM">DDU_WITH_TRAILER_ERRORS</param>
     </class>
 
     <class name="DqmDduInputFact" table="CDW_DQM_DDU_INPUT_FACTS" componentClass="DDUInput" factTitle="DQM DDU Input">
+        <annotations/>
         <param property="inputInErrorState" column="FCT_INPUT_IN_ERROR_STATE" measure="SUM">DDU_INPUT_IN_ERROR_STATE</param>
         <param property="inputInWarningState" column="FCT_INPUT_IN_WARN_STATE" measure="SUM">DDU_INPUT_IN_WARNING_STATE</param>
         <param property="inputNoData" column="FCT_NO_INPUT_DATA" measure="SUM">DDU_NO_INPUT_DATA</param>
     </class>
 
     <class name="DqmCscFact" table="CDW_DQM_CSC_FACTS" componentClass="Chamber" factTitle="DQM Chamber">
+        <annotations>
+            <ann:annotate xmlns:ann="http://jaxb.dev.java.net/plugin/annotate" xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                <a:FactAnn limitComponents="Chamber" title="DQM Chamber"/>
+            </ann:annotate>
+        </annotations>
         <param fraction="1" property="hotChamber" column="FCT_HOT_CHAMBER" measure="SUM">CSC_HOT_CHAMBER</param>
         <param fraction="1" property="lowEfficiencyChamber" column="FCT_LOW_EFF_CHAMBER" measure="SUM">CSC_LOW_EFF_CHAMBER</param>
         <param fraction="1" property="withBwords" column="FCT_WITH_BWORDS" measure="SUM">CSC_WITH_BWORDS</param>
@@ -83,16 +91,19 @@
     </class>
 
     <class name="DqmCscAfebFact" table="CDW_DQM_CSC_AFEB_FACTS" componentClass="AFEB" factTitle="DQM AFEB">
+        <annotations/>
         <param property="alctAfebNoisy" column="FCT_ALCT_AFEB_NOISY" measure="SUM">CSC_ALCT_AFEB_NOISY</param>
         <param property="alctNoAnodeData" column="FCT_ALCT_NO_ANODE_DATA" measure="SUM">CSC_ALCT_NO_ANODE_DATA</param>
     </class>
 
     <class name="DqmCscCfebFact" table="CDW_DQM_CSC_CFEB_FACTS" componentClass="CFEB" factTitle="DQM CFEB">
+        <annotations/>
         <param fraction="1" property="withLowCfebDavEfficiency" column="FCT_WITH_LOW_CFEB_DAV_EFF" measure="SUM">CSC_WITH_LOW_CFEB_DAV_EFF</param>
     </class>
 
     <!--
     <class name="DqmCscCfebSectorFact" table="CDW_DQM_CSC_CFEB_SECTOR_FACTS" componentClass="CFEBSection">
+        <annotations/>
         <param fraction="1" property="cfebComparatorsLowEfficiency" column="FCT_CFEB_COMPARATORS_LOW_EFF">CSC_CFEB_COMPARATORS_LOW_EFF</param>
         <param fraction="1" property="cfebComparatorsNoisy" column="FCT_CFEB_COMPARATORS_NOISY">CSC_CFEB_COMPARATORS_NOISY</param>
         <param fraction="1" property="cfebNoComparatorsData" column="FCT_CFEB_NO_COMPARATORS_DATA">CSC_CFEB_NO_COMPARATORS_DATA</param>
@@ -102,12 +113,14 @@
     </class>
 
     <class name="dqmCscCfebChannelFact" table="CDW_DQM_CSC_CFEB_CHANNEL_FACTS" componentClass="CFEBChannel">
+        <annotations/>
         <param fraction="1" property="cfebComparatorsNoisyChannel" column="FCT_CFEB_COMPARATORS_NOISY_CHANNEL">CSC_CFEB_COMPARATORS_NOISY_CHANNEL</param>
         <param fraction="1" property="cfebScaNoisyChannel" column="FCT_CFEB_SCA_NOISY_CHANNEL">CSC_CFEB_SCA_NOISY_CHANNEL</param>
     </class>
     -->
 
     <class name="DqmCscHvSegmentFact" table="CDW_DQM_CSC_HV_SEGMENT_FACTS" componentClass="HVSegment" factTitle="DQM HV Segment">
+        <annotations/>
         <param property="noHvSegment" column="FCT_NO_HV_SEGMENT" measure="SUM">CSC_NO_HV_SEGMENT</param>
     </class>
 
