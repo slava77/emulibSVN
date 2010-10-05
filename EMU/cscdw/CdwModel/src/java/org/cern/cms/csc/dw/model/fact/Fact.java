@@ -75,10 +75,11 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 @XmlSeeAlso({
     SlidingTmbTriggerCounterFact.class,
     DduFmmResetFact.class,
+    DqmReportFact.class,
     DqmDduFact.class,
     DqmDduInputFact.class,
-    DqmCscCfebFact.class,
     LocalDAQStatusFact.class,
+    DqmCscCfebFact.class,
     CumulativeTmbTriggerCounterFact.class,
     ApplicationStatusFact.class,
     FedFsmFact.class,

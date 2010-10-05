@@ -25,6 +25,7 @@
     <class>org.cern.cms.csc.dw.model.fact.DqmCscAfebFact</class>
     <class>org.cern.cms.csc.dw.model.fact.DqmCscCfebFact</class>
     <class>org.cern.cms.csc.dw.model.fact.DqmCscFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DqmReportFact</class>
     <class>org.cern.cms.csc.dw.model.fact.EmuMonitorFact</class>
     <class>org.cern.cms.csc.dw.model.fact.DqmCscHvSegmentFact</class>
     <class>org.cern.cms.csc.dw.model.fact.DqmDduFact</class>

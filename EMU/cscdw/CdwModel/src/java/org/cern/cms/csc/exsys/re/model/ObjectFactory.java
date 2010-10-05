@@ -54,11 +54,27 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ConclusionSourceRelation }
+     * 
+     */
+    public ConclusionSourceRelation createConclusionSourceRelation() {
+        return new ConclusionSourceRelation();
+    }
+
+    /**
      * Create an instance of {@link Action }
      * 
      */
     public Action createAction() {
         return new Action();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionFactory }
+     * 
+     */
+    public ConclusionFactory createConclusionFactory() {
+        return new ConclusionFactory();
     }
 
     /**
@@ -75,22 +91,6 @@ public class ObjectFactory {
      */
     public Rule createRule() {
         return new Rule();
-    }
-
-    /**
-     * Create an instance of {@link ConclusionSourceRelation }
-     * 
-     */
-    public ConclusionSourceRelation createConclusionSourceRelation() {
-        return new ConclusionSourceRelation();
-    }
-
-    /**
-     * Create an instance of {@link ConclusionFactory }
-     * 
-     */
-    public ConclusionFactory createConclusionFactory() {
-        return new ConclusionFactory();
     }
 
     /**
