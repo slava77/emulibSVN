@@ -73,7 +73,7 @@ public class CubeDef {
     public void generateSchema(Document doc, Node schemaNd) {
 
         Element cubeEl = doc.createElement("Cube");
-        cubeEl.setAttribute("name", fact.getTableName());
+        cubeEl.setAttribute("name", fact.getTitle());
         cubeEl.setAttribute("cache", "true");
         cubeEl.setAttribute("enabled", "true");
         Node cubeNd = schemaNd.appendChild(cubeEl);
