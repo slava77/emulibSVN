@@ -59,7 +59,7 @@ unsigned emu_signedToUnsigned(int value, int bitCount) {
   return ret;
 }
 
-// @return absolute value
+/** @return absolute value */
 float emu_abs(float value) {
   if (value < 0) {
     value = value * -1;
@@ -67,7 +67,7 @@ float emu_abs(float value) {
   return value;
 }
 
-//@return maximum value
+/** @return maximum value */
 float emu_max(dyn_float values) {
   float ret = minFLOAT();
   for (int i=1; i <= dynlen(values); i++) {
@@ -76,4 +76,29 @@ float emu_max(dyn_float values) {
     }
   }
   return ret;
+}
+
+/** @return minimum value */
+float emu_min(dyn_float values) {
+  float ret = maxFLOAT();
+  for (int i=1; i <= dynlen(values); i++) {
+    if (values[i] < ret) {
+      ret = values[i];
+    }
+  }
+  return ret;
+}
+
+/** Get range of the float values provided. */
+void emu_minMax(dyn_float values, float &min, float &max) {
+  min = maxFLOAT();
+  max = minFLOAT();
+  for (int i=1; i <= dynlen(values); i++) {
+    if (values[i] < min) {
+      min = values[i];
+    }
+    if (values[i] > max) {
+      max = values[i];
+    }
+  }
 }

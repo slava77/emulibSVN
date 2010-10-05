@@ -12,288 +12,128 @@ This package contains functions to lookup parameters of various devices.
 #uses "CMS_CSC_common/emu_util.ctl"
 #uses "CMS_CSC_common/emu_mapping.ctl"
 
-global mapping emu_g_mapPcmbDb = emuui_dummyMapping;
-global mapping emuui_g_mapPcmbDbById = emuui_dummyMapping;
-global mapping emuui_g_mapMaratonToPcmbs = emuui_dummyMapping;
-global mapping emuui_g_mapPcmbToMaraton = emuui_dummyMapping;
-global mapping emuui_g_mapMaratonDb = emuui_dummyMapping;
-global mapping emuui_g_mapMaratonDbSwapped = emuui_dummyMapping;
-global dyn_string emuui_g_maratonDbArray = makeDynString();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/** Returns datapoints representing high voltage channels that are used by the given chamber. 
-    Also returns channel number offset from #1. */
-void emuui_chamberGetHvChannelDps(mapping deviceParams, dyn_string &channelDps, int &channelsOffset, dyn_string &exceptionInfo) {
-  dyn_string dps = emuui_getDpNames("HV_channel", deviceParams, exceptionInfo);
+/**
+  * Returns chambers connected to the given Peripheral Crate.
+  * @param pcrate peripheral crate device parameters (must have these parameters: side, station, crateNum)
+  */
+dyn_mapping emuDev_getPCrateChambers(mapping pcrate, dyn_string &exceptionInfo) {
+  emu_checkDeviceParams("emuDev_getPCrateChambers", "PCrate", pcrate, makeDynString("side", "station", "crateNum"), exceptionInfo);
   if (emu_checkException(exceptionInfo)) { return; }
   
-  channelsOffset = 0;
-  int numChannels = emuui_chamberGetHvChannelCount(deviceParams, exceptionInfo);
-  if (emu_checkException(exceptionInfo)) { return; }
+  dyn_mapping ret;
   
-  if (numChannels == 18) { // not a big chamber i.e. a small one
-    channelsOffset = emuui_chamberGetHvChannelsOffset(deviceParams, exceptionInfo);
-    if (emu_checkException(exceptionInfo)) { return; }
+  string side = pcrate["side"];
+  int station = pcrate["station"];
+  int crateNum = pcrate["crateNum"];
+  
+  // total number of crates on a station
+  int totalCrates = 6;
+  if (station == 1) {
+    totalCrates = 12;
   }
   
-  // in array dps there are all 36 channels of the distribution board. Now we filter out only those used by our chamber
-  for (int i = channelsOffset + 1; i <= channelsOffset + numChannels; i++) {
-    // the dps array is very badly sorted so we need this ugly search procedure
-    string channelNumPart = ".v" + i;
-    int index;
-    for (int j=1; j <= dynlen(dps); j++) {
-      if (strpos(dps[j], channelNumPart) >= 0) {
-        index = j;
-        break;
-      }
+  if (crateNum > totalCrates) {
+    emu_addError("emuDev_getPCrateChambers(): invalid crateNum supplied. Supplied PCrate parameters: side=" + side + ", station=" + station + ", crateNum=" + crateNum, exceptionInfo);
+    return;
+  }
+  
+  int ringsCount = 2;
+  if (station == 1) {
+    ringsCount = 3;
+  } else if (station == 4) {
+    ringsCount = 1;
+  }
+  
+  for (int ring=1; ring <= ringsCount; ring++) {
+    int chamberNumShift;
+    int countChambersToInclude;
+    if (station == 1) { // on station 1, chamber numbers connected to the first PCrate start from 36, then go 1, 2
+      chamberNumShift = -1;
+      countChambersToInclude = 3;
+    } else if (ring == 1) { // on all other stations station ring 1, chamber numbers connected to the first PCrate start from 2, then go 3, 4
+      chamberNumShift = 1;
+      countChambersToInclude = 3;
+    } else if (ring == 2) { // on all other stations station ring 2, chamber numbers connected to the first PCrate start from 3, then go 4, 5, 6, 7, 8
+      chamberNumShift = 2;
+      countChambersToInclude = 6;
     }
-    dynAppend(channelDps, dps[index]);
-  }
-}
-
-/** Returns the offset of the high voltage channels in the distribution board that are use by a given chamber (normally it's 0 or 18). */
-int emuui_chamberGetHvChannelsOffset(mapping deviceParams, dyn_string &exceptionInfo) {
-  int channelsOffset = 0;
-  
-  string coordDp = emuui_getDpName("HV_coord", deviceParams, exceptionInfo);
-  if (emu_checkException(exceptionInfo)) { return; }
-
-  string coord;
-  dpGet(coordDp, coord);
-  int part = strsplit(coord, ";")[4];
-  if (part == 2) {
-    channelsOffset = 18;
-  }
-  
-  return channelsOffset;
-}
-
-/** Returns the number of high voltage channels used by a given chamber. */
-int emuui_chamberGetHvChannelCount(mapping deviceParams, dyn_string &exceptionInfo) {
-  int numChannels;
-  
-  string numChannelsDp = emuui_getDpName("HV_numChannels", deviceParams, exceptionInfo);
-  if (emu_checkException(exceptionInfo)) { return; }
-  dpGet(numChannelsDp, numChannels);
-  if (numChannels == 36) { numChannels = 18; } // if module uses all 36 channels - that means it has two chambers hooked up - so our chamber is a small one - 18 channels.
-
-  return numChannels;
-}
-
-/** Returns problematic HV channels of the given chamber.
-  @param trippedChannels        HV channels that are tripped,
-  @param interlockedChannels    HV channels that are interlocked,
-  @param deadChannels           HV channels that are dead,
-  @param disabledChannels       HV channels that are disabled.
-*/
-void emuui_chamberHvGetProblematicChannels(mapping deviceParams, 
-                                    dyn_int &trippedChannels, 
-                                    dyn_int &interlockedChannels, 
-                                    dyn_int &deadChannels, 
-                                    dyn_int &disabledChannels, 
-                                    dyn_string &exceptionInfo) {
-  // get channel dps
-  dyn_string channelDps;
-  int channelsOffset;
-  emuui_chamberGetHvChannelDps(deviceParams, channelDps, channelsOffset, exceptionInfo);
-  if (emu_checkException(exceptionInfo)) { return; }
-  
-  // make them status dps
-  for (int i=1; i <= dynlen(channelDps); i++) {
-    channelDps[i] += ".status";
-  }
-  
-  dyn_int channelStatuses;
-  dpGet(channelDps, channelStatuses);
-  for (int i=1; i <= dynlen(channelStatuses); i++) {
-    if (channelStatuses[i] <= 3) { // if status is less than or equal to 3 it's fine - skip it.
-      continue;
-    }
-    //problems
-    if (channelStatuses[i] == 4) { // state = 4 means DEAD
-      dynAppend(deadChannels, channelsOffset + i);
-    } else if (channelStatuses[i] == 5) { // state = 5 means interlocked
-      dynAppend(interlockedChannels, channelsOffset + i);
-    } else if (channelStatuses[i] > 5) { // if status is more than 5 then it's a trip
-      dynAppend(trippedChannels, channelsOffset + i);
+    
+    int startChamberNum = (1 + chamberNumShift) + ((crateNum - 1) * countChambersToInclude);
+    int endChamberNum = (1 + chamberNumShift) + ((crateNum) * countChambersToInclude) - 1;
+    int totalChambers = totalCrates * countChambersToInclude;
+    
+    for (int i = startChamberNum; i <= endChamberNum; i++) {
+      int chamberNum = i;
+      if (chamberNum <= 0) { chamberNum += totalChambers; } // wrap around the total number of available chambers
+      if (chamberNum > totalChambers) { chamberNum -= totalChambers; } // wrap around the total number of available chambers
+      
+      mapping chamber;
+      chamber["side"] = side;
+      chamber["station"] = station;
+      chamber["ring"] = ring;
+      string chamberNumStr = (string) chamberNum;
+      if (strlen(chamberNumStr) == 1) { chamberNumStr = "0" + chamberNumStr; }
+      chamber["chamberNumber"] = chamberNumStr;
+      
+      dynAppend(ret, chamber);
     }
   }
-  string offChannelsDp = emuui_getDpName("HV_off_channels", deviceParams, exceptionInfo);
-  if (emu_checkException(exceptionInfo)) { return; }
-  dpGet(offChannelsDp, disabledChannels);
-  for (int i=1; i <= dynlen(disabledChannels); i++) {
-    disabledChannels[i] -= channelsOffset;
+  
+  if ((side == "P") && (station == 4) && (crateNum == 2)) { // special case for the crate connected to the few ME+4/2 chambers
+    for (int chamberNum=9; chamberNum <= 13; chamberNum++) {
+      mapping chamber;
+      chamber["side"] = side;
+      chamber["station"] = station;
+      chamber["ring"] = 2;
+      string chamberNumStr = (string) chamberNum;
+      if (strlen(chamberNumStr) == 1) { chamberNumStr = "0" + chamberNumStr; }
+      chamber["chamberNumber"] = chamberNumStr;
+      dynAppend(ret, chamber);
+    }
   }
-}
-
-/** Returns deviceParams of ME11 high voltage channel, given its' name. */
-mapping emuui_parseME11channelName(string channelName, dyn_string &exceptionInfo) {
-  mapping ret;
-  int sideIdx, boardIdx, channelIdx;
-  
-  sideIdx = strpos(channelName, "/HVME11") + strlen("/HVME11");
-  boardIdx = strpos(channelName, "/board") + strlen("/board");
-  channelIdx = strpos(channelName, "/channel") + strlen("/channel");
-  
-  if ((sideIdx < 0) || (boardIdx < 0) || (channelIdx < 0)) {
-    emu_addError("One or more parameters missing in the ME11 channel name: " + channelName, exceptionInfo);
-    return emuui_dummyMapping;
-  }
-  
-  ret["side_ME11style"] = substr(channelName, sideIdx, 1);
-  ret["boardNumber"] = substr(channelName, boardIdx, 2);
-  ret["channelNumber"] = substr(channelName, channelIdx, 3);
   
   return ret;
 }
 
-/** A recursive function which tells if the given FSM node is disabled 
-    (i.e. this node or any of its parents are either disabled or "excluded and lockedOut", any other state is considered as enabled). */
-bool emuui_isFsmNodeEnabled(string fsmNode) {
-  emu_info("IS FSM NODE ENABLED: " + fsmNode);
-  
-  // if at any level of the hierarchy we get operation flag == 1 - break recursing and return ENABLED
-  int operationFlag = fwCU_getOperationMode(fsmNode);
-  if (operationFlag == 1) {
-    return true;
-  }
-  // at this point (we have operation flag == 0) it's possible that our device or it's parent is disabled
-  string domain = fsmNode;
-  string object = _fwCU_getNodeObj(domain);
-
-  if (fwFsm_isCU(domain, object)) {
-    string cuMode = fwFsmUi_getCUMode(domain, object);
-    emu_info("IS FSM NODE ENABLED: " + fsmNode + " is CU and it's mode is " + cuMode);
-    if (cuMode == "Disabled") {
-      return false;
-    } else {
-      int type;
-      string parent = fwCU_getParent(type, fsmNode);
-      if (parent == "") { // top level node reached
-        return true;
-      } else {
-        return emuui_isFsmNodeEnabled(parent);
-      }
+/**
+  * Checks if needed device parameters are provided. If some of them are not provided, an exception is thrown.
+  * @param funcName name of the function that got the device parameters that it wants to chech.
+  * @param deviceName name of the device that the parameters are for.
+  * @param deviceParams device parameters that you want to check.
+  * @param requiredParams list of required parameters.
+  */
+void emu_checkDeviceParams(string funcName, string deviceName, mapping deviceParams, dyn_string requiredParams, dyn_string &exceptionInfo) {
+  for (int i=1; i <= dynlen(requiredParams); i++) {
+    if (!mappingHasKey(deviceParams, requiredParams[i])) {
+      emu_addError("Incorrect device parameters for " + deviceName + " passed to " + funcName + ". Required parameters are: " + requiredParams, exceptionInfo);
+      return;
     }
-  } else {
-    string duMode = fwFsmUi_getDUMode(domain, object);
-    emu_info("IS FSM NODE ENABLED: " + fsmNode + " is DU and it's mode is " + duMode);
-    if (duMode == "Disabled") {
-      return false;
-    } else {
-      int type;
-      string parent = fwCU_getParent(type, fsmNode);
-      if (parent == "") { // top level node reached
-        return true;
-      } else {
-        return emuui_isFsmNodeEnabled(parent);
+  }
+}
+
+/**
+  * @return all PCrates in the system.
+  */
+dyn_mapping emu_getAllPCrates() {
+  dyn_mapping allCrates;
+  
+  for (int sideInt=0; sideInt <= 1; sideInt++) {
+    string side = "P";
+    if (sideInt == 1) { side = "M"; }
+    
+    for (int station=1; station <= 4; station++) {
+      int totalCrates = 6;
+      if (station == 1) { totalCrates = 12; }
+      
+      for (int crateNum=1; crateNum <= totalCrates; crateNum++) {
+        mapping pcrate;
+        pcrate["side"] = side;
+        pcrate["station"] = station;
+        pcrate["crateNum"] = crateNum;
+        dynAppend(allCrates, pcrate);
       }
     }
   }
-}
-
-/** Returns Maraton device parameters given an ID. */
-mapping emuui_getMaratonDeviceParams(int maratonId, dyn_string &exceptionInfo) {
-  mapping maratonDbSwapped = emuui_getMaratonDbSwapped(exceptionInfo);
-  if (emu_checkException(exceptionInfo)) { return; }
   
-  string maratonStr = maratonDbSwapped[(string)maratonId];
-  mapping deviceParams;
-  
-  dyn_string split = strsplit(maratonStr, "_"); // e.g M4_CR2
-  deviceParams["side"] = split[1][0]; // first part e.g. is M4 and second is CR2
-  int station = (string) split[1][1];
-  deviceParams["station"] = station;
-  int disk = station;
-  if (disk > 2) { disk--; } // Valeri named them after stations ME 1, 2, 4 (I like disks YE 1, 2, 3).
-  deviceParams["disk"] = disk;
-  strreplace(split[2], "CR", "");
-  deviceParams["crateNum"] = split[2];
-  
-  return deviceParams;
-}
-
-/** Given the ME11 (dubna) chamber deviceParams mapping this function adds neccessary parameters for ME11 HV channels. */
-mapping emuui_getME11HVChannelsDeviceParams(mapping deviceParams, dyn_string &exceptionInfo) {
-  dyn_string channelFsmNodes = emuui_getME11HVChannelFsmNodes(deviceParams, exceptionInfo);
-  if (emu_checkException(exceptionInfo)) { return; }
-  
-  string boardAndChannelParam = "{";
-  for (int i=1; i <= dynlen(channelFsmNodes); i++) {
-    mapping channelDeviceParams = emuui_parseME11channelName(channelFsmNodes[i], exceptionInfo);
-    if (emu_checkException(exceptionInfo)) { return; }
-    if (i > 1) {
-      boardAndChannelParam += ",";
-    }
-    boardAndChannelParam += "board" + channelDeviceParams["boardNumber"] + 
-                            "/channel" + channelDeviceParams["channelNumber"];
-  }
-  boardAndChannelParam += "}";
-  deviceParams["boardAndChannel"] = boardAndChannelParam;
-  return deviceParams;
-}
-
-/** Given the ME11 (dubna) chamber deviceParams this function returns FSM nodes for HV channels. */
-dyn_string emuui_getME11HVChannelFsmNodes(mapping deviceParams, dyn_string &exceptionInfo) {
-  if ((deviceParams["station"] != 1) || deviceParams["ring"] != 1) {
-    return makeDynString();
-  }
-  
-  // ----------========== GET THE MAIN HV FSM NODE FOR THIS CHAMBER ==========----------
-  string fsmNode = emuui_getFsmNode("chamber_me11_high_voltage", deviceParams, exceptionInfo);
-  if (emu_checkException(exceptionInfo)) { return; }
-  
-  // ----------========== GET CHANNEL FSM NODES ==========----------
-  dyn_int channelTypes;
-  dyn_string channelFsmNodes = fwCU_getChildren(channelTypes, fsmNode);
-  
-  return channelFsmNodes;
-}
-
-/** Returns Peripheral Crate name in standard format (VME+-station/pcrateNum). */
-string emuui_getPCrateName(string side, string station, string pcrateNum) {
-  string sideSign = "+";
-  if (side == "M") { sideSign = "-"; }
-  
-  return "VME" + sideSign + station + "/" + pcrateNum;
-}
-
-/** Returns Peripheral Crate name in standard format (VME+-station/pcrateNum) given the pcrate ID. */
-string emuui_getPCrateNameId(string elmbId, dyn_string &exceptionInfo) {
-  dyn_string info = emuui_getPcmbInfoById(elmbId, exceptionInfo);
-  if (emu_checkException(exceptionInfo)) { return; }
-  
-  return emuui_getPCrateName(info[1], info[2], info[6]);
+  return allCrates;
 }
