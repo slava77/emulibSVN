@@ -1,7 +1,7 @@
 <component>
 <name>CMS_CSC_UI</name>
-<version>3.5.1</version>
-<date>2010/09/29</date>
+<version>3.5.7</version>
+<date>2010/10/05</date>
 <required>CMS_CSC_common=1.0.1</required>
 <required>CMS_CSCfw_Supervisor=2.0.0</required>
 <required>fwCore=4.0.0</required>

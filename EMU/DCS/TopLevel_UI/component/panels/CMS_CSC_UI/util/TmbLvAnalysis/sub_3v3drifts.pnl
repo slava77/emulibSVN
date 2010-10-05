@@ -1,0 +1,1115 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 997 619 N "_3DFace" 0
+"main()
+{
+  emuui_init();
+//  tmb3v3dpes = dpNames(\"*:CSC_ME_*_LV.data.Tmb_o.v33\", \"LV_1_d\");
+  tmb3v3dpes = dpNames(\"*:CSC_ME_*_LV_Tmb_v33.value\", \"CSC_TMB_DATA\");
+  comboTmb.items = tmb3v3dpes;
+    
+  dpSet(\"trendPlot.curveTypes\", makeDynInt(2,2,2,2,2,2,2,2));
+  dpSet(\"trendPlot.axii\", makeDynBool(true,true,true,true,true,true,true,true));
+  dpSet(\"trendPlot.plotType\", 2);
+  dpSet(\"trendPlot.timeRange\", 3110400);
+  dpSet(\"trendPlot.yRangeMin\", makeDynFloat(3.07, 3.07, 3.07, 3.07, 3.07, 3.07, 3.07, 3.07));
+  dpSet(\"trendPlot.yRangeMax\", makeDynFloat(3.23, 3.23, 3.23, 3.23, 3.23, 3.23, 3.23, 3.23));
+  dyn_string ex;
+  initTmbIndexTree(ex);
+  if (emu_checkException(ex)) { return; }
+}
+" 0
+ E E E E 1 -1 -1 0  140 60
+""0  1
+E "#uses \"CMS_CSC_UI/emuui_utils.ctl\"
+#uses \"CMS_CSC_common/emu_common.ctl\"
+#uses \"CMS_CSC_common/emu_deviceInfo.ctl\"
+#uses \"CMS_CSC_UI/emuui_deviceInfo.ctl\"
+#uses \"CMS_CSC_UI/emuui_gradient.ctl\"
+
+dyn_string tmb3v3dpes;
+mapping tmbIndexTree; // a tree of chambers whose leaves are indices of the chambers (or TMBs) in the tmb3v3dpes array (e.g. tmbIndexTree[\"P\"][\"1\"][\"1\"][\"1\"] would return an index of CSC_ME_P11_C01_Tmb_v33 in tmb3v3dpes array)
+dyn_string nowAvgValues;
+dyn_mapping tableCellToDp;
+dyn_float tmbDrifts;
+
+void driftDatesChanged(time startDate, time endDate, bool isEndDateNow = false) {
+  setStatus(\"busy...\");
+
+  // get the average start and end values
+  dyn_string ex;
+  dyn_dyn_float avgValues = getAvgValues(tmb3v3dpes, startDate, endDate, isEndDateNow, ex);
+       
+  if (emu_checkException(ex)) { 
+    lblAvgGlobalDrift.text = \"ERROR while calculating the value\";
+    return;
+  }
+  
+  // calculate individual TMB drifts
+  int countMoreThan001 = 0;
+  for (int i=1; i <= dynlen(avgValues[1]); i++) {
+    if ((avgValues[1][i] == 0) || (avgValues[2][i] == 0)) { // could be caused by bad readings 
+      tmbDrifts[i] = -999;
+      continue;
+    }
+    tmbDrifts[i] = avgValues[1][i] - avgValues[2][i];
+    if (tmbDrifts[i] > 0.01) { countMoreThan001++; }
+  }
+  lblMore001.text = countMoreThan001;
+  
+  // calculate min, max drifts
+  string minDriftIdx, maxDriftIdx;
+  float minDrift, maxDrift;
+  minDrift = maxFLOAT();
+  maxDrift = minFLOAT();
+  for (int i=1; i <= dynlen(tmbDrifts); i++) {
+    if (tmbDrifts[i] == -999) { // ignore bad data
+      continue;
+    }
+    if (tmbDrifts[i] < minDrift) {
+      minDrift = tmbDrifts[i];
+      minDriftIdx = i;
+    }
+    if (tmbDrifts[i] > maxDrift) {
+      maxDrift = tmbDrifts[i];
+      maxDriftIdx = i;
+    }
+  }
+  
+  string chamberName = dpSubStr(tmb3v3dpes[minDriftIdx], DPSUB_DP);
+  strreplace(chamberName, \"_LV_Tmb_v33\", \"\");
+  string minDriftStr;
+  sprintf(minDriftStr, \"%.4f V for \" + chamberName, minDrift);
+
+  chamberName = dpSubStr(tmb3v3dpes[maxDriftIdx], DPSUB_DP);
+  strreplace(chamberName, \"_LV_Tmb_v33\", \"\");
+  string maxDriftStr;
+  sprintf(maxDriftStr, \"%.4f V for \" + chamberName, maxDrift);
+  lblMinDrift.text = minDriftStr;
+  lblMaxDrift.text = maxDriftStr;
+  
+  //calculate global average drift
+  float globalAvgDrift = 0;
+  int goodValuesCount = 0;
+  for (int i=1; i <= dynlen(tmbDrifts); i++) {
+    if (tmbDrifts[i] == -999) { continue; }
+    globalAvgDrift += tmbDrifts[i];
+    goodValuesCount++;
+  }
+  globalAvgDrift /= goodValuesCount;
+  
+  lblAvgGlobalDrift.text = globalAvgDrift + \"V\";
+  
+  // fill in the table
+  tableDrifts.deleteAllLines();
+  
+  dyn_mapping allCrates = emu_getAllPCrates();
+  for (int i=1; i <= dynlen(allCrates); i++) {
+    mapping crate = allCrates[i];
+    string crateName = emuui_getPCrateName(crate[\"side\"], crate[\"station\"], crate[\"crateNum\"]);
+    tableDrifts.appendLine(\"crate\", crateName);
+    
+    dyn_mapping chambers = emuDev_getPCrateChambers(crate, ex);
+    if (emu_checkException(ex)) { return; }
+    float avgCrateDrift = 0;
+    for (int j=1; j <= dynlen(chambers); j++) {
+      mapping chamber = chambers[j];
+      emu_info(\"getting index of \" + chamber);
+      string side = chamber[\"side\"];
+      string station = chamber[\"station\"];
+      string ring = chamber[\"ring\"];
+      string chamberNumber = chamber[\"chamberNumber\"];
+      int idx = tmbIndexTree[side][station][ring][chamberNumber];
+      
+      string driftStr;
+      sprintf(driftStr, \"%.4fV\", tmbDrifts[idx]);
+      tableDrifts.cellValueRC(i - 1, \"tmb\" + j, driftStr);
+      tableDrifts.cellBackColRC(i - 1, \"tmb\" + j, emuui_getGradientColor(tmbDrifts[idx], minDrift, maxDrift));
+      tableCellToDp[i][\"tmb\" + j] = tmb3v3dpes[idx];
+      avgCrateDrift += tmbDrifts[idx];      
+    }
+    avgCrateDrift /= dynlen(chambers);
+    string avgCrateDriftStr;
+    sprintf(avgCrateDriftStr, \"%.4fV\", avgCrateDrift);
+    tableDrifts.cellValueRC(i - 1, \"avg\", avgCrateDriftStr);
+    tableDrifts.cellBackColRC(i - 1, \"avg\", emuui_getGradientColor(avgCrateDrift, minDrift, maxDrift));
+  }
+
+
+  
+
+
+
+  
+  
+  
+  
+  
+  
+  
+//   dyn_string ex;
+//   mapping pcrate;
+//   pcrate[\"side\"] = side;
+//   pcrate[\"station\"] = station;
+//   pcrate[\"crateNum\"] = crateNum;
+//   dyn_mapping chambers = emuDev_getPCrateChambers(pcrate, ex);
+//   emu_info(\"Chambers connected to crate \" + side + \"_\" + station + \"_\" + crateNum);
+//   for (int i=1; i <= dynlen(chambers); i++) {
+//     emu_info(chambers[i]);
+//   }
+  
+  setStatus(\"ready\");
+}
+
+dyn_dyn_float getAvgValues(dyn_string dpes, time startDate, time endDate, bool isEndDateNow = false, dyn_string &exceptionInfo) {
+  
+  dyn_float startAverages, endAverages;
+
+  int dpesCount = dynlen(dpes);
+  progress.totalSteps = dpesCount * 2;
+  if ((dynlen(nowAvgValues) > 0) && (isEndDateNow)) {
+    progress.totalSteps = dpesCount;
+  }
+  
+  // get start averages
+  for (int i=1; i <= dynlen(dpes); i++) {
+    startAverages[i] = getHistoricalAverage(dpes[i], startDate, startDate + 86400, exceptionInfo);
+    if (i % 20) {
+      progress.progress = i; // up to 50%
+    }
+  }
+
+  // get end averages
+  if (isEndDateNow) {
+    endDate = getCurrentTime();
+    if (dynlen(nowAvgValues) > 0) { // use the cached values
+      emu_info(\"Using cached 'now' average values\");
+      dyn_dyn_float ret;
+      ret[1] = startAverages;
+      ret[2] = nowAvgValues;
+      return ret;
+    }
+  }
+  for (int i=1; i <= dynlen(dpes); i++) {
+    endAverages[i] = getHistoricalAverage(dpes[i], endDate - 86400, endDate - 1800, exceptionInfo);
+    if (i % 20) {
+      progress.progress = dpesCount + i; // 50-100 %
+    }
+  }  
+  if (isEndDateNow) {
+    nowAvgValues = endAverages; // cache the now average values
+  }
+  
+  dyn_dyn_float ret;
+  ret[1] = startAverages;
+  ret[2] = endAverages;
+  return ret;
+}
+
+float getHistoricalAverage(string dpe, time startDate, time endDate, dyn_string &exceptionInfo, bool printDebug = false) {
+  float average = 0;
+  dyn_float values = makeDynFloat();
+  dyn_time timestamps;
+  // get the data
+  bool gotEnough = false;
+  while (!gotEnough) {
+    int rc = dpGetPeriod(startDate, endDate, -1, dpe, values, timestamps);
+    if (rc != 0) {
+      emu_addError(\"Error while retrieving historical data. dpGetPeriod returned \" + rc, exceptionInfo);
+      return 0;
+    }
+    if (dynlen(values) < 2) { // require at least 2 values. If we get less than that, increase the time scale and try again
+      emu_info(\"stepping back the start date by 6 hours for \" + dpe);
+      startDate -= 21600;
+    } else {
+      gotEnough = true;
+    }
+  }
+  
+  // calculate average
+  int goodValuesCount = 0;
+  for (int j=1; j <= dynlen(values); j++) {
+    if (printDebug) {
+      emu_debug(dpe + \": \" + values[j]);
+    }
+    if (values[j] < 1) { // ignore funny values
+      continue;
+    }
+    average += values[j];
+    goodValuesCount++;
+  }
+  if (average == 0) {
+    emu_info(\"WARNING: Couldn't get enough good values for \" + dpe + \" to compute an average between \" + 
+                 emuui_formatTime(startDate) + \" and \" + emuui_formatTime(endDate) + \". IGNORING the values for this TMB\");
+  }
+  if (dynlen(values) == 0) {
+    emu_info(\"WARNING: No values found at all for \" + dpe);
+  } else {
+    average /= goodValuesCount;
+  }
+  
+  return average;
+}
+
+void setStatus(string status) {
+  lblStatus.text = status;
+  if (strpos(status, \"busy\") >= 0) {
+    lblStatus.foreCol = \"red\";
+    progress.visible = true;
+  } else {
+    lblStatus.foreCol = \"black\";
+    progress.visible = false;
+  }
+}
+
+void initTmbIndexTree(dyn_string &exceptionInfo) {
+  for (int i=1; i <= dynlen(tmb3v3dpes); i++) {
+    mapping devParams = emu_fsmNodeToDeviceParams(tmb3v3dpes[i], exceptionInfo);
+    string side = devParams[\"side\"];
+    string station = devParams[\"station\"];
+    string ring = devParams[\"ring\"];
+    string chamberNumber = devParams[\"chamberNumber\"];
+    if (emu_checkException(exceptionInfo)) { return; }
+    if (!mappingHasKey(tmbIndexTree, side)) { tmbIndexTree[side] = EMU_DUMMY_MAPPING; }
+    if (!mappingHasKey(tmbIndexTree[side], station)) { tmbIndexTree[side][station] = EMU_DUMMY_MAPPING; }
+    if (!mappingHasKey(tmbIndexTree[side][station], ring)) { tmbIndexTree[side][station][ring] = EMU_DUMMY_MAPPING; }
+
+    tmbIndexTree[side][station][ring][chamberNumber] = i;
+  }
+}
+
+void plotAllAboveThreshold(float driftThreshold) {
+  dyn_int plotBuffer;
+  for (int i=1; i <= dynlen(tmbDrifts); i++) {
+    if (tmbDrifts[i] > driftThreshold) {
+      dynAppend(plotBuffer, i);
+    }
+  }
+  
+  // plot the biggest trouble makers. Ordered by drift value
+  dyn_string plotBufferOrdered;
+  int plotNum = 0;
+  for (int i=1; i <= dynlen(plotBuffer); i++) {
+    int maxDriftIdx;
+    int maxDriftPlotBufferIdx;
+    float maxDriftValue = minFLOAT();
+    for (int j=1; j <= dynlen(plotBuffer); j++) {
+      if (plotBuffer[j] == -1) { continue; }
+      if (tmbDrifts[plotBuffer[j]] > maxDriftValue) {
+        maxDriftValue = tmbDrifts[plotBuffer[j]];
+        maxDriftIdx = plotBuffer[j];
+        maxDriftPlotBufferIdx = j;
+      }
+    }
+    plotBuffer[maxDriftPlotBufferIdx] = -1;
+    dynAppend(plotBufferOrdered, tmb3v3dpes[maxDriftIdx]);
+    if (dynlen(plotBufferOrdered) == 5) {
+        ChildPanelOnCentral(\"fwTrending/fwTrendingPlot.pnl\", \"TMB 3.3 V trend plot #\" + plotNum++, 
+                          makeDynString(\"$PlotName:trendPlot\", 
+                                        \"$templateParameters:dp1=\" + plotBufferOrdered[1] +
+                                                           \",dp2=\" + plotBufferOrdered[2] + 
+                                                           \",dp3=\" + plotBufferOrdered[3] +
+                                                           \",dp4=\" + plotBufferOrdered[4] + 
+                                                           \",dp5=\" + plotBufferOrdered[5] + 
+                                                           \",dp6=\"
+                                                           \",dp7=\"
+                                                           \",dp8=\"
+                                                           \",plotName=TMB 3.3v trend plot\"));
+      dynClear(plotBufferOrdered);
+    }
+  }
+  if (dynlen(plotBufferOrdered) > 0) {
+    while (dynlen(plotBufferOrdered) < 8) {
+      dynAppend(plotBufferOrdered, \"\");
+    }
+    ChildPanelOnCentral(\"fwTrending/fwTrendingPlot.pnl\", \"TMB 3.3 V trend plot #\" + plotNum++, 
+                      makeDynString(\"$PlotName:trendPlot\", 
+                                    \"$templateParameters:dp1=\" + plotBufferOrdered[1] +
+                                                       \",dp2=\" + plotBufferOrdered[2] + 
+                                                       \",dp3=\" + plotBufferOrdered[3] +
+                                                       \",dp4=\" + plotBufferOrdered[4] + 
+                                                       \",dp5=\" + plotBufferOrdered[5] + 
+                                                       \",dp6=\" + plotBufferOrdered[6] + 
+                                                       \",dp7=\" + plotBufferOrdered[7] + 
+                                                       \",dp8=\" + plotBufferOrdered[8] + 
+                                                       \",plotName=TMB 3.3v trend plot\"));
+    dynClear(plotBufferOrdered);
+  }
+}" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 1
+"btnDriftDist"
+""
+1 30.00000000000001 510 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  28 508 232 542
+
+T 
+1
+LANG:1 27 Get Drift Distribution Plot
+"main()
+{
+  //emuui_showHistogram(tmb3v3dpes, spinNumBuckets.text, \"TMB 3.3 V Distribution\");
+  emu_errorSingle(\"Sorry, drift distribution plot is not implemented yet..\");
+}
+
+" 0
+ E E E
+21 2
+"spinNumBuckets"
+""
+1 170 550 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  168 548 232 576
+0
+
+E
+E
+E
+
+N 0 999 1 15 1 1
+2 3
+"PRIMITIVE_TEXT1"
+""
+1 30 560 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 30 560 150 576
+0 2 2 "0s" 0 0 0 192 0 0  30 560 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 18 Number of buckets:
+2 6
+"lblFor3v3DriftStartDate"
+""
+1 30 50 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 30 50 97 66
+0 2 2 "0s" 0 0 0 192 0 0  30 50 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 11 Start Date:
+2 7
+"lblFor3v3DriftEndDate"
+""
+1 30 260 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 30 260 90 276
+0 2 2 "0s" 0 0 0 192 0 0  30 260 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 9 End Date:
+29 8
+"calDriftStartDate"
+""
+1 29.99999999999999 70 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"verticalHeaderFormat" "enum 1"
+"navigationBarVisible" "bool TRUE"
+"firstDayOfWeek" "enum 1"
+"horizontalHeaderFormat" "enum 0"
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  30 70 230 220
+8 Calendar
+0
+"main()
+{
+  this.selectedDate = makeTime(2010, 9, 2);
+}" 0
+29 9
+"calDriftEndDate"
+""
+1 29.99999999999999 280 E E E 0 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+2
+"firstDayOfWeek" "enum 1"
+"horizontalHeaderFormat" "enum 0"
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  30 280 230 430
+8 Calendar
+0
+E20 10
+"chkDriftEndDateNow"
+""
+1 110 260 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  108 258 232 281
+1
+T 
+1
+LANG:1 3 Now
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+E"main(int button, int state)
+{
+  calDriftEndDate.enabled = !state;
+}" 0
+2 11
+"lblForAvgGlobalDrift"
+""
+1 610 80 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 610 80 735 96
+0 2 2 "0s" 0 0 0 192 0 0  610 80 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 21 Average Global Drift:
+2 12
+"lblAvgGlobalDrift"
+""
+1 740 80 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 740 80 819 96
+0 2 2 "0s" 0 0 0 192 0 0  740 80 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 14 calculating...
+2 14
+"lblForStatus"
+""
+1 40 10 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 40 10 94 30
+0 2 2 "0s" 0 0 0 192 0 0  40 10 1
+1
+LANG:1 31 Sans Serif,12,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 7 status:
+2 15
+"lblStatus"
+""
+1 100 10 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+15 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 100 10 144 30
+0 2 2 "0s" 0 0 0 192 0 0  100 10 1
+1
+LANG:1 31 Sans Serif,12,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 4 busy
+29 17
+"progress"
+""
+1 160 10 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  160 10 980 30
+11 ProgressBar
+0
+E2 18
+"lblForMaxDrift"
+""
+1 270 80 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 270 80 328 96
+0 2 2 "0s" 0 0 0 192 0 0  270 80 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 10 Max Drift:
+2 19
+"lblForMinDrift"
+""
+1 270 100 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 270 100 325 116
+0 2 2 "0s" 0 0 0 192 0 0  270 100 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 10 Min Drift:
+2 20
+"lblMaxDrift"
+""
+1 340 80 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 340 80 419 96
+0 2 2 "0s" 0 0 0 192 0 0  340 80 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 12 computing...
+2 21
+"lblMinDrift"
+""
+1 340 100 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+21 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 340 100 419 116
+0 2 2 "0s" 0 0 0 192 0 0  340 100 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 12 computing...
+13 23
+"btnPlotTmb"
+""
+1 730 520 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+23 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  728 518 972 547
+
+T 
+1
+LANG:1 21 Get Plot for this TMB
+"main()
+{
+    ChildPanelOnCentral(\"fwTrending/fwTrendingPlot.pnl\", \"TMB 3.3 V trend plot\", 
+                      makeDynString(\"$PlotName:trendPlot\", 
+                                    \"$templateParameters:dp1=\" + comboTmb.selectedText+ \",dp2=,dp3=,dp4,dp5,dp6,dp7,dp8,plotName=TMB 3.3v trend plot\"));
+
+}" 0
+ E E E
+22 24
+"comboTmb"
+""
+1 260 520 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+24 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  258 518 712 546
+0
+
+E
+E
+E
+ 1 0
+30 25
+"frameResult"
+""
+1 260 42 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+25 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1.073529411764705 0 1.168478260869565 -29.11764705882347 0.9239130434782593 0 E 260 42 941 411
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 6 Result
+13 26
+"btnCompute"
+""
+1 20.00000000000001 440 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+26 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  18 438 242 482
+
+T 
+1
+LANG:1 30 Get Drifts Between These Dates
+"main()
+{
+  btnDriftDist.enabled = true;
+  bool isEndNow = chkDriftEndDateNow.state(0);
+  driftDatesChanged(calDriftStartDate.selectedDate + spinHour.text * 3600, calDriftEndDate.selectedDate, isEndNow);
+}" 0
+ E E E
+30 27
+"FRAME2"
+""
+1 270 522 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+27 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 0.4999999999999999 0 1.282051282051282 -115 -179.2307692307693 0 E 270 522 711 601
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 19 Drifts Distribution
+30 28
+"frameTrendPlot"
+""
+1 260 492 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+28 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1.057971014492754 0 0.9259259259259258 -25.07246376811607 34.4444444444445 0 E 260 492 951 601
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 26 Value Over Time Trend Plot
+13 30
+"PUSH_BUTTON1"
+""
+1 730 550 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+30 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  728 548 972 577
+
+T 
+1
+LANG:1 39 Plot all above selected drift threshold
+"main()
+{
+  plotAllAboveThreshold((float)editDriftThreshold.text);
+}" 0
+ E E E
+25 31
+"tableDrifts"
+""
+1 270 120 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E "main(int row, string column)
+{
+  string dp = tableCellToDp[row + 1][column];
+  emu_info(\"Plotting \" + dp);
+    ChildPanelOnCentral(\"fwTrending/fwTrendingPlot.pnl\", \"TMB 3.3 V trend plot\", 
+                      makeDynString(\"$PlotName:trendPlot\", 
+                                    \"$templateParameters:dp1=\" + dp + \",dp2=,dp3=,dp4,dp5,dp6,dp7,dp8,plotName=TMB 3.3v trend plot\"));
+}" 0
+
+31 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  268 118 942 442
+"main()
+{
+  this.tableMode = TABLE_SELECT_LINE_COLUMN;
+  this.selectByClick = TABLE_SELECT_LINE_COLUMN;
+}" 0
+E 1 0 1 11 0 "crate" 5 1 0 "s" 1
+LANG:1 5 Crate
+E
+1
+LANG:1 0 
+
+60 "avg" 5 1 0 "s" 1
+LANG:1 9 avg drift
+E
+1
+LANG:1 0 
+
+60 "tmb1" 5 1 0 "s" 1
+LANG:1 6 TMB #1
+E
+1
+LANG:1 0 
+
+60 "tmb2" 5 1 0 "s" 1
+LANG:1 6 TMB #2
+E
+1
+LANG:1 0 
+
+60 "tmb3" 5 1 0 "s" 1
+LANG:1 6 TMB #3
+E
+1
+LANG:1 0 
+
+60 "tmb4" 5 1 0 "s" 1
+LANG:1 6 TMB #4
+E
+1
+LANG:1 0 
+
+60 "tmb5" 5 1 0 "s" 1
+LANG:1 6 TMB #5
+E
+1
+LANG:1 0 
+
+60 "tmb6" 5 1 0 "s" 1
+LANG:1 6 TMB #6
+E
+1
+LANG:1 0 
+
+60 "tmb7" 5 1 0 "s" 1
+LANG:1 6 TMB #7
+E
+1
+LANG:1 0 
+
+60 "tmb8" 5 1 0 "s" 1
+LANG:1 6 TMB #8
+E
+1
+LANG:1 0 
+
+60 "tmb9" 5 1 0 "s" 1
+LANG:1 6 TMB #9
+E
+1
+LANG:1 0 
+
+60 
+16 16 10 10
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 0 1 1 1 7
+1 0
+2 36
+"PRIMITIVE_TEXT2"
+""
+1 300 460 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+36 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 300 460 681 476
+0 2 2 "0s" 0 0 0 192 0 0  300 460 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 65 Double click on a cell to get a value over time plot for that TMB
+2 37
+"PRIMITIVE_TEXT3"
+""
+1 30 230 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+37 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 30 230 63 246
+0 2 2 "0s" 0 0 0 192 0 0  30 230 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 5 Hour:
+21 38
+"spinHour"
+""
+1 70 227 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+38 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  68 225 192 253
+0
+
+E
+E
+E
+
+N 0 100 1 15 1 1
+2 39
+"lblForMore001\\"
+""
+1 610 100 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+39 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 610 100 842 116
+0 2 2 "0s" 0 0 0 192 0 0  610 100 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 36 Number of TMBs having Drift > 0.01V:
+2 40
+"lblMore001"
+""
+1 850 100 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+40 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 850 100 929 116
+0 2 2 "0s" 0 0 0 192 0 0  850 100 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 14 calculating...
+2 44
+"PRIMITIVE_TEXT6"
+""
+1 490 556 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+44 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 490 556 581 572
+0 2 2 "0s" 0 0 0 192 0 0  490 556 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 16 Drift threshold:
+14 46
+"editDriftThreshold"
+""
+1 590 550 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+46 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  588 548 712 576
+3 "0s" 0 0 0 0 0 -1  E "main()
+{
+  this.text = \"0.01\";
+}" 0
+ E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

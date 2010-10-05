@@ -1089,7 +1089,7 @@ E E 0 1 1 2 1 E 1 0 1 -209 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png"
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 -714.1731485177762 -570 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -955.8719198730504 -610 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -1108,7 +1108,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 48.95567225574192 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 48.91725723038807 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
@@ -1625,7 +1625,7 @@ LANG:1 36 Open Excluded Channels Summary Panel
 LANG:1 34 Open Xmas Monitoring Control Panel
 "2" 0 0 0 0 0
  1 1
-LANG:1 25 Open TMB LV Display Panel
+LANG:1 26 Open TMB LV Analysis Panel
 "3" 0 0 0 0 0
  E "main(string id)
 {
@@ -1639,7 +1639,7 @@ LANG:1 25 Open TMB LV Display Panel
       ChildPanelOnCentral(\"CMS_CSC_UI/XmasMonitoringControl.pnl\", \"Xmas Monitoring Control Panel\", makeDynString());
       break;
     case 3:
-      ChildPanelOnCentral(\"CMS_CSC_UI/TmbLvDisplay.pnl\", \"TMB LV Display Panel\", makeDynString());
+      ChildPanelOnCentral(\"CMS_CSC_UI/util/TmbLvAnalysis/Main.pnl\", \"TMB LV Analysis Panel\", makeDynString());
       break;
     default:
       break;

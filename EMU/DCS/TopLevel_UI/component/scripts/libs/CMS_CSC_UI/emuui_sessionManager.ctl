@@ -68,8 +68,8 @@ string emuui_getSessionId() {
 }
 
 /** @return a requested DPE of the current session. */
-string emuui_getSessionDp(string dp) {
-  return emuui_getSessionId() + "." + dp;
+string emuui_getSessionDp(string dpe) {
+  return emuui_getSessionId() + "." + dpe;
 }
 
 /** goes through all the session variables and if theres any that haven't got a value - applies the default
