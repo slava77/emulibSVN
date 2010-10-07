@@ -37,6 +37,9 @@ main()
   emu_info("Updating all alert classes");
   emuAlert_updateAllAlertClasses();
   emu_info("Done updating alert classes");
+  emu_info("Activating all alerts");
+  emuAlert_activateDeactivateSummaryAlertsWithDescriptors(true, ex, makeDynString("actual.OvV", "actual.UnV"));
+  emu_info("Done activating alerts");
   
 // **** Send a final info message ****
   CMSfwInstallUtils_endPostInstall("CMS_CSCfw_ME11HV");
