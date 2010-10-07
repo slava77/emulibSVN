@@ -19,7 +19,7 @@ PANEL,-1 -1 1600 1175 N "_3DFace" 0
   hostname = strtolower(hostname);
   if ((strpos(hostname, \"cms-scr-\") >= 0) || (strpos(hostname, \"scx5scr\") >= 0) ||       // control room
       (strpos(hostname, \"cerntscms01\") >= 0) ||                                          // terminal server
-      (strpos(hostname, \"dcspcS4F10-02\") >= 0) || (strpos(hostname, \"srv-c2c05-22\") >= 0)) { // test/development computers & cms gateways
+      (strpos(hostname, \"dcspcs4f10-02\") >= 0) || (strpos(hostname, \"srv-c2c05-22\") >= 0)) { // test/development computers & cms gateways
 
     fwAccessControl_setupPanel(\"selectRole\", ex);
     if (emu_checkException(ex)) { return; }
