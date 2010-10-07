@@ -21,32 +21,35 @@ CscAlertClass_FwWienerMarathon	CscConf_alertClassDescriptors	530972
 CscAlertClass_fwCrb_CSC_LV	CscConf_alertClassDescriptors	530973
 CscAlertClass_FwCaenCrateSY1527	CscConf_alertClassDescriptors	530975
 CscAlertClass_fwCooling_CSC_TURBINES_summary	CscConf_alertClassDescriptors	534484
+CscAlertClass_FwCaenChannel	CscConf_alertClassDescriptors	544924
 
 # DpValue
 ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
-CscAlertClass_HV_1_d.class	CscConf_alertClassDescriptors	_fwErrorNack_70.	0x101	30.05.2010 13:45:07.703
-CscAlertClass_HV_1_d.alertTexts	CscConf_alertClassDescriptors	"HV OK", "HV ERROR"	0x101	30.05.2010 15:29:58.953
-CscAlertClass_HV_PR_d.class	CscConf_alertClassDescriptors	_fwFatalAck_90.	0x101	30.05.2010 12:36:31.890
-CscAlertClass_HV_PR_d.alertTexts	CscConf_alertClassDescriptors	"HV PRIMARY PSU OK", "HV PRIMARY PSU ERROR"	0x101	30.05.2010 15:30:07.562
-CscAlertClass_FED_1_d.class	CscConf_alertClassDescriptors	_fwWarningNack_41.	0x101	30.05.2010 15:42:05.234
-CscAlertClass_FED_1_d.alertTexts	CscConf_alertClassDescriptors	"DDU OK", "DDU ERROR"	0x101	30.05.2010 15:28:40.750
-CscAlertClass_fwCooling_CSC_COOLING_d.class	CscConf_alertClassDescriptors	_fwFatalAck_90.	0x101	30.05.2010 13:44:14.421
-CscAlertClass_fwCooling_CSC_COOLING_d.alertTexts	CscConf_alertClassDescriptors	"CSC Cooling OK", "CSC Cooling ERROR"	0x101	30.05.2010 15:28:51.218
-CscAlertClass_fwLvCr_CSC_TEMP.class	CscConf_alertClassDescriptors	_fwErrorNack_61.	0x101	30.05.2010 14:29:26.234
-CscAlertClass_fwLvCr_CSC_TEMP.alertTexts	CscConf_alertClassDescriptors	"PCrate Temperature OK", "PCrate Temperature Alert"	0x101	30.05.2010 15:29:29.421
-CscAlertClass_fwWnrCr_CSC_LV_d.class	CscConf_alertClassDescriptors	_fwFatalAck_90.	0x101	30.05.2010 14:34:00.203
-CscAlertClass_fwWnrCr_CSC_LV_d.alertTexts	CscConf_alertClassDescriptors	"LV for HV PSU OK", "LV for HV PSU ERROR"	0x101	30.05.2010 15:29:49.343
-CscAlertClass_LV_1_d.class	CscConf_alertClassDescriptors	_fwWarningNack_41.	0x101	30.05.2010 14:35:58.078
-CscAlertClass_LV_1_d.alertTexts	CscConf_alertClassDescriptors	"On-Chamber el. LV OK", "On-Chamber el. LV ERROR"	0x101	30.05.2010 15:30:16.750
-CscAlertClass_TEMP_1_d.class	CscConf_alertClassDescriptors	_fwWarningNack_41.	0x101	30.05.2010 14:37:05.125
-CscAlertClass_TEMP_1_d.alertTexts	CscConf_alertClassDescriptors	"Temperature OK", "Temperature Alert"	0x101	30.05.2010 15:30:25.875
-CscAlertClass_FwElmbPSUBranch.class	CscConf_alertClassDescriptors	_fwErrorNack_70.	0x101	30.05.2010 14:45:21.890
-CscAlertClass_FwElmbPSUBranch.alertTexts	CscConf_alertClassDescriptors	"ELMB Power Supply OK", "ELMB Power Supply ERROR"	0x101	30.05.2010 15:29:17.718
-CscAlertClass_FwWienerMarathon.class	CscConf_alertClassDescriptors	_fwFatalAck_90.	0x101	30.05.2010 14:47:58.812
-CscAlertClass_FwWienerMarathon.alertTexts	CscConf_alertClassDescriptors	"Maraton PSU OK", "Maraton PSU ERROR"	0x101	30.05.2010 15:29:39.312
-CscAlertClass_fwCrb_CSC_LV.class	CscConf_alertClassDescriptors	_fwErrorAck_70.	0x101	30.05.2010 14:55:40.609
-CscAlertClass_fwCrb_CSC_LV.alertTexts	CscConf_alertClassDescriptors	"PCrate OK", "PCrate ERROR"	0x101	30.05.2010 15:29:05.593
-CscAlertClass_FwCaenCrateSY1527.class	CscConf_alertClassDescriptors	_fwErrorNack_70.	0x101	30.05.2010 16:04:49.343
-CscAlertClass_FwCaenCrateSY1527.alertTexts	CscConf_alertClassDescriptors	"ME1/1 HV OK", "ME1/1 HV ERROR"	0x101	30.05.2010 16:05:18.734
-CscAlertClass_fwCooling_CSC_TURBINES_summary.class	CscConf_alertClassDescriptors	_fwFatalAck_90.	0x101	31.05.2010 22:14:48.062
-CscAlertClass_fwCooling_CSC_TURBINES_summary.alertTexts	CscConf_alertClassDescriptors	"CSC Rack Turbine OK", "CSC Rack Turbine ALERT"	0x101	31.05.2010 22:14:34.906
+CscAlertClass_HV_1_d.class	CscConf_alertClassDescriptors	_fwErrorNack_70.	0x101	07.10.2010 14:32:24.054
+CscAlertClass_HV_1_d.alertTexts	CscConf_alertClassDescriptors	"HV OK", "HV ERROR"	0x101	07.10.2010 14:32:24.055
+CscAlertClass_HV_PR_d.class	CscConf_alertClassDescriptors	_fwFatalAck_90.	0x101	07.10.2010 14:32:24.056
+CscAlertClass_HV_PR_d.alertTexts	CscConf_alertClassDescriptors	"HV PRIMARY PSU OK", "HV PRIMARY PSU ERROR"	0x101	07.10.2010 14:32:24.057
+CscAlertClass_FED_1_d.class	CscConf_alertClassDescriptors	_fwWarningNack_41.	0x101	07.10.2010 14:32:24.059
+CscAlertClass_FED_1_d.alertTexts	CscConf_alertClassDescriptors	"DDU OK", "DDU ERROR"	0x101	07.10.2010 14:32:24.060
+CscAlertClass_fwCooling_CSC_COOLING_d.class	CscConf_alertClassDescriptors	_fwFatalAck_90.	0x101	07.10.2010 14:32:24.060
+CscAlertClass_fwCooling_CSC_COOLING_d.alertTexts	CscConf_alertClassDescriptors	"CSC Cooling OK", "CSC Cooling ERROR"	0x101	07.10.2010 14:32:24.061
+CscAlertClass_fwLvCr_CSC_TEMP.class	CscConf_alertClassDescriptors	_fwErrorNack_61.	0x101	07.10.2010 14:32:24.062
+CscAlertClass_fwLvCr_CSC_TEMP.alertTexts	CscConf_alertClassDescriptors	"PCrate Temperature OK", "PCrate Temperature Alert"	0x101	07.10.2010 14:32:24.063
+CscAlertClass_fwWnrCr_CSC_LV_d.class	CscConf_alertClassDescriptors	_fwFatalAck_90.	0x101	07.10.2010 14:32:24.064
+CscAlertClass_fwWnrCr_CSC_LV_d.alertTexts	CscConf_alertClassDescriptors	"LV for HV PSU OK", "LV for HV PSU ERROR"	0x101	07.10.2010 14:32:24.064
+CscAlertClass_LV_1_d.class	CscConf_alertClassDescriptors	_fwWarningNack_41.	0x101	07.10.2010 14:32:24.065
+CscAlertClass_LV_1_d.alertTexts	CscConf_alertClassDescriptors	"On-Chamber el. LV OK", "On-Chamber el. LV ERROR"	0x101	07.10.2010 14:32:24.066
+CscAlertClass_TEMP_1_d.class	CscConf_alertClassDescriptors	_fwWarningNack_41.	0x101	07.10.2010 14:32:24.066
+CscAlertClass_TEMP_1_d.alertTexts	CscConf_alertClassDescriptors	"Temperature OK", "Temperature Alert"	0x101	07.10.2010 14:32:24.067
+CscAlertClass_FwElmbPSUBranch.class	CscConf_alertClassDescriptors	_fwErrorNack_70.	0x101	07.10.2010 14:32:24.068
+CscAlertClass_FwElmbPSUBranch.alertTexts	CscConf_alertClassDescriptors	"ELMB Power Supply OK", "ELMB Power Supply ERROR"	0x101	07.10.2010 14:32:24.069
+CscAlertClass_FwWienerMarathon.class	CscConf_alertClassDescriptors	_fwFatalAck_90.	0x101	07.10.2010 14:32:24.070
+CscAlertClass_FwWienerMarathon.alertTexts	CscConf_alertClassDescriptors	"Maraton PSU OK", "Maraton PSU ERROR"	0x101	07.10.2010 14:32:24.071
+CscAlertClass_fwCrb_CSC_LV.class	CscConf_alertClassDescriptors	_fwErrorAck_70.	0x101	07.10.2010 14:32:24.071
+CscAlertClass_fwCrb_CSC_LV.alertTexts	CscConf_alertClassDescriptors	"PCrate OK", "PCrate ERROR"	0x101	07.10.2010 14:32:24.072
+CscAlertClass_FwCaenCrateSY1527.class	CscConf_alertClassDescriptors	_fwErrorNack_70.	0x101	07.10.2010 14:32:24.073
+CscAlertClass_FwCaenCrateSY1527.alertTexts	CscConf_alertClassDescriptors	"ME1/1 HV OK", "ME1/1 HV ERROR"	0x101	07.10.2010 14:32:24.074
+CscAlertClass_fwCooling_CSC_TURBINES_summary.class	CscConf_alertClassDescriptors	_fwFatalAck_90.	0x101	07.10.2010 14:32:24.074
+CscAlertClass_fwCooling_CSC_TURBINES_summary.alertTexts	CscConf_alertClassDescriptors	"CSC Rack Turbine OK", "CSC Rack Turbine ALERT"	0x101	07.10.2010 14:32:24.075
+CscAlertClass_FwCaenChannel.class	CscConf_alertClassDescriptors	_fwErrorNack_70.	0x101	07.10.2010 14:33:30.660
+CscAlertClass_FwCaenChannel.alertTexts	CscConf_alertClassDescriptors	"ME1/1 HV OK", "ME1/1 HV ERROR"	0x101	07.10.2010 14:34:13.704
