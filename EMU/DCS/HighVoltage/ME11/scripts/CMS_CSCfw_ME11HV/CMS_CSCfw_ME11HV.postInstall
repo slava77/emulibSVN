@@ -38,7 +38,9 @@ main()
   emuAlert_updateAllAlertClasses();
   emu_info("Done updating alert classes");
   emu_info("Activating all alerts");
+  dyn_string ex;
   emuAlert_activateDeactivateSummaryAlertsWithDescriptors(true, ex, makeDynString("actual.OvV", "actual.UnV"));
+  emu_checkException(ex);
   emu_info("Done activating alerts");
   
 // **** Send a final info message ****
