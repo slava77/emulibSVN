@@ -13,7 +13,18 @@ PANEL,-1 -1 1600 1175 N "_3DFace" 0
   fwFsmUi_addUserLogin(1380, -5);
   fwAccessControl_setupPanel(\"accessPrivilegesChangedCB\", ex);
   if (emu_checkException(ex)) { return; }
+  // auto-select role
+  string hostname, ip; int manId; time startTime ; dyn_string exceptionInfo;
+  fwAccessControl_getMyDisplay(hostname, ip, manId,startTime, exceptionInfo);
+  hostname = strtolower(hostname);
+  if ((strpos(hostname, \"cms-scr-\") >= 0) || (strpos(hostname, \"scx5scr\") >= 0) ||       // control room
+      (strpos(hostname, \"cerntscms01\") >= 0) ||                                          // terminal server
+      (strpos(hostname, \"dcspcS4F10-02\") >= 0) || (strpos(hostname, \"srv-c2c05-22\") >= 0)) { // test/development computers & cms gateways
 
+    fwAccessControl_setupPanel(\"selectRole\", ex);
+    if (emu_checkException(ex)) { return; }
+  }
+  
   // UI stuff
   lblVersion.text = \"UI Version \" + EMUUI_COMPONENT_VERSION + \" (\" + EMUUI_COMPONENT_DATE + \")\";
   initConstants();
@@ -104,10 +115,10 @@ bool releaseFsmOnExit = true;
 bool autoTakeControl = false;
 
 // access control stuff
-string currentUser;
+string currentUser, lastUser;
 dyn_string currentFsmOwners;
 bool hasControlPrivilege, hasExpertPrivilege;
-
+ 
 void waitForEmuUiInitialize() {
   while(!emuui_isInitialized()) { // wait for the emuui initialization
     delay(0, 200);
@@ -386,6 +397,31 @@ void killAllPvss() {
 
 dyn_string getCurrentFsmOwners() {
   return currentFsmOwners;
+}
+
+/** selects default role */
+void selectRole(string s1, string s2) {
+  //set default role
+  string myUserName;
+  dyn_string exc_info, groups;
+  bool enabled;
+  int id;
+  string fullName, description;
+
+  fwAccessControl_getUserName(myUserName);
+  if (lastUser == myUserName) return; // to allow changing role once you are logged in
+  
+  lastUser = myUserName;
+  if (strlen(myUserName) > 0) {
+    fwAccessControl_getUser(myUserName,fullName,description,id,enabled,groups,exc_info);
+    dyn_string rolesToCheck = makeDynString(\"CSC_expert\", \"CSC_operator\", \"cms_expert\", \"CENTRAL_DCS\", \"CMS_OPERATOR\", \"CENTRAL_Shift_leader\");
+    for (int i=1; i<= dynlen(rolesToCheck); i++) {
+      if (dynContains(groups,rolesToCheck[i])) {
+        fwAccessControl_setRole(rolesToCheck[i],exc_info);
+        break;
+      }
+    }
+  }
 }" 0
  2
 "CBRef" "1"
@@ -1089,7 +1125,7 @@ E E 0 1 1 2 1 E 1 0 1 -209 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png"
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 -955.8719198730504 -610 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -1075.105206302756 -630 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -1108,7 +1144,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 48.91725723038807 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 48.89863271809593 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E

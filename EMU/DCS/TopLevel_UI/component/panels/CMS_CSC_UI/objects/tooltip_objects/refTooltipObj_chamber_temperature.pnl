@@ -442,7 +442,7 @@ LANG:1 0
 "dashclr"N "_Transparent"
 E E 0 1 1 2 1 E 2.5 0 1 -185 6 1 E 110 0 130 20
 2 20
-"warnNoLvCommunication"
+"warnNoTempCommunication"
 ""
 1 10 90 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
  E E
