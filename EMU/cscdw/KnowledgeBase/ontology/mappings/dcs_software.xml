@@ -1,0 +1,32 @@
+<DCS>
+    <SoftwareComponents>
+        <DcsSoftwareComponent>XmasPlus</DcsSoftwareComponent>
+        <DcsSoftwareComponent>XmasMinus</DcsSoftwareComponent>
+        <DcsSoftwareComponent>X2PPlus</DcsSoftwareComponent>
+        <DcsSoftwareComponent>X2PMinus</DcsSoftwareComponent>
+        <DcsSoftwareComponent>pvss_cms_csc_dcs_09</DcsSoftwareComponent>
+        <DcsSoftwareComponent>pvss_cms_csc_dcs_08</DcsSoftwareComponent>
+        <DcsSoftwareComponent>pvss_cms_csc_dcs_07</DcsSoftwareComponent>
+        <DcsSoftwareComponent>pvss_cms_csc_dcs_02</DcsSoftwareComponent>
+        <DcsSoftwareComponent>pvss_cms_csc_dcs_00</DcsSoftwareComponent>
+        <DcsSoftwareComponent>pvss_cms_csc_dcs_01</DcsSoftwareComponent>
+        <DcsSoftwareComponent>pvss_cms_csc_dcs_lv</DcsSoftwareComponent>
+        <DcsSoftwareComponent>hvServerPlus</DcsSoftwareComponent>
+        <DcsSoftwareComponent>hvServerMinus</DcsSoftwareComponent>
+        <DcsSoftwareComponent>GasDipPublisher</DcsSoftwareComponent>
+        <DcsSoftwareComponent>CoolingDipPublisher</DcsSoftwareComponent>
+    </SoftwareComponents>
+    <Computers>
+        <DcsComputer>cms-csc-dcs-09</DcsComputer>
+        <DcsComputer>cms-csc-dcs-08</DcsComputer>
+        <DcsComputer>cms-csc-dcs-07</DcsComputer>
+        <DcsComputer>cms-csc-dcs-02</DcsComputer>
+        <DcsComputer>cms-csc-dcs-00</DcsComputer>
+        <DcsComputer>cms-csc-dcs-01</DcsComputer>
+        <DcsComputer>cms-csc-dcs-lv1</DcsComputer>
+        <DcsComputer>csc-dcs-pc1</DcsComputer>
+        <DcsComputer>csc-dcs-pc2</DcsComputer>
+        <DcsComputer>ufcmshv1</DcsComputer>
+        <DcsComputer>ufcmshv2</DcsComputer>
+    </Computers>
+</DCS>
