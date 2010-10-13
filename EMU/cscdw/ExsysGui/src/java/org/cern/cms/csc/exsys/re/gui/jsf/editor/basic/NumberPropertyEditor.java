@@ -8,6 +8,7 @@ package org.cern.cms.csc.exsys.re.gui.jsf.editor.basic;
 import java.math.BigInteger;
 import javax.faces.convert.BigIntegerConverter;
 import javax.faces.convert.Converter;
+import javax.faces.convert.DoubleConverter;
 import javax.faces.convert.FloatConverter;
 import javax.faces.convert.NumberConverter;
 import org.cern.cms.csc.dw.model.base.EntityBase;
@@ -44,6 +45,8 @@ public class NumberPropertyEditor extends BasicEditor {
             return new BigIntegerConverter();
         } else if (Float.class.isAssignableFrom(getMetadata().getType())) { // it's a float
             return new FloatConverter();
+        } else if (Double.class.isAssignableFrom(getMetadata().getType())) { // it's a double
+            return new DoubleConverter();
         }
         return new NumberConverter(); // default
     }

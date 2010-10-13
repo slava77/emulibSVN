@@ -4,7 +4,6 @@
     <Scope Scope="Project">
         <Node id="forward.jsp" x="22" y="17" zoom="true"/>
         <Node id="re/status.jsf" x="650" y="150" zoom="true"/>
-        <Node id="index.jsp" x="400" y="300" zoom="true"/>
         <Node id="re/admin/newRule.jsf" x="145" y="480" zoom="true"/>
         <Node id="re/admin/rules.jsf" x="150" y="300" zoom="true"/>
         <Node id="re/admin/rules.xhtml" x="144" y="352" zoom="true"/>
@@ -12,6 +11,7 @@
         <Node id="*" x="434" y="137" zoom="true"/>
         <Node id="index.jsf" x="443" y="297" zoom="true"/>
         <Node id="re/admin/newRule.xhtml" x="150" y="150" zoom="true"/>
+        <Node id="re/admin/editRule.jsf" x="400" y="300" zoom="true"/>
     </Scope>
     <Scope Scope="All Faces Configurations"/>
 </Scene>

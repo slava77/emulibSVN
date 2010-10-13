@@ -7,6 +7,7 @@ package org.cern.cms.csc.exsys.re.gui.jsf.action;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -93,9 +94,13 @@ public class NewFact extends EntityEditorManager {
     public List<SelectItem> getFactClassList() {
         if (factClassesSI == null) {
             Collection<FactMd> factClassMds = factMdManager.getFactMDs();
-            List<Object> factClasses = new ArrayList<Object>();
+            List<FactMd> factClassMdsSortedList = new ArrayList<FactMd>();
+            factClassMdsSortedList.addAll(factClassMds);
+            Collections.sort(factClassMdsSortedList);
+            
+            List<Class> factClasses = new ArrayList<Class>();
             factClassesSI = new ArrayList<SelectItem>();
-            for (FactMd factClassMd: factClassMds) {
+            for (FactMd factClassMd: factClassMdsSortedList) {
                 Class factClass = factClassMd.getFactClass();
                 factClasses.add(factClass);
                 factClassesSI.add(new SelectItem(factClass, factClass.getSimpleName()));
