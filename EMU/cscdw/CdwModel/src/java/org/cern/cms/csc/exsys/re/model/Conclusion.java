@@ -55,7 +55,6 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
  *         &lt;element name="title" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="severity" type="{http://www.cern.ch/cms/csc/dw/model}severityType"/>
- *         &lt;element name="certainty" type="{http://www.w3.org/2001/XMLSchema}integer"/>
  *         &lt;element name="timestamp" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
  *         &lt;element name="lastHitTime" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
  *         &lt;element name="hitCount" type="{http://www.w3.org/2001/XMLSchema}integer"/>
@@ -78,7 +77,6 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
     "title",
     "description",
     "severity",
-    "certainty",
     "timestamp",
     "lastHitTime",
     "hitCount",
@@ -103,8 +101,6 @@ public class Conclusion
     protected String description;
     @XmlElement(required = true)
     protected SeverityType severity;
-    @XmlElement(required = true)
-    protected BigInteger certainty;
     @XmlElement(required = true)
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar timestamp;
@@ -215,37 +211,6 @@ public class Conclusion
     @Transient
     public boolean isSetSeverity() {
         return (this.severity!= null);
-    }
-
-    /**
-     * Gets the value of the certainty property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
-     */
-    @Basic
-    @Column(name = "REC_CERTAINTY", nullable = false, precision = 3, scale = 0)
-    public BigInteger getCertainty() {
-        return certainty;
-    }
-
-    /**
-     * Sets the value of the certainty property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setCertainty(BigInteger value) {
-        this.certainty = value;
-    }
-
-    @Transient
-    public boolean isSetCertainty() {
-        return (this.certainty!= null);
     }
 
     /**

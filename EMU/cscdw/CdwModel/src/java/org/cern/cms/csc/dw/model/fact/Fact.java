@@ -75,17 +75,18 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 @XmlSeeAlso({
     SlidingTmbTriggerCounterFact.class,
     DduFmmResetFact.class,
-    DqmReportFact.class,
     DqmDduFact.class,
     DqmDduInputFact.class,
-    LocalDAQStatusFact.class,
     DqmCscCfebFact.class,
+    LocalDAQStatusFact.class,
     CumulativeTmbTriggerCounterFact.class,
     ApplicationStatusFact.class,
     FedFsmFact.class,
     DqmCscAfebFact.class,
+    DcsCommunicationStatusFact.class,
+    DcsCfebLvFact.class,
     DqmCscHvSegmentFact.class,
-    EmuMonitorFact.class,
+    DcsAlctLvFact.class,
     TmbCounterFact.class,
     DqmCscFact.class,
     DqmEmuFact.class,
@@ -277,7 +278,7 @@ public abstract class Fact
         CascadeType.ALL
     })
     @JoinColumn(name = "FCT_CMP_ID")
-    @org.cern.cms.csc.dw.model.annotation.OlapDimension(name = "Component", sharedTable = "CDW_OLAP$D_COMPONENTS")
+    @org.cern.cms.csc.dw.model.annotation.OlapDimension(name = "Chambers", sharedTable = "CDW_OLAP$D_CHAMBERS")
     public org.cern.cms.csc.dw.model.ontology.Component getComponent() {
         return component;
     }

@@ -145,16 +145,6 @@
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
-            <xsd:element name="certainty" type="xsd:integer">
-                <xsd:annotation>
-                    <xsd:appinfo>
-                        <hj:basic>
-                            <orm:column name="REC_CERTAINTY" precision="3" scale="0" nullable="false"/>
-                        </hj:basic>
-                        <jaxb:property name="certainty"/>
-                    </xsd:appinfo>
-                </xsd:annotation>
-            </xsd:element>
             <xsd:element name="timestamp" type="xsd:dateTime">
                 <xsd:annotation>
                     <xsd:appinfo>

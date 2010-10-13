@@ -29,6 +29,7 @@
     <xsd:include schemaLocation="applicationStatusFact.xsd"/>
     <xsd:include schemaLocation="localDAQStatusFact.xsd"/>
     <xsd:include schemaLocation="fedFacts.xsd"/>
+    <xsd:include schemaLocation="dcsFacts.xsd"/>
 
     <xsd:import namespace="http://www.cern.ch/cms/csc/dw/ontology" schemaLocation="ontology.xsd"/>
     <xsd:import namespace="http://www.cern.ch/cms/csc/dw/service" schemaLocation="service.xsd"/>

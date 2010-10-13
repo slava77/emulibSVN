@@ -70,7 +70,7 @@ import org.cern.cms.csc.dw.model.annotation.FactAnn;
 @Table(name = "CDW_DDU_FMM_IRQ_FACTS")
 @FactAnn(limitComponents = {
     "DDU"
-}, title = "DDU FMM IRQ Information")
+}, title = "DDU FMM IRQ information")
 public class DduFmmIrqFact
     extends Fact
     implements Serializable

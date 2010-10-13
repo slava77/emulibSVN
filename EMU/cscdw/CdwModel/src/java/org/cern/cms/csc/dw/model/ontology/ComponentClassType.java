@@ -26,19 +26,19 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;enumeration value="CCB"/>
  *     &lt;enumeration value="CFEB"/>
  *     &lt;enumeration value="Chamber"/>
+ *     &lt;enumeration value="Channel"/>
  *     &lt;enumeration value="Computer"/>
- *     &lt;enumeration value="ComputingDevice"/>
+ *     &lt;enumeration value="Cooling"/>
  *     &lt;enumeration value="CoolingCircuit"/>
- *     &lt;enumeration value="CoolingDevice"/>
  *     &lt;enumeration value="CSC"/>
- *     &lt;enumeration value="DataChannel"/>
- *     &lt;enumeration value="DataDevice"/>
+ *     &lt;enumeration value="DAQ"/>
+ *     &lt;enumeration value="DAQDevice"/>
  *     &lt;enumeration value="DCC"/>
+ *     &lt;enumeration value="DCS"/>
  *     &lt;enumeration value="DDU"/>
  *     &lt;enumeration value="DDUInput"/>
  *     &lt;enumeration value="Device"/>
  *     &lt;enumeration value="DMB"/>
- *     &lt;enumeration value="EmuMonitor"/>
  *     &lt;enumeration value="Endcap"/>
  *     &lt;enumeration value="FactProvider"/>
  *     &lt;enumeration value="FEDCrate"/>
@@ -47,24 +47,29 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;enumeration value="GasDevice"/>
  *     &lt;enumeration value="GasMixerInputLine"/>
  *     &lt;enumeration value="GasRack"/>
+ *     &lt;enumeration value="GasSystem"/>
+ *     &lt;enumeration value="Global"/>
+ *     &lt;enumeration value="GlobalDAQ"/>
+ *     &lt;enumeration value="HV"/>
  *     &lt;enumeration value="HVBoard"/>
  *     &lt;enumeration value="HVChannel"/>
  *     &lt;enumeration value="HVCrate"/>
- *     &lt;enumeration value="HVDevice"/>
  *     &lt;enumeration value="HVDistribution"/>
  *     &lt;enumeration value="HVMaster"/>
  *     &lt;enumeration value="HVPrimary"/>
- *     &lt;enumeration value="HVRack"/>
  *     &lt;enumeration value="HVSegment"/>
  *     &lt;enumeration value="Layer"/>
+ *     &lt;enumeration value="Local"/>
+ *     &lt;enumeration value="LocalDAQ"/>
  *     &lt;enumeration value="LogicalComponent"/>
  *     &lt;enumeration value="LogicalDomain"/>
  *     &lt;enumeration value="LTC"/>
- *     &lt;enumeration value="LVDevice"/>
+ *     &lt;enumeration value="LV"/>
  *     &lt;enumeration value="Maraton"/>
  *     &lt;enumeration value="MPC"/>
  *     &lt;enumeration value="PCrateRack"/>
  *     &lt;enumeration value="PeripheralCrate"/>
+ *     &lt;enumeration value="Rack"/>
  *     &lt;enumeration value="RackTurbine"/>
  *     &lt;enumeration value="RAT"/>
  *     &lt;enumeration value="Ring"/>
@@ -77,6 +82,8 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;enumeration value="TFDDU"/>
  *     &lt;enumeration value="TFRUI"/>
  *     &lt;enumeration value="TMB"/>
+ *     &lt;enumeration value="Trigger"/>
+ *     &lt;enumeration value="TriggerDevice"/>
  *     &lt;enumeration value="TTC"/>
  *     &lt;enumeration value="VCC"/>
  *   &lt;/restriction>
@@ -96,28 +103,26 @@ public enum ComponentClassType {
     CFEB("CFEB"),
     @XmlEnumValue("Chamber")
     CHAMBER("Chamber"),
+    @XmlEnumValue("Channel")
+    CHANNEL("Channel"),
     @XmlEnumValue("Computer")
     COMPUTER("Computer"),
-    @XmlEnumValue("ComputingDevice")
-    COMPUTING_DEVICE("ComputingDevice"),
+    @XmlEnumValue("Cooling")
+    COOLING("Cooling"),
     @XmlEnumValue("CoolingCircuit")
     COOLING_CIRCUIT("CoolingCircuit"),
-    @XmlEnumValue("CoolingDevice")
-    COOLING_DEVICE("CoolingDevice"),
     CSC("CSC"),
-    @XmlEnumValue("DataChannel")
-    DATA_CHANNEL("DataChannel"),
-    @XmlEnumValue("DataDevice")
-    DATA_DEVICE("DataDevice"),
+    DAQ("DAQ"),
+    @XmlEnumValue("DAQDevice")
+    DAQ_DEVICE("DAQDevice"),
     DCC("DCC"),
+    DCS("DCS"),
     DDU("DDU"),
     @XmlEnumValue("DDUInput")
     DDU_INPUT("DDUInput"),
     @XmlEnumValue("Device")
     DEVICE("Device"),
     DMB("DMB"),
-    @XmlEnumValue("EmuMonitor")
-    EMU_MONITOR("EmuMonitor"),
     @XmlEnumValue("Endcap")
     ENDCAP("Endcap"),
     @XmlEnumValue("FactProvider")
@@ -134,33 +139,39 @@ public enum ComponentClassType {
     GAS_MIXER_INPUT_LINE("GasMixerInputLine"),
     @XmlEnumValue("GasRack")
     GAS_RACK("GasRack"),
+    @XmlEnumValue("GasSystem")
+    GAS_SYSTEM("GasSystem"),
+    @XmlEnumValue("Global")
+    GLOBAL("Global"),
+    @XmlEnumValue("GlobalDAQ")
+    GLOBAL_DAQ("GlobalDAQ"),
+    HV("HV"),
     @XmlEnumValue("HVBoard")
     HV_BOARD("HVBoard"),
     @XmlEnumValue("HVChannel")
     HV_CHANNEL("HVChannel"),
     @XmlEnumValue("HVCrate")
     HV_CRATE("HVCrate"),
-    @XmlEnumValue("HVDevice")
-    HV_DEVICE("HVDevice"),
     @XmlEnumValue("HVDistribution")
     HV_DISTRIBUTION("HVDistribution"),
     @XmlEnumValue("HVMaster")
     HV_MASTER("HVMaster"),
     @XmlEnumValue("HVPrimary")
     HV_PRIMARY("HVPrimary"),
-    @XmlEnumValue("HVRack")
-    HV_RACK("HVRack"),
     @XmlEnumValue("HVSegment")
     HV_SEGMENT("HVSegment"),
     @XmlEnumValue("Layer")
     LAYER("Layer"),
+    @XmlEnumValue("Local")
+    LOCAL("Local"),
+    @XmlEnumValue("LocalDAQ")
+    LOCAL_DAQ("LocalDAQ"),
     @XmlEnumValue("LogicalComponent")
     LOGICAL_COMPONENT("LogicalComponent"),
     @XmlEnumValue("LogicalDomain")
     LOGICAL_DOMAIN("LogicalDomain"),
     LTC("LTC"),
-    @XmlEnumValue("LVDevice")
-    LV_DEVICE("LVDevice"),
+    LV("LV"),
     @XmlEnumValue("Maraton")
     MARATON("Maraton"),
     MPC("MPC"),
@@ -168,6 +179,8 @@ public enum ComponentClassType {
     P_CRATE_RACK("PCrateRack"),
     @XmlEnumValue("PeripheralCrate")
     PERIPHERAL_CRATE("PeripheralCrate"),
+    @XmlEnumValue("Rack")
+    RACK("Rack"),
     @XmlEnumValue("RackTurbine")
     RACK_TURBINE("RackTurbine"),
     RAT("RAT"),
@@ -187,6 +200,10 @@ public enum ComponentClassType {
     TFDDU("TFDDU"),
     TFRUI("TFRUI"),
     TMB("TMB"),
+    @XmlEnumValue("Trigger")
+    TRIGGER("Trigger"),
+    @XmlEnumValue("TriggerDevice")
+    TRIGGER_DEVICE("TriggerDevice"),
     TTC("TTC"),
     VCC("VCC");
     private final String value;

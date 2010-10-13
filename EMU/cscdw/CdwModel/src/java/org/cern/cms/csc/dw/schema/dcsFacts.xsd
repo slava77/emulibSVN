@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.cern.ch/cms/csc/dw/model"
+    xmlns:tns="http://www.cern.ch/cms/csc/dw/model"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    elementFormDefault="qualified"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+	xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+        xmlns:ann="http://jaxb.dev.java.net/plugin/annotate"
+        xmlns:ont="http://www.cern.ch/cms/csc/dw/ontology"
+    xsi:schemaLocation="
+        http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
+        http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
+        http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
+	jaxb:extensionBindingPrefixes="xjc orm hj ann"
+	jaxb:version="2.0">
+            
+    <xsd:import namespace="http://www.cern.ch/cms/csc/dw/ontology" schemaLocation="ontology.xsd"/>
+
+    <xsd:element name="DcsCommunicationStatusFact"
+                 type="tns:DcsCommunicationStatusFactType"
+                 substitutionGroup="tns:fact"/>
+                 
+    <xsd:element name="DcsCfebLvFact"
+                 type="tns:DcsCfebLvFactType"
+                 substitutionGroup="tns:fact"/>
+
+    <xsd:element name="DcsAlctLvFact"
+                 type="tns:DcsAlctLvFactType"
+                 substitutionGroup="tns:fact"/>
+
+    <xsd:complexType name="DcsCommunicationStatusFactType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="DcsCommunicationStatusFact" />
+                <hj:entity>
+                    <orm:table name="CDW_DCS_COMM_STATUS_FACTS"/>
+                </hj:entity>
+                <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                    <a:FactAnn title="Information about communication status between various components" limitComponents="DCS"/>
+                </ann:annotate>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:factType">
+                <xsd:sequence>
+
+                    <xsd:element name="source" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:ignored/>
+                                <jaxb:property name="source"/>
+                                <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                                    <a:ComponentId forProperty="sourceComponent" limitComponents="DCS,Device,LogicalComponent" limitComponentsRecursive="true" required="true"/>
+                                </ann:annotateGet>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="sourceComponent" type="ont:componentType" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:many-to-one>
+                                    <orm:join-column name="FCT_SOURCE_CMP_ID"/>
+                                </hj:many-to-one>
+                                <jaxb:property name="sourceComponent"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="status" type="tns:DcsCommStatusEnumType">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_STATUS" length="32"/>
+                                    <hj:enumerated-value/>
+                                </hj:basic>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:simpleType name="DcsCommStatusEnumType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:typesafeEnumClass name="DcsCommStatusEnum" />
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="OK"/>
+            <xsd:enumeration value="NO_COMMUNICATION"/>
+            <xsd:enumeration value="BAD_DATA"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="DcsCfebLvFactType">
+      	<xsd:annotation>
+    		<xsd:appinfo>
+                <jaxb:class name="DcsCfebLvFact" />
+                <hj:entity>
+                    <orm:table name="CDW_DCS_CFEB_LV_FACTS"/>
+                </hj:entity>
+                <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                    <a:FactAnn title="CFEB LV data" limitComponents="CFEB"/>
+                </ann:annotate>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:factType">
+                <xsd:sequence>
+
+                    <xsd:element name="status" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_DATA_STATUS" precision="10" scale="0"/>
+                                </hj:basic>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="current_5v" type="xsd:double">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_CURRENT_5V"/>
+                                </hj:basic>
+                                <jaxb:property name="current5v"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="DcsAlctLvFactType">
+      	<xsd:annotation>
+    		<xsd:appinfo>
+                <jaxb:class name="DcsAlctLvFact" />
+                <hj:entity>
+                    <orm:table name="CDW_DCS_ALCT_LV_FACTS"/>
+                </hj:entity>
+                <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                    <a:FactAnn title="ALCT LV data" limitComponents="ALCT"/>
+                </ann:annotate>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:factType">
+                <xsd:sequence>
+
+                    <xsd:element name="status" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_DATA_STATUS" precision="10" scale="0"/>
+                                </hj:basic>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="current_1v8" type="xsd:double">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_CURRENT_1V8"/>
+                                </hj:basic>
+                                <jaxb:property name="current1v8"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+</xsd:schema>

@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <persistence version="1.0" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd
 http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:orm="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <persistence-unit name="org.cern.cms.csc.dw.model.dse:org.cern.cms.csc.dw.service:org.cern.cms.csc.dw.model.ontology:org.cern.cms.csc.exsys.re.model:org.cern.cms.csc.dw.model.fact">
+    <persistence-unit name="org.cern.cms.csc.dw.model.fact:org.cern.cms.csc.exsys.re.model:org.cern.cms.csc.dw.model.ontology:org.cern.cms.csc.dw.service:org.cern.cms.csc.dw.model.dse">
         <class>org.cern.cms.csc.dw.model.dse.DataServiceEntity</class>
         <class>org.cern.cms.csc.dw.model.dse.TmbCounterDescriptionDSE</class>
         <class>org.cern.cms.csc.dw.model.fact.ApplicationStatusFact</class>
         <class>org.cern.cms.csc.dw.model.fact.CumulativeTmbTriggerCounterFact</class>
+        <class>org.cern.cms.csc.dw.model.fact.DcsAlctLvFact</class>
+        <class>org.cern.cms.csc.dw.model.fact.DcsCfebLvFact</class>
+        <class>org.cern.cms.csc.dw.model.fact.DcsCommunicationStatusFact</class>
         <class>org.cern.cms.csc.dw.model.fact.DduFmmIrqFact</class>
         <class>org.cern.cms.csc.dw.model.fact.DduFmmResetFact</class>
         <class>org.cern.cms.csc.dw.model.fact.DqmCscAfebFact</class>
@@ -15,7 +18,6 @@ http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistenc
         <class>org.cern.cms.csc.dw.model.fact.DqmDduFact</class>
         <class>org.cern.cms.csc.dw.model.fact.DqmDduInputFact</class>
         <class>org.cern.cms.csc.dw.model.fact.DqmEmuFact</class>
-        <class>org.cern.cms.csc.dw.model.fact.EmuMonitorFact</class>
         <class>org.cern.cms.csc.dw.model.fact.Fact</class>
         <class>org.cern.cms.csc.dw.model.fact.FactCollection</class>
         <class>org.cern.cms.csc.dw.model.fact.FactCollectionFactsItem</class>

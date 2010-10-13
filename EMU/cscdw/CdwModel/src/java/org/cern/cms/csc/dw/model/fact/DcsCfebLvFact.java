@@ -22,16 +22,17 @@ import org.cern.cms.csc.dw.model.annotation.FactAnn;
 
 
 /**
- * <p>Java class for DDUFMMResetFactType complex type.
+ * <p>Java class for DcsCfebLvFactType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="DDUFMMResetFactType">
+ * &lt;complexType name="DcsCfebLvFactType">
  *   &lt;complexContent>
  *     &lt;extension base="{http://www.cern.ch/cms/csc/dw/model}factType">
  *       &lt;sequence>
- *         &lt;element name="crateNumber" type="{http://www.w3.org/2001/XMLSchema}integer"/>
+ *         &lt;element name="status" type="{http://www.w3.org/2001/XMLSchema}integer"/>
+ *         &lt;element name="current_5v" type="{http://www.w3.org/2001/XMLSchema}double"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -41,24 +42,27 @@ import org.cern.cms.csc.dw.model.annotation.FactAnn;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DDUFMMResetFactType", propOrder = {
-    "crateNumber"
+@XmlType(name = "DcsCfebLvFactType", propOrder = {
+    "status",
+    "current5V"
 })
-@Entity(name = "org.cern.cms.csc.dw.model.fact.DduFmmResetFact")
-@Table(name = "CDW_DDU_FMM_RESET_FACTS")
+@Entity(name = "org.cern.cms.csc.dw.model.fact.DcsCfebLvFact")
+@Table(name = "CDW_DCS_CFEB_LV_FACTS")
 @FactAnn(limitComponents = {
-    "FEDCrate"
-}, title = "FMM IRQ reset detection")
-public class DduFmmResetFact
+    "CFEB"
+}, title = "CFEB LV data")
+public class DcsCfebLvFact
     extends Fact
     implements Serializable
 {
 
     @XmlElement(required = true)
-    protected BigInteger crateNumber;
+    protected BigInteger status;
+    @XmlElement(name = "current_5v")
+    protected double current5V;
 
     /**
-     * Gets the value of the crateNumber property.
+     * Gets the value of the status property.
      * 
      * @return
      *     possible object is
@@ -66,26 +70,49 @@ public class DduFmmResetFact
      *     
      */
     @Basic
-    @Column(name = "FCT_CRATE_NUMBER", precision = 3, scale = 0)
-    public BigInteger getCrateNumber() {
-        return crateNumber;
+    @Column(name = "FCT_DATA_STATUS", precision = 10, scale = 0)
+    public BigInteger getStatus() {
+        return status;
     }
 
     /**
-     * Sets the value of the crateNumber property.
+     * Sets the value of the status property.
      * 
      * @param value
      *     allowed object is
      *     {@link BigInteger }
      *     
      */
-    public void setCrateNumber(BigInteger value) {
-        this.crateNumber = value;
+    public void setStatus(BigInteger value) {
+        this.status = value;
     }
 
     @Transient
-    public boolean isSetCrateNumber() {
-        return (this.crateNumber!= null);
+    public boolean isSetStatus() {
+        return (this.status!= null);
+    }
+
+    /**
+     * Gets the value of the current5V property.
+     * 
+     */
+    @Basic
+    @Column(name = "FCT_CURRENT_5V", precision = 20, scale = 10)
+    public double getCurrent5V() {
+        return current5V;
+    }
+
+    /**
+     * Sets the value of the current5V property.
+     * 
+     */
+    public void setCurrent5V(double value) {
+        this.current5V = value;
+    }
+
+    @Transient
+    public boolean isSetCurrent5V() {
+        return true;
     }
 
 }

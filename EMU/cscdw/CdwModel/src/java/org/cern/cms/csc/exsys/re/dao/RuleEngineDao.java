@@ -27,4 +27,7 @@ public class RuleEngineDao implements RuleEngineDaoLocal {
         return rules;
     }
 
+    public Rule getRule(String name) {
+        return null;
+    }
 }

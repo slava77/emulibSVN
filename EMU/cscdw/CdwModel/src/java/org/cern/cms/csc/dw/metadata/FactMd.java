@@ -16,7 +16,7 @@ import org.cern.cms.csc.dw.model.ontology.ComponentClassType;
 
 @Entity
 @Table(name = "CDW_FACT_MD")
-public class FactMd extends EntityBase implements Serializable {
+public class FactMd extends EntityBase implements Serializable, Comparable {
 
     private Class<?extends Fact> factClass;
     private String title;
@@ -82,6 +82,14 @@ public class FactMd extends EntityBase implements Serializable {
     @Transient
     public Table getTableAnn() {
         return table;
+    }
+
+    public int compareTo(Object o) {
+        if (!(o instanceof FactMd)) {
+            throw new RuntimeException("FactMd.compareTo(Object o) method was called for o being not an instance of FactMd - can't compare..");
+        }
+        FactMd factMd = (FactMd) o;
+        return this.getFactClass().getName().compareTo(factMd.getFactClass().getName());
     }
 
 }
