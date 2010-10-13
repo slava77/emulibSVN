@@ -933,6 +933,24 @@
     </xsl:for-each>
   </xsl:template>
 
+  <!-- DCS Software -->
+  <xsl:template match="templ:DcsSoftware">
+    <xsl:text>&LF;</xsl:text>
+    <xsl:comment>DcsSoftware</xsl:comment>
+    <xsl:text>&LF;</xsl:text>
+    <xsl:variable name="SOURCE" select="@source"/>
+    <xsl:for-each select="document($SOURCE)/DCS/SoftwareComponents/DcsSoftwareComponent">
+      <xsl:variable name="sw" select="text()"/>
+      <Declaration><Individual URI="&csc;{$sw}"/></Declaration>
+      <ClassAssertion><Class URI="&csc;DCS"/><Individual URI="&csc;{$sw}"/></ClassAssertion>
+    </xsl:for-each>
+    <xsl:for-each select="document($SOURCE)/DCS/Computers/DcsComputer">
+      <xsl:variable name="computer" select="text()"/>
+      <Declaration><Individual URI="&csc;{$computer}"/></Declaration>
+      <ClassAssertion><Class URI="&csc;Computer"/><Individual URI="&csc;{$computer}"/></ClassAssertion>
+    </xsl:for-each>
+  </xsl:template>
+
   <xsl:template match="templ:Dummies">
     <xsl:text>&LF;</xsl:text>
     <xsl:comment>Various dummy individuals</xsl:comment>

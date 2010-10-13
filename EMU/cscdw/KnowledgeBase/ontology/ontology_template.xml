@@ -41,6 +41,7 @@
     <templ:LV source="mappings/lvMapping.xml"/>
     <templ:Gas source="mappings/GasSystem.xml"/>
     <templ:FactProviders source="mappings/fact_providers.xml"/>
+    <templ:DcsSoftware source="mappings/dcs_software.xml"/>
     <templ:CoolingCircuits/>
     <templ:Dummies/>
   </templ:individuals>
@@ -72,6 +73,7 @@
   <Declaration><Class URI="&csc;DataChannel"/></Declaration>
 
   <Declaration><Class URI="&csc;Software"/></Declaration>
+  <Declaration><Class URI="&csc;DCS"/></Declaration>
 
   <Declaration><Class URI="&csc;PeripheralCrate"/></Declaration>
   <Declaration><Class URI="&csc;FEDCrate"/></Declaration>
@@ -144,6 +146,7 @@
   <EntityAnnotation><Class URI="&csc;/dev/schar"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A simple character device used for reading out a hardware component (e.g. DDU). Naming: /dev/schar&lt;n&gt;, n: device number [1..4]</Constant></Annotation></EntityAnnotation>
 
   <EntityAnnotation><Class URI="&csc;Software"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A software application.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;DCS"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">DCS software module (not only PVSS projects).</Constant></Annotation></EntityAnnotation>
 
   <EntityAnnotation><Class URI="&csc;RUI"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Readout Unit Input is a software application reading out the DDU of the same instance. Naming: RUI&lt;i&gt;, i: zero-padded instance number [00..36].</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;TFRUI"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">TrackFinder Readout Unit Input is a software application reading out the TrackFinder DDU. It is the RUI of instance 0. Naming: RUI00</Constant></Annotation></EntityAnnotation>
@@ -315,6 +318,7 @@
   <!-- Software -->
   <SubClassOf><Class URI="&csc;RUI"/><Class URI="&csc;Software"/></SubClassOf>
   <SubClassOf><Class URI="&csc;FactProvider"/><Class URI="&csc;Software"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;DCS"/><Class URI="&csc;Software"/></SubClassOf>
 
   <!-- Data Channels -->
   <SubClassOf><Class URI="&csc;DDUInput"/><Class URI="&csc;DataChannel"/></SubClassOf>
