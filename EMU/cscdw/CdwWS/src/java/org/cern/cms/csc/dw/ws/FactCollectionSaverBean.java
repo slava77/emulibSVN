@@ -54,7 +54,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
         Set<JAXBElement<? extends Fact>> toRemove = new HashSet<JAXBElement<? extends Fact>>();
         ServiceInstructions instructions = factCollection.getServiceInstructions();
 
-        logger.info("FC Saver bean: received fact collection with " + factCollection.getFacts().size() + " facts");
+        logger.info("FC Saver bean: received fact collection with " + factCollection.getFacts().size() + " facts from " + factCollection.getSource());
 
         // Performing on receive operations
         factCollection.onReceive(entityDao);
