@@ -393,6 +393,17 @@
 	<ObjectProperty URI="&csc;monitors"/><Individual URI="&csc;DAQManager"/><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/>
       </ObjectPropertyAssertion>
 
+      <xsl:if test="$PADDED_RUI_INSTANCE != '00'">
+        <Declaration><Individual URI="&csc;EmuMonitor{$PADDED_RUI_INSTANCE}"/></Declaration>
+        <ClassAssertion><Class URI="&csc;EmuMonitor"/><Individual URI="&csc;EmuMonitor{$PADDED_RUI_INSTANCE}"/></ClassAssertion>
+        <ObjectPropertyAssertion>
+	  <ObjectProperty URI="&csc;receivesDataFrom"/><Individual URI="&csc;EmuMonitor{$PADDED_RUI_INSTANCE}"/><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/>
+        </ObjectPropertyAssertion>
+        <ObjectPropertyAssertion>
+	  <ObjectProperty URI="&csc;sendsDataTo"/><Individual URI="&csc;RUI{$PADDED_RUI_INSTANCE}"/><Individual URI="&csc;EmuMonitor{$PADDED_RUI_INSTANCE}"/>
+        </ObjectPropertyAssertion>
+      </xsl:if>
+
       <xsl:choose>
 	<xsl:when test="@instance=0">
 	  <ClassAssertion><Class URI="&csc;TFDDU"/><Individual URI="&csc;DDU{$PADDED_RUI_INSTANCE}"/></ClassAssertion>
@@ -692,6 +703,12 @@
 	  <ObjectProperty URI="&csc;isIn"/>
 	  <Individual URI="&csc;RUI{$INSTANCE}"/><Individual URI="&csc;{../@alias}"/>
 	</ObjectPropertyAssertion>
+        <xsl:if test="$INSTANCE != '00'">
+            <ObjectPropertyAssertion>
+              <ObjectProperty URI="&csc;isIn"/>
+              <Individual URI="&csc;EmuMonitor{$INSTANCE}"/><Individual URI="&csc;{../@alias}"/>
+            </ObjectPropertyAssertion>
+        </xsl:if>
 	<DataPropertyAssertion>
 	  <DataProperty URI="&csc;isInConfiguration"/><Individual URI="&csc;RUI{$INSTANCE}"/>
 	  <Constant datatypeURI="&xsd;boolean"><xsl:choose><xsl:when test="@status = 'in'">true</xsl:when><xsl:otherwise>false</xsl:otherwise></xsl:choose></Constant>

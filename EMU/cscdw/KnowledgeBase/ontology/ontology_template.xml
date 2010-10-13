@@ -84,6 +84,8 @@
   <Declaration><Class URI="&csc;RUI"/></Declaration>
   <Declaration><Class URI="&csc;TFRUI"/></Declaration>
 
+  <Declaration><Class URI="&csc;EmuMonitor"/></Declaration>
+
   <Declaration><Class URI="&csc;DDU"/></Declaration>
   <Declaration><Class URI="&csc;TFDDU"/></Declaration>
   <Declaration><Class URI="&csc;DDUInput"/></Declaration>
@@ -150,6 +152,8 @@
 
   <EntityAnnotation><Class URI="&csc;RUI"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Readout Unit Input is a software application reading out the DDU of the same instance. Naming: RUI&lt;i&gt;, i: zero-padded instance number [00..36].</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;TFRUI"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">TrackFinder Readout Unit Input is a software application reading out the TrackFinder DDU. It is the RUI of instance 0. Naming: RUI00</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;EmuMonitor"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">EmuMonitor is a software application for analyzing data coming from RUI. Naming: EmuMonitor&lt;i&gt;, i: zero-padded instance number [00..36].</Constant></Annotation></EntityAnnotation>
 
   <EntityAnnotation><Class URI="&csc;Device"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A hardware device.</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;DataDevice"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A hardware device for handling trigger information and/or data.</Constant></Annotation></EntityAnnotation>
@@ -318,6 +322,7 @@
   <!-- Software -->
   <SubClassOf><Class URI="&csc;RUI"/><Class URI="&csc;Software"/></SubClassOf>
   <SubClassOf><Class URI="&csc;FactProvider"/><Class URI="&csc;Software"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;EmuMonitor"/><Class URI="&csc;Software"/></SubClassOf>
   <SubClassOf><Class URI="&csc;DCS"/><Class URI="&csc;Software"/></SubClassOf>
 
   <!-- Data Channels -->
