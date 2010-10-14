@@ -22,6 +22,8 @@ CscAlertClass_fwCrb_CSC_LV	CscConf_alertClassDescriptors	530973
 CscAlertClass_FwCaenCrateSY1527	CscConf_alertClassDescriptors	530975
 CscAlertClass_fwCooling_CSC_TURBINES_summary	CscConf_alertClassDescriptors	534484
 CscAlertClass_FwCaenChannel	CscConf_alertClassDescriptors	544924
+CscAlertClass_FwCaenChannel_dot_actual_dot_Trip	CscConf_alertClassDescriptors	544928
+CscAlertClass_FwCaenChannel_dot_actual_dot_OvC	CscConf_alertClassDescriptors	544929
 
 # DpValue
 ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
@@ -53,3 +55,6 @@ CscAlertClass_fwCooling_CSC_TURBINES_summary.class	CscConf_alertClassDescriptors
 CscAlertClass_fwCooling_CSC_TURBINES_summary.alertTexts	CscConf_alertClassDescriptors	"CSC Rack Turbine OK", "CSC Rack Turbine ALERT"	0x101	07.10.2010 14:32:24.075
 CscAlertClass_FwCaenChannel.class	CscConf_alertClassDescriptors	_fwErrorNack_70.	0x101	07.10.2010 14:33:30.660
 CscAlertClass_FwCaenChannel.alertTexts	CscConf_alertClassDescriptors	"ME1/1 HV OK", "ME1/1 HV ERROR"	0x101	07.10.2010 14:34:13.704
+CscAlertClass_FwCaenChannel_dot_actual_dot_Trip.class	CscConf_alertClassDescriptors	_fwErrorNack_61.	0x101	14.10.2010 16:32:52.493
+CscAlertClass_FwCaenChannel_dot_actual_dot_Trip.alertTexts	CscConf_alertClassDescriptors		0x101	14.10.2010 16:39:43.362
+CscAlertClass_FwCaenChannel_dot_actual_dot_OvC.class	CscConf_alertClassDescriptors	_fwErrorNack_61.	0x101	14.10.2010 16:43:23.098

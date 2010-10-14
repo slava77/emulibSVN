@@ -103,10 +103,14 @@ void emuAlert_updateAlertClass(string dpe, string dpType = "") {
 void emuAlert_updateAllAlertClassesForType(string dpType, bool onlyInLocalSystem = true) {
   dyn_string dps;
   string type = strsplit(dpType, ".")[1];
+  string dpe = "";
+  if (strpos(dpType, ".") >= 0) {
+    dpe = substr(dpType, strpos(dpType, "."));
+  }
   if (onlyInLocalSystem) {
-    dps = dpNames("*", type);
+    dps = dpNames("*" + dpe, type);
   } else {
-    dps = dpNames("*:*", type);
+    dps = dpNames("*:*" + dpe, type);
   }
   for (int i=1; i <= dynlen(dps); i++) {
     emuAlert_updateAlertClass(dps[i], dpType);
@@ -122,6 +126,7 @@ void emuAlert_updateAllAlertClasses(bool onlyInLocalSystem = true) {
   for (int i=1; i <= dynlen(alertClassConfigs); i++) {
     alertClassConfigs[i] = dpSubStr(alertClassConfigs[i], DPSUB_DP);
     strreplace(alertClassConfigs[i], "CscAlertClass_", "");
+    strreplace(alertClassConfigs[i], "_dot_", ".");
     emuAlert_updateAllAlertClassesForType(alertClassConfigs[i], onlyInLocalSystem);
   }
 }
