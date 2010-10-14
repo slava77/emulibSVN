@@ -2,9 +2,12 @@ package org.cern.cms.csc.dw.model.ontology.graph;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import org.cern.cms.csc.dw.model.ontology.ComponentLinkClassType;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.ReturnableEvaluator;
+import org.neo4j.graphdb.StopEvaluator;
 
 public class GComponentImpl extends GNodeImpl implements GComponent {
 
@@ -75,17 +78,17 @@ public class GComponentImpl extends GNodeImpl implements GComponent {
         return getType().getParentsRecursive(true);
     }
 
-    public Collection<GComponent> getRelatedGComponents(ComponentLinkClassType type, Direction dir) {
+    public Collection<GComponent> getRelatedGComponents(ComponentLinkClassType linkType, Direction dir) {
         Collection<GComponent> ret = new LinkedHashSet<GComponent>();
 
         if (dir.equals(Direction.OUTGOING) || dir.equals(Direction.BOTH)) {
-            ret.addAll(getGComponentLinks().getRelatedGComponents(type));
+            ret.addAll(getGComponentLinks().getRelatedGComponents(linkType));
         }
 
         if (dir.equals(Direction.INCOMING) || dir.equals(Direction.BOTH)) {
             for (GComponentLinks links: getRelatedGNodeCollection(
                                             GComponentLinks.class,
-                                            type, Direction.INCOMING)) {
+                                            linkType, Direction.INCOMING)) {
                 ret.add(links.getGComponent());
             }
         }
@@ -93,26 +96,47 @@ public class GComponentImpl extends GNodeImpl implements GComponent {
         return ret;
     }
 
-    public boolean hasRelatedGComponents(ComponentLinkClassType type, Direction dir) {
+    public boolean hasRelatedGComponents(ComponentLinkClassType linkType, Direction dir) {
         boolean ret = false;
 
         if (dir.equals(Direction.OUTGOING) || dir.equals(Direction.BOTH)) {
-            ret = getGComponentLinks().hasLink(type);
+            ret = getGComponentLinks().hasLink(linkType);
         }
 
         if (!ret && (dir.equals(Direction.INCOMING) || dir.equals(Direction.BOTH))) {
-            ret = ! getRelatedGNodeCollection(GComponentLinks.class, type, Direction.INCOMING).isEmpty();
+            ret = ! getRelatedGNodeCollection(GComponentLinks.class, linkType, Direction.INCOMING).isEmpty();
         }
 
         return ret;
     }
 
-    public Collection<GComponent> getRelatedGComponents(ComponentLinkClassType type) {
-        return getRelatedGComponents(type, Direction.OUTGOING);
+    public Collection<GComponent> getRelatedGComponents(ComponentLinkClassType linkType) {
+        return getRelatedGComponents(linkType, Direction.OUTGOING);
     }
 
-    public boolean hasRelatedGComponents(ComponentLinkClassType type) {
-        return hasRelatedGComponents(type, Direction.OUTGOING);
+    public boolean hasRelatedGComponents(ComponentLinkClassType linkType) {
+        return hasRelatedGComponents(linkType, Direction.OUTGOING);
+    }
+
+    public Collection<GComponent> findRelatedGComponents(ComponentLinkClassType linkType, GComponentClass type) {
+        Collection<GComponent> ret = new LinkedList<GComponent>();
+        for (GComponent gc: findRelatedGComponents(linkType)) {
+            if (gc.getType().equals(type)) {
+                ret.add(gc);
+            }
+        }
+        return ret;
+    }
+
+    public Collection<GComponent> findRelatedGComponents(ComponentLinkClassType linkType) {
+        return getRelatedGNodeCollection(
+                GComponent.class,
+                GLinkType.COMPONENT_TO_LINKS,
+                Direction.OUTGOING,
+                linkType,
+                Direction.OUTGOING,
+                StopEvaluator.END_OF_GRAPH,
+                ReturnableEvaluator.ALL_BUT_START_NODE);
     }
 
 }
