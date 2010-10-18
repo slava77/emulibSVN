@@ -23,7 +23,7 @@ LANG:1 0
 29 0
 "EMBEDDED_MODULE1"
 ""
-1 9.592326932761353e-014 -7.105427357601002e-015 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 9.592326932761353e-14 -7.105427357601002e-15 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 0 0 0 0 0 0
 E E E
@@ -44,7 +44,7 @@ LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
 //   setScaleStyle(SCALE_ZOOM, \"TestModule\"); 
    
 
-  RootPanelOnModule(\"CMS_CSC_UI/TopMini.pnl\",\"CMS Endcap Muon System DCS Module\",\"CMS_CSC_DCS_Top_Module\", makeDynString()); 
+  RootPanelOnModule(\"CMS_CSC_UI/Top.pnl\",\"CMS Endcap Muon System DCS Module\",\"CMS_CSC_DCS_Top_Module\", makeDynString(\"$node:CMS_CSC\", \"$obj:CMS_CSC\")); 
 //   ZoomModule(\"TestModule\", 0.5); 
 
 }" 0
