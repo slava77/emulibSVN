@@ -41,6 +41,8 @@ main()
   dyn_string ex;
   emuAlert_activateDeactivateSummaryAlertsWithDescriptors(true, ex, makeDynString("actual.OvV", "actual.UnV"));
   emu_checkException(ex);
+  emuAlert_activateDeactivateSummaryAlertsForType(false, "FwCaenBoardSY1527", ex, makeDynString("channel"));
+  emu_checkException(ex);
   emu_info("Done activating alerts");
   
 // **** Send a final info message ****
