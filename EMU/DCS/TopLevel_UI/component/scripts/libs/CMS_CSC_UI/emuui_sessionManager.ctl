@@ -54,8 +54,13 @@ void emuui_initSession() {
   if (dynlen(sessionDps) == 0) {
     int sysId = getSystemId(emuui_getSystem());
     string dpToCreate = dpSubStr(emuui_g_sessionId, DPSUB_DP);
+    emu_info("Trying to create a new session DP: " + emuui_g_sessionId + " (system ID = " + sysId + ")");
     dpCreate(dpToCreate, "CSC_UI_sessionState", sysId);
     emuui_applySessionDefaults(emuui_g_sessionId);
+  }
+  
+  if (!dpExists(emuui_g_sessionId)) {
+    emu_errorSingle("UI FATAL: Session DP (" + emuui_g_sessionId + ") does not exist (UI already attempted to create it, but failed). UI behavior in this condition is undefined.");
   }
   
   // go through all the session variables and if theres any that haven't got a value - apply the default
