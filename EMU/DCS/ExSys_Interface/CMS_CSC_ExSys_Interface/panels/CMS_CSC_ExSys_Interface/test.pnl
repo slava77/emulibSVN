@@ -1,10 +1,12 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 400 400 N "_3DFace" 0
+PANEL,-1 -1 400 518 N "_3DFace" 0
 E E E E E 1 -1 -1 0  30 30
 ""0  1
-E "#uses \"CMS_CSC_ExSys_Interface/exsysInterface.ctl\"" 0
+E "#uses \"CMS_CSC_ExSys_Interface/exsysInterface.ctl\"
+#uses \"CMS_CSC_ExSys_Interface/exsysUtil.ctl\"
+#uses \"CMS_CSC_ExSys_Interface/facts/lvFact.ctl\"" 0
  2
 "CBRef" "1"
 "EClose" E
@@ -16,7 +18,7 @@ LANG:1 0
 13 0
 "PUSH_BUTTON1"
 ""
-1 30 30 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 30 100 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 0 0 0 0 0 0
 E E E
@@ -27,37 +29,37 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  28 28 372 62
+0  28 98 372 132
 
 T 
 1
-LANG:1 32 Create and print 500 dummy facts
+LANG:1 37 Send 10000 facts using auto-packaging
 "main()
 {
   dyn_string ex;
-  int factCollHdl = exsys_createFactCollection(ex);
   time t0;
-  emu_debugFuncStart(\"create500DummyFacts\", t0);
+  emu_debugFuncStart(\"send10000Facts\", t0);
   
-  dyn_string paramNames = makeDynString(\"dummyParam1\", \"dummyParam2\", \"dummyParam3\");
-  dyn_string paramValues = makeDynString(\"dummyValue1\", \"dummyValue2\", \"dummyValue3\");
+  dyn_string paramNames = makeDynString(\"crateNumber\");
+  dyn_string paramValues = makeDynString(\"1\");
   
-  for (int i=0; i < 500; i++) {
-    exsys_createFact(factCollHdl, \"dcsDummyFact\", t0, \"ME+1/1/\" + i, EXSYS_FACT_SEVERITY_DEBUG,
+  for (int i=0; i < 10000; i++) {
+    exsys_sendFact(\"DDUFMMResetFact\", t0, \"FEDCrate1\", EXSYS_FACT_SEVERITY_DEBUG,
                      \"dummy fact #\" + i, paramNames, paramValues, ex);
     if (emu_checkException(ex)) { return; }
+    
+    if (i % 100 == 0) {
+      emu_info(\"send10000Facts progress: \" + i + \"/10000\");
+    }
   }
   
-  exsys_getFactCollection(factCollHdl, ex);
-  if (emu_checkException(ex)) { return; }
-  
-  emu_debugFuncEnd(\"create500DummyFacts\", t0);
+  emu_debugFuncEnd(\"send10000Facts\", t0);
 }" 0
  E E E
 13 2
 "PUSH_BUTTON2"
 ""
-1 30 90 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 30 10 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 2 0 0 0 0 0
 E E E
@@ -68,7 +70,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  28 88 372 122
+0  28 8 372 42
 
 T 
 1
@@ -76,17 +78,127 @@ LANG:1 13 Send one fact
 "main()
 {
   dyn_string ex;
-  int factCollHdl = exsys_createFactCollection(ex);
   time t0 = getCurrentTime();
+  emu_debugFuncStart(\"send1FactNoAutoPackaging\", t0);
   
   dyn_string paramNames = makeDynString(\"crateNumber\");
   dyn_string paramValues = makeDynString(\"1\");
   
-  exsys_createFact(factCollHdl, \"DDUFMMResetFact\", t0, \"FEDCrate1\", EXSYS_FACT_SEVERITY_DEBUG,
-                   \"dummy fact\", paramNames, paramValues, ex);
+  exsys_sendFact(\"DDUFMMResetFact\", t0, \"FEDCrate1\", EXSYS_FACT_SEVERITY_DEBUG,
+                   \"dummy fact\", paramNames, paramValues, ex, false);
   if (emu_checkException(ex)) { return; }
+
+  emu_debugFuncEnd(\"send1FactNoAutoPackaging\", t0);
+}" 0
+ E E E
+13 3
+"PUSH_BUTTON3"
+""
+1 30 150 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  28 148 372 182
+
+T 
+1
+LANG:1 48 Send 10000 facts using auto-packaging (threaded)
+"main()
+{
+  dyn_string ex;
+  time t0;
+  emu_debugFuncStart(\"send10000ThreadedFacts\", t0);
   
-  exsys_sendFactCollection(factCollHdl, ex);
+  for (int i=0; i < 500; i++) {
+    startThread(\"send20FactsThread\", i);
+  }
+  
+  emu_debugFuncEnd(\"send10000ThreadedFacts\", t0);
+}
+
+void send20FactsThread(int threadNum) {
+  dyn_string ex;
+  time t0;
+
+  dyn_string paramNames = makeDynString(\"crateNumber\");
+  dyn_string paramValues = makeDynString(\"1\");
+
+  for (int i=0; i < 20; i++) {
+    exsys_sendFact(\"DDUFMMResetFact\", t0, \"FEDCrate1\", EXSYS_FACT_SEVERITY_DEBUG,
+                     \"dummy fact. thread num = \" + threadNum + \", fact # within the thread = \" + i, paramNames, paramValues, ex);
+    if (emu_checkException(ex)) { return; }
+  }
+}" 0
+ E E E
+13 5
+"PUSH_BUTTON5"
+""
+1 9.999999999999991 300 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  8 298 392 352
+
+T 
+1
+LANG:1 55 send "This project" -> ME+1/2/3 communication lost fact
+"main()
+{
+  dyn_string ex;
+  time t0 = getCurrentTime();
+  
+  dyn_string paramNames = makeDynString(\"source\", \"status\");
+  dyn_string paramValues = makeDynString(\"ME+1/2/3\", \"NO_COMMUNICATION\");
+  
+  exsys_sendFact(\"DcsCommunicationStatusFact\", t0, \"pvss_cms_csc_dcs_08\", EXSYS_FACT_SEVERITY_DEBUG,
+                   \"test no communication fact\", paramNames, paramValues, ex, false);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+13 6
+"PUSH_BUTTON6"
+""
+1 10 380 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  8 378 392 422
+
+T 
+1
+LANG:1 25 Start sending LV currents
+"main()
+{
+  dyn_string ex;
+  dyn_string lvDps = exsys_getLvDps(ex);
+  if (emu_checkException(ex)) { return; }
+  dpConnect(\"sendLvFacts\", true, lvDps[1] + \".update_value\");
+}
+
+void sendLvFacts(string dp, int value) {
+  dyn_string ex;
+  exsys_sendAllLvFacts(ex);
   if (emu_checkException(ex)) { return; }
 }" 0
  E E E

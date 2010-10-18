@@ -55,8 +55,13 @@ public void exsys_httpPost(string data, dyn_string &exceptionInfo) {
     int savedFactsCount = substr(responseData, returnPos, returnEndPos - returnPos);
     emu_debug("Exsys: Expert System response OK, number of facts saved: " + savedFactsCount);
   } else {
-    emu_addError("Exsys: unexpected Expert System response: " + responseData, exceptionInfo);
+    if (strlen(responseData) > 5) {
+      emu_addError("Exsys: unexpected Expert System response: \"" + responseData + "\"", exceptionInfo);
+    } else {
+      emu_info("Exsys: !!!!!!!!!! ignoring the bizare exsys response = \"" + responseData + "\"");
+    }
   }
+  exsys_closeConnection();
 }
 
 /** 

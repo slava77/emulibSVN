@@ -56,6 +56,14 @@ public string exsys_getFactCollection(int factCollectionDocId, dyn_string &excep
 }
 
 /**
+  * @param factCollectionDocId XML document ID of the fact collection which length (symbol count) you want to get.
+  * @return number of symbols in the provided fact collection XML document.
+  */
+public int exsys_getFactCollectionLength(int factCollectionDocId) {
+  return strlen(xmlDocumentToString(factCollectionDocId));
+}
+
+/**
   * Creates a fact and puts it into the provided fact collection.
   * @param factCollectionDocId XML document ID of the fact collection that this fact should be put into.
   * @param type type of the fact (or fact name) e.g. dcsFsmStateFact or dcsAlertFact, etc... (please look up valid fact names in the expert system)
