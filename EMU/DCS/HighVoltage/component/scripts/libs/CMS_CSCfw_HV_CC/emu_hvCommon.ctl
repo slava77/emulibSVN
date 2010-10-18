@@ -196,7 +196,7 @@ public void emuhv_enableDisableChannel(mapping channelDeviceParams, bool isEnabl
   
   if (isEnable) {                               // ------====== INCLUDE ======------
     emu_info("HV: Enabling channel #" + channelDeviceParams["channelNumber"] + " on chamber " + emuui_getChamberName(channelDeviceParams));
-    // turn the channel off
+    // turn the channel on
     emuhv_sendChannelCommand(channelDeviceParams, EMUHV_COMMAND_ON, exceptionInfo);
     if (emu_checkException(exceptionInfo)) { return; }
 
@@ -213,7 +213,7 @@ public void emuhv_enableDisableChannel(mapping channelDeviceParams, bool isEnabl
   } else {                                       // ------====== EXCLUDE ======------
     emu_info("HV: Disabling channel #" + channelDeviceParams["channelNumber"] + " on chamber " + emuui_getChamberName(channelDeviceParams));
 
-    // turn the channel on
+    // turn the channel off
     emuhv_sendChannelCommand(channelDeviceParams, EMUHV_COMMAND_OFF, exceptionInfo);
     if (emu_checkException(exceptionInfo)) { return; }
 
