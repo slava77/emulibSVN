@@ -47,7 +47,7 @@ void emuui_initSession() {
     for (int i=1; i <= dynlen(sessionDps); i++) {
       dpDelete(sessionDps[i]);
     }
-    sessionDps = dpNames("emu_g_sessionId", "CSC_UI_sessionState");
+    sessionDps = dpNames(emu_g_sessionId, "CSC_UI_sessionState");
   }
   
   // if it doesn't yet exist - create one
@@ -133,5 +133,5 @@ string emuui_makeSessionIdString(string hostname, string user) {
   sessionId = strtolower(sessionId);
   strreplace(sessionId, " ", "_");
   strreplace(sessionId, "-", "_");
-  return sessionId;
+  return emuui_getSystem() + sessionId;
 }

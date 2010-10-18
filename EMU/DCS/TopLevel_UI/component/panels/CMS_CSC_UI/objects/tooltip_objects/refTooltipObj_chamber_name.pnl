@@ -12,9 +12,7 @@ PANEL,-1 -1 217 34 N "_3DFace" 1
   string strSide = \"+\";
   if (deviceParams[\"side\"] == \"M\") { strSide = \"-\"; }
   
-  lblDeviceName.text = \"ME\" + strSide + 
-                       deviceParams[\"station\"] + \"/\" + deviceParams[\"ring\"] + \"/\" +
-                       deviceParams[\"chamberNumber\"];
+  lblDeviceName.text = emuui_getChamberName(deviceParams);
   
   // get the FSM node
   string fsmNode = emuui_getFsmNode(\"chamber_general\", deviceParams, ex);
@@ -79,7 +77,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 3 3 91 19
+E E 0 1 1 2 1 E U  1 E 3 3 95 18
 0 2 2 "0s" 0 0 0 192 0 0  3 3 1
 1
 LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0

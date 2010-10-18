@@ -63,7 +63,7 @@ dyn_string emuui_getMappingAsCSV(string name, dyn_string &exceptionInfo) {
   string version = emuui_g_version;
   if (strlen(version) > 0) { version = "_" + version; } // add prefix to version if it's provided
   
-  string dpName = "emuui_map_" + name + version;
+  string dpName = emuui_getSystem() + "emuui_map_" + name + version;
   if (!dpExists(dpName)) {
     emu_addError("Requested mapping \"" + name + version + "\" does not exist", exceptionInfo);
     return makeDynString();
@@ -278,7 +278,7 @@ dyn_string emuui_getArray(string name, dyn_string &exceptionInfo) {
     return emuui_g_arrayCache[name + version];
   }
   
-  string dpName = "emuui_array_" + name + version;
+  string dpName = emuui_getSystem() + "emuui_array_" + name + version;
   if (!dpExists(dpName)) {
     emu_addError("Requested array \"" + name + version + "\" does not exist", exceptionInfo);
     return makeDynString();

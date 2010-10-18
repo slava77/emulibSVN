@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 997 619 N "_3DFace" 0
+PANEL,-1 -1 997 605 N "_3DFace" 0
 "main()
 {
   emuui_init();
@@ -320,20 +320,17 @@ void plotAllAboveThreshold(float driftThreshold) {
     }
   }
   if (dynlen(plotBufferOrdered) > 0) {
-    while (dynlen(plotBufferOrdered) < 8) {
-      dynAppend(plotBufferOrdered, \"\");
-    }
-    ChildPanelOnCentral(\"fwTrending/fwTrendingPlot.pnl\", \"TMB 3.3 V trend plot #\" + plotNum++, 
-                      makeDynString(\"$PlotName:trendPlot\", 
-                                    \"$templateParameters:dp1=\" + plotBufferOrdered[1] +
-                                                       \",dp2=\" + plotBufferOrdered[2] + 
-                                                       \",dp3=\" + plotBufferOrdered[3] +
-                                                       \",dp4=\" + plotBufferOrdered[4] + 
-                                                       \",dp5=\" + plotBufferOrdered[5] + 
-                                                       \",dp6=\" + plotBufferOrdered[6] + 
-                                                       \",dp7=\" + plotBufferOrdered[7] + 
-                                                       \",dp8=\" + plotBufferOrdered[8] + 
-                                                       \",plotName=TMB 3.3v trend plot\"));
+        ChildPanelOnCentral(\"fwTrending/fwTrendingPlot.pnl\", \"TMB 3.3 V trend plot #\" + plotNum++, 
+                          makeDynString(\"$PlotName:trendPlot\", 
+                                        \"$templateParameters:dp1=\" + plotBufferOrdered[1] +
+                                                           \",dp2=\" + plotBufferOrdered[2] + 
+                                                           \",dp3=\" + plotBufferOrdered[3] +
+                                                           \",dp4=\" + plotBufferOrdered[4] + 
+                                                           \",dp5=\" + plotBufferOrdered[5] + 
+                                                           \",dp6=\" + plotBufferOrdered[6] + 
+                                                           \",dp7=\" + plotBufferOrdered[7] + 
+                                                           \",dp8=\" + plotBufferOrdered[8] + 
+                                                           \",plotName=TMB 3.3v trend plot\"));
     dynClear(plotBufferOrdered);
   }
 }" 0
@@ -375,7 +372,7 @@ LANG:1 27 Get Drift Distribution Plot
 21 2
 "spinNumBuckets"
 ""
-1 170 550 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 170 550 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
  E E
 2 0 0 0 0 0
 E E E
@@ -397,7 +394,7 @@ N 0 999 1 15 1 1
 2 3
 "PRIMITIVE_TEXT1"
 ""
-1 30 560 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 30 560 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
  E E
 3 0 0 0 0 0
 E E E
@@ -463,10 +460,10 @@ E E E
 LANG:1 0 
 
 4
-"verticalHeaderFormat" "enum 1"
-"navigationBarVisible" "bool TRUE"
-"firstDayOfWeek" "enum 1"
 "horizontalHeaderFormat" "enum 0"
+"firstDayOfWeek" "enum 1"
+"navigationBarVisible" "bool TRUE"
+"verticalHeaderFormat" "enum 1"
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0  30 70 230 220
@@ -488,8 +485,8 @@ E E E
 LANG:1 0 
 
 2
-"firstDayOfWeek" "enum 1"
 "horizontalHeaderFormat" "enum 0"
+"firstDayOfWeek" "enum 1"
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0  30 280 230 430
@@ -557,12 +554,12 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 740 80 819 96
+E E 0 1 1 2 1 E U  0 E 740 80 741 96
 0 2 2 "0s" 0 0 0 192 0 0  740 80 1
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 14 calculating...
+LANG:1 0 
 2 14
 "lblForStatus"
 ""
@@ -669,12 +666,12 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 340 80 419 96
+E E 0 1 1 2 1 E U  0 E 340 80 341 96
 0 2 2 "0s" 0 0 0 192 0 0  340 80 1
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 12 computing...
+LANG:1 0 
 2 21
 "lblMinDrift"
 ""
@@ -688,12 +685,12 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 340 100 419 116
+E E 0 1 1 2 1 E U  0 E 340 100 341 116
 0 2 2 "0s" 0 0 0 192 0 0  340 100 1
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 12 computing...
+LANG:1 0 
 13 23
 "btnPlotTmb"
 ""
@@ -1005,7 +1002,7 @@ E
 E
 E
 
-N 0 100 1 15 1 1
+N 0 100 1 14 1 1
 2 39
 "lblForMore001\\"
 ""
@@ -1038,12 +1035,12 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 850 100 929 116
+E E 0 1 1 2 1 E U  0 E 850 100 851 116
 0 2 2 "0s" 0 0 0 192 0 0  850 100 1
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 14 calculating...
+LANG:1 0 
 2 44
 "PRIMITIVE_TEXT6"
 ""

@@ -26,7 +26,7 @@ PANEL,-1 -1 1600 1175 N "_3DFace" 0
   }
   
   // UI stuff
-  lblVersion.text = \"UI Version \" + EMUUI_COMPONENT_VERSION + \" (\" + EMUUI_COMPONENT_DATE + \")\";
+  lblVersion.text = \"UI Version \" + emuui_getComponentVersion() + \" (\" + emuui_getComponentDate() + \")\";
   initConstants();
   resetToDefaultChamberViewMode();
   drawLegend(ex);
@@ -36,7 +36,7 @@ PANEL,-1 -1 1600 1175 N "_3DFace" 0
   topPanelInitialized = true;
       
   // listen for UI version change
-  string dp = \"fwInstallation_\" + EMUUI_COMPONENT_NAME;
+  string dp = emuui_getSystem() + \"fwInstallation_\" + EMUUI_COMPONENT_NAME;
   if (dpExists(dp)) {
     dpConnect(\"updateVersionCB\", false, dp + \".componentVersionString\");
   }
@@ -661,12 +661,12 @@ LANG:1 0
     fwCU_connectOperationMode(\"updateTopFsmNodeOperationModeCB\", \"CMS_CSC\");
   }
   dpConnect(\"updatePlusMinusNodesOperationModeCB\", true,
-            \"CMS_CSC|CMS_CSC_PLUS_FWM.fsm.currentState\",
-            \"CMS_CSC|CMS_CSC_PLUS|CMS_CSC_PLUS_FWM.fsm.currentState\",
-            \"CMS_CSC|CMS_CSC_MINUS_FWM.fsm.currentState\",
-            \"CMS_CSC|CMS_CSC_MINUS|CMS_CSC_MINUS_FWM.fsm.currentState\",
-            \"fwCU_CMS_CSC_PLUS.mode.owner\",
-            \"fwCU_CMS_CSC_MINUS.mode.owner\");
+            emuui_getSystem() + \"CMS_CSC|CMS_CSC_PLUS_FWM.fsm.currentState\",
+            emuui_getSystem() + \"CMS_CSC|CMS_CSC_PLUS|CMS_CSC_PLUS_FWM.fsm.currentState\",
+            emuui_getSystem() + \"CMS_CSC|CMS_CSC_MINUS_FWM.fsm.currentState\",
+            emuui_getSystem() + \"CMS_CSC|CMS_CSC_MINUS|CMS_CSC_MINUS_FWM.fsm.currentState\",
+            emuui_getSystem() + \"fwCU_CMS_CSC_PLUS.mode.owner\",
+            emuui_getSystem() + \"fwCU_CMS_CSC_MINUS.mode.owner\");
 }
 " 0
  E 0 0 1 0 1 E 1.68181818181818 0 1.40127388535031 -107.7272727272726 -305.2866242038144 0 E 70 853 291 1011
@@ -1125,7 +1125,7 @@ E E 0 1 1 2 1 E 1 0 1 -209 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png"
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 -1075.105206302756 -630 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -1310.387535623109 -670 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -1144,7 +1144,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 48.89863271809593 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 48.86251050313987 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E

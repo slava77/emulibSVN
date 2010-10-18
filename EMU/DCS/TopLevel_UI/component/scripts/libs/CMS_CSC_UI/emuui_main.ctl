@@ -19,17 +19,33 @@ This package contains the main top level functions of the UI.
 
 const string EMUUI_COMPONENT_NAME = "CMS_CSC_UI";
 const string EMUUI_OBJECTS_DIR = "CMS_CSC_UI/objects";
-global string EMUUI_COMPONENT_VERSION;
-global string EMUUI_COMPONENT_DATE;
-                                    
+private global string EMUUI_COMPONENT_VERSION;
+private global string EMUUI_COMPONENT_DATE;
+private global string EMUUI_SYSTEM; // system where CMS_CSC_UI component is installed
+
 global bool emuui_g_initialized = false;
 
 void emuui_init() {
   if (emuui_g_initialized) {
     return;
   }
-  
+
   emu_info("------========== EMU Top Level UI is initializing... ==========------");
+  
+  dyn_string sysNames;
+  fwInstallation_getApplicationSystem("CMS_CSC_UI", sysNames);
+  if (dynlen(sysNames) == 0) {
+    emu_errorSingle("UI FATAL: Cannot find system where CMS_CSC_UI component is installed! UI behavior is undefined in this condition.");
+    return;
+  }
+  if (dynlen(sysNames) > 0) {
+    if (dynlen(sysNames) > 1) {
+      emu_info("WARNING: more than one system foun with CMS_CSC_UI installed, choosing the first one: " + sysNames[1] + " (found: " + sysNames + ")");
+    }
+    EMUUI_SYSTEM = sysNames[1];
+  }
+  emu_info("System: " + emuui_getSystem());
+      
   fwInstallation_getComponentInfo(EMUUI_COMPONENT_NAME, "componentVersionString", EMUUI_COMPONENT_VERSION);
   EMUUI_COMPONENT_VERSION = substr(EMUUI_COMPONENT_VERSION, 3);
   fwInstallation_getComponentInfo(EMUUI_COMPONENT_NAME, "date", EMUUI_COMPONENT_DATE);
@@ -47,6 +63,18 @@ void emuui_init() {
   emu_info("Context menus initialized");
   emu_info("------========== EMU Top Level UI initialization DONE! ==========------");
   
+}
+
+string emuui_getSystem() {
+  return EMUUI_SYSTEM;
+}
+
+string emuui_getComponentVersion() {
+  return EMUUI_COMPONENT_VERSION;
+}
+
+string emuui_getComponentDate() {
+  return EMUUI_COMPONENT_DATE;
 }
 
 bool emuui_isInitialized() {
