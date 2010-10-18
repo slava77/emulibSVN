@@ -46,10 +46,8 @@ void emuui_init() {
   }
   emu_info("System: " + emuui_getSystem());
       
-  fwInstallation_getComponentInfo(EMUUI_COMPONENT_NAME, "componentVersionString", EMUUI_COMPONENT_VERSION);
-  EMUUI_COMPONENT_VERSION = substr(EMUUI_COMPONENT_VERSION, 3);
-  fwInstallation_getComponentInfo(EMUUI_COMPONENT_NAME, "date", EMUUI_COMPONENT_DATE);
-  EMUUI_COMPONENT_DATE = substr(EMUUI_COMPONENT_DATE, 3);
+  dpGet(emuui_getSystem() + "fwInstallation_" + EMUUI_COMPONENT_NAME + ".componentVersionString", EMUUI_COMPONENT_VERSION);
+  dpGet(emuui_getSystem() + "fwInstallation_" + EMUUI_COMPONENT_NAME + ".date", EMUUI_COMPONENT_DATE);
   emu_info("Component version: " + EMUUI_COMPONENT_VERSION + ", date: " + EMUUI_COMPONENT_DATE);
            
   emuui_initSession();
