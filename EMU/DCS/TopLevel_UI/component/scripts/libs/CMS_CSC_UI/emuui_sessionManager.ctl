@@ -52,7 +52,9 @@ void emuui_initSession() {
   
   // if it doesn't yet exist - create one
   if (dynlen(sessionDps) == 0) {
-    dpCreate(emuui_g_sessionId, "CSC_UI_sessionState");
+    int sysId = getSystemId(emuui_getSystem());
+    string dpToCreate = dpSubStr(emuui_g_sessionId, DPSUB_DP);
+    dpCreate(dpToCreate, "CSC_UI_sessionState", sysId);
     emuui_applySessionDefaults(emuui_g_sessionId);
   }
   
