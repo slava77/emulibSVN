@@ -81,9 +81,15 @@ main()
       delay(30);
       dyn_string installationDps = dpNames("*:MAJORITY_INSTALLATION", "MUDCS_MAJORITY_STRING");
       for (int i=1; i <= dynlen(installationDps); i++) {
+        // get the installation msg
         string message;
         dpGet(installationDps[i] + ".value", message);
-        if (message == "Supervisor DONE") {
+        // get msg update time
+        time messageUpdateTime;
+        string msgUpdateTimeDp = dpSubStr(installationDps[i] + ".value", DPSUB_SYS_DP_EL) + ":_online.._stime";
+        dpGet(msgUpdateTimeDp, messageUpdateTime);
+  
+        if ((message == "Supervisor DONE") && (getCurrentTime() - messageUpdateTime < 2*60*60)) { // if we see this message and it's been posted less than two hours ago, then we're good to go
           emumaj_debug("installation started", true);
           install = true;
         } else if (message == "CANCEL") {
