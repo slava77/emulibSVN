@@ -297,16 +297,20 @@ dyn_string emuui_getLvSystemNames(dyn_string &exceptionInfo) {
   if (dynlen(emuui_g_lvSystemNames) > 0) {
     return emuui_g_lvSystemNames;
   }
-  
-  //get systems list, pick those with "LV" and query them for PCMB DB
+
+  // get list of systems with CRB component installed and check if it has some Maraton DPs in it
   dyn_string sysNames;
-  dyn_uint sysIds;
-  getSystemNames(sysNames, sysIds);
+  fwInstallation_getApplicationSystem("CMS_CSCfw_LV_CRB", sysNames);
   for (int i=1; i <= dynlen(sysNames); i++) {
-    if (strpos(strtolower(sysNames[i]), "lv") >= 0) { // contains LV (case insensitive).
-      dynAppend(emuui_g_lvSystemNames, sysNames[i]);
+    dyn_string mrtnDps = dpNames(sysNames[i] + "*", "FwWienerMarathon");
+    if (dynlen(mrtnDps) > 0) {
+      string lvSysName = sysNames[i];
+      strreplace(lvSysName, ":", "");
+      dynAppend(emuui_g_lvSystemNames, lvSysName);
+      emu_debug("Found LV system: " + lvSysName);
     }
   }
+
   if (dynlen(emuui_g_lvSystemNames) == 0) {
     emu_addError("No Low Voltage systems found (Low Voltage system name should contain 'lv' in the name (case insensitive))", exceptionInfo);
     return emuui_g_lvSystemNames;
