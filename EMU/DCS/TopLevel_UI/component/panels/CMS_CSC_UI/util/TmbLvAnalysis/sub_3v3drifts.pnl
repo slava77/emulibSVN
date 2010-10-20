@@ -39,6 +39,9 @@ void driftDatesChanged(time startDate, time endDate, bool isEndDateNow = false) 
 
   // get the average start and end values
   dyn_string ex;
+  if (isEndDateNow) {
+    endDate = getCurrentTime();
+  }
   dyn_dyn_float avgValues = getAvgValues(tmb3v3dpes, startDate, endDate, isEndDateNow, ex);
        
   if (emu_checkException(ex)) { 
@@ -174,7 +177,7 @@ dyn_dyn_float getAvgValues(dyn_string dpes, time startDate, time endDate, bool i
   
   // get start averages
   for (int i=1; i <= dynlen(dpes); i++) {
-    startAverages[i] = getHistoricalAverage(dpes[i], startDate, startDate + 86400, exceptionInfo);
+    startAverages[i] = getHistoricalAverage(dpes[i], startDate - 86400, startDate, exceptionInfo);
     if (i % 20) {
       progress.progress = i; // up to 50%
     }
@@ -192,7 +195,15 @@ dyn_dyn_float getAvgValues(dyn_string dpes, time startDate, time endDate, bool i
     }
   }
   for (int i=1; i <= dynlen(dpes); i++) {
-    endAverages[i] = getHistoricalAverage(dpes[i], endDate - 86400, endDate - 1800, exceptionInfo);
+    float currentValue = -99;
+    if (isEndDateNow) { // try to simply get the current values
+      dpGet(dpes[i], currentValue);
+    }
+    if (isEndDateNow && (currentValue > 1)) { // ignore funny values
+      endAverages[i] = currentValue;
+    } else {
+      endAverages[i] = getHistoricalAverage(dpes[i], endDate - 86400, endDate, exceptionInfo);
+    }
     if (i % 20) {
       progress.progress = dpesCount + i; // 50-100 %
     }
@@ -460,10 +471,10 @@ E E E
 LANG:1 0 
 
 4
-"horizontalHeaderFormat" "enum 0"
-"firstDayOfWeek" "enum 1"
-"navigationBarVisible" "bool TRUE"
 "verticalHeaderFormat" "enum 1"
+"navigationBarVisible" "bool TRUE"
+"firstDayOfWeek" "enum 1"
+"horizontalHeaderFormat" "enum 0"
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0  30 70 230 220
@@ -485,8 +496,8 @@ E E E
 LANG:1 0 
 
 2
-"horizontalHeaderFormat" "enum 0"
 "firstDayOfWeek" "enum 1"
+"horizontalHeaderFormat" "enum 0"
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0  30 280 230 430
