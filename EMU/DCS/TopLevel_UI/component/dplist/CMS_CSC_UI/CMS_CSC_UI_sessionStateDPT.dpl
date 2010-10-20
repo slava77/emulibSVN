@@ -7,9 +7,6 @@ CSC_UI_sessionState.CSC_UI_sessionState	1#1
 	mainChamberView	1#3
 		connectionType	25#4
 		mode	25#5
-	valueMonitor	1#9
-		connectionType	25#10
-		mode	25#11
 	hvPrimaryView	1#12
 		connectionType	25#13
 		mode	25#14
@@ -21,7 +18,7 @@ CSC_UI_sessionState.CSC_UI_sessionState	1#1
 		mode	25#20
 	tooltipSizeUpdated	21#21
 	tooltipPositionUpdated	21#22
-	communicationMonitor	1#23
+	valueMonitor	1#23
 		connectionType	25#24
 		mode	25#25
 	communicationStatus	1#26
@@ -42,13 +39,18 @@ CSC_UI_sessionState.CSC_UI_sessionState	1#1
 		configuringCrates	9#41
 		configuredCrates	9#42
 		failedToConfigureCrates	9#43
-	histogram	1#44
-		histogramData	5#45
-		rangeMin	22#46
-		rangeMax	22#47
+	communicationMonitor	1#44
+		connectionType	25#45
+		mode	25#46
+	histogram	1#47
+		histogramData	5#48
+		rangeMin	22#49
+		rangeMax	22#50
 
 # Datapoint/DpId
 DpName	TypeName	ID
+session_macfrank_root	CSC_UI_sessionState	392011
+session_cms-csc-dcs-09_root	CSC_UI_sessionState	392579
 session_cms_scr_dcs_01_anyuser	CSC_UI_sessionState	393861
 session_cms_scr_dcs_02_anyuser	CSC_UI_sessionState	393862
 session_cms_scr_gas_01_anyuser	CSC_UI_sessionState	393864
@@ -58,4 +60,5 @@ session_macfrank_anyuser	CSC_UI_sessionState	393871
 session_scx5scr05_anyuser	CSC_UI_sessionState	393872
 session_scx5scr06_anyuser	CSC_UI_sessionState	393873
 session_scx5scr35_anyuser	CSC_UI_sessionState	393874
+session_cms_csc_dcs_09_anyuser	CSC_UI_sessionState	515426
 session_cms_cent_dcs_19_anyuser	CSC_UI_sessionState	544932
