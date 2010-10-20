@@ -666,7 +666,7 @@ E E 0 1 1 2 1 E U  1 E 10 380 370 394
 1
 LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
 0 1
-LANG:1 23 Peripheral Crate is OFF
+LANG:1 41 Peripheral Crate is OFF or not configured
 2 16
 "warnDmbReadingError"
 ""
