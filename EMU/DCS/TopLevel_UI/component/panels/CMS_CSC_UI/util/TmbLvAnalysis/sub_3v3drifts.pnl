@@ -247,8 +247,8 @@ float getHistoricalLast(string dpe, time date, dyn_string &exceptionInfo, int nu
     }
     
     // if there was no good value in this interval - step back the startDate by 3 hours
-    emu_info(\"stepping back the start date by 3 hours for \" + dpe);
-    startDate -= 60*60*3;
+    emu_info(\"stepping back the start date by 8 hours for \" + dpe);
+    startDate -= 60*60*8;
   }  
    
 }
