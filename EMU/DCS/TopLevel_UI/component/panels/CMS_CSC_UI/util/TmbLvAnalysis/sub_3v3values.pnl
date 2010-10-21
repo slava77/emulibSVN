@@ -28,6 +28,9 @@ updateList(float threshold) {
   _treeCache_dpGetAll(tmb3v3dpes, voltages);
   int count = 0;
   for (int i=1; i <= dynlen(voltages); i++) {
+    if (voltages[i] < 0) {
+      continue;
+    }
     if (voltages[i] < threshold) {
       string chamberName = emuui_getChamberName(emu_fsmNodeToDeviceParams(tmb3v3dpes[i], ex));
       if (emu_checkException(ex)) { return; }
