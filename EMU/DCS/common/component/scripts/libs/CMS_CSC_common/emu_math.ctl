@@ -102,3 +102,18 @@ void emu_minMax(dyn_float values, float &min, float &max) {
     }
   }
 }
+
+/** Get average of the provided float values. */
+float emu_avg(dyn_float values) {
+  float sum = emu_sum(values);
+  return sum / dynlen(values);
+}
+
+/** Get sum of the provided float values. */
+float emu_sum(dyn_float values) {
+  float ret = 0;
+  for (int i=1; i <= dynlen(values); i++) {
+    ret += values[i];
+  }
+  return ret;
+}
