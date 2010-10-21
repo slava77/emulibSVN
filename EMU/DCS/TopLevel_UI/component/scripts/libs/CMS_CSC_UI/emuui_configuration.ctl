@@ -293,7 +293,7 @@ dyn_string emuui_getArray(string name, dyn_string &exceptionInfo) {
 }
 
 /** returns names of the Low Voltage systems that are now reachable. */
-dyn_string emuui_getLvSystemNames(dyn_string &exceptionInfo) {
+synchronized dyn_string emuui_getLvSystemNames(dyn_string &exceptionInfo) {
   if (dynlen(emuui_g_lvSystemNames) > 0) {
     return emuui_g_lvSystemNames;
   }
@@ -312,7 +312,7 @@ dyn_string emuui_getLvSystemNames(dyn_string &exceptionInfo) {
   }
 
   if (dynlen(emuui_g_lvSystemNames) == 0) {
-    emu_addError("No Low Voltage systems found (Low Voltage system name should contain 'lv' in the name (case insensitive))", exceptionInfo);
+    emu_addError("No Low Voltage systems found (Low Voltage system should have CMS_CSCfw_LV_CRB component installed and have at least one FwWienerMarathon DP)", exceptionInfo);
     return emuui_g_lvSystemNames;
   }
   
