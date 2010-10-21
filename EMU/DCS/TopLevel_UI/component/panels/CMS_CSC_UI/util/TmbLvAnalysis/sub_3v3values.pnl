@@ -68,10 +68,10 @@ LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 
 T 
 1
-LANG:1 26 Get 3.3V Distribution Plot
+LANG:1 38 Get 3.3V Distribution Plot (ignore -2)
 "main()
 {
-  emuui_showHistogram(tmb3v3dpes, spinNumBuckets.text, \"TMB 3.3 V Distribution\");
+  emuui_showHistogramFromDpes(tmb3v3dpes, spinNumBuckets.text, \"TMB 3.3 V Distribution\", makeDynString(-2));
 }
 
 " 0
@@ -79,7 +79,7 @@ LANG:1 26 Get 3.3V Distribution Plot
 21 2
 "spinNumBuckets"
 ""
-1 622 132 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 700 130 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 2 0 0 0 0 0
 E E E
@@ -90,7 +90,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  620 130 684 158
+0  698 128 762 156
 0
 
 E
@@ -111,12 +111,12 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 492 132 611 148
+E E 0 1 1 2 1 E U  0 E 492 132 694 148
 0 2 2 "0s" 0 0 0 192 0 0  492 132 1
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 18 number of buckets:
+LANG:1 33 number of intervals in histogram:
 25 27
 "tableBelowSpec"
 ""

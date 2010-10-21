@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 1028 696 N "_3DFace" 0
+PANEL,-1 -1 1028 869 N "_3DFace" 0
 "main()
 {
   tmbDps[1] = \"jou\";
@@ -32,7 +32,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  8 48 1012 682
+0  8 48 1012 851
 E3 "3v3values" 1
 LANG:1 4 3.3V
 1 "CMS_CSC_UI/util/TmbLvAnalysis/sub_3v3values.pnl" 1

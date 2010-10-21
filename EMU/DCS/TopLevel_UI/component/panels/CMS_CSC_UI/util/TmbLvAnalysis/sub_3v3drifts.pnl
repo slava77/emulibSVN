@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 997 605 N "_3DFace" 0
+PANEL,-1 -1 997 772 N "_3DFace" 0
 "main()
 {
   emuui_init();
@@ -24,6 +24,7 @@ PANEL,-1 -1 997 605 N "_3DFace" 0
 ""0  1
 E "#uses \"CMS_CSC_UI/emuui_utils.ctl\"
 #uses \"CMS_CSC_common/emu_common.ctl\"
+#uses \"CMS_CSC_common/emu_math.ctl\"
 #uses \"CMS_CSC_common/emu_deviceInfo.ctl\"
 #uses \"CMS_CSC_UI/emuui_deviceInfo.ctl\"
 #uses \"CMS_CSC_UI/emuui_gradient.ctl\"
@@ -177,7 +178,7 @@ dyn_dyn_float getAvgValues(dyn_string dpes, time startDate, time endDate, bool i
   
   // get start averages
   for (int i=1; i <= dynlen(dpes); i++) {
-    startAverages[i] = getHistoricalAverage(dpes[i], startDate - 86400, startDate, exceptionInfo);
+    startAverages[i] = getHistoricalLast(dpes[i], startDate, exceptionInfo, spinAverageSize.text);
     if (i % 20) {
       progress.progress = i; // up to 50%
     }
@@ -202,7 +203,7 @@ dyn_dyn_float getAvgValues(dyn_string dpes, time startDate, time endDate, bool i
     if (isEndDateNow && (currentValue > 1)) { // ignore funny values
       endAverages[i] = currentValue;
     } else {
-      endAverages[i] = getHistoricalAverage(dpes[i], endDate - 86400, endDate, exceptionInfo);
+      endAverages[i] = getHistoricalLast(dpes[i], endDate, exceptionInfo, spinAverageSize.text);
     }
     if (i % 20) {
       progress.progress = dpesCount + i; // 50-100 %
@@ -216,6 +217,40 @@ dyn_dyn_float getAvgValues(dyn_string dpes, time startDate, time endDate, bool i
   ret[1] = startAverages;
   ret[2] = endAverages;
   return ret;
+}
+
+float getHistoricalLast(string dpe, time date, dyn_string &exceptionInfo, int numOfLastValuesToAverage = 1) {
+  dyn_float values = makeDynFloat();
+  dyn_time timestamps;
+  // get the data
+  bool gotEnough = false;
+  time startDate = date - 60*60*3; // minus 3 hours
+  time endDate = date;
+  while (true) {
+    int rc = dpGetPeriod(startDate, endDate, -1, dpe, values, timestamps);
+    if (rc != 0) {
+      emu_addError(\"Error while retrieving historical data. dpGetPeriod returned \" + rc, exceptionInfo);
+      return 0;
+    }
+    
+    // take last good value
+    dyn_float goodValues = makeDynFloat();
+    int goodValuesCount = 0;
+    for (int i=dynlen(values); i > 0; i--) {
+      if (values[i] > 1) {
+        dynAppend(goodValues, values[i]);
+        goodValuesCount++;
+        if (goodValuesCount >= numOfLastValuesToAverage) {
+          return emu_avg(goodValues);
+        }
+      }
+    }
+    
+    // if there was no good value in this interval - step back the startDate by 3 hours
+    emu_info(\"stepping back the start date by 3 hours for \" + dpe);
+    startDate -= 60*60*3;
+  }  
+   
 }
 
 float getHistoricalAverage(string dpe, time startDate, time endDate, dyn_string &exceptionInfo, bool printDebug = false) {
@@ -356,7 +391,7 @@ LANG:1 0
 13 1
 "btnDriftDist"
 ""
-1 30.00000000000001 510 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+1 30.00000000000004 680.0000000000001 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 1 0 0 0 0 0
 E E E
@@ -367,15 +402,14 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  28 508 232 542
+0  28 678 232 712
 
 T 
 1
 LANG:1 27 Get Drift Distribution Plot
 "main()
 {
-  //emuui_showHistogram(tmb3v3dpes, spinNumBuckets.text, \"TMB 3.3 V Distribution\");
-  emu_errorSingle(\"Sorry, drift distribution plot is not implemented yet..\");
+  emuui_showHistogram(tmbDrifts, spinNumBuckets.text, \"TMB 3.3V Drifts Distribution\");
 }
 
 " 0
@@ -383,7 +417,7 @@ LANG:1 27 Get Drift Distribution Plot
 21 2
 "spinNumBuckets"
 ""
-1 170 550 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+1 170 720 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 2 0 0 0 0 0
 E E E
@@ -394,7 +428,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  168 548 232 576
+0  168 718 232 746
 0
 
 E
@@ -405,7 +439,7 @@ N 0 999 1 15 1 1
 2 3
 "PRIMITIVE_TEXT1"
 ""
-1 30 560 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+1 30 723 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 3 0 0 0 0 0
 E E E
@@ -415,12 +449,12 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 30 560 150 576
-0 2 2 "0s" 0 0 0 192 0 0  30 560 1
+E E 0 1 1 2 1 E U  0 E 30 723 169 739
+0 2 2 "0s" 0 0 0 192 0 0  30 723 1
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 18 Number of buckets:
+LANG:1 26 No. of intervals in hist.:
 2 6
 "lblFor3v3DriftStartDate"
 ""
@@ -443,7 +477,7 @@ LANG:1 11 Start Date:
 2 7
 "lblFor3v3DriftEndDate"
 ""
-1 30 260 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 30 270 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 7 0 0 0 0 0
 E E E
@@ -453,8 +487,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 30 260 90 276
-0 2 2 "0s" 0 0 0 192 0 0  30 260 1
+E E 0 1 1 2 1 E U  0 E 30 270 90 286
+0 2 2 "0s" 0 0 0 192 0 0  30 270 1
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
@@ -471,10 +505,10 @@ E E E
 LANG:1 0 
 
 4
-"verticalHeaderFormat" "enum 1"
-"navigationBarVisible" "bool TRUE"
-"firstDayOfWeek" "enum 1"
 "horizontalHeaderFormat" "enum 0"
+"firstDayOfWeek" "enum 1"
+"navigationBarVisible" "bool TRUE"
+"verticalHeaderFormat" "enum 1"
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0  30 70 230 220
@@ -487,7 +521,7 @@ LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 29 9
 "calDriftEndDate"
 ""
-1 29.99999999999999 280 E E E 0 E 1 E N "_3DText" E N "_3DFace" E E
+1 29.99999999999999 290 E E E 0 E 1 E N "_3DText" E N "_3DFace" E E
  E E
 9 0 0 0 0 0
 E E E
@@ -496,17 +530,17 @@ E E E
 LANG:1 0 
 
 2
-"firstDayOfWeek" "enum 1"
 "horizontalHeaderFormat" "enum 0"
+"firstDayOfWeek" "enum 1"
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  30 280 230 430
+0  30 290 230 440
 8 Calendar
 0
 E20 10
 "chkDriftEndDateNow"
 ""
-1 110 260 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+1 110 270 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
  E E
 10 0 0 0 0 0
 E E E
@@ -517,7 +551,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  108 258 232 281
+0  108 268 232 291
 1
 T 
 1
@@ -532,6 +566,7 @@ E E
 E"main(int button, int state)
 {
   calDriftEndDate.enabled = !state;
+  spinHourEnd.enabled = !state;
 }" 0
 2 11
 "lblForAvgGlobalDrift"
@@ -705,7 +740,7 @@ LANG:1 0
 13 23
 "btnPlotTmb"
 ""
-1 730 520 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 730 690 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 23 0 0 0 0 0
 E E E
@@ -716,7 +751,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  728 518 972 547
+0  728 688 972 717
 
 T 
 1
@@ -732,7 +767,7 @@ LANG:1 21 Get Plot for this TMB
 22 24
 "comboTmb"
 ""
-1 260 520 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 260 690 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 24 0 0 0 0 0
 E E E
@@ -743,7 +778,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  258 518 712 546
+0  258 688 712 716
 0
 
 E
@@ -763,7 +798,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 1 0 1 E 1.073529411764705 0 1.168478260869565 -29.11764705882347 0.9239130434782593 0 E 260 42 941 411
+E E 0 0 1 0 1 E 1.073529411764705 0 1.630434782608695 -29.11764705882347 -18.47826086956522 0 E 260 42 941 411
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
@@ -771,7 +806,7 @@ LANG:1 6 Result
 13 26
 "btnCompute"
 ""
-1 20.00000000000001 440 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 20.00000000000001 580 E E E 1 E 1 E N "_ButtonText" E N "FwStateOKPhysics" E E
  E E
 26 0 0 0 0 0
 E E E
@@ -782,7 +817,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  18 438 242 482
+0  18 578 242 642
 
 T 
 1
@@ -791,7 +826,7 @@ LANG:1 30 Get Drifts Between These Dates
 {
   btnDriftDist.enabled = true;
   bool isEndNow = chkDriftEndDateNow.state(0);
-  driftDatesChanged(calDriftStartDate.selectedDate + spinHour.text * 3600, calDriftEndDate.selectedDate, isEndNow);
+  driftDatesChanged(calDriftStartDate.selectedDate + spinHourStart.text * 3600, calDriftEndDate.selectedDate + + spinHourEnd.text * 3600, isEndNow);
 }" 0
  E E E
 30 27
@@ -807,7 +842,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 1 0 1 E 0.4999999999999999 0 1.282051282051282 -115 -179.2307692307693 0 E 270 522 711 601
+E E 0 0 1 0 1 E 0.4999999999999999 0 1.282051282051282 -115 -9.230769230769234 0 E 270 522 711 601
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
@@ -825,7 +860,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 1 0 1 E 1.057971014492754 0 0.9259259259259258 -25.07246376811607 34.4444444444445 0 E 260 492 951 601
+E E 0 0 1 0 1 E 1.057971014492754 0 0.9259259259259258 -25.07246376811607 204.4444444444445 0 E 260 492 951 601
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
@@ -833,7 +868,7 @@ LANG:1 26 Value Over Time Trend Plot
 13 30
 "PUSH_BUTTON1"
 ""
-1 730 550 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 730 720 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 30 0 0 0 0 0
 E E E
@@ -844,7 +879,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  728 548 972 577
+0  728 718 972 747
 
 T 
 1
@@ -876,7 +911,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  268 118 942 442
+0  268 118 952 612
 "main()
 {
   this.tableMode = TABLE_SELECT_LINE_COLUMN;
@@ -888,7 +923,7 @@ E
 1
 LANG:1 0 
 
-60 "avg" 5 1 0 "s" 1
+70 "avg" 5 1 0 "s" 1
 LANG:1 9 avg drift
 E
 1
@@ -957,7 +992,7 @@ LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 2 36
 "PRIMITIVE_TEXT2"
 ""
-1 300 460 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 300 620 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 36 0 0 0 0 0
 E E E
@@ -967,8 +1002,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 300 460 681 476
-0 2 2 "0s" 0 0 0 192 0 0  300 460 1
+E E 0 1 1 2 1 E U  0 E 300 620 681 636
+0 2 2 "0s" 0 0 0 192 0 0  300 620 1
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
@@ -976,7 +1011,7 @@ LANG:1 65 Double click on a cell to get a value over time plot for that TMB
 2 37
 "PRIMITIVE_TEXT3"
 ""
-1 30 230 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 30 233 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 37 0 0 0 0 0
 E E E
@@ -986,16 +1021,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 30 230 63 246
-0 2 2 "0s" 0 0 0 192 0 0  30 230 1
+E E 0 1 1 2 1 E U  0 E 30 233 63 249
+0 2 2 "0s" 0 0 0 192 0 0  30 233 1
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 5 Hour:
 21 38
-"spinHour"
+"spinHourStart"
 ""
-1 70 227 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 70 230 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 38 0 0 0 0 0
 E E E
@@ -1006,7 +1041,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  68 225 192 253
+0  68 228 192 256
 0
 
 E
@@ -1055,7 +1090,7 @@ LANG:1 0
 2 44
 "PRIMITIVE_TEXT6"
 ""
-1 490 556 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 490 727 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 44 0 0 0 0 0
 E E E
@@ -1065,8 +1100,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 490 556 581 572
-0 2 2 "0s" 0 0 0 192 0 0  490 556 1
+E E 0 1 1 2 1 E U  0 E 490 727 581 743
+0 2 2 "0s" 0 0 0 192 0 0  490 727 1
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
@@ -1074,7 +1109,7 @@ LANG:1 16 Drift threshold:
 14 46
 "editDriftThreshold"
 ""
-1 590 550 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 590 720 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 46 0 0 0 0 0
 E E E
@@ -1085,12 +1120,98 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  588 548 712 576
+0  588 718 712 746
 3 "0s" 0 0 0 0 0 -1  E "main()
 {
   this.text = \"0.01\";
 }" 0
  E
+2 47
+"PRIMITIVE_TEXT7"
+""
+1 30 453 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+47 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 30 453 63 469
+0 2 2 "0s" 0 0 0 192 0 0  30 453 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 5 Hour:
+21 48
+"spinHourEnd"
+""
+1 70 450 E E E 0 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+48 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  68 448 192 476
+0
+
+E
+E
+E
+
+N 0 100 1 14 1 1
+2 49
+"PRIMITIVE_TEXT8"
+""
+1 20 500 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+49 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 20 500 195 534
+0 2 2 "0s" 0 0 0 192 0 0  20 500 2
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 28 Number of values to average 
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 28 on the edges of this period:
+21 50
+"spinAverageSize"
+""
+1 20 540 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+50 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  18 538 142 566
+0
+
+E
+E
+E
+
+N 1 100 1 1 1 1
 0
 LAYER, 1 
 1
