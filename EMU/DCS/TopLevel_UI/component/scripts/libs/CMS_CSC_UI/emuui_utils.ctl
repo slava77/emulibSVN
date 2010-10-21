@@ -187,8 +187,8 @@ void emuui_showHistogram(dyn_string dataDpes, int numBuckets, string dataTitle) 
   dpSetWait(EMUUI_HISTOGRAM_PLOT_DP + ".xRangeMin", xRangeMin, 
             EMUUI_HISTOGRAM_PLOT_DP + ".xRangeMax", xRangeMax);
   ChildPanelOnCentral("fwTrending/fwTrendingPlot.pnl", dataTitle + " Plot", 
-                      makeDynString("$PlotName:" + EMUUI_HISTOGRAM_PLOT_DP, 
-                                    "$templateParameters:histDataDpe=" + histogramDp + ".histogramData,dataTitle=" + dataTitle + ","));
+                      makeDynString("$PlotName:" + EMUUI_HISTOGRAM_PLOT_DP,
+                                    "$templateParameters:histDataDpe=" + dpSubStr(histogramDp, DPSUB_DP_EL) + ".histogramData,dataTitle=" + dataTitle + ","));
 }
 
 /**
