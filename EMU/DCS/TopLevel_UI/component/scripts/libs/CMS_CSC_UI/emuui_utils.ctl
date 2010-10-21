@@ -162,7 +162,37 @@ void emuui_openBrowser(string url) {
   * @param numBuckets number of buckets to divide the data into
   * @param dataTitle title of the data that you're ploting (this will name the the plot to "<dataTitle> Plot" and set the legend to "<dataTitle>")
   */
-void emuui_showHistogram(dyn_string dataDpes, int numBuckets, string dataTitle) {
+void emuui_showHistogramFromDpes(dyn_string dataDpes, int numBuckets, string dataTitle, dyn_float ignoreValues = makeDynFloat()) {
+  dyn_float data;
+  if (isFunctionDefined("_treeCache_dpGetAll")) {
+    _treeCache_dpGetAll(dataDpes, data); // allows mass dpGet from different systems
+  } else {
+    dpGet(dataDpes, data); // if the treeCache library is not available, try doing dpGet()
+  }
+  emuui_showHistogram(data, numBuckets, dataTitle);
+}
+
+/**
+  * Creates and shows a histogram for the given data (divides the histogram into <numBuckets> buckets)
+  * @param data data to be plotted
+  * @param numBuckets number of buckets to divide the data into
+  * @param dataTitle title of the data that you're ploting (this will name the the plot to "<dataTitle> Plot" and set the legend to "<dataTitle>")
+  * @param ignoreValues (optional) list of values to be ignored
+  */
+void emuui_showHistogram(dyn_float data, int numBuckets, string dataTitle, dyn_float ignoreValues = makeDynFloat()) {
+  if (dynlen(ignoreValues) > 0) {
+    dyn_int toRemove;
+    for (int i=1; i <= dynlen(data); i++) {
+      int idx = dynContains(ignoreValues, data[i]);
+      if (idx > 0) {
+        dynAppend(toRemove, idx);
+      }
+    }
+    for (int i=1; i <= dynlen(toRemove); i++) {
+      dynRemove(data, toRemove[i]);
+    }
+  }
+      
   if (emuui_getSessionId() == "") {
     emu_errorSingle("CSC UI session is not initialized. Histograms are not supported outside CSC UI. Please run this panel from within CSC UI. Terminating.");
     return;
@@ -170,7 +200,7 @@ void emuui_showHistogram(dyn_string dataDpes, int numBuckets, string dataTitle) 
   string histogramDp = emuui_getSessionDp("histogram");
   dyn_int histData;
   float rangeMin, rangeMax;
-  emuui_getHistogramData(dataDpes, numBuckets, histData, rangeMin, rangeMax);
+  emuui_getHistogramData(data, numBuckets, histData, rangeMin, rangeMax);
   dpSetWait(histogramDp + ".histogramData", histData, 
             histogramDp + ".rangeMin", rangeMin, 
             histogramDp + ".rangeMax", rangeMax);
@@ -194,19 +224,13 @@ void emuui_showHistogram(dyn_string dataDpes, int numBuckets, string dataTitle) 
 /**
   * Computes data for a histogram. Takes values from the given DPEs, finds min and max of the range and divides that range to numIntervals intervals 
   * and fills in the histData with number of DPEs that fall into each interval.
-  * @param dataDpes data DPEs - all must be of numeric type
+  * @param data data to be plotted
   * @param numBuckets number of intervals (buckets) to divide the total range of data into
   * @param histData number of DPEs that fall into each interval
   * @param rangeMin start of the histogram data range
   * @param rangeMax end of the histogram data range
   */
-void emuui_getHistogramData(dyn_string dataDpes, int numBuckets, dyn_int &histData, float &rangeMin, float &rangeMax) {
-  dyn_float data;
-  if (isFunctionDefined("_treeCache_dpGetAll")) {
-    _treeCache_dpGetAll(dataDpes, data); // allows mass dpGet from different systems
-  } else {
-    dpGet(dataDpes, data); // if the treeCache library is not available, try doing dpGet()
-  }
+void emuui_getHistogramData(dyn_float data, int numBuckets, dyn_int &histData, float &rangeMin, float &rangeMax) {
   emu_minMax(data, rangeMin, rangeMax);
   rangeMin -= (rangeMax - rangeMin) * 0.1; // expand the range by 20%
   rangeMax += (rangeMax - rangeMin) * 0.1; // expand the range by 20%
