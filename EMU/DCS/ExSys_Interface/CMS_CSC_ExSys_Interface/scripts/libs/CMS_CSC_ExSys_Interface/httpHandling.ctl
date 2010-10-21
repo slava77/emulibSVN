@@ -1,8 +1,8 @@
 #uses "CMS_CSC_common/emu_common.ctl"
 
-private const string EXSYS_HOST = "localhost";
-private const string EXSYS_PORT = 1234;
-private const string EXSYS_URL = "/ExsysEsb/httpFCInput";//"/cdw/factcollection";
+private const string EXSYS_HOST = "csc-expert";
+private const string EXSYS_PORT = 9080;
+private const string EXSYS_URL = "/ExsysEsb/httpFCInput";
 
 private global int exsys_g_socket_handler = -1;
 
