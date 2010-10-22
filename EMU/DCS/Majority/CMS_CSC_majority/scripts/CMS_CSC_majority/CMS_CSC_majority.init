@@ -71,6 +71,7 @@ main()
         emumaj_createMajorityConfiguration(majorityTopNodes[i]);
       }
     }
+    majority_setAccessControl_required_privilege("CMS_CSC", "CMS_CSC:Debug");
     
     emumaj_debug("Supervisor DONE", true);
   } else if (EMUMAJ_CREATE_MAJORITY_DUS || EMUMAJ_UPDATE_FSM_TYPES){
