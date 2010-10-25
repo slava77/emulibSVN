@@ -1,0 +1,11 @@
+# ascii dump of database
+
+# DpType
+TypeName
+CSC_debug_general.CSC_debug_general	1#1
+	hv	1#2
+		channelsAt3500	9#3
+
+# Datapoint/DpId
+DpName	TypeName	ID
+CSC_debug	CSC_debug_general	544940
