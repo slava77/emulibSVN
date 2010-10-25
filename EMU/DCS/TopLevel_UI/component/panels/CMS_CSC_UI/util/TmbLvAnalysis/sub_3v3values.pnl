@@ -68,10 +68,10 @@ LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 
 T 
 1
-LANG:1 44 Get 3.3V Distribution Plot (ignore 0 and -2)
+LANG:1 55 Get 3.3V Distribution Plot (consider only values > 0.1)
 "main()
 {
-  emuui_showHistogramFromDpes(tmb3v3dpes, spinNumBuckets.text, \"TMB 3.3 V Distribution\", makeDynFloat(0, -2));
+  emuui_showHistogramFromDpes(tmb3v3dpes, spinNumBuckets.text, \"TMB 3.3 V Distribution\", makeDynFloat(0.1, maxFLOAT()));
 }
 
 " 0

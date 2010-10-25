@@ -161,15 +161,16 @@ void emuui_openBrowser(string url) {
   * @param dataDpes dpes to be plotted
   * @param numBuckets number of buckets to divide the data into
   * @param dataTitle title of the data that you're ploting (this will name the the plot to "<dataTitle> Plot" and set the legend to "<dataTitle>")
+  * @param goodValuesRange (optional) min and max of values to consider.
   */
-void emuui_showHistogramFromDpes(dyn_string dataDpes, int numBuckets, string dataTitle, dyn_float ignoreValues = makeDynFloat()) {
+void emuui_showHistogramFromDpes(dyn_string dataDpes, int numBuckets, string dataTitle, dyn_float goodValuesRange = makeDynFloat()) {
   dyn_float data;
   if (isFunctionDefined("_treeCache_dpGetAll")) {
     _treeCache_dpGetAll(dataDpes, data); // allows mass dpGet from different systems
   } else {
     dpGet(dataDpes, data); // if the treeCache library is not available, try doing dpGet()
   }
-  emuui_showHistogram(data, numBuckets, dataTitle);
+  emuui_showHistogram(data, numBuckets, dataTitle, goodValuesRange);
 }
 
 /**
@@ -177,15 +178,16 @@ void emuui_showHistogramFromDpes(dyn_string dataDpes, int numBuckets, string dat
   * @param data data to be plotted
   * @param numBuckets number of buckets to divide the data into
   * @param dataTitle title of the data that you're ploting (this will name the the plot to "<dataTitle> Plot" and set the legend to "<dataTitle>")
-  * @param ignoreValues (optional) list of values to be ignored
+  * @param goodValuesRange (optional) min and max of values to consider.
   */
-void emuui_showHistogram(dyn_float data, int numBuckets, string dataTitle, dyn_float ignoreValues = makeDynFloat()) {
-  if (dynlen(ignoreValues) > 0) {
+void emuui_showHistogram(dyn_float data, int numBuckets, string dataTitle, dyn_float goodValuesRange = makeDynFloat()) {
+  emu_info("Preparing to show a histogram");
+  if (dynlen(goodValuesRange) == 2) {
     dyn_int toRemove;
     for (int i=1; i <= dynlen(data); i++) {
-      int idx = dynContains(ignoreValues, data[i]);
-      if (idx > 0) {
-        dynAppend(toRemove, idx);
+      if ((data[i] < goodValuesRange[1]) || (data[i] > goodValuesRange[2])) {
+        emu_info("removing value #" + i + "=" + data[i]);
+        dynAppend(toRemove, i);
       }
     }
     for (int i=1; i <= dynlen(toRemove); i++) {
