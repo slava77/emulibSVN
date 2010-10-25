@@ -49,6 +49,11 @@ void emuui_openContextMenu(string deviceType, mapping deviceParams, dyn_string &
   }
   
   if (emu_checkException(exceptionInfo)) { return; }
+  
+  if (dynlen(menu) == 0) {
+    return;
+  }
+  
   popupMenu(menu, answer);
   if (answer == 0) { // no item selected
     return;

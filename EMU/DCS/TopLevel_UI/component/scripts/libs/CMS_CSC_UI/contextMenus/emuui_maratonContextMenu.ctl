@@ -6,6 +6,8 @@ This package contains functions to construct context and process menus for "cham
 @date   October 2009
 */
 
+#uses "CMS_CSC_common/emu_accessControl.ctl"
+
 /** Initializes the actionMap which is [menu_answer]->[function] mapping. */
 mapping emuuicm_initMaratonContextMenus() {
   mapping actionMap;
@@ -18,6 +20,10 @@ mapping emuuicm_initMaratonContextMenus() {
 /** Returns context menu for maraton (as popupMenu structure - search PVSS help for popupMenu() for more information).*/
 dyn_string emuuicm_getMaratonContextMenu(mapping deviceParams, dyn_string &exceptionInfo) {
   dyn_string menu;
+
+  if (!emu_hasExpertControl()) {
+    return menu;
+  }
   
   dynAppend(menu, "PUSH_BUTTON, Control Individual Channels (!experts only!), 100, 1");
   

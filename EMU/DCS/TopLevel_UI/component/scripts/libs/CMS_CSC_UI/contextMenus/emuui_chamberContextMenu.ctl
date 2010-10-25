@@ -10,6 +10,7 @@ This package contains functions to construct context and process menus for "cham
 #uses "CMS_CSC_common/emu_alert.ctl"
 #uses "CMS_CSCfw_HV_CC/emu_hvCommon.ctl"
 #uses "CMS_CSC_UI/emuui_deviceInfo.ctl"
+#uses "CMS_CSC_common/emu_accessControl.ctl"
 
 /** Initializes the actionMap which is [menu_answer]->[function] mapping. */
 mapping emuuicm_initChamberContextMenus() {
@@ -42,6 +43,12 @@ mapping emuuicm_initChamberContextMenus() {
 /** Returns context menu for chamber (as popupMenu structure - search PVSS help for popupMenu() for more information).*/
 dyn_string emuuicm_getChamberContextMenu(mapping deviceParams, dyn_string &exceptionInfo) {
   dyn_string menu;
+
+  if (!emu_hasControl()) {
+    dynAppend(menu, "PUSH_BUTTON, You don't have control privileges.., 999, 0");
+    return menu;
+  }
+
   
   // ------====== HIGH VOLTAGE ======------
   dyn_int trippedHvChannels, interlockedHvChannels, deadHvChannels, disabledHvChannels;
