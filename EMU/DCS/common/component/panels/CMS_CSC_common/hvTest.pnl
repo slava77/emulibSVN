@@ -1,0 +1,299 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 571 358 N "_3DFace" 0
+"main()
+{
+  // ==== access control ====
+  if (isFunctionDefined(\"fwAccessControl_setupPanel\")) {
+    initAcConstants();
+    dyn_string ex;
+    fwAccessControl_setupPanel(\"accessPrivilegesChangedCB\", ex);
+    if (emu_checkException(ex)) { return; }
+    fwCU_connectOperationMode(\"accessPrivilegesChangedCB\", \"CMS_CSC::CMS_CSC\");
+  }
+  //=========================
+}
+
+/** initialize constants required for access control - basically just fill in the arrays of control and expert control button names. */
+void initAcConstants() {
+  controlButtons = makeDynString();
+  expertControlButtons = makeDynString(\"btnDo\", \"btnUndo\");
+}
+" 0
+ E E E E 1 -1 -1 0  140 50
+""0  1
+E "// Common libs
+#uses \"CMS_CSC_common/emu_common.ctl\"
+#uses \"CMS_CSC_common/emu_accessControl.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emu_hvCommon.ctl\"
+#uses \"CMS_CSC_UI/emuui_main.ctl\"
+
+/** for access control - arrays of control and expert control buttons which should be under access control */
+dyn_string controlButtons;
+dyn_string expertControlButtons;
+
+/** This function is called whenever the user privileges change and just passes that to emu_enableDisableControl() which takes care of enabling/disabling buttons. */
+void accessPrivilegesChangedCB(string dummy1, string dummy2) {
+  emu_enableDisableControl(\"CMS_CSC::CMS_CSC\", controlButtons, true, \"lblNoControl\", expertControlButtons, true);
+  lblNoExpert.visible = !emu_hasExpertControl();
+}
+" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+2 0
+"PRIMITIVE_TEXT1"
+""
+1 160 20 E E E 1 E 1 E N "_WindowText" E N "FwStateAttention3" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 160 20 392 44
+1 2 2 "0s" 0 0 0 192 0 0  160 20 1
+1
+LANG:1 31 Sans Serif,14,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 24 Expert Operation Only !!
+13 1
+"btnDo"
+""
+1 30 90 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  28 88 542 152
+
+T 
+1
+LANG:1 55 Enable all disabled channels and bring them up to 3500V
+"main()
+{
+    lblStatus.text = \"BUSY...\";
+    lblStatus.backCol = \"red\";
+  
+  dyn_string ex;
+  
+  dyn_mapping disabledChannels;
+  
+  dyn_string hvDps = dpNames(\"*:CSC_ME_*_HV\", \"HV_1_d\");
+  for (int i=1; i <= dynlen(hvDps); i++) {
+    mapping chamber = emu_fsmNodeToDeviceParams(hvDps[i], ex);
+    if (emu_checkException(ex)) { return; }
+    dyn_int trippedHvChannels, interlockedHvChannels, deadHvChannels, disabledHvChannels;
+    emuui_chamberHvGetProblematicChannels(chamber, 
+                                          trippedHvChannels, 
+                                          interlockedHvChannels, 
+                                          deadHvChannels, 
+                                          disabledHvChannels, 
+                                          ex);
+    if (emu_checkException(ex)) { return; }
+    
+    // enable and set to 3500V
+    for (int j=1; j <= dynlen(disabledHvChannels); j++) {
+      mapping channelDeviceParams = chamber;
+      channelDeviceParams[\"channelNumber\"] = disabledHvChannels[j];
+      dynAppend(disabledChannels, channelDeviceParams);
+      
+      emuhv_sendChannelCommand(channelDeviceParams, EMUHV_COMMAND_VSET, ex, false, 3500);
+
+      emuhv_enableDisableChannel(channelDeviceParams, true, ex);
+      if (emu_checkException(ex)) { return; }
+
+      // refresh the data now  
+      delay(0, 100);
+      emuhv_requestData(deviceParams, ex);
+      if (emu_checkException(ex)) { return; }
+    
+    }
+  }
+  
+  dyn_string channelsAt3500Str;
+  dpGet(\"CSC_debug.hv.channelsAt3500\", channelsAt3500Str);
+
+  for (int i=1; i <= dynlen(disabledChannels); i++) {
+    string disChannelStr = emuui_mappingToParameterString(disabledChannels[i]);
+    if (!dynContains(channelsAt3500Str, disChannelStr)) {
+      dynAppend(channelsAt3500Str, disChannelStr);
+    }
+  }
+  
+  dpSetWait(\"CSC_debug.hv.channelsAt3500\", channelsAt3500Str);
+  
+    lblStatus.text = \"ready\";
+    lblStatus.backCol = \"green\";
+  
+}" 0
+ E E E
+13 2
+"btnUndo"
+""
+1 30 180 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  28 178 542 242
+
+T 
+1
+LANG:1 44 Disable all channels previously set to 3500V
+"main()
+{
+  emu_errorSingle(\"This function is not yet implemented, sorry...\");
+}" 0
+ E E E
+2 3
+"PRIMITIVE_TEXT2"
+""
+1 20 30 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 20 30 64 46
+0 2 2 "0s" 0 0 0 192 0 0  20 30 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 7 Status:
+2 4
+"lblStatus"
+""
+1 70 30 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 70 30 105 46
+0 2 2 "0s" 0 0 0 192 0 0  70 30 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 5 ready
+2 5
+"lblNoControl"
+""
+1 588 -378 E E E 1 E 1 E N "_3DText" E N "_Window" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 60 60 261 79
+1 2 2 "0s" 0 0 0 192 0 0  60 60 1
+1
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0 1
+LANG:1 32 You don't have control privilege
+2 6
+"lblNoExpert"
+""
+1 808 -378 E E E 1 E 1 E N "_3DText" E N "_Window" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 280 60 478 79
+1 2 2 "0s" 0 0 0 192 0 0  280 60 1
+1
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0 1
+LANG:1 31 You don't have expert privilege
+13 7
+"PUSH_BUTTON1"
+""
+1 30 320 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  28 318 182 347
+
+T 
+1
+LANG:1 19 clear configuration
+"main()
+{
+  dpSetWait(\"CSC_debug.hv.channelsAt3500\", makeDynString());
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
