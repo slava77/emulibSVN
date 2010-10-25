@@ -37,9 +37,9 @@ void emuui_openContextMenu(string deviceType, mapping deviceParams, dyn_string &
   dyn_string menu;
   
   switch (deviceType) {
-//     case "chamber":
-//       menu = emuuicm_getChamberContextMenu(deviceParams, exceptionInfo);
-//       break;
+     case "chamber":
+       menu = emuuicm_getChamberContextMenu(deviceParams, exceptionInfo);
+       break;
     case "maraton":
       menu = emuuicm_getMaratonContextMenu(deviceParams, exceptionInfo);
       break;
@@ -68,6 +68,16 @@ emuui_executeContextMenuAction(string deviceType, int answer, mapping devicePara
     return;
   }
   
-  string function = emuuiContextMenuActionMap[deviceType]["action_" + answer];
-  startThread(function, deviceParams);
+  string function = emuuiContextMenuActionMap[deviceType]["action_" + answer][1];
+  dyn_anytype params;
+  emu_dynAppend(params, emuuiContextMenuActionMap[deviceType]["action_" + answer]);
+  dynRemove(params, 1);
+
+  emu_info("CSC UI: Context menu - executing action " + answer + " for device '" + deviceParams + "' (device type is " + deviceType + "), this action maps to function " + function + ". Params: " + params);
+
+  if (dynlen(params) > 0) {
+    startThread(function, deviceParams, params);
+  } else {
+    startThread(function, deviceParams);
+  }
 }

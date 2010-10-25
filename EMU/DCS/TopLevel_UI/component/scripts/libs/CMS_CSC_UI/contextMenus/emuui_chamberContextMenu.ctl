@@ -6,9 +6,36 @@ This package contains functions to construct context and process menus for "cham
 @date   June 2009
 */
 
+#uses "CMS_CSC_common/emu_common.ctl"
+#uses "CMS_CSC_common/emu_alert.ctl"
+#uses "CMS_CSCfw_HV_CC/emu_hvCommon.ctl"
+#uses "CMS_CSC_UI/emuui_deviceInfo.ctl"
+
 /** Initializes the actionMap which is [menu_answer]->[function] mapping. */
 mapping emuuicm_initChamberContextMenus() {
   mapping actionMap;
+
+  // recover HV
+  actionMap["action_100"] = makeDynString("emuuicm_recoverAllTrippedHvChannels");
+  for (int i=1; i <= 30; i++) {
+    int actionIdx = 100 + i;
+    actionMap["action_" + actionIdx] = makeDynString("emuuicm_recoverHvChannel", i);
+  }
+
+  // disable HV
+  actionMap["action_200"] = makeDynString("emuuicm_disableAllTrippedHvChannels");
+  for (int i=1; i <= 30; i++) {
+    int actionIdx = 200 + i;
+    actionMap["action_" + actionIdx] = makeDynString("emuuicm_disableHvChannel", i);
+  }
+  
+  // enable HV
+  actionMap["action_300"] = makeDynString("emuuicm_enableAllHvChannels");
+  for (int i=1; i <= 30; i++) {
+    int actionIdx = 300 + i;
+    actionMap["action_" + actionIdx] = makeDynString("emuuicm_enableHvChannel", i);
+  }
+
   return actionMap;
 }
 
@@ -90,4 +117,126 @@ dyn_string emuuicm_getChamberContextMenu(mapping deviceParams, dyn_string &excep
   }
   
   return menu;
+}
+
+// ================ ACTION FUNCTIONS (note all those functions must accept either only one parameter - mapping deviceParams, or two parameters - mapping deviceParams, dyn_anytype params) ================
+
+
+// recover HV
+void emuuicm_recoverAllTrippedHvChannels(mapping deviceParams) {
+  dyn_string ex;
+  dyn_int trippedHvChannels, interlockedHvChannels, deadHvChannels, disabledHvChannels;
+  emuui_chamberHvGetProblematicChannels(deviceParams, 
+                                        trippedHvChannels, 
+                                        interlockedHvChannels, 
+                                        deadHvChannels, 
+                                        disabledHvChannels, 
+                                        ex);
+  if (emu_checkException(ex)) { return; }
+  dyn_int canRecover;
+  emu_dynAppend(canRecover, trippedHvChannels);
+  emu_dynAppend(canRecover, interlockedHvChannels);  
+  
+  emuuicm_recoverHvChannel(deviceParams, canRecover);
+}
+
+void emuuicm_recoverHvChannel(mapping deviceParams, dyn_int channelNumbers) {
+  for (int i=1; i <= dynlen(channelNumbers); i++) {
+    int chNum = channelNumbers[i];
+    
+    dyn_string ex;
+    mapping channelDeviceParams = deviceParams;
+    channelDeviceParams["channelNumber"] = chNum;
+  
+    string channelDp = emuhv_getHvChannelDp(channelDeviceParams, ex);
+    if (emu_checkException(ex)) { return; }
+  
+    int state, status;
+    dpGet(channelDp + ".state", state,
+          channelDp + ".status", status);
+  
+    // switch it off if it's tripped
+    if ((state == 0) && (status >= 4)) {
+      emuhv_sendChannelCommand(channelDeviceParams, EMUHV_COMMAND_OFF, ex);
+      if (emu_checkException(ex)) { return; }
+    }
+  
+    // turn it back on
+    emuhv_sendChannelCommand(channelDeviceParams, EMUHV_COMMAND_ON, ex);
+  
+    // refresh the data now  
+    delay(1, 0);
+    emuhv_requestData(deviceParams, ex);
+    if (emu_checkException(ex)) { return; }
+  }
+}
+
+// disable HV
+void emuuicm_disableAllTrippedHvChannels(mapping deviceParams) {
+  dyn_string ex;
+  dyn_int trippedHvChannels, interlockedHvChannels, deadHvChannels, disabledHvChannels;
+  emuui_chamberHvGetProblematicChannels(deviceParams, 
+                                        trippedHvChannels, 
+                                        interlockedHvChannels, 
+                                        deadHvChannels, 
+                                        disabledHvChannels, 
+                                        ex);
+  if (emu_checkException(ex)) { return; }
+  dyn_int canDisable;
+  emu_dynAppend(canDisable, trippedHvChannels);
+  emu_dynAppend(canDisable, interlockedHvChannels);
+  emu_dynAppend(canDisable, deadHvChannels); 
+
+  emuuicm_disableHvChannel(deviceParams, canDisable);
+}
+
+void emuuicm_disableHvChannel(mapping deviceParams, dyn_int channelNumbers) {
+  for (int i=1; i <= dynlen(channelNumbers); i++) {
+    int chNum = channelNumbers[i];
+    
+    dyn_string ex;
+    mapping channelDeviceParams = deviceParams;
+    channelDeviceParams["channelNumber"] = chNum;
+  
+    emuhv_enableDisableChannel(channelDeviceParams, false, ex);
+    if (emu_checkException(ex)) { return; }
+
+    // refresh the data now  
+    delay(1, 0);
+    emuhv_requestData(deviceParams, ex);
+    if (emu_checkException(ex)) { return; }
+  }
+}
+
+//enable HV
+void emuuicm_enableAllHvChannels(mapping deviceParams) {
+  dyn_string ex;
+  dyn_int trippedHvChannels, interlockedHvChannels, deadHvChannels, disabledHvChannels;
+  emuui_chamberHvGetProblematicChannels(deviceParams, 
+                                        trippedHvChannels, 
+                                        interlockedHvChannels, 
+                                        deadHvChannels, 
+                                        disabledHvChannels, 
+                                        ex);
+  if (emu_checkException(ex)) { return; }
+  
+  emuuicm_enableHvChannel(deviceParams, disabledHvChannels);
+}
+
+void emuuicm_enableHvChannel(mapping deviceParams, dyn_int channelNumbers) {
+  for (int i=1; i <= dynlen(channelNumbers); i++) {
+    int chNum = channelNumbers[i];
+    
+    dyn_string ex;
+    mapping channelDeviceParams = deviceParams;
+    channelDeviceParams["channelNumber"] = chNum;
+  
+    emuhv_enableDisableChannel(channelDeviceParams, true, ex);
+    if (emu_checkException(ex)) { return; }
+
+    // refresh the data now  
+    delay(1, 0);
+    emuhv_requestData(deviceParams, ex);
+    if (emu_checkException(ex)) { return; }
+  }
 }

@@ -107,11 +107,11 @@ void emuui_chamberHvGetProblematicChannels(mapping deviceParams,
     }
     //problems
     if (channelStatuses[i] == 4) { // state = 4 means DEAD
-      dynAppend(deadChannels, channelsOffset + i);
+      dynAppend(deadChannels, i);
     } else if (channelStatuses[i] == 5) { // state = 5 means interlocked
-      dynAppend(interlockedChannels, channelsOffset + i);
+      dynAppend(interlockedChannels, i);
     } else if (channelStatuses[i] > 5) { // if status is more than 5 then it's a trip
-      dynAppend(trippedChannels, channelsOffset + i);
+      dynAppend(trippedChannels, i);
     }
   }
   string offChannelsDp = emuui_getDpName("HV_off_channels", deviceParams, exceptionInfo);

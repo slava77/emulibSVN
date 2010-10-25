@@ -10,7 +10,7 @@ This package contains functions to construct context and process menus for "cham
 mapping emuuicm_initMaratonContextMenus() {
   mapping actionMap;
   
-  actionMap["action_100"] = "emuuicm_openChannelControlPanel";
+  actionMap["action_100"] = makeDynAnytype("emuuicm_openChannelControlPanel");
   
   return actionMap;
 }
@@ -24,7 +24,7 @@ dyn_string emuuicm_getMaratonContextMenu(mapping deviceParams, dyn_string &excep
   return menu;
 }
 
-// ACTION FUNCTIONS (note all those functions must only accept one parameter - mapping deviceParams)
+// ACTION FUNCTIONS (note all those functions must accept either only one parameter - mapping deviceParams, or two parameters - mapping deviceParams, dyn_anytype params)
 void emuuicm_openChannelControlPanel(mapping deviceParams) {
   dyn_string ex;
   string mrtnDp = emuui_getDpName("maraton_upTime", deviceParams, ex);

@@ -54,8 +54,8 @@ PANEL,-1 -1 649 555 N "_3DFace" 2
     channelVoltageSettingDps[i] = channelDps[i] + \".Settings.Voltage\";
     dyn_string split = strsplit(channelDps[i], \"/\");
     channelsTable.appendLine(\"channelNum\", split[dynlen(split)]);
-    tableChannelControl.appendLine(\"channel\", split[dynlen(split)]);
-    tableChannelControl.deleteSelection();
+//    tableChannelControl.appendLine(\"channel\", split[dynlen(split)]);
+//    tableChannelControl.deleteSelection();
   }
   
   dpConnect(\"channelMeasurementChangedCB\", true, channelVoltageCurrentDps);
@@ -140,8 +140,8 @@ void channelVoltageSettingChangedCB(dyn_string dps, dyn_float voltages) {
       isOn = false;
     }
     channelsTable.cellBackColRC(i - 1, \"voltageSetting\", color);
-    setValue(\"btnChannel\" + i + \"On\", \"enabled\", !isOn);
-    setValue(\"btnChannel\" + i + \"Off\", \"enabled\", isOn);
+//    setValue(\"btnChannel\" + i + \"On\", \"enabled\", !isOn);
+//    setValue(\"btnChannel\" + i + \"Off\", \"enabled\", isOn);
   }
 }
 
