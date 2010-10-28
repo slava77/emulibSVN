@@ -38,6 +38,7 @@ PANEL,-1 -1 1600 1175 N "_3DFace" 0
   // listen for UI version change
   string dp = emuui_getSystem() + \"fwInstallation_\" + EMUUI_COMPONENT_NAME;
   if (dpExists(dp)) {
+    emu_info(\"UI: Listening for UI version change on: \" + dp);
     dpConnect(\"updateVersionCB\", false, dp + \".componentVersionString\");
   }
   dpConnect(\"pcratePowerUpBufferChangedCB\", true, emuui_getDpName(\"peripheralCrate_powerUpBuffer\", emuui_dummyMapping, ex));
@@ -1125,7 +1126,7 @@ E E 0 1 1 2 1 E 1 0 1 -209 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png"
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 -1991.434351557559 -790 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -2210.426709625377 -830 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -1144,7 +1145,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 48.76262473911687 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 48.7319696180619 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
@@ -1653,7 +1654,7 @@ LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
  0 1
 LANG:1 14 Expert Actions
 "" 0 0 0 0 0
- 3 1 1
+ 4 1 1
 LANG:1 36 Open Excluded Channels Summary Panel
 "1" 0 0 0 0 0
  1 1
@@ -1662,6 +1663,9 @@ LANG:1 34 Open Xmas Monitoring Control Panel
  1 1
 LANG:1 26 Open TMB LV Analysis Panel
 "3" 0 0 0 0 0
+ 1 1
+LANG:1 30 Open Reduced HV Channels Panel
+"4" 0 0 0 0 0
  E "main(string id)
 {
   emu_info(\"Executing expert action: \" + this.textItemId(id));
@@ -1675,6 +1679,9 @@ LANG:1 26 Open TMB LV Analysis Panel
       break;
     case 3:
       ChildPanelOnCentral(\"CMS_CSC_UI/util/TmbLvAnalysis/Main.pnl\", \"TMB LV Analysis Panel\", makeDynString());
+      break;
+    case 4:
+      ChildPanelOnCentral(\"CMS_CSC_common/hvTest.pnl\", \"HV Test Panel - EXPERTS ONLY!\", makeDynString());
       break;
     default:
       break;
