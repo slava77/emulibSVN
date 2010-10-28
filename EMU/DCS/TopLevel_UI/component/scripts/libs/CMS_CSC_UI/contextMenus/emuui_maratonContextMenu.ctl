@@ -21,7 +21,7 @@ mapping emuuicm_initMaratonContextMenus() {
 dyn_string emuuicm_getMaratonContextMenu(mapping deviceParams, dyn_string &exceptionInfo) {
   dyn_string menu;
 
-  if (!emu_hasExpertControl()) {
+  if (!emu_hasExpertControl() || !emu_hasFsmControl("CMS_CSC::CMS_CSC")) {
     return menu;
   }
   

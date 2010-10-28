@@ -37,6 +37,9 @@ mapping emuuicm_initChamberContextMenus() {
     actionMap["action_" + actionIdx] = makeDynString("emuuicm_enableHvChannel", i);
   }
 
+  // open HV panel
+  actionMap["action_400"] = makeDynString("emuuicm_openHvPanel");
+  
   return actionMap;
 }
 
@@ -44,10 +47,10 @@ mapping emuuicm_initChamberContextMenus() {
 dyn_string emuuicm_getChamberContextMenu(mapping deviceParams, dyn_string &exceptionInfo) {
   dyn_string menu;
 
-  if (!emu_hasControl()) {
-    dynAppend(menu, "PUSH_BUTTON, You don't have control privileges.., 999, 0");
-    return menu;
-  }
+//~~~~~~~~!!!!!!!!!! checking CMS_CSC::CMS_CSC is wrong - think about cDCS shifter :) aaaaa if (!emu_hasControl() || !emu_hasFsmControl("CMS_CSC::CMS_CSC")) {
+//    dynAppend(menu, "PUSH_BUTTON, You don't have control privileges.., 999, 0");
+//    return menu;
+//  }
 
   
   // ------====== HIGH VOLTAGE ======------
@@ -66,7 +69,7 @@ dyn_string emuuicm_getChamberContextMenu(mapping deviceParams, dyn_string &excep
   dynAppend(menu, "CASCADE_BUTTON, Recover High Voltage, " + enableRecoverMenu);
   dynAppend(menu, "CASCADE_BUTTON, Disable High Voltage Channels, " + enableDisableMenu);
   dynAppend(menu, "CASCADE_BUTTON, Enable High Voltage Channels, " + enableEnableMenu);
-    
+  dynAppend(menu, "PUSH_BUTTON, Open High Voltage Panel, 400, 1");
   
   
   //recover submenu
@@ -122,7 +125,7 @@ dyn_string emuuicm_getChamberContextMenu(mapping deviceParams, dyn_string &excep
     int id = 300 + disabledHvChannels[i];
     dynAppend(menu, "PUSH_BUTTON, Enable #" + disabledHvChannels[i] + ", " + id + ", 1");
   }
-  
+
   return menu;
 }
 
@@ -246,4 +249,18 @@ void emuuicm_enableHvChannel(mapping deviceParams, dyn_int channelNumbers) {
     emuhv_requestData(deviceParams, ex);
     if (emu_checkException(ex)) { return; }
   }
+}
+
+// open HV FSM panel
+void emuuicm_openHvPanel(mapping deviceParams) {
+  dyn_string ex;
+  
+  // get the domain and object
+  string fsmNode = emuui_getFsmNode("chamber_high_voltage", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  string domain = fsmNode;
+  string object = _fwCU_getNodeObj(domain);
+
+  // open the panel
+  fwFsmUi_ObjButtonDoubleClick(domain, object, domain);   
 }
