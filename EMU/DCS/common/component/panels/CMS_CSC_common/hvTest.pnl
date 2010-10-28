@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 571 358 N "_3DFace" 0
+PANEL,-1 -1 940 454 N "_3DFace" 0
 "main()
 {
   // ==== access control ====
@@ -13,6 +13,8 @@ PANEL,-1 -1 571 358 N "_3DFace" 0
     fwCU_connectOperationMode(\"accessPrivilegesChangedCB\", \"CMS_CSC::CMS_CSC\");
   }
   //=========================
+  
+  dpConnect(\"registeredChannelsChangedCB\", true, \"CSC_debug.hv.channelsAt3500\");
 }
 
 /** initialize constants required for access control - basically just fill in the arrays of control and expert control button names. */
@@ -38,7 +40,22 @@ void accessPrivilegesChangedCB(string dummy1, string dummy2) {
   emu_enableDisableControl(\"CMS_CSC::CMS_CSC\", controlButtons, true, \"lblNoControl\", expertControlButtons, true);
   lblNoExpert.visible = !emu_hasExpertControl();
 }
-" 0
+
+void registeredChannelsChangedCB(string dp, dyn_string channels) {
+  dyn_string ex;
+  dyn_string channelNames;
+  dyn_string ch3500Str;
+  dpGet(\"CSC_debug.hv.channelsAt3500\", ch3500Str);
+  for (int i=1; i <= dynlen(ch3500Str); i++) {
+    mapping channelDeviceParams = emuui_parseParameterString(ch3500Str[i], ex);
+    if (emu_checkException(ex)) { return; }
+    string channelName = emuui_getChamberName(channelDeviceParams) + \" ch. \" + channelDeviceParams[\"channelNumber\"];
+    dynAppend(channelNames, channelName);
+  }
+  
+  lstRegisteredChannels.items = channelNames;
+  lblChCount.text = dynlen(channelNames);
+}" 0
  2
 "CBRef" "1"
 "EClose" E
@@ -84,7 +101,7 @@ LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 
 T 
 1
-LANG:1 55 Enable all disabled channels and bring them up to 3500V
+LANG:1 55 Enable all disabled channels and bring them up to 3400V
 "main()
 {
     lblStatus.text = \"BUSY...\";
@@ -111,18 +128,21 @@ LANG:1 55 Enable all disabled channels and bring them up to 3500V
     for (int j=1; j <= dynlen(disabledHvChannels); j++) {
       mapping channelDeviceParams = chamber;
       channelDeviceParams[\"channelNumber\"] = disabledHvChannels[j];
+      emu_info(\"processing channel: \" + channelDeviceParams);
+      lblStatus.text = \"BUSY, ch. \" + channelDeviceParams;
       dynAppend(disabledChannels, channelDeviceParams);
       
-      emuhv_sendChannelCommand(channelDeviceParams, EMUHV_COMMAND_VSET, ex, false, 3500);
+      emuhv_sendChannelCommand(channelDeviceParams, EMUHV_COMMAND_VSET, ex, false, 3400);
+      if (emu_checkException(ex)) { return; }
+      delay(1, 0);
 
       emuhv_enableDisableChannel(channelDeviceParams, true, ex);
       if (emu_checkException(ex)) { return; }
 
       // refresh the data now  
-      delay(0, 100);
-      emuhv_requestData(deviceParams, ex);
+      delay(1, 0);
+      emuhv_requestData(chamber, ex);
       if (emu_checkException(ex)) { return; }
-    
     }
   }
   
@@ -146,7 +166,7 @@ LANG:1 55 Enable all disabled channels and bring them up to 3500V
 13 2
 "btnUndo"
 ""
-1 30 180 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 30 350 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 2 0 0 0 0 0
 E E E
@@ -157,14 +177,38 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  28 178 542 242
+0  28 348 542 412
 
 T 
 1
-LANG:1 44 Disable all channels previously set to 3500V
+LANG:1 44 Disable all channels previously set to 3400V
 "main()
 {
-  emu_errorSingle(\"This function is not yet implemented, sorry...\");
+    lblStatus.text = \"BUSY...\";
+    lblStatus.backCol = \"red\";
+  
+  dyn_string ex;
+  dyn_string ch3500Str;
+  dpGet(\"CSC_debug.hv.channelsAt3500\", ch3500Str);
+  for (int i=1; i <= dynlen(ch3500Str); i++) {
+    mapping channelDeviceParams = emuui_parseParameterString(ch3500Str[i], ex);
+    if (emu_checkException(ex)) { return; }
+    
+    lblStatus.text = \"BUSY, ch. \" + channelDeviceParams;
+      
+    emuhv_enableDisableChannel(channelDeviceParams, false, ex);
+    if (emu_checkException(ex)) { return; }
+
+    // refresh the data now  
+    delay(1, 0);
+    emuhv_requestData(channelDeviceParams, ex);
+    if (emu_checkException(ex)) { return; }
+  }
+  
+  dpSetWait(\"CSC_debug.hv.channelsAt3500\", makeDynString());
+    
+    lblStatus.text = \"ready\";
+    lblStatus.backCol = \"green\";
 }" 0
  E E E
 2 3
@@ -246,7 +290,7 @@ LANG:1 31 You don't have expert privilege
 13 7
 "PUSH_BUTTON1"
 ""
-1 30 320 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+1 10 420 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
  E E
 7 0 0 0 0 0
 E E E
@@ -257,7 +301,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  28 318 182 347
+0  8 418 162 447
 
 T 
 1
@@ -267,6 +311,134 @@ LANG:1 19 clear configuration
   dpSetWait(\"CSC_debug.hv.channelsAt3500\", makeDynString());
 }" 0
  E E E
+13 12
+"PUSH_BUTTON6"
+""
+1 30 170 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  28 168 542 232
+
+T 
+1
+LANG:1 52 Force all registered 3400V channels to 3400V setting
+"main()
+{
+    lblStatus.text = \"BUSY...\";
+    lblStatus.backCol = \"red\";
+  
+  dyn_string ex;
+  dyn_string ch3500Str;
+  dpGet(\"CSC_debug.hv.channelsAt3500\", ch3500Str);
+  for (int i=1; i <= dynlen(ch3500Str); i++) {
+    mapping channelDeviceParams = emuui_parseParameterString(ch3500Str[i], ex);
+    if (emu_checkException(ex)) { return; }
+    
+      lblStatus.text = \"BUSY, ch. \" + channelDeviceParams;
+      
+    emuhv_sendChannelCommand(channelDeviceParams, EMUHV_COMMAND_VSET, ex, false, 3400);
+    if (emu_checkException(ex)) { return; }
+    delay(2);
+    emuhv_sendChannelCommand(channelDeviceParams, EMUHV_COMMAND_VSET, ex, false, 3400);
+    if (emu_checkException(ex)) { return; }
+
+    // refresh the data now  
+    delay(1, 0);
+    emuhv_requestData(channelDeviceParams, ex);
+    if (emu_checkException(ex)) { return; }
+  }
+  
+      lblStatus.text = \"ready\";
+    lblStatus.backCol = \"green\";
+}" 0
+ E E E
+2 15
+"PRIMITIVE_TEXT5"
+""
+1 600 70 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+15 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 600 70 909 86
+0 2 2 "0s" 0 0 0 192 0 0  600 70 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 50 Channels currently registered for 3400V operation:
+17 16
+"lstRegisteredChannels"
+""
+1 600 90 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  598 88 902 422
+0
+
+E
+E
+E
+
+0 0
+2 17
+"PRIMITIVE_TEXT6"
+""
+1 600 430 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 600 430 635 446
+0 2 2 "0s" 0 0 0 192 0 0  600 430 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 6 Total:
+2 18
+"lblChCount"
+""
+1 640 430 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 640 430 672 446
+0 2 2 "0s" 0 0 0 192 0 0  640 430 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 3 ###
 0
 LAYER, 1 
 1
