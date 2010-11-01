@@ -6,10 +6,15 @@ PANEL,-1 -1 997 806 N "_3DFace" 0
 {
   emuui_init();
 //  tmb3v3dpes = dpNames(\"*:CSC_ME_*_LV.data.Tmb_o.v33\", \"LV_1_d\");
-  tmb3v3dpes = dpNames(\"*:CSC_ME_*_LV_Tmb_v33.value\", \"CSC_TMB_DATA\");
+  tmb3v3dpes = dpNames(\"*:CSC_ME_*_LV_Tmb_c33.value\", \"CSC_TMB_DATA\");
   comboTmb.items = tmb3v3dpes;
     
-  configureTrendParams();
+  dpSet(\"trendPlot.curveTypes\", makeDynInt(2,2,2,2,2,2,2,2));
+  dpSet(\"trendPlot.axii\", makeDynBool(true,true,true,true,true,true,true,true));
+  dpSet(\"trendPlot.plotType\", 2);
+  dpSet(\"trendPlot.timeRange\", 3110400);
+  dpSet(\"trendPlot.yRangeMin\", makeDynFloat(3.07, 3.07, 3.07, 3.07, 3.07, 3.07, 3.07, 3.07));
+  dpSet(\"trendPlot.yRangeMax\", makeDynFloat(3.23, 3.23, 3.23, 3.23, 3.23, 3.23, 3.23, 3.23));
   dyn_string ex;
   initTmbIndexTree(ex);
   if (emu_checkException(ex)) { return; }
@@ -232,7 +237,7 @@ float getHistoricalLast(string dpe, time date, dyn_string &exceptionInfo, int nu
     dyn_float goodValues = makeDynFloat();
     int goodValuesCount = 0;
     for (int i=dynlen(values); i > 0; i--) {
-      if (values[i] > 1) {
+      if (values[i] > 0.2) {
         dynAppend(goodValues, values[i]);
         goodValuesCount++;
         if (goodValuesCount >= numOfLastValuesToAverage) {
@@ -274,7 +279,7 @@ float getHistoricalAverage(string dpe, time startDate, time endDate, dyn_string 
     if (printDebug) {
       emu_debug(dpe + \": \" + values[j]);
     }
-    if (values[j] < 1) { // ignore funny values
+    if (values[j] < 0.2) { // ignore funny values
       continue;
     }
     average += values[j];
@@ -381,8 +386,8 @@ void configureTrendParams() {
   dpSet(\"trendPlot.axii\", makeDynBool(true,true,true,true,true,true,true,true));
   dpSet(\"trendPlot.plotType\", 2);
   dpSet(\"trendPlot.timeRange\", 3110400);
-  dpSet(\"trendPlot.yRangeMin\", makeDynFloat(3.07, 3.07, 3.07, 3.07, 3.07, 3.07, 3.07, 3.07));
-  dpSet(\"trendPlot.yRangeMax\", makeDynFloat(3.23, 3.23, 3.23, 3.23, 3.23, 3.23, 3.23, 3.23));
+  dpSet(\"trendPlot.yRangeMin\", makeDynFloat(2.2, 2.2, 2.2, 2.2, 2.2, 2.2, 2.2, 2.2));
+  dpSet(\"trendPlot.yRangeMax\", makeDynFloat(2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6));
 }" 0
  2
 "CBRef" "1"
@@ -509,10 +514,10 @@ E E E
 LANG:1 0 
 
 4
-"horizontalHeaderFormat" "enum 0"
-"firstDayOfWeek" "enum 1"
-"navigationBarVisible" "bool TRUE"
 "verticalHeaderFormat" "enum 1"
+"navigationBarVisible" "bool TRUE"
+"firstDayOfWeek" "enum 1"
+"horizontalHeaderFormat" "enum 0"
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0  30 70 230 220
@@ -534,8 +539,8 @@ E E E
 LANG:1 0 
 
 2
-"horizontalHeaderFormat" "enum 0"
 "firstDayOfWeek" "enum 1"
+"horizontalHeaderFormat" "enum 0"
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0  30 290 230 440
@@ -891,8 +896,8 @@ T
 LANG:1 39 Plot all above selected drift threshold
 "main()
 {
-  configureTrendParams();
-  plotAllAboveThreshold((float)editDriftThreshold.text);
+    configureTrendParams();
+    plotAllAboveThreshold((float)editDriftThreshold.text);
 }" 0
  E E E
 25 31

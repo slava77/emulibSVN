@@ -33,7 +33,7 @@ LANG:1 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0  8 48 1012 886
-E3 "3v3values" 1
+E4 "3v3values" 1
 LANG:1 4 3.3V
 1 "CMS_CSC_UI/util/TmbLvAnalysis/sub_3v3values.pnl" 1
 LANG:1 0 
@@ -42,6 +42,12 @@ LANG:1 0
 "3v3drifts" 1
 LANG:1 11 3.3V drifts
 1 "CMS_CSC_UI/util/TmbLvAnalysis/sub_3v3drifts.pnl" 1
+LANG:1 0 
+0
+
+"3v3currentDrifts" 1
+LANG:1 19 3.3V current drifts
+1 "CMS_CSC_UI/util/TmbLvAnalysis/sub_3v3currentDrifts.pnl" 1
 LANG:1 0 
 0
 

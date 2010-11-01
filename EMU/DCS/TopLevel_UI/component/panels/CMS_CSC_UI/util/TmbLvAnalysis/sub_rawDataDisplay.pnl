@@ -7,6 +7,8 @@ E E E E E 1 -1 -1 0  140 60
 E "#uses \"CMS_CSC_common/emu_common.ctl\"
 #uses \"CMS_CSC_UI/emuui_deviceInfo.ctl\"
 
+mapping chamberNameToLine;
+
 void dataUpdatedCB(dyn_string dps, dyn_float data) {
   dyn_string ex;
   string chamberName = emuui_getChamberName(emu_fsmNodeToDeviceParams(dpSubStr(dps[1], DPSUB_DP), ex));
@@ -17,6 +19,9 @@ void dataUpdatedCB(dyn_string dps, dyn_float data) {
     dyn_string tmpSplit = strsplit(column, \".\");
     column = tmpSplit[dynlen(tmpSplit)];
     table.updateLine(1, \"tmb\", chamberName, column, data[i]);
+    if ((column == \"c33\") && ((data[i] < 2.2) || (data[i] > 2.6))) {
+      table.cellBackColRC(chamberNameToLine[chamberName], \"c33\", \"FwStateAttention1\");
+    }
   }
 }" 0
  2
@@ -169,6 +174,7 @@ LANG:1 6 Start!
     string chamberName = emuui_getChamberName(emu_fsmNodeToDeviceParams(dpSubStr(dps[i], DPSUB_DP), ex));
     if (emu_checkException(ex)) { return; }
     table.appendLine(\"tmb\", chamberName);
+    chamberNameToLine[chamberName] = i - 1;
     dpConnect(\"dataUpdatedCB\", true, dpNames(dps[i] + \".data.Tmb_o.*\", \"LV_1_d\"));
   }
 }" 0
