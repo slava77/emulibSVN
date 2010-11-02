@@ -6,13 +6,12 @@
         <data xmlns="http://www.netbeans.org/ns/j2ee-ejbjarproject/3">
             <name>CdwModel</name>
             <minimum-ant-version>1.6.5</minimum-ant-version>
+            <included-library>libs.hibernate-support.classpath</included-library>
             <included-library>libs.hyperjaxb3.classpath</included-library>
-            <included-library>libs.ejb3-persistence.classpath</included-library>
             <included-library>file.reference.derbyclient.jar</included-library>
             <included-library>file.reference.ojdbc6.jar</included-library>
             <included-library>file.reference.orai18n.jar</included-library>
             <included-library>libs.neo4j.classpath</included-library>
-            <included-library>libs.hibernate-support.classpath</included-library>
             <source-roots>
                 <root id="src.dir"/>
             </source-roots>

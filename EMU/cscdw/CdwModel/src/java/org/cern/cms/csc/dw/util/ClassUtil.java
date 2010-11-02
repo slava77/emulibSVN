@@ -234,6 +234,7 @@ public class ClassUtil {
      */
     private static final class CallerResolver extends SecurityManager {
 
+        @Override
         protected Class<?>[] getClassContext() {
             return super.getClassContext();
         }
@@ -251,7 +252,7 @@ public class ClassUtil {
         }
     }
 
-    public static Collection<Class> packageClassses(String pckgname) {
+    public static Collection<Class> packageClassses(String pckgname, boolean recursive) {
 
         Collection<Class> ret = new LinkedList<Class>();
 
@@ -264,25 +265,32 @@ public class ClassUtil {
 
         // Get a File object for the package
         URL url = ClassUtil.class.getResource(name);
-        File directory = new File(url.getFile());
+        if (url != null) {
+            File directory = new File(url.getFile());
 
-        if (directory.exists()) {
-            // Get the list of the files contained in the package
-            String [] files = directory.list();
-            for (int i = 0; i<files.length;i++) {
+            if (directory.exists() && directory.isDirectory()) {
+                // Get the list of the files contained in the package
+                String [] files = directory.list();
+                for (int i = 0; i < files.length; i++) {
 
-                // we are only interested in .class files
-                if (files[i].endsWith(".class")) {
-                    // removes the .class extension
-                    String classname = files[i].substring(0, files[i].length() - 6);
-                    try {
-                        ret.add(Class.forName(pckgname + "." + classname));
-                    } catch (ClassNotFoundException ex) {
+                    // we are only interested in .class files
+                    if (files[i].endsWith(".class")) {
+                        // removes the .class extension
+                        String classname = files[i].substring(0, files[i].length() - 6);
+                        try {
+                            Class c = Class.forName(pckgname + "." + classname);
+                            ret.add(c);
+                        } catch (ClassNotFoundException ex) {
+                        }
+                    } else {
+                        if (recursive) {
+                            ret.addAll(packageClassses(pckgname + "." + files[i], recursive));
+                        }
                     }
                 }
             }
         }
-
+        
         return ret;
         
     }

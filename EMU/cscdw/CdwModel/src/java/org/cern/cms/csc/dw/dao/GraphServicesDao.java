@@ -7,6 +7,17 @@ import org.cern.cms.csc.dw.model.ontology.graph.GServices;
 import org.cern.cms.csc.dw.model.ontology.graph.GraphServices;
 import org.cern.cms.csc.dw.util.ZipUtil;
 
+/**
+ * A Custom Resource has to be created!
+ * Edit Custom Resource
+ * JNDI Name: OntologyGraphServices
+ * Resource Type: org.cern.cms.csc.dw.dao.GraphServicesDao
+ * Factory Class: org.cern.cms.csc.dw.util.GenericImmutableSingletonFactory
+ * Description: Ontology Graph Services Dao
+ * Status: Enabled
+ * @author valdo
+ */
+
 public class GraphServicesDao {
 
     private static final Logger log = Logger.getLogger(GraphServices.class.getName());

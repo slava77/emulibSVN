@@ -21,6 +21,7 @@
 <xsd:enumeration value="DataChannel"/>
 <xsd:enumeration value="DataDevice"/>
 <xsd:enumeration value="DCC"/>
+<xsd:enumeration value="DCS"/>
 <xsd:enumeration value="DDU"/>
 <xsd:enumeration value="DDUInput"/>
 <xsd:enumeration value="Device"/>

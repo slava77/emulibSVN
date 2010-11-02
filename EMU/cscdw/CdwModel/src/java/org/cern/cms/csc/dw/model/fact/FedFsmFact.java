@@ -55,7 +55,7 @@ import org.cern.cms.csc.dw.model.annotation.FactAnn;
 @Table(name = "CDW_FED_FSM_FACTS")
 @FactAnn(limitComponents = {
     "FEDSystem"
-}, title = "FED FSM state transition")
+}, title = "FED FSM State Transition")
 public class FedFsmFact
     extends Fact
     implements Serializable

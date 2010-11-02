@@ -12,7 +12,7 @@
       <property name="hibernate.cache.use_second_level_cache" value="true"/>
       <property name="hibernate.generate_statistics" value="false"/>
       <property name="hibernate.max_fetch_depth" value="3"/>
-      <property name="hibernate.hbm2ddl.auto" value="update"/>
+      <property name="hibernate.hbm2ddl.auto" value="none"/>
     </properties>
   </persistence-unit>
   <persistence-unit name="CdwUtilPU" transaction-type="RESOURCE_LOCAL">

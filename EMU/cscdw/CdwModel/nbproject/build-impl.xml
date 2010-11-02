@@ -351,24 +351,22 @@ exists or setup the property manually. For example like this:
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target depends="compile" name="library-inclusion-in-archive">
+        <copyfiles files="${libs.hibernate-support.classpath}" todir="${build.classes.dir}"/>
         <copyfiles files="${libs.hyperjaxb3.classpath}" todir="${build.classes.dir}"/>
-        <copyfiles files="${libs.ejb3-persistence.classpath}" todir="${build.classes.dir}"/>
         <copyfiles files="${file.reference.derbyclient.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${file.reference.ojdbc6.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${file.reference.orai18n.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${libs.neo4j.classpath}" todir="${build.classes.dir}"/>
-        <copyfiles files="${libs.hibernate-support.classpath}" todir="${build.classes.dir}"/>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
+        <copyfiles files="${libs.hibernate-support.classpath}" manifestproperty="manifest.libs.hibernate-support.classpath" todir="${dist.ear.dir}"/>
         <copyfiles files="${libs.hyperjaxb3.classpath}" manifestproperty="manifest.libs.hyperjaxb3.classpath" todir="${dist.ear.dir}"/>
-        <copyfiles files="${libs.ejb3-persistence.classpath}" manifestproperty="manifest.libs.ejb3-persistence.classpath" todir="${dist.ear.dir}"/>
         <copyfiles files="${file.reference.derbyclient.jar}" manifestproperty="manifest.file.reference.derbyclient.jar" todir="${dist.ear.dir}"/>
         <copyfiles files="${file.reference.ojdbc6.jar}" manifestproperty="manifest.file.reference.ojdbc6.jar" todir="${dist.ear.dir}"/>
         <copyfiles files="${file.reference.orai18n.jar}" manifestproperty="manifest.file.reference.orai18n.jar" todir="${dist.ear.dir}"/>
         <copyfiles files="${libs.neo4j.classpath}" manifestproperty="manifest.libs.neo4j.classpath" todir="${dist.ear.dir}"/>
-        <copyfiles files="${libs.hibernate-support.classpath}" manifestproperty="manifest.libs.hibernate-support.classpath" todir="${dist.ear.dir}"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${manifest.libs.hyperjaxb3.classpath} ${manifest.libs.ejb3-persistence.classpath} ${manifest.file.reference.derbyclient.jar} ${manifest.file.reference.ojdbc6.jar} ${manifest.file.reference.orai18n.jar} ${manifest.libs.neo4j.classpath} ${manifest.libs.hibernate-support.classpath} "/>
+            <attribute name="Class-Path" value="${manifest.libs.hibernate-support.classpath} ${manifest.libs.hyperjaxb3.classpath} ${manifest.file.reference.derbyclient.jar} ${manifest.file.reference.ojdbc6.jar} ${manifest.file.reference.orai18n.jar} ${manifest.libs.neo4j.classpath} "/>
         </manifest>
     </target>
     <target name="-copy-meta-inf">

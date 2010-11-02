@@ -48,7 +48,7 @@ import org.cern.cms.csc.dw.model.annotation.FactAnn;
 @Table(name = "CDW_DDU_FMM_RESET_FACTS")
 @FactAnn(limitComponents = {
     "FEDCrate"
-}, title = "FMM IRQ reset detection")
+}, title = "FMM IRQ Reset Detection")
 public class DduFmmResetFact
     extends Fact
     implements Serializable
