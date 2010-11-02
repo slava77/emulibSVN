@@ -65,7 +65,7 @@
       <!--property name="hibernate.connection.url" value="jdbc:oracle:thin:@localhost:10520:D10"/-->
       <!--property name="hibernate.connection.url" value="jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=10123))(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=10124))(LOAD_BALANCE=yes)(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=cmsdevr_lb.cern.ch)(FAILOVER_MODE=(TYPE=SELECT)(METHOD=BASIC)(RETRIES=180)(DELAY=5))))"/-->
       <property name="hibernate.connection.username" value="CMS_MUON_ENDCAP_EVKA"/>
-      <property name="hibernate.connection.password" value="cms08evka"/>
+      <property name="hibernate.connection.password" value=""/>
     </properties>
   </persistence-unit>
 </persistence>
