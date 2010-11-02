@@ -18,7 +18,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import org.cern.cms.csc.dw.exception.ComponentClassNotFoundException;
 import org.cern.cms.csc.dw.exception.ComponentNotFoundException;
-import org.cern.cms.csc.dw.util.JsfBeanBase;
 import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponent;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentClass;

@@ -2,10 +2,14 @@
 <Scene Scope="Project" version="2">
     <Scope Scope="Faces Configuration Only"/>
     <Scope Scope="Project">
+        <Node id="browser.jsp" x="1150" y="150" zoom="true"/>
         <Node id="component.jsp" x="419" y="200" zoom="true"/>
         <Node id="component.iface" x="483" y="356" zoom="true"/>
         <Node id="index.jsp" x="90" y="85" zoom="false"/>
         <Node id="explorer.iface" x="101" y="271" zoom="true"/>
+        <Node id="home.jsp" x="150" y="300" zoom="true"/>
+        <Node id="home.iface" x="650" y="150" zoom="true"/>
+        <Node id="browser.iface" x="650" y="300" zoom="true"/>
         <Node id="explorer.jsp" x="161" y="197" zoom="false"/>
     </Scope>
     <Scope Scope="All Faces Configurations"/>

@@ -12,7 +12,6 @@ import javax.faces.event.ActionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import org.cern.cms.csc.dw.exception.ComponentLinkClassNotFoundException;
-import org.cern.cms.csc.dw.util.JsfBeanBase;
 import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentLinkClass;
 import org.cern.cms.csc.dw.util.ServiceLocator;

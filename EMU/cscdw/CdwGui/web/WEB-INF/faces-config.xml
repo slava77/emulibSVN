@@ -5,45 +5,61 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd">
 
-  <application>
+    <application>
       
-    <locale-config>
-      <default-locale>en</default-locale>
-    </locale-config>
+        <locale-config>
+            <default-locale>en</default-locale>
+        </locale-config>
 
-    <view-handler>
+        <view-handler>
       com.icesoft.faces.facelets.D2DFaceletViewHandler
-    </view-handler>
+        </view-handler>
 
-    <state-manager>
+        <state-manager>
       com.icesoft.faces.application.ViewRootStateManagerImpl
-    </state-manager>
+        </state-manager>
 
-  </application>
+    </application>
 
-  <managed-bean>
-      <managed-bean-name>ComponentClassTreeController</managed-bean-name>
-      <managed-bean-class>org.cern.cms.csc.dw.gui.jsf.ComponentClassTreeController</managed-bean-class>
-      <managed-bean-scope>session</managed-bean-scope>
-  </managed-bean>
+    <managed-bean>
+        <managed-bean-name>ComponentClassTreeController</managed-bean-name>
+        <managed-bean-class>org.cern.cms.csc.dw.gui.jsf.ComponentClassTreeController</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
 
-  <managed-bean>
-      <managed-bean-name>ComponentLinkClassTreeController</managed-bean-name>
-      <managed-bean-class>org.cern.cms.csc.dw.gui.jsf.ComponentLinkClassTreeController</managed-bean-class>
-      <managed-bean-scope>session</managed-bean-scope>
-  </managed-bean>
+    <managed-bean>
+        <managed-bean-name>ComponentLinkClassTreeController</managed-bean-name>
+        <managed-bean-class>org.cern.cms.csc.dw.gui.jsf.ComponentLinkClassTreeController</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
 
-  <navigation-rule>
-    <navigation-case>
-      <from-outcome>explorer</from-outcome>
-      <to-view-id>/explorer.iface</to-view-id>
-      <redirect/>
-    </navigation-case>
-    <navigation-case>
-      <from-outcome>component</from-outcome>
-      <to-view-id>/component.iface</to-view-id>
-      <redirect/>
-    </navigation-case>
-  </navigation-rule>
+    <managed-bean>
+        <managed-bean-name>BeanTableController</managed-bean-name>
+        <managed-bean-class>org.cern.cms.csc.dw.gui.table.BeanTableController</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>home</from-outcome>
+            <to-view-id>/home.iface</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>browser</from-outcome>
+            <to-view-id>/browser.iface</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>explorer</from-outcome>
+            <to-view-id>/explorer.iface</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>component</from-outcome>
+            <to-view-id>/component.iface</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
 
 </faces-config>

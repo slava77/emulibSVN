@@ -85,10 +85,10 @@
     </welcome-file-list>
 
     <context-param>
-      <param-name>facelets.LIBRARIES</param-name>
-      <param-value>
-        /WEB-INF/facelets/facelets.tld.xml
-      </param-value>
+        <param-name>facelets.LIBRARIES</param-name>
+        <param-value>
+        /WEB-INF/resources/facelets/facelets.tld.xml
+        </param-value>
     </context-param>
 
 </web-app>

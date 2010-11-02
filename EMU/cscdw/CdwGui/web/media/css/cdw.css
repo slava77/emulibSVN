@@ -1,15 +1,574 @@
-td {
-    vertical-align: top;
+
+html, body {
+	margin: 0;
+	padding: 0;
 }
 
-.componentMatchesName {
-    width: 200px;
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    color: #000000;
 }
 
-.componentMatchesType {
-    width: 100px;
+table {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    color: #000000;
 }
 
-.componentMatchesSelect .componentMatchesButton {
-    vertical-align: bottom;
+
+.ActionLink {
+	color: blue;
+}
+
+.runWorkspaceLabel {
+	font-weight: normal;
+	color: #000000;
+}
+
+.runWorkspace {
+	font-weight: bold;
+	color: #000000;
+}
+
+.runNumberLabel {
+	font-weight: bold;
+	font-size: 30px;
+	color: #000000;
+}
+
+.tableNameLabel {
+	font-weight: bold;
+	font-size: 17px;
+	color: #8F8F8F;
+}
+
+.pageNameLabel {
+	font-weight: bold;
+	font-size: 17px;
+	color: yellow;
+}
+
+.runNumber {
+	font-weight: bold;
+	font-size: 30px;
+	color: blue;
+}
+
+.errorMessage {
+	font-weight: normal;
+	font-size: 11px;
+	color: red;
+}
+
+.labelCell {
+	vertical-align: middle;
+	text-align: right;
+}
+
+.valueCell {
+	vertical-align: middle;
+	text-align: left;
+}
+
+div.subsystemValue {
+	width: 100%;
+	text-align: center;
+	vertical-align: middle;
+}
+
+div.subsystemGOOD, span.subsystemGOOD {
+	background-color: #ADE38C;
+}
+
+div.subsystemBAD, span.subsystemBAD {
+	background-color: #F7515A;
+}
+
+div.subsystemEXCL, span.subsystemEXCL {
+	background-color: #DEDFDE;
+}
+
+div.subsystemNOTSET, span.subsystemNOTSET {
+}
+
+.iceDatTblRowEmpty {
+
+}
+
+div.tableFilterBox {
+    border-style: solid;
+    border-width: 1px;
+    border-color: darkgrey;
+    background-color: white;
+    height: 15px;
+    text-align: left;
+    padding: 2px;
+    overflow: hidden;
+    font-weight: normal;
+    white-space: normal;
+}
+
+/* View Run styles */
+
+td.viewLabelCell, td.viewLabelReportCell {
+	vertical-align: middle;
+	text-align: right;
+	font-size: 13px;
+	width: 150px;
+	border-spacing: 0px;
+	margin: 0px;
+	padding-top:5px;
+	padding-bottom:5px;
+	padding-right:5px;
+	padding-left:0px;
+	background-color: #EFEFEF;
+}
+
+td.viewLabelReportCell {
+	background-color: white;
+}
+
+td.viewValueCell {
+	vertical-align: middle;
+	text-align: left;
+	font-size: 13px;
+	border-spacing: 0px;
+	margin: 0px;
+	padding-top:0px;
+	padding-bottom:0px;
+	padding-right:10px;
+	padding-left:5px;
+}
+
+td.viewTopCell {
+	vertical-align: top;
+	text-align: left;
+	border-spacing: 0px;
+	margin: 0px;
+	padding-top:0px;
+	padding-bottom:0px;
+	padding-right:0px;
+	padding-left:0px;
+}
+
+table.viewHoldTable {
+	border-spacing: 0;
+	padding: 0px 0px 0px 0px;
+	border-spacing: 0px;
+	margin: 0px;
+}
+
+td.viewGroupCell, td.viewGroupReportCell {
+	vertical-align: top;
+	text-align: right;
+	font-size: 13px;
+	width: 150px;
+	border-spacing: 0px;
+	margin: 0px;
+	padding-top:5px;
+	padding-bottom:5px;
+	padding-right:5px;
+	padding-left:0px;
+	background-color: #EFEFEF;
+}
+
+td.viewGroupReportCell {
+	background-color: white;
+}
+
+table.viewDataTable {
+	border-spacing: 0px;
+	padding: 0px 0px 0px 0px;
+	border-spacing: 0px;
+	margin: 7px 3px 3px 3px;
+	border-color: #EEEEEE;
+}
+
+td.viewDataCell {
+	vertical-align: middle;
+	text-align: left;
+	font-size: 13px;
+	border-spacing: 0px;
+	padding:2px;
+	border-color: #EEEEEE;
+}
+
+tr.viewDataRow01 {
+	padding:2px;
+	background-color: #FFFFFF;
+}
+
+tr.viewDataRow02 {
+	padding:2px;
+	background-color: #EFEFEF;
+}
+
+.viewButton {
+	font-size: 15px;
+	margin-left: 4px;
+	margin-right: 4px;
+}
+
+/* Edit Run styles */
+
+div.editMessageBox {
+	background-color: #FFEFEF;
+	font-size: 13px;
+	border-style: dotted;
+	border-width: 1px;
+	border-color: red;
+}
+
+.editMessageError {
+	color: red;
+	font-weight: bold;
+}
+
+.editMessageInfo {
+	color: green;
+	font-weight: bold;
+}
+
+.viewLiveMode {
+	font-size: 15px;
+	color: red;
+	font-style:italic;
+	font-weight: bold;
+}
+
+.viewOutConStatInactv, .viewOutConStatActv, .viewOutConStatCaution, .viewOutConStatDisconnect {
+    height: 46px;
+    width: 46px;
+}
+
+.viewOutConStat {
+    margin-left: 15px;
+    margin-right: 0px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: 46px;
+    height: 46px;
+    border: none;
+    font-size: 11px;
+    background: transparent;
+}
+
+.viewOutConStatInactv {
+    background: url( '../image/cms_idle.gif' ) no-repeat top center;
+}
+
+.viewOutConStatActv {
+    background: url( '../image/cms_active.gif' ) no-repeat top center;
+}
+
+.viewOutConStatCaution {
+    background: url( '../image/cms_caution.gif' ) no-repeat top center;
+}
+
+.viewOutConStatDisconnect {
+    background: url( '../image/cms_disconnected.gif' ) no-repeat top center;
+}
+
+tr.viewDatTblRow td {
+	height: 23px;
+	overflow: hidden;
+}
+
+table.mainDataTable {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+/* tr.viewDatTblRow td span.iceOutTxt { */
+span.mainTableSpan {
+	max-height: 17px;
+	max-width: 250px;
+        overflow: hidden;
+}
+
+div.buttonPanel {
+	width: 100%;
+	background-color: #8F8F8F;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.whiteFont {
+	color: #FEFEFE;
+}
+
+.yellowFont {
+	color: yellow;
+	font-size: 13px;
+	font-weight: bold;
+	/* color: #FF9000; */
+}
+
+.chat_messages, .chat_users {
+	position: relative;
+	overflow-x: hidden;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-top-color: #bbbbbb;
+	border-right-color: #bbbbbb;
+	border-bottom-color: #bbbbbb;
+	border-left-color: #bbbbbb;
+	height: 600px;
+	padding-top: 5px;
+	padding-right: 5px;
+	padding-bottom: 5px;
+	padding-left: 5px;
+	background-color: #ffffff;
+	background-image: none;
+	background-repeat: repeat;
+	background-attachment: scroll;
+	background-x-position: 0%;
+	background-y-position: 0%;
+	margin-bottom: 5px;
+        overflow-y: auto;
+	display: block;
+}
+
+.chat_messages {
+}
+
+.chat_users {
+	width: 250px;
+}
+
+.chat_mesages_cell {
+	width: 50%;
+}
+
+.chat_users_cell {
+	width: 1%;
+}
+
+.iceMnuBarItem {
+	margin-left: 5px;
+	margin-right: 5px;
+	width: 80px;
+}
+
+.iceMnuBarItem-dis {
+	margin-left: 2px;
+	margin-right: 2px;
+	height: 27px;
+	width: 80px;
+}
+
+.iceMnuItmLabel {
+}
+
+.iceMnuBarItem {
+	text-align: center;
+}
+
+table.summaryTable {
+	width: 99%;
+}
+
+table.summaryTable tr th.summaryTableSubCell {
+	text-align: left;
+	background-color: #EFEFEF;
+}
+
+table.summaryTable tr td.summaryTableValueCell {
+	text-align: center;
+}
+
+div.overlay {
+	background: url(../image/loading_white.gif) no-repeat center center;
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 30;
+	width: 100%;
+	height: 100%;
+	background-color: white;
+}
+
+/* MESSAGE BOARD */
+
+div.mbMessageBox {
+	background-color: #FFEFEF;
+	font-size: 13px;
+	border-style: dotted;
+	border-width: 1px;
+	border-color: white;
+}
+
+.mbNotificationMessageError {
+	color: red;
+	font-weight: bold;
+}
+
+.mbNotificationMessageInfo {
+	color: black;
+}
+
+div.mbMessageUser {
+	text-align: left;
+	font-size: 13px;
+	margin-bottom: 10px;
+}
+
+div.mbFrame0, div.mbFrame1, div.mbFrame2, div.mbFrame3 {
+	text-align: left;
+	margin-bottom: 7px;
+	padding: 2px;
+	width: 100%;
+}
+
+div.mbHeader0, div.mbHeader1, div.mbHeader2, div.mbHeader3 {
+	text-align: left;
+	font-size: 11px;
+	color: #888888;
+}
+
+div.mbFrame2 {
+	border-style: dotted;
+	border-width: 2px;
+	border-color: red;
+}
+
+div.mbFrame3 {
+	border-style: solid;
+	border-width: 2px;
+	border-color: red;
+	background-color: #FFCFCF;
+}
+
+div.mbBody0, div.mbBody1, div.mbBody2, div.mbBody3 {
+	text-align: left;
+	font-size: 13px;
+	color: #000000;
+}
+
+div.mbBody0 {
+	font-size: 11px;
+	color: #888888;
+}
+
+span.mbText0, span.mbText1, span.mbText2, span.mbText3 {
+}
+
+span.mbText0 {
+	font-size: 11px;
+	color: #888888;
+}
+
+table.mbMsgTable {
+	width: 100%;
+}
+
+td.mbCellWor {
+	text-align: right;
+	width: 80px;
+	vertical-align: top;
+}
+
+td.mbCellMsg {
+	text-align: left;
+}
+
+div.mbWorFrame {
+	padding: 2px;
+}
+
+p.mbMsgLine {
+	padding: 0px;
+	margin: 0px;
+}
+
+input[readonly] {
+	background: #ECECEC;
+}
+
+div.icePnlPop table, div.icePnlTlTip table {
+	width: 100%;
+}
+.advFilterIndicator {
+	width: 100%;
+	padding: 5px;
+	background-color: #FFCFCF;
+}
+
+.stickytooltip {
+    box-shadow: 5px 5px 8px #818181; /*shadow for CSS3 capable browsers.*/
+    -webkit-box-shadow: 5px 5px 8px #818181;
+    -moz-box-shadow: 5px 5px 8px #818181;
+    display:none;
+    position:absolute;
+    display:none;
+    border:5px solid #8F8F8F; /*Border around tooltip*/
+    background:white;
+    z-index:3000;
+    max-width: 450px;
+}
+
+
+.stickytooltip .stickystatus { /*Style for footer bar within tooltip*/
+    background:#8F8F8F;
+    color: white;
+    padding-top:5px;
+    text-align:center;
+    font: normal 11px;
+}
+
+div.runNotFoundBlock {
+    margin: 20px;
+    padding: 20px;
+    border-color: red;
+    border-style: solid;
+    border-width: thin;
+}
+
+div.divTooltipText {
+    padding: 5px;
+    max-height: 450px;
+    overflow-y: auto;
+}
+
+.positionPanelContainer div.container {
+    background:#FFFFFF;
+    border:1px solid #E5EECC;
+    color:#484848;
+    padding-left:5px;
+}
+
+span.bitset0 {
+    margin-left: 1px;
+    font-size: 10px;
+    background-color: #F7515A;
+}
+
+span.bitset1 {
+    margin-left: 1px;
+    font-size: 10px;
+    background-color: #ADE38C;
+}
+
+span.bitsetN {
+    margin-left: 1px;
+    font-size: 10px;
+    background-color: #DEDFDE;
+}
+
+.tableColHeaderBoolean {
+    width: 10px;
+    overflow: hidden;
+}
+
+.mainTitle {
+    font-weight: bold;
+    font-size: 24px;
 }
