@@ -71,9 +71,29 @@ public void exsys_sendAllLvFacts(dyn_string &exceptionInfo) {
 public dyn_string exsys_getLvDps(dyn_string &exceptionInfo) {
   if (dynlen(lvDps) == 0) {
     lvDps = dpNames("*:CSC_ME_*_LV", "LV_1_d");
+//    lvDps = dpNames("*:CSC_ME_P11_C01_LV", "LV_1_d");
   }
   if (dynlen(lvDps) == 0) {
     emu_addError("ExSys::exsys_getLvDps(): No LV DPs were found", exceptionInfo);
   }
   return lvDps;
+}
+
+/**
+  * Connects to one of the LV DPs .update_value DPE to the exsys_lvFactSendTriggerCB callback, which sends LV facts about all system.
+  */
+public void exsys_startLvFactDelivery() {
+  dyn_string ex;
+  dyn_string lvDps = exsys_getLvDps(ex);
+  if (emu_checkException(ex)) { return; }
+  dpConnect("exsys_lvFactSendTriggerCB", true, lvDps[1] + ".update_value");
+}
+
+/**
+  * Callback function which triggers exsys_sendAllLvFacts function, which sends LV facts about all system.
+  */
+public void exsys_lvFactSendTriggerCB(string dp, int value) {
+  dyn_string ex;
+  exsys_sendAllLvFacts(ex);
+  if (emu_checkException(ex)) { return; }
 }
