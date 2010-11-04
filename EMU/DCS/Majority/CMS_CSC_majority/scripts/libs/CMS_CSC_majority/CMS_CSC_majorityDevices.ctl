@@ -35,6 +35,8 @@ dyn_int emumaj_hvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
     weight = channelCount - dynlen(excludedChannels);
   }
   
+  dyn_int onChVsets = values[4];
+  
   int vset = values[3];
   int on = 0,
       standby = 0,
@@ -61,8 +63,14 @@ dyn_int emumaj_hvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
   strreplace(dataDp, "HighVoltage/", "");
   for (int i = 1 + channelsOffset; i <= channelsOffset + channelCount; i++) {
     if (dynContains(excludedChannels, i) && !calcTotal) { continue; }
+    int chVset;
+    if (vset < 3400) { // for a chamber-wide setting of less than 3400V - most likely standby - apply the chamber-wide vset
+      chVset = vset;
+    } else {           // for a chamber-wide setting of more than 3400V - most likely ON - apply the individual channel vset
+      chVset = chOnVsets[i - channelsOffset];
+    }
     dyn_int chStates = emumaj_hvChannelStates(dataDp + ".data.v" + i, 
-                                                  vset, EMUMAJ_HV_STANDBY_VOLTAGE,
+                                                  chVset, EMUMAJ_HV_STANDBY_VOLTAGE,
                                                   true);
     on += chStates[1];
     standby += chStates[2];

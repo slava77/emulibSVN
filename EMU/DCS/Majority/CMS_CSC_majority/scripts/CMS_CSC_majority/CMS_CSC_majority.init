@@ -474,14 +474,14 @@ void emumaj_restoreFsmTypes() {
 void configureHv(string topNode) {
   majority_addDevice("HV_OUTER", // this defines the internal name of the device for the majority
   "HV_1", // this is the corresponding Device Unit Type
-  makeDynString(".status",".off_channels", ".last_vset", ".reserve1"), // define the datapoint elements you need to connect
+  makeDynString(".status",".off_channels", ".last_vset", ".reserve1", ".on_ch_vsets"), // define the datapoint elements you need to connect
   makeDynString("on","standby","error"), // these are the basic device states for this device
   18 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
   );
             
   majority_addDevice("HV_INNER", // this defines the internal name of the device for the majority
   "HV_1", // this is the corresponding Device Unit Type
-  makeDynString(".status",".off_channels", ".last_vset", ".reserve1"), // define the datapoint elements you need to connect
+  makeDynString(".status",".off_channels", ".last_vset", ".reserve1", ".on_ch_vsets"), // define the datapoint elements you need to connect
   makeDynString("on","standby","error"), // these are the basic device states for this device
   18 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
   );
