@@ -1,0 +1,770 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 517 756 N "_3DFace" 0
+"main()
+{
+  // ==== access control ====
+  if (isFunctionDefined(\"fwAccessControl_setupPanel\")) {
+    initAcConstants();
+    dyn_string ex;
+    fwAccessControl_setupPanel(\"accessPrivilegesChangedCB\", ex);
+    if (emu_checkException(ex)) { return; }
+    fwCU_connectOperationMode(\"accessPrivilegesChangedCB\", \"CMS_CSC::CMS_CSC\");
+  }
+  //=========================
+  
+  refreshMaskedChannels();
+  refreshLoweredChannels();
+}
+
+/** initialize constants required for access control - basically just fill in the arrays of control and expert control button names. */
+void initAcConstants() {
+  controlButtons = makeDynString();
+//  expertControlButtons = makeDynString(\"btnDo\", \"btnUndo\", \"btnForceSet\");
+}
+" 0
+ E E E E 1 -1 -1 0  140 50
+""0  1
+E "// Common libs
+#uses \"CMS_CSC_common/emu_common.ctl\"
+#uses \"CMS_CSC_common/emu_accessControl.ctl\"
+#uses \"CMS_CSCfw_HV_CC/emu_hvCommon.ctl\"
+#uses \"CMS_CSC_UI/emuui_main.ctl\"
+
+/** for access control - arrays of control and expert control buttons which should be under access control */
+dyn_string controlButtons;
+dyn_string expertControlButtons;
+dyn_mapping disabledChannelsList;
+dyn_mapping loweredChannelsList;
+
+/** This function is called whenever the user privileges change and just passes that to emu_enableDisableControl() which takes care of enabling/disabling buttons. */
+void accessPrivilegesChangedCB(string dummy1, string dummy2) {
+  emu_enableDisableControl(\"CMS_CSC::CMS_CSC\", controlButtons, true, \"lblNoControl\", expertControlButtons, true);
+  lblNoExpert.visible = !emu_hasExpertControl();
+}
+
+void refreshMaskedChannels() {
+  dyn_string ex;
+
+  lblRefreshingMaskedList.visible = true;
+  setBusy(true);
+      
+  dynClear(disabledChannelsList);
+  dyn_string disabledChannelsNames;
+  
+  dyn_string hvDps = dpNames(\"*:CSC_ME_*_HV\", \"HV_1_d\");
+  for (int i=1; i <= dynlen(hvDps); i++) {
+    mapping chamber = emu_fsmNodeToDeviceParams(hvDps[i], ex);
+    if (emu_checkException(ex)) { return; }
+    dyn_int trippedHvChannels, interlockedHvChannels, deadHvChannels, disabledHvChannels;
+    emuui_chamberHvGetProblematicChannels(chamber, 
+                                          trippedHvChannels, 
+                                          interlockedHvChannels, 
+                                          deadHvChannels, 
+                                          disabledHvChannels, 
+                                          ex);
+    if (emu_checkException(ex)) { return; }
+    
+    // enable and set to 3500V
+    for (int j=1; j <= dynlen(disabledHvChannels); j++) {
+      mapping channelDeviceParams = chamber;
+      channelDeviceParams[\"channelNumber\"] = disabledHvChannels[j];
+      dynAppend(disabledChannelsList, channelDeviceParams);
+      string channelName = emuui_getChamberName(channelDeviceParams) + \" ch. \" + channelDeviceParams[\"channelNumber\"];
+      dynAppend(disabledChannelsNames, channelName);
+    }
+  }
+  
+  tableMaskedChannels.deleteAllLines();
+  tableMaskedChannels.appendLines(dynlen(disabledChannelsNames), \"maskedChannels\", disabledChannelsNames);
+  lblChMaskedCount.text = dynlen(disabledChannelsNames);
+  
+  lblRefreshingMaskedList.visible = false;
+  setBusy(false);
+}
+
+void refreshLoweredChannels() {
+  dyn_string ex;
+
+  lblRefreshingLoweredList.visible = true;
+  setBusy(true);
+      
+  dynClear(loweredChannelsList);
+  dyn_string loweredChannelsNames;
+  dyn_string loweredChannelsVoltages;
+  
+  dyn_string hvDps = dpNames(\"*:HighVoltage/CSC_ME_*_HV\", \"HV_1\");
+  for (int i=1; i <= dynlen(hvDps); i++) {
+    mapping chamber = emu_fsmNodeToDeviceParams(hvDps[i], ex);
+    if (emu_checkException(ex)) { return; }
+    dyn_int vsets;
+    dpGet(hvDps[i] + \".on_ch_vsets\", vsets);
+    
+    for (int j=1; j <= dynlen(vsets); j++) {
+      if (vsets[j] == 3600) {
+        continue;
+      }
+      mapping channelDeviceParams = chamber;
+      channelDeviceParams[\"channelNumber\"] = j;
+      if (dynContains(disabledChannelsList, channelDeviceParams)) {
+        continue;
+      }
+      dynAppend(loweredChannelsList, channelDeviceParams);
+      string channelName = emuui_getChamberName(channelDeviceParams) + \" ch. \" + channelDeviceParams[\"channelNumber\"];
+      string channelVoltage = vsets[j] + \"V\";
+      dynAppend(loweredChannelsNames, channelName);
+      dynAppend(loweredChannelsVoltages, channelVoltage);
+    }
+  }
+  
+  tableLoweredChannels.deleteAllLines();
+  tableLoweredChannels.appendLines(dynlen(loweredChannelsNames), \"loweredChannels\", loweredChannelsNames, \"voltage\", loweredChannelsVoltages);
+  lblChLoweredCount.text = dynlen(loweredChannelsNames);
+  
+  lblRefreshingLoweredList.visible = false;
+  setBusy(false);
+}
+
+dyn_mapping getSelectedMaskedChannels() {
+  dyn_int selectedLines = tableMaskedChannels.getSelectedLines();
+  dyn_mapping selectedChannels;
+  for (int i=1; i <= dynlen(selectedLines); i++) {
+    dynAppend(selectedChannels, disabledChannelsList[selectedLines[i] + 1]);
+  }
+  return selectedChannels;
+}
+
+dyn_mapping getSelectedLoweredChannels() {
+  dyn_int selectedLines = tableLoweredChannels.getSelectedLines();
+  dyn_mapping selectedChannels;
+  for (int i=1; i <= dynlen(selectedLines); i++) {
+    dynAppend(selectedChannels, loweredChannelsList[selectedLines[i] + 1]);
+  }
+  return selectedChannels;
+}
+
+void enableDisableControls(bool enable) {
+  for (int i=1; i <= dynlen(controlButtons); i++) {
+    setValue(controlButtons[i], \"enabled\", enable);
+  }
+  for (int i=1; i <= dynlen(expertControlButtons); i++) {
+    setValue(expertControlButtons[i], \"enabled\", enable);
+  }
+}
+
+void setBusy(bool busy) {
+  enableDisableControls(!busy);
+  if (busy) {
+    lblStatus.text = \"BUSY...\";
+    lblStatus.backCol = \"red\";
+  } else {
+    lblStatus.text = \"ready\";
+    lblStatus.backCol = \"green\";
+  }
+}" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+2 0
+"PRIMITIVE_TEXT1"
+""
+1 160 20 E E E 1 E 1 E N "_WindowText" E N "FwStateAttention3" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 160 20 392 44
+1 2 2 "0s" 0 0 0 192 0 0  160 20 1
+1
+LANG:1 31 Sans Serif,14,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 24 Expert Operation Only !!
+2 3
+"PRIMITIVE_TEXT2"
+""
+1 20 30 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 20 30 64 46
+0 2 2 "0s" 0 0 0 192 0 0  20 30 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 7 Status:
+2 4
+"lblStatus"
+""
+1 70 30 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 70 30 105 46
+0 2 2 "0s" 0 0 0 192 0 0  70 30 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 5 ready
+2 5
+"lblNoControl"
+""
+1 588 -378 E E E 1 E 1 E N "_3DText" E N "_Window" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 60 60 261 79
+1 2 2 "0s" 0 0 0 192 0 0  60 60 1
+1
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0 1
+LANG:1 32 You don't have control privilege
+2 6
+"lblNoExpert"
+""
+1 808 -378 E E E 1 E 1 E N "_3DText" E N "_Window" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 280 60 478 79
+1 2 2 "0s" 0 0 0 192 0 0  280 60 1
+1
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0 1
+LANG:1 31 You don't have expert privilege
+2 21
+"PRIMITIVE_TEXT8"
+""
+1 20 450 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+21 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 20 450 55 466
+0 2 2 "0s" 0 0 0 192 0 0  20 450 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 6 Total:
+2 22
+"lblChMaskedCount"
+""
+1 70 450 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+22 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 70 450 102 466
+0 2 2 "0s" 0 0 0 192 0 0  70 450 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 3 ###
+13 23
+"btnRefreshMaskedChannels"
+""
+1 20 470 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+23 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  18 468 202 492
+
+T 
+1
+LANG:1 23 refresh masked ch. list
+"main()
+{
+  refreshMaskedChannels();
+}" 0
+ E E E
+2 28
+"lblRefreshingMaskedList"
+""
+1 20 90 E E E 1 E 1 E N "_WindowText" E N "FwStateAttention1" E E
+ E E
+28 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 20 90 200 106
+0 2 2 "0s" 0 0 0 64 0 0  20 90 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 23 refreshing the list....
+2 30
+"PRIMITIVE_TEXT10"
+""
+1 290 450 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+30 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 290 450 325 466
+0 2 2 "0s" 0 0 0 192 0 0  290 450 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 6 Total:
+2 31
+"lblChLoweredCount"
+""
+1 340 450 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+31 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 340 450 372 466
+0 2 2 "0s" 0 0 0 192 0 0  340 450 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 3 ###
+2 32
+"lblRefreshingLoweredList"
+""
+1 290 90 E E E 1 E 1 E N "_WindowText" E N "FwStateAttention1" E E
+ E E
+32 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 290 90 498 106
+0 2 2 "0s" 0 0 0 64 0 0  290 90 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 23 refreshing the list....
+13 34
+"PUSH_BUTTON1"
+""
+1 290 470 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+34 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  288 468 502 492
+
+T 
+1
+LANG:1 24 refresh lowered ch. list
+"main()
+{
+  refreshLoweredChannels();
+}" 0
+ E E E
+25 35
+"tableMaskedChannels"
+""
+1 20 110 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+35 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  18 108 202 442
+"main()
+{
+  this.tableMode = TABLE_SELECT_MULTIPLE;
+  this.selectByClick = TABLE_SELECT_LINE;
+}" 0
+E 1 0 1 1 0 "maskedChannels" 6 1 0 "s" 1
+LANG:1 15 Masked Channels
+E
+1
+LANG:1 0 
+
+170 
+16 16 10 10
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 0 1 1 1 7
+1 0
+2 37
+"PRIMITIVE_TEXT14"
+""
+1 10 500 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+37 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 10 500 502 516
+0 2 2 "0s" 0 0 0 192 0 0  10 500 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 81 Note: you can select multiple channels in the tables by holding CTRL and clicking
+25 38
+"tableLoweredChannels"
+""
+1 290 110 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+38 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  288 108 502 442
+"main()
+{
+  this.tableMode = TABLE_SELECT_MULTIPLE;
+  this.selectByClick = TABLE_SELECT_LINE;
+}" 0
+E 1 0 1 2 0 "loweredChannels" 6 1 0 "s" 1
+LANG:1 17 Lower Voltage Ch.
+E
+1
+LANG:1 0 
+
+145 "voltage" 6 1 0 "s" 1
+LANG:1 7 Voltage
+E
+1
+LANG:1 0 
+
+60 
+16 16 10 10
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 0 1 1 1 7
+1 0
+13 39
+"PUSH_BUTTON2"
+""
+1 40 570 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+39 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  38 568 242 597
+
+T 
+1
+LANG:1 26 Unmask and set voltage to:
+"main()
+{
+  setBusy(true);
+
+  dyn_string ex;
+  int newVset = spinUnmaskVoltage.text();
+  dyn_mapping selectedChannels = getSelectedMaskedChannels();
+  for (int i=1; i <= dynlen(selectedChannels); i++) {
+    mapping channelDeviceParams = selectedChannels[i];
+
+    emu_info(\"HV channels management panel: unmasking \" + channelDeviceParams + \" and setting vset to \" + newVset);
+    
+    emuhv_changeChannelVset(channelDeviceParams, newVset, ex);
+    if (emu_checkException(ex)) { return; }
+    delay(1, 0);
+
+    emuhv_enableDisableChannel(channelDeviceParams, true, ex);
+    if (emu_checkException(ex)) { return; }
+    
+    // refresh the data now  
+    delay(1, 0);
+    emuhv_requestData(channelDeviceParams, ex);
+    if (emu_checkException(ex)) { return; }
+  }
+  
+  setBusy(false);
+  
+  refreshMaskedChannels();
+  refreshLoweredChannels();
+}" 0
+ E E E
+21 40
+"spinUnmaskVoltage"
+""
+1 260 570 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+40 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  258 568 382 596
+0
+
+E
+E
+E
+
+N 0 3700 1 3400 1 1
+30 41
+"FRAME1"
+""
+1 20 502 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+41 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1.021276595744681 0 0.7407407407407407 -0.4255319148936154 168.1481481481482 0 E 20 502 491 611
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 34 Action on selected masked channels
+30 42
+"FRAME2"
+""
+1 20 502 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+42 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1.021276595744681 0 1 -0.4255319148936154 128 0 E 20 502 491 611
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 41 Action on selected lower voltage channels
+13 43
+"PUSH_BUTTON3"
+""
+1 40 660 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+43 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  38 658 242 687
+
+T 
+1
+LANG:1 4 Mask
+"main()
+{
+  setBusy(true);
+
+  dyn_string ex;
+  dyn_mapping selectedChannels = getSelectedLoweredChannels();
+  for (int i=1; i <= dynlen(selectedChannels); i++) {
+    mapping channelDeviceParams = selectedChannels[i];
+
+    emu_info(\"HV channels management panel: masking \" + channelDeviceParams);
+    
+    emuhv_enableDisableChannel(channelDeviceParams, false, ex);
+    if (emu_checkException(ex)) { return; }
+
+    // refresh the data now  
+    delay(1, 0);
+    emuhv_requestData(channelDeviceParams, ex);
+    if (emu_checkException(ex)) { return; }
+  }
+  
+  setBusy(false);
+  
+  refreshMaskedChannels();
+  refreshLoweredChannels();
+}" 0
+ E E E
+13 44
+"PUSH_BUTTON4"
+""
+1 40 700 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+44 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  38 698 242 727
+
+T 
+1
+LANG:1 18 Change Voltage To:
+"main()
+{
+  setBusy(true);
+
+  dyn_string ex;
+  int newVset = spinChangeVoltage.text();
+  dyn_mapping selectedChannels = getSelectedLoweredChannels();
+  for (int i=1; i <= dynlen(selectedChannels); i++) {
+    mapping channelDeviceParams = selectedChannels[i];
+
+    emu_info(\"HV channels management panel: changing vset for \" + channelDeviceParams + \" to \" + newVset);
+    
+    emuhv_changeChannelVset(channelDeviceParams, newVset, ex);
+    if (emu_checkException(ex)) { return; }
+    delay(1, 0);
+
+    // refresh the data now  
+    delay(1, 0);
+    emuhv_requestData(channelDeviceParams, ex);
+    if (emu_checkException(ex)) { return; }
+  }
+  
+  setBusy(false);
+  
+  refreshLoweredChannels();
+}" 0
+ E E E
+21 45
+"spinChangeVoltage"
+""
+1 260 700 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+45 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  258 698 382 726
+0
+
+E
+E
+E
+
+N 0 3700 1 3400 1 1
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

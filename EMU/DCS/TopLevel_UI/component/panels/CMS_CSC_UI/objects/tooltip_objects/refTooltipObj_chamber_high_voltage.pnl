@@ -27,6 +27,11 @@ PANEL,-1 -1 420 255 N "_3DFace" 1
   string offChannelsDp = emuui_getDpName(\"HV_off_channels\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
   
+  // channel vsets
+  string onChannelVsetsDp = emuui_getDpName(\"HV_ch_vsets\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  dpGet(onChannelVsetsDp, channelVsets);
+  
   // module type (if 0 - indicates an LV or signal cable problem)
   string moduleTypeDp = emuui_getDpName(\"HV_moduleType\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
@@ -164,7 +169,9 @@ void initConsts() {
 }" 0
  E E E 1 -1 -1 0  0 0
 ""0  1
-E "//some panel-wide constants
+E "#uses \"CMS_CSC_common/emu_math.ctl\"
+
+//some panel-wide constants
 mapping deviceParams;
 dyn_string vMonDps, statusDps;
 mapping hvStatusColors;
@@ -180,8 +187,9 @@ int posX, posY;
 dyn_string shapesBelowTable;
 bool allGrayMode; // this flag is true when the whole LV FSM node is disabled - then back color of the tables is always gray
 bool noCommunication;
+dyn_int channelVsets;
 
-const float EMU_HVTOOLTIP_MIN_NOMINAL_VOLTAGE = 3550;
+const int EMU_HVPANEL_VOLTAGE_DIFFERENCE_TOLERANCE = 50; // tolerable voltage differance, if voltage differs more than that, the channel will be marked yellow
 
 void updateVMonCB(dyn_string dpList, dyn_float voltages) {
   if (noCommunication) { return; } // don't update the table - let the \"???\" stay there
@@ -215,7 +223,7 @@ void updateStatusCB(dyn_string dpList, dyn_int statuses) {
       string statusText = hvStatusTexts[(string)statuses[arrayIndex]];
       string statusColor = hvStatusColors[statusText];
       if (!dynContains(disabledChannels, arrayIndex) && !allGrayMode) { // if this channel is disabled - do not update it's color - let it stay gray
-        if ((statusText == \"ON\") && (currentVoltages[arrayIndex] < EMU_HVTOOLTIP_MIN_NOMINAL_VOLTAGE)) { // in case the status is ON, but actually the voltage is too low, paint it yello (majority also sees that and paints the chamber yellow)
+        if ((statusText == \"ON\") && (emu_abs(currentVoltages[arrayIndex] - channelVsets[arrayIndex]) > EMU_HVPANEL_VOLTAGE_DIFFERENCE_TOLERANCE)) { // in case the status is ON, but actually the voltage is too low, paint it yellow (majority also sees that and paints the chamber yellow)
           statusColor = \"FwStateAttention1\";
         }
         tableVoltages.cellBackColRC(i, \"group\" + j, statusColor);
@@ -714,7 +722,7 @@ LANG:1 33 host=###; slot=#; addr=#; part=#,
 2 30
 "lblMasterInfo"
 ""
-1 377.7353316803474 320 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 386.6019269774778 340 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 43 0 0 0 0 0
 E E E
