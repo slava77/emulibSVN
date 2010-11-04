@@ -1,6 +1,8 @@
 #uses "CMS_CSCfw_HV_CC/emuDcs.ctl"
 #uses "CMS_CSCfw_HV_CC/emuDcs3.ctl"
 #uses "CMS_CSCfw_HV_CC/emuDcs4.ctl"
+#uses "CMS_CSCfw_HV_CC/emu_hvCommon.ctl"
+#uses "CMS_CSC_common/emu_common.ctl"
 
 string operating_system;
 
@@ -2227,8 +2229,37 @@ if(set=="")return;
 
                                 subcommand=subcommand  +"|"+   "HVCMD;"+coords[2]+";"+coords[3]+";"+chamber_depend_all_channels+"1;"+"0;"+"-1";
                                 // DpNameFsm=substr(dp_name,0,strpos(dp_name,".status"));
+                                
+                                
                                 dpGet(mudcsAddSystem(DpNameFsm+".last_vset"),last_vset);
-                            subcommand=subcommand  +"|"+   "HVCMD;"+coords[2]+";"+coords[3]+";"+chamber_depend_all_channels+"7;"+last_vset+";"+"-1";// vset
+//                            subcommand=subcommand  +"|"+   "HVCMD;"+coords[2]+";"+coords[3]+";"+chamber_depend_all_channels+"7;"+last_vset+";"+"-1";// vset
+                            
+                                int chCount = 18;
+                                if (coords[4] == "0") {
+                                  chCount = 30;
+                                }
+                                int chIdxOffset = 0;
+                                if (coords[4] == "2") {
+                                  chIdxOffset = 18;
+                                }
+
+                                dyn_int vsets;
+                                dpGet(mudcsAddSystem(DpNameFsm+".on_ch_vsets"), vsets);
+                                if (dynlen(vsets) == 0) { // if vsets have not been initialized yet, set everybody to 3600
+                                  for (int i=1; i <= chCount; i++) {
+                                    dynAppend(vsets, 3600);
+                                    dpSet(mudcsAddSystem(DpNameFsm+".on_ch_vsets"), vsets);
+                                  }
+                                }
+                                
+                                for (int i=0; i < chCount; i++) {
+                                  int vset = vsets[i + 1];
+                                  if (last_vset < 3400) { // if chamber-wide vset is not nominal - lower than 3400V - (e.g. during standby), set it to the chamber-wide vset
+                                    vset = last_vset;
+                                  }
+                                  subcommand=subcommand  +"|"+   "HVCMD;"+coords[2]+";"+coords[3]+";"+ (i + chIdxOffset) +";7;"+ vset +";"+"-1";// vset
+                                }                            
+                            
                             subcommand=subcommand  +"|"+   "HVCMD;"+coords[2]+";"+coords[3]+";"+chamber_depend_all_channels+"3;"+"11"+";"+"-1"; // ramp_up
                             /*if(CSC_fwG_g_IS_IMAX_SET)*/subcommand=subcommand  +"|"+   "HVCMD;"+coords[2]+";"+coords[3]+";"+chamber_depend_all_channels+"6;"+"1"+";"+"-1"; //imax
                             subcommand=subcommand  +"|"+   "HVCMD;"+coords[2]+";"+coords[3]+";"+chamber_depend_all_channels+"38;"+"500"+";"+"-1"; //trip_dl
@@ -2238,6 +2269,11 @@ if(set=="")return;
                              ichan=off_channels[i]-1;                              
                              subcommand=subcommand  +"|"+   "HVCMD;"+coords[2]+";"+coords[3]+";"+ichan+";0;"+"0;"+"-1";
                             }
+                            
+//                            mapping chamber = emu_fsmNodeToDeviceParams(DpNameFsm, exceptionInfo);
+//                            emu_checkException(exceptionInfo);
+//                            emuhv_checkChamberSpecialChannelsVset(chamber, exceptionInfo);
+//                            emu_checkException(exceptionInfo);
 
 /*
     dpGet(mudcsAddSystem("dyn_debug2."),dyn_debug);

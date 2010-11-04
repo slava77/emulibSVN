@@ -8,6 +8,8 @@ This package contains common functions for HV.
 
 #uses "CMS_CSC_common/emu_common.ctl"
 #uses "CMS_CSC_common/emu_deviceInfo.ctl"
+#uses "CMS_CSC_UI/emuui_deviceInfo.ctl" // only used for this 3.5kV setting of the special channels - remove this when that's over
+#uses "CMS_CSC_UI/emuui_main.ctl"        // only used for this 3.5kV setting of the special channels - remove this when that's over
 
 private global int emuhv_command_semaphore;
 
@@ -15,6 +17,8 @@ const float EMUHV_MIN_NOMINAL_VOLTAGE = 3550;
 
 public const int EMUHV_COMMAND_OFF = 0;
 public const int EMUHV_COMMAND_ON = 1;
+public const int EMUHV_COMMAND_VSET = 7;
+public const int EMUHV_COMMAND_SET_IMAX = 6;
 //public const int EMUHV_COMMAND_STANDBY = 1;
 
 /** 
@@ -64,12 +68,25 @@ void emuhv_sendAllChannelsCommand(mapping chamberDeviceParams, int command, dyn_
   * @param command command - use EMUHV_COMMAND_* constants
   * @param broadcastToAllChannels if this is true then channelDeviceParams["channelNumber"] is ignored and command is sent to all channels on that chamber
   */
-void emuhv_sendChannelCommand(mapping channelDeviceParams, int command, dyn_string &exceptionInfo, bool broadcastToAllChannels = false) {
-  if ((command != EMUHV_COMMAND_OFF) && (command != EMUHV_COMMAND_ON)) {
+void emuhv_sendChannelCommand(mapping channelDeviceParams, int command, dyn_string &exceptionInfo, bool broadcastToAllChannels = false, int commandParamValue = minINT()) {
+  if ((command != EMUHV_COMMAND_OFF) && (command != EMUHV_COMMAND_ON) && (command != EMUHV_COMMAND_VSET) && (command != EMUHV_COMMAND_SET_IMAX)) {
     emu_addError("Unsupported command: " + command, exceptionInfo);
     return;
   }
+  
+  if ((commandParamValue == minINT()) &&
+          ((command == EMUHV_COMMAND_VSET) ||
+           (command == EMUHV_COMMAND_SET_IMAX))) {
+    
+    emu_addError("Unsupported command: No value supplied for command " + command, exceptionInfo);
+    return;
+  }
+  
   int commandValue = 0;
+  
+  if ((command == EMUHV_COMMAND_VSET) || (command == EMUHV_COMMAND_SET_IMAX)) {
+    commandValue = commandParamValue;
+  }
   
   int channelNumber;
   
@@ -161,7 +178,7 @@ void emuhv_requestData(mapping chamberDeviceParams, dyn_string &exceptionInfo) {
   string host = coords[1];
   string commandStr = host + "|" + "HVDATA;" + coords[2] + ";" + coords[3] + ";255;0;0;-1"; //e.g.: 600|HVDATA;2;2;255;0;0;-1
 
-  emu_debug("HV: requesting data from HV server for " + emuui_getChamberName(deviceParams), emu_DEBUG_DETAIL);
+  emu_debug("HV: requesting data from HV server for " + emuui_getChamberName(chamberDeviceParams), emu_DEBUG_DETAIL);
   synchronized (emuhv_command_semaphore) {
     dpSetWait(dpSubStr(coordsDp, DPSUB_SYS) + "HV_1_COM.command", commandStr);
   }
@@ -284,4 +301,20 @@ string emuhv_getFellowChamber(string hvFsmDp) {
     fellowChamberDp = CSC_fwG_g_HV_36CHANNEL_BOARDS_CHAMBER_LIST[i][chamber2idx];
   }
   return fellowChamberDp;
+}
+
+/**
+  * Changes channel vset in HV_1.on_ch_vsets DPE and sends a VSET command for that channel to hvServer.
+  */
+void emuhv_changeChannelVset(mapping channelDeviceParams, int vset, dyn_string &exceptionInfo) {
+  string hvDp = dpNames("*:HighVoltage/CSC_ME_" + channelDeviceParams["side"] + channelDeviceParams["station"] + channelDeviceParams["ring"] + 
+                              "_C" + channelDeviceParams["chamberNumber"] + "_HV", "HV_1");
+  
+  dyn_int chVsets;
+  dpGet(hvDp + ".on_ch_vsets", chVsets);
+  chVsets[channelDeviceParams["channelNumber"]] = vset;
+  dpSetWait(hvDp + ".on_ch_vsets", chVsets);
+  
+  emuhv_sendChannelCommand(channelDeviceParams, EMUHV_COMMAND_VSET, exceptionInfo, false, vset);
+  if (emu_checkException(exceptionInfo)) { return; }
 }

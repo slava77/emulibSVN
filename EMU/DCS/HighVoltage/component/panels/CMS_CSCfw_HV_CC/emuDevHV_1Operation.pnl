@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 861 842 N "_3DFace" 2
+PANEL,-1 -1 861 841 N "_3DFace" 2
 "$1"
 "$2"
 "main()
@@ -218,6 +218,7 @@ void initAcConstants() {
  E E E 1 -1 -1 0  0 0
 ""0  1
 E "#uses \"CMS_CSC_common/emu_common.ctl\"
+#uses \"CMS_CSC_common/emu_math.ctl\"
 #uses \"CMS_CSC_common/emu_accessControl.ctl\"
 #uses \"CMS_CSC_common/emu_alert.ctl\"
 #uses \"CMS_CSCfw_HV_CC/emu_hvCommon.ctl\"
@@ -248,6 +249,8 @@ dyn_string controlButtons;
 dyn_string expertControlButtons;
 
 const int EMU_HVPANEL_DATA_REFRESH_INTERVAL = 15; // interval of time to wait between data refresh cycles (seconds)
+const int EMU_HVPANEL_VOLTAGE_DIFFERENCE_TOLERANCE = 50; // tolerable voltage differance, if voltage differs more than that, the channel will be marked yellow
+
 
 /** This function is called whenever the user privileges change and just passes that to emu_enableDisableControl() which takes care of enabling/disabling buttons. */
 void accessPrivilegesChangedCB(string dummy1, string dummy2) {
@@ -310,10 +313,10 @@ void updateStatusCB(dyn_string dpList, dyn_int statuses) {
   for (int i=1; i <= dynlen(statuses); i++) {
     string statusText = hvStatusTexts[(string)statuses[i]];
     string statusColor = hvStatusColors[statusText];
-    // check if voltage is lower than EMUHV_MIN_NOMINAL_VOLTAGE and the status is ON, then paint this line yellow
-    int voltage;
-    voltage = tableChannels.cellValueRC(i - 1, \"vmon\");
-    if ((statusText == \"ON\") && (voltage < EMUHV_MIN_NOMINAL_VOLTAGE)) {
+    // check if voltage differance between vset and vmon is greater than EMU_HVPANEL_VOLTAGE_DIFFERENCE_TOLERANCE and the status is ON, then paint this line yellow
+    int voltage = tableChannels.cellValueRC(i - 1, \"vmon\");
+    int vset = tableChannels.cellValueRC(i - 1, \"vset\");
+    if ((statusText == \"ON\") && (emu_abs(voltage - vset) > EMU_HVPANEL_VOLTAGE_DIFFERENCE_TOLERANCE)) {
       statusColor = \"FwStateAttention1\";
     }
     // set the color and state text
@@ -732,7 +735,7 @@ LANG:1 33 host=###; slot=#; addr=#; part=#,
 2 30
 "lblMasterInfo"
 ""
-1 4285.161520089953 6702 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 4888.817280797926 7862 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 43 0 0 0 0 0
 E E E
@@ -1108,7 +1111,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 1 0 1 E 2.2 0 2.631578947368421 -162.0000000000001 593.1578947368421 0 E 260 33 461 91
+E E 0 0 1 0 1 E 2.2 0 2.63157894736842 -162.0000000000001 593.1578947368421 0 E 260 33 461 91
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
