@@ -1126,7 +1126,7 @@ E E 0 1 1 2 1 E 1 0 1 -209 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png"
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 -2210.426709625377 -830 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -2318.458614003724 -850 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -1145,7 +1145,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 48.7319696180619 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 48.71710729079161 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
@@ -1681,7 +1681,7 @@ LANG:1 30 Open Reduced HV Channels Panel
       ChildPanelOnCentral(\"CMS_CSC_UI/util/TmbLvAnalysis/Main.pnl\", \"TMB LV Analysis Panel\", makeDynString());
       break;
     case 4:
-      ChildPanelOnCentral(\"CMS_CSC_common/hvTest.pnl\", \"HV Test Panel - EXPERTS ONLY!\", makeDynString());
+      ChildPanelOnCentral(\"CMS_CSC_UI/HvChannelManagement.pnl\", \"HV Channel Management - EXPERTS ONLY!\", makeDynString());
       break;
     default:
       break;
