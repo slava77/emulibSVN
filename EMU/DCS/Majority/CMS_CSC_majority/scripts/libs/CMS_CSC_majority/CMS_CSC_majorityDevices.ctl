@@ -4,6 +4,7 @@ global int EMUMAJ_HV_STATE_ON_VMON_ACCURACY = 50;
 global int EMUMAJ_HV_STATE_STANDBY_VMON_ACCURACY = 60;
 global int EMUMAJ_HV_STANDBY_VOLTAGE = 3000;
 global mapping hvParts;
+global mapping hvOnChannelVsets;
 
 /** values here are ".status",".off_channels", ".last_vset". States are ON, STANDBY and ERROR */
 dyn_int emumaj_hvStateCounts(dyn_anytype values, int &weight, bool calcTotal, string node, string majType) {
@@ -35,7 +36,7 @@ dyn_int emumaj_hvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
     weight = channelCount - dynlen(excludedChannels);
   }
   
-  dyn_int onChVsets = values[4];
+//  dyn_int onChVsets = values[4];
   
   int vset = values[3];
   int on = 0,
@@ -57,18 +58,31 @@ dyn_int emumaj_hvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
   if (status < 0) {
     checkChannelAlarms = true;
   }
-  
+
+  dyn_int onChVsets;
+  if (!mappingHasKey(hvOnChannelVsets, node)) {
+    dpGet(node + ".on_ch_vsets", onChVsets);
+    hvOnChannelVsets[node] = onChVsets;
+  } else {
+    onChVsets = hvOnChannelVsets[node];
+  }
+   
   // go through all the channels (except the masked ones) and collect their states
   string dataDp = node;
   strreplace(dataDp, "HighVoltage/", "");
   for (int i = 1 + channelsOffset; i <= channelsOffset + channelCount; i++) {
     if (dynContains(excludedChannels, i) && !calcTotal) { continue; }
-    int chVset;
-    if (vset < 3400) { // for a chamber-wide setting of less than 3400V - most likely standby - apply the chamber-wide vset
-      chVset = vset;
-    } else {           // for a chamber-wide setting of more than 3400V - most likely ON - apply the individual channel vset
-      chVset = chOnVsets[i - channelsOffset];
-    }
+    int chVset = vset;
+    
+     if (dynlen(onChVsets) < channelCount) {
+       emu_info("onChVsets length is only " + dynlen(onChVsets) + " for " + node);
+     } else {
+       // for a chamber-wide setting of less than 3400V - most likely standby - apply the chamber-wide vset
+       // for a chamber-wide setting of more than 3400V - most likely ON - apply the individual channel vset
+       if (vset >= 3400) {
+         chVset = onChVsets[i - channelsOffset];
+       }
+     }
     dyn_int chStates = emumaj_hvChannelStates(dataDp + ".data.v" + i, 
                                                   chVset, EMUMAJ_HV_STANDBY_VOLTAGE,
                                                   true);

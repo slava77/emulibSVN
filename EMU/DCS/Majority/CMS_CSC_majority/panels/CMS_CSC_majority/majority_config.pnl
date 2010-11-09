@@ -8,17 +8,235 @@ E "#uses \"majority_treeCache/majorityLib.ctl\"
 
 string majorityTopNode = \"CMS_CSC\";
 
+
+void emumaj_createMajorityConfiguration(string majorityTopNode) {
+  majority_new(majorityTopNode); // you may want to pass a second parameter that is the treeCache topNode if you need to use 
+  //  the same treeCache but with different topNodes for different majorities
+  majority_deleteConfig(majorityTopNode);  
+
+  DebugTN(\"Creating HV majority\");
+  configureHv(majorityTopNode);
+  DebugTN(\"Creating ME1/1 HV majority\");
+  configureME11Hv(majorityTopNode);
+  DebugTN(\"Creating HV Primary majority\");
+  configureHVPrimaries(majorityTopNode);
+  DebugTN(\"Creating LV majority\");
+  configureLv(majorityTopNode);
+  DebugTN(\"Creating Temperature majority\");
+  configureTemp(majorityTopNode);
+  DebugTN(\"Creating CRB majority\");
+  configureCrb(majorityTopNode);
+  DebugTN(\"Creating Maraton Channel majority\");
+  configureMaratonChannel(majorityTopNode);
+  DebugTN(\"Creating Maraton Crate majority\");
+  configureMaratonCrate(majorityTopNode);
+  DebugTN(\"Creating DDU majority\");
+  configureDDU(majorityTopNode);
+  DebugTN(\"Creating LV for HV majority\");
+  configureLvForHv(majorityTopNode);
+  DebugTN(\"Creating Atlas PSU branch majority\");
+  configureAtlasPSU(majorityTopNode);
+  DebugTN(\"Creating GAS majority (top device only)\");
+  configureGas(majorityTopNode);
+  DebugTN(\"Creating COOLING majority (top device only)\");
+  configureCooling(majorityTopNode);
+
+  DebugTN(\"Creating general majority parameters\");
+  
+  // Configure the polling: for each node, define the number of polls, the poll_time in milliseconds and the maximum number of polls
+  //  Possible values could be 100,2 
+ 
+  majority_clearPollConfig();
+//  majority_addPollConfig(majorityTopNode, 3, 500, 30);
+
+  // OR: If you want you can try to use the automaticConfig that tries to change the polling time depending on the number of children of each node 
+  //   In this case you define a mean poll time (divided in 1 or 2 polls) and a max number of rejected threads. Possible values  100, 2
+  // IF YOU USE THE AUTOMATIC CONFIGURATION, YOU DO NOT NEED TO CALL THE PREVIOUS TWO FUNCTIONS (majority_clearPollConfig and majority_addPollConfig)
+  majority_automaticConfig(100, 2);
+
+  // this is the refresh of the datapoints from the map in memory (500 ms should be ok)
+  majority_setRefresh(500);
+
+  // then create the majority
+  // to change the configuration you will need to repeat the steps after addPercentages and call again majority_create
+
+  majority_create();
+}
+
+void createMajorityDUs() { 
+  dyn_string ex;
+  dyn_string nodes;
+  dyn_string allTypes;  
+  
+    
+  fwTree_getAllTreeNodes(\"FSM\", nodes, ex);
+  if (emu_checkException(ex)) { return; }  
+  for(int i=1; i <= dynlen(nodes); i++) {
+    DebugTN(\"  processing node \" + nodes[i]);
+    if (strpos(nodes[i], \"&\") >= 0) { 
+      DebugTN(\"  skipping \" + nodes[i] + \" - reference\");
+      continue;
+    }
+    string type;
+    fwCU_getType(nodes[i], type);
+    string domain = nodes[i];
+    string object = _fwCU_getNodeObj(domain);
+    bool isDU = fwFsm_isDU(domain, object);
+    if (isDU) { continue; }
+    
+    if (fwFsmTree_isNode(\"majority_\" + nodes[i])) { 
+      DebugTN(\"  skipping majority_\" + nodes[i] + \" - node already exists\");
+      continue;
+    }
+    fwFsmTree_addNode(nodes[i], \"majority_\" + nodes[i], \"majority\", 0);   
+    fwFsmTree_setNodeVisibility(\"majority_\" + nodes[i], 0);
+    DebugTN(\"    majority DU created in \" + nodes[i] + \" - \" + type);
+    if (!dynContains(allTypes, type)) {
+      dynAppend(allTypes, type);
+    }
+  }
+
+  DebugTN(\"All non-DU types that were found:\");
+  for (int i=1; i <= dynlen(allTypes); i++) {
+    DebugTN(\"    \" + allTypes[i]);
+  }
+  
+  DebugTN(\"DONE\");
+}
+
+// in case CMS_CSC_common is not installed
+bool emu_checkException(dyn_string &exceptionInfo, string higherLevelMsg = \"\") {
+  if (dynlen(exceptionInfo) > 0) {
+    DebugTN(\"ERROR:\");
+    DebugTN(exceptionInfo);
+    return true;
+  }
+  return false;
+}
+
+void emumaj_updateFsmTypes() {
+  dyn_string typesToUpdate = makeDynString(\"CSC_LV_NODES\",
+                                           \"CSC_LV_HV\",
+                                           \"CSC_LV_TREE_NODES\",
+                                           \"EMUFEDNodes\",
+                                           \"EMUNodes\",
+                                           \"EMUSTBYNodes\",
+                                           \"EMUTREESTBYNodes\",
+                                           \"EMUTREENodes\",
+                                           \"EMUTREENodes_I\",
+                                           \"EMUTREENodes_O\",
+                                           \"EMUTREENodes_S\",
+                                           \"CMS_CSC_ME11_HV_Type\");
+  
+  for (int i=1; i <= dynlen(typesToUpdate); i++) {
+    string typeDp = \"fwOT_\" + typesToUpdate[i];
+    if (!dpExists(typeDp)) {
+      continue;
+    }
+    bool exists = dpExists(typeDp + \"_majBackup\");
+    if (!exists || EMUMAJ_OVERWRITE_FSM_TYPE_BACKUPS) {
+      int error;
+      if (!exists) {
+        dpCopy(typeDp, typeDp + \"_majBackup\", error);
+      }
+      string panel;
+      dyn_string components, states, actions, parameters;
+      dpGet(typeDp + \".panel\", panel,
+            typeDp + \".components\", components,
+            typeDp + \".states\", states,
+            typeDp + \".actions\", actions,
+            typeDp + \".parameters\", parameters);
+      dpSetWait(typeDp + \"_majBackup.panel\", panel,
+                typeDp + \"_majBackup.components\", components,
+                typeDp + \"_majBackup.states\", states,
+                typeDp + \"_majBackup.actions\", actions,
+                typeDp + \"_majBackup.parameters\", parameters);
+    }
+    
+    dyn_string states = makeDynString(\"OFF\",
+                                      \"FwStateOKNotPhysics\",
+                                      \"when ( $ALL$majority in_state ON )  move_to ON|when ( $ALL$majority in_state OUTER_ON )  move_to OUTER_ON|when ( $ALL$majority in_state STANDBY )  move_to STANDBY|when ( $ALL$majority in_state ERROR )  move_to ERROR|when ( $ALL$majority in_state NOT-READY )  move_to NOT-READY|\",
+                                      \"\",
+                                      \"\",
+                                      \"ERROR\",
+                                      \"FwStateAttention3\",
+                                      \"when ( $ALL$majority in_state ON )  move_to ON|when ( $ALL$majority in_state OUTER_ON )  move_to OUTER_ON|when ( $ALL$majority in_state STANDBY )  move_to STANDBY|when ( $ALL$majority in_state OFF )  move_to OFF|when ( $ALL$majority in_state NOT-READY )  move_to NOT-READY|\",
+                                      \"\",
+                                      \"\",
+                                      \"ON\",
+                                      \"FwStateOKPhysics\",
+                                      \"when ( $ALL$majority in_state OUTER_ON )  move_to OUTER_ON|when ( $ALL$majority in_state STANDBY )  move_to STANDBY|when ( $ALL$majority in_state OFF )  move_to OFF|when ( $ALL$majority in_state ERROR )  move_to ERROR|when ( $ALL$majority in_state NOT-READY )  move_to NOT-READY|\",
+                                      \"\",
+                                      \"\",
+                                      \"STANDBY\",
+                                      \"FwStateOKNotPhysics\",
+                                      \"when ( $ALL$majority in_state ON )  move_to ON|when ( $ALL$majority in_state OUTER_ON )  move_to OUTER_ON|when ( $ALL$majority in_state OFF )  move_to OFF|when ( $ALL$majority in_state ERROR )  move_to ERROR|when ( $ALL$majority in_state NOT-READY )  move_to NOT-READY|\",
+                                      \"\",
+                                      \"\",
+                                      \"OUTER_ON\",
+                                      \"FwStateAttention1\",
+                                      \"when ( $ALL$majority in_state ON )  move_to ON|when ( $ALL$majority in_state STANDBY )  move_to STANDBY|when ( $ALL$majority in_state OFF )  move_to OFF|when ( $ALL$majority in_state ERROR )  move_to ERROR|when ( $ALL$majority in_state NOT-READY )  move_to NOT-READY|\",
+                                      \"\",
+                                      \"\",
+                                      \"NOT-READY\",
+                                      \"FwStateAttention1\",
+                                      \"when ( $ALL$majority in_state ON )  move_to ON|when ( $ALL$majority in_state OUTER_ON )  move_to OUTER_ON|when ( $ALL$majority in_state STANDBY )  move_to STANDBY|when ( $ALL$majority in_state OFF )  move_to OFF|when ( $ALL$majority in_state ERROR )  move_to ERROR|\",
+                                      \"\",
+                                      \"\");
+    dpSetWait(typeDp + \".states\", states);
+  }
+}
+
+void emumaj_restoreFsmTypes() {
+  dyn_string typesToUpdate = makeDynString(\"CSC_LV_NODES\",
+                                           \"CSC_LV_HV\",
+                                           \"CSC_LV_TREE_NODES\",
+                                           \"EMUFEDNodes\",
+                                           \"EMUNodes\",
+                                           \"EMUSTBYNodes\",
+                                           \"EMUTREESTBYNodes\",
+                                           \"EMUTREENodes\",
+                                           \"EMUTREENodes_I\",
+                                           \"EMUTREENodes_O\",
+                                           \"EMUTREENodes_S\",
+                                           \"CMS_CSC_ME11_HV_Type\");
+  
+  for (int i=1; i <= dynlen(typesToUpdate); i++) {
+    string typeDp = \"fwOT_\" + typesToUpdate[i];
+    if (!dpExists(typeDp)) {
+      continue;
+    }
+    if (dpExists(typeDp + \"_majBackup\")) {
+//      int error;
+//      dpCopy(typeDp + \"_majBackup\", typeDp, error);
+      string panel;
+      dyn_string components, states, actions, parameters;
+      dpGet(typeDp + \"_majBackup.panel\", panel,
+            typeDp + \"_majBackup.components\", components,
+            typeDp + \"_majBackup.states\", states,
+            typeDp + \"_majBackup.actions\", actions,
+            typeDp + \"_majBackup.parameters\", parameters);
+      dpSetWait(typeDp + \".panel\", panel,
+                typeDp + \".components\", components,
+                typeDp + \".states\", states,
+                typeDp + \".actions\", actions,
+                typeDp + \".parameters\", parameters);
+    }
+  }  
+}
+
+// CSC majority configuration
 void configureHv(string topNode) {
   majority_addDevice(\"HV_OUTER\", // this defines the internal name of the device for the majority
   \"HV_1\", // this is the corresponding Device Unit Type
-  makeDynString(\".status\",\".off_channels\", \".last_vset\"), // define the datapoint elements you need to connect
+  makeDynString(\".status\",\".off_channels\", \".last_vset\", \".reserve1\"), // define the datapoint elements you need to connect
   makeDynString(\"on\",\"standby\",\"error\"), // these are the basic device states for this device
   18 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
   );
             
   majority_addDevice(\"HV_INNER\", // this defines the internal name of the device for the majority
   \"HV_1\", // this is the corresponding Device Unit Type
-  makeDynString(\".status\",\".off_channels\", \".last_vset\"), // define the datapoint elements you need to connect
+  makeDynString(\".status\",\".off_channels\", \".last_vset\", \".reserve1\"), // define the datapoint elements you need to connect
   makeDynString(\"on\",\"standby\",\"error\"), // these are the basic device states for this device
   18 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
   );
@@ -33,14 +251,14 @@ void configureHv(string topNode) {
   majority_addColors(\"HV_INNER\", \"standby\", makeDynString(\"_Window\",\"FwStateAttention1\",\"yellow\",\"yellow\",\"yellow\"));    
   majority_addColors(\"HV_INNER\", \"error\", majority_getStandardColorsError() );    
 
-  majority_addPercentages(topNode, \"HV_OUTER\", makeDynFloat(95, 95, 5)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
-  majority_addPercentages(topNode, \"HV_INNER\", makeDynFloat(95, 95, 5)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+  majority_addPercentages(topNode, \"HV_OUTER\", makeDynFloat(97, 97, 3)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+  majority_addPercentages(topNode, \"HV_INNER\", makeDynFloat(97, 97, 3)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
 }
 
 void configureLv(string topNode) {
   majority_addDevice(\"LV\", // this defines the internal name of the device for the majority
   \"LV_1\", // this is the corresponding Device Unit Type
-  makeDynString(\".status\", \".chamber_state\", \".noalert_channels\"), // define the datapoint elements you need to connect
+  makeDynString(\".status\", \".noalert_channels\"), // define the datapoint elements you need to connect
   makeDynString(\"on\", \"error\", \"no_communication\"), // these are the basic device states for this device
   19 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
   );
@@ -56,7 +274,7 @@ void configureLv(string topNode) {
 void configureTemp(string topNode) {
   majority_addDevice(\"TEMP\", // this defines the internal name of the device for the majority
   \"TEMP_1\", // this is the corresponding Device Unit Type
-  makeDynString(\".status\", \".chamber_state\", \".off_channels\"), // define the datapoint elements you need to connect
+  makeDynString(\".status\", \".off_channels\"), // define the datapoint elements you need to connect
   makeDynString(\"ok\", \"alert\", \"no_communication\"), // these are the basic device states for this device
   7 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
   );
@@ -208,7 +426,7 @@ void configureME11Hv(string topNode) {
   majority_addColors(\"HV_ME11\", \"standby\", makeDynString(\"_Window\",\"FwStateAttention1\",\"yellow\",\"yellow\",\"yellow\"));    
   majority_addColors(\"HV_ME11\", \"error\", majority_getStandardColorsError() );    
 
-  majority_addPercentages(topNode, \"HV_ME11\", makeDynFloat(95, 95, 5)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+  majority_addPercentages(topNode, \"HV_ME11\", makeDynFloat(95, 95, 3)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
 }
 
 void configureGas(string topNode) {
@@ -270,61 +488,8 @@ LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
 T 
 1
 LANG:1 18 Configure Majority
-"main() { 
-  
-  majority_new(majorityTopNode); // you may want to pass a second parameter that is the treeCache topNode if you need to use 
-  //  the same treeCache but with different topNodes for different majorities
-  majority_deleteConfig(majorityTopNode);  
-
-  DebugTN(\"Creating HV majority\");
-  configureHv(majorityTopNode);
-  DebugTN(\"Creating ME1/1 HV majority\");
-  configureME11Hv(majorityTopNode);
-  DebugTN(\"Creating HV Primary majority\");
-  configureHVPrimaries(majorityTopNode);
-  DebugTN(\"Creating LV majority\");
-  configureLv(majorityTopNode);
-  DebugTN(\"Creating Temperature majority\");
-  configureTemp(majorityTopNode);
-  DebugTN(\"Creating CRB majority\");
-  configureCrb(majorityTopNode);
-  DebugTN(\"Creating Maraton Channel majority\");
-  configureMaratonChannel(majorityTopNode);
-  DebugTN(\"Creating Maraton Crate majority\");
-  configureMaratonCrate(majorityTopNode);
-  DebugTN(\"Creating DDU majority\");
-  configureDDU(majorityTopNode);
-  DebugTN(\"Creating LV for HV majority\");
-  configureLvForHv(majorityTopNode);
-  DebugTN(\"Creating Atlas PSU branch majority\");
-  configureAtlasPSU(majorityTopNode);
-  DebugTN(\"Creating GAS majority (top device only)\");
-  configureGas(majorityTopNode);
-  DebugTN(\"Creating COOLING majority (top device only)\");
-  configureCooling(majorityTopNode);
-
-  DebugTN(\"Creating general majority parameters\");
-  
-  // Configure the polling: for each node, define the number of polls, the poll_time in milliseconds and the maximum number of polls
-  //  Possible values could be 100,2 
- 
-  majority_clearPollConfig();
-//  majority_addPollConfig(majorityTopNode, 3, 500, 30);
-
-  // OR: If you want you can try to use the automaticConfig that tries to change the polling time depending on the number of children of each node 
-  //   In this case you define a mean poll time (divided in 1 or 2 polls) and a max number of rejected threads. Possible values  100, 2
-  // IF YOU USE THE AUTOMATIC CONFIGURATION, YOU DO NOT NEED TO CALL THE PREVIOUS TWO FUNCTIONS (majority_clearPollConfig and majority_addPollConfig)
-  majority_automaticConfig(100, 2);
-
-  // this is the refresh of the datapoints from the map in memory (500 ms should be ok)
-  majority_setRefresh(500);
-
-  // then create the majority
-  // to change the configuration you will need to repeat the steps after addPercentages and call again majority_create
-
-  majority_create();
-  
-  DebugTN(\"DONE\");
+"main() {
+emumaj_createMajorityConfiguration(majorityTopNode);
 }" 0
  E E E
 13 1
@@ -607,7 +772,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 40 250 134 264
+E E 0 1 1 2 1 E U  0 E 40 250 155 265
 0 2 2 "0s" 0 0 0 192 0 0  40 250 1
 1
 LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
@@ -626,7 +791,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 150 250 197 264
+E E 0 1 1 2 1 E U  0 E 150 250 206 265
 0 2 2 "0s" 0 0 0 192 0 0  150 250 1
 1
 LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
