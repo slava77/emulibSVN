@@ -51,8 +51,8 @@
                 <to>$xmasUrl.parameters/url</to>
             </copy>
             <copy>
-                <from>'http://localhost:20044/urn:xdaq-application:lid=30/EmuCounterNames'</from> <!-- for development -->
-                <!--from>'http://csc-dcs-pc1:20040/urn:xdaq-application:lid=30/EmuCounterNames'</from--> <!-- production - P5 -->
+                <!--from>'http://localhost:20044/urn:xdaq-application:lid=30/EmuCounterNames'</from--> <!-- for development -->
+                <from>'http://csc-dcs-pc1:20040/urn:xdaq-application:lid=30/EmuCounterNames'</from> <!-- production - P5 -->
                 <to>$counterNamesUrl.parameters/url</to>
             </copy>
         </assign>

@@ -19,14 +19,14 @@
             <wsdl:input name="inMsg">
                 <!-- local tunnel -->
                 <!--sched:trigger name="pullMinusSideTmbTriggerCounters" type="simple" enabled="true" description="Pulls TMB trigger counters for minus side" repeat="indefinite" interval="30000" message="http://localhost:20044/urn:xdaq-application:lid=30/XmlOutput"/-->
-                <sched:trigger name="pullMinusSideTmbAllCounters" type="simple" enabled="true" description="Pulls TMB all counters for minus side" repeat="indefinite" interval="30000" message="http://localhost:20044/urn:xdaq-application:lid=30/DatabaseOutput"/>
+                <!--sched:trigger name="pullMinusSideTmbAllCounters" type="simple" enabled="true" description="Pulls TMB all counters for minus side" repeat="indefinite" interval="30000" message="http://localhost:20044/urn:xdaq-application:lid=30/DatabaseOutput"/-->
                 <!-- =========== -->
-                <!-- P5 - production ->
+                <!-- P5 - production -->
                 <sched:trigger name="pullPlusSideTmbTriggerCounters" type="simple" enabled="true" description="Pulls TMB trigger counters for plus side" repeat="indefinite" interval="30000" message="http://csc-dcs-pc1:20040/urn:xdaq-application:lid=30/XmlOutput"/>
                 <sched:trigger name="pullPlusSideTmbAllCounters" type="simple" enabled="true" description="Pulls all TMB counters for plus side" repeat="indefinite" interval="30000" message="http://csc-dcs-pc1:20040/urn:xdaq-application:lid=30/DatabaseOutput"/>
                 <sched:trigger name="pullMinusSideTmbTriggerCounters" type="simple" enabled="true" description="Pulls TMB trigger counters for minus side" repeat="indefinite" interval="30000" message="http://csc-dcs-pc2:20040/urn:xdaq-application:lid=30/XmlOutput"/>
                 <sched:trigger name="pullMinusSideTmbAllCounters" type="simple" enabled="true" description="Pulls all TMB counters for minus side" repeat="indefinite" interval="30000" message="http://csc-dcs-pc2:20040/urn:xdaq-application:lid=30/DatabaseOutput"/>
-                <!- =========== -->
+                <!-- =========== -->
             </wsdl:input>
         </wsdl:operation>
     </wsdl:binding>

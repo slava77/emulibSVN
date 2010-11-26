@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<process
+    name="httpFactCollectionInput"
+    targetNamespace="http://www.cern.ch/cms/csc/exsys/bpel/httpFactCollectionInput"
+    xmlns:tns="http://www.cern.ch/cms/csc/exsys/bpel/httpFactCollectionInput"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+    xmlns:sxt="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Trace" 
+    xmlns:sxed="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Editor"
+    xmlns:sxeh="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/ErrorHandling">
+    <import namespace="http://www.cern.ch/cms/csc/dw/ws/factCollectionInput" location="CdwWS/CdwFactCollectionInput.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <partnerLinks>
+        <partnerLink name="CdwPartner" xmlns:tns="http://www.cern.ch/cms/csc/dw/ws/factCollectionInput" partnerLinkType="tns:factcollectionLinkType" partnerRole="factcollectionRole"/>
+        <partnerLink name="FactProvider" xmlns:tns="http://www.cern.ch/cms/csc/dw/ws/factCollectionInput" partnerLinkType="tns:factcollectionLinkType" myRole="factcollectionRole"/>
+    </partnerLinks>
+    <variables>
+        <variable name="response" xmlns:tns="http://www.cern.ch/cms/csc/dw/ws/factCollectionInput" messageType="tns:inputResponse"/>
+        <variable name="factCollection" xmlns:tns="http://www.cern.ch/cms/csc/dw/ws/factCollectionInput" messageType="tns:input"/>
+    </variables>
+    <sequence>
+        <receive name="ReceiveFactCollection" createInstance="yes" partnerLink="FactProvider" operation="input" xmlns:tns="http://www.cern.ch/cms/csc/dw/ws/factCollectionInput" portType="tns:factcollection" variable="factCollection"/>
+        <invoke name="SendToCdw" partnerLink="CdwPartner" operation="input" xmlns:tns="http://www.cern.ch/cms/csc/dw/ws/factCollectionInput" portType="tns:factcollection" inputVariable="factCollection" outputVariable="response">
+            <!--
+            <sxt:trace>
+                <sxt:log level="info" location="onStart">
+                    <from variable="factCollection" part="parameters"></from>
+                </sxt:log>
+            </sxt:trace>
+            -->
+        </invoke>
+        <reply name="Reply" partnerLink="FactProvider" operation="input" xmlns:tns="http://www.cern.ch/cms/csc/dw/ws/factCollectionInput" portType="tns:factcollection" variable="response"/>
+    </sequence>
+</process>
+
+
+
