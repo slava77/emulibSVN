@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<casa xmlns="http://java.sun.com/xml/ns/casa" xmlns:ns1="http://www.cern.ch/cms/csc/exsys/wsdl/pullTmbCountersScheduler" xmlns:ns2="ExsysEsb" xmlns:ns3="http://www.cern.ch/cms/csc/dw/ws/factCollectionInput" xmlns:ns4="http://www.cern.ch/cms/csc/dw/ws/dataServiceEntityInput" xmlns:ns5="http://www.cern.ch/cms/csc/dw/ws/dataQueryService" xmlns:ns6="http://www.cern.ch/cms/csc/exsys/bpel/pullTmbCounters" xmlns:ns7="http://ws.exsys.csc.cms.cern.org/" xmlns:xlink="http://www.w3.org/2000/xlink">
+<casa xmlns="http://java.sun.com/xml/ns/casa" xmlns:ns1="http://www.cern.ch/cms/csc/exsys/wsdl/pullTmbCountersScheduler" xmlns:ns2="ExsysEsb" xmlns:ns3="http://www.cern.ch/cms/csc/dw/ws/factCollectionInput" xmlns:ns4="http://www.cern.ch/cms/csc/dw/ws/dataServiceEntityInput" xmlns:ns5="http://www.cern.ch/cms/csc/dw/ws/dataQueryService" xmlns:ns6="http://www.cern.ch/cms/csc/exsys/bpel/pullTmbCounters" xmlns:ns7="http://www.cern.ch/cms/csc/exsys/bpel/httpFactCollectionInput" xmlns:ns8="http://ws.exsys.csc.cms.cern.org/" xmlns:xlink="http://www.w3.org/2000/xlink">
     <endpoints>
         <endpoint endpoint-name="pullTmbCountersScheduler_TriggerPort" interface-name="ns1:TriggerPortType" name="endpoint1" service-name="ns1:TriggerService"/>
         <endpoint endpoint-name="cdwFCInput" interface-name="ns3:factcollection" name="endpoint2" service-name="ns2:ExsysEsbService2"/>
         <endpoint endpoint-name="cdwDSEInput" interface-name="ns4:dataservice" name="endpoint3" service-name="ns2:ExsysEsbService1"/>
         <endpoint endpoint-name="cdwDataQueryService" interface-name="ns5:dataqueryservice" name="endpoint4" service-name="ns2:ExsysEsbService3"/>
-        <endpoint display-name="SchedulerPartner" endpoint-name="TriggerPortTypeRole_myRole" file-path="tmbCounters\pullTmbCounters.bpel" interface-name="ns1:TriggerPortType" name="endpoint5" process-name="pullTmbCounters" service-name="ns6:SchedulerPartner"/>
-        <endpoint display-name="HttpProxyPartner" endpoint-name="HttpProxyWSRole_partnerRole" file-path="tmbCounters\pullTmbCounters.bpel" interface-name="ns7:HttpProxyWS" name="endpoint6" process-name="pullTmbCounters" service-name="ns6:HttpProxyPartner"/>
-        <endpoint display-name="CdwDataQueryPartner" endpoint-name="DataQueryServiceRole_partnerRole" file-path="tmbCounters\pullTmbCounters.bpel" interface-name="ns5:dataqueryservice" name="endpoint7" process-name="pullTmbCounters" service-name="ns6:CdwDataQueryPartner"/>
-        <endpoint display-name="CdwDataServiceInputPartner" endpoint-name="dataserviceRole_partnerRole" file-path="tmbCounters\pullTmbCounters.bpel" interface-name="ns4:dataservice" name="endpoint8" process-name="pullTmbCounters" service-name="ns6:CdwDataServiceInputPartner"/>
-        <endpoint display-name="CdwPartner" endpoint-name="factcollectionRole_partnerRole" file-path="tmbCounters\pullTmbCounters.bpel" interface-name="ns3:factcollection" name="endpoint9" process-name="pullTmbCounters" service-name="ns6:CdwPartner"/>
-        <endpoint endpoint-name="javaee_HttpProxyWSPort" interface-name="ns7:HttpProxyWS" name="endpoint10" service-name="ns7:HttpProxyWSService"/>
+        <endpoint endpoint-name="httpFCInput" interface-name="ns3:factcollection" name="endpoint5" service-name="ns2:ExsysEsbService4"/>
+        <endpoint display-name="SchedulerPartner" endpoint-name="TriggerPortTypeRole_myRole" file-path="tmbCounters/pullTmbCounters.bpel" interface-name="ns1:TriggerPortType" name="endpoint6" process-name="pullTmbCounters" service-name="ns6:SchedulerPartner"/>
+        <endpoint display-name="FactProvider" endpoint-name="factcollectionRole_myRole" file-path="httpFactCollectionInput.bpel" interface-name="ns3:factcollection" name="endpoint7" process-name="httpFactCollectionInput" service-name="ns7:FactProvider"/>
+        <endpoint display-name="HttpProxyPartner" endpoint-name="HttpProxyWSRole_partnerRole" file-path="tmbCounters/pullTmbCounters.bpel" interface-name="ns8:HttpProxyWS" name="endpoint8" process-name="pullTmbCounters" service-name="ns6:HttpProxyPartner"/>
+        <endpoint display-name="CdwDataQueryPartner" endpoint-name="DataQueryServiceRole_partnerRole" file-path="tmbCounters/pullTmbCounters.bpel" interface-name="ns5:dataqueryservice" name="endpoint9" process-name="pullTmbCounters" service-name="ns6:CdwDataQueryPartner"/>
+        <endpoint display-name="CdwDataServiceInputPartner" endpoint-name="dataserviceRole_partnerRole" file-path="tmbCounters/pullTmbCounters.bpel" interface-name="ns4:dataservice" name="endpoint10" process-name="pullTmbCounters" service-name="ns6:CdwDataServiceInputPartner"/>
+        <endpoint display-name="CdwPartner" endpoint-name="factcollectionRole_partnerRole" file-path="tmbCounters/pullTmbCounters.bpel" interface-name="ns3:factcollection" name="endpoint11" process-name="pullTmbCounters" service-name="ns6:CdwPartner"/>
+        <endpoint display-name="CdwPartner" endpoint-name="factcollectionRole_partnerRole" file-path="httpFactCollectionInput.bpel" interface-name="ns3:factcollection" name="endpoint12" process-name="httpFactCollectionInput" service-name="ns7:CdwPartner"/>
+        <endpoint endpoint-name="javaee_HttpProxyWSPort" interface-name="ns8:HttpProxyWS" name="endpoint13" service-name="ns8:HttpProxyWSService"/>
     </endpoints>
     <service-units>
         <service-engine-service-unit artifacts-zip="ExsysEsbBpel.jar" component-name="sun-bpel-engine" defined="true" description="Represents this Service Unit" internal="true" name="ExsysEsb-ExsysEsbBpel" unit-name="ExsysEsbBpel" unknown="false" x="89" y="73">
-            <provides endpoint="endpoint5"/>
-            <consumes endpoint="endpoint6"/>
-            <consumes endpoint="endpoint7"/>
+            <provides endpoint="endpoint6"/>
+            <provides endpoint="endpoint7"/>
             <consumes endpoint="endpoint8"/>
             <consumes endpoint="endpoint9"/>
+            <consumes endpoint="endpoint10"/>
+            <consumes endpoint="endpoint11"/>
+            <consumes endpoint="endpoint12"/>
         </service-engine-service-unit>
         <service-engine-service-unit artifacts-zip="ExsysEsbEjb.jar" component-name="sun-javaee-engine" defined="true" description="Represents this Service Unit" internal="true" name="ExsysEsb-ExsysEsbEjb" unit-name="ExsysEsbEjb" unknown="false" x="403" y="48">
-            <provides endpoint="endpoint10"/>
+            <provides endpoint="endpoint13"/>
         </service-engine-service-unit>
         <binding-component-service-unit artifacts-zip="sun-http-binding.jar" component-name="sun-http-binding" description="Represents this Service Unit" name="ExsysEsb-sun-http-binding" unit-name="sun-http-binding">
             <ports>
@@ -40,6 +45,11 @@
                     <consumes endpoint="endpoint4"/>
                     <provides endpoint="endpoint4"/>
                 </port>
+                <port bindingType="http" x="67" y="722">
+                    <link xlink:href="../jbiasa/ExsysEsb.wsdl#xpointer(/definitions/service[@name='ExsysEsbService4']/port[@name='httpFCInput'])" xlink:type="simple"/>
+                    <consumes endpoint="endpoint5"/>
+                    <provides endpoint="endpoint5"/>
+                </port>
             </ports>
         </binding-component-service-unit>
         <binding-component-service-unit artifacts-zip="sun-scheduler-binding.jar" component-name="sun-scheduler-binding" description="Represents this Service Unit" name="ExsysEsb-sun-scheduler-binding" unit-name="sun-scheduler-binding">
@@ -53,49 +63,55 @@
         </binding-component-service-unit>
     </service-units>
     <connections>
-        <connection consumer="endpoint1" provider="endpoint5" state="unchanged"/>
-        <connection consumer="endpoint8" provider="endpoint3" state="new"/>
-        <connection consumer="endpoint7" provider="endpoint4" state="new"/>
-        <connection consumer="endpoint6" provider="endpoint10" state="unchanged"/>
-        <connection consumer="endpoint9" provider="endpoint2" state="new"/>
+        <connection consumer="endpoint10" provider="endpoint3" state="new"/>
+        <connection consumer="endpoint1" provider="endpoint6" state="unchanged"/>
+        <connection consumer="endpoint9" provider="endpoint4" state="new"/>
+        <connection consumer="endpoint8" provider="endpoint13" state="unchanged"/>
+        <connection consumer="endpoint11" provider="endpoint2" state="new"/>
+        <connection consumer="endpoint5" provider="endpoint7" state="new"/>
+        <connection consumer="endpoint12" provider="endpoint2" state="new"/>
     </connections>
     <porttypes>
         <link xlink:href="../jbiasa/ExsysEsb.wsdl#xpointer(/definitions/portType[@name='dummyCasaPortType'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/META-INF/ExsysEsbBpel/src/_references/_projects/ExsysEsbEjb/src/conf/wsdl/HttpProxy/HttpProxyWSService.wsdl#xpointer(/definitions/portType[@name='HttpProxyWS'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/ExsysEsbEjb/META-INF/wsdl/HttpProxy/HttpProxyWSService.wsdl#xpointer(/definitions/portType[@name='HttpProxyWS'])" xlink:type="simple"/>
         <link xlink:href="../jbiServiceUnits/ExsysEsb.wsdl#xpointer(/definitions/portType[@name='dummyCasaPortType'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/ExsysEsbBpel/tmbCounters/pullTmbCountersScheduler.wsdl#xpointer(/definitions/portType[@name='TriggerPortType'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/ExsysEsbBpel/CdwWS/CdwFactCollectionInput.wsdl#xpointer(/definitions/portType[@name='factcollection'])" xlink:type="simple"/>
         <link xlink:href="../jbiServiceUnits/ExsysEsbBpel/CdwWS/CdwDataQueryService.wsdl#xpointer(/definitions/portType[@name='dataqueryservice'])" xlink:type="simple"/>
         <link xlink:href="../jbiServiceUnits/ExsysEsbBpel/CdwWS/CdwDataServiceEntityInput.wsdl#xpointer(/definitions/portType[@name='dataservice'])" xlink:type="simple"/>
-        <link xlink:href="../jbiServiceUnits/ExsysEsbBpel/CdwWS/CdwFactCollectionInput.wsdl#xpointer(/definitions/portType[@name='factcollection'])" xlink:type="simple"/>
-        <link xlink:href="../jbiServiceUnits/ExsysEsbBpel/tmbCounters/pullTmbCountersScheduler.wsdl#xpointer(/definitions/portType[@name='TriggerPortType'])" xlink:type="simple"/>
-        <link xlink:href="../jbiServiceUnits/ExsysEsbEjb/META-INF/wsdl/HttpProxy/HttpProxyWSService.wsdl#xpointer(/definitions/portType[@name='HttpProxyWS'])" xlink:type="simple"/>
-        <link xlink:href="../jbiServiceUnits/META-INF/ExsysEsbBpel/src/_references/_projects/ExsysEsbEjb/src/conf/wsdl/HttpProxy/HttpProxyWSService.wsdl#xpointer(/definitions/portType[@name='HttpProxyWS'])" xlink:type="simple"/>
     </porttypes>
     <bindings>
         <link xlink:href="../jbiasa/ExsysEsb.wsdl#xpointer(/definitions/binding[@name='casaBinding2'])" xlink:type="simple"/>
         <link xlink:href="../jbiasa/ExsysEsb.wsdl#xpointer(/definitions/binding[@name='casaBinding3'])" xlink:type="simple"/>
         <link xlink:href="../jbiasa/ExsysEsb.wsdl#xpointer(/definitions/binding[@name='casaBinding1'])" xlink:type="simple"/>
+        <link xlink:href="../jbiasa/ExsysEsb.wsdl#xpointer(/definitions/binding[@name='casaBinding4'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/META-INF/ExsysEsbBpel/src/_references/_projects/ExsysEsbEjb/src/conf/wsdl/HttpProxy/HttpProxyWSService.wsdl#xpointer(/definitions/binding[@name='HttpProxyWSPortBinding'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/ExsysEsbEjb/META-INF/wsdl/HttpProxy/HttpProxyWSService.wsdl#xpointer(/definitions/binding[@name='HttpProxyWSPortBinding'])" xlink:type="simple"/>
         <link xlink:href="../jbiServiceUnits/ExsysEsb.wsdl#xpointer(/definitions/binding[@name='casaBinding2'])" xlink:type="simple"/>
         <link xlink:href="../jbiServiceUnits/ExsysEsb.wsdl#xpointer(/definitions/binding[@name='casaBinding3'])" xlink:type="simple"/>
         <link xlink:href="../jbiServiceUnits/ExsysEsb.wsdl#xpointer(/definitions/binding[@name='casaBinding1'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/ExsysEsb.wsdl#xpointer(/definitions/binding[@name='casaBinding4'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/ExsysEsbBpel/tmbCounters/pullTmbCountersScheduler.wsdl#xpointer(/definitions/binding[@name='TriggerBinding'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/ExsysEsbBpel/CdwWS/CdwFactCollectionInput.wsdl#xpointer(/definitions/binding[@name='factcollectionPortBinding'])" xlink:type="simple"/>
         <link xlink:href="../jbiServiceUnits/ExsysEsbBpel/CdwWS/CdwDataQueryService.wsdl#xpointer(/definitions/binding[@name='DataQueryServicePortBinding'])" xlink:type="simple"/>
         <link xlink:href="../jbiServiceUnits/ExsysEsbBpel/CdwWS/CdwDataServiceEntityInput.wsdl#xpointer(/definitions/binding[@name='dataservicePortBinding'])" xlink:type="simple"/>
-        <link xlink:href="../jbiServiceUnits/ExsysEsbBpel/CdwWS/CdwFactCollectionInput.wsdl#xpointer(/definitions/binding[@name='factcollectionPortBinding'])" xlink:type="simple"/>
-        <link xlink:href="../jbiServiceUnits/ExsysEsbBpel/tmbCounters/pullTmbCountersScheduler.wsdl#xpointer(/definitions/binding[@name='TriggerBinding'])" xlink:type="simple"/>
-        <link xlink:href="../jbiServiceUnits/ExsysEsbEjb/META-INF/wsdl/HttpProxy/HttpProxyWSService.wsdl#xpointer(/definitions/binding[@name='HttpProxyWSPortBinding'])" xlink:type="simple"/>
-        <link xlink:href="../jbiServiceUnits/META-INF/ExsysEsbBpel/src/_references/_projects/ExsysEsbEjb/src/conf/wsdl/HttpProxy/HttpProxyWSService.wsdl#xpointer(/definitions/binding[@name='HttpProxyWSPortBinding'])" xlink:type="simple"/>
     </bindings>
     <services>
         <link xlink:href="../jbiasa/ExsysEsb.wsdl#xpointer(/definitions/service[@name='ExsysEsbService2'])" xlink:type="simple"/>
         <link xlink:href="../jbiasa/ExsysEsb.wsdl#xpointer(/definitions/service[@name='ExsysEsbService1'])" xlink:type="simple"/>
         <link xlink:href="../jbiasa/ExsysEsb.wsdl#xpointer(/definitions/service[@name='ExsysEsbService3'])" xlink:type="simple"/>
+        <link xlink:href="../jbiasa/ExsysEsb.wsdl#xpointer(/definitions/service[@name='ExsysEsbService4'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/META-INF/ExsysEsbBpel/src/_references/_projects/ExsysEsbEjb/src/conf/wsdl/HttpProxy/HttpProxyWSService.wsdl#xpointer(/definitions/service[@name='HttpProxyWSService'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/ExsysEsbEjb/META-INF/wsdl/HttpProxy/HttpProxyWSService.wsdl#xpointer(/definitions/service[@name='HttpProxyWSService'])" xlink:type="simple"/>
         <link xlink:href="../jbiServiceUnits/ExsysEsb.wsdl#xpointer(/definitions/service[@name='ExsysEsbService2'])" xlink:type="simple"/>
         <link xlink:href="../jbiServiceUnits/ExsysEsb.wsdl#xpointer(/definitions/service[@name='ExsysEsbService1'])" xlink:type="simple"/>
         <link xlink:href="../jbiServiceUnits/ExsysEsb.wsdl#xpointer(/definitions/service[@name='ExsysEsbService3'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/ExsysEsb.wsdl#xpointer(/definitions/service[@name='ExsysEsbService4'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/ExsysEsbBpel/tmbCounters/pullTmbCountersScheduler.wsdl#xpointer(/definitions/service[@name='TriggerService'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/ExsysEsbBpel/CdwWS/CdwFactCollectionInput.wsdl#xpointer(/definitions/service[@name='cdw'])" xlink:type="simple"/>
         <link xlink:href="../jbiServiceUnits/ExsysEsbBpel/CdwWS/CdwDataQueryService.wsdl#xpointer(/definitions/service[@name='cdw'])" xlink:type="simple"/>
         <link xlink:href="../jbiServiceUnits/ExsysEsbBpel/CdwWS/CdwDataServiceEntityInput.wsdl#xpointer(/definitions/service[@name='cdw'])" xlink:type="simple"/>
-        <link xlink:href="../jbiServiceUnits/ExsysEsbBpel/CdwWS/CdwFactCollectionInput.wsdl#xpointer(/definitions/service[@name='cdw'])" xlink:type="simple"/>
-        <link xlink:href="../jbiServiceUnits/ExsysEsbBpel/tmbCounters/pullTmbCountersScheduler.wsdl#xpointer(/definitions/service[@name='TriggerService'])" xlink:type="simple"/>
-        <link xlink:href="../jbiServiceUnits/ExsysEsbEjb/META-INF/wsdl/HttpProxy/HttpProxyWSService.wsdl#xpointer(/definitions/service[@name='HttpProxyWSService'])" xlink:type="simple"/>
-        <link xlink:href="../jbiServiceUnits/META-INF/ExsysEsbBpel/src/_references/_projects/ExsysEsbEjb/src/conf/wsdl/HttpProxy/HttpProxyWSService.wsdl#xpointer(/definitions/service[@name='HttpProxyWSService'])" xlink:type="simple"/>
     </services>
     <regions>
         <region name="WSDL Endpoints" width="150"/>

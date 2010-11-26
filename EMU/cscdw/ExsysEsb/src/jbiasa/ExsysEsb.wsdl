@@ -9,7 +9,7 @@
              xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
              xmlns:xsd="http://www.w3.org/2001/XMLSchema"
              targetNamespace="ExsysEsb"
-             xmlns:tns="ExsysEsb" xmlns:ns="http://www.cern.ch/cms/csc/dw/ws/factCollectionInput" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://www.cern.ch/cms/csc/dw/ws/dataServiceEntityInput" xmlns:ns2="http://www.cern.ch/cms/csc/dw/ws/dataQueryService">
+             xmlns:tns="ExsysEsb" xmlns:ns="http://www.cern.ch/cms/csc/dw/ws/factCollectionInput" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://www.cern.ch/cms/csc/dw/ws/dataServiceEntityInput" xmlns:ns2="http://www.cern.ch/cms/csc/dw/ws/dataQueryService" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/">
     <import namespace="http://www.cern.ch/cms/csc/dw/ws/factCollectionInput" location="../jbiServiceUnits/ExsysEsbBpel/CdwWS/CdwFactCollectionInput.wsdl"/>
     <import namespace="http://www.cern.ch/cms/csc/dw/ws/dataServiceEntityInput" location="../jbiServiceUnits/ExsysEsbBpel/CdwWS/CdwDataServiceEntityInput.wsdl"/>
     <import namespace="http://www.cern.ch/cms/csc/dw/ws/dataQueryService" location="../jbiServiceUnits/ExsysEsbBpel/CdwWS/CdwDataQueryService.wsdl"/>
@@ -59,27 +59,43 @@
             </fault>
         </operation>
     </binding>
+    <binding name="casaBinding4" type="ns:factcollection">
+        <http:binding verb="GET"/>
+        <operation name="input">
+            <http:operation location=""/>
+            <input>
+                <http:urlEncoded/>
+            </input>
+            <output/>
+            <fault name="Exception"/>
+        </operation>
+    </binding>
     <service name="ExsysEsbService2">
         <port name="cdwFCInput" binding="tns:casaBinding2">
             <soap:address location="http://localhost:8080/cdw/factcollection"/>
-            <!--soap:address location="http://macfrank:18080/cdw/factcollection"/-->
         </port>
     </service>
     <service name="ExsysEsbService1">
         <port name="cdwDSEInput" binding="tns:casaBinding3">
             <soap:address location="http://localhost:8080/cdw/dataservice"/>
-            <!--soap:address location="http://macfrank:18080/cdw/dataservice"/-->
         </port>
     </service>
     <service name="ExsysEsbService3">
         <port name="cdwDataQueryService" binding="tns:casaBinding1">
-            <!--soap:address location="http://localhost:8080/DataQueryServiceService/DataQueryService"/-->
-            <!--soap:address location="http://macfrank:18080/DataQueryServiceService/DataQueryService"/-->
             <soap:address location="http://localhost:8080/cdw/dataqueryservice"/>
-            <!--soap:address location="http://macfrank:18080/cdw/dataqueryservice"/-->
+        </port>
+    </service>
+    <service name="ExsysEsbService4">
+        <port name="httpFCInput" binding="tns:casaBinding4">
+            <http:address location="http://localhost:${HttpDefaultPort}/ExsysEsb/httpFCInput"/>
         </port>
     </service>
 </definitions>
+
+
+
+
+
 
 
 
