@@ -11,6 +11,7 @@ import com.espertech.esper.client.EPServiceProviderManager;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 
 /**
  *

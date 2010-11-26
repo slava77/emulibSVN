@@ -10,19 +10,26 @@ import com.espertech.esper.client.EPRuntime;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.EJBs;
 import javax.ejb.Stateless;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import org.cern.cms.csc.exsys.re.conclusion.ConclusionCacheService;
 import org.cern.cms.csc.exsys.re.conclusion.factory.ConclusionFactory;
 import org.cern.cms.csc.exsys.re.conclusion.factory.DefaultConclusionFactory;
+import org.cern.cms.csc.exsys.re.dao.ConclusionDaoLocal;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
 import org.cern.cms.csc.exsys.re.model.Rule;
 
@@ -32,6 +39,10 @@ import org.cern.cms.csc.exsys.re.model.Rule;
  * This is a bean dealing with Esper runtime (e.g. configuring it with rules.
  */
 @Stateless
+@EJBs({
+    @EJB(name="ejb/OntologyDao", beanInterface=org.cern.cms.csc.dw.dao.OntologyDaoLocal.class),
+    @EJB(name="ejb/ConclusionDao", beanInterface=org.cern.cms.csc.exsys.re.dao.ConclusionDaoLocal.class)
+})
 public class RuleEngineManager implements RuleEngineManagerLocal {
 
     private static Logger logger = Logger.getLogger(RuleEngineManager.class.getName());
@@ -47,6 +58,12 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
     
     @EJB
     private RuleEngineDaoLocal reDao;
+    @EJB
+    private ConclusionDaoLocal conclusionDao;
+    //@Resource(name="ConclusionCacheService")
+    private ConclusionCacheService conclusionCacheService;
+
+    private Collection<Rule> activeRules = new ArrayList<Rule>();
 
     public RuleEngineManager() {
     }
@@ -83,11 +100,22 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
     private void configure(EPServiceProvider epService) {
         List<Rule> rules = reDao.getAllRules();
         logger.info("Configuring rules engine... Loading these rules: ");
+        Set<String> ruleNames = new HashSet<String>();
+        activeRules.clear();
+        getConclusionCacheService().clear();
         for (Rule rule: rules) {
-            logger.info("Rule: " + rule.getName());
-            ConclusionFactory factory = new DefaultConclusionFactory(rule.getConclusionType());
+            if (!rule.isEnabled()) {
+                continue;
+            }
+            if (ruleNames.contains(rule.getName())) {
+                throw new RuntimeException("More than one version of rule \"" + rule.getName() + "\" is enabled");
+            }
+            ruleNames.add(rule.getName());
+            logger.info("Rule activated: " + rule.getName() + " v" + rule.getVersion());
+            ConclusionFactory factory = new DefaultConclusionFactory(rule, reDao, getConclusionCacheService());
             EPStatement statement = epService.getEPAdministrator().createEPL(rule.getRuleDefinition(), rule.getName());
             statement.addListener(factory);
+            activeRules.add(rule);
         }
     }
 
@@ -117,4 +145,20 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
     public EPRuntime getEsperRuntime() {
         return getEpService().getEPRuntime();
     }
+
+    /**
+     * Get all rules that are currently active in the RE runtime
+     * @return all rules that are currently active in the RE runtime
+     */
+    public Collection<Rule> getActiveRules() {
+        return activeRules;
+    }
+
+    public ConclusionCacheService getConclusionCacheService() {
+        if (conclusionCacheService == null) {
+            conclusionCacheService = new ConclusionCacheService(conclusionDao);
+        }
+        return conclusionCacheService;
+    }
+
 }

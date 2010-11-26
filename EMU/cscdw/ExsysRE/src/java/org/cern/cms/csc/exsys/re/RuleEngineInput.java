@@ -16,6 +16,7 @@ import org.cern.cms.csc.exsys.re.model.Conclusion;
  * @author Evka
  */
 @Stateless
+@EJB(name="ejb/OntologyDao", beanInterface=org.cern.cms.csc.dw.dao.OntologyDaoLocal.class)
 public class RuleEngineInput implements RuleEngineInputRemote, RuleEngineInputLocal {
 
     private static Logger logger = Logger.getLogger(RuleEngineInput.class.getName());

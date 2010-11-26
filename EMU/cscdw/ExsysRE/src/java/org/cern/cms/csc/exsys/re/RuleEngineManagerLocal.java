@@ -7,7 +7,9 @@ package org.cern.cms.csc.exsys.re;
 
 import com.espertech.esper.client.EPRuntime;
 import com.espertech.esper.client.EPServiceProvider;
+import java.util.Collection;
 import javax.ejb.Local;
+import org.cern.cms.csc.exsys.re.model.Rule;
 
 /**
  *
@@ -35,5 +37,11 @@ public interface RuleEngineManagerLocal {
 
 //    /** Configures the given EPServiceProvider i.e. gets all the rules from DB and registers them with the given EPServiceProvider. */
 //    void configure(EPServiceProvider epService);
+
+    /**
+     * Get all rules that are currently active in the RE runtime
+     * @return all rules that are currently active in the RE runtime
+     */
+    Collection<Rule> getActiveRules();
 
 }
