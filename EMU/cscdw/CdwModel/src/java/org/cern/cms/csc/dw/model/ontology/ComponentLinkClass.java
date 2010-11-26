@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import org.cern.cms.csc.dw.model.annotation.gui.UseInTitle;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -79,6 +80,7 @@ public class ComponentLinkClass
     @XmlElement(required = true, type = java.lang.Long.class)
     protected Long id;
     @XmlElement(required = true)
+    @UseInTitle(order = 1)
     protected ComponentLinkClassType type;
     protected ComponentLinkClass inverse;
     protected ComponentLinkClass parent;

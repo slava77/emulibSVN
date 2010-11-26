@@ -45,4 +45,12 @@ public interface GComponent extends GNode {
      */
     Collection<GComponent> findRelatedGComponents(ComponentLinkClassType linkType, GComponentClass type);
 
+    /**
+     * Checks if the given component is related to this component via the given link type (recursive).
+     * @param linkType link type to check.
+     * @param gComponent component to check.
+     * @return
+     */
+    boolean isRelatedToRecusively(ComponentLinkClassType linkType, GComponent gComponent);
+
 }

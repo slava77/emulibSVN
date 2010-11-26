@@ -16,10 +16,10 @@
     jaxb:extensionBindingPrefixes="orm hj cu"
     jaxb:version="2.0">
 
-    <xsd:include schemaLocation="conclusionFactory.xsd"/>
+    <xsd:include schemaLocation="conclusion.xsd"/>
 
     <xsd:element name="action" type="tns:actionType"/>
-    <xsd:element name="actionFactory" type="tns:actionFactoryType"/>
+    <xsd:element name="actionType" type="tns:actionTypeType"/>
 
     <xsd:complexType name="actionType">
         <xsd:annotation>
@@ -57,30 +57,30 @@
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
-            <xsd:element name="actionFactory" type="tns:actionFactoryType">
+            <xsd:element name="actionType" type="tns:actionTypeType">
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:many-to-one>
-                            <orm:join-column name="REA_ACTION_FACTORY_ID" nullable="false"/>
+                            <orm:join-column name="REA_ACTION_TYPE_ID" nullable="false"/>
                         </hj:many-to-one>
-                        <jaxb:property name="actionFactory"/>
+                        <jaxb:property name="actionType"/>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
     </xsd:complexType>
 
-    <xsd:complexType name="actionFactoryType">
+    <xsd:complexType name="actionTypeType">
         <xsd:annotation>
             <xsd:appinfo>
-                <jaxb:class name="ActionFactory"/>
+                <jaxb:class name="ActionType"/>
                 <cu:extends name="org.cern.cms.csc.dw.model.base.EntityBase"/>
                 <hj:entity>
-                    <orm:table name="RE_ACTION_FACTORIES"/>
+                    <orm:table name="RE_ACTION_TYPE"/>
                 </hj:entity>
                 <hj:generated-id name="id">
-                    <orm:column name="REAF_ID"/>
-                    <orm:sequence-generator name="RE_ACTION_FACTORY_ID_SEQ" sequence-name="RE_ACTION_FACTORY_ID_SEQ"/>
+                    <orm:column name="REAT_ID"/>
+                    <orm:sequence-generator name="RE_ACTION_TYPE_ID_SEQ" sequence-name="RE_ACTION_TYPE_ID_SEQ"/>
                 </hj:generated-id>
             </xsd:appinfo>
         </xsd:annotation>
@@ -89,19 +89,19 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="REAF_EXECUTION_DELAY" precision="10" scale="0" nullable="false"/>
+                            <orm:column name="REAT_EXECUTION_DELAY" precision="10" scale="0" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="executionDelay"/>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
-            <xsd:element name="conclusionFactory" type="tns:conclusionFactoryType">
+            <xsd:element name="conclusionType" type="tns:conclusionTypeType">
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:many-to-one>
-                            <orm:join-column name="REAF_CONCLUSION_FACTORY_ID" nullable="false"/>
+                            <orm:join-column name="REAT_CONCLUSION_TYPE_ID" nullable="false"/>
                         </hj:many-to-one>
-                        <jaxb:property name="conclusionFactory"/>
+                        <jaxb:property name="conclusionType"/>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>

@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -102,6 +104,13 @@ public class PersistDao implements PersistDaoLocal {
         }
         
     }
+
+    public void delete(EntityBase cdwEntityObject) {
+        // refresh the entity and delete it
+        cdwEntityObject = em.getReference(cdwEntityObject.getClass(), cdwEntityObject.getEntityId());
+        em.remove(cdwEntityObject);
+    }
+
 
     /*
     private Message createMessageForEntitySaverQueue(Session session, EntityBase entity) throws JMSException {

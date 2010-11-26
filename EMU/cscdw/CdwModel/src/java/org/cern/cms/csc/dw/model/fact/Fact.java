@@ -77,6 +77,7 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
     DduFmmResetFact.class,
     DqmReportFact.class,
     DqmDduFact.class,
+    DduFmmIrqFact.class,
     DqmDduInputFact.class,
     LocalDAQStatusFact.class,
     DqmCscCfebFact.class,
@@ -91,8 +92,7 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
     EmuMonitorFact.class,
     TmbCounterFact.class,
     DqmCscFact.class,
-    DqmEmuFact.class,
-    DduFmmIrqFact.class
+    DqmEmuFact.class
 })
 @Entity(name = "org.cern.cms.csc.dw.model.fact.Fact")
 @Table(name = "CDW_FACTS")

@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.cern.cms.csc.dw.model.annotation;
+package org.cern.cms.csc.dw.model.annotation.gui;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

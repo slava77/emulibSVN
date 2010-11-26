@@ -13,7 +13,7 @@ import org.cern.cms.csc.dw.model.ontology.ComponentClass;
 import org.cern.cms.csc.dw.model.ontology.ComponentLinkClass;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponent;
 
-@Stateless
+@Stateless(mappedName="ejb/OntologyDao")
 @SuppressWarnings("unchecked")
 public class OntologyDao extends GOntologyDao implements OntologyDaoLocal, Serializable {
     

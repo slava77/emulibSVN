@@ -5,6 +5,7 @@
     xmlns:tns="http://www.cern.ch/cms/csc/exsys/re/model"
     elementFormDefault="qualified"
     xmlns:fct="http://www.cern.ch/cms/csc/dw/model"
+    xmlns:ont="http://www.cern.ch/cms/csc/dw/ontology"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
     xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
@@ -18,6 +19,7 @@
     jaxb:version="2.0">
 
     <xsd:import namespace="http://www.cern.ch/cms/csc/dw/model" schemaLocation="../../../dw/schema/fact.xsd"/>
+    <xsd:import namespace="http://www.cern.ch/cms/csc/dw/ontology" schemaLocation="../../../dw/schema/ontology.xsd"/>
     <xsd:include schemaLocation="rule.xsd"/>
 
     <xsd:element name="conclusion" type="tns:conclusionType"/>
@@ -46,7 +48,7 @@
                             <orm:column name="RECT_NAME" length="64" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="name"/>
-                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
                             <a:UseInTitle order="1"/>
                         </ann:annotate>
                     </xsd:appinfo>
@@ -72,6 +74,16 @@
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
+            <xsd:element name="intermediate" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="RECT_IS_INTERMEDIATE" nullable="false"/>
+                        </hj:basic>
+                        <jaxb:property name="intermediate"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
             <xsd:element name="severity" type="fct:severityType">
                 <xsd:annotation>
                     <xsd:appinfo>
@@ -87,15 +99,31 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="REC_TIME_CREATED" nullable="false"/>
+                            <orm:column name="RECT_TIME_CREATED" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="timeCreated"/>
-                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
                             <a:NoManualInput createDefaultValue="true"/>
                         </ann:annotate>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
+            <!--xsd:element name="affectedPaths" type="ont:componentLinkClassType" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-many fetch="EAGER" merge="false">
+                            <orm:join-table name="RE_CONCLUSION_T_AFFECTED_PATHS">
+                                <orm:join-column name="RECP_CONCLUSION_TYPE"/>
+                                <orm:inverse-join-column name="RECP_COMPONENT_LINK_CLASS"/>
+                            </orm:join-table>
+                        </hj:many-to-many>
+                        <jaxb:property name="affectedPaths"/>
+                        <ann:annotateGet xmlns:a="org.hibernate.annotations">
+                            <a:Fetch value="SUBSELECT"/>
+                        </ann:annotateGet>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element-->
         </xsd:sequence>
     </xsd:complexType>
     
@@ -114,6 +142,19 @@
             </xsd:appinfo>
         </xsd:annotation>
         <xsd:sequence>
+            <xsd:element name="components" type="ont:componentType" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-many fetch="EAGER">
+                            <orm:join-table name="RE_CONCLUSIONS_COMPONENTS">
+                                <orm:join-column name="RECC_CONCLUSION"/>
+                                <orm:inverse-join-column name="RECC_COMPONENT"/>
+                            </orm:join-table>
+                        </hj:many-to-many>
+                        <jaxb:property name="components"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
             <xsd:element name="title" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo>
@@ -253,7 +294,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="REC_IS_CLOSING" nullable="false"/>
+                            <orm:column name="RECR_IS_CLOSING" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="isClosing"/>
                     </xsd:appinfo>

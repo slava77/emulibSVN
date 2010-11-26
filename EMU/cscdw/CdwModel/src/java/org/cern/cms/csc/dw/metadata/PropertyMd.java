@@ -8,11 +8,13 @@ package org.cern.cms.csc.dw.metadata;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.cern.cms.csc.dw.model.annotation.NoManualInput;
+import org.cern.cms.csc.dw.model.annotation.gui.Label;
+import org.cern.cms.csc.dw.model.annotation.gui.NoManualInput;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 
@@ -59,6 +61,7 @@ public abstract class PropertyMd {
     @SuppressWarnings("unchecked")
     public PropertyMd(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
         prop.setDisplayName(nameToTitle(prop.getName()));
+        prop.setShortDescription("");
         this.entityClass = prop.getReadMethod().getDeclaringClass();
         this.propertyDescriptor = prop;
         Field f = getField();
@@ -68,6 +71,11 @@ public abstract class PropertyMd {
             if (noManualInputA != null) {
                 isManualInputAllowed = false;
                 createDefaultValue = noManualInputA.createDefaultValue();
+            }
+            Label labelA = f.getAnnotation(Label.class);
+            if (labelA != null) {
+                prop.setDisplayName(labelA.name());
+                prop.setShortDescription(labelA.description());
             }
         }
     }
@@ -185,6 +193,18 @@ public abstract class PropertyMd {
     }
 
     /**
+     * @return property description.
+     */
+    public String getDescription() {
+        if ((propertyDescriptor.getShortDescription() == null) ||
+             propertyDescriptor.getShortDescription().isEmpty()) {
+            return null;
+        }
+
+        return propertyDescriptor.getShortDescription();
+    }
+
+    /**
      * Get object describing the bean property (things like name, display name, setter, getter, etc.).
      * @return object describing the bean property (things like name, display name, setter, getter, etc.).
      */
@@ -220,8 +240,9 @@ public abstract class PropertyMd {
             return getTitle() + " is mandatory - value cannot be blank";
         }
 
-        // is type of the value compatible with the property type? (skip primitive types, since e.g. boolean.class.isAssignableFrom(Boolean.class) returns false, which is not actually true..
-        if ((value != null) && (!getType().isAssignableFrom(value.getClass()) && (!getType().isPrimitive()))) {
+        // is type of the value compatible with the property type? (skip primitive types, since e.g. boolean.class.isAssignableFrom(Boolean.class) returns false, which is not actually true.. also ignore when type is collection and type of the value is an array, since ManyToManyEditor converts collections to arrays (otherwise icefaces doesn't do conversion properly)
+        if ((value != null) && (!getType().isAssignableFrom(value.getClass()) && (!getType().isPrimitive()) &&
+                (!(Collection.class.isAssignableFrom(getType()) && value.getClass().isArray()) ))) {
             String msgStr = "Wrong value type: expected " + getType().getName() + ", got " + value.getClass().getName();
             logger.severe("Serious validation error for property " + getName() + " of class " + getGetterMethod().getDeclaringClass().getName() + ": " + msgStr);
             return msgStr;

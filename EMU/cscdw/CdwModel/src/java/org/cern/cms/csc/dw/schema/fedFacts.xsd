@@ -22,7 +22,7 @@
                  substitutionGroup="tns:fact"/>
 
     <xsd:element name="DDUFMMIRQFact"
-                 type="tns:DDUFMMResetFactType"
+                 type="tns:DDUFMMIRQFactType"
                  substitutionGroup="tns:fact"/>
 
     <xsd:element name="FEDFSMFact"
@@ -37,7 +37,7 @@
                     <orm:table name="CDW_DDU_FMM_RESET_FACTS"/>
                 </hj:entity>
                 <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
-                    <a:FactAnn title="FMM IRQ Reset Detection" limitComponents="FEDCrate"/>
+                    <a:FactAnn title="FMM IRQ Reset Detection" limitComponents="FEDCrate,DDU"/>
                 </ann:annotate>
             </xsd:appinfo>
         </xsd:annotation>
@@ -180,7 +180,7 @@
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_DDU_FPGA_DEBUG_TRAP"/>
+                                    <orm:column name="FCT_DDU_FPGA_DEBUG_TRAP" length="1024"/>
                                 </hj:basic>
                                 <jaxb:property name="ddufpgaDebugTrap"/>
                             </xsd:appinfo>
@@ -191,7 +191,7 @@
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_IN_FPGA0_DEBUG_TRAP"/>
+                                    <orm:column name="FCT_IN_FPGA0_DEBUG_TRAP" length="1024"/>
                                 </hj:basic>
                                 <jaxb:property name="infpga0DebugTrap"/>
                             </xsd:appinfo>
@@ -202,7 +202,7 @@
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_IN_FPGA1_DEBUG_TRAP"/>
+                                    <orm:column name="FCT_IN_FPGA1_DEBUG_TRAP" length="1024"/>
                                 </hj:basic>
                                 <jaxb:property name="infpga1DebugTrap"/>
                             </xsd:appinfo>

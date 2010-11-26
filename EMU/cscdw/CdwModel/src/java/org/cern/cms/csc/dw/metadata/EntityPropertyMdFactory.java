@@ -18,6 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -32,7 +33,7 @@ public class EntityPropertyMdFactory {
 
     private static Logger logger = Logger.getLogger(EntityPropertyMdFactory.class.getName());
 
-    private static Pattern ignoredPropertiesPattern = Pattern.compile("(set|id|class|propertyMetadata|properties|entityTitle|metadata|componentId)(.*)");
+    private static Pattern ignoredPropertiesPattern = Pattern.compile("(set|id|entityId|class|propertyMetadata|properties|entityTitle|metadata|componentId)(.*)");
     private static Pattern itemPropertyPattern = Pattern.compile("(\\p{Lower}.+)Item");
 
     /**
@@ -122,6 +123,11 @@ public class EntityPropertyMdFactory {
         OneToOne oneToOneA = getter.getAnnotation(OneToOne.class);
         if (oneToOneA != null) {
             return new OneToOnePropertyMd(prop);
+        }
+
+        ManyToMany manyToManyA = getter.getAnnotation(ManyToMany.class);
+        if (manyToManyA != null) {
+            return new ManyToManyPropertyMd(prop);
         }
 
         throw new InvalidEntityBeanPropertyException("Don't know what type of property metadata to create for " + getter.toGenericString());

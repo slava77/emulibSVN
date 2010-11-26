@@ -20,5 +20,6 @@ public interface PersistDaoLocal {
     void persist(EntityBase cdwEntityObject) throws PersistException, OnSaveProcessingException;
     void persist(EntityBase cdwEntityObject, boolean queued, boolean useMerge) throws PersistException, OnSaveProcessingException;
     void merge(EntityBase cdwEntityObject) throws PersistException, OnSaveProcessingException;
+    void delete(EntityBase cdwEntityObject);
 
 }

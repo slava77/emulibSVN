@@ -8,18 +8,17 @@ package org.cern.cms.csc.exsys.re.dao;
 import java.util.List;
 import javax.ejb.Local;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
-import org.cern.cms.csc.exsys.exception.DaoException;
-import org.cern.cms.csc.exsys.re.model.Rule;
+import org.cern.cms.csc.exsys.re.model.Conclusion;
 
 /**
  *
- * @author Evka
+ * @author evka
  */
 @Local
-public interface RuleEngineDaoLocal {
+public interface ConclusionDaoLocal {
 
-    List<Rule> getAllRules();
-    Rule getActiveRule(String name) throws DaoException;
+    List<Conclusion> getAllConclusions();
+    List<Conclusion> getAllOpenConclusions();
     EntityDaoLocal getEntityDao();
 
 }

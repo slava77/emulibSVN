@@ -5,6 +5,7 @@
 
 package org.cern.cms.csc.dw.model.base;
 
+import java.beans.PropertyDescriptor;
 import org.cern.cms.csc.dw.metadata.PropertyMd;
 import org.cern.cms.csc.dw.metadata.EntityPropertyMdFactory;
 import java.io.Serializable;
@@ -14,13 +15,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.exception.InvalidEntityClassException;
 import org.cern.cms.csc.dw.exception.OnReceiveProcessingException;
 import org.cern.cms.csc.dw.exception.OnSaveProcessingException;
-import org.cern.cms.csc.dw.model.annotation.UseInTitle;
+import org.cern.cms.csc.dw.model.annotation.gui.UseInTitle;
 import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 
 /**
@@ -36,6 +38,11 @@ public class EntityBase implements Serializable {
     private static Map<Class, List<PropertyMd>> propertyMetadataCache = new HashMap<Class, List<PropertyMd>>();
     /** Cache of class -> names of the fields annotated by @UseInTitle. */
     private static Map<Class, List<String>> titleFieldNamesCache = new HashMap<Class, List<String>>();
+    /** Cach of class -> ID property - used by equals and hashCode methods */
+    private static Map<Class, PropertyDescriptor> idPropertyCache = new HashMap<Class, PropertyDescriptor>();
+
+    public EntityBase() {
+    }
 
     public void onSave(EntityDaoLocal eDao, boolean queued) throws OnSaveProcessingException { }
     public void onReceive(EntityDaoLocal eDao) throws OnReceiveProcessingException { }
@@ -61,12 +68,20 @@ public class EntityBase implements Serializable {
      * @return title of the entity which is constructed from all fields annotated with @UseInTitle. If there are no such fields, toString() is returned.
      */
     public String getEntityTitle() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        List<String> titleFieldNames = getTitleFieldNames();
-        if (titleFieldNames.isEmpty()) {
-            return toString();
+        String title = "";
+
+        UseInTitle useClassInTitleA = this.getClass().getAnnotation(UseInTitle.class);
+        if (useClassInTitleA != null) {
+            title = this.getClass().getSimpleName();
         }
 
-        String title = "";
+        List<String> titleFieldNames = getTitleFieldNames();
+        if (title.isEmpty() && titleFieldNames.isEmpty()) {
+            return toString();
+        } else if (titleFieldNames.isEmpty()) {
+            return title;
+        }
+        
         for (String titleFieldName: titleFieldNames) {
             if (!title.isEmpty()) {
                 title += "; ";
@@ -99,4 +114,83 @@ public class EntityBase implements Serializable {
         return titleFieldNamesCache.get(myClass);
     }
 
+
+    public boolean equals(Object object) {
+        if (object == null) {
+            return false;
+        }
+        if (!(this.getClass().equals(object.getClass()))) {
+            return false;
+        }
+        if (this == object) {
+            return true;
+        }
+        EntityBase that = (EntityBase) object;
+        PropertyDescriptor myIdProp = getIdPropertyMd();
+        PropertyDescriptor thatIdProp = that.getIdPropertyMd();
+        if ((myIdProp == null) || (thatIdProp == null)) {
+            return super.equals(object);
+        }
+        try {
+            Object myId = myIdProp.getReadMethod().invoke(this);
+            Object thatId = thatIdProp.getReadMethod().invoke(that);
+
+            if ((myId == null) || (thatId == null)){
+                return super.equals(object);
+            }
+
+            return myId.equals(thatId);
+        } catch (Exception ex) {
+            return super.equals(object);
+        }
+    }
+
+    public int hashCode() {
+        PropertyDescriptor myIdProp = getIdPropertyMd();
+        if (myIdProp == null) {
+            return super.hashCode();
+        }
+        try {
+            Object myId = myIdProp.getReadMethod().invoke(this);
+            if (myId == null) {
+                return super.hashCode();
+            }
+
+            return myId.hashCode();
+        } catch (Exception ex) {
+            return super.hashCode();
+        }
+    }
+
+    public Object getEntityId() {
+        try {
+            return getIdPropertyMd().getReadMethod().invoke(this);
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Exception while trying to get entity ID", ex);
+            return null;
+        }
+    }
+
+    public PropertyDescriptor getIdPropertyMd() {
+        Class myClass = this.getClass();
+        if (!idPropertyCache.containsKey(myClass)) {
+            try {
+                PropertyDescriptor[] allProps = PropertyUtils.getPropertyDescriptors(myClass);
+                boolean found = false;
+                for (PropertyDescriptor prop: allProps) {
+                    if (prop.getName().equalsIgnoreCase("id")) {
+                        idPropertyCache.put(myClass, prop);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    idPropertyCache.put(myClass, null);
+                }
+            } catch (Exception ex) {
+                idPropertyCache.put(myClass, null);
+            }
+        }
+        return idPropertyCache.get(myClass);
+    }
 }

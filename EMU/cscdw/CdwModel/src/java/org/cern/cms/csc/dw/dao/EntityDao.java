@@ -11,6 +11,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import org.cern.cms.csc.dw.exception.InvalidEntityClassException;
 import org.cern.cms.csc.dw.model.base.EntityBase;
@@ -131,6 +132,10 @@ public class EntityDao implements EntityDaoLocal {
      */
     public OntologyDaoLocal getOntologyDao() {
         return ontologyDao;
+    }
+
+    public void refreshEntity(EntityBase entity) {
+        entity = em.getReference(entity.getClass(), entity.getEntityId());
     }
 
 }

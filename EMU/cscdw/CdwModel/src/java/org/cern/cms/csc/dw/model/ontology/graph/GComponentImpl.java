@@ -139,4 +139,8 @@ public class GComponentImpl extends GNodeImpl implements GComponent {
                 ReturnableEvaluator.ALL_BUT_START_NODE);
     }
 
+    public boolean isRelatedToRecusively(ComponentLinkClassType linkType, GComponent gComponent) {
+        return findRelatedGComponents(linkType).contains(gComponent);
+    }
+
 }
