@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:exs="http://www.cern.ch/cms/csc/exsys/gui">
+    
+    <body>
+        
+        <ui:composition template="/WEB-INF/layout/main.xhtml">
+            
+            <ui:define name="content">
+
+                <ice:form id="actionsForm">
+                </ice:form>
+
+                <ice:form id="conclusionsForm">
+                    <p><h1>Conclusions</h1></p>
+                    <ice:dataTable id="conclusionsTable" var="concl" value="#{RuleEngineFacade.allConclusions}" rows="10">
+                        <f:facet name="header">
+                            <ice:columnGroup>
+                                <ice:headerRow>
+                                    <ice:column>
+                                        <ice:outputText value="Last Updated"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:outputText value="Type"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:outputText value="Title"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:outputText value="Components"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:outputText value="Description"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:outputText value="Update Count"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:outputText value="Time Created"/>
+                                    </ice:column>
+                                </ice:headerRow>
+                            </ice:columnGroup>
+                        </f:facet>
+
+                        <ice:column>
+                            <ice:outputText value="#{concl.lastHitTime}"/>
+                        </ice:column>
+                        <ice:column>
+                            <ice:outputText value="#{concl.type.entityTitle}"/>
+                        </ice:column>
+                        <ice:column>
+                            <ice:outputText value="#{concl.title}"/>
+                        </ice:column>
+                        <ice:column>
+                            <ice:dataTable var="comp" value="#{concl.components}">
+                                <ice:column>
+                                    <ice:outputText value="#{comp.entityTitle}"/>
+                                </ice:column>
+                            </ice:dataTable>
+                        </ice:column>
+                        <ice:column>
+                            <ice:outputText value="#{concl.description}"/>
+                        </ice:column>
+                        <ice:column>
+                            <ice:outputText value="#{concl.hitCount}"/>
+                        </ice:column>
+                        <ice:column>
+                            <ice:outputText value="#{concl.timestamp}"/>
+                        </ice:column>
+                    </ice:dataTable>
+                    <exs:paginator for="conclusionsTable"/>
+
+                </ice:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

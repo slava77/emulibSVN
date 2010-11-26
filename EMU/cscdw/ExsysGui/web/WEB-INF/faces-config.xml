@@ -29,6 +29,11 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http:/
             <to-view-id>/re/status.jsf</to-view-id>
             <redirect/>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>navConclusions</from-outcome>
+            <to-view-id>/re/conclusions.jsf</to-view-id>
+            <redirect/>
+        </navigation-case>
     </navigation-rule>
     <navigation-rule>
         <from-view-id>/re/admin/rules.xhtml</from-view-id>
@@ -61,6 +66,16 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http:/
     <managed-bean>
         <managed-bean-name>EditRule</managed-bean-name>
         <managed-bean-class>org.cern.cms.csc.exsys.re.gui.jsf.action.EditRule</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>EnableDisableRule</managed-bean-name>
+        <managed-bean-class>org.cern.cms.csc.exsys.re.gui.jsf.action.EnableDisableRule</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>DeleteRule</managed-bean-name>
+        <managed-bean-class>org.cern.cms.csc.exsys.re.gui.jsf.action.DeleteRule</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>

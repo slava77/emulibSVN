@@ -6,6 +6,7 @@
 package org.cern.cms.csc.exsys.re.gui.jsf.editor.base;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -30,6 +31,7 @@ public abstract class Editor {
         DATE_PICKER,
         CHECKBOX,
         SELECT_ONE_MENU,
+        SELECT_MANY_LIST,
         ONE_TO_ONE,
         COMPONENT
     }
@@ -53,7 +55,7 @@ public abstract class Editor {
      * @throws InvalidEntityBeanPropertyException thrown if property is incompatible with this kind of editor
      */
     public Editor(EntityBase entity, PropertyMd metadata, Editor parentEditor) throws InvalidEntityBeanPropertyException {
-        if (entity == null) {
+        if ((entity == null) && (metadata != null)) { // only when metadata is not null, because there's sort of a special case with EditorClassEditor which passes in both entity and metadata as null, because it doesn't have them (nor does it need them)
             throw new NullPointerException("Trying to create a property editor for a null entity");
         }
         this.entity = entity;

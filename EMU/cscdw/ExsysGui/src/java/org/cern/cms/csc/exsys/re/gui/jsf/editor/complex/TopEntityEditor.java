@@ -27,7 +27,7 @@ public class TopEntityEditor extends EntityEditor {
      * @throws InvalidEntityBeanPropertyException thrown if property is incompatible with this kind of editor
      */
     public TopEntityEditor(EntityBase entity, EntityDaoLocal entityDao) throws InvalidEntityBeanPropertyException {
-            super(entity, null, null, entityDao);
+        super(entity, null, null, entityDao);
     }
 
     /**

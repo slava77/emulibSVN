@@ -4,7 +4,8 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ice="http://www.icesoft.com/icefaces/component"
-      xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:exs="http://www.cern.ch/cms/csc/exsys/gui">
     
     <body>
         
@@ -18,7 +19,6 @@
 
                 <ice:form id="rulesForm">
                     <p><h1>Rules</h1></p>
-                    <h:outputText value="Number of rules: #{RuleEngineFacade.ruleCount}"/>
                     <ice:dataTable id="rulesTable" var="rule" value="#{RuleEngineFacade.allRules}" rows="10">
                         <f:facet name="header">
                             <ice:columnGroup>
@@ -34,6 +34,12 @@
                                     </ice:column>
                                     <ice:column>
                                         <ice:outputText value="Description"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:outputText value="Is Enabled"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:outputText value="Action"/>
                                     </ice:column>
                                 </ice:headerRow>
                             </ice:columnGroup>
@@ -53,7 +59,33 @@
                         <ice:column>
                             <ice:outputText value="#{rule.description}"/>
                         </ice:column>
+                        <ice:column>
+                            <ice:selectBooleanCheckbox value="#{rule.enabled}" partialSubmit="true"
+                                                       readonly="true" disabled="true"/>
+                        </ice:column>
+                        <ice:column>
+                            <ice:commandButton value="Enable" type="submit" 
+                                               rendered="#{!rule.enabled}"
+                                               action="#{EnableDisableRule.save}">
+                                <f:setPropertyActionListener target="#{EnableDisableRule.rule}" value="#{rule}"/>
+                                <f:setPropertyActionListener target="#{EnableDisableRule.enabled}" value="true"/>
+                            </ice:commandButton>
+                            <ice:commandButton value="Disable" type="submit"
+                                               rendered="#{rule.enabled}"
+                                               action="#{EnableDisableRule.save}">
+                                <f:setPropertyActionListener target="#{EnableDisableRule.rule}" value="#{rule}"/>
+                                <f:setPropertyActionListener target="#{EnableDisableRule.enabled}" value="false"/>
+                            </ice:commandButton>
+                            <ice:commandButton value="Delete" type="submit"
+                                               rendered="#{!rule.enabled}"
+                                               action="#{DeleteRule.delete}">
+                                <f:setPropertyActionListener target="#{DeleteRule.rule}" value="#{rule}"/>
+                            </ice:commandButton>
+                        </ice:column>
                     </ice:dataTable>
+
+                    <exs:paginator for="rulesTable"/>
+
                 </ice:form>
             </ui:define>
 

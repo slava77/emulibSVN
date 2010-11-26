@@ -11,4 +11,9 @@
     <source>entityForm.xhtml</source>
   </tag>
 
+  <tag>
+    <tag-name>paginator</tag-name>
+    <source>paginator.xhtml</source>
+  </tag>
+
 </facelet-taglib>

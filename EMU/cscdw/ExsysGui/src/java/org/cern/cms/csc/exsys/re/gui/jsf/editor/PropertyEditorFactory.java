@@ -5,7 +5,9 @@
 
 package org.cern.cms.csc.exsys.re.gui.jsf.editor;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collections;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.base.Editor;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +16,7 @@ import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.metadata.BasicPropertyMd;
 import org.cern.cms.csc.dw.metadata.EnumPropertyMd;
+import org.cern.cms.csc.dw.metadata.ManyToManyPropertyMd;
 import org.cern.cms.csc.dw.metadata.ManyToOnePropertyMd;
 import org.cern.cms.csc.dw.metadata.OneToOnePropertyMd;
 import org.cern.cms.csc.dw.metadata.PropertyMd;
@@ -23,10 +26,13 @@ import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.basic.BooleanPropertyEditor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.complex.ComponentEditor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.basic.DatePropertyEditor;
+import org.cern.cms.csc.exsys.re.gui.jsf.editor.basic.DoublePropertyEditor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.basic.NumberPropertyEditor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.basic.StringPropertyEditor;
+import org.cern.cms.csc.exsys.re.gui.jsf.editor.complex.EditorClassEditor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.complex.EnumValueEditor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.complex.FactComponentEditor;
+import org.cern.cms.csc.exsys.re.gui.jsf.editor.complex.ManyToManyEditor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.complex.ManyToOneEditor;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.complex.OneToOneEditor;
 
@@ -47,6 +53,17 @@ public class PropertyEditorFactory {
     public static List<Editor> createPropertyEditors(EntityBase entity, Editor parentEditor, EntityDaoLocal entityDao) {
         try {
             List<Editor> ret = new ArrayList<Editor>();
+
+            // if the class of the parent editor is abstract, then plug in the EditorClassEditor
+            if ((parentEditor.getMetadata() != null) && Modifier.isAbstract(parentEditor.getMetadata().getType().getModifiers())) {
+                EditorClassEditor classEditor = new EditorClassEditor(entity, parentEditor, entityDao);
+                ret.add(classEditor);
+            }
+            
+            if (entity == null) {
+                return ret;
+            }
+
             List<PropertyMd> propsMetadata = entity.getPropertyMetadata();
             for (PropertyMd propMetadata: propsMetadata) {
                 if (propMetadata.getIsManualInputAllowed()) {
@@ -87,6 +104,8 @@ public class PropertyEditorFactory {
                     return new BooleanPropertyEditor(entity, propMetadata, parentEditor);
                 } else if (Number.class.isAssignableFrom(propType)) {
                     return new NumberPropertyEditor(entity, propMetadata, parentEditor);
+                } else if (double.class.isAssignableFrom(propType)) {
+                    return new DoublePropertyEditor(entity, propMetadata, parentEditor);
                 } else if (String.class.isAssignableFrom(propType)) {
                     return new StringPropertyEditor(entity, propMetadata, parentEditor);
                 }
@@ -104,6 +123,8 @@ public class PropertyEditorFactory {
                 return new OneToOneEditor(entity, propMetadata, parentEditor, entityDao);
             } else if (propMetadata instanceof EnumPropertyMd) { // enum property
                 return new EnumValueEditor(entity, propMetadata, parentEditor, entityDao);
+            } else if (propMetadata instanceof ManyToManyPropertyMd) { // many to many property
+                return new ManyToManyEditor(entity, propMetadata, parentEditor, entityDao);
             }
             return null;
         } catch (InvalidEntityBeanPropertyException ex) {

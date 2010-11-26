@@ -5,6 +5,7 @@
 
 package org.cern.cms.csc.exsys.re.gui.jsf.editor.complex;
 
+import java.lang.reflect.Modifier;
 import java.util.logging.Level;
 import javax.faces.convert.Converter;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
@@ -36,7 +37,9 @@ public class OneToOneEditor extends EntityEditor {
 
         // create a new value
         try {
-            setValue(getMetadata().getNewValue());
+            if (!Modifier.isAbstract(metadata.getType().getModifiers())) {
+                setValue(getMetadata().getNewValue());
+            }
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "Exception while creating a new value for OneToOneEditor for " + metadata.getName() + " property", ex);
             throw new RuntimeException("Exception while creating a new value for OneToOneEditor for " + metadata.getName() + " property", ex);

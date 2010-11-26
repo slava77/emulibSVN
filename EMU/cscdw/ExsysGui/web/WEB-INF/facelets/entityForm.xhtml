@@ -24,7 +24,7 @@
                 <c:forEach var="propEditor" items="#{editor.propertyEditors}">
 
                     <ice:outputLabel for="input_#{propEditor.id}">
-                        <ice:outputText value="#{propEditor.metadata.title}: "/>
+                        <ice:outputText value="#{propEditor.metadata.title}: " rendered="#{propEditor.metadata != null}"/>
                     </ice:outputLabel>
                     <ice:panelGrid columns="1" style="width: 100%">
                         <!-- DEFAULT editor - simple inputText -->
@@ -35,6 +35,7 @@
                                        requiredMessage="This field is mandatory - value cannot be blank"
                                        styleClass="simpleEditor"
                                        rendered="#{propEditor.inputType == 'DEFAULT'}"/>
+
                         <!-- TEXT_AREA editor - used for larger string properties -->
                         <ice:inputTextarea id="input_#{propEditor.id}" value="#{propEditor.value}" partialSubmit="true"
                                            converter="#{propEditor.converter}"
@@ -44,6 +45,7 @@
                                            styleClass="simpleEditor"
                                            style="height: 100px"
                                            rendered="#{propEditor.inputType == 'TEXT_AREA'}"/>
+
                         <!-- CHECKBOX editor - used for boolean properties -->
                         <ice:selectBooleanCheckbox id="input_#{propEditor.id}" value="#{propEditor.value}" partialSubmit="true"
                                                    converter="#{propEditor.converter}"
@@ -51,6 +53,7 @@
                                                    required="#{propEditor.metadata.isMandatory}"
                                                    requiredMessage="This field is mandatory - value cannot be blank"
                                                    rendered="#{propEditor.inputType == 'CHECKBOX'}"/>
+
                         <!-- DATE_PICKER editor - used for date properties -->
                         <ice:selectInputDate id="input_#{propEditor.id}" value="#{propEditor.value}" partialSubmit="true"
                                              validator="#{propEditor.validate}"
@@ -58,6 +61,7 @@
                                              requiredMessage="This field is mandatory - value cannot be blank"
                                              renderAsPopup="true"
                                              rendered="#{propEditor.inputType == 'DATE_PICKER'}"/>
+
                         <!-- SELECT_ONE_MENU editor - used for enumerated properties and many-to-one relations -->
                         <ice:panelGroup rendered="#{propEditor.inputType == 'SELECT_ONE_MENU'}">
                             <ice:selectOneMenu id="input_#{propEditor.id}" value="#{propEditor.value}" partialSubmit="true"
@@ -80,6 +84,19 @@
                                 <f:setPropertyActionListener target="#{manager.editor}" value="#{propEditor}"/>
                             </ice:commandButton>
                         </ice:panelGroup>
+
+                        <!-- SELECT_MANY_LIST editor - used for many-to-many relations -->
+                        <ice:panelGroup rendered="#{propEditor.inputType == 'SELECT_MANY_LIST'}">
+                            <ice:selectManyListbox id="input_#{propEditor.id}" value="#{propEditor.valueAsArray}" partialSubmit="true"
+                                               converter="#{propEditor.converter}"
+                                               validator="#{propEditor.validate}"
+                                               required="#{propEditor.metadata.isMandatory}"
+                                               requiredMessage="This field is mandatory - value cannot be blank"
+                                               styleClass="simpleEditor">
+                                <f:selectItems value="#{propEditor.listOfValues}"/>
+                            </ice:selectManyListbox>
+                        </ice:panelGroup>
+
                         <!-- ONE-TO-ONE editor - input text just so that validation would be applied -->
                         <ice:panelGroup rendered="#{propEditor.inputType == 'ONE_TO_ONE'}">
                             <ice:inputText id="input_#{propEditor.id}" value="#{propEditor.value.entityTitle}"
@@ -96,6 +113,7 @@
                                 <f:setPropertyActionListener target="#{manager.editor}" value="#{propEditor}"/>
                             </ice:commandButton>
                         </ice:panelGroup>
+
                         <!-- COMPONENT editor - select input text -->
                         <ice:panelGrid columns="2"
                                        rendered="#{propEditor.inputType == 'COMPONENT'}">
@@ -133,6 +151,11 @@
                         <ice:outputText value="*" rendered="#{propEditor.metadata.isMandatory}" styleClass="requiredFieldIndicator"/>
                     </ice:panelGroup>
 
+                    <!-- Description -->
+                    <ice:panelGrid rendered="#{propEditor.metadata.description != null}"/>
+                    <ice:outputText value="#{propEditor.metadata.description}"
+                                    rendered="#{propEditor.metadata.description != null}" styleClass="note"/>
+                    <ice:panelGrid rendered="#{propEditor.metadata.description != null}"/>
 
                 </c:forEach>
             </ice:panelGrid>

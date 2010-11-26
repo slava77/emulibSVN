@@ -25,11 +25,11 @@ import org.cern.cms.csc.exsys.re.gui.jsf.editor.convert.LovConverter;
 public abstract class RestrictedEntityEditor extends EntityEditor {
 
     /** Cache of list of available values (used only for enum, many-to-one and many-to-many properties). */
-    private List<Object> lovCache = null;
+    protected List<Object> lovCache = null;
     /** Cache of list of available select items (used only for enum, many-to-one and many-to-many properties). */
-    private List<SelectItem> lovSelectItemsCache = null;
+    protected List<SelectItem> lovSelectItemsCache = null;
     /** List of newly created (and not saved) list of value items. */
-    private List<Object> newLovItems = new ArrayList<Object>();
+    protected List<Object> newLovItems = new ArrayList<Object>();
 
     /**
      * Constructor
@@ -40,7 +40,7 @@ public abstract class RestrictedEntityEditor extends EntityEditor {
      */
     public RestrictedEntityEditor(EntityBase entity, PropertyMd metadata, Editor parentEditor, EntityDaoLocal entityDao) throws InvalidEntityBeanPropertyException {
         super(entity, metadata, parentEditor, entityDao);
-        if (!(metadata instanceof RestrictedPropertyMd)) {
+        if ((metadata != null) && !(metadata instanceof RestrictedPropertyMd)) {
             throw new InvalidEntityBeanPropertyException("Attempt to create a RestrictedEntityEditor for a property which is not a restricted relation (not a many-to-one or many-to-many or enum): " + metadata.getName());
         }
     }
@@ -87,7 +87,6 @@ public abstract class RestrictedEntityEditor extends EntityEditor {
 
     /**
      * Get list of available values as List<SelectItem>
-     * @param includeNewValue if this is set to true, then a new value is also included in the list
      * @return list of available values as List<SelectItem>
      * @throws Exception rethrown from PropertyMd.getListOfValues()
      * @see org.cern.cms.csc.dw.model.base.PropertyMd.getListOfValues()
@@ -110,29 +109,36 @@ public abstract class RestrictedEntityEditor extends EntityEditor {
         if (lovCache != null) {
             List<SelectItem> ret = new ArrayList<SelectItem>();
             for (Object lovObject: lovCache) {
-                SelectItem lovItem;
-
-                if (lovObject instanceof EntityBase) {
-                    EntityBase lovEntityObj = (EntityBase) lovObject;
-                    String title = lovEntityObj.getEntityTitle();
-                    if (title.equals("null")) {
-                        title = "New";
-                    }
-                    lovItem = new SelectItem(lovObject, title);
-                } else if (lovObject.getClass().isEnum()) {
-                    String label;
-                    try {
-                        label = (String) lovObject.getClass().getMethod("value").invoke(lovObject);
-                    } catch (Exception ex) {
-                        label = lovObject.toString();
-                    }
-                    lovItem = new SelectItem(lovObject, label);
-                } else {
-                    lovItem = new SelectItem(lovObject, lovObject.toString());
-                }
+                SelectItem lovItem = new SelectItem(lovObject, getLovObjectTitle(lovObject));
                 ret.add(lovItem);
             }
             lovSelectItemsCache = ret;
+        }
+    }
+
+    /**
+     * Returns a title for the given LOV object.
+     * @param lovObject LOV (list of values) object that you want to get the title for.
+     * @return title for the given LOV object.
+     */
+    protected String getLovObjectTitle(Object lovObject) throws Exception {
+        if (lovObject instanceof EntityBase) {
+            EntityBase lovEntityObj = (EntityBase) lovObject;
+            String title = lovEntityObj.getEntityTitle();
+            if (title.equals("null")) {
+                title = "New";
+            }
+            return title;
+        } else if (lovObject.getClass().isEnum()) {
+            String label;
+            try {
+                label = (String) lovObject.getClass().getMethod("value").invoke(lovObject);
+            } catch (Exception ex) {
+                label = lovObject.toString();
+            }
+            return label;
+        } else {
+            return lovObject.toString();
         }
     }
 

@@ -54,5 +54,9 @@ span.requiredFieldIndicator {
 }
 
 .simpleEditor {
-    width: 300px;
+    width: 600px;
+}
+
+.note {
+    font-size: smaller;
 }

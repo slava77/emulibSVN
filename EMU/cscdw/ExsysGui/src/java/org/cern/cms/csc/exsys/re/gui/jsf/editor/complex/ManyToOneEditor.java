@@ -56,6 +56,7 @@ public class ManyToOneEditor extends RestrictedEntityEditor {
         return InputType.SELECT_ONE_MENU;
     }
 
+    /** Always returns false, telling the GUI to allow creation of new values. */
     @Override
     public boolean isRestrictionStrict() {
         return false;

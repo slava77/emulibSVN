@@ -30,6 +30,7 @@ public class EnumValueEditor extends ManyToOneEditor {
         return InputType.SELECT_ONE_MENU;
     }
 
+    /** Always returns true, telling the GUI not to allow creation of new values. */
     @Override
     public boolean isRestrictionStrict() {
         return true;

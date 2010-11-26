@@ -17,23 +17,25 @@
 
         <ice:outputBody>
 
-            <div id="top">
-                <ui:insert name="top"><h1>CSC Expert System</h1></ui:insert>
-            </div>
-            <div>
-                <div id="left">
-                    <ui:insert name="left">
-                        <ui:include src="menu.xhtml"/>
-                    </ui:insert>
+            <div id="container">
+                <div id="top">
+                    <ui:insert name="top"><h1>CSC Expert System</h1></ui:insert>
                 </div>
-                <div id="content" class="left_content">
-                    <ui:insert name="content">Content</ui:insert>
+                <div>
+                    <div id="left">
+                        <ui:insert name="left">
+                            <ui:include src="menu.xhtml"/>
+                        </ui:insert>
+                    </div>
+                    <div id="content" class="left_content">
+                        <ui:insert name="content">Content</ui:insert>
+                    </div>
+                </div>
+                <div id="bottom">
+                    <ui:insert name="bottom">CERN 2010</ui:insert>
                 </div>
             </div>
-            <div id="bottom">
-                <ui:insert name="bottom">CERN 2010</ui:insert>
-            </div>
-
+            
         </ice:outputBody>
             
     </ice:outputHtml>
