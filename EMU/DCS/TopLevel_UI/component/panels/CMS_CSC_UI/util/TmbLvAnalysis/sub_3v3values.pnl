@@ -287,6 +287,36 @@ LANG:1 6 Change
   updateList(editThreshold.text);
 }" 0
  E E E
+13 35
+"PUSH_BUTTON6"
+""
+1 270 90 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+35 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  268 88 402 112
+
+T 
+1
+LANG:1 18 Show as plain text
+"main()
+{
+  string text;
+  for (int i=0; i < tableBelowSpec.lineCount(); i++) {
+    text += tableBelowSpec.getLineN(i) + \"\\n\";
+  }
+  
+  ChildPanelOnCentralModal(\"CMS_CSC_UI/util/textEditor.pnl\", \"textEdit_excludedChannels\", 
+                           makeDynString(\"$text:\" + text));
+}" 0
+ E E E
 0
 LAYER, 1 
 1
