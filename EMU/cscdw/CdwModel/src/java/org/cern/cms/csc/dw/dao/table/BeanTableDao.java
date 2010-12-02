@@ -1,19 +1,8 @@
-package org.cern.cms.csc.dw.dao;
+package org.cern.cms.csc.dw.dao.table;
 
 import java.util.ArrayList;
-import org.cern.cms.csc.dw.dao.table.BeanTableIf;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import org.cern.cms.csc.dw.dao.table.BeanTableFilterIf;
-import org.cern.cms.csc.dw.dao.table.BeanTableFilterItemIf;
-import org.cern.cms.csc.dw.dao.table.BeanTableProjectionFilterItemIf;
-import org.cern.cms.csc.dw.dao.table.BeanTableSortColumnIf;
 import org.cern.cms.csc.dw.util.SQLParamRestriction;
 import org.hibernate.Criteria;
 import org.hibernate.QueryException;
@@ -23,37 +12,25 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
-import org.hibernate.ejb.EntityManagerImpl;
 
-@Stateless
-public class BeanTableDao implements BeanTableDaoLocal {
+public abstract class BeanTableDao implements BeanTableDaoIf {
 
-    private static final Pattern filterKeyPattern;
-    private static Matcher filterKeyMatcher;
-
-    static {
-        filterKeyPattern = Pattern.compile("^.*:");
-        filterKeyMatcher = filterKeyPattern.matcher("");
-    }
-
-    @PersistenceContext(unitName="CdwPU")
-    private EntityManager em;
+    protected abstract Session getSession();
 
     public List getData(BeanTableIf table, boolean pageOnly) {
 
-        Session session = (Session)((EntityManagerImpl)em.getDelegate()).getDelegate();
+        Session session = getSession();
         Transaction transaction = session.beginTransaction();
 
         Criteria c = getCriteria(session, table);
 
-        for (BeanTableSortColumnIf sc: table.getSortByColumns()) {
+        for (BeanTableColumnIf sc: table.getSortColumns()) {
             if (sc.isAscending()) {
-                c.addOrder(Order.asc(sc.getPropertyName()));
+                c.addOrder(Order.asc(sc.getName()));
             } else {
-                c.addOrder(Order.desc(sc.getPropertyName()));
+                c.addOrder(Order.desc(sc.getName()));
             }
         }
 
@@ -67,14 +44,17 @@ public class BeanTableDao implements BeanTableDaoLocal {
 
         List list = new ArrayList();
         try {
+            
             list = c.list();
 
         } catch (QueryException ex) {
+
             System.err.println(ex);
             ex.printStackTrace(System.err);
             if (table.isInteractiveMode()) {
                 //BeanBase.addErrorMessage("cms.dqm.workflow.getData.ERROR", false);
             }
+            
         }
 
         transaction.rollback();
@@ -84,7 +64,7 @@ public class BeanTableDao implements BeanTableDaoLocal {
 
     public Long getDataCount(BeanTableIf table) {
 
-        Session session = (Session)((EntityManagerImpl)em.getDelegate()).getDelegate();
+        Session session = getSession();
         Transaction transaction = session.beginTransaction();
 
         Long count = ((Integer) getCriteria(session, table)
@@ -103,15 +83,15 @@ public class BeanTableDao implements BeanTableDaoLocal {
         return getDetachedCriteria(table).getExecutableCriteria(session);
     }
 
-    private Criteria getCriteria(Session session, Class rowClass, Map<String, BeanTableFilterIf> filter) {
-        return getDetachedCriteria(rowClass, filter, null).getExecutableCriteria(session);
+    private Criteria getCriteria(Session session, Class rowClass, List<BeanTableColumnIf> columns) {
+        return getDetachedCriteria(rowClass, columns, null).getExecutableCriteria(session);
     }
 
     private DetachedCriteria getDetachedCriteria(BeanTableIf table) {
-        return getDetachedCriteria(table.getRowClass(), table.getFilter(), table.getAdvancedQuery());
+        return getDetachedCriteria(table.getRowClass(), table.getAllColumns(), table.getAdvancedQuery());
     }
 
-    private DetachedCriteria getDetachedCriteria(Class rowClass, Map<String, BeanTableFilterIf> filter, String advancedQuery) {
+    private DetachedCriteria getDetachedCriteria(Class rowClass, List<BeanTableColumnIf> columns, String advancedQuery) {
 
         DetachedCriteria c = DetachedCriteria.forClass(rowClass);
 
@@ -119,83 +99,82 @@ public class BeanTableDao implements BeanTableDaoLocal {
             c.add(SQLParamRestriction.restriction(advancedQuery));
         }
 
-        for (Iterator<String> filterItr = filter.keySet().iterator(); filterItr.hasNext();) {
+        for (BeanTableColumnIf col: columns) {
 
-            String k = filterItr.next();
-            BeanTableFilterIf f = filter.get(k);
+            if (col.isFilterSet()) {
+                
+                BeanTableFilterIf f = col.getFilter();
+                String propertyName = col.getName();
 
-            if (f.getItems().size() > 0) {
+                if (f.getItems().size() > 0) {
 
-                filterKeyMatcher.reset(k);
-                k = filterKeyMatcher.replaceAll("");
+                    Junction disJun = Restrictions.disjunction();
+                    Junction conJun = Restrictions.conjunction();
+                    Junction curJun = disJun;
 
-                Junction disJun = Restrictions.disjunction();
-                Junction conJun = Restrictions.conjunction();
-                Junction curJun = disJun;
+                    for (Iterator<BeanTableFilterItemIf> filterItemItr = f.getItems().iterator(); filterItemItr.hasNext();) {
 
-                for (Iterator<BeanTableFilterItemIf> filterItemItr = f.getItems().iterator(); filterItemItr.hasNext();) {
+                        BeanTableFilterItemIf item = filterItemItr.next();
 
-                    BeanTableFilterItemIf item = filterItemItr.next();
+                        switch (item.getOperator()) {
+                            case AND:
+                                curJun = conJun;
+                                break;
+                            case OR:
+                                curJun = disJun;
+                                break;
+                        }
 
-                    switch (item.getOperator()) {
-                        case AND:
-                            curJun = conJun;
-                            break;
-                        case OR:
-                            curJun = disJun;
-                            break;
-                    }
-
-                    switch (item.getOperation()) {
-                        case EQUAL:
-                            curJun.add(Restrictions.eq(k, item.getValue()));
-                            break;
-                        case MORE:
-                            curJun.add(Restrictions.gt(k, item.getValue()));
-                            break;
-                        case LESS:
-                            curJun.add(Restrictions.lt(k, item.getValue()));
-                            break;
-                        case MORE_EQUAL:
-                            curJun.add(Restrictions.ge(k, item.getValue()));
-                            break;
-                        case LESS_EQUAL:
-                            curJun.add(Restrictions.le(k, item.getValue()));
-                            break;
-                        case NOT_EQUAL:
-                            curJun.add(Restrictions.ne(k, item.getValue()));
-                            break;
-                        case LIKE:
-                            curJun.add(Restrictions.like(k, item.getValue()));
-                            break;
-                        case NOTLIKE:
-                            curJun.add(Restrictions.not(Restrictions.like(k, item.getValue())));
-                            break;
-                        case ISNULL:
-                            curJun.add(Restrictions.isNull(k));
-                            break;
-                        case ISNOTNULL:
-                            curJun.add(Restrictions.isNotNull(k));
-                            break;
-                        case IN:
-                            if (item instanceof BeanTableProjectionFilterItemIf) {
-                                BeanTableProjectionFilterItemIf pitem = (BeanTableProjectionFilterItemIf) item;
-                                BeanTableIf subQueryTable = (BeanTableIf) item.getValue();
-                                if (subQueryTable.isFilterOn() || subQueryTable.isAdvancedQuerySet()) {
-                                    DetachedCriteria subCriteria = getDetachedCriteria(subQueryTable);
-                                    subCriteria.setProjection(Property.forName(pitem.getProperty()));
-                                    curJun.add(Subqueries.propertyIn(k, subCriteria));
+                        switch (item.getOperation()) {
+                            case EQUAL:
+                                curJun.add(Restrictions.eq(propertyName, item.getValue()));
+                                break;
+                            case MORE:
+                                curJun.add(Restrictions.gt(propertyName, item.getValue()));
+                                break;
+                            case LESS:
+                                curJun.add(Restrictions.lt(propertyName, item.getValue()));
+                                break;
+                            case MORE_EQUAL:
+                                curJun.add(Restrictions.ge(propertyName, item.getValue()));
+                                break;
+                            case LESS_EQUAL:
+                                curJun.add(Restrictions.le(propertyName, item.getValue()));
+                                break;
+                            case NOT_EQUAL:
+                                curJun.add(Restrictions.ne(propertyName, item.getValue()));
+                                break;
+                            case LIKE:
+                                curJun.add(Restrictions.like(propertyName, item.getValue()));
+                                break;
+                            case NOTLIKE:
+                                curJun.add(Restrictions.not(Restrictions.like(propertyName, item.getValue())));
+                                break;
+                            case ISNULL:
+                                curJun.add(Restrictions.isNull(propertyName));
+                                break;
+                            case ISNOTNULL:
+                                curJun.add(Restrictions.isNotNull(propertyName));
+                                break;
+                            case IN:
+                                if (item instanceof BeanTableProjectionFilterItemIf) {
+                                    BeanTableProjectionFilterItemIf pitem = (BeanTableProjectionFilterItemIf) item;
+                                    BeanTableIf subQueryTable = pitem.getBeanTable();
+                                    if (subQueryTable.isFilterOn() || subQueryTable.isAdvancedQuerySet()) {
+                                        DetachedCriteria subCriteria = getDetachedCriteria(subQueryTable);
+                                        //subCriteria.setProjection(Property.forName(pitem.getProperty()));
+                                        curJun.add(Subqueries.propertyIn(propertyName, subCriteria));
+                                    }
                                 }
-                            }
-                            break;
+                                break;
+                        }
+
                     }
+
+                    c.add(disJun).add(conJun);
 
                 }
-
-                c.add(disJun).add(conJun);
-
             }
-
         }
 
         return c;

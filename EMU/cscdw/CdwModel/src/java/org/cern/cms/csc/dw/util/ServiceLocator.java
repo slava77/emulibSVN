@@ -1,7 +1,11 @@
 package org.cern.cms.csc.dw.util;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import javax.naming.Binding;
 import javax.naming.InitialContext;
+import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
 public class ServiceLocator {
@@ -10,6 +14,7 @@ public class ServiceLocator {
      * Singleton Instance of this class
      */
     private static ServiceLocator serviceLocator = null;
+    
     /**
      * InitialContext object
      */
@@ -84,5 +89,19 @@ public class ServiceLocator {
     public Object getEnvService(String name) throws NamingException {
         return getService("java:comp/env/" + name);
     }
+
+    public Set<Binding> getJniBindings() throws NamingException {
+        return getJniBindings("");
+    }
+
+    public Set<Binding> getJniBindings(String root) throws NamingException {
+        Set<Binding> bindings = new HashSet<Binding>();
+        NamingEnumeration<Binding> listBindings = context.listBindings(root);
+        while (listBindings.hasMore()) {
+            bindings.add(listBindings.next());
+        }
+        return bindings;
+    }
+
 
 }

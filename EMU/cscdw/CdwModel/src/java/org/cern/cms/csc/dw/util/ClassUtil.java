@@ -280,6 +280,7 @@ public class ClassUtil {
                         try {
                             Class c = Class.forName(pckgname + "." + classname);
                             ret.add(c);
+                        } catch (NoClassDefFoundError ex) {
                         } catch (ClassNotFoundException ex) {
                         }
                     } else {
@@ -293,6 +294,12 @@ public class ClassUtil {
         
         return ret;
         
+    }
+
+    public static boolean hasAsSuperClass(Class clazz, Class clazzSuper) {
+        if (clazz.equals(clazzSuper)) return true;
+        if (clazz.getSuperclass() == null) return false;
+        return hasAsSuperClass(clazz.getSuperclass(), clazzSuper);
     }
 
     public static Class[] getLoadedClasses() {

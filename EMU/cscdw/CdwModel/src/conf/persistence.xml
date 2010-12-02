@@ -68,4 +68,18 @@
       <property name="hibernate.connection.password" value=""/>
     </properties>
   </persistence-unit>
+  <persistence-unit name="CdwMonitorPU" transaction-type="JTA">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <jta-data-source>jdbc/cdw_monitor</jta-data-source>
+    <class>org.cern.cms.csc.dw.model.monitor.MonitorQueueStatus</class>
+    <class>org.cern.cms.csc.dw.model.monitor.MonitorDatabaseStatus</class>
+    <class>org.cern.cms.csc.dw.model.monitor.MonitorException</class>
+    <class>org.cern.cms.csc.dw.model.monitor.MonitorExceptionStackTrace</class>
+    <class>org.cern.cms.csc.dw.model.monitor.MonitorObject</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <properties>
+      <property name="hibernate.hbm2ddl.auto" value="update"/>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect"/>
+    </properties>
+  </persistence-unit>
 </persistence>
