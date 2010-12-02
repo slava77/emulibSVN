@@ -38,5 +38,5 @@ public class TableFilterItem implements BeanTableFilterItemIf {
     public void setValue(Object value) {
         this.value = value;
     }
-    
+
 }

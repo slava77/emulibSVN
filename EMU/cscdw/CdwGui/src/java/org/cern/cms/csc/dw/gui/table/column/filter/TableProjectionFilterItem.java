@@ -1,22 +1,17 @@
 package org.cern.cms.csc.dw.gui.table.column.filter;
 
-import org.cern.cms.csc.dw.gui.table.BeanTable;
+import org.cern.cms.csc.dw.dao.table.BeanTableProjectionFilterItemIf;
+import org.cern.cms.csc.dw.gui.table.BeanTableBase;
 
-public class TableProjectionFilterItem extends TableFilterItem {
+public class TableProjectionFilterItem extends TableFilterItem implements BeanTableProjectionFilterItemIf {
 
-    private String property;
-
-    public TableProjectionFilterItem(String property, BeanTable value) {
+    public TableProjectionFilterItem(BeanTableBase value) {
         super(value);
-        this.property = property;
         super.setOperation(TableFilter.Operation.IN);
     }
 
-    public String getProperty() {
-        return property;
+    public BeanTableBase getBeanTable() {
+        return (BeanTableBase) getValue();
     }
-
-    public BeanTable getBeanTable() {
-        return (BeanTable) getValue();
-    }
+    
 }

@@ -34,8 +34,14 @@
     </managed-bean>
 
     <managed-bean>
-        <managed-bean-name>BeanTableController</managed-bean-name>
-        <managed-bean-class>org.cern.cms.csc.dw.gui.table.BeanTableController</managed-bean-class>
+        <managed-bean-name>MainBeanTableController</managed-bean-name>
+        <managed-bean-class>org.cern.cms.csc.dw.gui.jsf.MainBeanTableController</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>MonitorController</managed-bean-name>
+        <managed-bean-class>org.cern.cms.csc.dw.gui.jsf.MonitorController</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
 
@@ -60,6 +66,13 @@
             <to-view-id>/component.iface</to-view-id>
             <redirect/>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>monitor</from-outcome>
+            <to-view-id>/monitor.iface</to-view-id>
+            <redirect/>
+        </navigation-case>
     </navigation-rule>
 
 </faces-config>
+
+

@@ -37,6 +37,7 @@
                         <ice:menuItem action="home" value="Home" styleClass=""/>
                         <ice:menuItem action="browser" value="Browser"/>
                         <ice:menuItem action="explorer" value="Ontology"/>
+                        <ice:menuItem action="monitor" value="Monitor"/>
                     </ice:menuBar>
 
                 </ice:panelGrid>

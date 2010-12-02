@@ -21,4 +21,9 @@
     <source>componentLinkClassLink.jsp</source>
   </tag>
 
+  <tag>
+    <tag-name>beanTable</tag-name>
+    <source>beanTable.jsp</source>
+  </tag>
+
 </facelet-taglib>

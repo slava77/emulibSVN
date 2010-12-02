@@ -109,6 +109,20 @@ div.tableFilterBox {
     white-space: normal;
 }
 
+input.tableFilterBox {
+    border-style: solid;
+    border-width: 1px;
+    border-color: darkgrey;
+    height: 22px;
+    text-align: left;
+    padding: 2px;
+    overflow: hidden;
+    font-weight: normal;
+    white-space: normal;
+    font-size: 12px;
+    width: 99%
+}
+
 /* View Run styles */
 
 td.viewLabelCell, td.viewLabelReportCell {
