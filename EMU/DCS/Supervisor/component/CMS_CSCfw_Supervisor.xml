@@ -1,7 +1,7 @@
  <component>
 	<name>CMS_CSCfw_Supervisor</name>
-	<version>3.0.1</version>
-	<date>02/03/2010</date>
+	<version>3.0.2</version>
+	<date>06/11/2010</date>
 	<config>./config/CMS_CSCfw_Supervisor.config</config>
 	<dplist>./dplist/CMS_CSCfw_Supervisor/CMS_CSCfw_Supervisor.dpl</dplist>
 	<dplist>./dplist/CMS_CSCfw_Supervisor/CMS_CSCfw_Supervisor2.dpl</dplist>
