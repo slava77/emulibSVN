@@ -10,6 +10,8 @@ create or replace PACKAGE CDW_UTILITY AS
     procedure generate_ddl;
 
     function partition_table_ddl(p_table_name varchar2, p_date_column varchar2, p_months_forward number) return varchar2;
+    function max_table_partition(p_table varchar2) return date;
+    procedure repartition_tables;
 
 END CDW_UTILITY;
 
@@ -166,6 +168,38 @@ create or replace PACKAGE BODY CDW_UTILITY AS
 
       return par_sql;
 
+    end;
+
+    function max_table_partition(p_table varchar2) return date as
+      l_d date := null;
+      l_md date := null;
+      l_s varchar2(32000);
+    begin
+      for r in (select table_name, high_value from USER_TAB_PARTITIONS where table_name = p_table) loop
+        l_s := 'select ' || substr(r.high_value, 1, length(r.high_value)) || ' from dual';
+        execute immediate l_s into l_d;
+        if l_md is null or l_d > l_md then
+          l_md := l_d;
+        end if;
+      end loop;
+      return l_md;
+    end;
+
+    procedure repartition_tables as
+      l_s varchar2(32000);
+      l_d date := null;
+    begin
+      for r in (select table_name from USER_TAB_PARTITIONS where table_name like 'CDW_%' group by table_name) loop
+        l_d := cdw_utility.max_table_partition(r.table_name);
+        if (l_d - sysdate) < 30 then
+          for i in 1..1 loop
+            l_s := 'ALTER TABLE ' || r.table_name || ' ADD PARTITION P' || TO_CHAR(l_d, 'YYYYMM');
+            l_d := ADD_MONTHS(l_d, 1);
+            l_s := l_s || ' values less than (to_date(''' || TO_CHAR(l_d, 'YYYY-MM-DD') || ''', ''YYYY-MM-DD''))';
+            execute immediate l_s;
+          end loop;
+        end if;
+      end loop;
     end;
 
 END CDW_UTILITY;

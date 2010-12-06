@@ -280,4 +280,20 @@
 
     </target>
 
+    <target name="08-repartition-tables" depends="db-properties">
+
+        <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
+            delimiter="/" keepformat="true" delimitertype="row" onerror="abort" classpathref="classpath" print="true">
+            <transaction>
+                begin
+                  cdw_utility.repartition_tables;
+                end;
+            </transaction>
+            <transaction>
+                select '[' || table_name || '] ok until ' || to_char(cdw_utility.max_table_partition(table_name),'YYYY-MM-DD') "table limit" from USER_TAB_PARTITIONS where table_name like 'CDW_%' group by table_name
+            </transaction>
+        </sql>
+
+    </target>
+
 </project>
