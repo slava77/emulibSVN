@@ -21,7 +21,7 @@ PANEL,-1 -1 517 756 N "_3DFace" 0
 /** initialize constants required for access control - basically just fill in the arrays of control and expert control button names. */
 void initAcConstants() {
   controlButtons = makeDynString();
-//  expertControlButtons = makeDynString(\"btnDo\", \"btnUndo\", \"btnForceSet\");
+  expertControlButtons = makeDynString(\"btnUnmaskAndChangeVset\", \"btnMask\", \"btnChangeVset\", \"spinUnmaskVoltage\", \"spinChangeVoltage\");
 }
 " 0
  E E E E 1 -1 -1 0  140 50
@@ -448,7 +448,7 @@ LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
   this.tableMode = TABLE_SELECT_MULTIPLE;
   this.selectByClick = TABLE_SELECT_LINE;
 }" 0
-E 1 0 1 1 0 "maskedChannels" 6 1 0 "s" 1
+E 1 0 1 1 0 "maskedChannels" 16 1 0 "s" 1
 LANG:1 15 Masked Channels
 E
 1
@@ -499,13 +499,13 @@ LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
   this.tableMode = TABLE_SELECT_MULTIPLE;
   this.selectByClick = TABLE_SELECT_LINE;
 }" 0
-E 1 0 1 2 0 "loweredChannels" 6 1 0 "s" 1
+E 1 0 1 2 0 "loweredChannels" 13 1 0 "s" 1
 LANG:1 17 Lower Voltage Ch.
 E
 1
 LANG:1 0 
 
-145 "voltage" 6 1 0 "s" 1
+145 "voltage" 5 1 0 "s" 1
 LANG:1 7 Voltage
 E
 1
@@ -518,7 +518,7 @@ LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 0 1 1 1 7
 1 0
 13 39
-"PUSH_BUTTON2"
+"btnUnmaskAndChangeVset"
 ""
 1 40 570 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
@@ -626,7 +626,7 @@ LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 41 Action on selected lower voltage channels
 13 43
-"PUSH_BUTTON3"
+"btnMask"
 ""
 1 40 660 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
@@ -671,7 +671,7 @@ LANG:1 4 Mask
 }" 0
  E E E
 13 44
-"PUSH_BUTTON4"
+"btnChangeVset"
 ""
 1 40 700 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E

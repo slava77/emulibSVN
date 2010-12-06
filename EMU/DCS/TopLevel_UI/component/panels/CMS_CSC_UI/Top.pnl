@@ -119,7 +119,7 @@ bool autoTakeControl = false;
 string currentUser, lastUser;
 dyn_string currentFsmOwners;
 bool hasControlPrivilege, hasExpertPrivilege;
- 
+
 void waitForEmuUiInitialize() {
   while(!emuui_isInitialized()) { // wait for the emuui initialization
     delay(0, 200);
@@ -423,6 +423,13 @@ void selectRole(string s1, string s2) {
       }
     }
   }
+}
+
+void updateTopFSMStateCB(string node, string state) {
+  string plusState, minusState;
+  fwCU_getState(\"CMS_CSC_PLUS\", plusState);
+  fwCU_getState(\"CMS_CSC_MINUS\", minusState);
+  lblOffInterlock.visible = (((plusState == \"OFF\") || (minusState == \"OFF\")) && !hasExpertPrivilege);
 }" 0
  2
 "CBRef" "1"
@@ -658,6 +665,9 @@ LANG:1 0
   emuui_addFsmNode(\"CMS_CSC_MINUS\", posX, posY, references, false, \"CMS_CSC\");
   posY += 30;
    
+  fwCU_connectState(\"updateTopFSMStateCB\", \"CMS_CSC_PLUS\");  
+  fwCU_connectState(\"updateTopFSMStateCB\", \"CMS_CSC_MINUS\");  
+  
   if (autoTakeControl) {
     fwCU_connectOperationMode(\"updateTopFsmNodeOperationModeCB\", \"CMS_CSC\");
   }
@@ -1126,7 +1136,7 @@ E E 0 1 1 2 1 E 1 0 1 -209 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png"
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 -2318.458614003724 -850 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -2531.637323273272 -890 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -1145,7 +1155,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 48.71710729079161 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 48.68828182830521 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
@@ -1800,6 +1810,25 @@ LANG:1 22 Operation Help (twiki)
   emuui_openBrowser(url);
 }" 0
  E E E
+2 94
+"lblOffInterlock"
+""
+1 196 1020 E E E 1 E 0 E N "_WindowText" E N "FwStateAttention1" E E
+ E E
+108 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 22 1020 370 1038
+1 2 2 "0s" 0 0 0 193 0 0  196 1020 1
+1
+LANG:1 31 Sans Serif,10,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 52 Only CSC Expert is allowed to turn ON from OFF state
 0
 LAYER, 1 
 1
