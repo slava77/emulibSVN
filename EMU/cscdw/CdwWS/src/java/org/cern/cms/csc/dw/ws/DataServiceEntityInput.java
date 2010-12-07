@@ -5,14 +5,13 @@
 
 package org.cern.cms.csc.dw.ws;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.ejb.Stateless;
 import javax.xml.bind.JAXBElement;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.dao.PersistDaoLocal;
 import org.cern.cms.csc.dw.exception.PersistException;
 import org.cern.cms.csc.dw.model.dse.DataServiceEntity;
@@ -26,7 +25,7 @@ import org.cern.cms.csc.dw.model.dse.DataServiceEntityCollection;
 @Stateless()
 public class DataServiceEntityInput {
 
-    private static Logger logger = Logger.getLogger(DataServiceEntityInput.class.getName());
+    private static Logger logger = Logger.getLogger(DataServiceEntityInput.class);
     @EJB
     private PersistDaoLocal persistDao;
 
@@ -36,15 +35,15 @@ public class DataServiceEntityInput {
     @WebMethod(operationName = "getDataServiceEntityCollection")
     public Integer getDataServiceEntityCollection(@WebParam(name = "dataServiceEntityCollection") final DataServiceEntityCollection dataServiceEntityCollection) throws Exception {
         try {
-            logger.fine("Data Service: got a DataServiceEntityCollection with " + dataServiceEntityCollection.getDataServiceEntities().size() + " DSEs");
+            logger.debug("Data Service: got a DataServiceEntityCollection with " + dataServiceEntityCollection.getDataServiceEntities().size() + " DSEs");
             for (JAXBElement<? extends DataServiceEntity> dseEl: dataServiceEntityCollection.getDataServiceEntities()) {
                 DataServiceEntity dse = dseEl.getValue();
-                logger.finer("Data Service: forwarding DSE for persistance. dse.toString(): " + dse.toString());
+                logger.debug("Data Service: forwarding DSE for persistance. dse.toString(): " + dse.toString());
                 persistDao.persist(dse);
             }
             return dataServiceEntityCollection.getDataServiceEntities().size();
         } catch (PersistException ex) {
-            logger.log(Level.SEVERE, "Error while saving DataServiceEntity", ex);
+            logger.error("Error while saving DataServiceEntity", ex);
             throw ex;
         }
     }

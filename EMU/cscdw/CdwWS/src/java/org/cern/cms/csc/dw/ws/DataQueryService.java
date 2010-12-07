@@ -5,12 +5,12 @@
 
 package org.cern.cms.csc.dw.ws;
 
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.ejb.Stateless;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.exception.InvalidEntityClassException;
 
@@ -22,7 +22,7 @@ import org.cern.cms.csc.dw.exception.InvalidEntityClassException;
 @Stateless()
 public class DataQueryService {
 
-    private static Logger logger = Logger.getLogger(DataQueryService.class.getName());
+    private static Logger logger = Logger.getLogger(DataQueryService.class);
 
     @EJB
     private EntityDaoLocal entityDao;
@@ -33,7 +33,7 @@ public class DataQueryService {
     @WebMethod(operationName = "entityExists")
     public Boolean entityExists(@WebParam(name = "className") final String className, @WebParam(name = "id") String id) throws InvalidEntityClassException {
         boolean ret = (entityDao.getEntityById(className, id) != null);
-        logger.fine("Data query service: got an entityExists query for class " + className + " with ID=" + id + ". Answer:" + ret);
+        logger.debug("Data query service: got an entityExists query for class " + className + " with ID=" + id + ". Answer:" + ret);
         return ret;
     }
 

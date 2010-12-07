@@ -15,12 +15,11 @@ import javax.jms.Session;
 import org.cern.cms.csc.dw.ws.exception.EmptyListReceivedException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.jms.ObjectMessage;
 import javax.xml.bind.JAXBElement;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.dao.PersistDaoLocal;
 import org.cern.cms.csc.dw.exception.WrongComponentTypeException;
@@ -31,7 +30,7 @@ import org.cern.cms.csc.dw.service.ServiceInstructions;
 @Stateless
 public class FactCollectionSaverBean implements FactCollectionSaverLocal {
 
-    private static Logger logger = Logger.getLogger(FactCollectionSaverBean.class.getName());
+    private static Logger logger = Logger.getLogger(FactCollectionSaverBean.class);
 
     @EJB
     private PersistDaoLocal persistDao;
@@ -49,12 +48,13 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
     private ConnectionFactory ruleEngineInputQueueFactory;
 
     public void saveFactCollection(FactCollection factCollection) throws Exception {
-        logger.finest("FC Saver bean: at start, number of facts: " + factCollection.getFacts().size() + ", number of fis: " + factCollection.getFactsItems().size());
+        
+        logger.debug("FC Saver bean: at start, number of facts: " + factCollection.getFacts().size() + ", number of fis: " + factCollection.getFactsItems().size());
 
         Set<JAXBElement<? extends Fact>> toRemove = new HashSet<JAXBElement<? extends Fact>>();
         ServiceInstructions instructions = factCollection.getServiceInstructions();
 
-        logger.info("FC Saver bean: received fact collection with " + factCollection.getFacts().size() + " facts from " + factCollection.getSource());
+        logger.debug("FC Saver bean: received fact collection with " + factCollection.getFacts().size() + " facts from " + factCollection.getSource());
 
         // Performing on receive operations
         factCollection.onReceive(entityDao);
@@ -68,7 +68,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
             // Get a fact
             Fact fact = fi.getValue();
             
-            logger.fine("FC Saver bean: Processing fact: " + fact.toString());
+            logger.debug("FC Saver bean: Processing fact: " + fact.toString());
 
             // Get ontology component object from fact component id or component.getId
             try {
@@ -93,7 +93,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
                 if (instructions.isStrict()) {
                     throw ex;
                 } else {
-                    logger.log(Level.SEVERE, "Exception in FactCollectionSaverBean", ex);
+                    logger.error("Exception in FactCollectionSaverBean", ex);
                     toRemove.add(fi);
                 }
             }
@@ -101,11 +101,11 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
         }
 
         // Remove facts what need to be removed
-        logger.finest("FC Saver bean: number of facts after processing but before removing: " + factCollection.getFacts().size());
+        logger.debug("FC Saver bean: number of facts after processing but before removing: " + factCollection.getFacts().size());
         for (JAXBElement<? extends Fact> fi: toRemove) {
             factCollection.getFacts().remove(fi);
         }
-        logger.finest("FC Saver bean: number of facts after processing and after removing: " + factCollection.getFacts().size());
+        logger.debug("FC Saver bean: number of facts after processing and after removing: " + factCollection.getFacts().size());
 
         if (!factCollection.isSetFacts()) {
             throw new EmptyListReceivedException("factCollection", "Fact");
@@ -113,7 +113,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
 
         // Persist collection
         if (instructions.isPersist()) {
-            logger.finest("FC Saver bean: serviceInstructions.isPersist() = true, so sending this fact collection to entity saver");
+            logger.debug("FC Saver bean: serviceInstructions.isPersist() = true, so sending this fact collection to entity saver");
             persistDao.persist(factCollection);
         }
 
@@ -124,7 +124,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
             }
             sendFactsToRuleEngineInputQueue(factsToSendToRE);
         } catch (JMSException jmsEx) {
-            logger.log(Level.SEVERE, "Exception while sending fact to rule engine input queue", jmsEx);
+            logger.error("Exception while sending fact to rule engine input queue", jmsEx);
         }
     }
 
@@ -150,7 +150,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
                 try {
                     session.close();
                 } catch (JMSException e) {
-                    Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot close session", e);
+                    logger.error("Cannot close session", e);
                 }
             }
             if (connection != null) {
