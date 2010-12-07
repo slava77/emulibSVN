@@ -9,10 +9,9 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.model.annotation.gui.Label;
 import org.cern.cms.csc.dw.model.annotation.gui.NoManualInput;
 import org.cern.cms.csc.dw.model.base.EntityBase;
@@ -25,7 +24,7 @@ import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
  */
 public abstract class PropertyMd {
 
-    private static Logger logger = Logger.getLogger(PropertyMd.class.getName());
+    private static Logger logger = Logger.getLogger(PropertyMd.class);
 
     private static Pattern camelCasePattern = Pattern.compile("(\\p{Upper}[\\p{Lower}\\d]*)");
     private static Pattern itemPropertyPattern = Pattern.compile("(.+)Item");
@@ -244,7 +243,7 @@ public abstract class PropertyMd {
         if ((value != null) && (!getType().isAssignableFrom(value.getClass()) && (!getType().isPrimitive()) &&
                 (!(Collection.class.isAssignableFrom(getType()) && value.getClass().isArray()) ))) {
             String msgStr = "Wrong value type: expected " + getType().getName() + ", got " + value.getClass().getName();
-            logger.severe("Serious validation error for property " + getName() + " of class " + getGetterMethod().getDeclaringClass().getName() + ": " + msgStr);
+            logger.error("Serious validation error for property " + getName() + " of class " + getGetterMethod().getDeclaringClass().getName() + ": " + msgStr);
             return msgStr;
         }
 
@@ -259,7 +258,7 @@ public abstract class PropertyMd {
                     }
                 }
             } catch (Exception ex) {
-                logger.log(Level.SEVERE, "Exception while validating a many-to-one relation value", ex);
+                logger.error("Exception while validating a many-to-one relation value", ex);
                 throw new RuntimeException("Exception while validating a many-to-one relation value", ex);
             }
         }

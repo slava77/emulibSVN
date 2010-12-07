@@ -41,12 +41,13 @@
     <class>org.cern.cms.csc.dw.model.ontology.ComponentClass</class>
     <class>org.cern.cms.csc.dw.model.ontology.ComponentLinkClass</class>
     <class>org.cern.cms.csc.dw.model.ontology.ComponentSynonym</class>
-    <class>org.cern.cms.csc.exsys.re.model.Action</class>
-    <class>org.cern.cms.csc.exsys.re.model.ActionFactory</class>
     <class>org.cern.cms.csc.exsys.re.model.Conclusion</class>
-    <class>org.cern.cms.csc.exsys.re.model.ConclusionFactory</class>
     <class>org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation</class>
     <class>org.cern.cms.csc.exsys.re.model.ConclusionType</class>
+    <class>org.cern.cms.csc.exsys.re.model.ComponentFinder</class>
+    <class>org.cern.cms.csc.exsys.re.model.IntersectingComponentFinder</class>
+    <class>org.cern.cms.csc.exsys.re.model.RelatedComponentFinder</class>
+    <class>org.cern.cms.csc.exsys.re.model.UnionComponentFinder</class>
     <class>org.cern.cms.csc.exsys.re.model.Rule</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
@@ -76,6 +77,7 @@
     <class>org.cern.cms.csc.dw.model.monitor.MonitorException</class>
     <class>org.cern.cms.csc.dw.model.monitor.MonitorExceptionStackTrace</class>
     <class>org.cern.cms.csc.dw.model.monitor.MonitorObject</class>
+    <class>org.cern.cms.csc.dw.model.monitor.MonitorFactCollectionLog</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="hibernate.hbm2ddl.auto" value="update"/>

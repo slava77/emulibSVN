@@ -2,7 +2,7 @@ package org.cern.cms.csc.dw.dao;
 
 import java.io.File;
 import java.net.URL;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.model.ontology.graph.GServices;
 import org.cern.cms.csc.dw.model.ontology.graph.GraphServices;
 import org.cern.cms.csc.dw.util.ZipUtil;
@@ -20,7 +20,7 @@ import org.cern.cms.csc.dw.util.ZipUtil;
 
 public class GraphServicesDao {
 
-    private static final Logger log = Logger.getLogger(GraphServices.class.getName());
+    private static final Logger log = Logger.getLogger(GraphServices.class);
     private static final String graphdbPath = "graphdb";
     private GraphServices graphServices;
 
@@ -53,7 +53,7 @@ public class GraphServicesDao {
             graphServices = new GraphServices(graphdbPath);
 
         } catch (Exception ex) {
-            log.severe(ex.getMessage());
+            log.error(ex.getMessage(), ex);
             ex.printStackTrace(System.err);
         }
 

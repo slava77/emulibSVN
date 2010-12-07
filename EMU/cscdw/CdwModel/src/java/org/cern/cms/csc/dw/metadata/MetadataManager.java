@@ -8,19 +8,20 @@ import java.io.InputStream;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.cern.cms.csc.dw.util.ClassUtil;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import javax.persistence.Entity;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.model.annotation.FactAnn;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.model.fact.Fact;
 
 @SuppressWarnings("unchecked")
 public class MetadataManager {
+
+    private static Logger logger = Logger.getLogger(MetadataManager.class);
 
     private static final String CLASS_ROOT                = "org.cern.cms.csc";
     private static final String RESOURCE_BASE             = "/org/cern/cms/csc/dw/metadata/";
@@ -47,7 +48,7 @@ public class MetadataManager {
                     }
                 }
             } catch (Exception ex) {
-                Logger.getLogger(MetadataManager.class.getName()).log(Level.SEVERE, null, ex);
+                logger.error(null, ex);
             }
         }
     }
@@ -98,7 +99,7 @@ public class MetadataManager {
 
 
         } catch (IOException ex) {
-            Logger.getLogger(MetadataManager.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(null, ex);
         }
 
     }

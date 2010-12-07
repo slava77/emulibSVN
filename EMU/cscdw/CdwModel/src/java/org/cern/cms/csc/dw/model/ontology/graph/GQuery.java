@@ -7,8 +7,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 import org.apache.lucene.search.Sort;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
@@ -21,6 +20,8 @@ import org.neo4j.graphdb.Traverser;
 import org.neo4j.graphdb.Traverser.Order;
 
 public class GQuery <T extends GNode> {
+
+    private static Logger logger = Logger.getLogger(GQuery.class);
 
     private final GServices gservices;
     private final Class<T> ifClass;
@@ -43,7 +44,7 @@ public class GQuery <T extends GNode> {
         try {
             this.constructor = implClass.getConstructor(GServices.class, Node.class);
         } catch (Exception ex) {
-            Logger.getLogger(GQuery.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(null, ex);
         }
     }
 

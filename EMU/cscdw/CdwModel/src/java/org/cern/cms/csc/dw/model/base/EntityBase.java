@@ -15,9 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.exception.InvalidEntityClassException;
 import org.cern.cms.csc.dw.exception.OnReceiveProcessingException;
@@ -32,7 +31,7 @@ import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 //@EJB(name="ejb/EntityDao", beanInterface=org.cern.cms.csc.dw.dao.EntityDaoLocal.class)
 public class EntityBase implements Serializable {
 
-    private static Logger logger = Logger.getLogger(EntityBase.class.getName());
+    private static Logger logger = Logger.getLogger(EntityBase.class);
 
     /** Class property metadata cache. */
     private static Map<Class, List<PropertyMd>> propertyMetadataCache = new HashMap<Class, List<PropertyMd>>();
@@ -166,7 +165,7 @@ public class EntityBase implements Serializable {
         try {
             return getIdPropertyMd().getReadMethod().invoke(this);
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, "Exception while trying to get entity ID", ex);
+            logger.error("Exception while trying to get entity ID", ex);
             return null;
         }
     }

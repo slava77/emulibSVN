@@ -9,8 +9,8 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.logging.Logger;
 import javax.persistence.ManyToMany;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.exception.InvalidEntityClassException;
 import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
@@ -21,7 +21,7 @@ import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
  */
 public class ManyToManyPropertyMd extends RestrictedPropertyMd {
 
-    private static final Logger logger = Logger.getLogger(ManyToManyPropertyMd.class.getSimpleName());
+    private static final Logger logger = Logger.getLogger(ManyToManyPropertyMd.class);
 
     private static Class[] mandatoryAnnotations = {ManyToMany.class};
 

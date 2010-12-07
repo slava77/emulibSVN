@@ -49,23 +49,26 @@ public class MonitorJob implements StatefulJob {
 
         for (QueueItem qi: queues) {
             try {
-                MonitorQueueStatus qstatus = new MonitorQueueStatus();
-                qstatus.setQueueName(qi.getName());
-                qstatus.setQueueSize(qi.getSize());
-                monitor.trace(qstatus);
+                Integer size = qi.getSize();
+                if (size > 0) {
+                    MonitorQueueStatus qstatus = new MonitorQueueStatus();
+                    qstatus.setQueueName(qi.getName());
+                    qstatus.setQueueSize(qi.getSize());
+                    monitor.trace(qstatus);
+                }
             } catch (JMSException ex) {
                 log.error("Error while accessing queues", ex);
             }
         }
 
-        MonitorDatabaseStatus dbstatus = new MonitorDatabaseStatus();
         try {
-            dbstatus.setAlive(monitorDao.getSysdate() != null);
+            monitorDao.getSysdate();
         } catch (Exception ex) {
+            MonitorDatabaseStatus dbstatus = new MonitorDatabaseStatus();
             dbstatus.setAlive(false);
+            monitor.trace(dbstatus);
             log.error("Error while accessing database", ex);
         }
-        monitor.trace(dbstatus);
 
     }
 

@@ -12,8 +12,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.persistence.Basic;
@@ -22,6 +20,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.exception.InvalidEntityClassException;
 import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 
@@ -31,7 +30,7 @@ import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
  */
 public class EntityPropertyMdFactory {
 
-    private static Logger logger = Logger.getLogger(EntityPropertyMdFactory.class.getName());
+    private static Logger logger = Logger.getLogger(EntityPropertyMdFactory.class);
 
     private static Pattern ignoredPropertiesPattern = Pattern.compile("(set|id|entityId|class|propertyMetadata|properties|entityTitle|metadata|componentId)(.*)");
     private static Pattern itemPropertyPattern = Pattern.compile("(\\p{Lower}.+)Item");
@@ -89,7 +88,7 @@ public class EntityPropertyMdFactory {
                 PropertyMd propMeta = createMetadataForProperty(prop);
                 metadata.add(propMeta);
             } catch (InvalidEntityBeanPropertyException ex) {
-                logger.log(Level.SEVERE, "Exception while constructing entity bean " + entityClass.getName() + "properties metadata - skipping this property", ex);
+                logger.error("Exception while constructing entity bean " + entityClass.getName() + "properties metadata - skipping this property", ex);
 //                throw ex;
             }
         }

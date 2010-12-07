@@ -5,8 +5,9 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.model.monitor.MonitorObject;
-import org.cern.cms.csc.dw.model.monitor.MonitorQueueStatus;
+import org.hibernate.CacheMode;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
@@ -15,6 +16,8 @@ import org.hibernate.ejb.EntityManagerImpl;
 
 @Stateless
 public class MonitorDao implements MonitorDaoLocal {
+
+    private static Logger log = Logger.getLogger(MonitorDao.class);
 
     @PersistenceContext(unitName="CdwPU")
     private EntityManager em;
@@ -36,12 +39,14 @@ public class MonitorDao implements MonitorDaoLocal {
     }
 
     @SuppressWarnings("unchecked")
-    public List<MonitorQueueStatus> getQueueStatusData(int hours) {
+    public <T extends MonitorObject> List<T> getMonitorObjects(Class<T> clazz, int lastHours) {
         Session session = getMonitorSession();
         Transaction tr = session.beginTransaction();
         Date from = new Date();
-        from.setTime(from.getTime() - hours * 60 * 60 * 1000);
-        List<MonitorQueueStatus> list = session.createCriteria(MonitorQueueStatus.class)
+        from.setTime(from.getTime() - lastHours * 60 * 60 * 1000);
+        List<T> list = session.createCriteria(clazz)
+                .setCacheMode(CacheMode.REFRESH)
+                .setCacheable(false)
                 .add(Restrictions.gt("time", from))
                 .addOrder(Order.asc("time"))
                 .list();

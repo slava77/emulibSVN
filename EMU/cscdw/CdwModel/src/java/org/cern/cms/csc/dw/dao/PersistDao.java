@@ -5,23 +5,12 @@
 
 package org.cern.cms.csc.dw.dao;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageProducer;
-import javax.jms.ObjectMessage;
-import javax.jms.Queue;
-import javax.jms.Session;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.exception.OnSaveProcessingException;
 import org.cern.cms.csc.dw.exception.PersistException;
 import org.cern.cms.csc.dw.model.base.EntityBase;
@@ -33,7 +22,7 @@ import org.cern.cms.csc.dw.model.base.EntityBase;
 @Stateless
 public class PersistDao implements PersistDaoLocal {
 
-    private static Logger logger = Logger.getLogger(PersistDao.class.getName());
+    private static Logger logger = Logger.getLogger(PersistDao.class);
     
     /** 
      * Indicates if objects need to be put into queue (to maintain processing order!)
@@ -90,8 +79,8 @@ public class PersistDao implements PersistDaoLocal {
             }
         } catch (Exception ex) {
             String className = cdwEntityObject.getClass().getCanonicalName();
-            logger.log(Level.SEVERE, "Error while persisting an entity of class " + className + ".\n toString(): " + cdwEntityObject.toString(), ex);
-            logger.log(Level.INFO, "Sending entity of class " + className + ".\n to saver queue...", ex);
+            logger.error("Error while persisting an entity of class " + className + ".\n toString(): " + cdwEntityObject.toString(), ex);
+            logger.info("Sending entity of class " + className + ".\n to saver queue...", ex);
 
             /* TODO:
              * put int object into queue. Still need to define how to handle queued objects, etc.

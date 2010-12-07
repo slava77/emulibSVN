@@ -1,8 +1,7 @@
 package org.cern.cms.csc.dw.model.ontology.graph;
 
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.RelationshipType;
@@ -12,6 +11,7 @@ import org.neo4j.graphdb.Transaction;
 
 public abstract class GNodeImpl extends GBase implements GNode {
 
+    private static Logger logger = Logger.getLogger(GNodeImpl.class);
     protected final Node node;
 
     /**
@@ -28,7 +28,7 @@ public abstract class GNodeImpl extends GBase implements GNode {
         try {
             return getPropertyKey(this.getClass(), type);
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(GNodeImpl.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(null, ex);
             return null;
         }
     }

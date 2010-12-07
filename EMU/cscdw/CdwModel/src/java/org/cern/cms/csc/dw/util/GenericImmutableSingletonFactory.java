@@ -9,23 +9,23 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.logging.Logger;
 import javax.naming.Context;
 import javax.naming.Name;
 import javax.naming.NamingException;
 import javax.naming.RefAddr;
 import javax.naming.spi.ObjectFactory;
+import org.apache.log4j.Logger;
 
 public class GenericImmutableSingletonFactory implements ObjectFactory {
 
-    private static final Logger log = Logger.getLogger(GenericImmutableSingletonFactory.class.getName());
+    private static final Logger log = Logger.getLogger(GenericImmutableSingletonFactory.class);
     private static Map<Name, Object> singletons = new HashMap<Name, Object>();
 
     public Object getObjectInstance(Object obj, Name name, Context nameCtx,
             Hashtable environment) throws NamingException {
-        log.fine("obj=" + obj);
-        log.fine("name=" + name);
-        log.fine("nameCtx=" + nameCtx);
+        log.debug("obj=" + obj);
+        log.debug("name=" + name);
+        log.debug("nameCtx=" + nameCtx);
         if (obj instanceof Reference) {
             Reference ref = (Reference) obj;
             String beanClassName = ref.getClassName();
@@ -50,7 +50,7 @@ public class GenericImmutableSingletonFactory implements ObjectFactory {
 
             Object bean;
             if (singletons.containsKey(name)) {
-                log.fine("returning already existing singleton: " + name);
+                log.debug("returning already existing singleton: " + name);
                 bean = singletons.get(name);
                 if (!bean.getClass().equals(beanClass)) {
                     // should probably recreate the singleton here

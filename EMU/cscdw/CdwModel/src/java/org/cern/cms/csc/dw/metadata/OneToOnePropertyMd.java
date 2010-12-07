@@ -6,9 +6,9 @@
 package org.cern.cms.csc.dw.metadata;
 
 import java.beans.PropertyDescriptor;
-import java.util.logging.Logger;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 
 /**
@@ -17,7 +17,7 @@ import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
  */
 public class OneToOnePropertyMd extends PropertyMd {
 
-    private static Logger logger = Logger.getLogger(ManyToOnePropertyMd.class.getName());
+    private static Logger logger = Logger.getLogger(ManyToOnePropertyMd.class);
     private static Class[] mandatoryAnnotations = {OneToOne.class, JoinColumn.class};
 
     public OneToOnePropertyMd(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
