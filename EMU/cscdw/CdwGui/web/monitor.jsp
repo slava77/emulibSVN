@@ -17,7 +17,65 @@
         <ice:panelTabSet>
             <ice:panelTab label="Current Status">
 
-                <ice:panelGrid columns="2">
+                <ice:panelGrid columns="1">
+
+                    <ice:panelGrid columns="3">
+
+                        <ice:panelGroup>
+
+                            <h2>Database</h2>
+
+                            <ice:panelGrid columns="2">
+                                <ice:outputLabel value="Status: "/>
+                                <ice:outputText value="OK" rendered="#{MonitorController.databaseDate != null}" style="color: green"/>
+                                <ice:outputText value="Not OK" rendered="#{MonitorController.databaseDate == null}" style="color: red"/>
+                                <ice:outputLabel value="Sysdate: "/>
+                                <ice:outputText value="#{MonitorController.databaseDate}"/>
+                            </ice:panelGrid>
+
+                        </ice:panelGroup>
+
+                        <ice:panelGroup>
+                            <h2>Queues</h2>
+
+                            <table border="0">
+                                <tr>
+                                    <td>
+                                        <ice:outputLabel value="Name"/>
+                                    </td><td>
+                                        <ice:outputLabel value="Size"/>
+                                    </td><td>
+                                        <ice:outputLabel value="Message"/>
+                                    </td>
+                                </tr>
+                                <ui:repeat value="#{MonitorController.queues}" var="q">
+                                    <tr>
+                                        <td>
+                                            <ice:outputText value="#{q.name}"/>
+                                        </td><td>
+                                            <ice:outputText value="#{q.size}"/>
+                                        </td><td>
+                                            <ice:commandLink value="flush" actionListener="#{q.flushMessageListener}"/>
+                                        </td>
+                                    </tr>
+                                </ui:repeat>
+                            </table>
+
+                        </ice:panelGroup>
+                        <ice:panelGroup>
+                            <h2>Chart</h2>
+
+                            <ice:outputLabel value="Last hours"/>
+                            <ice:selectOneMenu value="#{MonitorController.chartLastHours}" immediate="true" partialSubmit="true">
+                                <f:selectItems value="#{MonitorController.chartLastHoursItems}"/>
+                            </ice:selectOneMenu>
+
+                            <br/>
+
+                            <ice:commandLink value="Refresh" action="monitor"/>
+
+                        </ice:panelGroup>
+                    </ice:panelGrid>
 
                     <ice:panelGroup>
 
@@ -25,44 +83,6 @@
 
                     </ice:panelGroup>
 
-                    <ice:panelGroup>
-                        
-                        <h2>Database</h2>
-
-                        <ice:panelGrid columns="2">
-                            <ice:outputLabel value="Status: "/>
-                            <ice:outputText value="OK" rendered="#{MonitorController.databaseDate != null}" style="color: green"/>
-                            <ice:outputText value="Not OK" rendered="#{MonitorController.databaseDate == null}" style="color: red"/>
-                            <ice:outputLabel value="Sysdate: "/>
-                            <ice:outputText value="#{MonitorController.databaseDate}"/>
-                        </ice:panelGrid>
-
-                        <h2>Queues</h2>
-
-                        <table border="0">
-                            <tr>
-                                <td>
-                                    <ice:outputLabel value="Name"/>
-                                </td><td>
-                                    <ice:outputLabel value="Size"/>
-                                </td><td>
-                                    <ice:outputLabel value="Message"/>
-                                </td>
-                            </tr>
-                            <ui:repeat value="#{MonitorController.queues}" var="q">
-                                <tr>
-                                    <td>
-                                        <ice:outputText value="#{q.name}"/>
-                                    </td><td>
-                                        <ice:outputText value="#{q.size}"/>
-                                    </td><td>
-                                        <ice:commandLink value="flush" actionListener="#{q.flushMessageListener}"/>
-                                    </td>
-                                </tr>
-                            </ui:repeat>
-                        </table>
-
-                    </ice:panelGroup>
                 </ice:panelGrid>
 
             </ice:panelTab>

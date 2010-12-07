@@ -7,15 +7,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.exception.ComponentClassNotFoundException;
 import org.cern.cms.csc.dw.exception.ComponentNotFoundException;
 import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
@@ -26,6 +24,8 @@ import org.cern.cms.csc.dw.util.ServiceLocator;
 @EJB(name="OntologyDaoRef", beanInterface=OntologyDaoLocal.class)
 public class ComponentClassTreeController extends JsfBeanBase {
 
+    private static Logger logger = Logger.getLogger(ComponentClassTreeController.class);
+    
     private OntologyDaoLocal ontologyDao;  
     private DefaultTreeModel model;
 
@@ -105,7 +105,7 @@ public class ComponentClassTreeController extends JsfBeanBase {
                 selectedComponentClass = ontologyDao.getGComponentClass(Long.parseLong(strId));
                 componentMatchClasses = selectedComponentClass.getChildrenRecursive(true);
             } catch (ComponentClassNotFoundException ex) {
-                Logger.getLogger(ComponentClassTreeController.class.getName()).log(Level.SEVERE, null, ex);
+                logger.error(null, ex);
                 selectedComponentClass = null;
                 componentMatchClasses = Collections.EMPTY_SET;
             }

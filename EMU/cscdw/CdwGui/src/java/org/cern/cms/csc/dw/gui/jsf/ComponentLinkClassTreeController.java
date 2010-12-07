@@ -5,12 +5,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.event.ActionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.exception.ComponentLinkClassNotFoundException;
 import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentLinkClass;
@@ -18,6 +17,8 @@ import org.cern.cms.csc.dw.util.ServiceLocator;
 
 @EJB(name="OntologyDaoRef", beanInterface=OntologyDaoLocal.class)
 public class ComponentLinkClassTreeController extends JsfBeanBase {
+
+    private static Logger logger = Logger.getLogger(ComponentLinkClassTreeController.class);
 
     private OntologyDaoLocal ontologyDao;
 
@@ -92,7 +93,7 @@ public class ComponentLinkClassTreeController extends JsfBeanBase {
             try {
                 selectedLinkClass = ontologyDao.getGComponentLinkClass(Long.parseLong(strId));
             } catch (ComponentLinkClassNotFoundException ex) {
-                Logger.getLogger(ComponentLinkClassTreeController.class.getName()).log(Level.SEVERE, null, ex);
+                logger.error(null, ex);
                 selectedLinkClass = null;
             }
         }

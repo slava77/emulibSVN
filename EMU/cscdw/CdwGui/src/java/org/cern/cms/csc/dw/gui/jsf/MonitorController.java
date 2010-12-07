@@ -30,15 +30,20 @@ import org.cern.cms.csc.dw.gui.table.BeanTableBase;
 import org.cern.cms.csc.dw.gui.table.BeanTableControllerBase;
 import org.cern.cms.csc.dw.gui.table.SelectItemComparator;
 import org.cern.cms.csc.dw.model.base.EntityBase;
+import org.cern.cms.csc.dw.model.monitor.MonitorFactCollectionLog;
 import org.cern.cms.csc.dw.model.monitor.MonitorQueueStatus;
 import org.cern.cms.csc.dw.util.ServiceLocator;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYBarRenderer;
+import org.jfree.chart.renderer.xy.XYDotRenderer;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.time.TimeSeriesDataItem;
 
 @EJB(name = "MonitorDaoRef", beanInterface = MonitorDaoLocal.class)
 public class MonitorController extends BeanTableControllerBase {
@@ -75,6 +80,7 @@ public class MonitorController extends BeanTableControllerBase {
     private ServiceLocator locator;
     private MonitorDaoLocal monitorDao;
     private List<QueueItem> queues = new ArrayList<QueueItem>();
+    private Integer chartLastHours = 8;
 
     public MonitorController() throws NamingException {
         this.locator = ServiceLocator.getInstance();
@@ -94,31 +100,92 @@ public class MonitorController extends BeanTableControllerBase {
         return monitorDao.getSysdate();
     }
 
+    public Integer getChartLastHours() {
+        return chartLastHours;
+    }
+
+    public void setChartLastHours(Integer chartLastHours) {
+        this.chartLastHours = chartLastHours;
+    }
+
+    public List<SelectItem> getChartLastHoursItems() {
+        List<SelectItem> items = new ArrayList<SelectItem>();
+        for (int i = 1; i <= 24; i++) {
+            items.add(new SelectItem(i, String.valueOf(i)));
+        }
+        return items;
+    }
+
     public byte[] getChartImage() {
 
-        TimeSeriesCollection tsds = new TimeSeriesCollection();
-        for (MonitorQueueStatus qs: monitorDao.getQueueStatusData(24)) {
-            TimeSeries ts = tsds.getSeries(qs.getQueueName());
+        TimeSeriesCollection queueSizes = new TimeSeriesCollection();
+        Integer maxValue = 0;
+
+        for (MonitorQueueStatus qs: monitorDao.getMonitorObjects(MonitorQueueStatus.class, chartLastHours)) {
+            TimeSeries ts = queueSizes.getSeries(qs.getQueueName());
             if (ts == null) {
                 ts = new TimeSeries(qs.getQueueName());
-                tsds.addSeries(ts);
+                queueSizes.addSeries(ts);
             }
             ts.add(new Second(qs.getTime()), qs.getQueueSize());
+            if (maxValue < qs.getQueueSize()) maxValue = qs.getQueueSize();
         }
 
+        TimeSeriesCollection fColls = new TimeSeriesCollection();
+        for (MonitorFactCollectionLog fc: monitorDao.getMonitorObjects(MonitorFactCollectionLog.class, chartLastHours)) {
+            TimeSeries ts = fColls.getSeries(fc.getProvider());
+            if (ts == null) {
+                ts = new TimeSeries(fc.getProvider());
+                fColls.addSeries(ts);
+            }
+            Second sec = new Second(fc.getTime());
+            TimeSeriesDataItem dataItem = ts.getDataItem(sec);
+            Integer value = fc.getNumberOfFacts();
+            if (dataItem != null) {
+                value += dataItem.getValue().intValue();
+            }
+            ts.addOrUpdate(sec, value);
+            if (maxValue < value) maxValue = value;
+        }
 
-        JFreeChart chart = ChartFactory.createXYStepChart(
-                "Queue Sizes and Database status",
+        JFreeChart chart = ChartFactory.createTimeSeriesChart(
+                "Facts and Queue Sizes",
                 "Time",
                 "Size",
-                tsds,
-                PlotOrientation.VERTICAL,
+                queueSizes,
                 true, true, false);
 
-        chart.getXYPlot().getRangeAxis(0).setLowerBound(0.0);
+        XYPlot plot = chart.getXYPlot();
+
+        {
+            plot.getRangeAxis(0).setLowerBound(0.0);
+            plot.getRangeAxis(0).setUpperBound(maxValue.doubleValue());
+        }
         
+        {
+            Date from = new Date();
+            from.setTime(from.getTime() - chartLastHours * 60 * 60 * 1000);
+            plot.getDomainAxis().setLowerBound(new Second(from).getFirstMillisecond());
+            plot.getDomainAxis().setUpperBound(new Second(new Date()).getLastMillisecond());
+        }
+
+        /*
+        NumberAxis axis2 = new NumberAxis("Facts");
+        chart.getXYPlot().setRangeAxis(1, axis2);
+        chart.getXYPlot().setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
+        */
+        plot.setDataset(1, fColls);
+
+        XYBarRenderer renderer0 = new XYBarRenderer();
+        plot.setRenderer(0, renderer0);
+
+        XYDotRenderer renderer1 =  new XYDotRenderer();
+        renderer1.setDotHeight(2);
+        renderer1.setDotWidth(2);
+        plot.setRenderer(1, renderer1);
+
         try {
-            byte[] image = ChartUtilities.encodeAsPNG(chart.createBufferedImage(800, 600));
+            byte[] image = ChartUtilities.encodeAsPNG(chart.createBufferedImage(1000, 600));
             return image;
         } catch (IOException ex) {
             ex.printStackTrace();
