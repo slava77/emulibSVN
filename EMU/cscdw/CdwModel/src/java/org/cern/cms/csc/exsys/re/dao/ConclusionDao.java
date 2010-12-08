@@ -29,16 +29,28 @@ public class ConclusionDao implements ConclusionDaoLocal {
     public ConclusionDao() {
     }
 
+    @SuppressWarnings("unchecked")
     public List<Conclusion> getAllConclusions() {
         List<Conclusion> conclusions = em.createQuery("select c from org.cern.cms.csc.exsys.re.model.Conclusion as c " +
                                                       "order by c.timestampItem desc").getResultList();
         return conclusions;
     }
 
+    @SuppressWarnings("unchecked")
     public List<Conclusion> getAllOpenConclusions() {
         List<Conclusion> conclusions = em.createQuery(
                 "select c from org.cern.cms.csc.exsys.re.model.Conclusion as c " +
                 "where c.isClosed = false " +
+                "order by c.timestampItem desc").getResultList();
+        return conclusions;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Conclusion> getAllOpenTopConclusions() {
+        List<Conclusion> conclusions = em.createQuery(
+                "select c from org.cern.cms.csc.exsys.re.model.Conclusion as c " +
+                "where c.isClosed = false and " +
+                "c.parents is empty " +
                 "order by c.timestampItem desc").getResultList();
         return conclusions;
     }

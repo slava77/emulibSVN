@@ -18,8 +18,9 @@ import org.cern.cms.csc.dw.model.base.EntityBase;
 public interface PersistDaoLocal {
 
     void persist(EntityBase cdwEntityObject) throws PersistException, OnSaveProcessingException;
-    void persist(EntityBase cdwEntityObject, boolean queued, boolean useMerge) throws PersistException, OnSaveProcessingException;
-    void merge(EntityBase cdwEntityObject) throws PersistException, OnSaveProcessingException;
+    EntityBase persist(EntityBase cdwEntityObject, boolean queued, boolean useMerge) throws PersistException, OnSaveProcessingException;
+    EntityBase merge(EntityBase cdwEntityObject) throws PersistException, OnSaveProcessingException;
+    EntityBase mergeAndRefresh(EntityBase cdwEntityObject) throws PersistException, OnSaveProcessingException;
     void delete(EntityBase cdwEntityObject);
 
 }

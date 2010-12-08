@@ -135,6 +135,9 @@
                             <orm:join-column name="RER_COMPONENT_FINDER" nullable="false"/>
                         </hj:one-to-one>
                         <jaxb:property name="componentFinder"/>
+                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                            <a:Label name="Component Finder" description="This is used to tell the rules engine what component(s) it should assign to the conclusions it creates. There are several kinds of component finders which all use components coming from the source fact(s) and/or conclusion(s) as source components, but have different policies on how to use them to resolve the actual component(s) which will be assigned to the conclusion."/>
+                        </ann:annotate>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -194,12 +197,13 @@
                             </orm:join-table>
                         </hj:many-to-many>
                         <jaxb:property name="componentClasses"/>
-                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
-                            <a:Label name="Component Classes" description="If this is empty, then there's no filtering based on componet type. If this is not empty, then only components of the specified types are accepted (Note: this is mandatory for RelatedComponentFinder)"/>
-                        </ann:annotate>
                         <ann:annotateGet xmlns:a="org.hibernate.annotations">
                             <a:Fetch value="SUBSELECT"/>
                         </ann:annotateGet>
+                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                            <a:ImmutableReference/>
+                            <a:Label name="Component Classes" description="If this is empty, then there's no filtering based on componet type. If this is not empty, then only components of the specified types are accepted (Note: this is mandatory for RelatedComponentFinder)"/>
+                        </ann:annotate>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -254,7 +258,21 @@
                                 </hj:many-to-one>
                                 <jaxb:property name="linkClass"/>
                                 <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                                    <a:ImmutableReference/>
                                     <a:Label name="Link Class" description="(Mandaroty) This link class will be used to find the related components. Note that it's also mandatory to specify component class(es)"/>
+                                </ann:annotate>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="mergePolicy" type="tns:mergePolicyType">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic >
+                                    <orm:column name="RCF_MERGE_POLICY" length="12"/>
+                                    <hj:enumerated-value/>
+                                </hj:basic>
+                                <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                                    <a:Label name="Merge Policy" description="This is used to tell the component resolver what to do when multiple source components are given. With union merge policy, all related components are simply added together, while with intersection policy all related component sets retrieved from different source components are intersected."/>
                                 </ann:annotate>
                             </xsd:appinfo>
                         </xsd:annotation>
@@ -264,4 +282,15 @@
         </xsd:complexContent>
     </xsd:complexType>
 
+    <xsd:simpleType name="mergePolicyType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:typesafeEnumClass name="MergePolicy" />
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Intersection"/>
+            <xsd:enumeration value="Union"/>
+        </xsd:restriction>
+    </xsd:simpleType>
 </xsd:schema>

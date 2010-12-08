@@ -22,7 +22,8 @@ public interface EntityDaoLocal {
     <T extends EntityBase> T getEntityById(final Class<T> entityClass, final Object id) throws InvalidEntityClassException;
     <T extends EntityBase> List<T> getAllEntitiesByClass(final Class<T> entityClass) throws InvalidEntityClassException;
 
-    void refreshEntity(EntityBase entity);
+    EntityBase refreshEntity(EntityBase entity);
+    EntityBase refreshEntity(EntityBase entity, boolean usingId);
 
     PersistDaoLocal getPersistDao();
     OntologyDaoLocal getOntologyDao();

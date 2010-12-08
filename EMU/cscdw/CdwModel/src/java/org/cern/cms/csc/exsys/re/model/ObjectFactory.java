@@ -43,6 +43,30 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link RelatedComponentFinder }
+     * 
+     */
+    public RelatedComponentFinder createRelatedComponentFinder() {
+        return new RelatedComponentFinder();
+    }
+
+    /**
+     * Create an instance of {@link UnionComponentFinder }
+     * 
+     */
+    public UnionComponentFinder createUnionComponentFinder() {
+        return new UnionComponentFinder();
+    }
+
+    /**
+     * Create an instance of {@link Rule }
+     * 
+     */
+    public Rule createRule() {
+        return new Rule();
+    }
+
+    /**
      * Create an instance of {@link ConclusionSourceRelation }
      * 
      */
@@ -59,30 +83,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link UnionComponentFinder }
-     * 
-     */
-    public UnionComponentFinder createUnionComponentFinder() {
-        return new UnionComponentFinder();
-    }
-
-    /**
-     * Create an instance of {@link Conclusion }
-     * 
-     */
-    public Conclusion createConclusion() {
-        return new Conclusion();
-    }
-
-    /**
-     * Create an instance of {@link RelatedComponentFinder }
-     * 
-     */
-    public RelatedComponentFinder createRelatedComponentFinder() {
-        return new RelatedComponentFinder();
-    }
-
-    /**
      * Create an instance of {@link ConclusionType }
      * 
      */
@@ -91,11 +91,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Rule }
+     * Create an instance of {@link Conclusion }
      * 
      */
-    public Rule createRule() {
-        return new Rule();
+    public Conclusion createConclusion() {
+        return new Conclusion();
     }
 
     /**

@@ -9,9 +9,11 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
+import org.cern.cms.csc.dw.model.annotation.gui.ImmutableReference;
 import org.cern.cms.csc.dw.model.annotation.gui.Label;
 import org.cern.cms.csc.dw.model.annotation.gui.NoManualInput;
 import org.cern.cms.csc.dw.model.base.EntityBase;
@@ -38,6 +40,11 @@ public abstract class PropertyMd {
     /** Flag telling if a default value should be created
      * (this is determined from the annotation NoManualInput, so it can only be true if no manual inuput is allowed for this property) */
     private boolean createDefaultValue;
+    /**
+     * This is set to true is @ImmutableReference annotation is found on this property.
+     * It only makes sense if this property is a reference to another entity and tells GUI not to allow the user to edit it.
+     */
+    private boolean isImmutableReference;
     /** Class of the entity whose property this object is describing. */
     private Class entityClass;
 
@@ -66,19 +73,28 @@ public abstract class PropertyMd {
         Field f = getField();
         isManualInputAllowed = true;
         if (f != null) {
+            // check if it has a @NoManualInput annotation
             NoManualInput noManualInputA = f.getAnnotation(NoManualInput.class);
             if (noManualInputA != null) {
                 isManualInputAllowed = false;
                 createDefaultValue = noManualInputA.createDefaultValue();
             }
+
+            // check if it has a @Label annotation
             Label labelA = f.getAnnotation(Label.class);
             if (labelA != null) {
                 prop.setDisplayName(labelA.name());
                 prop.setShortDescription(labelA.description());
             }
+
+            // check if it has a @ImmutableReference annotation
+            ImmutableReference immutableRefA = f.getAnnotation(ImmutableReference.class);
+            if (immutableRefA != null) {
+                isImmutableReference = true;
+            }
         }
     }
-    
+
     /**
      * Get a flag telling if a default value should be created
      * (this is determined from the annotation NoManualInput, so it can only be true if no manual inuput is allowed for this property)
@@ -219,6 +235,11 @@ public abstract class PropertyMd {
         return isManualInputAllowed;
     }
 
+    /** Get a flag telling if this property is a reference to an immutable object (which should not / could not be edited). */
+    public boolean getIsImmutableReference() {
+        return isImmutableReference;
+    }
+
     /**
      * Get new value of the type appropriate for this type of property.
      * @return new value of the type appropriate for this type of property.
@@ -240,15 +261,16 @@ public abstract class PropertyMd {
         }
 
         // is type of the value compatible with the property type? (skip primitive types, since e.g. boolean.class.isAssignableFrom(Boolean.class) returns false, which is not actually true.. also ignore when type is collection and type of the value is an array, since ManyToManyEditor converts collections to arrays (otherwise icefaces doesn't do conversion properly)
-        if ((value != null) && (!getType().isAssignableFrom(value.getClass()) && (!getType().isPrimitive()) &&
-                (!(Collection.class.isAssignableFrom(getType()) && value.getClass().isArray()) ))) {
-            String msgStr = "Wrong value type: expected " + getType().getName() + ", got " + value.getClass().getName();
-            logger.error("Serious validation error for property " + getName() + " of class " + getGetterMethod().getDeclaringClass().getName() + ": " + msgStr);
-            return msgStr;
-        }
+//        if ((value != null) && (!getType().isAssignableFrom(value.getClass()) && (!getType().isPrimitive()) &&
+//                (!(Collection.class.isAssignableFrom(getType()) && value.getClass().isArray()) ))) {
+//            String msgStr = "Wrong value type: expected " + getType().getName() + ", got " + value.getClass().getName();
+//            logger.severe("Serious validation error for property " + getName() + " of class " + getGetterMethod().getDeclaringClass().getName() + ": " + msgStr);
+//            return msgStr;
+//        }
 
         // if the value is of type EntityBase, then run validation on all of it's properties and if that fails - reply that there's a validation error with the values properties
-        if (value instanceof EntityBase) {
+        // only do the recursive entity validation if this property is not a reference to an immutable object
+        if ((value instanceof EntityBase) && !getIsImmutableReference()) {
             EntityBase entityValue = (EntityBase) value;
             try {
                 for (PropertyMd propMetadata: entityValue.getPropertyMetadata()) {
@@ -258,7 +280,7 @@ public abstract class PropertyMd {
                     }
                 }
             } catch (Exception ex) {
-                logger.error("Exception while validating a many-to-one relation value", ex);
+                logger.log(Level.SEVERE, "Exception while validating a many-to-one relation value", ex);
                 throw new RuntimeException("Exception while validating a many-to-one relation value", ex);
             }
         }
@@ -266,5 +288,4 @@ public abstract class PropertyMd {
         // validation successful
         return null;
     }
-
 }

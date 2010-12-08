@@ -9,7 +9,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- *
+ * This annotation tells the GUI not to show this value at all.
+ * Optionally, if createDefaultValue is set to true, GUI will attempt to create a new value using the default constructor and assign it to the property.
  * @author Evka
  */
 

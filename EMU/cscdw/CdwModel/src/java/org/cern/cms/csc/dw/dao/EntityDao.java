@@ -133,8 +133,18 @@ public class EntityDao implements EntityDaoLocal {
         return ontologyDao;
     }
 
-    public void refreshEntity(EntityBase entity) {
-        entity = em.getReference(entity.getClass(), entity.getEntityId());
+    public EntityBase refreshEntity(EntityBase entity) {
+        return refreshEntity(entity, true);
+    }
+    
+    public EntityBase refreshEntity(EntityBase entity, boolean usingId) {
+        if (usingId) {
+            entity = em.getReference(entity.getClass(), entity.getEntityId());
+            //entity = em.find(entity.getClass(), entity.getEntityId());
+        } else {
+            em.refresh(entity);
+        }
+        return entity;
     }
 
 }

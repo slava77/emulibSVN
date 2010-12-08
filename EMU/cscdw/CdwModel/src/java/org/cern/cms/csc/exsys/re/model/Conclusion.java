@@ -13,7 +13,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -41,6 +40,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.model.fact.SeverityType;
+import org.hibernate.annotations.FetchMode;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XMLGregorianCalendarAsDateTime;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 
@@ -150,9 +150,7 @@ public class Conclusion
      * 
      * 
      */
-    @ManyToMany(targetEntity = org.cern.cms.csc.dw.model.ontology.Component.class, cascade = {
-        CascadeType.ALL
-    }, fetch = FetchType.EAGER)
+    @ManyToMany(targetEntity = org.cern.cms.csc.dw.model.ontology.Component.class, fetch = FetchType.EAGER)
     @JoinTable(name = "RE_CONCLUSIONS_COMPONENTS", joinColumns = {
         @JoinColumn(name = "RECC_CONCLUSION")
     }, inverseJoinColumns = {
@@ -426,9 +424,7 @@ public class Conclusion
      *     {@link org.cern.cms.csc.exsys.re.model.ConclusionType }
      *     
      */
-    @ManyToOne(targetEntity = org.cern.cms.csc.exsys.re.model.ConclusionType.class, cascade = {
-        CascadeType.ALL
-    })
+    @ManyToOne(targetEntity = org.cern.cms.csc.exsys.re.model.ConclusionType.class)
     @JoinColumn(name = "REC_CONCLUSION_TYPE_ID", nullable = false)
     public org.cern.cms.csc.exsys.re.model.ConclusionType getType() {
         return type;
@@ -459,9 +455,7 @@ public class Conclusion
      *     {@link org.cern.cms.csc.exsys.re.model.Rule }
      *     
      */
-    @ManyToOne(targetEntity = org.cern.cms.csc.exsys.re.model.Rule.class, cascade = {
-        CascadeType.ALL
-    })
+    @ManyToOne(targetEntity = org.cern.cms.csc.exsys.re.model.Rule.class)
     @JoinColumn(name = "REC_RULE_ID", nullable = false)
     public org.cern.cms.csc.exsys.re.model.Rule getRule() {
         return rule;
@@ -506,10 +500,9 @@ public class Conclusion
      * 
      * 
      */
-    @OneToMany(targetEntity = org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation.class, cascade = {
-        CascadeType.ALL
-    }, mappedBy = "parent")
+    @OneToMany(targetEntity = org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation.class, fetch = FetchType.EAGER, mappedBy = "parent")
     @JoinColumn(name = "CHILDREN_CONCLUSION_ID")
+    @org.hibernate.annotations.Fetch(FetchMode.SUBSELECT)
     public List<org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation> getChildren() {
         if (children == null) {
             children = new Vector<org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation>();
@@ -556,10 +549,9 @@ public class Conclusion
      * 
      * 
      */
-    @OneToMany(targetEntity = org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation.class, cascade = {
-        CascadeType.ALL
-    }, mappedBy = "childConclusion")
+    @OneToMany(targetEntity = org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation.class, fetch = FetchType.EAGER, mappedBy = "childConclusion")
     @JoinColumn(name = "PARENTS_CONCLUSION_ID")
+    @org.hibernate.annotations.Fetch(FetchMode.SUBSELECT)
     public List<org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation> getParents() {
         if (parents == null) {
             parents = new Vector<org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation>();
@@ -654,5 +646,60 @@ public class Conclusion
     public void setTimeClosedItem(Date target) {
         setTimeClosed(XmlAdapterUtils.marshall(XMLGregorianCalendarAsDateTime.class, target));
     }
+    
+//--simple--preserve
+
+    /** Get IDs of the components (sometimes useful in rules engine). */
+    @Transient
+    public Long[] getComponentIds() {
+        List<org.cern.cms.csc.dw.model.ontology.Component> comps = getComponents();
+        java.util.Iterator<org.cern.cms.csc.dw.model.ontology.Component> compIt = comps.iterator();
+        Long[] ids = new Long[comps.size()];
+
+        for (int i=0; compIt.hasNext(); i++) {
+            ids[i] = compIt.next().getId();
+        }
+
+        return ids;
+    }
+
+    public String debugPrint() {
+        return debugPrint(true);
+    }
+
+    public String debugPrint(boolean printChildren) {
+        StringBuilder ret = new StringBuilder();
+        ret.append("Conclusion ID=");
+        ret.append(getid());
+        ret.append(", type={");
+        ret.append(getType().toString());
+        ret.append("}, title=");
+        ret.append(getTitle());
+        ret.append(", number of parents=");
+        ret.append(getParents().size());
+        ret.append(", number of children=");
+        ret.append(getChildren().size());
+        ret.append("\n");
+
+        if (printChildren) {
+            for (ConclusionSourceRelation rel: getChildren()) {
+                Conclusion childConcl = rel.getChildConclusion();
+                if (childConcl == null) {
+                    continue;
+                }
+                ret.append("    Child: ");
+                ret.append(childConcl.debugPrint());
+            }
+        }
+
+        return ret.toString();
+    }
+
+    @Override
+    public String toString() {
+        return debugPrint(false);
+    }
+
+//--simple--preserve
 
 }

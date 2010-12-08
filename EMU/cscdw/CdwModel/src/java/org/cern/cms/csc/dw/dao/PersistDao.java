@@ -51,11 +51,17 @@ public class PersistDao implements PersistDaoLocal {
         persist(cdwEntityObject, false, false);
     }
 
-    public void merge(EntityBase cdwEntityObject) throws PersistException, OnSaveProcessingException {
-        persist(cdwEntityObject, false, true);
+    public EntityBase merge(EntityBase cdwEntityObject) throws PersistException, OnSaveProcessingException {
+        return persist(cdwEntityObject, false, true);
     }
 
-    public void persist(EntityBase cdwEntityObject, boolean queued, boolean useMerge) throws PersistException, OnSaveProcessingException {
+    public EntityBase mergeAndRefresh(EntityBase cdwEntityObject) throws PersistException, OnSaveProcessingException {
+        persist(cdwEntityObject, false, true);
+        //cdwEntityObject = em.merge(cdwEntityObject);
+        return cdwEntityObject;
+    }
+
+    public EntityBase persist(EntityBase cdwEntityObject, boolean queued, boolean useMerge) throws PersistException, OnSaveProcessingException {
 
         // is it null by any chance? if yes - then be angry about it
         if (cdwEntityObject == null) {
@@ -64,7 +70,7 @@ public class PersistDao implements PersistDaoLocal {
 
         if (!queued && queueMode) {
             //entityToSaverQueue(cdwEntityObject);
-            return;
+            return cdwEntityObject;
         }
 
         // call an onSave trigger method to give the entity the last chance to prepare itself for persistance
@@ -73,7 +79,7 @@ public class PersistDao implements PersistDaoLocal {
         // persist the entity
         try {
             if (useMerge) {
-                em.merge(cdwEntityObject);
+                cdwEntityObject = em.merge(cdwEntityObject);
             } else {
                 em.persist(cdwEntityObject);
             }
@@ -91,7 +97,8 @@ public class PersistDao implements PersistDaoLocal {
 
             throw new PersistException(ex);
         }
-        
+
+        return cdwEntityObject;
     }
 
     public void delete(EntityBase cdwEntityObject) {

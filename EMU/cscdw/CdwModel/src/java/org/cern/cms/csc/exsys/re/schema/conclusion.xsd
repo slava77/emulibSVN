@@ -145,7 +145,7 @@
             <xsd:element name="components" type="ont:componentType" maxOccurs="unbounded">
                 <xsd:annotation>
                     <xsd:appinfo>
-                        <hj:many-to-many fetch="EAGER">
+                        <hj:many-to-many merge="false" fetch="EAGER">
                             <orm:join-table name="RE_CONCLUSIONS_COMPONENTS">
                                 <orm:join-column name="RECC_CONCLUSION"/>
                                 <orm:inverse-join-column name="RECC_COMPONENT"/>
@@ -239,7 +239,7 @@
             <xsd:element name="type" type="tns:conclusionTypeType">
                 <xsd:annotation>
                     <xsd:appinfo>
-                        <hj:many-to-one>
+                        <hj:many-to-one merge="false">
                             <orm:join-column name="REC_CONCLUSION_TYPE_ID" nullable="false"/>
                         </hj:many-to-one>
                         <jaxb:property name="type"/>
@@ -249,7 +249,7 @@
             <xsd:element name="rule" type="tns:ruleType">
                 <xsd:annotation>
                     <xsd:appinfo>
-                        <hj:many-to-one>
+                        <hj:many-to-one merge="false">
                             <orm:join-column name="REC_RULE_ID" nullable="false"/>
                         </hj:many-to-one>
                         <jaxb:property name="rule"/>
@@ -259,16 +259,30 @@
             <xsd:element name="children" type="tns:conclusionSourceRelationType" minOccurs="0" maxOccurs="unbounded">
                 <xsd:annotation>
                     <xsd:appinfo>
-                        <hj:one-to-many mapped-by="parent"/>
+                        <hj:one-to-many merge="false" mapped-by="parent" fetch="EAGER">
+                            <!--orm:cascade>
+                                <orm:cascade-all/>
+                            </orm:cascade-->
+                        </hj:one-to-many>
                         <jaxb:property name="children"/>
+                        <ann:annotateGet xmlns:a="org.hibernate.annotations">
+                            <a:Fetch value="SUBSELECT"/>
+                        </ann:annotateGet>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element name="parents" type="tns:conclusionSourceRelationType" minOccurs="0" maxOccurs="unbounded">
                 <xsd:annotation>
                     <xsd:appinfo>
-                        <hj:one-to-many mapped-by="childConclusion"/>
+                        <hj:one-to-many mapped-by="childConclusion" fetch="EAGER" merge="false">
+                            <!--orm:cascade>
+                                <orm:cascade-all/>
+                            </orm:cascade-->
+                        </hj:one-to-many>
                         <jaxb:property name="parents"/>
+                        <ann:annotateGet xmlns:a="org.hibernate.annotations">
+                            <a:Fetch value="SUBSELECT"/>
+                        </ann:annotateGet>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -313,7 +327,7 @@
             <xsd:element name="parent" type="tns:conclusionType">
                 <xsd:annotation>
                     <xsd:appinfo>
-                        <hj:many-to-one>
+                        <hj:many-to-one merge="false">
                             <orm:join-column name="RECR_PARENT_ID" nullable="false"/>
                         </hj:many-to-one>
                         <jaxb:property name="parent"/>
@@ -324,7 +338,7 @@
                 <xsd:element name="childConclusion" type="tns:conclusionType">
                     <xsd:annotation>
                         <xsd:appinfo>
-                            <hj:many-to-one>
+                            <hj:many-to-one merge="false">
                                 <orm:join-column name="RECR_CHILD_CONCLUSION_ID"/>
                             </hj:many-to-one>
                             <jaxb:property name="childConclusion"/>
@@ -334,7 +348,7 @@
                 <xsd:element name="childFact" type="fct:factType">
                     <xsd:annotation>
                         <xsd:appinfo>
-                            <hj:many-to-one>
+                            <hj:many-to-one merge="false">
                                 <orm:join-column name="RECR_CHILD_FACT_ID"/>
                             </hj:many-to-one>
                             <jaxb:property name="childFact"/>

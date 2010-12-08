@@ -8,14 +8,17 @@
 package org.cern.cms.csc.exsys.re.model;
 
 import java.io.Serializable;
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import org.cern.cms.csc.dw.model.annotation.gui.Label;
+import org.cern.cms.csc.dw.model.annotation.gui.ImmutableReference;
 
 
 /**
@@ -29,6 +32,7 @@ import org.cern.cms.csc.dw.model.annotation.gui.Label;
  *     &lt;extension base="{http://www.cern.ch/cms/csc/exsys/re/model}componentFinderType">
  *       &lt;sequence>
  *         &lt;element name="linkClass" type="{http://www.cern.ch/cms/csc/dw/ontology}componentLinkClassType" minOccurs="0"/>
+ *         &lt;element name="mergePolicy" type="{http://www.cern.ch/cms/csc/exsys/re/model}mergePolicyType"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -39,7 +43,8 @@ import org.cern.cms.csc.dw.model.annotation.gui.Label;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "relatedComponentFinderType", propOrder = {
-    "linkClass"
+    "linkClass",
+    "mergePolicy"
 })
 @Entity(name = "org.cern.cms.csc.exsys.re.model.RelatedComponentFinder")
 public class RelatedComponentFinder
@@ -47,8 +52,12 @@ public class RelatedComponentFinder
     implements Serializable
 {
 
-    @Label(description = "(Mandaroty) This link class will be used to find the related components. Note that it's also mandatory to specify component class(es)", name = "Link Class")
+    @ImmutableReference
+    @org.cern.cms.csc.dw.model.annotation.gui.Label(description = "(Mandaroty) This link class will be used to find the related components. Note that it's also mandatory to specify component class(es)", name = "Link Class")
     protected org.cern.cms.csc.dw.model.ontology.ComponentLinkClass linkClass;
+    @XmlElement(required = true)
+    @org.cern.cms.csc.dw.model.annotation.gui.Label(description = "This is used to tell the component resolver what to do when multiple source components are given. With union merge policy, all related components are simply added together, while with intersection policy all related component sets retrieved from different source components are intersected.", name = "Merge Policy")
+    protected MergePolicy mergePolicy;
 
     /**
      * Gets the value of the linkClass property.
@@ -79,6 +88,46 @@ public class RelatedComponentFinder
     @Transient
     public boolean isSetLinkClass() {
         return (this.linkClass!= null);
+    }
+
+    /**
+     * Gets the value of the mergePolicy property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link MergePolicy }
+     *     
+     */
+    @Transient
+    public MergePolicy getMergePolicy() {
+        return mergePolicy;
+    }
+
+    /**
+     * Sets the value of the mergePolicy property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link MergePolicy }
+     *     
+     */
+    public void setMergePolicy(MergePolicy value) {
+        this.mergePolicy = value;
+    }
+
+    @Transient
+    public boolean isSetMergePolicy() {
+        return (this.mergePolicy!= null);
+    }
+
+    @Basic
+    @Column(name = "RCF_MERGE_POLICY", length = 12)
+    public String getMergePolicyItem() {
+        return ((this.getMergePolicy() == null)?null:this.getMergePolicy().value());
+    }
+
+    public void setMergePolicyItem(String target) {
+        setMergePolicy(((target == null)?null:MergePolicy.fromValue(target)));
     }
 
 }

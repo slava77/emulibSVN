@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+import org.cern.cms.csc.dw.model.annotation.gui.ImmutableReference;
 import org.cern.cms.csc.dw.model.annotation.gui.Label;
 import org.cern.cms.csc.dw.model.annotation.gui.NoManualInput;
 import org.cern.cms.csc.dw.model.annotation.gui.UseInTitle;
@@ -84,6 +85,7 @@ public abstract class ComponentFinder
     @NoManualInput
     protected org.cern.cms.csc.exsys.re.model.Rule rule;
     @XmlElement(required = true)
+    @ImmutableReference
     @Label(description = "If this is empty, then there's no filtering based on componet type. If this is not empty, then only components of the specified types are accepted (Note: this is mandatory for RelatedComponentFinder)", name = "Component Classes")
     protected List<org.cern.cms.csc.dw.model.ontology.ComponentClass> componentClasses = new Vector<org.cern.cms.csc.dw.model.ontology.ComponentClass>();
     @XmlAttribute(name = "id")

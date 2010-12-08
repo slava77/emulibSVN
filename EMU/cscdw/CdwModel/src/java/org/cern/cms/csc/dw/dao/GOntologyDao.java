@@ -8,6 +8,7 @@ import org.cern.cms.csc.dw.exception.ComponentClassNotFoundException;
 import org.cern.cms.csc.dw.exception.ComponentLinkClassNotFoundException;
 import org.cern.cms.csc.dw.exception.ComponentNotFoundException;
 import org.cern.cms.csc.dw.exception.OntologyException.OntologySource;
+import org.cern.cms.csc.dw.model.ontology.Component;
 import org.cern.cms.csc.dw.model.ontology.ComponentClassType;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponent;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentClass;
@@ -46,6 +47,10 @@ public class GOntologyDao implements GOntologyDaoLocal {
         }
 
         return c;
+    }
+
+    public GComponent getGComponent(Component component) throws ComponentNotFoundException {
+        return getGComponent(component.getName());
     }
 
     public GComponent getGComponentSilent(String name) {

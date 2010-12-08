@@ -319,5 +319,37 @@ public class ConclusionType
     public void setTimeCreatedItem(Date target) {
         setTimeCreated(XmlAdapterUtils.marshall(XMLGregorianCalendarAsDateTime.class, target));
     }
+    
+//--simple--preserve
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ConclusionType other = (ConclusionType) obj;
+        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 71 * hash + (this.id != null ? this.id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public String toString() {
+        return "ConclusionType name=" + getName();
+    }
+
+
+//--simple--preserve
 
 }

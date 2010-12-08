@@ -10,7 +10,6 @@ package org.cern.cms.csc.exsys.re.model;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -150,9 +149,7 @@ public class ConclusionSourceRelation
      *     {@link org.cern.cms.csc.exsys.re.model.Conclusion }
      *     
      */
-    @ManyToOne(targetEntity = org.cern.cms.csc.exsys.re.model.Conclusion.class, cascade = {
-        CascadeType.ALL
-    })
+    @ManyToOne(targetEntity = org.cern.cms.csc.exsys.re.model.Conclusion.class)
     @JoinColumn(name = "RECR_PARENT_ID", nullable = false)
     public org.cern.cms.csc.exsys.re.model.Conclusion getParent() {
         return parent;
@@ -183,9 +180,7 @@ public class ConclusionSourceRelation
      *     {@link org.cern.cms.csc.exsys.re.model.Conclusion }
      *     
      */
-    @ManyToOne(targetEntity = org.cern.cms.csc.exsys.re.model.Conclusion.class, cascade = {
-        CascadeType.ALL
-    })
+    @ManyToOne(targetEntity = org.cern.cms.csc.exsys.re.model.Conclusion.class)
     @JoinColumn(name = "RECR_CHILD_CONCLUSION_ID")
     public org.cern.cms.csc.exsys.re.model.Conclusion getChildConclusion() {
         return childConclusion;
@@ -216,9 +211,7 @@ public class ConclusionSourceRelation
      *     {@link org.cern.cms.csc.dw.model.fact.Fact }
      *     
      */
-    @ManyToOne(targetEntity = org.cern.cms.csc.dw.model.fact.Fact.class, cascade = {
-        CascadeType.ALL
-    })
+    @ManyToOne(targetEntity = org.cern.cms.csc.dw.model.fact.Fact.class)
     @JoinColumn(name = "RECR_CHILD_FACT_ID")
     public org.cern.cms.csc.dw.model.fact.Fact getChildFact() {
         return childFact;

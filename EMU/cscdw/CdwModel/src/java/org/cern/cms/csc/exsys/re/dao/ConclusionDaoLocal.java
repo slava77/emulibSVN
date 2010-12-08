@@ -19,6 +19,7 @@ public interface ConclusionDaoLocal {
 
     List<Conclusion> getAllConclusions();
     List<Conclusion> getAllOpenConclusions();
+    List<Conclusion> getAllOpenTopConclusions();
     EntityDaoLocal getEntityDao();
 
 }

@@ -12,28 +12,32 @@
       <property name="hibernate.cache.use_second_level_cache" value="true"/>
       <property name="hibernate.generate_statistics" value="false"/>
       <property name="hibernate.max_fetch_depth" value="3"/>
-      <property name="hibernate.hbm2ddl.auto" value="none"/>
     </properties>
   </persistence-unit>
   <persistence-unit name="CdwUtilPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <class>org.cern.cms.csc.dw.metadata.FactMd</class>
-    <class>org.cern.cms.csc.dw.model.dse.DataServiceEntity</class>
     <class>org.cern.cms.csc.dw.model.dse.TmbCounterDescriptionDSE</class>
     <class>org.cern.cms.csc.dw.model.fact.ApplicationStatusFact</class>
     <class>org.cern.cms.csc.dw.model.fact.CumulativeTmbTriggerCounterFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DcsAlctLvFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DcsCfebLvFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DcsCommunicationStatusFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DduFmmIrqFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DduFmmResetFact</class>
     <class>org.cern.cms.csc.dw.model.fact.DqmCscAfebFact</class>
     <class>org.cern.cms.csc.dw.model.fact.DqmCscCfebFact</class>
     <class>org.cern.cms.csc.dw.model.fact.DqmCscFact</class>
-    <class>org.cern.cms.csc.dw.model.fact.DqmReportFact</class>
-    <class>org.cern.cms.csc.dw.model.fact.EmuMonitorFact</class>
     <class>org.cern.cms.csc.dw.model.fact.DqmCscHvSegmentFact</class>
     <class>org.cern.cms.csc.dw.model.fact.DqmDduFact</class>
     <class>org.cern.cms.csc.dw.model.fact.DqmDduInputFact</class>
     <class>org.cern.cms.csc.dw.model.fact.DqmEmuFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DqmReportFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.EmuMonitorFact</class>
     <class>org.cern.cms.csc.dw.model.fact.Fact</class>
     <class>org.cern.cms.csc.dw.model.fact.FactCollection</class>
     <class>org.cern.cms.csc.dw.model.fact.FactCollectionFactsItem</class>
+    <class>org.cern.cms.csc.dw.model.fact.FedFsmFact</class>
     <class>org.cern.cms.csc.dw.model.fact.LocalDAQStatusFact</class>
     <class>org.cern.cms.csc.dw.model.fact.SlidingTmbTriggerCounterFact</class>
     <class>org.cern.cms.csc.dw.model.fact.TmbCounterFact</class>
@@ -41,15 +45,15 @@
     <class>org.cern.cms.csc.dw.model.ontology.ComponentClass</class>
     <class>org.cern.cms.csc.dw.model.ontology.ComponentLinkClass</class>
     <class>org.cern.cms.csc.dw.model.ontology.ComponentSynonym</class>
+    <class>org.cern.cms.csc.exsys.re.model.ComponentFinder</class>
+    <class>org.cern.cms.csc.exsys.re.model.Rule</class>
+    <class>org.cern.cms.csc.exsys.re.model.UnionComponentFinder</class>
     <class>org.cern.cms.csc.exsys.re.model.Conclusion</class>
     <class>org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation</class>
     <class>org.cern.cms.csc.exsys.re.model.ConclusionType</class>
-    <class>org.cern.cms.csc.exsys.re.model.ComponentFinder</class>
     <class>org.cern.cms.csc.exsys.re.model.IntersectingComponentFinder</class>
     <class>org.cern.cms.csc.exsys.re.model.RelatedComponentFinder</class>
-    <class>org.cern.cms.csc.exsys.re.model.UnionComponentFinder</class>
-    <class>org.cern.cms.csc.exsys.re.model.Rule</class>
-    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect"/>
       <property name="hibernate.connection.driver_class" value="oracle.jdbc.OracleDriver"/>
@@ -59,7 +63,6 @@
       <property name="hibernate.cache.use_query_cache" value="false"/>
       <property name="hibernate.cache.use_second_level_cache" value="false"/>
       <property name="hibernate.generate_statistics" value="false"/>
-      <property name="hibernate.hbm2ddl.auto" value="update"/>
       <!--property name="hibernate.connection.url" value="jdbc:oracle:thin:@localhost:1521:XE"/-->
       <property name="hibernate.connection.url" value="jdbc:oracle:thin:@oradev10.cern.ch:10520:D10"/>
       <!--property name="hibernate.connection.url" value="jdbc:oracle:thin:@int2r1-v.cern.ch:10121:int2r1"/-->
@@ -67,6 +70,7 @@
       <!--property name="hibernate.connection.url" value="jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=10123))(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=10124))(LOAD_BALANCE=yes)(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=cmsdevr_lb.cern.ch)(FAILOVER_MODE=(TYPE=SELECT)(METHOD=BASIC)(RETRIES=180)(DELAY=5))))"/-->
       <property name="hibernate.connection.username" value="CMS_MUON_ENDCAP_EVKA"/>
       <property name="hibernate.connection.password" value=""/>
+      <property name="hibernate.hbm2ddl.auto" value="update"/>
     </properties>
   </persistence-unit>
   <persistence-unit name="CdwMonitorPU" transaction-type="JTA">

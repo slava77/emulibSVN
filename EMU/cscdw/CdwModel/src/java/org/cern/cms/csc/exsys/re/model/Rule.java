@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
+import org.cern.cms.csc.dw.model.annotation.gui.Label;
 import org.cern.cms.csc.dw.model.annotation.gui.UseInTitle;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XMLGregorianCalendarAsDateTime;
@@ -109,6 +110,7 @@ public class Rule
     @org.cern.cms.csc.dw.model.annotation.gui.NoManualInput
     protected boolean enabled;
     @XmlElement(required = true)
+    @Label(description = "This is used to tell the rules engine what component(s) it should assign to the conclusions it creates. There are several kinds of component finders which all use components coming from the source fact(s) and/or conclusion(s) as source components, but have different policies on how to use them to resolve the actual component(s) which will be assigned to the conclusion.", name = "Component Finder")
     protected org.cern.cms.csc.exsys.re.model.ComponentFinder componentFinder;
     @XmlAttribute(name = "id")
     protected Long id;
@@ -276,9 +278,9 @@ public class Rule
      *     
      */
     @ManyToOne(targetEntity = org.cern.cms.csc.exsys.re.model.ConclusionType.class, cascade = {
-        CascadeType.PERSIST,
         CascadeType.MERGE,
-        CascadeType.REFRESH
+        CascadeType.REFRESH,
+        CascadeType.PERSIST
     })
     @JoinColumn(name = "RER_CONCLUSION_TYPE_ID", nullable = false)
     public org.cern.cms.csc.exsys.re.model.ConclusionType getConclusionType() {

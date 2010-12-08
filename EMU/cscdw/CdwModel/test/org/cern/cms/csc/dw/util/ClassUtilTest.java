@@ -8,7 +8,7 @@ public class ClassUtilTest {
     @Test
     public void packageClasses() {
 
-        Collection<Class> cls = ClassUtil.packageClassses("org.cern.cms.csc.dw.model.fact", true);
+        Collection<Class> cls = ClassUtil.packageClassses("org.cern.cms.csc.dw.model.fact", false);
         for (Class c: cls) {
             System.out.println(c.getName());
         }
