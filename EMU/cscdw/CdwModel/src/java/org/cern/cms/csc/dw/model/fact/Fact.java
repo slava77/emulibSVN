@@ -376,6 +376,30 @@ public abstract class Fact
         }
     }
 
+    @Override
+    public String toString() {
+        StringBuilder ret = new StringBuilder();
+        ret.append("Fact of type ");
+        ret.append(this.getClass().getSimpleName());
+        ret.append(". ID=");
+        ret.append(getid());
+        ret.append("; time=");
+        ret.append(getTimeItem());
+        ret.append("; componentId=");
+        ret.append(getComponentId());
+        ret.append("; component=");
+        ret.append(getComponent() == null ? "null" : getComponent().getName());
+        ret.append("; description=");
+        ret.append(getDescr());
+        ret.append("; severity=");
+        ret.append(getSeverityItem());
+        ret.append("; run=");
+        ret.append(getRun());
+
+        return ret.toString();
+    }
+
+
 //--simple--preserve
 
 }
