@@ -31,6 +31,7 @@ import org.cern.cms.csc.exsys.re.conclusion.factory.ConclusionFactory;
 import org.cern.cms.csc.exsys.re.conclusion.factory.DefaultConclusionFactory;
 import org.cern.cms.csc.exsys.re.dao.ConclusionDaoLocal;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
+import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.cern.cms.csc.exsys.re.model.Rule;
 
 /**
@@ -112,10 +113,16 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
             }
             ruleNames.add(rule.getName());
             logger.info("Rule activated: " + rule.getName() + " v" + rule.getVersion());
-            ConclusionFactory factory = new DefaultConclusionFactory(rule, reDao, getConclusionCacheService());
+            ConclusionFactory factory = new DefaultConclusionFactory(this, rule, getConclusionCacheService());
             EPStatement statement = epService.getEPAdministrator().createEPL(rule.getRuleDefinition(), rule.getName());
             statement.addListener(factory);
             activeRules.add(rule);
+        }
+
+        // throw all open conclusions into rule engine
+        List<Conclusion> openConclusions = conclusionDao.getAllOpenConclusions();
+        for (Conclusion concl: openConclusions) {
+            epService.getEPRuntime().sendEvent(concl);
         }
     }
 
@@ -159,6 +166,10 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
             conclusionCacheService = new ConclusionCacheService(conclusionDao);
         }
         return conclusionCacheService;
+    }
+
+    public RuleEngineDaoLocal getRuleEngineDao() {
+        return reDao;
     }
 
 }

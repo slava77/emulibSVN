@@ -17,6 +17,7 @@
                 <ice:form id="editRuleForm">
                     <exs:entityForm editor="#{EditRule.editor}" manager="#{EditRule}"/>
                     <ice:commandButton type="submit" value="Save" action="#{EditRule.doSave}" rendered="#{EditRule.editor.parentEditor == null}"/>
+                    <ice:commandButton type="submit" value="Cancel" immediate="true" action="navRules" rendered="#{EditRule.editor.parentEditor == null}"/>
                 </ice:form>
                 
             </ui:define>

@@ -23,6 +23,7 @@ import javax.naming.NamingException;
 import org.cern.cms.csc.dw.dao.GOntologyDaoLocal;
 import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
 import org.cern.cms.csc.dw.exception.ComponentNotFoundException;
+import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.dw.model.ontology.Component;
 import org.cern.cms.csc.dw.model.ontology.ComponentClass;
@@ -34,6 +35,7 @@ import org.cern.cms.csc.exsys.re.model.ComponentFinder;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation;
 import org.cern.cms.csc.exsys.re.model.IntersectingComponentFinder;
+import org.cern.cms.csc.exsys.re.model.MergePolicy;
 import org.cern.cms.csc.exsys.re.model.RelatedComponentFinder;
 import org.cern.cms.csc.exsys.re.model.UnionComponentFinder;
 
@@ -86,6 +88,31 @@ public class ComponentResolver {
     }
 
     /**
+     * Resolves components to be assigned to a conclusion having the given sources.
+     * @param conclusionSources conclusion sources from which you want to resolve the components from.
+     * @return components to be assigned to a conclusion having the given sources.
+     */
+    public List<Component> getComponents(Collection<EntityBase> conclusionSources) {
+        List<List<Component>> sourceComponents = new ArrayList<List<Component>>();
+        // get the source components
+        for (EntityBase sourceEntity: conclusionSources) {
+            if (sourceEntity instanceof Fact) {
+                List<Component> compsHolderCollection = new ArrayList<Component>();
+                compsHolderCollection.add(((Fact) sourceEntity).getComponent());
+                sourceComponents.add(compsHolderCollection);
+            } else if (sourceEntity instanceof Conclusion) {
+                sourceComponents.add(((Conclusion) sourceEntity).getComponents());
+            } else if (sourceEntity instanceof Component) {
+                List<Component> compsHolderCollection = new ArrayList<Component>();
+                compsHolderCollection.add((Component) sourceEntity);
+                sourceComponents.add(compsHolderCollection);
+            }
+        }
+
+        return new ArrayList<Component>(getComponents(sourceComponents));
+    }
+
+    /**
      * Resolve the components using the given source components and the component finder that we have
      */
     private Set<Component> getComponents(List<List<Component>> sourceComponents) {
@@ -106,13 +133,20 @@ public class ComponentResolver {
                 }
             }
         } else if (componentFinder instanceof RelatedComponentFinder) { // RELATED component finder
+            RelatedComponentFinder relCompFinder = (RelatedComponentFinder) componentFinder;
             Set<Component> fullSet = new HashSet<Component>();
             for (List<Component> comps: sourceComponents) { // get union
                 fullSet.addAll(comps);
             }
 
+            boolean first = true;
             for (Component comp: fullSet) { // resolve the related components
-                retSet.addAll(getRelatedComponents(comp));
+                if (relCompFinder.getMergePolicy().equals(MergePolicy.UNION) || first) {
+                    retSet.addAll(getRelatedComponents(comp));
+                    first = false;
+                } else if (relCompFinder.getMergePolicy().equals(MergePolicy.INTERSECTION)) {
+                    retSet.retainAll(getRelatedComponents(comp));
+                }
             }
         }
 
@@ -130,11 +164,14 @@ public class ComponentResolver {
             return Collections.EMPTY_SET;
         }
         Set<Component> retSet = new HashSet<Component>();
+        if (componentFinder.getComponentClasses().contains(component.getType())) {
+            retSet.add(component); // add itself
+        }
         ComponentLinkClassType linkType = ((RelatedComponentFinder) componentFinder).getLinkClass().getType();
         Set<GComponentClass> gCompClasses = getGComponentClasses();
         for (GComponentClass gCompClass: gCompClasses) {
             try {
-                GComponent gComp = getOntologyDao().getGComponent(component.getId());
+                GComponent gComp = getOntologyDao().getGComponent(component);
                 Collection<GComponent> relatedGComps = gComp.findRelatedGComponents(linkType, gCompClass);
                 for (GComponent relatedGComp: relatedGComps) {
                     retSet.add(getOntologyDao().getComponent(relatedGComp));

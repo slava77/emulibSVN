@@ -18,7 +18,7 @@
 
                 <ice:form id="conclusionsForm">
                     <p><h1>Conclusions</h1></p>
-                    <ice:dataTable id="conclusionsTable" var="concl" value="#{RuleEngineFacade.allConclusions}" rows="10">
+                    <ice:dataTable id="conclusionsTable" var="concl" value="#{RuleEngineFacade.allOpenTopConclusions}" rows="10">
                         <f:facet name="header">
                             <ice:columnGroup>
                                 <ice:headerRow>
@@ -29,13 +29,13 @@
                                         <ice:outputText value="Type"/>
                                     </ice:column>
                                     <ice:column>
-                                        <ice:outputText value="Title"/>
+                                        <ice:outputText value="Conclusion Title"/>
                                     </ice:column>
                                     <ice:column>
                                         <ice:outputText value="Components"/>
                                     </ice:column>
                                     <ice:column>
-                                        <ice:outputText value="Description"/>
+                                        <ice:outputText value="Conclusion Description"/>
                                     </ice:column>
                                     <ice:column>
                                         <ice:outputText value="Update Count"/>

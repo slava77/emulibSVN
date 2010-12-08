@@ -17,6 +17,7 @@ import javax.naming.NamingException;
 import org.cern.cms.csc.dw.model.ontology.Component;
 import org.cern.cms.csc.exsys.re.dao.ConclusionDaoLocal;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
+import org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation;
 import org.cern.cms.csc.exsys.re.model.ConclusionType;
 
 /**
@@ -63,8 +64,19 @@ public class ConclusionCacheService {
         if (conclusionCache == null) {
             checkCache(conclusion);
         }
-        getConclusionDao().getEntityDao().refreshEntity(conclusion);
+
+        logger.info("Adding to cache:");
+        logger.info(conclusion.debugPrint());
+
+        //conclusion = (Conclusion) conclusionDao.getEntityDao().refreshEntity(conclusion);
         conclusionCache.put(new ComparableConclusionWrapper(conclusion), conclusion);
+        // go through the children and add any child conclusions to the cache as well
+        for (ConclusionSourceRelation rel: conclusion.getChildren()) {
+            Conclusion childConclusion = rel.getChildConclusion();
+            if (childConclusion != null) {
+                addToCache(childConclusion);
+            }
+        }
     }
 
     public void clear() {
@@ -133,13 +145,13 @@ public class ConclusionCacheService {
                 return false;
             }
 
-            if (!otherConcl.getTitle().equals(conclusion.getTitle())) {
-                return false;
-            }
+//            if (!otherConcl.getTitle().equals(conclusion.getTitle())) {
+//                return false;
+//            }
 
-            if (!otherConcl.getDescription().equals(conclusion.getDescription())) {
-                return false;
-            }
+//            if (!otherConcl.getDescription().equals(conclusion.getDescription())) {
+//                return false;
+//            }
 
             return true;
         }

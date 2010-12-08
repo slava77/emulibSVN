@@ -49,16 +49,8 @@ public class RuleEngineFacade extends JsfBeanBase {
         return rules.size();
     }
 
-    public List<Conclusion> getAllConclusions() throws NamingException {
-        return getConclusionDao().getAllConclusions();
-    }
-
-    public int getConclusionCount() throws NamingException {
-        List<Conclusion> conclusions = getConclusionDao().getAllConclusions();
-        if (conclusions == null) {
-            return 0;
-        }
-        return conclusions.size();
+    public List<Conclusion> getAllOpenTopConclusions() throws NamingException {
+        return getConclusionDao().getAllOpenTopConclusions();
     }
 
     private RuleEngineDaoLocal getReDao() throws NamingException {

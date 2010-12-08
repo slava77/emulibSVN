@@ -16,6 +16,9 @@ import java.util.logging.Logger;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import org.cern.cms.csc.dw.exception.OnSaveProcessingException;
+import org.cern.cms.csc.dw.exception.PersistException;
+import org.cern.cms.csc.exsys.re.RuleEngineManagerLocal;
 import org.cern.cms.csc.exsys.re.conclusion.ConclusionCacheService;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
@@ -33,38 +36,48 @@ public class DefaultConclusionFactory extends ConclusionFactory {
     private RuleEngineDaoLocal reDao;
     private ConclusionCacheService conclusionCacheService;
 
-    public DefaultConclusionFactory(Rule rule, RuleEngineDaoLocal reDao, ConclusionCacheService conclusionCacheService) {
-        super(rule);
-        this.reDao = reDao;
+    public DefaultConclusionFactory(RuleEngineManagerLocal reManager, Rule rule, ConclusionCacheService conclusionCacheService) {
+        super(reManager, rule);
+        this.reDao = reManager.getRuleEngineDao();
         this.conclusionCacheService = conclusionCacheService;
     }
 
     @Override
-    protected void processConclusion(Conclusion conclusion) {
+    protected Conclusion processConclusion(Conclusion conclusion) {
         try {
             // check if it already exists in cache
             Conclusion existingConclusion = getConclusionCacheService().checkCache(conclusion);
             if (existingConclusion == null) {
                 logger.log(Level.INFO, "Default conclusion factory: Got new conclusion: {0}", conclusion.getTitle());
 
-                reDao.getEntityDao().getPersistDao().merge(conclusion);
-                //getConclusionCacheService().addToCache(conclusion);
-                getConclusionCacheService().clear();
+                logger.info("Saving new conclusion:");
+                logger.info(conclusion.debugPrint());
+                reDao.getEntityDao().getPersistDao().persist(conclusion);
+                getConclusionCacheService().addToCache(conclusion);
+                return conclusion;
             } else {
                 logger.log(Level.FINE, "Default conclusion factory: Got a duplicate conclusion (updating existing one): {0}",
                         conclusion.getTitle());
 
+                //existingConclusion = (Conclusion) reDao.getEntityDao().refreshEntity(existingConclusion);
                 updateExistingConclusion(existingConclusion, conclusion);
-                reDao.getEntityDao().getPersistDao().merge(existingConclusion);
+                logger.info("Saving existing conclusion:");
+                logger.info(existingConclusion.debugPrint());
+                existingConclusion = (Conclusion) reDao.getEntityDao().getPersistDao().merge(existingConclusion);
+                getConclusionCacheService().addToCache(existingConclusion); // update the conclusion in the cache
+                return existingConclusion;
             }
         } catch (Exception pex) {
             logger.log(Level.SEVERE, "Exception while saving a conclusion", pex);
+            return null;
         }
     }
 
     protected void updateExistingConclusion(Conclusion existingConclusion, Conclusion conclusion) {
         existingConclusion.setHitCount(existingConclusion.getHitCount().add(BigInteger.ONE));
         existingConclusion.setLastHitTimeItem(conclusion.getTimestampItem());
+        existingConclusion.setTitle(conclusion.getTitle()); // update with more up to date title
+        existingConclusion.setDescription(conclusion.getDescription()); // update with more up to date description
 
         // merge source relations
         Set<Long> existingChildFactIds = new HashSet<Long>();

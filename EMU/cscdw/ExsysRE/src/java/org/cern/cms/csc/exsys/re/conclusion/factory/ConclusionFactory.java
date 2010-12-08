@@ -7,12 +7,11 @@ package org.cern.cms.csc.exsys.re.conclusion.factory;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.EventBean;
-import com.espertech.esper.client.EventPropertyDescriptor;
 import com.espertech.esper.client.StatementAwareUpdateListener;
-import com.espertech.esper.event.bean.BeanEventBean;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.model.fact.Fact;
+import org.cern.cms.csc.exsys.re.RuleEngineManagerLocal;
 import org.cern.cms.csc.exsys.re.conclusion.ComponentResolver;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation;
@@ -45,11 +45,15 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
     private Rule rule;
     /** Component resolver for the conclusion type in use by this conclusion factory. */
     private ComponentResolver componentResolver;
-
+    /** Rule engine manager - used to throw conclusions back into rule engine. */
+    RuleEngineManagerLocal reManager;
+    
     /**
      * @param conclType conclusion type that this factory is supposed to use to create conclusions.
+     * @param reManager Rule engine manager - used to throw conclusions back into rule engine.
      */
-    public ConclusionFactory(Rule rule) {
+    public ConclusionFactory(RuleEngineManagerLocal reManager, Rule rule) {
+        this.reManager = reManager;
         this.rule = rule;
         this.conclType = rule.getConclusionType();
         this.componentResolver = new ComponentResolver(rule.getComponentFinder());
@@ -67,7 +71,10 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
 
         Conclusion concl = createConclusion(newEvents, oldEvents);
 
-        processConclusion(concl);
+        concl = processConclusion(concl);
+        if (concl != null) {
+            reManager.getEsperRuntime().sendEvent(concl);
+        }
     }
 
     /**
@@ -76,77 +83,128 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
      * @param oldEvents old events got in update(...)
      */
     protected Conclusion createConclusion(EventBean[] newEvents, EventBean[] oldEvents) {
+        Collection<EntityBase> unpackedEventEntities = unpackEntitiesFromEvents(newEvents);
+        unpackedEventEntities.addAll(unpackEntitiesFromEvents(oldEvents));
+        Collection<EventBean> unpackedNewEvents = unpackEvents(newEvents);
+
         Conclusion concl = new Conclusion();
         concl.setType(getConclusionType());
         concl.setRule(getRule());
-        concl.setTitle(substituteParams(getConclusionType().getTitle(), newEvents));
-        concl.setDescription(substituteParams(getConclusionType().getDescription(), newEvents));
+        concl.setTitle(substituteParams(getConclusionType().getTitle(), unpackedNewEvents));
+        concl.setDescription(substituteParams(getConclusionType().getDescription(), unpackedNewEvents));
         concl.setSeverity(getConclusionType().getSeverity());
         concl.setTimestampItem(new Date());
         concl.setLastHitTimeItem(new Date());
         concl.setHitCount(BigInteger.ZERO);
         concl.setIsClosed(false);
-        addChildrenToConclusion(concl, newEvents);
-        addChildrenToConclusion(concl, oldEvents);
-        concl.setComponents(getComponentResolver().getComponents(concl));
+        concl.setComponents(getComponentResolver().getComponents(unpackedEventEntities));
+        addChildrenToConclusion(concl, unpackedEventEntities);
         return concl;
     }
 
-    private void addChildrenToConclusion(Conclusion conclusion, EventBean[] events) {
-        if (events == null) {
-            return;
+    private void addChildrenToConclusion(Conclusion conclusion, Collection<EntityBase> children) {
+        for (EntityBase child: children) {
+            if (child instanceof Fact) { // that's a fact here - add it as a child of this conclusion
+                Fact childFact = (Fact) child;
+                ConclusionSourceRelation relation = new ConclusionSourceRelation();
+                relation.setChildFact(childFact);
+                relation.setParent(conclusion);
+                relation.setTimestampItem(new Date());
+                relation.setIsClosing(false); // just a default
+                conclusion.getChildren().add(relation);
+            } else if (child instanceof Conclusion) { // that's a conclusion here - add it as a child of this conclusion
+                Conclusion childConclusion = (Conclusion) child;
+                //childConclusion = (Conclusion) reManager.getRuleEngineDao().getEntityDao().refreshEntity(childConclusion);
+                ConclusionSourceRelation relation = new ConclusionSourceRelation();
+                relation.setChildConclusion(childConclusion);
+                relation.setParent(conclusion);
+                relation.setTimestampItem(new Date());
+                relation.setIsClosing(false);
+                childConclusion.getParents().add(relation);
+                conclusion.getChildren().add(relation);
+            }
         }
-        List<ConclusionSourceRelation> relations = new ArrayList<ConclusionSourceRelation>();
-        Set<Object> addedChildren = new HashSet<Object>();
+    }
+
+    /**
+     * Recursive function which checks if the provided event is a simple one or
+     * a composite one (contains a Map). In simple event case, it just returns
+     * the same thing, in composite event case - it returns any events wrapped
+     * inside it.
+     * @param event event that you want to unpack.
+     * @param unpackedEvents events, unpacked from the given event.
+     */
+    protected void unpackEvent(EventBean event, Collection<EventBean> unpackedEvents) {
+        Object underlying = event.getUnderlying();
+        if (underlying instanceof Map) { // a composite event
+            Collection wrappedUnderlyingObjs = ((Map) underlying).values();
+            for (Object wrappedUnderlyingObj: wrappedUnderlyingObjs) {
+                unpackEvent((EventBean) wrappedUnderlyingObj, unpackedEvents);
+            }
+        } else { // not a composite event
+            unpackedEvents.add(event);
+        }
+    }
+
+    /**
+     * Goes through all provided events and calls unpackEvent(...) on them.
+     * @see unpackEvent(EventBean event, Collection<EventBean> unpackedEvents)
+     */
+    protected Collection<EventBean> unpackEvents(EventBean[] events) {
+        Collection<EventBean> ret = new HashSet<EventBean>();
         for (EventBean event: events) {
-            Object child = event.getUnderlying();
-            if (!addedChildren.contains(child)) {
-                if (child instanceof Map) {
-                    Collection smallerChildWrappers = ((Map) child).values();
-                    for (Object smallerChildWrapper: smallerChildWrappers) {
-                        if (smallerChildWrapper instanceof EventBean) {
-                            Object smallerChild = ((EventBean) smallerChildWrapper).getUnderlying();
-                            if (!addedChildren.contains(smallerChild)) {
-                                addedChildren.add(smallerChild);
-                                addConclusionSource(conclusion, smallerChild);
-                            }
-                        }
-                    }
-                } else {
-                    addedChildren.add(child);
-                    addConclusionSource(conclusion, child);
+            unpackEvent(event, ret);
+        }
+        return ret;
+    }
+
+    /** Recursive function which checks the event.underlying() and if it's an entity - returns it,
+     *  if however that's a Map (which you get with join rules), then goes inside it, gets the wrapped
+     *  events and calls the same method on all of them.
+     * @param event event that you want to get the entities out from.
+     * @param unpackedEntities any entities wrapped inside the given event are placed here - it's not in return because it's a recursive function and it's just more efficient not to create new collections all the time.
+     */
+    protected void unpackEntitiesFromEvent(EventBean event, Collection<EntityBase> unpackedEntities) {
+        Object underlying = event.getUnderlying();
+        if (underlying instanceof EntityBase) {
+            unpackedEntities.add((EntityBase) underlying);
+        }
+        if (underlying instanceof Map) {
+            Collection wrappedUnderlyingObjs = ((Map) underlying).values();
+            for (Object wrappedUnderlyingObj: wrappedUnderlyingObjs) {
+                if (wrappedUnderlyingObj instanceof EventBean) {
+                    unpackEntitiesFromEvent((EventBean) wrappedUnderlyingObj, unpackedEntities);
+                } else if (wrappedUnderlyingObj instanceof EntityBase) {
+                    unpackedEntities.add((EntityBase) wrappedUnderlyingObj);
                 }
             }
         }
     }
 
-    private void addConclusionSource(Conclusion conclusion, Object child) {
-        if (child instanceof Fact) { // that's a fact here - add it as a child of this conclusion
-            Fact childFact = (Fact) child;
-            ConclusionSourceRelation relation = new ConclusionSourceRelation();
-            relation.setChildFact(childFact);
-            relation.setParent(conclusion);
-            relation.setTimestampItem(new Date());
-            relation.setIsClosing(false); // just a default
-            conclusion.getChildren().add(relation);
-        } else if (child instanceof Conclusion) { // that's a conclusion here - add it as a child of this conclusion
-            Conclusion childConclusion = (Conclusion) child;
-            ConclusionSourceRelation relation = new ConclusionSourceRelation();
-            relation.setChildConclusion(childConclusion);
-            relation.setParent(conclusion);
-            relation.setTimestampItem(new Date());
-            relation.setIsClosing(false);
-            childConclusion.getParents().add(relation);
-            conclusion.getChildren().add(relation);
+    /**
+     * Goes through all provided events and calls unpackEntitiesFromEvent(...) on them,
+     * which unpacks any entities, hidden in those events.
+     * @param events events that you want to unpack all entities from
+     * @return a collection of entities unpacked from the given events
+     */
+    protected Collection<EntityBase> unpackEntitiesFromEvents(EventBean[] events) {
+        if (events == null) {
+            return Collections.EMPTY_SET;
         }
+        Collection<EntityBase> ret = new HashSet<EntityBase>();
+        for (EventBean event: events) {
+            unpackEntitiesFromEvent(event, ret);
+        }
+        return ret;
     }
 
     /**
      * This method is called after the conclusion has been created by createConclusion(...)
      * This method must be overriden by the subclasses of ConclusionFactory
      * @param conclusion conclusion, created by createConclusion(...)
+     * @return processed conclusion to be thrown back into the rules engine, if null is returned, nothing is thrown to rules engine
      */
-    abstract protected void processConclusion(Conclusion conclusion);
+    abstract protected Conclusion processConclusion(Conclusion conclusion);
 
     /**
      * Substitutes all parameters (having format of $paramName) in a given string with their actual values from the event
@@ -154,13 +212,16 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
      * @param event event where the parameter values should be taken from
      * @return resulting string
      */
-    protected String substituteParams(String str, EventBean[] events) {
+    protected String substituteParams(String str, Collection<EventBean> events) {
         StringBuffer ret = new StringBuffer();
         Matcher m = paramPattern.matcher(str);
         while (m.find()) {
             String param = m.group(1);
             Set<String> paramValues = new HashSet<String>();
             for (EventBean event : events) {
+                if (!event.getEventType().isProperty(param)) {
+                    continue;
+                }
                 if (event.get(param) != null) {
                     Object paramValue = event.get(param);
                     if (paramValue.getClass().isArray()) {
@@ -185,6 +246,9 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
                 } else {
                     paramValues.add("NULL");
                 }
+            }
+            if (paramValues.isEmpty()) {
+                paramValues.add("N/A");
             }
             StringBuilder paramValueStr = new StringBuilder();
             boolean first = true;

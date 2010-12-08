@@ -280,7 +280,7 @@ public abstract class PropertyMd {
                     }
                 }
             } catch (Exception ex) {
-                logger.log(Level.SEVERE, "Exception while validating a many-to-one relation value", ex);
+                logger.error("Exception while validating a many-to-one relation value", ex);
                 throw new RuntimeException("Exception while validating a many-to-one relation value", ex);
             }
         }

@@ -74,13 +74,13 @@
                             </ice:selectOneMenu>
                             <ice:commandButton value="Edit"
                                                immediate="true"
-                                               rendered="#{!propEditor.restrictionStrict}">
+                                               rendered="#{!propEditor.restrictionStrict and !propEditor.metadata.isImmutableReference}">
                                 <f:setPropertyActionListener target="#{manager.editor}" value="#{propEditor}"/>
                             </ice:commandButton>
                             <ice:commandButton value="Create New"
                                                immediate="true"
                                                actionListener="#{propEditor.createAndAssignNewLovItem}"
-                                               rendered="#{!propEditor.restrictionStrict}">
+                                               rendered="#{!propEditor.restrictionStrict and !propEditor.metadata.isImmutableReference}">
                                 <f:setPropertyActionListener target="#{manager.editor}" value="#{propEditor}"/>
                             </ice:commandButton>
                         </ice:panelGroup>
@@ -100,7 +100,6 @@
                         <!-- ONE-TO-ONE editor - input text just so that validation would be applied -->
                         <ice:panelGroup rendered="#{propEditor.inputType == 'ONE_TO_ONE'}">
                             <ice:inputText id="input_#{propEditor.id}" value="#{propEditor.value.entityTitle}"
-                                           rendered="#{propEditor.inputType == 'ONE_TO_ONE'}"
                                            required="#{propEditor.metadata.isMandatory}"
                                            requiredMessage="This field is mandatory - value cannot be blank"
                                            validator="#{propEditor.validate}"
@@ -108,7 +107,7 @@
                                            styleClass="simpleEditor"
                                            partialSubmit="true"/>
                             <ice:commandButton type="submit" value="Edit"
-                                               rendered="#{propEditor.inputType == 'ONE_TO_ONE'}"
+                                               rendered="#{!propEditor.metadata.isImmutableReference}"
                                                immediate="true">
                                 <f:setPropertyActionListener target="#{manager.editor}" value="#{propEditor}"/>
                             </ice:commandButton>
