@@ -276,6 +276,8 @@ void accessPrivilegesChangedCB(string dummy1, string dummy2) {
   if (hasControlPrivilege) {
     enableDisableControl(true);
   }
+  
+  updateTopFSMStateCB(\"\", \"\"); // to update the visibility of \"OFF and no expert control\" label
 }
 
 /** This is called when Top FSM node (CMS_CSC) operation mode has changed. If it's detected that it's excluded - take the whole FSM tree. */
@@ -1136,7 +1138,7 @@ E E 0 1 1 2 1 E 1 0 1 -209 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png"
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 -2531.637323273272 -890 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -2636.801275744048 -910 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -1155,7 +1157,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 48.68828182830521 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 48.67430656275587 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
@@ -1398,7 +1400,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1110 890 1188 905
+E E 0 1 1 2 1 E U  1 E 1110 890 1189 905
 0 2 2 "0s" 0 0 0 192 0 0  1110 890 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
