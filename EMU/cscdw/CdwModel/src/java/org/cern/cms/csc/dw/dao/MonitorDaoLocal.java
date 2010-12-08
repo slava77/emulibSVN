@@ -9,10 +9,15 @@ import org.cern.cms.csc.dw.model.monitor.MonitorObject;
 public interface MonitorDaoLocal {
 
     Date getSysdate();
+    
     void save(MonitorObject status);
     
     public <T extends MonitorObject> List<T> getMonitorObjects(
             Class<T> clazz,
             int lastHours);
+
+    public <T extends MonitorObject> void retentMonitorObjects(
+            Class<T> clazz,
+            Date dateLimit);
 
 }

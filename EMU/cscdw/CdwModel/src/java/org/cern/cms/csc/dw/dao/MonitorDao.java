@@ -39,6 +39,16 @@ public class MonitorDao implements MonitorDaoLocal {
     }
 
     @SuppressWarnings("unchecked")
+    public <T extends MonitorObject> void retentMonitorObjects(Class<T> clazz, Date dateLimit) {
+        Session session = getMonitorSession();
+        Transaction tr = session.beginTransaction();
+        session.createQuery("delete from " + clazz.getSimpleName() + " where time < ?")
+                .setDate(1, dateLimit)
+                .executeUpdate();
+        tr.commit();
+    }
+
+    @SuppressWarnings("unchecked")
     public <T extends MonitorObject> List<T> getMonitorObjects(Class<T> clazz, int lastHours) {
         Session session = getMonitorSession();
         Transaction tr = session.beginTransaction();

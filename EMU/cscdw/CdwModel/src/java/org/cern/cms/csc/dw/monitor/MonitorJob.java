@@ -3,7 +3,6 @@ package org.cern.cms.csc.dw.monitor;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import javax.ejb.EJB;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -13,28 +12,18 @@ import javax.jms.Session;
 import javax.naming.Binding;
 import javax.naming.NamingException;
 import org.apache.log4j.Logger;
-import org.cern.cms.csc.dw.dao.MonitorDaoLocal;
 import org.cern.cms.csc.dw.model.monitor.MonitorDatabaseStatus;
 import org.cern.cms.csc.dw.model.monitor.MonitorQueueStatus;
-import org.cern.cms.csc.dw.util.ServiceLocator;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.quartz.StatefulJob;
 
-@EJB(name="MonitorDaoRef", beanInterface=MonitorDaoLocal.class)
-public class MonitorJob implements StatefulJob {
+public class MonitorJob extends MonitorJobBase {
 
     private static final Logger log = Logger.getLogger(MonitorJob.class);
-    private static final Logger monitor = MonitorLogger.getLogger();
-
-    private static ServiceLocator locator;
-    private static MonitorDaoLocal monitorDao;
     private static List<QueueItem> queues = new ArrayList<QueueItem>();
 
     static {
         try {
-            locator = ServiceLocator.getInstance();
-            monitorDao = (MonitorDaoLocal) locator.getEnvService("MonitorDaoRef");
             for (Binding b: locator.getJniBindings("jms")) {
                 if (!b.getName().endsWith("Factory")) {
                     queues.add(new QueueItem(b.getName()));

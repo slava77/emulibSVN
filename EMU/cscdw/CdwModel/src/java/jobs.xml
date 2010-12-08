@@ -17,10 +17,16 @@
     </processing-directives>
 
     <schedule>
+
         <job>
             <name>MonitorJob</name>
             <job-class>org.cern.cms.csc.dw.monitor.MonitorJob</job-class>
         </job>
+        <job>
+            <name>MonitorRetentionJob</name>
+            <job-class>org.cern.cms.csc.dw.monitor.MonitorRetentionJob</job-class>
+        </job>
+
         <trigger>
             <simple>
                 <name>TriggerAt10SecondsInterval</name>
@@ -29,5 +35,14 @@
                 <repeat-interval>10000</repeat-interval>  <!--  every 10 seconds -->
             </simple>
         </trigger>
+        <trigger>
+            <simple>
+                <name>TriggerAt2HourInterval</name>
+                <job-name>MonitorRetentionJob</job-name>
+                <repeat-count>-1</repeat-count> <!-- repeat indefinitely  -->
+                <repeat-interval>7200000</repeat-interval>  <!--  every 2 hours -->
+            </simple>
+        </trigger>
+
     </schedule>
 </job-scheduling-data>
