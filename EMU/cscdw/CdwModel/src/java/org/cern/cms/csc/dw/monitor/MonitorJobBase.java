@@ -10,7 +10,7 @@ import org.quartz.StatefulJob;
 @EJB(name="MonitorDaoRef", beanInterface=MonitorDaoLocal.class)
 public abstract class MonitorJobBase implements StatefulJob {
 
-    private static final Logger log = Logger.getLogger(MonitorJobBase.class);
+    private static final Logger logger = Logger.getLogger(MonitorJobBase.class);
 
     protected static final Logger monitor = MonitorLogger.getLogger();
     protected static ServiceLocator locator;
@@ -23,7 +23,7 @@ public abstract class MonitorJobBase implements StatefulJob {
             monitorDao = (MonitorDaoLocal) locator.getEnvService("MonitorDaoRef");
 
         }catch(NamingException ex) {
-            log.fatal("Error while initializing MonitorJobBase static objects", ex);
+            logger.fatal("Error while initializing MonitorJobBase static objects", ex);
         }
     }
 

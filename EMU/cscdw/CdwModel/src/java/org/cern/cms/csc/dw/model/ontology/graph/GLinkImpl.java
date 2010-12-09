@@ -4,10 +4,13 @@ import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import org.apache.log4j.Logger;
 import org.neo4j.graphdb.Relationship;
 
 public class GLinkImpl extends GBase implements GLink {
 
+    private static final Logger logger = Logger.getLogger(GLinkImpl.class);
+    
     protected Relationship relationship;
 
     public GLinkImpl(GServices gservices, Relationship relationship) {
@@ -37,7 +40,7 @@ public class GLinkImpl extends GBase implements GLink {
             }
             return ret;
         } catch (Exception e) {
-            e.printStackTrace(System.err);
+            logger.error(null, e);
             return null;
         }
     }

@@ -20,8 +20,9 @@ import org.cern.cms.csc.dw.util.ZipUtil;
 
 public class GraphServicesDao {
 
-    private static final Logger log = Logger.getLogger(GraphServices.class);
+    private static final Logger logger = Logger.getLogger(GraphServices.class);
     private static final String graphdbPath = "graphdb";
+    
     private GraphServices graphServices;
 
     public GraphServicesDao() {
@@ -32,29 +33,28 @@ public class GraphServicesDao {
 
         try {
 
-            log.info("Cleaning graphdb");
+            logger.info("Cleaning graphdb");
             {
                 File root = new File(graphdbPath);
                 if (root.exists()) {
-                    log.info("graphdb found in [" + root.getAbsolutePath() + "]. Removing...");
+                    logger.info("graphdb found in [" + root.getAbsolutePath() + "]. Removing...");
                     ZipUtil.deleteRecursive(root);
                 }
             }
 
-            log.info("Unpacking graphdb");
+            logger.info("Unpacking graphdb");
             {
                 File root = new File(graphdbPath);
                 root.mkdir();
                 URL zipUrl = this.getClass().getClassLoader().getResource("org/cern/cms/csc/dw/model/graphdb.zip");
-                log.info("Unpacking graphdb from [" + zipUrl.getFile() + "] to [" + root.getAbsolutePath() + "]");
+                logger.info("Unpacking graphdb from [" + zipUrl.getFile() + "] to [" + root.getAbsolutePath() + "]");
                 ZipUtil.unzip(new File(zipUrl.getFile()), root);
             }
 
             graphServices = new GraphServices(graphdbPath);
 
         } catch (Exception ex) {
-            log.error(ex.getMessage(), ex);
-            ex.printStackTrace(System.err);
+            logger.error(ex.getMessage(), ex);
         }
 
     }

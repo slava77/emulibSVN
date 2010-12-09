@@ -4,9 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.zip.ZipException;
 import junit.framework.Assert;
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
 public class ZipUtilTest {
+
+    private static final Logger logger = Logger.getLogger(ZipUtilTest.class);
 
     public ZipUtilTest() {
     }
@@ -31,10 +34,10 @@ public class ZipUtilTest {
             ZipUtil.unzip(zipFile, destFile);
 
         } catch (ZipException ex) {
-            ex.printStackTrace(System.err);
+            logger.error("Test failed", ex);
             Assert.fail();
         } catch (IOException ex) {
-            ex.printStackTrace(System.err);
+            logger.error("Test failed", ex);
             Assert.fail();
         }
         

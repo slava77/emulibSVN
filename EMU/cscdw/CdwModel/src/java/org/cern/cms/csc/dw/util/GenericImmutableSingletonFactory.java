@@ -18,14 +18,14 @@ import org.apache.log4j.Logger;
 
 public class GenericImmutableSingletonFactory implements ObjectFactory {
 
-    private static final Logger log = Logger.getLogger(GenericImmutableSingletonFactory.class);
+    private static final Logger logger = Logger.getLogger(GenericImmutableSingletonFactory.class);
     private static Map<Name, Object> singletons = new HashMap<Name, Object>();
 
     public Object getObjectInstance(Object obj, Name name, Context nameCtx,
             Hashtable environment) throws NamingException {
-        log.debug("obj=" + obj);
-        log.debug("name=" + name);
-        log.debug("nameCtx=" + nameCtx);
+        logger.debug("obj=" + obj);
+        logger.debug("name=" + name);
+        logger.debug("nameCtx=" + nameCtx);
         if (obj instanceof Reference) {
             Reference ref = (Reference) obj;
             String beanClassName = ref.getClassName();
@@ -50,7 +50,7 @@ public class GenericImmutableSingletonFactory implements ObjectFactory {
 
             Object bean;
             if (singletons.containsKey(name)) {
-                log.debug("returning already existing singleton: " + name);
+                logger.debug("returning already existing singleton: " + name);
                 bean = singletons.get(name);
                 if (!bean.getClass().equals(beanClass)) {
                     // should probably recreate the singleton here
@@ -72,7 +72,7 @@ public class GenericImmutableSingletonFactory implements ObjectFactory {
     }
 
     private Object createSingleton(Class beanClass, Reference ref) throws NamingException {
-        log.info("Creating new instance of singleton of class " + beanClass);
+        logger.info("Creating new instance of singleton of class " + beanClass);
         try {
             BeanInfo bi = Introspector.getBeanInfo(beanClass);
             PropertyDescriptor[] pda = bi.getPropertyDescriptors();
@@ -138,7 +138,7 @@ public class GenericImmutableSingletonFactory implements ObjectFactory {
             Method[] methods = beanClass.getMethods();
             for (Method method : methods) {
                 if (method.getName().equals("init")) {
-                    log.info("Init method found in class " + beanClass.getName() + " - calling");
+                    logger.info("Init method found in class " + beanClass.getName() + " - calling");
                     method.invoke(bean);
                 }
             }

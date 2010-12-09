@@ -19,7 +19,7 @@ import org.quartz.JobExecutionException;
 
 public class MonitorJob extends MonitorJobBase {
 
-    private static final Logger log = Logger.getLogger(MonitorJob.class);
+    private static final Logger logger = Logger.getLogger(MonitorJob.class);
     private static List<QueueItem> queues = new ArrayList<QueueItem>();
 
     static {
@@ -30,7 +30,7 @@ public class MonitorJob extends MonitorJobBase {
                 }
             }
         }catch(NamingException ex) {
-            log.fatal("Error while initializing MonitorJob static objects", ex);
+            logger.fatal("Error while initializing MonitorJob static objects", ex);
         }
     }
 
@@ -46,7 +46,7 @@ public class MonitorJob extends MonitorJobBase {
                     monitor.trace(qstatus);
                 }
             } catch (JMSException ex) {
-                log.error("Error while accessing queues", ex);
+                logger.error("Error while accessing queues", ex);
             }
         }
 
@@ -56,7 +56,7 @@ public class MonitorJob extends MonitorJobBase {
             MonitorDatabaseStatus dbstatus = new MonitorDatabaseStatus();
             dbstatus.setAlive(false);
             monitor.trace(dbstatus);
-            log.error("Error while accessing database", ex);
+            logger.error("Error while accessing database", ex);
         }
 
     }
@@ -94,7 +94,7 @@ public class MonitorJob extends MonitorJobBase {
                     try {
                         session.close();
                     } catch (JMSException e) {
-                        log.error("Error while closing JMS Session", e);
+                        logger.error("Error while closing JMS Session", e);
                     }
                 }
                 if (connection != null) {

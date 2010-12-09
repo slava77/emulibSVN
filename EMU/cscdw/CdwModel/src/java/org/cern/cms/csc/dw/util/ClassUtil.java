@@ -13,9 +13,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
+import org.apache.log4j.Logger;
 
 public class ClassUtil {
 
+    private static final Logger logger = Logger.getLogger(ClassUtil.class);
     private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
     private static final Throwable CVF_FAILURE, CR_FAILURE;
 
@@ -34,7 +36,7 @@ public class ClassUtil {
 
             tempf.setAccessible(true);
         } catch (Throwable t) {
-            t.printStackTrace(System.err);
+            logger.error(t.getMessage(), t);
             failure = t;
         }
         CLASSES_VECTOR_FIELD = tempf;
@@ -98,8 +100,7 @@ public class ClassUtil {
             return result;
         } // this should not happen if <clinit> was successful:
         catch (IllegalAccessException e) {
-            e.printStackTrace(System.out);
-
+            logger.error(e.getMessage(), e);
             return EMPTY_CLASS_ARRAY;
         }
     }

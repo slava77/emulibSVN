@@ -17,7 +17,7 @@ import org.hibernate.ejb.EntityManagerImpl;
 @Stateless
 public class MonitorDao implements MonitorDaoLocal {
 
-    private static Logger log = Logger.getLogger(MonitorDao.class);
+    private static Logger logger = Logger.getLogger(MonitorDao.class);
 
     @PersistenceContext(unitName="CdwPU")
     private EntityManager em;

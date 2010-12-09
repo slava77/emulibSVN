@@ -3,6 +3,7 @@ package org.cern.cms.csc.dw.dao.table;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.util.SQLParamRestriction;
 import org.hibernate.Criteria;
 import org.hibernate.QueryException;
@@ -17,6 +18,8 @@ import org.hibernate.criterion.Subqueries;
 
 public abstract class BeanTableDao implements BeanTableDaoIf {
 
+    private static final Logger logger = Logger.getLogger(BeanTableDao.class);
+    
     protected abstract Session getSession();
 
     public List getData(BeanTableIf table, boolean pageOnly) {
@@ -48,9 +51,7 @@ public abstract class BeanTableDao implements BeanTableDaoIf {
             list = c.list();
 
         } catch (QueryException ex) {
-
-            System.err.println(ex);
-            ex.printStackTrace(System.err);
+            logger.error(ex.getMessage(), ex);
             if (table.isInteractiveMode()) {
                 //BeanBase.addErrorMessage("cms.dqm.workflow.getData.ERROR", false);
             }

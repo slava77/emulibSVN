@@ -87,7 +87,7 @@ public class GQuery <T extends GNode> {
             return (T) null;
 
         } catch (Exception e) {
-            e.printStackTrace(System.err);
+            logger.error(null, e);
             return null;
         }
     }
@@ -137,7 +137,7 @@ public class GQuery <T extends GNode> {
             return ret;
 
         } catch (Exception e) {
-            e.printStackTrace(System.err);
+            logger.error(null, e);
             return null;
         }
     }
@@ -182,7 +182,7 @@ public class GQuery <T extends GNode> {
                     GNodeImpl.getPropertyKey(ifClass, property),
                     value));
         } catch (Exception e) {
-            e.printStackTrace(System.err);
+            logger.error(null, e);
             return null;
         }
         finally {
@@ -199,7 +199,7 @@ public class GQuery <T extends GNode> {
                     value));
 
         } catch (Exception e) {
-            e.printStackTrace(System.err);
+            logger.error(null, e);
             return null;
         }
         finally {
@@ -219,7 +219,7 @@ public class GQuery <T extends GNode> {
                         sort));
 
         } catch (Exception e) {
-            e.printStackTrace(System.err);
+            logger.error(null, e);
             return null;
         }
         finally {

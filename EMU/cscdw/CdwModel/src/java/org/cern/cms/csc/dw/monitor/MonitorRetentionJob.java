@@ -15,7 +15,7 @@ import org.quartz.JobExecutionException;
 
 public class MonitorRetentionJob extends MonitorJobBase {
 
-    private static final Logger log = Logger.getLogger(MonitorRetentionJob.class);
+    private static final Logger logger = Logger.getLogger(MonitorRetentionJob.class);
     private static final String ENTITIES_RESOURCE = "/org/cern/cms/csc/dw/metadata/monitor_entities.properties";
     private static final long RETENTION_TIME = 24 * 60 * 60 * 1000;
     private static Set<Class<? extends MonitorObject>> moClasses = new HashSet<Class<? extends MonitorObject>>();
@@ -32,7 +32,7 @@ public class MonitorRetentionJob extends MonitorJobBase {
                 moClasses.add(clazz);
             }
         } catch (Exception ex) {
-            log.fatal("Error while initializing MonitorRetentionJob", ex);
+            logger.fatal("Error while initializing MonitorRetentionJob", ex);
         }
     }
 
