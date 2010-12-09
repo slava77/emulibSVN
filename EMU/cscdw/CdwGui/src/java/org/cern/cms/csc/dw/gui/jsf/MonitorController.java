@@ -25,6 +25,7 @@ import javax.jms.QueueBrowser;
 import javax.jms.Session;
 import javax.naming.Binding;
 import javax.naming.NamingException;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.dao.MonitorDaoLocal;
 import org.cern.cms.csc.dw.gui.table.BeanTableBase;
 import org.cern.cms.csc.dw.gui.table.BeanTableControllerBase;
@@ -39,7 +40,6 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.jfree.chart.renderer.xy.XYDotRenderer;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
@@ -48,6 +48,7 @@ import org.jfree.data.time.TimeSeriesDataItem;
 @EJB(name = "MonitorDaoRef", beanInterface = MonitorDaoLocal.class)
 public class MonitorController extends BeanTableControllerBase {
 
+    private static final Logger logger = Logger.getLogger(MonitorController.class);
     private static final String ENTITIES_RESOURCE = "/org/cern/cms/csc/dw/metadata/monitor_entities.properties";
     private static final SortedSet<SelectItem> entities = new TreeSet<SelectItem>(new SelectItemComparator());
 
@@ -63,7 +64,7 @@ public class MonitorController extends BeanTableControllerBase {
                 entities.add(si);
             }
         } catch (IOException ex) {
-            ex.printStackTrace(System.err);
+            logger.error("IO error", ex);
         }
     }
 
@@ -86,8 +87,16 @@ public class MonitorController extends BeanTableControllerBase {
         this.locator = ServiceLocator.getInstance();
         monitorDao = (MonitorDaoLocal) locator.getEnvService("MonitorDaoRef");
         for (Binding b : locator.getJniBindings("jms")) {
-            if (!b.getName().endsWith("Factory")) {
-                queues.add(new QueueItem(b.getName()));
+            try {
+                Object queueObj = locator.getService("jms/" + b.getName());
+                if (queueObj instanceof Queue) {
+                    Object factoryObj = locator.getService("jms/" + b.getName() + "Factory");
+                    if (factoryObj instanceof ConnectionFactory) {
+                        queues.add(new QueueItem(b.getName(), (Queue) queueObj, (ConnectionFactory) factoryObj));
+                    }
+                }
+            } catch (NamingException ex) {
+                logger.info("Naming exception while looking for queues", ex);
             }
         }
     }
@@ -188,7 +197,7 @@ public class MonitorController extends BeanTableControllerBase {
             byte[] image = ChartUtilities.encodeAsPNG(chart.createBufferedImage(1000, 600));
             return image;
         } catch (IOException ex) {
-            ex.printStackTrace();
+            logger.error("Retrieving chart image", ex);
         }
         
         return null;
@@ -200,10 +209,10 @@ public class MonitorController extends BeanTableControllerBase {
         private Queue queue;
         private ConnectionFactory connectionFactory;
 
-        public QueueItem(String name) throws NamingException {
+        public QueueItem(String name, Queue queue, ConnectionFactory connectionFactory) throws NamingException {
             this.name = name;
-            this.queue = (Queue) locator.getService("jms/" + name);
-            this.connectionFactory = (ConnectionFactory) locator.getService("jms/" + name + "Factory");
+            this.queue = queue;
+            this.connectionFactory = connectionFactory;
         }
 
         public String getName() {
@@ -238,7 +247,7 @@ public class MonitorController extends BeanTableControllerBase {
                     try {
                         session.close();
                     } catch (JMSException e) {
-                        e.printStackTrace(System.err);
+                        logger.error("Closing queue session", e);
                     }
                 }
                 if (connection != null) {
@@ -261,7 +270,7 @@ public class MonitorController extends BeanTableControllerBase {
                     try {
                         session.close();
                     } catch (JMSException e) {
-                        e.printStackTrace(System.err);
+                        logger.error("Closing queue session", e);
                     }
                 }
                 if (connection != null) {

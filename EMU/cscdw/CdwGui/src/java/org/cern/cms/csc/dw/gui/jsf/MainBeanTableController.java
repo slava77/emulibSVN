@@ -11,10 +11,12 @@ import java.util.Properties;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.faces.model.SelectItem;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 
 public class MainBeanTableController extends BeanTableControllerBase {
 
+    private static final Logger logger = Logger.getLogger(MainBeanTableController.class);
     private static final String ENTITIES_RESOURCE = "/org/cern/cms/csc/dw/metadata/main_entities.properties";
     private static final SortedSet<SelectItem> entities = new TreeSet<SelectItem>(new SelectItemComparator());
 
@@ -30,7 +32,7 @@ public class MainBeanTableController extends BeanTableControllerBase {
                 entities.add(si);
             }
         } catch (IOException ex) {
-            ex.printStackTrace(System.err);
+            logger.error("IO error", ex);
         }
     }
 

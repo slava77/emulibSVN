@@ -7,12 +7,15 @@ import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.dao.table.BeanTableDaoIf;
 import org.cern.cms.csc.dw.dao.table.BeanTableIf;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 
 
 public abstract class BeanTableBaseBase implements BeanTableIf {
+
+    private static final Logger logger = Logger.getLogger(BeanTableBaseBase.class);
 
     private static final int DEFAULT_PAGE_SIZE = 20;
     private static final int PAGE_FAST_STEP = 5;
@@ -198,7 +201,7 @@ public abstract class BeanTableBaseBase implements BeanTableIf {
             try {
                 return PropertyUtils.getSimpleProperty(getCurrentRow(), col.getName());
             } catch (Exception ex) {
-                ex.printStackTrace(System.err);
+                logger.error("Error while retrieving bean value", ex);
             }
         }
         return null;

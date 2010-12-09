@@ -1,10 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.cern.cms.csc.dw.gui.jsf;
 
-//import com.icesoft.faces.context.effects.JavascriptContext;
+import com.icesoft.faces.context.effects.JavascriptContext;
 import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
 import javax.faces.application.ViewHandler;
@@ -19,12 +15,11 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.apache.log4j.Logger;
 
-/**
- *
- * @author valdo
- */
-public class JsfBeanBase {
+public abstract class JsfBeanBase {
+
+    private static final Logger logger = Logger.getLogger(JsfBeanBase.class);
 
     public static FacesContext getFacesContext(HttpServletRequest request, HttpServletResponse response, String lifecycleId) {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -61,7 +56,7 @@ public class JsfBeanBase {
             Application app = context.getApplication();
             value = app.evaluateExpressionGet(context, "#{" + expr + "}", Object.class);
         } catch (NullPointerException e) {
-            e.printStackTrace(System.err);
+            logger.error("Error while evaluating expression", e);
         }
         return value;
     }
@@ -122,7 +117,8 @@ public class JsfBeanBase {
         return null;
     }
 
-//    public static void addJavascript(String script) {
-//        JavascriptContext.addJavascriptCall(FacesContext.getCurrentInstance(), script);
-//    }
+   public static void addJavascript(String script) {
+        JavascriptContext.addJavascriptCall(FacesContext.getCurrentInstance(), script);
+   }
+
 }
