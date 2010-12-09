@@ -359,6 +359,7 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${libs.neo4j.classpath}" todir="${build.classes.dir}"/>
         <copyfiles files="${libs.Quartz.classpath}" todir="${build.classes.dir}"/>
         <copyfiles files="${libs.JMS.classpath}" todir="${build.classes.dir}"/>
+        <copyfiles files="${libs.log4j.classpath}" todir="${build.classes.dir}"/>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
         <copyfiles files="${libs.hibernate-support.classpath}" manifestproperty="manifest.libs.hibernate-support.classpath" todir="${dist.ear.dir}"/>
@@ -369,8 +370,9 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${libs.neo4j.classpath}" manifestproperty="manifest.libs.neo4j.classpath" todir="${dist.ear.dir}"/>
         <copyfiles files="${libs.Quartz.classpath}" manifestproperty="manifest.libs.Quartz.classpath" todir="${dist.ear.dir}"/>
         <copyfiles files="${libs.JMS.classpath}" manifestproperty="manifest.libs.JMS.classpath" todir="${dist.ear.dir}"/>
+        <copyfiles files="${libs.log4j.classpath}" manifestproperty="manifest.libs.log4j.classpath" todir="${dist.ear.dir}"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${manifest.libs.hibernate-support.classpath} ${manifest.libs.hyperjaxb3.classpath} ${manifest.file.reference.derbyclient.jar} ${manifest.file.reference.ojdbc6.jar} ${manifest.file.reference.orai18n.jar} ${manifest.libs.neo4j.classpath} ${manifest.libs.Quartz.classpath} ${manifest.libs.JMS.classpath} "/>
+            <attribute name="Class-Path" value="${manifest.libs.hibernate-support.classpath} ${manifest.libs.hyperjaxb3.classpath} ${manifest.file.reference.derbyclient.jar} ${manifest.file.reference.ojdbc6.jar} ${manifest.file.reference.orai18n.jar} ${manifest.libs.neo4j.classpath} ${manifest.libs.Quartz.classpath} ${manifest.libs.JMS.classpath} ${manifest.libs.log4j.classpath} "/>
         </manifest>
     </target>
     <target name="-copy-meta-inf">
