@@ -555,9 +555,10 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${reference.CdwModel.dist}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.reference.CdwModel.dist" todir="${dist.ear.dir}"/>
         <copyfiles files="${reference.ExsysRE.dist}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.reference.ExsysRE.dist" todir="${dist.ear.dir}"/>
         <copyfiles files="${libs.Icefaces.classpath}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.libs.Icefaces.classpath" todir="${dist.ear.dir}"/>
+        <copyfiles files="${libs.log4j.classpath}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.libs.log4j.classpath" todir="${dist.ear.dir}"/>
         <mkdir dir="${build.web.dir}/META-INF"/>
         <manifest file="${build.web.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${manifest.reference.CdwWS.dist} ${manifest.reference.CdwModel.dist} ${manifest.reference.ExsysRE.dist} ${manifest.libs.Icefaces.classpath} "/>
+            <attribute name="Class-Path" value="${manifest.reference.CdwWS.dist} ${manifest.reference.CdwModel.dist} ${manifest.reference.ExsysRE.dist} ${manifest.libs.Icefaces.classpath} ${manifest.libs.log4j.classpath} "/>
         </manifest>
     </target>
     <target depends="init" name="library-inclusion-in-archive" unless="dist.ear.dir">
@@ -565,6 +566,7 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${reference.CdwModel.dist}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${reference.ExsysRE.dist}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${libs.Icefaces.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${libs.log4j.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
     </target>
     <target depends="init,compile,compile-jsps,-pre-dist,library-inclusion-in-manifest" if="do.tmp.war.package" name="do-ear-dist">
         <dirname file="${dist.ear.war}" property="dist.jar.dir"/>
