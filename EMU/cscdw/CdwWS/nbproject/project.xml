@@ -13,6 +13,7 @@
             <minimum-ant-version>1.6.5</minimum-ant-version>
             <included-library>reference.CdwModel.dist</included-library>
             <included-library>libs.jaxb.classpath</included-library>
+            <included-library>libs.log4j.classpath</included-library>
             <included-library>libs.hyperjaxb3.classpath</included-library>
             <source-roots>
                 <root id="src.dir"/>
