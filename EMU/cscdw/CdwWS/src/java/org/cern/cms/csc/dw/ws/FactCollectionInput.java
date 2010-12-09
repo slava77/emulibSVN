@@ -26,7 +26,7 @@ import org.cern.cms.csc.dw.service.ServiceInstructions;
 @Stateless()
 public class FactCollectionInput implements FactCollectionInputLocal {
 
-    private static Logger log = Logger.getLogger(FactCollectionInput.class);
+    private static Logger logger = Logger.getLogger(FactCollectionInput.class);
     private static Logger monitor = MonitorLogger.getLogger();
 
     @EJB
@@ -53,13 +53,13 @@ public class FactCollectionInput implements FactCollectionInputLocal {
             }
 
             // some debug information
-            if (log.isDebugEnabled()) {
+            if (logger.isDebugEnabled()) {
 
-                log.debug("FCinput WS: fc with " + factCollection.getFacts().size() + " facts " +
+                logger.debug("FCinput WS: fc with " + factCollection.getFacts().size() + " facts " +
                             " and " + factCollection.getFactsItems().size() + " fact collection items");
-                log.debug("FCinput WS: fc.toString(): " + factCollection.toString());
+                logger.debug("FCinput WS: fc.toString(): " + factCollection.toString());
                 for (JAXBElement<? extends Fact> fi : factCollection.getFacts()) {
-                    log.debug("FCinput WS: fact: " + fi.getValue());
+                    logger.debug("FCinput WS: fact: " + fi.getValue());
                 }
                 
             }
@@ -87,12 +87,12 @@ public class FactCollectionInput implements FactCollectionInputLocal {
                 session.close();
                 connection.close();
             } else {
-                log.debug("FCinput WS: serviceInstructions.isAsync() = false, sending this fact collection directly to FactCollectionSaverBean");
+                logger.debug("FCinput WS: serviceInstructions.isAsync() = false, sending this fact collection directly to FactCollectionSaverBean");
                 saver.saveFactCollection(factCollection);
             }
 
         } catch (Exception ex) {
-            log.error("Error while saving Fact Collection", ex);
+            logger.error("Error while saving Fact Collection", ex);
             throw ex;
         }
 

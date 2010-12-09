@@ -26,6 +26,7 @@ import org.cern.cms.csc.dw.model.dse.DataServiceEntityCollection;
 public class DataServiceEntityInput {
 
     private static Logger logger = Logger.getLogger(DataServiceEntityInput.class);
+    
     @EJB
     private PersistDaoLocal persistDao;
 
