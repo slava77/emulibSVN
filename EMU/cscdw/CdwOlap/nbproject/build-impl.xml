@@ -539,14 +539,16 @@ exists or setup the property manually. For example like this:
     <target depends="init" if="dist.ear.dir" name="library-inclusion-in-manifest">
         <copyfiles files="${libs.JPivot.classpath}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.libs.JPivot.classpath" todir="${dist.ear.dir}"/>
         <copyfiles files="${libs.Json.classpath}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.libs.Json.classpath" todir="${dist.ear.dir}"/>
+        <copyfiles files="${libs.log4j.classpath}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.libs.log4j.classpath" todir="${dist.ear.dir}"/>
         <mkdir dir="${build.web.dir}/META-INF"/>
         <manifest file="${build.web.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${manifest.libs.JPivot.classpath} ${manifest.libs.Json.classpath} "/>
+            <attribute name="Class-Path" value="${manifest.libs.JPivot.classpath} ${manifest.libs.Json.classpath} ${manifest.libs.log4j.classpath} "/>
         </manifest>
     </target>
     <target depends="init" name="library-inclusion-in-archive" unless="dist.ear.dir">
         <copyfiles files="${libs.JPivot.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${libs.Json.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${libs.log4j.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
     </target>
     <target depends="init,compile,compile-jsps,-pre-dist,library-inclusion-in-manifest" if="do.tmp.war.package" name="do-ear-dist">
         <dirname file="${dist.ear.war}" property="dist.jar.dir"/>
