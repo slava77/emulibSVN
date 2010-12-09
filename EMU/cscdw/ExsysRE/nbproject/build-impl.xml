@@ -359,14 +359,16 @@ exists or setup the property manually. For example like this:
     <target depends="compile" name="library-inclusion-in-archive">
         <copyfiles files="${libs.esper.classpath}" todir="${build.classes.dir}"/>
         <copyfiles files="${libs.hyperjaxb3.classpath}" todir="${build.classes.dir}"/>
+        <copyfiles files="${libs.log4j.classpath}" todir="${build.classes.dir}"/>
         <copyfiles files="${reference.CdwModel.dist}" todir="${build.classes.dir}"/>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
         <copyfiles files="${libs.esper.classpath}" manifestproperty="manifest.libs.esper.classpath" todir="${dist.ear.dir}"/>
         <copyfiles files="${libs.hyperjaxb3.classpath}" manifestproperty="manifest.libs.hyperjaxb3.classpath" todir="${dist.ear.dir}"/>
+        <copyfiles files="${libs.log4j.classpath}" manifestproperty="manifest.libs.log4j.classpath" todir="${dist.ear.dir}"/>
         <copyfiles files="${reference.CdwModel.dist}" manifestproperty="manifest.reference.CdwModel.dist" todir="${dist.ear.dir}"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${manifest.libs.esper.classpath} ${manifest.libs.hyperjaxb3.classpath} ${manifest.reference.CdwModel.dist} "/>
+            <attribute name="Class-Path" value="${manifest.libs.esper.classpath} ${manifest.libs.hyperjaxb3.classpath} ${manifest.libs.log4j.classpath} ${manifest.reference.CdwModel.dist} "/>
         </manifest>
     </target>
     <target name="-copy-meta-inf">
