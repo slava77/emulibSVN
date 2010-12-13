@@ -18,6 +18,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
@@ -127,6 +128,11 @@ public class EntityPropertyMdFactory {
         ManyToMany manyToManyA = getter.getAnnotation(ManyToMany.class);
         if (manyToManyA != null) {
             return new ManyToManyPropertyMd(prop);
+        }
+
+        OneToMany oneToManyA = getter.getAnnotation(OneToMany.class);
+        if (oneToManyA != null) {
+            return new OneToManyPropertyMd(prop);
         }
 
         throw new InvalidEntityBeanPropertyException("Don't know what type of property metadata to create for " + getter.toGenericString());
