@@ -72,7 +72,8 @@
 
                             <br/>
 
-                            <ice:commandLink value="Refresh" action="monitor"/>
+                            <ice:commandLink value="Refresh"
+                                             actionListener="#{MonitorController.refreshChartImageListener}"/>
 
                         </ice:panelGroup>
                     </ice:panelGrid>

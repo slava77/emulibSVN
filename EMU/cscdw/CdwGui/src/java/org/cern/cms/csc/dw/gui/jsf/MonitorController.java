@@ -77,11 +77,12 @@ public class MonitorController extends BeanTableControllerBase {
     public BeanTableBase getBeanTable(String title, Class<? extends EntityBase> rowClass) throws Exception {
         return new MonitorBeanTable(title, rowClass, true);
     }
-    
+
     private ServiceLocator locator;
     private MonitorDaoLocal monitorDao;
     private List<QueueItem> queues = new ArrayList<QueueItem>();
     private Integer chartLastHours = 8;
+    private byte[] chartImage = null;
 
     public MonitorController() throws NamingException {
         this.locator = ServiceLocator.getInstance();
@@ -126,6 +127,13 @@ public class MonitorController extends BeanTableControllerBase {
     }
 
     public byte[] getChartImage() {
+        if (chartImage == null) {
+            refreshChartImageListener(null);
+        }
+        return chartImage;
+    }
+
+    public void refreshChartImageListener(ActionEvent ev) {
 
         TimeSeriesCollection queueSizes = new TimeSeriesCollection();
         Integer maxValue = 0;
@@ -170,12 +178,12 @@ public class MonitorController extends BeanTableControllerBase {
             plot.getRangeAxis(0).setLowerBound(0.0);
             plot.getRangeAxis(0).setUpperBound(maxValue.doubleValue());
         }
-        
+
         {
             Date from = new Date();
             from.setTime(from.getTime() - chartLastHours * 60 * 60 * 1000);
-            plot.getDomainAxis().setLowerBound(new Second(from).getFirstMillisecond());
-            plot.getDomainAxis().setUpperBound(new Second(new Date()).getLastMillisecond());
+            plot.getDomainAxis(0).setLowerBound(new Second(from).getFirstMillisecond());
+            plot.getDomainAxis(0).setUpperBound(new Second(new Date()).getLastMillisecond());
         }
 
         /*
@@ -194,13 +202,12 @@ public class MonitorController extends BeanTableControllerBase {
         plot.setRenderer(1, renderer1);
 
         try {
-            byte[] image = ChartUtilities.encodeAsPNG(chart.createBufferedImage(1000, 600));
-            return image;
+            chartImage = ChartUtilities.encodeAsPNG(chart.createBufferedImage(1000, 600));
         } catch (IOException ex) {
+            chartImage = null;
             logger.error("Retrieving chart image", ex);
         }
-        
-        return null;
+
     }
 
     public class QueueItem {
