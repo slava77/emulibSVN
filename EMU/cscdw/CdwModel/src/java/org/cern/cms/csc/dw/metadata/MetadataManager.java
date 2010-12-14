@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.model.annotation.FactAnn;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.model.fact.Fact;
+import org.cern.cms.csc.dw.model.monitor.MonitorObject;
 
 @SuppressWarnings("unchecked")
 public class MetadataManager {
@@ -84,7 +85,7 @@ public class MetadataManager {
                         factList.add(c.getSimpleName(), c.getName());
                     }
 
-                    if (c.getPackage().getName().equals(MONITOR_PACKAGE)) {
+                    if (c.getPackage().getName().equals(MONITOR_PACKAGE) && c.getSuperclass().equals(MonitorObject.class)) {
                         monitorEntitiesList.add(c.getSimpleName(), c.getName());
                     } else {
                         mainEntitiesList.add(c.getSimpleName(), c.getName());

@@ -20,9 +20,9 @@ import org.quartz.JobExecutionException;
 public class MonitorJob extends MonitorJobBase {
 
     private static final Logger logger = Logger.getLogger(MonitorJob.class);
-    private static List<QueueItem> queues = new ArrayList<QueueItem>();
+    private List<QueueItem> queues = new ArrayList<QueueItem>();
 
-    static {
+    public MonitorJob() {
         try {
             for (Binding b: locator.getJniBindings("jms")) {
                 if (!b.getName().endsWith("Factory")) {
@@ -61,7 +61,7 @@ public class MonitorJob extends MonitorJobBase {
 
     }
 
-    private static class QueueItem {
+    private class QueueItem {
 
         private Queue queue;
         private ConnectionFactory connectionFactory;

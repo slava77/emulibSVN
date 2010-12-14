@@ -11,18 +11,16 @@ import org.quartz.StatefulJob;
 public abstract class MonitorJobBase implements StatefulJob {
 
     private static final Logger logger = Logger.getLogger(MonitorJobBase.class);
-
     protected static final Logger monitor = MonitorLogger.getLogger();
-    protected static ServiceLocator locator;
-    protected static MonitorDaoLocal monitorDao;
 
-    static {
+    protected ServiceLocator locator;
+    protected MonitorDaoLocal monitorDao;
+
+    public MonitorJobBase() {
         try {
-
             locator = ServiceLocator.getInstance();
             monitorDao = (MonitorDaoLocal) locator.getEnvService("MonitorDaoRef");
-
-        }catch(NamingException ex) {
+        } catch(NamingException ex) {
             logger.fatal("Error while initializing MonitorJobBase static objects", ex);
         }
     }
