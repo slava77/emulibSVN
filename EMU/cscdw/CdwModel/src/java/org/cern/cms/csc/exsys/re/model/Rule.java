@@ -59,6 +59,7 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
  *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="conclusionType" type="{http://www.cern.ch/cms/csc/exsys/re/model}conclusionTypeType"/>
  *         &lt;element name="enabled" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
+ *         &lt;element name="type" type="{http://www.cern.ch/cms/csc/exsys/re/model}ruleTypeType"/>
  *         &lt;element name="componentFinder" type="{http://www.cern.ch/cms/csc/exsys/re/model}componentFinderType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -77,6 +78,7 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
     "description",
     "conclusionType",
     "enabled",
+    "type",
     "componentFinder"
 })
 @Entity(name = "org.cern.cms.csc.exsys.re.model.Rule")
@@ -110,7 +112,9 @@ public class Rule
     @org.cern.cms.csc.dw.model.annotation.gui.NoManualInput
     protected boolean enabled;
     @XmlElement(required = true)
-    @Label(description = "This is used to tell the rules engine what component(s) it should assign to the conclusions it creates. There are several kinds of component finders which all use components coming from the source fact(s) and/or conclusion(s) as source components, but have different policies on how to use them to resolve the actual component(s) which will be assigned to the conclusion.", name = "Component Finder")
+    protected RuleType type;
+    @XmlElement(required = true)
+    @Label(description = "This is used to tell the rules engine what component it should assign to the conclusions that this rule produces. There are several kinds of component finders which all use components coming from the source fact(s) and/or conclusion(s) as source components, but have different policies on how to use them to resolve the actual component which will be assigned to the conclusion. e.g. SimpleComponentFinder simply takes the source components, while RelatedComponentFinder can find a component of required type that is related to the source components. Note however that in any case, the component finder should only find one component, if it finds zero or more than one - an exception will be thrown.", name = "Component Finder")
     protected org.cern.cms.csc.exsys.re.model.ComponentFinder componentFinder;
     @XmlAttribute(name = "id")
     protected Long id;
@@ -278,9 +282,9 @@ public class Rule
      *     
      */
     @ManyToOne(targetEntity = org.cern.cms.csc.exsys.re.model.ConclusionType.class, cascade = {
-        CascadeType.MERGE,
+        CascadeType.PERSIST,
         CascadeType.REFRESH,
-        CascadeType.PERSIST
+        CascadeType.MERGE
     })
     @JoinColumn(name = "RER_CONCLUSION_TYPE_ID", nullable = false)
     public org.cern.cms.csc.exsys.re.model.ConclusionType getConclusionType() {
@@ -325,6 +329,36 @@ public class Rule
     @Transient
     public boolean isSetEnabled() {
         return true;
+    }
+
+    /**
+     * Gets the value of the type property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link RuleType }
+     *     
+     */
+    @Transient
+    public RuleType getType() {
+        return type;
+    }
+
+    /**
+     * Sets the value of the type property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link RuleType }
+     *     
+     */
+    public void setType(RuleType value) {
+        this.type = value;
+    }
+
+    @Transient
+    public boolean isSetType() {
+        return (this.type!= null);
     }
 
     /**
@@ -398,5 +432,25 @@ public class Rule
     public void setTimeCreatedItem(Date target) {
         setTimeCreated(XmlAdapterUtils.marshall(XMLGregorianCalendarAsDateTime.class, target));
     }
+
+    @Basic
+    @Column(name = "RER_TYPE", length = 7)
+    public String getTypeItem() {
+        return ((this.getType() == null)?null:this.getType().value());
+    }
+
+    public void setTypeItem(String target) {
+        setType(((target == null)?null:RuleType.fromValue(target)));
+    }
+    
+//--simple--preserve
+
+    @Override
+    public String toString() {
+        return "Rule " + getName() + " v" + getVersion();
+    }
+
+
+//--simple--preserve
 
 }

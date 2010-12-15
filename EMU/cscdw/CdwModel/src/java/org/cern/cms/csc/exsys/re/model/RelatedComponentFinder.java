@@ -8,17 +8,21 @@
 package org.cern.cms.csc.exsys.re.model;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
+import java.util.List;
+import java.util.Vector;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import org.cern.cms.csc.dw.model.annotation.gui.ImmutableReference;
+import org.cern.cms.csc.dw.model.annotation.gui.Label;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 
 /**
@@ -31,8 +35,7 @@ import org.cern.cms.csc.dw.model.annotation.gui.ImmutableReference;
  *   &lt;complexContent>
  *     &lt;extension base="{http://www.cern.ch/cms/csc/exsys/re/model}componentFinderType">
  *       &lt;sequence>
- *         &lt;element name="linkClass" type="{http://www.cern.ch/cms/csc/dw/ontology}componentLinkClassType" minOccurs="0"/>
- *         &lt;element name="mergePolicy" type="{http://www.cern.ch/cms/csc/exsys/re/model}mergePolicyType"/>
+ *         &lt;element name="linkClasses" type="{http://www.cern.ch/cms/csc/dw/ontology}componentLinkClassType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -43,8 +46,7 @@ import org.cern.cms.csc.dw.model.annotation.gui.ImmutableReference;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "relatedComponentFinderType", propOrder = {
-    "linkClass",
-    "mergePolicy"
+    "linkClasses"
 })
 @Entity(name = "org.cern.cms.csc.exsys.re.model.RelatedComponentFinder")
 public class RelatedComponentFinder
@@ -53,81 +55,69 @@ public class RelatedComponentFinder
 {
 
     @ImmutableReference
-    @org.cern.cms.csc.dw.model.annotation.gui.Label(description = "(Mandaroty) This link class will be used to find the related components. Note that it's also mandatory to specify component class(es)", name = "Link Class")
-    protected org.cern.cms.csc.dw.model.ontology.ComponentLinkClass linkClass;
-    @XmlElement(required = true)
-    @org.cern.cms.csc.dw.model.annotation.gui.Label(description = "This is used to tell the component resolver what to do when multiple source components are given. With union merge policy, all related components are simply added together, while with intersection policy all related component sets retrieved from different source components are intersected.", name = "Merge Policy")
-    protected MergePolicy mergePolicy;
+    @Label(description = "(At least one is mandaroty) These link classes will be used to find the related components.", name = "Link Classes")
+    protected List<org.cern.cms.csc.dw.model.ontology.ComponentLinkClass> linkClasses = new Vector<org.cern.cms.csc.dw.model.ontology.ComponentLinkClass>();
 
     /**
-     * Gets the value of the linkClass property.
+     * Gets the value of the linkClasses property.
      * 
-     * @return
-     *     possible object is
-     *     {@link org.cern.cms.csc.dw.model.ontology.ComponentLinkClass }
-     *     
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the linkClasses property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getLinkClasses().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link org.cern.cms.csc.dw.model.ontology.ComponentLinkClass }
+     * 
+     * 
      */
-    @ManyToOne(targetEntity = org.cern.cms.csc.dw.model.ontology.ComponentLinkClass.class)
-    @JoinColumn(name = "RCF_RELATING_LINK_CLASS")
-    public org.cern.cms.csc.dw.model.ontology.ComponentLinkClass getLinkClass() {
-        return linkClass;
+    @ManyToMany(targetEntity = org.cern.cms.csc.dw.model.ontology.ComponentLinkClass.class, fetch = FetchType.EAGER)
+    @JoinTable(name = "RE_REL_CMP_FINDER_LINK_CLASSES", joinColumns = {
+        @JoinColumn(name = "RECFL_RELATED_COMP_FINDER_ID")
+    }, inverseJoinColumns = {
+        @JoinColumn(name = "RECFL_COMPONENT_LINK_CLASS_ID")
+    })
+    @Fetch(FetchMode.SUBSELECT)
+    public List<org.cern.cms.csc.dw.model.ontology.ComponentLinkClass> getLinkClasses() {
+        if (linkClasses == null) {
+            linkClasses = new Vector<org.cern.cms.csc.dw.model.ontology.ComponentLinkClass>();
+        }
+        return this.linkClasses;
     }
 
     /**
-     * Sets the value of the linkClass property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link org.cern.cms.csc.dw.model.ontology.ComponentLinkClass }
-     *     
+     * 
      */
-    public void setLinkClass(org.cern.cms.csc.dw.model.ontology.ComponentLinkClass value) {
-        this.linkClass = value;
+    public void setLinkClasses(List<org.cern.cms.csc.dw.model.ontology.ComponentLinkClass> linkClasses) {
+        this.linkClasses = linkClasses;
     }
 
     @Transient
-    public boolean isSetLinkClass() {
-        return (this.linkClass!= null);
+    public boolean isSetLinkClasses() {
+        return ((this.linkClasses!= null)&&(!this.linkClasses.isEmpty()));
     }
 
-    /**
-     * Gets the value of the mergePolicy property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link MergePolicy }
-     *     
-     */
-    @Transient
-    public MergePolicy getMergePolicy() {
-        return mergePolicy;
+    public void unsetLinkClasses() {
+        this.linkClasses = null;
+    }
+    
+//--simple--preserve
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " for " + getComponentClass() + " via " + (getLinkClasses().size() == 1 ? getLinkClasses().get(0) : getLinkClasses());
     }
 
-    /**
-     * Sets the value of the mergePolicy property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link MergePolicy }
-     *     
-     */
-    public void setMergePolicy(MergePolicy value) {
-        this.mergePolicy = value;
-    }
-
-    @Transient
-    public boolean isSetMergePolicy() {
-        return (this.mergePolicy!= null);
-    }
-
-    @Basic
-    @Column(name = "RCF_MERGE_POLICY", length = 12)
-    public String getMergePolicyItem() {
-        return ((this.getMergePolicy() == null)?null:this.getMergePolicy().value());
-    }
-
-    public void setMergePolicyItem(String target) {
-        setMergePolicy(((target == null)?null:MergePolicy.fromValue(target)));
-    }
+//--simple--preserve
 
 }

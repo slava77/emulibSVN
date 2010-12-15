@@ -30,9 +30,13 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _ConclusionSourceRelation_QNAME = new QName("http://www.cern.ch/cms/csc/exsys/re/model", "conclusionSourceRelation");
+    private final static QName _ConclusionTrigger_QNAME = new QName("http://www.cern.ch/cms/csc/exsys/re/model", "conclusionTrigger");
+    private final static QName _ConclusionTriggerSource_QNAME = new QName("http://www.cern.ch/cms/csc/exsys/re/model", "conclusionTriggerSource");
     private final static QName _Conclusion_QNAME = new QName("http://www.cern.ch/cms/csc/exsys/re/model", "conclusion");
+    private final static QName _ComponentFinder_QNAME = new QName("http://www.cern.ch/cms/csc/exsys/re/model", "componentFinder");
+    private final static QName _ActionExecution_QNAME = new QName("http://www.cern.ch/cms/csc/exsys/re/model", "actionExecution");
     private final static QName _Rule_QNAME = new QName("http://www.cern.ch/cms/csc/exsys/re/model", "rule");
+    private final static QName _Action_QNAME = new QName("http://www.cern.ch/cms/csc/exsys/re/model", "action");
     private final static QName _ConclusionType_QNAME = new QName("http://www.cern.ch/cms/csc/exsys/re/model", "conclusionType");
 
     /**
@@ -43,43 +47,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link RelatedComponentFinder }
+     * Create an instance of {@link SimpleComponentFinder }
      * 
      */
-    public RelatedComponentFinder createRelatedComponentFinder() {
-        return new RelatedComponentFinder();
-    }
-
-    /**
-     * Create an instance of {@link UnionComponentFinder }
-     * 
-     */
-    public UnionComponentFinder createUnionComponentFinder() {
-        return new UnionComponentFinder();
-    }
-
-    /**
-     * Create an instance of {@link Rule }
-     * 
-     */
-    public Rule createRule() {
-        return new Rule();
-    }
-
-    /**
-     * Create an instance of {@link ConclusionSourceRelation }
-     * 
-     */
-    public ConclusionSourceRelation createConclusionSourceRelation() {
-        return new ConclusionSourceRelation();
-    }
-
-    /**
-     * Create an instance of {@link IntersectingComponentFinder }
-     * 
-     */
-    public IntersectingComponentFinder createIntersectingComponentFinder() {
-        return new IntersectingComponentFinder();
+    public SimpleComponentFinder createSimpleComponentFinder() {
+        return new SimpleComponentFinder();
     }
 
     /**
@@ -91,6 +63,38 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link RelatedComponentFinder }
+     * 
+     */
+    public RelatedComponentFinder createRelatedComponentFinder() {
+        return new RelatedComponentFinder();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionTriggerSource }
+     * 
+     */
+    public ConclusionTriggerSource createConclusionTriggerSource() {
+        return new ConclusionTriggerSource();
+    }
+
+    /**
+     * Create an instance of {@link EmailAction }
+     * 
+     */
+    public EmailAction createEmailAction() {
+        return new EmailAction();
+    }
+
+    /**
+     * Create an instance of {@link SmsAction }
+     * 
+     */
+    public SmsAction createSmsAction() {
+        return new SmsAction();
+    }
+
+    /**
      * Create an instance of {@link Conclusion }
      * 
      */
@@ -99,12 +103,45 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link ConclusionSourceRelation }{@code >}}
+     * Create an instance of {@link Rule }
      * 
      */
-    @XmlElementDecl(namespace = "http://www.cern.ch/cms/csc/exsys/re/model", name = "conclusionSourceRelation")
-    public JAXBElement<ConclusionSourceRelation> createConclusionSourceRelation(ConclusionSourceRelation value) {
-        return new JAXBElement<ConclusionSourceRelation>(_ConclusionSourceRelation_QNAME, ConclusionSourceRelation.class, null, value);
+    public Rule createRule() {
+        return new Rule();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionTrigger }
+     * 
+     */
+    public ConclusionTrigger createConclusionTrigger() {
+        return new ConclusionTrigger();
+    }
+
+    /**
+     * Create an instance of {@link ActionExecution }
+     * 
+     */
+    public ActionExecution createActionExecution() {
+        return new ActionExecution();
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ConclusionTrigger }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.cern.ch/cms/csc/exsys/re/model", name = "conclusionTrigger")
+    public JAXBElement<ConclusionTrigger> createConclusionTrigger(ConclusionTrigger value) {
+        return new JAXBElement<ConclusionTrigger>(_ConclusionTrigger_QNAME, ConclusionTrigger.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ConclusionTriggerSource }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.cern.ch/cms/csc/exsys/re/model", name = "conclusionTriggerSource")
+    public JAXBElement<ConclusionTriggerSource> createConclusionTriggerSource(ConclusionTriggerSource value) {
+        return new JAXBElement<ConclusionTriggerSource>(_ConclusionTriggerSource_QNAME, ConclusionTriggerSource.class, null, value);
     }
 
     /**
@@ -117,12 +154,39 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ComponentFinder }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.cern.ch/cms/csc/exsys/re/model", name = "componentFinder")
+    public JAXBElement<ComponentFinder> createComponentFinder(ComponentFinder value) {
+        return new JAXBElement<ComponentFinder>(_ComponentFinder_QNAME, ComponentFinder.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ActionExecution }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.cern.ch/cms/csc/exsys/re/model", name = "actionExecution")
+    public JAXBElement<ActionExecution> createActionExecution(ActionExecution value) {
+        return new JAXBElement<ActionExecution>(_ActionExecution_QNAME, ActionExecution.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link Rule }{@code >}}
      * 
      */
     @XmlElementDecl(namespace = "http://www.cern.ch/cms/csc/exsys/re/model", name = "rule")
     public JAXBElement<Rule> createRule(Rule value) {
         return new JAXBElement<Rule>(_Rule_QNAME, Rule.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link Action }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.cern.ch/cms/csc/exsys/re/model", name = "action")
+    public JAXBElement<Action> createAction(Action value) {
+        return new JAXBElement<Action>(_Action_QNAME, Action.class, null, value);
     }
 
     /**

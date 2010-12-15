@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.exsys.exception.DaoException;
+import org.cern.cms.csc.exsys.re.model.ConclusionType;
 import org.cern.cms.csc.exsys.re.model.Rule;
 
 /**
@@ -55,6 +56,26 @@ public class RuleEngineDao implements RuleEngineDaoLocal {
             throw new DaoException("No active rule with name \"" + name + "\" was found");
         }
         return rules.get(0);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Rule> getRulesByName(String name) {
+        List<Rule> rules = em.createQuery("select r from org.cern.cms.csc.exsys.re.model.Rule as r " +
+                                          "where r.name = :name " +
+                                          "order by r.version desc")
+                                          .setParameter("name", name)
+                                          .getResultList();
+        return rules;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Rule> getRulesByConclusionType(ConclusionType conclusionType) {
+        List<Rule> rules = em.createQuery("select r from org.cern.cms.csc.exsys.re.model.Rule as r " +
+                                          "where r.conclusionType = :conclType " +
+                                          "order by r.name, r.version desc")
+                                          .setParameter("conclType", conclusionType)
+                                          .getResultList();
+        return rules;
     }
 
     public EntityDaoLocal getEntityDao() {

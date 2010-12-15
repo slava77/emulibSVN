@@ -37,22 +37,18 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 
 
 /**
- * <p>Java class for conclusionSourceRelationType complex type.
+ * <p>Java class for actionExecutionType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="conclusionSourceRelationType">
+ * &lt;complexType name="actionExecutionType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="isClosing" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *         &lt;element name="timestamp" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
- *         &lt;element name="parent" type="{http://www.cern.ch/cms/csc/exsys/re/model}conclusionType"/>
- *         &lt;choice>
- *           &lt;element name="childConclusion" type="{http://www.cern.ch/cms/csc/exsys/re/model}conclusionType"/>
- *           &lt;element name="childFact" type="{http://www.cern.ch/cms/csc/dw/model}factType"/>
- *         &lt;/choice>
+ *         &lt;element name="action" type="{http://www.cern.ch/cms/csc/exsys/re/model}actionType"/>
+ *         &lt;element name="trigger" type="{http://www.cern.ch/cms/csc/exsys/re/model}conclusionTriggerType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -62,54 +58,28 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "conclusionSourceRelationType", propOrder = {
-    "isClosing",
+@XmlType(name = "actionExecutionType", propOrder = {
     "timestamp",
-    "parent",
-    "childConclusion",
-    "childFact"
+    "action",
+    "trigger"
 })
-@Entity(name = "org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation")
-@Table(name = "RE_CONCLUSION_SOURCE_RELATIONS")
+@Entity(name = "org.cern.cms.csc.exsys.re.model.ActionExecution")
+@Table(name = "RE_ACTION_EXECUTIONS")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class ConclusionSourceRelation
+public class ActionExecution
     extends EntityBase
     implements Serializable
 {
 
-    protected boolean isClosing;
     @XmlElement(required = true)
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar timestamp;
     @XmlElement(required = true)
-    protected org.cern.cms.csc.exsys.re.model.Conclusion parent;
-    protected org.cern.cms.csc.exsys.re.model.Conclusion childConclusion;
-    protected org.cern.cms.csc.dw.model.fact.Fact childFact;
+    protected Action action;
+    @XmlElement(required = true)
+    protected ConclusionTrigger trigger;
     @XmlAttribute(name = "id")
     protected Long id;
-
-    /**
-     * Gets the value of the isClosing property.
-     * 
-     */
-    @Basic
-    @Column(name = "RECR_IS_CLOSING", nullable = false)
-    public boolean isIsClosing() {
-        return isClosing;
-    }
-
-    /**
-     * Sets the value of the isClosing property.
-     * 
-     */
-    public void setIsClosing(boolean value) {
-        this.isClosing = value;
-    }
-
-    @Transient
-    public boolean isSetIsClosing() {
-        return true;
-    }
 
     /**
      * Gets the value of the timestamp property.
@@ -142,96 +112,65 @@ public class ConclusionSourceRelation
     }
 
     /**
-     * Gets the value of the parent property.
+     * Gets the value of the action property.
      * 
      * @return
      *     possible object is
-     *     {@link org.cern.cms.csc.exsys.re.model.Conclusion }
+     *     {@link Action }
      *     
      */
-    @ManyToOne(targetEntity = org.cern.cms.csc.exsys.re.model.Conclusion.class)
-    @JoinColumn(name = "RECR_PARENT_ID", nullable = false)
-    public org.cern.cms.csc.exsys.re.model.Conclusion getParent() {
-        return parent;
+    @ManyToOne(targetEntity = Action.class)
+    @JoinColumn(name = "REAE_ACTION_ID", nullable = false)
+    public Action getAction() {
+        return action;
     }
 
     /**
-     * Sets the value of the parent property.
+     * Sets the value of the action property.
      * 
      * @param value
      *     allowed object is
-     *     {@link org.cern.cms.csc.exsys.re.model.Conclusion }
+     *     {@link Action }
      *     
      */
-    public void setParent(org.cern.cms.csc.exsys.re.model.Conclusion value) {
-        this.parent = value;
+    public void setAction(Action value) {
+        this.action = value;
     }
 
     @Transient
-    public boolean isSetParent() {
-        return (this.parent!= null);
+    public boolean isSetAction() {
+        return (this.action!= null);
     }
 
     /**
-     * Gets the value of the childConclusion property.
+     * Gets the value of the trigger property.
      * 
      * @return
      *     possible object is
-     *     {@link org.cern.cms.csc.exsys.re.model.Conclusion }
+     *     {@link ConclusionTrigger }
      *     
      */
-    @ManyToOne(targetEntity = org.cern.cms.csc.exsys.re.model.Conclusion.class)
-    @JoinColumn(name = "RECR_CHILD_CONCLUSION_ID")
-    public org.cern.cms.csc.exsys.re.model.Conclusion getChildConclusion() {
-        return childConclusion;
+    @ManyToOne(targetEntity = ConclusionTrigger.class)
+    @JoinColumn(name = "REAE_TRIGGER_ID", nullable = false)
+    public ConclusionTrigger getTrigger() {
+        return trigger;
     }
 
     /**
-     * Sets the value of the childConclusion property.
+     * Sets the value of the trigger property.
      * 
      * @param value
      *     allowed object is
-     *     {@link org.cern.cms.csc.exsys.re.model.Conclusion }
+     *     {@link ConclusionTrigger }
      *     
      */
-    public void setChildConclusion(org.cern.cms.csc.exsys.re.model.Conclusion value) {
-        this.childConclusion = value;
+    public void setTrigger(ConclusionTrigger value) {
+        this.trigger = value;
     }
 
     @Transient
-    public boolean isSetChildConclusion() {
-        return (this.childConclusion!= null);
-    }
-
-    /**
-     * Gets the value of the childFact property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link org.cern.cms.csc.dw.model.fact.Fact }
-     *     
-     */
-    @ManyToOne(targetEntity = org.cern.cms.csc.dw.model.fact.Fact.class)
-    @JoinColumn(name = "RECR_CHILD_FACT_ID")
-    public org.cern.cms.csc.dw.model.fact.Fact getChildFact() {
-        return childFact;
-    }
-
-    /**
-     * Sets the value of the childFact property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link org.cern.cms.csc.dw.model.fact.Fact }
-     *     
-     */
-    public void setChildFact(org.cern.cms.csc.dw.model.fact.Fact value) {
-        this.childFact = value;
-    }
-
-    @Transient
-    public boolean isSetChildFact() {
-        return (this.childFact!= null);
+    public boolean isSetTrigger() {
+        return (this.trigger!= null);
     }
 
     /**
@@ -243,9 +182,9 @@ public class ConclusionSourceRelation
      *     
      */
     @Id
-    @Column(name = "RECR_ID")
+    @Column(name = "REAE_ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @SequenceGenerator(name = "RE_CONCL_SOURCE_REL_ID_SEQ", sequenceName = "RE_CONCL_SOURCE_REL_ID_SEQ")
+    @SequenceGenerator(name = "RE_ACTION_EXECUTION_ID_SEQ", sequenceName = "RE_ACTION_EXECUTION_ID_SEQ")
     public Long getid() {
         return id;
     }
@@ -263,7 +202,7 @@ public class ConclusionSourceRelation
     }
 
     @Basic
-    @Column(name = "RECR_TIMESTAMP", nullable = false)
+    @Column(name = "REAE_TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)
     public Date getTimestampItem() {
         return XmlAdapterUtils.unmarshall(XMLGregorianCalendarAsDateTime.class, this.getTimestamp());

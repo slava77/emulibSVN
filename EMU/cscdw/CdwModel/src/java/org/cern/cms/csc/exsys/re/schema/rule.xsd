@@ -20,6 +20,7 @@
     <xsd:import namespace="http://www.cern.ch/cms/csc/dw/ontology" schemaLocation="../../../dw/schema/ontology.xsd"/>
 
     <xsd:element name="rule" type="tns:ruleType"/>
+    <xsd:element name="componentFinder" type="tns:componentFinderType"/>
 
     <xsd:complexType name="ruleType">
         <xsd:annotation>
@@ -128,6 +129,16 @@
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
+            <xsd:element name="type" type="tns:ruleTypeType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic >
+                            <orm:column name="RER_TYPE" length="7"/>
+                            <hj:enumerated-value/>
+                        </hj:basic>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
             <xsd:element name="componentFinder" type="tns:componentFinderType">
                 <xsd:annotation>
                     <xsd:appinfo>
@@ -136,24 +147,25 @@
                         </hj:one-to-one>
                         <jaxb:property name="componentFinder"/>
                         <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
-                            <a:Label name="Component Finder" description="This is used to tell the rules engine what component(s) it should assign to the conclusions it creates. There are several kinds of component finders which all use components coming from the source fact(s) and/or conclusion(s) as source components, but have different policies on how to use them to resolve the actual component(s) which will be assigned to the conclusion."/>
+                            <a:Label name="Component Finder" description="This is used to tell the rules engine what component it should assign to the conclusions that this rule produces. There are several kinds of component finders which all use components coming from the source fact(s) and/or conclusion(s) as source components, but have different policies on how to use them to resolve the actual component which will be assigned to the conclusion. e.g. SimpleComponentFinder simply takes the source components, while RelatedComponentFinder can find a component of required type that is related to the source components. Note however that in any case, the component finder should only find one component, if it finds zero or more than one - an exception will be thrown."/>
                         </ann:annotate>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
-
-            <!--xsd:element name="conclusionFactory" type="tns:conclusionFactoryType">
-                <xsd:annotation>
-                    <xsd:appinfo>
-                        <hj:one-to-one>
-                            <orm:join-column name="RER_CONCLUSION_FACTORY_ID" nullable="false"/>
-                        </hj:one-to-one>
-                        <jaxb:property name="conclusionFactory"/>
-                    </xsd:appinfo>
-                </xsd:annotation>
-            </xsd:element-->
         </xsd:sequence>
     </xsd:complexType>
+
+    <xsd:simpleType name="ruleTypeType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:typesafeEnumClass name="RuleType" />
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Opening"/>
+            <xsd:enumeration value="Closing"/>
+        </xsd:restriction>
+    </xsd:simpleType>
 
     <xsd:complexType name="componentFinderType" abstract="true">
         <xsd:annotation>
@@ -179,30 +191,27 @@
             <xsd:element name="rule" type="tns:ruleType" minOccurs="0">
                 <xsd:annotation>
                     <xsd:appinfo>
-                        <hj:one-to-one mapped-by="componentFinder"/>
+                        <hj:one-to-one mapped-by="componentFinder">
+                            <orm:join-column name="RER_COMPONENT_FINDER" nullable="false"/>
+                        </hj:one-to-one>
                         <jaxb:property name="rule"/>
                         <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
                             <a:NoManualInput/>
+                            <a:ImmutableReference/>
                         </ann:annotate>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
-            <xsd:element name="componentClasses" type="ont:componentClassType" maxOccurs="unbounded">
+            <xsd:element name="componentClass" type="ont:componentClassType">
                 <xsd:annotation>
                     <xsd:appinfo>
-                        <hj:many-to-many fetch="EAGER" merge="false">
-                            <orm:join-table name="RE_COMP_FINDER_COMP_CLASSES">
-                                <orm:join-column name="RCFCC_COMPONENT_FINDER"/>
-                                <orm:inverse-join-column name="RCFCC_COMPONENT_CLASS"/>
-                            </orm:join-table>
-                        </hj:many-to-many>
-                        <jaxb:property name="componentClasses"/>
-                        <ann:annotateGet xmlns:a="org.hibernate.annotations">
-                            <a:Fetch value="SUBSELECT"/>
-                        </ann:annotateGet>
+                        <hj:many-to-one merge="false">
+                            <orm:join-column name="RCF_COMPONENT_CLASS_ID"/>
+                        </hj:many-to-one>
+                        <jaxb:property name="componentClass"/>
                         <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
                             <a:ImmutableReference/>
-                            <a:Label name="Component Classes" description="If this is empty, then there's no filtering based on componet type. If this is not empty, then only components of the specified types are accepted (Note: this is mandatory for RelatedComponentFinder)"/>
+                            <a:Label name="Component Type" description="This tells the component finder what component type is to be resolved/accepted."/>
                         </ann:annotate>
                     </xsd:appinfo>
                 </xsd:annotation>
@@ -210,26 +219,12 @@
         </xsd:sequence>
     </xsd:complexType>
 
-    <xsd:complexType name="unionComponentFinderType">
+    <xsd:complexType name="simpleComponentFinderType">
         <xsd:annotation>
             <xsd:appinfo>
-                <jaxb:class name="UnionComponentFinder"/>
+                <jaxb:class name="SimpleComponentFinder"/>
                 <hj:entity>
-                    <orm:table name="RE_UNION_COMP_FINDERS"/>
-                </hj:entity>
-            </xsd:appinfo>
-        </xsd:annotation>
-        <xsd:complexContent>
-            <xsd:extension base="tns:componentFinderType"></xsd:extension>
-        </xsd:complexContent>
-    </xsd:complexType>
-
-    <xsd:complexType name="intersectingComponentFinderType">
-        <xsd:annotation>
-            <xsd:appinfo>
-                <jaxb:class name="IntersectingComponentFinder"/>
-                <hj:entity>
-                    <orm:table name="RE_INTERSECTING_COMP_FINDERS"/>
+                    <orm:table name="RE_SIMPLE_COMP_FINDERS"/>
                 </hj:entity>
             </xsd:appinfo>
         </xsd:annotation>
@@ -250,29 +245,22 @@
         <xsd:complexContent>
             <xsd:extension base="tns:componentFinderType">
                 <xsd:sequence>
-                    <xsd:element name="linkClass" type="ont:componentLinkClassType" minOccurs="0">
+                    <xsd:element name="linkClasses" type="ont:componentLinkClassType" minOccurs="0" maxOccurs="unbounded">
                         <xsd:annotation>
                             <xsd:appinfo>
-                                <hj:many-to-one merge="false">
-                                    <orm:join-column name="RCF_RELATING_LINK_CLASS"/>
-                                </hj:many-to-one>
-                                <jaxb:property name="linkClass"/>
+                                <hj:many-to-many fetch="EAGER" merge="false">
+                                    <orm:join-table name="RE_REL_CMP_FINDER_LINK_CLASSES">
+                                        <orm:join-column name="RECFL_RELATED_COMP_FINDER_ID"/>
+                                        <orm:inverse-join-column name="RECFL_COMPONENT_LINK_CLASS_ID"/>
+                                    </orm:join-table>
+                                </hj:many-to-many>
+                                <jaxb:property name="linkClasses"/>
+                                <ann:annotateGet xmlns:a="org.hibernate.annotations">
+                                    <a:Fetch value="SUBSELECT"/>
+                                </ann:annotateGet>
                                 <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
                                     <a:ImmutableReference/>
-                                    <a:Label name="Link Class" description="(Mandaroty) This link class will be used to find the related components. Note that it's also mandatory to specify component class(es)"/>
-                                </ann:annotate>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-                    <xsd:element name="mergePolicy" type="tns:mergePolicyType">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic >
-                                    <orm:column name="RCF_MERGE_POLICY" length="12"/>
-                                    <hj:enumerated-value/>
-                                </hj:basic>
-                                <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
-                                    <a:Label name="Merge Policy" description="This is used to tell the component resolver what to do when multiple source components are given. With union merge policy, all related components are simply added together, while with intersection policy all related component sets retrieved from different source components are intersected."/>
+                                    <a:Label name="Link Classes" description="(At least one is mandaroty) These link classes will be used to find the related components."/>
                                 </ann:annotate>
                             </xsd:appinfo>
                         </xsd:annotation>
@@ -281,16 +269,5 @@
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
-
-    <xsd:simpleType name="mergePolicyType">
-        <xsd:annotation>
-            <xsd:appinfo>
-                <jaxb:typesafeEnumClass name="MergePolicy" />
-            </xsd:appinfo>
-        </xsd:annotation>
-        <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="Intersection"/>
-            <xsd:enumeration value="Union"/>
-        </xsd:restriction>
-    </xsd:simpleType>
+    
 </xsd:schema>

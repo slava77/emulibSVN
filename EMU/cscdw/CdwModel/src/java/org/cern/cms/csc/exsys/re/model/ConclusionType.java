@@ -9,14 +9,20 @@ package org.cern.cms.csc.exsys.re.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import java.util.Vector;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -50,9 +56,9 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
  *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="title" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="intermediate" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *         &lt;element name="severity" type="{http://www.cern.ch/cms/csc/dw/model}severityType"/>
  *         &lt;element name="timeCreated" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
+ *         &lt;element name="actions" type="{http://www.cern.ch/cms/csc/exsys/re/model}actionType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -66,9 +72,9 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
     "name",
     "title",
     "description",
-    "intermediate",
     "severity",
-    "timeCreated"
+    "timeCreated",
+    "actions"
 })
 @Entity(name = "org.cern.cms.csc.exsys.re.model.ConclusionType")
 @Table(name = "RE_CONCLUSION_TYPES")
@@ -85,13 +91,13 @@ public class ConclusionType
     protected String title;
     @XmlElement(required = true)
     protected String description;
-    protected boolean intermediate;
     @XmlElement(required = true)
     protected SeverityType severity;
     @XmlElement(required = true)
     @XmlSchemaType(name = "dateTime")
     @NoManualInput(createDefaultValue = true)
     protected XMLGregorianCalendar timeCreated;
+    protected List<Action> actions = new Vector<Action>();
     @XmlAttribute(name = "id")
     protected Long id;
 
@@ -189,29 +195,6 @@ public class ConclusionType
     }
 
     /**
-     * Gets the value of the intermediate property.
-     * 
-     */
-    @Basic
-    @Column(name = "RECT_IS_INTERMEDIATE", nullable = false)
-    public boolean isIntermediate() {
-        return intermediate;
-    }
-
-    /**
-     * Sets the value of the intermediate property.
-     * 
-     */
-    public void setIntermediate(boolean value) {
-        this.intermediate = value;
-    }
-
-    @Transient
-    public boolean isSetIntermediate() {
-        return true;
-    }
-
-    /**
      * Gets the value of the severity property.
      * 
      * @return
@@ -269,6 +252,58 @@ public class ConclusionType
     @Transient
     public boolean isSetTimeCreated() {
         return (this.timeCreated!= null);
+    }
+
+    /**
+     * Gets the value of the actions property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the actions property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getActions().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link Action }
+     * 
+     * 
+     */
+    @ManyToMany(targetEntity = Action.class, fetch = FetchType.EAGER)
+    @JoinTable(name = "RE_ACTIONS_CONCLUSION_TYPES", joinColumns = {
+        @JoinColumn(name = "REAC_CONCLUSION_TYPE_ID")
+    }, inverseJoinColumns = {
+        @JoinColumn(name = "REAC_ACTION_ID")
+    })
+    public List<Action> getActions() {
+        if (actions == null) {
+            actions = new Vector<Action>();
+        }
+        return this.actions;
+    }
+
+    /**
+     * 
+     * 
+     */
+    public void setActions(List<Action> actions) {
+        this.actions = actions;
+    }
+
+    @Transient
+    public boolean isSetActions() {
+        return ((this.actions!= null)&&(!this.actions.isEmpty()));
+    }
+
+    public void unsetActions() {
+        this.actions = null;
     }
 
     /**

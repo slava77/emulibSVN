@@ -15,12 +15,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for unionComponentFinderType complex type.
+ * <p>Java class for simpleComponentFinderType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="unionComponentFinderType">
+ * &lt;complexType name="simpleComponentFinderType">
  *   &lt;complexContent>
  *     &lt;extension base="{http://www.cern.ch/cms/csc/exsys/re/model}componentFinderType">
  *     &lt;/extension>
@@ -31,9 +31,9 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "unionComponentFinderType")
-@Entity(name = "org.cern.cms.csc.exsys.re.model.UnionComponentFinder")
-public class UnionComponentFinder
+@XmlType(name = "simpleComponentFinderType")
+@Entity(name = "org.cern.cms.csc.exsys.re.model.SimpleComponentFinder")
+public class SimpleComponentFinder
     extends ComponentFinder
     implements Serializable
 {

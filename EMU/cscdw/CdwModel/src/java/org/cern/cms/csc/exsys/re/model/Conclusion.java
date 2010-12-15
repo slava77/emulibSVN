@@ -13,17 +13,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
@@ -40,7 +38,6 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.model.fact.SeverityType;
-import org.hibernate.annotations.FetchMode;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XMLGregorianCalendarAsDateTime;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 
@@ -55,7 +52,7 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="components" type="{http://www.cern.ch/cms/csc/dw/ontology}componentType" maxOccurs="unbounded"/>
+ *         &lt;element name="component" type="{http://www.cern.ch/cms/csc/dw/ontology}componentType"/>
  *         &lt;element name="title" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="severity" type="{http://www.cern.ch/cms/csc/dw/model}severityType"/>
@@ -63,11 +60,11 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
  *         &lt;element name="lastHitTime" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
  *         &lt;element name="hitCount" type="{http://www.w3.org/2001/XMLSchema}integer"/>
  *         &lt;element name="isClosed" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
+ *         &lt;element name="isAcknowledged" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *         &lt;element name="timeClosed" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
  *         &lt;element name="type" type="{http://www.cern.ch/cms/csc/exsys/re/model}conclusionTypeType"/>
- *         &lt;element name="rule" type="{http://www.cern.ch/cms/csc/exsys/re/model}ruleType"/>
- *         &lt;element name="children" type="{http://www.cern.ch/cms/csc/exsys/re/model}conclusionSourceRelationType" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;element name="parents" type="{http://www.cern.ch/cms/csc/exsys/re/model}conclusionSourceRelationType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="triggers" type="{http://www.cern.ch/cms/csc/exsys/re/model}conclusionTriggerType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="parents" type="{http://www.cern.ch/cms/csc/exsys/re/model}conclusionTriggerSourceType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -78,7 +75,7 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "conclusionType", propOrder = {
-    "components",
+    "component",
     "title",
     "description",
     "severity",
@@ -86,10 +83,10 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
     "lastHitTime",
     "hitCount",
     "isClosed",
+    "isAcknowledged",
     "timeClosed",
     "type",
-    "rule",
-    "children",
+    "triggers",
     "parents"
 })
 @Entity(name = "org.cern.cms.csc.exsys.re.model.Conclusion")
@@ -101,7 +98,7 @@ public class Conclusion
 {
 
     @XmlElement(required = true)
-    protected List<org.cern.cms.csc.dw.model.ontology.Component> components = new Vector<org.cern.cms.csc.dw.model.ontology.Component>();
+    protected org.cern.cms.csc.dw.model.ontology.Component component;
     @XmlElement(required = true)
     protected String title;
     @XmlElement(required = true)
@@ -117,67 +114,45 @@ public class Conclusion
     @XmlElement(required = true)
     protected BigInteger hitCount;
     protected boolean isClosed;
+    protected boolean isAcknowledged;
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar timeClosed;
     @XmlElement(required = true)
     protected org.cern.cms.csc.exsys.re.model.ConclusionType type;
-    @XmlElement(required = true)
-    protected org.cern.cms.csc.exsys.re.model.Rule rule;
-    protected List<org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation> children = new Vector<org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation>();
-    protected List<org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation> parents = new Vector<org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation>();
+    protected List<ConclusionTrigger> triggers = new Vector<ConclusionTrigger>();
+    protected List<ConclusionTriggerSource> parents = new Vector<ConclusionTriggerSource>();
     @XmlAttribute(name = "id")
     protected Long id;
 
     /**
-     * Gets the value of the components property.
+     * Gets the value of the component property.
      * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the components property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getComponents().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link org.cern.cms.csc.dw.model.ontology.Component }
-     * 
-     * 
+     * @return
+     *     possible object is
+     *     {@link org.cern.cms.csc.dw.model.ontology.Component }
+     *     
      */
-    @ManyToMany(targetEntity = org.cern.cms.csc.dw.model.ontology.Component.class, fetch = FetchType.EAGER)
-    @JoinTable(name = "RE_CONCLUSIONS_COMPONENTS", joinColumns = {
-        @JoinColumn(name = "RECC_CONCLUSION")
-    }, inverseJoinColumns = {
-        @JoinColumn(name = "RECC_COMPONENT")
-    })
-    public List<org.cern.cms.csc.dw.model.ontology.Component> getComponents() {
-        if (components == null) {
-            components = new Vector<org.cern.cms.csc.dw.model.ontology.Component>();
-        }
-        return this.components;
+    @ManyToOne(targetEntity = org.cern.cms.csc.dw.model.ontology.Component.class)
+    @JoinColumn(name = "REC_COMPONENT")
+    public org.cern.cms.csc.dw.model.ontology.Component getComponent() {
+        return component;
     }
 
     /**
+     * Sets the value of the component property.
      * 
-     * 
+     * @param value
+     *     allowed object is
+     *     {@link org.cern.cms.csc.dw.model.ontology.Component }
+     *     
      */
-    public void setComponents(List<org.cern.cms.csc.dw.model.ontology.Component> components) {
-        this.components = components;
+    public void setComponent(org.cern.cms.csc.dw.model.ontology.Component value) {
+        this.component = value;
     }
 
     @Transient
-    public boolean isSetComponents() {
-        return ((this.components!= null)&&(!this.components.isEmpty()));
-    }
-
-    public void unsetComponents() {
-        this.components = null;
+    public boolean isSetComponent() {
+        return (this.component!= null);
     }
 
     /**
@@ -387,6 +362,29 @@ public class Conclusion
     }
 
     /**
+     * Gets the value of the isAcknowledged property.
+     * 
+     */
+    @Basic
+    @Column(name = "REC_IS_ACKNOWLEDGED", nullable = false)
+    public boolean isIsAcknowledged() {
+        return isAcknowledged;
+    }
+
+    /**
+     * Sets the value of the isAcknowledged property.
+     * 
+     */
+    public void setIsAcknowledged(boolean value) {
+        this.isAcknowledged = value;
+    }
+
+    @Transient
+    public boolean isSetIsAcknowledged() {
+        return true;
+    }
+
+    /**
      * Gets the value of the timeClosed property.
      * 
      * @return
@@ -448,83 +446,54 @@ public class Conclusion
     }
 
     /**
-     * Gets the value of the rule property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link org.cern.cms.csc.exsys.re.model.Rule }
-     *     
-     */
-    @ManyToOne(targetEntity = org.cern.cms.csc.exsys.re.model.Rule.class)
-    @JoinColumn(name = "REC_RULE_ID", nullable = false)
-    public org.cern.cms.csc.exsys.re.model.Rule getRule() {
-        return rule;
-    }
-
-    /**
-     * Sets the value of the rule property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link org.cern.cms.csc.exsys.re.model.Rule }
-     *     
-     */
-    public void setRule(org.cern.cms.csc.exsys.re.model.Rule value) {
-        this.rule = value;
-    }
-
-    @Transient
-    public boolean isSetRule() {
-        return (this.rule!= null);
-    }
-
-    /**
-     * Gets the value of the children property.
+     * Gets the value of the triggers property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the children property.
+     * This is why there is not a <CODE>set</CODE> method for the triggers property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getChildren().add(newItem);
+     *    getTriggers().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation }
+     * {@link ConclusionTrigger }
      * 
      * 
      */
-    @OneToMany(targetEntity = org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation.class, fetch = FetchType.EAGER, mappedBy = "parent")
-    @JoinColumn(name = "CHILDREN_CONCLUSION_ID")
-    @org.hibernate.annotations.Fetch(FetchMode.SUBSELECT)
-    public List<org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation> getChildren() {
-        if (children == null) {
-            children = new Vector<org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation>();
+    @OneToMany(targetEntity = ConclusionTrigger.class, cascade = {
+        CascadeType.REMOVE,
+        CascadeType.PERSIST
+    }, mappedBy = "conclusion")
+    @JoinColumn(name = "RECT_CONCLUSION_ID", nullable = false)
+    public List<ConclusionTrigger> getTriggers() {
+        if (triggers == null) {
+            triggers = new Vector<ConclusionTrigger>();
         }
-        return this.children;
+        return this.triggers;
     }
 
     /**
      * 
      * 
      */
-    public void setChildren(List<org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation> children) {
-        this.children = children;
+    public void setTriggers(List<ConclusionTrigger> triggers) {
+        this.triggers = triggers;
     }
 
     @Transient
-    public boolean isSetChildren() {
-        return ((this.children!= null)&&(!this.children.isEmpty()));
+    public boolean isSetTriggers() {
+        return ((this.triggers!= null)&&(!this.triggers.isEmpty()));
     }
 
-    public void unsetChildren() {
-        this.children = null;
+    public void unsetTriggers() {
+        this.triggers = null;
     }
 
     /**
@@ -545,16 +514,15 @@ public class Conclusion
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation }
+     * {@link ConclusionTriggerSource }
      * 
      * 
      */
-    @OneToMany(targetEntity = org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation.class, fetch = FetchType.EAGER, mappedBy = "childConclusion")
-    @JoinColumn(name = "PARENTS_CONCLUSION_ID")
-    @org.hibernate.annotations.Fetch(FetchMode.SUBSELECT)
-    public List<org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation> getParents() {
+    @OneToMany(targetEntity = ConclusionTriggerSource.class, mappedBy = "conclusion")
+    @JoinColumn(name = "RECS_CONCLUSION_ID")
+    public List<ConclusionTriggerSource> getParents() {
         if (parents == null) {
-            parents = new Vector<org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation>();
+            parents = new Vector<ConclusionTriggerSource>();
         }
         return this.parents;
     }
@@ -563,7 +531,7 @@ public class Conclusion
      * 
      * 
      */
-    public void setParents(List<org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation> parents) {
+    public void setParents(List<ConclusionTriggerSource> parents) {
         this.parents = parents;
     }
 
@@ -649,25 +617,11 @@ public class Conclusion
     
 //--simple--preserve
 
-    /** Get IDs of the components (sometimes useful in rules engine). */
-    @Transient
-    public Long[] getComponentIds() {
-        List<org.cern.cms.csc.dw.model.ontology.Component> comps = getComponents();
-        java.util.Iterator<org.cern.cms.csc.dw.model.ontology.Component> compIt = comps.iterator();
-        Long[] ids = new Long[comps.size()];
-
-        for (int i=0; compIt.hasNext(); i++) {
-            ids[i] = compIt.next().getId();
-        }
-
-        return ids;
-    }
-
     public String debugPrint() {
         return debugPrint(true);
     }
 
-    public String debugPrint(boolean printChildren) {
+    public String debugPrint(boolean printTriggers) {
         StringBuilder ret = new StringBuilder();
         ret.append("Conclusion ID=");
         ret.append(getid());
@@ -675,20 +629,18 @@ public class Conclusion
         ret.append(getType().toString());
         ret.append("}, title=");
         ret.append(getTitle());
-        ret.append(", number of parents=");
-        ret.append(getParents().size());
-        ret.append(", number of children=");
-        ret.append(getChildren().size());
-        ret.append("\n");
+        ret.append("}, component=");
+        ret.append(getComponent().getName());
 
-        if (printChildren) {
-            for (ConclusionSourceRelation rel: getChildren()) {
-                Conclusion childConcl = rel.getChildConclusion();
-                if (childConcl == null) {
-                    continue;
-                }
-                ret.append("    Child: ");
-                ret.append(childConcl.debugPrint());
+        if (printTriggers) {
+            ret.append(", number of parents=");
+            ret.append(getParents().size());
+            ret.append(", number of triggers=");
+            ret.append(getTriggers().size());
+            ret.append("\n");
+
+            for (ConclusionTrigger trig: getTriggers()) {
+                ret.append("   Trigger: " + trig.toString());
             }
         }
 

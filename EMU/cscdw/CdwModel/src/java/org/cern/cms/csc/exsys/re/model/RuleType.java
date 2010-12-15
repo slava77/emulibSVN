@@ -13,31 +13,31 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for mergePolicyType.
+ * <p>Java class for ruleTypeType.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
  * <pre>
- * &lt;simpleType name="mergePolicyType">
+ * &lt;simpleType name="ruleTypeType">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *     &lt;enumeration value="Intersection"/>
- *     &lt;enumeration value="Union"/>
+ *     &lt;enumeration value="Opening"/>
+ *     &lt;enumeration value="Closing"/>
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
  * 
  */
-@XmlType(name = "mergePolicyType")
+@XmlType(name = "ruleTypeType")
 @XmlEnum
-public enum MergePolicy {
+public enum RuleType {
 
-    @XmlEnumValue("Intersection")
-    INTERSECTION("Intersection"),
-    @XmlEnumValue("Union")
-    UNION("Union");
+    @XmlEnumValue("Opening")
+    OPENING("Opening"),
+    @XmlEnumValue("Closing")
+    CLOSING("Closing");
     private final String value;
 
-    MergePolicy(String v) {
+    RuleType(String v) {
         value = v;
     }
 
@@ -45,8 +45,8 @@ public enum MergePolicy {
         return value;
     }
 
-    public static MergePolicy fromValue(String v) {
-        for (MergePolicy c: MergePolicy.values()) {
+    public static RuleType fromValue(String v) {
+        for (RuleType c: RuleType.values()) {
             if (c.value.equals(v)) {
                 return c;
             }

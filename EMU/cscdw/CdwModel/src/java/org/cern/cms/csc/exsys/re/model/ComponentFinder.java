@@ -8,21 +8,17 @@
 package org.cern.cms.csc.exsys.re.model;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Vector;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -33,13 +29,10 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
-import org.cern.cms.csc.dw.model.annotation.gui.ImmutableReference;
 import org.cern.cms.csc.dw.model.annotation.gui.Label;
 import org.cern.cms.csc.dw.model.annotation.gui.NoManualInput;
 import org.cern.cms.csc.dw.model.annotation.gui.UseInTitle;
 import org.cern.cms.csc.dw.model.base.EntityBase;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 
 /**
@@ -53,7 +46,7 @@ import org.hibernate.annotations.FetchMode;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="rule" type="{http://www.cern.ch/cms/csc/exsys/re/model}ruleType" minOccurs="0"/>
- *         &lt;element name="componentClasses" type="{http://www.cern.ch/cms/csc/dw/ontology}componentClassType" maxOccurs="unbounded"/>
+ *         &lt;element name="componentClass" type="{http://www.cern.ch/cms/csc/dw/ontology}componentClassType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -65,12 +58,11 @@ import org.hibernate.annotations.FetchMode;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "componentFinderType", propOrder = {
     "rule",
-    "componentClasses"
+    "componentClass"
 })
 @XmlSeeAlso({
     RelatedComponentFinder.class,
-    UnionComponentFinder.class,
-    IntersectingComponentFinder.class
+    SimpleComponentFinder.class
 })
 @Entity(name = "org.cern.cms.csc.exsys.re.model.ComponentFinder")
 @Table(name = "RE_COMPONENT_FINDERS")
@@ -83,11 +75,12 @@ public abstract class ComponentFinder
 {
 
     @NoManualInput
+    @org.cern.cms.csc.dw.model.annotation.gui.ImmutableReference
     protected org.cern.cms.csc.exsys.re.model.Rule rule;
     @XmlElement(required = true)
-    @ImmutableReference
-    @Label(description = "If this is empty, then there's no filtering based on componet type. If this is not empty, then only components of the specified types are accepted (Note: this is mandatory for RelatedComponentFinder)", name = "Component Classes")
-    protected List<org.cern.cms.csc.dw.model.ontology.ComponentClass> componentClasses = new Vector<org.cern.cms.csc.dw.model.ontology.ComponentClass>();
+    @org.cern.cms.csc.dw.model.annotation.gui.ImmutableReference
+    @Label(description = "This tells the component finder what component type is to be resolved/accepted.", name = "Component Type")
+    protected org.cern.cms.csc.dw.model.ontology.ComponentClass componentClass;
     @XmlAttribute(name = "id")
     protected Long id;
 
@@ -102,7 +95,7 @@ public abstract class ComponentFinder
     @OneToOne(targetEntity = org.cern.cms.csc.exsys.re.model.Rule.class, cascade = {
         CascadeType.ALL
     }, mappedBy = "componentFinder")
-    @JoinColumn(name = "RULE__COMPONENTFINDER_ID")
+    @JoinColumn(name = "RER_COMPONENT_FINDER", nullable = false)
     public org.cern.cms.csc.exsys.re.model.Rule getRule() {
         return rule;
     }
@@ -125,56 +118,34 @@ public abstract class ComponentFinder
     }
 
     /**
-     * Gets the value of the componentClasses property.
+     * Gets the value of the componentClass property.
      * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the componentClasses property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getComponentClasses().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link org.cern.cms.csc.dw.model.ontology.ComponentClass }
-     * 
-     * 
+     * @return
+     *     possible object is
+     *     {@link org.cern.cms.csc.dw.model.ontology.ComponentClass }
+     *     
      */
-    @ManyToMany(targetEntity = org.cern.cms.csc.dw.model.ontology.ComponentClass.class, fetch = FetchType.EAGER)
-    @JoinTable(name = "RE_COMP_FINDER_COMP_CLASSES", joinColumns = {
-        @JoinColumn(name = "RCFCC_COMPONENT_FINDER")
-    }, inverseJoinColumns = {
-        @JoinColumn(name = "RCFCC_COMPONENT_CLASS")
-    })
-    @Fetch(FetchMode.SUBSELECT)
-    public List<org.cern.cms.csc.dw.model.ontology.ComponentClass> getComponentClasses() {
-        if (componentClasses == null) {
-            componentClasses = new Vector<org.cern.cms.csc.dw.model.ontology.ComponentClass>();
-        }
-        return this.componentClasses;
+    @ManyToOne(targetEntity = org.cern.cms.csc.dw.model.ontology.ComponentClass.class)
+    @JoinColumn(name = "RCF_COMPONENT_CLASS_ID")
+    public org.cern.cms.csc.dw.model.ontology.ComponentClass getComponentClass() {
+        return componentClass;
     }
 
     /**
+     * Sets the value of the componentClass property.
      * 
-     * 
+     * @param value
+     *     allowed object is
+     *     {@link org.cern.cms.csc.dw.model.ontology.ComponentClass }
+     *     
      */
-    public void setComponentClasses(List<org.cern.cms.csc.dw.model.ontology.ComponentClass> componentClasses) {
-        this.componentClasses = componentClasses;
+    public void setComponentClass(org.cern.cms.csc.dw.model.ontology.ComponentClass value) {
+        this.componentClass = value;
     }
 
     @Transient
-    public boolean isSetComponentClasses() {
-        return ((this.componentClasses!= null)&&(!this.componentClasses.isEmpty()));
-    }
-
-    public void unsetComponentClasses() {
-        this.componentClasses = null;
+    public boolean isSetComponentClass() {
+        return (this.componentClass!= null);
     }
 
     /**
@@ -204,5 +175,14 @@ public abstract class ComponentFinder
     public void setid(Long value) {
         this.id = value;
     }
+    
+//--simple--preserve
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " for " + getComponentClass();
+    }
+
+//--simple--preserve
 
 }
