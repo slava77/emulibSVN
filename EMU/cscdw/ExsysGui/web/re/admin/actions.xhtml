@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:exs="http://www.cern.ch/cms/csc/exsys/gui">
+    
+    <body>
+        
+        <ui:composition template="/WEB-INF/layout/main.xhtml">
+            
+            <ui:define name="content">
+
+                <ice:form id="actionsForm">
+                    <ice:commandLink value="Create New Email Action" action="#{EditAction.createEmailAction}"/> | 
+                    <ice:commandLink value="Create New SMS Action" action="#{EditAction.createSmsAction}"/>
+                </ice:form>
+
+                <ice:form id="actionsListForm">
+                    <p><h1>Actions</h1></p>
+                    <ice:dataTable id="actionsTable" var="action" value="#{Actions.allActions}" rows="10">
+                        <f:facet name="header">
+                            <ice:columnGroup>
+                                <ice:headerRow>
+                                    <ice:column>
+                                        <ice:outputText value="Name"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:outputText value="Class"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:outputText value="Trigger Type"/>
+                                    </ice:column>
+                                </ice:headerRow>
+                            </ice:columnGroup>
+                        </f:facet>
+
+                        <ice:column>
+                            <ice:commandLink value="#{action.name}" action="editAction">
+                                <f:setPropertyActionListener target="#{EditAction.entity}" value="#{action}"/>
+                            </ice:commandLink>
+                        </ice:column>
+                        <ice:column>
+                            <ice:outputText value="#{action.class.simpleName}"/>
+                        </ice:column>
+                        <ice:column>
+                            <ice:outputText value="#{action.triggerType}"/>
+                        </ice:column>
+                    </ice:dataTable>
+
+                    <exs:paginator for="actionsTable"/>
+
+                </ice:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

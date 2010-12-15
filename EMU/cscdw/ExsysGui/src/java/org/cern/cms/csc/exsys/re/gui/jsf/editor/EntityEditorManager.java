@@ -5,9 +5,9 @@
 
 package org.cern.cms.csc.exsys.re.gui.jsf.editor;
 
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.naming.NamingException;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
@@ -24,7 +24,7 @@ import org.cern.cms.csc.exsys.re.gui.jsf.util.JsfBeanBase;
 @EJB(name="ejb/EntityDao", beanInterface=org.cern.cms.csc.dw.dao.EntityDaoLocal.class)
 public abstract class EntityEditorManager extends JsfBeanBase {
 
-    private static Logger logger = Logger.getLogger(EntityEditorManager.class.getName());
+    private static Logger logger = Logger.getLogger(EntityEditorManager.class);
 
     /** Top level editor. */
     private TopEntityEditor topEditor;

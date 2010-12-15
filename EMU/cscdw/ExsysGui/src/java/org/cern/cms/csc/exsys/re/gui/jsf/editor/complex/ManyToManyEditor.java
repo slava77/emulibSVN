@@ -52,7 +52,6 @@ public class ManyToManyEditor extends RestrictedEntityEditor {
     }
 
     public void setValueAsArray(Object[] value) throws IllegalAccessException, InvocationTargetException {
-        logger.log(Level.INFO, "ManyToManyEditor.setValue({0})", value);
         if (Collection.class.isAssignableFrom(getMetadata().getType())) {
             super.setValue(Arrays.asList(value));
         } else if (getMetadata().getType().isArray()) {

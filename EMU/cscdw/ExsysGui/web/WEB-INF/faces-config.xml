@@ -5,7 +5,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http:/
         <view-handler>com.icesoft.faces.facelets.D2DFaceletViewHandler</view-handler>
     </application>
 
-<!-- ===================== Navigation rules ===================== -->
+<!-- ===================== Global Navigation Rules ===================== -->
 
     <navigation-rule>
         <from-view-id>*</from-view-id>
@@ -34,7 +34,15 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http:/
             <to-view-id>/re/conclusions.jsf</to-view-id>
             <redirect/>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>navActions</from-outcome>
+            <to-view-id>/re/admin/actions.jsf</to-view-id>
+            <redirect/>
+        </navigation-case>
     </navigation-rule>
+
+<!-- ===================== Rule Editing  ===================== -->
+
     <navigation-rule>
         <from-view-id>/re/admin/rules.xhtml</from-view-id>
         <navigation-case>
@@ -56,11 +64,48 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http:/
         </navigation-case>
     </navigation-rule>
 
+<!-- ===================== Action Editing  ===================== -->
+
+    <navigation-rule>
+        <from-view-id>/re/admin/actions.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>newAction</from-outcome>
+            <to-view-id>/re/admin/newAction.jsf</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>editAction</from-outcome>
+            <to-view-id>/re/admin/editAction.jsf</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/re/admin/newAction.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>back</from-outcome>
+            <to-view-id>/re/admin/actions.jsf</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+
 <!-- =========================================================== -->
 
     <managed-bean>
-        <managed-bean-name>RuleEngineFacade</managed-bean-name>
-        <managed-bean-class>org.cern.cms.csc.exsys.re.gui.jsf.RuleEngineFacade</managed-bean-class>
+        <managed-bean-name>Rules</managed-bean-name>
+        <managed-bean-class>org.cern.cms.csc.exsys.re.gui.jsf.Rules</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>Actions</managed-bean-name>
+        <managed-bean-class>org.cern.cms.csc.exsys.re.gui.jsf.Actions</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>Conclusions</managed-bean-name>
+        <managed-bean-class>org.cern.cms.csc.exsys.re.gui.jsf.Conclusions</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>ConclusionTypes</managed-bean-name>
+        <managed-bean-class>org.cern.cms.csc.exsys.re.gui.jsf.ConclusionTypes</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
@@ -88,6 +133,17 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http:/
         <managed-bean-class>org.cern.cms.csc.exsys.re.gui.jsf.action.NewFact</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
+    <managed-bean>
+        <managed-bean-name>EditAction</managed-bean-name>
+        <managed-bean-class>org.cern.cms.csc.exsys.re.gui.jsf.action.EditAction</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>AcknowledgeConclusion</managed-bean-name>
+        <managed-bean-class>org.cern.cms.csc.exsys.re.gui.jsf.action.AcknowledgeConclusion</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+
 </faces-config>
 
 

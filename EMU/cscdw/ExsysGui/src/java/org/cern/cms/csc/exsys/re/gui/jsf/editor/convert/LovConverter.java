@@ -5,11 +5,12 @@
 
 package org.cern.cms.csc.exsys.re.gui.jsf.editor.convert;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
+import org.apache.log4j.Logger;
 
 /**
  * Converter used in list of value select boxes and menus
@@ -17,12 +18,17 @@ import javax.faces.convert.Converter;
  */
 public class LovConverter implements Converter {
 
-    private static Logger logger = Logger.getLogger(LovConverter.class.getName());
+    private static Logger logger = Logger.getLogger(LovConverter.class);
 
     private List lov = null;
 
+    public LovConverter(Object[] lov) {
+        this.lov = Arrays.asList(lov);
+    }
+
     public LovConverter(List lov) {
         this.lov = lov;
+//        logger.info("Creating new Lov converter with these values: " + lov);
     }
 
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String param) {

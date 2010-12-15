@@ -7,10 +7,10 @@ package org.cern.cms.csc.exsys.re.gui.jsf.editor.base;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import javax.faces.convert.Converter;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
+import org.apache.log4j.Level;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.metadata.PropertyMd;
 import org.cern.cms.csc.dw.metadata.RestrictedPropertyMd;
@@ -93,6 +93,15 @@ public abstract class RestrictedEntityEditor extends EntityEditor {
      */
     public void refreshListOfValues() throws Exception {
         lovCache = getMetadata().getListOfValues(getEntityDao());
+        Object currentValue = getValue();
+        // replace the object equivalent to the current value with the actual current value object instance so that we don't go out of sync if the current value is edited by the user
+        if (currentValue != null) {
+            int idxOfCurrentValue = lovCache.indexOf(currentValue);
+            if (idxOfCurrentValue >= 0) {
+                lovCache.set(idxOfCurrentValue, currentValue);
+            }
+        }
+
         newLovItems.clear();
         resetConverter();
         lovSelectItemsCache =  null;
@@ -164,7 +173,7 @@ public abstract class RestrictedEntityEditor extends EntityEditor {
         try {
             return getNewLovItems().contains(getValue());
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, "Exception in RestrictedEntityEditor.isValueNew()", ex);
+            logger.log(Level.ERROR, "Exception in RestrictedEntityEditor.isValueNew()", ex);
             throw new RuntimeException(ex);
         }
     }

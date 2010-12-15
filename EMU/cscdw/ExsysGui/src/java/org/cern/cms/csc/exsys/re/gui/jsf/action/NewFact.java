@@ -10,11 +10,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
 import javax.naming.NamingException;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.exception.ComponentNotFoundException;
 import org.cern.cms.csc.dw.metadata.FactMd;
 import org.cern.cms.csc.dw.metadata.MetadataManager;
@@ -38,7 +38,7 @@ import org.cern.cms.csc.exsys.re.gui.jsf.editor.convert.LovConverter;
 @EJB(name="ejb/FactCollectionInput", beanInterface=org.cern.cms.csc.dw.ws.FactCollectionInputLocal.class)
 public class NewFact extends EntityEditorManager {
 
-    private static Logger logger = Logger.getLogger(NewFact.class.getName());
+    private static Logger logger = Logger.getLogger(NewFact.class);
 
     private static MetadataManager factMdManager = new MetadataManager();
     private List<SelectItem> factClassesSI;

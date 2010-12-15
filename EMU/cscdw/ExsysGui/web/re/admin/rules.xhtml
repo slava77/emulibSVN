@@ -19,7 +19,17 @@
 
                 <ice:form id="rulesForm">
                     <p><h1>Rules</h1></p>
-                    <ice:dataTable id="rulesTable" var="rule" value="#{RuleEngineFacade.allRules}" rows="10">
+
+                    <p>
+                        Choose Conclusion Type:
+                        <ice:selectOneMenu value="#{Rules.conclusionType}" 
+                                           converter="#{ConclusionTypes.allConclusionTypesConverter}"
+                                           partialSubmit="true">
+                            <!--f:selectItem value="#{null}" itemLabel="Please Choose A Conclusion Type"/-->
+                            <f:selectItems value="#{ConclusionTypes.allConclusionTypes}"/>
+                        </ice:selectOneMenu>
+                    </p>
+                    <ice:dataTable id="rulesTable" var="rule" value="#{Rules.allRulesForConclType}" rows="10">
                         <f:facet name="header">
                             <ice:columnGroup>
                                 <ice:headerRow>

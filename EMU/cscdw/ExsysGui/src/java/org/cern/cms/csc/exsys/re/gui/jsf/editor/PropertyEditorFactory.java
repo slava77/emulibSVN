@@ -7,11 +7,10 @@ package org.cern.cms.csc.exsys.re.gui.jsf.editor;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Collections;
 import org.cern.cms.csc.exsys.re.gui.jsf.editor.base.Editor;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.metadata.BasicPropertyMd;
@@ -42,7 +41,7 @@ import org.cern.cms.csc.exsys.re.gui.jsf.editor.complex.OneToOneEditor;
  */
 public class PropertyEditorFactory {
 
-    private static Logger logger = Logger.getLogger(PropertyEditorFactory.class.getName());
+    private static Logger logger = Logger.getLogger(PropertyEditorFactory.class);
 
     /**
      * Create property editors for all properties of the given entity

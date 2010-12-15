@@ -7,8 +7,8 @@
         <Node id="re/admin/newRule.jsf" x="145" y="480" zoom="true"/>
         <Node id="re/conclusions.jsf" x="900" y="150" zoom="true"/>
         <Node id="re/admin/rules.jsf" x="150" y="300" zoom="true"/>
-        <Node id="re/admin/rules.xhtml" x="144" y="352" zoom="true"/>
         <Node id="re/test/newFact.jsf" x="150" y="450" zoom="true"/>
+        <Node id="re/admin/rules.xhtml" x="144" y="352" zoom="true"/>
         <Node id="*" x="434" y="137" zoom="true"/>
         <Node id="index.jsf" x="443" y="297" zoom="true"/>
         <Node id="re/admin/newRule.xhtml" x="150" y="150" zoom="true"/>

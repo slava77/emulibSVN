@@ -6,13 +6,12 @@
 package org.cern.cms.csc.exsys.re.gui.jsf.editor.base;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.metadata.PropertyMd;
 import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
@@ -23,7 +22,7 @@ import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
  */
 public abstract class Editor {
 
-    protected static Logger logger = Logger.getLogger(Editor.class.getName());
+    protected static Logger logger = Logger.getLogger(Editor.class);
 
     public enum InputType {
         DEFAULT,
@@ -118,7 +117,7 @@ public abstract class Editor {
         return converter;
     }
 
-    protected void resetConverter() {
+    public void resetConverter() {
         converter = null;
     }
 

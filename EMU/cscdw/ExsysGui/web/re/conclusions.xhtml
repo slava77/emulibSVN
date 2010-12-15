@@ -18,13 +18,16 @@
 
                 <ice:form id="conclusionsForm">
                     <p><h1>Conclusions</h1></p>
-                    <ice:dataTable id="conclusionsTable" var="concl" value="#{RuleEngineFacade.allOpenTopConclusions}" rows="10">
+                    <p>
+                        Display Mode:
+                        <ice:selectOneRadio value="#{Conclusions.displayMode}" partialSubmit="true" immediate="true">
+                            <f:selectItems value="#{Conclusions.allDisplayModes}"/>
+                        </ice:selectOneRadio>
+                    </p>
+                    <ice:dataTable id="conclusionsTable" var="concl" value="#{Conclusions.conclusions}" rows="10">
                         <f:facet name="header">
                             <ice:columnGroup>
                                 <ice:headerRow>
-                                    <ice:column>
-                                        <ice:outputText value="Last Updated"/>
-                                    </ice:column>
                                     <ice:column>
                                         <ice:outputText value="Type"/>
                                     </ice:column>
@@ -32,7 +35,7 @@
                                         <ice:outputText value="Conclusion Title"/>
                                     </ice:column>
                                     <ice:column>
-                                        <ice:outputText value="Components"/>
+                                        <ice:outputText value="Component"/>
                                     </ice:column>
                                     <ice:column>
                                         <ice:outputText value="Conclusion Description"/>
@@ -43,13 +46,16 @@
                                     <ice:column>
                                         <ice:outputText value="Time Created"/>
                                     </ice:column>
+                                    <ice:column>
+                                        <ice:outputText value="Last Updated"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:outputText value="Action"/>
+                                    </ice:column>
                                 </ice:headerRow>
                             </ice:columnGroup>
                         </f:facet>
 
-                        <ice:column>
-                            <ice:outputText value="#{concl.lastHitTime}"/>
-                        </ice:column>
                         <ice:column>
                             <ice:outputText value="#{concl.type.entityTitle}"/>
                         </ice:column>
@@ -57,11 +63,7 @@
                             <ice:outputText value="#{concl.title}"/>
                         </ice:column>
                         <ice:column>
-                            <ice:dataTable var="comp" value="#{concl.components}">
-                                <ice:column>
-                                    <ice:outputText value="#{comp.entityTitle}"/>
-                                </ice:column>
-                            </ice:dataTable>
+                            <ice:outputText value="#{concl.component.name}"/>
                         </ice:column>
                         <ice:column>
                             <ice:outputText value="#{concl.description}"/>
@@ -71,6 +73,16 @@
                         </ice:column>
                         <ice:column>
                             <ice:outputText value="#{concl.timestamp}"/>
+                        </ice:column>
+                        <ice:column>
+                            <ice:outputText value="#{concl.lastHitTime}"/>
+                        </ice:column>
+                        <ice:column>
+                            <ice:commandButton value="Acknowledge" type="submit" partialSubmit="true"
+                                               rendered="#{Conclusions.displayMode == 'CURRENT'}"
+                                               action="#{AcknowledgeConclusion.doAcknowledge}">
+                                <f:setPropertyActionListener target="#{AcknowledgeConclusion.concl}" value="#{concl}"/>
+                            </ice:commandButton>
                         </ice:column>
                     </ice:dataTable>
                     <exs:paginator for="conclusionsTable"/>
