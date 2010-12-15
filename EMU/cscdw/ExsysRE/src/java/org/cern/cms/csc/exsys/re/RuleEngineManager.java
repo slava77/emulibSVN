@@ -17,8 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.EJBs;
@@ -26,6 +24,7 @@ import javax.ejb.Stateless;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.exsys.re.conclusion.ConclusionCacheService;
 import org.cern.cms.csc.exsys.re.conclusion.factory.ConclusionFactory;
 import org.cern.cms.csc.exsys.re.conclusion.factory.DefaultConclusionFactory;
@@ -46,7 +45,7 @@ import org.cern.cms.csc.exsys.re.model.Rule;
 })
 public class RuleEngineManager implements RuleEngineManagerLocal {
 
-    private static Logger logger = Logger.getLogger(RuleEngineManager.class.getName());
+    private static Logger logger = Logger.getLogger(RuleEngineManager.class);
 
     public static final String DEFAULT_EP_URI = "exsys";
     public static final String FACTS_PACKAGE = "org.cern.cms.csc.dw.model.fact";

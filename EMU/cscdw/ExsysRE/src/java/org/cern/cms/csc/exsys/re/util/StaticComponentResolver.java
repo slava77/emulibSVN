@@ -5,18 +5,15 @@
 
 package org.cern.cms.csc.exsys.re.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
 import org.cern.cms.csc.dw.model.ontology.Component;
 import org.cern.cms.csc.dw.model.ontology.ComponentClassType;
@@ -30,7 +27,7 @@ import org.cern.cms.csc.dw.model.ontology.graph.GComponentClass;
  */
 public class StaticComponentResolver {
 
-    private static final Logger logger = Logger.getLogger(StaticComponentResolver.class.getSimpleName());
+    private static final Logger logger = Logger.getLogger(StaticComponentResolver.class);
 
     /** OntologyDao. */
     private static OntologyDaoLocal ontologyDao;
@@ -103,9 +100,9 @@ public class StaticComponentResolver {
         } else if (comps.length == 1) {
             return comps[0];
         } else if (comps.length > 1) {
-            logger.log(Level.WARNING, "StaticComponentResolver.getRelatedSingle called with params ({0}, {1}, {2}) " +
-                    "resolved more than one component - returning the first one.",
-                    new String[]{sourceComp.getName(), linkTypeName, relatedComponentTypeName});
+            logger.warn("StaticComponentResolver.getRelatedSingle called with params " +
+                    "(" + sourceComp.getName() + ", " + linkTypeName + ", " + relatedComponentTypeName + ") " +
+                    "resolved more than one component - returning the first one.");
             return comps[0];
         }
         return null; // dummy - just to keep NetBeans and compiler happy :)
@@ -123,9 +120,9 @@ public class StaticComponentResolver {
         } else if (comps.length == 1) {
             return comps[0];
         } else if (comps.length > 1) {
-            logger.log(Level.WARNING, "StaticComponentResolver.getRelatedSingle called with params ({0}, {1}, {2}) " +
-                    "resolved more than one component - returning the first one.",
-                    new Object[]{sourceComps, linkTypeName, relatedComponentTypeName});
+            logger.warn("StaticComponentResolver.getRelatedSingle called with params " +
+                    "(" + sourceComps + ", " + linkTypeName + ", " + relatedComponentTypeName + ") " +
+                    "resolved more than one component - returning the first one.");
             return comps[0];
         }
         return null; // dummy - just to keep NetBeans and compiler happy :)
@@ -158,9 +155,9 @@ public class StaticComponentResolver {
             if (sourceComp != null) {
                 sourceCompName = sourceComp.getName();
             }
-            logger.log(Level.SEVERE, "Exception while resolving a related component: from "
-                                    + sourceCompName + " to " + relatedComponentTypeName + ", through link type " + linkTypeName,
-                      ex);
+            logger.error("Exception while resolving a related component: from "
+                        + sourceCompName + " to " + relatedComponentTypeName + ", through link type " + linkTypeName,
+                        ex);
             return null;
         }
     }

@@ -9,26 +9,27 @@ import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.EventBean;
 import com.espertech.esper.client.StatementAwareUpdateListener;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.exsys.re.RuleEngineManagerLocal;
 import org.cern.cms.csc.exsys.re.conclusion.ComponentResolver;
+import org.cern.cms.csc.exsys.re.exception.ComponentResolverException;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
-import org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation;
+import org.cern.cms.csc.exsys.re.model.ConclusionTrigger;
+import org.cern.cms.csc.exsys.re.model.ConclusionTriggerSource;
+import org.cern.cms.csc.exsys.re.model.ConclusionTriggerType;
 import org.cern.cms.csc.exsys.re.model.ConclusionType;
 import org.cern.cms.csc.exsys.re.model.Rule;
+import org.cern.cms.csc.exsys.re.model.RuleType;
 
 /**
  * @author Evaldas Juska
@@ -37,7 +38,7 @@ import org.cern.cms.csc.exsys.re.model.Rule;
  */
 public abstract class ConclusionFactory implements StatementAwareUpdateListener {
 
-    private static Logger logger = Logger.getLogger(ConclusionFactory.class.getName());
+    private static Logger logger = Logger.getLogger(ConclusionFactory.class);
     private static final Pattern paramPattern = Pattern.compile("\\$(\\S+)");
     /** Conclusion type that this factory is supposed to use to create conclusions. */
     private ConclusionType conclType;
@@ -65,15 +66,19 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
     public void update(EventBean[] newEvents, EventBean[] oldEvents,
             EPStatement statement, EPServiceProvider epService) {
 
-        logger.fine("Conclusion factory: Got a trigger for statement " +
+        logger.debug("Conclusion factory: Got a trigger for statement " +
                 statement.getName() +
                 ": " + statement.getText());
 
-        Conclusion concl = createConclusion(newEvents, oldEvents);
+        try {
+            Conclusion concl = createConclusion(newEvents, oldEvents);
 
-        concl = processConclusion(concl);
-        if (concl != null) {
-            reManager.getEsperRuntime().sendEvent(concl);
+            concl = processConclusion(concl);
+            if (concl != null) {
+                reManager.getEsperRuntime().sendEvent(concl);
+            }
+        } catch (Exception ex) {
+            logger.error("ConclusionFactory: error while constructing a conclusion for rule " + getRule().getName(), ex);
         }
     }
 
@@ -82,48 +87,59 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
      * @param newEvents new events got in update(...)
      * @param oldEvents old events got in update(...)
      */
-    protected Conclusion createConclusion(EventBean[] newEvents, EventBean[] oldEvents) {
+    protected Conclusion createConclusion(EventBean[] newEvents, EventBean[] oldEvents) throws ComponentResolverException {
         Collection<EntityBase> unpackedEventEntities = unpackEntitiesFromEvents(newEvents);
         unpackedEventEntities.addAll(unpackEntitiesFromEvents(oldEvents));
         Collection<EventBean> unpackedNewEvents = unpackEvents(newEvents);
 
         Conclusion concl = new Conclusion();
         concl.setType(getConclusionType());
-        concl.setRule(getRule());
         concl.setTitle(substituteParams(getConclusionType().getTitle(), unpackedNewEvents));
         concl.setDescription(substituteParams(getConclusionType().getDescription(), unpackedNewEvents));
         concl.setSeverity(getConclusionType().getSeverity());
         concl.setTimestampItem(new Date());
         concl.setLastHitTimeItem(new Date());
         concl.setHitCount(BigInteger.ZERO);
-        concl.setIsClosed(false);
-        concl.setComponents(getComponentResolver().getComponents(unpackedEventEntities));
-        addChildrenToConclusion(concl, unpackedEventEntities);
+        if (isRuleClosing()) {
+            concl.setIsClosed(true);
+        } else {
+            concl.setIsClosed(false);
+        }
+        concl.setComponent(getComponentResolver().getComponent(unpackedEventEntities));
+        addTriggerToConclusion(concl, unpackedEventEntities);
         return concl;
     }
 
-    private void addChildrenToConclusion(Conclusion conclusion, Collection<EntityBase> children) {
-        for (EntityBase child: children) {
-            if (child instanceof Fact) { // that's a fact here - add it as a child of this conclusion
-                Fact childFact = (Fact) child;
-                ConclusionSourceRelation relation = new ConclusionSourceRelation();
-                relation.setChildFact(childFact);
-                relation.setParent(conclusion);
-                relation.setTimestampItem(new Date());
-                relation.setIsClosing(false); // just a default
-                conclusion.getChildren().add(relation);
-            } else if (child instanceof Conclusion) { // that's a conclusion here - add it as a child of this conclusion
-                Conclusion childConclusion = (Conclusion) child;
+    private void addTriggerToConclusion(Conclusion conclusion, Collection<EntityBase> triggerSources) {
+        ConclusionTrigger trigger = new ConclusionTrigger();
+        if (isRuleClosing()) {
+            trigger.setType(ConclusionTriggerType.CLOSE);
+        } else {
+            trigger.setType(ConclusionTriggerType.OPEN);
+        }
+        trigger.setConclusion(conclusion);
+        trigger.setRule(getRule());
+        trigger.setTimestampItem(new Date());
+
+        for (EntityBase triggerSource: triggerSources) {
+            if (triggerSource instanceof Fact) { // that's a fact here - add it as a child of this conclusion
+                Fact fact = (Fact) triggerSource;
+                ConclusionTriggerSource source = new ConclusionTriggerSource();
+                source.setFact(fact);
+                source.setTrigger(trigger);
+                trigger.getSources().add(source);
+            } else if (triggerSource instanceof Conclusion) { // that's a conclusion here - add it as a child of this conclusion
+                Conclusion sourceConclusion = (Conclusion) triggerSource;
                 //childConclusion = (Conclusion) reManager.getRuleEngineDao().getEntityDao().refreshEntity(childConclusion);
-                ConclusionSourceRelation relation = new ConclusionSourceRelation();
-                relation.setChildConclusion(childConclusion);
-                relation.setParent(conclusion);
-                relation.setTimestampItem(new Date());
-                relation.setIsClosing(false);
-                childConclusion.getParents().add(relation);
-                conclusion.getChildren().add(relation);
+                ConclusionTriggerSource source = new ConclusionTriggerSource();
+                source.setConclusion(sourceConclusion);
+                source.setTrigger(trigger);
+                trigger.getSources().add(source);
+                //sourceConclusion.getParents().add(source);
             }
         }
+
+        conclusion.getTriggers().add(trigger);
     }
 
     /**
@@ -295,6 +311,14 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
      */
     public Rule getRule() {
         return rule;
+    }
+
+    /**
+     * Get a flag telling if the rule, associated to this conclusion factory is of closing type or not.
+     * @return a flag telling if the rule, associated to this conclusion factory is of closing type or not.
+     */
+    public boolean isRuleClosing() {
+        return rule.getType().equals(RuleType.CLOSING);
     }
 
     /**

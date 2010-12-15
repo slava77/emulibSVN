@@ -8,36 +8,30 @@ package org.cern.cms.csc.exsys.re.conclusion;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.ejb.EJB;
-import javax.ejb.EJBs;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import org.cern.cms.csc.dw.dao.GOntologyDaoLocal;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
 import org.cern.cms.csc.dw.exception.ComponentNotFoundException;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.dw.model.ontology.Component;
-import org.cern.cms.csc.dw.model.ontology.ComponentClass;
 import org.cern.cms.csc.dw.model.ontology.ComponentClassType;
+import org.cern.cms.csc.dw.model.ontology.ComponentLinkClass;
 import org.cern.cms.csc.dw.model.ontology.ComponentLinkClassType;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponent;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentClass;
+import org.cern.cms.csc.exsys.re.exception.ComponentResolverException;
 import org.cern.cms.csc.exsys.re.model.ComponentFinder;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
-import org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation;
-import org.cern.cms.csc.exsys.re.model.IntersectingComponentFinder;
-import org.cern.cms.csc.exsys.re.model.MergePolicy;
+import org.cern.cms.csc.exsys.re.model.ConclusionTrigger;
+import org.cern.cms.csc.exsys.re.model.ConclusionTriggerSource;
 import org.cern.cms.csc.exsys.re.model.RelatedComponentFinder;
-import org.cern.cms.csc.exsys.re.model.UnionComponentFinder;
+import org.cern.cms.csc.exsys.re.model.SimpleComponentFinder;
 
 /**
  *
@@ -45,14 +39,14 @@ import org.cern.cms.csc.exsys.re.model.UnionComponentFinder;
  */
 public class ComponentResolver {
 
-    private static final Logger logger = Logger.getLogger(ComponentResolver.class.getSimpleName());
+    private static final Logger logger = Logger.getLogger(ComponentResolver.class);
 
     /** Component finder to be used. */
     private ComponentFinder componentFinder;
-    /** Component class types to filter the output components on. */
-    private Set<ComponentClassType> componentClasses;
-    /** Component class types as GComponentClass. */
-    private Set<GComponentClass> gComponentClasses;
+    /** Component class type to filter the output components on. */
+    private ComponentClassType componentClassType;
+    /** Component class type as GComponentClass. */
+    private GComponentClass gComponentClass;
     /** OntologyDao. */
     private OntologyDaoLocal ontologyDao;
 
@@ -61,102 +55,101 @@ public class ComponentResolver {
     }
     
     /**
-     * Resolves components to be assigned to the given conclusion.
-     * @param targetConclusion conclusion which you want to resolve the components for.
-     * @return components to be assigned to the given conclusion.
+     * Resolves component to be assigned to the given conclusion.
+     * @param targetConclusion conclusion which you want to resolve the component for.
+     * @return component to be assigned to the given conclusion.
      */
-    public List<Component> getComponents(Conclusion targetConclusion) {
-        List<List<Component>> sourceComponents = new ArrayList<List<Component>>();
+    public Component getComponent(Conclusion targetConclusion) throws ComponentResolverException {
+        List<Component> sourceComponents = new ArrayList<Component>();
 
-        // get the source components
-        List<ConclusionSourceRelation> sources = targetConclusion.getChildren();
-        for (ConclusionSourceRelation source: sources) {
-            Fact sourceFact = source.getChildFact();
-            if (sourceFact != null) {
-                List<Component> compsHolderCollection = new ArrayList<Component>();
-                compsHolderCollection.add(sourceFact.getComponent());
-                sourceComponents.add(compsHolderCollection);
-            } else {
-                Conclusion sourceConclusion = source.getChildConclusion();
-                if (sourceConclusion != null) {
-                    sourceComponents.add(sourceConclusion.getComponents());
+        for (ConclusionTrigger trigger: targetConclusion.getTriggers()) {
+            for (ConclusionTriggerSource triggerSource: trigger.getSources()) {
+                Fact sourceFact = triggerSource.getFact();
+                if (sourceFact != null) {
+                    sourceComponents.add(sourceFact.getComponent());
+                } else {
+                    Conclusion sourceConclusion = triggerSource.getConclusion();
+                    if (sourceConclusion != null) {
+                        sourceComponents.add(sourceConclusion.getComponent());
+                    }
                 }
             }
         }
 
-        return new ArrayList<Component>(getComponents(sourceComponents));
+        return getComponent(sourceComponents);
     }
 
     /**
-     * Resolves components to be assigned to a conclusion having the given sources.
-     * @param conclusionSources conclusion sources from which you want to resolve the components from.
-     * @return components to be assigned to a conclusion having the given sources.
+     * Resolves component to be assigned to a conclusion having the given sources.
+     * @param conclusionSources conclusion sources from which you want to resolve the component from.
+     * @return component to be assigned to a conclusion having the given sources.
      */
-    public List<Component> getComponents(Collection<EntityBase> conclusionSources) {
-        List<List<Component>> sourceComponents = new ArrayList<List<Component>>();
+    public Component getComponent(Collection<EntityBase> conclusionSources) throws ComponentResolverException {
+        List<Component> sourceComponents = new ArrayList<Component>();
         // get the source components
         for (EntityBase sourceEntity: conclusionSources) {
             if (sourceEntity instanceof Fact) {
-                List<Component> compsHolderCollection = new ArrayList<Component>();
-                compsHolderCollection.add(((Fact) sourceEntity).getComponent());
-                sourceComponents.add(compsHolderCollection);
+                sourceComponents.add(((Fact) sourceEntity).getComponent());
             } else if (sourceEntity instanceof Conclusion) {
-                sourceComponents.add(((Conclusion) sourceEntity).getComponents());
+                sourceComponents.add(((Conclusion) sourceEntity).getComponent());
             } else if (sourceEntity instanceof Component) {
-                List<Component> compsHolderCollection = new ArrayList<Component>();
-                compsHolderCollection.add((Component) sourceEntity);
-                sourceComponents.add(compsHolderCollection);
+                sourceComponents.add((Component) sourceEntity);
             }
         }
 
-        return new ArrayList<Component>(getComponents(sourceComponents));
+        return getComponent(sourceComponents);
     }
 
     /**
-     * Resolve the components using the given source components and the component finder that we have
+     * Resolve the component using the given source components and the component finder that we have
      */
-    private Set<Component> getComponents(List<List<Component>> sourceComponents) {
-        Set<Component> retSet = new HashSet<Component>();
+    private Component getComponent(List<Component> sourceComponents) throws ComponentResolverException {
+        if (sourceComponents.isEmpty()) {
+            throw new ComponentResolverException("Got 0 source components, cannot resolve anything from that.. :) rule=" + componentFinder.getRule());
+        }
 
-        if (componentFinder instanceof UnionComponentFinder) { // UNION component finder
-            for (List<Component> comps: sourceComponents) {
-                retSet.addAll(comps);
-            }
-        } else if (componentFinder instanceof IntersectingComponentFinder) { // INTERSECTION component finder
-            boolean first = true;
-            for (List<Component> comps: sourceComponents) {
-                if (first) {
-                    retSet.addAll(comps);
-                    first = false;
-                } else {
-                    retSet.retainAll(comps);
+        if (componentFinder instanceof SimpleComponentFinder) { // SIMPLE component finder - make sure they're all the same and of the required type
+            Component firstComp = sourceComponents.get(0);
+
+            for (Component comp: sourceComponents) {
+                if (!comp.getId().equals(firstComp.getId())) {
+                    throw new ComponentResolverException("Simple component finder error: not all source components are the same, you could consider using a RelatedComponentFinder. Source components: " + sourceComponents +
+                                                         ", rule=" + componentFinder.getRule());
                 }
             }
-        } else if (componentFinder instanceof RelatedComponentFinder) { // RELATED component finder
-            RelatedComponentFinder relCompFinder = (RelatedComponentFinder) componentFinder;
-            Set<Component> fullSet = new HashSet<Component>();
-            for (List<Component> comps: sourceComponents) { // get union
-                fullSet.addAll(comps);
+
+            if (!isComponentOfRequiredType(firstComp)) {
+                throw new ComponentResolverException("Simple component finder error: one or more of the source components is not of the required type: " + getComponentClassType() +
+                                                     ", rule=" + componentFinder.getRule());
             }
 
+            return firstComp;
+        } else if (componentFinder instanceof RelatedComponentFinder) { // RELATED component finder
+            RelatedComponentFinder relCompFinder = (RelatedComponentFinder) componentFinder;
+            Set<Component> retSet = new HashSet<Component>();
+
             boolean first = true;
-            for (Component comp: fullSet) { // resolve the related components
-                if (relCompFinder.getMergePolicy().equals(MergePolicy.UNION) || first) {
+            for (Component comp: sourceComponents) { // resolve the related components
+                if (first) {
                     retSet.addAll(getRelatedComponents(comp));
                     first = false;
-                } else if (relCompFinder.getMergePolicy().equals(MergePolicy.INTERSECTION)) {
+                } else {
                     retSet.retainAll(getRelatedComponents(comp));
                 }
             }
+
+            if (retSet.isEmpty()) {
+                throw new ComponentResolverException("Related component finder error: could not resolve the component for source components: " + sourceComponents +
+                                                     ", rule=" + componentFinder.getRule());
+            }
+            if (retSet.size() > 1) {
+                throw new ComponentResolverException("Related component finder error: resolved more than one component (" + retSet + ") for source components: " + sourceComponents +
+                                                    ", rule=" + componentFinder.getRule());
+            }
+            return retSet.iterator().next();
         }
 
-        // clean up
-        if (!(componentFinder instanceof RelatedComponentFinder)) {
-
-            retSet = filterComponents(retSet);
-        }
-
-        return retSet;
+        throw new ComponentResolverException("Application logic error in ComponentResolver, rule=" + componentFinder.getRule());
     }
 
     private Collection<Component> getRelatedComponents(Component component) {
@@ -164,24 +157,36 @@ public class ComponentResolver {
             return Collections.EMPTY_SET;
         }
         Set<Component> retSet = new HashSet<Component>();
-        if (componentFinder.getComponentClasses().contains(component.getType())) {
+        if (componentFinder.getComponentClass().equals(component.getType())) {
             retSet.add(component); // add itself
         }
-        ComponentLinkClassType linkType = ((RelatedComponentFinder) componentFinder).getLinkClass().getType();
-        Set<GComponentClass> gCompClasses = getGComponentClasses();
-        for (GComponentClass gCompClass: gCompClasses) {
+        Collection<ComponentLinkClassType> linkTypes = new ArrayList<ComponentLinkClassType>();
+        for (ComponentLinkClass linkClass: ((RelatedComponentFinder) componentFinder).getLinkClasses()) {
+            linkTypes.add(linkClass.getType());
+        }
+        for (ComponentLinkClassType linkType: linkTypes) {
             try {
                 GComponent gComp = getOntologyDao().getGComponent(component);
-                Collection<GComponent> relatedGComps = gComp.findRelatedGComponents(linkType, gCompClass);
+                Collection<GComponent> relatedGComps = gComp.findRelatedGComponents(linkType, getGComponentClass());
                 for (GComponent relatedGComp: relatedGComps) {
                     retSet.add(getOntologyDao().getComponent(relatedGComp));
                 }
             } catch(ComponentNotFoundException cnfEx) {
-                logger.log(Level.WARNING, "ComponentResolver: Couldn't find a GComponent with ID={0} and name={1}, skipping this component...",
-                        new Object[]{component.getId(), component.getName()});
+                logger.warn("ComponentResolver: Couldn't find a GComponent with name=" + component.getName() +
+                           ", skipping this component...");
             }
         }
         return retSet;
+    }
+
+    /**
+     * Checks if the given component is of required type.
+     * @param component component to check.
+     * @return true if the given component is of required type, false if not.
+     */
+    private boolean isComponentOfRequiredType(Component component) {
+        GComponentClass gCompClass = getOntologyDao().getGComponentClass(component.getType().getType());
+        return ((getGComponentClass().equals(gCompClass)) || gCompClass.getParentsRecursive().contains(getGComponentClass()));
     }
 
     /**
@@ -191,15 +196,9 @@ public class ComponentResolver {
      */
     private Set<Component> filterComponents(Set<Component> components) {
         Set<Component> retSet = new HashSet<Component>();
-        List<ComponentClass> compClasses = componentFinder.getComponentClasses();
-        if (compClasses.isEmpty()) {
-            return components;
-        } else {
-            for (Component comp: components) {
-                GComponentClass gCompClass = getOntologyDao().getGComponentClass(comp.getType().getType());
-                if (getOntologyDao().isGComponentClassParent(getComponentClasses(), gCompClass, true)) {
-                    retSet.add(comp);
-                }
+        for (Component comp: components) {
+            if (isComponentOfRequiredType(comp)) {
+                retSet.add(comp);
             }
         }
         return retSet;
@@ -209,29 +208,22 @@ public class ComponentResolver {
      * Get component class types to filter the output components on.
      * @return component class types to filter the output components on.
      */
-    protected Set<ComponentClassType> getComponentClasses() {
-        if (componentClasses == null) {
-            componentClasses = new HashSet<ComponentClassType>();
-            List<ComponentClass> compClasses = componentFinder.getComponentClasses();
-            for (ComponentClass compClass: compClasses) {
-                componentClasses.add(compClass.getType());
-            }
+    protected ComponentClassType getComponentClassType() {
+        if (componentClassType == null) {
+            componentClassType = componentFinder.getComponentClass().getType();
         }
-        return componentClasses;
+        return componentClassType;
     }
 
     /**
      * Get component class types as GComponentClass
      * @return component class types as GComponentClass
      */
-    protected Set<GComponentClass> getGComponentClasses() {
-        if (gComponentClasses == null) {
-            gComponentClasses = new HashSet<GComponentClass>();
-            for (ComponentClassType compClassType: getComponentClasses()) {
-                gComponentClasses.add(getOntologyDao().getGComponentClass(compClassType));
-            }
+    protected GComponentClass getGComponentClass() {
+        if (gComponentClass == null) {
+            gComponentClass = getOntologyDao().getGComponentClass(getComponentClassType());
         }
-        return gComponentClasses;
+        return gComponentClass;
     }
 
     protected OntologyDaoLocal getOntologyDao() {

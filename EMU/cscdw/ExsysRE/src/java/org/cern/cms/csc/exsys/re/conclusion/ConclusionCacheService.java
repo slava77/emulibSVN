@@ -6,18 +6,16 @@
 package org.cern.cms.csc.exsys.re.conclusion;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.logging.Logger;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import org.cern.cms.csc.dw.model.ontology.Component;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.exsys.re.dao.ConclusionDaoLocal;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
-import org.cern.cms.csc.exsys.re.model.ConclusionSourceRelation;
+import org.cern.cms.csc.exsys.re.model.ConclusionTrigger;
+import org.cern.cms.csc.exsys.re.model.ConclusionTriggerSource;
 import org.cern.cms.csc.exsys.re.model.ConclusionType;
 
 /**
@@ -26,7 +24,7 @@ import org.cern.cms.csc.exsys.re.model.ConclusionType;
  */
 public class ConclusionCacheService {
 
-    private static final Logger logger = Logger.getLogger(ConclusionCacheService.class.getName());
+    private static final Logger logger = Logger.getLogger(ConclusionCacheService.class);
 
     private ConclusionDaoLocal conclusionDao;
     private Map<ComparableConclusionWrapper, Conclusion> conclusionCache;
@@ -65,18 +63,33 @@ public class ConclusionCacheService {
             checkCache(conclusion);
         }
 
+        if (conclusion.isIsClosed()) {
+            conclusionCache.remove(new ComparableConclusionWrapper(conclusion));
+            return;
+        }
+
         logger.info("Adding to cache:");
         logger.info(conclusion.debugPrint());
 
         //conclusion = (Conclusion) conclusionDao.getEntityDao().refreshEntity(conclusion);
         conclusionCache.put(new ComparableConclusionWrapper(conclusion), conclusion);
         // go through the children and add any child conclusions to the cache as well
-        for (ConclusionSourceRelation rel: conclusion.getChildren()) {
-            Conclusion childConclusion = rel.getChildConclusion();
-            if (childConclusion != null) {
-                addToCache(childConclusion);
+        for (ConclusionTrigger trigger: conclusion.getTriggers()) {
+            for (ConclusionTriggerSource triggerSource: trigger.getSources()) {
+                Conclusion childConclusion = triggerSource.getConclusion();
+                if (childConclusion != null) {
+                    addToCache(childConclusion);
+                }
             }
         }
+    }
+
+    public void removeFromCache(Conclusion conclusion) {
+        if (conclusionCache == null) {
+            checkCache(conclusion);
+        }
+
+        conclusionCache.remove(new ComparableConclusionWrapper(conclusion));
     }
 
     public void clear() {
@@ -100,21 +113,18 @@ public class ConclusionCacheService {
 
         private Conclusion conclusion;
 
-        private Set<Long> componentIds;
-
+        private Long componentId;
         private int hash;
 
         public ComparableConclusionWrapper(Conclusion conclusion) {
             this.conclusion = conclusion;
+            this.componentId = conclusion.getComponent().getId();
 
             ConclusionType type = conclusion.getType();
-            componentIds = getComponentIds(conclusion);
 
             hash = 7;
             hash = 19 * hash + (type != null ? type.getid().hashCode() : 0);
-            for (Long compId: componentIds) {
-                hash = 19 * hash + (compId != null ? compId.hashCode() : 0);
-            }
+            hash = 19 * hash + (componentId != null ? componentId.hashCode() : 0);
         }
 
         @Override
@@ -135,13 +145,7 @@ public class ConclusionCacheService {
                 return false;
             }
 
-            if (componentIds.size() != otherConcl.getComponents().size()) {
-                return false;
-            }
-
-            Set<Long> otherCompIds = getComponentIds(otherConcl);
-
-            if (!otherCompIds.containsAll(componentIds)) {
+            if (!componentId.equals(otherConcl.getComponent().getId())) {
                 return false;
             }
 
@@ -158,14 +162,6 @@ public class ConclusionCacheService {
 
         public Conclusion getConclusion() {
             return conclusion;
-        }
-
-        private Set<Long> getComponentIds(Conclusion concl) {
-            Set<Long> ret = new HashSet<Long>();
-            for (Component comp: concl.getComponents()) {
-                ret.add(comp.getId());
-            }
-            return ret;
         }
     }
 

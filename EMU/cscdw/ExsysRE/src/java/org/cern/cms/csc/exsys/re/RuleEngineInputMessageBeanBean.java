@@ -5,14 +5,14 @@
 
 package org.cern.cms.csc.exsys.re;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.model.fact.Fact;
 
 /**
@@ -25,7 +25,7 @@ import org.cern.cms.csc.dw.model.fact.Fact;
     })
 public class RuleEngineInputMessageBeanBean implements MessageListener {
 
-    private static Logger logger = Logger.getLogger(RuleEngineInputMessageBeanBean.class.getName());
+    private static Logger logger = Logger.getLogger(RuleEngineInputMessageBeanBean.class);
 
     @EJB
     RuleEngineInputLocal reInput;
@@ -40,11 +40,11 @@ public class RuleEngineInputMessageBeanBean implements MessageListener {
                 Fact fact = (Fact) omessage.getObject();
                 reInput.receiveFact(fact);
             } else {
-                logger.warning("Rule Engine Input Message Bean got an unrecognized object (type: " +
+                logger.error("Rule Engine Input Message Bean got an unrecognized object (type: " +
                                 omessage.getObject().getClass().getName() + ") - ignoring");
             }
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, "Exception in FactCollectionMessageBean", ex);
+            logger.fatal("Exception in FactCollectionMessageBean", ex);
         }
     }
     

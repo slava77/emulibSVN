@@ -10,8 +10,8 @@ import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -20,7 +20,7 @@ import javax.ejb.EJB;
  */
 public class EsperServiceProvider {
 
-    private static Logger logger = Logger.getLogger(EsperServiceProvider.class.getName());
+    private static Logger logger = Logger.getLogger(EsperServiceProvider.class);
 
     private Map<String, EPServiceProvider> epServices = new HashMap<String, EPServiceProvider>();
 

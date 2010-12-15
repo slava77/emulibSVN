@@ -5,9 +5,9 @@
 
 package org.cern.cms.csc.exsys.re;
 
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import org.apache.log4j.Logger;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 
@@ -19,14 +19,14 @@ import org.cern.cms.csc.exsys.re.model.Conclusion;
 @EJB(name="ejb/OntologyDao", beanInterface=org.cern.cms.csc.dw.dao.OntologyDaoLocal.class)
 public class RuleEngineInput implements RuleEngineInputRemote, RuleEngineInputLocal {
 
-    private static Logger logger = Logger.getLogger(RuleEngineInput.class.getName());
+    private static Logger logger = Logger.getLogger(RuleEngineInput.class);
 
     @EJB
     private RuleEngineManagerLocal reManager;
 
     public void receiveFact(Fact fact) {
         reManager.getEsperRuntime().sendEvent(fact);
-        logger.fine("ExsysRE: received a fact of type " + fact.getClass().getName() + " and sent to Esper");
+        logger.trace("ExsysRE: received a fact of type " + fact.getClass().getName() + " and sent to Esper");
     }
 
     public void receiveConclusion(Conclusion conclusion) {
