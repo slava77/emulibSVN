@@ -49,7 +49,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
 
     public void saveFactCollection(FactCollection factCollection) throws Exception {
         
-        logger.debug("FC Saver bean: at start, number of facts: " + factCollection.getFacts().size() + ", number of fis: " + factCollection.getFactsItems().size());
+        logger.trace("FC Saver bean: at start, number of facts: " + factCollection.getFacts().size() + ", number of fis: " + factCollection.getFactsItems().size());
 
         Set<JAXBElement<? extends Fact>> toRemove = new HashSet<JAXBElement<? extends Fact>>();
         ServiceInstructions instructions = factCollection.getServiceInstructions();
@@ -68,7 +68,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
             // Get a fact
             Fact fact = fi.getValue();
             
-            logger.debug("FC Saver bean: Processing fact: " + fact.toString());
+            logger.trace("FC Saver bean: Processing fact: " + fact.toString());
 
             // Get ontology component object from fact component id or component.getId
             try {
