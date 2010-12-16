@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html   xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.prime.com.tr/ui"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html">
+
+    <h:head>
+        <meta content="application/xhtml+xml;charset=UTF-8" http-equiv="Content-Type" />
+        <title>CMS CSC Expert System</title>
+    </h:head>
+
+    <h:body>
+
+        <p:layout fullPage="true">
+
+            <p:layoutUnit position="top" height="90" resizable="false" closable="false" collapsible="false" styleClass="ui-widget ui-widget-header">
+                <h:panelGroup id="logo">
+                    <h:outputText id="logo" value="CSC Expert System"/>
+                </h:panelGroup>
+            </p:layoutUnit>
+
+            <p:layoutUnit position="left" width="200" resizable="false" closable="false" collapsible="false">
+                <h:outputText value="Menu" />
+            </p:layoutUnit>
+
+            <p:layoutUnit position="center">
+                <h:panelGroup>
+                    <ui:insert name="content"/>
+                </h:panelGroup>
+            </p:layoutUnit>
+
+        </p:layout>
+
+
+
+
+    </h:body>
+
+</html>
