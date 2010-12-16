@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.cern.ch/cms/csc/dw/model"
+    xmlns:tns="http://www.cern.ch/cms/csc/dw/model"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    elementFormDefault="qualified"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+	xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+        xmlns:ann="http://jaxb.dev.java.net/plugin/annotate"
+    xsi:schemaLocation="
+        http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
+        http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
+        http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
+	jaxb:extensionBindingPrefixes="xjc orm hj ann"
+	jaxb:version="2.0">
+
+    <xsd:element name="applicationStatusFact"
+                 type="tns:applicationStatusFactType"
+                 substitutionGroup="tns:fact"/>
+
+    <xsd:complexType name="applicationStatusFactType">
+      	<xsd:annotation>
+    		<xsd:appinfo>
+                <jaxb:class name="ApplicationStatusFact" />
+                <hj:entity>
+                    <orm:table name="CDW_APP_STATUS_FACTS"/>
+                </hj:entity>
+                <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                    <a:FactAnn title="Application Status" limitComponents="Software" limitComponentsRecursive="true"/>
+                </ann:annotate>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:factType">
+                <xsd:sequence>
+
+                    <xsd:element name="state" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_STATE" length="16"/>
+                                </hj:basic>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+</xsd:schema>

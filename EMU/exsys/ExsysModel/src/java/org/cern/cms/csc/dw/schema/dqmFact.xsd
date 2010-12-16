@@ -1,0 +1,1369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ann="http://jaxb.dev.java.net/plugin/annotate" xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dqm="http://www.cern.ch/cms/csc/dw/model/dqm" xmlns:orm="http://java.sun.com/xml/ns/persistence/orm" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" xmlns:tns="http://www.cern.ch/cms/csc/dw/model" targetNamespace="http://www.cern.ch/cms/csc/dw/model" elementFormDefault="qualified" xsi:schemaLocation="                 http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd                 http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd                 http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd" jaxb:extensionBindingPrefixes="xjc orm hj ann" jaxb:version="2.0">
+<xsd:element name="DqmEmuFact" type="tns:DqmEmuFactType" substitutionGroup="tns:fact"/>
+<xsd:complexType name="DqmEmuFactType">
+<xsd:annotation>
+<xsd:appinfo>
+<jaxb:class name="DqmEmuFact"/>
+<hj:entity>
+<orm:table name="CDW_DQM_EMU_FACTS"/>
+</hj:entity>
+<ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:FactAnn limitComponents="CSC" title="DQM EMU"/>
+</ann:annotate>
+<annotations xmlns="http://www.cern.ch/cms/csc/dw/model/dqm"/>
+</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexContent>
+<xsd:extension base="tns:factType">
+<xsd:sequence>
+<xsd:element name="online" type="xsd:boolean">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_ONLINE"/>
+</hj:basic>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_CHAMBER_EVENTS_AVERAGE" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_CH_EVENTS_AVERAGE"/>
+</hj:basic>
+<jaxb:property name="chamberEventsAverage"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="chamberEventsAverage" aggregator="AVG"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_CHAMBER_EVENTS_COUNTER" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_CH_EVENTS_COUNTER"/>
+</hj:basic>
+<jaxb:property name="chamberEventsCounter"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="chamberEventsCounter" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_CHAMBERS_WITH_BWORDS" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_CH_WITH_BWORDS"/>
+</hj:basic>
+<jaxb:property name="chambersWithBwords"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="chambersWithBwords" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_CHAMBERS_WITH_FORMAT_ERRORS" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_CH_WITH_FORMAT_ERRORS"/>
+</hj:basic>
+<jaxb:property name="chambersWithFormatErrors"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="chambersWithFormatErrors" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_CHAMBERS_WITH_INPUT_FIFO_FULL" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_CH_WITH_INPUT_FIFO_FULL"/>
+</hj:basic>
+<jaxb:property name="chambersWithInputFifoFull"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="chambersWithInputFifoFull" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_CHAMBERS_WITH_INPUT_TIMEOUT" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_CHA_WITH_INPUT_TIMEOUT"/>
+</hj:basic>
+<jaxb:property name="chambersWithInputTimeout"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="chambersWithInputTimeout" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_CHAMBERS_WITH_L1A_OUT_OF_SYNC" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_CH_WITH_L1A_OUT_OF_SYNC"/>
+</hj:basic>
+<jaxb:property name="chambersWithL1aOutOfSync"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="chambersWithL1aOutOfSync" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_CHAMBERS_WITHOUT_ALCT" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_CH_WITHOUT_ALCT"/>
+</hj:basic>
+<jaxb:property name="chambersWithoutAlct"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="chambersWithoutAlct" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_CHAMBERS_WITHOUT_CFEB" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_CH_WITHOUT_CFEB"/>
+</hj:basic>
+<jaxb:property name="chambersWithoutCfeb"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="chambersWithoutCfeb" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_CHAMBERS_WITHOUT_CLCT" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_CH_WITHOUT_CLCT"/>
+</hj:basic>
+<jaxb:property name="chambersWithoutClct"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="chambersWithoutClct" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_CHAMBERS_WITHOUT_DATA" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_CH_WITHOUT_DATA"/>
+</hj:basic>
+<jaxb:property name="chambersWithoutData"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="chambersWithoutData" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_DDU_EVENTS_AVERAGE" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_DDU_EVENTS_AVERAGE"/>
+</hj:basic>
+<jaxb:property name="dduEventsAverage"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="dduEventsAverage" aggregator="AVG"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_DDU_EVENTS_COUNTER" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_DDU_EVENTS_COUNTER"/>
+</hj:basic>
+<jaxb:property name="dduEventsCounter"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="dduEventsCounter" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_DDU_IN_READOUT" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_DDU_IN_READOUT"/>
+</hj:basic>
+<jaxb:property name="dduInReadout"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="dduInReadout" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_DDU_INPUT_IN_ERROR_STATE" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_DDU_INPUT_IN_ERROR_STATE"/>
+</hj:basic>
+<jaxb:property name="dduInputInErrorState"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="dduInputInErrorState" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_DDU_INPUT_IN_WARNING_STATE" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_DDU_INPUT_IN_WARNING_STATE"/>
+</hj:basic>
+<jaxb:property name="dduInputInWarningState"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="dduInputInWarningState" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_DDU_WITH_DATA" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_DDU_WITH_DATA"/>
+</hj:basic>
+<jaxb:property name="dduWithData"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="dduWithData" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_DDU_WITH_FORMAT_ERRORS" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_DDU_WITH_FORMAT_ERRORS"/>
+</hj:basic>
+<jaxb:property name="dduWithFormatErrors"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="dduWithFormatErrors" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_DDU_WITH_INPUT_IN_ERROR_STATE" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_DDU_WITH_INPUT_IN_ERROR_ST"/>
+</hj:basic>
+<jaxb:property name="dduWithInputInErrorState"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="dduWithInputInErrorState" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_DDU_WITH_INPUT_IN_WARN_STATE" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_DDU_WITH_INPUT_IN_WARN_STA"/>
+</hj:basic>
+<jaxb:property name="dduWithInputInWarningState"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="dduWithInputInWarningState" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_DDU_WITH_LIVE_INPUTS" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_DDU_WITH_LIVE_INPUTS"/>
+</hj:basic>
+<jaxb:property name="dduWithLiveInputs"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="dduWithLiveInputs" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_HOT_CHAMBERS" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_HOT_CHAMBERS"/>
+</hj:basic>
+<jaxb:property name="chambersHot"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="chambersHot" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_HOT_DDU_IN_READOUT" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_HOT_DDU_IN_READOUT"/>
+</hj:basic>
+<jaxb:property name="dduInReadoutHot"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="dduInReadoutHot" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_LOW_DDU_IN_READOUT" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_LOW_DDU_IN_READOUT"/>
+</hj:basic>
+<jaxb:property name="dduInReadoutLow"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="dduInReadoutLow" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_LOW_EFF_CHAMBERS" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_LOW_EFF_CHAMBERS"/>
+</hj:basic>
+<jaxb:property name="chambersLowEfficiency"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="chambersLowEfficiency" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ALL_NO_DDU_IN_READOUT" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_NO_DDU_IN_READOUT"/>
+</hj:basic>
+<jaxb:property name="dduNotInReadout"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="dduNotInReadout" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:extension>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:element name="DqmDduFact" type="tns:DqmDduFactType" substitutionGroup="tns:fact"/>
+<xsd:complexType name="DqmDduFactType">
+<xsd:annotation>
+<xsd:appinfo>
+<jaxb:class name="DqmDduFact"/>
+<hj:entity>
+<orm:table name="CDW_DQM_DDU_FACTS"/>
+</hj:entity>
+<ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:FactAnn limitComponents="DDU" title="DQM DDU"/>
+</ann:annotate>
+<annotations xmlns="http://www.cern.ch/cms/csc/dw/model/dqm"/>
+</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexContent>
+<xsd:extension base="tns:factType">
+<xsd:sequence>
+<xsd:element name="online" type="xsd:boolean">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_ONLINE"/>
+</hj:basic>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="DDU_WITH_FORMAT_ERRORS" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_WITH_FORMAT_ERRORS"/>
+</hj:basic>
+<jaxb:property name="withFormatErrors"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="withFormatErrors" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="DDU_WITH_FORMAT_ERRORS_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_WITH_FORMAT_ERRORS_F"/>
+</hj:basic>
+<jaxb:property name="withFormatErrorsFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="DDU_WITH_TRAILER_ERRORS" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_WITH_TRAILER_ERRORS"/>
+</hj:basic>
+<jaxb:property name="withTrailerErrors"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="withTrailerErrors" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="DDU_WITH_TRAILER_ERRORS_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_WITH_TRAILER_ERRORS_F"/>
+</hj:basic>
+<jaxb:property name="withTrailerErrorsFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:extension>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:element name="DqmDduInputFact" type="tns:DqmDduInputFactType" substitutionGroup="tns:fact"/>
+<xsd:complexType name="DqmDduInputFactType">
+<xsd:annotation>
+<xsd:appinfo>
+<jaxb:class name="DqmDduInputFact"/>
+<hj:entity>
+<orm:table name="CDW_DQM_DDU_INPUT_FACTS"/>
+</hj:entity>
+<ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:FactAnn limitComponents="DDUInput" title="DQM DDU Input"/>
+</ann:annotate>
+<annotations xmlns="http://www.cern.ch/cms/csc/dw/model/dqm"/>
+</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexContent>
+<xsd:extension base="tns:factType">
+<xsd:sequence>
+<xsd:element name="online" type="xsd:boolean">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_ONLINE"/>
+</hj:basic>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="DDU_INPUT_IN_ERROR_STATE" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_INPUT_IN_ERROR_STATE"/>
+</hj:basic>
+<jaxb:property name="inputInErrorState"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="inputInErrorState" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="DDU_INPUT_IN_WARNING_STATE" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_INPUT_IN_WARN_STATE"/>
+</hj:basic>
+<jaxb:property name="inputInWarningState"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="inputInWarningState" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="DDU_NO_INPUT_DATA" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_NO_INPUT_DATA"/>
+</hj:basic>
+<jaxb:property name="inputNoData"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="inputNoData" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:extension>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:element name="DqmCscFact" type="tns:DqmCscFactType" substitutionGroup="tns:fact"/>
+<xsd:complexType name="DqmCscFactType">
+<xsd:annotation>
+<xsd:appinfo>
+<jaxb:class name="DqmCscFact"/>
+<hj:entity>
+<orm:table name="CDW_DQM_CSC_FACTS"/>
+</hj:entity>
+<ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:FactAnn limitComponents="Chamber" title="DQM Chamber"/>
+</ann:annotate>
+<annotations xmlns="http://www.cern.ch/cms/csc/dw/model/dqm">
+            
+                
+            
+        </annotations>
+</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexContent>
+<xsd:extension base="tns:factType">
+<xsd:sequence>
+<xsd:element name="online" type="xsd:boolean">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_ONLINE"/>
+</hj:basic>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT1" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT1"/>
+</hj:basic>
+<jaxb:property name="formatErrorDmbTrailerMissing"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="formatErrorDmbTrailerMissing" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT1_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT1_F"/>
+</hj:basic>
+<jaxb:property name="formatErrorDmbTrailerMissingFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT10" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT10"/>
+</hj:basic>
+<jaxb:property name="formatErrorTmbWordCountError"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="formatErrorTmbWordCountError" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT10_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT10_F"/>
+</hj:basic>
+<jaxb:property name="formatErrorTmbWordCountErrorFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT11" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT11"/>
+</hj:basic>
+<jaxb:property name="formatErrorTmbCrcError"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="formatErrorTmbCrcError" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT11_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT11_F"/>
+</hj:basic>
+<jaxb:property name="formatErrorTmbCrcErrorFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT12" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT12"/>
+</hj:basic>
+<jaxb:property name="formatErrorCfebWordCountPerSampleError"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="formatErrorCfebWordCountPerSampleError" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT12_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT12_F"/>
+</hj:basic>
+<jaxb:property name="formatErrorCfebWordCountPerSampleErrorFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT13" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT13"/>
+</hj:basic>
+<jaxb:property name="formatErrorCfebSampleCountError"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="formatErrorCfebSampleCountError" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT13_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT13_F"/>
+</hj:basic>
+<jaxb:property name="formatErrorCfebSampleCountErrorFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT14" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT14"/>
+</hj:basic>
+<jaxb:property name="formatErrorCfebCrcError"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="formatErrorCfebCrcError" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT14_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT14_F"/>
+</hj:basic>
+<jaxb:property name="formatErrorCfebCrcErrorFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT15" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT15"/>
+</hj:basic>
+<jaxb:property name="formatErrorDduEventSizeLimitError"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="formatErrorDduEventSizeLimitError" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT15_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT15_F"/>
+</hj:basic>
+<jaxb:property name="formatErrorDduEventSizeLimitErrorFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT16" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT16"/>
+</hj:basic>
+<jaxb:property name="formatErrorC-Words"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="formatErrorC-Words" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT16_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT16_F"/>
+</hj:basic>
+<jaxb:property name="formatErrorC-WordsFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT17" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT17"/>
+</hj:basic>
+<jaxb:property name="formatErrorAlctDavError"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="formatErrorAlctDavError" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT17_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT17_F"/>
+</hj:basic>
+<jaxb:property name="formatErrorAlctDavErrorFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT18" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT18"/>
+</hj:basic>
+<jaxb:property name="formatErrorTmbDavError"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="formatErrorTmbDavError" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT18_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT18_F"/>
+</hj:basic>
+<jaxb:property name="formatErrorTmbDavErrorFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT19" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT19"/>
+</hj:basic>
+<jaxb:property name="formatErrorCfebDavError"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="formatErrorCfebDavError" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT19_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT19_F"/>
+</hj:basic>
+<jaxb:property name="formatErrorCfebDavErrorFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT2" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT2"/>
+</hj:basic>
+<jaxb:property name="formatErrorDmbHeaderMissing"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="formatErrorDmbHeaderMissing" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT2_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT2_F"/>
+</hj:basic>
+<jaxb:property name="formatErrorDmbHeaderMissingFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT3" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT3"/>
+</hj:basic>
+<jaxb:property name="formatErrorAlctTrailerMissing"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="formatErrorAlctTrailerMissing" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT3_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT3_F"/>
+</hj:basic>
+<jaxb:property name="formatErrorAlctTrailerMissingFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT4" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT4"/>
+</hj:basic>
+<jaxb:property name="formatErrorAlctHeaderMissing"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="formatErrorAlctHeaderMissing" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT4_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT4_F"/>
+</hj:basic>
+<jaxb:property name="formatErrorAlctHeaderMissingFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT5" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT5"/>
+</hj:basic>
+<jaxb:property name="formatErrorAlctWordCountError"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="formatErrorAlctWordCountError" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT5_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT5_F"/>
+</hj:basic>
+<jaxb:property name="formatErrorAlctWordCountErrorFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT6" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT6"/>
+</hj:basic>
+<jaxb:property name="formatErrorAlctCrcError"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="formatErrorAlctCrcError" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT6_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT6_F"/>
+</hj:basic>
+<jaxb:property name="formatErrorAlctCrcErrorFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT7" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT7"/>
+</hj:basic>
+<jaxb:property name="formatErrorAlctTrailerBitError"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="formatErrorAlctTrailerBitError" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT7_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT7_F"/>
+</hj:basic>
+<jaxb:property name="formatErrorAlctTrailerBitErrorFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT8" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT8"/>
+</hj:basic>
+<jaxb:property name="formatErrorTmbTrailerMissing"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="formatErrorTmbTrailerMissing" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT8_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT8_F"/>
+</hj:basic>
+<jaxb:property name="formatErrorTmbTrailerMissingFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT9" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT9"/>
+</hj:basic>
+<jaxb:property name="formatErrorTmbHeaderMissing"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="formatErrorTmbHeaderMissing" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_FORMAT_ERRORS_BIT9_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_FORMAT_ERRORS_BIT9_F"/>
+</hj:basic>
+<jaxb:property name="formatErrorTmbHeaderMissingFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_HOT_CHAMBER" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_HOT_CHAMBER"/>
+</hj:basic>
+<jaxb:property name="hotChamber"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="hotChamber" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_HOT_CHAMBER_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_HOT_CHAMBER_F"/>
+</hj:basic>
+<jaxb:property name="hotChamberFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_LOW_EFF_CHAMBER" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_LOW_EFF_CHAMBER"/>
+</hj:basic>
+<jaxb:property name="lowEfficiencyChamber"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="lowEfficiencyChamber" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_LOW_EFF_CHAMBER_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_LOW_EFF_CHAMBER_F"/>
+</hj:basic>
+<jaxb:property name="lowEfficiencyChamberFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_WITH_BWORDS" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_WITH_BWORDS"/>
+</hj:basic>
+<jaxb:property name="withBwords"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="withBwords" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_WITH_BWORDS_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_WITH_BWORDS_F"/>
+</hj:basic>
+<jaxb:property name="withBwordsFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_WITH_FORMAT_ERRORS" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_WITH_FORMAT_ERRORS"/>
+</hj:basic>
+<jaxb:property name="withFormatErrors"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="withFormatErrors" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_WITH_FORMAT_ERRORS_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_WITH_FORMAT_ERRORS_F"/>
+</hj:basic>
+<jaxb:property name="withFormatErrorsFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_WITH_INPUT_FIFO_FULL" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_WITH_INPUT_FIFO_FULL"/>
+</hj:basic>
+<jaxb:property name="withInputFifoFull"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="withInputFifoFull" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_WITH_INPUT_FIFO_FULL_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_WITH_INPUT_FIFO_FULL_F"/>
+</hj:basic>
+<jaxb:property name="withInputFifoFullFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_WITH_INPUT_TIMEOUT" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_WITH_INPUT_TIMEOUT"/>
+</hj:basic>
+<jaxb:property name="withInputTimeout"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="withInputTimeout" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_WITH_INPUT_TIMEOUT_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_WITH_INPUT_TIMEOUT_F"/>
+</hj:basic>
+<jaxb:property name="withInputTimeoutFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_WITH_L1A_OUT_OF_SYNC" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_WITH_L1A_OUT_OF_SYNC"/>
+</hj:basic>
+<jaxb:property name="withL1aOutOfSync"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="withL1aOutOfSync" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_WITH_L1A_OUT_OF_SYNC_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_WITH_L1A_OUT_OF_SYNC_F"/>
+</hj:basic>
+<jaxb:property name="withL1aOutOfSyncFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_WITHOUT_ALCT" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_WITHOUT_ALCT"/>
+</hj:basic>
+<jaxb:property name="withoutAlct"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="withoutAlct" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_WITHOUT_ALCT_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_WITHOUT_ALCT_F"/>
+</hj:basic>
+<jaxb:property name="withoutAlctFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_WITHOUT_CFEB" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_WITHOUT_CFEB"/>
+</hj:basic>
+<jaxb:property name="withoutCfeb"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="withoutCfeb" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_WITHOUT_CFEB_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_WITHOUT_CFEB_F"/>
+</hj:basic>
+<jaxb:property name="withoutCfebFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_WITHOUT_CLCT" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_WITHOUT_CLCT"/>
+</hj:basic>
+<jaxb:property name="withoutClct"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="withoutClct" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_WITHOUT_CLCT_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_WITHOUT_CLCT_F"/>
+</hj:basic>
+<jaxb:property name="withoutClctFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:extension>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:element name="DqmCscAfebFact" type="tns:DqmCscAfebFactType" substitutionGroup="tns:fact"/>
+<xsd:complexType name="DqmCscAfebFactType">
+<xsd:annotation>
+<xsd:appinfo>
+<jaxb:class name="DqmCscAfebFact"/>
+<hj:entity>
+<orm:table name="CDW_DQM_CSC_AFEB_FACTS"/>
+</hj:entity>
+<ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:FactAnn limitComponents="AFEB" title="DQM AFEB"/>
+</ann:annotate>
+<annotations xmlns="http://www.cern.ch/cms/csc/dw/model/dqm"/>
+</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexContent>
+<xsd:extension base="tns:factType">
+<xsd:sequence>
+<xsd:element name="online" type="xsd:boolean">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_ONLINE"/>
+</hj:basic>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_ALCT_AFEB_NOISY" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_ALCT_AFEB_NOISY"/>
+</hj:basic>
+<jaxb:property name="alctAfebNoisy"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="alctAfebNoisy" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_ALCT_NO_ANODE_DATA" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_ALCT_NO_ANODE_DATA"/>
+</hj:basic>
+<jaxb:property name="alctNoAnodeData"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="alctNoAnodeData" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:extension>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:element name="DqmCscCfebFact" type="tns:DqmCscCfebFactType" substitutionGroup="tns:fact"/>
+<xsd:complexType name="DqmCscCfebFactType">
+<xsd:annotation>
+<xsd:appinfo>
+<jaxb:class name="DqmCscCfebFact"/>
+<hj:entity>
+<orm:table name="CDW_DQM_CSC_CFEB_FACTS"/>
+</hj:entity>
+<ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:FactAnn limitComponents="CFEB" title="DQM CFEB"/>
+</ann:annotate>
+<annotations xmlns="http://www.cern.ch/cms/csc/dw/model/dqm"/>
+</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexContent>
+<xsd:extension base="tns:factType">
+<xsd:sequence>
+<xsd:element name="online" type="xsd:boolean">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_ONLINE"/>
+</hj:basic>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_WITH_LOW_CFEB_DAV_EFF" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_WITH_LOW_CFEB_DAV_EFF"/>
+</hj:basic>
+<jaxb:property name="withLowCfebDavEfficiency"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="withLowCfebDavEfficiency" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_WITH_LOW_CFEB_DAV_EFF_F" type="xsd:float" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_WITH_LOW_CFEB_DAV_EFF_F"/>
+</hj:basic>
+<jaxb:property name="withLowCfebDavEfficiencyFraction"/>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:extension>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:element name="DqmCscHvSegmentFact" type="tns:DqmCscHvSegmentFactType" substitutionGroup="tns:fact"/>
+<xsd:complexType name="DqmCscHvSegmentFactType">
+<xsd:annotation>
+<xsd:appinfo>
+<jaxb:class name="DqmCscHvSegmentFact"/>
+<hj:entity>
+<orm:table name="CDW_DQM_CSC_HV_SEGMENT_FACTS"/>
+</hj:entity>
+<ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:FactAnn limitComponents="HVSegment" title="DQM HV Segment"/>
+</ann:annotate>
+<annotations xmlns="http://www.cern.ch/cms/csc/dw/model/dqm"/>
+</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexContent>
+<xsd:extension base="tns:factType">
+<xsd:sequence>
+<xsd:element name="online" type="xsd:boolean">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_ONLINE"/>
+</hj:basic>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="CSC_NO_HV_SEGMENT" type="xsd:long" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>
+<hj:basic>
+<orm:column name="FCT_NO_HV_SEGMENT"/>
+</hj:basic>
+<jaxb:property name="noHvSegment"/>
+<ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+<a:OlapMeasure name="noHvSegment" aggregator="SUM"/>
+</ann:annotateGet>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:extension>
+</xsd:complexContent>
+</xsd:complexType>
+</xsd:schema>

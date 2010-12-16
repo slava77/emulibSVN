@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema
+    targetNamespace="http://www.cern.ch/cms/csc/dw/service"
+    xmlns:tns="http://www.cern.ch/cms/csc/dw/service"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    elementFormDefault="qualified"
+
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+    xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+    xsi:schemaLocation="
+        http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
+        http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
+        http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
+	jaxb:extensionBindingPrefixes="xjc orm hj"
+	jaxb:version="2.0">
+
+    <xsd:annotation>
+        <xsd:appinfo>
+            <jaxb:schemaBindings>
+                <jaxb:package name="org.cern.cms.csc.dw.service"/>
+            </jaxb:schemaBindings>
+        </xsd:appinfo>
+    </xsd:annotation>
+
+    <xsd:element name="serviceInstructions" type="tns:serviceInstructionsType"/>
+
+    <xsd:complexType name="serviceInstructionsType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="ServiceInstructions" />
+                <hj:ignored/>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:attribute name="async" type="xsd:boolean" default="true">
+            <xsd:annotation>
+                <xsd:appinfo>
+                    <jaxb:property>
+                        <jaxb:javadoc>
+Process the message asynchronous if true and synchonous otherwise. 
+                        </jaxb:javadoc>
+                    </jaxb:property>
+                </xsd:appinfo>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="strict" type="xsd:boolean" default="false">
+            <xsd:annotation>
+                <xsd:appinfo>
+                    <jaxb:property>
+                        <jaxb:javadoc>
+Reject the whole message if at least one of its parts fails if true and process what is and if possible otherwise. Switch to true for debugging purposes.
+                        </jaxb:javadoc>
+                    </jaxb:property>
+                </xsd:appinfo>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="persist" type="xsd:boolean" default="true">
+            <xsd:annotation>
+                <xsd:appinfo>
+                    <jaxb:property>
+                        <jaxb:javadoc>
+Persist (save) message if true and do not otherwise. Should be used for debugging purposes together with strict = true and async = false.
+                        </jaxb:javadoc>
+                    </jaxb:property>
+                </xsd:appinfo>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+</xsd:schema>

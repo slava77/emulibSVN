@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.cern.ch/cms/csc/dw/model"
+    xmlns:tns="http://www.cern.ch/cms/csc/dw/model"
+    elementFormDefault="qualified"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+	xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+    xsi:schemaLocation="
+        http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
+        http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
+        http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
+	jaxb:extensionBindingPrefixes="xjc orm hj"
+	jaxb:version="2.0">
+
+  <xsd:simpleType name="unitType">
+    <xsd:annotation>
+        <xsd:appinfo>
+            <jaxb:typesafeEnumClass name="UnitType" />
+        </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="AMPERE"/>
+      <xsd:enumeration value="VOLT"/>
+      <xsd:enumeration value="METER"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="severityType">
+    <xsd:annotation>
+        <xsd:appinfo>
+            <jaxb:typesafeEnumClass name="SeverityType"/>
+        </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="DEBUG"/>
+      <xsd:enumeration value="INFO"/>
+      <xsd:enumeration value="MINOR"/>
+      <xsd:enumeration value="TOLERABLE"/>
+      <xsd:enumeration value="WARN"/>
+      <xsd:enumeration value="ERROR"/>
+      <xsd:enumeration value="SEVERE"/>
+      <xsd:enumeration value="CRITICAL"/>
+      <xsd:enumeration value="FATAL"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+</xsd:schema>

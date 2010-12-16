@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.cern.ch/cms/csc/exsys/re/model"
+    xmlns:tns="http://www.cern.ch/cms/csc/exsys/re/model"
+    elementFormDefault="qualified"
+    xmlns:fct="http://www.cern.ch/cms/csc/dw/model"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+    xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:cu="http://jaxb.dev.java.net/plugin/classutils"
+    xmlns:ann="http://jaxb.dev.java.net/plugin/annotate"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
+                        http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
+                        http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
+    jaxb:extensionBindingPrefixes="orm hj cu ann"
+    jaxb:version="2.0">
+
+    <xsd:element name="actionExecution" type="tns:actionExecutionType"/>
+    <xsd:element name="action" type="tns:actionType"/>
+
+    <xsd:complexType name="actionExecutionType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="ActionExecution"/>
+                <cu:extends name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+                <hj:entity>
+                    <orm:table name="RE_ACTION_EXECUTIONS"/>
+                </hj:entity>
+                <hj:generated-id name="id">
+                    <orm:column name="REAE_ID"/>
+                    <orm:sequence-generator name="RE_ACTION_EXECUTION_ID_SEQ" sequence-name="RE_ACTION_EXECUTION_ID_SEQ"/>
+                </hj:generated-id>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="timestamp" type="xsd:dateTime">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REAE_TIMESTAMP"/>
+                        </hj:basic>
+                        <jaxb:property name="timestamp"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="action" type="tns:actionType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-one merge="false">
+                            <orm:join-column name="REAE_ACTION_ID" nullable="false"/>
+                        </hj:many-to-one>
+                        <jaxb:property name="action"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="trigger" type="tns:conclusionTriggerType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-one merge="false">
+                            <orm:join-column name="REAE_TRIGGER_ID" nullable="false"/>
+                        </hj:many-to-one>
+                        <jaxb:property name="trigger"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="actionType" abstract="true">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="Action"/>
+                <cu:extends name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+                <hj:entity>
+                    <orm:table name="RE_ACTIONS"/>
+                    <orm:inheritance strategy="JOINED"/>
+                    <orm:discriminator-column name="REA_TYPE" length="64"/>
+                </hj:entity>
+                <hj:generated-id name="id">
+                    <orm:column name="REA_ID"/>
+                    <orm:sequence-generator name="RE_ACTION_ID_SEQ" sequence-name="RE_ACTION_ID_SEQ"/>
+                </hj:generated-id>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="name" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REA_NAME" length="128" nullable="false"/>
+                        </hj:basic>
+                        <jaxb:property name="name"/>
+                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                            <a:UseInTitle order="1"/>
+                        </ann:annotate>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="conclusionTypes" type="tns:conclusionTypeType" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-many merge="false">
+                            <orm:join-table name="RE_ACTIONS_CONCLUSION_TYPES">
+                                <orm:join-column name="REAC_ACTION_ID"/>
+                                <orm:inverse-join-column name="REAC_CONCLUSION_TYPE_ID"/>
+                            </orm:join-table>
+                        </hj:many-to-many>
+                        <jaxb:property name="conclusionTypes"/>
+                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                            <a:ImmutableReference/>
+                        </ann:annotate>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="triggerType" type="tns:conclusionTriggerTypeType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic >
+                            <orm:column name="REA_TRIGGER_TYPE" length="6" nullable="false"/>
+                            <hj:enumerated-value/>
+                        </hj:basic>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="emailActionType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="EmailAction"/>
+                <hj:entity>
+                    <orm:table name="RE_EMAIL_ACTIONS"/>
+                </hj:entity>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:actionType">
+                <xsd:sequence>
+                    <xsd:element name="recipients" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="REEA_RECIPIENTS" length="1024" nullable="false"/>
+                                </hj:basic>
+                                <jaxb:property name="recipients"/>
+                                <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                                    <a:Label name="Recipients" description="New line or comma separated list of email addresses."/>
+                                </ann:annotate>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="smsActionType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="SmsAction"/>
+                <hj:entity>
+                    <orm:table name="RE_SMS_ACTIONS"/>
+                </hj:entity>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:actionType">
+                <xsd:sequence>
+                    <xsd:element name="recipients" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="RESA_RECIPIENTS" length="1024" nullable="false"/>
+                                </hj:basic>
+                                <jaxb:property name="recipients"/>
+                                <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                                    <a:Label name="Recipients" description="New line or comma separated list of phone numbers."/>
+                                </ann:annotate>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+</xsd:schema>

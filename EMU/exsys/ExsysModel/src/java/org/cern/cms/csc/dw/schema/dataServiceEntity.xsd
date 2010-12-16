@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.cern.ch/cms/csc/dw/model/dse"
+    xmlns:tns="http://www.cern.ch/cms/csc/dw/model/dse"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    elementFormDefault="qualified"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+    xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+    xmlns:ann="http://jaxb.dev.java.net/plugin/annotate"
+    xmlns:cu="http://jaxb.dev.java.net/plugin/classutils"
+    xsi:schemaLocation="
+        http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
+        http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
+        http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
+    jaxb:extensionBindingPrefixes="xjc orm hj ann cu"
+    jaxb:version="2.0">
+
+    <xsd:annotation>
+        <xsd:appinfo>
+            <jaxb:schemaBindings>
+                <jaxb:package name="org.cern.cms.csc.dw.model.dse"/>
+            </jaxb:schemaBindings>
+        </xsd:appinfo>
+    </xsd:annotation>
+
+    <xsd:include schemaLocation="tmbCounterDescriptionDSE.xsd"/>
+
+    <xsd:element name="dataServiceEntity" type="tns:dataServiceEntityType"/>
+    <xsd:element name="dataServiceEntityCollection" type="tns:dataServiceEntityCollectionType"/>
+
+    <xsd:complexType name="dataServiceEntityCollectionType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="DataServiceEntityCollection"/>
+                <hj:ignored/>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element ref="tns:dataServiceEntity" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <jaxb:property name="dataServiceEntities"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="dataServiceEntityType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="DataServiceEntity"/>
+                <cu:extends name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+            </xsd:appinfo>
+        </xsd:annotation>
+    </xsd:complexType>
+
+</xsd:schema>

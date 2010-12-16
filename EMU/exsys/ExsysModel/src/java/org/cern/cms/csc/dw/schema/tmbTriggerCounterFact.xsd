@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.cern.ch/cms/csc/dw/model"
+    xmlns:tns="http://www.cern.ch/cms/csc/dw/model"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    elementFormDefault="qualified"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+	xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+        xmlns:ann="http://jaxb.dev.java.net/plugin/annotate"
+    xsi:schemaLocation="
+        http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
+        http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
+        http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
+	jaxb:extensionBindingPrefixes="xjc orm hj ann"
+	jaxb:version="2.0">
+
+    <xsd:element name="slidingTmbTriggerCounterFact"
+                 type="tns:slidingTmbTriggerCounterFactType"
+                 substitutionGroup="tns:fact"/>
+                 
+    <xsd:element name="cumulativeTmbTriggerCounterFact"
+                 type="tns:cumulativeTmbTriggerCounterFactType"
+                 substitutionGroup="tns:fact"/>
+
+    <xsd:complexType name="slidingTmbTriggerCounterFactType">
+      	<xsd:annotation>
+    		<xsd:appinfo>
+                <jaxb:class name="SlidingTmbTriggerCounterFact" />
+                <hj:entity>
+                    <orm:table name="CDW_TMB_TRG_CNT_SLIDING_FACTS"/>
+                </hj:entity>
+                <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                    <a:FactAnn title="Sliding TMB Trigger Counters" limitComponents="TMB"/>
+                </ann:annotate>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:factType">
+                <xsd:sequence>
+
+                    <xsd:element name="alctCount" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_ALCT_COUNT" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="alctCount"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="clctCount" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_CLCT_COUNT" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="clctCount"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="lctCount" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_LCT_COUNT" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="lctCount"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="l1aCount" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_L1A_COUNT" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="l1aCount"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="windowWidth" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_WINDOW_WIDTH" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="windowWidth"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="cumulativeTmbTriggerCounterFactType">
+      	<xsd:annotation>
+    		<xsd:appinfo>
+                <jaxb:class name="CumulativeTmbTriggerCounterFact" />
+                <hj:entity>
+                    <orm:table name="CDW_TMB_TRG_CNT_CUMUL_FACTS"/>
+                </hj:entity>
+                <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                    <a:FactAnn title="Cumulative TMB Trigger Counters" limitComponents="TMB"/>
+                </ann:annotate>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:factType">
+                <xsd:sequence>
+
+                    <xsd:element name="alctCount" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_ALCT_COUNT" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="alctCount"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="clctCount" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_CLCT_COUNT" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="clctCount"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="lctCount" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_LCT_COUNT" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="lctCount"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="l1aCount" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_L1A_COUNT" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="l1aCount"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+</xsd:schema>

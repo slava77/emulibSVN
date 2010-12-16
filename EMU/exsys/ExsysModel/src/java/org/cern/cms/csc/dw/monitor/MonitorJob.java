@@ -1,0 +1,175 @@
+package org.cern.cms.csc.dw.monitor;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+import javax.ejb.EJB;
+import javax.ejb.Schedule;
+import javax.ejb.Singleton;
+import javax.ejb.Stateless;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
+import javax.jms.Queue;
+import javax.jms.QueueBrowser;
+import javax.jms.Session;
+import javax.naming.Binding;
+import javax.naming.NamingException;
+import org.cern.cms.csc.dw.dao.MonitorDaoLocal;
+import org.cern.cms.csc.dw.log.Logger;
+import org.cern.cms.csc.dw.log.SimpleLogger;
+import org.cern.cms.csc.dw.model.monitor.MonitorDatabaseStatus;
+import org.cern.cms.csc.dw.model.monitor.MonitorEntity;
+import org.cern.cms.csc.dw.model.monitor.MonitorQueueStatus;
+import org.cern.cms.csc.dw.util.ServiceLocator;
+
+@Stateless
+public class MonitorJob {
+
+    private static final String ENTITIES_RESOURCE = "/org/cern/cms/csc/dw/metadata/monitor_entities.properties";
+    private static final long RETENTION_TIME = 24 * 60 * 60 * 1000;
+
+    private static final Logger logger = SimpleLogger.getLogger(MonitorJob.class);
+    private Logger monitor;
+
+    @EJB
+    private MonitorDaoLocal monitorDao;
+
+    private ServiceLocator locator;
+    private List<QueueItem> queues = new ArrayList<QueueItem>();
+    private Set<Class<? extends MonitorEntity>> moClasses = new HashSet<Class<? extends MonitorEntity>>();
+
+    public MonitorJob() {
+
+        try {
+
+            this.locator = ServiceLocator.getInstance();
+
+            for (Binding b: locator.getJniBindings("jms")) {
+                if (!b.getName().endsWith("Factory")) {
+                    queues.add(new QueueItem(b.getName()));
+                }
+            }
+
+            URL entitiesUrl = MonitorJob.class.getResource(ENTITIES_RESOURCE);
+            Properties entitiesPro = new Properties();
+            entitiesPro.load(new FileInputStream(new File(entitiesUrl.getFile())));
+            Enumeration en = entitiesPro.propertyNames();
+            while (en.hasMoreElements()) {
+                String k = (String) en.nextElement();
+                Class<? extends MonitorEntity> clazz = (Class<? extends MonitorEntity>) Class.forName(entitiesPro.getProperty(k));
+                this.moClasses.add(clazz);
+            }
+
+        }catch(Exception ex) {
+            logger.error("Error while initializing MonitorJob static objects", ex);
+        }
+    }
+
+    @Schedule(hour="*", minute="*", second="*/10")
+    public void monitorQueues() {
+
+        logger.debug("In monitorQueues");
+        for (QueueItem qi: queues) {
+            try {
+                Integer size = qi.getSize();
+                logger.trace("Queue {0} size = {1}", qi.getName(), size);
+                if (size > 0) {
+                    MonitorQueueStatus qstatus = new MonitorQueueStatus();
+                    qstatus.setQueueName(qi.getName());
+                    qstatus.setQueueSize(size);
+                    getMonitor().trace(qstatus);
+                }
+            } catch (JMSException ex) {
+                logger.error("Error while accessing queues", ex);
+            }
+        }
+    }
+
+    @Schedule(hour="*", minute="*", second="*/15")
+    public void monitorDatabase() {
+        logger.debug("In monitorDatabase");
+        getMonitor().trace("In monitorDatabase");
+        try {
+            Date date = monitorDao.getSysdate();
+            logger.trace("Database sysdate = {0}", date);
+        } catch (Exception ex) {
+            MonitorDatabaseStatus dbstatus = new MonitorDatabaseStatus();
+            dbstatus.setAlive(false);
+            getMonitor().trace(dbstatus);
+            logger.error("Error while accessing database", ex);
+        }
+
+    }
+
+    @Schedule(hour="0/2", minute="0", second="0")
+    public void monitorRetention() {
+        logger.debug("In monitorRetention");
+        Date d = new Date();
+        d.setTime(d.getTime() - RETENTION_TIME);
+        for (Class<? extends MonitorEntity> clazz : this.moClasses) {
+            logger.trace("Removing {0} objects earlier than {1}", clazz, d);
+            monitorDao.retentMonitorObjects(clazz, d);
+        }
+    }
+
+    private class QueueItem {
+
+        private Queue queue;
+        private ConnectionFactory connectionFactory;
+
+        public QueueItem(String name) throws NamingException {
+            this.queue = (Queue) locator.getService("jms/" + name);
+            this.connectionFactory = (ConnectionFactory) locator.getService("jms/" + name + "Factory");
+        }
+
+        public String getName() throws JMSException {
+            return queue.getQueueName();
+        }
+
+        public Integer getSize() throws JMSException {
+            Connection connection = null;
+            Session session = null;
+            try {
+                connection = connectionFactory.createConnection();
+                session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+                QueueBrowser browser = session.createBrowser(queue);
+                Enumeration en = browser.getEnumeration();
+                Integer num = 0;
+                while (en.hasMoreElements()) {
+                    en.nextElement();
+                    num++;
+                }
+                return num;
+            } finally {
+                if (session != null) {
+                    try {
+                        session.close();
+                    } catch (JMSException e) {
+                        logger.error("Error while closing JMS Session", e);
+                    }
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            }
+        }
+
+    }
+
+    public Logger getMonitor() {
+        if (monitor == null) {
+            this.monitor = MonitorLogger.getLogger(MonitorJob.class);
+        }
+        return monitor;
+    }
+
+
+}

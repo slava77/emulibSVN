@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.cern.ch/cms/csc/exsys/re/model"
+    xmlns:tns="http://www.cern.ch/cms/csc/exsys/re/model"
+    elementFormDefault="qualified"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+    xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:cu="http://jaxb.dev.java.net/plugin/classutils"
+    xmlns:ann="http://jaxb.dev.java.net/plugin/annotate"
+    xmlns:ont="http://www.cern.ch/cms/csc/dw/ontology"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
+                        http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
+                        http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
+    jaxb:extensionBindingPrefixes="orm hj cu ann"
+    jaxb:version="2.0">
+        
+    <xsd:import namespace="http://www.cern.ch/cms/csc/dw/ontology" schemaLocation="../../../dw/schema/ontology.xsd"/>
+
+    <xsd:element name="rule" type="tns:ruleType"/>
+    <xsd:element name="componentFinder" type="tns:componentFinderType"/>
+
+    <xsd:complexType name="ruleType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="Rule"/>
+                <cu:extends name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+                <hj:entity>
+                    <orm:table name="RE_RULES">
+                        <orm:unique-constraint>
+                            <orm:column-name>RER_NAME</orm:column-name>
+                            <orm:column-name>RER_VERSION</orm:column-name>
+                        </orm:unique-constraint>
+                    </orm:table>
+                </hj:entity>
+                <hj:generated-id name="id">
+                    <orm:column name="RER_ID"/>
+                    <orm:sequence-generator name="RE_RULE_ID_SEQ" sequence-name="RE_RULE_ID_SEQ"/>
+                </hj:generated-id>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="version" type="xsd:integer">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="RER_VERSION" nullable="false"/>
+                        </hj:basic>
+                        <jaxb:property name="version"/>
+                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                            <a:NoManualInput/>
+                        </ann:annotate>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="name" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="RER_NAME" length="128" nullable="false"/>
+                        </hj:basic>
+                        <jaxb:property name="name"/>
+                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                            <a:UseInTitle order="1"/>
+                        </ann:annotate>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="timeCreated" type="xsd:dateTime">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="RER_TIME_CREATED" nullable="false"/>
+                        </hj:basic>
+                        <jaxb:property name="timeCreated"/>
+                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                            <a:NoManualInput createDefaultValue="true"/>
+                        </ann:annotate>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="ruleDefinition" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="RER_RULE_DEF" length="1024" nullable="false"/>
+                        </hj:basic>
+                        <jaxb:property name="ruleDefinition"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="description" type="xsd:string" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="RER_DESCRIPTION" length="1024"/>
+                        </hj:basic>
+                        <jaxb:property name="description"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="conclusionType" type="tns:conclusionTypeType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-one merge="false">
+                            <orm:join-column name="RER_CONCLUSION_TYPE_ID" nullable="false"/>
+                            <orm:cascade>
+                                <orm:cascade-persist/>
+                                <orm:cascade-merge/>
+                                <orm:cascade-refresh/>
+                            </orm:cascade>
+                        </hj:many-to-one>
+                        <jaxb:property name="conclusionType"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="enabled" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="RER_IS_ENABLED" nullable="false"/>
+                        </hj:basic>
+                        <jaxb:property name="enabled"/>
+                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                            <a:NoManualInput/>
+                        </ann:annotate>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="type" type="tns:ruleTypeType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic >
+                            <orm:column name="RER_TYPE" length="7"/>
+                            <hj:enumerated-value/>
+                        </hj:basic>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="componentFinder" type="tns:componentFinderType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:one-to-one>
+                            <orm:join-column name="RER_COMPONENT_FINDER" nullable="false"/>
+                        </hj:one-to-one>
+                        <jaxb:property name="componentFinder"/>
+                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                            <a:Label name="Component Finder" description="This is used to tell the rules engine what component it should assign to the conclusions that this rule produces. There are several kinds of component finders which all use components coming from the source fact(s) and/or conclusion(s) as source components, but have different policies on how to use them to resolve the actual component which will be assigned to the conclusion. e.g. SimpleComponentFinder simply takes the source components, while RelatedComponentFinder can find a component of required type that is related to the source components. Note however that in any case, the component finder should only find one component, if it finds zero or more than one - an exception will be thrown."/>
+                        </ann:annotate>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="ruleTypeType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:typesafeEnumClass name="RuleType" />
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Opening"/>
+            <xsd:enumeration value="Closing"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="componentFinderType" abstract="true">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="ComponentFinder"/>
+                <cu:extends name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+                <hj:entity>
+                    <orm:table name="RE_COMPONENT_FINDERS"/>
+                    <orm:inheritance strategy="SINGLE_TABLE"/>
+                    <orm:discriminator-column name="RCF_TYPE" length="64"/>
+                </hj:entity>
+                <hj:generated-id name="id" javaType="java.lang.Long">
+                    <orm:column name="RCF_ID"/>
+                    <orm:generated-value strategy="SEQUENCE" generator="RE_RCF_ID_SEQ"/>
+                    <orm:sequence-generator name="RE_RCF_ID_SEQ" sequence-name="RE_RCF_ID_SEQ"/>
+                </hj:generated-id>
+                <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                    <a:UseInTitle order="0"/>
+                </ann:annotate>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="rule" type="tns:ruleType" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:one-to-one mapped-by="componentFinder">
+                            <orm:join-column name="RER_COMPONENT_FINDER" nullable="false"/>
+                        </hj:one-to-one>
+                        <jaxb:property name="rule"/>
+                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                            <a:NoManualInput/>
+                            <a:ImmutableReference/>
+                        </ann:annotate>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="componentClass" type="ont:componentClassType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-one merge="false">
+                            <orm:join-column name="RCF_COMPONENT_CLASS_ID"/>
+                        </hj:many-to-one>
+                        <jaxb:property name="componentClass"/>
+                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                            <a:ImmutableReference/>
+                            <a:Label name="Component Type" description="This tells the component finder what component type is to be resolved/accepted."/>
+                        </ann:annotate>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="simpleComponentFinderType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="SimpleComponentFinder"/>
+                <hj:entity>
+                    <orm:table name="RE_SIMPLE_COMP_FINDERS"/>
+                </hj:entity>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:componentFinderType"></xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="relatedComponentFinderType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="RelatedComponentFinder"/>
+                <hj:entity>
+                    <orm:table name="RE_RELATED_COMP_FINDERS"/>
+                </hj:entity>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:componentFinderType">
+                <xsd:sequence>
+                    <xsd:element name="linkClasses" type="ont:componentLinkClassType" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:many-to-many fetch="EAGER" merge="false">
+                                    <orm:join-table name="RE_REL_CMP_FINDER_LINK_CLASSES">
+                                        <orm:join-column name="RECFL_RELATED_COMP_FINDER_ID"/>
+                                        <orm:inverse-join-column name="RECFL_COMPONENT_LINK_CLASS_ID"/>
+                                    </orm:join-table>
+                                </hj:many-to-many>
+                                <jaxb:property name="linkClasses"/>
+                                <ann:annotateGet xmlns:a="org.hibernate.annotations">
+                                    <a:Fetch value="SUBSELECT"/>
+                                </ann:annotateGet>
+                                <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                                    <a:ImmutableReference/>
+                                    <a:Label name="Link Classes" description="(At least one is mandaroty) These link classes will be used to find the related components."/>
+                                </ann:annotate>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    
+</xsd:schema>

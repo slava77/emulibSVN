@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema
+    targetNamespace="http://www.cern.ch/cms/csc/dw/ontology"
+    xmlns:tns="http://www.cern.ch/cms/csc/dw/ontology"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    elementFormDefault="qualified"
+
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+    xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+    xmlns:ann="http://jaxb.dev.java.net/plugin/annotate"
+    xmlns:cu="http://jaxb.dev.java.net/plugin/classutils"
+    xsi:schemaLocation="
+        http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
+        http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
+        http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
+    jaxb:extensionBindingPrefixes="xjc orm hj ann cu"
+    jaxb:version="2.0">
+
+    <xsd:include schemaLocation="ontologyClassifiers.xsd"/>
+
+    <xsd:annotation>
+        <xsd:appinfo>
+            <jaxb:schemaBindings>
+                <jaxb:package name="org.cern.cms.csc.dw.model.ontology"/>
+            </jaxb:schemaBindings>
+        </xsd:appinfo>
+    </xsd:annotation>
+
+    <xsd:complexType name="componentType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="Component"/>
+                <cu:extends name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+                <hj:entity>
+                    <orm:table name="CDW_COMPONENTS">
+                        <orm:unique-constraint>
+                            <orm:column-name>CMP_NAME</orm:column-name>
+                        </orm:unique-constraint>
+                    </orm:table>
+                </hj:entity>
+                <ann:annotate xmlns:a="org.hibernate.annotations">
+                    <a:Cache usage="READ_WRITE"/>
+                </ann:annotate>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="type" type="tns:componentClassType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-one fetch="EAGER" optional="false">
+                            <orm:join-column name="CMP_CCL_ID"/>
+                        </hj:many-to-one>
+                        <jaxb:property name="type"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="id" type="xsd:long">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:id>
+                            <orm:column name="CMP_ID"/>
+                        </hj:id>
+                        <jaxb:property name="id">
+                            <jaxb:baseType name="Long"/>
+                        </jaxb:property>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="name" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic optional="false">
+                            <orm:column name="CMP_NAME" length="32"/>
+                        </hj:basic>
+                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                            <a:UseInTitle order="1"/>
+                        </ann:annotate>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="description" type="xsd:string" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic optional="true">
+                            <orm:column name="CMP_DESCR" length="2000"/>
+                        </hj:basic>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="synonym" type="tns:componentSynonymType" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:one-to-many fetch="LAZY">
+                            <orm:join-column name="SYN_CMP_ID"/>
+                        </hj:one-to-many>
+                        <jaxb:property name="synonyms"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="componentClassType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="ComponentClass"/>
+                <cu:extends name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+                <hj:entity>
+                    <orm:table name="CDW_COMPONENT_CLASSES">
+                        <orm:unique-constraint>
+                            <orm:column-name>CCL_NAME</orm:column-name>
+                        </orm:unique-constraint>
+                    </orm:table>
+                </hj:entity>
+                <ann:annotate xmlns:a="org.hibernate.annotations">
+                    <a:Cache usage="READ_WRITE"/>
+                </ann:annotate>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="id" type="xsd:long">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:id>
+                            <orm:column name="CCL_ID"/>
+                        </hj:id>
+                        <jaxb:property name="id">
+                            <jaxb:baseType name="Long"/>
+                        </jaxb:property>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="type" type="tns:componentClassIdType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic optional="false">
+                            <orm:column name="CCL_NAME"/>
+                            <hj:enumerated-value/>
+                        </hj:basic>
+                        <jaxb:property name="type"/>
+                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                            <a:UseInTitle order="1"/>
+                        </ann:annotate>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="description" type="xsd:string" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic optional="true">
+                            <orm:column name="CCL_DESCR" length="2000"/>
+                        </hj:basic>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="parent" type="tns:componentClassType" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-many fetch="LAZY">
+                            <orm:join-table name="CDW_COMPONENT_CLASS_PARENTS">
+                                <orm:join-column name="CCP_PARENT_CCL_ID"/>
+                                <orm:inverse-join-column name="CCP_CHILD_CCL_ID"/>
+                                <orm:unique-constraint>
+                                    <orm:column-name>CCP_PARENT_CCL_ID</orm:column-name>
+                                    <orm:column-name>CCP_CHILD_CCL_ID</orm:column-name>
+                                </orm:unique-constraint>
+                            </orm:join-table>
+                        </hj:many-to-many>
+                        <jaxb:property name="parents"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="componentSynonymType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="ComponentSynonym"/>
+                <cu:extends name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+                <hj:entity>
+                    <orm:table name="CDW_COMPONENT_SYNONYMS"/>
+                </hj:entity>
+                <ann:annotate xmlns:a="org.hibernate.annotations">
+                    <a:Cache usage="READ_WRITE"/>
+                </ann:annotate>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="name" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:id>
+                            <orm:column name="SYN_NAME" length="512"/>
+                        </hj:id>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="componentLinkClassType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="ComponentLinkClass" />
+                <cu:extends name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+                <hj:entity>
+                    <orm:table name="CDW_COMPONENT_LINK_CLASSES">
+                        <orm:unique-constraint>
+                            <orm:column-name>LCL_NAME</orm:column-name>
+                        </orm:unique-constraint>
+                    </orm:table>
+                </hj:entity>
+                <ann:annotate xmlns:a="org.hibernate.annotations">
+                    <a:Cache usage="READ_WRITE"/>
+                </ann:annotate>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="id" type="xsd:long">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:id>
+                            <orm:column name="LCL_ID"/>
+                        </hj:id>
+                        <jaxb:property name="id">
+                            <jaxb:baseType name="Long"/>
+                        </jaxb:property>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="type" type="tns:componentLinkClassIdType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic optional="false">
+                            <orm:column name="LCL_NAME"/>
+                            <hj:enumerated-value/>
+                        </hj:basic>
+                        <jaxb:property name="type"/>
+                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                            <a:UseInTitle order="1"/>
+                        </ann:annotate>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="inverse" type="tns:componentLinkClassType" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-one fetch="LAZY">
+                            <orm:join-column name="LCL_INVERSE_LCL_ID"/>
+                        </hj:many-to-one>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="parent" type="tns:componentLinkClassType" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-one fetch="LAZY">
+                            <orm:join-column name="LCL_PARENT_LCL_ID"/>
+                        </hj:many-to-one>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="transitive" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="LCL_TRANSITIVE"/>
+                        </hj:basic>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="description" type="xsd:string" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="LCL_DESCR" length="2000"/>
+                        </hj:basic>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+</xsd:schema>

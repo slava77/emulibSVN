@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema targetNamespace="http://www.cern.ch/cms/csc/dw/ontology" xsi:schemaLocation="                 http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd                 http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd                 http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd" elementFormDefault="qualified" jaxb:extensionBindingPrefixes="xjc orm hj cu" jaxb:version="2.0" xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:cu="http://jaxb.dev.java.net/plugin/classutils" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:orm="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" xmlns:tns="http://www.cern.ch/cms/csc/dw/ontology">
+<xsd:simpleType name="componentClassIdType">
+<xsd:annotation>
+<xsd:appinfo>
+<jaxb:typesafeEnumClass name="ComponentClassType"/>
+</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:enumeration value="/dev/schar"/>
+<xsd:enumeration value="AFEB"/>
+<xsd:enumeration value="ALCT"/>
+<xsd:enumeration value="CCB"/>
+<xsd:enumeration value="CFEB"/>
+<xsd:enumeration value="Chamber"/>
+<xsd:enumeration value="Computer"/>
+<xsd:enumeration value="ComputingDevice"/>
+<xsd:enumeration value="CoolingCircuit"/>
+<xsd:enumeration value="CoolingDevice"/>
+<xsd:enumeration value="CSC"/>
+<xsd:enumeration value="DataChannel"/>
+<xsd:enumeration value="DataDevice"/>
+<xsd:enumeration value="DCC"/>
+<xsd:enumeration value="DCS"/>
+<xsd:enumeration value="DDU"/>
+<xsd:enumeration value="DDUInput"/>
+<xsd:enumeration value="Device"/>
+<xsd:enumeration value="DMB"/>
+<xsd:enumeration value="EmuMonitor"/>
+<xsd:enumeration value="Endcap"/>
+<xsd:enumeration value="FactProvider"/>
+<xsd:enumeration value="FEDCrate"/>
+<xsd:enumeration value="FEDSystem"/>
+<xsd:enumeration value="GasChannel"/>
+<xsd:enumeration value="GasDevice"/>
+<xsd:enumeration value="GasMixerInputLine"/>
+<xsd:enumeration value="GasRack"/>
+<xsd:enumeration value="HVBoard"/>
+<xsd:enumeration value="HVChannel"/>
+<xsd:enumeration value="HVCrate"/>
+<xsd:enumeration value="HVDevice"/>
+<xsd:enumeration value="HVDistribution"/>
+<xsd:enumeration value="HVMaster"/>
+<xsd:enumeration value="HVPrimary"/>
+<xsd:enumeration value="HVRack"/>
+<xsd:enumeration value="HVSegment"/>
+<xsd:enumeration value="Layer"/>
+<xsd:enumeration value="LogicalComponent"/>
+<xsd:enumeration value="LogicalDomain"/>
+<xsd:enumeration value="LTC"/>
+<xsd:enumeration value="LVDevice"/>
+<xsd:enumeration value="Maraton"/>
+<xsd:enumeration value="MPC"/>
+<xsd:enumeration value="PCrateRack"/>
+<xsd:enumeration value="PeripheralCrate"/>
+<xsd:enumeration value="RackTurbine"/>
+<xsd:enumeration value="RAT"/>
+<xsd:enumeration value="Ring"/>
+<xsd:enumeration value="RUI"/>
+<xsd:enumeration value="SectorProcessor"/>
+<xsd:enumeration value="SectorProcessorInput"/>
+<xsd:enumeration value="Slink"/>
+<xsd:enumeration value="Software"/>
+<xsd:enumeration value="Station"/>
+<xsd:enumeration value="TFDDU"/>
+<xsd:enumeration value="TFRUI"/>
+<xsd:enumeration value="TMB"/>
+<xsd:enumeration value="TTC"/>
+<xsd:enumeration value="VCC"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="componentLinkClassIdType">
+<xsd:annotation>
+<xsd:appinfo>
+<jaxb:typesafeEnumClass name="ComponentLinkClassType"/>
+<cu:implements name="org.neo4j.graphdb.RelationshipType"/>
+</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:enumeration value="consistsOf"/>
+<xsd:enumeration value="contains"/>
+<xsd:enumeration value="controlPath"/>
+<xsd:enumeration value="controls"/>
+<xsd:enumeration value="coolingPath"/>
+<xsd:enumeration value="cools"/>
+<xsd:enumeration value="dataPath"/>
+<xsd:enumeration value="deliversGasTo"/>
+<xsd:enumeration value="deliversHVTo"/>
+<xsd:enumeration value="deliversLVTo"/>
+<xsd:enumeration value="gasSupplyPath"/>
+<xsd:enumeration value="getsGasFrom"/>
+<xsd:enumeration value="getsHVFrom"/>
+<xsd:enumeration value="getsLVFrom"/>
+<xsd:enumeration value="isControlledBy"/>
+<xsd:enumeration value="isCooledBy"/>
+<xsd:enumeration value="isIn"/>
+<xsd:enumeration value="isMonitoredBy"/>
+<xsd:enumeration value="isPartOf"/>
+<xsd:enumeration value="locationPath"/>
+<xsd:enumeration value="logicalComposition"/>
+<xsd:enumeration value="monitorPath"/>
+<xsd:enumeration value="monitors"/>
+<xsd:enumeration value="powerSupplyPath"/>
+<xsd:enumeration value="receivesDataFrom"/>
+<xsd:enumeration value="receivesL1AFrom"/>
+<xsd:enumeration value="receivesTriggerFrom"/>
+<xsd:enumeration value="sendsDataTo"/>
+<xsd:enumeration value="sendsL1ATo"/>
+<xsd:enumeration value="sendsTriggerTo"/>
+<xsd:enumeration value="triggerPath"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:schema>

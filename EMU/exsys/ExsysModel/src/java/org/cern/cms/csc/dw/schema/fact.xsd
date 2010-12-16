@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.cern.ch/cms/csc/dw/model"
+    elementFormDefault="qualified"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:tns="http://www.cern.ch/cms/csc/dw/model"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+    xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+    xmlns:ont="http://www.cern.ch/cms/csc/dw/ontology"
+    xmlns:ser="http://www.cern.ch/cms/csc/dw/service"
+    xmlns:cu="http://jaxb.dev.java.net/plugin/classutils"
+    xmlns:ann="http://jaxb.dev.java.net/plugin/annotate"
+    xsi:schemaLocation="
+        http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
+        http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
+        http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
+    jaxb:extensionBindingPrefixes="xjc orm hj cu ann"
+    jaxb:version="2.0">
+
+    <xsd:include schemaLocation="factClassifiers.xsd"/>
+    <xsd:include schemaLocation="tmbTriggerCounterFact.xsd"/>
+    <xsd:include schemaLocation="tmbCounterFact.xsd"/>
+    <xsd:include schemaLocation="dqmFact.xsd"/>
+    <xsd:include schemaLocation="dqmReportFact.xsd"/>
+    <xsd:include schemaLocation="emuMonitorFact.xsd"/>
+    <xsd:include schemaLocation="applicationStatusFact.xsd"/>
+    <xsd:include schemaLocation="localDAQStatusFact.xsd"/>
+    <xsd:include schemaLocation="fedFacts.xsd"/>
+    <xsd:include schemaLocation="dcsFacts.xsd"/>
+
+    <xsd:import namespace="http://www.cern.ch/cms/csc/dw/ontology" schemaLocation="ontology.xsd"/>
+    <xsd:import namespace="http://www.cern.ch/cms/csc/dw/service" schemaLocation="service.xsd"/>
+
+    <xsd:element name="factCollection" type="tns:factCollectionType"/>
+    <xsd:element name="fact" type="tns:factType"/>
+
+    <xsd:complexType name="factCollectionType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="FactCollection" />
+                <cu:extends name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+                <hj:entity>
+                    <orm:table name="CDW_FACT_COLLECTIONS"/>
+                </hj:entity>
+                <hj:generated-id name="id" javaType="java.lang.Long">
+                    <orm:column name="FCO_ID"/>
+                    <orm:generated-value strategy="SEQUENCE" generator="CDW_FCO_ID_SEQ"/>
+                    <orm:sequence-generator name="CDW_FCO_ID_SEQ" sequence-name="CDW_FCO_ID_SEQ"/>
+                </hj:generated-id>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element ref="ser:serviceInstructions" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:ignored/>
+                        <jaxb:property name="serviceInstructions"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="source" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:ignored/>
+                        <jaxb:property name="source"/>
+                        <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                            <a:ComponentId forProperty="component" limitComponents="FactProvider" limitComponentsRecursive="true" required="true"/>
+                        </ann:annotateGet>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="requestId" type="xsd:long" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="FCO_REQUEST_ID"/>
+                        </hj:basic>
+                        <jaxb:property name="request"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="time" type="xsd:dateTime" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="FCO_TIME"/>
+                        </hj:basic>
+                        <jaxb:property name="time"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="component" type="ont:componentType" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-one>
+                            <orm:join-column name="FCO_CMP_ID"/>
+                        </hj:many-to-one>
+                        <jaxb:property name="component"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element ref="tns:fact" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <jaxb:property name="facts"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="factType" abstract="true">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="Fact"/>
+                <cu:extends name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+                <hj:entity>
+                    <orm:table name="CDW_FACTS"/>
+                    <orm:inheritance strategy="TABLE_PER_CLASS"/>
+                </hj:entity>
+                <hj:generated-id name="id" javaType="java.lang.Long">
+                    <orm:column name="FCT_ID"/>
+                    <orm:generated-value strategy="SEQUENCE" generator="CDW_FCT_ID_SEQ"/>
+                    <orm:sequence-generator name="CDW_FCT_ID_SEQ" sequence-name="CDW_FCT_ID_SEQ"/>
+                </hj:generated-id>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="time" type="xsd:dateTime">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="FCT_TIME"/>
+                        </hj:basic>
+                        <jaxb:property name="time"/>
+                        <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                            <a:OlapDimension name="Time"/>
+                        </ann:annotateGet>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="component_id" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:ignored/>
+                        <jaxb:property name="componentId"/>
+                        <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                            <a:ComponentId forProperty="component" required="true"/>
+                        </ann:annotateGet>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="run" type="xsd:long" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="FCT_RUN"/>
+                        </hj:basic>
+                        <jaxb:property name="run"/>
+                        <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                            <a:OlapDimension name="Run"/>
+                        </ann:annotateGet>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="severity" type="tns:severityType" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="FCT_SEVERITY" length="10"/>
+                            <hj:enumerated-value/>
+                        </hj:basic>
+                        <jaxb:property name="severity"/>
+                        <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                            <a:OlapDimension name="Severity"/>
+                        </ann:annotateGet>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="descr" type="xsd:string" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="FCT_DESCR"/>
+                        </hj:basic>
+                        <jaxb:property name="descr"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="component" type="ont:componentType" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-one>
+                            <orm:join-column name="FCT_CMP_ID"/>
+                        </hj:many-to-one>
+                        <jaxb:property name="component"/>
+                        <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                            <a:OlapDimension name="Component" sharedTable="CDW_OLAP$D_COMPONENTS"/>
+                        </ann:annotateGet>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+</xsd:schema>

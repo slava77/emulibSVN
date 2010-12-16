@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.cern.ch/cms/csc/exsys/re/model"
+    xmlns:tns="http://www.cern.ch/cms/csc/exsys/re/model"
+    xmlns:fct="http://www.cern.ch/cms/csc/dw/model"
+    elementFormDefault="qualified"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+    xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
+                        http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
+                        http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
+    jaxb:extensionBindingPrefixes="orm hj"
+    jaxb:version="2.0">
+
+    <xsd:import namespace="http://www.cern.ch/cms/csc/dw/model" schemaLocation="../../../dw/schema/fact.xsd"/>
+
+    <xsd:annotation>
+        <xsd:appinfo>
+            <!-- globalBindings are already defined in cdw.xsd and it's illegal to define them more than once in one compilation -->
+            <!--jaxb:globalBindings
+                localScoping="toplevel"
+                fixedAttributeAsConstantProperty="true"
+                collectionType="java.util.Vector"
+                typesafeEnumBase="xsd:NCName"
+                choiceContentProperty="false"
+                typesafeEnumMemberName="generateError"
+                enableFailFastCheck="false"
+                generateIsSetMethod="true"
+                underscoreBinding="asCharInWord">
+                <jaxb:serializable/>
+            </jaxb:globalBindings-->
+            <jaxb:schemaBindings>
+                <jaxb:package name="org.cern.cms.csc.exsys.re.model"/>
+            </jaxb:schemaBindings>
+        </xsd:appinfo>
+    </xsd:annotation>
+
+    <xsd:include schemaLocation="rule.xsd"/>
+    <xsd:include schemaLocation="conclusion.xsd"/>
+
+</xsd:schema>

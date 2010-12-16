@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.cern.ch/cms/csc/exsys/re/model"
+    xmlns:tns="http://www.cern.ch/cms/csc/exsys/re/model"
+    elementFormDefault="qualified"
+    xmlns:fct="http://www.cern.ch/cms/csc/dw/model"
+    xmlns:ont="http://www.cern.ch/cms/csc/dw/ontology"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+    xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:cu="http://jaxb.dev.java.net/plugin/classutils"
+    xmlns:ann="http://jaxb.dev.java.net/plugin/annotate"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
+                        http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
+                        http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
+    jaxb:extensionBindingPrefixes="orm hj cu ann"
+    jaxb:version="2.0">
+
+    <xsd:import namespace="http://www.cern.ch/cms/csc/dw/model" schemaLocation="../../../dw/schema/fact.xsd"/>
+    <xsd:import namespace="http://www.cern.ch/cms/csc/dw/ontology" schemaLocation="../../../dw/schema/ontology.xsd"/>
+    <xsd:include schemaLocation="rule.xsd"/>
+    <xsd:include schemaLocation="action.xsd"/>
+
+    <xsd:element name="conclusion" type="tns:conclusionType"/>
+    <xsd:element name="conclusionType" type="tns:conclusionTypeType"/>
+    <xsd:element name="conclusionTrigger" type="tns:conclusionTriggerType"/>
+    <xsd:element name="conclusionTriggerSource" type="tns:conclusionTriggerSourceType"/>
+
+    <xsd:complexType name="conclusionTypeType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="ConclusionType"/>
+                <cu:extends name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+                <hj:entity>
+                    <orm:table name="RE_CONCLUSION_TYPES"/>
+                </hj:entity>
+                <hj:generated-id name="id">
+                    <orm:column name="RECT_ID"/>
+                    <orm:sequence-generator name="RE_CONCLUSION_TYPE_ID_SEQ" sequence-name="RE_CONCLUSION_TYPE_ID_SEQ"/>
+                </hj:generated-id>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="name" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="RECT_NAME" length="64" nullable="false"/>
+                        </hj:basic>
+                        <jaxb:property name="name"/>
+                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                            <a:UseInTitle order="1"/>
+                        </ann:annotate>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="title" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="RECT_TITLE" length="512" nullable="false"/>
+                        </hj:basic>
+                        <jaxb:property name="title"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="description" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="RECT_DESCRIPTION" length="2048" nullable="false"/>
+                        </hj:basic>
+                        <jaxb:property name="description"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="severity" type="fct:severityType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="RECT_SEVERITY" length="10" nullable="false"/>
+                            <hj:enumerated-value/>
+                        </hj:basic>
+                        <jaxb:property name="severity"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="timeCreated" type="xsd:dateTime">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="RECT_TIME_CREATED" nullable="false"/>
+                        </hj:basic>
+                        <jaxb:property name="timeCreated"/>
+                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                            <a:NoManualInput createDefaultValue="true"/>
+                        </ann:annotate>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="actions" type="tns:actionType" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-many merge="false" fetch="EAGER">
+                            <orm:join-table name="RE_ACTIONS_CONCLUSION_TYPES">
+                                <orm:join-column name="REAC_CONCLUSION_TYPE_ID"/>
+                                <orm:inverse-join-column name="REAC_ACTION_ID"/>
+                            </orm:join-table>
+                        </hj:many-to-many>
+                        <jaxb:property name="actions"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+
+            <!--xsd:element name="affectedPaths" type="ont:componentLinkClassType" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-many fetch="EAGER" merge="false">
+                            <orm:join-table name="RE_CONCLUSION_T_AFFECTED_PATHS">
+                                <orm:join-column name="RECP_CONCLUSION_TYPE"/>
+                                <orm:inverse-join-column name="RECP_COMPONENT_LINK_CLASS"/>
+                            </orm:join-table>
+                        </hj:many-to-many>
+                        <jaxb:property name="affectedPaths"/>
+                        <ann:annotateGet xmlns:a="org.hibernate.annotations">
+                            <a:Fetch value="SUBSELECT"/>
+                        </ann:annotateGet>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element-->
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="conclusionType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="Conclusion"/>
+                <cu:extends name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+                <hj:entity>
+                    <orm:table name="RE_CONCLUSIONS"/>
+                </hj:entity>
+                <hj:generated-id name="id">
+                    <orm:column name="REC_ID"/>
+                    <orm:sequence-generator name="RE_CONCLUSION_ID_SEQ" sequence-name="RE_CONCLUSION_ID_SEQ"/>
+                </hj:generated-id>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="component" type="ont:componentType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-one merge="false">
+                            <orm:join-column name="REC_COMPONENT"/>
+                        </hj:many-to-one>
+                        <jaxb:property name="component"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="title" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REC_TITLE" length="512" nullable="false"/>
+                        </hj:basic>
+                        <jaxb:property name="title"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="description" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REC_DESCRIPTION" length="2048" nullable="false"/>
+                        </hj:basic>
+                        <jaxb:property name="description"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="severity" type="fct:severityType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REC_SEVERITY" length="10" nullable="false"/>
+                            <hj:enumerated-value/>
+                        </hj:basic>
+                        <jaxb:property name="severity"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="timestamp" type="xsd:dateTime">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REC_TIMESTAMP" nullable="false"/>
+                        </hj:basic>
+                        <jaxb:property name="timestamp"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="lastHitTime" type="xsd:dateTime">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REC_LAST_HIT_TIME" nullable="false"/>
+                        </hj:basic>
+                        <jaxb:property name="lastHitTime"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="hitCount" type="xsd:integer">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REC_HIT_COUNT" nullable="false"/>
+                        </hj:basic>
+                        <jaxb:property name="hitCount"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="isClosed" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REC_IS_CLOSED" nullable="false"/>
+                        </hj:basic>
+                        <jaxb:property name="isClosed"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="isAcknowledged" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REC_IS_ACKNOWLEDGED" nullable="false"/>
+                        </hj:basic>
+                        <jaxb:property name="isAcknowledged"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="timeClosed" type="xsd:dateTime" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REC_TIME_CLOSED"/>
+                        </hj:basic>
+                        <jaxb:property name="timeClosed"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="type" type="tns:conclusionTypeType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-one merge="false">
+                            <orm:join-column name="REC_CONCLUSION_TYPE_ID" nullable="false"/>
+                        </hj:many-to-one>
+                        <jaxb:property name="type"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="triggers" type="tns:conclusionTriggerType" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:one-to-many mapped-by="conclusion" merge="false">
+                            <orm:join-column name="RECT_CONCLUSION_ID" nullable="false"/>
+                            <orm:cascade>
+                                <orm:cascade-remove/>
+                                <orm:cascade-persist/>
+                            </orm:cascade>
+                        </hj:one-to-many>
+                        <jaxb:property name="triggers"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="parents" type="tns:conclusionTriggerSourceType" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:one-to-many mapped-by="conclusion" merge="false">
+                            <orm:join-column name="RECS_CONCLUSION_ID"/>
+                        </hj:one-to-many>
+                        <jaxb:property name="parents"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="conclusionTriggerType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="ConclusionTrigger"/>
+                <cu:extends name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+                <hj:entity>
+                    <orm:table name="RE_CONCLUSION_TRIGGERS"/>
+                </hj:entity>
+                <hj:generated-id name="id">
+                    <orm:column name="RECT_ID"/>
+                    <orm:sequence-generator name="RE_CONCL_TRIGGER_ID_SEQ" sequence-name="RE_CONCL_TRIGGER_ID_SEQ"/>
+                </hj:generated-id>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="type" type="tns:conclusionTriggerTypeType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic >
+                            <orm:column name="RECT_TYPE" length="6"/>
+                            <hj:enumerated-value/>
+                        </hj:basic>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="timestamp" type="xsd:dateTime">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="RECT_TIMESTAMP" nullable="false"/>
+                        </hj:basic>
+                        <jaxb:property name="timestamp"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="rule" type="tns:ruleType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-one merge="false">
+                            <orm:join-column name="RECT_RULE_ID" nullable="false"/>
+                        </hj:many-to-one>
+                        <jaxb:property name="rule"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="conclusion" type="tns:conclusionType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-one merge="false">
+                            <orm:join-column name="RECT_CONCLUSION_ID" nullable="false"/>
+                        </hj:many-to-one>
+                        <jaxb:property name="conclusion"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="sources" type="tns:conclusionTriggerSourceType" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:one-to-many mapped-by="trigger">
+                            <orm:join-column name="RECS_TRIGGER_ID" nullable="false"/>
+                        </hj:one-to-many>
+                        <jaxb:property name="sources"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="conclusionTriggerSourceType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="ConclusionTriggerSource"/>
+                <cu:extends name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+                <hj:entity>
+                    <orm:table name="RE_CONCLUSION_TRIG_SOURCES"/>
+                </hj:entity>
+                <hj:generated-id name="id">
+                    <orm:column name="RECS_ID"/>
+                    <orm:sequence-generator name="RE_CONCL_TRIG_SOURCE_ID_SEQ" sequence-name="RE_CONCL_TRIG_SOURCE_ID_SEQ"/>
+                </hj:generated-id>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="trigger" type="tns:conclusionTriggerType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-one merge="false">
+                            <orm:join-column name="RECS_TRIGGER_ID" nullable="false"/>
+                        </hj:many-to-one>
+                        <jaxb:property name="trigger"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:choice>
+                <xsd:element name="conclusion" type="tns:conclusionType">
+                    <xsd:annotation>
+                        <xsd:appinfo>
+                            <hj:many-to-one merge="false">
+                                <orm:join-column name="RECS_CONCLUSION_ID"/>
+                            </hj:many-to-one>
+                            <jaxb:property name="conclusion"/>
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="fact" type="fct:factType">
+                    <xsd:annotation>
+                        <xsd:appinfo>
+                            <hj:many-to-one merge="false">
+                                <orm:join-column name="RECS_FACT_ID"/>
+                            </hj:many-to-one>
+                            <jaxb:property name="fact"/>
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:choice>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="conclusionTriggerTypeType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:typesafeEnumClass name="ConclusionTriggerType" />
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Open"/>
+            <xsd:enumeration value="Update"/>
+            <xsd:enumeration value="Close"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+</xsd:schema>
