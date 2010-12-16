@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Hierarchies>
+
+    <Hierarchy name="Chamber" table="CDW_OLAP$D_CHAMBERS">
+        <Level name="Endcap">
+            <ComponentClass name="Endcap"/>
+            <Level name="Station">
+                <ComponentClass name="Station"/>
+                <ComponentLinkClass name="isPartOf"/>
+                <Level name="Ring">
+                    <ComponentClass name="Ring"/>
+                    <ComponentLinkClass name="isPartOf"/>
+                    <Level name="Chamber">
+                        <ComponentClass name="Chamber"/>
+                        <ComponentLinkClass name="isPartOf"/>
+                        <Level name="Layer">
+                            <ComponentClass name="Layer"/>
+                            <ComponentLinkClass name="isPartOf"/>
+                        </Level>
+                    </Level>
+                </Level>
+            </Level>
+        </Level>
+    </Hierarchy>
+
+    <Hierarchy name="Component" table="CDW_OLAP$D_COMPONENTS">
+        <Level name="Class" column="CLASS">
+            <Level name="Component" column="COMPONENT"/>
+        </Level>
+        <sql>
+        select 
+          CMP_ID, 
+          CCL_NAME "CLASS", 
+          CMP_NAME "COMPONENT"
+        from 
+          CDW_COMPONENTS 
+          join CDW_COMPONENT_CLASSES 
+            on (CMP_CCL_ID = CCL_ID)
+        </sql>
+    </Hierarchy>
+
+</Hierarchies>

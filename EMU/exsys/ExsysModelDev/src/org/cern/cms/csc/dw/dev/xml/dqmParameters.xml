@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<classes xmlns="http://www.cern.ch/cms/csc/dw/model/dqm">
+
+    <class name="DqmEmuFact" table="CDW_DQM_EMU_FACTS" componentClass="CSC" factTitle="DQM EMU">
+        <annotations/>
+        <param property="chambersWithBwords" column="FCT_CH_WITH_BWORDS" measure="SUM">ALL_CHAMBERS_WITH_BWORDS</param>
+        <param property="chambersWithFormatErrors" column="FCT_CH_WITH_FORMAT_ERRORS" measure="SUM">ALL_CHAMBERS_WITH_FORMAT_ERRORS</param>
+        <param property="chambersWithInputFifoFull" column="FCT_CH_WITH_INPUT_FIFO_FULL" measure="SUM">ALL_CHAMBERS_WITH_INPUT_FIFO_FULL</param>
+        <param property="chambersWithInputTimeout" column="FCT_CHA_WITH_INPUT_TIMEOUT" measure="SUM">ALL_CHAMBERS_WITH_INPUT_TIMEOUT</param>
+        <param property="chambersWithL1aOutOfSync" column="FCT_CH_WITH_L1A_OUT_OF_SYNC" measure="SUM">ALL_CHAMBERS_WITH_L1A_OUT_OF_SYNC</param>
+        <param property="chambersWithoutAlct" column="FCT_CH_WITHOUT_ALCT" measure="SUM">ALL_CHAMBERS_WITHOUT_ALCT</param>
+        <param property="chambersWithoutCfeb" column="FCT_CH_WITHOUT_CFEB" measure="SUM">ALL_CHAMBERS_WITHOUT_CFEB</param>
+        <param property="chambersWithoutClct" column="FCT_CH_WITHOUT_CLCT" measure="SUM">ALL_CHAMBERS_WITHOUT_CLCT</param>
+        <param property="chambersWithoutData" column="FCT_CH_WITHOUT_DATA" measure="SUM">ALL_CHAMBERS_WITHOUT_DATA</param>
+
+        <param property="chamberEventsCounter" column="FCT_CH_EVENTS_COUNTER" measure="SUM">ALL_CHAMBER_EVENTS_COUNTER</param>
+        <param property="chamberEventsAverage" column="FCT_CH_EVENTS_AVERAGE" measure="AVG">ALL_CHAMBER_EVENTS_AVERAGE</param>
+
+        <param property="dduEventsCounter" column="FCT_DDU_EVENTS_COUNTER" measure="SUM">ALL_DDU_EVENTS_COUNTER</param>
+        <param property="dduEventsAverage" column="FCT_DDU_EVENTS_AVERAGE" measure="AVG">ALL_DDU_EVENTS_AVERAGE</param>
+
+        <param property="dduInputInErrorState" column="FCT_DDU_INPUT_IN_ERROR_STATE" measure="SUM">ALL_DDU_INPUT_IN_ERROR_STATE</param>
+        <param property="dduWithInputInErrorState" column="FCT_DDU_WITH_INPUT_IN_ERROR_STATE" measure="SUM">ALL_DDU_WITH_INPUT_IN_ERROR_STATE</param>
+
+        <param property="dduInputInWarningState" column="FCT_DDU_INPUT_IN_WARNING_STATE" measure="SUM">ALL_DDU_INPUT_IN_WARNING_STATE</param>
+        <param property="dduWithInputInWarningState" column="FCT_DDU_WITH_INPUT_IN_WARN_STATE" measure="SUM">ALL_DDU_WITH_INPUT_IN_WARN_STATE</param>
+
+        <param property="dduInReadout" column="FCT_DDU_IN_READOUT" measure="SUM">ALL_DDU_IN_READOUT</param>
+        <param property="dduWithData" column="FCT_DDU_WITH_DATA" measure="SUM">ALL_DDU_WITH_DATA</param>
+        <param property="dduWithFormatErrors" column="FCT_DDU_WITH_FORMAT_ERRORS" measure="SUM">ALL_DDU_WITH_FORMAT_ERRORS</param>
+        <param property="dduWithLiveInputs" column="FCT_DDU_WITH_LIVE_INPUTS" measure="SUM">ALL_DDU_WITH_LIVE_INPUTS</param>
+        <param property="chambersHot" column="FCT_HOT_CHAMBERS" measure="SUM">ALL_HOT_CHAMBERS</param>
+        <param property="dduInReadoutHot" column="FCT_HOT_DDU_IN_READOUT" measure="SUM">ALL_HOT_DDU_IN_READOUT</param>
+        <param property="dduInReadoutLow" column="FCT_LOW_DDU_IN_READOUT" measure="SUM">ALL_LOW_DDU_IN_READOUT</param>
+
+        <param property="chambersLowEfficiency" column="FCT_LOW_EFF_CHAMBERS" measure="SUM">ALL_LOW_EFF_CHAMBERS</param>
+        <param property="dduNotInReadout" column="FCT_NO_DDU_IN_READOUT" measure="SUM">ALL_NO_DDU_IN_READOUT</param>
+    </class>
+
+    <class name="DqmDduFact" table="CDW_DQM_DDU_FACTS" componentClass="DDU" factTitle="DQM DDU">
+        <annotations/>
+        <param fraction="1" property="withFormatErrors" column="FCT_WITH_FORMAT_ERRORS" measure="SUM">DDU_WITH_FORMAT_ERRORS</param>
+        <param fraction="1" property="withTrailerErrors" column="FCT_WITH_TRAILER_ERRORS" measure="SUM">DDU_WITH_TRAILER_ERRORS</param>
+    </class>
+
+    <class name="DqmDduInputFact" table="CDW_DQM_DDU_INPUT_FACTS" componentClass="DDUInput" factTitle="DQM DDU Input">
+        <annotations/>
+        <param property="inputInErrorState" column="FCT_INPUT_IN_ERROR_STATE" measure="SUM">DDU_INPUT_IN_ERROR_STATE</param>
+        <param property="inputInWarningState" column="FCT_INPUT_IN_WARN_STATE" measure="SUM">DDU_INPUT_IN_WARNING_STATE</param>
+        <param property="inputNoData" column="FCT_NO_INPUT_DATA" measure="SUM">DDU_NO_INPUT_DATA</param>
+    </class>
+
+    <class name="DqmCscFact" table="CDW_DQM_CSC_FACTS" componentClass="Chamber" factTitle="DQM Chamber">
+        <annotations>
+            <ann:annotate xmlns:ann="http://jaxb.dev.java.net/plugin/annotate" xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                <a:FactAnn limitComponents="Chamber" title="DQM Chamber"/>
+            </ann:annotate>
+        </annotations>
+        <param fraction="1" property="hotChamber" column="FCT_HOT_CHAMBER" measure="SUM">CSC_HOT_CHAMBER</param>
+        <param fraction="1" property="lowEfficiencyChamber" column="FCT_LOW_EFF_CHAMBER" measure="SUM">CSC_LOW_EFF_CHAMBER</param>
+        <param fraction="1" property="withBwords" column="FCT_WITH_BWORDS" measure="SUM">CSC_WITH_BWORDS</param>
+        
+        <param fraction="1" property="withFormatErrors" column="FCT_WITH_FORMAT_ERRORS" measure="SUM">CSC_WITH_FORMAT_ERRORS</param>
+        <param fraction="1" property="formatErrorDmbTrailerMissing" column="FCT_FORMAT_ERRORS_BIT1" measure="SUM">CSC_FORMAT_ERRORS_BIT1</param>
+        <param fraction="1" property="formatErrorDmbHeaderMissing" column="FCT_FORMAT_ERRORS_BIT2" measure="SUM">CSC_FORMAT_ERRORS_BIT2</param>
+        <param fraction="1" property="formatErrorAlctTrailerMissing" column="FCT_FORMAT_ERRORS_BIT3" measure="SUM">CSC_FORMAT_ERRORS_BIT3</param>
+        <param fraction="1" property="formatErrorAlctHeaderMissing" column="FCT_FORMAT_ERRORS_BIT4" measure="SUM">CSC_FORMAT_ERRORS_BIT4</param>
+        <param fraction="1" property="formatErrorAlctWordCountError" column="FCT_FORMAT_ERRORS_BIT5" measure="SUM">CSC_FORMAT_ERRORS_BIT5</param>
+        <param fraction="1" property="formatErrorAlctCrcError" column="FCT_FORMAT_ERRORS_BIT6" measure="SUM">CSC_FORMAT_ERRORS_BIT6</param>
+        <param fraction="1" property="formatErrorAlctTrailerBitError" column="FCT_FORMAT_ERRORS_BIT7" measure="SUM">CSC_FORMAT_ERRORS_BIT7</param>
+        <param fraction="1" property="formatErrorTmbTrailerMissing" column="FCT_FORMAT_ERRORS_BIT8" measure="SUM">CSC_FORMAT_ERRORS_BIT8</param>
+        <param fraction="1" property="formatErrorTmbHeaderMissing" column="FCT_FORMAT_ERRORS_BIT9" measure="SUM">CSC_FORMAT_ERRORS_BIT9</param>
+        <param fraction="1" property="formatErrorTmbWordCountError" column="FCT_FORMAT_ERRORS_BIT10" measure="SUM">CSC_FORMAT_ERRORS_BIT10</param>
+        <param fraction="1" property="formatErrorTmbCrcError" column="FCT_FORMAT_ERRORS_BIT11" measure="SUM">CSC_FORMAT_ERRORS_BIT11</param>
+        <param fraction="1" property="formatErrorCfebWordCountPerSampleError" column="FCT_FORMAT_ERRORS_BIT12" measure="SUM">CSC_FORMAT_ERRORS_BIT12</param>
+        <param fraction="1" property="formatErrorCfebSampleCountError" column="FCT_FORMAT_ERRORS_BIT13" measure="SUM">CSC_FORMAT_ERRORS_BIT13</param>
+        <param fraction="1" property="formatErrorCfebCrcError" column="FCT_FORMAT_ERRORS_BIT14" measure="SUM">CSC_FORMAT_ERRORS_BIT14</param>
+        <param fraction="1" property="formatErrorDduEventSizeLimitError" column="FCT_FORMAT_ERRORS_BIT15" measure="SUM">CSC_FORMAT_ERRORS_BIT15</param>
+        <param fraction="1" property="formatErrorC-Words" column="FCT_FORMAT_ERRORS_BIT16" measure="SUM">CSC_FORMAT_ERRORS_BIT16</param>
+        <param fraction="1" property="formatErrorAlctDavError" column="FCT_FORMAT_ERRORS_BIT17" measure="SUM">CSC_FORMAT_ERRORS_BIT17</param>
+        <param fraction="1" property="formatErrorTmbDavError" column="FCT_FORMAT_ERRORS_BIT18" measure="SUM">CSC_FORMAT_ERRORS_BIT18</param>
+        <param fraction="1" property="formatErrorCfebDavError" column="FCT_FORMAT_ERRORS_BIT19" measure="SUM">CSC_FORMAT_ERRORS_BIT19</param>
+
+        <param fraction="1" property="withInputFifoFull" column="FCT_WITH_INPUT_FIFO_FULL" measure="SUM">CSC_WITH_INPUT_FIFO_FULL</param>
+        <param fraction="1" property="withInputTimeout" column="FCT_WITH_INPUT_TIMEOUT" measure="SUM">CSC_WITH_INPUT_TIMEOUT</param>
+        <param fraction="1" property="withL1aOutOfSync" column="FCT_WITH_L1A_OUT_OF_SYNC" measure="SUM">CSC_WITH_L1A_OUT_OF_SYNC</param>
+        <param fraction="1" property="withoutAlct" column="FCT_WITHOUT_ALCT" measure="SUM">CSC_WITHOUT_ALCT</param>
+        <param fraction="1" property="withoutCfeb" column="FCT_WITHOUT_CFEB" measure="SUM">CSC_WITHOUT_CFEB</param>
+        <param fraction="1" property="withoutClct" column="FCT_WITHOUT_CLCT" measure="SUM">CSC_WITHOUT_CLCT</param>
+    </class>
+
+    <class name="DqmCscAfebFact" table="CDW_DQM_CSC_AFEB_FACTS" componentClass="AFEB" factTitle="DQM AFEB">
+        <annotations/>
+        <param property="alctAfebNoisy" column="FCT_ALCT_AFEB_NOISY" measure="SUM">CSC_ALCT_AFEB_NOISY</param>
+        <param property="alctNoAnodeData" column="FCT_ALCT_NO_ANODE_DATA" measure="SUM">CSC_ALCT_NO_ANODE_DATA</param>
+    </class>
+
+    <class name="DqmCscCfebFact" table="CDW_DQM_CSC_CFEB_FACTS" componentClass="CFEB" factTitle="DQM CFEB">
+        <annotations/>
+        <param fraction="1" property="withLowCfebDavEfficiency" column="FCT_WITH_LOW_CFEB_DAV_EFF" measure="SUM">CSC_WITH_LOW_CFEB_DAV_EFF</param>
+    </class>
+
+    <!--
+    <class name="DqmCscCfebSectorFact" table="CDW_DQM_CSC_CFEB_SECTOR_FACTS" componentClass="CFEBSection">
+        <annotations/>
+        <param fraction="1" property="cfebComparatorsLowEfficiency" column="FCT_CFEB_COMPARATORS_LOW_EFF">CSC_CFEB_COMPARATORS_LOW_EFF</param>
+        <param fraction="1" property="cfebComparatorsNoisy" column="FCT_CFEB_COMPARATORS_NOISY">CSC_CFEB_COMPARATORS_NOISY</param>
+        <param fraction="1" property="cfebNoComparatorsData" column="FCT_CFEB_NO_COMPARATORS_DATA">CSC_CFEB_NO_COMPARATORS_DATA</param>
+        <param property="cfebNoScaData" column="FCT_CFEB_NO_SCA_DATA">CSC_CFEB_NO_SCA_DATA</param>
+        <param fraction="1" property="cfebScaLowEfficiency" column="FCT_CFEB_SCA_LOW_EFF">CSC_CFEB_SCA_LOW_EFF</param>
+        <param fraction="1" property="cfebScaNoisy" column="FCT_CFEB_SCA_NOISY">CSC_CFEB_SCA_NOISY</param>
+    </class>
+
+    <class name="dqmCscCfebChannelFact" table="CDW_DQM_CSC_CFEB_CHANNEL_FACTS" componentClass="CFEBChannel">
+        <annotations/>
+        <param fraction="1" property="cfebComparatorsNoisyChannel" column="FCT_CFEB_COMPARATORS_NOISY_CHANNEL">CSC_CFEB_COMPARATORS_NOISY_CHANNEL</param>
+        <param fraction="1" property="cfebScaNoisyChannel" column="FCT_CFEB_SCA_NOISY_CHANNEL">CSC_CFEB_SCA_NOISY_CHANNEL</param>
+    </class>
+    -->
+
+    <class name="DqmCscHvSegmentFact" table="CDW_DQM_CSC_HV_SEGMENT_FACTS" componentClass="HVSegment" factTitle="DQM HV Segment">
+        <annotations/>
+        <param property="noHvSegment" column="FCT_NO_HV_SEGMENT" measure="SUM">CSC_NO_HV_SEGMENT</param>
+    </class>
+
+</classes>

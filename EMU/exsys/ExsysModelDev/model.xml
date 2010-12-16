@@ -1,0 +1,294 @@
+<?xml version="1.0"?>
+
+<project name="cdw-model-tasks" default="02-generate-model">
+
+    <import file="nbproject/build-impl.xml"/>
+
+    <property name="artifactId" value="hyperjaxb3-po-initial-ant"/>
+    <property name="version" value="0.5.4"/>
+    <property name="model" location="${basedir}/../ExsysModel" />
+    <property name="olap" location="${basedir}/../CdwOlap" />
+    <property name="kbase" location="${basedir}/../KnowledgeBase"/>
+    <property name="hj-libs" location="${basedir}/../lib/Hyperjaxb" />
+    <property name="plugin-dir" location="${basedir}/build/plugin"/>
+
+    <target name="-init-dev" depends="compile">
+        <path id="dev-classpath">
+            <pathelement path="${javac.classpath}"/>
+            <pathelement path="build/classes"/>
+            <pathelement path="${plugin-dir}"/>
+        </path>
+    </target>
+
+    <target name="build-plugins" depends="-init-dev">
+
+        <delete dir="${plugin-dir}" failonerror="false"/>
+        <mkdir dir="${plugin-dir}"/>
+
+        <javac destdir="build/plugin" classpathref="dev-classpath">
+            <src path="src"/>
+            <include name="org/jvnet/**"/>
+            <exclude name="org/cern/**"/>
+        </javac>
+
+        <copy todir="${plugin-dir}/META-INF/services">
+            <fileset dir="src/META-INF/services"/>
+        </copy>
+
+    </target>
+
+    <target name="hj-taskdef" depends="build-plugins">
+        <taskdef name="xjc" classname="org.jvnet.jaxb2_commons.xjc.XJC2Task">
+            <classpath>
+                <fileset dir="${hj-libs}">
+                    <include name="activation-*.jar"/>
+                    <include name="jaxb-api-*.jar"/>
+                    <include name="jaxb-impl-*.jar"/>
+                    <include name="jsr173_api-*.jar"/>
+                    <include name="stax-api-*.jar"/>
+                    <include name="jaxb-xjc-*.jar"/>
+                    <include name="codemodel-*.jar"/>
+                    <include name="dtd-parser-*.jar"/>
+                    <include name="istack-commons-tools-*.jar"/>
+                    <include name="relaxngDatatype-*.jar"/>
+                    <include name="resolver-*.jar"/>
+                    <include name="rngom-*.jar"/>
+                    <include name="xsom-*.jar"/>
+                    <include name="jaxb2-basics-ant-*.jar"/>
+                </fileset>
+            </classpath>
+        </taskdef>
+    </target>
+
+    <target name="01-prepare-ontology" depends="-init-dev">
+        <delete file="${kbase}/ontology/csc-ontology.owl" failonerror="false" />
+        <xslt style="${kbase}/ontology/ontology_generator.xsl"
+              in="${kbase}/ontology/ontology_template.xml"
+              out="${kbase}/ontology/csc-ontology.owl"/>
+    </target>
+
+    <target name="generate-ontology-schema">
+        <delete file="${model}/src/java/org/cern/cms/csc/dw/schema/ontologyClassifiers.xsd" failonerror="false" />
+        <xslt style="src/org/cern/cms/csc/dw/dev/template/ontologyClassifiers.xsl"
+              in="${kbase}/ontology/csc-ontology.owl"
+              out="${model}/src/java/org/cern/cms/csc/dw/schema/ontologyClassifiers.xsd"/>
+    </target>
+
+    <target name="db-properties" depends="-init-dev">
+
+        <property name="sqlbase" location="src/org/cern/cms/csc/dw/dev/sql/"/>
+
+        <!-- Copy over persistence configuration -->
+        <delete file="build/classes/META-INF/persistence.xml"/>
+        <copy file="${model}/src/conf/persistence.xml" todir="build/classes/META-INF"/>
+
+        <!-- Create database properties file -->
+        <delete file="build/classes/META-INF/persistence.properties" failonerror="false" />
+        <xslt style="src/org/cern/cms/csc/dw/dev/template/persistenceProperties.xsl"
+              in="build/classes/META-INF/persistence.xml"
+              out="build/classes/META-INF/persistence.properties"/>
+
+        <!-- Load JPA connection properties and remove file -->
+        <property file="build/classes/META-INF/persistence.properties"/>
+        <delete file="build/classes/META-INF/persistence.properties" failonerror="true" />
+
+    </target>
+
+    <target name="03-upgrade-db" depends="db-properties">
+
+        <!-- 1st STAGE -->
+
+        <java classname="org.cern.cms.csc.dw.dev.DatabaseUpdater" fork="true" failonerror="true" classpathref="dev-classpath">
+            <jvmarg line="-Xmn100M -Xms500M -Xmx500M -Xss100M"/>
+        </java>
+
+        <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
+            delimiter="/" keepformat="true" delimitertype="row" onerror="continue" classpathref="dev-classpath">
+            <transaction src="${sqlbase}/cdw_updatedb_stage01.sql"/>
+        </sql>
+
+        <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
+            delimiter="/" keepformat="true" delimitertype="row" onerror="abort" classpathref="dev-classpath">
+            <transaction src="${sqlbase}/cdw_utility.sql"/>
+        </sql>
+
+        <!-- 2nd STAGE -->
+
+        <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
+            delimiter="/" keepformat="true" delimitertype="row" onerror="abort" print="true" output="partitions.tmp.sql" classpathref="dev-classpath">
+            <transaction src="${sqlbase}/cdw_updatedb_stage02.sql"/>
+        </sql>
+
+        <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
+            delimiter="/" keepformat="true" delimitertype="row" onerror="continue" print="true" classpathref="dev-classpath">
+            <transaction src="partitions.tmp.sql"/>
+        </sql>
+
+        <delete file="partitions.tmp.sql"/>
+
+        <!-- 3rd STAGE -->
+
+        <java classname="org.cern.cms.csc.dw.dev.DatabaseUpdater" fork="true" failonerror="true" classpathref="dev-classpath">
+            <jvmarg line="-Xmn100M -Xms500M -Xmx500M -Xss100M"/>
+        </java>
+        
+        <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
+            delimiter="/" keepformat="true" delimitertype="row" onerror="continue" classpathref="dev-classpath">
+            <transaction src="${sqlbase}/cdw_updatedb_stage03.sql"/>
+        </sql>
+
+    </target>
+
+    <target name="04-ontology-graph" depends="-init-dev">
+
+        <!-- Remove graph db -->
+        <delete dir="${model}/src/graphdb" includeemptydirs="true" includes="**/*" excludes="CVS"/>
+
+        <!-- Execute main data import procedure -->
+        <java classname="org.cern.cms.csc.dw.dev.OntologyGraphImporter" fork="true" failonerror="true" classpathref="dev-classpath">
+            <jvmarg line="-Xmn100M -Xms500M -Xmx500M -Xss50M"/>
+            <arg value="--owl=${kbase}/ontology/csc-ontology.owl"/>
+            <arg value="--dest=${model}/src/graphdb"/>
+        </java>
+
+        <zip destfile="graphdb.zip" basedir="${model}/src/graphdb"/>
+        <move file="graphdb.zip" tofile="${model}/src/graphdb/graphdb.zip"/>
+
+    </target>
+
+    <target name="05-ontology-graph-to-database" depends="db-properties">
+
+        <!-- Execute pre-import SQL files -->
+        <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
+            delimiter="/" keepformat="true" delimitertype="row" onerror="abort" classpathref="dev-classpath">
+            <transaction src="${sqlbase}/cdw_ontology_pre_import.sql"/>
+        </sql>
+
+        <!-- Execute main data import procedure -->
+        <java classname="org.cern.cms.csc.dw.dev.OntologyGraphToDatabaseImporter" fork="true" failonerror="true" classpathref="dev-classpath">
+            <jvmarg line="-Xmn100M -Xms500M -Xmx500M -Xss50M"/>
+            <arg value="--gdb=${model}/src/graphdb"/>
+        </java>
+
+        <!-- Execute post-import SQL files -->
+        <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
+            delimiter="/" keepformat="true" delimitertype="row" autocommit="true" onerror="abort" classpathref="dev-classpath">
+            <transaction src="${sqlbase}/cdw_ontology_post_import.sql"/>
+        </sql>
+
+    </target>
+
+    <target name="generate-fact-schema">
+        <delete file="${model}/src/java/org/cern/cms/csc/dw/schema/dqmFact.xsd" failonerror="false" />
+        <xslt style="src/org/cern/cms/csc/dw/dev/template/dqmFactSchema.xsl"
+              in="src/org/cern/cms/csc/dw/dev/xml/dqmParameters.xml"
+              out="${model}/src/java/org/cern/cms/csc/dw/schema/dqmFact.xsd"/>
+    </target>
+
+    <target name="02-generate-model" depends="-init-dev,generate-ontology-schema,generate-fact-schema,hj-taskdef">
+
+        <xjc destdir="${model}/src/java" extension="true">
+            <arg line="
+                -Xhyperjaxb3-ejb
+                -Xinheritance
+                -XClassUtils
+                -XAnnotate
+                -XEnumValueGetter
+                -simple-preserve"/>
+            <schema file="${model}/src/java/org/cern/cms/csc/dw/schema/cdw.xsd"/>
+            <schema file="${model}/src/java/org/cern/cms/csc/exsys/re/schema/re.xsd"/>
+            <classpath>
+                <pathelement path="${javac.classpath}"/>
+                <pathelement path="build/classes"/>
+                <pathelement path="${plugin-dir}"/>
+            </classpath>
+        </xjc>
+
+        <!-- Make DataServiceEntity not an entity (cannot use <hj:ignore>, because that also affects subclasses) -->
+        <replace file="${model}/src/java/org/cern/cms/csc/dw/model/dse/DataServiceEntity.java">
+            <replacefilter token="@Entity" value="//@Entity"/>
+            <replacefilter token="@Table" value="//@Table"/>
+            <replacefilter token="@Inheritance" value="//@Inheritance"/>
+            <replacefilter token="@Id" value="//@Id"/>
+            <replacefilter token="@Column" value="//@Column"/>
+            <replacefilter token="@GeneratedValue" value="//@GeneratedValue"/>
+        </replace>
+
+        <!-- replaces dates like // Generated on: 2010.06.11 at 02:45:16 PM CEST  -->
+        <replaceregexp>
+            <regexp pattern="// Generated on: .*\n"/>
+            <substitution expression=""/>
+            <fileset dir="${model}/src/java/org/cern/cms/csc">
+                <include name="dw/model/**/*.java"/>
+                <include name="dw/service/**/*.java"/>
+                <include name="exsys/re/model/**/*.java"/>
+            </fileset>
+        </replaceregexp>
+
+        <!-- Fix ontology classes -->
+
+        <replace file="${model}/src/java/org/cern/cms/csc/dw/model/ontology/ComponentClass.java">
+            <replacefilter token="PARENT_COMPONENTCLASS_IDITEM" value="CCP_PARENT_CCL_ID"/>
+            <replacefilter token="CHILD_COMPONENTCLASS_IDITEM" value="CCP_CHILD_CCL_ID"/>
+        </replace>
+
+        <replace file="${model}/src/java/org/cern/cms/csc/dw/model/fact/FactCollection.java"
+            token="FACTSITEMS_FACTCOLLECTION_ID"
+            value="FIT_FCO_ID"/>
+
+        <replace file="${model}/src/java/org/cern/cms/csc/dw/model/fact/FactCollectionFactsItem.java">
+            <replacefilter token="FACTCOLLECTIONFACTSITEM" value="CDW_FACT_COLLECTION_ITEMS"/>
+            <replacefilter token="Hjid" value="Id"/>
+            <replacefilter token="hjid" value="id"/>
+            <replacefilter token="HJID" value="FIT_ID"/>
+            <replacefilter token="ITEMNAME" value="FIT_TYPE"/>
+            <replacefilter token="ITEMVALUE_FACTCOLLECTIONFACT_0" value="FIT_FCT_ID"/>
+        </replace>
+
+        <delete failonerror="false">
+            <fileset dir="${model}/src/java/org/cern/cms/csc/dw/model" includes="**/*.java.backup"/>
+            <fileset dir="${model}/src/java/org/cern/cms/csc/dw/service" includes="**/*.java.backup"/>
+            <fileset dir="${model}/src/java/org/cern/cms/csc/exsys/re/model" includes="**/*.java.backup"/>
+        </delete>
+
+    </target>
+
+    <target name="06-olap-definitions" depends="db-properties">
+
+        <!-- Execute main olap definition generation procedure -->
+        <java classname="org.cern.cms.csc.dw.dev.OlapGenerator" fork="false" failonerror="true" classpathref="dev-classpath">
+            <jvmarg line="-Xmn100M -Xms500M -Xmx500M -Xss50M"/>
+            <arg value="--db=${hibernate.connection.username}"/>
+            <arg value="--gdb=${model}/src/graphdb"/>
+            <arg value="--dest=${olap}/web/WEB-INF"/>
+            <arg value="--hxml=src/org/cern/cms/csc/dw/dev/xml/OlapHierarchies.xml"/>
+        </java>
+
+    </target>
+
+    <target name="07-olap-database" depends="db-properties">
+
+        <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
+            delimiter="/" keepformat="true" delimitertype="row" onerror="continue" classpathref="dev-classpath">
+            <transaction src="${olap}/web/WEB-INF/olap.sql"/>
+        </sql>
+
+    </target>
+
+    <target name="08-repartition-tables" depends="db-properties">
+
+        <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
+            delimiter="/" keepformat="true" delimitertype="row" onerror="abort" classpathref="dev-classpath" print="true">
+            <transaction>
+                begin
+                  cdw_utility.repartition_tables;
+                end;
+            </transaction>
+            <transaction>
+                select '[' || table_name || '] ok until ' || to_char(cdw_utility.max_table_partition(table_name),'YYYY-MM-DD') "table limit" from USER_TAB_PARTITIONS where table_name like 'CDW_%' group by table_name
+            </transaction>
+        </sql>
+
+    </target>
+
+</project>
