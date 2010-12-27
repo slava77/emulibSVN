@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- Use this file to generate the CSC ontology as follows: -->
+<!-- xsltproc ontology_generator.xsl ontology_template.xml -->
+
+<!DOCTYPE Ontology [
+   <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+   <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+   <!ENTITY csc "http://www.cern.ch/cms/csc.owl#" >
+]>
+
+<Ontology xmlns="http://www.w3.org/2006/12/owl2-xml#"
+	  xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
+	  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	  xmlns:ontology="http://www.cern.ch/cms/csc/ontology.owl#"
+	  xmlns:owl="http://www.w3.org/2002/07/owl#"
+	  xmlns:xsd="&xsd;"
+	  xmlns:csc="&csc;"
+	  xmlns:rdfs="&rdfs;"
+	  xmlns:dc="http://purl.org/dc/elements/1.1/"
+	  xmlns:templ="http://www.cern.ch/cms/csc/owl-template"
+	  URI="http://www.cern.ch/cms/csc.owl">
+
+
+  <!-- declarations and relations of individuals -->
+  <templ:individuals>
+    <templ:chambers source="mappings/RUI-to-chamber_mapping.xml"/>
+    <templ:SectorProc source="mappings/RUI-to-chamber_mapping.xml"/>
+    <templ:PSidePCrates source="mappings/VME_plus_20091005_pretrigger3.xml"/>
+    <templ:MSidePCrates source="mappings/VME_minus_20091005_pretrigger3.xml"/>
+    <templ:FEDCrates source="mappings/RUI-to-chamber_mapping.xml"/>
+    <templ:PSideFMM source="mappings/config_plus_global.xml"/>
+    <templ:MSideFMM source="mappings/config_minus_global.xml"/>
+    <templ:TFFMM source="mappings/config_tf_global.xml"/>
+    <templ:lDAQChain source="mappings/RUI-to-chamber_mapping.xml"/>
+    <templ:lDAQFarm source="mappings/RUI-to-computer_mapping.xml"/>
+    <templ:LTCandTTC/>
+    <templ:HV source="mappings/hvMapping.xml"/>
+    <templ:HVSegments source="mappings/HVChannelToSegment.xml"/>
+    <templ:HVDubna source="mappings/CAEN_HV_ME11.xml"/>
+    <templ:LV source="mappings/lvMapping.xml"/>
+    <templ:Gas source="mappings/GasSystem.xml"/>
+    <templ:FactProviders source="mappings/fact_providers.xml"/>
+    <templ:DcsSoftware source="mappings/dcs_software.xml"/>
+    <templ:CoolingCircuits/>
+    <templ:Dummies/>
+  </templ:individuals>
+
+
+
+  <!-- class declarations -->
+  <Declaration><Class URI="&csc;LogicalDomain"/></Declaration>
+  <Declaration><Class URI="&csc;LogicalComponent"/></Declaration>
+  <Declaration><Class URI="&csc;FactProvider"/></Declaration>
+
+  <Declaration><Class URI="&csc;CSC"/></Declaration>
+  <Declaration><Class URI="&csc;Endcap"/></Declaration>
+  <Declaration><Class URI="&csc;Station"/></Declaration>
+  <Declaration><Class URI="&csc;Ring"/></Declaration>
+  <Declaration><Class URI="&csc;Chamber"/></Declaration>
+  <Declaration><Class URI="&csc;Layer"/></Declaration>
+
+  <Declaration><Class URI="&csc;FEDSystem"/></Declaration>
+
+  <Declaration><Class URI="&csc;Device"/></Declaration>
+  <Declaration><Class URI="&csc;DataDevice"/></Declaration>
+  <Declaration><Class URI="&csc;HVDevice"/></Declaration>
+  <Declaration><Class URI="&csc;LVDevice"/></Declaration>
+  <Declaration><Class URI="&csc;GasDevice"/></Declaration>
+  <Declaration><Class URI="&csc;CoolingDevice"/></Declaration>
+  <Declaration><Class URI="&csc;ComputingDevice"/></Declaration>
+
+  <Declaration><Class URI="&csc;DataChannel"/></Declaration>
+
+  <Declaration><Class URI="&csc;Software"/></Declaration>
+  <Declaration><Class URI="&csc;DCS"/></Declaration>
+
+  <Declaration><Class URI="&csc;PeripheralCrate"/></Declaration>
+  <Declaration><Class URI="&csc;FEDCrate"/></Declaration>
+
+  <Declaration><Class URI="&csc;Computer"/></Declaration>
+  <Declaration><Class URI="&csc;/dev/schar"/></Declaration>
+
+  <Declaration><Class URI="&csc;RUI"/></Declaration>
+  <Declaration><Class URI="&csc;TFRUI"/></Declaration>
+
+  <Declaration><Class URI="&csc;EmuMonitor"/></Declaration>
+
+  <Declaration><Class URI="&csc;DDU"/></Declaration>
+  <Declaration><Class URI="&csc;TFDDU"/></Declaration>
+  <Declaration><Class URI="&csc;DDUInput"/></Declaration>
+  <Declaration><Class URI="&csc;DCC"/></Declaration>
+  <Declaration><Class URI="&csc;Slink"/></Declaration>
+  <Declaration><Class URI="&csc;DMB"/></Declaration>
+  <Declaration><Class URI="&csc;SectorProcessor"/></Declaration>
+  <Declaration><Class URI="&csc;SectorProcessorInput"/></Declaration>
+  <Declaration><Class URI="&csc;ALCT"/></Declaration>
+  <Declaration><Class URI="&csc;RAT"/></Declaration>
+  <Declaration><Class URI="&csc;TMB"/></Declaration>
+  <Declaration><Class URI="&csc;AFEB"/></Declaration>
+  <Declaration><Class URI="&csc;CFEB"/></Declaration>
+  <Declaration><Class URI="&csc;VCC"/></Declaration>
+  <Declaration><Class URI="&csc;CCB"/></Declaration>
+  <Declaration><Class URI="&csc;MPC"/></Declaration>
+  <Declaration><Class URI="&csc;PCrateRack"/></Declaration>
+
+  <Declaration><Class URI="&csc;TTC"/></Declaration>
+  <Declaration><Class URI="&csc;LTC"/></Declaration>
+
+  <Declaration><Class URI="&csc;HVPrimary"/></Declaration>
+  <Declaration><Class URI="&csc;HVMaster"/></Declaration>
+  <Declaration><Class URI="&csc;HVDistribution"/></Declaration>
+  <Declaration><Class URI="&csc;HVSegment"/></Declaration>
+  <Declaration><Class URI="&csc;HVRack"/></Declaration>
+  <Declaration><Class URI="&csc;HVCrate"/></Declaration>
+  <Declaration><Class URI="&csc;HVBoard"/></Declaration>
+  <Declaration><Class URI="&csc;HVChannel"/></Declaration>
+
+
+  <Declaration><Class URI="&csc;Maraton"/></Declaration>
+
+
+  <Declaration><Class URI="&csc;GasMixerInputLine"/></Declaration>
+  <Declaration><Class URI="&csc;GasRack"/></Declaration>
+  <Declaration><Class URI="&csc;GasChannel"/></Declaration>
+
+  <Declaration><Class URI="&csc;RackTurbine"/></Declaration>
+  <Declaration><Class URI="&csc;CoolingCircuit"/></Declaration>
+
+  <!-- class descriptions -->
+  <EntityAnnotation><Class URI="&csc;LogicalDomain"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A set of items that logically belong together.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;LogicalComponent"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A set of components that logically belong together.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;FactProvider"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A fact-providing SW component. Only members of this class may act as a source of facts to the Expert System.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;CSC"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Cathode Strip Chambers, the totality of the endcap muon cathode strip chambers. Naming: ME</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;Endcap"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">The collection of all the endcap muon cathode strip chambers on one side. Naming: ME&lt;e&gt;, e: endcap [+-]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;Station"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">The collection of all the endcap muon cathode strip chambers in one station. Naming: ME&lt;e&gt;&lt;s&gt;, e: endcap [+-], s: station [1..4]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;Ring"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">The collection of all the endcap muon cathode strip chambers in one ring. Naming: ME&lt;e&gt;&lt;s&gt;/&lt;r&gt;, e: endcap [+-], s: station [1..4], r: ring [1..3]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;Chamber"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A cathode strip chamber. Naming: ME&lt;e&gt;&lt;s&gt;/&lt;r&gt;/&lt;c&gt;, e: endcap [+-], s: station [1..4], r: ring [1..3], c: chamber [01..36]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;Layer"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A layer in a cathode strip chamber. Naming: ME&lt;e&gt;&lt;s&gt;/&lt;r&gt;/&lt;c&gt;/&lt;l&gt;, e: endcap [+-], s: station [1..4], r: ring [1..3], c: chamber [01..36], l: layer [1..6]</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;PeripheralCrate"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A peripheral crate (mounted on the periphery of the detector). Naming: VME&lt;e&gt;&lt;s&gt;/&lt;v&gt; or VME&lt;e&gt;&lt;s&gt;_&lt;v&gt;, e: endcap [+-] or [pm], s: station [1..4], v: VME (or sector) number [01..12] or [1..12]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;FEDCrate"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A crate hosting Front End Drivers (DDUs, DCCs). Naming: FEDCrate&lt;n&gt;, n: crate number</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;FEDSystem"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">FED (sub)sytem. Naming: FED/&lt;s&gt; s: [ME+,ME-,TF]</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;Computer"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">The alias of a computer.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;/dev/schar"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A simple character device used for reading out a hardware component (e.g. DDU). Naming: /dev/schar&lt;n&gt;, n: device number [1..4]</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;Software"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A software application.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;DCS"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">DCS software module (not only PVSS projects).</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;RUI"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Readout Unit Input is a software application reading out the DDU of the same instance. Naming: RUI&lt;i&gt;, i: zero-padded instance number [00..36].</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;TFRUI"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">TrackFinder Readout Unit Input is a software application reading out the TrackFinder DDU. It is the RUI of instance 0. Naming: RUI00</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;EmuMonitor"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">EmuMonitor is a software application for analyzing data coming from RUI. Naming: EmuMonitor&lt;i&gt;, i: zero-padded instance number [00..36].</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;Device"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A hardware device.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;DataDevice"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A hardware device for handling trigger information and/or data.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;HVDevice"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A hardware device for high voltage.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;LVDevice"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A hardware device for low voltage.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;GasDevice"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A hardware device for cooling.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;CoolingDevice"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A hardware device for cooling.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;ComputingDevice"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A computer hardware piece.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;DataChannel"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An input or output data or trigger channel.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;DDU"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Device Dependent Unit (a.k.a. Front End Driver, a VME board). Naming: DDU&lt;n&gt;, n: DDU number [00-36]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;TFDDU"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Device Dependent Unit (a.k.a. Front End Driver, a VME board) reading Track Finder's Sector Processors' data. Naming: DDU00</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;DDUInput"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An input channel to a Device Dependent Unit. Naming: DDU&lt;n&gt;Input&lt;i&gt;, n: DDU number [00-36] or [0-36], i: input channel number [0-14]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;DCC"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Data Concentrator Card (a VME board). Naming: DCC&lt;f&gt;, f: FMM id [750..760]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;Slink"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An output channel from the DCC to the global DAQ. Naming: Slink&lt;f&gt;, f: FMM id [750..760]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;DMB"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">DAQ Motherboard. Naming: ME&lt;e&gt;&lt;s&gt;/&lt;r&gt;/&lt;c&gt;/DMB, e: endcap [+-], s: station [1..4], r: ring [1..3], c: chamber [01..36]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;SectorProcessor"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Sector Processor. Naming: SectorProcessor&lt;n&gt;, n: sector processor number [01..12]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;SectorProcessorInput"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Input to Sector Processor. Naming: SectorProcessor&lt;n&gt;InputF&lt;f&gt;/M&lt;m&gt;, n: sector processor number [01..12], f: front FPGA [1..5], m: muon [1..3]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;ALCT"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Anode Local Charged Track. Naming: ME&lt;e&gt;&lt;s&gt;/&lt;r&gt;/&lt;c&gt;/ALCT, e: endcap [+-], s: station [1..4], r: ring [1..3], c: chamber [01..36]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;RAT"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">RPC and ALCT interface card. Naming: ME&lt;e&gt;&lt;s&gt;/&lt;r&gt;/&lt;c&gt;/RAT, e: endcap [+-], s: station [1..4], r: ring [1..3], c: chamber [01..36]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;TMB"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Trigger Motherboard. Naming: ME&lt;e&gt;&lt;s&gt;/&lt;r&gt;/&lt;c&gt;/TMB, e: endcap [+-], s: station [1..4], r: ring [1..3], c: chamber [01..36]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;AFEB"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Anode Front End Board. Naming: ME&lt;e&gt;&lt;s&gt;/&lt;r&gt;/&lt;c&gt;/AFEB&lt;a&gt;, e: endcap [+-], s: station [1..4], r: ring [1..3], c: chamber [01..36], a: AFEB number [1..42]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;CFEB"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Cathode Front End Board. Naming: ME&lt;e&gt;&lt;s&gt;/&lt;r&gt;/&lt;c&gt;/CFEB&lt;n&gt;, e: endcap [+-], s: station [1..4], r: ring [1..3], c: chamber [01..36], n: CFEB number [0..4]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;VCC"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">VME Crate Controller. Naming: VME&lt;e&gt;&lt;s&gt;/&lt;v&gt;/VCC, e: endcap [+-], s: station [1..4], v: VME (or sector) number [01..12]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;CCB"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Clock and Control Board. Naming: VME&lt;e&gt;&lt;s&gt;/&lt;v&gt;/CCB, e: endcap [+-], s: station [1..4], v: VME (or sector) number [01..12]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;MPC"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Muon Port Card. Naming: VME&lt;e&gt;&lt;s&gt;/&lt;v&gt;/MPC, e: endcap [+-], s: station [1..4], v: VME (or sector) number [01..12]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;PCrateRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Peripheral crate rack. Naming: Rack&lt;rn&gt;, rn: rack name</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;TTC"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Timing, Trigger and Control</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;LTC"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Local Trigger Control</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;HVPrimary"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">High voltage primary. Naming: HVPrimary&lt;id&gt;, id: id (&lt;hostId&gt;_&lt;port&gt;_&lt;address&gt;)</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;HVMaster"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">High voltage master. Naming: HVMaster&lt;i&gt;, i: id number</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;HVDistribution"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV distribution board. Naming: HVDistribution&lt;i&gt;, i: id number</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;HVSegment"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV segment. Naming: &lt;layer&gt;/HVSegment&lt;s&gt;, layer: full name of layer, s: HV segment [1..5]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;HVRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV rack.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;HVCrate"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV crate for Dubna (ME1/1) chambers. Naming: CAEN/HVME11&lt;side&gt;, side: plus or minus endcap [PN]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;HVBoard"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV board for Dubna (ME1/1) chambers. Naming: CAEN/HVME11&lt;side&gt;/Board&lt;b&gt;, side: plus or minus endcap [PN], b: board number [00..14]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;HVChannel"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV channel for Dubna (ME1/1) chambers. Naming: CAEN/HVME11&lt;side&gt;/Board&lt;b&gt;/Channel&lt;c&gt;, side: plus or minus endcap [PN], b: board number [00..14], c: channel number [001..027]</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;Maraton"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Maraton low voltage power supply. Naming: Maraton&lt;i&gt;, i: Maraton id [01..38]</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;GasMixerInputLine"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Input line to the gas mixer. Naming: GasMixerInputLine&lt;i&gt;, i: input line number (1: CO2, 2: Ar, 3: CF4)</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;GasRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Gas rack. Naming: GasRack&lt;r&gt;, r: gas rack number [61..70]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;GasChannel"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Gas channel from supply gas rack to chambers to return gas rack. Naming: GasRack&lt;r&gt;Channel&lt;c&gt;, r: gas rack number [61..70], c: gas channel number [01..18]</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><Class URI="&csc;RackTurbine"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">Cooling turbine for Peripheral Crate Rack. Naming: Rack&lt;rn&gt;Turbine&lt;t&gt;, rn: rack name, t: turbine number [1..2]</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;CoolingCircuit"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A cooling circuit. Naming: CoolingCircuit1 ("Racks Circuit") or CoolingCircuit2 ("Endcap Circuit")</Constant></Annotation></EntityAnnotation>
+
+
+  <!-- property declarations -->
+
+  <Declaration><ObjectProperty URI="&csc;triggerPath"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;receivesTriggerFrom"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;sendsTriggerTo"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;receivesL1AFrom"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;sendsL1ATo"/></Declaration>
+
+  <Declaration><ObjectProperty URI="&csc;dataPath"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;receivesDataFrom"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;sendsDataTo"/></Declaration>
+
+  <Declaration><ObjectProperty URI="&csc;locationPath"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;isIn"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;contains"/></Declaration>
+
+  <Declaration><ObjectProperty URI="&csc;logicalComposition"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;isPartOf"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;consistsOf"/></Declaration>
+
+  <Declaration><ObjectProperty URI="&csc;controlPath"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;isControlledBy"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;controls"/></Declaration>
+
+  <Declaration><ObjectProperty URI="&csc;monitorPath"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;isMonitoredBy"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;monitors"/></Declaration>
+
+  <Declaration><ObjectProperty URI="&csc;powerSupplyPath"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;deliversHVTo"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;getsHVFrom"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;deliversLVTo"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;getsLVFrom"/></Declaration>
+
+  <Declaration><ObjectProperty URI="&csc;gasSupplyPath"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;deliversGasTo"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;getsGasFrom"/></Declaration>
+
+  <Declaration><ObjectProperty URI="&csc;coolingPath"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;cools"/></Declaration>
+  <Declaration><ObjectProperty URI="&csc;isCooledBy"/></Declaration>
+
+  <Declaration><DataProperty URI="&csc;hasName"/></Declaration>
+  <Declaration><DataProperty URI="&csc;isInConfiguration"/></Declaration>
+  <Declaration><DataProperty URI="&csc;hasFMM"/></Declaration>
+  <Declaration><DataProperty URI="&csc;hasHVChannel"/></Declaration>
+  <Declaration><DataProperty URI="&csc;hasPositionInRack"/></Declaration>
+  <Declaration><DataProperty URI="&csc;hasELMBId"/></Declaration>
+  <Declaration><DataProperty URI="&csc;hasDCSCrateNumber"/></Declaration>
+  <Declaration><DataProperty URI="&csc;hasGas"/></Declaration>
+  
+
+  <!-- property descriptions -->
+  <EntityAnnotation><ObjectProperty URI="&csc;triggerPath"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'triggerPath' B, then A sends or receives trigger to/from B directly or indirectly.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;receivesTriggerFrom"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'receivesTriggerFrom' B, then A receives trigger from B directly or indirectly. It is a transitive relation. Its inverse is 'sendsTriggerTo'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;sendsTriggerTo"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'sendsTriggerTo' B, then A sends trigger to B directly or indirectly. It is a transitive relation. Its inverse is 'receivesTriggerFrom'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;receivesL1AFrom"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'receivesL1AFrom' B, then A receives L1A from B directly or indirectly. It is a transitive relation. Its inverse is 'sendsL1ATo'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;sendsL1ATo"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'sendsL1ATo' B, then A sends L1A to B directly or indirectly. It is a transitive relation. Its inverse is 'receivesL1AFrom'.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><ObjectProperty URI="&csc;dataPath"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'dataPath' B, then A sends or receives data to/from B directly or indirectly.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;receivesDataFrom"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'receivesDataFrom' B, then A receives data from B directly or indirectly. It is a transitive relation. Its inverse is 'sendsDataTo'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;sendsDataTo"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'sendsDataTo' B, then A sends data to B directly or indirectly. It is a transitive relation. Its inverse is 'receivesDataFrom'.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><ObjectProperty URI="&csc;locationPath"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'locationPath' B, then A contains, or is in, B directly or indirectly.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;isIn"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'isIn' B, then A is in B directly or indirectly. It is a transitive relation. Its inverse is 'contains'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;contains"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'contains' B, then A contains B directly or indirectly. It is a transitive relation. Its inverse is 'isIn'.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><ObjectProperty URI="&csc;logicalComposition"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'logicalComposition' B, then A constists of, or is part of, B directly or indirectly.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;isPartOf"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'isPartOf' B, then A is a part of B directly or indirectly. It is a transitive relation. Its inverse is 'consistsOf'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;consistsOf"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'consistsOf' B, then A consists exclusively or inclusively of B directly or indirectly. It is a transitive relation. Its inverse is 'isPartOf'.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><ObjectProperty URI="&csc;controlPath"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'controlPath' B, then A controls, or is controlled by, B directly or indirectly.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;isControlledBy"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'isControlledBy' B, then A is controlled by B directly or indirectly. It is a transitive relation. Its inverse is 'controls'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;controls"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'controls' B, then A controls B directly or indirectly. It is a transitive relation. Its inverse is 'isControlledBy'.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><ObjectProperty URI="&csc;monitorPath"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'monitorPath' B, then A monitors, or is monitored by, B directly or indirectly.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;isMonitoredBy"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'isMonitoredBy' B, then A is monitored by B directly or indirectly. It is a transitive relation. Its inverse is 'monitors'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;monitors"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'monitors' B, then A monitors B directly or indirectly. It is a transitive relation. Its inverse is 'isMonitoredBy'.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><ObjectProperty URI="&csc;powerSupplyPath"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'powerSupplyPath' B, then A delivers or gets high or low voltage to/from B directly or indirectly.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;deliversHVTo"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'deliversHVTo' B, then A delivers high voltage to B directly or indirectly. It is a transitive relation. Its inverse is 'getsHVFrom'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;getsHVFrom"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'getsHVFrom' B, then A gets high voltage from B directly or indirectly. It is a transitive relation. Its inverse is 'deliversHVTo'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;deliversLVTo"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'deliversLVTo' B, then A delivers low voltage to B directly or indirectly. It is a transitive relation. Its inverse is 'getsLVFrom'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;getsLVFrom"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'getsLVFrom' B, then A gets low voltage B directly or indirectly. It is a transitive relation. Its inverse is 'deliversLVTo'.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><ObjectProperty URI="&csc;gasSupplyPath"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'gasSupplyPath' B, then A delivers or gets gas to/from B directly or indirectly.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;deliversGasTo"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'deliversGasTo' B, then A delivers gas to B directly or indirectly. It is a transitive relation. Its inverse is 'getsGasFrom'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;getsGasFrom"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'getsGasFrom' B, then A gets gas from B directly or indirectly. It is a transitive relation. Its inverse is 'deliversGasTo'.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><ObjectProperty URI="&csc;coolingPath"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'coolingPath' B, then A cools, or is cooled by, B directly or indirectly.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;cools"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'cools' B, then A cools B directly or indirectly. It is a transitive relation. Its inverse is 'isCooledBy'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><ObjectProperty URI="&csc;isCooledBy"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'isCooledBy' B, then A is cooled by B directly or indirectly. It is a transitive relation. Its inverse is 'cools'.</Constant></Annotation></EntityAnnotation>
+
+  <EntityAnnotation><DataProperty URI="&csc;hasName"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'hasName' B, then A is also known as B.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;isInConfiguration"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'isInConfiguration' is TRUE, then A is part of the configuration, otherwise it is excluded.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;hasFMM"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'hasFMM' B, then A has FMM (Fast Merging Module) number B assigned to it.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;hasHVChannel"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If a HV segment 'hasHVChannel' C, then it is supplied HV through channel number C.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;hasPositionInRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A peripheral crate 'hasPositionInRack' 'top' or 'bottom'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;hasELMBId"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If a peripheral crate 'hasELMBId' I, its ELMB id number is I.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;hasDCSCrateNumber"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If a peripheral crate 'hasDCSCrateNumber' N, it is known by DCS by number N.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;hasGas"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'hasGas' B, then A has gas B (e.g., CO2) in it.</Constant></Annotation></EntityAnnotation>
+  
+
+
+  <!-- class and property relations -->
+
+  <!-- Devices -->
+  <SubClassOf><Class URI="&csc;DataDevice"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVDevice"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;LVDevice"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;GasDevice"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;CoolingDevice"/><Class URI="&csc;Device"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;ComputingDevice"/><Class URI="&csc;Device"/></SubClassOf>
+
+  <!-- Software -->
+  <SubClassOf><Class URI="&csc;RUI"/><Class URI="&csc;Software"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;FactProvider"/><Class URI="&csc;Software"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;EmuMonitor"/><Class URI="&csc;Software"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;DCS"/><Class URI="&csc;Software"/></SubClassOf>
+
+  <!-- Data Channels -->
+  <SubClassOf><Class URI="&csc;DDUInput"/><Class URI="&csc;DataChannel"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;Slink"/><Class URI="&csc;DataChannel"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;/dev/schar"/><Class URI="&csc;DataChannel"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;SectorProcessorInput"/><Class URI="&csc;DataChannel"/></SubClassOf>
+
+  <!-- Data Devices -->
+  <SubClassOf><Class URI="&csc;ALCT"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;AFEB"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;CFEB"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;RAT"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;TMB"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;DMB"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;DDU"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;DCC"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;SectorProcessor"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;VCC"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;CCB"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;MPC"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;LTC"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;TTC"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;FEDCrate"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;PeripheralCrate"/><Class URI="&csc;DataDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;PCrateRack"/><Class URI="&csc;DataDevice"/></SubClassOf>
+
+  <!-- HV Devices -->
+  <SubClassOf><Class URI="&csc;HVPrimary"/><Class URI="&csc;HVDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVMaster"/><Class URI="&csc;HVDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVDistribution"/><Class URI="&csc;HVDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVCrate"/><Class URI="&csc;HVDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVBoard"/><Class URI="&csc;HVDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVChannel"/><Class URI="&csc;HVDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVSegment"/><Class URI="&csc;HVDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVRack"/><Class URI="&csc;HVDevice"/></SubClassOf>
+
+  <!-- LV Devices -->
+  <SubClassOf><Class URI="&csc;Maraton"/><Class URI="&csc;LVDevice"/></SubClassOf>
+
+  <!-- Computing Devices -->
+  <SubClassOf><Class URI="&csc;Computer"/><Class URI="&csc;ComputingDevice"/></SubClassOf>
+ 
+  <!-- Gas Devices -->
+  <SubClassOf><Class URI="&csc;GasMixerInputLine"/><Class URI="&csc;GasDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;GasRack"/><Class URI="&csc;GasDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;GasChannel"/><Class URI="&csc;GasDevice"/></SubClassOf>
+
+  <!-- Cooling Devices -->
+  <SubClassOf><Class URI="&csc;CoolingCircuit"/><Class URI="&csc;CoolingDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;RackTurbine"/><Class URI="&csc;CoolingDevice"/></SubClassOf>
+
+  <!-- Logical Components -->
+  <SubClassOf><Class URI="&csc;CSC"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;Endcap"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;Station"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;Ring"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;Chamber"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;Layer"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;FEDSystem"/><Class URI="&csc;LogicalComponent"/></SubClassOf>
+
+  <SubClassOf><Class URI="&csc;TFRUI"/><Class URI="&csc;RUI"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;TFDDU"/><Class URI="&csc;DDU"/></SubClassOf>
+
+  <!-- SubObjectPropertyOf -->
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;receivesTriggerFrom"/><ObjectProperty URI="&csc;triggerPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;sendsTriggerTo"/><ObjectProperty URI="&csc;triggerPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;receivesL1AFrom"/><ObjectProperty URI="&csc;triggerPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;sendsL1ATo"/><ObjectProperty URI="&csc;triggerPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;receivesDataFrom"/><ObjectProperty URI="&csc;dataPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;sendsDataTo"/><ObjectProperty URI="&csc;dataPath"/></SubObjectPropertyOf>
+
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;isIn"/><ObjectProperty URI="&csc;locationPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;contains"/><ObjectProperty URI="&csc;locationPath"/></SubObjectPropertyOf>
+
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;isPartOf"/><ObjectProperty URI="&csc;logicalComposition"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;consistsOf"/><ObjectProperty URI="&csc;logicalComposition"/></SubObjectPropertyOf>
+
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;isControlledBy"/><ObjectProperty URI="&csc;controlPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;controls"/><ObjectProperty URI="&csc;controlPath"/></SubObjectPropertyOf>
+
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;isMonitoredBy"/><ObjectProperty URI="&csc;monitorPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;monitors"/><ObjectProperty URI="&csc;monitorPath"/></SubObjectPropertyOf>
+
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;deliversHVTo"/><ObjectProperty URI="&csc;powerSupplyPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;getsHVFrom"/><ObjectProperty URI="&csc;powerSupplyPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;deliversLVTo"/><ObjectProperty URI="&csc;powerSupplyPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;getsLVFrom"/><ObjectProperty URI="&csc;powerSupplyPath"/></SubObjectPropertyOf>
+
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;deliversGasTo"/><ObjectProperty URI="&csc;gasSupplyPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;getsGasFrom"/><ObjectProperty URI="&csc;gasSupplyPath"/></SubObjectPropertyOf>
+
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;cools"/><ObjectProperty URI="&csc;coolingPath"/></SubObjectPropertyOf>
+  <SubObjectPropertyOf><ObjectProperty URI="&csc;isCooledBy"/><ObjectProperty URI="&csc;coolingPath"/></SubObjectPropertyOf>
+
+  <!-- InverseObjectProperties -->
+  <InverseObjectProperties><ObjectProperty URI="&csc;sendsDataTo"/><ObjectProperty URI="&csc;receivesDataFrom"/></InverseObjectProperties>
+  <InverseObjectProperties><ObjectProperty URI="&csc;sendsTriggerTo"/><ObjectProperty URI="&csc;receivesTriggerFrom"/></InverseObjectProperties>
+  <InverseObjectProperties><ObjectProperty URI="&csc;sendsL1ATo"/><ObjectProperty URI="&csc;receivesL1AFrom"/></InverseObjectProperties>
+  <InverseObjectProperties><ObjectProperty URI="&csc;isIn"/><ObjectProperty URI="&csc;contains"/></InverseObjectProperties>
+  <InverseObjectProperties><ObjectProperty URI="&csc;isPartOf"/><ObjectProperty URI="&csc;consistsOf"/></InverseObjectProperties>
+  <InverseObjectProperties><ObjectProperty URI="&csc;controls"/><ObjectProperty URI="&csc;isControlledBy"/></InverseObjectProperties>
+  <InverseObjectProperties><ObjectProperty URI="&csc;monitors"/><ObjectProperty URI="&csc;isMonitoredBy"/></InverseObjectProperties>
+  <InverseObjectProperties><ObjectProperty URI="&csc;deliversHVTo"/><ObjectProperty URI="&csc;getsHVFrom"/></InverseObjectProperties>
+  <InverseObjectProperties><ObjectProperty URI="&csc;deliversLVTo"/><ObjectProperty URI="&csc;getsLVFrom"/></InverseObjectProperties>
+  <InverseObjectProperties><ObjectProperty URI="&csc;deliversGasTo"/><ObjectProperty URI="&csc;getsGasFrom"/></InverseObjectProperties>
+  <InverseObjectProperties><ObjectProperty URI="&csc;cools"/><ObjectProperty URI="&csc;isCooledBy"/></InverseObjectProperties>
+
+  <!-- TransitiveObjectProperty -->
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;sendsDataTo"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;receivesDataFrom"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;sendsTriggerTo"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;receivesTriggerFrom"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;sendsL1ATo"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;receivesL1AFrom"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;isIn"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;contains"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;isPartOf"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;consistsOf"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;deliversHVTo"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;getsHVFrom"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;deliversLVTo"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;getsLVFrom"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;deliversGasTo"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;getsGasFrom"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;cools"/></TransitiveObjectProperty>
+  <TransitiveObjectProperty><ObjectProperty URI="&csc;isCooledBy"/></TransitiveObjectProperty>
+
+  <!-- DataPropertyRange -->
+  <DataPropertyRange><DataProperty URI="&csc;hasName"/><Datatype URI="&xsd;string"/></DataPropertyRange>
+  <DataPropertyRange><DataProperty URI="&csc;isInConfiguration"/><Datatype URI="&xsd;boolean"/></DataPropertyRange>
+  <DataPropertyRange><DataProperty URI="&csc;hasFMM"/><Datatype URI="&xsd;integer"/></DataPropertyRange>
+  <DataPropertyRange><DataProperty URI="&csc;hasGas"/><Datatype URI="&xsd;string"/></DataPropertyRange>
+
+  <!-- FunctionalDataProperty -->
+  <FunctionalDataProperty><DataProperty URI="&csc;isInConfiguration"/></FunctionalDataProperty>
+
+</Ontology>

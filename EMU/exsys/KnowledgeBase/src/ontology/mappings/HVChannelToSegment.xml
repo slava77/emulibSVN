@@ -1,0 +1,64 @@
+<!-- Legend: -->
+<!--    Dubna="false" : all but the ME+-1/1/* chambers -->
+<!--    type="large"  : ME+-[234]/2/* chambers -->
+<!--    segment       : HV segment -->
+<!--    layer         : Layer in chamber (banana socket number) -->
+<!--    OUT1          : HV board channel number, in output connector 1  -->
+<!--    OUT2          : HV board channel number, in output connector 2 -->
+<!--    OUT           : HV board channel number (one sole output connector)-->
+<!-- Source: http://www.phys.ufl.edu/~madorsky/HVConnector/LEMOpinout.xls -->
+
+<HV>
+  <chamber Dubna="false" type="small">
+    <channel segment="2" layer="1" OUT1= "7" OUT2="25"/>
+    <channel segment="2" layer="2" OUT1= "8" OUT2="26"/>
+    <channel segment="2" layer="3" OUT1= "9" OUT2="27"/>
+    <channel segment="2" layer="4" OUT1="10" OUT2="28"/>
+    <channel segment="2" layer="5" OUT1="11" OUT2="29"/>
+    <channel segment="2" layer="6" OUT1="12" OUT2="30"/>
+    <channel segment="1" layer="1" OUT1= "1" OUT2="19"/>
+    <channel segment="1" layer="2" OUT1= "2" OUT2="20"/>
+    <channel segment="1" layer="3" OUT1= "3" OUT2="21"/>
+    <channel segment="1" layer="4" OUT1= "4" OUT2="22"/>
+    <channel segment="1" layer="5" OUT1= "5" OUT2="23"/>
+    <channel segment="1" layer="6" OUT1= "6" OUT2="24"/>
+    <channel segment="3" layer="1" OUT1="13" OUT2="31"/>
+    <channel segment="3" layer="2" OUT1="14" OUT2="32"/>
+    <channel segment="3" layer="3" OUT1="15" OUT2="33"/>
+    <channel segment="3" layer="4" OUT1="16" OUT2="34"/>
+    <channel segment="3" layer="5" OUT1="17" OUT2="35"/>
+    <channel segment="3" layer="6" OUT1="18" OUT2="36"/>
+  </chamber>
+  <chamber Dubna="false" type="large">
+    <channel segment="4" layer="1" OUT="10"/>
+    <channel segment="4" layer="2" OUT="11"/>
+    <channel segment="4" layer="3" OUT="12"/>
+    <channel segment="4" layer="4" OUT="25"/>
+    <channel segment="4" layer="5" OUT="26"/>
+    <channel segment="4" layer="6" OUT="27"/>
+    <channel segment="2" layer="1" OUT= "4"/>
+    <channel segment="2" layer="2" OUT= "5"/>
+    <channel segment="2" layer="3" OUT= "6"/>
+    <channel segment="2" layer="4" OUT="19"/>
+    <channel segment="2" layer="5" OUT="20"/>
+    <channel segment="2" layer="6" OUT="21"/>
+    <channel segment="1" layer="1" OUT= "1"/>
+    <channel segment="1" layer="2" OUT= "2"/>
+    <channel segment="1" layer="3" OUT= "3"/>
+    <channel segment="1" layer="4" OUT="16"/>
+    <channel segment="1" layer="5" OUT="17"/>
+    <channel segment="1" layer="6" OUT="18"/>
+    <channel segment="3" layer="1" OUT= "7"/>
+    <channel segment="3" layer="2" OUT= "8"/>
+    <channel segment="3" layer="3" OUT= "9"/>
+    <channel segment="3" layer="4" OUT="22"/>
+    <channel segment="3" layer="5" OUT="23"/>
+    <channel segment="3" layer="6" OUT="24"/>
+    <channel segment="5" layer="1" OUT="13"/>
+    <channel segment="5" layer="2" OUT="14"/>
+    <channel segment="5" layer="3" OUT="15"/>
+    <channel segment="5" layer="4" OUT="28"/>
+    <channel segment="5" layer="5" OUT="29"/>
+    <channel segment="5" layer="6" OUT="30"/>
+  </chamber>
+</HV>

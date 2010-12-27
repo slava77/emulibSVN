@@ -1,0 +1,137 @@
+<!--LV devices-->
+<lv>
+ <maraton station="4" crateNumber="3" side="P" id="19" disk="3" >
+  <peripheralCrate station="4" crateNumber="2" dcsCrateNumber="2" elmbId="26" rackName="X5R51" side="P" id="VME+4/2" placeInRack="bottom" />
+ </maraton>
+ <maraton station="2" crateNumber="2" side="M" id="30" disk="2" >
+  <peripheralCrate station="2" crateNumber="1" dcsCrateNumber="1" elmbId="43" rackName="X5E41" side="M" id="VME-2/1" placeInRack="top" />
+ </maraton>
+ <maraton station="1" crateNumber="5" side="M" id="26" disk="1" >
+  <peripheralCrate station="1" crateNumber="7" dcsCrateNumber="3A" elmbId="37" rackName="X3S31" side="M" id="VME-1/7" placeInRack="bottom" />
+  <peripheralCrate station="1" crateNumber="9" dcsCrateNumber="4A" elmbId="39" rackName="X1L31" side="M" id="VME-1/9" placeInRack="bottom" />
+  <peripheralCrate station="1" crateNumber="8" dcsCrateNumber="4B" elmbId="38" rackName="X1L31" side="M" id="VME-1/8" placeInRack="top" />
+ </maraton>
+ <maraton station="4" crateNumber="1" side="M" id="37" disk="3" >
+  <peripheralCrate station="4" crateNumber="2" dcsCrateNumber="2" elmbId="56" rackName="X5L51" side="M" id="VME-4/2" placeInRack="bottom" />
+  <peripheralCrate station="4" crateNumber="3" dcsCrateNumber="3" elmbId="57" rackName="X3S51" side="M" id="VME-4/3" placeInRack="top" />
+  <peripheralCrate station="4" crateNumber="4" dcsCrateNumber="4" elmbId="58" rackName="X1L51" side="M" id="VME-4/4" placeInRack="top" />
+ </maraton>
+ <maraton station="1" crateNumber="1" side="P" id="1" disk="1" >
+  <peripheralCrate station="1" crateNumber="1" dcsCrateNumber="6B" elmbId="1" rackName="X3J31" side="P" id="VME+1/1" placeInRack="top" />
+  <peripheralCrate station="1" crateNumber="2" dcsCrateNumber="1A" elmbId="2" rackName="X5U31" side="P" id="VME+1/2" placeInRack="bottom" />
+  <peripheralCrate station="1" crateNumber="12" dcsCrateNumber="6A" elmbId="12" rackName="X3J31" side="P" id="VME+1/12" placeInRack="bottom" />
+ </maraton>
+ <maraton station="2" crateNumber="1" side="M" id="29" disk="2" >
+  <peripheralCrate station="3" crateNumber="6" dcsCrateNumber="6" elmbId="54" rackName="X3V41" side="M" id="VME-3/6" placeInRack="bottom" />
+  <peripheralCrate station="2" crateNumber="6" dcsCrateNumber="6" elmbId="48" rackName="X3V41" side="M" id="VME-2/6" placeInRack="top" />
+  <peripheralCrate station="3" crateNumber="1" dcsCrateNumber="1" elmbId="49" rackName="X5E41" side="M" id="VME-3/1" placeInRack="bottom" />
+ </maraton>
+ <maraton station="1" crateNumber="6" side="P" id="5" disk="1" >
+  <peripheralCrate station="1" crateNumber="6" dcsCrateNumber="3B" elmbId="6" rackName="X3A31" side="P" id="VME+1/6" placeInRack="top" />
+ </maraton>
+ <maraton station="2" crateNumber="5" side="M" id="34" disk="2" >
+  <peripheralCrate station="3" crateNumber="3" dcsCrateNumber="3" elmbId="51" rackName="X3S41" side="M" id="VME-3/3" placeInRack="top" />
+  <peripheralCrate station="2" crateNumber="4" dcsCrateNumber="4" elmbId="46" rackName="X1L41" side="M" id="VME-2/4" placeInRack="bottom" />
+  <peripheralCrate station="3" crateNumber="4" dcsCrateNumber="4" elmbId="52" rackName="X1L41" side="M" id="VME-3/4" placeInRack="top" />
+ </maraton>
+ <maraton station="1" crateNumber="4" side="P" id="3" disk="1" >
+  <peripheralCrate station="1" crateNumber="4" dcsCrateNumber="2B" elmbId="4" rackName="X5R31" side="P" id="VME+1/4" placeInRack="top" />
+ </maraton>
+ <maraton station="2" crateNumber="7" side="P" id="15" disk="2" >
+  <peripheralCrate station="3" crateNumber="5" dcsCrateNumber="5" elmbId="23" rackName="X1U41" side="P" id="VME+3/5" placeInRack="bottom" />
+ </maraton>
+ <maraton station="2" crateNumber="3" side="M" id="32" disk="2" >
+  <peripheralCrate station="3" crateNumber="2" dcsCrateNumber="2" elmbId="50" rackName="X5L41" side="M" id="VME-3/2" placeInRack="bottom" />
+ </maraton>
+ <maraton station="1" crateNumber="2" side="M" id="22" disk="1" >
+  <peripheralCrate station="1" crateNumber="3" dcsCrateNumber="1B" elmbId="33" rackName="X5E31" side="M" id="VME-1/3" placeInRack="top" />
+ </maraton>
+ <maraton station="1" crateNumber="8" side="P" id="8" disk="1" >
+  <peripheralCrate station="1" crateNumber="11" dcsCrateNumber="5B" elmbId="11" rackName="X1U31" side="P" id="VME+1/11" placeInRack="top" />
+ </maraton>
+ <maraton station="2" crateNumber="6" side="P" id="13" disk="2" >
+  <peripheralCrate station="2" crateNumber="3" dcsCrateNumber="3" elmbId="15" rackName="X3A41" side="P" id="VME+2/3" placeInRack="top" />
+ </maraton>
+ <maraton station="1" crateNumber="7" side="P" id="7" disk="1" >
+  <peripheralCrate station="1" crateNumber="10" dcsCrateNumber="5A" elmbId="10" rackName="X1U31" side="P" id="VME+1/10" placeInRack="bottom" />
+ </maraton>
+ <maraton station="2" crateNumber="8" side="P" id="16" disk="2" >
+  <peripheralCrate station="2" crateNumber="5" dcsCrateNumber="5" elmbId="17" rackName="X1U41" side="P" id="VME+2/5" placeInRack="top" />
+ </maraton>
+ <maraton station="1" crateNumber="3" side="P" id="4" disk="1" >
+  <peripheralCrate station="1" crateNumber="5" dcsCrateNumber="2A" elmbId="5" rackName="X5R31" side="P" id="VME+1/5" placeInRack="bottom" />
+ </maraton>
+ <maraton station="1" crateNumber="5" side="P" id="6" disk="1" >
+  <peripheralCrate station="1" crateNumber="8" dcsCrateNumber="4B" elmbId="8" rackName="X1R31" side="P" id="VME+1/8" placeInRack="top" />
+  <peripheralCrate station="1" crateNumber="7" dcsCrateNumber="3A" elmbId="7" rackName="X3A31" side="P" id="VME+1/7" placeInRack="bottom" />
+  <peripheralCrate station="1" crateNumber="9" dcsCrateNumber="4A" elmbId="9" rackName="X1R31" side="P" id="VME+1/9" placeInRack="bottom" />
+ </maraton>
+ <maraton station="1" crateNumber="6" side="M" id="25" disk="1" >
+  <peripheralCrate station="1" crateNumber="6" dcsCrateNumber="3B" elmbId="36" rackName="X3S31" side="M" id="VME-1/6" placeInRack="top" />
+ </maraton>
+ <maraton station="1" crateNumber="2" side="P" id="2" disk="1" >
+  <peripheralCrate station="1" crateNumber="3" dcsCrateNumber="1B" elmbId="3" rackName="X5U31" side="P" id="VME+1/3" placeInRack="top" />
+ </maraton>
+ <maraton station="2" crateNumber="4" side="P" id="11" disk="2" >
+  <peripheralCrate station="2" crateNumber="2" dcsCrateNumber="2" elmbId="14" rackName="X5R41" side="P" id="VME+2/2" placeInRack="top" />
+ </maraton>
+ <maraton station="1" crateNumber="4" side="M" id="23" disk="1" >
+  <peripheralCrate station="1" crateNumber="4" dcsCrateNumber="2B" elmbId="34" rackName="X5L31" side="M" id="VME-1/4" placeInRack="top" />
+ </maraton>
+ <maraton station="2" crateNumber="6" side="M" id="33" disk="2" >
+  <peripheralCrate station="2" crateNumber="3" dcsCrateNumber="3" elmbId="45" rackName="X3S41" side="M" id="VME-2/3" placeInRack="bottom" />
+ </maraton>
+ <maraton station="4" crateNumber="1" side="P" id="17" disk="3" >
+  <peripheralCrate station="4" crateNumber="3" dcsCrateNumber="3" elmbId="27" rackName="X3A51" side="P" id="VME+4/3" placeInRack="top" />
+  <peripheralCrate station="4" crateNumber="4" dcsCrateNumber="4" elmbId="28" rackName="X1R51" side="P" id="VME+4/4" placeInRack="top" />
+ </maraton>
+ <maraton station="2" crateNumber="1" side="P" id="9" disk="2" >
+  <peripheralCrate station="3" crateNumber="1" dcsCrateNumber="1" elmbId="19" rackName="X5U41" side="P" id="VME+3/1" placeInRack="bottom" />
+  <peripheralCrate station="2" crateNumber="6" dcsCrateNumber="6" elmbId="18" rackName="X3J41" side="P" id="VME+2/6" placeInRack="bottom" />
+  <peripheralCrate station="3" crateNumber="6" dcsCrateNumber="6" elmbId="24" rackName="X3J41" side="P" id="VME+3/6" placeInRack="top" />
+ </maraton>
+ <maraton station="2" crateNumber="2" side="P" id="10" disk="2" >
+  <peripheralCrate station="2" crateNumber="1" dcsCrateNumber="1" elmbId="13" rackName="X5U41" side="P" id="VME+2/1" placeInRack="top" />
+ </maraton>
+ <maraton station="1" crateNumber="1" side="M" id="21" disk="1" >
+  <peripheralCrate station="1" crateNumber="2" dcsCrateNumber="1A" elmbId="32" rackName="X5E31" side="M" id="VME-1/2" placeInRack="bottom" />
+  <peripheralCrate station="1" crateNumber="12" dcsCrateNumber="6A" elmbId="42" rackName="X3V31" side="M" id="VME-1/12" placeInRack="bottom" />
+  <peripheralCrate station="1" crateNumber="1" dcsCrateNumber="6B" elmbId="31" rackName="X3V31" side="M" id="VME-1/1" placeInRack="top" />
+ </maraton>
+ <maraton station="2" crateNumber="7" side="M" id="35" disk="2" >
+  <peripheralCrate station="3" crateNumber="5" dcsCrateNumber="5" elmbId="53" rackName="X1E41" side="M" id="VME-3/5" placeInRack="bottom" />
+ </maraton>
+ <maraton station="1" crateNumber="7" side="M" id="27" disk="1" >
+  <peripheralCrate station="1" crateNumber="10" dcsCrateNumber="5A" elmbId="40" rackName="X1E31" side="M" id="VME-1/10" placeInRack="bottom" />
+ </maraton>
+ <maraton station="2" crateNumber="8" side="M" id="36" disk="2" >
+  <peripheralCrate station="2" crateNumber="5" dcsCrateNumber="5" elmbId="47" rackName="X1E41" side="M" id="VME-2/5" placeInRack="top" />
+ </maraton>
+ <maraton station="4" crateNumber="2" side="M" id="38" disk="3" >
+  <peripheralCrate station="4" crateNumber="5" dcsCrateNumber="5" elmbId="59" rackName="X1E51" side="M" id="VME-4/5" placeInRack="bottom" />
+  <peripheralCrate station="4" crateNumber="1" dcsCrateNumber="1" elmbId="55" rackName="X5E51" side="M" id="VME-4/1" placeInRack="bottom" />
+  <peripheralCrate station="4" crateNumber="6" dcsCrateNumber="6" elmbId="60" rackName="X3V51" side="M" id="VME-4/6" placeInRack="bottom" />
+ </maraton>
+ <maraton station="1" crateNumber="8" side="M" id="28" disk="1" >
+  <peripheralCrate station="1" crateNumber="11" dcsCrateNumber="5B" elmbId="41" rackName="X1E31" side="M" id="VME-1/11" placeInRack="top" />
+ </maraton>
+ <maraton station="2" crateNumber="3" side="P" id="12" disk="2" >
+  <peripheralCrate station="3" crateNumber="2" dcsCrateNumber="2" elmbId="20" rackName="X5R41" side="P" id="VME+3/2" placeInRack="bottom" />
+ </maraton>
+ <maraton station="2" crateNumber="5" side="P" id="14" disk="2" >
+  <peripheralCrate station="3" crateNumber="4" dcsCrateNumber="4" elmbId="22" rackName="X1R41" side="P" id="VME+3/4" placeInRack="top" />
+  <peripheralCrate station="2" crateNumber="4" dcsCrateNumber="4" elmbId="16" rackName="X1R41" side="P" id="VME+2/4" placeInRack="bottom" />
+  <peripheralCrate station="3" crateNumber="3" dcsCrateNumber="3" elmbId="21" rackName="X3A41" side="P" id="VME+3/3" placeInRack="bottom" />
+ </maraton>
+ <maraton station="4" crateNumber="2" side="P" id="18" disk="3" >
+  <peripheralCrate station="4" crateNumber="6" dcsCrateNumber="6" elmbId="30" rackName="X3J51" side="P" id="VME+4/6" placeInRack="bottom" />
+  <peripheralCrate station="4" crateNumber="5" dcsCrateNumber="5" elmbId="29" rackName="X1U51" side="P" id="VME+4/5" placeInRack="bottom" />
+  <peripheralCrate station="4" crateNumber="1" dcsCrateNumber="1" elmbId="25" rackName="X5U51" side="P" id="VME+4/1" placeInRack="bottom" />
+ </maraton>
+ <maraton station="1" crateNumber="3" side="M" id="24" disk="1" >
+  <peripheralCrate station="1" crateNumber="5" dcsCrateNumber="2A" elmbId="35" rackName="X5L31" side="M" id="VME-1/5" placeInRack="bottom" />
+ </maraton>
+ <maraton station="2" crateNumber="4" side="M" id="31" disk="2" >
+  <peripheralCrate station="2" crateNumber="2" dcsCrateNumber="2" elmbId="44" rackName="X5L41" side="M" id="VME-2/2" placeInRack="top" />
+ </maraton>
+</lv>
