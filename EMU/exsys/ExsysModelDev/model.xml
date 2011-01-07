@@ -8,7 +8,7 @@
     <property name="version" value="0.5.4"/>
     <property name="model" location="${basedir}/../ExsysModel" />
     <property name="olap" location="${basedir}/../CdwOlap" />
-    <property name="kbase" location="${basedir}/../KnowledgeBase"/>
+    <property name="kbase" location="${basedir}/../KnowledgeBase/src"/>
     <property name="hj-libs" location="${basedir}/../lib/Hyperjaxb" />
     <property name="plugin-dir" location="${basedir}/build/plugin"/>
 
