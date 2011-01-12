@@ -1,0 +1,19 @@
+# ascii dump of database
+
+# Datapoint/DpId
+DpName	TypeName	ID
+ConfigurationSetups/default	_FwConfigurationDB_setup	545863
+DBConnections/confDb	_FwDBConnection	545884
+
+# DpValue
+ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
+ConfigurationSetups/default.version	_FwConfigurationDB_setup	3	0x101	11.01.2011 11:35:15.446
+ConfigurationSetups/default.DBConnection	_FwConfigurationDB_setup	"confDb"	0x101	12.01.2011 18:14:35.827
+ConfigurationSetups/default.default	_FwConfigurationDB_setup	1	0x101	11.01.2011 11:35:15.449
+DBConnections/confDb.version	_FwDBConnection	3	0x101	12.01.2011 18:13:39.877
+DBConnections/confDb.description	_FwDBConnection	"P5 Configuration DB"	0x101	12.01.2011 18:13:39.877
+DBConnections/confDb.dbType	_FwDBConnection	"ORACLE"	0x101	12.01.2011 18:13:39.877
+DBConnections/confDb.dbName	_FwDBConnection	"cms_pvss_confdb"	0x101	12.01.2011 18:13:39.877
+DBConnections/confDb.dbUser	_FwDBConnection	"CMS_CSC_PVSS_CONF"	0x101	12.01.2011 18:13:39.877
+DBConnections/confDb.dbPassword	_FwDBConnection	"fzv0flAUUAZkcTDS8PXBpg=="	0x101	12.01.2011 18:13:39.878
+DBConnections/confDb.connectString	_FwDBConnection	"driver=<DRIVER>;uid=<USER>;enc_pwd=<PASSWORD>;database=<DBNAME>;"	0x101	12.01.2011 18:13:39.877
