@@ -131,3 +131,19 @@ void emudcsME11_setFsmDpSmoothing(string sDpName)
                sDpName + ":_archive.1._class","_EVENT",
                sDpName + ":_archive.1._std_type",4);
 }    
+
+/** Sets the default HV settings like rampUp=7 V/s, i0=20 uA, etc. */
+void emudcsME11_setDefaultHvSettings() {
+  dyn_string dps;
+  dps = dpNames(systemName + ":*HVME11*", "FwCaenChannel");
+  
+  for (int i=1; i <= dynlen(dps); i++) {
+    dpSet(dps[i] + ".settings.onOff", false,
+          dps[i] + ".settings.i0", 20,
+          dps[i] + ".settings.rDwn", 100,
+          dps[i] + ".settings.rUp", 7,
+          dps[i] + ".settings.v0", 2900,
+          dps[i] + ".settings.v1", 2300,
+          dps[i] + ".settings.vMaxSoftValue", 3100);
+  }
+}

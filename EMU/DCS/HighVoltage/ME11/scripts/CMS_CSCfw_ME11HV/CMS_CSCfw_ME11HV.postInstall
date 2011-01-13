@@ -18,6 +18,10 @@ main()
 // **** import the ascii file of the datapoints with an OPC address ****
   CMSfwInstallUtils_importAsciiFile("CMS_CSCfw_ME11HV/CMS_CSCfw_ME11HV_CAENsys.dpl");
 
+// **** Set the default HV settings (like ramp up, ramp down, max current, etc.) ****
+  DebugN("Setting default HV settings");
+  emudcsME11_setDefaultHvSettings();
+  
 // **** Set all the drivers to always ****
   DebugN("Setting back OPC to driver. Result = "+
   CMSfwInstallUtils_switchSimDriver(TRUE,"PVSS00opc", 6));

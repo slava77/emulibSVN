@@ -930,7 +930,7 @@ void setGenSignalStatus(string crateDp, bool onOff) {
     dpSetWait(crateDp + \".Information.GenSignCfg\", 1);
   }      
 }"	0x101	18.05.2010 08:55:28.148
-fwOT_FwCaenCrateSY1527.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "STANDBY", "FwStateAttention1", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	18.05.2010 08:55:28.132
+fwOT_FwCaenCrateSY1527.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "STANDBY", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	18.05.2010 08:55:28.132
 fwOT_FwCaenCrateSY1527.actions	_FwFsmObjectType	"ON/ON", "", "1", "", "0", "ON/STANDBY", "", "1", "", "0", "ON/OFF", "", "1", "", "0", "ON/RESET", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "OFF/STANDBY", "", "1", "", "0", "OFF/OFF", "", "1", "", "0", "OFF/RESET", "", "1", "", "0", "STANDBY/ON", "", "1", "", "0", "STANDBY/STANDBY", "", "1", "", "0", "STANDBY/OFF", "", "1", "", "0", "STANDBY/RESET", "", "1", "", "0", "ERROR/ON", "", "1", "", "0", "ERROR/STANDBY", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0", "ERROR/RESET", "", "1", "", "0"	0x101	18.05.2010 08:55:28.132
 fwOT_CMS_CSC_ME11_HV_Type.panel	_FwFsmObjectType	"CMS_CSCfw_ME11HV/ME11PN.pnl"	0x101	18.05.2010 08:54:10.007
 fwOT_CMS_CSC_ME11_HV_Type.components	_FwFsmObjectType		0x141	04.03.2010 11:02:20.594
