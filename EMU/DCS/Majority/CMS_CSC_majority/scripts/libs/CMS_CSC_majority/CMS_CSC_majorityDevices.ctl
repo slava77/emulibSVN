@@ -63,6 +63,7 @@ dyn_int emumaj_hvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
   if (!mappingHasKey(hvOnChannelVsets, node)) {
     dpGet(node + ".on_ch_vsets", onChVsets);
     hvOnChannelVsets[node] = onChVsets;
+    dpConnect("emumaj_hvChannelOnVoltageSettingChangedCB", false, node + ".on_ch_vsets");
   } else {
     onChVsets = hvOnChannelVsets[node];
   }
@@ -99,6 +100,11 @@ dyn_int emumaj_hvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
   }
   
   return makeDynInt(on, standby, error);
+}
+
+void emumaj_hvChannelOnVoltageSettingChangedCB(string dp, dyn_int onChVsets) {
+  string node = dpSubStr(dp, DPSUB_DP);
+  hvOnChannelVsets[node] = onChVsets;
 }
 
 dyn_int emumaj_hvChannelStates(string dp, int vset, int standbyVoltage, bool checkForAlerts = true) {
