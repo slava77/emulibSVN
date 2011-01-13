@@ -1,0 +1,16 @@
+# ascii dump of database
+
+# Datapoint/DpId
+DpName	TypeName	ID
+_FwDimConfigInfo	_FwDeviceDefinition	545878
+DimConfig	FwNode	545879
+
+# DpValue
+ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
+_FwDimConfigInfo.type	_FwDeviceDefinition	"Dim Configuration"	0x101	12.01.2011 14:54:42.933
+_FwDimConfigInfo.dpType	_FwDeviceDefinition	"_FwDimConfig"	0x101	12.01.2011 14:55:02.232
+DimConfig.type	FwNode	"VENDOR"	0x101	12.01.2011 14:56:52.940
+DimConfig.dpTypes	FwNode	"_FwDimConfig"	0x101	12.01.2011 14:57:10.181
+DimConfig.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	12.01.2011 14:57:24.041
+DimConfig.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	12.01.2011 14:57:32.586
+DimConfig.model	FwNode	""	0x100101	12.01.2011 14:59:35.367
