@@ -1,4 +1,4 @@
-string configDp="DIPConfig_CMS_CSCfw_GAS";
+string configDp;//="DIPConfig_CMS_CSCfw_GAS"; <- this is being set in mudcsDipConfig()
 
 mudcsTurbineConfig(dyn_string crates,bool issubscribe){
 
@@ -59,6 +59,8 @@ mudcs_dip_config(issubscribe,item, dpes, tags);
 mudcsDipConfig(bool issubscribe)
 {
  
+  configDp="DIPConfig_CMS_CSCfw_GAS";  
+  
 /*
   
   item="test.pub2"; // name of DIP publication (complex)
