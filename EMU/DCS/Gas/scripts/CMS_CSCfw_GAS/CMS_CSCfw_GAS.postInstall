@@ -1,29 +1,89 @@
+#uses "CMS_CSCfw_HV_CC/emuDcs.ctl"
+#uses "CMS_CSCfw_HV_CC/emuDcs2.ctl"
+#uses "CMS_CSCfw_HV_CC/emuDcs3.ctl"
+#uses "CMS_CSCfw_HV_CC/emuDcs4.ctl"
+
+ #uses "CMS_CSCfw_LV_CRB/mudcs9XAlertReconfigAllSlowControls.ctl"
+
+#uses "CMS_CSCfw_GAS/emuGas.ctl"
+#uses "CMS_CSCfw_GAS/mudcs0GasCreateAllTypes.ctl"
+#uses "CMS_CSCfw_GAS/mudcs1GasDipConfig.ctl"
+#uses "CMS_CSCfw_GAS/mudcs2GasFsmCreate.ctl"
+#uses "CMS_CSCfw_GAS/mudcs3GasAlert.ctl"
+#uses "CMS_CSCfw_GAS/mudcs4GasArchive.ctl"
+#uses "CMS_CSCfw_GAS/mudcs5GasSetPanels.ctl"
+
+#uses "aes.ctl"
+
 main(){
   
   
- dpCreate("CMS_CSC_GAS","MUDCS_STRING"); 
+  dpCreate("CMS_CSC_GAS","MUDCS_STRING"); 
   string configDp = "DIPConfig_CMS_CSCfw_GAS";
   if (! dpExists(configDp) ) {
       dpCreate(configDp, "_FwDipConfig");
   }
   fwInstallation_appendManager(TRUE, "EMU dip manager", "PVSS00dip", 
-"always", 30, 2, 2, "-num 20 -dns cms-cent-dcs-17,cms-cent-dcs-18");
+     "always", 30, 2, 2, "-num 20 -dns cms-cent-dcs-17,cms-cent-dcs-18");
   
 //    fwInstallation_appendManager(TRUE, "EMU sim  dip manager", "PVSS00sim", 
 //"always", 30, 2, 2, "-num 13");
+ 
+//   delay(15); 
+//  
+//   string os=getenv("OS");
+// 
+//  if(os=="Linux"){
+//   system("PVSS00ctrl -num 16 CMS_CSCfw_GAS/mudcsCreate_GAS.ctl &");
+//        
+//  }
+//  else{ 
+//   system("cmd /c PVSS00ctrl -num 16 CMS_CSCfw_GAS/mudcsCreate_GAS.ctl");
+//  }
+//   
   
- 
-  delay(15); 
- 
-string os=getenv("OS");
+  if (!dpExists("MYWARNING_GAS")) {
+    dpCreate("MYWARNING_GAS", "MUDCS_STRING");
+  }
 
- if(os=="Linux"){
-  system("PVSS00ctrl -num 16 CMS_CSCfw_GAS/mudcsCreate_GAS.ctl &");
-       
- }
- else{ 
-  system("cmd /c PVSS00ctrl -num 16 CMS_CSCfw_GAS/mudcsCreate_GAS.ctl");
- }
+  dpSet("MYWARNING_GAS.value", "postinstall started");
+  DebugTN("postinstall started");
   
+  //=== deletion =============
+  dpSet("MYWARNING_GAS.value", "starting mudcsGasFsmDelete()");
+  DebugTN("starting mudcsGasFsmDelete()");
+  mudcsGasFsmDelete();
+  dpSet("MYWARNING_GAS.value", "starting mudcsDipConfig(false)");
+  DebugTN("starting mudcsDipConfig(false)");
+   mudcsDipConfig(false); 
+  dpSet("MYWARNING_GAS.value", "starting mudcsDeleteGas_dps(true)");
+  DebugTN("starting mudcsDeleteGas_dps(true)");
+  mudcsDeleteGas_dps(true);
+ 
+  //=== creation ==============
+  
+  dpSet("MYWARNING_GAS.value", "starting GasSystem_main()");
+  DebugTN("starting GasSystem_main()");
+  GasSystem_main();
+  dpSet("MYWARNING_GAS.value", "starting mudcsDipConfig(true)");
+  DebugTN("starting mudcsDipConfig(true)");
+  mudcsDipConfig(true); 
+  dpSet("MYWARNING_GAS.value", "starting mudcsGasCreateFsmMain()");
+  DebugTN("starting mudcsGasCreateFsmMain()");
+  mudcsGasCreateFsmMain();
+  dpSet("MYWARNING_GAS.value", "starting mudcsGasAlertCreateMain(true)");
+  DebugTN("starting mudcsGasAlertCreateMain(true)");
+  mudcsGasAlertCreateMain(true);
+  dpSet("MYWARNING_GAS.value", "starting mudcsGasArchiveMain(true)");
+  DebugTN("starting mudcsGasArchiveMain(true)");
+  mudcsGasArchiveMain(true);
+  dpSet("MYWARNING_GAS.value", "starting mudcsGasFsmPanelsAndFsmAliasesSetMain()");
+  DebugTN("starting mudcsGasFsmPanelsAndFsmAliasesSetMain()");
+  mudcsGasFsmPanelsAndFsmAliasesSetMain();  
+ 
+  dpSet("MYWARNING_GAS.value", "postinstall finished");
+  DebugTN("postinstall finished");
+
+  exit(0);  
   
 }
