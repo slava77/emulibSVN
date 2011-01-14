@@ -1,3 +1,5 @@
+// this file shouldn't be used anymore, since now everything is moved to the postInstall file, but let's keep this file around for awhile longer just to be sure and then we'll delete it
+
 #uses "CMS_CSCfw_HV_CC/emuDcs.ctl"
 #uses "CMS_CSCfw_HV_CC/emuDcs2.ctl"
 #uses "CMS_CSCfw_HV_CC/emuDcs3.ctl"
@@ -23,7 +25,11 @@
 /** if this flag is set to true the full component installation is performed, otherwise only patch() is called. */
 global const bool EMU_HVCC_INSTALLATION_FULL = true;
 
-main(){
+main() {
+  mudcsStartHvCcInstallation();
+}
+
+mudcsStartHvCcInstallation(){
   mudcsInit();
 
   dpSetWait(CSC_fwG_g_SYSTEM_NAME+":MYWARNING.value","postinstall_start");
