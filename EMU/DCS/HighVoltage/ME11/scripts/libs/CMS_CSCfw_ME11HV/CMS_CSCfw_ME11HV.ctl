@@ -135,7 +135,7 @@ void emudcsME11_setFsmDpSmoothing(string sDpName)
 /** Sets the default HV settings like rampUp=7 V/s, i0=20 uA, etc. */
 void emudcsME11_setDefaultHvSettings() {
   dyn_string dps;
-  dps = dpNames(systemName + ":*HVME11*", "FwCaenChannel");
+  dps = dpNames("*HVME11*", "FwCaenChannel");
   
   for (int i=1; i <= dynlen(dps); i++) {
     dpSet(dps[i] + ".settings.onOff", false,
