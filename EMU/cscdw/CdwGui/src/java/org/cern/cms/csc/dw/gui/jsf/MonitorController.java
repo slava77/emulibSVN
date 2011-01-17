@@ -116,6 +116,7 @@ public class MonitorController extends BeanTableControllerBase {
 
     public void setChartLastHours(Integer chartLastHours) {
         this.chartLastHours = chartLastHours;
+        refreshChartImageListener(null);
     }
 
     public List<SelectItem> getChartLastHoursItems() {
@@ -139,6 +140,9 @@ public class MonitorController extends BeanTableControllerBase {
         Integer maxValue = 0;
 
         for (MonitorQueueStatus qs: monitorDao.getMonitorObjects(MonitorQueueStatus.class, chartLastHours)) {
+            if (qs.getQueueName() == null) {
+                qs.setQueueName("null");
+            }
             TimeSeries ts = queueSizes.getSeries(qs.getQueueName());
             if (ts == null) {
                 ts = new TimeSeries(qs.getQueueName());
@@ -150,6 +154,9 @@ public class MonitorController extends BeanTableControllerBase {
 
         TimeSeriesCollection fColls = new TimeSeriesCollection();
         for (MonitorFactCollectionLog fc: monitorDao.getMonitorObjects(MonitorFactCollectionLog.class, chartLastHours)) {
+            if (fc.getProvider() == null) {
+                fc.setProvider("null");
+            }
             TimeSeries ts = fColls.getSeries(fc.getProvider());
             if (ts == null) {
                 ts = new TimeSeries(fc.getProvider());
