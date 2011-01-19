@@ -58,7 +58,6 @@ mudcs_dip_config(issubscribe,item, dpes, tags);
 
 mudcsDipConfig(bool issubscribe)
 {
- 
   configDp="DIPConfig_CMS_CSCfw_GAS";  
   
 /*

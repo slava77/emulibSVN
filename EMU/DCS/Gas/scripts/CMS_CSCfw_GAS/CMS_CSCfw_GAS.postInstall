@@ -17,7 +17,6 @@
 
 main(){
   
-  
   dpCreate("CMS_CSC_GAS","MUDCS_STRING"); 
   string configDp = "DIPConfig_CMS_CSCfw_GAS";
   if (! dpExists(configDp) ) {
