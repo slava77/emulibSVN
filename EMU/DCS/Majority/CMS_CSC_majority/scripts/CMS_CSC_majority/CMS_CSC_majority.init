@@ -13,6 +13,11 @@ const bool EMUMAJ_UPDATE_FSM_TYPES = true;
 const bool EMUMAJ_OVERWRITE_FSM_TYPE_BACKUPS = false;
 const bool EMUMAJ_RESTORE_FSM_TYPES = false;
 
+const long EMUMAJ_SUPERVISOR_INSTALLATION_START_TIMEOUT = 5*60; // 5 minutes
+const long EMUMAJ_SUPERVISOR_INSTALLATION_FINISH_TIMEOUT = 2*60*60; // 2 hours
+
+bool isSupervisor;
+
 main()
 {
 
@@ -37,7 +42,7 @@ main()
     fwFsm_stopAllDomains();
   }
 
-  bool isSupervisor = isSupervisor();
+  isSupervisor = isSupervisor();
   // supervisor stuff
   if (isSupervisor) {
     updateInstallationDp("Installation started");
@@ -77,8 +82,17 @@ main()
   } else if (EMUMAJ_CREATE_MAJORITY_DUS || EMUMAJ_UPDATE_FSM_TYPES){
     // wait for supervisor machine to finish it's installation part first  
     bool install = false;
+    int waitCounter = 0; // will increase when waiting for supervisor to start installation (installation on the current machine will be terminated if this counter reaches a certain threshold), but it's set to -1 when the installation is started on supervisor - so the timeout is cancelled
     while (!install) {
-      emumaj_debug("Waiting for supervisor to finish...", true);
+      if (waitCounter >= EMUMAJ_SUPERVISOR_INSTALLATION_START_TIMEOUT / 30) { // timeout in supervisor starting the installation - just quit
+        emumaj_debug("installation canceled - supervisor didn't start the installation within " + EMUMAJ_SUPERVISOR_INSTALLATION_START_TIMEOUT + "s", true);
+        return;
+      }
+      if (waitCounter >= 0) { // supervisor hasn't started the installation yet
+        emumaj_debug("Waiting for supervisor to start installation... (will timeout in " + (EMUMAJ_SUPERVISOR_INSTALLATION_START_TIMEOUT - (30 * waitCounter)) + "s)", true);
+      } else { // supervisor has started the installation, but hasn't finished yet
+        emumaj_debug("Waiting for supervisor to finish installation... (timeout is " + EMUMAJ_SUPERVISOR_INSTALLATION_FINISH_TIMEOUT + "s)", true);
+      }
       delay(30);
       dyn_string installationDps = dpNames("*:MAJORITY_INSTALLATION", "MUDCS_MAJORITY_STRING");
       for (int i=1; i <= dynlen(installationDps); i++) {
@@ -90,14 +104,31 @@ main()
         string msgUpdateTimeDp = dpSubStr(installationDps[i] + ".value", DPSUB_SYS_DP_EL) + ":_online.._stime";
         dpGet(msgUpdateTimeDp, messageUpdateTime);
   
-        if ((message == "Supervisor DONE") && (getCurrentTime() - messageUpdateTime < 2*60*60)) { // if we see this message and it's been posted less than two hours ago, then we're good to go
-          emumaj_debug("installation started", true);
-          install = true;
-        } else if (message == "CANCEL") {
-          emumaj_debug("installation canceled", true);
-          return;
+        //installation in supervisor hasn't started yet
+        if (strpos(message, "Supervisor") >= 0) {
+          if (waitCounter >= 0) {
+            if (getCurrentTime() - messageUpdateTime <= EMUMAJ_SUPERVISOR_INSTALLATION_START_TIMEOUT) { // if the DP was updated in last EMUMAJ_SUPERVISOR_INSTALLATION_START_TIMEOUT seconds - installation in supervisor has started
+              waitCounter = -1; // stop the timeout counter
+              emumaj_debug("Supervisor started the installation - disabling the timeout counter and waiting for it to finish", true);
+            }
+          } else { // installation in supervisor has started - wait for it to finish
+            if (message == "Supervisor DONE") {
+              emumaj_debug("installation started", true);
+              install = true;
+            } else if (message == "CANCEL") {
+              emumaj_debug("installation canceled", true);
+              return;
+            } else if (getCurrentTime() - messageUpdateTime > EMUMAJ_SUPERVISOR_INSTALLATION_FINISH_TIMEOUT) { // supervisor installation timeout
+              emumaj_debug("installation canceled because supervisor installation hasn't finished in " + EMUMAJ_SUPERVISOR_INSTALLATION_FINISH_TIMEOUT + "s", true);
+              return;
+            }
+          }
         }
       }
+      if (waitCounter >= 0) {
+        waitCounter++;
+      }
+      
     }
   }
   
@@ -147,6 +178,9 @@ void setFsmAccessControl() {
 }
 
 void emumaj_debug(string msg, bool putToInstallationDp = false) {
+  if (isSupervisor) {
+    msg = "Supervisor: " + msg;
+  }
   DebugTN("Majority installation: " + msg);
   if (putToInstallationDp) {
     updateInstallationDp(msg);
