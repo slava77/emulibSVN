@@ -82,7 +82,4 @@ main(){
  
   dpSet("MYWARNING_GAS.value", "postinstall finished");
   DebugTN("postinstall finished");
-
-  exit(0);  
-  
 }
