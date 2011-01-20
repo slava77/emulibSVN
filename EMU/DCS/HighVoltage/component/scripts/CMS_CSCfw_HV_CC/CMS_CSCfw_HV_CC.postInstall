@@ -132,6 +132,14 @@ mudcsStartHvCcInstallation();
 // **************============= HV CC installation ==========************
 
 mudcsStartHvCcInstallation(){
+  
+  for (int i=2; i <= 7; i++) {
+    string dimConfDp = "_DimClient_" + i;
+    if (!dpExists(dimConfDp)) {
+      dpCreate(dimConfDp, "_FwDimConfig");
+    }
+  }
+  
   mudcsInit();
 
   dpSetWait(CSC_fwG_g_SYSTEM_NAME+":MYWARNING.value","postinstall_start");
