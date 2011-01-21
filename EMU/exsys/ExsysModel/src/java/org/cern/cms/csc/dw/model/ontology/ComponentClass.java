@@ -245,7 +245,7 @@ public class ComponentClass
     public void setTypeItem(String target) {
         setType(((target == null)?null:ComponentClassType.fromValue(target)));
     }
-
+    
 //--simple--preserve
 
     @Override
@@ -254,5 +254,5 @@ public class ComponentClass
     }
 
 //--simple--preserve
-    
+
 }

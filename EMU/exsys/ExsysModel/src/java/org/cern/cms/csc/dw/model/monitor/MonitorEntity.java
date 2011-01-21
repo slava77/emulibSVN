@@ -23,7 +23,7 @@ public abstract class MonitorEntity extends EntityBase {
 
     @Id
     @Column(name = "MON_ID")
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.TABLE)
     public Long getId() {
         return id;
     }

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.cern.cms.csc.dw.dao.table.BeanTableDao;
 import org.cern.cms.csc.dw.log.Logger;
 import org.cern.cms.csc.dw.log.SimpleLogger;
 import org.cern.cms.csc.dw.model.monitor.MonitorEntity;
@@ -16,7 +17,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.ejb.EntityManagerImpl;
 
 @Stateless
-public class MonitorDao implements MonitorDaoLocal {
+public class MonitorDao extends BeanTableDao implements MonitorDaoLocal {
 
     private static Logger logger = SimpleLogger.getLogger(MonitorDao.class);
 
@@ -26,9 +27,6 @@ public class MonitorDao implements MonitorDaoLocal {
     @PersistenceContext(unitName="CdwMonitorPU")
     private EntityManager mem;
 
-    private Session getMonitorSession() {
-        return (Session)((EntityManagerImpl) mem.getDelegate()).getDelegate();
-    }
     
     @Override
     public Date getSysdate() {
@@ -52,7 +50,7 @@ public class MonitorDao implements MonitorDaoLocal {
     @SuppressWarnings("unchecked")
     @Override
     public <T extends MonitorEntity> List<T> getMonitorObjects(Class<T> clazz, int lastHours) {
-        Session session = getMonitorSession();
+        Session session = getSession();
         Transaction tr = session.beginTransaction();
         Date from = new Date();
         from.setTime(from.getTime() - lastHours * 60 * 60 * 1000);
@@ -64,6 +62,11 @@ public class MonitorDao implements MonitorDaoLocal {
                 .list();
         tr.rollback();
         return list;
+    }
+
+    @Override
+    public Session getSession() {
+        return (Session) ((EntityManagerImpl) mem.getDelegate()).getDelegate();
     }
 
 }

@@ -95,7 +95,6 @@ public abstract class ComponentFinder
     @OneToOne(targetEntity = org.cern.cms.csc.exsys.re.model.Rule.class, cascade = {
         CascadeType.ALL
     }, mappedBy = "componentFinder")
-    @JoinColumn(name = "RER_COMPONENT_FINDER", nullable = false)
     public org.cern.cms.csc.exsys.re.model.Rule getRule() {
         return rule;
     }

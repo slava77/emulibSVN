@@ -96,7 +96,6 @@ public class MonitorJob {
     @Schedule(hour="*", minute="*", second="*/15")
     public void monitorDatabase() {
         logger.debug("In monitorDatabase");
-        getMonitor().trace("In monitorDatabase");
         try {
             Date date = monitorDao.getSysdate();
             logger.trace("Database sysdate = {0}", date);

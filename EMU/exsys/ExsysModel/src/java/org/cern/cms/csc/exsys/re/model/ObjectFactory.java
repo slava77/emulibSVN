@@ -47,11 +47,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link EmailAction }
+     * Create an instance of {@link Conclusion }
      * 
      */
-    public EmailAction createEmailAction() {
-        return new EmailAction();
+    public Conclusion createConclusion() {
+        return new Conclusion();
+    }
+
+    /**
+     * Create an instance of {@link SmsAction }
+     * 
+     */
+    public SmsAction createSmsAction() {
+        return new SmsAction();
     }
 
     /**
@@ -71,19 +79,27 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ConclusionType }
-     * 
-     */
-    public ConclusionType createConclusionType() {
-        return new ConclusionType();
-    }
-
-    /**
      * Create an instance of {@link ActionExecution }
      * 
      */
     public ActionExecution createActionExecution() {
         return new ActionExecution();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionTrigger }
+     * 
+     */
+    public ConclusionTrigger createConclusionTrigger() {
+        return new ConclusionTrigger();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionType }
+     * 
+     */
+    public ConclusionType createConclusionType() {
+        return new ConclusionType();
     }
 
     /**
@@ -95,35 +111,19 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link EmailAction }
+     * 
+     */
+    public EmailAction createEmailAction() {
+        return new EmailAction();
+    }
+
+    /**
      * Create an instance of {@link RelatedComponentFinder }
      * 
      */
     public RelatedComponentFinder createRelatedComponentFinder() {
         return new RelatedComponentFinder();
-    }
-
-    /**
-     * Create an instance of {@link Conclusion }
-     * 
-     */
-    public Conclusion createConclusion() {
-        return new Conclusion();
-    }
-
-    /**
-     * Create an instance of {@link SmsAction }
-     * 
-     */
-    public SmsAction createSmsAction() {
-        return new SmsAction();
-    }
-
-    /**
-     * Create an instance of {@link ConclusionTrigger }
-     * 
-     */
-    public ConclusionTrigger createConclusionTrigger() {
-        return new ConclusionTrigger();
     }
 
     /**

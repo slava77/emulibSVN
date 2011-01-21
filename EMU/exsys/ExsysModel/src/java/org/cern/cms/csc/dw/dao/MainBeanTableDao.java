@@ -12,10 +12,10 @@ public class MainBeanTableDao extends BeanTableDao implements MainBeanTableDaoLo
 
     @PersistenceContext(unitName="CdwPU")
     private EntityManager em;
-
+    
     @Override
-    protected Session getSession() {
-        return (Session)((EntityManagerImpl)em.getDelegate()).getDelegate();
+    public Session getSession() {
+        return (Session) ((EntityManagerImpl) em.getDelegate()).getDelegate();
     }
 
 }

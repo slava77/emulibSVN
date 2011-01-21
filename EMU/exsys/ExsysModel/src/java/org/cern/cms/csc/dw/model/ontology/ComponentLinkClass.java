@@ -277,7 +277,7 @@ public class ComponentLinkClass
     public void setTypeItem(String target) {
         setType(((target == null)?null:ComponentLinkClassType.fromValue(target)));
     }
-
+    
 //--simple--preserve
 
     @Override
