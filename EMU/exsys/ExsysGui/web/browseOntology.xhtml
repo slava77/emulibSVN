@@ -1,0 +1,190 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:icecore="http://www.icefaces.org/icefaces/core"
+    xmlns:ace="http://www.icefaces.org/icefaces/components"
+    xmlns:ice="http://www.icesoft.com/icefaces/component"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:exsys-component="http://java.sun.com/jsf/composite/component"
+    xmlns:exsys-browser="http://java.sun.com/jsf/composite/browser"
+    template="resources/main.xhtml">
+
+    <ui:define name="menu">
+
+        <ice:form>
+            
+            <ice:commandLink action="browseOntology" value="Reset" actionListener="#{componentClassTreeController.resetAction}"/>
+
+            <h4><ice:outputText value="Component Classes" /></h4>
+            <exsys-browser:componentClassTree/>
+
+            <h4><ice:outputText value="Component Link Classes" /></h4>
+            <exsys-browser:componentLinkClassTree/>
+
+        </ice:form>
+
+    </ui:define>
+
+    <ui:define name="content">
+
+        <ice:form>
+            <ice:panelGrid columns="2" columnClasses="componentMatchesSelect componentMatchesButton">
+                <exsys-component:componentSelector selector="#{componentClassTreeController.componentSelector}"/>
+                <ice:commandButton
+                    value="Details"
+                    action="browseOntologyComponent"
+                    disabled="#{componentClassTreeController.componentSelector.component == null}"/>
+            </ice:panelGrid>
+
+            <ice:panelGroup rendered="#{componentClassTreeController.selectedComponentClass != null}">
+
+                <h2>
+                    <ice:outputFormat value="Component Class: {0}">
+                        <f:param value="#{componentClassTreeController.selectedComponentClass.type.value}"/>
+                    </ice:outputFormat>
+                </h2>
+
+                <ice:panelGrid columns="2">
+
+                    <ice:outputLabel value="Subclass Of:"/>
+                    <ice:panelGroup>
+                        <ui:repeat value="#{componentClassTreeController.selectedComponentClass.parentsRecursive}" var="parent" varStatus="status">
+                            <ice:commandLink
+                                title="Click for details"
+                                action="browseOntology"
+                                actionListener="#{componentClassTreeController.componentClassNodeSelectedAction}">
+                                <f:param name="componentClassId" value="#{parent.id}" />
+                                <ice:outputText value="#{parent.type.value}"/>
+                            </ice:commandLink>
+                            <ice:outputText value="," rendered="#{!(status.index == status.end)}"/>
+                        </ui:repeat>
+                    </ice:panelGroup>
+
+                    <ice:outputLabel value="Has subclasses:"/>
+                    <ice:panelGroup>
+                        <ice:panelSeries value="#{componentClassTreeController.selectedComponentClass.childrenRecursive}"
+                                         var="child" varStatus="status">
+                            <ice:commandLink
+                                title="Click for details"
+                                action="browseOntology"
+                                actionListener="#{componentClassTreeController.componentClassNodeSelectedAction}">
+                                <f:param name="componentClassId" value="#{child.id}" />
+                                <ice:outputText value="#{child.type.value}"/>
+                            </ice:commandLink>
+                            <ice:outputText value="," rendered="#{!(status.index == status.end)}"/>
+                        </ice:panelSeries>
+                    </ice:panelGroup>
+
+                    <ice:outputLabel value="Description:"/>
+                    <ice:outputText value="#{componentClassTreeController.selectedComponentClass.description}"/>
+
+                </ice:panelGrid>
+
+                <ice:panelGroup rendered="#{!componentClassTreeController.selectedComponentClass.hasComponentsRecursive}">
+                    <ice:outputText value="Components not found"/>
+                </ice:panelGroup>
+
+                <ice:panelGroup rendered="#{componentClassTreeController.selectedComponentClass.hasComponentsRecursive}">
+                    <ice:dataTable id="componentTable"
+                        value="#{componentClassTreeController.selectedComponentClass.componentsRecursive}"
+                        var="comp" rows="15">
+
+                        <f:facet name="header">
+                            <ice:columnGroup>
+                                <ice:headerRow>
+                                    <ice:column>
+                                        <ice:outputText value="ID"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:outputText value="Name"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:outputText value="Class"/>
+                                    </ice:column>
+                                </ice:headerRow>
+                            </ice:columnGroup>
+                        </f:facet>
+
+                        <ice:column>
+                            <ice:outputText value="#{comp.id}"/>
+                        </ice:column>
+                        <ice:column>
+                            <ice:commandLink
+                                title="Click for details"
+                                action="browseOntologyComponent">
+                                <f:setPropertyActionListener target="#{componentClassTreeController.componentSelector.component}" value="#{comp}"/>
+                                <ice:outputText value="#{comp.name}"/>
+                            </ice:commandLink>
+                        </ice:column>
+                        <ice:column>
+                            <ice:commandLink
+                                title="Click for details"
+                                action="browseOntology"
+                                actionListener="#{componentClassTreeController.componentClassNodeSelectedAction}">
+                                <f:param name="componentClassId" value="#{comp.type.id}" />
+                                <ice:outputText value="#{comp.type.type.value}"/>
+                            </ice:commandLink>
+                        </ice:column>
+
+                    </ice:dataTable>
+
+                    <ice:panelGrid columns="2">
+
+                         <ice:dataPaginator for="componentTable"
+                             fastStep="10"
+                             pageCountVar="pageCount"
+                             pageIndexVar="pageIndex"
+                             paginator="true"
+                             paginatorMaxPages="9">
+                             <f:facet name="first" >
+                                     <ice:graphicImage url="/xmlhttp/css/rime/css-images/arrow-first.gif" style="border:none;"/>
+                            </f:facet>
+                             <f:facet name="last">
+                                    <ice:graphicImage url="/xmlhttp/css/rime/css-images/arrow-last.gif" style="border:none;" />
+                            </f:facet>
+                             <f:facet name="previous">
+                                    <ice:graphicImage url="/xmlhttp/css/rime/css-images/arrow-previous.gif" style="border:none;" />
+                            </f:facet>
+                             <f:facet name="next">
+                                    <ice:graphicImage url="/xmlhttp/css/rime/css-images/arrow-next.gif" style="border:none;" />
+                            </f:facet>
+                             <f:facet name="fastforward">
+                                    <ice:graphicImage url="/xmlhttp/css/rime/css-images/arrow-ff.gif" style="border:none;" />
+                            </f:facet>
+                             <f:facet name="fastrewind">
+                                    <ice:graphicImage url="/xmlhttp/css/rime/css-images/arrow-fr.gif" style="border:none;" />
+                            </f:facet>
+                        </ice:dataPaginator>
+
+                        <ice:dataPaginator
+                            for="componentTable"
+                            rowsCountVar="rowsCount"
+                            displayedRowsCountVar="displayedRowsCountVar"
+                            firstRowIndexVar="firstRowIndex"
+                            lastRowIndexVar="lastRowIndex"
+                            pageCountVar="pageCount"
+                            pageIndexVar="pageIndex">
+                            <ice:outputFormat value="{0} components found, displaying {1}, from {2} to {3}. Page {4} / {5}">
+                                <f:param value="#{rowsCount}" />
+                                <f:param value="#{displayedRowsCountVar}" />
+                                <f:param value="#{firstRowIndex}" />
+                                <f:param value="#{lastRowIndex}" />
+                                <f:param value="#{pageIndex}" />
+                                <f:param value="#{pageCount}" />
+                            </ice:outputFormat>
+                         </ice:dataPaginator>
+
+                    </ice:panelGrid>
+
+                </ice:panelGroup>
+
+            </ice:panelGroup>
+
+        </ice:form>
+    </ui:define>
+
+</ui:composition>

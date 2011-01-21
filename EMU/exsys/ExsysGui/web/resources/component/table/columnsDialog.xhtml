@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:cc="http://java.sun.com/jsf/composite">
+
+    <cc:interface>
+        <cc:attribute name="table" type="org.cern.cms.csc.exsys.gui.component.BeanTable" required="true"/>
+    </cc:interface>
+
+    <cc:implementation>
+
+        <ice:panelPopup id="columnsDlg" autoCentre="true" modal="false" draggable="false"
+                        style="z-index: 1000; overflow: hidden; height: 530px; width: 480px"
+                        rendered="#{cc.attrs.table.showSelectColumns}">
+
+            <f:facet name="header">
+                <ice:panelGroup>
+                    <table width="100%">
+                        <tr>
+                            <td width="100%">
+                                <ice:outputText value="Table Columns" />
+                            </td>
+                            <td width="1%">
+                                <ice:commandButton type="button"
+                                                   image="/xmlhttp/css/rime/css-images/cal_off.gif"
+                                                   style="vertical-align: middle; text-align: right"
+                                                   title="Close" alt="Close">
+                                    <f:setPropertyActionListener target="#{cc.attrs.table.showSelectColumns}" value="#{!cc.attrs.table.showSelectColumns}"/>
+                                </ice:commandButton>
+                            </td>
+                        </tr>
+                    </table>
+                </ice:panelGroup>
+            </f:facet>
+
+            <f:facet name="body">
+                <ice:panelTabSet>
+                    <ice:panelTab label="Display">
+                        <ice:panelGrid columns="2">
+
+                            <ice:outputText value="Available Columns"/>
+
+                            <ice:outputText value="Visible Columns"/>
+
+                            <ice:panelPositioned var="column"
+                                                 value="#{cc.attrs.table.selectedColumns.source}"
+                                                 styleClass="columnSelectPanelContainer">
+                                <ice:panelGroup styleClass="columnSelectPanel" >
+                                    <ice:outputText value="#{column.title}"/>
+                                </ice:panelGroup>
+                            </ice:panelPositioned>
+
+                            <ice:panelPositioned var="column"
+                                                 value="#{cc.attrs.table.selectedColumns.target}"
+                                                 styleClass="columnSelectPanelContainer">
+
+                                <ice:panelGroup styleClass="columnSelectPanel">
+                                    <ice:outputText value="#{column.title}"/>
+                                    <ice:panelGrid columns="2" style="width: 10px; float: right" border="0">
+                                        <ice:outputText value="#{column.width}">
+                                            <f:convertNumber integerOnly="true" groupingUsed="false"/>
+                                        </ice:outputText>
+                                        <ice:panelGrid columns="1" width="10px" cellpadding="0" cellspacing="0">
+                                            <ice:commandButton image="resources/img/spin_up.gif"
+                                                               title="Up by #{cc.attrs.table.widthChangeStep}"
+                                                               actionListener="#{column.widthUpListener}"/>
+                                            <ice:commandButton image="resources/img/spin_down.gif"
+                                                               title="Down by #{cc.attrs.table.widthChangeStep}"
+                                                               actionListener="#{column.widthDownListener}"/>
+                                        </ice:panelGrid>
+                                    </ice:panelGrid>
+                                </ice:panelGroup>
+
+                            </ice:panelPositioned>
+
+                        </ice:panelGrid>
+
+                        <ice:commandButton value="Reset Column Width"
+                                           style="margin-top: 5px; margin-left: 0px; margin-bottom: 0px"
+                                           actionListener="#{cc.attrs.table.resetColumnWidthListener}">
+                            <f:setPropertyActionListener target="#{cc.attrs.table.showSelectColumns}" value="#{!cc.attrs.table.showSelectColumns}"/>
+                        </ice:commandButton>
+
+                    </ice:panelTab>
+                    <ice:panelTab label="Sorting">
+
+                        <ice:panelGrid columns="2">
+
+                            <ice:outputText value="Available Columns"/>
+
+                            <ice:outputText value="Sorting Columns"/>
+
+                            <ice:panelPositioned var="column"
+                                                 value="#{cc.attrs.table.sortingColumns.source}"
+                                                 styleClass="columnSelectPanelContainer">
+                                <ice:panelGroup styleClass="columnSelectPanel" >
+                                    <ice:outputText value="#{column.title}"/>
+                                </ice:panelGroup>
+                            </ice:panelPositioned>
+
+                            <ice:panelPositioned var="column"
+                                                 value="#{cc.attrs.table.sortingColumns.target}"
+                                                 styleClass="columnSelectPanelContainer">
+
+                                <ice:panelGroup styleClass="columnSelectPanel">
+                                    <ice:selectBooleanCheckbox partialSubmit="true"
+                                                               title="Ascending?"
+                                                               value="#{column.ascending}"/>
+                                    <ice:outputText value="#{column.title}"/>
+                                </ice:panelGroup>
+
+                            </ice:panelPositioned>
+
+                        </ice:panelGrid>
+
+                        <ice:commandButton value="Apply"
+                                           style="margin-top: 5px; margin-left: 0px; margin-bottom: 0px"
+                                           actionListener="#{cc.attrs.table.refreshListener}"/>
+
+                    </ice:panelTab>
+                </ice:panelTabSet>
+            </f:facet>
+        </ice:panelPopup>
+
+    </cc:implementation>
+</html>

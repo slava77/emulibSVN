@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scene Scope="Project" version="2">
+    <Scope Scope="Faces Configuration Only"/>
+    <Scope Scope="Project">
+        <Node id="resources/component/table/columnsDialog.xhtml" x="150" y="600" zoom="true"/>
+        <Node id="resources/browser/componentClassTree.xhtml" x="400" y="150" zoom="true"/>
+        <Node id="browseData.xhtml" x="150" y="300" zoom="true"/>
+        <Node id="resources/component/table/paginator.xhtml" x="650" y="450" zoom="true"/>
+        <Node id="browseOntologyComponent.xhtml" x="150" y="450" zoom="true"/>
+        <Node id="resources/component/table/menu.xhtml" x="650" y="150" zoom="true"/>
+        <Node id="browseOntology.xhtml" x="400" y="300" zoom="true"/>
+        <Node id="resources/util/polling.xhtml" x="150" y="750" zoom="true"/>
+        <Node id="resources/component/componentSelector.xhtml" x="400" y="600" zoom="true"/>
+        <Node id="browseMonitor.xhtml" x="1150" y="150" zoom="true"/>
+        <Node id="resources/main.xhtml" x="791" y="72" zoom="true"/>
+        <Node id="resources/browser/componentLinkClassTree.xhtml" x="400" y="450" zoom="true"/>
+        <Node id="resources/component/table/table.xhtml" x="900" y="300" zoom="true"/>
+        <Node id="monitor.xhtml" x="669" y="301" zoom="true"/>
+        <Node id="resources/component/table/columnsWidth.xhtml" x="150" y="150" zoom="true"/>
+        <Node id="index.xhtml" x="297" y="53" zoom="false"/>
+        <Node id="resources/component/beanTable.xhtml" x="900" y="150" zoom="true"/>
+    </Scope>
+    <Scope Scope="All Faces Configurations"/>
+</Scene>

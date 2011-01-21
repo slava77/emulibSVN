@@ -1,0 +1,49 @@
+.layoutBlock {
+    position: absolute;
+}
+
+.headerStatus {
+    top: 0px;
+    left: 0px;
+}
+
+.headerTitle {
+    top: 8px;
+    left: 40px;
+}
+
+.headerTitle span {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.headerMenu {
+    top: 10px;
+    right: 10px;
+}
+
+.columnSelectPanel {
+    cursor:move;
+    border: 1px solid grey;
+    margin: 1px;
+    height: 25px;
+    padding: 2px;
+    vertical-align: middle;
+    background-color: white;
+}
+
+.columnSelectPanelContainer {
+    width:200px;
+    height:350px;
+    overflow-x:hidden;
+    overflow-y:auto;
+    border:2px solid grey;
+}
+
+tr.headerRow01, tr.headerRow02 {
+    text-align: left;
+}
+
+.iceSelInpTxtTxt {
+    margin: 0px;
+}

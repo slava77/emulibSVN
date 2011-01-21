@@ -4,39 +4,85 @@
 
 <html   xmlns="http://www.w3.org/1999/xhtml"
         xmlns:ui="http://java.sun.com/jsf/facelets"
-        xmlns:p="http://primefaces.prime.com.tr/ui"
-        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:ice="http://www.icesoft.com/icefaces/component"
         xmlns:h="http://java.sun.com/jsf/html">
 
     <h:head>
         <meta content="application/xhtml+xml;charset=UTF-8" http-equiv="Content-Type" />
         <title>CMS CSC Expert System</title>
+
+        <script type="text/javascript" src="resources/js/jquery-1.4.4.min.js"></script>
+        <script type="text/javascript" src="resources/js/jquery.layout.min-1.2.0.js"></script>
+        <script type="text/javascript" src="resources/js/jquery-ui-1.8.8.custom.min.js"></script>
+        <script type="text/javascript" src="resources/js/jquery.cookie.js"></script>
+        <script type="text/javascript" src="resources/js/gui.js"></script>
+
+        <link rel="stylesheet" type="text/css" href="./xmlhttp/css/rime/rime.css"/>
+        <link rel="stylesheet" type="text/css" href="resources/css/style.css"/>
+
+        <script type="text/javascript">
+            // <![CDATA[
+            jQuery.noConflict();
+            jQuery(document).ready(function () {
+
+		mainLayout = jQuery('body').layout({
+
+                    applyDefaultStyles: true,
+
+                    north__applyDefaultStyles: false,
+                    north__size: 50,
+                    north__closable: false,
+                    north__resizable: false,
+                    north__spacing_open: 0,
+                    north__spacing_closed: 0,
+                    north__showOverflowOnHover: true,
+                    north_fxName: "none"
+
+                });
+
+                if (jQuery("#mainBlockMenu").html() == "") {
+                    mainLayout.hide("west");
+                }
+
+            });
+
+            //]]>
+        </script>
     </h:head>
 
-    <h:body>
+    <h:body style="margin: 0px">
 
-        <p:layout fullPage="true">
+        <ice:panelGroup styleClass="ui-layout-north" style="overflow: visible; background-color: #DDDDDD">
+            <ice:form id="headerForm">
+                <ice:panelGroup id="headerStatus" styleClass="layoutBlock headerStatus">
+                    <ice:outputConnectionStatus displayHourglassWhenActive="true"/>
+                </ice:panelGroup>
 
-            <p:layoutUnit position="top" height="90" resizable="false" closable="false" collapsible="false" styleClass="ui-widget ui-widget-header">
-                <h:panelGroup id="logo">
-                    <h:outputText id="logo" value="CSC Expert System"/>
-                </h:panelGroup>
-            </p:layoutUnit>
+                <ice:panelGroup id="headerTitle" styleClass="layoutBlock headerTitle">
+                    <ice:outputText value="CSC Expert System"/>
+                </ice:panelGroup>
 
-            <p:layoutUnit position="left" width="200" resizable="false" closable="false" collapsible="false">
-                <h:outputText value="Menu" />
-            </p:layoutUnit>
+                <ice:panelGroup id="headerMenu" styleClass="layoutBlock headerMenu">
+                    <ice:menuBar style="font-size: 12px">
+                        <ice:menuItem action="index" value="Home"/>
+                        <ice:menuItem action="monitor" value="Monitor"/>
+                        <ice:menuItem onclick="" value="Browse">
+                            <ice:menuItem action="browseData" value="Data"/>
+                            <ice:menuItem action="browseMonitor" value="Monitor"/>
+                            <ice:menuItem action="browseOntology" value="Ontology"/>
+                        </ice:menuItem>
+                    </ice:menuBar>
+                </ice:panelGroup>
+            </ice:form>
+        </ice:panelGroup>
 
-            <p:layoutUnit position="center">
-                <h:panelGroup>
-                    <ui:insert name="content"/>
-                </h:panelGroup>
-            </p:layoutUnit>
+        <ice:panelGroup id="mainBlockMenu" styleClass="ui-layout-west">
+            <ui:insert name="menu"/>
+        </ice:panelGroup>
 
-        </p:layout>
-
-
-
+        <ice:panelGroup id="mainBlockContent" styleClass="ui-layout-center">
+            <ui:insert name="content"/>
+        </ice:panelGroup>
 
     </h:body>
 

@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:exsys-component-table="http://java.sun.com/jsf/composite/component/table">
+
+    <cc:interface>
+        <cc:attribute name="tableId" type="java.lang.String" required="true"/>
+        <cc:attribute name="table" type="org.cern.cms.csc.exsys.gui.component.BeanTable" required="true"/>
+    </cc:interface>
+
+    <cc:implementation>
+
+        <ice:panelGroup>
+
+            <exsys-component-table:table tableId="#{cc.attrs.tableId}"
+                                         table="#{cc.attrs.table}"/>
+
+            <ice:panelPopup id="filterTableDlg" autoCentre="true" modal="false" draggable="true"
+                            style="z-index: 1000; overflow: hidden; height: 650px; width: 850px"
+                            rendered="#{cc.attrs.table.filterTable != null}">
+
+                <f:facet name="header">
+                    <ice:panelGroup>
+                        <table width="100%">
+                            <tr>
+                                <td width="100%">
+                                    <ice:outputText value="Table Columns" />
+                                </td>
+                                <td width="1%">
+                                    <ice:commandButton type="button"
+                                                       image="/xmlhttp/css/rime/css-images/cal_off.gif"
+                                                       style="vertical-align: middle; text-align: right"
+                                                       actionListener="#{cc.attrs.table.refreshListener}"
+                                                       title="Close" alt="Close">
+                                        <f:setPropertyActionListener target="#{cc.attrs.table.filterTable}" value="#{null}"/>
+                                    </ice:commandButton>
+                                </td>
+                            </tr>
+                        </table>
+                    </ice:panelGroup>
+                </f:facet>
+
+                <f:facet name="body">
+                    <ice:panelGroup>
+                        <exsys-component-table:table tableId="#{cc.attrs.tableId}Filter"
+                                                     table="#{cc.attrs.table.filterTable}"/>
+                    </ice:panelGroup>
+                </f:facet>
+
+            </ice:panelPopup>
+
+        </ice:panelGroup>
+
+    </cc:implementation>
+</html>

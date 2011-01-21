@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:exsys-component-table="http://java.sun.com/jsf/composite/component/table">
+
+    <cc:interface>
+        <cc:attribute name="tableId" type="java.lang.String" required="true"/>
+        <cc:attribute name="table" type="org.cern.cms.csc.exsys.gui.component.BeanTable" required="true"/>
+    </cc:interface>
+
+    <cc:implementation>
+
+        <exsys-component-table:menu table="#{cc.attrs.table}"/>
+
+        <ice:dataTable id="#{cc.attrs.tableId}"
+                       styleClass="#{cc.attrs.tableId}-BeanTable"
+                       var="item"
+                       width="100%"
+                       value="#{cc.attrs.table.data}"
+                       varStatus="itemStatus"
+                       style="margin-top: 0px; width: 100%"
+                       columnWidths="#{cc.attrs.table.columnWidths}">
+
+            <ice:columns value="#{cc.attrs.table.columns}" var="column">
+
+                <f:facet name="header">
+                    <ice:panelGroup style="width: #{column.width}px; overflow: hidden; vertical-align: top; height: 100%">
+
+                        <ice:panelGrid columns="1" width="100%" cellpadding="0" cellspacing="0" style="height: 100%" border="0" rowClasses="headerRow01,headerRow02">
+
+                            <ice:panelGroup style="height: 100%" rendered="#{column.entityType or column.listType}">
+                                <ice:outputText value="#{column.title}" title="#{column.title}"/>
+                            </ice:panelGroup>
+
+                            <ice:panelGrid columns="2" border="0" rendered="#{!column.entityType and !column.listType}">
+                                <ice:commandLink value="#{column.title}" title="#{column.title}"
+                                                 style="font-size: 11px; font-weight: bold"
+                                                 actionListener="#{column.sortListener}"/>
+                                <ice:panelGroup styleClass="iceCmdSrtHdrAsc" style="vertical-align: middle" rendered="#{column.sorting and column.ascending}"/>
+                                <ice:panelGroup styleClass="iceCmdSrtHdrDesc" style="vertical-align: middle" rendered="#{column.sorting and !column.ascending}"/>
+                            </ice:panelGrid>
+
+                            <ice:panelGroup rendered="#{cc.attrs.table.displayFilter}" style="height: 24px">
+
+                                <ice:panelGrid columns="3" border="0" rendered="#{column.entityType}">
+                                    <ice:commandLink value="Filter"
+                                                     actionListener="#{column.filterTableListener}"/>
+                                    <ice:panelGroup rendered="#{column.filterSet}">|</ice:panelGroup>
+                                    <ice:commandLink value="Clear"
+                                                     rendered="#{column.filterSet}"
+                                                     actionListener="#{column.clearFilterListener}"/>
+                                 </ice:panelGrid>
+
+                                <ice:outputText value="" rendered="#{column.listType}"/>
+
+                                <ice:inputText converter="#{column.filterConverter}"
+                                               required="false" partialSubmit="true"
+                                               rendered="#{!column.entityType and !column.listType}"
+                                               value="#{column.filter}"
+                                               actionListener="#{cc.attrs.table.filterListener}"
+                                               style="width: #{column.width - 10}px; overflow: hidden" />
+
+                            </ice:panelGroup>
+
+                        </ice:panelGrid>
+
+                    </ice:panelGroup>
+                </f:facet>
+
+                <ice:panelGroup style="width: #{column.width}px; overflow: hidden">
+
+                    <ice:outputText style="width: 100%; text-align: left"
+                                    rendered="#{column.listType}"
+                                    value="{list}"/>
+
+                    <ice:outputText style="width: 100%; text-align: left"
+                                    rendered="#{column.entityType}"
+                                    value="#{column.cellValue.entityTitle}"/>
+
+                    <ice:outputText style="width: 100%; text-align: left"
+                                    rendered="#{!column.entityType and !column.listType}"
+                                    converter="#{column.converter}"
+                                    value="#{column.cellValue}"/>
+
+                </ice:panelGroup>
+
+            </ice:columns>
+
+        </ice:dataTable>
+
+        <exsys-component-table:columnsWidth tableId="#{cc.attrs.tableId}" table="#{cc.attrs.table}"/>
+
+        <exsys-component-table:columnsDialog table="#{cc.attrs.table}"/>
+
+    </cc:implementation>
+</html>

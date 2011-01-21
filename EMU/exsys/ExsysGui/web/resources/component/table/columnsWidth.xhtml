@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:cc="http://java.sun.com/jsf/composite">
+
+    <cc:interface>
+        <cc:attribute name="tableId" type="java.lang.String" required="true"/>
+        <cc:attribute name="table" type="org.cern.cms.csc.exsys.gui.component.BeanTable" required="true"/>
+    </cc:interface>
+
+    <cc:implementation>
+
+        <ice:panelGroup rendered="#{cc.attrs.table.setColumnWidth}" style="display: none">
+
+            <ice:inputText styleClass="#{cc.attrs.tableId}-BeanTableWidth" value="#{cc.attrs.table.columnWidths}"/>
+
+            <script type="text/javascript">
+                // <![CDATA[
+                jQuery(document).ready( function () {
+
+                    var columnWidths = "";
+                    jQuery('table.#{cc.attrs.tableId}-BeanTable thead tr th').each(function() {
+                        if (columnWidths != "") {
+                            columnWidths += ",";
+                        }
+                        columnWidths += jQuery(this).width();
+                    });
+
+                    jQuery('input.#{cc.attrs.tableId}-BeanTableWidth').val(columnWidths);
+
+                });
+                // ]]>
+            </script>
+
+        </ice:panelGroup>
+
+    </cc:implementation>
+</html>

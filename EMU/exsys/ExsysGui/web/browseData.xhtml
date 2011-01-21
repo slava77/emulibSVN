@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:icecore="http://www.icefaces.org/icefaces/core"
+    xmlns:ace="http://www.icefaces.org/icefaces/components"
+    xmlns:ice="http://www.icesoft.com/icefaces/component"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:exsys-component="http://java.sun.com/jsf/composite/component"
+    template="resources/main.xhtml">
+
+    <ui:define name="menu">
+        <ice:form>
+            <h4><ice:outputText value="Data tables" /></h4>
+            <ice:panelSeries value="#{dataBrowserController.classes}" var="class">
+                <ice:commandLink value="#{class.simpleName}">
+                    <f:setPropertyActionListener value="#{class}"
+                                                 target="#{dataBrowserController.currentClass}"/>
+                </ice:commandLink>
+                <br/>
+            </ice:panelSeries>
+        </ice:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <ice:form>
+            <ice:panelGroup rendered="#{dataBrowserController.table == null}">
+                <ice:outputText value="Table not selected."/>
+            </ice:panelGroup>
+            <ice:panelGroup rendered="#{dataBrowserController.table != null}">
+                <exsys-component:beanTable tableId="beanTable" table="#{dataBrowserController.table}"/>
+            </ice:panelGroup>
+        </ice:form>
+    </ui:define>
+
+</ui:composition>
