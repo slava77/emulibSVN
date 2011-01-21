@@ -11,7 +11,7 @@ import java.util.TreeMap;
 import org.cern.cms.csc.dw.log.Logger;
 import org.cern.cms.csc.dw.log.SimpleLogger;
 import org.cern.cms.csc.exsys.gui.component.BeanTable;
-import org.cern.cms.csc.exsys.gui.component.util.ClassComparator;
+import org.cern.cms.csc.exsys.gui.util.ClassComparator;
 
 public abstract class BrowserController extends JsfBeanBase {
 
