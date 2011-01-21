@@ -7,7 +7,8 @@
             <minimum-ant-version>1.6.5</minimum-ant-version>
             <included-library dirs="200">libs.Esper4.classpath</included-library>
             <included-library dirs="100">reference.ExsysModel.dist</included-library>
-            <included-library dirs="200">libs.Hyperjaxb.classpath</included-library>
+            <included-library dirs="200">libs.ejb3-persistence.classpath</included-library>
+            <included-library dirs="200">libs.Hibernate36.classpath</included-library>
             <source-roots>
                 <root id="src.dir"/>
             </source-roots>
