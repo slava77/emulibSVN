@@ -8,11 +8,14 @@ package org.cern.cms.csc.dw.dao;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.cern.cms.csc.dw.exception.InvalidEntityClassException;
+import org.cern.cms.csc.dw.exception.OnSaveProcessingException;
+import org.cern.cms.csc.dw.exception.PersistException;
+import org.cern.cms.csc.dw.log.Logger;
+import org.cern.cms.csc.dw.log.SimpleLogger;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 
 /**
@@ -22,11 +25,7 @@ import org.cern.cms.csc.dw.model.base.EntityBase;
 @Stateless
 public class EntityDao implements EntityDaoLocal {
 
-    @EJB
-    private PersistDaoLocal persistDao;
-
-    @EJB
-    private OntologyDaoLocal ontologyDao;
+    private static Logger logger = SimpleLogger.getLogger(EntityDao.class);
 
     @PersistenceContext(unitName="CdwPU")
     private EntityManager em;
@@ -58,6 +57,7 @@ public class EntityDao implements EntityDaoLocal {
      * @throws InvalidEntityClassException thrown in many cases e.g. class doesn't exist, doesnt extend EntityBase or ID method is not found or ID cast exception
      */
     @SuppressWarnings("unchecked")
+    @Override
     public EntityBase getEntityById(final String entityClassName, String id) throws InvalidEntityClassException {
         try {
             // get the class
@@ -105,6 +105,7 @@ public class EntityDao implements EntityDaoLocal {
      * @throws InvalidEntityClassException this is thrown when the given class is not a subclass of EntityBase
      */
     @SuppressWarnings("unchecked")
+    @Override
     public <T extends EntityBase> List<T> getAllEntitiesByClass(final Class<T> entityClass) throws InvalidEntityClassException {
         // check all the superclasses to see if it's a subclass of EntityBase, if not - throw InvalidEntityClassException
         boolean isEntity = EntityBase.class.isAssignableFrom(entityClass);
@@ -117,26 +118,12 @@ public class EntityDao implements EntityDaoLocal {
         return ret;
     }
 
-    /**
-     * Get PersistDao Bean
-     * @return PersistDao Bean
-     */
-    public PersistDaoLocal getPersistDao() {
-        return persistDao;
-    }
-
-    /**
-     * Ontology stuff
-     * @return
-     */
-    public OntologyDaoLocal getOntologyDao() {
-        return ontologyDao;
-    }
-
+    @Override
     public EntityBase refreshEntity(EntityBase entity) {
         return refreshEntity(entity, true);
     }
     
+    @Override
     public EntityBase refreshEntity(EntityBase entity, boolean usingId) {
         if (usingId) {
             entity = em.getReference(entity.getClass(), entity.getEntityId());
@@ -146,5 +133,92 @@ public class EntityDao implements EntityDaoLocal {
         }
         return entity;
     }
+
+    @Override
+    public void persist(EntityBase cdwEntityObject) throws PersistException, OnSaveProcessingException {
+        persist(cdwEntityObject, false, false);
+    }
+
+    @Override
+    public EntityBase merge(EntityBase cdwEntityObject) throws PersistException, OnSaveProcessingException {
+        return persist(cdwEntityObject, false, true);
+    }
+
+    @Override
+    public EntityBase mergeAndRefresh(EntityBase cdwEntityObject) throws PersistException, OnSaveProcessingException {
+        persist(cdwEntityObject, false, true);
+        //cdwEntityObject = em.merge(cdwEntityObject);
+        return cdwEntityObject;
+    }
+
+    @Override
+    public EntityBase persist(EntityBase cdwEntityObject, boolean queued, boolean useMerge) throws PersistException, OnSaveProcessingException {
+
+        // is it null by any chance? if yes - then be angry about it
+        if (cdwEntityObject == null) {
+            throw new IllegalArgumentException("null was passed to PersistDao.persist(EntityBase cdwEntityObject) method!");
+        }
+
+        // call an onSave trigger method to give the entity the last chance to prepare itself for persistance
+        cdwEntityObject.onSave(this, queued);
+
+        // persist the entity
+        try {
+            if (useMerge) {
+                cdwEntityObject = em.merge(cdwEntityObject);
+            } else {
+                em.persist(cdwEntityObject);
+            }
+        } catch (Exception ex) {
+            String className = cdwEntityObject.getClass().getCanonicalName();
+            logger.error("Error while persisting an entity of class " + className + ".\n toString(): " + cdwEntityObject.toString(), ex);
+            logger.info("Sending entity of class " + className + ".\n to saver queue...", ex);
+
+            /* TODO:
+             * put int object into queue. Still need to define how to handle queued objects, etc.
+             * I.e. all objects (once in
+             */
+            // entityToSaverQueue(cdwEntityObject);
+            // queueMode = true;
+
+            throw new PersistException(ex);
+        }
+
+        return cdwEntityObject;
+    }
+
+    @Override
+    public void delete(EntityBase cdwEntityObject) {
+        // refresh the entity and delete it
+        cdwEntityObject = em.getReference(cdwEntityObject.getClass(), cdwEntityObject.getEntityId());
+        em.remove(cdwEntityObject);
+    }
+
+
+    /*
+    private Message createMessageForEntitySaverQueue(Session session, EntityBase entity) throws JMSException {
+        ObjectMessage om = session.createObjectMessage();
+        om.setObject(entity);
+        return om;
+    }
+
+    private void entityToSaverQueue(EntityBase entity) throws JMSException {
+        Session session = null;
+        try {
+            session = entitySaverConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            MessageProducer messageProducer = session.createProducer(entitySaverQueue);
+            messageProducer.send(createMessageForEntitySaverQueue(session, entity));
+        } finally {
+            if (session != null) {
+                try {
+                    session.close();
+                } catch (JMSException e) {
+                    Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot close session", e);
+                }
+            }
+        }
+    }
+    */
+
 
 }
