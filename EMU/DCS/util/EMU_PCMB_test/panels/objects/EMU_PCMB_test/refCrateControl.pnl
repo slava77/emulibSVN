@@ -1,4 +1,4 @@
-V 10
+V 11
 1
 LANG:1 0 
 PANEL,-1 -1 142 172 N "_3DFace" 1
@@ -16,26 +16,29 @@ PANEL,-1 -1 142 172 N "_3DFace" 1
  E E E E 1 -1 -1 0  0 0
 ""0  1
 E "bool stateWithToggleBit = false; // if an older ELMB component is used then we use the state with toggle bit and dismiss that at CB func.
-
+bool busy = false;
+bool loopActive = false;
 
 void elmbStateUpdatedCB(string dpe, int state) {
   if (stateWithToggleBit) {
     state &= 127; // dismiss the toggle bit
   }
   
-  if (state == 5) { // OPERATIONAL
-    btnOn.enabled = true;
-    btnOff.enabled = true;
-  } else {
-    btnOn.enabled = false;
-    btnOff.enabled = false;
+  if (!busy) {
+    if (state == 5) { // OPERATIONAL
+      btnOn.enabled = true;
+      btnOff.enabled = true;
+      btnStartLoop.enabled = true;
+    } else {
+      btnOn.enabled = false;
+      btnOff.enabled = false;
+      btnStartLoop.enabled = false;
+    }
   }
 }
 
 // ---------============== CONTROL ===============---------------
-void pcTurnOn(string elmbDp, unsigned delayMs) {
-  dyn_string exception;
-  
+void pcTurnOn(string elmbDp, unsigned delayMs, dyn_string &exception) {
   emu_info(\"Switching ON crate hooked up with ELMB: \" + elmbDp);
 
   //ensure we're not in the suspend/standby state
@@ -52,17 +55,17 @@ void pcTurnOn(string elmbDp, unsigned delayMs) {
   //turn on some power
   fwElmbUser_setDoBit(elmbDp, \"A;3\", FALSE, exception);
   if (emu_checkException(exception) > 0) { return; }
-  if (toggleControlBit(elmbDp, delayMs) == -1) { return; } // toggle control bit and check for exception
+  if (toggleControlBit(elmbDp, delayMs, exception) == -1) { return; } // toggle control bit and check for exception
   
   //turn on boards
   for (int i=0; i < 8; i++) {  // turn ON the first 8 TMB/DMB pairs
     fwElmbUser_setDoBit(elmbDp, \"C;\" + i, FALSE, exception);
     if (emu_checkException(exception) > 0) { return; }
-    if (toggleControlBit(elmbDp, delayMs) == -1) { return; } // toggle control bit and check for exception
+    if (toggleControlBit(elmbDp, delayMs, exception) == -1) { return; } // toggle control bit and check for exception
   }
   fwElmbUser_setDoBit(elmbDp, \"A;0\", FALSE, exception); // turn ON the last - 9th TMB/DMB pair
   if (emu_checkException(exception) > 0) { return; }
-  if (toggleControlBit(elmbDp, delayMs) == -1) { return; } // toggle control bit and check for exception
+  if (toggleControlBit(elmbDp, delayMs, exception) == -1) { return; } // toggle control bit and check for exception
   
   //turn on the rest of the power
   fwElmbUser_setDoBit(elmbDp, \"A;1\", FALSE, exception);
@@ -70,23 +73,19 @@ void pcTurnOn(string elmbDp, unsigned delayMs) {
   delay(0, delayMs / 2);
   fwElmbUser_setDoBit(elmbDp, \"A;2\", FALSE, exception);
   if (emu_checkException(exception) > 0) { return; }
-  if (toggleControlBit(elmbDp, delayMs) == -1) { return; } // toggle control bit and check for exception
+  if (toggleControlBit(elmbDp, delayMs, exception) == -1) { return; } // toggle control bit and check for exception
 }
 
-void pcTurnOff(string elmbDp, unsigned delayMs) {
-  dyn_string exception;
-  
+void pcTurnOff(string elmbDp, unsigned delayMs, dyn_string &exception) {
   emu_info(\"Switching OFF crate hooked up with ELMB: \" + elmbDp);
   
   fwElmbUser_setDoBytes(elmbDp, 0x1fff, exception);
   if (emu_checkException(exception) > 0) { return; }
   
-  toggleControlBit(elmbDp, delayMs);
+  toggleControlBit(elmbDp, delayMs, exception);
 }
 
-int toggleControlBit(string node, unsigned delayMs) {
-  dyn_string exception;
-  
+int toggleControlBit(string node, unsigned delayMs, dyn_string &exception) {
   delay(0, delayMs / 2);
   fwElmbUser_setDoBit(node, \"A;4\", FALSE, exception);
   if (emu_checkException(exception) > 0) { return -1; }
@@ -107,7 +106,7 @@ LANG:1 0
 13 0
 "btnOn"
 ""
-1 9.99999999999995 9.99999999999999 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 9.99999999999995 9.999999999999989 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 1 0 0 0 0 0
 E E E
@@ -117,20 +116,26 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 8 8 132 35
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  8 8 132 35
 
 T 
 1
 LANG:1 7 Turn ON
 "main()
 {
+  dyn_string ex;
+  
+  busy = true;
   this.enabled = false;
   btnOff.enabled = false;
-  pcTurnOn($elmbDp, (unsigned) spinDelay.text);
+  
+  pcTurnOn($elmbDp, (unsigned) spinDelay.text, ex);
+  emu_checkException(ex);
+  
   this.enabled = true;
   btnOff.enabled = true;
+  busy = false;
 }" 0
  E E E
 13 1
@@ -146,26 +151,32 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 8 38 132 65
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  8 38 132 65
 
 T 
 1
 LANG:1 8 Turn OFF
 "main()
 {
+  dyn_string ex;
+
+  busy = true;
   this.enabled = false;
   btnOff.enabled = false;
-  pcTurnOff($elmbDp, (unsigned) spinDelay.text);
+
+  pcTurnOff($elmbDp, (unsigned) spinDelay.text, ex);
+  emu_checkException(ex);
+
   this.enabled = true;
   btnOff.enabled = true;
+  busy = false;
 }" 0
  E E E
 21 2
 "spinDelay"
 ""
-1 71.8518518518518 142 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 71.85185185185181 142 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 5 0 0 0 0 0
 E E E
@@ -175,9 +186,8 @@ LANG:1 0
 
 0
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
- 69.8518518518518 140 136.575866188769 163
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  70 140 137 163
 0
 
 E
@@ -188,7 +198,7 @@ N 0 10000 1 500 1 1
 2 3
 "PRIMITIVE_TEXT3"
 ""
-1 11.7146776406036 142 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -6.930854036478168 152 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 7 0 0 0 0 0
 E E E
@@ -201,10 +211,79 @@ LANG:1 0
 E E 0 1 1 2 1 E 0.925925925925926 0 1 -17.7777777777778 10 1 E 32 132 81 146
 0 2 2 "0s" 0 0 0 192 0 0  32 132 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0 1
 LANG:1 10 Delay (ms)
+13 4
+"btnStartLoop"
+""
+1 10 80 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  8 78 132 102
+
+T 
+1
+LANG:1 13 Start Looping
+"main()
+{
+  dyn_string ex;
+  
+  busy = true;
+  loopActive = true;
+  this.enabled = false;
+  btnOn.enabled = false;
+  btnOff.enabled = false;
+  btnStopLoop.enabled = true;
+  
+  while (loopActive) {
+    pcTurnOn($elmbDp, (unsigned) spinDelay.text, ex);
+    if (emu_checkException(ex)) { break; }
+    delay(0, spinDelay.text);
+    pcTurnOff($elmbDp, (unsigned) spinDelay.text, ex);
+    if (emu_checkException(ex)) { break; }
+  }
+  
+  this.enabled = true;
+  btnOn.enabled = true;
+  btnOff.enabled = true;
+  btnStopLoop.enabled = false;
+  loopActive = false;
+  busy = false;
+}" 0
+ E E E
+13 5
+"btnStopLoop"
+""
+1 10 110 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  8 108 132 132
+
+T 
+1
+LANG:1 12 Stop Looping
+"main()
+{
+  loopActive = false;
+}" 0
+ E E E
 0
 LAYER, 1 
 1
