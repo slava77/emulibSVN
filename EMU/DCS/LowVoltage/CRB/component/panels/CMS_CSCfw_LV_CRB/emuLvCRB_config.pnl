@@ -1,0 +1,484 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 543 345 N "_3DFace" 0
+"#uses \"CMS_CSCfw_LV_CRB/emuLvCRB.ctl\"
+main()
+{
+  emuLvCRB_initalizeParam();
+}" 0
+ E E E E 1 -1 -1 0  120 80
+""0  1
+E "#uses \"CMS_CSCfw_LV_CRB/emuLvCRB.ctl\"
+#uses \"CMS_CSCfw_LV_CRB/emuLvCRB_Constants.ctl\"" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"PUSH_BUTTON1"
+""
+1 20 30 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  18 28 122 72
+
+T 
+1
+LANG:1 10 delete all
+"#uses \"CMS_CSCfw_LV_CRB/emuLvCRB.ctl\"
+main()
+{
+  emuLvCRB_initalizeParam();
+  emuLvCRB_deleteAll();
+ // emudcsLv_initalizeParaCRB();
+  
+//  emudcsLv_setDebugCRB(bDebug,gSystemNameCRB);   
+//  emudcsLv_deleteAllCRB();
+ /*
+  dyn_string s = getFileNames(\"C:/project/csc_lv_developing/scripts/libs\",\"*$install\");
+  DebugTN(s); 
+ 
+  for (int i=1;i<=dynlen(s);i++)
+  {  
+   int j= remove(\"C:/project/csc_lv_developing/scripts/libs/\"+s[i]);
+   DebugTN(j);
+  }
+ */ 
+ // int i=remove(\"C:/project/csc_lv_developing/scripts/libs/*install\");
+ // int i=remove(\"C:/temp/boot.iso\");
+ // int i=remove(\"C:/project/csc_lv_developing/scripts/libs/NewFile.ctl\");
+ // DebugTN(i); 
+  
+}" 0
+ E E E
+13 2
+"PUSH_BUTTON3"
+""
+1 130 30 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  128 28 232 72
+
+T 
+1
+LANG:1 14 create Lv type
+"#uses \"CMS_CSCfw_LV_CRB/emuLvCRB.ctl\"
+//#uses \"CMS_CSCfw_LV_CRB/emuLvCRB_Constants.ctl\"
+main()
+{
+  emuLvCRB_createLvType();
+}  
+ /* 
+  //create type Db_PCMB
+  if(dynlen(dpTypes(\"*Db_PCMB*\")))
+   { 
+    emudcsLv_setDebugCRB(bDebug,\"type Db_PCMB already exist\");
+   } 
+  else  
+   {  
+     dyn_dyn_string ddsdepes;
+     dyn_dyn_int ddidepei;  
+     ddsdepes[1] = makeDynString (\"Db_PCMB\",\"\");
+     ddsdepes[2] = makeDynString (\"\",\"list\");
+     ddidepei[1] = makeDynInt (DPEL_STRUCT);
+     ddidepei[2] = makeDynInt (0,DPEL_DYN_STRING);
+     dpTypeCreate(ddsdepes,ddidepei);
+     emudcsLv_setDebugCRB(bDebug,\"Db_PCMB created\");
+   }
+  dpCreate(\"db_pcmb\",\"Db_PCMB\");
+  dpCreate(\"pcmb_mrtn\",\"Db_PCMB\");
+  dpCreate(\"db_pcmb_geographic\",\"Db_PCMB\"); 
+  
+  dyn_string dsDb,dsDbGeog,dsPcmbMrtn;
+  if(bP5Project)
+   {
+     dsDb = makeDynString(\"CR1_PSU;00;3f\",\"M4_PC1;37\",\"M4_PC2;38\",\"M4_PC3;39\",\"M4_PC4;3a\",\"M4_PC5;3b\",\"M4_PC6;3c\",      
+                                          \"M3_PC1;31\",\"M3_PC2;32\",\"M3_PC3;33\",\"M3_PC4;34\",\"M3_PC5;35\",\"M3_PC6;36\",
+                                          \"M2_PC1;2b\",\"M2_PC2;2c\",\"M2_PC3;2d\",\"M2_PC4;2e\",\"M2_PC5;2f\",\"M2_PC6;30\",
+                                    \"M1_PC1A;20\",\"M1_PC1B;21\",\"M1_PC2A;23\",\"M1_PC2B;22\",\"M1_PC3A;25\",\"M1_PC3B;24\",
+                                    \"M1_PC4A;27\",\"M1_PC4B;26\",\"M1_PC5A;28\",\"M1_PC5B;29\",\"M1_PC6A;2a\",\"M1_PC6B;1f\",
+                                    \"P1_PC1A;02\",\"P1_PC1B;03\",\"P1_PC2A;05\",\"P1_PC2B;04\",\"P1_PC3A;07\",\"P1_PC3B;06\",
+                                    \"P1_PC4A;09\",\"P1_PC4B;08\",\"P1_PC5A;0a\",\"P1_PC5B;0b\",\"P1_PC6A;0c\",\"P1_PC6B;01\",
+                                          \"P2_PC1;0d\",\"P2_PC2;0e\",\"P2_PC3;0f\",\"P2_PC4;10\",\"P2_PC5;11\",\"P2_PC6;12\",
+                                          \"P3_PC1;13\",\"P3_PC2;14\",\"P3_PC3;15\",\"P3_PC4;16\",\"P3_PC5;17\",\"P3_PC6;18\",
+                                          \"P4_PC1;19\",\"P4_PC2;1a\",\"P4_PC3;1b\",\"P4_PC4;1c\",\"P4_PC5;1d\",\"P4_PC6;1e\");
+     
+   dsDbGeog = makeDynString(\"n.a.\",\"X5E51/bot;1\",\"X5L51/bot;2\",\"X3S51/top;3\",\"X1L51/top;4\",\"X1E51/bot;5\",\"X3V51/bot;6\",  //ME-4
+                                   \"X5E41/bot;1\",\"X5L41/bot;2\",\"X3S41/top;3\",\"X1L41/top;4\",\"X1E41/bot;5\",\"X3V41/bot;6\",  //ME-3
+                                   \"X5E41/top;1\",\"X5L41/top;2\",\"X3S41/bot;3\",\"X1L41/bot;4\",\"X1E41/top;5\",\"X3V41/top;6\",  //ME-2
+                                   \"X5E31/bot;2\",\"X5E31/top;3\",\"X5L31/bot;5\",\"X5L31/top;4\",\"X3S31/bot;7\",\"X3S31/top;6\",  //ME-1
+                                \"X1L31/bot;9\",\"X1L31/top;8\",\"X1E31/bot;10\",\"X1E31/top;11\",\"X3V31/bot;12\",\"X3V31/top;1\",  //ME-1
+                                   \"X5U31/bot;2\",\"X5U31/top;3\",\"X5R31/bot;5\",\"X5R31/top;4\",\"X3A31/bot;7\",\"X3A31/top;6\",  //ME+1
+                                \"X1R31/bot;9\",\"X1R31/top;8\",\"X1U31/bot;10\",\"X1U31/top;11\",\"X3J31/bot;12\",\"X3J31/top;1\",  //ME+1
+                                   \"X5U41/top;1\",\"X5R41/top;2\",\"X3A41/top;3\",\"X1R41/bot;4\",\"X1U41/top;5\",\"X3J41/bot;6\",  //ME+2
+                                   \"X5U41/bot;1\",\"X5R41/top;2\",\"X3A41/top;3\",\"X1R41/bot;4\",\"X1U41/top;5\",\"X3J41/bot;6\",  //ME+3
+                                   \"X5U51/bot;1\",\"X5R51/bot;2\",\"X3A51/top;3\",\"X1R51/top;4\",\"X1U51/bot;5\",\"X3J51/bot;6\"); //ME+4
+   
+   dsPcmbMrtn = makeDynString(\"55;38\",\"56;37\",\"57;37\",\"58;37\",\"59;38\",\"60;38\",                                                 //ME-4
+                              \"49;29\",\"50;32\",\"51;34\",\"52;34\",\"53;35\",\"54;29\",                                                 //ME-3
+                              \"43;30\",\"44;31\",\"45;33\",\"46;34\",\"47;36\",\"48;29\",                                                 //ME-2
+                              \"32;21\",\"33;22\",\"35;24\",\"34;23\",\"37;26\",\"36;25\",\"39;26\",\"38;26\",\"40;27\",\"41;28\",\"42;21\",\"31;21\", //ME-1
+                                \"2;1\",  \"3;2\",  \"5;4\",  \"4;3\",  \"7;6\",  \"6;5\",  \"9;6\",  \"8;6\", \"10;7\", \"11;8\", \"12;1\",  \"1;1\", //ME+1
+                              \"13;10\",\"14;11\",\"15;13\",\"16;14\",\"17;16\", \"18;9\",                                                 //ME+2
+                               \"19;9\",\"20;12\",\"21;14\",\"22;14\",\"23;15\", \"24;9\",                                                 //ME+3
+                               \"25;18\",\"26;19\",\"27;17\",\"28;17\",\"29;18\",\"30;18\");                                               //ME+4                              
+                              
+   }
+  else
+   { 
+     dsDb = makeDynString(\"CR1_PSU;00;3f\",\"DEV_PC1;13\",\"DEV_PC2;02\");
+     dsDbGeog = makeDynString(\"n.a.\",\"DEV Bld\",\"DEV Bld\");
+   }
+  dpSetWait(\"db_pcmb.list\",dsDb,\"db_pcmb_geographic.list\",dsDbGeog,\"pcmb_mrtn.list\",dsPcmbMrtn);
+  emudcsLv_setDebugCRB(bDebug,\"Db set\"); 
+*/  
+" 0
+ E E E
+13 3
+"PUSH_BUTTON4"
+""
+1 130 80 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  128 78 232 122
+
+T 
+1
+LANG:1 11 create Elmb
+"#uses \"CMS_CSCfw_LV_CRB/emuLvCRB.ctl\"
+main()
+{
+  emuLvCRB_createElmbCRB();
+} 
+" 0
+ E E E
+13 4
+"PUSH_BUTTON5"
+""
+1 130 130 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  128 128 232 172
+
+T 
+1
+LANG:1 10 create PSu
+"#uses \"CMS_CSCfw_LV_CRB/emuLvCRB.ctl\"
+main()
+{
+  emuLvCRB_createElmbPSU();
+} 
+" 0
+ E E E
+13 7
+"PUSH_BUTTON7"
+""
+1 250 30 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  248 28 352 72
+
+T 
+1
+LANG:1 11 create tree
+"#uses \"CMS_CSCfw_LV_CRB/emuLvCRB.ctl\"
+main()
+{
+ emuLvCRB_initalizeParam();
+ emuLvCRB_createCrbTree();
+ emuLvCRB_createPsuTree();
+ delay(1);
+ fwFsmTree_generateAll(); 
+ fwFsmTree_refreshTree();
+ fwFsm_stopAllDomains();
+}" 0
+ E E E
+13 9
+"PUSH_BUTTON9"
+""
+1 130 180 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  128 178 232 222
+
+T 
+1
+LANG:1 15 create fwCrbPsu
+"#uses \"CMS_CSCfw_LV_CRB/emuLvCRB.ctl\"
+main()
+{
+ emuLvCRB_initalizeParam();
+ emuLvCRB_createFwCrbPsu();
+}" 0
+ E E E
+13 10
+"PUSH_BUTTON10"
+""
+1 130 230 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  128 228 232 272
+
+T 
+1
+LANG:1 23 set alert 
+for elmb/crb
+"#uses \"CMS_CSCfw_LV_CRB/emuLvCRB.ctl\"
+main()
+{
+ emuLvCRB_initalizeParam();
+ emuLvCRB_setAlertElmbAi();
+ emuLvCRB_setAlertElmbNode();
+ emuLvCRB_setAlertCrb();
+}" 0
+ E E E
+13 14
+"PUSH_BUTTON13"
+""
+1 130 280 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  128 278 232 322
+
+T 
+1
+LANG:1 17 set alert for PSU
+"#uses \"CMS_CSCfw_LV_CRB/emuLvCRB.ctl\"
+main()
+{
+ emuLvCRB_initalizeParam();
+ 
+ emuLvCRB_setAlertPsu();
+}" 0
+ E E E
+13 17
+"PUSH_BUTTON16"
+""
+1 250 80 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  248 78 352 122
+
+T 
+1
+LANG:1 16 set FSM Ui Infol
+"#uses \"CMS_CSCfw_LV_CRB/emuLvCRB.ctl\"
+main()
+{
+ emuLvCRB_initalizeParam();
+// emuLvCRB_createCrbTree();
+// emuLvCRB_createPsuTree();
+// fwFsmTree_generateAll(); 
+// fwFsmTree_refreshTree();
+ emuLvCRB_setFsmUiInfo();
+}" 0
+ E E E
+13 18
+"PUSH_BUTTON17"
+""
+1 249 132 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  247 130 351 174
+
+T 
+1
+LANG:1 16 set FSM userdata
+"#uses \"CMS_CSCfw_LV_CRB/emuLvCRB.ctl\"
+main()
+{
+ emuLvCRB_initalizeParam();
+// emuLvCRB_createCrbTree();
+// emuLvCRB_createPsuTree();
+// fwFsmTree_generateAll(); 
+// fwFsmTree_refreshTree();
+ emuLvCRB_setFsmUserData();
+}" 0
+ E E E
+13 19
+"PUSH_BUTTON18"
+""
+1 250 181 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  248 179 352 223
+
+T 
+1
+LANG:1 17 set dps archiving
+"#uses \"CMS_CSCfw_LV_CRB/emuLvCRB.ctl\"
+main()
+{
+ emuLvCRB_initalizeParam();
+// emuLvCRB_createCrbTree();
+// emuLvCRB_createPsuTree();
+// fwFsmTree_generateAll(); 
+// fwFsmTree_refreshTree();
+ emuLvCRB_setArchiving();
+}" 0
+ E E E
+30 22
+"FRAME1"
+""
+1 10 3 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+22 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1.155555555555556 0 1 -1.555555555555556 7 0 E 10 3 461 321
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 6 config
+13 26
+"CreateAll"
+""
+1 400 30 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+26 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  398 28 507 74
+
+T 
+1
+LANG:1 10 Create All
+"main()
+{
+  emuLvCRB_createLvCRBAll();  
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

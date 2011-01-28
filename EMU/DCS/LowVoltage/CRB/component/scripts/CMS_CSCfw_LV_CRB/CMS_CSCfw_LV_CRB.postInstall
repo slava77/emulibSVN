@@ -1,13 +1,60 @@
-main(){
+#uses "fwInstallation.ctl"
+#uses "CMS_CSCfw_LV_CRB/emuLvCRB.ctl"
+#uses "CMSfwInstallUtils/CMSfwInstallUtils.ctl"
+
+main()
+{
+DebugTN("running post-installation script for CSC LV CRB component");  
+
+// monitor server for CSC LV CRB
+fwInstallation_appendManager(TRUE, "CSC LV CRB monitor", "PVSS00ctrl", 
+"manual", 30, 2, 2, "-num 15 CMS_CSCfw_LV_CRB/emuLvCRB_Server.ctl");
+
+//clean all dps if exist
+  emuLvCRB_deleteAll();
+
+//delay 15 second
+  delay(15);
+
+// Set the driver 7 to manual and start simulator
+  DebugN("Setting OPC to simulator. Result = "+
+  CMSfwInstallUtils_switchSimDriver(FALSE,"PVSS00opc", 7));
+
+//delay 15 second 
+  delay(15);
+
+//start scripts to crate all dps for LV CRB compnent
+  emuLvCRB_createLvCRBAll(); 
+
+//delay 15 second
+  delay(15);
  
-fwInstallation_appendManager(TRUE, "fwCMS_CSC_LV_CRB server", "PVSS00ctrl", 
-"always", 30, 2, 2, "-num 15 libs/CMS_CSCfw_LV_CRB/mudcsLVserver.ctl");
 
-//  return;
-   system("start /b PVSS00ctrl -num 17 CMS_CSCfw_LV_CRB/mudcsCrbCreate.ctl");  
+//Copy ELMB server config file
+  string path;
+  dyn_string conf_path;
+  int pos, i; 
+  fwInstallation_getProjPaths(conf_path);
+  for(i=1; i<=dynlen(conf_path); i++){
+    if(isfile(conf_path[i] +"\\"+ DPLIST_REL_PATH + "CMS_CSCfw_LV_CRB\\OPCCanServer.cfg")){
+      path = conf_path[i] +"\\"+ DPLIST_REL_PATH + "CMS_CSCfw_LV_CRB";
+      break;
+    }
+  }   
+  copyFile(path + "/OPCCanServer.cfg","C:/CANopenOPC/OPCCanServer.cfg");
 
-// system("cmd /c cp "+ProjectHome+"\\source\\"+dir+"\\special_stuff/*cfg* "+
-//       OPC_SERVER_DIR+"/.");
-//DebugTN("cmd /c cp "+ProjectHome+"\\source\\"+dir+"\\special_stuff/*cfg* "+
-//       OPC_SERVER_DIR+"/.");
+
+// Set the driver to always and stop simulator
+   DebugN("Setting back OPC to driver. Result = "+
+   CMSfwInstallUtils_switchSimDriver(TRUE,"PVSS00opc", 7));
+
+//delay 15 second
+  delay(15);
+
+//set db config
+  emuLvCRB_setDbConfig();
+
+// Send a final info message
+  CMSfwInstallUtils_endPostInstall("done for CMS_CSCfw_LV_CRB");
+
 }

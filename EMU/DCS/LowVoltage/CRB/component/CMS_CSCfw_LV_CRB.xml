@@ -1,27 +1,40 @@
- <component>
-        <name>CMS_CSCfw_LV_CRB</name>
-        <version>1.1.0</version>
-        <date>2010/05/30</date> 
-		<required>CMS_CSC_common=1.1.0</required>
-		<required>fwCore=4.0.0</required>
-		<required>fwAnalogDigital=4.0.0</required>
-		<required>fwElmb=3.5.3</required>
-		<required>fwElmbPSU=2.1.5</required>
-		<required>fwAccessControl=3.2.7</required>
-		<required>fwTrending=3.2.1</required>
-        <config>./config/CMS_CSCfw_LV_CRB.config</config>
-        <dplist>./dplist/CMS_CSCfw_LV_CRB/CMS_CSCfw_LV_CRB.dpl</dplist>
-        <postInstall>./scripts/CMS_CSCfw_LV_CRB/CMS_CSCfw_LV_CRB.postInstall</postInstall>                   
-        <file>./CMS_CSCfw_LV_CRB.xml</file> 
-        <file>./source/CMS_CSCfw_LV_CRB/config/CMS_CSCfw_LV_*.xml</file>
-        <file>./source/CMS_CSCfw_LV_CRB/config/CMS_CSCfw_LV_*.config</file>
-        <file>./panels/CMS_CSCfw_LV_CRB/*.pnl</file>
-        <file>./panels/CMS_CSCfw_LV_CRB/config/*.pnl</file>
-        <file>./panels/CMS_CSCfw_LV_CRB/fwElmbPSU/*.pnl</file>
-        <file>./panels/CMS_CSCfw_LV_CRB/fwElmbPSU/objects/*.pnl</file>
-        <file>./scripts/libs/CMS_CSCfw_LV_CRB/*.ctl</file>
-        <file>./scripts/CMS_CSCfw_LV_CRB/*.*</file>
-        <file>./source/CMS_CSCfw_LV_CRB/special_stuff/*</file> 
-        <file>./source/CMS_CSCfw_LV_CRB/special_stuff/csc_dcs_lv1_install/*</file>  
-        <file>./source/CMS_CSCfw_LV_CRB/special_stuff/csc_dcs_lv2_install/*</file> 			
+<component>
+<name>CMS_CSCfw_LV_CRB</name>
+<version>3.1.0</version>
+<date>2011/01/28</date>
+<required>CMS_CSC_common=1.3.0</required>
+<required>CMSfwInstallUtils=1.0.0</required>
+<required>fwAccessControl=3.2.7</required>
+<required>fwAlarmHandling=3.2.2</required>
+<required>fwConfigs=3.2.4</required>
+<required>fwConfigurationDB=3.3.53</required>
+<required>fwCore=4.0.0</required>
+<required>fwElmb=4.2.2</required>
+<required>fwElmbPSU=2.2.0</required>
+<required>fwFSM=27.11.0</required>
+<required>fwFSMConfDB=3.4.0</required>
+<required>fwTrending=3.2.1</required>
+<required>unDistributedControl=3.2.1</required>
+<postInstall>./scripts/CMS_CSCfw_LV_CRB/CMS_CSCfw_LV_CRB.postInstall</postInstall>
+<config>./config/CMS_CSCfw_LV_CRB.config</config>
+<dplist>./dplist/CMS_CSCfw_LV_CRB/CMS_CSCfw_LV_CRB_FsmType.dpl</dplist>
+<dplist>./dplist/CMS_CSCfw_LV_CRB/CMS_CSCfw_LV_CRB_muDcs.dpl</dplist>
+<dplist>./dplist/CMS_CSCfw_LV_CRB/CMS_CSCfw_LV_CRB_trending.dpl</dplist>
+<dplist>./dplist/CMS_CSCfw_LV_CRB/OPCCanServer.cfg</dplist>
+<file>./panels/CMS_CSCfw_LV_CRB/emuBranchDisplay.pnl</file>
+<file>./panels/CMS_CSCfw_LV_CRB/emuCrbCrateList.pnl</file>
+<file>./panels/CMS_CSCfw_LV_CRB/emuDevfwBranch_CSC_LVOperation.pnl</file>
+<file>./panels/CMS_CSCfw_LV_CRB/emuDevfwCrb_CSC_LVHardware.pnl</file>
+<file>./panels/CMS_CSCfw_LV_CRB/emuDevfwCrb_CSC_LVLogical.pnl</file>
+<file>./panels/CMS_CSCfw_LV_CRB/emuDevfwCrb_CSC_LVOperation.pnl</file>
+<file>./panels/CMS_CSCfw_LV_CRB/emuLvCRB_config.pnl</file>
+<file>./panels/CMS_CSCfw_LV_CRB/emuStationCrbOperation.pnl</file>
+<file>./panels/CMS_CSCfw_LV_CRB/trending.pnl</file>
+<file>./panels/CMS_CSCfw_LV_CRB/trendingCRB.pnl</file>
+<file>./scripts/CMS_CSCfw_LV_CRB/emuLvCRB_Server.ctl</file>
+<file>./scripts/libs/CMS_CSCfw_LV_CRB/emuDcsCrb.ctl</file>
+<file>./scripts/libs/CMS_CSCfw_LV_CRB/emuDcsLv.ctl</file>
+<file>./scripts/libs/CMS_CSCfw_LV_CRB/emuLvCRB.ctl</file>
+<file>./scripts/libs/CMS_CSCfw_LV_CRB/emuLvCRB_Constants.ctl</file>
+<file>./CMS_CSCfw_LV_CRB.xml</file>
 </component>

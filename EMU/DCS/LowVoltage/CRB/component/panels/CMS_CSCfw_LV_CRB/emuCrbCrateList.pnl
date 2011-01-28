@@ -1,13 +1,12 @@
-V 10
+V 11
 1
 LANG:1 15 emuCrbCrateList
 PANEL,-1 -1 215 375 N "_3DFace" 1
 "$DpName"
 "main()
 {
-//  mudcsLvDebug($DpName);
-if(strpos($DpName,\"ME_P1\")>=0 || strpos($DpName,\"ME_M1\")>=0 )setValue(\"sectors_1\",\"visible\", true);
-else setValue(\"sectors_2\",\"visible\", true);
+  if(strpos($DpName,\"ME_P1\")>=0 || strpos($DpName,\"ME_M1\")>=0 )setValue(\"sectors_1\",\"visible\", true);
+  else setValue(\"sectors_2\",\"visible\", true);
 }" 0
  E E E E 1 -1 -1 0  0 0
 ""0  1
@@ -35,64 +34,52 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 22 12 193 346
 0 2 2 "0s" 0 0 0 192 0 0  22 12 12
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,21,5,50,0,0,0,0,0
+0 1
 LANG:1 18 Sector 2   Bottom 
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,21,5,50,0,0,0,0,0
+0 1
 LANG:1 14 Sector 3   Top
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,21,5,50,0,0,0,0,0
+0 1
 LANG:1 17 Sector 5   Bottom
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,21,5,50,0,0,0,0,0
+0 1
 LANG:1 14 Sector 4   Top
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,21,5,50,0,0,0,0,0
+0 1
 LANG:1 17 Sector 7   Bottom
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,21,5,50,0,0,0,0,0
+0 1
 LANG:1 14 Sector 6   Top
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,21,5,50,0,0,0,0,0
+0 1
 LANG:1 17 Sector 9   Bottom
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,21,5,50,0,0,0,0,0
+0 1
 LANG:1 14 Sector 8   Top
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,21,5,50,0,0,0,0,0
+0 1
 LANG:1 16 Sector 10 Bottom
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,21,5,50,0,0,0,0,0
+0 1
 LANG:1 13 Sector 11 Top
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,21,5,50,0,0,0,0,0
+0 1
 LANG:1 16 Sector 12 Bottom
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,21,5,50,0,0,0,0,0
+0 1
 LANG:1 14 Sector 1   Top
 2 1
 "sectors_2"
@@ -110,39 +97,32 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 22 12 122 182
 0 2 2 "0s" 0 0 0 64 0 0  22 12 7
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,21,5,50,0,0,0,0,0
+0 1
 LANG:1 8 Sector 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,21,5,50,0,0,0,0,0
+0 1
 LANG:1 8 Sector 2
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,21,5,50,0,0,0,0,0
+0 1
 LANG:1 8 Sector 3
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,21,5,50,0,0,0,0,0
+0 1
 LANG:1 8 Sector 4
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,21,5,50,0,0,0,0,0
+0 1
 LANG:1 8 Sector 5
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,21,5,50,0,0,0,0,0
+0 1
 LANG:1 8 Sector 6
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-21-*-100-100-*-*-iso8859-1|-21,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
+LANG:1 33 MS Shell Dlg,-1,21,5,50,0,0,0,0,0
+0 1
 LANG:1 0 
 0
 LAYER, 1 

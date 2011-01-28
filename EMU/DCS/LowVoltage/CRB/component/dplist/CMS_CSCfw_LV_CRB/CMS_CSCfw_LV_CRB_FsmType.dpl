@@ -1,0 +1,105 @@
+# ascii dump of database
+
+# Datapoint/DpId
+DpName	TypeName	ID
+fwOT_CSC_LV_NODES	_FwFsmObjectType	104695
+fwOT_CSC_LV_TREE_NODES	_FwFsmObjectType	104696
+fwOT_fwCrb_CSC_LV	_FwFsmObjectType	104801
+fwOT_fwBranch_CSC_LV	_FwFsmObjectType	749947
+
+# DpValue
+ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
+fwOT_CSC_LV_NODES.panel	_FwFsmObjectType	"CSC_LV_NODES.pnl"	0x101	03.09.2010 11:18:38.337
+fwOT_CSC_LV_NODES.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR|        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|", "", "", "ERROR", "FwStateAttention3", "        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|        when ( $ALL$FwCHILDREN in_state {ON,OFF} )  move_to OFF|", "", "", "ON", "FwStateOKPhysics", "   when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|   when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|", "", "", "STANDBY", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR|  when ( $ALL$FwCHILDREN in_state ON )  move_to ON| when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|", "", ""	0x101	17.12.2010 19:40:42.171
+fwOT_CSC_LV_NODES.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0"	0x101	17.12.2010 19:40:42.171
+fwOT_CSC_LV_NODES.parameters	_FwFsmObjectType		0x141	03.09.2010 11:18:38.352
+fwOT_CSC_LV_TREE_NODES.panel	_FwFsmObjectType	"CSC_LV_TREE_NODES.pnl"	0x101	03.09.2010 11:18:38.352
+fwOT_CSC_LV_TREE_NODES.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|", "", "", "ERROR", "FwStateAttention3", "        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|        when ( $ALL$FwCHILDREN in_state {ON,OFF,RAMP,STANDBY} )  move_to OFF|", "", "", "ON", "FwStateOKPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|   when ( $ANY$FwCHILDREN in_state {OFF,RAMP,STANDBY} )  move_to OFF|", "", ""	0x101	17.12.2010 19:40:42.406
+fwOT_CSC_LV_TREE_NODES.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0"	0x101	17.12.2010 19:40:42.406
+fwOT_CSC_LV_TREE_NODES.parameters	_FwFsmObjectType		0x141	03.09.2010 11:18:38.352
+fwOT_fwCrb_CSC_LV.panel	_FwFsmObjectType	"CMS_CSCfw_LV_CRB/emuDevfwCrb_CSC_LVOperation.pnl"	0x101	13.11.2010 11:03:19.328
+fwOT_fwCrb_CSC_LV.components	_FwFsmObjectType	"int status
+", "int command
+", "fwCrb_CSC_LV_initialize(string domain, string device)
+{
+}
+", "fwCrb_CSC_LV_valueChanged( string domain, string device,
+      int status, string &fwState)
+{
+	if(status > 0)
+	{
+		fwState = \"ON\";
+	}
+	else if(status > -1)
+	{
+		fwState = \"OFF\";
+	}
+	else
+	{
+		fwState = \"ERROR\";
+	}
+}
+", "fwCrb_CSC_LV_doCommand(string domain, string device, string command)
+{
+	if (command == \"OFF\")
+	{
+		dpSet(device+\".command\",0);
+	}
+	if (command == \"STANDBY\")
+	{
+		dpSet(device+\".command\",2);
+	}
+	if (command == \"ON\")
+	{
+		dpSet(device+\".command\",2);
+	}
+}
+
+"	0x101	17.12.2010 19:40:41.656
+fwOT_fwCrb_CSC_LV.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	17.12.2010 19:40:41.656
+fwOT_fwCrb_CSC_LV.actions	_FwFsmObjectType	"ON/OFF", "", "1", "", "0", "ON/STANDBY", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "OFF/STANDBY", "", "1", "", "0", "OFF/OFF", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0", "ERROR/STANDBY", "", "1", "", "0"	0x101	17.12.2010 19:40:41.656
+fwOT_fwCrb_CSC_LV.parameters	_FwFsmObjectType		0x141	03.09.2010 11:18:38.368
+fwOT_fwBranch_CSC_LV.panel	_FwFsmObjectType	"CMS_CSCfw_LV_CRB/emuDevfwBranch_CSC_LVOperation.pnl"	0x101	19.12.2010 23:16:19.625
+fwOT_fwBranch_CSC_LV.components	_FwFsmObjectType	"int status
+", "int command
+", "fwBranch_CSC_LV_initialize(string domain, string device)
+{
+  dpSetWait(device+\".command\",2);
+}
+", "fwBranch_CSC_LV_valueChanged( string domain, string device,
+      int status, string &fwState )
+{
+	if (status == 2)
+	{
+		fwState = \"ON\";
+	}
+	else if (status == 0)
+	{
+		fwState = \"OFF\";
+	}
+	else 
+	{
+		fwState = \"ERROR\";
+	}
+}
+
+", "fwBranch_CSC_LV_doCommand(string domain, string device, string command)
+{
+	if (command == \"OFF\")
+	{
+		dpSet(device+\".command\",2);
+	}
+	if (command == \"STANDBY\")
+	{
+		dpSet(device+\".command\",2);
+	}
+	if (command == \"ON\")
+	{
+		dpSet(device+\".command\",2);
+	}
+}
+
+"	0x101	19.12.2010 23:16:19.640
+fwOT_fwBranch_CSC_LV.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	19.12.2010 23:16:19.640
+fwOT_fwBranch_CSC_LV.actions	_FwFsmObjectType	"ON/OFF", "", "1", "", "0", "ON/STANDBY", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "OFF/STANDBY", "", "1", "", "0", "OFF/OFF", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0", "ERROR/ON", "", "1", "", "0", "ERROR/STANDBY", "", "1", "", "0"	0x101	19.12.2010 23:16:19.640
+fwOT_fwBranch_CSC_LV.parameters	_FwFsmObjectType		0x101	13.11.2010 13:01:24.421

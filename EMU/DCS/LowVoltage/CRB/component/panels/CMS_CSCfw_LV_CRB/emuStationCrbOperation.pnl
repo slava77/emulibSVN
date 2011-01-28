@@ -1,60 +1,35 @@
-V 10
+V 11
 1
 LANG:1 0 
-PANEL,-1 -1 120 85 N "_3DFace" 2
-"$obj"
-"$sDpName"
-"main()
+PANEL,-1 -1 120 85 N "_3DFace" 1
+"$2"
+"
+main()
 {
   mudcsCrbPnlInit(); 
- init_dp_switch();
-// DebugTN(DpName); 
- int x,y;
-// panelPosition(myModuleName(),myPanelName()/* \"emufwUi_v24r9\"*/, x, y);
- 
-// mudcsLvDebug(myPanelName());
-//     mudcsLvDebug(x);
-addSymbol(myModuleName(),myPanelName(),\"CMS_CSCfw_LV_CRB/emuCrbCrateList.pnl\",\"specific\",          
-makeDynString(\"$DpName:\"+DpName),   //+, \"$obj:\"+dev,\"$sDpName:\"+dev), // my_corr++
-  330, 100,  0,1,1); 
- 
-//if(strpos(DpName,\"ME_P1\")>=0)setValue(\"sectors_1\",\"visible\", true);
-//else setValue(\"sectors_2\",\"visible\", true);
+  init_dp_switch(); 
+  int x,y;
+  addSymbol( myModuleName(),myPanelName(),
+             \"CMS_CSCfw_LV_CRB/emuCrbCrateList.pnl\",\"specific\",          
+             makeDynString(\"$DpName:\"+DpName),
+             330, 100,  0,1,1); 
 }
-
 //============================================================
-
-
-init_dp_switch(){
-  
-//mudcsLvDebug($node);
-//mudcsLvDebug($obj);
-   
- if($obj != \"\"){   // the panel is called from FSM
-    DpName=$obj;
- } 
- else{
-    DpName=$sDpName; // the panel is called from LOGICAL TREE
- }
-
-DpName=mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME);
-
-
-
+init_dp_switch()
+{  
+  if($2 != \"\")
+   {   // the panel is called from FSM
+    DpName=$2;
+   }
+  DpName=mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME);
 }
-
-//============================================================
-/*
-addSymbol(myModuleName(),myPanelName(),panel_path,\"specific\",          
-makeDynString(\"$node:\"+node, \"$obj:\"+dev,\"$sDpName:\"+dev, \"$project_station:\"+
-   project_station, \"$project_system:\"+project_system), // my_corr++
-   x+x_add, y+y_add, 0,1,1);
-*/                    
 
 	" 0
  E E E E 1 -1 -1 0  30 20
 ""0  1
-E "
+E "#uses \"CMS_CSCfw_LV_CRB/emuDcsLv.ctl\"
+#uses \"CMS_CSCfw_LV_CRB/emuDcsCrb.ctl\"
+#uses \"CMS_CSCfw_LV_CRB/emuLvCRB.ctl\"
 string DpName;" 0
  2
 "CBRef" "1"

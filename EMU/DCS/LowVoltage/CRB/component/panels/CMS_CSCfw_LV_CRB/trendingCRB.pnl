@@ -1,0 +1,65 @@
+V 11
+1
+LANG:1 11 trendingCRB
+PANEL,-1 -1 752 527 N "_3DFace" 2
+"$ch"
+"$sPreDp"
+"main()    
+{
+  mudcsCrbPnlInit();
+  sDpName = $sPreDp;
+  iCh = $ch;
+  sDpName1 =sDpName+CSC_fwCAN1_g_LIST_3V1[iCh];
+  sDpName2 =sDpName+CSC_fwCAN1_g_LIST_3V2[iCh];
+  sDpName3 =sDpName+CSC_fwCAN1_g_LIST_5V[iCh]; 
+  addSymbol(\"mudcsTrending\",myPanelName(),\"CMS_CSCfw_LV_CRB/trending.pnl\",\"trending\",
+            makeDynString(\"$sDpName1:\"+sDpName1,\"$sDpName2:\"+sDpName2,\"$sDpName3:\"+sDpName3),
+            0,0,0,1,1);
+                         
+}
+" 0
+ E E E E 1 0 0 0  0 0
+""0  1
+E "#uses \"CMS_CSCfw_LV_CRB/emuDcsLv.ctl\"
+#uses \"CMS_CSCfw_LV_CRB/emuDcsCrb.ctl\"
+#uses \"CMS_CSCfw_LV_CRB/emuLvCRB.ctl\"
+string sDpName,sDpName1,sDpName2,sDpName3;
+int iCh;" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0
