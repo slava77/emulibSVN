@@ -31,18 +31,12 @@ fwInstallation_appendManager(TRUE, "CSC LV CRB monitor", "PVSS00ctrl",
  
 
 //Copy ELMB server config file
-  string path;
-  dyn_string conf_path;
-  int pos, i; 
-  fwInstallation_getProjPaths(conf_path);
-  for(i=1; i<=dynlen(conf_path); i++){
-    if(isfile(conf_path[i] +"\\"+ DPLIST_REL_PATH + "CMS_CSCfw_LV_CRB\\OPCCanServer.cfg")){
-      path = conf_path[i] +"\\"+ DPLIST_REL_PATH + "CMS_CSCfw_LV_CRB";
-      break;
-    }
-  }   
-  copyFile(path + "/OPCCanServer.cfg","C:/CANopenOPC/OPCCanServer.cfg");
-
+  dyn_string path = "\\\\dfs.cern.ch/dfs/Users/c/cmsdcs/Public/CMS_DCS_Repository/CMSFrameworkComponents/CSC/LV_OPC_configs";
+  if(isfile(path + "/OPCCanServer.cfg")){
+    copyFile(path + "/OPCCanServer.cfg","C:/CANopenOPC/OPCCanServer.cfg");
+  } else {
+    DebugTN("Could not locate OPC config file from here: " + path + "/OPCCanServer.cfg");
+  }
 
 // Set the driver to always and stop simulator
    DebugN("Setting back OPC to driver. Result = "+
