@@ -1,45 +1,49 @@
-V 10
+V 11
 1
 LANG:1 8 (NoName)
-PANEL,-1 -1 631 610 N "_3DFace" 1
-"$sDpName"
+PANEL,-1 -1 643 600 N "_3DFace" 1
+"$2"
 "main()
 {
  //---- my_corr---------------------------------------------------
-  mudcsMrtnPnlInit();  
-  DpName=mudcsLvAddSystem($sDpName, CSC_fwCAN2_g_SYSTEM_NAME);
+  mudcsMrtnPnlInit(); 
+  emuLvMRTN_initalizeParam(); 
+  DpName  = $2;
+  sDpName = $2;
   int local_sys;
   int is_local_sys;
   
   string local_sys = fwFsm_getSystemName();
-if(strpos(local_sys,\"CSC\")>=0 || strpos(local_sys,\"csc\")>=0 || strpos(local_sys,\"dcspcS2G19\")>=0 
-   || strpos(local_sys,\"EMU\")>=0 || strpos(local_sys,\"emu\")>=0)
-is_local_sys=1;
-else is_local_sys=0;
-if(is_local_sys){
-  setValue(\"commandButton1\",\"enabled\",true);
-  setValue(\"commandButton2\",\"enabled\",true);  
-  }else{
-  setValue(\"commandButton1\",\"enabled\",false);
-  setValue(\"commandButton2\",\"enabled\",false);     
-  }
-//------------------------------------------------------------------    
+  if(strpos(local_sys,\"CSC\")>=0 || strpos(local_sys,\"csc\")>=0 || strpos(local_sys,\"dcspcS2G19\")>=0 
+   || strpos(local_sys,\"EMU\")>=0 || strpos(local_sys,\"emu\")>=0 ||(local_sys+\":\"== gSystemNameMRTN))
+     is_local_sys=1;
+  else 
+     is_local_sys=0;
+  
+  if(is_local_sys)
+   {
+    setValue(\"commandButton1\",\"enabled\",true);
+    setValue(\"commandButton2\",\"enabled\",true);  
+   }
+  else
+   {
+    setValue(\"commandButton1\",\"enabled\",false);
+    setValue(\"commandButton2\",\"enabled\",false);     
+   }
+  
 	string model;
 	dyn_string exceptionInfo;
-
-	fwDevice_getModel(makeDynString($sDpName), model, exceptionInfo);
-
+  fwDevice_getModel(makeDynString($2), model, exceptionInfo);
 	if(strpos(model, \"(CAN)\") > 0)
-	{
+	 {
 		senseVoltageTitle.text = \"Over Voltage Protection\";
 		terminalVoltageTitle.text = \"Over Voltage\";
 		currentTitle.text = \"Over Current\";
 		table.visible = TRUE;
 		connectToParent();
-//DebugN(\"IS CAN\");
-	}
+	 }
 	else
-	{
+	 {
 		table.visible = FALSE;
 		commandFrame.visible = TRUE;
 		commandTitle.visible = TRUE;
@@ -62,15 +66,18 @@ if(is_local_sys){
 		setValue(\"TemperatureLed.p2\", \"visible\", TRUE);
 		
 		connectToDevice();
-//DebugN(\"IS TCP/IP\");
 	}
-
-}" 0
- E E E E 1 -1 -1 0  13 70
+}
+" 0
+ E E E E 1 -1 -1 0  0 0
 ""0  1
-E "string DpName;
-
-connectToParent()
+E "#uses \"CMS_CSC_common/emu_accessControl.ctl\"
+#uses \"CMS_CSCfw_LV_MRTN/emuLvMRTN.ctl\"
+#uses \"CMS_CSCfw_LV_MRTN/emuDcsMrtn.ctl\"
+#uses \"fwDevice/fwDevice.ctl\"
+string DpName,sDpName;
+//=============================================
+void connectToParent()
 {
 	int x,y;
 	dyn_string exceptionInfo;
@@ -91,8 +98,8 @@ connectToParent()
 		dpConnect(\"EP_textFieldInCB\", TRUE, hierarchyInfo[2][1] + \".Status.On:_online.._value\");
 	}
 }
-
-connectToDevice()
+//===========================================
+void connectToDevice()
 {
 	int x,y;
 	dyn_errClass err;
@@ -117,16 +124,16 @@ connectToDevice()
 	if (dynlen(err) > 0)
 		setValue(\"\", \"color\", \"_dpdoesnotexist\");
 }
-
-EP_textFieldInCB(string dp, bool boNewValue)
+//===============================================
+void EP_textFieldInCB(string dp, bool boNewValue)
 {
 	if(boNewValue)
 		powerState.text = \"Power ON\";
 	else
 		powerState.text = \"Power OFF\";
 }
-
-fwWriteValue(string sDpe, float fValue)
+//==================================================
+void fwWriteValue(string sDpe, float fValue)
 {
 	string cleanValue, format;
 	dyn_string exceptionInfo;
@@ -147,8 +154,8 @@ fwWriteValue(string sDpe, float fValue)
 	sprintf(cleanValue, format, fValue);
 	this.text = cleanValue;
 }
-
-InvalidColour(string dp, bool invalid)
+//===================================================
+void InvalidColour(string dp, bool invalid)
 {
 	string elementColour;
 
@@ -156,7 +163,9 @@ InvalidColour(string dp, bool invalid)
 		this.backCol = \"FwDead\";
 	else
 		this.backCol = \"_3DFace\";
-}" 0
+}
+
+" 0
  2
 "CBRef" "1"
 "EClose" "main()
@@ -187,9 +196,8 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 10 10 249 33
 0 0 0 "0s" 0 0 0 192 0 0  10 10 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-19-*-100-100-*-*-iso8859-1|-19,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,19,5,40,0,0,0,0,0
+0 1
 LANG:1 26 Marathon Channel Operation
 2 1
 "Text6"
@@ -207,9 +215,8 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 12 54 101 71
 0 2 0 "0s" 0 0 0 192 0 0  12 54 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 13 Channel Name:
 2 5
 "Text2"
@@ -227,9 +234,8 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 12 119 92 136
 0 2 0 "0s" 0 0 0 192 0 0  12 119 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 12 Parent Name:
 2 58
 "Text1"
@@ -247,13 +253,12 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 412 86 463 103
 0 2 0 "0s" 0 0 0 192 0 0  412 86 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 9 Position:
-1 337 7 "" 19
+1 403 7 "" 19
 0
-1 338 7 "" 18
+1 404 7 "" 18
 0
 2 67
 "NameText"
@@ -271,9 +276,8 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 12 86 81 103
 0 2 2 "0s" 0 0 0 192 0 0  12 86 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 12 Description:
 30 90
 "Frame1"
@@ -290,9 +294,8 @@ LANG:1 0
 "dashclr"N "_Transparent"
 E E 0 1 1 0 1 E U  0 E 10 160 215 330
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 6 Status
 2 91
 "powerState"
@@ -310,9 +313,8 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 53 189 110 206
 0 2 0 "0s" 0 0 0 192 0 0  53 189 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 8 (ON/OFF)
 30 96
 "commandFrame"
@@ -329,9 +331,8 @@ LANG:1 0
 "dashclr"N "_Transparent"
 E E 0 1 1 0 1 E U  0 E 10 490 215 560
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 8 Commands
 2 97
 "commandTitle"
@@ -349,9 +350,8 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 22 524 62 541
 0 2 2 "0s" 0 0 0 192 0 0  22 524 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 6 Power:
 30 105
 "Frame3"
@@ -368,9 +368,8 @@ LANG:1 0
 "dashclr"N "_Transparent"
 E E 0 1 1 0 1 E U  0 E 10 340 215 480
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 12 Measurements
 2 106
 "senseVoltageUnit"
@@ -387,14 +386,15 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "main()
 {
-	this.text = dpGetUnit($sDpName + \".MeasurementSenseVoltage\");
-}" 0
+  this.text = dpGetUnit($2 + \".MeasurementSenseVoltage\");
+}
+
+" 0
  E 0 1 1 0 1 E U  0 E 179 375 208 392
 0 2 0 "0s" 0 0 0 192 0 0  179 375 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 6 (unit)
 2 107
 "senseVoltageReadingTitle"
@@ -409,17 +409,15 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 23 366 71 400
+E E 0 1 1 0 1 E U  0 E 23 366 70 400
 0 2 0 "0s" 0 0 0 192 0 0  23 366 2
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 5 Sense
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 8 Voltage:
 2 109
 "currentUnit"
@@ -436,14 +434,15 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "main()
 {
-	this.text = dpGetUnit($sDpName + \".MeasurementCurrent\");
-}" 0
+  this.text = dpGetUnit($2 + \".MeasurementCurrent\");
+}
+
+" 0
  E 0 1 1 0 1 E U  0 E 179 410 208 427
 0 2 0 "0s" 0 0 0 192 0 0  179 410 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 6 (unit)
 2 110
 "currentReadingTitle"
@@ -461,9 +460,8 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 22 410 68 427
 0 2 2 "0s" 0 0 0 192 0 0  22 410 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 8 Current:
 2 112
 "temperatureUnit"
@@ -480,14 +478,15 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "main()
 {
-	this.text = dpGetUnit($sDpName + \".MeasurementTemperature\");
-}" 0
+  this.text = dpGetUnit($2 + \".MeasurementTemperature\");
+}
+
+" 0
  E 0 1 1 0 1 E U  0 E 179 445 208 462
 0 2 0 "0s" 0 0 0 192 0 0  179 445 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 6 (unit)
 2 113
 "temperatureReadingTitle"
@@ -502,12 +501,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 22 445 98 462
+E E 0 1 1 0 1 E U  0 E 22 445 96 462
 0 2 2 "0s" 0 0 0 192 0 0  22 445 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 12 Temperature:
 2 121
 "senseVoltageTitle"
@@ -522,12 +520,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 53 215 138 232
+E E 0 1 1 0 1 E U  0 E 53 215 137 232
 0 2 0 "0s" 0 0 0 192 0 0  53 215 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 13 Sense Voltage
 2 126
 "terminalVoltageTitle"
@@ -542,12 +539,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 53 242 150 259
+E E 0 1 1 0 1 E U  0 E 53 242 147 259
 0 2 0 "0s" 0 0 0 192 0 0  53 242 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 16 Terminal Voltage
 2 131
 "currentTitle"
@@ -565,9 +561,8 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 53 269 95 286
 0 2 0 "0s" 0 0 0 192 0 0  53 269 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 7 Current
 2 136
 "temperatureTitle"
@@ -582,12 +577,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 53 296 125 313
+E E 0 1 1 0 1 E U  0 E 53 296 123 313
 0 2 0 "0s" 0 0 0 192 0 0  53 296 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 11 Temperature
 2 160
 "Text16"
@@ -604,14 +598,15 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "main()
 {
-	this.text = dpGetUnit($sDpName + \".System.UpTime\");
-}" 0
+  this.text = dpGetUnit($2 + \".System.UpTime\");
+}
+
+" 0
  E 0 1 1 0 1 E U  0 E 555 183 584 200
 0 2 0 "0s" 0 0 0 192 0 0  555 183 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 6 (unit)
 2 161
 "Text17"
@@ -629,9 +624,8 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 245 186 352 203
 0 2 2 "0s" 0 0 0 192 0 0  245 186 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 16 Maximum Current:
 30 164
 "Frame4"
@@ -648,9 +642,8 @@ LANG:1 0
 "dashclr"N "_Transparent"
 E E 0 1 1 0 1 E U  0 E 230 160 620 250
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 14 Limit Settings
 2 165
 "Text18"
@@ -667,14 +660,15 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "main()
 {
-	this.text = dpGetUnit($sDpName + \".System.UpTime\");
-}" 0
+  this.text = dpGetUnit($2 + \".System.UpTime\");
+}
+
+" 0
  E 0 1 1 0 1 E U  0 E 555 213 584 230
 0 2 0 "0s" 0 0 0 192 0 0  555 213 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 6 (unit)
 2 166
 "Text19"
@@ -689,22 +683,20 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 245 206 334 240
+E E 0 1 1 0 1 E U  0 E 245 206 333 240
 0 2 0 "0s" 0 0 0 192 0 0  245 206 2
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 7 Maximum
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 14 Sense Voltage:
 2 170
 "groupTitle"
 ""
-1 278 681 E E E 1 E 0 E N "_3DText" E N "_Transparent" E E
+1 273 678 E E E 1 E 0 E N "_3DText" E N "_Transparent" E E
  E E
 79 0 0 0 0 0
 E E E
@@ -714,12 +706,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 245 523 335 540
-0 2 2 "0s" 0 0 0 192 0 0  245 523 1
+E E 0 1 1 0 1 E U  0 E 240 520 330 537
+0 2 2 "0s" 0 0 0 192 0 0  240 520 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 14 Channel Group:
 30 186
 "groupFrame"
@@ -736,9 +727,8 @@ LANG:1 0
 "dashclr"N "_Transparent"
 E E 0 1 1 0 1 E U  0 E 230 490 620 560
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 8 Grouping
 2 214
 "groupAssist"
@@ -756,9 +746,8 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 554 523 602 540
 0 2 0 "0s" 0 0 0 192 0 0  554 523 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 9 (1...127)
 6 239
 "powerLedPosition"
@@ -790,9 +779,8 @@ LANG:1 0
 E E 0 1 1 0 1 E U  0 E 412 54 451 71
 0 2 0 "0s" 0 0 0 192 0 0  412 54 1
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 6 Model:
 30 284
 "Frame5"
@@ -809,65 +797,80 @@ LANG:1 0
 "dashclr"N "_Transparent"
 E E 0 1 1 0 1 E U  0 E 230 260 620 480
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
-1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
 LANG:1 18 Behaviour Settings
-1 359 17 "" 2
+1 425 17 "" 2
 0
-1 360 17 "" 3
+1 426 17 "" 3
 0
-1 361 17 "" 4
+1 427 17 "" 4
 0
-1 362 17 "" 5
+1 428 17 "" 5
 0
-1 363 17 "" 6
+1 429 17 "" 6
 0
-1 364 17 "" 1
+1 430 17 "" 1
 0
-1 365 17 "" 0
+1 431 17 "" 0
 0
-1 366 18 "" 2
+1 432 17 "" 7
 0
-1 367 18 "" 3
+1 433 17 "" 8
 0
-1 368 18 "" 4
+1 434 18 "" 2
 0
-1 369 18 "" 5
+1 435 18 "" 3
 0
-1 370 18 "" 6
+1 436 18 "" 4
 0
-1 371 18 "" 1
+1 437 18 "" 5
 0
-1 372 18 "" 0
+1 438 18 "" 6
 0
-1 373 19 "" 2
+1 439 18 "" 1
 0
-1 374 19 "" 3
+1 440 18 "" 0
 0
-1 375 19 "" 4
+1 441 18 "" 7
 0
-1 376 19 "" 5
+1 442 18 "" 8
 0
-1 377 19 "" 6
+1 443 19 "" 2
 0
-1 378 19 "" 1
+1 444 19 "" 3
 0
-1 379 19 "" 0
+1 445 19 "" 4
 0
-1 380 20 "" 2
+1 446 19 "" 5
 0
-1 381 20 "" 3
+1 447 19 "" 6
 0
-1 382 20 "" 4
+1 448 19 "" 1
 0
-1 383 20 "" 5
+1 449 19 "" 0
 0
-1 384 20 "" 6
+1 450 19 "" 7
 0
-1 385 20 "" 1
+1 451 19 "" 8
 0
-1 386 20 "" 0
+1 452 20 "" 2
+0
+1 453 20 "" 3
+0
+1 454 20 "" 4
+0
+1 455 20 "" 5
+0
+1 456 20 "" 6
+0
+1 457 20 "" 1
+0
+1 458 20 "" 0
+0
+1 459 20 "" 7
+0
+1 460 20 "" 8
 0
 14 3
 "sChannelName"
@@ -882,25 +885,25 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 108 48 402 75
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  108 48 402 75
 2 "0s" 0 0 0 0 0 -1  E "main()
 {
 	dyn_string exceptionInfo;
 	dyn_dyn_string deviceHierarchy;
 	string sCrateName, sCrateType;
 	
-	fwDevice_getHierarchy($sDpName, deviceHierarchy, exceptionInfo);
+  fwDevice_getHierarchy($2, deviceHierarchy, exceptionInfo);
 	
-	this.text = $sDpName;
+  this.text = $2;
 
 	sCrateName = dpSubStr(deviceHierarchy[2][1], DPSUB_DP);
 	fwDevice_getType(dpTypeName(deviceHierarchy[2][1]), sCrateType, exceptionInfo);
 
 	crateName.text = sCrateName;
-//	crateType.text = sCrateType;
-}" 0
+}
+
+" 0
  E
 14 6
 "crateName"
@@ -915,16 +918,15 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 108 114 402 141
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  108 114 402 141
 2 "0s" 0 0 0 0 0 -1  E "main()
 {
 	int x,y;
 	dyn_string exceptionInfo;
 	dyn_dyn_string hierarchyInfo;
 
-	fwDevice_getHierarchy($sDpName, hierarchyInfo, exceptionInfo);
+  fwDevice_getHierarchy($2, hierarchyInfo, exceptionInfo);
 	
 	if(dpExists(hierarchyInfo[2][1] + \".General.Status.GetPowerOn\"))
 	{
@@ -946,12 +948,14 @@ fwShowState(string dpe, bool value)
 		cratePowerState.text = \"Device is ON\";
 	else
 		cratePowerState.text = \"Device is OFF\";
-}" 0
+}
+
+" 0
  E
 13 17
 "Button8"
 ""
-1 540 570 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 540 560 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 18 0 0 0 0 0
 E E E
@@ -961,9 +965,8 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 538 568 622 602
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  538 558 622 592
 
 T 
 1
@@ -976,7 +979,7 @@ LANG:1 5 Close
 14 59
 "sBusId"
 ""
-1 502 214 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+1 507.6923076923077 214 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
  E E
 37 0 0 0 0 0
 E E E
@@ -986,23 +989,24 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 463 80 532 107
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  463 80 542 107
 2 "0s" 0 0 0 0 0 -1  E "main()
 {
 	string deviceName;
 	int devicePosition;
 	dyn_string exceptionInfo;
 
-	fwDevice_getPosition($sDpName, deviceName, devicePosition, exceptionInfo);
+  fwDevice_getPosition($2, deviceName, devicePosition, exceptionInfo);
 	this.text = devicePosition;
 	
 	if(dynlen(exceptionInfo)>0)
 	{
 		fwExceptionHandling_display(exceptionInfo);
 	}
-}" 0
+}
+
+" 0
  E
 14 68
 "description"
@@ -1017,20 +1021,21 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 108 80 402 107
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  108 80 402 107
 2 "0s" 0 0 0 0 0 -1  E "main()
 {
-	this.text = dpGetDescription($sDpName + \".\");
+  this.text = dpGetDescription($2 + \".\");
 }
+
+
 " 0
  E
-1 339 8 "" 0
+1 405 8 "" 0
 0
-1 340 9 "" 0
+1 406 9 "" 0
 0
-1 341 9 "" 1
+1 407 9 "" 1
 0
 13 98
 "commandButton1"
@@ -1045,17 +1050,17 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 68 518 125 552
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  68 518 125 552
 
 T 
 1
 LANG:1 2 On
 "main()
 {
-	dpSet(DpName + \".Settings.OnOffChannel:_original.._value\", TRUE);
-}" 0
+	dpSetWait(DpName + \".Settings.OnOffChannel:_original.._value\", TRUE);
+}
+" 0
  E E E
 13 99
 "commandButton2"
@@ -1070,17 +1075,17 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 138 518 195 552
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  138 518 195 552
 
 T 
 1
 LANG:1 3 Off
 "main()
 {
-	dpSet(DpName + \".Settings.OnOffChannel:_original.._value\", FALSE);
-}" 0
+	dpSetWait(DpName + \".Settings.OnOffChannel:_original.._value\", FALSE);
+}
+" 0
  E E E
 14 108
 "measurementSenseVoltage"
@@ -1095,16 +1100,16 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 98 368 175 395
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  98 368 175 395
 2 "0s" 0 0 0 0 0 -1  E "main()
 {
 	dyn_string exceptionInfo;
+  dpConnect(\"fwWriteValue\", TRUE, $2 + \".MeasurementSenseVoltage:_online.._value\");
+	fwColour_connectItemBackColToStatus($2 + \".MeasurementSenseVoltage\", exceptionInfo);
+}
 
-	dpConnect(\"fwWriteValue\", TRUE, $sDpName + \".MeasurementSenseVoltage:_online.._value\");
-	fwColour_connectItemBackColToStatus($sDpName + \".MeasurementSenseVoltage\", exceptionInfo);
-}" 0
+" 0
  E
 14 111
 "measurementCurrent"
@@ -1119,16 +1124,16 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 98 403 175 430
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  98 403 175 430
 2 "0s" 0 0 0 0 0 -1  E "main()
 {
 	dyn_string exceptionInfo;
+  dpConnect(\"fwWriteValue\", TRUE, $2 + \".MeasurementCurrent:_online.._value\");
+	fwColour_connectItemBackColToStatus($2 + \".MeasurementCurrent\", exceptionInfo);
+}
 
-	dpConnect(\"fwWriteValue\", TRUE, $sDpName + \".MeasurementCurrent:_online.._value\");
-	fwColour_connectItemBackColToStatus($sDpName + \".MeasurementCurrent\", exceptionInfo);
-}" 0
+" 0
  E
 14 114
 "measurementTemperature"
@@ -1143,16 +1148,16 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 98 438 175 465
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  98 438 175 465
 2 "0s" 0 0 0 0 0 -1  E "main()
 {
 	dyn_string exceptionInfo;
+  dpConnect(\"fwWriteValue\", TRUE, $2 + \".MeasurementTemperature:_online.._value\");
+	fwColour_connectItemBackColToStatus($2 + \".MeasurementTemperature\", exceptionInfo);
+}
 
-	dpConnect(\"fwWriteValue\", TRUE, $sDpName + \".MeasurementTemperature:_online.._value\");
-	fwColour_connectItemBackColToStatus($sDpName + \".MeasurementTemperature\", exceptionInfo);
-}" 0
+" 0
  E
 14 162
 "TextField2"
@@ -1167,19 +1172,22 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 357 179 451 206
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  357 179 451 206
 2 "0s" 0 0 0 0 0 -1  "main()
 {
-	ChildPanelOnCentral(\"fwGeneral/fwChangeSetting.pnl\", \"Settings\",
-						 					makeDynString(	\"$sDpName:\" + $sDpName,
+  ChildPanelOnCentral(\"fwGeneral/fwChangeSetting.pnl\", \"Settings\",
+						 					makeDynString(	\"$sDpName:\" + $2,
 						  												\"$dpSetName:\" + \".Settings.SupervisionMaxCurrent\"));
-}" 0
+}
+
+" 0
  "main()
 {
-	dpConnect(\"fwWriteValue\", TRUE, $sDpName + \".Settings.SupervisionMaxCurrent:_online.._value\");
-}" 0
+  dpConnect(\"fwWriteValue\", TRUE, $2 + \".Settings.SupervisionMaxCurrent:_online.._value\");
+}
+
+" 0
  E
 14 163
 "TextField1"
@@ -1194,14 +1202,15 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 457 179 551 206
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  457 179 551 206
 2 "0s" 0 0 0 0 0 -1  E "main()
 {
-	dpConnect(\"fwWriteValue\", TRUE, $sDpName + \".ReadbackSettings.SupervisionMaxCurrent:_online.._value\");
-	dpConnect(\"InvalidColour\", TRUE, $sDpName + \".ReadbackSettings.SupervisionMaxCurrent:_online.._invalid\");
-}" 0
+  dpConnect(\"fwWriteValue\", TRUE, $2 + \".ReadbackSettings.SupervisionMaxCurrent:_online.._value\");
+	dpConnect(\"InvalidColour\", TRUE, $2 + \".ReadbackSettings.SupervisionMaxCurrent:_online.._invalid\");
+}
+
+" 0
  E
 14 167
 "TextField3"
@@ -1216,19 +1225,22 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 357 209 451 236
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  357 209 451 236
 2 "0s" 0 0 0 0 0 -1  "main()
 {
-	ChildPanelOnCentral(\"fwGeneral/fwChangeSetting.pnl\", \"Settings\",
-						 					makeDynString(	\"$sDpName:\" + $sDpName,
-						  												\"$dpSetName:\" + \".Settings.SupervisionMaxSenseVoltage\"));
-}" 0
+  ChildPanelOnCentral(\"fwGeneral/fwChangeSetting.pnl\", \"Settings\",
+						 					makeDynString(	\"$sDpName:\" + $2,
+						  												\"$dpSetName:\" + \".Settings.SupervisionMaxSenseVoltage\"));  
+}
+
+" 0
  "main()
 {
-	dpConnect(\"fwWriteValue\", TRUE, $sDpName + \".Settings.SupervisionMaxSenseVoltage:_online.._value\");
-}" 0
+  dpConnect(\"fwWriteValue\", TRUE, $2 + \".Settings.SupervisionMaxSenseVoltage:_online.._value\");
+}
+
+" 0
  E
 14 168
 "TextField4"
@@ -1243,19 +1255,20 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 457 209 551 236
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  457 209 551 236
 2 "0s" 0 0 0 0 0 -1  E "main()
 {
-	dpConnect(\"fwWriteValue\", TRUE, $sDpName + \".ReadbackSettings.SupervisionMaxSenseVoltage:_online.._value\");
-	dpConnect(\"InvalidColour\", TRUE, $sDpName + \".ReadbackSettings.SupervisionMaxSenseVoltage:_online.._invalid\");
-}" 0
+  dpConnect(\"fwWriteValue\", TRUE, $2 + \".ReadbackSettings.SupervisionMaxSenseVoltage:_online.._value\");
+	dpConnect(\"InvalidColour\", TRUE, $2 + \".ReadbackSettings.SupervisionMaxSenseVoltage:_online.._invalid\");
+}
+
+" 0
  E
 14 171
 "groupSetting"
 ""
-1 359 518 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+1 360 520 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
  E E
 80 0 0 0 0 0
 E E E
@@ -1265,24 +1278,27 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 357 516 451 543
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  358 518 452 545
 2 "0s" 0 0 0 0 0 -1  "main()
 {
-	ChildPanelOnCentral(\"fwGeneral/fwChangeSetting.pnl\", \"Settings\",
-						 					makeDynString(	\"$sDpName:\" + $sDpName,
+  ChildPanelOnCentral(\"fwGeneral/fwChangeSetting.pnl\", \"Settings\",
+						 					makeDynString(	\"$sDpName:\" + $2,
 						  												\"$dpSetName:\" + \".Settings.GroupNumber\"));
-}" 0
+}
+
+" 0
  "main()
 {
-	dpConnect(\"fwWriteValue\", TRUE, $sDpName + \".Settings.GroupNumber:_online.._value\");
-}" 0
+  dpConnect(\"fwWriteValue\", TRUE, $2 + \".Settings.GroupNumber:_online.._value\");
+}
+
+" 0
  E
 14 172
 "groupReadback"
 ""
-1 459 518 E E E 1 E 0 E N "_WindowText" E N "_3DFace" E E
+1 460 520 E E E 1 E 0 E N "_WindowText" E N "_3DFace" E E
  E E
 81 0 0 0 0 0
 E E E
@@ -1292,14 +1308,15 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 457 516 551 543
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  458 518 552 545
 2 "0s" 0 0 0 0 0 -1  E "main()
 {
-	dpConnect(\"fwWriteValue\", TRUE, $sDpName + \".ReadbackSettings.GroupNumber:_online.._value\");
-	dpConnect(\"InvalidColour\", TRUE, $sDpName + \".ReadbackSettings.GroupNumber:_online.._invalid\");
-}" 0
+  dpConnect(\"fwWriteValue\", TRUE, $2 + \".ReadbackSettings.GroupNumber:_online.._value\");
+	dpConnect(\"InvalidColour\", TRUE, $2 + \".ReadbackSettings.GroupNumber:_online.._invalid\");
+}
+
+" 0
  E
 14 261
 "TextField5"
@@ -1314,30 +1331,67 @@ LANG:1 0
 
 0
 1
-LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,404,0,0,0,0,0,0,0,0,Arial
-0 ""
- 463 48 622 75
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0  463 48 622 75
 2 "0s" 0 0 0 0 0 -1  E "main()
 {
 	string modelName;
 	dyn_string exceptionInfo;
-
-	fwDevice_getModel(makeDynString($sDpName), modelName, exceptionInfo);
+  fwDevice_getModel(makeDynString($2), modelName, exceptionInfo);
 	this.text = modelName;
 	
 	if(dynlen(exceptionInfo)>0)
 	{
 		fwExceptionHandling_display(exceptionInfo);
 	}
-}" 0
+}
+
+" 0
  E
-1 358 15 "" 0
+1 424 15 "" 0
 2 "visible" 0 0 0
 0
-2 336
-"PRIMITIVE_TEXT1"
+13 343
+"TrendingPlot"
 ""
-1 50 580 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 480 110 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+121 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 26 Arial,10,-1,5,50,0,0,0,0,0
+0  478 108 522 152
+
+P 
+4294967295
+"pictures/trendButton.bmp"
+1
+LANG:1 13 Trending Plot
+"main()
+{
+  EP_childPanelOn();
+}
+
+EP_childPanelOn()
+{
+  ChildPanelOnCentral(\"CMS_CSCfw_LV_MRTN/TrendingChannelMRTN.pnl\",
+      \"\",
+      makeDynString(\"$sDpName:\" + sDpName));
+}" 0
+ E E "main()
+{
+  sDpName = $2;
+}" 0
+
+2 402
+"PRIMITIVE_TEXT3"
+""
+1 432 223 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
  E E
 122 0 0 0 0 0
 E E E
@@ -1347,51 +1401,50 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 50 580 77 594
-0 2 2 "0s" 0 0 0 192 0 0  50 580 1
+E E 0 1 1 0 1 E U  0 E 410 120 458 137
+0 2 0 "0s" 0 0 0 192 0 0  410 120 1
 1
-LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
-0 ""
-1
-LANG:1 4 CSC1
+LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
+0 1
+LANG:1 8 Trending
 0
 LAYER, 1 
 1
 LANG:1 6 Layer2
-1 342 11 "" 4
+1 408 11 "" 4
 0
-1 343 11 "" 0
+1 409 11 "" 0
 0
-1 344 11 "" 3
+1 410 11 "" 3
 0
-1 345 11 "" 1
+1 411 11 "" 1
 0
-1 346 12 "" 4
+1 412 12 "" 4
 0
-1 347 12 "" 0
+1 413 12 "" 0
 0
-1 348 12 "" 3
+1 414 12 "" 3
 0
-1 349 12 "" 1
+1 415 12 "" 1
 0
-1 350 13 "" 4
+1 416 13 "" 4
 0
-1 351 13 "" 0
+1 417 13 "" 0
 0
-1 352 13 "" 3
+1 418 13 "" 3
 0
-1 353 13 "" 1
+1 419 13 "" 1
 0
-1 354 14 "" 4
+1 420 14 "" 4
 2 "visible" 0 0 0
 0
-1 355 14 "" 0
+1 421 14 "" 0
 2 "visible" 0 0 0
 0
-1 356 14 "" 3
+1 422 14 "" 3
 2 "visible" 0 0 0
 0
-1 357 14 "" 1
+1 423 14 "" 1
 2 "visible" 0 0 0
 0
 0
@@ -1419,73 +1472,73 @@ LAYER, 7
 1
 LANG:1 6 Layer8
 0
-3 7 "Group6"
-"fwDeviceEditorNavigator/fwActionButton.pnl" 471 10 T 39 1 0 1 -87 -12
+3 7 "Group6" -1
+"fwDeviceEditorNavigator\\fwActionButton.pnl" 471 10 T 39 1 0 1 -87 -12
 1
-"$sDpName""$sDpName"
-3 8 "Group7"
+"$sDpName""$2"
+3 8 "Group7" -1
 "objects\\fwGeneral\\fwHelpButton.pnl" 584 10 T 45 1 0 1 10 0
 1
 "$sPanelRelativePath""fwWiener/fwWienerMarathonRCMChannelOperation"
-3 9 ""
+3 9 "" -1
 "objects\\fwConfigs\\fwAlarmSummaryButton.pnl" 230 40 T 45 1 0 1 569 -20
 1
-"$sDpName""$sDpName"
-3 11 "Group6"
-"objects\\fwGeneral\\fwLedWithAlert.pnl" 40 239 T 61 0.666666666666667 0 0.666666666666667 -9.6666666666666 47.3333333333333
+"$sDpName""$2"
+3 11 "Group6" -1
+"objects\\fwGeneral\\fwLedWithAlert.pnl" 40 239 T 61 0.666666666666667 0 0.666666666666667 -8.666666666666679 48.66666666666659
 4
 "$color0"""
 "$color1"""
-"$sDpName""$sDpName"
+"$sDpName""$2"
 "$sDpSubName"".Status.FailureMaxSenseVoltage"
-3 12 "Group8"
-"objects\\fwGeneral\\fwLedWithAlert.pnl" 20 220 T 63 0.666666666666667 0 0.666666666666667 4.3333333333334 86.3333333333333
+3 12 "Group8" -1
+"objects\\fwGeneral\\fwLedWithAlert.pnl" 20 220 T 63 0.666666666666667 0 0.666666666666667 4.666666666666661 88.33333333333327
 4
 "$color0"""
 "$color1"""
-"$sDpName""$sDpName"
+"$sDpName""$2"
 "$sDpSubName"".Status.FailureMaxTerminalVoltage"
-3 13 "Group10"
-"objects\\fwGeneral\\fwLedWithAlert.pnl" 20 250 T 65 0.666666666666667 0 0.666666666666667 4.3333333333334 93.3333333333333
+3 13 "Group10" -1
+"objects\\fwGeneral\\fwLedWithAlert.pnl" 20 250 T 65 0.666666666666667 0 0.666666666666667 4.666666666666661 93.33333333333324
 4
 "$color0"""
 "$color1"""
-"$sDpName""$sDpName"
+"$sDpName""$2"
 "$sDpSubName"".Status.FailureMaxCurrent"
-3 14 "TemperatureLed"
-"objects\\fwGeneral\\fwLedWithAlert.pnl" 20 250 T 67 0.666666666666667 0 0.666666666666667 4.3333333333334 120.333333333333
+3 14 "TemperatureLed" -1
+"objects\\fwGeneral\\fwLedWithAlert.pnl" 20 250 T 67 0.666666666666667 0 0.666666666666667 4.666666666666661 118.3333333333333
 4
 "$color0"""
 "$color1"""
-"$sDpName""$sDpName"
+"$sDpName""$2"
 "$sDpSubName"".Status.FailureMaxTemperature"
-3 15 ""
-"objects\\fwWiener\\fwWienerChannelSettings.pnl" 230 150 T 99 0.672413793103448 0 1.33333333333333 -30.8965517241379 -420
+3 15 "" -1
+"objects\\fwWiener\\fwWienerChannelSettings.pnl" 230 150 T 99 0.672413793103448 0 1.33333333333333 -30.89655172413784 -419.9999999999986
 2
 "$bShowLimits""FALSE"
-"$sDpName""$sDpName"
-3 17 ""
-"objects\\fwWiener\\fwWienerSupervisionBehaviour.pnl" 140 190 T 118 1 0 1 112 250
+"$sDpName""$2"
+3 17 "" -1
+"objects\\fwWiener\\fwWienerSupervisionBehaviour.pnl" 140 190 T 118 1 0 1 117 251
 3
-"$sDpName""$sDpName"
+"$sDpName""$2"
 "$sSupervisionDpe""MaxSenseVoltage"
 "$sTitle""\"Maximum Sense Voltage\""
-3 18 "Group12"
+3 18 "Group12" -1
 "objects\\fwWiener\\fwWienerSupervisionBehaviour.pnl" 240 280 T 119 1 0 1 202 160
 3
-"$sDpName""$sDpName"
+"$sDpName""$2"
 "$sSupervisionDpe""MaxTerminalVoltage"
 "$sTitle""\"Maximum Terminal Voltage\""
-3 19 "Group14"
-"objects\\fwWiener\\fwWienerSupervisionBehaviour.pnl" 430 280 T 120 1 0 1 -178 260
+3 19 "Group14" -1
+"objects\\fwWiener\\fwWienerSupervisionBehaviour.pnl" 430 280 T 120 1 0 1 -183 261
 3
-"$sDpName""$sDpName"
+"$sDpName""$2"
 "$sSupervisionDpe""MaxCurrent"
 "$sTitle""\"Maximum Current\""
-3 20 "Group16"
+3 20 "Group16" -1
 "objects\\fwWiener\\fwWienerSupervisionBehaviour.pnl" 240 380 T 121 1 0 1 202 160
 3
-"$sDpName""$sDpName"
+"$sDpName""$2"
 "$sSupervisionDpe""MaxTemperature"
 "$sTitle""\"Maximum Temperature\""
 0

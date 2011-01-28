@@ -1,0 +1,201 @@
+# ascii dump of database
+
+# Datapoint/DpId
+DpName	TypeName	ID
+fwOT_FwWienerMarathon	_FwFsmObjectType	103204
+fwOT_FwWienerMarathonChannel	_FwFsmObjectType	103205
+fwOT_CSC_LV_NODES	_FwFsmObjectType	104695
+fwOT_CSC_LV_TREE_NODES	_FwFsmObjectType	104696
+
+# DpValue
+ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
+fwOT_FwWienerMarathon.panel	_FwFsmObjectType	"CMS_CSCfw_LV_MRTN/emuDevMRTN_CrateOperation.pnl"	0x101	01.12.2010 11:09:23.076
+fwOT_FwWienerMarathon.components	_FwFsmObjectType	"", "", "FwWienerMarathon_initialize(string domain, string device)
+{
+        dyn_string dpNames;
+        
+        dpNames[1] = device + \".Status.On:_online.._invalid\";
+        dpNames[2] = device + \".Status.On:_online.._value\";
+        dpNames[3] = device + \".Status.Inhibit:_online.._value\";
+        dpNames[4] = device + \".Status.OutputFailure:_online.._value\";
+  
+  	dpConnect(\"Check_Status\", TRUE, dpNames);
+  
+}
+Check_Status(dyn_string dp, dyn_int qval)
+{
+    string LogName, domain, device;
+    string sdp;
+    sdp = dp;
+    int colon, dot, slash;
+    colon = strpos(sdp, \":\");
+    dot = strpos(sdp, \".\");
+    device = substr(sdp, colon + 1, dot - colon - 1);
+    LogName = fwDU_getLogicalName( device);
+    slash = strpos(LogName, \"/\");
+    domain = substr(LogName, 0, slash);
+
+    int val;
+    val = qval[1]; 
+    if( val != 0 && qval[2] != 0)
+    {
+      fwDU_setState(domain, device, \"ERROR\");//\"POWER_FAIL\");
+      return;
+    }
+    val = qval[3]; 
+    if( val != 0)
+    {
+      fwDU_setState(domain, device, \"ERROR\");//\"INTERLOCK\");
+      return;
+    }
+    val = qval[4]; 
+    if( val != 0)
+    {
+      fwDU_setState(domain, device, \"ERROR\");//\"CHANNEL_FAIL\");
+      return;
+    } 
+    val = qval[2]; 
+    if( val != 0)
+      fwDU_setState(domain, device, \"ON\");
+    else
+      fwDU_setState(domain, device, \"OFF\");
+}
+", "FwWienerMarathon_valueChanged( string domain, string device, string &fwState)
+{
+}
+", "FwWienerMarathon_doCommand(string domain, string device, string command)
+{
+        dyn_string exceptionInfo;
+        int Time =15; 
+        int m_state, m_on;
+	if (command == \"OFF\")
+	{
+            dpGet(device+\".Settings.OnOffCrate\",m_state);
+            dpGet(device+\".Status.On\",m_on);           
+            if(m_state==0 && m_on==0){/*delay(2);*/ dpSetWait(device+\".Status.On\",FALSE);return;}          
+		dpSet(device+\".Settings.OnOffCrate\",0); 
+                fwDU_startTimeout(Time, domain, device, \"ERROR\");
+	}
+	if (command == \"ON\")
+	{
+            dpGet(device+\".Settings.OnOffCrate\",m_state);
+            dpGet(device+\".Status.On\",m_on);                       
+            if(m_state && m_on){/*delay(2);*/ dpSetWait(device+\".Status.On\",TRUE);return;}          
+		dpSet(device+\".Settings.OnOffCrate\",1);
+                fwDU_startTimeout(Time, domain, device, \"ERROR\"); 
+	}  
+  
+}
+"	0x101	01.12.2010 11:19:27.013
+fwOT_FwWienerMarathon.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	01.12.2010 11:19:26.998
+fwOT_FwWienerMarathon.actions	_FwFsmObjectType	"ON/OFF", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "OFF/OFF", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0", "ERROR/ON", "", "1", "", "0"	0x101	01.12.2010 11:19:26.998
+fwOT_FwWienerMarathon.parameters	_FwFsmObjectType	"int estimatedTime = 0"	0x101	26.07.2010 14:49:18.773
+fwOT_FwWienerMarathonChannel.panel	_FwFsmObjectType	"CMS_CSCfw_LV_MRTN/emuDevMRTN_ChannelOperation.pnl"	0x101	01.12.2010 11:09:29.560
+fwOT_FwWienerMarathonChannel.components	_FwFsmObjectType	"", "", "FwWienerMarathonChannel_initialize(string domain, string device)
+{
+        dyn_string dpNames;
+        
+     int pos=strpos(device,\"/Channel\"); 
+     string crate=substr(device,0,pos);         
+     
+        dpNames[1] = device + \".Status.On:_online.._value\";  
+        dpNames[2] = crate + \".Status.On:_online.._value\";              
+
+//        dpNames[3] = device + \".MeasurementCurrent:_online.._value\";  
+                 
+  	dpConnect(\"Check_Status_Channel\", TRUE, dpNames);  
+  
+}
+
+
+Check_Status_Channel(dyn_string dp, dyn_int qval)
+{
+    string LogName, domain, device;
+    string sdp;
+    sdp = dp;
+    int colon, dot, slash;
+    colon = strpos(sdp, \":\");
+    dot = strpos(sdp, \".\");
+    device = substr(sdp, colon + 1, dot - colon - 1);
+    LogName = fwDU_getLogicalName( device);
+    slash = strpos(LogName, \"/\");
+    domain = substr(LogName, 0, slash);
+        
+ //===============================================================  
+     int pos=strpos(device,\"/Channel\"); 
+     string crate=substr(device,0,pos);
+     bool crate_status;
+     dpGet(crate + \".Status.On:_online.._value\",crate_status); 
+          
+     float MIN_CURR = 0.5;
+     float MIN_VOLT= 4;
+     
+     int StatOVC, StatOVV, StatOVP;
+     
+//     float MeasurementCurrent=qval[3];
+//     float MeasurementSenseVoltage;
+     
+     int inv;
+     
+//     dpGet(device + \".MeasurementSenseVoltage:_online.._value\",MeasurementSenseVoltage);         
+     dpGet(device + \".MeasurementCurrent:_online.._invalid\", inv); 
+//     DebugN(device, \"--->>> Current \", MeasurementCurrent, \" inv \", inv);
+     if( inv != 0 && crate_status !=0)
+     {
+       fwDU_setState(domain, device, \"ERROR\");//fwState = \"ERROR\";//\"POWER_FAIL\";
+       return;
+     }
+     dpGet(device + \".Status.FailureMaxCurrent:_online.._value\", StatOVC);
+     dpGet(device + \".Status.FailureMaxSenseVoltage:_online.._value\", StatOVV);
+     dpGet(device + \".Status.FailureMaxTerminalVoltage:_online.._value\", StatOVP);
+//     DebugN(\"   OVC, OVV, OVP\", StatOVC, StatOVV, StatOVP);
+     if( StatOVC != 0)
+     {
+        fwDU_setState(domain, device, \"ERROR\");//fwState = \"ERROR\";//\"OVER_CURRENT\";
+        return;
+     }
+     if( StatOVV != 0)
+     {
+        fwDU_setState(domain, device, \"ERROR\");//fwState = \"ERROR\";//\"OVER_VOLTAGE\";
+        return;
+     }
+     if( StatOVP != 0)
+     {
+        fwDU_setState(domain, device, \"ERROR\");//fwState = \"ERROR\";//\"OVER_VOLTAGE_PROT\";
+        return;
+     }
+//     if (MeasurementCurrent >= MIN_CURR)  
+//     if (MeasurementSenseVoltage >=MIN_VOLT) 
+     if(crate_status)
+     {
+	fwDU_setState(domain, device, \"ON\");//fwState = \"ON\";
+        return;
+     }
+	fwDU_setState(domain, device, \"OFF\");//fwState = \"OFF\";        
+    
+}
+
+", "FwWienerMarathonChannel_valueChanged( string domain, string device, string &fwState)
+{
+}
+", "FwWienerMarathonChannel_doCommand(string domain, string device, string command)
+{
+// the following is to not to \\\\\\\"hang\\\\\\\" the status of the maraton channels
+// in the case of we switch the maraton and there is no communication to maraton
+// (PFC is off)  
+bool status;
+   dpGet(device+\".Status.On\",status);
+   dpSet(device+\".Status.On\",status);    
+}
+"	0x101	01.12.2010 11:19:27.279
+fwOT_FwWienerMarathonChannel.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "RECOVERING", "FwStateAttention2", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	01.12.2010 11:19:27.279
+fwOT_FwWienerMarathonChannel.actions	_FwFsmObjectType	"ON/OFF", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0"	0x101	01.12.2010 11:19:27.279
+fwOT_FwWienerMarathonChannel.parameters	_FwFsmObjectType	"int estimatedTime = 0"	0x101	26.07.2010 14:49:18.788
+fwOT_CSC_LV_NODES.panel	_FwFsmObjectType	"CSC_LV_NODES.pnl"	0x101	03.09.2010 11:18:38.337
+fwOT_CSC_LV_NODES.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR|        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|", "", "", "ERROR", "FwStateAttention3", "        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|        when ( $ALL$FwCHILDREN in_state {ON,OFF} )  move_to OFF|", "", "", "ON", "FwStateOKPhysics", "   when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|   when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|", "", "", "STANDBY", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR|  when ( $ALL$FwCHILDREN in_state ON )  move_to ON| when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|", "", ""	0x101	01.12.2010 11:19:28.795
+fwOT_CSC_LV_NODES.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0"	0x101	01.12.2010 11:19:28.795
+fwOT_CSC_LV_NODES.parameters	_FwFsmObjectType		0x141	03.09.2010 11:18:38.352
+fwOT_CSC_LV_TREE_NODES.panel	_FwFsmObjectType	"CSC_LV_TREE_NODES.pnl"	0x101	03.09.2010 11:18:38.352
+fwOT_CSC_LV_TREE_NODES.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|", "", "", "ERROR", "FwStateAttention3", "        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|        when ( $ALL$FwCHILDREN in_state {ON,OFF,RAMP,STANDBY} )  move_to OFF|", "", "", "ON", "FwStateOKPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|   when ( $ANY$FwCHILDREN in_state {OFF,RAMP,STANDBY} )  move_to OFF|", "", ""	0x101	01.12.2010 11:19:29.076
+fwOT_CSC_LV_TREE_NODES.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0"	0x101	01.12.2010 11:19:29.076
+fwOT_CSC_LV_TREE_NODES.parameters	_FwFsmObjectType		0x141	03.09.2010 11:18:38.352

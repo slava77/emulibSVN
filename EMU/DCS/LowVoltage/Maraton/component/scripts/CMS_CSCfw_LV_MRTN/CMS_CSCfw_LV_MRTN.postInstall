@@ -1,27 +1,62 @@
-#uses "CMS_CSCfw_LV_MRTN/emuDcsLv.ctl"
-#uses "CMS_CSCfw_LV_MRTN/emuDcsMrtn.ctl"
+#uses "fwInstallation.ctl"
+#uses "CMSfwInstallUtils/CMSfwInstallUtils.ctl"
+#uses "CMS_CSCfw_LV_MRTN/emuLvMRTN.ctl"
 
-main(){
- 
-fwInstallation_appendManager(TRUE, "fwCMS_CSC_LV_MRTN server", "PVSS00ctrl", 
-"always", 30, 2, 2, "-num 16 libs/CMS_CSCfw_LV_MRTN/mudcsLVserver.ctl");
-
-//return;
-
-//================================================================
-  int i;
- string emu_side=mudcsMrtnPnlInit();
- 
+main()
+{ 
+  DebugTN("running post-installation script for CSC LV MRTN component");  
+  // append monitor server for CSC LV MRTN
+  fwInstallation_appendManager(TRUE, "EMU LV MRTN Monitor", "PVSS00ctrl", 
+         "manual", 30, 2, 2, "-num 16 CMS_CSCfw_LV_MRTN/emuLvMRTN_Server.ctl");
+  //get system name for marathon component
+  emuLvMRTN_initalizeParam();
   
-  dyn_string ds1=dpNames("CMS_CSC_LV_MRTN*","MUDCS_STRING");
-  for(i=1;i<=dynlen(ds1);i++)dpDelete(ds1[i]);
+  //clean all dps if exist
+  emuLvMRTN_deleteAll();
 
-  dpCreate("CMS_CSC_LV_MRTN"+emu_side,"MUDCS_STRING");
+  //delay 15 second
+  delay(15);
 
-//================================================================  
+  // Set the driver 14 to manual and start simulator
+  DebugN("Setting OPC to simulator. Result = "+
+  CMSfwInstallUtils_switchSimDriver(FALSE,"PVSS00opc", 14));
 
-   system("start /b PVSS00ctrl -num 18 CMS_CSCfw_LV_MRTN/mudcsMrtnCreate.ctl");  
+  //delay 15 second 
+  delay(15);
 
-   
+  //start scripts to crate all dps for LV MRTN compnent
+  emuLvMRTN_createLvMRTNAll(); 
+  
+  //delay 15 second
+  delay(15);
+ 
+  //Copy Marathon opc server config file
+  string path;
+  dyn_string conf_path;
+  int pos, i; 
+  fwInstallation_getProjPaths(conf_path);
+  for(i=1; i<=dynlen(conf_path); i++){
+    if(isfile(conf_path[i] +"\\"+ DPLIST_REL_PATH + "CMS_CSCfw_LV_MRTN\\Wiener_cfg.xml")){
+      path = conf_path[i] +"\\"+ DPLIST_REL_PATH + "CMS_CSCfw_LV_MRTN";
+      break;
+    }
+  }   
+  copyFile(path + "/Wiener_cfg.xml","C:/WienerOPC/Wiener_cfg.xml");
+
+
+// Set the driver to always and stop simulator
+   DebugN("Setting back OPC to driver. Result = "+
+   CMSfwInstallUtils_switchSimDriver(TRUE,"PVSS00opc", 14));
+
+//delay 15 second
+  delay(15);
+  
+//set db config
+  emuLvMRTN_setDbConfig();
+  
+
+// Send a final info message
+  CMSfwInstallUtils_endPostInstall("done for CMS_CSCfw_LV_MRTN");
+
    
 }

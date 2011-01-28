@@ -1,0 +1,88 @@
+# ascii dump of database
+
+# Datapoint/DpId
+DpName	TypeName	ID
+TrendingMRTNVoltage	FwTrendingPlot	733921
+TrendingMRTNCurrent	FwTrendingPlot	733922
+TrendingMRTNChannel	FwTrendingPlot	733926
+
+# DpValue
+ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
+TrendingMRTNVoltage.plotTitle	FwTrendingPlot	"TrendingMRTNVoltage"	0x200101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.dpes	FwTrendingPlot	"{dpe}/Channel0.MeasurementSenseVoltage", "{dpe}/Channel1.MeasurementSenseVoltage", "{dpe}/Channel3.MeasurementSenseVoltage", "{dpe}/Channel4.MeasurementSenseVoltage", "{dpe}/Channel5.MeasurementSenseVoltage", "{dpe}/Channel7.MeasurementSenseVoltage", "", ""	0x101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.legendTexts	FwTrendingPlot	"{dpe}/Ch0_Voltage", "{dpe}/Ch1_Voltage", "{dpe}/Ch3_Voltage", "{dpe}/Ch4_Voltage", "{dpe}/Ch5_Voltage", "{dpe}/Ch7_Voltage", "", ""	0x101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.colors	FwTrendingPlot	"FwTrendingCurve1", "FwTrendingCurve2", "FwTrendingCurve3", "FwTrendingCurve4", "FwTrendingCurve5", "FwTrendingCurve6", "FwTrendingCurve7", "FwTrendingCurve8"	0x101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.axii	FwTrendingPlot	1, 0, 0, 0, 0, 0, 0, 0	0x101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.plotBackColor	FwTrendingPlot	"FwTrendingTrendBackground"	0x101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.legend	FwTrendingPlot	1	0x200101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.isTemplate	FwTrendingPlot	0	0x101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.curvesHidden	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.yRangeMin	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.yRangeMax	FwTrendingPlot	10, 10, 10, 10, 10, 10, 0, 0	0x101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.plotType	FwTrendingPlot	1	0x101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.templateName	FwTrendingPlot	""	0x101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.timeRange	FwTrendingPlot	3600	0x101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.isLogarithmic	FwTrendingPlot	0	0x101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.curveTypes	FwTrendingPlot	1, 1, 1, 1, 1, 1, 1, 1	0x101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.plotForeColor	FwTrendingPlot	"FwTrendingTrendForeground"	0x101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.grid	FwTrendingPlot	1	0x101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.model	FwTrendingPlot	"Value over time"	0x101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.xAxii	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.xDpes	FwTrendingPlot	"", "", "", "", "", "", "", ""	0x101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.xRangeMin	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.xRangeMax	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.xLegendTexts	FwTrendingPlot	"", "", "", "", "", "", "", ""	0x101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.markerType	FwTrendingPlot	0	0x101	30.11.2010 20:20:01.633
+TrendingMRTNVoltage.accessControl.save	FwTrendingPlot	""	0x101	30.11.2010 20:20:01.633
+TrendingMRTNCurrent.plotTitle	FwTrendingPlot	"TrendingMRTNCurrent"	0x200101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.dpes	FwTrendingPlot	"{dpe}/Channel0.MeasurementCurrent", "{dpe}/Channel1.MeasurementCurrent", "{dpe}/Channel3.MeasurementCurrent", "{dpe}/Channel4.MeasurementCurrent", "{dpe}/Channel5.MeasurementCurrent", "{dpe}/Channel7.MeasurementCurrent", "", ""	0x101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.legendTexts	FwTrendingPlot	"{dpe}/Ch0_Current", "{dpe}/Ch1_Current", "{dpe}/Ch3_Current", "{dpe}/Ch4_Current", "{dpe}/Ch5_Current", "{dpe}/Ch7_Current", "", ""	0x101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.colors	FwTrendingPlot	"FwTrendingCurve1", "FwTrendingCurve2", "FwTrendingCurve3", "FwTrendingCurve4", "FwTrendingCurve5", "FwTrendingCurve6", "FwTrendingCurve7", "FwTrendingCurve8"	0x101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.axii	FwTrendingPlot	1, 0, 0, 0, 0, 0, 0, 0	0x101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.plotBackColor	FwTrendingPlot	"FwTrendingTrendBackground"	0x101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.legend	FwTrendingPlot	1	0x200101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.isTemplate	FwTrendingPlot	0	0x101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.curvesHidden	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.yRangeMin	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.yRangeMax	FwTrendingPlot	50, 50, 50, 50, 50, 50, 0, 0	0x101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.plotType	FwTrendingPlot	1	0x101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.templateName	FwTrendingPlot	""	0x101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.timeRange	FwTrendingPlot	3600	0x101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.isLogarithmic	FwTrendingPlot	0	0x101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.curveTypes	FwTrendingPlot	1, 1, 1, 1, 1, 1, 1, 1	0x101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.plotForeColor	FwTrendingPlot	"FwTrendingTrendForeground"	0x101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.grid	FwTrendingPlot	1	0x101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.model	FwTrendingPlot	"Value over time"	0x101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.xAxii	FwTrendingPlot		0x101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.xDpes	FwTrendingPlot		0x101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.xRangeMin	FwTrendingPlot		0x101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.xRangeMax	FwTrendingPlot		0x101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.xLegendTexts	FwTrendingPlot		0x101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.markerType	FwTrendingPlot	0	0x101	30.11.2010 17:22:58.383
+TrendingMRTNCurrent.accessControl.save	FwTrendingPlot	""	0x101	30.11.2010 17:22:58.398
+TrendingMRTNChannel.plotTitle	FwTrendingPlot	"TrendingMRTNChannel"	0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.dpes	FwTrendingPlot	"{dpe}.MeasurementSenseVoltage", "{dpe}.MeasurementCurrent", "", "", "", "", "", ""	0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.legendTexts	FwTrendingPlot	"{dpe}_Voltage", "{dpe}_Current", "", "", "", "", "", ""	0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.colors	FwTrendingPlot	"FwTrendingCurve1", "FwTrendingCurve2", "FwTrendingCurve3", "FwTrendingCurve4", "FwTrendingCurve5", "FwTrendingCurve6", "FwTrendingCurve7", "FwTrendingCurve8"	0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.axii	FwTrendingPlot	1, 0, 0, 0, 0, 0, 0, 0	0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.plotBackColor	FwTrendingPlot	"FwTrendingTrendBackground"	0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.legend	FwTrendingPlot	1	0x200101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.isTemplate	FwTrendingPlot	0	0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.curvesHidden	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.yRangeMin	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.yRangeMax	FwTrendingPlot	50, 50, 0, 0, 0, 0, 0, 0	0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.plotType	FwTrendingPlot	1	0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.templateName	FwTrendingPlot	""	0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.timeRange	FwTrendingPlot	3600	0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.isLogarithmic	FwTrendingPlot	0	0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.curveTypes	FwTrendingPlot	1, 1, 1, 1, 1, 1, 1, 1	0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.plotForeColor	FwTrendingPlot	"FwTrendingTrendForeground"	0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.grid	FwTrendingPlot	1	0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.model	FwTrendingPlot	"Value over time"	0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.xAxii	FwTrendingPlot		0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.xDpes	FwTrendingPlot		0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.xRangeMin	FwTrendingPlot		0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.xRangeMax	FwTrendingPlot		0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.xLegendTexts	FwTrendingPlot		0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.markerType	FwTrendingPlot	0	0x101	24.12.2010 19:05:35.265
+TrendingMRTNChannel.accessControl.save	FwTrendingPlot	""	0x101	24.12.2010 19:05:35.265

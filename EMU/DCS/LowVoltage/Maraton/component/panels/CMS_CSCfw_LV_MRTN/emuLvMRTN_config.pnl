@@ -1,0 +1,298 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 546 358 N "_3DFace" 0
+"#uses \"CMS_CSCfw_LV_CRB/emuLvCRB.ctl\"
+main()
+{
+  emuLvCRB_initalizeParam();
+}" 0
+ E E E E 1 -1 -1 0  120 80
+""0  1
+E "
+#uses \"CMS_CSCfw_LV_MRTN/emuLvMRTN.ctl\"" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"PUSH_BUTTON1"
+""
+1 20 30 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  18 28 113 72
+
+T 
+1
+LANG:1 10 delete all
+"#uses \"CMS_CSCfw_LV_MRTN/emuLvMRTN.ctl\"
+main()
+{
+  emuLvMRTN_initalizeParam();
+  emuLvMRTN_deleteAll(); 
+}" 0
+ E E E
+13 2
+"PUSH_BUTTON3"
+""
+1 120 30 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  118 28 242 72
+
+T 
+1
+LANG:1 17 create MRTN  type
+"//#uses \"CMS_CSCfw_LV_MRTN/emuLvMRTN.ctl\"
+main()
+{
+  emuLvMRTN_createLvType();
+}  
+" 0
+ E E E
+13 3
+"PUSH_BUTTON4"
+""
+1 120 80 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  118 78 242 122
+
+T 
+1
+LANG:1 20 create MRTN hardware
+"#uses \"CMS_CSCfw_LV_MRTN/emuLvMRTN.ctl\"
+main()
+{
+  emuLvMRTN_initalizeParam();
+  emuLvMRTN_createHardware();
+} 
+" 0
+ E E E
+13 4
+"PUSH_BUTTON5"
+""
+1 120 130 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  118 128 242 172
+
+T 
+1
+LANG:1 16 create MRTN tree
+"#uses \"CMS_CSCfw_LV_CRB/emuLvCRB.ctl\"
+main()
+{
+  emuLvMRTN_createFsmTree();
+} 
+" 0
+ E E E
+13 9
+"PUSH_BUTTON9"
+""
+1 120 180 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  118 178 242 222
+
+T 
+1
+LANG:1 14 set MRTN alert
+"#uses \"CMS_CSCfw_LV_MRTN/emuLvMRTN.ctl\"
+main()
+{
+ emuLvMRTN_setAlertConfig(); 
+}" 0
+ E E E
+13 17
+"PUSH_BUTTON16"
+""
+1 120 230 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  118 228 242 272
+
+T 
+1
+LANG:1 15 set FSM Ui Info
+"main()
+{
+ emuLvMRTN_setFsmUiInfo();
+}" 0
+ E E E
+13 18
+"PUSH_BUTTON17"
+""
+1 120 280 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  118 278 242 322
+
+T 
+1
+LANG:1 16 set FSM userdata
+"main()
+{
+ emuLvMRTN_setFsmUserData();
+}" 0
+ E E E
+13 19
+"PUSH_BUTTON18"
+""
+1 250 30 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  248 28 372 72
+
+T 
+1
+LANG:1 17 set dps archiving
+"main()
+{
+ //emuLvMRTN_createDpType(\"CSC_MARATON_V_DATA\");
+ //emuLvMRTN_createDpType(\"CSC_MARATON_I_DATA\");
+ //emuLvMRTN_createDpType(\"CSC_MARATON_T_DATA\"); 
+ emuLvMRTN_setArchiving();
+}" 0
+ E E E
+30 22
+"FRAME1"
+""
+1 10 3 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+22 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1.155555555555556 0 1 -1.555555555555556 7 0 E 10 3 461 321
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 6 config
+13 26
+"CreateAll"
+""
+1 20 280 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+26 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  18 278 112 324
+
+T 
+1
+LANG:1 10 Create All
+"main()
+{
+  emuLvMRTN_createMRTNAll();  
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

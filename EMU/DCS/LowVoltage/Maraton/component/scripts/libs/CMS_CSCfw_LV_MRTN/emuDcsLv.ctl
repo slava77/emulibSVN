@@ -34,8 +34,7 @@ string mudcsLvAddSystem(string dp, string system_add=""){
 //  return s1+":"+s_split[dynlen(s_split)];
 //  else return system_add+":"+s_split[dynlen(s_split)];
   if(strpos(dp,s1+":")>=0)return dp;
-  return s1+":"+dp;
-  
+  return s1+":"+dp;  
 }
 //=======================================================================
 string mudcsLvRemoveSystem(string dp, string system_rem=""){
