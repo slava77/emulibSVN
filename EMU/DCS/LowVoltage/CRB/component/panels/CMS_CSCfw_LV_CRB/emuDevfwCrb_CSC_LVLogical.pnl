@@ -1,7 +1,9 @@
 V 11
 1
 LANG:1 25 emuDevfwCrb_CSC_LVLogical
-PANEL,-1 -1 694 494 N "_3DFace" 1
+PANEL,-1 -1 694 494 N "_3DFace" 3
+"$1"
+"$2"
 "$sDpName"
 "int is_local_sys;
 
@@ -675,7 +677,7 @@ void alert_reconfig(dyn_string dp_frag, int isexclude)
 
 /** This function is called whenever the user privileges change and just passes that to emu_enableDisableControl() which takes care of enabling/disabling buttons. */
 void accessPrivilegesChangedCB(string dummy1, string dummy2) {
-  emu_enableDisableControl(controlButtons, true, \"lblNoControl\", expertControlButtons, true);
+  emu_enableDisableControl($1 + \"::\" + $2, controlButtons, true, \"lblNoControl\", expertControlButtons, true);
 }
 " 0
  2
@@ -750,7 +752,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 90 52 109
+E E 0 0 0 0 1 E U  1 E 12 90 53 110
 1 2 2 "0s" 0 0 0 192 0 0  12 90 1
 1
 LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
@@ -836,7 +838,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 113 52 132
+E E 0 0 0 0 1 E U  1 E 12 113 53 133
 1 2 2 "0s" 0 0 0 192 0 0  12 113 1
 1
 LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
@@ -855,7 +857,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 133 52 152
+E E 0 0 0 0 1 E U  1 E 12 133 53 153
 1 2 2 "0s" 0 0 0 192 0 0  12 133 1
 1
 LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
@@ -874,7 +876,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 153 52 172
+E E 0 0 0 0 1 E U  1 E 12 153 53 173
 1 2 2 "0s" 0 0 0 192 0 0  12 153 1
 1
 LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
@@ -893,7 +895,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 173 52 192
+E E 0 0 0 0 1 E U  1 E 12 173 53 193
 1 2 2 "0s" 0 0 0 192 0 0  12 173 1
 1
 LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
@@ -912,7 +914,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 193 52 212
+E E 0 0 0 0 1 E U  1 E 12 193 53 213
 1 2 2 "0s" 0 0 0 192 0 0  12 193 1
 1
 LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
@@ -931,7 +933,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 213 52 232
+E E 0 0 0 0 1 E U  1 E 12 213 53 233
 1 2 2 "0s" 0 0 0 192 0 0  12 213 1
 1
 LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
@@ -950,7 +952,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 233 52 252
+E E 0 0 0 0 1 E U  1 E 12 233 53 253
 1 2 2 "0s" 0 0 0 192 0 0  12 233 1
 1
 LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
@@ -969,7 +971,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 253 52 272
+E E 0 0 0 0 1 E U  1 E 12 253 53 273
 1 2 2 "0s" 0 0 0 192 0 0  12 253 1
 1
 LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
@@ -988,7 +990,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 22 293 42 312
+E E 0 0 0 0 1 E U  1 E 22 293 44 313
 1 2 2 "0s" 0 0 0 192 0 0  22 293 1
 1
 LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
@@ -1023,7 +1025,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 304 335 334 354
+E E 0 0 0 0 1 E U  1 E 304 335 336 355
 1 2 2 "0s" 0 0 0 192 0 0  304 335 1
 1
 LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
@@ -1074,7 +1076,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 304 312 334 331
+E E 0 0 0 0 1 E U  1 E 304 312 336 332
 1 2 2 "0s" 0 0 0 192 0 0  304 312 1
 1
 LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
@@ -1115,7 +1117,7 @@ LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
 2 91
 "1.5_t"
 ""
-1 76 -1902.255131860275 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+1 78 -1631.368483958069 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
  E E
 181 0 0 0 0 0
 E E E
@@ -1125,7 +1127,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E 1 0 0.8843537414966 2 50.89795918367343 1 E 302 347 332 366
+E E 0 0 0 0 1 E 1 0 0.8843537414966 2 50.89795918367343 1 E 302 347 332 367
 1 2 2 "0s" 0 0 0 192 0 0  302 347 1
 1
 LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
@@ -1921,7 +1923,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 302 450 358 467
+E E 0 0 0 0 1 E U  1 E 302 450 358 470
 1 2 2 "0s" 0 0 0 192 0 0  302 450 1
 1
 LANG:1 38 Helvetica [Adobe],-1,14,5,75,0,0,0,0,0
@@ -1940,7 +1942,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 362 450 570 556
+E E 0 0 0 0 1 E U  1 E 362 450 572 562
 1 2 2 "0s" 0 0 0 192 0 0  362 450 6
 1
 LANG:1 38 Helvetica [Adobe],-1,12,5,50,0,0,0,0,0
@@ -2027,7 +2029,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 12 370 72 389
+E E 0 0 0 0 1 E U  1 E 12 370 73 390
 1 2 2 "0s" 0 0 0 192 0 0  12 370 1
 1
 LANG:1 36 Courier [Adobe],-1,16,5,75,0,0,0,0,0
@@ -2046,7 +2048,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 62 30 81 51
+E E 0 1 1 2 1 E U  1 E 62 30 82 50
 0 2 2 "0s" 0 0 0 192 0 0  62 30 1
 1
 LANG:1 33 MS Shell Dlg,-1,16,5,75,0,0,0,0,0
@@ -2065,7 +2067,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 60 50 360 90
+E E 0 0 0 0 1 E U  1 E 60 50 352 92
 1 2 2 "0s" 0 0 0 192 0 0  60 50 2
 1
 LANG:1 28 Courier,-1,16,5,75,0,0,0,0,0
@@ -2095,7 +2097,7 @@ getValue(\"\",\"name\",sname);
 vme_crate_draw(sname);
   
 }" 0
- E 0 1 1 2 1 E 1 5.55111512312578e-017 -2.77555756156289e-017 0.5 220 80 1 E 330 60 350 100
+ E 0 1 1 2 1 E 1 5.55111512312578e-17 -2.77555756156289e-17 0.5 220 80 1 E 330 60 350 100
 6 140
 "2_19_25_32_49_55"
 ""
@@ -2115,7 +2117,7 @@ LANG:1 0
 getValue(\"\",\"name\",sname);
 vme_crate_draw(sname);
 }" 0
- E 0 1 1 2 1 E 1 5.55111512312578e-017 -2.77555756156289e-017 0.5 220 100 1 E 330 60 350 100
+ E 0 1 1 2 1 E 1 5.55111512312578e-17 -2.77555756156289e-17 0.5 220 100 1 E 330 60 350 100
 6 141
 "4_14_34_44"
 ""
@@ -2135,7 +2137,7 @@ LANG:1 0
 getValue(\"\",\"name\",sname);
 vme_crate_draw(sname);
 }" 0
- E 0 1 1 2 1 E 1 5.55111512312578e-017 -2.77555756156289e-017 0.5 320 80 1 E 330 60 350 100
+ E 0 1 1 2 1 E 1 5.55111512312578e-17 -2.77555756156289e-17 0.5 320 80 1 E 330 60 350 100
 6 142
 "5_20_26_35_50_56"
 ""
@@ -2155,7 +2157,7 @@ LANG:1 0
 getValue(\"\",\"name\",sname);
 vme_crate_draw(sname);
 }" 0
- E 0 1 1 2 1 E 1 5.55111512312578e-017 -2.77555756156289e-017 0.5 320 100 1 E 330 60 350 100
+ E 0 1 1 2 1 E 1 5.55111512312578e-17 -2.77555756156289e-17 0.5 320 100 1 E 330 60 350 100
 6 143
 "6_15_27_36_51_57"
 ""
@@ -2175,7 +2177,7 @@ LANG:1 0
 getValue(\"\",\"name\",sname);
 vme_crate_draw(sname);
 }" 0
- E 0 1 1 2 1 E 1 5.55111512312578e-017 -2.77555756156289e-017 0.5 340 140 1 E 330 60 350 100
+ E 0 1 1 2 1 E 1 5.55111512312578e-17 -2.77555756156289e-17 0.5 340 140 1 E 330 60 350 100
 6 144
 "7_21_37_45"
 ""
@@ -2195,7 +2197,7 @@ LANG:1 0
 getValue(\"\",\"name\",sname);
 vme_crate_draw(sname);
 }" 0
- E 0 1 1 2 1 E 1 5.55111512312578e-017 -2.77555756156289e-017 0.5 340 160 1 E 330 60 350 100
+ E 0 1 1 2 1 E 1 5.55111512312578e-17 -2.77555756156289e-17 0.5 340 160 1 E 330 60 350 100
 6 145
 "8_22_28_38_52_58"
 ""
@@ -2215,7 +2217,7 @@ LANG:1 0
 getValue(\"\",\"name\",sname);
 vme_crate_draw(sname);
 }" 0
- E 0 1 1 2 1 E 1 5.55111512312578e-017 -2.77555756156289e-017 0.5 320 190 1 E 330 60 350 100
+ E 0 1 1 2 1 E 1 5.55111512312578e-17 -2.77555756156289e-17 0.5 320 190 1 E 330 60 350 100
 6 146
 "9_16_39_46"
 ""
@@ -2235,7 +2237,7 @@ LANG:1 0
 getValue(\"\",\"name\",sname);
 vme_crate_draw(sname);
 }" 0
- E 0 1 1 2 1 E 1 5.55111512312578e-017 -2.77555756156289e-017 0.5 320 210 1 E 330 60 350 100
+ E 0 1 1 2 1 E 1 5.55111512312578e-17 -2.77555756156289e-17 0.5 320 210 1 E 330 60 350 100
 6 147
 "11_17_41_47"
 ""
@@ -2255,7 +2257,7 @@ LANG:1 0
 getValue(\"\",\"name\",sname);
 vme_crate_draw(sname);
 }" 0
- E 0 1 1 2 1 E 1 5.55111512312578e-017 -2.77555756156289e-017 0.5 220 190 1 E 330 60 350 100
+ E 0 1 1 2 1 E 1 5.55111512312578e-17 -2.77555756156289e-17 0.5 220 190 1 E 330 60 350 100
 6 148
 "10_23_29_40_53_59"
 ""
@@ -2275,7 +2277,7 @@ LANG:1 0
 getValue(\"\",\"name\",sname);
 vme_crate_draw(sname);
 }" 0
- E 0 1 1 2 1 E 1 5.55111512312578e-017 -2.77555756156289e-017 0.5 220 210 1 E 330 60 350 100
+ E 0 1 1 2 1 E 1 5.55111512312578e-17 -2.77555756156289e-17 0.5 220 210 1 E 330 60 350 100
 6 149
 "1_24_31_48"
 ""
@@ -2295,7 +2297,7 @@ LANG:1 0
 getValue(\"\",\"name\",sname);
 vme_crate_draw(sname);
 }" 0
- E 0 1 1 2 1 E 1 5.55111512312578e-017 -2.77555756156289e-017 0.5 200 140 1 E 330 60 350 100
+ E 0 1 1 2 1 E 1 5.55111512312578e-17 -2.77555756156289e-17 0.5 200 140 1 E 330 60 350 100
 6 150
 "12_18_30_42_54_60"
 ""
@@ -2315,11 +2317,11 @@ LANG:1 0
 getValue(\"\",\"name\",sname);
 vme_crate_draw(sname);
 }" 0
- E 0 1 1 2 1 E 1 5.55111512312578e-017 -2.77555756156289e-017 0.5 200 160 1 E 330 60 350 100
+ E 0 1 1 2 1 E 1 5.55111512312578e-17 -2.77555756156289e-17 0.5 200 160 1 E 330 60 350 100
 2 152
 "PRIMITIVE_TEXT5"
 ""
-1 3483.946478368409 1485.699616808228 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 3492.450938504375 1489.391315407543 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 295 0 0 0 0 0
 E E E
@@ -2338,7 +2340,7 @@ LANG:1 2  1
 2 155
 "PRIMITIVE_TEXT8"
 ""
-1 3904.768476201756 1485.699616808228 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 3914.204436518277 1489.391315407543 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 301 0 0 0 0 0
 E E E
@@ -2357,7 +2359,7 @@ LANG:1 2  2
 2 156
 "PRIMITIVE_TEXT9"
 ""
-1 4150.247974937874 1799.367865193265 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 4160.227310359718 1803.75387642716 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 303 0 0 0 0 0
 E E E
@@ -2376,7 +2378,7 @@ LANG:1 2  3
 2 157
 "PRIMITIVE_TEXT10"
 ""
-1 3904.768476201756 2116.932613558244 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 3914.204436518277 2122.021562428391 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 305 0 0 0 0 0
 E E E
@@ -2395,7 +2397,7 @@ LANG:1 2  4
 2 158
 "PRIMITIVE_TEXT11"
 ""
-1 3507.325478248041 2116.932613558244 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 3515.881688394038 2122.021562428391 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 307 0 0 0 0 0
 E E E
@@ -2414,7 +2416,7 @@ LANG:1 2  5
 2 159
 "PRIMITIVE_TEXT12"
 ""
-1 3261.845979511922 1799.367865193265 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 3269.858814552596 1803.75387642716 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 309 0 0 0 0 0
 E E E
@@ -3487,7 +3489,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 500 60 630 100
+E E 0 0 0 0 1 E U  1 E 500 60 622 102
 1 2 2 "0s" 0 0 0 192 0 0  500 60 2
 1
 LANG:1 28 Courier,-1,16,5,75,0,0,0,0,0
@@ -3510,7 +3512,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 62 6 109 27
+E E 0 1 1 2 1 E U  1 E 62 6 113 26
 0 2 2 "0s" 0 0 0 192 0 0  62 6 1
 1
 LANG:1 33 MS Shell Dlg,-1,16,5,75,0,0,0,0,0
@@ -3529,7 +3531,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 350 400 556 417
+E E 0 1 1 2 1 E U  1 E 350 400 602 418
 0 2 2 "0s" 0 0 0 192 0 0  350 400 1
 1
 LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
@@ -4027,7 +4029,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 490 10 688 27
+E E 0 0 0 0 1 E U  1 E 490 10 691 29
 1 2 2 "0s" 0 0 0 192 0 0  490 10 1
 1
 LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
