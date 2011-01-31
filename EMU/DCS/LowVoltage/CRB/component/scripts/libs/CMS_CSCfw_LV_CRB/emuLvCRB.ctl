@@ -29,11 +29,20 @@ This library contains LV_CRB functions for EMU DCS LV project.
 void emuLvCRB_initalizeParam()
 {
   //get system name where CRB component installation
-  // dyn_string ds;
-  // fwInstallation_getApplicationSystem("CMS_CSCfw_LV_CRB",ds);    
-   addGlobal("gSystemNameCRB", STRING_VAR);
-  // gSystemNameCRB = ds[1]; //with ":"
-   gSystemNameCRB = "csc_dcs_lv1:";
+  dyn_string systems;
+  fwInstallation_getApplicationSystem("CMS_CSCfw_LV_CRB", systems);
+  addGlobal("gSystemNameCRB", STRING_VAR);
+  gSystemNameCRB = "";
+  for (int i=1; i <= dynlen(systems); i++) {
+    if (strpos(systems[i], "*") < 0) { // if the system is not actually alive (connected), then it will have * symbol around the sysName
+      gSystemNameCRB = systems[i];
+      break;
+    }
+  }
+  // fall back to default if none is found
+  if (gSystemNameCRB == "") {
+    gSystemNameCRB = "cms_csc_dcs_10";
+  }
 }
 /**
  * simple debug information on/off
@@ -988,13 +997,10 @@ void emuLvCRB_generateToggleA4(string sElmbName,int iInterval)
 void emuLvCRB_setDoBitSync(string sElmbName,string sBitId,bool bValue,dyn_string &dsExceptionInfo)
 {
   emuLvCRB_initalizeParam();
-  float fElmbVersion;
-  dpGet(gSystemNameCRB+"fwInstallation_fwElmb.componentVersion",fElmbVersion);
-  emuLvCRB_showDebug(bDebug,"current elmb version is "+fElmbVersion);
   dyn_string dsBitIds = makeDynString(sBitId);
   dyn_bool dbValues = makeDynBool(bValue);  
-  if(fElmbVersion>=4.2)
-   {
+  if (isFunctionDefined("fwElmbUser_setDoBitsSynchronized"))
+  {
      fwElmbUser_setDoBitsSynchronized(sElmbName,dsBitIds,dbValues,dsExceptionInfo); 
 //     fwElmbUser_setDoBits(sElmbName,dsBitIds,dbValues,dsExceptionInfo); 
      //fwElmbUser_setDoBit(sElmbName,sBitId,bValue,dsExceptionInfo); 
@@ -1031,6 +1037,7 @@ void emuLvCRB_setDoBitSync(string sElmbName,string sBitId,bool bValue,dyn_string
    }
   else
    {
+     DebugTN("WARNING: using fwElmbUser_setDoBit(...), because fwElmbUser_setDoBitsSynchronized(...) is not defined!!!");
      fwElmbUser_setDoBit(sElmbName,sBitId,bValue,dsExceptionInfo);
    }        
 }

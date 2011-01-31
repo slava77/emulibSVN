@@ -4,11 +4,12 @@
 
 main()
 {
-DebugTN("running post-installation script for CSC LV CRB component");  
+
+  DebugTN("running post-installation script for CSC LV CRB component");  
 
 // monitor server for CSC LV CRB
-fwInstallation_appendManager(TRUE, "CSC LV CRB monitor", "PVSS00ctrl", 
-"manual", 30, 2, 2, "-num 15 CMS_CSCfw_LV_CRB/emuLvCRB_Server.ctl");
+  fwInstallation_appendManager(TRUE, "CSC LV CRB monitor", "PVSS00ctrl", 
+                              "manual", 30, 2, 2, "-num 15 CMS_CSCfw_LV_CRB/emuLvCRB_Server.ctl");
 
 //clean all dps if exist
   emuLvCRB_deleteAll();
