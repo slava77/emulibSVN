@@ -7,5 +7,6 @@ public interface BeanTableColumnIf {
     boolean isFilterSet();
     BeanTableFilterIf getFilter();
     void setFilter(BeanTableFilterIf filter);
+    Class getType();
 
 }

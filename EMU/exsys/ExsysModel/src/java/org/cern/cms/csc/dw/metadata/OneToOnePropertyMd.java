@@ -19,13 +19,17 @@ import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 public class OneToOnePropertyMd extends PropertyMd {
 
     private static Logger logger = SimpleLogger.getLogger(ManyToOnePropertyMd.class);
-    private static Class[] mandatoryAnnotations = {OneToOne.class, JoinColumn.class};
+    private static Class[] mandatoryAnnotations = { OneToOne.class }; //, JoinColumn.class};
 
     public OneToOnePropertyMd(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
         super(prop, mandatoryAnnotations);
 
         JoinColumn joinColumn = prop.getReadMethod().getAnnotation(JoinColumn.class);
-        setIsMandatory(!joinColumn.nullable());
+
+        // TODO: determine if mandatory!
+        if (joinColumn != null) {
+            setIsMandatory(!joinColumn.nullable());
+        }
     }
 
 }

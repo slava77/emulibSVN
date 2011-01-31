@@ -13,6 +13,7 @@ public class MonitorBeanTableDao extends BeanTableDao implements MonitorBeanTabl
     @PersistenceContext(unitName="CdwMonitorPU")
     private EntityManager em;
 
+    @Override
     protected Session getSession() {
         return (Session)((EntityManagerImpl) em.getDelegate()).getDelegate();
     }

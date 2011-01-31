@@ -1,5 +1,6 @@
 package org.cern.cms.csc.dw.dao.table;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,6 +33,24 @@ public class DualList<T> {
 
     public void setTarget(List<T> target) {
         this.target = target;
+    }
+
+    public void setTargetExceptSource(Collection<T> list) {
+        setItemsExcept(list, this.target, this.source);
+    }
+
+    public void setSourceExceptTarget(Collection<T> list) {
+        setItemsExcept(list, this.source, this.target);
+    }
+
+    private void setItemsExcept(Collection<T> list,
+                                Collection<T> targetList,
+                                Collection<T> baseList) {
+        for (T t: list) {
+            if (!baseList.contains(t)) {
+                targetList.add(t);
+            }
+        }
     }
 
 }

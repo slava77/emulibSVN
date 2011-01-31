@@ -12,7 +12,6 @@ import java.util.Properties;
 import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Schedule;
-import javax.ejb.Singleton;
 import javax.ejb.Stateless;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -28,6 +27,7 @@ import org.cern.cms.csc.dw.log.SimpleLogger;
 import org.cern.cms.csc.dw.model.monitor.MonitorDatabaseStatus;
 import org.cern.cms.csc.dw.model.monitor.MonitorEntity;
 import org.cern.cms.csc.dw.model.monitor.MonitorQueueStatus;
+import org.cern.cms.csc.dw.model.monitor.MonitorSystem;
 import org.cern.cms.csc.dw.util.ServiceLocator;
 
 @Stateless
@@ -42,6 +42,7 @@ public class MonitorJob {
     @EJB
     private MonitorDaoLocal monitorDao;
 
+    private SysMonitor sysmon = new SysMonitor();
     private ServiceLocator locator;
     private List<QueueItem> queues = new ArrayList<QueueItem>();
     private Set<Class<? extends MonitorEntity>> moClasses = new HashSet<Class<? extends MonitorEntity>>();
@@ -91,6 +92,17 @@ public class MonitorJob {
                 logger.error("Error while accessing queues", ex);
             }
         }
+    }
+
+    @Schedule(hour="*", minute="*", second="*/10")
+    public void monitorSystem() {
+        logger.debug("In monitorSystem");
+        logger.trace("Up time: " + sysmon.getUpTime());
+        MonitorSystem ms = new MonitorSystem(sysmon.getCpuUsage(), sysmon.getRam(), sysmon.getSwap());
+        logger.trace("RAM: " + sysmon.getRam());
+        logger.trace("Swap: " + sysmon.getSwap());
+        logger.trace("CPU usage: " + String.valueOf(ms.getCpu()));
+        getMonitor().trace(ms);
     }
 
     @Schedule(hour="*", minute="*", second="*/15")

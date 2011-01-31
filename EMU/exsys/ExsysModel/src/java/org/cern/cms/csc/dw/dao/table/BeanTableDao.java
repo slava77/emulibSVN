@@ -164,10 +164,12 @@ public abstract class BeanTableDao implements BeanTableDaoIf {
                             case IN:
                                 if (item instanceof BeanTableProjectionFilterItemIf) {
                                     BeanTableProjectionFilterItemIf pitem = (BeanTableProjectionFilterItemIf) item;
-                                    BeanTableIf subQueryTable = pitem.getBeanTable();
-                                    if (subQueryTable.isFilterOn() || subQueryTable.isAdvancedQuerySet()) {
-                                        DetachedCriteria subCriteria = getDetachedCriteria(subQueryTable);
-                                        curJun.add(Subqueries.propertyIn(propertyName, subCriteria));
+                                    BeanTableIf subQueryTable = pitem.getTablePack().getTable();
+                                    if (subQueryTable != null) {
+                                        if (subQueryTable.isFilterOn() || subQueryTable.isAdvancedQuerySet()) {
+                                            DetachedCriteria subCriteria = getDetachedCriteria(subQueryTable);
+                                            curJun.add(Subqueries.propertyIn(propertyName, subCriteria));
+                                        }
                                     }
                                 }
                                 break;
