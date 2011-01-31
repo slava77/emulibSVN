@@ -14,14 +14,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.EJB;
-import javax.ejb.EJBs;
 import javax.ejb.Stateless;
 import org.cern.cms.csc.dw.log.Logger;
 import org.cern.cms.csc.dw.log.SimpleLogger;
 import org.cern.cms.csc.exsys.re.conclusion.ConclusionCacheService;
 import org.cern.cms.csc.exsys.re.conclusion.factory.ConclusionFactory;
 import org.cern.cms.csc.exsys.re.conclusion.factory.DefaultConclusionFactory;
-import org.cern.cms.csc.exsys.re.dao.ConclusionDaoLocal;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.cern.cms.csc.exsys.re.model.Rule;
@@ -47,8 +45,6 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
     
     @EJB
     private RuleEngineDaoLocal reDao;
-    @EJB
-    private ConclusionDaoLocal conclusionDao;
 
     //@Resource(name="ConclusionCacheService")
     private ConclusionCacheService conclusionCacheService = new ConclusionCacheService();
@@ -88,7 +84,7 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
 
     /** Configures the given EPServiceProvider i.e. gets all the rules from DB and registers them with the given EPServiceProvider. */
     private void configure(EPServiceProvider epService) {
-        List<Rule> rules = reDao.getAllRules();
+        List<Rule> rules = reDao.getRules();
         logger.info("Configuring rules engine... Loading these rules: ");
         Set<String> ruleNames = new HashSet<String>();
         activeRules.clear();
@@ -109,7 +105,7 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
         }
 
         // throw all open conclusions into rule engine
-        List<Conclusion> openConclusions = conclusionDao.getAllOpenConclusions();
+        List<Conclusion> openConclusions = reDao.getAllOpenConclusions();
         for (Conclusion concl: openConclusions) {
             epService.getEPRuntime().sendEvent(concl);
         }
@@ -120,6 +116,7 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
      * Calls reconfigure() for the default EPServiceProvider.
      * @see reconfigure(String uri)
      */
+    @Override
     public void reconfigure() {
         reconfigure(DEFAULT_EP_URI);
     }
@@ -128,6 +125,7 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
      * Removes all rules from the EPServiceProvider with the given uri and calls configure (which adds all the rules from DB).
      * @see configure(EPServiceProvider epService)
      */
+    @Override
     public void reconfigure(String uri) {
         logger.info("Reconfiguring Esper Runtime for URI=" + uri);
         EPServiceProvider epService = getEpService(uri);
@@ -138,6 +136,7 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
     /**
      * @return Esper Runtime (EPRuntime) which can be used to send facts into rule engine.
      */
+    @Override
     public EPRuntime getEsperRuntime() {
         return getEpService().getEPRuntime();
     }
@@ -146,10 +145,12 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
      * Get all rules that are currently active in the RE runtime
      * @return all rules that are currently active in the RE runtime
      */
+    @Override
     public Collection<Rule> getActiveRules() {
         return activeRules;
     }
 
+    @Override
     public RuleEngineDaoLocal getRuleEngineDao() {
         return reDao;
     }

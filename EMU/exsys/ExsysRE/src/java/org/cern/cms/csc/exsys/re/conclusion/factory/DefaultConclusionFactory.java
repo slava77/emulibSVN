@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import javax.jms.Connection;
@@ -20,7 +19,6 @@ import javax.jms.Message;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
-import javax.jms.TextMessage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -32,7 +30,6 @@ import org.cern.cms.csc.exsys.re.RuleEngineManagerLocal;
 import org.cern.cms.csc.exsys.re.conclusion.ConclusionCacheService;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
 import org.cern.cms.csc.exsys.re.model.Action;
-import org.cern.cms.csc.exsys.re.model.ActionExecution;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.cern.cms.csc.exsys.re.model.ConclusionTrigger;
 import org.cern.cms.csc.exsys.re.model.ConclusionTriggerSource;
@@ -68,7 +65,7 @@ public class DefaultConclusionFactory extends ConclusionFactory {
 
                 logger.info("Default conclusion factory: Got new conclusion: " + conclusion.getTitle());
                 logger.info("Saving new conclusion: " + conclusion);
-                reDao.getEntityDao().getPersistDao().persist(conclusion);
+                reDao.getEntityDao().persist(conclusion);
                 getConclusionCacheService().addToCache(conclusion);
                 executeActions(getConclusionType().getActions(), conclusion.getTriggers());
                 return conclusion;
@@ -78,7 +75,7 @@ public class DefaultConclusionFactory extends ConclusionFactory {
 
                 //existingConclusion = (Conclusion) reDao.getEntityDao().refreshEntity(existingConclusion);
                 updateExistingConclusion(existingConclusion, conclusion);
-                existingConclusion = (Conclusion) reDao.getEntityDao().getPersistDao().merge(existingConclusion);
+                existingConclusion = (Conclusion) reDao.getEntityDao().merge(existingConclusion);
                 if (!existingConclusion.isIsClosed()) {
                     logger.debug("Saving existing conclusion: " + existingConclusion);
                     getConclusionCacheService().addToCache(existingConclusion); // update the conclusion in the cache
@@ -118,7 +115,7 @@ public class DefaultConclusionFactory extends ConclusionFactory {
                 if (trigger.getType().equals(ConclusionTriggerType.OPEN)) { // don't change "CLOSE" to "UPDATE"
                     trigger.setType(ConclusionTriggerType.UPDATE);
                 }
-                reDao.getEntityDao().getPersistDao().persist(trigger);
+                reDao.getEntityDao().persist(trigger);
                 executeActions(getConclusionType().getActions(), trigger);
             }
 //            existingConclusion.getTriggers().add(trigger);

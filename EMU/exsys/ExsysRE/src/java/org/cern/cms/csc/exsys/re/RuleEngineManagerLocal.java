@@ -6,7 +6,6 @@
 package org.cern.cms.csc.exsys.re;
 
 import com.espertech.esper.client.EPRuntime;
-import com.espertech.esper.client.EPServiceProvider;
 import java.util.Collection;
 import javax.ejb.Local;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
@@ -46,4 +45,5 @@ public interface RuleEngineManagerLocal {
     Collection<Rule> getActiveRules();
 
     RuleEngineDaoLocal getRuleEngineDao();
+    
 }

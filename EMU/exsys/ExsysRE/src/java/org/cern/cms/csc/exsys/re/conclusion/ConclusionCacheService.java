@@ -11,8 +11,8 @@ import java.util.Map;
 import org.cern.cms.csc.dw.log.Logger;
 import org.cern.cms.csc.dw.log.SimpleLogger;
 import org.cern.cms.csc.dw.util.EjbLookup;
-import org.cern.cms.csc.exsys.re.dao.ConclusionDao;
-import org.cern.cms.csc.exsys.re.dao.ConclusionDaoLocal;
+import org.cern.cms.csc.exsys.re.dao.RuleEngineDao;
+import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.cern.cms.csc.exsys.re.model.ConclusionTrigger;
 import org.cern.cms.csc.exsys.re.model.ConclusionTriggerSource;
@@ -26,7 +26,7 @@ public class ConclusionCacheService {
 
     private static final Logger logger = SimpleLogger.getLogger(ConclusionCacheService.class);
 
-    private EjbLookup<ConclusionDaoLocal> conclusionDao = new EjbLookup<ConclusionDaoLocal>(ConclusionDaoLocal.class, ConclusionDao.class);
+    private EjbLookup<RuleEngineDaoLocal> reDao = new EjbLookup<RuleEngineDaoLocal>(RuleEngineDaoLocal.class, RuleEngineDao.class);
     private Map<ComparableConclusionWrapper, Conclusion> conclusionCache;
 
     public ConclusionCacheService() {
@@ -40,7 +40,7 @@ public class ConclusionCacheService {
     public Conclusion checkCache(Conclusion conclusion) {
         if (conclusionCache == null) { // initialize the cache
             conclusionCache = new HashMap<ComparableConclusionWrapper, Conclusion>();
-            List<Conclusion> conclusions = conclusionDao.ejb().getAllOpenConclusions();
+            List<Conclusion> conclusions = reDao.ejb().getAllOpenConclusions();
             for (Conclusion concl: conclusions) {
                 conclusionCache.put(new ComparableConclusionWrapper(concl), concl);
             }
