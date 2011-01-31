@@ -34,6 +34,9 @@ public class LovConverter implements Converter {
 
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String param) {
+        if (lov == null || lov.isEmpty()) {
+            return null;
+        }
         try {
             Integer index = Integer.valueOf(param);
 //            logger.info("LovConverter.getAsObject(). Param=" + param + ", index: " + index + " returning: " + lov.get(index));
@@ -45,6 +48,9 @@ public class LovConverter implements Converter {
 
     @Override
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object obj) {
+        if (lov == null || lov.isEmpty()) {
+            return null;
+        }
         Integer index = new Integer(lov.indexOf(obj));
 //        logger.info("LovConverter.getAsString(). obj=" + obj + ", index: " + index + " returning: " + index.toString());
         if (index < 0) { index = 0; } // back to first element if the obj was actually not found (needed because icefaces still sometimes sends some old version of the object taken from god knows where).

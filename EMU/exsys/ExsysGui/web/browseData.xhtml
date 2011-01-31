@@ -24,13 +24,17 @@
         </ice:form>
     </ui:define>
 
+    <ui:define name="pageTitle">
+        Data Browser
+    </ui:define>
+
     <ui:define name="content">
         <ice:form>
             <ice:panelGroup rendered="#{dataBrowserController.table == null}">
                 <ice:outputText value="Table not selected."/>
             </ice:panelGroup>
             <ice:panelGroup rendered="#{dataBrowserController.table != null}">
-                <exsys-component:beanTable tableId="beanTable" table="#{dataBrowserController.table}"/>
+                <exsys-component:beanTable manager="#{dataBrowserController.table}"/>
             </ice:panelGroup>
         </ice:form>
     </ui:define>

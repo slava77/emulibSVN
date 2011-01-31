@@ -65,11 +65,22 @@
                 <ice:panelGroup id="headerMenu" styleClass="layoutBlock headerMenu">
                     <ice:menuBar style="font-size: 12px">
                         <ice:menuItem action="index" value="Home"/>
-                        <ice:menuItem action="monitor" value="Monitor"/>
+                        <ice:menuItem onclick="" value="Status">
+                            <ice:menuItem action="monitor" value="Monitor"/>
+                            <ice:menuItem action="reStatus" value="Rule Engine"/>
+                        </ice:menuItem>
                         <ice:menuItem onclick="" value="Browse">
                             <ice:menuItem action="browseData" value="Data"/>
                             <ice:menuItem action="browseMonitor" value="Monitor"/>
                             <ice:menuItem action="browseOntology" value="Ontology"/>
+                        </ice:menuItem>
+                        <ice:menuItem onclick="" value="Rule Engine">
+                            <ice:menuItem action="reActions" value="Actions"/>
+                            <ice:menuItem action="reConclusions" value="Conclusions"/>
+                            <ice:menuItem action="reRules" value="Rules"/>
+                        </ice:menuItem>
+                        <ice:menuItem onclick="" value="Test">
+                            <ice:menuItem action="testFactInput" value="Fact Input" title="Test Fact Collection input service"/>
                         </ice:menuItem>
                     </ice:menuBar>
                 </ice:panelGroup>
@@ -81,6 +92,9 @@
         </ice:panelGroup>
 
         <ice:panelGroup id="mainBlockContent" styleClass="ui-layout-center">
+            <ice:panelGroup styleClass="pageTitle">
+                <ui:insert name="pageTitle"/>
+            </ice:panelGroup>
             <ui:insert name="content"/>
         </ice:panelGroup>
 

@@ -15,75 +15,105 @@
     <ui:define name="menu">
     </ui:define>
 
+    <ui:define name="pageTitle">
+        Service Monitor
+    </ui:define>
+
     <ui:define name="content">
         <ice:form>
 
             <ice:panelGrid columns="1">
 
-                <ice:panelGrid columns="3">
+                <ice:panelGrid columns="4" cellpadding="10" columnClasses="columnTop">
 
                     <ice:panelGroup>
-
-                        <h2>Database</h2>
-
+                        <ice:panelGroup styleClass="sectionTitle">
+                            <h:outputText value="General"/>
+                        </ice:panelGroup>
                         <ice:panelGrid columns="2">
-                            <ice:outputLabel value="Status: "/>
+                            <ice:outputLabel value="OS:"/>
+                            <ice:outputText value="#{monitorController.sysMonitor.osName}"/>
+                            <ice:outputLabel value="Number of CPUs:"/>
+                            <ice:outputText value="#{monitorController.sysMonitor.numCpus}"/>
+                            <ice:outputLabel value="Up time:"/>
+                            <ice:outputText value="#{monitorController.sysMonitor.upTime}"/>
+                            <ice:outputLabel value="CPU usage:"/>
+                            <ice:outputText value="#{monitorController.sysMonitor.cpuUsage}"/>
+                            <ice:outputLabel value="RAM:"/>
+                            <ice:outputText value="#{monitorController.sysMonitor.ram}"/>
+                            <ice:outputLabel value="Swap:"/>
+                            <ice:outputText value="#{monitorController.sysMonitor.swap}"/>
+                            <ice:outputLabel value="Current PID:"/>
+                            <ice:outputText value="#{monitorController.sysMonitor.currentPid}"/>
+                        </ice:panelGrid>
+                    </ice:panelGroup>
+
+                    <ice:panelGroup>
+                        <ice:panelGroup styleClass="sectionTitle">
+                            <h:outputText value="Database"/>
+                        </ice:panelGroup>
+                        <ice:panelGrid columns="2">
+                            <ice:outputLabel value="Status:"/>
                             <ice:outputText value="OK" rendered="#{monitorController.databaseDate != null}" style="color: green"/>
                             <ice:outputText value="Not OK" rendered="#{monitorController.databaseDate == null}" style="color: red"/>
-                            <ice:outputLabel value="Sysdate: "/>
+                            <ice:outputLabel value="Sysdate:"/>
                             <ice:outputText value="#{monitorController.databaseDate}"/>
                         </ice:panelGrid>
-
                     </ice:panelGroup>
 
                     <ice:panelGroup>
-                        <h2>Queues</h2>
-
-                        <table border="0">
-                            <tr>
-                                <td>
+                        <ice:panelGroup styleClass="sectionTitle">
+                            <h:outputText value="Queues"/>
+                        </ice:panelGroup>
+                        <ice:dataTable value="#{monitorController.queues}" var="q">
+                            <ice:column>
+                                <f:facet name="header">
                                     <ice:outputLabel value="Name"/>
-                                </td><td>
+                                </f:facet>
+                                <ice:outputText value="#{q.name}"/>
+                            </ice:column>
+                            <ice:column>
+                                <f:facet name="header">
                                     <ice:outputLabel value="Size"/>
-                                </td><td>
+                                </f:facet>
+                                <ice:outputText value="#{q.size}"/>
+                            </ice:column>
+                            <ice:column>
+                                <f:facet name="header">
                                     <ice:outputLabel value="Message"/>
-                                </td>
-                            </tr>
-                            <ui:repeat value="#{monitorController.queues}" var="q">
-                                <tr>
-                                    <td>
-                                        <ice:outputText value="#{q.name}"/>
-                                    </td><td>
-                                        <ice:outputText value="#{q.size}"/>
-                                    </td><td>
-                                        <ice:commandLink value="flush" actionListener="#{q.flushMessageListener}"/>
-                                    </td>
-                                </tr>
-                            </ui:repeat>
-                        </table>
-
+                                </f:facet>
+                                <ice:commandLink value="flush" actionListener="#{q.flushMessageListener}"/>
+                            </ice:column>
+                        </ice:dataTable>
                     </ice:panelGroup>
-                    <ice:panelGroup>
-                        <h2>Chart</h2>
 
+                    <ice:panelGroup>
+                        <ice:panelGroup styleClass="sectionTitle">
+                            <h:outputText value="Chart"/>
+                        </ice:panelGroup>
                         <ice:outputLabel value="Last hours"/>
                         <ice:selectOneMenu value="#{monitorController.chartLastHours}" immediate="true" partialSubmit="true">
                             <f:selectItems value="#{monitorController.chartLastHoursItems}"/>
                         </ice:selectOneMenu>
-
-                        <br/>
-
-                        <ice:commandLink value="Refresh"
-                                         actionListener="#{monitorController.refreshChartImageListener}"/>
-                        <exsys-util:polling uid="refreshPoll" interval="10"
-                                          actionListener="#{monitorController.refreshChartImageListener}"/>
-
+                        <ice:panelGroup>
+                            <ice:commandLink value="Refresh"
+                                             actionListener="#{monitorController.refreshAllImagesListener}"/>
+                            <exsys-util:polling uid="refreshPoll" interval="10"
+                                              actionListener="#{monitorController.refreshAllImagesListener}"/>
+                        </ice:panelGroup>
                     </ice:panelGroup>
+
                 </ice:panelGrid>
 
                 <ice:panelGroup>
 
-                    <ice:graphicImage value="#{monitorController.chartImage}"/>
+                    <ice:graphicImage value="#{monitorController.systemImage}"/>
+
+                </ice:panelGroup>
+
+                <ice:panelGroup>
+
+                    <ice:graphicImage value="#{monitorController.statusImage}"/>
 
                 </ice:panelGroup>
 

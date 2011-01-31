@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:icecore="http://www.icefaces.org/icefaces/core"
+    xmlns:ace="http://www.icefaces.org/icefaces/components"
+    xmlns:ice="http://www.icesoft.com/icefaces/component"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    template="resources/main.xhtml"
+    xmlns:component="http://java.sun.com/jsf/composite/component">
+
+    <ui:define name="menu">
+        
+    </ui:define>
+
+    <ui:define name="pageTitle">
+        <h:outputText value="Rules"/>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <ice:form>
+
+            <component:beanTable manager="#{rules.table}"
+                                 skipColumnsByName="enabled,name">
+
+                <f:facet name="addMenu">
+                    <ice:panelGroup>
+                        <ice:commandLink value="Create New Rule" action="reEditRule" style="font-weight: bold">
+                            <f:setPropertyActionListener target="#{editRule.entity}" value="#{null}"/>
+                        </ice:commandLink>
+                    </ice:panelGroup>
+                </f:facet>
+
+                <ice:panelGroup rendered="#{column.name == 'enabled'}">
+                    <ice:selectBooleanCheckbox value="#{item.enabled}" readonly="true" disabled="true"/>
+                    <ice:commandLink value="flip" style="color: blue">
+                        <f:setPropertyActionListener value="#{!item.enabled}" target="#{item.enabled}"/>
+                        <f:setPropertyActionListener value="#{item}" target="#{editRule.toSave}"/>
+                        <f:setPropertyActionListener value="#{true}" target="#{cc.attrs.manager.table.refresh}"/>
+                    </ice:commandLink>
+                </ice:panelGroup>
+
+                <ice:panelGrid columns="2" rendered="#{column.name == 'name'}">
+                    <ice:commandLink value="#{item.name}" action="reEditRule">
+                        <f:setPropertyActionListener target="#{editRule.entity}" value="#{item}"/>
+                    </ice:commandLink>
+                    <ice:panelGroup rendered="#{!item.enabled}">
+                        <ice:commandLink value=" (delete)" type="submit" style="color: blue">
+                            <f:setPropertyActionListener value="#{item}" target="#{editRule.toDelete}"/>
+                            <f:setPropertyActionListener value="#{true}" target="#{cc.attrs.manager.table.refresh}"/>
+                        </ice:commandLink>
+                    </ice:panelGroup>
+                </ice:panelGrid>
+
+            </component:beanTable>
+
+        </ice:form>
+    </ui:define>
+
+</ui:composition>

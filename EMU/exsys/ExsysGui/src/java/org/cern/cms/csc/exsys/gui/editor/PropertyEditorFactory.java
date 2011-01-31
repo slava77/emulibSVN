@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.cern.cms.csc.dw.dao.GenericDaoLocal;
-import org.cern.cms.csc.dw.dao.GenericDaoLocal;
 import org.cern.cms.csc.dw.log.Logger;
 import org.cern.cms.csc.dw.log.SimpleLogger;
 import org.cern.cms.csc.dw.model.base.EntityBase;

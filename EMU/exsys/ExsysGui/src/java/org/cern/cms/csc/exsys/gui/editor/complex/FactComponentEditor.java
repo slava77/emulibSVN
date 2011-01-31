@@ -32,7 +32,6 @@ public class FactComponentEditor extends ComponentEditor {
         }
     }
 
-    @Override
     public Collection<GComponentClass> getComponentClassLimit() {
         return limitComponentClasses;
     }

@@ -47,3 +47,115 @@ tr.headerRow01, tr.headerRow02 {
 .iceSelInpTxtTxt {
     margin: 0px;
 }
+
+.pageTitle {
+    background-color: #BBBBBB;
+    color: white;
+    font-size: 18px;
+    width: 100%;
+    font-weight: bold;
+    padding: 5px;
+}
+
+.sectionTitle {
+    background-color: #BBBBBB;
+    color: white;
+    font-size: 14px;
+    width: 100%;
+    font-weight: bold;
+    padding: 2px;
+    margin-top: 10px;
+}
+
+.errorError {
+    color: #FF0000;
+}
+
+span.inputLabel {
+    font-weight: normal;
+}
+
+span.requiredFieldIndicator {
+}
+
+.editorTable {
+    width: 800px;
+    /*border-width: thin;*/
+    /*border-style: solid;*/
+}
+
+.simpleEditor {
+    width: 600px;
+}
+
+.note {
+    font-size: smaller;
+}
+
+td.editorTableLabelCol {
+    vertical-align: top;
+    text-align: right;
+    width: 200px;
+    padding-top: 5px;
+}
+
+td.editorTableInputCol {
+    width: 600px;
+}
+
+.editorTableNotRequired {
+
+}
+
+.editorTableRequired {
+    text-decoration: underline;
+}
+
+.editorTableButtonPad {
+    margin-top: 5px;
+    padding-top: 10px;
+    border-top: #000 solid 1px;
+}
+
+.editorTableButtonPad input {
+    margin: 5px;
+}
+
+.beanTableBackButton {
+    font-weight: bold;
+    border: #FF0000 solid 1px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    margin-right: 5px;
+}
+
+.beanTableFilterIndicator {
+    background-color: lightpink;
+    font-size: 11px;
+    color: white;
+    vertical-align: middle;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.beanTableFilterIndicator a {
+    padding-right: 10px;
+}
+
+.beanTableFilterIndicator span {
+    padding-right: 10px;
+}
+
+.tableNameLabel {
+    font-weight: bold;
+    font-size: 15px;
+    margin-right: 5px;
+}
+
+td.columnTop {
+    vertical-align: top;
+}

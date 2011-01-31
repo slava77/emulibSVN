@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <cc:interface>
+        <cc:attribute name="propEditor" required="true"/>
+        <cc:attribute name="manager" required="true"/>
+    </cc:interface>
+
+    <cc:implementation>
+
+        <ice:panelGrid columns="1" style="width: 100%">
+
+            <ice:panelGroup>
+                <ice:inputText
+                    id="input"
+                    value="#{cc.attrs.propEditor.value.entityTitle}"
+                    required="#{cc.attrs.propEditor.metadata.isMandatory}"
+                    requiredMessage="This field is mandatory - value cannot be blank"
+                    validator="#{cc.attrs.propEditor.validate}"
+                    readonly="true"
+                    styleClass="simpleEditor"
+                    partialSubmit="true"/>
+                <ice:commandButton type="submit" value="Edit"
+                                   rendered="#{!cc.attrs.propEditor.metadata.isImmutableReference}"
+                                   immediate="true">
+                    <f:setPropertyActionListener target="#{cc.attrs.manager.editor}" value="#{cc.attrs.propEditor}"/>
+                </ice:commandButton>
+            </ice:panelGroup>
+
+            <ice:message for="input" styleClass="error"/>
+
+        </ice:panelGrid>
+
+    </cc:implementation>
+</html>

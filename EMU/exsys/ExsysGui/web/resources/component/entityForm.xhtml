@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:editor="http://java.sun.com/jsf/composite/component/editor"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <cc:interface>
+        <cc:attribute name="editor" required="true" shortDescription="Entity Editor"/>
+        <cc:attribute name="manager" required="true" shortDescription="Entity Manager"/>
+        <cc:facet name="buttons" required="false"/>
+    </cc:interface>
+
+    <cc:implementation>
+
+        <ice:panelGroup style="margin: 10px">
+
+            <ice:panelGroup styleClass="sectionTitle"
+                            rendered="#{cc.attrs.editor.parentEditor != null}">
+                <h:outputText value="#{cc.attrs.editor.metadata.title}"/>
+            </ice:panelGroup>
+
+            <ice:panelGrid columns="2"
+                           styleClass="editorTable" columnClasses="editorTableLabelCol editorTableInputCol">
+                <c:forEach var="propEditor" items="#{cc.attrs.editor.propertyEditors}" varStatus="status">
+
+                    <ice:outputLabel>
+                        <ice:outputText value="#{propEditor.metadata.title}:" styleClass="editorTableNotRequired"
+                                        title="Value is optional"
+                                        rendered="#{propEditor.metadata != null and !propEditor.metadata.isMandatory}"/>
+                        <ice:outputText value="#{propEditor.metadata.title}:" styleClass="editorTableRequired"
+                                        title="Value is mandatory"
+                                        rendered="#{propEditor.metadata != null and propEditor.metadata.isMandatory}"/>
+                    </ice:outputLabel>
+
+                    <c:choose>
+                        <c:when test="#{propEditor.inputType.name == 'DEFAULT'}">
+                            <editor:editorDefault propEditor="#{propEditor}"/>
+                        </c:when>
+                        <c:when test="#{propEditor.inputType == 'TEXT_AREA'}">
+                            <editor:editorTextArea propEditor="#{propEditor}"/>
+                        </c:when>
+                        <c:when test="#{propEditor.inputType == 'CHECKBOX'}">
+                            <editor:editorCheckBox propEditor="#{propEditor}"/>
+                        </c:when>
+                        <c:when test="#{propEditor.inputType == 'DATE_PICKER'}">
+                            <editor:editorDatePicker propEditor="#{propEditor}"/>
+                        </c:when>
+                        <c:when test="#{propEditor.inputType == 'SELECT_ONE_MENU'}">
+                            <editor:editorSelectOneMenu propEditor="#{propEditor}"
+                                                        manager="#{cc.attrs.manager}"/>
+                        </c:when>
+                        <c:when test="#{propEditor.inputType == 'SELECT_MANY_LIST'}">
+                            <editor:editorSelectManyList propEditor="#{propEditor}"/>
+                        </c:when>
+                        <c:when test="#{propEditor.inputType == 'ONE_TO_ONE'}">
+                            <editor:editorOneToOne propEditor="#{propEditor}"
+                                                   manager="#{cc.attrs.manager}"/>
+                        </c:when>
+                        <c:when test="#{propEditor.inputType == 'COMPONENT'}">
+                            <editor:editorComponent propEditor="#{propEditor}"/>
+                        </c:when>
+                    </c:choose>
+
+                    <ice:panelGroup rendered="#{propEditor.metadata.description != null}"/>
+                    <ice:outputText value="#{propEditor.metadata.description}"
+                                    rendered="#{propEditor.metadata.description != null}" styleClass="note"/>
+
+                </c:forEach>
+
+                <ice:panelGroup/>
+                
+                <ice:panelGroup styleClass="editorTableButtonPad">
+                    <ice:commandButton value="Discard new value" action="#{cc.attrs.manager.discardAndGoBack}"
+                                       rendered="#{(cc.attrs.editor.inputType == 'SELECT_ONE_MENU') and (cc.attrs.editor.valueNew)}"
+                                       immediate="true"/>
+
+                    <ice:commandButton value="Go back" action="#{cc.attrs.manager.goBack}"
+                                       rendered="#{cc.attrs.editor.parentEditor != null}"/>
+
+                    <cc:renderFacet name="buttons" required="false"/>
+                </ice:panelGroup>
+
+            </ice:panelGrid>
+
+        </ice:panelGroup>
+
+    </cc:implementation>
+</html>

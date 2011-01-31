@@ -140,17 +140,17 @@ public abstract class FilterConverter implements Converter {
             return new FilterBigIntegerConverter();
 
         } else
-        if (type.equals(Long.class)) {
+        if (type.equals(Long.class) || (type.isPrimitive() && type.getSimpleName().equals("long"))) {
 
             return new FilterLongConverter();
 
         } else
-        if (type.equals(Integer.class)) {
+        if (type.equals(Integer.class) || (type.isPrimitive() && type.getSimpleName().equals("int"))) {
 
             return new FilterIntegerConverter();
 
         } else
-        if (type.equals(Boolean.class)) {
+        if (type.equals(Boolean.class) || (type.isPrimitive() && type.getSimpleName().equals("boolean"))) {
 
             return new FilterBooleanConverter();
 

@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:component="http://java.sun.com/jsf/composite/component">
+
+    <cc:interface>
+        <cc:attribute name="propEditor" required="true"/>
+    </cc:interface>
+
+    <cc:implementation>
+
+        <ice:panelGrid columns="1" style="width: 100%">
+
+            <component:componentSelector id="input"
+                                         selector="#{propEditor.componentSelector}"/>
+
+            <ice:message for="input" styleClass="error"/>
+
+        </ice:panelGrid>
+    </cc:implementation>
+</html>

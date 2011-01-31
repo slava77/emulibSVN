@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:icecore="http://www.icefaces.org/icefaces/core"
+    xmlns:ace="http://www.icefaces.org/icefaces/components"
+    xmlns:ice="http://www.icesoft.com/icefaces/component"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    template="resources/main.xhtml">
+
+    <ui:define name="menu">
+            
+    </ui:define>
+
+    <ui:define name="pageTitle">
+        Rule Engine Status
+    </ui:define>
+
+    <ui:define name="content">
+
+        <ice:form id="linksForm">
+
+            <ice:panelGrid columns="1" width="100%">
+
+                <h:outputText value="Number of facts processed since last restart: #{ruleEngineRuntime.numEventsEvaluated}"/>
+
+                <ice:commandButton value="Reconfigure Rule Engine" action="#{ruleEngineRuntime.reconfigure}"/>
+
+                <ice:panelGroup styleClass="sectionTitle">
+                    <h:outputText value="Active Rules (#{ruleEngineRuntime.activeRulesCount})"/>
+                </ice:panelGroup>
+
+                <ice:dataTable id="activeRulesTable" var="rule" width="100%"
+                               value="#{ruleEngineRuntime.activeRules}" rows="10" varStatus="rowInfo">
+                    <f:facet name="header">
+                        <ice:columnGroup>
+                            <ice:headerRow>
+                                <ice:column>
+                                    <ice:outputText value="#"/>
+                                </ice:column>
+                                <ice:column>
+                                    <ice:outputText value="Name"/>
+                                </ice:column>
+                                <ice:column>
+                                    <ice:outputText value="Version"/>
+                                </ice:column>
+                                <ice:column>
+                                    <ice:outputText value="Description"/>
+                                </ice:column>
+                            </ice:headerRow>
+                        </ice:columnGroup>
+                    </f:facet>
+
+                    <ice:column>
+                        <ice:outputText value="#{rowInfo.index + 1}"/>
+                    </ice:column>
+                    <ice:column>
+                        <ice:outputText value="#{rule.name}"/>
+                    </ice:column>
+                    <ice:column>
+                        <ice:outputText value="#{rule.version}"/>
+                    </ice:column>
+                    <ice:column>
+                        <ice:outputText value="#{rule.description}"/>
+                    </ice:column>
+                </ice:dataTable>
+
+            </ice:panelGrid>
+
+        </ice:form>
+    </ui:define>
+
+</ui:composition>

@@ -25,6 +25,13 @@
 
     </ui:define>
 
+    <ui:define name="pageTitle">
+        <ice:outputFormat value="Component {0} (class: {1})">
+            <f:param value="#{componentClassTreeController.componentSelector.component.name}" />
+            <f:param value="#{componentClassTreeController.componentSelector.component.type.type.value}" />
+        </ice:outputFormat>
+    </ui:define>
+
     <ui:define name="content">
 
         <ice:form>
@@ -33,13 +40,6 @@
                             rendered="#{componentClassTreeController.componentSelector.component == null}"/>
 
             <ice:panelGroup rendered="#{componentClassTreeController.componentSelector.component != null}">
-
-                <h3>
-                    <ice:outputFormat value="Component {0} (class: {1})">
-                        <f:param value="#{componentClassTreeController.componentSelector.component.name}" />
-                        <f:param value="#{componentClassTreeController.componentSelector.component.type.type.value}" />
-                    </ice:outputFormat>
-                </h3>
 
                 <ice:panelGrid columns="2">
 

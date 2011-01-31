@@ -29,6 +29,12 @@
 
     </ui:define>
 
+    <ui:define name="pageTitle">
+        <ice:outputFormat value="Component Class: {0}">
+            <f:param value="#{componentClassTreeController.selectedComponentClass.type.value}"/>
+        </ice:outputFormat>
+    </ui:define>
+
     <ui:define name="content">
 
         <ice:form>
@@ -41,12 +47,6 @@
             </ice:panelGrid>
 
             <ice:panelGroup rendered="#{componentClassTreeController.selectedComponentClass != null}">
-
-                <h2>
-                    <ice:outputFormat value="Component Class: {0}">
-                        <f:param value="#{componentClassTreeController.selectedComponentClass.type.value}"/>
-                    </ice:outputFormat>
-                </h2>
 
                 <ice:panelGrid columns="2">
 

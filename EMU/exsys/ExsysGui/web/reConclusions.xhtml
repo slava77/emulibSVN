@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:icecore="http://www.icefaces.org/icefaces/core"
+    xmlns:ace="http://www.icefaces.org/icefaces/components"
+    xmlns:ice="http://www.icesoft.com/icefaces/component"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    template="resources/main.xhtml"
+    xmlns:component="http://java.sun.com/jsf/composite/component">
+
+    <ui:define name="menu">
+            
+    </ui:define>
+
+    <ui:define name="pageTitle">
+        Conclusions
+    </ui:define>
+
+    <ui:define name="content">
+        <ice:form id="conclusionsForm">
+            <ice:panelGrid columns="2">
+                Display Mode:
+                <ice:selectOneRadio value="#{conclusions.displayMode}" partialSubmit="true" immediate="true">
+                    <f:selectItems value="#{conclusions.allDisplayModes}"/>
+                </ice:selectOneRadio>
+            </ice:panelGrid>
+
+            <component:beanTable manager="#{conclusions.table}"/>
+
+            <!--ice:column>
+                <ice:commandButton value="Acknowledge" type="submit" partialSubmit="true"
+                                   rendered="#{conclusions.displayMode == 'CURRENT'}"
+                                   action="#{acknowledgeConclusion.doAcknowledge}">
+                    <f:setPropertyActionListener target="#{acknowledgeConclusion.concl}" value="#{concl}"/>
+                </ice:commandButton>
+            </ice:column-->
+
+        </ice:form>
+    </ui:define>
+
+</ui:composition>

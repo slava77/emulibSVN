@@ -1,11 +1,9 @@
 package org.cern.cms.csc.exsys.gui.component.table;
 
-import org.cern.cms.csc.exsys.gui.component.BeanTable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
-import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.convert.Converter;
@@ -14,7 +12,6 @@ import javax.faces.convert.NumberConverter;
 import javax.faces.event.ActionEvent;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.cern.cms.csc.dw.dao.table.BeanTableColumnIf;
-import org.cern.cms.csc.dw.dao.table.BeanTableDaoIf;
 import org.cern.cms.csc.dw.dao.table.BeanTableFilterIf;
 import org.cern.cms.csc.dw.metadata.PropertyMd;
 import org.cern.cms.csc.dw.model.base.EntityBase;
@@ -23,17 +20,10 @@ import org.cern.cms.csc.exsys.gui.component.table.converter.FilterConverter;
 public class BeanTableColumn implements BeanTableColumnIf {
 
     private static final Logger logger = Logger.getLogger(BeanTableColumn.class.getName());
-    private static final int FILTER_TABLE_PAGE_SIZE = 20;
-    private static final int FILTER_TABLE_PAGE_FAST_STEP = 5;
-    private static final int[] FILTER_TABLE_PAGE_SIZES = {5, 10, 15, 20, 25, 30};
-    private static final String DEFAULT_DATE_PATTERN = "EEE dd-MM-yy HH:mm:ss";
-    public static final TimeZone EST_TIME_ZONE = TimeZone.getTimeZone("Europe/Zurich");
 
     private final BeanTable table;
     private final PropertyMd propertyMd;
     private String name;
-    private boolean ascending = true;
-    private Integer width = null;
 
     private final boolean entityType;
     private final boolean listType;
@@ -58,9 +48,12 @@ public class BeanTableColumn implements BeanTableColumnIf {
             this.listType = false;
         } else {
             if (propertyMd.getType().isArray() || Collection.class.isAssignableFrom(propertyMd.getType())) {
+
                 this.entityType = false;
                 this.listType = true;
+
             } else {
+
                 this.entityType = false;
                 this.listType = false;
                 this.filterConverter = FilterConverter.getFilterConverter(propertyMd.getType());
@@ -68,7 +61,10 @@ public class BeanTableColumn implements BeanTableColumnIf {
                 if (propertyMd.getType().equals(BigDecimal.class) ||
                     propertyMd.getType().equals(BigInteger.class) ||
                     propertyMd.getType().equals(Integer.class) ||
-                    propertyMd.getType().equals(Long.class)) {
+                    propertyMd.getType().equals(Long.class) ||
+                    (propertyMd.getType().isPrimitive() &&
+                        (propertyMd.getType().getSimpleName().equals("int") ||
+                         propertyMd.getType().getSimpleName().equals("double")))) {
 
                     this.converter = new NumberConverter();
 
@@ -76,8 +72,8 @@ public class BeanTableColumn implements BeanTableColumnIf {
                 if (propertyMd.getType().equals(Date.class)) {
 
                     this.converter = new DateTimeConverter();
-                    ((DateTimeConverter) converter).setTimeZone(EST_TIME_ZONE);
-                    ((DateTimeConverter) converter).setPattern(DEFAULT_DATE_PATTERN);
+                    ((DateTimeConverter) converter).setTimeZone(table.getProperties().getDefaultTimeZone());
+                    ((DateTimeConverter) converter).setPattern(table.getProperties().getDefaultTimeFormat());
 
                 }
             }
@@ -91,11 +87,11 @@ public class BeanTableColumn implements BeanTableColumnIf {
 
     @Override
     public boolean isAscending() {
-        return ascending;
+        return table.getProperties().getColumnSortAsc(name);
     }
 
     public void setAscending(boolean ascending) {
-        this.ascending = ascending;
+        table.getProperties().setColumnSortAsc(name, ascending);
     }
 
     @Override
@@ -108,11 +104,11 @@ public class BeanTableColumn implements BeanTableColumnIf {
     }
 
     public Integer getWidth() {
-        return width;
+        return table.getProperties().getColumnWidth(name);
     }
 
     public void setWidth(Integer width) {
-        this.width = width;
+        table.getProperties().setColumnWidth(name, width);
     }
 
     public FilterConverter getFilterConverter() {
@@ -164,15 +160,15 @@ public class BeanTableColumn implements BeanTableColumnIf {
 
 
     public void widthUpListener(ActionEvent ev) {
-        if (this.width != null) {
-            changeWidth(table.getWidthChangeStep());
+        if (this.getWidth() != null) {
+            changeWidth(table.getProperties().getColumnWidthStep());
         }
     }
 
     public void widthDownListener(ActionEvent ev) {
-        if (this.width != null) {
-            if (this.width > 0) {
-                changeWidth((-1) * table.getWidthChangeStep());
+        if (this.getWidth() != null) {
+            if (this.getWidth() > 0) {
+                changeWidth((-1) * table.getProperties().getColumnWidthStep());
             }
         }
     }
@@ -180,9 +176,9 @@ public class BeanTableColumn implements BeanTableColumnIf {
     private void changeWidth(int step) {
         if (table.getSelectedColumns().getTarget().size() > 1) {
 
-            this.width += step;
-            if (width <= 0) {
-                width = 0;
+            setWidth(getWidth() + step);
+            if (getWidth() <= 0) {
+                setWidth(0);
             }
 
             BeanTableColumn prev = null;
@@ -207,8 +203,11 @@ public class BeanTableColumn implements BeanTableColumnIf {
     }
 
     public void sortListener(ActionEvent ev) {
+
         if (isSorting() && table.getSortingColumns().getTarget().size() == 1) {
-                this.ascending = !this.ascending;
+            
+            setAscending(!isAscending());
+
         } else {
 
             // All to source
@@ -218,31 +217,30 @@ public class BeanTableColumn implements BeanTableColumnIf {
             // This to target
             table.getSortingColumns().getSource().remove(this);
             table.getSortingColumns().getTarget().add(this);
+
         }
+
+        table.sortingChangeListener(null);
         table.refreshListener(ev);
+
     }
 
     public void filterTableListener(ActionEvent ev) throws Exception {
         if (isEntityType()) {
             if (filter == null) {
-                BeanTable bt = new BeanTable(getTitle(),
-                                            propertyMd.getType(),
-                                            true,
-                                            FILTER_TABLE_PAGE_SIZE,
-                                            FILTER_TABLE_PAGE_FAST_STEP,
-                                            FILTER_TABLE_PAGE_SIZES) {
-                        @Override
-                        public BeanTableDaoIf getBeanTableDao() {
-                            return table.getBeanTableDao();
-                        }
-                };
-                BeanTableFilterItem fi = new BeanTableProjectionFilterItem(bt);
+                BeanTablePack btp = new BeanTablePack(getName(), getTitle(), table.getPack().getManager(), propertyMd.getType());
+                BeanTableFilterItem fi = new BeanTableProjectionFilterItem(btp);
                 this.filter = new BeanTableFilter();
                 this.filter.getItems().add(fi);
             }
             BeanTableProjectionFilterItem fi = (BeanTableProjectionFilterItem) getFilter().getItems().get(0);
-            table.setFilterTable(fi.getBeanTable());
+            table.getPack().getManager().pushTable((BeanTablePack) fi.getTablePack());
         }
+    }
+
+    @Override
+    public Class getType() {
+        return propertyMd.getType();
     }
 
 }

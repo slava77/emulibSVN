@@ -10,6 +10,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 import javax.jms.Connection;
@@ -28,14 +29,17 @@ import org.cern.cms.csc.dw.log.Logger;
 import org.cern.cms.csc.dw.log.SimpleLogger;
 import org.cern.cms.csc.dw.model.monitor.MonitorFactCollectionLog;
 import org.cern.cms.csc.dw.model.monitor.MonitorQueueStatus;
+import org.cern.cms.csc.dw.model.monitor.MonitorSystem;
+import org.cern.cms.csc.dw.monitor.SysMonitor;
 import org.cern.cms.csc.dw.util.ServiceLocator;
-import org.cern.cms.csc.exsys.gui.component.BeanTable;
+import org.cern.cms.csc.exsys.gui.component.BeanTableManager;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.jfree.chart.renderer.xy.XYDotRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
@@ -50,14 +54,16 @@ public class MonitorController extends BrowserController {
 
     private ServiceLocator locator = new ServiceLocator();
 
-    private static final int [] PAGE_SIZES = {5, 10, 15, 20, 25};
-
     @EJB
     private MonitorDaoLocal monitorDao;
 
+    private SysMonitor sysMonitor = new SysMonitor();
+
     private List<QueueItem> queues = new ArrayList<QueueItem>();
     private Integer chartLastHours = 8;
-    private byte[] chartImage = null;
+
+    private byte[] statusImage = null;
+    private byte[] systemImage = null;
 
     public MonitorController() throws NamingException  {
         super(ENTITIES_RESOURCE);
@@ -78,6 +84,10 @@ public class MonitorController extends BrowserController {
 
     }
 
+    public SysMonitor getSysMonitor() {
+        return sysMonitor;
+    }
+
     public Collection<QueueItem> getQueues() {
         return queues;
     }
@@ -92,7 +102,8 @@ public class MonitorController extends BrowserController {
 
     public void setChartLastHours(Integer chartLastHours) {
         this.chartLastHours = chartLastHours;
-        refreshChartImageListener(null);
+        refreshStatusImage();
+        refreshSystemImage();
     }
 
     public List<SelectItem> getChartLastHoursItems() {
@@ -103,14 +114,26 @@ public class MonitorController extends BrowserController {
         return items;
     }
 
-    public byte[] getChartImage() {
-        if (chartImage == null) {
-            refreshChartImageListener(null);
+    public byte[] getStatusImage() {
+        if (statusImage == null) {
+            refreshStatusImage();
         }
-        return chartImage;
+        return statusImage;
     }
 
-    public void refreshChartImageListener(ActionEvent ev) {
+    public byte[] getSystemImage() {
+        if (systemImage == null) {
+            refreshSystemImage();
+        }
+        return systemImage;
+    }
+
+    public void refreshAllImagesListener(ActionEvent ev) {
+        refreshSystemImage();
+        refreshStatusImage();
+    }
+
+    public void refreshStatusImage() {
 
         TimeSeriesCollection queueSizes = new TimeSeriesCollection();
         Integer maxValue = 0;
@@ -185,20 +208,78 @@ public class MonitorController extends BrowserController {
         plot.setRenderer(1, renderer1);
 
         try {
-            chartImage = ChartUtilities.encodeAsPNG(chart.createBufferedImage(1000, 600));
+            statusImage = ChartUtilities.encodeAsPNG(chart.createBufferedImage(1000, 400));
         } catch (IOException ex) {
-            chartImage = null;
-            logger.error("Retrieving chart image", ex);
+            statusImage = null;
+            logger.error("Retrieving status chart image", ex);
+        }
+
+    }
+
+    private void refreshSystemImage() {
+
+        TimeSeriesCollection load = new TimeSeriesCollection();
+
+        TimeSeries cpu = new TimeSeries("CPU load");
+        load.addSeries(cpu);
+        TimeSeries ram = new TimeSeries("RAM");
+        load.addSeries(ram);
+        TimeSeries swap = new TimeSeries("Swap");
+        load.addSeries(swap);
+
+        for (MonitorSystem ms: monitorDao.getMonitorObjects(MonitorSystem.class, chartLastHours)) {
+            cpu.add(new Second(ms.getTime()), ms.getCpu());
+            ram.add(new Second(ms.getTime()), ms.getRam());
+            swap.add(new Second(ms.getTime()), ms.getSwap());
+        }
+
+        JFreeChart chart = ChartFactory.createTimeSeriesChart(
+                "CPU load and memory",
+                "Time",
+                "%",
+                load,
+                true, true, false);
+
+        XYPlot plot = chart.getXYPlot();
+
+        {
+            plot.getRangeAxis(0).setLowerBound(0.0);
+            plot.getRangeAxis(0).setUpperBound(1.0);
+        }
+
+        {
+            Date from = new Date();
+            from.setTime(from.getTime() - chartLastHours * 60 * 60 * 1000);
+            plot.getDomainAxis(0).setLowerBound(new Second(from).getFirstMillisecond());
+            plot.getDomainAxis(0).setUpperBound(new Second(new Date()).getLastMillisecond());
+        }
+
+        XYLineAndShapeRenderer renderer0 = new XYLineAndShapeRenderer(true, false);
+        plot.setRenderer(0, renderer0);
+        XYLineAndShapeRenderer renderer1 = new XYLineAndShapeRenderer(true, false);
+        plot.setRenderer(1, renderer1);
+        XYLineAndShapeRenderer renderer2 = new XYLineAndShapeRenderer(true, false);
+        plot.setRenderer(2, renderer2);
+
+        try {
+            systemImage = ChartUtilities.encodeAsPNG(chart.createBufferedImage(1000, 400));
+        } catch (IOException ex) {
+            systemImage = null;
+            logger.error("Retrieving system chart image", ex);
         }
 
     }
 
     @Override
-    protected BeanTable createTable(Class forClass) throws Exception {
-        return new BeanTable(forClass.getSimpleName(), forClass, 25, 5, PAGE_SIZES) {
+    protected BeanTableManager createTable(Class forClass) throws Exception {
+        return new BeanTableManager(forClass.getSimpleName(), forClass) {
             @Override
             public BeanTableDaoIf getBeanTableDao() {
                 return monitorDao;
+            }
+            @Override
+            public FacesContext getContext() {
+                return FacesContext.getCurrentInstance();
             }
         };
     }

@@ -2,49 +2,40 @@ package org.cern.cms.csc.exsys.gui.component.table;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.model.DataModel;
-import javax.faces.model.SelectItem;
 import org.cern.cms.csc.dw.dao.table.BeanTableIf;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 
 public abstract class BeanTableControls implements BeanTableIf {
 
-    private int pageSize;
+    private BeanTableProperties prop;
+
     private int pageIndex = 1;
-    private final int pageFastStep;
-    private final SelectItem[] pageSizeItems;
-    private boolean displayFilter = false;
-    private boolean showSelectColumns = false;
 
     public abstract DataModel<EntityBase> getData();
     public abstract Long getDataCount();
     public abstract int getDataSize();
     protected abstract void refresh();
 
-    public BeanTableControls(int pageSize, int pageFastStep, int[] pageSizes) {
-        this.pageSize = pageSize;
-        this.pageFastStep = pageFastStep;
-        this.pageSizeItems = new SelectItem[pageSizes.length];
-        for (int i = 0; i < pageSizes.length; i++) {
-            this.pageSizeItems[i] = new SelectItem(pageSizes[i], String.valueOf(pageSizes[i]));
-        }
+    public BeanTableControls(BeanTableProperties prop) {
+        this.prop = prop;
+    }
+
+    public BeanTableProperties getProperties() {
+        return prop;
     }
 
     /**
      * Paging
      */
 
-    public SelectItem[] getPageSizeItems() {
-        return pageSizeItems;
-    }
-
     @Override
     public int getPageSize() {
-        return pageSize;
+        return prop.getPageSize();
     }
 
     public void setPageSize(int pageSize) {
-        if (this.pageSize != pageSize) {
-            this.pageSize = pageSize;
+        if (getPageSize() != pageSize) {
+            prop.setPageSize(pageSize);
             setPageIndex(1);
         }
     }
@@ -89,8 +80,8 @@ public abstract class BeanTableControls implements BeanTableIf {
 
     public void fastforwardPageListener(ActionEvent e) {
         if (getPageIndex() < getPageCount()) {
-            if (getPageIndex() + pageFastStep < getPageCount()) {
-                setPageIndex(getPageIndex() + pageFastStep);
+            if (getPageIndex() + prop.getPageFastStep() < getPageCount()) {
+                setPageIndex(getPageIndex() + prop.getPageFastStep());
             } else {
                 setPageIndex(getPageCount());
             }
@@ -101,8 +92,8 @@ public abstract class BeanTableControls implements BeanTableIf {
 
     public void fastbackwardPageListener(ActionEvent e) {
         if (getPageIndex() > 1) {
-            if (getPageIndex() - pageFastStep > 1) {
-                setPageIndex(getPageIndex() - pageFastStep);
+            if (getPageIndex() - prop.getPageFastStep() > 1) {
+                setPageIndex(getPageIndex() - prop.getPageFastStep());
             } else {
                 setPageIndex(1);
             }
@@ -132,6 +123,9 @@ public abstract class BeanTableControls implements BeanTableIf {
      * Flags
      */
 
+    private boolean displayFilter = false;
+    private boolean displayColumns = false;
+
     public boolean isDisplayFilter() {
         return displayFilter;
     }
@@ -140,12 +134,12 @@ public abstract class BeanTableControls implements BeanTableIf {
         this.displayFilter = displayFilter;
     }
 
-    public boolean isShowSelectColumns() {
-        return showSelectColumns;
+    public boolean isDisplayColumns() {
+        return displayColumns;
     }
 
-    public void setShowSelectColumns(boolean showSelectColumns) {
-        this.showSelectColumns = showSelectColumns;
+    public void setDisplayColumns(boolean displayColumns) {
+        this.displayColumns = displayColumns;
     }
 
 }

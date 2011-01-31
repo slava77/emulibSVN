@@ -16,6 +16,7 @@ import org.cern.cms.csc.dw.log.SimpleLogger;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.metadata.PropertyMd;
 import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
+import org.cern.cms.csc.exsys.gui.component.OntologyComponentSelector;
 
 /**
  * Objects of this class are used in GUI to setup an input for a specific entity property and actually set and get the value of that property.
@@ -26,6 +27,7 @@ public abstract class Editor {
     protected static Logger logger = SimpleLogger.getLogger(Editor.class);
 
     public enum InputType {
+
         DEFAULT,
         TEXT_AREA,
         DATE_PICKER,
@@ -33,7 +35,12 @@ public abstract class Editor {
         SELECT_ONE_MENU,
         SELECT_MANY_LIST,
         ONE_TO_ONE,
-        COMPONENT
+        COMPONENT;
+
+        public String getName() {
+            return this.name();
+        }
+
     }
 
     /** Parent editor that this editor belongs to. */
@@ -161,5 +168,9 @@ public abstract class Editor {
      * @return JSF converter for this property type.
      */
     protected abstract Converter createConverter();
+
+    public OntologyComponentSelector getComponentSelector() {
+        return null;
+    }
 
 }

@@ -25,6 +25,10 @@
         </ice:form>
     </ui:define>
 
+    <ui:define name="pageTitle">
+        Monitor Data Browser
+    </ui:define>
+
     <ui:define name="content">
         <ice:form>
 
@@ -32,7 +36,7 @@
                 <ice:outputText value="Table not selected."/>
             </ice:panelGroup>
             <ice:panelGroup rendered="#{monitorController.table != null}">
-                <exsys-component:beanTable tableId="monitorTable" table="#{monitorController.table}"/>
+                <exsys-component:beanTable manager="#{monitorController.table}"/>
             </ice:panelGroup>
 
         </ice:form>

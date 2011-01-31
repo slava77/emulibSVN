@@ -6,6 +6,14 @@
     xmlns="http://java.sun.com/xml/ns/javaee" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+    <converter>
+        <converter-id>NewLineConverter</converter-id>
+        <converter-class>org.cern.cms.csc.exsys.gui.util.NewLineConverter</converter-class>
+    </converter>
+    <converter>
+        <converter-id>ClassConverter</converter-id>
+        <converter-class>org.cern.cms.csc.exsys.gui.util.ClassConverter</converter-class>
+    </converter>
     <navigation-rule>
         <navigation-case>
             <from-outcome>index</from-outcome>
@@ -35,6 +43,41 @@
         <navigation-case>
             <from-outcome>browseMonitor</from-outcome>
             <to-view-id>/browseMonitor.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>reStatus</from-outcome>
+            <to-view-id>/reStatus.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>reActions</from-outcome>
+            <to-view-id>/reActions.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>reEditAction</from-outcome>
+            <to-view-id>/reEditAction.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>reConclusions</from-outcome>
+            <to-view-id>/reConclusions.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>reRules</from-outcome>
+            <to-view-id>/reRules.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>reEditRule</from-outcome>
+            <to-view-id>/reEditRule.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>testFactInput</from-outcome>
+            <to-view-id>/testFactInput.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>
