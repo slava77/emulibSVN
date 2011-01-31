@@ -50,6 +50,7 @@ main()
   emuLvCRB_setDbConfig();
 
 // Send a final info message
+  DebugTN("DONE post-installation of CSC LV CRB component");
   CMSfwInstallUtils_endPostInstall("done for CMS_CSCfw_LV_CRB");
 
 }
