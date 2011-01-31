@@ -1,6 +1,6 @@
 <component>
 <name>CMS_CSCfw_RdbArchive</name>
-<version>1.0.11</version>
+<version>1.0.13</version>
 <date>2011/01/14</date>
 <postInstall>./scripts/CMS_CSCfw_RdbArchive/CMS_CSCfw_RdbArchive.postInstall</postInstall>
 <file>./panels/CMS_CSCfw_RdbArchive/CMS_CSCfw_RdbArchiveConfig.pnl</file>
