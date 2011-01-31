@@ -112,7 +112,7 @@ main()
               emumaj_debug("Supervisor started the installation - disabling the timeout counter and waiting for it to finish", true);
             }
           } else { // installation in supervisor has started - wait for it to finish
-            if (message == "Supervisor DONE") {
+            if (message == "Supervisor: Supervisor DONE") {
               emumaj_debug("installation started", true);
               install = true;
             } else if (message == "CANCEL") {
