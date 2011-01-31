@@ -11,8 +11,8 @@ import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.ejb.Stateless;
 import javax.xml.bind.JAXBElement;
+import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.log.SimpleLogger;
-import org.cern.cms.csc.dw.dao.PersistDaoLocal;
 import org.cern.cms.csc.dw.exception.PersistException;
 import org.cern.cms.csc.dw.log.Logger;
 import org.cern.cms.csc.dw.model.dse.DataServiceEntity;
@@ -29,7 +29,7 @@ public class DataServiceEntityInput {
     private static Logger logger = SimpleLogger.getLogger(DataServiceEntityInput.class);
     
     @EJB
-    private PersistDaoLocal persistDao;
+    private EntityDaoLocal entityDao;
 
     /**
      * Web service operation
@@ -41,7 +41,7 @@ public class DataServiceEntityInput {
             for (JAXBElement<? extends DataServiceEntity> dseEl: dataServiceEntityCollection.getDataServiceEntities()) {
                 DataServiceEntity dse = dseEl.getValue();
                 logger.debug("Data Service: forwarding DSE for persistance. dse.toString(): " + dse.toString());
-                persistDao.persist(dse);
+                entityDao.persist(dse);
             }
             return dataServiceEntityCollection.getDataServiceEntities().size();
         } catch (PersistException ex) {

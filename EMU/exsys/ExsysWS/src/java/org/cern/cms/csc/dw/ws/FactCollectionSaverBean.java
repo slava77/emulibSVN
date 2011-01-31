@@ -21,7 +21,6 @@ import javax.jms.ObjectMessage;
 import javax.xml.bind.JAXBElement;
 import org.cern.cms.csc.dw.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
-import org.cern.cms.csc.dw.dao.PersistDaoLocal;
 import org.cern.cms.csc.dw.exception.WrongComponentTypeException;
 import org.cern.cms.csc.dw.log.Logger;
 import org.cern.cms.csc.dw.model.fact.Fact;
@@ -33,8 +32,6 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
 
     private static Logger logger = SimpleLogger.getLogger(FactCollectionSaverBean.class);
 
-    @EJB
-    private PersistDaoLocal persistDao;
 
     @EJB
     private ComponentPropertyResolverLocal componentResolver;
@@ -117,7 +114,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
         // Persist collection
         if (instructions.isPersist()) {
             logger.debug("FC Saver bean: serviceInstructions.isPersist() = true, so sending this fact collection to entity saver");
-            persistDao.persist(factCollection);
+            entityDao.persist(factCollection);
         }
 
         try {

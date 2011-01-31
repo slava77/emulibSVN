@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<csc:factCollection xmlns:csc="http://www.cern.ch/cms/csc/dw/model">
+    <csc:source>DCSFactService</csc:source>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:02</csc:time>
+        <csc:component_id>ME-1/1/01/CFEB0</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.96920001506805</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:02</csc:time>
+        <csc:component_id>ME-1/1/01/CFEB1</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.95459997653961</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:02</csc:time>
+        <csc:component_id>ME-1/1/01/CFEB2</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.9326000213623</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:02</csc:time>
+        <csc:component_id>ME-1/1/01/CFEB4</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.96189999580383</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsAlctLvFact>
+        <csc:time>2010-08-26T00:25:02</csc:time>
+        <csc:component_id>ME-1/1/01/ALCT</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>ALCT LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_1v8>0.64700001478195</csc:current_1v8>
+    </csc:DcsAlctLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:02</csc:time>
+        <csc:component_id>ME-1/1/02/CFEB0</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.9423999786377</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:02</csc:time>
+        <csc:component_id>ME-1/1/02/CFEB1</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.9326000213623</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:02</csc:time>
+        <csc:component_id>ME-1/1/02/CFEB2</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr> Mon 31 18:01:36 > >CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.96189999580383</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:02</csc:time>
+        <csc:component_id>ME-1/1/02/CFEB3</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.9423999786377</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:02</csc:time>
+        <csc:component_id>ME-1/1/02/CFEB4</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.93989998102188</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsAlctLvFact>
+        <csc:time>2010-08-26T00:25:02</csc:time>
+        <csc:component_id>ME-1/1/02/ALCT</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>ALCT LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_1v8>0.13920000195503</csc:current_1v8>
+    </csc:DcsAlctLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:03</csc:time>
+        <csc:component_id>ME-1/1/03/CFEB0</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.94730001688004</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:03</csc:time>
+        <csc:component_id>ME-1/1/03/CFEB1</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.94730001688004</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:03</csc:time>
+        <csc:component_id>ME-1/1/03/CFEB2</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>1.1353000402451</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:03</csc:time>
+        <csc:component_id>ME-1/1/03/CFEB3</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>1.013200044632</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:03</csc:time>
+        <csc:component_id>ME-1/1/03/CFEB4</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.93510001897812</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsAlctLvFact>
+        <csc:time>2010-08-26T00:25:03</csc:time>
+        <csc:component_id>ME-1/1/03/ALCT</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>ALCT LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_1v8>0.55659997463226</csc:current_1v8>
+    </csc:DcsAlctLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:03</csc:time>
+        <csc:component_id>ME-1/1/04/CFEB1</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.98629999160767</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:03</csc:time>
+        <csc:component_id>ME-1/1/04/CFEB2</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.9423999786377</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:03</csc:time>
+        <csc:component_id>ME-1/1/04/CFEB3</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.94480001926422</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:03</csc:time>
+        <csc:component_id>ME-1/1/04/CFEB4</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.95700001716614</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsAlctLvFact>
+        <csc:time> Mon 31 18:01:36 > >2010-08-26T00:25:03</csc:time>
+        <csc:component_id>ME-1/1/04/ALCT</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>ALCT LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_1v8>0.55909997224808</csc:current_1v8>
+    </csc:DcsAlctLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:03</csc:time>
+        <csc:component_id>ME-1/1/05/CFEB0</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.93510001897812</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:03</csc:time>
+        <csc:component_id>ME-1/1/05/CFEB1</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.93510001897812</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:03</csc:time>
+        <csc:component_id>ME-1/1/05/CFEB2</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.92769998311996</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsAlctLvFact>
+        <csc:time>2010-08-26T00:25:03</csc:time>
+        <csc:component_id>ME-1/1/05/ALCT</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>ALCT LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_1v8>0.57370001077652</csc:current_1v8>
+    </csc:DcsAlctLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:04</csc:time>
+        <csc:component_id>ME-1/1/06/CFEB0</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.9520999789238</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:04</csc:time>
+        <csc:component_id>ME-1/1/06/CFEB1</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.96679997444153</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:04</csc:time>
+        <csc:component_id>ME-1/1/06/CFEB3</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.96439999341965</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:04</csc:time>
+        <csc:component_id>ME-1/1/06/CFEB4</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.93510001897812</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsAlctLvFact>
+        <csc:time>2010-08-26T00:25:04</csc:time>
+        <csc:component_id>ME-1/1/06/ALCT</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>ALCT LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_1v8>0.5663999915123</csc:current_1v8>
+    </csc:DcsAlctLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:04</csc:time>
+        <csc:component_id>ME-1/1/07/CFEB0</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.96920001506805</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:04</csc:time>
+        <csc:component_id>ME-1/1/07/CFEB1</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr> Mon 31 18:01:36 > >
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.9520999789238</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:04</csc:time>
+        <csc:component_id>ME-1/1/07/CFEB2</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.92769998311996</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:04</csc:time>
+        <csc:component_id>ME-1/1/07/CFEB3</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.94480001926422</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:04</csc:time>
+        <csc:component_id>ME-1/1/07/CFEB4</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.91060000658035</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsAlctLvFact>
+        <csc:time>2010-08-26T00:25:04</csc:time>
+        <csc:component_id>ME-1/1/07/ALCT</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>ALCT LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_1v8>0.57370001077652</csc:current_1v8>
+    </csc:DcsAlctLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:04</csc:time>
+        <csc:component_id>ME-1/1/08/CFEB1</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.93510001897812</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:04</csc:time>
+        <csc:component_id>ME-1/1/08/CFEB2</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.93510001897812</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:04</csc:time>
+        <csc:component_id>ME-1/1/08/CFEB3</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.94480001926422</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:04</csc:time>
+        <csc:component_id>ME-1/1/08/CFEB4</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.94480001926422</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:05</csc:time>
+        <csc:component_id>ME-1/1/09/CFEB0</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.91549998521805</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:05</csc:time>
+        <csc:component_id>ME-1/1/09/CFEB1</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.9326000213623</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:05</csc:time>
+        <csc:component_id>ME-1/1/09/CFEB2</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.95700001716614</csc:current_5v>
+    </csc:DcsCfebLvFact>
+    <csc:DcsCfebLvFact>
+        <csc:time>2010-08-26T00:25:05</csc:time>
+        <csc:component_id>ME-1/1/09/CFEB3</csc:component_id>
+        <csc:severity>INFO</csc:severity>
+        <csc:descr>CFEB LV</csc:descr>
+        <csc:status>0</csc:status>
+        <csc:current_5v>0.90329998731613</csc:current_5v>
+    </csc:DcsCfebLvFact>
+</csc:factCollection>
