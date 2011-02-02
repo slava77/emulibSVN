@@ -24,13 +24,13 @@ void emuLvMRTN_initalizeParam()
 {
   addGlobal("gSystemNameMRTN", STRING_VAR);
   //get system name where MRTN component installation
-  /*
+  
    dyn_string ds;
    fwInstallation_getApplicationSystem("CMS_CSCfw_LV_MRTN",ds);    
    gSystemNameMRTN = ds[1]; //with ":"  
-  */
+  
   //get system name with function getSystemName()
-   gSystemNameMRTN = getSystemName(); 
+  // gSystemNameMRTN = getSystemName(); 
 }
 /**
  * simple debug information on/off
