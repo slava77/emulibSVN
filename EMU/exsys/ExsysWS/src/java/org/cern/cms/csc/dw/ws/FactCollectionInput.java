@@ -10,18 +10,16 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.ejb.Stateless;
-import javax.jms.ObjectMessage;
 import javax.jms.Queue;
-import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
-import javax.jms.QueueSender;
-import javax.jms.QueueSession;
 import javax.xml.bind.JAXBElement;
 import org.cern.cms.csc.dw.log.Logger;
 import org.cern.cms.csc.dw.log.SimpleLogger;
 import org.cern.cms.csc.dw.model.monitor.MonitorFactCollectionLog;
 import org.cern.cms.csc.dw.monitor.MonitorLogger;
 import org.cern.cms.csc.dw.service.ServiceInstructions;
+import org.cern.cms.csc.dw.util.MessageSender;
+import org.cern.cms.csc.dw.ws.exception.ComponentNotProvidedException;
 
 @WebService(serviceName = "cdw", name = "factcollection", targetNamespace="http://www.cern.ch/cms/csc/dw/ws/factCollectionInput")
 @Stateless
@@ -39,7 +37,23 @@ public class FactCollectionInput implements FactCollectionInputLocal {
     @Resource(mappedName = "jms/factCollectionQueueFactory")
     private QueueConnectionFactory queueConnectionFactory;
 
+    private MessageSender sender;
+
     public FactCollectionInput() {
+
+        this.sender = new MessageSender() {
+
+            @Override
+            protected Queue getQueue() {
+                return queue;
+            }
+
+            @Override
+            protected QueueConnectionFactory getQueueConnectionFactory() {
+                return queueConnectionFactory;
+            }
+        };
+
     }
 
     /**
@@ -70,11 +84,15 @@ public class FactCollectionInput implements FactCollectionInputLocal {
             }
             // -------------
 
-            monitor.trace(new MonitorFactCollectionLog(factCollection));
-
             if (factCollection.getFactsItems().isEmpty()) {
                 throw new EmptyListReceivedException("factCollection", "Fact");
             }
+
+            if (factCollection.getSource() == null) {
+                throw new ComponentNotProvidedException(FactCollection.class, "source");
+            }
+
+            monitor.trace(new MonitorFactCollectionLog(factCollection));
 
             if (!factCollection.isSetServiceInstructions()) {
                 factCollection.setServiceInstructions(new ServiceInstructions());
@@ -83,14 +101,7 @@ public class FactCollectionInput implements FactCollectionInputLocal {
             ServiceInstructions instructions = factCollection.getServiceInstructions();
 
             if (instructions.isAsync()) {
-                final QueueConnection connection = queueConnectionFactory.createQueueConnection();
-                final QueueSession session = connection.createQueueSession(false, QueueSession.AUTO_ACKNOWLEDGE);
-                ObjectMessage m = session.createObjectMessage();
-                m.setObject(factCollection);
-                final QueueSender sender = session.createSender(queue);
-                sender.send(m);
-                session.close();
-                connection.close();
+                sender.sendMessage(factCollection);
             } else {
                 logger.debug("FCinput WS: serviceInstructions.isAsync() = false, sending this fact collection directly to FactCollectionSaverBean");
                 saver.saveFactCollection(factCollection);

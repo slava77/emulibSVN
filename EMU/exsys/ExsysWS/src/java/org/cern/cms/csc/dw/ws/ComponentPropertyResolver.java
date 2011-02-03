@@ -19,6 +19,7 @@ import org.cern.cms.csc.dw.model.annotation.ComponentId;
 import org.cern.cms.csc.dw.model.ontology.Component;
 import org.cern.cms.csc.dw.model.ontology.ComponentClassType;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponent;
+import org.cern.cms.csc.dw.ws.exception.ComponentNotProvidedException;
 
 /**
  * Resovles object properties that have Component type.
@@ -212,7 +213,7 @@ public class ComponentPropertyResolver implements ComponentPropertyResolverLocal
 
             } else {
                 if (required) {
-                    throw new NullArgumentException(clazz.getName() + " " + componentProperty + " not provided!");
+                    throw new ComponentNotProvidedException(clazz, componentProperty);
                 }
             }
 

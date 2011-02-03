@@ -5,19 +5,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.annotation.Resource;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageProducer;
 import javax.jms.Queue;
-import javax.jms.Session;
+import javax.jms.QueueConnectionFactory;
 import org.cern.cms.csc.dw.ws.exception.EmptyListReceivedException;
 import java.util.HashSet;
 import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.jms.ObjectMessage;
 import javax.xml.bind.JAXBElement;
 import org.cern.cms.csc.dw.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
@@ -26,6 +20,7 @@ import org.cern.cms.csc.dw.log.Logger;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.dw.model.fact.FactCollection;
 import org.cern.cms.csc.dw.service.ServiceInstructions;
+import org.cern.cms.csc.dw.util.MessageSender;
 
 @Stateless
 public class FactCollectionSaverBean implements FactCollectionSaverLocal {
@@ -44,7 +39,24 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
     private Queue ruleEngineInputQueue;
 
     @Resource(mappedName="jms/ruleEngineInputQueueFactory")
-    private ConnectionFactory ruleEngineInputQueueFactory;
+    private QueueConnectionFactory ruleEngineInputQueueFactory;
+
+    private final MessageSender sender;
+
+    public FactCollectionSaverBean() {
+        this.sender = new MessageSender() {
+
+            @Override
+            protected Queue getQueue() {
+                return ruleEngineInputQueue;
+            }
+
+            @Override
+            protected QueueConnectionFactory getQueueConnectionFactory() {
+                return ruleEngineInputQueueFactory;
+            }
+        };
+    }
 
     @Override
     public void saveFactCollection(FactCollection factCollection) throws Exception {
@@ -117,47 +129,12 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
             entityDao.persist(factCollection);
         }
 
-        try {
-            Collection<Fact> factsToSendToRE = new ArrayList<Fact>();
-            for (JAXBElement<? extends Fact> factEl: factCollection.getFacts()) {
-                factsToSendToRE.add(factEl.getValue());
-            }
-            sendFactsToRuleEngineInputQueue(factsToSendToRE);
-        } catch (JMSException jmsEx) {
-            logger.error("Exception while sending fact to rule engine input queue", jmsEx);
+        Collection<Serializable> factsToSendToRE = new ArrayList<Serializable>();
+        for (JAXBElement<? extends Fact> factEl: factCollection.getFacts()) {
+            factsToSendToRE.add(factEl.getValue());
         }
+        sender.sendMessages(factsToSendToRE);
         
-    }
-
-    private Message createJMSMessageForjmsRuleEngineInputQueue(Session session, Serializable messageData) throws JMSException {
-        // TODO create and populate message to send
-        ObjectMessage om = session.createObjectMessage();
-        om.setObject(messageData);
-        return om;
-    }
-
-    private void sendFactsToRuleEngineInputQueue(Collection<Fact> facts) throws JMSException {
-        Connection connection = null;
-        Session session = null;
-        try {
-            connection = ruleEngineInputQueueFactory.createConnection();
-            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            MessageProducer messageProducer = session.createProducer(ruleEngineInputQueue);
-            for (Serializable fact: facts) {
-                messageProducer.send(createJMSMessageForjmsRuleEngineInputQueue(session, fact));
-            }
-        } finally {
-            if (session != null) {
-                try {
-                    session.close();
-                } catch (JMSException e) {
-                    logger.error("Cannot close session", e);
-                }
-            }
-            if (connection != null) {
-                connection.close();
-            }
-        }
     }
 
 }
