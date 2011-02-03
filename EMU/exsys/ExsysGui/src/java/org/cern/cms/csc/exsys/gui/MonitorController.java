@@ -182,7 +182,7 @@ public class MonitorController extends BrowserController {
 
         {
             plot.getRangeAxis(0).setLowerBound(0.0);
-            plot.getRangeAxis(0).setUpperBound(maxValue.doubleValue());
+            plot.getRangeAxis(0).setUpperBound(maxValue > 100 ? maxValue.doubleValue() : 100.0d);
         }
 
         {
