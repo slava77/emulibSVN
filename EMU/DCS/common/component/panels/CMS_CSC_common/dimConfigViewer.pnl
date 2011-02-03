@@ -1,0 +1,171 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 461 571 N "_3DFace" 1
+"$sDpName"
+"main()
+{
+  tableServices.deleteAllLines();
+  tableCommands.deleteAllLines();
+  
+  dyn_string services, commands;
+  dpGet($sDpName + \".clientServices\", services,
+        $sDpName + \".clientCommands\", commands);
+  
+  for (int i=1; i <= dynlen(services); i++) {
+    dyn_string split = strsplit(services[i], \",\");
+    tableServices.appendLine(\"dp\", split[1], \"dimItem\", split[2]);
+  }
+  
+  for (int i=1; i <= dynlen(commands); i++) {
+    dyn_string split = strsplit(commands[i], \",\");
+    tableCommands.appendLine(\"dp\", split[1], \"dimItem\", split[2]);
+  }
+  
+  lblServices.text = \"Services (\" + dynlen(services) + \"):\";
+  lblCommands.text = \"Commands (\" + dynlen(commands) + \"):\";
+}" 0
+ E E E E 1 -1 -1 0  30 30
+""0  1
+E E 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+2 0
+"lblServices"
+""
+1 30 20 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 30 20 85 36
+0 2 2 "0s" 0 0 0 192 0 0  30 20 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 9 Services:
+25 1
+"tableServices"
+""
+1 30 49.99999999999999 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  28 48 442 402
+EE 1 0 1 2 0 "dp" 19 1 0 "s" 1
+LANG:1 2 DP
+E
+1
+LANG:1 0 
+
+200 "dimItem" 19 1 0 "s" 1
+LANG:1 8 DIM Item
+E
+1
+LANG:1 0 
+
+200 
+16 16 10 10
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 0 1 1 1 7
+1 0
+2 2
+"lblCommands"
+""
+1 20 420 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 20 420 93 436
+0 2 2 "0s" 0 0 0 192 0 0  20 420 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 9 Commands:
+25 3
+"tableCommands"
+""
+1 30 450 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  28 448 442 552
+EE 1 0 1 2 0 "dp" 19 1 0 "s" 1
+LANG:1 2 DP
+E
+1
+LANG:1 0 
+
+200 "dimItem" 19 1 0 "s" 1
+LANG:1 8 DIM Item
+E
+1
+LANG:1 0 
+
+200 
+16 16 10 10
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 0 1 1 1 7
+1 0
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

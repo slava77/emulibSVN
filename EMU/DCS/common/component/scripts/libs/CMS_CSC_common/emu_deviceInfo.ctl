@@ -97,12 +97,12 @@ dyn_mapping emuDev_getPCrateChambers(mapping pcrate, dyn_string &exceptionInfo) 
 
 /**
   * Checks if needed device parameters are provided. If some of them are not provided, an exception is thrown.
-  * @param funcName name of the function that got the device parameters that it wants to chech.
+  * @param funcName name of the function that got the device parameters that it wants to check.
   * @param deviceName name of the device that the parameters are for.
   * @param deviceParams device parameters that you want to check.
   * @param requiredParams list of required parameters.
   */
-void emu_checkDeviceParams(string funcName, string deviceName, mapping deviceParams, dyn_string requiredParams, dyn_string &exceptionInfo) {
+void emuDev_checkDeviceParams(string funcName, string deviceName, mapping deviceParams, dyn_string requiredParams, dyn_string &exceptionInfo) {
   for (int i=1; i <= dynlen(requiredParams); i++) {
     if (!mappingHasKey(deviceParams, requiredParams[i])) {
       emu_addError("Incorrect device parameters for " + deviceName + " passed to " + funcName + ". Required parameters are: " + requiredParams, exceptionInfo);
@@ -136,4 +136,46 @@ dyn_mapping emu_getAllPCrates() {
   }
   
   return allCrates;
+}
+
+/**
+  * @param side endcap - "M" or "P"
+  * @param station station number
+  * @return deviceParams of all chambers in the given station
+  */
+dyn_mapping emuDev_getAllChambersForStation(string side, int station) {
+  dyn_mapping ret;
+  int ringCount = (station == 1) ? 3 : 2;
+
+  for (int ring=1; ring <= ringCount; ring++) {
+    int chamberStartIdx = 1, 
+        chamberEndIdx = 36;
+    
+    // determine the number of chambers in this ring
+    if ((station != 1) && (ring == 1)) { // inner, non ME1/1 rings - 18 chambers
+      chamberEndIdx = 18;
+    } else if ((station == 4) && (ring == 2)) { // ME4/2
+      if (side == "P") {      // ME+4/2 <-- chambers 9 through 13
+        chamberStartIdx = 9;
+        chamberEndIdx = 13;
+      } else {                // ME-4/2 <-- no chambers here
+        chamberEndIdx = 0;
+      }
+    }
+    
+    for (int chamberNum=chamberStartIdx; chamberNum <= chamberEndIdx; chamberNum++) {
+      mapping deviceParams;
+      
+      deviceParams["side"] = side;
+      deviceParams["station"] = station;
+      deviceParams["ring"] = ring;
+      string chamberNumStr;
+      sprintf(chamberNumStr, "%.2d", chamberNum);
+      deviceParams["chamberNumber"] = chamberNumStr;
+      
+      dynAppend(ret, deviceParams);
+    }
+  }
+  
+  return ret;
 }
