@@ -42,14 +42,14 @@ public const int EMU_X2P_STATUS_CHAMBER_HAS_NO_ANALOG_POWER = 0x200; // chamber 
 public const int EMU_X2P_STATUS_CHAMBER_HAS_NO_DIGITAL_POWER = 0x400; // chamber lost Digital power
 
 // if any bit in this pattern is set then data should be ignored (and subject to timeout)
-public int EMU_X2P_STATUS_BAD_DATA = EMU_X2P_STATUS_OTHER_PROBLEM |
-                                     EMU_X2P_STATUS_CORRUPTED |
-                                     EMU_X2P_STATUS_VCC_NOT_ACCESSIBLE |
-                                     EMU_X2P_STATUS_DMB_READING_ERROR |
-                                     EMU_X2P_STATUS_TMB_READING_ERROR;
+public const int EMU_X2P_STATUS_BAD_DATA = 0x9D; /* EMU_X2P_STATUS_OTHER_PROBLEM |
+                                                    EMU_X2P_STATUS_CORRUPTED |
+                                                    EMU_X2P_STATUS_VCC_NOT_ACCESSIBLE |
+                                                    EMU_X2P_STATUS_DMB_READING_ERROR |
+                                                    EMU_X2P_STATUS_TMB_READING_ERROR; */
 
-public int EMU_X2P_STATUS_ERROR_WITH_DATA = EMU_X2P_STATUS_CHAMBER_HAS_NO_ANALOG_POWER |
-                                            EMU_X2P_STATUS_CHAMBER_HAS_NO_DIGITAL_POWER;
+public const int EMU_X2P_STATUS_ERROR_WITH_DATA = 0x600; /*EMU_X2P_STATUS_CHAMBER_HAS_NO_ANALOG_POWER |
+                                                           EMU_X2P_STATUS_CHAMBER_HAS_NO_DIGITAL_POWER; */
 
 void main() {
   mudcsInit();
