@@ -71,6 +71,14 @@ public abstract class BeanTableManager {
 
     public void backActionListener(ActionEvent ev) {
         popTable();
+        this.getTable().refresh(); //LA
+    }
+
+    public void topActionListener(ActionEvent ev) {  //LA
+        while (!isTop()) {
+            popTable();
+        }
+        this.getTable().refresh();
     }
 
     public String buildTableTitle(String nextTitle) {

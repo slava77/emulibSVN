@@ -135,11 +135,30 @@ public class BeanTableColumn implements BeanTableColumnIf {
 
     @Override
     public boolean isFilterSet() {
-        return filter != null && !filter.isEmpty();
+
+        if (filter == null) {
+            return false;
+        }
+
+        if (isEntityType()) {
+            BeanTableProjectionFilterItem tf = (BeanTableProjectionFilterItem) filter.getItems().get(0);
+            if (tf.getTablePack().getTable().isFilterOn()) {
+                return true;
+            }
+            if (!((BeanTablePack) tf.getTablePack()).isSingleClass()) {
+                return true;
+            }
+        } else {
+            return !filter.isEmpty();
+        }
+
+        return false;
+
     }
 
     public void clearFilterListener(ActionEvent ev) {
         filter = null;
+        this.table.refresh(); //LA
     }
 
     public Object getCellValue() {
@@ -226,12 +245,14 @@ public class BeanTableColumn implements BeanTableColumnIf {
     }
 
     public void filterTableListener(ActionEvent ev) throws Exception {
-        if (isEntityType()) {
+        if (isEntityType() && !isListType()) {
             if (filter == null) {
-                BeanTablePack btp = new BeanTablePack(getName(), getTitle(), table.getPack().getManager(), propertyMd.getType());
-                BeanTableFilterItem fi = new BeanTableProjectionFilterItem(btp);
-                this.filter = new BeanTableFilter();
-                this.filter.getItems().add(fi);
+                this.filter = new BeanTableProjectionFilter();
+                BeanTablePack btp = new BeanTablePack(getName(), 
+                                                      getTitle(),
+                                                      table.getPack().getManager(),
+                                                      propertyMd.getType());
+                ((BeanTableProjectionFilter) this.filter).setPack(btp);
             }
             BeanTableProjectionFilterItem fi = (BeanTableProjectionFilterItem) getFilter().getItems().get(0);
             table.getPack().getManager().pushTable((BeanTablePack) fi.getTablePack());

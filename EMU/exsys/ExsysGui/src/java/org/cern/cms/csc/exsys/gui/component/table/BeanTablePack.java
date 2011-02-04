@@ -81,6 +81,7 @@ public class BeanTablePack implements BeanTablePackIf {
         return manager;
     }
 
+    @Override
     public boolean isSingleClass() {
         return classes.isEmpty();
     }

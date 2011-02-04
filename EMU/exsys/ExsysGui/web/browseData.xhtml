@@ -34,7 +34,9 @@
                 <ice:outputText value="Table not selected."/>
             </ice:panelGroup>
             <ice:panelGroup rendered="#{dataBrowserController.table != null}">
-                <exsys-component:beanTable manager="#{dataBrowserController.table}"/>
+                <exsys-component:beanTable 
+                    title="#{dataBrowserController.currentClass.simpleName}"
+                    manager="#{dataBrowserController.table}"/>
             </ice:panelGroup>
         </ice:form>
     </ui:define>

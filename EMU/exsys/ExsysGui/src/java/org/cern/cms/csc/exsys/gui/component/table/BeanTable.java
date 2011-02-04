@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import org.cern.cms.csc.dw.dao.table.BeanTableColumnIf;
@@ -119,13 +120,29 @@ public class BeanTable extends BeanTableControls {
         refresh();
     }
 
+    public void filterOperationChangeListener(ValueChangeEvent e) {
+        String[] split = ((String) e.getNewValue()).split(":");
+        String colName = split[0];
+        String opName = split[1];
+
+        if (opName != null && colName != null) {
+            for (BeanTableColumnIf c: getColumns()) {
+                if (c.getName().equals(colName)) {
+                    ((BeanTableProjectionFilter) c.getFilter()).setOperation(opName);
+                    refresh();
+                    return;
+                }
+            }
+        }
+    }
+
     public void setRefresh(boolean refresh) {
         refresh();
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void refresh() {
+    public void refresh() {
         BeanTableDaoIf dao = pack.getManager().getBeanTableDao();
         this.data = new ListDataModel<EntityBase>(dao.getData(this));
         this.dataCount = dao.getDataCount((BeanTable) this);
@@ -183,21 +200,13 @@ public class BeanTable extends BeanTableControls {
 
     public void removeFilterListener(ActionEvent e) {
         removeFilter();
+        refresh();
     }
 
     public void removeFilter() {
         for (BeanTableColumnIf c: columns) {
             ((BeanTableColumn) c).clearFilterListener(null);
         }
-    }
-
-    public String getAdvancedQuery() {
-        return null;
-    }
-
-    @Override
-    public boolean isAdvancedQuerySet() {
-        return false;
     }
 
     /*********************************************

@@ -6,11 +6,12 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ice="http://www.icesoft.com/icefaces/component"
       xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-      xmlns:cc="http://java.sun.com/jsf/composite">
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
 
     <cc:interface>
         
-        <cc:attribute name="manager" type="org.cern.cms.csc.exsys.gui.component.BeanTableManager" required="true"/>
+        <cc:attribute name="manager" type="org.cern.cms.csc.exsys.gui.component.BeanTableManager"/>
         <cc:attribute name="title" type="java.lang.String" required="false" shortDescription="Table title"/>
         <cc:attribute name="skipColumnsByName" required="false" type="java.lang.String" default=""
                       shortDescription="List of column names separated by comma that not to be rendered"/>
@@ -22,6 +23,8 @@
     </cc:interface>
 
     <cc:implementation>
+
+        <c:if test="#{cc.attrs.manager != null}">
 
         <!-- Menu -->
 
@@ -37,7 +40,7 @@
                                              title="Go back to parent table" 
                                              styleClass="beanTableBackButton"/>
 
-                            <ice:commandLink actionListener="#{cc.attrs.manager.backActionListener}"
+                            <ice:commandLink actionListener="#{cc.attrs.manager.topActionListener}"
                                              rendered="#{cc.attrs.manager.depth &gt; 1}"
                                              value="Top"
                                              title="Go to top table"
@@ -156,7 +159,7 @@
 
             <ice:panelGroup rendered="#{cc.attrs.manager.table.filterOn}" styleClass="beanTableFilterIndicator">
                 <ice:outputText value="Filter is on!"/>
-                <ice:commandLink value="Remove" actionListener="#{cc.attrs.manager.table.removeFilterListener}"/>
+                <ice:commandLink value="Remove" title="Remove filter" actionListener="#{cc.attrs.manager.table.removeFilterListener}"/>
             </ice:panelGroup>
 
             <!-- Table -->
@@ -191,13 +194,24 @@
 
                                 <ice:panelGroup rendered="#{cc.attrs.manager.table.displayFilter}" style="height: 24px">
 
-                                    <ice:panelGrid columns="3" border="0" rendered="#{column.entityType}">
+                                    <ice:panelGrid columns="4" border="0" rendered="#{column.entityType}">
                                         <ice:commandLink value="Filter"
+                                                         title="Use filter"
                                                          actionListener="#{column.filterTableListener}"/>
                                         <ice:panelGroup rendered="#{column.filterSet}">|</ice:panelGroup>
                                         <ice:commandLink value="Clear"
+                                                         title="Clear title"
                                                          rendered="#{column.filterSet}"
                                                          actionListener="#{column.clearFilterListener}"/>
+
+                                        <ice:panelGroup rendered="#{column.filterSet}">
+                                            <ice:selectOneMenu valueChangeListener="#{cc.attrs.manager.table.filterOperationChangeListener}"
+                                                               partialSubmit="true">
+                                                <f:selectItem itemLabel="in" itemValue="#{column.name}:in"/>
+                                                <f:selectItem itemLabel="not in" itemValue="#{column.name}:notin" />
+                                            </ice:selectOneMenu>
+                                        </ice:panelGroup>
+
                                      </ice:panelGrid>
 
                                     <ice:outputText value="" rendered="#{column.listType}"/>
@@ -405,6 +419,8 @@
             </ice:panelPopup>
 
         </ice:panelGroup>
+
+        </c:if>
 
     </cc:implementation>
 </html>
