@@ -11,6 +11,5 @@ public interface BeanTableIf {
     Class<? extends EntityBase> getRowClass();
     List<BeanTableColumnIf> getColumns();
     boolean isFilterOn();
-    boolean isAdvancedQuerySet();
 
 }

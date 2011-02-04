@@ -3,10 +3,9 @@ package org.cern.cms.csc.dw.dao.table;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.cern.cms.csc.dw.log.Logger;
+import org.cern.cms.csc.dw.log.SimpleLogger;
 import org.cern.cms.csc.dw.model.base.EntityBase;
-import org.cern.cms.csc.dw.util.SQLParamRestriction;
 import org.hibernate.Criteria;
 import org.hibernate.QueryException;
 import org.hibernate.Session;
@@ -20,7 +19,7 @@ import org.hibernate.criterion.Subqueries;
 
 public abstract class BeanTableDao implements BeanTableDaoIf {
 
-    private static final Logger logger = Logger.getLogger(BeanTableDao.class.getName());
+    private static final Logger logger = SimpleLogger.getLogger(BeanTableDao.class);
 
     protected abstract Session getSession();
 
@@ -54,7 +53,7 @@ public abstract class BeanTableDao implements BeanTableDaoIf {
             list = c.list();
 
         } catch (QueryException ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
+            logger.error(ex);
             //if (table.isInteractiveMode()) {
                 //BeanBase.addErrorMessage("cms.dqm.workflow.getData.ERROR", false);
             //}
@@ -89,20 +88,22 @@ public abstract class BeanTableDao implements BeanTableDaoIf {
     }
 
     private Criteria getCriteria(Session session, Class rowClass, List<BeanTableColumnIf> columns) {
-        return getDetachedCriteria(rowClass, columns, null).getExecutableCriteria(session);
+        return getDetachedCriteria(rowClass, columns).getExecutableCriteria(session);
     }
 
     private DetachedCriteria getDetachedCriteria(BeanTableIf table) {
-        return getDetachedCriteria(table.getRowClass(), table.getColumns(), null); //table.getAdvancedQuery());
+        return getDetachedCriteria(table.getRowClass(), table.getColumns()); //table.getAdvancedQuery());
     }
 
-    private DetachedCriteria getDetachedCriteria(Class rowClass, List<BeanTableColumnIf> columns, String advancedQuery) {
+    private DetachedCriteria getDetachedCriteria(Class rowClass, List<BeanTableColumnIf> columns) {
 
         DetachedCriteria c = DetachedCriteria.forClass(rowClass);
 
+        /*
         if (advancedQuery != null) {
             c.add(SQLParamRestriction.restriction(advancedQuery));
         }
+        */
 
         for (BeanTableColumnIf col: columns) {
 
@@ -161,14 +162,20 @@ public abstract class BeanTableDao implements BeanTableDaoIf {
                             case ISNOTNULL:
                                 curJun.add(Restrictions.isNotNull(propertyName));
                                 break;
-                            case IN:
+                            default:
                                 if (item instanceof BeanTableProjectionFilterItemIf) {
                                     BeanTableProjectionFilterItemIf pitem = (BeanTableProjectionFilterItemIf) item;
-                                    BeanTableIf subQueryTable = pitem.getTablePack().getTable();
+                                    BeanTablePackIf pack = pitem.getTablePack();
+                                    BeanTableIf subQueryTable = pack.getTable();
                                     if (subQueryTable != null) {
-                                        if (subQueryTable.isFilterOn() || subQueryTable.isAdvancedQuerySet()) {
+                                        if (subQueryTable.isFilterOn() || !pack.isSingleClass()) {
                                             DetachedCriteria subCriteria = getDetachedCriteria(subQueryTable);
-                                            curJun.add(Subqueries.propertyIn(propertyName, subCriteria));
+                                            subCriteria.setProjection(Projections.id());
+                                            if (item.getOperation().equals(BeanTableFilterIf.Operation.IN)) {
+                                                curJun.add(Subqueries.propertyIn(propertyName, subCriteria));
+                                            } else if (item.getOperation().equals(BeanTableFilterIf.Operation.NOTIN)) {
+                                                curJun.add(Subqueries.propertyNotIn(propertyName, subCriteria));
+                                            }
                                         }
                                     }
                                 }
@@ -186,98 +193,5 @@ public abstract class BeanTableDao implements BeanTableDaoIf {
         return c;
 
     }
-
-    /*
-    public String getCriteriaFilterWhereClause(BeanTableIf table) throws NoSuchFieldException {
-
-        StringBuilder sql = new StringBuilder();
-        Class rowClass = table.getRowClass();
-
-        for (Iterator<String> filterItr = table.getFilter().keySet().iterator(); filterItr.hasNext();) {
-
-            String k = filterItr.next();
-            BeanTableFilterIf f = table.getFilter().get(k);
-
-            if (f.getItems().size() > 0) {
-
-                filterKeyMatcher.reset(k);
-                k = filterKeyMatcher.replaceAll("");
-
-                StringBuffer subsql = new StringBuffer();
-
-                for (Iterator<BeanTableFilterItemIf> filterItemItr = f.getItems().iterator(); filterItemItr.hasNext();) {
-                    BeanTableFilterItemIf item = filterItemItr.next();
-                    switch (item.getOperator()) {
-                        case AND:
-                            if (subsql.length() > 0) {
-                                subsql.append(" AND ");
-                            }
-                            break;
-                        case OR:
-                            if (subsql.length() > 0) {
-                                subsql.append(" OR ");
-                            }
-                            break;
-                    }
-
-                    Field field = rowClass.getDeclaredField(k);
-                    Column fieldColumn = field.getAnnotation(Column.class);
-                    subsql.append(fieldColumn.name());
-
-                    boolean skipValue = false;
-
-                    switch (item.getOperation()) {
-                        case NOTLIKE:
-                            subsql.append(" NOT LIKE ");
-                            break;
-                        case ISNULL:
-                            subsql.append(" IS NULL ");
-                            skipValue = true;
-                            break;
-                        case ISNOTNULL:
-                            subsql.append(" IS NOT NULL ");
-                            skipValue = true;
-                            break;
-                        default:
-                            subsql.append(" ")
-                                  .append(item.getOperation().getValue())
-                                  .append(" ");
-                    }
-
-                    if (!skipValue) {
-
-                        Class fieldType = field.getType();
-
-                        if (fieldType.equals(String.class)) {
-                            String v = (String) item.getValue();
-                            subsql.append("'");
-                            subsql.append(v.replaceAll("'", "''"));
-                            subsql.append("'");
-                        } else {
-                            if (fieldType.equals(Boolean.class)) {
-                                Boolean v = (Boolean) item.getValue();
-                                subsql.append(v ? 1 : 0);
-                            } else {
-                                subsql.append(item.getValue());
-                            }
-                        }
-                    }
-
-                }
-
-                if (sql.length() > 0) {
-                    sql.append(" AND ");
-                }
-                sql.append("(");
-                sql.append(subsql);
-                sql.append(")");
-
-            }
-
-        }
-
-        return sql.toString();
-    }
-    */
 
 }
