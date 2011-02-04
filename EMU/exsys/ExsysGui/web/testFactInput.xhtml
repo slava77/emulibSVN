@@ -13,7 +13,7 @@
     xmlns:component="http://java.sun.com/jsf/composite/component">
 
     <ui:define name="menu">
-        
+
     </ui:define>
 
     <ui:define name="pageTitle">
@@ -22,15 +22,40 @@
 
     <ui:define name="content">
         <ice:panelGroup styleClass="sectionTitle">
-            POST service
+            Fact Input service
         </ice:panelGroup>
         <ice:form>
             <table width="100%" cellpadding="5" cellspacing="5">
                 <tr>
                     <td colspan="2">
-                        URL:
-                        <input id="postUrl" type="text" value="/ExsysGui/factcollectioninput" size="50"/>
-                        <input id="postUrlTestButton" type="button" value="Test URL"/>
+                        Type:
+                        <input type="radio" name="testType" value="post" checked="1"/> POST
+                        <input type="radio" name="testType" value="soap"/> SOAP
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <table>
+                            <tr>
+                                <td>Default URLs:</td>
+                                <td>
+                                    <a href="#" help="post" onclick="setUrl('/ExsysGui/factcollectioninput');">/ExsysGui/factcollectioninput</a>
+                                    <a href="#" help="soap" onclick="setUrl('/cdw/factcollection');">/ExsysGui/factcollectioninput</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <table>
+                            <tr>
+                                <td>URL:</td>
+                                <td>
+                                  <input id="testUrl" type="text" value="/ExsysGui/factcollectioninput" size="50"/>
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
                 <tr>
@@ -39,52 +64,94 @@
                 </tr>
                 <tr>
                     <td width="50%">
-                        <textarea id="postXml" style="width: 100%; height: 400px"></textarea>
+                        <textarea id="testXml" style="width: 100%; height: 400px"></textarea>
                     </td>
                     <td width="50%">
-                        <div id="postResult" style="width: 100%; height: 400px; overflow: scroll; border-style: inset; border-width: 2px; padding: 5px; border-color: white"/>
+                        <div id="testResult" style="width: 100%; height: 400px; overflow: scroll; border-style: inset; border-width: 5px; padding: 5px; border-color: white"/>
                     </td>
                 </tr>
                 <tr>
                     <td width="50%">
-                        <input id="postButton" type="button" value="Send"/>
+                        <input id="testSendButton" type="button" value="Send"/>
                     </td>
                     <td width="50%">
-                        <input id="postClearButton" type="button" value="Clear"/>
+                        <input id="testClearButton" type="button" value="Clear"/>
                     </td>
                 </tr>
             </table>
 
             <script type="text/javascript">
                 // <![CDATA[
+
+                function setUrl(url) {
+                  jQuery("#testUrl").val(url);
+                }
+
                 jQuery(document).ready( function () {
 
-                    jQuery("#postUrlTestButton").click(function() {
-                        window.open(jQuery("#postUrl").val());
+                    jQuery("input[name=testType]:radio").click(function(o) {
+                        var v = jQuery("input[name=testType]:radio:checked").val();
+                        jQuery("a[help]").hide();
+                        jQuery("a[help=" + v + "]").show();
+                        jQuery("a[help=" + v + "]:first").click();
                     });
 
-                    jQuery("#postClearButton").click(function() {
-                        jQuery("#postResult").html("").css("border-color", "white");
+                    jQuery("#testUrlTestButton").click(function() {
+                        window.open(jQuery("#testUrl").val());
                     });
 
-                    jQuery("#postButton").click(function() {
-                        var url = jQuery("#postUrl").val();
-                        var xml = jQuery("#postXml").val();
+                    jQuery("#testClearButton").click(function() {
+                        jQuery("#testResult").html("").css("border-color", "white");
+                    });
+
+                    jQuery("#testSendButton").click(function() {
+                        var url = jQuery("#testUrl").val();
+                        var xml = jQuery("#testXml").val();
+                        var typ = jQuery("input[name=testType]:radio:checked").val();
+
+                        if (typ == 'soap') {
+                          xml = '<soap-env:Envelope soap-env:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:soap-env="http://schemas.xmlsoap.org/soap/envelope/">'
+                                + '<soap-env:Header/>'
+                                + '<soap-env:Body>'
+                                    + '<ws:input xmlns:ws="http://www.cern.ch/cms/csc/dw/ws/factCollectionInput">'
+                                      + xml
+                                    + '</ws:input>'
+                                + '</soap-env:Body>'
+                              + '</soap-env:Envelope>';
+                        }
+
                         jQuery.ajax({
                           type: 'POST',
+                          contentType: 'text/xml',
                           url: url,
                           data: xml,
                           async: false,
+                          dataType: 'html',
                           success:
                               function(res) {
-                                 jQuery("#postResult").html(res).css("border-color", "green");
+                                if (typ == 'soap') {
+                                  jQuery("#testResult").text(res);
+                                }
+                                if (typ == 'post') {
+                                  jQuery("#testResult").html(res);
+                                }
+                                jQuery("#testResult").css("border-color", "green");
                               },
                           error:
                               function(xhr, status, error) {
-                                 jQuery("#postResult").html(xhr.responseText).css("border-color", "red");
+                                if (typ == 'soap') {
+                                  jQuery("#testResult").text(xhr.responseText);
+                                }
+                                if (typ == 'post') {
+                                  jQuery("#testResult").html(xhr.responseText);
+                                }
+                                jQuery("#testResult").css("border-color", "red");
                               }
                         });
+
                     });
+
+                  jQuery("input[name=testType]:radio:checked").click();
 
                 });
                 // ]]>
