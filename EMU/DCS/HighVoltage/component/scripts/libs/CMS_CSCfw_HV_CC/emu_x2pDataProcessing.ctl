@@ -17,15 +17,17 @@ Everything that concerns X2P data is here and nowhere else.
 #uses "CMS_CSCfw_HV_CC/emuDcs2.ctl"
 
 // ============ status bit pattern ====================================================
-// bit 0 (value   1): misc. errors
-// bit 1 (value   2): chamber power off from Configuration DB
-// bit 2 (value   4): data corrupted (in infospace or during transmission)
-// bit 3 (value   8): VCC not accessible
-// bit 4 (value  16): DMB reading error
-// bit 5 (value  32): crate OFF
-// bit 6 (value  64): this DMB module caused VCC reading trouble
-// bit 7 (value 128): TMB reading error
-// bit 8 (value 256): this TMB module caused VCC reading trouble
+// bit 0  (value   1): misc. errors
+// bit 1  (value   2): chamber power off from Configuration DB
+// bit 2  (value   4): data corrupted (in infospace or during transmission)
+// bit 3  (value   8): VCC not accessible
+// bit 4  (value  16): DMB reading error
+// bit 5  (value  32): crate OFF
+// bit 6  (value  64): this DMB module caused VCC reading trouble
+// bit 7  (value 128): TMB reading error
+// bit 8  (value 256): this TMB module caused VCC reading trouble
+// bit 9  (value 512): chamber lost Analog power
+// bit 10 (val  1024): chamber lost Digital power
 // =====================================================================================
 public const int EMU_X2P_STATUS_OTHER_PROBLEM = 0x1; // reserved for an undocumented problem
 public const int EMU_X2P_STATUS_OFF = 0x2; // chamber power off from Configuration DB
@@ -36,6 +38,8 @@ public const int EMU_X2P_STATUS_CRATE_OFF = 0x20; // the PCrate is OFF
 public const int EMU_X2P_STATUS_DMB_CAUSED_VCC_ERROR = 0x40; // this DMB module caused VCC reading trouble
 public const int EMU_X2P_STATUS_TMB_READING_ERROR = 0x80; // TMB reading error
 public const int EMU_X2P_STATUS_TMB_CAUSED_VCC_ERROR = 0x100; // this TMB module caused VCC reading trouble
+public const int EMU_X2P_STATUS_CHAMBER_HAS_NO_ANALOG_POWER = 0x200; // chamber lost Analog power
+public const int EMU_X2P_STATUS_CHAMBER_HAS_NO_DIGITAL_POWER = 0x400; // chamber lost Digital power
 
 // if any bit in this pattern is set then data should be ignored (and subject to timeout)
 public int EMU_X2P_STATUS_BAD_DATA = EMU_X2P_STATUS_OTHER_PROBLEM |
@@ -43,6 +47,9 @@ public int EMU_X2P_STATUS_BAD_DATA = EMU_X2P_STATUS_OTHER_PROBLEM |
                                      EMU_X2P_STATUS_VCC_NOT_ACCESSIBLE |
                                      EMU_X2P_STATUS_DMB_READING_ERROR |
                                      EMU_X2P_STATUS_TMB_READING_ERROR;
+
+public int EMU_X2P_STATUS_ERROR_WITH_DATA = EMU_X2P_STATUS_CHAMBER_HAS_NO_ANALOG_POWER |
+                                            EMU_X2P_STATUS_CHAMBER_HAS_NO_DIGITAL_POWER;
 
 void main() {
   mudcsInit();
@@ -94,7 +101,7 @@ public dyn_string emux2p_getFedDataDps() {
 }
 
 /** Processes data status updates. */
-private void _emux2p_monitorDataStatusCB(string dp, int status) {  
+private void _emux2p_monitorDataStatusCB(string dp, int status) {
 //  emu_debug("got status update for " + dp + " = " + status);
   
   dyn_string ex;
@@ -103,7 +110,7 @@ private void _emux2p_monitorDataStatusCB(string dp, int status) {
   if (emu_checkException(ex)) { return; }
   
   // status is a bitmask of different problems, 0 means data is OK.
-  if (status == 0) { // good data
+  if ((status == 0) || (status & EMU_X2P_STATUS_ERROR_WITH_DATA)) { // good data
     // check if there is an alert - if so, set FSM DP status to -1 (error), if not then 2 (on)
     int alertState;
     dpGet(dataDp + ".:_alert_hdl.._act_state", alertState);
