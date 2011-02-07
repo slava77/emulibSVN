@@ -23,11 +23,8 @@ public const string EXSYS_FACT_SEVERITY_FATAL = "FATAL";
 public int exsys_createFactCollection(dyn_string &exceptionInfo, long requestId = -1) {
   int docId = xmlNewDocument();
   
-    int nodeId = xmlAppendChild(docId, -1, XML_ELEMENT_NODE, "input");
-    xmlSetElementAttribute(docId, nodeId, "xmlns", "http://www.cern.ch/cms/csc/dw/ws/factCollectionInput");
-    int parentNode = xmlAppendChild(docId, nodeId, XML_ELEMENT_NODE, "factCollection");
-    xmlSetElementAttribute(docId, parentNode, "xmlns:" + EXSYS_NAMESPACE_SHORT, EXSYS_NAMESPACE);
-    xmlSetElementAttribute(docId, parentNode, "xmlns", "");
+  int parentNode = xmlAppendChild(docId, -1, XML_ELEMENT_NODE, "factCollection");
+  xmlSetElementAttribute(docId, parentNode, "xmlns", EXSYS_NAMESPACE);
   
 //  int parentNode = _exsys_addXmlNode(docId, -1, "factCollection", "", exceptionInfo);
 //  if (emu_checkException(exceptionInfo)) { return; }
@@ -78,7 +75,7 @@ public void exsys_createFact(int factCollectionDocId, string type, time timestam
                      dyn_string factParamNames, dyn_anytype factParamValues, dyn_string &exceptionInfo) {
   
   // get the fact collection node and create a new fact node in it
-  int collectionNode = xmlFirstChild(factCollectionDocId, xmlFirstChild(factCollectionDocId));
+  int collectionNode = xmlFirstChild(factCollectionDocId);
   if (collectionNode == -1) {
     emu_addError("Exsys: exsys_createFact() could not find the factCollection root node in the given document ID = " + factCollectionDocId, exceptionInfo);
     return;
@@ -106,13 +103,13 @@ public void exsys_createFact(int factCollectionDocId, string type, time timestam
   * @param docId document ID
   */
 private int _exsys_addXmlNode(int docId, int parent, string name, string value = "", dyn_string &exceptionInfo) {
-  int nodeId = xmlAppendChild(docId, parent, XML_ELEMENT_NODE, EXSYS_NAMESPACE_SHORT + ":" + name);
+  int nodeId = xmlAppendChild(docId, parent, XML_ELEMENT_NODE, name);
   if (nodeId == -1) {
     emu_addError("Exsys: _exsys_addXmlNode(): error while adding a child node \"" + name + "\" to XML document ID=" + docId + ", xmlAppendChild() returned -1", exceptionInfo);
     return;
   }
   if (parent == -1) {
-    int retCode = xmlSetElementAttribute(docId, nodeId, "xmlns:" + EXSYS_NAMESPACE_SHORT, EXSYS_NAMESPACE);
+    int retCode = xmlSetElementAttribute(docId, nodeId, "xmlns", EXSYS_NAMESPACE);
     if (retCode == -1) { 
       emu_addError("Exsys: _exsys_addXmlNode(): error while setting namespace attribute to node \"" + name + "\" in XML document ID=" + docId + ", xmlSetElementAttribute() returned -1", exceptionInfo);
       return;

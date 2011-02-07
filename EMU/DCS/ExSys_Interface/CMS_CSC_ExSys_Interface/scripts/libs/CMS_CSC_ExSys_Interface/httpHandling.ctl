@@ -9,8 +9,8 @@
 #uses "CMS_CSC_common/emu_common.ctl"
 
 private const string EXSYS_HOST = "csc-expert";
-private const string EXSYS_PORT = 9080;
-private const string EXSYS_URL = "/ExsysEsb/httpFCInput";
+private const string EXSYS_PORT = 8080;
+private const string EXSYS_URL = "/ExsysGui/factcollectioninput";
 
 private global int exsys_g_socket_handler = -1;
 
@@ -57,16 +57,14 @@ public void exsys_httpPost(string data, dyn_string &exceptionInfo) {
   string responseData;
   time maxTimeout = 1000;
   tcpRead(socketHdl, responseData, maxTimeout);
-  if ((strpos(responseData, "inputResponse") >= 0) && (strpos(responseData, "<return>") >= 0)) {
-    int returnPos = strpos(responseData, "<return>") + 8;
-    int returnEndPos = strpos(responseData, "</return>");
-    int savedFactsCount = substr(responseData, returnPos, returnEndPos - returnPos);
+  int okPos = strpos(responseData, "OK:");
+  if (okPos >= 0) {
+    int numSavedPos = okPos + 3;
+    int savedFactsCount = substr(responseData, numSavedPos, strlen(responseData) - numSavedPos);
     emu_debug("Exsys: Expert System response OK, number of facts saved: " + savedFactsCount);
   } else {
     if (strlen(responseData) > 5) {
       emu_addError("Exsys: unexpected Expert System response: \"" + responseData + "\"", exceptionInfo);
-    } else {
-      emu_info("Exsys: !!!!!!!!!! ignoring the bizare exsys response = \"" + responseData + "\"");
     }
   }
   exsys_closeConnection();
@@ -114,7 +112,7 @@ private int _exsys_openSocket(string host, unsigned port, dyn_string &exceptionI
   if (dynlen(err) > 0) {
     emu_addError("ExSys: Error opening connection to " + host + ":" + port + ": " + err, exceptionInfo);
     emu_info("ExSys: Trying to close the connection...");
-    closeSocket(socket);
+    tcpClose(socket);
     return -1;
   } else {
     emu_info("ExSys Info: Connection to " + host + ":" + port + " has been established successfully");

@@ -1,3 +1,8 @@
+#uses "CMS_CSC_common/emu_common.ctl"
+#uses "CMS_CSC_UI/emuui_deviceInfo.ctl"
+#uses "CMS_CSC_ExSys_Interface/exsysUtil.ctl"
+#uses "CMS_CSC_ExSys_Interface/exsysInterface.ctl"
+
 /**@file
 
 LV Fact handling
@@ -5,11 +10,6 @@ LV Fact handling
 @author Evaldas Juska (PH/UCM)
 @date   September 2010
 */
-
-#uses "CMS_CSC_common/emu_common.ctl"
-#uses "CMS_CSC_UI/emuui_deviceInfo.ctl"
-#uses "CMS_CSC_ExSys_Interface/exsysUtil.ctl"
-#uses "CMS_CSC_ExSys_Interface/exsysInterface.ctl"
 
 private global dyn_string lvDps;
 
@@ -84,9 +84,11 @@ public dyn_string exsys_getLvDps(dyn_string &exceptionInfo) {
   */
 public void exsys_startLvFactDelivery() {
   dyn_string ex;
+  emu_info("Starting LV facts delivery service....");
   dyn_string lvDps = exsys_getLvDps(ex);
   if (emu_checkException(ex)) { return; }
   dpConnect("exsys_lvFactSendTriggerCB", true, lvDps[1] + ".update_value");
+  emu_info("LV facts delivery service started.");
 }
 
 /**
