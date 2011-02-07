@@ -60,6 +60,7 @@ public class FactCollectionInput extends HttpServlet {
 
             // Unmarshal and send object to WS
             JAXBElement<FactCollection> xcol = (JAXBElement<FactCollection>) unmarshaller.unmarshal(request.getReader());
+            response.getWriter().print("OK:");
             response.getWriter().print(wsInput.getFactCollection(xcol.getValue()));
 
         } catch (Exception ex) {
