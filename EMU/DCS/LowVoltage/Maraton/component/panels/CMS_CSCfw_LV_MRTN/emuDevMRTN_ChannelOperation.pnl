@@ -1379,9 +1379,11 @@ LANG:1 13 Trending Plot
 
 EP_childPanelOn()
 {
+  string sTrendingChannel = gSystemNameMRTN+\"TrendingMRTNChannel\";
   ChildPanelOnCentral(\"CMS_CSCfw_LV_MRTN/TrendingChannelMRTN.pnl\",
-      \"\",
-      makeDynString(\"$sDpName:\" + sDpName));
+                      \"\",
+                      makeDynString(\"$sDpName:\" + sDpName,
+                                    \"$sTrendingChannel:\" + sTrendingChannel));
 }" 0
  E E "main()
 {

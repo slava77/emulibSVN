@@ -1,8 +1,10 @@
 V 11
 1
 LANG:1 8 trending
-PANEL,-1 -1 969 958 N "_3DFace" 1
+PANEL,-1 -1 969 958 N "_3DFace" 3
 "$sDpName"
+"$sTrendingCurrent"
+"$sTrendingVoltage"
 E E E E E 1 -1 -1 0  20 21
 ""0  1
 E E 2
@@ -395,13 +397,13 @@ LANG:1 0
 "$fMinForLog"""
 "$iMarkerType"""
 "$sBackColor"""
-"$sDpName""TrendingMRTNVoltage"
+"$sDpName""$sTrendingVoltage"
 "$sForeColor"""
 "$sRefName""TrendingMRTNVoltage."
 "$sTimeRange"""
 "$templateParameters""dpe=$sDpName,"
 3 2 "TrendingMRTNCurrent" -1
-"objects\\fwTrending\\fwTrendingFaceplate.pnl" 10 371 T 3 1.70873786407767 0 1.950207468879668 -7.087378640776699 -241.5767634854772
+"objects\\fwTrending\\fwTrendingFaceplate.pnl" 10 371 T 3 1.70873786407767 0 1.950207468879668 -7.087378640776699 -241.5767634854771
 22
 "$ZoomWindowTitle"""
 "$bShowGrid"""
@@ -420,7 +422,7 @@ LANG:1 0
 "$fMinForLog"""
 "$iMarkerType"""
 "$sBackColor"""
-"$sDpName""TrendingMRTNCurrent"
+"$sDpName""$sTrendingCurrent"
 "$sForeColor"""
 "$sRefName""TrendingMRTNCurrent."
 "$sTimeRange"""
