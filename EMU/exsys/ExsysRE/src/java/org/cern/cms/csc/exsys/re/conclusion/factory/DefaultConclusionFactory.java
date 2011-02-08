@@ -22,10 +22,8 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import org.cern.cms.csc.dw.exception.OnSaveProcessingException;
-import org.cern.cms.csc.dw.exception.PersistException;
-import org.cern.cms.csc.dw.log.Logger;
-import org.cern.cms.csc.dw.log.SimpleLogger;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.exsys.re.RuleEngineManagerLocal;
 import org.cern.cms.csc.exsys.re.conclusion.ConclusionCacheService;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
@@ -91,7 +89,7 @@ public class DefaultConclusionFactory extends ConclusionFactory {
         }
     }
 
-    protected void updateExistingConclusion(Conclusion existingConclusion, Conclusion conclusion) throws OnSaveProcessingException, PersistException {
+    protected void updateExistingConclusion(Conclusion existingConclusion, Conclusion conclusion) throws Exception {
         existingConclusion.setHitCount(existingConclusion.getHitCount().add(BigInteger.ONE));
         existingConclusion.setLastHitTimeItem(conclusion.getTimestampItem());
         existingConclusion.setTitle(conclusion.getTitle()); // update with more up to date title

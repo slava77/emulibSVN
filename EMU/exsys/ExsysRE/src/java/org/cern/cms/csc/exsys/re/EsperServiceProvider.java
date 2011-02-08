@@ -6,8 +6,8 @@ import com.espertech.esper.client.EPServiceProviderManager;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.Singleton;
-import org.cern.cms.csc.dw.log.Logger;
-import org.cern.cms.csc.dw.log.SimpleLogger;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
 
 @Singleton
 public class EsperServiceProvider {

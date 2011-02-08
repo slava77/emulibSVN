@@ -7,8 +7,8 @@ package org.cern.cms.csc.exsys.re;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import org.cern.cms.csc.dw.log.Logger;
-import org.cern.cms.csc.dw.log.SimpleLogger;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 
