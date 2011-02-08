@@ -50,7 +50,7 @@
                             <orm:column name="RECT_NAME" length="64" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="name"/>
-                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                        <ann:annotate xmlns:a="jasf.bean.gui.annotation">
                             <a:UseInTitle order="1"/>
                         </ann:annotate>
                     </xsd:appinfo>
@@ -94,7 +94,7 @@
                             <orm:column name="RECT_TIME_CREATED" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="timeCreated"/>
-                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                        <ann:annotate xmlns:a="jasf.bean.gui.annotation">
                             <a:NoManualInput createDefaultValue="true"/>
                         </ann:annotate>
                     </xsd:appinfo>

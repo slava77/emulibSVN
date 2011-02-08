@@ -19,8 +19,8 @@ import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
-import org.cern.cms.csc.dw.model.annotation.gui.ImmutableReference;
-import org.cern.cms.csc.dw.model.annotation.gui.Label;
+import jsf.bean.gui.annotation.ImmutableReference;
+import jsf.bean.gui.annotation.Label;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 

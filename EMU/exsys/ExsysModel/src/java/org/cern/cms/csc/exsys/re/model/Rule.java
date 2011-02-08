@@ -35,8 +35,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
-import org.cern.cms.csc.dw.model.annotation.gui.Label;
-import org.cern.cms.csc.dw.model.annotation.gui.UseInTitle;
+import jsf.bean.gui.annotation.Label;
+import jsf.bean.gui.annotation.NoManualInput;
+import jsf.bean.gui.annotation.UseInTitle;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XMLGregorianCalendarAsDateTime;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
@@ -95,21 +96,21 @@ public class Rule
 {
 
     @XmlElement(required = true)
-    @org.cern.cms.csc.dw.model.annotation.gui.NoManualInput
+    @NoManualInput
     protected BigInteger version;
     @XmlElement(required = true)
     @UseInTitle(order = 1)
     protected String name;
     @XmlElement(required = true)
     @XmlSchemaType(name = "dateTime")
-    @org.cern.cms.csc.dw.model.annotation.gui.NoManualInput(createDefaultValue = true)
+    @NoManualInput(createDefaultValue = true)
     protected XMLGregorianCalendar timeCreated;
     @XmlElement(required = true)
     protected String ruleDefinition;
     protected String description;
     @XmlElement(required = true)
     protected org.cern.cms.csc.exsys.re.model.ConclusionType conclusionType;
-    @org.cern.cms.csc.dw.model.annotation.gui.NoManualInput
+    @NoManualInput
     protected boolean enabled;
     @XmlElement(required = true)
     protected RuleType type;

@@ -29,9 +29,10 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
-import org.cern.cms.csc.dw.model.annotation.gui.Label;
-import org.cern.cms.csc.dw.model.annotation.gui.NoManualInput;
-import org.cern.cms.csc.dw.model.annotation.gui.UseInTitle;
+import jsf.bean.gui.annotation.ImmutableReference;
+import jsf.bean.gui.annotation.Label;
+import jsf.bean.gui.annotation.NoManualInput;
+import jsf.bean.gui.annotation.UseInTitle;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 
 
@@ -75,10 +76,10 @@ public abstract class ComponentFinder
 {
 
     @NoManualInput
-    @org.cern.cms.csc.dw.model.annotation.gui.ImmutableReference
+    @ImmutableReference
     protected org.cern.cms.csc.exsys.re.model.Rule rule;
     @XmlElement(required = true)
-    @org.cern.cms.csc.dw.model.annotation.gui.ImmutableReference
+    @ImmutableReference
     @Label(description = "This tells the component finder what component type is to be resolved/accepted.", name = "Component Type")
     protected org.cern.cms.csc.dw.model.ontology.ComponentClass componentClass;
     @XmlAttribute(name = "id")

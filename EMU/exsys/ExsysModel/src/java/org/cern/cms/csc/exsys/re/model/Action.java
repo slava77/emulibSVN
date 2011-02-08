@@ -31,8 +31,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
-import org.cern.cms.csc.dw.model.annotation.gui.ImmutableReference;
-import org.cern.cms.csc.dw.model.annotation.gui.UseInTitle;
+import jsf.bean.gui.annotation.ImmutableReference;
+import jsf.bean.gui.annotation.UseInTitle;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 
 

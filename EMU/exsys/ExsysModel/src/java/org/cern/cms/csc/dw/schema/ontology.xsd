@@ -76,7 +76,7 @@
                         <hj:basic optional="false">
                             <orm:column name="CMP_NAME" length="32"/>
                         </hj:basic>
-                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                        <ann:annotate xmlns:a="jasf.bean.gui.annotation">
                             <a:UseInTitle order="1"/>
                         </ann:annotate>
                     </xsd:appinfo>
@@ -142,7 +142,7 @@
                             <hj:enumerated-value/>
                         </hj:basic>
                         <jaxb:property name="type"/>
-                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                        <ann:annotate xmlns:a="jasf.bean.gui.annotation">
                             <a:UseInTitle order="1"/>
                         </ann:annotate>
                     </xsd:appinfo>
@@ -241,7 +241,7 @@
                             <hj:enumerated-value/>
                         </hj:basic>
                         <jaxb:property name="type"/>
-                        <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation.gui">
+                        <ann:annotate xmlns:a="jasf.bean.gui.annotation">
                             <a:UseInTitle order="1"/>
                         </ann:annotate>
                     </xsd:appinfo>
