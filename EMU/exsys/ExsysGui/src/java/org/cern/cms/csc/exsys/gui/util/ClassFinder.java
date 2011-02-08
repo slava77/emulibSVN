@@ -11,12 +11,24 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import jsf.bean.gui.ClassFinderIf;
 
 /**
  *
  * @author evka
  */
-public class ClassFinder {
+public class ClassFinder implements ClassFinderIf {
+
+    private static ClassFinder instance;
+
+    private ClassFinder() { }
+
+    public static ClassFinder getInstance() {
+        if (instance == null) {
+            instance = new ClassFinder();
+        }
+        return instance;
+    }
 
     /**
      * Finds all subclasses of the given class that reside in the same package (or subpackages)
@@ -25,7 +37,8 @@ public class ClassFinder {
      * @throws ClassNotFoundException
      * @throws IOException
      */
-    public static List<Class> findSubclassesInSamePackage(Class clazz) throws ClassNotFoundException, IOException{
+    @Override
+    public List<Class> findSubclassesInSamePackage(Class clazz) throws ClassNotFoundException, IOException {
         String packageName = clazz.getPackage().getName();
         List<Class> classesInPackage = getClassesInPackage(packageName);
         List<Class> ret = new ArrayList<Class>();
@@ -71,7 +84,7 @@ public class ClassFinder {
      * @return The classes
      * @throws ClassNotFoundException
      */
-    private static List<Class> findClassesInDir(File directory, String packageName) throws ClassNotFoundException {
+    public static List<Class> findClassesInDir(File directory, String packageName) throws ClassNotFoundException {
         List<Class> classes = new ArrayList<Class>();
         if (!directory.exists()) {
             return classes;

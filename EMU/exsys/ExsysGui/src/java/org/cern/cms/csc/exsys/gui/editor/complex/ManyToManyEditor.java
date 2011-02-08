@@ -8,11 +8,11 @@ package org.cern.cms.csc.exsys.gui.editor.complex;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
-import org.cern.cms.csc.dw.dao.GenericDaoLocal;
-import org.cern.cms.csc.dw.metadata.ManyToManyPropertyMd;
-import org.cern.cms.csc.dw.metadata.PropertyMd;
+import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
+import jsf.bean.gui.metadata.ManyToManyPropertyMd;
+import jsf.bean.gui.metadata.PropertyMd;
+import org.cern.cms.csc.dw.dao.EditorDaoLocal;
 import org.cern.cms.csc.dw.model.base.EntityBase;
-import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 import org.cern.cms.csc.exsys.gui.editor.base.Editor;
 import org.cern.cms.csc.exsys.gui.editor.base.RestrictedEntityEditor;
 
@@ -29,8 +29,8 @@ public class ManyToManyEditor extends RestrictedEntityEditor {
      * @param parentEditor parent editor that this editor belongs to.
      * @throws InvalidEntityBeanPropertyException thrown if property is incompatible with this kind of editor
      */
-    public ManyToManyEditor(EntityBase entity, PropertyMd metadata, Editor parentEditor, GenericDaoLocal genericDao) throws InvalidEntityBeanPropertyException {
-        super(entity, metadata, parentEditor, genericDao);
+    public ManyToManyEditor(EntityBase entity, PropertyMd metadata, Editor parentEditor, EditorDaoLocal EditorDao) throws InvalidEntityBeanPropertyException {
+        super(entity, metadata, parentEditor, EditorDao);
         if (!(metadata instanceof ManyToManyPropertyMd)) {
             throw new InvalidEntityBeanPropertyException("Attempt to create a ManyToManyEditor for a property which is not a many-to-many relation: " + metadata.getName());
         }

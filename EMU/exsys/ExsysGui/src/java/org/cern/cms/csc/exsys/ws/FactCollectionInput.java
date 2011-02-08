@@ -14,8 +14,8 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import org.cern.cms.csc.dw.log.Logger;
-import org.cern.cms.csc.dw.log.SimpleLogger;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.model.fact.FactCollection;
 import org.cern.cms.csc.dw.ws.FactCollectionInputLocal;
 

@@ -10,10 +10,10 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.event.ActionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.GOntologyDaoLocal;
 import org.cern.cms.csc.dw.exception.ComponentClassNotFoundException;
-import org.cern.cms.csc.dw.log.Logger;
-import org.cern.cms.csc.dw.log.SimpleLogger;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentClass;
 import org.cern.cms.csc.exsys.gui.component.OntologyComponentSelector;
 

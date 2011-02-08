@@ -8,9 +8,7 @@ package org.cern.cms.csc.exsys.gui.action;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import org.cern.cms.csc.dw.dao.GenericDaoLocal;
-import org.cern.cms.csc.dw.exception.OnSaveProcessingException;
-import org.cern.cms.csc.dw.exception.PersistException;
+import org.cern.cms.csc.dw.dao.EditorDaoLocal;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.exsys.gui.editor.EntityEditorManager;
 import org.cern.cms.csc.exsys.re.model.Action;
@@ -27,7 +25,7 @@ import org.cern.cms.csc.exsys.re.model.SmsAction;
 public class EditAction extends EntityEditorManager {
 
     @EJB
-    private GenericDaoLocal dao;
+    private EditorDaoLocal dao;
 
     public EditAction() {
         super();
@@ -49,14 +47,14 @@ public class EditAction extends EntityEditorManager {
     }
 
     @Override
-    public String doSave() throws PersistException, OnSaveProcessingException {
+    public String doSave() throws Exception {
         Action action = (Action) getTopEditor().getValue();
-        getGenericDao().getEntityDao().merge(action);
+        getEditorDao().getEntityDao().merge(action);
         return "reActions";
     }
 
     @Override
-    protected GenericDaoLocal getGenericDao() {
+    protected EditorDaoLocal getEditorDao() {
         return dao;
     }
 

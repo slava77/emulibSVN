@@ -7,12 +7,11 @@ package org.cern.cms.csc.exsys.gui.editor.base;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import org.cern.cms.csc.dw.dao.GenericDaoLocal;
-import org.cern.cms.csc.dw.dao.GenericDaoLocal;
+import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
+import jsf.bean.gui.metadata.BasicPropertyMd;
+import jsf.bean.gui.metadata.PropertyMd;
+import org.cern.cms.csc.dw.dao.EditorDaoLocal;
 import org.cern.cms.csc.dw.model.base.EntityBase;
-import org.cern.cms.csc.dw.metadata.BasicPropertyMd;
-import org.cern.cms.csc.dw.metadata.PropertyMd;
-import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 import org.cern.cms.csc.exsys.gui.editor.PropertyEditorFactory;
 
 /**
@@ -24,8 +23,8 @@ public abstract class EntityEditor extends Editor {
 
     /** Editors of the properties of the entity being edited by this EntityEditor. */
     private List<Editor> propertyEditors = null;
-    /** GenericDao bean - this is passed to propertyEditorFactory when creating child editors (needed when creating restricted editors like ManyToOneEditor or ManyToManyEditor). */
-    private GenericDaoLocal genericDao;
+    /** EditorDao bean - this is passed to propertyEditorFactory when creating child editors (needed when creating restricted editors like ManyToOneEditor or ManyToManyEditor). */
+    private EditorDaoLocal EditorDao;
 
     /**
      * Constructor
@@ -34,9 +33,9 @@ public abstract class EntityEditor extends Editor {
      * @param parentEditor parent editor that this editor belongs to.
      * @throws InvalidEntityBeanPropertyException thrown if property is incompatible with this kind of editor
      */
-    public EntityEditor(EntityBase entity, PropertyMd metadata, Editor parentEditor, GenericDaoLocal genericDao) throws InvalidEntityBeanPropertyException {
+    public EntityEditor(EntityBase entity, PropertyMd metadata, Editor parentEditor, EditorDaoLocal EditorDao) throws InvalidEntityBeanPropertyException {
         super(entity, metadata, parentEditor);
-        this.genericDao = genericDao;
+        this.EditorDao = EditorDao;
         if ((metadata instanceof BasicPropertyMd)) {
             throw new InvalidEntityBeanPropertyException("Attempt to create a " + this.getClass().getName() + " for a property which is basic: " + metadata.getName());
         }
@@ -54,11 +53,11 @@ public abstract class EntityEditor extends Editor {
     }
 
     /**
-     * Get GenericDao bean - used by restricted editors (like ManyToOneEditor or ManyToManyEditor) to retrieve list of values.
-     * @return GenericDao bean - used by restricted editors (like ManyToOneEditor or ManyToManyEditor) to retrieve list of values
+     * Get EditorDao bean - used by restricted editors (like ManyToOneEditor or ManyToManyEditor) to retrieve list of values.
+     * @return EditorDao bean - used by restricted editors (like ManyToOneEditor or ManyToManyEditor) to retrieve list of values
      */
-    protected GenericDaoLocal getGenericDao() {
-        return genericDao;
+    protected EditorDaoLocal getEditorDao() {
+        return EditorDao;
     }
 
     /**
@@ -68,7 +67,7 @@ public abstract class EntityEditor extends Editor {
     public List<Editor> getPropertyEditors() {
         if (propertyEditors == null) {
             try {
-                propertyEditors = PropertyEditorFactory.createPropertyEditors((EntityBase)getValue(), this, genericDao);
+                propertyEditors = PropertyEditorFactory.createPropertyEditors((EntityBase)getValue(), this, EditorDao);
             } catch (Exception ex) {
                 throw new RuntimeException("Exception while trying to create property editors for an entity editor", ex);
             }

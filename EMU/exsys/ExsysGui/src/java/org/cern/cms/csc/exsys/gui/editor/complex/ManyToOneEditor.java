@@ -6,12 +6,12 @@
 package org.cern.cms.csc.exsys.gui.editor.complex;
 
 import java.lang.reflect.InvocationTargetException;
-import org.cern.cms.csc.dw.dao.GenericDaoLocal;
-import org.cern.cms.csc.dw.metadata.EnumPropertyMd;
+import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
+import jsf.bean.gui.metadata.EnumPropertyMd;
+import jsf.bean.gui.metadata.ManyToOnePropertyMd;
+import jsf.bean.gui.metadata.PropertyMd;
+import org.cern.cms.csc.dw.dao.EditorDaoLocal;
 import org.cern.cms.csc.dw.model.base.EntityBase;
-import org.cern.cms.csc.dw.metadata.ManyToOnePropertyMd;
-import org.cern.cms.csc.dw.metadata.PropertyMd;
-import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 import org.cern.cms.csc.exsys.gui.editor.base.Editor;
 import org.cern.cms.csc.exsys.gui.editor.base.Editor.InputType;
 import org.cern.cms.csc.exsys.gui.editor.base.RestrictedEntityEditor;
@@ -29,8 +29,8 @@ public class ManyToOneEditor extends RestrictedEntityEditor {
      * @param parentEditor parent editor that this editor belongs to.
      * @throws InvalidEntityBeanPropertyException thrown if property is incompatible with this kind of editor
      */
-    public ManyToOneEditor(EntityBase entity, PropertyMd metadata, Editor parentEditor, GenericDaoLocal genericDao) throws InvalidEntityBeanPropertyException {
-        super(entity, metadata, parentEditor, genericDao);
+    public ManyToOneEditor(EntityBase entity, PropertyMd metadata, Editor parentEditor, EditorDaoLocal EditorDao) throws InvalidEntityBeanPropertyException {
+        super(entity, metadata, parentEditor, EditorDao);
         if (!(metadata instanceof ManyToOnePropertyMd) && !(metadata instanceof EnumPropertyMd)) {
             throw new InvalidEntityBeanPropertyException("Attempt to create a ManyToOneEditor for a property which is not a many-to-one relation: " + metadata.getName());
         }

@@ -5,11 +5,11 @@
 
 package org.cern.cms.csc.exsys.gui.editor;
 
-import org.cern.cms.csc.dw.dao.GenericDaoLocal;
-import org.cern.cms.csc.dw.log.Logger;
-import org.cern.cms.csc.dw.log.SimpleLogger;
+import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.dao.EditorDaoLocal;
 import org.cern.cms.csc.dw.model.base.EntityBase;
-import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 import org.cern.cms.csc.exsys.gui.editor.base.Editor;
 import org.cern.cms.csc.exsys.gui.editor.base.RestrictedEntityEditor;
 import org.cern.cms.csc.exsys.gui.editor.complex.TopEntityEditor;
@@ -31,7 +31,7 @@ public abstract class EntityEditorManager extends JsfBeanBase {
     /** Entity that is being edited by this editor manager. */
     private EntityBase entity;
 
-    protected abstract GenericDaoLocal getGenericDao();
+    protected abstract EditorDaoLocal getEditorDao();
 
     /**
      * Constructor
@@ -96,7 +96,7 @@ public abstract class EntityEditorManager extends JsfBeanBase {
                 if (entity == null) {
                     return null;
                 }
-                topEditor = new TopEntityEditor(entity, getGenericDao());
+                topEditor = new TopEntityEditor(entity, getEditorDao());
                 currentEditor = topEditor;
             } catch (InvalidEntityBeanPropertyException iepex) {
                 throw new RuntimeException("Failed to instantiate EntityEditorManager topEditor - invalid entity bean property exception thrown while creating TopEntityEditor", iepex);

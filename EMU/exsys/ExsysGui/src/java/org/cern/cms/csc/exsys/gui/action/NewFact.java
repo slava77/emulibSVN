@@ -15,10 +15,10 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
-import org.cern.cms.csc.dw.dao.GenericDaoLocal;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.dao.EditorDaoLocal;
 import org.cern.cms.csc.dw.exception.ComponentNotFoundException;
-import org.cern.cms.csc.dw.log.Logger;
-import org.cern.cms.csc.dw.log.SimpleLogger;
 import org.cern.cms.csc.dw.metadata.FactMd;
 import org.cern.cms.csc.dw.metadata.MetadataManager;
 import org.cern.cms.csc.dw.model.base.EntityBase;
@@ -53,7 +53,7 @@ public class NewFact extends EntityEditorManager {
     private FactCollectionInputLocal factCollectionInput;
 
     @EJB
-    private GenericDaoLocal genericDao;
+    private EditorDaoLocal EditorDao;
 
     private Component factSource;
     private List<SelectItem> factSourcesSI;
@@ -136,11 +136,11 @@ public class NewFact extends EntityEditorManager {
     public List<SelectItem> getFactSourcesList() throws ComponentNotFoundException {
         if (factSourcesSI == null) {
             factSourcesSI = new ArrayList<SelectItem>();
-            GComponentClass factSourceClass = getGenericDao().getGOntologyDao().getGComponentClass(ComponentClassType.FACT_PROVIDER);
+            GComponentClass factSourceClass = getEditorDao().getGOntologyDao().getGComponentClass(ComponentClassType.FACT_PROVIDER);
             Collection<GComponent> factSourceGComponents = factSourceClass.getComponents();
             List<Component> factSources = new ArrayList<Component>();
             for (GComponent factSourceGComponent: factSourceGComponents) {
-                Component source = getGenericDao().getOntologyDao().getComponent(factSourceGComponent);
+                Component source = getEditorDao().getOntologyDao().getComponent(factSourceGComponent);
                 factSources.add(source);
                 SelectItem si = new SelectItem(source, source.getName());
                 factSourcesSI.add(si);
@@ -158,8 +158,8 @@ public class NewFact extends EntityEditorManager {
     }
 
     @Override
-    protected GenericDaoLocal getGenericDao() {
-        return genericDao;
+    protected EditorDaoLocal getEditorDao() {
+        return EditorDao;
     }
 
 }

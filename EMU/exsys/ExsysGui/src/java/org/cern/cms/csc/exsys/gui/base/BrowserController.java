@@ -8,9 +8,9 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import org.cern.cms.csc.dw.log.Logger;
-import org.cern.cms.csc.dw.log.SimpleLogger;
-import org.cern.cms.csc.exsys.gui.component.BeanTableManager;
+import jsf.bean.gui.component.BeanTableManager;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.exsys.gui.util.ClassComparator;
 
 public abstract class BrowserController extends JsfBeanBase {

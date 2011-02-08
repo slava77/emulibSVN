@@ -5,10 +5,10 @@
 
 package org.cern.cms.csc.exsys.gui.editor.base;
 
+import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
+import jsf.bean.gui.metadata.BasicPropertyMd;
+import jsf.bean.gui.metadata.PropertyMd;
 import org.cern.cms.csc.dw.model.base.EntityBase;
-import org.cern.cms.csc.dw.metadata.BasicPropertyMd;
-import org.cern.cms.csc.dw.metadata.PropertyMd;
-import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 
 /**
  * Editor which is used to edit basic properties (String, Number, Date...)

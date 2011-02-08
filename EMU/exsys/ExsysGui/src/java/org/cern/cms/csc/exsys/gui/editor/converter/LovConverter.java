@@ -10,8 +10,8 @@ import java.util.List;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
-import org.cern.cms.csc.dw.log.Logger;
-import org.cern.cms.csc.dw.log.SimpleLogger;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
 
 /**
  * Converter used in list of value select boxes and menus

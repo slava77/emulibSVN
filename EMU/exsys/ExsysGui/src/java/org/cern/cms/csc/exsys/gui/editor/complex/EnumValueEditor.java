@@ -5,11 +5,11 @@
 
 package org.cern.cms.csc.exsys.gui.editor.complex;
 
-import org.cern.cms.csc.dw.dao.GenericDaoLocal;
-import org.cern.cms.csc.dw.metadata.EnumPropertyMd;
-import org.cern.cms.csc.dw.metadata.PropertyMd;
+import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
+import jsf.bean.gui.metadata.EnumPropertyMd;
+import jsf.bean.gui.metadata.PropertyMd;
+import org.cern.cms.csc.dw.dao.EditorDaoLocal;
 import org.cern.cms.csc.dw.model.base.EntityBase;
-import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 import org.cern.cms.csc.exsys.gui.editor.base.Editor;
 import org.cern.cms.csc.exsys.gui.editor.base.Editor.InputType;
 
@@ -19,8 +19,8 @@ import org.cern.cms.csc.exsys.gui.editor.base.Editor.InputType;
  */
 public class EnumValueEditor extends ManyToOneEditor {
 
-    public EnumValueEditor(EntityBase entity, PropertyMd metadata, Editor parentEditor, GenericDaoLocal genericDao) throws InvalidEntityBeanPropertyException {
-        super(entity, metadata, parentEditor, genericDao);
+    public EnumValueEditor(EntityBase entity, PropertyMd metadata, Editor parentEditor, EditorDaoLocal EditorDao) throws InvalidEntityBeanPropertyException {
+        super(entity, metadata, parentEditor, EditorDao);
         if (!(metadata instanceof EnumPropertyMd)) {
             throw new InvalidEntityBeanPropertyException("Attempt to create a EnumValueEditor for a property which is not an enum: " + metadata.getName());
         }

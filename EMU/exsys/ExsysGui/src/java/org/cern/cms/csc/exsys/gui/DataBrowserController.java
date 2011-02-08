@@ -1,15 +1,17 @@
 package org.cern.cms.csc.exsys.gui;
 
 import org.cern.cms.csc.exsys.gui.base.BrowserController;
-import org.cern.cms.csc.exsys.gui.component.BeanTableManager;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import jsf.bean.gui.ClassFinderIf;
+import jsf.bean.gui.component.BeanTableManager;
+import jsf.bean.gui.component.table.BeanTableDaoIf;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.MainBeanTableDaoLocal;
-import org.cern.cms.csc.dw.dao.table.BeanTableDaoIf;
-import org.cern.cms.csc.dw.log.Logger;
-import org.cern.cms.csc.dw.log.SimpleLogger;
+import org.cern.cms.csc.exsys.gui.util.ClassFinder;
 
 @ManagedBean
 @SessionScoped
@@ -36,6 +38,10 @@ public class DataBrowserController extends BrowserController {
             @Override
             public FacesContext getContext() {
                 return FacesContext.getCurrentInstance();
+            }
+            @Override
+            public ClassFinderIf getClassFinder() {
+                return ClassFinder.getInstance();
             }
         };
     }

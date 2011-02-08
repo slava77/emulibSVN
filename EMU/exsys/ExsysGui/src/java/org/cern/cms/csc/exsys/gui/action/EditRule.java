@@ -8,7 +8,7 @@ package org.cern.cms.csc.exsys.gui.action;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import org.cern.cms.csc.dw.dao.GenericDaoLocal;
+import org.cern.cms.csc.dw.dao.EditorDaoLocal;
 import org.cern.cms.csc.dw.exception.OnSaveProcessingException;
 import org.cern.cms.csc.dw.exception.PersistException;
 import org.cern.cms.csc.dw.model.base.EntityBase;
@@ -30,7 +30,7 @@ public class EditRule extends EntityEditorManager {
     private RuleEngineDaoLocal reDao;
 
     @EJB
-    private GenericDaoLocal genericDao;
+    private EditorDaoLocal EditorDao;
 
     @Override
     protected EntityBase createEntity() {
@@ -38,7 +38,7 @@ public class EditRule extends EntityEditorManager {
     }
 
     @Override
-    public String doSave() throws PersistException, OnSaveProcessingException {
+    public String doSave() throws Exception {
         Rule rule = (Rule) getTopEditor().getValue();
         rule.setEnabled(false);
         setToSave(rule);
@@ -46,16 +46,16 @@ public class EditRule extends EntityEditorManager {
     }
 
     @Override
-    protected GenericDaoLocal getGenericDao() {
-        return genericDao;
+    protected EditorDaoLocal getEditorDao() {
+        return EditorDao;
     }
 
-    public void setToSave(Rule rule) throws PersistException, OnSaveProcessingException {
+    public void setToSave(Rule rule) throws Exception {
         reDao.saveRule(rule);
     }
 
     public void setToDelete(Rule rule) throws PersistException, OnSaveProcessingException {
-        genericDao.getEntityDao().delete(rule);
+        EditorDao.getEntityDao().delete(rule);
     }
 
 }

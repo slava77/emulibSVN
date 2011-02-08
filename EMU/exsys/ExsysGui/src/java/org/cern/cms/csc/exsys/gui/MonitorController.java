@@ -23,16 +23,18 @@ import javax.jms.QueueBrowser;
 import javax.jms.Session;
 import javax.naming.Binding;
 import javax.naming.NamingException;
+import jsf.bean.gui.ClassFinderIf;
+import jsf.bean.gui.component.BeanTableManager;
+import jsf.bean.gui.component.table.BeanTableDaoIf;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.MonitorDaoLocal;
-import org.cern.cms.csc.dw.dao.table.BeanTableDaoIf;
-import org.cern.cms.csc.dw.log.Logger;
-import org.cern.cms.csc.dw.log.SimpleLogger;
 import org.cern.cms.csc.dw.model.monitor.MonitorFactCollectionLog;
 import org.cern.cms.csc.dw.model.monitor.MonitorQueueStatus;
 import org.cern.cms.csc.dw.model.monitor.MonitorSystem;
 import org.cern.cms.csc.dw.monitor.SysMonitor;
 import org.cern.cms.csc.dw.util.ServiceLocator;
-import org.cern.cms.csc.exsys.gui.component.BeanTableManager;
+import org.cern.cms.csc.exsys.gui.util.ClassFinder;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -280,6 +282,10 @@ public class MonitorController extends BrowserController {
             @Override
             public FacesContext getContext() {
                 return FacesContext.getCurrentInstance();
+            }
+            @Override
+            public ClassFinderIf getClassFinder() {
+                return ClassFinder.getInstance();
             }
         };
     }

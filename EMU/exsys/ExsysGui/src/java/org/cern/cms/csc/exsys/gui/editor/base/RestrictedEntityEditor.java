@@ -10,13 +10,13 @@ import java.util.List;
 import javax.faces.convert.Converter;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
-import org.cern.cms.csc.dw.dao.GenericDaoLocal;
-import org.cern.cms.csc.dw.log.Logger;
-import org.cern.cms.csc.dw.log.SimpleLogger;
-import org.cern.cms.csc.dw.metadata.PropertyMd;
-import org.cern.cms.csc.dw.metadata.RestrictedPropertyMd;
+import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
+import jsf.bean.gui.metadata.PropertyMd;
+import jsf.bean.gui.metadata.RestrictedPropertyMd;
+import org.cern.cms.csc.dw.dao.EditorDaoLocal;
 import org.cern.cms.csc.dw.model.base.EntityBase;
-import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 import org.cern.cms.csc.exsys.gui.editor.converter.LovConverter;
 
 /**
@@ -41,8 +41,8 @@ public abstract class RestrictedEntityEditor extends EntityEditor {
      * @param parentEditor parent editor that this editor belongs to.
      * @throws InvalidEntityBeanPropertyException thrown if property is incompatible with this kind of editor
      */
-    public RestrictedEntityEditor(EntityBase entity, PropertyMd metadata, Editor parentEditor, GenericDaoLocal genericDao) throws InvalidEntityBeanPropertyException {
-        super(entity, metadata, parentEditor, genericDao);
+    public RestrictedEntityEditor(EntityBase entity, PropertyMd metadata, Editor parentEditor, EditorDaoLocal EditorDao) throws InvalidEntityBeanPropertyException {
+        super(entity, metadata, parentEditor, EditorDao);
         if ((metadata != null) && !(metadata instanceof RestrictedPropertyMd)) {
             throw new InvalidEntityBeanPropertyException("Attempt to create a RestrictedEntityEditor for a property which is not a restricted relation (not a many-to-one or many-to-many or enum): " + metadata.getName());
         }
@@ -95,7 +95,7 @@ public abstract class RestrictedEntityEditor extends EntityEditor {
      * @see org.cern.cms.csc.dw.model.base.PropertyMd.getListOfValues()
      */
     public void refreshListOfValues() throws Exception {
-        lovCache = getMetadata().getListOfValues(getGenericDao().getEntityDao());
+        lovCache = getMetadata().getListOfValues(getEditorDao().getEntityDao());
         Object currentValue = getValue();
         // replace the object equivalent to the current value with the actual current value object instance so that we don't go out of sync if the current value is edited by the user
         if (currentValue != null) {

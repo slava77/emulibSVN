@@ -13,11 +13,11 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
-import org.cern.cms.csc.dw.dao.GenericDaoLocal;
-import org.cern.cms.csc.dw.log.Logger;
-import org.cern.cms.csc.dw.log.SimpleLogger;
+import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.dao.EditorDaoLocal;
 import org.cern.cms.csc.dw.model.base.EntityBase;
-import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 import org.cern.cms.csc.exsys.gui.editor.base.Editor;
 import org.cern.cms.csc.exsys.gui.editor.base.Editor.InputType;
 import org.cern.cms.csc.exsys.gui.editor.base.EntityEditor;
@@ -34,8 +34,8 @@ public class EditorClassEditor extends RestrictedEntityEditor {
 
     private Class value;
 
-    public EditorClassEditor(EntityBase entity, Editor parentEditor, GenericDaoLocal genericDao) throws InvalidEntityBeanPropertyException {
-        super(entity, null, parentEditor, genericDao);
+    public EditorClassEditor(EntityBase entity, Editor parentEditor, EditorDaoLocal EditorDao) throws InvalidEntityBeanPropertyException {
+        super(entity, null, parentEditor, EditorDao);
         if (entity != null) {
             this.value = entity.getClass();
         }
@@ -80,7 +80,7 @@ public class EditorClassEditor extends RestrictedEntityEditor {
             if (this.value == null) {
                 lovCache.add(null);
             }
-            List<Class> subclasses = ClassFinder.findSubclassesInSamePackage(baseClass);
+            List<Class> subclasses = ClassFinder.getInstance().findSubclassesInSamePackage(baseClass);
             for (Class subclass: subclasses) {
                 if (!Modifier.isAbstract(subclass.getModifiers())) {
                     lovCache.add(subclass);

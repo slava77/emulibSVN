@@ -8,12 +8,9 @@ package org.cern.cms.csc.exsys.gui.action;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import javax.naming.NamingException;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
-import org.cern.cms.csc.dw.exception.OnSaveProcessingException;
-import org.cern.cms.csc.dw.exception.PersistException;
-import org.cern.cms.csc.dw.log.Logger;
-import org.cern.cms.csc.dw.log.SimpleLogger;
 import org.cern.cms.csc.exsys.gui.base.JsfBeanBase;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 
@@ -36,7 +33,7 @@ public class AcknowledgeConclusion extends JsfBeanBase {
         super();
     }
 
-    public void doAcknowledge() throws NamingException, PersistException, OnSaveProcessingException {
+    public void doAcknowledge() throws Exception {
         logger.info("Acknowledging conclusion: " + concl.toString());
         if (concl == null) {
             return;

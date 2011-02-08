@@ -8,9 +8,9 @@ package org.cern.cms.csc.exsys.gui.editor.basic;
 import java.util.Date;
 import javax.faces.convert.Converter;
 import javax.faces.convert.DateTimeConverter;
+import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
+import jsf.bean.gui.metadata.PropertyMd;
 import org.cern.cms.csc.dw.model.base.EntityBase;
-import org.cern.cms.csc.dw.metadata.PropertyMd;
-import org.cern.cms.csc.exsys.exception.InvalidEntityBeanPropertyException;
 import org.cern.cms.csc.exsys.gui.editor.base.BasicEditor;
 import org.cern.cms.csc.exsys.gui.editor.base.Editor;
 
