@@ -10,10 +10,10 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.ejb.Stateless;
-import org.cern.cms.csc.dw.log.SimpleLogger;
+import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
-import org.cern.cms.csc.dw.exception.InvalidEntityClassException;
-import org.cern.cms.csc.dw.log.Logger;
+import jsf.bean.gui.exception.InvalidEntityClassException;
+import jsf.bean.gui.log.Logger;
 
 /**
  *

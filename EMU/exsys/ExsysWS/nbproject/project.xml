@@ -8,6 +8,7 @@
         <data xmlns="http://www.netbeans.org/ns/j2ee-ejbjarproject/3">
             <name>ExsysWS</name>
             <minimum-ant-version>1.6.5</minimum-ant-version>
+            <included-library dirs="200">reference.JsfBeanGui.jar</included-library>
             <included-library dirs="100">reference.ExsysModel.dist</included-library>
             <included-library dirs="200">libs.Hibernate36.classpath</included-library>
             <included-library dirs="200">libs.Commons.classpath</included-library>
@@ -29,6 +30,14 @@
                 <target>dist</target>
                 <clean-target>clean</clean-target>
                 <id>dist</id>
+            </reference>
+            <reference>
+                <foreign-project>JsfBeanGui</foreign-project>
+                <artifact-type>jar</artifact-type>
+                <script>build.xml</script>
+                <target>jar</target>
+                <clean-target>clean</clean-target>
+                <id>jar</id>
             </reference>
         </references>
         <spring-data xmlns="http://www.netbeans.org/ns/spring-data/1">

@@ -12,9 +12,9 @@ import javax.jws.WebService;
 import javax.ejb.Stateless;
 import javax.xml.bind.JAXBElement;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
-import org.cern.cms.csc.dw.log.SimpleLogger;
+import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.exception.PersistException;
-import org.cern.cms.csc.dw.log.Logger;
+import jsf.bean.gui.log.Logger;
 import org.cern.cms.csc.dw.model.dse.DataServiceEntity;
 import org.cern.cms.csc.dw.model.dse.DataServiceEntityCollection;
 

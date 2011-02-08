@@ -456,10 +456,16 @@ exists or setup the property manually. For example like this:
             -->
     <target depends="init" if="no.dist.ear.dir" name="-deps-module-jar" unless="no.deps">
         <ant antfile="${project.ExsysModel}/build.xml" inheritall="false" target="dist"/>
+        <ant antfile="${project.JsfBeanGui}/build.xml" inheritall="false" target="jar">
+            <property name="deploy.on.save" value="false"/>
+        </ant>
     </target>
     <target depends="init" if="dist.ear.dir" name="-deps-ear-jar" unless="no.deps">
         <ant antfile="${project.ExsysModel}/build.xml" inheritall="false" target="dist-ear">
             <property location="${build.dir}" name="dist.ear.dir"/>
+        </ant>
+        <ant antfile="${project.JsfBeanGui}/build.xml" inheritall="false" target="jar">
+            <property name="deploy.on.save" value="false"/>
         </ant>
     </target>
     <target depends="init, -deps-module-jar, -deps-ear-jar" name="deps-jar"/>
@@ -472,11 +478,13 @@ exists or setup the property manually. For example like this:
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target depends="compile" name="library-inclusion-in-archive">
+        <copyfiles files="${reference.JsfBeanGui.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${reference.ExsysModel.dist}" todir="${build.classes.dir}"/>
         <copyfiles files="${libs.Hibernate36.classpath}" todir="${build.classes.dir}"/>
         <copyfiles files="${libs.Commons.classpath}" todir="${build.classes.dir}"/>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
+        <copyfiles files="${reference.JsfBeanGui.jar}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${reference.ExsysModel.dist}" todir="${dist.ear.dir}"/>
         <copyfiles files="${libs.Hibernate36.classpath}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.Commons.classpath}" todir="${dist.ear.dir}/lib"/>
@@ -772,6 +780,7 @@ exists or setup the property manually. For example like this:
             -->
     <target depends="init" if="no.dist.ear.dir" name="deps-clean" unless="no.deps">
         <ant antfile="${project.ExsysModel}/build.xml" inheritall="false" target="clean"/>
+        <ant antfile="${project.JsfBeanGui}/build.xml" inheritall="false" target="clean"/>
     </target>
     <target depends="init" name="-do-clean">
         <delete dir="${build.dir}"/>
