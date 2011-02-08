@@ -109,6 +109,7 @@
 
   <Declaration><Class URI="&csc;HVPrimary"/></Declaration>
   <Declaration><Class URI="&csc;HVMaster"/></Declaration>
+  <Declaration><Class URI="&csc;HVMasterChannel"/></Declaration>
   <Declaration><Class URI="&csc;HVDistribution"/></Declaration>
   <Declaration><Class URI="&csc;HVSegment"/></Declaration>
   <Declaration><Class URI="&csc;HVRack"/></Declaration>
@@ -188,6 +189,7 @@
 
   <EntityAnnotation><Class URI="&csc;HVPrimary"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">High voltage primary. Naming: HVPrimary&lt;id&gt;, id: id (&lt;hostId&gt;_&lt;port&gt;_&lt;address&gt;)</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;HVMaster"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">High voltage master. Naming: HVMaster&lt;i&gt;, i: id number</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><Class URI="&csc;HVMasterChannel"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">An output channel of a high voltage master. Naming: HVMaster&lt;i&gt;Channel&lt;c&gt;, i: id number, c: channel number</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;HVDistribution"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV distribution board. Naming: HVDistribution&lt;i&gt;, i: id number</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;HVSegment"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV segment. Naming: &lt;layer&gt;/HVSegment&lt;s&gt;, layer: full name of layer, s: HV segment [1..5]</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;HVRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">HV rack.</Constant></Annotation></EntityAnnotation>
@@ -254,6 +256,7 @@
   <Declaration><DataProperty URI="&csc;hasPositionInRack"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasELMBId"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasDCSCrateNumber"/></Declaration>
+  <Declaration><DataProperty URI="&csc;hasDCSId"/></Declaration>
   <Declaration><DataProperty URI="&csc;hasGas"/></Declaration>
   
 
@@ -304,7 +307,8 @@
   <EntityAnnotation><DataProperty URI="&csc;hasHVChannel"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If a HV segment 'hasHVChannel' C, then it is supplied HV through channel number C.</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><DataProperty URI="&csc;hasPositionInRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A peripheral crate 'hasPositionInRack' 'top' or 'bottom'.</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><DataProperty URI="&csc;hasELMBId"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If a peripheral crate 'hasELMBId' I, its ELMB id number is I.</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><DataProperty URI="&csc;hasDCSCrateNumber"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If a peripheral crate 'hasDCSCrateNumber' N, it is known by DCS by number N.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;hasDCSCrateNumber"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If a peripheral crate 'hasDCSCrateNumber' N, it is known to DCS by number N.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;hasDCSId"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If a device 'hasDCSId' I, it is known to DCS by the unique identifier I.</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><DataProperty URI="&csc;hasGas"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'hasGas' B, then A has gas B (e.g., CO2) in it.</Constant></Annotation></EntityAnnotation>
   
 
@@ -353,6 +357,7 @@
   <!-- HV Devices -->
   <SubClassOf><Class URI="&csc;HVPrimary"/><Class URI="&csc;HVDevice"/></SubClassOf>
   <SubClassOf><Class URI="&csc;HVMaster"/><Class URI="&csc;HVDevice"/></SubClassOf>
+  <SubClassOf><Class URI="&csc;HVMasterChannel"/><Class URI="&csc;HVDevice"/></SubClassOf>
   <SubClassOf><Class URI="&csc;HVDistribution"/><Class URI="&csc;HVDevice"/></SubClassOf>
   <SubClassOf><Class URI="&csc;HVCrate"/><Class URI="&csc;HVDevice"/></SubClassOf>
   <SubClassOf><Class URI="&csc;HVBoard"/><Class URI="&csc;HVDevice"/></SubClassOf>
