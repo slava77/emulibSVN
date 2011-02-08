@@ -180,7 +180,7 @@
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_DDU_FPGA_DEBUG_TRAP" length="1024"/>
+                                    <orm:column name="FCT_DDU_FPGA_DEBUG_TRAP" length="2048"/>
                                 </hj:basic>
                                 <jaxb:property name="ddufpgaDebugTrap"/>
                             </xsd:appinfo>
@@ -191,7 +191,7 @@
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_IN_FPGA0_DEBUG_TRAP" length="1024"/>
+                                    <orm:column name="FCT_IN_FPGA0_DEBUG_TRAP" length="2048"/>
                                 </hj:basic>
                                 <jaxb:property name="infpga0DebugTrap"/>
                             </xsd:appinfo>
@@ -202,7 +202,7 @@
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_IN_FPGA1_DEBUG_TRAP" length="1024"/>
+                                    <orm:column name="FCT_IN_FPGA1_DEBUG_TRAP" length="2048"/>
                                 </hj:basic>
                                 <jaxb:property name="infpga1DebugTrap"/>
                             </xsd:appinfo>

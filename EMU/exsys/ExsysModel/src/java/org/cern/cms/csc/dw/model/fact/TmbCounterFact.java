@@ -3736,7 +3736,7 @@ public class TmbCounterFact
         super.onReceive(eDao);
         try {
             setDescriptions(eDao.getEntityById(org.cern.cms.csc.dw.model.dse.TmbCounterDescriptionDSE.class, getVersion()));
-        } catch (org.cern.cms.csc.dw.exception.InvalidEntityClassException ex) {
+        } catch (jsf.bean.gui.exception.InvalidEntityClassException ex) {
             throw new org.cern.cms.csc.dw.exception.OnReceiveProcessingException(ex);
         }
     }
@@ -3748,7 +3748,7 @@ public class TmbCounterFact
             if (isSetDescriptions()) {
                 try {
                     setDescriptions(eDao.getEntityById(org.cern.cms.csc.dw.model.dse.TmbCounterDescriptionDSE.class, getVersion()));
-                } catch (org.cern.cms.csc.dw.exception.InvalidEntityClassException ex) {
+                } catch (jsf.bean.gui.exception.InvalidEntityClassException ex) {
                     throw new org.cern.cms.csc.dw.exception.OnSaveProcessingException(ex);
                 }
             }

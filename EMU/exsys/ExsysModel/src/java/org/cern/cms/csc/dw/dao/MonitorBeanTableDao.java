@@ -3,7 +3,7 @@ package org.cern.cms.csc.dw.dao;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import org.cern.cms.csc.dw.dao.table.BeanTableDao;
+import jsf.bean.gui.component.table.BeanTableDao;
 import org.hibernate.Session;
 import org.hibernate.ejb.EntityManagerImpl;
 

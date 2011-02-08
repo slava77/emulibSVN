@@ -3,10 +3,10 @@ package org.cern.cms.csc.dw.dao;
 import java.io.File;
 import java.net.URL;
 import javax.ejb.Singleton;
-import org.cern.cms.csc.dw.log.Logger;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.model.ontology.graph.GServices;
 import org.cern.cms.csc.dw.model.ontology.graph.GraphServices;
-import org.cern.cms.csc.dw.log.SimpleLogger;
 import org.cern.cms.csc.dw.util.ZipUtil;
 
 @Singleton

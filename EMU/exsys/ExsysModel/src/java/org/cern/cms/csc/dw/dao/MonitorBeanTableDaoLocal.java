@@ -1,7 +1,7 @@
 package org.cern.cms.csc.dw.dao;
 
-import org.cern.cms.csc.dw.dao.table.BeanTableDaoIf;
 import javax.ejb.Local;
+import jsf.bean.gui.component.table.BeanTableDaoIf;
 
 @Local
 public interface MonitorBeanTableDaoLocal extends BeanTableDaoIf {

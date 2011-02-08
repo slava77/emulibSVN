@@ -11,11 +11,12 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import org.cern.cms.csc.dw.exception.InvalidEntityClassException;
+import jsf.bean.gui.EntityBeanBase;
+import jsf.bean.gui.exception.InvalidEntityClassException;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.exception.OnSaveProcessingException;
 import org.cern.cms.csc.dw.exception.PersistException;
-import org.cern.cms.csc.dw.log.Logger;
-import org.cern.cms.csc.dw.log.SimpleLogger;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 
 /**
@@ -37,9 +38,10 @@ public class EntityDao implements EntityDaoLocal {
      * @return entity that you asked for or null if it doesn't exist
      * @throws InvalidEntityClassException this is thrown when the given class is not a subclass of EntityBase
      */
-    public <T extends EntityBase> T getEntityById(final Class<T> entityClass, final Object id) throws InvalidEntityClassException {
+    @Override
+    public <T extends EntityBeanBase> T getEntityById(final Class<T> entityClass, final Object id) throws InvalidEntityClassException {
         // check all the superclasses to see if it's a subclass of EntityBase, if not - throw InvalidEntityClassException
-        boolean isEntity = EntityBase.class.isAssignableFrom(entityClass);
+        boolean isEntity = EntityBeanBase.class.isAssignableFrom(entityClass);
         if (!isEntity) {
             throw new InvalidEntityClassException(entityClass.getCanonicalName());
         }
@@ -58,7 +60,7 @@ public class EntityDao implements EntityDaoLocal {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public EntityBase getEntityById(final String entityClassName, String id) throws InvalidEntityClassException {
+    public EntityBeanBase getEntityById(final String entityClassName, String id) throws InvalidEntityClassException {
         try {
             // get the class
             Class entityClass = Class.forName(entityClassName);
@@ -106,9 +108,9 @@ public class EntityDao implements EntityDaoLocal {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends EntityBase> List<T> getAllEntitiesByClass(final Class<T> entityClass) throws InvalidEntityClassException {
-        // check all the superclasses to see if it's a subclass of EntityBase, if not - throw InvalidEntityClassException
-        boolean isEntity = EntityBase.class.isAssignableFrom(entityClass);
+    public <T extends EntityBeanBase> List<T> getAllEntitiesByClass(final Class<T> entityClass) throws InvalidEntityClassException {
+        // check all the superclasses to see if it's a subclass of EntityBeanBase, if not - throw InvalidEntityClassException
+        boolean isEntity = EntityBeanBase.class.isAssignableFrom(entityClass);
         if (!isEntity) {
             throw new InvalidEntityClassException(entityClass.getCanonicalName());
         }
@@ -119,12 +121,12 @@ public class EntityDao implements EntityDaoLocal {
     }
 
     @Override
-    public EntityBase refreshEntity(EntityBase entity) {
+    public EntityBeanBase refreshEntity(EntityBeanBase entity) {
         return refreshEntity(entity, true);
     }
     
     @Override
-    public EntityBase refreshEntity(EntityBase entity, boolean usingId) {
+    public EntityBeanBase refreshEntity(EntityBeanBase entity, boolean usingId) {
         if (usingId) {
             entity = em.getReference(entity.getClass(), entity.getEntityId());
             //entity = em.find(entity.getClass(), entity.getEntityId());
@@ -135,32 +137,32 @@ public class EntityDao implements EntityDaoLocal {
     }
 
     @Override
-    public void persist(EntityBase cdwEntityObject) throws PersistException, OnSaveProcessingException {
+    public void persist(EntityBeanBase cdwEntityObject) throws PersistException, OnSaveProcessingException {
         persist(cdwEntityObject, false, false);
     }
 
     @Override
-    public EntityBase merge(EntityBase cdwEntityObject) throws PersistException, OnSaveProcessingException {
+    public EntityBeanBase merge(EntityBeanBase cdwEntityObject) throws PersistException, OnSaveProcessingException {
         return persist(cdwEntityObject, false, true);
     }
 
     @Override
-    public EntityBase mergeAndRefresh(EntityBase cdwEntityObject) throws PersistException, OnSaveProcessingException {
+    public EntityBeanBase mergeAndRefresh(EntityBeanBase cdwEntityObject) throws PersistException, OnSaveProcessingException {
         persist(cdwEntityObject, false, true);
         //cdwEntityObject = em.merge(cdwEntityObject);
         return cdwEntityObject;
     }
 
     @Override
-    public EntityBase persist(EntityBase cdwEntityObject, boolean queued, boolean useMerge) throws PersistException, OnSaveProcessingException {
+    public EntityBeanBase persist(EntityBeanBase cdwEntityObject, boolean queued, boolean useMerge) throws PersistException, OnSaveProcessingException {
 
         // is it null by any chance? if yes - then be angry about it
         if (cdwEntityObject == null) {
-            throw new IllegalArgumentException("null was passed to PersistDao.persist(EntityBase cdwEntityObject) method!");
+            throw new IllegalArgumentException("null was passed to PersistDao.persist(EntityBeanBase cdwEntityObject) method!");
         }
 
         // call an onSave trigger method to give the entity the last chance to prepare itself for persistance
-        cdwEntityObject.onSave(this, queued);
+        ((EntityBase) cdwEntityObject).onSave(this, queued);
 
         // persist the entity
         try {
@@ -188,12 +190,11 @@ public class EntityDao implements EntityDaoLocal {
     }
 
     @Override
-    public void delete(EntityBase cdwEntityObject) {
+    public void delete(EntityBeanBase cdwEntityObject) {
         // refresh the entity and delete it
         cdwEntityObject = em.getReference(cdwEntityObject.getClass(), cdwEntityObject.getEntityId());
         em.remove(cdwEntityObject);
     }
-
 
     /*
     private Message createMessageForEntitySaverQueue(Session session, EntityBase entity) throws JMSException {

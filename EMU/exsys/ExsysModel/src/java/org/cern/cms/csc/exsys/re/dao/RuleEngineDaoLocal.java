@@ -8,8 +8,6 @@ package org.cern.cms.csc.exsys.re.dao;
 import java.util.List;
 import javax.ejb.Local;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
-import org.cern.cms.csc.dw.exception.OnSaveProcessingException;
-import org.cern.cms.csc.dw.exception.PersistException;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.cern.cms.csc.exsys.re.model.ConclusionType;
 import org.cern.cms.csc.exsys.re.model.Rule;
@@ -22,7 +20,7 @@ import org.cern.cms.csc.exsys.re.model.Rule;
 public interface RuleEngineDaoLocal {
 
     List<Rule> getRules();
-    void saveRule(Rule rule) throws PersistException, OnSaveProcessingException;
+    void saveRule(Rule rule) throws Exception;
 
     List<Conclusion> getAllConclusions();
     List<Conclusion> getAllOpenConclusions();

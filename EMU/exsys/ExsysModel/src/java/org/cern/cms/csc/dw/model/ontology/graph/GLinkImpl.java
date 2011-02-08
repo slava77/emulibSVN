@@ -4,8 +4,8 @@ import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
-import org.cern.cms.csc.dw.log.Logger;
-import org.cern.cms.csc.dw.log.SimpleLogger;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
 import org.neo4j.graphdb.Relationship;
 
 public class GLinkImpl extends GBase implements GLink {

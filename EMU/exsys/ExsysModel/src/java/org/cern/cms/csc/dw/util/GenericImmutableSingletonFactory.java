@@ -14,8 +14,8 @@ import javax.naming.Name;
 import javax.naming.NamingException;
 import javax.naming.RefAddr;
 import javax.naming.spi.ObjectFactory;
-import org.cern.cms.csc.dw.log.Logger;
-import org.cern.cms.csc.dw.log.SimpleLogger;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
 
 public class GenericImmutableSingletonFactory implements ObjectFactory {
 

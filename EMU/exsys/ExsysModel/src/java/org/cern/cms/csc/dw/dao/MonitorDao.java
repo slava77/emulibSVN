@@ -1,13 +1,14 @@
 package org.cern.cms.csc.dw.dao;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import org.cern.cms.csc.dw.dao.table.BeanTableDao;
-import org.cern.cms.csc.dw.log.Logger;
-import org.cern.cms.csc.dw.log.SimpleLogger;
+import jsf.bean.gui.component.table.BeanTableDao;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.model.monitor.MonitorEntity;
 import org.hibernate.CacheMode;
 import org.hibernate.Session;

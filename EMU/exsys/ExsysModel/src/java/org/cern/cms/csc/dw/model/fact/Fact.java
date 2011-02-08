@@ -367,7 +367,7 @@ public abstract class Fact
             if (component != null) {
                 try {
                     component = eDao.getEntityById(org.cern.cms.csc.dw.model.ontology.Component.class, component.getId());
-                } catch (org.cern.cms.csc.dw.exception.InvalidEntityClassException iecEx) {
+                } catch (jsf.bean.gui.exception.InvalidEntityClassException iecEx) {
                     throw new org.cern.cms.csc.dw.exception.OnSaveProcessingException(iecEx);
                 }
             } else {

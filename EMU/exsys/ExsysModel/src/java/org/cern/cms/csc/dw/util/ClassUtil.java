@@ -13,8 +13,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
-import org.cern.cms.csc.dw.log.Logger;
-import org.cern.cms.csc.dw.log.SimpleLogger;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
 
 public class ClassUtil {
 
@@ -259,7 +259,7 @@ public class ClassUtil {
         Collection<Class> ret = new LinkedList<Class>();
 
         // Translate the package name into an absolute path
-        String name = new String(pckgname);
+        String name = pckgname;
         if (!name.startsWith("/")) {
             name = "/" + name;
         }

@@ -5,6 +5,7 @@
         <data xmlns="http://www.netbeans.org/ns/j2ee-ejbjarproject/3">
             <name>ExsysModel</name>
             <minimum-ant-version>1.6.5</minimum-ant-version>
+            <included-library dirs="200">reference.JsfBeanGui.jar</included-library>
             <included-library dirs="200">libs.Neo4j.classpath</included-library>
             <included-library dirs="200">libs.Hibernate36.classpath</included-library>
             <included-library dirs="200">libs.Hyperjaxb.classpath</included-library>
@@ -24,6 +25,16 @@
         <libraries xmlns="http://www.netbeans.org/ns/ant-project-libraries/1">
             <definitions>../lib/nblibraries.properties</definitions>
         </libraries>
+        <references xmlns="http://www.netbeans.org/ns/ant-project-references/1">
+            <reference>
+                <foreign-project>JsfBeanGui</foreign-project>
+                <artifact-type>jar</artifact-type>
+                <script>build.xml</script>
+                <target>jar</target>
+                <clean-target>clean</clean-target>
+                <id>jar</id>
+            </reference>
+        </references>
         <spring-data xmlns="http://www.netbeans.org/ns/spring-data/1">
             <config-files/>
             <config-file-groups/>

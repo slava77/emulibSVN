@@ -11,9 +11,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
-import org.cern.cms.csc.dw.exception.OnSaveProcessingException;
 import org.cern.cms.csc.dw.exception.PersistException;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.cern.cms.csc.exsys.re.model.ConclusionType;
@@ -123,7 +121,7 @@ public class RuleEngineDao implements RuleEngineDaoLocal {
     }
 
     @Override
-    public void saveRule(Rule rule) throws PersistException, OnSaveProcessingException {
+    public void saveRule(Rule rule) throws Exception {
         if (rule.getid() == null) {
 
             List list  = em.createQuery("select r from org.cern.cms.csc.exsys.re.model.Rule as r " +

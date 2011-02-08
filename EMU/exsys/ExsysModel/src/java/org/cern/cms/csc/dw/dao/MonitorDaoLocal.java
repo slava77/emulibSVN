@@ -3,7 +3,7 @@ package org.cern.cms.csc.dw.dao;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Local;
-import org.cern.cms.csc.dw.dao.table.BeanTableDaoIf;
+import jsf.bean.gui.component.table.BeanTableDaoIf;
 import org.cern.cms.csc.dw.model.monitor.MonitorEntity;
 
 @Local

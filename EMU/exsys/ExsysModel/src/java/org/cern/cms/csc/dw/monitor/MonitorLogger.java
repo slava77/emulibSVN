@@ -1,12 +1,12 @@
 package org.cern.cms.csc.dw.monitor;
 
 import java.util.Date;
+import jsf.bean.gui.log.BaseLogger;
+import jsf.bean.gui.log.Level;
 import org.cern.cms.csc.dw.dao.MonitorDao;
-import org.cern.cms.csc.dw.log.Level;
-import org.cern.cms.csc.dw.log.SimpleLogger;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.MonitorDaoLocal;
-import org.cern.cms.csc.dw.log.BaseLogger;
-import org.cern.cms.csc.dw.log.Logger;
 import org.cern.cms.csc.dw.model.monitor.MonitorEntity;
 import org.cern.cms.csc.dw.model.monitor.MonitorException;
 import org.cern.cms.csc.dw.util.EjbLookup;

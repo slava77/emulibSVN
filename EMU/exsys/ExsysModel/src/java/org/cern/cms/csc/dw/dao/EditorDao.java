@@ -4,7 +4,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 @Stateless
-public class GenericDao implements GenericDaoLocal {
+public class EditorDao implements EditorDaoLocal {
 
     @EJB
     private EntityDaoLocal entityDao;
