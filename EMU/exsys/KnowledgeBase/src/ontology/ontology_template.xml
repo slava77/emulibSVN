@@ -249,15 +249,15 @@
   <Declaration><ObjectProperty URI="&csc;cools"/></Declaration>
   <Declaration><ObjectProperty URI="&csc;isCooledBy"/></Declaration>
 
-  <Declaration><DataProperty URI="&csc;hasName"/></Declaration>
-  <Declaration><DataProperty URI="&csc;isInConfiguration"/></Declaration>
-  <Declaration><DataProperty URI="&csc;hasFMM"/></Declaration>
-  <Declaration><DataProperty URI="&csc;hasHVChannel"/></Declaration>
-  <Declaration><DataProperty URI="&csc;hasPositionInRack"/></Declaration>
-  <Declaration><DataProperty URI="&csc;hasELMBId"/></Declaration>
-  <Declaration><DataProperty URI="&csc;hasDCSCrateNumber"/></Declaration>
-  <Declaration><DataProperty URI="&csc;hasDCSId"/></Declaration>
-  <Declaration><DataProperty URI="&csc;hasGas"/></Declaration>
+  <Declaration><DataProperty URI="&csc;_Name"/></Declaration>
+  <Declaration><DataProperty URI="&csc;_isInConfiguration"/></Declaration>
+  <Declaration><DataProperty URI="&csc;_FMM"/></Declaration>
+  <Declaration><DataProperty URI="&csc;_HVChannel"/></Declaration>
+  <Declaration><DataProperty URI="&csc;_PositionInRack"/></Declaration>
+  <Declaration><DataProperty URI="&csc;_ELMBId"/></Declaration>
+  <Declaration><DataProperty URI="&csc;_DCSCrateNumber"/></Declaration>
+  <Declaration><DataProperty URI="&csc;_DCSId"/></Declaration>
+  <Declaration><DataProperty URI="&csc;_Gas"/></Declaration>
   
 
   <!-- property descriptions -->
@@ -301,15 +301,15 @@
   <EntityAnnotation><ObjectProperty URI="&csc;cools"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'cools' B, then A cools B directly or indirectly. It is a transitive relation. Its inverse is 'isCooledBy'.</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><ObjectProperty URI="&csc;isCooledBy"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'isCooledBy' B, then A is cooled by B directly or indirectly. It is a transitive relation. Its inverse is 'cools'.</Constant></Annotation></EntityAnnotation>
 
-  <EntityAnnotation><DataProperty URI="&csc;hasName"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'hasName' B, then A is also known as B.</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><DataProperty URI="&csc;isInConfiguration"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'isInConfiguration' is TRUE, then A is part of the configuration, otherwise it is excluded.</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><DataProperty URI="&csc;hasFMM"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'hasFMM' B, then A has FMM (Fast Merging Module) number B assigned to it.</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><DataProperty URI="&csc;hasHVChannel"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If a HV segment 'hasHVChannel' C, then it is supplied HV through channel number C.</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><DataProperty URI="&csc;hasPositionInRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A peripheral crate 'hasPositionInRack' 'top' or 'bottom'.</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><DataProperty URI="&csc;hasELMBId"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If a peripheral crate 'hasELMBId' I, its ELMB id number is I.</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><DataProperty URI="&csc;hasDCSCrateNumber"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If a peripheral crate 'hasDCSCrateNumber' N, it is known to DCS by number N.</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><DataProperty URI="&csc;hasDCSId"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If a device 'hasDCSId' I, it is known to DCS by the unique identifier I.</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><DataProperty URI="&csc;hasGas"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'hasGas' B, then A has gas B (e.g., CO2) in it.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;_Name"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A has '_Name' B, then A is also known as B.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;_isInConfiguration"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If for A '_isInConfiguration' is TRUE, then A is part of the configuration, otherwise it is excluded.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;_FMM"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A has '_FMM' B, then A has FMM (Fast Merging Module) number B assigned to it.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;_HVChannel"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If a HV segment has '_HVChannel' C, then it is supplied HV through channel number C.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;_PositionInRack"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A peripheral crate has '_PositionInRack' 'top' or 'bottom'.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;_ELMBId"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If a peripheral crate '_ELMBId' I, its ELMB id number is I.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;_DCSCrateNumber"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If a peripheral crate has '_DCSCrateNumber' N, it is known to DCS by number N.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;_DCSId"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If a device has '_DCSId' I, it is known to DCS by the unique identifier I.</Constant></Annotation></EntityAnnotation>
+  <EntityAnnotation><DataProperty URI="&csc;_Gas"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A has '_Gas' B, then A has gas B (e.g., CO2) in it.</Constant></Annotation></EntityAnnotation>
   
 
 
@@ -457,12 +457,12 @@
   <TransitiveObjectProperty><ObjectProperty URI="&csc;isCooledBy"/></TransitiveObjectProperty>
 
   <!-- DataPropertyRange -->
-  <DataPropertyRange><DataProperty URI="&csc;hasName"/><Datatype URI="&xsd;string"/></DataPropertyRange>
-  <DataPropertyRange><DataProperty URI="&csc;isInConfiguration"/><Datatype URI="&xsd;boolean"/></DataPropertyRange>
-  <DataPropertyRange><DataProperty URI="&csc;hasFMM"/><Datatype URI="&xsd;integer"/></DataPropertyRange>
-  <DataPropertyRange><DataProperty URI="&csc;hasGas"/><Datatype URI="&xsd;string"/></DataPropertyRange>
+  <DataPropertyRange><DataProperty URI="&csc;_Name"/><Datatype URI="&xsd;string"/></DataPropertyRange>
+  <DataPropertyRange><DataProperty URI="&csc;_isInConfiguration"/><Datatype URI="&xsd;boolean"/></DataPropertyRange>
+  <DataPropertyRange><DataProperty URI="&csc;_FMM"/><Datatype URI="&xsd;integer"/></DataPropertyRange>
+  <DataPropertyRange><DataProperty URI="&csc;_Gas"/><Datatype URI="&xsd;string"/></DataPropertyRange>
 
   <!-- FunctionalDataProperty -->
-  <FunctionalDataProperty><DataProperty URI="&csc;isInConfiguration"/></FunctionalDataProperty>
+  <FunctionalDataProperty><DataProperty URI="&csc;_isInConfiguration"/></FunctionalDataProperty>
 
 </Ontology>
