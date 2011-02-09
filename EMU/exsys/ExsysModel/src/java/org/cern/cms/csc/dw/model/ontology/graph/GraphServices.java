@@ -11,7 +11,7 @@ public class GraphServices extends GServices {
         super(path);
         try {
             
-            getIdxSrv().enableCache(GNodeImpl.getPropertyKey(GComponent.class, GNode.PropertyType.NAME), 100000);
+            getIdxSrv().enableCache(GNodeImpl.getPropertyKey(GComponent.class, GNode.InternalPropertyType.NAME), 100000);
             //getFTQueryIdxSrv().enableCache(GNodeImpl.getPropertyKey(GComponent.class, GNode.PropertyType.NAME), 100000);
 
         } catch (ClassNotFoundException ex) {

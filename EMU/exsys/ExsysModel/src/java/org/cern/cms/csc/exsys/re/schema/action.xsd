@@ -92,7 +92,7 @@
                             <orm:column name="REA_NAME" length="128" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="name"/>
-                        <ann:annotate xmlns:a="jasf.bean.gui.annotation">
+                        <ann:annotate xmlns:a="jsf.bean.gui.annotation">
                             <a:UseInTitle order="1"/>
                         </ann:annotate>
                     </xsd:appinfo>
@@ -108,7 +108,7 @@
                             </orm:join-table>
                         </hj:many-to-many>
                         <jaxb:property name="conclusionTypes"/>
-                        <ann:annotate xmlns:a="jasf.bean.gui.annotation">
+                        <ann:annotate xmlns:a="jsf.bean.gui.annotation">
                             <a:ImmutableReference/>
                         </ann:annotate>
                     </xsd:appinfo>
@@ -146,7 +146,7 @@
                                     <orm:column name="REEA_RECIPIENTS" length="1024" nullable="false"/>
                                 </hj:basic>
                                 <jaxb:property name="recipients"/>
-                                <ann:annotate xmlns:a="jasf.bean.gui.annotation">
+                                <ann:annotate xmlns:a="jsf.bean.gui.annotation">
                                     <a:Label name="Recipients" description="New line or comma separated list of email addresses."/>
                                 </ann:annotate>
                             </xsd:appinfo>
@@ -176,7 +176,7 @@
                                     <orm:column name="RESA_RECIPIENTS" length="1024" nullable="false"/>
                                 </hj:basic>
                                 <jaxb:property name="recipients"/>
-                                <ann:annotate xmlns:a="jasf.bean.gui.annotation">
+                                <ann:annotate xmlns:a="jsf.bean.gui.annotation">
                                     <a:Label name="Recipients" description="New line or comma separated list of phone numbers."/>
                                 </ann:annotate>
                             </xsd:appinfo>

@@ -362,7 +362,7 @@ public class DduFmmIrqFact
      *     
      */
     @Basic
-    @Column(name = "FCT_DDU_FPGA_DEBUG_TRAP", length = 1024)
+    @Column(name = "FCT_DDU_FPGA_DEBUG_TRAP", length = 2048)
     public String getDdufpgaDebugTrap() {
         return ddufpgaDebugTrap;
     }
@@ -393,7 +393,7 @@ public class DduFmmIrqFact
      *     
      */
     @Basic
-    @Column(name = "FCT_IN_FPGA0_DEBUG_TRAP", length = 1024)
+    @Column(name = "FCT_IN_FPGA0_DEBUG_TRAP", length = 2048)
     public String getInfpga0DebugTrap() {
         return infpga0DebugTrap;
     }
@@ -424,7 +424,7 @@ public class DduFmmIrqFact
      *     
      */
     @Basic
-    @Column(name = "FCT_IN_FPGA1_DEBUG_TRAP", length = 1024)
+    @Column(name = "FCT_IN_FPGA1_DEBUG_TRAP", length = 2048)
     public String getInfpga1DebugTrap() {
         return infpga1DebugTrap;
     }

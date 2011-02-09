@@ -11,34 +11,42 @@ public class GComponentLinkClassImpl extends GNodeImpl implements GComponentLink
         super(gservices, node);
     }
 
+    @Override
     public void setType(ComponentLinkClassType type) {
-        setProperty(PropertyType.TYPE, type.value(), true);
+        setProperty(InternalPropertyType.TYPE, type.value(), true);
     }
 
+    @Override
     public ComponentLinkClassType getType() {
-        return ComponentLinkClassType.fromValue((String) getProperty(PropertyType.TYPE));
+        return ComponentLinkClassType.fromValue((String) getProperty(InternalPropertyType.TYPE));
     }
 
+    @Override
     public void setDescription(String description) {
-        setProperty(PropertyType.DESCRIPTION, description);
+        setProperty(InternalPropertyType.DESCRIPTION, description);
     }
 
+    @Override
     public String getDescription() {
-        return (String) getProperty(PropertyType.DESCRIPTION, null);
+        return (String) getProperty(InternalPropertyType.DESCRIPTION, null);
     }
 
+    @Override
     public Boolean getTransitive() {
-        return (Boolean) getProperty(PropertyType.TRANSITIVE, false);
+        return (Boolean) getProperty(InternalPropertyType.TRANSITIVE, false);
     }
 
+    @Override
     public void setTransitive(Boolean transitive) {
-        setProperty(PropertyType.TRANSITIVE, transitive);
+        setProperty(InternalPropertyType.TRANSITIVE, transitive);
     }
 
+    @Override
     public void setParent(GComponentLinkClass parent) {
         setRelationship(parent, GLinkType.LINK_TO_PARENT);
     }
 
+    @Override
     public GComponentLinkClass getParent() {
         return getRelatedGNode(
                 GComponentLinkClass.class,
@@ -46,6 +54,7 @@ public class GComponentLinkClassImpl extends GNodeImpl implements GComponentLink
                 Direction.OUTGOING);
     }
 
+    @Override
     public Collection<GComponentLinkClass> getChildren() {
         return getRelatedGNodeCollection(
             GComponentLinkClass.class,
@@ -53,10 +62,12 @@ public class GComponentLinkClassImpl extends GNodeImpl implements GComponentLink
             Direction.INCOMING);
     }
 
+    @Override
     public void setInverse(GComponentLinkClass inverse) {
         setRelationship(inverse, GLinkType.LINK_TO_INVERSE);
     }
 
+    @Override
     public GComponentLinkClass getInverse() {
         return getRelatedGNode(
                 GComponentLinkClass.class,

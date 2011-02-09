@@ -36,7 +36,6 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
 import jsf.bean.gui.annotation.Label;
-import jsf.bean.gui.annotation.NoManualInput;
 import jsf.bean.gui.annotation.UseInTitle;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XMLGregorianCalendarAsDateTime;
@@ -96,21 +95,21 @@ public class Rule
 {
 
     @XmlElement(required = true)
-    @NoManualInput
+    @jsf.bean.gui.annotation.NoManualInput
     protected BigInteger version;
     @XmlElement(required = true)
     @UseInTitle(order = 1)
     protected String name;
     @XmlElement(required = true)
     @XmlSchemaType(name = "dateTime")
-    @NoManualInput(createDefaultValue = true)
+    @jsf.bean.gui.annotation.NoManualInput(createDefaultValue = true)
     protected XMLGregorianCalendar timeCreated;
     @XmlElement(required = true)
     protected String ruleDefinition;
     protected String description;
     @XmlElement(required = true)
     protected org.cern.cms.csc.exsys.re.model.ConclusionType conclusionType;
-    @NoManualInput
+    @jsf.bean.gui.annotation.NoManualInput
     protected boolean enabled;
     @XmlElement(required = true)
     protected RuleType type;
@@ -283,8 +282,8 @@ public class Rule
      *     
      */
     @ManyToOne(targetEntity = org.cern.cms.csc.exsys.re.model.ConclusionType.class, cascade = {
-        CascadeType.MERGE,
         CascadeType.REFRESH,
+        CascadeType.MERGE,
         CascadeType.PERSIST
     })
     @JoinColumn(name = "RER_CONCLUSION_TYPE_ID", nullable = false)

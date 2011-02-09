@@ -49,7 +49,7 @@
                             <orm:column name="RER_VERSION" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="version"/>
-                        <ann:annotate xmlns:a="jasf.bean.gui.annotation">
+                        <ann:annotate xmlns:a="jsf.bean.gui.annotation">
                             <a:NoManualInput/>
                         </ann:annotate>
                     </xsd:appinfo>
@@ -62,7 +62,7 @@
                             <orm:column name="RER_NAME" length="128" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="name"/>
-                        <ann:annotate xmlns:a="jasf.bean.gui.annotation">
+                        <ann:annotate xmlns:a="jsf.bean.gui.annotation">
                             <a:UseInTitle order="1"/>
                         </ann:annotate>
                     </xsd:appinfo>
@@ -75,7 +75,7 @@
                             <orm:column name="RER_TIME_CREATED" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="timeCreated"/>
-                        <ann:annotate xmlns:a="jasf.bean.gui.annotation">
+                        <ann:annotate xmlns:a="jsf.bean.gui.annotation">
                             <a:NoManualInput createDefaultValue="true"/>
                         </ann:annotate>
                     </xsd:appinfo>
@@ -123,7 +123,7 @@
                             <orm:column name="RER_IS_ENABLED" nullable="false"/>
                         </hj:basic>
                         <jaxb:property name="enabled"/>
-                        <ann:annotate xmlns:a="jasf.bean.gui.annotation">
+                        <ann:annotate xmlns:a="jsf.bean.gui.annotation">
                             <a:NoManualInput/>
                         </ann:annotate>
                     </xsd:appinfo>
@@ -146,7 +146,7 @@
                             <orm:join-column name="RER_COMPONENT_FINDER" nullable="false"/>
                         </hj:one-to-one>
                         <jaxb:property name="componentFinder"/>
-                        <ann:annotate xmlns:a="jasf.bean.gui.annotation">
+                        <ann:annotate xmlns:a="jsf.bean.gui.annotation">
                             <a:Label name="Component Finder" description="This is used to tell the rules engine what component it should assign to the conclusions that this rule produces. There are several kinds of component finders which all use components coming from the source fact(s) and/or conclusion(s) as source components, but have different policies on how to use them to resolve the actual component which will be assigned to the conclusion. e.g. SimpleComponentFinder simply takes the source components, while RelatedComponentFinder can find a component of required type that is related to the source components. Note however that in any case, the component finder should only find one component, if it finds zero or more than one - an exception will be thrown."/>
                         </ann:annotate>
                     </xsd:appinfo>
@@ -182,7 +182,7 @@
                     <orm:generated-value strategy="SEQUENCE" generator="RE_RCF_ID_SEQ"/>
                     <orm:sequence-generator name="RE_RCF_ID_SEQ" sequence-name="RE_RCF_ID_SEQ"/>
                 </hj:generated-id>
-                <ann:annotate xmlns:a="jasf.bean.gui.annotation">
+                <ann:annotate xmlns:a="jsf.bean.gui.annotation">
                     <a:UseInTitle order="0"/>
                 </ann:annotate>
             </xsd:appinfo>
@@ -195,7 +195,7 @@
                             <orm:join-column name="RER_COMPONENT_FINDER" nullable="false"/>
                         </hj:one-to-one>
                         <jaxb:property name="rule"/>
-                        <ann:annotate xmlns:a="jasf.bean.gui.annotation">
+                        <ann:annotate xmlns:a="jsf.bean.gui.annotation">
                             <a:NoManualInput/>
                             <a:ImmutableReference/>
                         </ann:annotate>
@@ -209,7 +209,7 @@
                             <orm:join-column name="RCF_COMPONENT_CLASS_ID"/>
                         </hj:many-to-one>
                         <jaxb:property name="componentClass"/>
-                        <ann:annotate xmlns:a="jasf.bean.gui.annotation">
+                        <ann:annotate xmlns:a="jsf.bean.gui.annotation">
                             <a:ImmutableReference/>
                             <a:Label name="Component Type" description="This tells the component finder what component type is to be resolved/accepted."/>
                         </ann:annotate>
@@ -258,7 +258,7 @@
                                 <ann:annotateGet xmlns:a="org.hibernate.annotations">
                                     <a:Fetch value="SUBSELECT"/>
                                 </ann:annotateGet>
-                                <ann:annotate xmlns:a="jasf.bean.gui.annotation">
+                                <ann:annotate xmlns:a="jsf.bean.gui.annotation">
                                     <a:ImmutableReference/>
                                     <a:Label name="Link Classes" description="(At least one is mandaroty) These link classes will be used to find the related components."/>
                                 </ann:annotate>

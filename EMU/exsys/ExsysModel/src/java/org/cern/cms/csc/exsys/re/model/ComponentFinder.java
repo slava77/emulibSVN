@@ -29,7 +29,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
-import jsf.bean.gui.annotation.ImmutableReference;
 import jsf.bean.gui.annotation.Label;
 import jsf.bean.gui.annotation.NoManualInput;
 import jsf.bean.gui.annotation.UseInTitle;
@@ -76,10 +75,10 @@ public abstract class ComponentFinder
 {
 
     @NoManualInput
-    @ImmutableReference
+    @jsf.bean.gui.annotation.ImmutableReference
     protected org.cern.cms.csc.exsys.re.model.Rule rule;
     @XmlElement(required = true)
-    @ImmutableReference
+    @jsf.bean.gui.annotation.ImmutableReference
     @Label(description = "This tells the component finder what component type is to be resolved/accepted.", name = "Component Type")
     protected org.cern.cms.csc.dw.model.ontology.ComponentClass componentClass;
     @XmlAttribute(name = "id")
@@ -96,6 +95,7 @@ public abstract class ComponentFinder
     @OneToOne(targetEntity = org.cern.cms.csc.exsys.re.model.Rule.class, cascade = {
         CascadeType.ALL
     }, mappedBy = "componentFinder")
+    @JoinColumn(name = "RER_COMPONENT_FINDER", nullable = false)
     public org.cern.cms.csc.exsys.re.model.Rule getRule() {
         return rule;
     }

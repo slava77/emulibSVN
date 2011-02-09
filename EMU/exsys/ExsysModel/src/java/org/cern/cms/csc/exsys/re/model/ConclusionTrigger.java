@@ -239,6 +239,7 @@ public class ConclusionTrigger
     @OneToMany(targetEntity = org.cern.cms.csc.exsys.re.model.ConclusionTriggerSource.class, cascade = {
         CascadeType.ALL
     }, mappedBy = "trigger")
+    @JoinColumn(name = "RECS_TRIGGER_ID", nullable = false)
     public List<org.cern.cms.csc.exsys.re.model.ConclusionTriggerSource> getSources() {
         if (sources == null) {
             sources = new Vector<org.cern.cms.csc.exsys.re.model.ConclusionTriggerSource>();

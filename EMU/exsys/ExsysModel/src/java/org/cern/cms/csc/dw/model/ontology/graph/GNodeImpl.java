@@ -1,6 +1,7 @@
 package org.cern.cms.csc.dw.model.ontology.graph;
 
 import java.util.Collection;
+import java.util.Iterator;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
 import org.neo4j.graphdb.Direction;
@@ -41,7 +42,7 @@ public abstract class GNodeImpl extends GBase implements GNode {
             ifclazz = GBase.ifClass(ifclazz);
         }
 
-        return ifclazz.getName().concat(".").concat(type.name());
+        return ifclazz.getName().concat(".").concat(type.propertyName());
     }
 
     public Long getId() {
@@ -80,6 +81,23 @@ public abstract class GNodeImpl extends GBase implements GNode {
             if (indexMe) {
                 gservices.getIdxSrv().index(node, getPropertyKey(prop), value);
                 gservices.getFTIdxSrv().index(node, getPropertyKey(prop), value);
+            }
+        } finally {
+            tx.success();
+            tx.finish();
+        }
+    }
+
+    public void removeAllProperties() {
+        Transaction tx = gservices.beginTx();
+        try {
+            Iterator<String> propKeyIt = node.getPropertyKeys().iterator();
+            for (;propKeyIt.hasNext();) {
+                String propKey = propKeyIt.next();
+                Object propValue = node.getProperty(propKey);
+                gservices.getIdxSrv().removeIndex(node, propKey, propValue);
+                gservices.getFTIdxSrv().removeIndex(node, propKey, propValue);
+                node.removeProperty(propKey);
             }
         } finally {
             tx.success();

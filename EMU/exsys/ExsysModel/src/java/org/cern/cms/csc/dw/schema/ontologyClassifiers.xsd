@@ -41,6 +41,7 @@
 <xsd:enumeration value="HVDevice"/>
 <xsd:enumeration value="HVDistribution"/>
 <xsd:enumeration value="HVMaster"/>
+<xsd:enumeration value="HVMasterChannel"/>
 <xsd:enumeration value="HVPrimary"/>
 <xsd:enumeration value="HVRack"/>
 <xsd:enumeration value="HVSegment"/>

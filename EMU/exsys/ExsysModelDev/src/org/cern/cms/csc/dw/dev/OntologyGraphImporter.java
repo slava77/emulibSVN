@@ -71,6 +71,10 @@ public class OntologyGraphImporter {
 
         gFactory.intermediateCommit();
 
+        processContentHandler(parser, filename, new DataPropertyAssertionHandler());
+
+        gFactory.intermediateCommit();
+        
         processContentHandler(parser, filename, new ObjectPropertyAssertionHandler(false));
         processContentHandler(parser, filename, new ObjectPropertyAssertionHandler(true));
 
@@ -184,7 +188,10 @@ public class OntologyGraphImporter {
             if (blockName != null && localName != null && uriName != null) {
                 String text = new String(ch, start, length);
                 if (text != null) {
-                    elementText(blockName, localName, uriName, text);
+                    text = text.replaceAll("\\n", "");
+                    if (!text.isEmpty()) {
+                        elementText(blockName, localName, uriName, text);
+                    }
                 }
             }
         }
@@ -385,6 +392,62 @@ public class OntologyGraphImporter {
             }
         }
     }
+
+    private class DataPropertyAssertionHandler extends OntologyHandler {
+
+        String propTypeName; // only used in case of an exception to provide more information
+        GComponent.DataPropertyType propType;
+        GComponent component;
+        Object value;
+
+        public DataPropertyAssertionHandler() {
+            super("DataPropertyAssertion");
+        }
+
+        @Override
+        public void blockEnd(String blockName) {
+            if ((propType != null) && (component != null) && (value != null)) {
+                component.setDataProperty(propType, value);
+            }
+        }
+
+        @Override
+        public void blockElement(String blockName, String localName, String name) {
+            if (localName.equals("DataProperty")) {
+                propTypeName = name;
+                propType = GComponent.DataPropertyType.fromOwlName(name);
+            } else if (localName.equals("Individual")) {
+                if (!components.containsKey(name)) {
+                    throw new RuntimeException("DataProperty was declared on an unknown individual: " + name);
+                } else {
+                    component = components.get(name);
+                }
+            }
+        }
+
+        @Override
+        public void elementText(String blockName, String localName, String name, String text) {
+           if (text.isEmpty()) {
+               log.warn("Found an empty data property value (" + propTypeName + " on individual " + component.getName() + ") - skipping");
+           }
+            if (localName.equals("Constant")) {
+                if (name.equals("string")) {
+                    value = text;
+                } else if (name.equals("integer")) {
+//                    try {
+//                        value = Integer.valueOf(text);
+//                    } catch (NumberFormatException nfEx) {
+//                        throw new RuntimeException("Couldn't parse an integer data property value: " + propTypeName + "=" + text + " on individual " + component.getName());
+//                    }
+                } else if (name.equals("boolean")) {
+                    value = Boolean.valueOf(text);
+                } else {
+                    throw new RuntimeException("Unknown data property dataType: " + name);
+                }
+            }
+        }
+    }
+
 
     private class ObjectPropertyAssertionHandler extends OntologyHandler {
 

@@ -118,8 +118,7 @@ public class GOntologyFactory {
             }
 
             // Removing properties and coresponding indexes
-            ((GNodeImpl) gc).removeProperty(GNode.PropertyType.NAME);
-            ((GNodeImpl) gc).removeProperty(GNode.PropertyType.DESCRIPTION);
+            ((GNodeImpl) gc).removeAllProperties();
 
             // Removing node
             gc.getNode().delete();

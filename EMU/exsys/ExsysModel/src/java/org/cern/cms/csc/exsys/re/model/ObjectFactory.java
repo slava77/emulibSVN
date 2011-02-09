@@ -47,43 +47,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Conclusion }
-     * 
-     */
-    public Conclusion createConclusion() {
-        return new Conclusion();
-    }
-
-    /**
      * Create an instance of {@link SmsAction }
      * 
      */
     public SmsAction createSmsAction() {
         return new SmsAction();
-    }
-
-    /**
-     * Create an instance of {@link ConclusionTriggerSource }
-     * 
-     */
-    public ConclusionTriggerSource createConclusionTriggerSource() {
-        return new ConclusionTriggerSource();
-    }
-
-    /**
-     * Create an instance of {@link Rule }
-     * 
-     */
-    public Rule createRule() {
-        return new Rule();
-    }
-
-    /**
-     * Create an instance of {@link ActionExecution }
-     * 
-     */
-    public ActionExecution createActionExecution() {
-        return new ActionExecution();
     }
 
     /**
@@ -103,14 +71,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SimpleComponentFinder }
-     * 
-     */
-    public SimpleComponentFinder createSimpleComponentFinder() {
-        return new SimpleComponentFinder();
-    }
-
-    /**
      * Create an instance of {@link EmailAction }
      * 
      */
@@ -119,11 +79,51 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ConclusionTriggerSource }
+     * 
+     */
+    public ConclusionTriggerSource createConclusionTriggerSource() {
+        return new ConclusionTriggerSource();
+    }
+
+    /**
      * Create an instance of {@link RelatedComponentFinder }
      * 
      */
     public RelatedComponentFinder createRelatedComponentFinder() {
         return new RelatedComponentFinder();
+    }
+
+    /**
+     * Create an instance of {@link Conclusion }
+     * 
+     */
+    public Conclusion createConclusion() {
+        return new Conclusion();
+    }
+
+    /**
+     * Create an instance of {@link ActionExecution }
+     * 
+     */
+    public ActionExecution createActionExecution() {
+        return new ActionExecution();
+    }
+
+    /**
+     * Create an instance of {@link SimpleComponentFinder }
+     * 
+     */
+    public SimpleComponentFinder createSimpleComponentFinder() {
+        return new SimpleComponentFinder();
+    }
+
+    /**
+     * Create an instance of {@link Rule }
+     * 
+     */
+    public Rule createRule() {
+        return new Rule();
     }
 
     /**

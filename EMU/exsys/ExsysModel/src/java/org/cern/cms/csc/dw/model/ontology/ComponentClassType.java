@@ -54,6 +54,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;enumeration value="HVDevice"/>
  *     &lt;enumeration value="HVDistribution"/>
  *     &lt;enumeration value="HVMaster"/>
+ *     &lt;enumeration value="HVMasterChannel"/>
  *     &lt;enumeration value="HVPrimary"/>
  *     &lt;enumeration value="HVRack"/>
  *     &lt;enumeration value="HVSegment"/>
@@ -148,6 +149,8 @@ public enum ComponentClassType {
     HV_DISTRIBUTION("HVDistribution"),
     @XmlEnumValue("HVMaster")
     HV_MASTER("HVMaster"),
+    @XmlEnumValue("HVMasterChannel")
+    HV_MASTER_CHANNEL("HVMasterChannel"),
     @XmlEnumValue("HVPrimary")
     HV_PRIMARY("HVPrimary"),
     @XmlEnumValue("HVRack")

@@ -14,11 +14,11 @@ public abstract class GServices extends GServicesBase {
     }
 
     public GComponentClass getGComponentClass(ComponentClassType type) {
-        return getGNodeByProperty(GComponentClass.class, GNode.PropertyType.TYPE, type.getValue());
+        return getGNodeByProperty(GComponentClass.class, GNode.InternalPropertyType.TYPE, type.getValue());
     }
 
     public GComponentLinkClass getGComponentLinkClass(ComponentLinkClassType type) {
-        return getGNodeByProperty(GComponentLinkClass.class, GNode.PropertyType.TYPE, type.getValue());
+        return getGNodeByProperty(GComponentLinkClass.class, GNode.InternalPropertyType.TYPE, type.getValue());
     }
 
     @SuppressWarnings("unchecked")

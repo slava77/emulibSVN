@@ -15,26 +15,32 @@ public class GComponentImpl extends GNodeImpl implements GComponent {
         super(gservices, node);
     }
 
+    @Override
     public void setName(String name) {
-        setProperty(PropertyType.NAME, name, true);
+        setProperty(InternalPropertyType.NAME, name, true);
     }
 
+    @Override
     public String getName() {
-        return (String) getProperty(PropertyType.NAME);
+        return (String) getProperty(InternalPropertyType.NAME);
     }
 
+    @Override
     public void setDescription(String description) {
-        setProperty(PropertyType.DESCRIPTION, description);
+        setProperty(InternalPropertyType.DESCRIPTION, description);
     }
 
+    @Override
     public String getDescription() {
-        return (String) getProperty(PropertyType.DESCRIPTION, null);
+        return (String) getProperty(InternalPropertyType.DESCRIPTION, null);
     }
 
+    @Override
     public void setType(GComponentClass type) {
         setRelationship(type, GLinkType.COMPONENT_TO_CLASS);
     }
 
+    @Override
     public GComponentClass getType() {
         return getRelatedGNode(
                 GComponentClass.class,
@@ -42,12 +48,14 @@ public class GComponentImpl extends GNodeImpl implements GComponent {
                 Direction.OUTGOING);
     }
 
+    @Override
     public void addSynonym(GComponentSynonym synonym) {
         if (!getSynonyms().contains(synonym) && synonym.getComponent() == null) {
             setRelationship(synonym, GLinkType.COMPONENT_TO_SYNONYM);
         }
     }
 
+    @Override
     public Collection<GComponentSynonym> getSynonyms() {
         return getRelatedGNodeCollection(
                 GComponentSynonym.class,
@@ -55,10 +63,27 @@ public class GComponentImpl extends GNodeImpl implements GComponent {
                 Direction.OUTGOING);
     }
 
+    @Override
     public boolean isSetType() {
         return (getType() != null);
     }
 
+    @Override
+    public Object getDataProperty(DataPropertyType type) {
+        return getProperty(type);
+    }
+
+    @Override
+    public boolean isSetDataProperty(DataPropertyType type) {
+        return (getDataProperty(type) != null);
+    }
+
+    @Override
+    public void setDataProperty(DataPropertyType type, Object value) {
+        setProperty(type, value, true);
+    }
+
+    @Override
     public GComponentLinks getGComponentLinks() {
         return getRelatedGNode(
                 GComponentLinks.class,
@@ -66,18 +91,22 @@ public class GComponentImpl extends GNodeImpl implements GComponent {
                 Direction.OUTGOING);
     }
 
+    @Override
     public Collection<GComponentLink> getLinks() {
         return getGComponentLinks().getLinks();
     }
 
+    @Override
     public boolean isSetName() {
         return (getName() != null);
     }
 
+    @Override
     public Collection<GComponentClass> getTypes() {
         return getType().getParentsRecursive(true);
     }
 
+    @Override
     public Collection<GComponent> getRelatedGComponents(ComponentLinkClassType linkType, Direction dir) {
         Collection<GComponent> ret = new LinkedHashSet<GComponent>();
 
@@ -96,6 +125,7 @@ public class GComponentImpl extends GNodeImpl implements GComponent {
         return ret;
     }
 
+    @Override
     public boolean hasRelatedGComponents(ComponentLinkClassType linkType, Direction dir) {
         boolean ret = false;
 
@@ -110,14 +140,17 @@ public class GComponentImpl extends GNodeImpl implements GComponent {
         return ret;
     }
 
+    @Override
     public Collection<GComponent> getRelatedGComponents(ComponentLinkClassType linkType) {
         return getRelatedGComponents(linkType, Direction.OUTGOING);
     }
 
+    @Override
     public boolean hasRelatedGComponents(ComponentLinkClassType linkType) {
         return hasRelatedGComponents(linkType, Direction.OUTGOING);
     }
 
+    @Override
     public Collection<GComponent> findRelatedGComponents(ComponentLinkClassType linkType, GComponentClass type) {
         Collection<GComponent> ret = new LinkedList<GComponent>();
         for (GComponent gc: findRelatedGComponents(linkType)) {
@@ -128,6 +161,7 @@ public class GComponentImpl extends GNodeImpl implements GComponent {
         return ret;
     }
 
+    @Override
     public Collection<GComponent> findRelatedGComponents(ComponentLinkClassType linkType) {
         return getRelatedGNodeCollection(
                 GComponent.class,
@@ -139,6 +173,7 @@ public class GComponentImpl extends GNodeImpl implements GComponent {
                 ReturnableEvaluator.ALL_BUT_START_NODE);
     }
 
+    @Override
     public boolean isRelatedToRecusively(ComponentLinkClassType linkType, GComponent gComponent) {
         return findRelatedGComponents(linkType).contains(gComponent);
     }

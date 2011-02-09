@@ -6,6 +6,35 @@ import org.neo4j.graphdb.Direction;
 
 public interface GComponent extends GNode {
 
+    public enum DataPropertyType implements GNode.PropertyType {
+
+        DCS_ID("_DCSId");
+
+        private final String owlName;
+
+        DataPropertyType(String argOwlName) {
+            owlName = argOwlName;
+        }
+
+        @Override
+        public String propertyName() {
+            return "data." + name();
+        }
+
+        public String getPropertyOwlName() {
+            return owlName;
+        }
+
+        public static DataPropertyType fromOwlName(String argOwlName) {
+            for (DataPropertyType enumItem: DataPropertyType.values()) {
+                if (enumItem.owlName.equals(argOwlName)) {
+                    return enumItem;
+                }
+            }
+            return null;
+        }
+    };
+
     void setName(String name);
     String getName();
     boolean isSetName();
@@ -23,6 +52,10 @@ public interface GComponent extends GNode {
 
     GComponentLinks getGComponentLinks();
     Collection<GComponentLink> getLinks();
+
+    void setDataProperty(DataPropertyType type, Object value);
+    Object getDataProperty(DataPropertyType type);
+    boolean isSetDataProperty(DataPropertyType type);
 
     Collection<GComponent> getRelatedGComponents(ComponentLinkClassType linkType);
     Collection<GComponent> getRelatedGComponents(ComponentLinkClassType linkType, Direction dir);

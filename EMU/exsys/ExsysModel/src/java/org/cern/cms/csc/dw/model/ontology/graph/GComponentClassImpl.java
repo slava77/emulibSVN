@@ -14,22 +14,27 @@ public class GComponentClassImpl extends GNodeImpl implements GComponentClass {
         super(gservices, node);
     }
 
+    @Override
     public void setType(ComponentClassType type) {
-        setProperty(PropertyType.TYPE, type.value(), true);
+        setProperty(InternalPropertyType.TYPE, type.value(), true);
     }
 
+    @Override
     public ComponentClassType getType() {
-        return ComponentClassType.fromValue((String) getProperty(PropertyType.TYPE));
+        return ComponentClassType.fromValue((String) getProperty(InternalPropertyType.TYPE));
     }
 
+    @Override
     public void setDescription(String description) {
-        setProperty(PropertyType.DESCRIPTION, description);
+        setProperty(InternalPropertyType.DESCRIPTION, description);
     }
 
+    @Override
     public String getDescription() {
-        return (String) getProperty(PropertyType.DESCRIPTION, null);
+        return (String) getProperty(InternalPropertyType.DESCRIPTION, null);
     }
 
+    @Override
     public Collection<GComponentClass> getChildren() {
         return getRelatedGNodeCollection(
                 GComponentClass.class,
@@ -37,6 +42,7 @@ public class GComponentClassImpl extends GNodeImpl implements GComponentClass {
                 Direction.INCOMING);
     }
 
+    @Override
     public Collection<GComponentClass> getParents() {
         return getRelatedGNodeCollection(
                 GComponentClass.class,
@@ -44,10 +50,12 @@ public class GComponentClassImpl extends GNodeImpl implements GComponentClass {
                 Direction.OUTGOING);
     }
 
+    @Override
     public Collection<GComponentClass> getParentsRecursive() {
         return getParentsRecursive(false);
     }
 
+    @Override
     public Collection<GComponentClass> getParentsRecursive(boolean returnSelf) {
         return getRelatedGNodeCollection(
                 GComponentClass.class,
@@ -57,18 +65,21 @@ public class GComponentClassImpl extends GNodeImpl implements GComponentClass {
                 (returnSelf ? ReturnableEvaluator.ALL : ReturnableEvaluator.ALL_BUT_START_NODE));
     }
 
+    @Override
     public void addParent(GComponentClass parent) {
         if (!getParents().contains(parent)) {
             setRelationship(parent, GLinkType.CLASS_TO_PARENT);
         }
     }
 
+    @Override
     public void addComponent(GComponent component) {
         if (component.getType() == null) {
             component.setType(this);
         }
     }
 
+    @Override
     public Collection<GComponent> getComponents() {
         return getRelatedGNodeCollection(
                 GComponent.class,
@@ -76,6 +87,7 @@ public class GComponentClassImpl extends GNodeImpl implements GComponentClass {
                 Direction.INCOMING);
     }
 
+    @Override
     public boolean isHasComponents() {
         Transaction tx = gservices.beginTx();
         try {
@@ -86,10 +98,12 @@ public class GComponentClassImpl extends GNodeImpl implements GComponentClass {
         }
     }
 
+    @Override
     public Collection<GComponentClass> getChildrenRecursive() {
         return getChildrenRecursive(false);
     }
 
+    @Override
     public Collection<GComponentClass> getChildrenRecursive(boolean returnSelf) {
         return getRelatedGNodeCollection(
                 GComponentClass.class,
@@ -99,6 +113,7 @@ public class GComponentClassImpl extends GNodeImpl implements GComponentClass {
                 (returnSelf ? ReturnableEvaluator.ALL : ReturnableEvaluator.ALL_BUT_START_NODE));
     }
 
+    @Override
     public Collection<GComponent> getComponentsRecursive() {
         return getRelatedGNodeCollection(
                 GComponent.class,
@@ -110,6 +125,7 @@ public class GComponentClassImpl extends GNodeImpl implements GComponentClass {
                 ReturnableEvaluator.ALL_BUT_START_NODE);
     }
 
+    @Override
     public boolean isHasComponentsRecursive() {
         for (GComponentClass cc: getChildrenRecursive(true)) {
             if (cc.isHasComponents()) {

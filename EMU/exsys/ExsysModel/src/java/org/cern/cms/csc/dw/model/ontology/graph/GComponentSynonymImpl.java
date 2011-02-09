@@ -9,14 +9,17 @@ public class GComponentSynonymImpl extends GNodeImpl implements GComponentSynony
         super(gservices, node);
     }
 
+    @Override
     public void setName(String name) {
-        setProperty(PropertyType.NAME, name, true);
+        setProperty(InternalPropertyType.NAME, name, true);
     }
 
+    @Override
     public String getName() {
-        return (String) getProperty(PropertyType.NAME);
+        return (String) getProperty(InternalPropertyType.NAME);
     }
 
+    @Override
     public GComponent getComponent() {
         return getRelatedGNode(
                 GComponent.class,
@@ -24,6 +27,7 @@ public class GComponentSynonymImpl extends GNodeImpl implements GComponentSynony
                 Direction.INCOMING);
     }
 
+    @Override
     public void setComponent(GComponent component) {
         component.addSynonym(this);
     }
