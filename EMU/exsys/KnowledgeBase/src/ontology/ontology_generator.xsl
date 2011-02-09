@@ -875,7 +875,7 @@
 	<ObjectPropertyAssertion><ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;{$PADDED_VME_NAME}"/><Individual URI="&csc;Rack{$RACK_NAME}"/></ObjectPropertyAssertion>
 	<DataPropertyAssertion><DataProperty URI="&csc;_PositionInRack"/><Individual URI="&csc;{$PADDED_VME_NAME}"/><Constant datatypeURI="&xsd;string"><xsl:value-of select="@placeInRack"/></Constant></DataPropertyAssertion>
 	<DataPropertyAssertion><DataProperty URI="&csc;_ELMBId"/><Individual URI="&csc;{$PADDED_VME_NAME}"/><Constant datatypeURI="&xsd;integer"><xsl:value-of select="@elmbId"/></Constant></DataPropertyAssertion>
-	<DataPropertyAssertion><DataProperty URI="&csc;_DCSCrateNumber"/><Individual URI="&csc;{$PADDED_VME_NAME}"/><Constant datatypeURI="&xsd;integer"><xsl:value-of select="@dcsCrateNumber"/></Constant></DataPropertyAssertion>
+	<DataPropertyAssertion><DataProperty URI="&csc;_DCSCrateNumber"/><Individual URI="&csc;{$PADDED_VME_NAME}"/><Constant datatypeURI="&xsd;string"><xsl:value-of select="@dcsCrateNumber"/></Constant></DataPropertyAssertion>
       </xsl:for-each>
     </xsl:for-each>
   </xsl:template>
