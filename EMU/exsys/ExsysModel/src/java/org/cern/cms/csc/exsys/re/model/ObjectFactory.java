@@ -47,11 +47,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SmsAction }
+     * Create an instance of {@link EmailAction }
      * 
      */
-    public SmsAction createSmsAction() {
-        return new SmsAction();
+    public EmailAction createEmailAction() {
+        return new EmailAction();
     }
 
     /**
@@ -63,27 +63,27 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ConclusionType }
-     * 
-     */
-    public ConclusionType createConclusionType() {
-        return new ConclusionType();
-    }
-
-    /**
-     * Create an instance of {@link EmailAction }
-     * 
-     */
-    public EmailAction createEmailAction() {
-        return new EmailAction();
-    }
-
-    /**
      * Create an instance of {@link ConclusionTriggerSource }
      * 
      */
     public ConclusionTriggerSource createConclusionTriggerSource() {
         return new ConclusionTriggerSource();
+    }
+
+    /**
+     * Create an instance of {@link Conclusion }
+     * 
+     */
+    public Conclusion createConclusion() {
+        return new Conclusion();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionType }
+     * 
+     */
+    public ConclusionType createConclusionType() {
+        return new ConclusionType();
     }
 
     /**
@@ -95,11 +95,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Conclusion }
+     * Create an instance of {@link Rule }
      * 
      */
-    public Conclusion createConclusion() {
-        return new Conclusion();
+    public Rule createRule() {
+        return new Rule();
     }
 
     /**
@@ -119,11 +119,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Rule }
+     * Create an instance of {@link SmsAction }
      * 
      */
-    public Rule createRule() {
-        return new Rule();
+    public SmsAction createSmsAction() {
+        return new SmsAction();
     }
 
     /**

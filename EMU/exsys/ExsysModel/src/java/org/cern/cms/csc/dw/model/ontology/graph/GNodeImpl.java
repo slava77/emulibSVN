@@ -139,6 +139,16 @@ public abstract class GNodeImpl extends GBase implements GNode {
         }
     }
 
+    protected Iterable<String> getAllPropertyKeys() {
+        Transaction tx = gservices.beginTx();
+        try {
+            return node.getPropertyKeys();
+        } finally {
+            tx.success();
+            tx.finish();
+        }
+    }
+
     protected void setRelationship(GNode toNode, RelationshipType type) {
         setRelationship(toNode.getNode(), type);
     }

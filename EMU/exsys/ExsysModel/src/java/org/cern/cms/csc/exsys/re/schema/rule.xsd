@@ -192,7 +192,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:one-to-one mapped-by="componentFinder">
-                            <orm:join-column name="RER_COMPONENT_FINDER" nullable="false"/>
+                            <!--orm:join-column name="RER_COMPONENT_FINDER" nullable="false"/-->
                         </hj:one-to-one>
                         <jaxb:property name="rule"/>
                         <ann:annotate xmlns:a="jsf.bean.gui.annotation">

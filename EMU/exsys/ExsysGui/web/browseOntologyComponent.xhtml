@@ -81,6 +81,30 @@
 
                 <br/>
 
+                <ice:outputLabel value="Data Properties:"/>
+                <ice:dataTable value="#{componentClassTreeController.componentSelector.componentDataProperties}" var="prop">
+                    <f:facet name="header">
+                        <ice:columnGroup>
+                            <ice:headerRow>
+                                <ice:column>
+                                    <ice:outputText value="Property Type"/>
+                                </ice:column>
+                                <ice:column>
+                                    <ice:outputText value="Value"/>
+                                </ice:column>
+                            </ice:headerRow>
+                        </ice:columnGroup>
+                    </f:facet>
+                    <ice:column>
+                        <ice:outputText value="#{prop.key}"/>
+                    </ice:column>
+                    <ice:column>
+                        <ice:outputText value="#{prop.value}"/>
+                    </ice:column>
+                </ice:dataTable>
+
+                <br/>
+
                 <ice:outputLabel value="Component Links:"/>
 
                 <ice:dataTable id="componentLinkTable" value="#{componentClassTreeController.componentSelector.component.links}" var="link" rows="15">

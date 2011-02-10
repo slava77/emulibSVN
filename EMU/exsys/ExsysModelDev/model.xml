@@ -214,6 +214,17 @@
             <replacefilter token="@GeneratedValue" value="//@GeneratedValue"/>
         </replace>
 
+        <!-- removes all @JoinColumn(...) annotations that go after another annotation having a mappedBy attribute -->
+        <replaceregexp >
+            <regexp pattern="(mappedBy.*\)\s*\n)\s*@JoinColumn\(.*\)\s*\n"/>
+            <substitution expression="\1"/>
+            <fileset dir="${model}/src/java/org/cern/cms/csc">
+                <include name="dw/model/**/*.java"/>
+                <include name="dw/service/**/*.java"/>
+                <include name="exsys/re/model/**/*.java"/>
+            </fileset>
+        </replaceregexp>
+
         <!-- replaces dates like // Generated on: 2010.06.11 at 02:45:16 PM CEST  -->
         <replaceregexp>
             <regexp pattern="// Generated on: .*\n"/>

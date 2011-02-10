@@ -1,6 +1,7 @@
 package org.cern.cms.csc.dw.model.ontology.graph;
 
 import java.util.Collection;
+import java.util.Map;
 import org.cern.cms.csc.dw.model.ontology.ComponentLinkClassType;
 import org.neo4j.graphdb.Direction;
 
@@ -33,6 +34,15 @@ public interface GComponent extends GNode {
             }
             return null;
         }
+
+        public static DataPropertyType valueOfSilent(String name) {
+            for (DataPropertyType enumItem: DataPropertyType.values()) {
+                if (enumItem.name().equals(name)) {
+                    return enumItem;
+                }
+            }
+            return null;
+        }
     };
 
     void setName(String name);
@@ -56,6 +66,7 @@ public interface GComponent extends GNode {
     void setDataProperty(DataPropertyType type, Object value);
     Object getDataProperty(DataPropertyType type);
     boolean isSetDataProperty(DataPropertyType type);
+    Map<DataPropertyType, Object> getAllDataProperties();
 
     Collection<GComponent> getRelatedGComponents(ComponentLinkClassType linkType);
     Collection<GComponent> getRelatedGComponents(ComponentLinkClassType linkType, Direction dir);

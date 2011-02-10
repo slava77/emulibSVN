@@ -1,8 +1,11 @@
 package org.cern.cms.csc.dw.model.ontology.graph;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import org.cern.cms.csc.dw.model.ontology.ComponentLinkClassType;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
@@ -81,6 +84,21 @@ public class GComponentImpl extends GNodeImpl implements GComponent {
     @Override
     public void setDataProperty(DataPropertyType type, Object value) {
         setProperty(type, value, true);
+    }
+
+    @Override
+    public Map<DataPropertyType, Object> getAllDataProperties() {
+        Map<DataPropertyType, Object> ret = new HashMap<DataPropertyType, Object>();
+        Iterator<String> propKeyIt = getAllPropertyKeys().iterator();
+        for (;propKeyIt.hasNext();) {
+            String propKey = propKeyIt.next();
+            String[] propKeyParts = propKey.split("\\.");
+            DataPropertyType propType = DataPropertyType.valueOfSilent(propKeyParts[propKeyParts.length - 1]);
+            if (propType != null) {
+                ret.put(propType, getDataProperty(propType));
+            }
+        }
+        return ret;
     }
 
     @Override

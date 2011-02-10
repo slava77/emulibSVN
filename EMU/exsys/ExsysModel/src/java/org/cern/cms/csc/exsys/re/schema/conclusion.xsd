@@ -263,7 +263,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:one-to-many mapped-by="conclusion" merge="false">
-                            <orm:join-column name="RECT_CONCLUSION_ID" nullable="false"/>
+                            <!--orm:join-column name="RECT_CONCLUSION_ID" nullable="false"/-->
                             <orm:cascade>
                                 <orm:cascade-remove/>
                                 <orm:cascade-persist/>
@@ -277,7 +277,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:one-to-many mapped-by="conclusion" merge="false">
-                            <orm:join-column name="RECS_CONCLUSION_ID"/>
+                            <!--orm:join-column name="RECS_CONCLUSION_ID"/-->
                         </hj:one-to-many>
                         <jaxb:property name="parents"/>
                     </xsd:appinfo>

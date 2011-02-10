@@ -63,83 +63,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link DqmCscHvSegmentFact }
+     * Create an instance of {@link DqmCscCfebFact }
      * 
      */
-    public DqmCscHvSegmentFact createDqmCscHvSegmentFact() {
-        return new DqmCscHvSegmentFact();
-    }
-
-    /**
-     * Create an instance of {@link FactCollection }
-     * 
-     */
-    public FactCollection createFactCollection() {
-        return new FactCollection();
-    }
-
-    /**
-     * Create an instance of {@link DqmReportFact }
-     * 
-     */
-    public DqmReportFact createDqmReportFact() {
-        return new DqmReportFact();
-    }
-
-    /**
-     * Create an instance of {@link DcsAlctLvFact }
-     * 
-     */
-    public DcsAlctLvFact createDcsAlctLvFact() {
-        return new DcsAlctLvFact();
-    }
-
-    /**
-     * Create an instance of {@link DqmDduInputFact }
-     * 
-     */
-    public DqmDduInputFact createDqmDduInputFact() {
-        return new DqmDduInputFact();
-    }
-
-    /**
-     * Create an instance of {@link DduFmmIrqFact }
-     * 
-     */
-    public DduFmmIrqFact createDduFmmIrqFact() {
-        return new DduFmmIrqFact();
-    }
-
-    /**
-     * Create an instance of {@link DqmDduFact }
-     * 
-     */
-    public DqmDduFact createDqmDduFact() {
-        return new DqmDduFact();
-    }
-
-    /**
-     * Create an instance of {@link ApplicationStatusFact }
-     * 
-     */
-    public ApplicationStatusFact createApplicationStatusFact() {
-        return new ApplicationStatusFact();
-    }
-
-    /**
-     * Create an instance of {@link EmuMonitorFact }
-     * 
-     */
-    public EmuMonitorFact createEmuMonitorFact() {
-        return new EmuMonitorFact();
-    }
-
-    /**
-     * Create an instance of {@link DcsCfebLvFact }
-     * 
-     */
-    public DcsCfebLvFact createDcsCfebLvFact() {
-        return new DcsCfebLvFact();
+    public DqmCscCfebFact createDqmCscCfebFact() {
+        return new DqmCscCfebFact();
     }
 
     /**
@@ -151,30 +79,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link DqmEmuFact }
-     * 
-     */
-    public DqmEmuFact createDqmEmuFact() {
-        return new DqmEmuFact();
-    }
-
-    /**
-     * Create an instance of {@link FactRequestCollection }
-     * 
-     */
-    public FactRequestCollection createFactRequestCollection() {
-        return new FactRequestCollection();
-    }
-
-    /**
-     * Create an instance of {@link DqmCscCfebFact }
-     * 
-     */
-    public DqmCscCfebFact createDqmCscCfebFact() {
-        return new DqmCscCfebFact();
-    }
-
-    /**
      * Create an instance of {@link SlidingTmbTriggerCounterFact }
      * 
      */
@@ -183,11 +87,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link FactRequest }
+     * Create an instance of {@link DqmReportFact }
      * 
      */
-    public FactRequest createFactRequest() {
-        return new FactRequest();
+    public DqmReportFact createDqmReportFact() {
+        return new DqmReportFact();
+    }
+
+    /**
+     * Create an instance of {@link DcsCfebLvFact }
+     * 
+     */
+    public DcsCfebLvFact createDcsCfebLvFact() {
+        return new DcsCfebLvFact();
     }
 
     /**
@@ -199,19 +111,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link DcsCommunicationStatusFact }
+     * Create an instance of {@link DduFmmIrqFact }
      * 
      */
-    public DcsCommunicationStatusFact createDcsCommunicationStatusFact() {
-        return new DcsCommunicationStatusFact();
-    }
-
-    /**
-     * Create an instance of {@link FedFsmFact }
-     * 
-     */
-    public FedFsmFact createFedFsmFact() {
-        return new FedFsmFact();
+    public DduFmmIrqFact createDduFmmIrqFact() {
+        return new DduFmmIrqFact();
     }
 
     /**
@@ -223,14 +127,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link LocalDAQStatusFact }
-     * 
-     */
-    public LocalDAQStatusFact createLocalDAQStatusFact() {
-        return new LocalDAQStatusFact();
-    }
-
-    /**
      * Create an instance of {@link CumulativeTmbTriggerCounterFact }
      * 
      */
@@ -239,11 +135,115 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link LocalDAQStatusFact }
+     * 
+     */
+    public LocalDAQStatusFact createLocalDAQStatusFact() {
+        return new LocalDAQStatusFact();
+    }
+
+    /**
+     * Create an instance of {@link DqmDduInputFact }
+     * 
+     */
+    public DqmDduInputFact createDqmDduInputFact() {
+        return new DqmDduInputFact();
+    }
+
+    /**
+     * Create an instance of {@link DqmEmuFact }
+     * 
+     */
+    public DqmEmuFact createDqmEmuFact() {
+        return new DqmEmuFact();
+    }
+
+    /**
+     * Create an instance of {@link DqmCscHvSegmentFact }
+     * 
+     */
+    public DqmCscHvSegmentFact createDqmCscHvSegmentFact() {
+        return new DqmCscHvSegmentFact();
+    }
+
+    /**
+     * Create an instance of {@link DcsCommunicationStatusFact }
+     * 
+     */
+    public DcsCommunicationStatusFact createDcsCommunicationStatusFact() {
+        return new DcsCommunicationStatusFact();
+    }
+
+    /**
+     * Create an instance of {@link EmuMonitorFact }
+     * 
+     */
+    public EmuMonitorFact createEmuMonitorFact() {
+        return new EmuMonitorFact();
+    }
+
+    /**
+     * Create an instance of {@link FedFsmFact }
+     * 
+     */
+    public FedFsmFact createFedFsmFact() {
+        return new FedFsmFact();
+    }
+
+    /**
+     * Create an instance of {@link DqmDduFact }
+     * 
+     */
+    public DqmDduFact createDqmDduFact() {
+        return new DqmDduFact();
+    }
+
+    /**
+     * Create an instance of {@link DcsAlctLvFact }
+     * 
+     */
+    public DcsAlctLvFact createDcsAlctLvFact() {
+        return new DcsAlctLvFact();
+    }
+
+    /**
+     * Create an instance of {@link FactCollection }
+     * 
+     */
+    public FactCollection createFactCollection() {
+        return new FactCollection();
+    }
+
+    /**
+     * Create an instance of {@link FactRequestCollection }
+     * 
+     */
+    public FactRequestCollection createFactRequestCollection() {
+        return new FactRequestCollection();
+    }
+
+    /**
+     * Create an instance of {@link FactRequest }
+     * 
+     */
+    public FactRequest createFactRequest() {
+        return new FactRequest();
+    }
+
+    /**
      * Create an instance of {@link DqmCscFact }
      * 
      */
     public DqmCscFact createDqmCscFact() {
         return new DqmCscFact();
+    }
+
+    /**
+     * Create an instance of {@link ApplicationStatusFact }
+     * 
+     */
+    public ApplicationStatusFact createApplicationStatusFact() {
+        return new ApplicationStatusFact();
     }
 
     /**

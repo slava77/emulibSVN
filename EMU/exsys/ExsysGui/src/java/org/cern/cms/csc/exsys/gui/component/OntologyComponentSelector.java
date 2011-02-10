@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import org.cern.cms.csc.dw.dao.GOntologyDaoLocal;
@@ -121,4 +123,7 @@ public abstract class OntologyComponentSelector {
         this.componentName = componentName;
     }
 
+    public Set<Map.Entry<GComponent.DataPropertyType, Object>> getComponentDataProperties() {
+        return getComponent().getAllDataProperties().entrySet();
+    }
 }
