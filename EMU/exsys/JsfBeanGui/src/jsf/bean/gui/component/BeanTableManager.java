@@ -20,6 +20,8 @@ import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.component.table.BeanTable;
 import jsf.bean.gui.component.table.BeanTableDaoIf;
 import jsf.bean.gui.component.table.BeanTablePack;
+import jsf.bean.gui.converter.ClassConverter;
+import jsf.bean.gui.converter.NewLineConverter;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
 
@@ -219,6 +221,14 @@ public abstract class BeanTableManager {
     private File getRealFile(String file) {
         String path = getContext().getExternalContext().getRealPath(file);
         return new File(path);
+    }
+
+    public ClassConverter getClassConverter() {
+        return new ClassConverter();
+    }
+
+    public NewLineConverter getNewLineConverter() {
+        return new NewLineConverter();
     }
 
 }
