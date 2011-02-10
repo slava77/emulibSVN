@@ -6,14 +6,6 @@
     xmlns="http://java.sun.com/xml/ns/javaee" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
-    <converter>
-        <converter-id>NewLineConverter</converter-id>
-        <converter-class>org.cern.cms.csc.exsys.gui.util.NewLineConverter</converter-class>
-    </converter>
-    <converter>
-        <converter-id>ClassConverter</converter-id>
-        <converter-class>org.cern.cms.csc.exsys.gui.util.ClassConverter</converter-class>
-    </converter>
     <navigation-rule>
         <navigation-case>
             <from-outcome>index</from-outcome>

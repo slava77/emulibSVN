@@ -9,13 +9,13 @@
         <Node id="browseOntology.xhtml" x="400" y="300" zoom="true"/>
         <Node id="resources/util/polling.xhtml" x="150" y="750" zoom="true"/>
         <Node id="browseMonitor.xhtml" x="1150" y="150" zoom="true"/>
-        <Node id="resources/main.xhtml" x="791" y="72" zoom="true"/>
         <Node id="reStatus.xhtml" x="1400" y="150" zoom="true"/>
+        <Node id="resources/main.xhtml" x="791" y="72" zoom="true"/>
         <Node id="resources/component/editor/editorCheckBox.xhtml" x="1150" y="450" zoom="true"/>
         <Node id="reConclusions.xhtml" x="1150" y="300" zoom="true"/>
         <Node id="reEditRule.xhtml" x="1650" y="300" zoom="true"/>
         <Node id="reEditAction.xhtml" x="400" y="750" zoom="true"/>
-        <Node id="resources/component/beanTable.xhtml" x="900" y="150" zoom="true"/>
+        <Node id="testFactInput.xhtml" x="150" y="150" zoom="true"/>
         <Node id="resources/component/editor/editorDefault.xhtml" x="1400" y="300" zoom="true"/>
         <Node id="resources/component/editor/editorTextArea.xhtml" x="150" y="900" zoom="true"/>
         <Node id="resources/component/componentSelector.xhtml" x="400" y="600" zoom="true"/>
