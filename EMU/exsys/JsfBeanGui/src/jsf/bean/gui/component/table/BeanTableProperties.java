@@ -12,8 +12,6 @@ public class BeanTableProperties extends GenericProperties {
     public static final String KEY_PAGE_SIZE = "pageSize";
     public static final String KEY_PAGE_FAST_STEP = "pageFastStep";
     public static final String KEY_PAGE_SIZES = "pageSizes";
-    public static final String KEY_DEFAULT_TIME_ZONE = "timeZone";
-    public static final String KEY_DEFAULT_TIME_FORMAT = "timeFormat";
     public static final String KEY_DISPLAY_FILTER = "displayFilter";
     public static final String KEY_DISPLAY_COLUMNS = "displayColumns";
     public static final String KEY_COLUMNS = "columns";
@@ -21,18 +19,27 @@ public class BeanTableProperties extends GenericProperties {
     public static final String KEY_COL_WIDTH_STEP = "columnWidthStep";
     public static final String KEYP_COL_SORT_ASC = "%s.asc";
     public static final String KEYP_COL_WIDTH = "%s.width";
+    public static final String KEYP_COL_NUMBER_GROUPING = "%s.numberGrouping";
+    public static final String KEYP_COL_NUMBER_MIN_FRAC_DIGITS = "%s.numberMinFractionDigits";
+    public static final String KEYP_COL_NUMBER_MAX_FRAC_DIGITS = "%s.numberMaxFractionDigits";
+    public static final String KEYP_COL_NUMBER_PATTERN = "%s.numberPattern";
+    public static final String KEYP_COL_DATE_TIME_ZONE = "%s.dateTimeZone";
+    public static final String KEYP_COL_DATE_FORMAT = "%s.dateTimeFormat";
 
     public static final Integer DEFAULT_MAX_PAGE_SIZE = 100;
     public static final Integer DEFAULT_PAGE_SIZE = 20;
     public static final Integer DEFAULT_PAGE_FAST_STEP = 5;
     public static final List<SelectItem> DEFAULT_PAGE_SIZES;
-    public static final String DEFAULT_TIME_FORMAT = "EEE dd-MM-yy HH:mm:ss";
-    public static final String DEFAULT_TIME_ZONE = "Europe/Zurich";
     public static final Boolean DEFAULT_DISPLAY_FILTER = false;
     public static final Boolean DEFAULT_DISPLAY_COLUMNS = false;
     public static final Integer DEFAULT_COL_WIDTH_STEP = 5;
     public static final Boolean DEFAULT_COL_SORT_ASC = true;
     public static final Integer DEFAULT_COL_WIDTH = null;
+    public static final Integer DEFAULT_COL_NUMBER_MIN_FRAC_DIGITS = null;
+    public static final Integer DEFAULT_COL_NUMBER_MAX_FRAC_DIGITS = null;
+    public static final String DEFAULT_COL_NUMBER_PATTERN = "";
+    public static final String DEFAULT_COL_DATE_FORMAT = "EEE dd-MM-yy HH:mm:ss";
+    public static final String DEFAULT_COL_DATE_TIME_ZONE = "Europe/Zurich";
 
     static {
         DEFAULT_PAGE_SIZES = new ArrayList<SelectItem>();
@@ -90,12 +97,12 @@ public class BeanTableProperties extends GenericProperties {
         return getSelectItemList(tableKey(KEY_PAGE_SIZES), DEFAULT_PAGE_SIZES);
     }
 
-    public String getDefaultTimeFormat() {
-        return get(tableKey(KEY_DEFAULT_TIME_FORMAT), DEFAULT_TIME_FORMAT);
+    public String getColumnDateFormat(String name) {
+        return get(columnKey(KEYP_COL_DATE_FORMAT, name), DEFAULT_COL_DATE_FORMAT);
     }
 
-    public TimeZone getDefaultTimeZone() {
-        return TimeZone.getTimeZone(get(tableKey(KEY_DEFAULT_TIME_ZONE), DEFAULT_TIME_ZONE));
+    public TimeZone getColumnDateTimeZone(String name) {
+        return TimeZone.getTimeZone(get(columnKey(KEYP_COL_DATE_TIME_ZONE, name), DEFAULT_COL_DATE_TIME_ZONE));
     }
 
     public List<String> getColumns() {
@@ -138,4 +145,19 @@ public class BeanTableProperties extends GenericProperties {
         set(columnKey(KEYP_COL_SORT_ASC, name), asc);
     }
 
+    public Boolean getColumnNumberGrouping(String name) {
+        return get(columnKey(KEYP_COL_NUMBER_GROUPING, name), true);
+    }
+
+    public Integer getColumnNumberMinFractionDigits(String name) {
+        return get(columnKey(KEYP_COL_NUMBER_MIN_FRAC_DIGITS, name), DEFAULT_COL_NUMBER_MIN_FRAC_DIGITS);
+    }
+
+    public Integer getColumnNumberMaxFractionDigits(String name) {
+        return get(columnKey(KEYP_COL_NUMBER_MAX_FRAC_DIGITS, name), DEFAULT_COL_NUMBER_MAX_FRAC_DIGITS);
+    }
+
+    public String getColumnNumberPattern(String name) {
+        return get(columnKey(KEYP_COL_NUMBER_PATTERN, name), DEFAULT_COL_NUMBER_PATTERN);
+    }
 }

@@ -64,14 +64,21 @@ public class BeanTableColumn {
                         (propertyMd.getType().getSimpleName().equals("int") ||
                          propertyMd.getType().getSimpleName().equals("double")))) {
 
-                    this.converter = new NumberConverter();
+                    NumberConverter numberConverter = new NumberConverter();
+
+                    numberConverter.setGroupingUsed(table.getProperties().getColumnNumberGrouping(name));
+                    numberConverter.setMinFractionDigits(table.getProperties().getColumnNumberMinFractionDigits(name));
+                    numberConverter.setMaxFractionDigits(table.getProperties().getColumnNumberMaxFractionDigits(name));
+                    numberConverter.setPattern(table.getProperties().getColumnNumberPattern(name));
+
+                    this.converter = numberConverter;
 
                 } else
                 if (propertyMd.getType().equals(Date.class)) {
 
                     this.converter = new DateTimeConverter();
-                    ((DateTimeConverter) converter).setTimeZone(table.getProperties().getDefaultTimeZone());
-                    ((DateTimeConverter) converter).setPattern(table.getProperties().getDefaultTimeFormat());
+                    ((DateTimeConverter) converter).setTimeZone(table.getProperties().getColumnDateTimeZone(name));
+                    ((DateTimeConverter) converter).setPattern(table.getProperties().getColumnDateFormat(name));
 
                 }
             }
