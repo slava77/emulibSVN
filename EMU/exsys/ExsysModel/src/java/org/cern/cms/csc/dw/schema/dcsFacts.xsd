@@ -32,6 +32,10 @@
                  type="tns:DcsAlctLvFactType"
                  substitutionGroup="tns:fact"/>
 
+    <xsd:element name="DcsAlertFact"
+                 type="tns:DcsAlertFactType"
+                 substitutionGroup="tns:dcsFact"/>
+
     <xsd:complexType name="DcsCommunicationStatusFactType">
         <xsd:annotation>
             <xsd:appinfo>
@@ -175,6 +179,77 @@
                                     <orm:column name="FCT_CURRENT_1V8"/>
                                 </hj:basic>
                                 <jaxb:property name="current1v8"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="DcsAlertFactType">
+      	<xsd:annotation>
+    		<xsd:appinfo>
+                <jaxb:class name="DcsAlertFact" />
+                <hj:entity>
+                    <orm:table name="CDW_DCS_ALERT_FACTS"/>
+                </hj:entity>
+                <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                    <a:FactAnn title="DCS Alert"/>
+                </ann:annotate>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:dcsFactType">
+                <xsd:sequence>
+
+                    <xsd:element name="isOn" type="xsd:boolean">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_IS_ALERT_ON" nullable="false"/>
+                                </hj:basic>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="isAcknowledged" type="xsd:boolean">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_IS_ALERT_ACKNOWLEDGED" nullable="false"/>
+                                </hj:basic>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="alertText" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_ALERT_TEXT"/>
+                                </hj:basic>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="sourceNumericValue" type="xsd:double" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_SOURCE_NUMERIC_VALUE"/>
+                                </hj:basic>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="sourceStringValue" type="xsd:string" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_SOURCE_STRING_VALUE"/>
+                                </hj:basic>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>

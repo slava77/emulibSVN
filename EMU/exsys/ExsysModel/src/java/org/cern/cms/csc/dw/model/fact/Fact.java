@@ -73,25 +73,26 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
     "component"
 })
 @XmlSeeAlso({
+    DqmReportFact.class,
+    DduFmmIrqFact.class,
+    ApplicationStatusFact.class,
+    CumulativeTmbTriggerCounterFact.class,
+    FedFsmFact.class,
+    DcsCfebLvFact.class,
+    DcsFact.class,
+    EmuMonitorFact.class,
+    DcsAlctLvFact.class,
+    DqmCscFact.class,
     SlidingTmbTriggerCounterFact.class,
     DduFmmResetFact.class,
-    DqmReportFact.class,
     DqmDduFact.class,
-    DduFmmIrqFact.class,
     DqmDduInputFact.class,
-    LocalDAQStatusFact.class,
     DqmCscCfebFact.class,
-    CumulativeTmbTriggerCounterFact.class,
-    ApplicationStatusFact.class,
-    FedFsmFact.class,
+    LocalDAQStatusFact.class,
     DqmCscAfebFact.class,
     DcsCommunicationStatusFact.class,
-    DcsCfebLvFact.class,
     DqmCscHvSegmentFact.class,
-    DcsAlctLvFact.class,
-    EmuMonitorFact.class,
     TmbCounterFact.class,
-    DqmCscFact.class,
     DqmEmuFact.class
 })
 @Entity(name = "org.cern.cms.csc.dw.model.fact.Fact")

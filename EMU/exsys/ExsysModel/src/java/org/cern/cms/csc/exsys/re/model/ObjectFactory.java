@@ -47,6 +47,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link SimpleComponentFinder }
+     * 
+     */
+    public SimpleComponentFinder createSimpleComponentFinder() {
+        return new SimpleComponentFinder();
+    }
+
+    /**
      * Create an instance of {@link EmailAction }
      * 
      */
@@ -55,43 +63,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ConclusionTrigger }
-     * 
-     */
-    public ConclusionTrigger createConclusionTrigger() {
-        return new ConclusionTrigger();
-    }
-
-    /**
-     * Create an instance of {@link ConclusionTriggerSource }
-     * 
-     */
-    public ConclusionTriggerSource createConclusionTriggerSource() {
-        return new ConclusionTriggerSource();
-    }
-
-    /**
-     * Create an instance of {@link Conclusion }
-     * 
-     */
-    public Conclusion createConclusion() {
-        return new Conclusion();
-    }
-
-    /**
-     * Create an instance of {@link ConclusionType }
-     * 
-     */
-    public ConclusionType createConclusionType() {
-        return new ConclusionType();
-    }
-
-    /**
      * Create an instance of {@link RelatedComponentFinder }
      * 
      */
     public RelatedComponentFinder createRelatedComponentFinder() {
         return new RelatedComponentFinder();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionTrigger }
+     * 
+     */
+    public ConclusionTrigger createConclusionTrigger() {
+        return new ConclusionTrigger();
     }
 
     /**
@@ -111,11 +95,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SimpleComponentFinder }
+     * Create an instance of {@link ConclusionType }
      * 
      */
-    public SimpleComponentFinder createSimpleComponentFinder() {
-        return new SimpleComponentFinder();
+    public ConclusionType createConclusionType() {
+        return new ConclusionType();
+    }
+
+    /**
+     * Create an instance of {@link Conclusion }
+     * 
+     */
+    public Conclusion createConclusion() {
+        return new Conclusion();
     }
 
     /**
@@ -124,6 +116,14 @@ public class ObjectFactory {
      */
     public SmsAction createSmsAction() {
         return new SmsAction();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionTriggerSource }
+     * 
+     */
+    public ConclusionTriggerSource createConclusionTriggerSource() {
+        return new ConclusionTriggerSource();
     }
 
     /**

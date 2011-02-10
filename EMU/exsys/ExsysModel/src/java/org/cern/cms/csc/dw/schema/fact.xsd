@@ -36,6 +36,7 @@
 
     <xsd:element name="factCollection" type="tns:factCollectionType"/>
     <xsd:element name="fact" type="tns:factType"/>
+    <xsd:element name="dcsFact" type="tns:dcsFactType"/>
 
     <xsd:complexType name="factCollectionType">
         <xsd:annotation>
@@ -204,6 +205,51 @@
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
+    </xsd:complexType>
+
+    <!-- This class extends Fact class and adds componentDcsId (transient) and componentAttribute properties,
+         so if you want to be able to refer to a component by it's DCS ID (i.e. DCS Datapoint Element),
+         use this class as a base for your concrete fact class.
+         When using this class as a base one can refer to components either by their ontologt ID using the component_id property or by DCS ID using the component_dcs_id property -->
+    <xsd:complexType name="dcsFactType">
+      	<xsd:annotation>
+    		<xsd:appinfo>
+                <jaxb:class name="DcsFact" />
+                <hj:entity>
+                    <orm:table name="CDW_DCS_FACTS"/>
+                </hj:entity>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:factType">
+                <xsd:sequence>
+
+                    <xsd:element name="component_attribute" type="xsd:string" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_CMP_ATTR"/>
+                                </hj:basic>
+                                <jaxb:property name="componentAttribute"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="component_dcs_id" type="xsd:string" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:ignored/>
+                                <jaxb:property name="componentDcsId"/>
+                                <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                                    <a:ComponentDcsId componentProperty="component" componentAttributeProperty="componentAttribute" required="false"/>
+                                </ann:annotateGet>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
     </xsd:complexType>
 
 </xsd:schema>
