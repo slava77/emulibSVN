@@ -51,7 +51,7 @@ import org.cern.cms.csc.dw.model.annotation.ComponentDcsId;
 })
 @Entity(name = "org.cern.cms.csc.dw.model.fact.DcsFact")
 @Table(name = "CDW_DCS_FACTS")
-public class DcsFact
+public abstract class DcsFact
     extends Fact
     implements Serializable
 {

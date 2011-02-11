@@ -468,8 +468,8 @@ public class Conclusion
      * 
      */
     @OneToMany(targetEntity = org.cern.cms.csc.exsys.re.model.ConclusionTrigger.class, cascade = {
-        CascadeType.PERSIST,
-        CascadeType.REMOVE
+        CascadeType.REMOVE,
+        CascadeType.PERSIST
     }, mappedBy = "conclusion")
     public List<org.cern.cms.csc.exsys.re.model.ConclusionTrigger> getTriggers() {
         if (triggers == null) {

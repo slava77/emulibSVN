@@ -47,27 +47,29 @@ public class FactCollectionFactsItem
      * 
      * @return
      *     possible object is
-     *     {@link JAXBElement }{@code <}{@link org.cern.cms.csc.dw.model.fact.Fact }{@code >}
      *     {@link JAXBElement }{@code <}{@link DqmCscCfebFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link DqmEmuFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link DqmDduFact }{@code >}
      *     {@link JAXBElement }{@code <}{@link TmbCounterFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link DqmCscAfebFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link DqmCscFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link DcsCommunicationStatusFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link FedFsmFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link EmuMonitorFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link DqmDduFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link org.cern.cms.csc.dw.model.fact.Fact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link SlidingTmbTriggerCounterFact }{@code >}
      *     {@link JAXBElement }{@code <}{@link DqmReportFact }{@code >}
      *     {@link JAXBElement }{@code <}{@link ApplicationStatusFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link CumulativeTmbTriggerCounterFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link DcsAlctLvFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link DqmDduInputFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link DcsCfebLvFact }{@code >}
      *     {@link JAXBElement }{@code <}{@link DduFmmIrqFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link LocalDAQStatusFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link DduFmmResetFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link SlidingTmbTriggerCounterFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link DcsAlertFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link DqmDduInputFact }{@code >}
      *     {@link JAXBElement }{@code <}{@link DqmCscHvSegmentFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link DcsFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link DqmCscFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link DqmCscAfebFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link DcsAlctLvFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link LocalDAQStatusFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link EmuMonitorFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link DduFmmResetFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link DqmEmuFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link CumulativeTmbTriggerCounterFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link DcsCfebLvFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link DcsCommunicationStatusFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link FedFsmFact }{@code >}
      *     
      */
     @Transient
@@ -80,27 +82,29 @@ public class FactCollectionFactsItem
      * 
      * @param value
      *     allowed object is
-     *     {@link JAXBElement }{@code <}{@link org.cern.cms.csc.dw.model.fact.Fact }{@code >}
      *     {@link JAXBElement }{@code <}{@link DqmCscCfebFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link DqmEmuFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link DqmDduFact }{@code >}
      *     {@link JAXBElement }{@code <}{@link TmbCounterFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link DqmCscAfebFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link DqmCscFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link DcsCommunicationStatusFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link FedFsmFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link EmuMonitorFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link DqmDduFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link org.cern.cms.csc.dw.model.fact.Fact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link SlidingTmbTriggerCounterFact }{@code >}
      *     {@link JAXBElement }{@code <}{@link DqmReportFact }{@code >}
      *     {@link JAXBElement }{@code <}{@link ApplicationStatusFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link CumulativeTmbTriggerCounterFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link DcsAlctLvFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link DqmDduInputFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link DcsCfebLvFact }{@code >}
      *     {@link JAXBElement }{@code <}{@link DduFmmIrqFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link LocalDAQStatusFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link DduFmmResetFact }{@code >}
-     *     {@link JAXBElement }{@code <}{@link SlidingTmbTriggerCounterFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link DcsAlertFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link DqmDduInputFact }{@code >}
      *     {@link JAXBElement }{@code <}{@link DqmCscHvSegmentFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link DcsFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link DqmCscFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link DqmCscAfebFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link DcsAlctLvFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link LocalDAQStatusFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link EmuMonitorFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link DduFmmResetFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link DqmEmuFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link CumulativeTmbTriggerCounterFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link DcsCfebLvFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link DcsCommunicationStatusFact }{@code >}
+     *     {@link JAXBElement }{@code <}{@link FedFsmFact }{@code >}
      *     
      */
     public void setItem(JAXBElement<? extends org.cern.cms.csc.dw.model.fact.Fact> value) {

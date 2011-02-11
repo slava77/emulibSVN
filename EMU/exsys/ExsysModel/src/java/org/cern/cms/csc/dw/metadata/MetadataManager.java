@@ -82,7 +82,7 @@ public class MetadataManager {
                     c.isAnnotationPresent(Entity.class) &&
                     !Modifier.isAbstract(c.getModifiers())) {
 
-                    if (c.getSuperclass().equals(Fact.class) && c.isAnnotationPresent(FactAnn.class)) {
+                    if (Fact.class.isAssignableFrom(c) && c.isAnnotationPresent(FactAnn.class)) {
                         factList.add(c.getSimpleName(), c.getName());
                     }
 

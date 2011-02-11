@@ -47,35 +47,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SimpleComponentFinder }
+     * Create an instance of {@link SmsAction }
      * 
      */
-    public SimpleComponentFinder createSimpleComponentFinder() {
-        return new SimpleComponentFinder();
-    }
-
-    /**
-     * Create an instance of {@link EmailAction }
-     * 
-     */
-    public EmailAction createEmailAction() {
-        return new EmailAction();
-    }
-
-    /**
-     * Create an instance of {@link RelatedComponentFinder }
-     * 
-     */
-    public RelatedComponentFinder createRelatedComponentFinder() {
-        return new RelatedComponentFinder();
-    }
-
-    /**
-     * Create an instance of {@link ConclusionTrigger }
-     * 
-     */
-    public ConclusionTrigger createConclusionTrigger() {
-        return new ConclusionTrigger();
+    public SmsAction createSmsAction() {
+        return new SmsAction();
     }
 
     /**
@@ -95,11 +71,43 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ConclusionTriggerSource }
+     * 
+     */
+    public ConclusionTriggerSource createConclusionTriggerSource() {
+        return new ConclusionTriggerSource();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionTrigger }
+     * 
+     */
+    public ConclusionTrigger createConclusionTrigger() {
+        return new ConclusionTrigger();
+    }
+
+    /**
      * Create an instance of {@link ConclusionType }
      * 
      */
     public ConclusionType createConclusionType() {
         return new ConclusionType();
+    }
+
+    /**
+     * Create an instance of {@link SimpleComponentFinder }
+     * 
+     */
+    public SimpleComponentFinder createSimpleComponentFinder() {
+        return new SimpleComponentFinder();
+    }
+
+    /**
+     * Create an instance of {@link EmailAction }
+     * 
+     */
+    public EmailAction createEmailAction() {
+        return new EmailAction();
     }
 
     /**
@@ -111,19 +119,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SmsAction }
+     * Create an instance of {@link RelatedComponentFinder }
      * 
      */
-    public SmsAction createSmsAction() {
-        return new SmsAction();
-    }
-
-    /**
-     * Create an instance of {@link ConclusionTriggerSource }
-     * 
-     */
-    public ConclusionTriggerSource createConclusionTriggerSource() {
-        return new ConclusionTriggerSource();
+    public RelatedComponentFinder createRelatedComponentFinder() {
+        return new RelatedComponentFinder();
     }
 
     /**

@@ -36,7 +36,9 @@
 
     <xsd:element name="factCollection" type="tns:factCollectionType"/>
     <xsd:element name="fact" type="tns:factType"/>
-    <xsd:element name="dcsFact" type="tns:dcsFactType"/>
+    <xsd:element name="dcsFact"
+                 type="tns:dcsFactType"
+                 substitutionGroup="tns:fact"/>
 
     <xsd:complexType name="factCollectionType">
         <xsd:annotation>
@@ -211,7 +213,7 @@
          so if you want to be able to refer to a component by it's DCS ID (i.e. DCS Datapoint Element),
          use this class as a base for your concrete fact class.
          When using this class as a base one can refer to components either by their ontologt ID using the component_id property or by DCS ID using the component_dcs_id property -->
-    <xsd:complexType name="dcsFactType">
+    <xsd:complexType name="dcsFactType" abstract="true">
       	<xsd:annotation>
     		<xsd:appinfo>
                 <jaxb:class name="DcsFact" />
