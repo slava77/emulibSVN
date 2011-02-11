@@ -10,7 +10,7 @@
     xmlns:h="http://java.sun.com/jsf/html"
     template="resources/main.xhtml"
     xmlns:exsys-component="http://java.sun.com/jsf/composite/component"
-    xmlns:exsys-util="http://java.sun.com/jsf/composite/util">
+    xmlns:exsys-util="http://java.sun.com/jsf/composite/component/util">
 
     <ui:define name="menu">
     </ui:define>
@@ -98,8 +98,9 @@
                         <ice:panelGroup>
                             <ice:commandLink value="Refresh"
                                              actionListener="#{monitorController.refreshAllImagesListener}"/>
-                            <exsys-util:polling uid="refreshPoll" interval="10"
-                                              actionListener="#{monitorController.refreshAllImagesListener}"/>
+                            <exsys-util:polling  uid="refreshPoll"
+                                                 interval="10"
+                                                 actionListener="#{monitorController.refreshAllImagesListener}"/>
                         </ice:panelGroup>
                     </ice:panelGroup>
 
