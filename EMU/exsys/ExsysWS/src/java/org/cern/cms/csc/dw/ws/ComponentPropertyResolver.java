@@ -51,6 +51,12 @@ public class ComponentPropertyResolver implements ComponentPropertyResolverLocal
             = Collections.synchronizedMap(new HashMap<Class, Set<SingleComponentResolver>>());
 
     /**
+     * Cache of mandatory component property names.
+     */
+    private Map<Class, Set<String>> mandatoryComponentProperties
+            = Collections.synchronizedMap(new HashMap<Class, Set<String>>());
+
+    /**
      * Solve component finding and assigning task for the provided object
      * @param bean Object to solve components for
      * @return object with solved components
@@ -65,6 +71,7 @@ public class ComponentPropertyResolver implements ComponentPropertyResolverLocal
         // One for each method + component
         if (!cache.containsKey(clazz)) {
             cache.put(clazz, new HashSet<SingleComponentResolver>());
+            mandatoryComponentProperties.put(clazz, new HashSet<String>());
             for (Method m: bean.getClass().getMethods()) {
                 if (m.getReturnType().equals(String.class)) {
                     if (m.isAnnotationPresent(ComponentId.class)) {
@@ -72,6 +79,9 @@ public class ComponentPropertyResolver implements ComponentPropertyResolverLocal
                         String componentProperty = annotation.forProperty();
                         if (PropertyUtils.getPropertyDescriptor(bean, componentProperty).getPropertyType().equals(Component.class)) {
                             cache.get(clazz).add(new ComponentIdResolver(clazz, m, componentProperty, annotation));
+                            if (annotation.required()) {
+                                mandatoryComponentProperties.get(clazz).add(componentProperty);
+                            }
                         }
                     } else if (m.isAnnotationPresent(ComponentDcsId.class)){
                         ComponentDcsId annotation = m.getAnnotation(ComponentDcsId.class);
@@ -81,6 +91,9 @@ public class ComponentPropertyResolver implements ComponentPropertyResolverLocal
                             PropertyUtils.getPropertyDescriptor(bean, componentAttrProperty).getPropertyType().equals(String.class)) {
 
                             cache.get(clazz).add(new ComponentDcsIdResolver(clazz, m, annotation));
+                            if (annotation.required()) {
+                                mandatoryComponentProperties.get(clazz).add(componentProperty);
+                            }
                         }
                     }
                 }
@@ -89,8 +102,18 @@ public class ComponentPropertyResolver implements ComponentPropertyResolverLocal
 
         // Process components...
         if (!cache.get(clazz).isEmpty()) {
-            for (SingleComponentResolver item: cache.get(clazz)) {
-                bean = item.resolve(bean);
+            for (SingleComponentResolver resolver: cache.get(clazz)) {
+                bean = resolver.resolve(bean);
+            }
+        }
+
+        // Go through all mandatory component properties and make sure they're not nulls, if they are - throw an exception
+        if (!mandatoryComponentProperties.get(clazz).isEmpty()) {
+            for (String propName: mandatoryComponentProperties.get(clazz)) {
+                Object comp = PropertyUtils.getSimpleProperty(bean, propName);
+                if (comp == null) {
+                    throw new ComponentNotProvidedException(clazz, propName);
+                }
             }
         }
 
@@ -206,12 +229,16 @@ public class ComponentPropertyResolver implements ComponentPropertyResolverLocal
          */
         public Object resolve(Object bean) throws Exception {
 
+            String componentName = (String) componentIdMethod.invoke(bean);
+            if ((componentName == null) || componentName.isEmpty()) {
+                return bean;
+            }
+
             GComponent gcomponent = null;
             Component component = (Component) PropertyUtils.getSimpleProperty(bean, componentProperty);
             if (component != null) {
                 gcomponent = gOntologyDao.getGComponent(component.getName());
             } else {
-                String componentName = (String) componentIdMethod.invoke(bean);
                 if (componentName != null) {
                     gcomponent = gOntologyDao.getGComponent(componentName);
                 }
@@ -288,13 +315,17 @@ public class ComponentPropertyResolver implements ComponentPropertyResolverLocal
          */
         public Object resolve(Object bean) throws Exception {
 
+            String componentDcsId = (String) componentDcsIdMethod.invoke(bean);
+            if ((componentDcsId == null) || componentDcsId.isEmpty()) {
+                return bean;
+            }
+
             GComponent gcomponent = null;
             String componentAttribute = "";
             Component component = (Component) PropertyUtils.getSimpleProperty(bean, componentDcsIdAnn.componentProperty());
             if (component != null) {
                 gcomponent = gOntologyDao.getGComponent(component.getName());
             } else {
-                String componentDcsId = (String) componentDcsIdMethod.invoke(bean);
                 if (componentDcsId != null) {
                     //find the best matching gcomponent by DCS ID Data Property
                     // drop DPE one by one and try to search
@@ -308,7 +339,7 @@ public class ComponentPropertyResolver implements ComponentPropertyResolverLocal
                             }
                             dcsIdBuilder.append(dcsIdParts[j]);
                         }
-                        gcomponent = gOntologyDao.getGComponent(GComponent.DataPropertyType.DCS_ID, dcsIdBuilder.toString());
+                        gcomponent = gOntologyDao.getGComponentSilent(GComponent.DataPropertyType.DCS_ID, dcsIdBuilder.toString());
                         if (gcomponent != null) {
                             // set the remaining part of the DCS ID as the component attribute and break out of the loop
                             StringBuilder componentAttrBuilder = new StringBuilder();
