@@ -1,3 +1,115 @@
+------------------------------------------------------------------------------------
+--
+-- Handling Component Classes
+--
+------------------------------------------------------------------------------------
+
+-- Creating and populating new ccl table backup
+create table
+  CDW_COMPONENT_CLASSES$IDS
+as
+  select
+    CCL_ID as CCL_ID_NEW,
+    CCL_NAME,
+    CCL_ID as CCL_ID_FIN
+  from
+    CDW_COMPONENT_CLASSES
+/
+
+-- Add index
+CREATE UNIQUE INDEX CDW_CCL_IDS_IDX ON CDW_COMPONENT_CLASSES$IDS (CCL_ID_NEW, CCL_ID_FIN)
+/
+
+-- Add index
+CREATE UNIQUE INDEX CDW_CCL_IDS_NAME_IDX ON CDW_COMPONENT_CLASSES$IDS (CCL_NAME)
+/
+
+-- Set all identifiers to NULL
+update CDW_COMPONENT_CLASSES$IDS set CCL_ID_FIN = null
+/
+
+-- Update identifiers to previous id's (where it is possible)
+update
+  CDW_COMPONENT_CLASSES$IDS ci
+set
+  ci.CCL_ID_FIN = (
+    select
+      co.CCL_ID
+    from
+      CDW_COMPONENT_CLASSES$OLD co
+    where
+      ci.CCL_NAME = co.CCL_NAME
+  )
+/
+
+declare
+  l_ccl_id number := 0;
+  l_cmp_id number := 0;
+begin
+
+  -- Insert all classes that where removed from current ontology
+  for r in (select CCL_ID, CCL_NAME from CDW_COMPONENT_CLASSES$OLD
+              where (CCL_NAME) not in
+                (select CCL_NAME from CDW_COMPONENT_CLASSES)) loop
+
+    insert into CDW_COMPONENT_CLASSES (CCL_ID, CCL_NAME, CCL_DESCR) values (r.CCL_ID, r.CCL_NAME, 'Removed from current update!');
+    insert into CDW_COMPONENT_CLASSES$IDS (CCL_ID_NEW, CCL_NAME, CCL_ID_FIN) values (r.CCL_ID, r.CCL_NAME, r.CCL_ID);
+
+  end loop;
+
+  -- Get next component id
+  select nvl(max(CCL_ID_FIN), 0) + 1 into l_cmp_id from CDW_COMPONENT_CLASSES$IDS where CCL_ID_FIN is not null;
+
+  -- Update newly created components with appropriate unique id's
+  for r in (select CCL_NAME from CDW_COMPONENT_CLASSES$IDS where CCL_ID_FIN is null) loop
+    update CDW_COMPONENT_CLASSES$IDS set CCL_ID_FIN = l_cmp_id where CCL_NAME = r.CCL_NAME;
+    l_cmp_id := l_cmp_id + 1;
+  end loop;
+
+end;
+/
+
+-- Updating component class foreign keys
+
+update
+    CDW_COMPONENT_CLASS_PARENTS cp
+set
+    cp.CCP_PARENT_CCL_ID = (select ci.CCL_ID_FIN
+                            from CDW_COMPONENT_CLASSES$IDS ci
+                            where ci.CCL_ID_NEW = cp.CCP_PARENT_CCL_ID)
+/
+
+update
+    CDW_COMPONENT_CLASS_PARENTS cp
+set
+    cp.CCP_CHILD_CCL_ID = (select ci.CCL_ID_FIN
+                           from CDW_COMPONENT_CLASSES$IDS ci
+                           where ci.CCL_ID_NEW = cp.CCP_CHILD_CCL_ID)
+/
+
+update
+    CDW_COMPONENTS c
+set
+    c.CMP_CCL_ID = (select ci.CCL_ID_FIN
+                     from CDW_COMPONENT_CLASSES$IDS ci
+                     where ci.CCL_ID_NEW = c.CMP_CCL_ID)
+/
+
+-- Updating classes
+update
+    CDW_COMPONENT_CLASSES c
+set
+    c.CCL_ID = (select ci.CCL_ID_FIN
+                from CDW_COMPONENT_CLASSES$IDS ci
+                where ci.CCL_ID_NEW = c.CCL_ID)
+/
+
+------------------------------------------------------------------------------------
+--
+-- Handling Components
+--
+------------------------------------------------------------------------------------
+
 -- Creating and populating new components table backup
 create table
   CDW_COMPONENTS$IDS
