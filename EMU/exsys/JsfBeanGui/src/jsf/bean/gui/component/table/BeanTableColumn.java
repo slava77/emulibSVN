@@ -67,8 +67,18 @@ public class BeanTableColumn {
                     NumberConverter numberConverter = new NumberConverter();
 
                     numberConverter.setGroupingUsed(table.getProperties().getColumnNumberGrouping(name));
-                    numberConverter.setMinFractionDigits(table.getProperties().getColumnNumberMinFractionDigits(name));
-                    numberConverter.setMaxFractionDigits(table.getProperties().getColumnNumberMaxFractionDigits(name));
+                    {
+                        Integer v = table.getProperties().getColumnNumberMinFractionDigits(name);
+                        if (v != null) {
+                            numberConverter.setMinFractionDigits(v);
+                        }
+                    }
+                    {
+                        Integer v = table.getProperties().getColumnNumberMaxFractionDigits(name);
+                        if (v != null) {
+                            numberConverter.setMaxFractionDigits(v);
+                        }
+                    }
                     numberConverter.setPattern(table.getProperties().getColumnNumberPattern(name));
 
                     this.converter = numberConverter;
