@@ -15,6 +15,7 @@ import org.cern.cms.csc.dw.dao.GOntologyDaoLocal;
 import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
 import org.cern.cms.csc.dw.exception.ComponentNotFoundException;
 import org.cern.cms.csc.dw.exception.WrongComponentTypeException;
+import org.cern.cms.csc.dw.model.annotation.ComponentDcsId;
 import org.cern.cms.csc.dw.model.annotation.ComponentId;
 import org.cern.cms.csc.dw.model.ontology.Component;
 import org.cern.cms.csc.dw.model.ontology.ComponentClassType;
@@ -46,8 +47,8 @@ public class ComponentPropertyResolver implements ComponentPropertyResolverLocal
     /**
      * Cached resolvers
      */
-    private Map<Class, Set<ComponentPropertyResolverItem>> cache
-            = Collections.synchronizedMap(new HashMap<Class, Set<ComponentPropertyResolverItem>>());
+    private Map<Class, Set<SingleComponentResolver>> cache
+            = Collections.synchronizedMap(new HashMap<Class, Set<SingleComponentResolver>>());
 
     /**
      * Solve component finding and assigning task for the provided object
@@ -63,14 +64,23 @@ public class ComponentPropertyResolver implements ComponentPropertyResolverLocal
         // If class data is not in the cache - put it.
         // One for each method + component
         if (!cache.containsKey(clazz)) {
-            cache.put(clazz, new HashSet<ComponentPropertyResolverItem>());
+            cache.put(clazz, new HashSet<SingleComponentResolver>());
             for (Method m: bean.getClass().getMethods()) {
                 if (m.getReturnType().equals(String.class)) {
                     if (m.isAnnotationPresent(ComponentId.class)) {
                         ComponentId annotation = m.getAnnotation(ComponentId.class);
                         String componentProperty = annotation.forProperty();
                         if (PropertyUtils.getPropertyDescriptor(bean, componentProperty).getPropertyType().equals(Component.class)) {
-                            cache.get(clazz).add(new ComponentPropertyResolverItem(clazz, m, componentProperty, annotation));
+                            cache.get(clazz).add(new ComponentIdResolver(clazz, m, componentProperty, annotation));
+                        }
+                    } else if (m.isAnnotationPresent(ComponentDcsId.class)){
+                        ComponentDcsId annotation = m.getAnnotation(ComponentDcsId.class);
+                        String componentProperty = annotation.componentProperty();
+                        String componentAttrProperty = annotation.componentAttributeProperty();
+                        if (PropertyUtils.getPropertyDescriptor(bean, componentProperty).getPropertyType().equals(Component.class) &&
+                            PropertyUtils.getPropertyDescriptor(bean, componentAttrProperty).getPropertyType().equals(String.class)) {
+
+                            cache.get(clazz).add(new ComponentDcsIdResolver(clazz, m, annotation));
                         }
                     }
                 }
@@ -79,7 +89,7 @@ public class ComponentPropertyResolver implements ComponentPropertyResolverLocal
 
         // Process components...
         if (!cache.get(clazz).isEmpty()) {
-            for (ComponentPropertyResolverItem item: cache.get(clazz)) {
+            for (SingleComponentResolver item: cache.get(clazz)) {
                 bean = item.resolve(bean);
             }
         }
@@ -119,7 +129,14 @@ public class ComponentPropertyResolver implements ComponentPropertyResolverLocal
     /**
      * A single class property resolver
      */
-    private class ComponentPropertyResolverItem {
+    private interface SingleComponentResolver {
+        Object resolve(Object bean) throws Exception;
+    }
+
+    /**
+     * A single class property resolver from component ID (component name)
+     */
+    private class ComponentIdResolver implements SingleComponentResolver {
 
         /**
          * Object class
@@ -163,7 +180,7 @@ public class ComponentPropertyResolver implements ComponentPropertyResolverLocal
          * @param componentProperty Component property name
          * @param componentId Annotation
          */
-        public ComponentPropertyResolverItem(Class clazz, Method componentIdMethod, String componentProperty, ComponentId componentId) {
+        public ComponentIdResolver(Class clazz, Method componentIdMethod, String componentProperty, ComponentId componentId) {
             this.clazz = clazz;
             this.componentIdMethod = componentIdMethod;
             for (PropertyDescriptor pd: PropertyUtils.getPropertyDescriptors(clazz)) {
@@ -214,6 +231,111 @@ public class ComponentPropertyResolver implements ComponentPropertyResolverLocal
             } else {
                 if (required) {
                     throw new ComponentNotProvidedException(clazz, componentProperty);
+                }
+            }
+
+            return bean;
+        }
+
+    }
+
+    /**
+     * A single class property resolver from component DCS ID (DCS Datapoint Element)
+     */
+    private class ComponentDcsIdResolver implements SingleComponentResolver {
+
+        /**
+         * Object class
+         */
+        private final Class clazz;
+
+        /**
+         * Method that returns component DCS ID value
+         */
+        private final Method componentDcsIdMethod;
+
+        /**
+         * ComponentDcsId annotation carrying metadata about the component resolution
+         */
+        private final ComponentDcsId componentDcsIdAnn;
+
+        /**
+         * Component classes that the resolved components must match to
+         */
+        private final Set<ComponentClassType> limitComponents;
+
+        /**
+         * Constructor
+         * @param clazz Object class
+         * @param componentDcsIdMethod Method that holds component DCS ID
+         * @param componentDcsIdAnn ComponentDcsId annotation
+         */
+        public ComponentDcsIdResolver(Class clazz, Method componentDcsIdMethod, ComponentDcsId componentDcsIdAnn) {
+            this.clazz = clazz;
+            this.componentDcsIdMethod = componentDcsIdMethod;
+            this.componentDcsIdAnn = componentDcsIdAnn;
+            this.limitComponents = new HashSet<ComponentClassType>();
+            for (String componentClassTypeName: componentDcsIdAnn.limitComponents()) {
+                limitComponents.add(ComponentClassType.fromValue(componentClassTypeName));
+            }
+        }
+
+        /**
+         * Resolve a single objects component property
+         * @param bean Object to solve property for
+         * @return Object with solved component property
+         * @throws Exception
+         */
+        public Object resolve(Object bean) throws Exception {
+
+            GComponent gcomponent = null;
+            String componentAttribute = "";
+            Component component = (Component) PropertyUtils.getSimpleProperty(bean, componentDcsIdAnn.componentProperty());
+            if (component != null) {
+                gcomponent = gOntologyDao.getGComponent(component.getName());
+            } else {
+                String componentDcsId = (String) componentDcsIdMethod.invoke(bean);
+                if (componentDcsId != null) {
+                    //find the best matching gcomponent by DCS ID Data Property
+                    // drop DPE one by one and try to search
+                    //TODO make DCS ID search algorithm more efficient (and/or nicer)
+                    String[] dcsIdParts = componentDcsId.split("\\.");
+                    for (int i = dcsIdParts.length; i > 0; i--) {
+                        StringBuilder dcsIdBuilder = new StringBuilder();
+                        for (int j=0; j < i; j++) {
+                            if (j > 0) {
+                                dcsIdBuilder.append(".");
+                            }
+                            dcsIdBuilder.append(dcsIdParts[j]);
+                        }
+                        gcomponent = gOntologyDao.getGComponent(GComponent.DataPropertyType.DCS_ID, dcsIdBuilder.toString());
+                        if (gcomponent != null) {
+                            // set the remaining part of the DCS ID as the component attribute and break out of the loop
+                            StringBuilder componentAttrBuilder = new StringBuilder();
+                            for (int j=i; j < dcsIdParts.length; j++) {
+                                if (j > i) {
+                                    dcsIdBuilder.append(".");
+                                }
+                                componentAttrBuilder.append(dcsIdParts[j]);
+                            }
+                            componentAttribute = componentAttrBuilder.toString();
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (gcomponent != null) {
+                if (!limitComponents.isEmpty()) {
+                    if (!checkComponentType(gcomponent, limitComponents, componentDcsIdAnn.limitComponentsRecursive())) {
+                        throw new WrongComponentTypeException(gcomponent, clazz, componentDcsIdAnn.componentProperty());
+                    }
+                }
+                PropertyUtils.setSimpleProperty(bean, componentDcsIdAnn.componentProperty(), ontologyDao.getComponent(gcomponent));
+                PropertyUtils.setSimpleProperty(bean, componentDcsIdAnn.componentAttributeProperty(), componentAttribute);
+            } else {
+                if (componentDcsIdAnn.required()) {
+                    throw new ComponentNotProvidedException(clazz, componentDcsIdAnn.componentProperty());
                 }
             }
 

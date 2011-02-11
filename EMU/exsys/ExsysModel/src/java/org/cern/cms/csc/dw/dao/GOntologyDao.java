@@ -14,11 +14,13 @@ import org.cern.cms.csc.dw.exception.OntologyException.OntologySource;
 import org.cern.cms.csc.dw.model.ontology.Component;
 import org.cern.cms.csc.dw.model.ontology.ComponentClassType;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponent;
+import org.cern.cms.csc.dw.model.ontology.graph.GComponent.DataPropertyType;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentClass;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentLinkClass;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentSynonym;
 import org.cern.cms.csc.dw.model.ontology.graph.GNode;
 import org.cern.cms.csc.dw.model.ontology.graph.GNode.InternalPropertyType;
+import org.cern.cms.csc.dw.model.ontology.graph.GNode.PropertyType;
 import org.cern.cms.csc.dw.model.ontology.graph.GServices;
 import org.cern.cms.csc.dw.model.ontology.graph.GNodeFilter;
 
@@ -48,13 +50,7 @@ public class GOntologyDao implements GOntologyDaoLocal {
 
     @Override
     public GComponent getGComponent(String name) throws ComponentNotFoundException {
-        GComponent c = getGComponentSilent(name);
-
-        if (c == null) {
-            throw new ComponentNotFoundException(OntologySource.GRAPH_DATABASE, name);
-        }
-
-        return c;
+        return getGComponent(InternalPropertyType.NAME, name);
     }
 
     @Override
@@ -64,11 +60,27 @@ public class GOntologyDao implements GOntologyDaoLocal {
 
     @Override
     public GComponent getGComponentSilent(String name) {
-        GServices gsvc = gdao.getServices();
-        GComponent c = gsvc.getGNodeByProperty(GComponent.class, InternalPropertyType.NAME, name);
+        return getGComponentSilent(InternalPropertyType.NAME, name);
+    }
+
+    @Override
+    public GComponent getGComponent(PropertyType propertyType, Object value) throws ComponentNotFoundException {
+        GComponent c = getGComponentSilent(propertyType, value);
 
         if (c == null) {
-            GComponentSynonym cs = gsvc.getGNodeByProperty(GComponentSynonym.class, InternalPropertyType.NAME, name);
+            throw new ComponentNotFoundException(OntologySource.GRAPH_DATABASE, propertyType, value);
+        }
+
+        return c;
+    }
+
+    @Override
+    public GComponent getGComponentSilent(PropertyType propertyType, Object value) {
+        GServices gsvc = gdao.getServices();
+        GComponent c = gsvc.getGNodeByProperty(GComponent.class, propertyType, value);
+
+        if (c == null) {
+            GComponentSynonym cs = gsvc.getGNodeByProperty(GComponentSynonym.class, propertyType, value);
             if (cs != null) {
                 c = cs.getComponent();
             }
