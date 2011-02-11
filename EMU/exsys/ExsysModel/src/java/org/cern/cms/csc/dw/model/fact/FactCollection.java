@@ -24,7 +24,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -277,29 +276,29 @@ public class FactCollection
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
+     * {@link JAXBElement }{@code <}{@link DcsAlctLvFact }{@code >}
      * {@link JAXBElement }{@code <}{@link DqmCscCfebFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link TmbCounterFact }{@code >}
      * {@link JAXBElement }{@code <}{@link DqmDduFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link Fact }{@code >}
-     * {@link JAXBElement }{@code <}{@link SlidingTmbTriggerCounterFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link DqmReportFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link ApplicationStatusFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link DqmCscFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link DduFmmResetFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link CumulativeTmbTriggerCounterFact }{@code >}
      * {@link JAXBElement }{@code <}{@link DduFmmIrqFact }{@code >}
      * {@link JAXBElement }{@code <}{@link DcsAlertFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link DqmDduInputFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link DqmCscHvSegmentFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link DcsFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link DqmCscFact }{@code >}
      * {@link JAXBElement }{@code <}{@link DqmCscAfebFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link DcsAlctLvFact }{@code >}
      * {@link JAXBElement }{@code <}{@link LocalDAQStatusFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link EmuMonitorFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link DduFmmResetFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link DqmEmuFact }{@code >}
-     * {@link JAXBElement }{@code <}{@link CumulativeTmbTriggerCounterFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link DcsFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link TmbCounterFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link SlidingTmbTriggerCounterFact }{@code >}
      * {@link JAXBElement }{@code <}{@link DcsCfebLvFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link DqmDduInputFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link ApplicationStatusFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link Fact }{@code >}
+     * {@link JAXBElement }{@code <}{@link EmuMonitorFact }{@code >}
      * {@link JAXBElement }{@code <}{@link DcsCommunicationStatusFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link DqmReportFact }{@code >}
      * {@link JAXBElement }{@code <}{@link FedFsmFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link DqmCscHvSegmentFact }{@code >}
+     * {@link JAXBElement }{@code <}{@link DqmEmuFact }{@code >}
      * 
      * 
      */
@@ -338,8 +337,7 @@ public class FactCollection
      */
     @Id
     @Column(name = "FCO_ID")
-    @GeneratedValue(generator = "CDW_FCO_ID_SEQ", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "CDW_FCO_ID_SEQ", sequenceName = "CDW_FCO_ID_SEQ")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getid() {
         return id;
     }

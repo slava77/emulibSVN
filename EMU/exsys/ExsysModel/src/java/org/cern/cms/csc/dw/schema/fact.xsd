@@ -50,8 +50,7 @@
                 </hj:entity>
                 <hj:generated-id name="id" javaType="java.lang.Long">
                     <orm:column name="FCO_ID"/>
-                    <orm:generated-value strategy="SEQUENCE" generator="CDW_FCO_ID_SEQ"/>
-                    <orm:sequence-generator name="CDW_FCO_ID_SEQ" sequence-name="CDW_FCO_ID_SEQ"/>
+                    <orm:generated-value strategy="AUTO"/>
                 </hj:generated-id>
             </xsd:appinfo>
         </xsd:annotation>
@@ -126,8 +125,7 @@
                 </hj:entity>
                 <hj:generated-id name="id" javaType="java.lang.Long">
                     <orm:column name="FCT_ID"/>
-                    <orm:generated-value strategy="SEQUENCE" generator="CDW_FCT_ID_SEQ"/>
-                    <orm:sequence-generator name="CDW_FCT_ID_SEQ" sequence-name="CDW_FCT_ID_SEQ"/>
+                    <orm:generated-value strategy="AUTO"/>
                 </hj:generated-id>
             </xsd:appinfo>
         </xsd:annotation>

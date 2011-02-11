@@ -179,8 +179,7 @@
                 </hj:entity>
                 <hj:generated-id name="id" javaType="java.lang.Long">
                     <orm:column name="RCF_ID"/>
-                    <orm:generated-value strategy="SEQUENCE" generator="RE_RCF_ID_SEQ"/>
-                    <orm:sequence-generator name="RE_RCF_ID_SEQ" sequence-name="RE_RCF_ID_SEQ"/>
+                    <orm:generated-value strategy="AUTO"/>
                 </hj:generated-id>
                 <ann:annotate xmlns:a="jsf.bean.gui.annotation">
                     <a:UseInTitle order="0"/>

@@ -20,7 +20,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -157,8 +156,7 @@ public abstract class ComponentFinder
      */
     @Id
     @Column(name = "RCF_ID")
-    @GeneratedValue(generator = "RE_RCF_ID_SEQ", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "RE_RCF_ID_SEQ", sequenceName = "RE_RCF_ID_SEQ")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getid() {
         return id;
     }
