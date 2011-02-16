@@ -10,7 +10,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import jsf.bean.gui.ClassFinderIf;
 import jsf.bean.gui.component.BeanTableManager;
@@ -43,10 +42,6 @@ public class Conclusions extends JsfBeanBase {
             @Override
             public BeanTableDaoIf getBeanTableDao() {
                 return dao;
-            }
-            @Override
-            public FacesContext getContext() {
-                return FacesContext.getCurrentInstance();
             }
             @Override
             public ClassFinderIf getClassFinder() {

@@ -153,7 +153,13 @@ td.editorTableInputCol {
 .tableNameLabel {
     font-weight: bold;
     font-size: 15px;
-    margin-right: 5px;
+}
+
+.tableNameHyperlink {
+    font-weight: bold;
+    font-size: 15px;
+    text-decoration: underline;
+    color: rgb(33,66,99);
 }
 
 td.columnTop {

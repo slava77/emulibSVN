@@ -4,7 +4,6 @@ import org.cern.cms.csc.exsys.gui.base.BrowserController;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
 import jsf.bean.gui.ClassFinderIf;
 import jsf.bean.gui.component.BeanTableManager;
 import jsf.bean.gui.component.table.BeanTableDaoIf;
@@ -34,10 +33,6 @@ public class DataBrowserController extends BrowserController {
             @Override
             public BeanTableDaoIf getBeanTableDao() {
                 return mainBeanTableDao;
-            }
-            @Override
-            public FacesContext getContext() {
-                return FacesContext.getCurrentInstance();
             }
             @Override
             public ClassFinderIf getClassFinder() {

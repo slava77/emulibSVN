@@ -5,12 +5,9 @@
 
 package org.cern.cms.csc.exsys.gui;
 
-import java.io.IOException;
-import java.util.Collection;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
 import jsf.bean.gui.ClassFinderIf;
 import jsf.bean.gui.component.BeanTableManager;
 import jsf.bean.gui.component.table.BeanTableDaoIf;
@@ -38,10 +35,6 @@ public class Actions extends JsfBeanBase {
             @Override
             public BeanTableDaoIf getBeanTableDao() {
                 return dao;
-            }
-            @Override
-            public FacesContext getContext() {
-                return FacesContext.getCurrentInstance();
             }
             @Override
             public ClassFinderIf getClassFinder() {

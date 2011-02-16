@@ -10,7 +10,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 import javax.jms.Connection;
@@ -278,10 +277,6 @@ public class MonitorController extends BrowserController {
             @Override
             public BeanTableDaoIf getBeanTableDao() {
                 return monitorDao;
-            }
-            @Override
-            public FacesContext getContext() {
-                return FacesContext.getCurrentInstance();
             }
             @Override
             public ClassFinderIf getClassFinder() {
