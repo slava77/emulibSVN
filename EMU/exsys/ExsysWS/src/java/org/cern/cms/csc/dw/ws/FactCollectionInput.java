@@ -18,7 +18,7 @@ import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.model.monitor.MonitorFactCollectionLog;
 import org.cern.cms.csc.dw.monitor.MonitorLogger;
 import org.cern.cms.csc.dw.service.ServiceInstructions;
-import org.cern.cms.csc.dw.util.MessageSender;
+import org.cern.cms.csc.dw.util.JmsWorker;
 import org.cern.cms.csc.dw.ws.exception.ComponentNotProvidedException;
 
 @WebService(serviceName = "cdw", name = "factcollection", targetNamespace="http://www.cern.ch/cms/csc/dw/ws/factCollectionInput")
@@ -37,11 +37,11 @@ public class FactCollectionInput implements FactCollectionInputLocal {
     @Resource(mappedName = "jms/factCollectionQueueFactory")
     private QueueConnectionFactory queueConnectionFactory;
 
-    private MessageSender sender;
+    private JmsWorker jmsWorker;
 
     public FactCollectionInput() {
 
-        this.sender = new MessageSender() {
+        this.jmsWorker = new JmsWorker() {
 
             @Override
             protected Queue getQueue() {
@@ -101,7 +101,7 @@ public class FactCollectionInput implements FactCollectionInputLocal {
             ServiceInstructions instructions = factCollection.getServiceInstructions();
 
             if (instructions.isAsync()) {
-                sender.sendMessage(factCollection);
+                jmsWorker.sendMessage(factCollection);
             } else {
                 logger.debug("FCinput WS: serviceInstructions.isAsync() = false, sending this fact collection directly to FactCollectionSaverBean");
                 saver.saveFactCollection(factCollection);

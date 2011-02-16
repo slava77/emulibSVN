@@ -20,7 +20,7 @@ import jsf.bean.gui.log.Logger;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.dw.model.fact.FactCollection;
 import org.cern.cms.csc.dw.service.ServiceInstructions;
-import org.cern.cms.csc.dw.util.MessageSender;
+import org.cern.cms.csc.dw.util.JmsWorker;
 
 @Stateless
 public class FactCollectionSaverBean implements FactCollectionSaverLocal {
@@ -41,10 +41,10 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
     @Resource(mappedName="jms/ruleEngineInputQueueFactory")
     private QueueConnectionFactory ruleEngineInputQueueFactory;
 
-    private final MessageSender sender;
+    private final JmsWorker jmsWorker;
 
     public FactCollectionSaverBean() {
-        this.sender = new MessageSender() {
+        this.jmsWorker = new JmsWorker() {
 
             @Override
             protected Queue getQueue() {
@@ -133,7 +133,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
         for (JAXBElement<? extends Fact> factEl: factCollection.getFacts()) {
             factsToSendToRE.add(factEl.getValue());
         }
-        sender.sendMessages(factsToSendToRE);
+        jmsWorker.sendMessages(factsToSendToRE);
         
     }
 
