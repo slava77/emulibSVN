@@ -65,7 +65,7 @@
                         <ice:panelGroup styleClass="sectionTitle">
                             <h:outputText value="Queues"/>
                         </ice:panelGroup>
-                        <ice:dataTable value="#{monitorController.queues}" var="q">
+                        <ice:dataTable value="#{monitorController.queues}" var="q" varStatus="status">
                             <ice:column>
                                 <f:facet name="header">
                                     <ice:outputLabel value="Name"/>
@@ -82,7 +82,9 @@
                                 <f:facet name="header">
                                     <ice:outputLabel value="Message"/>
                                 </f:facet>
-                                <ice:commandLink value="flush" actionListener="#{q.flushMessageListener}"/>
+                                <ice:commandLink value="flush" actionListener="#{monitorController.flushQueueMessageListener}">
+                                    <f:param name="index" value="#{status.index}"/>
+                                </ice:commandLink>
                             </ice:column>
                         </ice:dataTable>
                     </ice:panelGroup>

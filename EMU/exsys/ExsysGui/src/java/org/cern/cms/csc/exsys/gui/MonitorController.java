@@ -5,21 +5,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.Queue;
-import javax.jms.QueueBrowser;
-import javax.jms.Session;
 import javax.naming.Binding;
 import javax.naming.NamingException;
 import jsf.bean.gui.ClassFinderIf;
@@ -32,6 +23,8 @@ import org.cern.cms.csc.dw.model.monitor.MonitorFactCollectionLog;
 import org.cern.cms.csc.dw.model.monitor.MonitorQueueStatus;
 import org.cern.cms.csc.dw.model.monitor.MonitorSystem;
 import org.cern.cms.csc.dw.monitor.SysMonitor;
+import org.cern.cms.csc.dw.util.JmsWorker;
+import org.cern.cms.csc.dw.util.JmsWorkerJni;
 import org.cern.cms.csc.dw.util.ServiceLocator;
 import org.cern.cms.csc.exsys.gui.util.ClassFinder;
 import org.jfree.chart.ChartFactory;
@@ -60,7 +53,7 @@ public class MonitorController extends BrowserController {
 
     private SysMonitor sysMonitor = new SysMonitor();
 
-    private List<QueueItem> queues = new ArrayList<QueueItem>();
+    private List<JmsWorker> queues = new ArrayList<JmsWorker>();
     private Integer chartLastHours = 8;
 
     private byte[] statusImage = null;
@@ -71,12 +64,8 @@ public class MonitorController extends BrowserController {
 
         for (Binding b : locator.getJniBindings("jms")) {
             try {
-                Object queueObj = locator.getService("jms/" + b.getName());
-                if (queueObj instanceof Queue) {
-                    Object factoryObj = locator.getService("jms/" + b.getName() + "Factory");
-                    if (factoryObj instanceof ConnectionFactory) {
-                        queues.add(new QueueItem(b.getName(), (Queue) queueObj, (ConnectionFactory) factoryObj));
-                    }
+                if (JmsWorkerJni.isJmsService(b.getName())) {
+                    queues.add(new JmsWorkerJni(b.getName()));
                 }
             } catch (NamingException ex) {
                 logger.info("Naming exception while looking for queues", ex);
@@ -89,7 +78,7 @@ public class MonitorController extends BrowserController {
         return sysMonitor;
     }
 
-    public Collection<QueueItem> getQueues() {
+    public List<JmsWorker> getQueues() {
         return queues;
     }
 
@@ -285,80 +274,9 @@ public class MonitorController extends BrowserController {
         };
     }
 
-    public class QueueItem {
-
-        private String name;
-        private Queue queue;
-        private ConnectionFactory connectionFactory;
-
-        public QueueItem(String name, Queue queue, ConnectionFactory connectionFactory) throws NamingException {
-            this.name = name;
-            this.queue = queue;
-            this.connectionFactory = connectionFactory;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public Queue getQueue() {
-            return queue;
-        }
-
-        public ConnectionFactory getConnectionFactory() {
-            return connectionFactory;
-        }
-
-        public Integer getSize() throws JMSException {
-            Connection connection = null;
-            Session session = null;
-
-            try {
-                connection = connectionFactory.createConnection();
-                session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                QueueBrowser browser = session.createBrowser(queue);
-                Enumeration en = browser.getEnumeration();
-                Integer num = 0;
-                while (en.hasMoreElements()) {
-                    en.nextElement();
-                    num++;
-                }
-                return num;
-            } finally {
-                if (session != null) {
-                    try {
-                        session.close();
-                    } catch (JMSException e) {
-                        logger.error("Closing queue session", e);
-                    }
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            }
-        }
-
-        public void flushMessageListener(ActionEvent ev) throws JMSException {
-            Connection connection = null;
-            Session session = null;
-
-            try {
-                connection = connectionFactory.createConnection();
-                session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                MessageConsumer consumer = session.createConsumer(queue);
-                Message msg = consumer.receiveNoWait();
-            } finally {
-                if (session != null) {
-                    try {
-                        session.close();
-                    } catch (JMSException e) {
-                        logger.error("Closing queue session", e);
-                    }
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            }
-        }
+    public void flushQueueMessageListener(ActionEvent ev) {
+        int index = Integer.parseInt((String) getParameter("index"));
+        getQueues().get(index).flushObjectMessage();
     }
+
 }
