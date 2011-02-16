@@ -1,5 +1,7 @@
 package jsf.bean.gui.component.table;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
@@ -25,6 +27,7 @@ public class BeanTableColumn {
 
     private final boolean entityType;
     private final boolean listType;
+    private Class listItemType = null;
 
     private BeanTableFilter filter = null;
     private Converter converter = null;
@@ -47,8 +50,28 @@ public class BeanTableColumn {
         } else {
             if (propertyMd.getType().isArray() || Collection.class.isAssignableFrom(propertyMd.getType())) {
 
-                this.entityType = false;
                 this.listType = true;
+
+                Type t = propertyMd.getGenericType();
+                logger.info(t.toString());
+                if (t instanceof ParameterizedType) {
+                    ParameterizedType pt = (ParameterizedType) t;
+                    logger.info(pt.toString());
+                    if (pt.getActualTypeArguments().length == 1) {
+                        Type lit = pt.getActualTypeArguments()[0];
+                        logger.info(lit.toString());
+                        if (lit instanceof Class) {
+                            this.listItemType = (Class) lit;
+                        }
+                    }
+                }
+
+
+                if (listItemType != null && EntityBeanBase.class.isAssignableFrom(listItemType)) {
+                    this.entityType = true;
+                } else {
+                    this.entityType = false;
+                }
 
             } else {
 
@@ -60,8 +83,12 @@ public class BeanTableColumn {
                     propertyMd.getType().equals(BigInteger.class) ||
                     propertyMd.getType().equals(Integer.class) ||
                     propertyMd.getType().equals(Long.class) ||
+                    propertyMd.getType().equals(Float.class) ||
+                    propertyMd.getType().equals(Double.class) ||
                     (propertyMd.getType().isPrimitive() &&
                         (propertyMd.getType().getSimpleName().equals("int") ||
+                         propertyMd.getType().getSimpleName().equals("long") ||
+                         propertyMd.getType().getSimpleName().equals("float")||
                          propertyMd.getType().getSimpleName().equals("double")))) {
 
                     NumberConverter numberConverter = new NumberConverter();
@@ -168,7 +195,7 @@ public class BeanTableColumn {
 
     public void clearFilterListener(ActionEvent ev) {
         filter = null;
-        this.table.refresh(); //LA
+        this.table.refresh();
     }
 
     public Object getCellValue() {
@@ -255,13 +282,13 @@ public class BeanTableColumn {
     }
 
     public void filterTableListener(ActionEvent ev) throws Exception {
-        if (isEntityType() && !isListType()) {
+        if (isEntityType()) {
             if (filter == null) {
                 this.filter = new BeanTableProjectionFilter();
                 BeanTablePack btp = new BeanTablePack(getName(), 
-                                                      getTitle(),
+                                                      "Filter by ".concat(getTitle()),
                                                       table.getPack().getManager(),
-                                                      propertyMd.getType());
+                                                      (isListType() ? listItemType : propertyMd.getType()));
                 ((BeanTableProjectionFilter) this.filter).setPack(btp);
             }
             BeanTableProjectionFilterItem fi = (BeanTableProjectionFilterItem) getFilter().getItems().get(0);
@@ -271,6 +298,19 @@ public class BeanTableColumn {
 
     public Class getType() {
         return propertyMd.getType();
+    }
+
+    public void setListPropertyTable(EntityBeanBase currentItem) throws Exception {
+       if (isEntityType() && isListType()) {
+            BeanTablePackFilter listFilter = new BeanTableListFilter(table.getRowClass(), currentItem , getName());
+            BeanTablePack btp = new BeanTablePack(getName(),
+                                                  String.format("List of '%s' %s", currentItem.getEntityTitle(), getTitle()),
+                                                  table.getPack().getManager(),
+                                                  listItemType);
+            btp.addFilter(listFilter);
+
+            table.getPack().getManager().pushTable(btp);
+        }
     }
 
 }

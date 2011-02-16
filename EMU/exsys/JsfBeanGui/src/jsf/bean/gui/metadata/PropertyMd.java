@@ -8,6 +8,7 @@ package jsf.bean.gui.metadata;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import jsf.bean.gui.EntityBeanBase;
@@ -189,6 +190,13 @@ public abstract class PropertyMd {
         return propertyDescriptor.getPropertyType();
     }
 
+    /**
+     * Get generic type of the property (java.lang.reflect.Type).
+     * @return type of the property (java.lang.reflect.Type).
+     */
+    public Type getGenericType() {
+        return getGetterMethod().getGenericReturnType();
+    }
 
     /**
      * Get class of the entity whose property this object is describing.

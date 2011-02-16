@@ -35,8 +35,6 @@ public abstract class BeanTableManager {
 
     public abstract BeanTableDaoIf getBeanTableDao();
 
-    public abstract FacesContext getContext();
-    
     public abstract ClassFinderIf getClassFinder();
 
     public BeanTableManager(String id, Class<? extends EntityBeanBase> rowClass) throws Exception {
@@ -47,7 +45,11 @@ public abstract class BeanTableManager {
     public String getId() {
         return id;
     }
-    
+
+    public List<BeanTablePack> getTables() {
+        return tables;
+    }
+
     public BeanTablePack getTablePack() {
         return this.tablePack;
     }
@@ -87,15 +89,14 @@ public abstract class BeanTableManager {
         this.getTable().refresh();
     }
 
-    public String buildTableTitle(String nextTitle) {
-        String tableTitle = null;
-        if (nextTitle != null) {
-            if (getTablePack() != null) {
-                tableTitle = getTablePack().getTitle();
-            }
-            tableTitle = (tableTitle != null ? tableTitle.concat(".").concat(nextTitle) : nextTitle);
+    public void toTableActionListener() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        Map map = context.getExternalContext().getRequestParameterMap();
+        int tableIndex = Integer.valueOf((String) map.get("tableIndex"));
+        while (this.tables.size() != tableIndex) {
+            tablePack = tables.get(tables.size()-1);
+            this.popTable();
         }
-        return tableTitle;
     }
 
     public String buildTablePrefix(String nextPrefix) {
@@ -199,11 +200,13 @@ public abstract class BeanTableManager {
     private void setCookie(String name, String value, int age) {
         Cookie cookie = new Cookie(name, value);
         cookie.setMaxAge(age);
-        ((HttpServletResponse) getExContext().getResponse()).addCookie(cookie);
+        ((HttpServletResponse) FacesContext.getCurrentInstance()
+                .getExternalContext().getResponse()).addCookie(cookie);
     }
 
     private String getCookie(String name) {
-        Cookie cookie[] = ((HttpServletRequest) getExContext().getRequest()).getCookies();
+        Cookie cookie[] = ((HttpServletRequest) FacesContext.getCurrentInstance()
+                .getExternalContext().getRequest()).getCookies();
         if (cookie != null && cookie.length > 0) {
             for (int i = 0; i < cookie.length; i++) {
                 if (cookie[i].getName().equals(name)) {
@@ -214,12 +217,8 @@ public abstract class BeanTableManager {
         return null;
     }
 
-    private ExternalContext getExContext() {
-        return getContext().getExternalContext();
-    }
-
     private File getRealFile(String file) {
-        String path = getContext().getExternalContext().getRealPath(file);
+        String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath(file);
         return new File(path);
     }
 

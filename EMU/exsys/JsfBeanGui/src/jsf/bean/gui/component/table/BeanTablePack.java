@@ -15,15 +15,16 @@ public class BeanTablePack {
     private final BeanTableManager manager;
     private final String title;
     private final String prefix;
+    private Collection<BeanTablePackFilter> filters;
 
     public BeanTablePack(BeanTableManager manager, Class<? extends EntityBeanBase> rowClass) throws Exception {
         this(null, null, manager, rowClass);
     }
 
-    public BeanTablePack(String nextPrefix, String nextTitle, BeanTableManager manager, Class<? extends EntityBeanBase> rowClass) throws Exception {
+    public BeanTablePack(String nextPrefix, String title, BeanTableManager manager, Class<? extends EntityBeanBase> rowClass) throws Exception {
 
-        this.title = manager.buildTableTitle(nextTitle);
         this.prefix = manager.buildTablePrefix(nextPrefix);
+        this.title = title;
         this.manager = manager;
 
         Class firstClass = null;
@@ -74,12 +75,23 @@ public class BeanTablePack {
         return title;
     }
 
+    public Collection<BeanTablePackFilter> getFilters() {
+        return filters;
+    }
+
     public BeanTableManager getManager() {
         return manager;
     }
 
     public boolean isSingleClass() {
         return classes.isEmpty();
+    }
+
+    public void addFilter(BeanTablePackFilter btdf) {
+        if (filters == null) {
+            filters = new ArrayList<BeanTablePackFilter>();
+        }
+        filters.add(btdf);
     }
 
 }

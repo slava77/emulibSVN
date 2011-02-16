@@ -1,5 +1,6 @@
 package jsf.bean.gui.component.table;
 
+import java.beans.Expression;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -85,17 +86,9 @@ public abstract class BeanTableDao {
         return getDetachedCriteria(table).getExecutableCriteria(session);
     }
 
-    private Criteria getCriteria(Session session, Class rowClass, List<BeanTableColumn> columns) {
-        return getDetachedCriteria(rowClass, columns).getExecutableCriteria(session);
-    }
-
     private DetachedCriteria getDetachedCriteria(BeanTable table) {
-        return getDetachedCriteria(table.getRowClass(), table.getColumns()); //table.getAdvancedQuery());
-    }
 
-    private DetachedCriteria getDetachedCriteria(Class rowClass, List<BeanTableColumn> columns) {
-
-        DetachedCriteria c = DetachedCriteria.forClass(rowClass);
+        DetachedCriteria c = DetachedCriteria.forClass(table.getRowClass());
 
         /*
         if (advancedQuery != null) {
@@ -103,7 +96,29 @@ public abstract class BeanTableDao {
         }
         */
 
-        for (BeanTableColumn col: columns) {
+        if (table.getPack().getFilters() != null) {
+            for (BeanTablePackFilter pf: table.getPack().getFilters()) {
+                if (pf instanceof BeanTableListFilter) {
+                    BeanTableListFilter lf = (BeanTableListFilter) pf;
+
+                    Class<? extends EntityBeanBase> parentType = lf.getParentType();
+                    String parentPropertyName = lf.getPropertyName();
+                    EntityBeanBase parent = lf.getParent();
+                    String parentId = EntityBeanBase.getIdPropertyMd(parentType).getName();
+                    String myId = EntityBeanBase.getIdPropertyMd(table.getRowClass()).getName();
+
+                    DetachedCriteria subCriteria = DetachedCriteria.forClass(parentType);
+                    subCriteria.createAlias(parentPropertyName, "p");
+                    subCriteria.setProjection(Projections.property("p.".concat(myId)));
+                    subCriteria.add(Restrictions.eq(parentId, parent.getEntityId()));
+
+                    c.add(Subqueries.propertyIn(myId, subCriteria));
+
+                }
+            }
+        }
+
+        for (BeanTableColumn col: table.getColumns()) {
 
             if (col.isFilterSet()) {
 
@@ -169,10 +184,23 @@ public abstract class BeanTableDao {
                                         if (subQueryTable.isFilterOn() || !pack.isSingleClass()) {
                                             DetachedCriteria subCriteria = getDetachedCriteria(subQueryTable);
                                             subCriteria.setProjection(Projections.id());
-                                            if (item.getOperation().equals(BeanTableFilter.Operation.IN)) {
-                                                curJun.add(Subqueries.propertyIn(propertyName, subCriteria));
-                                            } else if (item.getOperation().equals(BeanTableFilter.Operation.NOTIN)) {
-                                                curJun.add(Subqueries.propertyNotIn(propertyName, subCriteria));
+                                            if (col.isListType()) {
+                                                String listItemId = EntityBeanBase.getIdPropertyMd(subQueryTable.getRowClass()).getName();
+                                                DetachedCriteria listCriteria = c.createCriteria(propertyName, "c");
+                                                if (item.getOperation().equals(BeanTableFilter.Operation.IN)) {
+                                                    listCriteria.add(Subqueries.propertyIn(listItemId, subCriteria));
+                                                } else if (item.getOperation().equals(BeanTableFilter.Operation.NOTIN)) {
+                                                    listCriteria.add(Subqueries.propertyNotIn(listItemId, subCriteria));
+                                                }
+
+                                            } else {
+
+                                                if (item.getOperation().equals(BeanTableFilter.Operation.IN)) {
+                                                    curJun.add(Subqueries.propertyIn(propertyName, subCriteria));
+                                                } else if (item.getOperation().equals(BeanTableFilter.Operation.NOTIN)) {
+                                                    curJun.add(Subqueries.propertyNotIn(propertyName, subCriteria));
+                                                }
+                                                
                                             }
                                         }
                                     }

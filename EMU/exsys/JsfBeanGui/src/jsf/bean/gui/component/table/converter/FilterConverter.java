@@ -157,6 +157,14 @@ public abstract class FilterConverter implements Converter {
 
             return new FilterDateConverter();
 
+        } else
+        if (type.equals(Float.class) || (type.isPrimitive() && type.getSimpleName().equals("float"))) {
+
+            return new FilterFloatConverter();
+        } else
+        if (type.equals(Double.class) || (type.isPrimitive() && type.getSimpleName().equals("double"))) {
+
+            return new FilterDoubleConverter();
         }
         
         return new FilterStringConverter();

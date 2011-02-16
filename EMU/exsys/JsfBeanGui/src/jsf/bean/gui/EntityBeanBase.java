@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.Id;
 import jsf.bean.gui.annotation.UseInTitle;
 import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
 import jsf.bean.gui.exception.InvalidEntityClassException;
@@ -33,20 +34,24 @@ public class EntityBeanBase implements Serializable {
 
     /** Class property metadata cache. */
     private static Map<Class, List<PropertyMd>> propertyMetadataCache = new HashMap<Class, List<PropertyMd>>();
+
     /** Cache of class -> names of the fields annotated by @UseInTitle. */
     private static Map<Class, List<String>> titleFieldNamesCache = new HashMap<Class, List<String>>();
+
     /** Cach of class -> ID property - used by equals and hashCode methods */
     private static Map<Class, PropertyDescriptor> idPropertyCache = new HashMap<Class, PropertyDescriptor>();
 
-    public EntityBeanBase() {
-    }
+    public EntityBeanBase() { }
 
     /**
      * Get entity class property metadata (it's cached in a static map called propertyMetadataCache).
      * @return entity class property metadata (it's cached in a static map called propertyMetadataCache).
      */
     public List<PropertyMd> getPropertyMetadata() throws InvalidEntityBeanPropertyException {
-        Class myClass = this.getClass();
+        return getPropertyMetadata(this.getClass());
+    }
+
+    public static List<PropertyMd> getPropertyMetadata(Class myClass) throws InvalidEntityBeanPropertyException {
         if (!propertyMetadataCache.containsKey(myClass)) {
             try {
                 propertyMetadataCache.put(myClass, EntityPropertyMdFactory.createMetadataForEntity(myClass));
@@ -168,13 +173,16 @@ public class EntityBeanBase implements Serializable {
     }
 
     public PropertyDescriptor getIdPropertyMd() {
-        Class myClass = this.getClass();
+        return getIdPropertyMd(this.getClass());
+    }
+
+    public static PropertyDescriptor getIdPropertyMd(Class myClass) {
         if (!idPropertyCache.containsKey(myClass)) {
             try {
                 PropertyDescriptor[] allProps = PropertyUtils.getPropertyDescriptors(myClass);
                 boolean found = false;
                 for (PropertyDescriptor prop: allProps) {
-                    if (prop.getName().equalsIgnoreCase("id")) {
+                    if (prop.getReadMethod().isAnnotationPresent(Id.class)) {
                         idPropertyCache.put(myClass, prop);
                         found = true;
                         break;
@@ -189,4 +197,5 @@ public class EntityBeanBase implements Serializable {
         }
         return idPropertyCache.get(myClass);
     }
+
 }
