@@ -13,14 +13,7 @@ import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.jms.Queue;
-import javax.jms.QueueBrowser;
-import javax.jms.Session;
 import javax.naming.Binding;
-import javax.naming.NamingException;
 import org.cern.cms.csc.dw.dao.MonitorDaoLocal;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
@@ -28,6 +21,8 @@ import org.cern.cms.csc.dw.model.monitor.MonitorDatabaseStatus;
 import org.cern.cms.csc.dw.model.monitor.MonitorEntity;
 import org.cern.cms.csc.dw.model.monitor.MonitorQueueStatus;
 import org.cern.cms.csc.dw.model.monitor.MonitorSystem;
+import org.cern.cms.csc.dw.util.JmsWorker;
+import org.cern.cms.csc.dw.util.JmsWorkerJni;
 import org.cern.cms.csc.dw.util.ServiceLocator;
 
 @Stateless
@@ -44,7 +39,7 @@ public class MonitorJob {
 
     private SysMonitor sysmon = new SysMonitor();
     private ServiceLocator locator;
-    private List<QueueItem> queues = new ArrayList<QueueItem>();
+    private List<JmsWorker> queues = new ArrayList<JmsWorker>();
     private Set<Class<? extends MonitorEntity>> moClasses = new HashSet<Class<? extends MonitorEntity>>();
 
     public MonitorJob() {
@@ -55,7 +50,9 @@ public class MonitorJob {
 
             for (Binding b: locator.getJniBindings("jms")) {
                 if (!b.getName().endsWith("Factory")) {
-                    queues.add(new QueueItem(b.getName()));
+                    if (JmsWorkerJni.isJmsService(b.getName())) {
+                        queues.add(new JmsWorkerJni(b.getName()));
+                    }
                 }
             }
 
@@ -78,18 +75,14 @@ public class MonitorJob {
     public void monitorQueues() {
 
         logger.debug("In monitorQueues");
-        for (QueueItem qi: queues) {
-            try {
-                Integer size = qi.getSize();
-                logger.trace("Queue {0} size = {1}", qi.getName(), size);
-                if (size > 0) {
-                    MonitorQueueStatus qstatus = new MonitorQueueStatus();
-                    qstatus.setQueueName(qi.getName());
-                    qstatus.setQueueSize(size);
-                    getMonitor().trace(qstatus);
-                }
-            } catch (JMSException ex) {
-                logger.error("Error while accessing queues", ex);
+        for (JmsWorker qi: queues) {
+            Integer size = qi.getSize();
+            logger.trace("Queue {0} size = {1}", qi.getName(), size);
+            if (size > 0) {
+                MonitorQueueStatus qstatus = new MonitorQueueStatus();
+                qstatus.setQueueName(qi.getName());
+                qstatus.setQueueSize(size);
+                getMonitor().trace(qstatus);
             }
         }
     }
@@ -129,50 +122,6 @@ public class MonitorJob {
             logger.trace("Removing {0} objects earlier than {1}", clazz, d);
             monitorDao.retentMonitorObjects(clazz, d);
         }
-    }
-
-    private class QueueItem {
-
-        private Queue queue;
-        private ConnectionFactory connectionFactory;
-
-        public QueueItem(String name) throws NamingException {
-            this.queue = (Queue) locator.getService("jms/" + name);
-            this.connectionFactory = (ConnectionFactory) locator.getService("jms/" + name + "Factory");
-        }
-
-        public String getName() throws JMSException {
-            return queue.getQueueName();
-        }
-
-        public Integer getSize() throws JMSException {
-            Connection connection = null;
-            Session session = null;
-            try {
-                connection = connectionFactory.createConnection();
-                session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                QueueBrowser browser = session.createBrowser(queue);
-                Enumeration en = browser.getEnumeration();
-                Integer num = 0;
-                while (en.hasMoreElements()) {
-                    en.nextElement();
-                    num++;
-                }
-                return num;
-            } finally {
-                if (session != null) {
-                    try {
-                        session.close();
-                    } catch (JMSException e) {
-                        logger.error("Error while closing JMS Session", e);
-                    }
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            }
-        }
-
     }
 
     public Logger getMonitor() {
