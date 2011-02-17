@@ -74,9 +74,9 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
 
             concl = processConclusion(concl);
             if (concl != null) {
-                reManager.getEsperRuntime().sendEvent(concl);
+                reManager.getEsperRuntime().route(concl);
             }
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             logger.error("ConclusionFactory: error while constructing a conclusion for rule " + getRule().getName(), ex);
         }
     }

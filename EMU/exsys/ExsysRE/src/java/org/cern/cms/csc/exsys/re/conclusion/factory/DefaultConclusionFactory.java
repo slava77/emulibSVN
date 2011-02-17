@@ -24,8 +24,9 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.exsys.re.RuleEngineManagerLocal;
-import org.cern.cms.csc.exsys.re.conclusion.ConclusionCacheService;
+import org.cern.cms.csc.exsys.re.conclusion.ConclusionCacheServiceLocal;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
 import org.cern.cms.csc.exsys.re.model.Action;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
@@ -43,16 +44,16 @@ public class DefaultConclusionFactory extends ConclusionFactory {
     private static Logger logger = SimpleLogger.getLogger(ConclusionFactory.class);
 
     private RuleEngineDaoLocal reDao;
-    private ConclusionCacheService conclusionCacheService;
+    private ConclusionCacheServiceLocal conclusionCacheService;
 
-    public DefaultConclusionFactory(RuleEngineManagerLocal reManager, Rule rule, ConclusionCacheService conclusionCacheService) {
+    public DefaultConclusionFactory(RuleEngineManagerLocal reManager, Rule rule, ConclusionCacheServiceLocal conclusionCacheService) {
         super(reManager, rule);
         this.reDao = reManager.getRuleEngineDao();
         this.conclusionCacheService = conclusionCacheService;
     }
 
     @Override
-    protected Conclusion processConclusion(Conclusion conclusion) {
+    protected synchronized Conclusion processConclusion(Conclusion conclusion) {
         try {
             // check if it already exists in cache
             Conclusion existingConclusion = getConclusionCacheService().checkCache(conclusion);
@@ -63,27 +64,34 @@ public class DefaultConclusionFactory extends ConclusionFactory {
 
                 logger.info("Default conclusion factory: Got new conclusion: " + conclusion.getTitle());
                 logger.info("Saving new conclusion: " + conclusion);
-                reDao.getEntityDao().persist(conclusion);
+                EntityDaoLocal entityDao = reDao.getEntityDao();
+                entityDao.persist(conclusion);
+                entityDao.flush();
                 getConclusionCacheService().addToCache(conclusion);
                 executeActions(getConclusionType().getActions(), conclusion.getTriggers());
                 return conclusion;
             } else {
                 logger.debug("Default conclusion factory: Got a duplicate conclusion (updating existing one): " +
-                        conclusion.getTitle());
+                        existingConclusion.getTitle() + " (id=" + existingConclusion.getid() + ")");
 
-                //existingConclusion = (Conclusion) reDao.getEntityDao().refreshEntity(existingConclusion);
+                //existingConclusion = (Conclusion) reDao.getEntityDao().refreshEntity(existingConclusion, false);
                 updateExistingConclusion(existingConclusion, conclusion);
-                existingConclusion = (Conclusion) reDao.getEntityDao().merge(existingConclusion);
+                logger.trace("Existing conclusion ID before merge: " + existingConclusion.getid());
+                EntityDaoLocal entityDao = reDao.getEntityDao();
+                existingConclusion = (Conclusion) entityDao.merge(existingConclusion);
+                entityDao.flush();
+                logger.trace("Existing conclusion ID after merge: " + existingConclusion.getid());
                 if (!existingConclusion.isIsClosed()) {
                     logger.debug("Saving existing conclusion: " + existingConclusion);
                     getConclusionCacheService().addToCache(existingConclusion); // update the conclusion in the cache
                 } else {
                     logger.info("Closing conclusion: " + existingConclusion);
                     getConclusionCacheService().removeFromCache(existingConclusion); // remove the conclusion from the cache
+                    return existingConclusion;
                 }
-                return existingConclusion;
+                return null; // don't throw the conclusion back into esper if it's just an update
             }
-        } catch (Exception pex) {
+        } catch (Throwable pex) {
             logger.error("Exception while saving a conclusion", pex);
             return null;
         }
@@ -120,7 +128,7 @@ public class DefaultConclusionFactory extends ConclusionFactory {
         }
     }
 
-    protected ConclusionCacheService getConclusionCacheService() {
+    protected ConclusionCacheServiceLocal getConclusionCacheService() {
         return conclusionCacheService;
     }
 

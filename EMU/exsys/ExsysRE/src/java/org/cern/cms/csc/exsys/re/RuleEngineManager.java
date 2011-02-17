@@ -18,6 +18,7 @@ import javax.ejb.Stateless;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.exsys.re.conclusion.ConclusionCacheService;
+import org.cern.cms.csc.exsys.re.conclusion.ConclusionCacheServiceLocal;
 import org.cern.cms.csc.exsys.re.conclusion.factory.ConclusionFactory;
 import org.cern.cms.csc.exsys.re.conclusion.factory.DefaultConclusionFactory;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
@@ -46,8 +47,8 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
     @EJB
     private RuleEngineDaoLocal reDao;
 
-    //@Resource(name="ConclusionCacheService")
-    private ConclusionCacheService conclusionCacheService = new ConclusionCacheService();
+    @EJB
+    private ConclusionCacheServiceLocal conclusionCacheService;
 
     private Collection<Rule> activeRules = new ArrayList<Rule>();
 

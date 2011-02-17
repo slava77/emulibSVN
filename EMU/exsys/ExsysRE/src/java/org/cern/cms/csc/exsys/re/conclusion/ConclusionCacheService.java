@@ -5,13 +5,14 @@
 
 package org.cern.cms.csc.exsys.re.conclusion;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ejb.EJB;
+import javax.ejb.Singleton;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
-import org.cern.cms.csc.dw.util.EjbLookup;
-import org.cern.cms.csc.exsys.re.dao.RuleEngineDao;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.cern.cms.csc.exsys.re.model.ConclusionTrigger;
@@ -22,11 +23,13 @@ import org.cern.cms.csc.exsys.re.model.ConclusionType;
  *
  * @author evka
  */
-public class ConclusionCacheService {
+@Singleton
+public class ConclusionCacheService implements ConclusionCacheServiceLocal {
 
     private static final Logger logger = SimpleLogger.getLogger(ConclusionCacheService.class);
 
-    private EjbLookup<RuleEngineDaoLocal> reDao = new EjbLookup<RuleEngineDaoLocal>(RuleEngineDaoLocal.class, RuleEngineDao.class);
+    @EJB
+    private RuleEngineDaoLocal reDao;
     private Map<ComparableConclusionWrapper, Conclusion> conclusionCache;
 
     public ConclusionCacheService() {
@@ -37,10 +40,11 @@ public class ConclusionCacheService {
      * If it does, then returns the original conclusion that was found in the cache.
      * If it doesn't, returns null.
      */
+    @Override
     public Conclusion checkCache(Conclusion conclusion) {
         if (conclusionCache == null) { // initialize the cache
-            conclusionCache = new HashMap<ComparableConclusionWrapper, Conclusion>();
-            List<Conclusion> conclusions = reDao.ejb().getAllOpenConclusions();
+            conclusionCache = Collections.synchronizedMap(new HashMap<ComparableConclusionWrapper, Conclusion>());
+            List<Conclusion> conclusions = reDao.getAllOpenConclusions();
             for (Conclusion concl: conclusions) {
                 conclusionCache.put(new ComparableConclusionWrapper(concl), concl);
             }
@@ -54,6 +58,7 @@ public class ConclusionCacheService {
         }
     }
 
+    @Override
     public void addToCache(Conclusion conclusion) {
         if (conclusionCache == null) {
             checkCache(conclusion);
@@ -64,8 +69,8 @@ public class ConclusionCacheService {
             return;
         }
 
-        logger.info("Adding to cache:");
-        logger.info(conclusion.debugPrint());
+        logger.debug("Adding to cache:");
+        logger.debug(conclusion.debugPrint());
 
         //conclusion = (Conclusion) conclusionDao.getEntityDao().refreshEntity(conclusion);
         conclusionCache.put(new ComparableConclusionWrapper(conclusion), conclusion);
@@ -80,6 +85,7 @@ public class ConclusionCacheService {
         }
     }
 
+    @Override
     public void removeFromCache(Conclusion conclusion) {
         if (conclusionCache == null) {
             checkCache(conclusion);
@@ -88,6 +94,7 @@ public class ConclusionCacheService {
         conclusionCache.remove(new ComparableConclusionWrapper(conclusion));
     }
 
+    @Override
     public void clear() {
         conclusionCache = null;
     }

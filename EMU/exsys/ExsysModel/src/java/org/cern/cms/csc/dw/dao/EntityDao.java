@@ -128,8 +128,8 @@ public class EntityDao implements EntityDaoLocal {
     @Override
     public EntityBeanBase refreshEntity(EntityBeanBase entity, boolean usingId) {
         if (usingId) {
-            entity = em.getReference(entity.getClass(), entity.getEntityId());
-            //entity = em.find(entity.getClass(), entity.getEntityId());
+            //entity = em.getReference(entity.getClass(), entity.getEntityId());
+            entity = em.find(entity.getClass(), entity.getEntityId());
         } else {
             em.refresh(entity);
         }
@@ -194,6 +194,11 @@ public class EntityDao implements EntityDaoLocal {
         // refresh the entity and delete it
         cdwEntityObject = em.getReference(cdwEntityObject.getClass(), cdwEntityObject.getEntityId());
         em.remove(cdwEntityObject);
+    }
+
+    @Override
+    public void flush() {
+        em.flush();
     }
 
     /*

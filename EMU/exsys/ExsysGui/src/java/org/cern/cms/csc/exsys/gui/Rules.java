@@ -6,6 +6,7 @@
 package org.cern.cms.csc.exsys.gui;
 
 import javax.ejb.EJB;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import jsf.bean.gui.ClassFinderIf;

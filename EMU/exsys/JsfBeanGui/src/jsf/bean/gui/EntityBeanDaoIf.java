@@ -27,4 +27,5 @@ public interface EntityBeanDaoIf {
     EntityBeanBase mergeAndRefresh(EntityBeanBase cdwEntityObject) throws Exception;
     void delete(EntityBeanBase cdwEntityObject);
 
+    void flush();
 }
