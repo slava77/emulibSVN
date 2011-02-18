@@ -1,6 +1,5 @@
 package jsf.bean.gui.component.table;
 
-import java.beans.Expression;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -123,101 +122,110 @@ public abstract class BeanTableDao {
             if (col.isFilterSet()) {
 
                 BeanTableFilter f = col.getFilter();
-                String propertyName = col.getName();
-
-                if (f.getItems().size() > 0) {
-
-                    Junction disJun = Restrictions.disjunction();
-                    Junction conJun = Restrictions.conjunction();
-                    Junction curJun = disJun;
-
-                    for (Iterator<BeanTableFilterItem> filterItemItr = f.getItems().iterator(); filterItemItr.hasNext();) {
-
-                        BeanTableFilterItem item = filterItemItr.next();
-
-                        switch (item.getOperator()) {
-                            case AND:
-                                curJun = conJun;
-                                break;
-                            case OR:
-                                curJun = disJun;
-                                break;
-                        }
-
-                        switch (item.getOperation()) {
-                            case EQUAL:
-                                curJun.add(Restrictions.eq(propertyName, item.getValue()));
-                                break;
-                            case MORE:
-                                curJun.add(Restrictions.gt(propertyName, item.getValue()));
-                                break;
-                            case LESS:
-                                curJun.add(Restrictions.lt(propertyName, item.getValue()));
-                                break;
-                            case MORE_EQUAL:
-                                curJun.add(Restrictions.ge(propertyName, item.getValue()));
-                                break;
-                            case LESS_EQUAL:
-                                curJun.add(Restrictions.le(propertyName, item.getValue()));
-                                break;
-                            case NOT_EQUAL:
-                                curJun.add(Restrictions.ne(propertyName, item.getValue()));
-                                break;
-                            case LIKE:
-                                curJun.add(Restrictions.like(propertyName, item.getValue()));
-                                break;
-                            case NOTLIKE:
-                                curJun.add(Restrictions.not(Restrictions.like(propertyName, item.getValue())));
-                                break;
-                            case ISNULL:
-                                curJun.add(Restrictions.isNull(propertyName));
-                                break;
-                            case ISNOTNULL:
-                                curJun.add(Restrictions.isNotNull(propertyName));
-                                break;
-                            default:
-                                if (item instanceof BeanTableProjectionFilterItem) {
-                                    BeanTableProjectionFilterItem pitem = (BeanTableProjectionFilterItem) item;
-                                    BeanTablePack pack = pitem.getTablePack();
-                                    BeanTable subQueryTable = pack.getTable();
-                                    if (subQueryTable != null) {
-                                        if (subQueryTable.isFilterOn() || !pack.isSingleClass()) {
-                                            DetachedCriteria subCriteria = getDetachedCriteria(subQueryTable);
-                                            subCriteria.setProjection(Projections.id());
-                                            if (col.isListType()) {
-                                                String listItemId = EntityBeanBase.getIdPropertyMd(subQueryTable.getRowClass()).getName();
-                                                DetachedCriteria listCriteria = c.createCriteria(propertyName, "c");
-                                                if (item.getOperation().equals(BeanTableFilter.Operation.IN)) {
-                                                    listCriteria.add(Subqueries.propertyIn(listItemId, subCriteria));
-                                                } else if (item.getOperation().equals(BeanTableFilter.Operation.NOTIN)) {
-                                                    listCriteria.add(Subqueries.propertyNotIn(listItemId, subCriteria));
-                                                }
-
-                                            } else {
-
-                                                if (item.getOperation().equals(BeanTableFilter.Operation.IN)) {
-                                                    curJun.add(Subqueries.propertyIn(propertyName, subCriteria));
-                                                } else if (item.getOperation().equals(BeanTableFilter.Operation.NOTIN)) {
-                                                    curJun.add(Subqueries.propertyNotIn(propertyName, subCriteria));
-                                                }
-                                                
-                                            }
-                                        }
-                                    }
-                                }
-                                break;
-                        }
-
-                    }
-
-                    c.add(disJun).add(conJun);
-
+                applyColumnFilter(c, col, f);
+                if (table.getPack().getPropertyFilters().containsKey(col.getName())) {
+                    applyColumnFilter(c, col, table.getPack().getPropertyFilters().get(col.getName()));
                 }
+
             }
         }
 
         return c;
 
+    }
+
+    private void applyColumnFilter(DetachedCriteria c, BeanTableColumn col, BeanTableFilter f) {
+
+        String propertyName = col.getName();
+
+        if (f.getItems().size() > 0) {
+
+            Junction disJun = Restrictions.disjunction();
+            Junction conJun = Restrictions.conjunction();
+            Junction curJun = disJun;
+
+            for (Iterator<BeanTableFilterItem> filterItemItr = f.getItems().iterator(); filterItemItr.hasNext();) {
+
+                BeanTableFilterItem item = filterItemItr.next();
+
+                switch (item.getOperator()) {
+                    case AND:
+                        curJun = conJun;
+                        break;
+                    case OR:
+                        curJun = disJun;
+                        break;
+                }
+
+                switch (item.getOperation()) {
+                    case EQUAL:
+                        curJun.add(Restrictions.eq(propertyName, item.getValue()));
+                        break;
+                    case MORE:
+                        curJun.add(Restrictions.gt(propertyName, item.getValue()));
+                        break;
+                    case LESS:
+                        curJun.add(Restrictions.lt(propertyName, item.getValue()));
+                        break;
+                    case MORE_EQUAL:
+                        curJun.add(Restrictions.ge(propertyName, item.getValue()));
+                        break;
+                    case LESS_EQUAL:
+                        curJun.add(Restrictions.le(propertyName, item.getValue()));
+                        break;
+                    case NOT_EQUAL:
+                        curJun.add(Restrictions.ne(propertyName, item.getValue()));
+                        break;
+                    case LIKE:
+                        curJun.add(Restrictions.like(propertyName, item.getValue()));
+                        break;
+                    case NOTLIKE:
+                        curJun.add(Restrictions.not(Restrictions.like(propertyName, item.getValue())));
+                        break;
+                    case ISNULL:
+                        curJun.add(Restrictions.isNull(propertyName));
+                        break;
+                    case ISNOTNULL:
+                        curJun.add(Restrictions.isNotNull(propertyName));
+                        break;
+                    default:
+                        if (item instanceof BeanTableProjectionFilterItem) {
+                            BeanTableProjectionFilterItem pitem = (BeanTableProjectionFilterItem) item;
+                            BeanTablePack pack = pitem.getTablePack();
+                            BeanTable subQueryTable = pack.getTable();
+                            if (subQueryTable != null) {
+                                if (subQueryTable.isFilterOn() || !pack.isSingleClass()) {
+                                    DetachedCriteria subCriteria = getDetachedCriteria(subQueryTable);
+                                    subCriteria.setProjection(Projections.id());
+                                    if (col.isListType()) {
+                                        String listItemId = EntityBeanBase.getIdPropertyMd(subQueryTable.getRowClass()).getName();
+                                        DetachedCriteria listCriteria = c.createCriteria(propertyName, "c");
+                                        if (item.getOperation().equals(BeanTableFilter.Operation.IN)) {
+                                            listCriteria.add(Subqueries.propertyIn(listItemId, subCriteria));
+                                        } else if (item.getOperation().equals(BeanTableFilter.Operation.NOTIN)) {
+                                            listCriteria.add(Subqueries.propertyNotIn(listItemId, subCriteria));
+                                        }
+
+                                    } else {
+
+                                        if (item.getOperation().equals(BeanTableFilter.Operation.IN)) {
+                                            curJun.add(Subqueries.propertyIn(propertyName, subCriteria));
+                                        } else if (item.getOperation().equals(BeanTableFilter.Operation.NOTIN)) {
+                                            curJun.add(Subqueries.propertyNotIn(propertyName, subCriteria));
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                }
+
+            }
+
+            c.add(disJun).add(conJun);
+
+        }
     }
 
 }

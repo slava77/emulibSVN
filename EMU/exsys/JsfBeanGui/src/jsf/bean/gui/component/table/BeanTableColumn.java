@@ -311,6 +311,8 @@ public class BeanTableColumn {
 
             table.getPack().getManager().pushTable(btp);
         }
+
+
     }
 
 }

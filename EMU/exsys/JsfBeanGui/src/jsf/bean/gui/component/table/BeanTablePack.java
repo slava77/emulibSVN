@@ -3,6 +3,8 @@ package jsf.bean.gui.component.table;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import javax.faces.model.SelectItem;
 import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.component.BeanTableManager;
@@ -15,7 +17,9 @@ public class BeanTablePack {
     private final BeanTableManager manager;
     private final String title;
     private final String prefix;
+
     private Collection<BeanTablePackFilter> filters;
+    private Map<String, BeanTableFilter> propertyFilters = new HashMap<String, BeanTableFilter>();
 
     public BeanTablePack(BeanTableManager manager, Class<? extends EntityBeanBase> rowClass) throws Exception {
         this(null, null, manager, rowClass);
@@ -92,6 +96,10 @@ public class BeanTablePack {
             filters = new ArrayList<BeanTablePackFilter>();
         }
         filters.add(btdf);
+    }
+
+    public Map<String, BeanTableFilter> getPropertyFilters() {
+        return propertyFilters;
     }
 
 }

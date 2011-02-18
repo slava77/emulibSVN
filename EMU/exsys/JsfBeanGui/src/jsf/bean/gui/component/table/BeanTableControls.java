@@ -36,6 +36,7 @@ public abstract class BeanTableControls {
             prop.setPageSize(pageSize);
             setPageIndex(1);
         }
+        refresh();
     }
 
     public int getDataFirstIndex() {

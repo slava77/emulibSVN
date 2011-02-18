@@ -19,4 +19,8 @@ public class InvalidEntityBeanPropertyException extends Exception {
         super(msg);
     }
     
+    public InvalidEntityBeanPropertyException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
+
 }

@@ -19,6 +19,8 @@ import jsf.bean.gui.ClassFinderIf;
 import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.component.table.BeanTable;
 import jsf.bean.gui.component.table.BeanTableDaoIf;
+import jsf.bean.gui.component.table.BeanTableFilter;
+import jsf.bean.gui.component.table.BeanTableFilterItem;
 import jsf.bean.gui.component.table.BeanTablePack;
 import jsf.bean.gui.converter.ClassConverter;
 import jsf.bean.gui.converter.NewLineConverter;
@@ -56,6 +58,14 @@ public abstract class BeanTableManager {
 
     public BeanTable getTable() {
         return this.tablePack.getTable();
+    }
+
+    public BeanTablePack getTopPack() {
+        if (!isTop()) {
+            return getTables().get(0);
+        } else {
+            return getTablePack();
+        }
     }
 
     public void pushTable(BeanTablePack nextTable) {
@@ -228,6 +238,29 @@ public abstract class BeanTableManager {
 
     public NewLineConverter getNewLineConverter() {
         return new NewLineConverter();
+    }
+
+    public void addPropertyFilter(String property, BeanTableFilter filter) {
+        getTopPack().getPropertyFilters().put(property, filter);
+    }
+
+    public void addPropertyFilter(String property, BeanTableFilter.Operation operation, Object value) {
+        BeanTableFilter filter = new BeanTableFilter();
+        BeanTableFilterItem filterItem = new BeanTableFilterItem();
+        filterItem.setOperation(operation);
+        filterItem.setValue(value);
+        filter.getItems().add(filterItem);
+        addPropertyFilter(property, filter);
+    }
+
+    public void removePropertyFilter(String property) {
+        if (getTopPack().getPropertyFilters().containsKey(property)) {
+            getTopPack().getPropertyFilters().remove(property);
+        }
+    }
+
+    public void removeAllPropertyFilters() {
+        getTopPack().getPropertyFilters().clear();
     }
 
 }
