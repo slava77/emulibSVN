@@ -66,16 +66,19 @@
                                     <li>
                                         <c:choose>
                                             <c:when test="#{cc.attrs.manager.top and cc.attrs.title != null}">
-                                                    <h:outputText value="#{cc.attrs.title}"/>
+                                                    <h:outputText styleClass="beanTablePathTop"
+                                                                  value="#{cc.attrs.title}"/>
                                             </c:when>
                                             <c:when test="#{!cc.attrs.manager.top and cc.attrs.title != null}">
                                                     <h:commandLink actionListener="#{cc.attrs.manager.topActionListener}"
-                                                                     value="#{cc.attrs.title}"
-                                                                     title="Go to #{cc.attrs.title} table"/>
+                                                                   value="#{cc.attrs.title}"
+                                                                   styleClass="beanTablePathTop"
+                                                                   title="Go to #{cc.attrs.title} table"/>
                                             </c:when>
                                             <c:when test="#{!cc.attrs.manager.top and cc.attrs.title == null}">
                                                 <h:commandLink actionListener="#{cc.attrs.manager.topActionListener}"
                                                                  value="Top table"
+                                                                 styleClass="beanTablePathTop"
                                                                  title="Go to top table"/>
                                             </c:when>
                                         </c:choose>
