@@ -47,14 +47,14 @@
 
                                 <script type="text/javascript">
                                     // <![CDATA[
-                                    var rebuildBc = 0;
+                                    var rebuildBc_#{cc.attrs.manager.id} = 0;
                                     jQuery(document).ready(function () {
 
-                                        rebuildBc = function() {
+                                        rebuildBc_#{cc.attrs.manager.id} = function() {
                                             jQuery('#beanTableBreadcrumb').xBreadcrumbs({});
                                         };
 
-                                        rebuildBc();
+                                        rebuildBc_#{cc.attrs.manager.id}();
                                     });
 
                                     // ]]>
@@ -102,7 +102,9 @@
                                     </c:if>
                                     <script type="text/javascript">
                                         // <![CDATA[
-                                            rebuildBc()
+                                        if (rebuildBc_#{cc.attrs.manager.id} != 0) {
+                                            rebuildBc_#{cc.attrs.manager.id}();
+                                        }
                                         // ]]>
                                     </script>
 

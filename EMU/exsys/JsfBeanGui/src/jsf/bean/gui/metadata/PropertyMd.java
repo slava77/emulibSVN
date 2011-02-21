@@ -7,6 +7,7 @@ package jsf.bean.gui.metadata;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.regex.Matcher;
@@ -18,6 +19,7 @@ import jsf.bean.gui.annotation.NoManualInput;
 import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
+import org.apache.commons.beanutils.PropertyUtils;
 
 /**
  * This class describes a property of an entity class (name, type, is mandatory, etc.).
@@ -295,4 +297,13 @@ public abstract class PropertyMd {
         // validation successful
         return null;
     }
+
+    public Object getPropertyValue(Object bean) {
+        try {
+            return PropertyUtils.getProperty(bean, getName());
+        } catch (Exception ex) {
+            throw new RuntimeException("Exception while retrieving bean property value", ex);
+        }
+    }
+
 }

@@ -15,6 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -89,8 +90,7 @@ public class EntityPropertyMdFactory {
                 PropertyMd propMeta = createMetadataForProperty(prop);
                 metadata.add(propMeta);
             } catch (InvalidEntityBeanPropertyException ex) {
-                logger.error("Exception while constructing entity bean " + entityClass.getName() + "properties metadata - skipping this property", ex);
-//                throw ex;
+                logger.warn("Exception while constructing entity bean " + entityClass.getName() + "properties metadata - skipping this property");
             }
         }
         return metadata;
@@ -105,9 +105,13 @@ public class EntityPropertyMdFactory {
     public static PropertyMd createMetadataForProperty(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
         // process the annotations and decide what type of PropertyMd object to create
         Method getter = prop.getReadMethod();
-        Basic basicA = getter.getAnnotation(Basic.class);
-        if (basicA != null) {
+
+        if (getter.isAnnotationPresent(Basic.class)) {
             return new BasicPropertyMd(prop);
+        }
+
+        if (getter.isAnnotationPresent(Embedded.class)) {
+            return new EmbeddedPropertyMd(prop);
         }
 
         if (prop.getPropertyType().isEnum()) {

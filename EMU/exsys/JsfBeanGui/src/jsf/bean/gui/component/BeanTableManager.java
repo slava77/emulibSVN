@@ -5,13 +5,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.persistence.Transient;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,7 +28,7 @@ import jsf.bean.gui.converter.NewLineConverter;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
 
-public abstract class BeanTableManager {
+public abstract class BeanTableManager implements Serializable {
 
     private static final Logger logger = SimpleLogger.getLogger(BeanTableManager.class);
 
@@ -207,6 +208,7 @@ public abstract class BeanTableManager {
         }
     }
 
+    @Transient
     private void setCookie(String name, String value, int age) {
         Cookie cookie = new Cookie(name, value);
         cookie.setMaxAge(age);
@@ -214,6 +216,7 @@ public abstract class BeanTableManager {
                 .getExternalContext().getResponse()).addCookie(cookie);
     }
 
+    @Transient
     private String getCookie(String name) {
         Cookie cookie[] = ((HttpServletRequest) FacesContext.getCurrentInstance()
                 .getExternalContext().getRequest()).getCookies();
