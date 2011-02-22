@@ -22,6 +22,7 @@
 
     <ui:define name="content">
         <ice:form id="conclusionsForm">
+
             <ice:panelGrid columns="2">
                 Display Mode:
                 <ice:selectOneRadio value="#{conclusions.displayMode}" partialSubmit="true" immediate="true">
@@ -29,7 +30,16 @@
                 </ice:selectOneRadio>
             </ice:panelGrid>
 
-            <component:beanTable manager="#{conclusions.table}"/>
+            <component:beanTable manager="#{conclusions.table}" title="Conclusions"
+                                 skipColumnsByName="acknowledged">
+                <ice:panelGroup rendered="#{column.name == 'acknowledged'}">
+                    <ice:selectBooleanCheckbox value="#{item.acknowledged}" readonly="true" disabled="true"/>
+                    <ice:commandLink value="acknowledge" style="color: blue" rendered="#{conclusions.displayMode == 'CURRENT' and !item.acknowledged}">
+                        <f:setPropertyActionListener value="#{item}" target="#{acknowledgeConclusion.toAcknowledge}"/>
+                        <f:setPropertyActionListener value="#{true}" target="#{cc.attrs.manager.table.refresh}"/>
+                    </ice:commandLink>
+                </ice:panelGroup>
+            </component:beanTable>
 
             <!--ice:column>
                 <ice:commandButton value="Acknowledge" type="submit" partialSubmit="true"

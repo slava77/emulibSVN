@@ -17,6 +17,7 @@ import javax.faces.model.SelectItem;
 import jsf.bean.gui.ClassFinderIf;
 import jsf.bean.gui.component.BeanTableManager;
 import jsf.bean.gui.component.table.BeanTableDaoIf;
+import jsf.bean.gui.component.table.BeanTableFilter.Operation;
 import org.cern.cms.csc.dw.dao.MainBeanTableDaoLocal;
 import org.cern.cms.csc.exsys.gui.base.JsfBeanBase;
 import org.cern.cms.csc.exsys.gui.util.ClassFinder;
@@ -40,7 +41,6 @@ public class Conclusions extends JsfBeanBase implements Serializable {
     /** Creates a new instance of RuleEngineFacade */
     public Conclusions() throws Exception {
         super();
-        displayMode = DisplayMode.CURRENT;
         this.table = new BeanTableManager("reConclusions", Conclusion.class) {
             @Override
             public BeanTableDaoIf getBeanTableDao() {
@@ -51,6 +51,7 @@ public class Conclusions extends JsfBeanBase implements Serializable {
                 return ClassFinder.getInstance();
             }
         };
+        setDisplayMode(DisplayMode.CURRENT, false);
     }
 
     public BeanTableManager getTable() {
@@ -62,7 +63,24 @@ public class Conclusions extends JsfBeanBase implements Serializable {
     }
 
     public void setDisplayMode(DisplayMode displayMode) {
+        setDisplayMode(displayMode, true);
+    }
+
+    public void setDisplayMode(DisplayMode displayMode, boolean refreshData) {
         this.displayMode = displayMode;
+        table.removeAllPropertyFilters();
+        if (displayMode.equals(DisplayMode.CURRENT)) {
+            table.addPropertyFilter("closed", Operation.EQUAL, false);
+            table.addPropertyFilter("acknowledged", Operation.EQUAL, false);
+        } else if (displayMode.equals(DisplayMode.ACKNOWLEDGED)) {
+            table.addPropertyFilter("closed", Operation.EQUAL, false);
+            table.addPropertyFilter("acknowledged", Operation.EQUAL, true);
+        } else if (displayMode.equals(DisplayMode.CLOSED)) {
+            table.addPropertyFilter("closed", Operation.EQUAL, true);
+        }
+        if (refreshData) {
+            table.getTable().refresh();
+        }
     }
 
     public List<SelectItem> getAllDisplayModes() {

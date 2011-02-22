@@ -27,28 +27,18 @@ public class AcknowledgeConclusion extends JsfBeanBase {
     @EJB
     private EntityDaoLocal entityDao;
 
-    private Conclusion concl;
-
     public AcknowledgeConclusion() {
         super();
     }
 
-    public void doAcknowledge() throws Exception {
-        logger.info("Acknowledging conclusion: " + concl.toString());
-        if (concl == null) {
+    public void setToAcknowledge(Conclusion conclusion) throws Exception {
+        logger.info("Acknowledging conclusion: " + conclusion.toString());
+        if (conclusion == null) {
             return;
         }
-        concl.setAcknowledged(true);
-        entityDao.merge(concl);
+        conclusion.setAcknowledged(true);
+        entityDao.merge(conclusion);
         return;
-    }
-
-    public Conclusion getConcl() {
-        return concl;
-    }
-
-    public void setConcl(Conclusion concl) {
-        this.concl = concl;
     }
 
 }
