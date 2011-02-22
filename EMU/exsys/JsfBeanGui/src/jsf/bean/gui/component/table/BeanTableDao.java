@@ -120,13 +120,12 @@ public abstract class BeanTableDao {
         for (BeanTableColumn col: table.getColumns()) {
 
             if (col.isFilterSet()) {
-
                 BeanTableFilter f = col.getFilter();
                 applyColumnFilter(c, col, f);
-                if (table.getPack().getPropertyFilters().containsKey(col.getName())) {
-                    applyColumnFilter(c, col, table.getPack().getPropertyFilters().get(col.getName()));
-                }
-
+            }
+            
+            if (table.getPack().getPropertyFilters().containsKey(col.getName())) {
+                applyColumnFilter(c, col, table.getPack().getPropertyFilters().get(col.getName()));
             }
         }
 
