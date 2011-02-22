@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 417 443 N "_3DFace" 1
+PANEL,-1 -1 417 448 N "_3DFace" 1
 "$deviceParams"
 "main()
 {
@@ -173,6 +173,8 @@ void initStatusBitMap() {
   warningNameToStatusBit[\"warnDmbCausedVccError\"] = EMU_X2P_STATUS_DMB_CAUSED_VCC_ERROR;
   warningNameToStatusBit[\"warnTmbCausedVccError\"] = EMU_X2P_STATUS_TMB_CAUSED_VCC_ERROR;
   warningNameToStatusBit[\"warnCorruptedData\"] = EMU_X2P_STATUS_CORRUPTED;
+  warningNameToStatusBit[\"warnNoAnalogPower\"] = EMU_X2P_STATUS_CHAMBER_HAS_NO_ANALOG_POWER;
+  warningNameToStatusBit[\"warnNoDigitalPower\"] = EMU_X2P_STATUS_CHAMBER_HAS_NO_DIGITAL_POWER;
   warningNameToStatusBit[\"warnUnknownProblem\"] = EMU_X2P_STATUS_OTHER_PROBLEM;
   warningNameToStatusBit[\"warnChamberOff\"] = EMU_X2P_STATUS_OFF;
   warningNameToStatusBit[\"warnPCrateOff\"] = EMU_X2P_STATUS_CRATE_OFF;
@@ -632,7 +634,7 @@ LANG:1 51 CMS_CSCfw_HV_CC/emu_x2pDataProcessing.ctl not found
 2 14
 "warnChamberOff"
 ""
-1 10 360 E E E 1 E 0 E N "_Window" E N "FwStateOKNotPhysics" E E
+1 10 400 E E E 1 E 0 E N "_Window" E N "FwStateOKNotPhysics" E E
  E E
 24 0 0 0 0 0
 E E E
@@ -642,8 +644,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 360 370 374
-1 2 2 "0s" 0 0 0 65 0 0  10 360 1
+E E 0 1 1 2 1 E U  1 E 10 400 370 414
+1 2 2 "0s" 0 0 0 65 0 0  10 400 1
 1
 LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
 0 1
@@ -651,7 +653,7 @@ LANG:1 14 Chamber is OFF
 2 15
 "warnPCrateOff"
 ""
-1 10 380 E E E 1 E 0 E N "_Window" E N "FwStateOKNotPhysics" E E
+1 10 420 E E E 1 E 0 E N "_Window" E N "FwStateOKNotPhysics" E E
  E E
 25 0 0 0 0 0
 E E E
@@ -661,8 +663,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 380 370 394
-1 2 2 "0s" 0 0 0 65 0 0  10 380 1
+E E 0 1 1 2 1 E U  1 E 10 420 370 434
+1 2 2 "0s" 0 0 0 65 0 0  10 420 1
 1
 LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
 0 1
@@ -727,7 +729,7 @@ LANG:1 14 Corrupted Data
 2 19
 "warnUnknownProblem"
 ""
-1 10 340 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+1 10 380 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
  E E
 29 0 0 0 0 0
 E E E
@@ -737,8 +739,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 340 370 354
-1 2 2 "0s" 0 0 0 65 0 0  10 340 1
+E E 0 1 1 2 1 E U  1 E 10 380 370 394
+1 2 2 "0s" 0 0 0 65 0 0  10 380 1
 1
 LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
 0 1
@@ -800,6 +802,44 @@ E E 0 1 1 2 1 E U  1 E 10 300 370 314
 LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
 0 1
 LANG:1 40 This TMB module caused VCC reading error
+2 23
+"warnNoAnalogPower"
+""
+1 10 340 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+33 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 340 370 354
+1 2 2 "0s" 0 0 0 65 0 0  10 340 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 33 Chamber doesn't have analog power
+2 24
+"warnNoDigitalPower"
+""
+1 10 360 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+34 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 360 370 374
+1 2 2 "0s" 0 0 0 65 0 0  10 360 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 34 Chamber doesn't have digital power
 0
 LAYER, 1 
 1

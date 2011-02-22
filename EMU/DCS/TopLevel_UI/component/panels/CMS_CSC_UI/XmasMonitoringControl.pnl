@@ -83,17 +83,26 @@ E "// Common libs
 /** for access control - arrays of control and expert control buttons which should be under access control */
 dyn_string controlButtons;
 dyn_string expertControlButtons;
+time lastActionTimePlus = 0, lastActionTimeMinus = 0;
 
 string controlSystemPlus, controlSystemMinus;
 
 void xmasControlUpdatedPCB(dyn_string dp, dyn_string command) {
-  lblLastActionPlus.text = getCommandMeaning(command);
-  lblLastActionTimePlus.text = emuui_getLastUpdateTime(dp);
+  time t = emuui_getLastUpdateTimeAsTime(dp);
+  if (t > lastActionTimePlus) {
+    lastActionTimePlus = t;
+    lblLastActionPlus.text = getCommandMeaning(command);
+    lblLastActionTimePlus.text = emuui_getLastUpdateTime(dp);
+  }
 }
 
 void xmasControlUpdatedMCB(dyn_string dp, dyn_string command) {
-  lblLastActionMinus.text = getCommandMeaning(command);
-  lblLastActionTimeMinus.text = emuui_getLastUpdateTime(dp);
+  time t = emuui_getLastUpdateTimeAsTime(dp);
+  if (t > lastActionTimeMinus) {
+    lastActionTimeMinus = t;
+    lblLastActionMinus.text = getCommandMeaning(command);
+    lblLastActionTimeMinus.text = emuui_getLastUpdateTime(dp);
+  }
 }
 
 string getCommandMeaning(string command) {

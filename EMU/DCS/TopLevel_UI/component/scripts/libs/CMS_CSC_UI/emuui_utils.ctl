@@ -54,7 +54,7 @@ void emuui_tableCompact(string tableShapeName, int numOfRows = -1) {
 }
 
 /** returns stime of a given datapoint (as type time). */
-string emuui_getLastUpdateTimeAsTime(string dp) {
+time emuui_getLastUpdateTimeAsTime(string dp) {
   time stime;
   string dpSTime = dpSubStr(dp, DPSUB_SYS_DP_EL) + ":_online.._stime";
   if (!dpExists(dpSTime)) {
