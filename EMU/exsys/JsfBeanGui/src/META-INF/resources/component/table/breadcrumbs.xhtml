@@ -37,25 +37,25 @@
             </script>
 
 
-            <ul id="beanTableBreadcrumb" class="xbreadcrumbs">
+            <ul id="beanTableBreadcrumb" class="xbreadcrumbs" style="width: 100%">
 
                 <li>
                     <c:choose>
                         <c:when test="#{cc.attrs.manager.top and cc.attrs.title != null}">
-                                <h:outputText styleClass="beanTablePathTop"
-                                              value="#{cc.attrs.title}"/>
+                            <h:outputText styleClass="beanTablePathTop"
+                                          value="#{cc.attrs.title}"/>
                         </c:when>
                         <c:when test="#{!cc.attrs.manager.top and cc.attrs.title != null}">
-                                <h:commandLink actionListener="#{cc.attrs.manager.topActionListener}"
-                                               value="#{cc.attrs.title}"
-                                               styleClass="beanTablePathTop"
-                                               title="Go to #{cc.attrs.title} table"/>
+                            <h:commandLink actionListener="#{cc.attrs.manager.topActionListener}"
+                                           value="#{cc.attrs.title}"
+                                           styleClass="beanTablePathTop"
+                                           title="Go to #{cc.attrs.title} table"/>
                         </c:when>
                         <c:when test="#{!cc.attrs.manager.top and cc.attrs.title == null}">
                             <h:commandLink actionListener="#{cc.attrs.manager.topActionListener}"
-                                             value="Top table"
-                                             styleClass="beanTablePathTop"
-                                             title="Go to top table"/>
+                                           value="Top table"
+                                           styleClass="beanTablePathTop"
+                                           title="Go to top table"/>
                         </c:when>
                     </c:choose>
                 </li>
@@ -64,8 +64,8 @@
                     <c:if test="#{status.index &gt; 0}">
                         <li>
                             <h:commandLink value="#{table.title}"
-                                             title="Go to #{table.title} table"
-                                             actionListener="#{cc.attrs.manager.toTableActionListener}">
+                                           title="Go to #{table.title} table"
+                                           actionListener="#{cc.attrs.manager.toTableActionListener}">
                                 <f:param name="tableIndex" value="#{status.index}" />
                             </h:commandLink>
 
@@ -79,6 +79,7 @@
                         <h:outputText value=" #{cc.attrs.manager.tablePack.title}"/>
                     </li>
                 </c:if>
+
                 <script type="text/javascript">
                     // <![CDATA[
                     if (rebuildBc_#{cc.attrs.manager.id} != 0) {

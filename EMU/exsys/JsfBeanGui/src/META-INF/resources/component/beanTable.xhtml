@@ -49,23 +49,31 @@
 
             <table border="0" cellspacing="0" width="100%" class="iceDatTblColHdr">
                 <tr>
+                    <td nowrap="true">
+                        
+                        <ice:panelGroup rendered="#{cc.attrs.manager.top}" 
+                                        style=" margin-left: 2px">
+                            <cc:renderFacet name="addMenu"/>
+                        </ice:panelGroup>
+                    </td>
+
                     <td>
 
-                        <ice:panelGroup rendered="#{!cc.attrs.manager.tablePack.singleClass}">
+                        <ice:panelGroup rendered="#{!cc.attrs.manager.tablePack.singleClass}" 
+                                        style=" margin-left: 2px;">
                             <ice:selectOneMenu value="#{cc.attrs.manager.tablePack.selectedClass}" immediate="true"
                                                partialSubmit="true">
                                 <f:selectItems value="#{cc.attrs.manager.tablePack.classes}"/>
                                 <f:converter binding="#{cc.attrs.manager.classConverter}"/>
                             </ice:selectOneMenu>
                         </ice:panelGroup>
+                    </td>
+
+					<td width="100%">
 
                         <ice:panelGroup rendered="#{cc.attrs.breadcrumbs or !cc.attrs.manager.top}">
                             <table:breadcrumbs manager="#{cc.attrs.manager}"
                                                title="#{cc.attrs.title}"/>
-                        </ice:panelGroup>
-
-                        <ice:panelGroup rendered="#{cc.attrs.manager.top}">
-                            <cc:renderFacet name="addMenu"/>
                         </ice:panelGroup>
 
                     </td>
@@ -154,7 +162,7 @@
 
                                         </ice:panelGrid>
 
-                                        <ice:outputText value="3 atvejis" rendered="#{column.listType and !column.entityType}"/>
+                                        <ice:outputText value="4 atvejis" rendered="#{column.listType and !column.entityType}"/>
 
                                         <ice:inputText converter="#{column.filterConverter}"
                                                        required="false" partialSubmit="true"
