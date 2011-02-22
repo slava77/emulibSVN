@@ -56,7 +56,7 @@ public abstract class BeanTableControls {
     }
 
     public void setPageIndex(int pageIndex) {
-        if (pageIndex > 0 && pageIndex <= getPageCount()) {
+        if (pageIndex > 0 && pageIndex <= getPageCount() && pageIndex != this.pageIndex) {
             this.pageIndex = pageIndex;
             refresh();
         }

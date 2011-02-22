@@ -9,18 +9,35 @@
       xmlns:cc="http://java.sun.com/jsf/composite"
       xmlns:c="http://java.sun.com/jsp/jstl/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:table="http://java.sun.com/jsf/composite/component/table">
 
     <cc:interface>
 
-        <cc:attribute name="manager" required="false"/>
-        <cc:attribute name="title" type="java.lang.String" required="false" shortDescription="Table title"/>
+        <cc:attribute name="manager" required="false"
+                      shortDescription="Table manager"/>
+        <cc:attribute name="title" type="java.lang.String" required="false"
+                      shortDescription="Table title"/>
         <cc:attribute name="skipColumnsByName" required="false" type="java.lang.String" default=""
                       shortDescription="List of column names separated by comma that not to be rendered"/>
         <cc:attribute name="skipColumnsByType" required="false" type="java.lang.String" default=""
                       shortDescription="A list of column types separated by comma that not to be rendered"/>
 
-        <cc:facet name="addMenu" required="false" shortDescription="Additional menu elements"/>
+        <cc:attribute name="breadcrumbs" required="false" default="true" type="java.lang.Boolean"
+                      shortDescription="Use breadcrumb navigation"/>
+
+        <cc:attribute name="rowSelection" required="false" default="false" type="java.lang.Boolean"
+                      shortDescription="Use row selection"/>
+
+        <cc:attribute name="actionColumn" required="false" default="false"
+                      shortDescription="Render additional action column"/>
+        <cc:attribute name="actionColumnTitle" required="false" default="Action"
+                      shortDescription="Action column title"/>
+        <cc:facet name="actionContent" required="false"
+                  shortDescription="Action column content"/>
+
+        <cc:facet name="addMenu" required="false"
+                  shortDescription="Additional menu elements"/>
 
     </cc:interface>
 
@@ -33,95 +50,24 @@
             <table border="0" cellspacing="0" width="100%" class="iceDatTblColHdr">
                 <tr>
                     <td>
-                      <!-->  <ice:panelGrid columns="2" cellspacing="2" cellpadding="2"> <-->
 
-                            <ice:panelGroup rendered="#{!cc.attrs.manager.tablePack.singleClass}">
-                                <ice:selectOneMenu value="#{cc.attrs.manager.tablePack.selectedClass}" immediate="true"
-                                                   partialSubmit="true">
-                                    <f:selectItems value="#{cc.attrs.manager.tablePack.classes}"/>
-                                    <f:converter binding="#{cc.attrs.manager.classConverter}"/>
-                                </ice:selectOneMenu>
-                            </ice:panelGroup>
+                        <ice:panelGroup rendered="#{!cc.attrs.manager.tablePack.singleClass}">
+                            <ice:selectOneMenu value="#{cc.attrs.manager.tablePack.selectedClass}" immediate="true"
+                                               partialSubmit="true">
+                                <f:selectItems value="#{cc.attrs.manager.tablePack.classes}"/>
+                                <f:converter binding="#{cc.attrs.manager.classConverter}"/>
+                            </ice:selectOneMenu>
+                        </ice:panelGroup>
 
-                            <ice:panelGroup>
+                        <ice:panelGroup rendered="#{cc.attrs.breadcrumbs or !cc.attrs.manager.top}">
+                            <table:breadcrumbs manager="#{cc.attrs.manager}"
+                                               title="#{cc.attrs.title}"/>
+                        </ice:panelGroup>
 
-                                <script type="text/javascript">
-                                    // <![CDATA[
-                                    var rebuildBc_#{cc.attrs.manager.id} = 0;
-                                    jQuery(document).ready(function () {
+                        <ice:panelGroup rendered="#{cc.attrs.manager.top}">
+                            <cc:renderFacet name="addMenu"/>
+                        </ice:panelGroup>
 
-                                        rebuildBc_#{cc.attrs.manager.id} = function() {
-                                            jQuery('#beanTableBreadcrumb').xBreadcrumbs({});
-                                        };
-
-                                        rebuildBc_#{cc.attrs.manager.id}();
-                                    });
-
-                                    // ]]>
-                                </script>
-
-
-                                <ul id="beanTableBreadcrumb" class="xbreadcrumbs">
-
-                                    <li>
-                                        <c:choose>
-                                            <c:when test="#{cc.attrs.manager.top and cc.attrs.title != null}">
-                                                    <h:outputText styleClass="beanTablePathTop"
-                                                                  value="#{cc.attrs.title}"/>
-                                            </c:when>
-                                            <c:when test="#{!cc.attrs.manager.top and cc.attrs.title != null}">
-                                                    <h:commandLink actionListener="#{cc.attrs.manager.topActionListener}"
-                                                                   value="#{cc.attrs.title}"
-                                                                   styleClass="beanTablePathTop"
-                                                                   title="Go to #{cc.attrs.title} table"/>
-                                            </c:when>
-                                            <c:when test="#{!cc.attrs.manager.top and cc.attrs.title == null}">
-                                                <h:commandLink actionListener="#{cc.attrs.manager.topActionListener}"
-                                                                 value="Top table"
-                                                                 styleClass="beanTablePathTop"
-                                                                 title="Go to top table"/>
-                                            </c:when>
-                                        </c:choose>
-                                    </li>
-
-                                    <c:forEach items="#{cc.attrs.manager.tables}" var="table" varStatus="status" >
-                                        <c:if test="#{status.index &gt; 0}">
-                                            <li>
-                                                <h:commandLink value="#{table.title}"
-                                                                 title="Go to #{table.title} table"
-                                                                 actionListener="#{cc.attrs.manager.toTableActionListener}">
-                                                    <f:param name="tableIndex" value="#{status.index}" />
-                                                </h:commandLink>
-                                                
-                                            </li>
-                                        </c:if>
-                                        
-                                    </c:forEach>
-
-                                    <c:if test="#{cc.attrs.manager.tablePack.title != null}">
-                                        <li id="lastItem">
-                                            <h:outputText value=" #{cc.attrs.manager.tablePack.title}"/>
-                                        </li>
-                                    </c:if>
-                                    <script type="text/javascript">
-                                        // <![CDATA[
-                                        if (rebuildBc_#{cc.attrs.manager.id} != 0) {
-                                            rebuildBc_#{cc.attrs.manager.id}();
-                                        }
-                                        // ]]>
-                                    </script>
-
-                                </ul>
-
-                                
-
-                            </ice:panelGroup>
-
-                            <ice:panelGroup rendered="#{cc.attrs.manager.top}">
-                                <cc:renderFacet name="addMenu"/>
-                            </ice:panelGroup>
-
-                      <!-->   </ice:panelGrid> <-->
                     </td>
                     <td align="right" width="160">
                         <ice:panelGrid columns="5" cellspacing="2" cellpadding="2" rendered="#{cc.attrs.manager.table != null}">
@@ -138,74 +84,7 @@
                     </td>
                     <td align="right" width="500">
 
-                        <!-- Paginator -->
-
-                        <ice:panelGrid columns="10" border="0" rendered="#{cc.attrs.manager.table != null}">
-
-                            <ice:commandButton
-                                image="/xmlhttp/css/xp/css-images/arrow-first.gif"
-                                actionListener="#{cc.attrs.manager.table.firstPageListener}"
-                                disabled="#{cc.attrs.manager.table.pageIndex == 1}"
-                                title="First Page" />
-
-                            <ice:commandButton
-                                image="/xmlhttp/css/xp/css-images/arrow-fr.gif"
-                                actionListener="#{cc.attrs.manager.table.fastbackwardPageListener}"
-                                disabled="#{cc.attrs.manager.table.pageIndex == 1}"
-                                title="Fast Backward" />
-
-                            <ice:commandButton
-                                image="/xmlhttp/css/xp/css-images/arrow-previous.gif"
-                                actionListener="#{cc.attrs.manager.table.prevPageListener}"
-                                disabled="#{cc.attrs.manager.table.pageIndex == 1}"
-                                title="Previous Page" />
-
-                            <ice:panelGroup>
-                                <ice:outputFormat value="{0}&nbsp;items.&nbsp;Show&nbsp;{1}&nbsp;from&nbsp;{2}&nbsp;to&nbsp;{3}.&nbsp;Page&nbsp;{4}&nbsp;/&nbsp;{5}" escape="false">
-                                    <f:param value="#{cc.attrs.manager.table.dataCount}"/>
-                                    <f:param value="#{cc.attrs.manager.table.dataSize}"/>
-                                    <f:param value="#{cc.attrs.manager.table.dataFirstIndex}"/>
-                                    <f:param value="#{cc.attrs.manager.table.dataLastIndex}"/>
-                                    <f:param value="#{cc.attrs.manager.table.pageIndex}"/>
-                                    <f:param value="#{cc.attrs.manager.table.pageCount}"/>
-                                </ice:outputFormat>
-                            </ice:panelGroup>
-
-                            <ice:commandButton
-                                image="/xmlhttp/css/xp/css-images/arrow-next.gif"
-                                actionListener="#{cc.attrs.manager.table.nextPageListener}"
-                                title="Next Page" />
-
-                            <ice:commandButton
-                                image="/xmlhttp/css/xp/css-images/arrow-ff.gif"
-                                actionListener="#{cc.attrs.manager.table.fastforwardPageListener}"
-                                title="Fast Forward" />
-
-                            <ice:commandButton
-                                image="/xmlhttp/css/xp/css-images/arrow-last.gif"
-                                actionListener="#{cc.attrs.manager.table.lastPageListener}"
-                                title="Last Page" />
-
-                            <ice:panelGrid columns="2" cellpadding="0" cellspacing="0">
-                                <ice:outputLabel value="Page"/>
-                                <ice:inputText value="#{cc.attrs.manager.table.pageIndex}"
-                                               style="margin-left: 5px; margin-top: 0px; margin-right: 5px; margin-bottom: 0px; width: 41px"
-                                               title="Jump to page">
-                                    <f:converter converterId="javax.faces.Integer"/>
-                                </ice:inputText>
-                            </ice:panelGrid>
-
-                            <ice:panelGrid columns="2" cellpadding="0" cellspacing="0">
-                                <ice:outputLabel value="Size"/>
-                                <ice:selectOneMenu value="#{cc.attrs.manager.table.properties.pageSize}"
-                                                   partialSubmit="true"
-                                                   style="margin-left: 5px; margin-top: 0px; margin-right: 5px; margin-bottom: 0px; width: 41px"
-                                                   title="Select page size">
-                                    <f:selectItems value="#{cc.attrs.manager.table.properties.pageSizes}"/>
-                                </ice:selectOneMenu>
-                            </ice:panelGrid>
-
-                        </ice:panelGrid>
+                        <table:paginator manager="#{cc.attrs.manager}"/>
 
                     </td>
                 </tr>
@@ -230,6 +109,11 @@
                                columnWidths="#{cc.attrs.manager.table.columnWidths}">
 
                     <ice:columns value="#{cc.attrs.manager.table.selectedColumns.target}" var="column">
+
+                        <ice:rowSelector
+                            value="#{item.selected}"
+                            rendered="#{cc.attrs.rowSelection}"
+                            selectionListener="#{cc.attrs.manager.rowSelectionListener}"/>
 
                         <f:facet name="header">
                             <ice:panelGroup style="width: #{column.width}px; overflow: hidden; vertical-align: top; height: 100%">
@@ -319,6 +203,17 @@
 
                     </ice:columns>
 
+                    <ice:column rendered="#{cc.attrs.actionColumn and cc.attrs.manager.top}">
+                        <f:facet name="header">
+                            <ice:panelGroup style="overflow: hidden; vertical-align: top; height: 100%">
+                                <ice:panelGroup style="height: 100%">
+                                    <ice:outputText value="#{cc.attrs.actionColumnTitle}"/>
+                                </ice:panelGroup>
+                            </ice:panelGroup>
+                        </f:facet>
+                        <cc:renderFacet name="actionColumnContent"/>
+                    </ice:column>
+
                 </ice:dataTable>
 
                 <!-- Column widths -->
@@ -347,136 +242,7 @@
 
                 </ice:panelGroup>
 
-                <!-- Columns dialog -->
-
-                <ice:panelPopup id="columnsDlg" autoCentre="true" modal="false" draggable="false"
-                                style="z-index: 1000; overflow: hidden; height: 530px; width: 480px"
-                                rendered="#{cc.attrs.manager.table.displayColumns}">
-
-                    <f:facet name="header">
-                        <ice:panelGroup>
-                            <table width="480">
-                                <tr>
-                                    <td width="100%">
-                                        <ice:outputText value="Table Columns" />
-                                    </td>
-                                    <td width="1%">
-                                        <ice:commandButton type="button"
-                                                           image="/xmlhttp/css/rime/css-images/cal_off.gif"
-                                                           style="vertical-align: middle; text-align: right"
-                                                           title="Close" alt="Close">
-                                            <f:setPropertyActionListener target="#{cc.attrs.manager.table.displayColumns}" value="#{!cc.attrs.manager.table.displayColumns}"/>
-                                        </ice:commandButton>
-                                    </td>
-                                </tr>
-                            </table>
-                        </ice:panelGroup>
-                    </f:facet>
-
-                    <f:facet name="body">
-                        <ice:panelTabSet>
-                            <ice:panelTab label="Display">
-                                <ice:panelGrid columns="2">
-
-                                    <ice:outputText value="Available Columns"/>
-
-                                    <ice:outputText value="Visible Columns"/>
-
-                                    <ice:panelPositioned var="column"
-                                                         value="#{cc.attrs.manager.table.selectedColumns.source}"
-                                                         styleClass="columnSelectPanelContainer">
-                                        <ice:panelGroup styleClass="columnSelectPanel" >
-                                            <ice:outputText value="#{column.title}"/>
-                                        </ice:panelGroup>
-                                    </ice:panelPositioned>
-
-                                    <ice:panelPositioned var="column"
-                                                         value="#{cc.attrs.manager.table.selectedColumns.target}"
-                                                         listener="#{cc.attrs.manager.table.columnsChangeListener}"
-                                                         styleClass="columnSelectPanelContainer">
-
-                                        <ice:panelGroup styleClass="columnSelectPanel">
-                                            <ice:outputText value="#{column.title}"/>
-                                            <ice:panelGrid columns="2" style="width: 10px; float: right" border="0">
-                                                <ice:outputText value="#{column.width}">
-                                                    <f:convertNumber integerOnly="true" groupingUsed="false"/>
-                                                </ice:outputText>
-                                                <ice:panelGrid columns="1" width="10px" cellpadding="0" cellspacing="0">
-                                                    <ice:commandButton image="resources/img/spin_up.gif"
-                                                                       title="Up by #{cc.attrs.manager.table.properties.columnWidthStep}"
-                                                                       actionListener="#{column.widthUpListener}"/>
-                                                    <ice:commandButton image="resources/img/spin_down.gif"
-                                                                       title="Down by #{cc.attrs.manager.table.properties.columnWidthStep}"
-                                                                       actionListener="#{column.widthDownListener}"/>
-                                                </ice:panelGrid>
-                                            </ice:panelGrid>
-                                        </ice:panelGroup>
-
-                                    </ice:panelPositioned>
-
-                                </ice:panelGrid>
-
-                                <ice:commandButton value="Reset Column Width"
-                                                   style="margin-top: 5px; margin-left: 0px; margin-bottom: 0px"
-                                                   actionListener="#{cc.attrs.manager.table.resetColumnWidthListener}">
-                                    <f:setPropertyActionListener target="#{cc.attrs.manager.table.displayColumns}" value="#{!cc.attrs.manager.table.displayColumns}"/>
-                                </ice:commandButton>
-
-                            </ice:panelTab>
-                            <ice:panelTab label="Sorting">
-
-                                <ice:panelGrid columns="2">
-
-                                    <ice:outputText value="Available Columns"/>
-
-                                    <ice:outputText value="Sorting Columns"/>
-
-                                    <ice:panelPositioned var="column"
-                                                         value="#{cc.attrs.manager.table.sortingColumns.source}"
-                                                         styleClass="columnSelectPanelContainer">
-                                        <ice:panelGroup styleClass="columnSelectPanel" >
-                                            <ice:outputText value="#{column.title}"/>
-                                        </ice:panelGroup>
-                                    </ice:panelPositioned>
-
-                                    <ice:panelPositioned var="column"
-                                                         value="#{cc.attrs.manager.table.sortingColumns.target}"
-                                                         listener="#{cc.attrs.manager.table.sortingChangeListener}"
-                                                         styleClass="columnSelectPanelContainer">
-
-                                        <ice:panelGroup styleClass="columnSelectPanel">
-                                            <ice:selectBooleanCheckbox partialSubmit="true"
-                                                                       title="Ascending?"
-                                                                       value="#{column.ascending}"/>
-                                            <ice:outputText value="#{column.title}"/>
-                                        </ice:panelGroup>
-
-                                    </ice:panelPositioned>
-
-                                </ice:panelGrid>
-
-                                <ice:commandButton value="Apply"
-                                                   style="margin-top: 5px; margin-left: 0px; margin-bottom: 0px"
-                                                   actionListener="#{cc.attrs.manager.table.refreshListener}"/>
-
-                            </ice:panelTab>
-                            <ice:panelTab label="Config">
-                                <ice:panelGroup style="width: 418px; border: #BBBBBB solid 1px; overflow: scroll; height: 370px; margin: 0; font-size: 10px; padding: 5px;">
-                                    <ice:outputText value="#{cc.attrs.manager.table.properties.data}" escape="false">
-                                        <f:converter binding="#{cc.attrs.manager.newLineConverter}"/>
-                                    </ice:outputText>
-                                </ice:panelGroup>
-                                <ice:panelGrid columns="2" cellpadding="5">
-                                    <ice:commandButton value="Save as my default"
-                                                       actionListener="#{cc.attrs.manager.savePersonalPropertiesListener}"/>
-                                    <ice:commandButton value="Save as global default"
-                                                       actionListener="#{cc.attrs.manager.saveGlobalPropertiesListener}"/>
-                                </ice:panelGrid>
-                            </ice:panelTab>
-
-                        </ice:panelTabSet>
-                    </f:facet>
-                </ice:panelPopup>
+                <table:columnsDialog manager="#{cc.attrs.manager}"/>
 
             </ice:panelGroup>
 

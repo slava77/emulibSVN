@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:cc="http://java.sun.com/jsf/composite">
+
+    <cc:interface>
+
+        <cc:attribute name="manager" required="true"
+                      shortDescription="Table manager"/>
+
+    </cc:interface>
+
+    <cc:implementation>
+
+        <ice:panelGrid columns="10" border="0" rendered="#{cc.attrs.manager.table != null}">
+
+            <ice:commandButton
+                image="/xmlhttp/css/xp/css-images/arrow-first.gif"
+                actionListener="#{cc.attrs.manager.table.firstPageListener}"
+                disabled="#{cc.attrs.manager.table.pageIndex == 1}"
+                title="First Page" />
+
+            <ice:commandButton
+                image="/xmlhttp/css/xp/css-images/arrow-fr.gif"
+                actionListener="#{cc.attrs.manager.table.fastbackwardPageListener}"
+                disabled="#{cc.attrs.manager.table.pageIndex == 1}"
+                title="Fast Backward" />
+
+            <ice:commandButton
+                image="/xmlhttp/css/xp/css-images/arrow-previous.gif"
+                actionListener="#{cc.attrs.manager.table.prevPageListener}"
+                disabled="#{cc.attrs.manager.table.pageIndex == 1}"
+                title="Previous Page" />
+
+            <ice:panelGroup>
+                <ice:outputFormat value="{0}&nbsp;items.&nbsp;Show&nbsp;{1}&nbsp;from&nbsp;{2}&nbsp;to&nbsp;{3}.&nbsp;Page&nbsp;{4}&nbsp;/&nbsp;{5}" escape="false">
+                    <f:param value="#{cc.attrs.manager.table.dataCount}"/>
+                    <f:param value="#{cc.attrs.manager.table.dataSize}"/>
+                    <f:param value="#{cc.attrs.manager.table.dataFirstIndex}"/>
+                    <f:param value="#{cc.attrs.manager.table.dataLastIndex}"/>
+                    <f:param value="#{cc.attrs.manager.table.pageIndex}"/>
+                    <f:param value="#{cc.attrs.manager.table.pageCount}"/>
+                </ice:outputFormat>
+            </ice:panelGroup>
+
+            <ice:commandButton
+                image="/xmlhttp/css/xp/css-images/arrow-next.gif"
+                actionListener="#{cc.attrs.manager.table.nextPageListener}"
+                title="Next Page" />
+
+            <ice:commandButton
+                image="/xmlhttp/css/xp/css-images/arrow-ff.gif"
+                actionListener="#{cc.attrs.manager.table.fastforwardPageListener}"
+                title="Fast Forward" />
+
+            <ice:commandButton
+                image="/xmlhttp/css/xp/css-images/arrow-last.gif"
+                actionListener="#{cc.attrs.manager.table.lastPageListener}"
+                title="Last Page" />
+
+            <ice:panelGrid columns="2" cellpadding="0" cellspacing="0">
+                <ice:outputLabel value="Page"/>
+                <ice:inputText value="#{cc.attrs.manager.table.pageIndex}"
+                               style="margin-left: 5px; margin-top: 0px; margin-right: 5px; margin-bottom: 0px; width: 41px"
+                               title="Jump to page">
+                    <f:converter converterId="javax.faces.Integer"/>
+                </ice:inputText>
+            </ice:panelGrid>
+
+            <ice:panelGrid columns="2" cellpadding="0" cellspacing="0">
+                <ice:outputLabel value="Size"/>
+                <ice:selectOneMenu value="#{cc.attrs.manager.table.properties.pageSize}"
+                                   partialSubmit="true"
+                                   style="margin-left: 5px; margin-top: 0px; margin-right: 5px; margin-bottom: 0px; width: 41px"
+                                   title="Select page size">
+                    <f:selectItems value="#{cc.attrs.manager.table.properties.pageSizes}"/>
+                </ice:selectOneMenu>
+            </ice:panelGrid>
+
+        </ice:panelGrid>
+
+    </cc:implementation>
+</html>

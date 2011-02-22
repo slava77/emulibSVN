@@ -198,4 +198,25 @@ public class EntityBeanBase implements Serializable {
         return idPropertyCache.get(myClass);
     }
 
+    /**
+     * Row (item) selection indicator in bean table
+     */
+    private Boolean selected = false;
+
+    /**
+     * Get indication if this item was selected
+     * @return
+     */
+    public final Boolean getSelected() {
+        return selected;
+    }
+
+    /**
+     * Set item selection indicator
+     * @param selected
+     */
+    public final void setSelected(Boolean selected) {
+        this.selected = selected;
+    }
+
 }

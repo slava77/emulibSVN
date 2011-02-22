@@ -1,12 +1,12 @@
 package jsf.bean.gui.component.table;
 
+import com.icesoft.faces.component.panelpositioned.PanelPositionedEvent;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 import javax.faces.event.ActionEvent;
-import javax.faces.event.FacesEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
@@ -139,6 +139,7 @@ public class BeanTable extends BeanTableControls {
         BeanTableDaoIf dao = pack.getManager().getBeanTableDao();
         this.data = new ListDataModel<EntityBeanBase>(dao.getData(this));
         this.dataCount = dao.getDataCount((BeanTable) this);
+        this.pack.getManager().clearSelected();
     }
 
     public DataModel<EntityBeanBase> getData() {
@@ -177,7 +178,11 @@ public class BeanTable extends BeanTableControls {
      *********************************************/
 
     public void filterListener(ActionEvent e) {
-        refresh();
+        if (getPageIndex() == 1) {
+            refresh();
+        } else {
+            setPageIndex(1);
+        }
     }
 
     public boolean isFilterOn() {
@@ -191,7 +196,7 @@ public class BeanTable extends BeanTableControls {
 
     public void removeFilterListener(ActionEvent e) {
         removeFilter();
-        refresh();
+        filterListener(e);
     }
 
     public void removeFilter() {
@@ -254,7 +259,7 @@ public class BeanTable extends BeanTableControls {
      *
      *********************************************/
 
-    public void columnsChangeListener(FacesEvent ev) {
+    public void columnsChangeListener(PanelPositionedEvent ev) {
         List<String> cols = new ArrayList<String>();
         for (BeanTableColumn col: selectedColumns.getTarget()) {
             cols.add(col.getName());
@@ -262,7 +267,7 @@ public class BeanTable extends BeanTableControls {
         getProperties().setColumns(cols);
     }
 
-    public void sortingChangeListener(FacesEvent ev) {
+    public void sortingChangeListener(PanelPositionedEvent ev) {
         List<String> cols = new ArrayList<String>();
         for (BeanTableColumn col: sortingColumns.getTarget()) {
             cols.add(col.getName());

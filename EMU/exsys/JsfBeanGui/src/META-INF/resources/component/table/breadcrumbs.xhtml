@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <cc:interface>
+
+        <cc:attribute name="manager" required="true"
+                      shortDescription="Table manager"/>
+        <cc:attribute name="title" type="java.lang.String" required="false"
+                      shortDescription="Table title"/>
+
+    </cc:interface>
+
+    <cc:implementation>
+
+        <ice:panelGroup>
+
+            <script type="text/javascript">
+                // <![CDATA[
+                var rebuildBc_#{cc.attrs.manager.id} = 0;
+                jQuery(document).ready(function () {
+
+                    rebuildBc_#{cc.attrs.manager.id} = function() {
+                        jQuery('#beanTableBreadcrumb').xBreadcrumbs({});
+                    };
+
+                    rebuildBc_#{cc.attrs.manager.id}();
+                });
+                // ]]>
+            </script>
+
+
+            <ul id="beanTableBreadcrumb" class="xbreadcrumbs">
+
+                <li>
+                    <c:choose>
+                        <c:when test="#{cc.attrs.manager.top and cc.attrs.title != null}">
+                                <h:outputText styleClass="beanTablePathTop"
+                                              value="#{cc.attrs.title}"/>
+                        </c:when>
+                        <c:when test="#{!cc.attrs.manager.top and cc.attrs.title != null}">
+                                <h:commandLink actionListener="#{cc.attrs.manager.topActionListener}"
+                                               value="#{cc.attrs.title}"
+                                               styleClass="beanTablePathTop"
+                                               title="Go to #{cc.attrs.title} table"/>
+                        </c:when>
+                        <c:when test="#{!cc.attrs.manager.top and cc.attrs.title == null}">
+                            <h:commandLink actionListener="#{cc.attrs.manager.topActionListener}"
+                                             value="Top table"
+                                             styleClass="beanTablePathTop"
+                                             title="Go to top table"/>
+                        </c:when>
+                    </c:choose>
+                </li>
+
+                <c:forEach items="#{cc.attrs.manager.tables}" var="table" varStatus="status" >
+                    <c:if test="#{status.index &gt; 0}">
+                        <li>
+                            <h:commandLink value="#{table.title}"
+                                             title="Go to #{table.title} table"
+                                             actionListener="#{cc.attrs.manager.toTableActionListener}">
+                                <f:param name="tableIndex" value="#{status.index}" />
+                            </h:commandLink>
+
+                        </li>
+                    </c:if>
+
+                </c:forEach>
+
+                <c:if test="#{cc.attrs.manager.tablePack.title != null}">
+                    <li id="lastItem">
+                        <h:outputText value=" #{cc.attrs.manager.tablePack.title}"/>
+                    </li>
+                </c:if>
+                <script type="text/javascript">
+                    // <![CDATA[
+                    if (rebuildBc_#{cc.attrs.manager.id} != 0) {
+                        rebuildBc_#{cc.attrs.manager.id}();
+                    }
+                    // ]]>
+                </script>
+
+            </ul>
+
+        </ice:panelGroup>
+
+    </cc:implementation>
+</html>

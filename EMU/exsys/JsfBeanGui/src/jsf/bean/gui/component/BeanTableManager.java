@@ -1,5 +1,6 @@
 package jsf.bean.gui.component;
 
+import com.icesoft.faces.component.ext.RowSelectorEvent;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,9 +9,13 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import javax.faces.application.Application;
+import javax.faces.application.ViewHandler;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.persistence.Transient;
 import javax.servlet.http.Cookie;
@@ -120,6 +125,50 @@ public abstract class BeanTableManager implements Serializable {
         }
         return tablePrefix;
     }
+
+    /*********************************************
+     *
+     * Row selection manager
+     *
+     *********************************************/
+
+    private EntityBeanBase selected;
+
+    public void rowSelectionListener(RowSelectorEvent event) {
+
+        EntityBeanBase current = null;
+        Iterator<EntityBeanBase> it = this.getTable().getData().iterator();
+        while (it.hasNext()) {
+            EntityBeanBase row = it.next();
+            if (row.getSelected()) {
+                current = row;
+                break;
+            }
+        }
+
+        if (current != null) {
+            if (current.equals(this.selected)) {
+                this.selected = null;
+            } else {
+                this.selected = current;
+            }
+        }
+    }
+
+    public final EntityBeanBase getSelected() {
+        return selected;
+    }
+
+    public final void setSelected(EntityBeanBase selected) {
+        this.selected = selected;
+    }
+
+    public final void clearSelected() {
+        if (this.selected != null) {
+            this.selected = null;
+        }
+    }
+
 
     /*********************************************
      *
@@ -264,6 +313,16 @@ public abstract class BeanTableManager implements Serializable {
 
     public void removeAllPropertyFilters() {
         getTopPack().getPropertyFilters().clear();
+    }
+
+    // TODO
+    public void refreshTable() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        Application application = context.getApplication();
+        ViewHandler viewHandler = application.getViewHandler();
+        UIViewRoot viewRoot = viewHandler.createView(context, context.getViewRoot().getViewId());
+        context.setViewRoot(viewRoot);
+        context.renderResponse();
     }
 
 }
