@@ -58,7 +58,7 @@ public class DefaultConclusionFactory extends ConclusionFactory {
             // check if it already exists in cache
             Conclusion existingConclusion = getConclusionCacheService().checkCache(conclusion);
             if (existingConclusion == null) {
-                if (conclusion.isIsClosed()) {
+                if (conclusion.isClosed()) {
                     return null;
                 }
 
@@ -81,7 +81,7 @@ public class DefaultConclusionFactory extends ConclusionFactory {
                 existingConclusion = (Conclusion) entityDao.merge(existingConclusion);
                 entityDao.flush();
                 logger.trace("Existing conclusion ID after merge: " + existingConclusion.getid());
-                if (!existingConclusion.isIsClosed()) {
+                if (!existingConclusion.isClosed()) {
                     logger.debug("Saving existing conclusion: " + existingConclusion);
                     getConclusionCacheService().addToCache(existingConclusion); // update the conclusion in the cache
                 } else {
@@ -102,7 +102,7 @@ public class DefaultConclusionFactory extends ConclusionFactory {
         existingConclusion.setLastHitTimeItem(conclusion.getTimestampItem());
         existingConclusion.setTitle(conclusion.getTitle()); // update with more up to date title
         existingConclusion.setDescription(conclusion.getDescription()); // update with more up to date description
-        existingConclusion.setIsClosed(conclusion.isIsClosed());
+        existingConclusion.setClosed(conclusion.isClosed());
 
         // add new triggers
         for (ConclusionTrigger trigger: conclusion.getTriggers()) {

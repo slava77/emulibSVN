@@ -36,6 +36,14 @@
                  type="tns:DcsAlertFactType"
                  substitutionGroup="tns:dcsFact"/>
 
+    <xsd:element name="DcsHVOnVoltageFact"
+                 type="tns:DcsHVOnVoltageFactType"
+                 substitutionGroup="tns:dcsFact"/>
+
+    <xsd:element name="DcsDisableEnableFact"
+                 type="tns:DcsDisableEnableFactType"
+                 substitutionGroup="tns:dcsFact"/>
+
     <xsd:complexType name="DcsCommunicationStatusFactType">
         <xsd:annotation>
             <xsd:appinfo>
@@ -210,6 +218,7 @@
                                 <hj:basic>
                                     <orm:column name="FCT_IS_ALERT_ON" nullable="false"/>
                                 </hj:basic>
+                                <jaxb:property name="isOn"/> <!-- to avoid esper reserved word "on" -->
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
@@ -220,6 +229,7 @@
                                 <hj:basic>
                                     <orm:column name="FCT_IS_ALERT_ACKNOWLEDGED" nullable="false"/>
                                 </hj:basic>
+                                <jaxb:property name="acknowledged"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
@@ -250,6 +260,69 @@
                                 <hj:basic>
                                     <orm:column name="FCT_SOURCE_STRING_VALUE"/>
                                 </hj:basic>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="DcsHVOnVoltageFactType">
+      	<xsd:annotation>
+    		<xsd:appinfo>
+                <jaxb:class name="DcsHVOnVoltageFact" />
+                <hj:entity>
+                    <orm:table name="CDW_DCS_HV_ON_VOLTAGE_FACTS"/>
+                </hj:entity>
+                <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                    <a:FactAnn title="HV channels on-voltage setting" limitComponents="HVSegment"/>
+                </ann:annotate>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:dcsFactType">
+                <xsd:sequence>
+
+                    <xsd:element name="voltageSetting" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_VOLTAGE_SETTING" precision="10" scale="0"  nullable="false"/>
+                                </hj:basic>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="DcsDisableEnableFactType">
+      	<xsd:annotation>
+    		<xsd:appinfo>
+                <jaxb:class name="DcsDisableEnableFact" />
+                <hj:entity>
+                    <orm:table name="CDW_DCS_DISABLE_ENABLE_FACTS"/>
+                </hj:entity>
+                <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                    <a:FactAnn title="Device disable and enable facts"/>
+                </ann:annotate>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:dcsFactType">
+                <xsd:sequence>
+
+                    <xsd:element name="isDisabled" type="xsd:boolean">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_IS_DISABLED" nullable="false"/>
+                                </hj:basic>
+                                <jaxb:property name="disabled"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>

@@ -4,10 +4,10 @@
     <Scope Scope="Project">
         <Node id="resources/component/editor/editorSelectManyList.xhtml" x="400" y="900" zoom="true"/>
         <Node id="resources/browser/componentClassTree.xhtml" x="400" y="150" zoom="true"/>
+        <Node id="reEditRuleSet.xhtml" x="650" y="150" zoom="true"/>
         <Node id="browseData.xhtml" x="150" y="300" zoom="true"/>
         <Node id="browseOntologyComponent.xhtml" x="150" y="450" zoom="true"/>
         <Node id="browseOntology.xhtml" x="400" y="300" zoom="true"/>
-        <Node id="resources/util/polling.xhtml" x="150" y="750" zoom="true"/>
         <Node id="browseMonitor.xhtml" x="1150" y="150" zoom="true"/>
         <Node id="reStatus.xhtml" x="1400" y="150" zoom="true"/>
         <Node id="resources/main.xhtml" x="791" y="72" zoom="true"/>
@@ -17,14 +17,15 @@
         <Node id="reEditAction.xhtml" x="400" y="750" zoom="true"/>
         <Node id="testFactInput.xhtml" x="150" y="150" zoom="true"/>
         <Node id="resources/component/editor/editorDefault.xhtml" x="1400" y="300" zoom="true"/>
+        <Node id="reRuleSets.xhtml" x="900" y="150" zoom="true"/>
         <Node id="resources/component/editor/editorTextArea.xhtml" x="150" y="900" zoom="true"/>
         <Node id="resources/component/componentSelector.xhtml" x="400" y="600" zoom="true"/>
         <Node id="resources/component/editor/editorComponent.xhtml" x="650" y="750" zoom="true"/>
         <Node id="reActions.xhtml" x="650" y="600" zoom="true"/>
         <Node id="resources/browser/componentLinkClassTree.xhtml" x="400" y="450" zoom="true"/>
         <Node id="monitor.xhtml" x="669" y="301" zoom="true"/>
-        <Node id="index.xhtml" x="297" y="53" zoom="false"/>
         <Node id="resources/component/editor/editorDatePicker.xhtml" x="900" y="600" zoom="true"/>
+        <Node id="index.xhtml" x="297" y="53" zoom="false"/>
         <Node id="resources/component/entityForm.xhtml" x="900" y="450" zoom="true"/>
         <Node id="reRules.xhtml" x="1650" y="150" zoom="true"/>
         <Node id="resources/component/editor/editorOneToOne.xhtml" x="150" y="1050" zoom="true"/>

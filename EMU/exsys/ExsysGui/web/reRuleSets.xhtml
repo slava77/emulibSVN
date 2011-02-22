@@ -17,25 +17,19 @@
     </ui:define>
 
     <ui:define name="pageTitle">
-        <h:outputText value="Rules"/>
+        <h:outputText value="Rule Sets"/>
     </ui:define>
 
     <ui:define name="content">
 
         <ice:form>
 
-            <component:beanTable manager="#{rules.table}"
+            <component:beanTable manager="#{ruleSets.table}"
                                  skipColumnsByName="enabled,name">
 
                 <f:facet name="addMenu">
-<!--                    <ice:panelGroup>
-                        <ice:selectOneMenu value="#{editRule.}"
-                        <ice:commandLink value="Create New Rule" action="reEditRule" style="font-weight: bold"/>
-                    </ice:panelGroup>-->
                     <ice:panelGroup>
-                        <ice:commandLink value="Create New Rule" action="reEditRule" style="font-weight: bold">
-                            <f:setPropertyActionListener target="#{editRule.entity}" value="#{null}"/>
-                        </ice:commandLink>
+                        <ice:commandLink value="Create New Rule Set" action="reEditRuleSet" style="font-weight: bold"/>
                     </ice:panelGroup>
                 </f:facet>
 
@@ -43,18 +37,18 @@
                     <ice:selectBooleanCheckbox value="#{item.enabled}" readonly="true" disabled="true"/>
                     <ice:commandLink value="flip" style="color: blue">
                         <f:setPropertyActionListener value="#{!item.enabled}" target="#{item.enabled}"/>
-                        <f:setPropertyActionListener value="#{item}" target="#{editRule.toSave}"/>
+                        <f:setPropertyActionListener value="#{item}" target="#{editRuleSet.toSave}"/>
                         <f:setPropertyActionListener value="#{true}" target="#{cc.attrs.manager.table.refresh}"/>
                     </ice:commandLink>
                 </ice:panelGroup>
 
                 <ice:panelGrid columns="2" rendered="#{column.name == 'name'}">
-                    <ice:commandLink value="#{item.name}" action="reEditRule">
-                        <f:setPropertyActionListener target="#{editRule.entity}" value="#{item}"/>
+                    <ice:commandLink value="#{item.name}" action="reEditRuleSet">
+                        <f:setPropertyActionListener target="#{editRuleSet.entity}" value="#{item}"/>
                     </ice:commandLink>
                     <ice:panelGroup rendered="#{!item.enabled}">
                         <ice:commandLink value=" (delete)" type="submit" style="color: blue">
-                            <f:setPropertyActionListener value="#{item}" target="#{editRule.toDelete}"/>
+                            <f:setPropertyActionListener value="#{item}" target="#{editRuleSet.toDelete}"/>
                             <f:setPropertyActionListener value="#{true}" target="#{cc.attrs.manager.table.refresh}"/>
                         </ice:commandLink>
                     </ice:panelGroup>

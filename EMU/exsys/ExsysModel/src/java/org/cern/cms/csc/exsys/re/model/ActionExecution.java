@@ -46,7 +46,9 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="timestamp" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
+ *         &lt;element name="timeCreated" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
+ *         &lt;element name="timeExecuted" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
+ *         &lt;element name="timeClosed" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
  *         &lt;element name="action" type="{http://www.cern.ch/cms/csc/exsys/re/model}actionType"/>
  *         &lt;element name="trigger" type="{http://www.cern.ch/cms/csc/exsys/re/model}conclusionTriggerType"/>
  *       &lt;/sequence>
@@ -59,7 +61,9 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "actionExecutionType", propOrder = {
-    "timestamp",
+    "timeCreated",
+    "timeExecuted",
+    "timeClosed",
     "action",
     "trigger"
 })
@@ -73,7 +77,13 @@ public class ActionExecution
 
     @XmlElement(required = true)
     @XmlSchemaType(name = "dateTime")
-    protected XMLGregorianCalendar timestamp;
+    protected XMLGregorianCalendar timeCreated;
+    @XmlElement(required = true)
+    @XmlSchemaType(name = "dateTime")
+    protected XMLGregorianCalendar timeExecuted;
+    @XmlElement(required = true)
+    @XmlSchemaType(name = "dateTime")
+    protected XMLGregorianCalendar timeClosed;
     @XmlElement(required = true)
     protected org.cern.cms.csc.exsys.re.model.Action action;
     @XmlElement(required = true)
@@ -82,7 +92,7 @@ public class ActionExecution
     protected Long id;
 
     /**
-     * Gets the value of the timestamp property.
+     * Gets the value of the timeCreated property.
      * 
      * @return
      *     possible object is
@@ -90,25 +100,85 @@ public class ActionExecution
      *     
      */
     @Transient
-    public XMLGregorianCalendar getTimestamp() {
-        return timestamp;
+    public XMLGregorianCalendar getTimeCreated() {
+        return timeCreated;
     }
 
     /**
-     * Sets the value of the timestamp property.
+     * Sets the value of the timeCreated property.
      * 
      * @param value
      *     allowed object is
      *     {@link XMLGregorianCalendar }
      *     
      */
-    public void setTimestamp(XMLGregorianCalendar value) {
-        this.timestamp = value;
+    public void setTimeCreated(XMLGregorianCalendar value) {
+        this.timeCreated = value;
     }
 
     @Transient
-    public boolean isSetTimestamp() {
-        return (this.timestamp!= null);
+    public boolean isSetTimeCreated() {
+        return (this.timeCreated!= null);
+    }
+
+    /**
+     * Gets the value of the timeExecuted property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    @Transient
+    public XMLGregorianCalendar getTimeExecuted() {
+        return timeExecuted;
+    }
+
+    /**
+     * Sets the value of the timeExecuted property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    public void setTimeExecuted(XMLGregorianCalendar value) {
+        this.timeExecuted = value;
+    }
+
+    @Transient
+    public boolean isSetTimeExecuted() {
+        return (this.timeExecuted!= null);
+    }
+
+    /**
+     * Gets the value of the timeClosed property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    @Transient
+    public XMLGregorianCalendar getTimeClosed() {
+        return timeClosed;
+    }
+
+    /**
+     * Sets the value of the timeClosed property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    public void setTimeClosed(XMLGregorianCalendar value) {
+        this.timeClosed = value;
+    }
+
+    @Transient
+    public boolean isSetTimeClosed() {
+        return (this.timeClosed!= null);
     }
 
     /**
@@ -202,14 +272,36 @@ public class ActionExecution
     }
 
     @Basic
-    @Column(name = "REAE_TIMESTAMP")
+    @Column(name = "REAE_TIME_CREATED")
     @Temporal(TemporalType.TIMESTAMP)
-    public Date getTimestampItem() {
-        return XmlAdapterUtils.unmarshall(XMLGregorianCalendarAsDateTime.class, this.getTimestamp());
+    public Date getTimeCreatedItem() {
+        return XmlAdapterUtils.unmarshall(XMLGregorianCalendarAsDateTime.class, this.getTimeCreated());
     }
 
-    public void setTimestampItem(Date target) {
-        setTimestamp(XmlAdapterUtils.marshall(XMLGregorianCalendarAsDateTime.class, target));
+    public void setTimeCreatedItem(Date target) {
+        setTimeCreated(XmlAdapterUtils.marshall(XMLGregorianCalendarAsDateTime.class, target));
+    }
+
+    @Basic
+    @Column(name = "REAE_TIME_EXECUTED")
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getTimeExecutedItem() {
+        return XmlAdapterUtils.unmarshall(XMLGregorianCalendarAsDateTime.class, this.getTimeExecuted());
+    }
+
+    public void setTimeExecutedItem(Date target) {
+        setTimeExecuted(XmlAdapterUtils.marshall(XMLGregorianCalendarAsDateTime.class, target));
+    }
+
+    @Basic
+    @Column(name = "REAE_TIME_CLOSED")
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getTimeClosedItem() {
+        return XmlAdapterUtils.unmarshall(XMLGregorianCalendarAsDateTime.class, this.getTimeClosed());
+    }
+
+    public void setTimeClosedItem(Date target) {
+        setTimeClosed(XmlAdapterUtils.marshall(XMLGregorianCalendarAsDateTime.class, target));
     }
 
 }

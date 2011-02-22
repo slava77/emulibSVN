@@ -8,7 +8,6 @@
 package org.cern.cms.csc.exsys.re.model;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -52,13 +51,12 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="version" type="{http://www.w3.org/2001/XMLSchema}integer"/>
  *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="timeCreated" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
  *         &lt;element name="ruleDefinition" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="conclusionType" type="{http://www.cern.ch/cms/csc/exsys/re/model}conclusionTypeType"/>
- *         &lt;element name="enabled" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
+ *         &lt;element name="isEnabled" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *         &lt;element name="type" type="{http://www.cern.ch/cms/csc/exsys/re/model}ruleTypeType"/>
  *         &lt;element name="componentFinder" type="{http://www.cern.ch/cms/csc/exsys/re/model}componentFinderType"/>
  *       &lt;/sequence>
@@ -71,7 +69,6 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ruleType", propOrder = {
-    "version",
     "name",
     "timeCreated",
     "ruleDefinition",
@@ -85,7 +82,7 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 @Table(name = "RE_RULES", uniqueConstraints = {
     @UniqueConstraint(columnNames = {
         "RER_NAME",
-        "RER_VERSION"
+        "RER_CONCLUSION_TYPE_ID"
     })
 })
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -94,9 +91,6 @@ public class Rule
     implements Serializable
 {
 
-    @XmlElement(required = true)
-    @jsf.bean.gui.annotation.NoManualInput
-    protected BigInteger version;
     @XmlElement(required = true)
     @UseInTitle(order = 1)
     protected String name;
@@ -109,6 +103,7 @@ public class Rule
     protected String description;
     @XmlElement(required = true)
     protected org.cern.cms.csc.exsys.re.model.ConclusionType conclusionType;
+    @XmlElement(name = "isEnabled")
     @jsf.bean.gui.annotation.NoManualInput
     protected boolean enabled;
     @XmlElement(required = true)
@@ -118,37 +113,6 @@ public class Rule
     protected org.cern.cms.csc.exsys.re.model.ComponentFinder componentFinder;
     @XmlAttribute(name = "id")
     protected Long id;
-
-    /**
-     * Gets the value of the version property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
-     */
-    @Basic
-    @Column(name = "RER_VERSION", nullable = false, precision = 20, scale = 10)
-    public BigInteger getVersion() {
-        return version;
-    }
-
-    /**
-     * Sets the value of the version property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setVersion(BigInteger value) {
-        this.version = value;
-    }
-
-    @Transient
-    public boolean isSetVersion() {
-        return (this.version!= null);
-    }
 
     /**
      * Gets the value of the name property.
@@ -282,8 +246,8 @@ public class Rule
      *     
      */
     @ManyToOne(targetEntity = org.cern.cms.csc.exsys.re.model.ConclusionType.class, cascade = {
-        CascadeType.PERSIST,
         CascadeType.REFRESH,
+        CascadeType.PERSIST,
         CascadeType.MERGE
     })
     @JoinColumn(name = "RER_CONCLUSION_TYPE_ID", nullable = false)
@@ -447,7 +411,7 @@ public class Rule
 
     @Override
     public String toString() {
-        return "Rule " + getName() + " v" + getVersion();
+        return "Rule " + getName();
     }
 
 

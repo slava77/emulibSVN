@@ -5,9 +5,10 @@
 //
 
 
-package org.cern.cms.csc.exsys.re.model;
+package org.cern.cms.csc.dw.model.fact;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,20 +18,20 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import jsf.bean.gui.annotation.Label;
+import org.cern.cms.csc.dw.model.annotation.FactAnn;
 
 
 /**
- * <p>Java class for smsActionType complex type.
+ * <p>Java class for DcsHVOnVoltageFactType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="smsActionType">
+ * &lt;complexType name="DcsHVOnVoltageFactType">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.cern.ch/cms/csc/exsys/re/model}notificationActionType">
+ *     &lt;extension base="{http://www.cern.ch/cms/csc/dw/model}dcsFactType">
  *       &lt;sequence>
- *         &lt;element name="recipients" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="voltageSetting" type="{http://www.w3.org/2001/XMLSchema}integer"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -40,49 +41,51 @@ import jsf.bean.gui.annotation.Label;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "smsActionType", propOrder = {
-    "recipients"
+@XmlType(name = "DcsHVOnVoltageFactType", propOrder = {
+    "voltageSetting"
 })
-@Entity(name = "org.cern.cms.csc.exsys.re.model.SmsAction")
-@Table(name = "RE_SMS_ACTIONS")
-public class SmsAction
-    extends NotificationAction
+@Entity(name = "org.cern.cms.csc.dw.model.fact.DcsHVOnVoltageFact")
+@Table(name = "CDW_DCS_HV_ON_VOLTAGE_FACTS")
+@FactAnn(limitComponents = {
+    "HVSegment"
+}, title = "HV channels on-voltage setting")
+public class DcsHVOnVoltageFact
+    extends DcsFact
     implements Serializable
 {
 
     @XmlElement(required = true)
-    @Label(description = "New line or comma separated list of phone numbers.", name = "Recipients")
-    protected String recipients;
+    protected BigInteger voltageSetting;
 
     /**
-     * Gets the value of the recipients property.
+     * Gets the value of the voltageSetting property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link BigInteger }
      *     
      */
     @Basic
-    @Column(name = "RESA_RECIPIENTS", nullable = false, length = 1024)
-    public String getRecipients() {
-        return recipients;
+    @Column(name = "FCT_VOLTAGE_SETTING", nullable = false, precision = 10, scale = 0)
+    public BigInteger getVoltageSetting() {
+        return voltageSetting;
     }
 
     /**
-     * Sets the value of the recipients property.
+     * Sets the value of the voltageSetting property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link BigInteger }
      *     
      */
-    public void setRecipients(String value) {
-        this.recipients = value;
+    public void setVoltageSetting(BigInteger value) {
+        this.voltageSetting = value;
     }
 
     @Transient
-    public boolean isSetRecipients() {
-        return (this.recipients!= null);
+    public boolean isSetVoltageSetting() {
+        return (this.voltageSetting!= null);
     }
 
 }

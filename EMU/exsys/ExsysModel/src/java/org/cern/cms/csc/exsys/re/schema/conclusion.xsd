@@ -27,6 +27,7 @@
     <xsd:element name="conclusionType" type="tns:conclusionTypeType"/>
     <xsd:element name="conclusionTrigger" type="tns:conclusionTriggerType"/>
     <xsd:element name="conclusionTriggerSource" type="tns:conclusionTriggerSourceType"/>
+    <xsd:element name="ruleSet" type="tns:ruleSetType"/>
 
     <xsd:complexType name="conclusionTypeType">
         <xsd:annotation>
@@ -110,6 +111,35 @@
                             </orm:join-table>
                         </hj:many-to-many>
                         <jaxb:property name="actions"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="ruleSet" type="tns:ruleSetType">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:many-to-one merge="false">
+                            <orm:join-column name="RECT_RULE_SET_ID" nullable="false"/>
+                        </hj:many-to-one>
+                        <ann:annotate xmlns:a="jsf.bean.gui.annotation">
+                            <a:NoManualInput createDefaultValue="false"/>
+                        </ann:annotate>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="rules" type="tns:ruleType" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:one-to-many mapped-by="conclusionType" fetch="EAGER" merge="false">
+                            <orm:cascade>
+                                <orm:cascade-remove/>
+                            </orm:cascade>
+                        </hj:one-to-many>
+                        <ann:annotateGet xmlns:a="org.hibernate.annotations">
+                            <a:Fetch value="SUBSELECT"/>
+                        </ann:annotateGet>
+                        <ann:annotate xmlns:a="jsf.bean.gui.annotation">
+                            <a:NoManualInput createDefaultValue="false"/>
+                        </ann:annotate>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -225,7 +255,7 @@
                         <hj:basic>
                             <orm:column name="REC_IS_CLOSED" nullable="false"/>
                         </hj:basic>
-                        <jaxb:property name="isClosed"/>
+                        <jaxb:property name="closed"/>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -235,7 +265,7 @@
                         <hj:basic>
                             <orm:column name="REC_IS_ACKNOWLEDGED" nullable="false"/>
                         </hj:basic>
-                        <jaxb:property name="isAcknowledged"/>
+                        <jaxb:property name="acknowledged"/>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -416,5 +446,108 @@
             <xsd:enumeration value="Close"/>
         </xsd:restriction>
     </xsd:simpleType>
+
+    <xsd:complexType name="ruleSetType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="RuleSet"/>
+                <cu:extends name="org.cern.cms.csc.dw.model.base.EntityBase"/>
+                <hj:entity>
+                    <orm:table name="RE_RULE_SETS"/>
+                </hj:entity>
+                <hj:generated-id name="id">
+                    <orm:column name="RERS_ID"/>
+                    <orm:sequence-generator name="RE_RULE_SET_ID_SEQ" sequence-name="RE_RULE_SET_ID_SEQ"/>
+                </hj:generated-id>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="name" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="RERS_NAME" length="64" nullable="false"/>
+                        </hj:basic>
+                        <jaxb:property name="name"/>
+                        <ann:annotate xmlns:a="jsf.bean.gui.annotation">
+                            <a:UseInTitle order="1"/>
+                        </ann:annotate>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="description" type="xsd:string" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="RERS_DESCRIPTION" length="2048" nullable="true"/>
+                        </hj:basic>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="version" type="xsd:integer">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="RERS_VERSION" nullable="false"/>
+                        </hj:basic>
+                        <ann:annotate xmlns:a="jsf.bean.gui.annotation">
+                            <a:NoManualInput createDefaultValue="false"/>
+                        </ann:annotate>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="enabled" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="RERS_ENABLED" nullable="false"/>
+                        </hj:basic>
+                        <ann:annotate xmlns:a="jsf.bean.gui.annotation">
+                            <a:NoManualInput createDefaultValue="false"/>
+                        </ann:annotate>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="timeCreated" type="xsd:dateTime">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="RERS_TIME_CREATED" nullable="false"/>
+                        </hj:basic>
+                        <ann:annotate xmlns:a="jsf.bean.gui.annotation">
+                            <a:NoManualInput createDefaultValue="true"/>
+                        </ann:annotate>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="timeLastModified" type="xsd:dateTime">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="RERS_TIME_LAST_MODIFIED" nullable="false"/>
+                        </hj:basic>
+                        <ann:annotate xmlns:a="jsf.bean.gui.annotation">
+                            <a:NoManualInput createDefaultValue="true"/>
+                        </ann:annotate>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="conclusionTypes" type="tns:conclusionTypeType" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:one-to-many mapped-by="ruleSet" merge="false">
+                            <orm:cascade>
+                                <orm:cascade-remove/>
+                                <orm:cascade-persist/>
+                            </orm:cascade>
+                        </hj:one-to-many>
+                        <ann:annotate xmlns:a="jsf.bean.gui.annotation">
+                            <a:NoManualInput createDefaultValue="false"/>
+                        </ann:annotate>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
 
 </xsd:schema>

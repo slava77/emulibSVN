@@ -11,6 +11,7 @@ import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.cern.cms.csc.exsys.re.model.ConclusionType;
 import org.cern.cms.csc.exsys.re.model.Rule;
+import org.cern.cms.csc.exsys.re.model.RuleSet;
 
 /**
  *
@@ -19,7 +20,11 @@ import org.cern.cms.csc.exsys.re.model.Rule;
 @Local
 public interface RuleEngineDaoLocal {
 
-    List<Rule> getRules();
+    List<RuleSet> getAllRuleSets();
+    List<RuleSet> getAllEnabledRuleSets();
+
+    List<Rule> getRules(RuleSet ruleSet);
+    List<Rule> getEnabledRules(RuleSet ruleSet);
     void saveRule(Rule rule) throws Exception;
 
     List<Conclusion> getAllConclusions();
@@ -29,7 +34,7 @@ public interface RuleEngineDaoLocal {
     List<Conclusion> getOpenTopConclusions(boolean acknowledged);
     List<Conclusion> getAllClosedTopConclusions();
 
-    List<ConclusionType> getAllConclusionTypes();
+    List<ConclusionType> getConclusionTypes(RuleSet ruleSet);
 
     EntityDaoLocal getEntityDao();
 

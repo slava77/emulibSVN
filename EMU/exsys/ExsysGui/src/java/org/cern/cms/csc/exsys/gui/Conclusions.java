@@ -5,12 +5,14 @@
 
 package org.cern.cms.csc.exsys.gui;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.model.SelectItem;
 import jsf.bean.gui.ClassFinderIf;
 import jsf.bean.gui.component.BeanTableManager;
@@ -26,8 +28,8 @@ import org.cern.cms.csc.exsys.re.model.Conclusion;
  */
 
 @ManagedBean
-@SessionScoped
-public class Conclusions extends JsfBeanBase {
+@ViewScoped
+public class Conclusions extends JsfBeanBase implements Serializable {
 
     @EJB
     private MainBeanTableDaoLocal dao;

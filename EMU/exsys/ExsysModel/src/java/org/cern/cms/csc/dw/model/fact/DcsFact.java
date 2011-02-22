@@ -47,7 +47,9 @@ import org.cern.cms.csc.dw.model.annotation.ComponentDcsId;
     "componentDcsId"
 })
 @XmlSeeAlso({
-    DcsAlertFact.class
+    DcsAlertFact.class,
+    DcsDisableEnableFact.class,
+    DcsHVOnVoltageFact.class
 })
 @Entity(name = "org.cern.cms.csc.dw.model.fact.DcsFact")
 @Table(name = "CDW_DCS_FACTS")

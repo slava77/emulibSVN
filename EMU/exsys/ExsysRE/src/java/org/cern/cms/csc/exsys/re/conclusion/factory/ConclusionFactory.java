@@ -99,11 +99,7 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
         concl.setTimestampItem(new Date());
         concl.setLastHitTimeItem(new Date());
         concl.setHitCount(BigInteger.ZERO);
-        if (isRuleClosing()) {
-            concl.setIsClosed(true);
-        } else {
-            concl.setIsClosed(false);
-        }
+        concl.setClosed(isRuleClosing());
         concl.setComponent(getComponentResolver().getComponent(unpackedEventEntities));
         addTriggerToConclusion(concl, unpackedEventEntities);
         return concl;

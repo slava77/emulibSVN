@@ -82,8 +82,8 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
     "timestamp",
     "lastHitTime",
     "hitCount",
-    "isClosed",
-    "isAcknowledged",
+    "closed",
+    "acknowledged",
     "timeClosed",
     "type",
     "triggers",
@@ -113,8 +113,10 @@ public class Conclusion
     protected XMLGregorianCalendar lastHitTime;
     @XmlElement(required = true)
     protected BigInteger hitCount;
-    protected boolean isClosed;
-    protected boolean isAcknowledged;
+    @XmlElement(name = "isClosed")
+    protected boolean closed;
+    @XmlElement(name = "isAcknowledged")
+    protected boolean acknowledged;
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar timeClosed;
     @XmlElement(required = true)
@@ -339,48 +341,48 @@ public class Conclusion
     }
 
     /**
-     * Gets the value of the isClosed property.
+     * Gets the value of the closed property.
      * 
      */
     @Basic
     @Column(name = "REC_IS_CLOSED", nullable = false)
-    public boolean isIsClosed() {
-        return isClosed;
+    public boolean isClosed() {
+        return closed;
     }
 
     /**
-     * Sets the value of the isClosed property.
+     * Sets the value of the closed property.
      * 
      */
-    public void setIsClosed(boolean value) {
-        this.isClosed = value;
+    public void setClosed(boolean value) {
+        this.closed = value;
     }
 
     @Transient
-    public boolean isSetIsClosed() {
+    public boolean isSetClosed() {
         return true;
     }
 
     /**
-     * Gets the value of the isAcknowledged property.
+     * Gets the value of the acknowledged property.
      * 
      */
     @Basic
     @Column(name = "REC_IS_ACKNOWLEDGED", nullable = false)
-    public boolean isIsAcknowledged() {
-        return isAcknowledged;
+    public boolean isAcknowledged() {
+        return acknowledged;
     }
 
     /**
-     * Sets the value of the isAcknowledged property.
+     * Sets the value of the acknowledged property.
      * 
      */
-    public void setIsAcknowledged(boolean value) {
-        this.isAcknowledged = value;
+    public void setAcknowledged(boolean value) {
+        this.acknowledged = value;
     }
 
     @Transient
-    public boolean isSetIsAcknowledged() {
+    public boolean isSetAcknowledged() {
         return true;
     }
 
@@ -468,8 +470,8 @@ public class Conclusion
      * 
      */
     @OneToMany(targetEntity = org.cern.cms.csc.exsys.re.model.ConclusionTrigger.class, cascade = {
-        CascadeType.PERSIST,
-        CascadeType.REMOVE
+        CascadeType.REMOVE,
+        CascadeType.PERSIST
     }, mappedBy = "conclusion")
     public List<org.cern.cms.csc.exsys.re.model.ConclusionTrigger> getTriggers() {
         if (triggers == null) {

@@ -24,6 +24,7 @@ import org.cern.cms.csc.exsys.re.conclusion.factory.DefaultConclusionFactory;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.cern.cms.csc.exsys.re.model.Rule;
+import org.cern.cms.csc.exsys.re.model.RuleSet;
 
 /**
  *
@@ -51,6 +52,7 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
     private ConclusionCacheServiceLocal conclusionCacheService;
 
     private Collection<Rule> activeRules = new ArrayList<Rule>();
+    private Collection<RuleSet> activeRuleSets = new ArrayList<RuleSet>();
 
     public RuleEngineManager() {
     }
@@ -85,24 +87,36 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
 
     /** Configures the given EPServiceProvider i.e. gets all the rules from DB and registers them with the given EPServiceProvider. */
     private void configure(EPServiceProvider epService) {
-        List<Rule> rules = reDao.getRules();
+        List<RuleSet> ruleSets = reDao.getAllEnabledRuleSets();
         logger.info("Configuring rules engine... Loading these rules: ");
-        Set<String> ruleNames = new HashSet<String>();
+        Set<String> ruleSetNames = new HashSet<String>();
+        activeRuleSets.clear();
         activeRules.clear();
         conclusionCacheService.clear();
-        for (Rule rule: rules) {
-            if (!rule.isEnabled()) {
-                continue;
+        for (RuleSet ruleSet: ruleSets) {
+            logger.info("  Rule Set: " + ruleSet.toString());
+            if (ruleSetNames.contains(ruleSet.getName())) {
+                throw new RuntimeException("More than one version of rule set \"" + ruleSet.getName() + "\" is enabled");
             }
-            if (ruleNames.contains(rule.getName())) {
-                throw new RuntimeException("More than one version of rule \"" + rule.getName() + "\" is enabled");
+            ruleSetNames.add(ruleSet.getName());
+
+            List<Rule> rules = reDao.getEnabledRules(ruleSet);
+            Set<String> ruleNames = new HashSet<String>();
+
+            for (Rule rule: rules) {
+                if (!rule.isEnabled()) {
+                    continue;
+                }
+                if (ruleNames.contains(rule.getName())) {
+                    throw new RuntimeException("There's more than one rule with the same name in the same rule set (" + ruleSet + "): \"" + rule.getName() + "\"");
+                }
+                ruleNames.add(rule.getName());
+                logger.info("    Rule activated: " + rule.getName());
+                ConclusionFactory factory = new DefaultConclusionFactory(this, rule, conclusionCacheService);
+                EPStatement statement = epService.getEPAdministrator().createEPL(rule.getRuleDefinition(), ruleSet.toString() + "_" + rule.getName());
+                statement.addListener(factory);
+                activeRules.add(rule);
             }
-            ruleNames.add(rule.getName());
-            logger.info("Rule activated: " + rule.getName() + " v" + rule.getVersion());
-            ConclusionFactory factory = new DefaultConclusionFactory(this, rule, conclusionCacheService);
-            EPStatement statement = epService.getEPAdministrator().createEPL(rule.getRuleDefinition(), rule.getName());
-            statement.addListener(factory);
-            activeRules.add(rule);
         }
 
         // throw all open conclusions into rule engine
@@ -149,6 +163,11 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
     @Override
     public Collection<Rule> getActiveRules() {
         return activeRules;
+    }
+
+    @Override
+    public Collection<RuleSet> getActiveRuleSets() {
+        return activeRuleSets;
     }
 
     @Override

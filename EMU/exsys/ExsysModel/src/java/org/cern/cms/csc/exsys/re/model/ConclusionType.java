@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -23,6 +24,8 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -35,10 +38,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
-import jsf.bean.gui.annotation.NoManualInput;
 import jsf.bean.gui.annotation.UseInTitle;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.model.fact.SeverityType;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XMLGregorianCalendarAsDateTime;
 import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
 
@@ -59,6 +63,8 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
  *         &lt;element name="severity" type="{http://www.cern.ch/cms/csc/dw/model}severityType"/>
  *         &lt;element name="timeCreated" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
  *         &lt;element name="actions" type="{http://www.cern.ch/cms/csc/exsys/re/model}actionType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="ruleSet" type="{http://www.cern.ch/cms/csc/exsys/re/model}ruleSetType"/>
+ *         &lt;element name="rules" type="{http://www.cern.ch/cms/csc/exsys/re/model}ruleType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -74,7 +80,9 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
     "description",
     "severity",
     "timeCreated",
-    "actions"
+    "actions",
+    "ruleSet",
+    "rules"
 })
 @Entity(name = "org.cern.cms.csc.exsys.re.model.ConclusionType")
 @Table(name = "RE_CONCLUSION_TYPES")
@@ -95,9 +103,13 @@ public class ConclusionType
     protected SeverityType severity;
     @XmlElement(required = true)
     @XmlSchemaType(name = "dateTime")
-    @NoManualInput(createDefaultValue = true)
+    @jsf.bean.gui.annotation.NoManualInput(createDefaultValue = true)
     protected XMLGregorianCalendar timeCreated;
     protected List<org.cern.cms.csc.exsys.re.model.Action> actions = new Vector<org.cern.cms.csc.exsys.re.model.Action>();
+    @XmlElement(required = true)
+    protected org.cern.cms.csc.exsys.re.model.RuleSet ruleSet;
+    @jsf.bean.gui.annotation.NoManualInput(createDefaultValue = false)
+    protected List<org.cern.cms.csc.exsys.re.model.Rule> rules = new Vector<org.cern.cms.csc.exsys.re.model.Rule>();
     @XmlAttribute(name = "id")
     protected Long id;
 
@@ -304,6 +316,87 @@ public class ConclusionType
 
     public void unsetActions() {
         this.actions = null;
+    }
+
+    /**
+     * Gets the value of the ruleSet property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link org.cern.cms.csc.exsys.re.model.RuleSet }
+     *     
+     */
+    @ManyToOne(targetEntity = org.cern.cms.csc.exsys.re.model.RuleSet.class)
+    @JoinColumn(name = "RECT_RULE_SET_ID", nullable = false)
+    public org.cern.cms.csc.exsys.re.model.RuleSet getRuleSet() {
+        return ruleSet;
+    }
+
+    /**
+     * Sets the value of the ruleSet property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link org.cern.cms.csc.exsys.re.model.RuleSet }
+     *     
+     */
+    public void setRuleSet(org.cern.cms.csc.exsys.re.model.RuleSet value) {
+        this.ruleSet = value;
+    }
+
+    @Transient
+    public boolean isSetRuleSet() {
+        return (this.ruleSet!= null);
+    }
+
+    /**
+     * Gets the value of the rules property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the rules property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getRules().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link org.cern.cms.csc.exsys.re.model.Rule }
+     * 
+     * 
+     */
+    @OneToMany(targetEntity = org.cern.cms.csc.exsys.re.model.Rule.class, cascade = {
+        CascadeType.REMOVE
+    }, fetch = FetchType.EAGER, mappedBy = "conclusionType")
+    @Fetch(FetchMode.SUBSELECT)
+    public List<org.cern.cms.csc.exsys.re.model.Rule> getRules() {
+        if (rules == null) {
+            rules = new Vector<org.cern.cms.csc.exsys.re.model.Rule>();
+        }
+        return this.rules;
+    }
+
+    /**
+     * 
+     * 
+     */
+    public void setRules(List<org.cern.cms.csc.exsys.re.model.Rule> rules) {
+        this.rules = rules;
+    }
+
+    @Transient
+    public boolean isSetRules() {
+        return ((this.rules!= null)&&(!this.rules.isEmpty()));
+    }
+
+    public void unsetRules() {
+        this.rules = null;
     }
 
     /**

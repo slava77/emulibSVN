@@ -17,18 +17,18 @@
     </ui:define>
 
     <ui:define name="pageTitle">
-        <h:outputText value="Edit Rule"/>
+        <h:outputText value="Edit Rule Set"/>
     </ui:define>
 
     <ui:define name="content">
 
         <ice:form>
 
-            <component:entityForm editor="#{editRule.editor}" manager="#{editRule}">
+            <component:entityForm editor="#{editRuleSet.editor}" manager="#{editRuleSet}">
                 <f:facet name="buttons">
                     <ice:commandButton type="submit" value="Save"
-                                       action="#{editRule.doSave}"
-                                       rendered="#{editRule.editor.parentEditor == null}"/>
+                                       action="#{editRuleSet.doSave}"
+                                       rendered="#{editRuleSet.editor.parentEditor == null}"/>
                 </f:facet>
             </component:entityForm>
 

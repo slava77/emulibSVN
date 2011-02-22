@@ -35,13 +35,30 @@
             </xsd:appinfo>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="timestamp" type="xsd:dateTime">
+            <xsd:element name="timeCreated" type="xsd:dateTime">
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="REAE_TIMESTAMP"/>
+                            <orm:column name="REAE_TIME_CREATED"/>
                         </hj:basic>
-                        <jaxb:property name="timestamp"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="timeExecuted" type="xsd:dateTime">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REAE_TIME_EXECUTED"/>
+                        </hj:basic>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="timeClosed" type="xsd:dateTime">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REAE_TIME_CLOSED"/>
+                        </hj:basic>
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -124,7 +141,72 @@
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
+            <xsd:element name="isDeleted" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REA_IS_DELETED" nullable="false"/>
+                        </hj:basic>
+                        <jaxb:property name="deleted"/>
+                        <ann:annotate xmlns:a="jsf.bean.gui.annotation">
+                            <a:NoManualInput createDefaultValue="true"/>
+                        </ann:annotate>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="isEnabled" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REA_IS_ENABLED" nullable="false"/>
+                        </hj:basic>
+                        <jaxb:property name="enabled"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="timeout" type="xsd:long">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REA_TIMEOUT" nullable="false"/>
+                        </hj:basic>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="acknowledgeConclusionOnExecution" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REA_ACK_CONCL_ON_EXEC" nullable="false"/>
+                        </hj:basic>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="acknowledgeConclusionOnCreate" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REA_ACK_CONCL_ON_CREATE" nullable="false"/>
+                        </hj:basic>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
         </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="notificationActionType" abstract="true">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="NotificationAction"/>
+                <hj:entity>
+                    <orm:table name="RE_NOTIFICATION_ACTIONS"/>
+                </hj:entity>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:actionType">
+            </xsd:extension>
+        </xsd:complexContent>
     </xsd:complexType>
 
     <xsd:complexType name="emailActionType">
@@ -137,7 +219,7 @@
             </xsd:appinfo>
         </xsd:annotation>
         <xsd:complexContent>
-            <xsd:extension base="tns:actionType">
+            <xsd:extension base="tns:notificationActionType">
                 <xsd:sequence>
                     <xsd:element name="recipients" type="xsd:string">
                         <xsd:annotation>
@@ -167,7 +249,7 @@
             </xsd:appinfo>
         </xsd:annotation>
         <xsd:complexContent>
-            <xsd:extension base="tns:actionType">
+            <xsd:extension base="tns:notificationActionType">
                 <xsd:sequence>
                     <xsd:element name="recipients" type="xsd:string">
                         <xsd:annotation>

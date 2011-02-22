@@ -68,6 +68,16 @@
             <redirect/>
         </navigation-case>
         <navigation-case>
+            <from-outcome>reRuleSets</from-outcome>
+            <to-view-id>/reRuleSets.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>reEditRuleSet</from-outcome>
+            <to-view-id>/reEditRuleSet.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
             <from-outcome>testFactInput</from-outcome>
             <to-view-id>/testFactInput.xhtml</to-view-id>
             <redirect/>

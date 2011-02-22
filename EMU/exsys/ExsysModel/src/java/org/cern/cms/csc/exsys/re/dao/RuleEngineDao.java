@@ -16,6 +16,7 @@ import org.cern.cms.csc.dw.exception.PersistException;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.cern.cms.csc.exsys.re.model.ConclusionType;
 import org.cern.cms.csc.exsys.re.model.Rule;
+import org.cern.cms.csc.exsys.re.model.RuleSet;
 
 /**
  *
@@ -30,14 +31,45 @@ public class RuleEngineDao implements RuleEngineDaoLocal {
     @EJB
     private EntityDaoLocal entityDao;
 
+    @Override
+    public List<RuleSet> getAllRuleSets() {
+        List<RuleSet> ruleSets = em.createQuery("select rs from org.cern.cms.csc.exsys.re.model.RuleSet as rs " +
+                                                "order by rs.name, rs.version desc", RuleSet.class)
+                                                .getResultList();
+        return ruleSets;
+    }
+
+    @Override
+    public List<RuleSet> getAllEnabledRuleSets() {
+        List<RuleSet> ruleSets = em.createQuery("select rs from org.cern.cms.csc.exsys.re.model.RuleSet as rs " +
+                                                "where rs.enabled = true " +
+                                                "order by rs.name, rs.version desc", RuleSet.class)
+                                                .getResultList();
+        return ruleSets;
+    }
+
+    @Override
+    public List<Rule> getEnabledRules(RuleSet ruleSet) {
+        List<Rule> rules = em.createQuery("select r from org.cern.cms.csc.exsys.re.model.Rule as r " +
+                                          "where r.conclusionType.ruleSet = :ruleSet and r.enabled = true " +
+                                          "order by r.name", Rule.class)
+                                          .setParameter("ruleSet", ruleSet)
+                                          .getResultList();
+        return rules;
+    }
+
     /**
      * Get all rules (both active and inactive)
      * @return all rules (both active and inactive)
      */
     @SuppressWarnings("unchecked")
     @Override
-    public List<Rule> getRules() {
-        List<Rule> rules = em.createQuery("select r from org.cern.cms.csc.exsys.re.model.Rule as r order by r.name, r.version desc").getResultList();
+    public List<Rule> getRules(RuleSet ruleSet) {
+        List<Rule> rules = em.createQuery("select r from org.cern.cms.csc.exsys.re.model.Rule as r " +
+                                          "where r.conclusionType.ruleSet = :ruleSet " +
+                                          "order by r.name", Rule.class)
+                                          .setParameter("ruleSet", ruleSet)
+                                          .getResultList();
         return rules;
     }
 
@@ -65,7 +97,7 @@ public class RuleEngineDao implements RuleEngineDaoLocal {
     public List<Conclusion> getAllOpenConclusions(boolean getAllOpenConclusions) {
         List<Conclusion> conclusions = em.createQuery(
                 "select c from org.cern.cms.csc.exsys.re.model.Conclusion as c " +
-                "where c.isClosed = false " +
+                "where c.closed = false " +
                 "order by c.timestampItem desc").getResultList();
         if (getAllOpenConclusions) {
             for (Conclusion concl: conclusions) {
@@ -81,7 +113,7 @@ public class RuleEngineDao implements RuleEngineDaoLocal {
     public List<Conclusion> getAllOpenTopConclusions() {
         List<Conclusion> conclusions = em.createQuery(
                 "select c from org.cern.cms.csc.exsys.re.model.Conclusion as c " +
-                "where c.isClosed = false and " +
+                "where c.closed = false and " +
                 "c.parents is empty " +
                 "order by c.timestampItem desc").getResultList();
         return conclusions;
@@ -89,9 +121,12 @@ public class RuleEngineDao implements RuleEngineDaoLocal {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<ConclusionType> getAllConclusionTypes() {
+    public List<ConclusionType> getConclusionTypes(RuleSet ruleSet) {
         List<ConclusionType> conclusionTypes = em.createQuery("select ct from org.cern.cms.csc.exsys.re.model.ConclusionType as ct " +
-                                                      "order by ct.name desc").getResultList();
+                                                      "where ct.ruleSet = :ruleSet " +
+                                                      "order by ct.name desc", ConclusionType.class)
+                                                      .setParameter("ruleSet", ruleSet)
+                                                      .getResultList();
         return conclusionTypes;
     }
 
@@ -100,9 +135,9 @@ public class RuleEngineDao implements RuleEngineDaoLocal {
     public List<Conclusion> getOpenTopConclusions(boolean acknowledged) {
         List<Conclusion> conclusions = em.createQuery(
                 "select c from org.cern.cms.csc.exsys.re.model.Conclusion as c " +
-                "where c.isClosed = false and " +
+                "where c.closed = false and " +
                 "c.parents is empty and " +
-                "c.isAcknowledged = :ack " +
+                "c.acknowledged = :ack " +
                 "order by c.timestampItem desc")
                 .setParameter("ack", acknowledged)
                 .getResultList();
@@ -114,7 +149,7 @@ public class RuleEngineDao implements RuleEngineDaoLocal {
     public List<Conclusion> getAllClosedTopConclusions() {
         List<Conclusion> conclusions = em.createQuery(
                 "select c from org.cern.cms.csc.exsys.re.model.Conclusion as c " +
-                "where c.isClosed = true and " +
+                "where c.closed = true and " +
                 "c.parents is empty " +
                 "order by c.timestampItem desc").getResultList();
         return conclusions;
@@ -122,30 +157,29 @@ public class RuleEngineDao implements RuleEngineDaoLocal {
 
     @Override
     public void saveRule(Rule rule) throws Exception {
-        if (rule.getid() == null) {
-
-            List list  = em.createQuery("select r from org.cern.cms.csc.exsys.re.model.Rule as r " +
-                                                  "where r.name = :name")
-                                                  .setParameter("name", rule.getName())
-                                                  .getResultList();
-            if (!list.isEmpty()) {
-                throw new PersistException("Rule with name " + rule.getName() + " already exists in database!");
-            }
-            rule.setVersion(BigInteger.ONE);
-
-        } else {
-
-            List conclusionTriggers = em.createQuery("select ct from org.cern.cms.csc.exsys.re.model.ConclusionTrigger as ct " +
-                                                  "where ct.rule = :rule")
-                                                  .setParameter("rule", rule)
-                                                  .setMaxResults(1)
-                                                  .getResultList();
-            if (!conclusionTriggers.isEmpty()) {
-                rule.setVersion(rule.getVersion().add(BigInteger.ONE));
-                rule.setid(null);
-            }
-
-        }
+//        if (rule.getid() == null) {
+//
+//            List list  = em.createQuery("select r from org.cern.cms.csc.exsys.re.model.Rule as r " +
+//                                                  "where r.name = :name and r.conclusionType = :conclType")
+//                                                  .setParameter("name", rule.getName())
+//                                                  .setParameter("conclType", rule.getConclusionType())
+//                                                  .getResultList();
+//            if (!list.isEmpty()) {
+//                throw new PersistException("Rule with name " + rule.getName() + " and conclusion type already exists in database!");
+//            }
+//
+//        } else {
+//
+//            List conclusionTriggers = em.createQuery("select ct from org.cern.cms.csc.exsys.re.model.ConclusionTrigger as ct " +
+//                                                  "where ct.rule = :rule")
+//                                                  .setParameter("rule", rule)
+//                                                  .setMaxResults(1)
+//                                                  .getResultList();
+//            if (!conclusionTriggers.isEmpty()) {
+//                throw new UnsupportedOperationException("Ruleset versioning is not yet supported - cannot update rule which has already produced conclusion triggers");
+//            }
+//
+//        }
 
         entityDao.merge(rule);
 

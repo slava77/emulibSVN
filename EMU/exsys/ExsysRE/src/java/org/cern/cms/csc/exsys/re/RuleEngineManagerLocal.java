@@ -10,6 +10,7 @@ import java.util.Collection;
 import javax.ejb.Local;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
 import org.cern.cms.csc.exsys.re.model.Rule;
+import org.cern.cms.csc.exsys.re.model.RuleSet;
 
 /**
  *
@@ -43,6 +44,8 @@ public interface RuleEngineManagerLocal {
      * @return all rules that are currently active in the RE runtime
      */
     Collection<Rule> getActiveRules();
+
+    Collection<RuleSet> getActiveRuleSets();
 
     RuleEngineDaoLocal getRuleEngineDao();
     

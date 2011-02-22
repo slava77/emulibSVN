@@ -64,7 +64,7 @@ public class ConclusionCacheService implements ConclusionCacheServiceLocal {
             checkCache(conclusion);
         }
 
-        if (conclusion.isIsClosed()) {
+        if (conclusion.isClosed()) {
             conclusionCache.remove(new ComparableConclusionWrapper(conclusion));
             return;
         }

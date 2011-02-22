@@ -46,7 +46,7 @@ import org.cern.cms.csc.dw.model.annotation.FactAnn;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DcsAlertFactType", propOrder = {
     "isOn",
-    "isAcknowledged",
+    "acknowledged",
     "alertText",
     "sourceNumericValue",
     "sourceStringValue"
@@ -60,7 +60,8 @@ public class DcsAlertFact
 {
 
     protected boolean isOn;
-    protected boolean isAcknowledged;
+    @XmlElement(name = "isAcknowledged")
+    protected boolean acknowledged;
     @XmlElement(required = true)
     protected String alertText;
     protected Double sourceNumericValue;
@@ -90,25 +91,25 @@ public class DcsAlertFact
     }
 
     /**
-     * Gets the value of the isAcknowledged property.
+     * Gets the value of the acknowledged property.
      * 
      */
     @Basic
     @Column(name = "FCT_IS_ALERT_ACKNOWLEDGED", nullable = false)
-    public boolean isIsAcknowledged() {
-        return isAcknowledged;
+    public boolean isAcknowledged() {
+        return acknowledged;
     }
 
     /**
-     * Sets the value of the isAcknowledged property.
+     * Sets the value of the acknowledged property.
      * 
      */
-    public void setIsAcknowledged(boolean value) {
-        this.isAcknowledged = value;
+    public void setAcknowledged(boolean value) {
+        this.acknowledged = value;
     }
 
     @Transient
-    public boolean isSetIsAcknowledged() {
+    public boolean isSetAcknowledged() {
         return true;
     }
 

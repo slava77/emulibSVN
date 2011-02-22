@@ -76,7 +76,7 @@ public class PropertyEditorFactory {
                         throw new InvalidEntityBeanPropertyException("Could not create default value for " +
                                                                       propMetadata.getEntityClass().getName() +
                                                                       " property " +
-                                                                      propMetadata.getName());
+                                                                      propMetadata.getName(), ex);
                     }
                 }
             }

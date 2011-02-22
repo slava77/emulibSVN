@@ -33,6 +33,7 @@ public class ObjectFactory {
     private final static QName _ConclusionTrigger_QNAME = new QName("http://www.cern.ch/cms/csc/exsys/re/model", "conclusionTrigger");
     private final static QName _ConclusionTriggerSource_QNAME = new QName("http://www.cern.ch/cms/csc/exsys/re/model", "conclusionTriggerSource");
     private final static QName _Conclusion_QNAME = new QName("http://www.cern.ch/cms/csc/exsys/re/model", "conclusion");
+    private final static QName _RuleSet_QNAME = new QName("http://www.cern.ch/cms/csc/exsys/re/model", "ruleSet");
     private final static QName _ComponentFinder_QNAME = new QName("http://www.cern.ch/cms/csc/exsys/re/model", "componentFinder");
     private final static QName _ActionExecution_QNAME = new QName("http://www.cern.ch/cms/csc/exsys/re/model", "actionExecution");
     private final static QName _Rule_QNAME = new QName("http://www.cern.ch/cms/csc/exsys/re/model", "rule");
@@ -47,6 +48,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link RuleSet }
+     * 
+     */
+    public RuleSet createRuleSet() {
+        return new RuleSet();
+    }
+
+    /**
      * Create an instance of {@link ConclusionType }
      * 
      */
@@ -55,35 +64,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ConclusionTrigger }
-     * 
-     */
-    public ConclusionTrigger createConclusionTrigger() {
-        return new ConclusionTrigger();
-    }
-
-    /**
      * Create an instance of {@link RelatedComponentFinder }
      * 
      */
     public RelatedComponentFinder createRelatedComponentFinder() {
         return new RelatedComponentFinder();
-    }
-
-    /**
-     * Create an instance of {@link Conclusion }
-     * 
-     */
-    public Conclusion createConclusion() {
-        return new Conclusion();
-    }
-
-    /**
-     * Create an instance of {@link SimpleComponentFinder }
-     * 
-     */
-    public SimpleComponentFinder createSimpleComponentFinder() {
-        return new SimpleComponentFinder();
     }
 
     /**
@@ -103,6 +88,22 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link Conclusion }
+     * 
+     */
+    public Conclusion createConclusion() {
+        return new Conclusion();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionTrigger }
+     * 
+     */
+    public ConclusionTrigger createConclusionTrigger() {
+        return new ConclusionTrigger();
+    }
+
+    /**
      * Create an instance of {@link ConclusionTriggerSource }
      * 
      */
@@ -111,19 +112,27 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ActionExecution }
-     * 
-     */
-    public ActionExecution createActionExecution() {
-        return new ActionExecution();
-    }
-
-    /**
      * Create an instance of {@link EmailAction }
      * 
      */
     public EmailAction createEmailAction() {
         return new EmailAction();
+    }
+
+    /**
+     * Create an instance of {@link SimpleComponentFinder }
+     * 
+     */
+    public SimpleComponentFinder createSimpleComponentFinder() {
+        return new SimpleComponentFinder();
+    }
+
+    /**
+     * Create an instance of {@link ActionExecution }
+     * 
+     */
+    public ActionExecution createActionExecution() {
+        return new ActionExecution();
     }
 
     /**
@@ -151,6 +160,15 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://www.cern.ch/cms/csc/exsys/re/model", name = "conclusion")
     public JAXBElement<Conclusion> createConclusion(Conclusion value) {
         return new JAXBElement<Conclusion>(_Conclusion_QNAME, Conclusion.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link RuleSet }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.cern.ch/cms/csc/exsys/re/model", name = "ruleSet")
+    public JAXBElement<RuleSet> createRuleSet(RuleSet value) {
+        return new JAXBElement<RuleSet>(_RuleSet_QNAME, RuleSet.class, null, value);
     }
 
     /**

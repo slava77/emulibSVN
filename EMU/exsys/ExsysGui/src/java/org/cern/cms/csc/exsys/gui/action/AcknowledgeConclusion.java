@@ -38,7 +38,7 @@ public class AcknowledgeConclusion extends JsfBeanBase {
         if (concl == null) {
             return;
         }
-        concl.setIsAcknowledged(true);
+        concl.setAcknowledged(true);
         entityDao.merge(concl);
         return;
     }

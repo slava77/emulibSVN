@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import jsf.bean.gui.annotation.ImmutableReference;
+import jsf.bean.gui.annotation.NoManualInput;
 import jsf.bean.gui.annotation.UseInTitle;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 
@@ -49,6 +50,11 @@ import org.cern.cms.csc.dw.model.base.EntityBase;
  *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="conclusionTypes" type="{http://www.cern.ch/cms/csc/exsys/re/model}conclusionTypeType" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element name="triggerType" type="{http://www.cern.ch/cms/csc/exsys/re/model}conclusionTriggerTypeType"/>
+ *         &lt;element name="isDeleted" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
+ *         &lt;element name="isEnabled" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
+ *         &lt;element name="timeout" type="{http://www.w3.org/2001/XMLSchema}long"/>
+ *         &lt;element name="acknowledgeConclusionOnExecution" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
+ *         &lt;element name="acknowledgeConclusionOnCreate" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -61,11 +67,15 @@ import org.cern.cms.csc.dw.model.base.EntityBase;
 @XmlType(name = "actionType", propOrder = {
     "name",
     "conclusionTypes",
-    "triggerType"
+    "triggerType",
+    "deleted",
+    "enabled",
+    "timeout",
+    "acknowledgeConclusionOnExecution",
+    "acknowledgeConclusionOnCreate"
 })
 @XmlSeeAlso({
-    SmsAction.class,
-    EmailAction.class
+    NotificationAction.class
 })
 @Entity(name = "org.cern.cms.csc.exsys.re.model.Action")
 @Table(name = "RE_ACTIONS")
@@ -83,6 +93,14 @@ public abstract class Action
     protected List<org.cern.cms.csc.exsys.re.model.ConclusionType> conclusionTypes = new Vector<org.cern.cms.csc.exsys.re.model.ConclusionType>();
     @XmlElement(required = true)
     protected ConclusionTriggerType triggerType;
+    @XmlElement(name = "isDeleted")
+    @NoManualInput(createDefaultValue = true)
+    protected boolean deleted;
+    @XmlElement(name = "isEnabled")
+    protected boolean enabled;
+    protected long timeout;
+    protected boolean acknowledgeConclusionOnExecution;
+    protected boolean acknowledgeConclusionOnCreate;
     @XmlAttribute(name = "id")
     protected Long id;
 
@@ -197,6 +215,121 @@ public abstract class Action
     @Transient
     public boolean isSetTriggerType() {
         return (this.triggerType!= null);
+    }
+
+    /**
+     * Gets the value of the deleted property.
+     * 
+     */
+    @Basic
+    @Column(name = "REA_IS_DELETED", nullable = false)
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    /**
+     * Sets the value of the deleted property.
+     * 
+     */
+    public void setDeleted(boolean value) {
+        this.deleted = value;
+    }
+
+    @Transient
+    public boolean isSetDeleted() {
+        return true;
+    }
+
+    /**
+     * Gets the value of the enabled property.
+     * 
+     */
+    @Basic
+    @Column(name = "REA_IS_ENABLED", nullable = false)
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    /**
+     * Sets the value of the enabled property.
+     * 
+     */
+    public void setEnabled(boolean value) {
+        this.enabled = value;
+    }
+
+    @Transient
+    public boolean isSetEnabled() {
+        return true;
+    }
+
+    /**
+     * Gets the value of the timeout property.
+     * 
+     */
+    @Basic
+    @Column(name = "REA_TIMEOUT", nullable = false, precision = 20, scale = 10)
+    public long getTimeout() {
+        return timeout;
+    }
+
+    /**
+     * Sets the value of the timeout property.
+     * 
+     */
+    public void setTimeout(long value) {
+        this.timeout = value;
+    }
+
+    @Transient
+    public boolean isSetTimeout() {
+        return true;
+    }
+
+    /**
+     * Gets the value of the acknowledgeConclusionOnExecution property.
+     * 
+     */
+    @Basic
+    @Column(name = "REA_ACK_CONCL_ON_EXEC", nullable = false)
+    public boolean isAcknowledgeConclusionOnExecution() {
+        return acknowledgeConclusionOnExecution;
+    }
+
+    /**
+     * Sets the value of the acknowledgeConclusionOnExecution property.
+     * 
+     */
+    public void setAcknowledgeConclusionOnExecution(boolean value) {
+        this.acknowledgeConclusionOnExecution = value;
+    }
+
+    @Transient
+    public boolean isSetAcknowledgeConclusionOnExecution() {
+        return true;
+    }
+
+    /**
+     * Gets the value of the acknowledgeConclusionOnCreate property.
+     * 
+     */
+    @Basic
+    @Column(name = "REA_ACK_CONCL_ON_CREATE", nullable = false)
+    public boolean isAcknowledgeConclusionOnCreate() {
+        return acknowledgeConclusionOnCreate;
+    }
+
+    /**
+     * Sets the value of the acknowledgeConclusionOnCreate property.
+     * 
+     */
+    public void setAcknowledgeConclusionOnCreate(boolean value) {
+        this.acknowledgeConclusionOnCreate = value;
+    }
+
+    @Transient
+    public boolean isSetAcknowledgeConclusionOnCreate() {
+        return true;
     }
 
     /**

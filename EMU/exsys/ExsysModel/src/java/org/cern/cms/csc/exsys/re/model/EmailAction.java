@@ -28,7 +28,7 @@ import jsf.bean.gui.annotation.Label;
  * <pre>
  * &lt;complexType name="emailActionType">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.cern.ch/cms/csc/exsys/re/model}actionType">
+ *     &lt;extension base="{http://www.cern.ch/cms/csc/exsys/re/model}notificationActionType">
  *       &lt;sequence>
  *         &lt;element name="recipients" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
@@ -46,7 +46,7 @@ import jsf.bean.gui.annotation.Label;
 @Entity(name = "org.cern.cms.csc.exsys.re.model.EmailAction")
 @Table(name = "RE_EMAIL_ACTIONS")
 public class EmailAction
-    extends Action
+    extends NotificationAction
     implements Serializable
 {
 

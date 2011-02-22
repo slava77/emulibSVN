@@ -5,9 +5,11 @@
 
 package org.cern.cms.csc.exsys.gui.action;
 
+import java.io.Serializable;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import org.cern.cms.csc.dw.dao.EditorDaoLocal;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.exsys.gui.editor.EntityEditorManager;
@@ -21,8 +23,8 @@ import org.cern.cms.csc.exsys.re.model.SmsAction;
  * @author Evka
  */
 @ManagedBean
-@SessionScoped
-public class EditAction extends EntityEditorManager {
+@ViewScoped
+public class EditAction extends EntityEditorManager implements Serializable {
 
     @EJB
     private EditorDaoLocal dao;
