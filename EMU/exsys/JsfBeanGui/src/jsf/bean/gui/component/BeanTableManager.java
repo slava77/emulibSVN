@@ -136,22 +136,17 @@ public abstract class BeanTableManager implements Serializable {
 
     public void rowSelectionListener(RowSelectorEvent event) {
 
-        EntityBeanBase current = null;
-        Iterator<EntityBeanBase> it = this.getTable().getData().iterator();
-        while (it.hasNext()) {
-            EntityBeanBase row = it.next();
-            if (row.getSelected()) {
-                current = row;
-                break;
+        if (event.isSelected()) {
+            Iterator<EntityBeanBase> it = this.getTable().getData().iterator();
+            while (it.hasNext()) {
+                EntityBeanBase row = it.next();
+                if (row.getSelected()) {
+                    this.selected = row;
+                    break;
+                }
             }
-        }
-
-        if (current != null) {
-            if (current.equals(this.selected)) {
-                this.selected = null;
-            } else {
-                this.selected = current;
-            }
+        } else {
+            this.selected = null;
         }
     }
 

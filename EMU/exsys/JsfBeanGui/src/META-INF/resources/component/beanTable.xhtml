@@ -50,7 +50,7 @@
             <table border="0" cellspacing="0" width="100%" class="iceDatTblColHdr">
                 <tr>
                     <td nowrap="true">
-                        
+
                         <ice:panelGroup rendered="#{cc.attrs.manager.top}" 
                                         style=" margin-left: 2px">
                             <cc:renderFacet name="addMenu"/>
@@ -58,7 +58,6 @@
                     </td>
 
                     <td>
-
                         <ice:panelGroup rendered="#{!cc.attrs.manager.tablePack.singleClass}" 
                                         style=" margin-left: 2px;">
                             <ice:selectOneMenu value="#{cc.attrs.manager.tablePack.selectedClass}" immediate="true"
@@ -69,14 +68,15 @@
                         </ice:panelGroup>
                     </td>
 
-					<td width="100%">
+                    <c:if test="#{cc.attrs.breadcrumbs or !cc.attrs.manager.top}">
+                        <td width="100%">
+                            <ice:panelGroup>
+                                <table:breadcrumbs manager="#{cc.attrs.manager}"
+                                                   title="#{cc.attrs.title}"/>
+                            </ice:panelGroup>
+                        </td>
+                    </c:if>
 
-                        <ice:panelGroup rendered="#{cc.attrs.breadcrumbs or !cc.attrs.manager.top}">
-                            <table:breadcrumbs manager="#{cc.attrs.manager}"
-                                               title="#{cc.attrs.title}"/>
-                        </ice:panelGroup>
-
-                    </td>
                     <td align="right" width="160">
                         <ice:panelGrid columns="5" cellspacing="2" cellpadding="2" rendered="#{cc.attrs.manager.table != null}">
                             <ice:commandLink actionListener="#{cc.attrs.manager.table.refreshListener}" value="Refresh" title="Refresh" style="font-weight: bold"/>
@@ -191,8 +191,8 @@
                                                         fn:contains(cc.attrs.skipColumnsByType, column.type.simpleName))}">
 
                             <ice:commandLink style="width: 100%; text-align: left"
-                                            rendered="#{column.listType}"
-                                            value="{list}">
+                                             rendered="#{column.listType}"
+                                             value="{list}">
 
                                 <f:setPropertyActionListener target="#{column.listPropertyTable}" value="#{item}"/>
 
