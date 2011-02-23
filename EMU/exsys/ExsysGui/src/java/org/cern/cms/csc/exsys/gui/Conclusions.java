@@ -29,7 +29,7 @@ import org.cern.cms.csc.exsys.re.model.Conclusion;
  */
 
 @ManagedBean
-@ViewScoped
+@SessionScoped
 public class Conclusions extends JsfBeanBase implements Serializable {
 
     @EJB

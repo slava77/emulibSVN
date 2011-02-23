@@ -25,7 +25,7 @@ import org.cern.cms.csc.exsys.re.model.Rule;
  */
 
 @ManagedBean
-@ViewScoped
+@SessionScoped
 public class Rules extends JsfBeanBase implements Serializable {
 
     @EJB

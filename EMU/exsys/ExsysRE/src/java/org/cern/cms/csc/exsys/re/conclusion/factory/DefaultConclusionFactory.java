@@ -158,7 +158,6 @@ public class DefaultConclusionFactory extends ConclusionFactory {
     }
 
     private Message createJMSMessageForjmsRuleEngineActionQueue(Session session, Serializable messageData) throws JMSException {
-        // TODO create and populate message to send
         ObjectMessage om = session.createObjectMessage();
         om.setObject(messageData);
         return om;

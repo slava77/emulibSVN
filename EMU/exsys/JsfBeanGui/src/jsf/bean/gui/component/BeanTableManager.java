@@ -1,6 +1,5 @@
 package jsf.bean.gui.component;
 
-import com.icesoft.faces.component.ext.RowSelectorEvent;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,6 +16,7 @@ import javax.faces.application.Application;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import javax.faces.event.FacesEvent;
 import javax.persistence.Transient;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -134,7 +134,7 @@ public abstract class BeanTableManager implements Serializable {
 
     private EntityBeanBase selected;
 
-    public void rowSelectionListener(RowSelectorEvent event) {
+    public void rowSelectionListener(FacesEvent event) {
 
         if (event.isSelected()) {
             Iterator<EntityBeanBase> it = this.getTable().getData().iterator();

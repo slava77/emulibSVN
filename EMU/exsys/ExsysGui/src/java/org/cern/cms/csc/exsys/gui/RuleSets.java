@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import jsf.bean.gui.ClassFinderIf;
 import jsf.bean.gui.component.BeanTableManager;
@@ -24,7 +25,7 @@ import org.cern.cms.csc.exsys.re.model.RuleSet;
  * @author evka
  */
 @ManagedBean
-@ViewScoped
+@SessionScoped
 public class RuleSets implements Serializable {
 
     @EJB

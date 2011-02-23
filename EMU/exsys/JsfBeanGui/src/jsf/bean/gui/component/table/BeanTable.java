@@ -1,12 +1,12 @@
 package jsf.bean.gui.component.table;
 
-import com.icesoft.faces.component.panelpositioned.PanelPositionedEvent;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.FacesEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
@@ -259,7 +259,7 @@ public class BeanTable extends BeanTableControls {
      *
      *********************************************/
 
-    public void columnsChangeListener(PanelPositionedEvent ev) {
+    public void columnsChangeListener(FacesEvent ev) {
         List<String> cols = new ArrayList<String>();
         for (BeanTableColumn col: selectedColumns.getTarget()) {
             cols.add(col.getName());
@@ -267,7 +267,7 @@ public class BeanTable extends BeanTableControls {
         getProperties().setColumns(cols);
     }
 
-    public void sortingChangeListener(PanelPositionedEvent ev) {
+    public void sortingChangeListener(FacesEvent ev) {
         List<String> cols = new ArrayList<String>();
         for (BeanTableColumn col: sortingColumns.getTarget()) {
             cols.add(col.getName());
