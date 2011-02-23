@@ -11,10 +11,10 @@
     <description>Builds, tests, and runs the project ExsysGui.</description>
     <import file="nbproject/build-impl.xml"/>
 
-    <target if="dist.ear.dir" name="-post-init">
-        <copyfiles files="${libs.icefaces2-compat.classpath}" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${libs.icefaces2-core.classpath}" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${libs.icefaces2-sparkle.classpath}" todir="${dist.ear.dir}/lib"/>
+    <target if="dist.ear.dir" name="-post-dist">
+        <move file="${build.web.dir}/WEB-INF/lib/icefaces.jar" todir="${dist.ear.dir}/lib"/>
+        <move file="${build.web.dir}/WEB-INF/lib/icefaces-ace.jar" todir="${dist.ear.dir}/lib"/>
+        <move file="${build.web.dir}/WEB-INF/lib/icefaces-compat.jar" todir="${dist.ear.dir}/lib"/>
     </target>
 
     <!--
