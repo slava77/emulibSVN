@@ -473,7 +473,6 @@ exists or setup the property manually. For example like this:
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target depends="compile" name="library-inclusion-in-archive">
-        <copyfiles files="${reference.JsfBeanGui.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${libs.Neo4j.classpath}" todir="${build.classes.dir}"/>
         <copyfiles files="${libs.Hibernate36.classpath}" todir="${build.classes.dir}"/>
         <copyfiles files="${libs.Hyperjaxb.classpath}" todir="${build.classes.dir}"/>
@@ -485,7 +484,6 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${libs.Javasysmon.classpath}" todir="${build.classes.dir}"/>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
-        <copyfiles files="${reference.JsfBeanGui.jar}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.Neo4j.classpath}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.Hibernate36.classpath}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.Hyperjaxb.classpath}" todir="${dist.ear.dir}/lib"/>

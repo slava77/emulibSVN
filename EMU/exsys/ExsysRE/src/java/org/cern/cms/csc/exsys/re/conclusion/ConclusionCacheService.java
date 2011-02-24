@@ -75,14 +75,14 @@ public class ConclusionCacheService implements ConclusionCacheServiceLocal {
         //conclusion = (Conclusion) conclusionDao.getEntityDao().refreshEntity(conclusion);
         conclusionCache.put(new ComparableConclusionWrapper(conclusion), conclusion);
         // go through the children and add any child conclusions to the cache as well
-        for (ConclusionTrigger trigger: conclusion.getTriggers()) {
-            for (ConclusionTriggerSource triggerSource: trigger.getSources()) {
-                Conclusion childConclusion = triggerSource.getConclusion();
-                if (childConclusion != null) {
-                    addToCache(childConclusion);
-                }
-            }
-        }
+//        for (ConclusionTrigger trigger: conclusion.getTriggers()) {
+//            for (ConclusionTriggerSource triggerSource: trigger.getSources()) {
+//                Conclusion childConclusion = triggerSource.getConclusion();
+//                if ((childConclusion != null) && !childConclusion.isClosed()) {
+//                    addToCache(childConclusion);
+//                }
+//            }
+//        }
     }
 
     @Override

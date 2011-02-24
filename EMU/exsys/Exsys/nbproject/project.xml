@@ -8,15 +8,15 @@
             <web-module-libraries/>
             <web-module-additional-libraries>
                 <library>
-                    <file>${reference.ExsysModel.dist-ear}</file>
-                    <path-in-war>/</path-in-war>
-                </library>
-                <library>
                     <file>${reference.ExsysWS.dist-ear}</file>
                     <path-in-war>/</path-in-war>
                 </library>
                 <library>
                     <file>${reference.ExsysRE.dist-ear}</file>
+                    <path-in-war>/</path-in-war>
+                </library>
+                <library>
+                    <file>${reference.ExsysModel.dist-ear}</file>
                     <path-in-war>/</path-in-war>
                 </library>
                 <library>

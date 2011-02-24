@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -67,9 +68,21 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
     public void update(EventBean[] newEvents, EventBean[] oldEvents,
             EPStatement statement, EPServiceProvider epService) {
 
-        logger.debug("Conclusion factory: Got a trigger for statement {0}: {1}", statement.getName(), statement.getText());
-
         try {
+            logger.debug("Conclusion factory: Got a trigger for statement \"{0}\"", statement.getName());
+            if (logger.isTraceEnabled()) {
+                if (newEvents != null) {
+                    for (EventBean ev: newEvents) {
+                        logger.trace("    Conclusion factory: new event: {0}", ev);
+                    }
+                }
+                if (oldEvents != null) {
+                    for (EventBean ev: oldEvents) {
+                        logger.trace("    Conclusion factory: old event: {0}", ev);
+                    }
+                }
+            }
+
             Conclusion concl = createConclusion(newEvents, oldEvents);
 
             concl = processConclusion(concl);
@@ -77,7 +90,7 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
                 reManager.getEsperRuntime().route(concl);
             }
         } catch (Throwable ex) {
-            logger.error("ConclusionFactory: error while constructing a conclusion for rule " + getRule().getName(), ex);
+            logger.error("ConclusionFactory: error while constructing a conclusion for rule \"" + getRule().getName() + "\"", ex);
         }
     }
 
@@ -88,7 +101,7 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
      */
     protected Conclusion createConclusion(EventBean[] newEvents, EventBean[] oldEvents) throws ComponentResolverException {
         Collection<EntityBase> unpackedEventEntities = unpackEntitiesFromEvents(newEvents);
-        unpackedEventEntities.addAll(unpackEntitiesFromEvents(oldEvents));
+        //unpackedEventEntities.addAll(unpackEntitiesFromEvents(oldEvents));
         Collection<EventBean> unpackedNewEvents = unpackEvents(newEvents);
 
         Conclusion concl = new Conclusion();
@@ -98,7 +111,7 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
         concl.setSeverity(getConclusionType().getSeverity());
         concl.setTimestampItem(new Date());
         concl.setLastHitTimeItem(new Date());
-        concl.setHitCount(BigInteger.ZERO);
+        concl.setHitCount(BigInteger.ONE);
         concl.setClosed(isRuleClosing());
         concl.setComponent(getComponentResolver().getComponent(unpackedEventEntities));
         addTriggerToConclusion(concl, unpackedEventEntities);
@@ -119,12 +132,18 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
         for (EntityBase triggerSource: triggerSources) {
             if (triggerSource instanceof Fact) { // that's a fact here - add it as a child of this conclusion
                 Fact fact = (Fact) triggerSource;
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Conclusion factory: trigger source (fact): {0}", fact);
+                }
                 ConclusionTriggerSource source = new ConclusionTriggerSource();
                 source.setFact(fact);
                 source.setTrigger(trigger);
                 trigger.getSources().add(source);
             } else if (triggerSource instanceof Conclusion) { // that's a conclusion here - add it as a child of this conclusion
                 Conclusion sourceConclusion = (Conclusion) triggerSource;
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Conclusion factory: trigger source (conclusion): {0}", sourceConclusion.debugPrint(false));
+                }
                 //childConclusion = (Conclusion) reManager.getRuleEngineDao().getEntityDao().refreshEntity(childConclusion);
                 ConclusionTriggerSource source = new ConclusionTriggerSource();
                 source.setConclusion(sourceConclusion);
@@ -150,7 +169,9 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
         if (underlying instanceof Map) { // a composite event
             Collection wrappedUnderlyingObjs = ((Map) underlying).values();
             for (Object wrappedUnderlyingObj: wrappedUnderlyingObjs) {
-                unpackEvent((EventBean) wrappedUnderlyingObj, unpackedEvents);
+                if (wrappedUnderlyingObj != null) {
+                    unpackEvent((EventBean) wrappedUnderlyingObj, unpackedEvents);
+                }
             }
         } else { // not a composite event
             unpackedEvents.add(event);

@@ -312,4 +312,13 @@ public class ConclusionTrigger
         setTimestamp(XmlAdapterUtils.marshall(XMLGregorianCalendarAsDateTime.class, target));
     }
 
+//--simple--preserve
+
+    @Override
+    public String toString() {
+        return conclusion.toString() + " trigger";
+    }
+
+//--simple--preserve
+
 }

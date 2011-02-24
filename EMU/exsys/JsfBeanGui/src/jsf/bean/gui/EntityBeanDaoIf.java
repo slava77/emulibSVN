@@ -21,10 +21,11 @@ public interface EntityBeanDaoIf {
     EntityBeanBase refreshEntity(EntityBeanBase entity);
     EntityBeanBase refreshEntity(EntityBeanBase entity, boolean usingId);
 
+//    EntityBeanBase persist(EntityBeanBase cdwEntityObject, boolean queued, boolean useMerge, boolean flush) throws Exception;
     void persist(EntityBeanBase cdwEntityObject) throws Exception;
-    EntityBeanBase persist(EntityBeanBase cdwEntityObject, boolean queued, boolean useMerge) throws Exception;
+    void persistAndFlush(EntityBeanBase cdwEntityObject) throws Exception;
     EntityBeanBase merge(EntityBeanBase cdwEntityObject) throws Exception;
-    EntityBeanBase mergeAndRefresh(EntityBeanBase cdwEntityObject) throws Exception;
+    EntityBeanBase mergeAndFlush(EntityBeanBase cdwEntityObject) throws Exception;
     void delete(EntityBeanBase cdwEntityObject);
 
     void flush();

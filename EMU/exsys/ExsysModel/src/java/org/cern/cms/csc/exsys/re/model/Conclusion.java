@@ -649,7 +649,7 @@ public class Conclusion
 
     @Override
     public String toString() {
-        return debugPrint(false);
+        return getTitle();
     }
 
 //--simple--preserve

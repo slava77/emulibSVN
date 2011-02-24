@@ -138,23 +138,25 @@ public class EntityDao implements EntityDaoLocal {
 
     @Override
     public void persist(EntityBeanBase cdwEntityObject) throws PersistException, OnSaveProcessingException {
-        persist(cdwEntityObject, false, false);
+        persist(cdwEntityObject, false, false, false);
+    }
+
+    @Override
+    public void persistAndFlush(EntityBeanBase cdwEntityObject) throws Exception {
+        persist(cdwEntityObject, false, false, true);
     }
 
     @Override
     public EntityBeanBase merge(EntityBeanBase cdwEntityObject) throws PersistException, OnSaveProcessingException {
-        return persist(cdwEntityObject, false, true);
+        return persist(cdwEntityObject, false, true, false);
     }
 
     @Override
-    public EntityBeanBase mergeAndRefresh(EntityBeanBase cdwEntityObject) throws PersistException, OnSaveProcessingException {
-        persist(cdwEntityObject, false, true);
-        //cdwEntityObject = em.merge(cdwEntityObject);
-        return cdwEntityObject;
+    public EntityBeanBase mergeAndFlush(EntityBeanBase cdwEntityObject) throws Exception {
+        return persist(cdwEntityObject, false, true, true);
     }
 
-    @Override
-    public EntityBeanBase persist(EntityBeanBase cdwEntityObject, boolean queued, boolean useMerge) throws PersistException, OnSaveProcessingException {
+    public EntityBeanBase persist(EntityBeanBase cdwEntityObject, boolean queued, boolean useMerge, boolean flush) throws PersistException, OnSaveProcessingException {
 
         // is it null by any chance? if yes - then be angry about it
         if (cdwEntityObject == null) {
@@ -170,6 +172,9 @@ public class EntityDao implements EntityDaoLocal {
                 cdwEntityObject = em.merge(cdwEntityObject);
             } else {
                 em.persist(cdwEntityObject);
+            }
+            if (flush) {
+                em.flush();
             }
         } catch (Exception ex) {
             String className = cdwEntityObject.getClass().getCanonicalName();

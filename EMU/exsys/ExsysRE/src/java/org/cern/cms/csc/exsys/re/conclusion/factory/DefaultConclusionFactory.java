@@ -53,7 +53,7 @@ public class DefaultConclusionFactory extends ConclusionFactory {
     }
 
     @Override
-    protected synchronized Conclusion processConclusion(Conclusion conclusion) {
+    protected Conclusion processConclusion(Conclusion conclusion) {
         try {
             // check if it already exists in cache
             Conclusion existingConclusion = getConclusionCacheService().checkCache(conclusion);
@@ -64,9 +64,7 @@ public class DefaultConclusionFactory extends ConclusionFactory {
 
                 logger.info("Default conclusion factory: Got new conclusion: " + conclusion.getTitle());
                 logger.info("Saving new conclusion: " + conclusion);
-                EntityDaoLocal entityDao = reDao.getEntityDao();
-                entityDao.persist(conclusion);
-                entityDao.flush();
+                reDao.getEntityDao().persistAndFlush(conclusion);
                 getConclusionCacheService().addToCache(conclusion);
                 executeActions(getConclusionType().getActions(), conclusion.getTriggers());
                 return conclusion;
@@ -77,9 +75,7 @@ public class DefaultConclusionFactory extends ConclusionFactory {
                 //existingConclusion = (Conclusion) reDao.getEntityDao().refreshEntity(existingConclusion, false);
                 updateExistingConclusion(existingConclusion, conclusion);
                 logger.trace("Existing conclusion ID before merge: " + existingConclusion.getid());
-                EntityDaoLocal entityDao = reDao.getEntityDao();
-                existingConclusion = (Conclusion) entityDao.merge(existingConclusion);
-                entityDao.flush();
+                existingConclusion = (Conclusion) reDao.getEntityDao().mergeAndFlush(existingConclusion);
                 logger.trace("Existing conclusion ID after merge: " + existingConclusion.getid());
                 if (!existingConclusion.isClosed()) {
                     logger.debug("Saving existing conclusion: " + existingConclusion);
