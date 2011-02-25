@@ -6,7 +6,8 @@ E E E E E 1 -1 -1 0  30 30
 ""0  1
 E "#uses \"CMS_CSC_ExSys_Interface/exsysInterface.ctl\"
 #uses \"CMS_CSC_ExSys_Interface/exsysUtil.ctl\"
-#uses \"CMS_CSC_ExSys_Interface/facts/lvFact.ctl\"" 0
+#uses \"CMS_CSC_ExSys_Interface/facts/lvFact.ctl\"
+#uses \"CMS_CSC_ExSys_Interface/facts/alertFact.ctl\"" 0
  2
 "CBRef" "1"
 "EClose" E
@@ -44,7 +45,7 @@ LANG:1 37 Send 10000 facts using auto-packaging
   dyn_string paramValues = makeDynString(\"1\");
   
   for (int i=0; i < 10000; i++) {
-    exsys_sendFact(\"DDUFMMResetFact\", t0, \"FEDCrate1\", EXSYS_FACT_SEVERITY_DEBUG,
+    exsys_sendFact(\"DDUFMMResetFact\", t0, \"FEDCrate1\", false, EXSYS_FACT_SEVERITY_DEBUG,
                      \"dummy fact #\" + i, paramNames, paramValues, ex);
     if (emu_checkException(ex)) { return; }
     
@@ -84,7 +85,7 @@ LANG:1 13 Send one fact
   dyn_string paramNames = makeDynString(\"crateNumber\");
   dyn_string paramValues = makeDynString(\"1\");
   
-  exsys_sendFact(\"DDUFMMResetFact\", t0, \"FEDCrate1\", EXSYS_FACT_SEVERITY_DEBUG,
+  exsys_sendFact(\"DDUFMMResetFact\", t0, \"FEDCrate1\", false, EXSYS_FACT_SEVERITY_DEBUG,
                    \"dummy fact\", paramNames, paramValues, ex, false);
   if (emu_checkException(ex)) { return; }
 
@@ -131,7 +132,7 @@ void send20FactsThread(int threadNum) {
   dyn_string paramValues = makeDynString(\"1\");
 
   for (int i=0; i < 20; i++) {
-    exsys_sendFact(\"DDUFMMResetFact\", t0, \"FEDCrate1\", EXSYS_FACT_SEVERITY_DEBUG,
+    exsys_sendFact(\"DDUFMMResetFact\", t0, \"FEDCrate1\", false, EXSYS_FACT_SEVERITY_DEBUG,
                      \"dummy fact. thread num = \" + threadNum + \", fact # within the thread = \" + i, paramNames, paramValues, ex);
     if (emu_checkException(ex)) { return; }
   }
@@ -164,7 +165,7 @@ LANG:1 55 send "This project" -> ME+1/2/3 communication lost fact
   dyn_string paramNames = makeDynString(\"source\", \"status\");
   dyn_string paramValues = makeDynString(\"ME+1/2/3\", \"NO_COMMUNICATION\");
   
-  exsys_sendFact(\"DcsCommunicationStatusFact\", t0, \"pvss_cms_csc_dcs_08\", EXSYS_FACT_SEVERITY_DEBUG,
+  exsys_sendFact(\"DcsCommunicationStatusFact\", t0, \"pvss_cms_csc_dcs_08\", false, EXSYS_FACT_SEVERITY_DEBUG,
                    \"test no communication fact\", paramNames, paramValues, ex, false);
   if (emu_checkException(ex)) { return; }
 }" 0
@@ -199,6 +200,31 @@ LANG:1 25 Start sending LV currents
 void sendLvFacts(string dp, int value) {
   dyn_string ex;
   exsys_sendAllLvFacts(ex);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+13 7
+"PUSH_BUTTON7"
+""
+1 10 440 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  8 438 392 482
+
+T 
+1
+LANG:1 25 Start sending alert facts
+"main() {
+  dyn_string ex;
+  exsys_startAlertFactDelivery(ex);
   if (emu_checkException(ex)) { return; }
 }" 0
  E E E

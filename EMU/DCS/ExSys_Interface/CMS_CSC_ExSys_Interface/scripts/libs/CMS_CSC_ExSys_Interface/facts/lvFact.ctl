@@ -50,7 +50,7 @@ public void exsys_sendAllLvFacts(dyn_string &exceptionInfo) {
       string component = chamberName + "/CFEB" + cfeb;
       float current = values[firstValueIdx + 2 + cfeb];
       dyn_anytype paramValues = makeDynString(status, current);
-      exsys_sendFact("DcsCfebLvFact", timestamp, component, EXSYS_FACT_SEVERITY_INFO,
+      exsys_sendFact("DcsCfebLvFact", timestamp, component, false, EXSYS_FACT_SEVERITY_INFO,
                      "CFEB LV", cfebParamNames, paramValues, exceptionInfo);
       if (emu_checkException(exceptionInfo)) { return; }
     }
@@ -58,7 +58,7 @@ public void exsys_sendAllLvFacts(dyn_string &exceptionInfo) {
     string component = chamberName + "/ALCT";
     float current = values[firstValueIdx + 7];
     dyn_anytype paramValues = makeDynString(status, current);
-    exsys_sendFact("DcsAlctLvFact", timestamp, component, EXSYS_FACT_SEVERITY_INFO,
+    exsys_sendFact("DcsAlctLvFact", timestamp, component, false, EXSYS_FACT_SEVERITY_INFO,
                    "ALCT LV", alctParamNames, paramValues, exceptionInfo);
     if (emu_checkException(exceptionInfo)) { return; }
   }

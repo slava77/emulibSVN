@@ -23,20 +23,21 @@ private void exsys_sendFactCollection(int factCollectionDocId, dyn_string &excep
   * Creates a fact and puts it into the provided fact collection.
   * @param type type of the fact (or fact name) e.g. dcsFsmStateFact or dcsAlertFact, etc... (please look up valid fact names in the expert system)
   * @param timestamp timestamp for the fact
-  * @param component component which this fact is providing info about e.g. ME+1/1/1, ME+1/1/1/DMB, etc.. (look up valid component names in the expert system component ontology)
+  * @param component component which this fact is providing info about - can be either component name in the ontology DB or a DPE (see isComponentAsDp flag)
+  * @param isComponentAsDp if this is false, then component is addressed by it's name in the expert system ontology database, if it's true, then component is addressed by PVSS DPE (this component must have DCSId property in expert system ontology)
   * @param severity severity level of the fact - please use the EXSYS_FACT_SEVERITY_* constants e.g. EXSYS_FACT_SEVERITY_INFO, EXSYS_FACT_SEVERITY_ERROR, etc..
   * @param description description of the fact
   * @param factParamNames names of the parameters of the fact i.e. elements that are specific to this fact type (look up specific fact definition in the expert system)
   * @param factParamValues values of the parameters supplied in the factParamNames parameter
   * @param autoPackaging (optional, default = true) if this is false, then the fact is packaged alone in a new fact collection and sent out immediately. If this is true - fact is autopackaged, which means that it could be packaged into a fact collection together with other facts in EXSYS_AUTO_PACKAGING_WINDOW ms time window.
   */
-public void exsys_sendFact(string type, time timestamp, string component, string severity, string description, 
+public void exsys_sendFact(string type, time timestamp, string component, bool isComponentAsDp, string severity, string description, 
                      dyn_string factParamNames, dyn_anytype factParamValues, dyn_string &exceptionInfo, bool autoPackaging = true) {
   // no auto packaging - send the fact out immediately
   if (!autoPackaging) {
     int factCollectionId = exsys_createFactCollection(exceptionInfo);
     if (emu_checkException(exceptionInfo)) { return; }
-    exsys_createFact(factCollectionId, type, timestamp, component, severity, description, factParamNames, factParamValues, exceptionInfo);
+    exsys_createFact(factCollectionId, type, timestamp, component, isComponentAsDp, severity, description, factParamNames, factParamValues, exceptionInfo);
     if (emu_checkException(exceptionInfo)) { return; }
     exsys_sendFactCollection(factCollectionId, exceptionInfo);
     if (emu_checkException(exceptionInfo)) { return; }
@@ -59,7 +60,7 @@ public void exsys_sendFact(string type, time timestamp, string component, string
         if (emu_checkException(exceptionInfo)) { return; }
         exsys_autoPackagingTimeoutThread = startThread("startAutoPackagingTimeoutThread");
       }
-      exsys_createFact(exsys_autoPackagingCollectionId, type, timestamp, component, severity, description, factParamNames, factParamValues, exceptionInfo);
+      exsys_createFact(exsys_autoPackagingCollectionId, type, timestamp, component, isComponentAsDp, severity, description, factParamNames, factParamValues, exceptionInfo);
       if (emu_checkException(exceptionInfo)) { return; }
     }
   }

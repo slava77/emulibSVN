@@ -1,0 +1,453 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 1324 650 N "_3DFace" 0
+E E E E E 1 -1 -1 0  60 20
+""0  1
+E "#uses \"CtrlXml\"
+
+dyn_mapping treeData;
+
+mapping getPrimaryData(mapping masterDeviceParams, dyn_string &ex) {
+  emu_info(\"getting primary data\");
+  
+  string masterDp = masterDeviceParams[\"dcsId\"];
+  mapping primaryDeviceParams;
+  string masterId;
+  dyn_string dpNamesRet = dpNames(\"*:\" + masterDp, \"HV_1_d\");
+  if (dynlen(dpNamesRet) == 0) {
+    emu_info(\"ERROR: master DP couldn't be found: \" + masterDp, ex);
+    primaryDeviceParams[\"ERROR\"] = \"Master doesn't exist\";
+    return primaryDeviceParams;
+  }
+  masterDp = dpNamesRet[1];
+  dpGet(masterDp + \".data.module_ID\", masterId);
+  if (masterId != masterDeviceParams[\"id\"]) {
+    emu_addError(\"FATAL: master ID from chamber doesn't match master ID from master DP!\" +
+                 \" Master ID from chamber: \" + masterDeviceParams[\"id\"] + 
+                 \", from DP: \" + masterId +
+                 \". Master deviceParams: \" + masterDeviceParams, ex);
+    return;
+  }
+  
+  dpGet(masterDp + \".data.master_hostid\", primaryDeviceParams[\"hostId\"]);
+  dpGet(masterDp + \".data.master_hvcard\", primaryDeviceParams[\"port\"]);
+  dpGet(masterDp + \".data.master_busaddr\", primaryDeviceParams[\"address\"]);
+  
+  return primaryDeviceParams;
+}
+
+mapping getMasterData(mapping chamberDeviceParams, dyn_string &ex) {
+  emu_info(\"getting master data for chamber: \" + chamberDeviceParams);
+  
+  mapping masterDeviceParams;
+  string masterIdDp = emuui_getDpName(\"HV_moduleToMasterId\", chamberDeviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  string masterHostIdDp = emuui_getDpName(\"HV_moduleToMasterHostId\", chamberDeviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  string masterHvCardDp = emuui_getDpName(\"HV_moduleToMasterHvCard\", chamberDeviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  string masterBusAddressDp = emuui_getDpName(\"HV_moduleToMasterBusAddress\", chamberDeviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  string masterChannelDp = emuui_getDpName(\"HV_moduleToMasterChannel\", chamberDeviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  string masterId;
+  dpGet(masterIdDp, masterId,
+        masterHostIdDp, masterDeviceParams[\"hostId\"],
+        masterHvCardDp, masterDeviceParams[\"slot\"],
+        masterBusAddressDp, masterDeviceParams[\"address\"],
+        masterChannelDp, masterDeviceParams[\"channelNumber\"]);
+    
+  masterDeviceParams[\"id\"] = masterId;
+  string masterDp = \"master\" + masterDeviceParams[\"hostId\"] + \"_\" + 
+                               masterDeviceParams[\"slot\"] + \"_\" + 
+                               masterDeviceParams[\"address\"];
+  masterDeviceParams[\"dcsId\"] = masterDp;
+  return masterDeviceParams;
+}
+
+mapping getModuleData(mapping chamberDeviceParams, dyn_string &ex) {
+  emu_info(\"getting module data for chamber: \" + chamberDeviceParams);
+  string hvCoordDp = emuui_getDpName(\"HV_coord\", chamberDeviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  string coordsCombined;
+  dpGet(hvCoordDp, coordsCombined);
+  dyn_string coords = strsplit(coordsCombined, \";\");
+  if (dynlen(coords) == 0) {
+    emu_addError(\"Could not get HV module coordinates. This is a sign that one of DCS computers is unreachable (perhaps OFF).\", ex);
+    return;
+  } else if (dynlen(coords) < 4) {
+    emu_addError(\"HV module coordinates are incomplete. DP = \" + hvCoordDp + \". Returned coordinates = \" + coordsCombined, ex);
+    return;
+  }
+  mapping moduleDeviceParams;
+  moduleDeviceParams[\"host\"] = coords[1];
+  moduleDeviceParams[\"slot\"] = coords[2];
+  moduleDeviceParams[\"address\"] = coords[3];
+  int part = coords[4];
+  
+  string moduleTypeDp = emuui_getDpName(\"HV_moduleType\", chamberDeviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  dpGet(moduleTypeDp, moduleDeviceParams[\"type\"]);
+  int numChannels;
+  string moduleNumChannelsDp = emuui_getDpName(\"HV_numChannels\", chamberDeviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  dpGet(moduleNumChannelsDp, numChannels);
+  string moduleDp = dpSubStr(moduleTypeDp, DPSUB_SYS_DP);
+  moduleDeviceParams[\"dcsId\"] = dpSubStr(moduleDp, DPSUB_DP);
+  dpGet(moduleDp + \".data.host_bus\", moduleDeviceParams[\"bus\"]);
+  string moduleId;
+  dpGet(moduleDp + \".data.module_ID\", moduleId);
+  moduleDeviceParams[\"id\"] = moduleId;
+  
+  if ((part == 0) && (numChannels != 30)) {
+    emu_addError(\"FATAL found part = 0 but number of channels != 30. \" + moduleDp, ex);
+    return;
+  }
+  switch (part) {
+    case 0:
+      moduleDeviceParams[\"channelsStart\"] = 1;
+      moduleDeviceParams[\"channelsEnd\"] = 30;
+      break;
+    case 1:
+      moduleDeviceParams[\"channelsStart\"] = 1;
+      moduleDeviceParams[\"channelsEnd\"] = 18;
+      break;
+    case 2:
+      moduleDeviceParams[\"channelsStart\"] = 19;
+      moduleDeviceParams[\"channelsEnd\"] = 36;
+      break;
+  }
+  
+  return moduleDeviceParams;
+}
+
+dyn_mapping getAllChambers() {
+  emu_info(\"getting all chambers\");
+  dyn_string chamberDps = dpNames(\"*:*\", \"HV_1\");
+  emu_info(dynlen(chamberDps) + \" chambers found\");
+  dyn_mapping chambersDeviceParams;
+  
+  for (int i=1; i <= dynlen(chamberDps); i++) {
+    string dp = dpSubStr(chamberDps[i], DPSUB_DP);    
+    strreplace(dp, \"HighVoltage/CSC_ME_\", \"\");
+    dyn_string dpParts = strsplit(dp, \"_\");
+    mapping deviceParams;
+    deviceParams[\"side\"] = dpParts[1][0];
+    deviceParams[\"station\"] = dpParts[1][1];
+    deviceParams[\"ring\"] = dpParts[1][2];
+    strreplace(dpParts[2], \"C\", \"\");
+    deviceParams[\"chamberNumber\"] = dpParts[2];
+    
+    dynAppend(chambersDeviceParams, deviceParams);
+  }
+  
+  return chambersDeviceParams;
+}
+
+void writeXml() {
+  int docId = xmlNewDocument();
+  emu_info(\"New XML document created, id = \" + docId);
+  
+  xmlAppendChild(docId, -1, XML_COMMENT_NODE, \"HV devices\");
+  int hvNode = xmlAppendChild(docId, -1, XML_ELEMENT_NODE, \"hv\"); 
+  
+  addNodesToXml(docId, hvNode, treeData, 1, mappingKeys(treeData[1]));
+  
+  
+//   node = xmlAppendChild(docId, node, XML_ELEMENT_NODE, \"sub_element\"); 
+//   xmlSetElementAttribute(docId, node, \"anAttribute\", \"a value\"); 
+//   node = xmlAppendChild(docId, node, XML_TEXT_NODE, \"some text\"); 
+//   xmlSetNodeValue(docId, node, \"The new value\"); 
+//   
+//  string doc = xmlDocumentToString(docId);
+  xmlDocumentToFile(docId, \"hvMapping.xml\");
+  xmlCloseDocument(docId);
+  emu_info(\"XML document saved\");
+}
+
+void addNodesToXml(int docId, int parentNode, dyn_mapping data, int level, dyn_string keys) {
+  for (int i=1; i <= dynlen(keys); i++) {
+    string key = keys[i];
+    int nodeId = xmlAppendChild(docId, parentNode, XML_ELEMENT_NODE, data[level][key][\"type\"]);
+    for (int j=1; j <= mappinglen(data[level][key]); j++) {
+      string attrKey = mappingGetKey(data[level][key], j);
+      if ((attrKey != \"type\") && (attrKey != \"children\")){
+        xmlSetElementAttribute(docId, nodeId, attrKey, data[level][key][attrKey]);
+      }
+    }
+    
+    if (mappingHasKey(data[level][key], \"children\")) {
+      dyn_string children = data[level][key][\"children\"];
+      addNodesToXml(docId, nodeId, data, level + 1, children);
+    }
+  }
+}" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"PUSH_BUTTON1"
+""
+1 60 20 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  58 18 182 45
+
+T 
+1
+LANG:1 11 Get Mapping
+"main()
+{ 
+  mapping primaries;
+  mapping masters;
+  mapping masterChannels;
+  mapping modules;
+  mapping moduleChannesl;
+  mapping hvSegments;
+  mapping chambers;
+  
+  dyn_string ex;
+  dyn_mapping allChambers = getAllChambers();
+  table.deleteAllLines();
+  for (int i=1; i <= dynlen(allChambers); i++) {
+    mapping chamber = allChambers[i];
+    mapping module = getModuleData(chamber, ex);
+    if (emu_checkException(ex)) { return; }
+    mapping master = getMasterData(chamber, ex);
+    if (emu_checkException(ex)) { return; }
+    mapping primary = getPrimaryData(master, ex);
+    if (emu_checkException(ex)) { return; }
+    table.appendLine(\"chamber\", chamber, \"module\", module, 
+                     \"master\", master, \"primary\", primary);
+    
+    // put in the structure for xml
+    // primary
+    if (!mappingHasKey(primary, \"address\")) {
+      primary[\"hostId\"] = \"unknown\";
+      primary[\"port\"] = \"unknown\";
+      primary[\"address\"] = \"unknown\";
+    }
+    
+    primary[\"type\"] = \"hvPrimary\";
+    string primaryId = primary[\"hostId\"] + \"_\" + 
+                       primary[\"address\"] + \"_\" +
+                       primary[\"port\"];
+    primary[\"id\"] = primaryId;
+    primary[\"dcsId\"] = \"HV_PR_primary\" + primaryId;
+    if (!mappingHasKey(primaries, primaryId)) {
+      primaries[primaryId] = primary;
+      primaries[primaryId][\"children\"] = makeDynString(); // masters
+    }
+    // master
+    master[\"type\"] = \"hvMaster\";
+    int masterChannelNum = master[\"channelNumber\"];
+    mappingRemove(master, \"channelNumber\");    
+    if (!mappingHasKey(masters, master[\"id\"])) {
+      masters[master[\"id\"]] = master;
+      masters[master[\"id\"]][\"children\"] = makeDynString(); // master channels
+    }
+    if (!dynContains(primaries[primaryId][\"children\"], master[\"id\"])) {
+      dynAppend(primaries[primaryId][\"children\"], master[\"id\"]);
+    }
+    
+    // master channel
+    mapping masterChannel;
+    masterChannel[\"type\"] = \"hvMasterChannel\";
+    masterChannel[\"id\"] = master[\"id\"] + \"/\" + masterChannelNum;
+    masterChannel[\"channelNumber\"] = masterChannelNum;
+    masterChannel[\"dcsId\"] = master[\"dcsId\"] + \".data.v\" + (masterChannelNum + 1);
+    if (!mappingHasKey(masterChannels, masterChannel[\"id\"])) {
+      masterChannels[masterChannel[\"id\"]] = masterChannel;
+      masterChannels[masterChannel[\"id\"]][\"children\"] = makeDynString(); // modules
+    }    
+    if (!dynContains(masters[master[\"id\"]][\"children\"], masterChannel[\"id\"])) {
+      dynAppend(masters[master[\"id\"]][\"children\"], masterChannel[\"id\"]);
+    }
+
+//    module[\"masterChannel\"] = masterChannelNum; // no master channels - master channel just an attribute in module
+    
+    // module
+    int channelsStart = module[\"channelsStart\"];
+    int channelsEnd = module[\"channelsEnd\"];
+    mappingRemove(module, \"channelsStart\");
+    mappingRemove(module, \"channelsEnd\");
+    
+    module[\"type\"] = \"hvDistribution\";
+    if (!mappingHasKey(modules, module[\"id\"])) {
+      modules[module[\"id\"]] = module;
+      modules[module[\"id\"]][\"children\"] = makeDynString(); // chambers
+    }
+    if (!dynContains(masterChannels[masterChannel[\"id\"]][\"children\"], module[\"id\"])) {
+      dynAppend(masterChannels[masterChannel[\"id\"]][\"children\"], module[\"id\"]);
+    }
+//     if (!dynContains(masters[master[\"id\"]][\"children\"], module[\"id\"])) {
+//       dynAppend(masters[master[\"id\"]][\"children\"], module[\"id\"]);
+//     }
+    
+    
+    // chamber & HV segments
+    chamber[\"type\"] = \"chamber\";
+    string side = \"+\";
+    if (chamber[\"side\"] == \"M\") { side = \"-\"; }
+    string chamberId = \"ME\" + side + chamber[\"station\"] + \"/\" + 
+                                     chamber[\"ring\"] + \"/\" +
+                                     chamber[\"chamberNumber\"];
+    chamber[\"id\"] = chamberId;
+    
+    int segment = 1;
+    string moduleDp = module[\"dcsId\"];
+    for (int channel=channelsStart; channel <= channelsEnd; channel++) {
+      mapping hvSegment;
+      hvSegment[\"type\"] = \"hvSegment\";
+      string segNumStr;
+      sprintf(segNumStr, \"%02d\", segment);
+      segment++;
+      string segmentId = chamberId + \"/hvSeg\" + segNumStr;
+      hvSegment[\"moduleChannel\"] = channel;
+      hvSegment[\"isInChamber\"] = chamberId;
+      hvSegment[\"dcsId\"] = moduleDp + \".data.v\" + channel;
+      hvSegments[segmentId] = hvSegment;
+      dynAppend(modules[module[\"id\"]][\"children\"], segmentId);
+    }
+        
+    
+    
+//     if (!mappingHasKey(chambers, chamberId)) {
+//       chambers[chamberId] = chamber;
+//     }
+//     if (!dynContains(modules[module[\"id\"]][\"children\"], chamber[\"id\"])) {
+//       dynAppend(modules[module[\"id\"]][\"children\"], chamber[\"id\"]);
+//     }
+    
+  }
+  
+  dynClear(treeData);
+  dynAppend(treeData, primaries);
+  dynAppend(treeData, masters);
+  dynAppend(treeData, masterChannels);
+  dynAppend(treeData, modules);
+//  dynAppend(treeData, moduleChannels);
+  dynAppend(treeData, hvSegments);
+  
+  emu_info(\"DONE!\");  
+}" 0
+ E E E
+25 1
+"table"
+""
+1 10 70 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  8 68 1302 642
+"main()
+{
+  this.tableMode = TABLE_SELECT_MULTIPLE;
+  this.selectByClick = TABLE_SELECT_LINE;
+}" 0
+E 1 0 1 4 0 "chamber" 26 1 0 "s" 1
+LANG:1 7 Chamber
+E
+1
+LANG:1 0 
+
+250 "module" 54 1 0 "s" 1
+LANG:1 6 Module
+E
+1
+LANG:1 0 
+
+500 "master" 38 1 0 "s" 1
+LANG:1 6 Master
+E
+1
+LANG:1 0 
+
+350 "primary" 18 1 0 "s" 1
+LANG:1 7 Primary
+E
+1
+LANG:1 0 
+
+170 
+14 14 10 10
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 0 1 1 1 7
+1 0
+13 2
+"PUSH_BUTTON2"
+""
+1 200 20 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  198 18 322 45
+
+T 
+1
+LANG:1 12 Write to XML
+"main()
+{
+  writeXml();
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

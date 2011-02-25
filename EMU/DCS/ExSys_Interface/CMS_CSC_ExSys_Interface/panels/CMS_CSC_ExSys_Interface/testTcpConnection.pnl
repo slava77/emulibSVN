@@ -47,7 +47,7 @@ main()
 {
   time t;
   mapping dummyMap;
-  exsys_sendFact(t, \"Alert\", \"ME+1/2/03\", dummyMap);
+  exsys_sendFact(t, \"Alert\", \"ME+1/2/03\", false, dummyMap);
 }
 " 0
  E E E

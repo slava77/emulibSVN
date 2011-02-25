@@ -65,13 +65,14 @@ public int exsys_getFactCollectionLength(int factCollectionDocId) {
   * @param factCollectionDocId XML document ID of the fact collection that this fact should be put into.
   * @param type type of the fact (or fact name) e.g. dcsFsmStateFact or dcsAlertFact, etc... (please look up valid fact names in the expert system)
   * @param timestamp timestamp for the fact
-  * @param component component which this fact is providing info about e.g. ME+1/1/1, ME+1/1/1/DMB, etc.. (look up valid component names in the expert system component ontology)
+  * @param component component which this fact is providing info about - can be either component name in the ontology DB or a DPE (see isComponentAsDp flag)
+  * @param isComponentAsDp if this is false, then component is addressed by it's name in the expert system ontology database, if it's true, then component is addressed by PVSS DPE (this component must have DCSId property in expert system ontology)
   * @param severity severity level of the fact - please use the EXSYS_FACT_SEVERITY_* constants e.g. EXSYS_FACT_SEVERITY_INFO, EXSYS_FACT_SEVERITY_ERROR, etc..
   * @param description description of the fact
   * @param factParamNames names of the parameters of the fact i.e. elements that are specific to this fact type (look up specific fact definition in the expert system)
   * @param factParamValues values of the parameters supplied in the factParamNames parameter
   */
-public void exsys_createFact(int factCollectionDocId, string type, time timestamp, string component, string severity, string description, 
+public void exsys_createFact(int factCollectionDocId, string type, time timestamp, string component, bool isComponentAsDp, string severity, string description, 
                      dyn_string factParamNames, dyn_anytype factParamValues, dyn_string &exceptionInfo) {
   
   // get the fact collection node and create a new fact node in it
@@ -84,9 +85,16 @@ public void exsys_createFact(int factCollectionDocId, string type, time timestam
   
   // construct the fact - base class (general) nodes
   _exsys_addXmlNode(factCollectionDocId, factNode, "time", exsys_formatTimeForXml(timestamp), exceptionInfo);
-  _exsys_addXmlNode(factCollectionDocId, factNode, "component_id", component, exceptionInfo);
+  if (isComponentAsDp) {
+    _exsys_addXmlNode(factCollectionDocId, factNode, "component_id", "", exceptionInfo);
+  } else {
+    _exsys_addXmlNode(factCollectionDocId, factNode, "component_id", component, exceptionInfo);
+  }
   _exsys_addXmlNode(factCollectionDocId, factNode, "severity", severity, exceptionInfo);
   _exsys_addXmlNode(factCollectionDocId, factNode, "descr", description, exceptionInfo);
+  if (isComponentAsDp) {
+    _exsys_addXmlNode(factCollectionDocId, factNode, "component_dcs_id", dpSubStr(component, DPSUB_DP_EL), exceptionInfo);
+  }
   
   // construct the fact - this fact type specific nodes
   if (dynlen(factParamNames) != dynlen(factParamValues)) {
@@ -94,7 +102,14 @@ public void exsys_createFact(int factCollectionDocId, string type, time timestam
     return;
   }
   for (int i=1; i <= dynlen(factParamNames); i++) {
-    _exsys_addXmlNode(factCollectionDocId, factNode, factParamNames[i], factParamValues[i], exceptionInfo);
+    // special handling for booleans.. PVSS converts bool to an uppercase word and SAX xml parser is very picky and only likes lowercase true or false... :/
+    if (getType(factParamValues[i]) == BOOL_VAR) {
+      string boolStr = factParamValues[i];
+      boolStr = strtolower(boolStr);
+      _exsys_addXmlNode(factCollectionDocId, factNode, factParamNames[i], boolStr, exceptionInfo);
+    } else {
+      _exsys_addXmlNode(factCollectionDocId, factNode, factParamNames[i], factParamValues[i], exceptionInfo);
+    }
   }
 }
 

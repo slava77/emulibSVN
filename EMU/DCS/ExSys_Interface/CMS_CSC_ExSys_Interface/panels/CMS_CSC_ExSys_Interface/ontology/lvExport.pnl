@@ -1,0 +1,204 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 1032 400 N "_3DFace" 0
+E E E E E 1 -1 -1 0  30 50
+""0  1
+E "string getLvSystem(dyn_string &ex) {
+  dyn_string lvSystems = emuui_getLvSystemNames(ex);
+  if (emu_checkException(ex)) { return; }
+  if (dynlen(lvSystems) < 1) {
+    emu_addError(\"No LV systems were found\", ex);
+    return \"\";
+  } else if (dynlen(lvSystems) > 1) {
+    emu_addError(\"More than one LV system was found\", ex);
+    return \"\";
+  }
+  return lvSystems[1];
+}
+
+mapping getAllMaratons(dyn_string &ex) {
+  string lvSystem = getLvSystem(ex);
+  if (emu_checkException(ex)) { return EMU_DUMMY_MAPPING; }
+  
+  mapping maratons;
+  mapping maratonsById = emuui_getMaratonDbSwapped(ex);
+  if (emu_checkException(ex)) { return; }
+  for (int i=1; i <= mappinglen(maratonsById); i++) {
+    string key = mappingGetKey(maratonsById, i);
+    if (strlen(key) == 0) { continue; }
+    mapping maraton = emuui_getMaratonDeviceParams((int)key, ex);
+    if (emu_checkException(ex)) { return; }
+    int crateNumber = maraton[\"crateNum\"];
+    mappingRemove(maraton, \"crateNum\");
+    maraton[\"crateNumber\"] = crateNumber;
+    maraton[\"type\"] = \"maraton\";
+    maraton[\"id\"] = key;
+    dyn_string maratonDps = dpNames(lvSystem + \":Wiener/CAN*/Crate\" + key, \"FwWienerMarathon\");
+    if (dynlen(maratonDps) < 1) {
+      emu_addError(\"DP was not found for maraton ID=\" + maraton[\"id\"], ex);
+      return EMU_DUMMY_MAPPING;
+    } else if (dynlen(maratonDps) > 1) {
+      emu_addError(\"More than one DP was not found for maraton ID=\" + maraton[\"id\"], ex);
+      return EMU_DUMMY_MAPPING;
+    }
+    maraton[\"dcsId\"] = dpSubStr(maratonDps[1], DPSUB_DP);
+    maratons[maraton[\"id\"]] = maraton;
+  }
+  
+  mapping mapToPcrates = emuui_getMaratonToPcmbsMap(ex);
+  if (emu_checkException(ex)) { return; }
+  for (int i=1; i <= mappinglen(mapToPcrates); i++) {
+    string key = mappingGetKey(mapToPcrates, i);
+    if (!mappingHasKey(maratons, key)) {
+      emu_addError(\"Maraton id=\" + key + \" was not found\", ex);
+    }
+    
+    maratons[key][\"children\"] = makeDynString();    
+    dyn_string elmbIds = mapToPcrates[key];
+    for (int j=1; j <= dynlen(elmbIds); j++) {
+      dynAppend(maratons[key][\"children\"], emuui_getPCrateNameId(elmbIds[j], ex));
+      if (emu_checkException(ex)) { return; }
+    }
+  }
+  
+  return maratons;
+}
+    
+mapping getAllPcrates(dyn_string &ex) {
+  string lvSystem = getLvSystem(ex);
+  if (emu_checkException(ex)) { return EMU_DUMMY_MAPPING; }
+  
+  mapping pcrates;
+  mapping pcratesById = emuui_getPcmbDbById(ex);
+  if (emu_checkException(ex)) { return; }
+  for (int i=1; i <= mappinglen(pcratesById); i++) {
+    string key = mappingGetKey(pcratesById, i);
+    mapping pcrate;
+    pcrate[\"type\"] = \"peripheralCrate\";
+    pcrate[\"side\"] = pcratesById[key][1];
+    pcrate[\"station\"] = pcratesById[key][2];
+    pcrate[\"crateNumber\"] = pcratesById[key][6];
+    pcrate[\"dcsCrateNumber\"] = pcratesById[key][3];
+    pcrate[\"rackName\"] = pcratesById[key][4];
+    pcrate[\"placeInRack\"] = pcratesById[key][5];
+    pcrate[\"elmbId\"] = key;
+    pcrate[\"id\"] = emuui_getPCrateNameId(key, ex);
+    if (emu_checkException(ex)) { return; }
+    string crbDp = \"CRB/CSC_ME_\" + pcrate[\"side\"] +
+                                   pcrate[\"station\"] + \"_PC\" +
+                                   pcrate[\"dcsCrateNumber\"] + \"_LV_CRB\";
+    if (!dpExists(lvSystem + \":\" + crbDp)) {
+      emu_addError(\"CRB DP doesn't exist for PCrate \" + pcrate[\"id\"] + \": \" + crbDp, ex);
+      return EMU_DUMMY_MAPPING;
+    }
+    pcrate[\"dcsId\"] = crbDp;
+    pcrates[pcrate[\"id\"]] = pcrate;
+  }
+  
+  return pcrates;
+}
+
+void export() {
+  dyn_string ex;
+  dyn_mapping treeData;
+  dynAppend(treeData, getAllMaratons(ex));
+  if (emu_checkException(ex)) { return; }
+  dynAppend(treeData, getAllPcrates(ex));
+  if (emu_checkException(ex)) { return; }
+   
+  writeXml(treeData);
+}
+
+void writeXml(dyn_mapping treeData) {
+  int docId = xmlNewDocument();
+  emu_info(\"New XML document created, id = \" + docId);
+  
+  xmlAppendChild(docId, -1, XML_COMMENT_NODE, \"LV devices\");
+  int rootNode = xmlAppendChild(docId, -1, XML_ELEMENT_NODE, \"lv\"); 
+  
+  addNodesToXml(docId, rootNode, treeData, 1, mappingKeys(treeData[1]));
+  xmlDocumentToFile(docId, \"lvMapping.xml\");
+  
+  emu_info(\"XML document saved\");
+}
+
+void addNodesToXml(int docId, int parentNode, dyn_mapping data, int level, dyn_string keys) {
+  for (int i=1; i <= dynlen(keys); i++) {
+    string key = keys[i];
+    int nodeId = xmlAppendChild(docId, parentNode, XML_ELEMENT_NODE, data[level][key][\"type\"]);
+    for (int j=1; j <= mappinglen(data[level][key]); j++) {
+      string attrKey = mappingGetKey(data[level][key], j);
+      if ((attrKey != \"type\") && (attrKey != \"children\")){
+        xmlSetElementAttribute(docId, nodeId, attrKey, data[level][key][attrKey]);
+      }
+    }
+    
+    if (mappingHasKey(data[level][key], \"children\")) {
+      dyn_string children = data[level][key][\"children\"];
+      addNodesToXml(docId, nodeId, data, level + 1, children);
+    }
+  }
+}" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 2
+"PUSH_BUTTON2"
+""
+1 30 10 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  28 8 152 32
+
+T 
+1
+LANG:1 12 PUSH_BUTTON2
+"main()
+{
+  export();
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
