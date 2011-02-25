@@ -1,0 +1,7 @@
+CSC_fwCAN1_g_LIST_5V=makeDynInt(56,55,54,53,52,51,50,49,48);
+CSC_fwCAN1_g_LIST_3V1=makeDynInt(0,2,4,6,8,10,12,14,32);
+CSC_fwCAN1_g_LIST_3V2=makeDynInt(1,3,5,7,9,11,13,15,33);
+CSC_fwCAN1_g_LIST_15V=makeDynInt(20,21);
+CSC_fwCAN1_g_LIST_CC=makeDynInt(35,19);
+CSC_fwCAN1_g_LIST_MPC=makeDynInt(34,57);
+CSC_fwCAN1_g_LIST_MAIN=makeDynInt(16,17,18);
