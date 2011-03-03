@@ -1138,7 +1138,7 @@ E E 0 1 1 2 1 E 1 0 1 -209 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png"
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 -2636.801275744048 -910 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -2741.026264353478 -930 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -1157,7 +1157,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 48.67430656275587 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 48.66061505894357 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
@@ -1400,7 +1400,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1110 890 1189 905
+E E 0 1 1 2 1 E U  1 E 1110 890 1188 905
 0 2 2 "0s" 0 0 0 192 0 0  1110 890 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -1676,7 +1676,7 @@ LANG:1 34 Open Xmas Monitoring Control Panel
 LANG:1 26 Open TMB LV Analysis Panel
 "3" 0 0 0 0 0
  1 1
-LANG:1 30 Open Reduced HV Channels Panel
+LANG:1 32 Open HV Channel Management Panel
 "4" 0 0 0 0 0
  E "main(string id)
 {
