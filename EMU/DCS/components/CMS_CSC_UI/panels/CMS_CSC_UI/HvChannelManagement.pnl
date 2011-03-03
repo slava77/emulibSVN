@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 517 756 N "_3DFace" 0
+PANEL,-1 -1 517 840 N "_3DFace" 0
 "main()
 {
   // ==== access control ====
@@ -14,6 +14,16 @@ PANEL,-1 -1 517 756 N "_3DFace" 0
   }
   //=========================
   
+  // init chamber combo box
+  dyn_string ex;
+  dyn_string allHvDps = dpNames(\"*:CSC_ME_*_HV\", \"HV_1_d\");
+  for (int i=1; i <= dynlen(allHvDps); i++) {
+    mapping chamber = emu_fsmNodeToDeviceParams(allHvDps[i], ex);
+    if (emu_checkException(ex)) { return; }
+    comboChamber.appendItem(emuui_getChamberName(chamber));
+  }
+  
+  // init tables
   refreshMaskedChannels();
   refreshLoweredChannels();
 }
@@ -738,6 +748,107 @@ E
 E
 
 N 0 3700 1 3400 1 1
+30 46
+"FRAME3"
+""
+1 20 502 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+46 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1.021276595744681 0 0.6481481481481481 -0.4255319148936199 424.6296296296297 0 E 20 502 491 611
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 17 Action on chamber
+13 48
+"btnChangeChamberVset"
+""
+1 180 780 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+48 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  178 778 382 807
+
+T 
+1
+LANG:1 18 Change Voltage To:
+"main()
+{
+  setBusy(true);
+
+  dyn_string ex;
+  int newVset = spinChangeChamberVoltage.text();
+  mapping chamber = emu_chamberNameToDeviceParams(comboChamber.text, ex);
+  if (emu_checkException(ex)) { return; }
+  emuhv_changeChamberVset(chamber, newVset, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // refresh the data now  
+  delay(1, 0);
+  emuhv_requestData(chamber, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  setBusy(false);
+  
+  refreshLoweredChannels();
+}" 0
+ E E E
+21 49
+"spinChangeChamberVoltage"
+""
+1 400 780 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+49 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  398 778 482 806
+0
+
+E
+E
+E
+
+N 0 3700 1 3400 1 1
+22 50
+"comboChamber"
+""
+1 40 780 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+50 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  38 778 162 806
+0
+
+E
+E
+E
+ 1 0
 0
 LAYER, 1 
 1
