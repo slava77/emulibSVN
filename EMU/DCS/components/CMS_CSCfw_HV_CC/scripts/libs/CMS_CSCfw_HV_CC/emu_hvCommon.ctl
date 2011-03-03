@@ -91,10 +91,10 @@ void emuhv_sendChannelCommand(mapping channelDeviceParams, int command, dyn_stri
   int channelNumber;
   
   if (broadcastToAllChannels) { // BROADCAST - all channels on the chamber
-    int channelOffset = emuui_chamberGetHvChannelsOffset(chamberDeviceParams, exceptionInfo);
+    int channelOffset = emuui_chamberGetHvChannelsOffset(channelDeviceParams, exceptionInfo);
     if (emu_checkException(exceptionInfo)) { return; }
 
-    int channelCount = emuui_chamberGetHvChannelCount(chamberDeviceParams, exceptionInfo);
+    int channelCount = emuui_chamberGetHvChannelCount(channelDeviceParams, exceptionInfo);
     if (emu_checkException(exceptionInfo)) { return; }
     
     if (channelCount < 30) { // small chamber - so only half of the channels on the board
@@ -316,5 +316,23 @@ void emuhv_changeChannelVset(mapping channelDeviceParams, int vset, dyn_string &
   dpSetWait(hvDp + ".on_ch_vsets", chVsets);
   
   emuhv_sendChannelCommand(channelDeviceParams, EMUHV_COMMAND_VSET, exceptionInfo, false, vset);
+  if (emu_checkException(exceptionInfo)) { return; }
+}
+
+/**
+  * Changes vset for all channels of the given chamber (HV_1.on_ch_vsets DPE and sends a VSET command for to hvServer).
+  */
+void emuhv_changeChamberVset(mapping chamberDeviceParams, int vset, dyn_string &exceptionInfo) {
+  string hvDp = dpNames("*:HighVoltage/CSC_ME_" + chamberDeviceParams["side"] + chamberDeviceParams["station"] + chamberDeviceParams["ring"] + 
+                              "_C" + chamberDeviceParams["chamberNumber"] + "_HV", "HV_1");
+  dyn_int chVsets;
+  int numChannels = emuui_chamberGetHvChannelCount(chamberDeviceParams, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  for (int i=1; i <= numChannels; i++) {
+    dynAppend(chVsets, vset);
+  }
+  dpSetWait(hvDp + ".on_ch_vsets", chVsets);
+  
+  emuhv_sendChannelCommand(chamberDeviceParams, EMUHV_COMMAND_VSET, exceptionInfo, true, vset);
   if (emu_checkException(exceptionInfo)) { return; }
 }
