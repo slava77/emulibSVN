@@ -482,3 +482,36 @@ mapping emu_fsmNodeToDeviceParams(string fsmNode, dyn_string &exceptionInfo) {
   
   return ret;
 }
+
+/** Given a standard chamber name (e.g. ME+1/2/03), this function returns a mapping of device params */
+mapping emu_chamberNameToDeviceParams(string chamberName, dyn_string &exceptionInfo) {
+  if (strpos(chamberName, "ME") < 0) {
+    emu_addError("Invalid chamber name provided to emu_chamberNameToDeviceParams - this name doesn't comform with the convention (ME+|-/#/#/##): " + chamberName, exceptionInfo);
+    return EMU_DUMMY_MAPPING;
+  }
+  
+  chamberName = substr(chamberName, strpos(chamberName, "ME") + 2);
+  dyn_string nameSplit = strsplit(chamberName, "/");
+  mapping ret;
+  string sideSign = substr(nameSplit[1], 0, 1);
+  if (sideSign == "+") {
+    ret["side"] = "P";
+  } else if (sideSign == "-") {
+    ret["side"] = "M";
+  }      
+  ret["station"] = substr(nameSplit[1], 1, 1);
+  ret["ring"] = nameSplit[2];
+  ret["chamberNumber"] = nameSplit[3];
+  
+  return ret;
+}
+
+/** Returns chamber name (in a standard form e.g. ME+2/2/02) given deviceParams (it should contain at least "side", "station", "ring" and "chamberNumber" params). */
+string emu_getChamberName(mapping deviceParams) {
+  string strSide = "+";
+  if (deviceParams["side"] == "M") { strSide = "-"; }
+  
+  return "ME" + strSide + 
+         deviceParams["station"] + "/" + deviceParams["ring"] + "/" +
+         deviceParams["chamberNumber"];
+}
