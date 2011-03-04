@@ -6,13 +6,17 @@
 package org.cern.cms.csc.exsys.re.dao;
 
 import java.math.BigInteger;
+import java.util.Collections;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.exception.PersistException;
+import org.cern.cms.csc.dw.model.ontology.ComponentClass;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.cern.cms.csc.exsys.re.model.ConclusionType;
 import org.cern.cms.csc.exsys.re.model.Rule;
@@ -23,7 +27,9 @@ import org.cern.cms.csc.exsys.re.model.RuleSet;
  * @author Evka
  */
 @Stateless
-public class RuleEngineDao implements RuleEngineDaoLocal {
+public class RuleEngineDao implements RuleEngineDaoLocal, RuleEngineDaoRemote {
+
+    private static final Logger logger = SimpleLogger.getLogger(RuleEngineDao.class);
 
     @PersistenceContext(unitName="CdwPU")
     private EntityManager em;
@@ -183,6 +189,34 @@ public class RuleEngineDao implements RuleEngineDaoLocal {
 
         entityDao.merge(rule);
 
+    }
+
+    @Override
+    public void cloneAndSaveRuleSet(RuleSet ruleSet) {
+        logger.info("RuleEngineDao: got this ruleset for cloning and saving: " + ruleSet);
+        ruleSet.setid(null);
+        for (ConclusionType ct: ruleSet.getConclusionTypes()) {
+            logger.info("RuleEngineDao: processing this conclusion type: " + ct);
+            ct.setid(null);
+            //TODO support actions in ruleset cloning
+            // throw away actions.. it's a many-to-many relationship - not easy to handle
+            ct.setActions(Collections.EMPTY_LIST);
+            for (Rule rule: ct.getRules()) {
+                logger.info("RuleEngineDao: processing this rule: " + rule);
+                rule.setid(null);
+                rule.getComponentFinder().setid(null);
+
+                // get the component class from production db
+                ComponentClass compClass = rule.getComponentFinder().getComponentClass();
+                compClass = em.createQuery("select cc from org.cern.cms.csc.dw.model.ontology.ComponentClass as cc where cc.typeItem = :typeItem", ComponentClass.class)
+                            .setParameter("typeItem", compClass.getType().value())
+                            .getSingleResult();
+                rule.getComponentFinder().setComponentClass(compClass);
+            }
+        }
+        logger.info("RuleEngineDao: persisting this ruleset: " + ruleSet);
+
+        em.persist(ruleSet);
     }
 
 }

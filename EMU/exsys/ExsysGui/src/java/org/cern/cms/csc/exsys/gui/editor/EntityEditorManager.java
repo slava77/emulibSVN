@@ -133,7 +133,7 @@ public abstract class EntityEditorManager extends JsfBeanBase {
      * @see goBack()
      * @throws Exception
      */
-    public String discardAndGoBack() {
+    public void discardAndGoBack() {
         try {
             currentEditor.setValue(null);
             if (currentEditor instanceof RestrictedEntityEditor) {
@@ -142,16 +142,15 @@ public abstract class EntityEditorManager extends JsfBeanBase {
         } catch (Exception ex) {
             throw new RuntimeException("Exception while discarding value of an editor. ", ex);
         }
-        return goBack();
+        goBack();
     }
 
     /**
      * Goes back - sets the parent editor as the current editor.
      * @return "reload"
      */
-    public String goBack() {
+    public void goBack() {
         setEditor(currentEditor.getParentEditor());
-        return "reload";
     }
 
     /**

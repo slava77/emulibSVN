@@ -39,9 +39,9 @@ import org.cern.cms.csc.exsys.re.model.SimpleComponentFinder;
  *
  * @author evka
  */
-public class ComponentResolver {
+public class ConclusionComponentResolver {
 
-    private static final Logger logger = SimpleLogger.getLogger(ComponentResolver.class);
+    private static final Logger logger = SimpleLogger.getLogger(ConclusionComponentResolver.class);
 
     /** Component finder to be used. */
     private ComponentFinder componentFinder;
@@ -54,10 +54,10 @@ public class ComponentResolver {
     /** GOntologyDao. */
     private EjbLookup<GOntologyDaoLocal> gOntologyDao = new EjbLookup<GOntologyDaoLocal>(GOntologyDaoLocal.class, GOntologyDao.class);
 
-    public ComponentResolver(ComponentFinder componentFinder) {
+    public ConclusionComponentResolver(ComponentFinder componentFinder) {
         this.componentFinder = componentFinder;
     }
-    
+
     /**
      * Resolves component to be assigned to the given conclusion.
      * @param targetConclusion conclusion which you want to resolve the component for.

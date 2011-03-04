@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:icecore="http://www.icefaces.org/icefaces/core"
+    xmlns:ace="http://www.icefaces.org/icefaces/components"
+    xmlns:ice="http://www.icesoft.com/icefaces/component"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    template="resources/main.xhtml"
+    xmlns:component="http://java.sun.com/jsf/composite/component">
+
+    <ui:define name="menu">
+        
+    </ui:define>
+
+    <ui:define name="pageTitle">
+        <h:outputText value="Transfer Rule Set"/>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <ice:form>
+
+            Rule Set:
+            <ice:selectOneMenu value="#{transferRuleSet.ruleSet}" converter="#{transferRuleSet.ruleSetConverter}">
+                <f:selectItems value="#{transferRuleSet.allRuleSets}"/>
+            </ice:selectOneMenu>
+
+            Hostname:
+            <ice:inputText value="#{transferRuleSet.hostname}"/>
+
+            Port:
+            <ice:inputText value="#{transferRuleSet.port}"/>
+            
+            <ice:commandButton value="Transfer" action="#{transferRuleSet.doTransfer}"/>
+
+        </ice:form>
+    </ui:define>
+
+</ui:composition>

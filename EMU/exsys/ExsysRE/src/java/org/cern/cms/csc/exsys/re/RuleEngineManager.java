@@ -37,8 +37,6 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
     private static Logger logger = SimpleLogger.getLogger(RuleEngineManager.class);
 
     public static final String DEFAULT_EP_URI = "exsys";
-    public static final String FACTS_PACKAGE = "org.cern.cms.csc.dw.model.fact";
-    public static final String CONCLUSION_PACKAGE = "org.cern.cms.csc.exsys.re.model";
 
     @EJB
     private EsperServiceProvider epProvider;

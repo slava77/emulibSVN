@@ -13,6 +13,7 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.model.ontology.Component;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.cern.cms.csc.exsys.re.model.ConclusionTrigger;
@@ -35,6 +36,12 @@ public class ConclusionCacheService implements ConclusionCacheServiceLocal {
     public ConclusionCacheService() {
     }
 
+    @Override
+    public Conclusion checkCache(String conclusionTypeName, Component component) {
+        checkIfCacheInitialized();
+        return conclusionCache.get(new ComparableConclusionWrapper(conclusionTypeName, component));
+    }
+
     /**
      * Checks if the given conclusion exists in the cache of open conclusions.
      * If it does, then returns the original conclusion that was found in the cache.
@@ -42,6 +49,11 @@ public class ConclusionCacheService implements ConclusionCacheServiceLocal {
      */
     @Override
     public Conclusion checkCache(Conclusion conclusion) {
+        checkIfCacheInitialized();
+        return conclusionCache.get(new ComparableConclusionWrapper(conclusion));
+    }
+
+    private void checkIfCacheInitialized() {
         if (conclusionCache == null) { // initialize the cache
             conclusionCache = Collections.synchronizedMap(new HashMap<ComparableConclusionWrapper, Conclusion>());
             List<Conclusion> conclusions = reDao.getAllOpenConclusions();
@@ -49,20 +61,11 @@ public class ConclusionCacheService implements ConclusionCacheServiceLocal {
                 conclusionCache.put(new ComparableConclusionWrapper(concl), concl);
             }
         }
-
-        ComparableConclusionWrapper conclWrapper = new ComparableConclusionWrapper(conclusion);
-        if (conclusionCache.containsKey(conclWrapper)) {
-            return conclusionCache.get(conclWrapper);
-        } else {
-            return null;
-        }
     }
 
     @Override
     public void addToCache(Conclusion conclusion) {
-        if (conclusionCache == null) {
-            checkCache(conclusion);
-        }
+        checkIfCacheInitialized();
 
         if (conclusion.isClosed()) {
             conclusionCache.remove(new ComparableConclusionWrapper(conclusion));
@@ -87,9 +90,7 @@ public class ConclusionCacheService implements ConclusionCacheServiceLocal {
 
     @Override
     public void removeFromCache(Conclusion conclusion) {
-        if (conclusionCache == null) {
-            checkCache(conclusion);
-        }
+        checkIfCacheInitialized();
 
         conclusionCache.remove(new ComparableConclusionWrapper(conclusion));
     }
@@ -102,19 +103,21 @@ public class ConclusionCacheService implements ConclusionCacheServiceLocal {
 
     public class ComparableConclusionWrapper {
 
-        private Conclusion conclusion;
+        private String conclusionTypeName;
 
         private Long componentId;
         private int hash;
 
         public ComparableConclusionWrapper(Conclusion conclusion) {
-            this.conclusion = conclusion;
-            this.componentId = conclusion.getComponent().getId();
+            this(conclusion.getType().getName(), conclusion.getComponent());
+        }
 
-            ConclusionType type = conclusion.getType();
+        public ComparableConclusionWrapper(String conclusionTypeName, Component component) {
+            this.conclusionTypeName = conclusionTypeName;
+            this.componentId = component.getId();
 
             hash = 7;
-            hash = 19 * hash + (type != null ? type.getid().hashCode() : 0);
+            hash = 19 * hash + (conclusionTypeName != null ? conclusionTypeName.hashCode() : 0);
             hash = 19 * hash + (componentId != null ? componentId.hashCode() : 0);
         }
 
@@ -131,29 +134,26 @@ public class ConclusionCacheService implements ConclusionCacheServiceLocal {
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            Conclusion otherConcl = ((ComparableConclusionWrapper) obj).getConclusion();
-            if (!conclusion.getType().getid().equals(otherConcl.getType().getid())) {
+            ComparableConclusionWrapper otherConclWrapper = (ComparableConclusionWrapper) obj;
+            if (!conclusionTypeName.equals(otherConclWrapper.getConclusionTypeName())) {
                 return false;
             }
 
-            if (!componentId.equals(otherConcl.getComponent().getId())) {
+            if (!componentId.equals(otherConclWrapper.getComponentId())) {
                 return false;
             }
-
-//            if (!otherConcl.getTitle().equals(conclusion.getTitle())) {
-//                return false;
-//            }
-
-//            if (!otherConcl.getDescription().equals(conclusion.getDescription())) {
-//                return false;
-//            }
 
             return true;
         }
 
-        public Conclusion getConclusion() {
-            return conclusion;
+        public Long getComponentId() {
+            return componentId;
         }
+
+        public String getConclusionTypeName() {
+            return conclusionTypeName;
+        }
+
     }
 
 }

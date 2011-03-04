@@ -18,6 +18,8 @@ import org.cern.cms.csc.dw.dao.MainBeanTableDaoLocal;
 import org.cern.cms.csc.exsys.gui.base.JsfBeanBase;
 import org.cern.cms.csc.exsys.gui.util.ClassFinder;
 import org.cern.cms.csc.exsys.re.model.Rule;
+import org.icefaces.bean.ViewRetained;
+import org.icefaces.bean.WindowDisposed;
 
 /**
  *
@@ -25,7 +27,9 @@ import org.cern.cms.csc.exsys.re.model.Rule;
  */
 
 @ManagedBean
-@SessionScoped
+@ViewScoped
+@ViewRetained
+@WindowDisposed
 public class Rules extends JsfBeanBase implements Serializable {
 
     @EJB

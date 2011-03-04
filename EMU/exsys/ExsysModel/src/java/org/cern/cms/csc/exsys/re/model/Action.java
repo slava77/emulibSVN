@@ -75,7 +75,8 @@ import org.cern.cms.csc.dw.model.base.EntityBase;
     "acknowledgeConclusionOnCreate"
 })
 @XmlSeeAlso({
-    NotificationAction.class
+    NotificationAction.class,
+    CommandAction.class
 })
 @Entity(name = "org.cern.cms.csc.exsys.re.model.Action")
 @Table(name = "RE_ACTIONS")
@@ -94,7 +95,7 @@ public abstract class Action
     @XmlElement(required = true)
     protected ConclusionTriggerType triggerType;
     @XmlElement(name = "isDeleted")
-    @NoManualInput(createDefaultValue = true)
+    @NoManualInput(createDefaultValue = false)
     protected boolean deleted;
     @XmlElement(name = "isEnabled")
     protected boolean enabled;

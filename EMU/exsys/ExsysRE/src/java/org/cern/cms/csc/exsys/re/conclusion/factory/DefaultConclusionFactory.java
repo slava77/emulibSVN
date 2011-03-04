@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import javax.jms.Connection;
@@ -29,6 +30,7 @@ import org.cern.cms.csc.exsys.re.RuleEngineManagerLocal;
 import org.cern.cms.csc.exsys.re.conclusion.ConclusionCacheServiceLocal;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
 import org.cern.cms.csc.exsys.re.model.Action;
+import org.cern.cms.csc.exsys.re.model.ActionExecution;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.cern.cms.csc.exsys.re.model.ConclusionTrigger;
 import org.cern.cms.csc.exsys.re.model.ConclusionTriggerSource;
@@ -66,7 +68,10 @@ public class DefaultConclusionFactory extends ConclusionFactory {
                 logger.info("Saving new conclusion: " + conclusion);
                 reDao.getEntityDao().persistAndFlush(conclusion);
                 getConclusionCacheService().addToCache(conclusion);
-                executeActions(getConclusionType().getActions(), conclusion.getTriggers());
+                boolean conclusionWasModified = executeActions(getConclusionType().getActions(), conclusion.getTriggers());
+                if (conclusionWasModified) {
+                    reDao.getEntityDao().mergeAndFlush(conclusion);
+                }
                 return conclusion;
             } else {
                 logger.debug("Default conclusion factory: Got a duplicate conclusion (updating existing one): " +
@@ -128,29 +133,48 @@ public class DefaultConclusionFactory extends ConclusionFactory {
         return conclusionCacheService;
     }
 
-    protected void executeAction(Action action, ConclusionTrigger trigger) {
+    /** @return true if the corresponding conclusion has been modified. */
+    protected boolean executeAction(Action action, ConclusionTrigger trigger) {
+        boolean conclModified = false;
         try {
-            logger.info("action execution disabled for now - should have executed action " + action.getName());
-//            ActionExecution exec = new ActionExecution();
-//            exec.setAction(action);
-//            exec.setTrigger(trigger);
-//            exec.setTimestampItem(new Date());
-//            sendJMSMessageToRuleEngineActionQueue(exec);
+            if (action.getTriggerType().equals(trigger.getType()) && !action.isDeleted() && action.isEnabled()) {
+                logger.debug("Sending action to execution queue: " + action.getName());
+//                if (action.isAcknowledgeConclusionOnCreate() && !trigger.getConclusion().isAcknowledged()) {
+//                    trigger.getConclusion().setAcknowledged(true);
+//                    conclModified = true;
+//                }
+//                ActionExecution exec = new ActionExecution();
+//                exec.setAction(action);
+//                exec.setTrigger(trigger);
+//                exec.setTimeCreatedItem(new Date());
+//                sendJMSMessageToRuleEngineActionQueue(exec);
+            }
         } catch (Exception ex) {
             logger.error("Exception while sending actions to the ruleEngineActionQueue for execution", ex);
         }
+        return conclModified;
     }
 
-    protected void executeActions(Collection<Action> actions, ConclusionTrigger trigger) {
+    /** @return true if the corresponding conclusion has been modified. */
+    protected boolean executeActions(Collection<Action> actions, ConclusionTrigger trigger) {
+        boolean conclModified = false;
         for (Action action: actions) {
-            executeAction(action, trigger);
+            if (executeAction(action, trigger)) {
+                conclModified = true;
+            }
         }
+        return conclModified;
     }
 
-    protected void executeActions(Collection<Action> actions, Collection<ConclusionTrigger> triggers) {
+    /** @return true if the corresponding conclusion has been modified. */
+    protected boolean executeActions(Collection<Action> actions, Collection<ConclusionTrigger> triggers) {
+        boolean conclModified = false;
         for (ConclusionTrigger trigger: triggers) {
-            executeActions(actions, trigger);
+            if (executeActions(actions, trigger)) {
+                conclModified = true;
+            }
         }
+        return conclModified;
     }
 
     private Message createJMSMessageForjmsRuleEngineActionQueue(Session session, Serializable messageData) throws JMSException {

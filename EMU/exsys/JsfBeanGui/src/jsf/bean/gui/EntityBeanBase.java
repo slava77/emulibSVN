@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Id;
+import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlTransient;
 import jsf.bean.gui.annotation.UseInTitle;
 import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
 import jsf.bean.gui.exception.InvalidEntityClassException;
@@ -207,6 +209,8 @@ public class EntityBeanBase implements Serializable {
      * Get indication if this item was selected
      * @return
      */
+    @Transient
+    @XmlTransient
     public final Boolean getSelected() {
         return selected;
     }

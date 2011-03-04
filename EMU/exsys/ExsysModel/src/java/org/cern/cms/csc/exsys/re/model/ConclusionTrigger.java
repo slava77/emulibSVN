@@ -311,7 +311,7 @@ public class ConclusionTrigger
     public void setTimestampItem(Date target) {
         setTimestamp(XmlAdapterUtils.marshall(XMLGregorianCalendarAsDateTime.class, target));
     }
-
+    
 //--simple--preserve
 
     @Override

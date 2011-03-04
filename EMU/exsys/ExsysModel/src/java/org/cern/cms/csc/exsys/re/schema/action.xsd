@@ -149,7 +149,7 @@
                         </hj:basic>
                         <jaxb:property name="deleted"/>
                         <ann:annotate xmlns:a="jsf.bean.gui.annotation">
-                            <a:NoManualInput createDefaultValue="true"/>
+                            <a:NoManualInput createDefaultValue="false"/>
                         </ann:annotate>
                     </xsd:appinfo>
                 </xsd:annotation>
@@ -265,6 +265,47 @@
                         </xsd:annotation>
                     </xsd:element>
                 </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="commandActionType" abstract="true">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="CommandAction"/>
+                <hj:entity>
+                    <orm:table name="RE_COMMAND_ACTIONS"/>
+                </hj:entity>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:actionType">
+                <xsd:sequence>
+                    <xsd:element name="closeConclusionOnExecution" type="xsd:boolean">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="RECA_CLOSE_CONCL_ON_EXEC" nullable="false"/>
+                                </hj:basic>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="dimCommandActionType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="DimCommandAction"/>
+                <hj:entity>
+                    <orm:table name="RE_DIM_COMMAND_ACTIONS"/>
+                </hj:entity>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:commandActionType">
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>

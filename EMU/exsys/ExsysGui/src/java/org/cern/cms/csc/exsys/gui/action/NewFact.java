@@ -13,6 +13,8 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
 import jsf.bean.gui.log.Logger;
@@ -32,6 +34,8 @@ import org.cern.cms.csc.dw.model.ontology.graph.GComponentClass;
 import org.cern.cms.csc.dw.ws.FactCollectionInputLocal;
 import org.cern.cms.csc.exsys.gui.editor.EntityEditorManager;
 import org.cern.cms.csc.exsys.gui.editor.converter.LovConverter;
+import org.icefaces.bean.ViewRetained;
+import org.icefaces.bean.WindowDisposed;
 
 /**
  *
@@ -39,7 +43,7 @@ import org.cern.cms.csc.exsys.gui.editor.converter.LovConverter;
  */
 
 @ManagedBean
-@RequestScoped
+@SessionScoped
 public class NewFact extends EntityEditorManager {
 
     private final static Logger logger = SimpleLogger.getLogger(NewFact.class);

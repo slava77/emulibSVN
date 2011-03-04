@@ -14,8 +14,11 @@ import org.cern.cms.csc.dw.dao.EditorDaoLocal;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.exsys.gui.editor.EntityEditorManager;
 import org.cern.cms.csc.exsys.re.model.Action;
+import org.cern.cms.csc.exsys.re.model.DimCommandAction;
 import org.cern.cms.csc.exsys.re.model.EmailAction;
 import org.cern.cms.csc.exsys.re.model.SmsAction;
+import org.icefaces.bean.ViewRetained;
+import org.icefaces.bean.WindowDisposed;
 
 
 /**
@@ -23,7 +26,7 @@ import org.cern.cms.csc.exsys.re.model.SmsAction;
  * @author Evka
  */
 @ManagedBean
-@ViewScoped
+@SessionScoped
 public class EditAction extends EntityEditorManager implements Serializable {
 
     @EJB
@@ -35,7 +38,7 @@ public class EditAction extends EntityEditorManager implements Serializable {
 
     @Override
     protected EntityBase createEntity() {
-        return null;
+        return new DimCommandAction();
     }
 
     public String createEmailAction() {
@@ -58,6 +61,14 @@ public class EditAction extends EntityEditorManager implements Serializable {
     @Override
     protected EditorDaoLocal getEditorDao() {
         return dao;
+    }
+
+    public void setToSave(Action action) throws Exception {
+        dao.getEntityDao().merge(action);
+    }
+
+    public void setToDelete(Action action) {
+        dao.getEntityDao().delete(action);
     }
 
 }

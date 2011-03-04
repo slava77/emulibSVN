@@ -25,11 +25,16 @@
         <ice:form>
 
             <component:beanTable manager="#{ruleSets.table}"
-                                 skipColumnsByName="enabled,name">
+                                 skipColumnsByName="enabled,name"
+                                 rowSelection="true">
 
                 <f:facet name="addMenu">
                     <ice:panelGroup>
                         <ice:commandLink value="Create New Rule Set" action="reEditRuleSet" style="font-weight: bold"/>
+                        |
+                        <ice:commandLink value="Transfer Selected" action="transferRuleSet" style="font-weight: bold">
+                            <f:setPropertyActionListener target="#{transferRuleSet.ruleSet}" value="#{ruleSets.table.selected}"/>
+                        </ice:commandLink>
                     </ice:panelGroup>
                 </f:facet>
 

@@ -5,6 +5,7 @@
 
 package org.cern.cms.csc.exsys.gui.action;
 
+import com.sun.faces.context.flash.ELFlash;
 import java.io.Serializable;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
@@ -19,6 +20,8 @@ import org.cern.cms.csc.exsys.gui.editor.EntityEditorManager;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
 import org.cern.cms.csc.exsys.re.model.Rule;
 import org.cern.cms.csc.exsys.re.model.RuleSet;
+import org.icefaces.bean.ViewRetained;
+import org.icefaces.bean.WindowDisposed;
 
 
 /**
@@ -34,7 +37,7 @@ public class EditRule extends EntityEditorManager implements Serializable {
     private RuleEngineDaoLocal reDao;
 
     @EJB
-    private EditorDaoLocal EditorDao;
+    private EditorDaoLocal editorDao;
 
     private RuleSet ruleSet;
 
@@ -43,6 +46,7 @@ public class EditRule extends EntityEditorManager implements Serializable {
 //        if (ruleSet == null) {
 //            throw new RuntimeException("RuleSet not provided");
 //        }
+
         return new Rule();
     }
 
@@ -62,7 +66,7 @@ public class EditRule extends EntityEditorManager implements Serializable {
 
     @Override
     protected EditorDaoLocal getEditorDao() {
-        return EditorDao;
+        return editorDao;
     }
 
     public void setToSave(Rule rule) throws Exception {
@@ -70,7 +74,7 @@ public class EditRule extends EntityEditorManager implements Serializable {
     }
 
     public void setToDelete(Rule rule) throws PersistException, OnSaveProcessingException {
-        EditorDao.getEntityDao().delete(rule);
+        editorDao.getEntityDao().delete(rule);
     }
 
     public RuleSet getRuleSet() {

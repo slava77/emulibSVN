@@ -9,6 +9,7 @@ import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.EventBean;
 import com.espertech.esper.client.StatementAwareUpdateListener;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -23,7 +24,7 @@ import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.exsys.re.RuleEngineManagerLocal;
-import org.cern.cms.csc.exsys.re.conclusion.ComponentResolver;
+import org.cern.cms.csc.exsys.re.conclusion.ConclusionComponentResolver;
 import org.cern.cms.csc.exsys.re.exception.ComponentResolverException;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.cern.cms.csc.exsys.re.model.ConclusionTrigger;
@@ -47,7 +48,7 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
     /** Rule that this conclusion factory belongs to. */
     private Rule rule;
     /** Component resolver for the conclusion type in use by this conclusion factory. */
-    private ComponentResolver componentResolver;
+    private ConclusionComponentResolver componentResolver;
     /** Rule engine manager - used to throw conclusions back into rule engine. */
     RuleEngineManagerLocal reManager;
     
@@ -59,7 +60,7 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
         this.reManager = reManager;
         this.rule = rule;
         this.conclType = rule.getConclusionType();
-        this.componentResolver = new ComponentResolver(rule.getComponentFinder());
+        this.componentResolver = new ConclusionComponentResolver(rule.getComponentFinder());
     }
 
     /**
@@ -133,7 +134,7 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
             if (triggerSource instanceof Fact) { // that's a fact here - add it as a child of this conclusion
                 Fact fact = (Fact) triggerSource;
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Conclusion factory: trigger source (fact): {0}", fact);
+                    logger.debug("    Conclusion factory: trigger source (fact): {0}", fact);
                 }
                 ConclusionTriggerSource source = new ConclusionTriggerSource();
                 source.setFact(fact);
@@ -142,7 +143,7 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
             } else if (triggerSource instanceof Conclusion) { // that's a conclusion here - add it as a child of this conclusion
                 Conclusion sourceConclusion = (Conclusion) triggerSource;
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Conclusion factory: trigger source (conclusion): {0}", sourceConclusion.debugPrint(false));
+                    logger.debug("    Conclusion factory: trigger source (conclusion): {0}", sourceConclusion.debugPrint(false));
                 }
                 //childConclusion = (Conclusion) reManager.getRuleEngineDao().getEntityDao().refreshEntity(childConclusion);
                 ConclusionTriggerSource source = new ConclusionTriggerSource();
@@ -168,10 +169,20 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
         Object underlying = event.getUnderlying();
         if (underlying instanceof Map) { // a composite event
             Collection wrappedUnderlyingObjs = ((Map) underlying).values();
+            boolean hasEntities = false;
             for (Object wrappedUnderlyingObj: wrappedUnderlyingObjs) {
-                if (wrappedUnderlyingObj != null) {
+                if (wrappedUnderlyingObj instanceof EventBean) {
                     unpackEvent((EventBean) wrappedUnderlyingObj, unpackedEvents);
+                } else if (wrappedUnderlyingObj instanceof EventBean[]) {
+                    for (EventBean e: (EventBean[]) wrappedUnderlyingObj) {
+                        unpackEvent(e, unpackedEvents);
+                    }
+                } else if (wrappedUnderlyingObj instanceof EntityBase) {
+                    hasEntities = true;
                 }
+            }
+            if (hasEntities) { // if the map contains entities, also add the whole event as unpacked
+                unpackedEvents.add(event);
             }
         } else { // not a composite event
             unpackedEvents.add(event);
@@ -200,6 +211,8 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
         Object underlying = event.getUnderlying();
         if (underlying instanceof EntityBase) {
             unpackedEntities.add((EntityBase) underlying);
+        } else if (underlying instanceof EntityBase[]) {
+            unpackedEntities.addAll(Arrays.asList((EntityBase[]) underlying));
         }
         if (underlying instanceof Map) {
             Collection wrappedUnderlyingObjs = ((Map) underlying).values();
@@ -208,6 +221,8 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
                     unpackEntitiesFromEvent((EventBean) wrappedUnderlyingObj, unpackedEntities);
                 } else if (wrappedUnderlyingObj instanceof EntityBase) {
                     unpackedEntities.add((EntityBase) wrappedUnderlyingObj);
+                } else if (wrappedUnderlyingObj instanceof EntityBase[]) {
+                    unpackedEntities.addAll(Arrays.asList((EntityBase[]) wrappedUnderlyingObj));
                 }
             }
         }
@@ -341,7 +356,7 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
      * Get component resolver for the conclusion type in use by this conclusion factory.
      * @return component resolver for the conclusion type in use by this conclusion factory.
      */
-    public ComponentResolver getComponentResolver() {
+    public ConclusionComponentResolver getComponentResolver() {
         return componentResolver;
     }
 

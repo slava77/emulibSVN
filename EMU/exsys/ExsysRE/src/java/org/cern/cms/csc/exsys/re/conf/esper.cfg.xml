@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Esper configuration for domain "DEFAULT".
+-->
+<esper-configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.espertech.com/schema/esper"
+    xsi:noNamespaceSchemaLocation="esper-configuration-4-0.xsd">
+    
+    <event-type-auto-name package-name="org.cern.cms.csc.dw.model.fact"/>
+    <event-type-auto-name package-name="org.cern.cms.csc.exsys.re.model"/>
+
+    <auto-import import-name="org.cern.cms.csc.exsys.re.util.Exsys"/>
+
+    <!--engine-settings>
+        <defaults>
+            <stream-selection>
+                <stream-selector value="istream" />
+            </stream-selection>
+        </defaults>
+    </engine-settings-->
+
+</esper-configuration>
+

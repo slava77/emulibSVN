@@ -62,8 +62,7 @@ public class EsperServiceProvider {
         } else { // create and configure the Esper service
             logger.info("Initializing rules engine (Esper service URI=" + uri + ")");
             Configuration conf = new Configuration();
-            conf.addEventTypeAutoName(RuleEngineManager.FACTS_PACKAGE);
-            conf.addEventTypeAutoName(RuleEngineManager.CONCLUSION_PACKAGE);
+            conf.configure("org/cern/cms/csc/exsys/re/conf/esper.cfg.xml");
             epService = EPServiceProviderManager.getProvider(uri, conf);
             logger.info("Rules engine initialized (Esper service URI=" + uri + ")");
             //reManager.configure(epService);

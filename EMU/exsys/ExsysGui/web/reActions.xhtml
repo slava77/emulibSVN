@@ -21,17 +21,46 @@
 
     <ui:define name="content">
 
+        <ice:form>
+            <ice:panelGroup>
+                <ice:commandLink value="Create New Action" action="reEditAction">
+                    <f:setPropertyActionListener target="#{editAction.entity}" value="#{null}"/>
+                </ice:commandLink>
+            </ice:panelGroup>
+        </ice:form>
+
         <ice:form id="actionsForm">
-
-            <component:beanTable manager="#{actions.table}">
+            <component:beanTable manager="#{actions.table}" skipColumnsByName="enabled,name">
                 <f:facet name="addMenu">
-                    <ice:commandLink value="Create New Action" action="aa"/>
+                    <ice:panelGroup>
+                        <ice:commandLink value="Create New Action" action="reEditAction">
+                            <f:setPropertyActionListener target="#{editAction.entity}" value="#{null}"/>
+                        </ice:commandLink>
+                    </ice:panelGroup>
                 </f:facet>
-            </component:beanTable>
 
-            <!--ice:commandLink value="#{action.name}" action="editAction">
-                <f:setPropertyActionListener target="#{EditAction.entity}" value="#{action}"/>
-            </ice:commandLink-->
+                <ice:panelGroup rendered="#{column.name == 'enabled'}">
+                    <ice:selectBooleanCheckbox value="#{item.enabled}" readonly="true" disabled="true"/>
+                    <ice:commandLink value="flip" style="color: blue">
+                        <f:setPropertyActionListener value="#{!item.enabled}" target="#{item.enabled}"/>
+                        <f:setPropertyActionListener value="#{item}" target="#{editAction.toSave}"/>
+                        <f:setPropertyActionListener value="#{true}" target="#{cc.attrs.manager.table.refresh}"/>
+                    </ice:commandLink>
+                </ice:panelGroup>
+
+                <ice:panelGrid columns="2" rendered="#{column.name == 'name'}">
+                    <ice:commandLink value="#{item.name}" action="reEditAction">
+                        <f:setPropertyActionListener target="#{editAction.entity}" value="#{item}"/>
+                    </ice:commandLink>
+                    <ice:panelGroup rendered="#{!item.enabled}">
+                        <ice:commandLink value=" (delete)" type="submit" style="color: blue">
+                            <f:setPropertyActionListener value="#{item}" target="#{editAction.toDelete}"/>
+                            <f:setPropertyActionListener value="#{true}" target="#{cc.attrs.manager.table.refresh}"/>
+                        </ice:commandLink>
+                    </ice:panelGroup>
+                </ice:panelGrid>
+
+            </component:beanTable>
 
         </ice:form>
     </ui:define>

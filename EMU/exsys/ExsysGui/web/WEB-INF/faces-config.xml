@@ -83,4 +83,24 @@
             <redirect/>
         </navigation-case>
     </navigation-rule>
+
+    <navigation-rule>
+        <from-view-id>/reRuleSets.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>transferRuleSet</from-outcome>
+            <to-view-id>/reTransferRuleSet.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>editRule</from-outcome>
+            <to-view-id>/reEditRule.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <from-view-id>/reRules.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>editRule</from-outcome>
+            <to-view-id>/reEditRule.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
 </faces-config>

@@ -48,27 +48,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link RuleSet }
+     * Create an instance of {@link Conclusion }
      * 
      */
-    public RuleSet createRuleSet() {
-        return new RuleSet();
-    }
-
-    /**
-     * Create an instance of {@link ConclusionType }
-     * 
-     */
-    public ConclusionType createConclusionType() {
-        return new ConclusionType();
-    }
-
-    /**
-     * Create an instance of {@link RelatedComponentFinder }
-     * 
-     */
-    public RelatedComponentFinder createRelatedComponentFinder() {
-        return new RelatedComponentFinder();
+    public Conclusion createConclusion() {
+        return new Conclusion();
     }
 
     /**
@@ -88,11 +72,35 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Conclusion }
+     * Create an instance of {@link RelatedComponentFinder }
      * 
      */
-    public Conclusion createConclusion() {
-        return new Conclusion();
+    public RelatedComponentFinder createRelatedComponentFinder() {
+        return new RelatedComponentFinder();
+    }
+
+    /**
+     * Create an instance of {@link RuleSet }
+     * 
+     */
+    public RuleSet createRuleSet() {
+        return new RuleSet();
+    }
+
+    /**
+     * Create an instance of {@link SimpleComponentFinder }
+     * 
+     */
+    public SimpleComponentFinder createSimpleComponentFinder() {
+        return new SimpleComponentFinder();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionType }
+     * 
+     */
+    public ConclusionType createConclusionType() {
+        return new ConclusionType();
     }
 
     /**
@@ -101,6 +109,22 @@ public class ObjectFactory {
      */
     public ConclusionTrigger createConclusionTrigger() {
         return new ConclusionTrigger();
+    }
+
+    /**
+     * Create an instance of {@link ActionExecution }
+     * 
+     */
+    public ActionExecution createActionExecution() {
+        return new ActionExecution();
+    }
+
+    /**
+     * Create an instance of {@link DimCommandAction }
+     * 
+     */
+    public DimCommandAction createDimCommandAction() {
+        return new DimCommandAction();
     }
 
     /**
@@ -117,22 +141,6 @@ public class ObjectFactory {
      */
     public EmailAction createEmailAction() {
         return new EmailAction();
-    }
-
-    /**
-     * Create an instance of {@link SimpleComponentFinder }
-     * 
-     */
-    public SimpleComponentFinder createSimpleComponentFinder() {
-        return new SimpleComponentFinder();
-    }
-
-    /**
-     * Create an instance of {@link ActionExecution }
-     * 
-     */
-    public ActionExecution createActionExecution() {
-        return new ActionExecution();
     }
 
     /**

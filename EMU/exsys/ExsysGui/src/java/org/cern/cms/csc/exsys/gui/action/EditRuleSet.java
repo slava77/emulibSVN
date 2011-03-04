@@ -10,6 +10,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import org.cern.cms.csc.dw.dao.EditorDaoLocal;
 import org.cern.cms.csc.dw.exception.OnSaveProcessingException;
@@ -18,13 +19,15 @@ import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.exsys.gui.editor.EntityEditorManager;
 import org.cern.cms.csc.exsys.re.model.ConclusionType;
 import org.cern.cms.csc.exsys.re.model.RuleSet;
+import org.icefaces.bean.ViewRetained;
+import org.icefaces.bean.WindowDisposed;
 
 /**
  *
  * @author evka
  */
 @ManagedBean
-@ViewScoped
+@SessionScoped
 public class EditRuleSet extends EntityEditorManager implements Serializable {
 
     @EJB

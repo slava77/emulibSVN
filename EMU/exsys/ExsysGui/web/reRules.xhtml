@@ -49,7 +49,7 @@
                 </ice:panelGroup>
 
                 <ice:panelGrid columns="2" rendered="#{column.name == 'name'}">
-                    <ice:commandLink value="#{item.name}" action="reEditRule">
+                    <ice:commandLink value="#{item.name}" action="editRule">
                         <f:setPropertyActionListener target="#{editRule.entity}" value="#{item}"/>
                     </ice:commandLink>
                     <ice:panelGroup rendered="#{!item.enabled}">
