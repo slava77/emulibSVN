@@ -17,7 +17,6 @@ import javax.faces.application.Application;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
-import javax.faces.event.FacesEvent;
 import javax.persistence.Transient;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +36,6 @@ import jsf.bean.gui.log.SimpleLogger;
 public abstract class BeanTableManager implements Serializable {
 
     private static final Logger logger = SimpleLogger.getLogger(BeanTableManager.class);
-
     private BeanTablePack tablePack;
     private List<BeanTablePack> tables = new ArrayList<BeanTablePack>();
     private final String id;
@@ -111,7 +109,7 @@ public abstract class BeanTableManager implements Serializable {
         Map map = context.getExternalContext().getRequestParameterMap();
         int tableIndex = Integer.valueOf((String) map.get("tableIndex"));
         while (this.tables.size() != tableIndex) {
-            tablePack = tables.get(tables.size()-1);
+            tablePack = tables.get(tables.size() - 1);
             this.popTable();
         }
     }
@@ -126,25 +124,52 @@ public abstract class BeanTableManager implements Serializable {
         }
         return tablePrefix;
     }
-
     /*********************************************
      *
      * Row selection manager
      *
      *********************************************/
-
     private EntityBeanBase selected;
+    private Boolean selectedFirst;
+    private Boolean selectedLast;
+
+    public boolean isSelectedFirst() {
+        return selectedFirst;
+    }
+
+    public boolean isSelectedLast() {
+        return selectedLast;
+    }
+
+    public void setSelectedRowById (Object idValue) {
+        Iterator<EntityBeanBase> it = this.getTable().getData().iterator();
+        selectedFirst = true;
+        this.selected = null;
+        while (it.hasNext()) {
+            EntityBeanBase row = it.next();
+            if (row.getEntityId().equals(idValue)) {
+                this.selected = row;
+                this.selected.setSelected(true);
+                selectedLast = !it.hasNext();
+                break;
+            }
+            selectedFirst = false;
+        }
+    }
 
     public void rowSelectionListener(RowSelectorEvent event) {
 
         if (event.isSelected()) {
             Iterator<EntityBeanBase> it = this.getTable().getData().iterator();
+            selectedFirst = true;
             while (it.hasNext()) {
                 EntityBeanBase row = it.next();
                 if (row.getSelected()) {
                     this.selected = row;
+                    selectedLast = !it.hasNext();
                     break;
                 }
+                selectedFirst = false;
             }
         } else {
             this.selected = null;
@@ -164,18 +189,14 @@ public abstract class BeanTableManager implements Serializable {
             this.selected = null;
         }
     }
-
-
     /*********************************************
      *
      * Bean Table Properties
      *
      *********************************************/
-
     private static final String PROPERTIES_BASE_PATH = "resources/tables/";
     private static final String PROPERTIES_EXTENSION = ".properties";
     private static final String COOKIE_NAME_PATTERN = "table.%s.properties";
-
     // Caching default properties
     private static Map<String, Properties> beanProperties = new HashMap<String, Properties>();
 
@@ -257,14 +278,12 @@ public abstract class BeanTableManager implements Serializable {
     private void setCookie(String name, String value, int age) {
         Cookie cookie = new Cookie(name, value);
         cookie.setMaxAge(age);
-        ((HttpServletResponse) FacesContext.getCurrentInstance()
-                .getExternalContext().getResponse()).addCookie(cookie);
+        ((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).addCookie(cookie);
     }
 
     @Transient
     private String getCookie(String name) {
-        Cookie cookie[] = ((HttpServletRequest) FacesContext.getCurrentInstance()
-                .getExternalContext().getRequest()).getCookies();
+        Cookie cookie[] = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getCookies();
         if (cookie != null && cookie.length > 0) {
             for (int i = 0; i < cookie.length; i++) {
                 if (cookie[i].getName().equals(name)) {
@@ -320,5 +339,4 @@ public abstract class BeanTableManager implements Serializable {
         context.setViewRoot(viewRoot);
         context.renderResponse();
     }
-
 }

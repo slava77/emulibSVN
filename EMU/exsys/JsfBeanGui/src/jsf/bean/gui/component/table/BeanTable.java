@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 import javax.faces.event.ActionEvent;
-import javax.faces.event.FacesEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
