@@ -23,6 +23,7 @@ const mapping emuui_dummyMapping;
 global mapping emuui_g_mappingCache;
 global mapping emuui_g_arrayCache;
 global string emuui_g_cscSystemNamesPattern;
+global dyn_string emuui_g_cscSystemNames;
 global dyn_string emuui_g_lvSystemNames;
 global mapping emuui_g_mapPcmbDb = emuui_dummyMapping;
 global mapping emuui_g_mapPcmbDbById = emuui_dummyMapping;
@@ -553,4 +554,20 @@ string emuui_getCscSystemNamesPattern(dyn_string &exceptionInfo) {
     emuui_g_cscSystemNamesPattern += "}";
   }
   return emuui_g_cscSystemNamesPattern;  
+}
+
+dyn_string emuui_getCscSystemNames(dyn_string &exceptionInfo) {
+  if (dynlen(emuui_g_cscSystemNames) == 0) {
+    mapping dcsProjects = emuui_getMapping("dcsProjectSystemNames", exceptionInfo);
+    if (emu_checkException(exceptionInfo)) { return ""; }
+    for (int i=1; i <= mappinglen(dcsProjects); i++) {
+      dynAppend(emuui_g_cscSystemNames, mappingGetValue(dcsProjects, i));
+    }
+    string mySysName = getSystemName();
+    strreplace(mySysName, ":", "");
+    if (!dynContains(emuui_g_cscSystemNames, mySysName)) {
+      dynAppend(emuui_g_cscSystemNames, mySysName);
+    }
+  }
+  return emuui_g_cscSystemNames;
 }
