@@ -21,23 +21,17 @@ public void exsys_startAlertFactDelivery(dyn_string &ex) {
 }
 
 private void exsys_sendAllAlertStates() {
-  dyn_string ex;
-//   dyn_string cscSystems = emuui_getCscSystemNames(ex);
-//   if (emu_checkException(ex)) { return; }
-//  for (int i=1; i <= dynlen(cscSystems); i++) {
-//    emu_info("    sending alert states for " + cscSystems[i] + "...");
-    
-    dyn_dyn_anytype alerts;
+  dyn_string ex;    
+  dyn_dyn_anytype alerts;
 
-    dpQuery("SELECT '_alert_hdl.._act_state', '_alert_hdl.._act_text', '_original.._value'"
-            + " FROM '*' " //+ " REMOTE '" + cscSystems[i] + ":'"
-            + " WHERE '_alert_hdl.._type' != 0", alerts);
+  dpQuery("SELECT '_alert_hdl.._act_state', '_alert_hdl.._act_text', '_original.._value'"
+          + " FROM '*' " //+ " REMOTE '" + cscSystems[i] + ":'"
+          + " WHERE '_alert_hdl.._type' != 0", alerts);
 
-    for(int i=1; i <= dynlen(alerts); i++) {
-      dyn_anytype alert = alerts[i];
-      exsys_sendAlertFactWithData(alert[1], alert[2], alert[3], alert[4]);
-    }
-//  }
+  for(int i=1; i <= dynlen(alerts); i++) {
+    dyn_anytype alert = alerts[i];
+    exsys_sendAlertFactWithData(alert[1], alert[2], alert[3], alert[4]);
+  }
 }
 
 public void exsys_updateAlertsCB(time t, int count, string alert) {
