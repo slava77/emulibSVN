@@ -15,5 +15,5 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Label {
     String name();
-    String description();
+    String description() default "";
 }
