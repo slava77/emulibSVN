@@ -9,18 +9,20 @@
 #uses "fwConfigs/fwAlertConfig.ctl"
 #uses "fwRDBArchiving/fwRDBConfig.ctl"
 
-// patched
 
 //----------------------------------------------------------------------------------
 /**@file
 
 This library contains LV_CRB functions for EMU DCS LV project.
 
-@author Xiaofeng Yang (PH/UCM)
-@date   Aug 2010
+@author              Xiaofeng Yang (PH/UCM)
+@date creation       Aug 2010
+@data modification   Jan 2011
+@data modification   Mar 2011  fix a bug in emuLvCRB_setArchiving()--change *ai* to *AI*
 */
-      const bool      bDebug                = false; //debug on, else off
-      const bool      bP5Project            = true; //for P5,else for 904      
+//-----------pre-defined constants-------------------------------------------------------------
+      const bool      bDebug                = false; //debug info  on/off
+      const bool      bP5Project            = true;  //project at P5/904      
 //---------------------------------------------------------------------------------
 /**
  * initialize generate parameters CRB,like system name where the CRB is installed
@@ -28,21 +30,13 @@ This library contains LV_CRB functions for EMU DCS LV project.
  */
 void emuLvCRB_initalizeParam()
 {
-  //get system name where CRB component installation
-  dyn_string systems;
-  fwInstallation_getApplicationSystem("CMS_CSCfw_LV_CRB", systems);
-  addGlobal("gSystemNameCRB", STRING_VAR);
-  gSystemNameCRB = "";
-  for (int i=1; i <= dynlen(systems); i++) {
-    if (strpos(systems[i], "*") < 0) { // if the system is not actually alive (connected), then it will have * symbol around the sysName
-      gSystemNameCRB = systems[i];
-      break;
-    }
-  }
-  // fall back to default if none is found
-  if (gSystemNameCRB == "") {
-    gSystemNameCRB = "cms_csc_dcs_10";
-  }
+   addGlobal("gSystemNameCRB", STRING_VAR); 
+//get system name where CRB component installation
+   
+   dyn_string ds;
+   fwInstallation_getApplicationSystem("CMS_CSCfw_LV_CRB",ds);    
+   gSystemNameCRB = ds[1]; //with ":"
+   emuLvCRB_showDebug(bDebug, gSystemNameCRB);
 }
 /**
  * simple debug information on/off
@@ -79,7 +73,7 @@ void emuLvCRB_deleteAll()
   emuLvCRB_showDebug(bDebug,"dps are deleted in dpTypes:"+dsDpTypes);
   for(i=1;i<=dynlen(dsDpTypes);i++)
   {
-    dsDpNames = dpNames("*",dsDpTypes[i]);
+    dsDpNames = dpNames(gSystemNameCRB+"*",dsDpTypes[i]);
       if (dynlen(dsDpNames)>0)
        {  
           for(j=1;j<=dynlen(dsDpNames);j++)
@@ -101,7 +95,7 @@ void emuLvCRB_deleteAll()
   dyn_string dsSearchTypes = makeDynString("*CRB*","*CAN1*","*PSU*");
   for (i=1;i<=dynlen(dsSearchTypes);i++)
   {
-    dsDpNames = dpNames(dsSearchTypes[i],"_FwTreeNode");
+    dsDpNames = dpNames(gSystemNameCRB+dsSearchTypes[i],"_FwTreeNode");
     for(j=1;j<=dynlen(dsDpNames);j++)
        {
          dpDelete(dsDpNames[j]);
@@ -109,7 +103,7 @@ void emuLvCRB_deleteAll()
   }
   
   //remove dps from FwNode
-   dsDpNames = dpNames("*CAN1*","FwNode");
+   dsDpNames = dpNames(gSystemNameCRB+"*CAN1*","FwNode");
     for(j=1;j<=dynlen(dsDpNames);j++)
        {
          dpDelete(dsDpNames[j]);
@@ -257,11 +251,11 @@ emuLvCRB_createElmbCRB()
            {
             fwElmbUser_createDigital(dsCanBusNames[iBus],"ELMB_"+sxE,"","C",iD,false,true,dsExceptionInfo); //create DO for Port C         
            }
-         for(iD=0;iD<=4;iD++)
+          for(iD=0;iD<=4;iD++)
            {
             fwElmbUser_createDigital(dsCanBusNames[iBus],"ELMB_"+sxE,"","A",iD,false,true,dsExceptionInfo); //create DO for Port A         
            }            
-        }
+       }
     }
    delay(1);
    DebugTN("done for CRB elmb creating");
@@ -297,7 +291,7 @@ void emuLvCRB_createElmbPSU()
    }
   delay(1); 
   //set .bus for PSU branch
-  ds1=dpNames("*Branch*","FwElmbPSUBranch"); 
+  ds1=dpNames(gSystemNameCRB+"*Branch*","FwElmbPSUBranch"); 
   for(i=1;i<=dynlen(ds1);i++)
    {   
       dpSetWait(ds1[i]+".bus",gSystemNameCRB+"ELMB/"+sCanBusName);
@@ -453,7 +447,6 @@ void emuLvCRB_createPsuTree()
 /**
  * create logical node for CRB
  */
-
 void emuLvCRB_createLogicalNode(string sParentNode,string sNode,string sConfigPanel,string sOpPanel)
 {    
 	string sName, sType, sAlias;
@@ -543,7 +536,7 @@ void emuLvCRB_createFwCrbPsu()
      sPcrate = "CRB/CSC_ME_"+ds1[1]+"_LV_CRB";
      sElmbID = ds1[2];
      //get digit output from elmbDo for switch_list
-     ds2 = dpNames("*ELMB_"+sElmbID+"*","FwElmbDo");
+     ds2 = dpNames(gSystemNameCRB+"*ELMB_"+sElmbID+"*","FwElmbDo");
      ds3 = makeDynString();
        for (j=1;j<=dynlen(ds2);j++)
         {
@@ -558,7 +551,7 @@ void emuLvCRB_createFwCrbPsu()
      //for fwPsu_CSC_LV
      emuLvCRB_showDebug(bDebug,"create dp at fwPsu_CSC_LV, waiting...");
      ds4 = strsplit(dsList[1],";");                 
-     sPsus = dpNames("*ELMB_"+ds4[3],"FwElmbNode"); //with system name systemname:ELMB/LV...
+     sPsus = dpNames(gSystemNameCRB+"*ELMB_"+ds4[3],"FwElmbNode"); //with system name systemname:ELMB/LV...
      ds5 = strsplit(sPsus,":");                     
      sPsu = ds5[2];                                 //without system name, ELMB/LV...
      strreplace(sPsu,"/","_");                      // ELMB_LV...
@@ -566,7 +559,7 @@ void emuLvCRB_createFwCrbPsu()
      dpSetWait(gSystemNameCRB+sPsu+".coord",sPsus);   //systemname:ELMB_LV..... 
      //for fwBranch_CSC_LV
      emuLvCRB_showDebug(bDebug,"create dp at fwBranch_CSC_LV, waiting...");
-     ds6 = dpNames("*EPSU*","FwElmbPSUBranch");
+     ds6 = dpNames(gSystemNameCRB+"*EPSU*","FwElmbPSUBranch");
      for (i=1;i<=dynlen(ds6);i++)
       {
         string sElmb,sElmbDo;
@@ -654,7 +647,7 @@ void emuLvCRB_setAlertElmbNode()
   dyn_string dsElmbNames,dsAlertTexts,dsAlertClasses; 
   dyn_float  dfLimit1,dfLimit2;  
   string sDpName1,sDpName2;
-  dsElmbNames = dpNames("*Elmb*","FwElmbNode");
+  dsElmbNames = dpNames(gSystemNameCRB+"*Elmb*","FwElmbNode");
   dsAlertTexts = makeDynString("error");
   dsAlertClasses = makeDynString("_fwErrorNack.");
   dfLimit1 = makeDynFloat(1);
@@ -678,7 +671,7 @@ void emuLvCRB_setAlertCrb()
   dyn_string dsCrbNames,dsAlertTexts,dsAlertClasses,dsDpLists,dsExceptionInfo; 
   dyn_float  dfLimits;  
   string sDpName,sCoord;
-  dsCrbNames = dpNames("*CRB*","fwCrb_CSC_LV");
+  dsCrbNames = dpNames(gSystemNameCRB+"*CRB*","fwCrb_CSC_LV");
   dsAlertTexts = makeDynString("error");
   dsAlertClasses = makeDynString("_fwErrorNack.");
   dfLimits = makeDynFloat(1);
@@ -690,7 +683,7 @@ void emuLvCRB_setAlertCrb()
     emuLvCRB_configAlert(sDpName,dfLimits,dsAlertTexts,dsAlertClasses);
     //set summary alert for Crb
     dpGet(dsCrbNames[i]+".coord",sCoord);
-    dsDpLists = dpNames("*ELMB_"+sCoord+"*.value","FwElmbAi");
+    dsDpLists = dpNames(gSystemNameCRB+"*ELMB_"+sCoord+"*.value","FwElmbAi");
     dynAppend(dsDpLists,sDpName);
     fwAlertConfig_createSummary(dsCrbNames[i]+".", makeDynString("PCrate OK","PCrate ERROR"),
                                 dsDpLists,"", makeDynString(),"",dsExceptionInfo);  
@@ -711,10 +704,10 @@ void emuLvCRB_setAlertPsu()
   string sDpName,sBranchCanV,sBranchAdV;
   int i,j,k;
   //modify alert class for ADV/CANV
-  dsADVs = dpNames("*ADV_*","FwElmbAi");
-  dsCANVs = dpNames("*CANV_*","FwElmbAi");
-  dsPsus = dpNames("*ELMB*","fwPsu_CSC_LV");
-  dsBranches = dpNames("*Branch*","FwElmbPSUBranch");
+  dsADVs = dpNames(gSystemNameCRB+"*ADV_*","FwElmbAi");
+  dsCANVs = dpNames(gSystemNameCRB+"*CANV_*","FwElmbAi");
+  dsPsus = dpNames(gSystemNameCRB+"*ELMB*","fwPsu_CSC_LV");
+  dsBranches = dpNames(gSystemNameCRB+"*Branch*","FwElmbPSUBranch");
   DebugTN("set alert for Psu...");
   for (i=1;i<=dynlen(dsADVs);i++)
     {
@@ -811,7 +804,7 @@ void emuLvCRB_setFsmUiInfo()
   //set label for Crb device,no need set panel for Crb device,the reason is:
   //use standard fwUi.pnl, and operating panel is defined in fwCrb_CSC_LV FSM type already 
   mapping mMarCrbID = emuLvCRB_getMapping("Marthon_Crb_ID_P5");
-  dsDevices = dpNames("*_CRB","_FwFsmDevice");
+  dsDevices = dpNames(gSystemNameCRB+"*_CRB","_FwFsmDevice");
   for(i=1;i<=dynlen(dsDevices);i++)
   {
      sDpName = dpSubStr(dsDevices[i], DPSUB_DP);
@@ -825,7 +818,7 @@ void emuLvCRB_setFsmUiInfo()
      dpSetWait(dsDevices[i]+".ui.label",sLabel);
   }  
   //set label/panel for Psu device
-  dsDevices = dpNames("*Branch*","_FwFsmDevice");
+  dsDevices = dpNames(gSystemNameCRB+"*Branch*","_FwFsmDevice");
   for(i=1;i<=dynlen(dsDevices);i++)
   {
      sDpName = dpSubStr(dsDevices[i], DPSUB_DP);
@@ -836,7 +829,7 @@ void emuLvCRB_setFsmUiInfo()
      dpSetWait(dsDevices[i]+".ui.label",sLabel);                                                 
   }
   //set label/panel for Crb objects
-  dsObjects = dpNames("*LV_CRB","_FwFsmObject");
+  dsObjects = dpNames(gSystemNameCRB+"*LV_CRB","_FwFsmObject");
   for(i=1;i<=dynlen(dsObjects);i++)
   { 
     sDpName = dpSubStr(dsObjects[i], DPSUB_DP);
@@ -848,7 +841,7 @@ void emuLvCRB_setFsmUiInfo()
                                                       "CMS_CSCfw_LV_CRB/emuStationCrbOperation.pnl"));      
   } 
   //set label for Psu objects, no panel set needed
-  dsObjects = dpNames("*PSU","_FwFsmObject");
+  dsObjects = dpNames(gSystemNameCRB+"*PSU","_FwFsmObject");
   for(i=1;i<=dynlen(dsObjects);i++)
   { 
     sDpName = dpSubStr(dsObjects[i], DPSUB_DP);
@@ -871,7 +864,7 @@ void emuLvCRB_setFsmUserData()
   mapping mMarCrbID = emuLvCRB_getMapping("Marthon_Crb_ID_P5");
   DebugTN("set userdata for Crb/PSU FSM tree node");
   //set label for Crb device in _FwTreeNode,no need for panel assign
-  dsDevices = dpNames("*TN_CRB*LV_CRB","_FwTreeNode");
+  dsDevices = dpNames(gSystemNameCRB+"*TN_CRB*LV_CRB","_FwTreeNode");
   for(i=1;i<=dynlen(dsDevices);i++)
   {
      sDpName   = dpSubStr(dsDevices[i], DPSUB_DP);
@@ -884,7 +877,7 @@ void emuLvCRB_setFsmUserData()
      dpSetWait(dsDevices[i]+".userdata",makeDynString(1,1,sLabel,""));
   }  
   //set label for PSU branch with .userdata in _FwTreeNode
-  dsDevices = dpNames("*Branch*","_FwTreeNode");
+  dsDevices = dpNames(gSystemNameCRB+"*Branch*","_FwTreeNode");
   for(i=1;i<=dynlen(dsDevices);i++)
   {
      sDpName  = dpSubStr(dsDevices[i], DPSUB_DP);
@@ -894,7 +887,7 @@ void emuLvCRB_setFsmUserData()
      dpSetWait(dsDevices[i]+".userdata",makeDynString(1,1,sLabel,""));
   }
   //set label/panel for Crb objects with .userdata in _FwTreeNode
-  dsObjects = dpNames("*TN_CSC*LV_CRB","_FwTreeNode");
+  dsObjects = dpNames(gSystemNameCRB+"*TN_CSC*LV_CRB","_FwTreeNode");
   for(i=1;i<=dynlen(dsObjects);i++)
   { 
     sDpName = dpSubStr(dsObjects[i], DPSUB_DP);
@@ -903,7 +896,7 @@ void emuLvCRB_setFsmUserData()
                                       "CMS_CSCfw_LV_CRB/emuStationCrbOperation.pnl"));    
   }
    //set label for Psu objects with .userdata in _FwTreeNode 
-  dsObjects = dpNames("*TN_CSC*PSU","_FwTreeNode");
+  dsObjects = dpNames(gSystemNameCRB+"*TN_CSC*PSU","_FwTreeNode");
    for(i=1;i<=dynlen(dsObjects);i++)
   { 
     sDpName = dpSubStr(dsObjects[i], DPSUB_DP);
@@ -920,7 +913,7 @@ void emuLvCRB_setArchiving()
   dyn_string dsAiNames,dsFsmDevs,dsFsmObjs;
   int i;
   DebugTN("set archiving config for CRB...");
-  dsAiNames = dpNames("*ai*","FwElmbAi");
+  dsAiNames = dpNames(gSystemNameCRB+"*AI*","FwElmbAi");
   if(dynlen(dsAiNames))
   { 
     for(i=1;i<=dynlen(dsAiNames);i++)
@@ -936,7 +929,7 @@ void emuLvCRB_setArchiving()
                  dsAiNames[i] + ".value:_archive.1._std_time",iTimeElmbAi);
     }  
   } 
-  dsFsmDevs = dpNames("*","_FwFsmDevice");
+  dsFsmDevs = dpNames(gSystemNameCRB+"*","_FwFsmDevice");
   if(dynlen(dsFsmDevs))
   {
     for(i=1;i<=dynlen(dsFsmDevs);i++)
@@ -944,7 +937,7 @@ void emuLvCRB_setArchiving()
       emuLvCRB_setFsmDpArchiving(dsFsmDevs[i]);
     }  
   }
-  dsFsmObjs = dpNames("*","_FwFsmObject");
+  dsFsmObjs = dpNames(gSystemNameCRB+"*","_FwFsmObject");
   if(dynlen(dsFsmObjs))
   {
     for(i=1;i<=dynlen(dsFsmObjs);i++)
@@ -979,13 +972,13 @@ void emuLvCRB_setFsmDpArchiving(string sDpName)
  */
 void emuLvCRB_generateToggleA4(string sElmbName,int iInterval)
 {
+  unsigned uMs = iInterval/3;
   dyn_string dsExceptionInfo;
-  //iInterval = 300;
-  delay(0,iInterval/3);
+  delay(0,uMs);
   emuLvCRB_setDoBitSync(sElmbName,"A;4",false,dsExceptionInfo);
-  delay(0,iInterval/3); 
+  delay(0,uMs); 
   emuLvCRB_setDoBitSync(sElmbName,"A;4",true,dsExceptionInfo); 
-  delay(0,iInterval/3);
+  delay(0,uMs);
 }
 /**
  * adaptor to fwElmbUser_setDoBitsSynchronized
@@ -996,50 +989,27 @@ void emuLvCRB_generateToggleA4(string sElmbName,int iInterval)
  */
 void emuLvCRB_setDoBitSync(string sElmbName,string sBitId,bool bValue,dyn_string &dsExceptionInfo)
 {
-  emuLvCRB_initalizeParam();
+  /*  
+  float fElmbVersion;
+  dpGet(gSystemNameCRB+"fwInstallation_fwElmb.componentVersion",fElmbVersion);
+  emuLvCRB_showDebug(bDebug,"current elmb version is "+fElmbVersion);
+  */
   dyn_string dsBitIds = makeDynString(sBitId);
   dyn_bool dbValues = makeDynBool(bValue);  
-  if (isFunctionDefined("fwElmbUser_setDoBitsSynchronized"))
-  {
-     fwElmbUser_setDoBitsSynchronized(sElmbName,dsBitIds,dbValues,dsExceptionInfo); 
-//     fwElmbUser_setDoBits(sElmbName,dsBitIds,dbValues,dsExceptionInfo); 
-     //fwElmbUser_setDoBit(sElmbName,sBitId,bValue,dsExceptionInfo); 
-     //DebugTN("dsExceptionInfo:"+dsExceptionInfo);
+ // if(fElmbVersion>=4.2)   
+  fwElmbUser_setDoBitsSynchronized(sElmbName,dsBitIds,dbValues,dsExceptionInfo);  
      if(dynlen(dsExceptionInfo)>0)
         {
-          //DebugTN(dsExceptionInfo);
           delay(0,100);
-          fwElmbUser_setDoBitsSynchronized(sElmbName,dsBitIds,dbValues,dsExceptionInfo);
-//          fwElmbUser_setDoBits(sElmbName,dsBitIds,dbValues,dsExceptionInfo);
-         // fwElmbUser_setDoBit(sElmbName,sBitId,bValue,dsExceptionInfo,false);
+          //fwElmbUser_setDoBitsSynchronized(sElmbName,dsBitIds,dbValues,dsExceptionInfo);
+          fwElmbUser_setDoBit(sElmbName,sBitId,bValue,dsExceptionInfo,false);
         }
-     
-     // readback the bit and check if it's indeed got set... try 3 times..
-     int resendingTryCount = 0;
-     bool valueGood = false;
-     while ((resendingTryCount < 3) && !valueGood) {
-        unsigned value = fwElmbUser_getDoByte(sElmbName, strsplit(sBitId, ";")[1], dsExceptionInfo);
-        if (dynlen(dsExceptionInfo) > 0) { return; }
-        bit32 bit32value = value;
-        int bitValue = getBit(bit32value, strsplit(sBitId, ";")[2]);
-        bool bbitValue = bitValue;
-        if (bbitValue != bValue) {
-          DebugTN("DO readback value of bit " + sElmbName + ", " + sBitId + " is not as it's supposed to be after setting. Setting was " + bValue + ", but readback " + bbitValue + ". Trying to set again (attempt #" + resendingTryCount + ")");
-          delay(0, 100);
-          fwElmbUser_setDoBitsSynchronized(sElmbName,dsBitIds,dbValues,dsExceptionInfo);
-//          fwElmbUser_setDoBits(sElmbName,dsBitIds,dbValues,dsExceptionInfo);
-        } else {
-          valueGood = true;
-        }
-        resendingTryCount++;
-      }
-  
-   }
+  /*   
   else
    {
-     DebugTN("WARNING: using fwElmbUser_setDoBit(...), because fwElmbUser_setDoBitsSynchronized(...) is not defined!!!");
      fwElmbUser_setDoBit(sElmbName,sBitId,bValue,dsExceptionInfo);
-   }        
+   } 
+  */   
 }
 /**
  * Create all for LV CRB
