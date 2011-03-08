@@ -49,6 +49,7 @@ public class EntityBeanBase implements Serializable {
      * Get entity class property metadata (it's cached in a static map called propertyMetadataCache).
      * @return entity class property metadata (it's cached in a static map called propertyMetadataCache).
      */
+    @Transient
     public List<PropertyMd> getPropertyMetadata() throws InvalidEntityBeanPropertyException {
         return getPropertyMetadata(this.getClass());
     }
@@ -68,6 +69,7 @@ public class EntityBeanBase implements Serializable {
      * If there are no such fields, toString() is returned.
      * @return title of the entity which is constructed from all fields annotated with @UseInTitle. If there are no such fields, toString() is returned.
      */
+    @Transient
     public String getEntityTitle() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         String title = "";
 
@@ -165,6 +167,7 @@ public class EntityBeanBase implements Serializable {
         }
     }
 
+    @Transient
     public Object getEntityId() {
         try {
             return getIdPropertyMd().getReadMethod().invoke(this);
@@ -174,6 +177,7 @@ public class EntityBeanBase implements Serializable {
         }
     }
 
+    @Transient
     public PropertyDescriptor getIdPropertyMd() {
         return getIdPropertyMd(this.getClass());
     }
