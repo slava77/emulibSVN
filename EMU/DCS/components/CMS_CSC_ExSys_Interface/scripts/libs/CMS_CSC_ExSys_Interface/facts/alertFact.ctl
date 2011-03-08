@@ -1,3 +1,8 @@
+#uses "CMS_CSC_common/emu_common.ctl"
+#uses "CMS_CSC_UI/emuui_deviceInfo.ctl"
+#uses "CMS_CSC_ExSys_Interface/exsysUtil.ctl"
+#uses "CMS_CSC_ExSys_Interface/exsysInterface.ctl"
+
 /**
   * Connects to all alerts and sends facts when they come and go
   */
@@ -20,17 +25,35 @@ public void exsys_startAlertFactDelivery(dyn_string &ex) {
   emu_info("Alert facts delivery service started.");
 }
 
+// private void exsys_sendAllAlertStates() {
+//   dyn_string ex;    
+//   dyn_dyn_anytype alerts;
+// 
+//   dpQuery("SELECT '_alert_hdl.._act_state', '_alert_hdl.._act_text', '_original.._value'"
+//           + " FROM '*' " //+ " REMOTE '" + cscSystems[i] + ":'"
+//           + " WHERE '_alert_hdl.._type' != 0", alerts);
+// 
+//   for(int i=1; i <= dynlen(alerts); i++) {
+//     dyn_anytype alert = alerts[i];
+//     exsys_sendAlertFactWithData(alert[1], alert[2], alert[3], alert[4]);
+//   }
+// }
+
 private void exsys_sendAllAlertStates() {
-  dyn_string ex;    
-  dyn_dyn_anytype alerts;
-
-  dpQuery("SELECT '_alert_hdl.._act_state', '_alert_hdl.._act_text', '_original.._value'"
-          + " FROM '*' " //+ " REMOTE '" + cscSystems[i] + ":'"
-          + " WHERE '_alert_hdl.._type' != 0", alerts);
-
-  for(int i=1; i <= dynlen(alerts); i++) {
-    dyn_anytype alert = alerts[i];
-    exsys_sendAlertFactWithData(alert[1], alert[2], alert[3], alert[4]);
+  // this basically returns all DPEs in the system since everybody actually appear to have a default alert handler
+  dyn_string allAlertTypeDpes = dpNames("*.**:_alert_hdl.._type");
+  dyn_int alertTypes;
+  dpGet(allAlertTypeDpes, alertTypes);
+  dyn_string realAlertDpes;
+  for (int i=1; i <= dynlen(allAlertTypeDpes); i++) {
+    if (alertTypes[i] != 0) { // only those which have _alert_hdl.._type != 0 are real alert handlers - filter only those
+      dynAppend(realAlertDpes, allAlertTypeDpes[i]);
+    }
+  }
+  
+  // send the alert state facts for all of the real alerts
+  for (int i=1; i <= dynlen(realAlertDpes); i++) {
+    exsys_sendAlertFact(realAlertDpes[i]);
   }
 }
 
@@ -39,7 +62,7 @@ public void exsys_updateAlertsCB(time t, int count, string alert) {
   startThread("exsys_sendAlertFact", alert);
 }
 
-private void exsys_sendAlertFact(string alert) {
+public void exsys_sendAlertFact(string alert) {
   string alertConf = dpSubStr(alert, DPSUB_SYS_DP_EL_CONF);
 
   // determine state and text  
@@ -60,7 +83,7 @@ private void exsys_sendAlertFact(string alert) {
   }
 }
 
-private void exsys_sendAlertFactWithData(string dpe, int actState, string actText, anytype value = -9999999) {
+public void exsys_sendAlertFactWithData(string dpe, int actState, string actText, anytype value = -9999999) {
   bool isOn = ((actState == 1) || (actState == 2)),
        isAcknowledged = ((actState == 0) || (actState == 2));
   
