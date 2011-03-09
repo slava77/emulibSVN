@@ -16,4 +16,6 @@ public interface ClassFinderIf {
 
     Collection<Class> findSubclassesInSamePackage(Class clazz) throws ClassNotFoundException, IOException;
 
+    Class getClassForName(String className) throws ClassNotFoundException;
+
 }
