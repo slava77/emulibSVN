@@ -7,10 +7,8 @@ package jsf.bean.gui.component.fm;
 
 import freemarker.template.TemplateException;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  *
@@ -20,8 +18,6 @@ public class TestManager {
 
     private static final String TEST_TEMPLATE = "<#if (%s)>true<#else>false</#if>";
 
-    private Set<String> enabledTests = new HashSet<String>();
-
     private TemplateManager manager;
 
     public TestManager() {
@@ -29,16 +25,15 @@ public class TestManager {
     }
 
     public void addTest(String name, String testStr) {
-        this.manager.putTemplate(name, String.format(TEST_TEMPLATE, testStr));
-        this.enabledTests.add(name);
+        this.manager.addTemplate(name, String.format(TEST_TEMPLATE, testStr));
     }
 
     public boolean test(String name, Map<String, Object> root) throws IOException, TemplateException {
         return Boolean.valueOf(this.manager.execute(name, root));
     }
 
-    public Set<String> getEnabledTests() {
-        return Collections.unmodifiableSet(enabledTests);
+    public List<String> getEnabledTests() {
+        return this.manager.getTemplateNames();
     }
 
 }

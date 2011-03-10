@@ -51,9 +51,39 @@ public class FmComponentBean extends JsfBeanBase {
         SKIP_CLASSES.add(Class.class);
     };
 
-    private static final String DATA_HINT_FORMAT = "%s (%s)";
+    private static final String DATA_HINT_LABEL = "%s (%s)";
+    private static final String TMPL_DATA_HINT_VALUE = "${%s?default('')}";
+    private static final String TEST_DATA_HINT_VALUE = "%s";
 
-    private void buildRootHelp(String value, Class c, List<SelectItem> help) {
+    /**
+     * Retrieves a composite component attribute by name
+     * @param name Attribute name
+     * @return attribute value
+     */
+    private <T> T getAttribute(Class<T> clazz, String name) {
+        UIComponent c = UIComponent.getCurrentComponent(FacesContext.getCurrentInstance());
+        UIComponent cc = UIComponent.getCompositeComponentParent(c);
+        return (T) cc.getAttributes().get(name);
+    }
+
+    private UIInput getTemplateInput() {
+        UIComponent c = UIComponent.getCurrentComponent(FacesContext.getCurrentInstance());
+        String ccId = UIComponent.getCompositeComponentParent(c).getClientId();
+        return (UIInput) FacesContext.getCurrentInstance().getViewRoot().findComponent(ccId + ":templateStr");
+    }
+
+    /**
+     * Is it a test template component?
+     * @return
+     */
+    private boolean isTest() {
+        return getAttribute(Boolean.class, "test");
+    }
+
+
+    private void buildRootHelp(String value, Class c, Object v, List<SelectItem> help) {
+
+        String valueFormat = isTest() ? TEST_DATA_HINT_VALUE : TMPL_DATA_HINT_VALUE;
 
         if (SKIP_CLASSES.contains(c)) {
             return;
@@ -64,59 +94,79 @@ public class FmComponentBean extends JsfBeanBase {
             FINAL_CLASSES.contains(c)) {
 
             String typeName = c.getSimpleName().toLowerCase();
-            help.add(new SelectItem(value, String.format(DATA_HINT_FORMAT, value, typeName), value));
+            help.add(new SelectItem(String.format(valueFormat, value),
+                                    String.format(DATA_HINT_LABEL, value, typeName),
+                                    value));
 
-        } else {
+        } else
+
+        // Map
+        if (Map.class.isAssignableFrom(c)) {
+
+            Map mv = (Map) v;
+            for (Object k: mv.keySet()) {
+                buildRootHelp((value == null ? "" : value.concat(".")).concat((String) k),
+                              mv.get(k).getClass(),
+                              mv.get(k),
+                              help);
+            }
+
+        } else
+
+        // Array or Collection
+        if (c.isArray() || Collection.class.isAssignableFrom(c)) {
+
+            help.add(new SelectItem(String.format(valueFormat, value),
+                                    String.format(DATA_HINT_LABEL, value, "sequence"),
+                                    value));
+
+            help.add(new SelectItem(String.format(valueFormat, value.concat("?size")),
+                                    String.format(DATA_HINT_LABEL, value.concat("?size"), "integer"),
+                                    value));
+
+        } else
 
         // Anything else
-            for (PropertyDescriptor pd: PropertyUtils.getPropertyDescriptors(c)) {
-                if (!pd.getReadMethod().isAnnotationPresent(Transient.class)) {
-                    buildRootHelp(value.concat(".").concat(pd.getName()), pd.getPropertyType(), help);
-                }
+        for (PropertyDescriptor pd: PropertyUtils.getPropertyDescriptors(c)) {
+            if (!pd.getReadMethod().isAnnotationPresent(Transient.class)) {
+                try {
+                    buildRootHelp((value == null ? "" : value.concat(".")).concat(pd.getName()),
+                                  pd.getPropertyType(),
+                                  pd.getReadMethod().invoke(v),
+                                  help);
+                } catch (Exception ex) { }
             }
         }
 
     }
 
-    private void buildRootHelp(Map root, List<SelectItem> help) {
-        for (Object k: root.keySet()) {
-            buildRootHelp((String) k, root.get(k).getClass(), help);
-        }
-    }
-
     public Collection<SelectItem> getRootHelp() {
         List<SelectItem> help = new ArrayList<SelectItem>();
-        Map root = getRoot(UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()));
-        buildRootHelp(root, help);
+        buildRootHelp(null, Map.class, getAttribute(Map.class, "root"), help);
         return help;
     }
 
-    private Map getRoot(UIComponent byComponent) {
-        UIComponent cc = UIComponent.getCompositeComponentParent(byComponent);
-        return (Map) cc.getAttributes().get("root");
-    }
-
-    private UIInput getTestStrInput(UIComponent byComponent) {
-        String compositeId = UIComponent.getCompositeComponentParent(byComponent).getClientId();
-        return (UIInput) FacesContext.getCurrentInstance().getViewRoot().findComponent(compositeId + ":testStr");
-    }
-
     public void compileListener(ActionEvent ev) {
-        UIInput input = getTestStrInput(ev.getComponent());
-        validateTest(FacesContext.getCurrentInstance(), input, input.getSubmittedValue());
+        UIInput input = getTemplateInput();
+        validateTemplate(FacesContext.getCurrentInstance(), input, input.getSubmittedValue());
         if (input.isValid()) {
             addInfoMessage("Compilation successfull");
         }
     }
 
-    public void validateTest(FacesContext fc, UIComponent uic, Object o) {
-        UIInput uicIn = (UIInput) uic;
-        TestManager tm = new TestManager();
+    public void validateTemplate(FacesContext fc, UIComponent uic, Object o) {
         try {
-            tm.addTest("test", (String) o);
-            tm.test("test", getRoot(uic));
+            if (isTest()) {
+                TestManager tm = new TestManager();
+                tm.addTest("test", (String) o);
+                tm.test("test", getAttribute(Map.class, "root"));
+            } else {
+                TemplateManager tm = new TemplateManager();
+                tm.addTemplate("template", (String) o);
+                tm.execute("template", getAttribute(Map.class, "root"));
+            }
         } catch (Exception ex) {
-            uicIn.setValid(false);
+            ((UIInput) uic).setValid(false);
             JsfBeanBase.addErrorMessage(ex.getMessage());
         }
     }

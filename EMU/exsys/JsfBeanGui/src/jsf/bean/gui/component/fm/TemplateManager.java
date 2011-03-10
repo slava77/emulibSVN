@@ -13,6 +13,9 @@ import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,6 +26,7 @@ public class TemplateManager {
 
     private Configuration cfg;
     private StringTemplateLoader loader;
+    private List<String> templateNames = new ArrayList<String>();
 
     public TemplateManager() {
         this.loader = new StringTemplateLoader();
@@ -31,8 +35,9 @@ public class TemplateManager {
         this.cfg.setTemplateLoader(loader);
     }
 
-    public void putTemplate(String name, String templateStr) {
+    public void addTemplate(String name, String templateStr) {
         loader.putTemplate(name, templateStr);
+        this.templateNames.add(name);
     }
 
     public String execute(String name, Map<String, Object> root) throws IOException, TemplateException {
@@ -44,6 +49,10 @@ public class TemplateManager {
             throw new IOException(ex);
         }
         return out.toString();
+    }
+
+    public List<String> getTemplateNames() {
+        return Collections.unmodifiableList(templateNames);
     }
 
 }

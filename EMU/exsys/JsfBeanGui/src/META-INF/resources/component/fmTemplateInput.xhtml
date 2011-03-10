@@ -10,11 +10,14 @@
 
     <cc:interface>
 
-        <cc:attribute name="value"
+        <cc:attribute name="value" preferred="true"
                       shortDescription="Tpl value"/>
 
-        <cc:attribute name="root"
+        <cc:attribute name="root" preferred="true"
                       shortDescription="Root map object"/>
+
+        <cc:attribute name="test" type="java.lang.Boolean" preferred="true"
+                      shortDescription="Is it a test template?"/>
 
         <cc:attribute name="render" type="java.lang.Boolean" default="true"
                       shortDescription="Render component"/>
@@ -43,7 +46,7 @@
                 function fmAddHint(cmd, selectorClass) {
                     var t = jQuery(cmd).closest("table");
                     var v = jQuery('select.' + selectorClass, t).val();
-                    jQuery('textarea.testStr', t).replaceSelection(v, true);
+                    jQuery('textarea.templateStr', t).replaceSelection(v, true);
                 }
 
             </script>
@@ -83,7 +86,7 @@
                                            style="float: left; width: 15px"/>
 
                         <ice:commandButton value="Compile"
-                                           title="Compile entered test"
+                                           title="Compile entered template"
                                            immediate="true"
                                            actionListener="#{fmComponentBean.compileListener}"
                                            style="float: right; width: 72px"/>
@@ -93,14 +96,23 @@
                 <tr>
                     <td nowrap="true">
 
-                        <ice:inputTextarea id="testStr"
+                        <ice:inputTextarea id="templateStr"
                                            style="width: #{cc.attrs.width}px; height: #{cc.attrs.height}px"
-                                           styleClass="testStr"
+                                           styleClass="templateStr"
                                            required="#{cc.attrs.required}"
                                            requiredMessage="#{cc.attrs.requiredMessage}"
-                                           validator="#{fmComponentBean.validateTest}"
+                                           validator="#{fmComponentBean.validateTemplate}"
                                            value="#{cc.attrs.value}"/>
 
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-size: 11px; text-align: right; padding: 2px">
+                        <a href="http://freemarker.sourceforge.net/docs/index.html" target="_blank">manual</a>
+                        |
+                        <a href="http://freemarker.sourceforge.net/docs/ref.html" target="_blank">reference</a>
+                        |
+                        <a href="http://freemarker.sourceforge.net/docs/alphaidx.html" target="_blank">index</a>
                     </td>
                 </tr>
             </table>
