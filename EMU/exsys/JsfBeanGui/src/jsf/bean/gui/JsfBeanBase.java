@@ -27,6 +27,9 @@ public abstract class JsfBeanBase implements Serializable {
 
     private static final Logger logger = SimpleLogger.getLogger(JsfBeanBase.class);
 
+    public JsfBeanBase() {
+    }
+
     @Transient
     public static FacesContext getFacesContext(HttpServletRequest request, HttpServletResponse response, String lifecycleId) {
         FacesContext facesContext = FacesContext.getCurrentInstance();

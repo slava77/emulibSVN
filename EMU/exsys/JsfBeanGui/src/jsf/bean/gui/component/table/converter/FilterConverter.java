@@ -165,6 +165,9 @@ public abstract class FilterConverter implements Converter {
         if (type.equals(Double.class) || (type.isPrimitive() && type.getSimpleName().equals("double"))) {
 
             return new FilterDoubleConverter();
+        } else
+        if (type.isEnum()) {
+            return new FilterEnumConverter(type);
         }
         
         return new FilterStringConverter();

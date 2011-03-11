@@ -120,7 +120,7 @@
 
                         <ice:rowSelector
                             value="#{item.selected}"
-                            rendered="#{cc.attrs.rowSelection}"
+                            rendered="#{cc.attrs.rowSelection and cc.attrs.manager.top}"
                             selectionListener="#{cc.attrs.manager.rowSelectionListener}"/>
 
                         <f:facet name="header">

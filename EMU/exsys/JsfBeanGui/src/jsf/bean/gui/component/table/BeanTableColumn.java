@@ -1,5 +1,6 @@
 package jsf.bean.gui.component.table;
 
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -41,7 +42,16 @@ public class BeanTableColumn {
 
         // Exception for the enumerations
         if (propertyMd.getType().isEnum()) {
-            this.name = this.name.concat("Item");
+
+            // Check if nameItem exists
+            String nameItem = this.name.concat("Item");
+            for (PropertyDescriptor pd: PropertyUtils.getPropertyDescriptors(table.getRowClass())) {
+                if (pd.getName().equals(nameItem)) {
+                    this.name = nameItem;
+                    break;
+                }
+            }
+            
         }
 
         if (EntityBeanBase.class.isAssignableFrom(propertyMd.getType())) {
