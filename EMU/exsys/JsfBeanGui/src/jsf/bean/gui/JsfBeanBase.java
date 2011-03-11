@@ -146,6 +146,18 @@ public abstract class JsfBeanBase implements Serializable {
         addMessage(FacesMessage.SEVERITY_INFO, null, msg, args);
     }
 
+    public static void addErrorMessage(Throwable th) {
+        StringBuilder sb = new StringBuilder();
+        while (th != null) {
+            if (sb.length() > 0) {
+                sb.append("\n");
+            }
+            sb.append(th.getMessage());
+            th = th.getCause();
+        }
+        addMessage(FacesMessage.SEVERITY_ERROR, null, sb.toString());
+    }
+
     public static void addErrorMessage(String msg, Object... args) {
         addMessage(FacesMessage.SEVERITY_ERROR, null, msg, args);
     }
