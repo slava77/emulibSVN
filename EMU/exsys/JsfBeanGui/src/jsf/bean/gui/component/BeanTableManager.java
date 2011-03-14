@@ -8,15 +8,21 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import javax.faces.application.Application;
 import javax.faces.application.ViewHandler;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.persistence.Transient;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -25,11 +31,16 @@ import jsf.bean.gui.ClassFinderIf;
 import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.component.table.BeanTable;
 import jsf.bean.gui.component.table.BeanTableDaoIf;
+import jsf.bean.gui.component.table.BeanTableDefaultExportTemplate;
+import jsf.bean.gui.component.table.BeanTableExportManager;
+import jsf.bean.gui.component.table.BeanTableExportTemplate;
+import jsf.bean.gui.component.table.BeanTableExportTemplateProvider;
 import jsf.bean.gui.component.table.BeanTableFilter;
 import jsf.bean.gui.component.table.BeanTableFilterItem;
 import jsf.bean.gui.component.table.BeanTablePack;
 import jsf.bean.gui.converter.ClassConverter;
 import jsf.bean.gui.converter.NewLineConverter;
+import jsf.bean.gui.converter.SelectItemComparator;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
 
@@ -124,6 +135,36 @@ public abstract class BeanTableManager implements Serializable {
         }
         return tablePrefix;
     }
+
+    public BeanTableExportTemplateProvider getTemplateProvider() {
+        return new BeanTableExportTemplateProvider();
+    }
+
+    public List<SelectItem> getExportTemplates() {
+        List<SelectItem> templates = new ArrayList<SelectItem>();
+
+        // Adding defaults
+        for (BeanTableExportTemplate t: BeanTableDefaultExportTemplate.getTemplates()) {
+            templates.add(new SelectItem(t, t.getName()));
+        }
+
+        // Adding custom templates
+        for (BeanTableExportTemplate t: getTemplateProvider().getTemplates(getTable().getRowClass())) {
+            templates.add(new SelectItem(t, t.getName()));
+        }
+        
+        Collections.sort(templates, new SelectItemComparator());
+
+        return templates;
+    }
+
+    public String getExportFileName() throws IOException {
+        UIInput templateSeletor = (UIInput) FacesContext.getCurrentInstance().getViewRoot().findComponent(getBeanTableComponent().getId() + ":templateSelector");
+        BeanTableExportTemplate t = (BeanTableExportTemplate) templateSeletor.getSubmittedValue();
+        File f = BeanTableExportManager.getInstance().export(getTable(), t);
+        return f.getName();
+    }
+
     /*********************************************
      *
      * Row selection manager
@@ -292,6 +333,11 @@ public abstract class BeanTableManager implements Serializable {
             }
         }
         return null;
+    }
+
+    private UIComponent getBeanTableComponent() {
+        UIComponent c = UIComponent.getCurrentComponent(FacesContext.getCurrentInstance());
+        return UIComponent.getCompositeComponentParent(c);
     }
 
     private File getRealFile(String file) {
