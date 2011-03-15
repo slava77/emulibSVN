@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
+import javax.annotation.Resource;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -23,6 +24,7 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.transaction.UserTransaction;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
@@ -122,7 +124,7 @@ public class DefaultConclusionFactory extends ConclusionFactory {
                 if (trigger.getType().equals(ConclusionTriggerType.OPEN)) { // don't change "CLOSE" to "UPDATE"
                     trigger.setType(ConclusionTriggerType.UPDATE);
                 }
-                reDao.getEntityDao().persist(trigger);
+                reDao.getEntityDao().persistAndFlush(trigger);
                 executeActions(getConclusionType().getActions(), trigger);
             }
 //            existingConclusion.getTriggers().add(trigger);
@@ -139,15 +141,16 @@ public class DefaultConclusionFactory extends ConclusionFactory {
         try {
             if (action.getTriggerType().equals(trigger.getType()) && !action.isDeleted() && action.isEnabled()) {
                 logger.debug("Sending action to execution queue: " + action.getName());
-//                if (action.isAcknowledgeConclusionOnCreate() && !trigger.getConclusion().isAcknowledged()) {
-//                    trigger.getConclusion().setAcknowledged(true);
-//                    conclModified = true;
-//                }
-//                ActionExecution exec = new ActionExecution();
-//                exec.setAction(action);
-//                exec.setTrigger(trigger);
-//                exec.setTimeCreatedItem(new Date());
-//                sendJMSMessageToRuleEngineActionQueue(exec);
+                if (action.isAcknowledgeConclusionOnCreate() && !trigger.getConclusion().isAcknowledged()) {
+                    trigger.getConclusion().setAcknowledged(true);
+                    conclModified = true;
+                }
+                ActionExecution exec = new ActionExecution();
+                exec.setAction(action);
+                exec.setTrigger(trigger);
+                exec.setTimeCreatedItem(new Date());
+                reDao.getEntityDao().persistAndFlush(exec);
+                sendJMSMessageToRuleEngineActionQueue(exec);
             }
         } catch (Exception ex) {
             logger.error("Exception while sending actions to the ruleEngineActionQueue for execution", ex);
@@ -185,13 +188,13 @@ public class DefaultConclusionFactory extends ConclusionFactory {
 
     private void sendJMSMessageToRuleEngineActionQueue(Serializable messageData) throws NamingException, JMSException {
         Context c = new InitialContext();
-        ConnectionFactory cf = (ConnectionFactory) c.lookup("java:comp/env/jms/ruleEngineActionQueueFactory");
+        ConnectionFactory cf = (ConnectionFactory) c.lookup("jms/ruleEngineActionQueueFactory");
         Connection conn = null;
         Session s = null;
         try {
             conn = cf.createConnection();
             s = conn.createSession(false, s.AUTO_ACKNOWLEDGE);
-            Destination destination = (Destination) c.lookup("java:comp/env/jms/ruleEngineActionQueue");
+            Destination destination = (Destination) c.lookup("jms/ruleEngineActionQueue");
             MessageProducer mp = s.createProducer(destination);
             mp.send(createJMSMessageForjmsRuleEngineActionQueue(s, messageData));
         } finally {

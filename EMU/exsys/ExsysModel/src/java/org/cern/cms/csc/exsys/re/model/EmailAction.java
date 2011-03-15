@@ -51,7 +51,7 @@ public class EmailAction
 {
 
     @XmlElement(required = true)
-    @Label(description = "New line or comma separated list of email addresses.", name = "Recipients")
+    @Label(description = "Comma separated list of email addresses.", name = "Recipients")
     protected String recipients;
 
     /**

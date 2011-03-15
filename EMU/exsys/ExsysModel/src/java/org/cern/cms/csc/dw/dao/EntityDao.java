@@ -24,7 +24,7 @@ import org.cern.cms.csc.dw.model.base.EntityBase;
  * @author Evka
  */
 @Stateless
-public class EntityDao implements EntityDaoLocal {
+public class EntityDao implements EntityDaoLocal, EntityDaoRemote {
 
     private static Logger logger = SimpleLogger.getLogger(EntityDao.class);
 

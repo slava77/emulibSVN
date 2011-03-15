@@ -26,8 +26,6 @@ public class Exsys {
 
     public static boolean conclusionExists(String conclusionTypeName, Component component) {
         try {
-            logger.info("Hey - got a conclusionExists() call with " + conclusionTypeName + " and " + component.getName());
-            logger.info("returning " + (conclCache.ejb().checkCache(conclusionTypeName, component) != null));
             return (conclCache.ejb().checkCache(conclusionTypeName, component) != null);
         } catch (Throwable th) {
             logger.error(th);

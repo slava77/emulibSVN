@@ -77,6 +77,7 @@ public class MonitorJob {
         logger.debug("In monitorQueues");
         for (JmsWorker qi: queues) {
             Integer size = qi.getSize();
+            if (size == null) { return; }
             logger.trace("Queue {0} size = {1}", qi.getName(), size);
             if (size > 0) {
                 MonitorQueueStatus qstatus = new MonitorQueueStatus();

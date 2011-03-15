@@ -28,7 +28,16 @@ public class EjbLookup <T> {
     private Class<T> ejbInterface;
 
     private T ejb = null;
-    
+
+    /**
+     * Use this one if the EJB implementation class is unknown or inaccessible.
+     * @note this is glassfish specific and not portable.
+     * @param ejbInterface interface of the EJB that you want to lookup
+     */
+    public EjbLookup(Class<T> ejbInterface) {
+        this.ejbInterface = ejbInterface;
+    }
+
     public EjbLookup(Class<T> ejbInterface, Class<? extends T> ejbClass) {
         this.ejbInterface = ejbInterface;
         this.ejbClass = ejbClass;
@@ -44,13 +53,44 @@ public class EjbLookup <T> {
         this.applicationName = applicationName;
     }
 
+    /**
+     * Used for remote EJB lookup
+     * @param remoteHostname hostname of the machine where the EJB is residing (uses default IIOP port)
+     */
     public EjbLookup(Class<T> ejbInterface, Class<? extends T> ejbClass, String applicationName, String moduleName, String remoteHostname) {
         this(ejbInterface, ejbClass, applicationName, moduleName);
         this.remoteHostname = remoteHostname;
     }
 
+    /**
+     * Used for remote EJB lookup
+     * @param remoteHostname hostname of the machine where the EJB is residing
+     * @param remoteIIOPPort IIOP port to be used
+     */
     public EjbLookup(Class<T> ejbInterface, Class<? extends T> ejbClass, String applicationName, String moduleName, String remoteHostname, int remoteIIOPPort) {
         this(ejbInterface, ejbClass, applicationName, moduleName, remoteHostname);
+        this.remoteIIOPPort = remoteIIOPPort;
+    }
+
+    /**
+     * Used for remote EJB lookup
+     * Use this if the EJB implementation class is unknown or inaccessible.
+     * @note this is glassfish specific and not portable.
+     * @param ejbInterface interface of the EJB that you want to lookup
+     */
+    public EjbLookup(Class<T> ejbInterface, String remoteHostname) {
+        this(ejbInterface);
+        this.remoteHostname = remoteHostname;
+    }
+
+    /**
+     * Used for remote EJB lookup
+     * Use this if the EJB implementation class is unknown or inaccessible.
+     * @note this is glassfish specific and not portable.
+     * @param ejbInterface interface of the EJB that you want to lookup
+     */
+    public EjbLookup(Class<T> ejbInterface, String remoteHostname, int remoteIIOPPort) {
+        this(ejbInterface, remoteHostname);
         this.remoteIIOPPort = remoteIIOPPort;
     }
 
@@ -72,7 +112,11 @@ public class EjbLookup <T> {
                 props.setProperty("org.omg.CORBA.ORBInitialPort", Integer.toString(remoteIIOPPort));
                 c = new InitialContext(props);
             }
-            return (T) c.lookup(String.format(PATTERN, applicationName, moduleName, ejbClass.getSimpleName(), ejbInterface.getName()));
+            if (ejbClass != null) {
+                return (T) c.lookup(String.format(PATTERN, applicationName, moduleName, ejbClass.getSimpleName(), ejbInterface.getName()));
+            } else {
+                return (T) c.lookup(ejbInterface.getCanonicalName());
+            }
         } catch (NamingException ne) {
             logger.error(ne);
             throw new RuntimeException(ne);

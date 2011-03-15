@@ -49,6 +49,7 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
  *         &lt;element name="timeCreated" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
  *         &lt;element name="timeExecuted" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
  *         &lt;element name="timeClosed" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
+ *         &lt;element name="error" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="action" type="{http://www.cern.ch/cms/csc/exsys/re/model}actionType"/>
  *         &lt;element name="trigger" type="{http://www.cern.ch/cms/csc/exsys/re/model}conclusionTriggerType"/>
  *       &lt;/sequence>
@@ -64,6 +65,7 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
     "timeCreated",
     "timeExecuted",
     "timeClosed",
+    "error",
     "action",
     "trigger"
 })
@@ -84,6 +86,8 @@ public class ActionExecution
     @XmlElement(required = true)
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar timeClosed;
+    @XmlElement(required = true)
+    protected String error;
     @XmlElement(required = true)
     protected org.cern.cms.csc.exsys.re.model.Action action;
     @XmlElement(required = true)
@@ -182,6 +186,37 @@ public class ActionExecution
     }
 
     /**
+     * Gets the value of the error property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Basic
+    @Column(name = "REAE_ERROR", length = 102400)
+    public String getError() {
+        return error;
+    }
+
+    /**
+     * Sets the value of the error property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setError(String value) {
+        this.error = value;
+    }
+
+    @Transient
+    public boolean isSetError() {
+        return (this.error!= null);
+    }
+
+    /**
      * Gets the value of the action property.
      * 
      * @return
@@ -272,7 +307,7 @@ public class ActionExecution
     }
 
     @Basic
-    @Column(name = "REAE_TIME_CREATED")
+    @Column(name = "REAE_TIME_CREATED", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     public Date getTimeCreatedItem() {
         return XmlAdapterUtils.unmarshall(XMLGregorianCalendarAsDateTime.class, this.getTimeCreated());

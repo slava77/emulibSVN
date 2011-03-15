@@ -51,7 +51,7 @@ public class SmsAction
 {
 
     @XmlElement(required = true)
-    @Label(description = "New line or comma separated list of phone numbers.", name = "Recipients")
+    @Label(description = "Comma separated list of phone numbers.", name = "Recipients")
     protected String recipients;
 
     /**

@@ -39,7 +39,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic>
-                            <orm:column name="REAE_TIME_CREATED"/>
+                            <orm:column name="REAE_TIME_CREATED" nullable="false"/>
                         </hj:basic>
                     </xsd:appinfo>
                 </xsd:annotation>
@@ -58,6 +58,15 @@
                     <xsd:appinfo>
                         <hj:basic>
                             <orm:column name="REAE_TIME_CLOSED"/>
+                        </hj:basic>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="error" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:basic>
+                            <orm:column name="REAE_ERROR" length="102400"/>
                         </hj:basic>
                     </xsd:appinfo>
                 </xsd:annotation>
@@ -229,7 +238,7 @@
                                 </hj:basic>
                                 <jaxb:property name="recipients"/>
                                 <ann:annotate xmlns:a="jsf.bean.gui.annotation">
-                                    <a:Label name="Recipients" description="New line or comma separated list of email addresses."/>
+                                    <a:Label name="Recipients" description="Comma separated list of email addresses."/>
                                 </ann:annotate>
                             </xsd:appinfo>
                         </xsd:annotation>
@@ -259,7 +268,7 @@
                                 </hj:basic>
                                 <jaxb:property name="recipients"/>
                                 <ann:annotate xmlns:a="jsf.bean.gui.annotation">
-                                    <a:Label name="Recipients" description="New line or comma separated list of phone numbers."/>
+                                    <a:Label name="Recipients" description="Comma separated list of phone numbers."/>
                                 </ann:annotate>
                             </xsd:appinfo>
                         </xsd:annotation>
@@ -295,19 +304,108 @@
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:complexType name="dimCommandActionType">
+    <xsd:complexType name="dimPublicationActionType" abstract="true">
         <xsd:annotation>
             <xsd:appinfo>
-                <jaxb:class name="DimCommandAction"/>
+                <jaxb:class name="DimPublicationAction"/>
                 <hj:entity>
-                    <orm:table name="RE_DIM_COMMAND_ACTIONS"/>
+                    <orm:table name="RE_DIM_PUBLICATION_ACTIONS"/>
                 </hj:entity>
             </xsd:appinfo>
         </xsd:annotation>
         <xsd:complexContent>
             <xsd:extension base="tns:commandActionType">
+                <xsd:sequence>
+                    <xsd:element name="serviceName" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="REA_DIM_SERVICE_NAME" length="128" nullable="false"/>
+                                </hj:basic>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="dataType" type="tns:dimServiceDataTypeType">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic >
+                                    <orm:column name="REA_DIM_DATA_TYPE" length="20" nullable="false"/>
+                                    <hj:enumerated-value/>
+                                </hj:basic>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
+
+    <xsd:simpleType name="dimServiceDataTypeType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:typesafeEnumClass name="DimServiceDataType" />
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="string"/>
+            <xsd:enumeration value="int"/>
+            <xsd:enumeration value="long"/>
+            <xsd:enumeration value="float"/>
+            <xsd:enumeration value="double"/>
+            <xsd:enumeration value="boolean"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="dcsCommandActionType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:class name="DcsCommandAction"/>
+                <hj:entity>
+                    <orm:table name="RE_DCS_COMMAND_ACTIONS"/>
+                </hj:entity>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:dimPublicationActionType">
+                <xsd:sequence>
+                    <xsd:element name="commandType" type="tns:dcsCommandTypeType">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic >
+                                    <orm:column name="REA_DCS_COMMAND_TYPE" length="64" nullable="false"/>
+                                    <hj:enumerated-value/>
+                                </hj:basic>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="args" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="REA_DCS_ARGS" length="512" nullable="true"/>
+                                </hj:basic>
+                                <ann:annotate xmlns:a="jsf.bean.gui.annotation">
+                                    <a:Label name="Additional Arguments" description="Comma separated list of additional arguments for the command (component is included by default)"/>
+                                </ann:annotate>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:simpleType name="dcsCommandTypeType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:typesafeEnumClass name="DcsCommandType" />
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="hvChannelForceOn"/>
+            <xsd:enumeration value="hvChannelVset"/>
+            <xsd:enumeration value="hvChannelDisable"/>
+        </xsd:restriction>
+    </xsd:simpleType>
 
 </xsd:schema>

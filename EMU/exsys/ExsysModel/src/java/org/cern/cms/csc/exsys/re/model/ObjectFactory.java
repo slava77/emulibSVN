@@ -48,46 +48,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Conclusion }
-     * 
-     */
-    public Conclusion createConclusion() {
-        return new Conclusion();
-    }
-
-    /**
-     * Create an instance of {@link SmsAction }
-     * 
-     */
-    public SmsAction createSmsAction() {
-        return new SmsAction();
-    }
-
-    /**
-     * Create an instance of {@link Rule }
-     * 
-     */
-    public Rule createRule() {
-        return new Rule();
-    }
-
-    /**
-     * Create an instance of {@link RelatedComponentFinder }
-     * 
-     */
-    public RelatedComponentFinder createRelatedComponentFinder() {
-        return new RelatedComponentFinder();
-    }
-
-    /**
-     * Create an instance of {@link RuleSet }
-     * 
-     */
-    public RuleSet createRuleSet() {
-        return new RuleSet();
-    }
-
-    /**
      * Create an instance of {@link SimpleComponentFinder }
      * 
      */
@@ -104,11 +64,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ConclusionTrigger }
+     * Create an instance of {@link RuleSet }
      * 
      */
-    public ConclusionTrigger createConclusionTrigger() {
-        return new ConclusionTrigger();
+    public RuleSet createRuleSet() {
+        return new RuleSet();
+    }
+
+    /**
+     * Create an instance of {@link SmsAction }
+     * 
+     */
+    public SmsAction createSmsAction() {
+        return new SmsAction();
     }
 
     /**
@@ -120,19 +88,35 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link DimCommandAction }
+     * Create an instance of {@link Rule }
      * 
      */
-    public DimCommandAction createDimCommandAction() {
-        return new DimCommandAction();
+    public Rule createRule() {
+        return new Rule();
     }
 
     /**
-     * Create an instance of {@link ConclusionTriggerSource }
+     * Create an instance of {@link DcsCommandAction }
      * 
      */
-    public ConclusionTriggerSource createConclusionTriggerSource() {
-        return new ConclusionTriggerSource();
+    public DcsCommandAction createDcsCommandAction() {
+        return new DcsCommandAction();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionTrigger }
+     * 
+     */
+    public ConclusionTrigger createConclusionTrigger() {
+        return new ConclusionTrigger();
+    }
+
+    /**
+     * Create an instance of {@link RelatedComponentFinder }
+     * 
+     */
+    public RelatedComponentFinder createRelatedComponentFinder() {
+        return new RelatedComponentFinder();
     }
 
     /**
@@ -141,6 +125,22 @@ public class ObjectFactory {
      */
     public EmailAction createEmailAction() {
         return new EmailAction();
+    }
+
+    /**
+     * Create an instance of {@link Conclusion }
+     * 
+     */
+    public Conclusion createConclusion() {
+        return new Conclusion();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionTriggerSource }
+     * 
+     */
+    public ConclusionTriggerSource createConclusionTriggerSource() {
+        return new ConclusionTriggerSource();
     }
 
     /**

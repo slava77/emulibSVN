@@ -454,11 +454,17 @@ exists or setup the property manually. For example like this:
                 COMPILATION SECTION
             -->
     <target depends="init" if="no.dist.ear.dir" name="-deps-module-jar" unless="no.deps">
+        <ant antfile="${project.ExsysApi}/build.xml" inheritall="false" target="jar">
+            <property name="deploy.on.save" value="false"/>
+        </ant>
         <ant antfile="${project.JsfBeanGui}/build.xml" inheritall="false" target="jar">
             <property name="deploy.on.save" value="false"/>
         </ant>
     </target>
     <target depends="init" if="dist.ear.dir" name="-deps-ear-jar" unless="no.deps">
+        <ant antfile="${project.ExsysApi}/build.xml" inheritall="false" target="jar">
+            <property name="deploy.on.save" value="false"/>
+        </ant>
         <ant antfile="${project.JsfBeanGui}/build.xml" inheritall="false" target="jar">
             <property name="deploy.on.save" value="false"/>
         </ant>
@@ -482,6 +488,7 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${libs.Commons.classpath}" todir="${build.classes.dir}"/>
         <copyfiles files="${libs.javaee-endorsed-api-6.0.classpath}" todir="${build.classes.dir}"/>
         <copyfiles files="${libs.Javasysmon.classpath}" todir="${build.classes.dir}"/>
+        <copyfiles files="${reference.ExsysApi.jar}" todir="${build.classes.dir}"/>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
         <copyfiles files="${libs.Neo4j.classpath}" todir="${dist.ear.dir}/lib"/>
@@ -493,6 +500,7 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${libs.Commons.classpath}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.javaee-endorsed-api-6.0.classpath}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.Javasysmon.classpath}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${reference.ExsysApi.jar}" todir="${dist.ear.dir}/lib"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update"/>
     </target>
     <target name="-copy-meta-inf">
@@ -784,6 +792,7 @@ exists or setup the property manually. For example like this:
                 CLEANUP SECTION
             -->
     <target depends="init" if="no.dist.ear.dir" name="deps-clean" unless="no.deps">
+        <ant antfile="${project.ExsysApi}/build.xml" inheritall="false" target="clean"/>
         <ant antfile="${project.JsfBeanGui}/build.xml" inheritall="false" target="clean"/>
     </target>
     <target depends="init" name="-do-clean">

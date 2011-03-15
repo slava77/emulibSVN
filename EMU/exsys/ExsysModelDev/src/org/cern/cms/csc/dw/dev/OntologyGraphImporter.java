@@ -18,7 +18,6 @@ import org.cern.cms.csc.dw.model.ontology.graph.GComponentClass;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentLinkClass;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentSynonym;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponent;
-import org.cern.cms.csc.dw.dao.GOntologyFactory;
 import jsf.bean.gui.log.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

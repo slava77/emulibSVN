@@ -43,7 +43,7 @@ import javax.xml.bind.annotation.XmlType;
     "closeConclusionOnExecution"
 })
 @XmlSeeAlso({
-    DimCommandAction.class
+    DimPublicationAction.class
 })
 @Entity(name = "org.cern.cms.csc.exsys.re.model.CommandAction")
 @Table(name = "RE_COMMAND_ACTIONS")

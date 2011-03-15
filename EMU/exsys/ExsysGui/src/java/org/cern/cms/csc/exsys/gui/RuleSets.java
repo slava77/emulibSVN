@@ -74,33 +74,4 @@ public class RuleSets implements Serializable {
         return table;
     }
 
-    public void exportToXml() throws SAXException, JAXBException {
-        RuleSet ruleSet = (RuleSet) table.getSelected();
-        if (ruleSet != null) {
-            try {
-                ut.begin();
-                ruleSet = (RuleSet) reDao.getEntityDao().refreshEntity(ruleSet);
-                for (ConclusionType ct: ruleSet.getConclusionTypes()) { // load lazy relations
-                    for (Rule r: ct.getRules()) {
-                        r.getConclusionType();
-                    }
-                }
-                ut.commit();
-
-                EjbLookup<RuleEngineDaoRemote> reDaoRemote = new EjbLookup<RuleEngineDaoRemote>(RuleEngineDaoRemote.class,
-                                                                                                RuleEngineDao.class,
-                                                                                                "Exsys",
-                                                                                                "ExsysModel",
-                                                                                                "emuslice21",
-                                                                                                3700);
-                logger.info("va:");
-                for (RuleSet rs: reDaoRemote.ejb().getAllRuleSets()) {
-                    logger.info(rs);
-                }
-logger.info("URA!!! :)");
-            } catch (Exception ex) {
-                logger.error(ex);
-            }
-        }
-    }
 }

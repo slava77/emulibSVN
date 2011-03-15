@@ -470,8 +470,8 @@ public class Conclusion
      * 
      */
     @OneToMany(targetEntity = org.cern.cms.csc.exsys.re.model.ConclusionTrigger.class, cascade = {
-        CascadeType.REMOVE,
-        CascadeType.PERSIST
+        CascadeType.PERSIST,
+        CascadeType.REMOVE
     }, mappedBy = "conclusion")
     public List<org.cern.cms.csc.exsys.re.model.ConclusionTrigger> getTriggers() {
         if (triggers == null) {
@@ -650,6 +650,49 @@ public class Conclusion
     @Override
     public String toString() {
         return getTitle();
+    }
+
+    public String toStringDetailed() {
+        StringBuilder ret = new StringBuilder();
+        ret.append("Conclusion details:");
+        ret.append("\n");
+        ret.append("    - State: ");
+        if (isClosed()) {
+            ret.append("CLOSED");
+        } else {
+            ret.append("OPEN");
+        }
+        if (isAcknowledged()) {
+            ret.append(" (acknowledged)");
+        } else {
+            ret.append(" (not acknowledged)");
+        }
+        ret.append("\n");
+        ret.append("    - Type: ");
+        ret.append(getType().getName());
+        ret.append("\n");
+        ret.append("    - Component: ");
+        ret.append(getComponent().getName());
+        ret.append("\n");
+        ret.append("    - Severity: ");
+        ret.append(getSeverity());
+        ret.append("\n");
+        ret.append("    - Title: ");
+        ret.append(getTitle());
+        ret.append("\n");
+        ret.append("    - Description: ");
+        ret.append(getTitle());
+        ret.append("\n");
+        ret.append("    - Time created: ");
+        ret.append(getTimestampItem());
+        ret.append("\n");
+        ret.append("    - Time of last update: ");
+        ret.append(getLastHitTimeItem());
+        ret.append("\n");
+        ret.append("    - Number of updates: ");
+        ret.append(getHitCount());
+
+        return ret.toString();
     }
 
 //--simple--preserve

@@ -17,7 +17,6 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
-import org.cern.cms.csc.exsys.re.conclusion.ConclusionCacheService;
 import org.cern.cms.csc.exsys.re.conclusion.ConclusionCacheServiceLocal;
 import org.cern.cms.csc.exsys.re.conclusion.factory.ConclusionFactory;
 import org.cern.cms.csc.exsys.re.conclusion.factory.DefaultConclusionFactory;

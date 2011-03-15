@@ -6,19 +6,20 @@
 package org.cern.cms.csc.exsys.gui.action;
 
 import java.io.Serializable;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
+import javax.transaction.UserTransaction;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.EditorDaoLocal;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.exsys.gui.editor.EntityEditorManager;
 import org.cern.cms.csc.exsys.re.model.Action;
-import org.cern.cms.csc.exsys.re.model.DimCommandAction;
+import org.cern.cms.csc.exsys.re.model.DcsCommandAction;
 import org.cern.cms.csc.exsys.re.model.EmailAction;
 import org.cern.cms.csc.exsys.re.model.SmsAction;
-import org.icefaces.bean.ViewRetained;
-import org.icefaces.bean.WindowDisposed;
 
 
 /**
@@ -29,26 +30,39 @@ import org.icefaces.bean.WindowDisposed;
 @SessionScoped
 public class EditAction extends EntityEditorManager implements Serializable {
 
+    private static final Logger logger = SimpleLogger.getLogger(EditAction.class);
+
     @EJB
     private EditorDaoLocal dao;
+    @Resource
+    private UserTransaction ut;
+
+    private Class newActionClass;
 
     public EditAction() {
         super();
     }
 
     @Override
-    protected EntityBase createEntity() {
-        return new DimCommandAction();
+    protected EntityBase createEntity() throws Exception {
+        if (newActionClass != null) {
+            return (EntityBase) newActionClass.newInstance();
+        } else {
+            throw new RuntimeException("Couldn't create new action - newActionClass is not set");
+        }
     }
 
-    public String createEmailAction() {
-        setEntity(new EmailAction());
-        return "reEditAction";
+    public void setNewActionClass(Class newActionClass) {
+        this.newActionClass = newActionClass;
     }
 
-    public String createSmsAction() {
-        setEntity(new SmsAction());
-        return "reEditAction";
+    public void setActionToEdit(Action action) throws Exception {
+        // reload the entity and load lazy relations
+        ut.begin();
+        action = (Action) dao.getEntityDao().refreshEntity(action);
+        action.getConclusionTypes().size(); // load the lazy conclusionTypes relation
+        ut.commit();
+        setEntity(action);
     }
 
     @Override

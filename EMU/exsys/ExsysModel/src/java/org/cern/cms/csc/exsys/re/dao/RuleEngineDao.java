@@ -217,6 +217,11 @@ public class RuleEngineDao implements RuleEngineDaoLocal, RuleEngineDaoRemote {
         logger.info("RuleEngineDao: persisting this ruleset: " + ruleSet);
 
         em.persist(ruleSet);
+        for (ConclusionType ct: ruleSet.getConclusionTypes()) {
+            for (Rule rule: ct.getRules()) {
+                em.persist(rule);
+            }
+        }
     }
 
 }

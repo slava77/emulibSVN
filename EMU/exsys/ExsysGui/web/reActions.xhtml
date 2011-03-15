@@ -35,6 +35,7 @@
                     <ice:panelGroup>
                         <ice:commandLink value="Create New Action" action="reEditAction">
                             <f:setPropertyActionListener target="#{editAction.entity}" value="#{null}"/>
+                            <f:setPropertyActionListener target="#{editAction.newActionClass}" value="#{cc.attrs.manager.tablePack.selectedClass}"/>
                         </ice:commandLink>
                     </ice:panelGroup>
                 </f:facet>
@@ -50,7 +51,7 @@
 
                 <ice:panelGrid columns="2" rendered="#{column.name == 'name'}">
                     <ice:commandLink value="#{item.name}" action="reEditAction">
-                        <f:setPropertyActionListener target="#{editAction.entity}" value="#{item}"/>
+                        <f:setPropertyActionListener target="#{editAction.actionToEdit}" value="#{item}"/>
                     </ice:commandLink>
                     <ice:panelGroup rendered="#{!item.enabled}">
                         <ice:commandLink value=" (delete)" type="submit" style="color: blue">

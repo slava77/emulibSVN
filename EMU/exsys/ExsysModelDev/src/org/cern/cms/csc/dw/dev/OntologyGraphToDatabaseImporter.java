@@ -9,8 +9,6 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.PosixParser;
 import jsf.bean.gui.log.SimpleLogger;
-import org.cern.cms.csc.dw.dao.GOntologyFactory;
-import org.cern.cms.csc.dw.dao.OntologyFactory;
 import jsf.bean.gui.log.Logger;
 import org.cern.cms.csc.dw.model.ontology.Component;
 import org.cern.cms.csc.dw.model.ontology.ComponentClass;

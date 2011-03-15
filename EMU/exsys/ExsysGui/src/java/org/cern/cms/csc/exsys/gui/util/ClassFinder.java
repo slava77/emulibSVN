@@ -101,4 +101,9 @@ public class ClassFinder implements ClassFinderIf {
         return classes;
     }
 
+    @Override
+    public Class getClassForName(String className) throws ClassNotFoundException {
+        return Class.forName(className);
+    }
+
 }

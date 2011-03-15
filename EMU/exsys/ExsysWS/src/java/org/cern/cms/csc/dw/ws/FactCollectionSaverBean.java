@@ -17,6 +17,7 @@ import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.exception.WrongComponentTypeException;
 import jsf.bean.gui.log.Logger;
+import org.cern.cms.csc.dw.model.fact.DcsFact;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.dw.model.fact.FactCollection;
 import org.cern.cms.csc.dw.service.ServiceInstructions;
@@ -105,7 +106,9 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
                 if (instructions.isStrict()) {
                     throw ex;
                 } else {
-                    logger.error("Exception in FactCollectionSaverBean", ex);
+                    if (! (fact instanceof DcsFact)) { // don't print the exception if it's a DCS fact, because it happens quite a lot and is normal due to DP addressing of unknown DPs
+                        logger.error("Exception in FactCollectionSaverBean", ex);
+                    }
                     toRemove.add(fi);
                 }
             }

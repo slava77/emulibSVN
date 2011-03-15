@@ -45,7 +45,7 @@ public abstract class JmsWorker {
                     logger.warn(ex);
                 }
             }
-            if (session != null) {
+            if (connection != null) {
                 try {
                     connection.close();
                 } catch (JMSException ex) {
@@ -75,7 +75,7 @@ public abstract class JmsWorker {
                     logger.warn(ex);
                 }
             }
-            if (session != null) {
+            if (connection != null) {
                 try {
                     connection.close();
                 } catch (JMSException ex) {
@@ -106,7 +106,7 @@ public abstract class JmsWorker {
                     logger.warn(ex);
                 }
             }
-            if (session != null) {
+            if (connection != null) {
                 try {
                     connection.close();
                 } catch (JMSException ex) {
@@ -119,13 +119,13 @@ public abstract class JmsWorker {
 
     }
 
-    public Integer getSize() {
+    public synchronized Integer getSize() {
         Integer num = 0;
         QueueConnection connection = null;
         QueueSession session = null;
         try {
             connection = getQueueConnectionFactory().createQueueConnection();
-            session = connection.createQueueSession(false, QueueSession.AUTO_ACKNOWLEDGE);
+            session = connection.createQueueSession(true, QueueSession.CLIENT_ACKNOWLEDGE);
             QueueBrowser browser = session.createBrowser(getQueue());
             connection.start();
             Enumeration en = browser.getEnumeration();
@@ -133,9 +133,9 @@ public abstract class JmsWorker {
                 en.nextElement();
                 num++;
             }
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             num = null;
-            logger.error(ex);
+            logger.warn(ex.getMessage());
         } finally {
             if (session != null) {
                 try {
@@ -144,7 +144,7 @@ public abstract class JmsWorker {
                     logger.warn(ex);
                 }
             }
-            if (session != null) {
+            if (connection != null) {
                 try {
                     connection.close();
                 } catch (JMSException ex) {
