@@ -48,7 +48,10 @@ public abstract class BeanTableControls {
     }
 
     public int getPageCount() {
-        return (int) Math.ceil((1.0 * getDataCount()) / (1.0 * getPageSize()));
+        if (getDataCount() != null) {
+            return (int) Math.ceil((1.0 * getDataCount()) / (1.0 * getPageSize()));
+        }
+        return 0;
     }
 
     public int getPageIndex() {

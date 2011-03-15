@@ -133,6 +133,11 @@ public class BeanTableColumn {
 
     }
 
+    public boolean isBoolean() {
+        return getType().equals(Boolean.class) ||
+                (getType().isPrimitive() && getType().getName().equals("boolean"));
+    }
+
     protected PropertyMd getPropertyMd() {
         return propertyMd;
     }
