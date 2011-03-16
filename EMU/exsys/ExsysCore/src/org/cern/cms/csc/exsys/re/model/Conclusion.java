@@ -470,8 +470,8 @@ public class Conclusion
      * 
      */
     @OneToMany(targetEntity = org.cern.cms.csc.exsys.re.model.ConclusionTrigger.class, cascade = {
-        CascadeType.PERSIST,
-        CascadeType.REMOVE
+        CascadeType.REMOVE,
+        CascadeType.PERSIST
     }, mappedBy = "conclusion")
     public List<org.cern.cms.csc.exsys.re.model.ConclusionTrigger> getTriggers() {
         if (triggers == null) {
@@ -520,6 +520,7 @@ public class Conclusion
      * 
      */
     @OneToMany(targetEntity = org.cern.cms.csc.exsys.re.model.ConclusionTriggerSource.class, mappedBy = "conclusion")
+    @JoinColumn(name = "PARENTS_CONCLUSION_ID")
     public List<org.cern.cms.csc.exsys.re.model.ConclusionTriggerSource> getParents() {
         if (parents == null) {
             parents = new Vector<org.cern.cms.csc.exsys.re.model.ConclusionTriggerSource>();

@@ -42,14 +42,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link TmbCounterDescriptionDSE }
-     * 
-     */
-    public TmbCounterDescriptionDSE createTmbCounterDescriptionDSE() {
-        return new TmbCounterDescriptionDSE();
-    }
-
-    /**
      * Create an instance of {@link DataServiceEntity }
      * 
      */
@@ -63,6 +55,14 @@ public class ObjectFactory {
      */
     public DataServiceEntityCollection createDataServiceEntityCollection() {
         return new DataServiceEntityCollection();
+    }
+
+    /**
+     * Create an instance of {@link TmbCounterDescriptionDSE }
+     * 
+     */
+    public TmbCounterDescriptionDSE createTmbCounterDescriptionDSE() {
+        return new TmbCounterDescriptionDSE();
     }
 
     /**
