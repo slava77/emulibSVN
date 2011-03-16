@@ -8,12 +8,12 @@
     <ejb>ExsysWS.jar</ejb>
   </module>
   <module>
-    <ejb>ExsysModel.jar</ejb>
-  </module>
-  <module>
     <web>
       <web-uri>ExsysGui.war</web-uri>
       <context-root>/ExsysGui</context-root>
     </web>
+  </module>
+  <module>
+    <ejb>ExsysDao.jar</ejb>
   </module>
 </application>

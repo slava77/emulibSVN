@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jax-ws xmlns="http://www.netbeans.org/ns/jax-ws/1">
   <services>
-    <service name="factcollection">
-      <implementation-class>org.cern.cms.csc.dw.ws.FactCollectionInput</implementation-class>
-    </service>
-    <service name="dataqueryservice">
-      <implementation-class>org.cern.cms.csc.dw.ws.DataQueryService</implementation-class>
-    </service>
-    <service name="dataservice">
-      <implementation-class>org.cern.cms.csc.dw.ws.DataServiceEntityInput</implementation-class>
-    </service>
   </services>
   <clients/>
 </jax-ws>

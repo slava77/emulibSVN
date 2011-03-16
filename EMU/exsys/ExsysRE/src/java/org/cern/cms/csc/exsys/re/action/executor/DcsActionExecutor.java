@@ -5,14 +5,7 @@
 
 package org.cern.cms.csc.exsys.re.action.executor;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import org.cern.cms.csc.dw.dao.GOntologyDao;
 import org.cern.cms.csc.dw.dao.GOntologyDaoLocal;
-import org.cern.cms.csc.dw.exception.ComponentNotFoundException;
 import org.cern.cms.csc.dw.model.ontology.Component;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponent.DataPropertyType;
 import org.cern.cms.csc.dw.util.EjbLookup;
@@ -34,8 +27,7 @@ public class DcsActionExecutor extends ActionExecutor {
     private EjbLookup<DimServiceProviderRemote> dimServiceProvider =
                       new ExsysIORemoteEjbLookup<DimServiceProviderRemote>(DimServiceProviderRemote.class);
 
-    private EjbLookup<GOntologyDaoLocal> gOntologyDao = new EjbLookup<GOntologyDaoLocal>(GOntologyDaoLocal.class,
-                                                                                         GOntologyDao.class);
+    private EjbLookup<GOntologyDaoLocal> gOntologyDao = new EjbLookup<GOntologyDaoLocal>(GOntologyDaoLocal.class);
 
     public DcsActionExecutor(ActionExecution actionExec) {
         super(actionExec);

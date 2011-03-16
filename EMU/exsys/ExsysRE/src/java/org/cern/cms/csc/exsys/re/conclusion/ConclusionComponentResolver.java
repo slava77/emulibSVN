@@ -11,9 +11,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.cern.cms.csc.dw.dao.GOntologyDao;
 import org.cern.cms.csc.dw.dao.GOntologyDaoLocal;
-import org.cern.cms.csc.dw.dao.OntologyDao;
 import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
 import org.cern.cms.csc.dw.exception.ComponentNotFoundException;
 import jsf.bean.gui.log.Logger;
@@ -50,9 +48,9 @@ public class ConclusionComponentResolver {
     /** Component class type as GComponentClass. */
     private GComponentClass gComponentClass;
     /** OntologyDao. */
-    private EjbLookup<OntologyDaoLocal> ontologyDao = new EjbLookup<OntologyDaoLocal>(OntologyDaoLocal.class, OntologyDao.class);
+    private EjbLookup<OntologyDaoLocal> ontologyDao = new EjbLookup<OntologyDaoLocal>(OntologyDaoLocal.class);
     /** GOntologyDao. */
-    private EjbLookup<GOntologyDaoLocal> gOntologyDao = new EjbLookup<GOntologyDaoLocal>(GOntologyDaoLocal.class, GOntologyDao.class);
+    private EjbLookup<GOntologyDaoLocal> gOntologyDao = new EjbLookup<GOntologyDaoLocal>(GOntologyDaoLocal.class);
 
     public ConclusionComponentResolver(ComponentFinder componentFinder) {
         this.componentFinder = componentFinder;

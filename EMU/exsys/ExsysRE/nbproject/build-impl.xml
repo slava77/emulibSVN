@@ -457,7 +457,7 @@ exists or setup the property manually. For example like this:
         <ant antfile="${project.ExsysApi}/build.xml" inheritall="false" target="jar">
             <property name="deploy.on.save" value="false"/>
         </ant>
-        <ant antfile="${project.ExsysModel}/build.xml" inheritall="false" target="dist"/>
+        <ant antfile="${project.ExsysDao}/build.xml" inheritall="false" target="dist"/>
         <ant antfile="${project.JsfBeanGui}/build.xml" inheritall="false" target="jar">
             <property name="deploy.on.save" value="false"/>
         </ant>
@@ -466,7 +466,7 @@ exists or setup the property manually. For example like this:
         <ant antfile="${project.ExsysApi}/build.xml" inheritall="false" target="jar">
             <property name="deploy.on.save" value="false"/>
         </ant>
-        <ant antfile="${project.ExsysModel}/build.xml" inheritall="false" target="dist-ear">
+        <ant antfile="${project.ExsysDao}/build.xml" inheritall="false" target="dist-ear">
             <property location="${build.dir}" name="dist.ear.dir"/>
         </ant>
         <ant antfile="${project.JsfBeanGui}/build.xml" inheritall="false" target="jar">
@@ -483,18 +483,18 @@ exists or setup the property manually. For example like this:
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target depends="compile" name="library-inclusion-in-archive">
-        <copyfiles files="${reference.ExsysModel.dist}" todir="${build.classes.dir}"/>
+        <copyfiles files="${reference.ExsysDao.dist}" todir="${build.classes.dir}"/>
+        <copyfiles files="${reference.ExsysApi.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${libs.Esper4.classpath}" todir="${build.classes.dir}"/>
         <copyfiles files="${libs.ejb3-persistence.classpath}" todir="${build.classes.dir}"/>
         <copyfiles files="${libs.DIM.classpath}" todir="${build.classes.dir}"/>
-        <copyfiles files="${reference.ExsysApi.jar}" todir="${build.classes.dir}"/>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
-        <copyfiles files="${reference.ExsysModel.dist}" todir="${dist.ear.dir}"/>
+        <copyfiles files="${reference.ExsysDao.dist}" todir="${dist.ear.dir}"/>
+        <copyfiles files="${reference.ExsysApi.jar}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.Esper4.classpath}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.ejb3-persistence.classpath}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.DIM.classpath}" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${reference.ExsysApi.jar}" todir="${dist.ear.dir}/lib"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update"/>
     </target>
     <target name="-copy-meta-inf">
@@ -787,7 +787,7 @@ exists or setup the property manually. For example like this:
             -->
     <target depends="init" if="no.dist.ear.dir" name="deps-clean" unless="no.deps">
         <ant antfile="${project.ExsysApi}/build.xml" inheritall="false" target="clean"/>
-        <ant antfile="${project.ExsysModel}/build.xml" inheritall="false" target="clean"/>
+        <ant antfile="${project.ExsysDao}/build.xml" inheritall="false" target="clean"/>
         <ant antfile="${project.JsfBeanGui}/build.xml" inheritall="false" target="clean"/>
     </target>
     <target depends="init" name="-do-clean">

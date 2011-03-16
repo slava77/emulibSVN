@@ -3,7 +3,6 @@ package org.cern.cms.csc.dw.monitor;
 import java.util.Date;
 import jsf.bean.gui.log.BaseLogger;
 import jsf.bean.gui.log.Level;
-import org.cern.cms.csc.dw.dao.MonitorDao;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.MonitorDaoLocal;
@@ -15,7 +14,7 @@ public class MonitorLogger extends BaseLogger {
 
     private static final Logger logger = SimpleLogger.getLogger(MonitorLogger.class);
 
-    private EjbLookup<MonitorDaoLocal> monitorDao = new EjbLookup<MonitorDaoLocal>(MonitorDaoLocal.class, MonitorDao.class);
+    private EjbLookup<MonitorDaoLocal> monitorDao = new EjbLookup<MonitorDaoLocal>(MonitorDaoLocal.class);
 
     private final Class clazz;
 

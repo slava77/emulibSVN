@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import org.cern.cms.csc.dw.dao.GOntologyDao;
 import org.cern.cms.csc.dw.dao.GOntologyDaoLocal;
 import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
 import jsf.bean.gui.log.Logger;
@@ -31,9 +30,9 @@ public class StaticComponentResolver {
     private static final Logger logger = SimpleLogger.getLogger(StaticComponentResolver.class);
 
     /** OntologyDao. */
-    private static EjbLookup<OntologyDaoLocal> ontologyDao = new EjbLookup<OntologyDaoLocal>(OntologyDaoLocal.class, OntologyDaoLocal.class);
+    private static EjbLookup<OntologyDaoLocal> ontologyDao = new EjbLookup<OntologyDaoLocal>(OntologyDaoLocal.class);
     /** GOntologyDao. */
-    private static EjbLookup<GOntologyDaoLocal> gOntologyDao = new EjbLookup<GOntologyDaoLocal>(GOntologyDaoLocal.class, GOntologyDao.class);
+    private static EjbLookup<GOntologyDaoLocal> gOntologyDao = new EjbLookup<GOntologyDaoLocal>(GOntologyDaoLocal.class);
 
 
     /**

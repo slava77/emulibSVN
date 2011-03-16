@@ -16,7 +16,6 @@ is divided into following sections:
 
         -->
 <project xmlns:ejbjarproject1="http://www.netbeans.org/ns/j2ee-ejbjarproject/1" xmlns:ejbjarproject2="http://www.netbeans.org/ns/j2ee-ejbjarproject/2" xmlns:ejbjarproject3="http://www.netbeans.org/ns/j2ee-ejbjarproject/3" basedir=".." default="default" name="ExsysWS-impl">
-    <import file="jaxws-build.xml"/>
     <import file="ant-deploy.xml"/>
     <fail message="Please build using Ant 1.7.1 or higher.">
         <condition>
@@ -455,13 +454,13 @@ exists or setup the property manually. For example like this:
                 COMPILATION SECTION
             -->
     <target depends="init" if="no.dist.ear.dir" name="-deps-module-jar" unless="no.deps">
-        <ant antfile="${project.ExsysModel}/build.xml" inheritall="false" target="dist"/>
+        <ant antfile="${project.ExsysDao}/build.xml" inheritall="false" target="dist"/>
         <ant antfile="${project.JsfBeanGui}/build.xml" inheritall="false" target="jar">
             <property name="deploy.on.save" value="false"/>
         </ant>
     </target>
     <target depends="init" if="dist.ear.dir" name="-deps-ear-jar" unless="no.deps">
-        <ant antfile="${project.ExsysModel}/build.xml" inheritall="false" target="dist-ear">
+        <ant antfile="${project.ExsysDao}/build.xml" inheritall="false" target="dist-ear">
             <property location="${build.dir}" name="dist.ear.dir"/>
         </ant>
         <ant antfile="${project.JsfBeanGui}/build.xml" inheritall="false" target="jar">
@@ -478,11 +477,11 @@ exists or setup the property manually. For example like this:
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target depends="compile" name="library-inclusion-in-archive">
-        <copyfiles files="${reference.ExsysModel.dist}" todir="${build.classes.dir}"/>
+        <copyfiles files="${reference.ExsysDao.dist}" todir="${build.classes.dir}"/>
         <copyfiles files="${libs.Commons.classpath}" todir="${build.classes.dir}"/>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
-        <copyfiles files="${reference.ExsysModel.dist}" todir="${dist.ear.dir}"/>
+        <copyfiles files="${reference.ExsysDao.dist}" todir="${dist.ear.dir}"/>
         <copyfiles files="${libs.Commons.classpath}" todir="${dist.ear.dir}/lib"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update"/>
     </target>
@@ -775,7 +774,7 @@ exists or setup the property manually. For example like this:
                 CLEANUP SECTION
             -->
     <target depends="init" if="no.dist.ear.dir" name="deps-clean" unless="no.deps">
-        <ant antfile="${project.ExsysModel}/build.xml" inheritall="false" target="clean"/>
+        <ant antfile="${project.ExsysDao}/build.xml" inheritall="false" target="clean"/>
         <ant antfile="${project.JsfBeanGui}/build.xml" inheritall="false" target="clean"/>
     </target>
     <target depends="init" name="-do-clean">

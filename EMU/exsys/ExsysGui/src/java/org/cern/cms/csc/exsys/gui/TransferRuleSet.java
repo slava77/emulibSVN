@@ -14,10 +14,8 @@ import javax.faces.convert.Converter;
 import javax.transaction.UserTransaction;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
-import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.util.EjbLookup;
 import org.cern.cms.csc.exsys.gui.editor.converter.LovConverter;
-import org.cern.cms.csc.exsys.re.dao.RuleEngineDao;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoRemote;
 import org.cern.cms.csc.exsys.re.model.ConclusionType;
@@ -111,9 +109,6 @@ public class TransferRuleSet {
             logger.info("TransferRuleSet: acquiring an instance of RuleEngineDaoRemote on " + hostname + ":" + Integer.parseInt(port));
 
             EjbLookup<RuleEngineDaoRemote> reDaoRemote = new EjbLookup<RuleEngineDaoRemote>(RuleEngineDaoRemote.class,
-                                                                                            RuleEngineDao.class,
-                                                                                            "Exsys",
-                                                                                            "ExsysModel",
                                                                                             hostname,
                                                                                             Integer.parseInt(port));
 
