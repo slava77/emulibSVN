@@ -25,11 +25,13 @@ public class RuleEngineInput implements RuleEngineInputRemote, RuleEngineInputLo
     @EJB
     private RuleEngineManagerLocal reManager;
 
+    @Override
     public void receiveFact(Fact fact) {
-        reManager.getEsperRuntime().sendEvent(fact);
+        reManager.postEvent(fact);
         logger.trace("ExsysRE: received a fact of type " + fact.getClass().getName() + " and sent to Esper");
     }
 
+    @Override
     public void receiveConclusion(Conclusion conclusion) {
         throw new UnsupportedOperationException("Receiving conclusions in the rule engine is not yet implemented");
         //getEpService().getEPRuntime().sendEvent(conclusion);

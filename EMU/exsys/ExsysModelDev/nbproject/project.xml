@@ -16,12 +16,12 @@
         </libraries>
         <references xmlns="http://www.netbeans.org/ns/ant-project-references/1">
             <reference>
-                <foreign-project>ExsysDao</foreign-project>
+                <foreign-project>ExsysCore</foreign-project>
                 <artifact-type>jar</artifact-type>
                 <script>build.xml</script>
-                <target>dist</target>
+                <target>jar</target>
                 <clean-target>clean</clean-target>
-                <id>dist</id>
+                <id>jar</id>
             </reference>
             <reference>
                 <foreign-project>JsfBeanGui</foreign-project>

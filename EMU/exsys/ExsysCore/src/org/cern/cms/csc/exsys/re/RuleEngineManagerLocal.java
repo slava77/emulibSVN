@@ -5,7 +5,6 @@
 
 package org.cern.cms.csc.exsys.re;
 
-import com.espertech.esper.client.EPRuntime;
 import java.util.Collection;
 import javax.ejb.Local;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
@@ -20,9 +19,17 @@ import org.cern.cms.csc.exsys.re.model.RuleSet;
 public interface RuleEngineManagerLocal {
 
     /**
-     * @return Esper Runtime (EPRuntime) which can be used to send facts into rule engine.
+     * Posts the given event to the rule engine.
+     * This method should be used when posting events from within rule engine listeners (like ConclusionFactory).
+     * @param event event that you want to post
      */
-    EPRuntime getEsperRuntime();
+    void postEventFromListener(Object event);
+
+    /**
+     * Posts the given event to the rule engine
+     * @param event event that you want to post
+     */
+    void postEvent(Object event);
 
     /**
      * Calls reconfigure() for the default EPServiceProvider.
@@ -39,6 +46,8 @@ public interface RuleEngineManagerLocal {
 //    /** Configures the given EPServiceProvider i.e. gets all the rules from DB and registers them with the given EPServiceProvider. */
 //    void configure(EPServiceProvider epService);
 
+    RuleEngineDaoLocal getRuleEngineDao();
+    
     /**
      * Get all rules that are currently active in the RE runtime
      * @return all rules that are currently active in the RE runtime
@@ -47,6 +56,5 @@ public interface RuleEngineManagerLocal {
 
     Collection<RuleSet> getActiveRuleSets();
 
-    RuleEngineDaoLocal getRuleEngineDao();
-    
+    long getNumEventsEvaluated();
 }

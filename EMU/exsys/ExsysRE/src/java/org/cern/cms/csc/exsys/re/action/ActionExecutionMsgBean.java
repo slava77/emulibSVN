@@ -53,6 +53,7 @@ public class ActionExecutionMsgBean implements MessageListener {
     public ActionExecutionMsgBean() {
     }
 
+    @Override
     public void onMessage(Message message) {
         try {
             ObjectMessage omessage = (ObjectMessage) message;
@@ -98,7 +99,7 @@ public class ActionExecutionMsgBean implements MessageListener {
                         concl.setClosed(true);
                         reDao.getEntityDao().mergeAndFlush(concl);
                         conclCache.removeFromCache(concl);
-                        reManager.getEsperRuntime().sendEvent(concl);
+                        reManager.postEvent(concl);
                     }
                     logger.info("Executed COMMAND action. Action = " + actionExec.getAction().getName() + " and trigger id = " + actionExec.getTrigger().getid());
                 }

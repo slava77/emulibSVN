@@ -24,7 +24,7 @@ import org.cern.cms.csc.dw.model.dse.DataServiceEntityCollection;
  */
 @WebService(serviceName="cdw", name="dataservice", targetNamespace="http://www.cern.ch/cms/csc/dw/ws/dataServiceEntityInput")
 @Stateless()
-public class DataServiceEntityInput {
+public class DataServiceEntityInput implements DataServiceEntityInputLocal {
 
     private static Logger logger = SimpleLogger.getLogger(DataServiceEntityInput.class);
     

@@ -92,9 +92,9 @@ public class MonitorJob {
     public void monitorSystem() {
         logger.debug("In monitorSystem");
         logger.trace("Up time: " + sysmon.getUpTime());
-        MonitorSystem ms = new MonitorSystem(sysmon.getCpuUsage(), sysmon.getRam(), sysmon.getSwap());
-        logger.trace("RAM: " + sysmon.getRam());
-        logger.trace("Swap: " + sysmon.getSwap());
+        MonitorSystem ms = new MonitorSystem(sysmon.getCpuUsage(), sysmon.getRamUsedPercentage(), sysmon.getSwapUsedPercentage());
+        logger.trace("RAM: " + sysmon.getRamAsString());
+        logger.trace("Swap: " + sysmon.getSwapAsString());
         logger.trace("CPU usage: " + String.valueOf(ms.getCpu()));
         getMonitor().trace(ms);
     }

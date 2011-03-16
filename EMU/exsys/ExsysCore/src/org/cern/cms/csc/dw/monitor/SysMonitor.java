@@ -42,6 +42,28 @@ public class SysMonitor {
         return sysmon.swap();
     }
 
+    public String getRamAsString() {
+        return sysmon.physical().toString();
+    }
+
+    public String getSwapAsString() {
+        return sysmon.swap().toString();
+    }
+
+    public Float getRamUsedPercentage() {
+        return calcUsedPercentage(getRam());
+    }
+
+    public Float getSwapUsedPercentage() {
+        return calcUsedPercentage(getSwap());
+    }
+
+    private Float calcUsedPercentage(MemoryStats ms) {
+        Double total = (double) ms.getTotalBytes();
+        Double used = (total - (double) ms.getFreeBytes()) / total;
+        return used.floatValue();
+    }
+
     public ProcessInfo[] getProcesses() {
         return sysmon.processTable();
     }

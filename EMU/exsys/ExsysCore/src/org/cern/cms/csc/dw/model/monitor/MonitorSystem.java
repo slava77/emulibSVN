@@ -1,6 +1,5 @@
 package org.cern.cms.csc.dw.model.monitor;
 
-import com.jezhumble.javasysmon.MemoryStats;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,16 +15,10 @@ public class MonitorSystem extends MonitorEntity {
 
     public MonitorSystem() { }
 
-    public MonitorSystem(Float cpu, MemoryStats ramStats, MemoryStats swapStats) {
+    public MonitorSystem(Float cpu, Float usedRamPercentage, Float usedSwapPercentage) {
         this.cpu = cpu;
-        this.ram = calcUsedPercentage(ramStats);
-        this.swap = calcUsedPercentage(swapStats);
-    }
-
-    private Float calcUsedPercentage(MemoryStats ms) {
-        Double total = (double) ms.getTotalBytes();
-        Double used = (total - (double) ms.getFreeBytes()) / total;
-        return used.floatValue();
+        this.ram = usedRamPercentage;
+        this.swap = usedSwapPercentage;
     }
 
     @Basic

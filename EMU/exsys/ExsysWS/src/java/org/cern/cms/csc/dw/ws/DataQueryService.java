@@ -21,7 +21,7 @@ import jsf.bean.gui.log.Logger;
  */
 @WebService(serviceName="cdw", name="dataqueryservice", targetNamespace="http://www.cern.ch/cms/csc/dw/ws/dataQueryService")
 @Stateless()
-public class DataQueryService {
+public class DataQueryService implements DataQueryServiceLocal {
 
     private static Logger logger = SimpleLogger.getLogger(DataQueryService.class);
 

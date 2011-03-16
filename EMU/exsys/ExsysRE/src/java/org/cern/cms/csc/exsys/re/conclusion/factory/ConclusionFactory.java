@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -66,6 +65,7 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
     /**
      * This method is called by Esper runtime whenever a rule is triggered
      */
+    @Override
     public void update(EventBean[] newEvents, EventBean[] oldEvents,
             EPStatement statement, EPServiceProvider epService) {
 
@@ -88,7 +88,7 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
 
             concl = processConclusion(concl);
             if (concl != null) {
-                reManager.getEsperRuntime().route(concl);
+                reManager.postEventFromListener(concl);
             }
         } catch (Throwable ex) {
             logger.error("ConclusionFactory: error while constructing a conclusion for rule \"" + getRule().getName() + "\"", ex);

@@ -6,7 +6,7 @@
         <data xmlns="http://www.netbeans.org/ns/j2ee-ejbjarproject/3">
             <name>ExsysWS</name>
             <minimum-ant-version>1.6.5</minimum-ant-version>
-            <included-library dirs="100">reference.ExsysDao.dist</included-library>
+            <included-library dirs="200">reference.ExsysCore.jar</included-library>
             <included-library dirs="200">libs.Commons.classpath</included-library>
             <source-roots>
                 <root id="src.dir"/>
@@ -20,12 +20,12 @@
         </libraries>
         <references xmlns="http://www.netbeans.org/ns/ant-project-references/1">
             <reference>
-                <foreign-project>ExsysDao</foreign-project>
+                <foreign-project>ExsysCore</foreign-project>
                 <artifact-type>jar</artifact-type>
                 <script>build.xml</script>
-                <target>dist</target>
+                <target>jar</target>
                 <clean-target>clean</clean-target>
-                <id>dist</id>
+                <id>jar</id>
             </reference>
             <reference>
                 <foreign-project>JsfBeanGui</foreign-project>

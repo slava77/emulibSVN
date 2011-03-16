@@ -148,9 +148,18 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
     /**
      * @return Esper Runtime (EPRuntime) which can be used to send facts into rule engine.
      */
-    @Override
-    public EPRuntime getEsperRuntime() {
+    private EPRuntime getEsperRuntime() {
         return getEpService().getEPRuntime();
+    }
+
+    @Override
+    public void postEvent(Object event) {
+        getEsperRuntime().sendEvent(event);
+    }
+
+    @Override
+    public void postEventFromListener(Object event) {
+        getEsperRuntime().route(event);
     }
 
     /**
@@ -170,6 +179,11 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
     @Override
     public RuleEngineDaoLocal getRuleEngineDao() {
         return reDao;
+    }
+
+    @Override
+    public long getNumEventsEvaluated() {
+        return getEsperRuntime().getNumEventsEvaluated();
     }
 
 }
