@@ -482,11 +482,15 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${reference.ExsysCore.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${libs.javaee-endorsed-api-6.0.classpath}" todir="${build.classes.dir}"/>
         <copyfiles files="${libs.Hibernate36.classpath}" todir="${build.classes.dir}"/>
+        <copyfiles files="${libs.Javasysmon.classpath}" todir="${build.classes.dir}"/>
+        <copyfiles files="${libs.Neo4j.classpath}" todir="${build.classes.dir}"/>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
         <copyfiles files="${reference.ExsysCore.jar}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.javaee-endorsed-api-6.0.classpath}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.Hibernate36.classpath}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${libs.Javasysmon.classpath}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${libs.Neo4j.classpath}" todir="${dist.ear.dir}/lib"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update"/>
     </target>
     <target name="-copy-meta-inf">

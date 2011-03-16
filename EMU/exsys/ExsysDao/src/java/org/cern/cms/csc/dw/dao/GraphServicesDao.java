@@ -34,7 +34,7 @@ public class GraphServicesDao {
             {
                 File root = new File(graphdbPath);
                 root.mkdir();
-                URL zipUrl = this.getClass().getClassLoader().getResource("org/cern/cms/csc/dw/model/graphdb.zip");
+                URL zipUrl = this.getClass().getClassLoader().getResource("graphdb.zip");
                 logger.info("Unpacking graphdb from [" + zipUrl.getFile() + "] to [" + root.getAbsolutePath() + "]");
                 ZipUtil.unzip(new File(zipUrl.getFile()), root);
             }

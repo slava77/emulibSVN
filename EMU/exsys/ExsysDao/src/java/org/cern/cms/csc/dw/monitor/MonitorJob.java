@@ -57,9 +57,8 @@ public class MonitorJob {
                 }
             }
 
-            URL entitiesUrl = MonitorJob.class.getResource(ENTITIES_RESOURCE);
             Properties entitiesPro = new Properties();
-            entitiesPro.load(new FileInputStream(new File(entitiesUrl.getFile())));
+            entitiesPro.load(MonitorJob.class.getResourceAsStream(ENTITIES_RESOURCE));
             Enumeration en = entitiesPro.propertyNames();
             while (en.hasMoreElements()) {
                 String k = (String) en.nextElement();
