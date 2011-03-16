@@ -10,6 +10,7 @@ import jsf.bean.gui.component.table.BeanTableDaoIf;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.MainBeanTableDaoLocal;
+import org.cern.cms.csc.dw.metadata.MetadataManager;
 import org.cern.cms.csc.exsys.gui.util.ClassFinder;
 
 @ManagedBean
@@ -18,7 +19,7 @@ public class DataBrowserController extends BrowserController {
 
     private static final Logger logger = SimpleLogger.getLogger(DataBrowserController.class);
 
-    private static final String ENTITIES_RESOURCE = "/org/cern/cms/csc/dw/metadata/main_entities.properties";
+    private static final String ENTITIES_RESOURCE = MetadataManager.RESOURCE_BASE + MetadataManager.MAIN_ENTITIES_RESOURCE;
 
     @EJB
     private MainBeanTableDaoLocal mainBeanTableDao;

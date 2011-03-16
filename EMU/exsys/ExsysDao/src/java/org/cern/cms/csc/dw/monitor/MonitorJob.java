@@ -17,6 +17,7 @@ import javax.naming.Binding;
 import org.cern.cms.csc.dw.dao.MonitorDaoLocal;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.metadata.MetadataManager;
 import org.cern.cms.csc.dw.model.monitor.MonitorDatabaseStatus;
 import org.cern.cms.csc.dw.model.monitor.MonitorEntity;
 import org.cern.cms.csc.dw.model.monitor.MonitorQueueStatus;
@@ -28,7 +29,7 @@ import org.cern.cms.csc.dw.util.ServiceLocator;
 @Stateless
 public class MonitorJob {
 
-    private static final String ENTITIES_RESOURCE = "/org/cern/cms/csc/dw/metadata/monitor_entities.properties";
+    private static final String ENTITIES_RESOURCE = MetadataManager.RESOURCE_BASE + MetadataManager.MONITOR_ENTITIES_RESOURCE;
     private static final long RETENTION_TIME = 24 * 60 * 60 * 1000;
 
     private static final Logger logger = SimpleLogger.getLogger(MonitorJob.class);

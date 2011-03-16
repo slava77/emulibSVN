@@ -19,6 +19,7 @@ import jsf.bean.gui.component.table.BeanTableDaoIf;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.MonitorDaoLocal;
+import org.cern.cms.csc.dw.metadata.MetadataManager;
 import org.cern.cms.csc.dw.model.monitor.MonitorFactCollectionLog;
 import org.cern.cms.csc.dw.model.monitor.MonitorQueueStatus;
 import org.cern.cms.csc.dw.model.monitor.MonitorSystem;
@@ -44,7 +45,7 @@ import org.jfree.data.time.TimeSeriesDataItem;
 public class MonitorController extends BrowserController {
 
     private static final Logger logger = SimpleLogger.getLogger(MonitorController.class);
-    private static final String ENTITIES_RESOURCE = "/org/cern/cms/csc/dw/metadata/monitor_entities.properties";
+    private static final String ENTITIES_RESOURCE = MetadataManager.RESOURCE_BASE + MetadataManager.MONITOR_ENTITIES_RESOURCE;
 
     private ServiceLocator locator = new ServiceLocator();
 

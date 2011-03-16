@@ -48,11 +48,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link RuleSet }
+     * Create an instance of {@link RelatedComponentFinder }
      * 
      */
-    public RuleSet createRuleSet() {
-        return new RuleSet();
+    public RelatedComponentFinder createRelatedComponentFinder() {
+        return new RelatedComponentFinder();
+    }
+
+    /**
+     * Create an instance of {@link ActionExecution }
+     * 
+     */
+    public ActionExecution createActionExecution() {
+        return new ActionExecution();
     }
 
     /**
@@ -72,27 +80,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SimpleComponentFinder }
+     * Create an instance of {@link RuleSet }
      * 
      */
-    public SimpleComponentFinder createSimpleComponentFinder() {
-        return new SimpleComponentFinder();
-    }
-
-    /**
-     * Create an instance of {@link ConclusionType }
-     * 
-     */
-    public ConclusionType createConclusionType() {
-        return new ConclusionType();
-    }
-
-    /**
-     * Create an instance of {@link RelatedComponentFinder }
-     * 
-     */
-    public RelatedComponentFinder createRelatedComponentFinder() {
-        return new RelatedComponentFinder();
+    public RuleSet createRuleSet() {
+        return new RuleSet();
     }
 
     /**
@@ -112,22 +104,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link DcsCommandAction }
-     * 
-     */
-    public DcsCommandAction createDcsCommandAction() {
-        return new DcsCommandAction();
-    }
-
-    /**
-     * Create an instance of {@link ActionExecution }
-     * 
-     */
-    public ActionExecution createActionExecution() {
-        return new ActionExecution();
-    }
-
-    /**
      * Create an instance of {@link Conclusion }
      * 
      */
@@ -141,6 +117,30 @@ public class ObjectFactory {
      */
     public ConclusionTrigger createConclusionTrigger() {
         return new ConclusionTrigger();
+    }
+
+    /**
+     * Create an instance of {@link SimpleComponentFinder }
+     * 
+     */
+    public SimpleComponentFinder createSimpleComponentFinder() {
+        return new SimpleComponentFinder();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionType }
+     * 
+     */
+    public ConclusionType createConclusionType() {
+        return new ConclusionType();
+    }
+
+    /**
+     * Create an instance of {@link DcsCommandAction }
+     * 
+     */
+    public DcsCommandAction createDcsCommandAction() {
+        return new DcsCommandAction();
     }
 
     /**

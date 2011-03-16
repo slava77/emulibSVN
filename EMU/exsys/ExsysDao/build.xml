@@ -66,22 +66,12 @@
 
     -->
 
-    <target name="-post-compile">
-        <java classname="org.cern.cms.csc.dw.metadata.MetadataManager" fork="true" failonerror="true">
-            <arg line="${build.ear.classes.dir}"/>
-            <classpath>
-                <path path="${build.ear.classes.dir}"/>
-                <path path="${javac.classpath}"/>
-            </classpath>
-        </java>
-    </target>
-
     <target name="-pre-dist">
 
         <copy
             failonerror="false"
             file="src/graphdb/graphdb.zip"
-            tofile="${build.classes.dir}/org/cern/cms/csc/dw/model/graphdb.zip"/>
+            tofile="${build.classes.dir}/graphdb.zip"/>
 
     </target>
 

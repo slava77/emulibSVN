@@ -6,7 +6,8 @@
 
     <property name="artifactId" value="hyperjaxb3-po-initial-ant"/>
     <property name="version" value="0.5.4"/>
-    <property name="model" location="${basedir}/../ExsysModel" />
+    <property name="model" location="${basedir}/../ExsysCore" />
+    <property name="dao" location="${basedir}/../ExsysDao" />
     <property name="olap" location="${basedir}/../CdwOlap" />
     <property name="kbase" location="${basedir}/../KnowledgeBase/src"/>
     <property name="hj-libs" location="${basedir}/../lib/Hyperjaxb" />
@@ -68,10 +69,10 @@
     </target>
 
     <target name="generate-ontology-schema">
-        <delete file="${model}/src/java/org/cern/cms/csc/dw/schema/ontologyClassifiers.xsd" failonerror="false" />
+        <delete file="${model}/src/org/cern/cms/csc/dw/schema/ontologyClassifiers.xsd" failonerror="false" />
         <xslt style="src/org/cern/cms/csc/dw/dev/template/ontologyClassifiers.xsl"
               in="${kbase}/ontology/csc-ontology.owl"
-              out="${model}/src/java/org/cern/cms/csc/dw/schema/ontologyClassifiers.xsd"/>
+              out="${model}/src/org/cern/cms/csc/dw/schema/ontologyClassifiers.xsd"/>
     </target>
 
     <target name="db-properties" depends="-init-dev">
@@ -80,7 +81,7 @@
 
         <!-- Copy over persistence configuration -->
         <delete file="build/classes/META-INF/persistence.xml"/>
-        <copy file="${model}/src/conf/persistence.xml" todir="build/classes/META-INF"/>
+        <copy file="${dao}/src/conf/persistence.xml" todir="build/classes/META-INF"/>
 
         <!-- Create database properties file -->
         <delete file="build/classes/META-INF/persistence.properties" failonerror="false" />
@@ -142,17 +143,17 @@
     <target name="04-ontology-graph" depends="-init-dev">
 
         <!-- Remove graph db -->
-        <delete dir="${model}/src/graphdb" includeemptydirs="true" includes="**/*" excludes="CVS"/>
+        <delete dir="${dao}/src/graphdb" includeemptydirs="true" includes="**/*" excludes="CVS"/>
 
         <!-- Execute main data import procedure -->
         <java classname="org.cern.cms.csc.dw.dev.OntologyGraphImporter" fork="true" failonerror="true" classpathref="dev-classpath">
             <jvmarg line="-Xmn100M -Xms500M -Xmx500M -Xss50M"/>
             <arg value="--owl=${kbase}/ontology/csc-ontology.owl"/>
-            <arg value="--dest=${model}/src/graphdb"/>
+            <arg value="--dest=${dao}/src/graphdb"/>
         </java>
 
-        <zip destfile="graphdb.zip" basedir="${model}/src/graphdb"/>
-        <move file="graphdb.zip" tofile="${model}/src/graphdb/graphdb.zip"/>
+        <zip destfile="graphdb.zip" basedir="${dao}/src/graphdb"/>
+        <move file="graphdb.zip" tofile="${dao}/src/graphdb/graphdb.zip"/>
 
     </target>
 
@@ -179,15 +180,15 @@
     </target>
 
     <target name="generate-fact-schema">
-        <delete file="${model}/src/java/org/cern/cms/csc/dw/schema/dqmFact.xsd" failonerror="false" />
+        <delete file="${model}/src/org/cern/cms/csc/dw/schema/dqmFact.xsd" failonerror="false" />
         <xslt style="src/org/cern/cms/csc/dw/dev/template/dqmFactSchema.xsl"
               in="src/org/cern/cms/csc/dw/dev/xml/dqmParameters.xml"
-              out="${model}/src/java/org/cern/cms/csc/dw/schema/dqmFact.xsd"/>
+              out="${model}/src/org/cern/cms/csc/dw/schema/dqmFact.xsd"/>
     </target>
 
     <target name="02-generate-model" depends="-init-dev,generate-ontology-schema,generate-fact-schema,hj-taskdef">
 
-        <xjc destdir="${model}/src/java" extension="true">
+        <xjc destdir="${model}/src" extension="true">
             <arg line="
                 -Xhyperjaxb3-ejb
                 -Xinheritance
@@ -195,8 +196,8 @@
                 -XAnnotate
                 -XEnumValueGetter
                 -simple-preserve"/>
-            <schema file="${model}/src/java/org/cern/cms/csc/dw/schema/cdw.xsd"/>
-            <schema file="${model}/src/java/org/cern/cms/csc/exsys/re/schema/re.xsd"/>
+            <schema file="${model}/src/org/cern/cms/csc/dw/schema/cdw.xsd"/>
+            <schema file="${model}/src/org/cern/cms/csc/exsys/re/schema/re.xsd"/>
             <classpath>
                 <pathelement path="${javac.classpath}"/>
                 <pathelement path="build/classes"/>
@@ -205,7 +206,7 @@
         </xjc>
 
         <!-- Make DataServiceEntity not an entity (cannot use <hj:ignore>, because that also affects subclasses) -->
-        <replace file="${model}/src/java/org/cern/cms/csc/dw/model/dse/DataServiceEntity.java">
+        <replace file="${model}/src/org/cern/cms/csc/dw/model/dse/DataServiceEntity.java">
             <replacefilter token="@Entity" value="//@Entity"/>
             <replacefilter token="@Table" value="//@Table"/>
             <replacefilter token="@Inheritance" value="//@Inheritance"/>
@@ -218,7 +219,7 @@
         <replaceregexp >
             <regexp pattern="(mappedBy.*\)\s*\n)\s*@JoinColumn\(.*\)\s*\n"/>
             <substitution expression="\1"/>
-            <fileset dir="${model}/src/java/org/cern/cms/csc">
+            <fileset dir="${model}/src/org/cern/cms/csc">
                 <include name="dw/model/**/*.java"/>
                 <include name="dw/service/**/*.java"/>
                 <include name="exsys/re/model/**/*.java"/>
@@ -229,7 +230,7 @@
         <replaceregexp>
             <regexp pattern="// Generated on: .*\n"/>
             <substitution expression=""/>
-            <fileset dir="${model}/src/java/org/cern/cms/csc">
+            <fileset dir="${model}/src/org/cern/cms/csc">
                 <include name="dw/model/**/*.java"/>
                 <include name="dw/service/**/*.java"/>
                 <include name="exsys/re/model/**/*.java"/>
@@ -238,16 +239,16 @@
 
         <!-- Fix ontology classes -->
 
-        <replace file="${model}/src/java/org/cern/cms/csc/dw/model/ontology/ComponentClass.java">
+        <replace file="${model}/src/org/cern/cms/csc/dw/model/ontology/ComponentClass.java">
             <replacefilter token="PARENT_COMPONENTCLASS_IDITEM" value="CCP_PARENT_CCL_ID"/>
             <replacefilter token="CHILD_COMPONENTCLASS_IDITEM" value="CCP_CHILD_CCL_ID"/>
         </replace>
 
-        <replace file="${model}/src/java/org/cern/cms/csc/dw/model/fact/FactCollection.java"
+        <replace file="${model}/src/org/cern/cms/csc/dw/model/fact/FactCollection.java"
             token="FACTSITEMS_FACTCOLLECTION_ID"
             value="FIT_FCO_ID"/>
 
-        <replace file="${model}/src/java/org/cern/cms/csc/dw/model/fact/FactCollectionFactsItem.java">
+        <replace file="${model}/src/org/cern/cms/csc/dw/model/fact/FactCollectionFactsItem.java">
             <replacefilter token="FACTCOLLECTIONFACTSITEM" value="CDW_FACT_COLLECTION_ITEMS"/>
             <replacefilter token="Hjid" value="Id"/>
             <replacefilter token="hjid" value="id"/>
@@ -257,10 +258,20 @@
         </replace>
 
         <delete failonerror="false">
-            <fileset dir="${model}/src/java/org/cern/cms/csc/dw/model" includes="**/*.java.backup"/>
-            <fileset dir="${model}/src/java/org/cern/cms/csc/dw/service" includes="**/*.java.backup"/>
-            <fileset dir="${model}/src/java/org/cern/cms/csc/exsys/re/model" includes="**/*.java.backup"/>
+            <fileset dir="${model}/src/org/cern/cms/csc/dw/model" includes="**/*.java.backup"/>
+            <fileset dir="${model}/src/org/cern/cms/csc/dw/service" includes="**/*.java.backup"/>
+            <fileset dir="${model}/src/org/cern/cms/csc/exsys/re/model" includes="**/*.java.backup"/>
         </delete>
+
+        <!-- generate model metadata -->
+        <java classname="org.cern.cms.csc.dw.dev.FactMetadataGenerator" fork="true" failonerror="true">
+            <arg line="${model}/src"/>
+            <classpath>
+                <pathelement path="${model}/build/classes"/>
+                <pathelement path="${javac.classpath}"/>
+                <pathelement path="build/classes"/>
+            </classpath>
+        </java>
 
     </target>
 
