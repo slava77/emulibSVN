@@ -1,6 +1,7 @@
 package jsf.bean.gui.component.table;
 
 import java.beans.PropertyDescriptor;
+import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -18,7 +19,7 @@ import jsf.bean.gui.component.table.converter.FilterConverter;
 import org.apache.commons.beanutils.PropertyUtils;
 import jsf.bean.gui.metadata.PropertyMd;
 
-public class BeanTableColumn {
+public class BeanTableColumn implements Serializable {
 
     private static final Logger logger = Logger.getLogger(BeanTableColumn.class.getName());
 

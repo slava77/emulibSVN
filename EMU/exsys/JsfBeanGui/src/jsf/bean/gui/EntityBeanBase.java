@@ -35,12 +35,15 @@ public class EntityBeanBase implements Serializable {
     private static Logger logger = SimpleLogger.getLogger(EntityBeanBase.class);
 
     /** Class property metadata cache. */
+    @Transient
     private static Map<Class, List<PropertyMd>> propertyMetadataCache = new HashMap<Class, List<PropertyMd>>();
 
     /** Cache of class -> names of the fields annotated by @UseInTitle. */
+    @Transient
     private static Map<Class, List<String>> titleFieldNamesCache = new HashMap<Class, List<String>>();
 
     /** Cach of class -> ID property - used by equals and hashCode methods */
+    @Transient
     private static Map<Class, PropertyDescriptor> idPropertyCache = new HashMap<Class, PropertyDescriptor>();
 
     public EntityBeanBase() { }

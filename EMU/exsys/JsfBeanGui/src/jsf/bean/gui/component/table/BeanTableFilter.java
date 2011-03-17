@@ -1,9 +1,10 @@
 package jsf.bean.gui.component.table;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BeanTableFilter {
+public class BeanTableFilter implements Serializable {
 
   public static enum Operator {
 

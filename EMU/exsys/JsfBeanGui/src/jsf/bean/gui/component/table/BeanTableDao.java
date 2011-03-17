@@ -1,5 +1,6 @@
 package jsf.bean.gui.component.table;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -17,11 +18,33 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 
-public abstract class BeanTableDao {
+public abstract class BeanTableDao implements Serializable {
 
     private static final Logger logger = SimpleLogger.getLogger(BeanTableDao.class);
 
     protected abstract Session getSession();
+
+    /**
+     * Method is being called right before executing criteria.
+     * Default method adds cache. Override to change!
+     * @param table Table used to construct criteria
+     * @param c Criteria to be executed
+     */
+    protected void preExecute(BeanTable table, Criteria c) {
+        c.setCacheable(true);
+        c.setCacheRegion(table.getRowClass().getCanonicalName());
+    }
+
+    /**
+     * Method is being called right before executing count criteria.
+     * Default method adds cache. Override to change!
+     * @param table Table used to construct criteria
+     * @param c Criteria to be executed
+     */
+    protected void preExecuteCount(BeanTable table, Criteria c) {
+        c.setCacheable(true);
+        c.setCacheRegion(table.getRowClass().getCanonicalName());
+    }
 
     public List<EntityBeanBase> getData(BeanTable table) {
 
@@ -43,8 +66,7 @@ public abstract class BeanTableDao {
             c.setMaxResults(table.getPageSize());
         }
 
-        c.setCacheable(true);
-        c.setCacheRegion(table.getRowClass().getCanonicalName());
+        preExecute(table, c);
 
         List list = new ArrayList();
         try {
@@ -69,13 +91,11 @@ public abstract class BeanTableDao {
         Session session = getSession();
         Transaction transaction = session.beginTransaction();
 
-        Long count = (Long) getCriteria(session, table)
-                .setProjection(Projections.rowCount())
-                .setCacheable(true)
-                .setCacheRegion(table.getRowClass()
-                .getCanonicalName())
-                .uniqueResult();
+        Criteria c = getCriteria(session, table).setProjection(Projections.rowCount());
 
+        preExecuteCount(table, c);
+
+        Long count = (Long) c.uniqueResult();
         transaction.rollback();
 
         return count;

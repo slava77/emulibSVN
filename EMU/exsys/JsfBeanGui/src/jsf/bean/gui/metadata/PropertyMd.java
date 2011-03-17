@@ -6,11 +6,13 @@
 package jsf.bean.gui.metadata;
 
 import java.beans.PropertyDescriptor;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.persistence.Transient;
 import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.annotation.ImmutableReference;
 import jsf.bean.gui.annotation.Label;
@@ -25,7 +27,7 @@ import org.apache.commons.beanutils.PropertyUtils;
  * All entities which are subclasses of EntityBase class can return a list of these objects corresponding to their attributes.
  * @author Evka
  */
-public abstract class PropertyMd {
+public abstract class PropertyMd implements Serializable {
 
     private static Logger logger = SimpleLogger.getLogger(PropertyMd.class);
 
@@ -33,6 +35,7 @@ public abstract class PropertyMd {
     private static Pattern itemPropertyPattern = Pattern.compile("(.+)Item");
 
     /** Object describing the bean property (things like name, display name, setter, getter, etc.). */
+    @Transient
     private PropertyDescriptor propertyDescriptor;
     /** Flag telling if the property is mandatory or optional. */
     private boolean isMandatory;

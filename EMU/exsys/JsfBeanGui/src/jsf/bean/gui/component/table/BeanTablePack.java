@@ -1,5 +1,6 @@
 package jsf.bean.gui.component.table;
 
+import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,7 +10,7 @@ import javax.faces.model.SelectItem;
 import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.component.BeanTableManager;
 
-public class BeanTablePack {
+public class BeanTablePack implements Serializable {
 
     private Collection<SelectItem> classes = new ArrayList<SelectItem>();
     private Class<? extends EntityBeanBase> selectedClass;

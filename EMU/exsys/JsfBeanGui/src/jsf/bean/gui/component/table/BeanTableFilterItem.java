@@ -1,6 +1,8 @@
 package jsf.bean.gui.component.table;
 
-public class BeanTableFilterItem {
+import java.io.Serializable;
+
+public class BeanTableFilterItem implements Serializable {
 
     private Object value;
     private BeanTableFilter.Operator operator = BeanTableFilter.Operator.OR;

@@ -1,10 +1,11 @@
 package jsf.bean.gui.component.table;
 
+import java.io.Serializable;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.DataModel;
 import jsf.bean.gui.EntityBeanBase;
 
-public abstract class BeanTableControls {
+public abstract class BeanTableControls implements Serializable {
 
     private BeanTableProperties prop;
 

@@ -1,5 +1,6 @@
 package jsf.bean.gui.component.table.converter;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
@@ -14,7 +15,7 @@ import javax.faces.convert.Converter;
 import jsf.bean.gui.component.table.BeanTableFilter;
 import jsf.bean.gui.component.table.BeanTableFilterItem;
 
-public abstract class FilterConverter implements Converter {
+public abstract class FilterConverter implements Converter, Serializable {
 
     private static Pattern tokenPattern = Pattern.compile("('[^']+'|\"[^\"]+\"|[^\" ]+)");
     private static Pattern quotePattern = Pattern.compile("^['\"]+(.*)['\"]+$");

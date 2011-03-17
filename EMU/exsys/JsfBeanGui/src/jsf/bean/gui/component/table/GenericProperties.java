@@ -1,6 +1,7 @@
 package jsf.bean.gui.component.table;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,7 +12,7 @@ import javax.faces.model.SelectItem;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
 
-public class GenericProperties {
+public class GenericProperties implements Serializable {
 
     private static final Logger logger = SimpleLogger.getLogger(GenericProperties.class);
     private Properties properties;
