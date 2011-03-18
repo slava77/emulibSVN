@@ -32,18 +32,6 @@ void emuui_init() {
 
   emu_info("------========== EMU Top Level UI is initializing... ==========------");
   
-  dyn_string sysNames;
-  fwInstallation_getApplicationSystem("CMS_CSC_UI", sysNames);
-  if (dynlen(sysNames) == 0) {
-    emu_errorSingle("UI FATAL: Cannot find system where CMS_CSC_UI component is installed! UI behavior is undefined in this condition.");
-    return;
-  }
-  if (dynlen(sysNames) > 0) {
-    if (dynlen(sysNames) > 1) {
-      emu_info("WARNING: more than one system foun with CMS_CSC_UI installed, choosing the first one: " + sysNames[1] + " (found: " + sysNames + ")");
-    }
-    EMUUI_SYSTEM = sysNames[1];
-  }
   emu_info("System: " + emuui_getSystem());
       
   dpGet(emuui_getSystem() + "fwInstallation_" + EMUUI_COMPONENT_NAME + ".componentVersionString", EMUUI_COMPONENT_VERSION);
@@ -64,6 +52,20 @@ void emuui_init() {
 }
 
 string emuui_getSystem() {
+  if (EMUUI_SYSTEM == "") {
+    dyn_string sysNames;
+    fwInstallation_getApplicationSystem("CMS_CSC_UI", sysNames);
+    if (dynlen(sysNames) == 0) {
+      emu_errorSingle("UI FATAL: Cannot find system where CMS_CSC_UI component is installed! UI behavior is undefined in this condition.");
+      return "cms-csc-dcs-09";
+    }
+    if (dynlen(sysNames) > 0) {
+      if (dynlen(sysNames) > 1) {
+        emu_info("WARNING: more than one system foun with CMS_CSC_UI installed, choosing the first one: " + sysNames[1] + " (found: " + sysNames + ")");
+      }
+      EMUUI_SYSTEM = sysNames[1];
+    }    
+  }
   return EMUUI_SYSTEM;
 }
 
