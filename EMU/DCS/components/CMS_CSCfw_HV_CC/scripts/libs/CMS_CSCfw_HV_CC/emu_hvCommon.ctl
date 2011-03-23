@@ -21,6 +21,22 @@ public const int EMUHV_COMMAND_VSET = 7;
 public const int EMUHV_COMMAND_SET_IMAX = 6;
 //public const int EMUHV_COMMAND_STANDBY = 1;
 
+public mapping emuhv_getHvChannel(string hvChannelDp, dyn_string &exceptionInfo) {
+  mapping deviceParams = emu_fsmNodeToDeviceParams(hvChannelDp, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  dyn_string dpSplit = strsplit(dpSubStr(hvChannelDp, DPSUB_DP_EL), ".");
+  if ((dynlen(dpSplit) < 3) || (dpSplit[2] != "data") || (dpSplit[3][0] != 'v')) {
+    emu_addError("emuhv_getHvChannel: invalid HV channel DP: " + hvChannelDp, exceptionInfo);
+    return;
+  }
+  strreplace(dpSplit[3], "v", "");
+  deviceParams["moduleChannelNumber"] = (int) dpSplit[3];
+  deviceParams["channelNumber"] = deviceParams["moduleChannelNumber"] - _emuhv_getModuleChannelOffset(deviceParams, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return EMU_DUMMY_MAPPING; }
+  
+  return deviceParams;
+}
+
 /** 
   * Returns DP of the requested HV channel. Useful because it does the conversion between channel number on a chamber (that's what you provide) and channel
   *   number on the board (that's what you need in order to get the actual DP.
@@ -36,8 +52,8 @@ public string emuhv_getHvChannelDp(mapping channelDeviceParams, dyn_string &exce
   return channelDp;
 }
 
-/** Converts chamber hv channel number to the channel number in the module (for small chambers this may be different - two chambers are connected to the same module) */
-private int _emuhv_getModuleHvChannelNum(mapping chamberDeviceParams, int chamberHvChannelNum, dyn_string &exceptionInfo) {
+/** @return offset of the module channel numbers compared to chamber channel numbers for the given chamber. */
+private int _emuhv_getModuleChannelOffset(mapping chamberDeviceParams, dyn_string &exceptionInfo) {
   int channelsOffset = 0;
   
   string coordDp = emuui_getDpName("HV_coord", chamberDeviceParams, exceptionInfo);
@@ -50,6 +66,13 @@ private int _emuhv_getModuleHvChannelNum(mapping chamberDeviceParams, int chambe
     channelsOffset = 18;
   }
 
+  return channelsOffset;
+}
+
+/** Converts chamber hv channel number to the channel number in the module (for small chambers this may be different - two chambers are connected to the same module) */
+private int _emuhv_getModuleHvChannelNum(mapping chamberDeviceParams, int chamberHvChannelNum, dyn_string &exceptionInfo) {
+  int channelsOffset = _emuhv_getModuleChannelOffset(chamberDeviceParams, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return -1; }
   return channelsOffset + chamberHvChannelNum;
 }
 
@@ -227,6 +250,8 @@ public void emuhv_enableDisableChannel(mapping channelDeviceParams, bool isEnabl
     // add it to the summary alert
     fwAlertConfig_addDpInAlertSummary(moduleDp + ".", channelDp + ".status", exceptionInfo, false);
     if (emu_checkException(exceptionInfo)) { return; }
+    fwAlertConfig_activate(moduleDp + ".", exceptionInfo);
+    if (emu_checkException(exceptionInfo)) { return; }
   } else {                                       // ------====== EXCLUDE ======------
     emu_info("HV: Disabling channel #" + channelDeviceParams["channelNumber"] + " on chamber " + emuui_getChamberName(channelDeviceParams));
 
@@ -242,6 +267,8 @@ public void emuhv_enableDisableChannel(mapping channelDeviceParams, bool isEnabl
 
     // take it out of the summary alert
     fwAlertConfig_deleteDpFromAlertSummary(moduleDp + ".", channelDp + ".status", exceptionInfo, false);
+    if (emu_checkException(exceptionInfo)) { return; }
+    fwAlertConfig_activate(moduleDp + ".", exceptionInfo);
     if (emu_checkException(exceptionInfo)) { return; }
   }
 }
