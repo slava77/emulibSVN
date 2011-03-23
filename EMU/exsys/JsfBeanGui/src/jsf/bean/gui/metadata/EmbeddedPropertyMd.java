@@ -7,8 +7,6 @@ package jsf.bean.gui.metadata;
 
 import java.beans.PropertyDescriptor;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.Embedded;
 import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
 import jsf.bean.gui.exception.InvalidEntityClassException;
@@ -65,4 +63,9 @@ public class EmbeddedPropertyMd extends PropertyMd {
         // validation successful
         return null;
     }
+
+    public List<PropertyMd> getPropertyMds() {
+        return propertyMd;
+    }
+
 }

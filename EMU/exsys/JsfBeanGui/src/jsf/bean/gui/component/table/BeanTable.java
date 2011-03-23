@@ -1,5 +1,7 @@
 package jsf.bean.gui.component.table;
 
+import jsf.bean.gui.component.table.column.BeanTableColumn;
+import jsf.bean.gui.component.table.column.BeanTableColumnFactory;
 import com.icesoft.faces.component.panelpositioned.PanelPositionedEvent;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -11,6 +13,7 @@ import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import jsf.bean.gui.EntityBeanBase;
+import jsf.bean.gui.component.table.column.BeanTableColumnSortable;
 import jsf.bean.gui.metadata.PropertyMd;
 
 public class BeanTable extends BeanTableControls {
@@ -25,7 +28,7 @@ public class BeanTable extends BeanTableControls {
 
     private List<BeanTableColumn> columns = new LinkedList<BeanTableColumn>();
     private DualList<BeanTableColumn> selectedColumns = new DualList<BeanTableColumn>();
-    private DualList<BeanTableColumn> sortingColumns = new DualList<BeanTableColumn>();
+    private DualList<BeanTableColumnSortable> sortingColumns = new DualList<BeanTableColumnSortable>();
 
     @SuppressWarnings("unchecked")
     public BeanTable(BeanTablePack pack, Class<? extends EntityBeanBase> rowClass) throws Exception {
@@ -35,8 +38,7 @@ public class BeanTable extends BeanTableControls {
         this.rowClass = rowClass;
 
         for (PropertyMd pmd: this.rowClass.newInstance().getPropertyMetadata()) {
-            BeanTableColumn c = new BeanTableColumn(this, pmd);
-            this.columns.add(c);
+            this.columns.add(BeanTableColumnFactory.getBeanTableColumn(this, pmd));
         }
 
         /*
@@ -66,8 +68,9 @@ public class BeanTable extends BeanTableControls {
         for (String cname: getProperties().getSorting()) {
             for (BeanTableColumn col: this.columns) {
                 if (col.getName().equals(cname)) {
-                    if (!((BeanTableColumn) col).isEntityType() && !((BeanTableColumn) col).isListType()) {
-                        this.sortingColumns.getTarget().add(col);
+                    if (col instanceof BeanTableColumnSortable && col.isSortable()) {
+                        BeanTableColumnSortable scol = (BeanTableColumnSortable) col;
+                        this.sortingColumns.getTarget().add(scol);
                     }
                     break;
                 }
@@ -75,9 +78,10 @@ public class BeanTable extends BeanTableControls {
         }
 
         for (BeanTableColumn col: this.columns) {
-            if (!this.sortingColumns.getTarget().contains(col)) {
-                if (!((BeanTableColumn) col).isEntityType() && !((BeanTableColumn) col).isListType()) {
-                    this.sortingColumns.getSource().add(col);
+            if (col instanceof BeanTableColumnSortable && col.isSortable()) {
+                BeanTableColumnSortable scol = (BeanTableColumnSortable) col;
+                if (!this.sortingColumns.getTarget().contains(scol)) {
+                    this.sortingColumns.getSource().add(scol);
                 }
             }
         }
@@ -98,7 +102,7 @@ public class BeanTable extends BeanTableControls {
         return rowClass;
     }
 
-    public DualList<BeanTableColumn> getSortingColumns() {
+    public DualList<BeanTableColumnSortable> getSortingColumns() {
         return sortingColumns;
     }
 
@@ -201,8 +205,9 @@ public class BeanTable extends BeanTableControls {
 
     public void removeFilter() {
         for (BeanTableColumn c: columns) {
-            ((BeanTableColumn) c).clearFilterListener(null);
+            c.clearFilterListener(null);
         }
+        refresh();
     }
 
     /*********************************************
@@ -213,8 +218,7 @@ public class BeanTable extends BeanTableControls {
 
     public String getColumnWidths() {
         StringBuilder sb = new StringBuilder("");
-        for (BeanTableColumn sci: selectedColumns.getTarget()) {
-            BeanTableColumn sc = (BeanTableColumn) sci;
+        for (BeanTableColumn sc: selectedColumns.getTarget()) {
             Integer w = sc.getWidth();
             if (w == null) {
                 return null;
@@ -231,7 +235,7 @@ public class BeanTable extends BeanTableControls {
         StringTokenizer tok = new StringTokenizer(colWidths, ",");
         for (BeanTableColumn sc: selectedColumns.getTarget()) {
             if (tok.hasMoreTokens()) {
-                ((BeanTableColumn) sc).setWidth(Integer.parseInt(tok.nextToken()));
+                sc.setWidth(Integer.parseInt(tok.nextToken()));
             } else {
                 return;
             }
@@ -240,7 +244,7 @@ public class BeanTable extends BeanTableControls {
 
     public boolean isSetColumnWidth() {
         for (BeanTableColumn c: selectedColumns.getTarget()) {
-            if (((BeanTableColumn) c).getWidth() == null) {
+            if (c.getWidth() == null) {
                 return true;
             }
         }
@@ -249,7 +253,7 @@ public class BeanTable extends BeanTableControls {
 
     public void resetColumnWidthListener(ActionEvent ev) {
         for (BeanTableColumn sc: columns) {
-            ((BeanTableColumn) sc).setWidth(null);
+            sc.setWidth(null);
         }
     }
 

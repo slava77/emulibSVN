@@ -6,7 +6,7 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ice="http://www.icesoft.com/icefaces/component"
       xmlns:cc="http://java.sun.com/jsf/composite"
-      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html">
 
     <cc:interface>
@@ -40,45 +40,37 @@
             <ul id="beanTableBreadcrumb" class="xbreadcrumbs" style="width: 100%">
 
                 <li>
-                    <c:choose>
-                        <c:when test="#{cc.attrs.manager.top and cc.attrs.title != null}">
-                            <h:outputText styleClass="beanTablePathTop"
-                                          value="#{cc.attrs.title}"/>
-                        </c:when>
-                        <c:when test="#{!cc.attrs.manager.top and cc.attrs.title != null}">
-                            <h:commandLink actionListener="#{cc.attrs.manager.topActionListener}"
-                                           value="#{cc.attrs.title}"
-                                           styleClass="beanTablePathTop"
-                                           title="Go to #{cc.attrs.title} table"/>
-                        </c:when>
-                        <c:when test="#{!cc.attrs.manager.top and cc.attrs.title == null}">
-                            <h:commandLink actionListener="#{cc.attrs.manager.topActionListener}"
-                                           value="Top table"
-                                           styleClass="beanTablePathTop"
-                                           title="Go to top table"/>
-                        </c:when>
-                    </c:choose>
+                    <h:outputText styleClass="beanTablePathTop"
+                                  rendered="#{cc.attrs.manager.top and cc.attrs.title != null}"
+                                  value="#{cc.attrs.title}"/>
+                    <h:commandLink actionListener="#{cc.attrs.manager.topActionListener}"
+                                   rendered="#{!cc.attrs.manager.top and cc.attrs.title != null and cc.attrs.title != ''}"
+                                   value="#{cc.attrs.title}"
+                                   styleClass="beanTablePathTop"
+                                   title="Go to #{cc.attrs.title} table"/>
+                    <h:commandLink actionListener="#{cc.attrs.manager.topActionListener}"
+                                   rendered="#{!cc.attrs.manager.top and (cc.attrs.title == null or cc.attrs.title == '')}"
+                                   value="Top"
+                                   styleClass="beanTablePathTop"
+                                   title="Go to top table"/>
                 </li>
 
-                <c:forEach items="#{cc.attrs.manager.tables}" var="table" varStatus="status" >
-                    <c:if test="#{status.index &gt; 0}">
-                        <li>
-                            <h:commandLink value="#{table.title}"
-                                           title="Go to #{table.title} table"
-                                           actionListener="#{cc.attrs.manager.toTableActionListener}">
-                                <f:param name="tableIndex" value="#{status.index}" />
-                            </h:commandLink>
+                <ui:repeat value="#{cc.attrs.manager.tables}" var="table" varStatus="status" offset="1">
+                    <li>
+                        <h:commandLink value="#{table.title}"
+                                       title="Go to #{table.title} table"
+                                       actionListener="#{cc.attrs.manager.toTableActionListener}">
+                            <f:param name="tableIndex" value="#{status.index}" />
+                        </h:commandLink>
 
-                        </li>
-                    </c:if>
-
-                </c:forEach>
-
-                <c:if test="#{cc.attrs.manager.tablePack.title != null}">
-                    <li id="lastItem">
-                        <h:outputText value=" #{cc.attrs.manager.tablePack.title}"/>
                     </li>
-                </c:if>
+                </ui:repeat>
+
+
+                <li id="lastItem">
+                    <h:outputText value=" #{cc.attrs.manager.tablePack.title}"
+                                  rendered="#{cc.attrs.manager.tablePack.title != null}"/>
+                </li>
 
                 <script type="text/javascript">
                     // <![CDATA[

@@ -5,8 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ice="http://www.icesoft.com/icefaces/component"
-      xmlns:cc="http://java.sun.com/jsf/composite"
-      xmlns:c="http://java.sun.com/jsp/jstl/core">
+      xmlns:cc="http://java.sun.com/jsf/composite">
 
     <cc:interface>
 
@@ -37,7 +36,7 @@
     </cc:interface>
     <cc:implementation>
 
-        <c:if test="#{cc.attrs.render}">
+        <ice:panelGroup rendered="#{cc.attrs.render}">
 
             <!-- Menu -->
 
@@ -116,7 +115,7 @@
                     </td>
                 </tr>
             </table>
-        </c:if>
+        </ice:panelGroup>
 
     </cc:implementation>
 </html>

@@ -71,13 +71,16 @@
                 </ice:inputText>
             </ice:panelGrid>
 
+            <script>
+                MouseEvent
+            </script>
+
             <ice:panelGrid columns="2" cellpadding="0" cellspacing="0">
                 <ice:outputLabel value="Size"/>
                 <ice:selectOneMenu value="#{cc.attrs.manager.table.properties.pageSize}"
-                                   partialSubmit="true"
                                    style="margin-left: 5px; margin-top: 0px; margin-right: 5px; margin-bottom: 0px; width: 41px"
                                    title="Select page size"
-                                   valueChangeListener="#{cc.attrs.manager.table.refresh}" >
+                                   onchange="jQuery('#' + ('#{cc.attrs.manager.compositeComponentClientId}'.replace(/[^:]+$/g,'') +'refreshButton').replace(/:/g, '\\:')).click();">
                     <f:selectItems value="#{cc.attrs.manager.table.properties.pageSizes}"/>
                 </ice:selectOneMenu>
             </ice:panelGrid>

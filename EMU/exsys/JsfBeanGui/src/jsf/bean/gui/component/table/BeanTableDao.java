@@ -1,10 +1,12 @@
 package jsf.bean.gui.component.table;
 
+import jsf.bean.gui.component.table.column.BeanTableColumn;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import jsf.bean.gui.EntityBeanBase;
+import jsf.bean.gui.component.table.column.BeanTableColumnSortable;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
 import org.hibernate.Criteria;
@@ -53,11 +55,11 @@ public abstract class BeanTableDao implements Serializable {
 
         Criteria c = getCriteria(session, table);
 
-        for (BeanTableColumn sc: table.getSortingColumns().getTarget()) {
+        for (BeanTableColumnSortable sc: table.getSortingColumns().getTarget()) {
             if (sc.isAscending()) {
-                c.addOrder(Order.asc(sc.getName()));
+                c.addOrder(Order.asc(sc.getSortName()));
             } else {
-                c.addOrder(Order.desc(sc.getName()));
+                c.addOrder(Order.desc(sc.getSortName()));
             }
         }
 

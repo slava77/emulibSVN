@@ -1,0 +1,279 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:table="http://java.sun.com/jsf/composite/component/table">
+
+    <cc:interface>
+
+        <cc:attribute name="manager" required="false"
+                      shortDescription="Table manager"/>
+        <cc:attribute name="title" type="java.lang.String" required="false"
+                      shortDescription="Table title"/>
+        <cc:attribute name="skipColumnsByName" required="false" type="java.lang.String" default=""
+                      shortDescription="List of column names separated by comma that not to be rendered"/>
+        <cc:attribute name="skipColumnsByType" required="false" type="java.lang.String" default=""
+                      shortDescription="A list of column types separated by comma that not to be rendered"/>
+
+        <cc:attribute name="breadcrumbs" required="false" default="true" type="java.lang.Boolean"
+                      shortDescription="Use breadcrumb navigation"/>
+
+        <cc:attribute name="rowSelection" required="false" default="false" type="java.lang.Boolean"
+                      shortDescription="Use row selection"/>
+
+        <cc:attribute name="styleClass" required="false" default="" type="java.lang.String"
+                      shortDescription="Table class(es)"/>
+
+        <cc:attribute name="actionColumn" required="false" default="false"
+                      shortDescription="Render additional action column"/>
+        <cc:attribute name="actionColumnTitle" required="false" default="Action"
+                      shortDescription="Action column title"/>
+        <cc:facet name="actionContent" required="false"
+                  shortDescription="Action column content"/>
+
+        <cc:facet name="addMenu" required="false"
+                  shortDescription="Additional menu elements"/>
+
+    </cc:interface>
+
+    <cc:implementation>
+
+        <ice:panelGroup rendered="#{cc.attrs.manager != null}">
+
+            <!-- Menu -->
+
+            <table border="0" cellspacing="0" width="100%" class="iceDatTblColHdr">
+                <tr>
+                    <td nowrap="true">
+                        <ice:panelGroup rendered="#{cc.attrs.manager.top}" 
+                                        style=" margin-left: 2px">
+                            <cc:renderFacet name="addMenu"/>
+                        </ice:panelGroup>
+                    </td>
+
+                    <td>
+                        <ice:panelGroup rendered="#{!cc.attrs.manager.tablePack.singleClass}" 
+                                        style=" margin-left: 2px;">
+                            <ice:selectOneMenu value="#{cc.attrs.manager.tablePack.selectedClass}" immediate="true"
+                                               partialSubmit="true">
+                                <f:selectItems value="#{cc.attrs.manager.tablePack.classes}"/>
+                                <f:converter binding="#{cc.attrs.manager.classConverter}"/>
+                            </ice:selectOneMenu>
+                        </ice:panelGroup>
+                    </td>
+
+                    <td width="#{cc.attrs.breadcrumbs or !cc.attrs.manager.top ? '100%' : '0%'}">
+                        <ice:panelGroup rendered="#{cc.attrs.breadcrumbs or !cc.attrs.manager.top}"
+                                        >
+                            <table:breadcrumbs manager="#{cc.attrs.manager}"
+                                               title="#{cc.attrs.title}"/>
+                        </ice:panelGroup>
+                    </td>
+
+                    <td align="right" width="160">
+                        <ice:panelGrid columns="5" cellspacing="2" cellpadding="2" rendered="#{cc.attrs.manager.table != null}">
+                            <ice:commandLink id="refreshButton"
+                                             actionListener="#{cc.attrs.manager.table.refreshListener}"
+                                             value="Refresh"
+                                             title="Refresh"
+                                             style="font-weight: bold"/>
+                            |
+                            <ice:commandLink value="Filter" title="Filter" style="font-weight: bold">
+                                <f:setPropertyActionListener target="#{cc.attrs.manager.table.displayFilter}" value="#{!cc.attrs.manager.table.displayFilter}"/>
+                            </ice:commandLink>
+                            |
+                            <ice:commandLink value="Columns" title="Columns" style="font-weight: bold">
+                                <f:setPropertyActionListener target="#{cc.attrs.manager.table.displayColumns}" value="#{!cc.attrs.manager.table.displayColumns}"/>
+                            </ice:commandLink>
+                        </ice:panelGrid>
+                    </td>
+                    <td align="right" width="500">
+
+                        <table:paginator manager="#{cc.attrs.manager}"/>
+
+                    </td>
+                </tr>
+            </table>
+
+            <ice:panelGroup rendered="#{cc.attrs.manager.table != null}">
+
+                <ice:panelGroup rendered="#{cc.attrs.manager.table.filterOn}" styleClass="beanTableFilterIndicator">
+                    <ice:outputText value="Filter is on!"/>
+                    <ice:commandLink value="Remove" title="Remove filter" actionListener="#{cc.attrs.manager.table.removeFilterListener}"/>
+                </ice:panelGroup>
+
+                <!-- Table -->
+
+                <ice:dataTable id="#{cc.attrs.manager.id}"
+                               styleClass="#{cc.attrs.manager.id}-BeanTable #{cc.attrs.styleClass}"
+                               var="item"
+                               width="100%"
+                               value="#{cc.attrs.manager.table.data}"
+                               varStatus="itemStatus"
+                               style="margin-top: 0px; width: 100%"
+                               columnWidths="#{cc.attrs.manager.table.columnWidths}">
+
+                    <ice:columns value="#{cc.attrs.manager.table.selectedColumns.target}" var="column">
+
+                        <ice:rowSelector
+                            value="#{item.selected}"
+                            rendered="#{cc.attrs.rowSelection and cc.attrs.manager.top}"
+                            selectionListener="#{cc.attrs.manager.rowSelectionListener}"/>
+
+                        <f:facet name="header">
+                            <ice:panelGroup style="width: #{column.width}px; overflow: hidden; vertical-align: top; height: 100%">
+
+                                <ice:panelGrid columns="1" width="100%" cellpadding="0" cellspacing="0" style="height: 100%" border="0" rowClasses="headerRow01,headerRow02">
+
+                                    <ice:panelGroup style="height: 100%" rendered="#{!column.sortable}">
+                                        <ice:outputText value="#{column.title}" title="#{column.title}"/>
+                                    </ice:panelGroup>
+
+                                    <ice:panelGrid columns="2" border="0" rendered="#{column.sortable}">
+                                        <ice:commandLink value="#{column.title}" title="#{column.title}"
+                                                         style="font-size: 11px; font-weight: bold"
+                                                         actionListener="#{column.sortListener}"/>
+                                        <ice:panelGroup styleClass="iceCmdSrtHdrAsc" style="vertical-align: middle" rendered="#{column.sorting and column.ascending}"/>
+                                        <ice:panelGroup styleClass="iceCmdSrtHdrDesc" style="vertical-align: middle" rendered="#{column.sorting and !column.ascending}"/>
+                                    </ice:panelGrid>
+
+                                    <ice:panelGroup rendered="#{cc.attrs.manager.table.displayFilter}" style="height: 24px">
+
+                                        <ice:panelGrid columns="4" border="0" rendered="#{column.entityType}">
+                                            <ice:commandLink value="Filter"
+                                                             title="Use filter"
+                                                             actionListener="#{column.filterTableListener}"/>
+                                            <ice:panelGroup rendered="#{column.filterSet}">|</ice:panelGroup>
+                                            <ice:commandLink value="Clear"
+                                                             title="Clear Filter"
+                                                             rendered="#{column.filterSet}"
+                                                             actionListener="#{column.clearFilterListener}"/>
+
+                                            <ice:panelGroup rendered="#{column.filterSet}">
+                                                <ice:selectOneMenu valueChangeListener="#{cc.attrs.manager.table.filterOperationChangeListener}"
+                                                                   partialSubmit="true">
+                                                    <f:selectItem itemLabel="in" itemValue="#{column.name}:in"/>
+                                                    <f:selectItem itemLabel="not in" itemValue="#{column.name}:notin" />
+                                                </ice:selectOneMenu>
+                                            </ice:panelGroup>
+
+                                        </ice:panelGrid>
+
+                                        <ice:outputText value="Not implemented!" rendered="#{column.listType and !column.entityType}"/>
+
+                                        <ice:inputText converter="#{column.filterConverter}"
+                                                       required="false"
+                                                       rendered="#{!column.entityType and !column.listType}"
+                                                       value="#{column.filter}"
+                                                       actionListener="#{cc.attrs.manager.table.filterListener}"
+                                                       style="width: #{column.width - 10}px; overflow: hidden" />
+
+                                    </ice:panelGroup>
+
+                                </ice:panelGrid>
+
+                            </ice:panelGroup>
+                        </f:facet>
+
+                        <ice:panelGroup style="width: #{selColumn.width}px; overflow: hidden" rendered="#{
+                                                        cc.attrs.manager.top and
+                                                        (fn:contains(cc.attrs.skipColumnsByName, column.name) ||
+                                                        fn:contains(cc.attrs.skipColumnsByType, column.type.simpleName))}">
+                            <cc:insertChildren/>
+                        </ice:panelGroup>
+
+                        <ice:panelGroup style="width: #{column.width}px; overflow: hidden" rendered="#{
+                                                        !cc.attrs.manager.top or
+                                                        !(fn:contains(cc.attrs.skipColumnsByName, column.name) ||
+                                                        fn:contains(cc.attrs.skipColumnsByType, column.type.simpleName))}">
+
+                            <ice:commandLink style="width: 100%; text-align: left"
+                                             rendered="#{column.listType}"
+                                             value="{list}">
+
+                                <f:setPropertyActionListener target="#{column.listPropertyTable}" value="#{item}"/>
+
+                            </ice:commandLink>
+
+                            <ice:outputText style="width: 100%; text-align: left"
+                                            rendered="#{column.entityType and !column.listType}"
+                                            value="#{column.cellValue.entityTitle}"/>
+
+                            <ice:panelGroup rendered="#{!column.entityType and !column.listType}"
+                                            style="padding: 0px;">
+
+                                <ice:panelGroup rendered="#{column.boolean}"
+                                                style="padding: 0px; text-align: center">
+                                    <ice:graphicImage value="./xmlhttp/beantable/img/true.png"
+                                                      title="#{column.cellValue}"
+                                                      rendered="#{column.cellValue}"/>
+                                    <ice:graphicImage value="./xmlhttp/beantable/img/false.png"
+                                                      title="#{column.cellValue}"
+                                                      rendered="#{not column.cellValue}"/>
+                                </ice:panelGroup>
+
+                                <ice:outputText style="width: 100%; text-align: left"
+                                                rendered="#{!column.boolean}"
+                                                converter="#{column.converter}"
+                                                value="#{column.cellValue}"/>
+
+                            </ice:panelGroup>
+
+                        </ice:panelGroup>
+
+                    </ice:columns>
+
+                    <ice:column rendered="#{cc.attrs.actionColumn and cc.attrs.manager.top}">
+                        <f:facet name="header">
+                            <ice:panelGroup style="overflow: hidden; vertical-align: top; height: 100%">
+                                <ice:panelGroup style="height: 100%">
+                                    <ice:outputText value="#{cc.attrs.actionColumnTitle}"/>
+                                </ice:panelGroup>
+                            </ice:panelGroup>
+                        </f:facet>
+                        <cc:renderFacet name="actionColumnContent"/>
+                    </ice:column>
+
+                </ice:dataTable>
+
+                <!-- Column widths -->
+
+                <ice:panelGroup rendered="#{cc.attrs.manager.table.setColumnWidth}" style="display: none">
+
+                    <ice:inputText styleClass="#{cc.attrs.manager.id}-BeanTableWidth" value="#{cc.attrs.manager.table.columnWidths}"/>
+
+                    <script type="text/javascript">
+                        // <![CDATA[
+                        jQuery(document).ready( function () {
+
+                            var columnWidths = "";
+                            jQuery('table.#{cc.attrs.manager.id}-BeanTable thead tr th').each(function() {
+                                if (columnWidths != "") {
+                                    columnWidths += ",";
+                                }
+                                columnWidths += jQuery(this).width();
+                            });
+
+                            jQuery('input.#{cc.attrs.manager.id}-BeanTableWidth').val(columnWidths);
+
+                        });
+                        // ]]>
+                    </script>
+
+                </ice:panelGroup>
+
+                <table:columnsDialog manager="#{cc.attrs.manager}"/>
+
+            </ice:panelGroup>
+
+        </ice:panelGroup>
+
+    </cc:implementation>
+</html>

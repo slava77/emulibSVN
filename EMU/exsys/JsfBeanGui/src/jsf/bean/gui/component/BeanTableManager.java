@@ -157,7 +157,7 @@ public abstract class BeanTableManager implements Serializable {
     }
 
     public String getExportFileName() throws IOException {
-        UIInput templateSeletor = (UIInput) FacesContext.getCurrentInstance().getViewRoot().findComponent(getBeanTableComponent().getId() + ":templateSelector");
+        UIInput templateSeletor = (UIInput) FacesContext.getCurrentInstance().getViewRoot().findComponent(getCompositeComponent().getId() + ":templateSelector");
         BeanTableExportTemplate t = (BeanTableExportTemplate) templateSeletor.getSubmittedValue();
         File f = BeanTableExportManager.getInstance().export(getTable(), t);
         return f.getName();
@@ -333,9 +333,13 @@ public abstract class BeanTableManager implements Serializable {
         return null;
     }
 
-    private UIComponent getBeanTableComponent() {
+    private UIComponent getCompositeComponent() {
         UIComponent c = UIComponent.getCurrentComponent(FacesContext.getCurrentInstance());
         return UIComponent.getCompositeComponentParent(c);
+    }
+
+    public String getCompositeComponentClientId() {
+        return getCompositeComponent().getClientId();
     }
 
     private File getRealFile(String file) {
