@@ -3,6 +3,14 @@
 #uses "CMS_CSC_ExSys_Interface/exsysUtil.ctl"
 #uses "CMS_CSC_ExSys_Interface/exsysInterface.ctl"
 
+/**@file
+
+HV Fact handling
+
+@author Evaldas Juska (PH/UCM)
+@date   February 2011
+*/
+
 /**
   * Starts sending HV facts
   */
