@@ -65,7 +65,7 @@ public void exsys_sendDisabledChannelsFacts(string offChannelsDp) {
 
   time t = getCurrentTime();  
   for (int i=1; i <= dynlen(channelDps); i++) {
-    bool isDisabled = dynContains(offChannels, i);
+    bool isDisabled = dynContains(offChannels, i + channelOffset);
     dyn_string paramNames = makeDynString("isDisabled");
     dyn_anytype paramValues = makeDynAnytype(isDisabled);
     exsys_sendFact("DcsDisableEnableFact", t, channelDps[i], true, EXSYS_FACT_SEVERITY_WARN,
