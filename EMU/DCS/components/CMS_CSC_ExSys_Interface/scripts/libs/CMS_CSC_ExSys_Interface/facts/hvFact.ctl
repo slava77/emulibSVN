@@ -37,7 +37,7 @@ public void exsys_startHvFactDelivery(dyn_string &ex) {
     dpConnect("exsys_updateHVChannelVsetsCB", false, channelVsetDps[i]);
   }
   
-  emu_info("HV facts delivery service started up successfully...");
+  emu_info("HV facts delivery service started up successfully!");
 }
 
 public void exsys_updateDisabledChannelsCB(string dp, dyn_string value) {
