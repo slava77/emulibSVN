@@ -205,7 +205,7 @@ public class BeanTable extends BeanTableControls {
 
     public void removeFilter() {
         for (BeanTableColumn c: columns) {
-            c.clearFilterListener(null);
+            c.clearFilter();
         }
         refresh();
     }

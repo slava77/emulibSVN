@@ -20,14 +20,14 @@ public class EmbeddedPropertyMd extends PropertyMd {
     private static Class[] mandatoryAnnotations = { Embedded.class };
 
     private final Class type;
-    private final List<PropertyMd> propertyMd;
+    private final List<PropertyMd> properties;
 
     public EmbeddedPropertyMd(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
         super(prop, mandatoryAnnotations);
         try {
             this.type = prop.getPropertyType();
-            this.propertyMd = EntityPropertyMdFactory.createMetadataForEntity(this.type);
-            for (PropertyMd pmd : this.propertyMd) {
+            this.properties = EntityPropertyMdFactory.createMetadataForEntity(this.type);
+            for (PropertyMd pmd : this.properties) {
                 if (pmd.getIsMandatory()) {
                     setIsMandatory(true);
                     break;
@@ -52,7 +52,7 @@ public class EmbeddedPropertyMd extends PropertyMd {
         }
 
         if (value != null) {
-            for (PropertyMd pmd: propertyMd) {
+            for (PropertyMd pmd: properties) {
                 msg = pmd.validate(pmd.getPropertyValue(value));
                 if (msg != null) {
                     return msg;
@@ -64,8 +64,8 @@ public class EmbeddedPropertyMd extends PropertyMd {
         return null;
     }
 
-    public List<PropertyMd> getPropertyMds() {
-        return propertyMd;
+    public List<PropertyMd> getProperties() {
+        return properties;
     }
 
 }

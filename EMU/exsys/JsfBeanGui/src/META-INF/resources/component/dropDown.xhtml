@@ -3,6 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ice="http://www.icesoft.com/icefaces/component"
       xmlns:cc="http://java.sun.com/jsf/composite">
 
@@ -17,16 +18,16 @@
         <cc:attribute name="title" default=""
                       shortDescription="title"/>
 
-        <cc:attribute name="styleClass" default=""
+        <cc:attribute name="styleClass" default=" "
                       shortDescription="Style class"/>
 
-        <cc:attribute name="popupStyleClass" default=""
+        <cc:attribute name="popupStyleClass" default=" "
                       shortDescription="Popup style class"/>
 
         <cc:attribute name="popupStyle" default=" border-left: black outset 2px;  border-right: black outset 2px;  border-bottom: black outset 2px; background-color: #eeeeee"
                       shortDescription="Popup style"/>
 
-        <cc:attribute name="disable" type="java.lang.Boolean"
+        <cc:attribute name="disable" type="java.lang.Boolean" default="false"
                       shortDescription="Disabled element"/>
 
         <cc:attribute name="render" type="java.lang.Boolean" default="true"
@@ -39,23 +40,21 @@
         <ice:panelGroup style="margin: 0; padding: 0"
                         rendered="#{cc.attrs.render}">
 
-            <ice:commandLink id="link"
-                             rendered="#{cc.attrs.type == 'link'}"
+            <h:commandLink id="link"
+                           rendered="#{cc.attrs.type == 'link'}"
+                           value="#{cc.attrs.value}"
+                           title="#{cc.attrs.title}"
+                           styleClass="iceCmdLnk #{cc.attrs.styleClass}"
+                           disabled="#{cc.attrs.disable}"
+                           onclick="jQuery('#{dropDownBean.jqPrefix}popup').trigger('controlClick', [this]); return false;"/>
+
+            <h:commandButton id="button"
+                             rendered="#{cc.attrs.type == 'button'}"
                              value="#{cc.attrs.value}"
                              title="#{cc.attrs.title}"
-                             styleClass="#{cc.attrs.styleClass}"
+                             styleClass="iceCmdBtn #{cc.attrs.styleClass}"
                              disabled="#{cc.attrs.disable}"
-                             onmouseout="jQuery('#{dropDownBean.jqPrefix}popup').trigger('controlMouseOut');"
-                             onclick="jQuery('#{dropDownBean.jqPrefix}popup').trigger('controlClick', [this]);"/>
-
-            <ice:commandButton id="button"
-                               rendered="#{cc.attrs.type == 'button'}"
-                               value="#{cc.attrs.value}"
-                               title="#{cc.attrs.title}"
-                               styleClass="#{cc.attrs.styleClass}"
-                               disabled="#{cc.attrs.disable}"
-                               onmouseout="jQuery('#{dropDownBean.jqPrefix}popup').trigger('controlMouseOut');"
-                               onclick="jQuery('#{dropDownBean.jqPrefix}popup').trigger('controlClick', [this]);"/>
+                             onclick="jQuery('#{dropDownBean.jqPrefix}popup').trigger('controlClick', [this]); return false;"/>
 
             <div id="#{dropDownBean.clientId}:popup"
                  style="display: none; #{cc.attrs.popupStyle};"
@@ -69,29 +68,18 @@
                     jQuery(document).ready(function () {
 
                         jQuery('#{dropDownBean.jqPrefix}popup')
-                            .bind('mouseleave', function(event) {
-                                var p = jQuery(this);
-                                if (p.is(':visible')) {
-                                    p.hide('fast');
-                                }
-                            })
-                            .bind('controlMouseOut', function(event) {
-                                var p = jQuery(this);
-                                if (p.is(':visible')) {
-                                    if (!p.data("first")) {
-                                        p.hide('fast');
-                                    } else {
-                                        p.data("first", false);
-                                    }
-                                }
+                            .hover(function() {
+                                jQuery(this).data("mouse_inside", true);
+                            }, function() {
+                                jQuery(this).data("mouse_inside", false);
                             })
                             .bind('controlClick', function(event, control) {
                                 var p = jQuery(this);
                                 if (!p.is(':visible')) {
                                     var c = jQuery(control);
-                                    p.data("first", true);
+                                    p.data("control_click", true);
                                     p.css("top", c.position().top + c.outerHeight(true))
-                                        .css("left", c.position().left + 5)
+                                        .css("left", c.position().left)
                                         .show('fast');
                                 } else {
                                     p.hide('fast');
@@ -99,11 +87,20 @@
                             })
                             .css("position", "absolute");
 
+                        jQuery("body").mouseup(function() {
+                            var p = jQuery('#{dropDownBean.jqPrefix}popup');
+                            if (p.is(':visible') && !p.data("mouse_inside")) {
+                                p.hide('fast');
+                            }
+                        });
+
                         ice.onBeforeUpdate(function() {
                             var p = jQuery('#{dropDownBean.jqPrefix}popup');
                             if (p.is(':visible')) {
-                                if (!p.data("first")) {
+                                if (!p.data("control_click")) {
                                     p.hide('fast');
+                                } else {
+                                    p.data("control_click", false);
                                 }
                             }
                         });

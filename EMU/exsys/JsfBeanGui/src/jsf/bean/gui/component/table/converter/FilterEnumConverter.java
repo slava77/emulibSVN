@@ -14,6 +14,9 @@ public class FilterEnumConverter extends FilterConverter {
 
     @Override
     public String valueToString(Object value) {
+        if (value == null) {
+            return null;
+        }
         Enum e = (Enum) value;
         return e.name();
     }

@@ -32,8 +32,6 @@ public class BeanTableColumnSimple extends BeanTableColumnSortable {
             }
         }
 
-        this.filterConverter = FilterConverter.getFilterConverter(type);
-
         if (type.equals(BigDecimal.class) ||
             type.equals(BigInteger.class) ||
             type.equals(Integer.class) ||

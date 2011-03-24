@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import jsf.bean.gui.EntityBeanBase;
+import jsf.bean.gui.component.table.column.BeanTableColumnBase;
+import jsf.bean.gui.component.table.column.BeanTableColumnEmbedded;
 import jsf.bean.gui.component.table.column.BeanTableColumnSortable;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
@@ -55,7 +57,7 @@ public abstract class BeanTableDao implements Serializable {
 
         Criteria c = getCriteria(session, table);
 
-        for (BeanTableColumnSortable sc: table.getSortingColumns().getTarget()) {
+        for (BeanTableColumnSortable sc : table.getSortingColumns().getTarget()) {
             if (sc.isAscending()) {
                 c.addOrder(Order.asc(sc.getSortName()));
             } else {
@@ -78,7 +80,7 @@ public abstract class BeanTableDao implements Serializable {
         } catch (QueryException ex) {
             logger.error(ex);
             //if (table.isInteractiveMode()) {
-                //BeanBase.addErrorMessage("cms.dqm.workflow.getData.ERROR", false);
+            //BeanBase.addErrorMessage("cms.dqm.workflow.getData.ERROR", false);
             //}
 
         }
@@ -113,12 +115,12 @@ public abstract class BeanTableDao implements Serializable {
 
         /*
         if (advancedQuery != null) {
-            c.add(SQLParamRestriction.restriction(advancedQuery));
+        c.add(SQLParamRestriction.restriction(advancedQuery));
         }
-        */
+         */
 
         if (table.getPack().getFilters() != null) {
-            for (BeanTablePackFilter pf: table.getPack().getFilters()) {
+            for (BeanTablePackFilter pf : table.getPack().getFilters()) {
                 if (pf instanceof BeanTableListFilter) {
                     BeanTableListFilter lf = (BeanTableListFilter) pf;
 
@@ -139,13 +141,21 @@ public abstract class BeanTableDao implements Serializable {
             }
         }
 
-        for (BeanTableColumn col: table.getColumns()) {
+        for (BeanTableColumn col : table.getColumns()) {
 
             if (col.isFilterSet()) {
-                BeanTableFilter f = col.getFilter();
-                applyColumnFilter(c, col, f);
+                if (col instanceof BeanTableColumnEmbedded) {
+                    for (BeanTableColumnBase ecol: ((BeanTableColumnEmbedded) col).getProperties()) {
+                        if (ecol.isFilterSet()) {
+                            applyColumnFilter(c, ecol, ecol.getFilter());
+                        }
+                    }
+                } else {
+                    BeanTableFilter f = col.getFilter();
+                    applyColumnFilter(c, col, f);
+                }
             }
-            
+
             if (table.getPack().getPropertyFilters().containsKey(col.getName())) {
                 applyColumnFilter(c, col, table.getPack().getPropertyFilters().get(col.getName()));
             }
@@ -155,7 +165,7 @@ public abstract class BeanTableDao implements Serializable {
 
     }
 
-    private void applyColumnFilter(DetachedCriteria c, BeanTableColumn col, BeanTableFilter f) {
+    private void applyColumnFilter(DetachedCriteria c, BeanTableColumnBase col, BeanTableFilter f) {
 
         String propertyName = col.getName();
 
@@ -248,5 +258,4 @@ public abstract class BeanTableDao implements Serializable {
 
         }
     }
-
 }

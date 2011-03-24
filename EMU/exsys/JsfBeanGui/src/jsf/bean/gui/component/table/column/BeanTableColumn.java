@@ -1,119 +1,34 @@
 package jsf.bean.gui.component.table.column;
 
-import java.io.Serializable;
-import javax.faces.convert.Converter;
 import javax.faces.event.ActionEvent;
 import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.component.table.BeanTable;
-import jsf.bean.gui.component.table.BeanTableFilter;
-import jsf.bean.gui.component.table.converter.FilterConverter;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
 import jsf.bean.gui.metadata.PropertyMd;
 import org.apache.commons.beanutils.PropertyUtils;
 
-public abstract class BeanTableColumn implements Serializable {
+public abstract class BeanTableColumn extends BeanTableColumnBase {
 
     private static final Logger logger = SimpleLogger.getLogger(BeanTableColumn.class);
 
     protected final BeanTable table;
-    protected String name;
-    protected final Class type;
-    protected final String title;
-
-    protected BeanTableFilter filter = null;
-    protected Converter converter = null;
-    protected FilterConverter filterConverter;
 
     public BeanTableColumn(BeanTable table, PropertyMd propertyMd) {
+        super(propertyMd);
         this.table = table;
-        this.name = propertyMd.getName();
-        this.type = propertyMd.getType();
-        this.title = propertyMd.getTitle();
     }
 
     /**
      *
-     * To override
+     * Specific methods
      *
      */
-
-    public boolean isBoolean() {
-        return false;
-    }
-
-    public boolean isEmbedded() {
-        return false;
-    }
-
-    public boolean isListType() {
-        return false;
-    }
-
-    public boolean isEntityType() {
-        return false;
-    }
-
-    public boolean isSortable() {
-        return false;
-    }
-
-    /**
-     *
-     * Getters and setters
-     *
-     */
-
-    public String getName() {
-        return name;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public Class getType() {
-        return type;
-    }
-
-    public FilterConverter getFilterConverter() {
-        return filterConverter;
-    }
-
-    public Converter getConverter() {
-        return converter;
-    }
-
-    /**
-     *
-     * Filter stuff
-     *
-     */
-
-    public BeanTableFilter getFilter() {
-        return filter;
-    }
-
-    public void setFilter(BeanTableFilter filter) {
-        this.filter = (BeanTableFilter) filter;
-    }
-
-    public boolean isFilterSet() {
-        if (this.filter != null) {
-            return !this.filter.isEmpty();
-        }
-        return false;
-    }
 
     public void clearFilterListener(ActionEvent ev) {
-        filter = null;
+        clearFilter();
+        table.refresh();
     }
-
-    /**
-     *
-     * Get value from table
-     *
-     */
 
     public Object getCellValue() {
         EntityBeanBase o = table.getCurrentRow();

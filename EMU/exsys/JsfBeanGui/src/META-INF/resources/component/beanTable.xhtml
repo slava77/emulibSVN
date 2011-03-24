@@ -9,6 +9,7 @@
       xmlns:cc="http://java.sun.com/jsf/composite"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:comp="http://java.sun.com/jsf/composite/component"
       xmlns:table="http://java.sun.com/jsf/composite/component/table">
 
     <cc:interface>
@@ -146,7 +147,9 @@
 
                                     <ice:panelGroup rendered="#{cc.attrs.manager.table.displayFilter}" style="height: 24px">
 
-                                        <ice:panelGrid columns="4" border="0" rendered="#{column.entityType}">
+                                        <ice:panelGrid columns="4" 
+                                                       border="0"
+                                                       rendered="#{column.entityType}">
                                             <ice:commandLink value="Filter"
                                                              title="Use filter"
                                                              actionListener="#{column.filterTableListener}"/>
@@ -163,14 +166,43 @@
                                                     <f:selectItem itemLabel="not in" itemValue="#{column.name}:notin" />
                                                 </ice:selectOneMenu>
                                             </ice:panelGroup>
+                                        </ice:panelGrid>
+
+                                        <ice:panelGrid columns="3"
+                                                       rendered="#{column.embedType and column.notEmpty}"
+                                                       style="padding-top: 5px">
+                                            <comp:dropDown value="Filter"
+                                                           type="link"
+                                                           render="true"
+                                                           title="Show filter fields">
+                                                <ice:panelGroup>
+                                                    <ui:repeat value="#{column.properties}" var="p">
+                                                        <ice:panelGrid columns="2">
+                                                            <ice:panelGroup style="width: 80px; overflow: hidden; text-align: right;">
+                                                                <ice:outputLabel value="#{p.title}:"/>
+                                                            </ice:panelGroup>
+                                                            <ice:inputText converter="#{p.filterConverter}"
+                                                                           style="width: 120px;"
+                                                                           required="false"
+                                                                           value="#{p.filter}"
+                                                                           actionListener="#{cc.attrs.manager.table.filterListener}"/>
+                                                        </ice:panelGrid>
+                                                    </ui:repeat>
+                                                </ice:panelGroup>
+                                            </comp:dropDown>
+
+                                            <ice:panelGroup rendered="#{column.filterSet}">|</ice:panelGroup>
+
+                                            <ice:commandLink value="Clear"
+                                                             title="Clear Filter"
+                                                             rendered="#{column.filterSet}"
+                                                             actionListener="#{column.clearFilterListener}"/>
 
                                         </ice:panelGrid>
 
-                                        <ice:outputText value="Not implemented!" rendered="#{column.listType and !column.entityType}"/>
-
                                         <ice:inputText converter="#{column.filterConverter}"
                                                        required="false"
-                                                       rendered="#{!column.entityType and !column.listType}"
+                                                       rendered="#{!column.entityType and !column.listType and !column.embedType}"
                                                        value="#{column.filter}"
                                                        actionListener="#{cc.attrs.manager.table.filterListener}"
                                                        style="width: #{column.width - 10}px; overflow: hidden" />
