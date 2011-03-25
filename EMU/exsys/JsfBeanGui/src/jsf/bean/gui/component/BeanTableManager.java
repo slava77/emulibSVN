@@ -17,10 +17,8 @@ import java.util.Properties;
 import javax.faces.application.Application;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
 import javax.persistence.Transient;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -29,16 +27,16 @@ import jsf.bean.gui.ClassFinderIf;
 import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.component.table.BeanTable;
 import jsf.bean.gui.component.table.BeanTableDaoIf;
-import jsf.bean.gui.component.table.BeanTableDefaultExportTemplate;
-import jsf.bean.gui.component.table.BeanTableExportManager;
-import jsf.bean.gui.component.table.BeanTableExportTemplate;
-import jsf.bean.gui.component.table.BeanTableExportTemplateProvider;
+import jsf.bean.gui.component.table.export.BeanTableDefaultExportTemplate;
+import jsf.bean.gui.component.table.export.BeanTableExportTemplate;
+import jsf.bean.gui.component.table.export.BeanTableExportTemplateProvider;
 import jsf.bean.gui.component.table.BeanTableFilter;
 import jsf.bean.gui.component.table.BeanTableFilterItem;
 import jsf.bean.gui.component.table.BeanTablePack;
+import jsf.bean.gui.component.table.export.BeanTableExportResource;
 import jsf.bean.gui.converter.ClassConverter;
 import jsf.bean.gui.converter.NewLineConverter;
-import jsf.bean.gui.converter.SelectItemComparator;
+import jsf.bean.gui.component.table.export.ExportTemplateComparator;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
 
@@ -48,6 +46,7 @@ public abstract class BeanTableManager implements Serializable {
     private BeanTablePack tablePack;
     private List<BeanTablePack> tables = new ArrayList<BeanTablePack>();
     private final String id;
+    private List<BeanTableExportResource> exportResources;
 
     public abstract BeanTableDaoIf getBeanTableDao();
 
@@ -134,33 +133,34 @@ public abstract class BeanTableManager implements Serializable {
         return tablePrefix;
     }
 
+    /**
+     * Override for custom template provider
+     * @return
+     */
     public BeanTableExportTemplateProvider getTemplateProvider() {
         return new BeanTableExportTemplateProvider();
     }
 
-    public List<SelectItem> getExportTemplates() {
-        List<SelectItem> templates = new ArrayList<SelectItem>();
+    public List<BeanTableExportResource> getExportResources() throws IOException {
 
-        // Adding defaults
-        for (BeanTableExportTemplate t: BeanTableDefaultExportTemplate.getTemplates()) {
-            templates.add(new SelectItem(t, t.getName()));
+        if (exportResources == null) {
+            List<BeanTableExportTemplate> templates = new ArrayList<BeanTableExportTemplate>();
+
+            // Adding defaults
+            templates.addAll(BeanTableDefaultExportTemplate.getTemplates());
+
+            // Adding custom templates
+            templates.addAll(getTemplateProvider().getTemplates(getTable().getRowClass()));
+
+            Collections.sort(templates, new ExportTemplateComparator());
+            exportResources = new ArrayList<BeanTableExportResource>();
+
+            for (BeanTableExportTemplate t : templates) {
+                exportResources.add(new BeanTableExportResource(getTable(), t));
+            }
         }
 
-        // Adding custom templates
-        for (BeanTableExportTemplate t: getTemplateProvider().getTemplates(getTable().getRowClass())) {
-            templates.add(new SelectItem(t, t.getName()));
-        }
-        
-        Collections.sort(templates, new SelectItemComparator());
-
-        return templates;
-    }
-
-    public String getExportFileName() throws IOException {
-        UIInput templateSeletor = (UIInput) FacesContext.getCurrentInstance().getViewRoot().findComponent(getCompositeComponent().getId() + ":templateSelector");
-        BeanTableExportTemplate t = (BeanTableExportTemplate) templateSeletor.getSubmittedValue();
-        File f = BeanTableExportManager.getInstance().export(getTable(), t);
-        return f.getName();
+        return exportResources;
     }
 
     /*********************************************
@@ -180,7 +180,7 @@ public abstract class BeanTableManager implements Serializable {
         return selectedLast;
     }
 
-    public void setSelectedRowById (Object idValue) {
+    public void setSelectedRowById(Object idValue) {
         Iterator<EntityBeanBase> it = this.getTable().getData().iterator();
         selectedFirst = true;
         this.selected = null;
@@ -380,11 +380,11 @@ public abstract class BeanTableManager implements Serializable {
 
     // TODO
     public void refreshTable() {
-            FacesContext context = FacesContext.getCurrentInstance();
-            Application application = context.getApplication();
-            ViewHandler viewHandler = application.getViewHandler();
-            UIViewRoot viewRoot = viewHandler.createView(context, context.getViewRoot().getViewId());
-            context.setViewRoot(viewRoot);
-            context.renderResponse();
+        FacesContext context = FacesContext.getCurrentInstance();
+        Application application = context.getApplication();
+        ViewHandler viewHandler = application.getViewHandler();
+        UIViewRoot viewRoot = viewHandler.createView(context, context.getViewRoot().getViewId());
+        context.setViewRoot(viewRoot);
+        context.renderResponse();
     }
 }

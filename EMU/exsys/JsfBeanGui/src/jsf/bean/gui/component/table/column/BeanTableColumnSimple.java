@@ -1,13 +1,9 @@
 package jsf.bean.gui.component.table.column;
 
 import java.beans.PropertyDescriptor;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Date;
 import javax.faces.convert.DateTimeConverter;
 import javax.faces.convert.NumberConverter;
 import jsf.bean.gui.component.table.BeanTable;
-import jsf.bean.gui.component.table.converter.FilterConverter;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
 import jsf.bean.gui.metadata.PropertyMd;
@@ -32,18 +28,7 @@ public class BeanTableColumnSimple extends BeanTableColumnSortable {
             }
         }
 
-        if (type.equals(BigDecimal.class) ||
-            type.equals(BigInteger.class) ||
-            type.equals(Integer.class) ||
-            type.equals(Long.class) ||
-            type.equals(Float.class) ||
-            type.equals(Double.class) ||
-            (type.isPrimitive() &&
-                (type.getSimpleName().equals("int") ||
-                 type.getSimpleName().equals("long") ||
-                 type.getSimpleName().equals("float")||
-                 type.getSimpleName().equals("double")))) {
-
+        if (isNumeric()) {
             NumberConverter numberConverter = new NumberConverter();
             numberConverter.setGroupingUsed(table.getProperties().getColumnNumberGrouping(name));
             {
@@ -60,22 +45,13 @@ public class BeanTableColumnSimple extends BeanTableColumnSortable {
             }
             numberConverter.setPattern(table.getProperties().getColumnNumberPattern(name));
             this.converter = numberConverter;
-
         } else
-        if (type.equals(Date.class)) {
-
+        if (isDate()) {
             this.converter = new DateTimeConverter();
             ((DateTimeConverter) converter).setTimeZone(table.getProperties().getColumnDateTimeZone(name));
             ((DateTimeConverter) converter).setPattern(table.getProperties().getColumnDateFormat(name));
-
         }
 
-    }
-
-    @Override
-    public boolean isBoolean() {
-        return getType().equals(Boolean.class) ||
-                (getType().isPrimitive() && getType().getName().equals("boolean"));
     }
 
 }

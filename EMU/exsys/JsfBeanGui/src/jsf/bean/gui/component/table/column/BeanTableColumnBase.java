@@ -1,6 +1,9 @@
 package jsf.bean.gui.component.table.column;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Date;
 import javax.faces.convert.Converter;
 import jsf.bean.gui.component.table.BeanTableFilter;
 import jsf.bean.gui.component.table.converter.FilterConverter;
@@ -33,8 +36,27 @@ public class BeanTableColumnBase implements Serializable {
      *
      */
 
-    public boolean isBoolean() {
-        return false;
+    public final boolean isBoolean() {
+        return getType().equals(Boolean.class) ||
+              (getType().isPrimitive() && getType().getName().equals("boolean"));
+    }
+
+    public final boolean isNumeric() {
+        return type.equals(BigDecimal.class) ||
+            type.equals(BigInteger.class) ||
+            type.equals(Integer.class) ||
+            type.equals(Long.class) ||
+            type.equals(Float.class) ||
+            type.equals(Double.class) ||
+            (type.isPrimitive() &&
+                (type.getSimpleName().equals("int") ||
+                 type.getSimpleName().equals("long") ||
+                 type.getSimpleName().equals("float")||
+                 type.getSimpleName().equals("double")));
+    }
+
+    public final boolean isDate() {
+        return type.equals(Date.class);
     }
 
     public boolean isEmbedType() {

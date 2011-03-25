@@ -31,7 +31,7 @@ public abstract class BeanTableDao implements Serializable {
     /**
      * Method is being called right before executing criteria.
      * Default method adds cache. Override to change!
-     * @param table Table used to construct criteria
+     * @param table Table
      * @param c Criteria to be executed
      */
     protected void preExecute(BeanTable table, Criteria c) {
@@ -42,7 +42,7 @@ public abstract class BeanTableDao implements Serializable {
     /**
      * Method is being called right before executing count criteria.
      * Default method adds cache. Override to change!
-     * @param table Table used to construct criteria
+     * @param table Table
      * @param c Criteria to be executed
      */
     protected void preExecuteCount(BeanTable table, Criteria c) {
@@ -52,10 +52,19 @@ public abstract class BeanTableDao implements Serializable {
 
     public List<EntityBeanBase> getData(BeanTable table) {
 
+        return getData(table,
+                       table.getPageSize(),
+                       table.getPageIndex());
+    }
+
+    public List<EntityBeanBase> getData(BeanTable table,
+                                        int pageSize,
+                                        int pageIndex) {
+
         Session session = getSession();
         Transaction transaction = session.beginTransaction();
 
-        Criteria c = getCriteria(session, table);
+        Criteria c = getDetachedCriteria(table).getExecutableCriteria(session);
 
         for (BeanTableColumnSortable sc : table.getSortingColumns().getTarget()) {
             if (sc.isAscending()) {
@@ -65,9 +74,9 @@ public abstract class BeanTableDao implements Serializable {
             }
         }
 
-        if (table.getPageSize() > 0) {
-            c.setFirstResult((table.getPageIndex() - 1) * table.getPageSize());
-            c.setMaxResults(table.getPageSize());
+        if (pageSize > 0) {
+            c.setFirstResult((pageIndex - 1) * pageSize);
+            c.setMaxResults(pageSize);
         }
 
         preExecute(table, c);
@@ -95,7 +104,9 @@ public abstract class BeanTableDao implements Serializable {
         Session session = getSession();
         Transaction transaction = session.beginTransaction();
 
-        Criteria c = getCriteria(session, table).setProjection(Projections.rowCount());
+        Criteria c = getDetachedCriteria(table)
+                            .getExecutableCriteria(session)
+                            .setProjection(Projections.rowCount());
 
         preExecuteCount(table, c);
 
@@ -103,10 +114,6 @@ public abstract class BeanTableDao implements Serializable {
         transaction.rollback();
 
         return count;
-    }
-
-    private Criteria getCriteria(Session session, BeanTable table) {
-        return getDetachedCriteria(table).getExecutableCriteria(session);
     }
 
     private DetachedCriteria getDetachedCriteria(BeanTable table) {

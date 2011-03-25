@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package jsf.bean.gui.component.table;
+package jsf.bean.gui.component.table.export;
 
 import java.util.Collections;
 import java.util.List;
