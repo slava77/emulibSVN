@@ -1,0 +1,2301 @@
+V 11
+1
+LANG:1 9 lblStatus
+PANEL,-1 -1 1205 748 N "_3DFace" 0
+"main()
+{
+  ringCountPerStation[\"-4\"] = 1;
+  ringCountPerStation[\"-3\"] = 2;
+  ringCountPerStation[\"-2\"] = 2;
+  ringCountPerStation[\"-1\"] = 3;
+  ringCountPerStation[\"+1\"] = 3;
+  ringCountPerStation[\"+2\"] = 2;
+  ringCountPerStation[\"+3\"] = 2;
+  ringCountPerStation[\"+4\"] = 2;
+  
+  dynAppend(lvCfebVoltageLines, 33);
+  dynAppend(lvCfebVoltageLines, 50);
+  dynAppend(lvCfebVoltageLines, 60);
+  
+  dynAppend(lvAlctVoltageLines, 18);
+  dynAppend(lvAlctVoltageLines, 33);
+  dynAppend(lvAlctVoltageLines, 55);
+  dynAppend(lvAlctVoltageLines, 56);
+}" 0
+ E E E E 1 -1 -1 0  10 30
+""0  1
+E "bool groupSelection = true;
+bool manipulateDisconnDp = true;
+const int ringCount = 17;
+mapping ringCountPerStation;
+dyn_string allChambers;
+dyn_int lvCfebVoltageLines;
+dyn_int lvAlctVoltageLines;
+
+dyn_string getSelectedChambers() {
+  dyn_string selection;
+  if (groupSelection) {
+    for (int i=0; i < ringCount; i++) {
+      if (!chkRing.state(i)) { continue; }
+      string ringName = chkRing.text(i);
+      strreplace(ringName, \"-\", \"M\");
+      strreplace(ringName, \"+\", \"P\");
+      strreplace(ringName, \"/\", \"\");
+      for (int i=1; i <= dynlen(allChambers); i++) {
+        if (strpos(allChambers[i], ringName) >= 0) {
+          dynAppend(selection, allChambers[i]);
+        }
+      }
+    }
+  } else {
+    dyn_int lines = tableChambers.getSelectedLines;
+    for (int i=1; i <= dynlen(lines); i++) {
+      dynAppend(selection, tableChambers.cellValueRC(lines[i], \"chamber\"));
+    }
+  }
+  
+  return selection;
+}
+
+void stationSelectionChanged() {
+  int minusCount, plusCount;  
+  for (int i=0; i < 8; i++) {
+    string stationName = chkStation.text(i);
+    if (chkStation.state(i)) {
+      if (strpos(stationName, \"-\") >= 0) {
+        minusCount++;
+      } else if (strpos(stationName, \"+\") >= 0) {
+        plusCount++;
+      }
+    }
+  }
+  
+  if (minusCount < 4) {
+    setValue(\"chkSide\", \"state\", 0, 0);
+  } else {
+    setValue(\"chkSide\", \"state\", 0, 1);
+  }
+  
+  if (plusCount < 4) {
+    setValue(\"chkSide\", \"state\", 1, 0);
+  } else {
+    setValue(\"chkSide\", \"state\", 1, 1);
+  }
+}
+
+void ringSelectionChanged() {
+  mapping selectedRingCountsPerStation;
+  for (int i=0; i < ringCount; i++) {
+    string ringName = chkRing.text(i);
+    string stationName = substr(ringName, 0, strpos(ringName, \"/\"));
+    if (!mappingHasKey(selectedRingCountsPerStation, stationName)) {
+      selectedRingCountsPerStation[stationName] = 0;
+    }
+    if (chkRing.state(i)) {
+      selectedRingCountsPerStation[stationName]++;
+    }
+  }
+  
+  for (int i=1; i <= mappinglen(selectedRingCountsPerStation); i++) {
+    string key = mappingGetKey(selectedRingCountsPerStation, i);
+    bool selectStation = true;
+    if (selectedRingCountsPerStation[key] < ringCountPerStation[key]) {
+      selectStation = false;
+    }
+    for (int j=0; j < 8; j++) {
+      string currentStationName = chkStation.text(j);
+      if (currentStationName == key) {
+        setValue(\"chkStation\", \"state\", j, selectStation);
+      }
+    }
+  }
+  
+  stationSelectionChanged();
+}
+
+dyn_string getHvChannelDps(string fsmDp) {
+  string sysNum = dpSubStr(fsmDp, DPSUB_SYS);
+  string dataDp = sysNum + substr(fsmDp, strpos(fsmDp, \"/\") + 1);
+  string coords;
+  dpGet(fsmDp + \".coord\", coords);
+  dyn_string coordsSplit = strsplit(coords, \";\");
+  int part = coordsSplit[4];
+  int channelOffset = 0;
+  int channelCount = 18;
+  if (part == 0) { channelCount = 30; }
+  if (part == 2) { channelOffset = 18; }
+  dyn_string channelDps;
+  for (int i = 1 + channelOffset; i <= channelCount + channelOffset; i++) {
+    dynAppend(channelDps, dataDp + \".data.v\" + i);
+  }
+  
+  return channelDps;
+}
+
+void addToDisconnectedDevices(string fsmDp) {
+  string sysName = dpSubStr(fsmDp, DPSUB_SYS);
+  string disconnDp = sysName + \"DPOINTS_NOT_CONTROLLED.value\";
+  string disconnDevices;
+  dpGet(disconnDp, disconnDevices);
+  if (strpos(disconnDevices, fsmDp) < 0) {
+    disconnDevices += fsmDp + \"\\n\";
+    dpSetWait(disconnDp, disconnDevices);
+  }
+}
+
+void removeFromDisconnectedDevices(string fsmDp) {
+  string sysName = dpSubStr(fsmDp, DPSUB_SYS);
+  string disconnDp = sysName + \"DPOINTS_NOT_CONTROLLED.value\";
+  string disconnDevices;
+  dpGet(disconnDp, disconnDevices);
+  if (strpos(disconnDevices, fsmDp) >= 0) {
+    strreplace(disconnDevices, fsmDp + \"\\n\", \"\");
+    dpSetWait(disconnDp, disconnDevices);
+  }
+}
+
+void rampChannels(dyn_string channelDps, int targetVoltage, string dpToTouch, int rampRate = 40, int updateDelay = 5) {
+  rampRate *= updateDelay;
+  bool finished = false;
+  while (!finished) {
+    delay(updateDelay);
+    int vmon;
+    dpGet(channelDps[1] + \".vmon\", vmon);
+    if (vmon <= targetVoltage) {
+      vmon += rampRate;
+      if (vmon >= targetVoltage) {
+        vmon = targetVoltage;
+        finished = true;
+      }
+    } else if (vmon > targetVoltage) {
+      vmon -= rampRate * 5; // ramp down will be 5 times faster
+      if (vmon <= targetVoltage) {
+        vmon = targetVoltage;
+        finished = true;
+      }
+    }
+    for (int i=1; i <= dynlen(channelDps); i++) {
+      dpSet(channelDps[i] + \".vmon\", vmon);
+    }
+    
+    // krepst
+    int tmp;
+    dpGet(dpToTouch, tmp);
+    dpSet(dpToTouch, tmp);
+  }  
+}" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+30 7
+"FRAME1"
+""
+1 120 23 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+7 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1.166666666666667 0 2.204724409448819 -130 379.2913385826773 0 E 120 23 241 151
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 2 HV
+20 4
+"chkRing"
+""
+1 132 112 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  130 110 194 380
+17
+T 
+1
+LANG:1 4 -4/1
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 4 -3/2
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 4 -3/1
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 4 -2/2
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 4 -2/1
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 4 -1/3
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 4 -1/2
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 4 -1/1
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 4 +1/1
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 4 +1/2
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 4 +1/3
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 4 +2/1
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 4 +2/2
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 4 +3/1
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 4 +3/2
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 4 +4/1
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 4 +4/2
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+E"main(int button, int state)
+{
+  ringSelectionChanged();
+}" 0
+2 5
+"PRIMITIVE_TEXT3"
+""
+1 132 92 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 132 92 162 106
+0 2 2 "0s" 0 0 0 192 0 0  132 92 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 6 Rings:
+13 6
+""
+""
+1 20 480 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  18 478 142 505
+
+T 
+1
+LANG:1 14 Turn ON (ramp)
+"main()
+{
+  lblStatus.text = \"working...\";
+  dyn_string chambers = getSelectedChambers();
+  for (int i=1; i <= dynlen(chambers); i++) {
+    dyn_string dpNamesRet = dpNames(\"*:HighVoltage/\" + chambers[i] + \"_HV\");
+    if (dynlen(dpNamesRet) < 1) { continue; }
+    string hvDp = dpNamesRet[1];
+    DebugTN(\"Turning ON HV on \" + chambers[i]);
+    dpSet(hvDp + \".module_state\", 1);
+    dpSet(hvDp + \".last_vset\", 3600);
+    dyn_string channelDps = getHvChannelDps(hvDp);
+    for (int j=1; j <= dynlen(channelDps); j++) {
+      dpSet(channelDps[j] + \".status\", 1);
+    }
+    startThread(\"rampChannels\", channelDps, 3600, hvDp + \".reserve1\");
+    dpSet(hvDp + \".status\", 3);
+    if (manipulateDisconnDp) {
+      removeFromDisconnectedDevices(hvDp);
+    }
+  }
+  lblStatus.text = \"DONE!\";
+}
+" 0
+ E E E
+13 8
+"PUSH_BUTTON2"
+""
+1 20 510 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  18 508 142 535
+
+T 
+1
+LANG:1 8 Turn OFF
+"main()
+{
+  lblStatus.text = \"working...\";
+  dyn_string chambers = getSelectedChambers();
+  for (int i=1; i <= dynlen(chambers); i++) {
+    dyn_string dpNamesRet = dpNames(\"*:HighVoltage/\" + chambers[i] + \"_HV\");
+    if (dynlen(dpNamesRet) < 1) { continue; }
+    string hvDp = dpNamesRet[1];
+    DebugTN(\"Turning OFF HV on \" + chambers[i]);
+    dpSet(hvDp + \".module_state\", 0);
+    dyn_string channelDps = getHvChannelDps(hvDp);
+    for (int j=1; j <= dynlen(channelDps); j++) {
+      dpSet(channelDps[j] + \".vmon\", 0);
+      dpSet(channelDps[j] + \".status\", 0);
+    }
+    dpSet(hvDp + \".status\", 0);
+    if (manipulateDisconnDp) {
+      removeFromDisconnectedDevices(hvDp);
+    }
+  }
+  lblStatus.text = \"DONE!\";
+}" 0
+ E E E
+30 10
+"FRAME2"
+""
+1 150 13 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+10 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1.324324324324324 0 1.135646687697161 -188.6486486486486 25.23659305993691 0 E 150 13 521 331
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 54 Selection for on-chamber electronics and HV simulation
+20 13
+"chkSide"
+""
+1 22 122 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+13 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  20 120 94 164
+2
+T 
+1
+LANG:1 5 Minus
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 4 Plus
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+E"main(int button, int state)
+{
+  int stationStart = 0,
+      stationEnd = 3,
+      ringStart = 0,
+      ringEnd = 7;
+  
+  if (button == 1) {
+    stationStart = 4;
+    stationEnd = 7;
+    ringStart = 8;
+    ringEnd = 16;
+  }
+  
+  for (int station = stationStart; station <= stationEnd; station++) {
+    setValue(\"chkStation\", \"state\", station, state);
+  }
+  for (int ring = ringStart; ring <= ringEnd; ring++) {
+    setValue(\"chkRing\", \"state\", ring, state);
+  }
+}" 0
+2 14
+"PRIMITIVE_TEXT5"
+""
+1 22 102 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 22 102 46 116
+0 2 2 "0s" 0 0 0 192 0 0  22 102 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 5 Side:
+2 15
+"PRIMITIVE_TEXT6"
+""
+1 22 192 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+15 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 22 192 60 206
+0 2 2 "0s" 0 0 0 192 0 0  22 192 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 8 Station:
+20 16
+"chkStation"
+""
+1 22 212 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  20 210 64 364
+8
+T 
+1
+LANG:1 2 -4
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 2 -3
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 2 -2
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 2 -1
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 2 +1
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 2 +2
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 2 +3
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 2 +4
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+E"main(int button, int state)
+{
+  string stationName = chkStation.text(button);
+  for (int i=0; i < ringCount; i++) {
+    string ringName = chkRing.text(i);
+    if (strpos(ringName, stationName) >= 0) {
+      setValue(\"chkRing\", \"state\", i, state);
+    }
+  }
+  
+  stationSelectionChanged();
+}" 0
+19 17
+"rdbSelectionType"
+""
+1 70 60 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"horizontal" ""
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  68 58 422 82
+2
+T 
+1
+LANG:1 15 Group selection
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 28 Individual chamber selection
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E "main(int button)
+{
+  if (button == 0) {
+    groupSelection = true;
+  } else {
+    groupSelection = false;
+  }
+  
+  tableChambers.enabled = !groupSelection;
+  chkSide.enabled = groupSelection;
+  chkStation.enabled = groupSelection;
+  chkRing.enabled = groupSelection;
+}" 0
+
+13 20
+"PUSH_BUTTON4"
+""
+1 20 590 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  18 588 142 615
+
+T 
+1
+LANG:1 17 Trip all channels
+"main()
+{
+  lblStatus.text = \"working...\";
+  dyn_string chambers = getSelectedChambers();
+  for (int i=1; i <= dynlen(chambers); i++) {
+    dyn_string dpNamesRet = dpNames(\"*:HighVoltage/\" + chambers[i] + \"_HV\");
+    if (dynlen(dpNamesRet) < 1) { continue; }
+    string hvDp = dpNamesRet[1];
+    DebugTN(\"Turning ON HV on \" + chambers[i]);
+    dyn_string channelDps = getHvChannelDps(hvDp);
+    for (int j=1; j <= dynlen(channelDps); j++) {
+      dpSet(channelDps[j] + \".vmon\", 2000);
+      dpSet(channelDps[j] + \".status\", 7);
+    }
+    dpSet(hvDp + \".status\", -1);
+    if (manipulateDisconnDp) {
+      removeFromDisconnectedDevices(hvDp);
+    }
+  }
+  lblStatus.text = \"DONE!\";
+}" 0
+ E E E
+13 21
+"PUSH_BUTTON5"
+""
+1 20 620 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+21 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  18 618 142 645
+
+T 
+1
+LANG:1 19 Trip one random ch.
+"main()
+{
+  lblStatus.text = \"working...\";
+  dyn_string chambers = getSelectedChambers();
+  for (int i=1; i <= dynlen(chambers); i++) {
+    dyn_string dpNamesRet = dpNames(\"*:HighVoltage/\" + chambers[i] + \"_HV\");
+    if (dynlen(dpNamesRet) < 1) { continue; }
+    string hvDp = dpNamesRet[1];
+    DebugTN(\"Turning ON HV on \" + chambers[i]);
+    dyn_string channelDps = getHvChannelDps(hvDp);
+    int randomChannelNum = (rand() % (dynlen(channelDps) - 1)) + 1;
+    dpSet(channelDps[randomChannelNum] + \".vmon\", 2000);
+    dpSet(channelDps[randomChannelNum] + \".status\", 7);
+    dpSet(hvDp + \".status\", -1);
+    if (manipulateDisconnDp) {
+      removeFromDisconnectedDevices(hvDp);
+    }
+  }
+  lblStatus.text = \"DONE!\";
+}" 0
+ E E E
+13 22
+"PUSH_BUTTON6"
+""
+1 20 650 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+22 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  18 648 142 675
+
+T 
+1
+LANG:1 19 Loose communication
+"main()
+{
+  lblStatus.text = \"working...\";
+  dyn_string chambers = getSelectedChambers();
+  for (int i=1; i <= dynlen(chambers); i++) {
+    dyn_string dpNamesRet = dpNames(\"*:HighVoltage/\" + chambers[i] + \"_HV\");
+    if (dynlen(dpNamesRet) < 1) { continue; }
+    string hvDp = dpNamesRet[1];
+    DebugTN(\"Loosing communication with HV on \" + chambers[i]);
+    dpSet(hvDp + \".status\", -2);
+    if (manipulateDisconnDp) {
+      addToDisconnectedDevices(hvDp);
+    }
+  }
+  lblStatus.text = \"DONE!\"; 
+}" 0
+ E E E
+2 23
+"PRIMITIVE_TEXT8"
+""
+1 160 10 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+23 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 8 10 823 44
+0 2 2 "0s" 0 0 0 65 0 0  160 10 1
+1
+LANG:1 35 MS Shell Dlg 2,20,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 23 CSC DCS Grand Simulator
+25 24
+"tableChambers"
+""
+1 260 100 E E E 0 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+24 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  258 98 482 392
+"main()
+{
+  this.tableMode = TABLE_SELECT_MULTIPLE;
+  this.selectByClick = TABLE_SELECT_LINE;
+  
+  for (int sideInt = 1; sideInt <= 2; sideInt++) {
+    string side = \"M\";
+    if (sideInt == 2) { side = \"P\"; }
+    for (int station = 1; station <= 4; station++) {
+      int ringCount = 2;
+      if (station == 1) { ringCount = 3; }
+      if ((station == 4) && (side == \"M\")) { ringCount = 1; }
+      for (int ring = 1; ring <= ringCount; ring++) {
+        int chamberStart = 1;
+        int chamberEnd = 36;
+        if ((station > 1) && (ring == 1)) {
+          chamberEnd = 18;
+        }
+        if ((side == \"P\") && (station == 4) && (ring == 2)) {
+          chamberStart = 9;
+          chamberEnd = 13;
+        }
+        for (int chamberNum = chamberStart; chamberNum <= chamberEnd; chamberNum++) {
+          string chamberNumStr;
+          sprintf(chamberNumStr, \"%02d\", chamberNum);
+          string chamberName = \"CSC_ME_\" + side + station + ring + \"_C\" + chamberNumStr;
+          
+          tableChambers.appendLine(\"chamber\", chamberName);
+          dynAppend(allChambers, chamberName);
+        }
+      }
+    }
+  }
+}" 0
+E 1 0 1 1 0 "chamber" 24 1 0 "s" 1
+LANG:1 8 Chambers
+E
+1
+LANG:1 0 
+
+200 
+14 14 10 10
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 0 2 1 1 7
+1 0
+13 25
+"PUSH_BUTTON7"
+""
+1 20 450 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+25 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  18 448 142 475
+
+T 
+1
+LANG:1 18 Turn ON imediately
+"main()
+{
+  lblStatus.text = \"working...\";
+  dyn_string chambers = getSelectedChambers();
+  for (int i=1; i <= dynlen(chambers); i++) {
+    dyn_string dpNamesRet = dpNames(\"*:HighVoltage/\" + chambers[i] + \"_HV\");
+    if (dynlen(dpNamesRet) < 1) { continue; }
+    string hvDp = dpNamesRet[1];
+    DebugTN(\"Turning ON HV on \" + chambers[i]);
+    dpSet(hvDp + \".module_state\", 1);
+    dpSet(hvDp + \".last_vset\", 3600);
+    dyn_string channelDps = getHvChannelDps(hvDp);
+    for (int j=1; j <= dynlen(channelDps); j++) {
+      dpSet(channelDps[j] + \".vmon\", 3600);
+      dpSet(channelDps[j] + \".status\", 1);
+    }
+    dpSet(hvDp + \".status\", 3);
+    if (manipulateDisconnDp) {
+      removeFromDisconnectedDevices(hvDp);
+    }
+  }
+  lblStatus.text = \"DONE!\";
+}" 0
+ E E E
+2 26
+"PRIMITIVE_TEXT9"
+""
+1 18.21158201671562 410 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+26 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1.076923076923077 0 1 -0.615384615384615 0 0 E 10 410 45 424
+0 2 2 "0s" 0 0 0 192 0 0  10 410 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 7 Status:
+2 27
+"lblStatus"
+""
+1 50 410 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+27 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 50 410 51 424
+0 2 2 "0s" 0 0 0 192 0 0  50 410 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 0 
+13 28
+"PUSH_BUTTON8"
+""
+1 20 680 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+28 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  18 678 142 702
+
+T 
+1
+LANG:1 20 Write Initial Params
+"main()
+{
+  lblStatus.text = \"working...\";
+  dyn_string chambers = getSelectedChambers();
+  for (int i=1; i <= dynlen(chambers); i++) {
+    dyn_string dpNamesRet = dpNames(\"*:HighVoltage/\" + chambers[i] + \"_HV\");
+    if (dynlen(dpNamesRet) < 1) { continue; }
+    string hvDp = dpNamesRet[1];
+    string dataDp = hvDp;
+    strreplace(dataDp, \"HighVoltage/\", \"\");
+    dpSetWait(dataDp + \".data.module_num_chans\", dynlen(getHvChannelDps(hvDp)));
+    dpSetWait(dataDp + \".data.module_type\", 1);
+  }
+  lblStatus.text = \"DONE!\";
+}" 0
+ E E E
+20 29
+"chkManipulateDisconnDp"
+""
+1 10 720 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+29 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  8 718 332 742
+1
+T 
+1
+LANG:1 51 Manipulate DPOINTS_NOT_CONTROLLED (takes some time)
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+"main()
+{
+  setValue(\"chkManipulateDisconnDp\", \"state\", 0, 1);
+}" 0
+"main(int button, int state)
+{
+  manipulateDisconnDp = state;
+}" 0
+13 31
+"PUSH_BUTTON10"
+""
+1 20 540 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+31 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  18 538 142 565
+
+T 
+1
+LANG:1 13 Go to STANDBY
+"main()
+{
+  lblStatus.text = \"working...\";
+  dyn_string chambers = getSelectedChambers();
+  for (int i=1; i <= dynlen(chambers); i++) {
+    dyn_string dpNamesRet = dpNames(\"*:HighVoltage/\" + chambers[i] + \"_HV\");
+    if (dynlen(dpNamesRet) < 1) { continue; }
+    string hvDp = dpNamesRet[1];
+    DebugTN(\"Turning ON HV on \" + chambers[i]);
+    dpSet(hvDp + \".module_state\", 1);
+    dpSet(hvDp + \".last_vset\", 3000);
+    dyn_string channelDps = getHvChannelDps(hvDp);
+    for (int j=1; j <= dynlen(channelDps); j++) {
+      dpSet(channelDps[j] + \".vmon\", 3000);
+      dpSet(channelDps[j] + \".status\", 1);
+    }
+    dpSet(hvDp + \".status\", 3);
+    if (manipulateDisconnDp) {
+      removeFromDisconnectedDevices(hvDp);
+    }
+  }
+  lblStatus.text = \"DONE!\";
+}" 0
+ E E E
+30 32
+"FRAME3"
+""
+1 120 23 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+32 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1.416666666666667 0 2.204724409448819 -9.999999999999986 379.2913385826772 0 E 120 23 241 151
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 2 LV
+30 33
+"FRAME4"
+""
+1 120 23 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+33 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1.333333333333333 0 2.204724409448819 180 379.2913385826772 0 E 120 23 241 151
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 11 Temperature
+13 34
+"PUSH_BUTTON11"
+""
+1 170 450 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+34 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  168 448 322 475
+
+T 
+1
+LANG:1 11 Make ALL OK
+"main()
+{
+  lblStatus.text = \"working...\";
+  dyn_string chambers = getSelectedChambers();
+  for (int i=1; i <= dynlen(chambers); i++) {
+    dyn_string dpNamesRet = dpNames(\"*:LowVoltage/\" + chambers[i] + \"_LV\");
+    if (dynlen(dpNamesRet) < 1) { continue; }
+    string lvDp = dpNamesRet[1];
+    string dataDp = lvDp;
+    strreplace(dataDp, \"LowVoltage/\", \"\");
+    DebugTN(\"Turning ON LV on \" + chambers[i]);
+    //CFEBs
+    for (int cfeb=1; cfeb <= 5; cfeb++) {
+      for (int line=1; line <= dynlen(lvCfebVoltageLines); line++) {
+        string voltageStr = lvCfebVoltageLines[line];
+        float voltage = (float)lvCfebVoltageLines[line] / 10;
+        dpSet(dataDp + \".data.Cfeb_o.v\" + voltageStr + \".v\" + cfeb, voltage);
+        dpSet(dataDp + \".data.Cfeb_o.c\" + voltageStr + \".v\" + cfeb, 1);
+      }
+    }
+    //ALCT
+    for (int line=1; line <= dynlen(lvAlctVoltageLines); line++) {
+      string voltageStr = lvAlctVoltageLines[line];
+      float voltage = (float)lvAlctVoltageLines[line] / 10;
+      dpSet(dataDp + \".data.Alct_o.v\" + voltageStr, voltage);
+      dpSet(dataDp + \".data.Alct_o.c\" + voltageStr, 1);
+    }
+
+    dpSet(lvDp + \".status\", 2);
+    dpSet(lvDp + \".chamber_state\", 2);
+    if (manipulateDisconnDp) {
+      removeFromDisconnectedDevices(lvDp);
+    }
+  }
+  lblStatus.text = \"DONE!\";
+}" 0
+ E E E
+13 36
+"PUSH_BUTTON13"
+""
+1 170 640 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+36 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  168 638 322 665
+
+T 
+1
+LANG:1 19 Loose communication
+"main()
+{
+  lblStatus.text = \"working...\";
+  dyn_string chambers = getSelectedChambers();
+  for (int i=1; i <= dynlen(chambers); i++) {
+    dyn_string dpNamesRet = dpNames(\"*:LowVoltage/\" + chambers[i] + \"_LV\");
+    if (dynlen(dpNamesRet) < 1) { continue; }
+    string lvDp = dpNamesRet[1];
+    DebugTN(\"Loosing communication with LV on \" + chambers[i]);
+    dpSet(lvDp + \".status\", -2);
+    if (manipulateDisconnDp) {
+      addToDisconnectedDevices(lvDp);
+    }
+  }
+  lblStatus.text = \"DONE!\"; 
+}" 0
+ E E E
+13 37
+"PUSH_BUTTON14"
+""
+1 349.9999999999999 640 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+37 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  348 638 492 665
+
+T 
+1
+LANG:1 19 Loose communication
+"main()
+{
+  lblStatus.text = \"working...\";
+  dyn_string chambers = getSelectedChambers();
+  for (int i=1; i <= dynlen(chambers); i++) {
+    dyn_string dpNamesRet = dpNames(\"*:Temperature/\" + chambers[i] + \"_TEMP\");
+    if (dynlen(dpNamesRet) < 1) { continue; }
+    string tempDp = dpNamesRet[1];
+    DebugTN(\"Loosing communication with Temperature on \" + chambers[i]);
+    dpSet(tempDp + \".status\", -2);
+    if (manipulateDisconnDp) {
+      addToDisconnectedDevices(tempDp);
+    }
+  }
+  lblStatus.text = \"DONE!\"; 
+}" 0
+ E E E
+13 40
+"PUSH_BUTTON17"
+""
+1 170 580 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+40 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  168 578 322 605
+
+T 
+1
+LANG:1 27 Overvoltage on all channels
+"main()
+{
+  lblStatus.text = \"working...\";
+  dyn_string chambers = getSelectedChambers();
+  for (int i=1; i <= dynlen(chambers); i++) {
+    dyn_string dpNamesRet = dpNames(\"*:LowVoltage/\" + chambers[i] + \"_LV\");
+    if (dynlen(dpNamesRet) < 1) { continue; }
+    string lvDp = dpNamesRet[1];
+    string dataDp = lvDp;
+    strreplace(dataDp, \"LowVoltage/\", \"\");
+    DebugTN(\"Doing LV overvoltage on \" + chambers[i]);
+    //CFEBs
+    for (int cfeb=1; cfeb <= 5; cfeb++) {
+      for (int line=1; line <= dynlen(lvCfebVoltageLines); line++) {
+        string voltageStr = lvCfebVoltageLines[line];
+        float voltage = (float)lvCfebVoltageLines[line] / 10;
+        voltage += 2; // overvoltage
+        dpSet(dataDp + \".data.Cfeb_o.v\" + voltageStr + \".v\" + cfeb, voltage);
+        dpSet(dataDp + \".data.Cfeb_o.c\" + voltageStr + \".v\" + cfeb, 1);
+      }
+    }
+    //ALCT
+    for (int line=1; line <= dynlen(lvAlctVoltageLines); line++) {
+      string voltageStr = lvAlctVoltageLines[line];
+      float voltage = (float)lvAlctVoltageLines[line] / 10;
+      voltage += 2; // overvoltage
+      dpSet(dataDp + \".data.Alct_o.v\" + voltageStr, voltage);
+      dpSet(dataDp + \".data.Alct_o.c\" + voltageStr, 1);
+    }
+
+     dpSet(lvDp + \".status\", -1);
+     dpSet(lvDp + \".chamber_state\", -1);
+    if (manipulateDisconnDp) {
+      removeFromDisconnectedDevices(lvDp);
+    }
+  }
+  lblStatus.text = \"DONE!\";
+}" 0
+ E E E
+13 42
+"PUSH_BUTTON19"
+""
+1 349.9999999999999 450 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+42 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  348 448 492 475
+
+T 
+1
+LANG:1 11 Make ALL OK
+"const int tempAverage = 25;
+
+main()
+{
+  lblStatus.text = \"working...\";
+  dyn_string chambers = getSelectedChambers();
+  for (int i=1; i <= dynlen(chambers); i++) {
+    dyn_string dpNamesRet = dpNames(\"*:Temperature/\" + chambers[i] + \"_TEMP\");
+    if (dynlen(dpNamesRet) < 1) { continue; }
+    string tempDp = dpNamesRet[1];
+    string dataDp = tempDp;
+    strreplace(dataDp, \"Temperature/\", \"\");
+    DebugTN(\"Making Temperature OK on \" + chambers[i]);
+    //CFEBs
+    for (int cfeb=1; cfeb <= 5; cfeb++) {
+      dpSet(dataDp + \".data.t_cfeb.v\" + cfeb, tempAverage + getTempRand());
+    }
+    dpSet(dataDp + \".data.t_alct.v1\", tempAverage + getTempRand());
+    dpSet(dataDp + \".data.t_dmb.v1\", tempAverage + getTempRand());
+
+    dpSet(tempDp + \".status\", 2);
+    dpSet(tempDp + \".chamber_state\", 2);
+    if (manipulateDisconnDp) {
+      removeFromDisconnectedDevices(tempDp);
+    }
+  }
+  lblStatus.text = \"DONE!\";
+}
+
+float getTempRand() {
+  return (float)((rand() % 60) - 30) / 10; // plus/minus 3 degrees
+}" 0
+ E E E
+13 43
+"PUSH_BUTTON20"
+""
+1 170 610 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+43 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  168 608 322 635
+
+T 
+1
+LANG:1 28 Overvoltage on a one channel
+"main()
+{
+  lblStatus.text = \"working...\";
+  dyn_string chambers = getSelectedChambers();
+  for (int i=1; i <= dynlen(chambers); i++) {
+    dyn_string dpNamesRet = dpNames(\"*:LowVoltage/\" + chambers[i] + \"_LV\");
+    if (dynlen(dpNamesRet) < 1) { continue; }
+    string lvDp = dpNamesRet[1];
+    string dataDp = lvDp;
+    strreplace(dataDp, \"LowVoltage/\", \"\");
+    DebugTN(\"Doing LV overvoltage on \" + chambers[i]);
+
+    int randCfebAlct = (rand() % 2);
+
+    if (randCfebAlct == 0) {
+      //CFEB
+      int randCfebNum = (rand() % 4) + 1; // don't include CFEB5, because it doesn't exist on ME1/3 chambers
+      int randChannel = (rand() % dynlen(lvCfebVoltageLines)) + 1;
+      string voltageStr = lvCfebVoltageLines[randChannel];
+      float voltage = (float)lvCfebVoltageLines[randChannel] / 10;
+      voltage += 2; // overvoltage
+      dpSet(dataDp + \".data.Cfeb_o.v\" + voltageStr + \".v\" + randCfebNum, voltage);
+      dpSet(dataDp + \".data.Cfeb_o.c\" + voltageStr + \".v\" + randCfebNum, 1);
+    } else {
+      //ALCT
+      int randChannel = (rand() % dynlen(lvAlctVoltageLines)) + 1;
+      string voltageStr = lvAlctVoltageLines[randChannel];
+      float voltage = (float)lvAlctVoltageLines[randChannel] / 10;
+      voltage += 2; // overvoltage
+      dpSet(dataDp + \".data.Alct_o.v\" + voltageStr, voltage);
+      dpSet(dataDp + \".data.Alct_o.c\" + voltageStr, 1);
+    }
+    dpSet(lvDp + \".status\", -1);
+    dpSet(lvDp + \".chamber_state\", -1);
+    if (manipulateDisconnDp) {
+      removeFromDisconnectedDevices(lvDp);
+    }
+  }
+  lblStatus.text = \"DONE!\";
+}" 0
+ E E E
+13 44
+"PUSH_BUTTON21"
+""
+1 350 580 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+44 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  348 578 492 605
+
+T 
+1
+LANG:1 25 Overtemp. on all channels
+"const int temp = 33;
+
+main()
+{
+  lblStatus.text = \"working...\";
+  dyn_string chambers = getSelectedChambers();
+  for (int i=1; i <= dynlen(chambers); i++) {
+    dyn_string dpNamesRet = dpNames(\"*:Temperature/\" + chambers[i] + \"_TEMP\");
+    if (dynlen(dpNamesRet) < 1) { continue; }
+    string tempDp = dpNamesRet[1];
+    string dataDp = tempDp;
+    strreplace(dataDp, \"Temperature/\", \"\");
+    DebugTN(\"Making overtemperature OK on \" + chambers[i]);
+    //CFEBs
+    for (int cfeb=1; cfeb <= 5; cfeb++) {
+      dpSet(dataDp + \".data.t_cfeb.v\" + cfeb, temp);
+    }
+    dpSet(dataDp + \".data.t_alct.v1\", temp);
+    dpSet(dataDp + \".data.t_dmb.v1\", temp);
+
+    dpSet(tempDp + \".status\", -1);
+    dpSet(tempDp + \".chamber_state\", -1);
+    if (manipulateDisconnDp) {
+      removeFromDisconnectedDevices(tempDp);
+    }
+  }
+  lblStatus.text = \"DONE!\";
+}" 0
+ E E E
+13 45
+"PUSH_BUTTON22"
+""
+1 350 610 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+45 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  348 608 492 635
+
+T 
+1
+LANG:1 24 Overtemp. on one channel
+"const int temp = 33;
+
+main()
+{
+  lblStatus.text = \"working...\";
+  dyn_string chambers = getSelectedChambers();
+  for (int i=1; i <= dynlen(chambers); i++) {
+    dyn_string dpNamesRet = dpNames(\"*:Temperature/\" + chambers[i] + \"_TEMP\");
+    if (dynlen(dpNamesRet) < 1) { continue; }
+    string tempDp = dpNamesRet[1];
+    string dataDp = tempDp;
+    strreplace(dataDp, \"Temperature/\", \"\");
+    DebugTN(\"Making overtemperature OK on \" + chambers[i]);
+    int randBoard = (rand() % 7) + 1;
+    if (randBoard <= 5) {
+      //CFEBs
+      dpSet(dataDp + \".data.t_cfeb.v\" + randBoard, temp);
+    } else if (randBoard == 6) {
+      dpSet(dataDp + \".data.t_alct.v1\", temp);
+    } else if (randBoard == 7) {
+      dpSet(dataDp + \".data.t_dmb.v1\", temp);
+    }
+
+    dpSet(tempDp + \".status\", -1);
+    dpSet(tempDp + \".chamber_state\", -1);
+    if (manipulateDisconnDp) {
+      removeFromDisconnectedDevices(tempDp);
+    }
+  }
+  lblStatus.text = \"DONE!\";
+}" 0
+ E E E
+4 46
+"LINE1"
+""
+1 520 50 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+46 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  520 50 520 740
+30 47
+"FRAME5"
+""
+1 540 43 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+47 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1 0 1 0 -3 0 E 540 43 821 401
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 28 Peripheral Crates Simulation
+30 49
+"FRAME7"
+""
+1 540 43 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+49 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1 0 0.9159663865546218 0 370.6134453781513 0 E 540 43 821 401
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 19 Maratons Simulation
+25 50
+"tablePCrates"
+""
+1 550 70 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+50 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  548 68 812 232
+"main()
+{
+  this.tableMode = TABLE_SELECT_MULTIPLE;
+  this.selectByClick = TABLE_SELECT_LINE;
+  dyn_string dps = dpNames(\"*:*\", \"fwCrb_CSC_LV\");
+  for (int i=1; i <= dynlen(dps); i++) {
+    this.appendLine(\"pcrates\", dps[i]);
+  }
+}" 0
+E 1 0 1 1 0 "pcrates" 31 1 0 "s" 1
+LANG:1 17 Peripheral Crates
+E
+1
+LANG:1 0 
+
+257 
+14 14 10 10
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 0 1 1 1 7
+1 0
+13 51
+"PUSH_BUTTON23"
+""
+1 550 270 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+51 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  548 268 812 292
+
+T 
+1
+LANG:1 2 ON
+"main()
+{
+  dyn_int selection = tablePCrates.getSelectedLines();
+  for (int i=1; i <= dynlen(selection); i++) {
+    string dp = tablePCrates.getLineN(selection[i]);
+    DebugTN(\"Setting PCrate \" + dp + \" to ON\");
+    dpSet(dp + \".status\", 2);
+  }
+}" 0
+ E E E
+13 52
+"PUSH_BUTTON24"
+""
+1 550 300 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+52 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  548 298 812 322
+
+T 
+1
+LANG:1 3 OFF
+"main()
+{
+  dyn_int selection = tablePCrates.getSelectedLines();
+  for (int i=1; i <= dynlen(selection); i++) {
+    string dp = tablePCrates.getLineN(selection[i]);
+    DebugTN(\"Setting PCrate \" + dp + \" to OFF\");
+    dpSet(dp + \".status\", 0);
+  }
+}" 0
+ E E E
+13 53
+"PUSH_BUTTON25"
+""
+1 550 330 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+53 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  548 328 812 352
+
+T 
+1
+LANG:1 5 ERROR
+"main()
+{
+  dyn_int selection = tablePCrates.getSelectedLines();
+  for (int i=1; i <= dynlen(selection); i++) {
+    string dp = tablePCrates.getLineN(selection[i]);
+    DebugTN(\"Setting PCrate \" + dp + \" to ERROR\");
+    dpSet(dp + \".status\", -1);
+  }
+}" 0
+ E E E
+13 54
+"PUSH_BUTTON26"
+""
+1 550 360 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+54 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  548 358 812 382
+
+T 
+1
+LANG:1 34 No Communication (FSM state ERROR)
+"main()
+{
+  dyn_int selection = tablePCrates.getSelectedLines();
+  for (int i=1; i <= dynlen(selection); i++) {
+    string dp = tablePCrates.getLineN(selection[i]);
+    DebugTN(\"Loosing communication with PCrate \" + dp);
+    dpSet(dp + \".status\", -2);
+  }
+}" 0
+ E E E
+25 55
+"tableMaratons"
+""
+1 550 439.9999999999999 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+55 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  548 438 812 582
+"main()
+{
+  this.tableMode = TABLE_SELECT_MULTIPLE;
+  this.selectByClick = TABLE_SELECT_LINE;
+  dyn_string dps = dpNames(\"*:*\", \"FwWienerMarathon\");
+  for (int i=1; i <= dynlen(dps); i++) {
+    this.appendLine(\"maratons\", dps[i]);
+  }
+}" 0
+E 1 0 1 1 0 "maratons" 31 1 0 "s" 1
+LANG:1 8 Maratons
+E
+1
+LANG:1 0 
+
+257 
+14 14 10 10
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 0 1 1 1 7
+1 0
+13 56
+"PUSH_BUTTON27"
+""
+1 550 620 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+56 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  548 618 812 642
+
+T 
+1
+LANG:1 2 ON
+"main()
+{
+  dyn_int selection = tableMaratons.getSelectedLines();
+  for (int i=1; i <= dynlen(selection); i++) {
+    string dp = tableMaratons.getLineN(selection[i]);
+    DebugTN(\"Setting Maraton \" + dp + \" to ON\");
+    dpSet(dp + \".Status.Inhibit\", false);
+    dpSet(dp + \".Status.On\", true);
+    
+    for (int i=0; i < 8; i++) {
+      if ((i == 2) || (i == 6)) { continue; }
+      dpSet(dp + \"/Channel\" + i + \".Status.FailureMaxCurrent\", false);
+    }
+  }
+}" 0
+ E E E
+13 57
+"PUSH_BUTTON28"
+""
+1 550 650 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+57 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  548 648 812 672
+
+T 
+1
+LANG:1 3 OFF
+"main()
+{
+  dyn_int selection = tableMaratons.getSelectedLines();
+  for (int i=1; i <= dynlen(selection); i++) {
+    string dp = tableMaratons.getLineN(selection[i]);
+    DebugTN(\"Setting Maraton \" + dp + \" to OFF\");
+    dpSet(dp + \".Status.Inhibit\", false);
+    dpSet(dp + \".Status.On\", false);
+    
+    for (int i=0; i < 8; i++) {
+      if ((i == 2) || (i == 6)) { continue; }
+      dpSet(dp + \"/Channel\" + i + \".Status.FailureMaxCurrent\", false);
+    }
+  }
+}" 0
+ E E E
+13 58
+"PUSH_BUTTON29"
+""
+1 550 680 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+58 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  548 678 812 702
+
+T 
+1
+LANG:1 16 Trip one channel
+"main()
+{
+  dyn_int selection = tableMaratons.getSelectedLines();
+  for (int i=1; i <= dynlen(selection); i++) {
+    string dp = tableMaratons.getLineN(selection[i]);
+    DebugTN(\"Tripping a Maraton channel \" + dp);
+    int randChannel = 2;
+    while ((randChannel == 2) || (randChannel == 6)) {
+      randChannel = (rand() % 8);
+    }
+    dpSet(dp + \"/Channel\" + randChannel + \".Status.FailureMaxCurrent\", true);
+  }
+}" 0
+ E E E
+13 62
+"btnSelectNone"
+""
+1 690 240 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+62 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  688 238 812 262
+
+T 
+1
+LANG:1 11 Select None
+"main()
+{
+  tablePCrates.deleteSelection();
+}" 0
+ E E E
+13 63
+"btnSelectAll"
+""
+1 550 240 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+63 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  548 238 672 262
+
+T 
+1
+LANG:1 10 Select All
+"main()
+{
+  tablePCrates.deleteSelection();
+  int lineCount = tablePCrates.lineCount;
+  dyn_int selection;
+  for (int i=0; i < lineCount; i++) {
+    dynAppend(selection, i);
+  }
+  tablePCrates.addSelectLines(selection);
+}" 0
+ E E E
+13 64
+"PUSH_BUTTON33"
+""
+1 690 590 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+64 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  688 588 812 612
+
+T 
+1
+LANG:1 11 Select None
+"main()
+{
+  tableMaratons.deleteSelection();
+}" 0
+ E E E
+13 65
+"PUSH_BUTTON34"
+""
+1 550 590 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+65 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  548 588 672 612
+
+T 
+1
+LANG:1 10 Select All
+"main()
+{
+  tableMaratons.deleteSelection();
+  int lineCount = tableMaratons.lineCount;
+  dyn_int selection;
+  for (int i=0; i < lineCount; i++) {
+    dynAppend(selection, i);
+  }
+  tableMaratons.addSelectLines(selection);
+}" 0
+ E E E
+13 66
+"PUSH_BUTTON35"
+""
+1 550 710 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+66 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  548 708 812 732
+
+T 
+1
+LANG:1 17 Trip all channels
+"main()
+{
+  dyn_int selection = tableMaratons.getSelectedLines();
+  for (int i=1; i <= dynlen(selection); i++) {
+    string dp = tableMaratons.getLineN(selection[i]);
+    DebugTN(\"Tripping all Maraton \" + dp + \" channels\");
+    
+    for (int i=0; i < 8; i++) {
+      if ((i == 2) || (i == 6)) { continue; }
+      dpSet(dp + \"/Channel\" + i + \".Status.FailureMaxCurrent\", true);
+    }
+  }
+}" 0
+ E E E
+4 67
+"LINE2"
+""
+1 840 50 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+67 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  840 50 840 740
+30 68
+"FRAME8"
+""
+1 540 43 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+68 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1 0 1 320 -3 0 E 540 43 821 401
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 14 DDU Simulation
+25 69
+"tableDDUs"
+""
+1 870 70 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+69 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  868 68 1132 232
+"main()
+{
+  this.tableMode = TABLE_SELECT_MULTIPLE;
+  this.selectByClick = TABLE_SELECT_LINE;
+  dyn_string dps = dpNames(\"*:DDU*\", \"FED_1_d\");
+  for (int i=1; i <= dynlen(dps); i++) {
+    this.appendLine(\"ddus\", dps[i]);
+  }
+}" 0
+E 1 0 1 1 0 "ddus" 31 1 0 "s" 1
+LANG:1 4 DDUs
+E
+1
+LANG:1 0 
+
+257 
+14 14 10 10
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 0 1 1 1 7
+1 0
+13 70
+"btnSelectNoneDDUs"
+""
+1 1010 240 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+70 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  1008 238 1132 262
+
+T 
+1
+LANG:1 11 Select None
+"main()
+{
+  tableDDUs.deleteSelection();
+}" 0
+ E E E
+13 71
+"btnSelectAllDDUs"
+""
+1 870 240 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+71 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
+0  868 238 992 262
+
+T 
+1
+LANG:1 10 Select All
+"main()
+{
+  tableDDUs.deleteSelection();
+  int lineCount = tableDDUs.lineCount;
+  dyn_int selection;
+  for (int i=0; i < lineCount; i++) {
+    dynAppend(selection, i);
+  }
+  tableDDUs.addSelectLines(selection);
+}" 0
+ E E E
+13 72
+"PUSH_BUTTON38"
+""
+1 870 270 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+72 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  868 268 1132 292
+
+T 
+1
+LANG:1 2 ON
+"main()
+{
+  lblStatus.text = \"working...\";
+  dyn_int selection = tableDDUs.getSelectedLines();
+  for (int i=1; i <= dynlen(selection); i++) {
+    string dp = tableDDUs.getLineN(selection[i]);
+    DebugTN(\"Setting everything OK for DDU \" + dp);
+
+    dpSet(dp + \".data.v15\", 1.5);
+    dpSet(dp + \".data.v25a\", 2.5);
+    dpSet(dp + \".data.v25b\", 2.5);
+    dpSet(dp + \".data.v33\", 3.3);
+    
+    dpSet(dp + \".data.td1\", 20);
+    dpSet(dp + \".data.td2\", 20);
+    dpSet(dp + \".data.td3\", 20);
+    dpSet(dp + \".data.td4\", 20);
+    
+    int timeInt = getCurrentTime();
+    dpSet(dp + \".update_value\", timeInt);
+    
+    dpSet(dp + \".status\", 1);
+    
+    dpSet(dp + \".quality\", \"DDU\");
+  }
+  lblStatus.text = \"DONE!\";
+}" 0
+ E E E
+13 73
+"PUSH_BUTTON39"
+""
+1 20 560 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+73 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  18 558 142 585
+
+T 
+1
+LANG:1 20 Go to STANDBY (ramp)
+"main()
+{
+  lblStatus.text = \"working...\";
+  dyn_string chambers = getSelectedChambers();
+  for (int i=1; i <= dynlen(chambers); i++) {
+    dyn_string dpNamesRet = dpNames(\"*:HighVoltage/\" + chambers[i] + \"_HV\");
+    if (dynlen(dpNamesRet) < 1) { continue; }
+    string hvDp = dpNamesRet[1];
+    DebugTN(\"Turning ON HV on \" + chambers[i]);
+    dpSet(hvDp + \".module_state\", 1);
+    dpSet(hvDp + \".last_vset\", 3000);
+    dyn_string channelDps = getHvChannelDps(hvDp);
+    for (int j=1; j <= dynlen(channelDps); j++) {
+      dpSet(channelDps[j] + \".status\", 1);
+    }
+    startThread(\"rampChannels\", channelDps, 3000, hvDp + \".reserve1\");
+    dpSet(hvDp + \".status\", 3);
+    if (manipulateDisconnDp) {
+      removeFromDisconnectedDevices(hvDp);
+    }
+  }
+  lblStatus.text = \"DONE!\";
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
