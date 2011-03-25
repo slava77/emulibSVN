@@ -24,20 +24,18 @@
 
             <script type="text/javascript">
                 // <![CDATA[
-                var rebuildBc_#{cc.attrs.manager.id} = 0;
                 jQuery(document).ready(function () {
-
-                    rebuildBc_#{cc.attrs.manager.id} = function() {
-                        jQuery('#beanTableBreadcrumb').xBreadcrumbs({});
-                    };
-
-                    rebuildBc_#{cc.attrs.manager.id}();
+                    ice.onAfterUpdate(
+                        function() {
+                            var t = jQuery('#' + '#{cc.attrs.manager.id}');
+                            jQuery('ul.xbreadcrumbs', t).xBreadcrumbs({});
+                        }
+                    );
                 });
                 // ]]>
             </script>
 
-
-            <ul id="beanTableBreadcrumb" class="xbreadcrumbs" style="width: 100%">
+            <ul class="xbreadcrumbs" style="width: 100%">
 
                 <li>
                     <h:outputText styleClass="beanTablePathTop"
@@ -71,14 +69,6 @@
                     <h:outputText value=" #{cc.attrs.manager.tablePack.title}"
                                   rendered="#{cc.attrs.manager.tablePack.title != null}"/>
                 </li>
-
-                <script type="text/javascript">
-                    // <![CDATA[
-                    if (rebuildBc_#{cc.attrs.manager.id} != 0) {
-                        rebuildBc_#{cc.attrs.manager.id}();
-                    }
-                    // ]]>
-                </script>
 
             </ul>
 
