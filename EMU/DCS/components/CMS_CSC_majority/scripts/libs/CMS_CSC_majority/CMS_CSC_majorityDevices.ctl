@@ -149,9 +149,9 @@ dyn_int emumaj_lvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
   int status = values[1];
   int channelCount;
   if ((deviceParams["station"] == 1) && (deviceParams["ring"] == 3)) {
-    channelCount = 16; // ME1/3 chambers have 4 CFEBs, all other chambers have 5
+    channelCount = 18; // ME1/3 chambers have 4 CFEBs, all other chambers have 5
   } else {
-    channelCount = 19;
+    channelCount = 21;
   }
   int excludedChannelCount = 0;
   for (int i=1; i <= dynlen(excludedChannels); i++) {
@@ -212,6 +212,11 @@ dyn_int emumaj_lvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
       if (emumaj_lvAlctChannelAlertStatus(dataDp, "56")) { error++; }
     }
   }
+  bool v7AnalogAlert, v7DigitalAlert;
+  dpGet(dataDp + ".data.Lvdb_o.v7Analog:_alert_hdl.._act_state", v7AnalogAlert,
+        dataDp + ".data.Lvdb_o.v7Digital:_alert_hdl.._act_state", v7DigitalAlert);
+  if (v7AnalogAlert) { error++; }
+  if (v7DigitalAlert) { error++; }
   
   /** if fsm is in ERROR, but channels don't have any alarms - it means that there is a more general problem 
       (perhaps a master channel trip), in which case all channels should be marked with error. */
