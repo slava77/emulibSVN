@@ -22,7 +22,7 @@
   * if this flag is set to true the full component installation is performed, otherwise only patch() is called.
   * Note that it's only used if HV_CC is already installed (some HV_1 dps exist), if not then full installation will be carried out regardless of this flag value
   */
-global const bool EMU_HVCC_INSTALLATION_FULL = false;
+global const bool EMU_HVCC_INSTALLATION_FULL = true;
 
 
 main(){
