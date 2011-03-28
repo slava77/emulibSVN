@@ -177,6 +177,7 @@ mudcsStartHvCcInstallation(){
   * This function is called when EMU_HVCC_INSTALLATION_FULL is FALSE. Put the desired patch actions here.
   */
 void patch() {
+  mudcsDbCreateMain(); 
   lv_setValidRandgeAndDefaultValue();
   mudcsAlertCreateMain();
   emuAlert_updateAllAlertClasses();
