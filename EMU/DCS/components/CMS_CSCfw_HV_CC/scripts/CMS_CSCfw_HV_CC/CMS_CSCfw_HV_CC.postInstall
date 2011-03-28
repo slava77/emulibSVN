@@ -19,8 +19,11 @@
 #uses "CMS_CSC_common/emu_common.ctl"
 #uses "CMS_CSC_common/emu_alert.ctl"
 
-/** if this flag is set to true the full component installation is performed, otherwise only patch() is called. */
-global const bool EMU_HVCC_INSTALLATION_FULL = true;
+/** 
+  * if this flag is set to true the full component installation is performed, otherwise only patch() is called.
+  * Note that it's only used if HV_CC is already installed (some HV_1 dps exist), if not then full installation will be carried out regardless of this flag value
+  */
+global const bool EMU_HVCC_INSTALLATION_FULL = false;
 
 
 main(){
@@ -111,8 +114,6 @@ for(i=1;i<=dynlen(CSC_fwG_g_idisk_cross_numbers);i++){
 //  mudcsSynchSystemPoratbleOS(os,"cat "+CSC_fwG_g_project_name_home+"/source/"+CSC_fwG_g_Component+"/config/CMS_CSCfw_HV_CC_add2_904.config >> "+CSC_fwG_g_project_name_home+"/config/config");     
 // }
 
-dpDelete("CMS_CSC_GAS");
-
 mudcsStartHvCcInstallation();
 
 //  if(os=="Linux"){
@@ -144,15 +145,23 @@ mudcsStartHvCcInstallation(){
 
   dpSetWait(CSC_fwG_g_SYSTEM_NAME+":MYWARNING.value","postinstall_start");
   
-  if (!EMU_HVCC_INSTALLATION_FULL) {
+  bool isHvCcInstallationPresent = (dynlen(dpNames("*", "HV_1")) > 0);
+  
+  if (!EMU_HVCC_INSTALLATION_FULL && isHvCcInstallationPresent) {
+    DebugTN("HV CC postinstall: doing patch only!");
     patch();
     dpSetWait(CSC_fwG_g_SYSTEM_NAME+":MYWARNING.value","postinstall_finish");
     return;
   }
   
+  DebugTN("HV CC postinstall: starting full (re-)installation");
+
 //int is_exist=fwFsmTree_isNode(CSC_fwG_g_csc_part);
 //if(is_exist)
-mudcsDeleteAllTrees();
+
+  dpDelete("CMS_CSC_GAS");
+
+  mudcsDeleteAllTrees();
 
   mudcsCreateAllTypesMain();
   mudcsDbCreateMain(); 
@@ -169,35 +178,46 @@ mudcsDeleteAllTrees();
   * This function is called when EMU_HVCC_INSTALLATION_FULL is FALSE. Put the desired patch actions here.
   */
 void patch() {
-  emu_info("Updating all alert classes");
+  lv_setValidRandgeAndDefaultValue();
+  mudcsAlertCreateMain();
   emuAlert_updateAllAlertClasses();
-  emu_info("Done updating alert classes");
+  return;
   
-  dyn_string list;
-  dpGet("Db_o.PCToManID", list);
-  for (int i=1; i <= dynlen(list); i++) {
-    string host = list[i];
-    host = strtolower(host);
-    if (host == "dcspcs2g19-06") {
-      list[i] = "csc-dcs-pc1";
-    }
-    if (host == "dcspcs2g19-04") {
-      list[i] = "csc-dcs-pc2";
-    }
-  }
-  dpSet("Db_o.PCToManID", list);
+  // a subset of LV_1_alert_main() - just for the new LVDB stuff
+dyn_string limits_s;
+string device_type, value;
+string s1,s2;
+//bool isGeneralSetting;
+
+	dyn_string exceptionInfo; 
+
+device_type="LV_1";
+  mudcsInit();
   
-  dpGet("Db_o.DimServerComputerList", list);
-  for (int i=1; i <= dynlen(list); i++) {
-    string host = list[i];
-    host = strtolower(host);
-    if (host == "dcspcs2g19-06") {
-      list[i] = "csc-dcs-pc1";
-    }
-    if (host == "dcspcs2g19-04") {
-      list[i] = "csc-dcs-pc2";
-    }
-  }
-  dpSet("Db_o.DimServerComputerList", list);
-  
+  string DpNameStartForAlertConfig=CSC_fwG_g_csc_part;
+
+//isGeneralSetting = true;
+//if(strpos(DpNameStartForAlertConfig,device_type) >= 0 )isGeneralSetting = false;
+
+
+limits_s = makeDynString();
+
+
+
+value=    ".data.Lvdb_o.v7Analog|"
+         +".data.Lvdb_o.v7Digital";
+
+// LVDB limits
+  float v7AnalogDelta, v7DigitalDelta;
+  dpGet("Db_LV_1_alert_o.LV_1_delta.Lvdb_o.v7Analog", v7AnalogDelta,
+        "Db_LV_1_alert_o.LV_1_delta.Lvdb_o.v7Digital", v7DigitalDelta);
+  s1 = 7 - v7AnalogDelta;
+  s2 = 7 + v7AnalogDelta;
+  dynAppend(limits_s,s1+"|"+s2);
+  s1 = 7 - v7DigitalDelta;
+  s2 = 7 + v7DigitalDelta;
+  dynAppend(limits_s,s1+"|"+s2);
+
+mudcsLookAndAlertArchiveConfig(true, false, true, device_type, value, limits_s, DpNameStartForAlertConfig,
+"",0,0,0.,0.);
 }

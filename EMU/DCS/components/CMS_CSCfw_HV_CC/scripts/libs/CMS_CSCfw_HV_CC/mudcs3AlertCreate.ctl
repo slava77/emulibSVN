@@ -1,6 +1,6 @@
 #uses "CMS_CSC_common/emu_common.ctl"
 #uses "CMS_CSC_common/emu_alert.ctl"
-
+#uses "CMS_CSCfw_HV_CC/emuAlert.ctl"
 
 const float MUDCS_G_ALERT_DEFAULT_TEMPERATURE = 25;
 
@@ -337,6 +337,9 @@ void lv_setValidRandgeAndDefaultValue() {
   for (int i=1; i <= dynlen(dpes); i++) {
     float defaultValue;
     dpGet(dpes[i], defaultValue);
+    if (defaultValue == 0) {
+      continue;
+    }
     dpes[i] = dpSubStr(dpes[i], DPSUB_SYS_DP_EL);
     strreplace(dpes[i], "Db_LV_1_alert_o.LV_1_default", "*.data");
     dyn_string dataDpes = dpNames(dpes[i], "LV_1_d");
@@ -351,7 +354,6 @@ void lv_setValidRandgeAndDefaultValue() {
     }
   }
 }
-
 
 //=======================================
 
@@ -389,7 +391,9 @@ value=    ".data.Alct_o.v18|"
          +".data.Cfeb_o.v60|"        
          +".data.Cfeb_o.c33|"
          +".data.Cfeb_o.c50|"
-         +".data.Cfeb_o.c60";
+         +".data.Cfeb_o.c60|"
+         +".data.Lvdb_o.v7Analog|"
+         +".data.Lvdb_o.v7Digital";
 
 if(rel_delta_volt == 0 || rel_delta_curr == 0){
   mudcsDebug("Interval should be > 0");
@@ -474,7 +478,16 @@ s1=c60_c-c60_c*rel_delta_curr_c;
 s2=c60_c+c60_c*rel_delta_curr_c;
 dynAppend(limits_s,s1+"|"+s2);
 
-
+// LVDB limits
+  float v7AnalogDelta, v7DigitalDelta;
+  dpGet("Db_LV_1_alert_o.LV_1_delta.Lvdb_o.v7Analog", v7AnalogDelta,
+        "Db_LV_1_alert_o.LV_1_delta.Lvdb_o.v7Digital", v7DigitalDelta);
+  s1 = 7 - v7AnalogDelta;
+  s2 = 7 + v7AnalogDelta;
+  dynAppend(limits_s,s1+"|"+s2);
+  s1 = 7 - v7DigitalDelta;
+  s2 = 7 + v7DigitalDelta;
+  dynAppend(limits_s,s1+"|"+s2);
 
 ////mudcsDebug(DpNameStartForAlertConfig);
 ////mudcsDebug(device_type);

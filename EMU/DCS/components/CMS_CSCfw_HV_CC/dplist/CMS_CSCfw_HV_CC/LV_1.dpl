@@ -49,11 +49,77 @@ Tmb_LV.Tmb_LV	1#1
 	vREF	22#27
 	vGND	22#28
 	vMAX	22#29
+Lvdb_LV.Lvdb_LV	1#1
+	v7Analog	22#2
+	v7Digital	22#3
 LV_1_data.LV_1_data	1#1
 	Cfeb_o	41#2:Cfeb
 	Alct_o	41#3:Alct
 	Tmb_o	41#72:Tmb_LV
+	Lvdb_o	41#92:Lvdb_LV
+	CCB_bits	21#93
+	FPGA_bits	21#94
 LV_1_d.LV_1_d	1#1
 	data	41#2:LV_1_data
 	update_value	21#3
 	status	21#4
+Db_LV_1_alert.Db_LV_1_alert	1#1
+	LV_1_default	41#2:LV_1_data
+	LV_1_delta	41#3:LV_1_data
+	rel_delta_volt_alct	22#4
+	rel_delta_curr_alct	22#5
+	rel_delta_volt_cfeb	22#6
+	rel_delta_curr_cfeb	22#7
+
+# Datapoint/DpId
+DpName	TypeName	ID
+Db_LV_1_alert_o	Db_LV_1_alert	534525
+
+# DpValue
+ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
+Db_LV_1_alert_o.rel_delta_volt_alct	Db_LV_1_alert	0.2	0x101	10.03.2011 14:03:59.614
+Db_LV_1_alert_o.rel_delta_curr_alct	Db_LV_1_alert	1	0x101	10.03.2011 14:03:59.614
+Db_LV_1_alert_o.rel_delta_volt_cfeb	Db_LV_1_alert	0.2	0x101	10.03.2011 14:03:59.617
+Db_LV_1_alert_o.rel_delta_curr_cfeb	Db_LV_1_alert	1	0x101	10.03.2011 14:03:59.617
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.v33.v1	Db_LV_1_alert	3.3	0x101	10.03.2011 14:03:59.614
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.v33.v2	Db_LV_1_alert	3.3	0x101	10.03.2011 14:03:59.615
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.v33.v3	Db_LV_1_alert	3.3	0x101	10.03.2011 14:03:59.615
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.v33.v4	Db_LV_1_alert	3.3	0x101	10.03.2011 14:03:59.615
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.v33.v5	Db_LV_1_alert	3.3	0x101	10.03.2011 14:03:59.615
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.v50.v1	Db_LV_1_alert	5	0x101	10.03.2011 14:03:59.615
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.v50.v2	Db_LV_1_alert	5	0x101	10.03.2011 14:03:59.615
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.v50.v3	Db_LV_1_alert	5	0x101	10.03.2011 14:03:59.615
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.v50.v4	Db_LV_1_alert	5	0x101	10.03.2011 14:03:59.615
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.v50.v5	Db_LV_1_alert	5	0x101	10.03.2011 14:03:59.615
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.v60.v1	Db_LV_1_alert	6	0x101	10.03.2011 14:03:59.615
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.v60.v2	Db_LV_1_alert	6	0x101	10.03.2011 14:03:59.615
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.v60.v3	Db_LV_1_alert	6	0x101	10.03.2011 14:03:59.615
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.v60.v4	Db_LV_1_alert	6	0x101	10.03.2011 14:03:59.615
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.v60.v5	Db_LV_1_alert	6	0x101	10.03.2011 14:03:59.616
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.c33.v1	Db_LV_1_alert	0.5	0x101	10.03.2011 14:03:59.616
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.c33.v2	Db_LV_1_alert	0.5	0x101	10.03.2011 14:03:59.616
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.c33.v3	Db_LV_1_alert	0.5	0x101	10.03.2011 14:03:59.616
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.c33.v4	Db_LV_1_alert	0.5	0x101	10.03.2011 14:03:59.616
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.c33.v5	Db_LV_1_alert	0.5	0x101	10.03.2011 14:03:59.617
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.c50.v1	Db_LV_1_alert	1	0x101	10.03.2011 14:03:59.616
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.c50.v2	Db_LV_1_alert	1	0x101	10.03.2011 14:03:59.616
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.c50.v3	Db_LV_1_alert	1	0x101	10.03.2011 14:03:59.616
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.c50.v4	Db_LV_1_alert	1	0x101	10.03.2011 14:03:59.616
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.c50.v5	Db_LV_1_alert	1	0x101	10.03.2011 14:03:59.617
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.c60.v1	Db_LV_1_alert	3	0x101	10.03.2011 14:03:59.616
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.c60.v2	Db_LV_1_alert	3	0x101	10.03.2011 14:03:59.616
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.c60.v3	Db_LV_1_alert	3	0x101	10.03.2011 14:03:59.616
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.c60.v4	Db_LV_1_alert	3	0x101	10.03.2011 14:03:59.617
+Db_LV_1_alert_o.LV_1_default.Cfeb_o.c60.v5	Db_LV_1_alert	3	0x101	10.03.2011 14:03:59.617
+Db_LV_1_alert_o.LV_1_default.Alct_o.v18	Db_LV_1_alert	1.8	0x101	10.03.2011 14:03:59.614
+Db_LV_1_alert_o.LV_1_default.Alct_o.v33	Db_LV_1_alert	3.3	0x101	10.03.2011 14:03:59.614
+Db_LV_1_alert_o.LV_1_default.Alct_o.v55	Db_LV_1_alert	5.5	0x101	10.03.2011 14:03:59.614
+Db_LV_1_alert_o.LV_1_default.Alct_o.v56	Db_LV_1_alert	5.5	0x101	10.03.2011 14:03:59.614
+Db_LV_1_alert_o.LV_1_default.Alct_o.c18	Db_LV_1_alert	2.1	0x101	10.03.2011 14:03:59.614
+Db_LV_1_alert_o.LV_1_default.Alct_o.c33	Db_LV_1_alert	2.5	0x101	10.03.2011 14:03:59.614
+Db_LV_1_alert_o.LV_1_default.Alct_o.c55	Db_LV_1_alert	2.1	0x101	10.03.2011 14:03:59.614
+Db_LV_1_alert_o.LV_1_default.Alct_o.c56	Db_LV_1_alert	2.1	0x101	10.03.2011 14:03:59.614
+Db_LV_1_alert_o.LV_1_default.Lvdb_o.v7Analog	Db_LV_1_alert	7	0x101	10.03.2011 11:55:13.134
+Db_LV_1_alert_o.LV_1_default.Lvdb_o.v7Digital	Db_LV_1_alert	7	0x101	10.03.2011 11:55:17.319
+Db_LV_1_alert_o.LV_1_delta.Lvdb_o.v7Analog	Db_LV_1_alert	3.5	0x101	10.03.2011 12:11:28.948
+Db_LV_1_alert_o.LV_1_delta.Lvdb_o.v7Digital	Db_LV_1_alert	3.5	0x101	10.03.2011 12:11:22.973
