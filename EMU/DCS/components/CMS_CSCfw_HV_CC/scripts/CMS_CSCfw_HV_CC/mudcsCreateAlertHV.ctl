@@ -1,6 +1,13 @@
 #uses "aes.ctl"
-#uses "CMS_CSCfw_LV_CRB/mudcs9XAlertReconfigAllSlowControls.ctl"
 #uses "CMS_CSC_common/emu_alert.ctl"
+#uses "CMS_CSC_common/emu_common.ctl"
+#uses "CMS_CSCfw_HV_CC/emuDcs.ctl"
+#uses "CMS_CSCfw_HV_CC/emuDcs2.ctl"
+#uses "CMS_CSCfw_HV_CC/emuDcs3.ctl"
+#uses "CMS_CSCfw_HV_CC/emuDcs4.ctl"
+#uses "CMS_CSCfw_HV_CC/emuDcsDim.ctl"
+#uses "CMS_CSCfw_HV_CC/emuAlert.ctl"
+#uses "CMS_CSCfw_HV_CC/emufw.ctl"
 
 
 

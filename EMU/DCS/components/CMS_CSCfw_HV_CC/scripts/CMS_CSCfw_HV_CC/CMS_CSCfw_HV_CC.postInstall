@@ -13,7 +13,6 @@
 #uses "CMS_CSCfw_HV_CC/mudcs4SetFsmPanels.ctl"
 #uses "CMS_CSCfw_HV_CC/mudcs5Archive.ctl"
 
-#uses "CMS_CSCfw_LV_CRB/mudcs9XAlertReconfigAllSlowControls.ctl"
 #uses "aes.ctl"
 
 #uses "CMS_CSC_common/emu_common.ctl"
