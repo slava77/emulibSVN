@@ -3,6 +3,14 @@
 #uses "CMS_CSC_ExSys_Interface/exsysUtil.ctl"
 #uses "CMS_CSC_ExSys_Interface/exsysInterface.ctl"
 
+/**@file
+
+Alert Fact handling
+
+@author Evaldas Juska (PH/UCM)
+@date   February 2011
+*/
+
 /**
   * Connects to all alerts and sends facts when they come and go
   */
