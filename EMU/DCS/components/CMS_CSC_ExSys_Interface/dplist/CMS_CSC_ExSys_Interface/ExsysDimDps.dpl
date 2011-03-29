@@ -1,14 +1,14 @@
 # ascii dump of database
 
+# DpType
+TypeName
+ExSys_string.ExSys_string	1#1
+	value	25#2
+
 # Datapoint/DpId
 DpName	TypeName	ID
-DimConfig/ExSys	_FwDimConfig	545994
+ExSys_command	ExSys_string	546121
 
 # DpValue
 ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
-DimConfig/ExSys.clientServices	_FwDimConfig	"ExSys_command,DCS_ACTION_REQUEST,,0,1"	0x101	18.03.2011 13:47:21.315
-DimConfig/ExSys.ApiInfo.manNum	_FwDimConfig	1	0x101	25.03.2011 18:03:18.632
-DimConfig/ExSys.ApiInfo.manState	_FwDimConfig	1	0x101	25.03.2011 18:03:18.632
-DimConfig/ExSys.ApiInfo.lastUpdate	_FwDimConfig	27.03.2011 10:55:56.043	0x300101	27.03.2011 10:55:56.043
-DimConfig/ExSys.ApiParams.dimDnsNode	_FwDimConfig	"emu-dcs-dev2"	0x101	18.03.2011 13:35:24.967
-DimConfig/ExSys.ApiParams.exit	_FwDimConfig	0	0x100101	18.03.2011 13:37:46.069
+ExSys_command.value	ExSys_string	""	0x100101	29.03.2011 09:39:28.239
