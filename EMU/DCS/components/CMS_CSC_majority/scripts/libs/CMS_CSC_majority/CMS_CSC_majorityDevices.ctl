@@ -193,12 +193,12 @@ dyn_int emumaj_lvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
   // everything that's not masked off is on - otherwise it would be in error or off state (in case everything is off).
   on = weight;
 
-  bool v7AnalogAlert, v7DigitalAlert;
+  int v7AnalogAlert, v7DigitalAlert;
   dpGet(dataDp + ".data.Lvdb_o.v7Analog:_alert_hdl.._act_state", v7AnalogAlert,
         dataDp + ".data.Lvdb_o.v7Digital:_alert_hdl.._act_state", v7DigitalAlert);
   // if LVDB voltages are bad, just mark everything bad
-  if (v7AnalogAlert) { error = weight; return makeDynInt(on, error, noCommunication); }
-  if (v7DigitalAlert) { error = weight; return makeDynInt(on, error, noCommunication); }
+  if (v7AnalogAlert > 0) { error = weight; return makeDynInt(on, error, noCommunication); }
+  if (v7DigitalAlert > 0) { error = weight; return makeDynInt(on, error, noCommunication); }
   
   // go through all the channels (except the masked ones) and check how many of them are in error
   string dataDp = node;
