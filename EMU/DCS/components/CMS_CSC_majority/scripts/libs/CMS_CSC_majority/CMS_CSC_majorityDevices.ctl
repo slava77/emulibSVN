@@ -192,7 +192,11 @@ dyn_int emumaj_lvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
 
   // everything that's not masked off is on - otherwise it would be in error or off state (in case everything is off).
   on = weight;
+  // go through all the channels (except the masked ones) and check how many of them are in error
+  string dataDp = node;
+  strreplace(dataDp, "LowVoltage/", "");
 
+  // LVDB
   int v7AnalogAlert, v7DigitalAlert;
   dpGet(dataDp + ".data.Lvdb_o.v7Analog:_alert_hdl.._act_state", v7AnalogAlert,
         dataDp + ".data.Lvdb_o.v7Digital:_alert_hdl.._act_state", v7DigitalAlert);
@@ -200,9 +204,6 @@ dyn_int emumaj_lvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
   if (v7AnalogAlert > 0) { error = weight; return makeDynInt(on, error, noCommunication); }
   if (v7DigitalAlert > 0) { error = weight; return makeDynInt(on, error, noCommunication); }
   
-  // go through all the channels (except the masked ones) and check how many of them are in error
-  string dataDp = node;
-  strreplace(dataDp, "LowVoltage/", "");
   for (int i=1; i <= 6; i++) {
     if (dynContains(excludedChannels, i) && !calcTotal) { continue; }
     // CFEB5 doesn't exist in ME1/3 chambers so don't care about this one
