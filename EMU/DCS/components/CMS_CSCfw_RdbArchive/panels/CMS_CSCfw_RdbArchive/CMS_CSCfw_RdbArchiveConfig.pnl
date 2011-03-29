@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 19 Archiving_dp_config
-PANEL,-1 -1 632 371 N "_3DFace" 0
+PANEL,-1 -1 632 427 N "_3DFace" 0
 E E E E E 1 0 0 0  110 60
 ""0  1
 E "#uses \"CMS_CSCfw_RdbArchive/CMS_CSCfw_RdbArchiveConfig.ctl\"" 0
@@ -307,6 +307,8 @@ LANG:1 12 set  dp arch
     sArchDptype = \"CSC_MARATON_T_DATA\"; 
   else if(sDptypeName == \" TMB\")
     sArchDptype = \"CSC_TMB_DATA\"; 
+  else if(sDptypeName == \" LVDB\")
+    sArchDptype = \"CSC_LVDB_DATA\"; 
                  
   else if (sDptypeName == \" Dp Type\")
   { 
@@ -460,7 +462,10 @@ LANG:1 14 remove dp arch
   else if(sDptypeName == \" MAR_I\")
     sArchDptype = \"CSC_MARATON_I_DATA\"; 
   else if(sDptypeName == \" TMB\")
-    sArchDptype = \"CSC_TMB_DATA\";  
+    sArchDptype = \"CSC_TMB_DATA\"; 
+  else if(sDptypeName == \" LVDB\")
+    sArchDptype = \"CSC_LVDB_DATA\"; 
+  
   else if (sDptypeName == \" Dp Type\")
   { 
      ChildPanelOnCentral(\"vision/MessageWarning\",\"warning\",
@@ -496,7 +501,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 1 0 1 E 0.931034482758621 0 4.477611940298491 273.448275862069 -1844.029850746261 0 E 50 423 341 491
+E E 0 0 1 0 1 E 0.931034482758621 0 5.223880597014906 273.448275862069 -2159.701492537305 0 E 50 423 341 491
 1
 LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
 0 1
@@ -516,7 +521,7 @@ LANG:1 0
 1
 LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
 0  458 68 552 102
-18
+19
 1
 LANG:1 8  Dp Type
 
@@ -555,6 +560,10 @@ LANG:1 5  LV_I
 0
 1
 LANG:1 4  TMB
+
+0
+1
+LANG:1 5  LVDB
 
 0
 1
@@ -1153,6 +1162,8 @@ main()
    dyn_string dsDpName_LVV = emudcsArchive_getDpNames(\"*\",\"CSC_LV_V_DATA\");
    dyn_string dsDpName_LVI = emudcsArchive_getDpNames(\"*\",\"CSC_LV_I_DATA\");
    dyn_string dsDpName_TMB = emudcsArchive_getDpNames(\"*\",\"CSC_TMB_DATA\");
+   dyn_string dsDpName_LVDB = emudcsArchive_getDpNames(\"*\",\"CSC_LVDB_DATA\");
+   dyn_string dsDpName_BITS = emudcsArchive_getDpNames(\"*\",\"CSC_BITS_DATA\");
    int iLen_LVV = dynlen(dsDpName_LVV);
    //DebugN(dsDpName_LV);
      DebugTN(\"delete LV archiving dps\");
@@ -1168,8 +1179,19 @@ main()
      {  
        DebugN(dsDpName_TMB[i]);
        dpDelete(dsDpName_TMB[i]);
-     } 
-    
+     }
+    int iLen_LVDB = dynlen(dsDpName_LVDB);
+    for (i=1;i<=iLen_LVDB;i++)
+     {  
+       DebugN(dsDpName_LVDB[i]);
+       dpDelete(dsDpName_LVDB[i]);
+     }
+    int iLen_BITS = dynlen(dsDpName_BITS);
+    for (i=1;i<=iLen_BITS;i++)
+     {  
+       DebugN(dsDpName_BITS[i]);
+       dpDelete(dsDpName_BITS[i]);
+     }    
   }  
   else if(sDptypeName == \" TEMP\")
   {  
@@ -1423,7 +1445,7 @@ LANG:1 13 set LV status
      for (i=1;i<=iLen_LV;i++)
      {  
       DebugN(dsDpName_LV[i]);
-      emudcsArchive_setDpSmoothingInt(dsDpName_LV[i]+\".status\",iTolStatus,iTimeStatus); //set archiving for status at LV_1_d       
+      emudcsArchive_setDpSmoothingBool(dsDpName_LV[i]+\".status\"); //set archiving for status at LV_1_d       
      }
    }
    delay(1);
@@ -1463,11 +1485,95 @@ LANG:1 16 remove LV status
    }
    else
    {
-     DebugTN(\"set archiving config for LV status\");
+     DebugTN(\"remove archiving config for LV status\");
      for (i=1;i<=iLen_LV;i++)
      {  
       DebugN(dsDpName_LV[i]);
       emudcsArchive_removeDpSmoothing(dsDpName_LV[i]+\".status\");      
+     }
+   }
+   delay(1);
+   DebugTN(\"done\");  
+}   
+
+
+" 0
+ E E E
+13 66
+"PUSH_BUTTON3"
+""
+1 339.9999999999999 350 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+97 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  338 348 452 382
+
+T 
+1
+LANG:1 11 set LV bits
+"main()
+{
+   dyn_string dsDpNameBits = dpNames( \"*\",\"CSC_BITS_DATA\");  
+   int iLenBits = dynlen(dsDpNameBits); 
+   if (iLenBits == 0)
+   {
+     DebugN(\"no Bits dp at CSC_BITS_DATA, skip\");
+   }
+   else
+   {
+     DebugTN(\"set archiving config for LV bits\");
+     for (int i=1;i<=iLenBits;i++)
+     {  
+      DebugN(dsDpNameBits[i]);
+      emudcsArchive_setDpSmoothingBool(dsDpNameBits[i]+\".value\"); //set archiving for LV bits      
+     }
+   }
+   delay(1);
+   DebugTN(\"done\");  
+} 
+" 0
+ E E E
+13 67
+"PUSH_BUTTON4"
+""
+1 460 350 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+98 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  458 348 572 382
+
+T 
+1
+LANG:1 14 remove LV bits
+"main()
+{
+   dyn_string dsDpNameBits = dpNames( \"*\",\"CSC_BITS_DATA\");  
+   int iLenBits = dynlen(dsDpNameBits); 
+   if (iLenBits == 0)
+   {
+     DebugN(\"no Bits dp at CSC_BITS_DATA, skip\");
+   }
+   else
+   {
+     DebugTN(\"remove archiving config for LV bits\");
+     for (int i=1;i<=iLenBits;i++)
+     {  
+      DebugN(dsDpNameBits[i]);
+      emudcsArchive_removeDpSmoothing(dsDpNameBits[i]+\".value\");      
      }
    }
    delay(1);

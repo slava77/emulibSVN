@@ -18,6 +18,10 @@ This library contains function associated with the CSC datapoints archive config
                  -- add archiving for HV primary power supply  
   07/2010  Xiaofeng Yang(PH-UCM)
                  -- add archiving for maraton status  
+  09/2010  Xiaofeng Yang(PH-UCM)
+                 -- add archiving for TMB LV status  
+  03/2011  Xiaofeng Yang(PH-UCM)
+                 -- add archiving for LVDB status/CCB_bits/FPGA_bits                
 @par Constraints
 	for CSC archiving set only,executing after CSC component installed
 @par Usage
@@ -37,14 +41,14 @@ This library contains function associated with the CSC datapoints archive config
    const float     fTolHVPV    = 20;      //deadband for HV_PV
    const float     fTolHVPI    = 30;      //deadband for HV_PI
    const float     fTolLV      = 0.01;    //deadband for LV_V/I
+   const float     fTolLvdb    = 0.1;     //deadband for LV_Lvdb
    const float     fTolTEMP    = 0.1;     //deadband for TEMP
    const float     fTolFEDV    = 0.01;    //deadband for FED_V
    const float     fTolFEDT    = 0.1;     //deadband for FED_T
    const float     fTolMA      = 1;       //deadband for MARATON channel
    const float     fTolElmbAi  = 1;       //deadband for ElmbAi 
    const float     fTolCooling = 0.5;     //deadband for Cooling
-   const int       iTolStatus  = 1;       //deadband for status in LV_1_d
-   
+ 
    const int       iTimeHV     = 7200;    //time interval for HV
    const int       iTimeHVM    = 7200;    //time interval for HVM
    const int       iTimeHVP    = 7200;    //time interval for HVP
@@ -54,7 +58,6 @@ This library contains function associated with the CSC datapoints archive config
    const int       iTimeMA     = 7200;    //time interval for MARATON channel
    const int       iTimeElmbAi = 7200;    //time interval for ElmbAi
    const int       iTimeCooling= 7200;    //time interval for Cooling
-   const int       iTimeStatus = 7200;    //time interval for status in LV_1_d
    
    const string    sDpTypeHVV  = "CSC_HV_V_DATA";  //channel HV voltage
    const string    sDpTypeHVI  = "CSC_HV_I_DATA";  //channel HV current
@@ -68,7 +71,9 @@ This library contains function associated with the CSC datapoints archive config
    const string    sDpTypeMAV = "CSC_MARATON_V_DATA";
    const string    sDpTypeMAI = "CSC_MARATON_I_DATA";
    const string    sDpTypeMAT = "CSC_MARATON_T_DATA";
-   const string    sDpTypeTMB = "CSC_TMB_DATA";       //new data from TMP
+   const string    sDpTypeTMB = "CSC_TMB_DATA";       //new data from TMB
+   const string    sDpTypeLVDB = "CSC_LVDB_DATA";     // new data from LVDB
+   const string    sDpTypeBits = "CSC_BITS_DATA";     // new data for CCB_bits and FPGA_bits
    const bool      bDebug     = true;                 // true  --- enable debug info
                                                       // false --- disable debug info
 //-------config all archiving dps ---------------------------------------------------  
@@ -100,6 +105,12 @@ void emudcsArchive_cleanAllDps()
       }
       dpTypeDelete(dsArchiveDpTypes[i]);
     }
+  dyn_string dsDpNameBits = dpNames("*","CSC_BITS_DATA");
+  for (int k=1; k <= dynlen(dsDpNameBits); k++)
+    {
+      dpDelete(dsDpNameBits[k]);
+    }
+  dpTypeDelete("CSC_BITS_DATA"); 
   DebugTN("Archiving dps and dptype deleted");
 
 }  
@@ -108,11 +119,12 @@ void emudcsArchive_createDpTypes()
 {
   DebugTN("create archiving dptype"); 
   dyn_string dsArchiveDpTypes = emudcsArchive_defineDpTypes(dsArchiveDpTypes);
-  emudcsArchive_showDebugInfo(bDebug,dsArchiveDpTypes);  
-  for (int i=1;i<= dynlen(dsArchiveDpTypes);i++)
-  {   
+  emudcsArchive_showDebugInfo(bDebug,dsArchiveDpTypes);
   dyn_dyn_string dsDpes;
   dyn_dyn_int diDpes;
+  int n;  
+  for (int i=1;i<= dynlen(dsArchiveDpTypes);i++)
+   {   
   //define a dp type
        dsDpes[1] = makeDynString (dsArchiveDpTypes[i],"");
        dsDpes[2] = makeDynString ("","value");
@@ -120,9 +132,17 @@ void emudcsArchive_createDpTypes()
        diDpes[1] = makeDynInt (DPEL_STRUCT);
        diDpes[2] = makeDynInt (0,DPEL_FLOAT);
   // Create a dp type
-       int n = dpTypeCreate(dsDpes,diDpes);
+       n = dpTypeCreate(dsDpes,diDpes);
        DebugN (dsArchiveDpTypes[i]+" type Created, result: ",n); 
-  }        
+     }    
+  // Create an int dp type for CSC_BITS_DATA      
+     dsDpes[1] = makeDynString (sDpTypeBits,"");
+     dsDpes[2] = makeDynString ("","value");
+
+     diDpes[1] = makeDynInt (DPEL_STRUCT);
+     diDpes[2] = makeDynInt (0,DPEL_INT);
+     n = dpTypeCreate(dsDpes,diDpes);
+     DebugN (sDpTypeBits+" type Created, result: ",n);           
 }  
 //----------  set configuration for all archiving dp-------------------------------------------------
 void emudcsArchive_setAllDpConfigs()
@@ -413,7 +433,13 @@ void emudcsArchive_setLvDpConfig(string sDpName)
 //new data from Tmb            
             emudcsArchive_createLvTmbDps(sCscChamber);       //create LV dp for Tmb
             emudcsArchive_setLvTmbDpFunction(sCscChamber);   //create LV dp fct for Tmb
-            emudcsArchive_setDpSmoothingInt(sCscChamber+"_LV.status",iTolStatus,iTimeStatus); //set archiving for status at LV_1_d
+            emudcsArchive_setDpSmoothingBool(sCscChamber+"_LV.status"); //set archiving for status at LV_1_d
+//new data from LVDB
+            emudcsArchive_createLvLvdbDps(sCscChamber);       //create LV dp for Lvdb
+            emudcsArchive_setLvLvdbDpFunction(sCscChamber);   //create LV dp fct for Lvdb
+//new data from CCB/FPFA bits  
+            emudcsArchive_createLvBitsDps(sCscChamber);       //create LV dp for Bits 
+            emudcsArchive_setLvBitsDpFunction(sCscChamber);   //create LV dp fct for Bits         
 }
 //---Temp archiving dp configuration-----
 void emudcsArchive_setTempDpConfig(string sDpName)
@@ -457,7 +483,7 @@ void emudcsArchive_setHvmDpConfig(string sDpName)
         for (int i=1;i<=8;i++)  //create dp for HV master channel
          {
            emudcsArchive_createHvmDps(sHVMasterNew,i); 
-           emudcsarchive_setHvmDpFunction(sHVMaster,sHVMasterNew,i);  
+           emudcsArchive_setHvmDpFunction(sHVMaster,sHVMasterNew,i);  
          }       
 } 
 //---------HV primary archiving dp configuration ------------------------------ 
@@ -473,7 +499,7 @@ void emudcsArchive_setHvpDpConfig(string sDpName)
     //DebugTN(sHVPrimaryNew);         
          
            emudcsArchive_createHvpDps(sHVPrimaryNew); 
-           emudcsarchive_setHvpDpFunction(sHVPrimary,sHVPrimaryNew);  
+           emudcsArchive_setHvpDpFunction(sHVPrimary,sHVPrimaryNew);  
                 
 } 
 //----FED archiving dp configuration-------
@@ -574,8 +600,7 @@ void emudcsArchive_createLvCfebDps(string sCscChamber,int i)
         emudcsArchive_createDp(sCscChamber+dsI[k]+i,"LV_I");
         emudcsArchive_setDpSmoothing(sCscChamber+dsI[k]+i,fTolLV,iTimeLV);
       }       
-}
-
+}    
 //--- LV alct archiving dp create------------------
 void emudcsArchive_createLvAlctDps(string sCscChamber) 
 {
@@ -594,6 +619,26 @@ void emudcsArchive_createLvAlctDps(string sCscChamber)
       }  
          
 } 
+//--- LV lvdb archiving dp create--------------------------
+void emudcsArchive_createLvLvdbDps(string sCscChamber)
+{
+     dyn_string dsV = makeDynString ("_LV_Lvdb_v7Analog","_LV_Lvdb_v7Digital");
+     for (int i=1;i<=dynlen(dsV);i++)
+      {
+        emudcsArchive_createDp(sCscChamber+dsV[i],"LVDB");
+        emudcsArchive_setDpSmoothing(sCscChamber+dsV[i],fTolLvdb,iTimeLV);
+      }   
+} 
+//--- LV Bits archiving dp create--------------------------
+void emudcsArchive_createLvBitsDps(string sCscChamber)
+{
+     dyn_string dsV = makeDynString ("_LV_CCB_bits","_LV_FPGA_bits");
+     for (int i=1;i<=dynlen(dsV);i++)
+      {
+        emudcsArchive_createDp(sCscChamber+dsV[i],"BITS");
+        emudcsArchive_setDpSmoothingBool(sCscChamber+dsV[i]+".value");
+      }   
+}  
 //--- LV Tmb archiving dp create------------------
 void emudcsArchive_createLvTmbDps(string sCscChamber) 
 {
@@ -709,7 +754,7 @@ void emudcsArchive_setHvDpFunction(string sCscChamber,string sType,int i)
     emudcsArchive_setDpFunction(sDpNameVmon,p1);   
 }
 //-----------------HV Master dp_fct setup ------------------------------
-void emudcsarchive_setHvmDpFunction(string sHVMaster,string sHVMasterNew,int i)
+void emudcsArchive_setHvmDpFunction(string sHVMaster,string sHVMasterNew,int i)
 {  
    string sDpNameNew,sDpNameLink;
    sDpNameNew = sHVMasterNew+"_V"+i+"_IMON";
@@ -721,7 +766,7 @@ void emudcsarchive_setHvmDpFunction(string sHVMaster,string sHVMasterNew,int i)
     emudcsArchive_setDpFunction(sDpNameNew,sDpNameLink);   
  }
 //-----------------HV primary dp_fct setup ------------------------------
-void emudcsarchive_setHvpDpFunction(string sHVPrimary,string sHVPrimaryNew)
+void emudcsArchive_setHvpDpFunction(string sHVPrimary,string sHVPrimaryNew)
 {  
    string sDpNameNew,sDpNameLink;
    sDpNameNew = sHVPrimaryNew+"_IMON";
@@ -754,8 +799,33 @@ void emudcsArchive_setLvCfebDpFunction(string sCscChamber,int i)
    {
      emudcsArchive_setDpFunction(dsNew[k],dsOld[k]);
    }  
-} 
-
+}
+//----- LV lvdb dp_fct setup--------------
+void emudcsArchive_setLvLvdbDpFunction(string sCscChamber)
+{
+   string sDpName = sCscChamber+"_LV";
+   dyn_string dsNew = makeDynString(sDpName+"_Lvdb_v7Analog",
+                                    sDpName+"_Lvdb_v7Digital");
+   dyn_string dsOld = makeDynString(sDpName+".data.Lvdb_o.v7Analog:_original.._value",
+                                    sDpName+".data.Lvdb_o.v7Digital:_original.._value");
+   for(int k=1;k<=dynlen(dsNew);k++)
+   {
+     emudcsArchive_setDpFunction(dsNew[k],dsOld[k]);
+   }  
+}
+//----- LV bits dp_fct setup--------------
+void emudcsArchive_setLvBitsDpFunction(string sCscChamber)
+{
+   string sDpName = sCscChamber+"_LV";
+   dyn_string dsNew = makeDynString(sDpName+"_CCB_bits",
+                                    sDpName+"_FPGA_bits");
+   dyn_string dsOld = makeDynString(sDpName+".data.CCB_bits:_original.._value",
+                                    sDpName+".data.FPGA_bits:_original.._value");
+   for(int k=1;k<=dynlen(dsNew);k++)
+   {
+     emudcsArchive_setDpFunction(dsNew[k],dsOld[k]);
+   }  
+}  
 //------LV Tmb dp_fct setup---------------
 void emudcsArchive_setLvTmbDpFunction(string sCscChamber)
 { 
@@ -918,9 +988,11 @@ void emudcsArchive_createDp(string sDpName,string sType)
        
 dyn_string emudcsArchive_defineDpTypes(dyn_string &dsArchiveDpTypes)
 {
+   //not include sDpTypeBITS
    dyn_string dsArchiveDpType = makeDynString(sDpTypeHVV, sDpTypeHVI, sDpTypeLVV, sDpTypeLVI,
                                               sDpTypeHVM,sDpTypeTEMP,sDpTypeFEDV,sDpTypeFEDT,
-                                              sDpTypeMAV,sDpTypeMAI,sDpTypeMAT,sDpTypeHVP,sDpTypeTMB);
+                                              sDpTypeMAV,sDpTypeMAI,sDpTypeMAT,sDpTypeHVP,sDpTypeTMB,
+                                              sDpTypeLVDB);
    return dsArchiveDpType;
    
 }       
@@ -1214,6 +1286,10 @@ void emudcsArchive_recreateLvDpFct(string sDpName)
             emudcsArchive_setLvAlctDpFunction(sCscChamber);   //recreate LV dp fct for alct
             
             emudcsArchive_setLvTmbDpFunction(sCscChamber);     //recreate LV dp fct for Tmb
+            
+            emudcsArchive_setLvLvdbDpFunction(sCscChamber);     //recreate LV dp fct for Lvdb
+            
+            emudcsArchive_setLvBitsDpFunction(sCscChamber);     //recreate LV dp fct for Bits
 }
 //----------------------------------------------------------------------------------------------
 void emudcsArchive_recreateTempDpFct(string sDpName)
@@ -1254,7 +1330,7 @@ void emudcsArchive_recreateHvmDpFct(string sDpName)
     //DebugTN(sHVMasterNew);         
         for (int i=1;i<=8;i++) 
          { 
-           emudcsarchive_setHvmDpFunction(sHVMaster,sHVMasterNew,i); //recreate dp_fct for HV master channel
+           emudcsArchive_setHvmDpFunction(sHVMaster,sHVMasterNew,i); //recreate dp_fct for HV master channel
          }       
 }
 
@@ -1270,7 +1346,7 @@ void emudcsArchive_recreateHvpDpFct(string sDpName)
     //DebugTN("HV primary: "+sHVPrimary); 
     //DebugTN(sHVPrimaryNew);  
     
-        emudcsarchive_setHvpDpFunction(sHVPrimary,sHVPrimaryNew); //recreate dp_fct for HV primary        
+        emudcsArchive_setHvpDpFunction(sHVPrimary,sHVPrimaryNew); //recreate dp_fct for HV primary        
 }
 //---------------------------------------------------------------------------------------------
 void emudcsArchive_recreateFedDpFct(string sDpName)
