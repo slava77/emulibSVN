@@ -49,3 +49,7 @@ void exsys_executeCommandCB(string dp, string command) {
   emu_info("ExSys commandExecutor: executing command function '" + functionName + "' with these arguments: " + args);
   startThread(functionName, args);
 }
+
+public void exsysCmd_test(dyn_string args) {
+  emu_info("This is a test command from Expert System. Got these arguments: " + args);
+}
