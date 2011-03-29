@@ -27,7 +27,7 @@ CscAlertClass_FwCaenChannel_dot_actual_dot_OvC	CscConf_alertClassDescriptors	544
 
 # DpValue
 ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
-CscAlertClass_HV_1_d.class	CscConf_alertClassDescriptors	_fwErrorNack_70.	0x101	07.10.2010 14:32:24.054
+CscAlertClass_HV_1_d.class	CscConf_alertClassDescriptors	_fwWarningNack_41.	0x101	29.03.2011 19:32:21.289
 CscAlertClass_HV_1_d.alertTexts	CscConf_alertClassDescriptors	"HV OK", "HV ERROR"	0x101	07.10.2010 14:32:24.055
 CscAlertClass_HV_PR_d.class	CscConf_alertClassDescriptors	_fwFatalAck_90.	0x101	07.10.2010 14:32:24.056
 CscAlertClass_HV_PR_d.alertTexts	CscConf_alertClassDescriptors	"HV PRIMARY PSU OK", "HV PRIMARY PSU ERROR"	0x101	07.10.2010 14:32:24.057
