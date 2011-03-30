@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 420 255 N "_3DFace" 1
+PANEL,-1 -1 420 276 N "_3DFace" 1
 "$deviceParams"
 "main()
 {
@@ -233,6 +233,17 @@ void updateStatusCB(dyn_string dpList, dyn_int statuses) {
       }
     }
   }
+  
+  bool trip = dynContains(statuses, 7);
+  if (trip) {
+    emuui_showTooltipWarning(getShape(\"refPoint\"),
+                             getShape(\"warnAutomaticTripRecovery\"), 
+                             getShape(\"chamber_high_voltage_tooltipBack\"));
+  } else {
+    emuui_hideTooltipWarning(getShape(\"warnAutomaticTripRecovery\"), 
+                             getShape(\"chamber_high_voltage_tooltipBack\"),
+                             makeDynString(\"warnNoHvCommunication\", \"warnLV\"));
+  }  
 }
 
 void updateDisabledChannelsCB(string dpName, dyn_string disabledChannelsParam) {
@@ -279,7 +290,7 @@ void updateDisconnectedWarningCB(dyn_string dps, dyn_string disconnectedDevices)
   } else {
     emuui_hideTooltipWarning(getShape(\"warnNoHvCommunication\"), 
                              getShape(\"chamber_high_voltage_tooltipBack\"),
-                             makeDynString(\"warnLV\"));
+                             makeDynString(\"warnLV\", \"warnAutomaticTripRecovery\"));
   }
   
   // no communication - display ??? for all values
@@ -298,7 +309,7 @@ void updateModuleTypeCB(string dpName, int type) {
   } else {
     emuui_hideTooltipWarning(getShape(\"warnLV\"), 
                              getShape(\"chamber_high_voltage_tooltipBack\"),
-                             \"warnNoHvCommunication\");
+                             makeDynString(\"warnNoHvCommunication\", \"warnAutomaticTripRecovery\"));
   }
 }
 
@@ -722,7 +733,7 @@ LANG:1 33 host=###; slot=#; addr=#; part=#,
 2 30
 "lblMasterInfo"
 ""
-1 386.6019269774778 340 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 395.1518581568536 360 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 43 0 0 0 0 0
 E E E
@@ -738,6 +749,25 @@ E E 0 1 1 2 1 E 0.964285714285714 0 1 22.35714285714295 20 1 E 290 160 359 175
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 13 ID ##, ch. ##
+2 32
+"warnAutomaticTripRecovery"
+""
+1 10 250 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+45 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 250 370 264
+1 2 2 "0s" 0 0 0 65 0 0  10 250 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 53 Recovery from this HV trip is automatic (waits 10min)
 0
 LAYER, 1 
 1
