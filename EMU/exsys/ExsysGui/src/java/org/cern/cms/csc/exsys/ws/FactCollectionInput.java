@@ -15,7 +15,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.fact.FactCollection;
 import org.cern.cms.csc.dw.ws.FactCollectionInputLocal;
 
@@ -23,7 +23,7 @@ public class FactCollectionInput extends HttpServlet {
 
     private static final String SERVICE_NAME = "EXSYS Fact Collection Input Service";
     private static final String SCHEMA_ENTRY = "/org/cern/cms/csc/dw/schema/cdw.xsd";
-    private static final Logger logger = SimpleLogger.getLogger(FactCollectionInput.class);
+    private static final Logger logger = ExsysLogger.getLogger(FactCollectionInput.class);
 
     @EJB
     private FactCollectionInputLocal wsInput;

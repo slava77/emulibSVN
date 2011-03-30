@@ -247,8 +247,8 @@ public class Rule
      */
     @ManyToOne(targetEntity = org.cern.cms.csc.exsys.re.model.ConclusionType.class, cascade = {
         CascadeType.REFRESH,
-        CascadeType.PERSIST,
-        CascadeType.MERGE
+        CascadeType.MERGE,
+        CascadeType.PERSIST
     })
     @JoinColumn(name = "RER_CONCLUSION_TYPE_ID", nullable = false)
     public org.cern.cms.csc.exsys.re.model.ConclusionType getConclusionType() {

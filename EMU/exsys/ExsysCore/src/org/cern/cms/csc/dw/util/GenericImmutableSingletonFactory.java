@@ -15,11 +15,11 @@ import javax.naming.NamingException;
 import javax.naming.RefAddr;
 import javax.naming.spi.ObjectFactory;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 
 public class GenericImmutableSingletonFactory implements ObjectFactory {
 
-    private static final Logger logger = SimpleLogger.getLogger(GenericImmutableSingletonFactory.class);
+    private static final Logger logger = ExsysLogger.getLogger(GenericImmutableSingletonFactory.class);
     private static Map<Name, Object> singletons = new HashMap<Name, Object>();
 
     public Object getObjectInstance(Object obj, Name name, Context nameCtx,

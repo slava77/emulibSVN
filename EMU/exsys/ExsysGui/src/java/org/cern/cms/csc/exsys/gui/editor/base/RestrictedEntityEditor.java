@@ -11,8 +11,6 @@ import javax.faces.convert.Converter;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import jsf.bean.gui.metadata.PropertyMd;
 import jsf.bean.gui.metadata.RestrictedPropertyMd;
 import org.cern.cms.csc.dw.dao.EditorDaoLocal;
@@ -24,8 +22,6 @@ import org.cern.cms.csc.exsys.gui.editor.converter.LovConverter;
  * @author Evka
  */
 public abstract class RestrictedEntityEditor extends EntityEditor {
-
-    private static final Logger logger = SimpleLogger.getLogger(RestrictedEntityEditor.class);
 
     /** Cache of list of available values (used only for enum, many-to-one and many-to-many properties). */
     protected List<Object> lovCache = null;

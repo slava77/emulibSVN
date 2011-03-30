@@ -6,15 +6,14 @@ import java.util.TreeSet;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.exception.ComponentClassNotFoundException;
 import org.cern.cms.csc.dw.exception.ComponentLinkClassNotFoundException;
 import org.cern.cms.csc.dw.exception.ComponentNotFoundException;
 import org.cern.cms.csc.dw.exception.OntologyException.OntologySource;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.ontology.Component;
 import org.cern.cms.csc.dw.model.ontology.ComponentClassType;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponent;
-import org.cern.cms.csc.dw.model.ontology.graph.GComponent.DataPropertyType;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentClass;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentLinkClass;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentSynonym;
@@ -27,7 +26,7 @@ import org.cern.cms.csc.dw.model.ontology.graph.GNodeFilter;
 @Stateless
 public class GOntologyDao implements GOntologyDaoLocal {
 
-    private static final Logger logger = SimpleLogger.getLogger(GOntologyDao.class);
+    private static final Logger logger = ExsysLogger.getLogger(GOntologyDao.class);
 
     @EJB
     private GraphServicesDao gdao;

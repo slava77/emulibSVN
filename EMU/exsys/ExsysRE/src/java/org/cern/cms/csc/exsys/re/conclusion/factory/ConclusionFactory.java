@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.exsys.re.RuleEngineManagerLocal;
@@ -40,7 +40,7 @@ import org.cern.cms.csc.exsys.re.model.RuleType;
  */
 public abstract class ConclusionFactory implements StatementAwareUpdateListener {
 
-    private static Logger logger = SimpleLogger.getLogger(ConclusionFactory.class);
+    private static Logger logger = ExsysLogger.getLogger(ConclusionFactory.class);
     private static final Pattern paramPattern = Pattern.compile("\\$(\\S+)");
     /** Conclusion type that this factory is supposed to use to create conclusions. */
     private ConclusionType conclType;
@@ -114,6 +114,9 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
         concl.setLastHitTimeItem(new Date());
         concl.setHitCount(BigInteger.ONE);
         concl.setClosed(isRuleClosing());
+        if (concl.isClosed()) {
+            concl.setTimeClosedItem(new Date());
+        }
         concl.setComponent(getComponentResolver().getComponent(unpackedEventEntities));
         addTriggerToConclusion(concl, unpackedEventEntities);
         return concl;

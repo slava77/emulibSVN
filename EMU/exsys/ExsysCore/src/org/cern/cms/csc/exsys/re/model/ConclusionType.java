@@ -65,6 +65,7 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
  *         &lt;element name="actions" type="{http://www.cern.ch/cms/csc/exsys/re/model}actionType" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element name="ruleSet" type="{http://www.cern.ch/cms/csc/exsys/re/model}ruleSetType"/>
  *         &lt;element name="rules" type="{http://www.cern.ch/cms/csc/exsys/re/model}ruleType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="isTransient" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -82,7 +83,8 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
     "timeCreated",
     "actions",
     "ruleSet",
-    "rules"
+    "rules",
+    "_transient"
 })
 @Entity(name = "org.cern.cms.csc.exsys.re.model.ConclusionType")
 @Table(name = "RE_CONCLUSION_TYPES")
@@ -111,6 +113,8 @@ public class ConclusionType
     protected org.cern.cms.csc.exsys.re.model.RuleSet ruleSet;
     @jsf.bean.gui.annotation.NoManualInput(createDefaultValue = false)
     protected List<org.cern.cms.csc.exsys.re.model.Rule> rules = new Vector<org.cern.cms.csc.exsys.re.model.Rule>();
+    @XmlElement(name = "isTransient")
+    protected boolean _transient;
     @XmlAttribute(name = "id")
     protected Long id;
 
@@ -398,6 +402,29 @@ public class ConclusionType
 
     public void unsetRules() {
         this.rules = null;
+    }
+
+    /**
+     * Gets the value of the transient property.
+     * 
+     */
+    @Basic
+    @Column(name = "RECT_IS_TRANSIENT", nullable = false)
+    public boolean isTransient() {
+        return _transient;
+    }
+
+    /**
+     * Sets the value of the transient property.
+     * 
+     */
+    public void setTransient(boolean value) {
+        this._transient = value;
+    }
+
+    @Transient
+    public boolean isSetTransient() {
+        return true;
     }
 
     /**

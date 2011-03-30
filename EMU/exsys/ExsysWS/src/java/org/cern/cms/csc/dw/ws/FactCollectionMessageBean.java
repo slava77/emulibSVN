@@ -7,8 +7,9 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.fact.FactCollection;
+import org.cern.cms.csc.dw.ws.exception.EmptyListReceivedException;
 
 @MessageDriven(mappedName="jms/factCollectionQueue", activationConfig =  {
     @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
@@ -16,7 +17,7 @@ import org.cern.cms.csc.dw.model.fact.FactCollection;
 })
 public class FactCollectionMessageBean implements MessageListener {
 
-    private static Logger logger = SimpleLogger.getLogger(FactCollectionMessageBean.class);
+    private static Logger logger = ExsysLogger.getLogger(FactCollectionMessageBean.class);
 
     @EJB
     FactCollectionSaverLocal saver;
@@ -30,6 +31,8 @@ public class FactCollectionMessageBean implements MessageListener {
             FactCollection fc = (FactCollection) omessage.getObject();
             logger.debug("FC message bean: got a fact collection to message bean, sending to FactCollectionSaver");
             saver.saveFactCollection(fc);
+        } catch (EmptyListReceivedException elrEx) {
+            logger.warn("Empty fact collection received");
         } catch (Exception ex) {
             logger.error("Exception in FactCollectionMessageBean", ex);
         }

@@ -12,13 +12,10 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.ontology.Component;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
-import org.cern.cms.csc.exsys.re.model.ConclusionTrigger;
-import org.cern.cms.csc.exsys.re.model.ConclusionTriggerSource;
-import org.cern.cms.csc.exsys.re.model.ConclusionType;
 
 /**
  *
@@ -27,7 +24,7 @@ import org.cern.cms.csc.exsys.re.model.ConclusionType;
 @Singleton
 public class ConclusionCacheService implements ConclusionCacheServiceLocal {
 
-    private static final Logger logger = SimpleLogger.getLogger(ConclusionCacheService.class);
+    private static final Logger logger = ExsysLogger.getLogger(ConclusionCacheService.class);
 
     @EJB
     private RuleEngineDaoLocal reDao;

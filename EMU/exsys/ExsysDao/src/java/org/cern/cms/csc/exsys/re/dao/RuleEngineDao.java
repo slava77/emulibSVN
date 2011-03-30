@@ -5,7 +5,6 @@
 
 package org.cern.cms.csc.exsys.re.dao;
 
-import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 import javax.ejb.EJB;
@@ -13,9 +12,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
-import org.cern.cms.csc.dw.exception.PersistException;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.ontology.ComponentClass;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.cern.cms.csc.exsys.re.model.ConclusionType;
@@ -29,7 +27,7 @@ import org.cern.cms.csc.exsys.re.model.RuleSet;
 @Stateless
 public class RuleEngineDao implements RuleEngineDaoLocal, RuleEngineDaoRemote {
 
-    private static final Logger logger = SimpleLogger.getLogger(RuleEngineDao.class);
+    private static final Logger logger = ExsysLogger.getLogger(RuleEngineDao.class);
 
     @PersistenceContext(unitName="CdwPU")
     private EntityManager em;

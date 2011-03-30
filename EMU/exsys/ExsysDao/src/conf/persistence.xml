@@ -3,7 +3,57 @@
   <persistence-unit name="CdwPU" transaction-type="JTA">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <jta-data-source>jdbc/cdw</jta-data-source>
-    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <class>org.cern.cms.csc.dw.model.dse.DataServiceEntity</class>
+    <class>org.cern.cms.csc.dw.model.dse.TmbCounterDescriptionDSE</class>
+    <class>org.cern.cms.csc.dw.model.fact.ApplicationStatusFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.CumulativeTmbTriggerCounterFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DcsAlctLvFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DcsAlertFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DcsCfebLvFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DcsCommunicationStatusFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DcsDisableEnableFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DcsFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DcsHVOnVoltageFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DduFmmIrqFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DduFmmResetFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DqmCscAfebFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DqmCscCfebFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DqmCscFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DqmCscHvSegmentFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DqmDduFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DqmDduInputFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DqmEmuFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DqmReportFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.EmuMonitorFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.Fact</class>
+    <class>org.cern.cms.csc.dw.model.fact.FactCollection</class>
+    <class>org.cern.cms.csc.dw.model.fact.FactCollectionFactsItem</class>
+    <class>org.cern.cms.csc.dw.model.fact.FedFsmFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.LocalDAQStatusFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.SlidingTmbTriggerCounterFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.TmbCounterFact</class>
+    <class>org.cern.cms.csc.dw.model.ontology.Component</class>
+    <class>org.cern.cms.csc.dw.model.ontology.ComponentClass</class>
+    <class>org.cern.cms.csc.dw.model.ontology.ComponentLinkClass</class>
+    <class>org.cern.cms.csc.dw.model.ontology.ComponentSynonym</class>
+    <class>org.cern.cms.csc.exsys.re.model.Action</class>
+    <class>org.cern.cms.csc.exsys.re.model.ActionExecution</class>
+    <class>org.cern.cms.csc.exsys.re.model.CommandAction</class>
+    <class>org.cern.cms.csc.exsys.re.model.ComponentFinder</class>
+    <class>org.cern.cms.csc.exsys.re.model.Conclusion</class>
+    <class>org.cern.cms.csc.exsys.re.model.ConclusionTrigger</class>
+    <class>org.cern.cms.csc.exsys.re.model.ConclusionTriggerSource</class>
+    <class>org.cern.cms.csc.exsys.re.model.ConclusionType</class>
+    <class>org.cern.cms.csc.exsys.re.model.DcsCommandAction</class>
+    <class>org.cern.cms.csc.exsys.re.model.DimPublicationAction</class>
+    <class>org.cern.cms.csc.exsys.re.model.EmailAction</class>
+    <class>org.cern.cms.csc.exsys.re.model.NotificationAction</class>
+    <class>org.cern.cms.csc.exsys.re.model.RelatedComponentFinder</class>
+    <class>org.cern.cms.csc.exsys.re.model.Rule</class>
+    <class>org.cern.cms.csc.exsys.re.model.RuleSet</class>
+    <class>org.cern.cms.csc.exsys.re.model.SimpleComponentFinder</class>
+    <class>org.cern.cms.csc.exsys.re.model.SmsAction</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect"/>
       <property name="hibernate.cache.provider_class" value="net.sf.ehcache.hibernate.SingletonEhCacheProvider"/>
@@ -52,14 +102,19 @@
     <class>org.cern.cms.csc.dw.model.ontology.ComponentSynonym</class>
     <class>org.cern.cms.csc.exsys.re.model.Action</class>
     <class>org.cern.cms.csc.exsys.re.model.ActionExecution</class>
+    <class>org.cern.cms.csc.exsys.re.model.CommandAction</class>
     <class>org.cern.cms.csc.exsys.re.model.ComponentFinder</class>
     <class>org.cern.cms.csc.exsys.re.model.Conclusion</class>
     <class>org.cern.cms.csc.exsys.re.model.ConclusionTrigger</class>
     <class>org.cern.cms.csc.exsys.re.model.ConclusionTriggerSource</class>
     <class>org.cern.cms.csc.exsys.re.model.ConclusionType</class>
+    <class>org.cern.cms.csc.exsys.re.model.DcsCommandAction</class>
+    <class>org.cern.cms.csc.exsys.re.model.DimPublicationAction</class>
     <class>org.cern.cms.csc.exsys.re.model.EmailAction</class>
+    <class>org.cern.cms.csc.exsys.re.model.NotificationAction</class>
     <class>org.cern.cms.csc.exsys.re.model.RelatedComponentFinder</class>
     <class>org.cern.cms.csc.exsys.re.model.Rule</class>
+    <class>org.cern.cms.csc.exsys.re.model.RuleSet</class>
     <class>org.cern.cms.csc.exsys.re.model.SimpleComponentFinder</class>
     <class>org.cern.cms.csc.exsys.re.model.SmsAction</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
@@ -93,6 +148,7 @@
     <class>org.cern.cms.csc.dw.model.monitor.MonitorEntity</class>
     <class>org.cern.cms.csc.dw.model.monitor.MonitorSystem</class>
     <class>org.cern.cms.csc.dw.model.monitor.TableProperties</class>
+    <class>org.cern.cms.csc.dw.model.monitor.MonitorLogMessage</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="hibernate.hbm2ddl.auto" value="update"/>

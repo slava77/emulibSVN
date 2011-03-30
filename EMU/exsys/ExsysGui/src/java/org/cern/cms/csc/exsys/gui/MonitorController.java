@@ -3,7 +3,6 @@ package org.cern.cms.csc.exsys.gui;
 import org.cern.cms.csc.exsys.gui.base.BrowserController;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -17,8 +16,8 @@ import jsf.bean.gui.ClassFinderIf;
 import jsf.bean.gui.component.BeanTableManager;
 import jsf.bean.gui.component.table.BeanTableDaoIf;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.MonitorDaoLocal;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.metadata.MetadataManager;
 import org.cern.cms.csc.dw.model.monitor.MonitorFactCollectionLog;
 import org.cern.cms.csc.dw.model.monitor.MonitorQueueStatus;
@@ -44,7 +43,7 @@ import org.jfree.data.time.TimeSeriesDataItem;
 @SessionScoped
 public class MonitorController extends BrowserController {
 
-    private static final Logger logger = SimpleLogger.getLogger(MonitorController.class);
+    private static final Logger logger = ExsysLogger.getLogger(MonitorController.class);
     private static final String ENTITIES_RESOURCE = MetadataManager.RESOURCE_BASE + MetadataManager.MONITOR_ENTITIES_RESOURCE;
 
     private ServiceLocator locator = new ServiceLocator();
@@ -100,6 +99,9 @@ public class MonitorController extends BrowserController {
     public List<SelectItem> getChartLastHoursItems() {
         List<SelectItem> items = new ArrayList<SelectItem>();
         for (int i = 1; i <= 24; i++) {
+            items.add(new SelectItem(i, String.valueOf(i)));
+        }
+        for (int i = 48; i <= 7 * 24; i += 24) {
             items.add(new SelectItem(i, String.valueOf(i)));
         }
         return items;

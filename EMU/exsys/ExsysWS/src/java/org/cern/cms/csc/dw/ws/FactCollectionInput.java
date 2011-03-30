@@ -14,7 +14,7 @@ import javax.jms.Queue;
 import javax.jms.QueueConnectionFactory;
 import javax.xml.bind.JAXBElement;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.monitor.MonitorFactCollectionLog;
 import org.cern.cms.csc.dw.monitor.MonitorLogger;
 import org.cern.cms.csc.dw.service.ServiceInstructions;
@@ -25,7 +25,7 @@ import org.cern.cms.csc.dw.ws.exception.ComponentNotProvidedException;
 @Stateless
 public class FactCollectionInput implements FactCollectionInputLocal {
 
-    private static Logger logger = SimpleLogger.getLogger(FactCollectionInput.class);
+    private static Logger logger = ExsysLogger.getLogger(FactCollectionInput.class);
     private static Logger monitor = MonitorLogger.getLogger(FactCollectionInput.class);
 
     @EJB
@@ -92,7 +92,7 @@ public class FactCollectionInput implements FactCollectionInputLocal {
                 throw new ComponentNotProvidedException(FactCollection.class, "source");
             }
 
-            monitor.trace(new MonitorFactCollectionLog(factCollection));
+            monitor.info(new MonitorFactCollectionLog(factCollection));
 
             if (!factCollection.isSetServiceInstructions()) {
                 factCollection.setServiceInstructions(new ServiceInstructions());

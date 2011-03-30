@@ -12,7 +12,7 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.fact.Fact;
 
 /**
@@ -25,7 +25,7 @@ import org.cern.cms.csc.dw.model.fact.Fact;
     })
 public class RuleEngineInputMessageBeanBean implements MessageListener {
 
-    private static Logger logger = SimpleLogger.getLogger(RuleEngineInputMessageBeanBean.class);
+    private static Logger logger = ExsysLogger.getLogger(RuleEngineInputMessageBeanBean.class);
 
     @EJB
     RuleEngineInputLocal reInput;

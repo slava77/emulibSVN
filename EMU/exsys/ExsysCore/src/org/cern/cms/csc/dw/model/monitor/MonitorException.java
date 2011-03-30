@@ -20,10 +20,6 @@ public class MonitorException extends MonitorEntity {
 
     public MonitorException() { }
 
-    public MonitorException(Class clazz, String message) {
-        this(clazz, message, null);
-    }
-
     public MonitorException(Class clazz, Throwable th) {
         this(clazz, th.getMessage(), th);
     }

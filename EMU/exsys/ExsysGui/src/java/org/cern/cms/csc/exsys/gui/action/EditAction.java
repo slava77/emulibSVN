@@ -12,14 +12,11 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.transaction.UserTransaction;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.EditorDaoLocal;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.exsys.gui.editor.EntityEditorManager;
 import org.cern.cms.csc.exsys.re.model.Action;
-import org.cern.cms.csc.exsys.re.model.DcsCommandAction;
-import org.cern.cms.csc.exsys.re.model.EmailAction;
-import org.cern.cms.csc.exsys.re.model.SmsAction;
 
 
 /**
@@ -30,7 +27,7 @@ import org.cern.cms.csc.exsys.re.model.SmsAction;
 @SessionScoped
 public class EditAction extends EntityEditorManager implements Serializable {
 
-    private static final Logger logger = SimpleLogger.getLogger(EditAction.class);
+    private static final Logger logger = ExsysLogger.getLogger(EditAction.class);
 
     @EJB
     private EditorDaoLocal dao;

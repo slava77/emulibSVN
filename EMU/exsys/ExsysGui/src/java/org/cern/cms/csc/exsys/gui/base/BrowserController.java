@@ -1,8 +1,5 @@
 package org.cern.cms.csc.exsys.gui.base;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.URL;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -10,12 +7,12 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import jsf.bean.gui.component.BeanTableManager;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.exsys.gui.util.ClassComparator;
 
 public abstract class BrowserController extends JsfBeanBase {
 
-    private static final Logger logger = SimpleLogger.getLogger(BrowserController.class);
+    private static final Logger logger = ExsysLogger.getLogger(BrowserController.class);
     private SortedMap<Class, BeanTableManager> tables = new TreeMap<Class, BeanTableManager>(new ClassComparator());
 
     private Class currentClass = null;
@@ -25,9 +22,8 @@ public abstract class BrowserController extends JsfBeanBase {
     
     public BrowserController(String pathToResource) {
         try {
-            URL entitiesUrl = BrowserController.class.getResource(pathToResource);
             Properties entitiesPro = new Properties();
-            entitiesPro.load(new FileInputStream(new File(entitiesUrl.getFile())));
+            entitiesPro.load(BrowserController.class.getResourceAsStream(pathToResource));
             Enumeration en = entitiesPro.propertyNames();
             while (en.hasMoreElements()) {
                 String k = (String) en.nextElement();

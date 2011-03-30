@@ -7,12 +7,12 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.Singleton;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 
 @Singleton
 public class EsperServiceProvider {
 
-    private static Logger logger = SimpleLogger.getLogger(EsperServiceProvider.class);
+    private static Logger logger = ExsysLogger.getLogger(EsperServiceProvider.class);
 
     private Map<String, EPServiceProvider> epServices = new HashMap<String, EPServiceProvider>();
 

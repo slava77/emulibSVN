@@ -13,10 +13,10 @@ import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.xml.bind.JAXBElement;
-import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.exception.WrongComponentTypeException;
 import jsf.bean.gui.log.Logger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.fact.DcsFact;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.dw.model.fact.FactCollection;
@@ -26,7 +26,7 @@ import org.cern.cms.csc.dw.util.JmsWorker;
 @Stateless
 public class FactCollectionSaverBean implements FactCollectionSaverLocal {
 
-    private static Logger logger = SimpleLogger.getLogger(FactCollectionSaverBean.class);
+    private static Logger logger = ExsysLogger.getLogger(FactCollectionSaverBean.class);
 
 
     @EJB
@@ -65,6 +65,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
         logger.debug("FC Saver bean: at start, number of facts: " + factCollection.getFacts().size() + ", number of fis: " + factCollection.getFactsItems().size());
 
         Set<JAXBElement<? extends Fact>> toRemove = new HashSet<JAXBElement<? extends Fact>>();
+        Collection<Serializable> factsToSendToRE = new ArrayList<Serializable>();
         ServiceInstructions instructions = factCollection.getServiceInstructions();
 
         logger.debug("FC Saver bean: received fact collection with " + factCollection.getFacts().size() + " facts from " + factCollection.getSource());
@@ -97,6 +98,12 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
 
                 fact.onReceive(entityDao);
 
+                // if fact is transient, only add it to the collection to be sent to RE, but don't save to DB
+                if (fact.isSetTransient() && fact.isTransient()) {
+                    toRemove.add(fi);
+                    factsToSendToRE.add(fi);
+                }
+
                 // This fact is OK so we add it to factItems
                 //FactCollectionFactsItem fcfi = new FactCollectionFactsItem();
                 //fcfi.setItemValue(fact);
@@ -122,17 +129,16 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
         }
         logger.debug("FC Saver bean: number of facts after processing and after removing: " + factCollection.getFacts().size());
 
-        if (!factCollection.isSetFacts()) {
+        if (!factCollection.isSetFacts() && factsToSendToRE.isEmpty()) {
             throw new EmptyListReceivedException("factCollection", "Fact");
         }
 
         // Persist collection
-        if (instructions.isPersist()) {
+        if (instructions.isPersist() && factCollection.isSetFacts()) {
             logger.debug("FC Saver bean: serviceInstructions.isPersist() = true, so sending this fact collection to entity saver");
             entityDao.persist(factCollection);
         }
 
-        Collection<Serializable> factsToSendToRE = new ArrayList<Serializable>();
         for (JAXBElement<? extends Fact> factEl: factCollection.getFacts()) {
             factsToSendToRE.add(factEl.getValue());
         }

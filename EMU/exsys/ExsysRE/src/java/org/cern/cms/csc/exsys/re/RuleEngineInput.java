@@ -8,7 +8,7 @@ package org.cern.cms.csc.exsys.re;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 
@@ -20,7 +20,7 @@ import org.cern.cms.csc.exsys.re.model.Conclusion;
 @EJB(name="ejb/OntologyDao", beanInterface=org.cern.cms.csc.dw.dao.OntologyDaoLocal.class)
 public class RuleEngineInput implements RuleEngineInputRemote, RuleEngineInputLocal {
 
-    private static Logger logger = SimpleLogger.getLogger(RuleEngineInput.class);
+    private static Logger logger = ExsysLogger.getLogger(RuleEngineInput.class);
 
     @EJB
     private RuleEngineManagerLocal reManager;

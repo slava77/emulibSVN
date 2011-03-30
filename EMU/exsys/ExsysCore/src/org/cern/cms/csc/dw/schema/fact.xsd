@@ -204,6 +204,14 @@
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
+            <xsd:element name="isTransient" type="xsd:boolean" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <hj:ignored/>
+                        <jaxb:property name="transient"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
         </xsd:sequence>
     </xsd:complexType>
 

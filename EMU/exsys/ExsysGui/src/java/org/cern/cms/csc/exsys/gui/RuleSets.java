@@ -33,8 +33,6 @@ import org.icefaces.bean.WindowDisposed;
 @WindowDisposed
 public class RuleSets implements Serializable {
 
-    private static final Logger logger = SimpleLogger.getLogger(RuleSets.class);
-
     @Resource
     private UserTransaction ut;
     @EJB

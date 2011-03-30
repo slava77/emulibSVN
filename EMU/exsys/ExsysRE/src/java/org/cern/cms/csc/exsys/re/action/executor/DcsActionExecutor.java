@@ -5,7 +5,9 @@
 
 package org.cern.cms.csc.exsys.re.action.executor;
 
+import jsf.bean.gui.log.Logger;
 import org.cern.cms.csc.dw.dao.GOntologyDaoLocal;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.ontology.Component;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponent.DataPropertyType;
 import org.cern.cms.csc.dw.util.EjbLookup;
@@ -22,12 +24,14 @@ import org.cern.cms.csc.exsys.re.model.DcsCommandAction;
  */
 public class DcsActionExecutor extends ActionExecutor {
 
+    private static final Logger logger = ExsysLogger.getLogger(ActionExecutor.class);
     private static final String DELIMITER = "|";
 
     private EjbLookup<DimServiceProviderRemote> dimServiceProvider =
                       new ExsysIORemoteEjbLookup<DimServiceProviderRemote>(DimServiceProviderRemote.class);
 
-    private EjbLookup<GOntologyDaoLocal> gOntologyDao = new EjbLookup<GOntologyDaoLocal>(GOntologyDaoLocal.class);
+    private EjbLookup<GOntologyDaoLocal> gOntologyDao = new EjbLookup<GOntologyDaoLocal>(EjbLookup.Module.DAO,
+                                                                                        GOntologyDaoLocal.class);
 
     public DcsActionExecutor(ActionExecution actionExec) {
         super(actionExec);
@@ -41,15 +45,23 @@ public class DcsActionExecutor extends ActionExecutor {
             // gather all data that we need
             DcsCommandAction dcsCommandAction = (DcsCommandAction) actionExec.getAction();
             Component comp = actionExec.getTrigger().getConclusion().getComponent();
-            String dp = (String) gOntologyDao.ejb().getGComponent(comp).getDataProperty(DataPropertyType.DCS_ID);
+            String dp = (String) gOntologyDao.ejbStrict().getGComponent(comp).getDataProperty(DataPropertyType.DCS_ID);
 
             dimData.append(dcsCommandAction.getCommandType().value());
-            dimData.append(DELIMITER);
-            dimData.append(dp);
-            dimData.append(DELIMITER);
-            dimData.append(dcsCommandAction.getArgs().replaceAll(",", DELIMITER));
+            if (dp != null) {
+                dimData.append(DELIMITER);
+                dimData.append(dp);
+            }
+            String args = dcsCommandAction.getArgs();
+            if (args != null) {
+                dimData.append(DELIMITER);
+                dimData.append(args.replaceAll(",", DELIMITER));
+            }
 
-//            dimServiceProvider.ejb().publishString(dcsCommandAction, dimData.toString());
+            logger.info("Publishing on DIM: " + dcsCommandAction.getServiceName() + " = " + dimData.toString());
+            dimServiceProvider.ejbStrict().publishString(dcsCommandAction, dimData.toString());
+            Thread.sleep(1000);
+            dimServiceProvider.ejbStrict().publishString(dcsCommandAction, "");
         } catch (Exception ex) {
             throw new ActionExecutionException("Could not execute DCS command", ex);
         }

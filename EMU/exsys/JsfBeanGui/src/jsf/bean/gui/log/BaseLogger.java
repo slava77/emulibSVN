@@ -3,6 +3,64 @@ package jsf.bean.gui.log;
 public abstract class BaseLogger implements Logger {
 
     /**
+     * Fatal level
+     */
+
+    @Override
+    public void fatal(String message, Object... params) {
+        log(Level.FATAL, message, params);
+    }
+
+    @Override
+    public void fatal(String message, Throwable th) {
+        log(Level.FATAL, message, th);
+    }
+
+    @Override
+    public void fatal(String message) {
+        log(Level.FATAL, message);
+    }
+
+    @Override
+    public void fatal(Throwable th) {
+        log(Level.FATAL, th);
+    }
+
+    @Override
+    public void fatal(Object obj) {
+        log(Level.FATAL, obj);
+    }
+
+    /**
+     * Critical level
+     */
+
+    @Override
+    public void critical(String message, Object... params) {
+        log(Level.CRITICAL, message, params);
+    }
+
+    @Override
+    public void critical(String message, Throwable th) {
+        log(Level.CRITICAL, message, th);
+    }
+
+    @Override
+    public void critical(String message) {
+        log(Level.CRITICAL, message);
+    }
+
+    @Override
+    public void critical(Throwable th) {
+        log(Level.CRITICAL, th);
+    }
+
+    @Override
+    public void critical(Object obj) {
+        log(Level.CRITICAL, obj);
+    }
+
+    /**
      * Error level
      */
 
@@ -32,7 +90,7 @@ public abstract class BaseLogger implements Logger {
     }
 
     /**
-     * Error level
+     * Warning level
      */
 
     @Override
@@ -174,6 +232,48 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void trace(Object obj) {
         log(Level.TRACE, obj);
+    }
+
+    /**
+     * Is enabled implementations
+     */
+
+    public boolean isFatalEnabled() {
+        return isLevelEnabled(Level.FATAL);
+    }
+
+    public boolean isCriticalEnabled() {
+        return isLevelEnabled(Level.CRITICAL);
+    }
+
+    @Override
+    public boolean isErrorEnabled() {
+        return isLevelEnabled(Level.ERROR);
+    }
+
+    @Override
+    public boolean isWarnEnabled() {
+        return isLevelEnabled(Level.WARN);
+    }
+
+    @Override
+    public boolean isConfigEnabled() {
+        return isLevelEnabled(Level.CONFIG);
+    }
+
+    @Override
+    public boolean isInfoEnabled() {
+        return isLevelEnabled(Level.INFO);
+    }
+
+    @Override
+    public boolean isDebugEnabled() {
+        return isLevelEnabled(Level.DEBUG);
+    }
+
+    @Override
+    public boolean isTraceEnabled() {
+        return isLevelEnabled(Level.TRACE);
     }
 
 }

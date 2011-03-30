@@ -14,9 +14,9 @@ import javax.persistence.PersistenceContext;
 import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.exception.InvalidEntityClassException;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.exception.OnSaveProcessingException;
 import org.cern.cms.csc.dw.exception.PersistException;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 
 /**
@@ -26,7 +26,7 @@ import org.cern.cms.csc.dw.model.base.EntityBase;
 @Stateless
 public class EntityDao implements EntityDaoLocal, EntityDaoRemote {
 
-    private static Logger logger = SimpleLogger.getLogger(EntityDao.class);
+    private static Logger logger = ExsysLogger.getLogger(EntityDao.class);
 
     @PersistenceContext(unitName="CdwPU")
     private EntityManager em;

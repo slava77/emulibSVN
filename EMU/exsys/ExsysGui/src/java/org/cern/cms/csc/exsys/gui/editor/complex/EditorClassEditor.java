@@ -30,8 +30,6 @@ import org.cern.cms.csc.exsys.gui.util.ClassFinder;
  */
 public class EditorClassEditor extends RestrictedEntityEditor {
 
-    private final static Logger logger = SimpleLogger.getLogger(EditorClassEditor.class);
-
     private Class value;
 
     public EditorClassEditor(EntityBase entity, Editor parentEditor, EditorDaoLocal EditorDao) throws InvalidEntityBeanPropertyException {

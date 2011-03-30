@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import javax.annotation.Resource;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -24,10 +22,9 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.transaction.UserTransaction;
+import jsf.bean.gui.log.Level;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
-import org.cern.cms.csc.dw.dao.EntityDaoLocal;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.exsys.re.RuleEngineManagerLocal;
 import org.cern.cms.csc.exsys.re.conclusion.ConclusionCacheServiceLocal;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
@@ -45,7 +42,7 @@ import org.cern.cms.csc.exsys.re.model.Rule;
  */
 public class DefaultConclusionFactory extends ConclusionFactory {
 
-    private static Logger logger = SimpleLogger.getLogger(ConclusionFactory.class);
+    private static Logger logger = ExsysLogger.getLogger(ConclusionFactory.class);
 
     private RuleEngineDaoLocal reDao;
     private ConclusionCacheServiceLocal conclusionCacheService;
@@ -59,6 +56,7 @@ public class DefaultConclusionFactory extends ConclusionFactory {
     @Override
     protected Conclusion processConclusion(Conclusion conclusion) {
         try {
+            boolean isTransient = conclusion.getType().isTransient();
             // check if it already exists in cache
             Conclusion existingConclusion = getConclusionCacheService().checkCache(conclusion);
             if (existingConclusion == null) {
@@ -68,10 +66,12 @@ public class DefaultConclusionFactory extends ConclusionFactory {
 
                 logger.info("Default conclusion factory: Got new conclusion: " + conclusion.getTitle());
                 logger.info("Saving new conclusion: " + conclusion);
-                reDao.getEntityDao().persistAndFlush(conclusion);
+                if (!isTransient) {
+                    reDao.getEntityDao().persistAndFlush(conclusion);
+                }
                 getConclusionCacheService().addToCache(conclusion);
                 boolean conclusionWasModified = executeActions(getConclusionType().getActions(), conclusion.getTriggers());
-                if (conclusionWasModified) {
+                if (conclusionWasModified && !isTransient) {
                     reDao.getEntityDao().mergeAndFlush(conclusion);
                 }
                 return conclusion;
@@ -80,9 +80,11 @@ public class DefaultConclusionFactory extends ConclusionFactory {
                         existingConclusion.getTitle() + " (id=" + existingConclusion.getid() + ")");
 
                 //existingConclusion = (Conclusion) reDao.getEntityDao().refreshEntity(existingConclusion, false);
-                updateExistingConclusion(existingConclusion, conclusion);
+                updateExistingConclusion(existingConclusion, conclusion, isTransient);
                 logger.trace("Existing conclusion ID before merge: " + existingConclusion.getid());
-                existingConclusion = (Conclusion) reDao.getEntityDao().mergeAndFlush(existingConclusion);
+                if (!isTransient) {
+                    existingConclusion = (Conclusion) reDao.getEntityDao().mergeAndFlush(existingConclusion);
+                }
                 logger.trace("Existing conclusion ID after merge: " + existingConclusion.getid());
                 if (!existingConclusion.isClosed()) {
                     logger.debug("Saving existing conclusion: " + existingConclusion);
@@ -100,7 +102,7 @@ public class DefaultConclusionFactory extends ConclusionFactory {
         }
     }
 
-    protected void updateExistingConclusion(Conclusion existingConclusion, Conclusion conclusion) throws Exception {
+    protected void updateExistingConclusion(Conclusion existingConclusion, Conclusion conclusion, boolean isTransient) throws Exception {
         existingConclusion.setHitCount(existingConclusion.getHitCount().add(BigInteger.ONE));
         existingConclusion.setLastHitTimeItem(conclusion.getTimestampItem());
         existingConclusion.setTitle(conclusion.getTitle()); // update with more up to date title
@@ -124,7 +126,9 @@ public class DefaultConclusionFactory extends ConclusionFactory {
                 if (trigger.getType().equals(ConclusionTriggerType.OPEN)) { // don't change "CLOSE" to "UPDATE"
                     trigger.setType(ConclusionTriggerType.UPDATE);
                 }
-                reDao.getEntityDao().persistAndFlush(trigger);
+                if (!isTransient) {
+                    reDao.getEntityDao().persistAndFlush(trigger);
+                }
                 executeActions(getConclusionType().getActions(), trigger);
             }
 //            existingConclusion.getTriggers().add(trigger);
@@ -149,7 +153,9 @@ public class DefaultConclusionFactory extends ConclusionFactory {
                 exec.setAction(action);
                 exec.setTrigger(trigger);
                 exec.setTimeCreatedItem(new Date());
-                reDao.getEntityDao().persistAndFlush(exec);
+                if (!exec.getTrigger().getConclusion().getType().isTransient()) {
+                    reDao.getEntityDao().persistAndFlush(exec);
+                }
                 sendJMSMessageToRuleEngineActionQueue(exec);
             }
         } catch (Exception ex) {
@@ -202,7 +208,7 @@ public class DefaultConclusionFactory extends ConclusionFactory {
                 try {
                     s.close();
                 } catch (JMSException e) {
-                    java.util.logging.Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot close session", e);
+                    logger.log(Level.WARN, "Cannot close session", e);
                 }
             }
             if (conn != null) {

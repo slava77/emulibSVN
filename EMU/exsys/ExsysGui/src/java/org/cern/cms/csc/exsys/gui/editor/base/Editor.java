@@ -13,8 +13,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import jsf.bean.gui.metadata.PropertyMd;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.exsys.gui.component.OntologyComponentSelector;
 
@@ -24,7 +24,7 @@ import org.cern.cms.csc.exsys.gui.component.OntologyComponentSelector;
  */
 public abstract class Editor {
 
-    protected static Logger logger = SimpleLogger.getLogger(Editor.class);
+    protected static Logger logger = ExsysLogger.getLogger(Editor.class);
 
     public enum InputType {
 

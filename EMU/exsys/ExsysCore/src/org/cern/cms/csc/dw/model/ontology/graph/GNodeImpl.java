@@ -3,7 +3,7 @@ package org.cern.cms.csc.dw.model.ontology.graph;
 import java.util.Collection;
 import java.util.Iterator;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.RelationshipType;
@@ -13,7 +13,7 @@ import org.neo4j.graphdb.Transaction;
 
 public abstract class GNodeImpl extends GBase implements GNode {
 
-    private static Logger logger = SimpleLogger.getLogger(GNodeImpl.class);
+    private static Logger logger = ExsysLogger.getLogger(GNodeImpl.class);
     protected final Node node;
 
     /**

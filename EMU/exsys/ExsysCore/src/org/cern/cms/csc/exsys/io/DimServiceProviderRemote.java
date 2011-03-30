@@ -6,7 +6,8 @@
 package org.cern.cms.csc.exsys.io;
 
 import javax.ejb.Remote;
-//import org.cern.cms.csc.exsys.re.model.DimPublicationAction;
+import org.cern.cms.csc.exsys.exception.DimException;
+import org.cern.cms.csc.exsys.re.model.DimPublicationAction;
 
 /**
  *
@@ -15,6 +16,6 @@ import javax.ejb.Remote;
 @Remote
 public interface DimServiceProviderRemote {
 
-//    void publishString(DimPublicationAction dimPubAction, String value);
+    void publishString(DimPublicationAction dimPubAction, String value) throws DimException;
 
 }

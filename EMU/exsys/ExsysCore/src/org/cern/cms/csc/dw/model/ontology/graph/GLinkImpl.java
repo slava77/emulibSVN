@@ -5,12 +5,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.neo4j.graphdb.Relationship;
 
 public class GLinkImpl extends GBase implements GLink {
 
-    private static final Logger logger = SimpleLogger.getLogger(GLinkImpl.class);
+    private static final Logger logger = ExsysLogger.getLogger(GLinkImpl.class);
     
     protected Relationship relationship;
 

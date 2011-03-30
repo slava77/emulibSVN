@@ -16,7 +16,7 @@ import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.exsys.re.conclusion.ConclusionCacheServiceLocal;
 import org.cern.cms.csc.exsys.re.conclusion.factory.ConclusionFactory;
 import org.cern.cms.csc.exsys.re.conclusion.factory.DefaultConclusionFactory;
@@ -33,7 +33,7 @@ import org.cern.cms.csc.exsys.re.model.RuleSet;
 @Stateless
 public class RuleEngineManager implements RuleEngineManagerLocal {
 
-    private static Logger logger = SimpleLogger.getLogger(RuleEngineManager.class);
+    private static Logger logger = ExsysLogger.getLogger(RuleEngineManager.class);
 
     public static final String DEFAULT_EP_URI = "exsys";
 

@@ -8,8 +8,8 @@ import jsf.bean.gui.ClassFinderIf;
 import jsf.bean.gui.component.BeanTableManager;
 import jsf.bean.gui.component.table.BeanTableDaoIf;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.MainBeanTableDaoLocal;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.metadata.MetadataManager;
 import org.cern.cms.csc.exsys.gui.util.ClassFinder;
 
@@ -17,7 +17,7 @@ import org.cern.cms.csc.exsys.gui.util.ClassFinder;
 @SessionScoped
 public class DataBrowserController extends BrowserController {
 
-    private static final Logger logger = SimpleLogger.getLogger(DataBrowserController.class);
+    private static final Logger logger = ExsysLogger.getLogger(DataBrowserController.class);
 
     private static final String ENTITIES_RESOURCE = MetadataManager.RESOURCE_BASE + MetadataManager.MAIN_ENTITIES_RESOURCE;
 

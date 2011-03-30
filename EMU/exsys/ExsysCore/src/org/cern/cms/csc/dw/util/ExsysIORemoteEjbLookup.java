@@ -5,8 +5,6 @@
 
 package org.cern.cms.csc.dw.util;
 
-import java.util.Properties;
-
 /**
  *
  * @author evka
@@ -24,4 +22,5 @@ public class ExsysIORemoteEjbLookup<T> extends EjbLookup<T> {
     public ExsysIORemoteEjbLookup(Class<T> ejbRemoteInterface) {
         super(ejbRemoteInterface, exsysIOHostname, exsysIOIIOPPort);
     }
+
 }

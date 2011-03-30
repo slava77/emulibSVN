@@ -4,7 +4,7 @@ import java.io.File;
 import java.net.URL;
 import javax.ejb.Singleton;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.ontology.graph.GServices;
 import org.cern.cms.csc.dw.model.ontology.graph.GraphServices;
 import org.cern.cms.csc.dw.util.ZipUtil;
@@ -12,7 +12,7 @@ import org.cern.cms.csc.dw.util.ZipUtil;
 @Singleton
 public class GraphServicesDao {
 
-    private static final Logger logger = SimpleLogger.getLogger(GraphServices.class);
+    private static final Logger logger = ExsysLogger.getLogger(GraphServices.class);
     private static final String graphdbPath = "graphdb";
     
     private GraphServices graphServices;

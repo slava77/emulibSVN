@@ -12,9 +12,9 @@ import javax.jws.WebService;
 import javax.ejb.Stateless;
 import javax.xml.bind.JAXBElement;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
-import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.exception.PersistException;
 import jsf.bean.gui.log.Logger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.dse.DataServiceEntity;
 import org.cern.cms.csc.dw.model.dse.DataServiceEntityCollection;
 
@@ -26,7 +26,7 @@ import org.cern.cms.csc.dw.model.dse.DataServiceEntityCollection;
 @Stateless()
 public class DataServiceEntityInput implements DataServiceEntityInputLocal {
 
-    private static Logger logger = SimpleLogger.getLogger(DataServiceEntityInput.class);
+    private static Logger logger = ExsysLogger.getLogger(DataServiceEntityInput.class);
     
     @EJB
     private EntityDaoLocal entityDao;

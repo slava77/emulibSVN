@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 
 public class ClassUtil {
 
-    private static final Logger logger = SimpleLogger.getLogger(ClassUtil.class);
+    private static final Logger logger = ExsysLogger.getLogger(ClassUtil.class);
     private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
     private static final Throwable CVF_FAILURE, CR_FAILURE;
 

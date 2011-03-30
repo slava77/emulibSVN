@@ -13,7 +13,7 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.convert.Converter;
 import javax.transaction.UserTransaction;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.util.EjbLookup;
 import org.cern.cms.csc.exsys.gui.editor.converter.LovConverter;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
@@ -30,7 +30,7 @@ import org.cern.cms.csc.exsys.re.model.RuleSet;
 @RequestScoped
 public class TransferRuleSet {
 
-    private static final Logger logger = SimpleLogger.getLogger(TransferRuleSet.class);
+    private static final Logger logger = ExsysLogger.getLogger(TransferRuleSet.class);
 
     @Resource
     private UserTransaction ut;

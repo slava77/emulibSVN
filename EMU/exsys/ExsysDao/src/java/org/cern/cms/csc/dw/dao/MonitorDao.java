@@ -20,8 +20,6 @@ import org.hibernate.ejb.EntityManagerImpl;
 @Stateless
 public class MonitorDao extends BeanTableDao implements MonitorDaoLocal {
 
-    private static Logger logger = SimpleLogger.getLogger(MonitorDao.class);
-
     @PersistenceContext(unitName="CdwPU")
     private EntityManager em;
 

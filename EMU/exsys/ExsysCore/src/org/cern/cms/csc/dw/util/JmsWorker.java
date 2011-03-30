@@ -14,11 +14,11 @@ import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 
 public abstract class JmsWorker {
 
-    private static final Logger logger = SimpleLogger.getLogger(JmsWorker.class);
+    private static final Logger logger = ExsysLogger.getLogger(JmsWorker.class);
 
     protected abstract Queue getQueue() throws Exception;
     protected abstract QueueConnectionFactory getQueueConnectionFactory() throws Exception;

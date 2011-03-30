@@ -9,10 +9,10 @@ import java.lang.reflect.Modifier;
 import javax.faces.convert.Converter;
 import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import jsf.bean.gui.metadata.OneToOnePropertyMd;
 import jsf.bean.gui.metadata.PropertyMd;
 import org.cern.cms.csc.dw.dao.EditorDaoLocal;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.exsys.gui.editor.base.Editor;
 import org.cern.cms.csc.exsys.gui.editor.base.EntityEditor;
@@ -23,7 +23,7 @@ import org.cern.cms.csc.exsys.gui.editor.base.EntityEditor;
  */
 public class OneToOneEditor extends EntityEditor {
 
-    private static final Logger logger = SimpleLogger.getLogger(OneToOneEditor.class);
+    private static final Logger logger = ExsysLogger.getLogger(OneToOneEditor.class);
 
     /**
      * Constructor

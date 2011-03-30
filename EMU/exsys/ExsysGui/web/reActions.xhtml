@@ -21,14 +21,6 @@
 
     <ui:define name="content">
 
-        <ice:form>
-            <ice:panelGroup>
-                <ice:commandLink value="Create New Action" action="reEditAction">
-                    <f:setPropertyActionListener target="#{editAction.entity}" value="#{null}"/>
-                </ice:commandLink>
-            </ice:panelGroup>
-        </ice:form>
-
         <ice:form id="actionsForm">
             <component:beanTable manager="#{actions.table}" skipColumnsByName="enabled,name">
                 <f:facet name="addMenu">

@@ -27,33 +27,8 @@ public class SimpleLogger extends BaseLogger {
     }
 
     @Override
-    public boolean isErrorEnabled() {
-        return logger.isLoggable(Level.ERROR.value());
-    }
-
-    @Override
-    public boolean isWarnEnabled() {
-        return logger.isLoggable(Level.WARN.value());
-    }
-
-    @Override
-    public boolean isConfigEnabled() {
-        return logger.isLoggable(Level.CONFIG.value());
-    }
-
-    @Override
-    public boolean isInfoEnabled() {
-        return logger.isLoggable(Level.INFO.value());
-    }
-
-    @Override
-    public boolean isDebugEnabled() {
-        return logger.isLoggable(Level.DEBUG.value());
-    }
-
-    @Override
-    public boolean isTraceEnabled() {
-        return logger.isLoggable(Level.TRACE.value());
+    public boolean isLevelEnabled(Level level) {
+        return logger.isLoggable(level.value());
     }
 
     /**

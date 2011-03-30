@@ -8,11 +8,43 @@ public interface Logger {
 
     boolean isErrorEnabled();
 
+    boolean isCriticalEnabled();
+
+    boolean isFatalEnabled();
+
     boolean isInfoEnabled();
 
     boolean isTraceEnabled();
 
     boolean isWarnEnabled();
+
+    boolean isLevelEnabled(Level level);
+
+    /**
+     * Fatal level
+     */
+    void fatal(String message, Object... params);
+
+    void fatal(String message, Throwable th);
+
+    void fatal(String message);
+
+    void fatal(Throwable th);
+
+    void fatal(Object obj);
+
+    /**
+     * Critical level
+     */
+    void critical(String message, Object... params);
+
+    void critical(String message, Throwable th);
+
+    void critical(String message);
+
+    void critical(Throwable th);
+
+    void critical(Object obj);
 
     /**
      * Config level
@@ -93,7 +125,7 @@ public interface Logger {
     void trace(Object obj);
 
     /**
-     * Error level
+     * Warning level
      */
     void warn(String message, Object... params);
 

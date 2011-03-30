@@ -5,10 +5,10 @@
         <ejb>
             <ejb-name>RuleEngineInputMessageBeanBean</ejb-name>
             <bean-pool>
-                <steady-pool-size>1</steady-pool-size>
+                <steady-pool-size>0</steady-pool-size>
                 <resize-quantity>1</resize-quantity>
                 <max-pool-size>1</max-pool-size>
-                <pool-idle-timeout-in-seconds>0</pool-idle-timeout-in-seconds>
+                <pool-idle-timeout-in-seconds>600</pool-idle-timeout-in-seconds>
             </bean-pool>
         </ejb>
     </enterprise-beans>

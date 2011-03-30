@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.apache.lucene.search.Sort;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
@@ -22,7 +22,7 @@ import org.neo4j.graphdb.Traverser.Order;
 
 public class GQuery <T extends GNode> {
 
-    private static Logger logger = SimpleLogger.getLogger(GQuery.class);
+    private static Logger logger = ExsysLogger.getLogger(GQuery.class);
 
     private final GServices gservices;
     private final Class<T> ifClass;

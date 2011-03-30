@@ -18,11 +18,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 
 public abstract class JsfBeanBase implements Serializable {
 
-    private static final Logger logger = SimpleLogger.getLogger(JsfBeanBase.class);
+    private static final Logger logger = ExsysLogger.getLogger(JsfBeanBase.class);
 
     @Transient
     public static FacesContext getFacesContext(HttpServletRequest request, HttpServletResponse response, String lifecycleId) {

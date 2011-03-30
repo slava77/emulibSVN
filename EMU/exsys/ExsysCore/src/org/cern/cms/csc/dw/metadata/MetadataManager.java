@@ -8,12 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 
 @SuppressWarnings("unchecked")
 public class MetadataManager {
 
-    private static Logger logger = SimpleLogger.getLogger(MetadataManager.class);
+    private static Logger logger = ExsysLogger.getLogger(MetadataManager.class);
 
     public static final String CLASS_ROOT                = "org.cern.cms.csc";
     public static final String RESOURCE_BASE             = "/org/cern/cms/csc/dw/metadata/";

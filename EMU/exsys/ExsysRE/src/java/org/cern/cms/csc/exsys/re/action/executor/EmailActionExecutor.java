@@ -5,17 +5,9 @@
 
 package org.cern.cms.csc.exsys.re.action.executor;
 
-import javax.mail.Message.RecipientType;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
+import org.cern.cms.csc.dw.util.EmailSender;
 import org.cern.cms.csc.exsys.re.action.ActionExecutor;
 import org.cern.cms.csc.exsys.re.exception.ActionExecutionException;
 import org.cern.cms.csc.exsys.re.model.ActionExecution;
@@ -29,7 +21,7 @@ import org.cern.cms.csc.exsys.re.model.EmailAction;
  */
 public class EmailActionExecutor extends ActionExecutor {
 
-    private static final Logger logger = SimpleLogger.getLogger(EmailActionExecutor.class);
+    private static final Logger logger = ExsysLogger.getLogger(EmailActionExecutor.class);
 
     public EmailActionExecutor(ActionExecution actionExec) {
         super(actionExec);
@@ -70,24 +62,10 @@ public class EmailActionExecutor extends ActionExecutor {
             body.append("\"\n");
             body.append("If you think you got this email by mistake, well, you're wrong ;) Expert System is always right!");
 
-            sendMail(emailAction.getRecipients(), subject, body.toString());
+            EmailSender.send(emailAction.getRecipients(), subject, body.toString());
         } catch (Exception ex) {
             throw new ActionExecutionException("Could not send an email", ex);
         }
-    }
-
-    private Session getMailcern() throws NamingException {
-        Context c = new InitialContext();
-        return (Session) c.lookup("mail/cern");
-    }
-
-    private void sendMail(String email, String subject, String body) throws NamingException, MessagingException {
-        Session mailcern = getMailcern();
-        MimeMessage message = new MimeMessage(mailcern);
-        message.setSubject(subject);
-        message.setRecipients(RecipientType.TO, InternetAddress.parse(email, false));
-        message.setText(body);
-        Transport.send(message);
     }
 
 }

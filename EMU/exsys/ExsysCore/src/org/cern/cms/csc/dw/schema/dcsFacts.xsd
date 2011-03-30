@@ -44,6 +44,10 @@
                  type="tns:DcsDisableEnableFactType"
                  substitutionGroup="tns:dcsFact"/>
 
+    <xsd:element name="DcsPingFact"
+                 type="tns:DcsPingFactType"
+                 substitutionGroup="tns:fact"/>
+
     <xsd:complexType name="DcsCommunicationStatusFactType">
         <xsd:annotation>
             <xsd:appinfo>
@@ -329,6 +333,17 @@
 
                 </xsd:sequence>
             </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="DcsPingFactType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <hj:ignored/>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:factType"/>
         </xsd:complexContent>
     </xsd:complexType>
 

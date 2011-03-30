@@ -11,6 +11,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import jsf.bean.gui.ClassFinderIf;
 
 /**
@@ -64,15 +66,43 @@ public class ClassFinder implements ClassFinderIf {
         assert classLoader != null;
         String path = packageName.replace('.', '/');
         Enumeration<URL> resources = classLoader.getResources(path);
-        List<File> dirs = new ArrayList<File>();
+        ArrayList<Class> classes = new ArrayList<Class>();
         while (resources.hasMoreElements()) {
             URL resource = resources.nextElement();
-            dirs.add(new File(resource.getFile()));
+            if (resource.getProtocol().equals("file")) {
+                classes.addAll(findClassesInDir(new File(resource.getFile()), packageName));
+            } else if (resource.getProtocol().equals("jar")) {
+                classes.addAll(findClassesInJarDir(resource));
+            }
         }
-        ArrayList<Class> classes = new ArrayList<Class>();
-        for (File directory : dirs) {
-            classes.addAll(findClassesInDir(directory, packageName));
+
+        return classes;
+    }
+
+    /**
+     * Finds all classes in a given directory within a jar
+     * @param jarDir - URL to the directory of interest within a jar file
+     * @return all classes in a given directory within a jar
+     * @throws ClassNotFoundException
+     */
+    public static List<Class> findClassesInJarDir(URL jarDir) throws IOException, ClassNotFoundException {
+        List<Class> classes = new ArrayList<Class>();
+
+        String[] split = jarDir.getFile().split("!/");
+        String jarFilename = split[0];
+        String dirName = split[1];
+
+        JarFile jar = new JarFile(jarFilename.replaceAll("file:", ""));
+        Enumeration<JarEntry> entries = jar.entries();
+        while (entries.hasMoreElements()) {
+            JarEntry entry = entries.nextElement();
+            if (entry.getName().startsWith(dirName) && entry.getName().endsWith(".class")) {
+                String classname = entry.getName().replaceAll("/", ".");
+                classname = classname.substring(0, classname.length() - 6);
+                classes.add(classForName(classname));
+            }
         }
+
         return classes;
     }
 
@@ -95,7 +125,7 @@ public class ClassFinder implements ClassFinderIf {
                 assert !file.getName().contains(".");
                 classes.addAll(findClassesInDir(file, packageName + "." + file.getName()));
             } else if (file.getName().endsWith(".class") && !file.getName().contains("<error>")) {
-                classes.add(Class.forName(packageName + '.' + file.getName().substring(0, file.getName().length() - 6)));
+                classes.add(classForName(packageName + '.' + file.getName().substring(0, file.getName().length() - 6)));
             }
         }
         return classes;
@@ -103,7 +133,11 @@ public class ClassFinder implements ClassFinderIf {
 
     @Override
     public Class getClassForName(String className) throws ClassNotFoundException {
-        return Class.forName(className);
+        return classForName(className);
+    }
+
+    public static Class classForName(String className) throws ClassNotFoundException {
+        return Class.forName(className, true, Thread.currentThread().getContextClassLoader());
     }
 
 }

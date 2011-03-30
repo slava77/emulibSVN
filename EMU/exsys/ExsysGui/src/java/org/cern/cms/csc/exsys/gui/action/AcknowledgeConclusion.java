@@ -9,8 +9,8 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.exsys.gui.base.JsfBeanBase;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 
@@ -22,7 +22,7 @@ import org.cern.cms.csc.exsys.re.model.Conclusion;
 @RequestScoped
 public class AcknowledgeConclusion extends JsfBeanBase {
 
-    private static final Logger logger = SimpleLogger.getLogger(AcknowledgeConclusion.class);
+    private static final Logger logger = ExsysLogger.getLogger(AcknowledgeConclusion.class);
 
     @EJB
     private EntityDaoLocal entityDao;

@@ -9,16 +9,17 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.model.SelectItem;
 import jsf.bean.gui.ClassFinderIf;
 import jsf.bean.gui.component.BeanTableManager;
 import jsf.bean.gui.component.table.BeanTableDaoIf;
 import jsf.bean.gui.component.table.BeanTableFilter.Operation;
+import jsf.bean.gui.log.Logger;
+import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.dao.MainBeanTableDaoLocal;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.exsys.gui.base.JsfBeanBase;
 import org.cern.cms.csc.exsys.gui.util.ClassFinder;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
@@ -36,9 +37,14 @@ import org.icefaces.bean.WindowDisposed;
 @WindowDisposed
 public class Conclusions extends JsfBeanBase implements Serializable {
 
+    private static final Logger logger = ExsysLogger.getLogger(Conclusions.class);
+
     @EJB
     private MainBeanTableDaoLocal dao;
     private BeanTableManager table;
+
+    @EJB
+    private EntityDaoLocal entityDao;
 
     private DisplayMode displayMode;
 
@@ -71,6 +77,36 @@ public class Conclusions extends JsfBeanBase implements Serializable {
     }
 
     public void setDisplayMode(DisplayMode displayMode, boolean refreshData) {
+//        try {
+//            if (entityDao == null) {
+//                return;
+//            }
+//            List<Conclusion> coco = entityDao.getAllEntitiesByClass(Conclusion.class);
+//            for (Conclusion co: coco) {
+//                logger.info("oba: " + co);
+//            }
+//            DataModel<EntityBeanBase> ooo = table.getTable().getData();
+//            Iterator<EntityBeanBase> it = ooo.iterator();
+//            for (;it.hasNext();) {
+//                logger.info("OBABA: " + it.next());
+//            }
+//            logger.info("kamon:" + dao.getDataCount(table.getTable()));
+//
+//            List<EntityBeanBase> bibi = dao.getData(table.getTable());
+//            for (EntityBeanBase bi: bibi) {
+//                logger.info("OBABA kamon sava: " + bi);
+//            }
+//
+//            logger.info("kamon komsi komsa: " + table.getTable().getDataCount());
+//            Collection<SelectItem> sisi = table.getTablePack().getClasses();
+//            for (SelectItem si: sisi) {
+//                logger.info("klasele: " + si);
+//            }
+//            logger.info("is single class? " + table.getTablePack().isSingleClass() + ", va klasele: " + table.getTablePack().getSelectedClass());
+//        } catch (Exception ex) {
+//            throw new RuntimeException(ex);
+//        }
+
         this.displayMode = displayMode;
         table.removeAllPropertyFilters();
         if (displayMode.equals(DisplayMode.CURRENT)) {

@@ -15,7 +15,7 @@ import org.cern.cms.csc.dw.dao.GOntologyDaoLocal;
 import org.cern.cms.csc.dw.dao.OntologyDaoLocal;
 import org.cern.cms.csc.dw.exception.ComponentNotFoundException;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.dw.model.ontology.Component;
@@ -39,7 +39,7 @@ import org.cern.cms.csc.exsys.re.model.SimpleComponentFinder;
  */
 public class ConclusionComponentResolver {
 
-    private static final Logger logger = SimpleLogger.getLogger(ConclusionComponentResolver.class);
+    private static final Logger logger = ExsysLogger.getLogger(ConclusionComponentResolver.class);
 
     /** Component finder to be used. */
     private ComponentFinder componentFinder;
@@ -48,9 +48,11 @@ public class ConclusionComponentResolver {
     /** Component class type as GComponentClass. */
     private GComponentClass gComponentClass;
     /** OntologyDao. */
-    private EjbLookup<OntologyDaoLocal> ontologyDao = new EjbLookup<OntologyDaoLocal>(OntologyDaoLocal.class);
+    private EjbLookup<OntologyDaoLocal> ontologyDao = new EjbLookup<OntologyDaoLocal>(EjbLookup.Module.DAO,
+                                                                                      OntologyDaoLocal.class);
     /** GOntologyDao. */
-    private EjbLookup<GOntologyDaoLocal> gOntologyDao = new EjbLookup<GOntologyDaoLocal>(GOntologyDaoLocal.class);
+    private EjbLookup<GOntologyDaoLocal> gOntologyDao = new EjbLookup<GOntologyDaoLocal>(EjbLookup.Module.DAO,
+                                                                                         GOntologyDaoLocal.class);
 
     public ConclusionComponentResolver(ComponentFinder componentFinder) {
         this.componentFinder = componentFinder;

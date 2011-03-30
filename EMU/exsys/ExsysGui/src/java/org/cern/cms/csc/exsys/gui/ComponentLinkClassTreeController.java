@@ -10,16 +10,16 @@ import javax.faces.event.ActionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.GOntologyDaoLocal;
 import org.cern.cms.csc.dw.exception.ComponentLinkClassNotFoundException;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentLinkClass;
 
 @ManagedBean
 @SessionScoped
 public class ComponentLinkClassTreeController extends JsfBeanBase {
 
-    private static Logger logger = SimpleLogger.getLogger(ComponentLinkClassTreeController.class);
+    private static Logger logger = ExsysLogger.getLogger(ComponentLinkClassTreeController.class);
 
     @EJB
     private GOntologyDaoLocal ontologyDao;

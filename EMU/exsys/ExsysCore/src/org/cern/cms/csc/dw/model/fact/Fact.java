@@ -54,6 +54,7 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
  *         &lt;element name="severity" type="{http://www.cern.ch/cms/csc/dw/model}severityType" minOccurs="0"/>
  *         &lt;element name="descr" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="component" type="{http://www.cern.ch/cms/csc/dw/ontology}componentType" minOccurs="0"/>
+ *         &lt;element name="isTransient" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -69,7 +70,8 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
     "run",
     "severity",
     "descr",
-    "component"
+    "component",
+    "_transient"
 })
 @XmlSeeAlso({
     DqmReportFact.class,
@@ -90,6 +92,7 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
     LocalDAQStatusFact.class,
     DqmCscAfebFact.class,
     DcsCommunicationStatusFact.class,
+    DcsPingFactType.class,
     DqmCscHvSegmentFact.class,
     TmbCounterFact.class,
     DqmEmuFact.class
@@ -111,6 +114,8 @@ public abstract class Fact
     protected SeverityType severity;
     protected String descr;
     protected org.cern.cms.csc.dw.model.ontology.Component component;
+    @XmlElement(name = "isTransient")
+    protected Boolean _transient;
     @XmlAttribute(name = "id")
     protected Long id;
 
@@ -300,6 +305,36 @@ public abstract class Fact
     @Transient
     public boolean isSetComponent() {
         return (this.component!= null);
+    }
+
+    /**
+     * Gets the value of the transient property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Boolean }
+     *     
+     */
+    @Transient
+    public Boolean isTransient() {
+        return _transient;
+    }
+
+    /**
+     * Sets the value of the transient property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Boolean }
+     *     
+     */
+    public void setTransient(Boolean value) {
+        this._transient = value;
+    }
+
+    @Transient
+    public boolean isSetTransient() {
+        return (this._transient!= null);
     }
 
     /**

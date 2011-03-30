@@ -10,16 +10,12 @@ import java.util.List;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 
 /**
  * Converter used in list of value select boxes and menus
  * @author Evka
  */
 public class LovConverter implements Converter {
-
-    private static Logger logger = SimpleLogger.getLogger(LovConverter.class);
 
     private List lov = null;
 

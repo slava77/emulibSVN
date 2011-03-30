@@ -10,10 +10,10 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.ejb.Stateless;
-import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import jsf.bean.gui.exception.InvalidEntityClassException;
 import jsf.bean.gui.log.Logger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 
 /**
  *
@@ -23,7 +23,7 @@ import jsf.bean.gui.log.Logger;
 @Stateless()
 public class DataQueryService implements DataQueryServiceLocal {
 
-    private static Logger logger = SimpleLogger.getLogger(DataQueryService.class);
+    private static Logger logger = ExsysLogger.getLogger(DataQueryService.class);
 
     @EJB
     private EntityDaoLocal entityDao;

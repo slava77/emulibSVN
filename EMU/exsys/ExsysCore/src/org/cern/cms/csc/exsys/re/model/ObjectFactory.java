@@ -48,59 +48,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link RelatedComponentFinder }
-     * 
-     */
-    public RelatedComponentFinder createRelatedComponentFinder() {
-        return new RelatedComponentFinder();
-    }
-
-    /**
-     * Create an instance of {@link ActionExecution }
-     * 
-     */
-    public ActionExecution createActionExecution() {
-        return new ActionExecution();
-    }
-
-    /**
-     * Create an instance of {@link Rule }
-     * 
-     */
-    public Rule createRule() {
-        return new Rule();
-    }
-
-    /**
      * Create an instance of {@link ConclusionTriggerSource }
      * 
      */
     public ConclusionTriggerSource createConclusionTriggerSource() {
         return new ConclusionTriggerSource();
-    }
-
-    /**
-     * Create an instance of {@link RuleSet }
-     * 
-     */
-    public RuleSet createRuleSet() {
-        return new RuleSet();
-    }
-
-    /**
-     * Create an instance of {@link EmailAction }
-     * 
-     */
-    public EmailAction createEmailAction() {
-        return new EmailAction();
-    }
-
-    /**
-     * Create an instance of {@link SmsAction }
-     * 
-     */
-    public SmsAction createSmsAction() {
-        return new SmsAction();
     }
 
     /**
@@ -112,11 +64,51 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ConclusionTrigger }
+     * Create an instance of {@link ConclusionType }
      * 
      */
-    public ConclusionTrigger createConclusionTrigger() {
-        return new ConclusionTrigger();
+    public ConclusionType createConclusionType() {
+        return new ConclusionType();
+    }
+
+    /**
+     * Create an instance of {@link RelatedComponentFinder }
+     * 
+     */
+    public RelatedComponentFinder createRelatedComponentFinder() {
+        return new RelatedComponentFinder();
+    }
+
+    /**
+     * Create an instance of {@link Rule }
+     * 
+     */
+    public Rule createRule() {
+        return new Rule();
+    }
+
+    /**
+     * Create an instance of {@link ActionExecution }
+     * 
+     */
+    public ActionExecution createActionExecution() {
+        return new ActionExecution();
+    }
+
+    /**
+     * Create an instance of {@link DcsCommandAction }
+     * 
+     */
+    public DcsCommandAction createDcsCommandAction() {
+        return new DcsCommandAction();
+    }
+
+    /**
+     * Create an instance of {@link RuleSet }
+     * 
+     */
+    public RuleSet createRuleSet() {
+        return new RuleSet();
     }
 
     /**
@@ -128,19 +120,27 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ConclusionType }
+     * Create an instance of {@link ConclusionTrigger }
      * 
      */
-    public ConclusionType createConclusionType() {
-        return new ConclusionType();
+    public ConclusionTrigger createConclusionTrigger() {
+        return new ConclusionTrigger();
     }
 
     /**
-     * Create an instance of {@link DcsCommandAction }
+     * Create an instance of {@link SmsAction }
      * 
      */
-    public DcsCommandAction createDcsCommandAction() {
-        return new DcsCommandAction();
+    public SmsAction createSmsAction() {
+        return new SmsAction();
+    }
+
+    /**
+     * Create an instance of {@link EmailAction }
+     * 
+     */
+    public EmailAction createEmailAction() {
+        return new EmailAction();
     }
 
     /**

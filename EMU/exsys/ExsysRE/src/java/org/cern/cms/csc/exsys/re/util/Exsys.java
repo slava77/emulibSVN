@@ -6,7 +6,7 @@
 package org.cern.cms.csc.exsys.re.util;
 
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.ontology.Component;
 import org.cern.cms.csc.dw.util.EjbLookup;
 import org.cern.cms.csc.exsys.re.conclusion.ConclusionCacheServiceLocal;
@@ -17,9 +17,10 @@ import org.cern.cms.csc.exsys.re.conclusion.ConclusionCacheServiceLocal;
  */
 public class Exsys {
 
-    private static Logger logger = SimpleLogger.getLogger(Exsys.class);
+    private static Logger logger = ExsysLogger.getLogger(Exsys.class);
 
-    private static EjbLookup<ConclusionCacheServiceLocal> conclCache = new EjbLookup(ConclusionCacheServiceLocal.class);
+    private static EjbLookup<ConclusionCacheServiceLocal> conclCache = new EjbLookup(EjbLookup.Module.RULE_ENGINE,
+                                                                                   ConclusionCacheServiceLocal.class);
 
     public static boolean conclusionExists(String conclusionTypeName, Component component) {
         try {

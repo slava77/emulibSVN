@@ -12,15 +12,13 @@ import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.EditorDaoLocal;
 import org.cern.cms.csc.dw.exception.ComponentNotFoundException;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.metadata.FactMd;
 import org.cern.cms.csc.dw.metadata.MetadataManager;
 import org.cern.cms.csc.dw.model.base.EntityBase;
@@ -34,8 +32,6 @@ import org.cern.cms.csc.dw.model.ontology.graph.GComponentClass;
 import org.cern.cms.csc.dw.ws.FactCollectionInputLocal;
 import org.cern.cms.csc.exsys.gui.editor.EntityEditorManager;
 import org.cern.cms.csc.exsys.gui.editor.converter.LovConverter;
-import org.icefaces.bean.ViewRetained;
-import org.icefaces.bean.WindowDisposed;
 
 /**
  *
@@ -46,9 +42,9 @@ import org.icefaces.bean.WindowDisposed;
 @SessionScoped
 public class NewFact extends EntityEditorManager {
 
-    private final static Logger logger = SimpleLogger.getLogger(NewFact.class);
+    private final static Logger logger = ExsysLogger.getLogger(NewFact.class);
 
-    private static MetadataManager factMdManager = new MetadataManager();
+    private static MetadataManager factMdManager;
     private List<SelectItem> factClassesSI;
     private Converter factClassListConverter;
     private Class factType;
@@ -95,9 +91,16 @@ public class NewFact extends EntityEditorManager {
         return (Fact) getEntity();
     }
 
+    private static MetadataManager getFactMdManager() {
+        if (factMdManager == null) {
+            factMdManager = new MetadataManager();
+        }
+        return factMdManager;
+    }
+
     public List<SelectItem> getFactClassList() {
         if (factClassesSI == null) {
-            Collection<FactMd> factClassMds = factMdManager.getFactMDs();
+            Collection<FactMd> factClassMds = getFactMdManager().getFactMDs();
             List<FactMd> factClassMdsSortedList = new ArrayList<FactMd>();
             factClassMdsSortedList.addAll(factClassMds);
             Collections.sort(factClassMdsSortedList);

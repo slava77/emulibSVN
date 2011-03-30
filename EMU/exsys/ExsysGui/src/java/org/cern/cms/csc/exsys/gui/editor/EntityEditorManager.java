@@ -7,8 +7,8 @@ package org.cern.cms.csc.exsys.gui.editor;
 
 import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
 import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.EditorDaoLocal;
+import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.exsys.gui.editor.base.Editor;
 import org.cern.cms.csc.exsys.gui.editor.base.RestrictedEntityEditor;
@@ -21,8 +21,6 @@ import org.cern.cms.csc.exsys.gui.base.JsfBeanBase;
  */
 
 public abstract class EntityEditorManager extends JsfBeanBase {
-
-    private static Logger logger = SimpleLogger.getLogger(EntityEditorManager.class);
 
     /** Top level editor. */
     private TopEntityEditor topEditor;
