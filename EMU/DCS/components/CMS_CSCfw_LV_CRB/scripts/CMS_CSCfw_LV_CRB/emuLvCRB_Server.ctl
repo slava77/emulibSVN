@@ -12,12 +12,15 @@ dyn_string CSC_fwCAN1_g_STATUS_HANDLERS_FIRST;
 dyn_string CSC_fwCAN1_g_FULL_DPLIST;
 dyn_string psu_power_dps,psu_branch_dps,all_crb_dps;
 dyn_bool   crb_busy;
+dyn_string dsCommandBuffers;  //for new crb power up 
+bool bBufferEmpty;
 //==========================================================================================
 main()
 {
   DebugTN("CRB monitor script starts"); 
   mudcsCrbPnlInit(); 
   emuLvCRB_initalizeParam();//get global system name for CRB: gSystemNameCRB with ":"
+  emuLvCRB_initalizeCrbBuffers(); //create dps for new CRB power up 
   mudcsCrbInitDelays(0); // set all CRBs delay to 0 
 //------------ reset crb_busy----------------------------
   all_crb_dps = dpNames(gSystemNameCRB+"*CRB*","fwCrb_CSC_LV");   
@@ -26,17 +29,23 @@ main()
     crb_busy[i]=false;
    }
 //-------- set delay time for crb -----------------------  
-  mudcsCrbInitDelays(1);   
+  mudcsCrbInitDelays(1);     
 //-------- set dp connection for crb and psu ------------
   mudcsCrbUpdate_BrokerList();  
-  startThread("mudcsCrb_threadWatchForTimeouts");
-  dpConnect("dist_connections_detect","_DistConnections.Dist.ManNums");  
+
+  dpConnect("dist_connections_detect","_DistConnections.Dist.ManNums");
+  
   string sValue;
   dpGet(gSystemNameCRB+"ALERT_CONFIG_CHANGED_DP.",sValue);
   if(sValue != "")
    {
      dpConnect("alert_config_changed_dp","ALERT_CONFIG_CHANGED_DP.");  
-   }  
+   }
+  
+  startThread("mudcsCrb_threadWatchForTimeouts");
+  
+//+++++++++watdog for new CRB power up++++++++++++++++++++++++++++  
+  startThread("emuLvCRB_monitorCrbBuffers");  
 }
 //========================================================
 void dist_connections_detect(string dpName, dyn_int dists)
@@ -116,10 +125,16 @@ void mudcsCrb_threadWatchForTimeouts()
    }       
 //------------indefinite loop: never broken ------------------------------------------------------- 
   delay((max_guard/1000)+15); // max_guard is in milliseconds (+15 is just in case at the beginning) 
+  int iCountTimeOut = 0;
   while(1)
    { 
+     iCountTimeOut ++;
      delay((max_guard/1000));
-     emuLvCRB_showDebug(bDebug,"mudcsCrb_threadWatchForTimeouts");   
+     emuLvCRB_showDebug(bDebug,"mudcsCrb_threadWatchForTimeouts"); 
+     if(iCountTimeOut >= 20){
+       DebugTN("watch for time out...");
+       iCountTimeOut = 0;
+     }  
 //------------------ for x2p ---------------------------------------------------------------------
      if(automatic_stop_pcrate_slow_control)  
       {
@@ -230,7 +245,7 @@ string mudcsCrbGetCrbByElmbId(string sId)
 //==================set dp connection for Crb and Psu==================================
 void mudcsCrbUpdate_BrokerList()
 {
-  int i;
+  int i,j;
   dyn_string datapoints; 
 //-------------set all elmbs to operating mode---------------------------
   emuLvCRB_sendCanBusCommand(1); 
@@ -243,7 +258,9 @@ void mudcsCrbUpdate_BrokerList()
        CSC_fwCAN1_g_BLOCK_NEXT_DPCONNECT=1;
        dpConnect("emuLvCRB_monitorCrbStatus",datapoints[i]+".:_alert_hdl.._act_state_color");
        while(CSC_fwCAN1_g_BLOCK_NEXT_DPCONNECT);      
-    } 
+    }
+// ------------------previous CRB power up--------------------------------------
+/*  
   for(i=1;i<=dynlen(datapoints);i++)
     {
        dynAppend(CSC_fwCAN1_g_STATUS_HANDLERS_FIRST,datapoints[i]);
@@ -251,8 +268,26 @@ void mudcsCrbUpdate_BrokerList()
        CSC_fwCAN1_g_BLOCK_NEXT_DPCONNECT=1;
        dpConnect("emuLvCRB_monitorCrbCommand",datapoints[i]+".command");
        while(CSC_fwCAN1_g_BLOCK_NEXT_DPCONNECT); 
-    }                     
-  dpConnect("mudcsCrbUpdate_single_crb_switch","SINGLE_CRB_SWITCH.");    
+    }
+*/
+//--------------------------------------------------------------------------------
+  
+//+++++++++++++++++++++++++for new CRB power up+++++++++++++++++++++++++++++++++++++++++  
+  dyn_string dsDpNames_Plus = dpNames(gSystemNameCRB+"CRB/CSC_ME_P*","fwCrb_CSC_LV");
+  dyn_string dsDpNames_Minus = dpNames(gSystemNameCRB+"CRB/CSC_ME_M*","fwCrb_CSC_LV");
+ 
+  for (i=1; i<= dynlen(dsDpNames_Plus);i++) {
+    dpConnect("emuLvCRB_addCrbBufferPlus",false,dsDpNames_Plus[i]+".command");
+  }
+  for (j=1; j<= dynlen(dsDpNames_Minus);j++) {
+    dpConnect("emuLvCRB_addCrbBufferMinus",false,dsDpNames_Minus[j]+".command");
+  }  
+  dpConnect("emuLvCRB_powerCrbBuffers",gSystemNameCRB+"CRB_Plus.");
+  dpConnect("emuLvCRB_powerCrbBuffers",gSystemNameCRB+"CRB_Minus.");
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  
+  dpConnect("mudcsCrbUpdate_single_crb_switch","SINGLE_CRB_SWITCH."); 
+  
 //------------ATLAS PSU PART with new type fwBranch_CSC_LV------------------
   dyn_string dsBranchName = dpNames(gSystemNameCRB+"*EPSU*","FwElmbPSUBranch");     
   for(i=1; i<= dynlen(dsBranchName); i++)
@@ -400,10 +435,9 @@ void mudcsCrb_threadAlertActiveSet(string dpe, bool isActive, int index_busy)
    }
   delay(10);//10 s delay for activing alert  
   dpSetWait(dpe+".:_alert_hdl.._active", isActive);
-  delay(0.5);
-  bool iActive;
-  dpGet(dpe+".:_alert_hdl.._active", iActive);  
-  emuLvCRB_showDebug(bDebug,"iActive(after switch on) = "+iActive);
+  delay(0,500);
+  dpGet(dpe+".:_alert_hdl.._active", isActive);  
+  emuLvCRB_showDebug(bDebug,"iActive(after switch on) = "+isActive);
   if(index_busy != 0)
     {crb_busy[index_busy]=false;}
 }
@@ -520,3 +554,237 @@ void mudcsLvGroupAcknowlege(string sDpName)
       fwAlertConfig_acknowledge(ds1[i], exceptionInfo);
     }
 }
+//******************************************************* **********************
+//******************script for new CRB power up procedure***********************
+//******************************************************************************
+void emuLvCRB_addCrbBufferPlus(string sDpName)
+{
+  emuLvCRB_addCrbBuffers(sDpName,"Plus");
+}
+void emuLvCRB_addCrbBufferMinus(string sDpName)
+{
+  emuLvCRB_addCrbBuffers(sDpName,"Minus");
+} 
+void emuLvCRB_addCrbBuffers(string sDpName,string sSide)synchronized(dsCommandBuffers)
+{
+   //remove .command
+   dyn_string ds = strsplit(sDpName,".");
+   dpGet(gSystemNameCRB+"CRB_Buffer_"+sSide+".",dsCommandBuffers);
+   dynAppend(dsCommandBuffers,ds[1]);  
+   dpSetWait(gSystemNameCRB+"CRB_Buffer_"+sSide+".",dsCommandBuffers);
+}
+
+void emuLvCRB_readCrbBuffers(string sSide)synchronized(dsCommandBuffers)
+{
+   dpGet(gSystemNameCRB+"CRB_Buffer_"+sSide+".",dsCommandBuffers);   
+   string sFirstCRB = "";
+   int iContain;
+   if (dynlen(dsCommandBuffers)<1){
+     emuLvCRB_showDebug(bDebug,"nothing in buffer "+sSide);
+     bBufferEmpty = true;
+     dpSetWait(gSystemNameCRB+"CRB_Buffer_Empty.",true);
+     emuLvCRB_showDebug(bDebug,"CRB buffer empty:"+bBufferEmpty);
+   }
+   else { 
+       do {   
+       sFirstCRB = dsCommandBuffers[1];
+       dynRemove(dsCommandBuffers,1);
+       iContain = dynContains(dsCommandBuffers,sFirstCRB);
+       emuLvCRB_showDebug(bDebug,"iContain = "+iContain);
+       }
+       while(iContain != 0);
+       emuLvCRB_showDebug(bDebug,"switch on/off "+sFirstCRB);
+       dpSetWait(gSystemNameCRB+"CRB_Buffer_"+sSide+".",dsCommandBuffers);
+       dpSetWait(gSystemNameCRB+"CRB_"+sSide+".",sFirstCRB);     
+   }
+}
+
+void emuLvCRB_monitorCrbBuffers()
+{ 
+  int iCount = 0; 
+  while(1){
+    delay(2);
+    iCount++;
+    if(iCount >= 10){
+      DebugTN("checking CRB buffer...");
+      iCount = 0;
+    }        
+    emuLvCRB_readCrbBuffers("Plus");
+    emuLvCRB_readCrbBuffers("Minus");
+  }
+}
+void emuLvCRB_initalizeCrbBuffers()
+{
+  DebugTN("initalize CRB buffers");
+  if(!(dpExists(gSystemNameCRB+"CRB_Plus"))){
+       dpCreate("CRB_Plus","MUDCS_STRING");
+     }
+  if(!(dpExists(gSystemNameCRB+"CRB_Minus"))){
+      dpCreate("CRB_Minus","MUDCS_STRING");
+     }
+  if(!(dpExists(gSystemNameCRB+"CRB_Buffer_Minus"))){
+     dpCreate("CRB_Buffer_Minus","MUDCS_DYN_STRING");
+     }
+  if(!(dpExists(gSystemNameCRB+"CRB_Buffer_Plus"))){
+     dpCreate("CRB_Buffer_Plus","MUDCS_DYN_STRING"); 
+    }
+  dpSetWait(gSystemNameCRB+"CRB_Buffer_Minus.",makeDynString());
+  dpSetWait(gSystemNameCRB+"CRB_Buffer_Plus.",makeDynString());
+  dpSetWait(gSystemNameCRB+"CRB_Plus.","");
+  dpSetWait(gSystemNameCRB+"CRB_Minus.","");
+  DebugTN("done");  
+}
+
+void emuLvCRB_powerCrbBuffers(string sBuffer,string sCRB)
+{  
+  //DebugTN("power_CRB:" +sCRB);
+  if (sCRB == ""){
+    return;
+  } 
+  else{ 
+       int iCommand,iStatus;
+       dpGet(sCRB+".command",iCommand);
+       dpGet(sCRB+".status",iStatus);
+       DebugTN(sCRB+" Command = "+iCommand);
+       DebugTN(sCRB+" Status = "+iStatus);
+       if(iCommand == iStatus){
+         DebugTN("CRB already in the status required");
+         dpSetWait(sCRB+".status",iStatus); //to reflash the FSM status
+         }
+       else{
+         if(iCommand == 2){                    
+             emuLvCRB_showDebug(bDebug,"switch on CRB:"+sCRB);
+             emuLvCRB_powerOnCRB(sCRB); //switch on CRB
+             }              
+         else{
+            emuLvCRB_showDebug(bDebug,"switch off CRB:"+sCRB);
+            emuLvCRB_powerOffCRB(sCRB); //switch off CRB
+            }
+         bBufferEmpty = false;
+         dpSetWait(gSystemNameCRB+"CRB_Buffer_Empty.",false);
+         emuLvCRB_showDebug(bDebug,"CRB buffer empty:"+bBufferEmpty);
+         }
+    }   
+}  
+void emuLvCRB_powerOnCRB(string sCRB)
+{
+  int i,j,interval;
+  dyn_string dsSwitchList,dsPairs,dsRest,argdsExceptionInfo;
+  dyn_int diOffChannels;
+  dyn_string dsOffChannels = makeDynString();
+  bool bPowerOn = false;
+  time startT = getCurrentTime();
+  if (bBufferEmpty == true){
+      delay(5); //set delay for first CRB to 5s
+  }    
+  mudcsCrb_stop_slow_control(sCRB); //for x2p
+  dpGet(sCRB+".switch_list",dsSwitchList);
+  dpGet(sCRB+".off_channels",diOffChannels);
+  string sElmb=substr(dsSwitchList[1],0,strpos(dsSwitchList[1],"/DO/"));
+  if(is_off_disabled_channels)
+     {
+       for(i=1;i<=dynlen(diOffChannels);i++)
+          {dsOffChannels[i]=diOffChannels[i];}
+     }
+//for  new_lv_power_up_sequence: switch on order: 1. 1.5v  2. 9 pairs of 3.3v-1,3.3v_2,5v
+// 3. VCC  4. MPC/CCB after each switch on, make a power cycle for dsRest(4) as toggle  
+    dsPairs = emuLvCRB_getDynString("Switch_List_DTmbs");
+    dsRest  = emuLvCRB_getDynString("Switch_List_Others");
+    
+    DebugTN("switching on "+sCRB);
+    for(j=1;j<=1;j++)
+         {         
+          //---switch on 1.5v-----------------------
+          if(dynContains(dsOffChannels,dynlen(dsPairs)+3))continue;
+          else emuLvCRB_setDoBitSync(sElmb,dsRest[3],bPowerOn,argdsExceptionInfo);
+          interval = interval_set;
+          emuLvCRB_generateToggleA4(sElmb,interval);    
+          delay(0,interval);     
+          emuLvCRB_showDebug(bDebug,"switch on "+sCRB+" board_cc 3 with "+interval+"ms clock");       
+          //---switch on board 1-9-------------------
+          for(i=1;i<=dynlen(dsPairs);i++)
+                {  
+                  if(dynContains(dsOffChannels,i))continue; 
+                  else emuLvCRB_setDoBitSync(sElmb,dsPairs[i],bPowerOn,argdsExceptionInfo); 
+                  emuLvCRB_generateToggleA4(sElmb,interval);
+                  delay(0,interval);                   
+                  emuLvCRB_showDebug(bDebug,"switch on "+sCRB+" board "+i+" with "+interval+"ms clock"); 
+                }
+          //----switch on vcc--------------------------
+          if(dynContains(dsOffChannels,dynlen(dsPairs)+2))continue;  
+          else emuLvCRB_setDoBitSync(sElmb,dsRest[2],bPowerOn,argdsExceptionInfo); 
+          emuLvCRB_generateToggleA4(sElmb,interval);
+          delay(0,interval);           
+          emuLvCRB_showDebug(bDebug,"switch on "+sCRB+" board_cc 2 with "+interval+"ms clock");
+          //----switch on ccb/mpc--------------------------
+          if(dynContains(dsOffChannels,dynlen(dsPairs)+1))continue;  
+          else emuLvCRB_setDoBitSync(sElmb,dsRest[1],bPowerOn,argdsExceptionInfo);   
+          emuLvCRB_generateToggleA4(sElmb,interval);
+          delay(0,interval);           
+          emuLvCRB_showDebug(bDebug,"switch on "+sCRB+" board_cc 1 with "+interval+"ms clock");
+          dpSetWait(sCRB+".status",2); //set FSM state to On or standby
+          DebugTN("done for power on of Crb:"+sCRB);
+          //---set alert handle to active-----------------------------------------
+          startThread("emuLvCRB_activeAlertHandle",sCRB,true);
+        } 
+    time endT = getCurrentTime();
+    time dt = endT - startT;
+    emuLvCRB_showDebug(bDebug,"Switch on took " + minute(dt) +":"+ second(dt) +"."+ milliSecond(dt));
+    //-----end of Power on-----------------------------
+    dpSetWait("LV_START_UP_CHAMBER.",sCRB+" is finished"); 
+}
+void emuLvCRB_powerOffCRB(string sCRB)
+{
+  time startT = getCurrentTime();
+  emuLvCRB_activeAlertHandle(sCRB,false);  
+  delay(0,500); //delay 500ms
+  //----for x2p-----------------------------------------
+  mudcsCrb_remove_id(sCRB); 
+  mudcsCrb_sendToX2P("CRATE_POWER_OFF", sCRB); 
+  
+  dyn_string dsSwitchList,argdsExceptionInfo;
+  dpGet(sCRB+".switch_list",dsSwitchList);
+  string sElmb=substr(dsSwitchList[1],0,strpos(dsSwitchList[1],"/DO/"));
+  int interval = interval_set;
+  fwElmbUser_setDoBytes(sElmb,4095,argdsExceptionInfo);    
+  emuLvCRB_generateToggleA4(sElmb,interval);            
+  emuLvCRB_showDebug(bDebug,"switch off "+sCRB+" with "+interval+"ms Clock");           
+  dpSetWait(sCRB+".status",0); //set FSM state to OFF
+  delay(0,100);
+  int iStatus;
+  dpGet(sCRB+".status",iStatus);
+  DebugTN("CRB:"+sCRB+".status = "+iStatus+" (after power off)");
+  time endT = getCurrentTime();
+  time dt = endT - startT;
+  emuLvCRB_showDebug(bDebug,"Switch on took " + minute(dt) +":"+ second(dt) +"."+ milliSecond(dt));
+  DebugTN("done for power off of Crb:"+sCRB);
+}
+void emuLvCRB_activeAlertHandle(string sCRB,bool bIsActive)
+{
+  if (bIsActive == true){
+    delay(10);
+    string iCommand;
+    dpGet(sCRB+".command",iCommand);
+    if(iCommand == 2){
+          dpSetWait(sCRB+".:_alert_hdl.._active",true); 
+       }
+    else  
+       dpSetWait(sCRB+".:_alert_hdl.._active",false);   
+    delay(0,500);
+    dpGet(sCRB+".:_alert_hdl.._active", bIsActive);  
+    emuLvCRB_showDebug(bDebug,"alert handle(after action) = "+bIsActive);    
+  }
+  else {
+    dpGet(sCRB+".:_alert_hdl.._active",bIsActive); 
+    emuLvCRB_showDebug(bDebug,"alert handle(before switch Off) = "+bIsActive);
+    if(bIsActive)
+       {
+        if(CSC_fwCAN1_g_ISACK)
+         {mudcsLvGroupAcknowlege(sCRB);}
+       }  
+     dpSetWait(sCRB+".:_alert_hdl.._active", false); //de-active alert_hdl 
+     delay(0,500);
+     dpGet(sCRB+".:_alert_hdl.._active", bIsActive);  
+     emuLvCRB_showDebug(bDebug,"alert handle(after action) = "+bIsActive);      
+  }     
+}  

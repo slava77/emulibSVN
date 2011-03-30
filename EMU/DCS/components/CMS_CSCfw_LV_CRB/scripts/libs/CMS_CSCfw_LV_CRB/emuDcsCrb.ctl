@@ -1,5 +1,6 @@
 #uses "CMS_CSCfw_LV_CRB/emuLvCRB.ctl" 
 #uses "CMS_CSCfw_LV_CRB/emuDcsLv.ctl"  
+//=======================================================================================
 int new_lv_power_up_sequence=true;
 int g_attempts=false;
 int interval_set = 150;  //change back to 150 ms
@@ -11,20 +12,7 @@ bool is_off_disabled_channels=false;
 
 // patched
 
-//=================================================================================
-void mudcsCrbDistConfig()
-{  
-  string ProjectHome=getPath("");//"C:\\PVSS_PROJECT_36\\csc_lv";//+key;
-  strreplace(ProjectHome,"/","\\");
-  ProjectHome=substr(ProjectHome,0,strlen(ProjectHome)-1);  
-  string config_file=ProjectHome+"\\config\\config";
-  string dist_config;
-  if(CSC_fwCAN1_g_904_MACHINE)dist_config="dist_config_904.txt";
-  else dist_config="dist_config_p5.txt";
-
-  DebugTN("cmd /c cat "+ProjectHome+"\\source\\CMS_CSCfw_LV_CRB\\special_stuff\\"+dist_config+" >> "+config_file);
-  system("cmd /c cat "+ProjectHome+"\\source\\CMS_CSCfw_LV_CRB\\special_stuff\\"+dist_config+" >> "+config_file );    
-}
+//========================================================================================
 //============set a global var "CSC_fwCAN1_g_CRB_DPS" as dpNames of Crbs==================
 //=====set a global var ""CSC_fwCAN1_g_CRB_DPS_SWITCH_DELAY" as general switch delays=====
 //=====================used as additional init for Vserver================================
@@ -78,15 +66,20 @@ void mudcsCrbPnlInit(int level=1)
   int i,n;
   dyn_string ds1,ds2,ds3;
   string coord;
- 
+  //---------get global gSystemNameCRB-----------------------------------------------  
+  bool gExist = globalExists("gSystemNameCRB");
+  if(!gExist){
+      emuLvCRB_initalizeParam(); //get system name where the CRB component has been installed
+    }    
+//-------------------------------------------------------------------------------- 
   addGlobal("CSC_fwCAN1_g_NEW_ELMB_SWITCH", BOOL_VAR);
   CSC_fwCAN1_g_NEW_ELMB_SWITCH=true;
   
   addGlobal("CSC_fwCAN1_g_DB_PCMB", DYN_STRING_VAR);
-  dpGet("db_pcmb.list",CSC_fwCAN1_g_DB_PCMB); 
+  dpGet(gSystemNameCRB+"db_pcmb.list",CSC_fwCAN1_g_DB_PCMB); 
   
   addGlobal("CSC_fwCAN1_g_DB_PCMB_GEOGRAPHIC", DYN_STRING_VAR);
-  dpGet("db_pcmb_geographic.list",CSC_fwCAN1_g_DB_PCMB_GEOGRAPHIC);
+  dpGet(gSystemNameCRB+"db_pcmb_geographic.list",CSC_fwCAN1_g_DB_PCMB_GEOGRAPHIC);
   
   addGlobal("CSC_fwCAN1_g_P5_SIM", BOOL_VAR); // corr++
   CSC_fwCAN1_g_P5_SIM=false;  // to set P5 simulation mode
@@ -128,6 +121,7 @@ void mudcsCrbPnlInit(int level=1)
   
   dyn_string systemNamesDps,s_split;
   systemNamesDps=dpNames("*:CMS_CSC_LV_CRB");  
+  emuLvCRB_showDebug(bDebug,"systemNamesDps at local ="+systemNamesDps); 
   if(dynlen(systemNamesDps)==0)mudcsLvDebug("SYSTEM NAME NOT DEFINED !");
   else
     {
@@ -151,7 +145,7 @@ void mudcsCrbPnlInit(int level=1)
       CSC_fwCAN1_g_PLUS_SYSTEM_NAME="";
       CSC_fwCAN1_g_MINUS_SYSTEM_NAME="";
       systemNamesDps=dpNames("*:CMS_CSC_HV_CC_*","MUDCS_STRING"); //looking for dps at middle layer projects
-      emuLvCRB_showDebug(bDebug,"systemNamesDps="+systemNamesDps);
+      emuLvCRB_showDebug(bDebug,"systemNamesDps at midlayer ="+systemNamesDps);
   
       for(i=1;i<=dynlen(systemNamesDps);i++)
         {

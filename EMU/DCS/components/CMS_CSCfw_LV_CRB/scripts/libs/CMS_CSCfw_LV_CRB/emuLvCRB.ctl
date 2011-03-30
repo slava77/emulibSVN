@@ -17,8 +17,10 @@
 This library contains LV_CRB functions for EMU DCS LV project.
 
 @author Xiaofeng Yang (PH/UCM)
-@date   Aug 2010
-@data modification   Mar 2011  fix a bug in emuLvCRB_setArchiving()--change *ai* to *AI*
+@date   Aug 2010 created
+@data   Mar 2011 modified: --add four dps for CRB command buffer
+                           --add new function for new CRB power up
+                           --modify archiving config "ai"-->"AI"
 */
       const bool      bDebug                = false; //debug on, else off
       const bool      bP5Project            = true; //for P5,else for 904      
@@ -156,6 +158,12 @@ void emuLvCRB_createLvType()
   dpCreate("db_pcmb","Db_PCMB");
   dpCreate("pcmb_mrtn","Db_PCMB");
   dpCreate("db_pcmb_geographic","Db_PCMB");  
+  // create dps for command buffer--new added
+  dpCreate("CRB_Minue","MUDCS_STRING");
+  dpCreate("CRB_Plus", "MUDCS_STRING");
+  dpCreate("CRB_Buffer_Minue","MUDCS_DYN_STRING");
+  dpCreate("CRB_Buffer_Plus", "MUDCS_DYN_STRING");  
+  
   dyn_string dsDb,dsDbGeog,dsPcmbMrtn;
   if(bP5Project)
    {
@@ -997,22 +1005,15 @@ void emuLvCRB_generateToggleA4(string sElmbName,int iInterval)
  */
 void emuLvCRB_setDoBitSync(string sElmbName,string sBitId,bool bValue,dyn_string &dsExceptionInfo)
 {
-  emuLvCRB_initalizeParam();
   dyn_string dsBitIds = makeDynString(sBitId);
   dyn_bool dbValues = makeDynBool(bValue);  
   if (isFunctionDefined("fwElmbUser_setDoBitsSynchronized"))
   {
      fwElmbUser_setDoBitsSynchronized(sElmbName,dsBitIds,dbValues,dsExceptionInfo); 
-//     fwElmbUser_setDoBits(sElmbName,dsBitIds,dbValues,dsExceptionInfo); 
-     //fwElmbUser_setDoBit(sElmbName,sBitId,bValue,dsExceptionInfo); 
-     //DebugTN("dsExceptionInfo:"+dsExceptionInfo);
      if(dynlen(dsExceptionInfo)>0)
         {
-          //DebugTN(dsExceptionInfo);
           delay(0,100);
           fwElmbUser_setDoBitsSynchronized(sElmbName,dsBitIds,dbValues,dsExceptionInfo);
-//          fwElmbUser_setDoBits(sElmbName,dsBitIds,dbValues,dsExceptionInfo);
-         // fwElmbUser_setDoBit(sElmbName,sBitId,bValue,dsExceptionInfo,false);
         }
      
      // readback the bit and check if it's indeed got set... try 3 times..
@@ -1028,13 +1029,11 @@ void emuLvCRB_setDoBitSync(string sElmbName,string sBitId,bool bValue,dyn_string
           DebugTN("DO readback value of bit " + sElmbName + ", " + sBitId + " is not as it's supposed to be after setting. Setting was " + bValue + ", but readback " + bbitValue + ". Trying to set again (attempt #" + resendingTryCount + ")");
           delay(0, 100);
           fwElmbUser_setDoBitsSynchronized(sElmbName,dsBitIds,dbValues,dsExceptionInfo);
-//          fwElmbUser_setDoBits(sElmbName,dsBitIds,dbValues,dsExceptionInfo);
         } else {
           valueGood = true;
         }
         resendingTryCount++;
-      }
-  
+      }  
    }
   else
    {

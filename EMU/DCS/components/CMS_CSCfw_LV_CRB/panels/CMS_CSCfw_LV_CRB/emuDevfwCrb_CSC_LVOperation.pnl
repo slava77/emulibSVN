@@ -5,26 +5,29 @@ PANEL,-1 -1 694 494 N "_3DFace" 2
 "$1"
 "$2"
 "int is_local_sys;
-
 //==============================================
 main()
-{ 
+{   
   // ------ access control ------------
   if (isFunctionDefined(\"fwAccessControl_setupPanel\")) {
     initAcConstants();
     dyn_string ex;
     fwAccessControl_setupPanel(\"accessPrivilegesChangedCB\", ex);
+    fwCU_connectOperationMode(\"accessPrivilegesChangedCB\", $1 + \"::\" + $2);
     if (emu_checkException(ex)) { return; }
   }  
-  //-----------------------------------   
+  //----------------------------------- 
+   
   int i,j, index, index1; 
   dyn_string ds1,ds2,ds3;
   dyn_string error_list, split1;
   string s1,s2; 
   string bus_number, elmb_number, position;
   
-  mudcsCrbPnlInit(); 
-  emuLvCRB_initalizeParam(); //get system name where the CRB component has been installed 
+  mudcsCrbPnlInit();
+  if(!globalExists(\"gSystemNameCRB\")){
+     emuLvCRB_initalizeParam(); //get system name where the CRB component has been installed 
+    }
   init_name();
   init_dp_switch();
   mudcsCrbInitDelays(1);
@@ -35,22 +38,13 @@ main()
   bus_number=get_bus_number(DpName, elmb_number);
   position=get_geographic(DpName);
   setValue(\"bus_number\",\"text\",\"BUS#\"+bus_number+\"(count from 0)\"+position+\": \"+elmb_number);
-
-  string local_sys = fwFsm_getSystemName();
-  if(strpos(local_sys,\"CSC\")>=0 || strpos(local_sys,\"csc\")>=0 || strpos(local_sys,\"dcspcS2G19\")>=0 
-   || strpos(local_sys,\"EMU\")>=0 || strpos(local_sys,\"emu\")>=0 || (local_sys+\":\"== gSystemNameCRB))
-       is_local_sys=1;
-  else 
-       is_local_sys=0;
-  if(is_local_sys)
+  
+  setValue(\"enable_disable\",\"enabled\",TRUE); 
+  for(i=1;i<=12;i++)
      {
-       setValue(\"enable_disable\",\"enabled\",TRUE); 
-       for(i=1;i<=12;i++)
-         {
-           setValue(\"on\"+i,\"enabled\",TRUE);
-           setValue(\"off\"+i,\"enabled\",TRUE);
-         }
-     }
+        setValue(\"on\"+i,\"enabled\",TRUE);
+        setValue(\"off\"+i,\"enabled\",TRUE);
+      }      
 //-------------------check CAN connection -------------------------
   dpConnect(\"update_connection\",DpName+\".status\");
 
@@ -142,7 +136,7 @@ void periodic_update_monitor()
   while(1)
    {
     update_monitor(\"\", \"\");
-    delay(10);
+    delay(2); //reduce from 10s to 2s
    }
 }
 //==========================================
@@ -388,7 +382,7 @@ void initAcConstants() {
                                  \"ch01\", \"ch02\", \"ch03\", \"ch04\", \"ch05\", \"ch06\", \"ch07\", \"ch08\", \"ch09\", // TMB+DMB enable/disable
                                  \"te_1\", \"te_2\", \"te_3\", \"te_4\", \"te_5\", \"te_6\", \"te_7\", \"te_8\", \"te_9\", // DMB temperature enable/disable
                                  \"on10\", \"on11\", \"on12\", \"off10\", \"off11\", \"off12\",                      // CCB, VCC, 1.5V on/off
-                                 \"ccb\", \"cc\", \"1.5\");                                                    // CCB, VCC, 1.5V enable/disable
+                                 \"ccb\", \"cc\", \"1.5\");   // CCB, VCC, 1.5V enable/disable
   expertControlButtons = makeDynString();
 }" 0
  E E E E 1 -1 -1 0  10 10
@@ -668,7 +662,7 @@ void alert_reconfig(dyn_string dp_frag, int isexclude)
 
 /** This function is called whenever the user privileges change and just passes that to emu_enableDisableControl() which takes care of enabling/disabling buttons. */
 void accessPrivilegesChangedCB(string dummy1, string dummy2) {
-  emu_enableDisableControl(controlButtons, true, \"lblNoControl\", expertControlButtons, true);
+  emu_enableDisableControl($1 + \"::\" + $2, controlButtons, true, \"lblNoControl\", expertControlButtons, true);
 }
 
 " 0
@@ -793,11 +787,11 @@ LANG:1 4 ....
 {
   dpSetWait(mudcsLvAddSystem(\"SINGLE_CRB_SWITCH.\"),1);   
   int current_status;
-  dpGet(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME)+\".status\",current_status);
+  dpGet(DpName+\".status\",current_status);
   if(current_status==0)
-   {dpSet(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME)+\".command\",2);}
+   {dpSetWait(DpName+\".command\",2);}
   else 
-   {dpSet(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME)+\".command\",0);}
+   {dpSetWait(DpName+\".command\",0);}
 }" 0
  E E "
 main(){
@@ -1113,7 +1107,7 @@ LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
 2 91
 "1.5_t"
 ""
-1 78 48.43333908015524 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+1 104 360.8539361312913 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
  E E
 181 0 0 0 0 0
 E E E
@@ -2349,7 +2343,7 @@ vme_crate_draw(sname);
 2 152
 "PRIMITIVE_TEXT5"
 ""
-1 3492.450938504376 1489.391315407543 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 3555.815211069662 1516.897093850382 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 295 0 0 0 0 0
 E E E
@@ -2368,7 +2362,7 @@ LANG:1 2  1
 2 155
 "PRIMITIVE_TEXT8"
 ""
-1 3914.204436518277 1489.391315407543 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 3984.509047493248 1516.897093850382 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 301 0 0 0 0 0
 E E E
@@ -2387,7 +2381,7 @@ LANG:1 2  2
 2 156
 "PRIMITIVE_TEXT9"
 ""
-1 4160.227310359718 1803.75387642716 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 4234.580452073669 1836.43277748092 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 303 0 0 0 0 0
 E E E
@@ -2406,7 +2400,7 @@ LANG:1 2  3
 2 157
 "PRIMITIVE_TEXT10"
 ""
-1 3914.204436518277 2122.021562428391 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 3984.509047493248 2159.93784848576 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 305 0 0 0 0 0
 E E E
@@ -2425,7 +2419,7 @@ LANG:1 2  4
 2 158
 "PRIMITIVE_TEXT11"
 ""
-1 3515.881688394038 2122.021562428391 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 3579.631535315416 2159.93784848576 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 307 0 0 0 0 0
 E E E
@@ -2444,7 +2438,7 @@ LANG:1 2  5
 2 159
 "PRIMITIVE_TEXT12"
 ""
-1 3269.858814552596 1803.75387642716 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 3329.560130734992 1836.43277748092 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 309 0 0 0 0 0
 E E E
@@ -2481,11 +2475,7 @@ T
 LANG:1 3 OFF
 "main()
 {
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), false, makeDynInt(11));
- 
- 
+  mudcsCrbCommandCrbGroup(DpName,false,makeDynInt(11)); 
 }" 0
  E E E
 13 162
@@ -2509,11 +2499,7 @@ T
 LANG:1 2 ON
 "main()
 {
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), true, makeDynInt(11));
- 
- 
+  mudcsCrbCommandCrbGroup(DpName,true,makeDynInt(11)); 
 }" 0
  E E E
 13 163
@@ -2537,11 +2523,7 @@ T
 LANG:1 3 OFF
 "main()
 {
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), false, makeDynInt(10));
- 
- 
+  mudcsCrbCommandCrbGroup(DpName,false,makeDynInt(10)); 
 }" 0
  E E E
 13 164
@@ -2565,11 +2547,7 @@ T
 LANG:1 2 ON
 "main()
 {
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), true, makeDynInt(10));
- 
- 
+  mudcsCrbCommandCrbGroup(DpName,true,makeDynInt(10)); 
 }" 0
  E E E
 13 165
@@ -2593,11 +2571,7 @@ T
 LANG:1 3 OFF
 "main()
 {
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), false, makeDynInt(12));
- 
- 
+  mudcsCrbCommandCrbGroup(DpName,false,makeDynInt(12)); 
 }" 0
  E E E
 13 166
@@ -2621,11 +2595,7 @@ T
 LANG:1 2 ON
 "main()
 {
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), true, makeDynInt(12));
- 
- 
+  mudcsCrbCommandCrbGroup(DpName,true,makeDynInt(12)); 
 }" 0
  E E E
 13 169
@@ -2649,11 +2619,9 @@ T
 LANG:1 3 OFF
 "main()
 {
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), false, makeDynInt(1));
- 
- 
+  DebugTN(\"DpName = \"+DpName);
+  mudcsCrbCommandCrbGroup(DpName,false,makeDynInt(1));  
+  
 }" 0
  E E E
 13 170
@@ -2676,12 +2644,8 @@ T
 1
 LANG:1 2 ON
 "main()
-{
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), true, makeDynInt(1));
- 
- 
+{ 
+ mudcsCrbCommandCrbGroup(DpName,true,makeDynInt(1)); 
 }" 0
  E E E
 13 171
@@ -2705,11 +2669,7 @@ T
 LANG:1 3 OFF
 "main()
 {
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), false, makeDynInt(2));
- 
- 
+  mudcsCrbCommandCrbGroup(DpName,false,makeDynInt(2)); 
 }" 0
  E E E
 13 172
@@ -2733,11 +2693,7 @@ T
 LANG:1 2 ON
 "main()
 {
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), true, makeDynInt(2));
- 
- 
+  mudcsCrbCommandCrbGroup(DpName,true,makeDynInt(2));  
 }" 0
  E E E
 13 173
@@ -2761,11 +2717,7 @@ T
 LANG:1 3 OFF
 "main()
 {
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), false, makeDynInt(3));
- 
- 
+  mudcsCrbCommandCrbGroup(DpName,false,makeDynInt(3)); 
 }" 0
  E E E
 13 174
@@ -2789,11 +2741,7 @@ T
 LANG:1 2 ON
 "main()
 {
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), true, makeDynInt(3));
- 
- 
+  mudcsCrbCommandCrbGroup(DpName,true,makeDynInt(3));  
 }" 0
  E E E
 13 175
@@ -2817,11 +2765,7 @@ T
 LANG:1 3 OFF
 "main()
 {
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), false, makeDynInt(4));
- 
- 
+  mudcsCrbCommandCrbGroup(DpName,false,makeDynInt(4)); 
 }" 0
  E E E
 13 176
@@ -2845,11 +2789,7 @@ T
 LANG:1 2 ON
 "main()
 {
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), true, makeDynInt(4));
- 
- 
+  mudcsCrbCommandCrbGroup(DpName,true,makeDynInt(4));  
 }" 0
  E E E
 13 177
@@ -2873,11 +2813,7 @@ T
 LANG:1 3 OFF
 "main()
 {
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), false, makeDynInt(5));
- 
- 
+  mudcsCrbCommandCrbGroup(DpName,false,makeDynInt(5));
 }" 0
  E E E
 13 178
@@ -2901,11 +2837,7 @@ T
 LANG:1 2 ON
 "main()
 {
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), true, makeDynInt(5));
- 
- 
+  mudcsCrbCommandCrbGroup(DpName,true,makeDynInt(5));  
 }" 0
  E E E
 13 179
@@ -2929,11 +2861,7 @@ T
 LANG:1 3 OFF
 "main()
 {
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), false, makeDynInt(6));
- 
- 
+  mudcsCrbCommandCrbGroup(DpName,false,makeDynInt(6)); 
 }" 0
  E E E
 13 180
@@ -2957,11 +2885,7 @@ T
 LANG:1 2 ON
 "main()
 {
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), true, makeDynInt(6));
- 
- 
+  mudcsCrbCommandCrbGroup(DpName,true,makeDynInt(6));  
 }" 0
  E E E
 13 181
@@ -2985,11 +2909,7 @@ T
 LANG:1 3 OFF
 "main()
 {
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), false, makeDynInt(7));
- 
- 
+  mudcsCrbCommandCrbGroup(DpName,false,makeDynInt(7)); 
 }" 0
  E E E
 13 182
@@ -3013,11 +2933,7 @@ T
 LANG:1 2 ON
 "main()
 {
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), true, makeDynInt(7));
- 
- 
+  mudcsCrbCommandCrbGroup(DpName,true,makeDynInt(7));  
 }" 0
  E E E
 13 183
@@ -3041,11 +2957,7 @@ T
 LANG:1 3 OFF
 "main()
 {
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), false, makeDynInt(8));
- 
- 
+  mudcsCrbCommandCrbGroup(DpName,false,makeDynInt(8)); 
 }" 0
  E E E
 13 184
@@ -3069,11 +2981,7 @@ T
 LANG:1 2 ON
 "main()
 {
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), true, makeDynInt(8));
- 
- 
+  mudcsCrbCommandCrbGroup(DpName,true,makeDynInt(8));  
 }" 0
  E E E
 13 185
@@ -3097,11 +3005,7 @@ T
 LANG:1 3 OFF
 "main()
 {
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), false, makeDynInt(9));
- 
- 
+   mudcsCrbCommandCrbGroup(DpName,false,makeDynInt(9)); 
 }" 0
  E E E
 13 186
@@ -3125,11 +3029,7 @@ T
 LANG:1 2 ON
 "main()
 {
-
- 
- mudcsCrbCommandCrbGroup(mudcsLvAddSystem(DpName,CSC_fwCAN1_g_SYSTEM_NAME), true, makeDynInt(9));
- 
- 
+  mudcsCrbCommandCrbGroup(DpName,true,makeDynInt(9));  
 }" 0
  E E E
 20 187

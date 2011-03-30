@@ -1,3 +1,12 @@
+#uses "CMS_CSCfw_LV_CRB/emuLvCRB.ctl"
+//----------------------------------------------------------------------------------
+/**@file
+
+This library contains mudcsLv functions for EMU DCS LV project.
+@data   Mar 2011 modified by X.Yang: 
+               rewrite two functions: mudcsLvAddSystem and mudcsLvRemoveSystem
+               commented out previous two 
+*/
 int mudcsLvProjectNumber(){
   // works only after a proper Init was called
   int i;
@@ -13,6 +22,7 @@ string mudcsAliasNameGet(string fdpname){
  return fdpname;
 }
 //=======================================================================
+/*
 string mudcsLvAddSystem(string dp, string system_add=""){
 // attention: the dp may contain e.g. :_alert..active !!!
 // so the code below covers that 
@@ -34,10 +44,21 @@ string mudcsLvAddSystem(string dp, string system_add=""){
 //  return s1+":"+s_split[dynlen(s_split)];
 //  else return system_add+":"+s_split[dynlen(s_split)];
   if(strpos(dp,s1+":")>=0)return dp;
-  return s1+":"+dp;
-  
+  return s1+":"+dp;  
 }
+*/
+//================created by X.Yang=======================================
+string mudcsLvAddSystem(string dp,string system_add="")
+{
+  bool gExist = globalExists("gSystemNameCRB");
+  if(!gExist){
+      emuLvCRB_initalizeParam(); //get system name where the CRB component has been installed
+    }    
+  if(strpos(dp,gSystemNameCRB)>=0)return dp;
+  else return gSystemNameCRB+dp;
+}  
 //=======================================================================
+/*
 string mudcsLvRemoveSystem(string dp, string system_rem=""){
   
 // attention: the dp may contain e.g. :_alert..active !!!
@@ -54,14 +75,31 @@ string mudcsLvRemoveSystem(string dp, string system_rem=""){
   //---- this works everywhere --------------
   if(system_rem!="")s1=system_rem; 
   //-----------------------------------------  
-  
-  if((pos=strpos(dp,s1+":"))< 0)return dp;  
+  DebugTN("s1 = "+s1);
+  if((pos=strpos(dp,s1+":"))< 0){
+    DebugTN("return dp 1= "+dp);
+    return dp; 
+  } 
   dp = substr(dp,strlen(s1+":"));
-  return dp;
-  
-  
+  DebugTN("return dp 2= "+dp);
+  return dp;  
 }
-//=======================================================================
+*/
+//================created by X.Yang===========================================================
+string mudcsLvRemoveSystem(string dp,string system_rem="")
+{
+  bool gExist = globalExists("gSystemNameCRB");
+  if(!gExist){
+      emuLvCRB_initalizeParam(); //get system name where the CRB component has been installed
+    } 
+  string sDpName;
+  if(strpos(dp,gSystemNameCRB)>=0){
+    sDpName = substr(dp,strlen(gSystemNameCRB));
+  }
+  else
+    sDpName = dp;
+  return sDpName;
+}  
 //============================================================================================
 
 mudcsLvDebug(string string_to_debug){
