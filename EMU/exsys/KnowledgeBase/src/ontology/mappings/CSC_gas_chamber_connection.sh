@@ -4,7 +4,7 @@
 MAPPINGFILE=CSC_gas_chamber_connection.txt
 print "<!-- Generated from $MAPPINGFILE by $0 -->"
 print "<gasSystem>"
-cat CSC_gas_chamber_connection.txt | while read LINE
+cat $MAPPINGFILE | while read LINE
 do
     if [[ $LINE =~ "Supply" ]]; then
 	LINEASARRAY=( $( echo $LINE) )
