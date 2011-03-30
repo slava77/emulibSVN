@@ -49,7 +49,6 @@
 
 
   <!-- class declarations -->
-  <Declaration><Class URI="&csc;LogicalDomain"/></Declaration>
   <Declaration><Class URI="&csc;LogicalComponent"/></Declaration>
   <Declaration><Class URI="&csc;FactProvider"/></Declaration>
 
@@ -129,7 +128,6 @@
   <Declaration><Class URI="&csc;CoolingCircuit"/></Declaration>
 
   <!-- class descriptions -->
-  <EntityAnnotation><Class URI="&csc;LogicalDomain"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A set of items that logically belong together.</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;LogicalComponent"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A set of components that logically belong together.</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><Class URI="&csc;FactProvider"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">A fact-providing SW component. Only members of this class may act as a source of facts to the Expert System.</Constant></Annotation></EntityAnnotation>
 
@@ -223,10 +221,6 @@
   <Declaration><ObjectProperty URI="&csc;isIn"/></Declaration>
   <Declaration><ObjectProperty URI="&csc;contains"/></Declaration>
 
-  <Declaration><ObjectProperty URI="&csc;logicalComposition"/></Declaration>
-  <Declaration><ObjectProperty URI="&csc;isPartOf"/></Declaration>
-  <Declaration><ObjectProperty URI="&csc;consistsOf"/></Declaration>
-
   <Declaration><ObjectProperty URI="&csc;controlPath"/></Declaration>
   <Declaration><ObjectProperty URI="&csc;isControlledBy"/></Declaration>
   <Declaration><ObjectProperty URI="&csc;controls"/></Declaration>
@@ -274,10 +268,6 @@
   <EntityAnnotation><ObjectProperty URI="&csc;locationPath"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'locationPath' B, then A contains, or is in, B directly or indirectly.</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><ObjectProperty URI="&csc;isIn"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'isIn' B, then A is in B directly or indirectly. It is a transitive relation. Its inverse is 'contains'.</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><ObjectProperty URI="&csc;contains"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'contains' B, then A contains B directly or indirectly. It is a transitive relation. Its inverse is 'isIn'.</Constant></Annotation></EntityAnnotation>
-
-  <EntityAnnotation><ObjectProperty URI="&csc;logicalComposition"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'logicalComposition' B, then A constists of, or is part of, B directly or indirectly.</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><ObjectProperty URI="&csc;isPartOf"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'isPartOf' B, then A is a part of B directly or indirectly. It is a transitive relation. Its inverse is 'consistsOf'.</Constant></Annotation></EntityAnnotation>
-  <EntityAnnotation><ObjectProperty URI="&csc;consistsOf"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'consistsOf' B, then A consists exclusively or inclusively of B directly or indirectly. It is a transitive relation. Its inverse is 'isPartOf'.</Constant></Annotation></EntityAnnotation>
 
   <EntityAnnotation><ObjectProperty URI="&csc;controlPath"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'controlPath' B, then A controls, or is controlled by, B directly or indirectly.</Constant></Annotation></EntityAnnotation>
   <EntityAnnotation><ObjectProperty URI="&csc;isControlledBy"/><Annotation annotationURI="dc:description"><Constant datatypeURI="xsd:string">If A 'isControlledBy' B, then A is controlled by B directly or indirectly. It is a transitive relation. Its inverse is 'controls'.</Constant></Annotation></EntityAnnotation>
@@ -403,9 +393,6 @@
   <SubObjectPropertyOf><ObjectProperty URI="&csc;isIn"/><ObjectProperty URI="&csc;locationPath"/></SubObjectPropertyOf>
   <SubObjectPropertyOf><ObjectProperty URI="&csc;contains"/><ObjectProperty URI="&csc;locationPath"/></SubObjectPropertyOf>
 
-  <SubObjectPropertyOf><ObjectProperty URI="&csc;isPartOf"/><ObjectProperty URI="&csc;logicalComposition"/></SubObjectPropertyOf>
-  <SubObjectPropertyOf><ObjectProperty URI="&csc;consistsOf"/><ObjectProperty URI="&csc;logicalComposition"/></SubObjectPropertyOf>
-
   <SubObjectPropertyOf><ObjectProperty URI="&csc;isControlledBy"/><ObjectProperty URI="&csc;controlPath"/></SubObjectPropertyOf>
   <SubObjectPropertyOf><ObjectProperty URI="&csc;controls"/><ObjectProperty URI="&csc;controlPath"/></SubObjectPropertyOf>
 
@@ -428,7 +415,6 @@
   <InverseObjectProperties><ObjectProperty URI="&csc;sendsTriggerTo"/><ObjectProperty URI="&csc;receivesTriggerFrom"/></InverseObjectProperties>
   <InverseObjectProperties><ObjectProperty URI="&csc;sendsL1ATo"/><ObjectProperty URI="&csc;receivesL1AFrom"/></InverseObjectProperties>
   <InverseObjectProperties><ObjectProperty URI="&csc;isIn"/><ObjectProperty URI="&csc;contains"/></InverseObjectProperties>
-  <InverseObjectProperties><ObjectProperty URI="&csc;isPartOf"/><ObjectProperty URI="&csc;consistsOf"/></InverseObjectProperties>
   <InverseObjectProperties><ObjectProperty URI="&csc;controls"/><ObjectProperty URI="&csc;isControlledBy"/></InverseObjectProperties>
   <InverseObjectProperties><ObjectProperty URI="&csc;monitors"/><ObjectProperty URI="&csc;isMonitoredBy"/></InverseObjectProperties>
   <InverseObjectProperties><ObjectProperty URI="&csc;deliversHVTo"/><ObjectProperty URI="&csc;getsHVFrom"/></InverseObjectProperties>
@@ -445,8 +431,6 @@
   <TransitiveObjectProperty><ObjectProperty URI="&csc;receivesL1AFrom"/></TransitiveObjectProperty>
   <TransitiveObjectProperty><ObjectProperty URI="&csc;isIn"/></TransitiveObjectProperty>
   <TransitiveObjectProperty><ObjectProperty URI="&csc;contains"/></TransitiveObjectProperty>
-  <TransitiveObjectProperty><ObjectProperty URI="&csc;isPartOf"/></TransitiveObjectProperty>
-  <TransitiveObjectProperty><ObjectProperty URI="&csc;consistsOf"/></TransitiveObjectProperty>
   <TransitiveObjectProperty><ObjectProperty URI="&csc;deliversHVTo"/></TransitiveObjectProperty>
   <TransitiveObjectProperty><ObjectProperty URI="&csc;getsHVFrom"/></TransitiveObjectProperty>
   <TransitiveObjectProperty><ObjectProperty URI="&csc;deliversLVTo"/></TransitiveObjectProperty>

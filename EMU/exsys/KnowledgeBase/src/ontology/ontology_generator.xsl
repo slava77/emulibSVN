@@ -67,7 +67,7 @@
 	<DataPropertyAssertion><DataProperty URI="&csc;_Name"/><Individual URI="&csc;ME{$ENDCAP}"/><Constant datatypeURI="&xsd;string"><xsl:value-of select="concat('ME',$ENDCAP)"/></Constant></DataPropertyAssertion>
 	<DataPropertyAssertion><DataProperty URI="&csc;_Name"/><Individual URI="&csc;ME{$ENDCAP}"/><Constant datatypeURI="&xsd;string"><xsl:value-of select="concat('ME',translate($ENDCAP,'+-','pm'))"/></Constant></DataPropertyAssertion>
 	<ObjectPropertyAssertion>
-	  <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}"/><Individual URI="&csc;ME"/>
+	  <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;ME{$ENDCAP}"/><Individual URI="&csc;ME"/>
 	</ObjectPropertyAssertion>
 
 	<xsl:for-each select="document($SOURCE)//Chamber[@endcap=$ENDCAP]">
@@ -78,7 +78,7 @@
 	    <Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}"/></Declaration>
 	    <ClassAssertion><Class URI="&csc;Station"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}"/></ClassAssertion>
 	    <ObjectPropertyAssertion>
-	      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}"/><Individual URI="&csc;ME{$ENDCAP}"/>
+	      <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}"/><Individual URI="&csc;ME{$ENDCAP}"/>
 	    </ObjectPropertyAssertion>
 
 	    <xsl:for-each select="document($SOURCE)//Chamber[@endcap=$ENDCAP and @station=$STATION]">
@@ -89,7 +89,7 @@
 		<Declaration><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}"/></Declaration>
 		<ClassAssertion><Class URI="&csc;Ring"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}"/></ClassAssertion>
 		<ObjectPropertyAssertion>
-		  <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}"/>
+		  <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}"/>
 		</ObjectPropertyAssertion>
 		
 		<xsl:for-each select="document($SOURCE)//Chamber[@endcap=$ENDCAP and @station=$STATION and @type=$RING]">
@@ -108,7 +108,7 @@
 		      </SameIndividuals>
 		    </xsl:if>
 		    <ClassAssertion><Class URI="&csc;Chamber"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/></ClassAssertion>
-		    <ObjectPropertyAssertion><ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}"/></ObjectPropertyAssertion>
+		    <ObjectPropertyAssertion><ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}"/></ObjectPropertyAssertion>
 		    <!-- Chamber's Cooling -->
 		    <ObjectPropertyAssertion><ObjectProperty URI="&csc;cools"/><Individual URI="&csc;CoolingCircuit2"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/></ObjectPropertyAssertion>
 
@@ -140,22 +140,22 @@
 		    <ClassAssertion><Class URI="&csc;Layer"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/5"/></ClassAssertion>
 		    <ClassAssertion><Class URI="&csc;Layer"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/6"/></ClassAssertion>
 		    <ObjectPropertyAssertion>
-		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/1"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/>
+		      <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/1"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/>
 		    </ObjectPropertyAssertion>
 		    <ObjectPropertyAssertion>
-		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/2"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/>
+		      <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/2"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/>
 		    </ObjectPropertyAssertion>
 		    <ObjectPropertyAssertion>
-		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/3"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/>
+		      <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/3"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/>
 		    </ObjectPropertyAssertion>
 		    <ObjectPropertyAssertion>
-		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/4"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/>
+		      <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/4"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/>
 		    </ObjectPropertyAssertion>
 		    <ObjectPropertyAssertion>
-		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/5"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/>
+		      <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/5"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/>
 		    </ObjectPropertyAssertion>
 		    <ObjectPropertyAssertion>
-		      <ObjectProperty URI="&csc;isPartOf"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/6"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/>
+		      <ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}/6"/><Individual URI="&csc;ME{$ENDCAP}{$STATION}/{$RING}/{$PADDED_CHAMBER}"/>
 		    </ObjectPropertyAssertion>
 		  </xsl:if>
 		</xsl:for-each>
@@ -269,7 +269,7 @@
     <xsl:for-each select="document($SOURCE)//FEDCrate">
       <!-- FED Crate -->
       <ObjectPropertyAssertion>
-	<ObjectProperty URI="&csc;isPartOf"/>
+	<ObjectProperty URI="&csc;isIn"/>
 	<Individual URI="&csc;FEDCrate{@CRATE_NUMBER}"/><Individual URI="&csc;{$FEDSYSTEM_CANONICAL}"/>
       </ObjectPropertyAssertion>
       <!-- DCC -->
@@ -335,7 +335,7 @@
     <xsl:for-each select="document($SOURCE)//FEDCrate">
       <!-- FED Crate -->
       <ObjectPropertyAssertion>
-	<ObjectProperty URI="&csc;isPartOf"/>
+	<ObjectProperty URI="&csc;isIn"/>
 	<Individual URI="&csc;FEDCrate{@CRATE_NUMBER}"/><Individual URI="&csc;{$FEDSYSTEM_CANONICAL}"/>
       </ObjectPropertyAssertion>
     </xsl:for-each>
