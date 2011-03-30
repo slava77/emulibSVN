@@ -404,14 +404,17 @@ void mudcsCrbCommandCrbGroup(string fsm, bool isOn, dyn_int boards)
 //-------------CSC_fwCAN1_g_NEW_ELMB_SWITCH-------------------
   dsPairs = emuLvCRB_getDynString("Switch_List_DTmbs");
   dsRest  = emuLvCRB_getDynString("Switch_List_Others");
-//------------------for Tmb/Dmb boards (once only)--------------------------  
+//------------------for Tmb/Dmb boards (once only)-------------------------- 
+ DebugTN("sElmb = "+sElmb);
   for(j=1;j<=1;j++)
    {
      for(i=1;i<=dynlen(dsPairs);i++)
        {  
          if(dynContains(dsOffChannels,i)>=1)continue;
          if(dynContains(boards,i)>=1)
-             {    
+             { 
+               DebugTN("dsPairs[i] = "+dspairs[i]);
+               DebugTN("isOn = "+isOn);  
                emuLvCRB_setDoBitSync(sElmb,dsPairs[i],isOn,argdsExceptionInfo);    
              }
        }
