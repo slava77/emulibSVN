@@ -673,7 +673,7 @@ void emuLvCRB_powerOnCRB(string sCRB)
   dyn_int diOffChannels;
   dyn_string dsOffChannels = makeDynString();
   bool bPowerOn = false;
-  time startT = getCurrentTime();
+//  time startT = getCurrentTime();
   if (bBufferEmpty == true){
       delay(5); //set delay for first CRB to 5s
   }    
@@ -727,15 +727,15 @@ void emuLvCRB_powerOnCRB(string sCRB)
           //---set alert handle to active-----------------------------------------
           startThread("emuLvCRB_activeAlertHandle",sCRB,true);
         } 
-    time endT = getCurrentTime();
-    time dt = endT - startT;
-    emuLvCRB_showDebug(bDebug,"Switch on took " + minute(dt) +":"+ second(dt) +"."+ milliSecond(dt));
+//    time endT = getCurrentTime();
+//    time dt = endT - startT;
+//    emuLvCRB_showDebug(bDebug,"Switch on took " + minute(dt) +":"+ second(dt) +"."+ milliSecond(dt));
     //-----end of Power on-----------------------------
     dpSetWait("LV_START_UP_CHAMBER.",sCRB+" is finished"); 
 }
 void emuLvCRB_powerOffCRB(string sCRB)
 {
-  time startT = getCurrentTime();
+ // time startT = getCurrentTime();
   emuLvCRB_activeAlertHandle(sCRB,false);  
   delay(0,500); //delay 500ms
   //----for x2p-----------------------------------------
@@ -754,9 +754,9 @@ void emuLvCRB_powerOffCRB(string sCRB)
   int iStatus;
   dpGet(sCRB+".status",iStatus);
   DebugTN("CRB:"+sCRB+".status = "+iStatus+" (after power off)");
-  time endT = getCurrentTime();
-  time dt = endT - startT;
-  emuLvCRB_showDebug(bDebug,"Switch on took " + minute(dt) +":"+ second(dt) +"."+ milliSecond(dt));
+//  time endT = getCurrentTime();
+//  time dt = endT - startT;
+//  emuLvCRB_showDebug(bDebug,"Switch on took " + minute(dt) +":"+ second(dt) +"."+ milliSecond(dt));
   DebugTN("done for power off of Crb:"+sCRB);
 }
 void emuLvCRB_activeAlertHandle(string sCRB,bool bIsActive)
