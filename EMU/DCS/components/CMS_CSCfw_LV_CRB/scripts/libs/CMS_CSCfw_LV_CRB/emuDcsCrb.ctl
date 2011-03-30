@@ -413,7 +413,7 @@ void mudcsCrbCommandCrbGroup(string fsm, bool isOn, dyn_int boards)
          if(dynContains(dsOffChannels,i)>=1)continue;
          if(dynContains(boards,i)>=1)
              { 
-               DebugTN("dsPairs[i] = "+dspairs[i]);
+               DebugTN("dsPairs[i] = "+dsPairs[i]);
                DebugTN("isOn = "+isOn);  
                emuLvCRB_setDoBitSync(sElmb,dsPairs[i],isOn,argdsExceptionInfo);    
              }
