@@ -8,7 +8,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -27,16 +26,11 @@ import jsf.bean.gui.ClassFinderIf;
 import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.component.table.BeanTable;
 import jsf.bean.gui.component.table.BeanTableDaoIf;
-import jsf.bean.gui.component.table.export.BeanTableDefaultExportTemplate;
-import jsf.bean.gui.component.table.export.BeanTableExportTemplate;
-import jsf.bean.gui.component.table.export.BeanTableExportTemplateProvider;
 import jsf.bean.gui.component.table.BeanTableFilter;
 import jsf.bean.gui.component.table.BeanTableFilterItem;
 import jsf.bean.gui.component.table.BeanTablePack;
-import jsf.bean.gui.component.table.export.BeanTableExportResource;
 import jsf.bean.gui.converter.ClassConverter;
 import jsf.bean.gui.converter.NewLineConverter;
-import jsf.bean.gui.component.table.export.ExportTemplateComparator;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
 
@@ -46,7 +40,6 @@ public abstract class BeanTableManager implements Serializable {
     private BeanTablePack tablePack;
     private List<BeanTablePack> tables = new ArrayList<BeanTablePack>();
     private final String id;
-    private List<BeanTableExportResource> exportResources;
 
     public abstract BeanTableDaoIf getBeanTableDao();
 
@@ -131,36 +124,6 @@ public abstract class BeanTableManager implements Serializable {
             tablePrefix = (tablePrefix != null ? tablePrefix.concat(nextPrefix) : nextPrefix).concat(".");
         }
         return tablePrefix;
-    }
-
-    /**
-     * Override for custom template provider
-     * @return
-     */
-    public BeanTableExportTemplateProvider getTemplateProvider() {
-        return new BeanTableExportTemplateProvider();
-    }
-
-    public List<BeanTableExportResource> getExportResources() throws IOException {
-
-        if (exportResources == null) {
-            List<BeanTableExportTemplate> templates = new ArrayList<BeanTableExportTemplate>();
-
-            // Adding defaults
-            templates.addAll(BeanTableDefaultExportTemplate.getTemplates());
-
-            // Adding custom templates
-            templates.addAll(getTemplateProvider().getTemplates(getTable().getRowClass()));
-
-            Collections.sort(templates, new ExportTemplateComparator());
-            exportResources = new ArrayList<BeanTableExportResource>();
-
-            for (BeanTableExportTemplate t : templates) {
-                exportResources.add(new BeanTableExportResource(getTable(), t));
-            }
-        }
-
-        return exportResources;
     }
 
     /*********************************************

@@ -16,7 +16,7 @@ import javax.faces.context.FacesContext;
  */
 @ManagedBean
 @RequestScoped
-public class DropDownBean {
+public class ComponentSupportBean {
 
     public String getClientId() {
         UIComponent c = UIComponent.getCurrentComponent(FacesContext.getCurrentInstance());

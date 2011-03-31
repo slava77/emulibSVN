@@ -42,59 +42,12 @@ public abstract class BeanTableColumn extends BeanTableColumnBase {
         return null;
     }
 
-
-
-    /**
-     *
-     * Width stuff
-     *
-     */
-
     public Integer getWidth() {
         return table.getProperties().getColumnWidth(name);
     }
 
     public void setWidth(Integer width) {
         table.getProperties().setColumnWidth(name, width);
-    }
-
-    public void widthUpListener(ActionEvent ev) {
-        if (this.getWidth() != null) {
-            changeWidth(table.getProperties().getColumnWidthStep());
-        }
-    }
-
-    public void widthDownListener(ActionEvent ev) {
-        if (this.getWidth() != null) {
-            if (this.getWidth() > 0) {
-                changeWidth((-1) * table.getProperties().getColumnWidthStep());
-            }
-        }
-    }
-
-    private void changeWidth(int step) {
-        if (table.getSelectedColumns().getTarget().size() > 1) {
-
-            setWidth(getWidth() + step);
-            if (getWidth() <= 0) {
-                setWidth(0);
-            }
-
-            BeanTableColumn prev = null;
-            int myidx = table.getSelectedColumns().getTarget().indexOf(this);
-            if (myidx == (table.getSelectedColumns().getTarget().size() - 1)) {
-                prev = (BeanTableColumn) table.getSelectedColumns().getTarget().get(myidx - 1);
-            } else {
-                prev = (BeanTableColumn) table.getSelectedColumns().getTarget().get(myidx + 1);
-            }
-
-            if (prev != null) {
-                prev.setWidth(prev.getWidth() + ((-1) * step));
-                if (prev.getWidth() < 0) {
-                    prev.setWidth(0);
-                }
-            }
-        }
     }
 
 }

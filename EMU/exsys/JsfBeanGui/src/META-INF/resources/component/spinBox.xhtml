@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:cc="http://java.sun.com/jsf/composite">
+
+    <cc:interface>
+
+        <cc:attribute name="value" required="true"
+                      shortDescription="Integer value"/>
+
+        <cc:attribute name="step" default="1" type="java.lang.Integer"
+                      shortDescription="Spin step"/>
+
+        <cc:attribute name="minValue" default="null" type="java.lang.Integer"
+                      shortDescription="Min alowable value"/>
+
+        <cc:attribute name="maxValue" default="null" type="java.lang.Integer"
+                      shortDescription="Min alowable value"/>
+
+        <cc:attribute name="style" default=" "
+                      shortDescription="Spin box style"/>
+
+        <cc:attribute name="gridStyle" default=" "
+                      shortDescription="grid style"/>
+
+    </cc:interface>
+
+    <cc:implementation>
+
+        <ice:panelGrid columns="2" 
+                       border="0"
+                       cellpadding="0" cellspacing="0"
+                       style="#{cc.attrs.gridStyle}">
+            <ice:inputText id="value"
+                           value="#{cc.attrs.value}"
+                           style="#{cc.attrs.style}">
+                <f:convertNumber integerOnly="true" groupingUsed="false"/>
+            </ice:inputText>
+            <ice:panelGrid columns="1" width="10px" cellpadding="0" cellspacing="0">
+                <ice:commandButton id="up"
+                                   image="/xmlhttp/beantable/img/spin_up.gif"
+                                   title="Up by #{cc.attrs.step}"/>
+                <ice:commandButton id="down"
+                                   image="/xmlhttp/beantable/img/spin_down.gif"
+                                   title="Down by #{cc.attrs.step}"/>
+            </ice:panelGrid>
+        </ice:panelGrid>
+
+        <script type="text/javascript">
+            // <![CDATA[
+
+            jQuery(document).ready(function () {
+
+                jQuery('#{componentSupportBean.jqPrefix}up')
+                    .click(function() {
+                        var v = jQuery('#{componentSupportBean.jqPrefix}value');
+                        var next = parseInt(v.val()) + #{cc.attrs.step};
+                        if ('#{cc.attrs.maxValue}' != 'null') {
+                          if (next > #{cc.attrs.maxValue}) {
+                              next = #{cc.attrs.maxValue};
+                          }
+                        }
+                        v.val(next);
+                    });
+
+                jQuery('#{componentSupportBean.jqPrefix}down')
+                    .click(function() {
+                        var v = jQuery('#{componentSupportBean.jqPrefix}value');
+                        var next = parseInt(v.val()) - #{cc.attrs.step};
+                        if ('#{cc.attrs.minValue}' != 'null') {
+                          if (next < #{cc.attrs.minValue}) {
+                              next = #{cc.attrs.minValue};
+                          }
+                        }
+                        v.val(next);
+                    });
+
+            });
+            //]]>
+        </script>
+
+
+    </cc:implementation>
+</html>

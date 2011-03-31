@@ -5,6 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:comp="http://java.sun.com/jsf/composite/component"
       xmlns:cc="http://java.sun.com/jsf/composite">
 
     <cc:interface>
@@ -64,19 +65,9 @@
 
                                 <ice:panelGroup styleClass="columnSelectPanel">
                                     <ice:outputText value="#{column.title}"/>
-                                    <ice:panelGrid columns="2" style="width: 10px; float: right" border="0">
-                                        <ice:outputText value="#{column.width}">
-                                            <f:convertNumber integerOnly="true" groupingUsed="false"/>
-                                        </ice:outputText>
-                                        <ice:panelGrid columns="1" width="10px" cellpadding="0" cellspacing="0">
-                                            <ice:commandButton image="/xmlhttp/beantable/img/spin_up.gif"
-                                                               title="Up by #{cc.attrs.manager.table.properties.columnWidthStep}"
-                                                               actionListener="#{column.widthUpListener}"/>
-                                            <ice:commandButton image="/xmlhttp/beantable/img/spin_down.gif"
-                                                               title="Down by #{cc.attrs.manager.table.properties.columnWidthStep}"
-                                                               actionListener="#{column.widthDownListener}"/>
-                                        </ice:panelGrid>
-                                    </ice:panelGrid>
+                                    <comp:spinBox value="#{column.width}"
+                                                  style="width: 25px;"
+                                                  gridStyle="float: right"/>
                                 </ice:panelGroup>
 
                             </ice:panelPositioned>

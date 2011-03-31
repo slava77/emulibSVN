@@ -121,7 +121,7 @@
                                style="margin-top: 0px; width: 100%"
                                columnWidths="#{cc.attrs.manager.table.columnWidths}">
 
-                    <ice:columns value="#{cc.attrs.manager.table.selectedColumns.target}" var="column">
+                    <ice:columns value="#{cc.attrs.manager.table.selectedColumns.target}" var="column" varStatus="columnStatus">
 
                         <ice:rowSelector
                             value="#{item.selected}"
