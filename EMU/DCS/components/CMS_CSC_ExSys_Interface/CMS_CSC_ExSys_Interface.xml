@@ -1,7 +1,7 @@
 <component>
 <name>CMS_CSC_ExSys_Interface</name>
-<version>2.0.1</version>
-<date>2011/03/29</date>
+<version>2.1.0</version>
+<date>2011/03/31</date>
 <required>CMS_CSC_common=1.3.5</required>
 <required>fwCore=4.0.0</required>
 <dontRestartProject>yes</dontRestartProject>
