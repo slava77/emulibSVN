@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Properties;
 import javax.faces.application.Application;
 import javax.faces.application.ViewHandler;
-import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.persistence.Transient;
@@ -30,7 +29,6 @@ import jsf.bean.gui.component.table.BeanTableFilter;
 import jsf.bean.gui.component.table.BeanTableFilterItem;
 import jsf.bean.gui.component.table.BeanTablePack;
 import jsf.bean.gui.converter.ClassConverter;
-import jsf.bean.gui.converter.NewLineConverter;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
 
@@ -199,6 +197,7 @@ public abstract class BeanTableManager implements Serializable {
     private static final String PROPERTIES_BASE_PATH = "resources/tables/";
     private static final String PROPERTIES_EXTENSION = ".properties";
     private static final String COOKIE_NAME_PATTERN = "table.%s.properties";
+
     // Caching default properties
     private static Map<String, Properties> beanProperties = new HashMap<String, Properties>();
 
@@ -296,26 +295,9 @@ public abstract class BeanTableManager implements Serializable {
         return null;
     }
 
-    private UIComponent getCompositeComponent() {
-        UIComponent c = UIComponent.getCurrentComponent(FacesContext.getCurrentInstance());
-        return UIComponent.getCompositeComponentParent(c);
-    }
-
-    public String getCompositeComponentClientId() {
-        return getCompositeComponent().getClientId();
-    }
-
     private File getRealFile(String file) {
         String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath(file);
         return new File(path);
-    }
-
-    public ClassConverter getClassConverter() {
-        return new ClassConverter(getClassFinder());
-    }
-
-    public NewLineConverter getNewLineConverter() {
-        return new NewLineConverter();
     }
 
     public void addPropertyFilter(String property, BeanTableFilter filter) {
@@ -350,4 +332,9 @@ public abstract class BeanTableManager implements Serializable {
         context.setViewRoot(viewRoot);
         context.renderResponse();
     }
+
+    public ClassConverter getClassConverter() {
+        return new ClassConverter(getClassFinder());
+    }
+
 }

@@ -62,10 +62,11 @@
                     <td>
                         <ice:panelGroup rendered="#{!cc.attrs.manager.tablePack.singleClass}" 
                                         style=" margin-left: 2px;">
-                            <ice:selectOneMenu value="#{cc.attrs.manager.tablePack.selectedClass}" immediate="true"
+                            <ice:selectOneMenu value="#{cc.attrs.manager.tablePack.selectedClass}" 
+                                               immediate="true"
+                                               converter="#{cc.attrs.manager.classConverter}"
                                                partialSubmit="true">
                                 <f:selectItems value="#{cc.attrs.manager.tablePack.classes}"/>
-                                <f:converter binding="#{cc.attrs.manager.classConverter}"/>
                             </ice:selectOneMenu>
                         </ice:panelGroup>
                     </td>
@@ -112,7 +113,7 @@
 
                 <!-- Table -->
 
-                <ice:dataTable id="#{cc.attrs.manager.id}"
+                <ice:dataTable id="beanTable"
                                styleClass="#{cc.attrs.manager.id}-BeanTable #{cc.attrs.styleClass}"
                                var="item"
                                width="100%"
@@ -279,21 +280,21 @@
 
                 <ice:panelGroup rendered="#{cc.attrs.manager.table.setColumnWidth}" style="display: none">
 
-                    <ice:inputText styleClass="#{cc.attrs.manager.id}-BeanTableWidth" value="#{cc.attrs.manager.table.columnWidths}"/>
+                    <ice:inputText id="beanTableWidths" value="#{cc.attrs.manager.table.columnWidths}"/>
 
                     <script type="text/javascript">
                         // <![CDATA[
                         jQuery(document).ready( function () {
 
                             var columnWidths = "";
-                            jQuery('table.#{cc.attrs.manager.id}-BeanTable thead tr th').each(function() {
+                            jQuery('#{componentSupportBean.jqPrefix}beanTable thead tr th').each(function() {
                                 if (columnWidths != "") {
                                     columnWidths += ",";
                                 }
                                 columnWidths += jQuery(this).width();
                             });
 
-                            jQuery('input.#{cc.attrs.manager.id}-BeanTableWidth').val(columnWidths);
+                            jQuery('#{componentSupportBean.jqPrefix}beanTableWidths').val(columnWidths);
 
                         });
                         // ]]>

@@ -9,6 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import jsf.bean.gui.converter.NewLineConverter;
 
 /**
  *
@@ -25,6 +26,10 @@ public class ComponentSupportBean {
 
     public String getJqPrefix() {
         return "#".concat(getClientId()).concat(":").replaceAll(":", "\\\\\\\\:");
+    }
+
+    public NewLineConverter getNewLineConverter() {
+        return new NewLineConverter();
     }
 
 }

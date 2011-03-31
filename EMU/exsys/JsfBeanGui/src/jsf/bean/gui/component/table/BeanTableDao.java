@@ -80,6 +80,7 @@ public abstract class BeanTableDao implements Serializable {
         }
 
         preExecute(table, c);
+        c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
         List list = new ArrayList();
         try {
@@ -109,6 +110,7 @@ public abstract class BeanTableDao implements Serializable {
                             .setProjection(Projections.rowCount());
 
         preExecuteCount(table, c);
+        c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
         Long count = (Long) c.uniqueResult();
         transaction.rollback();
