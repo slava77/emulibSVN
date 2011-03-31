@@ -79,6 +79,7 @@ This library contains function associated with the CSC datapoints archive config
 //-------config all archiving dps ---------------------------------------------------  
 void emudcsArchive_configAllArchivingDps()  
 {  
+  return;
    DebugTN("start archiving dp configuration..."); 
    DebugTN("please ignore any waining message");                   
 //Clean all previous archiving dps and dptypes  
