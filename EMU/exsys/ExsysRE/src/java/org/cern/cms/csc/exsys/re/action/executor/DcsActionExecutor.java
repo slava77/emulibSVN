@@ -9,6 +9,7 @@ import jsf.bean.gui.log.Logger;
 import org.cern.cms.csc.dw.dao.GOntologyDaoLocal;
 import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.ontology.Component;
+import org.cern.cms.csc.dw.model.ontology.graph.GComponent;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponent.DataPropertyType;
 import org.cern.cms.csc.dw.util.EjbLookup;
 import org.cern.cms.csc.dw.util.ExsysIORemoteEjbLookup;
@@ -45,7 +46,12 @@ public class DcsActionExecutor extends ActionExecutor {
             // gather all data that we need
             DcsCommandAction dcsCommandAction = (DcsCommandAction) actionExec.getAction();
             Component comp = actionExec.getTrigger().getConclusion().getComponent();
-            String dp = (String) gOntologyDao.ejbStrict().getGComponent(comp).getDataProperty(DataPropertyType.DCS_ID);
+            GComponent gComp = gOntologyDao.ejbStrict().getGComponent(comp);
+            String dp = null;
+
+            if (gComp.isSetDataProperty(DataPropertyType.DCS_ID)) {
+                dp = (String) gComp.getDataProperty(DataPropertyType.DCS_ID);
+            }
 
             dimData.append(dcsCommandAction.getCommandType().value());
             if (dp != null) {

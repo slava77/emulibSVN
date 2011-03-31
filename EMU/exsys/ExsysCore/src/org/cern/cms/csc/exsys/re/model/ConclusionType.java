@@ -109,7 +109,6 @@ public class ConclusionType
     protected XMLGregorianCalendar timeCreated;
     protected List<org.cern.cms.csc.exsys.re.model.Action> actions = new Vector<org.cern.cms.csc.exsys.re.model.Action>();
     @XmlElement(required = true)
-    @jsf.bean.gui.annotation.NoManualInput(createDefaultValue = false)
     protected org.cern.cms.csc.exsys.re.model.RuleSet ruleSet;
     @jsf.bean.gui.annotation.NoManualInput(createDefaultValue = false)
     protected List<org.cern.cms.csc.exsys.re.model.Rule> rules = new Vector<org.cern.cms.csc.exsys.re.model.Rule>();

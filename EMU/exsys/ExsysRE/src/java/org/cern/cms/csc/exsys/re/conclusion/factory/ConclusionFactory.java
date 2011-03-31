@@ -198,6 +198,9 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
      */
     protected Collection<EventBean> unpackEvents(EventBean[] events) {
         Collection<EventBean> ret = new HashSet<EventBean>();
+        if (events == null) {
+            return ret;
+        }
         for (EventBean event: events) {
             unpackEvent(event, ret);
         }

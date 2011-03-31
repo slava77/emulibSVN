@@ -21,7 +21,6 @@ import org.neo4j.graphdb.RelationshipType;
  * <pre>
  * &lt;simpleType name="componentLinkClassIdType">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *     &lt;enumeration value="consistsOf"/>
  *     &lt;enumeration value="contains"/>
  *     &lt;enumeration value="controlPath"/>
  *     &lt;enumeration value="controls"/>
@@ -39,9 +38,7 @@ import org.neo4j.graphdb.RelationshipType;
  *     &lt;enumeration value="isCooledBy"/>
  *     &lt;enumeration value="isIn"/>
  *     &lt;enumeration value="isMonitoredBy"/>
- *     &lt;enumeration value="isPartOf"/>
  *     &lt;enumeration value="locationPath"/>
- *     &lt;enumeration value="logicalComposition"/>
  *     &lt;enumeration value="monitorPath"/>
  *     &lt;enumeration value="monitors"/>
  *     &lt;enumeration value="powerSupplyPath"/>
@@ -63,8 +60,6 @@ public enum ComponentLinkClassType
     implements RelationshipType
 {
 
-    @XmlEnumValue("consistsOf")
-    CONSISTS_OF("consistsOf"),
     @XmlEnumValue("contains")
     CONTAINS("contains"),
     @XmlEnumValue("controlPath")
@@ -99,12 +94,8 @@ public enum ComponentLinkClassType
     IS_IN("isIn"),
     @XmlEnumValue("isMonitoredBy")
     IS_MONITORED_BY("isMonitoredBy"),
-    @XmlEnumValue("isPartOf")
-    IS_PART_OF("isPartOf"),
     @XmlEnumValue("locationPath")
     LOCATION_PATH("locationPath"),
-    @XmlEnumValue("logicalComposition")
-    LOGICAL_COMPOSITION("logicalComposition"),
     @XmlEnumValue("monitorPath")
     MONITOR_PATH("monitorPath"),
     @XmlEnumValue("monitors")

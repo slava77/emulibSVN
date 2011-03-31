@@ -9,7 +9,7 @@
     <event-type-auto-name package-name="org.cern.cms.csc.dw.model.fact"/>
     <event-type-auto-name package-name="org.cern.cms.csc.exsys.re.model"/>
 
-    <auto-import import-name="org.cern.cms.csc.exsys.re.util.Exsys"/>
+    <auto-import import-name="org.cern.cms.csc.exsys.re.util.*"/>
 
     <!--engine-settings>
         <defaults>

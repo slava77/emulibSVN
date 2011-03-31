@@ -60,7 +60,6 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;enumeration value="HVSegment"/>
  *     &lt;enumeration value="Layer"/>
  *     &lt;enumeration value="LogicalComponent"/>
- *     &lt;enumeration value="LogicalDomain"/>
  *     &lt;enumeration value="LTC"/>
  *     &lt;enumeration value="LVDevice"/>
  *     &lt;enumeration value="Maraton"/>
@@ -161,8 +160,6 @@ public enum ComponentClassType {
     LAYER("Layer"),
     @XmlEnumValue("LogicalComponent")
     LOGICAL_COMPONENT("LogicalComponent"),
-    @XmlEnumValue("LogicalDomain")
-    LOGICAL_DOMAIN("LogicalDomain"),
     LTC("LTC"),
     @XmlEnumValue("LVDevice")
     LV_DEVICE("LVDevice"),

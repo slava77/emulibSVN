@@ -120,9 +120,9 @@
                         <hj:many-to-one merge="false">
                             <orm:join-column name="RECT_RULE_SET_ID" nullable="false"/>
                         </hj:many-to-one>
-                        <ann:annotate xmlns:a="jsf.bean.gui.annotation">
+                        <!--ann:annotate xmlns:a="jsf.bean.gui.annotation">
                             <a:NoManualInput createDefaultValue="false"/>
-                        </ann:annotate>
+                        </ann:annotate-->
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>

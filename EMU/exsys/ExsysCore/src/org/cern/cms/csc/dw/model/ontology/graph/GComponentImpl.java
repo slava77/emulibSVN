@@ -78,7 +78,11 @@ public class GComponentImpl extends GNodeImpl implements GComponent {
 
     @Override
     public boolean isSetDataProperty(DataPropertyType type) {
-        return (getDataProperty(type) != null);
+        try {
+            return (getDataProperty(type) != null);
+        } catch(Throwable th) {
+            return false;
+        }
     }
 
     @Override

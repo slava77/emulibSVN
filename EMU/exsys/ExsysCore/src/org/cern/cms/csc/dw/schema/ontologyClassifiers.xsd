@@ -47,7 +47,6 @@
 <xsd:enumeration value="HVSegment"/>
 <xsd:enumeration value="Layer"/>
 <xsd:enumeration value="LogicalComponent"/>
-<xsd:enumeration value="LogicalDomain"/>
 <xsd:enumeration value="LTC"/>
 <xsd:enumeration value="LVDevice"/>
 <xsd:enumeration value="Maraton"/>
@@ -78,7 +77,6 @@
 </xsd:appinfo>
 </xsd:annotation>
 <xsd:restriction base="xsd:string">
-<xsd:enumeration value="consistsOf"/>
 <xsd:enumeration value="contains"/>
 <xsd:enumeration value="controlPath"/>
 <xsd:enumeration value="controls"/>
@@ -96,9 +94,7 @@
 <xsd:enumeration value="isCooledBy"/>
 <xsd:enumeration value="isIn"/>
 <xsd:enumeration value="isMonitoredBy"/>
-<xsd:enumeration value="isPartOf"/>
 <xsd:enumeration value="locationPath"/>
-<xsd:enumeration value="logicalComposition"/>
 <xsd:enumeration value="monitorPath"/>
 <xsd:enumeration value="monitors"/>
 <xsd:enumeration value="powerSupplyPath"/>

@@ -405,6 +405,7 @@
             <xsd:enumeration value="hvChannelForceOn"/>
             <xsd:enumeration value="hvChannelVset"/>
             <xsd:enumeration value="hvChannelDisable"/>
+            <xsd:enumeration value="alert"/>
         </xsd:restriction>
     </xsd:simpleType>
 

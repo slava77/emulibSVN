@@ -7,12 +7,16 @@ package org.cern.cms.csc.exsys.gui;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.model.DataModel;
 import javax.faces.model.SelectItem;
 import jsf.bean.gui.ClassFinderIf;
+import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.component.BeanTableManager;
 import jsf.bean.gui.component.table.BeanTableDaoIf;
 import jsf.bean.gui.component.table.BeanTableFilter.Operation;
