@@ -89,11 +89,13 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
 
                 fact = (Fact) componentResolver.resolveComponentLinks(fact);
 
-                if (!componentResolver.checkComponentType(
-                        fact.getComponent(),
-                        fact.getMetadata().getLimitComponents(),
-                        fact.getMetadata().isLimitComponentsRecursive())) {
-                    throw new WrongComponentTypeException(fact.getComponent(), fact.getClass(), "component");
+                if (!(fact.isSetTransient() && fact.isTransient())) {
+                    if (!componentResolver.checkComponentType(
+                            fact.getComponent(),
+                            fact.getMetadata().getLimitComponents(),
+                            fact.getMetadata().isLimitComponentsRecursive())) {
+                        throw new WrongComponentTypeException(fact.getComponent(), fact.getClass(), "component");
+                    }
                 }
 
                 fact.onReceive(entityDao);
@@ -101,7 +103,7 @@ public class FactCollectionSaverBean implements FactCollectionSaverLocal {
                 // if fact is transient, only add it to the collection to be sent to RE, but don't save to DB
                 if (fact.isSetTransient() && fact.isTransient()) {
                     toRemove.add(fi);
-                    factsToSendToRE.add(fi);
+                    factsToSendToRE.add(fact);
                 }
 
                 // This fact is OK so we add it to factItems

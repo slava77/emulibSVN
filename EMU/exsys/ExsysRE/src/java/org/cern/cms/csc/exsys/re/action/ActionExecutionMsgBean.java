@@ -27,6 +27,7 @@ import org.cern.cms.csc.exsys.re.model.Action;
 import org.cern.cms.csc.exsys.re.model.ActionExecution;
 import org.cern.cms.csc.exsys.re.model.CommandAction;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
+import org.cern.cms.csc.exsys.re.model.ConclusionType;
 
 /**
  *
@@ -85,11 +86,12 @@ public class ActionExecutionMsgBean implements MessageListener {
      */
     public void executeAction(ActionExecution actionExec) {
         logger.info("Got action exec with action=" + actionExec.getAction().getName() + " and trigger id = " + actionExec.getTrigger().getid());
-        boolean isTransient = actionExec.getTrigger().getConclusion().getType().isTransient();
+        ConclusionType conclType = actionExec.getTrigger().getConclusion().getType();
+        boolean isTransient = (conclType.isSetTransient() && conclType.isTransient());
 
         try {
             Conclusion concl = conclCache.checkCache(actionExec.getTrigger().getConclusion());
-            if ((concl != null) && !concl.isClosed()) { // execute action only if conclusion is still open
+            if (((concl != null) && !concl.isClosed()) || isTransient) { // execute action only if conclusion is still open
                 ActionExecutor executor = ActionExecutorFactory.createActionExecutor(actionExec);
                 executor.execute();
                 actionExec.setTimeExecutedItem(new Date());
@@ -99,8 +101,8 @@ public class ActionExecutionMsgBean implements MessageListener {
                         concl.setClosed(true);
                         if (!isTransient) {
                             reDao.getEntityDao().mergeAndFlush(concl);
+                            conclCache.removeFromCache(concl);
                         }
-                        conclCache.removeFromCache(concl);
                         reManager.postEvent(concl);
                     }
                     logger.info("Executed COMMAND action. Action = " + actionExec.getAction().getName() + " and trigger id = " + actionExec.getTrigger().getid());

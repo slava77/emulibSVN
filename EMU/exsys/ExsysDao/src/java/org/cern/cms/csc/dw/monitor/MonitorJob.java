@@ -155,7 +155,7 @@ public class MonitorJob {
 
     }
 
-    @Schedule(hour="0/2", minute="0", second="0")
+//    @Schedule(hour="0/2", minute="0", second="0")
     public void monitorRetention() {
         logger.debug("In monitorRetention");
         Date d = new Date();

@@ -48,27 +48,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SimpleComponentFinder }
+     * Create an instance of {@link Rule }
      * 
      */
-    public SimpleComponentFinder createSimpleComponentFinder() {
-        return new SimpleComponentFinder();
-    }
-
-    /**
-     * Create an instance of {@link DcsCommandAction }
-     * 
-     */
-    public DcsCommandAction createDcsCommandAction() {
-        return new DcsCommandAction();
-    }
-
-    /**
-     * Create an instance of {@link ActionExecution }
-     * 
-     */
-    public ActionExecution createActionExecution() {
-        return new ActionExecution();
+    public Rule createRule() {
+        return new Rule();
     }
 
     /**
@@ -80,43 +64,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Rule }
+     * Create an instance of {@link ConclusionTriggerSource }
      * 
      */
-    public Rule createRule() {
-        return new Rule();
+    public ConclusionTriggerSource createConclusionTriggerSource() {
+        return new ConclusionTriggerSource();
     }
 
     /**
-     * Create an instance of {@link ConclusionTrigger }
+     * Create an instance of {@link DcsCommandAction }
      * 
      */
-    public ConclusionTrigger createConclusionTrigger() {
-        return new ConclusionTrigger();
-    }
-
-    /**
-     * Create an instance of {@link EmailAction }
-     * 
-     */
-    public EmailAction createEmailAction() {
-        return new EmailAction();
-    }
-
-    /**
-     * Create an instance of {@link RelatedComponentFinder }
-     * 
-     */
-    public RelatedComponentFinder createRelatedComponentFinder() {
-        return new RelatedComponentFinder();
-    }
-
-    /**
-     * Create an instance of {@link SmsAction }
-     * 
-     */
-    public SmsAction createSmsAction() {
-        return new SmsAction();
+    public DcsCommandAction createDcsCommandAction() {
+        return new DcsCommandAction();
     }
 
     /**
@@ -128,11 +88,51 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ConclusionTriggerSource }
+     * Create an instance of {@link EmailAction }
      * 
      */
-    public ConclusionTriggerSource createConclusionTriggerSource() {
-        return new ConclusionTriggerSource();
+    public EmailAction createEmailAction() {
+        return new EmailAction();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionTrigger }
+     * 
+     */
+    public ConclusionTrigger createConclusionTrigger() {
+        return new ConclusionTrigger();
+    }
+
+    /**
+     * Create an instance of {@link ActionExecution }
+     * 
+     */
+    public ActionExecution createActionExecution() {
+        return new ActionExecution();
+    }
+
+    /**
+     * Create an instance of {@link RelatedComponentFinder }
+     * 
+     */
+    public RelatedComponentFinder createRelatedComponentFinder() {
+        return new RelatedComponentFinder();
+    }
+
+    /**
+     * Create an instance of {@link SimpleComponentFinder }
+     * 
+     */
+    public SimpleComponentFinder createSimpleComponentFinder() {
+        return new SimpleComponentFinder();
+    }
+
+    /**
+     * Create an instance of {@link SmsAction }
+     * 
+     */
+    public SmsAction createSmsAction() {
+        return new SmsAction();
     }
 
     /**

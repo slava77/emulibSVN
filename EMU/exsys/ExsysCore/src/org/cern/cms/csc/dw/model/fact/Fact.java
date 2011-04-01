@@ -92,7 +92,7 @@ import org.jvnet.hyperjaxb3.xml.bind.annotation.adapters.XmlAdapterUtils;
     LocalDAQStatusFact.class,
     DqmCscAfebFact.class,
     DcsCommunicationStatusFact.class,
-    DcsPingFactType.class,
+    DcsPingFact.class,
     DqmCscHvSegmentFact.class,
     TmbCounterFact.class,
     DqmEmuFact.class

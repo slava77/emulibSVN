@@ -65,11 +65,11 @@ public class DefaultConclusionFactory extends ConclusionFactory {
                 }
 
                 logger.info("Default conclusion factory: Got new conclusion: " + conclusion.getTitle());
-                logger.info("Saving new conclusion: " + conclusion);
                 if (!isTransient) {
+                    logger.info("Saving new conclusion: " + conclusion);
                     reDao.getEntityDao().persistAndFlush(conclusion);
+                    getConclusionCacheService().addToCache(conclusion);
                 }
-                getConclusionCacheService().addToCache(conclusion);
                 boolean conclusionWasModified = executeActions(getConclusionType().getActions(), conclusion.getTriggers());
                 if (conclusionWasModified && !isTransient) {
                     reDao.getEntityDao().mergeAndFlush(conclusion);
@@ -81,11 +81,11 @@ public class DefaultConclusionFactory extends ConclusionFactory {
 
                 //existingConclusion = (Conclusion) reDao.getEntityDao().refreshEntity(existingConclusion, false);
                 updateExistingConclusion(existingConclusion, conclusion, isTransient);
-                logger.trace("Existing conclusion ID before merge: " + existingConclusion.getid());
                 if (!isTransient) {
+                    logger.trace("Existing conclusion ID before merge: " + existingConclusion.getid());
                     existingConclusion = (Conclusion) reDao.getEntityDao().mergeAndFlush(existingConclusion);
+                    logger.trace("Existing conclusion ID after merge: " + existingConclusion.getid());
                 }
-                logger.trace("Existing conclusion ID after merge: " + existingConclusion.getid());
                 if (!existingConclusion.isClosed()) {
                     logger.debug("Saving existing conclusion: " + existingConclusion);
                     getConclusionCacheService().addToCache(existingConclusion); // update the conclusion in the cache

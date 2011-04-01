@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;enumeration value="hvChannelVset"/>
  *     &lt;enumeration value="hvChannelDisable"/>
  *     &lt;enumeration value="alert"/>
+ *     &lt;enumeration value="pong"/>
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
@@ -40,7 +41,9 @@ public enum DcsCommandType {
     @XmlEnumValue("hvChannelDisable")
     HV_CHANNEL_DISABLE("hvChannelDisable"),
     @XmlEnumValue("alert")
-    ALERT("alert");
+    ALERT("alert"),
+    @XmlEnumValue("pong")
+    PONG("pong");
     private final String value;
 
     DcsCommandType(String v) {

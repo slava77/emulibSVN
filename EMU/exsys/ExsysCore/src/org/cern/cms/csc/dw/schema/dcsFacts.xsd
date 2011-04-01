@@ -339,6 +339,7 @@
     <xsd:complexType name="DcsPingFactType">
         <xsd:annotation>
             <xsd:appinfo>
+                <jaxb:class name="DcsPingFact" />
                 <hj:ignored/>
             </xsd:appinfo>
         </xsd:annotation>
