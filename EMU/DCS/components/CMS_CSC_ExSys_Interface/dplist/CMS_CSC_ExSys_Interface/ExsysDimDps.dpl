@@ -12,12 +12,14 @@ DpName	TypeName	ID
 ExSys_command	ExSys_string	546121
 ExsysAlert_dirtyBeam	ExSys_alert	546125
 ExsysAlert_isAlive	ExSys_alert	546126
+ExSys_internalCommand	ExSys_string	546131
 
 # DpValue
 ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
-ExSys_command.value	ExSys_string	""	0x100101	30.03.2011 22:54:47.810
-ExsysAlert_dirtyBeam.value	ExSys_alert	0	0x100101	31.03.2011 12:46:23.153
-ExsysAlert_isAlive.value	ExSys_alert	1	0x101	31.03.2011 13:38:33.491
+ExSys_command.value	ExSys_string	""	0x101	01.04.2011 19:31:12.909
+ExsysAlert_dirtyBeam.value	ExSys_alert	0	0x100101	01.04.2011 11:05:03.984
+ExsysAlert_isAlive.value	ExSys_alert	1	0x200101	01.04.2011 19:31:11.909
+ExSys_internalCommand.value	ExSys_string	"exsys_mode"	0x100101	01.04.2011 19:30:13.853
 
 # AlertValue
 ElementName	TypeName	DetailNr	_alert_hdl.._type	_alert_hdl.._l_limit	_alert_hdl.._u_limit	_alert_hdl.._l_incl	_alert_hdl.._u_incl	_alert_hdl.._panel	_alert_hdl.._panel_param	_alert_hdl.._help	_alert_hdl.._min_prio	_alert_hdl.._class	_alert_hdl.._text	_alert_hdl.._active	_alert_hdl.._orig_hdl	_alert_hdl.._ok_range	_alert_hdl.._hyst_type	_alert_hdl.._hyst_time	_alert_hdl.._l_hyst_limit	_alert_hdl.._u_hyst_limit	_alert_hdl.._text1	_alert_hdl.._text0	_alert_hdl.._ack_has_prio	_alert_hdl.._order	_alert_hdl.._dp_pattern	_alert_hdl.._dp_list	_alert_hdl.._prio_pattern	_alert_hdl.._abbr_pattern	_alert_hdl.._ack_deletes	_alert_hdl.._non_ack	_alert_hdl.._came_ack	_alert_hdl.._pair_ack	_alert_hdl.._both_ack	_alert_hdl.._impulse	_alert_hdl.._filter_threshold	_alert_hdl.._went_text	_alert_hdl.._add_text	_alert_hdl.._status64_pattern	_alert_hdl.._neg	_alert_hdl.._status64_match	_alert_hdl.._match	_alert_hdl.._set

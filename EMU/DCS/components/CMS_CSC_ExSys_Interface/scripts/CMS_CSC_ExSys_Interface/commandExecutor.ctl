@@ -3,6 +3,7 @@
 #uses "CMS_CSC_UI/emuui_deviceInfo.ctl"
 #uses "CMS_CSC_ExSys_Interface/exsysUtil.ctl"
 
+#uses "CMS_CSC_ExSys_Interface/pingPong.ctl"
 #uses "CMS_CSC_ExSys_Interface/commands/hvCommands.ctl"
 #uses "CMS_CSC_ExSys_Interface/commands/alarmCommands.ctl"
 

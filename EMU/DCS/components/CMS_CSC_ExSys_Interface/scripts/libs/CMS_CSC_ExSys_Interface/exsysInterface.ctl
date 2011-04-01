@@ -1,3 +1,5 @@
+#uses "CMS_CSC_common/emu_alert.ctl"
+#uses "CMS_CSC_common/emu_common.ctl"
 #uses "CMS_CSC_ExSys_Interface/httpHandling.ctl"
 #uses "CMS_CSC_ExSys_Interface/msgHandling.ctl"
 
@@ -7,6 +9,10 @@ private const int EXSYS_AUTO_PACKAGING_WINDOW = 2000;
 /** XML document ID of the fact collection that is currently open for auto packaging. */
 private global int exsys_autoPackagingCollectionId = -1;
 private global int exsys_autoPackagingTimeoutThread = -1;
+
+public const string EXSYS_INTERNAL_CMD_DP = "ExSys_internalCommand.value";
+public const string EXSYS_INTERNAL_CMD_NO_EXSYS_MODE = "no_exsys_mode";
+public const string EXSYS_INTERNAL_CMD_EXSYS_MODE = "exsys_mode";
 
 /** Sends out the given fact collection. Internal use one - users should use exsys_sendFact(...) instead. */
 private void exsys_sendFactCollection(int factCollectionDocId, dyn_string &exceptionInfo) {
@@ -81,5 +87,16 @@ private void startAutoPackagingTimeoutThread() {
     dyn_string exceptionInfo;
     exsys_sendFactCollection(fcId, exceptionInfo);
     if (emu_checkException(exceptionInfo)) { return; }
+  }
+}
+
+/**
+  * Send internal command to all dcs exsys managers.
+  */
+public void exsys_sendInternalCommand(string command) {
+  emu_info("Sending '" + command + "' internal command to all exsys managers");
+  dyn_string dps = dpNames("*:" + EXSYS_INTERNAL_CMD_DP);
+  for (int i=1; i <= dynlen(dps); i++) {
+    dpSetWait(dps[i], command);
   }
 }
