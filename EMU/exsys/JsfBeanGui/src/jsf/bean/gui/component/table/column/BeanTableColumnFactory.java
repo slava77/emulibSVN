@@ -31,16 +31,6 @@ public abstract class BeanTableColumnFactory implements Serializable {
 
     }
 
-    public static BeanTableColumnBase getBeanTableColumnBase(PropertyMd propertyMd) {
-
-        if (isEntity(propertyMd) || isEmbedded(propertyMd) || isList(propertyMd)) {
-            return null;
-        }
-
-        return new BeanTableColumnBase(propertyMd);
-
-    }
-
     private static boolean isEntity(PropertyMd propertyMd) {
         return EntityBeanBase.class.isAssignableFrom(propertyMd.getType());
     }

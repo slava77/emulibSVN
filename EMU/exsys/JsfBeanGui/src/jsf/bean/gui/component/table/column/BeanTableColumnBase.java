@@ -1,5 +1,6 @@
 package jsf.bean.gui.component.table.column;
 
+import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -10,12 +11,14 @@ import jsf.bean.gui.component.table.converter.FilterConverter;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
 import jsf.bean.gui.metadata.PropertyMd;
+import org.apache.commons.beanutils.PropertyUtils;
 
 public class BeanTableColumnBase implements Serializable {
 
     private static final Logger logger = SimpleLogger.getLogger(BeanTableColumnBase.class);
 
-    protected String name;
+    private final BeanTableColumnBase parent;
+    protected final String name;
     protected final Class type;
     protected final String title;
 
@@ -24,6 +27,11 @@ public class BeanTableColumnBase implements Serializable {
     protected FilterConverter filterConverter;
 
     public BeanTableColumnBase(PropertyMd propertyMd) {
+        this(propertyMd, null);
+    }
+
+    public BeanTableColumnBase(PropertyMd propertyMd, BeanTableColumnBase parent) {
+        this.parent = parent;
         this.name = propertyMd.getName();
         this.type = propertyMd.getType();
         this.title = propertyMd.getTitle();
@@ -83,6 +91,18 @@ public class BeanTableColumnBase implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public BeanTableColumnBase getParent() {
+        return parent;
+    }
+
+    public String getFilterName() {
+        String fn = name;
+        if (parent != null) {
+            fn = parent.getFilterName().concat(".").concat(fn);
+        }
+        return fn;
     }
 
     public String getTitle() {

@@ -176,7 +176,7 @@ public abstract class BeanTableDao implements Serializable {
 
     private void applyColumnFilter(DetachedCriteria c, BeanTableColumnBase col, BeanTableFilter f) {
 
-        String propertyName = col.getName();
+        String propertyName = col.getFilterName();
 
         if (f.getItems().size() > 0) {
 

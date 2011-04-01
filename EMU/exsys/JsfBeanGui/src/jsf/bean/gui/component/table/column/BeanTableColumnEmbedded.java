@@ -20,28 +20,17 @@ import jsf.bean.gui.metadata.PropertyMd;
 public class BeanTableColumnEmbedded extends BeanTableColumnSortable {
 
     private List<BeanTableColumnBase> properties = new LinkedList<BeanTableColumnBase>();
-    private BeanTableColumnBase selected;
     private String sortByProperty;
 
     public BeanTableColumnEmbedded(BeanTable table, EmbeddedPropertyMd propertyMd) {
         super(table, propertyMd);
         for (PropertyMd pm : propertyMd.getProperties()) {
-            BeanTableColumnBase col = BeanTableColumnFactory.getBeanTableColumnBase(pm);
-            if (col != null) {
-
-                col.name = name + "." + col.name;
-                properties.add(col);
-
-                if (selected == null) {
-                    selected = col;
+            BeanTableColumnBase col = new BeanTableColumnBase(pm, this);
+            properties.add(col);
+            if (this.sortByProperty == null) {
+                if (pm.getGetterMethod().isAnnotationPresent(EmbeddedSortBy.class)) {
+                    this.sortByProperty = pm.getName();
                 }
-
-                if (this.sortByProperty == null) {
-                    if (pm.getGetterMethod().isAnnotationPresent(EmbeddedSortBy.class)) {
-                        this.sortByProperty = pm.getName();
-                    }
-                }
-
             }
         }
     }
@@ -81,22 +70,6 @@ public class BeanTableColumnEmbedded extends BeanTableColumnSortable {
             ret.add(new SelectItem(c.getName(), c.getTitle()));
         }
         return ret;
-    }
-
-    public BeanTableColumnBase getSelected() {
-        return selected;
-    }
-
-    public String getSelectedName() {
-        return selected.getName();
-    }
-
-    public void setSelectedName(String name) {
-        for (BeanTableColumnBase c: properties) {
-            if (c.getName().equals(name)) {
-                this.selected = c;
-            }
-        }
     }
 
     @Override

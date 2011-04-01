@@ -45,7 +45,7 @@ public class BeanTableExportManager {
     private FileOutputStream fileStream;
 
     public BeanTableExportManager(BeanTable table, BeanTableExportTemplate template) throws IOException {
-        this.file = File.createTempFile("rr3", template.getExt(), tmpDir);
+        this.file = File.createTempFile("rr3tmp", template.getExt(), tmpDir);
         fileStream = new FileOutputStream(file);
         this.table = table;
         this.template = template;

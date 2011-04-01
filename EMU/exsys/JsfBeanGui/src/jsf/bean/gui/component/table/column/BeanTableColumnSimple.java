@@ -12,17 +12,19 @@ import org.apache.commons.beanutils.PropertyUtils;
 public class BeanTableColumnSimple extends BeanTableColumnSortable {
 
     private static final Logger logger = SimpleLogger.getLogger(BeanTableColumnSimple.class);
+    private String enumNameItem = null;
 
     public BeanTableColumnSimple(BeanTable table, PropertyMd propertyMd) {
         super(table, propertyMd);
 
         // Exception for the enumerations
-        if (propertyMd.getType().isEnum()) {
-            // Check if nameItem exists
+        this.enumNameItem = null;
+        if (getType().isEnum()) {
             String nameItem = this.name.concat("Item");
+            // Check if nameItem exists
             for (PropertyDescriptor pd: PropertyUtils.getPropertyDescriptors(table.getRowClass())) {
                 if (pd.getName().equals(nameItem)) {
-                    this.name = nameItem;
+                    this.enumNameItem = nameItem;
                     break;
                 }
             }
@@ -52,6 +54,25 @@ public class BeanTableColumnSimple extends BeanTableColumnSortable {
             ((DateTimeConverter) converter).setPattern(table.getProperties().getColumnDateFormat(name));
         }
 
+    }
+
+    public final String getOutputFormat() {
+        if (isDate()) {
+            return table.getProperties().getColumnDateFormat(name);
+        }
+        if (isNumeric()) {
+            return table.getProperties().getColumnNumberPattern(name);
+        }
+        return null;
+    }
+
+    @Override
+    public String getFilterName() {
+        String fn = super.getFilterName();
+        if (enumNameItem != null) {
+            fn = fn.replaceFirst(name.concat("$"), enumNameItem);
+        }
+        return fn;
     }
 
 }

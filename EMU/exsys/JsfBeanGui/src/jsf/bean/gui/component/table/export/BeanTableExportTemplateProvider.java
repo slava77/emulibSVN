@@ -19,4 +19,21 @@ public class BeanTableExportTemplateProvider {
         return Collections.EMPTY_LIST;
     }
 
+    /**
+     * Override this method to enable custom template editing link
+     * @return
+     */
+    public boolean isEditCustomTemplates() {
+        return false;
+    }
+
+    /**
+     * Override this method to redirect user to custom templates editing page
+     * Hint: look for attribute rowClass for table RowClass
+     * @return
+     */
+    public String getCustomTemplatesAction() {
+        return null;
+    }
+
 }

@@ -18,6 +18,9 @@
         <cc:attribute name="title" default=""
                       shortDescription="title"/>
 
+        <cc:attribute name="style" default=" "
+                      shortDescription="Button/link style"/>
+
         <cc:attribute name="styleClass" default=" "
                       shortDescription="Style class"/>
 
@@ -45,6 +48,7 @@
                            value="#{cc.attrs.value}"
                            title="#{cc.attrs.title}"
                            styleClass="iceCmdLnk #{cc.attrs.styleClass}"
+                           style="#{cc.attrs.style}"
                            disabled="#{cc.attrs.disable}"
                            onclick="jQuery('#{componentSupportBean.jqPrefix}popup').trigger('controlClick', [this]); return false;"/>
 
@@ -54,7 +58,8 @@
                              title="#{cc.attrs.title}"
                              styleClass="iceCmdBtn #{cc.attrs.styleClass}"
                              disabled="#{cc.attrs.disable}"
-                             onclick="jQuery('#{componentSupportBean.jqPrefix}popup').trigger('controlClick', [this]); return false;"/>
+                             style="#{cc.attrs.style}"
+                             onclick="jQuery('#{dropDownBean.jqPrefix}popup').trigger('controlClick', [this]); return false;"/>
 
             <div id="#{componentSupportBean.clientId}:popup"
                  style="display: none; #{cc.attrs.popupStyle};"

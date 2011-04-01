@@ -80,7 +80,7 @@
                     </td>
 
                     <td align="right" width="160">
-                        <ice:panelGrid columns="5" cellspacing="2" cellpadding="2" rendered="#{cc.attrs.manager.table != null}">
+                        <ice:panelGrid columns="7" cellspacing="2" cellpadding="2" rendered="#{cc.attrs.manager.table != null}">
                             <ice:commandLink id="refreshButton"
                                              actionListener="#{cc.attrs.manager.table.refreshListener}"
                                              value="Refresh"
@@ -94,6 +94,30 @@
                             <ice:commandLink value="Columns" title="Columns" style="font-weight: bold">
                                 <f:setPropertyActionListener target="#{cc.attrs.manager.table.displayColumns}" value="#{!cc.attrs.manager.table.displayColumns}"/>
                             </ice:commandLink>
+                            |
+                            <comp:dropDown value="Export"
+                                           type="link"
+                                           render="true"
+                                           title="Choose export file type"
+                                           style="font-weight: bold">
+                                <ice:panelGroup style="padding: 5px">
+                                    <ice:panelSeries value="#{cc.attrs.manager.exportResources}"
+                                                     var="r"
+                                                     style="padding: 2px">
+                                        <ice:outputResource resource="#{r}"
+                                                            style="font-weight: bold"
+                                                            label="#{r.template.title}"
+                                                            mimeType="#{r.template.mimeType}"
+                                                            attachment="true"/>
+                                    </ice:panelSeries>
+                                    <ice:commandLink value="Edit custom templates..."
+                                                     title="Create, edit custom templates on this table"
+                                                     action="#{cc.attrs.manager.templateProvider.customTemplatesAction}"
+                                                     rendered="#{cc.attrs.manager.templateProvider.editCustomTemplates}">
+                                        <f:attribute name="rowClass" value="#{cc.attrs.manager.table.rowClass}"/>
+                                    </ice:commandLink>
+                                </ice:panelGroup>
+                            </comp:dropDown>
                         </ice:panelGrid>
                     </td>
                     <td align="right" width="500">

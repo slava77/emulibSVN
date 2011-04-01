@@ -57,7 +57,6 @@ public class BeanTableExportResource implements Resource, Serializable {
 
     public void withOptions(Options optns) throws IOException {
         optns.setFileName("rr3_export_file".concat(template.getExt()));
-        optns.setAsAttachement();
     }
 
     public BeanTableExportTemplate getTemplate() {
