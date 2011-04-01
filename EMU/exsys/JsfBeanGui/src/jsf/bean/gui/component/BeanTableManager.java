@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -44,7 +45,9 @@ public abstract class BeanTableManager implements Serializable {
     private BeanTablePack tablePack;
     private List<BeanTablePack> tables = new ArrayList<BeanTablePack>();
     private final String id;
+
     private List<BeanTableExportResource> exportResources;
+    private Date templatesModified;
 
     public abstract BeanTableDaoIf getBeanTableDao();
 
@@ -147,14 +150,16 @@ public abstract class BeanTableManager implements Serializable {
 
     public List<BeanTableExportResource> getExportResources() throws IOException {
 
-        if (exportResources == null) {
+        if (exportResources == null || 
+            (templatesModified != null && templatesModified.before(getTemplateProvider().getModified()) )) {
+
             List<BeanTableExportTemplate> templates = new ArrayList<BeanTableExportTemplate>();
 
             // Adding defaults
             templates.addAll(BeanTableDefaultExportTemplate.getTemplates());
 
             // Adding custom templates
-            templates.addAll(getTemplateProvider().getTemplates(getTable().getRowClass()));
+            templates.addAll(getTemplateProvider().getTemplates());
 
             Collections.sort(templates, new ExportTemplateComparator());
             exportResources = new ArrayList<BeanTableExportResource>();
@@ -162,6 +167,9 @@ public abstract class BeanTableManager implements Serializable {
             for (BeanTableExportTemplate t : templates) {
                 exportResources.add(new BeanTableExportResource(getTable(), t));
             }
+
+            this.templatesModified = getTemplateProvider().getModified();
+            
         }
 
         return exportResources;

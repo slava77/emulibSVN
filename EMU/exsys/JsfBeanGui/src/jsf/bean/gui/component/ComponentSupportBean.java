@@ -32,4 +32,8 @@ public class ComponentSupportBean {
         return new NewLineConverter();
     }
 
+    public String getViewId() {
+        return FacesContext.getCurrentInstance().getViewRoot().getViewId();
+    }
+
 }

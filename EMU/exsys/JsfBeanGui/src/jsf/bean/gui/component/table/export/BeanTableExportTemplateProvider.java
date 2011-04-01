@@ -6,8 +6,8 @@
 package jsf.bean.gui.component.table.export;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
-import jsf.bean.gui.EntityBeanBase;
 
 /**
  *
@@ -15,7 +15,21 @@ import jsf.bean.gui.EntityBeanBase;
  */
 public class BeanTableExportTemplateProvider {
 
-    public List<BeanTableExportTemplate> getTemplates(Class<? extends EntityBeanBase> rowClass) {
+    private static final Date modified = new Date();
+
+    /**
+     * Override this to implement modifications in templates.
+     * @return
+     */
+    public Date getModified() {
+        return modified;
+    }
+
+    /**
+     * Get a list of templates for a table
+     * @return
+     */
+    public List<BeanTableExportTemplate> getTemplates() {
         return Collections.EMPTY_LIST;
     }
 
@@ -32,7 +46,7 @@ public class BeanTableExportTemplateProvider {
      * Hint: look for attribute rowClass for table RowClass
      * @return
      */
-    public String getCustomTemplatesAction() {
+    public String customTemplatesAction() {
         return null;
     }
 
