@@ -101,7 +101,9 @@ void _emu_reportError(dyn_string error, bool pvssReport = false, bool terminateM
   //TODO figure out somehow if it's running on a CTRL manager or a UI manager (if it's not on UI - do not show the dialog box).
   dynAppend(exInfoForGraphics, backtrace);
   dynAppend(exInfoForGraphics, "");
-  fwExceptionHandling_display(exInfoForGraphics);
+  if (isFunctionDefined("fwExceptionHandling_display")) {
+    fwExceptionHandling_display(exInfoForGraphics);
+  }
   if (terminateManager) {
     throwError(makeError("", PRIO_FATAL, ERR_IMPL, 0, error));
   }
