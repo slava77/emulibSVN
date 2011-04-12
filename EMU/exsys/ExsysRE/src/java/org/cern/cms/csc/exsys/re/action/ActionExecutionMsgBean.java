@@ -107,6 +107,8 @@ public class ActionExecutionMsgBean implements MessageListener {
                     }
                     logger.info("Executed COMMAND action. Action = " + actionExec.getAction().getName() + " and trigger id = " + actionExec.getTrigger().getid());
                 }
+            } else if ((concl != null) && (concl.isClosed())) {
+                logger.info("Action " + actionExec.getAction().getName() + " (trigger id=" + actionExec.getTrigger().getid() + ") is canceled because the corresponding conclusion is already closed");
             }
 
             // close the action in any case - if conclusion is open or closed
