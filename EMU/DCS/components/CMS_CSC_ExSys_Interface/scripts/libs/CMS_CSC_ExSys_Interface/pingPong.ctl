@@ -12,8 +12,8 @@ DCS <-> Expert System Ping-Pong (a.k.a. heartbeat) stuff
 */
 
 
-private const int EXSYS_PING_PONG_INTERVAL = 60; // 1 minute = 60s
-private const int EXSYS_PING_PONG_TIMEOUT = 300; // 5 minutes = 300s
+private const int EXSYS_PING_PONG_INTERVAL = 60; // 1 minute
+private const int EXSYS_PING_PONG_TIMEOUT = 10 * 60; // 10 minutes
 public const string EXSYS_PING_PONG_ALIVE_DP = "ExsysAlert_isAlive.value";
 
 private bool exsys_wasAlive;
