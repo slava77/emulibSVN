@@ -95,6 +95,11 @@ public abstract class JsfBeanBase implements Serializable {
     }
 
     @Transient
+    public static boolean isRequestParameterExists(String key) {
+        return getExternalContext().getRequestParameterMap().containsKey(key);
+    }
+
+    @Transient
     public static ExternalContext getExternalContext() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         return facesContext.getExternalContext();

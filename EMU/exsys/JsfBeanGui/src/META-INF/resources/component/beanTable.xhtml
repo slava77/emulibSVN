@@ -295,12 +295,9 @@
 
                                 <ice:panelGroup rendered="#{column.boolean}"
                                                 style="padding: 0px; text-align: center">
-                                    <ice:graphicImage value="./xmlhttp/beantable/img/true.png"
+                                    <ice:graphicImage value="./xmlhttp/beantable/img/#{column.cellValue}.png"
                                                       title="#{column.cellValue}"
-                                                      rendered="#{column.cellValue}"/>
-                                    <ice:graphicImage value="./xmlhttp/beantable/img/false.png"
-                                                      title="#{column.cellValue}"
-                                                      rendered="#{not column.cellValue}"/>
+                                                      alt="#{column.cellValue}"/>
                                 </ice:panelGroup>
 
                                 <ice:outputText style="width: 100%; text-align: left"
