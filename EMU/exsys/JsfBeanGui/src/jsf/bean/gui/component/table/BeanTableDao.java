@@ -53,13 +53,13 @@ public abstract class BeanTableDao implements Serializable {
     public List<EntityBeanBase> getData(BeanTable table) {
 
         return getData(table,
-                       table.getPageSize(),
-                       table.getPageIndex());
+                table.getPageSize(),
+                table.getPageIndex());
     }
 
     public List<EntityBeanBase> getData(BeanTable table,
-                                        int pageSize,
-                                        int pageIndex) {
+            int pageSize,
+            int pageIndex) {
 
         Session session = getSession();
         Transaction transaction = session.beginTransaction();

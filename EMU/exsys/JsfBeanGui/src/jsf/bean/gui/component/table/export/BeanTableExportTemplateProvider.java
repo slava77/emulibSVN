@@ -8,6 +8,8 @@ package jsf.bean.gui.component.table.export;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import jsf.bean.gui.EntityBeanBase;
+import jsf.bean.gui.component.table.BeanTable;
 
 /**
  *
@@ -26,10 +28,18 @@ public class BeanTableExportTemplateProvider {
     }
 
     /**
-     * Get a list of templates for a table
+     * Get a list of public templates for a table
      * @return
      */
-    public List<BeanTableExportTemplate> getTemplates() {
+    public List<BeanTableExportTemplate> getPublicTemplates() {
+        return Collections.EMPTY_LIST;
+    }
+
+    /**
+     * Get a list of user templates for a table
+     * @return
+     */
+    public List<BeanTableExportTemplate> getUserTemplates() {
         return Collections.EMPTY_LIST;
     }
 
@@ -47,6 +57,14 @@ public class BeanTableExportTemplateProvider {
      * @return
      */
     public String customTemplatesAction() {
+        return null;
+    }
+
+    /**
+     * Override this method to get a table attribute rowClass which provides templates
+     * @return
+     */
+    public BeanTable getTable() {
         return null;
     }
 

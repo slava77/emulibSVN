@@ -6,8 +6,10 @@
 package jsf.bean.gui.component.fm;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +24,7 @@ import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 import javax.persistence.Transient;
 import jsf.bean.gui.JsfBeanBase;
+import jsf.bean.gui.component.table.export.BeanTableExportColumn;
 import org.apache.commons.beanutils.PropertyUtils;
 
 /**
@@ -36,6 +39,7 @@ public class FmComponentBean extends JsfBeanBase {
     static {
         FINAL_PACKAGES = new HashSet<Package>();
         FINAL_PACKAGES.add(Package.getPackage("java.lang"));
+        FINAL_PACKAGES.add(Package.getPackage("java.math"));
         FINAL_PACKAGES.add(Package.getPackage("java.math"));
     };
 
@@ -90,8 +94,10 @@ public class FmComponentBean extends JsfBeanBase {
         }
 
         // Final stuff?
-        if (FINAL_PACKAGES.contains(c.getPackage()) ||
-            FINAL_CLASSES.contains(c)) {
+        if (FINAL_PACKAGES.contains(c.getPackage())
+                || FINAL_CLASSES.contains(c)
+                || c.isEnum()
+                || BeanTableExportColumn.ColumnValue.class.isAssignableFrom(c)) {
 
             String typeName = c.getSimpleName().toLowerCase();
             help.add(new SelectItem(String.format(valueFormat, value),
@@ -130,10 +136,21 @@ public class FmComponentBean extends JsfBeanBase {
         for (PropertyDescriptor pd: PropertyUtils.getPropertyDescriptors(c)) {
             if (!pd.getReadMethod().isAnnotationPresent(Transient.class)) {
                 try {
-                    buildRootHelp((value == null ? "" : value.concat(".")).concat(pd.getName()),
-                                  pd.getPropertyType(),
-                                  pd.getReadMethod().invoke(v),
-                                  help);
+                    String str = (value == null ? "" : value.concat(".")).concat(pd.getName());
+                    Class clazz = pd.getPropertyType();
+                    Method met = pd.getReadMethod();
+                    Object obj = met.invoke(v);
+                    if (obj == null
+                            && !FINAL_PACKAGES.contains(clazz.getPackage())
+                            && !FINAL_CLASSES.contains(clazz)
+                            && !Map.class.isAssignableFrom(clazz)
+                            && !c.isArray()
+                            && !Collection.class.isAssignableFrom(c)
+                            && !clazz.isEnum()) {
+                        buildRootHelp(str, clazz, clazz.newInstance(), help);
+                    } else {
+                        buildRootHelp(str, clazz, obj, help);
+                    }
                 } catch (Exception ex) { }
             }
         }
@@ -143,6 +160,7 @@ public class FmComponentBean extends JsfBeanBase {
     public Collection<SelectItem> getRootHelp() {
         List<SelectItem> help = new ArrayList<SelectItem>();
         buildRootHelp(null, Map.class, getAttribute(Map.class, "root"), help);
+        Collections.sort(help, new TemplateHelpComparator());
         return help;
     }
 

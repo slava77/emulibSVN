@@ -14,14 +14,9 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 import jsf.bean.gui.component.table.BeanTable;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import org.icefaces.apache.commons.io.IOUtils;
 
 public class BeanTableExportResource implements Resource, Serializable {
-
-
-    private static final Logger logger = SimpleLogger.getLogger(BeanTableExportManager.class);
 
     private final BeanTableExportTemplate template;
     private final BeanTable table;
@@ -36,17 +31,11 @@ public class BeanTableExportResource implements Resource, Serializable {
     }
 
     public InputStream open() throws IOException {
-        File f = null;
-        byte[] bytes;
-        try {
-            BeanTableExportManager manager = new BeanTableExportManager(table, template);
-            f = manager.export();
-            InputStream input = new FileInputStream(f);
-            bytes = IOUtils.toByteArray(input);
-        } catch (Exception ex) {
-            logger.error(ex);
-            bytes = "".getBytes();
-        }
+        BeanTableExportManager manager = new BeanTableExportManager(table, template);
+        File f = manager.export();
+        InputStream input = new FileInputStream(f);
+        byte[] bytes = IOUtils.toByteArray(input);
+
         InputStream inputStream = new ByteArrayInputStream(bytes);
         return inputStream;
     }
@@ -62,6 +51,4 @@ public class BeanTableExportResource implements Resource, Serializable {
     public BeanTableExportTemplate getTemplate() {
         return template;
     }
-
-    
 }

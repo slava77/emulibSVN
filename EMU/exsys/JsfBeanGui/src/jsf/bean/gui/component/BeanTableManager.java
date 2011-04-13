@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,9 +46,10 @@ public abstract class BeanTableManager implements Serializable {
     private BeanTablePack tablePack;
     private List<BeanTablePack> tables = new ArrayList<BeanTablePack>();
     private final String id;
-
-    private List<BeanTableExportResource> exportResources;
-    private Date templatesModified;
+    private List<BeanTableExportResource> defaultExportResources;
+    private List<BeanTableExportResource> publicExportResources = new ArrayList<BeanTableExportResource>();
+    private List<BeanTableExportResource> userExportResources = new ArrayList<BeanTableExportResource>();
+    private Date templatesChecked = new Date(0);
 
     public abstract BeanTableDaoIf getBeanTableDao();
 
@@ -139,7 +141,6 @@ public abstract class BeanTableManager implements Serializable {
      * Export manager
      *
      *********************************************/
-
     /**
      * Override for custom template provider
      * @return
@@ -148,33 +149,66 @@ public abstract class BeanTableManager implements Serializable {
         return new BeanTableExportTemplateProvider();
     }
 
-    public List<BeanTableExportResource> getExportResources() throws IOException {
+    public List<BeanTableExportResource> getDefaultExportResources() throws IOException {
 
-        if (exportResources == null || 
-            (templatesModified != null && templatesModified.before(getTemplateProvider().getModified()) )) {
+        if (defaultExportResources == null) {
 
             List<BeanTableExportTemplate> templates = new ArrayList<BeanTableExportTemplate>();
 
             // Adding defaults
             templates.addAll(BeanTableDefaultExportTemplate.getTemplates());
 
-            // Adding custom templates
-            templates.addAll(getTemplateProvider().getTemplates());
-
             Collections.sort(templates, new ExportTemplateComparator());
-            exportResources = new ArrayList<BeanTableExportResource>();
+            defaultExportResources = new ArrayList<BeanTableExportResource>();
 
             for (BeanTableExportTemplate t : templates) {
-                exportResources.add(new BeanTableExportResource(getTable(), t));
+                defaultExportResources.add(new BeanTableExportResource(getTable(), t));
             }
 
-            this.templatesModified = getTemplateProvider().getModified();
-            
         }
 
-        return exportResources;
+        return defaultExportResources;
     }
 
+    public List<BeanTableExportResource> getPublicExportResources() {
+        if (getTemplateProvider().getModified() == null) {
+            return Collections.EMPTY_LIST;
+        }
+        if (this.templatesChecked.before(getTemplateProvider().getModified())) {
+            List<BeanTableExportTemplate> templates = new ArrayList<BeanTableExportTemplate>();
+            templates.addAll(getTemplateProvider().getPublicTemplates());
+            Collections.sort(templates, new ExportTemplateComparator());
+            publicExportResources.clear();
+            for (BeanTableExportTemplate t : templates) {
+                publicExportResources.add(new BeanTableExportResource(getTable(), t));
+            }
+            return publicExportResources;
+        }
+        return publicExportResources;
+    }
+
+    public List<BeanTableExportResource> getUserExportResources() {
+        if (getTemplateProvider().getModified() == null) {
+            this.templatesChecked = Calendar.getInstance().getTime();
+            return Collections.EMPTY_LIST;
+        }
+        if (this.templatesChecked.before(getTemplateProvider().getModified())) {
+            List<BeanTableExportTemplate> templates = new ArrayList<BeanTableExportTemplate>();
+            templates.addAll(getTemplateProvider().getUserTemplates());
+            Collections.sort(templates, new ExportTemplateComparator());
+            userExportResources.clear();
+            for (BeanTableExportTemplate t : templates) {
+                userExportResources.add(new BeanTableExportResource(getTable(), t));
+            }
+            this.templatesChecked = Calendar.getInstance().getTime();
+            return userExportResources;
+        }
+
+        this.templatesChecked = Calendar.getInstance().getTime();
+        return userExportResources;
+    }
+
+   
     /*********************************************
      *
      * Row selection manager
@@ -248,7 +282,6 @@ public abstract class BeanTableManager implements Serializable {
     private static final String PROPERTIES_BASE_PATH = "resources/tables/";
     private static final String PROPERTIES_EXTENSION = ".properties";
     private static final String COOKIE_NAME_PATTERN = "table.%s.properties";
-
     // Caching default properties
     private static Map<String, Properties> beanProperties = new HashMap<String, Properties>();
 
@@ -387,5 +420,4 @@ public abstract class BeanTableManager implements Serializable {
     public ClassConverter getClassConverter() {
         return new ClassConverter(getClassFinder());
     }
-
 }

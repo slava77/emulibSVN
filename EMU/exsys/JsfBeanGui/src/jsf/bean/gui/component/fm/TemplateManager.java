@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package jsf.bean.gui.component.fm;
 
 import freemarker.cache.StringTemplateLoader;
@@ -17,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import jsf.bean.gui.log.Logger;
+import jsf.bean.gui.log.SimpleLogger;
 
 /**
  *
@@ -24,17 +25,21 @@ import java.util.Map;
  */
 public class TemplateManager {
 
+    private static final Logger logger = SimpleLogger.getLogger(TemplateManager.class);
     private Configuration cfg;
     private StringTemplateLoader loader;
     private List<String> templateNames = new ArrayList<String>();
     private Map<String, Object> root;
+    private String DATE_FORMAT = "EEE dd-MM-yy HH:mm:ss";
+    private String NUMBER_FORMAT = "#.###########";
 
     public TemplateManager() {
         this.loader = new StringTemplateLoader();
         this.cfg = new Configuration();
         this.cfg.setObjectWrapper(ObjectWrapper.BEANS_WRAPPER);
         this.cfg.setTemplateLoader(loader);
-        this.cfg.setDateTimeFormat("EEE dd-MM-yy HH:mm:ss");
+        this.cfg.setDateTimeFormat(DATE_FORMAT);
+        this.cfg.setNumberFormat(NUMBER_FORMAT);
     }
 
     public void addTemplate(String name, String templateStr) {
@@ -42,7 +47,7 @@ public class TemplateManager {
         this.templateNames.add(name);
     }
 
-    public String execute(String name, Map<String, Object> root) throws IOException, TemplateException {
+    public String execute(String name, Map<String, Object> root) throws IOException {
         this.root = root;
         Writer out = new StringWriter();
         try {
@@ -50,6 +55,9 @@ public class TemplateManager {
             t.process(root, out);
         } catch (RuntimeException ex) {
             throw new IOException(ex);
+        } catch (TemplateException ex) {
+            logger.error(ex);
+            return ex.getMessage().concat(System.getProperty("line.separator")).concat(ex.getFTLInstructionStack());
         }
         return out.toString();
     }
@@ -65,5 +73,4 @@ public class TemplateManager {
     public Map<String, Object> getRoot() {
         return root;
     }
-
 }

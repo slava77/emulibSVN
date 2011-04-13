@@ -4,14 +4,14 @@ ${}SEPARATOR${}
 <${item.class.simpleName}>
 <#list columns as c>
 <${c.name?html}><#t>
-<#if c.embedType>
+<#if c.isEmbedType>
 <#assign embedItem=c.columnValue(item)>
 <#list c.embeddedProperties as embedCol>
 
 <${embedCol.name?html}><#t>
-<#if embedCol.entityType>
+<#if embedCol.isEntityType>
 ${embedCol.columnValue(embedItem).entityTitle}<#t>
-<#elseif embedCol.boolean>
+<#elseif embedCol.isBoolean>
 ${embedCol.columnValue(embedItem)?string}<#t>
 <#else>
 ${embedCol.columnValue(embedItem)?html}<#t>
@@ -19,9 +19,9 @@ ${embedCol.columnValue(embedItem)?html}<#t>
 </${embedCol.name?html}><#t>
 </#list>
 
-<#elseif c.entityType>
+<#elseif c.isEntityType>
 ${c.columnValue(item).entityTitle}<#t>
-<#elseif c.boolean>
+<#elseif c.isBoolean>
 ${c.columnValue(item)?string}<#t>
 <#else>
 ${c.columnValue(item)?html}<#t>

@@ -28,10 +28,19 @@ import org.apache.commons.beanutils.PropertyUtils;
 public class BeanTableExportColumn {
 
     private static final Logger logger = SimpleLogger.getLogger(BeanTableExportColumn.class);
-    private final ColumnValue columnValue = new ColumnValue();
     private final BeanTableColumnBase column;
+    private final String name;
+    private final String title;
+    private final Class type;
+    private final ColumnValue columnValue = new ColumnValue();
     private final String outputFormat;
     private final List<BeanTableExportColumn> embeddedProperties;
+    private final Boolean isEntityType;
+    private final Boolean isBoolean;
+    private final Boolean isNumeric;
+    private final Boolean isListType;
+    private final Boolean isDate;
+    private final Boolean isEmbedType;
 
     public BeanTableExportColumn(BeanTableColumnBase column) {
 
@@ -44,23 +53,48 @@ public class BeanTableExportColumn {
 
         this.embeddedProperties = new ArrayList<BeanTableExportColumn>();
         if (column.isEmbedType()) {
-            for (BeanTableColumnBase pc: ((BeanTableColumnEmbedded) column).getProperties()) {
+            for (BeanTableColumnBase pc : ((BeanTableColumnEmbedded) column).getProperties()) {
                 this.embeddedProperties.add(new BeanTableExportColumn(pc));
             }
         }
 
+        name = column.getName();
+        title = column.getTitle();
+        type = column.getType();
+        isEntityType = column.isEntityType();
+        isBoolean = column.isBoolean();
+        isNumeric = column.isNumeric();
+        isListType = column.isListType();
+        isDate = column.isDate();
+        isEmbedType = column.isEmbedType();
+
+    }
+
+    public BeanTableExportColumn() {
+        column = null;
+        name = null;
+        title = null;
+        type = null;
+        outputFormat = null;
+        embeddedProperties = new ArrayList<BeanTableExportColumn>();
+        isEntityType = null;
+        isBoolean = null;
+        isNumeric = null;
+        isListType = null;
+        isDate = null;
+        isEmbedType = null;
     }
 
     public String getName() {
-        return column.getName();
+        return name;
     }
 
     public String getTitle() {
-        return column.getTitle();
+        return title;
     }
 
     public Class getType() {
-        return column.getType();
+        return type;
     }
 
     public ColumnValue getColumnValue() {
@@ -75,28 +109,28 @@ public class BeanTableExportColumn {
         return embeddedProperties;
     }
 
-    public boolean isEntityType() {
-        return column.isEntityType();
+    public Boolean getIsEntityType() {
+        return isEntityType;
     }
 
-    public boolean isBoolean() {
-        return column.isBoolean();
+    public Boolean getIsBoolean() {
+        return isBoolean;
     }
 
-    public boolean isNumeric() {
-        return column.isNumeric();
+    public Boolean getIsNumeric() {
+        return isNumeric;
     }
 
-    public boolean isListType() {
-        return column.isListType();
+    public Boolean getIsListType() {
+        return isListType;
     }
 
-    public boolean isDate() {
-        return column.isDate();
+    public Boolean getIsDate() {
+        return isDate;
     }
 
-    public boolean isEmbedType() {
-        return column.isEmbedType();
+    public Boolean getIsEmbedType() {
+        return isEmbedType;
     }
 
     public class ColumnValue implements TemplateMethodModelEx {
@@ -113,7 +147,8 @@ public class BeanTableExportColumn {
                     return getValue(item);
                 }
                 Object item = ((StringModel) args.get(0)).getWrappedObject();
-                return getValue(item);
+                TemplateModel returnValue = getValue(item);
+                return returnValue;
 
             } catch (Exception e) {
                 logger.error(e);
@@ -124,11 +159,11 @@ public class BeanTableExportColumn {
         private TemplateModel getValue(Object item) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
             String s = getName();
             Object value = PropertyUtils.getSimpleProperty(item, s);
+            if (value == null) {
+                return SimpleScalar.EMPTY_STRING;
+            }
             if (column.isEntityType()) {
                 return new BeanModel(value, new BeansWrapper());
-            }
-            if (value == null) {
-                return new SimpleScalar("");
             }
             if (column.isBoolean()) {
                 if ((Boolean) value) {
@@ -147,6 +182,7 @@ public class BeanTableExportColumn {
                 return new StringModel(value, new BeansWrapper());
             }
             return new SimpleScalar(value.toString());
+
 
         }
     }

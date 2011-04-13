@@ -101,19 +101,48 @@
                                            title="Choose export file type"
                                            style="font-weight: bold">
                                 <ice:panelGroup style="padding: 5px">
-                                    <ice:panelSeries value="#{cc.attrs.manager.exportResources}"
+                                    <ice:outputText value="Default:" style="font-weight: bold"/>
+                                    <ice:panelSeries value="#{cc.attrs.manager.defaultExportResources}"
                                                      var="r"
-                                                     style="padding: 2px">
+                                                     style="padding-bottom: 8px; padding-left: 8px">
                                         <ice:outputResource resource="#{r}"
-                                                            style="font-weight: bold"
                                                             label="#{r.template.title}"
                                                             mimeType="#{r.template.mimeType}"
                                                             attachment="true"/>
                                     </ice:panelSeries>
+
+
+                                    
+                                    <ice:panelGroup rendered="#{!empty cc.attrs.manager.publicExportResources}">
+                                        <ice:outputText value="Public:" style="font-weight: bold"/>
+                                        <ice:panelSeries value="#{cc.attrs.manager.publicExportResources}"
+                                                         var="r"
+                                                         style="padding-bottom: 8px; padding-left: 8px">
+                                            <ice:outputResource resource="#{r}"
+                                                                label="#{r.template.title}"
+                                                                mimeType="#{r.template.mimeType}"
+                                                                attachment="true"/>
+                                        </ice:panelSeries>
+                                    </ice:panelGroup>
+
+                                    
+                                    <ice:panelGroup rendered="#{!empty cc.attrs.manager.userExportResources}">
+                                        <ice:outputText value="User:" style="font-weight: bold"/>
+                                        <ice:panelSeries value="#{cc.attrs.manager.userExportResources}"
+                                                         var="r"
+                                                         style="padding-bottom: 8px; padding-left: 8px">
+                                            <ice:outputResource resource="#{r}"
+                                                                label="#{r.template.title}"
+                                                                mimeType="#{r.template.mimeType}"
+                                                                attachment="true"/>
+                                        </ice:panelSeries>
+                                    </ice:panelGroup>
+
                                     <ice:commandLink value="Edit custom templates..."
                                                      title="Create, edit custom templates on this table"
                                                      action="#{cc.attrs.manager.templateProvider.customTemplatesAction}"
-                                                     rendered="#{cc.attrs.manager.templateProvider.editCustomTemplates}"/>
+                                                     rendered="#{cc.attrs.manager.templateProvider.editCustomTemplates}"
+                                                     style="font-weight: bold; color: black"/>
                                 </ice:panelGroup>
                             </comp:dropDown>
                         </ice:panelGrid>
