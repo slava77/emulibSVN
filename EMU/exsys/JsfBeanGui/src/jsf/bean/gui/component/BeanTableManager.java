@@ -50,6 +50,7 @@ public abstract class BeanTableManager implements Serializable {
     private List<BeanTableExportResource> publicExportResources = new ArrayList<BeanTableExportResource>();
     private List<BeanTableExportResource> userExportResources = new ArrayList<BeanTableExportResource>();
     private Date templatesChecked = new Date(0);
+    private int refreshInterval = 0;
 
     public abstract BeanTableDaoIf getBeanTableDao();
 
@@ -134,6 +135,14 @@ public abstract class BeanTableManager implements Serializable {
             tablePrefix = (tablePrefix != null ? tablePrefix.concat(nextPrefix) : nextPrefix).concat(".");
         }
         return tablePrefix;
+    }
+
+    public int getRefreshInterval() {
+        return refreshInterval;
+    }
+
+    public void setRefreshInterval(int refreshInterval) {
+        this.refreshInterval = refreshInterval;
     }
 
     /*********************************************

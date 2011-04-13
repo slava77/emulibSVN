@@ -5,23 +5,45 @@
       xmlns:cc="http://java.sun.com/jsf/composite">
 
     <cc:interface>
-        <cc:attribute name="uid" required="true" type="java.lang.String" shortDescription="Poll unique identifier"/>
         <cc:attribute name="interval" required="true" type="java.lang.Integer" shortDescription="Interval in seconds"/>
+        <cc:attribute name="run" required="false" default="true" type="java.lang.Boolean" shortDescription="Switch to poll or stop to"/>
         <cc:attribute name="actionListener" required="true" method-signature="void listener(javax.faces.event.ActionEvent)" shortDescription="Action listener to call"/>
     </cc:interface>
 
     <cc:implementation>
 
-        <ice:panelGrid visible="false">
-            <ice:commandButton styleClass="#{cc.attrs.uid}poll" actionListener="#{cc.attrs.actionListener}"/>
+        <ice:panelGroup visible="false"
+                        rendered="#{cc.attrs.run}">
+            <ice:commandButton id="button" actionListener="#{cc.attrs.actionListener}"/>
             <script type="text/javascript">
                 // <![CDATA[
+
                 jQuery(document).ready( function () {
-                    guiPollingStart(".#{cc.attrs.uid}poll", #{cc.attrs.interval});
+                    var b = jQuery('#{componentSupportBean.jqPrefix}button');
+                    b.bind('poll', function() {
+                        var b = jQuery(this);
+                        if (!b.data('first')) {
+                            b.click();
+                        } else {
+                            b.data('first', false);
+                        }
+                        if (b.data('interval') > 0) {
+                            setTimeout(
+                                function () {
+                                    jQuery('#{componentSupportBean.jqPrefix}button').trigger('poll');
+                                },
+                                (b.data('interval') * 1000)
+                            );
+                        }
+                    }).data('first', true)
+                      .data('interval', #{cc.attrs.interval});
+
+                    b.trigger('poll');
+
                 });
                 // ]]>
             </script>
-        </ice:panelGrid>
+        </ice:panelGroup>
 
     </cc:implementation>
 </html>

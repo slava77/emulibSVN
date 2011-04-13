@@ -10,6 +10,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:comp="http://java.sun.com/jsf/composite/component"
+      xmlns:comp-util="http://java.sun.com/jsf/composite/component/util"
       xmlns:table="http://java.sun.com/jsf/composite/component/table">
 
     <cc:interface>
@@ -91,9 +92,33 @@
                                 <f:setPropertyActionListener target="#{cc.attrs.manager.table.displayFilter}" value="#{!cc.attrs.manager.table.displayFilter}"/>
                             </ice:commandLink>
                             |
-                            <ice:commandLink value="Columns" title="Columns" style="font-weight: bold">
-                                <f:setPropertyActionListener target="#{cc.attrs.manager.table.displayColumns}" value="#{!cc.attrs.manager.table.displayColumns}"/>
-                            </ice:commandLink>
+                            <comp:dropDown value="Configure"
+                                           type="link"
+                                           render="true"
+                                           title="Configure table"
+                                           style="font-weight: bold">
+                                <ice:panelGroup style="padding: 5px">
+                                    <ice:commandLink value="Columns" title="Columns" style="font-weight: bold">
+                                        <f:setPropertyActionListener target="#{cc.attrs.manager.table.displayColumns}" value="#{!cc.attrs.manager.table.displayColumns}"/>
+                                    </ice:commandLink>
+                                    <ice:panelGroup rendered="#{cc.attrs.manager.top}">
+                                        <ice:outputLabel value="Live refresh"/>
+                                        <comp-util:polling interval="#{cc.attrs.manager.refreshInterval}"
+                                                           run="#{cc.attrs.manager.refreshInterval &gt; 0}"
+                                                           actionListener="#{cc.attrs.manager.table.refreshListener}"/>
+                                        <ice:selectOneMenu value="#{cc.attrs.manager.refreshInterval}"
+                                                           partialSubmit="true"
+                                                           immediate="true">
+                                            <f:selectItem itemValue="0"   itemLabel="Off"/>
+                                            <f:selectItem itemValue="20"  itemLabel="20 sec."/>
+                                            <f:selectItem itemValue="40"  itemLabel="40 sec."/>
+                                            <f:selectItem itemValue="60"  itemLabel="01 min."/>
+                                            <f:selectItem itemValue="120" itemLabel="02 min."/>
+                                            <f:selectItem itemValue="180" itemLabel="03 min."/>
+                                        </ice:selectOneMenu>
+                                    </ice:panelGroup>
+                                </ice:panelGroup>
+                            </comp:dropDown>
                             |
                             <comp:dropDown value="Export"
                                            type="link"
