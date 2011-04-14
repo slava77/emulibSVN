@@ -150,8 +150,14 @@ public abstract class BeanTableDao implements Serializable {
             }
         }
 
-        for (BeanTableColumn col : table.getColumns()) {
+        for (String cname: table.getPack().getPropertyFilters().keySet()) {
+            BeanTableColumn col = table.getColumn(cname);
+            if (col != null) {
+                applyColumnFilter(c, col, table.getPack().getPropertyFilters().get(cname));
+            }
+        }
 
+        for (BeanTableColumn col : table.getColumns()) {
             if (col.isFilterSet()) {
                 if (col instanceof BeanTableColumnEmbedded) {
                     for (BeanTableColumnBase ecol: ((BeanTableColumnEmbedded) col).getProperties()) {
@@ -163,10 +169,6 @@ public abstract class BeanTableDao implements Serializable {
                     BeanTableFilter f = col.getFilter();
                     applyColumnFilter(c, col, f);
                 }
-            }
-
-            if (table.getPack().getPropertyFilters().containsKey(col.getName())) {
-                applyColumnFilter(c, col, table.getPack().getPropertyFilters().get(col.getName()));
             }
         }
 

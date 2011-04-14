@@ -10,7 +10,6 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:comp="http://java.sun.com/jsf/composite/component"
-      xmlns:comp-util="http://java.sun.com/jsf/composite/component/util"
       xmlns:table="http://java.sun.com/jsf/composite/component/table">
 
     <cc:interface>
@@ -29,6 +28,9 @@
 
         <cc:attribute name="rowSelection" required="false" default="false" type="java.lang.Boolean"
                       shortDescription="Use row selection"/>
+
+        <cc:attribute name="liveRefresh" required="false" default="false" type="java.lang.Boolean"
+                      shortDescription="Enable live refresh option on table"/>
 
         <cc:attribute name="styleClass" required="false" default="" type="java.lang.String"
                       shortDescription="Table class(es)"/>
@@ -101,11 +103,11 @@
                                     <ice:commandLink value="Columns" title="Columns" style="font-weight: bold">
                                         <f:setPropertyActionListener target="#{cc.attrs.manager.table.displayColumns}" value="#{!cc.attrs.manager.table.displayColumns}"/>
                                     </ice:commandLink>
-                                    <ice:panelGroup rendered="#{cc.attrs.manager.top}">
+                                    <ice:panelGroup rendered="#{cc.attrs.liveRefresh and cc.attrs.manager.top}">
                                         <ice:outputLabel value="Live refresh"/>
-                                        <comp-util:polling interval="#{cc.attrs.manager.refreshInterval}"
-                                                           run="#{cc.attrs.manager.refreshInterval &gt; 0}"
-                                                           actionListener="#{cc.attrs.manager.table.refreshListener}"/>
+                                        <comp:polling interval="#{cc.attrs.manager.refreshInterval}"
+                                                      run="#{cc.attrs.manager.refreshInterval &gt; 0 and cc.attrs.manager.top}"
+                                                      actionListener="#{cc.attrs.manager.table.refreshListener}"/>
                                         <ice:selectOneMenu value="#{cc.attrs.manager.refreshInterval}"
                                                            partialSubmit="true"
                                                            immediate="true">

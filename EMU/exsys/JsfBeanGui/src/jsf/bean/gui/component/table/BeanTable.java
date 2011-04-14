@@ -114,6 +114,15 @@ public class BeanTable extends BeanTableControls {
         return columns;
     }
 
+    public BeanTableColumn getColumn(String name) {
+        for (BeanTableColumn c: columns) {
+            if (c.getName().equals(name)) {
+                return c;
+            }
+        }
+        return null;
+    }
+
     public void refreshListener(ActionEvent e) {
         refresh();
     }
