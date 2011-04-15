@@ -56,9 +56,9 @@
 
             jQuery(document).ready(function () {
 
-                jQuery('#{componentSupportBean.jqPrefix}up')
+                jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'up')
                     .click(function() {
-                        var v = jQuery('#{componentSupportBean.jqPrefix}value');
+                        var v = jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'value');
                         var next = parseInt(v.val()) + #{cc.attrs.step};
                         if ('#{cc.attrs.maxValue}' != 'null') {
                           if (next > #{cc.attrs.maxValue}) {
@@ -68,9 +68,9 @@
                         v.val(next);
                     });
 
-                jQuery('#{componentSupportBean.jqPrefix}down')
+                jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'down')
                     .click(function() {
-                        var v = jQuery('#{componentSupportBean.jqPrefix}value');
+                        var v = jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'value');
                         var next = parseInt(v.val()) - #{cc.attrs.step};
                         if ('#{cc.attrs.minValue}' != 'null') {
                           if (next < #{cc.attrs.minValue}) {

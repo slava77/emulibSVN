@@ -362,14 +362,14 @@
                         jQuery(document).ready( function () {
 
                             var columnWidths = "";
-                            jQuery('#{componentSupportBean.jqPrefix}beanTable thead tr th').each(function() {
+                            jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'beanTable thead tr th').each(function() {
                                 if (columnWidths != "") {
                                     columnWidths += ",";
                                 }
                                 columnWidths += jQuery(this).width();
                             });
 
-                            jQuery('#{componentSupportBean.jqPrefix}beanTableWidths').val(columnWidths);
+                            jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'beanTableWidths').val(columnWidths);
 
                         });
                         // ]]>

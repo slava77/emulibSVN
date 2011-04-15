@@ -43,8 +43,10 @@ ${}SEPARATOR${}
 <#assign embedItem=c.columnValue(item)>
 <#list c.embeddedProperties as embedCol>
                 <td><#rt>
-<#if embedCol.isEntityType>
+<#if embedCol.isEntityType && !embedCol.isListType>
                     ${embedCol.columnValue(embedItem).entityTitle}<#t>
+<#elseif embedCol.isListType>
+                <td>{list}</td>
 <#elseif embedCol.isBoolean>
                     ${embedCol.columnValue(embedItem)?string}<#t>
 <#else>
@@ -52,8 +54,10 @@ ${}SEPARATOR${}
 </#if>
                 </td><#lt>
 </#list>
-<#elseif c.isEntityType>
+<#elseif c.isEntityType && !c.isListType>
                 <td>${c.columnValue(item).entityTitle}</td>
+<#elseif c.isListType>
+                <td>{list}</td>
 <#elseif c.isBoolean>
                     <td>${c.columnValue(item)?string}</td>
 <#else>

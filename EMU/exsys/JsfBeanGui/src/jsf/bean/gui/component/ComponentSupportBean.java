@@ -25,7 +25,7 @@ public class ComponentSupportBean {
     }
 
     public String getJqPrefix() {
-        return "#".concat(getClientId()).concat(":").replaceAll(":", "\\\\\\\\:");
+        return "#".concat(getClientId()).concat(":");
     }
 
     public NewLineConverter getNewLineConverter() {

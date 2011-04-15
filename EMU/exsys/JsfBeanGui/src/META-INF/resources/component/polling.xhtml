@@ -19,7 +19,7 @@
                 // <![CDATA[
 
                 jQuery(document).ready( function () {
-                    var b = jQuery('#{componentSupportBean.jqPrefix}button');
+                    var b = jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'button');
                     b.bind('poll', function() {
                         var b = jQuery(this);
                         if (!b.data('first')) {
@@ -30,7 +30,7 @@
                         if (b.data('interval') > 0) {
                             setTimeout(
                                 function () {
-                                    jQuery('#{componentSupportBean.jqPrefix}button').trigger('poll');
+                                    jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'button').trigger('poll');
                                 },
                                 (b.data('interval') * 1000)
                             );

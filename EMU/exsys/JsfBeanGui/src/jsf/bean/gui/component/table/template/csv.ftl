@@ -10,8 +10,10 @@ ${}SEPARATOR${}
 <#if c.isEmbedType><#assign embItem=c.columnValue(item)><#list c.embeddedProperties as embCol>
 <#if !embCol.columnValue(embItem)?has_content>
 <#t>
-<#elseif embCol.isEntityType>
+<#elseif embCol.isEntityType && !embCol.isListType>
 ${embCol.columnValue(embItem).entityTitle}<#t>
+<#elseif embCol.isListType>
+{list}<#t>
 <#elseif embCol.columnValue(embItem)?is_string && ( embCol.columnValue(embItem)?contains(",") || embCol.columnValue(embItem)?contains("\"") || embCol.columnValue(embItem)?contains("\n") )>
 "${embCol.columnValue(embItem)?replace('"','\"\"')}"<#t>
 <#elseif embCol.isNumeric || embCol.isDate>
@@ -23,8 +25,10 @@ ${embCol.columnValue(embItem)?string}<#t>
 <#else>
 ${embCol.columnValue(embItem)}<#t>
 </#if><#if embCol_has_next>, </#if><#t></#list><#t>
-<#elseif c.isEntityType>
+<#elseif c.isEntityType && !c.isListType>
 ${c.columnValue(item).entityTitle}<#t>
+<#elseif c.isListType>
+{list}<#t>
 <#elseif c.columnValue(item)?is_string && ( c.columnValue(item)?contains(",") || c.columnValue(item)?contains("\"") || c.columnValue(item)?contains("\n") )>
 "${c.columnValue(item)?replace('"','\"\"')}"<#t>
 <#elseif c.isNumeric || c.isDate>

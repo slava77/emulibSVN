@@ -10,8 +10,10 @@ ${}SEPARATOR${}
 <#list c.embeddedProperties as embCol>
 <#if !embCol.columnValue(embItem)?has_content>
             "${embCol.name}": null<#rt>
-<#elseif c.isEntityType>
+<#elseif embCol.isEntityType && !embCol.isListType>
              "${embCol.name}": "${embCol.columnValue(embItem).entityTitle}"<#rt>
+<#elseif embCol.isListType>
+             "${embCol.name}": "{list}"<#rt>
 <#elseif embCol.isNumeric>
             "${embCol.name}": ${embCol.columnValue(embItem)}<#rt>
 <#elseif embCol.isBoolean>
@@ -21,8 +23,10 @@ ${}SEPARATOR${}
 </#if>
 <#if embCol_has_next>,</#if>
 </#list>        }<#rt>
-<#elseif c.isEntityType>
+<#elseif c.isEntityType && !c.isListType>
         "${c.name}": "${c.columnValue(item).entityTitle}"<#rt>
+<#elseif c.isListType>
+             "${c.name}": "{list}"<#rt>
 <#elseif c.isNumeric>
         "${c.name}": ${c.columnValue(item)}<#rt>
 <#elseif c.isBoolean>

@@ -50,7 +50,7 @@
                            styleClass="iceCmdLnk #{cc.attrs.styleClass}"
                            style="#{cc.attrs.style}"
                            disabled="#{cc.attrs.disable}"
-                           onclick="jQuery('#{componentSupportBean.jqPrefix}popup').trigger('controlClick', [this]); return false;"/>
+                           onclick="jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'popup').trigger('controlClick', [this]); return false;"/>
 
             <h:commandButton id="button"
                              rendered="#{cc.attrs.type == 'button'}"
@@ -59,7 +59,7 @@
                              styleClass="iceCmdBtn #{cc.attrs.styleClass}"
                              disabled="#{cc.attrs.disable}"
                              style="#{cc.attrs.style}"
-                             onclick="jQuery('#{dropDownBean.jqPrefix}popup').trigger('controlClick', [this]); return false;"/>
+                             onclick="jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'popup').trigger('controlClick', [this]); return false;"/>
 
             <div id="#{componentSupportBean.clientId}:popup"
                  style="display: none; #{cc.attrs.popupStyle};"
@@ -72,7 +72,7 @@
 
                     jQuery(document).ready(function () {
 
-                        jQuery('#{componentSupportBean.jqPrefix}popup')
+                        jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'popup')
                             .hover(function() {
                                 jQuery(this).data("mouse_inside", true);
                             }, function() {
@@ -93,14 +93,14 @@
                             .css("position", "absolute");
 
                         jQuery("body").mouseup(function() {
-                            var p = jQuery('#{componentSupportBean.jqPrefix}popup');
+                            var p = jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'popup');
                             if (p.is(':visible') && !p.data("mouse_inside")) {
                                 p.hide('fast');
                             }
                         });
 
                         ice.onBeforeUpdate(function() {
-                            var p = jQuery('#{componentSupportBean.jqPrefix}popup');
+                            var p = jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'popup');
                             if (p.is(':visible')) {
                                 if (!p.data("control_click")) {
                                     p.hide('fast');
