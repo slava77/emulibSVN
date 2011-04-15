@@ -17,8 +17,10 @@ ${}SEPARATOR${}
 ${embedCol.columnValue(embedItem).entityTitle}<#t>
 <#elseif embedCol.columnValue(embedItem)?is_string && ( embedCol.columnValue(embedItem)?contains("\n") )>
 "${embedCol.columnValue(embedItem)}"<#t>
-<#elseif embedCol.isBoolean || embedCol.isNumeric || embedCol.isDate>
+<#elseif embedCol.isNumeric || embedCol.isDate>
 ${embedCol.columnValue(embedItem)}<#t>
+<#elseif embedCol.isBoolean>
+${embedCol.columnValue(embedItem)?string}<#t>
 <#elseif embedCol.columnValue(embedItem)?contains(",") || embedCol.columnValue(embedItem)?contains("\"") || embedCol.columnValue(embedItem)?contains("\n")>
 "${embedCol.columnValue(embedItem)?replace('"','\"\"')}"<#t>
 <#else>
@@ -28,8 +30,10 @@ ${embedCol.columnValue(embedItem)}<#t>
 ${c.columnValue(item).entityTitle}<#t>
 <#elseif c.columnValue(item)?is_string && ( c.columnValue(item)?contains("\n") )>
 "${c.columnValue(item)}"<#t>
-<#elseif c.isBoolean || c.isNumeric || c.isDate>
+<#elseif c.isNumeric || c.isDate>
 ${c.columnValue(item)}<#t>
+<#elseif c.isBoolean>
+${c.columnValue(item)?string}<#t>
 <#elseif c.columnValue(item)?contains(",") || c.columnValue(item)?contains("\"") || c.columnValue(item)?contains("\n")>
 "${c.columnValue(item)?replace('"','\"\"')}"<#t>
 <#else>

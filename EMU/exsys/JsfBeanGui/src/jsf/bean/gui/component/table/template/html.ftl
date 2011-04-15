@@ -37,6 +37,7 @@ color:#ffffff;
 </#list>
             </tr>
 ${}SEPARATOR${}
+            <tr>
 <#list columns as c>
 <#if c.isEmbedType>
 <#assign embedItem=c.columnValue(item)>
@@ -44,6 +45,8 @@ ${}SEPARATOR${}
                 <td><#rt>
 <#if embedCol.isEntityType>
                     ${embedCol.columnValue(embedItem).entityTitle}<#t>
+<#elseif embedCol.isBoolean>
+                    ${embedCol.columnValue(embedItem)?string}<#t>
 <#else>
                     ${embedCol.columnValue(embedItem)?html}<#t>
 </#if>
@@ -51,6 +54,8 @@ ${}SEPARATOR${}
 </#list>
 <#elseif c.isEntityType>
                 <td>${c.columnValue(item).entityTitle}</td>
+<#elseif c.isBoolean>
+                    <td>${c.columnValue(item)?string}</td>
 <#else>
                 <td>${c.columnValue(item)?html}</td>
 </#if>

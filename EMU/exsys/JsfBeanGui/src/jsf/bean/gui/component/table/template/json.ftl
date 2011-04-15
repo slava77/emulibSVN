@@ -12,8 +12,10 @@ ${}SEPARATOR${}
             "${embCol.name}": null<#rt>
 <#elseif c.isEntityType>
              "${embCol.name}": "${embCol.columnValue(embItem).entityTitle}"<#rt>
-<#elseif embCol.isNumeric || embCol.isBoolean>
+<#elseif embCol.isNumeric>
             "${embCol.name}": ${embCol.columnValue(embItem)}<#rt>
+<#elseif embCol.isBoolean>
+            "${embCol.name}": ${embCol.columnValue(embItem)?string}<#rt>
 <#else>
             "${embCol.name}": "${embCol.columnValue(embItem)}"<#rt>
 </#if>
@@ -21,8 +23,10 @@ ${}SEPARATOR${}
 </#list>        }<#rt>
 <#elseif c.isEntityType>
         "${c.name}": "${c.columnValue(item).entityTitle}"<#rt>
-<#elseif c.isNumeric || c.isBoolean>
+<#elseif c.isNumeric>
         "${c.name}": ${c.columnValue(item)}<#rt>
+<#elseif c.isBoolean>
+        "${c.name}": ${c.columnValue(item)?string}<#rt>
 <#else>
         "${c.name}": "${c.columnValue(item)}"<#rt>
 </#if><#if c_has_next>,</#if>

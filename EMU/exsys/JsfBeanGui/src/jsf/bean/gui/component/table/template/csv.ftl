@@ -14,8 +14,10 @@ ${}SEPARATOR${}
 ${embCol.columnValue(embItem).entityTitle}<#t>
 <#elseif embCol.columnValue(embItem)?is_string && ( embCol.columnValue(embItem)?contains(",") || embCol.columnValue(embItem)?contains("\"") || embCol.columnValue(embItem)?contains("\n") )>
 "${embCol.columnValue(embItem)?replace('"','\"\"')}"<#t>
-<#elseif embCol.isBoolean || embCol.isNumeric || embCol.isDate>
+<#elseif embCol.isNumeric || embCol.isDate>
 ${embCol.columnValue(embItem)}<#t>
+<#elseif embCol.isBoolean>
+${embCol.columnValue(embItem)?string}<#t>
 <#elseif embCol.columnValue(embItem)?contains(",") || embCol.columnValue(embItem)?contains("\"") || embCol.columnValue(embItem)?contains("\n")>
 "${embCol.columnValue(embItem)?replace('"','\"\"')}"<#t>
 <#else>
@@ -25,8 +27,10 @@ ${embCol.columnValue(embItem)}<#t>
 ${c.columnValue(item).entityTitle}<#t>
 <#elseif c.columnValue(item)?is_string && ( c.columnValue(item)?contains(",") || c.columnValue(item)?contains("\"") || c.columnValue(item)?contains("\n") )>
 "${c.columnValue(item)?replace('"','\"\"')}"<#t>
-<#elseif c.isBoolean || c.isNumeric || c.isDate>
+<#elseif c.isNumeric || c.isDate>
 ${c.columnValue(item)}<#t>
+<#elseif c.isBoolean>
+${c.columnValue(item)?string}<#t>
 <#elseif c.columnValue(item)?contains(",") || c.columnValue(item)?contains("\"") || c.columnValue(item)?contains("\n")>
 "${c.columnValue(item)?replace('"','\"\"')}"<#t>
 <#else>
