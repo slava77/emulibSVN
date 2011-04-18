@@ -8,15 +8,17 @@ ${c.name}<#t>
 </#if><#if c_has_next>	</#if></#list>
 ${}SEPARATOR${}
 <#list columns as c>
-<#if !c.columnValue(item)?has_content>
+<#if c.isListType>
+{list}<#t>
+<#elseif !c.columnValue(item)?has_content>
 <#t>
 <#elseif c.isEmbedType><#assign embedItem=c.columnValue(item)><#list c.embeddedProperties as embedCol>
-<#if !embedCol.columnValue(embedItem)?has_content>
+<#if embedCol.isListType>
+{list}<#t>
+<#elseif !embedCol.columnValue(embedItem)?has_content>
 <#t>
 <#elseif embedCol.isEntityType && !embedCol.isListType>
 ${embedCol.columnValue(embedItem).entityTitle}<#t>
-<#elseif embedCol.isListType>
-{list}<#t>
 <#elseif embedCol.columnValue(embedItem)?is_string && ( embedCol.columnValue(embedItem)?contains("\n") )>
 "${embedCol.columnValue(embedItem)}"<#t>
 <#elseif embedCol.isNumeric || embedCol.isDate>
@@ -30,8 +32,6 @@ ${embedCol.columnValue(embedItem)}<#t>
 </#if><#t><#if embedCol_has_next>	</#if><#t></#list><#t>
 <#elseif c.isEntityType && !c.isListType>
 ${c.columnValue(item).entityTitle}<#t>
-<#elseif c.isListType>
-{list}<#t>
 <#elseif c.columnValue(item)?is_string && ( c.columnValue(item)?contains("\n") )>
 "${c.columnValue(item)}"<#t>
 <#elseif c.isNumeric || c.isDate>

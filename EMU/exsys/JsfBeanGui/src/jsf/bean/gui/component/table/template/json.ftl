@@ -2,18 +2,20 @@
 ${}SEPARATOR${}
     {
 <#list columns as c>
-<#if !c.columnValue(item)?has_content>
+<#if c.isListType>
+             "${c.name}": "{list}"<#rt>
+<#elseif !c.columnValue(item)?has_content>
         "${c.name}": null<#rt>
 <#elseif c.isEmbedType>
         "${c.name}": {
 <#assign embItem=c.columnValue(item)>
 <#list c.embeddedProperties as embCol>
-<#if !embCol.columnValue(embItem)?has_content>
+<#if embCol.isListType>
+             "${embCol.name}": "{list}"<#rt>
+<#elseif !embCol.columnValue(embItem)?has_content>
             "${embCol.name}": null<#rt>
 <#elseif embCol.isEntityType && !embCol.isListType>
              "${embCol.name}": "${embCol.columnValue(embItem).entityTitle}"<#rt>
-<#elseif embCol.isListType>
-             "${embCol.name}": "{list}"<#rt>
 <#elseif embCol.isNumeric>
             "${embCol.name}": ${embCol.columnValue(embItem)}<#rt>
 <#elseif embCol.isBoolean>
@@ -25,8 +27,6 @@ ${}SEPARATOR${}
 </#list>        }<#rt>
 <#elseif c.isEntityType && !c.isListType>
         "${c.name}": "${c.columnValue(item).entityTitle}"<#rt>
-<#elseif c.isListType>
-             "${c.name}": "{list}"<#rt>
 <#elseif c.isNumeric>
         "${c.name}": ${c.columnValue(item)}<#rt>
 <#elseif c.isBoolean>

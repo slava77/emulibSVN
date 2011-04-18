@@ -11,7 +11,7 @@ ${}SEPARATOR${}
 <${embedCol.name?html}><#t>
 <#if embedCol.isEntityType && !embedCol.isListType>
 ${embedCol.columnValue(embedItem).entityTitle}<#t>
-<#if embedCol.isListType>
+<#elseif embedCol.isListType>
 {list}<#t>
 <#elseif embedCol.isBoolean>
 ${embedCol.columnValue(embedItem)?string}<#t>
@@ -24,7 +24,7 @@ ${embedCol.columnValue(embedItem)?html}<#t>
 <#elseif c.isEntityType && !c.isListType>
 ${c.columnValue(item).entityTitle}<#t>
 <#elseif c.isListType>
-${list}<#t>
+{list}<#t>
 <#elseif c.isBoolean>
 ${c.columnValue(item)?string}<#t>
 <#else>

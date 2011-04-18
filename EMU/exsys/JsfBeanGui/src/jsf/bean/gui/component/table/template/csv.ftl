@@ -7,7 +7,11 @@ ${c.name} ${ec.name}<#if ec_has_next>, </#if><#t>
 ${c.name}<#t></#if><#if c_has_next>, </#if></#list>
 ${}SEPARATOR${}
 <#list columns as c>
-<#if c.isEmbedType><#assign embItem=c.columnValue(item)><#list c.embeddedProperties as embCol>
+<#if c.isListType>
+{list}<#t>
+<#elseif !c.columnValue(item)?has_content>
+<#t>
+<#elseif c.isEmbedType><#assign embItem=c.columnValue(item)><#list c.embeddedProperties as embCol>
 <#if !embCol.columnValue(embItem)?has_content>
 <#t>
 <#elseif embCol.isEntityType && !embCol.isListType>
@@ -27,8 +31,6 @@ ${embCol.columnValue(embItem)}<#t>
 </#if><#if embCol_has_next>, </#if><#t></#list><#t>
 <#elseif c.isEntityType && !c.isListType>
 ${c.columnValue(item).entityTitle}<#t>
-<#elseif c.isListType>
-{list}<#t>
 <#elseif c.columnValue(item)?is_string && ( c.columnValue(item)?contains(",") || c.columnValue(item)?contains("\"") || c.columnValue(item)?contains("\n") )>
 "${c.columnValue(item)?replace('"','\"\"')}"<#t>
 <#elseif c.isNumeric || c.isDate>
