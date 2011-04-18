@@ -20,6 +20,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
 import jsf.bean.gui.exception.InvalidEntityClassException;
 import jsf.bean.gui.log.Logger;
@@ -88,9 +89,11 @@ public class EntityPropertyMdFactory {
         for (PropertyDescriptor prop: props) {
             try {
                 PropertyMd propMeta = createMetadataForProperty(prop);
-                metadata.add(propMeta);
+                if (propMeta != null) {
+                    metadata.add(propMeta);
+                }
             } catch (InvalidEntityBeanPropertyException ex) {
-                logger.warn("Exception while constructing entity bean " + entityClass.getName() + "properties metadata - skipping this property");
+                logger.warn("Exception while constructing entity bean " + entityClass.getName() + " properties metadata (" + ex.getMessage() + ") - skipping this property");
             }
         }
         return metadata;
@@ -105,6 +108,10 @@ public class EntityPropertyMdFactory {
     public static PropertyMd createMetadataForProperty(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
         // process the annotations and decide what type of PropertyMd object to create
         Method getter = prop.getReadMethod();
+
+        if (getter.isAnnotationPresent(Transient.class)) {
+            return null;
+        }
 
         if (getter.isAnnotationPresent(Basic.class)) {
             return new BasicPropertyMd(prop);
