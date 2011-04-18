@@ -73,7 +73,7 @@
 
             <ice:panelGrid columns="2" cellpadding="0" cellspacing="0">
                 <ice:outputLabel value="Size"/>
-                <ice:selectOneMenu value="#{cc.attrs.manager.table.properties.pageSize}"
+                <ice:selectOneMenu value="#{cc.attrs.manager.table.pageSize}"
                                    style="margin-left: 5px; margin-top: 0px; margin-right: 5px; margin-bottom: 0px; width: 41px"
                                    title="Select page size"
                                    onchange="jQuery(jqPrefix('#{componentSupportBean.jqPrefix}').replace(/[^:]+:$/g,'') +'refreshButton').click();">

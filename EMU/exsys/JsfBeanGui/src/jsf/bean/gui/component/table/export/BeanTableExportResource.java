@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 import jsf.bean.gui.component.table.BeanTable;
@@ -40,8 +41,9 @@ public class BeanTableExportResource implements Resource, Serializable {
         return inputStream;
     }
 
+    @SuppressWarnings("deprecation")
     public Date lastModified() {
-        return new Date();
+        return Calendar.getInstance().getTime();
     }
 
     public void withOptions(Options optns) throws IOException {

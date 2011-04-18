@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -295,7 +296,6 @@ public abstract class BeanTableManager implements Serializable {
     private static Map<String, Properties> beanProperties = new HashMap<String, Properties>();
 
     public Properties getProperties() {
-        Properties p = new Properties();
 
         // Loading personal properties
         {
@@ -307,7 +307,10 @@ public abstract class BeanTableManager implements Serializable {
             if (myId != null) {
                 File f = getRealFile(PROPERTIES_BASE_PATH.concat(File.separator).concat(myId).concat(PROPERTIES_EXTENSION));
                 try {
-                    p.load(new FileInputStream(f));
+                    FileInputStream fin = new FileInputStream(f);
+                    Properties p = new Properties();
+                    p.load(fin);
+                    fin.close();
                     return p;
                 } catch (Exception ex) {
                     logger.warn("Table [id = {0}] personal properties not found at [{1}]. Reseting and loading defaults...", id, f.getAbsolutePath());
@@ -320,6 +323,7 @@ public abstract class BeanTableManager implements Serializable {
         {
             if (!beanProperties.containsKey(id)) {
                 File f = getRealFile(PROPERTIES_BASE_PATH.concat(File.separator).concat(id).concat(PROPERTIES_EXTENSION));
+                Properties p = new Properties();
                 try {
                     p.load(new FileInputStream(f));
                 } catch (Exception ex) {
@@ -329,7 +333,15 @@ public abstract class BeanTableManager implements Serializable {
             }
         }
 
-        return beanProperties.get(id);
+        // Copy properties instead of using the same...
+        Properties op = beanProperties.get(id);
+        Properties p = new Properties();
+        for (Enumeration keys = op.propertyNames(); keys.hasMoreElements(); ) {
+            Object key = keys.nextElement();
+            p.put(key, op.get(key));
+        }
+
+        return p;
 
     }
 

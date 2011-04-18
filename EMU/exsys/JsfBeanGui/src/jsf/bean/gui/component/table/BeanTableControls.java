@@ -37,7 +37,6 @@ public abstract class BeanTableControls implements Serializable {
             prop.setPageSize(pageSize);
             setPageIndex(1);
         }
-        refresh();
     }
 
     public int getDataFirstIndex() {
