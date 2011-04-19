@@ -58,6 +58,9 @@ public class EntityPropertyMdFactory {
         // * all those which match ignoredPropertyPattern
         List<String> propNamesToRemove = new ArrayList<String>();
         for (PropertyDescriptor prop: allProps) {
+            if (prop.getReadMethod() == null) {
+                propNamesToRemove.add(prop.getName());
+            }
             Matcher m = itemPropertyPattern.matcher(prop.getName());
             if (m.matches()) {
                 String nonItemPropName = m.group(1);
