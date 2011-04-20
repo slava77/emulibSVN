@@ -376,7 +376,7 @@ dyn_int emumaj_onOffErrorNoCommStatusDpCounts(dyn_anytype values, int &weight, b
 
 /** standard .status DP. > 1 means ON, < 0 means ERROR, else means OFF.
   values here are ".status". States are ON, ERROR and NO_COMMUNICATION */
-dyn_int emumaj_onOffErrorStatusDpCounts(dyn_anytype values, int &weight, bool calcTotal, string node, bool noCommMeansOn) {
+dyn_int emumaj_onOffErrorStatusDpCounts(dyn_anytype values, int &weight, bool calcTotal, string node, bool noCommMeansOn, bool noCommMeansError = true) {
   int status = values[1];
   int on = 0,
       error = 0;
@@ -384,10 +384,16 @@ dyn_int emumaj_onOffErrorStatusDpCounts(dyn_anytype values, int &weight, bool ca
   if (status > 1) {
     on = 1;
   } else if (status < 0) {
-    if (noCommMeansOn && (status == -2)) {
-      on = 1;
+    if (status == -2) { // means no communication
+      if (noCommMeansOn) {
+        on = 1;
+      }
+      if (noCommMeansError) {
+        error = 1;
+      }
+    } else {
+      error = 1;
     }
-    error = 1;
   }
   
   return makeDynInt(on, error);

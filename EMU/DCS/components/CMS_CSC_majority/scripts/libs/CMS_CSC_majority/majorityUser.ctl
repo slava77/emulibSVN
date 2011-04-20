@@ -46,9 +46,9 @@ dyn_int majorityUser_stateCounts(string device, dyn_anytype values, // informati
     case "LvForHv_Ch":
       return emumaj_onOffErrorStatusDpCounts(values, all, calcTotal, node, false);
     case "Gas":
-      return emumaj_onOffErrorStatusDpCounts(values, all, calcTotal, node, true);
+      return emumaj_onOffErrorStatusDpCounts(values, all, calcTotal, node, true, false);
     case "Cooling":
-      return emumaj_onOffErrorStatusDpCounts(values, all, calcTotal, node, true);
+      return emumaj_onOffErrorStatusDpCounts(values, all, calcTotal, node, true, false);
     default:
       break;
   }
