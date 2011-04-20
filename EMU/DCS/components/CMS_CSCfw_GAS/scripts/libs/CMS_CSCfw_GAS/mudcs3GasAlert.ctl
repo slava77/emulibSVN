@@ -44,6 +44,19 @@ Cooling_alert_main(){
  mudcsCoolingSummaryAlertSet(true);
  mudcsCoolingRacksSummary(true);       
 
+ // cooling FSM DP alert - mainly to catch "no communication", because it isn't being catched anywhere else
+  dyn_string ex;
+  fwAlertConfig_setAnalog("CoolingCMS/CSC_WATER_COOLING.status",
+                          makeDynString("No communication with cooling system", "Cooling Error", "Cooling OK"),
+                          makeDynFloat(-1, 2),
+                          makeDynString("_fwErrorNack_70.", "_fwErrorNack_70.", ""),
+                          "",
+                          makeDynString(),
+                          "Call CSC DOC.",
+                          ex);
+  if (dynlen(ex) > 0) { DebugTN(ex); }
+  fwAlertConfig_activate("CoolingCMS/CSC_WATER_COOLING.status", ex);
+  if (dynlen(ex) > 0) { DebugTN(ex); }
 
 }
 //===================================================================================
@@ -348,6 +361,18 @@ DebugTN(s1);
 GAS_alert_set(bool isSet, string device_type)
 {
 
+  dyn_string ex;
+  fwAlertConfig_setAnalog("GasCMS/CSC_GAS_MONITOR.status",
+                          makeDynString("No communication with gas system", "Gas Error", "Gas OK"),
+                          makeDynFloat(-1, 2),
+                          makeDynString("_fwErrorNack_70.", "_fwErrorNack_70.", ""),
+                          "",
+                          makeDynString(),
+                          "Call CSC DOC during daytime. CSC is fine without fresh gas for 24 hours.",
+                          ex);
+  if (dynlen(ex) > 0) { DebugTN(ex); }  
+  fwAlertConfig_activate("GasCMS/CSC_GAS_MONITOR.status", ex);
+  if (dynlen(ex) > 0) { DebugTN(ex); }  
   
 dyn_string limits_s;
 string value;
