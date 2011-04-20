@@ -100,9 +100,23 @@
                         <ice:panelGroup>
                             <ice:commandLink value="Refresh"
                                              actionListener="#{monitorController.refreshAllImagesListener}"/>
-                            <exsys-util:polling  uid="refreshPoll"
-                                                 interval="10"
-                                                 actionListener="#{monitorController.refreshAllImagesListener}"/>
+                            <ice:panelGroup>
+                                <ice:outputLabel value="Live refresh"/>
+                                <exsys-component:polling interval="#{monitorController.refreshInterval}"
+                                                         run="#{monitorController.refreshInterval &gt; 0}"
+                                                         actionListener="#{monitorController.refreshAllImagesListener}"/>
+                                <ice:selectOneMenu value="#{monitorController.refreshInterval}"
+                                                   partialSubmit="true"
+                                                   immediate="true">
+                                    <f:selectItem itemValue="0"   itemLabel="Off"/>
+                                    <f:selectItem itemValue="10"  itemLabel="10 sec."/>
+                                    <f:selectItem itemValue="20"  itemLabel="20 sec."/>
+                                    <f:selectItem itemValue="40"  itemLabel="40 sec."/>
+                                    <f:selectItem itemValue="60"  itemLabel="01 min."/>
+                                    <f:selectItem itemValue="120" itemLabel="02 min."/>
+                                    <f:selectItem itemValue="180" itemLabel="03 min."/>
+                                </ice:selectOneMenu>
+                            </ice:panelGroup>
                         </ice:panelGroup>
                     </ice:panelGroup>
 

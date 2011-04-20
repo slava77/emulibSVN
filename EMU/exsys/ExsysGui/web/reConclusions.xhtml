@@ -31,6 +31,7 @@
             </ice:panelGrid>
 
             <component:beanTable manager="#{conclusions.table}" title="Conclusions"
+                                 liveRefresh="true"
                                  skipColumnsByName="acknowledged">
                 <ice:panelGroup rendered="#{column.name == 'acknowledged'}">
                     <ice:selectBooleanCheckbox value="#{item.acknowledged}" readonly="true" disabled="true"/>

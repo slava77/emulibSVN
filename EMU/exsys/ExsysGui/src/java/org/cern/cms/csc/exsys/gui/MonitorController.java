@@ -55,6 +55,7 @@ public class MonitorController extends BrowserController {
 
     private List<JmsWorker> queues = new ArrayList<JmsWorker>();
     private Integer chartLastHours = 8;
+    private Integer refreshInterval = 0;
 
     private byte[] statusImage = null;
     private byte[] systemImage = null;
@@ -280,6 +281,14 @@ public class MonitorController extends BrowserController {
     public void flushQueueMessageListener(ActionEvent ev) {
         int index = Integer.parseInt((String) getParameter("index"));
         getQueues().get(index).flushObjectMessage();
+    }
+
+    public Integer getRefreshInterval() {
+        return refreshInterval;
+    }
+
+    public void setRefreshInterval(Integer refreshInterval) {
+        this.refreshInterval = refreshInterval;
     }
 
 }
