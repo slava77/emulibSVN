@@ -144,6 +144,7 @@ void emudcsME11_setDefaultHvSettings() {
           dps[i] + ".settings.rUp", 7,
           dps[i] + ".settings.v0", 2900,
           dps[i] + ".settings.v1", 2300,
-          dps[i] + ".settings.vMaxSoftValue", 3100);
+          dps[i] + ".settings.vMaxSoftValue", 3100,
+          dps[i] + ".userDefined", 2900);
   }
 }

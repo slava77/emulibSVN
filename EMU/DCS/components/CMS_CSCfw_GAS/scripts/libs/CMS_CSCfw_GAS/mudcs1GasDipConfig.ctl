@@ -166,6 +166,18 @@ mudcs_dip_config(issubscribe,item, dpes, tags);
 //==================================
 
 //===================================================================
+if (!dpExists("GasPlcCounter")) {
+  dpCreate("GasPlcCounter", "ExampleDP_Int");
+}
+dyn_string ex;
+if (issubscribe) {
+  fwDIP_subscribe("GasPlcCounter.", configDp, "dip/CMS/GCS/CMSCSC/PlcCounter", "AliveCounter", ex);
+} else {
+  fwDIP_unsubscribe("GasPlcCounter.", ex);
+}
+if (dynlen(ex) > 0) { DebugTN(ex); }
+
+
 dpCreate("CSC_GAS_MONITOR","fwGasSystem_CSC_GAS_d");
 item="dip/CMS/GCS/CMSCSC/GasSystem";
 dynClear(dpes);

@@ -580,7 +580,7 @@ dyn_string datapoints_d;
 ///// DebugN("-----------"+  datapoints_d[i]  +" ------------");
 /////        dpSetWait(datapoints_d[i]+".update_value",999);
         if(service=="fwGasSystem_CSC_GAS")
-           dpConnect(update_fun,FALSE,"GasPump_o.State");
+           dpConnect(update_fun,FALSE,"GasPlcCounter.");
         else if(service=="fwCooling_CSC_COOLING")
            dpConnect(update_fun,FALSE,datapoints_d[i]+".Flowmeter_EndCap_Cooling_YE_Plus_1");
         else dpConnect(update_fun,datapoints_d[i]+".update_value");
