@@ -75,6 +75,7 @@ file femessage;
 string emessage="To: valerii.sytnik@cern.ch \nSubject: EMU-DCS: SUBSYSTEM ALIVE WARNING  \n \n \n";
 string eemessage;
  
+emu_info("Starting watchdog, watch mask = " + CSC_fwG_g_watch_mask);
 
 //------------------
  while(1){
