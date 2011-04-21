@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 8 (NoName)
-PANEL,-1 -1 701 527 N "_3DFace" 1
+PANEL,-1 -1 701 552 N "_3DFace" 1
 "$2"
 "string system_name;
 
@@ -13,7 +13,7 @@ main()
  
   // DebugTN($2);
   //========= //my_corr
-    string dp, d2;
+    string dp;
     dyn_string ds;
     int pos;
     
@@ -42,6 +42,7 @@ main()
    dpConnect(\"stts\",true,d2+\".actual.status\");
    dpConnect(\"v0\",true,d2+\".readBackSettings.v0\");
    dpConnect(\"v1\",true,d2+\".readBackSettings.v1\");
+   dpConnect(\"nominalVoltage\", true, d2 + \".userDefined\");
 }
 
 vMon(string dp1, float a)
@@ -121,10 +122,14 @@ stts(string dp1, int x)
    Text8.text=s; 
 }
 
-" 0
+void nominalVoltage(string dpName, string value) {
+  int voltage = value;
+  spinNominalVoltage.text = voltage;
+}" 0
  E E E E 1 0 0 0  0 0
 ""0  1
-E E 2
+E "string d2;" 0
+ 2
 "CBRef" "1"
 "EClose" E
 ""
@@ -173,7 +178,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 30 20 120 37
+E E 0 1 1 0 1 E U  0 E 30 20 121 36
 0 2 0 "0s" 0 0 0 192 0 0  30 20 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -192,7 +197,7 @@ LANG:1 0
 
 1
 "dashclr"N {0,0,0}
-E E 0 1 1 0 0 E U  1 E 132 22 162 39
+E E 0 1 1 0 0 E U  1 E 132 22 167 38
 0 2 0 "0s" 0 0 0 192 0 0  132 22 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -211,7 +216,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 72 52 102 69
+E E 0 1 1 0 1 E U  0 E 72 52 107 68
 0 2 0 "0s" 0 0 0 192 0 0  72 52 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -230,7 +235,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 186 52 216 69
+E E 0 1 1 0 1 E U  0 E 186 52 221 68
 0 2 0 "0s" 0 0 0 192 0 0  186 52 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -249,7 +254,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 152 52 180 69
+E E 0 1 1 0 1 E U  0 E 152 52 182 68
 0 2 0 "0s" 0 0 0 192 0 0  152 52 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -268,7 +273,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 32 52 66 69
+E E 0 1 1 0 1 E U  0 E 32 52 68 68
 0 2 0 "0s" 0 0 0 192 0 0  32 52 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -287,7 +292,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 452 52 483 69
+E E 0 1 1 0 1 E U  0 E 452 52 485 68
 0 2 0 "0s" 0 0 0 192 0 0  452 52 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -306,7 +311,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 492 52 522 69
+E E 0 1 1 0 1 E U  0 E 492 52 527 68
 0 2 0 "0s" 0 0 0 192 0 0  492 52 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -325,7 +330,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 190 20 351 37
+E E 0 1 1 0 1 E U  0 E 190 20 354 36
 0 2 0 "0s" 0 0 0 192 0 0  190 20 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -344,7 +349,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 320 52 348 69
+E E 0 1 1 0 1 E U  0 E 320 52 350 68
 0 2 0 "0s" 0 0 0 192 0 0  320 52 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -363,7 +368,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 382 52 410 69
+E E 0 1 1 0 1 E U  0 E 382 52 412 68
 0 2 0 "0s" 0 0 0 192 0 0  382 52 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -382,7 +387,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 362 52 378 69
+E E 0 1 1 0 1 E U  0 E 362 52 380 68
 0 2 0 "0s" 0 0 0 192 0 0  362 52 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -401,7 +406,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 300 52 316 69
+E E 0 1 1 0 1 E U  0 E 300 52 318 68
 0 2 0 "0s" 0 0 0 192 0 0  300 52 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
@@ -555,6 +560,71 @@ LANG:1 2 V0
 0
 1 93 1 "5" 41
 0
+2 94
+"PRIMITIVE_TEXT1"
+""
+1 20 524 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+23 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 20 524 167 540
+0 2 2 "0s" 0 0 0 192 0 0  20 524 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 24 Nominal voltage setting:
+21 95
+"spinNominalVoltage"
+""
+1 170 520 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+24 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  168 518 292 546
+0
+
+E
+E
+E
+
+N 0 2950 1 0 1 1
+13 96
+"PUSH_BUTTON1"
+""
+1 300 520 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+25 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  298 518 472 547
+
+T 
+1
+LANG:1 23 Set new nominal voltage
+"main()
+{
+  dpSetWait(d2 + \".userDefined\", spinNominalVoltage.text);
+}" 0
+ E E E
 0
 LAYER, 1 
 1
@@ -585,7 +655,7 @@ LAYER, 7
 LANG:1 6 Layer8
 0
 3 1 "ME11_HV_Channel" -1
-"objects\\fwTrending\\fwTrendingFaceplate.pnl" 150 161 T 22 1.28155339805825 0 1.74273858921162 -172.233009708738 -200.580912863071
+"objects/fwTrending/fwTrendingFaceplate.pnl" 150 161 T 22 1.28155339805825 0 1.74273858921162 -172.233009708738 -200.580912863071
 22
 "$ZoomWindowTitle"""
 "$bShowGrid"""
