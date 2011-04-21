@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import javax.faces.convert.Converter;
 import jsf.bean.gui.component.table.BeanTableFilter;
 import jsf.bean.gui.component.table.BeanTableFilterItem;
+import jsf.bean.gui.metadata.PropertyMd;
 
 public abstract class FilterConverter implements Converter, Serializable {
 
@@ -127,14 +128,18 @@ public abstract class FilterConverter implements Converter, Serializable {
         return s.trim();
     }
 
-    public static FilterConverter getFilterConverter(Class type) {
-        
+    public static FilterConverter getFilterConverter(Class type, boolean periodType) {
+
         if (type.equals(BigDecimal.class)) {
             
             return new FilterBigDecimalConverter();
 
         } else
         if (type.equals(BigInteger.class)) {
+
+            if (periodType) {
+                return new FilterPeriodConverter();
+            }
 
             return new FilterBigIntegerConverter();
 

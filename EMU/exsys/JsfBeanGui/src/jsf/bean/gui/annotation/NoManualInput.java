@@ -5,8 +5,10 @@
 
 package jsf.bean.gui.annotation;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * This annotation tells the GUI not to show this value at all.
@@ -15,6 +17,7 @@ import java.lang.annotation.RetentionPolicy;
  */
 
 @Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
 public @interface NoManualInput {
     /**
      * If this is true then default value for this field will be created by an editor when creating a new instance of the entity

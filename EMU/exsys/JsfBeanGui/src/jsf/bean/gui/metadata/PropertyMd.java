@@ -108,7 +108,11 @@ public abstract class PropertyMd implements Serializable {
         return createDefaultValue;
     }
 
-    private Field getField() {
+    /**
+     * Get class field associated with property
+     * @return
+     */
+    public Field getField() {
         try {
             String fieldName = getPropertyDescriptor().getName();
             Matcher m = itemPropertyPattern.matcher(fieldName);

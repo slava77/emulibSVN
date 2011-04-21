@@ -5,14 +5,17 @@
 
 package jsf.bean.gui.annotation;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Class properties which have this annotation participate in building a title of an object of that class
  * @author Evka
  */
 @Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
 public @interface UseInTitle {
     int order();
 }

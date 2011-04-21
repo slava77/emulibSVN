@@ -1,17 +1,16 @@
 package jsf.bean.gui.component.table.column;
 
-import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import javax.faces.convert.Converter;
+import jsf.bean.gui.annotation.PeriodType;
 import jsf.bean.gui.component.table.BeanTableFilter;
 import jsf.bean.gui.component.table.converter.FilterConverter;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
 import jsf.bean.gui.metadata.PropertyMd;
-import org.apache.commons.beanutils.PropertyUtils;
 
 public class BeanTableColumnBase implements Serializable {
 
@@ -21,6 +20,7 @@ public class BeanTableColumnBase implements Serializable {
     protected final String name;
     protected final Class type;
     protected final String title;
+    private final Boolean periodType;
 
     protected Converter converter = null;
     protected BeanTableFilter filter = null;
@@ -35,7 +35,9 @@ public class BeanTableColumnBase implements Serializable {
         this.name = propertyMd.getName();
         this.type = propertyMd.getType();
         this.title = propertyMd.getTitle();
-        this.filterConverter = FilterConverter.getFilterConverter(type);
+        this.periodType = (type.equals(BigInteger.class) &&
+                propertyMd.getField().isAnnotationPresent(PeriodType.class));
+        this.filterConverter = FilterConverter.getFilterConverter(this.type, this.periodType);
     }
 
     /**
@@ -81,6 +83,10 @@ public class BeanTableColumnBase implements Serializable {
 
     public boolean isSortable() {
         return false;
+    }
+
+    public boolean isPeriod() {
+        return this.periodType;
     }
 
     /**

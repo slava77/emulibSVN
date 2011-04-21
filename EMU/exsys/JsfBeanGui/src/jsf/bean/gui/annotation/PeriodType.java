@@ -11,12 +11,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Class properties which have this annotation participate in building a title of an object of that class
- * @author Evka
+ * Indicates that this BigInteger column (value in seconds) is a period (defines filter)
+ * @author Valdo
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface Label {
-    String name();
-    String description() default "";
+public @interface PeriodType {
 }
