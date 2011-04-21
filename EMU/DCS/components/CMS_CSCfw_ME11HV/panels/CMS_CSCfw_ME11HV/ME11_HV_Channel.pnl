@@ -623,6 +623,7 @@ LANG:1 23 Set new nominal voltage
 "main()
 {
   dpSetWait(d2 + \".userDefined\", spinNominalVoltage.text);
+  dpSetWait(d2 + \".settings.v0\", spinNominalVoltage.text);
 }" 0
  E E E
 0
