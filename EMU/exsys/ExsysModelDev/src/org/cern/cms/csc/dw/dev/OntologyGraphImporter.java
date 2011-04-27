@@ -127,6 +127,7 @@ public class OntologyGraphImporter {
         private String localName = null;
         private String uriName = null;
         private Set<String> blockNames;
+        private StringBuilder text = null;
 
         public OntologyHandler(String... blockNames) {
             this.blockNames = new HashSet<String>(blockNames.length);
@@ -155,16 +156,24 @@ public class OntologyGraphImporter {
             }
 
             if (blockNames.contains(localName)) {
+                if (text != null) {
+                    String str = text.toString();
+                    str = str.replaceAll("\\n", "");
+                    if (!str.isEmpty()) {
+                        elementText(blockName, this.localName, uriName, str);
+                    }
+                }
                 blockEnd(blockName);
                 blockName = null;
                 uriName = null;
                 localName = null;
             }
-            
         }
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+            text = null;
+            
             if (!uri.equals(OWL_URI)) {
                 return;
             }
@@ -185,13 +194,10 @@ public class OntologyGraphImporter {
         @Override
         public void characters(char[] ch, int start, int length) throws SAXException {
             if (blockName != null && localName != null && uriName != null) {
-                String text = new String(ch, start, length);
-                if (text != null) {
-                    text = text.replaceAll("\\n", "");
-                    if (!text.isEmpty()) {
-                        elementText(blockName, localName, uriName, text);
-                    }
+                if (text == null) {
+                    text = new StringBuilder();
                 }
+                text.append(ch, start, length);
             }
         }
 
