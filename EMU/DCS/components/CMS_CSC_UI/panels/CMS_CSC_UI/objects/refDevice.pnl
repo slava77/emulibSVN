@@ -215,7 +215,8 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
   //special case for ME11 high voltage
   if (($deviceType == \"chamber\") && me11 && (
                                               (mode == \"high_voltage\") ||
-                                              (mode == \"HV_vMon\"))) {
+                                              (mode == \"HV_vMon\") ||
+                                              (mode == \"HV_iMon\"))) {
     mode = \"me11_\" + mode;
     deviceParams = emuui_getME11HVChannelsDeviceParams(deviceParams, ex);
     if (emu_checkException(ex)) { return; }
@@ -480,7 +481,7 @@ void updateME11hvFSMModeBitsCB(string dp, bit32 modeBits) {
 /** This function is used in in DP mode when connection is made to a DP of float or integer types. */
 void updateDPStateCB(string dp, float value) {
   if (currentConnectionMode == \"chamber_HV_iMon\") {
-    value /= 11.0;
+    value /= 11.0; // convert units to micro amps for HV current
   }
       
   dyn_string ex;
@@ -519,7 +520,7 @@ void updateDPsAverageStateCB(string firstDp, float firstValue) {
   for (int i=1; i <= dynlen(currentConnectionMultiple); i++) {
     dpGet(currentConnectionMultiple[i], values[i]);
     if (isImon) {
-      values[i] /= 11.0;
+      values[i] /= 11.0; // convert units to micro amps for HV current
     }    
   }
   // compute the average value
@@ -552,7 +553,7 @@ void updateDPsMaxStateCB(string firstDp, float firstValue) {
   for (int i=1; i <= dynlen(currentConnectionMultiple); i++) {
     dpGet(currentConnectionMultiple[i], values[i]);
     if (isImon) {
-      values[i] /= 11.0;
+      values[i] /= 11.0; // convert units to micro amps for HV current
     }
   }
   
