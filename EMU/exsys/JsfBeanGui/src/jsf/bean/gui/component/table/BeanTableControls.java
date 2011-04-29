@@ -15,6 +15,7 @@ public abstract class BeanTableControls implements Serializable {
     public abstract Long getDataCount();
     public abstract int getDataSize();
     protected abstract void refresh();
+    protected abstract void createSerializedTableFilter();
 
     public BeanTableControls(BeanTableProperties prop) {
         this.prop = prop;
@@ -140,6 +141,7 @@ public abstract class BeanTableControls implements Serializable {
     }
 
     public void setDisplayColumns(boolean displayColumns) {
+        createSerializedTableFilter();
         this.displayColumns = displayColumns;
     }
 

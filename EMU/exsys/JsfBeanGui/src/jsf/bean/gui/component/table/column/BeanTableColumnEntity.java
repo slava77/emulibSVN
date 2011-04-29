@@ -25,17 +25,24 @@ public class BeanTableColumnEntity extends BeanTableColumn {
     @Override
     public boolean isFilterSet() {
         if (filter != null) {
-            BeanTableProjectionFilterItem tf = (BeanTableProjectionFilterItem) filter.getItems().get(0);
-
-            if (tf.getTablePack().getTable().isFilterOn()) {
+            if (getFilterTablePack().getTable().isFilterOn()) {
                 return true;
             }
 
-            if (!((BeanTablePack) tf.getTablePack()).isSingleClass()) {
+            if (!getFilterTablePack().isSingleClass()) {
                 return true;
             }
         }
         return false;
+    }
+
+    public BeanTablePack getFilterTablePack() {
+        if (filter != null) {
+            BeanTableProjectionFilterItem tf = (BeanTableProjectionFilterItem) filter.getItems().get(0);
+            return tf.getTablePack();
+        } else {
+            return null;
+        }
     }
 
     public void filterTableListener(ActionEvent ev) throws Exception {

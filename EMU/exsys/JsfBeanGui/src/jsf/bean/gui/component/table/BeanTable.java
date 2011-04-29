@@ -1,5 +1,6 @@
 package jsf.bean.gui.component.table;
 
+import java.util.logging.Level;
 import jsf.bean.gui.component.table.column.BeanTableColumn;
 import jsf.bean.gui.component.table.column.BeanTableColumnFactory;
 import com.icesoft.faces.component.panelpositioned.PanelPositionedEvent;
@@ -15,6 +16,7 @@ import javax.faces.model.ListDataModel;
 import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.component.table.column.BeanTableColumnSortable;
 import jsf.bean.gui.metadata.PropertyMd;
+import org.json.JSONException;
 
 public class BeanTable extends BeanTableControls {
 
@@ -153,6 +155,12 @@ public class BeanTable extends BeanTableControls {
         this.data = new ListDataModel<EntityBeanBase>(dao.getData(this));
         this.dataCount = dao.getDataCount((BeanTable) this);
         this.pack.getManager().clearSelected();
+        try {
+            String s = this.getPack().getSerializedFilter().toString(4);
+            System.out.print(s);
+        } catch (JSONException ex) {
+            logger.log(Level.SEVERE, ex.toString());
+        }
     }
 
     public DataModel<EntityBeanBase> getData() {
@@ -286,6 +294,17 @@ public class BeanTable extends BeanTableControls {
             cols.add(col.getName());
         }
         getProperties().setSorting(cols);
+    }
+
+
+    @Override
+    protected void createSerializedTableFilter() {
+         try {
+            String s = this.getPack().getSerializedFilter().toString(4);
+            getProperties().setTableFilter(s);
+        } catch (JSONException ex) {
+            logger.log(Level.SEVERE, ex.toString());
+        }
     }
 
 }

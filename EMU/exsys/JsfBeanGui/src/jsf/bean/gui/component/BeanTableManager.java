@@ -1,7 +1,6 @@
 package jsf.bean.gui.component;
 
 import com.icesoft.faces.component.ext.RowSelectorEvent;
-import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -19,6 +18,8 @@ import java.util.Map;
 import java.util.Properties;
 import javax.faces.application.Application;
 import javax.faces.application.ViewHandler;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.persistence.Transient;
@@ -32,6 +33,7 @@ import jsf.bean.gui.component.table.BeanTableDaoIf;
 import jsf.bean.gui.component.table.BeanTableFilter;
 import jsf.bean.gui.component.table.BeanTableFilterItem;
 import jsf.bean.gui.component.table.BeanTablePack;
+import jsf.bean.gui.component.table.BeanTableProperties;
 import jsf.bean.gui.component.table.export.BeanTableDefaultExportTemplate;
 import jsf.bean.gui.component.table.export.BeanTableExportTemplate;
 import jsf.bean.gui.component.table.export.BeanTableExportResource;
@@ -217,8 +219,6 @@ public abstract class BeanTableManager implements Serializable {
         this.templatesChecked = Calendar.getInstance().getTime();
         return userExportResources;
     }
-
-   
     /*********************************************
      *
      * Row selection manager
@@ -336,7 +336,7 @@ public abstract class BeanTableManager implements Serializable {
         // Copy properties instead of using the same...
         Properties op = beanProperties.get(id);
         Properties p = new Properties();
-        for (Enumeration keys = op.propertyNames(); keys.hasMoreElements(); ) {
+        for (Enumeration keys = op.propertyNames(); keys.hasMoreElements();) {
             Object key = keys.nextElement();
             p.put(key, op.get(key));
         }
@@ -345,11 +345,11 @@ public abstract class BeanTableManager implements Serializable {
 
     }
 
-    public void savePersonalPropertiesListener(ActionEvent ev) throws IOException {
+    public void savePersonalPropertiesListener() throws IOException {
         saveProperties(false);
     }
 
-    public void saveGlobalPropertiesListener(ActionEvent ev) throws IOException {
+    public void saveGlobalPropertiesListener() throws IOException {
         saveProperties(true);
     }
 
@@ -360,6 +360,11 @@ public abstract class BeanTableManager implements Serializable {
 
             // Writting a file
             Properties p = getTable().getProperties().getProperties();
+            UIOutput c = (UIOutput) findComponent(UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()));
+            Boolean b = (Boolean) c.getValue();
+            if (!b) {
+                p.remove(BeanTableProperties.KEY_TABLE_FILTER);
+            }
             String filename = id;
             if (!global) {
                 filename = (String) getCookie(cookieName);
@@ -378,6 +383,20 @@ public abstract class BeanTableManager implements Serializable {
             }
 
         }
+    }
+
+    public UIComponent findComponent(UIComponent parent) {
+        UIComponent component = null;
+        for (UIComponent c : parent.getChildren()) {
+            if (c.getId().equals("filterCheckBox")) {
+                component = c;
+            } else {
+                if (c.getChildCount() > 0) {
+                    component = findComponent(c);
+                }
+            }
+        }
+        return component;
     }
 
     @Transient

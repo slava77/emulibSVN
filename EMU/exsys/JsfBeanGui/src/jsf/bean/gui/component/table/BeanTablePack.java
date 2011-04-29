@@ -9,16 +9,22 @@ import java.util.Map;
 import javax.faces.model.SelectItem;
 import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.component.BeanTableManager;
+import jsf.bean.gui.component.table.column.BeanTableColumn;
+import jsf.bean.gui.component.table.column.BeanTableColumnBase;
+import jsf.bean.gui.component.table.column.BeanTableColumnEmbedded;
+import jsf.bean.gui.component.table.column.BeanTableColumnEntity;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class BeanTablePack implements Serializable {
 
     private Collection<SelectItem> classes = new ArrayList<SelectItem>();
     private Class<? extends EntityBeanBase> selectedClass;
+    private final Class<? extends EntityBeanBase> rowClass;
     private BeanTable table = null;
     private final BeanTableManager manager;
     private final String title;
     private final String prefix;
-
     private Collection<BeanTablePackFilter> filters;
     private Map<String, BeanTableFilter> propertyFilters = new HashMap<String, BeanTableFilter>();
 
@@ -31,10 +37,11 @@ public class BeanTablePack implements Serializable {
         this.prefix = manager.buildTablePrefix(nextPrefix);
         this.title = title;
         this.manager = manager;
+        this.rowClass = rowClass;
 
         Class firstClass = null;
         if (Modifier.isAbstract(rowClass.getModifiers())) {
-            for (Class cl: manager.getClassFinder().findSubclassesInSamePackage(rowClass)) {
+            for (Class cl : manager.getClassFinder().findSubclassesInSamePackage(rowClass)) {
                 if (!Modifier.isAbstract(cl.getModifiers())) {
                     if (firstClass == null) {
                         firstClass = cl;
@@ -103,4 +110,71 @@ public class BeanTablePack implements Serializable {
         return propertyFilters;
     }
 
+    public JSONObject getSerializedFilter() throws JSONException {
+        JSONObject parentJson = new JSONObject();
+        parentJson.put("rowClass", rowClass.getCanonicalName());
+        if (!isSingleClass()) {
+            parentJson.put("selectedClass", selectedClass.getCanonicalName());
+        }
+        JSONObject childJson = new JSONObject();
+        if (getTable().isFilterOn()) {
+            for (BeanTableColumn column : getTable().getColumns()) {
+                if (column.isFilterSet()) {
+                    if (column.isEmbedType()) {
+                        BeanTableColumnEmbedded ec = (BeanTableColumnEmbedded) column;
+                        JSONObject eo = new JSONObject();
+                        for (BeanTableColumnBase property : ec.getProperties()) {
+                            if (property.isFilterSet()) {
+                                eo.put(property.getName(), property.getFilter().getString());
+                            }
+                        }
+                        childJson.put(column.getName(), eo);
+                    } else {
+                        if (column.isEntityType()) {
+                            BeanTableColumnEntity ec = (BeanTableColumnEntity) column;
+                            childJson.put(column.getName(), ec.getFilterTablePack().getSerializedFilter());
+                        } else {
+                            childJson.put(column.getName(), column.getFilter().getString());
+                        }
+                    }
+                }
+            }
+        }
+        if (childJson.length() != 0) {
+            parentJson.put("filter", childJson);
+        }
+        return parentJson;
+    }
+
+    public void setSerializedFilter(String filter) throws JSONException, Exception {
+        JSONObject json = new JSONObject(filter);
+
+        if (json.has("filter")) {
+            JSONObject filterJson = json.getJSONObject("filter");
+            for (BeanTableColumn column : getTable().getColumns()) {
+                if (filterJson.has(column.getName())) {
+                    if (filterJson.optJSONObject(column.getName()) != null) {
+                        JSONObject columnFilterJson = filterJson.getJSONObject(column.getName());
+                        if (columnFilterJson.has("rowClass")) {
+                            BeanTableColumnEntity ec = (BeanTableColumnEntity) column;
+                            ec.getFilterTablePack().setSerializedFilter(columnFilterJson.getString(ec.getName()));
+                        } else {
+                            BeanTableColumnEmbedded ec = (BeanTableColumnEmbedded) column;
+                            for (BeanTableColumnBase properties : ec.getProperties()) {
+                                if (columnFilterJson.has(properties.getName())) {
+                                    String filterText = columnFilterJson.getString(properties.getName());
+                                    properties.setFilter((BeanTableFilter) properties.getFilterConverter().getAsObject(null, null, filterText));
+                                }
+                            }
+                        }
+                    } else {
+                        String filterText = filterJson.getString(column.getName());
+                        column.setFilter((BeanTableFilter) column.getFilterConverter().getAsObject(null, null, filterText));
+                    }
+                }
+            }
+        }
+
+
+    }
 }

@@ -50,4 +50,8 @@ public abstract class BeanTableColumn extends BeanTableColumnBase {
         table.getProperties().setColumnWidth(name, width);
     }
 
+    public BeanTable getTable() {
+        return table;
+    }
+
 }

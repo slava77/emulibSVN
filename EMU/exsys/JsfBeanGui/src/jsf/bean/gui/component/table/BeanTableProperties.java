@@ -9,6 +9,8 @@ import javax.faces.model.SelectItem;
 
 public class BeanTableProperties extends GenericProperties {
 
+    public static final String KEY_TABLE_FILTER = "tableFilter";
+
     public static final String KEY_PAGE_SIZE = "pageSize";
     public static final String KEY_PAGE_FAST_STEP = "pageFastStep";
     public static final String KEY_PAGE_SIZES = "pageSizes";
@@ -25,6 +27,8 @@ public class BeanTableProperties extends GenericProperties {
     public static final String KEYP_COL_NUMBER_PATTERN = "%s.numberPattern";
     public static final String KEYP_COL_DATE_TIME_ZONE = "%s.dateTimeZone";
     public static final String KEYP_COL_DATE_FORMAT = "%s.dateTimeFormat";
+
+    public static final String DEFAULT_KEY_TABLE_FILTER = null;
 
     public static final Integer DEFAULT_MAX_PAGE_SIZE = 100;
     public static final Integer DEFAULT_PAGE_SIZE = 20;
@@ -56,6 +60,14 @@ public class BeanTableProperties extends GenericProperties {
 
     public BeanTableProperties(Properties properties) {
         super(properties);
+    }
+
+    public String getTableFilter() {
+        return get(tableKey(KEY_TABLE_FILTER), DEFAULT_KEY_TABLE_FILTER);
+    }
+
+    public void setTableFilter(String tableFilter) {
+        set(tableKey(KEY_TABLE_FILTER), tableFilter);
     }
 
     public void setTablePrefix(String tablePrefix) {
