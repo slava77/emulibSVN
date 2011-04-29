@@ -273,7 +273,13 @@ void updateChannelDataCB(dyn_string dpList, dyn_anytype data) {
     
     for (int chNumIdx=1; chNumIdx <= dynlen(chNums); chNumIdx++) {
       int chNum = chNums[chNumIdx] - 1; // make it 0-based for table row addressing (in dpname channel indices are 1-based).
-      tableChannels.cellValueRC(chNum, column, unpackedData[chNumIdx]);
+      string strValue;
+      if (unpackedData[chNumIdx] < 10) {
+        sprintf(strValue, \"%.1f\", unpackedData[chNumIdx]);
+      } else {
+        sprintf(strValue, \"%d\", unpackedData[chNumIdx]);
+      }
+      tableChannels.cellValueRC(chNum, column, strValue);
     }    
   }
 }
@@ -282,7 +288,7 @@ void updateChannelDataCB(dyn_string dpList, dyn_anytype data) {
   *  Unpacks HV data - returns data title (or table column name), channel numbers that the data is corresponding to and the data itself.
   *  This one can be used for any kind of HV channel data (including this pack_data DPEs, which hold data for two channels in one DPE).
   */
-void unpackData(string dp, int inputData, string &column, dyn_int &chNums, dyn_int &unpackedData) {
+void unpackData(string dp, int inputData, string &column, dyn_int &chNums, dyn_float &unpackedData) {
   dp = dpSubStr(dp, DPSUB_DP_EL);
   dyn_string dpSplit = strsplit(dp, \".\");
   column = dpSplit[dynlen(dpSplit)]; // take the last part of the DP
@@ -301,7 +307,11 @@ void unpackData(string dp, int inputData, string &column, dyn_int &chNums, dyn_i
     int chNum = substr(dpSplit[dynlen(dpSplit) - 1], 1); // take the part that's before the last one (which is channel number in a form like v12, v14..) and remove the v at the front.
     chNum -= channelsOffset;
     chNums = makeDynInt(chNum);
-    unpackedData = makeDynAnytype(inputData);
+    if (column == \"imon\") { // convert units to micro amps for current
+      unpackedData = makeDynAnytype(inputData / 11.0);
+    } else {
+      unpackedData = makeDynAnytype(inputData);
+    }
   }
 }
 
@@ -735,7 +745,7 @@ LANG:1 33 host=###; slot=#; addr=#; part=#,
 2 30
 "lblMasterInfo"
 ""
-1 4888.817280797926 7862 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 5174.573806483713 8442 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 43 0 0 0 0 0
 E E E
