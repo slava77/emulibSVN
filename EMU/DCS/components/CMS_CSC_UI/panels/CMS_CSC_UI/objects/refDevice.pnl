@@ -349,6 +349,8 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
       if (emu_checkException(ex)) { return; }
       currentConnectionMultiple = dps;
       string connectionDp = emuui_getDpWithLastUpdateTime(dps);
+      string lastConnectionMode = currentConnectionMode;
+      currentConnectionMode = mode;
       int rc = dpConnect(multipleConnectionFunction, true, connectionDp);
       emu_debug(\"RC for connect to \" + dps + \": \" + rc, emu_DEBUG_DETAIL);
       if (rc == 0) {
@@ -358,6 +360,7 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
         currentConnection = \"\";
         currentMultipleConnectionRepresentative = connectionDp;
       } else {
+        currentConnectionMode = lastConnectionMode;
         currentConnectionMultiple = makeDynString();
       }
     } else {
