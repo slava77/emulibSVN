@@ -248,7 +248,11 @@ void drawGradientScaleLabels(int bottomLeftX, int bottomLeftY, int height, int w
       float value = minValue + ((maxValue - minValue) / ((float)height)) * ((float)i);
       if (i == height -1) { value = maxValue; } // if it's the last one - just set the maxValue to avoid rounding error
       string strValue;
-      sprintf(strValue, \"%d\", value);
+      if (value >= 10) {
+        sprintf(strValue, \"%d\", value);
+      } else {
+        sprintf(strValue, \"%.1f\", value);
+      }
       // add the label
       string refName = \"valueLabel_\" + strValue;
       dynAppend(references, refName);
