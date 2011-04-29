@@ -510,9 +510,14 @@ void updateStringDPStateCB(string dp, string value) {
 
 /** Call-back function to update the state of multiple DPs connection computing the value by taking an average. */
 void updateDPsAverageStateCB(string firstDp, float firstValue) {
+  bool isImon = (currentConnectionMode == \"chamber_HV_iMon\");
+
   dyn_float values;
   for (int i=1; i <= dynlen(currentConnectionMultiple); i++) {
     dpGet(currentConnectionMultiple[i], values[i]);
+    if (isImon) {
+      values[i] /= 11.0;
+    }    
   }
   // compute the average value
   int count = 0;
@@ -538,9 +543,14 @@ void updateDPsAverageStateCB(string firstDp, float firstValue) {
 
 /** Call-back function to update the state of multiple DPs connection computing the value by taking the maximum. */
 void updateDPsMaxStateCB(string firstDp, float firstValue) {
+  bool isImon = (currentConnectionMode == \"chamber_HV_iMon\");
+  
   dyn_float values;
   for (int i=1; i <= dynlen(currentConnectionMultiple); i++) {
     dpGet(currentConnectionMultiple[i], values[i]);
+    if (isImon) {
+      values[i] /= 11.0;
+    }
   }
   
   // compute the average value
