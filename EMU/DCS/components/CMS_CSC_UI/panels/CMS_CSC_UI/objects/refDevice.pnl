@@ -476,6 +476,10 @@ void updateME11hvFSMModeBitsCB(string dp, bit32 modeBits) {
 
 /** This function is used in in DP mode when connection is made to a DP of float or integer types. */
 void updateDPStateCB(string dp, float value) {
+  if (currentConnectionMode == \"chamber_HV_iMon\") {
+    value /= 11.0;
+  }
+      
   dyn_string ex;
   string color = emuui_getGradientColor(value, currentDpValueRangeMin, currentDpValueRangeMax);
   setColor(color);

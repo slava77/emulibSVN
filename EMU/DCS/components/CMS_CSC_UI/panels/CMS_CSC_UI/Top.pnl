@@ -137,7 +137,7 @@ void updateValueMonitorMode(string connTypeDp, string connType, string modeDp, s
   if (mode == \"HV_vMon\") {
     mode = \"High Voltage\";
   } else if (mode == \"HV_iMon\") {
-    mode = \"HV Current (1/11uA)\";
+    mode = \"HV Current (uA)\";
   } else {
     mode = emuui_capitalizeFirstLetters(mode);
   }
@@ -1140,7 +1140,7 @@ E E 0 1 1 2 1 E 1 0 1 -209 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png"
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 -2946.692809558295 -970 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -3048.150909472955 -990 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -1159,7 +1159,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 48.63406040687956 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 48.62118608389724 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
