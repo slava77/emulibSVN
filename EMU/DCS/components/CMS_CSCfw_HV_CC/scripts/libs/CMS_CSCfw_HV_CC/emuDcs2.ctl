@@ -2261,7 +2261,7 @@ if(set=="")return;
                                 }                            
                             
                             subcommand=subcommand  +"|"+   "HVCMD;"+coords[2]+";"+coords[3]+";"+chamber_depend_all_channels+"3;"+"11"+";"+"-1"; // ramp_up
-                            /*if(CSC_fwG_g_IS_IMAX_SET)*/subcommand=subcommand  +"|"+   "HVCMD;"+coords[2]+";"+coords[3]+";"+chamber_depend_all_channels+"6;"+"1"+";"+"-1"; //imax
+                            /*if(CSC_fwG_g_IS_IMAX_SET)*/ subcommand=subcommand  +"|"+   "HVCMD;"+coords[2]+";"+coords[3]+";"+chamber_depend_all_channels+"6;"+"3"+";"+"-1"; //imax
                             subcommand=subcommand  +"|"+   "HVCMD;"+coords[2]+";"+coords[3]+";"+chamber_depend_all_channels+"38;"+"500"+";"+"-1"; //trip_dl
                             mudcsHVMasterChannelSwitch(dp_name, true);
 
