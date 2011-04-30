@@ -28,10 +28,6 @@
 #include <xalanc/XalanTransformer/XalanTransformer.hpp>
 // #include <xalanc/PlatformSupport/XalanMemoryManagerDefault.hpp> // TODO: remove with old stuff
 
-
-#include <unistd.h> // for sleep()
-#include <stdlib.h> // for getenv()
-
 #include <xercesc/parsers/XercesDOMParser.hpp>
 // #include <xercesc/sax/SAXException.hpp>
 
@@ -78,17 +74,17 @@ string AFEB::teststand::Application::generateLoggerName()
 void AFEB::teststand::Application::bindWebInterface(){
 //   xgi::bind(this, &AFEB::teststand::Application::xslWebPage,        "XSL"        );
   xgi::bind(this, &AFEB::teststand::Application::defaultWebPage,    "Default"    );
-  xgi::bind(this, &AFEB::teststand::Application::editorWebPage,     "Editor"     );
-  xgi::bind(this, &AFEB::teststand::Application::displayWebPage,    "Display"    );
 }
 
 void AFEB::teststand::Application::exportParams(){
 
   xdata::InfoSpace *s = getApplicationInfoSpace();;
 
-  configurationDir_  = "/tmp";
+  configurationDir_     = "/tmp";
+  configFileNameFilter_ = "AFEB*.xml";
 
-  s->fireItemAvailable( "configurationDir", &configurationDir_ );
+  s->fireItemAvailable( "configurationDir"    , &configurationDir_     );
+  s->fireItemAvailable( "configFileNameFilter", &configFileNameFilter_ );
 
 }
 

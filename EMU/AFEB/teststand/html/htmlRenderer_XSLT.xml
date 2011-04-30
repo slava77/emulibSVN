@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<xsl:transform 
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+    xmlns:a="http://cms.cern.ch/emu/afeb/teststand/application" 
+    xmlns:c="http://cms.cern.ch/emu/afeb/teststand/configuration" 
+    version="1.0">
+
+  <xsl:include href="application_XSLT.xml"/>
+  <xsl:include href="configEditor_XSLT.xml"/>
+
+  <xsl:output method="html" indent="yes"/>
+
+  <xsl:template match="/root">
+    <html xmlns="http://www.w3.org/1999/xhtml">
+      <head>
+        <title>Editing source xml of <xsl:value-of select="@c:date"/><xsl:text> </xsl:text><xsl:value-of select="@c:time"/></title>
+      </head>
+      <body>
+	<xsl:apply-templates select="//a:application"/>
+	<xsl:apply-templates select="//c:configuration"/>
+      </body>
+    </html>
+  </xsl:template>  
+
+
+</xsl:transform>

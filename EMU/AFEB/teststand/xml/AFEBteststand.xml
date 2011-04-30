@@ -1,0 +1,20 @@
+<?xml version='1.0'?>
+<?xml-stylesheet type="text/xml" href="../EmuDAQConfig.xsl"?>
+<xc:Partition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xc="http://xdaq.web.cern.ch/xdaq/xsd/2004/XMLConfiguration-30">
+
+  <xc:Context url="http://emuslice03.cern.ch:10000">
+
+    <xc:Module>${XDAQ_ROOT}/lib/libxalan-c.so</xc:Module>
+
+    <xc:Application id="12" instance="0" class="AFEB::teststand::Application" network="local">
+      <properties xsi:type="soapenc:Struct" xmlns="urn:xdaq-application:AFEB::teststand::Application">
+	<configurationDir xsi:type="xsd:string">/home/csctest/config/AFEB</configurationDir>
+	<configFileNameFilter xsi:type="xsd:string">AFEB*.xml</configFileNameFilter>
+      </properties>
+    </xc:Application>
+    <xc:Module>${BUILD_HOME}/${XDAQ_PLATFORM}/lib/libAFEBteststand.so</xc:Module>
+    <!-- <xc:Module>${XDAQ_ROOT}/lib/libAFEBteststand.so</xc:Module> -->
+
+  </xc:Context>
+
+</xc:Partition>

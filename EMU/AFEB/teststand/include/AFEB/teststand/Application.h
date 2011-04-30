@@ -52,6 +52,11 @@ private:
   ///
   xdata::String configurationDir_;
 
+  ///
+  /// 
+  ///
+  xdata::String configFileNameFilter_;
+
 /// @}
 
   ////////////////////////////////////////////////////////
@@ -74,19 +79,12 @@ private:
 
   /// Creates a display web page.
 
-  ///
-  /// @param in cgi input
-  /// @param out cgi output
-  ///
-  void displayWebPage(xgi::Input *in, xgi::Output *out)
-    throw (xgi::exception::Exception);
-
-  ///
-  /// @param in cgi input
-  /// @param out cgi output
-  ///
-  void editorWebPage(xgi::Input *in, xgi::Output *out)
-    throw (xgi::exception::Exception);
+  // ///
+  // /// @param in cgi input
+  // /// @param out cgi output
+  // ///
+  // void editorWebPage(xgi::Input *in, xgi::Output *out)
+  //   throw (xgi::exception::Exception);
 
   ///
   /// @param in cgi input

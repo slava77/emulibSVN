@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<xsl:transform 
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+    xmlns:a="http://cms.cern.ch/emu/afeb/teststand/application" 
+    version="1.0">
+
+  <xsl:output method="html" indent="yes"/>
+
+  <xsl:template match="//a:application">
+    <table>
+      <xsl:apply-templates select="a:*"/>
+    </table>
+  </xsl:template>  
+
+  <xsl:template match="a:*">
+    <tr>
+      <th><xsl:value-of select="local-name()"/></th>
+      <td><xsl:value-of select="."/></td>
+    </tr>
+  </xsl:template>
+
+</xsl:transform>
