@@ -832,6 +832,7 @@
 	  <ClassAssertion><Class URI="&csc;HVChannel"/><Individual URI="&csc;{$PADDED_CHANNEL_NAME}"/></ClassAssertion>
 	  <ObjectPropertyAssertion><ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;{$PADDED_BOARD_NAME}"/><Individual URI="&csc;{$CRATE_NAME}"/></ObjectPropertyAssertion>
 	  <ObjectPropertyAssertion><ObjectProperty URI="&csc;isIn"/><Individual URI="&csc;{$PADDED_CHANNEL_NAME}"/><Individual URI="&csc;{$PADDED_BOARD_NAME}"/></ObjectPropertyAssertion>
+	  <DataPropertyAssertion><DataProperty URI="&csc;_DCSId"/><Individual URI="&csc;{$PADDED_CHANNEL_NAME}"/><Constant datatypeURI="&xsd;string"><xsl:value-of select="@dcsId"/></Constant></DataPropertyAssertion>
 	  <!-- Chamber layer -->
 	  <ObjectPropertyAssertion><ObjectProperty URI="&csc;getsHVFrom"/><Individual URI="&csc;{$PADDED_LAYER_NAME}"/><Individual URI="&csc;{$PADDED_CHANNEL_NAME}"/></ObjectPropertyAssertion>
 	</xsl:for-each>
