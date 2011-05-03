@@ -168,7 +168,7 @@
         <!-- Execute main data import procedure -->
         <java classname="org.cern.cms.csc.dw.dev.OntologyGraphToDatabaseImporter" fork="true" failonerror="true" classpathref="dev-classpath">
             <jvmarg line="-Xmn100M -Xms500M -Xmx500M -Xss50M"/>
-            <arg value="--gdb=${model}/src/graphdb"/>
+            <arg value="--gdb=${dao}/src/graphdb"/>
         </java>
 
         <!-- Execute post-import SQL files -->

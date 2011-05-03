@@ -440,11 +440,13 @@ public class OntologyGraphImporter {
                     value = text;
                 } else if (name.equals("integer")) {
                     try {
+                        text = text.replaceAll("\\s", "");
                         value = Integer.valueOf(text);
                     } catch (NumberFormatException nfEx) {
                         throw new RuntimeException("Couldn't parse an integer data property value: " + propTypeName + "=" + text + " on individual " + component.getName());
                     }
                 } else if (name.equals("boolean")) {
+                    text = text.replaceAll("\\s", "");
                     value = Boolean.valueOf(text);
                 } else {
                     throw new RuntimeException("Unknown data property dataType: " + name);
