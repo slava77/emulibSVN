@@ -1,0 +1,128 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 763 464 N "_3DFace" 0
+E E E E E 1 -1 -1 0  70 60
+""0  1
+E E 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"PUSH_BUTTON1"
+""
+1 70 60 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  68 58 312 112
+
+T 
+1
+LANG:1 6 Export
+"#uses \"CtrlXml\"
+
+const string ME11_SYSTEM_NAME = \"CMS_CSC_DCS_01\";
+
+main()
+{
+  dyn_string dpsPlus = dpNames(ME11_SYSTEM_NAME + \":CAEN/HVME11P/*\", \"FwCaenChannel\");
+  dyn_string dpsMinus = dpNames(ME11_SYSTEM_NAME + \":CAEN/HVME11N/*\", \"FwCaenChannel\");
+  
+  emu_info(\"Found \" + dynlen(dpsPlus) + \" channels on plus side\");
+  emu_info(\"Found \" + dynlen(dpsMinus) + \" channels on minus side\");
+  
+  int docId = xmlNewDocument();
+  emu_info(\"New XML document created, id = \" + docId);
+  
+  xmlAppendChild(docId, -1, XML_COMMENT_NODE, \"Dubna HV system\");
+  int hvNode = xmlAppendChild(docId, -1, XML_ELEMENT_NODE, \"HV\"); 
+  int rackNode = xmlAppendChild(docId, hvNode, XML_ELEMENT_NODE, \"rack\"); 
+  xmlSetElementAttribute(docId, rackNode, \"name\", \"S1G10\");
+  int plusCrateNode = xmlAppendChild(docId, rackNode, XML_ELEMENT_NODE, \"crate\");   
+  xmlSetElementAttribute(docId, plusCrateNode, \"name\", \"CAEN/HVME11P\");
+  xmlSetElementAttribute(docId, plusCrateNode, \"ringName\", \"ME+1/1\");
+  // import plus channels here
+  createChannelNodes(dpsPlus, docId, plusCrateNode);
+  
+  int minusCrateNode = xmlAppendChild(docId, rackNode, XML_ELEMENT_NODE, \"crate\");   
+  xmlSetElementAttribute(docId, minusCrateNode, \"name\", \"CAEN/HVME11N\");
+  xmlSetElementAttribute(docId, minusCrateNode, \"ringName\", \"ME-1/1\");
+  // import minus channels here
+  createChannelNodes(dpsMinus, docId, minusCrateNode);
+  
+  xmlDocumentToFile(docId, \"me11HvMapping.xml\");
+  xmlCloseDocument(docId);
+  emu_info(\"XML document saved\");
+  
+}
+
+void createChannelNodes(dyn_string channelDps, int docId, int parentNode) {
+  for (int i=1; i <= dynlen(channelDps); i++) {
+    dyn_string dpSplit = strsplit(channelDps[i], \"/\");
+    strreplace(dpSplit[3], \"board\", \"\");
+    int boardNum = dpSplit[3];
+    strreplace(dpSplit[4], \"channel\", \"\");
+    int channelNum = dpSplit[4];
+    string alias = dpNameToAlias(channelDps[i] + \".\");
+    if (alias == \"\") {
+      emu_info(\"empty alias for \" + channelDps[i] + \", skipping this DP\");
+      continue;
+    }
+    dyn_string aliasSplit = strsplit(alias, \"/\");
+    string chamberNumStr = strsplit(aliasSplit[3], \"_\")[4];
+    strreplace(chamberNumStr, \"C\", \"\");
+    int chamberNum = chamberNumStr;
+    strreplace(aliasSplit[4], \"P\", \"\");
+    int planeNum = aliasSplit[4];
+    
+    int channelNode = xmlAppendChild(docId, parentNode, XML_ELEMENT_NODE, \"connection\");
+    xmlSetElementAttribute(docId, channelNode, \"board\", boardNum);
+    xmlSetElementAttribute(docId, channelNode, \"channel\", channelNum);
+    xmlSetElementAttribute(docId, channelNode, \"chamber\", chamberNum);
+    xmlSetElementAttribute(docId, channelNode, \"layer\", planeNum);
+    xmlSetElementAttribute(docId, channelNode, \"dcsId\", channelDps[i]);
+  }
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
