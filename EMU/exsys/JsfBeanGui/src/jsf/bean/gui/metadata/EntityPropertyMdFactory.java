@@ -57,6 +57,8 @@ public class EntityPropertyMdFactory {
         // * Remove all properties which have an equivalent "[propertyName]Item" property
         // * all those which match ignoredPropertyPattern
         List<String> propNamesToRemove = new ArrayList<String>();
+        // properties in this list should be included unconditionally (e.g. even if they're transient), this is used to e.g. include transient enums
+        List<String> propNamesToIncludeAlways = new ArrayList<String>();
         for (PropertyDescriptor prop: allProps) {
             if (prop.getReadMethod() == null) {
                 propNamesToRemove.add(prop.getName());
@@ -67,6 +69,10 @@ public class EntityPropertyMdFactory {
                 // for enums take the simple property, for others, take the *Item property
                 if ((allPropsMap.containsKey(nonItemPropName)) && (allPropsMap.get(nonItemPropName).getPropertyType().isEnum())) {
                     propNamesToRemove.add(prop.getName());
+
+                    if (!allPropsMap.get(prop.getName()).getReadMethod().isAnnotationPresent(Transient.class)) {
+                        propNamesToIncludeAlways.add(nonItemPropName);
+                    }
                     // determine if it's mandatory (I know - it's ugly, but I just can't think of a nicer way right now...
                     Column columnA = allPropsMap.get(prop.getName()).getReadMethod().getAnnotation(Column.class);
                     if ((columnA != null) && (!columnA.nullable())) {
@@ -80,9 +86,12 @@ public class EntityPropertyMdFactory {
 
         List<PropertyDescriptor> props = new ArrayList<PropertyDescriptor>();
         for (PropertyDescriptor prop: allProps) {
-            if (!propNamesToRemove.contains(prop.getName()) &&
-                !ignoredPropertiesPattern.matcher(prop.getName()).matches()) {
-
+            if ((!propNamesToRemove.contains(prop.getName()) && // not in the to-remove list
+                !ignoredPropertiesPattern.matcher(prop.getName()).matches() && // doesn't match with ignore pattern
+                (prop.getReadMethod().getAnnotation(Transient.class) == null))  // isn't transient
+                ||
+                (propNamesToIncludeAlways.contains(prop.getName()))) // OR is in the exception list - to be included unconditionally
+            {
                 props.add(allPropsMap.get(prop.getName()));
             }
         }
@@ -111,10 +120,6 @@ public class EntityPropertyMdFactory {
     public static PropertyMd createMetadataForProperty(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
         // process the annotations and decide what type of PropertyMd object to create
         Method getter = prop.getReadMethod();
-
-        if (getter.isAnnotationPresent(Transient.class)) {
-            return null;
-        }
 
         if (getter.isAnnotationPresent(Basic.class)) {
             return new BasicPropertyMd(prop);
