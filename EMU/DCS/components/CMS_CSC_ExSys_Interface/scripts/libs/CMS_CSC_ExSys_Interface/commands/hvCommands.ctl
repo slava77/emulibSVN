@@ -18,28 +18,35 @@ public void exsysCmd_hvChannelForceOn(dyn_string args) {
   if (!dpExists(channelDp)) {
     return;
   }
-  mapping channelDeviceParams = emuhv_getHvChannel(channelDp, ex);
-  if (emu_checkException(ex)) { return; }
   
   emu_info("ExSys command: Forcing on HV channel " + channelDp);
-  
-  int state, status;
-  dpGet(channelDp + ".state", state,
-        channelDp + ".status", status);
-  
-  // switch it off if it's tripped
-  if ((state == 0) && (status >= 4)) {
-    emuhv_sendChannelCommand(channelDeviceParams, EMUHV_COMMAND_OFF, ex);
+    
+  if (!_exsysCmd_isMe11(channelDp)) { // non-ME1/1 channels
+    mapping channelDeviceParams = emuhv_getHvChannel(channelDp, ex);
     if (emu_checkException(ex)) { return; }
-  }
   
-  // turn it back on
-  emuhv_sendChannelCommand(channelDeviceParams, EMUHV_COMMAND_ON, ex);
+    int state, status;
+    dpGet(channelDp + ".state", state,
+          channelDp + ".status", status);
+  
+    // switch it off if it's tripped
+    if ((state == 0) && (status >= 4)) {
+      emuhv_sendChannelCommand(channelDeviceParams, EMUHV_COMMAND_OFF, ex);
+      if (emu_checkException(ex)) { return; }
+    }
+  
+    // turn it back on
+    emuhv_sendChannelCommand(channelDeviceParams, EMUHV_COMMAND_ON, ex);
 
-  // refresh the data now  
-  delay(1, 0);
-  emuhv_requestData(channelDeviceParams, ex);
-  if (emu_checkException(ex)) { return; }  
+    // refresh the data now  
+    delay(1, 0);
+    emuhv_requestData(channelDeviceParams, ex);
+    if (emu_checkException(ex)) { return; }  
+  } else { // ME1/1 channels
+    dpSetWait(channelDp + ".settings.onOff", false);
+    delay(3);
+    dpSetWait(channelDp + ".settings.onOff", true);
+  }
 }
 
 /**
@@ -54,22 +61,33 @@ public void exsysCmd_hvChannelVset(dyn_string args) {
     return;
   }
   int vset = args[2];
-  mapping channelDeviceParams = emuhv_getHvChannel(channelDp, ex);
-  if (emu_checkException(ex)) { return; }
 
   emu_info("ExSys command: Changing HV channel " + channelDp + " VSET to " + vset);
   
-  int state, status;
-  dpGet(channelDp + ".state", state,
-        channelDp + ".status", status);
-  
-  emuhv_changeChannelVset(channelDeviceParams, vset, ex);
-  if (emu_checkException(ex)) { return; }
+  if (!_exsysCmd_isMe11(channelDp)) { // non-ME1/1 channels  
+    mapping channelDeviceParams = emuhv_getHvChannel(channelDp, ex);
+    if (emu_checkException(ex)) { return; }
 
-  // refresh the data now  
-  delay(1, 0);
-  emuhv_requestData(channelDeviceParams, ex);
-  if (emu_checkException(ex)) { return; }
+  
+    int state, status;
+    dpGet(channelDp + ".state", state,
+          channelDp + ".status", status);
+  
+    emuhv_changeChannelVset(channelDeviceParams, vset, ex);
+    if (emu_checkException(ex)) { return; }
+
+    // refresh the data now  
+    delay(1, 0);
+    emuhv_requestData(channelDeviceParams, ex);
+    if (emu_checkException(ex)) { return; }
+  } else { // ME1/1 channels
+    dpSetWait(channelDp + ".userDefined", vset);
+    int v0;
+    dpGet(channelDp + ".readBackSettings.v0", v0);
+    if (v0 != vset) {
+      dpSetWait(channelDp + ".settings.v0", vset);
+    }
+  }
 }
 
 /**
@@ -82,16 +100,27 @@ public void exsysCmd_hvChannelDisable(dyn_string args) {
   if (!dpExists(channelDp)) {
     return;
   }
-  mapping channelDeviceParams = emuhv_getHvChannel(channelDp, ex);
-  if (emu_checkException(ex)) { return; }
-
+  
   emu_info("ExSys command: Disabling HV channel " + channelDp);
   
-  emuhv_enableDisableChannel(channelDeviceParams, false, ex);
-  if (emu_checkException(ex)) { return; }
+  if (!_exsysCmd_isMe11(channelDp)) { // non-ME1/1 channels    
+    mapping channelDeviceParams = emuhv_getHvChannel(channelDp, ex);
+    if (emu_checkException(ex)) { return; }
 
-  // refresh the data now  
-  delay(1, 0);
-  emuhv_requestData(channelDeviceParams, ex);
-  if (emu_checkException(ex)) { return; }
+    emuhv_enableDisableChannel(channelDeviceParams, false, ex);
+    if (emu_checkException(ex)) { return; }
+
+    // refresh the data now  
+    delay(1, 0);
+    emuhv_requestData(channelDeviceParams, ex);
+    if (emu_checkException(ex)) { return; }
+  } else { //ME1/1 channels
+    dpSetWait(channelDp + ".settings.onOff", false);
+    string node = strsplit(dpNameToAlias(channelDp + "."), "/")[3];
+    fwCU_disableObj(node, channelDp);
+  }
+}
+
+private bool _exsysCmd_isMe11(string dp) {
+  return (strpos(dp, "CAEN") >= 0);
 }

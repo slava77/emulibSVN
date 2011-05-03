@@ -92,7 +92,7 @@ void createChannelNodes(dyn_string channelDps, int docId, int parentNode) {
     xmlSetElementAttribute(docId, channelNode, \"channel\", channelNum);
     xmlSetElementAttribute(docId, channelNode, \"chamber\", chamberNum);
     xmlSetElementAttribute(docId, channelNode, \"layer\", planeNum);
-    xmlSetElementAttribute(docId, channelNode, \"dcsId\", channelDps[i]);
+    xmlSetElementAttribute(docId, channelNode, \"dcsId\", dpSubStr(channelDps[i], DPSUB_DP));
   }
 }" 0
  E E E
