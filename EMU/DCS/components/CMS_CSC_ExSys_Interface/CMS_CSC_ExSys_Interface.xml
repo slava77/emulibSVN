@@ -9,4 +9,5 @@
 <file>./scripts/CMS_CSC_ExSys_Interface/*.ctl</file>
 <file>./scripts/libs/CMS_CSC_ExSys_Interface/*.ctl</file>
 <file>./CMS_CSC_ExSys_Interface.xml</file>
+<postInstall>./scripts/CMS_CSC_ExSys_Interface/CMS_CSC_ExSys_Interface.postInstall</postInstall>
 </component>
