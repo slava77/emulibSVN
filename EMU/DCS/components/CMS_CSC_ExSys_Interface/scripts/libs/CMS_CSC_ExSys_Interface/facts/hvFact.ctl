@@ -19,6 +19,7 @@ public void exsys_startHvFactDelivery(dyn_string &ex) {
   
   dyn_string disabledChannelsDps = dpNames("*:HighVoltage/CSC_ME_*_HV.off_channels", "HV_1");
   dyn_string channelVsetDps = dpNames("*:HighVoltage/CSC_ME_*_HV.on_ch_vsets", "HV_1");
+  dyn_string me11ChannelVsetDps = dpNames("*:CAEN/HVME11*/board*/channel*.userDefined", "FwCaenChannel");
   
   // send out initial values
   emu_info("sending out initial HV facts...");
@@ -28,6 +29,12 @@ public void exsys_startHvFactDelivery(dyn_string &ex) {
   for (int i=1; i <= dynlen(channelVsetDps); i++) {
     exsys_sendChannelVsetFacts(channelVsetDps[i]);
   }
+  for (int i=1; i <= dynlen(me11ChannelVsetDps); i++) {
+    string voltageStr;
+    dpGet(me11ChannelVsetDps[i], voltageStr);
+    int voltage = voltageStr;
+    exsys_sendMe11ChannelVsetFact(me11ChannelVsetDps[i], voltage);
+  }
   
   // connect
   for (int i=1; i <= dynlen(disabledChannelsDps); i++) {
@@ -35,6 +42,9 @@ public void exsys_startHvFactDelivery(dyn_string &ex) {
   }
   for (int i=1; i <= dynlen(channelVsetDps); i++) {
     dpConnect("exsys_updateHVChannelVsetsCB", false, channelVsetDps[i]);
+  }
+  for (int i=1; i <= dynlen(me11ChannelVsetDps); i++) {
+    dpConnect("exsys_updateMe11HVChannelVsetCB", false, me11ChannelVsetDps[i]);
   }
   
   emu_info("HV facts delivery service started up successfully!");
@@ -46,6 +56,11 @@ public void exsys_updateDisabledChannelsCB(string dp, dyn_string value) {
 
 public void exsys_updateHVChannelVsetsCB(string dp, dyn_string value) {
   exsys_sendChannelVsetFacts(dp);
+}
+
+public void exsys_updateMe11HVChannelVsetCB(string dp, string value) {
+  int voltage = value;
+  exsys_sendMe11ChannelVsetFact(dp, voltage);
 }
 
 /** Given a HighVoltage/CSC_ME_*_HV.off_channels DP, this function sends out facts about all disabled and
@@ -97,3 +112,12 @@ public void exsys_sendChannelVsetFacts(string onChVsetsDp) {
   }
 }
 
+public void exsys_sendMe11ChannelVsetFact(string onChVsetDp, int voltage) {
+  dyn_string ex;
+  time t = getCurrentTime();
+  dyn_string paramNames = makeDynString("voltageSetting");
+  dyn_anytype paramValues = makeDynAnytype(voltage);
+  exsys_sendFact("DcsHVOnVoltageFact", t, onChVsetDp, true, EXSYS_FACT_SEVERITY_WARN,
+                 "HV channel VSet fact", paramNames, paramValues, ex);
+  emu_checkException(ex);
+}
