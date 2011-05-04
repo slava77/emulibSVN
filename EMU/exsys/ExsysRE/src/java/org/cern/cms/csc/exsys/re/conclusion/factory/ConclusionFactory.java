@@ -110,12 +110,12 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
         concl.setTitle(substituteParams(getConclusionType().getTitle(), unpackedNewEvents));
         concl.setDescription(substituteParams(getConclusionType().getDescription(), unpackedNewEvents));
         concl.setSeverity(getConclusionType().getSeverity());
-        concl.setTimestampItem(new Date());
-        concl.setLastHitTimeItem(new Date());
+        concl.setTimestamp(new Date());
+        concl.setLastHitTime(new Date());
         concl.setHitCount(BigInteger.ONE);
         concl.setClosed(isRuleClosing());
         if (concl.isClosed()) {
-            concl.setTimeClosedItem(new Date());
+            concl.setTimeClosed(new Date());
         }
         concl.setComponent(getComponentResolver().getComponent(unpackedEventEntities));
         addTriggerToConclusion(concl, unpackedEventEntities);
@@ -131,7 +131,7 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
         }
         trigger.setConclusion(conclusion);
         trigger.setRule(getRule());
-        trigger.setTimestampItem(new Date());
+        trigger.setTimestamp(new Date());
 
         for (EntityBase triggerSource: triggerSources) {
             if (triggerSource instanceof Fact) { // that's a fact here - add it as a child of this conclusion

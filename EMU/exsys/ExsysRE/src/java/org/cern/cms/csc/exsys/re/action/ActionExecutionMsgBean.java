@@ -94,7 +94,7 @@ public class ActionExecutionMsgBean implements MessageListener {
             if (((concl != null) && !concl.isClosed()) || isTransient) { // execute action only if conclusion is still open
                 ActionExecutor executor = ActionExecutorFactory.createActionExecutor(actionExec);
                 executor.execute();
-                actionExec.setTimeExecutedItem(new Date());
+                actionExec.setTimeExecuted(new Date());
                 Action action = actionExec.getAction();
                 if (action instanceof CommandAction) {
                     if (((CommandAction) action).isCloseConclusionOnExecution()) {
@@ -112,7 +112,7 @@ public class ActionExecutionMsgBean implements MessageListener {
             }
 
             // close the action in any case - if conclusion is open or closed
-            actionExec.setTimeClosedItem(new Date());
+            actionExec.setTimeClosed(new Date());
             if (!isTransient) {
                 reDao.getEntityDao().mergeAndFlush(actionExec);
             }

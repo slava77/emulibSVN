@@ -104,7 +104,7 @@ public class DefaultConclusionFactory extends ConclusionFactory {
 
     protected void updateExistingConclusion(Conclusion existingConclusion, Conclusion conclusion, boolean isTransient) throws Exception {
         existingConclusion.setHitCount(existingConclusion.getHitCount().add(BigInteger.ONE));
-        existingConclusion.setLastHitTimeItem(conclusion.getTimestampItem());
+        existingConclusion.setLastHitTime(conclusion.getTimestamp());
         existingConclusion.setTitle(conclusion.getTitle()); // update with more up to date title
         existingConclusion.setDescription(conclusion.getDescription()); // update with more up to date description
         existingConclusion.setClosed(conclusion.isClosed());
@@ -152,7 +152,7 @@ public class DefaultConclusionFactory extends ConclusionFactory {
                 ActionExecution exec = new ActionExecution();
                 exec.setAction(action);
                 exec.setTrigger(trigger);
-                exec.setTimeCreatedItem(new Date());
+                exec.setTimeCreated(new Date());
                 if (!exec.getTrigger().getConclusion().getType().isTransient()) {
                     reDao.getEntityDao().persistAndFlush(exec);
                 }
