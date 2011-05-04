@@ -139,7 +139,7 @@
                     <xsd:appinfo>
                         <hj:basic optional="false">
                             <orm:column name="CCL_NAME"/>
-                            <hj:enumerated-value/>
+                            <orm:enumerated>STRING</orm:enumerated>
                         </hj:basic>
                         <jaxb:property name="type"/>
                         <ann:annotate xmlns:a="jsf.bean.gui.annotation">
@@ -238,7 +238,7 @@
                     <xsd:appinfo>
                         <hj:basic optional="false">
                             <orm:column name="LCL_NAME"/>
-                            <hj:enumerated-value/>
+                            <orm:enumerated>STRING</orm:enumerated>
                         </hj:basic>
                         <jaxb:property name="type"/>
                         <ann:annotate xmlns:a="jsf.bean.gui.annotation">

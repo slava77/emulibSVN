@@ -82,7 +82,7 @@
                     <xsd:appinfo>
                         <hj:basic>
                             <orm:column name="RECT_SEVERITY" length="10" nullable="false"/>
-                            <hj:enumerated-value/>
+                            <orm:enumerated>STRING</orm:enumerated>
                         </hj:basic>
                         <jaxb:property name="severity"/>
                     </xsd:appinfo>
@@ -223,7 +223,7 @@
                     <xsd:appinfo>
                         <hj:basic>
                             <orm:column name="REC_SEVERITY" length="10" nullable="false"/>
-                            <hj:enumerated-value/>
+                            <orm:enumerated>STRING</orm:enumerated>
                         </hj:basic>
                         <jaxb:property name="severity"/>
                     </xsd:appinfo>
@@ -346,7 +346,7 @@
                     <xsd:appinfo>
                         <hj:basic >
                             <orm:column name="RECT_TYPE" length="6"/>
-                            <hj:enumerated-value/>
+                            <orm:enumerated>STRING</orm:enumerated>
                         </hj:basic>
                     </xsd:appinfo>
                 </xsd:annotation>

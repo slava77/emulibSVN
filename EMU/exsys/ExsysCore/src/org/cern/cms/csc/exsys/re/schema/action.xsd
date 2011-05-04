@@ -145,7 +145,7 @@
                     <xsd:appinfo>
                         <hj:basic >
                             <orm:column name="REA_TRIGGER_TYPE" length="6" nullable="false"/>
-                            <hj:enumerated-value/>
+                            <orm:enumerated>STRING</orm:enumerated>
                         </hj:basic>
                     </xsd:appinfo>
                 </xsd:annotation>
@@ -330,7 +330,7 @@
                             <xsd:appinfo>
                                 <hj:basic >
                                     <orm:column name="REA_DIM_DATA_TYPE" length="20" nullable="false"/>
-                                    <hj:enumerated-value/>
+                                    <orm:enumerated>STRING</orm:enumerated>
                                 </hj:basic>
                             </xsd:appinfo>
                         </xsd:annotation>
@@ -373,7 +373,7 @@
                             <xsd:appinfo>
                                 <hj:basic >
                                     <orm:column name="REA_DCS_COMMAND_TYPE" length="64" nullable="false"/>
-                                    <hj:enumerated-value/>
+                                    <orm:enumerated>STRING</orm:enumerated>
                                 </hj:basic>
                             </xsd:appinfo>
                         </xsd:annotation>

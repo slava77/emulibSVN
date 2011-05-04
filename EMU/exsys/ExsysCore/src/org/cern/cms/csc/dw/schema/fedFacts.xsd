@@ -235,7 +235,7 @@
                             <xsd:appinfo>
                                 <hj:basic>
                                     <orm:column name="FCT_FROM" length="16"/>
-                                    <hj:enumerated-value/>
+                                    <orm:enumerated>STRING</orm:enumerated>
                                 </hj:basic>
                             </xsd:appinfo>
                         </xsd:annotation>
@@ -246,7 +246,7 @@
                             <xsd:appinfo>
                                 <hj:basic>
                                     <orm:column name="FCT_TO" length="16"/>
-                                    <hj:enumerated-value/>
+                                    <orm:enumerated>STRING</orm:enumerated>
                                 </hj:basic>
                             </xsd:appinfo>
                         </xsd:annotation>
@@ -257,7 +257,7 @@
                             <xsd:appinfo>
                                 <hj:basic>
                                     <orm:column name="FCT_CONFIG_TYPE" length="10"/>
-                                    <hj:enumerated-value/>
+                                    <orm:enumerated>STRING</orm:enumerated>
                                 </hj:basic>
                             </xsd:appinfo>
                         </xsd:annotation>
@@ -278,7 +278,7 @@
                             <xsd:appinfo>
                                 <hj:basic>
                                     <orm:column name="FCT_RESULT" length="10"/>
-                                    <hj:enumerated-value/>
+                                    <orm:enumerated>STRING</orm:enumerated>
                                 </hj:basic>
                             </xsd:appinfo>
                         </xsd:annotation>

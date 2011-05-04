@@ -121,7 +121,7 @@
                     <xsd:appinfo>
                         <hj:basic >
                             <orm:column name="RER_TYPE" length="7"/>
-                            <hj:enumerated-value/>
+                            <orm:enumerated>STRING</orm:enumerated>
                         </hj:basic>
                     </xsd:appinfo>
                 </xsd:annotation>

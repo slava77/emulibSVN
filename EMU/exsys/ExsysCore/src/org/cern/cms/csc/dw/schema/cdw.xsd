@@ -28,6 +28,10 @@
                 generateIsSetMethod="true"
                 underscoreBinding="asCharInWord">
                 <jaxb:serializable/>
+                <jaxb:javaType name="java.util.Date"
+                               xmlType="xsd:dateTime"
+                               parseMethod="org.cern.cms.csc.dw.util.JaxbDateConverter.parseDate"
+                               printMethod="org.cern.cms.csc.dw.util.JaxbDateConverter.printDate" />
             </jaxb:globalBindings>
             <jaxb:schemaBindings>
                 <jaxb:package name="org.cern.cms.csc.dw.model.fact"/>

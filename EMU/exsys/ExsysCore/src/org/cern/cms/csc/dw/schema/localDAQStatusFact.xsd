@@ -71,7 +71,7 @@
                             <xsd:appinfo>
                                 <hj:basic>
                                     <orm:column name="FCT_RUN_TYPE" length="32"/>
-                                    <hj:enumerated-value/>
+                                    <orm:enumerated>STRING</orm:enumerated>
                                 </hj:basic>
                             </xsd:appinfo>
                         </xsd:annotation>

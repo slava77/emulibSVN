@@ -172,7 +172,7 @@
                     <xsd:appinfo>
                         <hj:basic>
                             <orm:column name="FCT_SEVERITY" length="10"/>
-                            <hj:enumerated-value/>
+                            <orm:enumerated>STRING</orm:enumerated>
                         </hj:basic>
                         <jaxb:property name="severity"/>
                         <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
