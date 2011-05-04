@@ -13,8 +13,10 @@ private const string EXSYS_COMMAND_FUNCTION_PREFIX = "exsysCmd_";
 main()
 {
   dyn_string ex;
-  string commandDpSystem = "";
-  if (getHostname() != "macfrank") {
+  string commandDpSystem = "cms_csc_dcs_08";
+  if ((getHostname() != "macfrank") && // if it's not a development machine, then find where supervisor is installed
+      (strpos(getHostname(), "emu-dcs-dev") < 0) && 
+      (strpos(getHostname(), "emuslice") < 0)) {
     dyn_string sysNames;
     fwInstallation_getApplicationSystem("CMS_CSCfw_Supervisor", sysNames);
     if (dynlen(sysNames) > 0) {
