@@ -75,7 +75,7 @@ public class NewFact extends EntityEditorManager {
         fi.setItemValue(getFact());
         factsItems.add(fi);
         fc.setFactsItems(factsItems);
-        fc.setTimeItem(new Date());
+        fc.setTime(new Date());
         fc.setComponent(getFactSource());
         factCollectionInput.getFactCollection(fc);
 
