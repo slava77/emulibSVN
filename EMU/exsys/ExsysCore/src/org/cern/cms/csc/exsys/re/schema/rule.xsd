@@ -162,7 +162,7 @@
                 <hj:entity>
                     <orm:table name="RE_COMPONENT_FINDERS"/>
                     <orm:inheritance strategy="SINGLE_TABLE"/>
-                    <orm:discriminator-column name="RCF_TYPE" length="64"/>
+                    <orm:discriminator-column name="RCF_TYPE" length="64" discriminator-type="STRING"/>
                 </hj:entity>
                 <hj:generated-id name="id" javaType="java.lang.Long">
                     <orm:column name="RCF_ID"/>

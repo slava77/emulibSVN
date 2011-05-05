@@ -281,7 +281,7 @@
                     <orm:table name="CDW_DCS_HV_ON_VOLTAGE_FACTS"/>
                 </hj:entity>
                 <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
-                    <a:FactAnn title="HV channels on-voltage setting" limitComponents="HVSegment"/>
+                    <a:FactAnn title="HV channels on-voltage setting" limitComponents="HVSegment,HVChannel"/>
                 </ann:annotate>
             </xsd:appinfo>
         </xsd:annotation>
