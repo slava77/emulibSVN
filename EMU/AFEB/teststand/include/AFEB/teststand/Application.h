@@ -17,6 +17,8 @@
 //---------------------
 #include "xoap/MessageReference.h"
 
+using namespace std;
+
 namespace AFEB { namespace teststand {
 
 /// \class AFEB::teststand::Application
@@ -50,6 +52,11 @@ private:
   ///
   /// 
   ///
+  xdata::String HTML_ROOT_;
+
+  ///
+  /// 
+  ///
   xdata::String configurationDir_;
 
   ///
@@ -68,7 +75,7 @@ private:
   ///
   /// @return logger name
   ///  
-  std::string generateLoggerName();
+  string generateLoggerName();
 
   /// Binds web address to a method.
   void bindWebInterface();
@@ -79,19 +86,31 @@ private:
 
   /// Creates a display web page.
 
-  // ///
-  // /// @param in cgi input
-  // /// @param out cgi output
-  // ///
-  // void editorWebPage(xgi::Input *in, xgi::Output *out)
-  //   throw (xgi::exception::Exception);
-
   ///
   /// @param in cgi input
   /// @param out cgi output
   ///
   void defaultWebPage(xgi::Input *in, xgi::Output *out)
     throw (xgi::exception::Exception);
+
+  ///
+  /// @param in cgi input
+  /// @param out cgi output
+  ///
+  void configEditorWebPage(xgi::Input *in, xgi::Output *out)
+    throw (xgi::exception::Exception);
+
+  string setProcessingInstruction( const string XML, const string xslURI )
+    throw( xcept::Exception );
+
+  string setNodeValue2( const string XML, const string xPathToNode, const string value )
+    throw( xcept::Exception );
+  string setNodeValue( const string XML, const string xPathToNode, const string value )
+    throw( xcept::Exception );
+
+  string applicationURL_; ///< the URL of this application
+  string processingInstructionSetter_; ///< XSLT to set the processing instruction for XML
+  // string nodeValueSetter_; ///< XSLT to set the value of node(s) defined by an xPath expression
 
 };
 

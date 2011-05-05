@@ -18,7 +18,9 @@
       </head>
       <body>
 	<xsl:apply-templates select="//a:application"/>
-	<xsl:apply-templates select="//c:configuration"/>
+        <form action="{//a:application/@urlPath}/configEditor" method="get">
+	  <xsl:apply-templates select="//c:configuration"/>
+	</form>
       </body>
     </html>
   </xsl:template>  
