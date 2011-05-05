@@ -164,7 +164,7 @@ public abstract class BeanTableDao implements Serializable {
                     String alias = ALIAS_PREFIX.concat(String.valueOf(aliasNr++));
                     DetachedCriteria subCriteria = DetachedCriteria.forClass(parentType);
                     subCriteria.createAlias(parentPropertyName, alias);
-                    subCriteria.setProjection(Projections.property(alias.concat(myId)));
+                    subCriteria.setProjection(Projections.property(alias.concat(".").concat(myId)));
                     subCriteria.add(Restrictions.eq(parentId, parent.getEntityId()));
 
                     c.add(Subqueries.propertyIn(myId, subCriteria));
