@@ -121,17 +121,16 @@ public class EntityPropertyMdFactory {
         // process the annotations and decide what type of PropertyMd object to create
         Method getter = prop.getReadMethod();
 
+        if (prop.getPropertyType().isEnum()) {
+            return new EnumPropertyMd(prop);
+        }
+        
         if (getter.isAnnotationPresent(Basic.class)) {
             return new BasicPropertyMd(prop);
         }
 
         if (getter.isAnnotationPresent(Embedded.class)) {
             return new EmbeddedPropertyMd(prop);
-        }
-
-        if (prop.getPropertyType().isEnum()) {
-            boolean isMandatory = prop.getShortDescription().equals("mandatory");
-            return new EnumPropertyMd(prop, isMandatory);
         }
 
         ManyToOne manyToOneA = getter.getAnnotation(ManyToOne.class);

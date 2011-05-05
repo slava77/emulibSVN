@@ -9,6 +9,7 @@ import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.persistence.Column;
 import jsf.bean.gui.EntityBeanDaoIf;
 import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
 
@@ -18,14 +19,15 @@ import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
  */
 public class EnumPropertyMd extends RestrictedPropertyMd {
 
-    public EnumPropertyMd(PropertyDescriptor prop, boolean isMandatory) throws InvalidEntityBeanPropertyException {
+    public EnumPropertyMd(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
         super(prop);
 
         if (!prop.getPropertyType().isEnum()) {
             throw new InvalidEntityBeanPropertyException("EnumPropertyMd constructor - type of the property is not enum");
         }
 
-        setIsMandatory(isMandatory);
+        Column column = prop.getReadMethod().getAnnotation(Column.class);
+        setIsMandatory(!column.nullable());
     }
 
     @Override

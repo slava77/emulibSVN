@@ -120,7 +120,7 @@
                 <xsd:annotation>
                     <xsd:appinfo>
                         <hj:basic >
-                            <orm:column name="RER_TYPE" length="7"/>
+                            <orm:column name="RER_TYPE" length="7" nullable="false"/>
                             <orm:enumerated>STRING</orm:enumerated>
                         </hj:basic>
                     </xsd:appinfo>

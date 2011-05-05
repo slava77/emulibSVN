@@ -86,7 +86,7 @@ public class RuleEngineDao implements RuleEngineDaoLocal, RuleEngineDaoRemote {
     @Override
     public List<Conclusion> getAllConclusions() {
         List<Conclusion> conclusions = em.createQuery("select c from org.cern.cms.csc.exsys.re.model.Conclusion as c " +
-                                                      "order by c.timestampItem desc").getResultList();
+                                                      "order by c.timestamp desc").getResultList();
         return conclusions;
     }
 
@@ -102,7 +102,7 @@ public class RuleEngineDao implements RuleEngineDaoLocal, RuleEngineDaoRemote {
         List<Conclusion> conclusions = em.createQuery(
                 "select c from org.cern.cms.csc.exsys.re.model.Conclusion as c " +
                 "where c.closed = false " +
-                "order by c.timestampItem desc").getResultList();
+                "order by c.timestamp desc").getResultList();
         if (getAllOpenConclusions) {
             for (Conclusion concl: conclusions) {
                 concl.getTriggers().iterator();
@@ -119,7 +119,7 @@ public class RuleEngineDao implements RuleEngineDaoLocal, RuleEngineDaoRemote {
                 "select c from org.cern.cms.csc.exsys.re.model.Conclusion as c " +
                 "where c.closed = false and " +
                 "c.parents is empty " +
-                "order by c.timestampItem desc").getResultList();
+                "order by c.timestamp desc").getResultList();
         return conclusions;
     }
 
@@ -142,7 +142,7 @@ public class RuleEngineDao implements RuleEngineDaoLocal, RuleEngineDaoRemote {
                 "where c.closed = false and " +
                 "c.parents is empty and " +
                 "c.acknowledged = :ack " +
-                "order by c.timestampItem desc")
+                "order by c.timestamp desc")
                 .setParameter("ack", acknowledged)
                 .getResultList();
         return conclusions;
@@ -155,7 +155,7 @@ public class RuleEngineDao implements RuleEngineDaoLocal, RuleEngineDaoRemote {
                 "select c from org.cern.cms.csc.exsys.re.model.Conclusion as c " +
                 "where c.closed = true and " +
                 "c.parents is empty " +
-                "order by c.timestampItem desc").getResultList();
+                "order by c.timestamp desc").getResultList();
         return conclusions;
     }
 
@@ -206,8 +206,8 @@ public class RuleEngineDao implements RuleEngineDaoLocal, RuleEngineDaoRemote {
 
                 // get the component class from production db
                 ComponentClass compClass = rule.getComponentFinder().getComponentClass();
-                compClass = em.createQuery("select cc from org.cern.cms.csc.dw.model.ontology.ComponentClass as cc where cc.typeItem = :typeItem", ComponentClass.class)
-                            .setParameter("typeItem", compClass.getType().value())
+                compClass = em.createQuery("select cc from org.cern.cms.csc.dw.model.ontology.ComponentClass as cc where cc.type = :type", ComponentClass.class)
+                            .setParameter("type", compClass.getType())
                             .getSingleResult();
                 rule.getComponentFinder().setComponentClass(compClass);
             }
