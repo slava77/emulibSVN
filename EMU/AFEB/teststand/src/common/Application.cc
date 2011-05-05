@@ -1,5 +1,6 @@
 #include "AFEB/teststand/Application.h"
 #include "AFEB/teststand/version.h"
+#include "AFEB/teststand/utils/DOM.h"
 #include "AFEB/teststand/utils/Cgi.h"
 #include "AFEB/teststand/utils/Xalan.h"
 #include "AFEB/teststand/utils/System.h"
@@ -56,6 +57,8 @@
 
 #include <xalanc/XercesParserLiaison/XercesDocumentWrapper.hpp>
 
+
+#include <xalanc/XSLT/XSLTInputSource.hpp>
 
 AFEB::teststand::Application::Application(xdaq::ApplicationStub *s)
   throw (xdaq::exception::Exception) :
@@ -157,20 +160,28 @@ void AFEB::teststand::Application::configEditorWebPage(xgi::Input *in, xgi::Outp
   // string XML = AFEB::teststand::utils::readFile( string( getenv(HTML_ROOT_.toString().c_str()) ) + "/AFEB/teststand/html/testdummy.xml" );
   string XML = string( getenv(HTML_ROOT_.toString().c_str()) ) + "/AFEB/teststand/html/testdummy.xml";
   cout << "XML" << endl << XML << endl;
-  for ( v = values.begin(); v != values.end(); ++v ){
-    cout << v->first << "\t" << v->second << endl;
-    try{
-      setNodeValue( XML, v->first, "blabla" );
-    }
-    catch( xcept::Exception& e){
-      LOG4CPLUS_ERROR( logger_, "Failed to configure: " << xcept::stdformat_exception_history(e) );
-    }
-    
-  }
 
-  setNodeValue( XML, "/root", "blabla" );
-  setNodeValue( XML, "/root/c:configuration[1]", "blabla" );
-  setNodeValue( XML, "/root/configuration[1]", "blabla" );
+  setNodesValues( XML, values );
+
+  // for ( v = values.begin(); v != values.end(); ++v ){
+  //   cout << v->first << "\t" << v->second << endl;
+  //   try{
+  //     setNodeValue( XML, v->first, "blabla" );
+  //   }
+  //   catch( xcept::Exception& e){
+  //     LOG4CPLUS_ERROR( logger_, "Failed to configure: " << xcept::stdformat_exception_history(e) );
+  //   }
+    
+  // }
+
+    // try{
+    //   setNodeValue( XML, "/root", "blabla" );
+    //   setNodeValue( XML, "/root/c:configuration[1]", "blabla" );
+    //   setNodeValue( XML, "/root/configuration[1]", "blabla" );
+    // }
+    // catch( xcept::Exception& e){
+    //   LOG4CPLUS_ERROR( logger_, "Failed to configure: " << xcept::stdformat_exception_history(e) );
+    // }
 
   AFEB::teststand::utils::redirect( in, out );
   return;
@@ -218,209 +229,229 @@ string AFEB::teststand::Application::setProcessingInstruction( const string XML,
 }
 
 
-string AFEB::teststand::Application::setNodeValue2( const string XML, const string xPathToNode, const string value )
+string AFEB::teststand::Application::setNodeValue( const string XML, const string xPathToNode, const string value )
   throw( xcept::Exception ){
 
+  // Based on the idea in http://www.opensubscriber.com/message/xalan-c-users@xml.apache.org/2655850.html
+
   string modifiedXML;
+
+  XALAN_USING_XALAN(XPathEvaluator)
+  XALAN_USING_XALAN(XalanDOMString)
+  XALAN_USING_XALAN(XalanDocument)
+  XALAN_USING_XALAN(XalanDocumentPrefixResolver)
+  XALAN_USING_XALAN(XalanNode)
+  XALAN_USING_XALAN(XercesDOMSupport)
+  XALAN_USING_XALAN(XercesDOMWrapperParsedSource)
+  XALAN_USING_XALAN(XercesDocumentWrapper)
+  XALAN_USING_XALAN(XercesParserLiaison)
+  XALAN_USING_XALAN(XalanElement)
+  XALAN_USING_XERCES(DOMNode)
 
   XALAN_USING_XALAN(XalanDOMException)
   XALAN_USING_XALAN(XSLException)
 
-    try{
-      XALAN_USING_XERCES(XMLPlatformUtils)
+  XALAN_USING_XERCES(XMLPlatformUtils)
+  XALAN_USING_XALAN(XPathEvaluator)
 
-      XALAN_USING_XALAN(XPathEvaluator)
-
-
-      XMLPlatformUtils::Initialize();
-      XPathEvaluator::initialize();
-
-      XALAN_USING_XERCES(LocalFileInputSource)
-
-      XALAN_USING_XALAN(XalanDocument)
-      XALAN_USING_XALAN(XalanDocumentPrefixResolver)
-      XALAN_USING_XALAN(XalanDOMString)
-      XALAN_USING_XALAN(XalanNode)
-      XALAN_USING_XALAN(XalanSourceTreeInit)
-      XALAN_USING_XALAN(XalanSourceTreeDOMSupport)
-      XALAN_USING_XALAN(XalanSourceTreeParserLiaison)
-      XALAN_USING_XALAN(XObjectPtr)
-
-      // Initialize the XalanSourceTree subsystem...
-      XalanSourceTreeInit             theSourceTreeInit;
-
-      // We'll use these to parse the XML file.
-      XalanSourceTreeDOMSupport               theDOMSupport;
-      XalanSourceTreeParserLiaison    theLiaison(theDOMSupport);
-
-      // Hook the two together...
-      theDOMSupport.setParserLiaison(&theLiaison);
-
-      const XalanDOMString    theFileName(XML.c_str());
-
-      // Create an input source that represents a local file...
-      const LocalFileInputSource      theInputSource(theFileName.c_str());
-
-      // Parse the document...
-      // XalanDocument* const    theDocument =
-      XalanDocument* theDocument =
-	theLiaison.parseXMLStream(theInputSource);
-
-      XalanDocumentPrefixResolver             thePrefixResolver(theDocument);
-
-      XPathEvaluator  theEvaluator;
-
-      // // OK, let's find the context node...
-      // string contextNode = "/root";
-      // XalanNode* const        theContextNode =
-      //                 theEvaluator.selectSingleNode(
-      //                         theDOMSupport,
-      //                         theDocument,
-      //                         XalanDOMString(contextNode.c_str()).c_str(),
-      //                         thePrefixResolver);
-
-      // XalanNode* const node = theEvaluator.selectSingleNode( theDOMSupport,
-      XalanNode* node = theEvaluator.selectSingleNode( theDOMSupport,
-							     theDocument,
-							     XalanDOMString(xPathToNode.c_str()).c_str(),
-							     thePrefixResolver );
-
-      cout << "xpath: " << xPathToNode << endl;
+  try{
+    // Namespaces won't work if these are not initialized:
+    XMLPlatformUtils::Initialize();
+    XPathEvaluator::initialize();
+    
+    XercesDOMSupport theDOMSupport;
+    XercesParserLiaison theLiaison(theDOMSupport);
+    theLiaison.setBuildWrapperNodes(true);
+    theLiaison.setBuildMaps(true);
+    
+    // Create an input source that represents a local file...
+    const XalanDOMString    theFileName(XML.c_str());
+    const LocalFileInputSource      theInputSource(theFileName.c_str());
+    XalanDocument* xalan_document = theLiaison.parseXMLStream( theInputSource );
+    assert(xalan_document != 0);
+    
+    XercesDocumentWrapper* docWrapper = theLiaison.mapDocumentToWrapper(xalan_document);
+    assert(docWrapper != 0);
+    
+    XalanDocumentPrefixResolver thePrefixResolver( docWrapper );
+    
+    XPathEvaluator theEvaluator;
+    
+    XalanNode* xalan_node = theEvaluator.selectSingleNode( theDOMSupport,
+							   xalan_document,
+							   XalanDOMString(xPathToNode.c_str()).c_str(),
+							   thePrefixResolver ); // does not work with namespaces...
+    
+    
+    if ( xalan_node ){
+      
+      // XalanDOMString nodeName = xalan_node->getNodeName();
+      // std::cout << "Found node " << nodeName << std::endl;
+      
+      DOMNode* node = const_cast<DOMNode*>( docWrapper->mapNode( xalan_node ) );
       if ( node ){
 	cout << "---------" << endl;
-	cout << "   node->getNodeName()  " << node->getNodeName()   << endl;
-	cout << "   node->getNodeValue() " << node->getNodeValue()  << endl;
+	cout << "   node->getNodeName()  " << xoap::XMLCh2String( node->getNodeName() )  << endl;
+	cout << "   node->getNodeValue() " << xoap::XMLCh2String( node->getNodeValue() ) << endl;
 	cout << "   node->getNodeType()  " << node->getNodeType()   << endl;
-	cout << "   node->hasChildNodes()  " << node->hasChildNodes() << endl;
-	// if ( node->hasChildNodes() )
-	//   cout << "   node->getChildNodes()->getLength()  " << node->getChildNodes()->getLength() << endl;
-	if ( node->getAttributes() )
-	  cout << "   node->getAttributes()  " << node->getAttributes()->getLength() << endl;
 	
-	XalanDOMString newValue( value.c_str() );
-
-	node->setNodeValue( newValue ); // does not work (NO_MODIFICATION_ALLOWED_ERR)
+	AFEB::teststand::utils::setNodeValue( node, value );
+	
+	cout << "   node->getNodeValue() " << xoap::XMLCh2String( node->getNodeValue() ) << endl;
+	
+	DOMDocument *domDoc = const_cast<DOMDocument*>( docWrapper->getXercesDocument() );
+	modifiedXML = AFEB::teststand::utils::serializeDOM( domDoc );
+	cout << "modifiedXML" << endl << modifiedXML << endl;
+	
       }
+    }
 
-      modifiedXML = AFEB::teststand::utils::serialize( theDocument );
-      cout << "modifiedXML" << endl << modifiedXML << endl;
-
-      // if (theContextNode == 0)
-      //  {
-      //          cout << "Warning -- No nodes matched the location path \""
-      //                   << contextNode
-      //                   << "\"."
-      //                   << endl;
-      //  }
-      //  else
-      //  {
-      //          // OK, let's evaluate the expression...
-      //          const XObjectPtr        theResult(
-      //                  theEvaluator.evaluate(
-      //                                  theDOMSupport,
-      //                                  theContextNode,
-      //                                  XalanDOMString(xPathToNode.c_str()).c_str(),
-      //                                  thePrefixResolver));
-
-      //          assert(theResult.null() == false);
-
-      // 		cout << "xpath: " << xPathToNode << endl;
-      //          cout << "The string value of the result is:"
-      //                   << endl
-      //                   << theResult->str()
-      //                   << endl
-      //                   << endl;
-      //  }
-
-      XPathEvaluator::terminate();
-      XMLPlatformUtils::Terminate();
-    }
-    catch( XMLException& e ){
-      stringstream ss; ss << "Failed to set node value: " << xoap::XMLCh2String( e.getMessage() );
-      XCEPT_RAISE( xcept::Exception, ss.str() );
-    }
-    catch( DOMException& e ){
-      stringstream ss; ss << "Failed to set node value: " << xoap::XMLCh2String( e.getMessage() );
-      XCEPT_RAISE( xcept::Exception, ss.str() );
-    }
-    catch( XalanDOMException& e ){
-      stringstream ss; ss << "Failed to set node value: exception code " << e.getExceptionCode();
-      XCEPT_RAISE( xcept::Exception, ss.str() );
-    }
-    catch( XSLException& e ){
-      stringstream ss; ss << "Failed to set node value: " << e.getMessage(); // TODO: check if XalanDOMString is properly serialized this way.
-      XCEPT_RAISE( xcept::Exception, ss.str() );
-    }
-    catch( xcept::Exception& e ){
-      XCEPT_RETHROW( xcept::Exception, "Failed to set node value: ", e );
-    }
-    catch( std::exception& e ){
+    XMLPlatformUtils::Terminate();
+    XPathEvaluator::terminate();
+  }
+  catch( XMLException& e ){
+    stringstream ss; ss << "Failed to set node value: " << xoap::XMLCh2String( e.getMessage() );
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch( DOMException& e ){
+    stringstream ss; ss << "Failed to set node value: " << xoap::XMLCh2String( e.getMessage() );
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch( XalanDOMException& e ){
+    stringstream ss; ss << "Failed to set node value: exception code " << e.getExceptionCode();
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch( XSLException& e ){
+    stringstream ss; ss << "Failed to set node value: " << e.getMessage();
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch( xcept::Exception& e ){
+    XCEPT_RETHROW( xcept::Exception, "Failed to set node value: ", e );
+  }
+  catch( std::exception& e ){
       stringstream ss; ss << "Failed to set node value: " << e.what();
       XCEPT_RAISE( xcept::Exception, ss.str() );
-    }
-    // catch(...){
-    //   XCEPT_RAISE( xcept::Exception, "Failed to set node value: Unknown exception." );
-    // }
-
+  }
+  catch(...){
+    XCEPT_RAISE( xcept::Exception, "Failed to set node value: Unknown exception." );
+  }
+  
   return modifiedXML;
 }
 
-string AFEB::teststand::Application::setNodeValue( const string XML, const string xPathToNode, const string value )
+string AFEB::teststand::Application::setNodesValues( const string XML, const map<string,string>& values )
   throw( xcept::Exception ){
-  //XALAN_USING_XALAN(FormatterToXercesDOM)
-    XALAN_USING_XALAN(NodeRefList)
-    XALAN_USING_XALAN(XPathEvaluator)
-    XALAN_USING_XALAN(XalanDOMString)
-    XALAN_USING_XALAN(XalanDocument)
-    XALAN_USING_XALAN(XalanDocumentPrefixResolver)
-    XALAN_USING_XALAN(XalanNode)
-    XALAN_USING_XALAN(XercesDOMSupport)
-    XALAN_USING_XALAN(XercesDOMWrapperParsedSource)
-    XALAN_USING_XALAN(XercesDocumentWrapper)
-    XALAN_USING_XALAN(XercesParserLiaison)
-    XALAN_USING_XERCES(MemBufInputSource)
-    XALAN_USING_XALAN(XalanElement)
-    XALAN_USING_XERCES(DOMNode)
 
-  XercesDOMSupport theDOMSupport;
-  XercesParserLiaison theLiaison(theDOMSupport);
-  
-  theLiaison.setBuildWrapperNodes(true);
-  theLiaison.setBuildMaps(true);
-  
-  const XalanDOMString    theFileName(XML.c_str());
-  // Create an input source that represents a local file...
-  const LocalFileInputSource      theInputSource(theFileName.c_str());
-  XalanDocument* xalan_document = theLiaison.parseXMLStream( theInputSource );
-  
-  XercesDocumentWrapper* docWrapper = theLiaison.mapDocumentToWrapper(xalan_document);
-  
-  //XalanDocumentPrefixResolver thePrefixResolver( docWrapper );
-  XalanDocumentPrefixResolver thePrefixResolver( xalan_document );
+  // Based on the idea in http://www.opensubscriber.com/message/xalan-c-users@xml.apache.org/2655850.html
 
-  //XalanNode * contextNode = xalan_document;
-  
-  //XalanElement * namespace_node = xalan_document->getDocumentElement();
-  
-  XPathEvaluator theEvaluator;
-  
-  XalanNode * xalan_node = theEvaluator.selectSingleNode( theDOMSupport,
-							  xalan_document,
-							  XalanDOMString(xPathToNode.c_str()).c_str(),
-							  thePrefixResolver ); // does not work with namespaces...
+  string modifiedXML;
 
-  cout << "xpath: " << xPathToNode << endl;
+  XALAN_USING_XALAN(XPathEvaluator)
+  XALAN_USING_XALAN(XalanDOMString)
+  XALAN_USING_XALAN(XalanDocument)
+  XALAN_USING_XALAN(XalanDocumentPrefixResolver)
+  XALAN_USING_XALAN(XalanNode)
+  XALAN_USING_XALAN(XercesDOMSupport)
+  XALAN_USING_XALAN(XercesDOMWrapperParsedSource)
+  XALAN_USING_XALAN(XercesDocumentWrapper)
+  XALAN_USING_XALAN(XercesParserLiaison)
+  XALAN_USING_XALAN(XalanElement)
+  XALAN_USING_XERCES(DOMNode)
 
-  if (xalan_node)
-    {
-      XalanDOMString nodeName = xalan_node->getNodeName();
-      std::cout << "Found node " << nodeName << std::endl;
+  XALAN_USING_XALAN(XalanDOMException)
+  XALAN_USING_XALAN(XSLException)
+
+  XALAN_USING_XERCES(XMLPlatformUtils)
+  XALAN_USING_XALAN(XPathEvaluator)
+
+  try{
+    // Namespaces won't work if these are not initialized:
+    XMLPlatformUtils::Initialize();
+    XPathEvaluator::initialize();
+    
+    XercesDOMSupport theDOMSupport;
+    XercesParserLiaison theLiaison(theDOMSupport);
+    theLiaison.setBuildWrapperNodes(true);
+    theLiaison.setBuildMaps(true);
+    
+    // Create an input source that represents a local file...
+    const XalanDOMString    theFileName(XML.c_str());
+    const LocalFileInputSource      theInputSource(theFileName.c_str());
+    XalanDocument* xalan_document = theLiaison.parseXMLStream( theInputSource );
+    assert(xalan_document != 0);
+    
+    XercesDocumentWrapper* docWrapper = theLiaison.mapDocumentToWrapper(xalan_document);
+    assert(docWrapper != 0);
+    
+    XalanDocumentPrefixResolver thePrefixResolver( docWrapper );
+    
+    XPathEvaluator theEvaluator;
+    
+    map<string,string>::const_iterator v;
+    for ( v = values.begin(); v != values.end(); ++v ){
+      XalanNode* xalan_node = theEvaluator.selectSingleNode( theDOMSupport,
+							     xalan_document,
+							     XalanDOMString(v->first.c_str()).c_str(),
+							     thePrefixResolver ); // does not work with namespaces...
       
-      const DOMNode * xerces_node = docWrapper->mapNode(xalan_node);
-    }
+      if ( xalan_node ){
+	
+	// XalanDOMString nodeName = xalan_node->getNodeName();
+	// std::cout << "Found node " << nodeName << std::endl;
+	
+	DOMNode* node = const_cast<DOMNode*>( docWrapper->mapNode( xalan_node ) );
+	if ( node ){
+	  cout << "---------" << endl;
+	  cout << "   node->getNodeName()  " << xoap::XMLCh2String( node->getNodeName() )  << endl;
+	  cout << "   node->getNodeValue() " << xoap::XMLCh2String( node->getNodeValue() ) << endl;
+	  cout << "   node->getNodeType()  " << node->getNodeType()   << endl;
+	  
+	  AFEB::teststand::utils::setNodeValue( node, v->second );
+	  
+	  cout << "   node->getNodeValue() " << xoap::XMLCh2String( node->getNodeValue() ) << endl;
+	}
+      }
 
-  return string();
+    } // for ( v = values.begin(); v != values.end(); ++v )
+
+    DOMDocument *domDoc = const_cast<DOMDocument*>( docWrapper->getXercesDocument() );
+    modifiedXML = AFEB::teststand::utils::serializeDOM( domDoc );
+    cout << "modifiedXML" << endl << modifiedXML << endl;
+
+    XMLPlatformUtils::Terminate();
+    XPathEvaluator::terminate();
+
+  }
+  catch( XMLException& e ){
+    stringstream ss; ss << "Failed to set node value: " << xoap::XMLCh2String( e.getMessage() );
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch( DOMException& e ){
+    stringstream ss; ss << "Failed to set node value: " << xoap::XMLCh2String( e.getMessage() );
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch( XalanDOMException& e ){
+    stringstream ss; ss << "Failed to set node value: exception code " << e.getExceptionCode();
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch( XSLException& e ){
+    stringstream ss; ss << "Failed to set node value: " << e.getMessage();
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch( xcept::Exception& e ){
+    XCEPT_RETHROW( xcept::Exception, "Failed to set node value: ", e );
+  }
+  catch( std::exception& e ){
+    stringstream ss; ss << "Failed to set node value: " << e.what();
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch(...){
+    XCEPT_RAISE( xcept::Exception, "Failed to set node value: Unknown exception." );
+  }
+  
+  return modifiedXML;
 }
+
 
 /**
  * Provides the factory method for the instantiation of RUBuilderTester

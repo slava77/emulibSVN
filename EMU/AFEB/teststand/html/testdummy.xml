@@ -1,17 +1,16 @@
 <?xml-stylesheet type="text/xml" href="htmlRenderer_XSLT.xml"?>
-<root xmlns:a="http://cms.cern.ch/emu/afeb/teststand/application"
-      xmlns:c="http://cms.cern.ch/emu/afeb/teststand/configuration">
+<root>
 
   <configuration>
     <A/>
     <A a="aValue"/>
   </configuration>
 
-  <a:application urlPath="/urn:xdaq-application:lid=12">
+  <a:application xmlns:a="http://cms.cern.ch/emu/afeb/teststand/application" urlPath="/urn:xdaq-application:lid=12">
     <a:state>Halted</a:state>
   </a:application>
 
-  <c:configuration c:date="2011-04-29" c:time="12:00:00">
+  <c:configuration xmlns:c="http://cms.cern.ch/emu/afeb/teststand/configuration" c:date="2011-04-29" c:time="12:00:00">
     <c:A c:a1="a1Value" c:a2="a2Value">
       <c:B c:b1="b1Value" c:b2="b2Value">
 	<c:C>CText</c:C>

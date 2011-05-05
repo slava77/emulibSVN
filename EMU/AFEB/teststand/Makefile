@@ -23,6 +23,7 @@ Link=""
 
 Sources = \
 	Application.cc \
+	DOM.cc \
 	Cgi.cc \
 	Xalan.cc \
 	System.cc \
