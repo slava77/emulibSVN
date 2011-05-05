@@ -21,6 +21,7 @@ import org.json.JSONException;
 public class BeanTable extends BeanTableControls {
 
     private static final Logger logger = Logger.getLogger(BeanTable.class.getName());
+    private static final Integer DEFAULT_NEW_COL_WIDTH = 50;
 
     private final BeanTablePack pack;
     private final Class<? extends EntityBeanBase> rowClass;
@@ -40,7 +41,8 @@ public class BeanTable extends BeanTableControls {
         this.rowClass = rowClass;
 
         for (PropertyMd pmd: this.rowClass.newInstance().getPropertyMetadata()) {
-            this.columns.add(BeanTableColumnFactory.getBeanTableColumn(this, pmd));
+            BeanTableColumn col = BeanTableColumnFactory.getBeanTableColumn(this, pmd);
+            this.columns.add(col);
         }
 
         /*
@@ -284,6 +286,9 @@ public class BeanTable extends BeanTableControls {
         List<String> cols = new ArrayList<String>();
         for (BeanTableColumn col: selectedColumns.getTarget()) {
             cols.add(col.getName());
+            if (col.getWidth() == null) {
+                col.setWidth(DEFAULT_NEW_COL_WIDTH);
+            }
         }
         getProperties().setColumns(cols);
     }

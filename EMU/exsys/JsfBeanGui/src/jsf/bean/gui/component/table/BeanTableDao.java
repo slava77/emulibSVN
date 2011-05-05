@@ -295,7 +295,7 @@ public abstract class BeanTableDao implements Serializable {
     private class CriteriaConfig {
 
         private static final String ALIAS_PREFIX = "a";
-        Integer aliasNo = 0;
+        private Integer aliasNo = 0;
 
         public String nextAlias() {
             aliasNo++;
