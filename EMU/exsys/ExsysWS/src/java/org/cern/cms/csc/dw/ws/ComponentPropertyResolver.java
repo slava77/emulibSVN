@@ -345,7 +345,7 @@ public class ComponentPropertyResolver implements ComponentPropertyResolverLocal
                             StringBuilder componentAttrBuilder = new StringBuilder();
                             for (int j=i; j < dcsIdParts.length; j++) {
                                 if (j > i) {
-                                    dcsIdBuilder.append(".");
+                                    componentAttrBuilder.append(".");
                                 }
                                 componentAttrBuilder.append(dcsIdParts[j]);
                             }
