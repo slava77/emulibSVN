@@ -26,7 +26,6 @@ public abstract class BeanTableDao implements Serializable {
 
     private static final Logger logger = SimpleLogger.getLogger(BeanTableDao.class);
     private static final Integer MAX_IN_ELEMENTS = 1000;
-    private static final String ALIAS_PREFIX = "a";
 
     protected abstract Session getSession();
 
@@ -142,7 +141,7 @@ public abstract class BeanTableDao implements Serializable {
     private DetachedCriteria getDetachedCriteria(BeanTable table) {
 
         DetachedCriteria c = DetachedCriteria.forClass(table.getRowClass());
-        Integer aliasNr = 0;
+        CriteriaConfig config = new CriteriaConfig();
 
         /*
         if (advancedQuery != null) {
@@ -161,10 +160,9 @@ public abstract class BeanTableDao implements Serializable {
                     String parentId = EntityBeanBase.getIdPropertyMd(parentType).getName();
                     String myId = EntityBeanBase.getIdPropertyMd(table.getRowClass()).getName();
 
-                    String alias = ALIAS_PREFIX.concat(String.valueOf(aliasNr++));
                     DetachedCriteria subCriteria = DetachedCriteria.forClass(parentType);
-                    subCriteria.createAlias(parentPropertyName, alias);
-                    subCriteria.setProjection(Projections.property(alias.concat(".").concat(myId)));
+                    subCriteria.createAlias(parentPropertyName, config.nextAlias());
+                    subCriteria.setProjection(Projections.property(config.sameAlias().concat(".").concat(myId)));
                     subCriteria.add(Restrictions.eq(parentId, parent.getEntityId()));
 
                     c.add(Subqueries.propertyIn(myId, subCriteria));
@@ -176,7 +174,7 @@ public abstract class BeanTableDao implements Serializable {
         for (String cname: table.getPack().getPropertyFilters().keySet()) {
             BeanTableColumn col = table.getColumn(cname);
             if (col != null) {
-                aliasNr = applyColumnFilter(c, col, table.getPack().getPropertyFilters().get(cname), aliasNr);
+                applyColumnFilter(c, col, table.getPack().getPropertyFilters().get(cname), config);
             }
         }
 
@@ -185,12 +183,12 @@ public abstract class BeanTableDao implements Serializable {
                 if (col instanceof BeanTableColumnEmbedded) {
                     for (BeanTableColumnBase ecol: ((BeanTableColumnEmbedded) col).getProperties()) {
                         if (ecol.isFilterSet()) {
-                            aliasNr = applyColumnFilter(c, ecol, ecol.getFilter(), aliasNr);
+                            applyColumnFilter(c, ecol, ecol.getFilter(), config);
                         }
                     }
                 } else {
                     BeanTableFilter f = col.getFilter();
-                    aliasNr = applyColumnFilter(c, col, f, aliasNr);
+                    applyColumnFilter(c, col, f, config);
                 }
             }
         }
@@ -199,7 +197,7 @@ public abstract class BeanTableDao implements Serializable {
 
     }
 
-    private Integer applyColumnFilter(DetachedCriteria c, BeanTableColumnBase col, BeanTableFilter f, Integer aliasNr) {
+    private void applyColumnFilter(DetachedCriteria c, BeanTableColumnBase col, BeanTableFilter f, CriteriaConfig config) {
 
         String propertyName = col.getFilterName();
 
@@ -264,7 +262,7 @@ public abstract class BeanTableDao implements Serializable {
                                     subCriteria.setProjection(Projections.id());
                                     if (col.isListType()) {
                                         String listItemId = EntityBeanBase.getIdPropertyMd(subQueryTable.getRowClass()).getName();
-                                        DetachedCriteria listCriteria = c.createCriteria(propertyName, ALIAS_PREFIX.concat(String.valueOf(aliasNr++)));
+                                        DetachedCriteria listCriteria = c.createCriteria(propertyName, config.nextAlias());
                                         if (item.getOperation().equals(BeanTableFilter.Operation.IN)) {
                                             listCriteria.add(Subqueries.propertyIn(listItemId, subCriteria));
                                         } else if (item.getOperation().equals(BeanTableFilter.Operation.NOTIN)) {
@@ -292,7 +290,21 @@ public abstract class BeanTableDao implements Serializable {
 
         }
 
-        return aliasNr;
+    }
+
+    private class CriteriaConfig {
+
+        private static final String ALIAS_PREFIX = "a";
+        Integer aliasNo = 0;
+
+        public String nextAlias() {
+            aliasNo++;
+            return sameAlias();
+        }
+
+        public String sameAlias() {
+            return ALIAS_PREFIX.concat(String.valueOf(aliasNo));
+        }
 
     }
 
