@@ -217,7 +217,7 @@
         </replace>
 
         <!-- removes all @JoinColumn(...) annotations that go after another annotation having a mappedBy attribute -->
-        <replaceregexp >
+        <replaceregexp flags="g">
             <regexp pattern="(mappedBy.*\)\s*\n)\s*@JoinColumn\(.*\)\s*\n"/>
             <substitution expression="\1"/>
             <fileset dir="${model}/src/org/cern/cms/csc">
