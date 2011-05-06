@@ -71,6 +71,8 @@ void hvCommandCB(string dp, string hvCommandStr) {
       cmdChannelOn(moduleId, channel);
     } else if (command == EMUHV_COMMAND_VSET) {
       cmdChannelVset(moduleId, channel, value);
+    } else if (command == EMUHV_COMMAND_SET_IMAX) {
+      cmdChannelImax(moduleId, channel, value);
     }
   } else if (commandType == HVSIM_CMDTYPE_GETDATA) {
     updateData(moduleId, channel);
@@ -106,6 +108,11 @@ void cmdChannelVset(string moduleId, int channel, int targetVoltage) {
   }
   
   startNewRampThread(moduleId, channels);
+}
+
+void cmdChannelImax(string moduleId, int channel, int imax) {
+  dyn_int channels = getChannelNumbers(channel);
+  emu_info("HVSIM: setting IMAX=" + imax + " on channels " + channels + " on module " + moduleId);
 }
 
 void updateData(string moduleId, int channel) {
