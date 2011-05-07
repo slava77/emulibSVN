@@ -11,7 +11,6 @@
 
 #include <set>
 #include <map>
-// #include <multimap>
 #include <vector>
 
 //---------------------
@@ -103,15 +102,8 @@ private:
   string setProcessingInstruction( const string XML, const string xslURI )
     throw( xcept::Exception );
 
-  string setNodeValue( const string XML, const string xPathToNode, const string value )
-    throw( xcept::Exception );
-
-  string setNodesValues( const string XML, const map<string,string>& values )
-    throw( xcept::Exception );
-
   string applicationURL_; ///< the URL of this application
   string processingInstructionSetter_; ///< XSLT to set the processing instruction for XML
-  // string nodeValueSetter_; ///< XSLT to set the value of node(s) defined by an xPath expression
 
 };
 

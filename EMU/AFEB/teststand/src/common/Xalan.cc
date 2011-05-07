@@ -1,17 +1,9 @@
 #include "AFEB/teststand/utils/Xalan.h"
 
-#include <exception>
-
-// headers needed for Xalan transform
-#include <xalanc/Include/PlatformDefinitions.hpp>
 #include <xercesc/util/PlatformUtils.hpp>
+
 #include <xalanc/XalanTransformer/XalanTransformer.hpp>
-#include <xalanc/PlatformSupport/XalanMemoryManagerDefault.hpp>
-
 #include <xalanc/PlatformSupport/XSLException.hpp>
-
-// headers needed for Xalan serialize
-#include <sstream>
 #include <xalanc/PlatformSupport/XalanStdOutputStream.hpp>
 #include <xalanc/PlatformSupport/XalanOutputStreamPrintWriter.hpp>
 #include <xalanc/XMLSupport/FormatterToXML.hpp>
@@ -19,6 +11,9 @@
 #include <xalanc/XPath/XPathEvaluator.hpp>
 #include <xalanc/XalanSourceTree/XalanSourceTreeDOMSupport.hpp>
 #include <xalanc/DOMSupport/XalanDocumentPrefixResolver.hpp>
+
+#include <sstream>
+#include <exception>
 
 using namespace std;
 

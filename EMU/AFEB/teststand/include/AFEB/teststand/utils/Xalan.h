@@ -1,10 +1,8 @@
 #ifndef __AFEB_teststand_utils_Xalan_h__
 #define __AFEB_teststand_utils_Xalan_h__
 
-// #include "log4cplus/logger.h"
 #include "xcept/Exception.h"
 
-#include <xalanc/Include/PlatformDefinitions.hpp>
 #include <xalanc/XalanDOM/XalanDocument.hpp>
 #include <xalanc/XPath/NodeRefList.hpp>
 
