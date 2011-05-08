@@ -1,0 +1,103 @@
+CAMAC timings on dahts2, linux-2.0.29,  100Mhz Pentium, FERMI Benchmark Module
+
+5aug97 pdt timing with semaphores and SIG_BLOCK on SIGINT
+
+1) 1 pdt to 3290 Dataway Display and simultaneously,
+   1 pdt to silver FERMI SYSTEM BENCHMARK module: 500uS/8 bit word
+
+2) 1 pdt to 3290 Dataway Display: 300uS/8 bit word
+
+
+5aug97 modified sjy_interface to use i_buff for reads 
+
+1) 1 pdt to silver FERMI SYSTEM BENCHMARK module: 200uS/8 bit word
+
+2) 1 dma to   "      "      "       "        "  : 2uS/16 bit word
+   NWORDS = 2048
+
+
+08sep97 timings with Q/X response checked on Jorway 73A
+
+dma, 16 bit:
+1) Time elapsed for 10000 repetitions of buffer length 16100
+ 206 secs  640000 usec = 1.56 Mb/sec
+2) Time elapsed for 10000 repetitions of buffer length of 4096 words
+ 56 secs  470000 usec = 1.46 Mb/sec
+3) Time elapsed for 10000 repetitions of buffer length of 256 words
+ 8 secs  740000 usec = 588 Kb/sec 
+4) Time elapsed for 10000 repetitions of buffer length of 16 words
+ 5 secs  990000 usec = 53 Kb/sec
+5) Time elapsed for 10000 repetitions of buffer length of 2 words
+ 4 secs  200000 usec = 9.5 Kb/sec, 100usec setup?
+
+dma, 24 bit:
+1) Time elapsed for 10000 repetitions of buffer length of 8050 words
+ 209 secs  350000 usec = 1.54 Mb/sec
+2) Time elapsed for 10000 repetitions of buffer length of 2048 words
+ 56 secs  470000 usec = 1.44 Mb/sec
+3) Time elapsed for 10000 repetitions of buffer length of 128 words
+ 8 secs  900000 usec = 575 Kb/sec
+4) Time elapsed for 10000 repetitions of buffer length of 8 words
+ 5 secs  910000 usec = 54 Kb/sec
+5) Time elapsed for 10000 repetitions of buffer length of 1 words
+ 4 secs  170000 usec = 9.5 Kb/sec
+
+
+09sep97 timings with Q/X response checked on Jorway 411S, data xfers return
+0x4 CONDITION_MET for Q=1, (automatic request sense generated each transfer),
+Kinetic systems 3952 Type L-2 Serial crate controller
+
+dma, 16 bit
+1) Time elapsed for 10000 repetitions of buffer length of 4096 words
+ 248 secs  560000 usec = 330 Kb/sec
+2) Time elapsed for 10000 repetitions of buffer length of 256 words
+ 28 secs  390000 usec = 180 Kb/sec
+3) Time elapsed for 10000 repetitions of buffer length of 2 words
+ 18 secs  920000 usec = 2.1 Kb/sec,  472usec setup?
+
+dma, 24 bit
+1) Time elapsed for 10000 repetitions of buffer length of 2048 words
+ 129 secs  250000 usec = 635 Kb/sec
+2) Time elapsed for 10000 repetitions of buffer length of 128 words
+ 22 secs  880000 usec = 233 Kb/sec
+3) Time elapsed for 10000 repetitions of buffer length of 1 words
+ 18 secs  380000 usec = 2.2 Kb/sec
+
+
+Jorway Model 71B Crate Controller Type A-2
+
+dma, 16 bit
+1) Time elapsed for 10000 repetitions of buffer length of 4096 words
+ 106 secs  40000 usec = 773 Kb/sec
+2) Time elapsed for 10000 repetitions of buffer length of 256 words
+ 20 secs  450000 usec = 250 Kb/sec
+3) Time elapsed for 10000 repetitions of buffer length of 2 words
+ 19 secs  860000 usec = 2 Kb/sec, 498 usec setup
+
+dma, 24 bit
+1) Time elapsed for 10000 repetitions of buffer length of 2048 words
+ 63 secs  550000 usec = 1.3 Mb/sec
+2) Time elapsed for 10000 repetitions of buffer length of 128 words
+ 18 secs  440000 usec = 278 Kb/sec
+3) Time elapsed for 10000 repetitions of buffer length of 1 words
+ 19 secs  740000 usec = 2 Kb/sec
+
+
+
+14sep97 setup timings with dma, 16 bit, no cfsa
+
+Jorway 71B
+Time elapsed for 10000 repetitions of buffer length of 0 words
+ 1 secs  610000 usec    161 usec setup
+
+Kinetic Systems 3952
+Time elapsed for 10000 repetitions of buffer length of 0 words
+ 1 secs  590000 usec    159 usec setup
+
+Jorway 73A
+Time elapsed for 10000 repetitions of buffer length of 1 words
+ 2 secs  130000 usec    213 usec setup 
+
+
+
+
