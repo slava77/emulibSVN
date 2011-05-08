@@ -7,9 +7,9 @@
 
   <xsl:output method="html" indent="yes"/>
 
-  <!-- path to element -->
+  <!-- path to element within the c namespace-->
   <xsl:template name="elementPath">
-    <xsl:for-each select="(ancestor-or-self::*)"><xsl:variable name="NAME" select="name()"/>/<xsl:value-of select="name()"/>[<xsl:value-of select="1+count(preceding-sibling::*[name()=$NAME])"/>]</xsl:for-each>
+    <xsl:for-each select="(ancestor-or-self::c:*)"><xsl:variable name="NAME" select="name()"/>/<xsl:value-of select="name()"/>[<xsl:value-of select="1+count(preceding-sibling::c:*[name()=$NAME])"/>]</xsl:for-each>
   </xsl:template>
 
   <xsl:template match="//c:configuration">

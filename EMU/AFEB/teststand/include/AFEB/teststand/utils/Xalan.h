@@ -4,6 +4,7 @@
 #include "xcept/Exception.h"
 
 #include <xalanc/XalanDOM/XalanDocument.hpp>
+#include <xalanc/XalanDOM/XalanNode.hpp>
 #include <xalanc/XPath/NodeRefList.hpp>
 
 using namespace std;
@@ -17,11 +18,10 @@ namespace AFEB { namespace teststand { namespace utils {
     throw( xcept::Exception );
 
   XALAN_USING_XALAN(XalanDocument)
-
-  string serialize( const XalanDocument* document )
-    throw( xcept::Exception );
-
   XALAN_USING_XALAN(XalanNode)
+
+  string serialize( const XalanNode* node )
+    throw( xcept::Exception );
 
   XalanNode* getSingleNode( XalanDocument* doc, XalanNode* contextNode, const string xPath )
     throw( xcept::Exception );
@@ -29,6 +29,9 @@ namespace AFEB { namespace teststand { namespace utils {
   XALAN_USING_XALAN(NodeRefList)
 
   void getNodes( NodeRefList& resultNodeList, XalanDocument* document, XalanNode* contextNode, const string xPath )
+    throw( xcept::Exception );
+
+  string serializeSelectedNode( const string& XML, const string xPath )
     throw( xcept::Exception );
 
 }}}

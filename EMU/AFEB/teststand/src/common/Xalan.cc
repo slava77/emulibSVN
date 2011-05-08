@@ -1,6 +1,8 @@
 #include "AFEB/teststand/utils/Xalan.h"
 
 #include <xercesc/util/PlatformUtils.hpp>
+#include <xercesc/framework/MemBufInputSource.hpp>
+#include <xercesc/util/XMLException.hpp>
 
 #include <xalanc/XalanTransformer/XalanTransformer.hpp>
 #include <xalanc/PlatformSupport/XSLException.hpp>
@@ -11,6 +13,10 @@
 #include <xalanc/XPath/XPathEvaluator.hpp>
 #include <xalanc/XalanSourceTree/XalanSourceTreeDOMSupport.hpp>
 #include <xalanc/DOMSupport/XalanDocumentPrefixResolver.hpp>
+#include "xalanc/XercesParserLiaison/XercesDOMSupport.hpp"
+#include "xalanc/XercesParserLiaison/XercesParserLiaison.hpp"
+
+#include "xoap/domutils.h" // for XMLCh2String
 
 #include <sstream>
 #include <exception>
@@ -128,7 +134,7 @@ AFEB::teststand::utils::transformWithParams( istream& source, istream& styleshee
 XALAN_USING_XALAN(XalanDocument)
 
 string
-AFEB::teststand::utils::serialize( const XalanDocument* document )
+AFEB::teststand::utils::serialize( const XalanNode* node )
   throw( xcept::Exception ){
   XALAN_USING_XALAN(XalanStdOutputStream);
   XALAN_USING_XALAN(XalanOutputStreamPrintWriter);
@@ -139,7 +145,7 @@ AFEB::teststand::utils::serialize( const XalanDocument* document )
   XalanOutputStreamPrintWriter writer(output_stream);
   FormatterToXML formatter(writer);
   FormatterTreeWalker tree_walker(formatter);
-  tree_walker.traverse(document);
+  tree_walker.traverse( node );
   return target_stream.str();
 }
 
@@ -172,6 +178,8 @@ AFEB::teststand::utils::getSingleNode( XalanDocument* document, XalanNode* conte
 					     contextNode,
 					     XalanDOMString( xPath.c_str() ).c_str(),
 					     thePrefixResolver );
+    XMLPlatformUtils::Terminate();
+    XPathEvaluator::terminate();
   }
   catch( xcept::Exception& e ){
     stringstream ss; ss << "XPath selection failed for '"<< xPath << "': ";
@@ -219,6 +227,8 @@ AFEB::teststand::utils::getNodes( NodeRefList& resultNodeList, XalanDocument* do
 				 contextNode,
 				 XalanDOMString( xPath.c_str() ).c_str(),
 				 thePrefixResolver );
+    XPathEvaluator::terminate();
+    XMLPlatformUtils::Terminate();
   }
   catch( xcept::Exception& e ){
     stringstream ss; ss << "XPath selection failed for '"<< xPath << "': ";
@@ -236,4 +246,66 @@ AFEB::teststand::utils::getNodes( NodeRefList& resultNodeList, XalanDocument* do
     stringstream ss; ss << "XPath selection failed for '"<< xPath << "': Unknown exception.";
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
+}
+
+string AFEB::teststand::utils::serializeSelectedNode( const string& XML, const string xPath )
+  throw( xcept::Exception ){
+
+  string serializedNode;
+
+  XALAN_USING_XALAN(XercesDOMSupport)
+  XALAN_USING_XALAN(XercesParserLiaison)
+  XALAN_USING_XERCES(MemBufInputSource)
+  XALAN_USING_XERCES(XMLException)
+  XALAN_USING_XALAN(XalanDOMException)
+  XALAN_USING_XALAN(XSLException)
+
+  try{
+    XALAN_USING_XERCES(XMLPlatformUtils)
+    XALAN_USING_XALAN(XPathEvaluator)
+    XMLPlatformUtils::Initialize();
+
+    XercesDOMSupport theDOMSupport;
+    XercesParserLiaison theLiaison(theDOMSupport);
+    theLiaison.setDoNamespaces(true); // although it seems to be already set...
+    theLiaison.setBuildWrapperNodes(true);
+    theLiaison.setBuildMaps(true);
+    
+    const char* const id = "dummy";
+    MemBufInputSource theInputSource( (const XMLByte*) XML.c_str(), (unsigned int) XML.size(), id );
+    XalanDocument* document = theLiaison.parseXMLStream( theInputSource );
+
+
+    serializedNode = serialize( getSingleNode( document, document, xPath ) );
+
+    XMLPlatformUtils::Terminate();
+  }
+  catch( XMLException& e ){
+    stringstream ss; ss << "Failed to serialize selected node: " << xoap::XMLCh2String( e.getMessage() );
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch( DOMException& e ){
+    stringstream ss; ss << "Failed to serialize selected node: " << xoap::XMLCh2String( e.getMessage() );
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch( XalanDOMException& e ){
+    stringstream ss; ss << "Failed to serialize selected node: exception code " << e.getExceptionCode();
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch( XSLException& e ){
+    stringstream ss; ss << "Failed to serialize selected node: " << e.getMessage();
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch( xcept::Exception& e ){
+    XCEPT_RETHROW( xcept::Exception, "Failed to serialize selected node: ", e );
+  }
+  catch( std::exception& e ){
+    stringstream ss; ss << "Failed to serialize selected node: " << e.what();
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch(...){
+    XCEPT_RAISE( xcept::Exception, "Failed to serialize selected node: Unknown exception." );
+  }
+  
+  return serializedNode;
 }

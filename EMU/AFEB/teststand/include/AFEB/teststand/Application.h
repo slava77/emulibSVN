@@ -92,6 +92,8 @@ private:
   void defaultWebPage(xgi::Input *in, xgi::Output *out)
     throw (xgi::exception::Exception);
 
+  void loadConfigurationTemplate();
+
   ///
   /// @param in cgi input
   /// @param out cgi output
@@ -102,8 +104,10 @@ private:
   string setProcessingInstruction( const string XML, const string xslURI )
     throw( xcept::Exception );
 
-  string applicationURL_; ///< the URL of this application
+  string applicationURLPath_; ///< the path of the URL of this application
+  static const string applicationNamespace_; ///< the namespace of this application
   string processingInstructionSetter_; ///< XSLT to set the processing instruction for XML
+  string configurationXML_; ///< XML of the configuration
 
 };
 

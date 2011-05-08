@@ -92,7 +92,6 @@ string AFEB::teststand::utils::setSelectedNodeValue( const string XML, const str
 
   string modifiedXML;
 
-  XALAN_USING_XALAN(XPathEvaluator)
   XALAN_USING_XALAN(XalanDOMString)
   XALAN_USING_XALAN(XalanDocument)
   XALAN_USING_XALAN(XalanDocumentPrefixResolver)
@@ -201,7 +200,6 @@ string AFEB::teststand::utils::setSelectedNodesValues( const string XML, const m
 
   string modifiedXML;
 
-  XALAN_USING_XALAN(XPathEvaluator)
   XALAN_USING_XALAN(XalanDOMString)
   XALAN_USING_XALAN(XalanDocument)
   XALAN_USING_XALAN(XalanDocumentPrefixResolver)

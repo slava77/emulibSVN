@@ -14,7 +14,7 @@ namespace AFEB { namespace teststand { namespace utils {
 
   void redirect(xgi::Input *in, xgi::Output *out);
 
-  void redirectTo( const string newURL, xgi::Input *in, xgi::Output *out );
+  void redirectTo( const string newURL, xgi::Output *out );
 
 }}}
 

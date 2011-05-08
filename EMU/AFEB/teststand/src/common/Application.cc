@@ -31,10 +31,6 @@ AFEB::teststand::Application::Application(xdaq::ApplicationStub *s)
   logger_(Logger::getInstance(generateLoggerName()))
 {
 
-  stringstream ss( "urn:xdaq-application:lid=" );
-  ss << getApplicationDescriptor()->getLocalId();
-  applicationURL_ = ss.str();
-
   bindWebInterface();
   exportParams();
 }
@@ -72,6 +68,26 @@ void AFEB::teststand::Application::exportParams(){
 
 }
 
+void AFEB::teststand::Application::loadConfigurationTemplate(){
+  if ( bool( configurationXML_.size() ) ) return;
+  string fileName;
+  if ( getenv(HTML_ROOT_.toString().c_str()) != NULL ){
+    try{
+      fileName = string( getenv(HTML_ROOT_.toString().c_str()) ) + "/AFEB/teststand/xml/ConfigurationTemplate.xml";
+      cout << "Reading in " << fileName << endl;
+      configurationXML_ = AFEB::teststand::utils::readFile( fileName );
+    }
+    catch( xcept::Exception& e ){
+      LOG4CPLUS_ERROR( logger_, "Failed to load " << fileName << " : " << xcept::stdformat_exception_history(e) );
+    }
+  }
+  else{
+    LOG4CPLUS_FATAL( logger_, HTML_ROOT_.toString() + " is not defined. Exiting." );
+    exit(1);
+  }
+
+}
+
 
 void AFEB::teststand::Application::defaultWebPage(xgi::Input *in, xgi::Output *out)
   throw (xgi::exception::Exception){
@@ -82,27 +98,32 @@ void AFEB::teststand::Application::defaultWebPage(xgi::Input *in, xgi::Output *o
   // header.getReasonPhrase("See Other");
   // header.addHeader("Location", "/AFEB/teststand/html/Default.html");
   
-  string fileName;
+  loadConfigurationTemplate();
+
+
+  stringstream ss;
+  if ( applicationURLPath_.size() == 0 ){
+    ss << "/urn:xdaq-application:lid=" << getApplicationDescriptor()->getLocalId();
+    applicationURLPath_ = ss.str();
+    ss.str("");
+  }
+  ss << "<root>" << endl
+     << "<a:application xmlns:a=\"" << applicationNamespace_ 
+     << "\" urlPath=\"" << applicationURLPath_ 
+     << "\"/>" << endl
+     << configurationXML_ << endl
+     << "</root>";
+
+  string xml( ss.str() );
   string xsltName;
-  string xmlFile;
   if ( getenv(HTML_ROOT_.toString().c_str()) != NULL ){
     try{
-      fileName = string( getenv(HTML_ROOT_.toString().c_str()) ) + "/AFEB/teststand/html/testdummy.xml";
-      cout << "Reading in " << fileName << endl;
-      xmlFile = AFEB::teststand::utils::readFile( fileName );
-    }
-    catch( xcept::Exception& e ){
-      LOG4CPLUS_ERROR( logger_, "Failed to load " << fileName << " : " << xcept::stdformat_exception_history(e) );
-      XCEPT_RETHROW( xgi::exception::Exception, "Failed to load " + fileName, e );
-    }
-    try{
       xsltName = "/AFEB/teststand/html/htmlRenderer_XSLT.xml";
-      //cout << setProcessingInstruction( xmlFile, xsltName ) << endl;
-      *out << setProcessingInstruction( xmlFile, xsltName );
+      *out << setProcessingInstruction( xml, xsltName );
     }
     catch( xcept::Exception& e ){
-      LOG4CPLUS_ERROR( logger_, "Failed to set processing instruction to " << xsltName << " in "<< fileName << " : "<< xcept::stdformat_exception_history(e) );
-      XCEPT_RETHROW( xgi::exception::Exception, "Failed to set processing instruction to " + xsltName + " in " + fileName, e );
+      LOG4CPLUS_ERROR( logger_, "Failed to set processing instruction to " << xsltName << " in web page : "<< xcept::stdformat_exception_history(e) );
+      XCEPT_RETHROW( xgi::exception::Exception, "Failed to set processing instruction to " + xsltName + " in web page.", e );
     }
   }
   else{
@@ -121,23 +142,24 @@ void AFEB::teststand::Application::configEditorWebPage(xgi::Input *in, xgi::Outp
 
   map<string,string> values = AFEB::teststand::utils::selectFromQueryString( fev, "^/" );
   map<string,string>::const_iterator v;
+  for ( v = values.begin(); v != values.end(); ++v ){
+    cout << v->first << "\t" << v->second << endl;
+    //   try{
+    //     setNodeValue( XML, v->first, "blabla" );
+    //   }
+    //   catch( xcept::Exception& e){
+    //     LOG4CPLUS_ERROR( logger_, "Failed to configure: " << xcept::stdformat_exception_history(e) );
+    //   }
+  }
 
-  string XML = AFEB::teststand::utils::readFile( string( getenv(HTML_ROOT_.toString().c_str()) ) + "/AFEB/teststand/html/testdummy.xml" );
-  //string XML = string( getenv(HTML_ROOT_.toString().c_str()) ) + "/AFEB/teststand/html/testdummy.xml";
-  cout << "XML" << endl << XML << endl;
+  //string XML = AFEB::teststand::utils::readFile( string( getenv(HTML_ROOT_.toString().c_str()) ) + "/AFEB/teststand/html/testdummy.xml" );
+  string XML = configurationXML_;
+  cout << "XML" << endl << XML << endl << flush;
 
-  AFEB::teststand::utils::setSelectedNodesValues( XML, values );
+  configurationXML_ = AFEB::teststand::utils::setSelectedNodesValues( XML, values );
 
-  // for ( v = values.begin(); v != values.end(); ++v ){
-  //   cout << v->first << "\t" << v->second << endl;
-  //   try{
-  //     setNodeValue( XML, v->first, "blabla" );
-  //   }
-  //   catch( xcept::Exception& e){
-  //     LOG4CPLUS_ERROR( logger_, "Failed to configure: " << xcept::stdformat_exception_history(e) );
-  //   }
-    
-  // }
+  cout << "configurationXML" << endl << configurationXML_ << endl << flush;
+
 
     // try{
     //   setNodeValue( XML, "/root", "blabla" );
@@ -148,7 +170,7 @@ void AFEB::teststand::Application::configEditorWebPage(xgi::Input *in, xgi::Outp
     //   LOG4CPLUS_ERROR( logger_, "Failed to configure: " << xcept::stdformat_exception_history(e) );
     // }
 
-  AFEB::teststand::utils::redirect( in, out );
+  AFEB::teststand::utils::redirectTo( applicationURLPath_, out );
   return;
 }
 
@@ -160,7 +182,7 @@ string AFEB::teststand::Application::setProcessingInstruction( const string XML,
     if ( XML.size() == 0 ){
       XCEPT_RAISE( xcept::Exception, "XML document is empty." );
     }
-    // Load P.I. setting XSLT if it hasn't yet beed loaded.
+    // Load P.I. setting XSLT if it hasn't yet been loaded.
     if ( processingInstructionSetter_.size() == 0 ){
       string xsltName;
       if ( getenv(HTML_ROOT_.toString().c_str()) != NULL ){
@@ -178,7 +200,9 @@ string AFEB::teststand::Application::setProcessingInstruction( const string XML,
     stringstream source; source << XML;
     map<string,string> params;
     params["XSLURI"] = "'" + xslURI + "'";
+    cout << "BEFORE Source:" << endl << source.str() << endl << "Stylesheet:" << endl << stylesheet.str() << endl;
     AFEB::teststand::utils::transformWithParams( source, stylesheet, target, params );
+    cout << "AFTER Source:" << endl << source.str() << endl << "Stylesheet:" << endl << stylesheet.str() << endl;
   }catch( xcept::Exception& e ){
     stringstream ess; ess << "Failed to set processing instruction.";
     XCEPT_RETHROW( xcept::Exception, ess.str(), e );
@@ -192,6 +216,8 @@ string AFEB::teststand::Application::setProcessingInstruction( const string XML,
 
   return target.str();
 }
+
+const string AFEB::teststand::Application::applicationNamespace_( "http://cms.cern.ch/emu/afeb/teststand/application" );
 
 /**
  * Provides the factory method for the instantiation of RUBuilderTester

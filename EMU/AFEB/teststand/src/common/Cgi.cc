@@ -56,6 +56,8 @@ AFEB::teststand::utils::selectFromQueryString( std::vector<cgicc::FormEntry>& fe
 void
 AFEB::teststand::utils::redirect(xgi::Input *in, xgi::Output *out){
   // Redirect for the action not to be repeated if the 'reload' button is hit.
+  // cout << "PATH_TRANSLATED: " <<  in->getenv( "PATH_TRANSLATED" ) << endl
+  //      << "PATH_INFO: " << in->getenv( "PATH_INFO" ) << endl;
   std::string url = in->getenv( "PATH_TRANSLATED" );
   std::size_t p = url.find( "/" + in->getenv( "PATH_INFO" ) + "?" );
   if ( p != std::string::npos ){
@@ -69,7 +71,7 @@ AFEB::teststand::utils::redirect(xgi::Input *in, xgi::Output *out){
   }
 }
 
-void AFEB::teststand::utils::redirectTo( const string newURL, xgi::Input *in, xgi::Output *out ){
+void AFEB::teststand::utils::redirectTo( const string newURL, xgi::Output *out ){
   cgicc::HTTPResponseHeader &header = out->getHTTPResponseHeader();
   header.getStatusCode(303);
   header.getReasonPhrase("See Other");
