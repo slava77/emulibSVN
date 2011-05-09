@@ -16,6 +16,9 @@ namespace AFEB { namespace teststand { namespace utils {
 
       void setNodeValue( DOMNode* node, const string& value );
 
+      string appendToSelectedNode( const string XML, const string xPathToNode, const string xmlFragment )
+	throw( xcept::Exception );
+
       string setSelectedNodeValue( const string XML, const string xPathToNode, const string value )
 	throw( xcept::Exception );
 

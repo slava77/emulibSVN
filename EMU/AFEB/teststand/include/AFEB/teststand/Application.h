@@ -94,6 +94,8 @@ private:
 
   void loadConfigurationTemplate();
 
+  void initializeParameters();
+
   ///
   /// @param in cgi input
   /// @param out cgi output
@@ -108,6 +110,7 @@ private:
   static const string applicationNamespace_; ///< the namespace of this application
   string processingInstructionSetter_; ///< XSLT to set the processing instruction for XML
   string configurationXML_; ///< XML of the configuration
+  string xmlWebPageSkeleton_; ///< skeleton of the XML web page
 
 };
 
