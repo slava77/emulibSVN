@@ -17,6 +17,7 @@ import org.cern.cms.csc.exsys.io.DimServiceProviderRemote;
 import org.cern.cms.csc.exsys.re.action.ActionExecutor;
 import org.cern.cms.csc.exsys.re.exception.ActionExecutionException;
 import org.cern.cms.csc.exsys.re.model.ActionExecution;
+import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.cern.cms.csc.exsys.re.model.DcsCommandAction;
 
 /**

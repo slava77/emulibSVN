@@ -34,6 +34,9 @@ public class EnumPropertyMd extends RestrictedPropertyMd {
     public List<Object> getListOfValues(EntityBeanDaoIf entityDao) {
         List<Object> ret = new ArrayList<Object>();
         Object[] values = getType().getEnumConstants();
+        if (!getIsMandatory()) {
+            ret.add(null);
+        }
         ret.addAll(Arrays.asList(values));
         return ret;
     }

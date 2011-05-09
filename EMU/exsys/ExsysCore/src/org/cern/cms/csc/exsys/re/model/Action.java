@@ -373,6 +373,11 @@ public abstract class Action
         return getName();
     }
 
+    @Override
+    public String toString() {
+        return "Action \"" + name + "\"";
+    }
+
 //--simple--preserve
 
 }

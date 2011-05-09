@@ -14,6 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.persistence.Transient;
 import jsf.bean.gui.EntityBeanBase;
+import jsf.bean.gui.annotation.CreateDefaultValue;
 import jsf.bean.gui.annotation.ImmutableReference;
 import jsf.bean.gui.annotation.Label;
 import jsf.bean.gui.annotation.NoManualInput;
@@ -42,8 +43,10 @@ public abstract class PropertyMd implements Serializable {
     /** Flag telling if manual input of this property is allowed or not. */
     private boolean isManualInputAllowed;
     /** Flag telling if a default value should be created
-     * (this is determined from the annotation NoManualInput, so it can only be true if no manual inuput is allowed for this property) */
+     * (this is determined from the @NoManualInput or @CreateDefaultValue */
     private boolean createDefaultValue;
+    /** If createDefaultValue == true, then this property tells what should be the class of the new object */
+    private Class defaultValueClass;
     /**
      * This is set to true is @ImmutableReference annotation is found on this property.
      * It only makes sense if this property is a reference to another entity and tells GUI not to allow the user to edit it.
@@ -82,6 +85,15 @@ public abstract class PropertyMd implements Serializable {
             if (noManualInputA != null) {
                 isManualInputAllowed = false;
                 createDefaultValue = noManualInputA.createDefaultValue();
+                defaultValueClass = propertyDescriptor.getPropertyType();
+            }
+            CreateDefaultValue defValueA = f.getAnnotation(CreateDefaultValue.class);
+            if (!createDefaultValue && (defValueA != null)) {
+                createDefaultValue = true;
+                defaultValueClass = defValueA.clazz();
+                if (Object.class.equals(defaultValueClass)) {
+                    defaultValueClass = propertyDescriptor.getPropertyType();
+                }
             }
 
             // check if it has a @Label annotation
@@ -106,6 +118,14 @@ public abstract class PropertyMd implements Serializable {
      */
     public boolean getIsCreateDefaultValue() {
         return createDefaultValue;
+    }
+
+    /**
+     * Get class of the default value.
+     * @return class of the default value.
+     */
+    public Class getDefaultValueClass() {
+        return defaultValueClass;
     }
 
     /**

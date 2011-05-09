@@ -299,6 +299,20 @@
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
+                    <xsd:element name="componentFinder" type="tns:componentFinderType">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:one-to-one>
+                                    <orm:join-column name="RECA_COMPONENT_FINDER" nullable="false"/>
+                                </hj:one-to-one>
+                                <jaxb:property name="componentFinder"/>
+                                <ann:annotate xmlns:a="jsf.bean.gui.annotation">
+                                    <a:Label name="Target Component Finder" description="This is used by the action executor to find the target component on which the action has to be executed (source component is taken from the associated conclusion). If you simply want to use the same component as the source conclusion has, use SimpleComponentFinder with 'N/A' as component type"/>
+                                    <a:CreateDefaultValue clazz="org.cern.cms.csc.exsys.re.model.SimpleComponentFinder"/>
+                                </ann:annotate>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>

@@ -9,14 +9,20 @@ package org.cern.cms.csc.exsys.re.model;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+import jsf.bean.gui.annotation.CreateDefaultValue;
+import jsf.bean.gui.annotation.Label;
 
 
 /**
@@ -30,6 +36,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;extension base="{http://www.cern.ch/cms/csc/exsys/re/model}actionType">
  *       &lt;sequence>
  *         &lt;element name="closeConclusionOnExecution" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
+ *         &lt;element name="componentFinder" type="{http://www.cern.ch/cms/csc/exsys/re/model}componentFinderType"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -40,7 +47,8 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "commandActionType", propOrder = {
-    "closeConclusionOnExecution"
+    "closeConclusionOnExecution",
+    "componentFinder"
 })
 @XmlSeeAlso({
     DimPublicationAction.class
@@ -53,6 +61,10 @@ public abstract class CommandAction
 {
 
     protected boolean closeConclusionOnExecution;
+    @XmlElement(required = true)
+    @Label(description = "This is used by the action executor to find the target component on which the action has to be executed (source component is taken from the associated conclusion). If you simply want to use the same component as the source conclusion has, use SimpleComponentFinder with 'N/A' as component type", name = "Target Component Finder")
+    @CreateDefaultValue(clazz = SimpleComponentFinder.class)
+    protected org.cern.cms.csc.exsys.re.model.ComponentFinder componentFinder;
 
     /**
      * Gets the value of the closeConclusionOnExecution property.
@@ -75,6 +87,39 @@ public abstract class CommandAction
     @Transient
     public boolean isSetCloseConclusionOnExecution() {
         return true;
+    }
+
+    /**
+     * Gets the value of the componentFinder property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link org.cern.cms.csc.exsys.re.model.ComponentFinder }
+     *     
+     */
+    @OneToOne(targetEntity = org.cern.cms.csc.exsys.re.model.ComponentFinder.class, cascade = {
+        CascadeType.ALL
+    })
+    @JoinColumn(name = "RECA_COMPONENT_FINDER", nullable = false)
+    public org.cern.cms.csc.exsys.re.model.ComponentFinder getComponentFinder() {
+        return componentFinder;
+    }
+
+    /**
+     * Sets the value of the componentFinder property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link org.cern.cms.csc.exsys.re.model.ComponentFinder }
+     *     
+     */
+    public void setComponentFinder(org.cern.cms.csc.exsys.re.model.ComponentFinder value) {
+        this.componentFinder = value;
+    }
+
+    @Transient
+    public boolean isSetComponentFinder() {
+        return (this.componentFinder!= null);
     }
 
 }

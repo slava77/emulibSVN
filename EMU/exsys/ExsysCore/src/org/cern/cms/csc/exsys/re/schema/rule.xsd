@@ -174,18 +174,6 @@
             </xsd:appinfo>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="rule" type="tns:ruleType" minOccurs="0">
-                <xsd:annotation>
-                    <xsd:appinfo>
-                        <hj:one-to-one mapped-by="componentFinder"/>
-                        <jaxb:property name="rule"/>
-                        <ann:annotate xmlns:a="jsf.bean.gui.annotation">
-                            <a:NoManualInput/>
-                            <a:ImmutableReference/>
-                        </ann:annotate>
-                    </xsd:appinfo>
-                </xsd:annotation>
-            </xsd:element>
             <xsd:element name="componentClass" type="ont:componentClassType">
                 <xsd:annotation>
                     <xsd:appinfo>

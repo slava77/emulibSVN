@@ -70,7 +70,7 @@ public class PropertyEditorFactory {
                     ret.add(createPropertyEditor(entity, propMetadata, parentEditor, EditorDao));
                 } else if (propMetadata.getIsCreateDefaultValue()) {
                     try {
-                        Object defValue = propMetadata.getType().newInstance();
+                        Object defValue = propMetadata.getDefaultValueClass().newInstance();
                         propMetadata.getSetterMethod().invoke(entity, defValue);
                     } catch (Exception ex) {
                         throw new InvalidEntityBeanPropertyException("Could not create default value for " +

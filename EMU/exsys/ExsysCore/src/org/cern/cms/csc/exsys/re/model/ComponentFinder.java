@@ -8,7 +8,6 @@
 package org.cern.cms.csc.exsys.re.model;
 
 import java.io.Serializable;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -20,7 +19,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -29,8 +27,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+import jsf.bean.gui.annotation.ImmutableReference;
 import jsf.bean.gui.annotation.Label;
-import jsf.bean.gui.annotation.NoManualInput;
 import jsf.bean.gui.annotation.UseInTitle;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 
@@ -45,7 +43,6 @@ import org.cern.cms.csc.dw.model.base.EntityBase;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="rule" type="{http://www.cern.ch/cms/csc/exsys/re/model}ruleType" minOccurs="0"/>
  *         &lt;element name="componentClass" type="{http://www.cern.ch/cms/csc/dw/ontology}componentClassType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -57,7 +54,6 @@ import org.cern.cms.csc.dw.model.base.EntityBase;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "componentFinderType", propOrder = {
-    "rule",
     "componentClass"
 })
 @XmlSeeAlso({
@@ -74,47 +70,12 @@ public abstract class ComponentFinder
     implements Serializable
 {
 
-    @NoManualInput
-    @jsf.bean.gui.annotation.ImmutableReference
-    protected org.cern.cms.csc.exsys.re.model.Rule rule;
     @XmlElement(required = true)
-    @jsf.bean.gui.annotation.ImmutableReference
+    @ImmutableReference
     @Label(description = "This tells the component finder what component type is to be resolved/accepted.", name = "Component Type")
     protected org.cern.cms.csc.dw.model.ontology.ComponentClass componentClass;
     @XmlAttribute(name = "id")
     protected Long id;
-
-    /**
-     * Gets the value of the rule property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link org.cern.cms.csc.exsys.re.model.Rule }
-     *     
-     */
-    @OneToOne(targetEntity = org.cern.cms.csc.exsys.re.model.Rule.class, cascade = {
-        CascadeType.ALL
-    }, mappedBy = "componentFinder")
-    public org.cern.cms.csc.exsys.re.model.Rule getRule() {
-        return rule;
-    }
-
-    /**
-     * Sets the value of the rule property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link org.cern.cms.csc.exsys.re.model.Rule }
-     *     
-     */
-    public void setRule(org.cern.cms.csc.exsys.re.model.Rule value) {
-        this.rule = value;
-    }
-
-    @Transient
-    public boolean isSetRule() {
-        return (this.rule!= null);
-    }
 
     /**
      * Gets the value of the componentClass property.
@@ -178,7 +139,11 @@ public abstract class ComponentFinder
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " for " + getComponentClass();
+        String ret = getClass().getSimpleName();
+        if (getComponentClass() != null) {
+            ret += " for " + getComponentClass();
+        }
+        return ret;
     }
 
 //--simple--preserve

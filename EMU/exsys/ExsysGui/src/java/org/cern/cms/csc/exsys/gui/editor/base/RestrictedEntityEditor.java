@@ -130,6 +130,9 @@ public abstract class RestrictedEntityEditor extends EntityEditor {
      * @return title for the given LOV object.
      */
     protected String getLovObjectTitle(Object lovObject) throws Exception {
+        if (lovObject == null) {
+            return "N/A";
+        }
         if (lovObject instanceof EntityBase) {
             EntityBase lovEntityObj = (EntityBase) lovObject;
             String title = lovEntityObj.getEntityTitle();

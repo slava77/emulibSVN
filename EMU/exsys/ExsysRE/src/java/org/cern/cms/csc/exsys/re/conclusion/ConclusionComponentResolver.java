@@ -26,11 +26,13 @@ import org.cern.cms.csc.dw.model.ontology.graph.GComponent;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponentClass;
 import org.cern.cms.csc.dw.util.EjbLookup;
 import org.cern.cms.csc.exsys.re.exception.ComponentResolverException;
+import org.cern.cms.csc.exsys.re.model.Action;
 import org.cern.cms.csc.exsys.re.model.ComponentFinder;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.cern.cms.csc.exsys.re.model.ConclusionTrigger;
 import org.cern.cms.csc.exsys.re.model.ConclusionTriggerSource;
 import org.cern.cms.csc.exsys.re.model.RelatedComponentFinder;
+import org.cern.cms.csc.exsys.re.model.Rule;
 import org.cern.cms.csc.exsys.re.model.SimpleComponentFinder;
 
 /**
@@ -47,6 +49,8 @@ public class ConclusionComponentResolver {
     private ComponentClassType componentClassType;
     /** Component class type as GComponentClass. */
     private GComponentClass gComponentClass;
+    /** Name of the caller e.g. name of the rule that uses it or name of the action that uses it. */
+    private String callerName;
     /** OntologyDao. */
     private EjbLookup<OntologyDaoLocal> ontologyDao = new EjbLookup<OntologyDaoLocal>(EjbLookup.Module.DAO,
                                                                                       OntologyDaoLocal.class);
@@ -54,8 +58,29 @@ public class ConclusionComponentResolver {
     private EjbLookup<GOntologyDaoLocal> gOntologyDao = new EjbLookup<GOntologyDaoLocal>(EjbLookup.Module.DAO,
                                                                                          GOntologyDaoLocal.class);
 
-    public ConclusionComponentResolver(ComponentFinder componentFinder) {
+    /**
+     * Constructor.
+     * @param componentFinder associated component finder.
+     * @param callerRule rule that's calling this component resolver (used in log messages).
+     */
+    public ConclusionComponentResolver(ComponentFinder componentFinder, Rule callerRule) {
+        this(componentFinder);
+        this.callerName = callerRule.toString();
+    }
+
+    /**
+     * Constructor.
+     * @param componentFinder associated component finder.
+     * @param callerAction action that's calling this component resolver (used in log messages).
+     */
+    public ConclusionComponentResolver(ComponentFinder componentFinder, Action callerAction) {
+        this(componentFinder);
+        this.callerName = callerAction.toString();
+    }
+
+    private ConclusionComponentResolver(ComponentFinder componentFinder) {
         this.componentFinder = componentFinder;
+        this.callerName = "N/A";
     }
 
     /**
@@ -109,28 +134,32 @@ public class ConclusionComponentResolver {
      */
     private Component getComponent(List<Component> sourceComponents) throws ComponentResolverException {
         if (sourceComponents.isEmpty()) {
-            throw new ComponentResolverException("Got 0 source components, cannot resolve anything from that.. :) rule=" + componentFinder.getRule());
+            throw new ComponentResolverException("Got 0 source components, cannot resolve anything from that.. :) " + callerName);
         }
 
-        if (componentFinder instanceof SimpleComponentFinder) { // SIMPLE component finder - make sure they're all the same and of the required type
+        if (componentFinder instanceof SimpleComponentFinder) { // SIMPLE component finder - make sure they're all the same and of the required type (if supplied)
             Component firstComp = sourceComponents.get(0);
 
             for (Component comp: sourceComponents) {
                 if (!comp.getId().equals(firstComp.getId())) {
                     throw new ComponentResolverException("Simple component finder error: not all source components are the same, you could consider using a RelatedComponentFinder. Source components: " + sourceComponents +
-                                                         ", rule=" + componentFinder.getRule());
+                                                         ", " + callerName);
                 }
             }
 
-            if (!isComponentOfRequiredType(firstComp)) {
+            if ((componentFinder.getComponentClass() != null) && !isComponentOfRequiredType(firstComp)) {
                 throw new ComponentResolverException("Simple component finder error: one or more of the source components is not of the required type: " + getComponentClassType() +
-                                                     ", rule=" + componentFinder.getRule());
+                                                     ", " + callerName);
             }
 
             return firstComp;
         } else if (componentFinder instanceof RelatedComponentFinder) { // RELATED component finder
             RelatedComponentFinder relCompFinder = (RelatedComponentFinder) componentFinder;
             Set<Component> retSet = new HashSet<Component>();
+
+            if (componentFinder.getComponentClass() == null) {
+                throw new ComponentResolverException("Related component finder doesn't have component class defined!");
+            }
 
             boolean first = true;
             for (Component comp: sourceComponents) { // resolve the related components
@@ -144,16 +173,16 @@ public class ConclusionComponentResolver {
 
             if (retSet.isEmpty()) {
                 throw new ComponentResolverException("Related component finder error: could not resolve the component for source components: " + sourceComponents +
-                                                     ", rule=" + componentFinder.getRule());
+                                                     ", " + callerName);
             }
             if (retSet.size() > 1) {
                 throw new ComponentResolverException("Related component finder error: resolved more than one component (" + retSet + ") for source components: " + sourceComponents +
-                                                    ", rule=" + componentFinder.getRule());
+                                                    ", " + callerName);
             }
             return retSet.iterator().next();
         }
 
-        throw new ComponentResolverException("Application logic error in ComponentResolver, rule=" + componentFinder.getRule());
+        throw new ComponentResolverException("Application logic error in ComponentResolver, " + callerName);
     }
 
     private Collection<Component> getRelatedComponents(Component component) {

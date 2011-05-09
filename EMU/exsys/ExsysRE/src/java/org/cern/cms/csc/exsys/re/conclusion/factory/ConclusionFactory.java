@@ -59,7 +59,7 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
         this.reManager = reManager;
         this.rule = rule;
         this.conclType = rule.getConclusionType();
-        this.componentResolver = new ConclusionComponentResolver(rule.getComponentFinder());
+        this.componentResolver = new ConclusionComponentResolver(rule.getComponentFinder(), rule);
     }
 
     /**

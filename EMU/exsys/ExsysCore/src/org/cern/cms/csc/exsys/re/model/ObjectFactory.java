@@ -48,27 +48,35 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ConclusionTrigger }
+     * 
+     */
+    public ConclusionTrigger createConclusionTrigger() {
+        return new ConclusionTrigger();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionTriggerSource }
+     * 
+     */
+    public ConclusionTriggerSource createConclusionTriggerSource() {
+        return new ConclusionTriggerSource();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionType }
+     * 
+     */
+    public ConclusionType createConclusionType() {
+        return new ConclusionType();
+    }
+
+    /**
      * Create an instance of {@link EmailAction }
      * 
      */
     public EmailAction createEmailAction() {
         return new EmailAction();
-    }
-
-    /**
-     * Create an instance of {@link RuleSet }
-     * 
-     */
-    public RuleSet createRuleSet() {
-        return new RuleSet();
-    }
-
-    /**
-     * Create an instance of {@link ActionExecution }
-     * 
-     */
-    public ActionExecution createActionExecution() {
-        return new ActionExecution();
     }
 
     /**
@@ -88,11 +96,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ConclusionTriggerSource }
+     * Create an instance of {@link DcsCommandAction }
      * 
      */
-    public ConclusionTriggerSource createConclusionTriggerSource() {
-        return new ConclusionTriggerSource();
+    public DcsCommandAction createDcsCommandAction() {
+        return new DcsCommandAction();
     }
 
     /**
@@ -104,11 +112,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link DcsCommandAction }
+     * Create an instance of {@link RuleSet }
      * 
      */
-    public DcsCommandAction createDcsCommandAction() {
-        return new DcsCommandAction();
+    public RuleSet createRuleSet() {
+        return new RuleSet();
     }
 
     /**
@@ -128,19 +136,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ConclusionTrigger }
+     * Create an instance of {@link ActionExecution }
      * 
      */
-    public ConclusionTrigger createConclusionTrigger() {
-        return new ConclusionTrigger();
-    }
-
-    /**
-     * Create an instance of {@link ConclusionType }
-     * 
-     */
-    public ConclusionType createConclusionType() {
-        return new ConclusionType();
+    public ActionExecution createActionExecution() {
+        return new ActionExecution();
     }
 
     /**

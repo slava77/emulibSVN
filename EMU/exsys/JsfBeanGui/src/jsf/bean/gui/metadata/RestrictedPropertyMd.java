@@ -6,6 +6,7 @@
 package jsf.bean.gui.metadata;
 
 import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
 import java.util.List;
 import jsf.bean.gui.EntityBeanDaoIf;
 import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
@@ -27,7 +28,12 @@ public abstract class RestrictedPropertyMd extends PropertyMd {
 
     @SuppressWarnings("unchecked")
     public List<Object> getListOfValues(EntityBeanDaoIf entityDao) throws InvalidEntityClassException {
-        return entityDao.getAllEntitiesByClass(getType());
+        List<Object> ret = new ArrayList<Object>();
+        if (!getIsMandatory()) {
+            ret.add(null);
+        }
+        ret.addAll(entityDao.getAllEntitiesByClass(getType()));
+        return ret;
     }
 
 }

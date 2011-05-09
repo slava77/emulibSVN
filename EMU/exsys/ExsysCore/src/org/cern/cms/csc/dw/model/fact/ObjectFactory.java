@@ -68,35 +68,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link FactRequestCollection }
+     * Create an instance of {@link DqmDduInputFact }
      * 
      */
-    public FactRequestCollection createFactRequestCollection() {
-        return new FactRequestCollection();
+    public DqmDduInputFact createDqmDduInputFact() {
+        return new DqmDduInputFact();
     }
 
     /**
-     * Create an instance of {@link DduFmmResetFact }
+     * Create an instance of {@link DcsHVOnVoltageFact }
      * 
      */
-    public DduFmmResetFact createDduFmmResetFact() {
-        return new DduFmmResetFact();
-    }
-
-    /**
-     * Create an instance of {@link DcsCfebLvFact }
-     * 
-     */
-    public DcsCfebLvFact createDcsCfebLvFact() {
-        return new DcsCfebLvFact();
-    }
-
-    /**
-     * Create an instance of {@link DqmEmuFact }
-     * 
-     */
-    public DqmEmuFact createDqmEmuFact() {
-        return new DqmEmuFact();
+    public DcsHVOnVoltageFact createDcsHVOnVoltageFact() {
+        return new DcsHVOnVoltageFact();
     }
 
     /**
@@ -108,115 +92,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link DqmCscCfebFact }
+     * Create an instance of {@link DqmEmuFact }
      * 
      */
-    public DqmCscCfebFact createDqmCscCfebFact() {
-        return new DqmCscCfebFact();
-    }
-
-    /**
-     * Create an instance of {@link DqmDduInputFact }
-     * 
-     */
-    public DqmDduInputFact createDqmDduInputFact() {
-        return new DqmDduInputFact();
-    }
-
-    /**
-     * Create an instance of {@link DcsAlctLvFact }
-     * 
-     */
-    public DcsAlctLvFact createDcsAlctLvFact() {
-        return new DcsAlctLvFact();
-    }
-
-    /**
-     * Create an instance of {@link DqmCscFact }
-     * 
-     */
-    public DqmCscFact createDqmCscFact() {
-        return new DqmCscFact();
-    }
-
-    /**
-     * Create an instance of {@link DcsCommunicationStatusFact }
-     * 
-     */
-    public DcsCommunicationStatusFact createDcsCommunicationStatusFact() {
-        return new DcsCommunicationStatusFact();
-    }
-
-    /**
-     * Create an instance of {@link FactRequest }
-     * 
-     */
-    public FactRequest createFactRequest() {
-        return new FactRequest();
-    }
-
-    /**
-     * Create an instance of {@link FedFsmFact }
-     * 
-     */
-    public FedFsmFact createFedFsmFact() {
-        return new FedFsmFact();
-    }
-
-    /**
-     * Create an instance of {@link LocalDAQStatusFact }
-     * 
-     */
-    public LocalDAQStatusFact createLocalDAQStatusFact() {
-        return new LocalDAQStatusFact();
-    }
-
-    /**
-     * Create an instance of {@link DcsAlertFact }
-     * 
-     */
-    public DcsAlertFact createDcsAlertFact() {
-        return new DcsAlertFact();
-    }
-
-    /**
-     * Create an instance of {@link DcsDisableEnableFact }
-     * 
-     */
-    public DcsDisableEnableFact createDcsDisableEnableFact() {
-        return new DcsDisableEnableFact();
-    }
-
-    /**
-     * Create an instance of {@link DqmCscAfebFact }
-     * 
-     */
-    public DqmCscAfebFact createDqmCscAfebFact() {
-        return new DqmCscAfebFact();
-    }
-
-    /**
-     * Create an instance of {@link DduFmmIrqFact }
-     * 
-     */
-    public DduFmmIrqFact createDduFmmIrqFact() {
-        return new DduFmmIrqFact();
-    }
-
-    /**
-     * Create an instance of {@link FactCollection }
-     * 
-     */
-    public FactCollection createFactCollection() {
-        return new FactCollection();
-    }
-
-    /**
-     * Create an instance of {@link EmuMonitorFact }
-     * 
-     */
-    public EmuMonitorFact createEmuMonitorFact() {
-        return new EmuMonitorFact();
+    public DqmEmuFact createDqmEmuFact() {
+        return new DqmEmuFact();
     }
 
     /**
@@ -236,11 +116,67 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CumulativeTmbTriggerCounterFact }
+     * Create an instance of {@link FactCollection }
      * 
      */
-    public CumulativeTmbTriggerCounterFact createCumulativeTmbTriggerCounterFact() {
-        return new CumulativeTmbTriggerCounterFact();
+    public FactCollection createFactCollection() {
+        return new FactCollection();
+    }
+
+    /**
+     * Create an instance of {@link EmuMonitorFact }
+     * 
+     */
+    public EmuMonitorFact createEmuMonitorFact() {
+        return new EmuMonitorFact();
+    }
+
+    /**
+     * Create an instance of {@link DcsCommunicationStatusFact }
+     * 
+     */
+    public DcsCommunicationStatusFact createDcsCommunicationStatusFact() {
+        return new DcsCommunicationStatusFact();
+    }
+
+    /**
+     * Create an instance of {@link DcsCfebLvFact }
+     * 
+     */
+    public DcsCfebLvFact createDcsCfebLvFact() {
+        return new DcsCfebLvFact();
+    }
+
+    /**
+     * Create an instance of {@link DqmCscCfebFact }
+     * 
+     */
+    public DqmCscCfebFact createDqmCscCfebFact() {
+        return new DqmCscCfebFact();
+    }
+
+    /**
+     * Create an instance of {@link DcsDisableEnableFact }
+     * 
+     */
+    public DcsDisableEnableFact createDcsDisableEnableFact() {
+        return new DcsDisableEnableFact();
+    }
+
+    /**
+     * Create an instance of {@link DcsPingFact }
+     * 
+     */
+    public DcsPingFact createDcsPingFact() {
+        return new DcsPingFact();
+    }
+
+    /**
+     * Create an instance of {@link DduFmmIrqFact }
+     * 
+     */
+    public DduFmmIrqFact createDduFmmIrqFact() {
+        return new DduFmmIrqFact();
     }
 
     /**
@@ -252,6 +188,78 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link DcsAlertFact }
+     * 
+     */
+    public DcsAlertFact createDcsAlertFact() {
+        return new DcsAlertFact();
+    }
+
+    /**
+     * Create an instance of {@link DqmCscAfebFact }
+     * 
+     */
+    public DqmCscAfebFact createDqmCscAfebFact() {
+        return new DqmCscAfebFact();
+    }
+
+    /**
+     * Create an instance of {@link CumulativeTmbTriggerCounterFact }
+     * 
+     */
+    public CumulativeTmbTriggerCounterFact createCumulativeTmbTriggerCounterFact() {
+        return new CumulativeTmbTriggerCounterFact();
+    }
+
+    /**
+     * Create an instance of {@link DqmCscFact }
+     * 
+     */
+    public DqmCscFact createDqmCscFact() {
+        return new DqmCscFact();
+    }
+
+    /**
+     * Create an instance of {@link DcsAlctLvFact }
+     * 
+     */
+    public DcsAlctLvFact createDcsAlctLvFact() {
+        return new DcsAlctLvFact();
+    }
+
+    /**
+     * Create an instance of {@link FactRequestCollection }
+     * 
+     */
+    public FactRequestCollection createFactRequestCollection() {
+        return new FactRequestCollection();
+    }
+
+    /**
+     * Create an instance of {@link FedFsmFact }
+     * 
+     */
+    public FedFsmFact createFedFsmFact() {
+        return new FedFsmFact();
+    }
+
+    /**
+     * Create an instance of {@link LocalDAQStatusFact }
+     * 
+     */
+    public LocalDAQStatusFact createLocalDAQStatusFact() {
+        return new LocalDAQStatusFact();
+    }
+
+    /**
+     * Create an instance of {@link FactRequest }
+     * 
+     */
+    public FactRequest createFactRequest() {
+        return new FactRequest();
+    }
+
+    /**
      * Create an instance of {@link SlidingTmbTriggerCounterFact }
      * 
      */
@@ -260,19 +268,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link DcsHVOnVoltageFact }
+     * Create an instance of {@link DduFmmResetFact }
      * 
      */
-    public DcsHVOnVoltageFact createDcsHVOnVoltageFact() {
-        return new DcsHVOnVoltageFact();
-    }
-
-    /**
-     * Create an instance of {@link DcsPingFact }
-     * 
-     */
-    public DcsPingFact createDcsPingFact() {
-        return new DcsPingFact();
+    public DduFmmResetFact createDduFmmResetFact() {
+        return new DduFmmResetFact();
     }
 
     /**
