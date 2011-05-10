@@ -1,22 +1,63 @@
-<c:configuration xmlns:c="http://cms.cern.ch/emu/afeb/teststand/configuration" c:date="2011-04-29" c:time="12:00:00">
+<c:configuration xmlns:c="http://cms.cern.ch/emu/afeb/teststand/configuration" c:name="Template" c:date="2011-04-29" c:time="12:00:00">
 
     <c:chip c:name="" c:nChannels="16"/>
 
-    <c:crate c:number="">
-      <c:module c:slot="1" c:name="Jorway"/>
-      <c:module c:slot="2" c:name=""/>
-      <c:module c:slot="3" c:name=""/>
-      <c:module c:slot="4" c:name=""/>
-      <c:module c:slot="5" c:name=""/>
-      <c:module c:slot="6" c:name=""/>
-      <c:module c:slot="7" c:name=""/>
-      <c:module c:slot="8" c:name=""/>
-      <c:module c:slot="9" c:name=""/>
-      <c:module c:slot="10" c:name=""/>
-      <c:module c:slot="11" c:name=""/>
-      <c:module c:slot="12" c:name=""/>
+    <c:modules>
+      <c:module c:name="Jorway" c:description="Jorway Model 73A SCSI Bus CAMAC Crate Controller"/>
+      <c:module c:name="LE32" c:description="CAMAC 32-channel Converter and 2-channel Pulse Generator"/>
+      <c:module c:name="LeCroy3377" c:description="LeCroy Model 3377 32-channel CAMAC TDC"/>
+    </c:modules>
+
+    <c:crate c:number="1">
+      <c:station c:number="1"  c:moduleName=""/>
+      <c:station c:number="2"  c:moduleName=""/>
+      <c:station c:number="3"  c:moduleName="LeCroy3377"/>
+      <c:station c:number="4"  c:moduleName=""/>
+      <c:station c:number="5"  c:moduleName="LE32"/>
+      <c:station c:number="6"  c:moduleName="LE32"/>
+      <c:station c:number="7"  c:moduleName="LeCroy3377"/>
+      <c:station c:number="8"  c:moduleName=""/>
+      <c:station c:number="9"  c:moduleName="LE32"/>
+      <c:station c:number="10" c:moduleName="Jorway"/>
+      <c:station c:number="11" c:moduleName=""/>
+      <c:station c:number="12" c:moduleName=""/>
+      <c:station c:number="13" c:moduleName=""/>
+      <c:station c:number="14" c:moduleName=""/>
+      <c:station c:number="15" c:moduleName=""/>
+      <c:station c:number="16" c:moduleName=""/>
+      <c:station c:number="17" c:moduleName=""/>
+      <c:station c:number="18" c:moduleName=""/>
+      <c:station c:number="19" c:moduleName=""/>
+      <c:station c:number="20" c:moduleName=""/>
+      <c:station c:number="21" c:moduleName=""/>
+      <c:station c:number="22" c:moduleName=""/>
+      <c:station c:number="23" c:moduleName=""/>
+      <c:station c:number="24" c:moduleName=""/>
     </c:crate>
 
-    <c:measurement c:name=""/>
+    <c:inputs>
+      <c:chip c:number="1"  c:station="9" c:input="1"/>
+      <c:chip c:number="2"  c:station="9" c:input="2"/>
+      <c:chip c:number="3"  c:station=""  c:input=""/>
+      <c:chip c:number="4"  c:station=""  c:input=""/>
+      <c:chip c:number="5"  c:station=""  c:input=""/>
+      <c:chip c:number="6"  c:station=""  c:input=""/>
+      <c:chip c:number="7"  c:station=""  c:input=""/>
+      <c:chip c:number="8"  c:station=""  c:input=""/>
+      <c:chip c:number="9"  c:station=""  c:input=""/>
+      <c:chip c:number="10" c:station=""  c:input=""/>
+    </c:inputs>
+
+    <c:measurement c:name="count_vs_dac">
+      <c:DAC c:min="" c:max="" c:step="" c:nPulses="" c:stationNumber="6"/>
+      <c:threshold c:value="50"/>
+      <c:time c:min="0" c:max="120"/>
+    </c:measurement>
+
+    <c:measurement c:name="time_vs_dac">
+      <c:DAC c:min="" c:max="" c:step="" c:nPulses="" c:stationNumber="6"/>
+      <c:threshold c:value="50"/>
+      <c:time c:min="0" c:max="120"/>
+    </c:measurement>
 
 </c:configuration>
