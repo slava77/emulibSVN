@@ -19,7 +19,7 @@ This library contains LV_CRB functions for EMU DCS LV project.
 @author Xiaofeng Yang (PH/UCM)
 @date   Aug 2010 created
 @data   Mar 2011 modified: --add four dps for CRB command buffer
-                           --add new function for new CRB power up
+                           --add new dps for new CRB power up
                            --modify archiving config "ai"-->"AI"
 */
       const bool      bDebug                = false; //debug on, else off
@@ -162,7 +162,9 @@ void emuLvCRB_createLvType()
   dpCreate("CRB_Minue","MUDCS_STRING");
   dpCreate("CRB_Plus", "MUDCS_STRING");
   dpCreate("CRB_Buffer_Minue","MUDCS_DYN_STRING");
-  dpCreate("CRB_Buffer_Plus", "MUDCS_DYN_STRING");  
+  dpCreate("CRB_Buffer_Plus", "MUDCS_DYN_STRING"); 
+  // create dp for board control -- new 
+  dpCreate("CRB_Boards_Control", "MUDCS_DYN_STRING"); 
   
   dyn_string dsDb,dsDbGeog,dsPcmbMrtn;
   if(bP5Project)
