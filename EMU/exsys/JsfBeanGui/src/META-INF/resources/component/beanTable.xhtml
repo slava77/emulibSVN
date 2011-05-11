@@ -105,10 +105,10 @@
                                     </ice:commandLink>
                                     <ice:panelGroup rendered="#{cc.attrs.liveRefresh and cc.attrs.manager.top}">
                                         <ice:outputLabel value="Live refresh"/>
-                                        <comp:polling interval="#{cc.attrs.manager.refreshInterval}"
-                                                      run="#{cc.attrs.manager.refreshInterval &gt; 0 and cc.attrs.manager.top}"
+                                        <comp:polling interval="#{cc.attrs.manager.table.liveRefreshInterval}"
+                                                      run="#{cc.attrs.manager.table.liveRefreshInterval &gt; 0 and cc.attrs.manager.top}"
                                                       actionListener="#{cc.attrs.manager.table.refreshListener}"/>
-                                        <ice:selectOneMenu value="#{cc.attrs.manager.refreshInterval}"
+                                        <ice:selectOneMenu value="#{cc.attrs.manager.table.liveRefreshInterval}"
                                                            partialSubmit="true"
                                                            immediate="true">
                                             <f:selectItem itemValue="0"   itemLabel="Off"/>

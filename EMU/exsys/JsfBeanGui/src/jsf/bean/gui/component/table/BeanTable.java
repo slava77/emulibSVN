@@ -194,6 +194,14 @@ public class BeanTable extends BeanTableControls {
         return getData().getRowCount();
     }
 
+    public int getLiveRefreshInterval() {
+        return getProperties().getLiveRefreshInterval();
+    }
+
+    public void setLiveRefreshInterval(int liveRefreshInterval) {
+        getProperties().setLiveRefreshInterval(liveRefreshInterval);
+    }
+
     /*********************************************
      * 
      * Filter

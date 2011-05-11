@@ -142,13 +142,20 @@ public class BeanTableExportColumn {
                 return new SimpleScalar("");
             }
             try {
+
                 if (column.isEmbedType()) {
                     Object item = ((BeanModel) args.get(0)).getWrappedObject();
                     return getValue(item);
                 }
-                Object item = ((StringModel) args.get(0)).getWrappedObject();
-                TemplateModel returnValue = getValue(item);
-                return returnValue;
+
+                Object o = args.get(0);
+                if (o instanceof StringModel) {
+                    Object item = ((StringModel) o).getWrappedObject();
+                    TemplateModel returnValue = getValue(item);
+                    return returnValue;
+                }
+
+                return (SimpleScalar) o;
 
             } catch (Exception e) {
                 logger.error(e);
@@ -182,7 +189,6 @@ public class BeanTableExportColumn {
                 return new StringModel(value, new BeansWrapper());
             }
             return new SimpleScalar(value.toString());
-
 
         }
     }

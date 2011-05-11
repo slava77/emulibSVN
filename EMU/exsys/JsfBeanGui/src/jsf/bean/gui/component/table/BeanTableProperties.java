@@ -18,6 +18,7 @@ public class BeanTableProperties extends GenericProperties {
     public static final String KEY_DISPLAY_COLUMNS = "displayColumns";
     public static final String KEY_COLUMNS = "columns";
     public static final String KEY_SORTING = "sorting";
+    public static final String KEY_LIVE_REFRESH_INTERVAL = "liveRefresh";
     public static final String KEY_COL_WIDTH_STEP = "columnWidthStep";
     public static final String KEYP_COL_SORT_ASC = "%s.asc";
     public static final String KEYP_COL_WIDTH = "%s.width";
@@ -44,6 +45,7 @@ public class BeanTableProperties extends GenericProperties {
     public static final String DEFAULT_COL_NUMBER_PATTERN = "";
     public static final String DEFAULT_COL_DATE_FORMAT = "EEE dd-MM-yy HH:mm:ss";
     public static final String DEFAULT_COL_DATE_TIME_ZONE = "Europe/Zurich";
+    public static final Integer DEFAULT_LIVE_REFRESH_INTERVAL = 0;
 
     static {
         DEFAULT_PAGE_SIZES = new ArrayList<SelectItem>();
@@ -139,6 +141,14 @@ public class BeanTableProperties extends GenericProperties {
 
     public void setColumnWidthStep(Integer columnWidthStep) {
         set(tableKey(KEY_COL_WIDTH_STEP), columnWidthStep);
+    }
+
+    public Integer getLiveRefreshInterval() {
+        return get(tableKey(KEY_LIVE_REFRESH_INTERVAL), DEFAULT_LIVE_REFRESH_INTERVAL);
+    }
+
+    public void setLiveRefreshInterval(Integer liveRefreshInterval) {
+        set(tableKey(KEY_LIVE_REFRESH_INTERVAL), liveRefreshInterval);
     }
 
     public Integer getColumnWidth(String name) {
