@@ -315,4 +315,14 @@
 
     </target>
 
+    <target name="99-update-enums" depends="db-properties">
+
+        <java classname="org.cern.cms.csc.dw.dev.DatabaseEnumUpdateSql" fork="true" failonerror="true" classpathref="dev-classpath">
+            <jvmarg line="-Xmn100M -Xms500M -Xmx500M -Xss100M"/>
+        </java>
+
+        <echo>update RE_DIM_PUBLICATION_ACTIONS set REA_DIM_DATA_TYPE = upper(REA_DIM_DATA_TYPE);</echo>
+
+    </target>
+
 </project>
