@@ -1,51 +1,55 @@
 <c:configuration xmlns:c="http://cms.cern.ch/emu/afeb/teststand/configuration" c:name="Template" c:date="2011-04-29" c:time="12:00:00">
 
-    <c:chip c:name="" c:nChannels="16"/>
+    <c:description>
+      <c:testedDevice c:name="">-</c:testedDevice>
+      <c:crate>-</c:crate>
+      <c:module c:name="Jorway">Jorway Model 73A SCSI Bus CAMAC Crate Controller</c:module>
+      <c:module c:name="LE32">CAMAC 32-channel Converter and 2-channel Pulse Generator"</c:module>
+      <c:module c:name="LeCroy3377">LeCroy Model 3377 32-channel CAMAC TDC</c:module>
+      <c:module c:name="">-</c:module>
+      <c:module c:name="">-</c:module>
+    </c:description>
 
-    <c:modules>
-      <c:module c:name="Jorway" c:description="Jorway Model 73A SCSI Bus CAMAC Crate Controller"/>
-      <c:module c:name="LE32" c:description="CAMAC 32-channel Converter and 2-channel Pulse Generator"/>
-      <c:module c:name="LeCroy3377" c:description="LeCroy Model 3377 32-channel CAMAC TDC"/>
-    </c:modules>
+    <c:testedDevice c:name="" c:nChannels="16"/>
 
     <c:crate c:number="1">
-      <c:station c:number="1"  c:moduleName=""/>
-      <c:station c:number="2"  c:moduleName=""/>
-      <c:station c:number="3"  c:moduleName="LeCroy3377"/>
-      <c:station c:number="4"  c:moduleName=""/>
-      <c:station c:number="5"  c:moduleName="LE32"/>
-      <c:station c:number="6"  c:moduleName="LE32"/>
-      <c:station c:number="7"  c:moduleName="LeCroy3377"/>
-      <c:station c:number="8"  c:moduleName=""/>
-      <c:station c:number="9"  c:moduleName="LE32"/>
-      <c:station c:number="10" c:moduleName="Jorway"/>
-      <c:station c:number="11" c:moduleName=""/>
-      <c:station c:number="12" c:moduleName=""/>
-      <c:station c:number="13" c:moduleName=""/>
-      <c:station c:number="14" c:moduleName=""/>
-      <c:station c:number="15" c:moduleName=""/>
-      <c:station c:number="16" c:moduleName=""/>
-      <c:station c:number="17" c:moduleName=""/>
-      <c:station c:number="18" c:moduleName=""/>
-      <c:station c:number="19" c:moduleName=""/>
-      <c:station c:number="20" c:moduleName=""/>
-      <c:station c:number="21" c:moduleName=""/>
-      <c:station c:number="22" c:moduleName=""/>
-      <c:station c:number="23" c:moduleName=""/>
-      <c:station c:number="24" c:moduleName=""/>
+      <c:module c:station="1"  c:name=""/>
+      <c:module c:station="2"  c:name=""/>
+      <c:module c:station="3"  c:name="LeCroy3377"/>
+      <c:module c:station="4"  c:name=""/>
+      <c:module c:station="5"  c:name="LE32"/>
+      <c:module c:station="6"  c:name="LE32"/>
+      <c:module c:station="7"  c:name="LeCroy3377"/>
+      <c:module c:station="8"  c:name=""/>
+      <c:module c:station="9"  c:name="LE32"/>
+      <c:module c:station="10" c:name="Jorway"/>
+      <c:module c:station="11" c:name=""/>
+      <c:module c:station="12" c:name=""/>
+      <c:module c:station="13" c:name=""/>
+      <c:module c:station="14" c:name=""/>
+      <c:module c:station="15" c:name=""/>
+      <c:module c:station="16" c:name=""/>
+      <c:module c:station="17" c:name=""/>
+      <c:module c:station="18" c:name=""/>
+      <c:module c:station="19" c:name=""/>
+      <c:module c:station="20" c:name=""/>
+      <c:module c:station="21" c:name=""/>
+      <c:module c:station="22" c:name=""/>
+      <c:module c:station="23" c:name=""/>
+      <c:module c:station="24" c:name=""/>
     </c:crate>
 
     <c:inputs>
-      <c:chip c:number="1"  c:station="9" c:input="1"/>
-      <c:chip c:number="2"  c:station="9" c:input="2"/>
-      <c:chip c:number="3"  c:station=""  c:input=""/>
-      <c:chip c:number="4"  c:station=""  c:input=""/>
-      <c:chip c:number="5"  c:station=""  c:input=""/>
-      <c:chip c:number="6"  c:station=""  c:input=""/>
-      <c:chip c:number="7"  c:station=""  c:input=""/>
-      <c:chip c:number="8"  c:station=""  c:input=""/>
-      <c:chip c:number="9"  c:station=""  c:input=""/>
-      <c:chip c:number="10" c:station=""  c:input=""/>
+      <c:testedDevice c:number="1"  c:station="9" c:moduleInput="1"/>
+      <c:testedDevice c:number="2"  c:station="9" c:moduleInput="2"/>
+      <c:testedDevice c:number="3"  c:station=""  c:moduleInput=""/>
+      <c:testedDevice c:number="4"  c:station=""  c:moduleInput=""/>
+      <c:testedDevice c:number="5"  c:station=""  c:moduleInput=""/>
+      <c:testedDevice c:number="6"  c:station=""  c:moduleInput=""/>
+      <c:testedDevice c:number="7"  c:station=""  c:moduleInput=""/>
+      <c:testedDevice c:number="8"  c:station=""  c:moduleInput=""/>
+      <c:testedDevice c:number="9"  c:station=""  c:moduleInput=""/>
+      <c:testedDevice c:number="10" c:station=""  c:moduleInput=""/>
     </c:inputs>
 
     <c:measurement c:name="count_vs_dac">

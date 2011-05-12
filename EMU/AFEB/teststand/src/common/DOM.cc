@@ -11,6 +11,7 @@
 
 #include "xalanc/PlatformSupport/XSLException.hpp"
 #include "xalanc/XPath/XPathEvaluator.hpp"
+#include "xalanc/XPath/NodeRefList.hpp"
 #include "xalanc/DOMSupport/XalanDocumentPrefixResolver.hpp"
 #include "xalanc/XercesParserLiaison/XercesDOMSupport.hpp"
 #include "xalanc/XercesParserLiaison/XercesDOMSupport.hpp"
@@ -18,6 +19,9 @@
 #include "xalanc/XercesParserLiaison/XercesParserLiaison.hpp"
 #include "xalanc/XercesParserLiaison/XercesDocumentWrapper.hpp"
 #include "xalanc/XSLT/XSLTInputSource.hpp"
+#include "xalanc/XalanSourceTree/XalanSourceTreeParserLiaison.hpp"
+#include "xalanc/XalanSourceTree/XalanSourceTreeDOMSupport.hpp"
+#include "xalanc/XalanSourceTree/XalanSourceTreeInit.hpp"
 
 #include "xoap/domutils.h" // for XMLCh2String
 
@@ -137,7 +141,7 @@ string AFEB::teststand::utils::appendToSelectedNode( const string XML, const str
     XalanNode* xalan_node = theEvaluator.selectSingleNode( theDOMSupport,
 							   xalan_document,
 							   XalanDOMString(xPathToNode.c_str()).c_str(),
-							   thePrefixResolver ); // does not work with namespaces...
+							   thePrefixResolver );
     
     
     if ( xalan_node ){
@@ -424,4 +428,200 @@ string AFEB::teststand::utils::setSelectedNodesValues( const string XML, const m
   }
   
   return modifiedXML;
+}
+
+string AFEB::teststand::utils::getSelectedNodeValue( const string& XML, const string xpath )
+  throw( xcept::Exception ){
+
+  string value;
+
+  XALAN_USING_XALAN(XSLException);
+  XALAN_USING_XALAN(XalanDOMException)
+
+  try
+    {
+      XALAN_USING_XERCES(XMLPlatformUtils)
+      XALAN_USING_XALAN(XPathEvaluator)
+	
+
+	XMLPlatformUtils::Initialize();
+      
+      XPathEvaluator::initialize();
+
+	  XALAN_USING_XALAN(XalanDocument)
+	  XALAN_USING_XALAN(XalanDocumentPrefixResolver)
+	  XALAN_USING_XALAN(XalanDOMString)
+	  XALAN_USING_XALAN(XalanNode)
+	  XALAN_USING_XALAN(XalanSourceTreeInit)
+	  XALAN_USING_XALAN(XalanSourceTreeDOMSupport)
+	  XALAN_USING_XALAN(XalanSourceTreeParserLiaison)
+	  XALAN_USING_XALAN(XObjectPtr)
+
+	  // Initialize the XalanSourceTree subsystem...
+	  XalanSourceTreeInit             theSourceTreeInit;
+
+	// We'll use these to parse the XML file.
+	XalanSourceTreeDOMSupport               theDOMSupport;
+	XalanSourceTreeParserLiaison    theLiaison(theDOMSupport);
+
+	// Hook the two together...
+	theDOMSupport.setParserLiaison(&theLiaison);
+
+	const char* const id = "dummy";
+	MemBufInputSource theInputSource( (const XMLByte*) XML.c_str(), (unsigned int) XML.size(), id );
+
+	// Parse the document...
+	XalanDocument* const theDocument = theLiaison.parseXMLStream(theInputSource);
+
+	XalanDocumentPrefixResolver             thePrefixResolver(theDocument);
+
+	XPathEvaluator  theEvaluator;
+
+	// OK, let's find the node...
+	XalanNode* const node = theEvaluator.selectSingleNode( theDOMSupport,
+							       theDocument,
+							       XalanDOMString( xpath.c_str() ).c_str(),
+							       thePrefixResolver );
+
+	value = AFEB::teststand::utils::getNodeValue( node );
+
+	XPathEvaluator::terminate();
+	XMLPlatformUtils::Terminate();
+      }
+      catch( XMLException& e ){
+	stringstream ss; ss << "Failed to get node value: " << xoap::XMLCh2String( e.getMessage() );
+	XCEPT_RAISE( xcept::Exception, ss.str() );
+      }
+      catch( DOMException& e ){
+	stringstream ss; ss << "Failed to get node value: " << xoap::XMLCh2String( e.getMessage() );
+	XCEPT_RAISE( xcept::Exception, ss.str() );
+      }
+      catch( XalanDOMException& e ){
+	stringstream ss; ss << "Failed to get node value: exception code " << e.getExceptionCode();
+	XCEPT_RAISE( xcept::Exception, ss.str() );
+      }
+      catch( XSLException& e ){
+	stringstream ss; ss << "Failed to get node value: " << e.getMessage();
+	XCEPT_RAISE( xcept::Exception, ss.str() );
+      }
+      catch( xcept::Exception& e ){
+	XCEPT_RETHROW( xcept::Exception, "Failed to get node value: ", e );
+      }
+      catch( std::exception& e ){
+	stringstream ss; ss << "Failed to get node value: " << e.what();
+	XCEPT_RAISE( xcept::Exception, ss.str() );
+      }
+      catch(...){
+	XCEPT_RAISE( xcept::Exception, "Failed to get node value: Unknown exception." );
+      }
+  
+      return value;
+    }
+
+vector<string> AFEB::teststand::utils::getSelectedNodesValues( const string& XML, const string xpath )
+  throw( xcept::Exception ){ // TODO: result empty...
+
+  vector<string> values;
+
+  // XALAN_USING_XALAN(XalanNode);
+  // XalanNode* theNode;
+
+  XALAN_USING_XALAN(XSLException);
+  XALAN_USING_XALAN(XalanDOMException)
+
+  try{
+    XALAN_USING_XERCES(XMLPlatformUtils);
+    XMLPlatformUtils::Initialize();
+    XALAN_USING_XALAN(XPathEvaluator);
+    XPathEvaluator::initialize();
+
+    // Initialize the XalanSourceTree subsystem...
+    XALAN_USING_XALAN(XalanSourceTreeInit);
+    XalanSourceTreeInit          theSourceTreeInit;
+
+    // We'll use these to parse the XML file.
+    XALAN_USING_XALAN(XalanSourceTreeDOMSupport);
+    XalanSourceTreeDOMSupport    theDOMSupport;
+
+    XALAN_USING_XALAN(XalanSourceTreeParserLiaison)
+    XalanSourceTreeParserLiaison theLiaison( theDOMSupport );
+    theDOMSupport.setParserLiaison(&theLiaison);
+
+    const char* const id = "dummy";
+    MemBufInputSource theInputSource( (const XMLByte*) XML.c_str(), (unsigned int) XML.size(), id );
+    XALAN_USING_XALAN(XalanDocument)
+    XalanDocument* document = theLiaison.parseXMLStream( theInputSource );
+
+    XALAN_USING_XALAN(XalanDocumentPrefixResolver);
+    XalanDocumentPrefixResolver  thePrefixResolver( document );
+ 
+    XPathEvaluator               theEvaluator;
+   
+
+    XALAN_USING_XALAN(XalanDOMString);
+    XALAN_USING_XALAN(NodeRefList);
+
+    XalanDOMString xpathXalan( xpath.c_str() );
+
+    NodeRefList nodes;
+    nodes = theEvaluator.selectNodeList( nodes,
+					 theDOMSupport,
+					 document,
+					 xpathXalan.data(),
+					 thePrefixResolver );
+
+    cout << nodes.getLength() << " nodes selected." << endl;
+				 
+    for ( XalanDOMString::size_type i=0; i<nodes.getLength(); ++i ){
+      values.push_back( AFEB::teststand::utils::getNodeValue( nodes.item(i) ) );
+    }
+
+    XMLPlatformUtils::Terminate();
+    XPathEvaluator::terminate();
+
+  }
+  catch( XMLException& e ){
+    stringstream ss; ss << "Failed to get nodes' values: " << xoap::XMLCh2String( e.getMessage() );
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch( DOMException& e ){
+    stringstream ss; ss << "Failed to get nodes' values: " << xoap::XMLCh2String( e.getMessage() );
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch( XalanDOMException& e ){
+    stringstream ss; ss << "Failed to get nodes' values: exception code " << e.getExceptionCode();
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch( XSLException& e ){
+    stringstream ss; ss << "Failed to get nodes' values: " << e.getMessage();
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch( xcept::Exception& e ){
+    XCEPT_RETHROW( xcept::Exception, "Failed to get nodes' values: ", e );
+  }
+  catch( std::exception& e ){
+    stringstream ss; ss << "Failed to get nodes' values: " << e.what();
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch(...){
+    XCEPT_RAISE( xcept::Exception, "Failed to get nodes' values: Unknown exception." );
+  }
+  
+  return values;
+}
+
+string AFEB::teststand::utils::getNodeValue( const XalanNode* const node ){
+  stringstream value;
+  XALAN_USING_XALAN(XalanNode)
+  if ( node ){
+    if ( node->getNodeType() == XalanNode::ELEMENT_NODE && node->getFirstChild() ){
+      if ( node->getFirstChild()->getNodeType() == XalanNode::TEXT_NODE ){
+	value << node->getFirstChild()->getNodeValue();
+      }
+    }
+    else{
+      value << node->getNodeValue();
+    }
+  }
+  return value.str();
 }

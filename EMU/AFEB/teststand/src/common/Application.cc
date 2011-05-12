@@ -146,6 +146,15 @@ void AFEB::teststand::Application::configEditorWebPage(xgi::Input *in, xgi::Outp
 
   cout << "configurationXML" << endl << configurationXML_ << endl << flush;
 
+  cout << "Selected value: " << AFEB::teststand::utils::getSelectedNodeValue( configurationXML_, "/c:configuration[1]/@c:date" ) << endl;
+
+  vector<string> selectedValues = AFEB::teststand::utils::getSelectedNodesValues( configurationXML_, "/c:configuration/c:description/child::*" );
+  vector<string>::iterator v;
+  cout << "Selected values:" << endl;
+  for ( v = selectedValues.begin(); v != selectedValues.end(); ++v ){
+    cout << *v << endl;
+  }
+
   AFEB::teststand::utils::redirectTo( applicationURLPath_, out );
   return;
 }
