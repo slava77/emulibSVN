@@ -35,6 +35,12 @@ public void exsys_startHvFactDelivery(dyn_string &ex) {
     int voltage = voltageStr;
     exsys_sendMe11ChannelVsetFact(me11ChannelVsetDps[i], voltage);
   }
+  for (int i=1; i <= dynlen(me11ChannelVsetDps); i++) {
+    string channelDp = dpSubStr(me11ChannelVsetDps[i], DPSUB_DP);
+    int enabled;
+    fwUi_getEnabled("CSC_ME_11_HV", channelDp, enabled);
+    exsys_updateMe11HVChannelEnabledCB(dpSubStr(me11ChannelVsetDps[i], DPSUB_SYS_DP), enabled);
+  }
   
   // connect
   for (int i=1; i <= dynlen(disabledChannelsDps); i++) {
@@ -45,6 +51,10 @@ public void exsys_startHvFactDelivery(dyn_string &ex) {
   }
   for (int i=1; i <= dynlen(me11ChannelVsetDps); i++) {
     dpConnect("exsys_updateMe11HVChannelVsetCB", false, me11ChannelVsetDps[i]);
+  }
+  for (int i=1; i <= dynlen(me11ChannelVsetDps); i++) {
+    string channelDp = dpSubStr(me11ChannelVsetDps[i], DPSUB_DP);
+    fwUi_connectEnabled("exsys_updateMe11HVChannelEnabledCB", "CSC_ME_11_HV", channelDp);
   }
   
   emu_info("HV facts delivery service started up successfully!");
@@ -61,6 +71,13 @@ public void exsys_updateHVChannelVsetsCB(string dp, dyn_string value) {
 public void exsys_updateMe11HVChannelVsetCB(string dp, string value) {
   int voltage = value;
   exsys_sendMe11ChannelVsetFact(dp, voltage);
+}
+
+public void exsys_updateMe11HVChannelEnabledCB(string dp, int enabled) {
+  bool isDisabled = (enabled < 1);
+  dyn_string split = strsplit(dpSubStr(dp, DPSUB_DP), "|");
+  string channelDp = dpSubStr(dp, DPSUB_SYS) + split[dynlen(split)];
+  exsys_sendMe11ChannelDisabledFact(channelDp, isDisabled);
 }
 
 /** Given a HighVoltage/CSC_ME_*_HV.off_channels DP, this function sends out facts about all disabled and
@@ -119,5 +136,18 @@ public void exsys_sendMe11ChannelVsetFact(string onChVsetDp, int voltage) {
   dyn_anytype paramValues = makeDynAnytype(voltage);
   exsys_sendFact("DcsHVOnVoltageFact", t, onChVsetDp, true, EXSYS_FACT_SEVERITY_WARN,
                  "HV channel VSet fact", paramNames, paramValues, ex);
+  emu_checkException(ex);
+}
+
+/** 
+  * Given a channel DP and a flag saying if it's disabled or not, this function sends out a DcsDisableEnableFact
+  */
+public void exsys_sendMe11ChannelDisabledFact(string channelDp, bool isDisabled) {
+  dyn_string ex;
+  time t = getCurrentTime();
+  dyn_string paramNames = makeDynString("isDisabled");
+  dyn_anytype paramValues = makeDynAnytype(isDisabled);
+  exsys_sendFact("DcsDisableEnableFact", t, channelDp, true, EXSYS_FACT_SEVERITY_WARN,
+                 "HV channel disabled/enabled fact", paramNames, paramValues, ex);
   emu_checkException(ex);
 }
