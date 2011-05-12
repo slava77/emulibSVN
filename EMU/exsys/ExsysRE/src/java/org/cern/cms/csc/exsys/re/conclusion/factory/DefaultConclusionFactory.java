@@ -30,6 +30,7 @@ import org.cern.cms.csc.exsys.re.conclusion.ConclusionCacheServiceLocal;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
 import org.cern.cms.csc.exsys.re.model.Action;
 import org.cern.cms.csc.exsys.re.model.ActionExecution;
+import org.cern.cms.csc.exsys.re.model.CommandAction;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.cern.cms.csc.exsys.re.model.ConclusionTrigger;
 import org.cern.cms.csc.exsys.re.model.ConclusionTriggerSource;
@@ -143,6 +144,14 @@ public class DefaultConclusionFactory extends ConclusionFactory {
     protected boolean executeAction(Action action, ConclusionTrigger trigger) {
         boolean conclModified = false;
         try {
+            if (action instanceof CommandAction) {
+                CommandAction cmdAction = (CommandAction) action;
+                if ((cmdAction.getComponentClassRestriction() != null) && 
+                        !trigger.getConclusion().getComponent().getType().equals(cmdAction.getComponentClassRestriction())) {
+                    
+                    return false;
+                }
+            }
             if (action.getTriggerType().equals(trigger.getType()) && !action.isDeleted() && action.isEnabled()) {
                 logger.debug("Sending action to execution queue: " + action.getName());
                 if (action.isAcknowledgeConclusionOnCreate() && !trigger.getConclusion().isAcknowledged()) {

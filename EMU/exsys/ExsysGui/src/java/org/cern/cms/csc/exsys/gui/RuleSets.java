@@ -17,7 +17,7 @@ import jsf.bean.gui.component.table.BeanTableDaoIf;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
 import org.cern.cms.csc.dw.dao.MainBeanTableDaoLocal;
-import org.cern.cms.csc.exsys.gui.util.ClassFinder;
+import org.cern.cms.csc.dw.util.ClassFinder;
 import org.cern.cms.csc.exsys.re.dao.RuleEngineDaoLocal;
 import org.cern.cms.csc.exsys.re.model.RuleSet;
 import org.icefaces.bean.ViewRetained;

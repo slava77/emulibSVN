@@ -23,7 +23,7 @@ import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.exsys.re.RuleEngineManagerLocal;
-import org.cern.cms.csc.exsys.re.conclusion.ConclusionComponentResolver;
+import org.cern.cms.csc.exsys.re.conclusion.ComponentResolver;
 import org.cern.cms.csc.exsys.re.exception.ComponentResolverException;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.cern.cms.csc.exsys.re.model.ConclusionTrigger;
@@ -47,7 +47,7 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
     /** Rule that this conclusion factory belongs to. */
     private Rule rule;
     /** Component resolver for the conclusion type in use by this conclusion factory. */
-    private ConclusionComponentResolver componentResolver;
+    private ComponentResolver componentResolver;
     /** Rule engine manager - used to throw conclusions back into rule engine. */
     RuleEngineManagerLocal reManager;
     
@@ -59,7 +59,7 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
         this.reManager = reManager;
         this.rule = rule;
         this.conclType = rule.getConclusionType();
-        this.componentResolver = new ConclusionComponentResolver(rule.getComponentFinder(), rule);
+        this.componentResolver = new ComponentResolver(rule.getComponentFinder(), rule);
     }
 
     /**
@@ -362,7 +362,7 @@ public abstract class ConclusionFactory implements StatementAwareUpdateListener 
      * Get component resolver for the conclusion type in use by this conclusion factory.
      * @return component resolver for the conclusion type in use by this conclusion factory.
      */
-    public ConclusionComponentResolver getComponentResolver() {
+    public ComponentResolver getComponentResolver() {
         return componentResolver;
     }
 

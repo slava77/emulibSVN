@@ -26,7 +26,7 @@ import org.cern.cms.csc.dw.monitor.SysMonitor;
 import org.cern.cms.csc.dw.util.JmsWorker;
 import org.cern.cms.csc.dw.util.JmsWorkerJni;
 import org.cern.cms.csc.dw.util.ServiceLocator;
-import org.cern.cms.csc.exsys.gui.util.ClassFinder;
+import org.cern.cms.csc.dw.util.ClassFinder;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;

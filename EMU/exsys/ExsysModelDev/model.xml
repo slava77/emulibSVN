@@ -42,12 +42,13 @@
         <taskdef name="xjc" classname="org.jvnet.jaxb2_commons.xjc.XJC2Task">
             <classpath>
                 <fileset dir="${hj-libs}">
+                    <include name="persistence-api-*.jar"/>
                     <include name="activation-*.jar"/>
                     <include name="jaxb-api-*.jar"/>
                     <include name="jaxb-impl-*.jar"/>
                     <include name="jsr173_api-*.jar"/>
                     <include name="stax-api-*.jar"/>
-                    <include name="jaxb2-basics-jaxb-xjc-*.jar"/>
+                    <!--include name="jaxb2-basics-jaxb-xjc-*.jar"/-->
                     <include name="jaxb-xjc-*.jar"/>
                     <include name="codemodel-*.jar"/>
                     <include name="dtd-parser-*.jar"/>
@@ -268,8 +269,8 @@
         <java classname="org.cern.cms.csc.dw.dev.FactMetadataGenerator" fork="true" failonerror="true">
             <arg line="${model}/src"/>
             <classpath>
-                <pathelement path="${model}/build/classes"/>
                 <pathelement path="${javac.classpath}"/>
+                <pathelement path="${model}/build/classes"/>
                 <pathelement path="build/classes"/>
             </classpath>
         </java>

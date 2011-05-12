@@ -28,10 +28,6 @@
                                  skipColumnsByName="enabled,name">
 
                 <f:facet name="addMenu">
-<!--                    <ice:panelGroup>
-                        <ice:selectOneMenu value="#{editRule.}"
-                        <ice:commandLink value="Create New Rule" action="reEditRule" style="font-weight: bold"/>
-                    </ice:panelGroup>-->
                     <ice:panelGroup>
                         <ice:commandLink value="Create New Rule" action="reEditRule" style="font-weight: bold">
                             <f:setPropertyActionListener target="#{editRule.entity}" value="#{null}"/>

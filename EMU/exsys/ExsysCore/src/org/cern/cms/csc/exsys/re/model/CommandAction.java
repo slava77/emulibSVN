@@ -13,6 +13,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -22,7 +23,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import jsf.bean.gui.annotation.CreateDefaultValue;
-import jsf.bean.gui.annotation.Label;
+import jsf.bean.gui.annotation.ImmutableReference;
 
 
 /**
@@ -36,6 +37,7 @@ import jsf.bean.gui.annotation.Label;
  *     &lt;extension base="{http://www.cern.ch/cms/csc/exsys/re/model}actionType">
  *       &lt;sequence>
  *         &lt;element name="closeConclusionOnExecution" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
+ *         &lt;element name="componentClassRestriction" type="{http://www.cern.ch/cms/csc/dw/ontology}componentClassType"/>
  *         &lt;element name="componentFinder" type="{http://www.cern.ch/cms/csc/exsys/re/model}componentFinderType"/>
  *       &lt;/sequence>
  *     &lt;/extension>
@@ -48,6 +50,7 @@ import jsf.bean.gui.annotation.Label;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "commandActionType", propOrder = {
     "closeConclusionOnExecution",
+    "componentClassRestriction",
     "componentFinder"
 })
 @XmlSeeAlso({
@@ -62,7 +65,11 @@ public abstract class CommandAction
 
     protected boolean closeConclusionOnExecution;
     @XmlElement(required = true)
-    @Label(description = "This is used by the action executor to find the target component on which the action has to be executed (source component is taken from the associated conclusion). If you simply want to use the same component as the source conclusion has, use SimpleComponentFinder with 'N/A' as component type", name = "Target Component Finder")
+    @ImmutableReference
+    @jsf.bean.gui.annotation.Label(description = "If defined, actions will only be executed if the component of the triggering conclusion is of the specified type.", name = "Limit to Component Type")
+    protected org.cern.cms.csc.dw.model.ontology.ComponentClass componentClassRestriction;
+    @XmlElement(required = true)
+    @jsf.bean.gui.annotation.Label(description = "This is used by the action executor to find the target component on which the action has to be executed (source component is taken from the associated conclusion). If you simply want to use the same component as the source conclusion has, use SimpleComponentFinder with 'N/A' as component type", name = "Target Component Finder")
     @CreateDefaultValue(clazz = SimpleComponentFinder.class)
     protected org.cern.cms.csc.exsys.re.model.ComponentFinder componentFinder;
 
@@ -87,6 +94,37 @@ public abstract class CommandAction
     @Transient
     public boolean isSetCloseConclusionOnExecution() {
         return true;
+    }
+
+    /**
+     * Gets the value of the componentClassRestriction property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link org.cern.cms.csc.dw.model.ontology.ComponentClass }
+     *     
+     */
+    @ManyToOne(targetEntity = org.cern.cms.csc.dw.model.ontology.ComponentClass.class)
+    @JoinColumn(name = "RECA_COMPONENT_CLASS_ID", nullable = true)
+    public org.cern.cms.csc.dw.model.ontology.ComponentClass getComponentClassRestriction() {
+        return componentClassRestriction;
+    }
+
+    /**
+     * Sets the value of the componentClassRestriction property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link org.cern.cms.csc.dw.model.ontology.ComponentClass }
+     *     
+     */
+    public void setComponentClassRestriction(org.cern.cms.csc.dw.model.ontology.ComponentClass value) {
+        this.componentClassRestriction = value;
+    }
+
+    @Transient
+    public boolean isSetComponentClassRestriction() {
+        return (this.componentClassRestriction!= null);
     }
 
     /**

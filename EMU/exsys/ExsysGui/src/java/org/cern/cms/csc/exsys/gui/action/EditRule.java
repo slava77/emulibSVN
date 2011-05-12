@@ -63,6 +63,20 @@ public class EditRule extends EntityEditorManager implements Serializable {
         setToSave(rule);
         return "reRules";
     }
+    
+    public String doSaveCopy() throws Exception {
+        Rule rule = (Rule) getTopEditor().getValue();
+        
+        if (rule.getConclusionType().getRuleSet() == null) {
+            rule.getConclusionType().setRuleSet(ruleSet);
+        }
+        if (!rule.getConclusionType().getRules().contains(rule)) { //desros vyniotinis :D
+            rule.getConclusionType().getRules().add(rule);
+        }
+        rule.setEnabled(false);
+        reDao.cloneAndSaveRule(rule);
+        return "reRules";
+    }
 
     @Override
     protected EditorDaoLocal getEditorDao() {

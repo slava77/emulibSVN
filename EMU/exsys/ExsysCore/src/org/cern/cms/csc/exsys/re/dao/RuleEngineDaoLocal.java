@@ -26,6 +26,7 @@ public interface RuleEngineDaoLocal {
     List<Rule> getRules(RuleSet ruleSet);
     List<Rule> getEnabledRules(RuleSet ruleSet);
     void saveRule(Rule rule) throws Exception;
+    void cloneAndSaveRule(Rule rule);
 
     List<Conclusion> getAllConclusions();
     List<Conclusion> getAllOpenConclusions();
@@ -37,5 +38,5 @@ public interface RuleEngineDaoLocal {
     List<ConclusionType> getConclusionTypes(RuleSet ruleSet);
 
     EntityDaoLocal getEntityDao();
-
+    
 }

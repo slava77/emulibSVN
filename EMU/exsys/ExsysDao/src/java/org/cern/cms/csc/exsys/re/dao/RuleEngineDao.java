@@ -6,6 +6,7 @@
 package org.cern.cms.csc.exsys.re.dao;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -19,6 +20,7 @@ import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.cern.cms.csc.exsys.re.model.ConclusionType;
 import org.cern.cms.csc.exsys.re.model.Rule;
 import org.cern.cms.csc.exsys.re.model.RuleSet;
+import org.cern.cms.csc.exsys.re.model.RuleType;
 
 /**
  *
@@ -222,4 +224,13 @@ public class RuleEngineDao implements RuleEngineDaoLocal, RuleEngineDaoRemote {
         }
     }
 
+    @Override
+    public void cloneAndSaveRule(Rule rule) {
+        rule.setid(null);
+        rule.getComponentFinder().setid(null);
+        rule.setTimeCreated(new Date());
+        
+        em.merge(rule);
+    }
+    
 }

@@ -22,7 +22,7 @@ import org.cern.cms.csc.exsys.gui.editor.base.Editor;
 import org.cern.cms.csc.exsys.gui.editor.base.Editor.InputType;
 import org.cern.cms.csc.exsys.gui.editor.base.EntityEditor;
 import org.cern.cms.csc.exsys.gui.editor.base.RestrictedEntityEditor;
-import org.cern.cms.csc.exsys.gui.util.ClassFinder;
+import org.cern.cms.csc.dw.util.ClassFinder;
 
 /**
  *

@@ -29,6 +29,12 @@
                     <ice:commandButton type="submit" value="Save"
                                        action="#{editRule.doSave}"
                                        rendered="#{editRule.editor.parentEditor == null}"/>
+                    <ice:commandButton type="submit" value="Save As Copy"
+                                       action="#{editRule.doSaveCopy}"
+                                       rendered="#{editRule.editor.parentEditor == null}"/>
+                    <ice:commandButton type="submit" value="Cancel"
+                                       action="reRules"
+                                       rendered="#{editRule.editor.parentEditor == null}"/>
                 </f:facet>
             </component:entityForm>
 

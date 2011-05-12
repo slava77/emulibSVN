@@ -10,6 +10,7 @@ import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.ontology.Component;
 import org.cern.cms.csc.dw.util.EjbLookup;
 import org.cern.cms.csc.exsys.re.conclusion.ConclusionCacheServiceLocal;
+import org.cern.cms.csc.exsys.re.model.Conclusion;
 
 /**
  *
@@ -28,6 +29,15 @@ public class Exsys {
         } catch (Throwable th) {
             logger.error(th);
             return false;
+        }
+    }
+
+    public static Conclusion getConclusion(String conclusionTypeName, Component component) {
+        try {
+            return conclCache.ejb().checkCache(conclusionTypeName, component);
+        } catch (Throwable th) {
+            logger.error(th);
+            return null;
         }
     }
 

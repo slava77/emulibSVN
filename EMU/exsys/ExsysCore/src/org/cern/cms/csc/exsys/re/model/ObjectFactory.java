@@ -48,19 +48,27 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ConclusionTrigger }
+     * Create an instance of {@link Conclusion }
      * 
      */
-    public ConclusionTrigger createConclusionTrigger() {
-        return new ConclusionTrigger();
+    public Conclusion createConclusion() {
+        return new Conclusion();
     }
 
     /**
-     * Create an instance of {@link ConclusionTriggerSource }
+     * Create an instance of {@link SimpleComponentFinder }
      * 
      */
-    public ConclusionTriggerSource createConclusionTriggerSource() {
-        return new ConclusionTriggerSource();
+    public SimpleComponentFinder createSimpleComponentFinder() {
+        return new SimpleComponentFinder();
+    }
+
+    /**
+     * Create an instance of {@link ActionExecution }
+     * 
+     */
+    public ActionExecution createActionExecution() {
+        return new ActionExecution();
     }
 
     /**
@@ -80,19 +88,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Conclusion }
+     * Create an instance of {@link ConclusionTriggerSource }
      * 
      */
-    public Conclusion createConclusion() {
-        return new Conclusion();
-    }
-
-    /**
-     * Create an instance of {@link RelatedComponentFinder }
-     * 
-     */
-    public RelatedComponentFinder createRelatedComponentFinder() {
-        return new RelatedComponentFinder();
+    public ConclusionTriggerSource createConclusionTriggerSource() {
+        return new ConclusionTriggerSource();
     }
 
     /**
@@ -104,27 +104,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SimpleComponentFinder }
+     * Create an instance of {@link ConclusionTrigger }
      * 
      */
-    public SimpleComponentFinder createSimpleComponentFinder() {
-        return new SimpleComponentFinder();
-    }
-
-    /**
-     * Create an instance of {@link RuleSet }
-     * 
-     */
-    public RuleSet createRuleSet() {
-        return new RuleSet();
-    }
-
-    /**
-     * Create an instance of {@link Rule }
-     * 
-     */
-    public Rule createRule() {
-        return new Rule();
+    public ConclusionTrigger createConclusionTrigger() {
+        return new ConclusionTrigger();
     }
 
     /**
@@ -136,11 +120,27 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ActionExecution }
+     * Create an instance of {@link RuleSet }
      * 
      */
-    public ActionExecution createActionExecution() {
-        return new ActionExecution();
+    public RuleSet createRuleSet() {
+        return new RuleSet();
+    }
+
+    /**
+     * Create an instance of {@link RelatedComponentFinder }
+     * 
+     */
+    public RelatedComponentFinder createRelatedComponentFinder() {
+        return new RelatedComponentFinder();
+    }
+
+    /**
+     * Create an instance of {@link Rule }
+     * 
+     */
+    public Rule createRule() {
+        return new Rule();
     }
 
     /**

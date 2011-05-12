@@ -16,7 +16,7 @@ import jsf.bean.gui.component.BeanTableManager;
 import jsf.bean.gui.component.table.BeanTableDaoIf;
 import org.cern.cms.csc.dw.dao.MainBeanTableDaoLocal;
 import org.cern.cms.csc.exsys.gui.base.JsfBeanBase;
-import org.cern.cms.csc.exsys.gui.util.ClassFinder;
+import org.cern.cms.csc.dw.util.ClassFinder;
 import org.cern.cms.csc.exsys.re.model.Rule;
 import org.icefaces.bean.ViewRetained;
 import org.icefaces.bean.WindowDisposed;

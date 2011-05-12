@@ -11,7 +11,7 @@ import jsf.bean.gui.log.Logger;
 import org.cern.cms.csc.dw.dao.MainBeanTableDaoLocal;
 import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.metadata.MetadataManager;
-import org.cern.cms.csc.exsys.gui.util.ClassFinder;
+import org.cern.cms.csc.dw.util.ClassFinder;
 
 @ManagedBean
 @SessionScoped

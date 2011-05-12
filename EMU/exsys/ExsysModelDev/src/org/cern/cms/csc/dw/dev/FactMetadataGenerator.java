@@ -19,7 +19,7 @@ import org.cern.cms.csc.dw.model.annotation.FactAnn;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.dw.model.monitor.MonitorEntity;
-import org.cern.cms.csc.dw.util.ClassUtil;
+import org.cern.cms.csc.dw.util.ClassFinder;
 
 /**
  *
@@ -43,9 +43,10 @@ public class FactMetadataGenerator {
             ClassList mainEntitiesList = new ClassList(baseDir, MetadataManager.MAIN_ENTITIES_RESOURCE);
             ClassList monitorEntitiesList = new ClassList(baseDir, MetadataManager.MONITOR_ENTITIES_RESOURCE);
 
-            for (Class c : ClassUtil.packageClassses(MetadataManager.CLASS_ROOT, true)) {
-                if (ClassUtil.hasAsSuperClass(c, EntityBase.class) &&
-                    c.isAnnotationPresent(Entity.class) &&
+            ClassFinder classFinder = ClassFinder.getInstance();
+            
+            for (Class c : classFinder.findSubclassesInPackage(EntityBase.class, MetadataManager.CLASS_ROOT)) {
+                if (c.isAnnotationPresent(Entity.class) &&
                     !Modifier.isAbstract(c.getModifiers())) {
 
                     if (Fact.class.isAssignableFrom(c) && c.isAnnotationPresent(FactAnn.class)) {
@@ -57,7 +58,6 @@ public class FactMetadataGenerator {
                     } else {
                         mainEntitiesList.add(c.getSimpleName(), c.getName());
                     }
-
                 }
             }
 
@@ -66,8 +66,8 @@ public class FactMetadataGenerator {
             monitorEntitiesList.store();
 
 
-        } catch (IOException ex) {
-            logger.error(null, ex);
+        } catch (Exception ex) {
+            logger.error(ex);
         }
 
     }

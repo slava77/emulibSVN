@@ -26,6 +26,7 @@ import org.cern.cms.csc.exsys.gui.editor.base.Editor;
 import org.cern.cms.csc.exsys.gui.editor.basic.BooleanPropertyEditor;
 import org.cern.cms.csc.exsys.gui.editor.basic.DatePropertyEditor;
 import org.cern.cms.csc.exsys.gui.editor.basic.DoublePropertyEditor;
+import org.cern.cms.csc.exsys.gui.editor.basic.LongPropertyEditor;
 import org.cern.cms.csc.exsys.gui.editor.basic.NumberPropertyEditor;
 import org.cern.cms.csc.exsys.gui.editor.basic.StringPropertyEditor;
 import org.cern.cms.csc.exsys.gui.editor.complex.ComponentEditor;
@@ -68,10 +69,14 @@ public class PropertyEditorFactory {
             for (PropertyMd propMetadata: propsMetadata) {
                 if (propMetadata.getIsManualInputAllowed()) {
                     ret.add(createPropertyEditor(entity, propMetadata, parentEditor, EditorDao));
-                } else if (propMetadata.getIsCreateDefaultValue()) {
+                }
+                if (propMetadata.getIsCreateDefaultValue()) {
                     try {
-                        Object defValue = propMetadata.getDefaultValueClass().newInstance();
-                        propMetadata.getSetterMethod().invoke(entity, defValue);
+                        // if the value of the property is null, attempt to create a default value
+                        if (propMetadata.getGetterMethod().invoke(entity) == null) {
+                            Object defValue = propMetadata.getDefaultValueClass().newInstance();
+                            propMetadata.getSetterMethod().invoke(entity, defValue);
+                        }
                     } catch (Exception ex) {
                         throw new InvalidEntityBeanPropertyException("Could not create default value for " +
                                                                       propMetadata.getEntityClass().getName() +
@@ -106,6 +111,8 @@ public class PropertyEditorFactory {
                     return new NumberPropertyEditor(entity, propMetadata, parentEditor);
                 } else if (double.class.isAssignableFrom(propType)) {
                     return new DoublePropertyEditor(entity, propMetadata, parentEditor);
+                } else if (long.class.isAssignableFrom(propType)) {
+                    return new LongPropertyEditor(entity, propMetadata, parentEditor);
                 } else if (String.class.isAssignableFrom(propType)) {
                     return new StringPropertyEditor(entity, propMetadata, parentEditor);
                 }

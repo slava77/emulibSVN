@@ -5,9 +5,12 @@
 
 package org.cern.cms.csc.exsys.re.action.executor;
 
+import java.util.ArrayList;
+import java.util.List;
 import jsf.bean.gui.log.Logger;
 import org.cern.cms.csc.dw.dao.GOntologyDaoLocal;
 import org.cern.cms.csc.dw.log.ExsysLogger;
+import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.model.ontology.Component;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponent;
 import org.cern.cms.csc.dw.model.ontology.graph.GComponent.DataPropertyType;
@@ -15,6 +18,7 @@ import org.cern.cms.csc.dw.util.EjbLookup;
 import org.cern.cms.csc.dw.util.ExsysIORemoteEjbLookup;
 import org.cern.cms.csc.exsys.io.DimServiceProviderRemote;
 import org.cern.cms.csc.exsys.re.action.ActionExecutor;
+import org.cern.cms.csc.exsys.re.conclusion.ComponentResolver;
 import org.cern.cms.csc.exsys.re.exception.ActionExecutionException;
 import org.cern.cms.csc.exsys.re.model.ActionExecution;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
@@ -46,7 +50,19 @@ public class DcsActionExecutor extends ActionExecutor {
 
             // gather all data that we need
             DcsCommandAction dcsCommandAction = (DcsCommandAction) actionExec.getAction();
-            Component comp = actionExec.getTrigger().getConclusion().getComponent();
+            Conclusion conclusion = actionExec.getTrigger().getConclusion();
+            
+            if ((dcsCommandAction.getComponentClassRestriction() != null) && 
+                (!dcsCommandAction.getComponentClassRestriction().equals(conclusion.getComponent().getType()))) {
+                
+                return;
+            }
+            
+            ComponentResolver compResolver = new ComponentResolver(dcsCommandAction.getComponentFinder(), dcsCommandAction);
+            List<EntityBase> sourcesForCompResolution = new ArrayList<EntityBase>();
+            sourcesForCompResolution.add(conclusion);
+            Component comp = compResolver.getComponent(sourcesForCompResolution);
+            
             GComponent gComp = gOntologyDao.ejbStrict().getGComponent(comp);
             String dp = null;
 

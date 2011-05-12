@@ -11,11 +11,14 @@
     xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
     xmlns:cu="http://jaxb.dev.java.net/plugin/classutils"
     xmlns:ann="http://jaxb.dev.java.net/plugin/annotate"
+    xmlns:ont="http://www.cern.ch/cms/csc/dw/ontology"
     xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb ext/bindingschema_2_0.xsd
                         http://java.sun.com/xml/ns/persistence/orm ext/orm_1_0.xsd
                         http://hyperjaxb3.jvnet.org/ejb/schemas/customizations ext/customizations.xsd"
     jaxb:extensionBindingPrefixes="orm hj cu ann"
     jaxb:version="2.0">
+
+    <xsd:import namespace="http://www.cern.ch/cms/csc/dw/ontology" schemaLocation="../../../dw/schema/ontology.xsd"/>
 
     <xsd:element name="actionExecution" type="tns:actionExecutionType"/>
     <xsd:element name="action" type="tns:actionType"/>
@@ -296,6 +299,20 @@
                                 <hj:basic>
                                     <orm:column name="RECA_CLOSE_CONCL_ON_EXEC" nullable="false"/>
                                 </hj:basic>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="componentClassRestriction" type="ont:componentClassType">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:many-to-one merge="false">
+                                    <orm:join-column name="RECA_COMPONENT_CLASS_ID" nullable="true"/>
+                                </hj:many-to-one>
+                                <jaxb:property name="componentClassRestriction"/>
+                                <ann:annotate xmlns:a="jsf.bean.gui.annotation">
+                                    <a:ImmutableReference/>
+                                    <a:Label name="Limit to Component Type" description="If defined, actions will only be executed if the component of the triggering conclusion is of the specified type."/>
+                                </ann:annotate>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
