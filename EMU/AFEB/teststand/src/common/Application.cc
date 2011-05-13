@@ -24,6 +24,9 @@
 
 #include <iterator>
 
+#include "AFEB/teststand/Crate.h"
+#include "AFEB/teststand/Jorway73A.h"
+
 
 AFEB::teststand::Application::Application(xdaq::ApplicationStub *s)
   throw (xdaq::exception::Exception) :
@@ -154,6 +157,16 @@ void AFEB::teststand::Application::configEditorWebPage(xgi::Input *in, xgi::Outp
   for ( v = selectedValues.begin(); v != selectedValues.end(); ++v ){
     cout << *v << endl;
   }
+
+  // Test crate stuff:
+  AFEB::teststand::Crate *crate = new AFEB::teststand::Crate( 1 );
+  AFEB::teststand::Module *LE32 = new AFEB::teststand::Module( "LE32", "CAMAC" );
+  AFEB::teststand::Module *LeCroy3377 = new AFEB::teststand::Module( "LeCroy3377", "CAMAC" );
+  AFEB::teststand::Jorway73A *Jorway73AController = new AFEB::teststand::Jorway73A( 8, 1 );
+  crate->insert( LE32, 9 );
+  crate->insert( LeCroy3377, 7 );
+  crate->insertController( Jorway73AController, 10 );
+  cout << "Crate " << endl << *crate << endl;
 
   AFEB::teststand::utils::redirectTo( applicationURLPath_, out );
   return;

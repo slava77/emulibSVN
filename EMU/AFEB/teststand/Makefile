@@ -27,12 +27,16 @@ Sources = \
 	Cgi.cc \
 	Xalan.cc \
 	System.cc \
+	CAMAC.cc \
+	Crate.cc \
 	version.cc
 
 IncludeDirs = \
-	$(XDAQ_ROOT)/include
+	$(XDAQ_ROOT)/include \
+	$(BUILD_HOME)/AFEB/Jorway/include
 
-LibraryDirs = $(XDAQ_ROOT)/lib
+LibraryDirs = \
+	$(XDAQ_ROOT)/lib
 
 UserSourcePath =
 UserCFlags =
@@ -45,7 +49,7 @@ UserExecutableLinkFlags =
 # potentially need conditional processing
 #
 Libraries =
-ExternalObjects = 
+ExternalObjects = $(BUILD_HOME)/AFEB/Jorway/lib/libsjy.a
 
 #
 # Compile the source files and create a shared library

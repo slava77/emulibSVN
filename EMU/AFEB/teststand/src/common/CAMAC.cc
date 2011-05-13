@@ -36,7 +36,7 @@ void AFEB::teststand::CAMAC::write( const unsigned int data,
 				    const unsigned int subaddress, 
 				    const unsigned int function,
 				    const unsigned int station ){
-  unsigned short dataw = static_cast<unsigned short>(d);
+  unsigned short dataw = static_cast<unsigned short>(data);
   // Encode everything in an external address
   int ext;
   ::cdreg( &ext, branch_, crateNumber_, station, subaddress );
