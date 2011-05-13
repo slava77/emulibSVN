@@ -10,13 +10,12 @@
 main()
 {
   dyn_string ex;
+  startThread("exsys_startPinging");
   exsys_startLvFactDelivery();
 //  exsys_startAlertFactDelivery(ex);
 //  if (emu_checkException(ex)) { return; }
   exsys_startHvFactDelivery(ex);
   if (emu_checkException(ex)) { return; }
-  
-  startThread("exsys_startPinging");
   
   // connect to internal commands
   dpConnect("exsys_factFinderInternalCommandUpdatedCB", false, EXSYS_INTERNAL_CMD_DP);  
