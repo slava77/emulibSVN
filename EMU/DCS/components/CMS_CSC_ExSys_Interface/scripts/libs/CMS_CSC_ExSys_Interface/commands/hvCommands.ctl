@@ -81,6 +81,10 @@ public void exsysCmd_hvChannelVset(dyn_string args) {
     emuhv_requestData(channelDeviceParams, ex);
     if (emu_checkException(ex)) { return; }
   } else { // ME1/1 channels
+    if (vset > 2950) {
+      emu_errorSingle("Got a vset command for ME1/1 for " + vset + "V. No way I'm going to do that, the upper voltage limit for ME1/1 is 2950V");
+      return;
+    }
     dpSetWait(channelDp + ".userDefined", vset);
     int v0;
     dpGet(channelDp + ".readBackSettings.v0", v0);
