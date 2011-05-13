@@ -55,16 +55,16 @@ public:
   bool Set ( TdcMode mode, short shift, short hit,
                short edge, int mpi, int time_out, int time_enf );
 
-	void Reset ();
+	// void Reset ();
 	void Clear ();
-	void ClearLam ();
+	// void ClearLam ();
 	void EnableAcq ();
-	void DisableAcq ();
-	void EnableLam ();
-	void DisableLam ();
-	void ExecuteTest ();
-	bool EventReady ();
-	bool Busy ();
+	// void DisableAcq ();
+	// void EnableLam ();
+	// void DisableLam ();
+	// void ExecuteTest ();
+	// bool EventReady ();
+	// bool Busy ();
 
 private:
 

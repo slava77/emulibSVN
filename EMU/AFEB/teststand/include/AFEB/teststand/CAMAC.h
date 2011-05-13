@@ -9,6 +9,9 @@ namespace AFEB { namespace teststand {
 
     class CAMAC{
     public:
+      CAMAC( const int branch, const int crateNumber ) :
+	branch_( branch ),
+	crateNumber_( crateNumber ){}
       void z();
       void c();
       bool x();
@@ -22,12 +25,17 @@ namespace AFEB { namespace teststand {
       unsigned int read( const unsigned int subaddress, 
 			 const unsigned int function,
 			 const unsigned int station );
-      void readBlock( const unsigned int function,
+      void readBlock( const unsigned int subaddress, 
+		      const unsigned int function,
+		      const unsigned int station,
 		      unsigned short *data,
 		      const int blockSize );
       void execute( const unsigned int subaddress, 
 		    const unsigned int function,
 		    const unsigned int station );
+    private:
+      int branch_;
+      int crateNumber_;
    };
 
   }}

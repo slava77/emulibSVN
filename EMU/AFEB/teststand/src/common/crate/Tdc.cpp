@@ -186,35 +186,35 @@ void CamTdc::DataWr ( int data )
 
 //-----------------------------------------------------------
 
-void CamTdc::Reset ()
-	{ write ( 0, A0, F30, Station ); }
+// void CamTdc::Reset ()
+// 	{ write ( 0, A0, F30, Station ); }
 
 void CamTdc::Clear ()
 	{ write ( 0, A0, F9, Station ); }
 
-void CamTdc::ClearLam ()
-	{ write ( 0, A0, F10, Station ); }
+// void CamTdc::ClearLam ()
+// 	{ write ( 0, A0, F10, Station ); }
 
-bool  CamTdc::EventReady ()
-	{ write ( 0, A2, F27, Station ); return q(); }
+// bool  CamTdc::EventReady ()
+// 	{ write ( 0, A2, F27, Station ); return q(); }
 
-bool  CamTdc::Busy ()
-	{ write ( 0, A1, F27, Station ); return q(); }
+// bool  CamTdc::Busy ()
+// 	{ write ( 0, A1, F27, Station ); return q(); }
 
 void CamTdc::EnableAcq ()
 	{ write ( 0, A1, F26, Station ); }
 
-void CamTdc::DisableAcq ()
-	{ write ( 0, A1, F24, Station ); }
+// void CamTdc::DisableAcq ()
+// 	{ write ( 0, A1, F24, Station ); }
 
-void CamTdc::EnableLam ()
-	{ write ( 0, A0, F26, Station ); }
+// void CamTdc::EnableLam ()
+// 	{ write ( 0, A0, F26, Station ); }
 
-void CamTdc::DisableLam ()
-	{ write ( 0, A0, F24, Station ); }
+// void CamTdc::DisableLam ()
+// 	{ write ( 0, A0, F24, Station ); }
 
-void CamTdc::ExecuteTest ()
-	{ write ( 0, A0, F25, Station ); }
+// void CamTdc::ExecuteTest ()
+// 	{ write ( 0, A0, F25, Station ); }
 
 /*----  READ AND WRITE REGISTER  -------------*/
 
