@@ -7,33 +7,49 @@ using namespace std;
 
 namespace AFEB { namespace teststand {
 
+    enum Station_t {
+      N1=1, N2,  N3,  N4,  N5,  N6,  N7, N8,
+      N9,  N10, N11, N12, N13, N14, N15, N16, 
+      N17, N18, N19, N20, N21, N22, N23, N24 };
+    
+    enum Function_t {
+      F0,  F1,  F2,  F3 , F4,  F5,  F6,  F7,
+      F8,  F9,  F10, F11, F12, F13, F14, F15,
+      F16, F17, F18, F19, F20, F21, F22, F23,
+      F24, F25, F26, F27, F28, F29, F30, F31 };
+    
+    enum Subaddress_t {
+      A0,  A1,  A2,  A3,  A4,  A5,  A6,  A7,
+      A8,  A9,  A10, A11, A12, A13, A14, A15 };
+    
+    enum Crate_t { C1 = 1 , C2 , C3 , C4 };
+
     class CAMAC{
     public:
       CAMAC( const int branch, const int crateNumber ) :
 	branch_( branch ),
 	crateNumber_( crateNumber ){}
-      void z();
-      void c();
-      bool x();
-      bool q();
-      unsigned short lam();
-    protected:
+      void z() const;
+      void c() const;
+      bool x() const;
+      bool q() const;
+      unsigned short lam() const;
       void write( const unsigned int data, 
-		  const unsigned int subaddress, 
-		  const unsigned int function,
-		  const unsigned int station );
-      unsigned int read( const unsigned int subaddress, 
-			 const unsigned int function,
-			 const unsigned int station );
-      void readBlock( const unsigned int subaddress, 
-		      const unsigned int function,
-		      const unsigned int station,
+		  const Subaddress_t subaddress, 
+		  const Function_t function,
+		  const Station_t station ) const;
+      unsigned int read( const Subaddress_t subaddress, 
+			 const Function_t function,
+			 const Station_t station ) const;
+      void readBlock( const Subaddress_t subaddress, 
+		      const Function_t function,
+		      const Station_t station,
 		      unsigned short *data,
-		      const int blockSize );
-      void execute( const unsigned int subaddress, 
-		    const unsigned int function,
-		    const unsigned int station );
-    private:
+		      const int blockSize ) const;
+      void execute( const Subaddress_t subaddress, 
+		    const Function_t function,
+		    const Station_t station ) const;
+    protected:
       int branch_;
       int crateNumber_;
    };

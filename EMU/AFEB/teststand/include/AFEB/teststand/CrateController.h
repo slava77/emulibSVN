@@ -16,7 +16,7 @@ namespace AFEB { namespace teststand {
 	: Module( name, type ),
 	  crateNumber_( crateNumber ){}
       int getCrateNumber() const { return crateNumber_; }
-    private:
+    protected:
       int crateNumber_;
     };
 

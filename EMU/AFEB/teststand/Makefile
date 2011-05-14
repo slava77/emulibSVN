@@ -29,6 +29,7 @@ Sources = \
 	System.cc \
 	CAMAC.cc \
 	Crate.cc \
+	LE32.cc \
 	version.cc
 
 IncludeDirs = \

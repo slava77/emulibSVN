@@ -1,7 +1,7 @@
 #ifndef __AFEB_teststand_Crate_h__
 #define __AFEB_teststand_Crate_h__
 
-#include "AFEB/teststand/Module.h"
+// #include "AFEB/teststand/Module.h"
 #include "AFEB/teststand/CrateController.h"
 
 #include <string>
@@ -11,6 +11,9 @@
 using namespace std;
 
 namespace AFEB { namespace teststand {
+
+    class Module;
+    class CrateController;
 
     class Crate{
     public:

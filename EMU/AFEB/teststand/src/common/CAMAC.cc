@@ -2,7 +2,7 @@
 
 #include "ieee_fun_types.h"
 
-void AFEB::teststand::CAMAC::z(){
+void AFEB::teststand::CAMAC::z() const{
   // We only need the branch and crate for cccz
   const unsigned int dummy = 0;
   // Encode branch and crate in an external address
@@ -11,7 +11,7 @@ void AFEB::teststand::CAMAC::z(){
   ::cccz( ext );
 }
 
-void AFEB::teststand::CAMAC::c(){
+void AFEB::teststand::CAMAC::c() const{
   // We only need the branch and crate for cccz
   const unsigned int dummy = 0;
   // Encode branch and crate in an external address
@@ -20,22 +20,22 @@ void AFEB::teststand::CAMAC::c(){
   ::cccc( ext );
 }
 
-bool AFEB::teststand::CAMAC::x(){
+bool AFEB::teststand::CAMAC::x() const{
   return ::xrespn();
 }
 
-bool AFEB::teststand::CAMAC::q(){
+bool AFEB::teststand::CAMAC::q() const{
   return ::qrespn();
 }
 
-unsigned short AFEB::teststand::CAMAC::lam(){
+unsigned short AFEB::teststand::CAMAC::lam() const { // TODO: implement. (Needed?)
   return 0;
 }
 
 void AFEB::teststand::CAMAC::write( const unsigned int data, 
-				    const unsigned int subaddress, 
-				    const unsigned int function,
-				    const unsigned int station ){
+				    const Subaddress_t subaddress, 
+				    const Function_t function,
+				    const Station_t station ) const {
   unsigned short dataw = static_cast<unsigned short>(data);
   // Encode everything in an external address
   int ext;
@@ -45,9 +45,9 @@ void AFEB::teststand::CAMAC::write( const unsigned int data,
   ::cssa( function, ext, &dataw, qres );
 }
 
-unsigned int AFEB::teststand::CAMAC::read( const unsigned int subaddress, 
-					   const unsigned int function,
-					   const unsigned int station ){
+unsigned int AFEB::teststand::CAMAC::read( const Subaddress_t subaddress, 
+					   const Function_t function,
+					   const Station_t station ) const{
   unsigned short dataw = 0;
   // Encode full address in an external address
   int ext;
@@ -58,11 +58,11 @@ unsigned int AFEB::teststand::CAMAC::read( const unsigned int subaddress,
   return dataw;
 }
 
-void AFEB::teststand::CAMAC::readBlock( const unsigned int subaddress, // TODO: is subaddress needed here?
-					const unsigned int function,
-					const unsigned int station,
+void AFEB::teststand::CAMAC::readBlock( const Subaddress_t subaddress, // TODO: is subaddress needed here?
+					const Function_t function,
+					const Station_t station,
 					unsigned short *data,
-					const int blockSize ){
+					const int blockSize ) const{
   // Encode full address in an external address
   int ext;
   ::cdreg( &ext, branch_, crateNumber_, station, subaddress );
@@ -73,9 +73,9 @@ void AFEB::teststand::CAMAC::readBlock( const unsigned int subaddress, // TODO: 
   ::csubc( function, ext, &data[0], qres );
 }
 
-void AFEB::teststand::CAMAC::execute( const unsigned int subaddress, 
-				      const unsigned int function,
-				      const unsigned int station ){
+void AFEB::teststand::CAMAC::execute( const Subaddress_t subaddress, 
+				      const Function_t function,
+				      const Station_t station ) const{
   // Encode full address in an external address
   int ext;
   ::cdreg( &ext, branch_, crateNumber_, station, subaddress );

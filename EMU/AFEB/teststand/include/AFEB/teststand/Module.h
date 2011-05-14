@@ -1,7 +1,7 @@
 #ifndef __AFEB_teststand_Module_h__
 #define __AFEB_teststand_Module_h__
 
-#include "AFEB/teststand/Crate.h"
+//#include "AFEB/teststand/Crate.h"
 
 #include <string>
 
@@ -21,7 +21,7 @@ namespace AFEB { namespace teststand {
       const AFEB::teststand::Crate* getCrate() const { return crate_; }
       int getSlot() const { return slot_; }
       void setSlot( const int slot ){ slot_ = slot; }
-    private:
+    protected:
       string name_;
       string type_;
       AFEB::teststand::Crate* crate_;
