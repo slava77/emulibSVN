@@ -51,6 +51,17 @@ namespace AFEB { namespace teststand {
       int EdgeRec;
       unsigned short Data[nTdcChannels];
       
+      // Wrappers for CAMAC methods
+      void write( const unsigned int data, 
+		  const Subaddress_t subaddress, 
+		  const Function_t function ) const;
+      unsigned int read( const Subaddress_t subaddress, 
+			 const Function_t function ) const;
+      void readBlock( const Subaddress_t subaddress, 
+		      const Function_t function,
+		      unsigned short *data,
+		      const int blockSize ) const;
+
       int RegRd( TdcRegister_t reg );
       void RegWr( int data , TdcRegister_t reg );
       
