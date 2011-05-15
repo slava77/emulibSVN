@@ -40,15 +40,15 @@ bool AFEB::teststand::LeCroy3377::Set ( TdcMode_t mode, short shift, short hit,
 /*----  DATA READ AND CLEAR  ---------------*/
 
 bool AFEB::teststand::LeCroy3377::HeadRd()
-  { return DataHead( read ( A0, F0) ); }
+  { return DataHead( crate_->getCrateController()->read ( A0, F0, (Station_t)slot_ ) ); }
 
 bool AFEB::teststand::LeCroy3377::HeadRdBlock()
 {
   BlockClear();
-  if ( DataHead( read ( A0, F0) ) )
+  if ( DataHead( crate_->getCrateController()->read ( A0, F0, (Station_t)slot_ ) ) )
   {
     // read_block ( F0, Data, chs_tdc );
-    readBlock ( A0, F0, Data, nTdcChannels );
+    crate_->getCrateController()->readBlock ( A0, F0, (Station_t)slot_, Data, nTdcChannels );
     return true;
   }
   else return false;//ret;
@@ -134,22 +134,18 @@ bool AFEB::teststand::LeCroy3377::BlockRd ( int ch )
 
 bool AFEB::teststand::LeCroy3377::DataRd()
 {
-  if ( crate_->getCrateController()->getName() == "Jorway73A" ){
-    const Jorway73A* cc = static_cast<const Jorway73A*>( crate_->getCrateController() );
-    // int data = read();
-    int data = cc->read( A0, F0, (Station_t)slot_ );
-    // if ( !q()) return false;
-    if ( !cc->q() ) return false;
-    Channel = ( data & 0x7C00 ) >> 10 ;
-    if ( Single ) return SingleRd ( data );
-    if ( !DoubleRd ( data ) ) return false;
-    int time_tmp = TimeCh;
-    // if ( !DoubleRd ( data = read() ) ) return false;
-    if ( !DoubleRd ( data = cc->read( A0, F0, (Station_t)slot_ ) ) ) return false;
-    TimeCh += time_tmp;
-    return true;
-  }
-  return false;
+  // int data = read();
+  int data = crate_->getCrateController()->read( A0, F0, (Station_t)slot_ );
+  // if ( !q()) return false;
+  if ( !crate_->getCrateController()->q() ) return false;
+  Channel = ( data & 0x7C00 ) >> 10 ;
+  if ( Single ) return SingleRd ( data );
+  if ( !DoubleRd ( data ) ) return false;
+  int time_tmp = TimeCh;
+  // if ( !DoubleRd ( data = read() ) ) return false;
+  if ( !DoubleRd ( data = crate_->getCrateController()->read( A0, F0, (Station_t)slot_ ) ) ) return false;
+  TimeCh += time_tmp;
+  return true;
 }
 
 bool AFEB::teststand::LeCroy3377::SingleRd( int data )
@@ -169,73 +165,57 @@ bool AFEB::teststand::LeCroy3377::DoubleRd( int data )
 }
 
 void AFEB::teststand::LeCroy3377::DataWr ( int data )
-	{ write ( data, A0, F16 ); }
+	{ crate_->getCrateController()->write ( data, A0, F16, (Station_t)slot_ ); }
 
 //-----------------------------------------------------------
 
-// void AFEB::teststand::LeCroy3377::Reset ()
-// 	{ write ( 0, A0, F30 ); }
+void AFEB::teststand::LeCroy3377::Reset ()
+	{ crate_->getCrateController()->write ( 0, A0, F30, (Station_t)slot_ ); }
 
 void AFEB::teststand::LeCroy3377::Clear ()
-	{ write ( 0, A0, F9 ); }
+	{ crate_->getCrateController()->write ( 0, A0, F9, (Station_t)slot_ ); }
 
-// void AFEB::teststand::LeCroy3377::ClearLam ()
-// 	{ write ( 0, A0, F10 ); }
+void AFEB::teststand::LeCroy3377::ClearLam ()
+	{ crate_->getCrateController()->write ( 0, A0, F10, (Station_t)slot_ ); }
 
-// bool  AFEB::teststand::LeCroy3377::EventReady ()
-// 	{ write ( 0, A2, F27 ); return q(); }
+bool  AFEB::teststand::LeCroy3377::EventReady ()
+	{ crate_->getCrateController()->write ( 0, A2, F27, (Station_t)slot_ ); return crate_->getCrateController()->q(); }
 
-// bool  AFEB::teststand::LeCroy3377::Busy ()
-// 	{ write ( 0, A1, F27 ); return q(); }
+bool  AFEB::teststand::LeCroy3377::Busy ()
+	{ crate_->getCrateController()->write ( 0, A1, F27, (Station_t)slot_ ); return crate_->getCrateController()->q(); }
 
 void AFEB::teststand::LeCroy3377::EnableAcq ()
-	{ write ( 0, A1, F26 ); }
+	{ crate_->getCrateController()->write ( 0, A1, F26, (Station_t)slot_ ); }
 
-// void AFEB::teststand::LeCroy3377::DisableAcq ()
-// 	{ write ( 0, A1, F24 ); }
+void AFEB::teststand::LeCroy3377::DisableAcq ()
+	{ crate_->getCrateController()->write ( 0, A1, F24, (Station_t)slot_ ); }
 
-// void AFEB::teststand::LeCroy3377::EnableLam ()
-// 	{ write ( 0, A0, F26 ); }
+void AFEB::teststand::LeCroy3377::EnableLam ()
+	{ crate_->getCrateController()->write ( 0, A0, F26, (Station_t)slot_ ); }
 
-// void AFEB::teststand::LeCroy3377::DisableLam ()
-// 	{ write ( 0, A0, F24 ); }
+void AFEB::teststand::LeCroy3377::DisableLam ()
+	{ crate_->getCrateController()->write ( 0, A0, F24, (Station_t)slot_ ); }
 
-// void AFEB::teststand::LeCroy3377::ExecuteTest ()
-// 	{ write ( 0, A0, F25 ); }
+void AFEB::teststand::LeCroy3377::ExecuteTest ()
+	{ crate_->getCrateController()->write ( 0, A0, F25, (Station_t)slot_ ); }
 
 // -----  Wrappers for CAMAC methods -------
 void AFEB::teststand::LeCroy3377::write( const unsigned int data, 
 					 const Subaddress_t subaddress, 
 					 const Function_t function ) const {
-  if ( crate_->getCrateController()->getName() == "Jorway73A" ){
-    const Jorway73A* cc = static_cast<const Jorway73A*>( crate_->getCrateController() );
-    cc->write( data, subaddress, function, (Station_t)slot_ );
-  }  
+  crate_->getCrateController()->write( data, subaddress, function, (Station_t)slot_ );
 }
 
 unsigned int AFEB::teststand::LeCroy3377::read( const Subaddress_t subaddress, 
 						const Function_t function ) const {
-  if ( crate_->getCrateController()->getName() == "Jorway73A" ){
-    const Jorway73A* cc = static_cast<const Jorway73A*>( crate_->getCrateController() );
-    return cc->read( subaddress, function, (Station_t)slot_ );
-  }
-  else{
-    exit(1);
-  }
-  return 0;
+  return crate_->getCrateController()->read( subaddress, function, (Station_t)slot_ );
 }
 
 void AFEB::teststand::LeCroy3377::readBlock( const Subaddress_t subaddress, 
-					      const Function_t function,
-					      unsigned short *data,
-					      const int blockSize ) const {
-  if ( crate_->getCrateController()->getName() == "Jorway73A" ){
-    const Jorway73A* cc = static_cast<const Jorway73A*>( crate_->getCrateController() );
-    cc->readBlock( subaddress, function, (Station_t)slot_, data, nTdcChannels );
-  }  
-  else{
-    exit(1);
-  }
+					     const Function_t function,
+					     unsigned short *data,
+					     const int blockSize ) const {
+  crate_->getCrateController()->readBlock( subaddress, function, (Station_t)slot_, data, nTdcChannels );
 }
 
 
@@ -244,26 +224,13 @@ void AFEB::teststand::LeCroy3377::readBlock( const Subaddress_t subaddress,
 int AFEB::teststand::LeCroy3377::RegRd( TdcRegister_t reg )
   // { return read ( static_cast<subadd>(reg), F1 ); }
 {
-  if ( crate_->getCrateController()->getName() == "Jorway73A" ){
-    const Jorway73A* cc = static_cast<const Jorway73A*>( crate_->getCrateController() );
-    return cc->read( static_cast<Subaddress_t>(reg), F1, (Station_t)slot_ );
-  }
-  else{
-    exit(1);
-  }
-  return 0;
+  return crate_->getCrateController()->read( static_cast<Subaddress_t>(reg), F1, (Station_t)slot_ );
 }
 
 void AFEB::teststand::LeCroy3377::RegWr( int data , TdcRegister_t reg )
 	// { write ( data, static_cast<subadd>(reg), F17 ); }
 {
-  if ( crate_->getCrateController()->getName() == "Jorway73A" ){
-    const Jorway73A* cc = static_cast<const Jorway73A*>( crate_->getCrateController() );
-    cc->read( static_cast<Subaddress_t>(reg), F17, (Station_t)slot_ );
-  }  
-  else{
-    exit(1);
-  }
+  crate_->getCrateController()->write( data, static_cast<Subaddress_t>(reg), F17, (Station_t)slot_ );
 }
 /*-----  COMMON START TIMEOUT  ----------------------------*/
 
@@ -358,29 +325,23 @@ void AFEB::teststand::LeCroy3377::ModeWr()
 
 void AFEB::teststand::LeCroy3377::ModeWr( TdcMode_t _mode )
 {
-  if ( crate_->getCrateController()->getName() == "Jorway73A" ){
-    const Jorway73A* cc = static_cast<const Jorway73A*>( crate_->getCrateController() );
-    // F9,AO Clear all data and events (The F9 command also MUST be the FIRST command received by the module after power up.):
-    cc->write ( 0, A0, F9, (Station_t)slot_  );
-    // F30, any subaddress. This selects programming mode and resets the Xilinx gate array:
-    cc->write ( 0, A0, F30, (Station_t)slot_  );
-    //
-    cc->write ( 0, A0, static_cast<Function_t>(F20 + _mode), (Station_t)slot_  );
-    // F25, any subaddress. This begins the programming of the xilinx chip, using the selected program load (or the default load). This will take about 200 milliseconds to complete.
-    cc->write ( 0, A0, F25, (Station_t)slot_  ); 
-    for ( long int i = 0; i < 10; ++i )
-      {
-	::sleep(1);
-	// F13, any subaddress. Test the done flag, return Q=l when programming is complete. The host computer should loop on this command until Q is equal to 1.
-	cc->write( 0, A0, F13, (Station_t)slot_  );
-	if ( cc->q() ) break;
-      }
-    // F9,AO Clear all data and events:
-    cc->write( 0, A0, F9, (Station_t)slot_  );
-  }
-  else{
-    exit(1);
-  }
+  // F9,AO Clear all data and events (The F9 command also MUST be the FIRST command received by the module after power up.):
+  crate_->getCrateController()->write ( 0, A0, F9, (Station_t)slot_  );
+  // F30, any subaddress. This selects programming mode and resets the Xilinx gate array:
+  crate_->getCrateController()->write ( 0, A0, F30, (Station_t)slot_  );
+  //
+  crate_->getCrateController()->write ( 0, A0, static_cast<Function_t>(F20 + _mode), (Station_t)slot_  );
+  // F25, any subaddress. This begins the programming of the xilinx chip, using the selected program load (or the default load). This will take about 200 milliseconds to complete.
+  crate_->getCrateController()->write ( 0, A0, F25, (Station_t)slot_  ); 
+  for ( long int i = 0; i < 10; ++i )
+    {
+      ::sleep(1);
+      // F13, any subaddress. Test the done flag, return Q=l when programming is complete. The host computer should loop on this command until Q is equal to 1.
+      crate_->getCrateController()->write( 0, A0, F13, (Station_t)slot_  );
+      if ( crate_->getCrateController()->q() ) break;
+    }
+  // F9,AO Clear all data and events:
+  crate_->getCrateController()->write( 0, A0, F9, (Station_t)slot_  );
 }
 
 /*-----  TEST  --------------------------------------------*/

@@ -31,16 +31,16 @@ namespace AFEB { namespace teststand {
       int ChannelRd ( void ) { return Channel; };
       float ShiftTime ( void ) { return static_cast<float>(1<<Shift)/2; };
       
-      // void Reset ();
+      void Reset ();
       void Clear ();
-      // void ClearLam ();
+      void ClearLam ();
       void EnableAcq ();
-      // void DisableAcq ();
-      // void EnableLam ();
-      // void DisableLam ();
-      // void ExecuteTest ();
-      // bool EventReady ();
-      // bool Busy ();
+      void DisableAcq ();
+      void EnableLam ();
+      void DisableLam ();
+      void ExecuteTest ();
+      bool EventReady ();
+      bool Busy ();
       
     private:
       bool Single;

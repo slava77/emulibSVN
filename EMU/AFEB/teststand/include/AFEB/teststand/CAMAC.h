@@ -29,27 +29,27 @@ namespace AFEB { namespace teststand {
       CAMAC( const int branch, const int crateNumber ) :
 	branch_( branch ),
 	crateNumber_( crateNumber ){}
-      void z() const;
-      void c() const;
-      bool x() const;
-      bool q() const;
-      unsigned short lam() const;
-      void write( const unsigned int data, 
-		  const Subaddress_t subaddress, 
-		  const Function_t function,
-		  const Station_t station ) const;
-      unsigned int read( const Subaddress_t subaddress, 
-			 const Function_t function,
-			 const Station_t station ) const;
-      void readBlock( const Subaddress_t subaddress, 
-		      const Function_t function,
-		      const Station_t station,
-		      unsigned short *data,
-		      const int blockSize ) const;
-      void execute( const Subaddress_t subaddress, 
-		    const Function_t function,
-		    const Station_t station ) const;
     protected:
+      virtual void z() const;
+      virtual void c() const;
+      virtual bool x() const;
+      virtual bool q() const;
+      virtual unsigned short lam() const;
+      virtual void write( const unsigned int data, 
+			  const Subaddress_t subaddress, 
+			  const Function_t function,
+			  const Station_t station ) const;
+      virtual unsigned int read( const Subaddress_t subaddress, 
+				 const Function_t function,
+				 const Station_t station ) const;
+      virtual void readBlock( const Subaddress_t subaddress, 
+			      const Function_t function,
+			      const Station_t station,
+			      unsigned short *data,
+			      const int blockSize ) const;
+      virtual void execute( const Subaddress_t subaddress, 
+			    const Function_t function,
+			    const Station_t station ) const;
       int branch_;
       int crateNumber_;
    };
