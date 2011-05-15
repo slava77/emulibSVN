@@ -5,8 +5,6 @@
 #include <assert.h>
 #include <stdlib.h> // for exit()
 
-//using namespace AFEB::teststand;
-
 AFEB::teststand::LE32::LE32( const string name ) :
   Module( name, "CAMAC" ){
 }

@@ -30,6 +30,8 @@ Sources = \
 	CAMAC.cc \
 	Crate.cc \
 	LE32.cc \
+	LeCroy3377.cc \
+	Jorway73A.cc \
 	version.cc
 
 IncludeDirs = \
