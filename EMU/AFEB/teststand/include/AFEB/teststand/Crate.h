@@ -12,6 +12,8 @@ using namespace std;
 
 namespace AFEB { namespace teststand {
 
+    ostream& operator<<( ostream& os, const AFEB::teststand::Crate& c );
+
     class Module;
     class CrateController;
 

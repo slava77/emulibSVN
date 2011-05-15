@@ -3,6 +3,7 @@
 #include "AFEB/teststand/Crate.h"
 
 #include <assert.h>
+#include <stdlib.h> // for exit()
 
 //using namespace AFEB::teststand;
 
