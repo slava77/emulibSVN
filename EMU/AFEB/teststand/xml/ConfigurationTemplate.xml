@@ -13,43 +13,43 @@
     <c:testedDevice c:name="" c:nChannels="16"/>
 
     <c:crate c:number="1">
-      <c:module c:station="1"  c:name=""/>
-      <c:module c:station="2"  c:name=""/>
-      <c:module c:station="3"  c:name="LeCroy3377"/>
-      <c:module c:station="4"  c:name=""/>
-      <c:module c:station="5"  c:name="LE32"/>
-      <c:module c:station="6"  c:name="LE32"/>
-      <c:module c:station="7"  c:name="LeCroy3377"/>
-      <c:module c:station="8"  c:name=""/>
-      <c:module c:station="9"  c:name="LE32"/>
-      <c:module c:station="10" c:name="Jorway73A"/>
-      <c:module c:station="11" c:name=""/>
-      <c:module c:station="12" c:name=""/>
-      <c:module c:station="13" c:name=""/>
-      <c:module c:station="14" c:name=""/>
-      <c:module c:station="15" c:name=""/>
-      <c:module c:station="16" c:name=""/>
-      <c:module c:station="17" c:name=""/>
-      <c:module c:station="18" c:name=""/>
-      <c:module c:station="19" c:name=""/>
-      <c:module c:station="20" c:name=""/>
-      <c:module c:station="21" c:name=""/>
-      <c:module c:station="22" c:name=""/>
-      <c:module c:station="23" c:name=""/>
-      <c:module c:station="24" c:name=""/>
+      <c:module c:slot="1"  c:name="" c:type=""/>
+      <c:module c:slot="2"  c:name="" c:type=""/>
+      <c:module c:slot="3"  c:name="LeCroy3377" c:type="TDC"/>
+      <c:module c:slot="4"  c:name="" c:type=""/>
+      <c:module c:slot="5"  c:name="LE32" c:type="LevelConverter"/>
+      <c:module c:slot="6"  c:name="LE32" c:type="PulseGenerator"/>
+      <c:module c:slot="7"  c:name="LeCroy3377" c:type="TDC"/>
+      <c:module c:slot="8"  c:name="" c:type=""/>
+      <c:module c:slot="9"  c:name="LE32" c:type="LevelConverter"/>
+      <c:module c:slot="10" c:name="Jorway73A" c:type="CrateController"/>
+      <c:module c:slot="11" c:name="" c:type=""/>
+      <c:module c:slot="12" c:name="" c:type=""/>
+      <c:module c:slot="13" c:name="" c:type=""/>
+      <c:module c:slot="14" c:name="" c:type=""/>
+      <c:module c:slot="15" c:name="" c:type=""/>
+      <c:module c:slot="16" c:name="" c:type=""/>
+      <c:module c:slot="17" c:name="" c:type=""/>
+      <c:module c:slot="18" c:name="" c:type=""/>
+      <c:module c:slot="19" c:name="" c:type=""/>
+      <c:module c:slot="20" c:name="" c:type=""/>
+      <c:module c:slot="21" c:name="" c:type=""/>
+      <c:module c:slot="22" c:name="" c:type=""/>
+      <c:module c:slot="23" c:name="" c:type=""/>
+      <c:module c:slot="24" c:name="" c:type=""/>
     </c:crate>
 
     <c:inputs>
-      <c:testedDevice c:number="1"  c:station="9" c:moduleInput="1"/>
-      <c:testedDevice c:number="2"  c:station="9" c:moduleInput="2"/>
-      <c:testedDevice c:number="3"  c:station=""  c:moduleInput=""/>
-      <c:testedDevice c:number="4"  c:station=""  c:moduleInput=""/>
-      <c:testedDevice c:number="5"  c:station=""  c:moduleInput=""/>
-      <c:testedDevice c:number="6"  c:station=""  c:moduleInput=""/>
-      <c:testedDevice c:number="7"  c:station=""  c:moduleInput=""/>
-      <c:testedDevice c:number="8"  c:station=""  c:moduleInput=""/>
-      <c:testedDevice c:number="9"  c:station=""  c:moduleInput=""/>
-      <c:testedDevice c:number="10" c:station=""  c:moduleInput=""/>
+      <c:testedDevice c:socket="1"  c:id="1"  c:slot="9" c:moduleInput="1"/>
+      <c:testedDevice c:socket="2"  c:id="2"  c:slot="9" c:moduleInput="2"/>
+      <c:testedDevice c:socket="3"  c:id="3"  c:slot=""  c:moduleInput=""/>
+      <c:testedDevice c:socket="4"  c:id="4"  c:slot=""  c:moduleInput=""/>
+      <c:testedDevice c:socket="5"  c:id="5"  c:slot=""  c:moduleInput=""/>
+      <c:testedDevice c:socket="6"  c:id="6"  c:slot=""  c:moduleInput=""/>
+      <c:testedDevice c:socket="7"  c:id="7"  c:slot=""  c:moduleInput=""/>
+      <c:testedDevice c:socket="8"  c:id="8"  c:slot=""  c:moduleInput=""/>
+      <c:testedDevice c:socket="9"  c:id="9"  c:slot=""  c:moduleInput=""/>
+      <c:testedDevice c:socket="10" c:id="10" c:slot=""  c:moduleInput=""/>
     </c:inputs>
 
     <c:measurement c:name="count_vs_dac">
