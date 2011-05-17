@@ -19,6 +19,11 @@ ostream& AFEB::teststand::operator<<( ostream& os, const AFEB::teststand::Crate&
   return os;
 }
 
+// AFEB::teststand::Crate::~Crate(){
+//   vector<AFEB::teststand::Module*>::iterator m;
+//   for ( m = modules_.begin(); m != modules_.end(); ++m ) delete *m;
+// }
+
 void AFEB::teststand::Crate::insert( AFEB::teststand::Module* module, int slot ){
   modules_[slot] = module;
   modules_[slot]->setSlot( slot );
@@ -28,5 +33,4 @@ void AFEB::teststand::Crate::insertController( AFEB::teststand::CrateController*
   modules_[slot] = controller;
   modules_[slot]->setSlot( slot );
   controllerSlot_ = slot;
-  
 }
