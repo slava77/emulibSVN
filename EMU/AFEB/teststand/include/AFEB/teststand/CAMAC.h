@@ -29,6 +29,7 @@ namespace AFEB { namespace teststand {
       CAMAC( const int branch, const int crateNumber ) :
 	branch_( branch ),
 	crateNumber_( crateNumber ){}
+      virtual ~CAMAC(){}
     protected:
       virtual void z() const;
       virtual void c() const;

@@ -14,7 +14,7 @@ namespace AFEB { namespace teststand {
     {      
     public:
       Jorway73A( const int branch, const int crateNumber ) :
-	CrateController( "Jorway73A", "CAMAC", crateNumber ),
+	CrateController( "Jorway73A", crateNumber ),
 	CAMAC( branch, crateNumber )
       {}
 

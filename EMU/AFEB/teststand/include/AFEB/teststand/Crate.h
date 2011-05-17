@@ -19,23 +19,22 @@ namespace AFEB { namespace teststand {
 
     class Crate{
     public:
-      enum { maxModules_ = 25 };
+      enum { maxModules_ = 24 };
 
       friend ostream& operator<<( ostream& os, const AFEB::teststand::Crate& c );
 
-      Crate( const int number )
+      Crate()
 	: modules_( vector<AFEB::teststand::Module*>( maxModules_ + 1 ) ){}
       string getName() const { return name_; }
       string getType() const { return type_; }
-      int getNumber() const { return number_; }
+      int getNumber() const;
       const AFEB::teststand::Module* getModule( const int slot ) const { return modules_[slot]; }
-      const AFEB::teststand::CrateController* getCrateController() const { return static_cast<AFEB::teststand::CrateController* const>( modules_[controllerSlot_]); }
+      const AFEB::teststand::CrateController* getCrateController() const { return static_cast<const AFEB::teststand::CrateController*> ( modules_[controllerSlot_] ); }
       void insert( AFEB::teststand::Module* module, int slot );
       void insertController( AFEB::teststand::CrateController* controller, int slot );
     private:
       string name_;
       string type_;
-      int    number_;
       vector<AFEB::teststand::Module*> modules_;
       int    controllerSlot_;
     };

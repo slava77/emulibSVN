@@ -5,8 +5,8 @@
 #include <assert.h>
 #include <stdlib.h> // for exit()
 
-AFEB::teststand::LeCroy3377::LeCroy3377( const string name ) :
-  Module( name, "CAMAC" ){
+AFEB::teststand::LeCroy3377::LeCroy3377() :
+  Module( "LeCroy3377", "TDC" ){
 }
 
 /*-----  SET THE MODULE  ----------------------------------------*/

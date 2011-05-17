@@ -26,6 +26,10 @@
 
 #include "AFEB/teststand/Crate.h"
 #include "AFEB/teststand/Jorway73A.h"
+#include "AFEB/teststand/LE32.h"
+#include "AFEB/teststand/LeCroy3377.h"
+
+#include "AFEB/teststand/Configuration.h"
 
 
 AFEB::teststand::Application::Application(xdaq::ApplicationStub *s)
@@ -159,14 +163,17 @@ void AFEB::teststand::Application::configEditorWebPage(xgi::Input *in, xgi::Outp
   }
 
   // Test crate stuff:
-  AFEB::teststand::Crate *crate = new AFEB::teststand::Crate( 1 );
-  AFEB::teststand::Module *LE32 = new AFEB::teststand::Module( "LE32", "CAMAC" );
-  AFEB::teststand::Module *LeCroy3377 = new AFEB::teststand::Module( "LeCroy3377", "CAMAC" );
-  AFEB::teststand::Jorway73A *Jorway73AController = new AFEB::teststand::Jorway73A( 8, 1 );
-  crate->insert( LE32, 9 );
-  crate->insert( LeCroy3377, 7 );
-  crate->insertController( Jorway73AController, 10 );
-  cout << "Crate " << endl << *crate << endl;
+  // AFEB::teststand::Crate *crate = new AFEB::teststand::Crate();
+  // AFEB::teststand::Module *LE32 = new AFEB::teststand::LE32( "PulseGenerator" );
+  // AFEB::teststand::Module *LeCroy3377 = new AFEB::teststand::LeCroy3377();
+  // AFEB::teststand::Jorway73A *Jorway73AController = new AFEB::teststand::Jorway73A( 8, 1 );
+  // crate->insert( LE32, 9 );
+  // crate->insert( LeCroy3377, 7 );
+  // crate->insertController( Jorway73AController, 10 );
+  // cout << "Crate " << endl << *crate << endl;
+
+  AFEB::teststand::Configuration c( configurationXML_ );
+  AFEB::teststand::Crate crate( c.getCrate() ); 
 
   AFEB::teststand::utils::redirectTo( applicationURLPath_, out );
   return;

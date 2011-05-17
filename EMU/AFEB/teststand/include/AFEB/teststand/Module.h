@@ -16,6 +16,7 @@ namespace AFEB { namespace teststand {
       Module( const string name, const string type )
 	: name_( name ),
 	  type_( type ){}
+      virtual ~Module(){}
       string getName() const { return name_; }
       string getType() const { return type_; }
       const AFEB::teststand::Crate* getCrate() const { return crate_; }

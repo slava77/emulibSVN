@@ -11,10 +11,11 @@ namespace AFEB { namespace teststand {
 
     public:
       Configuration( const string XML );
-      Crate getCrate() const;
+      ~Configuration();
+      Crate getCrate();
     private:
       string xml_;
-
+      vector<AFEB::teststand::Module*> modules_; ///< For bookkeeping so that we can destroy them at the end.
     };
 
 }}

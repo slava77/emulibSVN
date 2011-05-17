@@ -14,9 +14,10 @@ namespace AFEB { namespace teststand {
     class CrateController : public Module
     {      
     public:
-      CrateController( const string name, const string type, const int crateNumber )
-	: Module( name, type ),
+      CrateController( const string name, const int crateNumber )
+	: Module( name, "CrateController" ),
 	  crateNumber_( crateNumber ){}
+      virtual ~CrateController(){}
       int getCrateNumber() const { return crateNumber_; }
 
       // Virtual methods for CAMAC to be implemented in a derived CAMAC crate controller class:

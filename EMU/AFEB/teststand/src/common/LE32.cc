@@ -5,8 +5,8 @@
 #include <assert.h>
 #include <stdlib.h> // for exit()
 
-AFEB::teststand::LE32::LE32( const string name ) :
-  Module( name, "CAMAC" ){
+AFEB::teststand::LE32::LE32( const string type ) :
+  Module( "LE32", type ){
 }
   
 void AFEB::teststand::LE32::turnOff(){

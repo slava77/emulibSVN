@@ -32,6 +32,7 @@ Sources = \
 	LE32.cc \
 	LeCroy3377.cc \
 	Jorway73A.cc \
+	Configuration.cc \
 	version.cc
 
 IncludeDirs = \
