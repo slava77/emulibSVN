@@ -1,4 +1,6 @@
 #include "AFEB/teststand/utils/DOM.h"
+#include "AFEB/teststand/utils/Xalan.h"
+#include "AFEB/teststand/utils/String.h"
 
 #include <exception>
 #include <sstream>
@@ -38,13 +40,22 @@ string AFEB::teststand::utils::serializeDOM( DOMNode* node ){
   DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
   DOMWriter* theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
 
-  // optionally you can set some features on this serializer
-  if (theSerializer->canSetFeature(XMLUni::fgDOMWRTDiscardDefaultContent, true))
-    theSerializer->setFeature(XMLUni::fgDOMWRTDiscardDefaultContent, true);
-  if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true))
-    theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true);
-
   try {
+    // optionally you can set some features on this serializer
+    if (theSerializer->canSetFeature(XMLUni::fgDOMWRTDiscardDefaultContent, true))
+      theSerializer->setFeature(XMLUni::fgDOMWRTDiscardDefaultContent, true);
+    if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true))
+      theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true);
+
+    // // Set encoding explicitly to UTF-8 (otherwise it'll be UTF-16). It doesn't seem to work...
+    // XMLCh* encoding = XMLString::transcode( "UTF-8" );
+    // theSerializer->setEncoding( encoding );
+    // XMLString::release( &encoding );
+
+    // //cout << "DOM encoding: " << xoap::XMLCh2String( node->getOwnerDocument()->getEncoding() ) << endl;
+    // cout << "DOM encoding: " << xoap::XMLCh2String( (static_cast<DOMDocument*>(node))->getEncoding() ) << endl;
+    // cout << "Serializer encoding: " << xoap::XMLCh2String( theSerializer->getEncoding() ) << endl;
+
     result = xoap::XMLCh2String( theSerializer->writeToString( *node ) );
   }
   catch( xcept::Exception& e ){
@@ -131,7 +142,7 @@ string AFEB::teststand::utils::appendToSelectedNode( const string XML, const str
     const char* const id = "dummy";
     MemBufInputSource theInputSource( (const XMLByte*) XML.c_str(), (unsigned int) XML.size(), id );
     XalanDocument* xalan_document = theLiaison.parseXMLStream( theInputSource );
-    
+    // cout << "Original XML from Xalan" << endl << AFEB::teststand::utils::serialize( xalan_document ) << endl;
     XercesDocumentWrapper* docWrapper = theLiaison.mapDocumentToWrapper(xalan_document);
     
     XalanDocumentPrefixResolver thePrefixResolver( docWrapper );
@@ -151,12 +162,23 @@ string AFEB::teststand::utils::appendToSelectedNode( const string XML, const str
       
       DOMNode* node = const_cast<DOMNode*>( docWrapper->mapNode( xalan_node ) );
       if ( node ){
-	cout << "---------" << endl;
-	cout << "   node->getNodeName()  " << xoap::XMLCh2String( node->getNodeName() )  << endl;
-	cout << "   node->getNodeValue() " << xoap::XMLCh2String( node->getNodeValue() ) << endl;
-	cout << "   node->getNodeType()  " << node->getNodeType()   << endl;
+	// cout << "---------" << endl;
+	// cout << "   node->getNodeName()  " << xoap::XMLCh2String( node->getNodeName() )  << endl;
+	// cout << "   node->getNodeValue() " << xoap::XMLCh2String( node->getNodeValue() ) << endl;
+	// cout << "   node->getNodeType()  " << node->getNodeType()   << endl;
 	
 	DOMDocument *domDoc = const_cast<DOMDocument*>( docWrapper->getXercesDocument() );
+
+	// cout << "Encoding: " << xoap::XMLCh2String( domDoc->getEncoding() ) 
+	//      << " Actual encoding: " << xoap::XMLCh2String( domDoc->getActualEncoding() ) << endl;
+	// // Set encoding explicitly to UTF-8 (otherwise it'll be UTF-16). It doesn't seem to work...
+	// XMLCh* encoding = XMLString::transcode( "UTF-8" );
+	// domDoc->setEncoding( encoding );
+	// XMLString::release( &encoding );
+	// cout << "Encoding: " << xoap::XMLCh2String( domDoc->getEncoding() ) 
+	//      << " Actual encoding: " << xoap::XMLCh2String( domDoc->getActualEncoding() ) << endl;
+	// cout << "Original XML from DOM" << endl << AFEB::teststand::utils::serializeDOM( domDoc ) << endl
+	  ;
 
 	// Parse the XML fragment into a DOM
 	MemBufInputSource xmlFragmentMBIS( (XMLByte*)xmlFragment.c_str(), xmlFragment.size(), "dummyId" );
@@ -169,7 +191,7 @@ string AFEB::teststand::utils::appendToSelectedNode( const string XML, const str
 	node->appendChild( importedNode );
 
 	modifiedXML = AFEB::teststand::utils::serializeDOM( domDoc );
-	cout << "modifiedXML" << endl << modifiedXML << endl;
+	// cout << "Modified XML from DOM" << endl << modifiedXML << endl;
 	
       }
     }
@@ -190,7 +212,7 @@ string AFEB::teststand::utils::appendToSelectedNode( const string XML, const str
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
   catch( XSLException& e ){
-    stringstream ss; ss << "Failed to append to selected node: " << e.getMessage();
+    stringstream ss; ss << "Failed to append to selected node: XSLException type: " << XalanDOMString( e.getType() ) << ", message: " << e.getMessage();
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
   catch( xcept::Exception& e ){
@@ -268,18 +290,18 @@ string AFEB::teststand::utils::setSelectedNodeValue( const string XML, const str
       
       DOMNode* node = const_cast<DOMNode*>( docWrapper->mapNode( xalan_node ) );
       if ( node ){
-	cout << "---------" << endl;
-	cout << "   node->getNodeName()  " << xoap::XMLCh2String( node->getNodeName() )  << endl;
-	cout << "   node->getNodeValue() " << xoap::XMLCh2String( node->getNodeValue() ) << endl;
-	cout << "   node->getNodeType()  " << node->getNodeType()   << endl;
+	// cout << "---------" << endl;
+	// cout << "   node->getNodeName()  " << xoap::XMLCh2String( node->getNodeName() )  << endl;
+	// cout << "   node->getNodeValue() " << xoap::XMLCh2String( node->getNodeValue() ) << endl;
+	// cout << "   node->getNodeType()  " << node->getNodeType()   << endl;
 	
 	AFEB::teststand::utils::setNodeValue( node, value );
 	
-	cout << "   node->getNodeValue() " << xoap::XMLCh2String( node->getNodeValue() ) << endl;
+	// cout << "   node->getNodeValue() " << xoap::XMLCh2String( node->getNodeValue() ) << endl;
 	
 	DOMDocument *domDoc = const_cast<DOMDocument*>( docWrapper->getXercesDocument() );
 	modifiedXML = AFEB::teststand::utils::serializeDOM( domDoc );
-	cout << "modifiedXML" << endl << modifiedXML << endl;
+	// cout << "modifiedXML" << endl << modifiedXML << endl;
 	
       }
     }
@@ -300,7 +322,7 @@ string AFEB::teststand::utils::setSelectedNodeValue( const string XML, const str
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
   catch( XSLException& e ){
-    stringstream ss; ss << "Failed to set node value: " << e.getMessage();
+    stringstream ss; ss << "Failed to set node value: XSLException type: " << XalanDOMString( e.getType() ) << ", message: " << e.getMessage();
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
   catch( xcept::Exception& e ){
@@ -394,7 +416,7 @@ string AFEB::teststand::utils::setSelectedNodesValues( const string XML, const m
 
     DOMDocument *domDoc = const_cast<DOMDocument*>( docWrapper->getXercesDocument() );
     modifiedXML = AFEB::teststand::utils::serializeDOM( domDoc );
-    cout << "modifiedXML" << endl << modifiedXML << endl;
+    // cout << "modifiedXML" << endl << modifiedXML << endl;
 
     XMLPlatformUtils::Terminate();
     XPathEvaluator::terminate();
@@ -413,7 +435,7 @@ string AFEB::teststand::utils::setSelectedNodesValues( const string XML, const m
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
   catch( XSLException& e ){
-    stringstream ss; ss << "Failed to set node value: " << e.getMessage();
+    stringstream ss; ss << "Failed to set node value: XSLException type: " << XalanDOMString( e.getType() ) << ", message: " << e.getMessage();
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
   catch( xcept::Exception& e ){
@@ -437,6 +459,7 @@ string AFEB::teststand::utils::getSelectedNodeValue( const string& XML, const st
 
   XALAN_USING_XALAN(XSLException);
   XALAN_USING_XALAN(XalanDOMException)
+  XALAN_USING_XALAN(XalanDOMString)
 
   try
     {
@@ -450,7 +473,6 @@ string AFEB::teststand::utils::getSelectedNodeValue( const string& XML, const st
 
 	  XALAN_USING_XALAN(XalanDocument)
 	  XALAN_USING_XALAN(XalanDocumentPrefixResolver)
-	  XALAN_USING_XALAN(XalanDOMString)
 	  XALAN_USING_XALAN(XalanNode)
 	  XALAN_USING_XALAN(XalanSourceTreeInit)
 	  XALAN_USING_XALAN(XalanSourceTreeDOMSupport)
@@ -501,7 +523,7 @@ string AFEB::teststand::utils::getSelectedNodeValue( const string& XML, const st
 	XCEPT_RAISE( xcept::Exception, ss.str() );
       }
       catch( XSLException& e ){
-	stringstream ss; ss << "Failed to get node value: " << e.getMessage();
+	stringstream ss; ss << "Failed to get node value: XSLException type: " << XalanDOMString( e.getType() ) << ", message: " << e.getMessage();
 	XCEPT_RAISE( xcept::Exception, ss.str() );
       }
       catch( xcept::Exception& e ){
@@ -518,16 +540,17 @@ string AFEB::teststand::utils::getSelectedNodeValue( const string& XML, const st
       return value;
     }
 
-vector<string> AFEB::teststand::utils::getSelectedNodesValues( const string& XML, const string xpath )
-  throw( xcept::Exception ){ // TODO: result empty...
+vector< pair<string,string> > AFEB::teststand::utils::getSelectedNodesValues( const string& XML, const string xpath )
+  throw( xcept::Exception ){
 
-  vector<string> values;
+  vector< pair<string,string> > nameValuePairs;
 
   // XALAN_USING_XALAN(XalanNode);
   // XalanNode* theNode;
 
   XALAN_USING_XALAN(XSLException);
   XALAN_USING_XALAN(XalanDOMException)
+  XALAN_USING_XALAN(XalanDOMString);
 
   try{
     XALAN_USING_XERCES(XMLPlatformUtils);
@@ -558,7 +581,6 @@ vector<string> AFEB::teststand::utils::getSelectedNodesValues( const string& XML
     XPathEvaluator               theEvaluator;
    
 
-    XALAN_USING_XALAN(XalanDOMString);
     XALAN_USING_XALAN(NodeRefList);
 
     XalanDOMString xpathXalan( xpath.c_str() );
@@ -570,10 +592,9 @@ vector<string> AFEB::teststand::utils::getSelectedNodesValues( const string& XML
 					 xpathXalan.data(),
 					 thePrefixResolver );
 
-    cout << nodes.getLength() << " nodes selected." << endl;
-				 
     for ( XalanDOMString::size_type i=0; i<nodes.getLength(); ++i ){
-      values.push_back( AFEB::teststand::utils::getNodeValue( nodes.item(i) ) );
+      nameValuePairs.push_back( make_pair( AFEB::teststand::utils::stringFrom( nodes.item(i)->getNodeName() ),
+					   AFEB::teststand::utils::getNodeValue( nodes.item(i) ) ) );
     }
 
     XMLPlatformUtils::Terminate();
@@ -593,7 +614,7 @@ vector<string> AFEB::teststand::utils::getSelectedNodesValues( const string& XML
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
   catch( XSLException& e ){
-    stringstream ss; ss << "Failed to get nodes' values: " << e.getMessage();
+    stringstream ss; ss << "Failed to get nodes' values: XSLException type: " << XalanDOMString( e.getType() ) << ", message: " << e.getMessage();
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
   catch( xcept::Exception& e ){
@@ -607,7 +628,7 @@ vector<string> AFEB::teststand::utils::getSelectedNodesValues( const string& XML
     XCEPT_RAISE( xcept::Exception, "Failed to get nodes' values: Unknown exception." );
   }
   
-  return values;
+  return nameValuePairs;
 }
 
 string AFEB::teststand::utils::getNodeValue( const XalanNode* const node ){

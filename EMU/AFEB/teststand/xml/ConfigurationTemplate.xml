@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <c:configuration xmlns:c="http://cms.cern.ch/emu/afeb/teststand/configuration" c:name="Template" c:date="2011-04-29" c:time="12:00:00">
 
     <c:description>
@@ -42,28 +43,29 @@
     </c:crate>
 
     <c:inputs>
-      <c:testedDevice c:socket="1"  c:id="01" c:slot="9" c:moduleInput="1"/>
-      <c:testedDevice c:socket="2"  c:id="02" c:slot="9" c:moduleInput="2"/>
-      <c:testedDevice c:socket="3"  c:id="03" c:slot=""  c:moduleInput=""/>
-      <c:testedDevice c:socket="4"  c:id="04" c:slot=""  c:moduleInput=""/>
-      <c:testedDevice c:socket="5"  c:id="05" c:slot=""  c:moduleInput=""/>
-      <c:testedDevice c:socket="6"  c:id="06" c:slot=""  c:moduleInput=""/>
-      <c:testedDevice c:socket="7"  c:id="07" c:slot=""  c:moduleInput=""/>
-      <c:testedDevice c:socket="8"  c:id="08" c:slot=""  c:moduleInput=""/>
-      <c:testedDevice c:socket="9"  c:id="09" c:slot=""  c:moduleInput=""/>
-      <c:testedDevice c:socket="10" c:id="10" c:slot=""  c:moduleInput=""/>
+      <c:testedDevice c:socket="1"  c:id="01" c:tdcSlot="9" c:tdcInput="1"/>
+      <c:testedDevice c:socket="2"  c:id="02" c:tdcSlot="9" c:tdcInput="2"/>
+      <c:testedDevice c:socket="3"  c:id="03" c:tdcSlot="5" c:tdcInput="1"/>
+      <c:testedDevice c:socket="4"  c:id="04" c:tdcSlot="5" c:tdcInput="2"/>
+      <c:testedDevice c:socket="5"  c:id=""   c:tdcSlot=""  c:tdcInput=""/>
+      <c:testedDevice c:socket="6"  c:id=""   c:tdcSlot=""  c:tdcInput=""/>
+      <c:testedDevice c:socket="7"  c:id=""   c:tdcSlot=""  c:tdcInput=""/>
+      <c:testedDevice c:socket="8"  c:id=""   c:tdcSlot=""  c:tdcInput=""/>
+      <c:testedDevice c:socket="9"  c:id=""   c:tdcSlot=""  c:tdcInput=""/>
+      <c:testedDevice c:socket="10" c:id=""   c:tdcSlot=""  c:tdcInput=""/>
     </c:inputs>
 
-    <c:measurement c:name="count_vs_dac">
-      <c:PulseGenerator c:minAmplitude="" c:maxAmplitude="" c:stepAmplitude="" c:nPulses="" c:slot="6"/>
-      <c:ThresholdSetter c:value="50"/>
-      <c:TDC c:minTime="0" c:maxTime="120"/>
-    </c:measurement>
-
-    <c:measurement c:name="time_vs_dac">
-      <c:PulseGenerator c:minAmplitude="" c:maxAmplitude="" c:stepAmplitude="" c:nPulses="" c:slot="6"/>
-      <c:ThresholdSetter c:value="50"/>
-      <c:TDC c:minTime="0" c:maxTime="120"/>
-    </c:measurement>
+    <c:measurements>
+      <c:measurement c:name="count_vs_dac" c:enabled="1">
+	<c:PulseGenerator c:minAmplitude="" c:maxAmplitude="" c:stepAmplitude="" c:nPulses="" c:slot="6"/>
+	<c:ThresholdSetter c:value="50"/>
+	<c:TDC c:minTime="0" c:maxTime="120"/>
+      </c:measurement>
+      <c:measurement c:name="time_vs_dac" c:enabled="1">
+	<c:PulseGenerator c:minAmplitude="" c:maxAmplitude="" c:stepAmplitude="" c:nPulses="" c:slot="6"/>
+	<c:ThresholdSetter c:value="50"/>
+	<c:TDC c:minTime="0" c:maxTime="120"/>
+      </c:measurement>
+    </c:measurements>
 
 </c:configuration>

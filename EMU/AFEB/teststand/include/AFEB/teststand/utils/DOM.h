@@ -30,7 +30,7 @@ namespace AFEB { namespace teststand { namespace utils {
       string getSelectedNodeValue( const string& XML, const string xpath )
 	throw( xcept::Exception );
 
-      vector<string> getSelectedNodesValues( const string& XML, const string xpath )
+      vector< pair<string,string> > getSelectedNodesValues( const string& XML, const string xpath )
 	throw( xcept::Exception );
 
       XALAN_USING_XALAN(XalanNode)

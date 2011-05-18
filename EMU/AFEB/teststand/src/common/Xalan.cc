@@ -60,7 +60,8 @@ AFEB::teststand::utils::transformStreams( istream& source, istream& stylesheet, 
     XCEPT_RETHROW( xcept::Exception, "XSLT transformation failed: ", e );
   }
   catch( XSLException& e ){
-    stringstream ss; ss << "XSLT transformation failed: " << e.getMessage();
+    XALAN_USING_XALAN(XalanDOMString)
+    stringstream ss; ss << "XSLT transformation failed: XSLException type: " << XalanDOMString( e.getType() ) << ", message: " << e.getMessage();
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
   catch( std::exception& e ){
@@ -117,7 +118,8 @@ AFEB::teststand::utils::transformWithParams( istream& source, istream& styleshee
     XCEPT_RETHROW( xcept::Exception, "XSLT transformation failed: ", e );
   }
   catch( XSLException& e ){
-    stringstream ss; ss << "XSLT transformation failed: " << e.getMessage();
+    XALAN_USING_XALAN(XalanDOMString)
+    stringstream ss; ss << "XSLT transformation failed: XSLException type: " << XalanDOMString( e.getType() ) << ", message: " << e.getMessage();
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
   catch( std::exception& e ){
@@ -186,7 +188,8 @@ AFEB::teststand::utils::getSingleNode( XalanDocument* document, XalanNode* conte
     XCEPT_RETHROW( xcept::Exception, ss.str(), e );
   }
   catch( XSLException& e ){
-    stringstream ss; ss << "XPath selection failed for '"<< xPath << "': " << e.getMessage();
+    XALAN_USING_XALAN(XalanDOMString)
+    stringstream ss; ss << "XPath selection failed for '"<< xPath << "': XSLException type: " << XalanDOMString( e.getType() ) << ", message: " << e.getMessage();
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
   catch( std::exception& e ){
@@ -235,7 +238,8 @@ AFEB::teststand::utils::getNodes( NodeRefList& resultNodeList, XalanDocument* do
     XCEPT_RETHROW( xcept::Exception, ss.str(), e );
   }
   catch( XSLException& e ){
-    stringstream ss; ss << "XPath selection failed for '"<< xPath << "': " << e.getMessage();
+    XALAN_USING_XALAN(XalanDOMString)
+    stringstream ss; ss << "XPath selection failed for '"<< xPath << "': XSLException type: " << XalanDOMString( e.getType() ) << ", message: " << e.getMessage();
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
   catch( std::exception& e ){
@@ -293,7 +297,8 @@ string AFEB::teststand::utils::serializeSelectedNode( const string& XML, const s
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
   catch( XSLException& e ){
-    stringstream ss; ss << "Failed to serialize selected node: " << e.getMessage();
+    XALAN_USING_XALAN(XalanDOMString)
+    stringstream ss; ss << "Failed to serialize selected node: XSLException type: " << XalanDOMString( e.getType() ) << ", message: " << e.getMessage();
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
   catch( xcept::Exception& e ){

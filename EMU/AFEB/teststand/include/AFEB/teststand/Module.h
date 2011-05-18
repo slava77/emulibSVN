@@ -1,8 +1,6 @@
 #ifndef __AFEB_teststand_Module_h__
 #define __AFEB_teststand_Module_h__
 
-//#include "AFEB/teststand/Crate.h"
-
 #include <string>
 
 using namespace std;
