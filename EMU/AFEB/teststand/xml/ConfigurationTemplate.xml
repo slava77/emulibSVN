@@ -8,6 +8,8 @@
       <c:module c:name="LeCroy3377">LeCroy Model 3377 32-channel CAMAC TDC</c:module>
       <c:module c:name="">-</c:module>
       <c:module c:name="">-</c:module>
+      <c:measurement c:name="count_vs_dac">-</c:measurement>
+      <c:measurement c:name="time_vs_dac">-</c:measurement>
     </c:description>
 
     <c:testedDevice c:name="" c:nChannels="16"/>
@@ -17,11 +19,11 @@
       <c:module c:slot="2"  c:name="" c:type=""/>
       <c:module c:slot="3"  c:name="LeCroy3377" c:type="TDC"/>
       <c:module c:slot="4"  c:name="" c:type=""/>
-      <c:module c:slot="5"  c:name="LE32" c:type="LevelConverter"/>
+      <c:module c:slot="5"  c:name="LE32" c:type="ThresholdSetter"/>
       <c:module c:slot="6"  c:name="LE32" c:type="PulseGenerator"/>
       <c:module c:slot="7"  c:name="LeCroy3377" c:type="TDC"/>
       <c:module c:slot="8"  c:name="" c:type=""/>
-      <c:module c:slot="9"  c:name="LE32" c:type="LevelConverter"/>
+      <c:module c:slot="9"  c:name="LE32" c:type="ThresholdSetter"/>
       <c:module c:slot="10" c:name="Jorway73A" c:type="CrateController"/>
       <c:module c:slot="11" c:name="" c:type=""/>
       <c:module c:slot="12" c:name="" c:type=""/>
@@ -40,28 +42,28 @@
     </c:crate>
 
     <c:inputs>
-      <c:testedDevice c:socket="1"  c:id="1"  c:slot="9" c:moduleInput="1"/>
-      <c:testedDevice c:socket="2"  c:id="2"  c:slot="9" c:moduleInput="2"/>
-      <c:testedDevice c:socket="3"  c:id="3"  c:slot=""  c:moduleInput=""/>
-      <c:testedDevice c:socket="4"  c:id="4"  c:slot=""  c:moduleInput=""/>
-      <c:testedDevice c:socket="5"  c:id="5"  c:slot=""  c:moduleInput=""/>
-      <c:testedDevice c:socket="6"  c:id="6"  c:slot=""  c:moduleInput=""/>
-      <c:testedDevice c:socket="7"  c:id="7"  c:slot=""  c:moduleInput=""/>
-      <c:testedDevice c:socket="8"  c:id="8"  c:slot=""  c:moduleInput=""/>
-      <c:testedDevice c:socket="9"  c:id="9"  c:slot=""  c:moduleInput=""/>
+      <c:testedDevice c:socket="1"  c:id="01" c:slot="9" c:moduleInput="1"/>
+      <c:testedDevice c:socket="2"  c:id="02" c:slot="9" c:moduleInput="2"/>
+      <c:testedDevice c:socket="3"  c:id="03" c:slot=""  c:moduleInput=""/>
+      <c:testedDevice c:socket="4"  c:id="04" c:slot=""  c:moduleInput=""/>
+      <c:testedDevice c:socket="5"  c:id="05" c:slot=""  c:moduleInput=""/>
+      <c:testedDevice c:socket="6"  c:id="06" c:slot=""  c:moduleInput=""/>
+      <c:testedDevice c:socket="7"  c:id="07" c:slot=""  c:moduleInput=""/>
+      <c:testedDevice c:socket="8"  c:id="08" c:slot=""  c:moduleInput=""/>
+      <c:testedDevice c:socket="9"  c:id="09" c:slot=""  c:moduleInput=""/>
       <c:testedDevice c:socket="10" c:id="10" c:slot=""  c:moduleInput=""/>
     </c:inputs>
 
     <c:measurement c:name="count_vs_dac">
-      <c:DAC c:min="" c:max="" c:step="" c:nPulses="" c:stationNumber="6"/>
-      <c:threshold c:value="50"/>
-      <c:time c:min="0" c:max="120"/>
+      <c:PulseGenerator c:minAmplitude="" c:maxAmplitude="" c:stepAmplitude="" c:nPulses="" c:slot="6"/>
+      <c:ThresholdSetter c:value="50"/>
+      <c:TDC c:minTime="0" c:maxTime="120"/>
     </c:measurement>
 
     <c:measurement c:name="time_vs_dac">
-      <c:DAC c:min="" c:max="" c:step="" c:nPulses="" c:stationNumber="6"/>
-      <c:threshold c:value="50"/>
-      <c:time c:min="0" c:max="120"/>
+      <c:PulseGenerator c:minAmplitude="" c:maxAmplitude="" c:stepAmplitude="" c:nPulses="" c:slot="6"/>
+      <c:ThresholdSetter c:value="50"/>
+      <c:TDC c:minTime="0" c:maxTime="120"/>
     </c:measurement>
 
 </c:configuration>

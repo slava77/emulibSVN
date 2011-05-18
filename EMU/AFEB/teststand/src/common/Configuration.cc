@@ -28,10 +28,10 @@ AFEB::teststand::Crate AFEB::teststand::Configuration::getCrate() {
   AFEB::teststand::Crate crate;
   for ( int slot=1; slot<=AFEB::teststand::Crate::maxModules_; ++slot ){
     stringstream xpath;
-    xpath << "//c:crate/c:module[@c:slot=\"" << slot << "\"]/@c:name";
+    xpath << "//c:configuration/c:crate/c:module[@c:slot=\"" << slot << "\"]/@c:name";
     string moduleName = AFEB::teststand::utils::getSelectedNodeValue( xml_, xpath.str() );
     xpath.str("");
-    xpath << "//c:crate/c:module[@c:slot=\"" << slot << "\"]/@c:type";
+    xpath << "//c:configuration/c:crate/c:module[@c:slot=\"" << slot << "\"]/@c:type";
     string moduleType = AFEB::teststand::utils::getSelectedNodeValue( xml_, xpath.str() );
     // cout << slot << " " << moduleName << " " << moduleType << endl << flush;
     if ( moduleName.size() != 0 && moduleType.size() != 0 ){
@@ -55,7 +55,7 @@ AFEB::teststand::Crate AFEB::teststand::Configuration::getCrate() {
 	else{
 	  // TODO: throw an exception
 	}
-      else if ( moduleType == "LevelConverter" ){
+      else if ( moduleType == "ThresholdSetter" ){
 	if ( moduleName == "LE32" ){
 	  AFEB::teststand::LE32 *module = new AFEB::teststand::LE32( moduleType  );
 	  crate.insert( module, slot );
