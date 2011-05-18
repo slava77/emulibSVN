@@ -57,14 +57,14 @@
 
     <c:measurements>
       <c:measurement c:name="count_vs_dac" c:enabled="1">
-	<c:PulseGenerator c:minAmplitude="" c:maxAmplitude="" c:stepAmplitude="" c:nPulses="" c:slot="6"/>
+	<c:PulseGenerator c:amplitudeMin="" c:amplitudeMax="" c:amplitudeStep="" c:nPulses="" c:slot="6"/>
 	<c:ThresholdSetter c:value="50"/>
-	<c:TDC c:minTime="0" c:maxTime="120"/>
+	<c:TDC c:timeMin="0" c:timeMax="120"/>
       </c:measurement>
       <c:measurement c:name="time_vs_dac" c:enabled="1">
-	<c:PulseGenerator c:minAmplitude="" c:maxAmplitude="" c:stepAmplitude="" c:nPulses="" c:slot="6"/>
+	<c:PulseGenerator c:amplitudeMin="" c:amplitudeMax="" c:amplitudeStep="" c:nPulses="" c:slot="6"/>
 	<c:ThresholdSetter c:value="50"/>
-	<c:TDC c:minTime="0" c:maxTime="120"/>
+	<c:TDC c:timeMin="0" c:timeMax="120"/>
       </c:measurement>
     </c:measurements>
 

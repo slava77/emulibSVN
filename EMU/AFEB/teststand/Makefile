@@ -33,6 +33,7 @@ Sources = \
 	LeCroy3377.cc \
 	Jorway73A.cc \
 	Configuration.cc \
+	Measurement.cc \
 	version.cc
 
 IncludeDirs = \
