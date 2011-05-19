@@ -12,7 +12,7 @@ AFEB::teststand::Measurement::Measurement( const string name, const string type,
   crate_( crate ){
   bool isValidType = false;
   for ( int i=0; i<nTypes && !isValidType; ++i ){
-    isValidType |= ( type_ == types_[i] );
+    isValidType |= ( type.compare( types_[i] ) == 0 );
   }
   if ( !isValidType ){
     XCEPT_RAISE( xcept::Exception, type + " is not a valid meaurement type." );

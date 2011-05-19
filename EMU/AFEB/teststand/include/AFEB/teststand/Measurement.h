@@ -12,12 +12,13 @@ using namespace std;
 namespace AFEB { namespace teststand {
 
     class Measurement{
+    public:
       enum Type_t { count_vs_dac, time_vs_dac, nTypes };
       Measurement( const string name, const string type, const AFEB::teststand::Crate* const crate );
       void setPulseParameters( const vector< pair<string,string> >& param );
       void setThresholdParameters( const vector< pair<string,string> >& param );
       void setTDCParameters( const vector< pair<string,string> >& param );
-    protected:
+    private:
       static const char* const types_[nTypes];
       string name_;
       string type_;

@@ -8,39 +8,38 @@
 #include "AFEB/teststand/LE32.h"
 #include "AFEB/teststand/LeCroy3377.h"
 
+#include "xcept/Exception.h"
+
 using namespace std;
+using namespace AFEB::teststand;
 
 AFEB::teststand::Configuration::Configuration( const string XML ) : 
   xml_( XML )
-{}
-
-AFEB::teststand::Configuration::~Configuration(){
-  // cout << "Configuration destroying " << modules_.size() << " modules:" << endl;
-  vector<AFEB::teststand::Module*>::iterator m;
-  for ( m = modules_.begin(); m != modules_.end(); ++m ){
-    // cout << "   " << *m << " " << (*m)->getName() << " " << (*m)->getType() << endl << flush;
-    delete *m;
-  }
+{
+  createMeasurements();
 }
 
-AFEB::teststand::Crate AFEB::teststand::Configuration::getCrate() {
-  int crateNumber = AFEB::teststand::utils::stringTo<int>( AFEB::teststand::utils::getSelectedNodeValue( xml_, "//c:crate/@c:number" ) );
-  AFEB::teststand::Crate crate;
+AFEB::teststand::Configuration::~Configuration(){
+  delete crate_;
+}
+
+void AFEB::teststand::Configuration::createCrate() {
+  int crateNumber = utils::stringTo<int>( utils::getSelectedNodeValue( xml_, "//c:crate/@c:number" ) );
+  crate_ = new AFEB::teststand::Crate();
   for ( int slot=1; slot<=AFEB::teststand::Crate::maxModules_; ++slot ){
     stringstream xpath;
     xpath << "//c:configuration/c:crate/c:module[@c:slot=\"" << slot << "\"]/@c:name";
-    string moduleName = AFEB::teststand::utils::getSelectedNodeValue( xml_, xpath.str() );
+    string moduleName = utils::getSelectedNodeValue( xml_, xpath.str() );
     xpath.str("");
     xpath << "//c:configuration/c:crate/c:module[@c:slot=\"" << slot << "\"]/@c:type";
-    string moduleType = AFEB::teststand::utils::getSelectedNodeValue( xml_, xpath.str() );
+    string moduleType = utils::getSelectedNodeValue( xml_, xpath.str() );
     // cout << slot << " " << moduleName << " " << moduleType << endl << flush;
     if ( moduleName.size() != 0 && moduleType.size() != 0 ){
 
       if ( moduleType == "CrateController" ){
 	if ( moduleName == "Jorway73A" ){
 	  AFEB::teststand::Jorway73A *module = new AFEB::teststand::Jorway73A( 8, crateNumber ); // TODO: branch
-	  crate.insertController( module, slot );
-	  modules_.push_back( module ); // for bookkeeping
+	  crate_->insertController( module, slot );
 	}
 	else{
 	  // TODO: throw an exception
@@ -49,8 +48,7 @@ AFEB::teststand::Crate AFEB::teststand::Configuration::getCrate() {
       else if ( moduleType == "TDC" )
 	if ( moduleName == "LeCroy3377" ){
 	  AFEB::teststand::LeCroy3377 *module = new AFEB::teststand::LeCroy3377();
-	  crate.insert( module, slot );
-	  modules_.push_back( module ); // for bookkeeping
+	  crate_->insert( module, slot );
 	}
 	else{
 	  // TODO: throw an exception
@@ -58,8 +56,7 @@ AFEB::teststand::Crate AFEB::teststand::Configuration::getCrate() {
       else if ( moduleType == "ThresholdSetter" ){
 	if ( moduleName == "LE32" ){
 	  AFEB::teststand::LE32 *module = new AFEB::teststand::LE32( moduleType  );
-	  crate.insert( module, slot );
-	  modules_.push_back( module ); // for bookkeeping
+	  crate_->insert( module, slot );
 	}
 	else{
 	  // TODO: throw an exception
@@ -68,8 +65,7 @@ AFEB::teststand::Crate AFEB::teststand::Configuration::getCrate() {
       else if ( moduleType == "PulseGenerator" ){
 	if ( moduleName == "LE32" ){
 	  AFEB::teststand::LE32 *module = new AFEB::teststand::LE32( moduleType  );
-	  crate.insert( module, slot );
-	  modules_.push_back( module ); // for bookkeeping
+	  crate_->insert( module, slot );
 	}
 	else{
 	  // TODO: throw an exception
@@ -80,5 +76,42 @@ AFEB::teststand::Crate AFEB::teststand::Configuration::getCrate() {
       }
     }
   }
-  return crate;
+}
+
+void AFEB::teststand::Configuration::createMeasurements() {
+  // Find the requested (enabled) measurements in the XML
+  vector< pair<string,string> > enabledMeasurementTypes = utils::getSelectedNodesValues( xml_, "/c:configuration/c:measurements/c:measurement[@c:enabled!='0']/@c:type" );
+  if ( enabledMeasurementTypes.size() == 0 ){
+    XCEPT_RAISE( xcept::Exception, "No measurements are selected." );
+  }
+  // Create the crate setup
+  createCrate();
+  // Create the requested (enabled) measurements
+  vector< pair<string,string> >::const_iterator m;
+  for ( m = enabledMeasurementTypes.begin(); m != enabledMeasurementTypes.end(); ++m ){
+    // Create this measurement
+    stringstream xpath;
+    xpath << "/c:configuration/c:measurements/c:measurement[@c:type='" << m->second << "']/@c:name";
+    string name = utils::getSelectedNodeValue( xml_, xpath.str() );
+    Measurement* measurement = new Measurement( name, m->second, crate_ );
+    // Set pulse generator parameters
+    xpath.str("");
+    xpath << "/c:configuration/c:measurements/c:measurement[@c:type='" << m->second << "']/c:PulseGenerator/@*";
+    vector< pair<string,string> > parameters = utils::getSelectedNodesValues( xml_, xpath.str() );
+    measurement->setPulseParameters( parameters );
+    // Set thereshold parameters
+    xpath.str("");
+    xpath << "/c:configuration/c:measurements/c:measurement[@c:type='" << m->second << "']/c:ThresholdSetter/@*";
+    parameters.clear();
+    parameters = utils::getSelectedNodesValues( xml_, xpath.str() );
+    measurement->setThresholdParameters( parameters );
+    // Set TDC parameters
+    xpath.str("");
+    xpath << "/c:configuration/c:measurements/c:measurement[@c:type='" << m->second << "']/c:TDC/@*";
+    parameters.clear();
+    parameters = utils::getSelectedNodesValues( xml_, xpath.str() );
+    measurement->setTDCParameters( parameters );
+
+    measurements_.push_back( measurement );
+  }
 }

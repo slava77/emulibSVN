@@ -179,8 +179,7 @@ void AFEB::teststand::Application::configEditorWebPage(xgi::Input *in, xgi::Outp
   // cout << "Crate " << endl << *crate << endl;
 
   AFEB::teststand::Configuration c( configurationXML_ );
-  AFEB::teststand::Crate crate( c.getCrate() ); 
-  cout << "Crate:" << endl << crate << endl;
+  cout << *c.getCrate() << endl;
 
   AFEB::teststand::utils::redirectTo( applicationURLPath_, out );
   return;

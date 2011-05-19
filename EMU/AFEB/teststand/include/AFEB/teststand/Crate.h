@@ -23,10 +23,8 @@ namespace AFEB { namespace teststand {
 
       friend ostream& operator<<( ostream& os, const AFEB::teststand::Crate& c );
 
-      Crate()
-	: modules_( vector<AFEB::teststand::Module*>( maxModules_ + 1 ) ){}
-      string getName() const { return name_; }
-      string getType() const { return type_; }
+      Crate();
+      ~Crate();
       int getNumber() const;
       const AFEB::teststand::Module* getModule( const int slot ) const { return modules_[slot]; }
       const AFEB::teststand::CrateController* getCrateController() const { return static_cast<const AFEB::teststand::CrateController*> ( modules_[controllerSlot_] ); }
