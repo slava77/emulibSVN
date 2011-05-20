@@ -22,7 +22,6 @@ import org.cern.cms.csc.dw.metadata.MetadataManager;
 import org.cern.cms.csc.dw.model.monitor.MonitorDatabaseStatus;
 import org.cern.cms.csc.dw.model.monitor.MonitorEntity;
 import org.cern.cms.csc.dw.model.monitor.MonitorQueueStatus;
-import org.cern.cms.csc.dw.model.monitor.MonitorSystem;
 import org.cern.cms.csc.dw.util.JmsWorker;
 import org.cern.cms.csc.dw.util.JmsWorkerJni;
 import org.cern.cms.csc.dw.util.ServiceLocator;
@@ -122,16 +121,16 @@ public class MonitorJob {
         }
     }
 
-    @Schedule(hour="*", minute="*", second="*/10")
-    public void monitorSystem() {
-        logger.debug("In monitorSystem");
-        logger.trace("Up time: " + sysmon.getUpTime());
-        MonitorSystem ms = new MonitorSystem(sysmon.getCpuUsage(), sysmon.getRamUsedPercentage(), sysmon.getSwapUsedPercentage());
-        logger.trace("RAM: " + sysmon.getRamAsString());
-        logger.trace("Swap: " + sysmon.getSwapAsString());
-        logger.trace("CPU usage: " + String.valueOf(ms.getCpu()));
-        getMonitor().info(ms);
-    }
+//    @Schedule(hour="*", minute="*", second="*/10")
+//    public void monitorSystem() {
+//        logger.debug("In monitorSystem");
+//        logger.trace("Up time: " + sysmon.getUpTime());
+//        MonitorSystem ms = new MonitorSystem(sysmon.getCpuUsage(), sysmon.getRamUsedPercentage(), sysmon.getSwapUsedPercentage());
+//        logger.trace("RAM: " + sysmon.getRamAsString());
+//        logger.trace("Swap: " + sysmon.getSwapAsString());
+//        logger.trace("CPU usage: " + String.valueOf(ms.getCpu()));
+//        getMonitor().info(ms);
+//    }
 
     @Schedule(hour="*", minute="*", second="*/15")
     public void monitorDatabase() {

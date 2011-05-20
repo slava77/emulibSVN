@@ -514,22 +514,19 @@ exists or setup the property manually. For example like this:
         <basename file="${reference.ExsysCore.jar}" property="manifest.reference.ExsysCore.jar"/>
         <basename file="${libs.javaee-endorsed-api-6.0.classpath}" property="manifest.libs.javaee-endorsed-api-6.0.classpath"/>
         <basename file="${libs.Hibernate36.classpath}" property="manifest.libs.Hibernate36.classpath"/>
-        <basename file="${libs.Javasysmon.classpath}" property="manifest.libs.Javasysmon.classpath"/>
         <basename file="${libs.Neo4j.classpath}" property="manifest.libs.Neo4j.classpath"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Extension-List" value="jar-1 jar-2 jar-3 jar-4 jar-5 "/>
+            <attribute name="Extension-List" value="jar-1 jar-2 jar-3 jar-4 "/>
             <attribute name="jar-1-Extension-Name" value="${manifest.reference.ExsysCore.jar}"/>
             <attribute name="jar-2-Extension-Name" value="${manifest.libs.javaee-endorsed-api-6.0.classpath}"/>
             <attribute name="jar-3-Extension-Name" value="${manifest.libs.Hibernate36.classpath}"/>
-            <attribute name="jar-4-Extension-Name" value="${manifest.libs.Javasysmon.classpath}"/>
-            <attribute name="jar-5-Extension-Name" value="${manifest.libs.Neo4j.classpath}"/>
+            <attribute name="jar-4-Extension-Name" value="${manifest.libs.Neo4j.classpath}"/>
         </manifest>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
         <copyfiles files="${reference.ExsysCore.jar}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.javaee-endorsed-api-6.0.classpath}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.Hibernate36.classpath}" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${libs.Javasysmon.classpath}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.Neo4j.classpath}" todir="${dist.ear.dir}/lib"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update"/>
     </target>

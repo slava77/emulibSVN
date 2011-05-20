@@ -8,7 +8,6 @@
             <included-library dirs="200">reference.ExsysCore.jar</included-library>
             <included-library dirs="200">libs.javaee-endorsed-api-6.0.classpath</included-library>
             <included-library dirs="200">libs.Hibernate36.classpath</included-library>
-            <included-library dirs="200">libs.Javasysmon.classpath</included-library>
             <included-library dirs="200">libs.Neo4j.classpath</included-library>
             <source-roots>
                 <root id="src.dir"/>
