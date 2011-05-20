@@ -2,27 +2,34 @@
 #define __AFEB_teststand_Measurement_h__
 
 #include "AFEB/teststand/Crate.h"
+#include "AFEB/teststand/TestedDevice.h"
 
 #include <string>
 #include <vector>
 #include <map>
 
 using namespace std;
+using namespace AFEB::teststand;
 
 namespace AFEB { namespace teststand {
 
     class Measurement{
     public:
       enum Type_t { count_vs_dac, time_vs_dac, nTypes };
-      Measurement( const string name, const string type, const AFEB::teststand::Crate* const crate );
+      Measurement( const string name, const string type );
       void setPulseParameters( const vector< pair<string,string> >& param );
       void setThresholdParameters( const vector< pair<string,string> >& param );
       void setTDCParameters( const vector< pair<string,string> >& param );
+      void addTestedDevice( TestedDevice* device );
+      string getType() const { return type_; }
+      const TestedDevice* findTestedDevice( const int tdcSlot ) const;
+
     private:
       static const char* const types_[nTypes];
       string name_;
       string type_;
-      const AFEB::teststand::Crate* const crate_;
+      //const Crate* const crate_;
+      vector<TestedDevice*> testedDevices_;
 
       int amplitudeMin_;
       int amplitudeMax_;
@@ -35,7 +42,6 @@ namespace AFEB { namespace teststand {
       int tdcTimeMin_;
       int tdcTimeMax_;
 
-      map<string,int> testedDeviceId_;
     };
 
   }}

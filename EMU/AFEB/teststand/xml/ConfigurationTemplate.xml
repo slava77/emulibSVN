@@ -13,7 +13,7 @@
       <c:measurement c:name="time_vs_dac">-</c:measurement>
     </c:description>
 
-    <c:testedDevice c:name="" c:nChannels="16"/>
+    <c:testedDevice c:type="" c:nChannels="16"/>
 
     <c:crate c:number="1">
       <c:module c:slot="1"  c:name="" c:type=""/>

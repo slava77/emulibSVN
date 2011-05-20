@@ -34,6 +34,7 @@ Sources = \
 	Jorway73A.cc \
 	Configuration.cc \
 	Measurement.cc \
+	TestedDevice.cc \
 	version.cc
 
 IncludeDirs = \

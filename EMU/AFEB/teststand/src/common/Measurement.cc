@@ -7,9 +7,8 @@ using namespace AFEB::teststand;
 
 const char* const AFEB::teststand::Measurement::types_[] = { "count_vs_dac", "time_vs_dac" };
 
-AFEB::teststand::Measurement::Measurement( const string name, const string type, const AFEB::teststand::Crate* const crate ) :
-  name_( name ),
-  crate_( crate ){
+AFEB::teststand::Measurement::Measurement( const string name, const string type ) :
+  name_( name ){
   bool isValidType = false;
   for ( int i=0; i<nTypes && !isValidType; ++i ){
     isValidType |= ( type.compare( types_[i] ) == 0 );
@@ -43,4 +42,28 @@ void AFEB::teststand::Measurement::setTDCParameters( const vector< pair<string,s
     if      ( p->first.rfind( "tdcTimeMin" ) != string::npos ) tdcTimeMin_ = utils::stringTo<int>( p->second );
     else if ( p->first.rfind( "tdcTimeMax" ) != string::npos ) tdcTimeMax_ = utils::stringTo<int>( p->second );
   }
+}
+
+void AFEB::teststand::Measurement::addTestedDevice( TestedDevice* device ){
+  // Check if this input has already been taken:
+  vector<TestedDevice*>::const_iterator d;
+  for ( d = testedDevices_.begin(); d != testedDevices_.end(); ++d ){
+    if ( (*d)->getTDCSlot()  == device->getTDCSlot()  && 
+	 (*d)->getTDCInput() == device->getTDCInput()    ){
+      stringstream ss;
+      ss << "A tested device (" << (*d)->getId() 
+	 << ") is already configured to be read out by input " << device->getTDCInput() 
+	 << " of the TDC in slot " << device->getTDCSlot();
+      XCEPT_RAISE( xcept::Exception, ss.str() );
+    }
+  }
+  testedDevices_.push_back( device );
+}
+
+const TestedDevice* AFEB::teststand::Measurement::findTestedDevice( const int tdcSlot ) const {
+  vector<TestedDevice*>::const_iterator d;
+  for ( d = testedDevices_.begin(); d != testedDevices_.end(); ++d ){
+    if ( (*d)->getTDCSlot() == tdcSlot ) return *d;
+  }
+  return NULL;
 }

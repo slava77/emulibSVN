@@ -18,11 +18,12 @@ namespace AFEB { namespace teststand {
       const vector<Measurement*> getMeasurements() const { return measurements_; }
     private:
       string xml_;
-      Crate* crate_;
+      Crate* crate_; ///< The crate setup. It's adopted by all measurements.
+      vector<TestedDevice*> testedDevices_;
       vector<Measurement*> measurements_;
-      //vector<AFEB::teststand::Module*> modules_; ///< For bookkeeping so that we can destroy them at the end.
       void createCrate();
       void createMeasurements();
+      Measurement* findMeasurement( const string type, const int tdcSlot ) const;
     };
 
 }}

@@ -84,34 +84,78 @@ void AFEB::teststand::Configuration::createMeasurements() {
   if ( enabledMeasurementTypes.size() == 0 ){
     XCEPT_RAISE( xcept::Exception, "No measurements are selected." );
   }
+
   // Create the crate setup
   createCrate();
-  // Create the requested (enabled) measurements
-  vector< pair<string,string> >::const_iterator m;
-  for ( m = enabledMeasurementTypes.begin(); m != enabledMeasurementTypes.end(); ++m ){
-    // Create this measurement
-    stringstream xpath;
-    xpath << "/c:configuration/c:measurements/c:measurement[@c:type='" << m->second << "']/@c:name";
-    string name = utils::getSelectedNodeValue( xml_, xpath.str() );
-    Measurement* measurement = new Measurement( name, m->second, crate_ );
-    // Set pulse generator parameters
-    xpath.str("");
-    xpath << "/c:configuration/c:measurements/c:measurement[@c:type='" << m->second << "']/c:PulseGenerator/@*";
-    vector< pair<string,string> > parameters = utils::getSelectedNodesValues( xml_, xpath.str() );
-    measurement->setPulseParameters( parameters );
-    // Set thereshold parameters
-    xpath.str("");
-    xpath << "/c:configuration/c:measurements/c:measurement[@c:type='" << m->second << "']/c:ThresholdSetter/@*";
-    parameters.clear();
-    parameters = utils::getSelectedNodesValues( xml_, xpath.str() );
-    measurement->setThresholdParameters( parameters );
-    // Set TDC parameters
-    xpath.str("");
-    xpath << "/c:configuration/c:measurements/c:measurement[@c:type='" << m->second << "']/c:TDC/@*";
-    parameters.clear();
-    parameters = utils::getSelectedNodesValues( xml_, xpath.str() );
-    measurement->setTDCParameters( parameters );
 
-    measurements_.push_back( measurement );
+  // Find the type of tested device
+  string testedDeviceType   = utils::getSelectedNodeValue( xml_, "/c:configuration/c:testedDevice/@c:type" );
+  int testedDeviceNChannels = utils::stringTo<int>( utils::getSelectedNodeValue( xml_, "/c:configuration/c:testedDevice/@c:nChannels" ) );
+
+
+  // Find the socket number of devices to be tested (i.e., those for which an id is given):
+  vector< pair<string,string> > testedDevices = utils::getSelectedNodesValues( xml_, "/c:configuration/c:inputs/c:testedDevice[@c:id!='0']/@c:socket" );
+  if ( testedDevices.size() == 0 ){
+    XCEPT_RAISE( xcept::Exception, "No device ids to be tested are specified." );
   }
+
+  // Loop over the devices to be tested:
+  vector< pair<string,string> >::const_iterator t;
+  for ( t = testedDevices.begin(); t != testedDevices.end(); ++t ){
+    // Create this device
+    stringstream xpath;
+    xpath << "/c:configuration/c:inputs/c:testedDevice[@c:socket!='" << t->second << "']/@*";
+    vector< pair<string,string> > deviceParameters = utils::getSelectedNodesValues( xml_, xpath.str() );
+    TestedDevice* testedDevice = new TestedDevice( testedDeviceType, testedDeviceNChannels, crate_ );
+    testedDevice->setParameters( deviceParameters );
+
+    // Loop over the requested (enabled) measurement types
+    vector< pair<string,string> >::const_iterator m;
+    for ( m = enabledMeasurementTypes.begin(); m != enabledMeasurementTypes.end(); ++m ){
+
+      // Check if a measurement with this TDC module already exists:
+      Measurement* measurement = findMeasurement( m->second, testedDevice->getTDCSlot() );
+      if ( measurement == NULL ){
+	// Create this measurement
+	xpath.str("");
+	xpath << "/c:configuration/c:measurements/c:measurement[@c:type='" << m->second << "']/@c:name";
+	string name = utils::getSelectedNodeValue( xml_, xpath.str() );
+	measurement = new Measurement( name, m->second );
+	// Set pulse generator parameters
+	xpath.str("");
+	xpath << "/c:configuration/c:measurements/c:measurement[@c:type='" << m->second << "']/c:PulseGenerator/@*";
+	vector< pair<string,string> > parameters = utils::getSelectedNodesValues( xml_, xpath.str() );
+	measurement->setPulseParameters( parameters );
+	// Set thereshold parameters
+	xpath.str("");
+	xpath << "/c:configuration/c:measurements/c:measurement[@c:type='" << m->second << "']/c:ThresholdSetter/@*";
+	parameters.clear();
+	parameters = utils::getSelectedNodesValues( xml_, xpath.str() );
+	measurement->setThresholdParameters( parameters );
+	// Set TDC parameters
+	xpath.str("");
+	xpath << "/c:configuration/c:measurements/c:measurement[@c:type='" << m->second << "']/c:TDC/@*";
+	parameters.clear();
+	parameters = utils::getSelectedNodesValues( xml_, xpath.str() );
+	measurement->setTDCParameters( parameters );
+	
+	measurements_.push_back( measurement );
+      } // if ( measurement == NULL )
+
+      // Add this device to be tested in this measurement
+      measurement->addTestedDevice( testedDevice );
+
+    } // for ( m = enabledMeasurementTypes.begin(); m != enabledMeasurementTypes.end(); ++m )
+  } // for ( t = testedDevices.begin(); t != testedDevices.end(); ++t )
+}
+
+
+Measurement* AFEB::teststand::Configuration::findMeasurement( const string type, const int tdcSlot ) const {
+  vector<Measurement*>::const_iterator m;
+  for ( m = measurements_.begin(); m != measurements_.end(); ++m ){
+    if ( (*m)->getType().compare( type ) == 0 && (*m)->findTestedDevice( tdcSlot ) != NULL ){
+      return *m;
+    }
+  }
+  return NULL;
 }
