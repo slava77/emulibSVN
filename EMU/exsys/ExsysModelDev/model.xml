@@ -8,7 +8,7 @@
     <property name="version" value="0.5.4"/>
     <property name="model" location="${basedir}/../ExsysCore" />
     <property name="dao" location="${basedir}/../ExsysDao" />
-    <property name="olap" location="${basedir}/../CdwOlap" />
+    <property name="olap" location="${basedir}/../ExsysOlap" />
     <property name="kbase" location="${basedir}/../KnowledgeBase/src"/>
     <property name="hj-libs" location="${basedir}/../lib/Hyperjaxb" />
     <property name="plugin-dir" location="${basedir}/build/plugin"/>
@@ -283,7 +283,7 @@
         <java classname="org.cern.cms.csc.dw.dev.OlapGenerator" fork="false" failonerror="true" classpathref="dev-classpath">
             <jvmarg line="-Xmn100M -Xms500M -Xmx500M -Xss50M"/>
             <arg value="--db=${hibernate.connection.username}"/>
-            <arg value="--gdb=${model}/src/graphdb"/>
+            <arg value="--gdb=${dao}/src/graphdb"/>
             <arg value="--dest=${olap}/web/WEB-INF"/>
             <arg value="--hxml=src/org/cern/cms/csc/dw/dev/xml/OlapHierarchies.xml"/>
         </java>

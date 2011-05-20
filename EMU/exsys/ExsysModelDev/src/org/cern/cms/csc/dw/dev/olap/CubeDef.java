@@ -50,6 +50,10 @@ public class CubeDef {
 
         for (PropertyDescriptor prop : utils.getPropertyUtils().getPropertyDescriptors(fact.getFactClass())) {
             Method m = prop.getReadMethod();
+            
+            if (m == null) {
+                continue;
+            }
 
             if (m.isAnnotationPresent(Column.class) || m.isAnnotationPresent(JoinColumn.class)) {
 

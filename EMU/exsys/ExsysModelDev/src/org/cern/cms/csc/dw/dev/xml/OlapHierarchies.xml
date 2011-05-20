@@ -7,16 +7,16 @@
             <ComponentClass name="Endcap"/>
             <Level name="Station">
                 <ComponentClass name="Station"/>
-                <ComponentLinkClass name="isPartOf"/>
+                <ComponentLinkClass name="isIn"/>
                 <Level name="Ring">
                     <ComponentClass name="Ring"/>
-                    <ComponentLinkClass name="isPartOf"/>
+                    <ComponentLinkClass name="isIn"/>
                     <Level name="Chamber">
                         <ComponentClass name="Chamber"/>
-                        <ComponentLinkClass name="isPartOf"/>
+                        <ComponentLinkClass name="isIn"/>
                         <Level name="Layer">
                             <ComponentClass name="Layer"/>
-                            <ComponentLinkClass name="isPartOf"/>
+                            <ComponentLinkClass name="isIn"/>
                         </Level>
                     </Level>
                 </Level>
