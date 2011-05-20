@@ -16,14 +16,14 @@
                       required="false"
                       type="java.lang.Integer"
                       default="300"/>
-        <cc:attribute name="rendered"
+        <cc:attribute name="render"
                       required="false"
                       type="java.lang.Boolean"
                       default="true"/>
     </cc:interface>
 
     <cc:implementation>
-        <ice:panelGrid columns="1" border="0" cellpadding="0" cellspacing="0" width="#{cc.attrs.size}" rendered="#{cc.attrs.rendered}">
+        <ice:panelGrid columns="1" border="0" cellpadding="0" cellspacing="0" width="#{cc.attrs.size}" rendered="#{cc.attrs.render}">
             <ice:selectInputText width="#{cc.attrs.size}"
                                  rows="#{cc.attrs.selector.rows}"
                                  value="#{cc.attrs.selector.componentName}"
@@ -51,6 +51,5 @@
                 </table>
             </ice:panelGroup>
         </ice:panelGrid>
-
     </cc:implementation>
 </html>
