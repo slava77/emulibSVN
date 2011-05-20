@@ -33,7 +33,6 @@ void AFEB::teststand::Configuration::createCrate() {
     xpath.str("");
     xpath << "//c:configuration/c:crate/c:module[@c:slot=\"" << slot << "\"]/@c:type";
     string moduleType = utils::getSelectedNodeValue( xml_, xpath.str() );
-    // cout << slot << " " << moduleName << " " << moduleType << endl << flush;
     if ( moduleName.size() != 0 && moduleType.size() != 0 ){
 
       if ( moduleType == "CrateController" ){
@@ -94,7 +93,7 @@ void AFEB::teststand::Configuration::createMeasurements() {
 
 
   // Find the socket number of devices to be tested (i.e., those for which an id is given):
-  vector< pair<string,string> > testedDevices = utils::getSelectedNodesValues( xml_, "/c:configuration/c:inputs/c:testedDevice[@c:id!='0']/@c:socket" );
+  vector< pair<string,string> > testedDevices = utils::getSelectedNodesValues( xml_, "/c:configuration/c:inputs/c:testedDevice[@c:id!='']/@c:socket" );
   if ( testedDevices.size() == 0 ){
     XCEPT_RAISE( xcept::Exception, "No device ids to be tested are specified." );
   }
@@ -104,7 +103,7 @@ void AFEB::teststand::Configuration::createMeasurements() {
   for ( t = testedDevices.begin(); t != testedDevices.end(); ++t ){
     // Create this device
     stringstream xpath;
-    xpath << "/c:configuration/c:inputs/c:testedDevice[@c:socket!='" << t->second << "']/@*";
+    xpath << "/c:configuration/c:inputs/c:testedDevice[@c:socket='" << t->second << "']/@*";
     vector< pair<string,string> > deviceParameters = utils::getSelectedNodesValues( xml_, xpath.str() );
     TestedDevice* testedDevice = new TestedDevice( testedDeviceType, testedDeviceNChannels, crate_ );
     testedDevice->setParameters( deviceParameters );
@@ -140,11 +139,12 @@ void AFEB::teststand::Configuration::createMeasurements() {
 	measurement->setTDCParameters( parameters );
 	
 	measurements_.push_back( measurement );
+	
       } // if ( measurement == NULL )
 
       // Add this device to be tested in this measurement
       measurement->addTestedDevice( testedDevice );
-
+      
     } // for ( m = enabledMeasurementTypes.begin(); m != enabledMeasurementTypes.end(); ++m )
   } // for ( t = testedDevices.begin(); t != testedDevices.end(); ++t )
 }

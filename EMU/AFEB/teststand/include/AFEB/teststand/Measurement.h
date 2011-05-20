@@ -13,9 +13,15 @@ using namespace AFEB::teststand;
 
 namespace AFEB { namespace teststand {
 
+    class Measurement;
+    ostream& operator<<( ostream& os, const Measurement& m );
+
     class Measurement{
     public:
       enum Type_t { count_vs_dac, time_vs_dac, nTypes };
+
+      friend ostream& operator<<( ostream& os, const Measurement& m );
+
       Measurement( const string name, const string type );
       void setPulseParameters( const vector< pair<string,string> >& param );
       void setThresholdParameters( const vector< pair<string,string> >& param );
@@ -28,7 +34,6 @@ namespace AFEB { namespace teststand {
       static const char* const types_[nTypes];
       string name_;
       string type_;
-      //const Crate* const crate_;
       vector<TestedDevice*> testedDevices_;
 
       int amplitudeMin_;

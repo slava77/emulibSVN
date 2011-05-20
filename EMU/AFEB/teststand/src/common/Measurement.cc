@@ -7,8 +7,23 @@ using namespace AFEB::teststand;
 
 const char* const AFEB::teststand::Measurement::types_[] = { "count_vs_dac", "time_vs_dac" };
 
+ostream& AFEB::teststand::operator<<( ostream& os, const Measurement& m ){
+
+  os << "Measurement '" << m.name_ << "' of type " << m.type_ << endl
+     << "  Tested devices:" << endl;
+
+  vector<TestedDevice*>::const_iterator d;
+  for ( d = m.testedDevices_.begin(); d != m.testedDevices_.end(); ++d ){
+    os << **d;
+  }
+
+  return os;
+}
+
 AFEB::teststand::Measurement::Measurement( const string name, const string type ) :
-  name_( name ){
+  name_( name ),
+  type_( type )
+{
   bool isValidType = false;
   for ( int i=0; i<nTypes && !isValidType; ++i ){
     isValidType |= ( type.compare( types_[i] ) == 0 );

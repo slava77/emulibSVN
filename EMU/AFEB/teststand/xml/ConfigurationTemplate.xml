@@ -13,7 +13,7 @@
       <c:measurement c:name="time_vs_dac">-</c:measurement>
     </c:description>
 
-    <c:testedDevice c:type="" c:nChannels="16"/>
+    <c:testedDevice c:type="AD16" c:nChannels="16"/>
 
     <c:crate c:number="1">
       <c:module c:slot="1"  c:name="" c:type=""/>
@@ -61,7 +61,7 @@
 	<c:ThresholdSetter c:value="50"/>
 	<c:TDC c:timeMin="0" c:timeMax="120"/>
       </c:measurement>
-      <c:measurement c:name="Time response vs. pulse hight" c:type="count_vs_dac" c:enabled="1">
+      <c:measurement c:name="Time response vs. pulse hight" c:type="time_vs_dac" c:enabled="1">
 	<c:PulseGenerator c:amplitudeMin="" c:amplitudeMax="" c:amplitudeStep="" c:nPulses="" c:slot="6"/>
 	<c:ThresholdSetter c:value="50"/>
 	<c:TDC c:timeMin="0" c:timeMax="120"/>

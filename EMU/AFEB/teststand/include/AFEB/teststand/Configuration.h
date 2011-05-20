@@ -15,7 +15,7 @@ namespace AFEB { namespace teststand {
       Configuration( const string XML );
       ~Configuration();
       const Crate* getCrate() const { return crate_; }
-      const vector<Measurement*> getMeasurements() const { return measurements_; }
+      const vector<Measurement*>& getMeasurements() const { return measurements_; }
     private:
       string xml_;
       Crate* crate_; ///< The crate setup. It's adopted by all measurements.

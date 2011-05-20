@@ -181,6 +181,12 @@ void AFEB::teststand::Application::configEditorWebPage(xgi::Input *in, xgi::Outp
   AFEB::teststand::Configuration c( configurationXML_ );
   cout << *c.getCrate() << endl;
 
+  vector<Measurement*>::const_iterator m;
+  cout << c.getMeasurements().size() << " measurements" << endl;
+  for ( m = c.getMeasurements().begin(); m != c.getMeasurements().end(); ++m ){
+    cout << **m;
+  }
+
   AFEB::teststand::utils::redirectTo( applicationURLPath_, out );
   return;
 }

@@ -12,8 +12,13 @@ using namespace AFEB::teststand;
 
 namespace AFEB { namespace teststand {
 
+    class TestedDevice;
+    ostream& operator<<( ostream& os, const TestedDevice& d );
+
     class TestedDevice{
     public:
+      friend ostream& operator<<( ostream& os, const TestedDevice& d );
+
       TestedDevice( const string type, const int nChannels, Crate* const crate );
       void setParameters( const vector< pair<string,string> >& param );
       int getTDCSlot() const { return tdcSlot_; }

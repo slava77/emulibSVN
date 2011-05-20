@@ -2,6 +2,21 @@
 #include "AFEB/teststand/utils/String.h"
 #include "xcept/Exception.h"
 
+#include <iomanip>
+
+ostream& AFEB::teststand::operator<<( ostream& os, const TestedDevice& d ){
+  os << "socket    type                id                      TDC slot   TDC input" << endl
+     << right
+     << setw(6) << d.socket_ << "    "
+     << left
+     << setw(20) << d.type_ 
+     << setw(20) << d.id_
+     << right 
+     << setw(12) << d.tdcSlot_ 
+     << setw(12) << d.tdcInput_ << endl;
+  return os;
+}
+
 AFEB::teststand::TestedDevice::TestedDevice( const string type, const int nChannels, Crate* const crate ) :
   type_( type ),
   nChannels_( nChannels ),
