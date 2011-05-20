@@ -56,30 +56,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SimpleComponentFinder }
-     * 
-     */
-    public SimpleComponentFinder createSimpleComponentFinder() {
-        return new SimpleComponentFinder();
-    }
-
-    /**
-     * Create an instance of {@link ActionExecution }
-     * 
-     */
-    public ActionExecution createActionExecution() {
-        return new ActionExecution();
-    }
-
-    /**
-     * Create an instance of {@link ConclusionType }
-     * 
-     */
-    public ConclusionType createConclusionType() {
-        return new ConclusionType();
-    }
-
-    /**
      * Create an instance of {@link EmailAction }
      * 
      */
@@ -88,35 +64,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ConclusionTriggerSource }
+     * Create an instance of {@link Rule }
      * 
      */
-    public ConclusionTriggerSource createConclusionTriggerSource() {
-        return new ConclusionTriggerSource();
-    }
-
-    /**
-     * Create an instance of {@link DcsCommandAction }
-     * 
-     */
-    public DcsCommandAction createDcsCommandAction() {
-        return new DcsCommandAction();
-    }
-
-    /**
-     * Create an instance of {@link ConclusionTrigger }
-     * 
-     */
-    public ConclusionTrigger createConclusionTrigger() {
-        return new ConclusionTrigger();
-    }
-
-    /**
-     * Create an instance of {@link SmsAction }
-     * 
-     */
-    public SmsAction createSmsAction() {
-        return new SmsAction();
+    public Rule createRule() {
+        return new Rule();
     }
 
     /**
@@ -136,11 +88,59 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Rule }
+     * Create an instance of {@link SimpleComponentFinder }
      * 
      */
-    public Rule createRule() {
-        return new Rule();
+    public SimpleComponentFinder createSimpleComponentFinder() {
+        return new SimpleComponentFinder();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionType }
+     * 
+     */
+    public ConclusionType createConclusionType() {
+        return new ConclusionType();
+    }
+
+    /**
+     * Create an instance of {@link DcsCommandAction }
+     * 
+     */
+    public DcsCommandAction createDcsCommandAction() {
+        return new DcsCommandAction();
+    }
+
+    /**
+     * Create an instance of {@link SmsAction }
+     * 
+     */
+    public SmsAction createSmsAction() {
+        return new SmsAction();
+    }
+
+    /**
+     * Create an instance of {@link ActionExecution }
+     * 
+     */
+    public ActionExecution createActionExecution() {
+        return new ActionExecution();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionTriggerSource }
+     * 
+     */
+    public ConclusionTriggerSource createConclusionTriggerSource() {
+        return new ConclusionTriggerSource();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionTrigger }
+     * 
+     */
+    public ConclusionTrigger createConclusionTrigger() {
+        return new ConclusionTrigger();
     }
 
     /**
