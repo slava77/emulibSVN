@@ -26,6 +26,8 @@ namespace AFEB { namespace teststand {
       int getSignalConverterSlot() const { return signalConverterSlot_; }
       int getTDCInput() const { return tdcInput_; }
       string getId() const { return id_; }
+      string getType() const { return type_; }
+      int getNChannels() const { return nChannels_; }
     private:
       string type_;
       int nChannels_;

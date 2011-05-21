@@ -78,14 +78,6 @@ void AFEB::teststand::Measurement::addTestedDevice( TestedDevice* device ){
   testedDevices_.push_back( device );
 }
 
-// const TestedDevice* AFEB::teststand::Measurement::findTestedDevice( const int tdcSlot ) const {
-//   vector<TestedDevice*>::const_iterator d;
-//   for ( d = testedDevices_.begin(); d != testedDevices_.end(); ++d ){
-//     if ( (*d)->getTDCSlot() == tdcSlot ) return *d;
-//   }
-//   return NULL;
-// }
-
 const TestedDevice* AFEB::teststand::Measurement::findTestedDevice( const int tdcInput ) const {
   vector<TestedDevice*>::const_iterator d;
   for ( d = testedDevices_.begin(); d != testedDevices_.end(); ++d ){

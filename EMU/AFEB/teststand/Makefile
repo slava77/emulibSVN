@@ -9,6 +9,10 @@ PACKAGE_VER_MAJOR=01
 PACKAGE_VER_MINOR=00
 PACKAGE_VER_PATCH=00
 
+ROOTCFLAGS    = $(shell root-config --cflags)
+ROOTLIBS      = $(shell root-config --libs)
+ROOTGLIBS     = $(shell root-config --glibs)
+
 
 #
 # Packages to be built
@@ -35,11 +39,13 @@ Sources = \
 	Configuration.cc \
 	Measurement.cc \
 	TestedDevice.cc \
+	Results.cc \
 	version.cc
 
 IncludeDirs = \
 	$(XDAQ_ROOT)/include \
-	$(BUILD_HOME)/AFEB/Jorway/include
+	$(BUILD_HOME)/AFEB/Jorway/include \
+	$(ROOTSYS)/include
 
 LibraryDirs = \
 	$(XDAQ_ROOT)/lib
@@ -48,7 +54,7 @@ UserSourcePath =
 UserCFlags =
 #UserCCFlags = -g -Wall -pedantic-errors -Wno-long-long
 UserCCFlags = -g -Wall -Wno-long-long
-UserDynamicLinkFlags =
+UserDynamicLinkFlags = $(ROOTLIBS)
 UserStaticLinkFlags =
 UserExecutableLinkFlags =
 

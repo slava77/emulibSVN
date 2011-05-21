@@ -27,9 +27,14 @@ namespace AFEB { namespace teststand {
       void setThresholdParameters( const vector< pair<string,string> >& param );
       void setTDCParameters( const vector< pair<string,string> >& param );
       void addTestedDevice( TestedDevice* device );
+      string getName() const { return name_; }
       string getType() const { return type_; }
       const TestedDevice* findTestedDevice( const int tdcInput ) const;
       int getTDCSlot() const;
+      int getAmplitudeMin () const { return amplitudeMin_; }
+      int getAmplitudeMax () const { return amplitudeMax_; }
+      int getAmplitudeStep() const { return amplitudeStep_;}
+      int getNPulses() const { return nPulses_; }
       void execute();
 
     private:
