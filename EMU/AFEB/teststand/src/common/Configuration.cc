@@ -21,6 +21,8 @@ AFEB::teststand::Configuration::Configuration( const string XML ) :
 
 AFEB::teststand::Configuration::~Configuration(){
   delete crate_;
+  for ( vector<Measurement*>::iterator  i = measurements_.begin() ; i != measurements_.end() ; ++i ) delete *i;
+  for ( vector<TestedDevice*>::iterator i = testedDevices_.begin(); i != testedDevices_.end(); ++i ) delete *i;
 }
 
 void AFEB::teststand::Configuration::createCrate() {
@@ -52,7 +54,7 @@ void AFEB::teststand::Configuration::createCrate() {
 	else{
 	  // TODO: throw an exception
 	}
-      else if ( moduleType == "ThresholdSetter" ){
+      else if ( moduleType == "SignalConverter" ){
 	if ( moduleName == "LE32" ){
 	  AFEB::teststand::LE32 *module = new AFEB::teststand::LE32( moduleType  );
 	  crate_->insert( module, slot );
@@ -127,7 +129,7 @@ void AFEB::teststand::Configuration::createMeasurements() {
 	measurement->setPulseParameters( parameters );
 	// Set thereshold parameters
 	xpath.str("");
-	xpath << "/c:configuration/c:measurements/c:measurement[@c:type='" << m->second << "']/c:ThresholdSetter/@*";
+	xpath << "/c:configuration/c:measurements/c:measurement[@c:type='" << m->second << "']/c:SignalConverter/@*";
 	parameters.clear();
 	parameters = utils::getSelectedNodesValues( xml_, xpath.str() );
 	measurement->setThresholdParameters( parameters );
@@ -153,7 +155,8 @@ void AFEB::teststand::Configuration::createMeasurements() {
 Measurement* AFEB::teststand::Configuration::findMeasurement( const string type, const int tdcSlot ) const {
   vector<Measurement*>::const_iterator m;
   for ( m = measurements_.begin(); m != measurements_.end(); ++m ){
-    if ( (*m)->getType().compare( type ) == 0 && (*m)->findTestedDevice( tdcSlot ) != NULL ){
+    if ( (*m)->getType().compare( type ) == 0       && 
+	 (*m)->getTDCSlot()              == tdcSlot    ){
       return *m;
     }
   }

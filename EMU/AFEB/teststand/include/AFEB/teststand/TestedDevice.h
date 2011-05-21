@@ -21,7 +21,9 @@ namespace AFEB { namespace teststand {
 
       TestedDevice( const string type, const int nChannels, Crate* const crate );
       void setParameters( const vector< pair<string,string> >& param );
+      Crate* getCrate() const { return crate_; }
       int getTDCSlot() const { return tdcSlot_; }
+      int getSignalConverterSlot() const { return signalConverterSlot_; }
       int getTDCInput() const { return tdcInput_; }
       string getId() const { return id_; }
     private:
@@ -32,6 +34,7 @@ namespace AFEB { namespace teststand {
       int socket_;
       int tdcSlot_;
       int tdcInput_;
+      int signalConverterSlot_;
     };
 
   }}

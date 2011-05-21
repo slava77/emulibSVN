@@ -17,10 +17,10 @@ namespace AFEB { namespace teststand {
       const Crate* getCrate() const { return crate_; }
       const vector<Measurement*>& getMeasurements() const { return measurements_; }
     private:
-      string xml_;
-      Crate* crate_; ///< The crate setup. It's adopted by all measurements.
-      vector<TestedDevice*> testedDevices_;
-      vector<Measurement*> measurements_;
+      string xml_; ///< The configuration XML.
+      Crate* crate_; ///< The crate setup. It's adopted by all measurements of this configuration.
+      vector<TestedDevice*> testedDevices_; ///< The tested devices. It's adopted by all measurements of this configuration.
+      vector<Measurement*> measurements_; ///< The selected measurements of this configuration.
       void createCrate();
       void createMeasurements();
       Measurement* findMeasurement( const string type, const int tdcSlot ) const;

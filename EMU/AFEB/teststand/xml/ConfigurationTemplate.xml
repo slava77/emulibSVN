@@ -20,11 +20,11 @@
       <c:module c:slot="2"  c:name="" c:type=""/>
       <c:module c:slot="3"  c:name="LeCroy3377" c:type="TDC"/>
       <c:module c:slot="4"  c:name="" c:type=""/>
-      <c:module c:slot="5"  c:name="LE32" c:type="ThresholdSetter"/>
+      <c:module c:slot="5"  c:name="LE32" c:type="SignalConverter"/>
       <c:module c:slot="6"  c:name="LE32" c:type="PulseGenerator"/>
       <c:module c:slot="7"  c:name="LeCroy3377" c:type="TDC"/>
       <c:module c:slot="8"  c:name="" c:type=""/>
-      <c:module c:slot="9"  c:name="LE32" c:type="ThresholdSetter"/>
+      <c:module c:slot="9"  c:name="LE32" c:type="SignalConverter"/>
       <c:module c:slot="10" c:name="Jorway73A" c:type="CrateController"/>
       <c:module c:slot="11" c:name="" c:type=""/>
       <c:module c:slot="12" c:name="" c:type=""/>
@@ -43,27 +43,27 @@
     </c:crate>
 
     <c:inputs>
-      <c:testedDevice c:socket="1"  c:id="01" c:tdcSlot="9" c:tdcInput="1"/>
-      <c:testedDevice c:socket="2"  c:id="02" c:tdcSlot="9" c:tdcInput="2"/>
-      <c:testedDevice c:socket="3"  c:id="03" c:tdcSlot="5" c:tdcInput="1"/>
-      <c:testedDevice c:socket="4"  c:id="04" c:tdcSlot="5" c:tdcInput="2"/>
-      <c:testedDevice c:socket="5"  c:id=""   c:tdcSlot=""  c:tdcInput=""/>
-      <c:testedDevice c:socket="6"  c:id=""   c:tdcSlot=""  c:tdcInput=""/>
-      <c:testedDevice c:socket="7"  c:id=""   c:tdcSlot=""  c:tdcInput=""/>
-      <c:testedDevice c:socket="8"  c:id=""   c:tdcSlot=""  c:tdcInput=""/>
-      <c:testedDevice c:socket="9"  c:id=""   c:tdcSlot=""  c:tdcInput=""/>
-      <c:testedDevice c:socket="10" c:id=""   c:tdcSlot=""  c:tdcInput=""/>
+      <c:testedDevice c:socket="1"  c:id="01" c:tdcSlot="3" c:tdcInput="1" c:signalConverterSlot="5"/>
+      <c:testedDevice c:socket="2"  c:id="02" c:tdcSlot="3" c:tdcInput="2" c:signalConverterSlot="5"/>
+      <c:testedDevice c:socket="3"  c:id="03" c:tdcSlot="7" c:tdcInput="1" c:signalConverterSlot="9"/>
+      <c:testedDevice c:socket="4"  c:id="04" c:tdcSlot="7" c:tdcInput="2" c:signalConverterSlot="9"/>
+      <c:testedDevice c:socket="5"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""/>
+      <c:testedDevice c:socket="6"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""/>
+      <c:testedDevice c:socket="7"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""/>
+      <c:testedDevice c:socket="8"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""/>
+      <c:testedDevice c:socket="9"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""/>
+      <c:testedDevice c:socket="10" c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""/>
     </c:inputs>
 
     <c:measurements>
       <c:measurement c:name="Efficiency scan" c:type="count_vs_dac" c:enabled="1">
 	<c:PulseGenerator c:amplitudeMin="" c:amplitudeMax="" c:amplitudeStep="" c:nPulses="" c:slot="6"/>
-	<c:ThresholdSetter c:value="50"/>
+	<c:SignalConverter c:thresholdValue="50"/>
 	<c:TDC c:timeMin="0" c:timeMax="120"/>
       </c:measurement>
       <c:measurement c:name="Time response vs. pulse hight" c:type="time_vs_dac" c:enabled="1">
 	<c:PulseGenerator c:amplitudeMin="" c:amplitudeMax="" c:amplitudeStep="" c:nPulses="" c:slot="6"/>
-	<c:ThresholdSetter c:value="50"/>
+	<c:SignalConverter c:thresholdValue="50"/>
 	<c:TDC c:timeMin="0" c:timeMax="120"/>
       </c:measurement>
     </c:measurements>

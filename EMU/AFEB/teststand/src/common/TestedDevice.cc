@@ -5,7 +5,7 @@
 #include <iomanip>
 
 ostream& AFEB::teststand::operator<<( ostream& os, const TestedDevice& d ){
-  os << "socket    type                id                      TDC slot   TDC input" << endl
+  os << "socket    type                id                      TDC slot   TDC input      converter slot" << endl
      << right
      << setw(6) << d.socket_ << "    "
      << left
@@ -13,7 +13,8 @@ ostream& AFEB::teststand::operator<<( ostream& os, const TestedDevice& d ){
      << setw(20) << d.id_
      << right 
      << setw(12) << d.tdcSlot_ 
-     << setw(12) << d.tdcInput_ << endl;
+     << setw(12) << d.tdcInput_ 
+     << setw(20) << d.signalConverterSlot_ << endl;
   return os;
 }
 
@@ -30,5 +31,6 @@ void AFEB::teststand::TestedDevice::setParameters( const vector< pair<string,str
     else if ( p->first.rfind( "socket"   ) != string::npos ) socket_   = utils::stringTo<int>( p->second );
     else if ( p->first.rfind( "tdcSlot"  ) != string::npos ) tdcSlot_  = utils::stringTo<int>( p->second );
     else if ( p->first.rfind( "tdcInput" ) != string::npos ) tdcInput_ = utils::stringTo<int>( p->second );
+    else if ( p->first.rfind( "signalConverterSlot" ) != string::npos ) signalConverterSlot_ = utils::stringTo<int>( p->second );
   }
 }

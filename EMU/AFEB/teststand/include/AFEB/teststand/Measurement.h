@@ -28,12 +28,15 @@ namespace AFEB { namespace teststand {
       void setTDCParameters( const vector< pair<string,string> >& param );
       void addTestedDevice( TestedDevice* device );
       string getType() const { return type_; }
-      const TestedDevice* findTestedDevice( const int tdcSlot ) const;
+      const TestedDevice* findTestedDevice( const int tdcInput ) const;
+      int getTDCSlot() const;
+      void execute();
 
     private:
       static const char* const types_[nTypes];
       string name_;
       string type_;
+      Type_t type_t_;
       vector<TestedDevice*> testedDevices_;
 
       int amplitudeMin_;
@@ -47,6 +50,8 @@ namespace AFEB { namespace teststand {
       int tdcTimeMin_;
       int tdcTimeMax_;
 
+      void countVsDAQ();
+      void countVsTime();
     };
 
   }}
