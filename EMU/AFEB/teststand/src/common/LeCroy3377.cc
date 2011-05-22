@@ -48,7 +48,7 @@ bool AFEB::teststand::LeCroy3377::HeadRdBlock()
   if ( DataHead( crate_->getCrateController()->read ( A0, F0, (Station_t)slot_ ) ) )
   {
     // read_block ( F0, Data, chs_tdc );
-    crate_->getCrateController()->readBlock ( A0, F0, (Station_t)slot_, Data, nTdcChannels );
+    crate_->getCrateController()->readBlock ( A0, F0, (Station_t)slot_, Data, nShortsData );
     return true;
   }
   else return false;//ret;
@@ -64,7 +64,7 @@ bool AFEB::teststand::LeCroy3377::DataHead( int data )
 //-----------------------------------------------------------
 void AFEB::teststand::LeCroy3377::BlockClear ( void )
 {
-  for ( int ch = 0; ch < nTdcChannels; ch++ )
+  for ( int ch = 0; ch < nShortsData; ch++ )
     Data[ch] = 0;
 }
 
@@ -86,7 +86,7 @@ bool AFEB::teststand::LeCroy3377::BlockRd ( int ch )
   file << Edge << "\t" ;
   file << TimeCh  << "\t" << Data[ch] << endl ;
 */
-  if ( ( Data[ch] == 0 )&&( ch != nTdcChannels - 1 ) )
+  if ( ( Data[ch] == 0 )&&( ch != nShortsData - 1 ) )
     if ( Data[ch+1] == 0 )
       { last_channel = last_2_channel = -1; return false; }
 
@@ -124,7 +124,7 @@ bool AFEB::teststand::LeCroy3377::BlockRd ( int ch )
 
   if ( bad_channel ) TimeCh = -1000;
 
-  if ( ch == nTdcChannels - 1 )
+  if ( ch == nShortsData - 1 )
     { last_channel = last_2_channel = -1; return false; }
 
   return true;
@@ -215,7 +215,7 @@ void AFEB::teststand::LeCroy3377::readBlock( const Subaddress_t subaddress,
 					     const Function_t function,
 					     unsigned short *data,
 					     const int blockSize ) const {
-  crate_->getCrateController()->readBlock( subaddress, function, (Station_t)slot_, data, nTdcChannels );
+  crate_->getCrateController()->readBlock( subaddress, function, (Station_t)slot_, data, nShortsData );
 }
 
 

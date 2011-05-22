@@ -3,6 +3,7 @@
 #include "AFEB/teststand/utils/DOM.h"
 #include "AFEB/teststand/utils/Xalan.h"
 #include "AFEB/teststand/utils/String.h"
+#include "AFEB/teststand/utils/IO.h"
 
 #include "AFEB/teststand/Jorway73A.h"
 #include "AFEB/teststand/LE32.h"
@@ -109,6 +110,9 @@ void AFEB::teststand::Configuration::createMeasurements() {
     vector< pair<string,string> > deviceParameters = utils::getSelectedNodesValues( xml_, xpath.str() );
     TestedDevice* testedDevice = new TestedDevice( testedDeviceType, testedDeviceNChannels, crate_ );
     testedDevice->setParameters( deviceParameters );
+    
+    cout << deviceParameters << endl;
+    cout << "Created device" << endl << *testedDevice << endl;
 
     // Loop over the requested (enabled) measurement types
     vector< pair<string,string> >::const_iterator m;

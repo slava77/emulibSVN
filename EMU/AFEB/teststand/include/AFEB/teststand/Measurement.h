@@ -3,6 +3,7 @@
 
 #include "AFEB/teststand/Crate.h"
 #include "AFEB/teststand/TestedDevice.h"
+#include "AFEB/teststand/Results.h"
 
 #include <string>
 #include <vector>
@@ -16,6 +17,8 @@ namespace AFEB { namespace teststand {
     class Measurement;
     ostream& operator<<( ostream& os, const Measurement& m );
 
+    class Results;
+
     class Measurement{
     public:
       enum Type_t { count_vs_dac, time_vs_dac, nTypes };
@@ -23,13 +26,14 @@ namespace AFEB { namespace teststand {
       friend ostream& operator<<( ostream& os, const Measurement& m );
 
       Measurement( const string name, const string type );
+      ~Measurement();
       void setPulseParameters( const vector< pair<string,string> >& param );
       void setThresholdParameters( const vector< pair<string,string> >& param );
       void setTDCParameters( const vector< pair<string,string> >& param );
       void addTestedDevice( TestedDevice* device );
       string getName() const { return name_; }
       string getType() const { return type_; }
-      const TestedDevice* findTestedDevice( const int tdcInput ) const;
+      const TestedDevice* getTestedDevice( const int tdcInput ) const;
       int getTDCSlot() const;
       int getAmplitudeMin () const { return amplitudeMin_; }
       int getAmplitudeMax () const { return amplitudeMax_; }
@@ -42,7 +46,9 @@ namespace AFEB { namespace teststand {
       string name_;
       string type_;
       Type_t type_t_;
-      vector<TestedDevice*> testedDevices_;
+      // vector<TestedDevice*> testedDevices_;
+      // vector<Results*> results_;
+      map<TestedDevice*,Results*> results_;
 
       int amplitudeMin_;
       int amplitudeMax_;
@@ -57,6 +63,9 @@ namespace AFEB { namespace teststand {
 
       void countVsDAQ();
       void countVsTime();
+      void dummyResultGenerator();
+      TestedDevice* findTestedDevice( const int tdcInput );
+      Results* findResults( const int tdcInput );
     };
 
   }}

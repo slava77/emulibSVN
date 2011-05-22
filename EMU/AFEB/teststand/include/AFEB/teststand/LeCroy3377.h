@@ -16,7 +16,8 @@ namespace AFEB { namespace teststand {
 	M3     //Mode3 - Common Start , Double Word
       };
       enum TdcRegister_t { R0 , R1 , R2 , R3 , R4 , R5 };
-      static const int nTdcChannels = 16 * 4;
+      static const int nTdcChannels = 16 * 2;
+      static const int nShortsData = 16 * 4; // TODO: why not 16 * 2 = 32 ?
       LeCroy3377();
       bool Set( TdcMode_t mode, short shift, short hit,
 		short edge, int mpi, int time_out, int time_enforced );
@@ -49,7 +50,7 @@ namespace AFEB { namespace teststand {
       int TimeCh;
       TdcMode_t Mode;
       int EdgeRec;
-      unsigned short Data[nTdcChannels];
+      unsigned short Data[nShortsData];
       
       // Wrappers for CAMAC methods
       void write( const unsigned int data, 

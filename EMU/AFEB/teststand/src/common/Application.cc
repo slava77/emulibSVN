@@ -185,6 +185,7 @@ void AFEB::teststand::Application::configEditorWebPage(xgi::Input *in, xgi::Outp
   cout << c.getMeasurements().size() << " measurements" << endl;
   for ( m = c.getMeasurements().begin(); m != c.getMeasurements().end(); ++m ){
     cout << **m;
+    (*m)->execute();
   }
 
   AFEB::teststand::utils::redirectTo( applicationURLPath_, out );
