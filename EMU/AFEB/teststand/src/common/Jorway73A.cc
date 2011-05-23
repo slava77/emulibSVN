@@ -22,7 +22,7 @@ int AFEB::teststand::Jorway73A::getBranch(){
     stringstream ss;
     ss << "Failed to find the Jorway73A SCSI device. (Looked for vendor: " << vendor 
        << ", model: " << model << ")";
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+    cout << ss.str() << endl; // XCEPT_RAISE( xcept::Exception, ss.str() ); // TODO: throw exception
   }
   return ( scsi.id + 8 * scsi.host );
 }

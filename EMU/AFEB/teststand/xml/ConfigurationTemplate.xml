@@ -1,17 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <c:configuration xmlns:c="http://cms.cern.ch/emu/afeb/teststand/configuration" c:name="Template" c:date="2011-04-29" c:time="12:00:00">
 
-    <c:description>
-      <c:testedDevice c:name="">-</c:testedDevice>
-      <c:crate>-</c:crate>
-      <c:module c:name="Jorway">Jorway Model 73A SCSI Bus CAMAC Crate Controller</c:module>
-      <c:module c:name="LE32">CAMAC 32-channel Converter and 2-channel Pulse Generator"</c:module>
-      <c:module c:name="LeCroy3377">LeCroy Model 3377 32-channel CAMAC TDC</c:module>
-      <c:module c:name="">-</c:module>
-      <c:module c:name="">-</c:module>
+    <c:metadata>
+      <c:tag c:name="c:testedDevice">
+	<c:attr c:name="c:type" c:value="AD16" c:description="16-channel pre-amp, shaper and descriminator"/>
+	<c:attr c:name="c:nChannels" c:value="16" c:description="Number of channels."/>
+	<c:attr c:name="c:tdcSlot" c:value="1" c:description="The crate slot in which the TDC reading out this device is inserted."/>
+	<c:attr c:name="c:tdcSlot" c:value="2" c:description="The crate slot in which the TDC reading out this device is inserted."/>
+	<c:attr c:name="c:tdcSlot" c:value="3" c:description="The crate slot in which the TDC reading out this device is inserted."/>
+	<c:attr c:name="c:tdcSlot" c:value="4" c:description="The crate slot in which the TDC reading out this device is inserted."/>
+	<c:attr c:name="c:tdcSlot" c:value="5" c:description="The crate slot in which the TDC reading out this device is inserted."/>
+	<c:attr c:name="c:tdcSlot" c:value="6" c:description="The crate slot in which the TDC reading out this device is inserted."/>
+	<c:attr c:name="c:tdcSlot" c:value="7" c:description="The crate slot in which the TDC reading out this device is inserted."/>
+	<c:attr c:name="c:tdcSlot" c:value="8" c:description="The crate slot in which the TDC reading out this device is inserted."/>
+	<c:attr c:name="c:tdcSlot" c:value="9" c:description="The crate slot in which the TDC reading out this device is inserted."/>
+	<c:attr c:name="c:tdcInput" c:value="1" c:description="The TDC's upper input socket (channels 1-16)."/>
+	<c:attr c:name="c:tdcInput" c:value="2" c:description="The TDC's lower input socket (channels 17-32)."/>
+	<c:attr c:name="c:signalConverterSlot" c:value="1" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+	<c:attr c:name="c:signalConverterSlot" c:value="2" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+	<c:attr c:name="c:signalConverterSlot" c:value="3" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+	<c:attr c:name="c:signalConverterSlot" c:value="4" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+	<c:attr c:name="c:signalConverterSlot" c:value="5" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+	<c:attr c:name="c:signalConverterSlot" c:value="6" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+	<c:attr c:name="c:signalConverterSlot" c:value="7" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+	<c:attr c:name="c:signalConverterSlot" c:value="8" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+	<c:attr c:name="c:signalConverterSlot" c:value="9" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      </c:tag>
+      <c:tag c:name="c:crate">
+	<c:attr c:name="c:number" c:value="1" c:description="The crate number to be set on the crate controller."/>
+      </c:tag>
+      <c:tag c:name="c:module">
+	<c:attr c:name="c:name" c:value="LeCroy3377" c:description="LeCroy Model 3377 32-channel CAMAC TDC"/>
+	<c:attr c:name="c:name" c:value="LE32" c:description="CAMAC 32-channel Converter and 2-channel Pulse and Threashold Generator"/>
+	<c:attr c:name="c:name" c:value="Jorway" c:description="Jorway Model 73A SCSI Bus CAMAC Crate Controller"/>
+	<c:attr c:name="c:type" c:value="TDC" c:description="Time-to-Digital Converter"/>
+	<c:attr c:name="c:type" c:value="SignalConverter" c:description="LVDS-to-ECL Signal Converter and Threshold Generator"/>
+	<c:attr c:name="c:type" c:value="PulseGenerator" c:description="Adjustable height pulse generator."/>
+      </c:tag>
+      <c:tag c:name="c:measurement">
+	<c:attr c:name="c:type" c:value="count_vs_dac" c:description="Efficiency vs pulse amplitude"/>
+	<c:attr c:name="c:type" c:value="time_vs_dac" c:description=""/>
+	<c:attr c:name="c:" c:value="" c:description=""/>
+	<c:attr c:name="c:" c:value="" c:description=""/>
+	<c:attr c:name="c:" c:value="" c:description=""/>
+      </c:tag>
+      <c:tag c:name="c:PulseGenerator">
+	<c:attr c:name="c:slot" c:value="1" c:description="The crate slot in which the pulse generator is inserted."/>
+	<c:attr c:name="c:slot" c:value="2" c:description="The crate slot in which the pulse generator is inserted."/>
+	<c:attr c:name="c:slot" c:value="3" c:description="The crate slot in which the pulse generator is inserted."/>
+	<c:attr c:name="c:slot" c:value="4" c:description="The crate slot in which the pulse generator is inserted."/>
+	<c:attr c:name="c:slot" c:value="5" c:description="The crate slot in which the pulse generator is inserted."/>
+	<c:attr c:name="c:slot" c:value="6" c:description="The crate slot in which the pulse generator is inserted."/>
+	<c:attr c:name="c:slot" c:value="7" c:description="The crate slot in which the pulse generator is inserted."/>
+	<c:attr c:name="c:slot" c:value="8" c:description="The crate slot in which the pulse generator is inserted."/>
+	<c:attr c:name="c:slot" c:value="9" c:description="The crate slot in which the pulse generator is inserted."/>
+      </c:tag>
       <c:measurement c:name="count_vs_dac">-</c:measurement>
       <c:measurement c:name="time_vs_dac">-</c:measurement>
-    </c:description>
+    </c:metadata>
 
     <c:testedDevice c:type="AD16" c:nChannels="16"/>
 
@@ -27,19 +73,19 @@
       <c:module c:slot="9"  c:name="LE32" c:type="SignalConverter"/>
       <c:module c:slot="10" c:name="Jorway73A" c:type="CrateController"/>
       <c:module c:slot="11" c:name="" c:type=""/>
-      <c:module c:slot="12" c:name="" c:type=""/>
-      <c:module c:slot="13" c:name="" c:type=""/>
-      <c:module c:slot="14" c:name="" c:type=""/>
-      <c:module c:slot="15" c:name="" c:type=""/>
-      <c:module c:slot="16" c:name="" c:type=""/>
-      <c:module c:slot="17" c:name="" c:type=""/>
-      <c:module c:slot="18" c:name="" c:type=""/>
-      <c:module c:slot="19" c:name="" c:type=""/>
-      <c:module c:slot="20" c:name="" c:type=""/>
-      <c:module c:slot="21" c:name="" c:type=""/>
-      <c:module c:slot="22" c:name="" c:type=""/>
-      <c:module c:slot="23" c:name="" c:type=""/>
-      <c:module c:slot="24" c:name="" c:type=""/>
+      <!-- <c:module c:slot="12" c:name="" c:type=""/> -->
+      <!-- <c:module c:slot="13" c:name="" c:type=""/> -->
+      <!-- <c:module c:slot="14" c:name="" c:type=""/> -->
+      <!-- <c:module c:slot="15" c:name="" c:type=""/> -->
+      <!-- <c:module c:slot="16" c:name="" c:type=""/> -->
+      <!-- <c:module c:slot="17" c:name="" c:type=""/> -->
+      <!-- <c:module c:slot="18" c:name="" c:type=""/> -->
+      <!-- <c:module c:slot="19" c:name="" c:type=""/> -->
+      <!-- <c:module c:slot="20" c:name="" c:type=""/> -->
+      <!-- <c:module c:slot="21" c:name="" c:type=""/> -->
+      <!-- <c:module c:slot="22" c:name="" c:type=""/> -->
+      <!-- <c:module c:slot="23" c:name="" c:type=""/> -->
+      <!-- <c:module c:slot="24" c:name="" c:type=""/> -->
     </c:crate>
 
     <c:inputs>
