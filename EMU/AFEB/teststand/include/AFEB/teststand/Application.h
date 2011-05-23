@@ -8,6 +8,7 @@
 #include "xdata/String.h"
 #include "xdata/UnsignedInteger32.h"
 #include "xdata/Vector.h"
+#include "toolbox/fsm/FiniteStateMachine.h"
 
 #include <set>
 #include <map>
@@ -69,6 +70,16 @@ private:
   // End of exported parameters for configuration       //
   ////////////////////////////////////////////////////////
 
+  void createFSM();
+  void stateChanged(toolbox::fsm::FiniteStateMachine &fsm);
+  void fireEvent( const string name );
+  // State transitions
+  void configureAction(toolbox::Event::Reference e);
+  void enableAction(toolbox::Event::Reference e);
+  void haltAction(toolbox::Event::Reference e);
+  void noAction(toolbox::Event::Reference e);
+
+
   /// Generates logger name.
 
   ///
@@ -111,7 +122,7 @@ private:
   string processingInstructionSetter_; ///< XSLT to set the processing instruction for XML
   string configurationXML_; ///< XML of the configuration
   string xmlWebPageSkeleton_; ///< skeleton of the XML web page
-
+  toolbox::fsm::FiniteStateMachine fsm_; ///< finite state machine
 };
 
 }}

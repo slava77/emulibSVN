@@ -37,7 +37,7 @@ AFEB::teststand::Application::Application(xdaq::ApplicationStub *s)
   xdaq::WebApplication(s),
   logger_(Logger::getInstance(generateLoggerName()))
 {
-
+  createFSM();
   bindWebInterface();
   exportParams();
   //AFEB::teststand::utils::SCSI_t scsi = AFEB::teststand::utils::getSCSI( "Jorway", "73A" );
@@ -50,6 +50,47 @@ AFEB::teststand::Application::Application(xdaq::ApplicationStub *s)
        << " lun: " << scsi.lun
        << endl;
 
+}
+
+void AFEB::teststand::Application::createFSM(){
+    fsm_.addState('H', "Halted",     this, &AFEB::teststand::Application::stateChanged);
+    fsm_.addState('C', "Configured", this, &AFEB::teststand::Application::stateChanged);
+    fsm_.addState('E', "Enabled",    this, &AFEB::teststand::Application::stateChanged);
+    
+    fsm_.addStateTransition('H', 'C', "Configure", this, &AFEB::teststand::Application::configureAction);
+    fsm_.addStateTransition('C', 'C', "Configure", this, &AFEB::teststand::Application::noAction);
+    fsm_.addStateTransition('C', 'E', "Enable",    this, &AFEB::teststand::Application::enableAction);
+    fsm_.addStateTransition('E', 'C', "Configure", this, &AFEB::teststand::Application::noAction);
+    fsm_.addStateTransition('C', 'H', "Halt",      this, &AFEB::teststand::Application::haltAction);
+    fsm_.addStateTransition('E', 'H', "Halt",      this, &AFEB::teststand::Application::haltAction);
+    fsm_.addStateTransition('H', 'E', "Enable",    this, &AFEB::teststand::Application::noAction);    
+    fsm_.addStateTransition('H', 'H', "Halt",      this, &AFEB::teststand::Application::noAction);
+    fsm_.addStateTransition('E', 'E', "Enable",    this, &AFEB::teststand::Application::noAction);
+
+    //fsm_.setFailedStateTransitionChanged(this, &AFEB::teststand::Application::stateChanged);
+    fsm_.setInitialState( 'H' );
+    fsm_.reset();
+}
+
+void AFEB::teststand::Application::stateChanged( toolbox::fsm::FiniteStateMachine &fsm ){
+  LOG4CPLUS_INFO( logger_, string( "State changed to " ) + fsm_.getStateName( fsm_.getCurrentState() ) );
+}
+
+void AFEB::teststand::Application::fireEvent( const string name ){
+  toolbox::Event::Reference event( new toolbox::Event( name, this ) );
+  fsm_.fireEvent( event );
+}
+
+void AFEB::teststand::Application::configureAction(toolbox::Event::Reference e){
+}
+
+void AFEB::teststand::Application::enableAction(toolbox::Event::Reference e){
+}
+
+void AFEB::teststand::Application::haltAction(toolbox::Event::Reference e){
+}
+
+void AFEB::teststand::Application::noAction(toolbox::Event::Reference e){
 }
 
 
@@ -99,7 +140,9 @@ void AFEB::teststand::Application::initializeParameters(){
      << "<root>" << endl
      << "<a:application xmlns:a=\"" << applicationNamespace_ 
      << "\" urlPath=\"" << applicationURLPath_ 
-     << "\"/>" << endl
+     << "\" state=\"" << fsm_.getStateName( fsm_.getCurrentState() )
+     << "\"/>" 
+     << endl
      << "</root>";
 
   xmlWebPageSkeleton_ = ss.str();
