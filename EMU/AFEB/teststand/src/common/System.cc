@@ -1,4 +1,7 @@
 #include "AFEB/teststand/utils/System.h"
+#include "AFEB/teststand/utils/IO.h"
+#include "AFEB/teststand/utils/String.h"
+#include "toolbox/regex.h"
 
 #include <exception>
 #include <sstream>
@@ -75,4 +78,50 @@ string AFEB::teststand::utils::getDateTime(){
      << setfill('0') << setw(2) << tm->tm_sec       << " UTC";
 
   return ss.str();
+}
+
+AFEB::teststand::utils::SCSI_t AFEB::teststand::utils::getSCSI( const string vendor, const string model ){
+  // /proc/scsi/scsi has entries like this:
+  // Host: scsi3 Channel: 00 Id: 00 Lun: 00
+  //   Vendor: JORWAY   Model: 73A              Rev: 208 
+  //   Type:   Unknown                          ANSI SCSI revision: 02
+  AFEB::teststand::utils::SCSI_t scsi;
+  string scsiInfo = readFile("/proc/scsi/scsi" );
+  const string regex1( "^[[:blank:]]*Host:[[:blank:]]\+scsi\([[:digit:]]\{1,3\}\)[[:blank:]]\+Channel:[[:blank:]]\+\([[:digit:]][[:digit:]]\)[[:blank:]]\+Id:[[:blank:]]\+\([[:digit:]][[:digit:]]\)[[:blank:]]\+Lun:[[:blank:]]\+\([[:digit:]][[:digit:]]\)[[:blank:]]*$" );
+  const string regex2( "^[[:blank:]]*Vendor: \([[:print:]]\+\)Model: \([[:print:]]\+\)Rev: \([[:print:]]\+\)$" );
+
+  vector<string> matches;
+  vector<string> lines = utils::splitSting( scsiInfo, "\n" );
+
+  for ( vector<string>::iterator l = lines.begin(); l != lines.end(); ++l ){
+    try{
+      if ( toolbox::regx_match( *l, regex1, matches ) ){
+	scsi.host    = utils::stringTo<int>( matches[1] );
+	scsi.channel = utils::stringTo<int>( matches[2] );
+	scsi.id      = utils::stringTo<int>( matches[3] );
+	scsi.lun     = utils::stringTo<int>( matches[4] );
+	//cout << matches.size() << " regex1 matches: " << endl << matches << endl;
+      }
+      if ( toolbox::regx_match( *l, regex2, matches ) ){
+	scsi.vendor   = utils::shaveOffBlanks( matches[1] );
+	scsi.model    = utils::shaveOffBlanks( matches[2] );
+	scsi.revision = utils::shaveOffBlanks( matches[3] );
+	//cout << matches.size() << " regex1 matches: " << endl << matches << endl;
+	if ( scsi.vendor == vendor && scsi.model == model ) return scsi;
+      }
+    }
+    catch( xcept::Exception &e ){
+      XCEPT_RETHROW( xcept::Exception, "Failed to get SCSI parameters: ", e );
+    }
+    catch( std::exception &e ){
+      stringstream ss;
+      ss << "Failed to get SCSI parameters: " << e.what();
+      XCEPT_RAISE( xcept::Exception, ss.str() );
+    }
+    catch( ... ){
+      XCEPT_RAISE( xcept::Exception, "Unknown exception." );
+    }
+  }
+
+  return scsi;
 }

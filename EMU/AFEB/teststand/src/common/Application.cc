@@ -40,6 +40,16 @@ AFEB::teststand::Application::Application(xdaq::ApplicationStub *s)
 
   bindWebInterface();
   exportParams();
+  //AFEB::teststand::utils::SCSI_t scsi = AFEB::teststand::utils::getSCSI( "Jorway", "73A" );
+  AFEB::teststand::utils::SCSI_t scsi = AFEB::teststand::utils::getSCSI( "PIONEER", "BD-ROM" );
+  cout << "SCSI device vendor: " << scsi.vendor 
+       << " model: " << scsi.model 
+       << " host: "  << scsi.host 
+       << " channel: "<< scsi.channel
+       << " id: " << scsi.id
+       << " lun: " << scsi.lun
+       << endl;
+
 }
 
 

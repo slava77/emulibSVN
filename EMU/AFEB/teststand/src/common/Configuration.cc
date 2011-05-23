@@ -3,6 +3,7 @@
 #include "AFEB/teststand/utils/DOM.h"
 #include "AFEB/teststand/utils/Xalan.h"
 #include "AFEB/teststand/utils/String.h"
+#include "AFEB/teststand/utils/System.h"
 #include "AFEB/teststand/utils/IO.h"
 
 #include "AFEB/teststand/Jorway73A.h"
@@ -40,7 +41,7 @@ void AFEB::teststand::Configuration::createCrate() {
 
       if ( moduleType == "CrateController" ){
 	if ( moduleName == "Jorway73A" ){
-	  AFEB::teststand::Jorway73A *module = new AFEB::teststand::Jorway73A( 8, crateNumber ); // TODO: branch
+	  AFEB::teststand::Jorway73A *module = new AFEB::teststand::Jorway73A( crateNumber );
 	  crate_->insertController( module, slot );
 	}
 	else{

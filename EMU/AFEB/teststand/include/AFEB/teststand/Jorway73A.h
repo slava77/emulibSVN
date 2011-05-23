@@ -13,10 +13,7 @@ namespace AFEB { namespace teststand {
     class Jorway73A : public CrateController, public CAMAC
     {      
     public:
-      Jorway73A( const int branch, const int crateNumber ) :
-	CrateController( "Jorway73A", crateNumber ),
-	CAMAC( branch, crateNumber )
-      {}
+      Jorway73A( const int crateNumber );
 
       // Implement CAMAC-type virtual methods of CrateController
       void z() const { CAMAC::z(); }
@@ -40,6 +37,8 @@ namespace AFEB { namespace teststand {
 		    const Function_t function,
 		    const Station_t station ) const { CAMAC::execute( subaddress, function, station ); }
       
+    private:
+      int getBranch();
     };
 
   }}

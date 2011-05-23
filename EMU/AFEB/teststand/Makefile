@@ -31,6 +31,7 @@ Sources = \
 	Cgi.cc \
 	Xalan.cc \
 	System.cc \
+	String.cc \
 	CAMAC.cc \
 	Crate.cc \
 	LE32.cc \
