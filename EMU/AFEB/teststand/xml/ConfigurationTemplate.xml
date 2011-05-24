@@ -103,12 +103,12 @@
 
     <c:measurements>
       <c:measurement c:name="Efficiency scan" c:type="count_vs_dac" c:enabled="1">
-	<c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="" c:slot="6"/>
+	<c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="1000" c:slot="6"/>
 	<c:SignalConverter c:thresholdValue="50"/>
 	<c:TDC c:timeMin="0" c:timeMax="120"/>
       </c:measurement>
       <c:measurement c:name="Time response vs. pulse hight" c:type="time_vs_dac" c:enabled="1">
-	<c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="" c:slot="6"/>
+	<c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="1000" c:slot="6"/>
 	<c:SignalConverter c:thresholdValue="50"/>
 	<c:TDC c:timeMin="0" c:timeMax="120"/>
       </c:measurement>

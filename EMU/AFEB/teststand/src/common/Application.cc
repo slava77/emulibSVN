@@ -109,8 +109,8 @@ string AFEB::teststand::Application::generateLoggerName()
 }
 
 void AFEB::teststand::Application::bindWebInterface(){
-  xgi::bind(this, &AFEB::teststand::Application::defaultWebPage,      "Default"         );
-  xgi::bind(this, &AFEB::teststand::Application::configEditorWebPage, "configEditor"    );
+  xgi::bind(this, &AFEB::teststand::Application::defaultWebPage, "Default" );
+  xgi::bind(this, &AFEB::teststand::Application::controlWebPage, "control" );
 }
 
 void AFEB::teststand::Application::exportParams(){
@@ -186,7 +186,7 @@ void AFEB::teststand::Application::defaultWebPage(xgi::Input *in, xgi::Output *o
 
 }
 
-void AFEB::teststand::Application::configEditorWebPage(xgi::Input *in, xgi::Output *out)
+void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *out)
   throw (xgi::exception::Exception){
 
   initializeParameters();

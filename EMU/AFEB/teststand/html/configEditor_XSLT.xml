@@ -11,10 +11,10 @@
   <xsl:template match="//c:configuration">
     <table class="configuration">
       <tr>
+	<td><xsl:apply-templates select="c:measurements"/></td>
 	<td><xsl:apply-templates select="c:testedDevice"/></td>
 	<td><xsl:apply-templates select="c:crate"/></td>
 	<td><xsl:apply-templates select="c:inputs"/></td>
-	<td><xsl:apply-templates select="c:measurements"/></td>
       </tr>
     </table>
     <input type="submit" name="config" value="save"/>
@@ -30,15 +30,19 @@
   <xsl:template name="options">
     <xsl:param name="TAG"/>
     <xsl:param name="ATTR"/>
+    <xsl:param name="SELVAL"/>
     <xsl:for-each select="//c:metadata/c:tag[@c:name=$TAG]/c:attr[@c:name=$ATTR]">
-      <option title="{@c:description}" value="{@c:value}"><xsl:value-of select="@c:value"/></option>
+      <option title="{@c:description}" value="{@c:value}">
+	<xsl:if test="@c:value=$SELVAL"><xsl:attribute name="selected">selected</xsl:attribute></xsl:if>
+	<xsl:value-of select="@c:value"/>
+      </option>
     </xsl:for-each>
   </xsl:template>
 
   <xsl:template match="c:testedDevice">
     <table class="device">
       <tr>
-	<th colspan="2">Tested Device</th>
+	<th colspan="2">Tested device</th>
       </tr>
       <tr>
 	<th>type</th>
@@ -48,6 +52,7 @@
 	    <xsl:call-template name="options">
 	      <xsl:with-param name="TAG"><xsl:value-of select="name()"/></xsl:with-param>
 	      <xsl:with-param name="ATTR">c:type</xsl:with-param>
+	      <xsl:with-param name="SELVAL"><xsl:value-of select="@c:type"/></xsl:with-param>
 	    </xsl:call-template>
 	  </select>
 	</td>
@@ -75,6 +80,7 @@
 	      <xsl:call-template name="options">
 		<xsl:with-param name="TAG"><xsl:value-of select="name()"/></xsl:with-param>
 		<xsl:with-param name="ATTR">c:name</xsl:with-param>
+		<xsl:with-param name="SELVAL"><xsl:value-of select="@c:name"/></xsl:with-param>
 	      </xsl:call-template>
 	    </select>
 	  </td>
@@ -85,6 +91,7 @@
 	      <xsl:call-template name="options">
 		<xsl:with-param name="TAG"><xsl:value-of select="name()"/></xsl:with-param>
 		<xsl:with-param name="ATTR">c:type</xsl:with-param>
+		<xsl:with-param name="SELVAL"><xsl:value-of select="@c:type"/></xsl:with-param>
 	      </xsl:call-template>
 	    </select>
 	  </td>
@@ -121,6 +128,7 @@
 	      <xsl:call-template name="options">
 		<xsl:with-param name="TAG"><xsl:value-of select="name()"/></xsl:with-param>
 		<xsl:with-param name="ATTR">c:tdcSlot</xsl:with-param>
+		<xsl:with-param name="SELVAL"><xsl:value-of select="@c:tdcSlot"/></xsl:with-param>
 	      </xsl:call-template>
 	    </select>
 	  </td>
@@ -131,6 +139,7 @@
 	      <xsl:call-template name="options">
 		<xsl:with-param name="TAG"><xsl:value-of select="name()"/></xsl:with-param>
 		<xsl:with-param name="ATTR">c:tdcInput</xsl:with-param>
+		<xsl:with-param name="SELVAL"><xsl:value-of select="@c:tdcInput"/></xsl:with-param>
 	      </xsl:call-template>
 	    </select>
 	  </td>
@@ -141,6 +150,7 @@
 	      <xsl:call-template name="options">
 		<xsl:with-param name="TAG"><xsl:value-of select="name()"/></xsl:with-param>
 		<xsl:with-param name="ATTR">c:signalConverterSlot</xsl:with-param>
+		<xsl:with-param name="SELVAL"><xsl:value-of select="@c:signalConverterSlot"/></xsl:with-param>
 	      </xsl:call-template>
 	    </select>
 	  </td>
@@ -160,32 +170,109 @@
 
 	    <table class="measurement">
 	      <tr>
-		<th>selected</th><th>type</th><th>name</th>
+		<td>
+
+		  <table>
+		    <tr>
+		      <th>selected</th><th>type</th><th>name</th>
+		    </tr>
+		    <tr>
+		      <td>
+			<input type="checkbox" title="Check if this measurement is to be performed.">
+			  <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
+			  <xsl:if test="@c:enabled='1'">
+			    <xsl:attribute name="checked">checked</xsl:attribute>
+			  </xsl:if>
+			</input>
+		      </td>
+		      <td>
+			<select>
+			  <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
+			  <xsl:call-template name="options">
+			    <xsl:with-param name="TAG"><xsl:value-of select="name()"/></xsl:with-param>
+			    <xsl:with-param name="ATTR">c:type</xsl:with-param>
+			    <xsl:with-param name="SELVAL"><xsl:value-of select="@c:type"/></xsl:with-param>
+			  </xsl:call-template>
+			</select>
+		      </td>
+		      <td>
+			<input type="text" title="The name of this measurement.">
+			  <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
+			  <xsl:attribute name="value"><xsl:value-of select="@c:name"/></xsl:attribute>
+			</input>
+		      </td>
+		    </tr>
+		  </table>
+
+		</td>
 	      </tr>
 	      <tr>
 		<td>
-		  <input type="checkbox" title="Check if this measurement is to be performed.">
-		    <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
-		    <xsl:if test="@c:enabled='1'">
-		      <xsl:attribute name="checked">checked</xsl:attribute>
-		    </xsl:if>
-		  </input>
+
+		  <table>
+		    <tr><th rowspan="2">pulse generator</th><th>slot</th><th>min</th><th>max</th><th>step</th><th>N</th></tr>
+		    <tr>
+		      <td>
+			<select>
+			  <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
+			  <xsl:call-template name="options">
+			    <xsl:with-param name="TAG">c:PulseGenerator</xsl:with-param>
+			    <xsl:with-param name="ATTR">c:slot</xsl:with-param>
+			    <xsl:with-param name="SELVAL"><xsl:value-of select="c:PulseGenerator/@c:slot"/></xsl:with-param>
+			  </xsl:call-template>
+			</select>
+		      </td>
+		      <td>
+			<input type="text" title="The lowest pulse amplitude." size="3">
+			  <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
+			  <xsl:attribute name="value"><xsl:value-of select="c:PulseGenerator/@c:amplitudeMin"/></xsl:attribute>
+			</input>
+		      </td>
+		      <td>
+			<input type="text" title="The highest pulse amplitude." size="3">
+			  <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
+			  <xsl:attribute name="value"><xsl:value-of select="c:PulseGenerator/@c:amplitudeMax"/></xsl:attribute>
+			</input>
+		      </td>
+		      <td>
+			<input type="text" title="The pulse amplitude increment." size="3">
+			  <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
+			  <xsl:attribute name="value"><xsl:value-of select="c:PulseGenerator/@c:amplitudeStep"/></xsl:attribute>
+			</input>
+		      </td>
+		      <td>
+			<input type="text" title="The number of pulses at each amplitude." size="4">
+			  <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
+			  <xsl:attribute name="value"><xsl:value-of select="c:PulseGenerator/@c:nPulses"/></xsl:attribute>
+			</input>
+		      </td>
+		    </tr>
+		  </table>
+
 		</td>
+	      </tr>
+	      <tr>
 		<td>
-		  <select>
-		    <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
-		    <xsl:call-template name="options">
-		      <xsl:with-param name="TAG"><xsl:value-of select="name()"/></xsl:with-param>
-		      <xsl:with-param name="ATTR">c:type</xsl:with-param>
-		    </xsl:call-template>
-		  </select>
+
+		  <table>
+		    <tr><th rowspan="2">TDC</th><th>minimum time</th><th>maximum time</th></tr>
+		    <tr>
+		      <td>
+			<input type="text" title="The minimum TDC time recoreded." size="4">
+			  <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
+			  <xsl:attribute name="value"><xsl:value-of select="c:TDC/@c:timeMin"/></xsl:attribute>
+			</input>
+		      </td>
+		      <td>
+			<input type="text" title="The maximum TDC time recoreded." size="4">
+			  <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
+			  <xsl:attribute name="value"><xsl:value-of select="c:TDC/@c:timeMax"/></xsl:attribute>
+			</input>
+		      </td>
+		    </tr>
+		  </table>
+
 		</td>
-	      <td>
-		<input type="text" title="The name of this measurement.">
-		  <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
-		  <xsl:attribute name="value"><xsl:value-of select="@c:name"/></xsl:attribute>
-		</input>
-	      </td>
 	      </tr>
 	    </table>
 

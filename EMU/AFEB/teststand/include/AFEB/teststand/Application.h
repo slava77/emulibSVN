@@ -103,16 +103,16 @@ private:
   void defaultWebPage(xgi::Input *in, xgi::Output *out)
     throw (xgi::exception::Exception);
 
-  void loadConfigurationTemplate();
-
-  void initializeParameters();
-
   ///
   /// @param in cgi input
   /// @param out cgi output
   ///
-  void configEditorWebPage(xgi::Input *in, xgi::Output *out)
+  void controlWebPage(xgi::Input *in, xgi::Output *out)
     throw (xgi::exception::Exception);
+
+  void loadConfigurationTemplate();
+
+  void initializeParameters();
 
   string setProcessingInstruction( const string XML, const string xslURI )
     throw( xcept::Exception );

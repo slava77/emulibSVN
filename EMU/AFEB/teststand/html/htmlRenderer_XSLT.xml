@@ -20,10 +20,8 @@
 	</style>      
       </head>
       <body>
-        <form action="{//a:application/@urlPath}/fsmControl" method="post">
+        <form action="{//a:application/@a:urlPath}/control" method="get">
 	  <xsl:apply-templates select="//a:application"/>
-	</form>
-        <form action="{//a:application/@urlPath}/configEditor" method="post">
 	  <fieldset>
 	    <legend>Configuration</legend>
 	    <xsl:apply-templates select="//c:configuration"/>
