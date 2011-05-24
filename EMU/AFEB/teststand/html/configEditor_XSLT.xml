@@ -7,21 +7,27 @@
 
   <xsl:output method="html" indent="yes"/>
 
-  <!-- path to element within the c namespace-->
-  <xsl:template name="elementPath">
-    <xsl:for-each select="(ancestor-or-self::c:*)"><xsl:variable name="NAME" select="name()"/>/<xsl:value-of select="name()"/>[<xsl:value-of select="1+count(preceding-sibling::c:*[name()=$NAME])"/>]</xsl:for-each>
-  </xsl:template>
 
   <xsl:template match="//c:configuration">
-    <xsl:apply-templates select="c:testedDevice"/>
-    <xsl:apply-templates select="c:crate"/>
-    <xsl:apply-templates select="c:inputs"/>
+    <table class="configuration">
+      <tr>
+	<td><xsl:apply-templates select="c:testedDevice"/></td>
+	<td><xsl:apply-templates select="c:crate"/></td>
+	<td><xsl:apply-templates select="c:inputs"/></td>
+	<td><xsl:apply-templates select="c:measurements"/></td>
+      </tr>
+    </table>
     <input type="submit" name="config" value="save"/>
     <input type="submit" name="config" value="load"/>
   </xsl:template>
 
+  <!-- xpath to element within the c namespace-->
+  <xsl:template name="elementPath">
+    <xsl:for-each select="(ancestor-or-self::c:*)"><xsl:variable name="NAME" select="name()"/>/<xsl:value-of select="name()"/>[<xsl:value-of select="1+count(preceding-sibling::c:*[name()=$NAME])"/>]</xsl:for-each>
+  </xsl:template>
+
+  <!-- generate options from metadata -->
   <xsl:template name="options">
-    <!-- generate options from metadata -->
     <xsl:param name="TAG"/>
     <xsl:param name="ATTR"/>
     <xsl:for-each select="//c:metadata/c:tag[@c:name=$TAG]/c:attr[@c:name=$ATTR]">
@@ -137,6 +143,52 @@
 		<xsl:with-param name="ATTR">c:signalConverterSlot</xsl:with-param>
 	      </xsl:call-template>
 	    </select>
+	  </td>
+	</tr>
+      </xsl:for-each>
+    </table>
+  </xsl:template>
+
+  <xsl:template match="c:measurements">
+    <table class="measurements">
+      <tr>
+	<th colspan="5">Measurements</th>
+      </tr>
+      <xsl:for-each select="c:measurement">
+	<tr>
+	  <td>
+
+	    <table class="measurement">
+	      <tr>
+		<th>selected</th><th>type</th><th>name</th>
+	      </tr>
+	      <tr>
+		<td>
+		  <input type="checkbox" title="Check if this measurement is to be performed.">
+		    <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
+		    <xsl:if test="@c:enabled='1'">
+		      <xsl:attribute name="checked">checked</xsl:attribute>
+		    </xsl:if>
+		  </input>
+		</td>
+		<td>
+		  <select>
+		    <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
+		    <xsl:call-template name="options">
+		      <xsl:with-param name="TAG"><xsl:value-of select="name()"/></xsl:with-param>
+		      <xsl:with-param name="ATTR">c:type</xsl:with-param>
+		    </xsl:call-template>
+		  </select>
+		</td>
+	      <td>
+		<input type="text" title="The name of this measurement.">
+		  <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
+		  <xsl:attribute name="value"><xsl:value-of select="@c:name"/></xsl:attribute>
+		</input>
+	      </td>
+	      </tr>
+	    </table>
+
 	  </td>
 	</tr>
       </xsl:for-each>

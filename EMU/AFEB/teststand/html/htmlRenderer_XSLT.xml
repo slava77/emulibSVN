@@ -15,13 +15,19 @@
     <html xmlns="http://www.w3.org/1999/xhtml">
       <head>
         <title>Editing source xml of <xsl:value-of select="@c:date"/><xsl:text> </xsl:text><xsl:value-of select="@c:time"/></title>
+	<style type="text/css">
+	  li {display:inline;}
+	</style>      
       </head>
       <body>
         <form action="{//a:application/@urlPath}/fsmControl" method="post">
 	  <xsl:apply-templates select="//a:application"/>
 	</form>
         <form action="{//a:application/@urlPath}/configEditor" method="post">
-	  <xsl:apply-templates select="//c:configuration"/>
+	  <fieldset>
+	    <legend>Configuration</legend>
+	    <xsl:apply-templates select="//c:configuration"/>
+	  </fieldset>
 	</form>
       </body>
     </html>
