@@ -139,8 +139,9 @@ void AFEB::teststand::Application::initializeParameters(){
   ss << "<?xml-stylesheet type=\"text/xml\" href=\"/AFEB/teststand/html/htmlRenderer_XSLT.xml\"?>" << endl 
      << "<root>" << endl
      << "<a:application xmlns:a=\"" << applicationNamespace_ 
-     << "\" urlPath=\"" << applicationURLPath_ 
-     << "\" state=\"" << fsm_.getStateName( fsm_.getCurrentState() )
+     << "\" a:urlPath=\"" << applicationURLPath_ 
+     << "\" a:state=\"" << fsm_.getStateName( fsm_.getCurrentState() )
+     << "\" a:dateTime=\"" << AFEB::teststand::utils::getDateTime()
      << "\"/>" 
      << endl
      << "</root>";

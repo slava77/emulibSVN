@@ -8,16 +8,30 @@
   <xsl:output method="html" indent="yes"/>
 
   <xsl:template match="//a:application">
-    <table>
-      <xsl:apply-templates select="a:*"/>
+    <table class="app">
+      <tr>
+	<td><xsl:value-of select="@a:state"/></td>
+	<td/>
+	<td><xsl:value-of select="@a:dateTime"/></td>
+      </tr>
+      <tr>
+	<td>
+	  <input type="submit" name="fsm" value="Configure">
+	    <xsl:if test="@a:state!='Halted'"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
+	  </input>
+	</td>
+	<td>
+	  <input type="submit" name="fsm" value="Enable">
+	    <xsl:if test="@a:state!='Configured'"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
+	  </input>
+	</td>
+	<td>
+	  <input type="submit" name="fsm" value="Halt">
+	    <xsl:if test="@a:state='Halted'"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
+	  </input>
+	</td>
+      </tr>
     </table>
   </xsl:template>  
-
-  <xsl:template match="a:*">
-    <tr>
-      <th><xsl:value-of select="local-name()"/></th>
-      <td><xsl:value-of select="."/></td>
-    </tr>
-  </xsl:template>
 
 </xsl:transform>

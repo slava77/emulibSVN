@@ -13,39 +13,134 @@
   </xsl:template>
 
   <xsl:template match="//c:configuration">
-          <ol>
-            <xsl:apply-templates select="c:*"/>
-          </ol>
-          <input type="submit" name="submit" value="submit"/>
+    <xsl:apply-templates select="c:testedDevice"/>
+    <xsl:apply-templates select="c:crate"/>
+    <xsl:apply-templates select="c:inputs"/>
+    <input type="submit" name="config" value="save"/>
+    <input type="submit" name="config" value="load"/>
   </xsl:template>
 
-  <xsl:template match="c:*">
-    <li>
-      <xsl:value-of select="local-name(.)"/><xsl:text> </xsl:text><xsl:apply-templates select="@c:*"/>
-      <xsl:if test="not(child::c:*) and text()">
-        <input type="text">
-          <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
-          <xsl:attribute name="value"><xsl:value-of select="text()"/></xsl:attribute>
-        </input>
-      </xsl:if>
-    </li>
-    <xsl:if test="child::c:*">
-      <ol>
-        <xsl:apply-templates select="c:*"/>
-      </ol>
-    </xsl:if>
+  <xsl:template name="options">
+    <!-- generate options from metadata -->
+    <xsl:param name="TAG"/>
+    <xsl:param name="ATTR"/>
+    <xsl:for-each select="//c:metadata/c:tag[@c:name=$TAG]/c:attr[@c:name=$ATTR]">
+      <option title="{@c:description}" value="{@c:value}"><xsl:value-of select="@c:value"/></option>
+    </xsl:for-each>
   </xsl:template>
 
-  <xsl:template match="@c:*">
-    <xsl:value-of select="local-name(.)"/>
-    <xsl:text> = </xsl:text>
-    <input type="text">
-      <xsl:attribute name="name"><xsl:call-template name="elementPath"/>/@<xsl:value-of select="name()"/></xsl:attribute>
-      <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-    </input>
-    <xsl:text>  </xsl:text>
+  <xsl:template match="c:testedDevice">
+    <table class="device">
+      <tr>
+	<th colspan="2">Tested Device</th>
+      </tr>
+      <tr>
+	<th>type</th>
+	<td>
+	  <select>
+	    <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
+	    <xsl:call-template name="options">
+	      <xsl:with-param name="TAG"><xsl:value-of select="name()"/></xsl:with-param>
+	      <xsl:with-param name="ATTR">c:type</xsl:with-param>
+	    </xsl:call-template>
+	  </select>
+	</td>
+      </tr>
+    </table>
   </xsl:template>
 
-  <xsl:template match="text()"/>
+  <xsl:template match="c:crate">
+    <table class="crate">
+      <tr>
+	<th colspan="3">Modules in crate</th>
+      </tr>
+      <tr>
+	<th>slot</th>
+	<th>name</th>
+	<th>type</th>
+      </tr>
+      <xsl:for-each select="c:module">
+	<tr>
+	  <th><xsl:value-of select="@c:slot"/></th>
+	  <td>
+	    <select>
+	      <option title="Empty slot." value="">-</option>
+	      <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
+	      <xsl:call-template name="options">
+		<xsl:with-param name="TAG"><xsl:value-of select="name()"/></xsl:with-param>
+		<xsl:with-param name="ATTR">c:name</xsl:with-param>
+	      </xsl:call-template>
+	    </select>
+	  </td>
+	  <td>
+	    <select>
+	      <option title="Empty slot." value="">-</option>
+	      <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
+	      <xsl:call-template name="options">
+		<xsl:with-param name="TAG"><xsl:value-of select="name()"/></xsl:with-param>
+		<xsl:with-param name="ATTR">c:type</xsl:with-param>
+	      </xsl:call-template>
+	    </select>
+	  </td>
+	</tr>
+      </xsl:for-each>
+    </table>
+  </xsl:template>
+
+  <xsl:template match="c:inputs">
+    <table class="crate">
+      <tr>
+	<th colspan="5">Device-to-module mapping</th>
+      </tr>
+      <tr>
+	<th>socket</th>
+	<th>device id</th>
+	<th>TDC slot</th>
+	<th>TDC input</th>
+	<th>signal convertet slot</th>
+      </tr>
+      <xsl:for-each select="c:testedDevice">
+	<tr>
+	  <th><xsl:value-of select="@c:socket"/></th>
+	  <td>
+	    <input type="text" title="The unique id of this device.">
+	      <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
+	      <xsl:attribute name="value"><xsl:value-of select="format-number(@c:socket,'00')"/></xsl:attribute>
+	    </input>
+	  </td>
+	  <td>
+	    <select>
+	      <option title="Empty socket." value="">-</option>
+	      <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
+	      <xsl:call-template name="options">
+		<xsl:with-param name="TAG"><xsl:value-of select="name()"/></xsl:with-param>
+		<xsl:with-param name="ATTR">c:tdcSlot</xsl:with-param>
+	      </xsl:call-template>
+	    </select>
+	  </td>
+	  <td>
+	    <select>
+	      <option title="Empty socket." value="">-</option>
+	      <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
+	      <xsl:call-template name="options">
+		<xsl:with-param name="TAG"><xsl:value-of select="name()"/></xsl:with-param>
+		<xsl:with-param name="ATTR">c:tdcInput</xsl:with-param>
+	      </xsl:call-template>
+	    </select>
+	  </td>
+	  <td>
+	    <select>
+	      <option title="Empty socket." value="">-</option>
+	      <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
+	      <xsl:call-template name="options">
+		<xsl:with-param name="TAG"><xsl:value-of select="name()"/></xsl:with-param>
+		<xsl:with-param name="ATTR">c:signalConverterSlot</xsl:with-param>
+	      </xsl:call-template>
+	    </select>
+	  </td>
+	</tr>
+      </xsl:for-each>
+    </table>
+  </xsl:template>
 
 </xsl:transform>

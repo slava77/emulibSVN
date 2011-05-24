@@ -17,9 +17,7 @@
         <title>Editing source xml of <xsl:value-of select="@c:date"/><xsl:text> </xsl:text><xsl:value-of select="@c:time"/></title>
       </head>
       <body>
-        <form action="{//a:application/@urlPath}/fsmControl" method="post">
-	  <xsl:apply-templates select="//a:application"/>
-	</form>
+	<xsl:apply-templates select="//a:application"/>
         <form action="{//a:application/@urlPath}/configEditor" method="post">
 	  <xsl:apply-templates select="//c:configuration"/>
 	</form>
