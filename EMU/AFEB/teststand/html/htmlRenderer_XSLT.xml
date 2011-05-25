@@ -15,9 +15,8 @@
     <html xmlns="http://www.w3.org/1999/xhtml">
       <head>
         <title>Editing source xml of <xsl:value-of select="@c:date"/><xsl:text> </xsl:text><xsl:value-of select="@c:time"/></title>
-	<style type="text/css">
-	  li {display:inline;}
-	</style>      
+	<link rel="stylesheet" type="text/css" href="/AFEB/teststand/html/teststand.css"/>
+	<!-- <link rel="stylesheet" type="text/css" href="teststand.css"/> -->
       </head>
       <body>
         <form action="{//a:application/@a:urlPath}/control" method="get">

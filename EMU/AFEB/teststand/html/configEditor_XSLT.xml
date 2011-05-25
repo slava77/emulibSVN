@@ -9,7 +9,9 @@
 
 
   <xsl:template match="//c:configuration">
-    <table class="configuration">
+    <input type="submit" name="config" value="save" class="submit"/>
+    <input type="submit" name="config" value="load" class="submit"/>
+    <table class="layout">
       <tr>
 	<td><xsl:apply-templates select="c:measurements"/></td>
 	<td><xsl:apply-templates select="c:testedDevice"/></td>
@@ -17,8 +19,6 @@
 	<td><xsl:apply-templates select="c:inputs"/></td>
       </tr>
     </table>
-    <input type="submit" name="config" value="save"/>
-    <input type="submit" name="config" value="load"/>
   </xsl:template>
 
   <!-- xpath to element within the c namespace-->
@@ -116,7 +116,7 @@
 	<tr>
 	  <th><xsl:value-of select="@c:socket"/></th>
 	  <td>
-	    <input type="text" title="The unique id of this device.">
+	    <input type="text" title="The unique id of this device." size="10">
 	      <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
 	      <xsl:attribute name="value"><xsl:value-of select="format-number(@c:socket,'00')"/></xsl:attribute>
 	    </input>
@@ -166,25 +166,26 @@
       </tr>
       <xsl:for-each select="c:measurement">
 	<tr>
+	  <th>
+	    select
+	    <input type="checkbox" title="Check if this measurement is to be performed.">
+	      <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
+	      <xsl:if test="@c:enabled='1'">
+		<xsl:attribute name="checked">checked</xsl:attribute>
+	      </xsl:if>
+	    </input>
+	  </th>
 	  <td>
 
-	    <table class="measurement">
+	    <table class="layout">
 	      <tr>
 		<td>
 
-		  <table>
+		  <table class="layout">
 		    <tr>
-		      <th>selected</th><th>type</th><th>name</th>
+		      <th>type</th><th>name</th>
 		    </tr>
 		    <tr>
-		      <td>
-			<input type="checkbox" title="Check if this measurement is to be performed.">
-			  <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
-			  <xsl:if test="@c:enabled='1'">
-			    <xsl:attribute name="checked">checked</xsl:attribute>
-			  </xsl:if>
-			</input>
-		      </td>
 		      <td>
 			<select>
 			  <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
@@ -209,7 +210,7 @@
 	      <tr>
 		<td>
 
-		  <table>
+		  <table class="layout">
 		    <tr><th rowspan="2">pulse generator</th><th>slot</th><th>min</th><th>max</th><th>step</th><th>N</th></tr>
 		    <tr>
 		      <td>
@@ -254,7 +255,7 @@
 	      <tr>
 		<td>
 
-		  <table>
+		  <table class="layout">
 		    <tr><th rowspan="2">TDC</th><th>minimum time</th><th>maximum time</th></tr>
 		    <tr>
 		      <td>
