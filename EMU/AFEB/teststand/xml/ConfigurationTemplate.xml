@@ -3,7 +3,8 @@
 
     <c:metadata>
       <c:tag c:name="c:testedDevice">
-	<c:attr c:name="c:type" c:value="AD16" c:description="16-channel pre-amp, shaper and descriminator"/>
+	<c:attr c:name="c:type" c:value="AD16" c:description="16-channel pre-amp, shaper and discriminator"/>
+	<c:attr c:name="c:type" c:value="DEL16" c:description="16-channel delay chip"/>
 	<c:attr c:name="c:nChannels" c:value="16" c:description="Number of channels."/>
 	<c:attr c:name="c:tdcSlot" c:value="1" c:description="The crate slot in which the TDC reading out this device is inserted."/>
 	<c:attr c:name="c:tdcSlot" c:value="2" c:description="The crate slot in which the TDC reading out this device is inserted."/>
@@ -28,6 +29,9 @@
       </c:tag>
       <c:tag c:name="c:crate">
 	<c:attr c:name="c:number" c:value="1" c:description="The crate number to be set on the crate controller."/>
+	<c:attr c:name="c:number" c:value="2" c:description="The crate number to be set on the crate controller."/>
+	<c:attr c:name="c:number" c:value="3" c:description="The crate number to be set on the crate controller."/>
+	<c:attr c:name="c:number" c:value="4" c:description="The crate number to be set on the crate controller."/>
       </c:tag>
       <c:tag c:name="c:module">
 	<c:attr c:name="c:name" c:value="LeCroy3377" c:description="LeCroy Model 3377 32-channel CAMAC TDC"/>

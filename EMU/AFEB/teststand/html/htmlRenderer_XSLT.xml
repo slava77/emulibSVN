@@ -14,12 +14,11 @@
   <xsl:template match="/root">
     <html xmlns="http://www.w3.org/1999/xhtml">
       <head>
-        <title>Editing source xml of <xsl:value-of select="@c:date"/><xsl:text> </xsl:text><xsl:value-of select="@c:time"/></title>
+        <title>Editing source xml of <xsl:value-of select="@c:dateTime"/></title>
 	<link rel="stylesheet" type="text/css" href="/AFEB/teststand/html/teststand.css"/>
-	<!-- <link rel="stylesheet" type="text/css" href="teststand.css"/> -->
       </head>
       <body>
-        <form action="{//a:application/@a:urlPath}/control" method="get">
+        <form action="{//a:application/@a:urlPath}/control" method="post">
 	  <xsl:apply-templates select="//a:application"/>
 	  <fieldset>
 	    <legend>Configuration</legend>

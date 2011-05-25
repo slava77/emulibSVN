@@ -22,8 +22,13 @@
   </xsl:template>
 
   <!-- xpath to element within the c namespace-->
-  <xsl:template name="elementPath">
+  <xsl:template name="elementXPath">
     <xsl:for-each select="(ancestor-or-self::c:*)"><xsl:variable name="NAME" select="name()"/>/<xsl:value-of select="name()"/>[<xsl:value-of select="1+count(preceding-sibling::c:*[name()=$NAME])"/>]</xsl:for-each>
+  </xsl:template>
+
+  <!-- xpath to attribute within the c namespace-->
+  <xsl:template name="attributeXPath">    
+    <xsl:for-each select="ancestor::c:*"><xsl:variable name="NAME" select="name()"/>/<xsl:value-of select="name()"/>[<xsl:value-of select="1+count(preceding-sibling::c:*[name()=$NAME])"/>]</xsl:for-each>/@<xsl:value-of select="name()"/>
   </xsl:template>
 
   <!-- generate options from metadata -->
@@ -47,14 +52,17 @@
       <tr>
 	<th>type</th>
 	<td>
-	  <select>
-	    <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
-	    <xsl:call-template name="options">
-	      <xsl:with-param name="TAG"><xsl:value-of select="name()"/></xsl:with-param>
-	      <xsl:with-param name="ATTR">c:type</xsl:with-param>
-	      <xsl:with-param name="SELVAL"><xsl:value-of select="@c:type"/></xsl:with-param>
-	    </xsl:call-template>
-	  </select>
+	  <!-- for-each: just to set the current node for the templates called by name: -->
+	  <xsl:for-each select="@c:type">
+	    <select>
+	      <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+	      <xsl:call-template name="options">
+		<xsl:with-param name="TAG" select="name(..)"/>
+		<xsl:with-param name="ATTR" select="name()"/>
+		<xsl:with-param name="SELVAL" select="."/>
+	      </xsl:call-template>
+	    </select>
+	  </xsl:for-each>
 	</td>
       </tr>
     </table>
@@ -63,7 +71,19 @@
   <xsl:template match="c:crate">
     <table class="crate">
       <tr>
-	<th colspan="3">Modules in crate</th>
+	<th colspan="3">Modules in crate
+	  <!-- for-each: just to set the current node for the templates called by name: -->
+	  <xsl:for-each select="@c:number">
+	    <select>
+	      <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+	      <xsl:call-template name="options">
+		<xsl:with-param name="TAG" select="name(..)"/>
+		<xsl:with-param name="ATTR" select="name()"/>
+		<xsl:with-param name="SELVAL" select="."/>
+	      </xsl:call-template>
+	    </select>
+	  </xsl:for-each>
+	</th>
       </tr>
       <tr>
 	<th>slot</th>
@@ -74,26 +94,32 @@
 	<tr>
 	  <th><xsl:value-of select="@c:slot"/></th>
 	  <td>
-	    <select>
-	      <option title="Empty slot." value="">-</option>
-	      <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
-	      <xsl:call-template name="options">
-		<xsl:with-param name="TAG"><xsl:value-of select="name()"/></xsl:with-param>
-		<xsl:with-param name="ATTR">c:name</xsl:with-param>
-		<xsl:with-param name="SELVAL"><xsl:value-of select="@c:name"/></xsl:with-param>
-	      </xsl:call-template>
-	    </select>
+	    <!-- for-each: just to set the current node for the templates called by name: -->
+	    <xsl:for-each select="@c:name">
+	      <select>
+		<xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+		<option title="Empty slot." value="">-</option>
+		<xsl:call-template name="options">
+		  <xsl:with-param name="TAG" select="name(..)"/>
+		  <xsl:with-param name="ATTR" select="name()"/>
+		  <xsl:with-param name="SELVAL" select="."/>
+		</xsl:call-template>
+	      </select>
+	    </xsl:for-each>
 	  </td>
 	  <td>
-	    <select>
-	      <option title="Empty slot." value="">-</option>
-	      <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
-	      <xsl:call-template name="options">
-		<xsl:with-param name="TAG"><xsl:value-of select="name()"/></xsl:with-param>
-		<xsl:with-param name="ATTR">c:type</xsl:with-param>
-		<xsl:with-param name="SELVAL"><xsl:value-of select="@c:type"/></xsl:with-param>
-	      </xsl:call-template>
-	    </select>
+	    <!-- for-each: just to set the current node for the templates called by name: -->
+	    <xsl:for-each select="@c:type">
+	      <select>
+		<xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+		<option title="Empty slot." value="">-</option>
+		<xsl:call-template name="options">
+		  <xsl:with-param name="TAG" select="name(..)"/>
+		  <xsl:with-param name="ATTR" select="name()"/>
+		  <xsl:with-param name="SELVAL" select="."/>
+		</xsl:call-template>
+	      </select>
+	    </xsl:for-each>
 	  </td>
 	</tr>
       </xsl:for-each>
@@ -116,43 +142,55 @@
 	<tr>
 	  <th><xsl:value-of select="@c:socket"/></th>
 	  <td>
-	    <input type="text" title="The unique id of this device." size="10">
-	      <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
-	      <xsl:attribute name="value"><xsl:value-of select="format-number(@c:socket,'00')"/></xsl:attribute>
-	    </input>
+	    <!-- for-each: just to set the current node for the templates called by name: -->
+	    <xsl:for-each select="@c:id">
+	      <input type="text" title="The unique id of this device." size="10">
+		<xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+		<xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+	      </input>
+	    </xsl:for-each>
 	  </td>
 	  <td>
-	    <select>
-	      <option title="Empty socket." value="">-</option>
-	      <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
-	      <xsl:call-template name="options">
-		<xsl:with-param name="TAG"><xsl:value-of select="name()"/></xsl:with-param>
-		<xsl:with-param name="ATTR">c:tdcSlot</xsl:with-param>
-		<xsl:with-param name="SELVAL"><xsl:value-of select="@c:tdcSlot"/></xsl:with-param>
-	      </xsl:call-template>
-	    </select>
+	    <!-- for-each: just to set the current node for the templates called by name: -->
+	    <xsl:for-each select="@c:tdcSlot">
+	      <select>
+		<xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+		<option title="Empty socket." value="">-</option>
+		<xsl:call-template name="options">
+		  <xsl:with-param name="TAG" select="name(..)"/>
+		  <xsl:with-param name="ATTR" select="name()"/>
+		  <xsl:with-param name="SELVAL" select="."/>
+		</xsl:call-template>
+	      </select>
+	    </xsl:for-each>
 	  </td>
 	  <td>
-	    <select>
-	      <option title="Empty socket." value="">-</option>
-	      <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
-	      <xsl:call-template name="options">
-		<xsl:with-param name="TAG"><xsl:value-of select="name()"/></xsl:with-param>
-		<xsl:with-param name="ATTR">c:tdcInput</xsl:with-param>
-		<xsl:with-param name="SELVAL"><xsl:value-of select="@c:tdcInput"/></xsl:with-param>
-	      </xsl:call-template>
-	    </select>
+	    <!-- for-each: just to set the current node for the templates called by name: -->
+	    <xsl:for-each select="@c:tdcInput">
+	      <select>
+		<xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+		<option title="Empty socket." value="">-</option>
+		<xsl:call-template name="options">
+		  <xsl:with-param name="TAG" select="name(..)"/>
+		  <xsl:with-param name="ATTR" select="name()"/>
+		  <xsl:with-param name="SELVAL" select="."/>
+		</xsl:call-template>
+	      </select>
+	    </xsl:for-each>
 	  </td>
 	  <td>
-	    <select>
-	      <option title="Empty socket." value="">-</option>
-	      <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
-	      <xsl:call-template name="options">
-		<xsl:with-param name="TAG"><xsl:value-of select="name()"/></xsl:with-param>
-		<xsl:with-param name="ATTR">c:signalConverterSlot</xsl:with-param>
-		<xsl:with-param name="SELVAL"><xsl:value-of select="@c:signalConverterSlot"/></xsl:with-param>
-	      </xsl:call-template>
-	    </select>
+	    <!-- for-each: just to set the current node for the templates called by name: -->
+	    <xsl:for-each select="@c:signalConverterSlot">
+	      <select>
+		<xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+		<option title="Empty socket." value="">-</option>
+		<xsl:call-template name="options">
+		  <xsl:with-param name="TAG" select="name(..)"/>
+		  <xsl:with-param name="ATTR" select="name()"/>
+		  <xsl:with-param name="SELVAL" select="."/>
+		</xsl:call-template>
+	      </select>
+	    </xsl:for-each>
 	  </td>
 	</tr>
       </xsl:for-each>
@@ -168,12 +206,15 @@
 	<tr>
 	  <th>
 	    select
-	    <input type="checkbox" title="Check if this measurement is to be performed.">
-	      <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
-	      <xsl:if test="@c:enabled='1'">
-		<xsl:attribute name="checked">checked</xsl:attribute>
-	      </xsl:if>
-	    </input>
+	    <!-- for-each: just to set the current node for the templates called by name: -->
+	    <xsl:for-each select="@c:enabled">
+	      <input type="checkbox" title="Check if this measurement is to be performed.">
+		<xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+		<xsl:if test=".='1'">
+		  <xsl:attribute name="checked">checked</xsl:attribute>
+		</xsl:if>
+	      </input>
+	    </xsl:for-each>
 	  </th>
 	  <td>
 
@@ -187,20 +228,26 @@
 		    </tr>
 		    <tr>
 		      <td>
-			<select>
-			  <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
-			  <xsl:call-template name="options">
-			    <xsl:with-param name="TAG"><xsl:value-of select="name()"/></xsl:with-param>
-			    <xsl:with-param name="ATTR">c:type</xsl:with-param>
-			    <xsl:with-param name="SELVAL"><xsl:value-of select="@c:type"/></xsl:with-param>
-			  </xsl:call-template>
-			</select>
+			<!-- for-each: just to set the current node for the templates called by name: -->
+			<xsl:for-each select="@c:type">
+			  <select>
+			    <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+			    <xsl:call-template name="options">
+			      <xsl:with-param name="TAG" select="name(..)"/>
+			      <xsl:with-param name="ATTR" select="name()"/>
+			      <xsl:with-param name="SELVAL" select="."/>
+			    </xsl:call-template>
+			  </select>
+			</xsl:for-each>
 		      </td>
 		      <td>
-			<input type="text" title="The name of this measurement.">
-			  <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
-			  <xsl:attribute name="value"><xsl:value-of select="@c:name"/></xsl:attribute>
-			</input>
+			<!-- for-each: just to set the current node for the templates called by name: -->
+			<xsl:for-each select="@c:name">
+			  <input type="text" title="The name of this measurement.">
+			    <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+			    <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+			  </input>
+			</xsl:for-each>
 		      </td>
 		    </tr>
 		  </table>
@@ -214,38 +261,73 @@
 		    <tr><th rowspan="2">pulse generator</th><th>slot</th><th>min</th><th>max</th><th>step</th><th>N</th></tr>
 		    <tr>
 		      <td>
-			<select>
-			  <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
-			  <xsl:call-template name="options">
-			    <xsl:with-param name="TAG">c:PulseGenerator</xsl:with-param>
-			    <xsl:with-param name="ATTR">c:slot</xsl:with-param>
-			    <xsl:with-param name="SELVAL"><xsl:value-of select="c:PulseGenerator/@c:slot"/></xsl:with-param>
-			  </xsl:call-template>
-			</select>
+			<!-- for-each: just to set the current node for the templates called by name: -->
+			<xsl:for-each select="c:PulseGenerator/@c:slot">
+			  <select>
+			    <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+			    <xsl:call-template name="options">
+			      <xsl:with-param name="TAG" select="name(..)"/>
+			      <xsl:with-param name="ATTR" select="name()"/>
+			      <xsl:with-param name="SELVAL" select="."/>
+			    </xsl:call-template>
+			  </select>
+			</xsl:for-each>
 		      </td>
 		      <td>
-			<input type="text" title="The lowest pulse amplitude." size="3">
-			  <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
-			  <xsl:attribute name="value"><xsl:value-of select="c:PulseGenerator/@c:amplitudeMin"/></xsl:attribute>
-			</input>
+			<!-- for-each: just to set the current node for the templates called by name: -->
+			<xsl:for-each select="c:PulseGenerator/@c:amplitudeMin">
+			  <input type="text" title="The lowest pulse amplitude." size="3">
+			    <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+			    <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+			  </input>
+			</xsl:for-each>
 		      </td>
 		      <td>
-			<input type="text" title="The highest pulse amplitude." size="3">
-			  <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
-			  <xsl:attribute name="value"><xsl:value-of select="c:PulseGenerator/@c:amplitudeMax"/></xsl:attribute>
-			</input>
+			<!-- for-each: just to set the current node for the templates called by name: -->
+			<xsl:for-each select="c:PulseGenerator/@c:amplitudeMax">
+			  <input type="text" title="The highest pulse amplitude." size="3">
+			    <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+			    <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+			  </input>
+			</xsl:for-each>
 		      </td>
 		      <td>
-			<input type="text" title="The pulse amplitude increment." size="3">
-			  <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
-			  <xsl:attribute name="value"><xsl:value-of select="c:PulseGenerator/@c:amplitudeStep"/></xsl:attribute>
-			</input>
+			<!-- for-each: just to set the current node for the templates called by name: -->
+			<xsl:for-each select="c:PulseGenerator/@c:amplitudeStep">
+			  <input type="text" title="The pulse amplitude increment." size="3">
+			    <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+			    <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+			  </input>
+			</xsl:for-each>
 		      </td>
 		      <td>
-			<input type="text" title="The number of pulses at each amplitude." size="4">
-			  <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
-			  <xsl:attribute name="value"><xsl:value-of select="c:PulseGenerator/@c:nPulses"/></xsl:attribute>
-			</input>
+			<!-- for-each: just to set the current node for the templates called by name: -->
+			<xsl:for-each select="c:PulseGenerator/@c:nPulses">
+			  <input type="text" title="The number of pulses at each amplitude." size="4">
+			    <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+			    <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+			  </input>
+			</xsl:for-each>
+		      </td>
+		    </tr>
+		  </table>
+
+		</td>
+	      </tr>
+	      <tr>
+		<td>
+
+		  <table class="layout">
+		    <tr><th rowspan="2">Signal Converter</th><th>threshold value</th></tr>
+		    <tr>
+		      <td>
+			<!-- for-each: just to set the current node for the templates called by name: -->
+			<xsl:for-each select="c:SignalConverter/@c:thresholdValue">
+			  <input type="text" title="The threshold value." size="4">
+			    <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+			    <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+			  </input>
+			</xsl:for-each>
 		      </td>
 		    </tr>
 		  </table>
@@ -259,22 +341,29 @@
 		    <tr><th rowspan="2">TDC</th><th>minimum time</th><th>maximum time</th></tr>
 		    <tr>
 		      <td>
-			<input type="text" title="The minimum TDC time recoreded." size="4">
-			  <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
-			  <xsl:attribute name="value"><xsl:value-of select="c:TDC/@c:timeMin"/></xsl:attribute>
-			</input>
+			<!-- for-each: just to set the current node for the templates called by name: -->
+			<xsl:for-each select="c:TDC/@c:timeMin">
+			  <input type="text" title="The minimum TDC time recoreded." size="4">
+			    <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+			    <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+			  </input>
+			</xsl:for-each>
 		      </td>
 		      <td>
-			<input type="text" title="The maximum TDC time recoreded." size="4">
-			  <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
-			  <xsl:attribute name="value"><xsl:value-of select="c:TDC/@c:timeMax"/></xsl:attribute>
-			</input>
+			<!-- for-each: just to set the current node for the templates called by name: -->
+			<xsl:for-each select="c:TDC/@c:timeMax">
+			  <input type="text" title="The maximum TDC time recoreded." size="4">
+			    <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+			    <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+			  </input>
+			</xsl:for-each>
 		      </td>
 		    </tr>
 		  </table>
 
 		</td>
 	      </tr>
+
 	    </table>
 
 	  </td>
