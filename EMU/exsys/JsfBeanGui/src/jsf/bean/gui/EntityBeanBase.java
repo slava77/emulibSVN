@@ -100,19 +100,16 @@ public class EntityBeanBase implements Serializable {
     protected List<String> getTitleFieldNames() {
         Class myClass = this.getClass();
         if (!titleFieldNamesCache.containsKey(myClass)) {
-            Field[] fields = this.getClass().getDeclaredFields();
-            List<String> titleFieldNames = new ArrayList<String>();
-            int numberOfFieldsFound = 0;
-            for (Field field: fields) {
-                UseInTitle useInTitleA = field.getAnnotation(UseInTitle.class);
-                if (useInTitleA != null) {
-                    titleFieldNames.add(useInTitleA.order() - 1, field.getName());
-                    numberOfFieldsFound++;
+            List<String> titleFieldNames = getTitleFieldNames(myClass);
+            if (titleFieldNames.isEmpty()) {
+                Class superClass = myClass.getSuperclass();
+                while (superClass.equals(EntityBeanBase.class) == false) {
+                    titleFieldNames = getTitleFieldNames(superClass);
+                    if (titleFieldNames.isEmpty() == false) {
+                        break;
+                    }
+                    superClass = superClass.getSuperclass();
                 }
-            }
-            if (numberOfFieldsFound != titleFieldNames.size()) {
-                throw new RuntimeException("There is something wrong with @UseInTitle annotations in class " + myClass.getName() +
-                                           ". Check the order - it should start with 1 and there should be no gaps between subsequent indices");
             }
             titleFieldNamesCache.put(myClass, titleFieldNames);
         }
@@ -120,6 +117,23 @@ public class EntityBeanBase implements Serializable {
         return titleFieldNamesCache.get(myClass);
     }
 
+    private static List<String> getTitleFieldNames(Class clazz) {
+        Field[] fields = clazz.getDeclaredFields();
+        List<String> titleFieldNames = new ArrayList<String>();
+        int numberOfFieldsFound = 0;
+        for (Field field: fields) {
+            UseInTitle useInTitleA = field.getAnnotation(UseInTitle.class);
+            if (useInTitleA != null) {
+                titleFieldNames.add(useInTitleA.order() - 1, field.getName());
+                numberOfFieldsFound++;
+            }
+        }
+        if (numberOfFieldsFound != titleFieldNames.size()) {
+            throw new RuntimeException("There is something wrong with @UseInTitle annotations in class " + clazz.getName() +
+                                       ". Check the order - it should start with 1 and there should be no gaps between subsequent indices");
+        }
+        return titleFieldNames;
+    }
 
     @Override
     public boolean equals(Object object) {

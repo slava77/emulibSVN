@@ -24,13 +24,10 @@ public class BeanTableColumnList extends BeanTableColumn {
         super(table, propertyMd);
 
         Type t = propertyMd.getGenericType();
-        logger.info(t.toString());
         if (t instanceof ParameterizedType) {
             ParameterizedType pt = (ParameterizedType) t;
-            logger.info(pt.toString());
             if (pt.getActualTypeArguments().length == 1) {
                 Type lit = pt.getActualTypeArguments()[0];
-                logger.info(lit.toString());
                 if (lit instanceof Class) {
                     this.itemType = (Class) lit;
                 }

@@ -307,6 +307,7 @@
 
                             <ice:commandLink style="width: 100%; text-align: left"
                                              rendered="#{column.listType}"
+                                             immediate="true"
                                              value="{list}">
 
                                 <f:setPropertyActionListener target="#{column.listPropertyTable}" value="#{item}"/>

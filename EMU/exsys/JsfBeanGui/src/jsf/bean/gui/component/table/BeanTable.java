@@ -159,7 +159,6 @@ public class BeanTable extends BeanTableControls {
         this.pack.getManager().clearSelected();
         try {
             String s = this.getPack().getSerializedFilter().toString(4);
-            System.out.print(s);
         } catch (JSONException ex) {
             logger.log(Level.SEVERE, ex.toString());
         }
