@@ -173,7 +173,9 @@ void getChambersStartEndParams(string side, int station, int ring, int &chambers
 " 0
  E E E 1 -1 -1 0  0 0
 ""0  1
-E "// init parameters
+E "#uses \"CMS_CSC_UI/emuui_gradient.ctl\"
+
+// init parameters
 string paramGroup;
 int paramWidth;
 

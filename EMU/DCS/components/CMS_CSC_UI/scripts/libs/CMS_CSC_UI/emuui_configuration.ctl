@@ -571,3 +571,40 @@ dyn_string emuui_getCscSystemNames(dyn_string &exceptionInfo) {
   }
   return emuui_g_cscSystemNames;
 }
+
+/**
+  * Given a list of DPs, type and deviceParams, this function filters out the DPs that refer to disabled channels.
+  * Only a handful of types are actually supported (e.g. temperature), if you give a type that's not supported, 
+  * this fuction will just return the same collection of DPs.
+  */
+dyn_string emuui_filterDisabled(dyn_string dpsToFilter, string type, mapping deviceParams, dyn_string &ex) {
+  if (type == "chamber_temperature") {
+    string disabledChDp = emuui_getDpName(type + "_disabled_channels", deviceParams, ex);
+    if (emu_checkException(ex)) { return dpsToFilter; }
+    dyn_int disabledCh;
+    if (!dpExists(disabledChDp)) {
+      return dpsToFilter;
+    }
+    dpGet(disabledChDp, disabledCh);
+    if (dynlen(disabledCh) > 0) {
+      for (int i=1; i <= dynlen(disabledCh); i++) {
+        if (disabledCh[i] < 6) {
+          deviceParams["boardType"] = "cfeb";
+          deviceParams["boardNumber"] = (string) disabledCh;
+        } else if (disabledCh[i] < 7) {
+          deviceParams["boardType"] = "alct";
+        } else if (disabledCh[i] < 8) {
+          deviceParams["boardType"] = "dmb";
+        }
+        int idx = dynContains(dpsToFilter, emuui_getDpName(type, deviceParams, ex));
+        if (emu_checkException(ex)) { return dpsToFilter; }
+        if (idx > 0) {
+          emu_debug("filtered out this dp disabled for '" + type + "': " + emuui_getDpName(type, deviceParams, ex));
+          dynRemove(dpsToFilter, idx);
+        }
+      }
+    }
+  }
+  
+  return dpsToFilter;
+}

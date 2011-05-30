@@ -326,13 +326,21 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
     }
   } else if (strpos(connectionType, \"DPs_\") >= 0) { // -----===== MULTIPLE DPs CONNECTION =====-----
     bool dpsFound = false;
-    
+
     dyn_string dps = emuui_getDpNames(mode, deviceParams, ex);
     // dp hasn't been found
     if (dynlen(ex) > 0) {
       emu_errorHandled(ex);
-    } else if (dynlen(dps) > 0){
-      dpsFound = true;
+      dpsFound = false;
+    } else {
+      dps = emuui_filterDisabled(dps, mode, deviceParams, ex); // filter out the disabled channels
+      if (dynlen(ex) > 0) {
+        emu_errorHandled(ex);
+        dpsFound = false;
+      }
+      if (dynlen(dps) > 0) {
+        dpsFound = true;
+      }
     }
 
     // find the function to which we want to connect these multiple DPs    
