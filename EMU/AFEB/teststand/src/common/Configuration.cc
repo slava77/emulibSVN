@@ -83,7 +83,7 @@ void AFEB::teststand::Configuration::createCrate() {
 
 void AFEB::teststand::Configuration::createMeasurements() {
   // Find the requested (enabled) measurements in the XML
-  vector< pair<string,string> > enabledMeasurementTypes = utils::getSelectedNodesValues( xml_, "/c:configuration/c:measurements/c:measurement[@c:enabled!='0']/@c:type" );
+  vector< pair<string,string> > enabledMeasurementTypes = utils::getSelectedNodesValues( xml_, "/c:configuration/c:measurements/c:measurement[@c:enabled='yes']/@c:type" );
   if ( enabledMeasurementTypes.size() == 0 ){
     XCEPT_RAISE( xcept::Exception, "No measurements are selected." );
   }

@@ -195,10 +195,10 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
   std::vector<cgicc::FormEntry> fev = cgi.getElements();
 
   map<string,string> values = AFEB::teststand::utils::selectFromQueryString( fev, "^/" );
-  // map<string,string>::const_iterator v;
-  // for ( v = values.begin(); v != values.end(); ++v ){
-  //   cout << v->first << "\t" << v->second << endl;
-  // }
+  map<string,string>::const_iterator v;
+  for ( v = values.begin(); v != values.end(); ++v ){
+    cout << v->first << "\t" << v->second << endl;
+  }
 
   string XML = configurationXML_;
   cout << "XML" << endl << XML << endl << flush;
@@ -207,7 +207,7 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
 
   cout << "configurationXML" << endl << configurationXML_ << endl << flush;
 
-  cout << "Selected value: " << AFEB::teststand::utils::getSelectedNodeValue( configurationXML_, "/c:configuration[1]/@c:date" ) << endl;
+  // cout << "Selected value: " << AFEB::teststand::utils::getSelectedNodeValue( configurationXML_, "/c:configuration[1]/@c:dateTime" ) << endl;
 
   try{
     vector< pair<string,string> > selectedValues = AFEB::teststand::utils::getSelectedNodesValues( configurationXML_, "/c:configuration/c:measurements/child::* | /c:configuration/c:description/child::*" );

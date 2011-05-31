@@ -46,8 +46,6 @@ namespace AFEB { namespace teststand {
       string name_;
       string type_;
       Type_t type_t_;
-      // vector<TestedDevice*> testedDevices_;
-      // vector<Results*> results_;
       map<TestedDevice*,Results*> results_;
 
       int amplitudeMin_;

@@ -4,6 +4,7 @@
 #include "AFEB/teststand/LE32.h"
 #include "AFEB/teststand/LeCroy3377.h"
 #include "xcept/Exception.h"
+#include "TRandom3.h"
 
 using namespace std;
 using namespace AFEB::teststand;
@@ -13,7 +14,15 @@ const char* const AFEB::teststand::Measurement::types_[] = { "count_vs_dac", "ti
 ostream& AFEB::teststand::operator<<( ostream& os, const Measurement& m ){
 
   os << "Measurement '" << m.name_ << "' of type " << m.type_ << endl
-     << "  Tested devices:" << endl;
+     << " amplitudeMin="        << m.amplitudeMin_        
+     << " amplitudeMax="        << m.amplitudeMax_        
+     << " amplitudeStep="       << m.amplitudeStep_       << endl
+     << " nPulses="             << m.nPulses_             
+     << " pulseGeneratorSlot="  << m.pulseGeneratorSlot_
+     << " thresholdValue="      << m.thresholdValue_      << endl
+     << " tdcTimeMin="          << m.tdcTimeMin_          
+     << " tdcTimeMax="          << m.tdcTimeMax_          << endl 
+     << "  Tested devices:"                               << endl;
 
   map<TestedDevice*,Results*>::const_iterator r;
   for ( r = m.results_.begin(); r != m.results_.end(); ++r ){
@@ -57,15 +66,15 @@ void AFEB::teststand::Measurement::setPulseParameters( const vector< pair<string
 void AFEB::teststand::Measurement::setThresholdParameters( const vector< pair<string,string> >& param ){
   vector< pair<string,string> >::const_iterator p;
   for ( p = param.begin(); p != param.end(); ++p ){
-    if ( p->first.compare( "c:value" ) == 0 ) thresholdValue_ = utils::stringTo<int>( p->second );
+    if ( p->first.compare( "c:thresholdValue" ) == 0 ) thresholdValue_ = utils::stringTo<int>( p->second );
   }
 }
 
 void AFEB::teststand::Measurement::setTDCParameters( const vector< pair<string,string> >& param ){
   vector< pair<string,string> >::const_iterator p;
   for ( p = param.begin(); p != param.end(); ++p ){
-    if      ( p->first.compare( "c:tdcTimeMin" ) == 0 ) tdcTimeMin_ = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "c:tdcTimeMax" ) == 0 ) tdcTimeMax_ = utils::stringTo<int>( p->second );
+    if      ( p->first.compare( "c:timeMin" ) == 0 ) tdcTimeMin_ = utils::stringTo<int>( p->second );
+    else if ( p->first.compare( "c:timeMax" ) == 0 ) tdcTimeMax_ = utils::stringTo<int>( p->second );
   }
 }
 
@@ -212,6 +221,8 @@ void AFEB::teststand::Measurement::dummyResultGenerator(){
   LE32* signalConverter = static_cast<LE32*>( crate->getModule( results_.begin()->first->getSignalConverterSlot() ) );
   const CrateController* controller = crate->getCrateController();
 
+  TRandom3 rndm;
+
   // Gradually crank up the pulse height:
   for ( int amplitude = amplitudeMin_; amplitude <= amplitudeMax_; amplitude += amplitudeStep_ ){
 
@@ -227,7 +238,17 @@ void AFEB::teststand::Measurement::dummyResultGenerator(){
 	//cout << "         data word=" << iShort << endl;
 	int tdcInput = ( iShort < nDeviceChannels ? 1 : 2 );
 	Results* results = findResults( tdcInput );
-	if ( results ) results->add( iShort, amplitude, 2*amplitude );
+	if ( results ){
+	  if ( double(amplitude) > rndm.Gaus( 0.5 * ( amplitudeMax_ + amplitudeMin_ ),
+					      0.1 * ( amplitudeMax_ - amplitudeMin_ ) ) 
+	       ){
+	    results->add( iShort, 
+			  amplitude,
+			  rndm.Gaus( 0.5 * ( tdcTimeMax_ + tdcTimeMin_ ), 
+				     0.1 * ( tdcTimeMax_ - tdcTimeMin_ ) ) 
+			  );
+	  }
+	}
       } // for ( int iShort = 0; iShort < LeCroy3377::nShortsData; ++iShort )
 
     } // for ( int iPulse = 0; iPulse < nPulses_; ++iPulse )
