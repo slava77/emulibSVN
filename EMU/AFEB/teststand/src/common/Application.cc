@@ -209,18 +209,18 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
 
   // cout << "Selected value: " << AFEB::teststand::utils::getSelectedNodeValue( configurationXML_, "/c:configuration[1]/@c:dateTime" ) << endl;
 
-  try{
-    vector< pair<string,string> > selectedValues = AFEB::teststand::utils::getSelectedNodesValues( configurationXML_, "/c:configuration/c:measurements/child::* | /c:configuration/c:description/child::*" );
-    //vector< pair<string,string> > selectedValues = AFEB::teststand::utils::getSelectedNodesValues( configurationXML_, "/c:configuration/c:measurements/c:measurement/c:PulseGenerator/@*" );
-    vector< pair<string,string> >::iterator v;
-    cout << selectedValues.size() << " selected values:" << endl;
-    for ( v = selectedValues.begin(); v != selectedValues.end(); ++v ){
-      cout << v->first << "\t'" << v->second << "'" << endl;
-    }
-  }
-  catch( xcept::Exception &e ){
-    XCEPT_RETHROW( xgi::exception::Exception, "Failed to get configuration: ", e );
-  }
+  // try{
+  //   vector< pair<string,string> > selectedValues = AFEB::teststand::utils::getSelectedNodesValues( configurationXML_, "/c:configuration/c:measurements/child::* | /c:configuration/c:description/child::*" );
+  //   //vector< pair<string,string> > selectedValues = AFEB::teststand::utils::getSelectedNodesValues( configurationXML_, "/c:configuration/c:measurements/c:measurement/c:PulseGenerator/@*" );
+  //   vector< pair<string,string> >::iterator v;
+  //   cout << selectedValues.size() << " selected values:" << endl;
+  //   for ( v = selectedValues.begin(); v != selectedValues.end(); ++v ){
+  //     cout << v->first << "\t'" << v->second << "'" << endl;
+  //   }
+  // }
+  // catch( xcept::Exception &e ){
+  //   XCEPT_RETHROW( xgi::exception::Exception, "Failed to get configuration: ", e );
+  // }
 
   // Test crate stuff:
   // AFEB::teststand::Crate *crate = new AFEB::teststand::Crate();

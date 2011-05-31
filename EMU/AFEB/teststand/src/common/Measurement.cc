@@ -195,9 +195,9 @@ void AFEB::teststand::Measurement::countVsDAQ(){
 	if ( !tdc->BlockRd( iShort ) ) break;
 	// if ( tdc->TimeChRd() >= tdcTimeMin_ && 
 	//      tdc->TimeChRd() <= tdcTimeMax_    ){
-	int tdcInput = ( tdc->ChannelRd() < nDeviceChannels ? 1 : 2 );
+	int tdcInput = tdc->ChannelRd() / nDeviceChannels + 1;
 	Results* results = findResults( tdcInput );
-	if ( results ) results->add( tdc->ChannelRd(), amplitude, tdc->TimeChRd() );
+	if ( results ) results->add( tdc->ChannelRd() % nDeviceChannels + 1, amplitude, tdc->TimeChRd() );
 	// }
       } // for ( int iShort = 0; iShort < LeCroy3377::nShortsData; ++iShort )
 

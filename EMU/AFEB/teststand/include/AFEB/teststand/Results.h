@@ -22,16 +22,21 @@ namespace AFEB { namespace teststand {
       Results( const Measurement* const measurement, const TestedDevice* const device );
       ~Results();
       void add( const int channel, int const amplitude, const int time );
+      void createFigure();
       void save();
     private:
       toolbox::BSem bsem_;
       const Measurement* const measurement_;
       const TestedDevice* const testedDevice_;
-      TTree *times_;
-      TH2D *pulses_;
+      TTree *times_; ///< ( channel, amplitude, time ) ntuple
+      TH2D *pulses_; ///< pulses( channel, amplitude)  2D histogram
+      TH1D *threshold_; ///< measured threshold( channel ) 1D histogram
+      TH1D *noise_; ///< measured noise( channel ) 1D histogram
+      TH1D *efficiency_; ///< measured efficiency( channel ) 1D histogram
       int channel_;
       int amplitude_;
       int time_;
+      //double normalCDF( double *x, double *p ) const ;
     };
 
   }}
