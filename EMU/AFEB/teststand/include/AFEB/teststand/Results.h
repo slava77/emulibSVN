@@ -6,6 +6,7 @@
 #include "TH2D.h"
 #include "TTree.h"
 #include "TFile.h"
+#include "TGaxis.h"
 
 #include "AFEB/teststand/Measurement.h"
 
@@ -22,6 +23,7 @@ namespace AFEB { namespace teststand {
       Results( const Measurement* const measurement, const TestedDevice* const device );
       ~Results();
       void add( const int channel, int const amplitude, const int time );
+      void fitResults();
       void createFigure();
       void save();
     private:
@@ -36,9 +38,8 @@ namespace AFEB { namespace teststand {
       int channel_;
       int amplitude_;
       int time_;
-      //double normalCDF( double *x, double *p ) const ;
+      TGaxis* adjustToHistogram( const TH1* const h1, TH1* h2, bool isNewAxisOnRight=true );
     };
-
   }}
 
 #endif

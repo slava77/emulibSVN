@@ -189,7 +189,7 @@ void AFEB::teststand::Measurement::countVsDAQ(){
       tdc->HeadRdBlock(); // This doeas the actual hardware readout.
 
       // Read out TDC channels
-      for ( int iShort = 0; iShort < LeCroy3377::nShortsData; ++iShort ){
+      for ( int iShort = 0; iShort < LeCroy3377::nShortsData; ++iShort ){ // TODO: LeCroy3377::nShortsData / 2 ?
 	// LeCroy3377::BlockRd sets LeCroy3377::TimeCh, which can be accessed by LeCroy3377::TimeChRd(),
 	//                     and LeCroy3377::Channel, which can be accessed by LeCroy3377::ChannelRd()
 	if ( !tdc->BlockRd( iShort ) ) break;
@@ -234,15 +234,15 @@ void AFEB::teststand::Measurement::dummyResultGenerator(){
       //cout << "   pulse=" << iPulse << endl;
 
       // Read out TDC channels
-      for ( int iShort = 0; iShort < LeCroy3377::nShortsData; ++iShort ){
+      for ( int iShort = 0; iShort < LeCroy3377::nShortsData / 2; ++iShort ){
 	//cout << "         data word=" << iShort << endl;
-	int tdcInput = ( iShort < nDeviceChannels ? 1 : 2 );
+	int tdcInput = iShort / nDeviceChannels + 1;
 	Results* results = findResults( tdcInput );
 	if ( results ){
 	  if ( double(amplitude) > rndm.Gaus( 0.5 * ( amplitudeMax_ + amplitudeMin_ ),
 					      0.1 * ( amplitudeMax_ - amplitudeMin_ ) ) 
 	       ){
-	    results->add( iShort, 
+	    results->add( iShort % nDeviceChannels, 
 			  amplitude,
 			  rndm.Gaus( 0.5 * ( tdcTimeMax_ + tdcTimeMin_ ), 
 				     0.1 * ( tdcTimeMax_ - tdcTimeMin_ ) ) 
