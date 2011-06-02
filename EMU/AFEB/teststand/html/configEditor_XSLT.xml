@@ -10,7 +10,13 @@
 
   <xsl:template match="//c:configuration">
     <input type="submit" name="config" value="save" class="submit"/>
-    <input type="submit" name="config" value="load" class="submit"/>
+    <!-- for-each: just to set the current node for the templates called by name: -->
+    <xsl:for-each select="@c:name">
+      <input type="text" title="The name of this configuration." size="20">
+	<xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+	<xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+      </input>
+    </xsl:for-each>
     <table class="layout">
       <tr>
 	<td><xsl:apply-templates select="c:measurements"/></td>

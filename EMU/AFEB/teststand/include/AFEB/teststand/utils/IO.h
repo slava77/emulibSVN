@@ -22,6 +22,16 @@ namespace AFEB { namespace teststand {
       return os;
     }
     
+    template <typename T1, typename T2>
+    ostream& operator<<( ostream& os, const map<T1,T2>& t ){
+      cout << "(";
+      typename map<T1,T2>::const_iterator it;
+      for ( it = t.begin(); it != t.end(); ++it )
+	cout << it->first << ":" << it->second << ",";//(it+1 != t.end() ? "," : ""); // no match for 'operator+' in 'it + 1'...
+      cout << ")";
+      return os;
+    }
+    
   }}
 
 #endif

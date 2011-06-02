@@ -280,7 +280,7 @@ string AFEB::teststand::utils::setSelectedNodeValue( const string XML, const str
     XalanNode* xalan_node = theEvaluator.selectSingleNode( theDOMSupport,
 							   xalan_document,
 							   XalanDOMString(xPathToNode.c_str()).c_str(),
-							   thePrefixResolver ); // does not work with namespaces...
+							   thePrefixResolver );
     
     
     if ( xalan_node ){

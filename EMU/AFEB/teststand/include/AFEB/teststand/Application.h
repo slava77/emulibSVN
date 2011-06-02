@@ -14,6 +14,8 @@
 #include <map>
 #include <vector>
 
+#include "AFEB/teststand/Configuration.h"
+
 //---------------------
 #include "xoap/MessageReference.h"
 
@@ -112,6 +114,8 @@ private:
 
   void loadConfigurationTemplate();
 
+  vector<pair<string,string> > loadConfigurationFileList();
+
   void initializeParameters();
 
   string setProcessingInstruction( const string XML, const string xslURI )
@@ -123,6 +127,7 @@ private:
   string configurationXML_; ///< XML of the configuration
   string xmlWebPageSkeleton_; ///< skeleton of the XML web page
   toolbox::fsm::FiniteStateMachine fsm_; ///< finite state machine
+  AFEB::teststand::Configuration* configuration_;  ///< configuration
 };
 
 }}

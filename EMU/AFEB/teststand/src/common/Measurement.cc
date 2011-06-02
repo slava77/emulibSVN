@@ -228,6 +228,8 @@ void AFEB::teststand::Measurement::dummyResultGenerator(){
 
     cout << "amplitude=" << amplitude << endl;
 
+    ::sleep(1); // TODO: remove
+
     // Send pulses
     for ( int iPulse = 0; iPulse < nPulses_; ++iPulse ){
 

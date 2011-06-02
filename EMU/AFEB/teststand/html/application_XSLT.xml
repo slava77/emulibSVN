@@ -31,7 +31,23 @@
 	  </input>
 	</td>
       </tr>
+      <tr>
+	<td colspan="3">
+	  <xsl:apply-templates select="//a:configuration"/>
+	  <input type="submit" name="config" value="load" class="submit"/>
+	</td>
+      </tr>
     </table>
   </xsl:template>  
+
+  <xsl:template match="//a:configuration">
+    <select name="file" size="3">
+      <xsl:apply-templates select="//a:file"/>
+    </select>
+  </xsl:template>
+
+  <xsl:template match="//a:file">
+    <option value="{@a:name}"><xsl:value-of select="@a:time"/><xsl:text> </xsl:text><b><xsl:value-of select="@a:name"/></b></option>
+  </xsl:template>
 
 </xsl:transform>

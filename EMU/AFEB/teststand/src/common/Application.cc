@@ -4,6 +4,7 @@
 #include "AFEB/teststand/utils/Cgi.h"
 #include "AFEB/teststand/utils/Xalan.h"
 #include "AFEB/teststand/utils/System.h"
+#include "AFEB/teststand/utils/IO.h"
 
 #include "xcept/tools.h"
 #include "xoap/domutils.h" // for XMLCh2String
@@ -28,8 +29,6 @@
 #include "AFEB/teststand/Jorway73A.h"
 #include "AFEB/teststand/LE32.h"
 #include "AFEB/teststand/LeCroy3377.h"
-
-#include "AFEB/teststand/Configuration.h"
 
 
 AFEB::teststand::Application::Application(xdaq::ApplicationStub *s)
@@ -82,9 +81,18 @@ void AFEB::teststand::Application::fireEvent( const string name ){
 }
 
 void AFEB::teststand::Application::configureAction(toolbox::Event::Reference e){
+  delete configuration_;
+  configuration_ = new Configuration( configurationXML_ );
+  cout << configuration_->getCrate() << endl;
 }
 
-void AFEB::teststand::Application::enableAction(toolbox::Event::Reference e){
+void AFEB::teststand::Application::enableAction(toolbox::Event::Reference e){ // TODO: in separate thread, with mutex
+  vector<Measurement*>::const_iterator m;
+  cout << configuration_->getMeasurements().size() << " measurements" << endl;
+  for ( m = configuration_->getMeasurements().begin(); m != configuration_->getMeasurements().end(); ++m ){
+    cout << **m;
+    (*m)->execute();
+  }
 }
 
 void AFEB::teststand::Application::haltAction(toolbox::Event::Reference e){
@@ -129,6 +137,8 @@ void AFEB::teststand::Application::exportParams(){
 void AFEB::teststand::Application::initializeParameters(){
   loadConfigurationTemplate();
 
+  vector<pair<string,string> > configList = loadConfigurationFileList();
+
   stringstream ss;
   if ( applicationURLPath_.size() == 0 ){
     ss << "/urn:xdaq-application:lid=" << getApplicationDescriptor()->getLocalId();
@@ -138,12 +148,17 @@ void AFEB::teststand::Application::initializeParameters(){
   
   ss << "<?xml-stylesheet type=\"text/xml\" href=\"/AFEB/teststand/html/htmlRenderer_XSLT.xml\"?>" << endl 
      << "<root>" << endl
-     << "<a:application xmlns:a=\"" << applicationNamespace_ 
+     << "  <a:application xmlns:a=\"" << applicationNamespace_ 
      << "\" a:urlPath=\"" << applicationURLPath_ 
      << "\" a:state=\"" << fsm_.getStateName( fsm_.getCurrentState() )
      << "\" a:dateTime=\"" << AFEB::teststand::utils::getDateTime()
-     << "\"/>" 
-     << endl
+     << "\">" << endl
+     << "    <a:configuration>" << endl;
+  for ( vector<pair<string,string> >::const_iterator c=configList.begin(); c!=configList.end(); ++c ){
+    ss << "      <a:file a:time=\"" << c->first << "\" a:name=\"" << c->second << "\"/>" << endl;
+  }
+  ss << "    </a:configuration>" << endl
+     << "  </a:application>" << endl
      << "</root>";
 
   xmlWebPageSkeleton_ = ss.str();
@@ -176,6 +191,36 @@ void AFEB::teststand::Application::loadConfigurationTemplate(){
 
 }
 
+vector<pair<string,string> >
+AFEB::teststand::Application::loadConfigurationFileList(){
+  vector<pair<string,string> > configFiles; 
+  try{
+    string configPath 
+      = configurationDir_.toString() 
+      + "/"
+      + configFileNameFilter_.toString();
+    string command = string("ls -1 ") + configPath;
+    vector<string> files = AFEB::teststand::utils::execShellCommand( command );
+    //cout << command << endl;
+    //cout << files << endl;
+    command = string("ls -l --time-style=long-iso ") + configPath + " | awk '{ print $6\" \"$7 }'";
+    vector<string> times = AFEB::teststand::utils::execShellCommand( command );
+    if ( files.size() != times.size() ){
+      XCEPT_RAISE( xcept::Exception, "The number of configuration files has changed?!" );
+    }
+    for ( size_t i=0; i<files.size(); ++i )
+      configFiles.push_back( make_pair( times[i], files[i] ) );
+    //cout << configFiles << endl;
+  }catch( xcept::Exception& e ){
+    XCEPT_RETHROW( xcept::Exception, "Failed to read in list of .duck files: ", e );
+  }catch( std::exception& e ){
+    stringstream ess; ess << "Failed to read in list of .duck files: " << e.what();
+    XCEPT_RAISE( xcept::Exception, ess.str() );
+  }catch(...){
+    XCEPT_RAISE( xcept::Exception, "Failed to read in list of .duck files: unexpected exception." );
+  }
+  return configFiles;
+}
 
 void AFEB::teststand::Application::defaultWebPage(xgi::Input *in, xgi::Output *out)
   throw (xgi::exception::Exception){
@@ -194,18 +239,69 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
   cgicc::Cgicc cgi( in );
   std::vector<cgicc::FormEntry> fev = cgi.getElements();
 
-  map<string,string> values = AFEB::teststand::utils::selectFromQueryString( fev, "^/" );
-  map<string,string>::const_iterator v;
-  for ( v = values.begin(); v != values.end(); ++v ){
-    cout << v->first << "\t" << v->second << endl;
+  //
+  // Find out what to do:
+  //
+
+  // Manipulate configuration?
+  map<string,string> action = AFEB::teststand::utils::selectFromQueryString( fev, "^config$" );
+  if ( action.size() == 1 ){
+    // Save?
+    if ( action["config"].compare( "save" ) == 0 ){
+      // // What name was specified?
+      // map<string,string> v = AFEB::teststand::utils::selectFromQueryString( fev, "^/c:configuration\\[1\\]/@c:name$" );
+      // cout << v << endl;
+      // if ( v.size() == 1 ){
+      // 	configurationXML_ = AFEB::teststand::utils::setSelectedNodeValue( configurationXML_, "/c:configuration[1]/@c:name", v.begin()->second  );
+      // 	string fileToSaveConfigIn = configurationDir_.toString() + "/" + v.begin()->second + ".xml";
+      // 	AFEB::teststand::utils::writeFile( fileToSaveConfigIn, configurationXML_ );
+      // 	LOG4CPLUS_INFO( logger_, string("Saved configuration to ") + fileToSaveConfigIn );
+      // }
+      map<string,string> values = AFEB::teststand::utils::selectFromQueryString( fev, "^/" );
+      for ( map<string,string>::const_iterator v = values.begin(); v != values.end(); ++v ){
+	cout << v->first << "\t" << v->second << endl;
+      }
+      configurationXML_ = AFEB::teststand::utils::setSelectedNodesValues( configurationXML_, values );
+      cout << "configurationXML" << endl << configurationXML_ << endl << flush;
+      string fileToSaveConfigIn = configurationDir_.toString() + "/" + values["/c:configuration[1]/@c:name"] + ".xml";
+      AFEB::teststand::utils::writeFile( fileToSaveConfigIn, configurationXML_ );
+      LOG4CPLUS_INFO( logger_, string("Saved configuration to ") + fileToSaveConfigIn );
+    }
+    // Load?
+    else if ( action["config"].compare( "load" ) == 0 ){
+      map<string,string> v = AFEB::teststand::utils::selectFromQueryString( fev, "^file$" );
+      if ( v.size() == 1 ){
+	LOG4CPLUS_INFO( logger_, string("Reading configuration from ") + v["file"] );
+	configurationXML_ = AFEB::teststand::utils::readFile( v["file"] );
+      } 
+    }
   }
 
-  string XML = configurationXML_;
-  cout << "XML" << endl << XML << endl << flush;
-
-  configurationXML_ = AFEB::teststand::utils::setSelectedNodesValues( XML, values );
-
-  cout << "configurationXML" << endl << configurationXML_ << endl << flush;
+  // Drive FSM?
+  action = AFEB::teststand::utils::selectFromQueryString( fev, "^fsm$" );
+  if ( action.size() == 1 ){
+    if ( action["fsm"].compare( "Configure" ) == 0 ){
+      if ( fsm_.getCurrentState() == 'H' ){
+	map<string,string> values = AFEB::teststand::utils::selectFromQueryString( fev, "^/" );
+	for ( map<string,string>::const_iterator v = values.begin(); v != values.end(); ++v ){
+	  cout << v->first << "\t" << v->second << endl;
+	}
+	configurationXML_ = AFEB::teststand::utils::setSelectedNodesValues( configurationXML_, values );
+	cout << "configurationXML" << endl << configurationXML_ << endl << flush;
+	fireEvent( "Configure" );
+      }
+    }
+    else if ( action["fsm"].compare( "Enable" ) == 0 ){
+      if ( fsm_.getCurrentState() == 'C' ){
+	fireEvent( "Enable" );
+      }
+    }
+    else if ( action["fsm"].compare( "Halt" ) == 0 ){
+      if ( fsm_.getCurrentState() == 'C' || fsm_.getCurrentState() == 'E' ){
+	fireEvent( "Halt" );
+      }
+    }
+  }
 
   // cout << "Selected value: " << AFEB::teststand::utils::getSelectedNodeValue( configurationXML_, "/c:configuration[1]/@c:dateTime" ) << endl;
 
@@ -232,15 +328,6 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
   // crate->insertController( Jorway73AController, 10 );
   // cout << "Crate " << endl << *crate << endl;
 
-  AFEB::teststand::Configuration c( configurationXML_ );
-  cout << *c.getCrate() << endl;
-
-  vector<Measurement*>::const_iterator m;
-  cout << c.getMeasurements().size() << " measurements" << endl;
-  for ( m = c.getMeasurements().begin(); m != c.getMeasurements().end(); ++m ){
-    cout << **m;
-    (*m)->execute();
-  }
 
   AFEB::teststand::utils::redirectTo( applicationURLPath_, out );
   return;
