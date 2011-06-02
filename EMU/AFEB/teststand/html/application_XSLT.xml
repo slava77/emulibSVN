@@ -33,6 +33,11 @@
       </tr>
       <tr>
 	<td colspan="3">
+	  <xsl:apply-templates select="//a:results"/>
+	</td>
+      </tr>
+      <tr>
+	<td colspan="3">
 	  <xsl:apply-templates select="//a:configuration"/>
 	  <input type="submit" name="config" value="load" class="submit"/>
 	</td>
@@ -40,13 +45,26 @@
     </table>
   </xsl:template>  
 
-  <xsl:template match="//a:configuration">
+  <xsl:template match="a:results">
+    <xsl:apply-templates select="a:plot">
+      <xsl:sort select="@a:name"/>
+    </xsl:apply-templates>
+    <xsl:for-each select="a:plot[@a:current='yes']">
+      <img src="{@a:url}"/>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template match="a:plot">
+    <a href="{@a:url}" class="popup"><xsl:value-of select="@a:name"/></a><xsl:if test="position()!=last()"> | </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="a:configuration">
     <select name="file" size="3">
-      <xsl:apply-templates select="//a:file"/>
+      <xsl:apply-templates select="a:file"/>
     </select>
   </xsl:template>
 
-  <xsl:template match="//a:file">
+  <xsl:template match="a:file">
     <option value="{@a:name}"><xsl:value-of select="@a:time"/><xsl:text> </xsl:text><b><xsl:value-of select="@a:name"/></b></option>
   </xsl:template>
 

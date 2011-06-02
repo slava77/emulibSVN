@@ -34,6 +34,7 @@ namespace AFEB { namespace teststand {
       string getName() const { return name_; }
       string getType() const { return type_; }
       const TestedDevice* getTestedDevice( const int tdcInput ) const;
+      const map<TestedDevice*,Results*> getResults() const { return results_; }
       int getTDCSlot() const;
       int getAmplitudeMin () const { return amplitudeMin_; }
       int getAmplitudeMax () const { return amplitudeMax_; }

@@ -89,9 +89,11 @@ void AFEB::teststand::Application::configureAction(toolbox::Event::Reference e){
 void AFEB::teststand::Application::enableAction(toolbox::Event::Reference e){ // TODO: in separate thread, with mutex
   vector<Measurement*>::const_iterator m;
   cout << configuration_->getMeasurements().size() << " measurements" << endl;
+  currentMeasurementIndex_ = 0;
   for ( m = configuration_->getMeasurements().begin(); m != configuration_->getMeasurements().end(); ++m ){
     cout << **m;
     (*m)->execute();
+    ++currentMeasurementIndex_;
   }
 }
 
@@ -128,9 +130,11 @@ void AFEB::teststand::Application::exportParams(){
   HTML_ROOT_            = "BUILD_HOME";
   configurationDir_     = "/tmp";
   configFileNameFilter_ = "AFEB*.xml";
+  resultDir_            = "";
 
   s->fireItemAvailable( "configurationDir"    , &configurationDir_     );
   s->fireItemAvailable( "configFileNameFilter", &configFileNameFilter_ );
+  s->fireItemAvailable( "resultDir"           , &resultDir_            );
 
 }
 
@@ -152,8 +156,24 @@ void AFEB::teststand::Application::initializeParameters(){
      << "\" a:urlPath=\"" << applicationURLPath_ 
      << "\" a:state=\"" << fsm_.getStateName( fsm_.getCurrentState() )
      << "\" a:dateTime=\"" << AFEB::teststand::utils::getDateTime()
-     << "\">" << endl
-     << "    <a:configuration>" << endl;
+     << "\">"
+     << "    <a:results>" << endl;
+  int measurementCount = 0;
+  if ( configuration_ != NULL ){
+    vector<Measurement*> measurements = configuration_->getMeasurements();
+    for ( vector<Measurement*>::const_iterator m = measurements.begin(); m != measurements.end(); ++m ){
+      map<TestedDevice*,Results*> results = (*m)->getResults();
+      for ( map<TestedDevice*,Results*>::const_iterator r = results.begin(); r != results.end(); ++r ){
+	ss << "      <a:plot a:name=\"" << r->second->getFileName() 
+	   << "\" a:url=\"" << resultDir_.toString() << "/" << r->second->getFileName() << ".png"
+	   << "\" a:current=\"" << ( measurementCount == currentMeasurementIndex_ ? "yes" : "no" ) 
+	   << "\"/>" << endl;
+      }
+      ++measurementCount;
+    }
+  }
+  ss << "    </a:results>" << endl;
+  ss << "    <a:configuration>" << endl;
   for ( vector<pair<string,string> >::const_iterator c=configList.begin(); c!=configList.end(); ++c ){
     ss << "      <a:file a:time=\"" << c->first << "\" a:name=\"" << c->second << "\"/>" << endl;
   }
@@ -248,15 +268,6 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
   if ( action.size() == 1 ){
     // Save?
     if ( action["config"].compare( "save" ) == 0 ){
-      // // What name was specified?
-      // map<string,string> v = AFEB::teststand::utils::selectFromQueryString( fev, "^/c:configuration\\[1\\]/@c:name$" );
-      // cout << v << endl;
-      // if ( v.size() == 1 ){
-      // 	configurationXML_ = AFEB::teststand::utils::setSelectedNodeValue( configurationXML_, "/c:configuration[1]/@c:name", v.begin()->second  );
-      // 	string fileToSaveConfigIn = configurationDir_.toString() + "/" + v.begin()->second + ".xml";
-      // 	AFEB::teststand::utils::writeFile( fileToSaveConfigIn, configurationXML_ );
-      // 	LOG4CPLUS_INFO( logger_, string("Saved configuration to ") + fileToSaveConfigIn );
-      // }
       map<string,string> values = AFEB::teststand::utils::selectFromQueryString( fev, "^/" );
       for ( map<string,string>::const_iterator v = values.begin(); v != values.end(); ++v ){
 	cout << v->first << "\t" << v->second << endl;
@@ -302,32 +313,6 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
       }
     }
   }
-
-  // cout << "Selected value: " << AFEB::teststand::utils::getSelectedNodeValue( configurationXML_, "/c:configuration[1]/@c:dateTime" ) << endl;
-
-  // try{
-  //   vector< pair<string,string> > selectedValues = AFEB::teststand::utils::getSelectedNodesValues( configurationXML_, "/c:configuration/c:measurements/child::* | /c:configuration/c:description/child::*" );
-  //   //vector< pair<string,string> > selectedValues = AFEB::teststand::utils::getSelectedNodesValues( configurationXML_, "/c:configuration/c:measurements/c:measurement/c:PulseGenerator/@*" );
-  //   vector< pair<string,string> >::iterator v;
-  //   cout << selectedValues.size() << " selected values:" << endl;
-  //   for ( v = selectedValues.begin(); v != selectedValues.end(); ++v ){
-  //     cout << v->first << "\t'" << v->second << "'" << endl;
-  //   }
-  // }
-  // catch( xcept::Exception &e ){
-  //   XCEPT_RETHROW( xgi::exception::Exception, "Failed to get configuration: ", e );
-  // }
-
-  // Test crate stuff:
-  // AFEB::teststand::Crate *crate = new AFEB::teststand::Crate();
-  // AFEB::teststand::Module *LE32 = new AFEB::teststand::LE32( "PulseGenerator" );
-  // AFEB::teststand::Module *LeCroy3377 = new AFEB::teststand::LeCroy3377();
-  // AFEB::teststand::Jorway73A *Jorway73AController = new AFEB::teststand::Jorway73A( 8, 1 );
-  // crate->insert( LE32, 9 );
-  // crate->insert( LeCroy3377, 7 );
-  // crate->insertController( Jorway73AController, 10 );
-  // cout << "Crate " << endl << *crate << endl;
-
 
   AFEB::teststand::utils::redirectTo( applicationURLPath_, out );
   return;

@@ -51,21 +51,10 @@ private:
   ///
 /// @{
 
-  ///
-  /// 
-  ///
   xdata::String HTML_ROOT_;
-
-  ///
-  /// 
-  ///
   xdata::String configurationDir_;
-
-  ///
-  /// 
-  ///
   xdata::String configFileNameFilter_;
-
+  xdata::String resultDir_; ///< results' directory relative to HTML_ROOT_
 /// @}
 
   ////////////////////////////////////////////////////////
@@ -128,6 +117,7 @@ private:
   string xmlWebPageSkeleton_; ///< skeleton of the XML web page
   toolbox::fsm::FiniteStateMachine fsm_; ///< finite state machine
   AFEB::teststand::Configuration* configuration_;  ///< configuration
+  int currentMeasurementIndex_; ///< the index of the measurement being performed
 };
 
 }}
