@@ -25,11 +25,13 @@ namespace AFEB { namespace teststand {
       void add( const int channel, int const amplitude, const int time );
       void fitResults();
       void createFigure();
+      string getFileName() const { return fileName_; }
       void save();
     private:
       toolbox::BSem bsem_;
       const Measurement* const measurement_;
       const TestedDevice* const testedDevice_;
+      string fileName_; ///< result file name without the extension
       TTree *times_; ///< ( channel, amplitude, time ) ntuple
       TH2D *pulses_; ///< pulses( channel, amplitude)  2D histogram
       TH1D *threshold_; ///< measured threshold( channel ) 1D histogram

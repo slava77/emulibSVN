@@ -107,7 +107,7 @@
     </c:inputs>
 
     <c:measurements>
-      <c:measurement c:name="Efficiency scan" c:type="count_vs_dac" c:enabled="yes">
+      <c:measurement c:name="Threshold scan" c:type="count_vs_dac" c:enabled="yes">
 	<c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="1000" c:slot="6"/>
 	<c:SignalConverter c:thresholdValue="50"/>
 	<c:TDC c:timeMin="0" c:timeMax="120"/>

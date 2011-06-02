@@ -3,6 +3,7 @@
 #include "TMath.h"
 #include "TStyle.h"
 #include "TCanvas.h"
+#include "TLatex.h"
 #include "Math/SpecFuncMathCore.h" // for erf()
 
 #include <sstream>
@@ -12,17 +13,18 @@ using namespace AFEB::teststand;
 AFEB::teststand::Results::Results( const Measurement* const measurement, const TestedDevice* const device  ) :
   bsem_( toolbox::BSem::EMPTY ), // locked
   measurement_( measurement ),
-  testedDevice_( device ){
+  testedDevice_( device ),
+  fileName_( measurement_->getType() + "_" + testedDevice_->getType() + "_" + testedDevice_->getId() )
+{
 
   // pulses( channel, amplitude)  2D histogram
   stringstream name;
   name << "pulses__" << measurement_->getType() << "__" << testedDevice_->getId();
   stringstream title;
-  title << "Number of pulses out of " << measurement_->getNPulses()
-	<< " in " << testedDevice_->getType()
-	<< " of id "  << testedDevice_->getId()
-	<< " in a '" << measurement_->getName() 
-	<< "' measurement ";
+  title << measurement_->getName() 
+	<< " with " << measurement_->getNPulses()
+	<< " pulses of " << testedDevice_->getType()
+	<< " of id "  << testedDevice_->getId();
   int yspan = 
     ( measurement_->getAmplitudeMax() - measurement_->getAmplitudeMin() ) -
     ( measurement_->getAmplitudeMax() - measurement_->getAmplitudeMin() ) %  measurement_->getAmplitudeStep();
@@ -30,8 +32,8 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   pulses_ = new TH2D( name.str().c_str(),
 		      title.str().c_str(),
 		      testedDevice_->getNChannels(),
-		      -0.5,
-		      -0.5 + testedDevice_->getNChannels(),
+		      0.,
+		      0. + testedDevice_->getNChannels(),
 		      ny,
 		      measurement_->getAmplitudeMin() -        0.5   * measurement_->getAmplitudeStep(),
 		      measurement_->getAmplitudeMin() + ( ny - 0.5 ) * measurement_->getAmplitudeStep()
@@ -39,7 +41,11 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   pulses_->SetXTitle( "channel" );
   pulses_->SetYTitle( "amplitude" );
   pulses_->SetZTitle( "count" );
+  pulses_->SetMinimum( 0. );
+  pulses_->SetMaximum( measurement_->getNPulses() );
   pulses_->SetStats( kFALSE );
+  pulses_->GetXaxis()->CenterLabels( kTRUE );
+  pulses_->GetXaxis()->SetNdivisions( testedDevice_->getNChannels() );
 
   // measured threshold( channel ) 1D histogram
   name.str("");
@@ -50,14 +56,16 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   threshold_ = new TH1D( name.str().c_str(),
 			 title.str().c_str(),
 			 testedDevice_->getNChannels(),
-			 -0.5,
-			 -0.5 + testedDevice_->getNChannels() );
+			 0.,
+			 0. + testedDevice_->getNChannels() );
   threshold_->SetXTitle( "channel" );
   threshold_->SetYTitle( "threshold" );
   threshold_->SetStats( kFALSE );
   threshold_->SetMarkerStyle( kOpenCircle );
   threshold_->SetMinimum( - 0.1 * measurement_->getAmplitudeMax() );
   threshold_->SetMaximum(   1.1 * measurement_->getAmplitudeMax() );
+  threshold_->GetXaxis()->CenterLabels( kTRUE );
+  threshold_->GetXaxis()->SetNdivisions( testedDevice_->getNChannels() );
 
   // measured noise( channel ) 1D histogram
   name.str("");
@@ -68,14 +76,16 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   noise_ = new TH1D( name.str().c_str(),
 		     title.str().c_str(),
 		     testedDevice_->getNChannels(),
-		     -0.5,
-		     -0.5 + testedDevice_->getNChannels() );
+		     0.,
+		     0. + testedDevice_->getNChannels() );
   noise_->SetXTitle( "channel" );
   noise_->SetYTitle( "noise" );
   noise_->SetStats( kFALSE );
   noise_->SetMarkerStyle( kOpenSquare );
   noise_->SetMinimum( - 0.1 * measurement_->getAmplitudeMax() );
   noise_->SetMaximum(   1.1 * measurement_->getAmplitudeMax() );
+  noise_->GetXaxis()->CenterLabels( kTRUE );
+  noise_->GetXaxis()->SetNdivisions( testedDevice_->getNChannels() );
 
   // measured efficiency( channel ) 1D histogram
   name.str("");
@@ -86,8 +96,8 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   efficiency_ = new TH1D( name.str().c_str(),
 			  title.str().c_str(),
 			  testedDevice_->getNChannels(),
-			  -0.5,
-			  -0.5 + testedDevice_->getNChannels() );
+			  0.,
+			  0. + testedDevice_->getNChannels() );
   efficiency_->SetXTitle( "channel" );
   efficiency_->SetYTitle( "efficiency" );
   efficiency_->SetStats( kFALSE );
@@ -96,6 +106,8 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   efficiency_->SetLineColor( kBlue );
   efficiency_->SetMinimum( -0.1 );
   efficiency_->SetMaximum(  1.1 );
+  efficiency_->GetXaxis()->CenterLabels( kTRUE );
+  efficiency_->GetXaxis()->SetNdivisions( testedDevice_->getNChannels() );
 
   // ( channel, amplitude, time ) ntuple
   name.str("");
@@ -175,27 +187,40 @@ void AFEB::teststand::Results::fitResults(){
 }
 
 void AFEB::teststand::Results::createFigure(){
-  // TODO: improve x axis labeling, drop title
   fitResults();
   gStyle->SetPalette(1,0);
-  TCanvas c( "result", "result", 1000, 1000 );
+
+  TCanvas c( fileName_.c_str(), measurement_->getName().c_str(), 500, 500 );
+  TLatex latex;
   c.Divide( 1, 2, 0., 0. );
+
+  c.cd( 0 );
+  latex.SetTextSize( 0.025 );
+  latex.SetTextAlign(23);  // h centered, v top aligned
+  latex.DrawLatex( 0.5, 0.99, pulses_->GetTitle() );
+
   c.cd( 1 );
   gPad->SetRightMargin( 0.07 );
   gPad->SetGridx();
-  pulses_->Draw("colz");
+  gPad->SetFrameFillColor( kGray + 3 );
+  TH2D pulses( *pulses_ ); // work on copy to keep original intact
+  pulses.SetTitle("");
+  pulses.Draw("colz");
+
   c.cd( 2 );
   gPad->SetRightMargin( 0.07 );
   gPad->SetGridx();
   gPad->SetGridy();
-  threshold_->SetYTitle("threshold (circles) and noise (squares)");
-  threshold_->Draw();
+  TH1D threshold( *threshold_ ); // work on copy to keep original intact
+  TH1D efficiency( *efficiency_ ); // work on copy to keep original intact
+  threshold.SetTitle("");
+  threshold.SetYTitle("threshold (circles) and noise (squares)");
+  threshold.Draw();
   noise_->Draw("same");
-  TH1D efficiency( *efficiency_ );
-  TGaxis *axis = adjustToHistogram( threshold_, &efficiency );
+  TGaxis *axis = adjustToHistogram( &threshold, &efficiency );
   axis->Draw();
   efficiency.Draw("same");
-  c.Print("result.png");
+  c.Print( (fileName_+".png").c_str() );
   delete axis;
 }
 
