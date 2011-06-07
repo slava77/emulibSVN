@@ -1,0 +1,18 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="conclusion_trigger_to_rule" id="E7D15966-2F70-F0F9-F1C4-0D428B6A9880" directorySegmentName="seg_0">
+   <createdBy>evka</createdBy>
+   <createdTime>2011-05-23 15:33:25 UTC</createdTime>
+   <changedBy>evka</changedBy>
+   <changedTime>2011-05-24 10:46:52 UTC</changedTime>
+   <ownerDesignName>cdw_schema</ownerDesignName>
+   <identifying>false</identifying>
+   <nameOnSource>create</nameOnSource>
+   <nameOnTarget>be created by</nameOnTarget>
+   <optionalSource>true</optionalSource>
+   <optionalTarget>false</optionalTarget>
+   <sourceCardinality>1</sourceCardinality>
+   <sourceEntity>E5736E84-0F8A-D8F8-50EE-5724AB503C93</sourceEntity>
+   <targetCardinalityString>*</targetCardinalityString>
+   <targetEntity>B860F698-971B-E54A-6BF8-AF768F472697</targetEntity>
+   <transferable>true</transferable>
+</Relation>

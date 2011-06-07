@@ -1,0 +1,18 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="Component_class_to_component" id="631D6DA4-6492-763E-A7BA-4A71E313B9A1" directorySegmentName="seg_0">
+   <createdBy>evka</createdBy>
+   <createdTime>2011-05-23 14:09:56 UTC</createdTime>
+   <changedBy>evka</changedBy>
+   <changedTime>2011-05-23 14:11:16 UTC</changedTime>
+   <ownerDesignName>cdw_schema</ownerDesignName>
+   <identifying>false</identifying>
+   <nameOnSource>have</nameOnSource>
+   <nameOnTarget>instance of</nameOnTarget>
+   <optionalSource>true</optionalSource>
+   <optionalTarget>false</optionalTarget>
+   <sourceCardinality>1</sourceCardinality>
+   <sourceEntity>16359948-A57E-226D-C167-6D6618D31D4D</sourceEntity>
+   <targetCardinalityString>*</targetCardinalityString>
+   <targetEntity>F11FEC99-EEA9-D73B-A272-3D3E55A2CF26</targetEntity>
+   <transferable>true</transferable>
+</Relation>

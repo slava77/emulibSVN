@@ -1,0 +1,89 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" id="4AF90034-9E24-CC3F-1617-176745251F1A" directorySegmentName="seg_0" name="Component Synonym">
+   <createdBy>evka</createdBy>
+   <createdTime>2011-05-23 14:06:54 UTC</createdTime>
+   <changedBy>evka</changedBy>
+   <changedTime>2011-05-23 14:12:10 UTC</changedTime>
+   <ownerDesignName>cdw_schema</ownerDesignName>
+   <pkName>Component Synonym PK</pkName>
+   <adequatelyNormalized>NO</adequatelyNormalized>
+   <expectedVolumes>0</expectedVolumes>
+   <fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+   <growthPercent>0</growthPercent>
+   <growthType>Year</growthType>
+   <maxVolumes>9999999</maxVolumes>
+   <minVolumes>0</minVolumes>
+   <normalForm>Third</normalForm>
+   <fonts>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>Title</foType>
+         <fontStyle>1</fontStyle>
+         <colorRGB>-16776961</colorRGB>
+      </FontObject>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>Attribute</foType>
+         <colorRGB>-16777216</colorRGB>
+      </FontObject>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>Datatype</foType>
+         <colorRGB>-16744448</colorRGB>
+      </FontObject>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>PK Element</foType>
+         <colorRGB>-16776961</colorRGB>
+      </FontObject>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>FK Element</foType>
+         <colorRGB>-16777216</colorRGB>
+      </FontObject>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>UK Element</foType>
+         <colorRGB>-16776961</colorRGB>
+      </FontObject>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>Not Null</foType>
+         <colorRGB>-65536</colorRGB>
+      </FontObject>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>Key</foType>
+         <colorRGB>-16777216</colorRGB>
+      </FontObject>
+   </fonts>
+   <attributes>
+      <Attribute class="oracle.dbtools.crest.model.design.logical.Attribute" name="name" id="E53AE281-EA99-0DD1-F2E3-94B1727B7D81">
+         <createdBy>evka</createdBy>
+         <createdTime>2011-05-23 14:07:08 UTC</createdTime>
+         <changedBy>evka</changedBy>
+         <changedTime>2011-05-23 14:07:42 UTC</changedTime>
+         <ownerDesignName>cdw_schema</ownerDesignName>
+         <use>1</use>
+         <logicalDatatype>LOGDT024</logicalDatatype>
+         <dataTypeSize>32</dataTypeSize>
+      </Attribute>
+      <Attribute class="oracle.dbtools.crest.model.design.logical.Attribute" name="id" id="650C93C3-936A-EC69-30F9-5996C1E5B3C1">
+         <createdBy>evka</createdBy>
+         <createdTime>2011-05-23 14:08:44 UTC</createdTime>
+         <changedBy>evka</changedBy>
+         <changedTime>2011-05-23 14:08:44 UTC</changedTime>
+         <generatorID>54C73578-B7D3-3EA2-A59B-CF4240F097CC</generatorID>
+         <ownerDesignName>cdw_schema</ownerDesignName>
+         <referedAttribute>3BD03852-79C1-ACFC-34DD-64FB4FCF7F2F</referedAttribute>
+         <use>1</use>
+         <logicalDatatype>LOGDT019</logicalDatatype>
+      </Attribute>
+   </attributes>
+   <identifiers>
+      <identifier class="oracle.dbtools.crest.model.design.logical.CandidateKey" id="969B3972-B974-6D85-BD47-6D22463F7C4C" name="Component Synonym PK">
+         <createdBy>evka</createdBy>
+         <createdTime>2011-05-23 14:07:39 UTC</createdTime>
+         <changedBy>evka</changedBy>
+         <changedTime>2011-05-23 14:12:10 UTC</changedTime>
+         <ownerDesignName>cdw_schema</ownerDesignName>
+         <pk>true</pk>
+         <usedAttributes>
+            <attributeRef>E53AE281-EA99-0DD1-F2E3-94B1727B7D81</attributeRef>
+            <attributeRef>650C93C3-936A-EC69-30F9-5996C1E5B3C1</attributeRef>
+         </usedAttributes>
+      </identifier>
+   </identifiers>
+</Entity>

@@ -1,0 +1,13 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Arc class="oracle.dbtools.crest.model.design.logical.Arc" id="1E931DDB-DFB1-ED24-CA35-AA7B727E4E5C" directorySegmentName="seg_0" name="Arc_1">
+   <createdBy>evka</createdBy>
+   <createdTime>2011-05-23 15:14:55 UTC</createdTime>
+   <changedBy>evka</changedBy>
+   <changedTime>2011-05-23 15:14:55 UTC</changedTime>
+   <ownerDesignName>cdw_schema</ownerDesignName>
+   <entity>DAE54BBF-4177-4651-0F35-6316D019A2AF</entity>
+   <relations>
+      <relationID>662E499E-C1C9-BD75-5B03-ECE3EB8E1B6E</relationID>
+      <relationID>E95AC937-FAD1-1C41-1840-B168853779C6</relationID>
+   </relations>
+</Arc>

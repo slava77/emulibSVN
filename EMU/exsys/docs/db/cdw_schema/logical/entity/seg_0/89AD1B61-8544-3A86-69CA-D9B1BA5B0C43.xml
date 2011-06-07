@@ -1,0 +1,85 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" id="89AD1B61-8544-3A86-69CA-D9B1BA5B0C43" directorySegmentName="seg_0" name="DCS Alert Fact">
+   <createdBy>evka</createdBy>
+   <createdTime>2011-05-23 13:31:34 UTC</createdTime>
+   <changedBy>evka</changedBy>
+   <changedTime>2011-05-24 11:20:09 UTC</changedTime>
+   <ownerDesignName>cdw_schema</ownerDesignName>
+   <adequatelyNormalized>NO</adequatelyNormalized>
+   <expectedVolumes>0</expectedVolumes>
+   <fwdEngineeringStrategyName>Table per child</fwdEngineeringStrategyName>
+   <growthPercent>0</growthPercent>
+   <growthType>Year</growthType>
+   <hierarchicalParent>26EAF050-45F0-4B9D-8E6B-CC7C7F382BDE</hierarchicalParent>
+   <maxVolumes>9999999</maxVolumes>
+   <minVolumes>0</minVolumes>
+   <normalForm>Third</normalForm>
+   <fonts>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>Title</foType>
+         <fontStyle>1</fontStyle>
+         <colorRGB>-16776961</colorRGB>
+      </FontObject>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>Attribute</foType>
+         <colorRGB>-16777216</colorRGB>
+      </FontObject>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>Datatype</foType>
+         <colorRGB>-16744448</colorRGB>
+      </FontObject>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>PK Element</foType>
+         <colorRGB>-16776961</colorRGB>
+      </FontObject>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>FK Element</foType>
+         <colorRGB>-16777216</colorRGB>
+      </FontObject>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>UK Element</foType>
+         <colorRGB>-16776961</colorRGB>
+      </FontObject>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>Not Null</foType>
+         <colorRGB>-65536</colorRGB>
+      </FontObject>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>Key</foType>
+         <colorRGB>-16777216</colorRGB>
+      </FontObject>
+   </fonts>
+   <attributes>
+      <Attribute class="oracle.dbtools.crest.model.design.logical.Attribute" name="isOn" id="AAF3BFBF-4C9A-FBEB-8166-9775C3F773C1">
+         <createdBy>evka</createdBy>
+         <createdTime>2011-05-23 13:54:36 UTC</createdTime>
+         <changedBy>evka</changedBy>
+         <changedTime>2011-05-23 13:54:56 UTC</changedTime>
+         <ownerDesignName>cdw_schema</ownerDesignName>
+         <use>1</use>
+         <logicalDatatype>LOGDT006</logicalDatatype>
+         <dataTypeSize>1</dataTypeSize>
+      </Attribute>
+      <Attribute class="oracle.dbtools.crest.model.design.logical.Attribute" name="isAcknowledged" id="F23D2758-B33B-38C3-C39C-062BEBDDBB01">
+         <createdBy>evka</createdBy>
+         <createdTime>2011-05-23 13:55:04 UTC</createdTime>
+         <changedBy>evka</changedBy>
+         <changedTime>2011-05-23 13:55:24 UTC</changedTime>
+         <ownerDesignName>cdw_schema</ownerDesignName>
+         <use>1</use>
+         <logicalDatatype>LOGDT006</logicalDatatype>
+         <dataTypeSize>1</dataTypeSize>
+      </Attribute>
+      <Attribute class="oracle.dbtools.crest.model.design.logical.Attribute" name="alertText" id="D598F5AC-629A-B37D-0793-BF853B808A17">
+         <createdBy>evka</createdBy>
+         <createdTime>2011-05-23 13:55:18 UTC</createdTime>
+         <changedBy>evka</changedBy>
+         <changedTime>2011-05-23 13:55:53 UTC</changedTime>
+         <ownerDesignName>cdw_schema</ownerDesignName>
+         <nullsAllowed>true</nullsAllowed>
+         <use>1</use>
+         <logicalDatatype>LOGDT024</logicalDatatype>
+         <dataTypeSize>255</dataTypeSize>
+      </Attribute>
+   </attributes>
+</Entity>

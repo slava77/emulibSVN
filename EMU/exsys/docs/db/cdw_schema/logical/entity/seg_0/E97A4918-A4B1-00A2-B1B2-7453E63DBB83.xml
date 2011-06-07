@@ -1,0 +1,166 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" id="E97A4918-A4B1-00A2-B1B2-7453E63DBB83" directorySegmentName="seg_0" name="Conclusion">
+   <createdBy>evka</createdBy>
+   <createdTime>2011-05-23 14:56:49 UTC</createdTime>
+   <changedBy>evka</changedBy>
+   <changedTime>2011-05-23 15:12:05 UTC</changedTime>
+   <ownerDesignName>cdw_schema</ownerDesignName>
+   <pkName>Conclusion PK</pkName>
+   <adequatelyNormalized>NO</adequatelyNormalized>
+   <expectedVolumes>0</expectedVolumes>
+   <fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+   <growthPercent>0</growthPercent>
+   <growthType>Year</growthType>
+   <maxVolumes>9999999</maxVolumes>
+   <minVolumes>0</minVolumes>
+   <normalForm>Third</normalForm>
+   <fonts>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>Title</foType>
+         <fontStyle>1</fontStyle>
+         <colorRGB>-16776961</colorRGB>
+      </FontObject>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>Attribute</foType>
+         <colorRGB>-16777216</colorRGB>
+      </FontObject>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>Datatype</foType>
+         <colorRGB>-16744448</colorRGB>
+      </FontObject>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>PK Element</foType>
+         <colorRGB>-16776961</colorRGB>
+      </FontObject>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>FK Element</foType>
+         <colorRGB>-16777216</colorRGB>
+      </FontObject>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>UK Element</foType>
+         <colorRGB>-16776961</colorRGB>
+      </FontObject>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>Not Null</foType>
+         <colorRGB>-65536</colorRGB>
+      </FontObject>
+      <FontObject class="oracle.dbtools.crest.model.design.FontObjectWr">
+         <foType>Key</foType>
+         <colorRGB>-16777216</colorRGB>
+      </FontObject>
+   </fonts>
+   <attributes>
+      <Attribute class="oracle.dbtools.crest.model.design.logical.Attribute" name="id" id="AF025201-40C8-4277-A6F6-E1CEB3D8D9BC">
+         <createdBy>evka</createdBy>
+         <createdTime>2011-05-23 14:56:56 UTC</createdTime>
+         <changedBy>evka</changedBy>
+         <changedTime>2011-05-23 14:57:25 UTC</changedTime>
+         <ownerDesignName>cdw_schema</ownerDesignName>
+         <use>1</use>
+         <logicalDatatype>LOGDT019</logicalDatatype>
+      </Attribute>
+      <Attribute class="oracle.dbtools.crest.model.design.logical.Attribute" name="title" id="C56C5E79-23BD-229D-D084-5584B70D1164">
+         <createdBy>evka</createdBy>
+         <createdTime>2011-05-23 14:57:25 UTC</createdTime>
+         <changedBy>evka</changedBy>
+         <changedTime>2011-05-23 14:57:49 UTC</changedTime>
+         <ownerDesignName>cdw_schema</ownerDesignName>
+         <use>1</use>
+         <logicalDatatype>LOGDT024</logicalDatatype>
+         <dataTypeSize>512</dataTypeSize>
+      </Attribute>
+      <Attribute class="oracle.dbtools.crest.model.design.logical.Attribute" name="description" id="42E1A8A3-2B24-6C6A-2B66-16078166219E">
+         <createdBy>evka</createdBy>
+         <createdTime>2011-05-23 14:57:50 UTC</createdTime>
+         <changedBy>evka</changedBy>
+         <changedTime>2011-05-23 14:58:13 UTC</changedTime>
+         <ownerDesignName>cdw_schema</ownerDesignName>
+         <use>1</use>
+         <logicalDatatype>LOGDT024</logicalDatatype>
+         <dataTypeSize>2048</dataTypeSize>
+      </Attribute>
+      <Attribute class="oracle.dbtools.crest.model.design.logical.Attribute" name="severity" id="31D05F1C-E9A5-666E-11E1-19920E184843">
+         <createdBy>evka</createdBy>
+         <createdTime>2011-05-23 14:58:46 UTC</createdTime>
+         <changedBy>evka</changedBy>
+         <changedTime>2011-05-23 14:59:07 UTC</changedTime>
+         <comment>enum</comment>
+         <ownerDesignName>cdw_schema</ownerDesignName>
+         <use>1</use>
+         <logicalDatatype>LOGDT024</logicalDatatype>
+         <dataTypeSize>10</dataTypeSize>
+      </Attribute>
+      <Attribute class="oracle.dbtools.crest.model.design.logical.Attribute" name="timeCreated" id="7B2B28C3-6FE9-24BB-80AD-C0449955A5F7">
+         <createdBy>evka</createdBy>
+         <createdTime>2011-05-23 14:58:15 UTC</createdTime>
+         <changedBy>evka</changedBy>
+         <changedTime>2011-05-23 14:58:25 UTC</changedTime>
+         <ownerDesignName>cdw_schema</ownerDesignName>
+         <use>1</use>
+         <logicalDatatype>LOGDT015</logicalDatatype>
+      </Attribute>
+      <Attribute class="oracle.dbtools.crest.model.design.logical.Attribute" name="timeLastUpdated" id="0025CE84-2309-F376-0A23-FE9AAEE6E0EE">
+         <createdBy>evka</createdBy>
+         <createdTime>2011-05-23 14:59:09 UTC</createdTime>
+         <changedBy>evka</changedBy>
+         <changedTime>2011-05-23 14:59:28 UTC</changedTime>
+         <ownerDesignName>cdw_schema</ownerDesignName>
+         <use>1</use>
+         <logicalDatatype>LOGDT015</logicalDatatype>
+      </Attribute>
+      <Attribute class="oracle.dbtools.crest.model.design.logical.Attribute" name="timeClosed" id="47FD1BBC-6F7B-0A20-27E9-6154E76DCB1C">
+         <createdBy>evka</createdBy>
+         <createdTime>2011-05-23 14:59:46 UTC</createdTime>
+         <changedBy>evka</changedBy>
+         <changedTime>2011-05-23 14:59:56 UTC</changedTime>
+         <ownerDesignName>cdw_schema</ownerDesignName>
+         <nullsAllowed>true</nullsAllowed>
+         <use>1</use>
+         <logicalDatatype>LOGDT015</logicalDatatype>
+      </Attribute>
+      <Attribute class="oracle.dbtools.crest.model.design.logical.Attribute" name="hitCount" id="428CAB5B-07C4-B6C4-7F1D-DFEDA556F55B">
+         <createdBy>evka</createdBy>
+         <createdTime>2011-05-23 15:00:01 UTC</createdTime>
+         <changedBy>evka</changedBy>
+         <changedTime>2011-05-23 15:00:24 UTC</changedTime>
+         <ownerDesignName>cdw_schema</ownerDesignName>
+         <use>1</use>
+         <logicalDatatype>LOGDT019</logicalDatatype>
+      </Attribute>
+      <Attribute class="oracle.dbtools.crest.model.design.logical.Attribute" name="isAcknowledged" id="5C81BA83-AA40-0E5A-A03B-33AB3700212B">
+         <createdBy>evka</createdBy>
+         <createdTime>2011-05-23 15:00:24 UTC</createdTime>
+         <changedBy>evka</changedBy>
+         <changedTime>2011-05-23 15:00:40 UTC</changedTime>
+         <ownerDesignName>cdw_schema</ownerDesignName>
+         <nullsAllowed>true</nullsAllowed>
+         <use>1</use>
+         <logicalDatatype>LOGDT006</logicalDatatype>
+         <dataTypeSize>1</dataTypeSize>
+      </Attribute>
+      <Attribute class="oracle.dbtools.crest.model.design.logical.Attribute" name="id1" id="C378CB1A-7D47-DEF0-4B96-6E74898453DE">
+         <createdBy>evka</createdBy>
+         <createdTime>2011-05-23 15:04:11 UTC</createdTime>
+         <changedBy>evka</changedBy>
+         <changedTime>2011-05-23 15:04:11 UTC</changedTime>
+         <generatorID>00F7D314-1DE2-4B42-34AA-0AA9B869071C</generatorID>
+         <ownerDesignName>cdw_schema</ownerDesignName>
+         <referedAttribute>473B2BAC-E428-F24C-8D81-A7A5E585880C</referedAttribute>
+         <use>1</use>
+         <logicalDatatype>LOGDT019</logicalDatatype>
+      </Attribute>
+   </attributes>
+   <identifiers>
+      <identifier class="oracle.dbtools.crest.model.design.logical.CandidateKey" id="4A717091-6D78-8885-6765-C54A5AC93957" name="Conclusion PK">
+         <createdBy>evka</createdBy>
+         <createdTime>2011-05-23 14:57:24 UTC</createdTime>
+         <changedBy>evka</changedBy>
+         <changedTime>2011-05-23 15:04:53 UTC</changedTime>
+         <ownerDesignName>cdw_schema</ownerDesignName>
+         <pk>true</pk>
+         <usedAttributes>
+            <attributeRef>AF025201-40C8-4277-A6F6-E1CEB3D8D9BC</attributeRef>
+         </usedAttributes>
+      </identifier>
+   </identifiers>
+</Entity>

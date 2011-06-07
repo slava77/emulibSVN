@@ -1,0 +1,19 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="conclusion_trigger_source_fact" id="E95AC937-FAD1-1C41-1840-B168853779C6" directorySegmentName="seg_0">
+   <createdBy>evka</createdBy>
+   <createdTime>2011-05-23 15:05:36 UTC</createdTime>
+   <changedBy>evka</changedBy>
+   <changedTime>2011-05-23 15:06:22 UTC</changedTime>
+   <ownerDesignName>cdw_schema</ownerDesignName>
+   <arc>1E931DDB-DFB1-ED24-CA35-AA7B727E4E5C</arc>
+   <identifying>false</identifying>
+   <nameOnSource>have</nameOnSource>
+   <nameOnTarget>belong to</nameOnTarget>
+   <optionalSource>true</optionalSource>
+   <optionalTarget>false</optionalTarget>
+   <sourceCardinality>1</sourceCardinality>
+   <sourceEntity>26EAF050-45F0-4B9D-8E6B-CC7C7F382BDE</sourceEntity>
+   <targetCardinalityString>*</targetCardinalityString>
+   <targetEntity>DAE54BBF-4177-4651-0F35-6316D019A2AF</targetEntity>
+   <transferable>true</transferable>
+</Relation>

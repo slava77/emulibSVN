@@ -1,0 +1,49 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<oracle.dbtools.crest.model.design.logical.LogicalDesign>
+   <object objectType="Entity" objectID="EFA28E86-808A-7013-20CE-44105D4378F6" name="21 other fact types..." seqName="seg_0"/>
+   <object objectType="Entity" objectID="CF828690-2191-C0C8-88AF-41A305D0AE06" name="Action" seqName="seg_0"/>
+   <object objectType="Entity" objectID="2C85DB73-64B5-A5BF-C561-29B23F231267" name="Action Execution" seqName="seg_0"/>
+   <object objectType="Entity" objectID="A5418613-0DDA-760C-5D5C-5E99879C5272" name="Command Action" seqName="seg_0"/>
+   <object objectType="Entity" objectID="F11FEC99-EEA9-D73B-A272-3D3E55A2CF26" name="Component" seqName="seg_0"/>
+   <object objectType="Entity" objectID="16359948-A57E-226D-C167-6D6618D31D4D" name="Component Class" seqName="seg_0"/>
+   <object objectType="Entity" objectID="4AF90034-9E24-CC3F-1617-176745251F1A" name="Component Synonym" seqName="seg_0"/>
+   <object objectType="Entity" objectID="E97A4918-A4B1-00A2-B1B2-7453E63DBB83" name="Conclusion" seqName="seg_0"/>
+   <object objectType="Entity" objectID="B860F698-971B-E54A-6BF8-AF768F472697" name="Conclusion Trigger" seqName="seg_0"/>
+   <object objectType="Entity" objectID="DAE54BBF-4177-4651-0F35-6316D019A2AF" name="Conclusion Trigger Source" seqName="seg_0"/>
+   <object objectType="Entity" objectID="2E30678B-3732-6A10-1EE6-C443D39DD761" name="Conclusion Type" seqName="seg_0"/>
+   <object objectType="Entity" objectID="3411906B-BA32-6215-E8D0-C2698C50AD84" name="Cumulative TMB trigger counter" seqName="seg_0"/>
+   <object objectType="Entity" objectID="89AD1B61-8544-3A86-69CA-D9B1BA5B0C43" name="DCS Alert Fact" seqName="seg_0"/>
+   <object objectType="Entity" objectID="74BA68B4-A81D-5E5E-61B5-D63C2CD8D530" name="Dcs Command Action" seqName="seg_0"/>
+   <object objectType="Entity" objectID="B1FD4C0D-63A6-45B9-37DD-0607E503D398" name="Email Action" seqName="seg_0"/>
+   <object objectType="Entity" objectID="26EAF050-45F0-4B9D-8E6B-CC7C7F382BDE" name="Fact" seqName="seg_0"/>
+   <object objectType="Entity" objectID="346903B8-4BEA-4324-9358-2DBA4BDEBB66" name="Fact Collection" seqName="seg_0"/>
+   <object objectType="Entity" objectID="36EC469E-0F0C-5CCD-77D6-26731BAFE91E" name="Notification Action" seqName="seg_0"/>
+   <object objectType="Entity" objectID="E5736E84-0F8A-D8F8-50EE-5724AB503C93" name="Rule" seqName="seg_0"/>
+   <object objectType="Entity" objectID="6FEC26E2-F502-833F-D625-F5ECB3B76404" name="Ruleset" seqName="seg_0"/>
+   <object objectType="Entity" objectID="D945E0D0-4DD9-6A8F-B298-ABA67D17BB4B" name="SMS Action" seqName="seg_0"/>
+   <object objectType="Relation" objectID="DCC5AF6E-38BD-A2FD-F65D-E4ED1F135F75" name="Component_class_parents" seqName="seg_0"/>
+   <object objectType="Relation" objectID="631D6DA4-6492-763E-A7BA-4A71E313B9A1" name="Component_class_to_component" seqName="seg_0"/>
+   <object objectType="Relation" objectID="6E8BA198-5044-827A-90EC-BE2E785AB18A" name="Conclusion_trigger_to_source" seqName="seg_0"/>
+   <object objectType="Relation" objectID="47E96166-38C0-2FA8-A17A-6878B49C5251" name="Fact_component" seqName="seg_0"/>
+   <object objectType="Relation" objectID="D8DDDA2E-0176-6B33-1C5C-2CDFADB849A6" name="action_exec_to_action" seqName="seg_0"/>
+   <object objectType="Relation" objectID="1DDF917D-39E5-E5E3-6F48-0207D337CAC7" name="action_exec_to_conclusion_trigger" seqName="seg_0"/>
+   <object objectType="Relation" objectID="8C730C83-983A-C688-0EE4-726724FD484C" name="actions_to_conclusion_types" seqName="seg_0"/>
+   <object objectType="Relation" objectID="54C73578-B7D3-3EA2-A59B-CF4240F097CC" name="component_synonyms" seqName="seg_0"/>
+   <object objectType="Relation" objectID="E95AC937-FAD1-1C41-1840-B168853779C6" name="conclusion_trigger_source_fact" seqName="seg_0"/>
+   <object objectType="Relation" objectID="16F28E02-A18C-9F05-5B76-D4CCF02AFDBF" name="conclusion_trigger_to_conclusion" seqName="seg_0"/>
+   <object objectType="Relation" objectID="E7D15966-2F70-F0F9-F1C4-0D428B6A9880" name="conclusion_trigger_to_rule" seqName="seg_0"/>
+   <object objectType="Relation" objectID="00F7D314-1DE2-4B42-34AA-0AA9B869071C" name="conclusion_type_to_conclusion" seqName="seg_0"/>
+   <object objectType="Relation" objectID="6F5CC04C-2115-D163-76DA-72E4718C43CD" name="fact_collection_to_facts" seqName="seg_0"/>
+   <object objectType="Relation" objectID="E5391A2D-CDF5-A013-B80C-1DF50482E85D" name="rule_to_concl_type" seqName="seg_0"/>
+   <object objectType="Relation" objectID="DB02C42E-7255-A4D1-0F3B-704FB747196E" name="rule_to_ruleset" seqName="seg_0"/>
+   <object objectType="Relation" objectID="662E499E-C1C9-BD75-5B03-ECE3EB8E1B6E" name="trigger_source_to_conclusion" seqName="seg_0"/>
+   <object objectType="Hierarchy relation" objectID="A6213993-A8B3-13F8-9E2C-CF61AD842134" name="Hierarchy_1" seqName="seg_0"/>
+   <object objectType="Hierarchy relation" objectID="B67F40BE-2CDF-E798-7883-1E1716C1C67B" name="Hierarchy_2" seqName="seg_0"/>
+   <object objectType="Hierarchy relation" objectID="A41E1B54-1F5B-ABAE-D142-100F17CE7E54" name="Hierarchy_3" seqName="seg_0"/>
+   <object objectType="Hierarchy relation" objectID="166FC222-AAF9-98AE-5125-95F186D57967" name="Hierarchy_4" seqName="seg_0"/>
+   <object objectType="Hierarchy relation" objectID="B8C1311E-D7A4-FA6B-B834-D5FE8EB08AC3" name="Hierarchy_5" seqName="seg_0"/>
+   <object objectType="Hierarchy relation" objectID="B681A1B7-1B14-8287-D007-AB4C6D7A6198" name="Hierarchy_6" seqName="seg_0"/>
+   <object objectType="Hierarchy relation" objectID="1A8F83DD-A563-9A5F-C861-2B7ACB0E8313" name="Hierarchy_7" seqName="seg_0"/>
+   <object objectType="Hierarchy relation" objectID="B3A9D8EC-A809-7D7A-E730-09B6AF3C6B19" name="Hierarchy_8" seqName="seg_0"/>
+   <object objectType="Arc" objectID="1E931DDB-DFB1-ED24-CA35-AA7B727E4E5C" name="Arc_1" seqName="seg_0"/>
+</oracle.dbtools.crest.model.design.logical.LogicalDesign>

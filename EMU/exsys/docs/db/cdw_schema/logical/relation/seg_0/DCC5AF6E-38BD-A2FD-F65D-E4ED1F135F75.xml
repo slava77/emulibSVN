@@ -1,0 +1,18 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="Component_class_parents" id="DCC5AF6E-38BD-A2FD-F65D-E4ED1F135F75" directorySegmentName="seg_0">
+   <createdBy>evka</createdBy>
+   <createdTime>2011-05-23 14:13:20 UTC</createdTime>
+   <changedBy>evka</changedBy>
+   <changedTime>2011-05-23 14:13:52 UTC</changedTime>
+   <ownerDesignName>cdw_schema</ownerDesignName>
+   <identifying>false</identifying>
+   <nameOnSource>subclass of</nameOnSource>
+   <nameOnTarget>superclass of</nameOnTarget>
+   <optionalSource>true</optionalSource>
+   <optionalTarget>true</optionalTarget>
+   <sourceCardinality>*</sourceCardinality>
+   <sourceEntity>16359948-A57E-226D-C167-6D6618D31D4D</sourceEntity>
+   <targetCardinalityString>*</targetCardinalityString>
+   <targetEntity>16359948-A57E-226D-C167-6D6618D31D4D</targetEntity>
+   <transferable>true</transferable>
+</Relation>

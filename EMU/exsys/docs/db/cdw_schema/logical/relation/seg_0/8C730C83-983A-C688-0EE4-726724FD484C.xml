@@ -1,0 +1,16 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="actions_to_conclusion_types" id="8C730C83-983A-C688-0EE4-726724FD484C" directorySegmentName="seg_0">
+   <createdBy>evka</createdBy>
+   <createdTime>2011-05-23 15:38:01 UTC</createdTime>
+   <changedBy>evka</changedBy>
+   <changedTime>2011-05-23 15:38:13 UTC</changedTime>
+   <ownerDesignName>cdw_schema</ownerDesignName>
+   <identifying>false</identifying>
+   <optionalSource>true</optionalSource>
+   <optionalTarget>true</optionalTarget>
+   <sourceCardinality>*</sourceCardinality>
+   <sourceEntity>2E30678B-3732-6A10-1EE6-C443D39DD761</sourceEntity>
+   <targetCardinalityString>*</targetCardinalityString>
+   <targetEntity>CF828690-2191-C0C8-88AF-41A305D0AE06</targetEntity>
+   <transferable>true</transferable>
+</Relation>

@@ -1,0 +1,10 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<OSDM_Design class="oracle.dbtools.crest.model.design.Design" name="cdw_schema" id="4ADB7845-F061-EE3C-3A8A-309B5BFB19E0" version="3.4">
+   <createdBy>evka</createdBy>
+   <createdTime>2011-05-23 13:29:26 UTC</createdTime>
+   <changedBy>evka</changedBy>
+   <changedTime>2011-05-23 14:21:29 UTC</changedTime>
+   <ownerDesignName>cdw_schema</ownerDesignName>
+   <capitalNames>false</capitalNames>
+   <designId>4ADB7845-F061-EE3C-3A8A-309B5BFB19E0</designId>
+</OSDM_Design>
