@@ -34,8 +34,8 @@ public class BeanTable extends BeanTableControls {
     private DualList<BeanTableColumnSortable> sortingColumns = new DualList<BeanTableColumnSortable>();
 
     @SuppressWarnings("unchecked")
-    public BeanTable(BeanTablePack pack, Class<? extends EntityBeanBase> rowClass) throws Exception {
-        super(new BeanTableProperties(pack.getManager().getProperties()));
+    public BeanTable(BeanTableProperties properties, BeanTablePack pack, Class<? extends EntityBeanBase> rowClass) throws Exception {
+        super(properties);
 
         this.pack = pack;
         this.rowClass = rowClass;

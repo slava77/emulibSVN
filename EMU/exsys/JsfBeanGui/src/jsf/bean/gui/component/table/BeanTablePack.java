@@ -66,16 +66,17 @@ public class BeanTablePack implements Serializable {
     public final void setSelectedClass(Class<? extends EntityBeanBase> selectedClass) throws Exception {
         if (selectedClass != null && (this.selectedClass == null || !this.selectedClass.equals(selectedClass))) {
             this.selectedClass = selectedClass;
-            this.table = new BeanTable(this, selectedClass);
+            BeanTableProperties props = new BeanTableProperties(getManager().getProperties());
             if (classes.isEmpty()) {
-                this.table.getProperties().setTablePrefix(prefix);
+                props.setTablePrefix(prefix);
             } else {
                 String p = "{".concat(selectedClass.getSimpleName()).concat("}.");
                 if (prefix != null) {
                     p = prefix.concat(p);
                 }
-                this.table.getProperties().setTablePrefix(p);
+                props.setTablePrefix(p);
             }
+            this.table = new BeanTable(props, this, selectedClass);
         }
     }
 
