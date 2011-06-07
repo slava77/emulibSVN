@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<DataSources>
+
+    <DataSource>
+        <DataSourceName>CmsCscExsysDW</DataSourceName>
+        <DataSourceDescription>CMS CSC Expert System Data Warehouse</DataSourceDescription>
+        <URL>http://macfrank:8080/ExsysOlap/xmla</URL>
+        <DataSourceInfo>Provider=mondrian;DataSource=jdbc/cdw;</DataSourceInfo>
+        <ProviderName>Mondrian</ProviderName>
+        <ProviderType>MDP</ProviderType>
+        <AuthenticationMode>Unauthenticated</AuthenticationMode>
+        <Catalogs>
+            <Catalog name="Exsys">
+                <Definition>/WEB-INF/OlapExsys.xml</Definition>
+            </Catalog>
+        </Catalogs>
+    </DataSource>
+
+</DataSources>
