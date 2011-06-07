@@ -294,14 +294,12 @@
                         </f:facet>
 
                         <ice:panelGroup style="width: #{selColumn.width}px; overflow: hidden" rendered="#{
-                                                        cc.attrs.manager.top and
                                                         (fn:contains(cc.attrs.skipColumnsByName, column.name) ||
                                                         fn:contains(cc.attrs.skipColumnsByType, column.type.simpleName))}">
                             <cc:insertChildren/>
                         </ice:panelGroup>
 
                         <ice:panelGroup style="width: #{column.width}px; overflow: hidden" rendered="#{
-                                                        !cc.attrs.manager.top or
                                                         !(fn:contains(cc.attrs.skipColumnsByName, column.name) ||
                                                         fn:contains(cc.attrs.skipColumnsByType, column.type.simpleName))}">
 
