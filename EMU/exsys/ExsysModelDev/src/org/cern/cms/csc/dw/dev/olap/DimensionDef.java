@@ -18,7 +18,7 @@ class DimensionDef extends ColumnDef {
         super(cube, method, name);
 
         if (method.getReturnType().equals(Date.class)) {
-            setTableName(cube.getFact().getTableName(), cube.getTableSuffix());
+            setTableName(cube.getCubeTableName(), cube.getTableSuffix());
             this.timeDimension = true;
         }
 
@@ -65,7 +65,7 @@ class DimensionDef extends ColumnDef {
                 out.println("\t, to_number(TO_CHAR(a.time_data, \'D\')) \"WEEKDAY\"");
                 out.println("\t, initcap(trim(TO_CHAR(a.time_data, \'DAY\'))) \"WEEKDAY_NAME\"");
                 out.println("FROM");
-                out.println("\t(SELECT DISTINCT " + columnName + " as time_data FROM " + cube.getFact().getTableName());
+                out.println("\t(SELECT DISTINCT " + columnName + " as time_data FROM " + cube.getCubeTableName());
                 out.println("\tWHERE " + columnName + " is not null) a");
                 out.print(OlapGenerator.SQL_ENDL);
 
@@ -80,7 +80,7 @@ class DimensionDef extends ColumnDef {
                 out.println("SELECT DISTINCT");
                 out.println("\t  " + columnName);
                 out.println("FROM");
-                out.println("\t" + cube.getFact().getTableName());
+                out.println("\t" + cube.getCubeTableName());
                 out.print(OlapGenerator.SQL_ENDL);
                 
             }
@@ -139,7 +139,6 @@ class DimensionDef extends ColumnDef {
         }
 
         Element hierarchyEl = doc.createElement("Hierarchy");
-        hierarchyEl.setAttribute("name", name);
         hierarchyEl.setAttribute("hasAll", "true");
 
         dimEl.appendChild(hierarchyEl);

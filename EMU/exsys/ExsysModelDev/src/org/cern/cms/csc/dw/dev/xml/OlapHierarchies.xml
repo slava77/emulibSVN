@@ -2,7 +2,7 @@
 
 <Hierarchies>
 
-    <Hierarchy name="Chamber" table="CDW_OLAP$D_CHAMBERS">
+    <Hierarchy name="ComponentLocation" table="CDW_OLAP$D_COMPS_BY_LOCATION">
         <Level name="Endcap">
             <ComponentClass name="Endcap"/>
             <Level name="Station">
@@ -17,6 +17,10 @@
                         <Level name="Layer">
                             <ComponentClass name="Layer"/>
                             <ComponentLinkClass name="isIn"/>
+                            <Level name="HvSegment">
+                                <ComponentClass name="HVSegment"/>
+                                <ComponentLinkClass name="isIn"/>
+                            </Level>
                         </Level>
                     </Level>
                 </Level>
@@ -24,7 +28,7 @@
         </Level>
     </Hierarchy>
 
-    <Hierarchy name="Component" table="CDW_OLAP$D_COMPONENTS">
+    <Hierarchy name="ComponentType" table="CDW_OLAP$D_COMPS_BY_TYPE">
         <Level name="Class" column="CLASS">
             <Level name="Component" column="COMPONENT"/>
         </Level>
@@ -37,6 +41,17 @@
           CDW_COMPONENTS 
           join CDW_COMPONENT_CLASSES 
             on (CMP_CCL_ID = CCL_ID)
+        </sql>
+    </Hierarchy>
+
+    <Hierarchy name="ConclusionType" table="CDW_OLAP$D_CONCLUSION_TYPES">
+        <Level name="TypeName" column="NAME"/>
+        <sql>
+        select 
+          RECT_ID "CMP_ID", 
+          RECT_NAME "NAME"
+        from 
+          RE_CONCLUSION_TYPES
         </sql>
     </Hierarchy>
 

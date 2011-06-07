@@ -27,6 +27,7 @@ import org.cern.cms.csc.dw.metadata.FactMd;
 import org.cern.cms.csc.dw.metadata.MetadataManager;
 import org.cern.cms.csc.dw.model.ontology.graph.GServices;
 import org.cern.cms.csc.dw.model.ontology.graph.GraphDevServices;
+import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -61,6 +62,7 @@ public class OlapGenerator {
         for (FactMd fact: mm.getFactMDs()) {
             cubes.add(new CubeDef(fact, dbSchema));
         }
+        cubes.add(new CubeDef(Conclusion.class, "Conclusion", dbSchema));
 
         Document doc = docBuilder.parse(hierarchiesXml);
         gdb = new GraphDevServices(graphdb);

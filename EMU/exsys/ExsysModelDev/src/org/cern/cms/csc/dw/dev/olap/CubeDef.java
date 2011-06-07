@@ -9,34 +9,48 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.Table;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.cern.cms.csc.dw.metadata.FactMd;
 import org.cern.cms.csc.dw.model.annotation.OlapDimension;
 import org.cern.cms.csc.dw.model.annotation.OlapDimensionSetter;
 import org.cern.cms.csc.dw.model.annotation.OlapMeasure;
 import org.cern.cms.csc.dw.model.annotation.OlapMeasureSetter;
+import org.cern.cms.csc.dw.model.base.EntityBase;
+import org.cern.cms.csc.dw.model.fact.Fact;
+import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 public class CubeDef {
 
-    private FactMd fact;
+    private Class entityClass;
+    private String entityTableName;
+    private String entityTitle;
     private List<ColumnDef> columns = new ArrayList<ColumnDef>();
     private BeanUtilsBean utils = BeanUtilsBean.getInstance();
     private final String dbSchema;
 
     private int tableSuffixNumber = 1;
 
-    public CubeDef(FactMd fact, String dbSchema) {
-        this.fact = fact;
+    public CubeDef(Class<? extends EntityBase> entityClass, String entityTitle, String dbSchema) {
+        this.entityClass = entityClass;
+        this.entityTitle = entityTitle;
         this.dbSchema = dbSchema;
-
+        
+        Table tableAnn = entityClass.getAnnotation(Table.class);
+        if (tableAnn == null) {
+            throw new IllegalArgumentException("Provided entity class doesn't have a Table annotation - cannot determine table name");
+        }
+        this.entityTableName = tableAnn.name();
+        
         Set<OlapDimensionSetter> dimensionSetters = new HashSet<OlapDimensionSetter>();
         Set<OlapMeasureSetter> measureSetters = new HashSet<OlapMeasureSetter>();
 
-        for (Annotation an: fact.getFactClass().getAnnotations()) {
+        for (Annotation an: entityClass.getAnnotations()) {
 
             if (an.annotationType().equals(OlapDimensionSetter.class)) {
                 dimensionSetters.add((OlapDimensionSetter) an);
@@ -48,7 +62,7 @@ public class CubeDef {
 
         }
 
-        for (PropertyDescriptor prop : utils.getPropertyUtils().getPropertyDescriptors(fact.getFactClass())) {
+        for (PropertyDescriptor prop : utils.getPropertyUtils().getPropertyDescriptors(entityClass)) {
             Method m = prop.getReadMethod();
             
             if (m == null) {
@@ -81,13 +95,17 @@ public class CubeDef {
 
         }
     }
-
-    private String getCubeTableName() {
-        return fact.getTableName();
+    
+    public CubeDef(FactMd factMd, String dbSchema) {
+        this(factMd.getFactClass(), factMd.getTitle(), dbSchema);
     }
 
-    public FactMd getFact() {
-        return fact;
+    public String getCubeTableName() {
+        return entityTableName;
+    }
+
+    public String getCubeTitle() {
+        return entityTitle;
     }
 
     public String getDbSchema() {
@@ -101,7 +119,7 @@ public class CubeDef {
     public void generateSchema(Document doc, Node schemaNd) {
 
         Element cubeEl = doc.createElement("Cube");
-        cubeEl.setAttribute("name", fact.getTitle());
+        cubeEl.setAttribute("name", getCubeTitle());
         cubeEl.setAttribute("cache", "true");
         cubeEl.setAttribute("enabled", "true");
         Node cubeNd = schemaNd.appendChild(cubeEl);
@@ -143,7 +161,7 @@ public class CubeDef {
          * Adding special measures
          */
 
-        {
+        if (Fact.class.isAssignableFrom(entityClass)) {
             Element el = doc.createElement("Measure");
             el.setAttribute("name", "No of Facts");
             el.setAttribute("column", "FCT_ID");
@@ -152,6 +170,17 @@ public class CubeDef {
             el.setAttribute("visible", "true");
             cubeNd.appendChild(el);
         }
+        
+        if (Conclusion.class.isAssignableFrom(entityClass)) {
+            Element el = doc.createElement("Measure");
+            el.setAttribute("name", "No of Conclusions");
+            el.setAttribute("column", "REC_ID");
+            el.setAttribute("datatype", "Integer");
+            el.setAttribute("aggregator", "count");
+            el.setAttribute("visible", "true");
+            cubeNd.appendChild(el);
+        }
+        
 
         /**
          * Generating measures like this:

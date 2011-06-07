@@ -19,6 +19,10 @@ public class DataTypeDef {
         if (type.equals(BigDecimal.class)) {
             typeName = "Numeric";
         }
+        
+        if (type.isEnum()) {
+            typeName = "String";
+        }
 
     }
 
