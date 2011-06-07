@@ -8,6 +8,8 @@ package org.cern.cms.csc.exsys.re;
 import com.espertech.esper.client.EPRuntime;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPStatement;
+import com.espertech.esper.client.time.CurrentTimeEvent;
+import com.espertech.esper.client.time.TimerControlEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -17,6 +19,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import jsf.bean.gui.log.Logger;
 import org.cern.cms.csc.dw.log.ExsysLogger;
+import org.cern.cms.csc.dw.model.fact.Fact;
 import org.cern.cms.csc.exsys.re.conclusion.ConclusionCacheServiceLocal;
 import org.cern.cms.csc.exsys.re.conclusion.factory.ConclusionFactory;
 import org.cern.cms.csc.exsys.re.conclusion.factory.DefaultConclusionFactory;
@@ -50,6 +53,7 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
 
     private Collection<Rule> activeRules = new ArrayList<Rule>();
     private Collection<RuleSet> activeRuleSets = new ArrayList<RuleSet>();
+    private boolean isTimeInternal = true;
 
     public RuleEngineManager() {
     }
@@ -121,6 +125,12 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
         for (Conclusion concl: openConclusions) {
             epService.getEPRuntime().sendEvent(concl);
         }
+        
+        if (isTimeInternal()) {
+            epService.getEPRuntime().sendEvent(new TimerControlEvent(TimerControlEvent.ClockType.CLOCK_INTERNAL));
+        } else {
+            epService.getEPRuntime().sendEvent(new TimerControlEvent(TimerControlEvent.ClockType.CLOCK_EXTERNAL));
+        }
     }
 
 
@@ -140,9 +150,16 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
     @Override
     public void reconfigure(String uri) {
         logger.info("Reconfiguring Esper Runtime for URI=" + uri);
+        setIsTimeInternal(true);
         EPServiceProvider epService = getEpService(uri);
         epService.getEPAdministrator().destroyAllStatements();
         configure(epService);
+    }
+
+    @Override
+    public void reconfigureForFactReplay() {
+        setIsTimeInternal(false);
+        reconfigure();
     }
 
     /**
@@ -154,14 +171,44 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
 
     @Override
     public void postEvent(Object event) {
+        if (!isTimeInternal()) { // if time is not internal (e.g. in case of fact replay), take the time from the event and update RE time with it.
+            updateTimeFromEvent(event);
+        }
         getEsperRuntime().sendEvent(event);
     }
 
     @Override
     public void postEventFromListener(Object event) {
+        if (!isTimeInternal()) { // if time is not internal (e.g. in case of fact replay), take the time from the event and update RE time with it.
+            updateTimeFromEvent(event);
+        }
         getEsperRuntime().route(event);
     }
 
+    /**
+     * Takes the time from the given event (if it's a fact or conclusion) and updates RE time with it
+     */
+    private void updateTimeFromEvent(Object event) {
+        long time = getTimeFromEvent(event);
+        if (time >= 0) {
+            getEsperRuntime().sendEvent(new CurrentTimeEvent(time));
+        }
+    }
+
+    /**
+     * Given an event, this method tries to extract a timestamp from it
+     * Currently only Fact and Conclusion events are supported
+     * @return event time. In case if event type is not supported, -1 is returned.
+     */
+    private long getTimeFromEvent(Object event) {
+        if (event instanceof Fact) {
+            return ((Fact) event).getTime().getTime();
+        } else if (event instanceof Conclusion) {
+            return ((Conclusion) event).getTimestamp().getTime();
+        }
+        return -1;
+    }
+    
     /**
      * Get all rules that are currently active in the RE runtime
      * @return all rules that are currently active in the RE runtime
@@ -184,6 +231,14 @@ public class RuleEngineManager implements RuleEngineManagerLocal {
     @Override
     public long getNumEventsEvaluated() {
         return getEsperRuntime().getNumEventsEvaluated();
+    }
+
+    private boolean isTimeInternal() {
+        return isTimeInternal;
+    }
+
+    private void setIsTimeInternal(boolean isTimeInternal) {
+        this.isTimeInternal = isTimeInternal;
     }
 
 }

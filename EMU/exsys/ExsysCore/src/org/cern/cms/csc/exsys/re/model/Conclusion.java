@@ -38,6 +38,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import org.cern.cms.csc.dw.model.annotation.OlapDimensionSetter;
 import org.cern.cms.csc.dw.model.base.EntityBase;
 import org.cern.cms.csc.dw.model.fact.SeverityType;
 import org.w3._2001.xmlschema.Adapter1;
@@ -93,6 +94,7 @@ import org.w3._2001.xmlschema.Adapter1;
 @Entity(name = "org.cern.cms.csc.exsys.re.model.Conclusion")
 @Table(name = "RE_CONCLUSIONS")
 @Inheritance(strategy = InheritanceType.JOINED)
+@OlapDimensionSetter(name = "ComponentLocation", propertyName = "component", sharedTable = "CDW_OLAP$D_COMPS_BY_LOCATION")
 public class Conclusion
     extends EntityBase
     implements Serializable
@@ -141,6 +143,7 @@ public class Conclusion
      */
     @ManyToOne(targetEntity = org.cern.cms.csc.dw.model.ontology.Component.class)
     @JoinColumn(name = "REC_COMPONENT")
+    @org.cern.cms.csc.dw.model.annotation.OlapDimension(name = "ComponentType", sharedTable = "CDW_OLAP$D_COMPS_BY_TYPE")
     public org.cern.cms.csc.dw.model.ontology.Component getComponent() {
         return component;
     }
@@ -235,6 +238,7 @@ public class Conclusion
     @Basic
     @Column(name = "REC_SEVERITY", nullable = false, length = 10)
     @Enumerated(EnumType.STRING)
+    @org.cern.cms.csc.dw.model.annotation.OlapDimension(name = "Severity")
     public SeverityType getSeverity() {
         return severity;
     }
@@ -267,6 +271,7 @@ public class Conclusion
     @Basic
     @Column(name = "REC_TIMESTAMP", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
+    @org.cern.cms.csc.dw.model.annotation.OlapDimension(name = "Timestamp")
     public Date getTimestamp() {
         return timestamp;
     }
@@ -439,6 +444,7 @@ public class Conclusion
      */
     @ManyToOne(targetEntity = org.cern.cms.csc.exsys.re.model.ConclusionType.class)
     @JoinColumn(name = "REC_CONCLUSION_TYPE_ID", nullable = false)
+    @org.cern.cms.csc.dw.model.annotation.OlapDimension(name = "ConclusionType", sharedTable = "CDW_OLAP$D_CONCLUSION_TYPES")
     public org.cern.cms.csc.exsys.re.model.ConclusionType getType() {
         return type;
     }
@@ -483,8 +489,8 @@ public class Conclusion
      * 
      */
     @OneToMany(targetEntity = org.cern.cms.csc.exsys.re.model.ConclusionTrigger.class, cascade = {
-        CascadeType.REMOVE,
-        CascadeType.PERSIST
+        CascadeType.PERSIST,
+        CascadeType.REMOVE
     }, mappedBy = "conclusion")
     public List<org.cern.cms.csc.exsys.re.model.ConclusionTrigger> getTriggers() {
         if (triggers == null) {

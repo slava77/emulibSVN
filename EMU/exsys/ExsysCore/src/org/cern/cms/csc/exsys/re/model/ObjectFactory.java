@@ -48,67 +48,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Conclusion }
-     * 
-     */
-    public Conclusion createConclusion() {
-        return new Conclusion();
-    }
-
-    /**
-     * Create an instance of {@link EmailAction }
-     * 
-     */
-    public EmailAction createEmailAction() {
-        return new EmailAction();
-    }
-
-    /**
-     * Create an instance of {@link Rule }
-     * 
-     */
-    public Rule createRule() {
-        return new Rule();
-    }
-
-    /**
-     * Create an instance of {@link RuleSet }
-     * 
-     */
-    public RuleSet createRuleSet() {
-        return new RuleSet();
-    }
-
-    /**
-     * Create an instance of {@link RelatedComponentFinder }
-     * 
-     */
-    public RelatedComponentFinder createRelatedComponentFinder() {
-        return new RelatedComponentFinder();
-    }
-
-    /**
-     * Create an instance of {@link SimpleComponentFinder }
-     * 
-     */
-    public SimpleComponentFinder createSimpleComponentFinder() {
-        return new SimpleComponentFinder();
-    }
-
-    /**
      * Create an instance of {@link ConclusionType }
      * 
      */
     public ConclusionType createConclusionType() {
         return new ConclusionType();
-    }
-
-    /**
-     * Create an instance of {@link DcsCommandAction }
-     * 
-     */
-    public DcsCommandAction createDcsCommandAction() {
-        return new DcsCommandAction();
     }
 
     /**
@@ -120,6 +64,22 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link Conclusion }
+     * 
+     */
+    public Conclusion createConclusion() {
+        return new Conclusion();
+    }
+
+    /**
+     * Create an instance of {@link DcsCommandAction }
+     * 
+     */
+    public DcsCommandAction createDcsCommandAction() {
+        return new DcsCommandAction();
+    }
+
+    /**
      * Create an instance of {@link ActionExecution }
      * 
      */
@@ -128,11 +88,43 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ConclusionTriggerSource }
+     * Create an instance of {@link RelatedComponentFinder }
      * 
      */
-    public ConclusionTriggerSource createConclusionTriggerSource() {
-        return new ConclusionTriggerSource();
+    public RelatedComponentFinder createRelatedComponentFinder() {
+        return new RelatedComponentFinder();
+    }
+
+    /**
+     * Create an instance of {@link RuleSet }
+     * 
+     */
+    public RuleSet createRuleSet() {
+        return new RuleSet();
+    }
+
+    /**
+     * Create an instance of {@link EmailAction }
+     * 
+     */
+    public EmailAction createEmailAction() {
+        return new EmailAction();
+    }
+
+    /**
+     * Create an instance of {@link SimpleComponentFinder }
+     * 
+     */
+    public SimpleComponentFinder createSimpleComponentFinder() {
+        return new SimpleComponentFinder();
+    }
+
+    /**
+     * Create an instance of {@link Rule }
+     * 
+     */
+    public Rule createRule() {
+        return new Rule();
     }
 
     /**
@@ -141,6 +133,14 @@ public class ObjectFactory {
      */
     public ConclusionTrigger createConclusionTrigger() {
         return new ConclusionTrigger();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionTriggerSource }
+     * 
+     */
+    public ConclusionTriggerSource createConclusionTriggerSource() {
+        return new ConclusionTriggerSource();
     }
 
     /**

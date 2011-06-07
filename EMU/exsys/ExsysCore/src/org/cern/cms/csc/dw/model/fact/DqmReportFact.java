@@ -47,7 +47,7 @@ import org.cern.cms.csc.dw.model.annotation.OlapDimensionSetter;
 @Entity(name = "org.cern.cms.csc.dw.model.fact.DqmReportFact")
 @Table(name = "CDW_DQM_REPORT_FACTS")
 @FactAnn(title = "DQM Report")
-@OlapDimensionSetter(name = "Chamber", propertyName = "component", sharedTable = "CDW_OLAP$D_CHAMBERS")
+@OlapDimensionSetter(name = "ComponentLocation", propertyName = "component", sharedTable = "CDW_OLAP$D_COMPS_BY_LOCATION")
 public class DqmReportFact
     extends Fact
     implements Serializable

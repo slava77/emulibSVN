@@ -38,6 +38,12 @@ public interface RuleEngineManagerLocal {
     void reconfigure();
 
     /**
+     * Reconfigures RE for fact replay.
+     * This means that internal timer will be disabled and time will be taken from the incoming facts.
+     */
+    void reconfigureForFactReplay();
+
+    /**
      * Removes all rules from the EPServiceProvider with the given uri and calls configure (which adds all the rules from DB).
      * @see configure(EPServiceProvider epService)
      */

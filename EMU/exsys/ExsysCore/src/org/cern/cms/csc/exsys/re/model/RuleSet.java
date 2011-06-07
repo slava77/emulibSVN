@@ -310,8 +310,8 @@ public class RuleSet
      * 
      */
     @OneToMany(targetEntity = org.cern.cms.csc.exsys.re.model.ConclusionType.class, cascade = {
-        CascadeType.REMOVE,
-        CascadeType.PERSIST
+        CascadeType.PERSIST,
+        CascadeType.REMOVE
     }, mappedBy = "ruleSet")
     public List<org.cern.cms.csc.exsys.re.model.ConclusionType> getConclusionTypes() {
         if (conclusionTypes == null) {
