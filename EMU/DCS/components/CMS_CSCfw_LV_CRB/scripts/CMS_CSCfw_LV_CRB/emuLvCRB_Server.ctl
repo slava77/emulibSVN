@@ -589,7 +589,7 @@ void emuLvCRB_readCrbBuffers(string sSide)synchronized(dsCommandBuffers)
    if (dynlen(dsCommandBuffers)<1){
      emuLvCRB_showDebug(bDebug,"nothing in buffer "+sSide);
      bBufferEmpty = true;
-     dpSetWait(gSystemNameCRB+"CRB_Buffer_Empty.",true);
+     //dpSetWait(gSystemNameCRB+"CRB_Buffer_Empty.",true);
      emuLvCRB_showDebug(bDebug,"CRB buffer empty:"+bBufferEmpty);
    }
    else { 
@@ -673,7 +673,7 @@ void emuLvCRB_powerCrbBuffers(string sBuffer,string sCRB)
             emuLvCRB_powerOffCRB(sCRB); //switch off CRB
             }
          bBufferEmpty = false;
-         dpSetWait(gSystemNameCRB+"CRB_Buffer_Empty.",false);
+         //dpSetWait(gSystemNameCRB+"CRB_Buffer_Empty.",false);
          emuLvCRB_showDebug(bDebug,"CRB buffer empty:"+bBufferEmpty);
          }
     }   
