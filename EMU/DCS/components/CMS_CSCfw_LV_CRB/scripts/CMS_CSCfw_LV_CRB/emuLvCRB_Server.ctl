@@ -803,9 +803,16 @@ void emuLvCRB_setAlertHandle(string sCRB,bool bIsActive)
 //====for board control================================================
 void emuLvCRB_boardControl(string sDpName,dyn_string dsValue)
 {
-  bool bIsOn = dsValue[2];
-  dyn_int diBoard = makeDynInt(dsValue[3]);
-  mudcsCrbCommandCrbGroup(dsValue[1],bIsOn,diBoard);
+  if(dynlen(dsValue)<3)
+   { 
+    DebugTN("no action on board");
+   } 
+  else
+    {    
+      bool bIsOn = dsValue[2];
+      dyn_int diBoard = makeDynInt(dsValue[3]);
+      mudcsCrbCommandCrbGroup(dsValue[1],bIsOn,diBoard);
+    }  
 }
 //=====for fast deactive CRB alert handle==============================
 void emuLvCRB_deactiveAlertHandle(string sDpName,int iCommand)
