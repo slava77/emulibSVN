@@ -24,9 +24,9 @@ namespace AFEB { namespace teststand {
       ~Results();
       void add( const int channel, int const amplitude, const int time );
       void fitResults();
-      void createFigure();
+      void createFigure( const string directory );
       string getFileName() const { return fileName_; }
-      void save();
+      void save( const string directory );
     private:
       toolbox::BSem bsem_;
       const Measurement* const measurement_;

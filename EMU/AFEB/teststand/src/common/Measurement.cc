@@ -32,9 +32,10 @@ ostream& AFEB::teststand::operator<<( ostream& os, const Measurement& m ){
   return os;
 }
 
-AFEB::teststand::Measurement::Measurement( const string name, const string type ) :
+AFEB::teststand::Measurement::Measurement( const string name, const string type, const string resultDir ) :
   name_( name ),
-  type_( type )
+  type_( type ),
+  resultDir_( resultDir )
 {
   bool isValidType = false;
   for ( int i=0; i<nTypes && !isValidType; ++i ){
@@ -258,6 +259,6 @@ void AFEB::teststand::Measurement::dummyResultGenerator(){
   } // for ( int amplitude = amplitudeMin_; amplitude <= amplitudeMax_; amplitude += amplitudeStep_ )
 
   map<TestedDevice*,Results*>::iterator r;
-  for ( r = results_.begin(); r != results_.end(); ++r ) r->second->save();
+  for ( r = results_.begin(); r != results_.end(); ++r ) r->second->save( resultDir_ );
 
 }

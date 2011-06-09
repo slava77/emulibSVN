@@ -149,8 +149,11 @@ double normalCDF( double *x, double *p ){
 }
 
 void AFEB::teststand::Results::fitResults(){
+  bsem_.take();
   double lo = pulses_->GetYaxis()->GetXmin();
   double hi = pulses_->GetYaxis()->GetXmax();
+  bsem_.give();
+
   TH1D p( "pulses", "pulses", pulses_->GetNbinsY(), lo, hi ); 
   //TF1 nCDF( "normalCDF", &AFEB::teststand::Results::normalCDF, lo, hi, 3, NULL );
   TF1 nCDF( "normalCDF", &normalCDF, lo, hi, 3, NULL );
@@ -163,10 +166,14 @@ void AFEB::teststand::Results::fitResults(){
     p.Reset();
     cout << "ch = " << iChannelBin-1 << endl;
     cout << "counts = ( ";
+
+    bsem_.take();
     for ( int iAmpBin = 1; iAmpBin <= pulses_->GetNbinsY(); ++iAmpBin ){
       cout << pulses_->GetBinContent( iChannelBin, iAmpBin ) << " ";
       p.SetBinContent( iAmpBin, pulses_->GetBinContent( iChannelBin, iAmpBin ) );
     }
+    bsem_.give();
+
     cout << ")" << endl;
     p.Fit( &nCDF, "" );
     // if ( iChannelBin == testedDevice_->getNChannels() ){
@@ -177,17 +184,29 @@ void AFEB::teststand::Results::fitResults(){
     //   p.Write();
     //   f.Close();
     // }
+
+    bsem_.take();
     threshold_ ->SetBinContent( iChannelBin, nCDF.GetParameter( 0 ) );
     noise_     ->SetBinContent( iChannelBin, nCDF.GetParameter( 1 ) );
     efficiency_->SetBinContent( iChannelBin, nCDF.GetParameter( 2 ) / measurement_->getNPulses() );
     threshold_ ->SetBinError( iChannelBin, nCDF.GetParError( 0 ) );
     noise_     ->SetBinError( iChannelBin, nCDF.GetParError( 1 ) );
     efficiency_->SetBinError( iChannelBin, nCDF.GetParError( 2 ) / measurement_->getNPulses() );    
+    bsem_.give();
   }
 }
 
-void AFEB::teststand::Results::createFigure(){
+void AFEB::teststand::Results::createFigure( const string directory ){
   fitResults();
+
+  // Work on copies to keep original histograms intact:
+  bsem_.take();
+  TH2D pulses( *pulses_ );
+  TH1D threshold( *threshold_ );
+  TH1D efficiency( *efficiency_ );
+  TH1D noise( *noise_ );
+  bsem_.give();
+  
   gStyle->SetPalette(1,0);
 
   TCanvas c( fileName_.c_str(), measurement_->getName().c_str(), 500, 500 );
@@ -203,7 +222,6 @@ void AFEB::teststand::Results::createFigure(){
   gPad->SetRightMargin( 0.07 );
   gPad->SetGridx();
   gPad->SetFrameFillColor( kGray + 3 );
-  TH2D pulses( *pulses_ ); // work on copy to keep original intact
   pulses.SetTitle("");
   pulses.Draw("colz");
 
@@ -211,16 +229,14 @@ void AFEB::teststand::Results::createFigure(){
   gPad->SetRightMargin( 0.07 );
   gPad->SetGridx();
   gPad->SetGridy();
-  TH1D threshold( *threshold_ ); // work on copy to keep original intact
-  TH1D efficiency( *efficiency_ ); // work on copy to keep original intact
   threshold.SetTitle("");
   threshold.SetYTitle("threshold (circles) and noise (squares)");
   threshold.Draw();
-  noise_->Draw("same");
+  noise.Draw("same");
   TGaxis *axis = adjustToHistogram( &threshold, &efficiency );
   axis->Draw();
   efficiency.Draw("same");
-  c.Print( (fileName_+".png").c_str() );
+  c.Print( ( directory + "/" + fileName_+".png").c_str() );
   delete axis;
 }
 
@@ -266,15 +282,19 @@ TGaxis* AFEB::teststand::Results::adjustToHistogram( const TH1* const h1, TH1* h
   return axis;
 }
 
-void AFEB::teststand::Results::save(){
-  createFigure();
+void AFEB::teststand::Results::save( const string directory ){
+  createFigure( directory );
   times_->Print();
-  TFile f( (testedDevice_->getType()+"__"+testedDevice_->getId()+".root").c_str(), "recreate" );
+  TFile f( (directory + "/" + testedDevice_->getType()+"__"+testedDevice_->getId()+".root").c_str(), "recreate" );
   f.cd();
+
+  bsem_.take();
   times_->Write();
   pulses_->Write();
   threshold_->Write();
   noise_->Write();
   efficiency_->Write();
+  bsem_.give();
+
   f.Close();
 }

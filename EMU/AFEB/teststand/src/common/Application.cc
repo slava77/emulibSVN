@@ -82,18 +82,19 @@ void AFEB::teststand::Application::fireEvent( const string name ){
 
 void AFEB::teststand::Application::configureAction(toolbox::Event::Reference e){
   delete configuration_;
-  configuration_ = new Configuration( configurationXML_ );
+  currentMeasurementIndex_ = -1;
+  configuration_ = new Configuration( configurationXML_, string( getenv(HTML_ROOT_.toString().c_str()) ) + "/" + resultDir_.toString() );
   cout << configuration_->getCrate() << endl;
 }
 
 void AFEB::teststand::Application::enableAction(toolbox::Event::Reference e){ // TODO: in separate thread, with mutex
   vector<Measurement*>::const_iterator m;
   cout << configuration_->getMeasurements().size() << " measurements" << endl;
-  currentMeasurementIndex_ = 0;
+  currentMeasurementIndex_ = -1;
   for ( m = configuration_->getMeasurements().begin(); m != configuration_->getMeasurements().end(); ++m ){
+    ++currentMeasurementIndex_;
     cout << **m;
     (*m)->execute();
-    ++currentMeasurementIndex_;
   }
 }
 
@@ -318,6 +319,7 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
   return;
 }
 
+// TODO: result web page (file)
 
 string AFEB::teststand::Application::setProcessingInstruction( const string XML, const string xslURI )
   throw( xcept::Exception ){

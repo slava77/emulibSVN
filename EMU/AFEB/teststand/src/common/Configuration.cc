@@ -15,8 +15,9 @@
 using namespace std;
 using namespace AFEB::teststand;
 
-AFEB::teststand::Configuration::Configuration( const string XML ) : 
-  xml_( XML )
+AFEB::teststand::Configuration::Configuration( const string XML, const string resultDir ) : 
+  xml_( XML ),
+  resultDir_( resultDir )
 {
   createMeasurements();
 }
@@ -126,7 +127,7 @@ void AFEB::teststand::Configuration::createMeasurements() {
 	xpath.str("");
 	xpath << "/c:configuration/c:measurements/c:measurement[@c:type='" << m->second << "']/@c:name";
 	string name = utils::getSelectedNodeValue( xml_, xpath.str() );
-	measurement = new Measurement( name, m->second );
+	measurement = new Measurement( name, m->second, resultDir_ );
 	// Set pulse generator parameters
 	xpath.str("");
 	xpath << "/c:configuration/c:measurements/c:measurement[@c:type='" << m->second << "']/c:PulseGenerator/@*";
