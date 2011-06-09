@@ -204,7 +204,10 @@ void AFEB::teststand::Measurement::countVsDAQ(){
 
     } // for ( int iPulse = 0; iPulse < nPulses_; ++iPulse )
 
-    // TODO: store results
+    // Update stored results
+    for ( map<TestedDevice*,Results*>::iterator r = results_.begin(); r != results_.end(); ++r ){
+      r->second->createFigure( resultDir_ );
+    }
 
   } // for ( int amplitude = amplitudeMin_; amplitude <= amplitudeMax_; amplitude += amplitudeStep_ )
 }
@@ -255,6 +258,11 @@ void AFEB::teststand::Measurement::dummyResultGenerator(){
       } // for ( int iShort = 0; iShort < LeCroy3377::nShortsData; ++iShort )
 
     } // for ( int iPulse = 0; iPulse < nPulses_; ++iPulse )
+
+    // Update stored results
+    for ( map<TestedDevice*,Results*>::iterator r = results_.begin(); r != results_.end(); ++r ){
+      r->second->createFigure( resultDir_ );
+    }
 
   } // for ( int amplitude = amplitudeMin_; amplitude <= amplitudeMax_; amplitude += amplitudeStep_ )
 

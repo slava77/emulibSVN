@@ -8,6 +8,7 @@
 
 #include "xcept/tools.h"
 #include "xoap/domutils.h" // for XMLCh2String
+#include "toolbox/task/WorkLoopFactory.h"
 
 #include "xercesc/util/XMLString.hpp"
 #include "xercesc/util/PlatformUtils.hpp"
@@ -49,6 +50,9 @@ AFEB::teststand::Application::Application(xdaq::ApplicationStub *s)
        << " lun: " << scsi.lun
        << endl;
 
+  measurementWorkLoop_ = toolbox::task::getWorkLoopFactory()->getWorkLoop( "AFEB::teststand::Application", "waiting" );
+  measurementSignature_  = toolbox::task::bind( this, &AFEB::teststand::Application::measurementInWorkLoop, "measurementInWorkLoop" );
+
 }
 
 void AFEB::teststand::Application::createFSM(){
@@ -88,6 +92,23 @@ void AFEB::teststand::Application::configureAction(toolbox::Event::Reference e){
 }
 
 void AFEB::teststand::Application::enableAction(toolbox::Event::Reference e){ // TODO: in separate thread, with mutex
+  // Execute measurement in a separate thread:
+  if ( ! measurementWorkLoop_->isActive() ){
+    try{
+      measurementWorkLoop_->activate();
+      LOG4CPLUS_INFO( logger_, "Activated work loop." );
+    } catch( xcept::Exception &e ){
+      XCEPT_RETHROW( toolbox::fsm::exception::Exception, "Failed to activate work loop.", e );
+    }
+  }
+  try{
+    measurementWorkLoop_->submit( measurementSignature_ );
+  } catch( xcept::Exception &e ){
+    XCEPT_RETHROW(toolbox::fsm::exception::Exception, "Failed to submit action to work loop.", e);
+  }
+}
+
+bool AFEB::teststand::Application::measurementInWorkLoop(toolbox::task::WorkLoop *wl){
   vector<Measurement*>::const_iterator m;
   cout << configuration_->getMeasurements().size() << " measurements" << endl;
   currentMeasurementIndex_ = -1;
@@ -96,6 +117,7 @@ void AFEB::teststand::Application::enableAction(toolbox::Event::Reference e){ //
     cout << **m;
     (*m)->execute();
   }
+  return false;
 }
 
 void AFEB::teststand::Application::haltAction(toolbox::Event::Reference e){
@@ -292,7 +314,9 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
   // Drive FSM?
   action = AFEB::teststand::utils::selectFromQueryString( fev, "^fsm$" );
   if ( action.size() == 1 ){
+
     if ( action["fsm"].compare( "Configure" ) == 0 ){
+
       if ( fsm_.getCurrentState() == 'H' ){
 	map<string,string> values = AFEB::teststand::utils::selectFromQueryString( fev, "^/" );
 	for ( map<string,string>::const_iterator v = values.begin(); v != values.end(); ++v ){
@@ -302,17 +326,22 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
 	cout << "configurationXML" << endl << configurationXML_ << endl << flush;
 	fireEvent( "Configure" );
       }
+
     }
     else if ( action["fsm"].compare( "Enable" ) == 0 ){
+
       if ( fsm_.getCurrentState() == 'C' ){
 	fireEvent( "Enable" );
       }
+
     }
     else if ( action["fsm"].compare( "Halt" ) == 0 ){
+
       if ( fsm_.getCurrentState() == 'C' || fsm_.getCurrentState() == 'E' ){
 	fireEvent( "Halt" );
       }
     }
+
   }
 
   AFEB::teststand::utils::redirectTo( applicationURLPath_, out );

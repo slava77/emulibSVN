@@ -9,6 +9,8 @@
 #include "xdata/UnsignedInteger32.h"
 #include "xdata/Vector.h"
 #include "toolbox/fsm/FiniteStateMachine.h"
+#include "toolbox/task/Action.h"
+#include "toolbox/task/WorkLoop.h"
 
 #include <set>
 #include <map>
@@ -110,6 +112,8 @@ private:
   string setProcessingInstruction( const string XML, const string xslURI )
     throw( xcept::Exception );
 
+  bool measurementInWorkLoop(toolbox::task::WorkLoop *wl);
+
   string applicationURLPath_; ///< the path of the URL of this application
   static const string applicationNamespace_; ///< the namespace of this application
   string processingInstructionSetter_; ///< XSLT to set the processing instruction for XML
@@ -118,6 +122,8 @@ private:
   toolbox::fsm::FiniteStateMachine fsm_; ///< finite state machine
   AFEB::teststand::Configuration* configuration_;  ///< configuration
   int currentMeasurementIndex_; ///< the index of the measurement being performed
+  toolbox::task::WorkLoop *measurementWorkLoop_;
+  toolbox::task::ActionSignature *measurementSignature_;
 };
 
 }}
