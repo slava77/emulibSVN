@@ -67,15 +67,15 @@ string AFEB::teststand::utils::getDateTime(){
   struct tm *tm;
 
   time ( &t );
-  tm = gmtime ( &t );
+  tm = localtime ( &t );
 
   stringstream ss;
   ss << setfill('0') << setw(4) << tm->tm_year+1900 << "-"
      << setfill('0') << setw(2) << tm->tm_mon+1     << "-"
-     << setfill('0') << setw(2) << tm->tm_mday      << " "
+     << setfill('0') << setw(2) << tm->tm_mday      << "T"
      << setfill('0') << setw(2) << tm->tm_hour      << ":"
      << setfill('0') << setw(2) << tm->tm_min       << ":"
-     << setfill('0') << setw(2) << tm->tm_sec       << " UTC";
+     << setfill('0') << setw(2) << tm->tm_sec;
 
   return ss.str();
 }

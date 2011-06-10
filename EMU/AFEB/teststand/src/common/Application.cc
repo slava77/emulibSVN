@@ -300,6 +300,7 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
       // Save?
       if ( action["config"].compare( "save" ) == 0 ){
 	map<string,string> values = AFEB::teststand::utils::selectFromQueryString( fev, "^/" );
+	values["/c:configuration[1]/@c:dateTime"] = AFEB::teststand::utils::getDateTime();
 	for ( map<string,string>::const_iterator v = values.begin(); v != values.end(); ++v ){
 	  cout << v->first << "\t" << v->second << endl;
 	}

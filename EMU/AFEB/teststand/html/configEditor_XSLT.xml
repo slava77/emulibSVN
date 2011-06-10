@@ -9,14 +9,17 @@
 
 
   <xsl:template match="//c:configuration">
-    <input type="submit" name="config" value="save" class="submit"/>
-    <!-- for-each: just to set the current node for the templates called by name: -->
-    <xsl:for-each select="@c:name">
-      <input type="text" title="The name of this configuration." size="20">
-	<xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
-	<xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-      </input>
-    </xsl:for-each>
+    <p>
+      <input type="submit" name="config" value="save" class="submit" title="Save this configuration."/> as 
+      <!-- for-each: just to set the current node for the templates called by name: -->
+      <xsl:for-each select="@c:name">
+	<input type="text" title="The name of this configuration." size="20">
+	  <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+	  <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+	</input>
+      </xsl:for-each>
+      <div style="float: right;">Saved at <xsl:value-of select="@c:dateTime"/></div>
+    </p>
     <table class="layout">
       <tr>
 	<td><xsl:apply-templates select="c:measurements"/></td>
