@@ -41,7 +41,8 @@ namespace AFEB { namespace teststand {
       int getAmplitudeMax () const { return amplitudeMax_; }
       int getAmplitudeStep() const { return amplitudeStep_;}
       int getNPulses() const { return nPulses_; }
-      void execute();
+      bool execute();
+      void abort() const { isToKeepRunning_ = false; }
 
     private:
       static const char* const types_[nTypes];
@@ -49,6 +50,7 @@ namespace AFEB { namespace teststand {
       string type_;
       Type_t type_t_;
       string resultDir_;
+      mutable bool isToKeepRunning_;
       map<TestedDevice*,Results*> results_;
 
       int amplitudeMin_;
@@ -62,9 +64,9 @@ namespace AFEB { namespace teststand {
       int tdcTimeMin_;
       int tdcTimeMax_;
 
-      void countVsDAQ();
-      void countVsTime();
-      void dummyResultGenerator();
+      bool countVsDAQ();
+      bool countVsTime();
+      bool dummyResultGenerator();
       TestedDevice* findTestedDevice( const int tdcInput );
       Results* findResults( const int tdcInput );
     };

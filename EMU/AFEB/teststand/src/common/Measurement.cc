@@ -35,7 +35,8 @@ ostream& AFEB::teststand::operator<<( ostream& os, const Measurement& m ){
 AFEB::teststand::Measurement::Measurement( const string name, const string type, const string resultDir ) :
   name_( name ),
   type_( type ),
-  resultDir_( resultDir )
+  resultDir_( resultDir ),
+  isToKeepRunning_( true )
 {
   bool isValidType = false;
   for ( int i=0; i<nTypes && !isValidType; ++i ){
@@ -129,15 +130,16 @@ int AFEB::teststand::Measurement::getTDCSlot() const {
   return results_.begin()->first->getTDCSlot();
 }
 
-void AFEB::teststand::Measurement::execute(){
+bool AFEB::teststand::Measurement::execute(){
+  if ( ! isToKeepRunning_ ) return false;
   switch ( type_t_ ){
   case count_vs_dac:
-    //countVsDAQ();
-    dummyResultGenerator();
+    // return countVsDAQ();
+    return dummyResultGenerator();
     break;
   case time_vs_dac:
-    //countVsTime();
-    dummyResultGenerator();
+    // return countVsTime();
+    return dummyResultGenerator();
     break;
   default:
     stringstream ss;
@@ -145,9 +147,10 @@ void AFEB::teststand::Measurement::execute(){
     XCEPT_RAISE( xcept::Exception, ss.str() );
     break;
   }
+  return false;
 }
 
-void AFEB::teststand::Measurement::countVsDAQ(){
+bool AFEB::teststand::Measurement::countVsDAQ(){
   // All tested devices in one measurement are read out by the same TDC. Take the first device to get its.
   int nDeviceChannels = results_.begin()->first->getNChannels();
   Crate* crate = results_.begin()->first->getCrate();
@@ -199,6 +202,7 @@ void AFEB::teststand::Measurement::countVsDAQ(){
 	int tdcInput = tdc->ChannelRd() / nDeviceChannels + 1;
 	Results* results = findResults( tdcInput );
 	if ( results ) results->add( tdc->ChannelRd() % nDeviceChannels + 1, amplitude, tdc->TimeChRd() );
+	if ( ! isToKeepRunning_ ) return false;
 	// }
       } // for ( int iShort = 0; iShort < LeCroy3377::nShortsData; ++iShort )
 
@@ -210,13 +214,15 @@ void AFEB::teststand::Measurement::countVsDAQ(){
     }
 
   } // for ( int amplitude = amplitudeMin_; amplitude <= amplitudeMax_; amplitude += amplitudeStep_ )
+  return true;
 }
 
-void AFEB::teststand::Measurement::countVsTime(){
+bool AFEB::teststand::Measurement::countVsTime(){
   // TODO: implement
+  return true;
 }
 
-void AFEB::teststand::Measurement::dummyResultGenerator(){
+bool AFEB::teststand::Measurement::dummyResultGenerator(){
   // All tested devices in one measurement are read out by the same TDC. Take the first device to get its.
   int nDeviceChannels = results_.begin()->first->getNChannels();
   Crate* crate = results_.begin()->first->getCrate();
@@ -253,6 +259,7 @@ void AFEB::teststand::Measurement::dummyResultGenerator(){
 			  rndm.Gaus( 0.5 * ( tdcTimeMax_ + tdcTimeMin_ ), 
 				     0.1 * ( tdcTimeMax_ - tdcTimeMin_ ) ) 
 			  );
+	    if ( ! isToKeepRunning_ ) return false;
 	  }
 	}
       } // for ( int iShort = 0; iShort < LeCroy3377::nShortsData; ++iShort )
@@ -261,7 +268,7 @@ void AFEB::teststand::Measurement::dummyResultGenerator(){
 
     // Update stored results
     for ( map<TestedDevice*,Results*>::iterator r = results_.begin(); r != results_.end(); ++r ){
-      r->second->createFigure( resultDir_ );
+      r->second->createFigure( resultDir_, amplitudeMin_, amplitude );
     }
 
   } // for ( int amplitude = amplitudeMin_; amplitude <= amplitudeMax_; amplitude += amplitudeStep_ )
@@ -269,4 +276,5 @@ void AFEB::teststand::Measurement::dummyResultGenerator(){
   map<TestedDevice*,Results*>::iterator r;
   for ( r = results_.begin(); r != results_.end(); ++r ) r->second->save( resultDir_ );
 
+  return true;
 }

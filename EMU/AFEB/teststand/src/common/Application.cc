@@ -85,6 +85,9 @@ void AFEB::teststand::Application::fireEvent( const string name ){
 }
 
 void AFEB::teststand::Application::configureAction(toolbox::Event::Reference e){
+  if ( configuration_ != NULL ){
+    for ( vector<Measurement*>::const_iterator m = configuration_->getMeasurements().begin(); m != configuration_->getMeasurements().end(); ++m ) (*m)->abort();
+  }
   delete configuration_;
   currentMeasurementIndex_ = -1;
   configuration_ = new Configuration( configurationXML_, string( getenv(HTML_ROOT_.toString().c_str()) ) + "/" + resultDir_.toString() );
@@ -96,15 +99,15 @@ void AFEB::teststand::Application::enableAction(toolbox::Event::Reference e){ //
   if ( ! measurementWorkLoop_->isActive() ){
     try{
       measurementWorkLoop_->activate();
-      LOG4CPLUS_INFO( logger_, "Activated work loop." );
+      LOG4CPLUS_INFO( logger_, "Activated measurement work loop." );
     } catch( xcept::Exception &e ){
-      XCEPT_RETHROW( toolbox::fsm::exception::Exception, "Failed to activate work loop.", e );
+      XCEPT_RETHROW( toolbox::fsm::exception::Exception, "Failed to activate measurement work loop.", e );
     }
   }
   try{
     measurementWorkLoop_->submit( measurementSignature_ );
   } catch( xcept::Exception &e ){
-    XCEPT_RETHROW(toolbox::fsm::exception::Exception, "Failed to submit action to work loop.", e);
+    XCEPT_RETHROW(toolbox::fsm::exception::Exception, "Failed to submit measurement action to work loop.", e);
   }
 }
 
@@ -115,12 +118,13 @@ bool AFEB::teststand::Application::measurementInWorkLoop(toolbox::task::WorkLoop
   for ( m = configuration_->getMeasurements().begin(); m != configuration_->getMeasurements().end(); ++m ){
     ++currentMeasurementIndex_;
     cout << **m;
-    (*m)->execute();
+    if ( ! (*m)->execute() ) return false; // Measurement::execute returns false if aborted.
   }
   return false;
 }
 
 void AFEB::teststand::Application::haltAction(toolbox::Event::Reference e){
+  for ( vector<Measurement*>::const_iterator m = configuration_->getMeasurements().begin(); m != configuration_->getMeasurements().end(); ++m ) (*m)->abort();
 }
 
 void AFEB::teststand::Application::noAction(toolbox::Event::Reference e){
@@ -286,62 +290,69 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
   // Find out what to do:
   //
 
+
   // Manipulate configuration?
-  map<string,string> action = AFEB::teststand::utils::selectFromQueryString( fev, "^config$" );
-  if ( action.size() == 1 ){
-    // Save?
-    if ( action["config"].compare( "save" ) == 0 ){
-      map<string,string> values = AFEB::teststand::utils::selectFromQueryString( fev, "^/" );
-      for ( map<string,string>::const_iterator v = values.begin(); v != values.end(); ++v ){
-	cout << v->first << "\t" << v->second << endl;
-      }
-      configurationXML_ = AFEB::teststand::utils::setSelectedNodesValues( configurationXML_, values );
-      cout << "configurationXML" << endl << configurationXML_ << endl << flush;
-      string fileToSaveConfigIn = configurationDir_.toString() + "/" + values["/c:configuration[1]/@c:name"] + ".xml";
-      AFEB::teststand::utils::writeFile( fileToSaveConfigIn, configurationXML_ );
-      LOG4CPLUS_INFO( logger_, string("Saved configuration to ") + fileToSaveConfigIn );
-    }
-    // Load?
-    else if ( action["config"].compare( "load" ) == 0 ){
-      map<string,string> v = AFEB::teststand::utils::selectFromQueryString( fev, "^file$" );
-      if ( v.size() == 1 ){
-	LOG4CPLUS_INFO( logger_, string("Reading configuration from ") + v["file"] );
-	configurationXML_ = AFEB::teststand::utils::readFile( v["file"] );
-      } 
-    }
-  }
-
-  // Drive FSM?
-  action = AFEB::teststand::utils::selectFromQueryString( fev, "^fsm$" );
-  if ( action.size() == 1 ){
-
-    if ( action["fsm"].compare( "Configure" ) == 0 ){
-
-      if ( fsm_.getCurrentState() == 'H' ){
+  map<string,string> action;
+  try{
+    action = AFEB::teststand::utils::selectFromQueryString( fev, "^config$" );
+    if ( action.size() == 1 ){
+      // Save?
+      if ( action["config"].compare( "save" ) == 0 ){
 	map<string,string> values = AFEB::teststand::utils::selectFromQueryString( fev, "^/" );
 	for ( map<string,string>::const_iterator v = values.begin(); v != values.end(); ++v ){
 	  cout << v->first << "\t" << v->second << endl;
 	}
 	configurationXML_ = AFEB::teststand::utils::setSelectedNodesValues( configurationXML_, values );
 	cout << "configurationXML" << endl << configurationXML_ << endl << flush;
-	fireEvent( "Configure" );
+	string fileToSaveConfigIn = configurationDir_.toString() + "/" + values["/c:configuration[1]/@c:name"] + ".xml";
+	AFEB::teststand::utils::writeFile( fileToSaveConfigIn, configurationXML_ );
+	LOG4CPLUS_INFO( logger_, string("Saved configuration to ") + fileToSaveConfigIn );
       }
-
-    }
-    else if ( action["fsm"].compare( "Enable" ) == 0 ){
-
-      if ( fsm_.getCurrentState() == 'C' ){
-	fireEvent( "Enable" );
-      }
-
-    }
-    else if ( action["fsm"].compare( "Halt" ) == 0 ){
-
-      if ( fsm_.getCurrentState() == 'C' || fsm_.getCurrentState() == 'E' ){
-	fireEvent( "Halt" );
+      // Load?
+      else if ( action["config"].compare( "load" ) == 0 ){
+	map<string,string> v = AFEB::teststand::utils::selectFromQueryString( fev, "^file$" );
+	if ( v.size() == 1 ){
+	  LOG4CPLUS_INFO( logger_, string("Reading configuration from ") + v["file"] );
+	  configurationXML_ = AFEB::teststand::utils::readFile( v["file"] );
+	} 
       }
     }
 
+    // Drive FSM?
+    action = AFEB::teststand::utils::selectFromQueryString( fev, "^fsm$" );
+    if ( action.size() == 1 ){
+
+      if ( action["fsm"].compare( "Configure" ) == 0 ){
+
+	if ( fsm_.getCurrentState() == 'H' ){
+	  map<string,string> values = AFEB::teststand::utils::selectFromQueryString( fev, "^/" );
+	  for ( map<string,string>::const_iterator v = values.begin(); v != values.end(); ++v ){
+	    cout << v->first << "\t" << v->second << endl;
+	  }
+	  configurationXML_ = AFEB::teststand::utils::setSelectedNodesValues( configurationXML_, values );
+	  cout << "configurationXML" << endl << configurationXML_ << endl << flush;
+	  fireEvent( "Configure" );
+	}
+
+      }
+      else if ( action["fsm"].compare( "Enable" ) == 0 ){
+
+	if ( fsm_.getCurrentState() == 'C' ){
+	  fireEvent( "Enable" );
+	}
+
+      }
+      else if ( action["fsm"].compare( "Halt" ) == 0 ){
+
+	if ( fsm_.getCurrentState() == 'C' || fsm_.getCurrentState() == 'E' ){
+	  fireEvent( "Halt" );
+	}
+      }
+
+    }
+
+  } catch (  xcept::Exception& e ){
+    XCEPT_RETHROW( xgi::exception::Exception, string("Failed to execute ") + action.begin()->second, e );
   }
 
   AFEB::teststand::utils::redirectTo( applicationURLPath_, out );

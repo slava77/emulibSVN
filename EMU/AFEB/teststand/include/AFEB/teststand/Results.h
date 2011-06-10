@@ -23,8 +23,8 @@ namespace AFEB { namespace teststand {
       Results( const Measurement* const measurement, const TestedDevice* const device );
       ~Results();
       void add( const int channel, int const amplitude, const int time );
-      void fitResults();
-      void createFigure( const string directory );
+      void fit( const double from, const double to );
+      void createFigure( const string directory, const double fitRangeStart=0., const double fitRangeEnd=0. );
       string getFileName() const { return fileName_; }
       void save( const string directory );
     private:

@@ -148,7 +148,7 @@ double normalCDF( double *x, double *p ){
   return p[2] * 0.5 * ( 1. + ROOT::Math::erf( ( x[0] - p[0] ) / ( TMath::Sqrt(2.) * p[1] ) ) );
 }
 
-void AFEB::teststand::Results::fitResults(){
+void AFEB::teststand::Results::fit( const double from, const double to ){
   bsem_.take();
   double lo = pulses_->GetYaxis()->GetXmin();
   double hi = pulses_->GetYaxis()->GetXmax();
@@ -161,21 +161,24 @@ void AFEB::teststand::Results::fitResults(){
   nCDF.SetParameters( 0.5 * ( hi + lo ),
 		      0.1 * ( hi - lo ),
 		      measurement_->getNPulses() );
+  if ( to != from ) nCDF.SetRange( from, to ); // fit only in the range measured so far
+
   // Loop over channels and fit results
   for ( int iChannelBin = 1; iChannelBin <= testedDevice_->getNChannels(); ++iChannelBin ){
     p.Reset();
-    cout << "ch = " << iChannelBin-1 << endl;
-    cout << "counts = ( ";
+    // cout << "ch = " << iChannelBin-1 << endl;
+    // cout << "counts = ( ";
 
     bsem_.take();
     for ( int iAmpBin = 1; iAmpBin <= pulses_->GetNbinsY(); ++iAmpBin ){
-      cout << pulses_->GetBinContent( iChannelBin, iAmpBin ) << " ";
+      // cout << pulses_->GetBinContent( iChannelBin, iAmpBin ) << " ";
       p.SetBinContent( iAmpBin, pulses_->GetBinContent( iChannelBin, iAmpBin ) );
     }
     bsem_.give();
 
-    cout << ")" << endl;
-    p.Fit( &nCDF, "" );
+    // cout << ")" << endl;
+
+    p.Fit( &nCDF, "QR" ); // quiet (no printing), use function range
     // if ( iChannelBin == testedDevice_->getNChannels() ){
     //   TFile f( (testedDevice_->getType()+"__"+testedDevice_->getId()+"_test.root").c_str(), "recreate" );
     //   f.cd();
@@ -196,8 +199,8 @@ void AFEB::teststand::Results::fitResults(){
   }
 }
 
-void AFEB::teststand::Results::createFigure( const string directory ){
-  fitResults();
+void AFEB::teststand::Results::createFigure( const string directory, const double fitRangeStart, const double fitRangeEnd ){
+  fit( fitRangeStart, fitRangeEnd );
 
   // Work on copies to keep original histograms intact:
   bsem_.take();
