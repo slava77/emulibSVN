@@ -153,7 +153,7 @@
 	  <td>
 	    <!-- for-each: just to set the current node for the templates called by name: -->
 	    <xsl:for-each select="@c:id">
-	      <input type="text" title="The unique id of this device." size="10">
+	      <input type="text" title="The unique id of this device. Leave it blank if this socket is not used." size="10">
 		<xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
 		<xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
 	      </input>
@@ -164,7 +164,7 @@
 	    <xsl:for-each select="@c:tdcSlot">
 	      <select>
 		<xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
-		<option title="Empty socket." value="">-</option>
+		<option title="Unused socket." value="">-</option>
 		<xsl:call-template name="options">
 		  <xsl:with-param name="TAG" select="name(..)"/>
 		  <xsl:with-param name="ATTR" select="name()"/>

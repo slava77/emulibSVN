@@ -301,3 +301,14 @@ void AFEB::teststand::Results::save( const string directory ){
 
   f.Close();
 }
+
+map<string,pair<double,double> > AFEB::teststand::Results::getParameters( const int channel ) const {
+  map<string,pair<double,double> > values;
+  values["threshold" ] = make_pair<double,double>( threshold_ ->GetBinContent( channel+1 ),
+						   threshold_ ->GetBinError  ( channel+1 ) );
+  values["noise"     ] = make_pair<double,double>( noise_     ->GetBinContent( channel+1 ),
+						   noise_     ->GetBinError  ( channel+1 ) );
+  values["efficiency"] = make_pair<double,double>( efficiency_->GetBinContent( channel+1 ),
+						   efficiency_->GetBinError  ( channel+1 ) );
+  return values;
+}

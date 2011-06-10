@@ -103,6 +103,13 @@ private:
   void controlWebPage(xgi::Input *in, xgi::Output *out)
     throw (xgi::exception::Exception);
 
+  ///
+  /// @param in cgi input
+  /// @param out cgi output
+  ///
+  void resultsWebPage(xgi::Input *in, xgi::Output *out)
+    throw (xgi::exception::Exception);
+
   void loadConfigurationTemplate();
 
   vector<pair<string,string> > loadConfigurationFileList();

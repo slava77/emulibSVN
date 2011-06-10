@@ -49,17 +49,17 @@
 
   <xsl:template match="a:results">
     <p>
-      <xsl:apply-templates select="a:plot">
-	<xsl:sort select="@a:name"/>
+      <xsl:apply-templates select="a:device">
+	<xsl:sort select="a:plot/@a:name"/>
       </xsl:apply-templates>
     </p>
-    <xsl:for-each select="a:plot[@a:current='yes']">
-      <img src="{@a:url}"/>
+    <xsl:for-each select="a:device[@a:current='yes']">
+      <img src="{a:plot/@a:url}"/>
     </xsl:for-each>
   </xsl:template>
 
-  <xsl:template match="a:plot">
-    <a href="{@a:url}" class="popup" target="_blank"><xsl:value-of select="@a:name"/></a><xsl:if test="position()!=last()"> | </xsl:if>
+  <xsl:template match="a:device">
+    <a href="{a:plot/@a:url}" class="popup" target="_blank"><xsl:value-of select="a:plot/@a:name"/></a><xsl:if test="position()!=last()"> | </xsl:if>
   </xsl:template>
 
   <xsl:template match="a:configuration">

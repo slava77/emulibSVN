@@ -26,6 +26,7 @@ namespace AFEB { namespace teststand {
       void fit( const double from, const double to );
       void createFigure( const string directory, const double fitRangeStart=0., const double fitRangeEnd=0. );
       string getFileName() const { return fileName_; }
+      map<string,pair<double,double> > getParameters( const int channel ) const;
       void save( const string directory );
     private:
       toolbox::BSem bsem_;

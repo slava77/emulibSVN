@@ -151,6 +151,7 @@ string AFEB::teststand::Application::generateLoggerName()
 void AFEB::teststand::Application::bindWebInterface(){
   xgi::bind(this, &AFEB::teststand::Application::defaultWebPage, "Default" );
   xgi::bind(this, &AFEB::teststand::Application::controlWebPage, "control" );
+  xgi::bind(this, &AFEB::teststand::Application::resultsWebPage, "results" );
 }
 
 void AFEB::teststand::Application::exportParams(){
@@ -194,14 +195,30 @@ void AFEB::teststand::Application::initializeParameters(){
     for ( vector<Measurement*>::const_iterator m = measurements.begin(); m != measurements.end(); ++m ){
       map<TestedDevice*,Results*> results = (*m)->getResults();
       for ( map<TestedDevice*,Results*>::const_iterator r = results.begin(); r != results.end(); ++r ){
-	ss << "      <a:plot a:name=\"" << r->second->getFileName() 
-	   << "\" a:url=\"" << resultDir_ << "/" << r->second->getFileName() << ".png"
-	   << "\" a:current=\"" << ( measurementCount == currentMeasurementIndex_ ? "yes" : "no" ) 
-	   << "\"/>" << endl;
-      }
+	ss << "      <a:device a:id=\"" << r->first->getId() 
+	   <<              "\" a:measurement=\"" << (*m)->getType() 
+	   <<              "\" a:current=\"" << ( measurementCount == currentMeasurementIndex_ ? "yes" : "no" ) 
+	   <<              "\">" << endl
+	   << "        <a:plot a:name=\"" << r->second->getFileName() 
+	   <<              "\" a:url=\"" << resultDir_ << "/" << r->second->getFileName() << ".png"
+	   <<              "\"/>" << endl;
+	// Loop over channels and fit results
+	for ( int iChannel = 1; iChannel <= r->first->getNChannels(); ++iChannel ){
+	  ss << "        <a:channel a:number=\"" <<  iChannel << "\">";
+	  map<string,pair<double,double> > parameters = r->second->getParameters( iChannel );
+	  for ( map<string,pair<double,double> >::const_iterator p = parameters.begin(); p != parameters.end(); ++p ){ 
+	    ss << "<a:parameter a:name=\""  << p->first
+	       <<           "\" a:value=\"" << p->second.first
+	       <<           "\" a:error=\"" << p->second.second
+	       <<           "\"/>";
+	  }
+	  ss << "</a:channel>" << endl;
+	} // for ( int iChannel = 1; iChannel <= r->first->getNChannels(); ++iChannel )
+	ss << "      </a:device>" << endl;
+      } // for ( map<TestedDevice*,Results*>::const_iterator r = results.begin(); r != results.end(); ++r )
       ++measurementCount;
-    }
-  }
+    } // for ( vector<Measurement*>::const_iterator m = measurements.begin(); m != measurements.end(); ++m )
+  } // if ( configuration_ != NULL )
   ss << "    </a:results>" << endl;
   ss << "    <a:configuration>" << endl;
   for ( vector<pair<string,string> >::const_iterator c=configList.begin(); c!=configList.end(); ++c ){
@@ -212,6 +229,8 @@ void AFEB::teststand::Application::initializeParameters(){
      << "</root>";
 
   xmlWebPageSkeleton_ = ss.str();
+
+  cout << xmlWebPageSkeleton_ << endl;
 }
 
 void AFEB::teststand::Application::loadConfigurationTemplate(){
@@ -363,7 +382,13 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
   return;
 }
 
-// TODO: result web page (file)
+void AFEB::teststand::Application::resultsWebPage(xgi::Input *in, xgi::Output *out)
+  throw (xgi::exception::Exception){
+  initializeParameters();
+
+  *out << AFEB::teststand::utils::appendToSelectedNode( xmlWebPageSkeleton_, "/root", configurationXML_ );
+}
+
 
 string AFEB::teststand::Application::setProcessingInstruction( const string XML, const string xslURI )
   throw( xcept::Exception ){
