@@ -120,6 +120,7 @@ bool AFEB::teststand::Application::measurementInWorkLoop(toolbox::task::WorkLoop
     cout << **m;
     if ( ! (*m)->execute() ) return false; // Measurement::execute returns false if aborted.
   }
+  fsm_.reset(); // To go back to initial state (Halted) without triggering haltAction.
   return false;
 }
 
