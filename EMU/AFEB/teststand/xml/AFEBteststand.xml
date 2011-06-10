@@ -10,7 +10,7 @@
       <properties xsi:type="soapenc:Struct" xmlns="urn:xdaq-application:AFEB::teststand::Application">
 	<configurationDir xsi:type="xsd:string">/home/csctest/config/AFEB</configurationDir>
 	<configFileNameFilter xsi:type="xsd:string">AFEB*.xml</configFileNameFilter>
-	<resultDir xsi:type="xsd:string">/AFEB/results</resultDir><!-- relative to $BUILD_HOME -->
+	<resultBaseDir xsi:type="xsd:string">/AFEB/results</resultBaseDir><!-- relative to $BUILD_HOME -->
       </properties>
     </xc:Application>
     <xc:Module>${BUILD_HOME}/${XDAQ_PLATFORM}/lib/libAFEBteststand.so</xc:Module>

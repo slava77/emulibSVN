@@ -90,7 +90,9 @@ void AFEB::teststand::Application::configureAction(toolbox::Event::Reference e){
   }
   delete configuration_;
   currentMeasurementIndex_ = -1;
-  configuration_ = new Configuration( configurationXML_, string( getenv(HTML_ROOT_.toString().c_str()) ) + "/" + resultDir_.toString() );
+  resultDir_ = resultBaseDir_.toString() + "/" + AFEB::teststand::utils::getDateTime();
+  AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + string( getenv(HTML_ROOT_.toString().c_str()) ) + "/" + resultDir_ );
+  configuration_ = new Configuration( configurationXML_, string( getenv(HTML_ROOT_.toString().c_str()) ) + "/" + resultDir_ );
   cout << configuration_->getCrate() << endl;
 }
 
@@ -158,11 +160,11 @@ void AFEB::teststand::Application::exportParams(){
   HTML_ROOT_            = "BUILD_HOME";
   configurationDir_     = "/tmp";
   configFileNameFilter_ = "AFEB*.xml";
-  resultDir_            = "";
+  resultBaseDir_        = "";
 
   s->fireItemAvailable( "configurationDir"    , &configurationDir_     );
   s->fireItemAvailable( "configFileNameFilter", &configFileNameFilter_ );
-  s->fireItemAvailable( "resultDir"           , &resultDir_            );
+  s->fireItemAvailable( "resultBaseDir"       , &resultBaseDir_        );
 
 }
 
@@ -193,7 +195,7 @@ void AFEB::teststand::Application::initializeParameters(){
       map<TestedDevice*,Results*> results = (*m)->getResults();
       for ( map<TestedDevice*,Results*>::const_iterator r = results.begin(); r != results.end(); ++r ){
 	ss << "      <a:plot a:name=\"" << r->second->getFileName() 
-	   << "\" a:url=\"" << resultDir_.toString() << "/" << r->second->getFileName() << ".png"
+	   << "\" a:url=\"" << resultDir_ << "/" << r->second->getFileName() << ".png"
 	   << "\" a:current=\"" << ( measurementCount == currentMeasurementIndex_ ? "yes" : "no" ) 
 	   << "\"/>" << endl;
       }

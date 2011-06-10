@@ -56,7 +56,7 @@ private:
   xdata::String HTML_ROOT_;
   xdata::String configurationDir_;
   xdata::String configFileNameFilter_;
-  xdata::String resultDir_; ///< results' directory relative to HTML_ROOT_
+  xdata::String resultBaseDir_; ///< results' base directory relative to HTML_ROOT_
 /// @}
 
   ////////////////////////////////////////////////////////
@@ -124,6 +124,7 @@ private:
   int currentMeasurementIndex_; ///< the index of the measurement being performed
   toolbox::task::WorkLoop *measurementWorkLoop_;
   toolbox::task::ActionSignature *measurementSignature_;
+  string resultDir_;
 };
 
 }}
