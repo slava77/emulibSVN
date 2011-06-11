@@ -22,6 +22,7 @@ namespace AFEB { namespace teststand {
     class Measurement{
     public:
       enum Type_t { count_vs_dac, time_vs_dac, nTypes };
+      enum Status_t { waiting, running, done, nStatus };
 
       friend ostream& operator<<( ostream& os, const Measurement& m );
 
@@ -41,18 +42,19 @@ namespace AFEB { namespace teststand {
       int getAmplitudeMax () const { return amplitudeMax_; }
       int getAmplitudeStep() const { return amplitudeStep_;}
       int getNPulses() const { return nPulses_; }
-      bool isExecuting() const { return isExecuting_; }
+      string getStatus() const { return status_[status_t_]; }
       bool execute();
       void abort() const { isToKeepRunning_ = false; }
 
     private:
       static const char* const types_[nTypes];
+      static const char* const status_[nStatus];
       string name_;
       string type_;
       Type_t type_t_;
+      Status_t status_t_;
       string resultDir_; ///< The full path to the directory to save the results in.
       mutable bool isToKeepRunning_;
-      bool isExecuting_; ///< true if this measurement is currently being taken.
       map<TestedDevice*,Results*> results_;
 
       int amplitudeMin_;

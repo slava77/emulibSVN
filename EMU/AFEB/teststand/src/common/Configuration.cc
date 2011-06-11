@@ -178,18 +178,18 @@ string AFEB::teststand::Configuration::resultsXML(){
     for ( map<TestedDevice*,Results*>::const_iterator r = results.begin(); r != results.end(); ++r ){
       ss << "      <a:device a:id=\"" << r->first->getId() 
 	 <<              "\" a:measurement=\"" << (*m)->getType() 
-	 <<              "\" a:running=\"" << ( (*m)->isExecuting() ? "yes" : "no" ) 
+	 <<              "\" a:status=\"" << (*m)->getStatus() 
 	 <<              "\">" << endl
 	 << "        <a:plot a:name=\"" << r->second->getFileName()
 	 <<              "\"/>" << endl;
       // Loop over channels and fit results
-      for ( int iChannel = 1; iChannel <= r->first->getNChannels(); ++iChannel ){
+      for ( int iChannel = 0; iChannel < r->first->getNChannels(); ++iChannel ){
 	ss << "        <a:channel a:number=\"" <<  iChannel << "\">";
 	map<string,pair<double,double> > parameters = r->second->getParameters( iChannel );
 	for ( map<string,pair<double,double> >::const_iterator p = parameters.begin(); p != parameters.end(); ++p ){ 
 	  ss << "<a:parameter a:name=\""  << p->first
-	     <<           "\" a:value=\"" << showpos << showpoint << setw(10) << setprecision(5) << p->second.first
-	     <<           "\" a:error=\"" << showpos << showpoint << setw(10) << setprecision(5) << p->second.second
+	     <<           "\" a:value=\"" <<   showpos << showpoint << setprecision(5) << p->second.first
+	     <<           "\" a:error=\"" << noshowpos << showpoint << setprecision(5) << p->second.second
 	     <<           "\"/>" << noshowpos << noshowpoint;
 	}
 	ss << "</a:channel>" << endl;

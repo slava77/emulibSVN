@@ -10,6 +10,7 @@ using namespace std;
 using namespace AFEB::teststand;
 
 const char* const AFEB::teststand::Measurement::types_[] = { "count_vs_dac", "time_vs_dac" };
+const char* const AFEB::teststand::Measurement::status_[] = { "waiting", "running", "done" };
 
 ostream& AFEB::teststand::operator<<( ostream& os, const Measurement& m ){
 
@@ -35,9 +36,9 @@ ostream& AFEB::teststand::operator<<( ostream& os, const Measurement& m ){
 AFEB::teststand::Measurement::Measurement( const string name, const string type, const string resultDir ) :
   name_( name ),
   type_( type ),
+  status_t_( AFEB::teststand::Measurement::waiting ),
   resultDir_( resultDir ),
-  isToKeepRunning_( true ),
-  isExecuting_( false )
+  isToKeepRunning_( true )
 {
   bool isValidType = false;
   for ( int i=0; i<nTypes && !isValidType; ++i ){
@@ -133,11 +134,11 @@ int AFEB::teststand::Measurement::getTDCSlot() const {
 
 bool AFEB::teststand::Measurement::execute(){
   if ( ! isToKeepRunning_ ){
-    isExecuting_ = false;
+    status_t_ = AFEB::teststand::Measurement::waiting;
     return false;
   }
   bool keepRunning = true;
-  isExecuting_ = true;
+  status_t_ = AFEB::teststand::Measurement::running;
   switch ( type_t_ ){
   case count_vs_dac:
     //  keepRunning = countVsDAQ();
@@ -153,7 +154,7 @@ bool AFEB::teststand::Measurement::execute(){
     XCEPT_RAISE( xcept::Exception, ss.str() );
     break;
   }
-  isExecuting_ = false;
+  status_t_ = AFEB::teststand::Measurement::done;
   return keepRunning;
 }
 

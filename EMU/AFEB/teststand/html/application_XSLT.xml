@@ -49,28 +49,54 @@
 
   <xsl:template mode="application" match="a:results">
     <p>
-      <xsl:apply-templates select="a:device">
-	<xsl:sort select="a:plot/@a:name"/>
+      <xsl:apply-templates mode="application" select="a:device">
+    	<xsl:sort select="a:plot/@a:name"/>
       </xsl:apply-templates>
     </p>
-    <xsl:for-each select="a:device[@a:running='yes']">
+    <xsl:for-each select="a:device[@a:status='running']">
       <img src="{../@a:httpPath}{a:plot/@a:name}.png"/>
     </xsl:for-each>
   </xsl:template>
 
   <xsl:template mode="results" match="a:results">
-    <p>
-      <xsl:apply-templates select="a:device">
-	<xsl:sort select="a:plot/@a:name"/>
-      </xsl:apply-templates>
-    </p>
-    <xsl:for-each select="a:device">
-      <img src="{../@a:httpPath}{a:plot/@a:name}.png"/>
-    </xsl:for-each>
+    <table class="layout">
+      <xsl:apply-templates mode="results" select="a:device"/>
+    </table>
   </xsl:template>
 
-  <xsl:template match="a:device">
-    <a href="{a:plot/@a:url}" class="popup" target="_blank"><xsl:value-of select="a:plot/@a:name"/></a><xsl:if test="position()!=last()"> | </xsl:if>
+  <xsl:template mode="application" match="a:device">
+    <a href="{../@a:httpPath}{../@a:file}" class="{@a:status}" target="_blank"><xsl:value-of select="a:plot/@a:name"/></a><xsl:if test="position()!=last()"> | </xsl:if>
+  </xsl:template>
+
+  <xsl:template mode="results" match="a:device">
+    <tr>
+      <td>
+	<a name="{a:plot/@a:name}"/>
+	<img src="{../@a:httpPath}{a:plot/@a:name}.png"/>
+      </td>
+      <table>
+	<xsl:apply-templates mode="header" select="a:channel[@a:number=1]"/>
+	<xsl:apply-templates mode="data" select="a:channel"/>
+      </table>
+    </tr>
+  </xsl:template>
+
+  <xsl:template mode="header" match="a:channel">
+      <tr>
+	<th>channel</th>
+	<xsl:for-each select="a:parameter">
+	  <th><xsl:value-of select="@a:name"/></th>
+	</xsl:for-each>
+      </tr>
+  </xsl:template>
+
+  <xsl:template mode="data" match="a:channel">
+      <tr>
+	<th><xsl:value-of select="@a:number"/></th>
+	<xsl:for-each select="a:parameter">
+	  <td style="width: 25x;"><xsl:value-of select="@a:value"/>&#177;<xsl:value-of select="@a:error"/></td>
+	</xsl:for-each>
+      </tr>
   </xsl:template>
 
   <xsl:template match="a:configuration">
