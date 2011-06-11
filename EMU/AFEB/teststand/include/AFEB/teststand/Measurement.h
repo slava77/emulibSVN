@@ -41,6 +41,7 @@ namespace AFEB { namespace teststand {
       int getAmplitudeMax () const { return amplitudeMax_; }
       int getAmplitudeStep() const { return amplitudeStep_;}
       int getNPulses() const { return nPulses_; }
+      bool isExecuting() const { return isExecuting_; }
       bool execute();
       void abort() const { isToKeepRunning_ = false; }
 
@@ -49,8 +50,9 @@ namespace AFEB { namespace teststand {
       string name_;
       string type_;
       Type_t type_t_;
-      string resultDir_;
+      string resultDir_; ///< The full path to the directory to save the results in.
       mutable bool isToKeepRunning_;
+      bool isExecuting_; ///< true if this measurement is currently being taken.
       map<TestedDevice*,Results*> results_;
 
       int amplitudeMin_;

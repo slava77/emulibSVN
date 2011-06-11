@@ -36,7 +36,8 @@ AFEB::teststand::Measurement::Measurement( const string name, const string type,
   name_( name ),
   type_( type ),
   resultDir_( resultDir ),
-  isToKeepRunning_( true )
+  isToKeepRunning_( true ),
+  isExecuting_( false )
 {
   bool isValidType = false;
   for ( int i=0; i<nTypes && !isValidType; ++i ){
@@ -131,15 +132,20 @@ int AFEB::teststand::Measurement::getTDCSlot() const {
 }
 
 bool AFEB::teststand::Measurement::execute(){
-  if ( ! isToKeepRunning_ ) return false;
+  if ( ! isToKeepRunning_ ){
+    isExecuting_ = false;
+    return false;
+  }
+  bool keepRunning = true;
+  isExecuting_ = true;
   switch ( type_t_ ){
   case count_vs_dac:
-    // return countVsDAQ();
-    return dummyResultGenerator();
+    //  keepRunning = countVsDAQ();
+    keepRunning = dummyResultGenerator();
     break;
   case time_vs_dac:
-    // return countVsTime();
-    return dummyResultGenerator();
+    // keepRunning = countVsTime();
+    keepRunning = dummyResultGenerator();
     break;
   default:
     stringstream ss;
@@ -147,7 +153,8 @@ bool AFEB::teststand::Measurement::execute(){
     XCEPT_RAISE( xcept::Exception, ss.str() );
     break;
   }
-  return false;
+  isExecuting_ = false;
+  return keepRunning;
 }
 
 bool AFEB::teststand::Measurement::countVsDAQ(){

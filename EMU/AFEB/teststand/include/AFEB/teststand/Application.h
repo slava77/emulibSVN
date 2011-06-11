@@ -114,7 +114,11 @@ private:
 
   vector<pair<string,string> > loadConfigurationFileList();
 
-  void initializeParameters();
+  string createXMLWebPageSkeleton();
+
+  string createResultsXML();
+
+  void copyStyleFilesToResultsDir();
 
   string setProcessingInstruction( const string XML, const string xslURI )
     throw( xcept::Exception );
@@ -125,13 +129,13 @@ private:
   static const string applicationNamespace_; ///< the namespace of this application
   string processingInstructionSetter_; ///< XSLT to set the processing instruction for XML
   string configurationXML_; ///< XML of the configuration
-  string xmlWebPageSkeleton_; ///< skeleton of the XML web page
   toolbox::fsm::FiniteStateMachine fsm_; ///< finite state machine
   AFEB::teststand::Configuration* configuration_;  ///< configuration
   int currentMeasurementIndex_; ///< the index of the measurement being performed
   toolbox::task::WorkLoop *measurementWorkLoop_;
   toolbox::task::ActionSignature *measurementSignature_;
-  string resultDir_;
+  string resultDir_; ///< Result directory relative to the HTML root.
+  string resultDirFullPath_; ///< The result directory given as full path.
 };
 
 }}

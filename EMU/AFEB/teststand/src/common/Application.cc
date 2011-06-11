@@ -9,6 +9,7 @@
 #include "xcept/tools.h"
 #include "xoap/domutils.h" // for XMLCh2String
 #include "toolbox/task/WorkLoopFactory.h"
+#include "toolbox/net/URL.h"
 
 #include "xercesc/util/XMLString.hpp"
 #include "xercesc/util/PlatformUtils.hpp"
@@ -91,9 +92,11 @@ void AFEB::teststand::Application::configureAction(toolbox::Event::Reference e){
   delete configuration_;
   currentMeasurementIndex_ = -1;
   resultDir_ = resultBaseDir_.toString() + "/" + AFEB::teststand::utils::getDateTime();
-  AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + string( getenv(HTML_ROOT_.toString().c_str()) ) + "/" + resultDir_ );
-  configuration_ = new Configuration( configurationXML_, string( getenv(HTML_ROOT_.toString().c_str()) ) + "/" + resultDir_ );
-  cout << configuration_->getCrate() << endl;
+  resultDirFullPath_ = string( getenv(HTML_ROOT_.toString().c_str()) ) + "/" + resultDir_;
+  AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + resultDirFullPath_ );
+  configuration_ = new Configuration( configurationXML_, resultDirFullPath_ );
+  // cout << configuration_->getCrate() << endl;
+
 }
 
 void AFEB::teststand::Application::enableAction(toolbox::Event::Reference e){ // TODO: in separate thread, with mutex
@@ -122,6 +125,10 @@ bool AFEB::teststand::Application::measurementInWorkLoop(toolbox::task::WorkLoop
     cout << **m;
     if ( ! (*m)->execute() ) return false; // Measurement::execute returns false if aborted.
   }
+
+  // Create (and save) results' XML file
+  createResultsXML();
+
   fsm_.reset(); // To go back to initial state (Halted) without triggering haltAction.
   return false;
 }
@@ -169,7 +176,7 @@ void AFEB::teststand::Application::exportParams(){
 
 }
 
-void AFEB::teststand::Application::initializeParameters(){
+string AFEB::teststand::Application::createXMLWebPageSkeleton(){
   loadConfigurationTemplate();
 
   vector<pair<string,string> > configList = loadConfigurationFileList();
@@ -182,56 +189,106 @@ void AFEB::teststand::Application::initializeParameters(){
   }
   
   ss << "<?xml-stylesheet type=\"text/xml\" href=\"/AFEB/teststand/html/htmlRenderer_XSLT.xml\"?>" << endl 
-     << "<root>" << endl
-     << "  <a:application xmlns:a=\"" << applicationNamespace_ 
-     << "\" a:urlPath=\"" << applicationURLPath_ 
-     << "\" a:state=\"" << fsm_.getStateName( fsm_.getCurrentState() )
-     << "\" a:dateTime=\"" << AFEB::teststand::utils::getDateTime()
-     << "\">"
-     << "    <a:results>" << endl;
-  int measurementCount = 0;
-  if ( configuration_ != NULL ){
-    vector<Measurement*> measurements = configuration_->getMeasurements();
-    for ( vector<Measurement*>::const_iterator m = measurements.begin(); m != measurements.end(); ++m ){
-      map<TestedDevice*,Results*> results = (*m)->getResults();
-      for ( map<TestedDevice*,Results*>::const_iterator r = results.begin(); r != results.end(); ++r ){
-	ss << "      <a:device a:id=\"" << r->first->getId() 
-	   <<              "\" a:measurement=\"" << (*m)->getType() 
-	   <<              "\" a:current=\"" << ( measurementCount == currentMeasurementIndex_ ? "yes" : "no" ) 
-	   <<              "\">" << endl
-	   << "        <a:plot a:name=\"" << r->second->getFileName() 
-	   <<              "\" a:url=\"" << resultDir_ << "/" << r->second->getFileName() << ".png"
-	   <<              "\"/>" << endl;
-	// Loop over channels and fit results
-	for ( int iChannel = 1; iChannel <= r->first->getNChannels(); ++iChannel ){
-	  ss << "        <a:channel a:number=\"" <<  iChannel << "\">";
-	  map<string,pair<double,double> > parameters = r->second->getParameters( iChannel );
-	  for ( map<string,pair<double,double> >::const_iterator p = parameters.begin(); p != parameters.end(); ++p ){ 
-	    ss << "<a:parameter a:name=\""  << p->first
-	       <<           "\" a:value=\"" << p->second.first
-	       <<           "\" a:error=\"" << p->second.second
-	       <<           "\"/>";
-	  }
-	  ss << "</a:channel>" << endl;
-	} // for ( int iChannel = 1; iChannel <= r->first->getNChannels(); ++iChannel )
-	ss << "      </a:device>" << endl;
-      } // for ( map<TestedDevice*,Results*>::const_iterator r = results.begin(); r != results.end(); ++r )
-      ++measurementCount;
-    } // for ( vector<Measurement*>::const_iterator m = measurements.begin(); m != measurements.end(); ++m )
-  } // if ( configuration_ != NULL )
-  ss << "    </a:results>" << endl;
+     << "<root htmlDir=\"/AFEB/teststand/html/\">" << endl;
+
+  // Application info
+  ss << "  <a:application xmlns:a=\"" << applicationNamespace_ 
+     <<               "\" a:urlPath=\"" << applicationURLPath_ 
+     <<               "\" a:state=\"" << fsm_.getStateName( fsm_.getCurrentState() )
+     <<               "\" a:dateTime=\"" << AFEB::teststand::utils::getDateTime()
+     <<               "\">" << endl;
+
+  // Configuration files
   ss << "    <a:configuration>" << endl;
   for ( vector<pair<string,string> >::const_iterator c=configList.begin(); c!=configList.end(); ++c ){
     ss << "      <a:file a:time=\"" << c->first << "\" a:name=\"" << c->second << "\"/>" << endl;
   }
   ss << "    </a:configuration>" << endl
-     << "  </a:application>" << endl
-     << "</root>";
+     << "  </a:application>" << endl;
 
-  xmlWebPageSkeleton_ = ss.str();
+  // Results
+  toolbox::net::URL url( getApplicationDescriptor()->getContextDescriptor()->getURL() );
+  ss << "  <a:results xmlns:a=\"" << applicationNamespace_ 
+     <<           "\" a:host=\"" << url.getHost()
+     <<           "\" a:systemPath=\"" << resultDirFullPath_
+     <<           "\" a:httpPath=\"" << resultDir_ << "/"
+     <<           "\" a:file=\"" << "results.xml"
+     <<           "\">" << endl;
+  if ( configuration_ != NULL ) ss << configuration_->resultsXML();
+  ss << "  </a:results>" << endl;
 
-  cout << xmlWebPageSkeleton_ << endl;
+  ss << "</root>";
+
+  return ss.str();
 }
+
+string AFEB::teststand::Application::createResultsXML(){
+  stringstream ss;
+
+  //
+  // First create a file that can be opened directly in a browser.
+  //
+
+  // The XSL file should be in the same directory as the XML file.
+  ss << "<?xml-stylesheet type=\"text/xml\" href=\"htmlRenderer_XSLT.xml\"?>" << endl 
+     << "<root htmlDir=\"\">" << endl;
+
+  toolbox::net::URL url( getApplicationDescriptor()->getContextDescriptor()->getURL() );
+  ss << "  <a:results xmlns:a=\"" << applicationNamespace_ 
+     <<           "\" a:host=\"" << url.getHost()
+     <<           "\" a:systemPath=\"" << resultDirFullPath_
+     <<           "\" a:httpPath=\"" // Everything is in the current directory.
+     <<           "\" a:file=\"" << "results.xml"
+     <<           "\">" << endl;
+  if ( configuration_ != NULL ) ss << configuration_->resultsXML();
+  ss << "  </a:results>" << endl;
+
+  ss << "</root>";
+
+  // Append the configuration to it:
+  string resultsXML = AFEB::teststand::utils::appendToSelectedNode( ss.str(), "/root", configurationXML_ );
+
+  // Save it:
+  AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + resultDirFullPath_ );
+  AFEB::teststand::utils::writeFile( resultDirFullPath_ + "/results.xml", resultsXML );
+  copyStyleFilesToResultsDir();
+
+
+  //
+  // Now create it as a web page to be accessed via the web server
+  //
+
+  ss.str("");
+  ss << "<?xml-stylesheet type=\"text/xml\" href=\"/AFEB/teststand/html/htmlRenderer_XSLT.xml\"?>" << endl 
+     << "<root htmlDir=\"/AFEB/teststand/html/\">" << endl;
+
+  ss << "  <a:results xmlns:a=\"" << applicationNamespace_ 
+     <<           "\" a:host=\"" << url.getHost()
+     <<           "\" a:systemPath=\"" << resultDirFullPath_
+     <<           "\" a:httpPath=\"" << resultDir_ << "/"
+     <<           "\" a:file=\"" << "results.xml"
+     <<           "\">" << endl;
+  if ( configuration_ != NULL ) ss << configuration_->resultsXML();
+  ss << "  </a:results>" << endl;
+
+  ss << "</root>";
+
+  // Append the configuration to it:
+  return AFEB::teststand::utils::appendToSelectedNode( ss.str(), "/root", configurationXML_ );
+}
+
+void AFEB::teststand::Application::copyStyleFilesToResultsDir(){
+  stringstream command;
+  if ( getenv( HTML_ROOT_.toString().c_str() ) != NULL ){
+    string dir( getenv( HTML_ROOT_.toString().c_str() ) );
+    command << "cp "
+	    << dir << "/AFEB/teststand/html/*_XSLT.xml "
+	    << dir << "/AFEB/teststand/html/*.css "
+	    << resultDirFullPath_;
+    AFEB::teststand::utils::execShellCommand( command.str() );
+  }
+}
+
 
 void AFEB::teststand::Application::loadConfigurationTemplate(){
 
@@ -293,17 +350,12 @@ AFEB::teststand::Application::loadConfigurationFileList(){
 
 void AFEB::teststand::Application::defaultWebPage(xgi::Input *in, xgi::Output *out)
   throw (xgi::exception::Exception){
-
-  initializeParameters();
-
-  *out << AFEB::teststand::utils::appendToSelectedNode( xmlWebPageSkeleton_, "/root", configurationXML_ );
-
+  string XMLWebPageSkeleton( createXMLWebPageSkeleton() );
+  *out << AFEB::teststand::utils::appendToSelectedNode( XMLWebPageSkeleton, "/root", configurationXML_ );
 }
 
 void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *out)
   throw (xgi::exception::Exception){
-
-  initializeParameters();
 
   cgicc::Cgicc cgi( in );
   std::vector<cgicc::FormEntry> fev = cgi.getElements();
@@ -311,7 +363,6 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
   //
   // Find out what to do:
   //
-
 
   // Manipulate configuration?
   map<string,string> action;
@@ -384,9 +435,7 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
 
 void AFEB::teststand::Application::resultsWebPage(xgi::Input *in, xgi::Output *out)
   throw (xgi::exception::Exception){
-  initializeParameters();
-
-  *out << AFEB::teststand::utils::appendToSelectedNode( xmlWebPageSkeleton_, "/root", configurationXML_ );
+  *out << createResultsXML();
 }
 
 
@@ -401,7 +450,7 @@ string AFEB::teststand::Application::setProcessingInstruction( const string XML,
     if ( processingInstructionSetter_.size() == 0 ){
       string xsltName;
       if ( getenv(HTML_ROOT_.toString().c_str()) != NULL ){
-	xsltName = string( getenv(HTML_ROOT_.toString().c_str()) ) + "/AFEB/teststand/xml/processingInstructionSetter.xsl";
+	xsltName = string( getenv( HTML_ROOT_.toString().c_str() ) ) + "/AFEB/teststand/xml/processingInstructionSetter.xsl";
 	try{
 	  processingInstructionSetter_ = AFEB::teststand::utils::readFile( xsltName );
 	}

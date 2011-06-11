@@ -10,6 +10,7 @@
 #include "xercesc/framework/LocalFileInputSource.hpp"
 #include "xercesc/framework/MemBufInputSource.hpp"
 #include "xercesc/parsers/XercesDOMParser.hpp"
+#include "xercesc/sax/SAXParseException.hpp"
 
 #include "xalanc/PlatformSupport/XSLException.hpp"
 #include "xalanc/XPath/XPathEvaluator.hpp"
@@ -118,6 +119,7 @@ string AFEB::teststand::utils::appendToSelectedNode( const string XML, const str
   XALAN_USING_XALAN(XercesParserLiaison)
   XALAN_USING_XALAN(XalanElement)
   XALAN_USING_XERCES(DOMNode)
+  XALAN_USING_XERCES(SAXParseException)
 
   XALAN_USING_XALAN(XalanDOMException)
   XALAN_USING_XALAN(XSLException)
@@ -139,10 +141,10 @@ string AFEB::teststand::utils::appendToSelectedNode( const string XML, const str
     // Create an input source that represents a local file...
     // const XalanDOMString    theFileName(XML.c_str());
     // const LocalFileInputSource      theInputSource(theFileName.c_str());
-    const char* const id = "dummy";
+    const char* const id = "appendToSelectedNode";
     MemBufInputSource theInputSource( (const XMLByte*) XML.c_str(), (unsigned int) XML.size(), id );
     XalanDocument* xalan_document = theLiaison.parseXMLStream( theInputSource );
-    // cout << "Original XML from Xalan" << endl << AFEB::teststand::utils::serialize( xalan_document ) << endl;
+    //cout << "Original XML from Xalan" << endl << AFEB::teststand::utils::serialize( xalan_document ) << endl;
     XercesDocumentWrapper* docWrapper = theLiaison.mapDocumentToWrapper(xalan_document);
     
     XalanDocumentPrefixResolver thePrefixResolver( docWrapper );
@@ -181,7 +183,7 @@ string AFEB::teststand::utils::appendToSelectedNode( const string XML, const str
 	  ;
 
 	// Parse the XML fragment into a DOM
-	MemBufInputSource xmlFragmentMBIS( (XMLByte*)xmlFragment.c_str(), xmlFragment.size(), "dummyId" );
+	MemBufInputSource xmlFragmentMBIS( (XMLByte*)xmlFragment.c_str(), xmlFragment.size(), "appendToSelectedNodeId" );
 	XercesDOMParser parser;
 	parser.parse( xmlFragmentMBIS );
 	DOMElement *xmlFragmentDOM = parser.getDocument()->getDocumentElement();	
@@ -198,6 +200,10 @@ string AFEB::teststand::utils::appendToSelectedNode( const string XML, const str
 
     XMLPlatformUtils::Terminate();
     XPathEvaluator::terminate();
+  }
+  catch( SAXParseException& e ){
+    stringstream ss; ss << "Failed to append to selected node: " << xoap::XMLCh2String( e.getMessage() );
+    XCEPT_RAISE( xcept::Exception, ss.str() );
   }
   catch( XMLException& e ){
     stringstream ss; ss << "Failed to append to selected node: " << xoap::XMLCh2String( e.getMessage() );
@@ -246,6 +252,7 @@ string AFEB::teststand::utils::setSelectedNodeValue( const string XML, const str
   XALAN_USING_XALAN(XercesParserLiaison)
   XALAN_USING_XALAN(XalanElement)
   XALAN_USING_XERCES(DOMNode)
+  XALAN_USING_XERCES(SAXParseException)
 
   XALAN_USING_XALAN(XalanDOMException)
   XALAN_USING_XALAN(XSLException)
@@ -267,7 +274,7 @@ string AFEB::teststand::utils::setSelectedNodeValue( const string XML, const str
     // Create an input source that represents a local file...
     // const XalanDOMString    theFileName(XML.c_str());
     // const LocalFileInputSource      theInputSource(theFileName.c_str());
-    const char* const id = "dummy";
+    const char* const id = "setSelectedNodeValue";
     MemBufInputSource theInputSource( (const XMLByte*) XML.c_str(), (unsigned int) XML.size(), id );
     XalanDocument* xalan_document = theLiaison.parseXMLStream( theInputSource );
     
@@ -308,6 +315,10 @@ string AFEB::teststand::utils::setSelectedNodeValue( const string XML, const str
 
     XMLPlatformUtils::Terminate();
     XPathEvaluator::terminate();
+  }
+  catch( SAXParseException& e ){
+    stringstream ss; ss << "Failed to set node value: " << xoap::XMLCh2String( e.getMessage() );
+    XCEPT_RAISE( xcept::Exception, ss.str() );
   }
   catch( XMLException& e ){
     stringstream ss; ss << "Failed to set node value: " << xoap::XMLCh2String( e.getMessage() );
@@ -356,6 +367,7 @@ string AFEB::teststand::utils::setSelectedNodesValues( const string XML, const m
   XALAN_USING_XALAN(XercesParserLiaison)
   XALAN_USING_XALAN(XalanElement)
   XALAN_USING_XERCES(DOMNode)
+  XALAN_USING_XERCES(SAXParseException)
 
   XALAN_USING_XALAN(XalanDOMException)
   XALAN_USING_XALAN(XSLException)
@@ -377,7 +389,7 @@ string AFEB::teststand::utils::setSelectedNodesValues( const string XML, const m
     // Create an input source that represents a local file...
     // const XalanDOMString    theFileName(XML.c_str());
     // const LocalFileInputSource      theInputSource(theFileName.c_str());
-    const char* const id = "dummy";
+    const char* const id = "setSelectedNodesValues";
     MemBufInputSource theInputSource( (const XMLByte*) XML.c_str(), (unsigned int) XML.size(), id );
     XalanDocument* xalan_document = theLiaison.parseXMLStream( theInputSource );
     
@@ -422,31 +434,35 @@ string AFEB::teststand::utils::setSelectedNodesValues( const string XML, const m
     XPathEvaluator::terminate();
 
   }
+  catch( SAXParseException& e ){
+    stringstream ss; ss << "Failed to set nodes' values: " << xoap::XMLCh2String( e.getMessage() );
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
   catch( XMLException& e ){
-    stringstream ss; ss << "Failed to set node value: " << xoap::XMLCh2String( e.getMessage() );
+    stringstream ss; ss << "Failed to set nodes' values: " << xoap::XMLCh2String( e.getMessage() );
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
   catch( DOMException& e ){
-    stringstream ss; ss << "Failed to set node value: " << xoap::XMLCh2String( e.getMessage() );
+    stringstream ss; ss << "Failed to set nodes' values: " << xoap::XMLCh2String( e.getMessage() );
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
   catch( XalanDOMException& e ){
-    stringstream ss; ss << "Failed to set node value: exception code " << e.getExceptionCode();
+    stringstream ss; ss << "Failed to set nodes' values: exception code " << e.getExceptionCode();
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
   catch( XSLException& e ){
-    stringstream ss; ss << "Failed to set node value: XSLException type: " << XalanDOMString( e.getType() ) << ", message: " << e.getMessage();
+    stringstream ss; ss << "Failed to set nodes' values: XSLException type: " << XalanDOMString( e.getType() ) << ", message: " << e.getMessage();
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
   catch( xcept::Exception& e ){
-    XCEPT_RETHROW( xcept::Exception, "Failed to set node value: ", e );
+    XCEPT_RETHROW( xcept::Exception, "Failed to set nodes' values: ", e );
   }
   catch( std::exception& e ){
-    stringstream ss; ss << "Failed to set node value: " << e.what();
+    stringstream ss; ss << "Failed to set nodes' values: " << e.what();
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
   catch(...){
-    XCEPT_RAISE( xcept::Exception, "Failed to set node value: Unknown exception." );
+    XCEPT_RAISE( xcept::Exception, "Failed to set nodes' values: Unknown exception." );
   }
   
   return modifiedXML;
@@ -489,7 +505,7 @@ string AFEB::teststand::utils::getSelectedNodeValue( const string& XML, const st
 	// Hook the two together...
 	theDOMSupport.setParserLiaison(&theLiaison);
 
-	const char* const id = "dummy";
+	const char* const id = "getSelectedNodeValue";
 	MemBufInputSource theInputSource( (const XMLByte*) XML.c_str(), (unsigned int) XML.size(), id );
 
 	// Parse the document...
@@ -570,7 +586,7 @@ vector< pair<string,string> > AFEB::teststand::utils::getSelectedNodesValues( co
     XalanSourceTreeParserLiaison theLiaison( theDOMSupport );
     theDOMSupport.setParserLiaison(&theLiaison);
 
-    const char* const id = "dummy";
+    const char* const id = "getSelectedNodesValues";
     MemBufInputSource theInputSource( (const XMLByte*) XML.c_str(), (unsigned int) XML.size(), id );
     XALAN_USING_XALAN(XalanDocument)
     XalanDocument* document = theLiaison.parseXMLStream( theInputSource );

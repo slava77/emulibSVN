@@ -3,6 +3,7 @@
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>
 #include <xercesc/util/XMLException.hpp>
+#include "xercesc/sax/SAXParseException.hpp"
 
 #include <xalanc/XalanTransformer/XalanTransformer.hpp>
 #include <xalanc/PlatformSupport/XSLException.hpp>
@@ -261,6 +262,7 @@ string AFEB::teststand::utils::serializeSelectedNode( const string& XML, const s
   XALAN_USING_XALAN(XercesParserLiaison)
   XALAN_USING_XERCES(MemBufInputSource)
   XALAN_USING_XERCES(XMLException)
+  XALAN_USING_XERCES(SAXParseException)
   XALAN_USING_XALAN(XalanDOMException)
   XALAN_USING_XALAN(XSLException)
 
@@ -283,6 +285,10 @@ string AFEB::teststand::utils::serializeSelectedNode( const string& XML, const s
     serializedNode = serialize( getSingleNode( document, document, xPath ) );
 
     XMLPlatformUtils::Terminate();
+  }
+  catch( SAXParseException& e ){
+    stringstream ss; ss << "Failed to serialize selected node: " << xoap::XMLCh2String( e.getMessage() );
+    XCEPT_RAISE( xcept::Exception, ss.str() );
   }
   catch( XMLException& e ){
     stringstream ss; ss << "Failed to serialize selected node: " << xoap::XMLCh2String( e.getMessage() );

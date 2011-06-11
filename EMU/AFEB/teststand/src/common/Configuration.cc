@@ -12,6 +12,8 @@
 
 #include "xcept/Exception.h"
 
+#include <iomanip>
+
 using namespace std;
 using namespace AFEB::teststand;
 
@@ -167,4 +169,33 @@ Measurement* AFEB::teststand::Configuration::findMeasurement( const string type,
     }
   }
   return NULL;
+}
+
+string AFEB::teststand::Configuration::resultsXML(){
+  stringstream ss;
+  for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m ){
+    map<TestedDevice*,Results*> results = (*m)->getResults();
+    for ( map<TestedDevice*,Results*>::const_iterator r = results.begin(); r != results.end(); ++r ){
+      ss << "      <a:device a:id=\"" << r->first->getId() 
+	 <<              "\" a:measurement=\"" << (*m)->getType() 
+	 <<              "\" a:running=\"" << ( (*m)->isExecuting() ? "yes" : "no" ) 
+	 <<              "\">" << endl
+	 << "        <a:plot a:name=\"" << r->second->getFileName()
+	 <<              "\"/>" << endl;
+      // Loop over channels and fit results
+      for ( int iChannel = 1; iChannel <= r->first->getNChannels(); ++iChannel ){
+	ss << "        <a:channel a:number=\"" <<  iChannel << "\">";
+	map<string,pair<double,double> > parameters = r->second->getParameters( iChannel );
+	for ( map<string,pair<double,double> >::const_iterator p = parameters.begin(); p != parameters.end(); ++p ){ 
+	  ss << "<a:parameter a:name=\""  << p->first
+	     <<           "\" a:value=\"" << showpos << showpoint << setw(10) << setprecision(5) << p->second.first
+	     <<           "\" a:error=\"" << showpos << showpoint << setw(10) << setprecision(5) << p->second.second
+	     <<           "\"/>" << noshowpos << noshowpoint;
+	}
+	ss << "</a:channel>" << endl;
+      } // for ( int iChannel = 1; iChannel <= r->first->getNChannels(); ++iChannel )
+      ss << "      </a:device>" << endl;
+    } // for ( map<TestedDevice*,Results*>::const_iterator r = results.begin(); r != results.end(); ++r )
+  } // for ( vector<Measurement*>::const_iterator m = measurements.begin(); m != measurements.end(); ++m )
+  return ss.str();
 }

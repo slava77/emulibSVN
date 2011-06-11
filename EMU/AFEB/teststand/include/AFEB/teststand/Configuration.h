@@ -16,9 +16,11 @@ namespace AFEB { namespace teststand {
       ~Configuration();
       const Crate* getCrate() const { return crate_; }
       const vector<Measurement*>& getMeasurements() const { return measurements_; }
+      string getResultDir() const { return resultDir_; }
+      string resultsXML();
     private:
       string xml_; ///< The configuration XML.
-      string resultDir_; ///< The directory to save the results in.
+      string resultDir_; ///< The full path to the directory to save the results in.
       Crate* crate_; ///< The crate setup. It's adopted by all measurements of this configuration.
       vector<TestedDevice*> testedDevices_; ///< The tested devices. It's adopted by all measurements of this configuration.
       vector<Measurement*> measurements_; ///< The selected measurements of this configuration.

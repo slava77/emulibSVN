@@ -18,14 +18,15 @@
 	  <meta http-equiv="refresh" content="3" />
 	</xsl:if>
         <title>Editing source xml of <xsl:value-of select="@c:dateTime"/></title>
-	<link rel="stylesheet" type="text/css" href="/AFEB/teststand/html/teststand.css"/>
+	<link rel="stylesheet" type="text/css" href="{@htmlDir}teststand.css"/>
       </head>
       <body>
-        <form action="{//a:application/@a:urlPath}/control" method="post">
-	  <xsl:apply-templates select="//a:application"/>
+        <form action="{a:application/@a:urlPath}/control" method="post">
+	  <xsl:apply-templates select="a:application"/>
+	  <xsl:apply-templates mode="results" select="a:results[not(../a:application)]"/>
 	  <fieldset>
 	    <legend>Configuration</legend>
-	    <xsl:apply-templates select="//c:configuration"/>
+	    <xsl:apply-templates select="c:configuration"/>
 	  </fieldset>
 	</form>
       </body>
