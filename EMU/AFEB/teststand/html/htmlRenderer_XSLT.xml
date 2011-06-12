@@ -11,6 +11,13 @@
 
   <xsl:output method="html" indent="yes"/>
 
+  <xsl:param name="CONFIGMODE">
+    <xsl:choose>
+      <xsl:when test="/root/a:application/@a:state='Halted'">control</xsl:when>
+      <xsl:otherwise>display</xsl:otherwise>
+    </xsl:choose>
+  </xsl:param>
+
   <xsl:template match="/root">
     <html xmlns="http://www.w3.org/1999/xhtml">
       <head>

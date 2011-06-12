@@ -211,7 +211,7 @@ string AFEB::teststand::Application::createXMLWebPageSkeleton(){
   ss << "  <a:results xmlns:a=\"" << applicationNamespace_ 
      <<           "\" a:host=\"" << url.getHost()
      <<           "\" a:systemPath=\"" << resultDirFullPath_
-     <<           "\" a:httpPath=\"" << resultDir_ << "/"
+     <<           "\" a:urlPath=\"" << resultDir_ << "/"
      <<           "\" a:file=\"" << "results.xml"
      <<           "\">" << endl;
   if ( configuration_ != NULL ) ss << configuration_->resultsXML();
@@ -237,7 +237,7 @@ string AFEB::teststand::Application::createResultsXML(){
   ss << "  <a:results xmlns:a=\"" << applicationNamespace_ 
      <<           "\" a:host=\"" << url.getHost()
      <<           "\" a:systemPath=\"" << resultDirFullPath_
-     <<           "\" a:httpPath=\"" // Everything is in the current directory.
+     <<           "\" a:urlPath=\"" // Everything is in the current directory.
      <<           "\" a:file=\"" << "results.xml"
      <<           "\">" << endl;
   if ( configuration_ != NULL ) ss << configuration_->resultsXML();
@@ -265,7 +265,7 @@ string AFEB::teststand::Application::createResultsXML(){
   ss << "  <a:results xmlns:a=\"" << applicationNamespace_ 
      <<           "\" a:host=\"" << url.getHost()
      <<           "\" a:systemPath=\"" << resultDirFullPath_
-     <<           "\" a:httpPath=\"" << resultDir_ << "/"
+     <<           "\" a:urlPath=\"" << resultDir_ << "/"
      <<           "\" a:file=\"" << "results.xml"
      <<           "\">" << endl;
   if ( configuration_ != NULL ) ss << configuration_->resultsXML();

@@ -54,7 +54,7 @@
       </xsl:apply-templates>
     </p>
     <xsl:for-each select="a:device[@a:status='running']">
-      <img src="{../@a:httpPath}{a:plot/@a:name}.png"/>
+      <img src="{../@a:urlPath}{a:plot/@a:name}.png"/>
     </xsl:for-each>
   </xsl:template>
 
@@ -65,14 +65,14 @@
   </xsl:template>
 
   <xsl:template mode="application" match="a:device">
-    <a href="{../@a:httpPath}{../@a:file}" class="{@a:status}" target="_blank"><xsl:value-of select="a:plot/@a:name"/></a><xsl:if test="position()!=last()"> | </xsl:if>
+    <a href="{/root/a:application/@a:urlPath}/results" class="{@a:status}" target="_blank"><xsl:value-of select="a:plot/@a:name"/></a><xsl:if test="position()!=last()"> | </xsl:if>
   </xsl:template>
 
   <xsl:template mode="results" match="a:device">
     <tr>
       <td>
 	<a name="{a:plot/@a:name}"/>
-	<img src="{../@a:httpPath}{a:plot/@a:name}.png"/>
+	<img src="{../@a:urlPath}{a:plot/@a:name}.png"/>
       </td>
       <table>
 	<xsl:apply-templates mode="header" select="a:channel[@a:number=1]"/>
