@@ -17,7 +17,7 @@ This package contains functions to lookup parameters of various devices.
   * @param pcrate peripheral crate device parameters (must have these parameters: side, station, crateNum)
   */
 dyn_mapping emuDev_getPCrateChambers(mapping pcrate, dyn_string &exceptionInfo) {
-  emu_checkDeviceParams("emuDev_getPCrateChambers", "PCrate", pcrate, makeDynString("side", "station", "crateNum"), exceptionInfo);
+  emuDev_checkDeviceParams("emuDev_getPCrateChambers", "PCrate", pcrate, makeDynString("side", "station", "crateNum"), exceptionInfo);
   if (emu_checkException(exceptionInfo)) { return; }
   
   dyn_mapping ret;
