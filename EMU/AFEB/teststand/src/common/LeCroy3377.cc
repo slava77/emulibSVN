@@ -224,6 +224,8 @@ void AFEB::teststand::LeCroy3377::readBlock( const Subaddress_t subaddress,
 int AFEB::teststand::LeCroy3377::RegRd( TdcRegister_t reg )
   // { return read ( static_cast<subadd>(reg), F1 ); }
 {
+  cout << "***In AFEB::teststand::LeCroy3377::RegRd*** *crate_" << endl << *crate_ << endl; 
+  cout << "***In AFEB::teststand::LeCroy3377::RegRd*** *crate_->getCrateController()" << endl << crate_->getCrateController()->getName() << endl; 
   return crate_->getCrateController()->read( static_cast<Subaddress_t>(reg), F1, (Station_t)slot_ );
 }
 

@@ -41,15 +41,16 @@ AFEB::teststand::Application::Application(xdaq::ApplicationStub *s)
   createFSM();
   bindWebInterface();
   exportParams();
-  //AFEB::teststand::utils::SCSI_t scsi = AFEB::teststand::utils::getSCSI( "Jorway", "73A" );
-  AFEB::teststand::utils::SCSI_t scsi = AFEB::teststand::utils::getSCSI( "PIONEER", "BD-ROM" );
-  cout << "SCSI device vendor: " << scsi.vendor 
-       << " model: " << scsi.model 
-       << " host: "  << scsi.host 
-       << " channel: "<< scsi.channel
-       << " id: " << scsi.id
-       << " lun: " << scsi.lun
-       << endl;
+  AFEB::teststand::utils::SCSI_t scsi = AFEB::teststand::utils::getSCSI( "Jorway", "73A" );
+  //AFEB::teststand::utils::SCSI_t scsi = AFEB::teststand::utils::getSCSI( "PIONEER", "BD-ROM" );
+  LOG4CPLUS_INFO( logger_, 
+		  "Found SCSI device:"            << endl
+		  << " vendor:  " << scsi.vendor  << endl
+		  << " model:   " << scsi.model   << endl
+		  << " host:    " << scsi.host    << endl
+		  << " channel: " << scsi.channel << endl
+		  << " id:      " << scsi.id      << endl
+		  << " lun:     " << scsi.lun );
 
   measurementWorkLoop_ = toolbox::task::getWorkLoopFactory()->getWorkLoop( "AFEB::teststand::Application", "waiting" );
   measurementSignature_  = toolbox::task::bind( this, &AFEB::teststand::Application::measurementInWorkLoop, "measurementInWorkLoop" );
@@ -95,8 +96,7 @@ void AFEB::teststand::Application::configureAction(toolbox::Event::Reference e){
   resultDirFullPath_ = string( getenv(HTML_ROOT_.toString().c_str()) ) + "/" + resultDir_;
   AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + resultDirFullPath_ );
   configuration_ = new Configuration( configurationXML_, resultDirFullPath_ );
-  // cout << configuration_->getCrate() << endl;
-
+  LOG4CPLUS_DEBUG( logger_, "Crate:" << endl << *configuration_->getCrate() );
 }
 
 void AFEB::teststand::Application::enableAction(toolbox::Event::Reference e){ // TODO: in separate thread, with mutex

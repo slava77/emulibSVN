@@ -4,15 +4,17 @@
 
 ostream& AFEB::teststand::operator<<( ostream& os, const AFEB::teststand::Crate& c ){
 
-  os << "Crate number " << c.getNumber() << endl
-     << "      slot  module name         module type" << endl;
+  os << "Crate number " << c.getNumber() << ", controller slot " << c.controllerSlot_ << endl
+     << "      slot  module name         module type         slot from module" << endl;
 
   for ( int i=1; i<=AFEB::teststand::Crate::maxModules_; ++i ){
     const AFEB::teststand::Module* m = c.getModule( i );
     if ( m ){
       os << right << setw(10) << i
 	 << "  "
-	 << left  << setw(20) << m->getName() << m->getType() << endl;
+	 << left  << setw(20) << m->getName() 
+	 << left  << setw(20) << m->getType() 
+	 << right << setw(10) << endl;
     }
   }
 
@@ -45,10 +47,12 @@ int AFEB::teststand::Crate::getNumber() const {
 void AFEB::teststand::Crate::insert( AFEB::teststand::Module* module, int slot ){
   modules_[slot] = module;
   modules_[slot]->setSlot( slot );
+  modules_[slot]->setCrate( this );
 }
 
 void AFEB::teststand::Crate::insertController( AFEB::teststand::CrateController* controller, int slot ){
   modules_[slot] = controller;
   modules_[slot]->setSlot( slot );
+  modules_[slot]->setCrate( this );
   controllerSlot_ = slot;
 }

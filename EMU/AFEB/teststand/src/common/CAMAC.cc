@@ -3,8 +3,8 @@
 #include "ieee_fun_types.h"
 
 void AFEB::teststand::CAMAC::z() const{
-  // We only need the branch and crate for cccz
-  const unsigned int dummy = 0;
+  // We only need the branch and crate for cccz. Pick any valid station and subaddress to make ::cdreg happy.
+  const unsigned int dummy = 1; // an arbitrary valid station and subaddress
   // Encode branch and crate in an external address
   int ext;
   ::cdreg( &ext, branch_, crateNumber_, dummy, dummy );
@@ -12,8 +12,8 @@ void AFEB::teststand::CAMAC::z() const{
 }
 
 void AFEB::teststand::CAMAC::c() const{
-  // We only need the branch and crate for cccz
-  const unsigned int dummy = 0;
+  // We only need the branch and crate for cccc. Pick any valid station and subaddress to make ::cdreg happy.
+  const unsigned int dummy = 1; // an arbitrary valid station and subaddress
   // Encode branch and crate in an external address
   int ext;
   ::cdreg( &ext, branch_, crateNumber_, dummy, dummy );

@@ -36,10 +36,11 @@
       <c:tag c:name="c:module">
 	<c:attr c:name="c:name" c:value="LeCroy3377" c:description="LeCroy Model 3377 32-channel CAMAC TDC"/>
 	<c:attr c:name="c:name" c:value="LE32" c:description="CAMAC 32-channel Converter and 2-channel Pulse and Threashold Generator"/>
-	<c:attr c:name="c:name" c:value="Jorway" c:description="Jorway Model 73A SCSI Bus CAMAC Crate Controller"/>
+	<c:attr c:name="c:name" c:value="Jorway73A" c:description="Jorway Model 73A SCSI Bus CAMAC Crate Controller"/>
 	<c:attr c:name="c:type" c:value="TDC" c:description="Time-to-Digital Converter"/>
 	<c:attr c:name="c:type" c:value="SignalConverter" c:description="LVDS-to-ECL Signal Converter and Threshold Generator"/>
 	<c:attr c:name="c:type" c:value="PulseGenerator" c:description="Adjustable height pulse generator."/>
+	<c:attr c:name="c:type" c:value="CrateController" c:description="Crate controller."/>
       </c:tag>
       <c:tag c:name="c:measurement">
 	<c:attr c:name="c:type" c:value="count_vs_dac" c:description="Efficiency vs pulse amplitude"/>
@@ -76,8 +77,8 @@
       <c:module c:slot="7"  c:name="LeCroy3377" c:type="TDC"/>
       <c:module c:slot="8"  c:name="" c:type=""/>
       <c:module c:slot="9"  c:name="LE32" c:type="SignalConverter"/>
-      <c:module c:slot="10" c:name="Jorway73A" c:type="CrateController"/>
-      <c:module c:slot="11" c:name="" c:type=""/>
+      <c:module c:slot="10" c:name="" c:type=""/>
+      <c:module c:slot="11" c:name="Jorway73A" c:type="CrateController"/>
       <!-- <c:module c:slot="12" c:name="" c:type=""/> -->
       <!-- <c:module c:slot="13" c:name="" c:type=""/> -->
       <!-- <c:module c:slot="14" c:name="" c:type=""/> -->
@@ -94,10 +95,10 @@
     </c:crate>
 
     <c:inputs>
-      <c:testedDevice c:socket="1"  c:id="01" c:tdcSlot="3" c:tdcInput="1" c:signalConverterSlot="5"/>
-      <c:testedDevice c:socket="2"  c:id="02" c:tdcSlot="3" c:tdcInput="2" c:signalConverterSlot="5"/>
-      <c:testedDevice c:socket="3"  c:id="03" c:tdcSlot="7" c:tdcInput="1" c:signalConverterSlot="9"/>
-      <c:testedDevice c:socket="4"  c:id="04" c:tdcSlot="7" c:tdcInput="2" c:signalConverterSlot="9"/>
+      <c:testedDevice c:socket="1"  c:id="01" c:tdcSlot="7" c:tdcInput="1" c:signalConverterSlot="9"/>
+      <c:testedDevice c:socket="2"  c:id="02" c:tdcSlot="7" c:tdcInput="2" c:signalConverterSlot="9"/>
+      <c:testedDevice c:socket="3"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""/>
+      <c:testedDevice c:socket="4"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""/>
       <c:testedDevice c:socket="5"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""/>
       <c:testedDevice c:socket="6"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""/>
       <c:testedDevice c:socket="7"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""/>

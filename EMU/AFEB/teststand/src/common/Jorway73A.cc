@@ -24,5 +24,6 @@ int AFEB::teststand::Jorway73A::getBranch(){
        << ", model: " << model << ")";
     cout << ss.str() << endl; // XCEPT_RAISE( xcept::Exception, ss.str() ); // TODO: throw exception
   }
+  cout << "'branch' for Jorway73A: " << scsi.id + 8 * scsi.host << endl;
   return ( scsi.id + 8 * scsi.host );
 }

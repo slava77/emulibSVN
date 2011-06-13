@@ -141,12 +141,12 @@ bool AFEB::teststand::Measurement::execute(){
   status_t_ = AFEB::teststand::Measurement::running;
   switch ( type_t_ ){
   case count_vs_dac:
-    //  keepRunning = countVsDAQ();
-    keepRunning = dummyResultGenerator();
+    keepRunning = countVsDAQ();
+    // keepRunning = dummyResultGenerator();
     break;
   case time_vs_dac:
-    // keepRunning = countVsTime();
-    keepRunning = dummyResultGenerator();
+    keepRunning = countVsTime();
+    // keepRunning = dummyResultGenerator();
     break;
   default:
     stringstream ss;
@@ -154,6 +154,10 @@ bool AFEB::teststand::Measurement::execute(){
     XCEPT_RAISE( xcept::Exception, ss.str() );
     break;
   }
+
+  // Save everything if it hasn't been aborted:
+  if ( keepRunning ) for ( map<TestedDevice*,Results*>::iterator r = results_.begin(); r != results_.end(); ++r ) r->second->save( resultDir_ );
+
   status_t_ = AFEB::teststand::Measurement::done;
   return keepRunning;
 }
@@ -166,6 +170,8 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
   LE32*  pulseGenerator = static_cast<LE32*>( crate->getModule( pulseGeneratorSlot_                         ) );
   LE32* signalConverter = static_cast<LE32*>( crate->getModule( results_.begin()->first->getSignalConverterSlot() ) );
   const CrateController* controller = crate->getCrateController();
+
+  cout << "***AFEB::teststand::Measurement::countVsDAQ***" << endl << *crate << endl;
 
   // Zero CAMAC:
   controller->z();
@@ -210,6 +216,7 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
 	int tdcInput = tdc->ChannelRd() / nDeviceChannels + 1;
 	Results* results = findResults( tdcInput );
 	if ( results ) results->add( tdc->ChannelRd() % nDeviceChannels + 1, amplitude, tdc->TimeChRd() );
+	// Check whether we've been instructed to abort in the meantime:
 	if ( ! isToKeepRunning_ ) return false;
 	// }
       } // for ( int iShort = 0; iShort < LeCroy3377::nShortsData; ++iShort )
@@ -222,6 +229,7 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
     }
 
   } // for ( int amplitude = amplitudeMin_; amplitude <= amplitudeMax_; amplitude += amplitudeStep_ )
+
   return true;
 }
 
@@ -267,6 +275,7 @@ bool AFEB::teststand::Measurement::dummyResultGenerator(){
 			  rndm.Gaus( 0.5 * ( tdcTimeMax_ + tdcTimeMin_ ), 
 				     0.1 * ( tdcTimeMax_ - tdcTimeMin_ ) ) 
 			  );
+	    // Check whether we've been instructed to abort in the meantime:
 	    if ( ! isToKeepRunning_ ) return false;
 	  }
 	}
@@ -280,9 +289,6 @@ bool AFEB::teststand::Measurement::dummyResultGenerator(){
     }
 
   } // for ( int amplitude = amplitudeMin_; amplitude <= amplitudeMax_; amplitude += amplitudeStep_ )
-
-  map<TestedDevice*,Results*>::iterator r;
-  for ( r = results_.begin(); r != results_.end(); ++r ) r->second->save( resultDir_ );
 
   return true;
 }

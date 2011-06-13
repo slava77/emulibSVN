@@ -19,6 +19,7 @@ namespace AFEB { namespace teststand {
       string getType() const { return type_; }
       const AFEB::teststand::Crate* getCrate() const { return crate_; }
       int getSlot() const { return slot_; }
+      void setCrate( AFEB::teststand::Crate* crate ){ crate_= crate; }
       void setSlot( const int slot ){ slot_ = slot; }
     protected:
       string name_;
