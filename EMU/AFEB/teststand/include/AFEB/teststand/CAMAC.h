@@ -1,11 +1,13 @@
 #ifndef __AFEB_teststand_CAMAC_h__
 #define __AFEB_teststand_CAMAC_h__
 
+#include "ieee_fun_types.h"
+
 #include <string>
 
 using namespace std;
 
-namespace AFEB { namespace teststand {
+namespace CAMAC {
 
     enum Station_t {
       N1=1, N2,  N3,  N4,  N5,  N6,  N7, N8,
@@ -24,37 +26,6 @@ namespace AFEB { namespace teststand {
     
     enum Crate_t { C1 = 1 , C2 , C3 , C4 };
 
-    class CAMAC{
-    public:
-      CAMAC( const int branch, const int crateNumber ) :
-	branch_( branch ),
-	crateNumber_( crateNumber ){}
-      virtual ~CAMAC(){}
-    protected:
-      virtual void z() const;
-      virtual void c() const;
-      virtual bool x() const;
-      virtual bool q() const;
-      virtual unsigned short lam() const;
-      virtual void write( const unsigned int data, 
-			  const Subaddress_t subaddress, 
-			  const Function_t function,
-			  const Station_t station ) const;
-      virtual unsigned int read( const Subaddress_t subaddress, 
-				 const Function_t function,
-				 const Station_t station ) const;
-      virtual void readBlock( const Subaddress_t subaddress, 
-			      const Function_t function,
-			      const Station_t station,
-			      unsigned short *data,
-			      const int blockSize ) const;
-      virtual void execute( const Subaddress_t subaddress, 
-			    const Function_t function,
-			    const Station_t station ) const;
-      int branch_;
-      int crateNumber_;
-   };
-
-  }}
+}
 
 #endif

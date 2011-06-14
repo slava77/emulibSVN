@@ -8,6 +8,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace CAMAC;
 
 namespace AFEB { namespace teststand {
 
@@ -20,28 +21,33 @@ namespace AFEB { namespace teststand {
       virtual ~CrateController(){}
       int getCrateNumber() const { return crateNumber_; }
 
+      // Generic virtual method to be implemented by any crate controller:
+
+      virtual void initialize() const;
+
       // Virtual methods for CAMAC to be implemented in a derived CAMAC crate controller class:
-      virtual void z() const { cerr << "AFEB::teststand::CrateController::z is not implemented."; return; }
-      virtual void c() const { cerr << "AFEB::teststand::CrateController::c is not implemented."; return; }
-      virtual bool x() const { cerr << "AFEB::teststand::CrateController::x is not implemented."; return false; }
-      virtual bool q() const { cerr << "AFEB::teststand::CrateController::q is not implemented."; return false; }
-      virtual unsigned short lam() const { cerr << "AFEB::teststand::CrateController::lam is not implemented."; return 0; }
+
+      virtual void z() const;
+      virtual void c() const;
+      virtual bool x() const;
+      virtual bool q() const;
+      virtual unsigned short lam() const;
       virtual void write( const unsigned int data, 
-			  const Subaddress_t subaddress, 
-			  const Function_t function,
-			  const Station_t station ) const { cerr << "AFEB::teststand::CrateController::write is not implemented."; return; }
+      			  const Subaddress_t subaddress, 
+      			  const Function_t function,
+      			  const Station_t station ) const;
       virtual unsigned int read( const Subaddress_t subaddress, 
-				 const Function_t function,
-				 const Station_t station ) const { cerr << "AFEB::teststand::CrateController::read is not implemented."; return 0; }
+      				 const Function_t function,
+      				 const Station_t station ) const;
       virtual void readBlock( const Subaddress_t subaddress, 
-			      const Function_t function,
-			      const Station_t station,
-			      unsigned short *data,
-			      const int blockSize ) const { cerr << "AFEB::teststand::CrateController::readBlock is not implemented."; return; }
+      			      const Function_t function,
+      			      const Station_t station,
+      			      unsigned short *data,
+      			      const int blockSize ) const;
       virtual void execute( const Subaddress_t subaddress, 
-			    const Function_t function,
-			    const Station_t station ) const { cerr << "AFEB::teststand::CrateController::execute is not implemented."; return; }
-      
+      			    const Function_t function,
+      			    const Station_t station ) const;
+
     protected:
       int crateNumber_;
 

@@ -32,8 +32,8 @@ Sources = \
 	Xalan.cc \
 	System.cc \
 	String.cc \
-	CAMAC.cc \
 	Crate.cc \
+	CrateController.cc \
 	LE32.cc \
 	LeCroy3377.cc \
 	Jorway73A.cc \

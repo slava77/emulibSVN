@@ -4,6 +4,8 @@
 #include "AFEB/teststand/CrateController.h"
 #include "AFEB/teststand/CAMAC.h"
 
+using namespace CAMAC;
+
 namespace AFEB { namespace teststand {
 
     class LeCroy3377 : public Module

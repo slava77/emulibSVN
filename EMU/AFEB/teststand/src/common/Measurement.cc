@@ -3,8 +3,11 @@
 #include "AFEB/teststand/utils/IO.h"
 #include "AFEB/teststand/LE32.h"
 #include "AFEB/teststand/LeCroy3377.h"
+#include "AFEB/teststand/Jorway73A.h"
 #include "xcept/Exception.h"
 #include "TRandom3.h"
+
+#include "ieee_fun_types.h" // for cdchn
 
 using namespace std;
 using namespace AFEB::teststand;
@@ -171,10 +174,17 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
   LE32* signalConverter = static_cast<LE32*>( crate->getModule( results_.begin()->first->getSignalConverterSlot() ) );
   const CrateController* controller = crate->getCrateController();
 
-  cout << "***AFEB::teststand::Measurement::countVsDAQ***" << endl << *crate << endl;
+  controller->initialize();
+
+  // TODO: remove debug
+  // cout << "***AFEB::teststand::Measurement::countVsDAQ***" << endl << *crate << endl;  
+  // while ( true ){
+  //   controller->read( CAMAC::A0, CAMAC::F1, CAMAC::N7 );
+  // }
+  //
 
   // Zero CAMAC:
-  controller->z();
+  // controller->z(); // TODO: needed? Takes very long, see why.
 
   // Set up TDC:
   tdc->Set( LeCroy3377::M1, 0, 2, 0, 0, 550, 511 ); // ( Mode, Shift, Hit, Edge, Mpi, TimeOut, TimeEnf )
