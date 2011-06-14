@@ -2,7 +2,7 @@
 
 #CC = g++
 
-CFLAGS = -g -Wall -I../include -DSJY73A -DDEBUG
+CFLAGS = -g -Wall -fPIC -I../include -DSJY73A -DDEBUG
 #SJY411S
 
 LIBRARY = ../lib/libsjy.a
