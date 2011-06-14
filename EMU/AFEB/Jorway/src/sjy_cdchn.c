@@ -205,6 +205,7 @@ int readFile(FILE *g_rfp, char *filename, char charBuff[], int charBuffsize)
 **      25-Aug-1991	DAS     Creation
 **      25-Feb-2003     DAS     added Thomas Hadig fix to sscanf for long 
 **                              vendor and type names
+**      13-Jun-2011     KB      work with numbered generic SCSI devices /dev/sg{0..255} (K.Banicz)
 **                             
 **  ======================================================================== */
 /*									     */
