@@ -219,7 +219,7 @@ void emuui_showHistogram(dyn_float data, int numBuckets, string dataTitle, dyn_f
   dpSetWait(EMUUI_HISTOGRAM_PLOT_DP + ".xRangeMin", xRangeMin, 
             EMUUI_HISTOGRAM_PLOT_DP + ".xRangeMax", xRangeMax);
   dyn_string params = makeDynString("$PlotName:" + EMUUI_HISTOGRAM_PLOT_DP,
-                                    "$templateParameters:histDataDpe=" + dpSubStr(histogramDp, DPSUB_DP_EL) + ".histogramData,dataTitle=" + dataTitle + ",");
+                                    "$templateParameters:histDataDpe=" + dpSubStr(histogramDp, DPSUB_SYS_DP_EL) + ".histogramData,dataTitle=" + dataTitle + ",");
   emu_info("Opening histogram panel with these params: " + params);
   ChildPanelOnCentral("fwTrending/fwTrendingPlot.pnl", dataTitle + " Plot", 
                       params);
