@@ -223,7 +223,7 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
 	//      tdc->TimeChRd() <= tdcTimeMax_    ){
 	int tdcInput = tdc->ChannelRd() / nDeviceChannels + 1;
 	Results* results = findResults( tdcInput );
-	if ( results ) results->add( tdc->ChannelRd() % nDeviceChannels + 1, amplitude, tdc->TimeChRd() );
+	if ( results ) results->add( tdc->ChannelRd() % nDeviceChannels, amplitude, tdc->TimeChRd() );
 	// Check whether we've been instructed to abort in the meantime:
 	if ( ! isToKeepRunning_ ) return false;
 	// }
