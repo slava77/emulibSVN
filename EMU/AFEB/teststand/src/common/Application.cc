@@ -41,16 +41,6 @@ AFEB::teststand::Application::Application(xdaq::ApplicationStub *s)
   createFSM();
   bindWebInterface();
   exportParams();
-  AFEB::teststand::utils::SCSI_t scsi = AFEB::teststand::utils::getSCSI( "Jorway", "73A" );
-  //AFEB::teststand::utils::SCSI_t scsi = AFEB::teststand::utils::getSCSI( "PIONEER", "BD-ROM" );
-  LOG4CPLUS_INFO( logger_, 
-		  "Found SCSI device:"            << endl
-		  << " vendor:  " << scsi.vendor  << endl
-		  << " model:   " << scsi.model   << endl
-		  << " host:    " << scsi.host    << endl
-		  << " channel: " << scsi.channel << endl
-		  << " id:      " << scsi.id      << endl
-		  << " lun:     " << scsi.lun );
 
   measurementWorkLoop_ = toolbox::task::getWorkLoopFactory()->getWorkLoop( "AFEB::teststand::Application", "waiting" );
   measurementSignature_  = toolbox::task::bind( this, &AFEB::teststand::Application::measurementInWorkLoop, "measurementInWorkLoop" );
@@ -97,6 +87,25 @@ void AFEB::teststand::Application::configureAction(toolbox::Event::Reference e){
   AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + resultDirFullPath_ );
   configuration_ = new Configuration( configurationXML_, resultDirFullPath_ );
   LOG4CPLUS_DEBUG( logger_, "Crate:" << endl << *configuration_->getCrate() );
+
+  AFEB::teststand::utils::SCSI_t scsi;
+  try{
+    // TODO: get vendor and model from configuration.
+    scsi = AFEB::teststand::utils::getSCSI( "JORWAY", "73A" );
+    // scsi = AFEB::teststand::utils::getSCSI( "PIONEER", "BD-ROM" );
+  } catch ( xcept::Exception &e ){
+    LOG4CPLUS_FATAL( logger_, "Cannot continue without crate controller. " << xcept::stdformat_exception_history(e) );
+    XCEPT_RETHROW( toolbox::fsm::exception::Exception, "Cannot continue without crate controller.", e );
+  }
+  // TODO: see if /dev/sg* is read/writeable.
+  LOG4CPLUS_INFO( logger_, 
+		  "Found SCSI device:"            << endl
+		  << " vendor:  " << scsi.vendor  << endl
+		  << " model:   " << scsi.model   << endl
+		  << " host:    " << scsi.host    << endl
+		  << " channel: " << scsi.channel << endl
+		  << " id:      " << scsi.id      << endl
+		  << " lun:     " << scsi.lun );
 }
 
 void AFEB::teststand::Application::enableAction(toolbox::Event::Reference e){ // TODO: in separate thread, with mutex
@@ -430,7 +439,7 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
 
     }
 
-  } catch (  xcept::Exception& e ){
+  } catch ( xcept::Exception& e ){
     XCEPT_RETHROW( xgi::exception::Exception, string("Failed to execute ") + action.begin()->second, e );
   }
 

@@ -93,34 +93,36 @@ AFEB::teststand::utils::SCSI_t AFEB::teststand::utils::getSCSI( const string ven
   vector<string> matches;
   vector<string> lines = utils::splitSting( scsiInfo, "\n" );
 
-  for ( vector<string>::iterator l = lines.begin(); l != lines.end(); ++l ){
-    try{
+  try{
+    for ( vector<string>::iterator l = lines.begin(); l != lines.end(); ++l ){
       if ( toolbox::regx_match( *l, regex1, matches ) ){
 	scsi.host    = utils::stringTo<int>( matches[1] );
 	scsi.channel = utils::stringTo<int>( matches[2] );
 	scsi.id      = utils::stringTo<int>( matches[3] );
 	scsi.lun     = utils::stringTo<int>( matches[4] );
-	//cout << matches.size() << " regex1 matches: " << endl << matches << endl;
+	// cout << matches.size() << " regex1 matches: " << endl << matches << endl;
       }
       if ( toolbox::regx_match( *l, regex2, matches ) ){
 	scsi.vendor   = utils::shaveOffBlanks( matches[1] );
 	scsi.model    = utils::shaveOffBlanks( matches[2] );
 	scsi.revision = utils::shaveOffBlanks( matches[3] );
-	//cout << matches.size() << " regex1 matches: " << endl << matches << endl;
-	if ( scsi.vendor == vendor && scsi.model == model ) return scsi;
+	// cout << matches.size() << " regex1 matches: " << endl << matches << endl;
+	if ( scsi.vendor.compare( vendor ) == 0 && 
+	     scsi.model .compare( model  ) == 0    ) return scsi;
       }
     }
-    catch( xcept::Exception &e ){
-      XCEPT_RETHROW( xcept::Exception, "Failed to get SCSI parameters: ", e );
-    }
-    catch( std::exception &e ){
-      stringstream ss;
-      ss << "Failed to get SCSI parameters: " << e.what();
-      XCEPT_RAISE( xcept::Exception, ss.str() );
-    }
-    catch( ... ){
-      XCEPT_RAISE( xcept::Exception, "Unknown exception." );
-    }
+    XCEPT_RAISE( xcept::Exception, string( "No SCSI device " ) + vendor + " " + model + " found.");
+  }
+  catch( xcept::Exception &e ){
+    XCEPT_RETHROW( xcept::Exception, "Failed to get SCSI parameters.", e );
+  }
+  catch( std::exception &e ){
+    stringstream ss;
+    ss << "Failed to get SCSI parameters. " << e.what();
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch( ... ){
+    XCEPT_RAISE( xcept::Exception, "Unknown exception." );
   }
 
   return scsi;

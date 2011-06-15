@@ -144,8 +144,8 @@ bool AFEB::teststand::Measurement::execute(){
   status_t_ = AFEB::teststand::Measurement::running;
   switch ( type_t_ ){
   case count_vs_dac:
-    //keepRunning = countVsDAQ();
-    keepRunning = dummyResultGenerator();
+    keepRunning = countVsDAQ();
+    // keepRunning = dummyResultGenerator();
     break;
   case time_vs_dac:
     //keepRunning = countVsTime();
@@ -184,7 +184,7 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
   //
 
   // Zero CAMAC:
-  // controller->z(); // TODO: needed? Takes very long, see why.
+  controller->z(); // TODO: needed? Takes very long, see why.
 
   // Set up TDC:
   tdc->Set( LeCroy3377::M1, 0, 2, 0, 0, 550, 511 ); // ( Mode, Shift, Hit, Edge, Mpi, TimeOut, TimeEnf )

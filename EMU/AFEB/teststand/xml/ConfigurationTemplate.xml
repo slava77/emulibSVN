@@ -36,7 +36,7 @@
       <c:tag c:name="c:module">
 	<c:attr c:name="c:name" c:value="LeCroy3377" c:description="LeCroy Model 3377 32-channel CAMAC TDC"/>
 	<c:attr c:name="c:name" c:value="LE32" c:description="CAMAC 32-channel Converter and 2-channel Pulse and Threashold Generator"/>
-	<c:attr c:name="c:name" c:value="Jorway73A" c:description="Jorway Model 73A SCSI Bus CAMAC Crate Controller"/>
+	<c:attr c:name="c:name" c:value="Jorway73A" c:description="SCSI Bus CAMAC Crate Controller, vendor: JORWAY model: 73A"/>
 	<c:attr c:name="c:type" c:value="TDC" c:description="Time-to-Digital Converter"/>
 	<c:attr c:name="c:type" c:value="SignalConverter" c:description="LVDS-to-ECL Signal Converter and Threshold Generator"/>
 	<c:attr c:name="c:type" c:value="PulseGenerator" c:description="Adjustable height pulse generator."/>
