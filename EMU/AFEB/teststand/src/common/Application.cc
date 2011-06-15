@@ -243,6 +243,8 @@ string AFEB::teststand::Application::createResultsXML(){
   if ( configuration_ != NULL ) ss << configuration_->resultsXML();
   ss << "  </a:results>" << endl;
 
+  // This already has an XML declaration...: ss << configurationXML_ << endl;
+
   ss << "</root>";
 
   // Append the configuration to it:
@@ -271,10 +273,13 @@ string AFEB::teststand::Application::createResultsXML(){
   if ( configuration_ != NULL ) ss << configuration_->resultsXML();
   ss << "  </a:results>" << endl;
 
+  // This already has an XML declaration...: ss << configurationXML_ << endl;
+
   ss << "</root>";
 
   // Append the configuration to it:
   return AFEB::teststand::utils::appendToSelectedNode( ss.str(), "/root", configurationXML_ );
+  //return ss.str();
 }
 
 void AFEB::teststand::Application::copyStyleFilesToResultsDir(){

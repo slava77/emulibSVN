@@ -48,6 +48,10 @@ string AFEB::teststand::utils::serializeDOM( DOMNode* node ){
     if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true))
       theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true);
 
+    // This method does output UTF-8, it's just the XML declaration that will claim it's UTF-16. 
+    // The problem is that emacs is too smart, and is mislead by it. It must be forced to open it as UTF-8 by C-x C-m c utf-8 RET.
+    // Try to influence what the XML declaration will say:
+    
     // // Set encoding explicitly to UTF-8 (otherwise it'll be UTF-16). It doesn't seem to work...
     // XMLCh* encoding = XMLString::transcode( "UTF-8" );
     // theSerializer->setEncoding( encoding );
@@ -171,6 +175,10 @@ string AFEB::teststand::utils::appendToSelectedNode( const string XML, const str
 	
 	DOMDocument *domDoc = const_cast<DOMDocument*>( docWrapper->getXercesDocument() );
 
+	// This method does output UTF-8, it's just the XML declaration that will claim it's UTF-16. 
+	// The problem is that emacs is too smart, and is mislead by it. It must be forced to open it as UTF-8 by C-x C-m c utf-8 RET.
+	// Try to influence what the XML declaration will say:
+
 	// cout << "Encoding: " << xoap::XMLCh2String( domDoc->getEncoding() ) 
 	//      << " Actual encoding: " << xoap::XMLCh2String( domDoc->getActualEncoding() ) << endl;
 	// // Set encoding explicitly to UTF-8 (otherwise it'll be UTF-16). It doesn't seem to work...
@@ -179,8 +187,7 @@ string AFEB::teststand::utils::appendToSelectedNode( const string XML, const str
 	// XMLString::release( &encoding );
 	// cout << "Encoding: " << xoap::XMLCh2String( domDoc->getEncoding() ) 
 	//      << " Actual encoding: " << xoap::XMLCh2String( domDoc->getActualEncoding() ) << endl;
-	// cout << "Original XML from DOM" << endl << AFEB::teststand::utils::serializeDOM( domDoc ) << endl
-	  ;
+	// cout << "Original XML from DOM" << endl << AFEB::teststand::utils::serializeDOM( domDoc ) << endl;
 
 	// Parse the XML fragment into a DOM
 	MemBufInputSource xmlFragmentMBIS( (XMLByte*)xmlFragment.c_str(), xmlFragment.size(), "appendToSelectedNodeId" );

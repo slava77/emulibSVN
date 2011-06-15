@@ -144,12 +144,12 @@ bool AFEB::teststand::Measurement::execute(){
   status_t_ = AFEB::teststand::Measurement::running;
   switch ( type_t_ ){
   case count_vs_dac:
-    keepRunning = countVsDAQ();
-    // keepRunning = dummyResultGenerator();
+    //keepRunning = countVsDAQ();
+    keepRunning = dummyResultGenerator();
     break;
   case time_vs_dac:
-    keepRunning = countVsTime();
-    // keepRunning = dummyResultGenerator();
+    //keepRunning = countVsTime();
+    keepRunning = dummyResultGenerator();
     break;
   default:
     stringstream ss;
@@ -200,8 +200,6 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
   // Gradually crank up the pulse height:
   for ( int amplitude = amplitudeMin_; amplitude <= amplitudeMax_; amplitude += amplitudeStep_ ){
 
-    // TODO: zero counters
-
     pulseGenerator->writeAmplitude( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch1 ), amplitude );
     pulseGenerator->enablePulses(  (LE32::Channel_t)( LE32::Ch1 | LE32::Ch1 ) );
     pulseGenerator->exec();
@@ -214,7 +212,7 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
       tdc->Clear();
       pulseGenerator->exec();
       
-      tdc->HeadRdBlock(); // This doeas the actual hardware readout.
+      tdc->HeadRdBlock(); // This does the actual hardware readout.
 
       // Read out TDC channels
       for ( int iShort = 0; iShort < LeCroy3377::nShortsData; ++iShort ){ // TODO: LeCroy3377::nShortsData / 2 ?
@@ -251,11 +249,6 @@ bool AFEB::teststand::Measurement::countVsTime(){
 bool AFEB::teststand::Measurement::dummyResultGenerator(){
   // All tested devices in one measurement are read out by the same TDC. Take the first device to get its.
   int nDeviceChannels = results_.begin()->first->getNChannels();
-  Crate* crate = results_.begin()->first->getCrate();
-  LeCroy3377*       tdc = static_cast<LeCroy3377*>( crate->getModule( results_.begin()->first->getTDCSlot() ) );
-  LE32*  pulseGenerator = static_cast<LE32*>( crate->getModule( pulseGeneratorSlot_                         ) );
-  LE32* signalConverter = static_cast<LE32*>( crate->getModule( results_.begin()->first->getSignalConverterSlot() ) );
-  const CrateController* controller = crate->getCrateController();
 
   TRandom3 rndm;
 
@@ -278,13 +271,11 @@ bool AFEB::teststand::Measurement::dummyResultGenerator(){
 	Results* results = findResults( tdcInput );
 	if ( results ){
 	  if ( double(amplitude) > rndm.Gaus( 0.5 * ( amplitudeMax_ + amplitudeMin_ ),
-					      0.1 * ( amplitudeMax_ - amplitudeMin_ ) ) 
-	       ){
+					      0.1 * ( amplitudeMax_ - amplitudeMin_ ) ) ){
 	    results->add( iShort % nDeviceChannels, 
 			  amplitude,
 			  rndm.Gaus( 0.5 * ( tdcTimeMax_ + tdcTimeMin_ ), 
-				     0.1 * ( tdcTimeMax_ - tdcTimeMin_ ) ) 
-			  );
+				     0.1 * ( tdcTimeMax_ - tdcTimeMin_ ) ) );
 	    // Check whether we've been instructed to abort in the meantime:
 	    if ( ! isToKeepRunning_ ) return false;
 	  }

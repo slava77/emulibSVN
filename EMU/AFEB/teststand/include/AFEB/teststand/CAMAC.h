@@ -3,10 +3,6 @@
 
 #include "ieee_fun_types.h"
 
-#include <string>
-
-using namespace std;
-
 namespace CAMAC {
 
     enum Station_t {

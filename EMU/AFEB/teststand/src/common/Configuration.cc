@@ -182,7 +182,7 @@ string AFEB::teststand::Configuration::resultsXML(){
 	 <<              "\">" << endl
 	 << "        <a:plot a:name=\"" << r->second->getFileName()
 	 <<              "\"/>" << endl;
-      // Loop over channels and fit results
+      // Loop over channels and get fit results
       for ( int iChannel = 0; iChannel < r->first->getNChannels(); ++iChannel ){
 	ss << "        <a:channel a:number=\"" <<  iChannel << "\">";
 	map<string,pair<double,double> > parameters = r->second->getParameters( iChannel );
