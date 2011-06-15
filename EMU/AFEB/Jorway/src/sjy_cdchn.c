@@ -206,11 +206,79 @@ int readFile(FILE *g_rfp, char *filename, char charBuff[], int charBuffsize)
 **      25-Feb-2003     DAS     added Thomas Hadig fix to sscanf for long 
 **                              vendor and type names
 **      13-Jun-2011     KB      work with numbered generic SCSI devices /dev/sg{0..255} (K.Banicz)
+**      15-Jun-2011     KB      use /proc/scsi/sg/devices and /proc/scsi/sg/device_strs (K.Banicz)
 **                             
 **  ======================================================================== */
 /*									     */
 
 int sjy_getdev (char *dev, int branch)
+{
+  int status = 0;
+
+  char *devices     = "/proc/scsi/sg/devices";
+  char *device_strs = "/proc/scsi/sg/device_strs";
+  /* See /proc/scsi/sg/device_hdr: */
+  int host, chan, id, lun, type, opens, qdepth, busy, online;
+  char vendor[100], model[100], revision[100];
+
+  const int nGenericDevices = 256; /* There are 256 possible SCSI generic (sg) devices: /dev/sg{0..255} */
+
+  FILE *fd_devices = fopen( devices, "r" );
+  if( fd_devices == NULL ){
+     printf( "ScanSCSIDevices:  Cannot open %s", devices );
+     return( CAM_S_DEV_OPEN_FAIL );
+  }
+  FILE *fd_device_strs = fopen( device_strs, "r" );
+  if( fd_devices== NULL ){
+     printf( "ScanSCSIDevices:  Cannot open %s", device_strs );
+     fclose( fd_devices );
+     return( CAM_S_DEV_OPEN_FAIL );
+  }
+
+  char line_devices[100];
+  char line_device_strs[100];
+
+  /* read each line of filename */
+  int found = 0;
+  int iLine = 0; /* this corresponds to the SCSI generic device number in /dev/sg<N> */
+  while((status == 0) && (iLine < nGenericDevices)){
+    
+    status = readFile( fd_devices, devices, line_devices, sizeof(line_devices) );
+    if( status == EOF ) {    /* end of file */
+      status = CAM_S_DEV_OPEN_FAIL;
+      break;
+    } 
+    status = readFile( fd_device_strs, device_strs, line_device_strs, sizeof(line_device_strs) );
+    if( status == EOF ) {    /* end of file */
+      status = CAM_S_DEV_OPEN_FAIL;
+      break;
+    } 
+    
+    /* parse the file line */
+    sscanf( devices, "%d%d%d%d%d%d%d%d%d", &host, &chan, &id, &lun, &type, &opens, &qdepth, &busy, &online );
+    if ( (id == ID(branch)) && (host == BUS(branch)) ){
+      sscanf( device_strs, "%s %s %s", vendor, model, revision );
+      if ( strncmp( vendor, "JORWAY", 6 ) == 0 && strncmp( model, "73A", 3 ) == 0 ){
+	char scsiDeviceName[16];
+	sprintf( scsiDeviceName, "/dev/sg%d", iLine );
+	strcpy( dev, scsiDeviceName );
+	found = 1;
+	break;
+      }
+    }
+
+    ++iLine;
+  }
+
+  fclose( fd_devices );
+  fclose( fd_device_strs );
+
+  if ( found ) status = CAM_S_SUCCESS;
+
+  return(status);
+}
+
+int sjy_getdev_old (char *dev, int branch)
 {
   /*
   TODO: This method may fail for two reasons:
@@ -231,6 +299,13 @@ int sjy_getdev (char *dev, int branch)
       Host: scsi10 Channel: 00 Id: 00 Lun: 00
       Vendor: JORWAY   Model: 73A              Rev: 208 
       Type:   No Device                        ANSI  SCSI revision: 02
+
+  Fix: Use /proc/scsi/sg/device_strs and /proc/scsi/sg/devices
+       instead, which preserve 
+       the row positions of the remaining devices after some are 
+       removed (for which a "hole" will be left), corresponding to
+       the generaic SCSI device number N in /dev/sg<N>.
+       This is not the case for /proc/scsi/scsi
   */
 
  int status = 0;
