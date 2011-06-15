@@ -212,6 +212,27 @@ int readFile(FILE *g_rfp, char *filename, char charBuff[], int charBuffsize)
 
 int sjy_getdev (char *dev, int branch)
 {
+  /*
+  TODO: This method may fail for two reasons:
+  1) If /dev/sg* numbering is not contiguous, like this:
+     sg_map -x
+     /dev/sg0  -3 -3 -3 -3  -3
+     /dev/sg1  1 0 0 0  5  /dev/scd0
+     /dev/sg3  10 0 0 0  31
+  2) If scsi bus number is 2 or 3 digits long, like this:
+      cat /proc/scsi/scsi
+      Attached devices:
+      Host: scsi0 Channel: 00 Id: 00 Lun: 00
+      Vendor: ATA      Model: Hitachi HTS72505 Rev: PC4O
+      Type:   Direct-Access                    ANSI  SCSI revision: 05
+      Host: scsi1 Channel: 00 Id: 00 Lun: 00
+      Vendor: PIONEER  Model: BD-ROM  BDC-TD03 Rev: 1.00
+      Type:   CD-ROM                           ANSI  SCSI revision: 05
+      Host: scsi10 Channel: 00 Id: 00 Lun: 00
+      Vendor: JORWAY   Model: 73A              Rev: 208 
+      Type:   No Device                        ANSI  SCSI revision: 02
+  */
+
  int status = 0;
  char charBuff[120];        /* file line buffer */
 
