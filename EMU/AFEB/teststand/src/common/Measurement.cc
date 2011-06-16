@@ -184,24 +184,37 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
   //
 
   // Zero CAMAC:
-  controller->z(); // TODO: needed? Takes very long, see why.
+  //controller->z(); // TODO: needed? Takes very long, see why.
+
+  // BEGIN test pulses
+  // pulseGenerator->writeAmplitude( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ), amplitudeMax_ );
+  // pulseGenerator->enablePulses(  (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ) );
+  // pulseGenerator->writeAmplitude( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ), amplitudeMax_ );
+  // cout << "Wrote amplitude " << amplitudeMax_ 
+  //      << " to channels " <<  (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 )
+  //      << endl;
+  // for( int i=0; i<100000; i++ ){
+  //   if ( i%1000 == 0 ) std::cout << "pulse " << std::dec << i << std::endl;
+  //   pulseGenerator->exec();
+  // }
+  // END test pulses
 
   // Set up TDC:
   tdc->Set( LeCroy3377::M1, 0, 2, 0, 0, 550, 511 ); // ( Mode, Shift, Hit, Edge, Mpi, TimeOut, TimeEnf )
 
   // Set up threshold-setting module:
-  signalConverter->writeThreshold( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch1 ), thresholdValue_ );
-  signalConverter->writeAmplitude( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch1 ), 0 );
+  signalConverter->writeThreshold( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ), thresholdValue_ );
+  signalConverter->writeAmplitude( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ), 0 );
   signalConverter->enablePulses( LE32::NoCh );
 
   // Set pulse generator
-  pulseGenerator->writeAmplitude( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch1 ), amplitudeMin_ );
+  pulseGenerator->writeAmplitude( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ), amplitudeMin_ );
 
   // Gradually crank up the pulse height:
   for ( int amplitude = amplitudeMin_; amplitude <= amplitudeMax_; amplitude += amplitudeStep_ ){
 
-    pulseGenerator->writeAmplitude( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch1 ), amplitude );
-    pulseGenerator->enablePulses(  (LE32::Channel_t)( LE32::Ch1 | LE32::Ch1 ) );
+    pulseGenerator->writeAmplitude( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ), amplitude );
+    pulseGenerator->enablePulses(  (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ) );
     pulseGenerator->exec();
     tdc->Clear();
     tdc->EnableAcq();
