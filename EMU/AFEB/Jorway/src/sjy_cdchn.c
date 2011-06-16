@@ -255,9 +255,9 @@ int sjy_getdev (char *dev, int branch)
     } 
     
     /* parse the file line */
-    sscanf( devices, "%d%d%d%d%d%d%d%d%d", &host, &chan, &id, &lun, &type, &opens, &qdepth, &busy, &online );
+    sscanf( line_devices, "%d%d%d%d%d%d%d%d%d", &host, &chan, &id, &lun, &type, &opens, &qdepth, &busy, &online );
     if ( (id == ID(branch)) && (host == BUS(branch)) ){
-      sscanf( device_strs, "%s %s %s", vendor, model, revision );
+      sscanf( line_device_strs, "%s %s %s", vendor, model, revision );
       if ( strncmp( vendor, "JORWAY", 6 ) == 0 && strncmp( model, "73A", 3 ) == 0 ){
 	char scsiDeviceName[16];
 	sprintf( scsiDeviceName, "/dev/sg%d", iLine );

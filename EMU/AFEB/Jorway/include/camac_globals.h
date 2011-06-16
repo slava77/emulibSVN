@@ -18,6 +18,7 @@
                         by Thomas Hadig), updated version number
 	18oct05 das     increased SJY_MAX_SJY73A from 21 to 31 to 
                         account for SCSI bus = 3
+	16jun11 KB      increased SJY_MAX_SJY73A from 31 to 255 (K.Banicz)
  */
 
 
@@ -200,8 +201,11 @@ typedef struct _SJB_SENSE {
 
 // "Branch" is used here synonymously with Controller SCSI ID
 // for code reuse purposes
-#define	SJY_MAX_SJY73A	31	/* maximum number of Jorways on host computer */
-                                /* 7 SCSI IDs/bus * 3 SCSI buses */
+#define	SJY_MAX_SJY73A	255	/* maximum number of Jorways on host computer */
+                                /* Make it big to accomodate larger host (bus) numbers. 
+				   It has to be bigger than id+8*host, and host is incremented 
+				   every time we plug the cable into the computer... */
+                                
 
 xdef SJY_CONTROLLER sjy_controller[SJY_MAX_SJY73A];
 
