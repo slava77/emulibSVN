@@ -42,6 +42,7 @@ namespace AFEB { namespace teststand {
       int amplitude_;
       int time_;
       TGaxis* adjustToHistogram( const TH1* const h1, TH1* h2, bool isNewAxisOnRight=true );
+      void estimateFitParameters( const TH1D& hist, double& mean, double& sigma, double& height );
     };
   }}
 

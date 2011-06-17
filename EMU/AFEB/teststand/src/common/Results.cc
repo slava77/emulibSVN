@@ -148,7 +148,34 @@ double normalCDF( double *x, double *p ){
   return p[2] * 0.5 * ( 1. + ROOT::Math::erf( ( x[0] - p[0] ) / ( TMath::Sqrt(2.) * p[1] ) ) );
 }
 
+void AFEB::teststand::Results::estimateFitParameters( const TH1D& hist,
+						      double& mean,
+						      double& sigma,
+						      double& height ){
+  // Estimate the fit parameters assuming hist is ~ a normal CDF.
+
+  // The original histogram's binning:
+  double lo = hist.GetXaxis()->GetXmin();
+  double hi = hist.GetXaxis()->GetXmax();
+  int nBins = hist.GetNbinsX();
+  
+  // The difference histogram:
+  TH1D diff( "diff", "diff",
+	     nBins - 1,
+	     lo + 0.5 * ( hi - lo ) / nBins,
+	     hi - 0.5 * ( hi - lo ) / nBins );
+  for ( int i=1; i<=diff.GetNbinsX(); ++i ){
+    diff.SetBinContent( i, hist.GetBinContent( i+1 ) - hist.GetBinContent( i ) );
+  }
+
+  mean   = diff.GetMean();
+  sigma  = diff.GetRMS();
+  height = hist.GetBinContent( hist.GetMaximumBin() );
+
+}
+
 void AFEB::teststand::Results::fit( const double from, const double to ){
+  // Fit the threshold scan's S-curve with a normal CDF.
   bsem_.take();
   double lo = pulses_->GetYaxis()->GetXmin();
   double hi = pulses_->GetYaxis()->GetXmax();
@@ -158,6 +185,7 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
   //TF1 nCDF( "normalCDF", &AFEB::teststand::Results::normalCDF, lo, hi, 3, NULL );
   TF1 nCDF( "normalCDF", &normalCDF, lo, hi, 3, NULL );
   nCDF.SetParNames( "mean", "sigma", "height" );
+  double mean, sigma, height;
   nCDF.SetParameters( 0.5 * ( hi + lo ),
 		      0.1 * ( hi - lo ),
 		      measurement_->getNPulses() );
@@ -178,6 +206,8 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
 
     // cout << ")" << endl;
 
+    estimateFitParameters( p, mean, sigma, height );
+    nCDF.SetParameters( mean, sigma, height );
     p.Fit( &nCDF, "QR" ); // quiet (no printing), use function range
     // if ( iChannelBin == testedDevice_->getNChannels() ){
     //   TFile f( (testedDevice_->getType()+"__"+testedDevice_->getId()+"_test.root").c_str(), "recreate" );
@@ -246,7 +276,7 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
 TGaxis* AFEB::teststand::Results::adjustToHistogram( const TH1* const h1, TH1* h2, bool isNewAxisOnRight ){
   // Transform h2 to h1 so they can be superimposed on the same plot, 
   // and return the axis for h2.
-  // The desired min and max of both h1 and h2 should already be set when invoking this meathod.
+  // The desired min and max of both h1 and h2 should already be set when this method is invoked.
 
   // The abscissa
   double alo = h1->GetXaxis()->GetXmin();
