@@ -26,12 +26,13 @@ namespace AFEB { namespace teststand {
 
       friend ostream& operator<<( ostream& os, const Measurement& m );
 
-      Measurement( const string name, const string type, const string resultDir );
+      Measurement( const int index, const string name, const string type, const string resultDir );
       ~Measurement();
       void setPulseParameters( const vector< pair<string,string> >& param );
       void setThresholdParameters( const vector< pair<string,string> >& param );
       void setTDCParameters( const vector< pair<string,string> >& param );
       void addTestedDevice( TestedDevice* device );
+      int getIndex() const { return index_; }
       string getName() const { return name_; }
       string getType() const { return type_; }
       string getResultDir() const { return resultDir_; }
@@ -49,6 +50,7 @@ namespace AFEB { namespace teststand {
     private:
       static const char* const types_[nTypes];
       static const char* const status_[nStatus];
+      int index_;
       string name_;
       string type_;
       Type_t type_t_;

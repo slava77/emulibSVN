@@ -120,6 +120,7 @@ void AFEB::teststand::Configuration::createMeasurements() {
 
     // Loop over the requested (enabled) measurement types
     vector< pair<string,string> >::const_iterator m;
+    int index;
     for ( m = enabledMeasurementTypes.begin(); m != enabledMeasurementTypes.end(); ++m ){
 
       // Check if a measurement with this TDC module already exists:
@@ -129,7 +130,7 @@ void AFEB::teststand::Configuration::createMeasurements() {
 	xpath.str("");
 	xpath << "/c:configuration/c:measurements/c:measurement[@c:type='" << m->second << "']/@c:name";
 	string name = utils::getSelectedNodeValue( xml_, xpath.str() );
-	measurement = new Measurement( name, m->second, resultDir_ );
+	measurement = new Measurement( index++, name, m->second, resultDir_ );
 	// Set pulse generator parameters
 	xpath.str("");
 	xpath << "/c:configuration/c:measurements/c:measurement[@c:type='" << m->second << "']/c:PulseGenerator/@*";

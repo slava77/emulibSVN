@@ -39,6 +39,7 @@
       <xsl:if test="@a:state='Halted'">
 	<tr>
 	  <td colspan="3">
+	    Select a previously defined configuration:
 	    <xsl:apply-templates select="a:configuration"/>
 	    <input type="submit" name="config" value="load" title="Load the selected configuration." class="submit"/>
 	  </td>

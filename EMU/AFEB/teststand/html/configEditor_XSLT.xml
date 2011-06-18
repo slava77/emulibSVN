@@ -12,7 +12,6 @@
     <p>
       <xsl:if test="$CONFIGMODE='control'">
 	<input type="submit" name="config" value="save" class="submit" title="Save this configuration."/> as 
-	<!-- for-each: just to set the current node for the templates called by name: -->
 	<xsl:for-each select="@c:name">
 	  <input type="text" title="The name of this configuration." size="20">
 	    <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
@@ -26,7 +25,7 @@
     <table class="layout">
       <tr>
 	<td><xsl:apply-templates select="c:measurements"/></td>
-	<td><xsl:apply-templates select="c:testedDevice"/></td>
+	<!-- <td><xsl:apply-templates select="c:testedDevice"/></td> -->
 	<td><xsl:apply-templates select="c:crate"/></td>
 	<td><xsl:apply-templates select="c:inputs"/></td>
       </tr>
@@ -54,33 +53,6 @@
 	<xsl:value-of select="@c:value"/>
       </option>
     </xsl:for-each>
-  </xsl:template>
-
-  <xsl:template match="c:testedDevice">
-    <table class="device">
-      <tr>
-	<th colspan="2">Tested device</th>
-      </tr>
-      <tr>
-	<th>type</th>
-	<td>
-	  <xsl:if test="$CONFIGMODE='control'">
-	    <!-- for-each: just to set the current node for the templates called by name: -->
-	    <xsl:for-each select="@c:type">
-	      <select>
-		<xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
-		<xsl:call-template name="options">
-		  <xsl:with-param name="TAG" select="name(..)"/>
-		  <xsl:with-param name="ATTR" select="name()"/>
-		  <xsl:with-param name="SELVAL" select="."/>
-		</xsl:call-template>
-	      </select>
-	    </xsl:for-each>
-	  </xsl:if>
-	  <xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="@c:type"/></xsl:if>	
-	</td>
-      </tr>
-    </table>
   </xsl:template>
 
   <xsl:template match="c:crate">
@@ -156,7 +128,20 @@
 	<th colspan="5">Device-to-module mapping</th>
       </tr>
       <tr>
-	<th>socket</th>
+	<th>
+	  socket of adaptor
+	  <!-- for-each: just to set the current node for the templates called by name: -->
+	  <xsl:for-each select="@c:adaptor">
+	    <select>
+	      <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+	      <xsl:call-template name="options">
+		<xsl:with-param name="TAG" select="name(..)"/>
+		<xsl:with-param name="ATTR" select="name()"/>
+		<xsl:with-param name="SELVAL" select="."/>
+	      </xsl:call-template>
+	    </select>
+	  </xsl:for-each>
+	</th>
 	<th>device id</th>
 	<th>TDC slot</th>
 	<th>TDC input</th>
@@ -236,7 +221,20 @@
   <xsl:template match="c:measurements">
     <table class="measurements">
       <tr>
-	<th colspan="5">Measurements</th>
+	<th colspan="5">
+	  Measurements of device
+	    <!-- for-each: just to set the current node for the templates called by name: -->
+	    <xsl:for-each select="../c:testedDevice/@c:type">
+	      <select>
+		<xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+		<xsl:call-template name="options">
+		  <xsl:with-param name="TAG" select="name(..)"/>
+		  <xsl:with-param name="ATTR" select="name()"/>
+		  <xsl:with-param name="SELVAL" select="."/>
+		</xsl:call-template>
+	      </select>
+	    </xsl:for-each>
+	</th>
       </tr>
       <xsl:for-each select="c:measurement">
 	<xsl:if test="$CONFIGMODE='control' or ($CONFIGMODE='display' and @c:enabled='yes')">

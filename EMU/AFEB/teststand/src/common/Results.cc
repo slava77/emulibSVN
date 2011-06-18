@@ -19,7 +19,8 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 
   // pulses( channel, amplitude)  2D histogram
   stringstream name;
-  name << "pulses__" << measurement_->getType() << "__" << testedDevice_->getId();
+  name << "pulses__" << measurement_->getIndex() << "_" << measurement_->getType() 
+       << "__" << testedDevice_->getId();
   stringstream title;
   title << measurement_->getName() 
 	<< " with " << measurement_->getNPulses()
@@ -49,7 +50,8 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 
   // measured threshold( channel ) 1D histogram
   name.str("");
-  name << "threshold__" << measurement_->getType() << "__" << testedDevice_->getId();
+  name << "threshold__" << measurement_->getIndex() << "_" << measurement_->getType() 
+       << "__" << testedDevice_->getId();
   title.str("");
   title << "measured threshold for " << testedDevice_->getType()
 	<< " of id "  << testedDevice_->getId();
@@ -69,7 +71,8 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 
   // measured noise( channel ) 1D histogram
   name.str("");
-  name << "noise__" << measurement_->getType() << "__" << testedDevice_->getId();
+  name << "noise__" << measurement_->getIndex() << "_" << measurement_->getType() 
+       << "__" << testedDevice_->getId();
   title.str("");
   title << "measured noise for " << testedDevice_->getType()
 	<< " of id "  << testedDevice_->getId();
@@ -89,7 +92,8 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 
   // measured efficiency( channel ) 1D histogram
   name.str("");
-  name << "efficiency__" << measurement_->getType() << "__" << testedDevice_->getId();
+  name << "efficiency__" << measurement_->getIndex() << "_" << measurement_->getType() 
+       << "__" << testedDevice_->getId();
   title.str("");
   title << "measured efficiency for " << testedDevice_->getType()
 	<< " of id "  << testedDevice_->getId();
@@ -111,10 +115,11 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 
   // ( channel, amplitude, time ) ntuple
   name.str("");
-  name << "times__" << measurement_->getType() << "__" << testedDevice_->getId();
+  name << "times__" << measurement_->getIndex() << "_" << measurement_->getType() 
+       << "__" << testedDevice_->getId();
   title.str("");
-  title << "TDC times " << measurement_->getNPulses()
-	<< " for " << testedDevice_->getType()
+  title << "TDC times of " << measurement_->getNPulses()
+	<< " pulses for " << testedDevice_->getType()
 	<< " of id "  << testedDevice_->getId();
   times_ = new TTree( name.str().c_str(), title.str().c_str() );
   times_->Branch("ch",&channel_,"ch/I");
@@ -318,7 +323,7 @@ TGaxis* AFEB::teststand::Results::adjustToHistogram( const TH1* const h1, TH1* h
 void AFEB::teststand::Results::save( const string directory ){
   createFigure( directory );
   times_->Print();
-  TFile f( (directory + "/" + testedDevice_->getType()+"__"+testedDevice_->getId()+".root").c_str(), "recreate" );
+  TFile f( (directory + "/" + testedDevice_->getType()+"__"+testedDevice_->getId()+".root").c_str(), "UPDATE", "", 5 );
   f.cd();
 
   bsem_.take();

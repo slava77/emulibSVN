@@ -36,7 +36,8 @@ ostream& AFEB::teststand::operator<<( ostream& os, const Measurement& m ){
   return os;
 }
 
-AFEB::teststand::Measurement::Measurement( const string name, const string type, const string resultDir ) :
+AFEB::teststand::Measurement::Measurement( const int index, const string name, const string type, const string resultDir ) :
+  index_( index ),
   name_( name ),
   type_( type ),
   status_t_( AFEB::teststand::Measurement::waiting ),
