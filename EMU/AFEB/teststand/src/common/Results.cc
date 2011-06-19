@@ -1,4 +1,5 @@
 #include "AFEB/teststand/Results.h"
+#include "AFEB/teststand/utils/String.h"
 #include "TF1.h"
 #include "TMath.h"
 #include "TStyle.h"
@@ -113,6 +114,28 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   efficiency_->GetXaxis()->CenterLabels( kTRUE );
   efficiency_->GetXaxis()->SetNdivisions( testedDevice_->getNChannels() );
 
+  // time vs amplitude profile histogram for each channel
+  for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
+    name.str("");
+    name << "timeVsAmpl__" << measurement_->getIndex() << "_" << measurement_->getType() 
+	 << "__" << testedDevice_->getId() << "__ch" << iChannel;
+    title.str("");
+    title << "Times in channel " << iChannel << " of " << testedDevice_->getType()
+	  << " of id "  << testedDevice_->getId();
+    TProfile* t = new TProfile( name.str().c_str(), 
+				title.str().c_str(),
+				ny,
+				measurement_->getAmplitudeMin() -        0.5   * measurement_->getAmplitudeStep(),
+				measurement_->getAmplitudeMin() + ( ny - 0.5 ) * measurement_->getAmplitudeStep(),
+				measurement_->getTDCTimeMin(),
+				measurement_->getTDCTimeMax(),
+				"S" ); // spread option (not error on mean)
+    t->SetXTitle( "amplitude" );
+    t->SetYTitle( "time [TDC units]" );
+    t->SetStats( kFALSE );
+    timeVsAmplitude_.push_back( t );
+  }
+
   // ( channel, amplitude, time ) ntuple
   name.str("");
   name << "times__" << measurement_->getIndex() << "_" << measurement_->getType() 
@@ -135,6 +158,7 @@ AFEB::teststand::Results::~Results(){
   delete threshold_;
   delete noise_;
   delete efficiency_;
+  for ( vector<TProfile*>::iterator t=timeVsAmplitude_.begin(); t!=timeVsAmplitude_.end(); ++t ) delete *t;
 }
 
 void AFEB::teststand::Results::add( const int channel, int const amplitude, const int time ){
@@ -144,6 +168,7 @@ void AFEB::teststand::Results::add( const int channel, int const amplitude, cons
   time_      = time;
   times_->Fill();
   pulses_->Fill( channel, amplitude );
+  timeVsAmplitude_.at( channel )->Fill( amplitude, time );
   bsem_.give();
 }
 
@@ -234,6 +259,7 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
   }
 }
 
+
 void AFEB::teststand::Results::createFigure( const string directory, const double fitRangeStart, const double fitRangeEnd ){
   fit( fitRangeStart, fitRangeEnd );
 
@@ -247,24 +273,35 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   
   gStyle->SetPalette(1,0);
 
-  TCanvas c( fileName_.c_str(), measurement_->getName().c_str(), 500, 500 );
+  TCanvas c( fileName_.c_str(), measurement_->getName().c_str(), 500, 1000 );
   TLatex latex;
-  c.Divide( 1, 2, 0., 0. );
+  c.Divide( 1, 2, 0.00001, 0.00001 );
 
-  c.cd( 0 );
+  TPad *efficiencyPad = (TPad*)c.GetPad(1);
+  TPad *timePad = (TPad*)c.GetPad(2);
+
+  //
+  // The threshold scan (efficiencies)
+  // 
+  efficiencyPad->Divide( 1, 2, 0., 0. );
+
+  efficiencyPad->cd( 0 );
+  gPad->SetBottomMargin( 0.05 );
   latex.SetTextSize( 0.025 );
   latex.SetTextAlign(23);  // h centered, v top aligned
   latex.DrawLatex( 0.5, 0.99, pulses_->GetTitle() );
 
-  c.cd( 1 );
-  gPad->SetRightMargin( 0.07 );
+  efficiencyPad->cd( 1 );
+  gPad->SetRightMargin( 0.05 );
+  gPad->SetTopMargin( 0.01 );
   gPad->SetGridx();
   gPad->SetFrameFillColor( kGray + 3 );
   pulses.SetTitle("");
   pulses.Draw("colz");
 
-  c.cd( 2 );
-  gPad->SetRightMargin( 0.07 );
+  efficiencyPad->cd( 2 );
+  gPad->SetRightMargin( 0.05 );
+  gPad->SetBottomMargin( 0.15 );
   gPad->SetGridx();
   gPad->SetGridy();
   threshold.SetTitle("");
@@ -274,6 +311,22 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   TGaxis *axis = adjustToHistogram( &threshold, &efficiency );
   axis->Draw();
   efficiency.Draw("same");
+
+  //
+  // The time responses
+  //
+  timePad->Divide( 2, testedDevice_->getNChannels()/2, 0., 0. );
+  for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
+    timePad->cd( iChannel + 1 );
+    // Create a copy so as not to change the original's tile:
+    TProfile p( *timeVsAmplitude_.at( iChannel ) );
+    p.SetTitle( utils::stringFrom<int>( iChannel ).c_str() );
+    p.SetTitleSize( 0.3 );
+    p.SetMinimum( measurement_->getTDCTimeMin() );
+    p.SetMaximum( measurement_->getTDCTimeMax() );
+    p.DrawCopy("e");
+  }
+
   c.Print( ( directory + "/" + fileName_+".png").c_str() );
   delete axis;
 }
@@ -332,6 +385,8 @@ void AFEB::teststand::Results::save( const string directory ){
   threshold_->Write();
   noise_->Write();
   efficiency_->Write();
+  for ( vector<TProfile*>::iterator t=timeVsAmplitude_.begin(); t!=timeVsAmplitude_.end(); ++t ) (*t)->Write();
+
   bsem_.give();
 
   f.Close();

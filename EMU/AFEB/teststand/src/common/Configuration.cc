@@ -120,7 +120,7 @@ void AFEB::teststand::Configuration::createMeasurements() {
 
     // Loop over the requested (enabled) measurement types
     vector< pair<string,string> >::const_iterator m;
-    int index;
+    int index = 1;
     for ( m = enabledMeasurementTypes.begin(); m != enabledMeasurementTypes.end(); ++m ){
 
       // Check if a measurement with this TDC module already exists:

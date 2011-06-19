@@ -4,6 +4,7 @@
 #include "toolbox/BSem.h"
 
 #include "TH2D.h"
+#include "TProfile.h"
 #include "TTree.h"
 #include "TFile.h"
 #include "TGaxis.h"
@@ -38,6 +39,7 @@ namespace AFEB { namespace teststand {
       TH1D *threshold_; ///< measured threshold( channel ) 1D histogram
       TH1D *noise_; ///< measured noise( channel ) 1D histogram
       TH1D *efficiency_; ///< measured efficiency( channel ) 1D histogram
+      vector<TProfile*> timeVsAmplitude_;
       int channel_;
       int amplitude_;
       int time_;

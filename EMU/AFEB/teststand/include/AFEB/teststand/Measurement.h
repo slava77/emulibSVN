@@ -43,6 +43,8 @@ namespace AFEB { namespace teststand {
       int getAmplitudeMax () const { return amplitudeMax_; }
       int getAmplitudeStep() const { return amplitudeStep_;}
       int getNPulses() const { return nPulses_; }
+      int getTDCTimeMin() const { return tdcTimeMin_; }
+      int getTDCTimeMax() const { return tdcTimeMax_; }
       string getStatus() const { return status_[status_t_]; }
       bool execute();
       void abort() const { isToKeepRunning_ = false; }

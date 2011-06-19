@@ -15,6 +15,9 @@
 	<td><xsl:value-of select="@a:dateTime"/></td>
       </tr>
       <tr>
+	<td colspan="3"><hr/></td>
+      </tr>
+      <tr>
 	<td>
 	  <input type="submit" name="fsm" value="Configure" class="submit" title="Configure the measurement.">
 	    <xsl:if test="@a:state!='Halted'"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
@@ -33,6 +36,7 @@
       </tr>
       <tr>
 	<td colspan="3">
+	  <hr/>
 	  <xsl:apply-templates mode="application" select="../a:results"/>
 	</td>
       </tr>
