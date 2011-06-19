@@ -44,9 +44,9 @@ public:
   Logger logger_;
 
 private:
-  ////////////////////////////////////////////////////////
-  // Beginning of exported parameters for configuration //
-  ////////////////////////////////////////////////////////
+  //////////////////////////////////////
+  // Beginning of exported parameters //
+  //////////////////////////////////////
 
   ///
   /// \defgroup Application_config_param Application parameters exported for configuration
@@ -56,12 +56,14 @@ private:
   xdata::String HTML_ROOT_;
   xdata::String configurationDir_;
   xdata::String configFileNameFilter_;
-  xdata::String resultBaseDir_; ///< results' base directory relative to HTML_ROOT_
+  xdata::String resultBaseURLDir_; ///< results' base directory relative to HTML_ROOT_
 /// @}
 
-  ////////////////////////////////////////////////////////
-  // End of exported parameters for configuration       //
-  ////////////////////////////////////////////////////////
+  xdata::String reasonForFailure_;
+
+  ////////////////////////////////
+  // End of exported parameters //
+  ////////////////////////////////
 
   void createFSM();
   void stateChanged(toolbox::fsm::FiniteStateMachine &fsm);
@@ -71,6 +73,7 @@ private:
   void enableAction(toolbox::Event::Reference e);
   void haltAction(toolbox::Event::Reference e);
   void noAction(toolbox::Event::Reference e);
+  void failAction(toolbox::Event::Reference e);
 
 
   /// Generates logger name.
@@ -125,7 +128,7 @@ private:
 
   bool measurementInWorkLoop(toolbox::task::WorkLoop *wl);
 
-  string applicationURLPath_; ///< the path of the URL of this application
+  string applicationURLPath_; ///< the path part of the URL of this application
   static const string applicationNamespace_; ///< the namespace of this application
   string processingInstructionSetter_; ///< XSLT to set the processing instruction for XML
   string configurationXML_; ///< XML of the configuration
@@ -134,8 +137,9 @@ private:
   int currentMeasurementIndex_; ///< the index of the measurement being performed
   toolbox::task::WorkLoop *measurementWorkLoop_;
   toolbox::task::ActionSignature *measurementSignature_;
-  string resultDir_; ///< Result directory relative to the HTML root.
-  string resultDirFullPath_; ///< The result directory given as full path.
+  string resultURLDir_; ///< Result directory relative to the HTML root.
+  string resultSystemDir_; ///< The result directory given as full path.
+  string host_;  ///< The name of the host we're running on.
 };
 
 }}

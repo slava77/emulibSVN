@@ -7,4 +7,8 @@ td { background-color:#eeeeee; text-align:center; }
 .waiting { background-color:#dddddd; }
 .running { background-color:#eeee66; }
 .done { background-color:#aaffaa; }
+.Halted { background-color:#9999FF; }
+.Configured { background-color:#FFFF44; }
+.Enabled { background-color:#22dd22; }
+.Failed { background-color:#FF9999; text-decoration:blink; }
 /* .submit { background-color: #666666; color: #dddddd; } */

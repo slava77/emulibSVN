@@ -15,16 +15,31 @@ int AFEB::teststand::Jorway73A::findBranch(){
   //           ^bus               ^id     ==> In this example, branch=24.
   //   Vendor: JORWAY   Model: 73A              Rev: 208 
   //   Type:   Unknown                          ANSI SCSI revision: 02
-  const string vendor( "JORWAY" );
-  const string model( "73A" );
-  AFEB::teststand::utils::SCSI_t scsi = AFEB::teststand::utils::getSCSI( vendor, model );
-  if ( scsi.vendor != vendor || scsi.model != model ){
+  const string vendor( "PIONEER" );
+  const string model( "BD-ROM" );
+  // const string vendor( "JORWAY" );
+  // const string model( "73A" );
+  AFEB::teststand::utils::SCSI_t scsi;
+  try{
+    scsi = AFEB::teststand::utils::getSCSI( vendor, model );
+  }
+  catch( xcept::Exception &e ){
     stringstream ss;
     ss << "Failed to find the Jorway73A SCSI device. (Looked for vendor: " << vendor 
        << ", model: " << model << ")";
-    cout << ss.str() << endl; // XCEPT_RAISE( xcept::Exception, ss.str() ); // TODO: throw exception
+    XCEPT_RETHROW( xcept::Exception, ss.str(), e );
   }
-  cout << "'branch' for Jorway73A: " << scsi.id + 8 * scsi.host << endl;
+  // TODO: see if /dev/sg* is read/writeable.
+  cout << "Found SCSI device:"            << endl
+       << " vendor:  " << scsi.vendor  << endl
+       << " model:   " << scsi.model   << endl
+       << " host:    " << scsi.host    << endl
+       << " channel: " << scsi.channel << endl
+       << " id:      " << scsi.id      << endl
+       << " lun:     " << scsi.lun     << endl
+       <<                                 endl
+       << "'Branch' for Jorway73A: "
+       << scsi.id + 8 * scsi.host      << endl;
   return ( scsi.id + 8 * scsi.host );
 }
 

@@ -148,7 +148,7 @@ string AFEB::teststand::utils::appendToSelectedNode( const string XML, const str
     const char* const id = "appendToSelectedNode";
     MemBufInputSource theInputSource( (const XMLByte*) XML.c_str(), (unsigned int) XML.size(), id );
     XalanDocument* xalan_document = theLiaison.parseXMLStream( theInputSource );
-    //cout << "Original XML from Xalan" << endl << AFEB::teststand::utils::serialize( xalan_document ) << endl;
+    // cout << "Original XML from Xalan" << endl << AFEB::teststand::utils::serialize( xalan_document ) << endl;
     XercesDocumentWrapper* docWrapper = theLiaison.mapDocumentToWrapper(xalan_document);
     
     XalanDocumentPrefixResolver thePrefixResolver( docWrapper );

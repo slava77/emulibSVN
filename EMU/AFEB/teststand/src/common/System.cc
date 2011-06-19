@@ -100,18 +100,19 @@ AFEB::teststand::utils::SCSI_t AFEB::teststand::utils::getSCSI( const string ven
 	scsi.channel = utils::stringTo<int>( matches[2] );
 	scsi.id      = utils::stringTo<int>( matches[3] );
 	scsi.lun     = utils::stringTo<int>( matches[4] );
-	// cout << matches.size() << " regex1 matches: " << endl << matches << endl;
+	//cout << matches.size() << " regex1 matches: " << endl << matches << endl;
       }
       if ( toolbox::regx_match( *l, regex2, matches ) ){
 	scsi.vendor   = utils::shaveOffBlanks( matches[1] );
 	scsi.model    = utils::shaveOffBlanks( matches[2] );
 	scsi.revision = utils::shaveOffBlanks( matches[3] );
-	// cout << matches.size() << " regex1 matches: " << endl << matches << endl;
+	//cout << matches.size() << " regex1 matches: " << endl << matches << endl;
+	// Require strict match for vendor. The model name should start with the given string.
 	if ( scsi.vendor.compare( vendor ) == 0 && 
-	     scsi.model .compare( model  ) == 0    ) return scsi;
+	     scsi.model .find   ( model  ) == 0    ) return scsi;
       }
     }
-    XCEPT_RAISE( xcept::Exception, string( "No SCSI device " ) + vendor + " " + model + " found.");
+    XCEPT_RAISE( xcept::Exception, string( "No SCSI device of vendor \"" ) + vendor + "\" and model \"" + model + "\" found.");
   }
   catch( xcept::Exception &e ){
     XCEPT_RETHROW( xcept::Exception, "Failed to get SCSI parameters.", e );

@@ -10,6 +10,7 @@
 #include "xoap/domutils.h" // for XMLCh2String
 #include "toolbox/task/WorkLoopFactory.h"
 #include "toolbox/net/URL.h"
+#include "toolbox/fsm/FailedEvent.h"
 
 #include "xercesc/util/XMLString.hpp"
 #include "xercesc/util/PlatformUtils.hpp"
@@ -45,12 +46,15 @@ AFEB::teststand::Application::Application(xdaq::ApplicationStub *s)
   measurementWorkLoop_ = toolbox::task::getWorkLoopFactory()->getWorkLoop( "AFEB::teststand::Application", "waiting" );
   measurementSignature_  = toolbox::task::bind( this, &AFEB::teststand::Application::measurementInWorkLoop, "measurementInWorkLoop" );
 
+  vector<string> lines = AFEB::teststand::utils::execShellCommand( string( "hostname -s" ) );
+  if ( lines.size() == 1 ) host_ = lines[0];
 }
 
 void AFEB::teststand::Application::createFSM(){
-    fsm_.addState('H', "Halted",     this, &AFEB::teststand::Application::stateChanged);
-    fsm_.addState('C', "Configured", this, &AFEB::teststand::Application::stateChanged);
-    fsm_.addState('E', "Enabled",    this, &AFEB::teststand::Application::stateChanged);
+    fsm_.addState('H', "Halted",         this, &AFEB::teststand::Application::stateChanged);
+    fsm_.addState('C', "Configured",     this, &AFEB::teststand::Application::stateChanged);
+    fsm_.addState('E', "Enabled",        this, &AFEB::teststand::Application::stateChanged);
+    fsm_.setFailedStateTransitionChanged(this, &AFEB::teststand::Application::stateChanged);
     
     fsm_.addStateTransition('H', 'C', "Configure", this, &AFEB::teststand::Application::configureAction);
     fsm_.addStateTransition('C', 'C', "Configure", this, &AFEB::teststand::Application::noAction);
@@ -61,8 +65,10 @@ void AFEB::teststand::Application::createFSM(){
     fsm_.addStateTransition('H', 'E', "Enable",    this, &AFEB::teststand::Application::noAction);    
     fsm_.addStateTransition('H', 'H', "Halt",      this, &AFEB::teststand::Application::noAction);
     fsm_.addStateTransition('E', 'E', "Enable",    this, &AFEB::teststand::Application::noAction);
+    fsm_.setFailedStateTransitionAction(           this, &AFEB::teststand::Application::failAction);
 
-    //fsm_.setFailedStateTransitionChanged(this, &AFEB::teststand::Application::stateChanged);
+    fsm_.setStateName('F', "Failed");
+
     fsm_.setInitialState( 'H' );
     fsm_.reset();
 }
@@ -73,7 +79,14 @@ void AFEB::teststand::Application::stateChanged( toolbox::fsm::FiniteStateMachin
 
 void AFEB::teststand::Application::fireEvent( const string name ){
   toolbox::Event::Reference event( new toolbox::Event( name, this ) );
-  fsm_.fireEvent( event );
+  //XCEPT_RAISE( xcept::Exception, "Test exception." );
+  try{
+    // fsm_.fireEvent( event ) expects toolbox::fsm::exception::Exception to be thrown.
+    // It catches it but won't itself rethrow it but sets the state to 'F' (Failed).
+    fsm_.fireEvent( event );
+  } catch ( toolbox::fsm::exception::Exception &e ){
+    XCEPT_RETHROW( xcept::Exception, "State transition failed. ", e );
+  }
 }
 
 void AFEB::teststand::Application::configureAction(toolbox::Event::Reference e){
@@ -82,30 +95,15 @@ void AFEB::teststand::Application::configureAction(toolbox::Event::Reference e){
   }
   delete configuration_;
   currentMeasurementIndex_ = -1;
-  resultDir_ = resultBaseDir_.toString() + "/" + AFEB::teststand::utils::getDateTime();
-  resultDirFullPath_ = string( getenv(HTML_ROOT_.toString().c_str()) ) + "/" + resultDir_;
-  AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + resultDirFullPath_ );
-  configuration_ = new Configuration( configurationXML_, resultDirFullPath_ );
-  LOG4CPLUS_DEBUG( logger_, "Crate:" << endl << *configuration_->getCrate() );
-
-  AFEB::teststand::utils::SCSI_t scsi;
+  resultURLDir_ = resultBaseURLDir_.toString() + "/" + AFEB::teststand::utils::getDateTime();
+  resultSystemDir_ = string( getenv(HTML_ROOT_.toString().c_str()) ) + "/" + resultURLDir_;
+  AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + resultSystemDir_ );
   try{
-    // TODO: get vendor and model from configuration.
-    scsi = AFEB::teststand::utils::getSCSI( "JORWAY", "73A" );
-    // scsi = AFEB::teststand::utils::getSCSI( "PIONEER", "BD-ROM" );
+    configuration_ = new Configuration( configurationXML_, resultSystemDir_ );
+    LOG4CPLUS_DEBUG( logger_, "Crate:" << endl << *configuration_->getCrate() );
   } catch ( xcept::Exception &e ){
-    LOG4CPLUS_FATAL( logger_, "Cannot continue without crate controller. " << xcept::stdformat_exception_history(e) );
-    XCEPT_RETHROW( toolbox::fsm::exception::Exception, "Cannot continue without crate controller.", e );
+    XCEPT_RETHROW( toolbox::fsm::exception::Exception, "Configuration failed. ", e );
   }
-  // TODO: see if /dev/sg* is read/writeable.
-  LOG4CPLUS_INFO( logger_, 
-		  "Found SCSI device:"            << endl
-		  << " vendor:  " << scsi.vendor  << endl
-		  << " model:   " << scsi.model   << endl
-		  << " host:    " << scsi.host    << endl
-		  << " channel: " << scsi.channel << endl
-		  << " id:      " << scsi.id      << endl
-		  << " lun:     " << scsi.lun );
 }
 
 void AFEB::teststand::Application::enableAction(toolbox::Event::Reference e){ // TODO: in separate thread, with mutex
@@ -149,6 +147,38 @@ void AFEB::teststand::Application::haltAction(toolbox::Event::Reference e){
 void AFEB::teststand::Application::noAction(toolbox::Event::Reference e){
 }
 
+void AFEB::teststand::Application::failAction(toolbox::Event::Reference event)
+//throw (toolbox::fsm::exception::Exception)
+{
+    try
+    {
+      if ( typeid(*event) == typeid(toolbox::fsm::FailedEvent) ){
+        toolbox::fsm::FailedEvent &failedEvent = dynamic_cast<toolbox::fsm::FailedEvent&>(*event);
+        xcept::Exception exception = failedEvent.getException();
+
+        stringstream ss;
+        ss << "Failure occurred when performing transition from "
+	   << failedEvent.getFromState() << " to " << failedEvent.getToState()
+	   << "; " << xcept::stdformat_exception_history(exception);
+
+	reasonForFailure_ = ss.str();
+
+        LOG4CPLUS_FATAL(logger_, ss.str() );
+      }
+    }catch( xcept::Exception& e ){
+      stringstream ss;
+      ss <<  "Caught exception while moving to Failed state: " << xcept::stdformat_exception_history(e);
+      LOG4CPLUS_FATAL(logger_, ss.str() );
+    }catch( std::exception& e ){
+      stringstream ss;
+      ss <<  "Caught exception while moving to Failed state: " << e.what();
+      LOG4CPLUS_FATAL(logger_, ss.str() );
+    }catch(...){
+      stringstream ss;
+      ss <<  "Caught an unknown exception while moving to Failed state.";
+      LOG4CPLUS_FATAL(logger_, ss.str() );
+    }
+}
 
 string AFEB::teststand::Application::generateLoggerName()
 {
@@ -177,12 +207,13 @@ void AFEB::teststand::Application::exportParams(){
   HTML_ROOT_            = "BUILD_HOME";
   configurationDir_     = "/tmp";
   configFileNameFilter_ = "AFEB*.xml";
-  resultBaseDir_        = "";
+  resultBaseURLDir_     = "";
+  reasonForFailure_     = "";
 
   s->fireItemAvailable( "configurationDir"    , &configurationDir_     );
   s->fireItemAvailable( "configFileNameFilter", &configFileNameFilter_ );
-  s->fireItemAvailable( "resultBaseDir"       , &resultBaseDir_        );
-
+  s->fireItemAvailable( "resultBaseURLDir"    , &resultBaseURLDir_     );
+  s->fireItemAvailable( "reasonForFailure"    , &reasonForFailure_     );
 }
 
 string AFEB::teststand::Application::createXMLWebPageSkeleton(){
@@ -203,9 +234,14 @@ string AFEB::teststand::Application::createXMLWebPageSkeleton(){
   // Application info
   ss << "  <a:application xmlns:a=\"" << applicationNamespace_ 
      <<               "\" a:urlPath=\"" << applicationURLPath_ 
-     <<               "\" a:state=\"" << fsm_.getStateName( fsm_.getCurrentState() )
      <<               "\" a:dateTime=\"" << AFEB::teststand::utils::getDateTime()
+     <<               "\" a:state=\"" << fsm_.getStateName( fsm_.getCurrentState() )
      <<               "\">" << endl;
+
+  // Message, if any
+  if ( fsm_.getCurrentState() == 'F' ){
+    ss << "    <a:message><![CDATA[" << reasonForFailure_.toString() << "]]></a:message>" << endl;
+  }
 
   // Configuration files
   ss << "    <a:configuration>" << endl;
@@ -218,9 +254,10 @@ string AFEB::teststand::Application::createXMLWebPageSkeleton(){
   // Results
   toolbox::net::URL url( getApplicationDescriptor()->getContextDescriptor()->getURL() );
   ss << "  <a:results xmlns:a=\"" << applicationNamespace_ 
-     <<           "\" a:host=\"" << url.getHost()
-     <<           "\" a:systemPath=\"" << resultDirFullPath_
-     <<           "\" a:urlPath=\"" << resultDir_ << "/"
+     <<           "\" a:host=\"" << host_
+     <<           "\" a:systemPath=\"" << resultSystemDir_
+     <<           "\" a:urlHost=\"" << url.getHost()
+     <<           "\" a:urlPath=\"" << resultURLDir_ << "/"
      <<           "\" a:file=\"" << "results.xml"
      <<           "\">" << endl;
   if ( configuration_ != NULL ) ss << configuration_->resultsXML();
@@ -244,8 +281,9 @@ string AFEB::teststand::Application::createResultsXML(){
 
   toolbox::net::URL url( getApplicationDescriptor()->getContextDescriptor()->getURL() );
   ss << "  <a:results xmlns:a=\"" << applicationNamespace_ 
-     <<           "\" a:host=\"" << url.getHost()
-     <<           "\" a:systemPath=\"" << resultDirFullPath_
+     <<           "\" a:host=\"" << host_
+     <<           "\" a:systemPath=\"" << resultSystemDir_
+     <<           "\" a:urlHost=\"" << url.getHost()
      <<           "\" a:urlPath=\"" // Everything is in the current directory.
      <<           "\" a:file=\"" << "results.xml"
      <<           "\">" << endl;
@@ -260,8 +298,8 @@ string AFEB::teststand::Application::createResultsXML(){
   string resultsXML = AFEB::teststand::utils::appendToSelectedNode( ss.str(), "/root", configurationXML_ );
 
   // Save it:
-  AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + resultDirFullPath_ );
-  AFEB::teststand::utils::writeFile( resultDirFullPath_ + "/results.xml", resultsXML );
+  AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + resultSystemDir_ );
+  AFEB::teststand::utils::writeFile( resultSystemDir_ + "/results.xml", resultsXML );
   copyStyleFilesToResultsDir();
 
 
@@ -274,9 +312,10 @@ string AFEB::teststand::Application::createResultsXML(){
      << "<root htmlDir=\"/AFEB/teststand/html/\">" << endl;
 
   ss << "  <a:results xmlns:a=\"" << applicationNamespace_ 
-     <<           "\" a:host=\"" << url.getHost()
-     <<           "\" a:systemPath=\"" << resultDirFullPath_
-     <<           "\" a:urlPath=\"" << resultDir_ << "/"
+     <<           "\" a:host=\"" << host_
+     <<           "\" a:systemPath=\"" << resultSystemDir_
+     <<           "\" a:urlHost=\"" << url.getHost()
+     <<           "\" a:urlPath=\"" << resultURLDir_ << "/"
      <<           "\" a:file=\"" << "results.xml"
      <<           "\">" << endl;
   if ( configuration_ != NULL ) ss << configuration_->resultsXML();
@@ -298,7 +337,7 @@ void AFEB::teststand::Application::copyStyleFilesToResultsDir(){
     command << "cp "
 	    << dir << "/AFEB/teststand/html/*_XSLT.xml "
 	    << dir << "/AFEB/teststand/html/*.css "
-	    << resultDirFullPath_;
+	    << resultSystemDir_;
     AFEB::teststand::utils::execShellCommand( command.str() );
   }
 }

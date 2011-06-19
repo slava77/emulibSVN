@@ -10,8 +10,8 @@
   <xsl:template match="a:application">
     <table class="layout">
       <tr>
-	<td><xsl:value-of select="@a:state"/></td>
-	<td/>
+	<td><span class="{@a:state}"><xsl:value-of select="@a:state"/></span></td>
+	<td><xsl:value-of select="a:message"/></td>
 	<td><xsl:value-of select="@a:dateTime"/></td>
       </tr>
       <tr>
@@ -60,6 +60,9 @@
   </xsl:template>
 
   <xsl:template mode="results" match="a:results">
+    <p>
+      These results can also be accessed offline by opening <a href="file://{@a:systemPath}/{@a:file}">file://<xsl:value-of select="@a:systemPath"/>/<xsl:value-of select="@a:file"/></a> on in a browser running on host <xsl:value-of select="@a:host"/>.
+    </p>
     <table class="layout">
       <xsl:apply-templates mode="results" select="a:device"/>
     </table>
