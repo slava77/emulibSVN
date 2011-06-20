@@ -77,6 +77,56 @@ string emuui_formatTime(time t) {
   return formatTime("%Y.%m.%d %H:%M", t);
 }
 
+/**
+  * Gives back a human readable representation of duration (e.g. 12min 5s)
+  * @param startTime beginning of the time period
+  * @param endTime end of the time period
+  * @param includeZeros (optional, default=false) if true, then also zeros will be reported e.g. 0min 3s or 0h 0min 1s. This may be useful for sorting and such.
+  * @param maxUnitIsMinutes (optional, default=false) if true, then max units is minutes so you'll get 130min 10s instead of 2h 10min 10s
+  */
+string emuui_formatDuration(time startTime, time endTime, bool includeZeros = false, bool maxUnitIsMinutes=false) {
+  int duration = endTime - startTime;
+  return emuui_formatDurationSeconds(duration, includeZeros, maxUnitIsMinutes);
+}
+
+/**
+  * Gives back a human readable representation of duration (e.g. 12min 5s)
+  * @param durationSeconds duration in seconds
+  */
+string emuui_formatDurationSeconds(int durationSeconds, bool includeZeros = false, bool maxUnitIsMinutes=false) {
+  
+  int durHours = 0;
+  int durMinutes = 0;
+  int durSeconds = 0;
+  
+  if (!maxUnitIsMinutes) {
+    durHours = floor(((float)durationSeconds) / 3600);
+    durMinutes = floor(((float)(durationSeconds % 3600)) / 60);
+  } else {
+    durMinutes = floor(((float)durationSeconds) / 60);
+  }
+  durSeconds = durationSeconds % 60;
+
+  string ret;
+  if (durHours > 0) {
+    return ret + durHours + "h " + durMinutes + "min";
+  }
+  if (durMinutes > 0) {
+    return ret + durMinutes + "min " + durSeconds + "s";
+  }
+  return ret + durSeconds + "s";
+  
+}
+
+/**
+  * Returns human readable representation of a time period.
+  * @param startTime beginning of the time period
+  * @param endTime end of the time period
+  */
+string emuui_formatPeriod(time startTime, time endTime, bool timeAndDuration) {
+  return "At " + emuui_formatTime(startTime) + " for " + emuui_formatDuration(startTime, endTime);
+}
+
 /** returns dp which has been updated most recently in the dp List. */
 string emuui_getDpWithLastUpdateTime(dyn_string dpList) {
   int retIndex = 1;
