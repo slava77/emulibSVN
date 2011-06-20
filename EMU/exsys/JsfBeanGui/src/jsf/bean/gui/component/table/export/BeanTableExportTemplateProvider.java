@@ -8,7 +8,6 @@ package jsf.bean.gui.component.table.export;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.component.table.BeanTable;
 
 /**

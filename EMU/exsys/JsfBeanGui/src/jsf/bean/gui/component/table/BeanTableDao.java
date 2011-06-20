@@ -35,7 +35,7 @@ public abstract class BeanTableDao implements Serializable {
      * @param table Table
      * @param c Criteria to be executed
      */
-    protected void preExecute(BeanTable table, Criteria c) {
+    protected void preExecute(Session session, Transaction transaction, BeanTable table, Criteria c) {
         c.setCacheable(true);
         c.setCacheRegion(table.getRowClass().getCanonicalName());
     }
@@ -46,7 +46,7 @@ public abstract class BeanTableDao implements Serializable {
      * @param table Table
      * @param c Criteria to be executed
      */
-    protected void preExecuteCount(BeanTable table, Criteria c) {
+    protected void preExecuteCount(Session session, Transaction transaction, BeanTable table, Criteria c) {
         c.setCacheable(true);
         c.setCacheRegion(table.getRowClass().getCanonicalName());
     }
@@ -75,6 +75,7 @@ public abstract class BeanTableDao implements Serializable {
                                 .setFirstResult((pageIndex - 1) * pageSize)
                                 .setMaxResults(pageSize);
             applyOrder(c, table);
+            preExecute(session, transaction, table, c);
             pageIds = c.list();
         }
 
@@ -93,7 +94,7 @@ public abstract class BeanTableDao implements Serializable {
             applyOrder(c, table);
 
             try {
-                preExecute(table, c);
+                preExecute(session, transaction, table, c);
                 c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
                 data = c.list();
             } catch (QueryException ex) {
@@ -119,7 +120,7 @@ public abstract class BeanTableDao implements Serializable {
                             .getExecutableCriteria(session)
                             .setProjection(Projections.rowCount());
 
-        preExecuteCount(table, c);
+        preExecuteCount(session, transaction, table, c);
         c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
         Long count = (Long) c.uniqueResult();

@@ -15,6 +15,7 @@ import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.component.table.column.BeanTableColumnSortable;
+import jsf.bean.gui.component.table.export.BeanTableExportTemplateList;
 import jsf.bean.gui.metadata.PropertyMd;
 import org.json.JSONException;
 
@@ -25,6 +26,7 @@ public class BeanTable extends BeanTableControls {
 
     private final BeanTablePack pack;
     private final Class<? extends EntityBeanBase> rowClass;
+    private final BeanTableExportTemplateList exportTemplateList;
 
     private DataModel<EntityBeanBase> data;
     private Long dataCount;
@@ -39,6 +41,7 @@ public class BeanTable extends BeanTableControls {
 
         this.pack = pack;
         this.rowClass = rowClass;
+        this.exportTemplateList = new BeanTableExportTemplateList(this);
 
         for (PropertyMd pmd: this.rowClass.newInstance().getPropertyMetadata()) {
             BeanTableColumn col = BeanTableColumnFactory.getBeanTableColumn(this, pmd);
@@ -199,6 +202,10 @@ public class BeanTable extends BeanTableControls {
 
     public void setLiveRefreshInterval(int liveRefreshInterval) {
         getProperties().setLiveRefreshInterval(liveRefreshInterval);
+    }
+
+    public BeanTableExportTemplateList getExportTemplateList() {
+        return exportTemplateList;
     }
 
     /*********************************************

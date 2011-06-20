@@ -49,8 +49,7 @@
                            title="#{cc.attrs.title}"
                            styleClass="iceCmdLnk #{cc.attrs.styleClass}"
                            style="#{cc.attrs.style}"
-                           disabled="#{cc.attrs.disable}"
-                           onclick="jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'popup').trigger('controlClick', [this]); return false;"/>
+                           disabled="#{cc.attrs.disable}"/>
 
             <h:commandButton id="button"
                              rendered="#{cc.attrs.type == 'button'}"
@@ -58,8 +57,7 @@
                              title="#{cc.attrs.title}"
                              styleClass="iceCmdBtn #{cc.attrs.styleClass}"
                              disabled="#{cc.attrs.disable}"
-                             style="#{cc.attrs.style}"
-                             onclick="jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'popup').trigger('controlClick', [this]); return false;"/>
+                             style="#{cc.attrs.style}"/>
 
             <div id="#{componentSupportBean.clientId}:popup"
                  style="display: none; #{cc.attrs.popupStyle};"
@@ -71,45 +69,9 @@
                     // <![CDATA[
 
                     jQuery(document).ready(function () {
-
-                        jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'popup')
-                            .hover(function() {
-                                jQuery(this).data("mouse_inside", true);
-                            }, function() {
-                                jQuery(this).data("mouse_inside", false);
-                            })
-                            .bind('controlClick', function(event, control) {
-                                var p = jQuery(this);
-                                if (!p.is(':visible')) {
-                                    var c = jQuery(control);
-                                    p.data("control_click", true);
-                                    p.css("top", c.position().top + c.outerHeight(true))
-                                        .css("left", c.position().left)
-                                        .show('fast');
-                                } else {
-                                    p.hide('fast');
-                                }
-                            })
-                            .css("position", "absolute");
-
-                        jQuery("body").mouseup(function() {
-                            var p = jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'popup');
-                            if (p.is(':visible') && !p.data("mouse_inside")) {
-                                p.hide('fast');
-                            }
-                        });
-
-                        ice.onBeforeUpdate(function() {
-                            var p = jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'popup');
-                            if (p.is(':visible')) {
-                                if (!p.data("control_click")) {
-                                    p.hide('fast');
-                                } else {
-                                    p.data("control_click", false);
-                                }
-                            }
-                        });
-
+                        var p = jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'popup');
+                        var c = jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'button, ' + jqPrefix('#{componentSupportBean.jqPrefix}') + 'link');
+                        c.dropDown(p);
                     });
                     //]]>
                 </script>

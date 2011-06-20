@@ -125,16 +125,7 @@ public abstract class BeanTableControls implements Serializable {
      * Flags
      */
 
-    private boolean displayFilter = false;
     private boolean displayColumns = false;
-
-    public boolean isDisplayFilter() {
-        return displayFilter;
-    }
-
-    public void setDisplayFilter(boolean displayFilter) {
-        this.displayFilter = displayFilter;
-    }
 
     public boolean isDisplayColumns() {
         return displayColumns;
