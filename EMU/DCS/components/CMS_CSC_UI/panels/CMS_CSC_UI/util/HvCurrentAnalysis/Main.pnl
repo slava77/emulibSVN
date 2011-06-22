@@ -8,7 +8,9 @@ PANEL,-1 -1 1005 755 N "_3DFace" 0
 }" 0
  E E E E 1 -1 -1 0  0 0
 ""0  1
-E "dyn_string dps;
+E "#uses \"CMSfwGenericPlotter/CMSfwGenericPlotter.ctl\"
+
+dyn_string dps;
 
 mapping idToDpe;
 mapping idToStartTime;
@@ -138,28 +140,41 @@ void setStatus(string status) {
   }
 }
 
-void showPlot(string dpe, time startTime = 0, time endTime = 0) {
-  // configure some params
-  dpSet(\"trendPlot.curveTypes\", makeDynInt(2,2,2,2,2,2,2,2));
-  dpSet(\"trendPlot.axii\", makeDynBool(true,true,true,true,true,true,true,true));
-  dpSet(\"trendPlot.plotType\", 2);
-  dpSet(\"trendPlot.yRangeMin\", makeDynFloat(0, 0, 0, 0, 0, 0, 0, 0));
-  dpSet(\"trendPlot.yRangeMax\", makeDynFloat(0, 0, 0, 0, 0, 0, 0, 0));
+void showPlot(string dpe, string channelName, time startTime = 0, time endTime = 0) {
   
-  int duration = 3600 * 24; // default = one day
-  if ((startTime != 0) && (endTime != 0)) {
-    duration = endTime - startTime;
-    dpSet(\"trendPlot.xRangeMin\", makeDynFloat(startTime, 0, 0, 0, 0, 0, 0, 0));
-    dpSet(\"trendPlot.xRangeMax\", makeDynFloat(endTime, 0, 0, 0, 0, 0, 0, 0));
-  }
+  if (isFunctionDefined(\"CMSfwGenericPlotter_openPlotForInterval\")) { // use Lorenzo's plotter
+    if ((startTime != 0) && (endTime != 0)) {
+      CMSfwGenericPlotter_openPlotForInterval(makeDynString(dpe), \"HV Current on \" + channelName,
+                                              startTime, endTime,
+                                              CMSfwGenericPlotter_BASIC | CMSfwGenericPlotter_ALLOW_CHANGE_DATE
+                                              );
+    } else {
+      CMSfwGenericPlotter_openPlotForLastDays(makeDynString(dpe), \"HV Current on \" + channelName,
+                                              1, CMSfwGenericPlotter_BASIC | CMSfwGenericPlotter_ALLOW_CHANGE_DATE);
+    }
+  } else { // use fwTrending
+  
+    // configure some params
+    dpSet(\"trendPlot.curveTypes\", makeDynInt(2,2,2,2,2,2,2,2));
+    dpSet(\"trendPlot.axii\", makeDynBool(true,true,true,true,true,true,true,true));
+    dpSet(\"trendPlot.plotType\", 2);
+    dpSet(\"trendPlot.yRangeMin\", makeDynFloat(0, 0, 0, 0, 0, 0, 0, 0));
+    dpSet(\"trendPlot.yRangeMax\", makeDynFloat(0, 0, 0, 0, 0, 0, 0, 0));
+  
+    int duration = 3600 * 24; // default = one day
+    if ((startTime != 0) && (endTime != 0)) {
+      duration = endTime - startTime;
+      dpSet(\"trendPlot.xRangeMin\", makeDynFloat(startTime, 0, 0, 0, 0, 0, 0, 0));
+      dpSet(\"trendPlot.xRangeMax\", makeDynFloat(endTime, 0, 0, 0, 0, 0, 0, 0));
+    }
 
-  dpSet(\"trendPlot.timeRange\", duration);
+    dpSet(\"trendPlot.timeRange\", duration);
   
   
-  ChildPanelOnCentral(\"fwTrending/fwTrendingPlot.pnl\", \"HV Current NOTE: you have to divide the value by 11 to get uA\", 
-                    makeDynString(\"$PlotName:trendPlot\", 
-                                  \"$templateParameters:dp1=\" + dpe + \",dp2=,dp3=,dp4,dp5,dp6,dp7,dp8,plotName=HV Current\"));
-  
+    ChildPanelOnCentral(\"fwTrending/fwTrendingPlot.pnl\", \"HV Current NOTE: you have to divide the value by 11 to get uA\", 
+                      makeDynString(\"$PlotName:trendPlot\", 
+                                    \"$templateParameters:dp1=\" + dpe + \",dp2=,dp3=,dp4,dp5,dp6,dp7,dp8,plotName=HV Current\"));
+  }  
 }
 " 0
  2
@@ -201,8 +216,8 @@ E E E
 LANG:1 0 
 
 2
-"horizontalHeaderFormat" "enum 0"
 "firstDayOfWeek" "enum 1"
+"horizontalHeaderFormat" "enum 0"
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0  10 80 210 230
@@ -303,8 +318,8 @@ E E E
 LANG:1 0 
 
 2
-"firstDayOfWeek" "enum 1"
 "horizontalHeaderFormat" "enum 0"
+"firstDayOfWeek" "enum 1"
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0  10 310 210 460
@@ -523,10 +538,11 @@ LANG:1 3 Go!
  E "main(int row, string column)
 {
   string id = this.cellValueRC(row, \"channel\") + this.cellValueRC(row, \"time\");
+  string channelName = this.cellValueRC(row, \"channel\");
   string dpe = idToDpe[id];
   time startTime = idToStartTime[id];
   time endTime = idToEndTime[id];
-  showPlot(dpe);//, startTime, endTime); // don't know how to set start time in the plot!!
+  showPlot(dpe, channelName, startTime, endTime); // don't know how to set start time in the plot!!
 }
 " 0
 
@@ -545,31 +561,31 @@ LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
   this.tableMode = TABLE_SELECT_LINE;
   this.selectByClick = TABLE_SELECT_LINE;
 }" 0
-E 1 0 1 5 0 "channel" 6 1 0 "s" 1
+E 1 0 1 5 0 "channel" 24 1 0 "s" 1
 LANG:1 7 Channel
 E
 1
 LANG:1 0 
 
-250 "time" 6 1 0 "s" 1
+250 "time" 14 1 0 "s" 1
 LANG:1 10 Start Time
 E
 1
 LANG:1 0 
 
-150 "duration" 6 1 0 "s" 1
+150 "duration" 9 1 0 "s" 1
 LANG:1 8 Duration
 E
 1
 LANG:1 0 
 
-100 "minCurrent" 6 1 0 "s" 1
+100 "minCurrent" 11 1 0 "s" 1
 LANG:1 17 Min. Current (uA)
 E
 1
 LANG:1 0 
 
-120 "maxCurrent" 6 1 0 "s" 1
+120 "maxCurrent" 11 1 0 "s" 1
 LANG:1 17 Max. Current (uA)
 E
 1
