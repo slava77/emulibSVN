@@ -1,16 +1,25 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 1005 755 N "_3DFace" 0
+PANEL,-1 -1 1005 806 N "_3DFace" 0
 "main()
 {
-  dps = dpNames(\"*:*.value\", \"CSC_HV_I_DATA\");
+  allDps = dpNames(\"*:*.value\", \"CSC_HV_I_DATA\");
+  
+  dyn_string ex;
+  for (int i=1; i <= dynlen(allDps); i++) {
+    string dp = dpSubStr(allDps[i], DPSUB_DP);
+    string channelName = emu_getChamberName(emu_fsmNodeToDeviceParams(dp, ex)) + 
+                         \" ch. \" + substr(dp, 19, 2);
+    
+    comboChannel.appendItem(channelName);
+  }
 }" 0
  E E E E 1 -1 -1 0  0 0
 ""0  1
 E "#uses \"CMSfwGenericPlotter/CMSfwGenericPlotter.ctl\"
 
-dyn_string dps;
+dyn_string allDps;
 
 mapping idToDpe;
 mapping idToStartTime;
@@ -20,13 +29,14 @@ const int MAX_RESULTS = 1000;
 
 /**
   * Fills the result table (current should be provided in nano amps, then they're converted to uA for internal use)
+  * @param dps list of DPS to go over
   * @param startTime beginning of search time period
   * @param startTime end of search time period
   * @param minCurrent filter of minimum current (nano amps)
   * @param maxCurrent filter of maximum current (nano amps)
   * @param minDuration filter of minimum duration (seconds)
   */
-void go(time startTime, time endTime, float minCurrent, float maxCurrent, int minDuration) {
+void go(dyn_string dps, time startTime, time endTime, float minCurrent, float maxCurrent, int minDuration) {
   minCurrent /= 1000;
   maxCurrent /= 1000;
   
@@ -216,8 +226,8 @@ E E E
 LANG:1 0 
 
 2
-"firstDayOfWeek" "enum 1"
 "horizontalHeaderFormat" "enum 0"
+"firstDayOfWeek" "enum 1"
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0  10 80 210 230
@@ -318,8 +328,8 @@ E E E
 LANG:1 0 
 
 2
-"horizontalHeaderFormat" "enum 0"
 "firstDayOfWeek" "enum 1"
+"horizontalHeaderFormat" "enum 0"
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0  10 310 210 460
@@ -455,7 +465,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 1 0 1 E 0.7692307692307692 0 1.015625 2.307692307692308 -9.843750000000034 0 E 10 502 271 631
+E E 0 0 1 0 1 E 0.7692307692307692 0 1.40625 2.307692307692308 -205.9375000000001 0 E 10 502 271 631
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
@@ -504,7 +514,7 @@ N 0 50000 1 50000 1 1
 13 20
 "btnGo"
 ""
-1 10.00000000000001 650 E E E 1 E 1 E N "_ButtonText" E N "FwStateOKPhysics" E E
+1 10.00000000000001 700 E E E 1 E 1 E N "_ButtonText" E N "FwStateOKPhysics" E E
  E E
 20 0 0 0 0 0
 E E E
@@ -515,7 +525,7 @@ LANG:1 0
 0
 1
 LANG:1 31 Sans Serif,18,-1,5,50,0,0,0,0,0
-0  8 648 212 742
+0  8 698 212 792
 
 T 
 1
@@ -528,7 +538,14 @@ LANG:1 3 Go!
   if (isEndNow) {
     endTime = getCurrentTime();
   }
-  go(startTime, endTime, spinMinCurrent.text, spinMaxCurrent.text, spinMinDuration.text);
+  
+  dyn_string dps;
+  if (chkAllChambers.state(0)) {
+    dps = allDps;
+  } else {
+    dps = makeDynString(allDps[comboChannel.selectedPos]);
+  }
+  go(dps, startTime, endTime, spinMinCurrent.text, spinMaxCurrent.text, spinMinDuration.text);
 }" 0
  E E E
 25 21
@@ -555,7 +572,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  238 88 992 742
+0  238 88 992 792
 "main()
 {
   this.tableMode = TABLE_SELECT_LINE;
@@ -692,7 +709,77 @@ E
 E
 E
 
-N 0 86400 1 0 1 1
+N 0 86400 1 30 1 1
+2 27
+"PRIMITIVE_TEXT9"
+""
+1 20 620 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+27 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 20 620 74 636
+0 2 2 "0s" 0 0 0 192 0 0  20 620 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 8 Channel:
+20 29
+"chkAllChambers"
+""
+1 100 620 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+29 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  98 618 202 641
+1
+T 
+1
+LANG:1 3 All
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+E"main(int button, int state)
+{
+  comboChannel.enabled = !state;
+}" 0
+22 31
+"comboChannel"
+""
+1 20 640 E E E 0 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+31 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  18 638 202 666
+0
+
+E
+E
+E
+ 0 0
 0
 LAYER, 1 
 1
