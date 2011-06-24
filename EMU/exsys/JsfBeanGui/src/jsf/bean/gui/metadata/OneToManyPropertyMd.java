@@ -24,7 +24,7 @@ public class OneToManyPropertyMd extends RestrictedPropertyMd {
 
     private static final Logger logger = SimpleLogger.getLogger(OneToManyPropertyMd.class);
 
-    private static Class[] mandatoryAnnotations = {OneToMany.class};
+    private static Class[] mandatoryAnnotations = { OneToMany.class };
 
     public OneToManyPropertyMd(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
         super(prop, mandatoryAnnotations);

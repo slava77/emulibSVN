@@ -126,14 +126,13 @@
                                             escape="false">
                             </ice:outputText>
                         </ice:panelGroup>
-                        <ice:panelGrid columns="4" cellpadding="5" id="panelGridOf4">
+                        <ice:panelGrid columns="2" 
+                                       cellpadding="5" 
+                                       id="panelGridOf4">
                             <ice:commandButton value="Save as my default"
                                                actionListener="#{cc.attrs.manager.savePersonalPropertiesListener}"/>
                             <ice:commandButton value="Save as global default"
                                                actionListener="#{cc.attrs.manager.saveGlobalPropertiesListener}"/>
-                            <ice:outputText value="Save filter?"/>
-                            <ice:selectBooleanCheckbox id="filterCheckBox"
-                                                       partialSubmit="true"/>
                         </ice:panelGrid>
                     </ice:panelTab>
 

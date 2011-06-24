@@ -8,6 +8,7 @@ import java.util.List;
 import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.component.table.column.BeanTableColumnBase;
 import jsf.bean.gui.component.table.column.BeanTableColumnEmbedded;
+import jsf.bean.gui.component.table.column.BeanTableColumnEntity;
 import jsf.bean.gui.component.table.column.BeanTableColumnSortable;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
@@ -260,7 +261,8 @@ public abstract class BeanTableDao implements Serializable {
                             if (subQueryTable != null) {
                                 if (subQueryTable.isFilterOn() || !pack.isSingleClass()) {
                                     DetachedCriteria subCriteria = getDetachedCriteria(subQueryTable);
-                                    subCriteria.setProjection(Projections.id());
+                                    String referencedProperty = ((BeanTableColumnEntity) col).getReferencedProperty();
+                                    subCriteria.setProjection(referencedProperty != null ? Projections.property(referencedProperty) : Projections.id());
                                     if (col.isListType()) {
                                         String listItemId = EntityBeanBase.getIdPropertyMd(subQueryTable.getRowClass()).getName();
                                         DetachedCriteria listCriteria = c.createCriteria(propertyName, config.nextAlias());

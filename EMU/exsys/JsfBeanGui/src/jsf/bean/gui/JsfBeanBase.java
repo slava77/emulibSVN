@@ -1,6 +1,7 @@
 package jsf.bean.gui;
 
 import com.icesoft.faces.context.effects.JavascriptContext;
+import java.io.File;
 import java.io.Serializable;
 import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
@@ -187,6 +188,11 @@ public abstract class JsfBeanBase implements Serializable {
         FacesMessage message = new FacesMessage(severity, msg, msg);
         FacesContext.getCurrentInstance().addMessage(componentId, message);
         return message;
+    }
+
+    public static File getRealFile(String file) {
+        String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath(file);
+        return new File(path);
     }
 
 }

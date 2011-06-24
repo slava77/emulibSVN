@@ -43,21 +43,26 @@
         <ice:panelGroup style="margin: 0; padding: 0"
                         rendered="#{cc.attrs.render}">
 
-            <h:commandLink id="link"
-                           rendered="#{cc.attrs.type == 'link'}"
-                           value="#{cc.attrs.value}"
-                           title="#{cc.attrs.title}"
-                           styleClass="iceCmdLnk #{cc.attrs.styleClass}"
-                           style="#{cc.attrs.style}"
-                           disabled="#{cc.attrs.disable}"/>
+            <ice:panelGroup rendered="#{cc.attrs.type == 'link'}">
+                <a id="#{componentSupportBean.clientId}:link"
+                   href="#"
+                   title="#{cc.attrs.title}"
+                   class="iceCmdLnk #{cc.attrs.styleClass}"
+                   style="#{cc.attrs.style}"
+                   disabled="#{cc.attrs.disable}">
+                    #{cc.attrs.value}
+                </a>
+            </ice:panelGroup>
 
-            <h:commandButton id="button"
-                             rendered="#{cc.attrs.type == 'button'}"
-                             value="#{cc.attrs.value}"
-                             title="#{cc.attrs.title}"
-                             styleClass="iceCmdBtn #{cc.attrs.styleClass}"
-                             disabled="#{cc.attrs.disable}"
-                             style="#{cc.attrs.style}"/>
+            <ice:panelGroup rendered="#{cc.attrs.type == 'button'}">
+                <input id="#{componentSupportBean.clientId}:button"
+                       type="button"
+                       value="#{cc.attrs.value}"
+                       title="#{cc.attrs.title}"
+                       class="iceCmdBtn #{cc.attrs.styleClass}"
+                       disabled="#{cc.attrs.disable}"
+                       style="#{cc.attrs.style}"/>
+            </ice:panelGroup>
 
             <div id="#{componentSupportBean.clientId}:popup"
                  style="display: none; #{cc.attrs.popupStyle};"

@@ -1,6 +1,8 @@
 package jsf.bean.gui.component.table.column;
 
 import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.component.table.BeanTable;
@@ -15,6 +17,10 @@ public abstract class BeanTableColumnFactory implements Serializable {
 
     public static BeanTableColumn getBeanTableColumn(BeanTable table, PropertyMd propertyMd) {
 
+        if (isList(propertyMd) && isEntity(propertyMd)) {
+            return new BeanTableColumnEntityList(table, propertyMd);
+        }
+
         if (isEntity(propertyMd)) {
             return new BeanTableColumnEntity(table, propertyMd);
         }
@@ -23,16 +29,28 @@ public abstract class BeanTableColumnFactory implements Serializable {
             return new BeanTableColumnEmbedded(table, (EmbeddedPropertyMd) propertyMd);
         }
 
-        if (isList(propertyMd)) {
-            return new BeanTableColumnList(table, propertyMd);
-        }
-
         return new BeanTableColumnSimple(table, propertyMd);
 
     }
 
+    public static Class getParametrizedType(PropertyMd propertyMd) {
+        Type t = propertyMd.getGenericType();
+        if (t instanceof ParameterizedType) {
+            ParameterizedType pt = (ParameterizedType) t;
+            if (pt.getActualTypeArguments().length == 1) {
+                Type lit = pt.getActualTypeArguments()[0];
+                if (lit instanceof Class) {
+                    return (Class) lit;
+                }
+            }
+        }
+        return Object.class;
+    }
+    
     private static boolean isEntity(PropertyMd propertyMd) {
-        return EntityBeanBase.class.isAssignableFrom(propertyMd.getType());
+        return EntityBeanBase.class.isAssignableFrom(propertyMd.getType()) ||
+               (isList(propertyMd) && 
+                   EntityBeanBase.class.isAssignableFrom(getParametrizedType(propertyMd)));
     }
 
     private static boolean isEmbedded(PropertyMd propertyMd) {
@@ -42,5 +60,5 @@ public abstract class BeanTableColumnFactory implements Serializable {
     private static boolean isList(PropertyMd propertyMd) {
         return propertyMd.getType().isArray() || Collection.class.isAssignableFrom(propertyMd.getType());
     }
-
+    
 }

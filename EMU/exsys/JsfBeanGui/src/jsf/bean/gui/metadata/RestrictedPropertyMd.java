@@ -18,6 +18,8 @@ import jsf.bean.gui.exception.InvalidEntityClassException;
  */
 public abstract class RestrictedPropertyMd extends PropertyMd {
 
+    private String referencedProperty = null;
+    
     public RestrictedPropertyMd(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
         super(prop);
     }
@@ -36,4 +38,12 @@ public abstract class RestrictedPropertyMd extends PropertyMd {
         return ret;
     }
 
+    public String getReferencedProperty() {
+        return referencedProperty;
+    }
+
+    public void setReferencedProperty(String referencedProperty) {
+        this.referencedProperty = referencedProperty;
+    }
+    
 }

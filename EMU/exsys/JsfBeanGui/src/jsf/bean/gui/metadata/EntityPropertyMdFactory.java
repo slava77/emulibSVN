@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -100,8 +101,25 @@ public class EntityPropertyMdFactory {
         // Go through all properties and make property metadata objects out of them
         for (PropertyDescriptor prop: props) {
             try {
+                
                 PropertyMd propMeta = createMetadataForProperty(prop);
                 if (propMeta != null) {
+                    
+                    // Retrieve referenced properties for Restricted types
+                    // This is used to map properties by references
+                    if (RestrictedPropertyMd.class.isAssignableFrom(propMeta.getClass())) {
+                        JoinColumn joinColumn = propMeta.getGetterMethod().getAnnotation(JoinColumn.class);
+                        if (joinColumn != null) {
+                            String referencedColumnName = joinColumn.referencedColumnName();
+                            if (referencedColumnName != null) {
+                                if (propMeta.getGetterMethod().isAnnotationPresent(ManyToOne.class)) {
+                                    ((RestrictedPropertyMd) propMeta).setReferencedProperty(
+                                        getPropertyNameByColumnName(propMeta.getType(), referencedColumnName));
+                                }
+                            }
+                        }
+                    }
+                    
                     metadata.add(propMeta);
                 }
             } catch (InvalidEntityBeanPropertyException ex) {
@@ -156,4 +174,23 @@ public class EntityPropertyMdFactory {
         throw new InvalidEntityBeanPropertyException("Don't know what type of property metadata to create for " + getter.toGenericString());
     }
 
+    /**
+     * Retrieves propertyName by using column name
+     * @param entityClass class to look for property at
+     * @param columnName column to look for
+     * @return propertyName
+     */
+    private static String getPropertyNameByColumnName(Class entityClass, String columnName) {
+        for (PropertyDescriptor prop: PropertyUtils.getPropertyDescriptors(entityClass)) {
+            Column column = prop.getReadMethod().getAnnotation(Column.class);
+            if (column != null) {
+                if (columnName.equals(column.name())) {
+                    return prop.getName();
+                }
+            }
+        }
+        return null;
+    }
+    
 }
+

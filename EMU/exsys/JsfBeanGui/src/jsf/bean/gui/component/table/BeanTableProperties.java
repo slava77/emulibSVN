@@ -64,6 +64,12 @@ public class BeanTableProperties extends GenericProperties {
         super(properties);
     }
 
+    public BeanTableProperties clone(String prefix) {
+        BeanTableProperties p = new BeanTableProperties(getProperties());
+        p.setTablePrefix(prefix);
+        return p;
+    }
+    
     public String getTableFilter() {
         return get(tableKey(KEY_TABLE_FILTER), DEFAULT_KEY_TABLE_FILTER);
     }
@@ -182,4 +188,5 @@ public class BeanTableProperties extends GenericProperties {
     public String getColumnNumberPattern(String name) {
         return get(columnKey(KEYP_COL_NUMBER_PATTERN, name), DEFAULT_COL_NUMBER_PATTERN);
     }
+    
 }

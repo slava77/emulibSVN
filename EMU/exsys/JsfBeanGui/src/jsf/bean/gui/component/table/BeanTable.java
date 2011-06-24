@@ -17,7 +17,6 @@ import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.component.table.column.BeanTableColumnSortable;
 import jsf.bean.gui.component.table.export.BeanTableExportTemplateList;
 import jsf.bean.gui.metadata.PropertyMd;
-import org.json.JSONException;
 
 public class BeanTable extends BeanTableControls {
 
@@ -160,11 +159,6 @@ public class BeanTable extends BeanTableControls {
         this.data = new ListDataModel<EntityBeanBase>(dao.getData(this));
         this.dataCount = dao.getDataCount((BeanTable) this);
         this.pack.getManager().clearSelected();
-        try {
-            String s = this.getPack().getSerializedFilter().toString(4);
-        } catch (JSONException ex) {
-            logger.log(Level.SEVERE, ex.toString());
-        }
     }
 
     public DataModel<EntityBeanBase> getData() {
@@ -319,9 +313,8 @@ public class BeanTable extends BeanTableControls {
     @Override
     protected void createSerializedTableFilter() {
          try {
-            String s = this.getPack().getSerializedFilter().toString(4);
-            getProperties().setTableFilter(s);
-        } catch (JSONException ex) {
+            getProperties().setTableFilter(this.getPack().getSerializedFilter().toString());
+        } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.toString());
         }
     }

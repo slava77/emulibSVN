@@ -1,28 +1,13 @@
 package jsf.bean.gui.component;
 
 import com.icesoft.faces.component.ext.RowSelectorEvent;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import javax.faces.application.Application;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
-import javax.persistence.Transient;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import jsf.bean.gui.ClassFinderIf;
 import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.component.table.BeanTable;
@@ -31,6 +16,7 @@ import jsf.bean.gui.component.table.BeanTableFilter;
 import jsf.bean.gui.component.table.BeanTableFilterItem;
 import jsf.bean.gui.component.table.BeanTablePack;
 import jsf.bean.gui.component.table.BeanTableProperties;
+import jsf.bean.gui.component.table.BeanTablePropertiesManager;
 import jsf.bean.gui.component.table.export.BeanTableExportTemplateProvider;
 import jsf.bean.gui.converter.ClassConverter;
 import jsf.bean.gui.log.Logger;
@@ -39,8 +25,10 @@ import jsf.bean.gui.log.SimpleLogger;
 public abstract class BeanTableManager implements Serializable {
 
     private static final Logger logger = SimpleLogger.getLogger(BeanTableManager.class);
+    
     private BeanTablePack tablePack;
     private List<BeanTablePack> tables = new ArrayList<BeanTablePack>();
+    private BeanTableProperties properties;
     private final String id;
     
     public abstract BeanTableDaoIf getBeanTableDao();
@@ -48,7 +36,12 @@ public abstract class BeanTableManager implements Serializable {
 
     public BeanTableManager(String id, Class<? extends EntityBeanBase> rowClass) throws Exception {
         this.id = id;
+        this.properties = new BeanTableProperties(BeanTablePropertiesManager.getProperties(id));
         this.tablePack = new BeanTablePack(this, rowClass);
+    }
+
+    public BeanTableProperties getProperties() {
+        return properties;
     }
 
     public String getId() {
@@ -119,7 +112,7 @@ public abstract class BeanTableManager implements Serializable {
     public String buildTablePrefix(String nextPrefix) {
         String tablePrefix = null;
         if (nextPrefix != null) {
-            if (getTable() != null) {
+            if (this.tablePack != null && getTable() != null) {
                 tablePrefix = getTable().getProperties().getTablePrefix();
             }
             tablePrefix = (tablePrefix != null ? tablePrefix.concat(nextPrefix) : nextPrefix).concat(".");
@@ -145,31 +138,19 @@ public abstract class BeanTableManager implements Serializable {
      * Row selection manager
      *
      *********************************************/
+    
     private EntityBeanBase selected;
-    private Boolean selectedFirst;
-    private Boolean selectedLast;
-
-    public boolean isSelectedFirst() {
-        return selectedFirst;
-    }
-
-    public boolean isSelectedLast() {
-        return selectedLast;
-    }
 
     public void setSelectedRowById(Object idValue) {
         Iterator<EntityBeanBase> it = this.getTable().getData().iterator();
-        selectedFirst = true;
         this.selected = null;
         while (it.hasNext()) {
             EntityBeanBase row = it.next();
             if (row.getEntityId().equals(idValue)) {
                 this.selected = row;
                 this.selected.setSelected(true);
-                selectedLast = !it.hasNext();
                 break;
             }
-            selectedFirst = false;
         }
     }
 
@@ -177,15 +158,12 @@ public abstract class BeanTableManager implements Serializable {
 
         if (event.isSelected()) {
             Iterator<EntityBeanBase> it = this.getTable().getData().iterator();
-            selectedFirst = true;
             while (it.hasNext()) {
                 EntityBeanBase row = it.next();
                 if (row.getSelected()) {
                     this.selected = row;
-                    selectedLast = !it.hasNext();
                     break;
                 }
-                selectedFirst = false;
             }
         } else {
             this.selected = null;
@@ -205,146 +183,27 @@ public abstract class BeanTableManager implements Serializable {
             this.selected = null;
         }
     }
+    
     /*********************************************
      *
-     * Bean Table Properties
+     * Table properties
      *
      *********************************************/
-    private static final String PROPERTIES_BASE_PATH = "resources/tables/";
-    private static final String PROPERTIES_EXTENSION = ".properties";
-    private static final String COOKIE_NAME_PATTERN = "table.%s.properties";
-    // Caching default properties
-    private static Map<String, Properties> beanProperties = new HashMap<String, Properties>();
-
-    public Properties getProperties() {
-
-        // Loading personal properties
-        {
-            // Get cookie for the table
-            String cookieName = String.format(COOKIE_NAME_PATTERN, id);
-
-            String myId = (String) getCookie(cookieName);
-
-            if (myId != null) {
-                File f = getRealFile(PROPERTIES_BASE_PATH.concat(File.separator).concat(myId).concat(PROPERTIES_EXTENSION));
-                try {
-                    FileInputStream fin = new FileInputStream(f);
-                    Properties p = new Properties();
-                    p.load(fin);
-                    fin.close();
-                    return p;
-                } catch (Exception ex) {
-                    logger.warn("Table [id = {0}] personal properties not found at [{1}]. Reseting and loading defaults...", id, f.getAbsolutePath());
-                    setCookie(cookieName, "", 0);
-                }
-            }
-        }
-
-        // Loading default properties
-        {
-            if (!beanProperties.containsKey(id)) {
-                File f = getRealFile(PROPERTIES_BASE_PATH.concat(File.separator).concat(id).concat(PROPERTIES_EXTENSION));
-                Properties p = new Properties();
-                try {
-                    p.load(new FileInputStream(f));
-                } catch (Exception ex) {
-                    logger.warn("Table [id = {0}] properties not found at [{1}]. Loading defaults...", id, f.getAbsolutePath());
-                }
-                beanProperties.put(id, p);
-            }
-        }
-
-        // Copy properties instead of using the same...
-        Properties op = beanProperties.get(id);
-        Properties p = new Properties();
-        for (Enumeration keys = op.propertyNames(); keys.hasMoreElements();) {
-            Object key = keys.nextElement();
-            p.put(key, op.get(key));
-        }
-
-        return p;
-
-    }
-
+    
     public void savePersonalPropertiesListener() throws IOException {
-        saveProperties(false);
+        BeanTablePropertiesManager.saveProperties(id, properties, false);
     }
 
     public void saveGlobalPropertiesListener() throws IOException {
-        saveProperties(true);
+        BeanTablePropertiesManager.saveProperties(id, properties, true);
     }
 
-    private void saveProperties(boolean global) throws IOException {
-        if (getTable() != null) {
-
-            String cookieName = String.format(COOKIE_NAME_PATTERN, id);
-
-            // Writting a file
-            Properties p = getTable().getProperties().getProperties();
-            UIOutput c = (UIOutput) findComponent(UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()));
-            Boolean b = (Boolean) c.getValue();
-            if (!b) {
-                p.remove(BeanTableProperties.KEY_TABLE_FILTER);
-            }
-            String filename = id;
-            if (!global) {
-                filename = (String) getCookie(cookieName);
-                if (filename == null) {
-                    File f = File.createTempFile(id.concat("."), "", getRealFile(PROPERTIES_BASE_PATH));
-                    filename = f.getName();
-                    f.delete();
-                }
-            }
-            p.store(new FileOutputStream(
-                    getRealFile(PROPERTIES_BASE_PATH.concat(File.separator).concat(filename).concat(PROPERTIES_EXTENSION))), filename);
-
-            // Saving filename in cookie
-            if (!global) {
-                setCookie(cookieName, filename, 356 * 24 * 60 * 60);
-            }
-
-        }
-    }
-
-    public UIComponent findComponent(UIComponent parent) {
-        UIComponent component = null;
-        for (UIComponent c : parent.getChildren()) {
-            if (c.getId().equals("filterCheckBox")) {
-                component = c;
-            } else {
-                if (c.getChildCount() > 0) {
-                    component = findComponent(c);
-                }
-            }
-        }
-        return component;
-    }
-
-    @Transient
-    private void setCookie(String name, String value, int age) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setMaxAge(age);
-        ((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).addCookie(cookie);
-    }
-
-    @Transient
-    private String getCookie(String name) {
-        Cookie cookie[] = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getCookies();
-        if (cookie != null && cookie.length > 0) {
-            for (int i = 0; i < cookie.length; i++) {
-                if (cookie[i].getName().equals(name)) {
-                    return cookie[i].getValue();
-                }
-            }
-        }
-        return null;
-    }
-
-    private File getRealFile(String file) {
-        String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath(file);
-        return new File(path);
-    }
-
+    /*********************************************
+     *
+     * Table filters
+     *
+     *********************************************/
+    
     public void addPropertyFilter(String property, BeanTableFilter filter) {
         getTopPack().getPropertyFilters().put(property, filter);
     }
@@ -368,17 +227,8 @@ public abstract class BeanTableManager implements Serializable {
         getTopPack().getPropertyFilters().clear();
     }
 
-    // TODO
-    public void refreshTable() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        Application application = context.getApplication();
-        ViewHandler viewHandler = application.getViewHandler();
-        UIViewRoot viewRoot = viewHandler.createView(context, context.getViewRoot().getViewId());
-        context.setViewRoot(viewRoot);
-        context.renderResponse();
-    }
-
     public ClassConverter getClassConverter() {
         return new ClassConverter(getClassFinder());
     }
+    
 }

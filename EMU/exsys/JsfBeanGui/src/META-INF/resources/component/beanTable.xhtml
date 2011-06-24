@@ -133,8 +133,6 @@
                                                             mimeType="#{r.template.mimeType}"
                                                             attachment="true"/>
                                     </ice:panelSeries>
-
-
                                     
                                     <ice:panelGroup rendered="#{!empty cc.attrs.manager.table.exportTemplateList.publicExportResources}">
                                         <ice:outputText value="Public:" style="font-weight: bold"/>
@@ -211,7 +209,7 @@
                                                        type="link"
                                                        style="font-size: 11px; font-weight: bold"
                                                        render="true"
-                                                       title="#{column.title}">
+                                                       title="Click to filter or order by [#{column.title}]">
                                             <ice:panelGrid columns="1" 
                                                            style="margin: 5px"
                                                            cellpadding="2">
@@ -291,9 +289,7 @@
                                              rendered="#{column.listType}"
                                              immediate="true"
                                              value="{list}">
-
                                 <f:setPropertyActionListener target="#{column.listPropertyTable}" value="#{item}"/>
-
                             </ice:commandLink>
 
                             <ice:outputText style="width: 100%; text-align: left"
