@@ -25,7 +25,7 @@ void emuuibc_startBackgroundChecks() {
   dyn_string xmasControlDPs = emuui_getDpNames("xmas_control", emuui_dummyMapping, ex);
   if (emu_checkException(ex)) { return; }
   mapping exsysIsAliveParams;
-  exsysIsAliveParams["system"] = getSystemName();
+  exsysIsAliveParams["system"] = emuui_getSystem();
   string exsysIsAliveDp = emuui_getDpName("exsys_is_alive", exsysIsAliveParams, ex);
   if (emu_checkException(ex)) { return; }
   emu_info("Background checks service: starting monitoring for disconnected devices (devices that loose communication)");
