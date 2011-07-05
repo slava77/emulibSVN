@@ -14,9 +14,9 @@ void drawCommunicationDevices(int width) {
   int posX, posY;
   getValue(\"refPoint\", \"position\", posX, posY); 
   int lblWidth = 57;
-  int xGapSize = (width - (7 * lblWidth)) / 7;
-  if (xGapSize < 93) {
-    xGapSize = 93; // minimum x gap size
+  int xGapSize = (width - (8 * lblWidth)) / 8;
+  if (xGapSize < 73) {
+    xGapSize = 73; // minimum x gap size
   }
   
   lblXmasP.position(posX, posY);
@@ -52,6 +52,11 @@ void drawCommunicationDevices(int width) {
   lblDcsPCs.position(posX, posY);
   posX += lblWidth;
   drawConnectionDevice(posX, posY, \"dcsPCs\");
+  posX += xGapSize;
+  
+  lblExsys.position(posX, posY);
+  posX += lblWidth + 5;
+  drawConnectionDevice(posX, posY, \"exsys\");
 }
 
 void drawConnectionDevice(int x, int y, string connectionDeviceType, string additionalDeviceParams = \"\" ) {
@@ -90,7 +95,7 @@ int paramWidth;
 dyn_string references;
 bool runningLocal; // if true then panel is running localy, if false then panel is a reference
 
-const int EMUUI_REFCOMM_DEVICE_WIDTH = 90;
+const int EMUUI_REFCOMM_DEVICE_WIDTH = 60;//90;
 const int EMUUI_REFCOMM_DEVICE_HEIGHT = 19;
 
 /** coppies dollar parameters to local variables. If any dollar parameter is missing 
@@ -273,6 +278,25 @@ LANG:1 0
 1
 "dashclr"N "_Transparent"
 E E 0 1 1 2 1 E 1 0 1 -140 -110 1 E 140 110 10 10
+2 15
+"lblExsys"
+""
+1 0 140 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+25 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 0 140 60 154
+0 2 2 "0s" 0 0 0 66 0 0  0 140 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 11 Expert Sys:
 0
 LAYER, 1 
 1

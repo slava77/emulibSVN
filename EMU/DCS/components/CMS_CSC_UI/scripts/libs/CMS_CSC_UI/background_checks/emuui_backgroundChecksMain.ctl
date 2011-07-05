@@ -24,9 +24,14 @@ void emuuibc_startBackgroundChecks() {
   if (emu_checkException(ex)) { return; }
   dyn_string xmasControlDPs = emuui_getDpNames("xmas_control", emuui_dummyMapping, ex);
   if (emu_checkException(ex)) { return; }
+  mapping exsysIsAliveParams;
+  exsysIsAliveParams["system"] = getSystemName();
+  string exsysIsAliveDp = emuui_getDpName("exsys_is_alive", exsysIsAliveParams, ex);
+  if (emu_checkException(ex)) { return; }
   emu_info("Background checks service: starting monitoring for disconnected devices (devices that loose communication)");
   emu_debug("Background checks service: disconnected devices dps: " + disconnectedDevDPs, emu_DEBUG_DETAIL);
   emu_debug("Background checks service: xmas control dps: " + xmasControlDPs, emu_DEBUG_DETAIL);
+  emu_debug("Background checks service: expert system is alive dp: " + exsysIsAliveDp, emu_DEBUG_DETAIL);
   
   // connect the DPs to the work functions
   for (int i=1; i <= dynlen(xmasControlDPs); i++) {
@@ -38,6 +43,9 @@ void emuuibc_startBackgroundChecks() {
   
   // connect to a list of remote PVSS projects (from distribution manager)
   dpConnect("emuuibc_checkComputersConnectionStatusCB", true, "_DistManager.State.SystemNums");
+  
+  // connect expert system is alive DP
+  dpConnect("emuuibc_checkExsysConnectionStatusCB", true, exsysIsAliveDp);
   
   // connect to the "UPS on battery" signal
   string upsOnBatteryDp = emuui_getDpName("UPS_on_battery_status", emuui_dummyMapping, ex);

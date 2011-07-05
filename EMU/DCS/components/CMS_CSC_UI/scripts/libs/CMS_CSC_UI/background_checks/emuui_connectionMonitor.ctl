@@ -182,6 +182,9 @@ void emuuibc_checkXmasConnectionState(string side) {
   dpSetWait(stateDp, state);
 }
 
+/**
+  * Callback that updates DCS computers connection status in the session DP
+  */
 void emuuibc_checkComputersConnectionStatusCB(string dp, dyn_string systemNums) {
   dyn_string ex;
   mapping requiredSystems = emuui_getMapping("dcsProjectSystemNames", ex);
@@ -197,15 +200,29 @@ void emuuibc_checkComputersConnectionStatusCB(string dp, dyn_string systemNums) 
   
   string state = "ALL OK";
   if (missingCount > 0) {
-    state = "ERROR (" + 
-            (mappinglen(requiredSystems) - missingCount) + "/" 
-            + mappinglen(requiredSystems) + 
-            ")";
+    state = "ERROR";
+//    state = "ERROR (" + 
+//            (mappinglen(requiredSystems) - missingCount) + "/" 
+//            + mappinglen(requiredSystems) + 
+//            ")";
   }
   
   mapping params;
   params["sessionId"] = emuui_getSessionId();
   string dpName = emuui_getDpName("connection_dcsPCs_general", params, ex);
+  if (emu_checkException(ex)) { return; }
+  dpSet(dpName, state);
+}
+
+/**
+  * Callback that updates expert system connection status in the session DP
+  */
+void emuuibc_checkExsysConnectionStatusCB(string dp, bool isAlive) {
+  dyn_string ex;
+  string state = isAlive ? "OK" : "ERROR";
+  mapping params;
+  params["sessionId"] = emuui_getSessionId();
+  string dpName = emuui_getDpName("connection_exsys_general", params, ex);
   if (emu_checkException(ex)) { return; }
   dpSet(dpName, state);
 }
