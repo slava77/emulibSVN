@@ -202,7 +202,7 @@ void drawLegend(dyn_string &ex, bool vertical = false) {
     string state = split[1];
     string color = split[2];
     if (state == \"default\") { continue; } // special case
-    if (state == \"DEAD\") { state=\"Excluded\"; } // special case - don't scare the operator - it's not dead, just excluded
+    if (state == \"DEAD\") { state=\"Excluded\"; } // special case - don't scare the operator - it's not dead, just excluded :)
     
     string refName = \"LegendaryItem_\" + state;
     addSymbol(myModuleName(), myPanelName(),
@@ -213,7 +213,7 @@ void drawLegend(dyn_string &ex, bool vertical = false) {
     if (vertical) {
       posY += 27;
     } else {
-      posX += 90;
+      posX += 120;
     }
   }
 }
@@ -995,7 +995,7 @@ LANG:1 29 Current Mode: Max Temperature
 2 21
 "lblChamberViewMode"
 ""
-1 10 10 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+1 1160 30 E E E 1 E 0 E N "_WindowText" E N "_3DFace" E E
  E E
 36 0 0 0 0 0
 E E E
@@ -1011,8 +1011,8 @@ LANG:1 0
   string dp = emuui_getSessionDp(\"mainChamberView\");
   dpConnect(\"updateChamberViewMode\", true, dp + \".connectionType\", dp + \".mode\");
 }" 0
- E 0 1 1 2 1 E U  1 E 10 10 245 25
-0 2 2 "0s" 0 0 0 192 0 0  10 10 1
+ E 0 1 1 2 1 E U  1 E 1160 30 1395 45
+0 2 2 "0s" 0 0 0 192 0 0  1160 30 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -1020,7 +1020,7 @@ LANG:1 40 Current chamber view mode: General state
 6 22
 "btnChamberViewMode"
 ""
-1 830 600 E E E 1 E 1 E N {0,0,0} E N "_Button" E E
+1 830 600 E E E 1 E 0 E N {0,0,0} E N "_Button" E E
  E E
 40 0 0 0 0 0
 E E E
@@ -1038,11 +1038,11 @@ E "main()
   
   ChildPanelOnCentralModal(EMUUI_COMPONENT_NAME + \"/ChamberViewModeChooser.pnl\", \"ModeChooser\", makeDynString());
 }" 0
- 0 1 1 2 1 E 1 0 1 -80 -54 1 E 360 60 470 83
+ 0 1 1 2 1 E 1 0 1 1040 -34 1 E 360 60 470 83
 2 23
 "btnChamberViewMode_label"
 ""
-1 280 10 E E E 1 E 1 E N "_ButtonText" E N "_Transparent" E E
+1 1400 30 E E E 1 E 0 E N "_ButtonText" E N "_Transparent" E E
  E E
 38 0 0 0 0 0
 E E E
@@ -1060,8 +1060,8 @@ E "main()
   
   ChildPanelOnCentralModal(EMUUI_COMPONENT_NAME + \"/ChamberViewModeChooser.pnl\", \"ModeChooser\", makeDynString());
 }" 0
- 0 1 1 2 1 E U  1 E 280 10 386 23
-0 2 2 "0s" 0 0 0 65 0 0  280 10 1
+ 0 1 1 2 1 E U  1 E 1400 30 1506 43
+0 2 2 "0s" 0 0 0 65 0 0  1400 30 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -1069,7 +1069,7 @@ LANG:1 11 Change Mode
 2 24
 "lblLegend"
 ""
-1 410 10 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+1 20 10 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
  E E
 44 0 0 0 0 0
 E E E
@@ -1079,8 +1079,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 410 10 457 25
-0 2 2 "0s" 0 0 0 192 0 0  410 10 1
+E E 0 1 1 2 1 E U  1 E 20 10 67 25
+0 2 2 "0s" 0 0 0 192 0 0  20 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -1088,7 +1088,7 @@ LANG:1 7 Legend:
 2 26
 "PRIMITIVE_TEXT1"
 ""
-1 1110 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 950 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 52 0 0 0 0 0
 E E E
@@ -1098,8 +1098,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1110 10 1198 25
-0 2 2 "0s" 0 0 0 192 0 0  1110 10 1
+E E 0 1 1 2 1 E U  1 E 950 10 1038 25
+0 2 2 "0s" 0 0 0 192 0 0  950 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -1107,7 +1107,7 @@ LANG:1 13 Known problem
 2 27
 "PRIMITIVE_TEXT2"
 ""
-1 1100 10 E E E 1 E 1 E N "white" E N "_3DText" E E
+1 940 10 E E E 1 E 1 E N "white" E N "_3DText" E E
  E E
 53 0 0 0 0 0
 E E E
@@ -1117,8 +1117,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 1100 10 1106 28
-0 2 2 "0s" 0 0 0 192 0 0  1100 10 1
+E E 0 1 1 2 1 E U  1 E 940 10 946 28
+0 2 2 "0s" 0 0 0 192 0 0  940 10 1
 1
 LANG:1 33 MS Shell Dlg,-1,13,5,75,0,0,0,0,0
 0 1
@@ -1136,11 +1136,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 1 0 1 -209 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4294967295 E 1424 40 10 10
+E E 0 1 1 2 1 E 1 0 1 -339 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4294967295 E 1424 40 10 10
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 -3248.357569803598 -1030 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -3693.933642980723 -1070 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -1150,7 +1150,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 0.991071428571429 0 1 -127.7678571428577 -20 1 E 1370 30 1506 45
+E E 0 1 1 2 1 E 0.991071428571429 0 1 -257.7678571428578 -20 1 E 1370 30 1506 45
 0 2 2 "0s" 0 0 0 192 0 0  1370 30 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -1159,7 +1159,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 48.59621635288433 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 48.57225032669196 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
