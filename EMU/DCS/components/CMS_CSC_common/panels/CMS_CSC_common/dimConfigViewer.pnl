@@ -14,11 +14,17 @@ PANEL,-1 -1 461 571 N "_3DFace" 1
   
   for (int i=1; i <= dynlen(services); i++) {
     dyn_string split = strsplit(services[i], \",\");
+    if (strpos(split[1], \"#\") >= 0) {
+      dynRemove(split, 1);
+    }
     tableServices.appendLine(\"dp\", split[1], \"dimItem\", split[2]);
   }
   
   for (int i=1; i <= dynlen(commands); i++) {
     dyn_string split = strsplit(commands[i], \",\");
+    if (strpos(split[1], \"#\") >= 0) {
+      dynRemove(split, 1);
+    }
     tableCommands.appendLine(\"dp\", split[1], \"dimItem\", split[2]);
   }
   
