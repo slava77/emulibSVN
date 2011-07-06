@@ -658,6 +658,25 @@ LANG:1 23 Set new nominal voltage
   dpSetWait(d2 + \".settings.v0\", spinNominalVoltage.text);
 }" 0
  E E E
+2 174
+"lblNoControl"
+""
+1 840 84 E E E 1 E 1 E N "_3DText" E N "FwStateAttention1" E E
+ E E
+26 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 0 0 1 E U  1 E 312 522 657 539
+1 2 2 "0s" 0 0 0 65 0 0  312 522 1
+1
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0 1
+LANG:1 32 You don't have control privilege
 0
 LAYER, 1 
 1
