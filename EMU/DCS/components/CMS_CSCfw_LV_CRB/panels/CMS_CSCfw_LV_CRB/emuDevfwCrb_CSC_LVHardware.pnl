@@ -1114,7 +1114,7 @@ LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
 2 91
 "1.5_t"
 ""
-1 84 -3474.75446198029 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+1 86 -3022.014150050602 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
  E E
 181 0 0 0 0 0
 E E E
@@ -2318,7 +2318,7 @@ vme_crate_draw(sname);
 2 152
 "PRIMITIVE_TEXT5"
 ""
-1 3513.943402285491 1498.720972689492 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 3519.948118761701 1501.327558298701 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 295 0 0 0 0 0
 E E E
@@ -2337,7 +2337,7 @@ LANG:1 2  1
 2 155
 "PRIMITIVE_TEXT8"
 ""
-1 3938.05098669319 1498.720972689492 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 3944.713404468759 1501.327558298701 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 301 0 0 0 0 0
 E E E
@@ -2356,7 +2356,7 @@ LANG:1 2  2
 2 156
 "PRIMITIVE_TEXT9"
 ""
-1 4185.447077597679 1814.838199956338 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 4192.49315446454 1817.935016626643 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 303 0 0 0 0 0
 E E E
@@ -2375,7 +2375,7 @@ LANG:1 2  3
 2 157
 "PRIMITIVE_TEXT10"
 ""
-1 3938.05098669319 2134.882349301037 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 3944.713404468759 2138.475486859285 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 305 0 0 0 0 0
 E E E
@@ -2394,7 +2394,7 @@ LANG:1 2  4
 2 158
 "PRIMITIVE_TEXT11"
 ""
-1 3537.504934752586 2134.882349301037 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 3543.546190189871 2138.475486859285 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 307 0 0 0 0 0
 E E E
@@ -2413,7 +2413,7 @@ LANG:1 2  5
 2 159
 "PRIMITIVE_TEXT12"
 ""
-1 3290.108843848095 1814.838199956338 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 3295.766440194088 1817.935016626643 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 309 0 0 0 0 0
 E E E
@@ -3515,25 +3515,6 @@ E E 0 1 1 2 1 E U  1 E 62 6 113 26
 LANG:1 33 MS Shell Dlg,-1,16,5,75,0,0,0,0,0
 0 1
 LANG:1 4 BUS#
-2 201
-"lblOnOff"
-""
-1 350 400 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
- E E
-390 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 350 400 602 418
-0 2 2 "0s" 0 0 0 192 0 0  350 400 1
-1
-LANG:1 33 MS Shell Dlg,-1,13,5,50,0,0,0,0,0
-0 1
-LANG:1 50                   switch with no delay            
 20 203
 "isDeviceEnabledCheck"
 ""
