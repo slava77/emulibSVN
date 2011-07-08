@@ -26,6 +26,15 @@
 	<c:attr c:name="c:signalConverterSlot" c:value="7" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
 	<c:attr c:name="c:signalConverterSlot" c:value="8" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
 	<c:attr c:name="c:signalConverterSlot" c:value="9" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+	<c:attr c:name="c:pulseGeneratorSlot" c:value="1" c:description="The crate slot in which the pulse generator for this device is inserted."/>
+	<c:attr c:name="c:pulseGeneratorSlot" c:value="2" c:description="The crate slot in which the pulse generator for this device is inserted."/>
+	<c:attr c:name="c:pulseGeneratorSlot" c:value="3" c:description="The crate slot in which the pulse generator for this device is inserted."/>
+	<c:attr c:name="c:pulseGeneratorSlot" c:value="4" c:description="The crate slot in which the pulse generator for this device is inserted."/>
+	<c:attr c:name="c:pulseGeneratorSlot" c:value="5" c:description="The crate slot in which the pulse generator for this device is inserted."/>
+	<c:attr c:name="c:pulseGeneratorSlot" c:value="6" c:description="The crate slot in which the pulse generator for this device is inserted."/>
+	<c:attr c:name="c:pulseGeneratorSlot" c:value="7" c:description="The crate slot in which the pulse generator for this device is inserted."/>
+	<c:attr c:name="c:pulseGeneratorSlot" c:value="8" c:description="The crate slot in which the pulse generator for this device is inserted."/>
+	<c:attr c:name="c:pulseGeneratorSlot" c:value="9" c:description="The crate slot in which the pulse generator for this device is inserted."/>
       </c:tag>
       <c:tag c:name="c:crate">
 	<c:attr c:name="c:number" c:value="1" c:description="The crate number to be set on the crate controller."/>
@@ -56,6 +65,8 @@
 	<c:attr c:name="c:" c:value="" c:description=""/>
       </c:tag>
       <c:tag c:name="c:PulseGenerator">
+	<c:attr c:name="c:capacitor" c:value="internal" c:description="Pulse the device's internal capacitor."/>
+	<c:attr c:name="c:capacitor" c:value="external" c:description="Pulse the external capacitor."/>
 	<c:attr c:name="c:slot" c:value="1" c:description="The crate slot in which the pulse generator is inserted."/>
 	<c:attr c:name="c:slot" c:value="2" c:description="The crate slot in which the pulse generator is inserted."/>
 	<c:attr c:name="c:slot" c:value="3" c:description="The crate slot in which the pulse generator is inserted."/>
@@ -87,26 +98,36 @@
     </c:crate>
 
     <c:inputs c:adaptor="10AD16A">
-      <c:testedDevice c:socket="1"  c:id="01" c:tdcSlot="7" c:tdcInput="1" c:signalConverterSlot="9"/>
-      <c:testedDevice c:socket="2"  c:id="02" c:tdcSlot="7" c:tdcInput="2" c:signalConverterSlot="9"/>
-      <c:testedDevice c:socket="3"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""/>
-      <c:testedDevice c:socket="4"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""/>
-      <c:testedDevice c:socket="5"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""/>
-      <c:testedDevice c:socket="6"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""/>
-      <c:testedDevice c:socket="7"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""/>
-      <c:testedDevice c:socket="8"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""/>
-      <c:testedDevice c:socket="9"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""/>
-      <c:testedDevice c:socket="10" c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""/>
+      <c:testedDevice c:socket="1"  c:id="01" c:tdcSlot="7" c:tdcInput="1" c:signalConverterSlot="9" c:pulseGeneratorSlot="6"/>
+      <c:testedDevice c:socket="2"  c:id="02" c:tdcSlot="7" c:tdcInput="2" c:signalConverterSlot="9" c:pulseGeneratorSlot="6"/>
+      <c:testedDevice c:socket="3"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot="" c:pulseGeneratorSlot=""/>
+      <c:testedDevice c:socket="4"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot="" c:pulseGeneratorSlot=""/>
+      <c:testedDevice c:socket="5"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot="" c:pulseGeneratorSlot=""/>
+      <c:testedDevice c:socket="6"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot="" c:pulseGeneratorSlot=""/>
+      <c:testedDevice c:socket="7"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot="" c:pulseGeneratorSlot=""/>
+      <c:testedDevice c:socket="8"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot="" c:pulseGeneratorSlot=""/>
+      <c:testedDevice c:socket="9"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot="" c:pulseGeneratorSlot=""/>
+      <c:testedDevice c:socket="10" c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot="" c:pulseGeneratorSlot=""/>
     </c:inputs>
 
     <c:measurements>
       <c:measurement c:name="Threshold scan" c:type="count_vs_dac" c:enabled="yes">
-	<c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="1000" c:slot="6"/>
+	<c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="1000" c:slot="6" c:capacitor="external"/>
+	<c:SignalConverter c:thresholdValue="50"/>
+	<c:TDC c:timeMin="0" c:timeMax="120"/>
+      </c:measurement>
+      <c:measurement c:name="Threshold scan" c:type="count_vs_dac" c:enabled="yes">
+	<c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="1000" c:slot="6" c:capacitor="external"/>
+	<c:SignalConverter c:thresholdValue="50"/>
+	<c:TDC c:timeMin="0" c:timeMax="120"/>
+      </c:measurement>
+      <c:measurement c:name="Threshold scan" c:type="count_vs_dac" c:enabled="yes">
+	<c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="1000" c:slot="6" c:capacitor="internal"/>
 	<c:SignalConverter c:thresholdValue="50"/>
 	<c:TDC c:timeMin="0" c:timeMax="120"/>
       </c:measurement>
       <c:measurement c:name="Time response vs. pulse hight" c:type="time_vs_dac" c:enabled="yes">
-	<c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="1000" c:slot="6"/>
+	<c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="1000" c:slot="6" c:capacitor="external"/>
 	<c:SignalConverter c:thresholdValue="50"/>
 	<c:TDC c:timeMin="0" c:timeMax="120"/>
       </c:measurement>
