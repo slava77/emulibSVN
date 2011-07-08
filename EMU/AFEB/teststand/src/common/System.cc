@@ -107,7 +107,7 @@ AFEB::teststand::utils::SCSI_t AFEB::teststand::utils::getSCSI( const string ven
 	scsi.model    = utils::shaveOffBlanks( matches[2] );
 	scsi.revision = utils::shaveOffBlanks( matches[3] );
 	//cout << matches.size() << " regex1 matches: " << endl << matches << endl;
-	// Require strict match for vendor. The model name should start with the given string.
+	// Require strict match for the vendor name. As for the model name, it's enough if it starts with the given string.
 	if ( scsi.vendor.compare( vendor ) == 0 && 
 	     scsi.model .find   ( model  ) == 0    ) return scsi;
       }
@@ -127,4 +127,44 @@ AFEB::teststand::utils::SCSI_t AFEB::teststand::utils::getSCSI( const string ven
   }
 
   return scsi;
+}
+
+string AFEB::teststand::utils::findSCSIDevice( AFEB::teststand::utils::SCSI_t scsi ){
+
+  const char *fullPathTo_devices     = "/proc/scsi/sg/devices";
+  const char *fullPathTo_device_strs = "/proc/scsi/sg/device_strs";
+  int host, chan, id, lun, type, opens, qdepth, busy, online; // See /proc/scsi/sg/device_hdr
+  string vendor, model;
+  const int nGenericDevices = 256; // There are 256 possible SCSI generic (sg) devices: /dev/sg{0..255}
+
+  fstream devices    ( fullPathTo_devices    , fstream::in );
+  fstream device_strs( fullPathTo_device_strs, fstream::in );
+  int iLine = 0; // The line number corresponds to the SCSI generic device number in /dev/sg<N>
+  while ( devices.good() && device_strs.good() && iLine < nGenericDevices ){
+    const int lineLength = 256;
+    char line_devices[lineLength];
+    char line_device_strs[lineLength];
+    devices    .getline( line_devices    , lineLength );
+    device_strs.getline( line_device_strs, lineLength );
+    if ( ! devices.fail() && ! device_strs.fail() ){
+      stringstream ss_line_devices    ( line_devices     );
+      ss_line_devices >> host >> chan >> id >> lun >> type >> opens >> qdepth >> busy >> online;
+      if ( scsi.host    == host &&
+	   scsi.channel == chan &&
+	   scsi.id      == id   &&
+	   scsi.lun     == lun     ){
+	stringstream ss_line_device_strs( line_device_strs );
+	ss_line_device_strs >> vendor >> model;
+	// Require strict match for the vendor name. As for the model name, it's enough if it starts with the given string.
+	if ( scsi.vendor.compare( vendor ) == 0 && scsi.model.find( model ) == 0 ){
+	  stringstream scsiDevice;
+	  scsiDevice << "/dev/sg" << iLine;
+	  return scsiDevice.str();
+	}
+      }
+    }
+    ++iLine;
+  }
+
+  return string("");
 }

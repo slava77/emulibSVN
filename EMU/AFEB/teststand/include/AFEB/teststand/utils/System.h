@@ -36,6 +36,7 @@ namespace AFEB { namespace teststand { namespace utils {
       };
       
       SCSI_t getSCSI( const string vendor, const string model );
+      string findSCSIDevice( SCSI_t scsi );
 }}}
 
 #endif

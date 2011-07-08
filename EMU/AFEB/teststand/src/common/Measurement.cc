@@ -145,8 +145,8 @@ bool AFEB::teststand::Measurement::execute(){
   status_t_ = AFEB::teststand::Measurement::running;
   switch ( type_t_ ){
   case count_vs_dac:
-    // keepRunning = countVsDAQ();
-    keepRunning = dummyResultGenerator();
+    keepRunning = countVsDAQ();
+    // keepRunning = dummyResultGenerator();
     break;
   case time_vs_dac:
     //keepRunning = countVsTime();

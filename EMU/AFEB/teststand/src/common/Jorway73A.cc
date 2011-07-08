@@ -3,6 +3,8 @@
 
 #include "xcept/Exception.h"
 
+#include <unistd.h> // for access()
+
 AFEB::teststand::Jorway73A::Jorway73A( const int crateNumber ) :
   CrateController( "Jorway73A", crateNumber ),
   branch_( findBranch() )
@@ -15,10 +17,11 @@ int AFEB::teststand::Jorway73A::findBranch(){
   //           ^bus               ^id     ==> In this example, branch=24.
   //   Vendor: JORWAY   Model: 73A              Rev: 208 
   //   Type:   Unknown                          ANSI SCSI revision: 02
-  const string vendor( "PIONEER" );
-  const string model( "BD-ROM" );
-  // const string vendor( "JORWAY" );
-  // const string model( "73A" );
+
+  // const string vendor( "PIONEER" );
+  // const string model( "BD-ROM" );
+  const string vendor( "JORWAY" );
+  const string model( "73A" );
   AFEB::teststand::utils::SCSI_t scsi;
   try{
     scsi = AFEB::teststand::utils::getSCSI( vendor, model );
@@ -29,17 +32,28 @@ int AFEB::teststand::Jorway73A::findBranch(){
        << ", model: " << model << ")";
     XCEPT_RETHROW( xcept::Exception, ss.str(), e );
   }
-  // TODO: see if /dev/sg* is read/writeable.
-  cout << "Found SCSI device:"            << endl
-       << " vendor:  " << scsi.vendor  << endl
-       << " model:   " << scsi.model   << endl
-       << " host:    " << scsi.host    << endl
-       << " channel: " << scsi.channel << endl
-       << " id:      " << scsi.id      << endl
-       << " lun:     " << scsi.lun     << endl
-       <<                                 endl
+
+  string scsiDevice = AFEB::teststand::utils::findSCSIDevice( scsi );
+
+  cout << "Found SCSI device:"           << endl
+       << "   vendor:  " << scsi.vendor  << endl
+       << "   model:   " << scsi.model   << endl
+       << "   host:    " << scsi.host    << endl
+       << "   channel: " << scsi.channel << endl
+       << "   id:      " << scsi.id      << endl
+       << "   lun:     " << scsi.lun     << endl
        << "'Branch' for Jorway73A: "
-       << scsi.id + 8 * scsi.host      << endl;
+       << scsi.id + 8 * scsi.host        << endl
+       << "Device file: " << scsiDevice  << endl;
+
+  // Check if the corresponding SCSI device is read/writeable
+  if ( access( scsiDevice.c_str(), R_OK | W_OK ) == -1 && errno == EACCES){
+    stringstream ss;
+    ss << "You don't seem to have read/write permissions for SCSI device \"" <<  scsiDevice 
+       << "\". Please execute [sudo] chmod 666 " <<  scsiDevice;
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+
   return ( scsi.id + 8 * scsi.host );
 }
 

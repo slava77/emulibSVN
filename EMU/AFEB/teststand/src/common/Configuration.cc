@@ -44,8 +44,12 @@ void AFEB::teststand::Configuration::createCrate() {
 
       if ( moduleType == "CrateController" ){
 	if ( moduleName == "Jorway73A" ){
-	  AFEB::teststand::Jorway73A *module = new AFEB::teststand::Jorway73A( crateNumber );
-	  crate_->insertController( module, slot );
+	  try{
+	    AFEB::teststand::Jorway73A *module = new AFEB::teststand::Jorway73A( crateNumber );
+	    crate_->insertController( module, slot );
+	  } catch( xcept::Exception &e ){
+	    XCEPT_RETHROW( xcept::Exception, "Failed to create Jorway73A.", e );
+	  }	  
 	}
 	else{
 	  // TODO: throw an exception
