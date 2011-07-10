@@ -12,12 +12,12 @@
 using namespace std;
 using namespace AFEB::teststand;
 
-const char* const AFEB::teststand::Measurement::types_[] = { "count_vs_dac", "time_vs_dac" };
+const char* const AFEB::teststand::Measurement::types_[] = { "count_vs_dac", "time_vs_dac", "dummy" };
 const char* const AFEB::teststand::Measurement::status_[] = { "waiting", "running", "done" };
 
 ostream& AFEB::teststand::operator<<( ostream& os, const Measurement& m ){
 
-  os << "Measurement '" << m.name_ << "' of type " << m.type_ << endl
+  os << "Measurement " << m.index_ << ": '" << m.name_ << "' of type " << m.type_ << " at position " << m.position_ << endl
      << " amplitudeMin="        << m.amplitudeMin_        
      << " amplitudeMax="        << m.amplitudeMax_        
      << " amplitudeStep="       << m.amplitudeStep_       << endl
@@ -36,7 +36,8 @@ ostream& AFEB::teststand::operator<<( ostream& os, const Measurement& m ){
   return os;
 }
 
-AFEB::teststand::Measurement::Measurement( const int index, const string name, const string type, const string resultDir ) :
+AFEB::teststand::Measurement::Measurement( const int position, const int index, const string name, const string type, const string resultDir ) :
+  position_( position ),
   index_( index ),
   name_( name ),
   type_( type ),
@@ -145,13 +146,11 @@ bool AFEB::teststand::Measurement::execute(){
   status_t_ = AFEB::teststand::Measurement::running;
   switch ( type_t_ ){
   case count_vs_dac:
-    keepRunning = countVsDAQ();
-    // keepRunning = dummyResultGenerator();
-    break;
   case time_vs_dac:
-    //keepRunning = countVsTime();
-    keepRunning = dummyResultGenerator();
+    keepRunning = countVsDAQ();
     break;
+  case dummy:
+    keepRunning = dummyResultGenerator();
   default:
     stringstream ss;
     ss << "Unknown measurement type " << type_t_ << " specified as '" << type_ << "'";
@@ -255,10 +254,6 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
   return true;
 }
 
-bool AFEB::teststand::Measurement::countVsTime(){
-  // TODO: implement
-  return true;
-}
 
 bool AFEB::teststand::Measurement::dummyResultGenerator(){
   // All tested devices in one measurement are read out by the same TDC. Take the first device to get its.

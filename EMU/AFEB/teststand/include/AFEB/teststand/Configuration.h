@@ -24,9 +24,9 @@ namespace AFEB { namespace teststand {
       Crate* crate_; ///< The crate setup. It's adopted by all measurements of this configuration.
       vector<TestedDevice*> testedDevices_; ///< The tested devices. It's adopted by all measurements of this configuration.
       vector<Measurement*> measurements_; ///< The selected measurements of this configuration.
-      void createCrate();
+      void createCrate( bool forDummyMeasurements );
       void createMeasurements();
-      Measurement* findMeasurement( const string type, const int tdcSlot ) const;
+      Measurement* findMeasurement( const int position, const int tdcSlot ) const;
     };
 
 }}

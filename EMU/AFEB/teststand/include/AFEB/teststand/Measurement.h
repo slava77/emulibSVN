@@ -21,17 +21,18 @@ namespace AFEB { namespace teststand {
 
     class Measurement{
     public:
-      enum Type_t { count_vs_dac, time_vs_dac, nTypes };
+      enum Type_t { count_vs_dac, time_vs_dac, dummy, nTypes };
       enum Status_t { waiting, running, done, nStatus };
 
       friend ostream& operator<<( ostream& os, const Measurement& m );
 
-      Measurement( const int index, const string name, const string type, const string resultDir );
+      Measurement( const int position, const int index, const string name, const string type, const string resultDir );
       ~Measurement();
       void setPulseParameters( const vector< pair<string,string> >& param );
       void setThresholdParameters( const vector< pair<string,string> >& param );
       void setTDCParameters( const vector< pair<string,string> >& param );
       void addTestedDevice( TestedDevice* device );
+      int getPosition() const { return position_; }
       int getIndex() const { return index_; }
       string getName() const { return name_; }
       string getType() const { return type_; }
@@ -52,7 +53,8 @@ namespace AFEB { namespace teststand {
     private:
       static const char* const types_[nTypes];
       static const char* const status_[nStatus];
-      int index_;
+      int position_; ///< The position of the corresponding c:measurement element in the configuration XML.
+      int index_; ///< The index of this measurement among the selected measurements.
       string name_;
       string type_;
       Type_t type_t_;
@@ -73,7 +75,7 @@ namespace AFEB { namespace teststand {
       int tdcTimeMax_;
 
       bool countVsDAQ();
-      bool countVsTime();
+      // bool countVsTime(); // Will not be implemented, being essentially the same as countVsDAQ with only the parameters different.
       bool dummyResultGenerator();
       TestedDevice* findTestedDevice( const int tdcInput );
       Results* findResults( const int tdcInput );

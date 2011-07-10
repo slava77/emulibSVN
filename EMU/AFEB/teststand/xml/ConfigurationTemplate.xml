@@ -59,6 +59,7 @@
       <c:tag c:name="c:measurement">
 	<c:attr c:name="c:type" c:value="count_vs_dac" c:description="Efficiency vs pulse amplitude"/>
 	<c:attr c:name="c:type" c:value="time_vs_dac" c:description="Time vs. pulse amplitude"/>
+	<c:attr c:name="c:type" c:value="dummy" c:description="Use the software generator of dummy results for offline test purposes."/>
 	<c:attr c:name="c:enabled" c:value="yes" c:description="Perform this measurement."/>
 	<c:attr c:name="c:enabled" c:value="no" c:description="Skip this measurement."/>
 	<c:attr c:name="c:" c:value="" c:description=""/>
