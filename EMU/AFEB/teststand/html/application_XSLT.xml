@@ -11,7 +11,7 @@
     <table class="layout">
       <tr>
 	<td><span class="{@a:state}"><xsl:value-of select="@a:state"/></span></td>
-	<td><xsl:value-of select="a:message"/></td>
+	<td><xsl:copy-of select="a:message"/></td>
 	<td><xsl:value-of select="@a:dateTime"/></td>
       </tr>
       <tr>
@@ -30,7 +30,7 @@
 	</td>
 	<td>
 	  <input type="submit" name="fsm" value="Halt" class="submit" title="Halt the measurement.">
-	    <xsl:if test="@a:state='Halted'"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
+	    <xsl:if test="@a:state='Halted' or @a:state='Failed'"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
 	  </input>
 	</td>
       </tr>

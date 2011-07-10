@@ -5,6 +5,7 @@
 #include "AFEB/teststand/utils/Xalan.h"
 #include "AFEB/teststand/utils/System.h"
 #include "AFEB/teststand/utils/IO.h"
+#include "AFEB/teststand/utils/Xcept.h"
 
 #include "xcept/tools.h"
 #include "xoap/domutils.h" // for XMLCh2String
@@ -155,14 +156,14 @@ void AFEB::teststand::Application::failAction(toolbox::Event::Reference event)
       if ( typeid(*event) == typeid(toolbox::fsm::FailedEvent) ){
         toolbox::fsm::FailedEvent &failedEvent = dynamic_cast<toolbox::fsm::FailedEvent&>(*event);
         xcept::Exception exception = failedEvent.getException();
+	reasonForFailure_ = AFEB::teststand::utils::xhtmlformat_exception_history( exception );
 
         stringstream ss;
         ss << "Failure occurred when performing transition from "
-	   << failedEvent.getFromState() << " to " << failedEvent.getToState()
-	   << "; " << xcept::stdformat_exception_history(exception);
-
-	reasonForFailure_ = ss.str();
-
+	   << fsm_.getStateName( failedEvent.getFromState() ) 
+	   << " to " 
+	   << fsm_.getStateName( failedEvent.getToState() )
+	   << ": " << xcept::stdformat_exception_history( exception );
         LOG4CPLUS_FATAL(logger_, ss.str() );
       }
     }catch( xcept::Exception& e ){
@@ -240,7 +241,7 @@ string AFEB::teststand::Application::createXMLWebPageSkeleton(){
 
   // Message, if any
   if ( fsm_.getCurrentState() == 'F' ){
-    ss << "    <a:message><![CDATA[" << reasonForFailure_.toString() << "]]></a:message>" << endl;
+    ss << "    <a:message>" << reasonForFailure_.toString() << "</a:message>" << endl;
   }
 
   // Configuration files
@@ -403,8 +404,16 @@ AFEB::teststand::Application::loadConfigurationFileList(){
 
 void AFEB::teststand::Application::defaultWebPage(xgi::Input *in, xgi::Output *out)
   throw (xgi::exception::Exception){
-  string XMLWebPageSkeleton( createXMLWebPageSkeleton() );
-  *out << AFEB::teststand::utils::appendToSelectedNode( XMLWebPageSkeleton, "/root", configurationXML_ );
+  try{
+    string XMLWebPageSkeleton( createXMLWebPageSkeleton() );
+    *out << AFEB::teststand::utils::appendToSelectedNode( XMLWebPageSkeleton, "/root", configurationXML_ );
+  } catch( xcept::Exception& e ){
+    XCEPT_RETHROW( xgi::exception::Exception, "Failed to create default web page.", e );
+  } catch( std::exception& e ){
+    XCEPT_RAISE( xgi::exception::Exception, string( "Failed to create default web page: ") + e.what() );
+  } catch( ... ){
+    XCEPT_RAISE( xgi::exception::Exception, "Failed to create default web page. Unknown exception." );
+  }
 }
 
 void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *out)

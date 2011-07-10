@@ -32,6 +32,7 @@ Sources = \
 	Xalan.cc \
 	System.cc \
 	String.cc \
+	Xcept.cc \
 	Crate.cc \
 	CrateController.cc \
 	LE32.cc \

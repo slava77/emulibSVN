@@ -25,9 +25,10 @@
     <table class="layout">
       <tr>
 	<td><xsl:apply-templates select="c:measurements"/></td>
-	<!-- <td><xsl:apply-templates select="c:testedDevice"/></td> -->
-	<td><xsl:apply-templates select="c:crate"/></td>
-	<td><xsl:apply-templates select="c:inputs"/></td>
+	<td>
+	  <xsl:apply-templates select="c:crate"/>
+	  <xsl:apply-templates select="c:inputs"/>
+	</td>
       </tr>
     </table>
   </xsl:template>
