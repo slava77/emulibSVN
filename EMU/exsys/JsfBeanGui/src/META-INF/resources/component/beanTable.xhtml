@@ -205,66 +205,81 @@
                             <ice:panelGroup style="width: #{column.width}px; overflow: hidden; vertical-align: top; text-align: left">
 
                                     <ice:panelGrid columns="3" border="0">
-                                        <comp:dropDown value="#{column.title}"
-                                                       type="link"
-                                                       style="font-size: 11px; font-weight: bold"
-                                                       render="true"
-                                                       title="Click to filter or order by [#{column.title}]">
-                                            <ice:panelGrid columns="1" 
-                                                           style="margin: 5px"
-                                                           cellpadding="2">
-                                                
-                                                <ice:commandLink value="Order by" 
-                                                                 rendered="#{column.sortable}"
-                                                                 title="Sort or change direction"
-                                                                 actionListener="#{column.sortListener}"/>
+                                        <ice:panelGroup>
+                                            <a id="#{componentSupportBean.clientId}:#{column.name}-link"
+                                               href="#"
+                                               title="Click to filter or order by [#{column.title}]"
+                                               class="iceCmdLnk"
+                                               style="font-size: 11px; font-weight: bold;">
+                                                #{column.title}
+                                            </a>
+                                            <div id="#{componentSupportBean.clientId}:#{column.name}-popup"
+                                                 style="display: none; border-left: black outset 2px;  border-right: black outset 2px;  border-bottom: black outset 2px; background-color: #eeeeee;">
+                                                <ice:panelGrid columns="1" 
+                                                               style="margin: 5px"
+                                                               cellpadding="2">
 
-                                                <ice:panelGrid columns="3"
-                                                               rendered="#{column.entityType}">
-                                                    <ice:commandLink value="Filter"
-                                                                     title="Use filter"
-                                                                     actionListener="#{column.filterTableListener}"/>
-                                                    <ice:panelGroup rendered="#{column.filterSet}">
-                                                        <ice:selectOneMenu valueChangeListener="#{cc.attrs.manager.table.filterOperationChangeListener}"
-                                                                           partialSubmit="true">
-                                                            <f:selectItem itemLabel="in" itemValue="#{column.name}:in"/>
-                                                            <f:selectItem itemLabel="not in" itemValue="#{column.name}:notin" />
-                                                        </ice:selectOneMenu>
-                                                    </ice:panelGroup>
-                                                </ice:panelGrid>
+                                                    <ice:commandLink value="Order by" 
+                                                                     rendered="#{column.sortable}"
+                                                                     title="Sort or change direction"
+                                                                     actionListener="#{column.sortListener}"/>
 
-                                                <ice:panelGroup rendered="#{column.embedType and column.notEmpty}">
                                                     <ice:panelGrid columns="3"
-                                                                   style="padding-top: 5px">
-                                                        <ui:repeat value="#{column.properties}" var="p">
-                                                            <ice:panelGrid columns="2">
-                                                                <ice:panelGroup style="width: 80px; overflow: hidden; text-align: right;">
-                                                                    <ice:outputLabel value="#{p.title}:"/>
-                                                                </ice:panelGroup>
-                                                                <ice:inputText converter="#{p.filterConverter}"
-                                                                               style="width: 120px;"
-                                                                               required="false"
-                                                                               value="#{p.filter}"
-                                                                               actionListener="#{cc.attrs.manager.table.filterListener}"/>
-                                                            </ice:panelGrid>
-                                                        </ui:repeat>
+                                                                   rendered="#{column.entityType}">
+                                                        <ice:commandLink value="Filter"
+                                                                         title="Use filter"
+                                                                         actionListener="#{column.filterTableListener}"/>
+                                                        <ice:panelGroup rendered="#{column.filterSet}">
+                                                            <ice:selectOneMenu valueChangeListener="#{cc.attrs.manager.table.filterOperationChangeListener}"
+                                                                               partialSubmit="true">
+                                                                <f:selectItem itemLabel="in" itemValue="#{column.name}:in"/>
+                                                                <f:selectItem itemLabel="not in" itemValue="#{column.name}:notin" />
+                                                            </ice:selectOneMenu>
+                                                        </ice:panelGroup>
                                                     </ice:panelGrid>
-                                                </ice:panelGroup>
 
-                                                <ice:inputText converter="#{column.filterConverter}"
-                                                               required="false"
-                                                               rendered="#{!column.entityType and !column.listType and !column.embedType}"
-                                                               value="#{column.filter}"
-                                                               actionListener="#{cc.attrs.manager.table.filterListener}"
-                                                               style="width: 100px; overflow: hidden" />
-                                                
-                                                <ice:commandLink value="Clear Filter"
-                                                                 title="Clear Filter"
-                                                                 rendered="#{column.filterSet}"
-                                                                 actionListener="#{column.clearFilterListener}"/>
-                                                           
-                                            </ice:panelGrid>
-                                        </comp:dropDown>
+                                                    <ice:panelGroup rendered="#{column.embedType and column.notEmpty}">
+                                                        <ice:panelGrid columns="3"
+                                                                       style="padding-top: 5px">
+                                                            <ui:repeat value="#{column.properties}" var="p">
+                                                                <ice:panelGrid columns="2">
+                                                                    <ice:panelGroup style="width: 80px; overflow: hidden; text-align: right;">
+                                                                        <ice:outputLabel value="#{p.title}:"/>
+                                                                    </ice:panelGroup>
+                                                                    <ice:inputText converter="#{p.filterConverter}"
+                                                                                   style="width: 120px;"
+                                                                                   required="false"
+                                                                                   value="#{p.filter}"
+                                                                                   actionListener="#{cc.attrs.manager.table.filterListener}"/>
+                                                                </ice:panelGrid>
+                                                            </ui:repeat>
+                                                        </ice:panelGrid>
+                                                    </ice:panelGroup>
+
+                                                    <ice:inputText converter="#{column.filterConverter}"
+                                                                   required="false"
+                                                                   rendered="#{!column.entityType and !column.listType and !column.embedType}"
+                                                                   value="#{column.filter}"
+                                                                   actionListener="#{cc.attrs.manager.table.filterListener}"
+                                                                   style="width: 100px; overflow: hidden" />
+
+                                                    <ice:commandLink value="Clear Filter"
+                                                                     title="Clear Filter"
+                                                                     rendered="#{column.filterSet}"
+                                                                     actionListener="#{column.clearFilterListener}"/>
+
+                                                </ice:panelGrid>
+                                                <script type="text/javascript">
+                                                    // <![CDATA[
+                                                    jQuery(document).ready(function () {
+                                                        var p = jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + '#{column.name}-popup');
+                                                        var c = jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + '#{column.name}-link');
+                                                        c.dropDown(p);
+                                                    });
+                                                    //]]>
+                                                </script>
+                                            </div>
+                                        </ice:panelGroup>
                                         <ice:panelGroup rendered="#{column.sortable}">
                                             <ice:panelGroup styleClass="iceCmdSrtHdrAsc" style="vertical-align: middle" rendered="#{column.sorting and column.ascending}"/>
                                             <ice:panelGroup styleClass="iceCmdSrtHdrDesc" style="vertical-align: middle" rendered="#{column.sorting and !column.ascending}"/>

@@ -140,17 +140,30 @@ public abstract class BeanTableManager implements Serializable {
      *********************************************/
     
     private EntityBeanBase selected;
+    private Boolean selectedFirst;
+    private Boolean selectedLast;
+
+    public boolean isSelectedFirst() {
+        return selectedFirst;
+    }
+
+    public boolean isSelectedLast() {
+        return selectedLast;
+    }
 
     public void setSelectedRowById(Object idValue) {
         Iterator<EntityBeanBase> it = this.getTable().getData().iterator();
+        selectedFirst = true;
         this.selected = null;
         while (it.hasNext()) {
             EntityBeanBase row = it.next();
             if (row.getEntityId().equals(idValue)) {
                 this.selected = row;
                 this.selected.setSelected(true);
+                selectedLast = !it.hasNext();
                 break;
             }
+            selectedFirst = false;
         }
     }
 
@@ -158,12 +171,15 @@ public abstract class BeanTableManager implements Serializable {
 
         if (event.isSelected()) {
             Iterator<EntityBeanBase> it = this.getTable().getData().iterator();
+            selectedFirst = true;
             while (it.hasNext()) {
                 EntityBeanBase row = it.next();
                 if (row.getSelected()) {
                     this.selected = row;
+                    selectedLast = !it.hasNext();
                     break;
                 }
+                selectedFirst = false;
             }
         } else {
             this.selected = null;
