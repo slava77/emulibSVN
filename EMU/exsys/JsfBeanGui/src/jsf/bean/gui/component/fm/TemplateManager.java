@@ -5,10 +5,13 @@
 package jsf.bean.gui.component.fm;
 
 import freemarker.cache.StringTemplateLoader;
+import freemarker.core.Environment;
+import freemarker.core.InvalidReferenceException;
 import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import freemarker.template.TemplateExceptionHandler;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -47,18 +50,12 @@ public class TemplateManager {
         this.templateNames.add(name);
     }
 
-    public String execute(String name, Map<String, Object> root) throws IOException {
+    public String execute(String name, Map<String, Object> root) throws IOException, TemplateException {
         this.root = root;
         Writer out = new StringWriter();
-        try {
-            Template t = cfg.getTemplate(name);
-            t.process(root, out);
-        } catch (RuntimeException ex) {
-            throw new IOException(ex);
-        } catch (TemplateException ex) {
-            logger.error(ex);
-            return ex.getMessage().concat(System.getProperty("line.separator")).concat(ex.getFTLInstructionStack());
-        }
+        Template t = cfg.getTemplate(name);
+        t.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        t.process(root, out);
         return out.toString();
     }
 
@@ -73,4 +70,13 @@ public class TemplateManager {
     public Map<String, Object> getRoot() {
         return root;
     }
+    
+    public class TemplateManagerExceptionHandler implements TemplateExceptionHandler {
+
+        public void handleTemplateException(TemplateException te, Environment env, Writer out) throws TemplateException {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+        
+    }
+    
 }
