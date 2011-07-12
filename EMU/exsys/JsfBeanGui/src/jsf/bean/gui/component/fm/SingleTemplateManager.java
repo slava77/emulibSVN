@@ -17,13 +17,17 @@ public class SingleTemplateManager {
 
     private static final String TEMPLATE_NAME = "template";
     private TemplateManager manager = new TemplateManager();
+    private boolean nullTemplate = true;
 
     public SingleTemplateManager(String template) {
-        manager.addTemplate(TEMPLATE_NAME, template);
+        if (template != null) {
+            nullTemplate = false;
+            manager.addTemplate(TEMPLATE_NAME, template);
+        }
     }
 
     public String execute(Map root) throws IOException, TemplateException {
-        return manager.execute(TEMPLATE_NAME, root);
+        return nullTemplate ? null : manager.execute(TEMPLATE_NAME, root);
     }
 
 }
