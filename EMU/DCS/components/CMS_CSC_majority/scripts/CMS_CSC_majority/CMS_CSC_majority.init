@@ -269,7 +269,13 @@ void emumaj_deleteMajorityDUs() {
 
 bool emumaj_createTreeCache(string majorityTopNode) {
   dyn_string exceptionInfo;
-  treeCache_create(majorityTopNode, makeDynString(), exceptionInfo); // give the top node of your hierarchy here
+  // exclude the duplicate nodes - nodes which reference nodes already included in other parts of the FSM tree
+  dyn_string excludedNodes = makeDynString("node=CSC_ME_P11_HV",
+                                           "node=CSC_ME_N11_HV",
+                                           "node=LV_MRTN_MINUS",
+                                           "node=LV_MRTN_PLUS");
+  
+  treeCache_create(majorityTopNode, excludedNodes, exceptionInfo);
 
   if (dynlen(exceptionInfo) > 0) {
     DebugTN("Error creating tree cache: ");

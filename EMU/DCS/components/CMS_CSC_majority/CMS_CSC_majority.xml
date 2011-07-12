@@ -1,7 +1,7 @@
 <component>
 <name>CMS_CSC_majority</name>
-<version>5.15.9</version>
-<date>2011/03/28</date>
+<version>6.0.0</version>
+<date>2011/07/12</date>
 <required>majority_treeCache=1.2.11</required>
 <dontRestartProject>yes</dontRestartProject>
 <dplist>./dplist/CMS_CSC_majority/majorityInstallationDp.dpl</dplist>
