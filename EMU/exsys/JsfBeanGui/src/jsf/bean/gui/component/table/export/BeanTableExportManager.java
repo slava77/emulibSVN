@@ -4,6 +4,7 @@
  */
 package jsf.bean.gui.component.table.export;
 
+import freemarker.template.TemplateException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -92,13 +93,32 @@ public class BeanTableExportManager {
         }
         root.put(COLUMNS, exportColumns);
 
-        writeToFile(manager.execute(TemplateTypeKey.HEADER.name(), root));
-        if (isPreview) {
-            writeItemToFilePreview(manager, root);
-        } else {
-            writeItemToFile(manager, root);
+        String content = null;
+        try {
+            content = manager.execute(TemplateTypeKey.HEADER.name(), root);
+        } catch (TemplateException ex) {
+            content = ex.getMessage().concat(ex.getFTLInstructionStack());
         }
-        writeToFile(manager.execute(TemplateTypeKey.FOOTER.name(), root));
+        
+        writeToFile(content);
+        
+        try {
+            if (isPreview) {
+                writeItemToFilePreview(manager, root);
+            } else {
+                writeItemToFile(manager, root);
+            }
+        } catch (TemplateException ex) {
+            writeToFile(ex.getMessage().concat(ex.getFTLInstructionStack()));
+        }
+        
+        try {
+            content = manager.execute(TemplateTypeKey.FOOTER.name(), root);
+        } catch (TemplateException ex) {
+            content = ex.getMessage().concat(ex.getFTLInstructionStack());
+        }
+        
+        writeToFile(content);
 
         fileStream.close();
         file.deleteOnExit();
@@ -106,23 +126,25 @@ public class BeanTableExportManager {
         return file;
     }
 
-    private void writeItemToFile(TemplateManager manager, Map root) throws IOException {
+    private void writeItemToFile(TemplateManager manager, Map root) throws IOException, TemplateException {
         root.put(KEY_IS_LAST, false);
         long pages = ((table.getDataCount() % PAGE_SIZE) == 0 ? (table.getDataCount() / PAGE_SIZE) : (table.getDataCount() / PAGE_SIZE) + 1);
         for (Integer p = 1; p <= pages; p++) {
             root.put(KEY_PAGE, table.getPack().getManager().getBeanTableDao().getData(table, PAGE_SIZE, p));
+            
             if (p == 1) {
                 root.put(KEY_IS_FIRST_PAGE, true);
             } else {
                 root.put(KEY_IS_FIRST_PAGE, false);
             }
+            
             if (p == pages) {
                 root.put(KEY_IS_LAST_PAGE, true);
             } else {
                 root.put(KEY_IS_LAST_PAGE, false);
             }
-            String out = manager.execute(TemplateTypeKey.ITEM.name(), root);
-            writeToFile(out);
+            
+            writeToFile(manager.execute(TemplateTypeKey.ITEM.name(), root));
             root.remove(KEY_IS_LAST_PAGE);
             root.put(KEY_IS_FIRST_PAGE, true);
         }
@@ -131,16 +153,11 @@ public class BeanTableExportManager {
         root.remove(KEY_PAGE);
     }
 
-    private void writeItemToFilePreview(TemplateManager manager, Map root) {
+    private void writeItemToFilePreview(TemplateManager manager, Map root) throws IOException, TemplateException {
         root.put(KEY_PAGE, table.getPack().getManager().getBeanTableDao().getData(table, PAGE_SIZE, 1));
         root.put(KEY_IS_FIRST_PAGE, true);
         root.put(KEY_IS_LAST_PAGE, true);
-        try {
-            String out = manager.execute(TemplateTypeKey.ITEM.name(), root);
-            writeToFile(out);
-        } catch (IOException ex) {
-            logger.error(ex);
-        }
+        writeToFile(manager.execute(TemplateTypeKey.ITEM.name(), root));
         root.remove(KEY_IS_LAST_PAGE);
         root.remove(KEY_IS_FIRST_PAGE);
         root.remove(KEY_PAGE);
