@@ -61,14 +61,26 @@ AFEB::teststand::Measurement::~Measurement(){
 }
 
 void AFEB::teststand::Measurement::setPulseParameters( const vector< pair<string,string> >& param ){
+  string pulseGeneratorSlot;
   vector< pair<string,string> >::const_iterator p;
   for ( p = param.begin(); p != param.end(); ++p ){
     if      ( p->first.compare( "c:amplitudeMin"  ) == 0 ) amplitudeMin_       = utils::stringTo<int>( p->second );
     else if ( p->first.compare( "c:amplitudeMax"  ) == 0 ) amplitudeMax_       = utils::stringTo<int>( p->second );
     else if ( p->first.compare( "c:amplitudeStep" ) == 0 ) amplitudeStep_      = utils::stringTo<int>( p->second );
     else if ( p->first.compare( "c:nPulses"       ) == 0 ) nPulses_            = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "c:slot"          ) == 0 ) pulseGeneratorSlot_ = utils::stringTo<int>( p->second );
+    else if ( p->first.compare( "c:capacitor"     ) == 0 ) pulsedCapacitor_    = utils::stringTo<int>( p->second );
+    else if ( p->first.compare( "c:slot"          ) == 0 ){
+      if ( p->second.compare( "SignalConverter" ) == 0 ){
+	injection_ = individual;
+	pulseGeneratorSlot_ = -1;
+      }
+      else {
+	injection_ = common;
+	pulseGeneratorSlot_ = utils::stringTo<int>( p->second );
+      }
+    }
   }
+
   //cout << param << endl << *this << endl;
 }
 
@@ -170,8 +182,13 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
   int nDeviceChannels = results_.begin()->first->getNChannels();
   Crate* crate = results_.begin()->first->getCrate();
   LeCroy3377*       tdc = static_cast<LeCroy3377*>( crate->getModule( results_.begin()->first->getTDCSlot() ) );
-  LE32*  pulseGenerator = static_cast<LE32*>( crate->getModule( pulseGeneratorSlot_                         ) );
+  // All tested devices's signals in one measurement are fed through the same signal converter module. Take the first device to get its.
   LE32* signalConverter = static_cast<LE32*>( crate->getModule( results_.begin()->first->getSignalConverterSlot() ) );
+  // Use either the specified pulse generator for common injection (through external capacitor), 
+  // or the corresponding signal converter module to inject individually (through external or internal capacitor). 
+  LE32*  pulseGenerator = NULL;
+  if      ( injection_ == common     ) pulseGenerator = static_cast<LE32*>( crate->getModule( pulseGeneratorSlot_ ) );
+  else if ( injection_ == individual ) pulseGenerator = signalConverter;
   const CrateController* controller = crate->getCrateController();
 
   controller->initialize();

@@ -47,8 +47,8 @@
 	<c:attr c:name="c:name" c:value="LE32" c:description="CAMAC 32-channel Converter and 2-channel Pulse and Threashold Generator"/>
 	<c:attr c:name="c:name" c:value="Jorway73A" c:description="SCSI Bus CAMAC Crate Controller, vendor: JORWAY model: 73A"/>
 	<c:attr c:name="c:type" c:value="TDC" c:description="Time-to-Digital Converter"/>
-	<c:attr c:name="c:type" c:value="SignalConverter" c:description="LVDS-to-ECL Signal Converter and Threshold Generator"/>
-	<c:attr c:name="c:type" c:value="PulseGenerator" c:description="Adjustable height pulse generator."/>
+	<c:attr c:name="c:type" c:value="SignalConverter" c:description="LVDS-to-ECL Signal Converter, Threshold Generator and Pulse Generator to the device's internal capacitor."/>
+	<c:attr c:name="c:type" c:value="PulseGenerator" c:description="Adjustable height pulse generator to external capacitor."/>
 	<c:attr c:name="c:type" c:value="CrateController" c:description="Crate controller."/>
       </c:tag>
       <c:tag c:name="c:inputs">
@@ -66,17 +66,18 @@
 	<c:attr c:name="c:" c:value="" c:description=""/>
       </c:tag>
       <c:tag c:name="c:PulseGenerator">
-	<c:attr c:name="c:capacitor" c:value="internal" c:description="Pulse the device's internal capacitor."/>
-	<c:attr c:name="c:capacitor" c:value="external" c:description="Pulse the external capacitor."/>
-	<c:attr c:name="c:slot" c:value="1" c:description="The crate slot in which the pulse generator is inserted."/>
-	<c:attr c:name="c:slot" c:value="2" c:description="The crate slot in which the pulse generator is inserted."/>
-	<c:attr c:name="c:slot" c:value="3" c:description="The crate slot in which the pulse generator is inserted."/>
-	<c:attr c:name="c:slot" c:value="4" c:description="The crate slot in which the pulse generator is inserted."/>
-	<c:attr c:name="c:slot" c:value="5" c:description="The crate slot in which the pulse generator is inserted."/>
-	<c:attr c:name="c:slot" c:value="6" c:description="The crate slot in which the pulse generator is inserted."/>
-	<c:attr c:name="c:slot" c:value="7" c:description="The crate slot in which the pulse generator is inserted."/>
-	<c:attr c:name="c:slot" c:value="8" c:description="The crate slot in which the pulse generator is inserted."/>
-	<c:attr c:name="c:slot" c:value="9" c:description="The crate slot in which the pulse generator is inserted."/>
+	<c:attr c:name="c:capacitor" c:value="internal" c:description="Inject pulses through the device's internal capacitor."/>
+	<c:attr c:name="c:capacitor" c:value="external" c:description="Inject pulses through the external capacitor."/>
+	<c:attr c:name="c:slot" c:value="SignalConverter" c:description="Use the each device's own signal converter module to inject pulses."/>
+	<c:attr c:name="c:slot" c:value="1"               c:description="Use the common pulse generator in this slot to inject pulses through the external capacitor."/>
+	<c:attr c:name="c:slot" c:value="2"               c:description="Use the common pulse generator in this slot to inject pulses through the external capacitor."/>
+	<c:attr c:name="c:slot" c:value="3"               c:description="Use the common pulse generator in this slot to inject pulses through the external capacitor."/>
+	<c:attr c:name="c:slot" c:value="4"               c:description="Use the common pulse generator in this slot to inject pulses through the external capacitor."/>
+	<c:attr c:name="c:slot" c:value="5"               c:description="Use the common pulse generator in this slot to inject pulses through the external capacitor."/>
+	<c:attr c:name="c:slot" c:value="6"               c:description="Use the common pulse generator in this slot to inject pulses through the external capacitor."/>
+	<c:attr c:name="c:slot" c:value="7"               c:description="Use the common pulse generator in this slot to inject pulses through the external capacitor."/>
+	<c:attr c:name="c:slot" c:value="8"               c:description="Use the common pulse generator in this slot to inject pulses through the external capacitor."/>
+	<c:attr c:name="c:slot" c:value="9"               c:description="Use the common pulse generator in this slot to inject pulses through the external capacitor."/>
       </c:tag>
       <c:measurement c:name="count_vs_dac">-</c:measurement>
       <c:measurement c:name="time_vs_dac">-</c:measurement>
@@ -123,7 +124,7 @@
 	<c:TDC c:timeMin="0" c:timeMax="120"/>
       </c:measurement>
       <c:measurement c:name="Threshold scan" c:type="count_vs_dac" c:enabled="yes">
-	<c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="1000" c:slot="6" c:capacitor="internal"/>
+	<c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="1000" c:slot="SignalConverter" c:capacitor="internal"/>
 	<c:SignalConverter c:thresholdValue="50"/>
 	<c:TDC c:timeMin="0" c:timeMax="120"/>
       </c:measurement>

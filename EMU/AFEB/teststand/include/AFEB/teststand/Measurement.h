@@ -23,6 +23,7 @@ namespace AFEB { namespace teststand {
     public:
       enum Type_t { count_vs_dac, time_vs_dac, dummy, nTypes };
       enum Status_t { waiting, running, done, nStatus };
+      enum Injection_t { common, individual };
 
       friend ostream& operator<<( ostream& os, const Measurement& m );
 
@@ -67,7 +68,9 @@ namespace AFEB { namespace teststand {
       int amplitudeMax_;
       int amplitudeStep_;
       int nPulses_;
-      int pulseGeneratorSlot_;
+      int pulseGeneratorSlot_; ///< The slot of the pulse generator to the exteranl capacitor. When the internal capacitor is pulsed, it's set equal to the signal converter's slot.
+      string pulsedCapacitor_;
+      Injection_t injection_;
 
       int thresholdValue_;
 
