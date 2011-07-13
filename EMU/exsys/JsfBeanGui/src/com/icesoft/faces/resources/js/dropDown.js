@@ -9,13 +9,13 @@
                 
                 var control = $(this);
                 
-                control.click(
+                control.bind('click',
                     function () {
                         panel.trigger('controlClick', [ control ]); 
                         return false;
                     }
                 );
-                
+                        
                 panel
                     .hover(function() {
                         jQuery(this).data("mouse_inside", true);
