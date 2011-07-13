@@ -62,7 +62,8 @@ string fwUiPnl;
 //else 
 // fwUiPnl="fwFSMuser/fwUi.pnl";
 
-
+string standardFwUiPnl = "fwFSMuser/fwUi.pnl";
+ 
 //=================================================================
 
 dyn_string os;
@@ -249,6 +250,7 @@ p="emuDev"+s+"Operation.pnl";
 s="HV_1";
  if((pos=strpos(o,s))>=0){
 p="emuDev"+s+"Operation.pnl"; 
+  panels = makeDynString(standardFwUiPnl); //override this s**t..
   dynAppend(panels,dir_oper+"/"+p);
 //  mudcsDebug(o+" "+panels[dynlen(panels)]);
   dpSet(objs[i]+".ui.panels:_original.._value",panels);
