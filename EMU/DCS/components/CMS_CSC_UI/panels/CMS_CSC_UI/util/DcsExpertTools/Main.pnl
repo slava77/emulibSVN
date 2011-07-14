@@ -36,6 +36,8 @@ void exec(string command) {
   } else {
     command = \"start /b \" + command;
   }
+  
+  emu_info(\"executing: \" + command);
   system(command);
 }
 
