@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 400 683 N "_3DFace" 0
+PANEL,-1 -1 400 664 N "_3DFace" 0
 "main()
 {
   string os = getenv(\"OS\");
@@ -73,8 +73,8 @@ T
 LANG:1 9 Open PARA
 "main()
 {
-  exec(\"PVSS00ui -m para -data \" + getSelectedSysHost() + \" -event \" + getSelectedSysHost() + \" -user=\\\"\\\"\");
-//  exec(\"PVSS00ui -m para -data emu-dcs-dev2:61543 -event emu-dcs-dev2:61542 -user=\\\"\\\"\");
+  exec(\"PVSS00ui -m para -data \" + getSelectedSysHost() + \" -event \" + getSelectedSysHost() + \" -user \\\"\\\"\");
+//  exec(\"PVSS00ui -m para -data emu-dcs-dev2:61543 -event emu-dcs-dev2:61542 -user \\\"\\\"\");
 }" 0
  E E E
 22 1
@@ -142,8 +142,8 @@ T
 LANG:1 22 Open Device Editor Nav
 "main()
 {
-  exec(\"PVSS00ui -p fwDeviceEditorNavigator/fwDeviceEditorNavigator.pnl -iconBar -menuBar -data \" + getSelectedSysHost() + \" -event \" + getSelectedSysHost() + \" -user=\\\"\\\"\");
-//  exec(\"PVSS00ui -p fwDeviceEditorNavigator/fwDeviceEditorNavigator.pnl -iconBar -menuBar -data emu-dcs-dev2:61543 -event emu-dcs-dev2:61542 -user=\\\"\\\"\");
+  exec(\"PVSS00ui -p fwDeviceEditorNavigator/fwDeviceEditorNavigator.pnl -iconBar -menuBar -data \" + getSelectedSysHost() + \" -event \" + getSelectedSysHost() + \" -user \\\"\\\"\");
+//  exec(\"PVSS00ui -p fwDeviceEditorNavigator/fwDeviceEditorNavigator.pnl -iconBar -menuBar -data emu-dcs-dev2:61543 -event emu-dcs-dev2:61542 -user \\\"\\\"\");
 }" 0
  E E E
 13 4
@@ -167,8 +167,8 @@ T
 LANG:1 17 Open alert screen
 "main()
 {
-  exec(\"PVSS00ui -p fwAlarmHandling/fwAlarmHandlingScreen.pnl -menuBar -iconBar -data \" + topNodeHostname + \" -event \" + topNodeHostname + \" -user=\\\"\\\"\");
-//  exec(\"PVSS00ui -p fwAlarmHandling/fwAlarmHandlingScreen.pnl -menuBar -iconBar -data emu-dcs-dev2:61543 -event emu-dcs-dev2:61542 -user=\\\"\\\"\");
+  exec(\"PVSS00ui -p fwAlarmHandling/fwAlarmHandlingScreen.pnl -menuBar -iconBar -data \" + topNodeHostname + \" -event \" + topNodeHostname + \" -user \\\"\\\"\");
+//  exec(\"PVSS00ui -p fwAlarmHandling/fwAlarmHandlingScreen.pnl -menuBar -iconBar -data emu-dcs-dev2:61543 -event emu-dcs-dev2:61542 -user \\\"\\\"\");
 }" 0
  E E E
 30 5
@@ -228,8 +228,8 @@ T
 LANG:1 36 Open hacked PARA (no access control)
 "main()
 {
-//  exec(\"PVSS00ui -p CMS_CSC_UI/util/DcsExpertTools/simplePara.pnl -data \" + getSelectedSysHost() + \" -event \" + getSelectedSysHost() + \" -user=\\\"\\\"\");
-  exec(\"PVSS00ui -p CMS_CSC_UI/util/DcsExpertTools/simplePara.pnl -data emu-dcs-dev2:61543 -event emu-dcs-dev2:61542 -user=\\\"\\\"\");
+  exec(\"PVSS00ui -p CMS_CSC_UI/util/DcsExpertTools/simplePara.pnl -data \" + getSelectedSysHost() + \" -event \" + getSelectedSysHost() + \" -user \\\"\\\"\");
+//  exec(\"PVSS00ui -p CMS_CSC_UI/util/DcsExpertTools/simplePara.pnl -data emu-dcs-dev2:61543 -event emu-dcs-dev2:61542 -user=\\\"\\\"\");
 }" 0
  E E E
 13 9
