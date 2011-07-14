@@ -5,6 +5,8 @@ PANEL,-1 -1 400 607 N "_3DFace" 0
 "main()
 {
   os = getenv(\"OS\");
+  emu_info(\"OS: \" + os);
+  
   cscSystemToHostname[\"09 - Top Node\"] = topNodeHostname;
   cscSystemToHostname[\"08 - ME+1\"] = \"cms-csc-dcs-08\";
   cscSystemToHostname[\"07 - ME+2+3+4\"] = \"cms-csc-dcs-07\";
@@ -33,7 +35,7 @@ void exec(string command) {
   system(command);
 }
 
-void getSelectedSysHost() {
+string getSelectedSysHost() {
   return cscSystemToHostname[comboSys.text];
 }" 0
  2
