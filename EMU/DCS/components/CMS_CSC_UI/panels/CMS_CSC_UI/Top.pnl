@@ -250,7 +250,8 @@ void accessPrivilegesChangedCB(string dummy1, string dummy2) {
   fwAccessControl_isGranted(\"CMS_CSC:Debug\", isExpert, ex);
   if (emu_checkException(ex)) { return; }
   fwAccessControl_isGranted(\"CMS_CSC:Modify\", isDcsExpert, ex);
-  if (emu_checkException(ex)) { return; }
+  if (emu_checkException(ex)) { return; }  
+  btnDcsExpertPanel.visible = isDcsExpert;
   
   if ((user == currentUser) && (hasControl == hasControlPrivilege) && (isExpert == hasExpertPrivilege)) {
     emu_info(\"accessPrivilegesChangedCB called, but the user and the privileges are the same - ignoring\");
@@ -282,8 +283,6 @@ void accessPrivilegesChangedCB(string dummy1, string dummy2) {
   }
   
   updateTopFSMStateCB(\"\", \"\"); // to update the visibility of \"OFF and no expert control\" label
-  
-  btnDcsExpertPanel.visible = isDcsExpert;
 }
 
 /** This is called when Top FSM node (CMS_CSC) operation mode has changed. If it's detected that it's excluded - take the whole FSM tree. */
