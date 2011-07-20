@@ -5,11 +5,10 @@ PANEL,-1 -1 400 664 N "_3DFace" 0
 "main()
 {
   string os = getenv(\"OS\");
-  emu_info(\"Detected OS: \" + os);
-  int idx = dynContains(comboOs.items, os);
-  emu_info(idx);
-  if (idx > 0) {
-    comboOs.selectedPos = idx;
+  if (_WIN32) {
+    comboOs.selectedPos = dynContains(comboOs.items, \"Windows\");
+  } else {
+    comboOs.selectedPos = dynContains(comboOs.items, \"Linux\");
   }
   
   cscSystemToHostname[\"09 - Top Node\"] = topNodeHostname;
