@@ -243,11 +243,13 @@ void accessPrivilegesChangedCB(string dummy1, string dummy2) {
   emu_info(\"Access privileges have changed - user \" + user + \" has logged in\");
     
   dyn_string ex;
-  bool hasControl, isExpert;
+  bool hasControl, isExpert, isDcsExpert;
   
   fwAccessControl_isGranted(\"CMS_CSC:Control\", hasControl, ex);
   if (emu_checkException(ex)) { return; }
   fwAccessControl_isGranted(\"CMS_CSC:Debug\", isExpert, ex);
+  if (emu_checkException(ex)) { return; }
+  fwAccessControl_isGranted(\"CMS_CSC:Modify\", isDcsExpert, ex);
   if (emu_checkException(ex)) { return; }
   
   if ((user == currentUser) && (hasControl == hasControlPrivilege) && (isExpert == hasExpertPrivilege)) {
@@ -280,6 +282,8 @@ void accessPrivilegesChangedCB(string dummy1, string dummy2) {
   }
   
   updateTopFSMStateCB(\"\", \"\"); // to update the visibility of \"OFF and no expert control\" label
+  
+  btnDcsExpertPanel.visible = isDcsExpert;
 }
 
 /** This is called when Top FSM node (CMS_CSC) operation mode has changed. If it's detected that it's excluded - take the whole FSM tree. */
@@ -1140,7 +1144,7 @@ E E 0 1 1 2 1 E 1 0 1 -339 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png"
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 -3693.933642980723 -1070 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -3918.719949739826 -1090 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -1159,7 +1163,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 48.57225032669196 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 48.56063103071852 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
@@ -1842,6 +1846,30 @@ E E 0 1 1 2 1 E U  1 E 22 1020 370 1038
 LANG:1 31 Sans Serif,10,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 52 Only CSC Expert is allowed to turn ON from OFF state
+13 96
+"btnDcsExpertPanel"
+""
+1 90 1020 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+110 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  88 1018 292 1042
+
+T 
+1
+LANG:1 21 Open DCS expert panel
+"main()
+{
+  ChildPanelOnCentral(\"CMS_CSC_UI/util/DcsExpertTools/Main.pnl\", \"CSC DCS Expert Panel\", makeDynString());
+}" 0
+ E E E
 0
 LAYER, 1 
 1

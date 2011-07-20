@@ -303,3 +303,27 @@ void emuui_getHistogramData(dyn_float data, int numBuckets, dyn_int &histData, f
     histData[bucketIdx]++;
   }
 }
+
+/**
+  * Opens a dialog with provided message and Yes/No buttons.
+  * @param msg message to be displayed
+  * @return true if user clicked on yes and false otherwise.
+  */
+bool emuui_openConfirmationDialog(string msg) {
+  dyn_string result;
+  dyn_float float_result;
+  
+  ChildPanelOnCentralModalReturn("vision/MessageInfo", ("information"), makeDynString(msg,"Yes","No"), float_result, result);
+  return result[1]=="true";
+}
+
+/**
+  * Opens an information dialog with provided message and Ok button.
+  * @param msg message to be displayed
+  */
+void emuui_openInfoDialog(string msg) {
+  dyn_string result;
+  dyn_float float_result;
+  
+  ChildPanelOnCentralModalReturn("vision/MessageInfo1", ("information"), makeDynString(msg, "Ok"), float_result, result);
+}

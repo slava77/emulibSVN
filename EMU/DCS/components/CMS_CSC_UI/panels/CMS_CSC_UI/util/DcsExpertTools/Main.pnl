@@ -115,7 +115,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 22 80.00000000000003 105 96.00000000000003
+E E 0 1 1 2 1 E U  0 E 22 80.00000000000003 105 96
 0 2 2 "0s" 0 0 0 192 0 0  22 80.00000000000003 1
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
@@ -228,6 +228,7 @@ T
 LANG:1 36 Open hacked PARA (no access control)
 "main()
 {
+  emuui_openInfoDialog(\"Please please please use it very carefully - it has no access control so you CAN change values of DPs, which is generally not a good idea (when in production env)\");
   exec(\"PVSS00ui -p CMS_CSC_UI/util/DcsExpertTools/simplePara.pnl -data \" + getSelectedSysHost() + \" -event \" + getSelectedSysHost() + \" -user \\\"\\\"\");
 //  exec(\"PVSS00ui -p CMS_CSC_UI/util/DcsExpertTools/simplePara.pnl -data emu-dcs-dev2:61543 -event emu-dcs-dev2:61542 -user=\\\"\\\"\");
 }" 0
@@ -281,11 +282,17 @@ T
 LANG:1 25 Force release FSM control
 "main()
 {
+  if (!emuui_openConfirmationDialog(\"Are you sure you want to force release FSM control?\")) {
+    return;
+  }  
+  
   string node = \"CMS_CSC\";
   bool enabled;
   string owner;
   fwUi_checkOwnership(node, enabled, owner);
   fwCU_releaseFullTree(node, owner);
+  
+  emuui_openInfoDialog(\"DONE - FSM control force released from \" + owner);
 }" 0
  E E E
 13 11
@@ -309,7 +316,19 @@ T
 LANG:1 20 Kill all DIM clients
 "main()
 {
-  emu_notImplementedError(\"kill DIM clients\");
+  string sys = getSelectedSysHost();
+  strreplace(sys, \"-\", \"_\");
+  if (!emuui_openConfirmationDialog(\"Are you sure you want to kill all DIM clients on \" + sys + \"?\")) {
+    return;
+  }
+      
+  dyn_string dimConfigDps = dpNames(sys + \":*\", \"_FwDimConfig\");
+  for (int i=1; i <= dynlen(dimConfigDps); i++) {
+    emu_info(\"Killing \" + dimConfigDps[i]);
+    dpSetWait(dimConfigDps[i] + \".ApiParams.exit\", 1);
+  }
+  
+  emuui_openInfoDialog(\"DONE - DIM clients should be killed now on\" + sys + \". Please check.\");
 }" 0
  E E E
 13 12
@@ -333,7 +352,13 @@ T
 LANG:1 26 Kill all majority managers
 "main()
 {
+  if (!emuui_openConfirmationDialog(\"Are you sure you want to kill/restart ALL majority managers?\")) {
+    return;
+  }
+  
   majority_triggerRestart(\"cms_csc_dcs_*:\");
+  
+  emuui_openInfoDialog(\"DONE - all majority managers were killed, should be restarting now (takes a few minutes - be patient)\");
 }" 0
  E E E
 13 13
@@ -374,6 +399,8 @@ LANG:1 24 Share all necessary FSMs
   for (int i=1; i <= dynlen(nodesToShare); i++) {
     fwCU_shareTree(nodesToShare[i], \"emu\");
   }
+  
+  emuui_openInfoDialog(\"DONE - all necessary FSM nodes have been shared, have a good day ;)\");
 }" 0
  E E E
 2 14
@@ -412,11 +439,11 @@ LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0  138 8 262 36
 2
 1
-LANG:1 7 Windows
+LANG:1 5 Linux
 
 0
 1
-LANG:1 5 Linux
+LANG:1 7 Windows
 
 0
 
