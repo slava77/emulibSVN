@@ -35,8 +35,16 @@ public abstract class BeanTableManager implements Serializable {
     public abstract ClassFinderIf getClassFinder();
 
     public BeanTableManager(String id, Class<? extends EntityBeanBase> rowClass) throws Exception {
+        this(id, rowClass, true);
+    }
+
+    public BeanTableManager(String id, Class<? extends EntityBeanBase> rowClass, boolean loadProperties) throws Exception {
         this.id = id;
-        this.properties = new BeanTableProperties(BeanTablePropertiesManager.getProperties(id));
+        if (loadProperties) {
+            this.properties = new BeanTableProperties(BeanTablePropertiesManager.getProperties(id));
+        } else {
+            this.properties = new BeanTableProperties();
+        }
         this.tablePack = new BeanTablePack(this, rowClass);
     }
 
