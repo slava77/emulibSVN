@@ -6,22 +6,14 @@ package jsf.bean.gui.component.table.api;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 import jsf.bean.gui.EntityBeanBase;
+import jsf.bean.gui.component.table.BeanTableFilter.Operation;
 
 /**
  * Single table API configuration
  * @author valdo
  */
-public class BeanTableApiConfig {
-    
-    private static final List<Pattern> NAME_TO_IDS;
-    static {
-        NAME_TO_IDS = new ArrayList<Pattern>();
-        NAME_TO_IDS.add(Pattern.compile("([^ ]+) \\(.*\\)"));
-    }
+public abstract class BeanTableApiConfig {
 
     /**
      * Table API name (without spaces and special characters)
@@ -32,6 +24,8 @@ public class BeanTableApiConfig {
     private List<BeanTableApiConfigPropertyFilter> propertyFilters 
                 = new ArrayList<BeanTableApiConfigPropertyFilter>();
 
+    public abstract String getTemplateId(String name);
+    
     public BeanTableApiConfig(String id, Class<? extends EntityBeanBase> rowClass) {
         this.id = id;
         this.rowClass = rowClass;
@@ -41,7 +35,7 @@ public class BeanTableApiConfig {
         return id;
     }
 
-    public void add(String name, String operation, Object value) {
+    public void addPropertyFilter(String name, Operation operation, Object value) {
         propertyFilters.add(new BeanTableApiConfigPropertyFilter(name, operation, value));
     }
     
@@ -53,25 +47,13 @@ public class BeanTableApiConfig {
         return rowClass;
     }
 
-    public String getTemplateId(String name) {
-        String id = name;
-        for (Pattern p: NAME_TO_IDS) {
-            Matcher m = p.matcher(name);
-            if (m.matches()) {
-                id = m.group(1);
-                break;
-            }
-        }
-        return id.replaceAll(" ", "").toLowerCase();
-    }
-    
     public class BeanTableApiConfigPropertyFilter {
 
         private final String name;
-        private final String operation;
+        private final Operation operation;
         private final Object value;
 
-        public BeanTableApiConfigPropertyFilter(String name, String operation, Object value) {
+        public BeanTableApiConfigPropertyFilter(String name, Operation operation, Object value) {
             this.name = name;
             this.operation = operation;
             this.value = value;
@@ -81,7 +63,7 @@ public class BeanTableApiConfig {
             return name;
         }
 
-        public String getOperation() {
+        public Operation getOperation() {
             return operation;
         }
 

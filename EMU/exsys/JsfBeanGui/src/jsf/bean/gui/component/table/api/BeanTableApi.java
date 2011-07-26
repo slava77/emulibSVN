@@ -4,24 +4,22 @@
  */
 package jsf.bean.gui.component.table.api;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import jsf.bean.gui.ClassFinderIf;
 import jsf.bean.gui.component.BeanTableApiManager;
 import jsf.bean.gui.component.BeanTableManager;
+import jsf.bean.gui.component.table.BeanTable;
 import jsf.bean.gui.component.table.BeanTableDaoIf;
-import jsf.bean.gui.component.table.BeanTableFilter.Operation;
 import jsf.bean.gui.component.table.column.BeanTableColumn;
 import jsf.bean.gui.component.table.export.BeanTableExportResource;
 import jsf.bean.gui.component.table.export.BeanTableExportTemplateProvider;
+import org.json.JSONObject;
 
 /**
  *
@@ -62,7 +60,7 @@ public class BeanTableApi {
         for (BeanTableApiConfig.BeanTableApiConfigPropertyFilter pf: this.config.getPropertyFilters()) {
             this.manager.addPropertyFilter(
                     pf.getName(), 
-                    Operation.fromValue(pf.getOperation()), 
+                    pf.getOperation(), 
                     pf.getValue());
         }
         
@@ -96,17 +94,48 @@ public class BeanTableApi {
         return columns;
     }
 
+    public boolean isColumnExists(String name) {
+        for (BeanTableApiColumn col: columns) {
+            if (col.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public SortedSet<BeanTableApiTemplate> getTemplates() {
         return templates;
     }
+
+    public boolean isTemplateExists(String name) {
+        for (BeanTableApiTemplate t: templates) {
+            if (t.getId().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
     
-    public InputStream export(String id) throws BeanTableApiTemplateNotExists, IOException {
+    public InputStream export(String templateId, List<String> columns, JSONObject apiFilter) throws Exception {
         
-        if (!exportResources.containsKey(id)) {
-            throw new BeanTableApiTemplateNotExists(id);
+        if (!exportResources.containsKey(templateId)) {
+            throw new Exception(String.format("Template [%s] not found?!", templateId));
         }
         
-        return exportResources.get(id).open();
+        if (!columns.isEmpty()) {
+            BeanTable table = this.manager.getTable();
+            table.getSelectedColumns().getTarget().clear();
+            for (String colName: columns) {
+                table.getSelectedColumns().getTarget().add(table.getColumn(colName));
+            }
+            table.getSelectedColumns().setSourceExceptTarget(table.getColumns());
+        }
+        
+        if (apiFilter != null) {
+            this.manager.getTablePack().setSerializedFilter(apiFilter);
+        }
+        
+        return exportResources.get(templateId).open();
         
     }
     

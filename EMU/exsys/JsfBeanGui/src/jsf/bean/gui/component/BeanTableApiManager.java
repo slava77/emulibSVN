@@ -7,7 +7,6 @@ package jsf.bean.gui.component;
 import jsf.bean.gui.ClassFinderIf;
 import jsf.bean.gui.component.table.BeanTable;
 import jsf.bean.gui.component.table.BeanTableDaoIf;
-import jsf.bean.gui.component.table.api.BeanTableApiNotConfigured;
 import jsf.bean.gui.component.table.api.BeanTableApi;
 import jsf.bean.gui.component.table.api.BeanTableApiConfig;
 import jsf.bean.gui.component.table.api.BeanTableApiConfigProviderIf;
@@ -34,7 +33,7 @@ public abstract class BeanTableApiManager {
         if (config != null) {
             return new BeanTableApi(config, this);
         }
-        throw new BeanTableApiNotConfigured(id);
+        throw new Exception(String.format("Bean table API with ID = [%s] not found?!", id));
     }
 
     public BeanTableApiConfigProviderIf getConfigProvider() {
