@@ -95,7 +95,11 @@
                                            render="true"
                                            title="Configure table"
                                            style="font-weight: bold">
-                                <ice:panelGroup style="padding: 5px">
+                                <ice:panelGrid columns="1"
+                                               style="padding: 5px">
+                                    <ice:commandLink value="Query" title="Advanced Query" style="font-weight: bold">
+                                        <f:setPropertyActionListener target="#{cc.attrs.manager.table.displayQuery}" value="#{!cc.attrs.manager.table.displayQuery}"/>
+                                    </ice:commandLink>
                                     <ice:commandLink value="Columns" title="Columns" style="font-weight: bold">
                                         <f:setPropertyActionListener target="#{cc.attrs.manager.table.displayColumns}" value="#{!cc.attrs.manager.table.displayColumns}"/>
                                     </ice:commandLink>
@@ -115,7 +119,7 @@
                                             <f:selectItem itemValue="180" itemLabel="03 min."/>
                                         </ice:selectOneMenu>
                                     </ice:panelGroup>
-                                </ice:panelGroup>
+                                </ice:panelGrid>
                             </comp:dropDown>
                             |
                             <comp:dropDown value="Export"
@@ -178,9 +182,30 @@
 
             <ice:panelGroup rendered="#{cc.attrs.manager.table != null}">
 
-                <ice:panelGroup rendered="#{cc.attrs.manager.table.filterOn}" styleClass="beanTableFilterIndicator">
-                    <ice:outputText value="Filter is on!"/>
-                    <ice:commandLink value="Remove" title="Remove filter" actionListener="#{cc.attrs.manager.table.removeFilterListener}"/>
+                <ice:panelGroup rendered="#{cc.attrs.manager.table.filterOn || cc.attrs.manager.table.queryApplied}" 
+                                columns="2"
+                                styleClass="beanTableFilterIndicator">
+                    <ice:panelGrid columns="2"
+                                   style="padding: 0px; border-spacing: 0px">
+                        <ice:panelGrid columns="2"
+                                       style="padding: 0px; border-spacing: 0px"
+                                       rendered="#{cc.attrs.manager.table.filterOn}">
+                            <ice:outputText value="Filter is on!"/>
+                            <ice:commandLink value="Remove" 
+                                             title="Remove filter" 
+                                             actionListener="#{cc.attrs.manager.table.removeFilterListener}"/>
+                        </ice:panelGrid>
+                        <ice:panelGrid columns="2"
+                                       style="padding: 0px; border-spacing: 0px"
+                                       rendered="#{cc.attrs.manager.table.queryApplied}">
+                            <ice:outputText value="Query is on!"/>
+                            <ice:commandLink value="Remove" 
+                                             title="Remove query">
+                                <f:setPropertyActionListener target="#{cc.attrs.manager.table.query}" 
+                                                             value="#{null}"/>
+                            </ice:commandLink>
+                        </ice:panelGrid>
+                    </ice:panelGrid>
                 </ice:panelGroup>
 
                 <!-- Table -->
@@ -372,6 +397,8 @@
                 </ice:panelGroup>
 
                 <table:columnsDialog manager="#{cc.attrs.manager}"/>
+                
+                <table:queryDialog manager="#{cc.attrs.manager}"/>
 
             </ice:panelGroup>
 

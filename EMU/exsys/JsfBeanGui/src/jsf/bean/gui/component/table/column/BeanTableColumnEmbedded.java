@@ -4,9 +4,10 @@
  */
 package jsf.bean.gui.component.table.column;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 import jsf.bean.gui.annotation.EmbeddedSortBy;
 import jsf.bean.gui.component.table.BeanTable;
@@ -85,6 +86,20 @@ public class BeanTableColumnEmbedded extends BeanTableColumnSortable {
     @Override
     public boolean isEmbedType() {
         return true;
+    }
+
+    @Override
+    public Collection<BeanTableQueryColumn> getQueryColumns() {
+        Collection<BeanTableQueryColumn> cols = new ArrayList<BeanTableQueryColumn>();
+        for (BeanTableColumnBase p: properties) {
+            cols.add(
+                new BeanTableQueryColumn(
+                    this.getTitle().concat(".").concat(p.getTitle()),
+                    this.getName().concat(".").concat(p.getName()), 
+                    p.getType(), 
+                    true));
+        }
+        return cols;
     }
 
 }

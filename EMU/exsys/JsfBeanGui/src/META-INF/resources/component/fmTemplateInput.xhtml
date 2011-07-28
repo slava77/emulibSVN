@@ -38,18 +38,6 @@
 
         <ice:panelGroup rendered="#{cc.attrs.render}">
 
-            <!-- Menu -->
-
-            <script type="text/javascript">
-
-                function fmAddHint(cmd, selectorClass) {
-                    var t = jQuery(cmd).closest("table");
-                    var v = jQuery('select.' + selectorClass, t).val();
-                    jQuery('textarea.templateStr', t).replaceSelection(v, true);
-                }
-
-            </script>
-
             <table border="0" cellspacing="0" width="#{cc.attrs.width}">
                 <tr>
                     <td nowrap="true" valign="middle">
@@ -61,7 +49,7 @@
                         </ice:selectOneMenu>
 
                         <ice:commandButton value="&raquo;"
-                                           onclick="fmAddHint(this, 'fmDataHint');"
+                                           onclick="jQuery('textarea.templateStr', jQuery(this).closest('table')).replaceSelection(jQuery('select.fmDataHint', jQuery(this).closest('table')).val(), true);"
                                            title="Add selected data property"
                                            style="float: left; width: 15px"/>
 
@@ -81,7 +69,7 @@
                         </ice:selectOneMenu>
                         
                         <ice:commandButton value="&raquo;"
-                                           onclick="fmAddHint(this, 'fmOperatorHint');"
+                                           onclick="jQuery('textarea.templateStr', jQuery(this).closest('table')).replaceSelection(jQuery('select.fmOperatorHint', jQuery(this).closest('table')).val(), true);"
                                            title="Add selected operator"
                                            style="float: left; width: 15px"/>
 

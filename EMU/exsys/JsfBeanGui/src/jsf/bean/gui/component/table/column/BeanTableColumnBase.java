@@ -3,6 +3,8 @@ package jsf.bean.gui.component.table.column;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import javax.faces.convert.Converter;
 import jsf.bean.gui.annotation.PeriodType;
@@ -89,6 +91,10 @@ public class BeanTableColumnBase implements Serializable {
         return this.periodType;
     }
 
+    public Collection<BeanTableQueryColumn> getQueryColumns() {
+        return Collections.singleton(new BeanTableQueryColumn(title, name, type, true));
+    }
+    
     /**
      *
      * Getters and setters

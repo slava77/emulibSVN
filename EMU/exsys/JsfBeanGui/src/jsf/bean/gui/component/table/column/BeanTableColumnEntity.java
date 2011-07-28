@@ -1,5 +1,7 @@
 package jsf.bean.gui.component.table.column;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.faces.event.ActionEvent;
 import jsf.bean.gui.component.table.BeanTable;
 import jsf.bean.gui.component.table.BeanTablePack;
@@ -76,6 +78,20 @@ public class BeanTableColumnEntity extends BeanTableColumn {
 
     public void filterTableListener(ActionEvent ev) throws Exception {
         table.getPack().getManager().pushTable(setFilterTablePack());
+    }
+
+    @Override
+    public Collection<BeanTableQueryColumn> getQueryColumns() {
+        Collection<BeanTableQueryColumn> cols = new ArrayList<BeanTableQueryColumn> ();
+        for (BeanTableColumn c: getFilterTablePack().getTable().getColumns()) {
+            cols.add(
+                new BeanTableQueryColumn(
+                    this.getTitle().concat(".").concat(c.getTitle()),
+                    this.getName().concat(".").concat(c.getName()), 
+                    c.getType(), 
+                    false));
+        }
+        return cols;
     }
 
 }

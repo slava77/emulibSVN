@@ -5,6 +5,7 @@
 package jsf.bean.gui.component.table.api;
 
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,7 +17,7 @@ import jsf.bean.gui.component.BeanTableApiManager;
 import jsf.bean.gui.component.BeanTableManager;
 import jsf.bean.gui.component.table.BeanTable;
 import jsf.bean.gui.component.table.BeanTableDaoIf;
-import jsf.bean.gui.component.table.column.BeanTableColumn;
+import jsf.bean.gui.component.table.column.BeanTableQueryColumn;
 import jsf.bean.gui.component.table.export.BeanTableExportResource;
 import jsf.bean.gui.component.table.export.BeanTableExportTemplateProvider;
 import org.json.JSONObject;
@@ -30,7 +31,6 @@ public class BeanTableApi {
     private final BeanTableApiConfig config;
     private final BeanTableManager manager;
     private final BeanTableApiManager apimanager;
-    private SortedSet<BeanTableApiColumn> columns = new TreeSet<BeanTableApiColumn>();
     private SortedSet<BeanTableApiTemplate> templates = new TreeSet<BeanTableApiTemplate>();
     private Map<String, BeanTableExportResource> exportResources = new HashMap<String, BeanTableExportResource>();
     
@@ -64,10 +64,6 @@ public class BeanTableApi {
                     pf.getValue());
         }
         
-        for (BeanTableColumn col: this.manager.getTable().getColumns()) {
-            columns.add(new BeanTableApiColumn(col.getName(), col.getType().getSimpleName()));
-        }
-        
         List<BeanTableExportResource> erl = new LinkedList<BeanTableExportResource>();
         erl.addAll(this.manager.getTable().getExportTemplateList().getDefaultExportResources());
         erl.addAll(this.manager.getTable().getExportTemplateList().getPublicExportResources());
@@ -90,12 +86,12 @@ public class BeanTableApi {
         
     }
 
-    public SortedSet<BeanTableApiColumn> getColumns() {
-        return columns;
+    public Collection<BeanTableQueryColumn> getColumns() {
+        return manager.getTable().getQueryColumns();
     }
 
     public boolean isColumnExists(String name) {
-        for (BeanTableApiColumn col: columns) {
+        for (BeanTableQueryColumn col: getColumns()) {
             if (col.getName().equals(name)) {
                 return true;
             }

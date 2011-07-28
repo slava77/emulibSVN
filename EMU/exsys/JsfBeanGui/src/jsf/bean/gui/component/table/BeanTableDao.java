@@ -13,7 +13,6 @@ import jsf.bean.gui.component.table.column.BeanTableColumnSortable;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
 import org.hibernate.Criteria;
-import org.hibernate.QueryException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.DetachedCriteria;
@@ -64,68 +63,72 @@ public abstract class BeanTableDao implements Serializable {
             int pageIndex) {
 
         List data = new ArrayList();
-        List pageIds = null;
 
         Session session = getSession();
         Transaction transaction = session.beginTransaction();
 
-        if (pageSize > 0 && pageSize <= MAX_IN_ELEMENTS) {
-            Criteria c = getDetachedCriteria(table)
-                                .getExecutableCriteria(session)
-                                .setProjection(Projections.id())
-                                .setFirstResult((pageIndex - 1) * pageSize)
-                                .setMaxResults(pageSize);
-            applyOrder(c, table);
-            preExecute(session, transaction, table, c);
-            pageIds = c.list();
-        }
-
-        if (pageIds == null || !pageIds.isEmpty()) {
-
-            Criteria c;
-
-            if (pageIds != null) {
-                c = session.createCriteria(table.getRowClass());
-                String itemId = EntityBeanBase.getIdPropertyMd(table.getRowClass()).getName();
-                c.add(Restrictions.in(itemId, pageIds));
-            } else {
-                c = getDetachedCriteria(table).getExecutableCriteria(session);
+        try {
+        
+            List pageIds = null;
+            
+            if (pageSize > 0 && pageSize <= MAX_IN_ELEMENTS) {
+                Criteria c = getDetachedCriteria(table)
+                                    .getExecutableCriteria(session)
+                                    .setProjection(Projections.id())
+                                    .setFirstResult((pageIndex - 1) * pageSize)
+                                    .setMaxResults(pageSize);
+                applyOrder(c, table);
+                preExecute(session, transaction, table, c);
+                pageIds = c.list();
             }
 
-            applyOrder(c, table);
+            if (pageIds == null || !pageIds.isEmpty()) {
 
-            try {
+                Criteria c;
+
+                if (pageIds != null) {
+                    c = session.createCriteria(table.getRowClass());
+                    String itemId = EntityBeanBase.getIdPropertyMd(table.getRowClass()).getName();
+                    c.add(Restrictions.in(itemId, pageIds));
+                } else {
+                    c = getDetachedCriteria(table).getExecutableCriteria(session);
+                }
+
+                applyOrder(c, table);
+
                 preExecute(session, transaction, table, c);
                 c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
                 data = c.list();
-            } catch (QueryException ex) {
-                logger.error(ex);
-                //if (table.isInteractiveMode()) {
-                //BeanBase.addErrorMessage("cms.dqm.workflow.getData.ERROR", false);
-                //}
 
             }
+            
+        } finally {
+            transaction.rollback();
         }
-
-        transaction.rollback();
 
         return data;
     }
 
     public Long getDataCount(BeanTable table) {
-
+        
+        Long count = 0L;
         Session session = getSession();
         Transaction transaction = session.beginTransaction();
+        
+        try {
+            
+            Criteria c = getDetachedCriteria(table)
+                                .getExecutableCriteria(session)
+                                .setProjection(Projections.rowCount());
 
-        Criteria c = getDetachedCriteria(table)
-                            .getExecutableCriteria(session)
-                            .setProjection(Projections.rowCount());
+            preExecuteCount(session, transaction, table, c);
+            c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
-        preExecuteCount(session, transaction, table, c);
-        c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-
-        Long count = (Long) c.uniqueResult();
-        transaction.rollback();
+            count = (Long) c.uniqueResult();
+            
+        } finally {
+            transaction.rollback();
+        }
 
         return count;
     }
@@ -145,11 +148,9 @@ public abstract class BeanTableDao implements Serializable {
         DetachedCriteria c = DetachedCriteria.forClass(table.getRowClass());
         CriteriaConfig config = new CriteriaConfig();
 
-        /*
-        if (advancedQuery != null) {
-        c.add(SQLParamRestriction.restriction(advancedQuery));
+        if (table.isQueryApplied()) {
+            c.add(SQLParamRestriction.restriction(table.getAppliedQuery()));
         }
-         */
 
         if (table.getPack().getFilters() != null) {
             for (BeanTablePackFilter pf : table.getPack().getFilters()) {

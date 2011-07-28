@@ -5,9 +5,14 @@ import jsf.bean.gui.component.table.column.BeanTableColumn;
 import jsf.bean.gui.component.table.column.BeanTableColumnFactory;
 import com.icesoft.faces.component.panelpositioned.PanelPositionedEvent;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
 import java.util.StringTokenizer;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
@@ -15,6 +20,7 @@ import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.component.table.column.BeanTableColumnSortable;
+import jsf.bean.gui.component.table.column.BeanTableQueryColumn;
 import jsf.bean.gui.component.table.export.BeanTableExportTemplateList;
 import jsf.bean.gui.metadata.PropertyMd;
 
@@ -317,6 +323,26 @@ public class BeanTable extends BeanTableControls {
         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.toString());
         }
+    }
+
+    /**
+     * 
+     * Columns metadata
+     * 
+     */
+
+    private static Map<Class, Collection<BeanTableQueryColumn>> queryColumnCache 
+                        = new HashMap<Class, Collection<BeanTableQueryColumn>>();
+    
+    public Collection<BeanTableQueryColumn> getQueryColumns() {
+        if (!queryColumnCache.containsKey(this.rowClass)) {
+            SortedSet<BeanTableQueryColumn> cols = new TreeSet<BeanTableQueryColumn>();
+            for (BeanTableColumn col : getColumns()) {
+                cols.addAll(col.getQueryColumns());
+            }
+            queryColumnCache.put(this.rowClass, cols);
+        }
+        return queryColumnCache.get(this.rowClass);
     }
 
 }

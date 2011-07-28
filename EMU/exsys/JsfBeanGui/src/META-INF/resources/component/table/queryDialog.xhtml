@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:comp="http://java.sun.com/jsf/composite/component"
+      xmlns:cc="http://java.sun.com/jsf/composite">
+
+    <cc:interface>
+
+        <cc:attribute name="manager" required="false"
+                      shortDescription="Table manager"/>
+
+    </cc:interface>
+
+    <cc:implementation>
+
+        <ice:panelPopup id="queryDlg" autoCentre="true" modal="false" draggable="false"
+                        style="z-index: 1000; overflow: visible; height: 240px; width: 600px"
+                        rendered="#{cc.attrs.manager.table.displayQuery}">
+
+            <f:facet name="header">
+                <ice:panelGroup>
+                    <table width="600">
+                        <tr>
+                            <td width="100%">
+                                <ice:outputText value="Query" />
+                            </td>
+                            <td width="1%">
+                                <ice:commandButton type="button"
+                                                   image="/xmlhttp/css/rime/css-images/cal_off.gif"
+                                                   style="vertical-align: middle; text-align: right"
+                                                   immediate="true"
+                                                   title="Close" alt="Close">
+                                    <f:setPropertyActionListener target="#{cc.attrs.manager.table.displayQuery}" 
+                                                                 value="#{!cc.attrs.manager.table.displayQuery}"/>
+                                </ice:commandButton>
+                            </td>
+                        </tr>
+                    </table>
+                </ice:panelGroup>
+            </f:facet>
+
+            <f:facet name="body">
+                <ice:panelGroup>
+                    <ice:panelGrid columns="2">
+                        <ice:panelGroup panelTooltip="QueryColumnsPopup"
+                                        style="margin-right: 10px">
+                            <ice:outputText value="Columns"/>
+                        </ice:panelGroup>
+                        <ice:panelGroup panelTooltip="QueryFunctionsPopup"
+                                        style="margin-right: 10px">
+                            <ice:outputText value="Operators and functions"/>
+                        </ice:panelGroup>
+                    </ice:panelGrid>
+                    <ice:panelGroup>
+                        <ice:inputTextarea id="editQuery"
+                                           value="#{cc.attrs.manager.table.query}"
+                                           style="width: 570px; height: 130px"/>
+                    </ice:panelGroup>
+                    <ice:panelGroup>
+                        <ice:commandButton value="Apply" 
+                                           title="Apply query and refresh table"
+                                           style="margin: 5px"/>
+                        <ice:commandButton value="Remove" 
+                                           title="Remove query and refresh table"
+                                           style="margin: 5px">
+                            <f:setPropertyActionListener target="#{cc.attrs.manager.table.query}" 
+                                                         value="#{null}"/>
+                        </ice:commandButton>
+                        <ice:commandButton value="Restore" 
+                                           title="Reset to currently applied query"
+                                           disabled="#{cc.attrs.manager.table.query == cc.attrs.manager.table.appliedQuery}"
+                                           style="margin: 5px">
+                            <f:setPropertyActionListener target="#{cc.attrs.manager.table.query}" 
+                                                         value="#{cc.attrs.manager.table.appliedQuery}"/>
+                        </ice:commandButton>
+                        <ice:commandButton value="Close" 
+                                           title="Close dialog"
+                                           immediate="true"
+                                           style="margin: 5px">
+                            <f:setPropertyActionListener target="#{cc.attrs.manager.table.displayQuery}" 
+                                                         value="#{!cc.attrs.manager.table.displayQuery}"/>
+                        </ice:commandButton>
+                    </ice:panelGroup>
+                    
+                    <ice:panelTooltip id="QueryColumnsPopup" displayOn="hover" hideOn="mouseout" hoverDelay="100"
+                                      style="width: 250px; height: 250px; overflow: auto;" rendered="true" visible="true">
+                        <f:facet name="body" style="text-align: left">
+                            <ice:panelSeries value="#{cc.attrs.manager.table.queryColumns}" var="col">
+                                <ice:panelGroup>
+                                    <ice:commandLink style="font-size: small"
+                                                     value="#{col.title} (#{col.typeName})"
+                                                     title="Add [#{col.title}] column to query"
+                                                     onclick="jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'editQuery').replaceSelection('{#{col.name}}', true); jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'QueryColumnsPopup').hide(); return false;"/>
+                                </ice:panelGroup>
+                            </ice:panelSeries>
+                        </f:facet>
+                    </ice:panelTooltip>
+
+                    <ice:panelTooltip id="QueryFunctionsPopup" displayOn="hover" hideOn="mouseout" hoverDelay="100"
+                                      style="width: 250px; height: 250px; overflow: auto" rendered="true" visible="true">
+                        <f:facet name="body" style="text-align: left">
+                            <ice:panelSeries value="#{cc.attrs.manager.table.queryFunctions}" var="function">
+                                <ice:panelGroup>
+                                    <ice:commandLink style="font-size: small"
+                                                     value="#{function.label}"
+                                                     title="Add [#{function.label}] function/operator to query"
+                                                     onclick="jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'editQuery').replaceSelection('#{function.value}', true); jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'QueryFunctionsPopup').hide(); return false;"/>
+                                </ice:panelGroup>
+                            </ice:panelSeries>
+                        </f:facet>
+                    </ice:panelTooltip>
+
+                </ice:panelGroup>
+            </f:facet>
+            
+        </ice:panelPopup>
+
+    </cc:implementation>
+</html>
