@@ -29,9 +29,13 @@ public abstract class BeanTableApiManager {
     }
     
     public BeanTableApi getApi(String id) throws Exception {
+        return getApi(id, getBeanTableDao());
+    }
+    
+    public BeanTableApi getApi(String id, BeanTableDaoIf tableDao) throws Exception {
         BeanTableApiConfig config = configProvider.getConfig(id);
         if (config != null) {
-            return new BeanTableApi(config, this);
+            return new BeanTableApi(config, this, tableDao);
         }
         throw new Exception(String.format("Bean table API with ID = [%s] not found?!", id));
     }

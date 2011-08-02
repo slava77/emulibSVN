@@ -161,6 +161,10 @@ public class BeanTablePack implements Serializable {
             parentJson.put("filter", childJson);
         }
         
+        if (getTable().isQueryApplied()) {
+            parentJson.put("query", getTable().getAppliedQuery());
+        }
+        
         return parentJson;
     }
 
@@ -185,45 +189,43 @@ public class BeanTablePack implements Serializable {
         
         if (filter.has("filter")) {
             JSONObject filterJson = filter.getJSONObject("filter");
-            applyColumnsFilter(filterJson);
-        }
-
-
-    }
-    
-    private void applyColumnsFilter(JSONObject filterJson) throws Exception {
-        for (BeanTableColumn column : getTable().getColumns()) {
-            if (filterJson.has(column.getName())) {
-                if (filterJson.optJSONObject(column.getName()) != null) {
-                    JSONObject columnFilterJson = filterJson.getJSONObject(column.getName());
-                    if (columnFilterJson.has("rowClass")) {
-                        if (column.isEntityType()) {
-                            if (column.isListType()) {
-                                BeanTableColumnEntityList ce = (BeanTableColumnEntityList) column;
-                                ce.setFilterTablePack(this.prefix);
-                                ce.getFilterTablePack().setSerializedFilter(columnFilterJson);
-                            } else {
-                                BeanTableColumnEntity ce = (BeanTableColumnEntity) column;
-                                ce.setFilterTablePack(this.prefix);
-                                ce.getFilterTablePack().setSerializedFilter(columnFilterJson);
+            for (BeanTableColumn column : getTable().getColumns()) {
+                if (filterJson.has(column.getName())) {
+                    if (filterJson.optJSONObject(column.getName()) != null) {
+                        JSONObject columnFilterJson = filterJson.getJSONObject(column.getName());
+                        if (columnFilterJson.has("rowClass")) {
+                            if (column.isEntityType()) {
+                                if (column.isListType()) {
+                                    BeanTableColumnEntityList ce = (BeanTableColumnEntityList) column;
+                                    ce.setFilterTablePack(this.prefix);
+                                    ce.getFilterTablePack().setSerializedFilter(columnFilterJson);
+                                } else {
+                                    BeanTableColumnEntity ce = (BeanTableColumnEntity) column;
+                                    ce.setFilterTablePack(this.prefix);
+                                    ce.getFilterTablePack().setSerializedFilter(columnFilterJson);
+                                }
+                            }
+                        } else {
+                            BeanTableColumnEmbedded ec = (BeanTableColumnEmbedded) column;
+                            for (BeanTableColumnBase properties : ec.getProperties()) {
+                                if (columnFilterJson.has(properties.getName())) {
+                                    String filterText = columnFilterJson.getString(properties.getName());
+                                    properties.setFilter((BeanTableFilter) properties.getFilterConverter().getAsObject(null, null, filterText));
+                                }
                             }
                         }
                     } else {
-                        BeanTableColumnEmbedded ec = (BeanTableColumnEmbedded) column;
-                        for (BeanTableColumnBase properties : ec.getProperties()) {
-                            if (columnFilterJson.has(properties.getName())) {
-                                String filterText = columnFilterJson.getString(properties.getName());
-                                properties.setFilter((BeanTableFilter) properties.getFilterConverter().getAsObject(null, null, filterText));
-                            }
-                        }
+                        String filterText = filterJson.getString(column.getName());
+                        column.setFilter((BeanTableFilter) column.getFilterConverter().getAsObject(null, null, filterText));
                     }
-                } else {
-                    String filterText = filterJson.getString(column.getName());
-                    column.setFilter((BeanTableFilter) column.getFilterConverter().getAsObject(null, null, filterText));
                 }
             }
         }
-
+        
+        if (filter.has("query")) {
+            getTable().setQuery(filter.getString("query"));
+        }
+        
     }
     
 }

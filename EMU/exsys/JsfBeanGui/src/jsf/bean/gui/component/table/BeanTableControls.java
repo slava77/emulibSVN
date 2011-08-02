@@ -188,7 +188,9 @@ public abstract class BeanTableControls implements Serializable {
     }
 
     public void setQuery(String nquery) {
-
+        
+        boolean interactiveMode = isInteractiveMode();
+        
         // Initial query cleanup
         
         if (nquery != null) {
@@ -209,7 +211,7 @@ public abstract class BeanTableControls implements Serializable {
         
             // Secondary query checkup
             if (query != null && SUBQUERY_PATTERN.matcher(query).matches()) {
-                if (isInteractiveMode()) {
+                if (interactiveMode) {
                     JsfBeanBase.addErrorMessage("Subqueries are not allowed!");
                     return;
                 } else {
@@ -220,37 +222,29 @@ public abstract class BeanTableControls implements Serializable {
             String prevAppliedQuery = appliedQuery;
             this.appliedQuery = query;
 
-            Exception sqlException = null;
+            if (interactiveMode) {
+                
+                Exception sqlException = null;
 
-            try {
+                try {
 
-                refresh();
+                    refresh();
 
-            } catch (org.hibernate.exception.SQLGrammarException e) {
-                sqlException = e;
-            } catch (org.hibernate.QueryException e) {
-                sqlException = e;
-            }
+                } catch (org.hibernate.exception.SQLGrammarException e) {
+                    sqlException = e;
+                } catch (org.hibernate.QueryException e) {
+                    sqlException = e;
+                }
 
-            if (sqlException != null) {
-
-                this.appliedQuery = prevAppliedQuery;
-                refresh();
-
-                if (isInteractiveMode()) {
+                if (sqlException != null) {
+                    this.appliedQuery = prevAppliedQuery;
+                    refresh();
                     JsfBeanBase.addErrorMessage(sqlException);
                 } else {
-                    throw new RuntimeException(sqlException);
-                }
-
-            } else {
-
-                if (isInteractiveMode()) {
-                    //addAdvancedQueryHistoryItem(advancedQueryTemp);
                     firstPageListener(null);
                 }
-
             }
+            
         }
         
     }
@@ -277,29 +271,4 @@ public abstract class BeanTableControls implements Serializable {
         return QUERY_FUNCTIONS;
     }
     
-    /*
-    private SortedMap<Date, String> advHistory = new TreeMap<Date, String>();
-
-    public List<String> getAdvancedQueryHistory() {
-        List<String> list = new ArrayList<String>();
-        for (Date d : advHistory.keySet()) {
-            list.add(advHistory.get(d));
-        }
-        return list;
-    }
-
-    private void addAdvancedQueryHistoryItem(String query) {
-        if (!advHistory.containsValue(query)) {
-            if (advHistory.size() >= 10) {
-                advHistory.remove(advHistory.firstKey());
-            }
-            advHistory.put(GeneralUtil.getCETDate(), query);
-        }
-    }
-
-    public boolean isSetAdvancedQueryHistory() {
-        return (advHistory.size() > 0);
-    }
-    */
-
 }

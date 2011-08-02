@@ -31,18 +31,21 @@ public class BeanTableApi {
     private final BeanTableApiConfig config;
     private final BeanTableManager manager;
     private final BeanTableApiManager apimanager;
+    private final BeanTableDaoIf tableDao;
     private SortedSet<BeanTableApiTemplate> templates = new TreeSet<BeanTableApiTemplate>();
     private Map<String, BeanTableExportResource> exportResources = new HashMap<String, BeanTableExportResource>();
     
     public BeanTableApi(BeanTableApiConfig config, 
-                        BeanTableApiManager apimanager_) throws Exception {
+                        BeanTableApiManager apimanager_,
+                        BeanTableDaoIf tableDao_) throws Exception {
         this.config = config;
         this.apimanager = apimanager_;
+        this.tableDao = tableDao_;
         this.manager = new BeanTableManager(config.getId(), this.config.getRowClass(), false) {
 
             @Override
             public BeanTableDaoIf getBeanTableDao() {
-                return apimanager.getBeanTableDao();
+                return tableDao;
             }
 
             @Override
@@ -132,6 +135,16 @@ public class BeanTableApi {
         }
         
         return exportResources.get(templateId).open();
+        
+    }
+    
+    public Long count(JSONObject apiFilter) throws Exception {
+        
+        if (apiFilter != null) {
+            this.manager.getTablePack().setSerializedFilter(apiFilter);
+        }
+        
+        return this.manager.getTable().getDataCount();
         
     }
     

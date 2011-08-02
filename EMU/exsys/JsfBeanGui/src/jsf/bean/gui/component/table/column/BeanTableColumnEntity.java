@@ -82,16 +82,27 @@ public class BeanTableColumnEntity extends BeanTableColumn {
 
     @Override
     public Collection<BeanTableQueryColumn> getQueryColumns() {
-        Collection<BeanTableQueryColumn> cols = new ArrayList<BeanTableQueryColumn> ();
-        for (BeanTableColumn c: getFilterTablePack().getTable().getColumns()) {
-            cols.add(
-                new BeanTableQueryColumn(
-                    this.getTitle().concat(".").concat(c.getTitle()),
-                    this.getName().concat(".").concat(c.getName()), 
-                    c.getType(), 
-                    false));
+        try {
+            Collection<BeanTableQueryColumn> cols = new ArrayList<BeanTableQueryColumn> ();
+            boolean filterWasNull = (filter == null);
+            if (filterWasNull) {
+                setFilterTablePack(null);
+            }
+            for (BeanTableColumn c: getFilterTablePack().getTable().getColumns()) {
+                cols.add(
+                    new BeanTableQueryColumn(
+                        this.getTitle().concat(".").concat(c.getTitle()),
+                        this.getName().concat(".").concat(c.getName()), 
+                        c.getType(), 
+                        false));
+            }
+            if (filterWasNull) {
+                clearFilter();
+            }
+            return cols;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
-        return cols;
     }
 
 }
