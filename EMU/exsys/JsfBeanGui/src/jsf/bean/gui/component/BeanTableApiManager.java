@@ -4,12 +4,17 @@
  */
 package jsf.bean.gui.component;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import jsf.bean.gui.ClassFinderIf;
 import jsf.bean.gui.component.table.BeanTable;
 import jsf.bean.gui.component.table.BeanTableDaoIf;
 import jsf.bean.gui.component.table.api.BeanTableApi;
 import jsf.bean.gui.component.table.api.BeanTableApiConfig;
 import jsf.bean.gui.component.table.api.BeanTableApiConfigProviderIf;
+import jsf.bean.gui.component.table.api.BeanTableApiTemplate;
+import jsf.bean.gui.component.table.column.BeanTableQueryColumn;
 import jsf.bean.gui.component.table.export.BeanTableExportTemplateProvider;
 
 /**
@@ -18,7 +23,9 @@ import jsf.bean.gui.component.table.export.BeanTableExportTemplateProvider;
  */
 public abstract class BeanTableApiManager {
     
-    private BeanTableApiConfigProviderIf configProvider;
+    private final BeanTableApiConfigProviderIf configProvider;
+    private Map<String, Collection<BeanTableQueryColumn>> cacheColumns;
+    private Map<String, Collection<BeanTableApiTemplate>> cacheTemplates;
 
     public abstract BeanTableDaoIf getBeanTableDao();
     public abstract ClassFinderIf getClassFinder();
@@ -26,6 +33,49 @@ public abstract class BeanTableApiManager {
     
     public BeanTableApiManager(BeanTableApiConfigProviderIf configProvider) {
         this.configProvider = configProvider;
+        this.cacheColumns = new HashMap<String, Collection<BeanTableQueryColumn>>();
+        this.cacheTemplates = new HashMap<String, Collection<BeanTableApiTemplate>>();
+    }
+    
+    public Collection<BeanTableQueryColumn> getColumns(String id) throws Exception {
+        if (!cacheColumns.containsKey(id)) {
+            cacheColumns.put(id, getApi(id).getColumns());
+        }
+        return cacheColumns.get(id);
+    }
+    
+    public boolean isColumnExists(String id, String name) throws Exception {
+        for (BeanTableQueryColumn col: getColumns(id)) {
+            if (col.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean isOrderColumnExists(String id, String name) throws Exception {
+        for (BeanTableQueryColumn col: getColumns(id)) {
+            if (col.getName().equals(name)) {
+                return col.isSortable();
+            }
+        }
+        return false;
+    }
+    
+    public Collection<BeanTableApiTemplate> getTemplates(String id) throws Exception {
+        if (!cacheTemplates.containsKey(id)) {
+            cacheTemplates.put(id, getApi(id).getTemplates());
+        }
+        return cacheTemplates.get(id);
+    }
+
+    public boolean isTemplateExists(String id, String name) throws Exception {
+        for (BeanTableApiTemplate t: getTemplates(id)) {
+            if (t.getId().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     public BeanTableApi getApi(String id) throws Exception {

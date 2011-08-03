@@ -92,7 +92,7 @@ public class BeanTableColumnBase implements Serializable {
     }
 
     public Collection<BeanTableQueryColumn> getQueryColumns() {
-        return Collections.singleton(new BeanTableQueryColumn(title, name, type, true));
+        return Collections.singleton(new BeanTableQueryColumn(title, name, type, true, isSortable()));
     }
     
     /**

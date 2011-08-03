@@ -97,7 +97,8 @@ public class BeanTableColumnEmbedded extends BeanTableColumnSortable {
                     this.getTitle().concat(".").concat(p.getTitle()),
                     this.getName().concat(".").concat(p.getName()), 
                     p.getType(), 
-                    true));
+                    true,
+                    isSortable()));
         }
         return cols;
     }

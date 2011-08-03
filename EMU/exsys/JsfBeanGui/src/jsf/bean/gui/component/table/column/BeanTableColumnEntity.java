@@ -94,6 +94,7 @@ public class BeanTableColumnEntity extends BeanTableColumn {
                         this.getTitle().concat(".").concat(c.getTitle()),
                         this.getName().concat(".").concat(c.getName()), 
                         c.getType(), 
+                        false,
                         false));
             }
             if (filterWasNull) {
