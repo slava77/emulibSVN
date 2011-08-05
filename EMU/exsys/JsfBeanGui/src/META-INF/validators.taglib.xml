@@ -8,4 +8,10 @@
             <validator-id>jsf.bean.gui.UrlValidator</validator-id>
         </validator>
     </tag>
+    <tag>
+        <tag-name>validateCName</tag-name>
+        <validator>
+            <validator-id>jsf.bean.gui.CNameValidator</validator-id>
+        </validator>
+    </tag>
 </facelet-taglib>

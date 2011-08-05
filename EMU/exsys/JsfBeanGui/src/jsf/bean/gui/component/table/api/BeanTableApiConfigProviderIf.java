@@ -5,6 +5,7 @@
 package jsf.bean.gui.component.table.api;
 
 import java.util.Collection;
+import jsf.bean.gui.EntityBeanBase;
 
 /**
  *
@@ -13,6 +14,7 @@ import java.util.Collection;
 public interface BeanTableApiConfigProviderIf {
     
     BeanTableApiConfig getConfig(String id);
+    BeanTableApiConfig getConfig(Class<? extends EntityBeanBase> rowClass);
     Collection<BeanTableApiConfig> getAllConfigs();
     
 }

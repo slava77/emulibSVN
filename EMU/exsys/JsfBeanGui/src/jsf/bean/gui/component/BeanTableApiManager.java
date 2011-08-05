@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import jsf.bean.gui.ClassFinderIf;
+import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.component.table.BeanTable;
 import jsf.bean.gui.component.table.BeanTableDaoIf;
 import jsf.bean.gui.component.table.api.BeanTableApi;
@@ -44,24 +45,6 @@ public abstract class BeanTableApiManager {
         return cacheColumns.get(id);
     }
     
-    public boolean isColumnExists(String id, String name) throws Exception {
-        for (BeanTableQueryColumn col: getColumns(id)) {
-            if (col.getName().equals(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    public boolean isOrderColumnExists(String id, String name) throws Exception {
-        for (BeanTableQueryColumn col: getColumns(id)) {
-            if (col.getName().equals(name)) {
-                return col.isSortable();
-            }
-        }
-        return false;
-    }
-    
     public Collection<BeanTableApiTemplate> getTemplates(String id) throws Exception {
         if (!cacheTemplates.containsKey(id)) {
             cacheTemplates.put(id, getApi(id).getTemplates());
@@ -76,6 +59,22 @@ public abstract class BeanTableApiManager {
             }
         }
         return false;
+    }
+    
+    public BeanTableApiTemplate getTemplate(String id, String name) throws Exception {
+        for (BeanTableApiTemplate t: getTemplates(id)) {
+            if (t.getId().equals(name)) {
+                return t;
+            }
+        }
+        return null;
+    }
+    
+    public void refreshTemplates(Class<? extends EntityBeanBase> rowClass) {
+        BeanTableApiConfig config = configProvider.getConfig(rowClass);
+        if (config != null) {
+            this.cacheTemplates.remove(config.getId());
+        }
     }
     
     public BeanTableApi getApi(String id) throws Exception {

@@ -9,5 +9,10 @@
             <validator-id>jsf.bean.gui.UrlValidator</validator-id>
             <validator-class>jsf.bean.gui.validator.UrlValidator</validator-class>
     </validator>
-        
+
+    <validator>
+            <validator-id>jsf.bean.gui.CNameValidator</validator-id>
+            <validator-class>jsf.bean.gui.validator.CNameValidator</validator-class>
+    </validator>
+
 </faces-config>

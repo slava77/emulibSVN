@@ -70,6 +70,10 @@ public class BeanTablePack implements Serializable {
         
     }
 
+    public Class<? extends EntityBeanBase> getRowClass() {
+        return rowClass;
+    }
+
     public Collection<SelectItem> getClasses() {
         return classes;
     }
