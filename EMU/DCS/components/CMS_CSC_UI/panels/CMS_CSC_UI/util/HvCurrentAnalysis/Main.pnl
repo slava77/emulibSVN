@@ -226,8 +226,8 @@ E E E
 LANG:1 0 
 
 2
-"horizontalHeaderFormat" "enum 0"
 "firstDayOfWeek" "enum 1"
+"horizontalHeaderFormat" "enum 0"
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0  10 80 210 230
@@ -328,8 +328,8 @@ E E E
 LANG:1 0 
 
 2
-"firstDayOfWeek" "enum 1"
 "horizontalHeaderFormat" "enum 0"
+"firstDayOfWeek" "enum 1"
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0  10 310 210 460
@@ -780,6 +780,36 @@ E
 E
 E
  0 0
+13 32
+"PUSH_BUTTON6"
+""
+1 860 70 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+32 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  858 68 992 92
+
+T 
+1
+LANG:1 18 Show as plain text
+"main()
+{
+  string text;
+  for (int i=0; i < tableResults.lineCount(); i++) {
+    text += tableResults.getLineN(i) + \"\\n\";
+  }
+  
+  ChildPanelOnCentralModal(\"CMS_CSC_UI/util/textEditor.pnl\", \"textEdit_highCurrentHvChannels\", 
+                           makeDynString(\"$text:\" + text));
+}" 0
+ E E E
 0
 LAYER, 1 
 1
