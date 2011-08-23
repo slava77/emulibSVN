@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 517 840 N "_3DFace" 0
+PANEL,-1 -1 517 874 N "_3DFace" 0
 "main()
 {
   // ==== access control ====
@@ -473,7 +473,7 @@ LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 2 37
 "PRIMITIVE_TEXT14"
 ""
-1 10 500 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 10 530 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 37 0 0 0 0 0
 E E E
@@ -483,8 +483,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 10 500 502 516
-0 2 2 "0s" 0 0 0 192 0 0  10 500 1
+E E 0 1 1 2 1 E U  0 E 10 530 502 546
+0 2 2 "0s" 0 0 0 192 0 0  10 530 1
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
@@ -530,7 +530,7 @@ LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 13 39
 "btnUnmaskAndChangeVset"
 ""
-1 40 570 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 40 610 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 39 0 0 0 0 0
 E E E
@@ -541,7 +541,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  38 568 242 597
+0  38 608 242 637
 
 T 
 1
@@ -580,7 +580,7 @@ LANG:1 26 Unmask and set voltage to:
 21 40
 "spinUnmaskVoltage"
 ""
-1 260 570 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 260 610 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 40 0 0 0 0 0
 E E E
@@ -591,7 +591,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  258 568 382 596
+0  258 608 382 636
 0
 
 E
@@ -612,7 +612,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 1 0 1 E 1.021276595744681 0 0.7407407407407407 -0.4255319148936154 168.1481481481482 0 E 20 502 491 611
+E E 0 0 1 0 1 E 1.021276595744681 0 0.7407407407407407 -0.4255319148936154 208.1481481481482 0 E 20 502 491 611
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
@@ -630,7 +630,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 1 0 1 E 1.021276595744681 0 1 -0.4255319148936154 128 0 E 20 502 491 611
+E E 0 0 1 0 1 E 1.021276595744681 0 1 -0.4255319148936154 168 0 E 20 502 491 611
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
@@ -638,7 +638,7 @@ LANG:1 41 Action on selected lower voltage channels
 13 43
 "btnMask"
 ""
-1 40 660 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 40 700 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 43 0 0 0 0 0
 E E E
@@ -649,7 +649,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  38 658 242 687
+0  38 698 242 727
 
 T 
 1
@@ -683,7 +683,7 @@ LANG:1 4 Mask
 13 44
 "btnChangeVset"
 ""
-1 40 700 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 40 740 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 44 0 0 0 0 0
 E E E
@@ -694,7 +694,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  38 698 242 727
+0  38 738 242 767
 
 T 
 1
@@ -729,7 +729,7 @@ LANG:1 18 Change Voltage To:
 21 45
 "spinChangeVoltage"
 ""
-1 260 700 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 260 740 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 45 0 0 0 0 0
 E E E
@@ -740,7 +740,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  258 698 382 726
+0  258 738 382 766
 0
 
 E
@@ -761,7 +761,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 1 0 1 E 1.021276595744681 0 0.6481481481481481 -0.4255319148936199 424.6296296296297 0 E 20 502 491 611
+E E 0 0 1 0 1 E 1.021276595744681 0 0.6481481481481481 -0.4255319148936199 464.6296296296297 0 E 20 502 491 611
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
@@ -769,7 +769,7 @@ LANG:1 17 Action on chamber
 13 48
 "btnChangeChamberVset"
 ""
-1 180 780 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 180 820 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 48 0 0 0 0 0
 E E E
@@ -780,7 +780,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  178 778 382 807
+0  178 818 382 847
 
 T 
 1
@@ -809,7 +809,7 @@ LANG:1 18 Change Voltage To:
 21 49
 "spinChangeChamberVoltage"
 ""
-1 400 780 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 400 820 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 49 0 0 0 0 0
 E E E
@@ -820,7 +820,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  398 778 482 806
+0  398 818 482 846
 0
 
 E
@@ -831,7 +831,7 @@ N 0 3700 1 3400 1 1
 22 50
 "comboChamber"
 ""
-1 40 780 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 40 820 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 50 0 0 0 0 0
 E E E
@@ -842,13 +842,73 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  38 778 162 806
+0  38 818 162 846
 0
 
 E
 E
 E
  1 0
+13 51
+"PUSH_BUTTON6"
+""
+1 20.00000000000002 500 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+51 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  18 498 202 522
+
+T 
+1
+LANG:1 18 Show as plain text
+"main()
+{
+  string text;
+  for (int i=0; i < tableMaskedChannels.lineCount(); i++) {
+    text += tableMaskedChannels.getLineN(i) + \"\\n\";
+  }
+  
+  ChildPanelOnCentralModal(\"CMS_CSC_UI/util/textEditor.pnl\", \"textEdit_maskedHvChannels\", 
+                           makeDynString(\"$text:\" + text));
+}" 0
+ E E E
+13 52
+"PUSH_BUTTON7"
+""
+1 290 500 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+52 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  288 498 502 522
+
+T 
+1
+LANG:1 18 Show as plain text
+"main()
+{
+  string text;
+  for (int i=0; i < tableLoweredChannels.lineCount(); i++) {
+    text += tableLoweredChannels.getLineN(i) + \"\\n\";
+  }
+  
+  ChildPanelOnCentralModal(\"CMS_CSC_UI/util/textEditor.pnl\", \"textEdit_loweredHvChannels\", 
+                           makeDynString(\"$text:\" + text));
+}" 0
+ E E E
 0
 LAYER, 1 
 1
