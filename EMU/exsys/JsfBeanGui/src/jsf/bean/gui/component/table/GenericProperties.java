@@ -37,7 +37,11 @@ public class GenericProperties implements Serializable {
     }
 
     public void set(String key, String value) {
-        properties.setProperty(key, value);
+        if (value == null) {
+            properties.remove(key);
+        } else {
+            properties.setProperty(key, value);
+        }
     }
 
     public Integer get(String key, Integer defaultValue) {
