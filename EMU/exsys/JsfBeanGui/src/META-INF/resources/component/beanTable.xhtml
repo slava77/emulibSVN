@@ -49,6 +49,8 @@
 
     <cc:implementation>
 
+        <f:loadBundle basename="jsf.bean.gui.component.table.Help"   var="tableHelp"/>
+        
         <ice:panelGroup rendered="#{cc.attrs.manager != null}">
 
             <!-- Menu -->
@@ -244,11 +246,6 @@
                                                                style="margin: 5px"
                                                                cellpadding="2">
 
-                                                    <ice:commandLink value="Order by" 
-                                                                     rendered="#{column.sortable}"
-                                                                     title="Sort or change direction"
-                                                                     actionListener="#{column.sortListener}"/>
-
                                                     <ice:panelGrid columns="3"
                                                                    rendered="#{column.entityType}">
                                                         <ice:commandLink value="Filter"
@@ -271,27 +268,53 @@
                                                                     <ice:panelGroup style="width: 80px; overflow: hidden; text-align: right;">
                                                                         <ice:outputLabel value="#{p.title}:"/>
                                                                     </ice:panelGroup>
-                                                                    <ice:inputText converter="#{p.filterConverter}"
-                                                                                   style="width: 120px;"
-                                                                                   required="false"
-                                                                                   value="#{p.filter}"
-                                                                                   actionListener="#{cc.attrs.manager.table.filterListener}"/>
+                                                                    <ice:panelGroup panelTooltip="columnHelpTooltip">
+                                                                        <ice:inputText converter="#{p.filterConverter}"
+                                                                                       style="width: 120px;"
+                                                                                       required="false"
+                                                                                       value="#{p.filter}"
+                                                                                       actionListener="#{cc.attrs.manager.table.filterListener}"/>
+                                                                    </ice:panelGroup>
                                                                 </ice:panelGrid>
+                                                                <ice:panelTooltip id="columnHelpTooltip">
+                                                                    <f:facet name="body">
+                                                                        <ice:outputText value="${tableHelp[p.filterConverter.class.simpleName]}"
+                                                                                        style="font-weight: normal; white-space: nowrap"
+                                                                                        escape="false"/>
+                                                                    </f:facet>
+                                                                </ice:panelTooltip>
                                                             </ui:repeat>
                                                         </ice:panelGrid>
                                                     </ice:panelGroup>
 
-                                                    <ice:inputText converter="#{column.filterConverter}"
-                                                                   required="false"
-                                                                   rendered="#{!column.entityType and !column.listType and !column.embedType}"
-                                                                   value="#{column.filter}"
-                                                                   actionListener="#{cc.attrs.manager.table.filterListener}"
-                                                                   style="width: 100px; overflow: hidden" />
-
+                                                    <ice:panelGroup rendered="#{!column.entityType and !column.listType and !column.embedType}">
+                                                        <ice:panelGroup panelTooltip="columnHelpTooltip">
+                                                            <ice:inputText converter="#{column.filterConverter}"
+                                                                           required="false"
+                                                                           rendered="#{!column.entityType and !column.listType and !column.embedType}"
+                                                                           value="#{column.filter}"
+                                                                           title="#{tableHelp[column.filterConverter.class.simpleName]}"
+                                                                           actionListener="#{cc.attrs.manager.table.filterListener}"
+                                                                           style="width: 100px; overflow: hidden" />
+                                                        </ice:panelGroup>
+                                                        <ice:panelTooltip id="columnHelpTooltip">
+                                                            <f:facet name="body">
+                                                                <ice:outputText value="${tableHelp[column.filterConverter.class.simpleName]}"
+                                                                                style="font-weight: normal; white-space: nowrap"
+                                                                                escape="false"/>
+                                                            </f:facet>
+                                                        </ice:panelTooltip>
+                                                    </ice:panelGroup>
+                                                    
                                                     <ice:commandLink value="Clear Filter"
                                                                      title="Clear Filter"
                                                                      rendered="#{column.filterSet}"
                                                                      actionListener="#{column.clearFilterListener}"/>
+                                                    
+                                                    <ice:commandLink value="Sort" 
+                                                                     rendered="#{column.sortable}"
+                                                                     title="Sort or change direction"
+                                                                     actionListener="#{column.sortListener}"/>
 
                                                 </ice:panelGrid>
                                                 <script type="text/javascript">

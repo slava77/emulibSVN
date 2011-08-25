@@ -47,7 +47,8 @@ public class FilterDateConverter extends FilterConverter {
         for (Iterator<BeanTableFilterItem> itemItr = filter.getItems().iterator(); itemItr.hasNext();) {
             BeanTableFilterItem item = itemItr.next();
             BeanTableFilter.Operation op = item.getOperation();
-            if (op == BeanTableFilter.Operation.LIKE) {
+            if (op == BeanTableFilter.Operation.LIKE ||
+                op == BeanTableFilter.Operation.NOTLIKE) {
                 ConversionError("filterConverter.DateLikeOperation");
             }
         }
