@@ -377,7 +377,14 @@ void mudcsCrbCommandCrbGroup(string fsm, bool isOn, dyn_int boards)
 //------------------for x2p---------------------------------
   if(automatic_stop_pcrate_slow_control)
    {
-    if(isOn)mudcsCrb_stop_slow_control(fsm);
+    if (isOn) {
+      for (int i=1; i <= dynlen(boards); i++) {
+        if (boards[i] != 11) { // skip VCC because power-cycling VCC doesn't require power-up-init
+          mudcsCrb_stop_slow_control(fsm);
+          break;
+        }
+      }
+    }
     delay(5);
    }    
 //------low level is on, high level is off for CRB---------
