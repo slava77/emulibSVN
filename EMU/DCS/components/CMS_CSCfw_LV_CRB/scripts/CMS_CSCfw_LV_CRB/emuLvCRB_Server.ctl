@@ -698,6 +698,16 @@ void emuLvCRB_powerOnCRB(string sCRB)
        for(i=1;i<=dynlen(diOffChannels);i++)
           {dsOffChannels[i]=diOffChannels[i];}
      }
+//check the highest 3 bits in portA, if not zero then set to zreo
+  unsigned unValuePortA = fwElmbUser_getDoByte(sElmb,"A",argdsExceptionInfo);
+  if (dynlen(argdsExceptionInfo) > 0) { return; }
+  bit32 b32ValuePortA = unValuePortA;
+  bit32    b32Thres = 31;
+  if((b32ValuePortA>>5)){
+      bit32   b32ValueSet = (b32ValuePortA & b32Thres);
+      fwElmbUser_setDoByte(sElmb,"A",b32ValueSet,argdsExceptionInfo);
+  }
+    
 //for  new_lv_power_up_sequence: switch on order: 1. 1.5v  2. 9 pairs of 3.3v-1,3.3v_2,5v
 // 3. VCC  4. MPC/CCB after each switch on, make a power cycle for dsRest(4) as toggle  
     dsPairs = emuLvCRB_getDynString("Switch_List_DTmbs");
