@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 8 (NoName)
-PANEL,-1 -1 701 480 N "_3DFace" 2
+PANEL,-1 -1 701 419 N "_3DFace" 2
 "$1"
 "$2"
 "string system_name;
@@ -176,7 +176,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E 2.4 0 1 -616 0 1 E 440 50 540 70
+E E 0 1 1 0 1 E 2.4 0 1 -615.9999999999996 -18 1 E 440 50 540 70
 6 18
 "Border1"
 ""
@@ -190,11 +190,11 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  1 E 20 50 430 70
+E E 0 1 1 0 1 E 1 0 1 4.938272013532696e-013 -18 1 E 20 50 430 70
 2 0
 "Text1"
 ""
-1 28 18 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+1 28 3 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
  E E
 1 0 0 0 0 0
 E E E
@@ -204,8 +204,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 30 20 120 37
-0 2 0 "0s" 0 0 0 192 0 0  30 20 1
+E E 0 1 1 0 1 E U  0 E 30 5 120 22
+0 2 0 "0s" 0 0 0 192 0 0  30 5 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
 0 1
@@ -213,7 +213,7 @@ LANG:1 13 Hardware name
 2 1
 "Text2"
 ""
-1 130 20 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+1 130.0000000000005 2 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
  E E
 2 0 0 0 0 0
 E E E
@@ -223,8 +223,8 @@ LANG:1 0
 
 1
 "dashclr"N {0,0,0}
-E E 0 1 1 0 0 E U  1 E 132 22 162 39
-0 2 0 "0s" 0 0 0 192 0 0  132 22 1
+E E 0 1 1 0 0 E U  1 E 132.0000000000005 4 162.0000000000005 21
+0 2 0 "0s" 0 0 0 192 0 0  132.0000000000005 4 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
 0 1
@@ -232,7 +232,7 @@ LANG:1 5 Text2
 2 3
 "Text3"
 ""
-1 70 50 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+1 70.0000000000005 32 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
  E E
 4 0 0 0 0 0
 E E E
@@ -242,8 +242,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 72 52 102 69
-0 2 0 "0s" 0 0 0 192 0 0  72 52 1
+E E 0 1 1 0 1 E U  0 E 72.0000000000005 34 102.0000000000005 51
+0 2 0 "0s" 0 0 0 192 0 0  72.0000000000005 34 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
 0 1
@@ -251,7 +251,7 @@ LANG:1 5 Text3
 2 4
 "Text4"
 ""
-1 184 50 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+1 184.0000000000005 32 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
  E E
 5 0 0 0 0 0
 E E E
@@ -261,8 +261,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 186 52 216 69
-0 2 0 "0s" 0 0 0 192 0 0  186 52 1
+E E 0 1 1 0 1 E U  0 E 186.0000000000005 34 216.0000000000005 51
+0 2 0 "0s" 0 0 0 192 0 0  186.0000000000005 34 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
 0 1
@@ -270,7 +270,7 @@ LANG:1 5 Text3
 2 5
 "Text5"
 ""
-1 150 50 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+1 150.0000000000005 32 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
  E E
 6 0 0 0 0 0
 E E E
@@ -280,8 +280,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 152 52 180 69
-0 2 0 "0s" 0 0 0 192 0 0  152 52 1
+E E 0 1 1 0 1 E U  0 E 152.0000000000005 34 180.0000000000005 51
+0 2 0 "0s" 0 0 0 192 0 0  152.0000000000005 34 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
 0 1
@@ -289,7 +289,7 @@ LANG:1 4 Imon
 2 6
 "Text6"
 ""
-1 30 50 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+1 30.00000000000049 32 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
  E E
 7 0 0 0 0 0
 E E E
@@ -299,8 +299,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 32 52 66 69
-0 2 0 "0s" 0 0 0 192 0 0  32 52 1
+E E 0 1 1 0 1 E U  0 E 32.0000000000005 34 66.0000000000005 51
+0 2 0 "0s" 0 0 0 192 0 0  32.0000000000005 34 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
 0 1
@@ -308,7 +308,7 @@ LANG:1 4 Vmon
 2 7
 "Text7"
 ""
-1 450 50 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+1 450.0000000000005 32 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
  E E
 8 0 0 0 0 0
 E E E
@@ -318,8 +318,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 452 52 483 69
-0 2 0 "0s" 0 0 0 192 0 0  452 52 1
+E E 0 1 1 0 1 E U  0 E 452.0000000000005 34 483.0000000000005 51
+0 2 0 "0s" 0 0 0 192 0 0  452.0000000000005 34 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
 0 1
@@ -327,7 +327,7 @@ LANG:1 5 State
 2 8
 "Text8"
 ""
-1 490 50 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+1 490.0000000000005 32 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
  E E
 9 0 0 0 0 0
 E E E
@@ -337,8 +337,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 492 52 522 69
-0 2 0 "0s" 0 0 0 192 0 0  492 52 1
+E E 0 1 1 0 1 E U  0 E 492.0000000000005 34 522.0000000000005 51
+0 2 0 "0s" 0 0 0 192 0 0  492.0000000000005 34 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
 0 1
@@ -346,7 +346,7 @@ LANG:1 5 Text3
 2 12
 "Text9"
 ""
-1 188 18 E E E 1 E 0 E N {255,0,0} E N "_Transparent" E E
+1 188.0000000000005 3 E E E 1 E 0 E N {255,0,0} E N "_Transparent" E E
  E E
 13 0 0 0 0 0
 E E E
@@ -356,8 +356,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 190 20 351 37
-0 2 0 "0s" 0 0 0 192 0 0  190 20 1
+E E 0 1 1 0 1 E U  0 E 190.0000000000005 5 351.0000000000005 22
+0 2 0 "0s" 0 0 0 192 0 0  190.0000000000005 5 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
 0 1
@@ -365,7 +365,7 @@ LANG:1 31 ALL ini at panel initialization
 2 13
 "Text10"
 ""
-1 318 50 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+1 318.0000000000005 32 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
  E E
 14 0 0 0 0 0
 E E E
@@ -375,8 +375,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 320 52 348 69
-0 2 0 "0s" 0 0 0 192 0 0  320 52 1
+E E 0 1 1 0 1 E U  0 E 320.0000000000005 34 348.0000000000005 51
+0 2 0 "0s" 0 0 0 192 0 0  320.0000000000005 34 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
 0 1
@@ -384,7 +384,7 @@ LANG:1 4 3000
 2 14
 "Text11"
 ""
-1 380 50 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+1 380.0000000000005 32 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
  E E
 15 0 0 0 0 0
 E E E
@@ -394,8 +394,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 382 52 410 69
-0 2 0 "0s" 0 0 0 192 0 0  382 52 1
+E E 0 1 1 0 1 E U  0 E 382.0000000000005 34 410.0000000000005 51
+0 2 0 "0s" 0 0 0 192 0 0  382.0000000000005 34 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
 0 1
@@ -403,7 +403,7 @@ LANG:1 4 3000
 2 15
 "Text12"
 ""
-1 360 50 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+1 360.0000000000005 32 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
  E E
 16 0 0 0 0 0
 E E E
@@ -413,8 +413,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 362 52 378 69
-0 2 0 "0s" 0 0 0 192 0 0  362 52 1
+E E 0 1 1 0 1 E U  0 E 362.0000000000005 34 378.0000000000005 51
+0 2 0 "0s" 0 0 0 192 0 0  362.0000000000005 34 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
 0 1
@@ -422,7 +422,7 @@ LANG:1 2 V1
 2 16
 "Text13"
 ""
-1 298 50 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+1 298.0000000000005 32 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
  E E
 17 0 0 0 0 0
 E E E
@@ -432,8 +432,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 0 1 E U  0 E 300 52 316 69
-0 2 0 "0s" 0 0 0 192 0 0  300 52 1
+E E 0 1 1 0 1 E U  0 E 300.0000000000005 34 316.0000000000005 51
+0 2 0 "0s" 0 0 0 192 0 0  300.0000000000005 34 1
 1
 LANG:1 26 Arial,-1,13,5,40,0,0,0,0,0
 0 1
@@ -589,7 +589,7 @@ LANG:1 2 V0
 2 94
 "PRIMITIVE_TEXT1"
 ""
-1 22 444 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 22.00000000000049 384 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 23 0 0 0 0 0
 E E E
@@ -599,8 +599,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 22 444 154 460
-0 2 2 "0s" 0 0 0 192 0 0  22 444 1
+E E 0 1 1 2 1 E U  0 E 22.00000000000049 384 154.0000000000005 400
+0 2 2 "0s" 0 0 0 192 0 0  22.00000000000049 384 1
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
@@ -608,7 +608,7 @@ LANG:1 24 Nominal voltage setting:
 21 95
 "spinNominalVoltage"
 ""
-1 172 440 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 172.0000000000005 380 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 24 0 0 0 0 0
 E E E
@@ -619,7 +619,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  170 438 294 466
+0  170 378 294 406
 0
 
 E
@@ -630,7 +630,7 @@ N 0 2950 1 0 1 1
 13 96
 "btnSetNewNominalVoltage"
 ""
-1 302 440 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 302.0000000000005 380 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 25 0 0 0 0 0
 E E E
@@ -641,7 +641,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  300 438 474 467
+0  300 378 474 407
 
 T 
 1
@@ -655,7 +655,7 @@ LANG:1 23 Set new nominal voltage
 2 174
 "lblNoControl"
 ""
-1 842 4 E E E 1 E 1 E N "_3DText" E N "FwStateAttention1" E E
+1 842.0000000000005 -56 E E E 1 E 1 E N "_3DText" E N "FwStateAttention1" E E
  E E
 26 0 0 0 0 0
 E E E
@@ -665,8 +665,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 0 0 1 E U  1 E 314 442 659 459
-1 2 2 "0s" 0 0 0 65 0 0  314 442 1
+E E 0 0 0 0 1 E U  1 E 314.0000000000005 382 659.0000000000005 399
+1 2 2 "0s" 0 0 0 65 0 0  314.0000000000005 382 1
 1
 LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
 0 1
@@ -701,7 +701,7 @@ LAYER, 7
 LANG:1 6 Layer8
 0
 3 1 "ME11_HV_Channel" -1
-"objects\\fwTrending\\fwTrendingFaceplate.pnl" 150 161 T 22 1.28155339805825 0 1.419087136929462 -172.233009708738 -148.8444576170721
+"objects\\fwTrending\\fwTrendingFaceplate.pnl" 150 161 T 22 1.28155339805825 0 1.2448132780083 -172.2330097087375 -138.986366330765
 22
 "$ZoomWindowTitle"""
 "$bShowGrid"""
