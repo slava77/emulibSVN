@@ -1,0 +1,34 @@
+# ascii dump of database
+
+# Datapoint/DpId
+DpName	TypeName	ID
+TrendingCRB	FwTrendingPlot	565266
+
+# DpValue
+ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
+TrendingCRB.plotTitle	FwTrendingPlot	"TrendingCRB"	0x101	21.12.2010 09:30:56.703
+TrendingCRB.dpes	FwTrendingPlot	"{dp1}.value", "{dp2}.value", "{dp3}.value", "", "", "", "", ""	0x101	21.12.2010 09:30:56.703
+TrendingCRB.legendTexts	FwTrendingPlot	"{dp1}_V3.3_1", "{dp2}_V3.3_2", "{dp3}_V5", "", "", "", "", ""	0x101	21.12.2010 09:30:56.703
+TrendingCRB.colors	FwTrendingPlot	"FwTrendingCurve1", "FwTrendingCurve2", "FwTrendingCurve3", "FwTrendingCurve4", "FwTrendingCurve5", "FwTrendingCurve6", "FwTrendingCurve7", "FwTrendingCurve8"	0x101	21.12.2010 09:30:56.703
+TrendingCRB.axii	FwTrendingPlot	1, 0, 0, 0, 0, 0, 0, 0	0x101	21.12.2010 09:30:56.703
+TrendingCRB.plotBackColor	FwTrendingPlot	"FwTrendingTrendBackground"	0x101	21.12.2010 09:30:56.703
+TrendingCRB.legend	FwTrendingPlot	1	0x101	21.12.2010 09:30:56.703
+TrendingCRB.isTemplate	FwTrendingPlot	0	0x101	21.12.2010 09:30:56.703
+TrendingCRB.curvesHidden	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	21.12.2010 09:30:56.703
+TrendingCRB.yRangeMin	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	21.12.2010 09:30:56.703
+TrendingCRB.yRangeMax	FwTrendingPlot	6, 6, 6, 0, 0, 0, 0, 0	0x101	21.12.2010 09:30:56.703
+TrendingCRB.plotType	FwTrendingPlot	1	0x101	21.12.2010 09:30:56.703
+TrendingCRB.templateName	FwTrendingPlot	""	0x101	21.12.2010 09:30:56.703
+TrendingCRB.timeRange	FwTrendingPlot	3600	0x101	21.12.2010 09:30:56.703
+TrendingCRB.isLogarithmic	FwTrendingPlot	0	0x101	21.12.2010 09:30:56.703
+TrendingCRB.curveTypes	FwTrendingPlot	1, 1, 1, 1, 1, 1, 1, 1	0x101	21.12.2010 09:30:56.703
+TrendingCRB.plotForeColor	FwTrendingPlot	"FwTrendingTrendForeground"	0x101	21.12.2010 09:30:56.703
+TrendingCRB.grid	FwTrendingPlot	1	0x101	21.12.2010 09:30:56.703
+TrendingCRB.model	FwTrendingPlot	"Value over time"	0x101	21.12.2010 09:30:56.703
+TrendingCRB.xAxii	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	21.12.2010 09:30:56.703
+TrendingCRB.xDpes	FwTrendingPlot	"", "", "", "", "", "", "", ""	0x101	21.12.2010 09:30:56.703
+TrendingCRB.xRangeMin	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	21.12.2010 09:30:56.703
+TrendingCRB.xRangeMax	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x101	21.12.2010 09:30:56.703
+TrendingCRB.xLegendTexts	FwTrendingPlot	"", "", "", "", "", "", "", ""	0x101	21.12.2010 09:30:56.703
+TrendingCRB.markerType	FwTrendingPlot	0	0x101	21.12.2010 09:30:56.703
+TrendingCRB.accessControl.save	FwTrendingPlot	""	0x101	21.12.2010 09:30:56.703
