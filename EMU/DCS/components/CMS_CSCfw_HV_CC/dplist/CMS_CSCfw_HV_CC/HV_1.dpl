@@ -1,0 +1,13 @@
+# ascii dump of database
+
+# DpType
+TypeName
+HV_1.HV_1	1#1
+	module_state	21#2
+	coord	25#3
+	last_vset	21#4
+	status	21#5
+	off_channels	5#6
+	reserve1	21#7
+	reserve2	21#8
+	on_ch_vsets	5#9
