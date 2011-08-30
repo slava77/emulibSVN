@@ -1,6 +1,6 @@
 #uses "CMS_CSCfw_LV_CRB/emuDcsCrb.ctl"
 #uses "CMS_CSCfw_LV_CRB/emuLvCRB.ctl" 
-//=========constant========================================================================
+//=========constant======================================================================== 
 bool automatic_stop_pcrate_slow_control=true;
 bool two_way_communications_x2p=true;
 bool connected_minus_side=false;
