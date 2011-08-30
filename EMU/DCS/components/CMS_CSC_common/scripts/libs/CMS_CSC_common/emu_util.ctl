@@ -6,7 +6,7 @@ This package contains miscellaneous utility functions.
 @date   May 2009
 */
 
-// Common libs
+// Common libraries
 #uses "CMS_CSC_common/emu_common.ctl"
 #uses "CMS_CSC_common/emu_math.ctl"
 #uses "CMS_CSC_common/emu_mapping.ctl"
