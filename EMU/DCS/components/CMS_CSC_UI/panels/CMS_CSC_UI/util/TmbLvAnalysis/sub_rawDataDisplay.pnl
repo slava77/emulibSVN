@@ -146,7 +146,7 @@ LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 13 1
 "PUSH_BUTTON1"
 ""
-1 19.99999999999996 10 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 19.99999999999997 10 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 1 0 0 0 0 0
 E E E
@@ -157,7 +157,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  18 8 952 42
+0  18 8 812 42
 
 T 
 1
@@ -177,6 +177,36 @@ LANG:1 6 Start!
     chamberNameToLine[chamberName] = i - 1;
     dpConnect(\"dataUpdatedCB\", true, dpNames(dps[i] + \".data.Tmb_o.*\", \"LV_1_d\"));
   }
+}" 0
+ E E E
+13 2
+"PUSH_BUTTON6"
+""
+1 820 20 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  818 18 952 42
+
+T 
+1
+LANG:1 18 Show as plain text
+"main()
+{
+  string text;
+  for (int i=0; i < table.lineCount(); i++) {
+    text += table.getLineN(i) + \"\\n\";
+  }
+  
+  ChildPanelOnCentralModal(\"CMS_CSC_UI/util/textEditor.pnl\", \"textEdit_TMB_LV\", 
+                           makeDynString(\"$text:\" + text));
 }" 0
  E E E
 0
