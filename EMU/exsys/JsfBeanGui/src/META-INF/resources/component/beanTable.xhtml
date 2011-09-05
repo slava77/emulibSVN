@@ -105,6 +105,10 @@
                                     <ice:commandLink value="Columns" title="Columns" style="font-weight: bold">
                                         <f:setPropertyActionListener target="#{cc.attrs.manager.table.displayColumns}" value="#{!cc.attrs.manager.table.displayColumns}"/>
                                     </ice:commandLink>
+                                    <ice:commandLink value="Reset Column Widths" 
+                                                     title="Reset Column Widths"
+                                                     style="font-weight: bold"
+                                                     actionListener="#{cc.attrs.manager.table.resetColumnWidthListener}"/>
                                     <ice:panelGroup rendered="#{cc.attrs.liveRefresh and cc.attrs.manager.top}">
                                         <ice:outputLabel value="Live refresh"/>
                                         <comp:polling interval="#{cc.attrs.manager.table.liveRefreshInterval}"

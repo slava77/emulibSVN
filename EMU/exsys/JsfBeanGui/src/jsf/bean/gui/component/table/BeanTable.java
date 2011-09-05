@@ -19,6 +19,7 @@ import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import jsf.bean.gui.EntityBeanBase;
+import jsf.bean.gui.JsfBeanBase;
 import jsf.bean.gui.component.table.column.BeanTableColumnSortable;
 import jsf.bean.gui.component.table.column.BeanTableQueryColumn;
 import jsf.bean.gui.component.table.export.BeanTableExportTemplateList;
@@ -288,6 +289,7 @@ public class BeanTable extends BeanTableControls {
         for (BeanTableColumn sc: columns) {
             sc.setWidth(null);
         }
+        JsfBeanBase.addJavascript("window.location.href = window.location.href;");
     }
 
     /*********************************************

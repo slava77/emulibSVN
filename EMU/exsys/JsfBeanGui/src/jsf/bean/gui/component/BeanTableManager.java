@@ -254,5 +254,5 @@ public abstract class BeanTableManager implements Serializable {
     public ClassConverter getClassConverter() {
         return new ClassConverter(getClassFinder());
     }
-    
+       
 }
