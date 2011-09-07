@@ -9,9 +9,9 @@ PACKAGE_VER_MAJOR=01
 PACKAGE_VER_MINOR=00
 PACKAGE_VER_PATCH=00
 
-ROOTCFLAGS    = $(shell root-config --cflags)
-ROOTLIBS      = $(shell root-config --libs)
-ROOTGLIBS     = $(shell root-config --glibs)
+ROOTCFLAGS    = $(shell $(ROOTSYS)/bin/root-config --cflags)
+ROOTLIBS      = $(shell $(ROOTSYS)/bin/root-config --libs)
+ROOTGLIBS     = $(shell $(ROOTSYS)/bin/root-config --glibs)
 
 
 #
