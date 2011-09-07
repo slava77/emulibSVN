@@ -87,8 +87,11 @@ AFEB::teststand::utils::SCSI_t AFEB::teststand::utils::getSCSI( const string ven
   //   Type:   Unknown                          ANSI SCSI revision: 02
   AFEB::teststand::utils::SCSI_t scsi;
   string scsiInfo = readFile("/proc/scsi/scsi" );
-  const string regex1( "^[[:blank:]]*Host:[[:blank:]]\+scsi\([[:digit:]]\{1,3\}\)[[:blank:]]\+Channel:[[:blank:]]\+\([[:digit:]][[:digit:]]\)[[:blank:]]\+Id:[[:blank:]]\+\([[:digit:]][[:digit:]]\)[[:blank:]]\+Lun:[[:blank:]]\+\([[:digit:]][[:digit:]]\)[[:blank:]]*$" );
-  const string regex2( "^[[:blank:]]*Vendor: \([[:print:]]\+\)Model: \([[:print:]]\+\)Rev: \([[:print:]]\+\)$" );
+  // const string regex1( "^[[:blank:]]*Host:[[:blank:]]\+scsi\([[:digit:]]\{1,3\}\)[[:blank:]]\+Channel:[[:blank:]]\+\([[:digit:]][[:digit:]]\)[[:blank:]]\+Id:[[:blank:]]\+\([[:digit:]][[:digit:]]\)[[:blank:]]\+Lun:[[:blank:]]\+\([[:digit:]][[:digit:]]\)[[:blank:]]*$" );
+  // const string regex2( "^[[:blank:]]*Vendor: \([[:print:]]\+\)Model: \([[:print:]]\+\)Rev: \([[:print:]]\+\)$" );
+  // Try escaping backslash as the compiler complains "error: unknown escape sequence '\)'" tc.
+  const string regex1( "^[[:blank:]]*Host:[[:blank:]]\\+scsi\\([[:digit:]]\\{1,3\\}\\)[[:blank:]]\\+Channel:[[:blank:]]\\+\\([[:digit:]][[:digit:]]\\)[[:blank:]]\\+Id:[[:blank:]]\\+\\([[:digit:]][[:digit:]]\\)[[:blank:]]\\+Lun:[[:blank:]]\\+\\([[:digit:]][[:digit:]]\\)[[:blank:]]*$" );
+  const string regex2( "^[[:blank:]]*Vendor: \\([[:print:]]\\+\\)Model: \\([[:print:]]\\+\\)Rev: \\([[:print:]]\\+\\)$" );
 
   vector<string> matches;
   vector<string> lines = utils::splitSting( scsiInfo, "\n" );

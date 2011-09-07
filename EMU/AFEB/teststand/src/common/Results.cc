@@ -211,9 +211,10 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
   double hi = pulses_->GetYaxis()->GetXmax();
   bsem_.give();
 
-  TH1D p( "pulses", "pulses", pulses_->GetNbinsY(), lo, hi ); 
+  TH1D p( "pulses", "pulses", pulses_->GetNbinsY(), lo, hi );
+  const char* normalCDFname = "normalCDF";
   //TF1 nCDF( "normalCDF", &AFEB::teststand::Results::normalCDF, lo, hi, 3, NULL );
-  TF1 nCDF( "normalCDF", &normalCDF, lo, hi, 3, NULL );
+  TF1 nCDF( normalCDFname, &normalCDF, lo, hi, 3, (const char*)NULL );
   nCDF.SetParNames( "mean", "sigma", "height" );
   double mean, sigma, height;
   nCDF.SetParameters( 0.5 * ( hi + lo ),
