@@ -440,7 +440,10 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
 	}
 	configurationXML_ = AFEB::teststand::utils::setSelectedNodesValues( configurationXML_, values );
 	cout << "configurationXML" << endl << configurationXML_ << endl << flush;
-	string fileToSaveConfigIn = configurationDir_.toString() + "/" + values["/c:configuration[1]/@c:name"] + ".xml";
+	AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + configurationDir_.toString() );
+	string expandedConfigDir = AFEB::teststand::utils::performExpansions( configurationDir_.toString() );
+	LOG4CPLUS_INFO( logger_, string("Expanded ") + configurationDir_.toString() + string( " to " ) +  expandedConfigDir );
+	string fileToSaveConfigIn = expandedConfigDir + "/" + values["/c:configuration[1]/@c:name"] + ".xml";
 	AFEB::teststand::utils::writeFile( fileToSaveConfigIn, configurationXML_ );
 	LOG4CPLUS_INFO( logger_, string("Saved configuration to ") + fileToSaveConfigIn );
       }
