@@ -62,6 +62,22 @@ vector<string> AFEB::teststand::utils::execShellCommand( const string shellComma
   return replyLines;
 }
 
+string AFEB::teststand::utils::performExpansions( const string toExpand ){
+  string expanded;
+  try{
+    redi::ipstream command( ( std::string("echo ") + toExpand ).c_str() );
+    string reply;
+    while ( std::getline( command, reply ) ) {
+      expanded += reply;
+    }
+  }
+  catch( std::exception& e ){
+    stringstream ess; ess << "Expansion failed. Failed to execute shell command \"echo " << toExpand << "\": " << e.what();
+    XCEPT_RAISE( xcept::Exception, ess.str() );
+  }
+  return expanded;
+}
+
 string AFEB::teststand::utils::getDateTime(){
   time_t t;
   struct tm *tm;
