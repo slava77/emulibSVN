@@ -21,13 +21,14 @@ print "    ROOTSYS            = $ROOTSYS"
 print "    LD_LIBRARY_PATH    = $LD_LIBRARY_PATH"
 print "Executing:"
 print "${XDAQ_ROOT}/${XDAQ_PLATFORM}/bin/xdaq.exe \
- -h $(hostname) \
+ -h localhost \
  -p 10000 \
  -c ${BUILD_HOME}/AFEB/teststand/xml/AFEBteststand.xml \
  -e ${BUILD_HOME}/AFEB/teststand/xml/AFEBteststand.profile"
+print
 
 ${XDAQ_ROOT}/${XDAQ_PLATFORM}/bin/xdaq.exe \
-    -h $(hostname).cern.ch \
+    -h localhost \
     -p 10000 \
     -c ${BUILD_HOME}/AFEB/teststand/xml/AFEBteststand.xml \
     -e ${BUILD_HOME}/AFEB/teststand/xml/AFEBteststand.profile
