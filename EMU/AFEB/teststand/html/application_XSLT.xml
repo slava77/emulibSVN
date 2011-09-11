@@ -65,7 +65,7 @@
 
   <xsl:template mode="results" match="a:results">
     <p>
-      These results can also be accessed offline by opening <a href="file://{@a:systemPath}/{@a:file}">file://<xsl:value-of select="@a:systemPath"/>/<xsl:value-of select="@a:file"/></a> on in a browser running on host <xsl:value-of select="@a:host"/>.
+      These results can also be accessed offline by opening <a href="file://{@a:systemPath}/{@a:file}">file://<xsl:value-of select="@a:systemPath"/>/<xsl:value-of select="@a:file"/></a> in a browser running on host <xsl:value-of select="@a:host"/>.
     </p>
     <table class="layout">
       <xsl:apply-templates mode="results" select="a:device"/>
