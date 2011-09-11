@@ -67,6 +67,10 @@ void AFEB::teststand::Application::createFSM(){
     fsm_.addStateTransition('H', 'H', "Halt",      this, &AFEB::teststand::Application::noAction);
     fsm_.addStateTransition('E', 'E', "Enable",    this, &AFEB::teststand::Application::noAction);
     fsm_.setFailedStateTransitionAction(           this, &AFEB::teststand::Application::failAction);
+    // Define "Fail" transition explicitly for moveToFailedState to work:
+    fsm_.addStateTransition('H', 'F', "Fail",      this, &AFEB::teststand::Application::failAction);
+    fsm_.addStateTransition('C', 'F', "Fail",      this, &AFEB::teststand::Application::failAction);
+    fsm_.addStateTransition('E', 'F', "Fail",      this, &AFEB::teststand::Application::failAction);
 
     fsm_.setStateName('F', "Failed");
 
@@ -130,8 +134,17 @@ bool AFEB::teststand::Application::measurementInWorkLoop(toolbox::task::WorkLoop
   currentMeasurementIndex_ = -1;
   for ( m = configuration_->getMeasurements().begin(); m != configuration_->getMeasurements().end(); ++m ){
     ++currentMeasurementIndex_;
-    cout << **m;
-    if ( ! (*m)->execute() ) return false; // Measurement::execute returns false if aborted.
+    LOG4CPLUS_INFO( logger_, "Executing measurement " << currentMeasurementIndex_ << "/" << configuration_->getMeasurements().size() << endl << **m );
+    try{
+      if ( ! (*m)->execute() ) return false; // Measurement::execute returns false if aborted.
+    } catch ( xcept::Exception& e ){
+      stringstream ss;
+      ss << "Failed execute measurement " << currentMeasurementIndex_ << "/" << configuration_->getMeasurements().size() << endl << **m;
+      XCEPT_DECLARE_NESTED( xcept::Exception, ee, ss.str(), e );
+      LOG4CPLUS_FATAL( logger_, xcept::stdformat_exception_history( ee ) );
+      moveToFailedState( ee );
+      return false;
+    }
   }
 
   // Create (and save) results' XML file
@@ -180,6 +193,19 @@ void AFEB::teststand::Application::failAction(toolbox::Event::Reference event)
       LOG4CPLUS_FATAL(logger_, ss.str() );
     }
 }
+
+void AFEB::teststand::Application::moveToFailedState( xcept::Exception exception ){
+  // Use this from inside the work loop to force the FSM to Failed state 
+  try{
+    toolbox::Event::Reference evtRef( new toolbox::Event( "Fail", this ) );
+    reasonForFailure_ = AFEB::teststand::utils::xhtmlformat_exception_history( exception );
+    fsm_.fireEvent( evtRef );
+  } 
+  catch( xcept::Exception &e ){
+    LOG4CPLUS_FATAL( logger_, "Failed to move to the Failed state : " << xcept::stdformat_exception_history(e) );
+  }
+}
+
 
 string AFEB::teststand::Application::generateLoggerName()
 {
