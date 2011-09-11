@@ -17,7 +17,7 @@ const char* const AFEB::teststand::Measurement::status_[] = { "waiting", "runnin
 
 ostream& AFEB::teststand::operator<<( ostream& os, const Measurement& m ){
 
-  os << "Measurement " << m.index_ << ": '" << m.name_ << "' of type " << m.type_ << " at position " << m.position_ << endl
+  os << "Measurement " << m.index_ << ": '" << m.name_ << "' of type " << m.type_ << " (" << m.type_t_ << ") at position " << m.position_ << endl
      << " amplitudeMin="        << m.amplitudeMin_        
      << " amplitudeMax="        << m.amplitudeMax_        
      << " amplitudeStep="       << m.amplitudeStep_       << endl
@@ -163,6 +163,7 @@ bool AFEB::teststand::Measurement::execute(){
     break;
   case dummy:
     keepRunning = dummyResultGenerator();
+    break;
   default:
     stringstream ss;
     ss << "Unknown measurement type " << type_t_ << " specified as '" << type_ << "'";
