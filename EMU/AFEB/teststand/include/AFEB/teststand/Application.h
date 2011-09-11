@@ -75,6 +75,7 @@ private:
   void noAction(toolbox::Event::Reference e);
   void failAction(toolbox::Event::Reference e);
 
+  void moveToFailedState( xcept::Exception exception );
 
   /// Generates logger name.
 

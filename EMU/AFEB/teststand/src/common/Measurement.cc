@@ -279,6 +279,12 @@ bool AFEB::teststand::Measurement::dummyResultGenerator(){
 
   TRandom3 rndm;
 
+  // Spread the threshold so that not all channels have it at the same value:
+  double thresholdOffset[LeCroy3377::nShortsData / 2];
+  for ( int iShort = 0; iShort < LeCroy3377::nShortsData / 2; ++iShort ){
+    thresholdOffset[ iShort ] = rndm.Gaus( 0., 0.08 * ( amplitudeMax_ - amplitudeMin_ ) );
+  }
+
   // Gradually crank up the pulse height:
   for ( int amplitude = amplitudeMin_; amplitude <= amplitudeMax_; amplitude += amplitudeStep_ ){
 
@@ -297,7 +303,7 @@ bool AFEB::teststand::Measurement::dummyResultGenerator(){
 	int tdcInput = iShort / nDeviceChannels + 1;
 	Results* results = findResults( tdcInput );
 	if ( results ){
-	  if ( double(amplitude) > rndm.Gaus( 0.5 * ( amplitudeMax_ + amplitudeMin_ ),
+	  if ( double(amplitude) > rndm.Gaus( 0.5 * ( amplitudeMax_ + amplitudeMin_ ) + thresholdOffset[ iShort ],
 					      0.1 * ( amplitudeMax_ - amplitudeMin_ ) ) ){
 	    results->add( iShort % nDeviceChannels, 
 			  amplitude,

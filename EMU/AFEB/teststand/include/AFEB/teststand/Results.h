@@ -8,6 +8,7 @@
 #include "TTree.h"
 #include "TFile.h"
 #include "TGaxis.h"
+#include "TLegend.h"
 
 #include "AFEB/teststand/Measurement.h"
 
@@ -39,7 +40,10 @@ namespace AFEB { namespace teststand {
       TH1D *threshold_; ///< measured threshold( channel ) 1D histogram
       TH1D *noise_; ///< measured noise( channel ) 1D histogram
       TH1D *efficiency_; ///< measured efficiency( channel ) 1D histogram
-      vector<TProfile*> timeVsAmplitude_;
+      TH1D *stability_;  ///< distribution of the measured max efficiency for evaluation of stability
+      vector<TH1D*> sCurve_; ///< measured efficiency( amplitude ) 1D histogram
+      vector<TProfile*> timeVsAmplitude_;  ///< measured time( amplitude ) 1D histogram
+      TLegend *legend_; ///< legend for S curves
       int channel_;
       int amplitude_;
       int time_;

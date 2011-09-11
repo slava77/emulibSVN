@@ -27,24 +27,24 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 	<< " with " << measurement_->getNPulses()
 	<< " pulses of " << testedDevice_->getType()
 	<< " of id "  << testedDevice_->getId();
-  int yspan = 
+  int ampSpan = 
     ( measurement_->getAmplitudeMax() - measurement_->getAmplitudeMin() ) -
     ( measurement_->getAmplitudeMax() - measurement_->getAmplitudeMin() ) %  measurement_->getAmplitudeStep();
-  int ny = yspan / measurement_->getAmplitudeStep() + 1;
+  int nAmp = ampSpan / measurement_->getAmplitudeStep() + 1;
   pulses_ = new TH2D( name.str().c_str(),
 		      title.str().c_str(),
 		      testedDevice_->getNChannels(),
 		      0.,
 		      0. + testedDevice_->getNChannels(),
-		      ny,
-		      measurement_->getAmplitudeMin() -        0.5   * measurement_->getAmplitudeStep(),
-		      measurement_->getAmplitudeMin() + ( ny - 0.5 ) * measurement_->getAmplitudeStep()
+		      nAmp,
+		      measurement_->getAmplitudeMin() -          0.5   * measurement_->getAmplitudeStep(),
+		      measurement_->getAmplitudeMin() + ( nAmp - 0.5 ) * measurement_->getAmplitudeStep()
 		      );
   pulses_->SetXTitle( "channel" );
   pulses_->SetYTitle( "amplitude" );
   pulses_->SetZTitle( "count" );
   pulses_->SetMinimum( 0. );
-  pulses_->SetMaximum( measurement_->getNPulses() );
+  pulses_->SetMaximum( 2 * measurement_->getNPulses() );
   pulses_->SetStats( kFALSE );
   pulses_->GetXaxis()->CenterLabels( kTRUE );
   pulses_->GetXaxis()->SetNdivisions( testedDevice_->getNChannels() );
@@ -114,8 +114,18 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   efficiency_->GetXaxis()->CenterLabels( kTRUE );
   efficiency_->GetXaxis()->SetNdivisions( testedDevice_->getNChannels() );
 
-  // time vs amplitude profile histogram for each channel
+  // time vs amplitude profile histogram for each channel, and
+  // measured efficiency( amplitude ) for each channel
+  enum lineStyles { solid=1, dotted=3, dashed=5, dottedDashed=7 };
+  enum colors { black=1, red=2, blue=4, green=8 };
+  const int nStyles = 4;
+  const int nColors = 4;
+  const unsigned long style[nStyles] = { solid, dotted, dashed, dottedDashed };
+  const unsigned long color[nColors] = { black, red, blue, green  };
+  legend_ = new TLegend( 0.2, 0.15, 0.35, 0.85 );
+  legend_->SetHeader( "channel" );
   for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
+    // time vs amplitude profile histogram
     name.str("");
     name << "timeVsAmpl__" << measurement_->getIndex() << "_" << measurement_->getType() 
 	 << "__" << testedDevice_->getId() << "__ch" << iChannel;
@@ -124,9 +134,9 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 	  << " of id "  << testedDevice_->getId();
     TProfile* t = new TProfile( name.str().c_str(), 
 				title.str().c_str(),
-				ny,
-				measurement_->getAmplitudeMin() -        0.5   * measurement_->getAmplitudeStep(),
-				measurement_->getAmplitudeMin() + ( ny - 0.5 ) * measurement_->getAmplitudeStep(),
+				nAmp,
+				measurement_->getAmplitudeMin() -          0.5   * measurement_->getAmplitudeStep(),
+				measurement_->getAmplitudeMin() + ( nAmp - 0.5 ) * measurement_->getAmplitudeStep(),
 				measurement_->getTDCTimeMin(),
 				measurement_->getTDCTimeMax(),
 				"S" ); // spread option (not error on mean)
@@ -134,7 +144,28 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
     t->SetYTitle( "time [TDC units]" );
     t->SetStats( kFALSE );
     timeVsAmplitude_.push_back( t );
-  }
+    // measured efficiency( amplitude ) graph
+    name.str("");
+    name << "effVsAmpl__" << measurement_->getIndex() << "_" << measurement_->getType() 
+	 << "__" << testedDevice_->getId() << "__ch" << iChannel;
+    title.str("");
+    title << "Efficiency vs. pulse amplitude in channel " << iChannel << " of " << testedDevice_->getType()
+	  << " of id "  << testedDevice_->getId();
+    TH1D *e = new TH1D( name.str().c_str(), 
+			title.str().c_str(),
+			nAmp,
+			measurement_->getAmplitudeMin() -          0.5   * measurement_->getAmplitudeStep(),
+			measurement_->getAmplitudeMin() + ( nAmp - 0.5 ) * measurement_->getAmplitudeStep() );
+    e->SetXTitle( "amplitude" );
+    e->SetYTitle( "efficiency" );
+    e->SetStats( kFALSE );
+    if ( iChannel / nStyles < nColors ) e->SetLineColor( color[ iChannel/nStyles ] );
+    e->SetLineStyle( style[ iChannel%nStyles ] );
+    sCurve_.push_back( e );
+    legend_->AddEntry( e,  utils::stringFrom<int>( iChannel ).c_str(), "l" );
+  } // for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel )
+
+
 
   // ( channel, amplitude, time ) ntuple
   name.str("");
@@ -158,7 +189,9 @@ AFEB::teststand::Results::~Results(){
   delete threshold_;
   delete noise_;
   delete efficiency_;
+  delete legend_;
   for ( vector<TProfile*>::iterator t=timeVsAmplitude_.begin(); t!=timeVsAmplitude_.end(); ++t ) delete *t;
+  for ( vector<TH1D*    >::iterator s=         sCurve_.begin(); s!=         sCurve_.end(); ++s ) delete *s;
 }
 
 void AFEB::teststand::Results::add( const int channel, int const amplitude, const int time ){
@@ -168,6 +201,7 @@ void AFEB::teststand::Results::add( const int channel, int const amplitude, cons
   time_      = time;
   times_->Fill();
   pulses_->Fill( channel, amplitude );
+  sCurve_.at( channel )->Fill( amplitude );
   timeVsAmplitude_.at( channel )->Fill( amplitude, time );
   bsem_.give();
 }
@@ -274,12 +308,13 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   
   gStyle->SetPalette(1,0);
 
-  TCanvas c( fileName_.c_str(), measurement_->getName().c_str(), 500, 1000 );
+  TCanvas c( fileName_.c_str(), measurement_->getName().c_str(), 500, 1500 );
   TLatex latex;
-  c.Divide( 1, 2, 0.00001, 0.00001 );
+  c.Divide( 1, 3, 0.00001, 0.00001 );
 
   TPad *efficiencyPad = (TPad*)c.GetPad(1);
-  TPad *timePad = (TPad*)c.GetPad(2);
+  TPad *sCurvePad = (TPad*)c.GetPad(2);
+  TPad *timePad = (TPad*)c.GetPad(3);
 
   //
   // The threshold scan (efficiencies)
@@ -312,6 +347,25 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   TGaxis *axis = adjustToHistogram( &threshold, &efficiency );
   axis->Draw();
   efficiency.Draw("same");
+
+  //
+  // S curves
+  //
+  sCurvePad->cd( 0 );
+  gPad->SetLeftMargin( 0.15 );
+  gPad->SetRightMargin( 0.02 );
+  for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
+    // Create a copy so as not to change the original's tile:
+    TH1D e( *sCurve_.at( iChannel ) );
+    e.Scale( 1./measurement_->getNPulses() );
+    e.SetTitle( "S curve" );
+    e.SetMinimum( 0. );
+    e.SetMaximum( 2.1 );
+    e.SetTitleOffset( 2., "Y" );
+    if ( iChannel == 0 ) e.DrawCopy("l");
+    else                 e.DrawCopy("lsame");
+  }
+  legend_->Draw();
 
   //
   // The time responses
@@ -387,6 +441,7 @@ void AFEB::teststand::Results::save( const string directory ){
   noise_->Write();
   efficiency_->Write();
   for ( vector<TProfile*>::iterator t=timeVsAmplitude_.begin(); t!=timeVsAmplitude_.end(); ++t ) (*t)->Write();
+  for ( vector<TH1D*>::iterator s=sCurve_.begin(); s!=sCurve_.end(); ++s ) (*s)->Write();
 
   bsem_.give();
 
