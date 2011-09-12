@@ -20,6 +20,8 @@ int AFEB::teststand::Jorway73A::findBranch(){
 
   // const string vendor( "PIONEER" );
   // const string model( "BD-ROM" );
+  // const string vendor( "ATA" );
+  // const string model( "HDS728080PLA380" );
   const string vendor( "JORWAY" );
   const string model( "73A" );
   AFEB::teststand::utils::SCSI_t scsi;
@@ -47,7 +49,7 @@ int AFEB::teststand::Jorway73A::findBranch(){
        << "Device file: " << scsiDevice  << endl;
 
   // Check if the corresponding SCSI device is read/writeable
-  if ( access( scsiDevice.c_str(), R_OK | W_OK ) == -1 && errno == EACCES){
+  if ( access( scsiDevice.c_str(), R_OK | W_OK ) == -1 && errno == EACCES ){
     stringstream ss;
     ss << "You don't seem to have read/write permissions for SCSI device \"" <<  scsiDevice 
        << "\". Please execute [sudo] chmod 666 " <<  scsiDevice;
