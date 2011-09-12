@@ -24,7 +24,8 @@
 	<xsl:if test="a:application/@a:state='Enabled'">
 	  <meta http-equiv="refresh" content="3" />
 	</xsl:if>
-        <title>Editing source xml of <xsl:value-of select="@c:dateTime"/></title>
+	
+        <title><xsl:if test="$CONFIGMODE='control'">Editing AFEB configuration xml of <xsl:value-of select="c:configuration/@c:dateTime"/></xsl:if><xsl:if test="$CONFIGMODE='display'">Results of <xsl:value-of select="a:results/@a:systemPath"/></xsl:if></title>
 	<link rel="stylesheet" type="text/css" href="{@htmlDir}teststand.css"/>
       </head>
       <body>
