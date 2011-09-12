@@ -101,7 +101,7 @@ void AFEB::teststand::Application::configureAction(toolbox::Event::Reference e){
   delete configuration_;
   currentMeasurementIndex_ = -1;
   resultURLDir_ = resultBaseURLDir_.toString() + "/" + AFEB::teststand::utils::getDateTime();
-  resultSystemDir_ = string( getenv(HTML_ROOT_.toString().c_str()) ) + "/" + resultURLDir_;
+  resultSystemDir_ = string( getenv(HTML_ROOT_.toString().c_str()) ) + resultURLDir_;
   AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + resultSystemDir_ );
   try{
     configuration_ = new Configuration( configurationXML_, resultSystemDir_ );
