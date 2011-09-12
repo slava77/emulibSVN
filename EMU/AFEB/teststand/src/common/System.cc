@@ -139,7 +139,7 @@ AFEB::teststand::utils::SCSI_t AFEB::teststand::utils::getSCSI( const string ven
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
   catch( ... ){
-    XCEPT_RAISE( xcept::Exception, "Unknown exception." );
+    XCEPT_RAISE( xcept::Exception, "Failed to get SCSI parameters. Unknown exception." );
   }
 
   return scsi;
