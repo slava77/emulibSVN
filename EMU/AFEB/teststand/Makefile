@@ -46,16 +46,13 @@ Sources = \
 
 IncludeDirs = \
 	$(XDAQ_ROOT)/include \
-	$(BUILD_HOME)/AFEB/Jorway/include \
-	$(ROOTSYS)/include
-
-LibraryDirs = \
-	$(XDAQ_ROOT)/lib
+	$(BUILD_HOME)/AFEB/Jorway/include
+LibraryDirs =
 
 UserSourcePath =
-UserCFlags =
+UserCFlags = $(ROOTCFLAGS)
 #UserCCFlags = -g -Wall -pedantic-errors -Wno-long-long
-UserCCFlags = -g -Wall -Wno-long-long
+UserCCFlags = -g -Wall -Wno-long-long $(ROOTCFLAGS)
 UserDynamicLinkFlags = $(ROOTLIBS)
 UserStaticLinkFlags =
 UserExecutableLinkFlags =
