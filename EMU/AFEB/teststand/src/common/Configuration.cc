@@ -208,8 +208,8 @@ string AFEB::teststand::Configuration::resultsXML(){
 	map<string,pair<double,double> > parameters = r->second->getParameters( iChannel );
 	for ( map<string,pair<double,double> >::const_iterator p = parameters.begin(); p != parameters.end(); ++p ){ 
 	  ss << "<a:parameter a:name=\""  << p->first
-	     <<           "\" a:value=\"" <<   showpos << showpoint << setprecision(5) << p->second.first
-	     <<           "\" a:error=\"" << noshowpos << showpoint << setprecision(5) << p->second.second
+	     <<           "\" a:value=\"" <<   showpos << showpoint << setprecision(6) << p->second.first
+	     <<           "\" a:error=\"" << noshowpos << showpoint << setprecision(6) << p->second.second
 	     <<           "\"/>" << noshowpos << noshowpoint;
 	}
 	ss << "</a:channel>" << endl;

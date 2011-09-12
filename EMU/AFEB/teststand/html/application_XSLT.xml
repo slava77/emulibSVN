@@ -102,7 +102,7 @@
       <tr>
 	<th><xsl:value-of select="@a:number"/></th>
 	<xsl:for-each select="a:parameter">
-	  <td style="width: 25x;"><xsl:value-of select="@a:value"/>&#177;<xsl:value-of select="@a:error"/></td>
+	  <td style="width: 25x;"><xsl:value-of select="@a:value"/><xsl:if test="@a:name != 'rms'">&#177;<xsl:value-of select="@a:error"/></xsl:if></td>
 	</xsl:for-each>
       </tr>
   </xsl:template>

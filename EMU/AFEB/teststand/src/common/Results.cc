@@ -132,7 +132,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   rmsOnPlateau_->SetMarkerStyle( kFullDotLarge );
   rmsOnPlateau_->SetMarkerColor( kBlue );
   rmsOnPlateau_->SetLineColor( kBlue );
-  rmsOnPlateau_->SetMinimum(  0.000001 );
+  rmsOnPlateau_->SetMinimum(  0.0000008 );
   rmsOnPlateau_->SetMaximum(  1.0 );
   rmsOnPlateau_->GetXaxis()->CenterLabels( kTRUE );
   rmsOnPlateau_->GetXaxis()->SetNdivisions( testedDevice_->getNChannels() );
@@ -355,7 +355,7 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
     threshold_ ->SetBinError( iChannelBin, nCDF.GetParError( 0 ) );
     noise_     ->SetBinError( iChannelBin, nCDF.GetParError( 1 ) );
     efficiency_->SetBinError( iChannelBin, nCDF.GetParError( 2 ) / measurement_->getNPulses() );    
-    rmsOnPlateau_->SetBinContent( iChannelBin, RMS );
+    rmsOnPlateau_->SetBinContent( iChannelBin, TMath::Max( RMS, 1.25 * rmsOnPlateau_->GetMinimum() ) ); // Show 0 at bottom of log scale.
     bsem_.give();
   }
 }
@@ -517,6 +517,7 @@ void AFEB::teststand::Results::save( const string directory ){
   threshold_->Write();
   noise_->Write();
   efficiency_->Write();
+  rmsOnPlateau_->Write();
   for ( vector<TProfile*>::iterator t=timeVsAmplitude_.begin(); t!=timeVsAmplitude_.end(); ++t ) (*t)->Write();
   for ( vector<TH1D*>::iterator s=sCurve_.begin(); s!=sCurve_.end(); ++s ) (*s)->Write();
 
@@ -527,11 +528,12 @@ void AFEB::teststand::Results::save( const string directory ){
 
 map<string,pair<double,double> > AFEB::teststand::Results::getParameters( const int channel ) const {
   map<string,pair<double,double> > values;
-  values["threshold" ] = make_pair<double,double>( threshold_ ->GetBinContent( channel+1 ),
-						   threshold_ ->GetBinError  ( channel+1 ) );
-  values["noise"     ] = make_pair<double,double>( noise_     ->GetBinContent( channel+1 ),
-						   noise_     ->GetBinError  ( channel+1 ) );
-  values["efficiency"] = make_pair<double,double>( efficiency_->GetBinContent( channel+1 ),
-						   efficiency_->GetBinError  ( channel+1 ) );
+  values["threshold" ] = make_pair<double,double>( threshold_   ->GetBinContent( channel+1 ),
+						   threshold_   ->GetBinError  ( channel+1 ) );
+  values["noise"     ] = make_pair<double,double>( noise_       ->GetBinContent( channel+1 ),
+						   noise_       ->GetBinError  ( channel+1 ) );
+  values["efficiency"] = make_pair<double,double>( efficiency_  ->GetBinContent( channel+1 ),
+						   efficiency_  ->GetBinError  ( channel+1 ) );
+  values["rms"       ] = make_pair<double,double>( rmsOnPlateau_->GetBinContent( channel+1 ), 0. );
   return values;
 }
