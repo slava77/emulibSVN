@@ -103,11 +103,8 @@ AFEB::teststand::utils::SCSI_t AFEB::teststand::utils::getSCSI( const string ven
   //   Type:   Unknown                          ANSI SCSI revision: 02
   AFEB::teststand::utils::SCSI_t scsi;
   string scsiInfo = readFile("/proc/scsi/scsi" );
-  // const string regex1( "^[[:blank:]]*Host:[[:blank:]]\+scsi\([[:digit:]]\{1,3\}\)[[:blank:]]\+Channel:[[:blank:]]\+\([[:digit:]][[:digit:]]\)[[:blank:]]\+Id:[[:blank:]]\+\([[:digit:]][[:digit:]]\)[[:blank:]]\+Lun:[[:blank:]]\+\([[:digit:]][[:digit:]]\)[[:blank:]]*$" );
-  // const string regex2( "^[[:blank:]]*Vendor: \([[:print:]]\+\)Model: \([[:print:]]\+\)Rev: \([[:print:]]\+\)$" );
-  // Try escaping backslash as the compiler complains "error: unknown escape sequence '\)'" tc.
-  const string regex1( "^[[:blank:]]*Host:[[:blank:]]\\+scsi\\([[:digit:]]\\{1,3\\}\\)[[:blank:]]\\+Channel:[[:blank:]]\\+\\([[:digit:]][[:digit:]]\\)[[:blank:]]\\+Id:[[:blank:]]\\+\\([[:digit:]][[:digit:]]\\)[[:blank:]]\\+Lun:[[:blank:]]\\+\\([[:digit:]][[:digit:]]\\)[[:blank:]]*$" );
-  const string regex2( "^[[:blank:]]*Vendor: \\([[:print:]]\\+\\)Model: \\([[:print:]]\\+\\)Rev: \\([[:print:]]\\+\\)$" );
+  const string regex1( "^[[:blank:]]*Host:[[:blank:]]+scsi([[:digit:]]{1,3})[[:blank:]]+Channel:[[:blank:]]+([[:digit:]][[:digit:]])[[:blank:]]+Id:[[:blank:]]+([[:digit:]][[:digit:]])[[:blank:]]+Lun:[[:blank:]]+([[:digit:]][[:digit:]])[[:blank:]]*$" );
+  const string regex2( "^[[:blank:]]*Vendor: ([[:print:]]+)Model: ([[:print:]]+)Rev: ([[:print:]]+)$" );
 
   vector<string> matches;
   vector<string> lines = utils::splitSting( scsiInfo, "\n" );
@@ -125,7 +122,7 @@ AFEB::teststand::utils::SCSI_t AFEB::teststand::utils::getSCSI( const string ven
 	scsi.vendor   = utils::shaveOffBlanks( matches[1] );
 	scsi.model    = utils::shaveOffBlanks( matches[2] );
 	scsi.revision = utils::shaveOffBlanks( matches[3] );
-	//cout << matches.size() << " regex1 matches: " << endl << matches << endl;
+	//cout << matches.size() << " regex2 matches: " << endl << matches << endl;
 	// Require strict match for the vendor name. As for the model name, it's enough if it starts with the given string.
 	if ( scsi.vendor.compare( vendor ) == 0 && 
 	     scsi.model .find   ( model  ) == 0    ) return scsi;
