@@ -19,8 +19,12 @@ void dataUpdatedCB(dyn_string dps, dyn_float data) {
     dyn_string tmpSplit = strsplit(column, \".\");
     column = tmpSplit[dynlen(tmpSplit)];
     table.updateLine(1, \"tmb\", chamberName, column, data[i]);
-    if ((column == \"c33\") && ((data[i] < 2.2) || (data[i] > 2.6))) {
-      table.cellBackColRC(chamberNameToLine[chamberName], \"c33\", \"FwStateAttention1\");
+    if (column == \"c33\") {
+      if ((data[i] < 2.2) || (data[i] > 2.6)) {
+        table.cellBackColRC(chamberNameToLine[chamberName], \"c33\", \"FwStateAttention1\");
+      } else {
+        table.cellBackColRC(chamberNameToLine[chamberName], \"c33\", \"white\");
+      }
     }
   }
 }" 0
