@@ -224,9 +224,11 @@ void AFEB::teststand::Results::add( const int channel, int const amplitude, cons
   amplitude_ = amplitude;
   time_      = time;
   times_->Fill();
-  pulses_->Fill( channel, amplitude );
-  sCurve_.at( channel )->Fill( amplitude );
-  timeVsAmplitude_.at( channel )->Fill( amplitude, time );
+  if ( measurement_->getTDCTimeMin() <= time_ && time_ <= measurement_->getTDCTimeMax() ){ 
+    pulses_->Fill( channel, amplitude );
+    sCurve_.at( channel )->Fill( amplitude );
+    timeVsAmplitude_.at( channel )->Fill( amplitude, time );
+  }
   bsem_.give();
 }
 
