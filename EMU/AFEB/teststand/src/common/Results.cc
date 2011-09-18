@@ -148,6 +148,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   legend_ = new TLegend( 0.2, 0.15, 0.35, 0.85 );
   legend_->SetHeader( "channel" );
   for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
+
     // time vs amplitude profile histogram
     name.str("");
     name << "timeVsAmpl__" << measurement_->getIndex() << "_" << measurement_->getType() 
@@ -166,7 +167,10 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
     t->SetXTitle( "amplitude" );
     t->SetYTitle( "time [TDC units]" );
     t->SetStats( kFALSE );
+    if ( iChannel / nStyles < nColors ) t->SetLineColor( color[ iChannel/nStyles ] );
+    t->SetLineStyle( style[ iChannel%nStyles ] );
     timeVsAmplitude_.push_back( t );
+
     // measured efficiency( amplitude ) graph
     name.str("");
     name << "effVsAmpl__" << measurement_->getIndex() << "_" << measurement_->getType() 
@@ -186,6 +190,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
     e->SetLineStyle( style[ iChannel%nStyles ] );
     sCurve_.push_back( e );
     legend_->AddEntry( e,  utils::stringFrom<int>( iChannel ).c_str(), "l" );
+
   } // for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel )
 
 
@@ -449,17 +454,25 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   //
   // The time responses
   //
-  timePad->Divide( 2, testedDevice_->getNChannels()/2, 0., 0. );
+  timePad->cd();
+  gPad->SetLeftMargin( 0.15 );
+  gPad->SetRightMargin( 0.02 );
   for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
-    timePad->cd( iChannel + 1 );
     // Create a copy so as not to change the original's tile:
-    TProfile p( *timeVsAmplitude_.at( iChannel ) );
-    p.SetTitle( utils::stringFrom<int>( iChannel ).c_str() );
-    p.SetTitleSize( 0.3 );
-    p.SetMinimum( measurement_->getTDCTimeMin() );
-    p.SetMaximum( measurement_->getTDCTimeMax() );
-    p.DrawCopy("e");
+    TH1D t( *timeVsAmplitude_.at( iChannel )->ProjectionX( "t", "" ) ); // Profile hist needs projecting
+    t.SetLineStyle( timeVsAmplitude_.at( iChannel )->GetLineStyle() ); // Keep line style...
+    t.SetLineColor( timeVsAmplitude_.at( iChannel )->GetLineColor() ); // ...and color
+    t.SetTitle( "Time vs. amplitude" );
+    if ( iChannel == 0 ){
+      t.SetMinimum( measurement_->getTDCTimeMin() );
+      t.SetMaximum( measurement_->getTDCTimeMax() );
+      t.DrawCopy("l");
+    }
+    else{
+      t.DrawCopy("lsame");
+    }
   }
+  legend_->Draw();
 
   c.Print( ( directory + "/" + fileName_+".png").c_str() );
   delete axis;
