@@ -245,6 +245,9 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
       
       tdc->HeadRdBlock(); // This does the actual hardware readout.
 
+      // Check whether we've been instructed to abort in the meantime:
+      if ( ! isToKeepRunning_ ) return false;
+
       // Read out TDC channels
       for ( int iShort = 0; iShort < LeCroy3377::nShortsData; ++iShort ){ // TODO: LeCroy3377::nShortsData / 2 ?
 	// LeCroy3377::BlockRd sets LeCroy3377::TimeCh, which can be accessed by LeCroy3377::TimeChRd(),
