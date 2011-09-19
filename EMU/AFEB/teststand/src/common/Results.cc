@@ -42,7 +42,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 		      measurement_->getAmplitudeMin() + ( nAmp - 0.5 ) * measurement_->getAmplitudeStep()
 		      );
   pulses_->SetXTitle( "channel" );
-  pulses_->SetYTitle( "amplitude" );
+  pulses_->SetYTitle( "amplitude [ADC units]" );
   pulses_->SetZTitle( "count" );
   pulses_->SetTitleOffset( 0.8, "x" );
   pulses_->SetTitleOffset( 0.5, "y" );
@@ -117,7 +117,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 			  0.,
 			  0. + testedDevice_->getNChannels() );
   efficiency_->SetXTitle( "channel" );
-  efficiency_->SetYTitle( "efficiency (#bullet)" );
+  efficiency_->SetYTitle( "efficiency:#bullet" );
   efficiency_->SetStats( kFALSE );
   efficiency_->SetMarkerStyle( kFullDotLarge );
   efficiency_->SetMarkerColor( kBlue );
@@ -462,6 +462,7 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   gPad->SetGridx();
   gPad->SetFrameFillColor( kGray + 3 );
   pulses.SetTitle("");
+  pulses_->SetZTitle( "count" );
   pulses.DrawCopy("colz");
 
   efficiencyPad->cd( 2 );
@@ -470,7 +471,7 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   gPad->SetGridx();
   gPad->SetGridy();
   threshold.SetTitle("");
-  threshold.SetYTitle("threshold (#circ) and noise (#Box)");
+  threshold.SetYTitle("threshold:#circ, noise:#Box [ADC]");
   threshold.Draw("p e");
   noise.Draw("same p e");
   cout << "Efficiency 1" << endl; efficiency.Print("all");
