@@ -16,7 +16,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   isFinal_( false ),
   measurement_( measurement ),
   testedDevice_( device ),
-  fileName_( measurement_->getType() + "_" + testedDevice_->getType() + "_" + testedDevice_->getId() )
+  fileName_( measurement_->getIndex() + "_" + measurement_->getType() + "_" + testedDevice_->getType() + "_" + testedDevice_->getId() )
 {
 
   // pulses( channel, amplitude)  2D histogram
@@ -305,7 +305,7 @@ void AFEB::teststand::Results::estimateFitParameters( TH1D& hist,
        << endl;
 }
 
-double AFEB::teststand::Results::mean( const TH1D& hist, double& from, double& to ){
+double AFEB::teststand::Results::mean( const TH1D& hist, const double from, const double to ){
   // Calculate the mean of histogram values between from and to.
   double sumY  = 0;
   int n = 0;
@@ -320,7 +320,7 @@ double AFEB::teststand::Results::mean( const TH1D& hist, double& from, double& t
   return ( n>0 ? sumY / n : 0. );
 }
 
-double AFEB::teststand::Results::rms( const TH1D& hist, double& from, double& to ){
+double AFEB::teststand::Results::rms( const TH1D& hist, const double from, const double to ){
   // Calculate the RMS of histogram values between from and to.
   double m = mean( hist, from, to );
   double sumD2  = 0;
@@ -614,13 +614,31 @@ void AFEB::teststand::Results::save( const string directory ){
 
 map<string,pair<double,double> > AFEB::teststand::Results::getParameters( const int channel ) const {
   map<string,pair<double,double> > values;
-  values["threshold"      ] = make_pair<double,double>( threshold_    ->GetBinContent( channel+1 ),
-							threshold_    ->GetBinError  ( channel+1 ) );
-  values["noise"          ] = make_pair<double,double>( noise_        ->GetBinContent( channel+1 ),
-							noise_        ->GetBinError  ( channel+1 ) );
-  values["efficiency"     ] = make_pair<double,double>( efficiency_   ->GetBinContent( channel+1 ),
-							efficiency_   ->GetBinError  ( channel+1 ) );
-  values["time on plateau"] = make_pair<double,double>( timeOnPlateau_->GetBinContent( channel+1 ), 
-							timeOnPlateau_->GetBinError  ( channel+1 ) );
+  values["threshold [ADC]"      ] = make_pair<double,double>( threshold_    ->GetBinContent( channel+1 ),
+							      threshold_    ->GetBinError  ( channel+1 ) );
+  values["noise [ADC]"          ] = make_pair<double,double>( noise_        ->GetBinContent( channel+1 ),
+							      noise_        ->GetBinError  ( channel+1 ) );
+  values["efficiency"           ] = make_pair<double,double>( efficiency_   ->GetBinContent( channel+1 ),
+							      efficiency_   ->GetBinError  ( channel+1 ) );
+  values["time on plateau [TDC]"] = make_pair<double,double>( timeOnPlateau_->GetBinContent( channel+1 ), 
+							      timeOnPlateau_->GetBinError  ( channel+1 ) );
   return values;
+}
+
+map<string,double> AFEB::teststand::Results::getStats( const TH1D* hist ){
+  map<string,double> stats;  
+  bsem_.take();
+  stats["mean"] = mean( *hist, hist->GetXaxis()->GetXmin(), hist->GetXaxis()->GetXmax() );
+  stats["rms" ] = rms ( *hist, hist->GetXaxis()->GetXmin(), hist->GetXaxis()->GetXmax() );
+  stats["span"] = hist->GetBinContent( hist->GetMaximumBin() ) - hist->GetBinContent( hist->GetMinimumBin() );
+  bsem_.give();
+  return stats;
+}
+
+map<string,double> AFEB::teststand::Results::getThresholdStats(){
+  return getStats( threshold_ );
+}
+
+map<string,double> AFEB::teststand::Results::getTimeStats(){
+  return getStats( timeOnPlateau_ );
 }

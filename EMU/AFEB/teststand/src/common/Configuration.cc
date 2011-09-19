@@ -215,6 +215,21 @@ string AFEB::teststand::Configuration::resultsXML(){
 	}
 	ss << "</a:channel>" << endl;
       } // for ( int iChannel = 1; iChannel <= r->first->getNChannels(); ++iChannel )
+      // Add statistics to assess stability
+      ss << "<a:statistics>" << endl;
+      map<string,double> stat = r->second->getThresholdStats();
+      ss << "<a:parameter a:name=\"threshold [ADC units]\"" << endl;
+      for ( map<string,double>::const_iterator s=stat.begin(); s!=stat.end(); ++s ){
+	ss << " a:" << s->first << "=\"" << noshowpos << showpoint << setprecision(6) << s->second << "\"";
+      }
+      ss << "/>" << endl;      
+      stat = r->second->getTimeStats();
+      ss << "<a:parameter a:name=\"time on plateau [ADC units]\"";
+      for ( map<string,double>::const_iterator s=stat.begin(); s!=stat.end(); ++s ){
+	ss << " a:" << s->first << "=\"" << noshowpos << showpoint << setprecision(6) << s->second << "\"";
+      }
+      ss << "/>" << endl;      
+      ss << "</a:statistics>" << endl;
       ss << "</a:device>" << endl;
     } // for ( map<TestedDevice*,Results*>::const_iterator r = results.begin(); r != results.end(); ++r )
     ss << "</a:measurement>" << endl;

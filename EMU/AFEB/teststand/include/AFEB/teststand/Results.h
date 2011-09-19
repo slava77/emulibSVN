@@ -30,6 +30,8 @@ namespace AFEB { namespace teststand {
       string getFileName() const { return fileName_; }
       map<string,pair<double,double> > getParameters( const int channel ) const;
       void save( const string directory );
+      map<string,double> getThresholdStats();
+      map<string,double> getTimeStats();
     private:
       toolbox::BSem bsem_;
       bool isFinal_; ///< Indicates that everything should be calculated, not just the plots.
@@ -50,9 +52,10 @@ namespace AFEB { namespace teststand {
       int time_;
       TGaxis* adjustToHistogram( const TH1* const h1, TH1* h2, bool isNewAxisOnRight=true );
       void estimateFitParameters( TH1D& hist, const double from, const double to, double& mean, double& sigma, double& height );
-      double mean( const TH1D& hist, double& from, double& to );
-      double rms( const TH1D& hist, double& from, double& to );
+      double mean( const TH1D& hist, const double from, const double to );
+      double rms( const TH1D& hist, const double from, const double to );
       void timesOnEfficiencyPlateau( double plateauStart );
+      map<string,double> getStats( const TH1D* hist );
     };
   }}
 

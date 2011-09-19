@@ -256,7 +256,7 @@ string AFEB::teststand::Application::createXMLWebPageSkeleton(){
   }
   
   ss << "<?xml-stylesheet type=\"text/xml\" href=\"/AFEB/teststand/html/htmlRenderer_XSLT.xml\"?>" << endl 
-     << "<root htmlDir=\"/AFEB/teststand/html/\">" << endl;
+     << "<root htmlDir=\"/AFEB/teststand/html/\" softwareVersion=\"" <<  AFEBteststand::versions << "\">" << endl;
 
   // Application info
   ss << "  <a:application xmlns:a=\"" << applicationNamespace_ 
@@ -304,7 +304,7 @@ string AFEB::teststand::Application::createResultsXML(){
 
   // The XSL file should be in the same directory as the XML file.
   ss << "<?xml-stylesheet type=\"text/xml\" href=\"htmlRenderer_XSLT.xml\"?>" << endl 
-     << "<root htmlDir=\"\">" << endl;
+     << "<root htmlDir=\"\" softwareVersion=\"" << AFEBteststand::versions << "\">" << endl;
 
   toolbox::net::URL url( getApplicationDescriptor()->getContextDescriptor()->getURL() );
   ss << "  <a:results xmlns:a=\"" << applicationNamespace_ 
@@ -336,7 +336,7 @@ string AFEB::teststand::Application::createResultsXML(){
 
   ss.str("");
   ss << "<?xml-stylesheet type=\"text/xml\" href=\"/AFEB/teststand/html/htmlRenderer_XSLT.xml\"?>" << endl 
-     << "<root htmlDir=\"/AFEB/teststand/html/\">" << endl;
+     << "<root htmlDir=\"/AFEB/teststand/html/\" softwareVersion=\"" << AFEBteststand::versions << "\">" << endl;
 
   ss << "  <a:results xmlns:a=\"" << applicationNamespace_ 
      <<           "\" a:host=\"" << host_

@@ -24,8 +24,7 @@
 	<xsl:if test="a:application/@a:state='Enabled'">
 	  <meta http-equiv="refresh" content="3" />
 	</xsl:if>
-	
-        <title><xsl:if test="$CONFIGMODE='control'">Editing AFEB configuration xml of <xsl:value-of select="c:configuration/@c:dateTime"/></xsl:if><xsl:if test="$CONFIGMODE='display'">Results of <xsl:value-of select="a:results/@a:systemPath"/></xsl:if></title>
+        <title><xsl:if test="$CONFIGMODE='control'">AFEB Test Stand Configuration of <xsl:value-of select="c:configuration/@c:dateTime"/></xsl:if><xsl:if test="$CONFIGMODE='display'">AFEB Test Stand Results of <xsl:value-of select="a:results/@a:systemPath"/></xsl:if></title>
 	<link rel="stylesheet" type="text/css" href="{@htmlDir}teststand.css"/>
       </head>
       <body>
@@ -37,6 +36,8 @@
 	    <xsl:apply-templates select="c:configuration"/>
 	  </fieldset>
 	</form>
+	<hr/>
+	<p style="text-align:center;">AFEBteststand version  <xsl:value-of select="@softwareVersion"/></p>
       </body>
     </html>
   </xsl:template>  
