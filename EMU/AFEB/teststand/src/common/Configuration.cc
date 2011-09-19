@@ -194,17 +194,18 @@ Measurement* AFEB::teststand::Configuration::findMeasurement( const int position
 string AFEB::teststand::Configuration::resultsXML(){
   stringstream ss;
   for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m ){
+    ss << "<a:measurement a:index=\""  << (*m)->getIndex()
+       <<             "\" a:type=\""   << (*m)->getType()
+       <<             "\" a:name=\""   << (*m)->getName()
+	 <<           "\" a:status=\"" << (*m)->getStatus() 
+       <<             "\">" << endl;
     map<TestedDevice*,Results*> results = (*m)->getResults();
     for ( map<TestedDevice*,Results*>::const_iterator r = results.begin(); r != results.end(); ++r ){
-      ss << "      <a:device a:id=\"" << r->first->getId() 
-	 <<              "\" a:measurement=\"" << (*m)->getType() 
-	 <<              "\" a:status=\"" << (*m)->getStatus() 
-	 <<              "\">" << endl
-	 << "        <a:plot a:name=\"" << r->second->getFileName()
-	 <<              "\"/>" << endl;
+      ss << "<a:device a:id=\"" << r->first->getId() << "\">" << endl
+	 << "<a:plot a:name=\"" << r->second->getFileName() << "\"/>" << endl;
       // Loop over channels and get fit results
       for ( int iChannel = 0; iChannel < r->first->getNChannels(); ++iChannel ){
-	ss << "        <a:channel a:number=\"" <<  iChannel << "\">";
+	ss << "<a:channel a:number=\"" <<  iChannel << "\">";
 	map<string,pair<double,double> > parameters = r->second->getParameters( iChannel );
 	for ( map<string,pair<double,double> >::const_iterator p = parameters.begin(); p != parameters.end(); ++p ){ 
 	  ss << "<a:parameter a:name=\""  << p->first
@@ -214,8 +215,9 @@ string AFEB::teststand::Configuration::resultsXML(){
 	}
 	ss << "</a:channel>" << endl;
       } // for ( int iChannel = 1; iChannel <= r->first->getNChannels(); ++iChannel )
-      ss << "      </a:device>" << endl;
+      ss << "</a:device>" << endl;
     } // for ( map<TestedDevice*,Results*>::const_iterator r = results.begin(); r != results.end(); ++r )
+    ss << "</a:measurement>" << endl;
   } // for ( vector<Measurement*>::const_iterator m = measurements.begin(); m != measurements.end(); ++m )
   return ss.str();
 }
