@@ -13,6 +13,7 @@ using namespace AFEB::teststand;
 
 AFEB::teststand::Results::Results( const Measurement* const measurement, const TestedDevice* const device  ) :
   bsem_( toolbox::BSem::EMPTY ), // locked
+  isFinal_( false ),
   measurement_( measurement ),
   testedDevice_( device ),
   fileName_( measurement_->getType() + "_" + testedDevice_->getType() + "_" + testedDevice_->getId() )
@@ -43,6 +44,15 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   pulses_->SetXTitle( "channel" );
   pulses_->SetYTitle( "amplitude" );
   pulses_->SetZTitle( "count" );
+  pulses_->SetTitleOffset( 0.8, "x" );
+  pulses_->SetTitleOffset( 0.5, "y" );
+  pulses_->SetTitleOffset( 0.7, "z" );
+  pulses_->SetTitleSize( 0.08, "x" );
+  pulses_->SetTitleSize( 0.08, "y" );
+  pulses_->SetTitleSize( 0.08, "z" );
+  pulses_->SetLabelSize( 0.08, "x" );
+  pulses_->SetLabelSize( 0.08, "y" );
+  pulses_->SetLabelSize( 0.08, "z" );
   pulses_->SetMinimum( 0. );
   pulses_->SetMaximum( 2 * measurement_->getNPulses() );
   pulses_->SetStats( kFALSE );
@@ -63,6 +73,9 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 			 0. + testedDevice_->getNChannels() );
   threshold_->SetXTitle( "channel" );
   threshold_->SetYTitle( "threshold" );
+  threshold_->SetTitleOffset( 0.5, "y" );
+  threshold_->SetTitleSize( 0.08, "y" );
+  threshold_->SetLabelSize( 0.08, "y" );
   threshold_->SetStats( kFALSE );
   threshold_->SetMarkerStyle( kOpenCircle );
   threshold_->SetMinimum( - 0.1 * measurement_->getAmplitudeMax() );
@@ -104,7 +117,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 			  0.,
 			  0. + testedDevice_->getNChannels() );
   efficiency_->SetXTitle( "channel" );
-  efficiency_->SetYTitle( "efficiency" );
+  efficiency_->SetYTitle( "efficiency (#bullet)" );
   efficiency_->SetStats( kFALSE );
   efficiency_->SetMarkerStyle( kFullDotLarge );
   efficiency_->SetMarkerColor( kBlue );
@@ -114,28 +127,28 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   efficiency_->GetXaxis()->CenterLabels( kTRUE );
   efficiency_->GetXaxis()->SetNdivisions( testedDevice_->getNChannels() );
 
-  // measured rms( channel ) 1D histogram
+  // measured mean+-rms( channel ) 1D histogram
   name.str("");
-  name << "rms__" << measurement_->getIndex() << "_" << measurement_->getType() 
+  name << "timesOnPlateau__" << measurement_->getIndex() << "_" << measurement_->getType() 
        << "__" << testedDevice_->getId();
   title.str("");
-  title << "rms of measured efficiency on plateau for " << testedDevice_->getType()
+  title << "mean and rms of measured times on efficiency plateau for " << testedDevice_->getType()
 	<< " of id "  << testedDevice_->getId();
-  rmsOnPlateau_ = new TH1D( name.str().c_str(),
+  timeOnPlateau_ = new TH1D( name.str().c_str(),
 			  title.str().c_str(),
 			  testedDevice_->getNChannels(),
 			  0.,
 			  0. + testedDevice_->getNChannels() );
-  rmsOnPlateau_->SetXTitle( "channel" );
-  rmsOnPlateau_->SetYTitle( "RMS on plateau" );
-  rmsOnPlateau_->SetStats( kFALSE );
-  rmsOnPlateau_->SetMarkerStyle( kFullDotLarge );
-  rmsOnPlateau_->SetMarkerColor( kBlue );
-  rmsOnPlateau_->SetLineColor( kBlue );
-  rmsOnPlateau_->SetMinimum(  0.0000008 );
-  rmsOnPlateau_->SetMaximum(  1.0 );
-  rmsOnPlateau_->GetXaxis()->CenterLabels( kTRUE );
-  rmsOnPlateau_->GetXaxis()->SetNdivisions( testedDevice_->getNChannels() );
+  timeOnPlateau_->SetXTitle( "channel" );
+  timeOnPlateau_->SetYTitle( "RMS of times on plateau" );
+  // timeOnPlateau_->SetStats( kFALSE );
+  // timeOnPlateau_->SetMarkerStyle( kFullDotLarge );
+  // timeOnPlateau_->SetMarkerColor( kBlue );
+  // timeOnPlateau_->SetLineColor( kBlue );
+  // timeOnPlateau_->SetMinimum(  0.0000008 );
+  // timeOnPlateau_->SetMaximum(  1.0 );
+  // timeOnPlateau_->GetXaxis()->CenterLabels( kTRUE );
+  // timeOnPlateau_->GetXaxis()->SetNdivisions( testedDevice_->getNChannels() );
 
   // time vs amplitude profile histogram for each channel, and
   // measured efficiency( amplitude ) for each channel
@@ -217,7 +230,7 @@ AFEB::teststand::Results::~Results(){
   delete threshold_;
   delete noise_;
   delete efficiency_;
-  delete rmsOnPlateau_;
+  delete timeOnPlateau_;
   delete legend_;
   for ( vector<TProfile*>::iterator t=timeVsAmplitude_.begin(); t!=timeVsAmplitude_.end(); ++t ) delete *t;
   for ( vector<TH1D*    >::iterator s=         sCurve_.begin(); s!=         sCurve_.end(); ++s ) delete *s;
@@ -243,30 +256,53 @@ double normalCDF( double *x, double *p ){
   return p[2] * 0.5 * ( 1. + ROOT::Math::erf( ( x[0] - p[0] ) / ( TMath::Sqrt(2.) * p[1] ) ) );
 }
 
-void AFEB::teststand::Results::estimateFitParameters( const TH1D& hist,
+void AFEB::teststand::Results::estimateFitParameters( TH1D& hist,
+						      const double from,
+						      const double to,
 						      double& mean,
 						      double& sigma,
 						      double& height ){
   // Estimate the fit parameters assuming hist is ~ a normal CDF.
 
-  // The original histogram's binning:
-  double lo = hist.GetXaxis()->GetXmin();
-  double hi = hist.GetXaxis()->GetXmax();
-  int nBins = hist.GetNbinsX();
-  
   // The difference histogram:
+  int fromBin = hist.FindBin( from );
+  int toBin   = hist.FindBin( to   );
+  double lo = hist.GetBinLowEdge( fromBin   );
+  double hi = hist.GetBinLowEdge( toBin + 1 );
+  int nBins = toBin - fromBin + 1;
   TH1D diff( "diff", "diff",
 	     nBins - 1,
 	     lo + 0.5 * ( hi - lo ) / nBins,
 	     hi - 0.5 * ( hi - lo ) / nBins );
-  for ( int i=1; i<=diff.GetNbinsX(); ++i ){
-    diff.SetBinContent( i, hist.GetBinContent( i+1 ) - hist.GetBinContent( i ) );
+  int iBin = 1;
+  cout << " from=" << from
+       << " to="   <<   to
+       << " fromBin=" << fromBin
+       << " toBin="   <<   toBin
+       << " lo=" << lo
+       << " hi=" << hi 
+       << " nBins="   <<   nBins
+       << endl;
+  for ( int i=fromBin; i<=toBin-1; ++i ){
+    diff.SetBinContent( iBin, hist.GetBinContent( i+1 ) - hist.GetBinContent( i ) );
+    cout << diff.GetBinContent( iBin ) << " ";
+    ++iBin;
   }
+  cout << endl;
+
 
   mean   = diff.GetMean();
   sigma  = diff.GetRMS();
-  height = hist.GetBinContent( hist.GetMaximumBin() );
+  // Find maximum:
+  height = 0.;
+  for ( int i=fromBin; i<=toBin; ++i ){
+    if ( height < hist.GetBinContent( i ) ) height = hist.GetBinContent( i );
+  }
 
+  cout << " m = " << mean 
+       << " s = " << sigma 
+       << " h = " << height 
+       << endl;
 }
 
 double AFEB::teststand::Results::mean( const TH1D& hist, double& from, double& to ){
@@ -334,39 +370,58 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
 
     // cout << ")" << endl;
 
-    estimateFitParameters( p, mean, sigma, height );
-    nCDF.SetParameters( mean, sigma, height );
-    p.Fit( &nCDF, "QR" ); // quiet (no printing), use function range
-    // if ( iChannelBin == testedDevice_->getNChannels() ){
-    //   TFile f( (testedDevice_->getType()+"__"+testedDevice_->getId()+"_test.root").c_str(), "recreate" );
-    //   f.cd();
-    //   for ( int i=1; i<=p.GetNbinsX(); ++i ) cout << p.GetBinContent( i ) << " ";
-    //   cout << endl;
-    //   p.Write();
-    //   f.Close();
-    // }
-
-    //
-    // Also calculate the stability of the efficiency plateau
-    //
-    
-    // Look at efficiencies beyond 3 stddev above transition.
-    double plateauStart = nCDF.GetParameter( 0 ) + 3. * nCDF.GetParameter( 1 );
-    double RMS = 1.; // A big number if no plateau...
-    if ( plateauStart < hi ) RMS = rms( p, plateauStart, hi ) / measurement_->getNPulses();    
+    estimateFitParameters( p, from, to, mean, sigma, height );
+    cout << "ch = " << iChannelBin-1 
+	 << " m = " << mean 
+	 << " s = " << sigma 
+	 << " h = " << height 
+	 << endl;
 
     bsem_.take();
-    threshold_ ->SetBinContent( iChannelBin, nCDF.GetParameter( 0 ) );
-    noise_     ->SetBinContent( iChannelBin, nCDF.GetParameter( 1 ) );
-    efficiency_->SetBinContent( iChannelBin, nCDF.GetParameter( 2 ) / measurement_->getNPulses() );
-    threshold_ ->SetBinError( iChannelBin, nCDF.GetParError( 0 ) );
-    noise_     ->SetBinError( iChannelBin, nCDF.GetParError( 1 ) );
-    efficiency_->SetBinError( iChannelBin, nCDF.GetParError( 2 ) / measurement_->getNPulses() );    
-    rmsOnPlateau_->SetBinContent( iChannelBin, TMath::Max( RMS, 1.25 * rmsOnPlateau_->GetMinimum() ) ); // Show 0 at bottom of log scale.
+    if ( isFinal_ ){
+      // Calculate everything properly for the final results.
+      nCDF.SetParameters( mean, sigma, height );
+      p.Fit( &nCDF, "QR" ); // quiet (no printing), use function range
+      threshold_ ->SetBinContent( iChannelBin, nCDF.GetParameter( 0 ) );
+      noise_     ->SetBinContent( iChannelBin, nCDF.GetParameter( 1 ) );
+      efficiency_->SetBinContent( iChannelBin, nCDF.GetParameter( 2 ) / measurement_->getNPulses() );
+      threshold_ ->SetBinError( iChannelBin, nCDF.GetParError( 0 ) );
+      noise_     ->SetBinError( iChannelBin, nCDF.GetParError( 1 ) );
+      efficiency_->SetBinError( iChannelBin, nCDF.GetParError( 2 ) / measurement_->getNPulses() );    
+      // Look at times beyond 3 stddev above transition.
+      double plateauStart = nCDF.GetParameter( 0 ) + 3. * nCDF.GetParameter( 1 );
+      timesOnEfficiencyPlateau( plateauStart ); // This fills timeOnPlateau_.
+    }
+    else{
+      // Just use estimates for the updates to show progress.
+      threshold_ ->SetBinContent( iChannelBin, mean  );
+      noise_     ->SetBinContent( iChannelBin, sigma );
+      efficiency_->SetBinContent( iChannelBin, height / measurement_->getNPulses() );
+      threshold_ ->SetBinError( iChannelBin, 0. );
+      noise_     ->SetBinError( iChannelBin, 0. );
+      efficiency_->SetBinError( iChannelBin, 0. );    
+    }
     bsem_.give();
   }
 }
 
+void AFEB::teststand::Results::timesOnEfficiencyPlateau( double plateauStart ){
+
+  // An auxiliary histogram just to do the statistics for us:
+  TH1D timesOfChannel( "timesOfChannel", "timesOfChannel", 
+		       measurement_->getTDCTimeMax()-measurement_->getTDCTimeMin(),
+		       double( measurement_->getTDCTimeMin() ),
+		       double( measurement_->getTDCTimeMax() ) );
+  // The condition of being on the plateau:
+  string onPlateau = utils::stringFrom<double>( plateauStart ) + "<a";
+  // Loop over channels and project the times measured at amplitudes on the plateau onto the auxiliary histogram.
+  for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
+    timesOfChannel.Reset( "ICES" );
+    times_->Project( "timesOfChannel", "t", (onPlateau + " && ch==" + utils::stringFrom<int>( iChannel )).c_str() );
+    timeOnPlateau_->SetBinContent( iChannel + 1, timesOfChannel.GetMean() );
+    timeOnPlateau_->SetBinError  ( iChannel + 1, timesOfChannel.GetRMS () );
+  }
+}
 
 void AFEB::teststand::Results::createFigure( const string directory, const double fitRangeStart, const double fitRangeEnd ){
   fit( fitRangeStart, fitRangeEnd );
@@ -377,13 +432,16 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   TH1D threshold( *threshold_ );
   TH1D efficiency( *efficiency_ );
   TH1D noise( *noise_ );
-  TH1D rmsOnPlateau( *rmsOnPlateau_ );
   bsem_.give();
   
   gStyle->SetPalette(1,0);
 
-  TCanvas c( fileName_.c_str(), measurement_->getName().c_str(), 500, 1500 );
   TLatex latex;
+  latex.SetTextSize( 0.025 );
+  latex.SetTextAlign(23);  // h centered, v top aligned
+  latex.DrawLatex( 0.5, 0.99, pulses_->GetTitle() );
+
+  TCanvas c( fileName_.c_str(), measurement_->getName().c_str(), 500, 1500 );
   c.Divide( 1, 3, 0.00001, 0.00001 );
 
   TPad *efficiencyPad = (TPad*)c.GetPad(1);
@@ -397,9 +455,6 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
 
   efficiencyPad->cd( 0 );
   gPad->SetBottomMargin( 0.05 );
-  latex.SetTextSize( 0.025 );
-  latex.SetTextAlign(23);  // h centered, v top aligned
-  latex.DrawLatex( 0.5, 0.99, pulses_->GetTitle() );
 
   efficiencyPad->cd( 1 );
   gPad->SetRightMargin( 0.05 );
@@ -407,30 +462,38 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   gPad->SetGridx();
   gPad->SetFrameFillColor( kGray + 3 );
   pulses.SetTitle("");
-  pulses.Draw("colz");
+  pulses.DrawCopy("colz");
 
   efficiencyPad->cd( 2 );
   gPad->SetRightMargin( 0.05 );
-  gPad->SetBottomMargin( 0.15 );
+  // gPad->SetBottomMargin( 0.15 );
   gPad->SetGridx();
   gPad->SetGridy();
   threshold.SetTitle("");
-  threshold.SetYTitle("threshold (circles) and noise (squares)");
-  threshold.Draw();
-  noise.Draw("same");
+  threshold.SetYTitle("threshold (#circ) and noise (#Box)");
+  threshold.Draw("p e");
+  noise.Draw("same p e");
+  cout << "Efficiency 1" << endl; efficiency.Print("all");
   TGaxis *axis = adjustToHistogram( &threshold, &efficiency );
+  cout << "Efficiency 2" << endl; efficiency.Print("all");
+  axis->SetTitleOffset( 0.7 );
+  axis->SetTitleSize( 0.08 );
+  axis->SetLabelSize( 0.08 );
   axis->Draw();
-  efficiency.Draw("same");
+  efficiency.Draw("same p e");
 
   efficiencyPad->cd( 3 );
-  gPad->SetLogy();
   gPad->SetRightMargin( 0.05 );
+  gPad->SetTopMargin( 0.01 );
   gPad->SetBottomMargin( 0.15 );
   gPad->SetGridx();
-  gPad->SetGridy();
-  rmsOnPlateau.SetTitle("");
-  rmsOnPlateau.SetYTitle("RMS on plateau");
-  rmsOnPlateau.Draw("p");
+  gPad->SetFrameFillColor( kGray + 3 );
+  pulses.SetMinimum( measurement_->getNPulses() - 2 );
+  pulses.SetMaximum( measurement_->getNPulses() + 2 );
+  pulses.SetNdivisions( 5, "z" );
+  pulses.SetTitle("");
+  pulses_->SetZTitle( "count (zoomed in on 100%)" );
+  pulses.DrawCopy("colz");
 
   //
   // S curves
@@ -462,7 +525,9 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
     TH1D t( *timeVsAmplitude_.at( iChannel )->ProjectionX( "t", "" ) ); // Profile hist needs projecting
     t.SetLineStyle( timeVsAmplitude_.at( iChannel )->GetLineStyle() ); // Keep line style...
     t.SetLineColor( timeVsAmplitude_.at( iChannel )->GetLineColor() ); // ...and color
-    t.SetTitle( "Time vs. amplitude" );
+    t.SetTitle( "Mean time vs. amplitude" );
+    t.SetTitleOffset( 2., "Y" );
+    t.SetStats( kFALSE );
     if ( iChannel == 0 ){
       t.SetMinimum( measurement_->getTDCTimeMin() );
       t.SetMaximum( measurement_->getTDCTimeMax() );
@@ -521,7 +586,13 @@ TGaxis* AFEB::teststand::Results::adjustToHistogram( const TH1* const h1, TH1* h
 }
 
 void AFEB::teststand::Results::save( const string directory ){
-  createFigure( directory );
+
+  // Indicate that everything must be calculated:
+  bsem_.take();
+  isFinal_ = true;
+  bsem_.give();
+
+  createFigure( directory, measurement_->getAmplitudeMin(), measurement_->getAmplitudeMax() );
   times_->Print();
   TFile f( (directory + "/" + testedDevice_->getType()+"__"+testedDevice_->getId()+".root").c_str(), "UPDATE", "", 5 );
   f.cd();
@@ -532,10 +603,9 @@ void AFEB::teststand::Results::save( const string directory ){
   threshold_->Write();
   noise_->Write();
   efficiency_->Write();
-  rmsOnPlateau_->Write();
+  timeOnPlateau_->Write();
   for ( vector<TProfile*>::iterator t=timeVsAmplitude_.begin(); t!=timeVsAmplitude_.end(); ++t ) (*t)->Write();
   for ( vector<TH1D*>::iterator s=sCurve_.begin(); s!=sCurve_.end(); ++s ) (*s)->Write();
-
   bsem_.give();
 
   f.Close();
@@ -543,12 +613,13 @@ void AFEB::teststand::Results::save( const string directory ){
 
 map<string,pair<double,double> > AFEB::teststand::Results::getParameters( const int channel ) const {
   map<string,pair<double,double> > values;
-  values["threshold" ] = make_pair<double,double>( threshold_   ->GetBinContent( channel+1 ),
-						   threshold_   ->GetBinError  ( channel+1 ) );
-  values["noise"     ] = make_pair<double,double>( noise_       ->GetBinContent( channel+1 ),
-						   noise_       ->GetBinError  ( channel+1 ) );
-  values["efficiency"] = make_pair<double,double>( efficiency_  ->GetBinContent( channel+1 ),
-						   efficiency_  ->GetBinError  ( channel+1 ) );
-  values["rms"       ] = make_pair<double,double>( rmsOnPlateau_->GetBinContent( channel+1 ), 0. );
+  values["threshold"      ] = make_pair<double,double>( threshold_    ->GetBinContent( channel+1 ),
+							threshold_    ->GetBinError  ( channel+1 ) );
+  values["noise"          ] = make_pair<double,double>( noise_        ->GetBinContent( channel+1 ),
+							noise_        ->GetBinError  ( channel+1 ) );
+  values["efficiency"     ] = make_pair<double,double>( efficiency_   ->GetBinContent( channel+1 ),
+							efficiency_   ->GetBinError  ( channel+1 ) );
+  values["time on plateau"] = make_pair<double,double>( timeOnPlateau_->GetBinContent( channel+1 ), 
+							timeOnPlateau_->GetBinError  ( channel+1 ) );
   return values;
 }

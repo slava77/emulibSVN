@@ -264,7 +264,7 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
 
     // Update stored results
     for ( map<TestedDevice*,Results*>::iterator r = results_.begin(); r != results_.end(); ++r ){
-      r->second->createFigure( resultDir_ );
+      r->second->createFigure( resultDir_, amplitudeMin_, amplitude );
     }
 
   } // for ( int amplitude = amplitudeMin_; amplitude <= amplitudeMax_; amplitude += amplitudeStep_ )
