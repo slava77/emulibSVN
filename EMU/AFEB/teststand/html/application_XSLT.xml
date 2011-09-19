@@ -78,14 +78,19 @@
 
   <xsl:template mode="results" match="a:device">
     <tr>
+      <th colspan="2"><xsl:value-of select="a:plot/@a:name"></xsl:value-of></th>
+    </tr>
+    <tr>
       <td>
 	<a name="{a:plot/@a:name}"/>
 	<img src="{../@a:urlPath}{a:plot/@a:name}.png"/>
       </td>
-      <table>
-	<xsl:apply-templates mode="header" select="a:channel[@a:number=1]"/>
-	<xsl:apply-templates mode="data" select="a:channel"/>
-      </table>
+      <td style="vertical-align:top;">
+	<table>
+	  <xsl:apply-templates mode="header" select="a:channel[@a:number=1]"/>
+	  <xsl:apply-templates mode="data" select="a:channel"/>
+	</table>
+      </td>
     </tr>
   </xsl:template>
 
