@@ -279,7 +279,9 @@
 		</select>
 	      </xsl:for-each>
 	      </xsl:if>
-
+	      <xsl:if test="$CONFIGMODE='display'">
+		<xsl:value-of select="count(preceding-sibling::c:*[@c:enabled='yes'])"/>
+	      </xsl:if>
 	    </th>
 	    <td>
 	      
