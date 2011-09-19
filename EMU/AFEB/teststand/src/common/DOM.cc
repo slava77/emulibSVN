@@ -111,6 +111,8 @@ string AFEB::teststand::utils::appendToSelectedNode( const string XML, const str
 
   // Based on the idea in http://www.opensubscriber.com/message/xalan-c-users@xml.apache.org/2655850.html
 
+  if ( xmlFragment.size() == 0 ) return XML;
+
   string modifiedXML;
 
   XALAN_USING_XALAN(XalanDOMString)
