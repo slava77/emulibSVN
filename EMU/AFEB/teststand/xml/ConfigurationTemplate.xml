@@ -68,7 +68,7 @@
       <c:tag c:name="c:PulseGenerator">
 	<c:attr c:name="c:capacitor" c:value="internal" c:description="Inject pulses through the device's internal capacitor."/>
 	<c:attr c:name="c:capacitor" c:value="external" c:description="Inject pulses through the external capacitor."/>
-	<c:attr c:name="c:slot" c:value="SignalConverter" c:description="Use the each device's own signal converter module to inject pulses."/>
+	<c:attr c:name="c:slot" c:value="SignalConverter" c:description="Use each device's own signal converter module to inject pulses."/>
 	<c:attr c:name="c:slot" c:value="1"               c:description="Use the common pulse generator in this slot to inject pulses through the external capacitor."/>
 	<c:attr c:name="c:slot" c:value="2"               c:description="Use the common pulse generator in this slot to inject pulses through the external capacitor."/>
 	<c:attr c:name="c:slot" c:value="3"               c:description="Use the common pulse generator in this slot to inject pulses through the external capacitor."/>
