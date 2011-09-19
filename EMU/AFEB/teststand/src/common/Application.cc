@@ -139,7 +139,7 @@ bool AFEB::teststand::Application::measurementInWorkLoop(toolbox::task::WorkLoop
       if ( ! (*m)->execute() ) return false; // Measurement::execute returns false if aborted.
     } catch ( xcept::Exception& e ){
       stringstream ss;
-      ss << "Failed execute measurement " << currentMeasurementIndex_ << "/" << configuration_->getMeasurements().size() << endl << **m;
+      ss << "Failed to execute measurement " << currentMeasurementIndex_ << "/" << configuration_->getMeasurements().size() << endl << **m;
       XCEPT_DECLARE_NESTED( xcept::Exception, ee, ss.str(), e );
       LOG4CPLUS_FATAL( logger_, xcept::stdformat_exception_history( ee ) );
       moveToFailedState( ee );
