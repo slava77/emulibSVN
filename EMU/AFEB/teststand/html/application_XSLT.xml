@@ -54,17 +54,19 @@
 
   <xsl:template mode="application" match="a:results">
     <xsl:variable name="NDEVICES" select="count(a:measurement[position()=1]/a:device)"/>
-    <table>
-      <tr>
-	<th colspan="{number($NDEVICES)+3}">measurement</th>
-      </tr>      
-      <tr>
-	<th>index</th><th>type</th><th>name</th><th colspan="{$NDEVICES}">devices</th>
-      </tr>
-      <xsl:apply-templates mode="application" select="a:measurement">
-    	<xsl:sort select="@a:index"/>
-      </xsl:apply-templates>
-    </table>
+    <xsl:if test="$NDEVICES != 0">
+      <table>
+	<tr>
+	  <th colspan="{number($NDEVICES)+3}">measurement</th>
+	</tr>      
+	<tr>
+	  <th>index</th><th>type</th><th>name</th><th colspan="{$NDEVICES}">devices</th>
+	</tr>
+	<xsl:apply-templates mode="application" select="a:measurement">
+	  <xsl:sort select="@a:index"/>
+	</xsl:apply-templates>
+      </table>
+    </xsl:if>
     <xsl:for-each select="a:measurement[@a:status='running']/a:device">
       <img src="{../../@a:urlPath}{a:plot/@a:name}.png"/>
     </xsl:for-each>
