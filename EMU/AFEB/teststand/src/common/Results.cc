@@ -379,18 +379,35 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
 
     bsem_.take();
     if ( isFinal_ ){
-      // Calculate everything properly for the final results.
-      nCDF.SetParameters( mean, sigma, height );
-      p.Fit( &nCDF, "QR" ); // quiet (no printing), use function range
-      threshold_ ->SetBinContent( iChannelBin, nCDF.GetParameter( 0 ) );
-      noise_     ->SetBinContent( iChannelBin, nCDF.GetParameter( 1 ) );
-      efficiency_->SetBinContent( iChannelBin, nCDF.GetParameter( 2 ) / measurement_->getNPulses() );
-      threshold_ ->SetBinError( iChannelBin, nCDF.GetParError( 0 ) );
-      noise_     ->SetBinError( iChannelBin, nCDF.GetParError( 1 ) );
-      efficiency_->SetBinError( iChannelBin, nCDF.GetParError( 2 ) / measurement_->getNPulses() );    
-      // Look at times beyond 3 stddev above transition.
-      double plateauStart = nCDF.GetParameter( 0 ) + 3. * nCDF.GetParameter( 1 );
-      timesOnEfficiencyPlateau( plateauStart ); // This fills timeOnPlateau_.
+      if ( measurement_->getTypeType() == AFEB::teststand::Measurement::count_vs_dac ){
+	// Calculate everything properly for the final results.
+	nCDF.SetParameters( mean, sigma, height );
+	p.Fit( &nCDF, "QR" ); // quiet (no printing), use function range
+	threshold_ ->SetBinContent( iChannelBin, nCDF.GetParameter( 0 ) );
+	noise_     ->SetBinContent( iChannelBin, nCDF.GetParameter( 1 ) );
+	efficiency_->SetBinContent( iChannelBin, nCDF.GetParameter( 2 ) / measurement_->getNPulses() );
+	threshold_ ->SetBinError( iChannelBin, nCDF.GetParError( 0 ) );
+	noise_     ->SetBinError( iChannelBin, nCDF.GetParError( 1 ) );
+	efficiency_->SetBinError( iChannelBin, nCDF.GetParError( 2 ) / measurement_->getNPulses() );    
+	// Look at times beyond 3 stddev above transition.
+	double plateauStart = nCDF.GetParameter( 0 ) + 3. * nCDF.GetParameter( 1 );
+	timesOnEfficiencyPlateau( plateauStart ); // This fills timeOnPlateau_.
+      }
+      else{
+	// Fit may fail in time_vs_dac as the transition region may not be covered or resolved well. 
+	// Use the estimates instead, which are less accurate but more robust.
+	threshold_ ->SetBinContent( iChannelBin, mean  );
+	noise_     ->SetBinContent( iChannelBin, sigma );
+	efficiency_->SetBinContent( iChannelBin, height / measurement_->getNPulses() );
+	threshold_ ->SetBinError( iChannelBin, 0. );
+	noise_     ->SetBinError( iChannelBin, 0. );
+	efficiency_->SetBinError( iChannelBin, 0. );    
+	// Look at times beyond 3 stddev above transition.
+	// If sigma=0 (the S curve is a step function at the given resolution), take the increment
+	// size for sigma, i.e., start the plateau 3 amplitude steps away from the transition.
+	double plateauStart = mean + 3. * TMath::Max( sigma, double( measurement_->getAmplitudeStep() ) );
+	timesOnEfficiencyPlateau( plateauStart ); // This fills timeOnPlateau_.
+      }
     }
     else{
       // Just use estimates for the updates to show progress.
@@ -506,7 +523,7 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
     // Create a copy so as not to change the original's tile:
     TH1D e( *sCurve_.at( iChannel ) );
     e.Scale( 1./measurement_->getNPulses() );
-    e.SetTitle( "S curve" );
+    e.SetTitle( (string( "S curve for device " ) + testedDevice_->getId()).c_str() );
     e.SetMinimum( 0. );
     e.SetMaximum( 2.1 );
     e.SetTitleOffset( 2., "Y" );
@@ -522,11 +539,15 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   gPad->SetLeftMargin( 0.15 );
   gPad->SetRightMargin( 0.02 );
   for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
-    // Create a copy so as not to change the original's tile:
-    TH1D t( *timeVsAmplitude_.at( iChannel )->ProjectionX( "t", "" ) ); // Profile hist needs projecting
+    // Profile hist needs projecting:
+    TH1D *tp = timeVsAmplitude_.at( iChannel )->ProjectionX( "t", "" );
+    // Create a copy so that we can delete the original projection, just to avoid any possible interference:
+    TH1D t( *tp );
+    // Delete original projection:
+    delete tp;
     t.SetLineStyle( timeVsAmplitude_.at( iChannel )->GetLineStyle() ); // Keep line style...
     t.SetLineColor( timeVsAmplitude_.at( iChannel )->GetLineColor() ); // ...and color
-    t.SetTitle( "Mean time vs. amplitude" );
+    t.SetTitle( (string( "Mean time vs. amplitude for device " ) + testedDevice_->getId()).c_str() );
     t.SetTitleOffset( 2., "Y" );
     t.SetStats( kFALSE );
     if ( iChannel == 0 ){

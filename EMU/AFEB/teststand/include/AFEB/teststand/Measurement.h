@@ -37,6 +37,7 @@ namespace AFEB { namespace teststand {
       int getIndex() const { return index_; }
       string getName() const { return name_; }
       string getType() const { return type_; }
+      Type_t getTypeType() const { return type_t_; }
       string getResultDir() const { return resultDir_; }
       const TestedDevice* getTestedDevice( const int tdcInput ) const;
       const map<TestedDevice*,Results*> getResults() const { return results_; }
