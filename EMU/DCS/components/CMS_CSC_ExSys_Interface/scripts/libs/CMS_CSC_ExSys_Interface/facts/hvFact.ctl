@@ -54,7 +54,9 @@ public void exsys_startHvFactDelivery(dyn_string &ex) {
   }
   for (int i=1; i <= dynlen(me11ChannelVsetDps); i++) {
     string channelDp = dpSubStr(me11ChannelVsetDps[i], DPSUB_DP);
-    fwUi_connectEnabled("exsys_updateMe11HVChannelEnabledCB", "CSC_ME_11_HV", channelDp);
+    if (fwFsm_isDU("CSC_ME_11_HV", channelDp)) {  // make sure the node exists (we do have spare channels which are not in FSM!!!)
+      fwUi_connectEnabled("exsys_updateMe11HVChannelEnabledCB", "CSC_ME_11_HV", channelDp);
+    }
   }
   
   emu_info("HV facts delivery service started up successfully!");
