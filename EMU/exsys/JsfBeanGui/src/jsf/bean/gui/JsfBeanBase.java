@@ -60,7 +60,12 @@ public abstract class JsfBeanBase implements Serializable {
 
     @Transient
     public static Object getEvalValue(String expr) {
-        return getEvalValue(FacesContext.getCurrentInstance(), expr);
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (context != null) {
+            return getEvalValue(context, expr);
+        } else {
+            return null;
+        }
     }
 
     @Transient

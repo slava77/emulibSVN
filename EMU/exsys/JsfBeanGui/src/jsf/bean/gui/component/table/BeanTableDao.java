@@ -79,7 +79,10 @@ public abstract class BeanTableDao implements Serializable {
                                     .setMaxResults(pageSize);
                 applyOrder(c, table);
                 preExecute(session, transaction, table, c);
+                Long sTime = System.nanoTime();
                 pageIds = c.list();
+                Long eTime = System.nanoTime();
+                System.out.println("Elapsed: " + (eTime - sTime) / 1000000 + " ms.");
             }
 
             if (pageIds == null || !pageIds.isEmpty()) {
@@ -98,7 +101,10 @@ public abstract class BeanTableDao implements Serializable {
 
                 preExecute(session, transaction, table, c);
                 c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+                Long sTime = System.nanoTime();
                 data = c.list();
+                Long eTime = System.nanoTime();
+                System.out.println("Elapsed: " + (eTime - sTime) / 1000000 + " ms.");
 
             }
             
@@ -124,7 +130,10 @@ public abstract class BeanTableDao implements Serializable {
             preExecuteCount(session, transaction, table, c);
             c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
+            Long sTime = System.nanoTime();
             count = (Long) c.uniqueResult();
+            Long eTime = System.nanoTime();
+            System.out.println("Elapsed: " + (eTime - sTime) / 1000000 + " ms.");
             
         } finally {
             transaction.rollback();
