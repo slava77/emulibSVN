@@ -403,9 +403,14 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
 	noise_     ->SetBinError( iChannelBin, 0. );
 	efficiency_->SetBinError( iChannelBin, 0. );    
 	// Look at times beyond 3 stddev above transition.
-	// If sigma=0 (the S curve is a step function at the given resolution), take the increment
-	// size for sigma, i.e., start the plateau 3 amplitude steps away from the transition.
-	double plateauStart = mean + 3. * TMath::Max( sigma, double( measurement_->getAmplitudeStep() ) );
+
+	// // If sigma=0 (the S curve is a step function at the given resolution), take the increment
+	// // size for sigma, i.e., start the plateau 3 amplitude steps away from the transition.
+	// double plateauStart = mean + 3. * TMath::Max( sigma, double( measurement_->getAmplitudeStep() ) );
+
+	// Start it at twice the (apparent) threshold.
+	double plateauStart = 2 * mean;
+
 	timesOnEfficiencyPlateau( plateauStart ); // This fills timeOnPlateau_.
       }
     }
