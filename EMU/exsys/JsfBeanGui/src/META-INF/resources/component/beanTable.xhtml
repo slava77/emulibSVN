@@ -354,13 +354,13 @@
                             <ice:commandLink style="width: 100%; text-align: left"
                                              rendered="#{column.listType}"
                                              immediate="true"
-                                             value="{list}">
+                                             value="#{column.entityTitle}">
                                 <f:setPropertyActionListener target="#{column.listPropertyTable}" value="#{item}"/>
                             </ice:commandLink>
 
                             <ice:outputText style="width: 100%; text-align: left"
                                             rendered="#{column.entityType and !column.listType}"
-                                            value="#{column.cellValue.entityTitle}"/>
+                                            value="#{column.entityTitle}"/>
 
                             <ice:panelGroup rendered="#{!column.entityType and !column.listType}"
                                             style="padding: 0px;">

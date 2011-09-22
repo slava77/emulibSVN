@@ -6,15 +6,16 @@
 package jsf.bean.gui.metadata;
 
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 import javax.persistence.OneToMany;
 import jsf.bean.gui.EntityBeanDaoIf;
+import jsf.bean.gui.annotation.EntityTitle;
+import jsf.bean.gui.annotation.EntityTitleType;
 import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
 import jsf.bean.gui.exception.InvalidEntityClassException;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 
 /**
  *
@@ -22,12 +23,26 @@ import jsf.bean.gui.log.SimpleLogger;
  */
 public class OneToManyPropertyMd extends RestrictedPropertyMd {
 
-    private static final Logger logger = SimpleLogger.getLogger(OneToManyPropertyMd.class);
+    private static final EntityTitle DEFAULT_ENTITY_TITLE = new EntityTitle() {
 
-    private static Class[] mandatoryAnnotations = { OneToMany.class };
+        public EntityTitleType type() {
+            return EntityTitleType.CONSTANT;
+        }
+
+        public String value() {
+            return "{list}";
+        }
+
+        public Class<? extends Annotation> annotationType() {
+            return EntityTitle.class;
+        }
+                    
+    };
+
+    private static final Class[] MANDATORY_ANNOTATIONS = { OneToMany.class };
 
     public OneToManyPropertyMd(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
-        super(prop, mandatoryAnnotations);
+        super(prop, MANDATORY_ANNOTATIONS);
         setIsMandatory(false);
     }
 
@@ -50,6 +65,11 @@ public class OneToManyPropertyMd extends RestrictedPropertyMd {
         Class actualPropClass = (Class) actualTypes[0];
 
         return entityDao.getAllEntitiesByClass(actualPropClass);
+    }
+
+    @Override
+    protected EntityTitle getDefaultEntityTitle() {
+        return DEFAULT_ENTITY_TITLE;
     }
     
 }

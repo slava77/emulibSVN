@@ -1,8 +1,12 @@
 package jsf.bean.gui.component.table.column;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.faces.event.ActionEvent;
+import jsf.bean.gui.EntityBeanBase;
+import jsf.bean.gui.annotation.EntityTitle;
+import jsf.bean.gui.annotation.EntityTitleType;
 import jsf.bean.gui.component.table.BeanTable;
 import jsf.bean.gui.component.table.BeanTablePack;
 import jsf.bean.gui.component.table.BeanTableProjectionFilter;
@@ -16,12 +20,16 @@ public class BeanTableColumnEntity extends BeanTableColumn {
 
     private static final Logger logger = SimpleLogger.getLogger(BeanTableColumnEntity.class);
     private String referencedProperty = null;
+    private EntityTitle entityTitle;
 
     public BeanTableColumnEntity(BeanTable table, PropertyMd propertyMd) {
         super(table, propertyMd);
         if (RestrictedPropertyMd.class.isAssignableFrom(propertyMd.getClass())) {
-            referencedProperty = ((RestrictedPropertyMd) propertyMd).getReferencedProperty();
+            RestrictedPropertyMd restrictedPropertyMd = (RestrictedPropertyMd) propertyMd;
+            this.referencedProperty = restrictedPropertyMd.getReferencedProperty();
+            this.entityTitle = restrictedPropertyMd.getEntityTitle();
         }
+        
     }
 
     public String getReferencedProperty() {
@@ -106,4 +114,16 @@ public class BeanTableColumnEntity extends BeanTableColumn {
         }
     }
 
+    public Object getEntityTitle() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        if (entityTitle != null) {
+            if (entityTitle.type().equals(EntityTitleType.CONSTANT)) {
+                return entityTitle.value();
+            }
+            if (entityTitle.type().equals(EntityTitleType.PROPERTY)) {
+                return getTable().getColumn(entityTitle.value()).getCellValue();
+            }
+        }
+        return ((EntityBeanBase) getCellValue()).getEntityTitle();
+    }
+    
 }

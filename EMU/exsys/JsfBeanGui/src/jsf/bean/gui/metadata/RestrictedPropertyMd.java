@@ -6,9 +6,11 @@
 package jsf.bean.gui.metadata;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import jsf.bean.gui.EntityBeanDaoIf;
+import jsf.bean.gui.annotation.EntityTitle;
 import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
 import jsf.bean.gui.exception.InvalidEntityClassException;
 
@@ -19,6 +21,7 @@ import jsf.bean.gui.exception.InvalidEntityClassException;
 public abstract class RestrictedPropertyMd extends PropertyMd {
 
     private String referencedProperty = null;
+    private EntityTitle entityTitle = null;
     
     public RestrictedPropertyMd(PropertyDescriptor prop) throws InvalidEntityBeanPropertyException {
         super(prop);
@@ -44,6 +47,20 @@ public abstract class RestrictedPropertyMd extends PropertyMd {
 
     public void setReferencedProperty(String referencedProperty) {
         this.referencedProperty = referencedProperty;
+    }
+    
+    protected abstract EntityTitle getDefaultEntityTitle();
+    
+    public EntityTitle getEntityTitle() {
+        if (entityTitle == null) {
+            Field field = getField();
+            if (field.isAnnotationPresent(EntityTitle.class)) {
+                entityTitle = field.getAnnotation(EntityTitle.class);
+            } else {
+                entityTitle = getDefaultEntityTitle();
+            }
+        }
+        return entityTitle;
     }
     
 }
