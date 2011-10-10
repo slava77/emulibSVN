@@ -50,7 +50,31 @@ public abstract class BeanTableDao implements Serializable {
         c.setCacheable(true);
         c.setCacheRegion(table.getRowClass().getCanonicalName());
     }
+    
+    /**
+     * Check if this table (i.e. rowClass) has a special Id criteria treatment?
+     * If this returns true than latter customIdCriteria will be called and 
+     * default criterias will not be used.
+     * @param table Source table
+     * @return true if custom criteria has implementation, false otherwise
+     */
+    protected boolean hasCustomPageIdCriteria(BeanTable table) {
+        return false;
+    }
 
+    /**
+     * Apply custom criteria
+     * @param table Source table
+     * @param c Criteria to apply ids to
+     * @param pageIds List of page ids
+     */
+    public void applyCustomPageIdCriteria(BeanTable table, Criteria c, List pageIds) { }
+    
+    /**
+     * Get list of data for the table
+     * @param table Source table
+     * @return List of data
+     */
     public List<EntityBeanBase> getData(BeanTable table) {
 
         return getData(table,
@@ -58,6 +82,13 @@ public abstract class BeanTableDao implements Serializable {
                 table.getPageIndex());
     }
 
+    /**
+     * Get list of page data for table 
+     * @param table Source table
+     * @param pageSize Page size
+     * @param pageIndex Page index
+     * @return List of page data
+     */
     public List<EntityBeanBase> getData(BeanTable table,
             int pageSize,
             int pageIndex) {
@@ -91,8 +122,12 @@ public abstract class BeanTableDao implements Serializable {
 
                 if (pageIds != null) {
                     c = session.createCriteria(table.getRowClass());
-                    String itemId = EntityBeanBase.getIdPropertyMd(table.getRowClass()).getName();
-                    c.add(Restrictions.in(itemId, pageIds));
+                    if (hasCustomPageIdCriteria(table)) {
+                        applyCustomPageIdCriteria(table, c, pageIds);
+                    } else {
+                        String itemId = EntityBeanBase.getIdPropertyMd(table.getRowClass()).getName();
+                        c.add(Restrictions.in(itemId, pageIds));
+                    }
                 } else {
                     c = getDetachedCriteria(table).getExecutableCriteria(session);
                 }
@@ -115,6 +150,11 @@ public abstract class BeanTableDao implements Serializable {
         return data;
     }
 
+    /**
+     * Get data size on table
+     * @param table Source table
+     * @return number of rows
+     */
     public Long getDataCount(BeanTable table) {
         
         Long count = 0L;
@@ -142,6 +182,11 @@ public abstract class BeanTableDao implements Serializable {
         return count;
     }
 
+    /**
+     * Apply order instructions on criteria
+     * @param c Criteria
+     * @param table Source table
+     */
     private void applyOrder(Criteria c, BeanTable table) {
         for (BeanTableColumnSortable sc : table.getSortingColumns().getTarget()) {
             if (sc.isAscending()) {
@@ -152,6 +197,11 @@ public abstract class BeanTableDao implements Serializable {
         }
     }
 
+    /**
+     * Get detached (db session free) criteria
+     * @param table Source table
+     * @return Criteria
+     */
     private DetachedCriteria getDetachedCriteria(BeanTable table) {
 
         DetachedCriteria c = DetachedCriteria.forClass(table.getRowClass());
@@ -209,6 +259,13 @@ public abstract class BeanTableDao implements Serializable {
 
     }
 
+    /**
+     * Apply single column filter(s) on detached criteria
+     * @param c Criteria to apply filters upon
+     * @param col Source column 
+     * @param f Filter
+     * @param config Criteria configuration
+     */
     private void applyColumnFilter(DetachedCriteria c, BeanTableColumnBase col, BeanTableFilter f, CriteriaConfig config) {
 
         String propertyName = col.getFilterName();
@@ -305,16 +362,28 @@ public abstract class BeanTableDao implements Serializable {
 
     }
 
+    /**
+     * Criteria configuration class which 
+     * holds and manages criteria aliases
+     */
     private class CriteriaConfig {
 
         private static final String ALIAS_PREFIX = "a";
         private Integer aliasNo = 0;
 
+        /**
+         * Next column alias
+         * @return Alias
+         */
         public String nextAlias() {
             aliasNo++;
             return sameAlias();
         }
 
+        /**
+         * Current alias
+         * @return Alias
+         */
         public String sameAlias() {
             return ALIAS_PREFIX.concat(String.valueOf(aliasNo));
         }
