@@ -123,7 +123,12 @@ public class BeanTableColumnEntity extends BeanTableColumn {
                 return getTable().getColumn(entityTitle.value()).getCellValue();
             }
         }
-        return ((EntityBeanBase) getCellValue()).getEntityTitle();
+        EntityBeanBase bean = (EntityBeanBase) getCellValue();
+        if (bean != null) {
+            return bean.getEntityTitle();
+        } else {
+            return null;
+        }
     }
     
 }

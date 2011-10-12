@@ -54,7 +54,7 @@ public abstract class RestrictedPropertyMd extends PropertyMd {
     public EntityTitle getEntityTitle() {
         if (entityTitle == null) {
             Field field = getField();
-            if (field.isAnnotationPresent(EntityTitle.class)) {
+            if (field != null && field.isAnnotationPresent(EntityTitle.class)) {
                 entityTitle = field.getAnnotation(EntityTitle.class);
             } else {
                 entityTitle = getDefaultEntityTitle();
