@@ -6,8 +6,6 @@ package jsf.bean.gui.component.table.export;
 
 import com.icesoft.faces.context.Resource;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -33,10 +31,8 @@ public class BeanTableExportResource implements Resource, Serializable {
 
     public InputStream open() throws IOException {
         BeanTableExportManager manager = new BeanTableExportManager(table, template);
-        File f = manager.export();
-        InputStream input = new FileInputStream(f);
+        InputStream input = manager.export();
         byte[] bytes = IOUtils.toByteArray(input);
-
         InputStream inputStream = new ByteArrayInputStream(bytes);
         return inputStream;
     }

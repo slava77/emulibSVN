@@ -4,18 +4,15 @@
  */
 package jsf.bean.gui.component.table.export;
 
-import freemarker.template.TemplateException;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import jsf.bean.gui.component.fm.TemplateManager;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Stack;
 import jsf.bean.gui.component.table.BeanTable;
-import jsf.bean.gui.component.table.column.BeanTableColumn;
-import jsf.bean.gui.component.table.export.BeanTableExportTemplate.TemplateTypeKey;
 import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
 
@@ -26,149 +23,77 @@ import jsf.bean.gui.log.SimpleLogger;
 public class BeanTableExportManager {
 
     private static final Logger logger = SimpleLogger.getLogger(BeanTableExportManager.class);
-    private static final String KEY_IS_LAST_PAGE = "isLastPage";
-    private static final String KEY_IS_FIRST_PAGE = "isLastPage";
-    public static final String KEY_IS_LAST = "isLast";
-    public static final String KEY_IS_FIRST = "isFirst";
-    private static final String KEY_PAGE = "page";
-    public static final String ITEM = "item";
-    public static final String COLUMNS = "columns";
-    private static final String ITEM_TEMPLATE_PREFIX = "<#list " + KEY_PAGE + " as " + ITEM + ">"
-            + "<#if " + KEY_IS_LAST_PAGE + " && !" + ITEM + "_has_next>"
-            + "<#assign " + KEY_IS_LAST + "=true>"
-            + "<#else>"
-            + "<#assign " + KEY_IS_LAST + "=false>"
-            + "</#if>"
-            + "<#if " + KEY_IS_FIRST_PAGE + " && !(" + ITEM + "_index = 0)>"
-            + "<#assign " + KEY_IS_FIRST + "=true>"
-            + "<#else>"
-            + "<#assign " + KEY_IS_FIRST + "=false>"
-            + "</#if>";
-    private static final String ITEM_TEMPLATE_SUFFIX = "</#list>";
-    private static final int PAGE_SIZE = 50;
-    private BeanTable table;
-    private BeanTableExportTemplate template;
-    private File file;
-    private File tmpDir = new File("/tmp");
-    private FileOutputStream fileStream;
-    private boolean isPreview = false;
+
+    private static final File tmpDir = new File("/tmp");
+    
+    private final BeanTable table;
+    private final BeanTableExportTemplate topTemplate;
+    private final boolean isPreview;
 
     public BeanTableExportManager(BeanTable table, BeanTableExportTemplate template) throws IOException {
-        this.file = File.createTempFile("rr3tmp", template.getExt(), tmpDir);
-        fileStream = new FileOutputStream(file);
-        this.table = table;
-        this.template = template;
-        this.isPreview = false;
+        this(table, template, false);
     }
 
     public BeanTableExportManager(BeanTable table, BeanTableExportTemplate template, boolean isPreview) throws IOException {
-        this.file = File.createTempFile("rr3tmp", template.getExt(), tmpDir);
-        fileStream = new FileOutputStream(file);
         this.table = table;
-        this.template = template;
+        this.topTemplate = template;
         this.isPreview = isPreview;
     }
 
-    public File export() throws IOException {
+    public InputStream export() throws IOException {
 
-        TemplateManager manager = new TemplateManager();
-        Map root = new HashMap();
-
-        Map<TemplateTypeKey, String> templates = template.getTemplate();
-        for (TemplateTypeKey k : TemplateTypeKey.values()) {
-            if (templates.containsKey(k)) {
-                String s = templates.get(k);
-                if (k.equals(TemplateTypeKey.ITEM) && s != null) {
-                    s = ITEM_TEMPLATE_PREFIX.concat(s).concat(ITEM_TEMPLATE_SUFFIX);
-                }
-                manager.addTemplate(k.name(), s == null ? "" : s);
-            } else {
-                manager.addTemplate(k.name(), "");
-            }
-        }
-
-        List<BeanTableExportColumn> exportColumns = new LinkedList<BeanTableExportColumn>();
-        for (BeanTableColumn col : table.getSelectedColumns().getTarget()) {
-            exportColumns.add(new BeanTableExportColumn(col));
-        }
-        root.put(COLUMNS, exportColumns);
-
-        String content = null;
-        try {
-            content = manager.execute(TemplateTypeKey.HEADER.name(), root);
-        } catch (TemplateException ex) {
-            content = ex.getMessage().concat(ex.getFTLInstructionStack());
+        Stack<BeanTableExportTemplate> stack = new Stack<BeanTableExportTemplate>();
+        BeanTableExportTemplate ct = topTemplate;
+        
+        while (ct instanceof BeanTableExportTemplateSecondary && ct.isPrimary() == false) {
+            stack.push(ct);
+            ct = ((BeanTableExportTemplateSecondary) topTemplate).getPreviousTemplate();
         }
         
-        writeToFile(content);
+        boolean success;
         
-        try {
-            if (isPreview) {
-                writeItemToFilePreview(manager, root);
-            } else {
-                writeItemToFile(manager, root);
-            }
-        } catch (TemplateException ex) {
-            writeToFile(ex.getMessage().concat(ex.getFTLInstructionStack()));
+        StreamWorker output = new StreamWorker();
+        BeanTableExportProcessorPrimary pm = new BeanTableExportProcessorPrimary(table, (BeanTableExportTemplatePrimary) ct, isPreview);
+        success = pm.export(output.getOutputStream(ct.getExt()));
+        output.close();
+        
+        while (success && !stack.empty()) {
+            ct = stack.pop();
+            BeanTableExportProcessorSecondary sm = BeanTableExportProcessorSecondary.getProcessor(table, (BeanTableExportTemplateSecondary) ct);
+            success = sm.export(output.getInputStream(), output.getOutputStream(ct.getExt()));
+            output.close();
         }
         
-        try {
-            content = manager.execute(TemplateTypeKey.FOOTER.name(), root);
-        } catch (TemplateException ex) {
-            content = ex.getMessage().concat(ex.getFTLInstructionStack());
-        }
-        
-        writeToFile(content);
-
-        fileStream.close();
-        file.deleteOnExit();
-        
-        return file;
+        return output.getInputStream();
     }
 
-    private void writeItemToFile(TemplateManager manager, Map root) throws IOException, TemplateException {
-        root.put(KEY_IS_LAST, false);
-        long pages = ((table.getDataCount() % PAGE_SIZE) == 0 ? (table.getDataCount() / PAGE_SIZE) : (table.getDataCount() / PAGE_SIZE) + 1);
-        for (Integer p = 1; p <= pages; p++) {
-            root.put(KEY_PAGE, table.getPack().getManager().getBeanTableDao().getData(table, PAGE_SIZE, p));
-            
-            if (p == 1) {
-                root.put(KEY_IS_FIRST_PAGE, true);
-            } else {
-                root.put(KEY_IS_FIRST_PAGE, false);
-            }
-            
-            if (p == pages) {
-                root.put(KEY_IS_LAST_PAGE, true);
-            } else {
-                root.put(KEY_IS_LAST_PAGE, false);
-            }
-            
-            writeToFile(manager.execute(TemplateTypeKey.ITEM.name(), root));
-            root.remove(KEY_IS_LAST_PAGE);
-            root.put(KEY_IS_FIRST_PAGE, true);
-        }
-        root.remove(KEY_IS_LAST);
-        root.remove(KEY_IS_FIRST_PAGE);
-        root.remove(KEY_PAGE);
-    }
+    private class StreamWorker {
+        
+        private File fout = null;
+        private File fin = null;
+        
+        private FileOutputStream sout = null;
+        private FileInputStream sin = null;
 
-    private void writeItemToFilePreview(TemplateManager manager, Map root) throws IOException, TemplateException {
-        root.put(KEY_PAGE, table.getPack().getManager().getBeanTableDao().getData(table, PAGE_SIZE, 1));
-        root.put(KEY_IS_FIRST_PAGE, true);
-        root.put(KEY_IS_LAST_PAGE, true);
-        writeToFile(manager.execute(TemplateTypeKey.ITEM.name(), root));
-        root.remove(KEY_IS_LAST_PAGE);
-        root.remove(KEY_IS_FIRST_PAGE);
-        root.remove(KEY_PAGE);
-    }
-
-    private void writeToFile(String text) {
-        try {
-            fileStream.write(text.getBytes());
-            fileStream.flush();
-        } catch (IOException ex) {
-            logger.error("File stream did not write to file. " + ex);
+        public OutputStream getOutputStream(String ext) throws FileNotFoundException, IOException {
+            this.fout = File.createTempFile("rr3", ext, tmpDir);
+            this.sout = new FileOutputStream(this.fout);
+            return this.sout;
         }
+        
+        public InputStream getInputStream() {
+            return this.sin;
+        }
+        
+        public void close() throws IOException {
+            this.sout.flush();
+            this.sout.close();
+            this.fin = this.fout;
+            this.sin = new FileInputStream(fin);
+            this.fin.deleteOnExit();
+            this.fout = null;
+        }
+        
     }
+        
 }

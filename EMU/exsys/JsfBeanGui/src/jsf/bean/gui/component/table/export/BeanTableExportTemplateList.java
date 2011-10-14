@@ -31,7 +31,7 @@ public class BeanTableExportTemplateList {
         List<BeanTableExportTemplate> templates = new ArrayList<BeanTableExportTemplate>();
 
         // Adding defaults
-        templates.addAll(BeanTableDefaultExportTemplate.getTemplates());
+        templates.addAll(BeanTableDefaultExportTemplateFactory.getTemplates());
         Collections.sort(templates, new ExportTemplateComparator());
         defaultExportResources = new ArrayList<BeanTableExportResource>();
         for (BeanTableExportTemplate t : templates) {

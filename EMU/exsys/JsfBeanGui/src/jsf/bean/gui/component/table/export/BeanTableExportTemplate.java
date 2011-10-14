@@ -5,24 +5,15 @@
 
 package jsf.bean.gui.component.table.export;
 
-import java.util.Map;
-
 /**
  *
  * @author valdo
  */
 public interface BeanTableExportTemplate {
 
-    public enum TemplateTypeKey {
-        HEADER,
-        ITEM,
-        FOOTER
-    };
-
+    boolean isPrimary();
     String getMimeType();
     String getTitle();
     String getExt();
-
-    Map<TemplateTypeKey, String> getTemplate();
 
 }

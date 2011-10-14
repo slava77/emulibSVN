@@ -6,7 +6,6 @@ package jsf.bean.gui.component.fm;
 
 import freemarker.cache.StringTemplateLoader;
 import freemarker.core.Environment;
-import freemarker.core.InvalidReferenceException;
 import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
 import freemarker.template.Template;
@@ -29,6 +28,7 @@ import jsf.bean.gui.log.SimpleLogger;
 public class TemplateManager {
 
     private static final Logger logger = SimpleLogger.getLogger(TemplateManager.class);
+    
     private Configuration cfg;
     private StringTemplateLoader loader;
     private List<String> templateNames = new ArrayList<String>();
