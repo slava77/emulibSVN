@@ -40,7 +40,7 @@ public class BeanTableExportProcessorPrimary extends BeanTableExportProcessor {
             + "<#assign " + KEY_IS_FIRST + "=false>"
             + "</#if>";
     private static final String ITEM_TEMPLATE_SUFFIX = "</#list>";
-    private static final int PAGE_SIZE = 50;
+    private static final int PAGE_SIZE = 200;
     
     private final BeanTableExportTemplatePrimary template;
     private final boolean isPreview;

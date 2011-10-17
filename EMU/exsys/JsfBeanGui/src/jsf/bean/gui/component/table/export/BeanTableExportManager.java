@@ -47,7 +47,7 @@ public class BeanTableExportManager {
         
         while (ct instanceof BeanTableExportTemplateSecondary && ct.isPrimary() == false) {
             stack.push(ct);
-            ct = ((BeanTableExportTemplateSecondary) topTemplate).getPreviousTemplate();
+            ct = ((BeanTableExportTemplateSecondary) ct).getPreviousTemplate();
         }
         
         boolean success;
