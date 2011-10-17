@@ -15,5 +15,6 @@ public interface BeanTableExportTemplate {
     String getMimeType();
     String getTitle();
     String getExt();
+    String getKey();
 
 }

@@ -70,10 +70,9 @@ public class FmComponentBean extends JsfBeanBase {
         return (T) cc.getAttributes().get(name);
     }
 
-    private UIInput getTemplateInput() {
-        UIComponent c = UIComponent.getCurrentComponent(FacesContext.getCurrentInstance());
-        String ccId = UIComponent.getCompositeComponentParent(c).getClientId();
-        return (UIInput) FacesContext.getCurrentInstance().getViewRoot().findComponent(ccId + ":templateStr");
+    private UIInput getTemplateInput(UIComponent c) {
+        UIComponent cc = UIComponent.getCompositeComponentParent(c);
+        return (UIInput) cc.findComponent(cc.getClientId() + ":templateStr");
     }
 
     /**
@@ -165,7 +164,7 @@ public class FmComponentBean extends JsfBeanBase {
     }
 
     public void compileListener(ActionEvent ev) {
-        UIInput input = getTemplateInput();
+        UIInput input = getTemplateInput(ev.getComponent());
         validateTemplate(FacesContext.getCurrentInstance(), input, input.getSubmittedValue());
         if (input.isValid()) {
             addInfoMessage("Compilation successfull");

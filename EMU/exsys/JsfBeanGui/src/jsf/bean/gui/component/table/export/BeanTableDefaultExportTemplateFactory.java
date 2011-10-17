@@ -26,52 +26,66 @@ public class BeanTableDefaultExportTemplateFactory {
     private static final String KEY_PREV_SUFFIX = ".prev";
     private static final String KEY_SECONDARY = "secondary";
 
-    public static List<BeanTableExportTemplate> getTemplates() throws IOException {
+    private static List<BeanTableExportTemplate> templates;
+    
+    public static List<BeanTableExportTemplate> getTemplates() {
         
-        List<BeanTableExportTemplate> templates = new ArrayList<BeanTableExportTemplate>();
-        ResourceBundle bundle = ResourceBundle.getBundle(TEMPLATES_BUNDLE);
+        if (templates == null) {
         
-        Map<String, BeanTableExportTemplate> loaded = new HashMap<String, BeanTableExportTemplate>();
-        
-        {
-            String s = bundle.getString(KEY_PRIMARY);
-            if (s != null && s.trim().length() > 0) {
-                String[] keys = s.split(",");
-                for (String key: keys) {
-                    BeanTableDefaultExportTemplate t = new BeanTableDefaultPrimaryTemplate(key, bundle);
-                    templates.add(t);
-                    loaded.put(key, t);
+            templates = new ArrayList<BeanTableExportTemplate>();
+            ResourceBundle bundle = ResourceBundle.getBundle(TEMPLATES_BUNDLE);
+
+            Map<String, BeanTableExportTemplate> loaded = new HashMap<String, BeanTableExportTemplate>();
+
+            {
+                String s = bundle.getString(KEY_PRIMARY);
+                if (s != null && s.trim().length() > 0) {
+                    String[] keys = s.split(",");
+                    for (String key: keys) {
+                        try {
+                            BeanTableDefaultExportTemplate t = new BeanTableDefaultPrimaryTemplate(key, bundle);
+                            templates.add(t);
+                            loaded.put(key, t);
+                        } catch (IOException ex) {
+                            logger.error("Error while loading default templates", ex);
+                        }
+                    }
+                }
+            }
+
+            {
+                String s = bundle.getString(KEY_SECONDARY);
+                if (s != null && s.trim().length() > 0) {
+                    String[] keys = s.split(",");
+                    int numMissedToLoad = 0;
+                    int numLoaded = 0;
+                    do {
+                        numMissedToLoad = 0;
+                        numLoaded = 0;
+                        for (String key: keys) {
+                            if (!loaded.containsKey(key)) {
+                                try {
+                                    String prev = bundle.getString(key.concat(KEY_PREV_SUFFIX));
+                                    if (loaded.containsKey(prev)) {
+                                        BeanTableDefaultSecondaryTemplate t = new BeanTableDefaultSecondaryTemplate(key, loaded.get(prev), bundle);
+                                        templates.add(t);
+                                        loaded.put(key, t);
+                                    }
+                                    numLoaded += 1;
+                                } catch (IOException ex) {
+                                    logger.error("Error while loading default templates", ex);
+                                }
+                            } else {
+                                numMissedToLoad += 1;
+                            }
+                        }
+                    } while (numMissedToLoad == 0 || numLoaded == 0);
                 }
             }
         }
         
-        {
-            String s = bundle.getString(KEY_SECONDARY);
-            if (s != null && s.trim().length() > 0) {
-                String[] keys = s.split(",");
-                int numMissedToLoad = 0;
-                int numLoaded = 0;
-                do {
-                    numMissedToLoad = 0;
-                    numLoaded = 0;
-                    for (String key: keys) {
-                        if (!loaded.containsKey(key)) {
-                            String prev = bundle.getString(key.concat(KEY_PREV_SUFFIX));
-                            if (loaded.containsKey(prev)) {
-                                BeanTableDefaultSecondaryTemplate t = new BeanTableDefaultSecondaryTemplate(key, loaded.get(prev), bundle);
-                                templates.add(t);
-                                loaded.put(key, t);
-                            }
-                            numLoaded += 1;
-                        } else {
-                            numMissedToLoad += 1;
-                        }
-                    }
-                } while (numMissedToLoad == 0 || numLoaded == 0);
-            }
-        }
-        
         return templates;
+        
     }
 
 

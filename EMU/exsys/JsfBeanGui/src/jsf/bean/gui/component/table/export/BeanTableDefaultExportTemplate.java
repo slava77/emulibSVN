@@ -45,4 +45,8 @@ public abstract class BeanTableDefaultExportTemplate implements BeanTableExportT
         return ext;
     }
 
+    public String getKey() {
+        return key;
+    }
+    
 }
