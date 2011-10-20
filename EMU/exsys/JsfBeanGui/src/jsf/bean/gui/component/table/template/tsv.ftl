@@ -20,28 +20,28 @@ ${}SEPARATOR${}
 <#elseif embedCol.isEntityType && !embedCol.isListType>
 ${embedCol.columnValue(embedItem).entityTitle}<#t>
 <#elseif embedCol.columnValue(embedItem)?is_string && ( embedCol.columnValue(embedItem)?contains("\n") )>
-"${embedCol.columnValue(embedItem)}"<#t>
+"${embedCol.columnValue(embedItem)?replace('\n',' ')}"<#t>
 <#elseif embedCol.isNumeric || embedCol.isDate>
 ${embedCol.columnValue(embedItem)}<#t>
 <#elseif embedCol.isBoolean>
 ${embedCol.columnValue(embedItem)?string}<#t>
 <#elseif embedCol.columnValue(embedItem)?contains(",") || embedCol.columnValue(embedItem)?contains("\"") || embedCol.columnValue(embedItem)?contains("\n")>
-"${embedCol.columnValue(embedItem)?replace('"','\"\"')}"<#t>
+"${embedCol.columnValue(embedItem)?replace('"','\"\"')?replace('\n',' ')}"<#t>
 <#else>
-${embedCol.columnValue(embedItem)}<#t>
+${embedCol.columnValue(embedItem)?replace('\n',' ')}<#t>
 </#if><#t><#if embedCol_has_next>	</#if><#t></#list><#t>
 <#elseif c.isEntityType && !c.isListType>
 ${c.columnValue(item).entityTitle}<#t>
 <#elseif c.columnValue(item)?is_string && ( c.columnValue(item)?contains("\n") )>
-"${c.columnValue(item)}"<#t>
+"${c.columnValue(item)?replace('\n',' ')}"<#t>
 <#elseif c.isNumeric || c.isDate>
 ${c.columnValue(item)}<#t>
 <#elseif c.isBoolean>
 ${c.columnValue(item)?string}<#t>
 <#elseif c.columnValue(item)?contains(",") || c.columnValue(item)?contains("\"") || c.columnValue(item)?contains("\n")>
-"${c.columnValue(item)?replace('"','\"\"')}"<#t>
+"${c.columnValue(item)?replace('"','\"\"')?replace('\n',' ')}"<#t>
 <#else>
-${c.columnValue(item)}<#t>
+${c.columnValue(item)?replace('\n',' ')}<#t>
 </#if><#if c_has_next>	<#t></#if><#t>
 </#list>
 
