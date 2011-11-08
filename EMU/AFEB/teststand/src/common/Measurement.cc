@@ -306,7 +306,7 @@ bool AFEB::teststand::Measurement::dummyResultGenerator(){
 	int tdcInput = iShort / nDeviceChannels + 1;
 	Results* results = findResults( tdcInput );
 	if ( results ){
-	  if ( double(amplitude) > rndm.Gaus( 0.5 * ( amplitudeMax_ + amplitudeMin_ ) + thresholdOffset[ iShort ],
+	  if ( double(amplitude) > rndm.Gaus( 0.3 * ( amplitudeMax_ + amplitudeMin_ ) + thresholdOffset[ iShort ],
 					      0.1 * ( amplitudeMax_ - amplitudeMin_ ) ) ){
 	    results->add( iShort % nDeviceChannels, 
 			  amplitude,
