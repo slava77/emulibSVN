@@ -1,6 +1,6 @@
 <component>
 <name>CMS_CSC_common</name>
-<version>1.3.11</version>
+<version>1.3.12</version>
 <date>2011/06/13</date> 
 <required>fwAccessControl=3.2.7</required>
 <required>fwConfigurationDB=3.3.53</required>

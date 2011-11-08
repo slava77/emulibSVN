@@ -468,6 +468,11 @@ void emu_dpTypeCreateOrChange(dyn_dyn_string elements, dyn_dyn_int types) {
 
 /** Given an FSM node, this function returns a mapping of device params */
 mapping emu_fsmNodeToDeviceParams(string fsmNode, dyn_string &exceptionInfo) {
+  string dp = dpSubStr(fsmNode, DPSUB_DP);
+  if (dp != "") {
+    fsmNode = dp;
+  }
+  
   if (strpos(fsmNode, "CSC_ME_") < 0) {
     emu_addError("Invalid fsmNode provided to emu_fsmNodeToDeviceParams - this node doesn't comform with the convention (*CSC_ME_*): " + fsmNode, exceptionInfo);
     return EMU_DUMMY_MAPPING;
@@ -508,12 +513,41 @@ mapping emu_chamberNameToDeviceParams(string chamberName, dyn_string &exceptionI
   return ret;
 }
 
-/** Returns chamber name (in a standard form e.g. ME+2/2/02) given deviceParams (it should contain at least "side", "station", "ring" and "chamberNumber" params). */
-string emu_getChamberName(mapping deviceParams) {
+/**
+  * @return chamber name (in a standard form e.g. ME+2/2/02) given the deviceParams (it should contain at least "side", "station", "ring" and "chamberNumber" params).
+  * @param zeroPadded (optional, default=true) if set to false, will produce a non zero padded chamber name e.g. ME+1/1/1 (note that the use of this option is strongly discouraged in order to preserve a uniform format in the whole system, however it is sometimes needed e.g. when communicating with X2P).
+  */
+string emu_getChamberName(mapping deviceParams, bool zeroPadded = true) {
   string strSide = "+";
   if (deviceParams["side"] == "M") { strSide = "-"; }
+
+  string ret;
+  if (zeroPadded) {  
+    ret = "ME" + strSide + 
+          deviceParams["station"] + "/" + deviceParams["ring"] + "/" +
+          deviceParams["chamberNumber"];
+  } else {
+    ret = "ME" + strSide + 
+          deviceParams["station"] + "/" + deviceParams["ring"] + "/" +
+          (int) deviceParams["chamberNumber"];
+  }
   
-  return "ME" + strSide + 
-         deviceParams["station"] + "/" + deviceParams["ring"] + "/" +
-         deviceParams["chamberNumber"];
+  return ret;
+}
+
+/**
+  * This function works as dpGet, but it caches the result of the DPE and next time
+  * uses memory to answer the query.
+  * Also the first time a particular DPE is requested, this function does a dpConnect
+  * to it so that the cached value would be kept up to date.
+  * @note This function is useful for rarely changing but frequently needed DPEs (like
+  * number of channels of an HV board).
+  * @note DO NOT USE THIS FUNCTION ON FREQUENTLY CHANGING DPEs.
+  * Rule of thumb here would be this: if you think the DPE will change less frequently
+  * than you're going to query it's value - use this function, otherwise don't.
+  */
+anytype emu_dpGetCached(string dpe) {
+  anytype ret;
+  dpGet(dpe, ret); // dummy implementation for now
+  return ret;
 }
