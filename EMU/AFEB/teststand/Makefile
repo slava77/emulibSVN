@@ -13,6 +13,11 @@ ROOTCFLAGS    = $(shell $(ROOTSYS)/bin/root-config --cflags)
 ROOTLIBS      = $(shell $(ROOTSYS)/bin/root-config --libs)
 ROOTGLIBS     = $(shell $(ROOTSYS)/bin/root-config --glibs)
 
+info:
+	@echo "Values of required variables inside Makefile:"
+	@echo "   BUILD_HOME=$(BUILD_HOME)"
+	@echo "   XDAQ_ROOT =$(XDAQ_ROOT)"
+	@echo "   ROOTSYS   =$(ROOTSYS)"
 
 #
 # Packages to be built
