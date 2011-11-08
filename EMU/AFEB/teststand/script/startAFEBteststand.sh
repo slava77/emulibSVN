@@ -17,14 +17,16 @@ EOF
 done
 
 # BUILD_HOME, XDAQ_ROOT and ROOTSYS should be set. Their default values are:
-export BUILD_HOME=${BUILD_HOME:-$HOME/EMU}
+export BUILD_HOME=${BUILD_HOME:-$HOME/CMS}
 export XDAQ_ROOT=${XDAQ_ROOT:-$HOME/XDAQ}
 export ROOTSYS=${ROOTSYS:-$HOME/ROOT/root}
 
 export XDAQ_OS=linux
-[[ $(uname -m) == "x86_64" ]] && export XDAQ_PLATFORM="x86_64" || export XDAQ_PLATFORM="x86"
-export XDAQ_DOCUMENT_ROOT=${XDAQ_ROOT}/${XDAQ_PLATFORM}/htdocs
-export LD_LIBRARY_PATH=$ROOTSYS/lib:$XDAQ_ROOT/$XDAQ_PLATFORM/lib
+[[ $(uname -m) == "x86_64" ]] && XDAQ_PLATFORM="x86_64" || XDAQ_PLATFORM="x86"
+[[ ${#DISTRIB_ID} -gt 0 ]] && XDAQ_PLATFORM=${XDAQ_PLATFORM}_$DISTRIB_ID
+export XDAQ_PLATFORM
+export XDAQ_DOCUMENT_ROOT=${XDAQ_ROOT}/htdocs
+export LD_LIBRARY_PATH=$ROOTSYS/lib:$XDAQ_ROOT/lib
 
 print
 print "Environment variables:"
