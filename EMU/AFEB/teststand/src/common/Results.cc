@@ -355,6 +355,10 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
 		      measurement_->getNPulses() );
   if ( to != from ) nCDF.SetRange( from, to ); // fit only in the range measured so far
 
+  // The array of amplitudes at which the efficiency plateau starts in each channel
+  vector<double> plateauStarts;
+  plateauStarts.resize( testedDevice_->getNChannels(), 0. );
+
   // Loop over channels and fit results
   for ( int iChannelBin = 1; iChannelBin <= testedDevice_->getNChannels(); ++iChannelBin ){
     p.Reset();
@@ -390,8 +394,7 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
 	noise_     ->SetBinError( iChannelBin, nCDF.GetParError( 1 ) );
 	efficiency_->SetBinError( iChannelBin, nCDF.GetParError( 2 ) / measurement_->getNPulses() );    
 	// Look at times beyond 3 stddev above transition.
-	double plateauStart = nCDF.GetParameter( 0 ) + 3. * nCDF.GetParameter( 1 );
-	timesOnEfficiencyPlateau( plateauStart ); // This fills timeOnPlateau_.
+	plateauStarts[iChannelBin-1] = nCDF.GetParameter( 0 ) + 3. * nCDF.GetParameter( 1 );
       }
       else{
 	// Fit may fail in time_vs_dac as the transition region may not be covered or resolved well. 
@@ -401,17 +404,13 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
 	efficiency_->SetBinContent( iChannelBin, height / measurement_->getNPulses() );
 	threshold_ ->SetBinError( iChannelBin, 0. );
 	noise_     ->SetBinError( iChannelBin, 0. );
-	efficiency_->SetBinError( iChannelBin, 0. );    
-	// Look at times beyond 3 stddev above transition.
-
+	efficiency_->SetBinError( iChannelBin, 0. );
 	// // If sigma=0 (the S curve is a step function at the given resolution), take the increment
 	// // size for sigma, i.e., start the plateau 3 amplitude steps away from the transition.
 	// double plateauStart = mean + 3. * TMath::Max( sigma, double( measurement_->getAmplitudeStep() ) );
 
-	// Start it at twice the (apparent) threshold.
-	double plateauStart = 2 * mean;
-
-	timesOnEfficiencyPlateau( plateauStart ); // This fills timeOnPlateau_.
+	// Start it at twice the (apparent) threshold. In time_vs_dac measurements we sure go up to a high enough amplitude to have a long plateau.
+	plateauStarts[iChannelBin-1] = 2 * mean;
       }
     }
     else{
@@ -425,24 +424,37 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
     }
     bsem_.give();
   }
+
+  bsem_.take();
+  if ( isFinal_ ){
+    timesOnEfficiencyPlateau( plateauStarts ); // This fills timeOnPlateau_.
+  }
+  bsem_.give();
+
 }
 
-void AFEB::teststand::Results::timesOnEfficiencyPlateau( double plateauStart ){
-
-  // An auxiliary histogram just to do the statistics for us:
-  TH1D timesOfChannel( "timesOfChannel", "timesOfChannel", 
-		       measurement_->getTDCTimeMax()-measurement_->getTDCTimeMin(),
-		       double( measurement_->getTDCTimeMin() ),
-		       double( measurement_->getTDCTimeMax() ) );
-  // The condition of being on the plateau:
-  string onPlateau = utils::stringFrom<double>( plateauStart ) + "<a";
-  // Loop over channels and project the times measured at amplitudes on the plateau onto the auxiliary histogram.
-  for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
-    timesOfChannel.Reset( "ICES" );
-    times_->Project( "timesOfChannel", "t", (onPlateau + " && ch==" + utils::stringFrom<int>( iChannel )).c_str() );
-    timeOnPlateau_->SetBinContent( iChannel + 1, timesOfChannel.GetMean() );
-    timeOnPlateau_->SetBinError  ( iChannel + 1, timesOfChannel.GetRMS () );
+void AFEB::teststand::Results::timesOnEfficiencyPlateau( vector<double>& plateauStarts ){
+  // An array of auxiliary histograms just to do the statistics for us:
+  vector<TH1D*> timesOfChannel;
+  for ( int iChannel=0; iChannel<testedDevice_->getNChannels(); ++iChannel ){
+    timesOfChannel.push_back( new TH1D( (string( "timesOfChannel" )+utils::stringFrom<int>( iChannel )).c_str(),
+					(string( "timesOfChannel" )+utils::stringFrom<int>( iChannel )).c_str(), 
+					measurement_->getTDCTimeMax()-measurement_->getTDCTimeMin(),
+					double( measurement_->getTDCTimeMin() ),
+					double( measurement_->getTDCTimeMax() ) ) );
   }
+  // Loop over all entries and collect the times on the efficiency plateau of that channel:
+  for( Long64_t i=0; i<times_->GetEntries(); ++i ){
+    times_->GetEntry( i );
+    if ( amplitude_ > plateauStarts.at( channel_ ) ) timesOfChannel.at( channel_ )->Fill( time_ );
+  }
+  // Get the statistics of every channel into the timeOnPlateau_ histogram:
+  for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
+    timeOnPlateau_->SetBinContent( iChannel + 1, timesOfChannel.at( iChannel )->GetMean() );
+    timeOnPlateau_->SetBinError  ( iChannel + 1, timesOfChannel.at( iChannel )->GetRMS () );    
+  }
+  // Delete the auxiliary histograms:
+  for ( vector<TH1D*>::iterator h = timesOfChannel.begin(); h != timesOfChannel.end(); ++h ) delete *h;
 }
 
 void AFEB::teststand::Results::createFigure( const string directory, const double fitRangeStart, const double fitRangeEnd ){

@@ -47,14 +47,14 @@ namespace AFEB { namespace teststand {
       vector<TH1D*> sCurve_; ///< measured efficiency( amplitude ) 1D histogram
       vector<TProfile*> timeVsAmplitude_;  ///< measured time( amplitude ) 1D histogram
       TLegend *legend_; ///< legend for S curves
-      int channel_;
-      int amplitude_;
-      int time_;
+      int channel_;		///< To access an entry in the times_ tree.
+      int amplitude_;		///< To access an entry in the times_ tree.
+      int time_;		///< To access an entry in the times_ tree.
       TGaxis* adjustToHistogram( const TH1* const h1, TH1* h2, bool isNewAxisOnRight=true );
       void estimateFitParameters( TH1D& hist, const double from, const double to, double& mean, double& sigma, double& height );
       double mean( const TH1D& hist, const double from, const double to );
       double rms( const TH1D& hist, const double from, const double to );
-      void timesOnEfficiencyPlateau( double plateauStart );
+      void timesOnEfficiencyPlateau( vector<double>& plateauStarts );
       map<string,double> getStats( const TH1D* hist );
     };
   }}
