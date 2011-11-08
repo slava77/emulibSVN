@@ -1,0 +1,202 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 973 806 N "_3DFace" 0
+E E E E E 1 -1 -1 0  140 60
+""0  1
+E "#uses \"CMS_CSC_common/emu_common.ctl\"
+#uses \"CMS_CSC_UI/emuui_deviceInfo.ctl\"
+
+mapping chamberNameToLine;
+
+void voltageUpdatedCB(dyn_string dps, dyn_int voltages) {
+  dyn_string ex;
+  string chamberName = emu_getChamberName(emu_fsmNodeToDeviceParams(dpSubStr(dps[1], DPSUB_DP), ex));
+  if (emu_checkException(ex)) { return; }
+
+  int masterVoltage = voltages[1];
+  table.updateLine(1, \"chamber\", chamberName, \"masterVoltage\", masterVoltage);
+  int minVoltage = maxINT(), maxVoltage = minINT();
+  for (int i=2; i <= dynlen(voltages); i++) {
+    if (voltages[i] > maxVoltage) {
+      maxVoltage = voltages[i];
+    }
+    if (voltages[i] < minVoltage) {
+      minVoltage = voltages[i];
+    }
+  }
+  table.updateLine(1, \"chamber\", chamberName, \"minVoltage\", minVoltage,
+                                              \"maxVoltage\", maxVoltage);
+
+  if (minVoltage > 3550) {
+    table.cellBackColRC(chamberNameToLine[chamberName], \"minVoltage\", \"FwStateOKPhysics\");
+  } else {
+    table.cellBackColRC(chamberNameToLine[chamberName], \"minVoltage\", \"white\");
+  }
+  if (maxVoltage > 3550) {
+    table.cellBackColRC(chamberNameToLine[chamberName], \"maxVoltage\", \"FwStateOKPhysics\");
+  } else {
+    table.cellBackColRC(chamberNameToLine[chamberName], \"maxVoltage\", \"white\");
+  }
+  if (masterVoltage > 3550) {
+    table.cellBackColRC(chamberNameToLine[chamberName], \"masterVoltage\", \"FwStateOKPhysics\");
+  } else {
+    table.cellBackColRC(chamberNameToLine[chamberName], \"masterVoltage\", \"white\");
+  }
+}" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+25 0
+"table"
+""
+1 20.00000000000002 50.00000000000001 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  18 48 952 792
+EE 1 0 1 4 0 "chamber" 7 1 0 "s" 1
+LANG:1 7 Chamber
+E
+1
+LANG:1 0 
+
+80 "masterVoltage" 7 1 0 "s" 1
+LANG:1 14 master voltage
+E
+1
+LANG:1 0 
+
+80 "minVoltage" 7 1 0 "[0.2f,False,False,ALIGNMENT_BEGINNING,False]" 1
+LANG:1 11 min voltage
+E
+1
+LANG:1 0 
+
+80 "maxVoltage" 7 1 0 "[0.2f,False,False,ALIGNMENT_BEGINNING,False]" 1
+LANG:1 11 max voltage
+E
+1
+LANG:1 0 
+
+80 
+16 16 10 10
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 0 1 1 1 7
+1 0
+13 1
+"PUSH_BUTTON1"
+""
+1 19.99999999999997 10 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  18 8 812 42
+
+T 
+1
+LANG:1 6 Start!
+"main()
+{
+  this.enabled = false;
+  
+  dyn_string ex;
+  
+  dyn_string dps = dpNames(\"*:*\", \"CscHvChamberFastMon\");
+  
+  for (int i=1; i <= dynlen(dps); i++) {
+    string chamberName = emu_getChamberName(emu_fsmNodeToDeviceParams(dpSubStr(dps[i], DPSUB_DP), ex));
+    if (emu_checkException(ex)) { return; }
+    table.appendLine(\"chamber\", chamberName);
+    chamberNameToLine[chamberName] = i - 1;
+    dyn_string voltageDps;
+    dynAppend(voltageDps, dps[i] + \".master_channel.vmon\");
+    int numChans;
+    dpGet(dps[i] + \".num_chans\", numChans);
+    for (int j=1; j <= numChans; j++) {
+      dynAppend(voltageDps, dps[i] + \".channels.ch\" + j + \".vmon\");
+    }
+    dpConnect(\"voltageUpdatedCB\", true, voltageDps);
+  }
+}" 0
+ E E E
+13 2
+"PUSH_BUTTON6"
+""
+1 820 20 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  818 18 952 42
+
+T 
+1
+LANG:1 18 Show as plain text
+"main()
+{
+  string text;
+  for (int i=0; i < table.lineCount(); i++) {
+    text += table.getLineN(i) + \"\\n\";
+  }
+  
+  ChildPanelOnCentralModal(\"CMS_CSC_UI/util/textEditor.pnl\", \"textEdit_TMB_LV\", 
+                           makeDynString(\"$text:\" + text));
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

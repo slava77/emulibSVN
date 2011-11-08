@@ -1,0 +1,145 @@
+# ascii dump of database
+
+# Datapoint/DpId
+DpName	TypeName	ID
+CscLvChamberInfo	_FwDeviceDefinition	559415
+CscTempChamberInfo	_FwDeviceDefinition	559417
+CscFedDduInfo	_FwDeviceDefinition	559419
+CscLowVoltage	FwNode	559421
+CscTemperature	FwNode	559422
+CscFed	FwNode	559423
+
+# DpValue
+ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
+CscLvChamberInfo.type	_FwDeviceDefinition	"CSC Chamber Low Voltage"	0x101	30.10.2011 14:56:06.447
+CscLvChamberInfo.dpType	_FwDeviceDefinition	"CscLvChamber"	0x101	30.10.2011 14:56:06.447
+CscLvChamberInfo.version	_FwDeviceDefinition	""	0x101	30.10.2011 14:56:06.447
+CscLvChamberInfo.properties.names	_FwDeviceDefinition	".disabled_channels", ".fsm_command", ".fsm_state"	0x101	30.10.2011 14:56:06.408
+CscLvChamberInfo.properties.dpes	_FwDeviceDefinition	".disabled_channels", ".fsm_command", ".fsm_state"	0x101	30.10.2011 14:56:06.409
+CscLvChamberInfo.properties.description	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:56:06.410
+CscLvChamberInfo.configuration.address.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.413
+CscLvChamberInfo.configuration.address.general.defaultType	_FwDeviceDefinition	"NO HARDWARE CONNECTION"	0x101	30.10.2011 14:56:06.447
+CscLvChamberInfo.configuration.address.OPC.items	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:56:06.414
+CscLvChamberInfo.configuration.address.OPC.groups	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:56:06.415
+CscLvChamberInfo.configuration.address.OPC.general.canHave	_FwDeviceDefinition	0	0x101	30.10.2011 14:56:06.449
+CscLvChamberInfo.configuration.address.OPC.general.serverName	_FwDeviceDefinition	""	0x101	30.10.2011 14:56:06.449
+CscLvChamberInfo.configuration.address.OPC.general.driverNumber	_FwDeviceDefinition	0	0x101	30.10.2011 14:56:06.449
+CscLvChamberInfo.configuration.address.OPC.general.groupIn	_FwDeviceDefinition	""	0x101	30.10.2011 14:56:06.449
+CscLvChamberInfo.configuration.address.OPC.general.groupOut	_FwDeviceDefinition	""	0x101	30.10.2011 14:56:06.449
+CscLvChamberInfo.configuration.address.DIM.items	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:56:06.418
+CscLvChamberInfo.configuration.address.DIM.general.canHave	_FwDeviceDefinition	0	0x101	30.10.2011 14:56:06.450
+CscLvChamberInfo.configuration.address.DIM.general.driverNumber	_FwDeviceDefinition	0	0x101	30.10.2011 14:56:06.450
+CscLvChamberInfo.configuration.address.DIM.general.timeInterval	_FwDeviceDefinition	0	0x101	30.10.2011 14:56:06.450
+CscLvChamberInfo.configuration.address.DIM.general.timeStamp	_FwDeviceDefinition	0	0x101	30.10.2011 14:56:06.450
+CscLvChamberInfo.configuration.dpFunction.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.419
+CscLvChamberInfo.configuration.dpFunction.function	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:56:06.419
+CscLvChamberInfo.configuration.dpFunction.params	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:56:06.420
+CscLvChamberInfo.configuration.alert.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.421
+CscLvChamberInfo.configuration.alert.defaultClasses	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:56:06.422
+CscLvChamberInfo.configuration.alert.defaultTexts	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:56:06.423
+CscLvChamberInfo.configuration.archive.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.425
+CscLvChamberInfo.configuration.archive.defaultClass	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:56:06.425
+CscLvChamberInfo.configuration.archive.smoothType	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.426
+CscLvChamberInfo.configuration.archive.smoothProcedure	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.427
+CscLvChamberInfo.configuration.archive.deadband	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.428
+CscLvChamberInfo.configuration.archive.timeInterval	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.429
+CscLvChamberInfo.configuration.smoothing.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.430
+CscLvChamberInfo.configuration.smoothing.smoothProcedure	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.431
+CscLvChamberInfo.configuration.smoothing.deadband	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.431
+CscLvChamberInfo.configuration.smoothing.timeInterval	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.432
+CscLvChamberInfo.configuration.pvRange.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.433
+CscLvChamberInfo.configuration.pvRange.minValue	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.434
+CscLvChamberInfo.configuration.pvRange.maxValue	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.435
+CscLvChamberInfo.configuration.pvRange.negateRange	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.436
+CscLvChamberInfo.configuration.pvRange.ignoreOutside	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.437
+CscLvChamberInfo.configuration.pvRange.inclusiveMin	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.437
+CscLvChamberInfo.configuration.pvRange.inclusiveMax	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.438
+CscLvChamberInfo.configuration.format.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.439
+CscLvChamberInfo.configuration.format.format	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:56:06.440
+CscLvChamberInfo.configuration.unit.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.441
+CscLvChamberInfo.configuration.unit.unit	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:56:06.442
+CscLvChamberInfo.panels.navigator.hardware	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	30.10.2011 14:56:06.448
+CscLvChamberInfo.panels.navigator.logical	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	30.10.2011 14:56:06.448
+CscLvChamberInfo.panels.editor.hardware	_FwDeviceDefinition	"fwDevice/fwDeviceManage", "fwDevice/fwDeviceExpertConfiguration"	0x101	30.10.2011 14:56:06.448
+CscLvChamberInfo.panels.editor.logical	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	30.10.2011 14:56:06.448
+CscLvChamberInfo.panels.editor.expert	_FwDeviceDefinition	"fwDevice/fwDeviceConfigurationExpert"	0x101	30.10.2011 14:56:06.449
+CscLvChamberInfo.properties.defaultValues	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:56:06.411
+CscLvChamberInfo.configuration.address.OPC.direction	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.416
+CscLvChamberInfo.configuration.address.DIM.direction	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.417
+CscLvChamberInfo.general.childrenDPTypes	_FwDeviceDefinition		0x101	30.10.2011 14:56:06.447
+CscLvChamberInfo.general.nameRoot	_FwDeviceDefinition	""	0x101	30.10.2011 14:56:06.448
+CscLvChamberInfo.general.nameDigits	_FwDeviceDefinition	0	0x101	30.10.2011 14:56:06.448
+CscLvChamberInfo.configuration.conversion.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.443
+CscLvChamberInfo.configuration.conversion.type	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:56:06.443
+CscLvChamberInfo.general.startingNumber	_FwDeviceDefinition	0	0x101	30.10.2011 14:56:06.448
+CscLvChamberInfo.panels.editor.hardwareAdd	_FwDeviceDefinition		0x101	30.10.2011 14:56:06.449
+CscLvChamberInfo.panels.editor.hardwareRemove	_FwDeviceDefinition		0x101	30.10.2011 14:56:06.449
+CscLvChamberInfo.configuration.canHaveDefaults	_FwDeviceDefinition	0	0x101	30.10.2011 14:56:06.447
+CscLvChamberInfo.properties.types	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:56:06.413
+CscLvChamberInfo.configuration.alert.defaultLimits	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:56:06.424
+CscLvChamberInfo.configuration.conversion.conversionType	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.444
+CscLvChamberInfo.configuration.conversion.order	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.445
+CscLvChamberInfo.configuration.conversion.arguments	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:56:06.446
+CscLvChamberInfo.properties.userData	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:56:06.412
+CscTempChamberInfo.type	_FwDeviceDefinition	"CSC Chamber Temperature"	0x101	30.10.2011 14:50:10.249
+CscTempChamberInfo.dpType	_FwDeviceDefinition	"CscTempChamber"	0x101	30.10.2011 14:50:10.249
+CscTempChamberInfo.properties.names	_FwDeviceDefinition	".disabled_channels", ".fsm_command", ".fsm_state"	0x101	30.10.2011 14:50:10.254
+CscTempChamberInfo.properties.dpes	_FwDeviceDefinition	".disabled_channels", ".fsm_command", ".fsm_state"	0x101	30.10.2011 14:50:10.254
+CscTempChamberInfo.properties.description	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:50:10.254
+CscTempChamberInfo.configuration.address.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:50:10.255
+CscTempChamberInfo.configuration.address.general.defaultType	_FwDeviceDefinition	"NO HARDWARE CONNECTION"	0x101	30.10.2011 14:50:10.255
+CscTempChamberInfo.configuration.address.OPC.general.canHave	_FwDeviceDefinition	0	0x101	30.10.2011 14:50:10.255
+CscTempChamberInfo.configuration.address.DIM.general.canHave	_FwDeviceDefinition	0	0x101	30.10.2011 14:50:10.255
+CscTempChamberInfo.configuration.dpFunction.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:50:10.255
+CscTempChamberInfo.configuration.alert.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:50:10.255
+CscTempChamberInfo.configuration.archive.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:50:10.255
+CscTempChamberInfo.configuration.smoothing.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:50:10.255
+CscTempChamberInfo.configuration.pvRange.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:50:10.255
+CscTempChamberInfo.configuration.format.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:50:10.255
+CscTempChamberInfo.configuration.unit.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:50:10.255
+CscTempChamberInfo.panels.navigator.hardware	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	30.10.2011 14:50:10.249
+CscTempChamberInfo.panels.navigator.logical	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	30.10.2011 14:50:10.249
+CscTempChamberInfo.panels.editor.hardware	_FwDeviceDefinition	"fwDevice/fwDeviceManage", "fwDevice/fwDeviceExpertConfiguration"	0x101	30.10.2011 14:50:10.249
+CscTempChamberInfo.panels.editor.logical	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	30.10.2011 14:50:10.249
+CscTempChamberInfo.panels.editor.expert	_FwDeviceDefinition	"fwDevice/fwDeviceConfigurationExpert"	0x101	30.10.2011 14:50:10.249
+CscTempChamberInfo.properties.defaultValues	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:50:10.254
+CscTempChamberInfo.configuration.conversion.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:50:10.255
+CscTempChamberInfo.properties.types	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:50:10.254
+CscTempChamberInfo.properties.userData	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:50:10.254
+CscFedDduInfo.type	_FwDeviceDefinition	"CSC DDU"	0x101	30.10.2011 14:55:17.415
+CscFedDduInfo.dpType	_FwDeviceDefinition	"CscFedDdu"	0x101	30.10.2011 14:55:17.415
+CscFedDduInfo.properties.names	_FwDeviceDefinition	".disabled_channels", ".fsm_command", ".fsm_state"	0x101	30.10.2011 14:55:17.420
+CscFedDduInfo.properties.dpes	_FwDeviceDefinition	".disabled_channels", ".fsm_command", ".fsm_state"	0x101	30.10.2011 14:55:17.420
+CscFedDduInfo.properties.description	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:55:17.420
+CscFedDduInfo.configuration.address.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:55:17.421
+CscFedDduInfo.configuration.address.general.defaultType	_FwDeviceDefinition	"NO HARDWARE CONNECTION"	0x101	30.10.2011 14:55:17.421
+CscFedDduInfo.configuration.address.OPC.general.canHave	_FwDeviceDefinition	0	0x101	30.10.2011 14:55:17.421
+CscFedDduInfo.configuration.address.DIM.general.canHave	_FwDeviceDefinition	0	0x101	30.10.2011 14:55:17.421
+CscFedDduInfo.configuration.dpFunction.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:55:17.421
+CscFedDduInfo.configuration.alert.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:55:17.421
+CscFedDduInfo.configuration.archive.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:55:17.421
+CscFedDduInfo.configuration.smoothing.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:55:17.421
+CscFedDduInfo.configuration.pvRange.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:55:17.421
+CscFedDduInfo.configuration.format.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:55:17.421
+CscFedDduInfo.configuration.unit.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:55:17.421
+CscFedDduInfo.panels.navigator.hardware	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	30.10.2011 14:55:17.415
+CscFedDduInfo.panels.navigator.logical	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	30.10.2011 14:55:17.415
+CscFedDduInfo.panels.editor.hardware	_FwDeviceDefinition	"fwDevice/fwDeviceManage", "fwDevice/fwDeviceExpertConfiguration"	0x101	30.10.2011 14:55:17.415
+CscFedDduInfo.panels.editor.logical	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	30.10.2011 14:55:17.415
+CscFedDduInfo.panels.editor.expert	_FwDeviceDefinition	"fwDevice/fwDeviceConfigurationExpert"	0x101	30.10.2011 14:55:17.415
+CscFedDduInfo.properties.defaultValues	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:55:17.420
+CscFedDduInfo.configuration.conversion.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:55:17.421
+CscFedDduInfo.properties.types	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:55:17.420
+CscFedDduInfo.properties.userData	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:55:17.420
+CscLowVoltage.type	FwNode	"VENDOR"	0x101	30.10.2011 14:56:04.065
+CscLowVoltage.dpTypes	FwNode	"CscLvChamber"	0x101	30.10.2011 14:56:04.065
+CscLowVoltage.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	30.10.2011 14:56:04.065
+CscLowVoltage.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	30.10.2011 14:56:04.065
+CscTemperature.type	FwNode	"VENDOR"	0x101	30.10.2011 14:56:26.739
+CscTemperature.dpTypes	FwNode	"CscTempChamber"	0x101	30.10.2011 14:56:26.739
+CscTemperature.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	30.10.2011 14:56:26.739
+CscTemperature.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	30.10.2011 14:56:26.739
+CscFed.type	FwNode	"VENDOR"	0x101	30.10.2011 14:57:02.975
+CscFed.dpTypes	FwNode	"CscFedDdu"	0x101	30.10.2011 14:57:02.975
+CscFed.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	30.10.2011 14:57:02.975
+CscFed.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	30.10.2011 14:57:02.975

@@ -1,0 +1,115 @@
+# ascii dump of database
+
+# DpType
+TypeName
+CscLvAlct_Template.CscLvAlct_Template	1#1
+	v18	22#2
+	v33	22#3
+	v55	22#4
+	v56	22#5
+	c18	22#6
+	c33	22#7
+	c55	22#8
+	c56	22#9
+CscLvCfeb_Template.CscLvCfeb_Template	1#1
+	v33	1#58
+		v1	22#59
+		v2	22#60
+		v3	22#61
+		v4	22#62
+		v5	22#63
+	v50	1#64
+		v1	22#65
+		v2	22#66
+		v3	22#67
+		v4	22#68
+		v5	22#69
+	v60	1#70
+		v1	22#71
+		v2	22#72
+		v3	22#73
+		v4	22#74
+		v5	22#75
+	c33	1#76
+		v1	22#77
+		v2	22#78
+		v3	22#79
+		v4	22#80
+		v5	22#81
+	c50	1#82
+		v1	22#83
+		v2	22#84
+		v3	22#85
+		v4	22#86
+		v5	22#87
+	c60	1#88
+		v1	22#89
+		v2	22#90
+		v3	22#91
+		v4	22#92
+		v5	22#93
+CscLvTmb_Template.CscLvTmb_Template	1#1
+	v50	22#16
+	v33	22#17
+	v15C	22#18
+	v15T	22#19
+	v10T	22#20
+	c50	22#21
+	c33	22#22
+	c15C	22#23
+	c15T	22#24
+	cRAT	22#25
+	vRAT	22#26
+	vREF	22#27
+	vGND	22#28
+	vMAX	22#29
+CscLvLvdb_Template.CscLvLvdb_Template	1#1
+	v7Analog	22#2
+	v7Digital	22#3
+CscLvChamber.CscLvChamber	1#1
+	fsm_state	25#2
+	fsm_command	25#3
+	disabled_channels	29#4
+CscTempChamberMon.CscTempChamberMon	1#1
+	dmb	1#2
+		v1	22#3
+	alct	1#4
+		v1	22#5
+	cfeb	1#6
+		v1	22#7
+		v2	22#8
+		v3	22#9
+		v4	22#10
+		v5	22#11
+	timestamp	26#12
+	status	21#13
+CscTempChamber.CscTempChamber	1#1
+	fsm_state	25#2
+	fsm_command	25#3
+	disabled_channels	29#4
+CscFedDduMon.CscFedDduMon	1#1
+	lv	1#2
+		v15	22#3
+		v25a	22#4
+		v25b	22#5
+		v33	22#6
+	temp	1#7
+		v1	22#8
+		v2	22#9
+		v3	22#10
+		v4	22#11
+	timestamp	26#12
+	status	21#13
+CscFedDdu.CscFedDdu	1#1
+	fsm_state	25#2
+	fsm_command	25#3
+	disabled_channels	29#4
+CscLvChamberMon.CscLvChamberMon	1#1
+	Cfeb	41#2:CscLvCfeb_Template
+	Alct	41#3:CscLvAlct_Template
+	Tmb	41#72:CscLvTmb_Template
+	Lvdb	41#92:CscLvLvdb_Template
+	CCB_bits	21#93
+	FPGA_bits	21#94
+	timestamp	26#138
+	status	21#137

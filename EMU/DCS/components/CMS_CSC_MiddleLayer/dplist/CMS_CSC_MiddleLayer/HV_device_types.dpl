@@ -1,0 +1,181 @@
+# ascii dump of database
+
+# Datapoint/DpId
+DpName	TypeName	ID
+CscHighVoltage	FwNode	546196
+CscHvPrimaryMonInfo	_FwDeviceDefinition	555361
+CscHvPrimaryInfo	_FwDeviceDefinition	555363
+CscHvChamberInfo	_FwDeviceDefinition	559334
+
+# DpValue
+ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
+CscHighVoltage.type	FwNode	"VENDOR"	0x101	22.06.2011 12:06:49.688
+CscHighVoltage.dpTypes	FwNode	"CscHvChamber", "CscHvPrimary"	0x101	30.10.2011 14:36:18.032
+CscHighVoltage.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	22.06.2011 12:06:49.688
+CscHighVoltage.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	22.06.2011 12:06:49.688
+CscHighVoltage.fsmCommand	FwNode	0	0x101	30.10.2011 14:36:26.335
+CscHvPrimaryMonInfo.type	_FwDeviceDefinition	"CSC High Voltage Primary PSU Monitor"	0x101	29.10.2011 13:04:48.346
+CscHvPrimaryMonInfo.dpType	_FwDeviceDefinition	"CscHvPrimaryMon"	0x101	29.10.2011 13:04:48.346
+CscHvPrimaryMonInfo.version	_FwDeviceDefinition	""	0x101	29.10.2011 13:04:48.346
+CscHvPrimaryMonInfo.properties.names	_FwDeviceDefinition	".address", ".control", ".host_id", ".imax", ".imon", ".output", ".outset", ".polarity", ".port", ".ramp_down", ".ramp_up", ".status", ".update_value", ".vcur", ".vmon", ".vset"	0x101	29.10.2011 13:04:48.216
+CscHvPrimaryMonInfo.properties.dpes	_FwDeviceDefinition	".address", ".control", ".host_id", ".imax", ".imon", ".output", ".outset", ".polarity", ".port", ".ramp_down", ".ramp_up", ".status", ".update_value", ".vcur", ".vmon", ".vset"	0x101	29.10.2011 13:04:48.219
+CscHvPrimaryMonInfo.properties.description	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x101	29.10.2011 13:04:48.222
+CscHvPrimaryMonInfo.configuration.address.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.233
+CscHvPrimaryMonInfo.configuration.address.general.defaultType	_FwDeviceDefinition	"NO HARDWARE CONNECTION"	0x101	29.10.2011 13:04:48.346
+CscHvPrimaryMonInfo.configuration.address.OPC.items	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x101	29.10.2011 13:04:48.236
+CscHvPrimaryMonInfo.configuration.address.OPC.groups	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x101	29.10.2011 13:04:48.239
+CscHvPrimaryMonInfo.configuration.address.OPC.general.canHave	_FwDeviceDefinition	0	0x101	29.10.2011 13:04:48.348
+CscHvPrimaryMonInfo.configuration.address.OPC.general.serverName	_FwDeviceDefinition	""	0x101	29.10.2011 13:04:48.348
+CscHvPrimaryMonInfo.configuration.address.OPC.general.driverNumber	_FwDeviceDefinition	0	0x101	29.10.2011 13:04:48.348
+CscHvPrimaryMonInfo.configuration.address.OPC.general.groupIn	_FwDeviceDefinition	""	0x101	29.10.2011 13:04:48.348
+CscHvPrimaryMonInfo.configuration.address.OPC.general.groupOut	_FwDeviceDefinition	""	0x101	29.10.2011 13:04:48.348
+CscHvPrimaryMonInfo.configuration.address.DIM.items	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x101	29.10.2011 13:04:48.248
+CscHvPrimaryMonInfo.configuration.address.DIM.general.canHave	_FwDeviceDefinition	0	0x101	29.10.2011 13:04:48.349
+CscHvPrimaryMonInfo.configuration.address.DIM.general.driverNumber	_FwDeviceDefinition	0	0x101	29.10.2011 13:04:48.349
+CscHvPrimaryMonInfo.configuration.address.DIM.general.timeInterval	_FwDeviceDefinition	0	0x101	29.10.2011 13:04:48.349
+CscHvPrimaryMonInfo.configuration.address.DIM.general.timeStamp	_FwDeviceDefinition	0	0x101	29.10.2011 13:04:48.349
+CscHvPrimaryMonInfo.configuration.dpFunction.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.251
+CscHvPrimaryMonInfo.configuration.dpFunction.function	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x101	29.10.2011 13:04:48.254
+CscHvPrimaryMonInfo.configuration.dpFunction.params	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x101	29.10.2011 13:04:48.257
+CscHvPrimaryMonInfo.configuration.alert.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.260
+CscHvPrimaryMonInfo.configuration.alert.defaultClasses	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x101	29.10.2011 13:04:48.263
+CscHvPrimaryMonInfo.configuration.alert.defaultTexts	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x101	29.10.2011 13:04:48.266
+CscHvPrimaryMonInfo.configuration.archive.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.271
+CscHvPrimaryMonInfo.configuration.archive.defaultClass	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x101	29.10.2011 13:04:48.274
+CscHvPrimaryMonInfo.configuration.archive.smoothType	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.277
+CscHvPrimaryMonInfo.configuration.archive.smoothProcedure	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.280
+CscHvPrimaryMonInfo.configuration.archive.deadband	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.283
+CscHvPrimaryMonInfo.configuration.archive.timeInterval	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.286
+CscHvPrimaryMonInfo.configuration.smoothing.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.289
+CscHvPrimaryMonInfo.configuration.smoothing.smoothProcedure	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.292
+CscHvPrimaryMonInfo.configuration.smoothing.deadband	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.295
+CscHvPrimaryMonInfo.configuration.smoothing.timeInterval	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.298
+CscHvPrimaryMonInfo.configuration.pvRange.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.301
+CscHvPrimaryMonInfo.configuration.pvRange.minValue	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.304
+CscHvPrimaryMonInfo.configuration.pvRange.maxValue	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.307
+CscHvPrimaryMonInfo.configuration.pvRange.negateRange	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.310
+CscHvPrimaryMonInfo.configuration.pvRange.ignoreOutside	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.313
+CscHvPrimaryMonInfo.configuration.pvRange.inclusiveMin	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.316
+CscHvPrimaryMonInfo.configuration.pvRange.inclusiveMax	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.319
+CscHvPrimaryMonInfo.configuration.format.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.322
+CscHvPrimaryMonInfo.configuration.format.format	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x101	29.10.2011 13:04:48.325
+CscHvPrimaryMonInfo.configuration.unit.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.328
+CscHvPrimaryMonInfo.configuration.unit.unit	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x101	29.10.2011 13:04:48.330
+CscHvPrimaryMonInfo.panels.navigator.hardware	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	29.10.2011 13:04:48.347
+CscHvPrimaryMonInfo.panels.navigator.logical	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	29.10.2011 13:04:48.347
+CscHvPrimaryMonInfo.panels.editor.hardware	_FwDeviceDefinition	"fwDevice/fwDeviceManage", "fwDevice/fwDeviceExpertConfiguration"	0x101	29.10.2011 13:04:48.347
+CscHvPrimaryMonInfo.panels.editor.logical	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	29.10.2011 13:04:48.347
+CscHvPrimaryMonInfo.panels.editor.expert	_FwDeviceDefinition	"fwDevice/fwDeviceConfigurationExpert"	0x101	29.10.2011 13:04:48.348
+CscHvPrimaryMonInfo.properties.defaultValues	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x101	29.10.2011 13:04:48.225
+CscHvPrimaryMonInfo.configuration.address.OPC.direction	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.242
+CscHvPrimaryMonInfo.configuration.address.DIM.direction	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.245
+CscHvPrimaryMonInfo.general.childrenDPTypes	_FwDeviceDefinition		0x101	29.10.2011 13:04:48.347
+CscHvPrimaryMonInfo.general.nameRoot	_FwDeviceDefinition	""	0x101	29.10.2011 13:04:48.347
+CscHvPrimaryMonInfo.general.nameDigits	_FwDeviceDefinition	0	0x101	29.10.2011 13:04:48.347
+CscHvPrimaryMonInfo.configuration.conversion.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.333
+CscHvPrimaryMonInfo.configuration.conversion.type	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x101	29.10.2011 13:04:48.336
+CscHvPrimaryMonInfo.general.startingNumber	_FwDeviceDefinition	0	0x101	29.10.2011 13:04:48.347
+CscHvPrimaryMonInfo.panels.editor.hardwareAdd	_FwDeviceDefinition		0x101	29.10.2011 13:04:48.348
+CscHvPrimaryMonInfo.panels.editor.hardwareRemove	_FwDeviceDefinition		0x101	29.10.2011 13:04:48.348
+CscHvPrimaryMonInfo.configuration.canHaveDefaults	_FwDeviceDefinition	0	0x101	29.10.2011 13:04:48.346
+CscHvPrimaryMonInfo.properties.types	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x101	29.10.2011 13:04:48.230
+CscHvPrimaryMonInfo.configuration.alert.defaultLimits	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x101	29.10.2011 13:04:48.268
+CscHvPrimaryMonInfo.configuration.conversion.conversionType	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.339
+CscHvPrimaryMonInfo.configuration.conversion.order	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.342
+CscHvPrimaryMonInfo.configuration.conversion.arguments	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x101	29.10.2011 13:04:48.345
+CscHvPrimaryMonInfo.properties.userData	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x101	29.10.2011 13:04:48.227
+CscHvPrimaryInfo.type	_FwDeviceDefinition	"CSC High Voltage Primary PSU"	0x101	30.10.2011 14:18:01.297
+CscHvPrimaryInfo.dpType	_FwDeviceDefinition	"CscHvPrimary"	0x101	30.10.2011 14:18:01.297
+CscHvPrimaryInfo.version	_FwDeviceDefinition	""	0x101	30.10.2011 14:18:01.298
+CscHvPrimaryInfo.properties.names	_FwDeviceDefinition	".fsm_command", ".fsm_status"	0x101	30.10.2011 14:18:01.265
+CscHvPrimaryInfo.properties.dpes	_FwDeviceDefinition	".fsm_command", ".fsm_status"	0x101	30.10.2011 14:18:01.266
+CscHvPrimaryInfo.properties.description	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	30.10.2011 14:18:01.267
+CscHvPrimaryInfo.configuration.address.canHave	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.269
+CscHvPrimaryInfo.configuration.address.general.defaultType	_FwDeviceDefinition	"NO HARDWARE CONNECTION"	0x101	30.10.2011 14:18:01.298
+CscHvPrimaryInfo.configuration.address.OPC.items	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	30.10.2011 14:18:01.270
+CscHvPrimaryInfo.configuration.address.OPC.groups	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	30.10.2011 14:18:01.271
+CscHvPrimaryInfo.configuration.address.OPC.general.canHave	_FwDeviceDefinition	0	0x101	30.10.2011 14:18:01.299
+CscHvPrimaryInfo.configuration.address.OPC.general.serverName	_FwDeviceDefinition	""	0x101	30.10.2011 14:18:01.299
+CscHvPrimaryInfo.configuration.address.OPC.general.driverNumber	_FwDeviceDefinition	0	0x101	30.10.2011 14:18:01.299
+CscHvPrimaryInfo.configuration.address.OPC.general.groupIn	_FwDeviceDefinition	""	0x101	30.10.2011 14:18:01.299
+CscHvPrimaryInfo.configuration.address.OPC.general.groupOut	_FwDeviceDefinition	""	0x101	30.10.2011 14:18:01.300
+CscHvPrimaryInfo.configuration.address.DIM.items	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	30.10.2011 14:18:01.273
+CscHvPrimaryInfo.configuration.address.DIM.general.canHave	_FwDeviceDefinition	0	0x101	30.10.2011 14:18:01.300
+CscHvPrimaryInfo.configuration.address.DIM.general.driverNumber	_FwDeviceDefinition	0	0x101	30.10.2011 14:18:01.300
+CscHvPrimaryInfo.configuration.address.DIM.general.timeInterval	_FwDeviceDefinition	0	0x101	30.10.2011 14:18:01.300
+CscHvPrimaryInfo.configuration.address.DIM.general.timeStamp	_FwDeviceDefinition	0	0x101	30.10.2011 14:18:01.300
+CscHvPrimaryInfo.configuration.dpFunction.canHave	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.274
+CscHvPrimaryInfo.configuration.dpFunction.function	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	30.10.2011 14:18:01.274
+CscHvPrimaryInfo.configuration.dpFunction.params	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	30.10.2011 14:18:01.275
+CscHvPrimaryInfo.configuration.alert.canHave	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.276
+CscHvPrimaryInfo.configuration.alert.defaultClasses	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	30.10.2011 14:18:01.276
+CscHvPrimaryInfo.configuration.alert.defaultTexts	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	30.10.2011 14:18:01.277
+CscHvPrimaryInfo.configuration.archive.canHave	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.279
+CscHvPrimaryInfo.configuration.archive.defaultClass	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	30.10.2011 14:18:01.279
+CscHvPrimaryInfo.configuration.archive.smoothType	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.280
+CscHvPrimaryInfo.configuration.archive.smoothProcedure	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.281
+CscHvPrimaryInfo.configuration.archive.deadband	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.281
+CscHvPrimaryInfo.configuration.archive.timeInterval	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.282
+CscHvPrimaryInfo.configuration.smoothing.canHave	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.283
+CscHvPrimaryInfo.configuration.smoothing.smoothProcedure	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.284
+CscHvPrimaryInfo.configuration.smoothing.deadband	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.284
+CscHvPrimaryInfo.configuration.smoothing.timeInterval	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.285
+CscHvPrimaryInfo.configuration.pvRange.canHave	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.286
+CscHvPrimaryInfo.configuration.pvRange.minValue	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.286
+CscHvPrimaryInfo.configuration.pvRange.maxValue	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.287
+CscHvPrimaryInfo.configuration.pvRange.negateRange	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.288
+CscHvPrimaryInfo.configuration.pvRange.ignoreOutside	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.289
+CscHvPrimaryInfo.configuration.pvRange.inclusiveMin	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.289
+CscHvPrimaryInfo.configuration.pvRange.inclusiveMax	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.290
+CscHvPrimaryInfo.configuration.format.canHave	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.291
+CscHvPrimaryInfo.configuration.format.format	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	30.10.2011 14:18:01.291
+CscHvPrimaryInfo.configuration.unit.canHave	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.292
+CscHvPrimaryInfo.configuration.unit.unit	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	30.10.2011 14:18:01.293
+CscHvPrimaryInfo.panels.navigator.hardware	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	30.10.2011 14:18:01.298
+CscHvPrimaryInfo.panels.navigator.logical	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	30.10.2011 14:18:01.298
+CscHvPrimaryInfo.panels.editor.hardware	_FwDeviceDefinition	"fwDevice/fwDeviceManage", "fwDevice/fwDeviceExpertConfiguration"	0x101	30.10.2011 14:18:01.298
+CscHvPrimaryInfo.panels.editor.logical	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	30.10.2011 14:18:01.299
+CscHvPrimaryInfo.panels.editor.expert	_FwDeviceDefinition	"fwDevice/fwDeviceConfigurationExpert"	0x101	30.10.2011 14:18:01.299
+CscHvPrimaryInfo.properties.defaultValues	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	30.10.2011 14:18:01.267
+CscHvPrimaryInfo.configuration.address.OPC.direction	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.272
+CscHvPrimaryInfo.configuration.address.DIM.direction	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.272
+CscHvPrimaryInfo.general.childrenDPTypes	_FwDeviceDefinition	"CscHvPrimaryMon"	0x101	30.10.2011 14:18:01.298
+CscHvPrimaryInfo.general.nameRoot	_FwDeviceDefinition	""	0x101	30.10.2011 14:18:01.298
+CscHvPrimaryInfo.general.nameDigits	_FwDeviceDefinition	0	0x101	30.10.2011 14:18:01.298
+CscHvPrimaryInfo.configuration.conversion.canHave	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.294
+CscHvPrimaryInfo.configuration.conversion.type	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	30.10.2011 14:18:01.294
+CscHvPrimaryInfo.general.startingNumber	_FwDeviceDefinition	0	0x101	30.10.2011 14:18:01.298
+CscHvPrimaryInfo.panels.editor.hardwareAdd	_FwDeviceDefinition		0x101	30.10.2011 14:18:01.299
+CscHvPrimaryInfo.panels.editor.hardwareRemove	_FwDeviceDefinition		0x101	30.10.2011 14:18:01.299
+CscHvPrimaryInfo.configuration.canHaveDefaults	_FwDeviceDefinition	0	0x101	30.10.2011 14:18:01.298
+CscHvPrimaryInfo.properties.types	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	30.10.2011 14:18:01.269
+CscHvPrimaryInfo.configuration.alert.defaultLimits	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	30.10.2011 14:18:01.278
+CscHvPrimaryInfo.configuration.conversion.conversionType	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.295
+CscHvPrimaryInfo.configuration.conversion.order	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.296
+CscHvPrimaryInfo.configuration.conversion.arguments	_FwDeviceDefinition	0, 0	0x101	30.10.2011 14:18:01.297
+CscHvPrimaryInfo.properties.userData	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	30.10.2011 14:18:01.268
+CscHvChamberInfo.type	_FwDeviceDefinition	"CSC Chamber High Voltage"	0x101	30.10.2011 14:35:20.466
+CscHvChamberInfo.dpType	_FwDeviceDefinition	"CscHvChamber"	0x101	30.10.2011 14:35:20.466
+CscHvChamberInfo.properties.names	_FwDeviceDefinition	".channel_states", ".fsm_command", ".fsm_state"	0x101	30.10.2011 14:35:20.471
+CscHvChamberInfo.properties.dpes	_FwDeviceDefinition	".channel_states", ".fsm_command", ".fsm_state"	0x101	30.10.2011 14:35:20.471
+CscHvChamberInfo.properties.description	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:35:20.471
+CscHvChamberInfo.configuration.address.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:35:20.471
+CscHvChamberInfo.configuration.address.general.defaultType	_FwDeviceDefinition	"NO HARDWARE CONNECTION"	0x101	30.10.2011 14:35:20.471
+CscHvChamberInfo.configuration.address.OPC.general.canHave	_FwDeviceDefinition	0	0x101	30.10.2011 14:35:20.471
+CscHvChamberInfo.configuration.address.DIM.general.canHave	_FwDeviceDefinition	0	0x101	30.10.2011 14:35:20.471
+CscHvChamberInfo.configuration.dpFunction.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:35:20.471
+CscHvChamberInfo.configuration.alert.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:35:20.471
+CscHvChamberInfo.configuration.archive.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:35:20.471
+CscHvChamberInfo.configuration.smoothing.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:35:20.471
+CscHvChamberInfo.configuration.pvRange.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:35:20.471
+CscHvChamberInfo.configuration.format.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:35:20.471
+CscHvChamberInfo.configuration.unit.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:35:20.471
+CscHvChamberInfo.panels.navigator.hardware	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	30.10.2011 14:35:20.466
+CscHvChamberInfo.panels.navigator.logical	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	30.10.2011 14:35:20.466
+CscHvChamberInfo.panels.editor.hardware	_FwDeviceDefinition	"fwDevice/fwDeviceManage", "fwDevice/fwDeviceExpertConfiguration"	0x101	30.10.2011 14:35:20.466
+CscHvChamberInfo.panels.editor.logical	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	30.10.2011 14:35:20.466
+CscHvChamberInfo.panels.editor.expert	_FwDeviceDefinition	"fwDevice/fwDeviceConfigurationExpert"	0x101	30.10.2011 14:35:20.466
+CscHvChamberInfo.properties.defaultValues	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:35:20.471
+CscHvChamberInfo.configuration.conversion.canHave	_FwDeviceDefinition	0, 0, 0	0x101	30.10.2011 14:35:20.471
+CscHvChamberInfo.properties.types	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:35:20.471
+CscHvChamberInfo.properties.userData	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	30.10.2011 14:35:20.471

@@ -1,0 +1,759 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 713 509 N "_3DFace" 0
+E E E E E 1 -1 -1 0  30 50
+""0  1
+E "#uses \"CMS_CSCfw_HV_CC_new/emu_hv.ctl\"
+
+dyn_mapping getSelectedDevicesParams() {
+
+  if (chkAllSide.state(0) == true) { // one endcap
+    dyn_mapping ret;
+    for (int station=1; station <= 4; station++) {
+      dynAppend(ret, emuDev_getAllChambersForStation(comboSide.text, station));
+    }
+    return ret;
+  } else if (chkAllStation.state(0) == true) { // one station
+    return emuDev_getAllChambersForStation(comboSide.text, spinStation.text);
+  } else { // single chamber
+    mapping dev;
+    dev[\"side\"] = comboSide.text;
+    dev[\"station\"] = spinStation.text;
+    dev[\"ring\"] = spinRing.text;
+    string chamberNumberStr;
+    sprintf(chamberNumberStr, \"%02d\", spinChamber.text);
+    dev[\"chamberNumber\"] = chamberNumberStr;
+    if (chkAllChamber.state(0) == false) {
+      dev[\"channelNumber\"] = spinChannelNumber.text;
+    }
+  
+    dyn_mapping ret;
+    dynAppend(ret, dev);
+    return ret;
+  }
+  
+}
+
+mapping getSelectedPrimaryDeviceParams() {
+  mapping ret;
+  ret[\"hostId\"] = comboPrSide.text();
+  ret[\"port\"] = spinPrPort.text();
+  ret[\"address\"] = spinPrAddress.text();
+}" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+2 0
+"PRIMITIVE_TEXT1"
+""
+1 30 50 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 30 50 61 66
+0 2 2 "0s" 0 0 0 192 0 0  30 50 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 5 Side:
+22 1
+"comboSide"
+""
+1 100 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  98 38 222 66
+2
+1
+LANG:1 1 M
+
+0
+1
+LANG:1 1 P
+
+0
+
+E
+E
+E
+ 1 0
+2 2
+"PRIMITIVE_TEXT2"
+""
+1 30 80 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 30 80 78 96
+0 2 2 "0s" 0 0 0 192 0 0  30 80 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 8 Station:
+2 4
+"PRIMITIVE_TEXT3"
+""
+1 32 112 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 32 112 63 128
+0 2 2 "0s" 0 0 0 192 0 0  32 112 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 5 Ring:
+2 6
+"PRIMITIVE_TEXT4"
+""
+1 32 142 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 32 142 92 158
+0 2 2 "0s" 0 0 0 192 0 0  32 142 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 8 Chamber:
+21 10
+"spinStation"
+""
+1 100 80 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  98 78 222 106
+0
+
+E
+E
+E
+
+N 1 4 1 2 1 1
+21 11
+"spinRing"
+""
+1 100 110 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  98 108 222 136
+0
+
+E
+E
+E
+
+N 1 3 1 2 1 1
+21 12
+"spinChamber"
+""
+1 100 140 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  98 138 222 166
+0
+
+E
+E
+E
+
+N 1 36 1 10 1 1
+21 13
+"spinChannelNumber"
+""
+1 100 180 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+13 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  98 178 222 206
+0
+
+E
+E
+E
+
+N 1 30 1 1 1 1
+2 14
+"PRIMITIVE_TEXT5"
+""
+1 32 182 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 32 182 86 198
+0 2 2 "0s" 0 0 0 192 0 0  32 182 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 8 Channel:
+20 15
+"chkAllChamber"
+""
+1 230 180 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+15 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  228 178 332 202
+1
+T 
+1
+LANG:1 11 all chamber
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+EE2 16
+"PRIMITIVE_TEXT6"
+""
+1 32 272 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 32 272 99 288
+0 2 2 "0s" 0 0 0 192 0 0  32 272 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 8 Command:
+21 18
+"spinCmd"
+""
+1 100 270 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  98 268 222 296
+0
+
+E
+E
+E
+
+N 0 100 1 1 1 1
+2 19
+"PRIMITIVE_TEXT7"
+""
+1 252 272 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 252 272 356 288
+0 2 2 "0s" 0 0 0 192 0 0  252 272 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 14 Command Value:
+21 20
+"spinCmdValue"
+""
+1 360 270 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  358 268 482 296
+0
+
+E
+E
+E
+
+N 0 99999999 1 0 1 1
+13 21
+"PUSH_BUTTON1"
+""
+1 30 320 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+21 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  28 318 152 347
+
+T 
+1
+LANG:1 13 Send Command!
+"main()
+{
+  dyn_string ex;
+  dyn_mapping devices = getSelectedDevicesParams();
+  int command = spinCmd.text;
+  int commandValue = spinCmdValue.text;
+  
+  for (int i=1; i <= dynlen(devices); i++) {
+    emu_info(\"sending command=\" + command + \" with value=\" + commandValue + \" for: \" + devices[i]);
+    emuhv_sendCommand(devices[i], command, ex, commandValue);
+    emu_checkException(ex);
+  }
+}" 0
+ E E E
+13 22
+"PUSH_BUTTON2"
+""
+1 30 220 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+22 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  28 218 152 247
+
+T 
+1
+LANG:1 12 Request Data
+"main()
+{
+  dyn_string ex;
+  dyn_mapping devices = getSelectedDevicesParams();
+  for (int i=1; i <= dynlen(devices); i++) {
+    emu_info(\"requesting data for: \" + devices[i]);
+    emuhv_requestData(devices[i], ex);
+    emu_checkException(ex);
+  }
+}" 0
+ E E E
+2 23
+"PRIMITIVE_TEXT8"
+""
+1 410 20 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+23 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 410 20 655 82
+0 2 2 "0s" 0 0 0 192 0 0  410 20 2
+1
+LANG:1 31 Sans Serif,18,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 15 HV control test
+1
+LANG:1 31 Sans Serif,18,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 20 Super experts only!!
+20 24
+"chkAllSide"
+""
+1 240 40 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+24 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  238 38 342 62
+1
+T 
+1
+LANG:1 8 all side
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+E"main(int button, int state)
+{
+  spinStation.enabled = !state;
+  spinRing.enabled = !state;
+  spinChamber.enabled = !state;
+  spinChannelNumber.enabled = !state;
+}" 0
+20 25
+"chkAllStation"
+""
+1 240 80 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+25 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  238 78 342 102
+1
+T 
+1
+LANG:1 11 all station
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+E"main(int button, int state)
+{
+  spinRing.enabled = !state;
+  spinChamber.enabled = !state;
+  spinChannelNumber.enabled = !state;
+}" 0
+30 26
+"FRAME1"
+""
+1 40 372 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+26 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E U  0 E 40 372 681 471
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 15 Primary control
+2 27
+"PRIMITIVE_TEXT9"
+""
+1 50 400 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+27 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 50 400 81 416
+0 2 2 "0s" 0 0 0 192 0 0  50 400 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 5 Host:
+22 28
+"comboPrSide"
+""
+1 90 400 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+28 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  88 398 212 426
+2
+1
+LANG:1 3 500
+
+0
+1
+LANG:1 3 600
+
+0
+
+E
+E
+E
+ 1 0
+2 29
+"PRIMITIVE_TEXT10"
+""
+1 230 400 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+29 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 230 400 258 416
+0 2 2 "0s" 0 0 0 192 0 0  230 400 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 5 Port:
+21 30
+"spinPrPort"
+""
+1 260 400 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+30 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  258 398 382 426
+0
+
+E
+E
+E
+
+N 0 4 1 1 1 1
+2 31
+"PRIMITIVE_TEXT11"
+""
+1 402 402 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+31 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 402 402 455 418
+0 2 2 "0s" 0 0 0 192 0 0  402 402 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 8 Address:
+21 32
+"spinPrAddress"
+""
+1 460 400 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+32 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  458 398 582 426
+0
+
+E
+E
+E
+
+N 0 4 1 1 1 1
+13 33
+"PUSH_BUTTON3"
+""
+1 480 340 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+33 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  478 338 682 367
+
+T 
+1
+LANG:1 24 Send Command to PRIMARY!
+"main()
+{
+  dyn_string ex;
+  mapping pr = getSelectedPrimaryDeviceParams();
+  int command = spinCmd.text;
+  int commandValue = spinCmdValue.text;
+  
+  emu_info(\"sending command=\" + command + \" with value=\" + commandValue + \" for: \" + pr);
+  emuhv_sendPrimaryCommand(pr, command, ex, commandValue);
+  emu_checkException(ex);
+}" 0
+ E E E
+13 34
+"PUSH_BUTTON4"
+""
+1 480 310 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+34 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  478 308 682 337
+
+T 
+1
+LANG:1 25 Request Data from PRIMARY
+"main()
+{
+  dyn_string ex;
+  mapping pr = getSelectedPrimaryDeviceParams();
+  emu_info(\"requesting data for: \" + pr);
+  emuhv_requestPrimaryData(pr, ex);
+  emu_checkException(ex);
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

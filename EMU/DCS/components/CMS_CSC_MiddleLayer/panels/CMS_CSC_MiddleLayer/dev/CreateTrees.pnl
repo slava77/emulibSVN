@@ -1,0 +1,1444 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 790 400 N "_3DFace" 0
+"main()
+{
+  fwDevice_initialize();
+}" 0
+ E E E E 1 -1 -1 0  30 40
+""0  1
+E "#uses \"CMS_CSCfw_HV_CC_new/emu_hv.ctl\"
+
+// ************* FSM ****************************************
+const string EMU_FSM_TYPE_SYSTEM = \"EMUGrouping\";
+const string EMU_FSM_TYPE_TOP = \"EMUGrouping\";
+const string EMU_FSM_TYPE_STATION = \"EMUGrouping\";
+const string EMU_FSM_TYPE_TRIGGER_SECTOR = \"EMUGrouping\";
+const string EMU_FSM_TYPE_CHAMBER_INNER = \"EMUChamberInner\";
+const string EMU_FSM_TYPE_CHAMBER_OUTER = \"EMUChamberOuter\";
+const string EMU_FSM_TYPE_FED = \"EMUFed\";
+const string EMU_FSM_TYPE_HV = \"EMUGrouping\";
+const string EMU_FSM_TYPE_ME11_HV = \"CMS_CSC_ME11_HV_Type\";
+
+const string EMU_FSM_DOMAIN_ME11_HV = \"CSC_ME_11_HV\";
+const string EMU_FSM_NODE_ME11_HV_PLUS = \"CSC_ME_P11_HV\";
+const string EMU_FSM_NODE_ME11_HV_MINUS = \"CSC_ME_N11_HV\";
+
+// ******************* DP ***********************************
+const string HV_DP_TYPE = \"CscHvChamber\";
+const string HV_FAST_MON_DP_TYPE = \"CscHvChamberFastMon\";
+const string HV_SLOW_MON_DP_TYPE = \"CscHvChamberSlowMon\";
+const string HV_SETTINGS_DP_TYPE = \"CscHvChamberSettings\";
+const string HV_PRIMARY_DP_TYPE = \"CscHvPrimary\";
+const string HV_PRIMARY_MON_DP_TYPE = \"CscHvPrimaryMon\";
+
+const string LV_DP_TYPE = \"CscLvChamber\";
+const string LV_MON_DP_TYPE = \"CscLvChamberMon\";
+
+const string TEMP_DP_TYPE = \"CscTempChamber\";
+const string TEMP_MON_DP_TYPE = \"CscTempChamberMon\";
+
+const string DDU_DP_TYPE = \"CscFedDdu\";
+const string DDU_MON_DP_TYPE = \"CscFedDduMon\";
+
+// ****************** Device ********************************
+
+const string HV_DEVICE_PREFIX = \"CscHighVoltage\";
+const string LV_DEVICE_PREFIX = \"CscLowVoltage\";
+const string TEMP_DEVICE_PREFIX = \"CscTemperature\";
+const string FED_DEVICE_PREFIX = \"CscFed\";
+const string DIM_DEVICE_PREFIX = \"DimConfig\";
+
+// ****************** DIM Command ***************************
+
+const string HV_DIM_COMMAND_SERVICE = \"HV_1_COMMAND\";
+const string COMMAND_DP_PREFIX = \"CscDimCommand/\";
+
+// ***************** DIM DNS ********************************
+
+const string HV_DIM_DNS_PLUS = \"dcspcs1a11-01\"; // csc-dcs-hv1.cern.ch
+const string HV_DIM_DNS_MINUS = \"dcspcs1a11-02\"; // csc-dcs-hv2.cern.ch
+const string HV_DIM_DNS_ISR = \"ufcmshv1\";
+
+const string X2P_DIM_DNS_PLUS = \"csc-dcs-pc1\"; // csc-dcs-hv1.cern.ch
+const string X2P_DIM_DNS_MINUS = \"csc-dcs-pc2\"; // csc-dcs-hv2.cern.ch
+const string X2P_DIM_DNS_ISR = \"emuslice12\";
+
+// **********************************************************
+
+
+/** @return chambers to be created. */
+dyn_mapping getChambersToCreate() {
+  mapping station = getStationToCreate();
+  
+  if (station[\"side\"] != \"ISR\") {
+    dyn_mapping ret = emuDev_getAllChambersForStation(station[\"side\"], station[\"station\"]);
+    return ret;
+  } else { // development env
+    dyn_mapping ret;
+    ret[1][\"side\"] = \"M\";
+    ret[1][\"station\"] = \"1\";
+    ret[1][\"ring\"] = \"3\";
+    ret[1][\"chamberNumber\"] = \"10\";
+    
+    ret[2][\"side\"] = \"M\";
+    ret[2][\"station\"] = \"1\";
+    ret[2][\"ring\"] = \"3\";
+    ret[2][\"chamberNumber\"] = \"11\";
+
+    ret[3][\"side\"] = \"M\";
+    ret[3][\"station\"] = \"2\";
+    ret[3][\"ring\"] = \"2\";
+    ret[3][\"chamberNumber\"] = \"10\";
+    
+    return ret;
+  }
+  
+}
+
+/** @return station to be created. */
+mapping getStationToCreate() {
+  string stationStr = comboStation.text();
+  mapping ret;
+  emu_info(\"Selected station = \" + stationStr);
+
+  if (stationStr == \"ISR\") {
+    ret[\"side\"] = \"ISR\";
+    ret[\"station\"] = \"\";
+    return ret;
+  }
+  
+  ret[\"side\"] = (stationStr[2] == '+' ? \"P\" : \"M\");
+  ret[\"station\"] = (string) stationStr[3];
+  
+  return ret;
+}
+
+/** @return HV primary PSUs to be created. **/
+dyn_mapping getHvPrimariesToCreate() {
+  dyn_mapping ret;
+  mapping station = getStationToCreate();
+  
+  // determine the host ID
+  int hostId;
+  if (station[\"side\"] == \"P\") {
+    hostId = 600;
+  } else if (station[\"side\"] == \"M\") {
+    hostId = 500;
+  } else if (station[\"side\"] == \"ISR\") {
+    mapping primary;
+    primary[\"hostId\"] = 500;
+    primary[\"port\"] = 1;
+    primary[\"address\"] = 1;
+    dynAppend(ret, primary);
+    return ret;
+  }
+  
+  mapping primary;
+  primary[\"hostId\"] = hostId;
+  primary[\"port\"] = 1;
+  // create all primaries (for one side) only when creating station 1 (easier to handle in FSM that way)
+  if (station[\"station\"] == 1) {
+    for (int i=1; i <= 4; i++) {
+      primary[\"address\"] = i;
+      dynAppend(ret, primary);
+    }
+  }
+
+  // create primaries corresponding to the stations
+//   if ((station[\"station\"] == 2) || (station[\"station\"] == 3)) { // stations 2 and 3 are each serviced by two primaries (2 and 3) which power -X and +X of both stations respectively
+//     primary[\"address\"] = 2;
+//     dynAppend(ret, primary);
+//     primary[\"address\"] = 3;
+//     dynAppend(ret, primary);
+//   } else { // for other stations station number = primary address
+//     primary[\"address\"] = station[\"station\"];
+//     dynAppend(ret, primary);
+//   }
+   
+  return ret;
+}
+
+/** @return DDUs to be created. */
+dyn_mapping getDdusToCreate() {
+  dyn_mapping ret;
+  mapping station = getStationToCreate();
+  
+  // only on station 1
+  if (station[\"station\"] != 1) { 
+    return ret;
+  }
+  
+  int startId,
+      count = 18;
+  if (station[\"side\"] == \"P\") {
+    startId = 1;
+  } else if (station[\"side\"] == \"M\") {
+    startId = 19;
+  } else {
+    return;
+  }
+  
+  for (int i=startId; i < startId + count; i++) {
+    mapping ddu;
+    ddu[\"id\"] = i;
+    dynAppend(ret, ddu);
+  }
+  
+  return ret;
+}
+
+
+
+// *********************** Defining DP names ***********************
+
+
+string getChamberDpName(mapping chamber) {
+  return \"CSC_ME_\" +
+         chamber[\"side\"] + 
+         chamber[\"station\"] +
+         chamber[\"ring\"] +
+         \"_C\" + chamber[\"chamberNumber\"];
+}
+
+string getHvDpName(mapping chamber) {
+  return HV_DEVICE_PREFIX + \"/\" + getChamberDpName(chamber);
+}
+
+string getMe11HvNode(mapping chamber) {
+  string node = getChamberDpName(chamber);
+  strreplace(node, \"M11\", \"N11\"); // translate M (minus) to ME1/1 notation i.e. N (negative)
+  node += \"_HV\";
+  return node;
+}
+
+string getHvDimServiceName(mapping chamber, string serviceType) {
+  return \"HV/\" + emu_getChamberName(chamber) + \"/\" + serviceType;
+}
+
+string getHvPrimaryDpName(mapping primary) {
+  return HV_DEVICE_PREFIX + 
+             \"/Primary_\" + 
+             primary[\"hostId\"] + \"_\" + 
+             primary[\"port\"] + \"_\" +
+             primary[\"address\"];
+}
+
+string getHvDimPrimaryServiceName(mapping primary) {
+  return \"HV_PR_\" + primary[\"hostId\"] + \"_\" + primary[\"port\"] + \"_\" + primary[\"address\"];
+}
+
+string getLvDpName(mapping chamber) {
+  return LV_DEVICE_PREFIX + \"/\" + getChamberDpName(chamber);
+}
+
+string getLvDimServiceName(mapping chamber) {
+  return \"LV_1_\" + emu_getChamberName(chamber, false);
+}
+
+string getTempDpName(mapping chamber) {
+  return TEMP_DEVICE_PREFIX + \"/\" + getChamberDpName(chamber);
+}
+
+string getTempDimServiceName(mapping chamber) {
+  return \"TEMP_1_\" + emu_getChamberName(chamber, false);
+}
+
+string getDduDpName(mapping ddu) {
+  string dduDp;
+  sprintf(dduDp, FED_DEVICE_PREFIX + \"/\" + \"DDU%.2d\", ddu[\"id\"]);
+  return dduDp;
+}
+
+string getDduDimServiceName(mapping ddu) {
+  return \"FED_1_DDU\" + ddu[\"id\"];
+}
+
+// *********************** Creating the devices ***********************
+
+
+void createHvDevices(dyn_string &ex) {
+  dyn_mapping chambers = getChambersToCreate();
+  
+  for (int i=1; i <= dynlen(chambers); i++) {
+    mapping chamber = chambers[i];
+    
+    if (isMe11Chamber(chamber)) { continue; } // skip ME1/1 chambers
+    
+    emu_info(\"Creating HV device for chamber: \" + chamber);
+
+    // crete main device
+    
+    dyn_string hvMainDevice = createDevice(HV_DP_TYPE, getHvDpName(chamber), ex);
+    if (emu_checkException(ex)) { return; }
+    
+    // create FastMon
+    
+    createDevice(HV_FAST_MON_DP_TYPE, \"FastMon\", ex, hvMainDevice);
+    if (emu_checkException(ex)) { return; }
+    
+    // create SlowMon
+    
+    createDevice(HV_SLOW_MON_DP_TYPE, \"SlowMon\", ex, hvMainDevice);
+    if (emu_checkException(ex)) { return; }
+
+    // create Settings
+    
+    createDevice(HV_SETTINGS_DP_TYPE, \"Settings\", ex, hvMainDevice);
+    if (emu_checkException(ex)) { return; }
+
+  }
+  
+  // create primary PSUs
+  
+  dyn_mapping primaries = getHvPrimariesToCreate();
+  for (int i=1; i <= dynlen(primaries); i++) {
+    mapping primary = primaries[i];
+
+    emu_info(\"Creating HV Primary PSU device for: \" + primary);
+    
+    // create main device
+    
+    dyn_string mainPrimaryDevice = createDevice(HV_PRIMARY_DP_TYPE, getHvPrimaryDpName(primary), ex);
+    if (emu_checkException(ex)) { return; }
+    
+    // create the monitor device
+    
+    createDevice(HV_PRIMARY_MON_DP_TYPE, \"Mon\", ex, mainPrimaryDevice);
+    if (emu_checkException(ex)) { return; }
+
+  }
+
+}
+
+void createX2PDevices(dyn_string &ex) {
+  dyn_mapping chambers = getChambersToCreate();
+  
+  for (int i=1; i <= dynlen(chambers); i++) {
+    mapping chamber = chambers[i];
+    emu_info(\"Creating LV & Temperature devices for chamber: \" + chamber);
+
+    // crete main LV device
+
+    dyn_string mainLvDevice = createDevice(LV_DP_TYPE, getLvDpName(chamber), ex);
+    if (emu_checkException(ex)) { return; }
+
+    // create LV Mon
+    
+    createDevice(LV_MON_DP_TYPE, \"Mon\", ex, mainLvDevice);
+    if (emu_checkException(ex)) { return; }
+
+    // create main Temperature device
+    
+    dyn_string mainTempDevice = createDevice(TEMP_DP_TYPE, getTempDpName(chamber), ex);
+    if (emu_checkException(ex)) { return; }
+
+    // create Temperature Mon
+    
+    createDevice(TEMP_MON_DP_TYPE, \"Mon\", ex, mainTempDevice);
+    if (emu_checkException(ex)) { return; }
+
+  }
+  
+  // create DDUs
+  dyn_mapping ddus = getDdusToCreate();
+  for (int i=1; i <= dynlen(ddus); i++) {
+    emu_info(\"creating DDU: \" + ddus[i]);
+    
+    // create main DDU device
+    
+    dyn_string mainDduDevice = createDevice(DDU_DP_TYPE, getDduDpName(ddus[i]), ex);
+    if (emu_checkException(ex)) { return; }
+
+    // create Temperature Mon
+    
+    createDevice(DDU_MON_DP_TYPE, \"Mon\", ex, mainDduDevice);
+    if (emu_checkException(ex)) { return; }
+    
+  }
+}
+
+
+// *********************** Creating DIM configuration ***********************
+
+
+void createHvDimConfig(dyn_string &ex) {
+  mapping station = getStationToCreate();
+  dyn_mapping chambers = getChambersToCreate();
+  
+  // create DIM config
+  
+  string dimConfigName = DIM_DEVICE_PREFIX + fwDevice_HIERARCHY_SEPARATOR +
+                         \"HV_\" + station[\"side\"] + station[\"station\"];
+  createDimConfigDevice(dimConfigName, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // subscribe to services
+
+  dyn_string serviceNames, dps;
+  for (int i=1; i <= dynlen(chambers); i++) {
+    if (isMe11Chamber(chambers[i])) { continue; } // skip ME1/1 chambers
+    
+    string chamberDp = getHvDpName(chambers[i]);
+    dynAppend(dps, chamberDp + fwDevice_HIERARCHY_SEPARATOR + \"FastMon\");
+    dynAppend(dps, chamberDp + fwDevice_HIERARCHY_SEPARATOR + \"SlowMon\");
+    dynAppend(serviceNames, getHvDimServiceName(chambers[i], \"FAST_MON\"));
+    dynAppend(serviceNames, getHvDimServiceName(chambers[i], \"SLOW_MON\"));
+  }
+  fwDim_subscribeServices(dimConfigName, serviceNames, dps);
+  
+  // set DIM DNS and other standard settings
+  setHvDimDnsNode(dimConfigName, station[\"side\"]);
+}
+
+void createHvDimConfig_splitSlowFast(dyn_string &ex) {
+  mapping station = getStationToCreate();
+  dyn_mapping chambers = getChambersToCreate();
+
+  // create DIM configs
+
+  string slowDimConfigName = DIM_DEVICE_PREFIX + fwDevice_HIERARCHY_SEPARATOR +
+                             \"HV_\" + station[\"side\"] + station[\"station\"] + \"_SLOW\";
+  string fastDimConfigName = DIM_DEVICE_PREFIX + fwDevice_HIERARCHY_SEPARATOR +
+                             \"HV_\" + station[\"side\"] + station[\"station\"] + \"_FAST\";
+  createDimConfigDevice(slowDimConfigName, ex);
+  if (emu_checkException(ex)) { return; }
+  createDimConfigDevice(fastDimConfigName, ex);
+  if (emu_checkException(ex)) { return; }
+
+  // subscribe to services
+  
+  dyn_string slowServiceNames, slowDps,
+             fastServiceNames, fastDps;
+  for (int i=1; i <= dynlen(chambers); i++) {
+    if (isMe11Chamber(chambers[i])) { continue; } // skip ME1/1 chambers
+    
+    string chamberDp = getHvDpName(chambers[i]);
+    dynAppend(fastDps, chamberDp + fwDevice_HIERARCHY_SEPARATOR + \"FastMon\");
+    dynAppend(slowDps, chamberDp + fwDevice_HIERARCHY_SEPARATOR + \"SlowMon\");
+    dynAppend(fastServiceNames, getHvDimServiceName(chambers[i], \"FAST_MON\"));
+    dynAppend(slowServiceNames, getHvDimServiceName(chambers[i], \"SLOW_MON\"));
+  }
+  emu_info(\"fastMon subscribing to these services: \" + fastServiceNames + \" with these DPs: \" + fastDps);
+  fwDim_subscribeServices(fastDimConfigName, fastServiceNames, fastDps);
+  emu_info(\"slowMon subscribing to these services: \" + slowServiceNames + \" with these DPs: \" + slowDps);
+  fwDim_subscribeServices(slowDimConfigName, slowServiceNames, slowDps);
+  
+  // set DIM DNS and other standard settings
+  setHvDimDnsNode(fastDimConfigName, station[\"side\"]);
+  setHvDimDnsNode(slowDimConfigName, station[\"side\"]);
+}
+
+void createHvPrimaryDimConfig(dyn_string &ex) {
+  mapping station = getStationToCreate();
+  dyn_mapping primaries = getHvPrimariesToCreate();
+  if (dynlen(primaries) == 0) {
+    return;
+  }
+
+  // create DIM config
+  
+  string dimConfigName = DIM_DEVICE_PREFIX + fwDevice_HIERARCHY_SEPARATOR +
+                         \"HV_Primary_\" + station[\"side\"];
+  createDimConfigDevice(dimConfigName, ex, false);
+  if (emu_checkException(ex)) { return; }
+  
+  // subscribe to services
+  
+  dyn_string serviceNames, dps;
+  for (int i=1; i <= dynlen(primaries); i++) {
+    string primaryDp = getHvPrimaryDpName(primaries[i]);
+    string primaryMonDp = primaryDp + fwDevice_HIERARCHY_SEPARATOR + \"Mon\";
+    dynAppend(dps, primaryMonDp);
+    dynAppend(serviceNames, getHvDimPrimaryServiceName(primaries[i]));
+  }
+  fwDim_subscribeServices(dimConfigName, serviceNames, dps);
+  
+  // set DIM DNS and other standard settings
+  setHvDimDnsNode(dimConfigName, station[\"side\"]);
+}
+
+void createHvCommandDpAndDimConfig(dyn_string &ex) {
+  mapping station = getStationToCreate();
+  string side = station[\"side\"];
+  
+  string cmdDp = COMMAND_DP_PREFIX + \"HV_\" + side;
+  if (side == \"ISR\") {
+    cmdDp = COMMAND_DP_PREFIX + \"HV_\" + \"M\";
+  }
+  if (!dpExists(cmdDp)) {
+    dpCreate(cmdDp, \"CscDimCommand\");
+  }
+  
+  string dimConfigName = DIM_DEVICE_PREFIX + fwDevice_HIERARCHY_SEPARATOR +
+                         \"HV_COMMAND_\" + side;
+  createDimConfigDevice(dimConfigName, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  fwDim_subscribeCommand(dimConfigName, HV_DIM_COMMAND_SERVICE, cmdDp);
+  
+  setHvDimDnsNode(dimConfigName, side);
+}
+
+void setHvDimDnsNode(string configName, string side) {
+  string dns;
+  if (side == \"M\") {
+    dns = HV_DIM_DNS_MINUS;
+  } else if (side == \"P\") {
+    dns = HV_DIM_DNS_PLUS;
+  } else if (side == \"ISR\") {
+    dns = HV_DIM_DNS_ISR;
+  }
+  fwDim_setDimDnsNode(configName, dns);
+}
+
+void setX2PDimDnsNode(string configName, string side) {
+  string dns;
+  if (side == \"M\") {
+    dns = X2P_DIM_DNS_MINUS;
+  } else if (side == \"P\") {
+    dns = X2P_DIM_DNS_PLUS;
+  } else if (side == \"ISR\") {
+    dns = X2P_DIM_DNS_ISR;
+  }
+  fwDim_setDimDnsNode(configName, dns);
+}
+
+void createX2PDimConfig(dyn_string &ex) {
+  mapping station = getStationToCreate();
+  dyn_mapping chambers = getChambersToCreate();
+  
+  // create DIM config
+  
+  string dimConfigName = DIM_DEVICE_PREFIX + fwDevice_HIERARCHY_SEPARATOR +
+                         \"X2P_\" + station[\"side\"] + station[\"station\"];
+  createDimConfigDevice(dimConfigName, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // subscribe to services
+
+  dyn_string serviceNames, dps;
+  for (int i=1; i <= dynlen(chambers); i++) {
+    string lvDp = getLvDpName(chambers[i]);
+    string tempDp = getTempDpName(chambers[i]);
+    dynAppend(dps, lvDp + fwDevice_HIERARCHY_SEPARATOR + \"Mon\");
+    dynAppend(dps, tempDp + fwDevice_HIERARCHY_SEPARATOR + \"Mon\");
+    dynAppend(serviceNames, getLvDimServiceName(chambers[i]));
+    dynAppend(serviceNames, getTempDimServiceName(chambers[i]));
+  }
+  
+  fwDim_subscribeServices(dimConfigName, serviceNames, dps);
+  
+  // set DIM DNS and other standard settings
+  setX2PDimDnsNode(dimConfigName, station[\"side\"]);
+}
+
+void createX2PFedDimConfig(dyn_string &ex) {
+  mapping station = getStationToCreate();
+  dyn_mapping ddus = getDdusToCreate();
+
+  if (dynlen(ddus) == 0) {
+    return;
+  }
+  
+  // create DIM config
+  
+  string dimConfigName = DIM_DEVICE_PREFIX + fwDevice_HIERARCHY_SEPARATOR +
+                         \"X2P_FED_\" + station[\"side\"];
+  createDimConfigDevice(dimConfigName, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // subscribe to services
+
+  dyn_string serviceNames, dps;
+  for (int i=1; i <= dynlen(ddus); i++) {
+    string dduDp = getDduDpName(ddus[i]);
+    dynAppend(dps, dduDp + fwDevice_HIERARCHY_SEPARATOR + \"Mon\");
+    dynAppend(serviceNames, getDduDimServiceName(ddus[i]));
+  }
+  
+  fwDim_subscribeServices(dimConfigName, serviceNames, dps);
+  
+  // set DIM DNS and other standard settings
+  setX2PDimDnsNode(dimConfigName, station[\"side\"]);
+}
+
+void createAllDimManagers(dyn_string &ex) {
+  emu_info(\"Creating DIM managers\");
+  
+  dyn_string configDps = dpNames(\"DimConfig/{HV,X2P}_*\", \"_FwDimConfig\");
+  for (int i=1; i <= dynlen(configDps); i++) {
+    string configDp = configDps[i];
+    string dns;
+    dpGet(configDp + \".ApiParams.dimDnsNode\", dns);
+    string name = dpSubStr(configDp, DPSUB_DP);
+    strreplace(name, \"DimConfig/\", \"\");
+    int num = 20 + i;
+    
+    if (dns == \"\") {
+      emu_addError(\"DIM config \" + configDp + \" doesn't have a valid DNS set\", ex);
+      return;
+    }
+    
+    emu_info(\"creating DIM manager for \" + name + \" with num=\" + num);
+    fwInstallation_appendManager(TRUE, name, \"PVSS00dim\", 
+                                 \"always\", 90, 2, 2,
+                                 \"-num \" + num + \" -dim_dp_config \" + dpSubStr(configDp, DPSUB_DP) + 
+                                 \" -dim_dns_node \" + dns);
+  }
+  
+  emu_info(\"DONE\");
+}
+
+// ************************** FSM **************************
+
+
+void createFsm(dyn_string &ex) {
+  emu_info(\"Creating FSM\");
+
+  //create the top system node
+  string systemNode = getSystemName();
+  strreplace(systemNode, \":\", \"\");
+  fwFsmTree_addNode(\"FSM\", systemNode, EMU_FSM_TYPE_SYSTEM, true);
+
+  createStationsFsm(systemNode, ex);
+  if (emu_checkException(ex)) { return; }
+  createHvFsm(systemNode, ex);
+  if (emu_checkException(ex)) { return; }
+  createFedFsm(systemNode);
+  
+  emu_info(\"Done creating FSM\");
+}
+
+void createStationsFsm(string systemNode, dyn_string &ex) {
+  dyn_mapping chambers = getChambersToCreate();
+  for (int i=1; i <= dynlen(chambers); i++) {
+    mapping chamber = chambers[i];
+
+    //create station
+    string stationNode = \"CSC_ME_\" + chamber[\"side\"] + chamber[\"station\"];
+    string stationName = \"CSC ME\" + 
+                         ((chamber[\"side\"] == \"M\") ? \"-\" : \"+\") + // translate P/M to +/-
+                         chamber[\"station\"];
+    fwFsmTree_addNode(systemNode, stationNode, EMU_FSM_TYPE_STATION, true);    
+    fwFsmTree_setNodeLabel(stationNode, stationName);
+    
+    //create trigger sector
+    bool isSmallRing = ((chamber[\"station\"] > 1) && (chamber[\"ring\"] == 1));
+    int trgSector;
+    if (!isSmallRing) {
+      trgSector = floor(((float)chamber[\"chamberNumber\"] - 3) / 6.0) + 1;
+    } else {
+      trgSector = floor(((float)chamber[\"chamberNumber\"] * 2 - 3) / 6.0) + 1;
+    }
+    if (trgSector == 0) { trgSector = 6; }
+    string trgSectorNode = stationNode + \"_TS_\" + trgSector;
+    string trgSectorName = \"ME\" + 
+                         ((chamber[\"side\"] == \"M\") ? \"-\" : \"+\") + // translate P/M to +/-
+                         chamber[\"station\"] +
+                         \" trigger sector \" + trgSector;
+    fwFsmTree_addNode(stationNode, trgSectorNode, EMU_FSM_TYPE_TRIGGER_SECTOR, false);
+    fwFsmTree_setNodeLabel(trgSectorNode, trgSectorName);
+    
+    // create chamber
+    string chamberType = (chamber[\"ring\"] == 1) ? EMU_FSM_TYPE_CHAMBER_INNER : EMU_FSM_TYPE_CHAMBER_OUTER;
+    string chamberNode = \"CSC_ME_\" + chamber[\"side\"] + chamber[\"station\"] + chamber[\"ring\"] + \"_C\" + chamber[\"chamberNumber\"];
+    string chamberName = emu_getChamberName(chamber);
+    fwFsmTree_addNode(trgSectorNode, chamberNode, chamberType, false);
+    fwFsmTree_setNodeLabel(chamberNode, chamberName);
+    
+    // create chamber HV DU
+    if (!isMe11Chamber(chamber)) { // UF/PNPI HV system
+      string hvDp = getHvDpName(chamber);
+      fwFsmTree_addNode(chamberNode, hvDp, HV_DP_TYPE, false);
+      fwFsmTree_setNodeLabel(hvDp, chamberName + \" HV\");
+    } else {  // CAEN HV system
+      string me11HvNode = getMe11HvNode(chamber);
+      string me11HvLabel = chamberName + \" HV\";
+      
+      // check if the node is reachable
+      if (fwFsmTree_isNode(me11HvNode)) {
+        if (!fwFsmTree_isNode(chamberNode + \"::\" + me11HvNode)) { // if already exists locally - skip
+          fwFsmTree_addNode(chamberNode, EMU_FSM_DOMAIN_ME11_HV + \"::\" + me11HvNode, EMU_FSM_TYPE_ME11_HV, false);
+        }
+//        fwFsmTree_setNodeLabel(chamberNode + \"::\" + me11HvNode,  me11HvLabel);
+      } else {
+        emu_addError(\"ME1/1 HV node \" + me11HvNode + \" could not be found.\", ex);
+        return;
+      }
+    }
+    
+    // create chamber LV DU
+    string lvDp = getLvDpName(chamber);
+    fwFsmTree_addNode(chamberNode, lvDp, LV_DP_TYPE, false);
+    fwFsmTree_setNodeLabel(lvDp,  chamberName + \" LV\");
+
+    // create chamber Temperature DU
+    string tempDp = getTempDpName(chamber);
+    fwFsmTree_addNode(chamberNode, tempDp, TEMP_DP_TYPE, false);
+    fwFsmTree_setNodeLabel(tempDp,  chamberName + \" Temperature\");
+  }
+}
+
+void createHvFsm(string systemNode, dyn_string &ex) {
+  mapping station = getStationToCreate();
+  dyn_mapping primaries = getHvPrimariesToCreate();
+  
+  if (dynlen(primaries) > 0) {
+    string side = station[\"side\"];
+
+    // main HV node
+
+    string hvNode = \"CSC_HV_\" + side;
+    string hvName = \"CSC HV \" +
+                     ((side == \"M\") ? \"MINUS\" : \"PLUS\"); // translate P/M to PLUS/MINUS
+    
+    fwFsmTree_addNode(systemNode, hvNode, EMU_FSM_TYPE_HV, true);
+    fwFsmTree_setNodeLabel(hvNode, hvName);
+
+    // UF/PNPI HV primary PSUs group node
+    
+    string hvPrimariesNode = hvNode + \"_PRIMARIES\";
+    fwFsmTree_addNode(hvNode, hvPrimariesNode, EMU_FSM_TYPE_HV, true);
+    fwFsmTree_setNodeLabel(hvPrimariesNode, hvName + \" Primaries\");
+    
+    // UF/PNPI HV primary PSUs
+    
+    for (int i=1; i <= dynlen(primaries); i++) {
+      mapping primary = primaries[i];
+      string hvPrimaryDp = getHvPrimaryDpName(primary);
+      fwFsmTree_addNode(hvPrimariesNode, hvPrimaryDp, HV_PRIMARY_DP_TYPE, false);
+      fwFsmTree_setNodeLabel(hvPrimaryDp,  \"Primary_\" + primary[\"hostId\"] + \"_\" + primary[\"port\"] + \"_\" + primary[\"address\"]);
+    }
+    
+    // ME1/1 HV
+
+    string me11HvNode = (side == \"M\") ? EMU_FSM_NODE_ME11_HV_MINUS : EMU_FSM_NODE_ME11_HV_PLUS;
+    string me11HvName = \"CSC ME1/1 \" +
+                        ((side == \"M\") ? \"MINUS\" : \"PLUS\") + // translate P/M to PLUS/MINUS
+                        \" HV\";
+        
+    // check if the node is reachable remotely
+    if (fwFsmTree_isNode(me11HvNode)) {
+      if (!fwFsmTree_isNode(hvNode + \"::\" + me11HvNode)) { // if already exists locally - skip
+        fwFsmTree_addNode(hvNode, EMU_FSM_DOMAIN_ME11_HV + \"::\" + me11HvNode, EMU_FSM_TYPE_ME11_HV, false);
+      }
+//      fwFsmTree_setNodeLabel(hvNode + \"::\" + me11HvNode,  me11HvName);
+    } else {
+      emu_addError(\"ME1/1 HV node \" + me11HvNode + \" could not be found.\", ex);
+      return;
+    }
+    
+  } 
+}
+
+void createLvFsm(string systemNode) {
+}
+
+void createFedFsm(string systemNode) {
+  mapping station = getStationToCreate();
+  if (station[\"station\"] == \"1\") {
+    string side = station[\"side\"];
+    string fedNode = \"CSC_FED_\" + side;
+    string fedName = \"CSC FED \" +
+                     ((side == \"M\") ? \"MINUS\" : \"PLUS\"); // translate P/M to PLUS/MINUS
+    fwFsmTree_addNode(systemNode, fedNode, EMU_FSM_TYPE_FED, true);
+    fwFsmTree_setNodeLabel(fedNode, fedName);
+    
+    dyn_mapping ddus = getDdusToCreate();
+    for (int i=1; i <= dynlen(ddus); i++) {
+      string dduDp = getDduDpName(ddus[i]);
+      string dduLabel;
+      sprintf(dduLabel, \"DDU%.2d\", ddus[i][\"id\"]);
+      fwFsmTree_addNode(fedNode, dduDp, DDU_DP_TYPE, false);
+      fwFsmTree_setNodeLabel(dduDp, dduLabel);
+    }
+  }
+}
+
+
+// *********************** General ***********************
+
+
+dyn_string createDevice(string type, string name, dyn_string &ex, dyn_string parentDevice = makeDynString()) {
+  dyn_string device;
+  
+  fwDevice_createObject(device, ex);
+  if (emu_checkException(ex)) { return makeDynString(); }
+
+  if (dynlen(parentDevice) == 0) {
+    fwDevice_createObject(parentDevice, ex);
+    if (emu_checkException(ex)) { return makeDynString(); }
+  }
+    
+  device[fwDevice_DP_TYPE] = type;
+  device[fwDevice_DP_NAME] = name;
+  if (!deviceExists(device, parentDevice)) {
+    fwDevice_create(device, parentDevice, ex);
+    if (emu_checkException(ex)) { return makeDynString(); }
+  }
+  
+  return device;
+}
+
+bool deviceExists(dyn_string device, dyn_string parent) {
+  string dp = \"\";
+  if (parent[fwDevice_DP_NAME] != \"\") {
+    dp += parent[fwDevice_DP_NAME] + fwDevice_HIERARCHY_SEPARATOR;
+  }
+  dp += device[fwDevice_DP_NAME];
+  return dpExists(dp);
+}
+
+bool isMe11Chamber(mapping chamber) {
+  return (chamber[\"station\"] == 1) && (chamber[\"ring\"] == 1);
+}
+
+void createDimConfigDevice(string configName, dyn_string &ex, bool clearIfExists = true) {
+  if (strpos(configName, DIM_DEVICE_PREFIX) < 0) {
+    configName = DIM_DEVICE_PREFIX + fwDevice_HIERARCHY_SEPARATOR + configName;
+  }
+  
+  emu_info(\"Creating DimConfig: \" + configName);
+  
+  createDevice(\"_FwDimConfig\", configName, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  if (clearIfExists) {
+    dpSetWait(configName + \".clientServices\", makeDynString(),
+              configName + \".clientCommands\", makeDynString());
+  }
+}
+" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+2 0
+"PRIMITIVE_TEXT1"
+""
+1 30 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 30 40 78 56
+0 2 2 "0s" 0 0 0 192 0 0  30 40 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 8 Station:
+22 1
+"comboStation"
+""
+1 80 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  78 38 202 66
+0
+
+"main()
+{
+  for (int station = -4; station <= 4; station++) {
+    if (station == 0) {
+      continue;
+    }
+    string stationStr = \"ME\";
+    if (station > 0) {
+      stationStr += \"+\";
+    }
+    stationStr += station;
+    comboStation.appendItem(stationStr);
+  }
+  
+  // add special values
+  comboStation.appendItem(\"ISR\");
+}" 0
+
+E
+E
+ 0 0
+13 2
+"PUSH_BUTTON1"
+""
+1 20.00000000000003 120 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  18 118 382 147
+
+T 
+1
+LANG:1 30 Create HV devices, DIM configs
+"main()
+{
+  dyn_string ex;
+  
+  emu_info(\"Creating HV devices...\");
+  createHvDevices(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  emu_info(\"Creating HV DIM config...\");
+  if (chkSplitSlowFastDim.state(0)) {
+    createHvDimConfig_splitSlowFast(ex);
+  } else {
+    createHvDimConfig(ex);
+  }
+  if (emu_checkException(ex)) { return; }
+
+  emu_info(\"Creating HV Primary DIM config...\");
+  createHvPrimaryDimConfig(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  emu_info(\"Creating HV DIM command config and DP...\");
+  createHvCommandDpAndDimConfig(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  emu_info(\"DONE\");
+}" 0
+ E E E
+13 4
+"PUSH_BUTTON3"
+""
+1 20 350 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  18 348 382 382
+
+T 
+1
+LANG:1 17 Delete all HV DPs
+"main()
+{
+  deleteAll(\"*\", \"CscHvChamber\");
+  deleteAll(\"*\", \"CscHvChamberFastMon\");
+  deleteAll(\"*\", \"CscHvChamberSlowMon\");
+  deleteAll(\"*\", \"CscHvChamberSettings\");
+  deleteAll(\"*\", \"CscHvPrimary\");
+  deleteAll(\"*\", \"CscHvPrimaryMon\");
+  
+  emu_info(\"Done deleting\");
+}
+
+void deleteAll(string pattern, string dpType) {
+  dyn_string dps = dpNames(pattern, dpType);
+  for (int i=1; i <= dynlen(dps); i++) {
+    dpDelete(dps[i]);
+  }
+}" 0
+ E E E
+13 5
+"PUSH_BUTTON4"
+""
+1 20 160 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  18 158 382 192
+
+T 
+1
+LANG:1 21 Create default alerts
+"main()
+{
+  dyn_string ex;
+  
+  emu_info(\"creating summary alerts...\");
+  setSummaryAlerts(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  emu_info(\"creating LV alerts...\");
+  setLvAlerts(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  emu_info(\"creating interlock alerts...\");
+  setInterlockAlerts(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  emu_info(\"creating 'module type' alerts...\");
+  setModuleTypeAlerts(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  emu_info(\"creating module status alerts...\");
+  setModuleStatusAlerts(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  emu_info(\"creating channel status alerts...\");
+  setChannelStatusAlerts(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  emu_info(\"creating master channel status alerts...\");
+  setMasterChannelStatusAlerts(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // primary
+  
+  emu_info(\"creating primary PSU summary alerts...\");
+  setPrimarySummaryAlerts(ex);
+  if (emu_checkException(ex)) { return; }
+
+  emu_info(\"creating primary PSU status alerts...\");
+  setPrimaryStatusAlerts(ex);
+  if (emu_checkException(ex)) { return; }
+
+  // activate all the summary alerts
+  emu_info(\"activating all summary alerts\");
+  fwAlertConfig_activateMultiple(dpNames(\"*.\", \"CscHvChamberFastMon\"), ex);
+  if (emu_checkException(ex)) { return; }
+  fwAlertConfig_activateMultiple(dpNames(\"*.\", \"CscHvChamberSlowMon\"), ex);
+  if (emu_checkException(ex)) { return; }
+  fwAlertConfig_activateMultiple(dpNames(\"*.\", \"CscHvChamber\"), ex);
+  if (emu_checkException(ex)) { return; }
+  fwAlertConfig_activateMultiple(dpNames(\"*.\", \"CscHvPrimaryMon\"), ex);
+  if (emu_checkException(ex)) { return; }
+  fwAlertConfig_activateMultiple(dpNames(\"*.\", \"CscHvPrimary\"), ex);
+  if (emu_checkException(ex)) { return; }
+  
+  emu_info(\"DONE\");
+}
+
+void setLvAlerts(dyn_string &ex) {
+  dyn_string texts = makeDynString(\"HV LV problem: +5V is too low\", \"\", \"HV LV problem: +5V is too high\");
+  dyn_float limits = makeDynFloat(2000, 4000);
+  dyn_string classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  
+  dyn_string dps = dpNames(\"*.pos5v\", \"CscHvChamberFastMon\");
+  fwAlertConfig_setMultiple(dps, DPCONFIG_ALERT_NONBINARYSIGNAL,
+                    texts, limits, classes,
+                    makeDynString(), \"\", makeDynString(), \"\",
+                    ex,
+                    false, false, \".\");
+  if (emu_checkException(ex)) { return; }
+  fwAlertConfig_activateMultiple(dps, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  texts = makeDynString(\"HV LV problem: -5V is too low\", \"\", \"HV LV problem: -5V is too high\");
+  limits = makeDynFloat(1000, 4000);
+  dps = dpNames(\"*.neg5v\", \"CscHvChamberFastMon\");
+  fwAlertConfig_setMultiple(dps, DPCONFIG_ALERT_NONBINARYSIGNAL,
+                    texts, limits, classes,
+                    makeDynString(), \"\", makeDynString(), \"\",
+                    ex,
+                    false, false, \".\");
+  if (emu_checkException(ex)) { return; }  
+  fwAlertConfig_activateMultiple(dps, ex);
+  if (emu_checkException(ex)) { return; }
+}
+
+void setInterlockAlerts(dyn_string &ex) {
+  dyn_string dps = dpNames(\"*.interlock\", \"CscHvChamberFastMon\");
+  fwAlertConfig_setMultiple(dps,
+                            DPCONFIG_ALERT_NONBINARYSIGNAL,
+                            makeDynString(\"Interlock\", \"\"),
+                            makeDynFloat(1),
+                            makeDynString(\"_fwErrorNack\", \"\"),
+                            makeDynString(), \"\", makeDynString(), \"\",
+                            ex,
+                            false, false, \".\");
+  if (emu_checkException(ex)) { return; }  
+  fwAlertConfig_activateMultiple(dps, ex);
+  if (emu_checkException(ex)) { return; }
+}
+
+void setModuleTypeAlerts(dyn_string &ex) {
+  dyn_string dps = dpNames(\"*.{rdb,master}_type\", \"CscHvChamberSlowMon\");
+  fwAlertConfig_setMultiple(dps,
+                            DPCONFIG_ALERT_NONBINARYSIGNAL,
+                            makeDynString(\"Invalid module type - board problem\", \"\"),
+                            makeDynFloat(1),
+                            makeDynString(\"_fwErrorNack\", \"\"),
+                            makeDynString(), \"\", makeDynString(), \"\",
+                            ex,
+                            false, false, \".\");
+  if (emu_checkException(ex)) { return; }  
+  fwAlertConfig_activateMultiple(dps, ex);
+  if (emu_checkException(ex)) { return; }
+}
+
+void setModuleStatusAlerts(dyn_string &ex) {
+  dyn_string dps = dpNames(\"*.module_status\", \"CscHvChamberFastMon\");
+  fwAlertConfig_setMultiple(dps,
+                            DPCONFIG_ALERT_NONBINARYSIGNAL,
+                            makeDynString(\"\", \"HV Module Error\"),
+                            makeDynFloat(4),
+                            makeDynString(\"\", \"_fwErrorNack\"),
+                            makeDynString(), \"\", makeDynString(), \"\",
+                            ex,
+                            false, false, \".\");
+  if (emu_checkException(ex)) { return; }  
+  fwAlertConfig_activateMultiple(dps, ex);
+  if (emu_checkException(ex)) { return; }
+
+  dps = dpNames(\"*.master_module_status\", \"CscHvChamberFastMon\");
+  fwAlertConfig_setMultiple(dps,
+                            DPCONFIG_ALERT_NONBINARYSIGNAL,
+                            makeDynString(\"\", \"HV Master Module Error\"),
+                            makeDynFloat(4),
+                            makeDynString(\"\", \"_fwErrorNack\"),
+                            makeDynString(), \"\", makeDynString(), \"\",
+                            ex,
+                            false, false, \".\");
+  if (emu_checkException(ex)) { return; }  
+  fwAlertConfig_activateMultiple(dps, ex);
+  if (emu_checkException(ex)) { return; }
+}
+
+void setChannelStatusAlerts(dyn_string &ex) {
+  dyn_string dps = dpNames(\"*.channels.*.status\", \"CscHvChamberFastMon\");
+  
+  fwAlertConfig_setMultiple(dps,
+                            DPCONFIG_ALERT_NONBINARYSIGNAL,
+                            makeDynString(\"\", \"HV Channel Error\"),
+                            makeDynFloat(4),
+                            makeDynString(\"\", \"_fwErrorNack\"),
+                            makeDynString(), \"\", makeDynString(), \"\",
+                            ex);
+  if (emu_checkException(ex)) { return; }  
+  // alert activation and inclusion to the summary alert will be done in the emuhv_checkIntegrity function (because that depends on conditions)
+  
+}
+
+void setMasterChannelStatusAlerts(dyn_string &ex) {
+  dyn_string dps = dpNames(\"*.master_channel.status\", \"CscHvChamberFastMon\");
+  
+  fwAlertConfig_setMultiple(dps,
+                            DPCONFIG_ALERT_NONBINARYSIGNAL,
+                            makeDynString(\"\", \"HV Master Channel Error\"),
+                            makeDynFloat(4),
+                            makeDynString(\"\", \"_fwErrorNack\"),
+                            makeDynString(), \"\", makeDynString(), \"\",
+                            ex,
+                            false, false, \".\");
+  if (emu_checkException(ex)) { return; }  
+  fwAlertConfig_activateMultiple(dps, ex);
+  if (emu_checkException(ex)) { return; }
+  
+}
+
+void setSummaryAlerts(dyn_string &ex) {
+  
+  //FAST MON
+  dyn_string dps = dpNames(\"*.\", \"CscHvChamberFastMon\");
+  fwAlertConfig_setMultiple(dps,
+                            DPCONFIG_SUM_ALERT,
+                            makeDynString(\"HV OK\", \"HV Error\"),
+                            makeDynFloat(),
+                            makeDynString(\"_fwErrorNack\"),
+                            makeDynString(),
+                            \"\", makeDynString(), \"\",
+                            ex);
+  if (emu_checkException(ex)) { return; }
+
+  //SLOW MON
+  dps = dpNames(\"*.\", \"CscHvChamberSlowMon\");
+  fwAlertConfig_setMultiple(dps,
+                            DPCONFIG_SUM_ALERT,
+                            makeDynString(\"HV OK\", \"HV Error\"),
+                            makeDynFloat(),
+                            makeDynString(\"_fwErrorNack\"),
+                            makeDynString(),
+                            \"\", makeDynString(), \"\",
+                            ex);
+  if (emu_checkException(ex)) { return; }
+
+  //TOP
+  dps = dpNames(\"*.\", \"CscHvChamber\");
+  fwAlertConfig_setMultiple(dps,
+                            DPCONFIG_SUM_ALERT,
+                            makeDynString(\"HV OK\", \"HV Error\"),
+                            makeDynFloat(),
+                            makeDynString(\"_fwErrorNack\"),
+                            makeDynString(),
+                            \"\", makeDynString(), \"\",
+                            ex);
+  if (emu_checkException(ex)) { return; }
+  
+  for (int i=1; i <= dynlen(dps); i++) {
+    fwAlertConfig_addDpInAlertSummary(dps[i],
+                                      dpSubStr(dps[i], DPSUB_SYS_DP) + \"/FastMon.\",
+                                      ex,
+                                      false);
+    if (emu_checkException(ex)) { return; }
+    fwAlertConfig_addDpInAlertSummary(dps[i],
+                                      dpSubStr(dps[i], DPSUB_SYS_DP) + \"/SlowMon.\",
+                                      ex,
+                                      false);
+    if (emu_checkException(ex)) { return; }
+  }
+}
+
+// *********** PRIMARY ***********
+
+void setPrimaryStatusAlerts(dyn_string &ex) {
+  dyn_string dps = dpNames(\"*.status\", \"CscHvPrimaryMon\");
+  fwAlertConfig_setMultiple(dps,
+                            DPCONFIG_ALERT_NONBINARYSIGNAL,
+                            makeDynString(\"\", \"HV Primary PSU Error\"),
+                            makeDynFloat(4),
+                            makeDynString(\"\", \"_fwFatalNack\"),
+                            makeDynString(), \"\", makeDynString(), \"\",
+                            ex,
+                            false, false, \".\");
+  if (emu_checkException(ex)) { return; }  
+  fwAlertConfig_activateMultiple(dps, ex);
+  if (emu_checkException(ex)) { return; }
+}
+
+void setPrimarySummaryAlerts(dyn_string &ex) {
+  
+  // Primary Mon
+  dyn_string dps = dpNames(\"*.\", \"CscHvPrimaryMon\");
+  fwAlertConfig_setMultiple(dps,
+                            DPCONFIG_SUM_ALERT,
+                            makeDynString(\"HV Primary PSU OK\", \"HV Primary PSU Error\"),
+                            makeDynFloat(),
+                            makeDynString(\"_fwFatalNack\"),
+                            makeDynString(),
+                            \"\", makeDynString(), \"\",
+                            ex);
+  if (emu_checkException(ex)) { return; }
+
+  // Primary
+  dps = dpNames(\"*.\", \"CscHvPrimary\");
+  fwAlertConfig_setMultiple(dps,
+                            DPCONFIG_SUM_ALERT,
+                            makeDynString(\"HV Primary PSU OK\", \"HV Primary PSU Error\"),
+                            makeDynFloat(),
+                            makeDynString(\"_fwFatalAck\"),
+                            makeDynString(),
+                            \"\", makeDynString(), \"\",
+                            ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // add the mon alerts into the primary alerts
+  for (int i=1; i <= dynlen(dps); i++) {
+    fwAlertConfig_addDpInAlertSummary(dps[i],
+                                      dpSubStr(dps[i], DPSUB_SYS_DP) + \"/Mon.\",
+                                      ex,
+                                      false);
+    if (emu_checkException(ex)) { return; }
+  }
+}
+" 0
+ E E E
+20 6
+"chkSplitSlowFastDim"
+""
+1 20 79.99999999999999 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  18 78 292 102
+1
+T 
+1
+LANG:1 35 Split slow and fast mon DIM configs
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+"main()
+{
+  this.state(0, true);
+}" 0
+E13 7
+"PUSH_BUTTON5"
+""
+1 20 200 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  18 198 772 232
+
+T 
+1
+LANG:1 10 Create FSM
+"main() {
+  dyn_string ex;
+  createFsm(ex);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+13 9
+"PUSH_BUTTON6"
+""
+1 20 240 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  18 238 382 272
+
+T 
+1
+LANG:1 19 Run integrity check
+"main()
+{
+  emu_info(\"running integrity check\");
+  
+  dyn_string ex;
+  emuhv_checkIntegrity(ex);
+  if (!emu_checkException(ex)) {
+    emu_info(\"no critical errors found\");
+  }
+  
+  emu_info(\"DONE\");
+}" 0
+ E E E
+13 11
+"PUSH_BUTTON8"
+""
+1 410 120 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  408 118 772 147
+
+T 
+1
+LANG:1 54 Create X2P devices (LV, temperature, FED), DIM configs
+"main()
+{
+  dyn_string ex;
+  
+  emu_info(\"Creating X2P devices...\");
+  createX2PDevices(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  emu_info(\"Creating X2P DIM config...\");
+  createX2PDimConfig(ex);
+  if (emu_checkException(ex)) { return; }
+
+  emu_info(\"Creating X2P FED DIM config...\");
+  createX2PFedDimConfig(ex);
+  if (emu_checkException(ex)) { return; }
+      
+  emu_info(\"DONE\");
+}" 0
+ E E E
+13 12
+"PUSH_BUTTON9"
+""
+1 20 280 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  18 278 382 312
+
+T 
+1
+LANG:1 23 Create all DIM managers
+"main()
+{
+  dyn_string ex;
+  createAllDimManagers(ex);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
