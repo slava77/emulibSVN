@@ -1,12 +1,14 @@
 package jsf.bean.gui.component;
 
 import com.icesoft.faces.component.ext.RowSelectorEvent;
+import com.sun.faces.facelets.el.ContextualCompositeMethodExpression;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import jsf.bean.gui.ClassFinderIf;
 import jsf.bean.gui.EntityBeanBase;
@@ -189,11 +191,30 @@ public abstract class BeanTableManager implements Serializable {
                 }
                 selectedFirst = false;
             }
+            
         } else {
             this.selected = null;
         }
+        
+        invokeSelectedListener();
+        
     }
 
+    private void invokeSelectedListener() {
+        UIComponent c = UIComponent.getCurrentComponent(FacesContext.getCurrentInstance());
+        UIComponent cc = UIComponent.getCompositeComponentParent(c);
+        if (cc.getAttributes().containsKey("rowSelectionListener")) {
+            Object exo = cc.getAttributes().get("rowSelectionListener");
+            if (exo instanceof ContextualCompositeMethodExpression) {
+                ContextualCompositeMethodExpression ex = (ContextualCompositeMethodExpression) exo;
+                if (ex != null) {
+                    Object [] params = new Object[]{ this.selected };
+                    ex.invoke(FacesContext.getCurrentInstance().getELContext(), params);
+                }
+            }
+        }
+    }
+    
     public final EntityBeanBase getSelected() {
         return selected;
     }

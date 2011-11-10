@@ -57,6 +57,16 @@ public class EntityBeanBase implements Serializable {
         return getPropertyMetadata(this.getClass());
     }
 
+    @Transient
+    public PropertyMd getPropertyMetadata(String propertyName) throws InvalidEntityBeanPropertyException {
+        for(PropertyMd pmd: getPropertyMetadata(this.getClass())) {
+            if (pmd.getName().equals(propertyName)) {
+                return pmd;
+            }
+        }
+        return null;
+    }
+    
     public static List<PropertyMd> getPropertyMetadata(Class myClass) throws InvalidEntityBeanPropertyException {
         if (!propertyMetadataCache.containsKey(myClass)) {
             try {

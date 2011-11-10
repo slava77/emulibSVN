@@ -53,7 +53,8 @@
                             <ice:panelPositioned var="column"
                                                  value="#{cc.attrs.manager.table.selectedColumns.source}"
                                                  styleClass="columnSelectPanelContainer">
-                                <ice:panelGroup styleClass="columnSelectPanel" >
+                                <ice:panelGroup styleClass="columnSelectPanel"
+                                                style="height: 15px;">
                                     <ice:outputText value="#{column.title}"/>
                                 </ice:panelGroup>
                             </ice:panelPositioned>
@@ -93,7 +94,8 @@
                             <ice:panelPositioned var="column"
                                                  value="#{cc.attrs.manager.table.sortingColumns.source}"
                                                  styleClass="columnSelectPanelContainer">
-                                <ice:panelGroup styleClass="columnSelectPanel" >
+                                <ice:panelGroup styleClass="columnSelectPanel"
+                                                style="height: 15px;">
                                     <ice:outputText value="#{column.title}"/>
                                 </ice:panelGroup>
                             </ice:panelPositioned>
@@ -103,7 +105,8 @@
                                                  listener="#{cc.attrs.manager.table.sortingChangeListener}"
                                                  styleClass="columnSelectPanelContainer">
 
-                                <ice:panelGroup styleClass="columnSelectPanel">
+                                <ice:panelGroup styleClass="columnSelectPanel"
+                                                style="height: 16px;">
                                     <ice:selectBooleanCheckbox partialSubmit="true"
                                                                title="Ascending?"
                                                                value="#{column.ascending}"/>

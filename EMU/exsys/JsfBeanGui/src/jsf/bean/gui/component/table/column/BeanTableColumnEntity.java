@@ -54,8 +54,10 @@ public class BeanTableColumnEntity extends BeanTableColumn {
                 return true;
             }
             
-            if (filterTablePack.getTable().isFilterOn()) {
-                return true;
+            if (filterTablePack.getTable() != null) {
+                if (filterTablePack.getTable().isFilterOn()) {
+                    return true;
+                }
             }
             
         }

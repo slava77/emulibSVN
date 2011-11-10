@@ -16,10 +16,13 @@
 
         <cc:attribute name="manager" required="false"
                       shortDescription="Table manager"/>
+        
         <cc:attribute name="title" type="java.lang.String" required="false"
                       shortDescription="Table title"/>
+        
         <cc:attribute name="skipColumnsByName" required="false" type="java.lang.String" default=""
                       shortDescription="List of column names separated by comma that not to be rendered"/>
+        
         <cc:attribute name="skipColumnsByType" required="false" type="java.lang.String" default=""
                       shortDescription="A list of column types separated by comma that not to be rendered"/>
 
@@ -29,6 +32,9 @@
         <cc:attribute name="rowSelection" required="false" default="false" type="java.lang.Boolean"
                       shortDescription="Use row selection"/>
 
+        <cc:attribute name="rowSelectionListener" required="false"
+                      method-signature="void action(jsf.bean.gui.EntityBeanBase)"/>
+        
         <cc:attribute name="liveRefresh" required="false" default="false" type="java.lang.Boolean"
                       shortDescription="Enable live refresh option on table"/>
 
@@ -37,8 +43,10 @@
 
         <cc:attribute name="actionColumn" required="false" default="false"
                       shortDescription="Render additional action column"/>
+        
         <cc:attribute name="actionColumnTitle" required="false" default="Action"
                       shortDescription="Action column title"/>
+        
         <cc:facet name="actionContent" required="false"
                   shortDescription="Action column content"/>
 

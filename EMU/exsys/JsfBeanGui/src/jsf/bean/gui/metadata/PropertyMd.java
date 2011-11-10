@@ -209,7 +209,6 @@ public abstract class PropertyMd implements Serializable {
         return propertyDescriptor.getWriteMethod();
     }
 
-
     /**
      * Get type of the property (java class).
      * @return type of the property (java class).
@@ -332,4 +331,12 @@ public abstract class PropertyMd implements Serializable {
         }
     }
 
+    public void setPropertyValue(Object bean, Object value) {
+        try {
+            PropertyUtils.setProperty(bean, getName(), value);
+        } catch (Exception ex) {
+            throw new RuntimeException("Exception while setting bean property value", ex);
+        }
+    }
+    
 }
