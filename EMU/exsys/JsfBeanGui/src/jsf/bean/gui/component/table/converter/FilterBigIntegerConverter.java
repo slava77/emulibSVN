@@ -19,7 +19,7 @@ public class FilterBigIntegerConverter extends FilterNumericConverter {
         try {
             return (Object) new BigInteger(value);
         } catch (NumberFormatException e) {
-            ConversionError("filterConverter.NumberFormatException");
+            ConversionError("Error converting filter string to Integer filter. Please fix the filter!");
         }
         return null;
     }

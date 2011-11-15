@@ -38,7 +38,7 @@ public class FilterEnumConverter extends FilterConverter {
             BeanTableFilter.Operation op = item.getOperation();
             if (op != BeanTableFilter.Operation.EQUAL &&
                 op != BeanTableFilter.Operation.NOT_EQUAL) {
-                ConversionError("filterConverter.WrongEnumOperation");
+                ConversionError("Enum filter supports only Equals and Not Equals operations. Please fix the filter!");
             }
         }
     }

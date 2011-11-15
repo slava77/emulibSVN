@@ -13,7 +13,7 @@ public class FilterDoubleConverter extends FilterNumericConverter {
         try {
             return (Object) Double.parseDouble(value);
         } catch (NumberFormatException e) {
-            ConversionError("filterConverter.NumberFormatException");
+            ConversionError("Error converting filter string to Double filter. Please fix the filter!");
         }
         return null;
     }

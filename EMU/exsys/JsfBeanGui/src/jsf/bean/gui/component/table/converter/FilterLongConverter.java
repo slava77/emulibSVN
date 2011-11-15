@@ -13,7 +13,7 @@ public class FilterLongConverter extends FilterNumericConverter {
         try {
             return (Object) Long.parseLong(value);
         } catch (NumberFormatException e) {
-            ConversionError("filterConverter.NumberFormatException");
+            ConversionError("Error converting filter string to Long filter. Please fix the filter!");
         }
         return null;
     }

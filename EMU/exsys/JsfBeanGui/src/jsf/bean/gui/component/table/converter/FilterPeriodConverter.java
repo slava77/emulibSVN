@@ -25,7 +25,7 @@ public class FilterPeriodConverter extends FilterConverter {
             BeanTableFilter.Operation op = item.getOperation();
             if (op == BeanTableFilter.Operation.LIKE || 
                 op == BeanTableFilter.Operation.NOTLIKE) {
-                ConversionError("filterConverter.PeriodLikeOperation");
+                ConversionError("Period filter does not support LIKE operation. Please fix the filter!");
             }
         }
     }

@@ -34,7 +34,7 @@ public class FilterDateConverter extends FilterConverter {
         Calendar cal = Calendar.getInstance();
         Matcher m = datePattern.matcher(value);
         if (!m.matches()) {
-            ConversionError("filterConverter.DateFormatException");
+            ConversionError("Error converting filter string to Date filter. Please fix the filter!");
         }
         cal.set(Integer.parseInt(m.group(1)),
                 Integer.parseInt(m.group(2)) - 1,
@@ -49,7 +49,7 @@ public class FilterDateConverter extends FilterConverter {
             BeanTableFilter.Operation op = item.getOperation();
             if (op == BeanTableFilter.Operation.LIKE ||
                 op == BeanTableFilter.Operation.NOTLIKE) {
-                ConversionError("filterConverter.DateLikeOperation");
+                ConversionError("Like operation is not supported for dates. Please fix the filter!");
             }
         }
     }

@@ -13,7 +13,7 @@ public class FilterIntegerConverter extends FilterNumericConverter {
         try {
             return (Object) Integer.parseInt(value);
         } catch (NumberFormatException e) {
-            ConversionError("filterConverter.NumberFormatException");
+            ConversionError("Error converting filter string to Integer filter. Please fix the filter!");
         }
         return null;
     }

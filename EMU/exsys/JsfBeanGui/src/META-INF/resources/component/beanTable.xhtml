@@ -301,11 +301,12 @@
 
                                                     <ice:panelGroup rendered="#{!column.entityType and !column.listType and !column.embedType}">
                                                         <ice:panelGroup panelTooltip="columnHelpTooltip">
-                                                            <ice:inputText converter="#{column.filterConverter}"
+                                                            <ice:inputText id="filterInput"
+                                                                           converter="#{column.filterConverter}"
                                                                            required="false"
-                                                                           rendered="#{!column.entityType and !column.listType and !column.embedType}"
                                                                            value="#{column.filter}"
                                                                            actionListener="#{cc.attrs.manager.table.filterListener}"
+                                                                           styleClass="filterInput"
                                                                            style="width: 100px; overflow: hidden" />
                                                         </ice:panelGroup>
                                                         <ice:panelTooltip id="columnHelpTooltip">
@@ -362,6 +363,7 @@
                             <ice:commandLink style="width: 100%; text-align: left"
                                              rendered="#{column.listType}"
                                              immediate="true"
+                                             onclick="jQuery('input.filterInput').val('');"
                                              value="#{column.entityTitle}">
                                 <f:setPropertyActionListener target="#{column.listPropertyTable}" value="#{item}"/>
                             </ice:commandLink>

@@ -40,7 +40,7 @@ public class FilterStringConverter extends FilterConverter {
                     || op == BeanTableFilter.Operation.LESS
                     || op == BeanTableFilter.Operation.MORE_EQUAL
                     || op == BeanTableFilter.Operation.LESS_EQUAL) {
-                ConversionError("filterConverter.StringIllegalOperation");
+                ConversionError("String filter does not support MORE, LESS operations. Please fix the filter!");
             }
         }
     }

@@ -13,7 +13,7 @@ public abstract class FilterNumericConverter extends FilterConverter {
             BeanTableFilter.Operation op = item.getOperation();
             if (op == BeanTableFilter.Operation.LIKE ||
                 op == BeanTableFilter.Operation.NOTLIKE) {
-                ConversionError("filterConverter.NumberLikeOperation");
+                ConversionError("Numeric filters does not support LIKE operations. Please fix the filter!");
             }
         }
     }

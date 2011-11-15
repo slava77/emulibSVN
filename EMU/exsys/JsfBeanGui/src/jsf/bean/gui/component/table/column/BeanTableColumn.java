@@ -1,7 +1,5 @@
 package jsf.bean.gui.component.table.column;
 
-import edu.emory.mathcs.backport.java.util.Collections;
-import java.util.Collection;
 import javax.faces.event.ActionEvent;
 import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.component.table.BeanTable;
@@ -55,5 +53,5 @@ public abstract class BeanTableColumn extends BeanTableColumnBase {
     public BeanTable getTable() {
         return table;
     }
-    
+ 
 }

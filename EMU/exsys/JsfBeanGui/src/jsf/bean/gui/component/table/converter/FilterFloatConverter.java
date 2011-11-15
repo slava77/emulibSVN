@@ -13,7 +13,7 @@ public class FilterFloatConverter extends FilterNumericConverter {
         try {
             return (Object) Float.parseFloat(value);
         } catch (NumberFormatException e) {
-            ConversionError("filterConverter.NumberFormatException");
+            ConversionError("Error converting filter string to Float filter. Please fix the filter!");
         }
         return null;
     }

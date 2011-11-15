@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 import javax.faces.convert.Converter;
 import jsf.bean.gui.component.table.BeanTableFilter;
 import jsf.bean.gui.component.table.BeanTableFilterItem;
-import jsf.bean.gui.metadata.PropertyMd;
 
 public abstract class FilterConverter implements Converter, Serializable {
 

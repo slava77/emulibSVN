@@ -25,7 +25,7 @@ public class PeriodConverter implements Converter {
         if (value != null && value.trim().length() > 0) {
             Matcher m = periodPattern.matcher(value);
             if (!m.matches()) {
-                ConversionError("periodConverter.PeriodFormatException");
+                ConversionError("Error converting filter string to Period filter. Please fix the filter!");
             }
             long v = 0;
             String[] tokens = value.split(":");

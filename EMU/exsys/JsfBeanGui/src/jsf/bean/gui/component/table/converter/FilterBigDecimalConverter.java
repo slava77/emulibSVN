@@ -15,7 +15,7 @@ public class FilterBigDecimalConverter extends FilterNumericConverter {
         try {
             return (Object) new BigDecimal(value);
         } catch (NumberFormatException e) {
-            ConversionError("filterConverter.NumberFormatException");
+            ConversionError("Error converting filter string to Decimal filter. Please fix the filter!");
         }
         return null;
     }

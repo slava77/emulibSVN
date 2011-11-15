@@ -17,7 +17,7 @@ public class FilterClobConverter extends FilterStringConverter {
                     || op == BeanTableFilter.Operation.LESS_EQUAL
                     || op == BeanTableFilter.Operation.EQUAL
                     || op == BeanTableFilter.Operation.NOT_EQUAL) {
-                ConversionError("filterConverter.ClobIllegalOperation");
+                ConversionError("Big text filter accepts only LIKE operator. Please fix the filter!");
             }
         }
     }

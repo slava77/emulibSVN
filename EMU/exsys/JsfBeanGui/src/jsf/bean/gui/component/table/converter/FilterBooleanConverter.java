@@ -23,7 +23,7 @@ public class FilterBooleanConverter extends FilterConverter {
             BeanTableFilterItem item = itemItr.next();
             BeanTableFilter.Operation op = item.getOperation();
             if (op != BeanTableFilter.Operation.EQUAL) {
-                ConversionError("filterConverter.BooleanNotEqual");
+                ConversionError("Boolean accepts only EQUAL operation. Please fix the filter!");
             }
         }
     }
