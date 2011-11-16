@@ -30,6 +30,7 @@ namespace AFEB { namespace teststand {
       string getFileName() const { return fileName_; }
       map<string,pair<double,double> > getParameters( const int channel ) const;
       void save( const string directory );
+      void saveInOldFormat( const string directory );
       map<string,double> getThresholdStats();
       map<string,double> getTimeStats();
     private:

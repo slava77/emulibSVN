@@ -1,5 +1,6 @@
 #include "AFEB/teststand/Results.h"
 #include "AFEB/teststand/utils/String.h"
+#include "AFEB/teststand/utils/System.h"
 #include "TF1.h"
 #include "TMath.h"
 #include "TStyle.h"
@@ -16,12 +17,15 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   isFinal_( false ),
   measurement_( measurement ),
   testedDevice_( device ),
-  fileName_( measurement_->getIndex() + "_" + measurement_->getType() + "_" + testedDevice_->getType() + "_" + testedDevice_->getId() )
+  fileName_( utils::stringFrom<int>( measurement_->getIndex() ) 
+	     + "__" + measurement_->getType()
+	     + "__" + testedDevice_->getId()
+	     + "__" + testedDevice_->getType() )
 {
 
   // pulses( channel, amplitude)  2D histogram
   stringstream name;
-  name << "pulses__" << measurement_->getIndex() << "_" << measurement_->getType() 
+  name << "pulses__" << measurement_->getIndex() << "__" << measurement_->getType() 
        << "__" << testedDevice_->getId();
   stringstream title;
   title << measurement_->getName() 
@@ -61,7 +65,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 
   // measured threshold( channel ) 1D histogram
   name.str("");
-  name << "threshold__" << measurement_->getIndex() << "_" << measurement_->getType() 
+  name << "threshold__" << measurement_->getIndex() << "__" << measurement_->getType() 
        << "__" << testedDevice_->getId();
   title.str("");
   title << "measured threshold for " << testedDevice_->getType()
@@ -85,7 +89,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 
   // measured noise( channel ) 1D histogram
   name.str("");
-  name << "noise__" << measurement_->getIndex() << "_" << measurement_->getType() 
+  name << "noise__" << measurement_->getIndex() << "__" << measurement_->getType() 
        << "__" << testedDevice_->getId();
   title.str("");
   title << "measured noise for " << testedDevice_->getType()
@@ -129,7 +133,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 
   // measured mean+-rms( channel ) 1D histogram
   name.str("");
-  name << "timesOnPlateau__" << measurement_->getIndex() << "_" << measurement_->getType() 
+  name << "timesOnPlateau__" << measurement_->getIndex() << "__" << measurement_->getType() 
        << "__" << testedDevice_->getId();
   title.str("");
   title << "mean and rms of measured times on efficiency plateau for " << testedDevice_->getType()
@@ -158,14 +162,17 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   const int nColors = 4;
   const unsigned long style[nStyles] = { solid, dotted, dashed, dottedDashed };
   const unsigned long color[nColors] = { black, red, blue, green  };
-  legend_ = new TLegend( 0.2, 0.15, 0.35, 0.85 );
+  legend_ = new TLegend( 0.90, 0.1, 0.99, 0.9 );
   legend_->SetHeader( "channel" );
+  legend_->SetTextAlign( 22 ); // middle, middle
+  legend_->SetTextSize( 0.025 );
+  legend_->SetMargin( 0.6 ); // to make the line segment as long as 0.6 times the box width
   for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
 
     // time vs amplitude profile histogram
     name.str("");
-    name << "timeVsAmpl__" << measurement_->getIndex() << "_" << measurement_->getType() 
-	 << "__" << testedDevice_->getId() << "__ch" << iChannel;
+    name << "timeVsAmpl__" << measurement_->getIndex() << "__" << measurement_->getType() 
+	 << "__" << testedDevice_->getId() << "__ch_" << iChannel;
     title.str("");
     title << "Times in channel " << iChannel << " of " << testedDevice_->getType()
 	  << " of id "  << testedDevice_->getId();
@@ -186,8 +193,8 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 
     // measured efficiency( amplitude ) graph
     name.str("");
-    name << "effVsAmpl__" << measurement_->getIndex() << "_" << measurement_->getType() 
-	 << "__" << testedDevice_->getId() << "__ch" << iChannel;
+    name << "effVsAmpl__" << measurement_->getIndex() << "__" << measurement_->getType() 
+	 << "__" << testedDevice_->getId() << "__ch_" << iChannel;
     title.str("");
     title << "Efficiency vs. pulse amplitude in channel " << iChannel << " of " << testedDevice_->getType()
 	  << " of id "  << testedDevice_->getId();
@@ -534,8 +541,8 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   // S curves
   //
   sCurvePad->cd( 0 );
-  gPad->SetLeftMargin( 0.15 );
-  gPad->SetRightMargin( 0.02 );
+  gPad->SetLeftMargin( 0.12 );
+  gPad->SetRightMargin( 0.10 );
   for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
     // Create a copy so as not to change the original's tile:
     TH1D e( *sCurve_.at( iChannel ) );
@@ -543,7 +550,7 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
     e.SetTitle( (string( "S curve for device " ) + testedDevice_->getId()).c_str() );
     e.SetMinimum( 0. );
     e.SetMaximum( 2.1 );
-    e.SetTitleOffset( 2., "Y" );
+    e.SetTitleOffset( 1.5, "Y" );
     if ( iChannel == 0 ) e.DrawCopy("l");
     else                 e.DrawCopy("lsame");
   }
@@ -553,8 +560,8 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   // The time responses
   //
   timePad->cd();
-  gPad->SetLeftMargin( 0.15 );
-  gPad->SetRightMargin( 0.02 );
+  gPad->SetLeftMargin( 0.12 );
+  gPad->SetRightMargin( 0.10 );
   for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
     // Profile hist needs projecting:
     TH1D *tp = timeVsAmplitude_.at( iChannel )->ProjectionX( "t", "" );
@@ -565,7 +572,7 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
     t.SetLineStyle( timeVsAmplitude_.at( iChannel )->GetLineStyle() ); // Keep line style...
     t.SetLineColor( timeVsAmplitude_.at( iChannel )->GetLineColor() ); // ...and color
     t.SetTitle( (string( "Mean time vs. amplitude for device " ) + testedDevice_->getId()).c_str() );
-    t.SetTitleOffset( 2., "Y" );
+    t.SetTitleOffset( 1.5, "Y" );
     t.SetStats( kFALSE );
     if ( iChannel == 0 ){
       t.SetMinimum( measurement_->getTDCTimeMin() );
@@ -633,7 +640,7 @@ void AFEB::teststand::Results::save( const string directory ){
 
   createFigure( directory, measurement_->getAmplitudeMin(), measurement_->getAmplitudeMax() );
   times_->Print();
-  TFile f( (directory + "/" + testedDevice_->getType()+"__"+testedDevice_->getId()+".root").c_str(), "UPDATE", "", 5 );
+  TFile f( (directory + "/" + fileName_ +".root").c_str(), "UPDATE", "", 5 );
   f.cd();
 
   bsem_.take();
@@ -648,6 +655,22 @@ void AFEB::teststand::Results::save( const string directory ){
   bsem_.give();
 
   f.Close();
+
+  // For backward compatibility, save in old format as well:
+  saveInOldFormat( directory );
+}
+
+void AFEB::teststand::Results::saveInOldFormat( const string directory ){
+  stringstream resultInOldFormat;
+  for ( int iAmpBin = 1; iAmpBin <= pulses_->GetNbinsY(); ++iAmpBin ){
+    resultInOldFormat << TMath::Nint( pulses_->GetYaxis()->GetBinCenter( iAmpBin ) ) << "\t";
+    for ( int iChannelBin = 1; iChannelBin <= testedDevice_->getNChannels(); ++iChannelBin ){
+      resultInOldFormat << TMath::Nint( pulses_->GetBinContent( iChannelBin, iAmpBin ) );
+      if ( iChannelBin == testedDevice_->getNChannels() ) resultInOldFormat << endl;
+      else                                                resultInOldFormat << "\t";
+    }
+  }
+  utils::writeFile( directory + "/" + fileName_ + ".dat", resultInOldFormat.str() );
 }
 
 map<string,pair<double,double> > AFEB::teststand::Results::getParameters( const int channel ) const {
