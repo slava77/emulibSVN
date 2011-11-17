@@ -68,6 +68,7 @@
       </table>
     </xsl:if>
     <xsl:for-each select="a:measurement[@a:status='running']/a:device">
+      <xsl:sort select="@a:id"/>
       <img src="{../../@a:urlPath}{a:plot/@a:name}.png"/>
     </xsl:for-each>
   </xsl:template>
@@ -77,7 +78,9 @@
       <td><xsl:value-of select="@a:index"/></td>
       <td><xsl:value-of select="@a:type"/></td>
       <td><xsl:value-of select="@a:name"/></td>
-      <xsl:apply-templates mode="application" select="a:device"/>
+      <xsl:apply-templates mode="application" select="a:device">
+	<xsl:sort select="@a:id"/>
+      </xsl:apply-templates>
     </tr>
   </xsl:template>
 
@@ -92,8 +95,11 @@
       These results can also be accessed offline by opening <a href="file://{@a:systemPath}/{@a:file}">file://<xsl:value-of select="@a:systemPath"/>/<xsl:value-of select="@a:file"/></a> in a browser running on host <xsl:value-of select="@a:host"/>.
     </p>
     <table class="layout">
-      <xsl:apply-templates mode="results" select="a:measurement/a:device"/>
-    </table>
+      <xsl:apply-templates mode="results" select="a:measurement/a:device">
+	<xsl:sort select="../@a:index"/>
+ 	<xsl:sort select="@a:id"/>
+      </xsl:apply-templates>
+   </table>
   </xsl:template>
 
   <xsl:template mode="results" match="a:device">
