@@ -30,6 +30,11 @@
 	  <xsl:apply-templates select="c:inputs"/>
 	</td>
       </tr>
+      <tr>
+	<td>
+	  <xsl:apply-templates select="c:adaptors"/>
+	</td>
+      </tr>
     </table>
   </xsl:template>
 
@@ -59,7 +64,7 @@
   <xsl:template match="c:crate">
     <table class="crate">
       <tr>
-	<th colspan="3">Modules in crate number
+	<th colspan="4">Modules in crate number
 	  <xsl:if test="$CONFIGMODE='control'">
 	    <!-- for-each: just to set the current node for the templates called by name: -->
 	    <xsl:for-each select="@c:number">
@@ -79,6 +84,7 @@
       <tr>
 	<th>slot</th>
 	<th>name</th>
+	<th>id</th>
 	<th>type</th>
       </tr>
       <xsl:for-each select="c:module">
@@ -97,6 +103,18 @@
 		    <xsl:with-param name="SELVAL" select="."/>
 		  </xsl:call-template>
 		</select>
+	      </xsl:for-each>
+	    </xsl:if>
+	    <xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="@c:name"/></xsl:if>	
+	  </td>
+	  <td>
+	    <xsl:if test="$CONFIGMODE='control'">
+	      <!-- for-each: just to set the current node for the templates called by name: -->
+	      <xsl:for-each select="@c:id">
+		<input type="text" title="The unique id of this module. Mandatory for modules with DAC." size="10">
+		  <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+		  <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+		</input>
 	      </xsl:for-each>
 	    </xsl:if>
 	    <xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="@c:name"/></xsl:if>	
@@ -484,6 +502,29 @@
 	</xsl:if>
       </xsl:for-each>
     </table>
+  </xsl:template>
+
+  <xsl:template match="c:adaptors">
+    <table class="adaptors">
+      <tr>
+	<th>Adaptors</th>
+      </tr>
+      <xsl:apply-templates select="c:adaptor"/>
+    </table>
+  </xsl:template>
+
+  <xsl:template match="c:adaptor">
+    <table class="adaptor">
+      <tr><th rowspan="{count(c:socket)+4}"><xsl:value-of select="@c:name"/></th></tr>
+      <tr><th>pulse division factor</th><td><xsl:value-of select="@c:pulseDivisionFactor"/></td></tr>
+      <tr><th>injection capacitance [pF]</th><td><xsl:value-of select="@c:injectionCapacitance"/></td></tr>
+      <tr><th>socket</th><th>coefficient</th></tr>
+      <xsl:apply-templates select="c:socket"/>
+    </table>
+  </xsl:template>
+
+  <xsl:template match="c:socket">
+    <tr><th><xsl:value-of select="@c:number"/></th><td><xsl:value-of select="@c:coefficient"/></td></tr>
   </xsl:template>
 
 </xsl:transform>

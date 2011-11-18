@@ -52,9 +52,9 @@
 	<c:attr c:name="c:type" c:value="CrateController" c:description="Crate controller."/>
       </c:tag>
       <c:tag c:name="c:inputs">
-	<c:attr c:name="c:adaptor" c:value="10AD16A" c:description="10-socket adapter for AD16 boards, with common test pulse input, 6.31x test pulse attenuation."/>
-	<c:attr c:name="c:adaptor" c:value="2AD16A" c:description="2-socket adapter for AD16 boards, with one test pulse input per socket, 6.31x test pulse attenuation."/>
-	<c:attr c:name="c:adaptor" c:value="2CMP16A" c:description="2-socket adapter for CMP16 chips, with common test pulse input, 5x test pulse attenuation."/>
+	<c:attr c:name="c:adaptor" c:value="10AD16A" c:description="10-socket adapter for AD16 boards, see 'Adaptors' table for details."/>
+	<c:attr c:name="c:adaptor" c:value="2AD16A" c:description="2-socket adapter for AD16 boards,  see 'Adaptors' table for details."/>
+	<c:attr c:name="c:adaptor" c:value="2CMP16A" c:description="2-socket adapter for CMP16 chips,  see 'Adaptors' table for details."/>
       </c:tag>
       <c:tag c:name="c:measurement">
 	<c:attr c:name="c:type" c:value="count_vs_dac" c:description="Efficiency vs pulse amplitude"/>
@@ -79,24 +79,22 @@
 	<c:attr c:name="c:slot" c:value="8"               c:description="Use the common pulse generator in this slot to inject pulses through the external capacitor."/>
 	<c:attr c:name="c:slot" c:value="9"               c:description="Use the common pulse generator in this slot to inject pulses through the external capacitor."/>
       </c:tag>
-      <c:measurement c:name="count_vs_dac">-</c:measurement>
-      <c:measurement c:name="time_vs_dac">-</c:measurement>
     </c:metadata>
 
     <c:testedDevice c:type="AD16" c:nChannels="16"/>
 
     <c:crate c:number="1">
-      <c:module c:slot="1"  c:name="" c:type=""/>
-      <c:module c:slot="2"  c:name="" c:type=""/>
-      <c:module c:slot="3"  c:name="LeCroy3377" c:type="TDC"/>
-      <c:module c:slot="4"  c:name="" c:type=""/>
-      <c:module c:slot="5"  c:name="LE32" c:type="SignalConverter"/>
-      <c:module c:slot="6"  c:name="LE32" c:type="PulseGenerator"/>
-      <c:module c:slot="7"  c:name="LeCroy3377" c:type="TDC"/>
-      <c:module c:slot="8"  c:name="" c:type=""/>
-      <c:module c:slot="9"  c:name="LE32" c:type="SignalConverter"/>
-      <c:module c:slot="10" c:name="" c:type=""/>
-      <c:module c:slot="11" c:name="Jorway73A" c:type="CrateController"/>
+      <c:module c:slot="1"  c:name=""           c:id=""       c:type=""/>
+      <c:module c:slot="2"  c:name=""           c:id=""       c:type=""/>
+      <c:module c:slot="3"  c:name="LeCroy3377" c:id="B58662" c:type="TDC"/>
+      <c:module c:slot="4"  c:name=""           c:id=""       c:type=""/>
+      <c:module c:slot="5"  c:name="LE32"       c:id="11"     c:type="SignalConverter"/>
+      <c:module c:slot="6"  c:name="LE32"       c:id="5"      c:type="PulseGenerator"/>
+      <c:module c:slot="7"  c:name="LeCroy3377" c:id="B58652" c:type="TDC"/>
+      <c:module c:slot="8"  c:name=""           c:id=""       c:type=""/>
+      <c:module c:slot="9"  c:name="LE32"       c:id="12"     c:type="SignalConverter"/>
+      <c:module c:slot="10" c:name=""           c:id=""       c:type=""/>
+      <c:module c:slot="11" c:name="Jorway73A"  c:id=""       c:type="CrateController"/>
     </c:crate>
 
     <c:inputs c:adaptor="10AD16A">
@@ -134,5 +132,71 @@
 	<c:TDC c:timeMin="0" c:timeMax="120"/>
       </c:measurement>
     </c:measurements>
+
+    <!-- Below are parameters that are unlikely to need (frequent) changing and therefore cannot be edited from the web interface. -->
+
+    <c:adaptors>
+      <c:adaptor c:name="10AD16A" c:pulseDivisionFactor="6.31" c:injectionCapacitance="1.6">
+	<c:socket c:number= "1" c:coefficient="1.0"/>
+	<c:socket c:number= "2" c:coefficient="1.0"/>
+	<c:socket c:number= "3" c:coefficient="1.0"/>
+	<c:socket c:number= "4" c:coefficient="1.0"/>
+	<c:socket c:number= "5" c:coefficient="1.0"/>
+	<c:socket c:number= "6" c:coefficient="1.0"/>
+	<c:socket c:number= "7" c:coefficient="1.0"/>
+	<c:socket c:number= "8" c:coefficient="1.0"/>
+	<c:socket c:number= "9" c:coefficient="1.0"/>
+	<c:socket c:number="10" c:coefficient="1.0"/>
+      </c:adaptor>
+      <c:adaptor c:name="2AD16A" c:pulseDivisionFactor="1.0" c:injectionCapacitance="1.0">
+	<c:socket c:number= "1" c:coefficient="1.0"/>
+	<c:socket c:number= "2" c:coefficient="1.0"/>
+      </c:adaptor>
+      <c:adaptor c:name="2CMP16A" c:pulseDivisionFactor="5.0" c:injectionCapacitance="1.6">
+	<c:socket c:number= "1" c:coefficient="1.0"/>
+	<c:socket c:number= "2" c:coefficient="1.0"/>
+      </c:adaptor>
+    </c:adaptors>
+
+    <c:DACs>
+      <c:DAC moduleName="LE32" moduleId="11" DACOutput="1">
+	<value DACUnits=  "25" milliVolts=  "50"/>
+	<value DACUnits=  "50" milliVolts= "100"/>
+	<value DACUnits=  "75" milliVolts= "150"/>
+	<value DACUnits= "100" milliVolts= "200"/>
+	<value DACUnits= "150" milliVolts= "300"/>
+	<value DACUnits= "200" milliVolts= "400"/>
+	<value DACUnits= "250" milliVolts= "500"/>
+	<value DACUnits= "300" milliVolts= "600"/>
+	<value DACUnits= "350" milliVolts= "700"/>
+	<value DACUnits= "400" milliVolts= "800"/>
+	<value DACUnits= "450" milliVolts= "900"/>
+	<value DACUnits= "500" milliVolts="1000"/>
+	<value DACUnits= "600" milliVolts="1200"/>
+	<value DACUnits= "700" milliVolts="1400"/>
+	<value DACUnits= "800" milliVolts="1600"/>
+	<value DACUnits= "900" milliVolts="1800"/>
+	<value DACUnits="1000" milliVolts="2000"/>
+      </c:DAC>
+      <c:DAC moduleName="LE32" moduleId="11" DACOutput="2">
+	<value DACUnits=  "25" milliVolts=  "50"/>
+	<value DACUnits=  "50" milliVolts= "100"/>
+	<value DACUnits=  "75" milliVolts= "150"/>
+	<value DACUnits= "100" milliVolts= "200"/>
+	<value DACUnits= "150" milliVolts= "300"/>
+	<value DACUnits= "200" milliVolts= "400"/>
+	<value DACUnits= "250" milliVolts= "500"/>
+	<value DACUnits= "300" milliVolts= "600"/>
+	<value DACUnits= "350" milliVolts= "700"/>
+	<value DACUnits= "400" milliVolts= "800"/>
+	<value DACUnits= "450" milliVolts= "900"/>
+	<value DACUnits= "500" milliVolts="1000"/>
+	<value DACUnits= "600" milliVolts="1200"/>
+	<value DACUnits= "700" milliVolts="1400"/>
+	<value DACUnits= "800" milliVolts="1600"/>
+	<value DACUnits= "900" milliVolts="1800"/>
+	<value DACUnits="1000" milliVolts="2000"/>
+      </c:DAC>
+    </c:DACs>
 
 </c:configuration>
