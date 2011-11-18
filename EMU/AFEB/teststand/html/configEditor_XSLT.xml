@@ -117,7 +117,7 @@
 		</input>
 	      </xsl:for-each>
 	    </xsl:if>
-	    <xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="@c:name"/></xsl:if>	
+	    <xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="@c:id"/></xsl:if>	
 	  </td>
 	  <td>
 	    <xsl:if test="$CONFIGMODE='control'">

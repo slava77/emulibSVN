@@ -13,7 +13,7 @@ namespace AFEB { namespace teststand {
     class Jorway73A : public CrateController
     {      
     public:
-      Jorway73A( const int crateNumber );
+      Jorway73A( const string id, const int crateNumber );
       int getBranch() const { return branch_; }
 
       // Implement generic virtual methods of CrateController

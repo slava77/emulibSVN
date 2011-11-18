@@ -41,12 +41,15 @@ void AFEB::teststand::Configuration::createCrate( bool forDummyMeasurements ) {
     xpath.str("");
     xpath << "//c:configuration/c:crate/c:module[@c:slot=\"" << slot << "\"]/@c:type";
     string moduleType = utils::getSelectedNodeValue( xml_, xpath.str() );
+    xpath.str("");
+    xpath << "//c:configuration/c:crate/c:module[@c:slot=\"" << slot << "\"]/@c:id";
+    string moduleId = utils::getSelectedNodeValue( xml_, xpath.str() );
     if ( moduleName.size() != 0 && moduleType.size() != 0 ){
 
       if ( moduleType == "CrateController" && !forDummyMeasurements ){
 	if ( moduleName == "Jorway73A" ){
 	  try{
-	    AFEB::teststand::Jorway73A *module = new AFEB::teststand::Jorway73A( crateNumber );
+	    AFEB::teststand::Jorway73A *module = new AFEB::teststand::Jorway73A( moduleId, crateNumber );
 	    crate_->insertController( module, slot );
 	  } catch( xcept::Exception &e ){
 	    XCEPT_RETHROW( xcept::Exception, "Failed to create Jorway73A.", e );
@@ -58,7 +61,7 @@ void AFEB::teststand::Configuration::createCrate( bool forDummyMeasurements ) {
       }
       else if ( moduleType == "TDC" )
 	if ( moduleName == "LeCroy3377" ){
-	  AFEB::teststand::LeCroy3377 *module = new AFEB::teststand::LeCroy3377();
+	  AFEB::teststand::LeCroy3377 *module = new AFEB::teststand::LeCroy3377( moduleId );
 	  crate_->insert( module, slot );
 	}
 	else{
@@ -66,7 +69,7 @@ void AFEB::teststand::Configuration::createCrate( bool forDummyMeasurements ) {
 	}
       else if ( moduleType == "SignalConverter" ){
 	if ( moduleName == "LE32" ){
-	  AFEB::teststand::LE32 *module = new AFEB::teststand::LE32( moduleType  );
+	  AFEB::teststand::LE32 *module = new AFEB::teststand::LE32( moduleType, moduleId );
 	  crate_->insert( module, slot );
 	}
 	else{
@@ -75,7 +78,7 @@ void AFEB::teststand::Configuration::createCrate( bool forDummyMeasurements ) {
       }
       else if ( moduleType == "PulseGenerator" ){
 	if ( moduleName == "LE32" ){
-	  AFEB::teststand::LE32 *module = new AFEB::teststand::LE32( moduleType  );
+	  AFEB::teststand::LE32 *module = new AFEB::teststand::LE32( moduleType, moduleId );
 	  crate_->insert( module, slot );
 	}
 	else{

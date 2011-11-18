@@ -15,8 +15,8 @@ namespace AFEB { namespace teststand {
     class CrateController : public Module
     {      
     public:
-      CrateController( const string name, const int crateNumber )
-	: Module( name, "CrateController" ),
+      CrateController( const string name, const string id, const int crateNumber )
+	: Module( name, "CrateController", id ),
 	  crateNumber_( crateNumber ){}
       virtual ~CrateController(){}
       int getCrateNumber() const { return crateNumber_; }

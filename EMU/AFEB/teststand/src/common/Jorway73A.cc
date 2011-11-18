@@ -5,8 +5,8 @@
 
 #include <unistd.h> // for access()
 
-AFEB::teststand::Jorway73A::Jorway73A( const int crateNumber ) :
-  CrateController( "Jorway73A", crateNumber ),
+AFEB::teststand::Jorway73A::Jorway73A( const string id, const int crateNumber ) :
+  CrateController( "Jorway73A", id, crateNumber ),
   branch_( findBranch() )
 {}
 

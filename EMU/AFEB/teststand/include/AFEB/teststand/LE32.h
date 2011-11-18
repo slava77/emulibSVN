@@ -10,7 +10,7 @@ namespace AFEB { namespace teststand {
     {
     public:
       enum Channel_t { NoCh=0x0, Ch1=0x1, Ch2=0x2 }; 
-      LE32( const string type );
+      LE32( const string type, const string id );
       void turnOff();
       void writeAmplitude( const Channel_t pulseChannels, const unsigned int amplitude );
       void writeThreshold( const Channel_t thresholdChannels, const unsigned int threshold );
