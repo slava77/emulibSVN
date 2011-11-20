@@ -31,8 +31,19 @@
 	</td>
       </tr>
       <tr>
-	<td>
-	  <xsl:apply-templates select="c:adaptors"/>
+	<td colspan="2">
+	  <table class="layout">
+	    <tr><th colspan="2">Calibrations</th></tr>
+	    <tr>
+	      <td><xsl:apply-templates select="c:calibrations/c:adaptors"/></td>
+	      <td>
+		<table class="layout">
+		  <xsl:call-template name="DACs"><xsl:with-param name="DACTYPE">pulse</xsl:with-param></xsl:call-template>
+		  <xsl:call-template name="DACs"><xsl:with-param name="DACTYPE">threshold</xsl:with-param></xsl:call-template>
+		</table>
+	      </td>
+	    </tr>
+	  </table>
 	</td>
       </tr>
     </table>
@@ -504,7 +515,7 @@
     </table>
   </xsl:template>
 
-  <xsl:template match="c:adaptors">
+  <xsl:template match="c:calibrations/c:adaptors">
     <table class="adaptors">
       <tr>
 	<th>Adaptors</th>
@@ -516,8 +527,8 @@
   <xsl:template match="c:adaptor">
     <table class="adaptor">
       <tr><th rowspan="{count(c:socket)+4}"><xsl:value-of select="@c:name"/></th></tr>
-      <tr><th>pulse division factor</th><td><xsl:value-of select="@c:pulseDivisionFactor"/></td></tr>
-      <tr><th>injection capacitance [pF]</th><td><xsl:value-of select="@c:injectionCapacitance"/></td></tr>
+      <tr><th>pulse division</th><td><xsl:value-of select="@c:pulseDivisionFactor"/></td></tr>
+      <tr><th>injection C [pF]</th><td><xsl:value-of select="@c:injectionCapacitance"/></td></tr>
       <tr><th>socket</th><th>coefficient</th></tr>
       <xsl:apply-templates select="c:socket"/>
     </table>
@@ -525,6 +536,37 @@
 
   <xsl:template match="c:socket">
     <tr><th><xsl:value-of select="@c:number"/></th><td><xsl:value-of select="@c:coefficient"/></td></tr>
+  </xsl:template>
+
+  <xsl:template name="DACs">
+    <xsl:param name="DACTYPE"/>
+    <tr>
+      <xsl:for-each select="//c:configuration/c:crate/c:module[@c:type='SignalConverter' or @c:type='PulseGenerator']">
+	<sort select="@c:name"/>
+	<sort select="@c:id"/>
+	<xsl:variable name="MODULENAME" select="@c:name"/>
+	<xsl:variable name="MODULEID" select="@c:id"/>
+	<xsl:for-each select="//c:configuration/c:calibrations/c:DACs/c:DAC[@c:type=$DACTYPE and @c:moduleName=$MODULENAME and @c:moduleId=$MODULEID]">
+	  <xsl:sort select="@c:channel"/>
+	  <td>
+	    <table class="DACs">
+	      <tr><th colspan="2"><xsl:value-of select="@c:type"/> DAC</th></tr>
+	      <tr><th>module</th><td><xsl:value-of select="@c:moduleName"/></td></tr>
+	      <tr><th>module id</th><td><xsl:value-of select="@c:moduleId"/></td></tr>
+	      <tr><th>channel</th><td><xsl:value-of select="@c:channel"/></td></tr>
+	      <tr><th>DAC</th><th>U [mV]</th></tr>
+	      <xsl:apply-templates select="c:value">
+		<xsl:sort data-type="number" select="@c:DACUnits"/>
+	      </xsl:apply-templates>
+	    </table>
+	  </td>
+	</xsl:for-each>
+      </xsl:for-each>
+    </tr>
+  </xsl:template>
+
+  <xsl:template match="c:value">
+    <tr><th><xsl:value-of select="@c:DACUnits"/></th><td><xsl:value-of select="@c:milliVolts"/></td></tr>
   </xsl:template>
 
 </xsl:transform>
