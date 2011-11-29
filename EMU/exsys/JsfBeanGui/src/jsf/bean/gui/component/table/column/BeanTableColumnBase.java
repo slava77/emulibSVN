@@ -37,9 +37,8 @@ public class BeanTableColumnBase implements Serializable {
         this.name = propertyMd.getName();
         this.type = propertyMd.getType();
         this.title = propertyMd.getTitle();
-        this.periodType = (type.equals(BigInteger.class) &&
-                propertyMd.getField().isAnnotationPresent(PeriodType.class));
-        this.filterConverter = FilterConverter.getFilterConverter(this.type, this.periodType);
+        this.periodType = (type.equals(BigInteger.class) && propertyMd.getField().isAnnotationPresent(PeriodType.class));
+        this.filterConverter = FilterConverter.getFilterConverter(propertyMd);
     }
 
     /**

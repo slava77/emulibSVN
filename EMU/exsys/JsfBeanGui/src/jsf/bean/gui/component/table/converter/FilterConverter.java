@@ -12,8 +12,11 @@ import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.faces.convert.Converter;
+import javax.persistence.Lob;
+import jsf.bean.gui.annotation.PeriodType;
 import jsf.bean.gui.component.table.BeanTableFilter;
 import jsf.bean.gui.component.table.BeanTableFilterItem;
+import jsf.bean.gui.metadata.PropertyMd;
 
 public abstract class FilterConverter implements Converter, Serializable {
 
@@ -36,10 +39,15 @@ public abstract class FilterConverter implements Converter, Serializable {
         return m.replaceAll("$1");
     }
 
+    public BeanTableFilter.Operation getDefaultOperation() {
+        return BeanTableFilter.Operation.EQUAL;
+    }
+    
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
         BeanTableFilter filter = new BeanTableFilter();
         BeanTableFilterItem item = new BeanTableFilterItem();
+        item.setOperation(getDefaultOperation());
         if (value != null && value.trim().length() > 0) {
             Matcher m = tokenPattern.matcher(value);
             while (m.find()) {
@@ -127,8 +135,10 @@ public abstract class FilterConverter implements Converter, Serializable {
         return s.trim();
     }
 
-    public static FilterConverter getFilterConverter(Class type, boolean periodType) {
-
+    public static FilterConverter getFilterConverter(PropertyMd propertyMd) {
+        
+        Class type = propertyMd.getType();
+        
         if (type.equals(BigDecimal.class)) {
             
             return new FilterBigDecimalConverter();
@@ -136,7 +146,7 @@ public abstract class FilterConverter implements Converter, Serializable {
         } else
         if (type.equals(BigInteger.class)) {
 
-            if (periodType) {
+            if (propertyMd.getField().isAnnotationPresent(PeriodType.class)) {
                 return new FilterPeriodConverter();
             }
 
@@ -173,6 +183,10 @@ public abstract class FilterConverter implements Converter, Serializable {
         } else
         if (type.isEnum()) {
             return new FilterEnumConverter(type);
+        }
+        
+        if (propertyMd.getGetterMethod().isAnnotationPresent(Lob.class)) {
+            return new FilterClobConverter();
         }
         
         return new FilterStringConverter();

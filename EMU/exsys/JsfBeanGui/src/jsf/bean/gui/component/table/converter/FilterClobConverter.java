@@ -1,10 +1,16 @@
 package jsf.bean.gui.component.table.converter;
 
 import java.util.Iterator;
+import jsf.bean.gui.component.table.BeanTableFilter.Operation;
 import jsf.bean.gui.component.table.BeanTableFilterItem;
 import jsf.bean.gui.component.table.BeanTableFilter;
 
 public class FilterClobConverter extends FilterStringConverter {
+
+    @Override
+    public Operation getDefaultOperation() {
+        return Operation.LIKE;
+    }
 
     @Override
     public void checkFilter(BeanTableFilter filter) {
