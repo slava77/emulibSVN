@@ -22,7 +22,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 
-public abstract class BeanTableDao implements Serializable {
+public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
 
     private static final Logger logger = SimpleLogger.getLogger(BeanTableDao.class);
     private static final Integer MAX_IN_ELEMENTS = 1000;
@@ -202,7 +202,7 @@ public abstract class BeanTableDao implements Serializable {
      * @param table Source table
      * @return Criteria
      */
-    private DetachedCriteria getDetachedCriteria(BeanTable table) {
+    public DetachedCriteria getDetachedCriteria(BeanTable table) {
 
         DetachedCriteria c = DetachedCriteria.forClass(table.getRowClass());
         CriteriaConfig config = new CriteriaConfig();
