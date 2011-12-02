@@ -30,6 +30,7 @@ public class BeanTableExportTemplateProvider {
      * Get a list of public templates for a table
      * @return
      */
+    @SuppressWarnings(value="unchecked")
     public List<BeanTableExportTemplate> getPublicTemplates() {
         return Collections.EMPTY_LIST;
     }
@@ -38,6 +39,7 @@ public class BeanTableExportTemplateProvider {
      * Get a list of user templates for a table
      * @return
      */
+    @SuppressWarnings(value="unchecked")
     public List<BeanTableExportTemplate> getUserTemplates() {
         return Collections.EMPTY_LIST;
     }

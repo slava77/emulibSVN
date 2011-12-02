@@ -89,11 +89,12 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
      * @param pageIndex Page index
      * @return List of page data
      */
+    @SuppressWarnings("unchecked")
     public List<EntityBeanBase> getData(BeanTable table,
             int pageSize,
             int pageIndex) {
 
-        List data = new ArrayList();
+        List<EntityBeanBase> data = new ArrayList<EntityBeanBase>();
 
         Session session = getSession();
         Transaction transaction = session.beginTransaction();

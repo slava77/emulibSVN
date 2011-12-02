@@ -37,6 +37,7 @@ public abstract class BeanTableExportProcessor {
         fileStream.flush();
     }
     
+    @SuppressWarnings("unchecked")
     protected Map getRoot() {
         
         Map root = new HashMap();

@@ -77,6 +77,7 @@ public class GenericProperties implements Serializable {
         properties.setProperty(key, sb.toString());
     }
 
+    @SuppressWarnings(value="unchecked")
     public List<Integer> getIntList(String key) {
         if (hasKey(key)) {
             List<Integer> ret = new ArrayList<Integer>();
@@ -99,6 +100,7 @@ public class GenericProperties implements Serializable {
         properties.setProperty(key, sb.toString());
     }
 
+    @SuppressWarnings(value="unchecked")
     public Collection<SelectItem> getSelectItemList(String key) {
         if (hasKey(key)) {
             List<SelectItem> ret = new ArrayList<SelectItem>();

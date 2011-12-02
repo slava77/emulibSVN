@@ -15,6 +15,7 @@ import java.util.UUID;
 import jsf.bean.gui.component.table.BeanTable;
 import org.icefaces.apache.commons.io.IOUtils;
 
+@SuppressWarnings("deprecation")
 public class BeanTableExportResource implements Resource, Serializable {
 
     private final BeanTableExportTemplate template;
@@ -37,7 +38,6 @@ public class BeanTableExportResource implements Resource, Serializable {
         return inputStream;
     }
 
-    @SuppressWarnings("deprecation")
     public Date lastModified() {
         return Calendar.getInstance().getTime();
     }

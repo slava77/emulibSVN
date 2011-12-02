@@ -73,6 +73,7 @@ public class BeanTableColumnEntity extends BeanTableColumn {
         return setFilterTablePack(null);
     }
     
+    @SuppressWarnings("unchecked")
     public BeanTablePack setFilterTablePack(String prefix) throws Exception {
         if (filter == null) {
             this.filter = new BeanTableProjectionFilter();

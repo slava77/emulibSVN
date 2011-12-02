@@ -27,6 +27,7 @@ public class BeanTableExportProcessorSecFreemarker extends BeanTableExportProces
         super(table, template);
     }
 
+    @SuppressWarnings("unchecked")
     public boolean export(InputStream in, OutputStream out) throws IOException {
 
         TemplateManager manager = new TemplateManager();

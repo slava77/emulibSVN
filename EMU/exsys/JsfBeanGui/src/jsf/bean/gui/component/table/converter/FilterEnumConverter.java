@@ -22,6 +22,7 @@ public class FilterEnumConverter extends FilterConverter {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Object valueToObject(String value) {
         try {
             return (Enum) Enum.valueOf(enumClass, value);

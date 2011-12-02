@@ -44,6 +44,7 @@ public class BeanTableExportTemplateList {
         return defaultExportResources;
     }
 
+    @SuppressWarnings(value="unchecked")
     public List<BeanTableExportResource> getPublicExportResources() {
         BeanTableExportTemplateProvider provider = table.getPack().getManager().getTemplateProvider();
         if (provider.getModified() == null) {
@@ -63,6 +64,7 @@ public class BeanTableExportTemplateList {
         return publicExportResources;
     }
 
+    @SuppressWarnings(value="unchecked")
     public List<BeanTableExportResource> getUserExportResources() {
         BeanTableExportTemplateProvider provider = table.getPack().getManager().getTemplateProvider();
         if (provider.getModified() == null) {

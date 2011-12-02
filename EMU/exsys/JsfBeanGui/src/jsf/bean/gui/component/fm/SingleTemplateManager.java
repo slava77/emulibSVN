@@ -26,6 +26,7 @@ public class SingleTemplateManager {
         }
     }
 
+    @SuppressWarnings(value="unchecked")
     public String execute(Map root) throws IOException, TemplateException {
         return nullTemplate ? null : manager.execute(TEMPLATE_NAME, root);
     }

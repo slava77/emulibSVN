@@ -32,6 +32,7 @@ public class BeanTablePack implements Serializable {
         this(null, null, manager, rowClass);
     }
 
+    @SuppressWarnings(value="unchecked")
     public BeanTablePack(String nextPrefix, String title, BeanTableManager manager, Class<? extends EntityBeanBase> rowClass) throws Exception {
 
         this.prefix = manager.buildTablePrefix(nextPrefix);
@@ -172,6 +173,7 @@ public class BeanTablePack implements Serializable {
         return parentJson;
     }
 
+    @SuppressWarnings(value="unchecked")
     public final void setSerializedFilter(JSONObject filter) throws Exception {
         
         if (!isSingleClass()) {

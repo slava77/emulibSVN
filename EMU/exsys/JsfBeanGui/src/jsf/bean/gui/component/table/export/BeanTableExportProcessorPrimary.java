@@ -55,6 +55,7 @@ public class BeanTableExportProcessorPrimary extends BeanTableExportProcessor {
         this.isPreview = isPreview;
     }
 
+    @SuppressWarnings("unchecked")
     public boolean export(OutputStream out) throws IOException {
 
         TemplateManager manager = new TemplateManager();
@@ -109,6 +110,7 @@ public class BeanTableExportProcessorPrimary extends BeanTableExportProcessor {
         
     }
 
+    @SuppressWarnings("unchecked")
     private void writeItems(OutputStream out, TemplateManager manager, Map root) throws IOException, TemplateException {
         root.put(KEY_IS_LAST, false);
         long pages = ((table.getDataCount() % PAGE_SIZE) == 0 ? (table.getDataCount() / PAGE_SIZE) : (table.getDataCount() / PAGE_SIZE) + 1);
@@ -136,6 +138,7 @@ public class BeanTableExportProcessorPrimary extends BeanTableExportProcessor {
         root.remove(KEY_PAGE);
     }
 
+    @SuppressWarnings("unchecked")
     private void writeItemsPreview(OutputStream out, TemplateManager manager, Map root) throws IOException, TemplateException {
         root.put(KEY_PAGE, table.getPack().getManager().getBeanTableDao().getData(table, PAGE_SIZE, 1));
         root.put(KEY_IS_FIRST_PAGE, true);

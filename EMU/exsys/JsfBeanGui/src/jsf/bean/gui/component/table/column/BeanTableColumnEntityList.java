@@ -29,6 +29,7 @@ public class BeanTableColumnEntityList extends BeanTableColumnEntity {
         return itemType;
     }
     
+    @SuppressWarnings("unchecked")
     public void setListPropertyTable(EntityBeanBase currentItem) throws Exception {
         if (isEntityType()) {
             setFilterTablePack();

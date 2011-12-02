@@ -64,6 +64,7 @@ public class FmComponentBean extends JsfBeanBase {
      * @param name Attribute name
      * @return attribute value
      */
+    @SuppressWarnings(value="unchecked")
     private <T> T getAttribute(Class<T> clazz, String name) {
         UIComponent c = UIComponent.getCurrentComponent(FacesContext.getCurrentInstance());
         UIComponent cc = UIComponent.getCompositeComponentParent(c);
@@ -171,6 +172,7 @@ public class FmComponentBean extends JsfBeanBase {
         }
     }
 
+    @SuppressWarnings(value="unchecked")
     public void validateTemplate(FacesContext fc, UIComponent uic, Object o) {
         try {
             if (isTest()) {
