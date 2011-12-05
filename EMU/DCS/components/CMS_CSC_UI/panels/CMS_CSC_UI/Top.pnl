@@ -386,9 +386,14 @@ void updatePlusMinusNodesOperationModeCB(dyn_string dpNames, dyn_string included
 void pcratePowerUpBufferChangedCB(string dpName, dyn_string buffer) {
   if (dynlen(buffer) > 0) {
     btnErrorSummaryBack.backCol = \"advanceAlarmCamUna\";
+    lblWarnConfiguring.visible = true;
+    progressConfiguration.visible = true;
+    progressConfiguration.progress = 60 - dynlen(buffer); // 60 PCrates in total
   } else {
     btnErrorSummaryBack.backCol = \"_Button\";
-  }      
+    lblWarnConfiguring.visible = false;
+    progressConfiguration.visible = false;
+  }
 }
 
 void updateVersionCB(string dpName, string version) {
@@ -1143,7 +1148,7 @@ E E 0 1 1 2 1 E 1 0 1 -339 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png"
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 -3918.719949739826 -1090 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -4362.289421296593 -1130 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -1162,7 +1167,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 48.56063103071852 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 48.53809542279456 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
@@ -1869,7 +1874,48 @@ LANG:1 21 Open DCS expert panel
   ChildPanelOnCentral(\"CMS_CSC_UI/util/DcsExpertTools/Main.pnl\", \"CSC DCS Expert Panel\", makeDynString());
 }" 0
  E E E
+2 98
+"lblWarnConfiguring"
+""
+1 810 417 E E E 1 E 0 E N "_WindowText" E N "advanceAlarmCamUna" E E
+ E E
+112 0 0 0 0 0
+E E E
 0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 354 417 1266 455
+1 2 2 "0s" 0 0 0 193 0 0  810 417 2
+1
+LANG:1 31 Sans Serif,10,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 24 System is configuring...
+1
+LANG:1 31 Sans Serif,10,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 124 Please wait until this process is finished before doing ANYTHING else (including use of yellow page, blue page, RCMS, etc..)
+29 99
+"progressConfiguration"
+""
+1 910 420 E E E 1 E 0 E N "_3DText" E N "_3DFace" E E
+ E E
+113 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"totalSteps" "int 60"
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  910 420 1140 430
+11 ProgressBar
+0
+E0
 LAYER, 1 
 1
 LANG:1 0 
