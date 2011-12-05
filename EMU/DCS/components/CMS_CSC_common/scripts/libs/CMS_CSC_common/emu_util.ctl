@@ -13,7 +13,7 @@ This package contains miscellaneous utility functions.
 
 
 /** returns stime of a given datapoint (as type time). */
-string emu_getLastUpdateTimeAsTime(string dp) {
+time emu_getLastUpdateTimeAsTime(string dp) {
   time stime;
   string dpSTime = dpSubStr(dp, DPSUB_SYS_DP_EL) + ":_online.._stime";
   if (!dpExists(dpSTime)) {

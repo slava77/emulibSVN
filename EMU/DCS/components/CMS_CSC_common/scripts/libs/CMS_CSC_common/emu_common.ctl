@@ -32,6 +32,9 @@ global dyn_string g_emu_debugBacktrace;
 global dyn_int g_emu_reportingThreads;
 global dyn_dyn_string g_emu_exceptionsToReport;
 
+/** Cache of DPE values used by emu_dpGetCached() */
+global mapping g_emu_dpCache;
+
 /** Register an EMU error
   @param msg         Error message. 
 */
@@ -448,6 +451,16 @@ int emu_dynAppend(dyn_anytype &x, dyn_anytype y) {
   return dynlen(x);
 }
 
+/** Removes all elements from x which are also found in y. */
+void emu_dynRemove(dyn_anytype &x, dyn_anytype y) {
+  for (int i=1; i <= dynlen(y); i++) {
+    int idx = dynContains(x, y[i]);
+    if (idx > 0) {
+      dynRemove(x, idx);
+    }
+  }
+}
+
 /** Does a dpGet, then checks if the value is different from the one provided, if so then does a dpSetWait with the value provided. */
 void emu_dpSetWaitIfDifferent(string dp, anytype value) {
   anytype currentValue;
@@ -547,7 +560,25 @@ string emu_getChamberName(mapping deviceParams, bool zeroPadded = true) {
   * than you're going to query it's value - use this function, otherwise don't.
   */
 anytype emu_dpGetCached(string dpe) {
+//   if (mappingHasKey(g_emu_dpCache, dpe)) {
+//     emu_info("returning from cache");
+//     return g_emu_dpCache[dpe];
+//   } else {
+//     anytype ret;
+//     dpGet(dpe, ret);
+//     g_emu_dpCache[dpe] = ret;
+//     dpConnect("_emu_cachedDpUpdatedCB", false, dpe);
+//     emu_info("adding to cache");
+//     return ret;
+//   }
+  
   anytype ret;
   dpGet(dpe, ret); // dummy implementation for now
   return ret;
+}
+
+void _emu_cachedDpUpdatedCB(string dpe, anytype value) {
+//  emu_info("cache update came, dpe=" + dpe + ", value=" + value);
+//  emu_info("does it even exist in the mapping? " + mappingHasKey(g_emu_dpCache, dpe));
+//  g_emu_dpCache[dpe] = value;
 }
