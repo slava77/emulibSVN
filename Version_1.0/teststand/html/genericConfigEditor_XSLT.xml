@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+
+<xsl:transform 
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+    xmlns:c="http://cms.cern.ch/emu/afeb/teststand/configuration" 
+    version="1.0">
+
+  <xsl:output method="html" indent="yes"/>
+
+  <!-- path to element within the c namespace-->
+  <xsl:template name="elementPath">
+    <xsl:for-each select="(ancestor-or-self::c:*)"><xsl:variable name="NAME" select="name()"/>/<xsl:value-of select="name()"/>[<xsl:value-of select="1+count(preceding-sibling::c:*[name()=$NAME])"/>]</xsl:for-each>
+  </xsl:template>
+
+  <xsl:template match="//c:configuration">
+          <ol>
+            <xsl:apply-templates select="c:*"/>
+          </ol>
+          <input type="submit" name="submit" value="submit"/>
+  </xsl:template>
+
+  <xsl:template match="c:*">
+    <li>
+      <xsl:value-of select="local-name(.)"/><xsl:text> </xsl:text><xsl:apply-templates select="@c:*"/>
+      <xsl:if test="not(child::c:*) and text()">
+        <input type="text">
+          <xsl:attribute name="name"><xsl:call-template name="elementPath"/></xsl:attribute>
+          <xsl:attribute name="value"><xsl:value-of select="text()"/></xsl:attribute>
+        </input>
+      </xsl:if>
+    </li>
+    <xsl:if test="child::c:*">
+      <ol>
+        <xsl:apply-templates select="c:*"/>
+      </ol>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="@c:*">
+    <xsl:value-of select="local-name(.)"/>
+    <xsl:text> = </xsl:text>
+    <input type="text">
+      <xsl:attribute name="name"><xsl:call-template name="elementPath"/>/@<xsl:value-of select="name()"/></xsl:attribute>
+      <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+    </input>
+    <xsl:text>  </xsl:text>
+  </xsl:template>
+
+  <xsl:template match="text()"/>
+
+</xsl:transform>

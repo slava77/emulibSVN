@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<locatingRules xmlns="http://thaiopensource.com/ns/locating-rules/1.0">
+  <uri resource="htmlRenderer_XSLT.xml" typeId="XSLT"/>
+  <uri resource="configEditor_XSLT.xml" typeId="XSLT"/>
+  <uri resource="application_XSLT.xml" typeId="XSLT"/>
+</locatingRules>
