@@ -32,25 +32,25 @@ Link=""
 
 Sources = \
 	Application.cc \
-	DOM.cc \
-	Cgi.cc \
-	Xalan.cc \
-	System.cc \
-	String.cc \
-	Xcept.cc \
-	Module.cc \
-	Crate.cc \
-	CrateController.cc \
-	LE32.cc \
-	LeCroy3377.cc \
-	Jorway73A.cc \
 	Configuration.cc \
 	Measurement.cc \
 	Calibration.cc \
 	TestedDevice.cc \
 	Results.cc \
-	fit/StraightLine2D.cc \
-	version.cc
+	version.cc \
+	utils/DOM.cc \
+	utils/Cgi.cc \
+	utils/Xalan.cc \
+	utils/System.cc \
+	utils/String.cc \
+	utils/Xcept.cc \
+	crate/Module.cc \
+	crate/Crate.cc \
+	crate/CrateController.cc \
+	crate/LE32.cc \
+	crate/LeCroy3377.cc \
+	crate/Jorway73A.cc \
+	fit/StraightLine2D.cc
 
 TestSources =
 TestIncludeDirs =
