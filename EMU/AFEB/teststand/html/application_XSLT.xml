@@ -19,17 +19,49 @@
       </tr>
       <tr>
 	<td>
-	  <input type="submit" name="fsm" value="Configure" class="submit" title="Configure the measurement.">
+	  <input type="submit" name="fsm" value="Configure" class="submit" title="Configure for the selected mode.">
 	    <xsl:if test="@a:state!='Halted'"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
 	  </input>
+	  <select name="mode">
+	    <xsl:if test="@a:state!='Halted'"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
+	    <option title="Perform measurements.">
+	      <xsl:if test="@a:mode='measurement'"><xsl:attribute name="selected">selected</xsl:attribute></xsl:if>
+	      measurement
+	    </option>
+	    <option title="Perform calibrations.">
+	      <xsl:if test="@a:mode='calibration'"><xsl:attribute name="selected">selected</xsl:attribute></xsl:if>
+	      calibration
+	    </option>
+	  </select>
 	</td>
 	<td>
-	  <input type="submit" name="fsm" value="Enable" class="submit" title="Start the measurement.">
-	    <xsl:if test="@a:state!='Configured'"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
-	  </input>
+	  <xsl:choose>
+	    <xsl:when test="@a:mode='calibration'">
+	      <input type="submit" name="fsm" class="submit">
+		<xsl:choose>
+		  <xsl:when test="@a:state='Enabled'">
+		    <xsl:attribute name="value">Stop</xsl:attribute>
+		    <xsl:attribute name="title">Stop the calibration to change DAC values.</xsl:attribute>
+		  </xsl:when>
+		  <xsl:otherwise>
+		    <xsl:attribute name="value">Enable</xsl:attribute>
+		    <xsl:attribute name="title">Start the calibration with the given DAC values.</xsl:attribute>
+		  </xsl:otherwise>
+		</xsl:choose>
+		<xsl:if test="@a:state='Halted' or @a:state='Failed'"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
+	      </input>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <input type="submit" name="fsm" value="Enable" class="submit" title="Start the measurement.">
+		<xsl:if test="@a:state!='Configured'"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
+	      </input>
+	    </xsl:otherwise>
+	  </xsl:choose>
 	</td>
 	<td>
-	  <input type="submit" name="fsm" value="Halt" class="submit" title="Halt the measurement.">
+	  <input type="submit" name="fsm" value="Halt" class="submit">
+	    <xsl:if test="@a:mode='calibration'"><xsl:attribute name="title">Halt the calibration to reconfigure the setup.</xsl:attribute></xsl:if>
+	    <xsl:if test="@a:mode='measurement'"><xsl:attribute name="title">Halt the measurement.</xsl:attribute></xsl:if>
 	    <xsl:if test="@a:state='Halted' or @a:state='Failed'"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
 	  </input>
 	</td>
@@ -37,7 +69,8 @@
       <tr>
 	<td colspan="3">
 	  <hr/>
-	  <xsl:apply-templates mode="application" select="../a:results"/>
+	  <xsl:if test="$APPMODE='measurement'"><xsl:apply-templates mode="application" select="../a:results"/></xsl:if>
+	  <xsl:if test="$APPMODE='calibration'"><xsl:apply-templates select="a:calibration"/></xsl:if>
 	</td>
       </tr>
       <xsl:if test="@a:state='Halted'">
@@ -129,9 +162,30 @@
 
   <xsl:template mode="header" match="a:channel">
       <tr>
-	<th>channel</th>
+	<th rowspan="2">channel</th>
 	<xsl:for-each select="a:parameter">
-	  <th><xsl:value-of select="@a:name"/></th>
+	  <xsl:choose>
+	    <xsl:when test="@a:name='chi2ndf'">
+	      <th rowspan="2">&#x03c7;&#xb2;/ndf</th>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <th colspan="2"><xsl:value-of select="@a:name"/></th>
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</xsl:for-each>
+      </tr>
+      <tr>
+	<xsl:for-each select="a:parameter">
+	  <xsl:choose>
+	    <xsl:when test="@a:name='time on plateau [TDC]'">
+	      <th>mean</th><th>rms</th>
+	    </xsl:when>
+	    <xsl:when test="@a:name='chi2ndf'">
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <th>value</th><th>error</th>
+	    </xsl:otherwise>
+	  </xsl:choose>
 	</xsl:for-each>
       </tr>
   </xsl:template>
@@ -140,7 +194,11 @@
       <tr>
 	<th><xsl:value-of select="@a:number"/></th>
 	<xsl:for-each select="a:parameter">
-	  <td style="width: 25x;"><xsl:value-of select="@a:value"/>&#177;<xsl:value-of select="@a:error"/></td>
+	  <!-- <td style="width: 25x;"><xsl:value-of select="@a:value"/> &#177; <xsl:value-of select="@a:error"/></td> -->
+	  <td><xsl:value-of select="@a:value"/></td>
+	  <xsl:if test="@a:name!='chi2ndf'">
+	    <td><xsl:value-of select="@a:error"/></td>
+	  </xsl:if>
 	</xsl:for-each>
       </tr>
   </xsl:template>
@@ -180,6 +238,15 @@
 
   <xsl:template match="a:file">
     <option value="{@a:name}"><xsl:value-of select="@a:time"/><xsl:text> </xsl:text><b><xsl:value-of select="@a:name"/></b></option>
+  </xsl:template>
+
+  <xsl:template match="a:calibration">
+    <p>Enter the DAC values, and click 'Enable' to set them.</p>
+    <table class="calibrations">
+      <tr><th>all DACs of type</th><th>value [DAC units]</th></tr>
+      <tr><td>test pulse</td><td><input type="text" name="pulseApmlitude" value="{@a:pulseAmplitude}" title="Enter a negative integer if test pulse DACs are not to be pulsed." size="4"/></td></tr>
+      <tr><td>threshold</td><td><input type="text" name="thresholdLevel" value="{@a:thresholdLevel}" title="Enter a negative integer if threshold DACs are not to be set." size="4"/></td></tr>
+    </table>
   </xsl:template>
 
 </xsl:transform>

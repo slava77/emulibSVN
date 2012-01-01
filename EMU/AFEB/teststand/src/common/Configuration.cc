@@ -23,12 +23,18 @@ AFEB::teststand::Configuration::Configuration( const string XML, const string re
 {
   createMeasurements();
   for ( vector<Measurement*>::iterator  i = measurements_.begin() ; i != measurements_.end() ; ++i ) cout << **i;
+  createCalibration();
 }
 
 AFEB::teststand::Configuration::~Configuration(){
+  delete calibration_;
+  calibration_ = NULL;
   delete crate_;
+  crate_ = NULL;
   for ( vector<Measurement*>::iterator  i = measurements_.begin() ; i != measurements_.end() ; ++i ) delete *i;
+  measurements_.clear();
   for ( vector<TestedDevice*>::iterator i = testedDevices_.begin(); i != testedDevices_.end(); ++i ) delete *i;
+  testedDevices_.clear();
 }
 
 void AFEB::teststand::Configuration::createCrate( bool forDummyMeasurements ) {
@@ -182,6 +188,20 @@ void AFEB::teststand::Configuration::createMeasurements() {
   } // for ( t = testedDevices.begin(); t != testedDevices.end(); ++t )
 }
 
+void AFEB::teststand::Configuration::createCalibration(){
+  calibration_ = new Calibration();
+  for ( int iSlot = 1; iSlot<=crate_->maxModules_; ++iSlot ){
+    Module* module = crate_->getModule( iSlot );
+    if ( module != NULL ){
+      if ( module->getType().compare( "PulseGenerator"  ) == 0 ||
+	   module->getType().compare( "SignalConverter" ) == 0 ){
+	calibration_->addModule( module );
+      }
+    }
+  }
+  cout << *calibration_;
+}
+
 
 Measurement* AFEB::teststand::Configuration::findMeasurement( const int position, const int tdcSlot ) const {
   vector<Measurement*>::const_iterator m;
@@ -200,7 +220,7 @@ string AFEB::teststand::Configuration::resultsXML(){
     ss << "<a:measurement a:index=\""  << (*m)->getIndex()
        <<             "\" a:type=\""   << (*m)->getType()
        <<             "\" a:name=\""   << (*m)->getName()
-	 <<           "\" a:status=\"" << (*m)->getStatus() 
+       <<             "\" a:status=\"" << (*m)->getStatus() 
        <<             "\">" << endl;
     map<TestedDevice*,Results*> results = (*m)->getResults();
     for ( map<TestedDevice*,Results*>::const_iterator r = results.begin(); r != results.end(); ++r ){

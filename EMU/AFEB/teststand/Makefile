@@ -38,6 +38,7 @@ Sources = \
 	System.cc \
 	String.cc \
 	Xcept.cc \
+	Module.cc \
 	Crate.cc \
 	CrateController.cc \
 	LE32.cc \
@@ -45,9 +46,18 @@ Sources = \
 	Jorway73A.cc \
 	Configuration.cc \
 	Measurement.cc \
+	Calibration.cc \
 	TestedDevice.cc \
 	Results.cc \
+	fit/StraightLine2D.cc \
+	test/fitterTest.cc \
 	version.cc
+
+TestSources = \
+	test/StraightLine2D.cc \
+	test/fitterTest.cc
+TestIncludeDirs = \
+	$(XDAQ_ROOT)/include
 
 IncludeDirs = \
 	$(XDAQ_ROOT)/include \
@@ -75,7 +85,7 @@ DynamicLibrary = AFEBteststand
 StaticLibrary =
 
 TestLibraries=
-TestExecutables=
+TestExecutables=fitterTest.exe
 
 include $(XDAQ_ROOT)/config/Makefile.rules
 include $(XDAQ_ROOT)/config/mfRPM.rules

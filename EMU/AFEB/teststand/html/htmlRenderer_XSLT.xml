@@ -11,6 +11,8 @@
 
   <xsl:output method="html" indent="yes"/>
 
+  <xsl:param name="APPMODE" select="/root/a:application/@a:mode"/>
+
   <xsl:param name="CONFIGMODE">
     <xsl:choose>
       <xsl:when test="/root/a:application/@a:state='Halted'">control</xsl:when>

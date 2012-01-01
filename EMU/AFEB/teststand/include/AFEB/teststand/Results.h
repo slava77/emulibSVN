@@ -44,6 +44,7 @@ namespace AFEB { namespace teststand {
       TH1D *threshold_; ///< measured threshold( channel ) 1D histogram
       TH1D *noise_; ///< measured noise( channel ) 1D histogram
       TH1D *efficiency_; ///< measured efficiency( channel ) 1D histogram
+      TH1D *chi2ndf_; ///< threshold S-curve fit's chi^2/ndf( channel ) 1D histogram
       TH1D *timeOnPlateau_;  ///< mean +- RMS of the measured times on the efficiency plateau for evaluation of stability
       vector<TH1D*> sCurve_; ///< measured efficiency( amplitude ) 1D histogram
       vector<TProfile*> timeVsAmplitude_;  ///< measured time( amplitude ) 1D histogram

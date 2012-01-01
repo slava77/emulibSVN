@@ -38,14 +38,15 @@
 AFEB::teststand::Application::Application(xdaq::ApplicationStub *s)
   throw (xdaq::exception::Exception) :
   xdaq::WebApplication(s),
-  logger_(Logger::getInstance(generateLoggerName()))
+  logger_(Logger::getInstance(generateLoggerName())),
+  mode_( AFEB::teststand::Application::measurement )
 {
   createFSM();
   bindWebInterface();
   exportParams();
 
-  measurementWorkLoop_ = toolbox::task::getWorkLoopFactory()->getWorkLoop( "AFEB::teststand::Application", "waiting" );
   measurementSignature_  = toolbox::task::bind( this, &AFEB::teststand::Application::measurementInWorkLoop, "measurementInWorkLoop" );
+  calibrationSignature_  = toolbox::task::bind( this, &AFEB::teststand::Application::calibrationInWorkLoop, "calibrationInWorkLoop" );
 
   vector<string> lines = AFEB::teststand::utils::execShellCommand( string( "hostname -s" ) );
   if ( lines.size() == 1 ) host_ = lines[0];
@@ -60,7 +61,7 @@ void AFEB::teststand::Application::createFSM(){
     fsm_.addStateTransition('H', 'C', "Configure", this, &AFEB::teststand::Application::configureAction);
     fsm_.addStateTransition('C', 'C', "Configure", this, &AFEB::teststand::Application::noAction);
     fsm_.addStateTransition('C', 'E', "Enable",    this, &AFEB::teststand::Application::enableAction);
-    fsm_.addStateTransition('E', 'C', "Configure", this, &AFEB::teststand::Application::noAction);
+    fsm_.addStateTransition('E', 'C', "Stop",      this, &AFEB::teststand::Application::stopAction);
     fsm_.addStateTransition('C', 'H', "Halt",      this, &AFEB::teststand::Application::haltAction);
     fsm_.addStateTransition('E', 'H', "Halt",      this, &AFEB::teststand::Application::haltAction);
     fsm_.addStateTransition('H', 'E', "Enable",    this, &AFEB::teststand::Application::noAction);    
@@ -95,9 +96,6 @@ void AFEB::teststand::Application::fireEvent( const string name ){
 }
 
 void AFEB::teststand::Application::configureAction(toolbox::Event::Reference e){
-  if ( configuration_ != NULL ){
-    for ( vector<Measurement*>::const_iterator m = configuration_->getMeasurements().begin(); m != configuration_->getMeasurements().end(); ++m ) (*m)->abort();
-  }
   delete configuration_;
   currentMeasurementIndex_ = -1;
   resultURLDir_ = resultBaseURLDir_.toString() + "/" + AFEB::teststand::utils::getDateTime();
@@ -109,23 +107,54 @@ void AFEB::teststand::Application::configureAction(toolbox::Event::Reference e){
   } catch ( xcept::Exception &e ){
     XCEPT_RETHROW( toolbox::fsm::exception::Exception, "Configuration failed. ", e );
   }
+
+  // Remove leftover work loop, if any, and get a new one
+  try{
+    list<toolbox::task::WorkLoop*> workloops = toolbox::task::getWorkLoopFactory()->getWorkLoops();
+    for ( list<toolbox::task::WorkLoop*>::const_iterator wl = workloops.begin(); wl != workloops.end(); ++ wl ){
+      if ( workLoopName_.compare( (*wl)->getName() ) == 0 &&
+	   workLoopType_.compare( (*wl)->getType() ) == 0    ){
+	toolbox::task::getWorkLoopFactory()->removeWorkLoop( workLoopName_, workLoopType_ );
+	break;
+      }
+    }
+    workLoop_ = toolbox::task::getWorkLoopFactory()->getWorkLoop( workLoopName_, workLoopType_ );
+  } catch( xcept::Exception &e ){
+    XCEPT_RETHROW(toolbox::fsm::exception::Exception, "Failed recreate work loop.", e);
+  }
+
+  // Schedule measurement or calibration to be executed in a separate thread
+  if ( mode_ == AFEB::teststand::Application::measurement ){
+    try{
+      workLoop_->submit( measurementSignature_ );
+      LOG4CPLUS_INFO( logger_, "Submitted measurement action to work loop." );
+    } catch( xcept::Exception &e ){
+      XCEPT_RETHROW(toolbox::fsm::exception::Exception, "Failed to submit measurement action to work loop.", e);
+    }
+  } 
+  else if ( mode_ == AFEB::teststand::Application::calibration ){
+    try{
+      workLoop_->submit( calibrationSignature_ );
+      LOG4CPLUS_INFO( logger_, "Submitted calibration action to work loop." );
+    } catch( xcept::Exception &e ){
+      XCEPT_RETHROW(toolbox::fsm::exception::Exception, "Failed to submit calibration action to work loop.", e);
+    }    
+  }
+
 }
 
-void AFEB::teststand::Application::enableAction(toolbox::Event::Reference e){ // TODO: in separate thread, with mutex
-  // Execute measurement in a separate thread:
-  if ( ! measurementWorkLoop_->isActive() ){
+void AFEB::teststand::Application::enableAction(toolbox::Event::Reference e){
+  // Execute measurement or calibration in a separate thread:
+
+  if ( ! workLoop_->isActive() ){
     try{
-      measurementWorkLoop_->activate();
-      LOG4CPLUS_INFO( logger_, "Activated measurement work loop." );
+      workLoop_->activate();
+      LOG4CPLUS_INFO( logger_, "Activated work loop." );
     } catch( xcept::Exception &e ){
-      XCEPT_RETHROW( toolbox::fsm::exception::Exception, "Failed to activate measurement work loop.", e );
+      XCEPT_RETHROW( toolbox::fsm::exception::Exception, "Failed to activate work loop.", e );
     }
   }
-  try{
-    measurementWorkLoop_->submit( measurementSignature_ );
-  } catch( xcept::Exception &e ){
-    XCEPT_RETHROW(toolbox::fsm::exception::Exception, "Failed to submit measurement action to work loop.", e);
-  }
+
 }
 
 bool AFEB::teststand::Application::measurementInWorkLoop(toolbox::task::WorkLoop *wl){
@@ -154,8 +183,26 @@ bool AFEB::teststand::Application::measurementInWorkLoop(toolbox::task::WorkLoop
   return false;
 }
 
+bool AFEB::teststand::Application::calibrationInWorkLoop(toolbox::task::WorkLoop *wl){
+  return configuration_->getCalibration()->execute();
+}
+
 void AFEB::teststand::Application::haltAction(toolbox::Event::Reference e){
+  // abort() will cause the method not to be automatically rescheduled any more
   for ( vector<Measurement*>::const_iterator m = configuration_->getMeasurements().begin(); m != configuration_->getMeasurements().end(); ++m ) (*m)->abort();
+  if ( configuration_->getCalibration() != NULL ) configuration_->getCalibration()->abort();
+}
+
+void AFEB::teststand::Application::stopAction(toolbox::Event::Reference e){
+  // Just stop the task of the work loop without removing the scheduled method
+  if ( workLoop_->isActive() ){
+    try{
+      workLoop_->cancel();
+      LOG4CPLUS_INFO( logger_, "Cancelled work loop." );
+    } catch( xcept::Exception &e ){
+      XCEPT_RETHROW( toolbox::fsm::exception::Exception, "Failed to cancel work loop.", e );
+    }
+  }
 }
 
 void AFEB::teststand::Application::noAction(toolbox::Event::Reference e){
@@ -259,10 +306,11 @@ string AFEB::teststand::Application::createXMLWebPageSkeleton(){
      << "<root htmlDir=\"/AFEB/teststand/html/\" softwareVersion=\"" <<  AFEBteststand::versions << "\">" << endl;
 
   // Application info
-  ss << "  <a:application xmlns:a=\"" << applicationNamespace_ 
-     <<               "\" a:urlPath=\"" << applicationURLPath_ 
+  ss << "  <a:application xmlns:a=\""    << applicationNamespace_ 
+     <<               "\" a:urlPath=\""  << applicationURLPath_ 
      <<               "\" a:dateTime=\"" << AFEB::teststand::utils::getDateTime()
-     <<               "\" a:state=\"" << fsm_.getStateName( fsm_.getCurrentState() )
+     <<               "\" a:state=\""    << fsm_.getStateName( fsm_.getCurrentState() )
+     <<               "\" a:mode=\""     << modeNames_[ mode_ ]
      <<               "\">" << endl;
 
   // Message, if any
@@ -275,8 +323,15 @@ string AFEB::teststand::Application::createXMLWebPageSkeleton(){
   for ( vector<pair<string,string> >::const_iterator c=configList.begin(); c!=configList.end(); ++c ){
     ss << "      <a:file a:time=\"" << c->first << "\" a:name=\"" << c->second << "\"/>" << endl;
   }
-  ss << "    </a:configuration>" << endl
-     << "  </a:application>" << endl;
+  ss << "    </a:configuration>" << endl;
+  // Calibration
+  if ( mode_ == AFEB::teststand::Application::calibration && configuration_->getCalibration() != NULL ){
+    ss << "    <a:calibration a:thresholdLevel=\"" << configuration_->getCalibration()->getThresholdLevel()
+       <<                 "\" a:pulseAmplitude=\"" << configuration_->getCalibration()->getPulseAmplitude()
+       <<                 "\"/>" << endl;
+  }
+  ss << "  </a:application>" << endl;
+
 
   // Results
   toolbox::net::URL url( getApplicationDescriptor()->getContextDescriptor()->getURL() );
@@ -490,6 +545,12 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
       if ( action["fsm"].compare( "Configure" ) == 0 ){
 
 	if ( fsm_.getCurrentState() == 'H' ){
+	  // Set mode
+	  map<string,string> modes = AFEB::teststand::utils::selectFromQueryString( fev, "^mode$" );
+	  if ( modes.size() == 1 ) mode_ = ( modes["mode"].compare( modeNames_[ AFEB::teststand::Application::calibration ] ) == 0 ? 
+					     AFEB::teststand::Application::calibration : 
+					     AFEB::teststand::Application::measurement );
+	  // Set parameter values
 	  map<string,string> values = AFEB::teststand::utils::selectFromQueryString( fev, "^/" );
 	  for ( map<string,string>::const_iterator v = values.begin(); v != values.end(); ++v ){
 	    cout << v->first << "\t" << v->second << endl;
@@ -503,6 +564,12 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
       else if ( action["fsm"].compare( "Enable" ) == 0 ){
 
 	if ( fsm_.getCurrentState() == 'C' ){
+	  if ( mode_ == AFEB::teststand::Application::calibration ){
+	    map<string,string> DACValues = AFEB::teststand::utils::selectFromQueryString( fev, "^(thresholdLevel|pulseApmlitude)$" );
+	    if ( DACValues.size() == 2 ) configuration_->getCalibration()->setDACValues( DACValues );
+	    cout << "DACValues" << DACValues << endl;
+	    cout << *configuration_->getCalibration() << endl;
+	  }
 	  fireEvent( "Enable" );
 	}
 
@@ -512,6 +579,14 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
 	if ( fsm_.getCurrentState() == 'C' || fsm_.getCurrentState() == 'E' ){
 	  fireEvent( "Halt" );
 	}
+
+      }
+      else if ( action["fsm"].compare( "Stop" ) == 0 ){
+
+	if ( fsm_.getCurrentState() == 'E' ){
+	  fireEvent( "Stop" );
+	}
+
       }
 
     }
@@ -573,6 +648,9 @@ string AFEB::teststand::Application::setProcessingInstruction( const string XML,
 }
 
 const string AFEB::teststand::Application::applicationNamespace_( "http://cms.cern.ch/emu/afeb/teststand/application" );
+const string AFEB::teststand::Application::workLoopName_( "AFEB::teststand::Application" );
+const string AFEB::teststand::Application::workLoopType_( "waiting" );
+const char* const AFEB::teststand::Application::modeNames_[] = { "measurement", "calibration" };
 
 /**
  * Provides the factory method for the instantiation of RUBuilderTester

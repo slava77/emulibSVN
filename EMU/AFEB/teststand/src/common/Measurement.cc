@@ -7,8 +7,6 @@
 #include "xcept/Exception.h"
 #include "TRandom3.h"
 
-#include "ieee_fun_types.h" // for cdchn
-
 using namespace std;
 using namespace AFEB::teststand;
 
@@ -37,6 +35,7 @@ ostream& AFEB::teststand::operator<<( ostream& os, const Measurement& m ){
 }
 
 AFEB::teststand::Measurement::Measurement( const int position, const int index, const string name, const string type, const string resultDir ) :
+  bsem_( toolbox::BSem::EMPTY ), // locked
   position_( position ),
   index_( index ),
   name_( name ),
@@ -53,6 +52,7 @@ AFEB::teststand::Measurement::Measurement( const int position, const int index, 
   if ( !isValidType ){
     XCEPT_RAISE( xcept::Exception, type + " is not a valid meaurement type." );
   }
+  bsem_.give();
 }
 
 AFEB::teststand::Measurement::~Measurement(){
@@ -61,6 +61,7 @@ AFEB::teststand::Measurement::~Measurement(){
 }
 
 void AFEB::teststand::Measurement::setPulseParameters( const vector< pair<string,string> >& param ){
+  bsem_.take();
   string pulseGeneratorSlot;
   vector< pair<string,string> >::const_iterator p;
   for ( p = param.begin(); p != param.end(); ++p ){
@@ -82,24 +83,30 @@ void AFEB::teststand::Measurement::setPulseParameters( const vector< pair<string
   }
 
   //cout << param << endl << *this << endl;
+  bsem_.give();
 }
 
 void AFEB::teststand::Measurement::setThresholdParameters( const vector< pair<string,string> >& param ){
+  bsem_.take();
   vector< pair<string,string> >::const_iterator p;
   for ( p = param.begin(); p != param.end(); ++p ){
     if ( p->first.compare( "c:thresholdValue" ) == 0 ) thresholdValue_ = utils::stringTo<int>( p->second );
   }
+  bsem_.give();
 }
 
 void AFEB::teststand::Measurement::setTDCParameters( const vector< pair<string,string> >& param ){
+  bsem_.take();
   vector< pair<string,string> >::const_iterator p;
   for ( p = param.begin(); p != param.end(); ++p ){
     if      ( p->first.compare( "c:timeMin" ) == 0 ) tdcTimeMin_ = utils::stringTo<int>( p->second );
     else if ( p->first.compare( "c:timeMax" ) == 0 ) tdcTimeMax_ = utils::stringTo<int>( p->second );
   }
+  bsem_.give();
 }
 
 void AFEB::teststand::Measurement::addTestedDevice( TestedDevice* device ){
+  bsem_.take();
   // Check if this input has already been taken:
   map<TestedDevice*,Results*>::const_iterator r;
   for ( r = results_.begin(); r != results_.end(); ++r ){
@@ -115,6 +122,7 @@ void AFEB::teststand::Measurement::addTestedDevice( TestedDevice* device ){
   // Create results for it, too:
   Results *results = new Results( this, device );
   results_.insert( make_pair( device, results ) );
+  bsem_.give();
 }
 
 const TestedDevice* AFEB::teststand::Measurement::getTestedDevice( const int tdcInput ) const {
@@ -150,12 +158,16 @@ int AFEB::teststand::Measurement::getTDCSlot() const {
 }
 
 bool AFEB::teststand::Measurement::execute(){
+  bsem_.take();
   if ( ! isToKeepRunning_ ){
     status_t_ = AFEB::teststand::Measurement::waiting;
+    bsem_.give();
     return false;
   }
   bool keepRunning = true;
   status_t_ = AFEB::teststand::Measurement::running;
+  bsem_.give();
+
   switch ( type_t_ ){
   case count_vs_dac:
   case time_vs_dac:
@@ -171,10 +183,13 @@ bool AFEB::teststand::Measurement::execute(){
     break;
   }
 
+  bsem_.take();
   // Save everything if it hasn't been aborted:
   if ( keepRunning ) for ( map<TestedDevice*,Results*>::iterator r = results_.begin(); r != results_.end(); ++r ) r->second->save( resultDir_ );
 
   status_t_ = AFEB::teststand::Measurement::done;
+  bsem_.give();
+
   return keepRunning;
 }
 

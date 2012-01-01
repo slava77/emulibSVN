@@ -11,6 +11,7 @@ namespace AFEB { namespace teststand {
 
     class Module{
     public:
+      friend ostream& operator<<( ostream& os, const Module& m );
       Module( const string name, const string type, const string id )
 	: name_( name ),
 	  type_( type ),
@@ -30,6 +31,8 @@ namespace AFEB { namespace teststand {
       AFEB::teststand::Crate* crate_;
       int    slot_;
     };
+    
+    ostream& operator<<( ostream& os, const Module& m );
 
   }}
 

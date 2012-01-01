@@ -27,7 +27,7 @@ namespace AFEB { namespace teststand {
       int getNumber() const;
       const AFEB::teststand::Module* getModule( const int slot ) const { return modules_[slot]; }
       AFEB::teststand::Module* getModule( const int slot ) { return modules_[slot]; }
-      const AFEB::teststand::CrateController* getCrateController() const { return static_cast<const AFEB::teststand::CrateController*> ( modules_[controllerSlot_] ); }
+      const AFEB::teststand::CrateController* getCrateController() const;
       void insert( AFEB::teststand::Module* module, int slot );
       void insertController( AFEB::teststand::CrateController* controller, int slot );
     private:

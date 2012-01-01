@@ -33,6 +33,8 @@ class Application : public xdaq::WebApplication
 
 public:
 
+  enum Mode_t { measurement, calibration, nModes };
+
   /// define factory method for the instantion of AFEBTeststand applications
   XDAQ_INSTANTIATOR();
   
@@ -44,6 +46,8 @@ public:
   Logger logger_;
 
 private:
+  static const char* const modeNames_[nModes];
+
   //////////////////////////////////////
   // Beginning of exported parameters //
   //////////////////////////////////////
@@ -72,6 +76,7 @@ private:
   void configureAction(toolbox::Event::Reference e);
   void enableAction(toolbox::Event::Reference e);
   void haltAction(toolbox::Event::Reference e);
+  void stopAction(toolbox::Event::Reference e);
   void noAction(toolbox::Event::Reference e);
   void failAction(toolbox::Event::Reference e);
 
@@ -128,16 +133,21 @@ private:
     throw( xcept::Exception );
 
   bool measurementInWorkLoop(toolbox::task::WorkLoop *wl);
+  bool calibrationInWorkLoop(toolbox::task::WorkLoop *wl);
 
   string applicationURLPath_; ///< the path part of the URL of this application
   static const string applicationNamespace_; ///< the namespace of this application
+  static const string workLoopName_; ///< the name of the work loop
+  static const string workLoopType_; ///< the type of the work loop
   string processingInstructionSetter_; ///< XSLT to set the processing instruction for XML
   string configurationXML_; ///< XML of the configuration
   toolbox::fsm::FiniteStateMachine fsm_; ///< finite state machine
+  Mode_t mode_;			///< Whether to measure or calibrate.
   AFEB::teststand::Configuration* configuration_;  ///< configuration
   int currentMeasurementIndex_; ///< the index of the measurement being performed
-  toolbox::task::WorkLoop *measurementWorkLoop_;
+  toolbox::task::WorkLoop *workLoop_; ///< work loop for the calibrations or measurements to be executed in a separate thread
   toolbox::task::ActionSignature *measurementSignature_;
+  toolbox::task::ActionSignature *calibrationSignature_;
   string resultURLDir_; ///< Result directory relative to the HTML root.
   string resultSystemDir_; ///< The result directory given as full path.
   string host_;  ///< The name of the host we're running on.

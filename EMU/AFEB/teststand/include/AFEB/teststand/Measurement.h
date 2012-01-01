@@ -5,6 +5,8 @@
 #include "AFEB/teststand/TestedDevice.h"
 #include "AFEB/teststand/Results.h"
 
+#include "toolbox/BSem.h"
+
 #include <string>
 #include <vector>
 #include <map>
@@ -50,9 +52,10 @@ namespace AFEB { namespace teststand {
       int getTDCTimeMax() const { return tdcTimeMax_; }
       string getStatus() const { return status_[status_t_]; }
       bool execute();
-      void abort() const { isToKeepRunning_ = false; }
+      void abort(){ isToKeepRunning_ = false; }
 
     private:
+      toolbox::BSem bsem_;	///< Binary semaphore.
       static const char* const types_[nTypes];
       static const char* const status_[nStatus];
       int position_; ///< The position of the corresponding c:measurement element in the configuration XML.
@@ -62,7 +65,7 @@ namespace AFEB { namespace teststand {
       Type_t type_t_;
       Status_t status_t_;
       string resultDir_; ///< The full path to the directory to save the results in.
-      mutable bool isToKeepRunning_;
+      bool isToKeepRunning_;
       map<TestedDevice*,Results*> results_;
 
       int amplitudeMin_;

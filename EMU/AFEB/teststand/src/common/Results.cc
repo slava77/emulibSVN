@@ -131,6 +131,28 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   efficiency_->GetXaxis()->CenterLabels( kTRUE );
   efficiency_->GetXaxis()->SetNdivisions( testedDevice_->getNChannels() );
 
+  // threshold S-curve fit's chi^2/ndf( channel ) 1D histogram
+  name.str("");
+  name << "chi2ndf__" << measurement_->getIndex() << "__" << measurement_->getType() 
+       << "__" << testedDevice_->getId();
+  title.str("");
+  title << "S-curve fit's chi^2/ndf for " << testedDevice_->getType()
+	<< " of id "  << testedDevice_->getId();
+  chi2ndf_ = new TH1D( name.str().c_str(),
+		       title.str().c_str(),
+		       testedDevice_->getNChannels(),
+		       0.,
+		       0. + testedDevice_->getNChannels() );
+  chi2ndf_->SetXTitle( "channel" );
+  chi2ndf_->SetYTitle( "#chi^2/ndf" );
+  chi2ndf_->SetTitleOffset( 0.5, "y" );
+  chi2ndf_->SetTitleSize( 0.08, "y" );
+  chi2ndf_->SetLabelSize( 0.08, "y" );
+  chi2ndf_->SetStats( kFALSE );
+  chi2ndf_->SetMarkerStyle( kOpenCircle );
+  chi2ndf_->GetXaxis()->CenterLabels( kTRUE );
+  chi2ndf_->GetXaxis()->SetNdivisions( testedDevice_->getNChannels() );
+
   // measured mean+-rms( channel ) 1D histogram
   name.str("");
   name << "timesOnPlateau__" << measurement_->getIndex() << "__" << measurement_->getType() 
@@ -237,6 +259,7 @@ AFEB::teststand::Results::~Results(){
   delete threshold_;
   delete noise_;
   delete efficiency_;
+  delete chi2ndf_;
   delete timeOnPlateau_;
   delete legend_;
   for ( vector<TProfile*>::iterator t=timeVsAmplitude_.begin(); t!=timeVsAmplitude_.end(); ++t ) delete *t;
@@ -390,25 +413,13 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
 
     bsem_.take();
     if ( isFinal_ ){
-      if ( measurement_->getTypeType() == AFEB::teststand::Measurement::count_vs_dac ){
-	// Calculate everything properly for the final results.
-	nCDF.SetParameters( mean, sigma, height );
-	p.Fit( &nCDF, "QR" ); // quiet (no printing), use function range
-	threshold_ ->SetBinContent( iChannelBin, nCDF.GetParameter( 0 ) );
-	noise_     ->SetBinContent( iChannelBin, nCDF.GetParameter( 1 ) );
-	efficiency_->SetBinContent( iChannelBin, nCDF.GetParameter( 2 ) / measurement_->getNPulses() );
-	threshold_ ->SetBinError( iChannelBin, nCDF.GetParError( 0 ) );
-	noise_     ->SetBinError( iChannelBin, nCDF.GetParError( 1 ) );
-	efficiency_->SetBinError( iChannelBin, nCDF.GetParError( 2 ) / measurement_->getNPulses() );    
-	// Look at times beyond 3 stddev above transition.
-	plateauStarts[iChannelBin-1] = nCDF.GetParameter( 0 ) + 3. * nCDF.GetParameter( 1 );
-      }
-      else{
+      if ( measurement_->getTypeType() == AFEB::teststand::Measurement::time_vs_dac ){
 	// Fit may fail in time_vs_dac as the transition region may not be covered or resolved well. 
 	// Use the estimates instead, which are less accurate but more robust.
 	threshold_ ->SetBinContent( iChannelBin, mean  );
 	noise_     ->SetBinContent( iChannelBin, sigma );
 	efficiency_->SetBinContent( iChannelBin, height / measurement_->getNPulses() );
+	chi2ndf_   ->SetBinContent( iChannelBin, 0. );
 	threshold_ ->SetBinError( iChannelBin, 0. );
 	noise_     ->SetBinError( iChannelBin, 0. );
 	efficiency_->SetBinError( iChannelBin, 0. );
@@ -416,8 +427,23 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
 	// // size for sigma, i.e., start the plateau 3 amplitude steps away from the transition.
 	// double plateauStart = mean + 3. * TMath::Max( sigma, double( measurement_->getAmplitudeStep() ) );
 
-	// Start it at twice the (apparent) threshold. In time_vs_dac measurements we sure go up to a high enough amplitude to have a long plateau.
+	// Start it at twice the (apparent) threshold. 
+	// In time_vs_dac measurements we sure go up to a high enough amplitude to have a long plateau.
 	plateauStarts[iChannelBin-1] = 2 * mean;
+      }
+      else{
+	// Calculate everything properly for the final results.
+	nCDF.SetParameters( mean, sigma, height );
+	p.Fit( &nCDF, "QR" ); // quiet (no printing), use function range
+	threshold_ ->SetBinContent( iChannelBin, nCDF.GetParameter( 0 ) );
+	noise_     ->SetBinContent( iChannelBin, nCDF.GetParameter( 1 ) );
+	efficiency_->SetBinContent( iChannelBin, nCDF.GetParameter( 2 ) / measurement_->getNPulses() );
+	chi2ndf_   ->SetBinContent( iChannelBin, nCDF.GetChisquare() / ( pulses_->GetNbinsY() - 3 ) );
+	threshold_ ->SetBinError( iChannelBin, nCDF.GetParError( 0 ) );
+	noise_     ->SetBinError( iChannelBin, nCDF.GetParError( 1 ) );
+	efficiency_->SetBinError( iChannelBin, nCDF.GetParError( 2 ) / measurement_->getNPulses() );    
+	// Look at times beyond 3 stddev above transition.
+	plateauStarts[iChannelBin-1] = nCDF.GetParameter( 0 ) + 3. * nCDF.GetParameter( 1 );
       }
     }
     else{
@@ -647,6 +673,7 @@ void AFEB::teststand::Results::save( const string directory ){
   times_->Write();
   pulses_->Write();
   threshold_->Write();
+  chi2ndf_->Write();
   noise_->Write();
   efficiency_->Write();
   timeOnPlateau_->Write();
@@ -681,6 +708,8 @@ map<string,pair<double,double> > AFEB::teststand::Results::getParameters( const 
 							      noise_        ->GetBinError  ( channel+1 ) );
   values["efficiency"           ] = make_pair<double,double>( efficiency_   ->GetBinContent( channel+1 ),
 							      efficiency_   ->GetBinError  ( channel+1 ) );
+  values["chi2ndf"              ] = make_pair<double,double>( chi2ndf_      ->GetBinContent( channel+1 ), 
+							      0.                                         );
   values["time on plateau [TDC]"] = make_pair<double,double>( timeOnPlateau_->GetBinContent( channel+1 ), 
 							      timeOnPlateau_->GetBinError  ( channel+1 ) );
   return values;
