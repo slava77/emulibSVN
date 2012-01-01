@@ -18,17 +18,11 @@ namespace AFEB { namespace teststand { namespace fit {
       class Linear3DTo3D : public AbstractModel{
 
       public:
-	Linear3DTo3D( unsigned int nObservations ) : 
-	  AFEB::teststand::fit::AbstractModel( nObservations ){
+	Linear3DTo3D() : 
+	  AFEB::teststand::fit::AbstractModel(){
 	}
 
-	TMatrixDSym& getDataCovariance( const unsigned int iObservation, const TMatrixD& x, const TMatrixD& y, const TMatrixDSym& covariance ){
-	  if ( dataCovariance_ == NULL ) dataCovariance_ = new TMatrixDSym( covariance );
-	  else                          *dataCovariance_ = covariance;
-	  return *dataCovariance_;
-	}
-
-	TMatrixD&    getJacobian( const unsigned int iObservation, const TMatrixD& x, const TMatrixD& y ){
+	TMatrixD& getJacobian( const TMatrixD& x ){
 	  if ( jacobian_ == NULL ) jacobian_ = new TMatrixD( 3, 12 );
 	  /// parameters = ( a_0, a_1, a_2, B_00, B_01, ... B_21, B_22 ) 
 	  (*jacobian_)( 0,  0 ) = 1.;
@@ -75,6 +69,17 @@ namespace AFEB { namespace teststand { namespace fit {
 	  return *jacobian_;
 	}
 
+	TMatrixD getModelFunctionValue( const TMatrixD& x, const TMatrixD& parameters ){
+	  TMatrixD a( 3, 1 );
+	  for ( int i=0; i<3; ++i ) a( i, 0 ) = parameters( i, 0 );
+	  TMatrixD B( 3, 3 );
+	  for ( int i=0; i<3; ++i ) 
+	    for ( int j=0; j<3; ++j ) 
+	      B( i, j ) = parameters( 2 + 3*i + j, 0 );
+	  TMatrixD value( a + B * x );
+	  return value;
+	}
+
       };
     }
   }
@@ -100,6 +105,13 @@ int main( int argc, char** argv ){
   }
   cout << "Fitted parameters:" << endl;
   slfitter.getFittedParameters().Print();
+  cout << "Fitted parameters' covariance:" << endl;
+  slfitter.getFittedParametersCovariance().Print();
+  TMatrixD x1(1,1); x1(0,0)=4.5;
+  cout << "Fitted function value at " << x1(0,0) << endl;
+  slfitter.getY( x1 ).Print();
+  cout << "Fitted function value's covariance at " << x1(0,0) << endl;
+  slfitter.getYCovariance( x1 ).Print();
 
   //
   // General linear 3D --> 3D
@@ -125,6 +137,11 @@ int main( int argc, char** argv ){
   LeastSquaresFitter<Linear3DTo3D> l3dfitter;
   TRandom random(34565);
   for ( unsigned int i=0; i<100; ++i ){
+
+    CC( 0, 1 ) = CC( 1, 0 ) = 20.*(random.Rndm( i+4 )-0.5);
+    CC( 0, 2 ) = CC( 2, 0 ) = 20.*(random.Rndm( i+5 )-0.5);
+    CC( 1, 2 ) = CC( 2, 1 ) = 20.*(random.Rndm( i+6 )-0.5);
+
     xx(0,0) = 20.*(random.Rndm( i+1 )-0.5);
     xx(1,0) = 20.*(random.Rndm( i+2 )-0.5);
     xx(2,0) = 20.*(random.Rndm( i+3 )-0.5);
@@ -142,9 +159,21 @@ int main( int argc, char** argv ){
     //   cout << "yy:" << endl; yy.Print();
     //   cout << "CC:" << endl; CC.Print();
     // }
+
   }
   cout << "Fitted parameters:" << endl;
   l3dfitter.getFittedParameters().Print();
+  cout << "Fitted parameters' covariance:" << endl;
+  l3dfitter.getFittedParametersCovariance().Print();
+  TMatrixD x3(3,1); 
+  x3(0,0)=3.;
+  x3(1,0)=3.;
+  x3(2,0)=3.;
+  cout << "Fitted function value at " << endl;
+  x3.Print();
+  l3dfitter.getY( x3 ).Print();
+  cout << "Fitted function value's covariance" << endl;
+  l3dfitter.getYCovariance( x3 ).Print();
 
 
   return 0;

@@ -18,12 +18,25 @@ namespace AFEB { namespace teststand { namespace fit {
 
       public:
 	LeastSquaresFitter( unsigned int nObservations = 0 ) :
-	  model_               ( new Model( nObservations ) ),
+	  model_               ( new Model() ),
 	  dataCovariance_      ( NULL ),
 	  jacobian_            ( NULL ),
 	  y_                   ( NULL ),
+	  Gamma_               ( NULL ),
+	  beta_                ( NULL ),
 	  parameters_          ( NULL ),
 	  parametersCovariance_( NULL ){
+	}
+
+	~LeastSquaresFitter(){
+	  delete model_;
+	  delete dataCovariance_;
+	  delete jacobian_;
+	  delete y_;
+	  delete Gamma_;
+	  delete beta_;
+	  delete parameters_;
+	  delete parametersCovariance_;
 	}
 
 	void setParameterNames( const vector<string>& parameterNames ){
@@ -43,8 +56,8 @@ namespace AFEB { namespace teststand { namespace fit {
 
 	  if ( jacobian_ == NULL ){
 
-	    dataCovariance_ = new TMatrixDSym( model_->getDataCovariance( iObservation, x, y, covariance ) );
-	    jacobian_       = new TMatrixD   ( model_->getJacobian      ( iObservation, x, y             ) );
+	    dataCovariance_ = new TMatrixDSym( covariance );
+	    jacobian_       = new TMatrixD   ( model_->getJacobian ( x ) );
 
 	    // Build Gamma for the normal equation:
 	    TMatrixDSym dataCovariance_Inv( TMatrixDSym::kInverted, *dataCovariance_ );
@@ -56,8 +69,8 @@ namespace AFEB { namespace teststand { namespace fit {
 	  }
 	  else{
 
-	    (*dataCovariance_) = model_->getDataCovariance( iObservation, x, y, covariance );
-	    (*jacobian_)       = model_->getJacobian      ( iObservation, x, y             );
+	    (*dataCovariance_) = covariance;
+	    (*jacobian_)       = model_->getJacobian( x );
 
 	    // Build Gamma for the normal equation:
 	    TMatrixDSym dataCovariance_Inv( TMatrixDSym::kInverted, *dataCovariance_ );
@@ -72,15 +85,15 @@ namespace AFEB { namespace teststand { namespace fit {
 	}
 
 	// void addObservation( const TMatrixD& x, const TMatrixD& y, const TMatrixDSym& covariance, const unsigned int iObservation=0 ){
-	//   // This is how to solve it when the observations correlate.
+	//   // This is how to solve it when the observations are correlated.
 	//   if ( jacobian_ == NULL ){
-	//     dataCovariance_ = new TMatrixDSym( model_->getDataCovariance( iObservation, x, y, covariance ) );
-	//     jacobian_       = new TMatrixD   ( model_->getJacobian      ( iObservation, x, y             ) );
+	//     dataCovariance_ = new TMatrixDSym( model_->getDataCovariance( iObservation, x, covariance ) );
+	//     jacobian_       = new TMatrixD   ( model_->getJacobian      ( iObservation, x,            ) );
 	//     y_              = new TMatrixD   ( y );
 	//   }
 	//   else{
-	//     (*dataCovariance_) += model_->getDataCovariance( iObservation, x, y, covariance );
-	//     (*jacobian_)       += model_->getJacobian      ( iObservation, x, y             );
+	//     (*dataCovariance_) += model_->getDataCovariance( iObservation, x, covariance );
+	//     (*jacobian_)       += model_->getJacobian      ( iObservation, x,            );
 	//     (*y_)              += y;
 	//   }
 	//   observationCount_++;
@@ -134,8 +147,7 @@ namespace AFEB { namespace teststand { namespace fit {
 	  if ( observationCount_ == 0 ) throw logic_error( "No observations yet." );
 	  if ( parameters_ == NULL || refit ) solve();
 
-	  TMatrixD y;
-	  return y;
+	  return model_->getModelFunctionValue( x, *parameters_ );
 	}
 
 	TMatrixD getYCovariance( const TMatrixD& x, const bool refit=false ){
@@ -143,7 +155,7 @@ namespace AFEB { namespace teststand { namespace fit {
 	  if ( parameters_ == NULL || refit ) solve();
 
 	  TMatrixD yCovariance;
-	  return yCovariance;
+	  return TMatrixD( model_->getJacobian( x ), TMatrixD::kMult, TMatrixD( *parametersCovariance_, TMatrixD::kMultTranspose,  model_->getJacobian( x ) ) );
 	}
 
       private:
@@ -162,16 +174,16 @@ namespace AFEB { namespace teststand { namespace fit {
 	  delete parametersCovariance_;
 	  
 	  // Invert Gamma as general square matrix. Inversion of TMatrixDSym is unstable.
-	  cout << "Gamma" << endl; Gamma_->Print();
+	  //cout << "Gamma" << endl; Gamma_->Print();
 	  double det = 0.;
 	  Gamma_->Invert( &det ); // From here on, Gamma is GammaInverse!
-	  cout << "Gamma's determinant " << det << endl;
-	  cout << "Gamma inverse" << endl; Gamma_->Print();
+	  //cout << "Gamma's determinant " << det << endl;
+	  //cout << "Gamma inverse" << endl; Gamma_->Print();
 
 	  // It's inverse is the inverse of the fitted parameters' covariance (a symmetric matrix):
 	  parametersCovariance_ = new TMatrixDSym( Gamma_->GetNrows() );
 	  parametersCovariance_->SetMatrixArray( Gamma_->GetMatrixArray() );
-	  cout << "parametersCovariance_" << endl; parametersCovariance_->Print();
+	  //cout << "parametersCovariance_" << endl; parametersCovariance_->Print();
 
 	  // The fitted parameters:
 	  parameters_ = new TMatrixD( *parametersCovariance_, TMatrixD::kMult, *beta_ );
@@ -179,7 +191,7 @@ namespace AFEB { namespace teststand { namespace fit {
 	}
 
 	// void solve(){
-	//   // This is how to solve it when the observations correlate.
+	//   // This is how to solve it when the observations are correlated.
 
 	//   // Solve Gamma * parameters = beta
 	//   // where Gamma = J^T * V^-1 * J   (is also the inverse of the fitted parameters' covariance)

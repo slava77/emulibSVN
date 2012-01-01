@@ -10,27 +10,17 @@ namespace AFEB { namespace teststand { namespace fit {
       class AbstractModel{
 	
       public:
-	AbstractModel( unsigned int nObservations ) :
-	  nObservations_(),
-	  dataCovariance_( NULL ),
+	AbstractModel() :
 	  jacobian_( NULL ){
 	}
 	virtual ~AbstractModel(){
-	  delete dataCovariance_;
 	  delete jacobian_;
 	}
-	virtual TMatrixDSym& getDataCovariance( const unsigned int iObservation,
-						const TMatrixD& x,
-						const TMatrixD& y,
-						const TMatrixDSym& covariance )=0;
-	virtual TMatrixD&    getJacobian      ( const unsigned int iObservation, 
-						const TMatrixD& x, 
-						const TMatrixD& y )=0;
+	virtual TMatrixD& getJacobian( const TMatrixD& x )=0;
+	virtual TMatrixD  getModelFunctionValue( const TMatrixD& x, const TMatrixD& parameters )=0;
 
       protected:
-	unsigned int    nObservations_;	       ///< number of observations
-	TMatrixDSym*    dataCovariance_;       ///< covariance of the data
-	TMatrixD*       jacobian_;	       ///< dModelFunction/dParameters
+	TMatrixD* jacobian_;	       ///< dModelFunction/dParameters
 
       };
     }

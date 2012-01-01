@@ -7,9 +7,9 @@ namespace AFEB { namespace teststand { namespace fit {
       class StraightLine2D : public AbstractModel{
 
       public:
-	StraightLine2D( unsigned int nObservations );
-	TMatrixDSym& getDataCovariance( const unsigned int iObservation, const TMatrixD& x, const TMatrixD& y, const TMatrixDSym& covariance );
-	TMatrixD&    getJacobian( const unsigned int iObservation, const TMatrixD& x, const TMatrixD& y );
+	StraightLine2D();
+	TMatrixD& getJacobian( const TMatrixD& x );
+	TMatrixD  getModelFunctionValue( const TMatrixD& x, const TMatrixD& parameters );
 
       };
     }
