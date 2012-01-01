@@ -49,10 +49,10 @@ if [[ $RUNINDEBUGGER = "true" ]]; then
     print "Execute in ddd the command:"
     print "run $OPTIONS"
     print
-    eval "ddd ${XDAQ_ROOT}/${XDAQ_PLATFORM}/bin/xdaq.exe"
+    eval "ddd ${XDAQ_ROOT}/bin/xdaq.exe"
 else
     print "Executing:"
-    print "${XDAQ_ROOT}/${XDAQ_PLATFORM}/bin/xdaq.exe $OPTIONS"
+    print "${XDAQ_ROOT}/bin/xdaq.exe $OPTIONS"
     print
-    eval "${XDAQ_ROOT}/${XDAQ_PLATFORM}/bin/xdaq.exe $OPTIONS"
+    eval "${XDAQ_ROOT}/bin/xdaq.exe $OPTIONS"
 fi
