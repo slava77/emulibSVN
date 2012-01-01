@@ -50,14 +50,10 @@ Sources = \
 	TestedDevice.cc \
 	Results.cc \
 	fit/StraightLine2D.cc \
-	test/fitterTest.cc \
 	version.cc
 
-TestSources = \
-	test/StraightLine2D.cc \
-	test/fitterTest.cc
-TestIncludeDirs = \
-	$(XDAQ_ROOT)/include
+TestSources =
+TestIncludeDirs =
 
 IncludeDirs = \
 	$(XDAQ_ROOT)/include \
@@ -84,8 +80,26 @@ ExternalObjects = $(BUILD_HOME)/AFEB/Jorway/lib/libsjy.a
 DynamicLibrary = AFEBteststand
 StaticLibrary =
 
-TestLibraries=
-TestExecutables=fitterTest.exe
+# To build tests:
+#     export BUILD_HOME=... 
+#     make tests
+# To run it:
+#     LD_LIBRARY_PATH=$XDAQ_ROOT/lib:$BUILD_HOME/AFEB/teststand/lib/$XDAQ_OS/$XDAQ_PLATFORM:$ROOTSYS/lib $BUILD_HOME/AFEB/teststand/test/$XDAQ_OS/$XDAQ_PLATFORM/fitterTest.exe
+TestLibraries=xcept toolbox log4cplus xdata xerces-c xalan-c xdaq xalanMsg xoap xgi cgicc pthttp peer asyncresolv mimetic config logudpappender logxmlappender uuid
+TestExecutables=fitterTest.cc
+
+
+# To build fitterTest:
+#     export BUILD_HOME=... 
+#     make fitterTest
+# To run it:
+#     $BUILD_HOME/AFEB/teststand/test/$XDAQ_OS/$XDAQ_PLATFORM/fitterTest.exe
+fitterTest:
+	mkdir -p $(BUILD_HOME)/AFEB/teststand/test/$(XDAQ_OS)/$(XDAQ_PLATFORM)
+	g++ $(ROOTCFLAGS) $(ROOTLIBS) $(ROOTGLIBS) -I$(BUILD_HOME)/AFEB/teststand/include \
+	-o $(BUILD_HOME)/AFEB/teststand/test/$(XDAQ_OS)/$(XDAQ_PLATFORM)/fitterTest.exe \
+	$(BUILD_HOME)/AFEB/teststand/test/common/fitterTest.cc \
+	$(BUILD_HOME)/AFEB/teststand/src/common/fit/StraightLine2D.cxx
 
 include $(XDAQ_ROOT)/config/Makefile.rules
 include $(XDAQ_ROOT)/config/mfRPM.rules
