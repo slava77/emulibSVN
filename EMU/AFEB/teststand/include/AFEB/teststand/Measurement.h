@@ -1,7 +1,7 @@
 #ifndef __AFEB_teststand_Measurement_h__
 #define __AFEB_teststand_Measurement_h__
 
-#include "AFEB/teststand/Crate.h"
+#include "AFEB/teststand/crate/Crate.h"
 #include "AFEB/teststand/TestedDevice.h"
 #include "AFEB/teststand/Results.h"
 

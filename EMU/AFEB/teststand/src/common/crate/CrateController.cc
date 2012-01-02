@@ -1,4 +1,4 @@
-#include "AFEB/teststand/CrateController.h"
+#include "AFEB/teststand/crate/CrateController.h"
 
 // Generic virtual method to be implemented by any crate controller
 

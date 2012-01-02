@@ -1,9 +1,9 @@
 #include "AFEB/teststand/Measurement.h"
 #include "AFEB/teststand/utils/String.h"
 #include "AFEB/teststand/utils/IO.h"
-#include "AFEB/teststand/LE32.h"
-#include "AFEB/teststand/LeCroy3377.h"
-#include "AFEB/teststand/Jorway73A.h"
+#include "AFEB/teststand/crate/LE32.h"
+#include "AFEB/teststand/crate/LeCroy3377.h"
+#include "AFEB/teststand/crate/Jorway73A.h"
 #include "xcept/Exception.h"
 #include "TRandom3.h"
 

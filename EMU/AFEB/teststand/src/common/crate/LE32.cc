@@ -1,6 +1,6 @@
-#include "AFEB/teststand/LE32.h"
-#include "AFEB/teststand/Jorway73A.h"
-#include "AFEB/teststand/Crate.h"
+#include "AFEB/teststand/crate/LE32.h"
+#include "AFEB/teststand/crate/Jorway73A.h"
+#include "AFEB/teststand/crate/Crate.h"
 
 #include <assert.h>
 #include <stdlib.h> // for exit()

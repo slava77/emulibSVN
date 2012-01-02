@@ -1,7 +1,7 @@
 #ifndef __AFEB_teststand_Calibration_h__
 #define __AFEB_teststand_Calibration_h__
 
-#include "AFEB/teststand/LE32.h"
+#include "AFEB/teststand/crate/LE32.h"
 
 #include "toolbox/BSem.h"
 

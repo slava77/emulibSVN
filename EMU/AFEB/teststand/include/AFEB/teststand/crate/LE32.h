@@ -1,8 +1,8 @@
 #ifndef __AFEB_teststand_LE32_h__
 #define __AFEB_teststand_LE32_h__
 
-#include "AFEB/teststand/CrateController.h"
-#include "AFEB/teststand/CAMAC.h"
+#include "AFEB/teststand/crate/CrateController.h"
+#include "AFEB/teststand/crate/CAMAC.h"
 
 namespace AFEB { namespace teststand {
 

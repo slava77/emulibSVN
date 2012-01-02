@@ -1,4 +1,4 @@
-#include "AFEB/teststand/Jorway73A.h"
+#include "AFEB/teststand/crate/Jorway73A.h"
 #include "AFEB/teststand/utils/System.h"
 
 #include "xcept/Exception.h"

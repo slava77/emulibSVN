@@ -1,8 +1,8 @@
 #ifndef __AFEB_teststand_CrateController_h__
 #define __AFEB_teststand_CrateController_h__
 
-#include "AFEB/teststand/Module.h"
-#include "AFEB/teststand/CAMAC.h"
+#include "AFEB/teststand/crate/Module.h"
+#include "AFEB/teststand/crate/CAMAC.h"
 
 #include <string>
 #include <iostream>

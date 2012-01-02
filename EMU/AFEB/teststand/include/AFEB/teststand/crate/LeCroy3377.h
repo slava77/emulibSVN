@@ -1,8 +1,8 @@
 #ifndef __AFEB_teststand_LeCroy3377_h__
 #define __AFEB_teststand_LeCroy3377_h__
 
-#include "AFEB/teststand/CrateController.h"
-#include "AFEB/teststand/CAMAC.h"
+#include "AFEB/teststand/crate/CrateController.h"
+#include "AFEB/teststand/crate/CAMAC.h"
 
 using namespace CAMAC;
 

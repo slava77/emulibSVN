@@ -6,9 +6,9 @@
 #include "AFEB/teststand/utils/System.h"
 #include "AFEB/teststand/utils/IO.h"
 
-#include "AFEB/teststand/Jorway73A.h"
-#include "AFEB/teststand/LE32.h"
-#include "AFEB/teststand/LeCroy3377.h"
+#include "AFEB/teststand/crate/Jorway73A.h"
+#include "AFEB/teststand/crate/LE32.h"
+#include "AFEB/teststand/crate/LeCroy3377.h"
 
 #include "xcept/Exception.h"
 

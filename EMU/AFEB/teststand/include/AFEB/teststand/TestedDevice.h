@@ -1,7 +1,7 @@
 #ifndef __AFEB_teststand_TestedDevice_h__
 #define __AFEB_teststand_TestedDevice_h__
 
-#include "AFEB/teststand/Crate.h"
+#include "AFEB/teststand/crate/Crate.h"
 
 #include <string>
 #include <vector>

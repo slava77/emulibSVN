@@ -1,5 +1,5 @@
 #include "AFEB/teststand/Calibration.h"
-#include "AFEB/teststand/Crate.h"
+#include "AFEB/teststand/crate/Crate.h"
 #include "AFEB/teststand/utils/String.h"
 #include "xcept/Exception.h"
 

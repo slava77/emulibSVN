@@ -29,10 +29,10 @@
 
 #include <iterator>
 
-#include "AFEB/teststand/Crate.h"
-#include "AFEB/teststand/Jorway73A.h"
-#include "AFEB/teststand/LE32.h"
-#include "AFEB/teststand/LeCroy3377.h"
+#include "AFEB/teststand/crate/Crate.h"
+#include "AFEB/teststand/crate/Jorway73A.h"
+#include "AFEB/teststand/crate/LE32.h"
+#include "AFEB/teststand/crate/LeCroy3377.h"
 
 
 AFEB::teststand::Application::Application(xdaq::ApplicationStub *s)
