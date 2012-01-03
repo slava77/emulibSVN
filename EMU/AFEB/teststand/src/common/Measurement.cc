@@ -50,6 +50,7 @@ AFEB::teststand::Measurement::Measurement( const int position, const int index, 
     if ( isValidType ) type_t_ = (Type_t) i;
   }
   if ( !isValidType ){
+    bsem_.give();
     XCEPT_RAISE( xcept::Exception, type + " is not a valid meaurement type." );
   }
   bsem_.give();

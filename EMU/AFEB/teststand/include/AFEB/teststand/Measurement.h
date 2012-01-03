@@ -52,7 +52,7 @@ namespace AFEB { namespace teststand {
       int getTDCTimeMax() const { return tdcTimeMax_; }
       string getStatus() const { return status_[status_t_]; }
       bool execute();
-      void abort(){ isToKeepRunning_ = false; }
+      void abort(){ bsem_.take(); isToKeepRunning_ = false; bsem_.give(); }
 
     private:
       toolbox::BSem bsem_;	///< Binary semaphore.

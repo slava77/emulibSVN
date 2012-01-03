@@ -38,6 +38,7 @@
 AFEB::teststand::Application::Application(xdaq::ApplicationStub *s)
   throw (xdaq::exception::Exception) :
   xdaq::WebApplication(s),
+  bsem_( toolbox::BSem::EMPTY ), // locked
   logger_(Logger::getInstance(generateLoggerName())),
   mode_( AFEB::teststand::Application::measurement )
 {
@@ -50,6 +51,8 @@ AFEB::teststand::Application::Application(xdaq::ApplicationStub *s)
 
   vector<string> lines = AFEB::teststand::utils::execShellCommand( string( "hostname -s" ) );
   if ( lines.size() == 1 ) host_ = lines[0];
+
+  bsem_.give();
 }
 
 void AFEB::teststand::Application::createFSM(){
@@ -98,36 +101,47 @@ void AFEB::teststand::Application::fireEvent( const string name ){
 void AFEB::teststand::Application::configureAction(toolbox::Event::Reference e){
   delete configuration_;
   currentMeasurementIndex_ = -1;
-  resultURLDir_ = resultBaseURLDir_.toString() + "/" + AFEB::teststand::utils::getDateTime();
-  resultSystemDir_ = string( getenv(HTML_ROOT_.toString().c_str()) ) + resultURLDir_;
-  AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + resultSystemDir_ );
   try{
+    resultURLDir_ = resultBaseURLDir_.toString() + "/" + AFEB::teststand::utils::getDateTime();
+    resultSystemDir_ = string( getenv(HTML_ROOT_.toString().c_str()) ) + resultURLDir_;
+    AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + resultSystemDir_ );
     configuration_ = new Configuration( configurationXML_, resultSystemDir_ );
     LOG4CPLUS_DEBUG( logger_, "Crate:" << endl << *configuration_->getCrate() );
   } catch ( xcept::Exception &e ){
     XCEPT_RETHROW( toolbox::fsm::exception::Exception, "Configuration failed. ", e );
   }
 
-  // Remove leftover work loop, if any, and get a new one
+  // Remove leftover work loop, if any...
   try{
     list<toolbox::task::WorkLoop*> workloops = toolbox::task::getWorkLoopFactory()->getWorkLoops();
+    LOG4CPLUS_INFO( logger_, "Found " << workloops.size() << " work loops." );
     for ( list<toolbox::task::WorkLoop*>::const_iterator wl = workloops.begin(); wl != workloops.end(); ++ wl ){
-      if ( workLoopName_.compare( (*wl)->getName() ) == 0 &&
-	   workLoopType_.compare( (*wl)->getType() ) == 0    ){
-	toolbox::task::getWorkLoopFactory()->removeWorkLoop( workLoopName_, workLoopType_ );
-	break;
-      }
+      LOG4CPLUS_INFO( logger_, "Found " << (*wl)->getType() << " work loop " << (*wl)->getName() );
     }
-    workLoop_ = toolbox::task::getWorkLoopFactory()->getWorkLoop( workLoopName_, workLoopType_ );
+    // It's tricky to find a work loop by name as 
+    // toolbox::task::WorkLoopFactory::getWorkLoop(const std::string & name, const std::string & type)
+    // creates a work loop named '<name>/<type>' for some reason.
+    // Let's just try to remove it blindly instead, and catch the exception it throws if no such work loop exists.
+    toolbox::task::getWorkLoopFactory()->removeWorkLoop( workLoopName_, workLoopType_ );
+    LOG4CPLUS_INFO( logger_, "Removed " << workLoopType_ << " work loop " << workLoopName_ );
   } catch( xcept::Exception &e ){
-    XCEPT_RETHROW(toolbox::fsm::exception::Exception, "Failed recreate work loop.", e);
+    LOG4CPLUS_WARN( logger_, "Failed to remove leftover work loop: " << xcept::stdformat_exception_history( e ) );
+  }
+  //...and get a new one
+  try{
+    workLoop_ = toolbox::task::getWorkLoopFactory()->getWorkLoop( workLoopName_, workLoopType_ );
+    LOG4CPLUS_INFO( logger_, "Created " << workLoopType_ << " work loop " << workLoopName_ );
+  } catch( xcept::Exception &e ){
+    stringstream ss;
+    ss << "Failed recreate " << workLoopType_ << " work loop " << workLoopName_;
+    XCEPT_RETHROW( xcept::Exception, ss.str(), e );
   }
 
   // Schedule measurement or calibration to be executed in a separate thread
   if ( mode_ == AFEB::teststand::Application::measurement ){
     try{
       workLoop_->submit( measurementSignature_ );
-      LOG4CPLUS_INFO( logger_, "Submitted measurement action to work loop." );
+      LOG4CPLUS_INFO( logger_, "Submitted measurement action to " << workLoopType_ << " work loop " << workLoopName_ );
     } catch( xcept::Exception &e ){
       XCEPT_RETHROW(toolbox::fsm::exception::Exception, "Failed to submit measurement action to work loop.", e);
     }
@@ -145,7 +159,6 @@ void AFEB::teststand::Application::configureAction(toolbox::Event::Reference e){
 
 void AFEB::teststand::Application::enableAction(toolbox::Event::Reference e){
   // Execute measurement or calibration in a separate thread:
-
   if ( ! workLoop_->isActive() ){
     try{
       workLoop_->activate();
@@ -154,15 +167,20 @@ void AFEB::teststand::Application::enableAction(toolbox::Event::Reference e){
       XCEPT_RETHROW( toolbox::fsm::exception::Exception, "Failed to activate work loop.", e );
     }
   }
-
 }
 
 bool AFEB::teststand::Application::measurementInWorkLoop(toolbox::task::WorkLoop *wl){
+
+  bsem_.take();
   vector<Measurement*>::const_iterator m;
   cout << configuration_->getMeasurements().size() << " measurements" << endl;
   currentMeasurementIndex_ = -1;
+  bsem_.give();
+
   for ( m = configuration_->getMeasurements().begin(); m != configuration_->getMeasurements().end(); ++m ){
+    bsem_.take();
     ++currentMeasurementIndex_;
+    bsem_.give();
     LOG4CPLUS_INFO( logger_, "Executing measurement " << currentMeasurementIndex_ << "/" << configuration_->getMeasurements().size() << endl << **m );
     try{
       if ( ! (*m)->execute() ) return false; // Measurement::execute returns false if aborted.
@@ -179,7 +197,10 @@ bool AFEB::teststand::Application::measurementInWorkLoop(toolbox::task::WorkLoop
   // Create (and save) results' XML file
   createResultsXML();
 
+  bsem_.take();
   fsm_.reset(); // To go back to initial state (Halted) without triggering haltAction.
+  bsem_.give();
+
   return false;
 }
 
@@ -243,6 +264,7 @@ void AFEB::teststand::Application::failAction(toolbox::Event::Reference event)
 
 void AFEB::teststand::Application::moveToFailedState( xcept::Exception exception ){
   // Use this from inside the work loop to force the FSM to Failed state 
+  bsem_.take();
   try{
     toolbox::Event::Reference evtRef( new toolbox::Event( "Fail", this ) );
     reasonForFailure_ = AFEB::teststand::utils::xhtmlformat_exception_history( exception );
@@ -251,6 +273,7 @@ void AFEB::teststand::Application::moveToFailedState( xcept::Exception exception
   catch( xcept::Exception &e ){
     LOG4CPLUS_FATAL( logger_, "Failed to move to the Failed state : " << xcept::stdformat_exception_history(e) );
   }
+  bsem_.give();
 }
 
 
@@ -351,65 +374,77 @@ string AFEB::teststand::Application::createXMLWebPageSkeleton(){
 }
 
 string AFEB::teststand::Application::createResultsXML(){
-  stringstream ss;
+  bsem_.take();
 
-  //
-  // First create a file that can be opened directly in a browser.
-  //
+  string resultXML;
 
-  // The XSL file should be in the same directory as the XML file.
-  ss << "<?xml-stylesheet type=\"text/xml\" href=\"htmlRenderer_XSLT.xml\"?>" << endl 
-     << "<root htmlDir=\"\" softwareVersion=\"" << AFEBteststand::versions << "\">" << endl;
+  try{
+    stringstream ss;
 
-  toolbox::net::URL url( getApplicationDescriptor()->getContextDescriptor()->getURL() );
-  ss << "  <a:results xmlns:a=\"" << applicationNamespace_ 
-     <<           "\" a:host=\"" << host_
-     <<           "\" a:systemPath=\"" << resultSystemDir_
-     <<           "\" a:urlHost=\"" << url.getHost()
-     <<           "\" a:urlPath=\"" // Everything is in the current directory.
-     <<           "\" a:file=\"" << "results.xml"
-     <<           "\">" << endl;
-  if ( configuration_ != NULL ) ss << configuration_->resultsXML();
-  ss << "  </a:results>" << endl;
+    //
+    // First create a file that can be opened directly in a browser.
+    //
 
-  // This already has an XML declaration...: ss << configurationXML_ << endl;
+    // The XSL file should be in the same directory as the XML file.
+    ss << "<?xml-stylesheet type=\"text/xml\" href=\"htmlRenderer_XSLT.xml\"?>" << endl 
+       << "<root htmlDir=\"\" softwareVersion=\"" << AFEBteststand::versions << "\">" << endl;
 
-  ss << "</root>";
+    toolbox::net::URL url( getApplicationDescriptor()->getContextDescriptor()->getURL() );
+    ss << "  <a:results xmlns:a=\"" << applicationNamespace_ 
+       <<           "\" a:host=\"" << host_
+       <<           "\" a:systemPath=\"" << resultSystemDir_
+       <<           "\" a:urlHost=\"" << url.getHost()
+       <<           "\" a:urlPath=\"" // Everything is in the current directory.
+       <<           "\" a:file=\"" << "results.xml"
+       <<           "\">" << endl;
+    if ( configuration_ != NULL ) ss << configuration_->resultsXML();
+    ss << "  </a:results>" << endl;
 
-  // Append the configuration to it:
-  string resultsXML = AFEB::teststand::utils::appendToSelectedNode( ss.str(), "/root", configurationXML_ );
+    // This already has an XML declaration...: ss << configurationXML_ << endl;
 
-  // Save it:
-  AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + resultSystemDir_ );
-  AFEB::teststand::utils::writeFile( resultSystemDir_ + "/results.xml", resultsXML );
-  copyStyleFilesToResultsDir();
+    ss << "</root>";
+
+    // Append the configuration to it:
+    string resultsXML = AFEB::teststand::utils::appendToSelectedNode( ss.str(), "/root", configurationXML_ );
+
+    // Save it:
+    AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + resultSystemDir_ );
+    AFEB::teststand::utils::writeFile( resultSystemDir_ + "/results.xml", resultsXML );
+    copyStyleFilesToResultsDir();
 
 
-  //
-  // Now create it as a web page to be accessed via the web server
-  //
+    //
+    // Now create it as a web page to be accessed via the web server
+    //
 
-  ss.str("");
-  ss << "<?xml-stylesheet type=\"text/xml\" href=\"/AFEB/teststand/html/htmlRenderer_XSLT.xml\"?>" << endl 
-     << "<root htmlDir=\"/AFEB/teststand/html/\" softwareVersion=\"" << AFEBteststand::versions << "\">" << endl;
+    ss.str("");
+    ss << "<?xml-stylesheet type=\"text/xml\" href=\"/AFEB/teststand/html/htmlRenderer_XSLT.xml\"?>" << endl 
+       << "<root htmlDir=\"/AFEB/teststand/html/\" softwareVersion=\"" << AFEBteststand::versions << "\">" << endl;
 
-  ss << "  <a:results xmlns:a=\"" << applicationNamespace_ 
-     <<           "\" a:host=\"" << host_
-     <<           "\" a:systemPath=\"" << resultSystemDir_
-     <<           "\" a:urlHost=\"" << url.getHost()
-     <<           "\" a:urlPath=\"" << resultURLDir_ << "/"
-     <<           "\" a:file=\"" << "results.xml"
-     <<           "\">" << endl;
-  if ( configuration_ != NULL ) ss << configuration_->resultsXML();
-  ss << "  </a:results>" << endl;
+    ss << "  <a:results xmlns:a=\"" << applicationNamespace_ 
+       <<           "\" a:host=\"" << host_
+       <<           "\" a:systemPath=\"" << resultSystemDir_
+       <<           "\" a:urlHost=\"" << url.getHost()
+       <<           "\" a:urlPath=\"" << resultURLDir_ << "/"
+       <<           "\" a:file=\"" << "results.xml"
+       <<           "\">" << endl;
+    if ( configuration_ != NULL ) ss << configuration_->resultsXML();
+    ss << "  </a:results>" << endl;
 
-  // This already has an XML declaration...: ss << configurationXML_ << endl;
+    // This already has an XML declaration...: ss << configurationXML_ << endl;
 
-  ss << "</root>";
+    ss << "</root>";
 
-  // Append the configuration to it:
-  return AFEB::teststand::utils::appendToSelectedNode( ss.str(), "/root", configurationXML_ );
-  //return ss.str();
+    // Append the configuration to it:
+    resultXML = AFEB::teststand::utils::appendToSelectedNode( ss.str(), "/root", configurationXML_ );
+  }
+  catch( xcept::Exception& e ){
+    bsem_.give();
+    XCEPT_RETHROW( xcept::Exception, "Failed to create results XML", e );
+  }
+
+  bsem_.give();
+  return resultXML;
 }
 
 void AFEB::teststand::Application::copyStyleFilesToResultsDir(){
@@ -485,21 +520,26 @@ AFEB::teststand::Application::loadConfigurationFileList(){
 
 void AFEB::teststand::Application::defaultWebPage(xgi::Input *in, xgi::Output *out)
   throw (xgi::exception::Exception){
+  bsem_.take();
   try{
     string XMLWebPageSkeleton( createXMLWebPageSkeleton() );
     *out << AFEB::teststand::utils::appendToSelectedNode( XMLWebPageSkeleton, "/root", configurationXML_ );
   } catch( xcept::Exception& e ){
+    bsem_.give();
     XCEPT_RETHROW( xgi::exception::Exception, "Failed to create default web page.", e );
   } catch( std::exception& e ){
+    bsem_.give();
     XCEPT_RAISE( xgi::exception::Exception, string( "Failed to create default web page: ") + e.what() );
   } catch( ... ){
+    bsem_.give();
     XCEPT_RAISE( xgi::exception::Exception, "Failed to create default web page. Unknown exception." );
   }
+  bsem_.give();
 }
 
 void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *out)
   throw (xgi::exception::Exception){
-
+  bsem_.take();
   cgicc::Cgicc cgi( in );
   std::vector<cgicc::FormEntry> fev = cgi.getElements();
 
@@ -592,10 +632,14 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
     }
 
   } catch ( xcept::Exception& e ){
+    bsem_.give();
     XCEPT_RETHROW( xgi::exception::Exception, string("Failed to execute ") + action.begin()->second, e );
   }
 
   AFEB::teststand::utils::redirectTo( applicationURLPath_, out );
+
+  bsem_.give();
+
   return;
 }
 

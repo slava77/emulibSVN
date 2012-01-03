@@ -135,6 +135,7 @@ private:
   bool measurementInWorkLoop(toolbox::task::WorkLoop *wl);
   bool calibrationInWorkLoop(toolbox::task::WorkLoop *wl);
 
+  toolbox::BSem bsem_;	///< Binary semaphore.
   string applicationURLPath_; ///< the path part of the URL of this application
   static const string applicationNamespace_; ///< the namespace of this application
   static const string workLoopName_; ///< the name of the work loop
