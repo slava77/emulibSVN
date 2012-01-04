@@ -49,7 +49,7 @@ AFEB::teststand::Application::Application(xdaq::ApplicationStub *s)
   measurementSignature_  = toolbox::task::bind( this, &AFEB::teststand::Application::measurementInWorkLoop, "measurementInWorkLoop" );
   calibrationSignature_  = toolbox::task::bind( this, &AFEB::teststand::Application::calibrationInWorkLoop, "calibrationInWorkLoop" );
 
-  vector<string> lines = AFEB::teststand::utils::execShellCommand( string( "hostname -s" ) );
+  vector<string> lines = AFEB::teststand::utils::execShellCommand( string( "hostname" ) );
   if ( lines.size() == 1 ) host_ = lines[0];
 
   bsem_.give();

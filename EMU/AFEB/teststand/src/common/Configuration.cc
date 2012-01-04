@@ -241,7 +241,7 @@ string AFEB::teststand::Configuration::resultsXML(){
       // Add statistics to assess stability
       ss << "<a:statistics>" << endl;
       map<string,double> stat = r->second->getThresholdStats();
-      ss << "<a:parameter a:name=\"threshold [ADC units]\"" << endl;
+      ss << "<a:parameter a:name=\"threshold [ADC units]\"";
       for ( map<string,double>::const_iterator s=stat.begin(); s!=stat.end(); ++s ){
 	ss << " a:" << s->first << "=\"" << noshowpos << showpoint << setprecision(6) << s->second << "\"";
       }
