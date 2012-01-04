@@ -1,7 +1,9 @@
 #ifndef __AFEB_teststand_utils_IO_h__
 #define __AFEB_teststand_utils_IO_h__
 
-#include <ostream>
+#include <vector>
+#include <map>
+#include <iostream>
 
 using namespace std;
 
@@ -18,16 +20,16 @@ namespace AFEB { namespace teststand {
     
     template <typename T1, typename T2>
     ostream& operator<<( ostream& os, const pair<T1,T2>& t ){
-      cout << "(" << t.first << ":" << t.second << ")";
+      cout << "(" << t.first << "|" << t.second << ")";
       return os;
     }
     
     template <typename T1, typename T2>
     ostream& operator<<( ostream& os, const map<T1,T2>& t ){
       cout << "(";
-      typename map<T1,T2>::const_iterator it;
-      for ( it = t.begin(); it != t.end(); ++it )
-	cout << it->first << ":" << it->second << ",";//(it+1 != t.end() ? "," : ""); // no match for 'operator+' in 'it + 1'...
+      typename map<T1,T2>::const_iterator it, iti;
+      for ( it = iti = t.begin(), ++iti; it != t.end(); ++it, ++iti )
+	cout << it->first << "->" << it->second << (iti != t.end() ? "," : "");
       cout << ")";
       return os;
     }
