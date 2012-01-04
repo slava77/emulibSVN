@@ -102,10 +102,12 @@ void AFEB::teststand::Application::configureAction(toolbox::Event::Reference e){
   delete configuration_;
   currentMeasurementIndex_ = -1;
   try{
-    resultURLDir_ = resultBaseURLDir_.toString() + "/" + AFEB::teststand::utils::getDateTime();
-    resultSystemDir_ = string( getenv(HTML_ROOT_.toString().c_str()) ) + resultURLDir_;
-    AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + resultSystemDir_ );
-    configuration_ = new Configuration( configurationXML_, resultSystemDir_ );
+    rawResultURLDir_ = resultBaseURLDir_.toString() + "/" + AFEB::teststand::utils::getDateTime() + "/raw";
+    rawResultSystemDir_ = string( getenv(HTML_ROOT_.toString().c_str()) ) + rawResultURLDir_;
+    analyzedResultURLDir_ = resultBaseURLDir_.toString() + "/" + AFEB::teststand::utils::getDateTime() + "/analyzed";
+    analyzedResultSystemDir_ = string( getenv(HTML_ROOT_.toString().c_str()) ) + analyzedResultURLDir_;
+    AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + rawResultSystemDir_ );
+    configuration_ = new Configuration( configurationXML_, rawResultSystemDir_ );
     LOG4CPLUS_DEBUG( logger_, "Crate:" << endl << *configuration_->getCrate() );
   } catch ( xcept::Exception &e ){
     XCEPT_RETHROW( toolbox::fsm::exception::Exception, "Configuration failed. ", e );
@@ -360,9 +362,9 @@ string AFEB::teststand::Application::createXMLWebPageSkeleton(){
   toolbox::net::URL url( getApplicationDescriptor()->getContextDescriptor()->getURL() );
   ss << "  <a:results xmlns:a=\"" << applicationNamespace_ 
      <<           "\" a:host=\"" << host_
-     <<           "\" a:systemPath=\"" << resultSystemDir_
+     <<           "\" a:systemPath=\"" << rawResultSystemDir_
      <<           "\" a:urlHost=\"" << url.getHost()
-     <<           "\" a:urlPath=\"" << resultURLDir_ << "/"
+     <<           "\" a:urlPath=\"" << rawResultURLDir_ << "/"
      <<           "\" a:file=\"" << "results.xml"
      <<           "\">" << endl;
   if ( configuration_ != NULL ) ss << configuration_->resultsXML();
@@ -392,7 +394,7 @@ string AFEB::teststand::Application::createResultsXML(){
     toolbox::net::URL url( getApplicationDescriptor()->getContextDescriptor()->getURL() );
     ss << "  <a:results xmlns:a=\"" << applicationNamespace_ 
        <<           "\" a:host=\"" << host_
-       <<           "\" a:systemPath=\"" << resultSystemDir_
+       <<           "\" a:systemPath=\"" << rawResultSystemDir_
        <<           "\" a:urlHost=\"" << url.getHost()
        <<           "\" a:urlPath=\"" // Everything is in the current directory.
        <<           "\" a:file=\"" << "results.xml"
@@ -408,8 +410,8 @@ string AFEB::teststand::Application::createResultsXML(){
     string resultsXML = AFEB::teststand::utils::appendToSelectedNode( ss.str(), "/root", configurationXML_ );
 
     // Save it:
-    AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + resultSystemDir_ );
-    AFEB::teststand::utils::writeFile( resultSystemDir_ + "/results.xml", resultsXML );
+    AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + rawResultSystemDir_ );
+    AFEB::teststand::utils::writeFile( rawResultSystemDir_ + "/results.xml", resultsXML );
     copyStyleFilesToResultsDir();
 
 
@@ -423,9 +425,9 @@ string AFEB::teststand::Application::createResultsXML(){
 
     ss << "  <a:results xmlns:a=\"" << applicationNamespace_ 
        <<           "\" a:host=\"" << host_
-       <<           "\" a:systemPath=\"" << resultSystemDir_
+       <<           "\" a:systemPath=\"" << rawResultSystemDir_
        <<           "\" a:urlHost=\"" << url.getHost()
-       <<           "\" a:urlPath=\"" << resultURLDir_ << "/"
+       <<           "\" a:urlPath=\"" << rawResultURLDir_ << "/"
        <<           "\" a:file=\"" << "results.xml"
        <<           "\">" << endl;
     if ( configuration_ != NULL ) ss << configuration_->resultsXML();
@@ -454,7 +456,7 @@ void AFEB::teststand::Application::copyStyleFilesToResultsDir(){
     command << "cp "
 	    << dir << "/AFEB/teststand/html/*_XSLT.xml "
 	    << dir << "/AFEB/teststand/html/*.css "
-	    << resultSystemDir_;
+	    << rawResultSystemDir_;
     AFEB::teststand::utils::execShellCommand( command.str() );
   }
 }
