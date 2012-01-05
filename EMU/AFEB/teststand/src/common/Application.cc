@@ -13,20 +13,6 @@
 #include "toolbox/net/URL.h"
 #include "toolbox/fsm/FailedEvent.h"
 
-#include "xercesc/util/XMLString.hpp"
-#include "xercesc/util/PlatformUtils.hpp"
-#include "xercesc/framework/LocalFileInputSource.hpp"
-
-#include "xalanc/PlatformSupport/XSLException.hpp"
-#include "xalanc/XPath/XPathEvaluator.hpp"
-#include "xalanc/DOMSupport/XalanDocumentPrefixResolver.hpp"
-#include "xalanc/XercesParserLiaison/XercesDOMSupport.hpp"
-#include "xalanc/XercesParserLiaison/XercesDOMSupport.hpp"
-#include "xalanc/XalanTransformer/XercesDOMWrapperParsedSource.hpp"
-#include "xalanc/XercesParserLiaison/XercesParserLiaison.hpp"
-#include "xalanc/XercesParserLiaison/XercesDocumentWrapper.hpp"
-#include "xalanc/XSLT/XSLTInputSource.hpp"
-
 #include <iterator>
 
 #include "AFEB/teststand/crate/Crate.h"
