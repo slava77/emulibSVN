@@ -10,6 +10,8 @@
 #include "xercesc/util/PlatformUtils.hpp"
 #include "xercesc/framework/LocalFileInputSource.hpp"
 #include "xercesc/framework/MemBufInputSource.hpp"
+#include "xercesc/framework/StdOutFormatTarget.hpp"
+#include "xercesc/framework/MemBufFormatTarget.hpp"
 #include "xercesc/parsers/XercesDOMParser.hpp"
 #include "xercesc/sax/SAXParseException.hpp"
 
@@ -33,6 +35,7 @@ using namespace std;
 
 XERCES_CPP_NAMESPACE_USE
 
+
 string AFEB::teststand::utils::serializeDOM( DOMNode* node ){
 
   string result;
@@ -49,20 +52,33 @@ string AFEB::teststand::utils::serializeDOM( DOMNode* node ){
     if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true))
       theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true);
 
-    // This method does output UTF-8, it's just the XML declaration that will claim it's UTF-16. 
-    // The problem is that emacs is too smart, and is mislead by it. It must be forced to open it as UTF-8 by C-x C-m c utf-8 RET.
     // Try to influence what the XML declaration will say:
-    
-    // // Set encoding explicitly to UTF-8 (otherwise it'll be UTF-16). It doesn't seem to work...
-    // XMLCh* encoding = XMLString::transcode( "UTF-8" );
-    // theSerializer->setEncoding( encoding );
-    // XMLString::release( &encoding );
+    // Set encoding explicitly to UTF-8 (otherwise it'll be UTF-16).
+    XMLCh* encoding = XMLString::transcode( "UTF-8" );
+    theSerializer->setEncoding( encoding );
+    XMLString::release( &encoding );
 
-    // //cout << "DOM encoding: " << xoap::XMLCh2String( node->getOwnerDocument()->getEncoding() ) << endl;
+    // cout << "DOM encoding: " << xoap::XMLCh2String( node->getOwnerDocument()->getEncoding() ) << endl;
     // cout << "DOM encoding: " << xoap::XMLCh2String( (static_cast<DOMDocument*>(node))->getEncoding() ) << endl;
     // cout << "Serializer encoding: " << xoap::XMLCh2String( theSerializer->getEncoding() ) << endl;
 
-    result = xoap::XMLCh2String( theSerializer->writeToString( *node ) );
+    MemBufFormatTarget *myFormTarget;
+    myFormTarget = new MemBufFormatTarget();
+    
+    //
+    // do the serialization through DOMWriter::writeNode();
+    //
+    theSerializer->writeNode(myFormTarget, *node);
+    
+    result.append( (const char*) myFormTarget->getRawBuffer(), (string::size_type) myFormTarget->getLen() );
+
+    theSerializer->release();
+    
+    //
+    // Filter, formatTarget and error handler are NOT owned by the serializer.
+    //
+    delete myFormTarget;
+
   }
   catch( xcept::Exception& e ){
     XCEPT_RETHROW( xcept::Exception, "Failed to serialize DOM: ", e );
@@ -87,10 +103,9 @@ string AFEB::teststand::utils::serializeDOM( DOMNode* node ){
     XCEPT_RAISE( xcept::Exception, "Failed to serialize DOM: Unexpected exception." );
   }
 
-  theSerializer->release();
   return result;
-
 }
+
 
 void AFEB::teststand::utils::setNodeValue( DOMNode* node, const string& value ){
   if ( node == NULL ) return;
