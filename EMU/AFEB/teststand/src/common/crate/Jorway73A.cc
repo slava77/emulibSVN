@@ -6,8 +6,7 @@
 #include <unistd.h> // for access()
 
 AFEB::teststand::Jorway73A::Jorway73A( const string id, const int crateNumber ) :
-  CrateController( "Jorway73A", id, crateNumber ),
-  branch_( findBranch() )
+  CrateController( "Jorway73A", id, crateNumber )
 {}
 
 int AFEB::teststand::Jorway73A::findBranch(){
@@ -63,7 +62,9 @@ int AFEB::teststand::Jorway73A::findBranch(){
 // Implement the generic virtual methods
 //=======================================
 
-void AFEB::teststand::Jorway73A::initialize() const{
+void AFEB::teststand::Jorway73A::initialize(){
+  branch_ = findBranch();
+
   // cdchn( branch, channel, route )
   // SCSI device will be closed if channel=0
   // route seems to be dummy.

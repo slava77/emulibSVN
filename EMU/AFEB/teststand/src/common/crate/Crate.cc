@@ -41,9 +41,9 @@ int AFEB::teststand::Crate::getNumber() const {
   return -1;
 }
 
-const AFEB::teststand::CrateController* AFEB::teststand::Crate::getCrateController() const {
+AFEB::teststand::CrateController* AFEB::teststand::Crate::getCrateController() const {
   if ( 1 <= controllerSlot_ && controllerSlot_ <= maxModules_ ){
-    return static_cast<const AFEB::teststand::CrateController*> ( modules_[controllerSlot_] );
+    return static_cast<AFEB::teststand::CrateController*> ( modules_[controllerSlot_] );
   }
   return NULL;
 }

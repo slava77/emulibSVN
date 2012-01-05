@@ -23,7 +23,7 @@ namespace AFEB { namespace teststand {
 
       // Generic virtual method to be implemented by any crate controller:
 
-      virtual void initialize() const;
+      virtual void initialize();
 
       // Virtual methods for CAMAC to be implemented in a derived CAMAC crate controller class:
 

@@ -206,7 +206,7 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
   LE32*  pulseGenerator = NULL;
   if      ( injection_ == common     ) pulseGenerator = static_cast<LE32*>( crate->getModule( pulseGeneratorSlot_ ) );
   else if ( injection_ == individual ) pulseGenerator = signalConverter;
-  const CrateController* controller = crate->getCrateController();
+  CrateController* controller = crate->getCrateController();
 
   controller->initialize();
 
