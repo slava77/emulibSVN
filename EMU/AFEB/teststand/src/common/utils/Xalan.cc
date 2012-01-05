@@ -181,8 +181,13 @@ AFEB::teststand::utils::getSingleNode( XalanDocument* document, XalanNode* conte
 					     contextNode,
 					     XalanDOMString( xPath.c_str() ).c_str(),
 					     thePrefixResolver );
-    XMLPlatformUtils::Terminate();
+
     XPathEvaluator::terminate();
+    // XMLPlatformUtils::Terminate() causes the program to crash unless XMLPlatformUtils::Initialize()
+    // has been called more times than has XMLPlatformUtils::Terminate(). Anyway, as of Xerces-C++ 2.8.0:
+    // "The termination call is currently optional, to aid those dynamically loading the parser 
+    // to clean up before exit, or to avoid spurious reports from leak detectors."
+    // XMLPlatformUtils::Terminate();
   }
   catch( xcept::Exception& e ){
     stringstream ss; ss << "XPath selection failed for '"<< xPath << "': ";
@@ -232,7 +237,11 @@ AFEB::teststand::utils::getNodes( NodeRefList& resultNodeList, XalanDocument* do
 				 XalanDOMString( xPath.c_str() ).c_str(),
 				 thePrefixResolver );
     XPathEvaluator::terminate();
-    XMLPlatformUtils::Terminate();
+    // XMLPlatformUtils::Terminate() causes the program to crash unless XMLPlatformUtils::Initialize()
+    // has been called more times than has XMLPlatformUtils::Terminate(). Anyway, as of Xerces-C++ 2.8.0:
+    // "The termination call is currently optional, to aid those dynamically loading the parser 
+    // to clean up before exit, or to avoid spurious reports from leak detectors."
+    // XMLPlatformUtils::Terminate();
   }
   catch( xcept::Exception& e ){
     stringstream ss; ss << "XPath selection failed for '"<< xPath << "': ";
@@ -284,7 +293,11 @@ string AFEB::teststand::utils::serializeSelectedNode( const string& XML, const s
 
     serializedNode = serialize( getSingleNode( document, document, xPath ) );
 
-    XMLPlatformUtils::Terminate();
+    // XMLPlatformUtils::Terminate() causes the program to crash unless XMLPlatformUtils::Initialize()
+    // has been called more times than has XMLPlatformUtils::Terminate(). Anyway, as of Xerces-C++ 2.8.0:
+    // "The termination call is currently optional, to aid those dynamically loading the parser 
+    // to clean up before exit, or to avoid spurious reports from leak detectors."
+    // XMLPlatformUtils::Terminate();
   }
   catch( SAXParseException& e ){
     stringstream ss; ss << "Failed to serialize selected node: " << xoap::XMLCh2String( e.getMessage() );

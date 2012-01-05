@@ -1,6 +1,7 @@
 #include "AFEB/teststand/utils/DOM.h"
 #include "AFEB/teststand/utils/Xalan.h"
 #include "AFEB/teststand/utils/String.h"
+#include "AFEB/teststand/utils/IO.h"
 
 #include <exception>
 #include <sstream>
@@ -207,8 +208,12 @@ string AFEB::teststand::utils::appendToSelectedNode( const string XML, const str
       }
     }
 
-    XMLPlatformUtils::Terminate();
     XPathEvaluator::terminate();
+    // XMLPlatformUtils::Terminate() causes the program to crash unless XMLPlatformUtils::Initialize()
+    // has been called more times than has XMLPlatformUtils::Terminate(). Anyway, as of Xerces-C++ 2.8.0:
+    // "The termination call is currently optional, to aid those dynamically loading the parser 
+    // to clean up before exit, or to avoid spurious reports from leak detectors."
+    // XMLPlatformUtils::Terminate();
   }
   catch( SAXParseException& e ){
     stringstream ss; ss << "Failed to append to selected node: " << xoap::XMLCh2String( e.getMessage() );
@@ -322,8 +327,12 @@ string AFEB::teststand::utils::setSelectedNodeValue( const string XML, const str
       }
     }
 
-    XMLPlatformUtils::Terminate();
     XPathEvaluator::terminate();
+    // XMLPlatformUtils::Terminate() causes the program to crash unless XMLPlatformUtils::Initialize()
+    // has been called more times than has XMLPlatformUtils::Terminate(). Anyway, as of Xerces-C++ 2.8.0:
+    // "The termination call is currently optional, to aid those dynamically loading the parser 
+    // to clean up before exit, or to avoid spurious reports from leak detectors."
+    // XMLPlatformUtils::Terminate();
   }
   catch( SAXParseException& e ){
     stringstream ss; ss << "Failed to set node value: " << xoap::XMLCh2String( e.getMessage() );
@@ -439,9 +448,12 @@ string AFEB::teststand::utils::setSelectedNodesValues( const string XML, const m
     modifiedXML = AFEB::teststand::utils::serializeDOM( domDoc );
     // cout << "modifiedXML" << endl << modifiedXML << endl;
 
-    XMLPlatformUtils::Terminate();
     XPathEvaluator::terminate();
-
+    // XMLPlatformUtils::Terminate() causes the program to crash unless XMLPlatformUtils::Initialize()
+    // has been called more times than has XMLPlatformUtils::Terminate(). Anyway, as of Xerces-C++ 2.8.0:
+    // "The termination call is currently optional, to aid those dynamically loading the parser 
+    // to clean up before exit, or to avoid spurious reports from leak detectors."
+    // XMLPlatformUtils::Terminate();
   }
   catch( SAXParseException& e ){
     stringstream ss; ss << "Failed to set nodes' values: " << xoap::XMLCh2String( e.getMessage() );
@@ -533,7 +545,11 @@ string AFEB::teststand::utils::getSelectedNodeValue( const string& XML, const st
 	value = AFEB::teststand::utils::getNodeValue( node );
 
 	XPathEvaluator::terminate();
-	XMLPlatformUtils::Terminate();
+	// XMLPlatformUtils::Terminate() causes the program to crash unless XMLPlatformUtils::Initialize()
+	// has been called more times than has XMLPlatformUtils::Terminate(). Anyway, as of Xerces-C++ 2.8.0:
+	// "The termination call is currently optional, to aid those dynamically loading the parser 
+	// to clean up before exit, or to avoid spurious reports from leak detectors."
+	// XMLPlatformUtils::Terminate();
       }
       catch( XMLException& e ){
 	stringstream ss; ss << "Failed to get node value: " << xoap::XMLCh2String( e.getMessage() );
@@ -612,19 +628,22 @@ vector< pair<string,string> > AFEB::teststand::utils::getSelectedNodesValues( co
 
     NodeRefList nodes;
     nodes = theEvaluator.selectNodeList( nodes,
-					 theDOMSupport,
-					 document,
-					 xpathXalan.data(),
-					 thePrefixResolver );
+    					 theDOMSupport,
+    					 document,
+    					 xpathXalan.data(),
+    					 thePrefixResolver );
 
     for ( XalanDOMString::size_type i=0; i<nodes.getLength(); ++i ){
       nameValuePairs.push_back( make_pair( AFEB::teststand::utils::stringFrom( nodes.item(i)->getNodeName() ),
 					   AFEB::teststand::utils::getNodeValue( nodes.item(i) ) ) );
     }
 
-    XMLPlatformUtils::Terminate();
     XPathEvaluator::terminate();
-
+    // XMLPlatformUtils::Terminate() causes the program to crash unless XMLPlatformUtils::Initialize()
+    // has been called more times than has XMLPlatformUtils::Terminate(). Anyway, as of Xerces-C++ 2.8.0:
+    // "The termination call is currently optional, to aid those dynamically loading the parser 
+    // to clean up before exit, or to avoid spurious reports from leak detectors."
+    // XMLPlatformUtils::Terminate();
   }
   catch( XMLException& e ){
     stringstream ss; ss << "Failed to get nodes' values: " << xoap::XMLCh2String( e.getMessage() );
