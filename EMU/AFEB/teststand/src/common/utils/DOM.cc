@@ -437,7 +437,7 @@ string AFEB::teststand::utils::setSelectedNodesValues( const string XML, const m
       XalanNode* xalan_node = theEvaluator.selectSingleNode( theDOMSupport,
 							     xalan_document,
 							     XalanDOMString(v->first.c_str()).c_str(),
-							     thePrefixResolver ); // does not work with namespaces...
+							     thePrefixResolver );
       
       if ( xalan_node ){
 	
@@ -689,6 +689,108 @@ vector< pair<string,string> > AFEB::teststand::utils::getSelectedNodesValues( co
   
   return nameValuePairs;
 }
+
+
+string AFEB::teststand::utils::getSelectedNode( const string& XML, const string xpath )
+  throw( xcept::Exception ){
+
+  string nodeXML;
+
+  XALAN_USING_XALAN(XalanDOMString)
+  XALAN_USING_XALAN(XalanDocument)
+  XALAN_USING_XALAN(XalanDocumentPrefixResolver)
+  XALAN_USING_XALAN(XalanNode)
+  XALAN_USING_XALAN(XercesDOMSupport)
+  XALAN_USING_XALAN(XercesDOMWrapperParsedSource)
+  XALAN_USING_XALAN(XercesDocumentWrapper)
+  XALAN_USING_XALAN(XercesParserLiaison)
+  XALAN_USING_XALAN(XalanElement)
+  XALAN_USING_XERCES(DOMNode)
+  XALAN_USING_XERCES(SAXParseException)
+
+  XALAN_USING_XALAN(XalanDOMException)
+  XALAN_USING_XALAN(XSLException)
+
+  XALAN_USING_XERCES(XMLPlatformUtils)
+  XALAN_USING_XALAN(XPathEvaluator)
+
+  try{
+    // Namespaces won't work if these are not initialized:
+    XMLPlatformUtils::Initialize();
+    XPathEvaluator::initialize();
+    
+    XercesDOMSupport theDOMSupport;
+    XercesParserLiaison theLiaison(theDOMSupport);
+    theLiaison.setDoNamespaces(true); // although it seems to be already set...
+    theLiaison.setBuildWrapperNodes(true);
+    theLiaison.setBuildMaps(true);
+    
+    // Create an input source that represents a local file...
+    // const XalanDOMString    theFileName(XML.c_str());
+    // const LocalFileInputSource      theInputSource(theFileName.c_str());
+    const char* const id = "setSelectedNodesValues";
+    MemBufInputSource theInputSource( (const XMLByte*) XML.c_str(), (unsigned int) XML.size(), id );
+    XalanDocument* xalan_document = theLiaison.parseXMLStream( theInputSource );
+    
+    XercesDocumentWrapper* docWrapper = theLiaison.mapDocumentToWrapper(xalan_document);
+    
+    XalanDocumentPrefixResolver thePrefixResolver( docWrapper );
+    
+    XPathEvaluator theEvaluator;
+    
+    XalanNode* xalan_node = theEvaluator.selectSingleNode( theDOMSupport,
+							   xalan_document,
+							   XalanDOMString( xpath.c_str() ).c_str(),
+							   thePrefixResolver );
+      
+    if ( xalan_node ){
+      DOMNode* node = const_cast<DOMNode*>( docWrapper->mapNode( xalan_node ) );
+      if ( node ){
+	 nodeXML = AFEB::teststand::utils::serializeDOM( node );
+      }
+    }
+    
+    XPathEvaluator::terminate();
+    // XMLPlatformUtils::Terminate() causes the program to crash unless XMLPlatformUtils::Initialize()
+    // has been called more times than has XMLPlatformUtils::Terminate(). Anyway, as of Xerces-C++ 2.8.0:
+    // "The termination call is currently optional, to aid those dynamically loading the parser 
+    // to clean up before exit, or to avoid spurious reports from leak detectors."
+    // XMLPlatformUtils::Terminate();
+  }
+  catch( SAXParseException& e ){
+    stringstream ss; ss << "Failed to set nodes' values: " << xoap::XMLCh2String( e.getMessage() );
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch( XMLException& e ){
+    stringstream ss; ss << "Failed to set nodes' values: " << xoap::XMLCh2String( e.getMessage() );
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch( DOMException& e ){
+    stringstream ss; ss << "Failed to set nodes' values: " << xoap::XMLCh2String( e.getMessage() );
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch( XalanDOMException& e ){
+    stringstream ss; ss << "Failed to set nodes' values: exception code " << e.getExceptionCode();
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch( XSLException& e ){
+    stringstream ss; ss << "Failed to set nodes' values: XSLException type: " << XalanDOMString( e.getType() ) << ", message: " << e.getMessage();
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch( xcept::Exception& e ){
+    XCEPT_RETHROW( xcept::Exception, "Failed to set nodes' values: ", e );
+  }
+  catch( std::exception& e ){
+    stringstream ss; ss << "Failed to set nodes' values: " << e.what();
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  catch(...){
+    XCEPT_RAISE( xcept::Exception, "Failed to set nodes' values: Unknown exception." );
+  }
+  
+  return nodeXML;
+}
+
 
 string AFEB::teststand::utils::getNodeValue( const XalanNode* const node ){
   stringstream value;
