@@ -14,7 +14,7 @@ using namespace std;
 namespace AFEB { namespace teststand {
 
     class Calibration{
-    public:      
+    public: 
       friend ostream& operator<<( ostream& os, const Calibration& c );
       Calibration();
       void addModule( Module* module );
@@ -28,11 +28,11 @@ namespace AFEB { namespace teststand {
       
     private:
       toolbox::BSem bsem_;	///< Binary semaphore.
-      vector<Module*> modules_; ///< Modules with DAC to calibrate.
       int thresholdLevel_;	///< Threshold level in DAC units.
       int pulseAmplitude_;	///< Test pulse amplitude in DAC units.
       bool initialized_;	///< Whether or not the crate has been initialized already.
-      bool isToKeepRunning_;
+      bool isToKeepRunning_;	///< \c true if pulsing is to continue.
+      vector<Module*> modules_; ///< Modules with DAC to calibrate.
     };
 
     ostream& operator<<( ostream& os, const Calibration& m );
