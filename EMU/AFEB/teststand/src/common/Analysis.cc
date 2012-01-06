@@ -22,13 +22,14 @@ AFEB::teststand::Analysis::~Analysis(){
 }
 
 void AFEB::teststand::Analysis::calibrateDACs( const string& configXML ){
-  //
-  // Create DACs
-  //
   stringstream xpath;
+  // Count DACs with calibration data
   size_t nDACs = utils::getSelectedNodesValues( configXML, "/c:configuration/c:calibrations/c:DACs/c:DAC" ).size();
   cout << "nDACs=" << nDACs << endl;
   for ( size_t iDAC=1; iDAC<=nDACs; ++iDAC ){
+    //
+    // Create DAC
+    //
     xpath.str("");
     xpath << "/c:configuration/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/@c:moduleId";
     string moduleId = utils::getSelectedNodeValue( configXML, xpath.str() );
@@ -42,13 +43,27 @@ void AFEB::teststand::Analysis::calibrateDACs( const string& configXML ){
     xpath << "/c:configuration/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/@c:channel";
     int channel = utils::stringTo<int>( utils::getSelectedNodeValue( configXML, xpath.str() ) );
     DACs_.push_back( DAC( moduleId, moduleName, type, channel ) );
-    //cout << DACs_.back();
+    //
+    // Load calibration data
+    //
+    xpath.str("");
+    xpath << "/c:configuration/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/*[name()='c:value']/@c:DACUnits";
+    vector< pair<string,string> > x = utils::getSelectedNodesValues( configXML, xpath.str() );
+    cout << x << endl;
+    xpath.str("");
+    xpath << "/c:configuration/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/*[name()='c:value']/@c:milliVolts";
+    vector< pair<string,string> > y = utils::getSelectedNodesValues( configXML, xpath.str() );
+    cout << y << endl;
+    if ( x.size() != y.size() ){
+      // TODO: throw
+    }
+    vector< pair<string,string> >::const_iterator ix, iy;
+    for ( ix = x.begin(), iy = y.begin(); ix != x.end() && iy != y.end(); ++ix, ++iy ){
+      
+    }
   }
   cout << DACs_ << endl;
 
-  //
-  // Load calibration data
-  //
   
 
 }
