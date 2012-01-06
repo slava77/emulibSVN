@@ -38,6 +38,7 @@ Sources = \
 	TestedDevice.cc \
 	Results.cc \
 	Analysis.cc \
+	DAC.cc \
 	version.cc \
 	utils/DOM.cc \
 	utils/Cgi.cc \
