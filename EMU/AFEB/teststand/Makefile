@@ -37,6 +37,7 @@ Sources = \
 	Calibration.cc \
 	TestedDevice.cc \
 	Results.cc \
+	Analysis.cc \
 	version.cc \
 	utils/DOM.cc \
 	utils/Cgi.cc \
@@ -84,9 +85,9 @@ StaticLibrary =
 #     export BUILD_HOME=... 
 #     make tests
 # To run it:
-#     LD_LIBRARY_PATH=$XDAQ_ROOT/lib:$BUILD_HOME/AFEB/teststand/lib/$XDAQ_OS/$XDAQ_PLATFORM:$ROOTSYS/lib $BUILD_HOME/AFEB/teststand/test/$XDAQ_OS/$XDAQ_PLATFORM/fitterTest.exe
+#     LD_LIBRARY_PATH=$BUILD_HOME/AFEB/teststand/lib/$XDAQ_OS/$XDAQ_PLATFORM:$XDAQ_ROOT/lib:$ROOTSYS/lib $BUILD_HOME/AFEB/teststand/test/$XDAQ_OS/$XDAQ_PLATFORM/fitterTest.exe
 TestLibraries=xcept toolbox log4cplus xdata xerces-c xalan-c xdaq xalanMsg xoap xgi cgicc pthttp peer asyncresolv mimetic config logudpappender logxmlappender uuid
-TestExecutables=fitterTest.cc
+TestExecutables=fitterTest.cc analyze.cc
 
 
 # To build fitterTest:
@@ -100,6 +101,18 @@ fitterTest:
 	-o $(BUILD_HOME)/AFEB/teststand/test/$(XDAQ_OS)/$(XDAQ_PLATFORM)/fitterTest.exe \
 	$(BUILD_HOME)/AFEB/teststand/test/common/fitterTest.cc \
 	$(BUILD_HOME)/AFEB/teststand/src/common/fit/StraightLine2D.cxx
+
+analyze:
+	mkdir -p $(BUILD_HOME)/AFEB/teststand/test/$(XDAQ_OS)/$(XDAQ_PLATFORM)
+	g++ $(ROOTCFLAGS) $(ROOTLIBS) $(ROOTGLIBS) -I$(BUILD_HOME)/AFEB/teststand/include -I$(XDAQ_ROOT)/include  -I$(XDAQ_ROOT)/include/$(XDAQ_OS) \
+	-L $(XDAQ_ROOT)/lib \
+	-lxcept -ltoolbox -llog4cplus -lxdata -lxerces-c -lxalan-c -lxalanMsg -lxoap -lasyncresolv -lmimetic -lconfig -luuid \
+	-o $(BUILD_HOME)/AFEB/teststand/test/$(XDAQ_OS)/$(XDAQ_PLATFORM)/analyze.exe \
+	$(BUILD_HOME)/AFEB/teststand/test/common/analyze.cc \
+	$(BUILD_HOME)/AFEB/teststand/src/common/Analysis.cc \
+	$(BUILD_HOME)/AFEB/teststand/src/common/utils/DOM.cc \
+	$(BUILD_HOME)/AFEB/teststand/src/common/utils/String.cc \
+	$(BUILD_HOME)/AFEB/teststand/src/common/utils/System.cc
 
 include $(XDAQ_ROOT)/config/Makefile.rules
 include $(XDAQ_ROOT)/config/mfRPM.rules
