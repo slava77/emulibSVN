@@ -136,7 +136,7 @@ namespace AFEB { namespace teststand { namespace fit {
 	  return (*parameters_)( i->second, 0 );
 	}
 
-	TMatrixD getFittedParametersCovariance( const bool refit=false ){
+	TMatrixDSym getFittedParametersCovariance( const bool refit=false ){
 	  if ( observationCount_ == 0 ) throw logic_error( "No observations yet." );
 	  if ( parameters_ == NULL || refit ) solve();
 
