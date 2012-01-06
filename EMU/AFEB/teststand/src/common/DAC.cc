@@ -1,4 +1,6 @@
 #include "AFEB/teststand/DAC.h"
+
+#include "AFEB/teststand/utils/ROOTIO.h"
 #include "TMath.h"
 
 using namespace std;
@@ -6,9 +8,13 @@ using namespace AFEB::teststand;
 
 ostream& AFEB::teststand::operator<<( ostream& os, const DAC& dac ){
   os << "DAC channel " << dac.channel_
-     << " in "       << dac.moduleName_
-     << " module "   << dac.moduleId_
-     << " for "   << dac.type_;
+     << " in "         << dac.moduleName_
+     << " module "     << dac.moduleId_
+     << " for "        << dac.type_;
+  if ( dac.getCalibrationParameters() != NULL ) 
+    os << endl << "Parameters" << endl << *dac.getCalibrationParameters();
+  if ( dac.getCalibrationParametersCovariance() != NULL ) 
+    os << endl << "Parameters' covariance" << endl << *dac.getCalibrationParametersCovariance();
   return os;
 }
 
