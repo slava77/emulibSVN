@@ -16,6 +16,7 @@ const char* const AFEB::teststand::Measurement::status_[] = { "waiting", "runnin
 ostream& AFEB::teststand::operator<<( ostream& os, const Measurement& m ){
 
   os << "Measurement " << m.index_ << ": '" << m.name_ << "' of type " << m.type_ << " (" << m.type_t_ << ") at position " << m.position_ << endl
+     << " pulsedCapacitor="     << m.pulsedCapacitor_
      << " amplitudeMin="        << m.amplitudeMin_        
      << " amplitudeMax="        << m.amplitudeMax_        
      << " amplitudeStep="       << m.amplitudeStep_       << endl
@@ -70,7 +71,7 @@ void AFEB::teststand::Measurement::setPulseParameters( const vector< pair<string
     else if ( p->first.compare( "c:amplitudeMax"  ) == 0 ) amplitudeMax_       = utils::stringTo<int>( p->second );
     else if ( p->first.compare( "c:amplitudeStep" ) == 0 ) amplitudeStep_      = utils::stringTo<int>( p->second );
     else if ( p->first.compare( "c:nPulses"       ) == 0 ) nPulses_            = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "c:capacitor"     ) == 0 ) pulsedCapacitor_    = utils::stringTo<int>( p->second );
+    else if ( p->first.compare( "c:capacitor"     ) == 0 ) pulsedCapacitor_    =                       p->second  ;
     else if ( p->first.compare( "c:slot"          ) == 0 ){
       if ( p->second.compare( "SignalConverter" ) == 0 ){
 	injection_ = individual;
