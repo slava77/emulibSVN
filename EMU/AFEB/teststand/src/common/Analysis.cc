@@ -2,8 +2,12 @@
 #include "AFEB/teststand/utils/System.h"
 #include "AFEB/teststand/utils/DOM.h"
 #include "AFEB/teststand/utils/IO.h"
+#include "AFEB/teststand/utils/ROOTIO.h"
 #include "AFEB/teststand/utils/String.h"
+#include "AFEB/teststand/fit/StraightLine2D.h"
+#include "AFEB/teststand/fit/LeastSquaresFitter.h"
 #include <iostream>
+#include <sstream>
 
 using namespace AFEB::teststand;
 
@@ -28,7 +32,7 @@ void AFEB::teststand::Analysis::calibrateDACs( const string& configXML ){
   cout << "nDACs=" << nDACs << endl;
   for ( size_t iDAC=1; iDAC<=nDACs; ++iDAC ){
     //
-    // Create DAC
+    // Create DAC objects
     //
     xpath.str("");
     xpath << "/c:configuration/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/@c:moduleId";
@@ -54,13 +58,31 @@ void AFEB::teststand::Analysis::calibrateDACs( const string& configXML ){
     xpath << "/c:configuration/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/*[name()='c:value']/@c:milliVolts";
     vector< pair<string,string> > y = utils::getSelectedNodesValues( configXML, xpath.str() );
     cout << y << endl;
+    //
+    // Fit calibration data
+    //
     if ( x.size() != y.size() ){
-      // TODO: throw
+      stringstream ss;
+      ss << "Calibration data size mismatch for " << DACs_.back();
+      // DAC dac( moduleId, moduleName, type, channel );
+      XCEPT_RAISE( xcept::Exception, ss.str() );
     }
+    fit::LeastSquaresFitter<fit::StraightLine2D> slfitter;
     vector< pair<string,string> >::const_iterator ix, iy;
+    TMatrixD X(1,1);
+    TMatrixD Y(1,1);
+    TMatrixDSym V(1);
+    V( 0, 0 ) = 1.; // [mV^2], the estimated variance of the measurement
     for ( ix = x.begin(), iy = y.begin(); ix != x.end() && iy != y.end(); ++ix, ++iy ){
-      
+      X( 0, 0 ) = utils::stringTo<double>( ix->second );
+      Y( 0, 0 ) = utils::stringTo<double>( iy->second );
+      slfitter.addObservation( X, Y, V );
     }
+    DACs_.back().setCalibrationParameters( slfitter.getFittedParameters(),
+					   slfitter.getFittedParametersCovariance() );
+    cout << DACs_.back().getCalibrationParametersCovariance() << endl;
+    TMatrixT<double> mm(2,2); mm(0,0)=-1.; mm(0,1)=2.; mm(1,0)=3.; mm(1,1)=4.;
+    cout << mm << endl;
   }
   cout << DACs_ << endl;
 
@@ -74,7 +96,7 @@ void AFEB::teststand::Analysis::calculateGain(){
 	m != configuration_->getMeasurements().end(); ++m ){
     //if ( (*m)->getTypeType() == Measurement::count_vs_dac && (*m)->getPulsedCapacitor() == "external" ){
     if ( (*m)->getTypeType() == Measurement::dummy && (*m)->getPulsedCapacitor() == "external" ){
-      cout << **m;
+      //cout << **m;
     }
   }
 }
