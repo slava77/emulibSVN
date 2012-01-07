@@ -23,6 +23,9 @@ namespace AFEB { namespace teststand {
       void setParameters( const vector< pair<string,string> >& param );
       int getTDCSlot() const { return tdcSlot_; }
       int getSignalConverterSlot() const { return signalConverterSlot_; }
+      int getSignalConverterInput() const { return signalConverterInput_; }
+      int getPulseGeneratorSlot() const { return pulseGeneratorSlot_; }
+      int getPulseGeneratorOutput() const { return pulseGeneratorOutput_; }
       int getTDCInput() const { return tdcInput_; }
       string getId() const { return id_; }
       string getType() const { return type_; }
@@ -35,6 +38,9 @@ namespace AFEB { namespace teststand {
       int tdcSlot_;
       int tdcInput_;
       int signalConverterSlot_;
+      int signalConverterInput_;
+      int pulseGeneratorSlot_;
+      int pulseGeneratorOutput_;
     };
 
   }}

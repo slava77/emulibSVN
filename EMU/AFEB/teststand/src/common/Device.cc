@@ -31,7 +31,10 @@ void AFEB::teststand::Device::setParameters( const vector< pair<string,string> >
     else if ( p->first.compare( "c:socket"   ) == 0 ) socket_   = utils::stringTo<int>( p->second );
     else if ( p->first.compare( "c:tdcSlot"  ) == 0 ) tdcSlot_  = utils::stringTo<int>( p->second );
     else if ( p->first.compare( "c:tdcInput" ) == 0 ) tdcInput_ = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "c:signalConverterSlot" ) == 0 ) signalConverterSlot_ = utils::stringTo<int>( p->second );
+    else if ( p->first.compare( "c:signalConverterSlot"  ) == 0 ) signalConverterSlot_  = utils::stringTo<int>( p->second );
+    else if ( p->first.compare( "c:signalConverterInput" ) == 0 ) signalConverterInput_ = utils::stringTo<int>( p->second );
+    else if ( p->first.compare( "c:pulseGeneratorSlot"   ) == 0 ) pulseGeneratorSlot_   = utils::stringTo<int>( p->second );
+    else if ( p->first.compare( "c:pulseGeneratorOutput" ) == 0 ) pulseGeneratorOutput_ = utils::stringTo<int>( p->second );
   }
   //cout << param << endl << *this << endl;
 }

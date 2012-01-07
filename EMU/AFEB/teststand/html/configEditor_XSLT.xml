@@ -155,7 +155,7 @@
   <xsl:template match="c:inputs">
     <table class="crate">
       <tr>
-	<th colspan="6">Device-to-module mapping</th>
+	<th colspan="8">Device-to-module mapping</th>
       </tr>
       <tr>
 	<th>
@@ -178,8 +178,10 @@
 	<th>device id</th>
 	<th>TDC slot</th>
 	<th>TDC input</th>
-	<th>signal convertet slot</th>
+	<th>signal converter slot</th>
+	<th>signal converter input</th>
 	<th>pulse generator slot</th>
+	<th>pulse generator output</th>
       </tr>
       <xsl:for-each select="c:testedDevice">
 	<tr>
@@ -250,6 +252,23 @@
 	  <td>
 	    <xsl:if test="$CONFIGMODE='control'">
 	    <!-- for-each: just to set the current node for the templates called by name: -->
+	    <xsl:for-each select="@c:signalConverterInput">
+	      <select>
+		<xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+		<option title="Empty socket." value="">-</option>
+		<xsl:call-template name="options">
+		  <xsl:with-param name="TAG" select="name(..)"/>
+		  <xsl:with-param name="ATTR" select="name()"/>
+		  <xsl:with-param name="SELVAL" select="."/>
+		</xsl:call-template>
+	      </select>
+	    </xsl:for-each>
+	  </xsl:if>
+	  <xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="@c:signalConverterInput"/></xsl:if>	
+	  </td>
+	  <td>
+	    <xsl:if test="$CONFIGMODE='control'">
+	    <!-- for-each: just to set the current node for the templates called by name: -->
 	    <xsl:for-each select="@c:pulseGeneratorSlot">
 	      <select>
 		<xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
@@ -263,6 +282,23 @@
 	    </xsl:for-each>
 	  </xsl:if>
 	  <xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="@c:pulseGeneratorSlot"/></xsl:if>	
+	  </td>
+	  <td>
+	    <xsl:if test="$CONFIGMODE='control'">
+	    <!-- for-each: just to set the current node for the templates called by name: -->
+	    <xsl:for-each select="@c:pulseGeneratorOutput">
+	      <select>
+		<xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+		<option title="Empty socket." value="">-</option>
+		<xsl:call-template name="options">
+		  <xsl:with-param name="TAG" select="name(..)"/>
+		  <xsl:with-param name="ATTR" select="name()"/>
+		  <xsl:with-param name="SELVAL" select="."/>
+		</xsl:call-template>
+	      </select>
+	    </xsl:for-each>
+	  </xsl:if>
+	  <xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="@c:pulseGeneratorOutput"/></xsl:if>	
 	  </td>
 	</tr>
       </xsl:for-each>
