@@ -35,7 +35,9 @@ Sources = \
 	Configuration.cc \
 	Measurement.cc \
 	Calibration.cc \
+	Device.cc \
 	TestedDevice.cc \
+	AnalyzedDevice.cc \
 	Results.cc \
 	Analysis.cc \
 	DAC.cc \

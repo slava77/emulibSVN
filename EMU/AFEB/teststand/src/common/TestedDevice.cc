@@ -20,19 +20,5 @@ ostream& AFEB::teststand::operator<<( ostream& os, const TestedDevice& d ){
 }
 
 AFEB::teststand::TestedDevice::TestedDevice( const string type, const int nChannels, Crate* const crate ) :
-  type_( type ),
-  nChannels_( nChannels ),
+  Device( type, nChannels ),
   crate_( crate ){}
-
-
-void AFEB::teststand::TestedDevice::setParameters( const vector< pair<string,string> >& param ){
-  vector< pair<string,string> >::const_iterator p;
-  for ( p = param.begin(); p != param.end(); ++p ){
-    if      ( p->first.compare( "c:id"       ) == 0 ) id_       = p->second;
-    else if ( p->first.compare( "c:socket"   ) == 0 ) socket_   = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "c:tdcSlot"  ) == 0 ) tdcSlot_  = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "c:tdcInput" ) == 0 ) tdcInput_ = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "c:signalConverterSlot" ) == 0 ) signalConverterSlot_ = utils::stringTo<int>( p->second );
-  }
-  //cout << param << endl << *this << endl;
-}
