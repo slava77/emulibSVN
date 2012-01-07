@@ -1,6 +1,7 @@
 #ifndef __AFEB_teststand_Measurement_h__
 #define __AFEB_teststand_Measurement_h__
 
+#include "AFEB/teststand/utils/STL.h"
 #include "AFEB/teststand/crate/Crate.h"
 #include "AFEB/teststand/TestedDevice.h"
 #include "AFEB/teststand/Results.h"
@@ -43,12 +44,15 @@ namespace AFEB { namespace teststand {
       string getResultDir() const { return resultDir_; }
       const TestedDevice* getTestedDevice( const int tdcInput ) const;
       const map<TestedDevice*,Results*> getResults() const { return results_; }
+      const set<TestedDevice*> getTestedDevices() const { return utils::keys( results_ ); }
       int getTDCSlot() const;
+      int getPulseGeneratorSlot() const { return pulseGeneratorSlot_; }
       string getPulsedCapacitor() const { return pulsedCapacitor_; }
       int getAmplitudeMin () const { return amplitudeMin_; }
       int getAmplitudeMax () const { return amplitudeMax_; }
       int getAmplitudeStep() const { return amplitudeStep_;}
       int getNPulses() const { return nPulses_; }
+      int getSetThreshold() const { return thresholdValue_; }
       int getTDCTimeMin() const { return tdcTimeMin_; }
       int getTDCTimeMax() const { return tdcTimeMax_; }
       string getStatus() const { return status_[status_t_]; }
@@ -60,7 +64,7 @@ namespace AFEB { namespace teststand {
       static const char* const types_[nTypes];
       static const char* const status_[nStatus];
       int position_; ///< The position of the corresponding c:measurement element in the configuration XML.
-      int index_; ///< The index of this measurement among the selected measurements.
+      int index_; ///< The index of this measurement among the selected (c:enabled="yes") measurements.
       string name_;
       string type_;
       Type_t type_t_;
@@ -73,7 +77,7 @@ namespace AFEB { namespace teststand {
       int amplitudeMax_;
       int amplitudeStep_;
       int nPulses_;
-      int pulseGeneratorSlot_; ///< The slot of the pulse generator to the exteranl capacitor. When the internal capacitor is pulsed, it's set equal to the signal converter's slot.
+      int pulseGeneratorSlot_; ///< The slot of the pulse generator to the exteranl capacitor. When the internal capacitor is pulsed, it's set equal to -1 as it is then each device's signal converter that generates the pulses for it.
       string pulsedCapacitor_;
       Injection_t injection_;
 
