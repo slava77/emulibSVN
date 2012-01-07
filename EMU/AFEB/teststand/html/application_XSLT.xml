@@ -102,7 +102,7 @@
     </xsl:if>
     <xsl:for-each select="a:measurement[@a:status='running']/a:device">
       <xsl:sort select="@a:id"/>
-      <img src="{../../@a:urlPath}{a:plot/@a:name}.png"/>
+      <img src="{../../@a:urlPath}{a:file/@a:name}.png"/>
     </xsl:for-each>
   </xsl:template>
 
@@ -147,8 +147,8 @@
     </tr>
     <tr>
       <td>
-	<a name="{a:plot/@a:name}"/>
-	<img src="{../../@a:urlPath}{a:plot/@a:name}.png"/>
+	<a name="{a:file/@a:name}"/>
+	<img src="{../../@a:urlPath}{a:file/@a:name}.png"/>
       </td>
       <td style="vertical-align:top;">
 	<table>
