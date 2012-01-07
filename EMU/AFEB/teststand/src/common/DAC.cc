@@ -61,6 +61,20 @@ AFEB::teststand::DAC::operator=( const DAC& rhs ){
   return *this;
 }
 
+bool 
+AFEB::teststand::DAC::operator<( const DAC& rhs ) const {
+  return ( (moduleId_+":"+moduleName_+":"+type_) 
+	   <
+	   (rhs.getModuleid()+":"+rhs.getModuleName()+":"+rhs.getType()) );
+}
+
+bool 
+AFEB::teststand::DAC::operator==( const DAC& rhs ) const {
+  return ( (moduleId_+":"+moduleName_+":"+type_) 
+	   == 
+	   (rhs.getModuleid()+":"+rhs.getModuleName()+":"+rhs.getType()) );
+}
+
 void 
 AFEB::teststand::DAC::setCalibrationParameters( const TMatrixD& parameters,
 						const TMatrixDSym& covariance ){
