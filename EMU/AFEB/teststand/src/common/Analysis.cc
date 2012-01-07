@@ -8,6 +8,7 @@
 #include "AFEB/teststand/fit/LeastSquaresFitter.h"
 #include <iostream>
 #include <sstream>
+#include <set>
 
 using namespace AFEB::teststand;
 
@@ -17,12 +18,26 @@ AFEB::teststand::Analysis::Analysis( const string& resultsDir ){
   rawResultXML_    = utils::getSelectedNode( XML, "/root/a:results" );
 
   configuration_ = new Configuration( configXML, "" );
+
+  collectAnalyzedDevices();
   calibrateDACs( configXML );
   calculateGain();
 }
 
 AFEB::teststand::Analysis::~Analysis(){
   delete configuration_;
+}
+
+void AFEB::teststand::Analysis::collectAnalyzedDevices(){
+  // Get devices from configuration's first measurement
+  if ( configuration_->getMeasurements().size() == 0 ){
+    XCEPT_RAISE( xcept::Exception, "No measurements found!" );
+  }
+  set<TestedDevice*> td = configuration_->getMeasurements().front()->getTestedDevices();
+  for ( set<TestedDevice*>::iterator tdi = td.begin(); tdi != td.end(); ++tdi ){
+    analyzedDevices_.push_back( AnalyzedDevice( **tdi ) );
+  }
+  cout << "Analyzed devices" << endl << analyzedDevices_ << endl;
 }
 
 void AFEB::teststand::Analysis::calibrateDACs( const string& configXML ){
@@ -85,18 +100,46 @@ void AFEB::teststand::Analysis::calibrateDACs( const string& configXML ){
     cout << mm << endl;
   }
   cout << DACs_ << endl;
-
-  
-
 }
 
 void AFEB::teststand::Analysis::calculateGain(){
-  // Find the count_vs_dac measurements with charge injection into external capacitors
-  for ( vector<Measurement*>::const_iterator m = configuration_->getMeasurements().begin(); 
-	m != configuration_->getMeasurements().end(); ++m ){
+  stringstream xpath;
+  // Find the count_vs_dac measurements with charge injection through external capacitors
+  for ( vector<Measurement*>::const_iterator m = configuration_->getMeasurements().begin(); m != configuration_->getMeasurements().end(); ++m ){
     //if ( (*m)->getTypeType() == Measurement::count_vs_dac && (*m)->getPulsedCapacitor() == "external" ){
-    if ( (*m)->getTypeType() == Measurement::dummy && (*m)->getPulsedCapacitor() == "external" ){
-      //cout << **m;
+    if ( (*m)->getTypeType() == Measurement::dummy && (*m)->getPulsedCapacitor() == "external" ){      
+      //cout << **m << endl;
+      
+      // Find which DAC was used for pulse injection
+      if ( (*m)->getPulseGeneratorSlot() < 0 ){
+	stringstream ss;
+	ss << "Pulse generator's slot not set in a measurement with external capacitor?!" << **m;
+	XCEPT_RAISE( xcept::Exception, ss.str() );
+      }
+
+      // Loop over the devices
+      for ( vector<AnalyzedDevice>::const_iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
+
+	// Loop over the channels
+	for ( int iChannel=0; iChannel<d->getNChannels(); ++iChannel ){
+	  // Get the observed threshold and its error for this channel from the result XML
+	  xpath.str("");
+	  xpath << "a:results/a:measurement[@a:index='" << (*m)->getIndex() 
+		<< "']/a:device[@a:id='" << d->getId() 
+		<< "']/a:channel[@a:number='" << iChannel
+		<< "']/a:parameter[@a:name='threshold [ADC]']/@a:value";
+	  double threshold = utils::stringTo<double>( utils::getSelectedNodeValue( rawResultXML_, xpath.str() ) );
+	  //cout << xpath.str() << "     " << threshold << endl;
+	  xpath.str("");
+	  xpath << "a:results/a:measurement[@a:index='" << (*m)->getIndex() 
+		<< "']/a:device[@a:id='" << d->getId() 
+		<< "']/a:channel[@a:number='" << iChannel
+		<< "']/a:parameter[@a:name='threshold [ADC]']/@a:error";
+	  double thresholdError = utils::stringTo<double>( utils::getSelectedNodeValue( rawResultXML_, xpath.str() ) );
+	  //cout << xpath.str() << "     " << thresholdError << endl;
+
+	}
+      }
     }
   }
 }

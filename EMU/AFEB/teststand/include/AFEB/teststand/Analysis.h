@@ -2,6 +2,7 @@
 #define __AFEB_teststand_Analysis_h__
 #include "AFEB/teststand/Configuration.h"
 #include "AFEB/teststand/DAC.h"
+#include "AFEB/teststand/AnalyzedDevice.h"
 
 #include <string>
 #include <vector>
@@ -16,11 +17,13 @@ namespace AFEB { namespace teststand {
       ~Analysis();
 
     private:
+      void collectAnalyzedDevices();
       void calibrateDACs( const string& configXML );
       void calculateGain();
       string rawResultXML_;
       Configuration *configuration_;
       vector<DAC> DACs_;
+      vector<AnalyzedDevice> analyzedDevices_;
     };
     
   }
