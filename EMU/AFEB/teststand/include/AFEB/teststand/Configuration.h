@@ -24,7 +24,6 @@ namespace AFEB { namespace teststand {
       string xml_; ///< The configuration XML.
       string resultDir_; ///< The full path to the directory to save the results in.
       Crate* crate_; ///< The crate setup. It's adopted by all measurements of this configuration.
-      vector<TestedDevice*> testedDevices_; ///< The tested devices. It's adopted by all measurements of this configuration.
       vector<Measurement*> measurements_; ///< The selected measurements of this configuration.
       Calibration* calibration_;
       void createCrate( bool forDummyMeasurements );

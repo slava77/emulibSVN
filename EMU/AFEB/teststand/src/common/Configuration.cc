@@ -33,8 +33,6 @@ AFEB::teststand::Configuration::~Configuration(){
   crate_ = NULL;
   for ( vector<Measurement*>::iterator  i = measurements_.begin() ; i != measurements_.end() ; ++i ) delete *i;
   measurements_.clear();
-  for ( vector<TestedDevice*>::iterator i = testedDevices_.begin(); i != testedDevices_.end(); ++i ) delete *i;
-  testedDevices_.clear();
 }
 
 void AFEB::teststand::Configuration::createCrate( bool forDummyMeasurements ) {
@@ -225,7 +223,7 @@ string AFEB::teststand::Configuration::resultsXML(){
     map<TestedDevice*,Results*> results = (*m)->getResults();
     for ( map<TestedDevice*,Results*>::const_iterator r = results.begin(); r != results.end(); ++r ){
       ss << "<a:device a:id=\"" << r->first->getId() << "\">" << endl
-	 << "<a:plot a:name=\"" << r->second->getFileName() << "\"/>" << endl;
+	 << "<a:file a:name=\"" << r->second->getFileName() << "\"/>" << endl;
       // Loop over channels and get fit results
       for ( int iChannel = 0; iChannel < r->first->getNChannels(); ++iChannel ){
 	ss << "<a:channel a:number=\"" <<  iChannel << "\">";
