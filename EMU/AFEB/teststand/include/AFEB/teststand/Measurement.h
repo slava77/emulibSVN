@@ -27,6 +27,7 @@ namespace AFEB { namespace teststand {
       enum Type_t { count_vs_dac, time_vs_dac, dummy, nTypes };
       enum Status_t { waiting, running, done, nStatus };
       enum Injection_t { common, individual };
+      enum Capacitor_t { external, internal, nCapacitors };
 
       friend ostream& operator<<( ostream& os, const Measurement& m );
 
@@ -47,7 +48,8 @@ namespace AFEB { namespace teststand {
       const set<TestedDevice*> getTestedDevices() const { return utils::keys( results_ ); }
       int getTDCSlot() const;
       int getPulseGeneratorSlot() const { return pulseGeneratorSlot_; }
-      string getPulsedCapacitor() const { return pulsedCapacitor_; }
+      string getInjectionCapacitor() const { return capacitors_[injectionCapacitor_]; }
+      Capacitor_t getInjectionCapacitorType() const { return injectionCapacitor_; }
       int getAmplitudeMin () const { return amplitudeMin_; }
       int getAmplitudeMax () const { return amplitudeMax_; }
       int getAmplitudeStep() const { return amplitudeStep_;}
@@ -63,6 +65,7 @@ namespace AFEB { namespace teststand {
       toolbox::BSem bsem_;	///< Binary semaphore.
       static const char* const types_[nTypes];
       static const char* const status_[nStatus];
+      static const char* const capacitors_[nCapacitors];
       int position_; ///< The position of the corresponding c:measurement element in the configuration XML.
       int index_; ///< The index of this measurement among the selected (c:enabled="yes") measurements.
       string name_;
@@ -78,8 +81,8 @@ namespace AFEB { namespace teststand {
       int amplitudeStep_;
       int nPulses_;
       int pulseGeneratorSlot_; ///< The slot of the pulse generator to the exteranl capacitor. When the internal capacitor is pulsed, it's set equal to -1 as it is then each device's signal converter that generates the pulses for it.
-      string pulsedCapacitor_;
       Injection_t injection_;
+      Capacitor_t injectionCapacitor_;
 
       int thresholdValue_;
 

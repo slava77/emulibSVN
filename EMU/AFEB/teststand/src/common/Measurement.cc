@@ -12,16 +12,16 @@ using namespace AFEB::teststand;
 
 const char* const AFEB::teststand::Measurement::types_[] = { "count_vs_dac", "time_vs_dac", "dummy" };
 const char* const AFEB::teststand::Measurement::status_[] = { "waiting", "running", "done" };
+const char* const AFEB::teststand::Measurement::capacitors_[] = { "external", "internal" };
 
 ostream& AFEB::teststand::operator<<( ostream& os, const Measurement& m ){
 
   os << "Measurement " << m.index_ << ": '" << m.name_ << "' of type " << m.type_ << " (" << m.type_t_ << ") at position " << m.position_ << endl
-     << " pulsedCapacitor="     << m.pulsedCapacitor_
+     << " injectionCapacitor="  << m.capacitors_[m.injectionCapacitor_]
      << " amplitudeMin="        << m.amplitudeMin_        
      << " amplitudeMax="        << m.amplitudeMax_        
      << " amplitudeStep="       << m.amplitudeStep_       << endl
      << " nPulses="             << m.nPulses_             
-     << " pulseGeneratorSlot="  << m.pulseGeneratorSlot_
      << " thresholdValue="      << m.thresholdValue_      << endl
      << " tdcTimeMin="          << m.tdcTimeMin_          
      << " tdcTimeMax="          << m.tdcTimeMax_          << endl 
@@ -64,25 +64,27 @@ AFEB::teststand::Measurement::~Measurement(){
 
 void AFEB::teststand::Measurement::setPulseParameters( const vector< pair<string,string> >& param ){
   bsem_.take();
-  string pulseGeneratorSlot;
   vector< pair<string,string> >::const_iterator p;
   for ( p = param.begin(); p != param.end(); ++p ){
     if      ( p->first.compare( "c:amplitudeMin"  ) == 0 ) amplitudeMin_       = utils::stringTo<int>( p->second );
     else if ( p->first.compare( "c:amplitudeMax"  ) == 0 ) amplitudeMax_       = utils::stringTo<int>( p->second );
     else if ( p->first.compare( "c:amplitudeStep" ) == 0 ) amplitudeStep_      = utils::stringTo<int>( p->second );
     else if ( p->first.compare( "c:nPulses"       ) == 0 ) nPulses_            = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "c:capacitor"     ) == 0 ) pulsedCapacitor_    =                       p->second  ;
-    else if ( p->first.compare( "c:slot"          ) == 0 ){
-      if ( p->second.compare( "SignalConverter" ) == 0 ){
-	injection_ = individual;
-	pulseGeneratorSlot_ = -1;
+    else if ( p->first.compare( "c:capacitor"     ) == 0 ){
+      bool isValidCapacitor = false;
+      for ( size_t i=0; i<nCapacitors; ++i ){
+	if ( p->second == capacitors_[i] ){
+	  injectionCapacitor_ = (Capacitor_t) i;
+	  isValidCapacitor = true;
+	  break;
+	}
       }
-      else {
-	injection_ = common;
-	pulseGeneratorSlot_ = utils::stringTo<int>( p->second );
+      if ( ! isValidCapacitor ){
+	bsem_.give();
+	XCEPT_RAISE( xcept::Exception, p->second + " is not a valid injection capacitor type." );
       }
     }
-  }
+  } // for ( p = param.begin(); p != param.end(); ++p )
 
   //cout << param << endl << *this << endl;
   bsem_.give();
@@ -205,8 +207,8 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
   // Use either the specified pulse generator for common injection (through external capacitor), 
   // or the corresponding signal converter module to inject individually (through external or internal capacitor). 
   LE32*  pulseGenerator = NULL;
-  if      ( injection_ == common     ) pulseGenerator = static_cast<LE32*>( crate->getModule( pulseGeneratorSlot_ ) );
-  else if ( injection_ == individual ) pulseGenerator = signalConverter;
+  if      ( injectionCapacitor_ == external ) pulseGenerator = static_cast<LE32*>( crate->getModule( results_.begin()->first->getPulseGeneratorSlot() ) );
+  else if ( injectionCapacitor_ == internal ) pulseGenerator = signalConverter;
   CrateController* controller = crate->getCrateController();
 
   controller->initialize();

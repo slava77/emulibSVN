@@ -107,7 +107,7 @@ void AFEB::teststand::Analysis::calculateGain(){
   // Find the count_vs_dac measurements with charge injection through external capacitors
   for ( vector<Measurement*>::const_iterator m = configuration_->getMeasurements().begin(); m != configuration_->getMeasurements().end(); ++m ){
     //if ( (*m)->getTypeType() == Measurement::count_vs_dac && (*m)->getPulsedCapacitor() == "external" ){
-    if ( (*m)->getTypeType() == Measurement::dummy && (*m)->getPulsedCapacitor() == "external" ){      
+    if ( (*m)->getTypeType() == Measurement::dummy && (*m)->getInjectionCapacitorType() == Measurement::external ){      
       //cout << **m << endl;
       
       // Find which DAC was used for pulse injection

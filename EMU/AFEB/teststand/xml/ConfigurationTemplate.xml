@@ -72,16 +72,6 @@
     <c:tag c:name="c:PulseGenerator">
       <c:attr c:name="c:capacitor" c:value="internal" c:description="Inject pulses through the device's internal capacitor."/>
       <c:attr c:name="c:capacitor" c:value="external" c:description="Inject pulses through the external capacitor."/>
-      <c:attr c:name="c:slot" c:value="SignalConverter" c:description="Use each device's own signal converter module to inject pulses."/>
-      <c:attr c:name="c:slot" c:value="1"               c:description="Use the common pulse generator in this slot to inject pulses through the external capacitor."/>
-      <c:attr c:name="c:slot" c:value="2"               c:description="Use the common pulse generator in this slot to inject pulses through the external capacitor."/>
-      <c:attr c:name="c:slot" c:value="3"               c:description="Use the common pulse generator in this slot to inject pulses through the external capacitor."/>
-      <c:attr c:name="c:slot" c:value="4"               c:description="Use the common pulse generator in this slot to inject pulses through the external capacitor."/>
-      <c:attr c:name="c:slot" c:value="5"               c:description="Use the common pulse generator in this slot to inject pulses through the external capacitor."/>
-      <c:attr c:name="c:slot" c:value="6"               c:description="Use the common pulse generator in this slot to inject pulses through the external capacitor."/>
-      <c:attr c:name="c:slot" c:value="7"               c:description="Use the common pulse generator in this slot to inject pulses through the external capacitor."/>
-      <c:attr c:name="c:slot" c:value="8"               c:description="Use the common pulse generator in this slot to inject pulses through the external capacitor."/>
-      <c:attr c:name="c:slot" c:value="9"               c:description="Use the common pulse generator in this slot to inject pulses through the external capacitor."/>
     </c:tag>
   </c:metadata>
 
@@ -116,22 +106,22 @@
 
   <c:measurements>
     <c:measurement c:name="Threshold scan" c:type="count_vs_dac" c:enabled="yes">
-      <c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="1000" c:slot="6" c:capacitor="external"/>
+      <c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="1000" c:capacitor="external"/>
       <c:SignalConverter c:thresholdValue="50"/>
       <c:TDC c:timeMin="0" c:timeMax="120"/>
     </c:measurement>
     <c:measurement c:name="Threshold scan" c:type="count_vs_dac" c:enabled="yes">
-      <c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="1000" c:slot="6" c:capacitor="external"/>
+      <c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="1000" c:capacitor="external"/>
       <c:SignalConverter c:thresholdValue="50"/>
       <c:TDC c:timeMin="0" c:timeMax="120"/>
     </c:measurement>
     <c:measurement c:name="Threshold scan" c:type="count_vs_dac" c:enabled="yes">
-      <c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="1000" c:slot="SignalConverter" c:capacitor="internal"/>
+      <c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="1000" c:capacitor="internal"/>
       <c:SignalConverter c:thresholdValue="50"/>
       <c:TDC c:timeMin="0" c:timeMax="120"/>
     </c:measurement>
     <c:measurement c:name="Time response vs. pulse hight" c:type="time_vs_dac" c:enabled="yes">
-      <c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="1000" c:slot="6" c:capacitor="external"/>
+      <c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="1000" c:capacitor="external"/>
       <c:SignalConverter c:thresholdValue="50"/>
       <c:TDC c:timeMin="0" c:timeMax="120"/>
     </c:measurement>

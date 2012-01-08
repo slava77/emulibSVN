@@ -24,8 +24,8 @@
 AFEB::teststand::Application::Application(xdaq::ApplicationStub *s)
   throw (xdaq::exception::Exception) :
   xdaq::WebApplication(s),
-  bsem_( toolbox::BSem::EMPTY ), // locked
   logger_(Logger::getInstance(generateLoggerName())),
+  bsem_( toolbox::BSem::EMPTY ), // locked
   mode_( AFEB::teststand::Application::measurement )
 {
   createFSM();
