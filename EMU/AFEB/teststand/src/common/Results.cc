@@ -297,20 +297,20 @@ void AFEB::teststand::Results::estimateFitParameters( TH1D& hist,
 	     lo + 0.5 * ( hi - lo ) / nBins,
 	     hi - 0.5 * ( hi - lo ) / nBins );
   int iBin = 1;
-  cout << " from=" << from
-       << " to="   <<   to
-       << " fromBin=" << fromBin
-       << " toBin="   <<   toBin
-       << " lo=" << lo
-       << " hi=" << hi 
-       << " nBins="   <<   nBins
-       << endl;
+  // cout << " from=" << from
+  //      << " to="   <<   to
+  //      << " fromBin=" << fromBin
+  //      << " toBin="   <<   toBin
+  //      << " lo=" << lo
+  //      << " hi=" << hi 
+  //      << " nBins="   <<   nBins
+  //      << endl;
   for ( int i=fromBin; i<=toBin-1; ++i ){
     diff.SetBinContent( iBin, hist.GetBinContent( i+1 ) - hist.GetBinContent( i ) );
-    cout << diff.GetBinContent( iBin ) << " ";
+    // cout << diff.GetBinContent( iBin ) << " ";
     ++iBin;
   }
-  cout << endl;
+  // cout << endl;
 
 
   mean   = diff.GetMean();
@@ -321,10 +321,10 @@ void AFEB::teststand::Results::estimateFitParameters( TH1D& hist,
     if ( height < hist.GetBinContent( i ) ) height = hist.GetBinContent( i );
   }
 
-  cout << " m = " << mean 
-       << " s = " << sigma 
-       << " h = " << height 
-       << endl;
+  // cout << " m = " << mean 
+  //      << " s = " << sigma 
+  //      << " h = " << height 
+  //      << endl;
 }
 
 double AFEB::teststand::Results::mean( const TH1D& hist, const double from, const double to ){
@@ -363,9 +363,13 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
   bsem_.take();
   double lo = pulses_->GetYaxis()->GetXmin();
   double hi = pulses_->GetYaxis()->GetXmax();
-
   TH1D p( "pulses", "pulses", pulses_->GetNbinsY(), lo, hi );
   bsem_.give();
+
+  // Make sure fit range doesn't extend beyond that of the histogram.
+  // To be sure, restrict it to between the first and last bin's center.
+  double From = TMath::Max( from, p.GetBinCenter( 1             ) );
+  double To   = TMath::Min( to  , p.GetBinCenter( p.GetNbinsX() )  );   
 
   const char* normalCDFname = "normalCDF";
   //TF1 nCDF( "normalCDF", &AFEB::teststand::Results::normalCDF, lo, hi, 3, NULL );
@@ -375,7 +379,7 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
   nCDF.SetParameters( 0.5 * ( hi + lo ),
 		      0.1 * ( hi - lo ),
 		      measurement_->getNPulses() );
-  if ( to != from ) nCDF.SetRange( from, to ); // fit only in the range measured so far
+  if ( To != From ) nCDF.SetRange( From, To ); // fit only in the range measured so far
 
   // The array of amplitudes at which the efficiency plateau starts in each channel
   vector<double> plateauStarts;
@@ -396,12 +400,7 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
 
     // cout << ")" << endl;
 
-    estimateFitParameters( p, from, to, mean, sigma, height );
-    cout << "ch = " << iChannelBin-1 
-	 << " m = " << mean 
-	 << " s = " << sigma 
-	 << " h = " << height 
-	 << endl;
+    estimateFitParameters( p, From, To, mean, sigma, height );
 
     bsem_.take();
     if ( isFinal_ ){
@@ -414,7 +413,7 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
 	chi2ndf_   ->SetBinContent( iChannelBin, 0. );
 	threshold_ ->SetBinError( iChannelBin, 0. );
 	noise_     ->SetBinError( iChannelBin, 0. );
-	efficiency_->SetBinError( iChannelBin, 0. );
+	efficiency_->SetBinError( iChannelBin, 0.00001 ); // For some reason the efficiency histogram refuses to be plotted scaled to the others if the error is zero...
 	// // If sigma=0 (the S curve is a step function at the given resolution), take the increment
 	// // size for sigma, i.e., start the plateau 3 amplitude steps away from the transition.
 	// double plateauStart = mean + 3. * TMath::Max( sigma, double( measurement_->getAmplitudeStep() ) );
@@ -425,6 +424,18 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
       }
       else{
 	// Calculate everything properly for the final results.
+	// p.Print( "all" );
+	// cout << "ch = " << iChannelBin-1
+	//      << " lo = " << lo 
+	//      << " hi = " << hi 
+	//      << " from = " << from 
+	//      << " to = " << to 
+	//      << " From = " << From 
+	//      << " To = " << To 
+	//      << " m = " << mean 
+	//      << " s = " << sigma 
+	//      << " h = " << height 
+	//      << endl;
 	nCDF.SetParameters( mean, sigma, height );
 	p.Fit( &nCDF, "QR" ); // quiet (no printing), use function range
 	threshold_ ->SetBinContent( iChannelBin, nCDF.GetParameter( 0 ) );
@@ -445,7 +456,7 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
       efficiency_->SetBinContent( iChannelBin, height / measurement_->getNPulses() );
       threshold_ ->SetBinError( iChannelBin, 0. );
       noise_     ->SetBinError( iChannelBin, 0. );
-      efficiency_->SetBinError( iChannelBin, 0. );    
+      efficiency_->SetBinError( iChannelBin, 0.00001 ); // For some reason the efficiency histogram refuses to be plotted scaled to the others if the error is zero...
     }
     bsem_.give();
   }
@@ -531,16 +542,16 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   gPad->SetGridy();
   threshold.SetTitle("");
   threshold.SetYTitle("threshold:#circ, noise:#Box [ADC]");
-  threshold.Draw("p e");
-  noise.Draw("same p e");
-  cout << "Efficiency 1" << endl; efficiency.Print("all");
+  threshold.DrawCopy("p e");
+  noise.DrawCopy("same p e");
+  // cout << "Efficiency before adjustment"; efficiency.Print("all");
   TGaxis *axis = adjustToHistogram( &threshold, &efficiency );
-  cout << "Efficiency 2" << endl; efficiency.Print("all");
+  // cout << "Efficiency after adjustment "; efficiency.Print("all");
   axis->SetTitleOffset( 0.7 );
   axis->SetTitleSize( 0.08 );
   axis->SetLabelSize( 0.08 );
   axis->Draw();
-  efficiency.Draw("same p e");
+  efficiency.DrawCopy("same p e");
 
   efficiencyPad->cd( 3 );
   gPad->SetRightMargin( 0.05 );
@@ -632,6 +643,7 @@ TGaxis* AFEB::teststand::Results::adjustToHistogram( const TH1* const h1, TH1* h
 
   for ( int i=1; i<=h2->GetNbinsX(); ++i ){
     h2->SetBinContent( i, s * ( h2->GetBinContent( i ) - h2lo ) + h1lo );
+    h2->SetBinError  ( i, s *   h2->GetBinError( i )                   );
   }
 
   double x = ( isNewAxisOnRight ? ahi : alo );
