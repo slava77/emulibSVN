@@ -35,7 +35,7 @@ AFEB::teststand::Configuration::~Configuration(){
   measurements_.clear();
 }
 
-void AFEB::teststand::Configuration::createCrate( bool forDummyMeasurements ) {
+void AFEB::teststand::Configuration::createCrate() {
   int crateNumber = utils::stringTo<int>( utils::getSelectedNodeValue( xml_, "//c:crate/@c:number" ) );
   crate_ = new AFEB::teststand::Crate();
   for ( int slot=1; slot<=AFEB::teststand::Crate::maxModules_; ++slot ){
@@ -50,7 +50,7 @@ void AFEB::teststand::Configuration::createCrate( bool forDummyMeasurements ) {
     string moduleId = utils::getSelectedNodeValue( xml_, xpath.str() );
     if ( moduleName.size() != 0 && moduleType.size() != 0 ){
 
-      if ( moduleType == "CrateController" && !forDummyMeasurements ){
+      if ( moduleType == "CrateController" ){
 	if ( moduleName == "Jorway73A" ){
 	  try{
 	    AFEB::teststand::Jorway73A *module = new AFEB::teststand::Jorway73A( moduleId, crateNumber );
@@ -107,11 +107,8 @@ void AFEB::teststand::Configuration::createMeasurements() {
     XCEPT_RAISE( xcept::Exception, "No measurements are selected." );
   }
 
-  // Check if all enabled measurements are dummy (i.e., results are software-generated):
-  vector< pair<string,string> > enabledDummyMeasurements = utils::getSelectedNodesValues( xml_, "/c:configuration/c:measurements/c:measurement[@c:enabled='yes' and @c:type='dummy']" );
-  bool allDummy = ( enabledMeasurementTypes.size() == enabledDummyMeasurements.size() );
   // Create the crate setup:
-  createCrate( allDummy );
+  createCrate();
 
   // Find the type of tested device
   string testedDeviceType   = utils::getSelectedNodeValue( xml_, "/c:configuration/c:testedDevice/@c:type" );
@@ -155,7 +152,8 @@ void AFEB::teststand::Configuration::createMeasurements() {
 	  xpath.str("");
 	  xpath << "/c:configuration/c:measurements/c:measurement[position()=" << position << "]/@c:type";
 	  string type = utils::getSelectedNodeValue( xml_, xpath.str() );
-	  measurement = new Measurement( position, index++, name, type, resultDir_ );
+	  bool dummyData = ( utils::getSelectedNodesValues( xml_, "//c:dummyData" ).size() > 0 ); 
+	  measurement = new Measurement( position, index++, name, type, resultDir_, dummyData );
 	  // Set pulse generator parameters
 	  xpath.str("");
 	  xpath << "/c:configuration/c:measurements/c:measurement[position()=" << position << "]/c:PulseGenerator/@*";

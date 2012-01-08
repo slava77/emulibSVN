@@ -35,7 +35,7 @@ ostream& AFEB::teststand::operator<<( ostream& os, const Measurement& m ){
   return os;
 }
 
-AFEB::teststand::Measurement::Measurement( const int position, const int index, const string name, const string type, const string resultDir ) :
+AFEB::teststand::Measurement::Measurement( const int position, const int index, const string name, const string type, const string resultDir, bool generateDummyData ) :
   bsem_( toolbox::BSem::EMPTY ), // locked
   position_( position ),
   index_( index ),
@@ -43,6 +43,7 @@ AFEB::teststand::Measurement::Measurement( const int position, const int index, 
   type_( type ),
   status_t_( AFEB::teststand::Measurement::waiting ),
   resultDir_( resultDir ),
+  generateDummyData_( generateDummyData ),
   isToKeepRunning_( true )
 {
   bool isValidType = false;
@@ -175,10 +176,7 @@ bool AFEB::teststand::Measurement::execute(){
   switch ( type_t_ ){
   case count_vs_dac:
   case time_vs_dac:
-    keepRunning = countVsDAQ();
-    break;
-  case dummy:
-    keepRunning = dummyResultGenerator();
+    keepRunning = ( generateDummyData_ ? dummyResultGenerator() : countVsDAQ() );
     break;
   default:
     stringstream ss;

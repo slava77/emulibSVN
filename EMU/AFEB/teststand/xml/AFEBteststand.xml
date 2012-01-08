@@ -11,6 +11,7 @@
 	<configurationDir xsi:type="xsd:string">${HOME}/config/AFEB</configurationDir>
 	<configFileNameFilter xsi:type="xsd:string">AFEB*.xml</configFileNameFilter>
 	<resultBaseURLDir xsi:type="xsd:string">/AFEB/results</resultBaseURLDir><!-- relative to $BUILD_HOME -->
+	<generateDummyData xsi:type="xsd:boolean">true</generateDummyData>
       </properties>
     </xc:Application>
     <xc:Module>${BUILD_HOME}/${XDAQ_PLATFORM}/lib/libAFEBteststand.so</xc:Module>

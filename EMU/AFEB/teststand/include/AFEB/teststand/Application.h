@@ -6,6 +6,7 @@
 #include "xdata/Boolean.h"
 #include "xdata/InfoSpace.h"
 #include "xdata/String.h"
+#include "xdata/Boolean.h"
 #include "xdata/UnsignedInteger32.h"
 #include "xdata/Vector.h"
 #include "toolbox/fsm/FiniteStateMachine.h"
@@ -61,6 +62,7 @@ private:
   xdata::String configurationDir_;
   xdata::String configFileNameFilter_;
   xdata::String resultBaseURLDir_; ///< results' base directory relative to HTML_ROOT_
+  xdata::Boolean generateDummyData_;
 /// @}
 
   xdata::String reasonForFailure_;

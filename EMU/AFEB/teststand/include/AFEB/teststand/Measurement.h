@@ -31,7 +31,7 @@ namespace AFEB { namespace teststand {
 
       friend ostream& operator<<( ostream& os, const Measurement& m );
 
-      Measurement( const int position, const int index, const string name, const string type, const string resultDir );
+      Measurement( const int position, const int index, const string name, const string type, const string resultDir, bool generateDummyData );
       ~Measurement();
       void setPulseParameters( const vector< pair<string,string> >& param );
       void setThresholdParameters( const vector< pair<string,string> >& param );
@@ -74,6 +74,7 @@ namespace AFEB { namespace teststand {
       Status_t status_t_;
       string resultDir_; ///< The full path to the directory to save the results in.
       bool isToKeepRunning_;
+      bool generateDummyData_;	///< If \e true, use the software generator of dummy results for offline test purposes.
       map<TestedDevice*,Results*> results_;
 
       int amplitudeMin_;

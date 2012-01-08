@@ -26,7 +26,7 @@ namespace AFEB { namespace teststand {
       Crate* crate_; ///< The crate setup. It's adopted by all measurements of this configuration.
       vector<Measurement*> measurements_; ///< The selected measurements of this configuration.
       Calibration* calibration_;
-      void createCrate( bool forDummyMeasurements );
+      void createCrate();
       void createMeasurements();
       void createCalibration();
       Measurement* findMeasurement( const int position, const int tdcSlot ) const;
