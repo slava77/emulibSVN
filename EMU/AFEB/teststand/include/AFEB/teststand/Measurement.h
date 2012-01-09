@@ -72,8 +72,8 @@ namespace AFEB { namespace teststand {
       Type_t type_t_;
       Status_t status_t_;
       string resultDir_; ///< The full path to the directory to save the results in.
-      bool isToKeepRunning_;
       bool generateDummyData_;	///< If \e true, use the software generator of dummy results for offline test purposes.
+      bool isToKeepRunning_;
       map<TestedDevice*,Results*> results_;
 
       int amplitudeMin_;

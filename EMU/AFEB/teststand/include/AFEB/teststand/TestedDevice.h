@@ -21,8 +21,8 @@ namespace AFEB { namespace teststand {
       friend ostream& operator<<( ostream& os, const TestedDevice& d );
       TestedDevice( const string type, const int nChannels, Crate* const crate );
       Crate* getCrate() const { return crate_; }
-    private:
-      Crate* const crate_;
+    protected:
+      Crate* crate_;
     };
 
   }}

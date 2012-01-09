@@ -106,12 +106,17 @@ void AFEB::teststand::Analysis::calculateGain(){
   stringstream xpath;
   // Find the count_vs_dac measurements with charge injection through external capacitors
   for ( vector<Measurement*>::const_iterator m = configuration_->getMeasurements().begin(); m != configuration_->getMeasurements().end(); ++m ){
-    //if ( (*m)->getTypeType() == Measurement::count_vs_dac && (*m)->getPulsedCapacitor() == "external" ){
-    if ( (*m)->getTypeType() == Measurement::dummy && (*m)->getInjectionCapacitorType() == Measurement::external ){      
+    if ( (*m)->getTypeType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitorType() == Measurement::external ){      
       //cout << **m << endl;
       
       // Loop over the devices
       for ( vector<AnalyzedDevice>::const_iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
+
+	cout << " id="   << d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getId()
+	     << " name=" << d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getName()
+	     << " type=" << d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getType()
+	     << endl;
+	// d->getPulseGeneratorSocket()
 
 	// Loop over the channels
 	for ( int iChannel=0; iChannel<d->getNChannels(); ++iChannel ){

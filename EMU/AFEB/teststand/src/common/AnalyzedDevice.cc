@@ -19,13 +19,8 @@ ostream& AFEB::teststand::operator<<( ostream& os, const AnalyzedDevice& d ){
   return os;
 }
 
-AFEB::teststand::AnalyzedDevice::AnalyzedDevice( const string type, const int nChannels ) :
-  Device( type, nChannels ){
-  resizeContainers();
-}
-
-AFEB::teststand::AnalyzedDevice::AnalyzedDevice( const Device& device ) :
-  Device( device ){
+AFEB::teststand::AnalyzedDevice::AnalyzedDevice( const TestedDevice& device ) :
+  TestedDevice( device ){
   resizeContainers();
 }
 
