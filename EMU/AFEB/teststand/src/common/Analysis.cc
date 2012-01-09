@@ -110,13 +110,6 @@ void AFEB::teststand::Analysis::calculateGain(){
     if ( (*m)->getTypeType() == Measurement::dummy && (*m)->getInjectionCapacitorType() == Measurement::external ){      
       //cout << **m << endl;
       
-      // Find which DAC was used for pulse injection
-      if ( (*m)->getPulseGeneratorSlot() < 0 ){
-	stringstream ss;
-	ss << "Pulse generator's slot not set in a measurement with external capacitor?! " << endl << **m;
-	XCEPT_RAISE( xcept::Exception, ss.str() );
-      }
-
       // Loop over the devices
       for ( vector<AnalyzedDevice>::const_iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
 

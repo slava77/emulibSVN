@@ -177,11 +177,11 @@
 	</th>
 	<th>device id</th>
 	<th>TDC slot</th>
-	<th>TDC input</th>
+	<th>TDC socket</th>
 	<th>signal converter slot</th>
-	<th>signal converter input</th>
+	<th>signal converter socket</th>
 	<th>pulse generator slot</th>
-	<th>pulse generator output</th>
+	<th>pulse generator socket</th>
       </tr>
       <xsl:for-each select="c:testedDevice">
 	<tr>
@@ -218,7 +218,7 @@
 	  <td>
 	    <xsl:if test="$CONFIGMODE='control'">
 	    <!-- for-each: just to set the current node for the templates called by name: -->
-	    <xsl:for-each select="@c:tdcInput">
+	    <xsl:for-each select="@c:tdcSocket">
 	      <select>
 		<xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
 		<option title="Empty socket." value="">-</option>
@@ -230,7 +230,7 @@
 	      </select>
 	    </xsl:for-each>
 	  </xsl:if>
-	  <xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="@c:tdcInput"/></xsl:if>	
+	  <xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="@c:tdcSocket"/></xsl:if>	
 	  </td>
 	  <td>
 	    <xsl:if test="$CONFIGMODE='control'">
@@ -252,7 +252,7 @@
 	  <td>
 	    <xsl:if test="$CONFIGMODE='control'">
 	    <!-- for-each: just to set the current node for the templates called by name: -->
-	    <xsl:for-each select="@c:signalConverterInput">
+	    <xsl:for-each select="@c:signalConverterSocket">
 	      <select>
 		<xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
 		<option title="Empty socket." value="">-</option>
@@ -264,7 +264,7 @@
 	      </select>
 	    </xsl:for-each>
 	  </xsl:if>
-	  <xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="@c:signalConverterInput"/></xsl:if>	
+	  <xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="@c:signalConverterSocket"/></xsl:if>	
 	  </td>
 	  <td>
 	    <xsl:if test="$CONFIGMODE='control'">
@@ -286,7 +286,7 @@
 	  <td>
 	    <xsl:if test="$CONFIGMODE='control'">
 	    <!-- for-each: just to set the current node for the templates called by name: -->
-	    <xsl:for-each select="@c:pulseGeneratorOutput">
+	    <xsl:for-each select="@c:pulseGeneratorSocket">
 	      <select>
 		<xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
 		<option title="Empty socket." value="">-</option>
@@ -298,7 +298,7 @@
 	      </select>
 	    </xsl:for-each>
 	  </xsl:if>
-	  <xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="@c:pulseGeneratorOutput"/></xsl:if>	
+	  <xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="@c:pulseGeneratorSocket"/></xsl:if>	
 	  </td>
 	</tr>
       </xsl:for-each>

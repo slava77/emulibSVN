@@ -7,7 +7,7 @@ using namespace std;
 using namespace AFEB::teststand;
 
 ostream& AFEB::teststand::operator<<( ostream& os, const DAC& dac ){
-  os << "DAC channel " << dac.channel_
+  os << "DAC socket "  << dac.socket_
      << " in "         << dac.moduleName_
      << " module "     << dac.moduleId_
      << " for "        << dac.type_;
@@ -21,11 +21,11 @@ ostream& AFEB::teststand::operator<<( ostream& os, const DAC& dac ){
 AFEB::teststand::DAC::DAC( const string& moduleId,
 			   const string& moduleName,
 			   const string& type,
-			   const int     channel    )
+			   const int     socket    )
   : moduleId_  ( moduleId   )
   , moduleName_( moduleName )
   , type_      ( type       )
-  , channel_   ( channel    )
+  , socket_    ( socket    )
   , calibrationParameters_          ( NULL )
   , calibrationParametersCovariance_( NULL ){
 }
@@ -34,7 +34,7 @@ AFEB::teststand::DAC::DAC( const DAC& other )
   : moduleId_  ( other.getModuleid()   )
   , moduleName_( other.getModuleName() )
   , type_      ( other.getType()       )
-  , channel_   ( other.getChannel()    )
+  , socket_    ( other.getSocket()    )
   , calibrationParameters_          ( NULL )
   , calibrationParametersCovariance_( NULL ){
   if ( other.getCalibrationParameters()           != NULL ) calibrationParameters_           = new TMatrixD   ( *other.getCalibrationParameters()           );
@@ -53,7 +53,7 @@ AFEB::teststand::DAC::operator=( const DAC& rhs ){
   moduleId_   = rhs.getModuleid()  ;
   moduleName_ = rhs.getModuleName();
   type_       = rhs.getType()      ;
-  channel_    = rhs.getChannel()   ;
+  socket_     = rhs.getSocket()   ;
 
   if ( rhs.getCalibrationParameters()           != NULL ) calibrationParameters_           = new TMatrixD   ( *rhs.getCalibrationParameters()           );
   if ( rhs.getCalibrationParametersCovariance() != NULL ) calibrationParametersCovariance_ = new TMatrixDSym( *rhs.getCalibrationParametersCovariance() );

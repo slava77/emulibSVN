@@ -15,8 +15,8 @@
       <c:attr c:name="c:tdcSlot" c:value="7" c:description="The crate slot in which the TDC reading out this device is inserted."/>
       <c:attr c:name="c:tdcSlot" c:value="8" c:description="The crate slot in which the TDC reading out this device is inserted."/>
       <c:attr c:name="c:tdcSlot" c:value="9" c:description="The crate slot in which the TDC reading out this device is inserted."/>
-      <c:attr c:name="c:tdcInput" c:value="1" c:description="The TDC's upper input socket (channels 1-16)."/>
-      <c:attr c:name="c:tdcInput" c:value="2" c:description="The TDC's lower input socket (channels 17-32)."/>
+      <c:attr c:name="c:tdcSocket" c:value="1" c:description="The TDC's upper input socket (channels 1-16)."/>
+      <c:attr c:name="c:tdcSocket" c:value="2" c:description="The TDC's lower input socket (channels 17-32)."/>
       <c:attr c:name="c:signalConverterSlot" c:value="1" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
       <c:attr c:name="c:signalConverterSlot" c:value="2" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
       <c:attr c:name="c:signalConverterSlot" c:value="3" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
@@ -26,8 +26,8 @@
       <c:attr c:name="c:signalConverterSlot" c:value="7" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
       <c:attr c:name="c:signalConverterSlot" c:value="8" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
       <c:attr c:name="c:signalConverterSlot" c:value="9" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <c:attr c:name="c:signalConverterInput" c:value="1" c:description="The signal converter's / threshold setter's upper input socket."/>
-      <c:attr c:name="c:signalConverterInput" c:value="2" c:description="The signal converter's / threshold setter's lower input socket."/>
+      <c:attr c:name="c:signalConverterSocket" c:value="1" c:description="The signal converter's / threshold setter's upper input socket."/>
+      <c:attr c:name="c:signalConverterSocket" c:value="2" c:description="The signal converter's / threshold setter's lower input socket."/>
       <c:attr c:name="c:pulseGeneratorSlot" c:value="1" c:description="The crate slot in which the pulse generator for this device is inserted."/>
       <c:attr c:name="c:pulseGeneratorSlot" c:value="2" c:description="The crate slot in which the pulse generator for this device is inserted."/>
       <c:attr c:name="c:pulseGeneratorSlot" c:value="3" c:description="The crate slot in which the pulse generator for this device is inserted."/>
@@ -37,8 +37,8 @@
       <c:attr c:name="c:pulseGeneratorSlot" c:value="7" c:description="The crate slot in which the pulse generator for this device is inserted."/>
       <c:attr c:name="c:pulseGeneratorSlot" c:value="8" c:description="The crate slot in which the pulse generator for this device is inserted."/>
       <c:attr c:name="c:pulseGeneratorSlot" c:value="9" c:description="The crate slot in which the pulse generator for this device is inserted."/>
-      <c:attr c:name="c:pulseGeneratorOutput" c:value="1" c:description="The pulse generator's upper output socket for common external pulses."/>
-      <c:attr c:name="c:pulseGeneratorOutput" c:value="2" c:description="The pulse generator's lower output socket for common external pulses."/>
+      <c:attr c:name="c:pulseGeneratorSocket" c:value="1" c:description="The pulse generator's upper output socket for common external pulses."/>
+      <c:attr c:name="c:pulseGeneratorSocket" c:value="2" c:description="The pulse generator's lower output socket for common external pulses."/>
     </c:tag>
     <c:tag c:name="c:crate">
       <c:attr c:name="c:number" c:value="1" c:description="The crate number to be set on the crate controller."/>
@@ -91,16 +91,16 @@
   </c:crate>
 
   <c:inputs c:adaptor="10AD16A">
-    <c:testedDevice c:socket="1"  c:id="01" c:tdcSlot="7" c:tdcInput="1" c:signalConverterSlot="9" c:signalConverterInput="1" c:pulseGeneratorSlot="6" c:pulseGeneratorOutput="1"/>
-    <c:testedDevice c:socket="2"  c:id="02" c:tdcSlot="7" c:tdcInput="2" c:signalConverterSlot="9" c:signalConverterInput="2" c:pulseGeneratorSlot="6" c:pulseGeneratorOutput="2"/>
-    <c:testedDevice c:socket="3"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""  c:signalConverterInput=""  c:pulseGeneratorSlot=""  c:pulseGeneratorOutput=""/>
-    <c:testedDevice c:socket="4"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""  c:signalConverterInput=""  c:pulseGeneratorSlot=""  c:pulseGeneratorOutput=""/>
-    <c:testedDevice c:socket="5"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""  c:signalConverterInput=""  c:pulseGeneratorSlot=""  c:pulseGeneratorOutput=""/>
-    <c:testedDevice c:socket="6"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""  c:signalConverterInput=""  c:pulseGeneratorSlot=""  c:pulseGeneratorOutput=""/>
-    <c:testedDevice c:socket="7"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""  c:signalConverterInput=""  c:pulseGeneratorSlot=""  c:pulseGeneratorOutput=""/>
-    <c:testedDevice c:socket="8"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""  c:signalConverterInput=""  c:pulseGeneratorSlot=""  c:pulseGeneratorOutput=""/>
-    <c:testedDevice c:socket="9"  c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""  c:signalConverterInput=""  c:pulseGeneratorSlot=""  c:pulseGeneratorOutput=""/>
-    <c:testedDevice c:socket="10" c:id=""   c:tdcSlot=""  c:tdcInput=""  c:signalConverterSlot=""  c:signalConverterInput=""  c:pulseGeneratorSlot=""  c:pulseGeneratorOutput=""/>
+    <c:testedDevice c:socket="1"  c:id="01" c:tdcSlot="7" c:tdcSocket="1" c:signalConverterSlot="9" c:signalConverterSocket="1" c:pulseGeneratorSlot="6" c:pulseGeneratorSocket="1"/>
+    <c:testedDevice c:socket="2"  c:id="02" c:tdcSlot="7" c:tdcSocket="2" c:signalConverterSlot="9" c:signalConverterSocket="2" c:pulseGeneratorSlot="6" c:pulseGeneratorSocket="2"/>
+    <c:testedDevice c:socket="3"  c:id=""   c:tdcSlot=""  c:tdcSocket=""  c:signalConverterSlot=""  c:signalConverterSocket=""  c:pulseGeneratorSlot=""  c:pulseGeneratorSocket=""/>
+    <c:testedDevice c:socket="4"  c:id=""   c:tdcSlot=""  c:tdcSocket=""  c:signalConverterSlot=""  c:signalConverterSocket=""  c:pulseGeneratorSlot=""  c:pulseGeneratorSocket=""/>
+    <c:testedDevice c:socket="5"  c:id=""   c:tdcSlot=""  c:tdcSocket=""  c:signalConverterSlot=""  c:signalConverterSocket=""  c:pulseGeneratorSlot=""  c:pulseGeneratorSocket=""/>
+    <c:testedDevice c:socket="6"  c:id=""   c:tdcSlot=""  c:tdcSocket=""  c:signalConverterSlot=""  c:signalConverterSocket=""  c:pulseGeneratorSlot=""  c:pulseGeneratorSocket=""/>
+    <c:testedDevice c:socket="7"  c:id=""   c:tdcSlot=""  c:tdcSocket=""  c:signalConverterSlot=""  c:signalConverterSocket=""  c:pulseGeneratorSlot=""  c:pulseGeneratorSocket=""/>
+    <c:testedDevice c:socket="8"  c:id=""   c:tdcSlot=""  c:tdcSocket=""  c:signalConverterSlot=""  c:signalConverterSocket=""  c:pulseGeneratorSlot=""  c:pulseGeneratorSocket=""/>
+    <c:testedDevice c:socket="9"  c:id=""   c:tdcSlot=""  c:tdcSocket=""  c:signalConverterSlot=""  c:signalConverterSocket=""  c:pulseGeneratorSlot=""  c:pulseGeneratorSocket=""/>
+    <c:testedDevice c:socket="10" c:id=""   c:tdcSlot=""  c:tdcSocket=""  c:signalConverterSlot=""  c:signalConverterSocket=""  c:pulseGeneratorSlot=""  c:pulseGeneratorSocket=""/>
   </c:inputs>
 
   <c:measurements>

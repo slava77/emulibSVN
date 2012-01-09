@@ -116,10 +116,10 @@ void AFEB::teststand::Measurement::addTestedDevice( TestedDevice* device ){
   map<TestedDevice*,Results*>::const_iterator r;
   for ( r = results_.begin(); r != results_.end(); ++r ){
     if ( r->first->getTDCSlot()  == device->getTDCSlot()  && 
-	 r->first->getTDCInput() == device->getTDCInput()    ){
+	 r->first->getTDCSocket() == device->getTDCSocket()    ){
       stringstream ss;
       ss << "A tested device (" << r->first->getId() 
-	 << ") is already configured to be read out by input " << device->getTDCInput() 
+	 << ") is already configured to be read out by input " << device->getTDCSocket() 
 	 << " of the TDC in slot " << device->getTDCSlot();
       XCEPT_RAISE( xcept::Exception, ss.str() );
     }
@@ -130,26 +130,26 @@ void AFEB::teststand::Measurement::addTestedDevice( TestedDevice* device ){
   bsem_.give();
 }
 
-const TestedDevice* AFEB::teststand::Measurement::getTestedDevice( const int tdcInput ) const {
+const TestedDevice* AFEB::teststand::Measurement::getTestedDevice( const int tdcSocket ) const {
   map<TestedDevice*,Results*>::const_iterator r;
   for ( r = results_.begin(); r != results_.end(); ++r ){
-    if ( r->first->getTDCInput() == tdcInput ) return r->first;
+    if ( r->first->getTDCSocket() == tdcSocket ) return r->first;
   }
   return NULL;
 }
 
-TestedDevice* AFEB::teststand::Measurement::findTestedDevice( const int tdcInput ) {
+TestedDevice* AFEB::teststand::Measurement::findTestedDevice( const int tdcSocket ) {
   map<TestedDevice*,Results*>::iterator r;
   for ( r = results_.begin(); r != results_.end(); ++r ){
-    if ( r->first->getTDCInput() == tdcInput ) return r->first;
+    if ( r->first->getTDCSocket() == tdcSocket ) return r->first;
   }
   return NULL;
 }
 
-Results* AFEB::teststand::Measurement::findResults( const int tdcInput ) {
+Results* AFEB::teststand::Measurement::findResults( const int tdcSocket ) {
   map<TestedDevice*,Results*>::iterator r;
   for ( r = results_.begin(); r != results_.end(); ++r ){
-    if ( r->first->getTDCInput() == tdcInput ) return r->second;
+    if ( r->first->getTDCSocket() == tdcSocket ) return r->second;
   }
   return NULL;
 }
@@ -272,8 +272,8 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
 	if ( !tdc->BlockRd( iShort ) ) break;
 	// if ( tdc->TimeChRd() >= tdcTimeMin_ && 
 	//      tdc->TimeChRd() <= tdcTimeMax_    ){
-	int tdcInput = tdc->ChannelRd() / nDeviceChannels + 1;
-	Results* results = findResults( tdcInput );
+	int tdcSocket = tdc->ChannelRd() / nDeviceChannels + 1;
+	Results* results = findResults( tdcSocket );
 	if ( results ) results->add( tdc->ChannelRd() % nDeviceChannels, amplitude, tdc->TimeChRd() );
 	// Check whether we've been instructed to abort in the meantime:
 	if ( ! isToKeepRunning_ ) return false;
@@ -320,8 +320,8 @@ bool AFEB::teststand::Measurement::dummyResultGenerator(){
       // Read out TDC channels
       for ( int iShort = 0; iShort < LeCroy3377::nShortsData / 2; ++iShort ){
 	//cout << "         data word=" << iShort << endl;
-	int tdcInput = iShort / nDeviceChannels + 1;
-	Results* results = findResults( tdcInput );
+	int tdcSocket = iShort / nDeviceChannels + 1;
+	Results* results = findResults( tdcSocket );
 	if ( results ){
 	  if ( double(amplitude) > rndm.Gaus( thresholdValue_ + thresholdOffset[ iShort ],
 					      0.1 * ( amplitudeMax_ - amplitudeMin_ ) ) ){

@@ -14,7 +14,7 @@ ostream& AFEB::teststand::operator<<( ostream& os, const AnalyzedDevice& d ){
      << setw(20) << d.id_
      << right 
      << setw(12) << d.tdcSlot_ 
-     << setw(12) << d.tdcInput_ 
+     << setw(12) << d.tdcSocket_ 
      << setw(20) << d.signalConverterSlot_ << endl;
   return os;
 }

@@ -43,11 +43,10 @@ namespace AFEB { namespace teststand {
       string getType() const { return type_; }
       Type_t getTypeType() const { return type_t_; }
       string getResultDir() const { return resultDir_; }
-      const TestedDevice* getTestedDevice( const int tdcInput ) const;
+      const TestedDevice* getTestedDevice( const int tdcSocket ) const;
       const map<TestedDevice*,Results*> getResults() const { return results_; }
       const set<TestedDevice*> getTestedDevices() const { return utils::keys( results_ ); }
       int getTDCSlot() const;
-      int getPulseGeneratorSlot() const { return pulseGeneratorSlot_; }
       string getInjectionCapacitor() const { return capacitors_[injectionCapacitor_]; }
       Capacitor_t getInjectionCapacitorType() const { return injectionCapacitor_; }
       int getAmplitudeMin () const { return amplitudeMin_; }
@@ -81,7 +80,6 @@ namespace AFEB { namespace teststand {
       int amplitudeMax_;
       int amplitudeStep_;
       int nPulses_;
-      int pulseGeneratorSlot_; ///< The slot of the pulse generator to the exteranl capacitor. When the internal capacitor is pulsed, it's set equal to -1 as it is then each device's signal converter that generates the pulses for it.
       Injection_t injection_;
       Capacitor_t injectionCapacitor_;
 
@@ -93,8 +91,8 @@ namespace AFEB { namespace teststand {
       bool countVsDAQ();
       // bool countVsTime(); // Will not be implemented, being essentially the same as countVsDAQ with only the parameters different.
       bool dummyResultGenerator();
-      TestedDevice* findTestedDevice( const int tdcInput );
-      Results* findResults( const int tdcInput );
+      TestedDevice* findTestedDevice( const int tdcSocket );
+      Results* findResults( const int tdcSocket );
     };
 
   }}

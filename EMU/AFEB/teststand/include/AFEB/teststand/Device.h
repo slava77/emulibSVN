@@ -23,10 +23,10 @@ namespace AFEB { namespace teststand {
       void setParameters( const vector< pair<string,string> >& param );
       int getTDCSlot() const { return tdcSlot_; }
       int getSignalConverterSlot() const { return signalConverterSlot_; }
-      int getSignalConverterInput() const { return signalConverterInput_; }
+      int getSignalConverterSocket() const { return signalConverterSocket_; }
       int getPulseGeneratorSlot() const { return pulseGeneratorSlot_; }
-      int getPulseGeneratorOutput() const { return pulseGeneratorOutput_; }
-      int getTDCInput() const { return tdcInput_; }
+      int getPulseGeneratorSocket() const { return pulseGeneratorSocket_; }
+      int getTDCSocket() const { return tdcSocket_; }
       string getId() const { return id_; }
       string getType() const { return type_; }
       int getNChannels() const { return nChannels_; }
@@ -36,11 +36,11 @@ namespace AFEB { namespace teststand {
       string id_;
       int socket_;
       int tdcSlot_;
-      int tdcInput_;
+      int tdcSocket_;
       int signalConverterSlot_;
-      int signalConverterInput_;
+      int signalConverterSocket_;
       int pulseGeneratorSlot_;
-      int pulseGeneratorOutput_;
+      int pulseGeneratorSocket_;
     };
 
   }}

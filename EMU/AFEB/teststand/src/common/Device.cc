@@ -14,7 +14,7 @@ ostream& AFEB::teststand::operator<<( ostream& os, const Device& d ){
      << setw(20) << d.id_
      << right 
      << setw(12) << d.tdcSlot_ 
-     << setw(12) << d.tdcInput_ 
+     << setw(12) << d.tdcSocket_ 
      << setw(20) << d.signalConverterSlot_ << endl;
   return os;
 }
@@ -30,11 +30,11 @@ void AFEB::teststand::Device::setParameters( const vector< pair<string,string> >
     if      ( p->first.compare( "c:id"       ) == 0 ) id_       = p->second;
     else if ( p->first.compare( "c:socket"   ) == 0 ) socket_   = utils::stringTo<int>( p->second );
     else if ( p->first.compare( "c:tdcSlot"  ) == 0 ) tdcSlot_  = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "c:tdcInput" ) == 0 ) tdcInput_ = utils::stringTo<int>( p->second );
+    else if ( p->first.compare( "c:tdcSocket" ) == 0 ) tdcSocket_ = utils::stringTo<int>( p->second );
     else if ( p->first.compare( "c:signalConverterSlot"  ) == 0 ) signalConverterSlot_  = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "c:signalConverterInput" ) == 0 ) signalConverterInput_ = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "c:pulseGeneratorSlot"   ) == 0 ) pulseGeneratorSlot_   = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "c:pulseGeneratorOutput" ) == 0 ) pulseGeneratorOutput_ = utils::stringTo<int>( p->second );
+    else if ( p->first.compare( "c:signalConverterSocket" ) == 0 ) signalConverterSocket_ = utils::stringTo<int>( p->second );
+    else if ( p->first.compare( "c:pulseGeneratorSlot"    ) == 0 ) pulseGeneratorSlot_    = utils::stringTo<int>( p->second );
+    else if ( p->first.compare( "c:pulseGeneratorSocket"  ) == 0 ) pulseGeneratorSocket_  = utils::stringTo<int>( p->second );
   }
   //cout << param << endl << *this << endl;
 }

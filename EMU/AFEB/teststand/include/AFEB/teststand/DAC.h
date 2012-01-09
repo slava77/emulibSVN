@@ -24,7 +24,7 @@ namespace AFEB { namespace teststand {
       DAC( const string& moduleId,
 	   const string& moduleName,
 	   const string& type,
-	   const int     channel );
+	   const int     socket );
       DAC( const DAC& other );
       ~DAC();
       DAC& operator=( const DAC& rhs );
@@ -33,7 +33,7 @@ namespace AFEB { namespace teststand {
       string getModuleid  () const { return moduleId_;   }  
       string getModuleName() const { return moduleName_; }
       string getType      () const { return type_;       }      
-      int    getChannel   () const { return channel_;    }   
+      int    getSocket    () const { return socket_;     }   
       const TMatrixD*    getCalibrationParameters()           const { return calibrationParameters_;           }
       const TMatrixDSym* getCalibrationParametersCovariance() const { return calibrationParametersCovariance_; }
 
@@ -46,7 +46,7 @@ namespace AFEB { namespace teststand {
       string moduleId_;
       string moduleName_;
       string type_;
-      int    channel_;
+      int    socket_;
 
       TMatrixD    *calibrationParameters_;
       TMatrixDSym *calibrationParametersCovariance_;
