@@ -5,6 +5,10 @@
 #include <assert.h>
 #include <stdlib.h> // for exit()
 
+AFEB::teststand::LE32::LE32( const AFEB::teststand::Module::Type_t type, const string id ) :
+  Module( "LE32", type, id ){
+}
+  
 AFEB::teststand::LE32::LE32( const string type, const string id ) :
   Module( "LE32", type, id ){
 }

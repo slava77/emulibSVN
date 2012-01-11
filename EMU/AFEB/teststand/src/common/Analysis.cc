@@ -112,11 +112,22 @@ void AFEB::teststand::Analysis::calculateGain(){
       // Loop over the devices
       for ( vector<AnalyzedDevice>::const_iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
 
-	cout << " id="   << d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getId()
-	     << " name=" << d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getName()
-	     << " type=" << d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getType()
-	     << endl;
-	// d->getPulseGeneratorSocket()
+	// cout << " id="   << d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getId()
+	//      << " name=" << d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getName()
+	//      << " type=" << d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getType()
+	//      << endl;
+	DAC soughtDAC( d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getId(),
+		       d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getName(),
+		       DAC::getType( d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getType() ),
+		       d->getPulseGeneratorSocket() );
+	// cout << endl << "Sought DAC" << endl << soughtDAC << endl;
+	for ( vector<DAC>::const_iterator dac=DACs_.begin(); dac!=DACs_.end(); ++dac ){
+	  if ( *dac == soughtDAC ){
+	    cout << "Found DAC" << endl << *dac << endl;
+	    soughtDAC = *dac;
+	    break;
+	  }
+	}
 
 	// Loop over the channels
 	for ( int iChannel=0; iChannel<d->getNChannels(); ++iChannel ){
@@ -127,14 +138,14 @@ void AFEB::teststand::Analysis::calculateGain(){
 		<< "']/a:channel[@a:number='" << iChannel
 		<< "']/a:parameter[@a:name='threshold [ADC]']/@a:value";
 	  double threshold = utils::stringTo<double>( utils::getSelectedNodeValue( rawResultXML_, xpath.str() ) );
-	  //cout << xpath.str() << "     " << threshold << endl;
+	  cout << xpath.str() << "     " << threshold << endl;
 	  xpath.str("");
 	  xpath << "a:results/a:measurement[@a:index='" << (*m)->getIndex() 
 		<< "']/a:device[@a:id='" << d->getId() 
 		<< "']/a:channel[@a:number='" << iChannel
 		<< "']/a:parameter[@a:name='threshold [ADC]']/@a:error";
 	  double thresholdError = utils::stringTo<double>( utils::getSelectedNodeValue( rawResultXML_, xpath.str() ) );
-	  //cout << xpath.str() << "     " << thresholdError << endl;
+	  cout << xpath.str() << "     " << thresholdError << endl;
 
 	}
       }

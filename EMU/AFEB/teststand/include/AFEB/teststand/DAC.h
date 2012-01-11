@@ -1,6 +1,8 @@
 #ifndef __AFEB_teststand_DAC_h__
 #define __AFEB_teststand_DAC_h__
 
+#include "AFEB/teststand/crate/Module.h"
+
 #include "TMatrixD.h"
 #include "TMatrixDSym.h"
 
@@ -21,19 +23,29 @@ namespace AFEB { namespace teststand {
     public:
       enum CalibrationParameter_t { intercept, slope, nCalibrationParameters };
 
+      enum Type_t { pulse, threshold, nTypes };
+
       DAC( const string& moduleId,
-	   const string& moduleName,
-	   const string& type,
-	   const int     socket );
+      	   const string& moduleName,
+      	   const AFEB::teststand::DAC::Type_t type,
+      	   const int     socket );
+      DAC( const string& moduleId,
+      	   const string& moduleName,
+      	   const string& typeString,
+      	   const int     socket );
       DAC( const DAC& other );
       ~DAC();
       DAC& operator=( const DAC& rhs );
       bool operator<( const DAC& rhs ) const;
       bool operator==( const DAC& rhs ) const;
-      string getModuleid  () const { return moduleId_;   }  
-      string getModuleName() const { return moduleName_; }
-      string getType      () const { return type_;       }      
-      int    getSocket    () const { return socket_;     }   
+      string getModuleid  () const { return moduleId_;           }  
+      string getModuleName() const { return moduleName_;         }
+      Type_t getType      () const { return type_;               }      
+      string getTypeString() const { return typeStrings_[type_]; }      
+      int    getSocket    () const { return socket_;             }   
+      static Type_t getType      ( const string& typeString );
+      static string getTypeString( const Type_t type );      
+      static Type_t getType      ( const AFEB::teststand::Module::Type_t type );      
       const TMatrixD*    getCalibrationParameters()           const { return calibrationParameters_;           }
       const TMatrixDSym* getCalibrationParametersCovariance() const { return calibrationParametersCovariance_; }
 
@@ -45,11 +57,12 @@ namespace AFEB { namespace teststand {
     private:
       string moduleId_;
       string moduleName_;
-      string type_;
+      Type_t type_;
       int    socket_;
 
       TMatrixD    *calibrationParameters_;
       TMatrixDSym *calibrationParametersCovariance_;
+      static const char* const typeStrings_[nTypes];
     };
     
   }

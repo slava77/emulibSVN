@@ -1,10 +1,14 @@
 #include "AFEB/teststand/DAC.h"
 
+#include "AFEB/teststand/utils/String.h"
 #include "AFEB/teststand/utils/ROOTIO.h"
+#include "xcept/Exception.h"
 #include "TMath.h"
 
 using namespace std;
 using namespace AFEB::teststand;
+
+const char* const AFEB::teststand::DAC::typeStrings_[DAC::nTypes] = { "pulse", "threshold" };
 
 ostream& AFEB::teststand::operator<<( ostream& os, const DAC& dac ){
   os << "DAC socket "  << dac.socket_
@@ -20,12 +24,24 @@ ostream& AFEB::teststand::operator<<( ostream& os, const DAC& dac ){
 
 AFEB::teststand::DAC::DAC( const string& moduleId,
 			   const string& moduleName,
-			   const string& type,
+			   const AFEB::teststand::DAC::Type_t type,
 			   const int     socket    )
   : moduleId_  ( moduleId   )
   , moduleName_( moduleName )
   , type_      ( type       )
-  , socket_    ( socket    )
+  , socket_    ( socket     )
+  , calibrationParameters_          ( NULL )
+  , calibrationParametersCovariance_( NULL ){
+}
+
+AFEB::teststand::DAC::DAC( const string& moduleId,
+			   const string& moduleName,
+			   const string& typeString,
+			   const int     socket    )
+  : moduleId_  ( moduleId                   )
+  , moduleName_( moduleName                 )
+  , type_      ( DAC::getType( typeString ) )
+  , socket_    ( socket                     )
   , calibrationParameters_          ( NULL )
   , calibrationParametersCovariance_( NULL ){
 }
@@ -34,7 +50,7 @@ AFEB::teststand::DAC::DAC( const DAC& other )
   : moduleId_  ( other.getModuleid()   )
   , moduleName_( other.getModuleName() )
   , type_      ( other.getType()       )
-  , socket_    ( other.getSocket()    )
+  , socket_    ( other.getSocket()     )
   , calibrationParameters_          ( NULL )
   , calibrationParametersCovariance_( NULL ){
   if ( other.getCalibrationParameters()           != NULL ) calibrationParameters_           = new TMatrixD   ( *other.getCalibrationParameters()           );
@@ -63,16 +79,19 @@ AFEB::teststand::DAC::operator=( const DAC& rhs ){
 
 bool 
 AFEB::teststand::DAC::operator<( const DAC& rhs ) const {
-  return ( (moduleId_+":"+moduleName_+":"+type_) 
+  return ( ( moduleId_        +":"+moduleName_        +":"+typeStrings_[type_]+":"+utils::stringFrom<int>( socket_ )       )
 	   <
-	   (rhs.getModuleid()+":"+rhs.getModuleName()+":"+rhs.getType()) );
+	   ( rhs.getModuleid()+":"+rhs.getModuleName()+":"+rhs.getTypeString()+":"+utils::stringFrom<int>( rhs.getSocket() ) )
+	   );
 }
 
 bool 
 AFEB::teststand::DAC::operator==( const DAC& rhs ) const {
-  return ( (moduleId_+":"+moduleName_+":"+type_) 
-	   == 
-	   (rhs.getModuleid()+":"+rhs.getModuleName()+":"+rhs.getType()) );
+  if ( moduleId_   != rhs.getModuleid()   ) return false;
+  if ( moduleName_ != rhs.getModuleName() ) return false;
+  if ( type_       != rhs.getType()       ) return false;
+  if ( socket_     != rhs.getSocket()     ) return false;
+  return true;
 }
 
 void 
@@ -98,4 +117,48 @@ AFEB::teststand::DAC::toMilliVolts( const double valueInDACUnits,
   return make_pair<double,double>( (*calibrationParameters_)( DAC::intercept, 0 ) + 
 				   (*calibrationParameters_)( DAC::slope    , 0 ) * valueInDACUnits,
 				   TMath::Sqrt( varianceDueToParameters + varianceDueToObservation ) );
+}
+
+// static function
+AFEB::teststand::DAC::Type_t 
+AFEB::teststand::DAC::getType( const string& typeString ){
+  AFEB::teststand::DAC::Type_t type = AFEB::teststand::DAC::nTypes;
+  bool isValidType = false;
+  for ( int i=0; i<AFEB::teststand::DAC::nTypes && !isValidType; ++i ){
+    isValidType |= ( typeString.compare( typeStrings_[i] ) == 0 );
+    if ( isValidType ) type = (AFEB::teststand::DAC::Type_t) i;
+  }
+  if ( !isValidType ){
+    stringstream ss;
+    ss << "\"" << typeString << "\" is not a valid DAC type.";
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  return type;
+}
+
+// static function
+string 
+AFEB::teststand::DAC::getTypeString( const Type_t type ){
+  if ( type < (AFEB::teststand::DAC::Type_t)0 || type >=AFEB::teststand::DAC::nTypes ){
+    stringstream ss;
+    ss << "'" << type << "' is not a valid DAC type.";
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  return typeStrings_[type];
+}
+
+// static function
+AFEB::teststand::DAC::Type_t 
+AFEB::teststand::DAC::getType( const AFEB::teststand::Module::Type_t type ){
+  switch( type ){
+  case AFEB::teststand::Module::PulseGenerator:
+    return pulse;
+  case AFEB::teststand::Module::SignalConverter:
+    return threshold;
+  default:
+    string moduleTypeString = AFEB::teststand::Module::getTypeString( type );
+    stringstream ss;
+    ss << "Modules of type " << moduleTypeString << " have no DACs.";
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
 }

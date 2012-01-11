@@ -44,13 +44,15 @@ void AFEB::teststand::Configuration::createCrate() {
     string moduleName = utils::getSelectedNodeValue( xml_, xpath.str() );
     xpath.str("");
     xpath << "//c:configuration/c:crate/c:module[@c:slot=\"" << slot << "\"]/@c:type";
-    string moduleType = utils::getSelectedNodeValue( xml_, xpath.str() );
+    string moduleTypeString = utils::getSelectedNodeValue( xml_, xpath.str() );
     xpath.str("");
     xpath << "//c:configuration/c:crate/c:module[@c:slot=\"" << slot << "\"]/@c:id";
     string moduleId = utils::getSelectedNodeValue( xml_, xpath.str() );
-    if ( moduleName.size() != 0 && moduleType.size() != 0 ){
+    if ( moduleName.size() != 0 && moduleTypeString.size() != 0 ){
 
-      if ( moduleType == "CrateController" ){
+      AFEB::teststand::Module::Type_t moduleType = AFEB::teststand::Module::getType( moduleTypeString );
+
+      if ( moduleType == AFEB::teststand::Module::CrateController ){
 	if ( moduleName == "Jorway73A" ){
 	  try{
 	    AFEB::teststand::Jorway73A *module = new AFEB::teststand::Jorway73A( moduleId, crateNumber );
@@ -63,7 +65,7 @@ void AFEB::teststand::Configuration::createCrate() {
 	  // TODO: throw an exception
 	}
       }
-      else if ( moduleType == "TDC" )
+      else if ( moduleType == AFEB::teststand::Module::TDC )
 	if ( moduleName == "LeCroy3377" ){
 	  AFEB::teststand::LeCroy3377 *module = new AFEB::teststand::LeCroy3377( moduleId );
 	  crate_->insert( module, slot );
@@ -71,7 +73,7 @@ void AFEB::teststand::Configuration::createCrate() {
 	else{
 	  // TODO: throw an exception
 	}
-      else if ( moduleType == "SignalConverter" ){
+      else if ( moduleType == AFEB::teststand::Module::SignalConverter ){
 	if ( moduleName == "LE32" ){
 	  AFEB::teststand::LE32 *module = new AFEB::teststand::LE32( moduleType, moduleId );
 	  crate_->insert( module, slot );
@@ -80,7 +82,7 @@ void AFEB::teststand::Configuration::createCrate() {
 	  // TODO: throw an exception
 	}
       }
-      else if ( moduleType == "PulseGenerator" ){
+      else if ( moduleType == AFEB::teststand::Module::PulseGenerator ){
 	if ( moduleName == "LE32" ){
 	  AFEB::teststand::LE32 *module = new AFEB::teststand::LE32( moduleType, moduleId );
 	  crate_->insert( module, slot );
@@ -189,8 +191,8 @@ void AFEB::teststand::Configuration::createCalibration(){
   for ( int iSlot = 1; iSlot<=crate_->maxModules_; ++iSlot ){
     Module* module = crate_->getModule( iSlot );
     if ( module != NULL ){
-      if ( module->getType().compare( "PulseGenerator"  ) == 0 ||
-	   module->getType().compare( "SignalConverter" ) == 0 ){
+      if ( module->getType() == AFEB::teststand::Module::PulseGenerator ||
+	   module->getType() == AFEB::teststand::Module::SignalConverter   ){
 	calibration_->addModule( module );
       }
     }
