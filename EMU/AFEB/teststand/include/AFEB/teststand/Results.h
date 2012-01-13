@@ -33,6 +33,7 @@ namespace AFEB { namespace teststand {
       void saveInOldFormat( const string directory );
       map<string,double> getThresholdStats();
       map<string,double> getTimeStats();
+      static string getFileName( const int     measurementIndex, const string& measurementTypeString, const string& deviceId );
     private:
       toolbox::BSem bsem_;
       bool isFinal_; ///< Indicates that everything should be calculated, not just the plots.

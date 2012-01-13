@@ -17,9 +17,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   isFinal_( false ),
   measurement_( measurement ),
   testedDevice_( device ),
-  fileName_( utils::stringFrom<int>( measurement_->getIndex() ) 
-	     + "__" + measurement_->getType()
-	     + "__" + testedDevice_->getId() )
+  fileName_( getFileName( measurement_->getIndex(), measurement_->getType(), testedDevice_->getId() ) )
 {
 
   // pulses( channel, amplitude)  2D histogram
@@ -735,4 +733,10 @@ map<string,double> AFEB::teststand::Results::getThresholdStats(){
 
 map<string,double> AFEB::teststand::Results::getTimeStats(){
   return getStats( timeOnPlateau_ );
+}
+
+// static function
+string 
+AFEB::teststand::Results::getFileName( const int measurementIndex, const string& measurementTypeString,  const string& deviceId ){
+  return ( utils::stringFrom<int>( measurementIndex ) + "__" + measurementTypeString + "__" + deviceId );
 }
