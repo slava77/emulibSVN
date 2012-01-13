@@ -304,6 +304,80 @@
 	<c:value c:DACUnits= "240" c:milliVolts="750"/>
 	<c:value c:DACUnits= "255" c:milliVolts="800"/>
       </c:DAC>
+
+      <c:DAC c:type="threshold" c:moduleName="LE32" c:moduleId="5" c:channel="1">
+	<c:value c:DACUnits=  "16" c:milliVolts= "50"/>
+	<c:value c:DACUnits=  "32" c:milliVolts="100"/>
+	<c:value c:DACUnits=  "48" c:milliVolts="150"/>
+	<c:value c:DACUnits=  "64" c:milliVolts="200"/>
+	<c:value c:DACUnits=  "80" c:milliVolts="250"/>
+	<c:value c:DACUnits=  "96" c:milliVolts="300"/>
+	<c:value c:DACUnits= "112" c:milliVolts="350"/>
+	<c:value c:DACUnits= "128" c:milliVolts="400"/>
+	<c:value c:DACUnits= "144" c:milliVolts="450"/>
+	<c:value c:DACUnits= "160" c:milliVolts="500"/>
+	<c:value c:DACUnits= "176" c:milliVolts="550"/>
+	<c:value c:DACUnits= "192" c:milliVolts="600"/>
+	<c:value c:DACUnits= "208" c:milliVolts="650"/>
+	<c:value c:DACUnits= "224" c:milliVolts="700"/>
+	<c:value c:DACUnits= "240" c:milliVolts="750"/>
+	<c:value c:DACUnits= "255" c:milliVolts="800"/>
+      </c:DAC>
+      <c:DAC c:type="threshold" c:moduleName="LE32" c:moduleId="5" c:channel="2">
+	<c:value c:DACUnits=  "16" c:milliVolts= "50"/>
+	<c:value c:DACUnits=  "32" c:milliVolts="100"/>
+	<c:value c:DACUnits=  "48" c:milliVolts="150"/>
+	<c:value c:DACUnits=  "64" c:milliVolts="200"/>
+	<c:value c:DACUnits=  "80" c:milliVolts="250"/>
+	<c:value c:DACUnits=  "96" c:milliVolts="300"/>
+	<c:value c:DACUnits= "112" c:milliVolts="350"/>
+	<c:value c:DACUnits= "128" c:milliVolts="400"/>
+	<c:value c:DACUnits= "144" c:milliVolts="450"/>
+	<c:value c:DACUnits= "160" c:milliVolts="500"/>
+	<c:value c:DACUnits= "176" c:milliVolts="550"/>
+	<c:value c:DACUnits= "192" c:milliVolts="600"/>
+	<c:value c:DACUnits= "208" c:milliVolts="650"/>
+	<c:value c:DACUnits= "224" c:milliVolts="700"/>
+	<c:value c:DACUnits= "240" c:milliVolts="750"/>
+	<c:value c:DACUnits= "255" c:milliVolts="800"/>
+      </c:DAC>
+
+      <c:DAC c:type="threshold" c:moduleName="LE32" c:moduleId="12" c:channel="1">
+	<c:value c:DACUnits=  "16" c:milliVolts= "50"/>
+	<c:value c:DACUnits=  "32" c:milliVolts="100"/>
+	<c:value c:DACUnits=  "48" c:milliVolts="150"/>
+	<c:value c:DACUnits=  "64" c:milliVolts="200"/>
+	<c:value c:DACUnits=  "80" c:milliVolts="250"/>
+	<c:value c:DACUnits=  "96" c:milliVolts="300"/>
+	<c:value c:DACUnits= "112" c:milliVolts="350"/>
+	<c:value c:DACUnits= "128" c:milliVolts="400"/>
+	<c:value c:DACUnits= "144" c:milliVolts="450"/>
+	<c:value c:DACUnits= "160" c:milliVolts="500"/>
+	<c:value c:DACUnits= "176" c:milliVolts="550"/>
+	<c:value c:DACUnits= "192" c:milliVolts="600"/>
+	<c:value c:DACUnits= "208" c:milliVolts="650"/>
+	<c:value c:DACUnits= "224" c:milliVolts="700"/>
+	<c:value c:DACUnits= "240" c:milliVolts="750"/>
+	<c:value c:DACUnits= "255" c:milliVolts="800"/>
+      </c:DAC>
+      <c:DAC c:type="threshold" c:moduleName="LE32" c:moduleId="12" c:channel="2">
+	<c:value c:DACUnits=  "16" c:milliVolts= "50"/>
+	<c:value c:DACUnits=  "32" c:milliVolts="100"/>
+	<c:value c:DACUnits=  "48" c:milliVolts="150"/>
+	<c:value c:DACUnits=  "64" c:milliVolts="200"/>
+	<c:value c:DACUnits=  "80" c:milliVolts="250"/>
+	<c:value c:DACUnits=  "96" c:milliVolts="300"/>
+	<c:value c:DACUnits= "112" c:milliVolts="350"/>
+	<c:value c:DACUnits= "128" c:milliVolts="400"/>
+	<c:value c:DACUnits= "144" c:milliVolts="450"/>
+	<c:value c:DACUnits= "160" c:milliVolts="500"/>
+	<c:value c:DACUnits= "176" c:milliVolts="550"/>
+	<c:value c:DACUnits= "192" c:milliVolts="600"/>
+	<c:value c:DACUnits= "208" c:milliVolts="650"/>
+	<c:value c:DACUnits= "224" c:milliVolts="700"/>
+	<c:value c:DACUnits= "240" c:milliVolts="750"/>
+	<c:value c:DACUnits= "255" c:milliVolts="800"/>
+      </c:DAC>
     </c:DACs>
 
   </c:calibrations>
