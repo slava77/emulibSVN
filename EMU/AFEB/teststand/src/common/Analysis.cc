@@ -6,14 +6,18 @@
 #include "AFEB/teststand/utils/String.h"
 #include "AFEB/teststand/fit/StraightLine2D.h"
 #include "AFEB/teststand/fit/LeastSquaresFitter.h"
+#include "TFile.h"
+#include "TH1D.h"
 #include <iostream>
 #include <sstream>
 #include <set>
 
 using namespace AFEB::teststand;
 
-AFEB::teststand::Analysis::Analysis( const string& resultsDir ){
-  string       XML = utils::readFile( resultsDir + "/raw/results.xml" );
+AFEB::teststand::Analysis::Analysis( const string& resultsDir )
+  : rawResultsDir_     ( resultsDir + "/raw"      )
+  , analyzedResultsDir_( resultsDir + "/analyzed" ){
+  string       XML = utils::readFile( rawResultsDir_ + "/results.xml" );
   string configXML = utils::getSelectedNode( XML, "/root/c:configuration" );
   rawResultXML_    = utils::getSelectedNode( XML, "/root/a:results" );
 
@@ -104,50 +108,57 @@ void AFEB::teststand::Analysis::calibrateDACs( const string& configXML ){
 
 void AFEB::teststand::Analysis::calculateGain(){
   stringstream xpath;
-  // Find the count_vs_dac measurements with charge injection through external capacitors
-  for ( vector<Measurement*>::const_iterator m = configuration_->getMeasurements().begin(); m != configuration_->getMeasurements().end(); ++m ){
-    if ( (*m)->getTypeType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitorType() == Measurement::external ){      
-      //cout << **m << endl;
-      
-      // Loop over the devices
-      for ( vector<AnalyzedDevice>::const_iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
 
-	// cout << " id="   << d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getId()
-	//      << " name=" << d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getName()
-	//      << " type=" << d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getType()
-	//      << endl;
-	DAC soughtDAC( d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getId(),
-		       d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getName(),
-		       DAC::getType( d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getType() ),
-		       d->getPulseGeneratorSocket() );
-	// cout << endl << "Sought DAC" << endl << soughtDAC << endl;
-	for ( vector<DAC>::const_iterator dac=DACs_.begin(); dac!=DACs_.end(); ++dac ){
-	  if ( *dac == soughtDAC ){
-	    cout << "Found DAC" << endl << *dac << endl;
-	    soughtDAC = *dac;
-	    break;
-	  }
+  // Loop over the devices
+  for ( vector<AnalyzedDevice>::const_iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
+
+    // Find the pulse generator's and the threshold generator's DACs for this device
+    DAC pulseDAC( d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getId(),
+		  d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getName(),
+		  DAC::getType( d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getType() ),
+		  d->getPulseGeneratorSocket() ); // Just the descriptor, no calibration yet.
+    DAC thresholdDAC( d->getCrate()->getModule( d->getSignalConverterSlot() )->getId(),
+		      d->getCrate()->getModule( d->getSignalConverterSlot() )->getName(),
+		      DAC::getType( d->getCrate()->getModule( d->getSignalConverterSlot() )->getType() ),
+		      d->getSignalConverterSocket() ); // Just the descriptor, no calibration yet.
+    for ( vector<DAC>::const_iterator dac=DACs_.begin(); dac!=DACs_.end(); ++dac ){
+      if ( *dac == pulseDAC ){
+	cout << "Found pulse DAC" << endl << *dac << endl;
+	pulseDAC = *dac; // Now it contains the calibration, too.
+      }
+      else if ( *dac == thresholdDAC ){
+	cout << "Found threshold DAC" << endl << *dac << endl;
+	thresholdDAC = *dac; // Now it contains the calibration, too.
+      }
+    }
+
+    // Find the count_vs_dac measurements with charge injection through external capacitors
+    for ( vector<Measurement*>::const_iterator m = configuration_->getMeasurements().begin(); m != configuration_->getMeasurements().end(); ++m ){
+      if ( (*m)->getTypeType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitorType() == Measurement::external ){      
+	// Open the root file of this measurement's results...
+	string fileName = Results::getFileName( (*m)->getIndex(), (*m)->getType(), d->getId() );
+	TFile f( ( rawResultsDir_ + "/" + fileName +".root").c_str(), "READ" );
+	if ( f.IsZombie() ){
+	  stringstream ss;
+	  ss << "Failed to open ROOT file " << f.GetName();
+	  XCEPT_RAISE( xcept::Exception, ss.str() );
 	}
+	cout << "Opened " << f.GetName() << endl;
+	f.cd();
+	// ...and get the threshold histogram
+	string histogramName = string( "threshold__" ) + fileName;
+	TH1D *histogram;
+	f.GetObject( histogramName.c_str(), histogram );
 
 	// Loop over the channels
 	for ( int iChannel=0; iChannel<d->getNChannels(); ++iChannel ){
-	  // Get the observed threshold and its error for this channel from the result XML
-	  xpath.str("");
-	  xpath << "a:results/a:measurement[@a:index='" << (*m)->getIndex() 
-		<< "']/a:device[@a:id='" << d->getId() 
-		<< "']/a:channel[@a:number='" << iChannel
-		<< "']/a:parameter[@a:name='threshold [ADC]']/@a:value";
-	  double threshold = utils::stringTo<double>( utils::getSelectedNodeValue( rawResultXML_, xpath.str() ) );
-	  cout << xpath.str() << "     " << threshold << endl;
-	  xpath.str("");
-	  xpath << "a:results/a:measurement[@a:index='" << (*m)->getIndex() 
-		<< "']/a:device[@a:id='" << d->getId() 
-		<< "']/a:channel[@a:number='" << iChannel
-		<< "']/a:parameter[@a:name='threshold [ADC]']/@a:error";
-	  double thresholdError = utils::stringTo<double>( utils::getSelectedNodeValue( rawResultXML_, xpath.str() ) );
-	  cout << xpath.str() << "     " << thresholdError << endl;
+	  cout << iChannel+1 << "  " 
+	       << histogram->GetBinContent( iChannel+1 ) << "   " 
+	       << histogram->GetBinError( iChannel+1 ) << endl;
 
 	}
+
+	f.Close();
       }
     }
   }
