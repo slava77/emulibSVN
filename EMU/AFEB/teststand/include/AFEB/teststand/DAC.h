@@ -38,7 +38,7 @@ namespace AFEB { namespace teststand {
       DAC& operator=( const DAC& rhs );
       bool operator<( const DAC& rhs ) const;
       bool operator==( const DAC& rhs ) const;
-      string getModuleid  () const { return moduleId_;           }  
+      string getModuleId  () const { return moduleId_;           }  
       string getModuleName() const { return moduleName_;         }
       Type_t getType      () const { return type_;               }      
       string getTypeString() const { return typeStrings_[type_]; }      

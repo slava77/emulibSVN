@@ -11,10 +11,10 @@ using namespace AFEB::teststand;
 const char* const AFEB::teststand::DAC::typeStrings_[DAC::nTypes] = { "pulse", "threshold" };
 
 ostream& AFEB::teststand::operator<<( ostream& os, const DAC& dac ){
-  os << "DAC socket "  << dac.socket_
-     << " in "         << dac.moduleName_
-     << " module "     << dac.moduleId_
-     << " for "        << dac.type_;
+  os << "DAC socket "  << dac.getSocket()
+     << " in "         << dac.getModuleName()
+     << " module "     << dac.getModuleId()
+     << " for "        << dac.getTypeString();
   if ( dac.getCalibrationParameters() != NULL ) 
     os << endl << "Parameters" << endl << *dac.getCalibrationParameters();
   if ( dac.getCalibrationParametersCovariance() != NULL ) 
@@ -47,7 +47,7 @@ AFEB::teststand::DAC::DAC( const string& moduleId,
 }
 
 AFEB::teststand::DAC::DAC( const DAC& other )  
-  : moduleId_  ( other.getModuleid()   )
+  : moduleId_  ( other.getModuleId()   )
   , moduleName_( other.getModuleName() )
   , type_      ( other.getType()       )
   , socket_    ( other.getSocket()     )
@@ -66,7 +66,7 @@ AFEB::teststand::DAC&
 AFEB::teststand::DAC::operator=( const DAC& rhs ){
   if ( this == &rhs ) return *this;
 
-  moduleId_   = rhs.getModuleid()  ;
+  moduleId_   = rhs.getModuleId()  ;
   moduleName_ = rhs.getModuleName();
   type_       = rhs.getType()      ;
   socket_     = rhs.getSocket()   ;
@@ -81,13 +81,13 @@ bool
 AFEB::teststand::DAC::operator<( const DAC& rhs ) const {
   return ( ( moduleId_        +":"+moduleName_        +":"+typeStrings_[type_]+":"+utils::stringFrom<int>( socket_ )       )
 	   <
-	   ( rhs.getModuleid()+":"+rhs.getModuleName()+":"+rhs.getTypeString()+":"+utils::stringFrom<int>( rhs.getSocket() ) )
+	   ( rhs.getModuleId()+":"+rhs.getModuleName()+":"+rhs.getTypeString()+":"+utils::stringFrom<int>( rhs.getSocket() ) )
 	   );
 }
 
 bool 
 AFEB::teststand::DAC::operator==( const DAC& rhs ) const {
-  if ( moduleId_   != rhs.getModuleid()   ) return false;
+  if ( moduleId_   != rhs.getModuleId()   ) return false;
   if ( moduleName_ != rhs.getModuleName() ) return false;
   if ( type_       != rhs.getType()       ) return false;
   if ( socket_     != rhs.getSocket()     ) return false;
