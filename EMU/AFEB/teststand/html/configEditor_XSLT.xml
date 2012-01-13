@@ -586,7 +586,7 @@
   </xsl:template>
 
   <xsl:template match="c:value">
-    <tr><th><xsl:value-of select="@c:DACUnits"/></th><td><xsl:value-of select="@c:milliVolts"/></td></tr>
+    <tr><th style="text-align:right"><xsl:value-of select="@c:DACUnits"/></th><td style="text-align:right"><xsl:value-of select="@c:milliVolts"/></td></tr>
   </xsl:template>
 
 </xsl:transform>
