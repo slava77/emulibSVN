@@ -105,11 +105,11 @@ CscFedDdu.CscFedDdu	1#1
 	fsm_command	25#3
 	disabled_channels	29#4
 CscLvChamberMon.CscLvChamberMon	1#1
-	Cfeb	41#2:CscLvCfeb_Template
-	Alct	41#3:CscLvAlct_Template
-	Tmb	41#72:CscLvTmb_Template
-	Lvdb	41#92:CscLvLvdb_Template
-	CCB_bits	21#93
-	FPGA_bits	21#94
+	cfeb	41#2:CscLvCfeb_Template
+	alct	41#3:CscLvAlct_Template
+	tmb	41#72:CscLvTmb_Template
+	lvdb	41#92:CscLvLvdb_Template
+	ccb_bits	21#93
+	fpga_bits	21#94
 	timestamp	26#138
 	status	21#137

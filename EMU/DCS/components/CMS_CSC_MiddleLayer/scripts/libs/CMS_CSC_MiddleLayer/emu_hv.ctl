@@ -2,7 +2,7 @@
 
 This package contains common functions for HV.
 
-@author Evaldas Juska (PH/UCM)
+@author Evaldas Juska (FNAL)
 @date   June 2011
 */
 
@@ -41,6 +41,7 @@ public const int EMUHV_COMMAND_SET_STATE     = 8;  // Set state
 
 public const int EMUHV_VOLTAGE_NOMINAL = 3600;
 public const int EMUHV_VOLTAGE_STANDBY = 3000;
+public const int EMUHV_VOLTAGE_PRIMARY_STANDBY = 3200;
 
 public const int EMUHV_DEFAULT_RAMP_UP = 10;
 public const int EMUHV_DEFAULT_RAMP_DOWN = 100;
@@ -240,9 +241,26 @@ public void emuhv_sendCommand(mapping deviceParams, int command, dyn_string &exc
   */
 public void emuhv_sendPrimaryCommand(mapping deviceParams, int command, dyn_string &exceptionInfo, int commandParamValue = minINT()) {
   // some error checking and preparation
-  if (command != EMUHV_COMMAND_OFF) { // only off command is supported for primary PSUs, everything else is handled automagically by the HV server when it gets commands for chamber channels
+  if ((command != EMUHV_COMMAND_OFF) &&
+      (command != EMUHV_COMMAND_SET_VSET)) { // only off and standby commands are supported for primary PSUs, everything else is handled automagically by the HV server when it gets commands for chamber channels
     
     emu_addError("Unsupported command: " + command, exceptionInfo);
+    return;
+  }
+
+  if ((commandParamValue == minINT()) &&
+      (
+          (command == EMUHV_COMMAND_SET_RAMP_UP) ||
+          (command == EMUHV_COMMAND_SET_RAMP_DOWN) ||
+          (command == EMUHV_COMMAND_SET_VMAX) ||
+          (command == EMUHV_COMMAND_SET_IMAX) ||
+          (command == EMUHV_COMMAND_SET_IMAX_RAMP) ||
+          (command == EMUHV_COMMAND_SET_VSET) ||
+          (command == EMUHV_COMMAND_SET_MOD_STATE) ||
+          (command == EMUHV_COMMAND_SET_STATE))
+     ) {
+    
+    emu_addError("Unsupported command: No value supplied for command " + command, exceptionInfo);
     return;
   }
 
@@ -409,6 +427,8 @@ public void emuhv_checkIntegrity(dyn_string &exceptionInfo) {
   
   dyn_string dps = dpNames(EMUHV_DP_PREFIX + "*", "CscHvChamber");
   for (int i=1; i <= dynlen(dps); i++) {
+    emu_debug("HV: Checking " + dps[i]);
+
     string numChannelsDp = dps[i] + EMUHV_DP_TYPE_SLOW_MON + ".num_chans";
     int numChannels = emu_dpGetCached(numChannelsDp);
     if (numChannels <= 0) {

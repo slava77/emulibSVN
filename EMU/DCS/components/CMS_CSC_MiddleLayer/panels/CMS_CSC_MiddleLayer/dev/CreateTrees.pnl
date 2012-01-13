@@ -8,7 +8,7 @@ PANEL,-1 -1 790 400 N "_3DFace" 0
 }" 0
  E E E E 1 -1 -1 0  30 40
 ""0  1
-E "#uses \"CMS_CSCfw_HV_CC_new/emu_hv.ctl\"
+E "#uses \"CMS_CSC_MiddleLayer/emu_hv.ctl\"
 
 // ************* FSM ****************************************
 const string EMU_FSM_TYPE_SYSTEM = \"EMUGrouping\";
@@ -20,10 +20,19 @@ const string EMU_FSM_TYPE_CHAMBER_OUTER = \"EMUChamberOuter\";
 const string EMU_FSM_TYPE_FED = \"EMUFed\";
 const string EMU_FSM_TYPE_HV = \"EMUGrouping\";
 const string EMU_FSM_TYPE_ME11_HV = \"CMS_CSC_ME11_HV_Type\";
+const string EMU_FSM_TYPE_LV = \"EMU_LV\";
+const string EMU_FSM_TYPE_MARATONS = \"CSC_LV_TREE_NODES\";
+const string EMU_FSM_TYPE_CRBS = \"CSC_LV_TREE_NODES\";
 
 const string EMU_FSM_DOMAIN_ME11_HV = \"CSC_ME_11_HV\";
 const string EMU_FSM_NODE_ME11_HV_PLUS = \"CSC_ME_P11_HV\";
 const string EMU_FSM_NODE_ME11_HV_MINUS = \"CSC_ME_N11_HV\";
+
+const string EMU_FSM_DOMAIN_LV_MRTN = \"CMS_CSC_LV_CAN2\";
+const string EMU_FSM_DOMAIN_LV_CRB = \"CMS_CSC_LV_CAN1\";
+
+const string EMU_FSM_NODE_ELMB_PSU_MINUS = \"CSC_ME_LV_CR1_MINUS_PSU\";
+const string EMU_FSM_NODE_ELMB_PSU_PLUS = \"CSC_ME_LV_CR1_PLUS_PSU\";
 
 // ******************* DP ***********************************
 const string HV_DP_TYPE = \"CscHvChamber\";
@@ -160,6 +169,19 @@ dyn_mapping getHvPrimariesToCreate() {
   return ret;
 }
 
+/** @return HV LV PSUs to be created. **/
+dyn_mapping getHvLvToCreate() {
+  dyn_mapping ret;
+  mapping station = getStationToCreate();
+  if (station[\"station\"] == 1) {
+    mapping psu;
+    psu[\"side\"] = station[\"side\"];
+    dynAppend(ret, psu);
+  }
+  
+  return ret;
+}
+
 /** @return DDUs to be created. */
 dyn_mapping getDdusToCreate() {
   dyn_mapping ret;
@@ -227,6 +249,10 @@ string getHvPrimaryDpName(mapping primary) {
 
 string getHvDimPrimaryServiceName(mapping primary) {
   return \"HV_PR_\" + primary[\"hostId\"] + \"_\" + primary[\"port\"] + \"_\" + primary[\"address\"];
+}
+
+string getHvLvDpName(mapping hvLvPsu) {
+  return \"Wiener/HV_LV_\" + hvLvPsu[\"side\"];
 }
 
 string getLvDpName(mapping chamber) {
@@ -310,6 +336,15 @@ void createHvDevices(dyn_string &ex) {
 
   }
 
+  // create HV LV PSUs (Wiener PL512)
+  
+  dyn_mapping hvLvPsus = getHvLvToCreate();
+  for (int i=1; i <= dynlen(hvLvPsus); i++) {
+    mapping hvLvPsu = hvLvPsus[i];
+    
+    emu_info(\"Creating HV LV PSU is not implemented yet!!!!\");
+  }
+  
 }
 
 void createX2PDevices(dyn_string &ex) {
@@ -624,7 +659,19 @@ void createStationsFsm(string systemNode, dyn_string &ex) {
     fwFsmTree_addNode(systemNode, stationNode, EMU_FSM_TYPE_STATION, true);    
     fwFsmTree_setNodeLabel(stationNode, stationName);
     
-    //create trigger sector
+    // import the Maraton and CRB nodes
+    string crbNode = stationNode + \"_LV_CRB\";
+    string maratonNode = stationNode + \"_LV_MRTN\";
+    if (chamber[\"station\"] == 3) { // special case for station 3 - use Maraton node for station 2 - it powers both ME2 and ME3 (on the same disk). I know.. doesn't look very nice.. mais c'est la vie..
+      maratonNode = \"CSC_ME_\" + chamber[\"side\"] + \"2\" + \"_LV_MRTN\";
+    }
+
+    createFsmRefNode(maratonNode, stationNode, EMU_FSM_DOMAIN_LV_MRTN, EMU_FSM_TYPE_MARATONS, ex);
+    if (emu_checkException(ex)) { return; }
+    createFsmRefNode(crbNode, stationNode, EMU_FSM_DOMAIN_LV_CRB, EMU_FSM_TYPE_CRBS, ex);
+    if (emu_checkException(ex)) { return; }
+    
+    // create trigger sector
     bool isSmallRing = ((chamber[\"station\"] > 1) && (chamber[\"ring\"] == 1));
     int trgSector;
     if (!isSmallRing) {
@@ -655,18 +702,9 @@ void createStationsFsm(string systemNode, dyn_string &ex) {
       fwFsmTree_setNodeLabel(hvDp, chamberName + \" HV\");
     } else {  // CAEN HV system
       string me11HvNode = getMe11HvNode(chamber);
-      string me11HvLabel = chamberName + \" HV\";
       
-      // check if the node is reachable
-      if (fwFsmTree_isNode(me11HvNode)) {
-        if (!fwFsmTree_isNode(chamberNode + \"::\" + me11HvNode)) { // if already exists locally - skip
-          fwFsmTree_addNode(chamberNode, EMU_FSM_DOMAIN_ME11_HV + \"::\" + me11HvNode, EMU_FSM_TYPE_ME11_HV, false);
-        }
-//        fwFsmTree_setNodeLabel(chamberNode + \"::\" + me11HvNode,  me11HvLabel);
-      } else {
-        emu_addError(\"ME1/1 HV node \" + me11HvNode + \" could not be found.\", ex);
-        return;
-      }
+      createFsmRefNode(me11HvNode, chamberNode, EMU_FSM_DOMAIN_ME11_HV, EMU_FSM_TYPE_ME11_HV, ex);
+      if (emu_checkException(ex)) { return; }
     }
     
     // create chamber LV DU
@@ -687,12 +725,12 @@ void createHvFsm(string systemNode, dyn_string &ex) {
   
   if (dynlen(primaries) > 0) {
     string side = station[\"side\"];
-
+    string sideFull = (side == \"M\") ? \"MINUS\" : \"PLUS\"; // translate P/M to PLUS/MINUS
+    
     // main HV node
 
     string hvNode = \"CSC_HV_\" + side;
-    string hvName = \"CSC HV \" +
-                     ((side == \"M\") ? \"MINUS\" : \"PLUS\"); // translate P/M to PLUS/MINUS
+    string hvName = \"CSC HV \" + sideFull;
     
     fwFsmTree_addNode(systemNode, hvNode, EMU_FSM_TYPE_HV, true);
     fwFsmTree_setNodeLabel(hvNode, hvName);
@@ -711,29 +749,51 @@ void createHvFsm(string systemNode, dyn_string &ex) {
       fwFsmTree_addNode(hvPrimariesNode, hvPrimaryDp, HV_PRIMARY_DP_TYPE, false);
       fwFsmTree_setNodeLabel(hvPrimaryDp,  \"Primary_\" + primary[\"hostId\"] + \"_\" + primary[\"port\"] + \"_\" + primary[\"address\"]);
     }
+
+    
+    // HV LV PSU
+    
+    dyn_mapping hvLvPsus = getHvLvToCreate();
+    for (int i=1; i <= dynlen(hvLvPsus); i++) {
+      if (side != hvLvPsus[i][\"side\"]) { // check if things are consistent here
+        emu_addError(\"trying to create HV LV PSU and HV primaries that do not belong to the same endcap: \" + side + \" != \" + hvLvPsus[i][\"side\"], ex);
+        return;
+      }
+      string wienerDp = getHvLvDpName(hvLvPsus[i]);
+      if (dpExists(wienerDp)) {
+        // create LV HV logical node
+        string hvLvNode = \"CSC_HV_LV_\" + side;
+        string hvLvName = \"LV for HV \" + sideFull;
+        fwFsmTree_addNode(hvNode, hvLvNode, EMU_FSM_TYPE_LV, true);
+        fwFsmTree_setNodeLabel(hvLvNode, hvLvName);
+      
+        // add the devices
+        string wienerName = \"Wiener PSU for HV \" + sideFull;
+        fwFsmTree_addNode(hvLvNode, wienerDp, \"FwWienerMarathon\", false);
+        fwFsmTree_setNodeLabel(wienerDp, wienerName);
+      
+        dyn_string channelDps = dpNames(wienerDp + \"/*\", \"FwWienerMarathonChannel\");
+        for (int i=1; i <= dynlen(channelDps); i++) {
+          string channelDp = channelDps[i];
+          dyn_string channelDpSplit = strsplit(channelDp, \"/\");
+          string channelName = channelDpSplit[3];
+          strreplace(channelName, \"Channel\", \"Channel \");
+        
+          fwFsmTree_addNode(hvLvNode, channelDp, \"FwWienerMarathonChannel\", false);
+          fwFsmTree_setNodeLabel(channelDp, channelName);
+        }
+      }      
+    }
+
     
     // ME1/1 HV
 
     string me11HvNode = (side == \"M\") ? EMU_FSM_NODE_ME11_HV_MINUS : EMU_FSM_NODE_ME11_HV_PLUS;
-    string me11HvName = \"CSC ME1/1 \" +
-                        ((side == \"M\") ? \"MINUS\" : \"PLUS\") + // translate P/M to PLUS/MINUS
-                        \" HV\";
         
-    // check if the node is reachable remotely
-    if (fwFsmTree_isNode(me11HvNode)) {
-      if (!fwFsmTree_isNode(hvNode + \"::\" + me11HvNode)) { // if already exists locally - skip
-        fwFsmTree_addNode(hvNode, EMU_FSM_DOMAIN_ME11_HV + \"::\" + me11HvNode, EMU_FSM_TYPE_ME11_HV, false);
-      }
-//      fwFsmTree_setNodeLabel(hvNode + \"::\" + me11HvNode,  me11HvName);
-    } else {
-      emu_addError(\"ME1/1 HV node \" + me11HvNode + \" could not be found.\", ex);
-      return;
-    }
+    createFsmRefNode(me11HvNode, hvNode, EMU_FSM_DOMAIN_ME11_HV, EMU_FSM_TYPE_ME11_HV, ex);
+    if (emu_checkException(ex)) { return; }
     
   } 
-}
-
-void createLvFsm(string systemNode) {
 }
 
 void createFedFsm(string systemNode) {
@@ -760,7 +820,9 @@ void createFedFsm(string systemNode) {
 
 // *********************** General ***********************
 
-
+/**
+  * Creates a given device if it doesn't already exist.
+  */
 dyn_string createDevice(string type, string name, dyn_string &ex, dyn_string parentDevice = makeDynString()) {
   dyn_string device;
   
@@ -771,7 +833,7 @@ dyn_string createDevice(string type, string name, dyn_string &ex, dyn_string par
     fwDevice_createObject(parentDevice, ex);
     if (emu_checkException(ex)) { return makeDynString(); }
   }
-    
+  
   device[fwDevice_DP_TYPE] = type;
   device[fwDevice_DP_NAME] = name;
   if (!deviceExists(device, parentDevice)) {
@@ -782,6 +844,9 @@ dyn_string createDevice(string type, string name, dyn_string &ex, dyn_string par
   return device;
 }
 
+/**
+  * @return true if given device already exists in the local system.
+  */
 bool deviceExists(dyn_string device, dyn_string parent) {
   string dp = \"\";
   if (parent[fwDevice_DP_NAME] != \"\") {
@@ -791,10 +856,16 @@ bool deviceExists(dyn_string device, dyn_string parent) {
   return dpExists(dp);
 }
 
+/**
+  * @return true if the given chamber is an ME1/1 chamber.
+  */
 bool isMe11Chamber(mapping chamber) {
   return (chamber[\"station\"] == 1) && (chamber[\"ring\"] == 1);
 }
 
+/**
+  * Creates a DIM config device.
+  */
 void createDimConfigDevice(string configName, dyn_string &ex, bool clearIfExists = true) {
   if (strpos(configName, DIM_DEVICE_PREFIX) < 0) {
     configName = DIM_DEVICE_PREFIX + fwDevice_HIERARCHY_SEPARATOR + configName;
@@ -810,7 +881,20 @@ void createDimConfigDevice(string configName, dyn_string &ex, bool clearIfExists
               configName + \".clientCommands\", makeDynString());
   }
 }
-" 0
+
+/**
+  * Creates a reference to remote FSM node. Checks if the node exists remotely and doesn't exist locally.
+  */
+void createFsmRefNode(string nodeName, string parentNode, string remoteDomain, string type, dyn_string &ex) {
+  if (fwFsmTree_isNode(nodeName)) { // is the node is reachable?
+    if (!fwFsmTree_isNode(parentNode + \"::\" + nodeName)) { // if already exists locally - skip
+      fwFsmTree_addNode(parentNode, remoteDomain + \"::\" + nodeName, type, false);
+    }
+  } else {
+    emu_addError(\"Remote FSM node could not be found: \" + nodeName, ex);
+    return;
+  }
+}" 0
  2
 "CBRef" "1"
 "EClose" E
@@ -1410,6 +1494,427 @@ LANG:1 23 Create all DIM managers
   dyn_string ex;
   createAllDimManagers(ex);
   if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+13 15
+"PUSH_BUTTON11"
+""
+1 410 160 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+15 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  408 158 772 192
+
+T 
+1
+LANG:1 21 Create default alerts
+"main()
+{
+  dyn_string ex;
+
+  // summary
+  
+  emu_info(\"creating LV summary alerts...\");
+  setSummaryAlerts(\"CscLvChamber\", \"LV OK\", \"LV Error\", ex);
+  if (emu_checkException(ex)) { return; }
+
+  emu_info(\"creating Temperature summary alerts...\");
+  setSummaryAlerts(\"CscTempChamber\", \"Temperature OK\", \"Temperature Error\", ex);
+  if (emu_checkException(ex)) { return; }
+
+  emu_info(\"creating DDU summary alerts...\");
+  setSummaryAlerts(\"CscFedDdu\", \"DDU OK\", \"DDU Error\", ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // LV
+  
+  emu_info(\"creating CFEB LV alerts...\");
+  setCfebLvAlerts(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  emu_info(\"creating ALCT LV alerts...\");
+  setAlctLvAlerts(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  emu_info(\"creating TMB LV alerts...\");
+  setTmbLvAlerts(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  emu_info(\"creating LVDB LV alerts...\");
+  setLvdbLvAlerts(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // Temperature
+  emu_info(\"creating temperature alerts...\");
+  setTemperatureAlerts(ex);
+  if (emu_checkException(ex)) { return; }
+
+  // FED
+  emu_info(\"creating FED alerts...\");
+  setFedAlerts(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  // activate all the summary alerts
+
+  emu_info(\"activating all summary alerts\");
+  fwAlertConfig_activateMultiple(dpNames(\"*.\", \"CscLvChamberMon\"), ex);
+  if (emu_checkException(ex)) { return; }
+  fwAlertConfig_activateMultiple(dpNames(\"*.\", \"CscLvChamber\"), ex);
+  if (emu_checkException(ex)) { return; }
+  fwAlertConfig_activateMultiple(dpNames(\"*.\", \"CscTempChamberMon\"), ex);
+  if (emu_checkException(ex)) { return; }
+  fwAlertConfig_activateMultiple(dpNames(\"*.\", \"CscTempChamber\"), ex);
+  if (emu_checkException(ex)) { return; }
+  fwAlertConfig_activateMultiple(dpNames(\"*.\", \"CscFedDduMon\"), ex);
+  if (emu_checkException(ex)) { return; }
+  fwAlertConfig_activateMultiple(dpNames(\"*.\", \"CscFedDdu\"), ex);
+  if (emu_checkException(ex)) { return; }
+  
+  emu_info(\"DONE\");
+}
+
+void setSummaryAlerts(string type, string okText, string badText, dyn_string &ex) {
+  
+  dyn_string dps = dpNames(\"*.\", type + \"Mon\");
+  fwAlertConfig_setMultiple(dps,
+                            DPCONFIG_SUM_ALERT,
+                            makeDynString(okText, badText),
+                            makeDynFloat(),
+                            makeDynString(\"_fwErrorNack\"),
+                            makeDynString(),
+                            \"\", makeDynString(), \"\",
+                            ex);
+  if (emu_checkException(ex)) { return; }
+
+  dps = dpNames(\"*.\", type);
+  fwAlertConfig_setMultiple(dps,
+                            DPCONFIG_SUM_ALERT,
+                            makeDynString(okText, badText),
+                            makeDynFloat(),
+                            makeDynString(\"_fwErrorNack\"),
+                            makeDynString(),
+                            \"\", makeDynString(), \"\",
+                            ex);
+  if (emu_checkException(ex)) { return; }
+
+  for (int i=1; i <= dynlen(dps); i++) {
+    fwAlertConfig_addDpInAlertSummary(dps[i],
+                                      dpSubStr(dps[i], DPSUB_SYS_DP) + \"/Mon.\",
+                                      ex,
+                                      false);
+    if (emu_checkException(ex)) { return; }
+  }
+}
+
+// CFEB LV
+void setCfebLvAlerts(dyn_string &ex) {
+  dyn_string dpsToIgnore = dpNames(\"*CSC_ME13_*.cfeb.*.v5\", \"CscLvChamberMon\"); // ME1/3 only have 4 CFEBs - so ignore the 5th
+  
+  dyn_string dps, texts, classes;
+  dyn_float limits;
+
+  // 3.3V voltage
+  dps = dpNames(\"*CSC_ME*.cfeb.v33.*\", \"CscLvChamberMon\");
+  texts = makeDynString(\"CFEB 3.3V voltage is too low\", \"\", \"CFEB 3.3V voltage is too high\");
+  limits = makeDynFloat(2.64, 3.96);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex, dpsToIgnore);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 3.3, dpsToIgnore);
+    
+  // 5V voltage
+  dps = dpNames(\"*CSC_ME*.cfeb.v50.*\", \"CscLvChamberMon\");
+  texts = makeDynString(\"CFEB 5V voltage is too low\", \"\", \"CFEB 5V voltage is too high\");
+  limits = makeDynFloat(4.0, 6.0);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex, dpsToIgnore);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 5.0, dpsToIgnore);
+  
+  // 6V voltage
+  dps = dpNames(\"*CSC_ME*.cfeb.v60.*\", \"CscLvChamberMon\");
+  texts = makeDynString(\"CFEB 6V voltage is too low\", \"\", \"CFEB 6V voltage is too high\");
+  limits = makeDynFloat(4.8, 7.2);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex, dpsToIgnore);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 6.0, dpsToIgnore);
+  
+  // 3.3V current
+  dps = dpNames(\"*CSC_ME*.cfeb.c33.*\", \"CscLvChamberMon\");
+  texts = makeDynString(\"CFEB 3.3V current is too low\", \"\", \"CFEB 3.3V current is too high\");
+  limits = makeDynFloat(0.075, 1.1);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex, dpsToIgnore);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 0.5, dpsToIgnore);
+    
+  // 5V current
+  dps = dpNames(\"*CSC_ME*.cfeb.c50.*\", \"CscLvChamberMon\");
+  texts = makeDynString(\"CFEB 5V current is too low\", \"\", \"CFEB 5V current is too high\");
+  limits = makeDynFloat(0, 2);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex, dpsToIgnore);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 1.0, dpsToIgnore);
+  
+  // 6V current
+  dps = dpNames(\"*CSC_ME*.cfeb.c60.*\", \"CscLvChamberMon\");
+  texts = makeDynString(\"CFEB 6V current is too low\", \"\", \"CFEB 6V current is too high\");
+  limits = makeDynFloat(0, 6);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex, dpsToIgnore);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 3.0, dpsToIgnore);
+}    
+
+// ALCT LV
+void setAlctLvAlerts(dyn_string &ex) {
+  dyn_string dps, texts, classes;
+  dyn_float limits;
+
+  // 1.8V voltage
+  dps = dpNames(\"*CSC_ME*.alct.v18\", \"CscLvChamberMon\");
+  texts = makeDynString(\"ALCT 1.8V voltage is too low\", \"\", \"ALCT 1.8V voltage is too high\");
+  limits = makeDynFloat(1.44, 2.16);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 1.8);
+  
+  // 3.3V voltage
+  dps = dpNames(\"*CSC_ME*.alct.v33\", \"CscLvChamberMon\");
+  texts = makeDynString(\"ALCT 3.3V voltage is too low\", \"\", \"ALCT 3.3V voltage is too high\");
+  limits = makeDynFloat(2.64, 3.96);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 3.3);
+  
+  // 5.5V voltage
+  dps = dpNames(\"*CSC_ME*.alct.v55\", \"CscLvChamberMon\");
+  texts = makeDynString(\"ALCT 5.5V voltage is too low\", \"\", \"ALCT 5.5V voltage is too high\");
+  limits = makeDynFloat(4.4, 6.6);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 5.5);
+  
+  // 5.6V voltage
+  dps = dpNames(\"*CSC_ME*.alct.v56\", \"CscLvChamberMon\");
+  texts = makeDynString(\"ALCT 5.6V voltage is too low\", \"\", \"ALCT 5.6V voltage is too high\");
+  limits = makeDynFloat(4.4, 6.6);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 5.5);
+  
+  // 1.8V current
+  dps = dpNames(\"*CSC_ME*.alct.v18\", \"CscLvChamberMon\");
+  texts = makeDynString(\"ALCT 1.8V current is too low\", \"\", \"ALCT 1.8V current is too high\");
+  limits = makeDynFloat(0, 4.2);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 2.1);
+  
+  // 3.3V current
+  dps = dpNames(\"*CSC_ME*.alct.v33\", \"CscLvChamberMon\");
+  texts = makeDynString(\"ALCT 3.3V current is too low\", \"\", \"ALCT 3.3V current is too high\");
+  limits = makeDynFloat(0, 5);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 2.5);
+  
+  // 5.5V current
+  dps = dpNames(\"*CSC_ME*.alct.v55\", \"CscLvChamberMon\");
+  texts = makeDynString(\"ALCT 5.5V current is too low\", \"\", \"ALCT 5.5V current is too high\");
+  limits = makeDynFloat(0, 4.2);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 2.1);
+  
+  // 5.6V current
+  dps = dpNames(\"*CSC_ME*.alct.v56\", \"CscLvChamberMon\");
+  texts = makeDynString(\"ALCT 5.6V current is too low\", \"\", \"ALCT 5.6V current is too high\");
+  limits = makeDynFloat(0, 4.2);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 2.1);
+}
+
+// TMB LV
+void setTmbLvAlerts(dyn_string &ex) {
+}
+
+// LVDB LV
+void setLvdbLvAlerts(dyn_string &ex) {
+  dyn_string dps, texts, classes;
+  dyn_float limits;
+
+  // 7.5V analog
+  dps = dpNames(\"*CSC_ME*.lvdb.v7Analog\", \"CscLvChamberMon\");
+  texts = makeDynString(\"LVDB 7.5V analog voltage is too low\", \"\", \"LVDB 7.5V analog voltage is too high\");
+  limits = makeDynFloat(3.5, 10.5);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 7.0);
+  
+  // 7.5V digital
+  dps = dpNames(\"*CSC_ME*.lvdb.v7Digital\", \"CscLvChamberMon\");
+  texts = makeDynString(\"LVDB 7.5V digital voltage is too low\", \"\", \"LVDB 7.5V digital voltage is too high\");
+  limits = makeDynFloat(3.5, 10.5);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 7.0);
+}
+
+// Temperature
+void setTemperatureAlerts(dyn_string &ex) {
+  dyn_string dpsToIgnore = dpNames(\"*CSC_ME13_*.cfeb.*.v5\", \"CscTempChamberMon\"); // ME1/3 only have 4 CFEBs - so ignore the 5th
+  
+  dyn_string dps, texts, classes;
+  dyn_float limits;
+
+  // CFEB
+  dps = dpNames(\"*CSC_ME*.cfeb.v*\", \"CscTempChamberMon\");
+  texts = makeDynString(\"CFEB temperature is too low\", \"\", \"CFEB temperature is too high\");
+  limits = makeDynFloat(10, 31);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex, dpsToIgnore);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 25, dpsToIgnore);
+  
+  // ALCT
+  dps = dpNames(\"*CSC_ME*.alct.v1\", \"CscTempChamberMon\");
+  texts = makeDynString(\"ALCT temperature is too low\", \"\", \"ALCT temperature is too high\");
+  limits = makeDynFloat(10, 31);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex, dpsToIgnore);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 25);
+  
+  // DMB
+  dps = dpNames(\"*CSC_ME*.dmb.v1\", \"CscTempChamberMon\");
+  texts = makeDynString(\"DMB temperature is too low\", \"\", \"DMB temperature is too high\");
+  limits = makeDynFloat(10, 30);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex, dpsToIgnore);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 25);
+}
+
+// FED
+void setFedAlerts(dyn_string &ex) {
+  dyn_string dps, texts, classes;
+  dyn_float limits;
+
+  // temperature
+  dps = dpNames(\"*DDU*.temp.*\", \"CscFedDduMon\");
+  texts = makeDynString(\"DDU temperature is too low\", \"\", \"DDU temperature is too high\");
+  limits = makeDynFloat(0, 35);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
+  if (emu_checkException(ex)) { return; }
+
+  // 1.5V voltage
+  dps = dpNames(\"*DDU*.lv.v15\", \"CscFedDduMon\");
+  texts = makeDynString(\"DDU 1.5V voltage is too low\", \"\", \"DDU 1.5V voltage is too high\");
+  limits = makeDynFloat(1.2, 1.8);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
+  if (emu_checkException(ex)) { return; }
+
+  // 2.5V voltage (a & b)
+  dps = dpNames(\"*DDU*.lv.v25*\", \"CscFedDduMon\");
+  texts = makeDynString(\"DDU 2.5V voltage is too low\", \"\", \"DDU 2.5V voltage is too high\");
+  limits = makeDynFloat(2, 3);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
+  if (emu_checkException(ex)) { return; }
+
+  // 3.3V voltage
+  dps = dpNames(\"*DDU*.lv.v33*\", \"CscFedDduMon\");
+  texts = makeDynString(\"DDU 3.3V voltage is too low\", \"\", \"DDU 3.3V voltage is too high\");
+  limits = makeDynFloat(2.64, 3.96);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
+  if (emu_checkException(ex)) { return; }
+}
+
+void setAndActivateAnalogAlerts(dyn_string dpes, dyn_string texts, dyn_string limits, dyn_string classes, 
+                                dyn_string &ex, dyn_string dpesToIgnore = makeDynString()) {
+  emu_dynRemove(dpes, dpesToIgnore);
+  fwAlertConfig_setMultiple(dpes, DPCONFIG_ALERT_NONBINARYSIGNAL,
+                    texts, limits, classes,
+                    makeDynString(), \"\", makeDynString(), \"\",
+                    ex,
+                    false, false, \".\");
+  if (emu_checkException(ex)) { return; }
+  fwAlertConfig_activateMultiple(dpes, ex);
+  if (emu_checkException(ex)) { return; }
+}
+
+void setDefaultValueAndRange(dyn_string dpes, float defaultValue, dyn_string dpesToIgnore = makeDynString(), float min = -1, float max = 999999999 /*maxFLOAT()*/) {
+  emu_dynRemove(dpes, dpesToIgnore);
+  for (int i=1; i <= dynlen(dpes); i++) {
+   dpSetWait(dpes[i] + \":_pv_range.._type\", DPCONFIG_MINMAX_PVSS_RANGECHECK,
+             dpes[i] + \":_pv_range.._min\", min,
+             dpes[i] + \":_pv_range.._max\", max,
+             dpes[i] + \":_default.._type\", DPCONFIG_DEFAULTVALUE,
+             dpes[i] + \":_default.._value\", defaultValue,
+             dpes[i] + \":_default.._set_pvrange\", true);                 
+ }
+}" 0
+ E E E
+13 18
+"PUSH_BUTTON14"
+""
+1 420 350 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  418 348 782 382
+
+T 
+1
+LANG:1 18 Delete all X2P DPs
+"main()
+{
+  deleteAll(\"*\", \"CscLvChamber\");
+  deleteAll(\"*\", \"CscLvChamberMon\");
+  deleteAll(\"*\", \"CscTempChamber\");
+  deleteAll(\"*\", \"CscTempChamberMon\");
+  deleteAll(\"*\", \"CscFedDdu\");
+  deleteAll(\"*\", \"CscFedDduMon\");
+  
+  emu_info(\"Done deleting\");
+}
+
+void deleteAll(string pattern, string dpType) {
+  dyn_string dps = dpNames(pattern, dpType);
+  for (int i=1; i <= dynlen(dps); i++) {
+    dpDelete(dps[i]);
+  }
 }" 0
  E E E
 0

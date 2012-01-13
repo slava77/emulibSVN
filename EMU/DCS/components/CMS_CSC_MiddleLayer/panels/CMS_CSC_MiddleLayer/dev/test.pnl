@@ -4,7 +4,7 @@ LANG:1 0
 PANEL,-1 -1 713 509 N "_3DFace" 0
 E E E E E 1 -1 -1 0  30 50
 ""0  1
-E "#uses \"CMS_CSCfw_HV_CC_new/emu_hv.ctl\"
+E "#uses \"CMS_CSC_MiddleLayer/emu_hv.ctl\"
 
 dyn_mapping getSelectedDevicesParams() {
 
@@ -40,6 +40,7 @@ mapping getSelectedPrimaryDeviceParams() {
   ret[\"hostId\"] = comboPrSide.text();
   ret[\"port\"] = spinPrPort.text();
   ret[\"address\"] = spinPrAddress.text();
+  return ret;
 }" 0
  2
 "CBRef" "1"

@@ -1,0 +1,106 @@
+/**@file
+
+This package contains everything for X2P data (LV, temperature, FED) processing (e.g. interpreting status flags, activating and deactivating alerts, seting FSM state DP, procedures during the project startup).
+
+@author Evaldas Juska (FNAL)
+@date   July 2010
+*/
+
+// EMU common libs
+#uses "CMS_CSC_common/emu_common.ctl"
+#uses "CMS_CSC_common/emu_alert.ctl"
+#uses "CMS_CSC_common/emu_mapping.ctl"
+
+// ============ status bit pattern ====================================================
+// bit 0  (value   1): misc. errors
+// bit 1  (value   2): chamber power off from Configuration DB
+// bit 2  (value   4): data corrupted (in infospace or during transmission)
+// bit 3  (value   8): VCC not accessible
+// bit 4  (value  16): DMB reading error
+// bit 5  (value  32): crate OFF
+// bit 6  (value  64): this DMB module caused VCC reading trouble
+// bit 7  (value 128): TMB reading error
+// bit 8  (value 256): this TMB module caused VCC reading trouble
+// bit 9  (value 512): chamber lost Analog power
+// bit 10 (val  1024): chamber lost Digital power
+// =====================================================================================
+public const int EMU_X2P_STATUS_OTHER_PROBLEM = 0x1; // reserved for an undocumented problem
+public const int EMU_X2P_STATUS_OFF = 0x2; // chamber power off from Configuration DB
+public const int EMU_X2P_STATUS_CORRUPTED = 0x4; // data corrupted (in infospace or during transmission)
+public const int EMU_X2P_STATUS_VCC_NOT_ACCESSIBLE = 0x8; // VME Crate Controller problem (not accessible)
+public const int EMU_X2P_STATUS_DMB_READING_ERROR = 0x10; // DMB reading error
+public const int EMU_X2P_STATUS_CRATE_OFF = 0x20; // the PCrate is OFF
+public const int EMU_X2P_STATUS_DMB_CAUSED_VCC_ERROR = 0x40; // this DMB module caused VCC reading trouble
+public const int EMU_X2P_STATUS_TMB_READING_ERROR = 0x80; // TMB reading error
+public const int EMU_X2P_STATUS_TMB_CAUSED_VCC_ERROR = 0x100; // this TMB module caused VCC reading trouble
+public const int EMU_X2P_STATUS_CHAMBER_HAS_NO_ANALOG_POWER = 0x200; // chamber lost Analog power
+public const int EMU_X2P_STATUS_CHAMBER_HAS_NO_DIGITAL_POWER = 0x400; // chamber lost Digital power
+
+// if any bit in this pattern is set then data should be ignored (and subject to timeout)
+public const int EMU_X2P_STATUS_BAD_DATA = 0x9D; /* EMU_X2P_STATUS_OTHER_PROBLEM |
+                                                    EMU_X2P_STATUS_CORRUPTED |
+                                                    EMU_X2P_STATUS_VCC_NOT_ACCESSIBLE |
+                                                    EMU_X2P_STATUS_DMB_READING_ERROR |
+                                                    EMU_X2P_STATUS_TMB_READING_ERROR; */
+
+public const int EMU_X2P_STATUS_ERROR_WITH_DATA = 0x600; /*EMU_X2P_STATUS_CHAMBER_HAS_NO_ANALOG_POWER |
+                                                           EMU_X2P_STATUS_CHAMBER_HAS_NO_DIGITAL_POWER; */
+
+public const string EMU_X2P_DEVICE_PREFIX_LV = "CscLowVoltage/";
+public const string EMU_X2P_DEVICE_PREFIX_TEMP = "CscTemperature/";
+public const string EMU_X2P_DEVICE_PREFIX_FED = "CscFed/";
+
+public const string EMU_X2P_DEVICE_MON_DPT_LV = "CscLvChamberMon";
+public const string EMU_X2P_DEVICE_MON_DPT_TEMP = "CscTempChamberMon";
+public const string EMU_X2P_DEVICE_MON_DPT_FED = "CscFedDduMon";
+
+public const string EMU_X2P_DEVICE_FSM_DPT_LV = "CscLvChamber";
+public const string EMU_X2P_DEVICE_FSM_DPT_TEMP = "CscTempChamber";
+public const string EMU_X2P_DEVICE_FSM_DPT_FED = "CscFedDdu";
+
+/**
+  * @return all X2P data DPs (LV, temperature and FED)
+  */
+public dyn_string emux2p_getAllDataDps() {
+  dyn_string x2pDataDps = makeDynString();
+  emu_dynAppend(x2pDataDps, emux2p_getLvDataDps());
+  emu_dynAppend(x2pDataDps, emux2p_getTemperatureDataDps());
+  emu_dynAppend(x2pDataDps, emux2p_getFedDataDps());
+  
+  return x2pDataDps;
+}
+
+/**
+  * @return LV data DPs (DPT: CscLvChamberMon)
+  */
+public dyn_string emux2p_getLvDataDps() {
+  return dpNames("*CSC_ME*", EMU_X2P_DEVICE_MON_DPT_LV);
+}
+
+/**
+  * @return On-Chamber electronics temperature data DPs (DPT: CscTempChamberMon)
+  */
+public dyn_string emux2p_getTemperatureDataDps() {
+  return dpNames("*CSC_ME*", EMU_X2P_DEVICE_MON_DPT_TEMP);
+}
+
+/**
+  * @return FED (DDU) data DPs (DPT: CscFedDduMon)
+  */
+public dyn_string emux2p_getFedDataDps() {
+  return dpNames("*DDU*", EMU_X2P_DEVICE_MON_DPT_FED);
+}
+
+/**
+  * @return FSM dp given the data DP (e.g. converts from CscLvChamberMon to CscLvChamber).
+  */
+public string emux2p_getFsmDpFromDataDp(string dp, dyn_string &ex) {
+  if (strpos(dp, "/Mon") < 0) {
+    emu_addError("Invalid data DP: " + dp, ex);
+    return "";
+  }
+  
+  dp = dpSubStr(dp, DPSUB_SYS_DP);
+  strreplace(dp, "/Mon", "");
+  return dp;
+}

@@ -4,12 +4,12 @@ This manager determines HV states from the incoming data and executes HV FSM com
 by hooking up to HV command DPEs and translating the arriving FSM commands to 
 HV commands and sending them over to HV server over DIM.
 
-@author Evaldas Juska (PH/UCM)
+@author Evaldas Juska (FNAL)
 @date   June 2011
 */
 
 #uses "CMS_CSC_common/emu_common.ctl"
-#uses "CMS_CSCfw_HV_CC_new/emu_hv.ctl"
+#uses "CMS_CSC_MiddleLayer/emu_hv.ctl"
 
 const int EMUHV_STATE_OFF_HIGHEST_VMON = 80;
 const int EMUHV_STATE_ON_VMON_ACCURACY = 50;
@@ -37,7 +37,7 @@ main() {
   for (int i=1; i <= dynlen(primaryMonDps); i++) {
     dpConnect("emuhv_primaryDataUpdatedCB", true, primaryMonDps[i]);
   }
-  
+
   
   // hook up to FSM command DPEs
   dyn_string dps = dpNames(EMUHV_DP_PREFIX + "*.fsm_command", "CscHvChamber");
@@ -235,12 +235,12 @@ void emuhv_commandReceivedCB(string dpe, string command) {
     string fastMonDp = emuhv_getDp(chamber, EMUHV_DP_TYPE_FAST_MON, ex);
     if (emu_checkException(ex)) { return; }
     // turn module on if it's off
-    int moduleState;
-    dpGet(fastMonDp + ".module_status", moduleState);
-    if (moduleState == EMUHV_STATE_OFF) {
+//    int moduleState;
+//    dpGet(fastMonDp + ".module_status", moduleState);
+//    if (moduleState == EMUHV_STATE_OFF) {
       emuhv_sendCommand(chamber, EMUHV_COMMAND_SET_MOD_STATE, ex, EMUHV_STATE_ON);
       if (emu_checkException(ex)) { return; }
-    }
+//    }
     
     dyn_mapping channels = emuhv_getAllChannelDevices(chamber, ex);
     dyn_string channelSettingsDps = emuhv_getAllChannelDps(chamber, EMUHV_DP_TYPE_SETTINGS, ex);
@@ -290,16 +290,23 @@ void emuhv_commandReceivedCB(string dpe, string command) {
   * Callback function which actually executes primary PSU FSM commands.
   */
 void emuhv_primaryCommandReceivedCB(string dpe, string command) {
+  dyn_string ex;
+  mapping primary = emuhv_getPrimaryDeviceParams(dpe, ex);
+  if (emu_checkException(ex)) { return; }
+  
   if (command == "OFF") { // switch off
-    dyn_string ex;
-    mapping primary = emuhv_getPrimaryDeviceParams(dpe, ex);
-    if (emu_checkException(ex)) { return; }
     emuhv_sendPrimaryCommand(primary, EMUHV_COMMAND_OFF, ex);
     if (emu_checkException(ex)) { return; }
     delay(0, 100);
     emuhv_requestPrimaryData(primary, ex);
     if (emu_checkException(ex)) { return; }
+  } else if (command == "STANDBY") { // lower the voltage
+    emuhv_sendPrimaryCommand(primary, EMUHV_COMMAND_SET_VSET, ex, EMUHV_VOLTAGE_PRIMARY_STANDBY);
+    if (emu_checkException(ex)) { return; }
+    delay(0, 100);
+    emuhv_requestPrimaryData(primary, ex);
+    if (emu_checkException(ex)) { return; }
   } else {
-    emu_info("HV Client: ignoring primary PSU command " + command + " on " + dpe + " (it will be handled automatically by the HV server when it gets a command for a chamber channel, only OFF commands are executed by DCS for primary PSUs)");
+    emu_info("HV Client: ignoring primary PSU command " + command + " on " + dpe + " (it will be handled automatically by the HV server when it gets a command for a chamber channel, only OFF and STANDBY commands are executed by DCS for primary PSUs)");
   }
 }

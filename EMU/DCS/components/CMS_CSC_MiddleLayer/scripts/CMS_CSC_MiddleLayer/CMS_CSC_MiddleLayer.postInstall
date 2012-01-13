@@ -1,0 +1,15 @@
+#uses "CMS_CSC_common/emu_common.ctl"
+#uses "fwInstallationUtils.ctl"
+
+main() {
+
+  emu_info("CMS_CSC_MiddleLayer PostInstall: Starting");
+  
+  dyn_string ex;
+  fwInstallationUtils_loadConfigurations("CMS_CSC_MiddleLayer", ex);
+  if (emu_checkException(ex)) { emu_info("CMS_CSC_MiddleLayer PostInstall: aborted"); return; }
+  emu_info("CMS_CSC_MiddleLayer PostInstall: Finished loading configurations");
+
+  emu_info("CMS_CSC_MiddleLayer PostInstall: DONE");
+
+}
