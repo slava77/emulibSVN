@@ -201,7 +201,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 1 0 1 E 1 0 1.170212765957447 0 128.7234042553191 0 E 10 172 391 361
+E E 0 0 1 0 1 E 1 0 1.276595744680851 0 110.4255319148936 0 E 10 172 391 361
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
@@ -450,6 +450,36 @@ E
 E
 E
  0 0
+13 16
+"PUSH_BUTTON6"
+""
+1 30 520 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  28 518 372 547
+
+T 
+1
+LANG:1 26 Clean power-up-init buffer
+"main()
+{
+  if (!emuui_openConfirmationDialog(\"Are you sure you want to clean the power-up-init buffer?\")) {
+    return;
+  }
+  
+  dpSetWait(\"cms_csc_dcs_10:PREPARE_POWER_UP_BUFFER.\", makeDynString());
+  
+  emuui_openInfoDialog(\"DONE\");
+}" 0
+ E E E
 0
 LAYER, 1 
 1
