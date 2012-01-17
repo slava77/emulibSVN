@@ -258,6 +258,7 @@ LANG:1 43 I really really really know what I'm doing!
   btnKillMajority.enabled = true;
   btnShareFsm.enabled = true;
   btnKillDim.enabled = true;
+  btnCleanPowerupinit.enabled = true;
 }" 0
  E E E
 13 10
@@ -451,7 +452,7 @@ E
 E
  0 0
 13 16
-"PUSH_BUTTON6"
+"btnCleanPowerupinit"
 ""
 1 30 520 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
  E E
