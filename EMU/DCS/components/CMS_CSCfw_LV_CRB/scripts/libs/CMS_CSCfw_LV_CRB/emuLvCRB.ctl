@@ -1025,7 +1025,13 @@ void emuLvCRB_setDoBitSync(string sElmbName,string sBitId,bool bValue,dyn_string
      bool valueGood = false;
      while ((resendingTryCount < 3) && !valueGood) {
         unsigned value = fwElmbUser_getDoByte(sElmbName, strsplit(sBitId, ";")[1], dsExceptionInfo);
-        if (dynlen(dsExceptionInfo) > 0) { dynClear(dsExceptionInfo); delay(0, 100); continue; }
+        if (dynlen(dsExceptionInfo) > 0) {
+            resendingTryCount++;
+            DebugTN("DO readback value of bit " + sElmbName + ", " + sBitId + " did not succeed. Trying to set again (attempt #" + resendingTryCount + ")");
+            dynClear(dsExceptionInfo);
+            delay(0, 100);
+            continue;
+        }
         bit32 bit32value = value;
         int bitValue = getBit(bit32value, strsplit(sBitId, ";")[2]);
         bool bbitValue = bitValue;
