@@ -1012,18 +1012,20 @@ void emuLvCRB_setDoBitSync(string sElmbName,string sBitId,bool bValue,dyn_string
   if (isFunctionDefined("fwElmbUser_setDoBitsSynchronized"))
   {
      fwElmbUser_setDoBitsSynchronized(sElmbName,dsBitIds,dbValues,dsExceptionInfo); 
-     if(dynlen(dsExceptionInfo)>0)
-        {
-          delay(0,100);
-          fwElmbUser_setDoBitsSynchronized(sElmbName,dsBitIds,dbValues,dsExceptionInfo);
-        }
+     dynClear(dsExceptionInfo); // even if we have an exception here, we don't care because we're going to check this bit later (see below)
+
+//     if(dynlen(dsExceptionInfo)>0)
+//        {
+//          delay(0,100);
+//          fwElmbUser_setDoBitsSynchronized(sElmbName,dsBitIds,dbValues,dsExceptionInfo);
+//        }
      
      // readback the bit and check if it's indeed got set... try 3 times..
      int resendingTryCount = 0;
      bool valueGood = false;
      while ((resendingTryCount < 3) && !valueGood) {
         unsigned value = fwElmbUser_getDoByte(sElmbName, strsplit(sBitId, ";")[1], dsExceptionInfo);
-        if (dynlen(dsExceptionInfo) > 0) { return; }
+        if (dynlen(dsExceptionInfo) > 0) { dynClear(dsExceptionInfo); delay(0, 100); continue; }
         bit32 bit32value = value;
         int bitValue = getBit(bit32value, strsplit(sBitId, ";")[2]);
         bool bbitValue = bitValue;
@@ -1031,6 +1033,7 @@ void emuLvCRB_setDoBitSync(string sElmbName,string sBitId,bool bValue,dyn_string
           DebugTN("DO readback value of bit " + sElmbName + ", " + sBitId + " is not as it's supposed to be after setting. Setting was " + bValue + ", but readback " + bbitValue + ". Trying to set again (attempt #" + resendingTryCount + ")");
           delay(0, 100);
           fwElmbUser_setDoBitsSynchronized(sElmbName,dsBitIds,dbValues,dsExceptionInfo);
+          dynClear(dsExceptionInfo); // even if we have an exception here, we don't care because we're going to check this bit later (see below)
         } else {
           valueGood = true;
         }
