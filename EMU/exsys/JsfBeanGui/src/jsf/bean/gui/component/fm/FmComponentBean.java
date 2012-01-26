@@ -73,7 +73,7 @@ public class FmComponentBean extends JsfBeanBase {
 
     private UIInput getTemplateInput(UIComponent c) {
         UIComponent cc = UIComponent.getCompositeComponentParent(c);
-        return (UIInput) cc.findComponent(cc.getClientId() + ":templateStr");
+        return (UIInput) cc.findComponent("templateStr");
     }
 
     /**
