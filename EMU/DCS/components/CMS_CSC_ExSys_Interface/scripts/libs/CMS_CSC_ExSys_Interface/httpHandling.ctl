@@ -77,7 +77,7 @@ public void exsys_httpPost(string data, dyn_string &exceptionInfo) {
 private int exsys_tcpWrite(string data, dyn_string &exceptionInfo) {
   dyn_errClass err;
   int socketHdl = exsys_getSocket(exceptionInfo);
-  if (emu_checkException(exceptionInfo)) { return; }
+  if (emu_checkException(exceptionInfo)) { return -1; }
   if (socketHdl == -1) {
     emu_addError("ExSys: exsys_getSocket returned socket handler = -1", exceptionInfo);
     return socketHdl;
