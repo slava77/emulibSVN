@@ -9,7 +9,14 @@
 	<required>fwTrending=3.2.1</required>
 	<required>fwDIM=19.01</required>
 
-	<dplist>./dplist/CMS_CSC_MiddleLayer/*.dpl</dplist>
+	<dplist>./dplist/CMS_CSC_MiddleLayer/HV_device_types.dpl</dplist>
+	<dplist>./dplist/CMS_CSC_MiddleLayer/HV_dptypes.dpl</dplist>
+	<dplist>./dplist/CMS_CSC_MiddleLayer/HV_FSM_types.dpl</dplist>
+	<dplist>./dplist/CMS_CSC_MiddleLayer/MidLayer_FSM_types.dpl</dplist>
+	<dplist>./dplist/CMS_CSC_MiddleLayer/MidLayer_misc.dpl</dplist>
+	<dplist>./dplist/CMS_CSC_MiddleLayer/X2P_device_types.dpl</dplist>
+	<dplist>./dplist/CMS_CSC_MiddleLayer/X2P_dptypes.dpl</dplist>
+
 	<file>./panels/CMS_CSC_MiddleLayer/*.pnl</file>
 	<file>./panels/CMS_CSC_MiddleLayer/dev/*.pnl</file>
 	<file>./panels/CMS_CSC_MiddleLayer/devices/*.pnl</file>
