@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 790 400 N "_3DFace" 0
+PANEL,-1 -1 790 610 N "_3DFace" 0
 "main()
 {
   fwDevice_initialize();
@@ -9,30 +9,8 @@ PANEL,-1 -1 790 400 N "_3DFace" 0
  E E E E 1 -1 -1 0  30 40
 ""0  1
 E "#uses \"CMS_CSC_MiddleLayer/emu_hv.ctl\"
-
-// ************* FSM ****************************************
-const string EMU_FSM_TYPE_SYSTEM = \"EMUGrouping\";
-const string EMU_FSM_TYPE_TOP = \"EMUGrouping\";
-const string EMU_FSM_TYPE_STATION = \"EMUGrouping\";
-const string EMU_FSM_TYPE_TRIGGER_SECTOR = \"EMUGrouping\";
-const string EMU_FSM_TYPE_CHAMBER_INNER = \"EMUChamberInner\";
-const string EMU_FSM_TYPE_CHAMBER_OUTER = \"EMUChamberOuter\";
-const string EMU_FSM_TYPE_FED = \"EMUFed\";
-const string EMU_FSM_TYPE_HV = \"EMUGrouping\";
-const string EMU_FSM_TYPE_ME11_HV = \"CMS_CSC_ME11_HV_Type\";
-const string EMU_FSM_TYPE_LV = \"EMU_LV\";
-const string EMU_FSM_TYPE_MARATONS = \"CSC_LV_TREE_NODES\";
-const string EMU_FSM_TYPE_CRBS = \"CSC_LV_TREE_NODES\";
-
-const string EMU_FSM_DOMAIN_ME11_HV = \"CSC_ME_11_HV\";
-const string EMU_FSM_NODE_ME11_HV_PLUS = \"CSC_ME_P11_HV\";
-const string EMU_FSM_NODE_ME11_HV_MINUS = \"CSC_ME_N11_HV\";
-
-const string EMU_FSM_DOMAIN_LV_MRTN = \"CMS_CSC_LV_CAN2\";
-const string EMU_FSM_DOMAIN_LV_CRB = \"CMS_CSC_LV_CAN1\";
-
-const string EMU_FSM_NODE_ELMB_PSU_MINUS = \"CSC_ME_LV_CR1_MINUS_PSU\";
-const string EMU_FSM_NODE_ELMB_PSU_PLUS = \"CSC_ME_LV_CR1_PLUS_PSU\";
+#uses \"CMS_CSC_common/emu_common.ctl\"
+#uses \"CMS_CSC_common/emu_deviceInfo.ctl\"
 
 // ******************* DP ***********************************
 const string HV_DP_TYPE = \"CscHvChamber\";
@@ -53,10 +31,6 @@ const string DDU_MON_DP_TYPE = \"CscFedDduMon\";
 
 // ****************** Device ********************************
 
-const string HV_DEVICE_PREFIX = \"CscHighVoltage\";
-const string LV_DEVICE_PREFIX = \"CscLowVoltage\";
-const string TEMP_DEVICE_PREFIX = \"CscTemperature\";
-const string FED_DEVICE_PREFIX = \"CscFed\";
 const string DIM_DEVICE_PREFIX = \"DimConfig\";
 
 // ****************** DIM Command ***************************
@@ -76,6 +50,11 @@ const string X2P_DIM_DNS_ISR = \"emuslice12\";
 
 // **********************************************************
 
+// ***************** Misc ***********************************
+
+const int DIM_MANAGER_NUM_START = 30;
+
+// **********************************************************
 
 /** @return chambers to be created. */
 dyn_mapping getChambersToCreate() {
@@ -215,36 +194,8 @@ dyn_mapping getDdusToCreate() {
 
 // *********************** Defining DP names ***********************
 
-
-string getChamberDpName(mapping chamber) {
-  return \"CSC_ME_\" +
-         chamber[\"side\"] + 
-         chamber[\"station\"] +
-         chamber[\"ring\"] +
-         \"_C\" + chamber[\"chamberNumber\"];
-}
-
-string getHvDpName(mapping chamber) {
-  return HV_DEVICE_PREFIX + \"/\" + getChamberDpName(chamber);
-}
-
-string getMe11HvNode(mapping chamber) {
-  string node = getChamberDpName(chamber);
-  strreplace(node, \"M11\", \"N11\"); // translate M (minus) to ME1/1 notation i.e. N (negative)
-  node += \"_HV\";
-  return node;
-}
-
 string getHvDimServiceName(mapping chamber, string serviceType) {
   return \"HV/\" + emu_getChamberName(chamber) + \"/\" + serviceType;
-}
-
-string getHvPrimaryDpName(mapping primary) {
-  return HV_DEVICE_PREFIX + 
-             \"/Primary_\" + 
-             primary[\"hostId\"] + \"_\" + 
-             primary[\"port\"] + \"_\" +
-             primary[\"address\"];
 }
 
 string getHvDimPrimaryServiceName(mapping primary) {
@@ -255,26 +206,12 @@ string getHvLvDpName(mapping hvLvPsu) {
   return \"Wiener/HV_LV_\" + hvLvPsu[\"side\"];
 }
 
-string getLvDpName(mapping chamber) {
-  return LV_DEVICE_PREFIX + \"/\" + getChamberDpName(chamber);
-}
-
 string getLvDimServiceName(mapping chamber) {
   return \"LV_1_\" + emu_getChamberName(chamber, false);
 }
 
-string getTempDpName(mapping chamber) {
-  return TEMP_DEVICE_PREFIX + \"/\" + getChamberDpName(chamber);
-}
-
 string getTempDimServiceName(mapping chamber) {
   return \"TEMP_1_\" + emu_getChamberName(chamber, false);
-}
-
-string getDduDpName(mapping ddu) {
-  string dduDp;
-  sprintf(dduDp, FED_DEVICE_PREFIX + \"/\" + \"DDU%.2d\", ddu[\"id\"]);
-  return dduDp;
 }
 
 string getDduDimServiceName(mapping ddu) {
@@ -290,13 +227,13 @@ void createHvDevices(dyn_string &ex) {
   for (int i=1; i <= dynlen(chambers); i++) {
     mapping chamber = chambers[i];
     
-    if (isMe11Chamber(chamber)) { continue; } // skip ME1/1 chambers
+    if (emuDev_isMe11Chamber(chamber)) { continue; } // skip ME1/1 chambers
     
     emu_info(\"Creating HV device for chamber: \" + chamber);
 
     // crete main device
     
-    dyn_string hvMainDevice = createDevice(HV_DP_TYPE, getHvDpName(chamber), ex);
+    dyn_string hvMainDevice = createDevice(HV_DP_TYPE, emuhv_getDp(chamber, \"\", ex, false), ex);
     if (emu_checkException(ex)) { return; }
     
     // create FastMon
@@ -326,7 +263,7 @@ void createHvDevices(dyn_string &ex) {
     
     // create main device
     
-    dyn_string mainPrimaryDevice = createDevice(HV_PRIMARY_DP_TYPE, getHvPrimaryDpName(primary), ex);
+    dyn_string mainPrimaryDevice = createDevice(HV_PRIMARY_DP_TYPE, emuhv_getPrimaryDp(primary, \"\", ex, false), ex);
     if (emu_checkException(ex)) { return; }
     
     // create the monitor device
@@ -356,7 +293,7 @@ void createX2PDevices(dyn_string &ex) {
 
     // crete main LV device
 
-    dyn_string mainLvDevice = createDevice(LV_DP_TYPE, getLvDpName(chamber), ex);
+    dyn_string mainLvDevice = createDevice(LV_DP_TYPE, emux2p_getLvDpName(chamber, ex), ex);
     if (emu_checkException(ex)) { return; }
 
     // create LV Mon
@@ -366,7 +303,7 @@ void createX2PDevices(dyn_string &ex) {
 
     // create main Temperature device
     
-    dyn_string mainTempDevice = createDevice(TEMP_DP_TYPE, getTempDpName(chamber), ex);
+    dyn_string mainTempDevice = createDevice(TEMP_DP_TYPE, emux2p_getTempDpName(chamber, ex), ex);
     if (emu_checkException(ex)) { return; }
 
     // create Temperature Mon
@@ -383,7 +320,7 @@ void createX2PDevices(dyn_string &ex) {
     
     // create main DDU device
     
-    dyn_string mainDduDevice = createDevice(DDU_DP_TYPE, getDduDpName(ddus[i]), ex);
+    dyn_string mainDduDevice = createDevice(DDU_DP_TYPE, emux2p_getDduDpName(ddus[i], ex), ex);
     if (emu_checkException(ex)) { return; }
 
     // create Temperature Mon
@@ -413,9 +350,9 @@ void createHvDimConfig(dyn_string &ex) {
 
   dyn_string serviceNames, dps;
   for (int i=1; i <= dynlen(chambers); i++) {
-    if (isMe11Chamber(chambers[i])) { continue; } // skip ME1/1 chambers
+    if (emuDev_isMe11Chamber(chambers[i])) { continue; } // skip ME1/1 chambers
     
-    string chamberDp = getHvDpName(chambers[i]);
+    string chamberDp = emuhv_getDp(chambers[i], \"\", ex, false);
     dynAppend(dps, chamberDp + fwDevice_HIERARCHY_SEPARATOR + \"FastMon\");
     dynAppend(dps, chamberDp + fwDevice_HIERARCHY_SEPARATOR + \"SlowMon\");
     dynAppend(serviceNames, getHvDimServiceName(chambers[i], \"FAST_MON\"));
@@ -447,9 +384,9 @@ void createHvDimConfig_splitSlowFast(dyn_string &ex) {
   dyn_string slowServiceNames, slowDps,
              fastServiceNames, fastDps;
   for (int i=1; i <= dynlen(chambers); i++) {
-    if (isMe11Chamber(chambers[i])) { continue; } // skip ME1/1 chambers
+    if (emuDev_isMe11Chamber(chambers[i])) { continue; } // skip ME1/1 chambers
     
-    string chamberDp = getHvDpName(chambers[i]);
+    string chamberDp = emuhv_getDp(chambers[i], \"\", ex, false);
     dynAppend(fastDps, chamberDp + fwDevice_HIERARCHY_SEPARATOR + \"FastMon\");
     dynAppend(slowDps, chamberDp + fwDevice_HIERARCHY_SEPARATOR + \"SlowMon\");
     dynAppend(fastServiceNames, getHvDimServiceName(chambers[i], \"FAST_MON\"));
@@ -483,7 +420,7 @@ void createHvPrimaryDimConfig(dyn_string &ex) {
   
   dyn_string serviceNames, dps;
   for (int i=1; i <= dynlen(primaries); i++) {
-    string primaryDp = getHvPrimaryDpName(primaries[i]);
+    string primaryDp = emuhv_getPrimaryDp(primaries[i], \"\", ex, false);
     string primaryMonDp = primaryDp + fwDevice_HIERARCHY_SEPARATOR + \"Mon\";
     dynAppend(dps, primaryMonDp);
     dynAppend(serviceNames, getHvDimPrimaryServiceName(primaries[i]));
@@ -555,8 +492,10 @@ void createX2PDimConfig(dyn_string &ex) {
 
   dyn_string serviceNames, dps;
   for (int i=1; i <= dynlen(chambers); i++) {
-    string lvDp = getLvDpName(chambers[i]);
-    string tempDp = getTempDpName(chambers[i]);
+    string lvDp = emux2p_getLvDpName(chambers[i], ex);
+    if (emu_checkException(ex)) { return; }
+    string tempDp = emux2p_getTempDpName(chambers[i], ex);
+    if (emu_checkException(ex)) { return; }    
     dynAppend(dps, lvDp + fwDevice_HIERARCHY_SEPARATOR + \"Mon\");
     dynAppend(dps, tempDp + fwDevice_HIERARCHY_SEPARATOR + \"Mon\");
     dynAppend(serviceNames, getLvDimServiceName(chambers[i]));
@@ -588,7 +527,8 @@ void createX2PFedDimConfig(dyn_string &ex) {
 
   dyn_string serviceNames, dps;
   for (int i=1; i <= dynlen(ddus); i++) {
-    string dduDp = getDduDpName(ddus[i]);
+    string dduDp = emux2p_getDduDpName(ddus[i], ex);
+    if (emu_checkException(ex)) { return; }
     dynAppend(dps, dduDp + fwDevice_HIERARCHY_SEPARATOR + \"Mon\");
     dynAppend(serviceNames, getDduDimServiceName(ddus[i]));
   }
@@ -609,7 +549,7 @@ void createAllDimManagers(dyn_string &ex) {
     dpGet(configDp + \".ApiParams.dimDnsNode\", dns);
     string name = dpSubStr(configDp, DPSUB_DP);
     strreplace(name, \"DimConfig/\", \"\");
-    int num = 20 + i;
+    int num = DIM_MANAGER_NUM_START + i;
     
     if (dns == \"\") {
       emu_addError(\"DIM config \" + configDp + \" doesn't have a valid DNS set\", ex);
@@ -625,198 +565,6 @@ void createAllDimManagers(dyn_string &ex) {
   
   emu_info(\"DONE\");
 }
-
-// ************************** FSM **************************
-
-
-void createFsm(dyn_string &ex) {
-  emu_info(\"Creating FSM\");
-
-  //create the top system node
-  string systemNode = getSystemName();
-  strreplace(systemNode, \":\", \"\");
-  fwFsmTree_addNode(\"FSM\", systemNode, EMU_FSM_TYPE_SYSTEM, true);
-
-  createStationsFsm(systemNode, ex);
-  if (emu_checkException(ex)) { return; }
-  createHvFsm(systemNode, ex);
-  if (emu_checkException(ex)) { return; }
-  createFedFsm(systemNode);
-  
-  emu_info(\"Done creating FSM\");
-}
-
-void createStationsFsm(string systemNode, dyn_string &ex) {
-  dyn_mapping chambers = getChambersToCreate();
-  for (int i=1; i <= dynlen(chambers); i++) {
-    mapping chamber = chambers[i];
-
-    //create station
-    string stationNode = \"CSC_ME_\" + chamber[\"side\"] + chamber[\"station\"];
-    string stationName = \"CSC ME\" + 
-                         ((chamber[\"side\"] == \"M\") ? \"-\" : \"+\") + // translate P/M to +/-
-                         chamber[\"station\"];
-    fwFsmTree_addNode(systemNode, stationNode, EMU_FSM_TYPE_STATION, true);    
-    fwFsmTree_setNodeLabel(stationNode, stationName);
-    
-    // import the Maraton and CRB nodes
-    string crbNode = stationNode + \"_LV_CRB\";
-    string maratonNode = stationNode + \"_LV_MRTN\";
-    if (chamber[\"station\"] == 3) { // special case for station 3 - use Maraton node for station 2 - it powers both ME2 and ME3 (on the same disk). I know.. doesn't look very nice.. mais c'est la vie..
-      maratonNode = \"CSC_ME_\" + chamber[\"side\"] + \"2\" + \"_LV_MRTN\";
-    }
-
-    createFsmRefNode(maratonNode, stationNode, EMU_FSM_DOMAIN_LV_MRTN, EMU_FSM_TYPE_MARATONS, ex);
-    if (emu_checkException(ex)) { return; }
-    createFsmRefNode(crbNode, stationNode, EMU_FSM_DOMAIN_LV_CRB, EMU_FSM_TYPE_CRBS, ex);
-    if (emu_checkException(ex)) { return; }
-    
-    // create trigger sector
-    bool isSmallRing = ((chamber[\"station\"] > 1) && (chamber[\"ring\"] == 1));
-    int trgSector;
-    if (!isSmallRing) {
-      trgSector = floor(((float)chamber[\"chamberNumber\"] - 3) / 6.0) + 1;
-    } else {
-      trgSector = floor(((float)chamber[\"chamberNumber\"] * 2 - 3) / 6.0) + 1;
-    }
-    if (trgSector == 0) { trgSector = 6; }
-    string trgSectorNode = stationNode + \"_TS_\" + trgSector;
-    string trgSectorName = \"ME\" + 
-                         ((chamber[\"side\"] == \"M\") ? \"-\" : \"+\") + // translate P/M to +/-
-                         chamber[\"station\"] +
-                         \" trigger sector \" + trgSector;
-    fwFsmTree_addNode(stationNode, trgSectorNode, EMU_FSM_TYPE_TRIGGER_SECTOR, false);
-    fwFsmTree_setNodeLabel(trgSectorNode, trgSectorName);
-    
-    // create chamber
-    string chamberType = (chamber[\"ring\"] == 1) ? EMU_FSM_TYPE_CHAMBER_INNER : EMU_FSM_TYPE_CHAMBER_OUTER;
-    string chamberNode = \"CSC_ME_\" + chamber[\"side\"] + chamber[\"station\"] + chamber[\"ring\"] + \"_C\" + chamber[\"chamberNumber\"];
-    string chamberName = emu_getChamberName(chamber);
-    fwFsmTree_addNode(trgSectorNode, chamberNode, chamberType, false);
-    fwFsmTree_setNodeLabel(chamberNode, chamberName);
-    
-    // create chamber HV DU
-    if (!isMe11Chamber(chamber)) { // UF/PNPI HV system
-      string hvDp = getHvDpName(chamber);
-      fwFsmTree_addNode(chamberNode, hvDp, HV_DP_TYPE, false);
-      fwFsmTree_setNodeLabel(hvDp, chamberName + \" HV\");
-    } else {  // CAEN HV system
-      string me11HvNode = getMe11HvNode(chamber);
-      
-      createFsmRefNode(me11HvNode, chamberNode, EMU_FSM_DOMAIN_ME11_HV, EMU_FSM_TYPE_ME11_HV, ex);
-      if (emu_checkException(ex)) { return; }
-    }
-    
-    // create chamber LV DU
-    string lvDp = getLvDpName(chamber);
-    fwFsmTree_addNode(chamberNode, lvDp, LV_DP_TYPE, false);
-    fwFsmTree_setNodeLabel(lvDp,  chamberName + \" LV\");
-
-    // create chamber Temperature DU
-    string tempDp = getTempDpName(chamber);
-    fwFsmTree_addNode(chamberNode, tempDp, TEMP_DP_TYPE, false);
-    fwFsmTree_setNodeLabel(tempDp,  chamberName + \" Temperature\");
-  }
-}
-
-void createHvFsm(string systemNode, dyn_string &ex) {
-  mapping station = getStationToCreate();
-  dyn_mapping primaries = getHvPrimariesToCreate();
-  
-  if (dynlen(primaries) > 0) {
-    string side = station[\"side\"];
-    string sideFull = (side == \"M\") ? \"MINUS\" : \"PLUS\"; // translate P/M to PLUS/MINUS
-    
-    // main HV node
-
-    string hvNode = \"CSC_HV_\" + side;
-    string hvName = \"CSC HV \" + sideFull;
-    
-    fwFsmTree_addNode(systemNode, hvNode, EMU_FSM_TYPE_HV, true);
-    fwFsmTree_setNodeLabel(hvNode, hvName);
-
-    // UF/PNPI HV primary PSUs group node
-    
-    string hvPrimariesNode = hvNode + \"_PRIMARIES\";
-    fwFsmTree_addNode(hvNode, hvPrimariesNode, EMU_FSM_TYPE_HV, true);
-    fwFsmTree_setNodeLabel(hvPrimariesNode, hvName + \" Primaries\");
-    
-    // UF/PNPI HV primary PSUs
-    
-    for (int i=1; i <= dynlen(primaries); i++) {
-      mapping primary = primaries[i];
-      string hvPrimaryDp = getHvPrimaryDpName(primary);
-      fwFsmTree_addNode(hvPrimariesNode, hvPrimaryDp, HV_PRIMARY_DP_TYPE, false);
-      fwFsmTree_setNodeLabel(hvPrimaryDp,  \"Primary_\" + primary[\"hostId\"] + \"_\" + primary[\"port\"] + \"_\" + primary[\"address\"]);
-    }
-
-    
-    // HV LV PSU
-    
-    dyn_mapping hvLvPsus = getHvLvToCreate();
-    for (int i=1; i <= dynlen(hvLvPsus); i++) {
-      if (side != hvLvPsus[i][\"side\"]) { // check if things are consistent here
-        emu_addError(\"trying to create HV LV PSU and HV primaries that do not belong to the same endcap: \" + side + \" != \" + hvLvPsus[i][\"side\"], ex);
-        return;
-      }
-      string wienerDp = getHvLvDpName(hvLvPsus[i]);
-      if (dpExists(wienerDp)) {
-        // create LV HV logical node
-        string hvLvNode = \"CSC_HV_LV_\" + side;
-        string hvLvName = \"LV for HV \" + sideFull;
-        fwFsmTree_addNode(hvNode, hvLvNode, EMU_FSM_TYPE_LV, true);
-        fwFsmTree_setNodeLabel(hvLvNode, hvLvName);
-      
-        // add the devices
-        string wienerName = \"Wiener PSU for HV \" + sideFull;
-        fwFsmTree_addNode(hvLvNode, wienerDp, \"FwWienerMarathon\", false);
-        fwFsmTree_setNodeLabel(wienerDp, wienerName);
-      
-        dyn_string channelDps = dpNames(wienerDp + \"/*\", \"FwWienerMarathonChannel\");
-        for (int i=1; i <= dynlen(channelDps); i++) {
-          string channelDp = channelDps[i];
-          dyn_string channelDpSplit = strsplit(channelDp, \"/\");
-          string channelName = channelDpSplit[3];
-          strreplace(channelName, \"Channel\", \"Channel \");
-        
-          fwFsmTree_addNode(hvLvNode, channelDp, \"FwWienerMarathonChannel\", false);
-          fwFsmTree_setNodeLabel(channelDp, channelName);
-        }
-      }      
-    }
-
-    
-    // ME1/1 HV
-
-    string me11HvNode = (side == \"M\") ? EMU_FSM_NODE_ME11_HV_MINUS : EMU_FSM_NODE_ME11_HV_PLUS;
-        
-    createFsmRefNode(me11HvNode, hvNode, EMU_FSM_DOMAIN_ME11_HV, EMU_FSM_TYPE_ME11_HV, ex);
-    if (emu_checkException(ex)) { return; }
-    
-  } 
-}
-
-void createFedFsm(string systemNode) {
-  mapping station = getStationToCreate();
-  if (station[\"station\"] == \"1\") {
-    string side = station[\"side\"];
-    string fedNode = \"CSC_FED_\" + side;
-    string fedName = \"CSC FED \" +
-                     ((side == \"M\") ? \"MINUS\" : \"PLUS\"); // translate P/M to PLUS/MINUS
-    fwFsmTree_addNode(systemNode, fedNode, EMU_FSM_TYPE_FED, true);
-    fwFsmTree_setNodeLabel(fedNode, fedName);
-    
-    dyn_mapping ddus = getDdusToCreate();
-    for (int i=1; i <= dynlen(ddus); i++) {
-      string dduDp = getDduDpName(ddus[i]);
-      string dduLabel;
-      sprintf(dduLabel, \"DDU%.2d\", ddus[i][\"id\"]);
-      fwFsmTree_addNode(fedNode, dduDp, DDU_DP_TYPE, false);
-      fwFsmTree_setNodeLabel(dduDp, dduLabel);
-    }
-  }
-}
-
 
 // *********************** General ***********************
 
@@ -857,13 +605,6 @@ bool deviceExists(dyn_string device, dyn_string parent) {
 }
 
 /**
-  * @return true if the given chamber is an ME1/1 chamber.
-  */
-bool isMe11Chamber(mapping chamber) {
-  return (chamber[\"station\"] == 1) && (chamber[\"ring\"] == 1);
-}
-
-/**
   * Creates a DIM config device.
   */
 void createDimConfigDevice(string configName, dyn_string &ex, bool clearIfExists = true) {
@@ -881,20 +622,7 @@ void createDimConfigDevice(string configName, dyn_string &ex, bool clearIfExists
               configName + \".clientCommands\", makeDynString());
   }
 }
-
-/**
-  * Creates a reference to remote FSM node. Checks if the node exists remotely and doesn't exist locally.
-  */
-void createFsmRefNode(string nodeName, string parentNode, string remoteDomain, string type, dyn_string &ex) {
-  if (fwFsmTree_isNode(nodeName)) { // is the node is reachable?
-    if (!fwFsmTree_isNode(parentNode + \"::\" + nodeName)) { // if already exists locally - skip
-      fwFsmTree_addNode(parentNode, remoteDomain + \"::\" + nodeName, type, false);
-    }
-  } else {
-    emu_addError(\"Remote FSM node could not be found: \" + nodeName, ex);
-    return;
-  }
-}" 0
+" 0
  2
 "CBRef" "1"
 "EClose" E
@@ -1394,9 +1122,11 @@ LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 T 
 1
 LANG:1 10 Create FSM
-"main() {
+"#uses \"CMS_CSC_MiddleLayer/emu_fsm.ctl\"
+
+main() {
   dyn_string ex;
-  createFsm(ex);
+  emuFsm_createMiddleLayerFsm(ex);
   if (emu_checkException(ex)) { return; }
 }" 0
  E E E
@@ -1917,7 +1647,266 @@ void deleteAll(string pattern, string dpType) {
   }
 }" 0
  E E E
+13 19
+"btnSaveToDb"
+""
+1 450 450 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+19 0 0 0 0 0
+E E E
 0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  448 448 692 562
+
+T 
+1
+LANG:1 14 Save to confDB
+"#uses \"fwConfigurationDB/fwConfigurationDB.ctl\"
+#uses \"fwConfigurationDB/fwConfigurationDB_DeviceConfiguration.ctl\"
+
+const string CONFDB_PREFIX = \"MiddleLayer/\";
+
+main()
+{
+  dyn_string ex;
+  fwConfigurationDB_checkInit(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  dyn_string devices;
+  
+  if (chkSaveHv.state(0)) {
+    // *** HV ***
+    emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"CscHighVoltage\", ex));
+    if (emu_checkException(ex)) { return; }
+    emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"DimConfig\", ex, \"*HV*\"));
+    if (emu_checkException(ex)) { return; }
+    emu_dynAppend(devices, dpNames(\"*HV*\", \"CscDimCommand\"));
+  
+    saveConfiguration(devices, \"HV\", editVersion.text, ex, chkJustPrint.state(0));
+    if (emu_checkException(ex)) { return; }
+
+    // *** HV LV ***
+    dynClear(devices);
+    emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"Wiener\", ex, \"*HV_LV_*\"));
+    if (emu_checkException(ex)) { return; }
+
+    saveConfiguration(devices, \"HV_LV\", editVersion.text, ex, chkJustPrint.state(0));
+    if (emu_checkException(ex)) { return; }
+  }
+  
+  if (chkSaveX2P.state(0)) {
+    // *** X2P ***
+    dynClear(devices);
+    emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"CscLowVoltage\", ex));
+    if (emu_checkException(ex)) { return; }
+    emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"CscTemperature\", ex));
+    if (emu_checkException(ex)) { return; }
+    emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"DimConfig\", ex, \"*X2P_[PM]*\"));
+    if (emu_checkException(ex)) { return; }
+    emu_dynAppend(devices, dpNames(\"*X2P*\", \"CscDimCommand\"));
+  
+    saveConfiguration(devices, \"X2P\", editVersion.text, ex, chkJustPrint.state(0));
+    if (emu_checkException(ex)) { return; }
+  
+    // *** X2P FED ***
+    dynClear(devices);
+    emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"CscFed\", ex));
+    if (emu_checkException(ex)) { return; }
+    emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"DimConfig\", ex, \"*X2P_FED*\"));
+    if (emu_checkException(ex)) { return; }
+  
+    saveConfiguration(devices, \"X2P_FED\", editVersion.text, ex, chkJustPrint.state(0));
+    if (emu_checkException(ex)) { return; }
+  }
+  
+  emu_info(\"DONE saving devices to conf DB as version \" + editVersion.text);
+}
+
+/**
+  * @return devices from the specified node of the hardware hierarchy (also optionally matching a given pattern)
+  */
+dyn_string getDevicesFromHardwareHierarchy(string rootNode, dyn_string &ex, string pattern = \"\") {
+  dyn_string deviceList;
+  fwConfigurationDB_getHierarchyFromPVSS(rootNode, fwDevice_HARDWARE, deviceList, ex);
+  if (emu_checkException(ex)) { return; }
+
+  dyn_string ret;
+  if (pattern != \"\") {
+    for (int i=1; i <= dynlen(deviceList); i++) {
+      string device = deviceList[i];
+      if (patternMatch(pattern, device)) {
+        dynAppend(ret, device);
+      }
+    }
+  } else {
+    ret = deviceList;
+  }
+  
+  return ret;
+}
+
+/**
+  * Saves given devices to configuration DB (if justPrint=true, it won't actually save the devices, but just print the list instead)
+  */
+void saveConfiguration(dyn_string devices, string name, string version, dyn_string &exceptionInfo, bool justPrint = FALSE) {
+  string confName = CONFDB_PREFIX + name + \"_v\" + version;
+  emu_info(\"Saving these devices to conf DB with name \" + confName);
+  emu_info(devices);
+  if (!justPrint) {
+    fwConfigurationDB_saveDeviceConfiguration(devices, confName, fwDevice_HARDWARE, exceptionInfo);
+    if (emu_checkException(exceptionInfo)) { return; }
+  }
+}" 0
+ E E E
+2 21
+"PRIMITIVE_TEXT2"
+""
+1 30 460 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+21 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 30 460 78 476
+0 2 2 "0s" 0 0 0 192 0 0  30 460 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 8 version:
+14 22
+"editVersion"
+""
+1 80 450 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+22 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  78 448 142 476
+3 "0s" 0 0 0 0 0 -1  E "main()
+{
+  this.text = \"1.0\";
+}" 0
+ E
+20 23
+"chkJustPrint"
+""
+1 30 540 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+23 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  28 538 262 562
+1
+T 
+1
+LANG:1 32 Just print - don't actually save
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+EE20 24
+"chkSaveHv"
+""
+1 30 480 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+24 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  28 478 182 502
+1
+T 
+1
+LANG:1 15 Save HV devices
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+"main()
+{
+  this.state(0, true);
+}" 0
+E30 25
+"FRAME1"
+""
+1 10 432 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+25 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E U  0 E 10 432 711 571
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 16 Configuration DB
+20 27
+"chkSaveX2P"
+""
+1 30 510 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+27 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  28 508 172 532
+1
+T 
+1
+LANG:1 16 Save X2P devices
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+"main()
+{
+  this.state(0, true);
+}" 0
+E0
 LAYER, 1 
 1
 LANG:1 0 

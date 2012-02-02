@@ -1,4 +1,5 @@
 #uses "CMS_CSC_common/emu_common.ctl"
+#uses "CMS_CSC_MiddleLayer/emu_fsm.ctl"
 #uses "fwInstallationUtils.ctl"
 
 main() {
@@ -6,10 +7,22 @@ main() {
   emu_info("CMS_CSC_MiddleLayer PostInstall: Starting");
   
   dyn_string ex;
+  emu_info("CMS_CSC_MiddleLayer PostInstall: Switching to Wiener simulation driver");
+  fwInstallationUtils_switchSimDriver(FALSE, "PVSS00opc", 14);
+
+  emu_info("CMS_CSC_MiddleLayer PostInstall: Loading configurations...");
   fwInstallationUtils_loadConfigurations("CMS_CSC_MiddleLayer", ex);
   if (emu_checkException(ex)) { emu_info("CMS_CSC_MiddleLayer PostInstall: aborted"); return; }
   emu_info("CMS_CSC_MiddleLayer PostInstall: Finished loading configurations");
 
+  emu_info("CMS_CSC_MiddleLayer PostInstall: Switching to Wiener real driver");
+  fwInstallationUtils_switchSimDriver(TRUE, "PVSS00opc", 14);
+  
+  emu_info("CMS_CSC_MiddleLayer PostInstall: Creating FSM...");
+  emuFsm_createMiddleLayerFsm(ex);
+  if (emu_checkException(ex)) { return; }
+  emu_info("CMS_CSC_MiddleLayer PostInstall: Finished creating FSM");
+  
   emu_info("CMS_CSC_MiddleLayer PostInstall: DONE");
 
 }

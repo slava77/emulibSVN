@@ -29,24 +29,62 @@
     <target>
         <system_name>cms_csc_dcs_08</system_name>
         <configuration>
-            <tag>MiddleLayer/HV_P1_v1.0</tag>
+            <tag>MiddleLayer/HV_v1.0</tag>
             <db>default</db>
-            <pattern>*</pattern>
-            <logical>true</logical>
+            <pattern>CscHighVoltage/CSC_ME_P1*,CscHighVoltage/Primary_600*,DimConfig/HV_P1*,DimConfig/HV_COMMAND_P*,DimConfig/HV_Primary_P*</pattern>
+            <logical>false</logical>
             <hardware>true</hardware>
         </configuration>
         <configuration>
             <tag>MiddleLayer/HV_LV_v1.0</tag>
             <db>default</db>
-            <pattern>*HV_LV_P*</pattern>
-            <logical>true</logical>
+            <pattern>Wiener/HV_LV_P*</pattern>
+            <logical>false</logical>
             <hardware>true</hardware>
         </configuration>
         <configuration>
-            <tag>MiddleLayer/X2P_P1_v1.0</tag>
+            <tag>MiddleLayer/X2P_v1.0</tag>
             <db>default</db>
-            <pattern>*</pattern>
-            <logical>true</logical>
+            <pattern>*CSC_ME_P1*,DimConfig/X2P_P1*</pattern>
+            <logical>false</logical>
+            <hardware>true</hardware>
+        </configuration>
+        <configuration>
+            <tag>MiddleLayer/X2P_FED_v1.0</tag>
+            <db>default</db>
+            <pattern>CscFed/DDU0*,CscFed/DDU10*,CscFed/DDU11*,CscFed/DDU12*,CscFed/DDU13*,CscFed/DDU14*,CscFed/DDU15*,CscFed/DDU16*,CscFed/DDU17*,CscFed/DDU18*,DimConfig/X2P_FED_P*</pattern>
+            <logical>false</logical>
+            <hardware>true</hardware>
+        </configuration>
+    </target>
+    <target>
+        <system_name>cms_csc_dcs_00</system_name>
+        <configuration>
+            <tag>MiddleLayer/HV_v1.0</tag>
+            <db>default</db>
+            <pattern>CscHighVoltage/CSC_ME_M1*,CscHighVoltage/Primary_500*,DimConfig/HV_M1*,DimConfig/HV_COMMAND_M*,DimConfig/HV_Primary_M*</pattern>
+            <logical>false</logical>
+            <hardware>true</hardware>
+        </configuration>
+        <configuration>
+            <tag>MiddleLayer/HV_LV_v1.0</tag>
+            <db>default</db>
+            <pattern>Wiener/HV_LV_M*</pattern>
+            <logical>false</logical>
+            <hardware>true</hardware>
+        </configuration>
+        <configuration>
+            <tag>MiddleLayer/X2P_v1.0</tag>
+            <db>default</db>
+            <pattern>*CSC_ME_M1*,DimConfig/X2P_M1*</pattern>
+            <logical>false</logical>
+            <hardware>true</hardware>
+        </configuration>
+        <configuration>
+            <tag>MiddleLayer/X2P_FED_v1.0</tag>
+            <db>default</db>
+            <pattern>CscFed/DDU19,CscFed/DDU2*,CscFed/DDU3*,DimConfig/X2P_FED_M*</pattern>
+            <logical>false</logical>
             <hardware>true</hardware>
         </configuration>
     </target>

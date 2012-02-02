@@ -24,8 +24,7 @@ main() {
   emuhv_checkIntegrity(ex);
   if (!emu_checkException(ex)) {
     emu_info("HV Client: no critical integrity errors found");
-  }  
-  
+  }
   
   // hook up to monitoring DPEs
   dyn_string monDps = dpNames(EMUHV_DP_PREFIX + "*.num_chans", "CscHvChamberFastMon");

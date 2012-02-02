@@ -104,3 +104,33 @@ public string emux2p_getFsmDpFromDataDp(string dp, dyn_string &ex) {
   strreplace(dp, "/Mon", "");
   return dp;
 }
+
+/**
+  * @return Low Voltage FSM dp, given chamber device parameters (must inclue "side", "station", "ring" and "chamberNumber" parameters)
+  */
+string emux2p_getLvDpName(mapping chamber, dyn_string &exceptionInfo) {
+  string ret = EMU_X2P_DEVICE_PREFIX_LV + emu_chamberDeviceParamsToFsmName(chamber, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return ""; }
+  return ret;
+}
+
+/**
+  * @return Temperature FSM dp, given chamber device parameters (must inclue "side", "station", "ring" and "chamberNumber" parameters)
+  */
+string emux2p_getTempDpName(mapping chamber, dyn_string &exceptionInfo) {
+  string ret = EMU_X2P_DEVICE_PREFIX_TEMP + emu_chamberDeviceParamsToFsmName(chamber, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return ""; }
+  return ret;
+}
+
+/**
+  * @return DDU FSM dp, given DDU device parameters (must inclue "id" parameter)
+  */
+string emux2p_getDduDpName(mapping ddu, dyn_string &exceptionInfo) {
+  emuDev_checkDeviceParams("emux2p_getDduDpName", "DDU", ddu, makeDynString("id"), exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return ""; }
+  
+  string dduDp;
+  sprintf(dduDp, EMU_X2P_DEVICE_PREFIX_FED + "DDU%.2d", ddu["id"]);
+  return dduDp;
+}

@@ -59,7 +59,7 @@ private global int emuhv_command_lock; // semaphore for doing dpSetWait on the D
   * @param deviceParams device parameters describing either a chamber or a channel (must include "side", "station", "ring" and "chamberNumber" params and optionally "channelNumber")
   * @param type (optional) defines the type of the DP to be returned. Possible values: EMUHV_DP_TYPE_FSM, EMUHV_DP_TYPE_SLOW_MON, EMUHV_DP_TYPE_FAST_MON and EMUHV_DP_TYPE_SETTINGS
   */
-public string emuhv_getDp(mapping deviceParams, string type, dyn_string &exceptionInfo) {
+public string emuhv_getDp(mapping deviceParams, string type, dyn_string &exceptionInfo, bool checkIfExists = true) {
   string dp = EMUHV_DP_PREFIX + "CSC_ME_" + 
               deviceParams["side"] + 
               deviceParams["station"] +
@@ -71,7 +71,7 @@ public string emuhv_getDp(mapping deviceParams, string type, dyn_string &excepti
     dp += ".channels.ch" + deviceParams["channelNumber"];
   }
 
-  if (!dpExists(dp)) {
+  if (checkIfExists && !dpExists(dp)) {
     dyn_string dps = dpNames("*:" + dp);
     if (dynlen(dps) == 0) {
       emu_addError("HV: couldn't find HV DP for device parameters: " + deviceParams + " and type=" + type, exceptionInfo);
@@ -90,14 +90,14 @@ public string emuhv_getDp(mapping deviceParams, string type, dyn_string &excepti
   * @param deviceParams device parameters the primary PSU (must include "hostId", "port", "address")
   * @param type (optional) defines the type of the DP to be returned. Possible values: EMUHV_DP_TYPE_FSM, EMUHV_DP_TYPE_PRIMARY_MON
   */
-public string emuhv_getPrimaryDp(mapping deviceParams, string type, dyn_string &exceptionInfo) {
+public string emuhv_getPrimaryDp(mapping deviceParams, string type, dyn_string &exceptionInfo, bool checkIfExists = true) {
   string dp = EMUHV_DP_PREFIX + "Primary_" + 
               deviceParams["hostId"] + "_" +
               deviceParams["port"] + "_" +
               deviceParams["address"] +
               type;
   
-  if (!dpExists(dp)) {
+  if (checkIfExists && !dpExists(dp)) {
     dyn_string dps = dpNames("*:" + dp);
     if (dynlen(dps) == 0) {
       emu_addError("HV: couldn't find HV DP for device parameters: " + deviceParams + " and type=" + type, exceptionInfo);
