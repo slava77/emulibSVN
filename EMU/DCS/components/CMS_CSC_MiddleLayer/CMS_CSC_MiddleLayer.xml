@@ -9,7 +9,6 @@
 	<required>fwTrending=3.2.1</required>
 	<required>fwDIM=19.01</required>
 
-<!--
 	<dplist>./dplist/CMS_CSC_MiddleLayer/*.dpl</dplist>
 	<file>./panels/CMS_CSC_MiddleLayer/*.pnl</file>
 	<file>./panels/CMS_CSC_MiddleLayer/dev/*.pnl</file>
@@ -17,7 +16,6 @@
 	<file>./scripts/CMS_CSC_MiddleLayer/*</file>
 	<file>./scripts/libs/CMS_CSC_MiddleLayer/*</file>
 	<file>./CMS_CSC_MiddleLayer.xml</file>
--->
 
         <postInstall>./scripts/CMS_CSC_MiddleLayer/CMS_CSC_MiddleLayer.postInstall</postInstall>
 </component>
