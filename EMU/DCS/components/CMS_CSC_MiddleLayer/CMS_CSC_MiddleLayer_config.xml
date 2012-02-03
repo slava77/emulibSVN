@@ -58,6 +58,23 @@
         </configuration>
     </target>
     <target>
+        <system_name>cms_csc_dcs_07</system_name>
+        <configuration>
+            <tag>MiddleLayer/HV_v1.0</tag>
+            <db>default</db>
+            <pattern>CscHighVoltage/CSC_ME_P2*,CscHighVoltage/CSC_ME_P3*,CscHighVoltage/CSC_ME_P4*,DimConfig/HV_P2*,DimConfig/HV_P3*,DimConfig/HV_P4*,DimConfig/HV_COMMAND_P*</pattern>
+            <logical>false</logical>
+            <hardware>true</hardware>
+        </configuration>
+        <configuration>
+            <tag>MiddleLayer/X2P_v1.0</tag>
+            <db>default</db>
+            <pattern>*CSC_ME_P2*,*CSC_ME_P3*,*CSC_ME_P4*,DimConfig/X2P_P2*,DimConfig/X2P_P3*,DimConfig/X2P_P4*</pattern>
+            <logical>false</logical>
+            <hardware>true</hardware>
+        </configuration>
+    </target>
+    <target>
         <system_name>cms_csc_dcs_00</system_name>
         <configuration>
             <tag>MiddleLayer/HV_v1.0</tag>
@@ -84,6 +101,23 @@
             <tag>MiddleLayer/X2P_FED_v1.0</tag>
             <db>default</db>
             <pattern>CscFed/DDU19,CscFed/DDU2*,CscFed/DDU3*,DimConfig/X2P_FED_M*</pattern>
+            <logical>false</logical>
+            <hardware>true</hardware>
+        </configuration>
+    </target>
+    <target>
+        <system_name>cms_csc_dcs_02</system_name>
+        <configuration>
+            <tag>MiddleLayer/HV_v1.0</tag>
+            <db>default</db>
+            <pattern>CscHighVoltage/CSC_ME_M2*,CscHighVoltage/CSC_ME_M3*,CscHighVoltage/CSC_ME_M4*,DimConfig/HV_M2*,DimConfig/HV_M3*,DimConfig/HV_M4*,DimConfig/HV_COMMAND_M*</pattern>
+            <logical>false</logical>
+            <hardware>true</hardware>
+        </configuration>
+        <configuration>
+            <tag>MiddleLayer/X2P_v1.0</tag>
+            <db>default</db>
+            <pattern>*CSC_ME_M2*,*CSC_ME_M3*,*CSC_ME_M4*,DimConfig/X2P_M2*,DimConfig/X2P_M3*,DimConfig/X2P_M4*</pattern>
             <logical>false</logical>
             <hardware>true</hardware>
         </configuration>
