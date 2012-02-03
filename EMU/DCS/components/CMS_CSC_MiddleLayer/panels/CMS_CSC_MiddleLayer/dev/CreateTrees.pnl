@@ -1650,7 +1650,7 @@ void deleteAll(string pattern, string dpType) {
 13 19
 "btnSaveToDb"
 ""
-1 450 450 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 450 450 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 19 0 0 0 0 0
 E E E
@@ -1661,7 +1661,7 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  448 448 692 562
+0  448 448 692 532
 
 T 
 1
@@ -1906,7 +1906,37 @@ E E
 {
   this.state(0, true);
 }" 0
-E0
+E20 28
+"chkImSure"
+""
+1 460 540 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+28 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  458 538 692 562
+1
+T 
+1
+LANG:1 32 I'm sure - enable the big button
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+E"main(int button, int state)
+{
+  btnSaveToDb.enabled = this.state(0);
+}" 0
+0
 LAYER, 1 
 1
 LANG:1 0 
