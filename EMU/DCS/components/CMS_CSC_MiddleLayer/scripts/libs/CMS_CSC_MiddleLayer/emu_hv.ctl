@@ -11,11 +11,18 @@ This package contains common functions for HV.
 
 public const string EMUHV_DP_PREFIX = "CscHighVoltage/";
 
-public const string EMUHV_DP_TYPE_FSM = "";
-public const string EMUHV_DP_TYPE_SLOW_MON = "/SlowMon";
-public const string EMUHV_DP_TYPE_FAST_MON = "/FastMon";
-public const string EMUHV_DP_TYPE_SETTINGS = "/Settings";
-public const string EMUHV_DP_TYPE_PRIMARY_MON = "/Mon";
+public const string EMUHV_DPT_HV_FSM = "CscHvChamber";
+public const string EMUHV_DPT_HV_FAST_MON = "CscHvChamberFastMon";
+public const string EMUHV_DPT_HV_SLOW_MON = "CscHvChamberFastMon";
+public const string EMUHV_DPT_HV_SETTINGS = "CscHvChamberSettings";
+public const string EMUHV_DPT_PRIMARY_FSM = "CscHvPrimary";
+public const string EMUHV_DPT_PRIMARY_MON = "CscHvPrimaryMon";
+
+public const string EMUHV_DP_POSTFIX_FSM = "";
+public const string EMUHV_DP_POSTFIX_SLOW_MON = "/SlowMon";
+public const string EMUHV_DP_POSTFIX_FAST_MON = "/FastMon";
+public const string EMUHV_DP_POSTFIX_SETTINGS = "/Settings";
+public const string EMUHV_DP_POSTFIX_PRIMARY_MON = "/Mon";
 
 public const int EMUHV_STATE_OFF           = 0;  // Channel or module is turned Off
 public const int EMUHV_STATE_ON            = 1;  // Channel or module is turned On
@@ -57,27 +64,27 @@ private global int emuhv_command_lock; // semaphore for doing dpSetWait on the D
 /**
   * @return DP of a given type for the given device (chamber or channel).
   * @param deviceParams device parameters describing either a chamber or a channel (must include "side", "station", "ring" and "chamberNumber" params and optionally "channelNumber")
-  * @param type (optional) defines the type of the DP to be returned. Possible values: EMUHV_DP_TYPE_FSM, EMUHV_DP_TYPE_SLOW_MON, EMUHV_DP_TYPE_FAST_MON and EMUHV_DP_TYPE_SETTINGS
+  * @param dpPostfix (optional) defines the type of the DP to be returned. Possible values: EMUHV_DP_POSTFIX_FSM, EMUHV_DP_POSTFIX_SLOW_MON, EMUHV_DP_POSTFIX_FAST_MON and EMUHV_DP_POSTFIX_SETTINGS
   */
-public string emuhv_getDp(mapping deviceParams, string type, dyn_string &exceptionInfo, bool checkIfExists = true) {
+public string emuhv_getDp(mapping deviceParams, string dpPostfix, dyn_string &exceptionInfo, bool checkIfExists = true) {
   string dp = EMUHV_DP_PREFIX + "CSC_ME_" + 
               deviceParams["side"] + 
               deviceParams["station"] +
               deviceParams["ring"] +
               "_C" + deviceParams["chamberNumber"] +
-              type;
+              dpPostfix;
   
-  if (mappingHasKey(deviceParams, "channelNumber") && type != EMUHV_DP_TYPE_FSM) {
+  if (mappingHasKey(deviceParams, "channelNumber") && dpPostfix != EMUHV_DP_POSTFIX_FSM) {
     dp += ".channels.ch" + deviceParams["channelNumber"];
   }
 
   if (checkIfExists && !dpExists(dp)) {
     dyn_string dps = dpNames("*:" + dp);
     if (dynlen(dps) == 0) {
-      emu_addError("HV: couldn't find HV DP for device parameters: " + deviceParams + " and type=" + type, exceptionInfo);
+      emu_addError("HV: couldn't find HV DP for device parameters: " + deviceParams + " and dpPostfix=" + dpPostfix, exceptionInfo);
       return "";
     } else if (dynlen(dps) > 1) {
-      emu_info("HV warning: more than one match found for HV DP with device parameters: " + deviceParams + " and type=" + type + ": " + dps + ". returning the first one.");
+      emu_info("HV warning: more than one match found for HV DP with device parameters: " + deviceParams + " and dpPostfix=" + dpPostfix + ": " + dps + ". returning the first one.");
     }
     return dps[1];
   }
@@ -88,22 +95,22 @@ public string emuhv_getDp(mapping deviceParams, string type, dyn_string &excepti
 /**
   * @return DP of a primary PSU
   * @param deviceParams device parameters the primary PSU (must include "hostId", "port", "address")
-  * @param type (optional) defines the type of the DP to be returned. Possible values: EMUHV_DP_TYPE_FSM, EMUHV_DP_TYPE_PRIMARY_MON
+  * @param dpPostfix (optional) defines the type of the DP to be returned. Possible values: EMUHV_DP_POSTFIX_FSM, EMUHV_DP_POSTFIX_PRIMARY_MON
   */
-public string emuhv_getPrimaryDp(mapping deviceParams, string type, dyn_string &exceptionInfo, bool checkIfExists = true) {
+public string emuhv_getPrimaryDp(mapping deviceParams, string dpPostfix, dyn_string &exceptionInfo, bool checkIfExists = true) {
   string dp = EMUHV_DP_PREFIX + "Primary_" + 
               deviceParams["hostId"] + "_" +
               deviceParams["port"] + "_" +
               deviceParams["address"] +
-              type;
+              dpPostfix;
   
   if (checkIfExists && !dpExists(dp)) {
     dyn_string dps = dpNames("*:" + dp);
     if (dynlen(dps) == 0) {
-      emu_addError("HV: couldn't find HV DP for device parameters: " + deviceParams + " and type=" + type, exceptionInfo);
+      emu_addError("HV: couldn't find HV DP for device parameters: " + deviceParams + " and dpPostfix=" + dpPostfix, exceptionInfo);
       return "";
     } else if (dynlen(dps) > 1) {
-      emu_info("HV warning: more than one match found for HV DP with device parameters: " + deviceParams + " and type=" + type + ": " + dps + ". returning the first one.");
+      emu_info("HV warning: more than one match found for HV DP with device parameters: " + deviceParams + " and dpPostfix=" + dpPostfix + ": " + dps + ". returning the first one.");
     }
     return dps[1];
   }
@@ -134,12 +141,12 @@ public mapping emuhv_getPrimaryDeviceParams(string dp, dyn_string &exceptionInfo
 /**
   * @return DPs of all channels of a given chamber.
   * @param deviceParams device parameters describing a chamber (must include "side", "station", "ring" and "chamberNumber" params)
-  * @param type defines the type of the DPs to be returned. Possible values: EMUHV_DP_TYPE_SLOW_MON, EMUHV_DP_TYPE_FAST_MON and EMUHV_DP_TYPE_SETTINGS
+  * @param dpPostfix defines the type of the DPs to be returned. Possible values: EMUHV_DP_POSTFIX_SLOW_MON, EMUHV_DP_POSTFIX_FAST_MON and EMUHV_DP_POSTFIX_SETTINGS
   */
-public dyn_string emuhv_getAllChannelDps(mapping deviceParams, string type, dyn_string &exceptionInfo) {
-  string baseDp = dpSubStr(emuhv_getDp(deviceParams, type, exceptionInfo), DPSUB_SYS_DP);
+public dyn_string emuhv_getAllChannelDps(mapping deviceParams, string dpPostfix, dyn_string &exceptionInfo) {
+  string baseDp = dpSubStr(emuhv_getDp(deviceParams, dpPostfix, exceptionInfo), DPSUB_SYS_DP);
   if (emu_checkException(exceptionInfo)) { return makeDynString(); }
-  int channelCount = emu_dpGetCached(emuhv_getDp(deviceParams, EMUHV_DP_TYPE_SLOW_MON, exceptionInfo) + ".num_chans");
+  int channelCount = emu_dpGetCached(emuhv_getDp(deviceParams, EMUHV_DP_POSTFIX_SLOW_MON, exceptionInfo) + ".num_chans");
   if (emu_checkException(exceptionInfo)) { return makeDynString(); }
 
   dyn_string ret;
@@ -155,7 +162,7 @@ public dyn_string emuhv_getAllChannelDps(mapping deviceParams, string type, dyn_
   * @param deviceParams device parameters describing a chamber (must include "side", "station", "ring" and "chamberNumber" params)
   */
 public dyn_mapping emuhv_getAllChannelDevices(mapping deviceParams, dyn_string &exceptionInfo) {
-  int channelCount = emu_dpGetCached(emuhv_getDp(deviceParams, EMUHV_DP_TYPE_SLOW_MON, exceptionInfo) + ".num_chans");
+  int channelCount = emu_dpGetCached(emuhv_getDp(deviceParams, EMUHV_DP_POSTFIX_SLOW_MON, exceptionInfo) + ".num_chans");
   if (emu_checkException(exceptionInfo)) { return; }
   
   dyn_mapping ret;
@@ -364,15 +371,15 @@ public void emuhv_requestPrimaryData(mapping primaryDeviceParams, dyn_string &ex
   * @param isEnable if this is true then the channel is included, if false excluded
   */
 public void emuhv_enableDisableChannel(mapping channelDeviceParams, bool isEnable, dyn_string &exceptionInfo) {
-  string settingsDp = emuhv_getDp(channelDeviceParams, EMUHV_DP_TYPE_SETTINGS, exceptionInfo);
-  string fastMonDp = emuhv_getDp(channelDeviceParams, EMUHV_DP_TYPE_FAST_MON, exceptionInfo);
+  string settingsDp = emuhv_getDp(channelDeviceParams, EMUHV_DP_POSTFIX_SETTINGS, exceptionInfo);
+  string fastMonDp = emuhv_getDp(channelDeviceParams, EMUHV_DP_POSTFIX_FAST_MON, exceptionInfo);
   if (emu_checkException(exceptionInfo)) { return; }
 
   if (isEnable) {                    // ------====== ENABLE ======------
     emu_info("HV: Enabling channel #" + channelDeviceParams["channelNumber"] + " on chamber " + emu_getChamberName(channelDeviceParams));
     
     // turn the channel on if the chamber isn't off
-    string fsmDp = emuhv_getDp(channelDeviceParams, EMUHV_DP_TYPE_FSM, exceptionInfo);
+    string fsmDp = emuhv_getDp(channelDeviceParams, EMUHV_DP_POSTFIX_FSM, exceptionInfo);
     if (emu_checkException(exceptionInfo)) { return; }
     string fsmState;
     dpGet(fsmDp + ".fsm_state", fsmState);
@@ -410,7 +417,7 @@ public void emuhv_enableDisableChannel(mapping channelDeviceParams, bool isEnabl
   * Changes channel nominal vset. It changes it in the settings dp and sends a command to HV server as well.
   */
 public void emuhv_setChannelOnVset(mapping channelDeviceParams, int vset, dyn_string &exceptionInfo) {
-  string settingsDp = emuhv_getDp(channelDeviceParams, EMUHV_DP_TYPE_SETTINGS, exceptionInfo);
+  string settingsDp = emuhv_getDp(channelDeviceParams, EMUHV_DP_POSTFIX_SETTINGS, exceptionInfo);
   if (emu_checkException(exceptionInfo)) { return; }
   
   dpSetWait(settingsDp + ".on_vset", vset);
@@ -429,7 +436,7 @@ public void emuhv_checkIntegrity(dyn_string &exceptionInfo) {
   for (int i=1; i <= dynlen(dps); i++) {
     emu_debug("HV: Checking " + dps[i]);
 
-    string numChannelsDp = dps[i] + EMUHV_DP_TYPE_SLOW_MON + ".num_chans";
+    string numChannelsDp = dps[i] + EMUHV_DP_POSTFIX_SLOW_MON + ".num_chans";
     int numChannels = emu_dpGetCached(numChannelsDp);
     if (numChannels <= 0) {
       emu_addError("Invalid number of HV channels! " +
@@ -438,16 +445,16 @@ public void emuhv_checkIntegrity(dyn_string &exceptionInfo) {
     }
     for (int ch=1; ch <= numChannels; ch++) {
       // make sure that disabled channels are not in summary alerts and enabled ones are in summary alerts
-      string channelSettingsDp = dps[i] + EMUHV_DP_TYPE_SETTINGS + ".channels.ch" + ch;
+      string channelSettingsDp = dps[i] + EMUHV_DP_POSTFIX_SETTINGS + ".channels.ch" + ch;
       bool isDisabled = emu_dpGetCached(channelSettingsDp + ".disabled");
-      string channelStatusDpe = dps[i] + EMUHV_DP_TYPE_FAST_MON + ".channels.ch" + ch + ".status";
+      string channelStatusDpe = dps[i] + EMUHV_DP_POSTFIX_FAST_MON + ".channels.ch" + ch + ".status";
       if (isDisabled) {
-        fwAlertConfig_deleteDpFromAlertSummary(dps[i] + EMUHV_DP_TYPE_FAST_MON + ".",
+        fwAlertConfig_deleteDpFromAlertSummary(dps[i] + EMUHV_DP_POSTFIX_FAST_MON + ".",
                                                channelStatusDpe,
                                                exceptionInfo,
                                                false);
       } else {
-        fwAlertConfig_addDpInAlertSummary(dps[i] + EMUHV_DP_TYPE_FAST_MON + ".",
+        fwAlertConfig_addDpInAlertSummary(dps[i] + EMUHV_DP_POSTFIX_FAST_MON + ".",
                                           channelStatusDpe,
                                           exceptionInfo,
                                           false);
@@ -471,9 +478,9 @@ public void emuhv_checkIntegrity(dyn_string &exceptionInfo) {
     // make sure all the summary alerts are active
     fwAlertConfig_activate(dps[i] + ".", exceptionInfo);
     if (emu_checkException(exceptionInfo)) { return; }
-    fwAlertConfig_activate(dps[i] + EMUHV_DP_TYPE_SLOW_MON + ".", exceptionInfo);
+    fwAlertConfig_activate(dps[i] + EMUHV_DP_POSTFIX_SLOW_MON + ".", exceptionInfo);
     if (emu_checkException(exceptionInfo)) { return; }
-    fwAlertConfig_activate(dps[i] + EMUHV_DP_TYPE_FAST_MON + ".", exceptionInfo);
+    fwAlertConfig_activate(dps[i] + EMUHV_DP_POSTFIX_FAST_MON + ".", exceptionInfo);
     if (emu_checkException(exceptionInfo)) { return; }
   }
   

@@ -143,7 +143,7 @@ void emuFsm_createStationsFsm(string systemNode, dyn_mapping chambers, dyn_strin
     if (!emuDev_isMe11Chamber(chamber)) { // UF/PNPI HV system
       string hvDp = emuhv_getDp(chamber, "", ex);
       if (emu_checkException(ex)) { return; }
-      fwFsmTree_addNode(chamberNode, hvDp, HV_DP_TYPE, false);
+      fwFsmTree_addNode(chamberNode, hvDp, EMUHV_DPT_HV_FSM, false);
       fwFsmTree_setNodeLabel(hvDp, chamberName + " HV");
     } else {  // CAEN HV system
       string me11HvNode = "CSC_ME_" +
@@ -160,13 +160,13 @@ void emuFsm_createStationsFsm(string systemNode, dyn_mapping chambers, dyn_strin
     // create chamber LV DU
     string lvDp = emux2p_getLvDpName(chamber, ex);
     if (emu_checkException(ex)) { return; }
-    fwFsmTree_addNode(chamberNode, lvDp, LV_DP_TYPE, false);
+    fwFsmTree_addNode(chamberNode, lvDp, EMU_X2P_DEVICE_FSM_DPT_LV, false);
     fwFsmTree_setNodeLabel(lvDp,  chamberName + " LV");
 
     // create chamber Temperature DU
     string tempDp = emux2p_getTempDpName(chamber, ex);
     if (emu_checkException(ex)) { return; }
-    fwFsmTree_addNode(chamberNode, tempDp, TEMP_DP_TYPE, false);
+    fwFsmTree_addNode(chamberNode, tempDp, EMU_X2P_DEVICE_FSM_DPT_TEMP, false);
     fwFsmTree_setNodeLabel(tempDp,  chamberName + " Temperature");
   }
 }
@@ -201,7 +201,7 @@ void emuFsm_createHvFsm(string systemNode, string side, dyn_string primaryDps, d
     string hvPrimaryDp = primaryDps[i];
     string nodeName = hvPrimaryDp;
     strreplace(nodeName, "CscHighVoltage/", "");
-    fwFsmTree_addNode(hvPrimariesNode, hvPrimaryDp, HV_PRIMARY_DP_TYPE, false);
+    fwFsmTree_addNode(hvPrimariesNode, hvPrimaryDp, EMUHV_DPT_PRIMARY_FSM, false);
     fwFsmTree_setNodeLabel(hvPrimaryDp, nodeName);
   }
     
@@ -263,7 +263,7 @@ void emuFsm_createFedFsm(string systemNode, dyn_string dduDps) {
     // create the DDU node
     string dduLabel;
     sprintf(dduLabel, "DDU%.2d", dduId);
-    fwFsmTree_addNode(fedNode, dduDp, DDU_DP_TYPE, false);
+    fwFsmTree_addNode(fedNode, dduDp, EMU_X2P_DEVICE_FSM_DPT_FED, false);
     fwFsmTree_setNodeLabel(dduDp, dduLabel);
   }
   

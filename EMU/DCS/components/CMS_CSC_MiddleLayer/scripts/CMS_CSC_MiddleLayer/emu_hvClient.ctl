@@ -104,9 +104,9 @@ void emuhv_primaryDataUpdatedCB(string dp, string value) {
   * Updates FSM states of the given HV DP (for the chamber as well as all the channels).
   */
 void emuhv_updateChamberState(string hvDp) {
-  string fastMonDp = hvDp + EMUHV_DP_TYPE_FAST_MON;
-  string slowMonDp = hvDp + EMUHV_DP_TYPE_SLOW_MON;
-  string settingsMonDp = hvDp + EMUHV_DP_TYPE_SETTINGS;
+  string fastMonDp = hvDp + EMUHV_DP_POSTFIX_FAST_MON;
+  string slowMonDp = hvDp + EMUHV_DP_POSTFIX_SLOW_MON;
+  string settingsMonDp = hvDp + EMUHV_DP_POSTFIX_SETTINGS;
   
   int alert = 0;
   dpGet(hvDp + ".:_alert_hdl.._act_state", alert);
@@ -171,8 +171,8 @@ void emuhv_updateChamberState(string hvDp) {
   * @return states of the given HV channel.
   */
 string emuhv_getChannelStates(string hvDp, int channelNum, bool checkForAlerts = true) {
-  string settingsDp = hvDp + EMUHV_DP_TYPE_SETTINGS + ".channels.ch" + channelNum;
-  string fastMonDp = hvDp + EMUHV_DP_TYPE_FAST_MON + ".channels.ch" + channelNum;
+  string settingsDp = hvDp + EMUHV_DP_POSTFIX_SETTINGS + ".channels.ch" + channelNum;
+  string fastMonDp = hvDp + EMUHV_DP_POSTFIX_FAST_MON + ".channels.ch" + channelNum;
   
   string ret;
   
@@ -231,7 +231,7 @@ void emuhv_commandReceivedCB(string dpe, string command) {
 
   // turn on and make sure all channels have correct settings
   if ((command == "ON") || (command == "STANDBY")) {
-    string fastMonDp = emuhv_getDp(chamber, EMUHV_DP_TYPE_FAST_MON, ex);
+    string fastMonDp = emuhv_getDp(chamber, EMUHV_DP_POSTFIX_FAST_MON, ex);
     if (emu_checkException(ex)) { return; }
     // turn module on if it's off
 //    int moduleState;
@@ -242,8 +242,8 @@ void emuhv_commandReceivedCB(string dpe, string command) {
 //    }
     
     dyn_mapping channels = emuhv_getAllChannelDevices(chamber, ex);
-    dyn_string channelSettingsDps = emuhv_getAllChannelDps(chamber, EMUHV_DP_TYPE_SETTINGS, ex);
-    dyn_string channelSlowMonDps = emuhv_getAllChannelDps(chamber, EMUHV_DP_TYPE_SLOW_MON, ex);
+    dyn_string channelSettingsDps = emuhv_getAllChannelDps(chamber, EMUHV_DP_POSTFIX_SETTINGS, ex);
+    dyn_string channelSlowMonDps = emuhv_getAllChannelDps(chamber, EMUHV_DP_POSTFIX_SLOW_MON, ex);
     dyn_int disabledChannels;
     if (emu_checkException(ex)) { return; }
     
