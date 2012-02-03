@@ -179,3 +179,10 @@ dyn_mapping emuDev_getAllChambersForStation(string side, int station) {
   
   return ret;
 }
+
+/**
+  * @return true if the given chamber is an ME1/1 chamber.
+  */
+bool emuDev_isMe11Chamber(mapping chamber) {
+  return (chamber["station"] == 1) && (chamber["ring"] == 1);
+}

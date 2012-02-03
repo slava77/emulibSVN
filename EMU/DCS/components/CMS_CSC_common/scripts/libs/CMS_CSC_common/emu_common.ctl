@@ -503,6 +503,22 @@ mapping emu_fsmNodeToDeviceParams(string fsmNode, dyn_string &exceptionInfo) {
   return ret;
 }
 
+/**
+  * Given chamber device params (must include "side", "station", "ring" and "chamberNumber" parameters) returns
+  * standard chamber name in FSM notation e.g. CSC_ME_P12_C03
+  */
+string emu_chamberDeviceParamsToFsmName(mapping chamberDeviceParams, dyn_string &exceptionInfo) {
+  emuDev_checkDeviceParams("emu_chamberDeviceParamsToFsmName", "chamber", chamberDeviceParams,
+                           makeDynString("side", "station", "ring", "chamberNumber"), exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return ""; }
+                           
+  return "CSC_ME_" +
+       chamberDeviceParams["side"] + 
+       chamberDeviceParams["station"] +
+       chamberDeviceParams["ring"] +
+       "_C" + chamberDeviceParams["chamberNumber"];
+}
+
 /** Given a standard chamber name (e.g. ME+1/2/03), this function returns a mapping of device params */
 mapping emu_chamberNameToDeviceParams(string chamberName, dyn_string &exceptionInfo) {
   if (strpos(chamberName, "ME") < 0) {
