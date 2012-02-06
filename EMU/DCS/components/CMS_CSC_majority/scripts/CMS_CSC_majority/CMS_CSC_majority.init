@@ -305,18 +305,18 @@ void emumaj_createMajorityConfiguration(string majorityTopNode) {
   configureME11Hv(majorityTopNode);
   DebugTN("Creating HV Primary majority");
   configureHVPrimaries(majorityTopNode);
-  DebugTN("Creating LV majority");
-  configureLv(majorityTopNode);
-  DebugTN("Creating Temperature majority");
-  configureTemp(majorityTopNode);
+//  DebugTN("Creating LV majority");
+//  configureLv(majorityTopNode);
+//  DebugTN("Creating Temperature majority");
+//  configureTemp(majorityTopNode);
   DebugTN("Creating CRB majority");
   configureCrb(majorityTopNode);
   DebugTN("Creating Maraton Channel majority");
   configureMaratonChannel(majorityTopNode);
   DebugTN("Creating Maraton Crate majority");
   configureMaratonCrate(majorityTopNode);
-  DebugTN("Creating DDU majority");
-  configureDDU(majorityTopNode);
+//  DebugTN("Creating DDU majority");
+//  configureDDU(majorityTopNode);
   DebugTN("Creating LV for HV majority");
   configureLvForHv(majorityTopNode);
   DebugTN("Creating Atlas PSU branch majority");
@@ -513,31 +513,33 @@ void emumaj_restoreFsmTypes() {
 // CSC majority configuration
 void configureHv(string topNode) {
   majority_addDevice("HV_OUTER", // this defines the internal name of the device for the majority
-  "HV_1", // this is the corresponding Device Unit Type
-  makeDynString(".status",".off_channels", ".last_vset", ".reserve1", ".on_ch_vsets"), // define the datapoint elements you need to connect
-  makeDynString("on","standby","error"), // these are the basic device states for this device
-  18 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  "CscHvChamber", // this is the corresponding Device Unit Type
+  makeDynString(".channel_states"), // define the datapoint elements you need to connect
+  makeDynString("on", "standby", "ramping", "error"), // these are the basic device states for this device
+  -1 // because it can be either an 18 or a 30 channel chamber, we set the weight to -1 so that it would be calculated in majorityUser_getDeviceWeight(...)
   );
             
   majority_addDevice("HV_INNER", // this defines the internal name of the device for the majority
-  "HV_1", // this is the corresponding Device Unit Type
-  makeDynString(".status",".off_channels", ".last_vset", ".reserve1", ".on_ch_vsets"), // define the datapoint elements you need to connect
-  makeDynString("on","standby","error"), // these are the basic device states for this device
-  18 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  "CscHvChamber", // this is the corresponding Device Unit Type
+  makeDynString(".channel_states"), // define the datapoint elements you need to connect
+  makeDynString("on", "standby", "ramping", "error"), // these are the basic device states for this device
+  -1 // because it can be either an 18 or a 30 channel chamber, we set the weight to -1 so that it would be calculated in majorityUser_getDeviceWeight(...)
   );
  
   // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
             
   majority_addColors("HV_OUTER", "on", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
   majority_addColors("HV_OUTER", "standby", makeDynString("_Window","FwStateAttention1","yellow","yellow","yellow"));    
+  majority_addColors("HV_OUTER", "ramping", makeDynString("_Window","FwStateAttention1","yellow","yellow","yellow"));    
   majority_addColors("HV_OUTER", "error", majority_getStandardColorsError() );    
 
   majority_addColors("HV_INNER", "on", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
   majority_addColors("HV_INNER", "standby", makeDynString("_Window","FwStateAttention1","yellow","yellow","yellow"));    
+  majority_addColors("HV_INNER", "ramping", makeDynString("_Window","FwStateAttention1","yellow","yellow","yellow"));    
   majority_addColors("HV_INNER", "error", majority_getStandardColorsError() );    
 
-  majority_addPercentages(topNode, "HV_OUTER", makeDynFloat(97, 97, 3)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
-  majority_addPercentages(topNode, "HV_INNER", makeDynFloat(97, 97, 3)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+  majority_addPercentages(topNode, "HV_OUTER", makeDynFloat(97, 97, 3, 3)); // here you define the thresholds for the percentages: in this case we have 97% for ON and STANDBY and 3% for ERROR or RAMPING
+  majority_addPercentages(topNode, "HV_INNER", makeDynFloat(97, 97, 3, 3)); // here you define the thresholds for the percentages: in this case we have 97% for ON and STANDBY and 3% for ERROR or RAMPING
 }
 
 void configureLv(string topNode) {
@@ -683,18 +685,18 @@ void configureAtlasPSU(string topNode) {
 void configureHVPrimaries(string topNode) {
   // HV Primary supplies
   majority_addDevice("HV_Primary", // this defines the internal name of the device for the majority
-  "HV_PR", // this is the corresponding Device Unit Type
+  "CscHvPrimary", // this is the corresponding Device Unit Type
   makeDynString(".fsm.currentState"), // define the datapoint elements you need to connect
   makeDynString("on", "standby", "error"), // these are the basic device states for this device
   1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
   );
  
   // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
-  majority_addColors("HV_Primary", "on", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
+  majority_addColors("HV_Primary", "on", majority_getStandardColorsPhysics() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
   majority_addColors("HV_Primary", "standby", makeDynString("_Window","FwStateAttention1","yellow","yellow","yellow"));    
   majority_addColors("HV_Primary", "error", majority_getStandardColorsError() );    
 
-  majority_addPercentages(topNode, "HV_Primary", makeDynFloat(100, 100, 0)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+  majority_addPercentages(topNode, "HV_Primary", makeDynFloat(100, 100, 0));
 }
 
 void configureME11Hv(string topNode) {

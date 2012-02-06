@@ -1,3 +1,5 @@
+#uses "CMS_CSC_common/emu_common.ctl"
+#uses "CMS_CSC_MiddleLayer/emu_hv.ctl"
 #uses "majority_treeCache/treeCache.ctl"
 #uses "majority_treeCache/majorityLib.ctl"
 #uses "CMS_CSC_majority/CMS_CSC_majorityDevices.ctl"
@@ -238,22 +240,24 @@ string majorityUser_nodeTranslation(string node) {
   */
 dyn_string majorityUser_nodeTranslationToDpes(string dev, string node, bool& use_it) {
    use_it = false;
-   if ((dev == "HV_OUTER") || (dev == "HV_INNER")) {
-      mapping deviceParams = emumaj_getChamberDeviceParams(node);
-      string hvType = "HV_OUTER";
-      if (deviceParams["ring"] == 1) {
-        hvType = "HV_INNER";
-      }
-      if (dev != hvType) {
-        DebugTN("returning 0 DPs to connect to for majority type " + dev + " for node " + node);
-        use_it = true;
-        return makeDynString();
-      }
-   }
    return makeDynString(); // if use_it is false you can return any value, it will not be taken into account  
 }
 
-
+/**
+  * @return weight of devices which have a variable weight so have been set a weight of -1 during majority configuration (e.g. HV)
+  */
+int majorityUser_getDeviceWeight(string node, string device) {
+  if ((device == "HV_OUTER") || (device == "HV_INNER")) {
+    mapping deviceParams = emu_fsmNodeToDeviceParams(node);
+    string hvType = (deviceParams["ring"] == 1) ? "HV_INNER" : "HV_OUTER";
+    if (device != hvType) {
+      return 0;
+    }
+    int numChannels;
+    dpGet(dpSubStr(node, DPSUB_SYS_DP) + EMUHV_DP_POSTFIX_SLOW_MON + ".num_chans", numChannels);
+    return numChannels;
+  }
+}
 
 /**/
 

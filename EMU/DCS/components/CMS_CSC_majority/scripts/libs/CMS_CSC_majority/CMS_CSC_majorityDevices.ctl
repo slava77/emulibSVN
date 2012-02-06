@@ -1,145 +1,46 @@
 #uses "CMS_CSC_common/emu_common.ctl"
 
-global int EMUMAJ_HV_STATE_ON_VMON_ACCURACY = 50;
-global int EMUMAJ_HV_STATE_STANDBY_VMON_ACCURACY = 60;
-global int EMUMAJ_HV_STANDBY_VOLTAGE = 3000;
-global mapping hvParts;
-global mapping hvOnChannelVsets;
-
-/** values here are ".status",".off_channels", ".last_vset". States are ON, STANDBY and ERROR */
+/** values is .channel_states. States are ON, STANDBY, RAMPING and ERROR */
 dyn_int emumaj_hvStateCounts(dyn_anytype values, int &weight, bool calcTotal, string node, string majType) {
-  mapping deviceParams = emumaj_getChamberDeviceParams(node);
-
-  // check if the real type (outer or inner) of the given device is equal to the expected majority type
-  // if not - return total = 0. This way we differenciate inner and outer chambers without two different DU types
-  string type = "HV_OUTER";
-  if (deviceParams["ring"] == 1) {
-    type = "HV_INNER";
-  }
-  if (type != majType) {
-    weight = 0;
-    return makeDynInt(0, 0, 0);
-  }
-  //----------------------------------------------------------------------------------------------------
-  
-  dyn_int excludedChannels = values[2];
-  int status = values[1];
-  int channelCount;
-  if ((deviceParams["station"] == 1) || (deviceParams["ring"] == 1)) {
-    channelCount = 18;
-  } else {
-    channelCount = 30;
-  }
-  if (calcTotal) {
-    weight = channelCount;
-  } else {
-    weight = channelCount - dynlen(excludedChannels);
+  if (weight == 0) {
+    return;
   }
   
-//  dyn_int onChVsets = values[4];
+  dyn_string channelStates = values[1];
   
-  int vset = values[3];
   int on = 0,
       standby = 0,
-      error = 0;
+      ramping = 0,
+      error = 0,
+      disabled = 0;
   
-  // determine the channel offset
-  int channelsOffset = 0;
-  int part = getHvPart(node);
-  if (part < 0) {
-    error = weight;
-    return makeDynInt(on, standby, error);
-  }
-  if (part == 2) {
-    channelsOffset = 18;
-  }
-
-  bool checkChannelAlarms = false;
-  if (status < 0) {
-    checkChannelAlarms = true;
-  }
-
-  dyn_int onChVsets;
-  if (!mappingHasKey(hvOnChannelVsets, node)) {
-    dpGet(node + ".on_ch_vsets", onChVsets);
-    hvOnChannelVsets[node] = onChVsets;
-    dpConnect("emumaj_hvChannelOnVoltageSettingChangedCB", false, node + ".on_ch_vsets");
-  } else {
-    onChVsets = hvOnChannelVsets[node];
-  }
-   
-  // go through all the channels (except the masked ones) and collect their states
-  string dataDp = node;
-  strreplace(dataDp, "HighVoltage/", "");
-  for (int i = 1 + channelsOffset; i <= channelsOffset + channelCount; i++) {
-    if (dynContains(excludedChannels, i) && !calcTotal) { continue; }
-    int chVset = vset;
+  for (int i=1; i <= dynlen(channelStates); i++) {
+    string chState = channelStates[i];
     
-     if (dynlen(onChVsets) < channelCount) {
-       emu_info("onChVsets length is only " + dynlen(onChVsets) + " for " + node);
-     } else {
-       // for a chamber-wide setting of less than 3400V - most likely standby - apply the chamber-wide vset
-       // for a chamber-wide setting of more than 3400V - most likely ON - apply the individual channel vset
-       if (vset >= 3400) {
-         chVset = onChVsets[i - channelsOffset];
-       }
-     }
-    dyn_int chStates = emumaj_hvChannelStates(dataDp + ".data.v" + i, 
-                                                  chVset, EMUMAJ_HV_STANDBY_VOLTAGE,
-                                                  true);
-    on += chStates[1];
-    standby += chStates[2];
-    error += chStates[3];
-  }
-  
-  /** if fsm is in ERROR, but channels don't have any alarms - it means that there is a more general problem 
-      (perhaps a master channel trip), in which case all channels should be marked with error. */
-//  if (((fsmState == "ERROR") && (error == 0)) || (status == -2)) {
-  if ((status == -2) || ((status < 0) && (error == 0))){
-    error = weight;
-  }
-  
-  return makeDynInt(on, standby, error);
-}
-
-void emumaj_hvChannelOnVoltageSettingChangedCB(string dp, dyn_int onChVsets) {
-  string node = dpSubStr(dp, DPSUB_DP);
-  hvOnChannelVsets[node] = onChVsets;
-}
-
-dyn_int emumaj_hvChannelStates(string dp, int vset, int standbyVoltage, bool checkForAlerts = true) {
-  float vmon;
-  int alert = 0;
-  dpGet(dp + ".vmon", vmon);
-  if (checkForAlerts) {
-    dpGet(dp + ".status:_alert_hdl.._act_state", alert);
-  }
-  
-  int on = 0,
-      standby = 0,
-      error = 0;
-
-  if (alert > 0) {
-    error = 1;
-  }  
-
-  if (vset > standbyVoltage + EMUMAJ_HV_STATE_ON_VMON_ACCURACY) { // going to ON
-    if (vmon > vset - EMUMAJ_HV_STATE_ON_VMON_ACCURACY) { // it's ON
-      on = 1;
-    } else if (vmon > standbyVoltage - EMUMAJ_HV_STATE_ON_VMON_ACCURACY) { // it's passed standby voltage - keep in standby
-      standby = 1;
-    } // else it's off
-  } else {
-    // it's in standby
-    if ((vmon <= standbyVoltage + EMUMAJ_HV_STATE_STANDBY_VMON_ACCURACY) && 
-        (vmon >= standbyVoltage - EMUMAJ_HV_STATE_STANDBY_VMON_ACCURACY)){
-      standby = 1;
-    } else if (vmon > standbyVoltage + EMUMAJ_HV_STATE_ON_VMON_ACCURACY) {
-      on = 1;
+    if (strpos(chState, EMUHV_FSM_STATE_DISABLED) >= 0) {
+      disabled++;
+      continue;
     }
+    if (strpos(chState, EMUHV_FSM_STATE_ON) >= 0) {
+      on++;
+    }
+    if (strpos(chState, EMUHV_FSM_STATE_STANDBY) >= 0) {
+      standby++;
+    }
+    if (strpos(chState, EMUHV_FSM_STATE_RAMPING) >= 0) {
+      ramping++;
+    }
+    if (strpos(chState, EMUHV_FSM_STATE_ERROR) >= 0) {
+      error++;
+    }
+    
   }
   
-  return makeDynInt(on, standby, error);
+  if (!calcTotal) {
+    weight -= disabled;
+  }
+  
+  return makeDynInt(on, standby, ramping, error);
 }
 
 /** values here are ".status", ".chamber_state", ".noalert_channels". States are ON, ERROR and NO_COMMUNICATION */
@@ -326,31 +227,6 @@ dyn_int emumaj_temperatureStateCounts(dyn_anytype values, int &weight, bool calc
   return makeDynInt(ok, error, noCommunication);
 }
 
-/** Takes any kind of chamber device (HV, LV, TEMP) and returns a mapping with elements:
-                                                   dataDp, side, station, ring, chamberNumber.
-*/
-mapping emumaj_getChamberDeviceParams(string nodeName) {
-  dyn_string split = strsplit(nodeName, "/");
-  string dataDp = nodeName;
-  if (dynlen(split) > 1) {
-    dataDp = split[2];
-  }
-  
-  string tmpStr = dataDp;
-  strreplace(tmpStr, "CSC_ME_", "");
-  split = strsplit(tmpStr, "_");
-  strreplace(split[2], "C", "");
-
-  mapping deviceParams;
-  deviceParams["dataDp"] = dataDp;
-  deviceParams["side"] = (string) split[1][0];
-  deviceParams["station"] = (int)(string) split[1][1];
-  deviceParams["ring"] = (int)(string) split[1][2];
-  deviceParams["chamberNumber"] = (int) split[2];
-  
-  return deviceParams;
-}
-
 /** standard .status DP. > 1 means ON, < 0 means ERROR, -2 means NO_COMMUNICATION, else means OFF.
   values here are ".status". States are ON, ERROR and NO_COMMUNICATION */
 dyn_int emumaj_onOffErrorNoCommStatusDpCounts(dyn_anytype values, int &weight, bool calcTotal, string node, bool noCommMeansOn) {
@@ -436,18 +312,4 @@ dyn_int emumaj_onOffStandbyErrorFsmStateCounts(dyn_anytype values, int &weight, 
   }
   
   return makeDynInt(on, standby, error);
-}
-
-int getHvPart(string node) {
-  if (!mappingHasKey(hvParts, node)) {
-    string coord;
-    dpGet(node + ".coord", coord);
-    dyn_string coordSplit = strsplit(coord, ";");
-    if (dynlen(coordSplit) < 4) {
-      return -1;
-    }
-    hvParts[node] = strsplit(coord, ";")[4];
-  }
-  
-  return hvParts[node];
 }
