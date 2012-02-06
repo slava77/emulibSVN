@@ -9,6 +9,7 @@ PANEL,-1 -1 790 610 N "_3DFace" 0
  E E E E 1 -1 -1 0  30 40
 ""0  1
 E "#uses \"CMS_CSC_MiddleLayer/emu_hv.ctl\"
+#uses \"CMS_CSC_MiddleLayer/emu_x2p.ctl\"
 #uses \"CMS_CSC_common/emu_common.ctl\"
 #uses \"CMS_CSC_common/emu_deviceInfo.ctl\"
 
@@ -644,7 +645,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 30 40 78 56
+E E 0 1 1 2 1 E U  0 E 30 40 74 56
 0 2 2 "0s" 0 0 0 192 0 0  30 40 1
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
@@ -1122,7 +1123,7 @@ LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 T 
 1
 LANG:1 10 Create FSM
-"#uses \"CMS_CSC_MiddleLayer/emu_fsm.ctl\"
+"#uses \"CMS_CSC_MiddleLayer/setup/fsmCreate.ctl\"
 
 main() {
   dyn_string ex;

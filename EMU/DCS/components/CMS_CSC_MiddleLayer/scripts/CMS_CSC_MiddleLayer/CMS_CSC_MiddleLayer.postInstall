@@ -1,6 +1,6 @@
 #uses "CMS_CSC_common/emu_common.ctl"
 #uses "CMS_CSC_common/emu_deviceInfo.ctl"
-#uses "CMS_CSC_MiddleLayer/emu_fsm.ctl"
+#uses "CMS_CSC_MiddleLayer/setup/fsmCreate.ctl"
 #uses "fwInstallationUtils.ctl"
 
 main() {

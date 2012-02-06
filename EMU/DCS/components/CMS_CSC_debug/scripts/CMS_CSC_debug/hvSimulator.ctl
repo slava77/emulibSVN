@@ -1,52 +1,64 @@
-#uses "CMS_CSCfw_HV_CC/emu_hvCommon.ctl"
+#uses "CMS_CSC_MiddleLayer/emu_hv.ctl"
 #uses "CMS_CSC_common/emu_common.ctl"
 
-string HVSIM_CMDTYPE_CMD = "HVCMD";
-string HVSIM_CMDTYPE_GETDATA = "HVDATA";
+string HVSIM_CMDTYPE_CMD = "HVCSCCMD";
+string HVSIM_CMDTYPE_GETDATA = "HVCSCDATA";
 
-int HVSIM_RAMP_MULTIPLIER = 300;//5;
-
-mapping moduleIdToDps;
+int HVSIM_RAMP_MULTIPLIER = 20;
+int HVSIM_DEFAULT_RAMP_UP_RATE = 10;
+int HVSIM_DEFAULT_RAMP_DOWN_RATE = 100;
 
 mapping channelIdToRampThread;
-
+mapping chamberNameToFastMonDp;
+mapping chamberNameToSlowMonDp;
+mapping chamberNameToNumChans;
 
 main()
 {
   emu_info("HV simulator initializing");
-  init();
+  dyn_string ex;
+  init(ex);
+  if (emu_checkException(ex)) { return; }
   emu_info("HV simulator started");
 }
 
 
-void init() {
-  dyn_string coordsDps = dpNames("HighVoltage/CSC_ME_*_HV.coord", "HV_1");
-  for (int i=1; i <= dynlen(coordsDps); i++) {
-    string coords;
-    dpGet(coordsDps[i], coords);
-    string hostSlotAddress = substr(coords, 0, strlen(coords) - 2);
-    string fsmDp = dpSubStr(coordsDps[i], DPSUB_DP);
-    string dp = substr(fsmDp, strpos(fsmDp, "CSC_ME"));
-
-    if (!mappingHasKey(moduleIdToDps, hostSlotAddress)) {
-      moduleIdToDps[hostSlotAddress] = makeDynString();
-    }
+void init(dyn_string &ex) {
+  dyn_string hvDps = dpNames(EMUHV_DP_PREFIX + "*", "CscHvChamber");
+  for (int i=1; i <= dynlen(hvDps); i++) {
+    mapping chamber = emu_fsmNodeToDeviceParams(hvDps[i], ex);
+    string chamberName = emu_getChamberName(chamber);
+    if (emu_checkException(ex)) { return; }
+    string slowMonDp = hvDps[i] + EMUHV_DP_POSTFIX_SLOW_MON;
+    string fastMonDp = hvDps[i] + EMUHV_DP_POSTFIX_FAST_MON;
+    chamberNameToFastMonDp[chamberName] = fastMonDp;
+    chamberNameToSlowMonDp[chamberName] = slowMonDp;
     
-    int part = strsplit(coords, ";")[4];
-    if (part == 0) { part++; }
-    dynInsertAt(moduleIdToDps[hostSlotAddress], dp, part);
+    int numChans = ((chamber["ring"] == 2) && (chamber["station"] > 1)) ? 30 : 18;
+    // some default settings
+    dpSet(fastMonDp + ".num_chans", numChans,
+          slowMonDp + ".num_chans", numChans,
+          fastMonDp + ".interlock", 1,
+          fastMonDp + ".pos5v", 3000,
+          fastMonDp + ".neg5v", 3000);
+    
+    chamberNameToNumChans[chamberName] = numChans;
   }
-
-  // start everything  
-  dpConnect("hvCommandCB", false, "HV_1_COM.command");
-  startThread("periodicUpdateThread");
+  
+  // start everything
+  dyn_string commandDps = dpNames("*.command", "CscDimCommand");
+  for (int i=1; i <= dynlen(commandDps); i++) {
+    dpConnect("hvCommandCB", false, commandDps[i]);
+  }
+//  startThread("periodicUpdateThread");
 }
 
 void hvCommandCB(string dp, string hvCommandStr) {
   dyn_string dsTmp;
 
   string hostId, commandType;
-  int slot, address, channel, command, value;
+  string chamberName;
+  int channel, command, value;
   
   dsTmp = strsplit(hvCommandStr, "|");
   hostId = dsTmp[1];
@@ -54,90 +66,72 @@ void hvCommandCB(string dp, string hvCommandStr) {
   dyn_string params = strsplit(dsTmp[2], ";");
   
   commandType = params[1];
-  slot = params[2];
-  address = params[3];
-  channel = params[4];
-  command = params[5];
-  value = params[6];
-  
-  string moduleId = hostId + ";" + slot + ";" + address;
+  chamberName = params[2];
+  channel = params[3];
+  command = params[4];
+  value = params[5];
   
   emu_info("HVSIM: got command: " + hvCommandStr);
   
   if (commandType == HVSIM_CMDTYPE_CMD) {
     if (command == EMUHV_COMMAND_OFF) {
-      cmdChannelOff(moduleId, channel);
+      cmdChannelOff(chamberName, channel);
     } else if (command == EMUHV_COMMAND_ON) {
-      cmdChannelOn(moduleId, channel);
-    } else if (command == EMUHV_COMMAND_VSET) {
-      cmdChannelVset(moduleId, channel, value);
+      cmdChannelOn(chamberName, channel);
+    } else if (command == EMUHV_COMMAND_SET_VSET) {
+      cmdChannelVset(chamberName, channel, value);
     } else if (command == EMUHV_COMMAND_SET_IMAX) {
-      cmdChannelImax(moduleId, channel, value);
+      cmdChannelImax(chamberName, channel, value);
     }
   } else if (commandType == HVSIM_CMDTYPE_GETDATA) {
-    updateData(moduleId, channel);
+    updateData(chamberName, channel);
   }
 }
 
-void cmdChannelOff(string moduleId, int channel) {
+void cmdChannelOff(string chamberName, int channel) {
   dyn_int channels = getChannelNumbers(channel);
-  emu_info("HVSIM: switching off channels " + channels + " on module " + moduleId);
-  startNewRampThread(moduleId, channels, 0, 0);
+  emu_info("HVSIM: switching off channels " + channels + " on chamber " + chamberName);
+  startNewRampThread(chamberName, channels, 0, 0);
 }
 
-void cmdChannelOn(string moduleId, int channel) {
+void cmdChannelOn(string chamberName, int channel) {
   dyn_int channels = getChannelNumbers(channel);
-  emu_info("HVSIM: switching on channels " + channels + " on module " + moduleId);
-  startNewRampThread(moduleId, channels);
+  emu_info("HVSIM: switching on channels " + channels + " on chamber " + chamberName);
+  startNewRampThread(chamberName, channels);
 }
 
-void cmdChannelVset(string moduleId, int channel, int targetVoltage) {
+void cmdChannelVset(string chamberName, int channel, int targetVoltage) {
   dyn_int channels = getChannelNumbers(channel);
-  emu_info("HVSIM: setting VSET=" + targetVoltage + " on channels " + channels + " on module " + moduleId);
+  emu_info("HVSIM: setting VSET=" + targetVoltage + " on channels " + channels + " on chamber " + chamberName);
 
-  dyn_string chamberDps;
-  emu_dynAppend(chamberDps, moduleIdToDps[moduleId]);
-  for (int i=1; i <= dynlen(chamberDps); i++) {
-    string chamberDp = chamberDps[i];
-    
-    for (int i=1; i <= dynlen(channels); i++) {
-      int channelNum = channels[i];
-      
-      setPackedData(chamberDp, channelNum, "vset", targetVoltage);
-    }
+  string slowMonDp = chamberNameToSlowMonDp[chamberName];
+  for (int i=1; i <= dynlen(channels); i++) {
+    int channelNum = channels[i];
+    dpSet(slowMonDp + ".channels.ch" + channelNum + ".vset", targetVoltage);
   }
+  dpSet(slowMonDp + ".num_chans", chamberNameToNumChans[chamberName]); // to trigger update in hvClient
+  startThread("startNewRampThread", chamberName, channels);
+}
+
+void cmdChannelImax(string chamberName, int channel, int imax) {
+  dyn_int channels = getChannelNumbers(channel);
+  emu_info("HVSIM: setting IMAX=" + imax + " on channels " + channels + " on chamber " + chamberName + " (NOT IMPLEMENTED)");  
+}
+
+void updateData(string chamberName, int channel) {
+  string fastMonDp = chamberNameToFastMonDp[chamberName];
+  string slowMonDp = chamberNameToSlowMonDp[chamberName];
+
+  emu_info("HVSIM: updating data on chamber " + chamberName);
   
-  startNewRampThread(moduleId, channels);
-}
-
-void cmdChannelImax(string moduleId, int channel, int imax) {
-  dyn_int channels = getChannelNumbers(channel);
-  emu_info("HVSIM: setting IMAX=" + imax + " on channels " + channels + " on module " + moduleId);
-}
-
-void updateData(string moduleId, int channel) {
-  dyn_string chamberDps;
-  emu_dynAppend(chamberDps, moduleIdToDps[moduleId]);
-
-  emu_info("HVSIM: updating data on module " + moduleId);
-  
-  for (int i=1; i <= dynlen(chamberDps); i++) {
-    dpSet(chamberDps[i] + ".update_value", 1);
-  }
+  dpSet(fastMonDp + ".num_chans", emu_dpGetCached(fastMonDp + ".num_chans"));
+  dpSet(slowMonDp + ".num_chans", emu_dpGetCached(slowMonDp + ".num_chans"));
 }
 
 dyn_int getChannelNumbers(int channel) {
   dyn_int channels;
-  if (channel == 253) {
-    for (int i=1; i <= 18; i++) {
-      dynAppend(channels, i);
-    }
-  } else if (channel == 254) {
-    for (int i=19; i <= 36; i++) {
-      dynAppend(channels, i);
-    }
-  } else if (channel == 255) {
-    for (int i=1; i <= 36; i++) {
+  if (channel == 255) {
+    for (int i=1; i <= 30; i++) {
       dynAppend(channels, i);
     }
   } else {
@@ -147,90 +141,71 @@ dyn_int getChannelNumbers(int channel) {
   return channels;
 }
 
-void startNewRampThread(string moduleId, dyn_int channels, int targetVoltage = -1, int statusAfterDone = 1) {
+void startNewRampThread(string chamberName, dyn_int channels, int targetVoltage = -1, int statusAfterDone = 1) synchronized(channelIdToRampThread) {
   for (int i=1; i <= dynlen(channels); i++) {    
-    string channelId = moduleId + ";ch" + channels[i];
+    string channelId = chamberName + ";ch" + channels[i];
     if (mappingHasKey(channelIdToRampThread, channelId) && (channelIdToRampThread[channelId] != -1)) {
+      //emu_info("trying to stop thread with id = " + channelIdToRampThread[channelId]);
       stopThread(channelIdToRampThread[channelId]);
       channelIdToRampThread[channelId] = -1;
+      delay(0, 50);
+      if (channelIdToRampThread[channelId] != -1) {
+        return;
+      }
     }
   
-    channelIdToRampThread[channelId] = startThread("rampThread", moduleId, channels[i], targetVoltage, statusAfterDone);
+    channelIdToRampThread[channelId] = startThread("rampThread", chamberName, channels[i], targetVoltage, statusAfterDone);
   }
 }
 
-void rampThread(string moduleId, int channelNum, int targetVoltage = -1, int statusAfterDone = 1) {
-  dyn_string chamberDps;
-  emu_dynAppend(chamberDps, moduleIdToDps[moduleId]);
-
-  emu_info("HVSIM: ramping channel " + channelNum + " on module " + moduleId + " to " + targetVoltage + ". (chamberDps = " + chamberDps + ")");
+void rampThread(string chamberName, int channelNum, int targetVoltage = -1, int statusAfterDone = 1) {
+  emu_info("HVSIM: ramping channel " + channelNum + " on chamber " + chamberName + " to " + targetVoltage + ".");
+  
+  string fastMonDp = chamberNameToFastMonDp[chamberName];
+  string slowMonDp = chamberNameToSlowMonDp[chamberName];
+  string chFastMonDp = fastMonDp + ".channels.ch" + channelNum;
+  string chSlowMonDp = slowMonDp + ".channels.ch" + channelNum;
   
   if (targetVoltage == -1) {
-    targetVoltage = getPackedData(chamberDps[1], channelNum, "vset");
+    targetVoltage = emu_dpGetCached(chSlowMonDp + ".vset");
   }
   
   // get ramping parameters
   int currentVoltage;
-  dpGet(chamberDps[1] + ".data.v" + channelNum + ".vmon", currentVoltage);
+  dpGet(chFastMonDp + ".vmon", currentVoltage);
   int rampRate;
   if (currentVoltage > targetVoltage) { // ramp down
-    dpSetForAllChambers(chamberDps, ".data.v" + channelNum + ".state", statusAfterDone);
-    dpSetForAllChambers(chamberDps, ".data.v" + channelNum + ".status", 3);
-    rampRate = getPackedData(chamberDps[1], channelNum, "ramp_down") * -1;
+    dpSet(chFastMonDp + ".status", 3);
+    rampRate = emu_dpGetCached(chSlowMonDp + ".ramp_down") * -1;
+    if (rampRate == 0) {
+      dpSet(chSlowMonDp + ".ramp_down", HVSIM_DEFAULT_RAMP_DOWN_RATE);
+      rampRate = HVSIM_DEFAULT_RAMP_DOWN_RATE * -1;
+    }
   } else {
-    dpSetForAllChambers(chamberDps, ".data.v" + channelNum + ".state", statusAfterDone);
-    dpSetForAllChambers(chamberDps, ".data.v" + channelNum + ".status", 2);
-    rampRate = getPackedData(chamberDps[1], channelNum, "ramp_up");
+    dpSet(chFastMonDp + ".status", 2);
+    rampRate = emu_dpGetCached(chSlowMonDp + ".ramp_up");
+    if (rampRate == 0) {
+      dpSet(chSlowMonDp + ".ramp_up", HVSIM_DEFAULT_RAMP_UP_RATE);
+      rampRate = HVSIM_DEFAULT_RAMP_UP_RATE;
+    }
   }
-  
+  dpSet(chSlowMonDp + ".is_on", statusAfterDone);
+  dpSet(slowMonDp + ".num_chans", chamberNameToNumChans[chamberName]); // to trigger update in hvClient  
   // ramp
   while((rampRate < 0) && (currentVoltage > targetVoltage) || (rampRate > 0) && (currentVoltage < targetVoltage)) {
-    dpSetForAllChambers(chamberDps, ".data.v" + channelNum + ".vmon", currentVoltage);
+    dpSet(chFastMonDp + ".vmon", currentVoltage);
+    dpSet(fastMonDp + ".num_chans", chamberNameToNumChans[chamberName]); // to trigger update in hvClient
     currentVoltage += rampRate * HVSIM_RAMP_MULTIPLIER + (rand() % (2 * HVSIM_RAMP_MULTIPLIER));
     delay(1);
   }
   
   // finalize ramping
-  dpSetForAllChambers(chamberDps, ".data.v" + channelNum + ".vmon", targetVoltage);
-      
-  dpSetForAllChambers(chamberDps, ".data.v" + channelNum + ".state", statusAfterDone);
-  dpSetForAllChambers(chamberDps, ".data.v" + channelNum + ".status", statusAfterDone);
-    
-//  dpSetForAllChambers(chamberDps, ".update_value", 2);
-}
+  dpSet(chFastMonDp + ".vmon", targetVoltage);
+  dpSet(chFastMonDp + ".status", statusAfterDone);
+  dpSet(fastMonDp + ".num_chans", chamberNameToNumChans[chamberName]); // to trigger update in hvClient
 
-private void dpSetForAllChambers(dyn_string chamberDps, string dpe, anytype value) {
-  for (int i=1; i <= dynlen(chamberDps); i++) {
-    dpSet(chamberDps[i] + dpe, value);
-  }
-}
-
-int getPackedData(string chamberDp, int channelNum, string dpe) {
-  int packedDataNum = ceil((float)channelNum / 2);
-  int data;
-  dpGet(chamberDp + ".data.pack_data.v" + packedDataNum + "." + dpe, data);
-  int data1 = data & 0x0FFFF;
-  int data2 = (data >> 16) & 0x0FFFF;
-  if (((float) channelNum / 2) < packedDataNum) {
-    return data1;
-  } else {
-    return data2;
-  }
-}
-
-void setPackedData(string chamberDp, int channelNum, string dpe, int value) {
-  int packedDataNum = ceil((float)channelNum / 2);
-  int data;
-  dpGet(chamberDp + ".data.pack_data.v" + packedDataNum + "." + dpe, data);
-  int data1 = data & 0x0FFFF;
-  int data2 = (data >> 16) & 0x0FFFF;
-  if (((float) channelNum / 2) < packedDataNum) {
-    data1 = value;
-  } else {
-    data2 = value;
-  }
-  data = data1 + (data2 << 16);
-  dpSetWait(chamberDp + ".data.pack_data.v" + packedDataNum + "." + dpe, data);
+  string channelId = chamberName + ";ch" + channelNum;
+  channelIdToRampThread[channelId] = -1;
 }
 
 void periodicUpdateThread() {
