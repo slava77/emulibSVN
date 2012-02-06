@@ -8,6 +8,7 @@
 <dplist>./dplist/CMS_CSC_debug/profiler/CMS_CSC_debug_profiler_types.dpl</dplist>
 <file>./panels/CMS_CSC_debug/*.pnl</file>
 <file>./panels/CMS_CSC_debug/profiler/*.pnl</file>
+<file>./scripts/CMS_CSC_debug/*.ctl</file>
 <file>./scripts/libs/CMS_CSC_debug/*.ctl</file>
 <file>./scripts/libs/CMS_CSC_debug/profiler/*.ctl</file>
 <file>./CMS_CSC_debug.xml</file>
