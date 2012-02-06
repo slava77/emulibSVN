@@ -31,7 +31,7 @@
         <configuration>
             <tag>MiddleLayer/HV_v1.0</tag>
             <db>default</db>
-            <pattern>CscHighVoltage/CSC_ME_P1*,CscHighVoltage/Primary_600*,DimConfig/HV_P1*,DimConfig/HV_COMMAND_P*,DimConfig/HV_Primary_P*</pattern>
+            <pattern>CscHighVoltage/CSC_ME_P1*,CscHighVoltage/Primary_600*,DimConfig/HV_P1*,DimConfig/HV_COMMAND_P*,DimConfig/HV_Primary_P*,CscDimCommand/HV_P</pattern>
             <logical>false</logical>
             <hardware>true</hardware>
         </configuration>
@@ -62,7 +62,7 @@
         <configuration>
             <tag>MiddleLayer/HV_v1.0</tag>
             <db>default</db>
-            <pattern>CscHighVoltage/CSC_ME_P2*,CscHighVoltage/CSC_ME_P3*,CscHighVoltage/CSC_ME_P4*,DimConfig/HV_P2*,DimConfig/HV_P3*,DimConfig/HV_P4*,DimConfig/HV_COMMAND_P*</pattern>
+            <pattern>CscHighVoltage/CSC_ME_P2*,CscHighVoltage/CSC_ME_P3*,CscHighVoltage/CSC_ME_P4*,DimConfig/HV_P2*,DimConfig/HV_P3*,DimConfig/HV_P4*,DimConfig/HV_COMMAND_P*,CscDimCommand/HV_P</pattern>
             <logical>false</logical>
             <hardware>true</hardware>
         </configuration>
@@ -79,7 +79,7 @@
         <configuration>
             <tag>MiddleLayer/HV_v1.0</tag>
             <db>default</db>
-            <pattern>CscHighVoltage/CSC_ME_M1*,CscHighVoltage/Primary_500*,DimConfig/HV_M1*,DimConfig/HV_COMMAND_M*,DimConfig/HV_Primary_M*</pattern>
+            <pattern>CscHighVoltage/CSC_ME_M1*,CscHighVoltage/Primary_500*,DimConfig/HV_M1*,DimConfig/HV_COMMAND_M*,DimConfig/HV_Primary_M*,CscDimCommand/HV_M</pattern>
             <logical>false</logical>
             <hardware>true</hardware>
         </configuration>
@@ -110,7 +110,7 @@
         <configuration>
             <tag>MiddleLayer/HV_v1.0</tag>
             <db>default</db>
-            <pattern>CscHighVoltage/CSC_ME_M2*,CscHighVoltage/CSC_ME_M3*,CscHighVoltage/CSC_ME_M4*,DimConfig/HV_M2*,DimConfig/HV_M3*,DimConfig/HV_M4*,DimConfig/HV_COMMAND_M*</pattern>
+            <pattern>CscHighVoltage/CSC_ME_M2*,CscHighVoltage/CSC_ME_M3*,CscHighVoltage/CSC_ME_M4*,DimConfig/HV_M2*,DimConfig/HV_M3*,DimConfig/HV_M4*,DimConfig/HV_COMMAND_M*,CscDimCommand/HV_M</pattern>
             <logical>false</logical>
             <hardware>true</hardware>
         </configuration>
