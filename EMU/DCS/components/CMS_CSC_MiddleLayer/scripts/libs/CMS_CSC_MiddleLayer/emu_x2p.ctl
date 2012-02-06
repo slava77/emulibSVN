@@ -58,6 +58,12 @@ public const string EMU_X2P_DEVICE_FSM_DPT_LV = "CscLvChamber";
 public const string EMU_X2P_DEVICE_FSM_DPT_TEMP = "CscTempChamber";
 public const string EMU_X2P_DEVICE_FSM_DPT_FED = "CscFedDdu";
 
+public const string EMU_X2P_FSM_STATE_ON        = "ON";
+public const string EMU_X2P_FSM_STATE_OFF       = "OFF";
+public const string EMU_X2P_FSM_STATE_ERROR     = "ERROR";
+public const string EMU_X2P_FSM_STATE_NOT_READY = "NOT-READY";
+public const string EMU_X2P_FSM_STATE_DISABLED  = "DISABLED";
+
 /**
   * @return all X2P data DPs (LV, temperature and FED)
   */

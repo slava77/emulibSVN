@@ -24,6 +24,18 @@ public const string EMUHV_DP_POSTFIX_FAST_MON = "/FastMon";
 public const string EMUHV_DP_POSTFIX_SETTINGS = "/Settings";
 public const string EMUHV_DP_POSTFIX_PRIMARY_MON = "/Mon";
 
+public const string EMUHV_FSM_STATE_ON        = "ON";
+public const string EMUHV_FSM_STATE_OFF       = "OFF";
+public const string EMUHV_FSM_STATE_STANDBY   = "STANDBY";
+public const string EMUHV_FSM_STATE_RAMPING   = "RAMPING";
+public const string EMUHV_FSM_STATE_ERROR     = "ERROR";
+public const string EMUHV_FSM_STATE_NOT_READY = "NOT-READY";
+public const string EMUHV_FSM_STATE_DISABLED  = "DISABLED";
+
+public const string EMUHV_FSM_COMMAND_ON        = "ON";
+public const string EMUHV_FSM_COMMAND_OFF       = "OFF";
+public const string EMUHV_FSM_COMMAND_STANDBY   = "STANDBY";
+
 public const int EMUHV_STATE_OFF           = 0;  // Channel or module is turned Off
 public const int EMUHV_STATE_ON            = 1;  // Channel or module is turned On
 public const int EMUHV_STATE_RAMP_UP       = 2;  // Channel is ramping Up
