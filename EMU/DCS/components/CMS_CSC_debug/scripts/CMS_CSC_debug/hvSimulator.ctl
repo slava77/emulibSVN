@@ -40,7 +40,9 @@ void init(dyn_string &ex) {
           slowMonDp + ".num_chans", numChans,
           fastMonDp + ".interlock", 1,
           fastMonDp + ".pos5v", 3000,
-          fastMonDp + ".neg5v", 3000);
+          fastMonDp + ".neg5v", 3000,
+          slowMonDp + ".rdb_type", 1,
+          slowMonDp + ".master_type", 1);
     
     chamberNameToNumChans[chamberName] = numChans;
   }
