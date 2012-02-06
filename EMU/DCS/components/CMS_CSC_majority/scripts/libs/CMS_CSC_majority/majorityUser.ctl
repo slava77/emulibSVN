@@ -214,7 +214,7 @@ string majorityUser_nodeTranslation(string node) {
       (type == "FwWienerMarathonChannel") || 
       (type == "FwWienerMarathon") || 
       (type == "FwElmbPSUBranch") ||
-      (type == "HV_PR") ||
+      (type == "CscHvPrimary") ||
       (type == "FwCaenChannel")) {
     return treeCache_getFsmInternalDp(node);
   } else {
