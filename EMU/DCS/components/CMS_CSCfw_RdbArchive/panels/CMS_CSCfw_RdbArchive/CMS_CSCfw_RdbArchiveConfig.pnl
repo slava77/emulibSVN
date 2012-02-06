@@ -1,7 +1,7 @@
-V 11
+V 10
 1
 LANG:1 19 Archiving_dp_config
-PANEL,-1 -1 632 427 N "_3DFace" 0
+PANEL,-1 -1 632 301 N "_3DFace" 0
 E E E E E 1 0 0 0  110 60
 ""0  1
 E "#uses \"CMS_CSCfw_RdbArchive/CMS_CSCfw_RdbArchiveConfig.ctl\"" 0
@@ -26,8 +26,9 @@ LANG:1 0
 
 0
 1
-LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
-0  58 78 172 112
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 58 78 172 112
 
 T 
 1
@@ -52,8 +53,9 @@ LANG:1 0
 
 0
 1
-LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
-0  178 118 292 152
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 178 118 292 152
 
 T 
 1
@@ -89,8 +91,9 @@ LANG:1 0
 "dashclr"N "_Transparent"
 E E 0 0 1 0 1 E 2.67326732673266 0 2.5 -494.653465346532 -57.5000000000001 0 E 200 43 302 104
 1
-LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
-0 1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
 LANG:1 27 config dp for rdb archiving
 2 17
 "PRIMITIVE_TEXT1"
@@ -108,8 +111,9 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 190 20 463 37
 0 2 2 "0s" 0 0 0 192 0 0  190 20 1
 1
-LANG:1 33 MS Shell Dlg,-1,13,5,75,0,0,0,0,0
-0 1
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
 LANG:1 37 CSC DP Config Panel for RDB Archiving
 13 20
 "delete_all"
@@ -124,8 +128,9 @@ LANG:1 0
 
 0
 1
-LANG:1 33 MS Shell Dlg,-1,13,5,75,0,0,0,0,0
-0  178 158 292 192
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 178 158 292 192
 
 T 
 1
@@ -153,8 +158,9 @@ LANG:1 0
 
 0
 1
-LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
-0  338 228 452 262
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 338 228 452 262
 
 T 
 1
@@ -202,8 +208,9 @@ LANG:1 0
 
 0
 1
-LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
-0  458 228 572 262
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 457.999999999999 228 571.999999999999 262
 
 T 
 1
@@ -241,10 +248,13 @@ void emudcsArchive_removeFsmDpConfig(string sDpName)
                                  sDpName + \".fsm.currentParameters\");
   for (int i=1; i<=dynlen(ds);i++)
   {
-    emudcsArchive_removeDpSmoothing(ds[i]);
+    emudcsArchive_removeFsmDpSmoothing(ds[i]);
   }
 }
-                    " 0
+void emudcsArchive_removeFsmDpSmoothing(string sDpName)
+{    
+    dpSetWait (sDpName + \":_archive.._type\",DPCONFIG_NONE);       
+}                    " 0
  E E E
 13 25
 "set_dp_arch"
@@ -259,8 +269,9 @@ LANG:1 0
 
 0
 1
-LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
-0  338 188 452 222
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 338 187.999999999999 452 221.999999999999
 
 T 
 1
@@ -281,10 +292,6 @@ LANG:1 12 set  dp arch
     sArchDptype = \"CSC_HV_M_DATA\";
   else if(sDptypeName == \" HV_MI\")
     sArchDptype = \"CSC_HV_M_DATA\";
-  else if(sDptypeName == \" HV_PV\")
-    sArchDptype = \"CSC_HV_P_DATA\";
-  else if(sDptypeName == \" HV_PI\")
-    sArchDptype = \"CSC_HV_P_DATA\";
   else if(sDptypeName == \" LV_V\")
     sArchDptype = \"CSC_LV_V_DATA\";
   else if(sDptypeName == \" LV_I\")
@@ -305,10 +312,6 @@ LANG:1 12 set  dp arch
     sArchDptype = \"CSC_MARATON_I_DATA\"; 
   else if(sDptypeName == \" MAR_T\")
     sArchDptype = \"CSC_MARATON_T_DATA\"; 
-  else if(sDptypeName == \" TMB\")
-    sArchDptype = \"CSC_TMB_DATA\"; 
-  else if(sDptypeName == \" LVDB\")
-    sArchDptype = \"CSC_LVDB_DATA\"; 
                  
   else if (sDptypeName == \" Dp Type\")
   { 
@@ -335,9 +338,7 @@ LANG:1 12 set  dp arch
   else if(sDeadBand == \" 10\")
     fArchDeadBand = 10; 
   else if(sDeadBand == \" 20\")
-    fArchDeadBand = 20; 
-  else if(sDeadBand == \" 30\")
-    fArchDeadBand = 30;  
+    fArchDeadBand = 20;         
   else if (sDeadBand == \" DeadBand\")
   { 
      ChildPanelOnCentral(\"vision/MessageWarning\",\"warning\",
@@ -378,14 +379,6 @@ LANG:1 12 set  dp arch
   {
     ds_dpname = dpNames(\"*_IMON\",sArchDptype);
   }
-  else if (sDptypeName == \" HV_PV\")
-  {
-    ds_dpname = dpNames(\"*_VMON\",sArchDptype);
-  }
-  else if (sDptypeName == \" HV_PI\")
-  {
-    ds_dpname = dpNames(\"*_IMON\",sArchDptype);
-  }   
   else  
   {   
     ds_dpname = dpNames(\"*\",sArchDptype);
@@ -417,8 +410,9 @@ LANG:1 0
 
 0
 1
-LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
-0  458 188 572 222
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 458 187.999999999999 572 221.999999999999
 
 T 
 1
@@ -435,14 +429,8 @@ LANG:1 14 remove dp arch
     sArchDptype = \"CSC_HV_V_DATA\";
   else if(sDptypeName == \" HV_I\")
     sArchDptype = \"CSC_HV_I_DATA\";
-  else if(sDptypeName == \" HV_MI\")
+  else if(sDptypeName == \" HV_M\")
     sArchDptype = \"CSC_HV_M_DATA\";
-  else if(sDptypeName == \" HV_MV\")
-    sArchDptype = \"CSC_HV_M_DATA\";
-  else if(sDptypeName == \" HV_PI\")
-    sArchDptype = \"CSC_HV_P_DATA\";
-  else if(sDptypeName == \" HV_PV\")
-    sArchDptype = \"CSC_HV_P_DATA\";
   else if(sDptypeName == \" LV_V\")
     sArchDptype = \"CSC_LV_V_DATA\";
   else if(sDptypeName == \" LV_I\")
@@ -460,18 +448,13 @@ LANG:1 14 remove dp arch
   else if(sDptypeName == \" MAR_V\")
     sArchDptype = \"CSC_MARATON_V_DATA\";  
   else if(sDptypeName == \" MAR_I\")
-    sArchDptype = \"CSC_MARATON_I_DATA\"; 
-  else if(sDptypeName == \" TMB\")
-    sArchDptype = \"CSC_TMB_DATA\"; 
-  else if(sDptypeName == \" LVDB\")
-    sArchDptype = \"CSC_LVDB_DATA\"; 
-  
+    sArchDptype = \"CSC_MARATON_I_DATA\";                
   else if (sDptypeName == \" Dp Type\")
   { 
      ChildPanelOnCentral(\"vision/MessageWarning\",\"warning\",
                          makeDynString( \"$1:\"+\"please select a dp type\"));
      DebugN(\"please select a dp type\");
-     return;
+     return; 
    } 
 
   dyn_string ds_dpname;
@@ -481,12 +464,16 @@ LANG:1 14 remove dp arch
   
   for (i=1;i<=imax_dpname;i++)
    {
-    emudcsArchive_removeDpSmoothing(ds_dpname[i]+\".value\");
+    emudcsArchive_removeDpSmoothing(ds_dpname[i]);
    }
   delay(1);
   DebugTN(\"done\");
 }
-                               " 0
+//---delete archiving config-----------------------------  
+void emudcsArchive_removeDpSmoothing(string sDpName)
+{
+    dpSetWait (sDpName + \".value:_archive.._type\",DPCONFIG_NONE);       
+}                                      " 0
  E E E
 30 28
 "FRAME6"
@@ -501,15 +488,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 1 0 1 E 0.931034482758621 0 5.223880597014906 273.448275862069 -2159.701492537305 0 E 50 423 341 491
+E E 0 0 1 0 1 E 0.931034482758621 0 3.43283582089551 273.448275862069 -1402.0895522388 0 E 50 423 341 491
 1
-LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
-0 1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
 LANG:1 21 modify dp arch-config
 22 29
 "DP_arch_type"
 ""
-1 460 69.99999999999849 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 460 69.9999999999985 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 37 0 0 0 0 0
 E E E
@@ -519,9 +507,10 @@ LANG:1 0
 
 0
 1
-LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
-0  458 68 552 102
-19
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 458 67.9999999999985 552 101.999999999998
+15
 1
 LANG:1 8  Dp Type
 
@@ -543,27 +532,11 @@ LANG:1 6  HV_MI
 
 0
 1
-LANG:1 6  HV_PV
-
-0
-1
-LANG:1 6  HV_PI
-
-0
-1
 LANG:1 5  LV_V
 
 0
 1
 LANG:1 5  LV_I
-
-0
-1
-LANG:1 4  TMB
-
-0
-1
-LANG:1 5  LVDB
 
 0
 1
@@ -616,9 +589,10 @@ LANG:1 0
 
 0
 1
-LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
-0  458 108 552 142
-8
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 458 107.999999999998 552 141.999999999998
+7
 1
 LANG:1 9  DeadBand
 
@@ -647,10 +621,6 @@ LANG:1 3  10
 LANG:1 3  20
 
 0
-1
-LANG:1 3  30
-
-0
 
 E
 E
@@ -659,7 +629,7 @@ E
 2 33
 "PRIMITIVE_TEXT4"
 ""
-1 370 79.99999999999849 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+1 370 79.9999999999985 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
  E E
 43 0 0 0 0 0
 E E E
@@ -669,11 +639,12 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 370 79.99999999999849 407 94
-0 2 2 "0s" 0 0 0 192 0 0  370 79.99999999999849 1
+E E 0 1 1 2 1 E U  1 E 370 79.9999999999985 407 94
+0 2 2 "0s" 0 0 0 192 0 0  370 79.9999999999985 1
 1
-LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
-0 1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
 LANG:1 7 Dp type
 2 34
 "PRIMITIVE_TEXT5"
@@ -691,8 +662,9 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 370 119.999999999998 423 134
 0 2 2 "0s" 0 0 0 192 0 0  370 119.999999999998 1
 1
-LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
-0 1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
 LANG:1 9 Dead band
 2 35
 "PRIMITIVE_TEXT6"
@@ -710,8 +682,9 @@ LANG:1 0
 E E 0 1 1 2 1 E U  1 E 370 159.999999999998 430 174
 0 2 2 "0s" 0 0 0 192 0 0  370 159.999999999998 1
 1
-LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
-0 1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
 LANG:1 13 Time interval
 22 36
 "Time_Int"
@@ -726,8 +699,9 @@ LANG:1 0
 
 0
 1
-LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
-0  458 148 552 182
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 458 147.999999999998 552 181.999999999998
 6
 1
 LANG:1 10  Time(sec)
@@ -771,8 +745,9 @@ LANG:1 0
 
 0
 1
-LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
-0  58 118 172 152
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 58 118 172 152
 
 T 
 1
@@ -800,8 +775,9 @@ LANG:1 0
 
 0
 1
-LANG:1 33 MS Shell Dlg,-1,13,5,75,0,0,0,0,0
-0  58 158 172 192
+LANG:1 101 -*-MS Shell Dlg-bold-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,758,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 58 158 172 192
 
 T 
 1
@@ -826,8 +802,9 @@ LANG:1 0
 
 0
 1
-LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
-0  178 78 292 112
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 178 78 292 112
 
 T 
 1
@@ -848,7 +825,7 @@ DebugTN(\"Delete dp type \");
 22 56
 "dptype_select"
 ""
-1 50 259.9999999999988 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 50 240 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 84 0 0 0 0 0
 E E E
@@ -858,9 +835,10 @@ LANG:1 0
 
 0
 1
-LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
-0  48 258 152 292
-8
+LANG:1 84 -*-Arial-*-r-normal-*-13-*-100-100-*-*-iso8859-1|-13,0,0,0,505,0,0,0,0,0,0,0,0,Arial
+0 ""
+ 48 238 152 272
+7
 1
 LANG:1 8  Dp Type
 
@@ -871,10 +849,6 @@ LANG:1 3  HV
 0
 1
 LANG:1 7  Master
-
-0
-1
-LANG:1 8  Primary
 
 0
 1
@@ -901,7 +875,7 @@ E
 13 57
 "PUSH_BUTTON1"
 ""
-1 170 259.9999999999988 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 170 240 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 86 0 0 0 0 0
 E E E
@@ -911,8 +885,9 @@ LANG:1 0
 
 0
 1
-LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
-0  168 258 232 292
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 168 238 232 272
 
 T 
 1
@@ -924,8 +899,8 @@ main()
    DebugTN(\"please waiting...\");
   shape cb1=getShape(\"dptype_select\");
   string sDptypeName,sArchDptype;
-  dyn_string dsDpName_HV,dsDpName_LV,dsDpName_TEMP,dsDpName_HVM,dsDpName_FED,dsDpName_MA,dsDpName_HVP; 
-  int i, iLen_HV,iLen_LV,iLen_TEMP,iLen_HVM,iLen_FED,iLen_MA,iLen_HVP;
+  dyn_string dsDpName_HV,dsDpName_LV,dsDpName_TEMP,dsDpName_HVM,dsDpName_FED,dsDpName_MA; 
+  int i, iLen_HV,iLen_LV,iLen_TEMP,iLen_HVM,iLen_FED,iLen_MA;
   sDptypeName = cb1.selectedText();
   //DebugN(sDptypeName);
   if (sDptypeName == \" HV\")
@@ -966,25 +941,6 @@ main()
      }
    }   
   }  
-  else if(sDptypeName == \" Primary\")
-  {  
-   dsDpName_HVP = emudcsArchive_getDpNames(\"HV_PR_primary*\",\"HV_PR_d\");
-   iLen_HVP = dynlen(dsDpName_HVP);
-   //DebugN(dsDpName_HVP);
-   if (iLen_HVP == 0)
-   {
-     DebugTN(\"no primary dp at HV_PR_d, skip\");
-   }
-   else
-   {
-     DebugTN(\"create archiving dps for HV primary\");
-     for (i=1;i<=iLen_HVP;i++)
-     {  
-       DebugN(dsDpName_HVP[i]);
-       emudcsArchive_setHvpDpConfig(dsDpName_HVP[i]);  //set config for HVP dp
-     }
-    }
-   }   
   else if(sDptypeName == \" LV\")
   {  
    dsDpName_LV = emudcsArchive_getDpNames(\"*LV\",\"LV_1_d\");
@@ -1087,15 +1043,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 1 0 1 E 1 0 1.194029850746275 0 -24.32835820895647 0 E 40 213 311 281
+E E 0 0 1 0 1 E 1 0 1.04477611940299 0 -12.5373134328358 0 E 40 213 311 281
 1
-LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
-0 1
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+1
 LANG:1 38 config individual dp for rdb archiving
 13 60
 "PUSH_BUTTON2"
 ""
-1 240 259.9999999999988 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 240 240 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 91 0 0 0 0 0
 E E E
@@ -1105,8 +1062,9 @@ LANG:1 0
 
 0
 1
-LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
-0  238 258 302 292
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 238 238 302 272
 
 T 
 1
@@ -1144,26 +1102,11 @@ main()
        DebugN(dsDpName_HVM[i]);
        dpDelete(dsDpName_HVM[i]);
      }
-   }  
-  else if(sDptypeName == \" Primary\")
-  {  
-   dyn_string dsDpName_HVP = emudcsArchive_getDpNames(\"*\",\"CSC_HV_P_DATA\");
-   int iLen_HVP = dynlen(dsDpName_HVP);
-   //DebugN(dsDpName_HVP);
-     DebugTN(\"delete HV primary archiving dps\");
-     for (i=1;i<=iLen_HVP;i++)
-     {  
-       DebugN(dsDpName_HVP[i]);
-       dpDelete(dsDpName_HVP[i]);
-     }
-   }      
+   }    
   else if(sDptypeName == \" LV\")
   {  
    dyn_string dsDpName_LVV = emudcsArchive_getDpNames(\"*\",\"CSC_LV_V_DATA\");
    dyn_string dsDpName_LVI = emudcsArchive_getDpNames(\"*\",\"CSC_LV_I_DATA\");
-   dyn_string dsDpName_TMB = emudcsArchive_getDpNames(\"*\",\"CSC_TMB_DATA\");
-   dyn_string dsDpName_LVDB = emudcsArchive_getDpNames(\"*\",\"CSC_LVDB_DATA\");
-   dyn_string dsDpName_BITS = emudcsArchive_getDpNames(\"*\",\"CSC_BITS_DATA\");
    int iLen_LVV = dynlen(dsDpName_LVV);
    //DebugN(dsDpName_LV);
      DebugTN(\"delete LV archiving dps\");
@@ -1173,25 +1116,7 @@ main()
        dpDelete(dsDpName_LVV[i]);
        DebugN(dsDpName_LVI[i]);
        dpDelete(dsDpName_LVI[i]);
-     }
-    int iLen_TMB = dynlen(dsDpName_TMB);
-    for (i=1;i<=iLen_TMB;i++)
-     {  
-       DebugN(dsDpName_TMB[i]);
-       dpDelete(dsDpName_TMB[i]);
-     }
-    int iLen_LVDB = dynlen(dsDpName_LVDB);
-    for (i=1;i<=iLen_LVDB;i++)
-     {  
-       DebugN(dsDpName_LVDB[i]);
-       dpDelete(dsDpName_LVDB[i]);
-     }
-    int iLen_BITS = dynlen(dsDpName_BITS);
-    for (i=1;i<=iLen_BITS;i++)
-     {  
-       DebugN(dsDpName_BITS[i]);
-       dpDelete(dsDpName_BITS[i]);
-     }    
+     } 
   }  
   else if(sDptypeName == \" TEMP\")
   {  
@@ -1265,8 +1190,9 @@ LANG:1 0
 
 0
 1
-LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
-0  518 28 592 51
+LANG:1 98 -*-MS Shell Dlg-*-r-normal-*-11-*-100-100-*-*-iso8859-1|-11,0,0,0,505,0,0,0,0,0,0,0,0,MS Shell Dlg
+0 ""
+ 518 28 592 51
 3 "0s" 0 0 0 0 0 -1  E "// SimpleCtrlScriptStart {invalid}
 main()
 {
@@ -1305,284 +1231,6 @@ EP_textFieldInCB(string dp, string sNewValue)
 // SimpleCtrlScriptEnd {EP_textFieldIn}
 " 0
  E
-13 62
-"set_MA_status"
-""
-1 339.9999999999999 270 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-93 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
-0  338 268 452 302
-
-T 
-1
-LANG:1 13 set MA status
-"main()
-{
-  dyn_string dsDpName_MA;
-  int iLen_MA,i;
-  dsDpName_MA = dpNames( \"*\",\"FwWienerMarathonChannel\");  
-   iLen_MA = dynlen(dsDpName_MA);
-   //DebugN(dsDpName_MA); 
-   if (iLen_MA == 0)
-   {
-     DebugN(\"no Maraton dp at FwWienerMarathonChannel, skip\");
-   }
-   else
-   {
-     DebugTN(\"set archiving config for Maraton channel status\");
-     for (i=1;i<=iLen_MA;i++)
-     {  
-       DebugN(dsDpName_MA[i]);
-         emudcsArchive_setMaStatusConfig(dsDpName_MA[i]); //set config for Maraton status
-       
-     }
-   }
-   delay(1);
-   DebugTN(\"done\");  
-} 
-" 0
- E E E
-13 63
-"remove_MA_status"
-""
-1 460 270 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-94 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
-0  458 268 572 302
-
-T 
-1
-LANG:1 16 remove MA status
-"main()
-{
-  dyn_string dsDpName_MA;
-  int iLen_MA,i;
-  dsDpName_MA = dpNames( \"*\",\"FwWienerMarathonChannel\");  
-   iLen_MA = dynlen(dsDpName_MA);
-   //DebugN(dsDpName_MA); 
-   if (iLen_MA == 0)
-   {
-     DebugN(\"no Maraton dp at FwWienerMarathonChannel, skip\");
-   }
-   else
-   {
-     DebugTN(\"remove archiving config for Maraton channel status\");
-     for (i=1;i<=iLen_MA;i++)
-     {  
-       DebugN(dsDpName_MA[i]);
-         emudcsArchive_removeMaStatusConfig(dsDpName_MA[i]); //set config for Maraton status
-       
-     }
-   }
-    delay(1);
-    DebugTN(\"done\");
-} 
-
-void emudcsArchive_removeMaStatusConfig(string sDpName)
-{
-  dyn_string ds = makeDynString( sDpName + \".Status.FailureMaxTemperature\",
-                                 sDpName + \".Status.FailureMaxCurrent\",
-                                 sDpName + \".Status.FailureMaxSenseVoltage\",
-                                 sDpName + \".Status.FailureMaxTerminalVoltage\",
-                                 sDpName + \".Status.FailureMinSenseVoltage\");
-  for (int i=1; i<=dynlen(ds);i++)
-  {
-    emudcsArchive_removeDpSmoothing(ds[i]);
-  }
-}  
-
-" 0
- E E E
-13 64
-"set_LV_status"
-""
-1 339.9999999999999 310 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-95 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
-0  338 308 452 342
-
-T 
-1
-LANG:1 13 set LV status
-"main()
-{
-  dyn_string dsDpName_LV;
-  int iLen_LV,i;
-  dsDpName_LV = dpNames( \"*LV\",\"LV_1_d\");  
-   iLen_LV = dynlen(dsDpName_LV);
-   //DebugN(dsDpName_LV); 
-   if (iLen_LV == 0)
-   {
-     DebugN(\"no LV dp at LV_1_d, skip\");
-   }
-   else
-   {
-     DebugTN(\"set archiving config for LV status\");
-     for (i=1;i<=iLen_LV;i++)
-     {  
-      DebugN(dsDpName_LV[i]);
-      emudcsArchive_setDpSmoothingBool(dsDpName_LV[i]+\".status\"); //set archiving for status at LV_1_d       
-     }
-   }
-   delay(1);
-   DebugTN(\"done\");  
-} 
-" 0
- E E E
-13 65
-"remove_LV_status"
-""
-1 460 310 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-96 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
-0  458 308 572 342
-
-T 
-1
-LANG:1 16 remove LV status
-"main()
-{
-  dyn_string dsDpName_LV;
-  int iLen_LV,i;
-  dsDpName_LV = dpNames( \"*LV\",\"LV_1_d\");  
-   iLen_LV = dynlen(dsDpName_LV);
-   //DebugN(dsDpName_LV); 
-   if (iLen_LV == 0)
-   {
-     DebugN(\"no LV dp at LV_1_d, skip\");
-   }
-   else
-   {
-     DebugTN(\"remove archiving config for LV status\");
-     for (i=1;i<=iLen_LV;i++)
-     {  
-      DebugN(dsDpName_LV[i]);
-      emudcsArchive_removeDpSmoothing(dsDpName_LV[i]+\".status\");      
-     }
-   }
-   delay(1);
-   DebugTN(\"done\");  
-}   
-
-
-" 0
- E E E
-13 66
-"PUSH_BUTTON3"
-""
-1 339.9999999999999 350 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-97 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
-0  338 348 452 382
-
-T 
-1
-LANG:1 11 set LV bits
-"main()
-{
-   dyn_string dsDpNameBits = dpNames( \"*\",\"CSC_BITS_DATA\");  
-   int iLenBits = dynlen(dsDpNameBits); 
-   if (iLenBits == 0)
-   {
-     DebugN(\"no Bits dp at CSC_BITS_DATA, skip\");
-   }
-   else
-   {
-     DebugTN(\"set archiving config for LV bits\");
-     for (int i=1;i<=iLenBits;i++)
-     {  
-      DebugN(dsDpNameBits[i]);
-      emudcsArchive_setDpSmoothingBool(dsDpNameBits[i]+\".value\"); //set archiving for LV bits      
-     }
-   }
-   delay(1);
-   DebugTN(\"done\");  
-} 
-" 0
- E E E
-13 67
-"PUSH_BUTTON4"
-""
-1 460 350 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
- E E
-98 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-0
-1
-LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
-0  458 348 572 382
-
-T 
-1
-LANG:1 14 remove LV bits
-"main()
-{
-   dyn_string dsDpNameBits = dpNames( \"*\",\"CSC_BITS_DATA\");  
-   int iLenBits = dynlen(dsDpNameBits); 
-   if (iLenBits == 0)
-   {
-     DebugN(\"no Bits dp at CSC_BITS_DATA, skip\");
-   }
-   else
-   {
-     DebugTN(\"remove archiving config for LV bits\");
-     for (int i=1;i<=iLenBits;i++)
-     {  
-      DebugN(dsDpNameBits[i]);
-      emudcsArchive_removeDpSmoothing(dsDpNameBits[i]+\".value\");      
-     }
-   }
-   delay(1);
-   DebugTN(\"done\");  
-}   
-
-
-" 0
- E E E
 0
 LAYER, 1 
 1
