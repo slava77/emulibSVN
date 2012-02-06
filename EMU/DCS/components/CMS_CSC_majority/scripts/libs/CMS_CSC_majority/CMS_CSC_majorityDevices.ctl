@@ -3,7 +3,7 @@
 /** values is .channel_states. States are ON, STANDBY, RAMPING and ERROR */
 dyn_int emumaj_hvStateCounts(dyn_anytype values, int &weight, bool calcTotal, string node, string majType) {
   if (weight == 0) {
-    return;
+    return makeDynInt(0, 0, 0, 0);
   }
   
   dyn_string channelStates = values[1];
