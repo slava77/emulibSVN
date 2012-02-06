@@ -248,7 +248,9 @@ dyn_string majorityUser_nodeTranslationToDpes(string dev, string node, bool& use
   */
 int majorityUser_getDeviceWeight(string node, string device) {
   if ((device == "HV_OUTER") || (device == "HV_INNER")) {
-    mapping deviceParams = emu_fsmNodeToDeviceParams(node);
+    dyn_string ex;
+    mapping deviceParams = emu_fsmNodeToDeviceParams(node, ex);
+    if (emu_checkException(ex)) { return 0; }
     string hvType = (deviceParams["ring"] == 1) ? "HV_INNER" : "HV_OUTER";
     if (device != hvType) {
       return 0;
