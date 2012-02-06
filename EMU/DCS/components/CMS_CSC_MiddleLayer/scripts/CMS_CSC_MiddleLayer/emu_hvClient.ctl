@@ -76,25 +76,25 @@ void emuhv_primaryDataUpdatedCB(string dp, string value) {
 
   string fsmState;
   if (alert) {
-    fsmState = "ERROR";
+    fsmState = EMUHV_FSM_STATE_ERROR;
   } else {
     if (hvState == EMUHV_STATE_OFF) {
-      fsmState = "OFF";
+      fsmState = EMUHV_FSM_STATE_OFF;
     } else if ((hvState == EMUHV_STATE_RAMP_UP) || (hvState == EMUHV_STATE_RAMP_DOWN)) {
-      fsmState = "RAMPING";
+      fsmState = EMUHV_FSM_STATE_RAMPING;
     } else if (hvState == EMUHV_STATE_ON) {
       int vmon;
       dpGet(monDp + ".vmon", vmon);
       if (vmon > EMUHV_VOLTAGE_NOMINAL - EMUHV_STATE_ON_VMON_ACCURACY) {
-        fsmState = "ON";
+        fsmState = EMUHV_FSM_STATE_ON;
       } else if (vmon > EMUHV_VOLTAGE_STANDBY - EMUHV_STATE_STANDBY_VMON_ACCURACY) {
-        fsmState = "STANDBY";
+        fsmState = EMUHV_FSM_STATE_STANDBY;
       }
     }
   }
   
   if (fsmState == "") {
-    fsmState = "NOT-READY";
+    fsmState = EMUHV_FSM_STATE_NOT_READY;
   }
   
   dpSet(fsmDp + ".fsm_state", fsmState);
@@ -121,8 +121,9 @@ void emuhv_updateChamberState(string hvDp) {
   
   // compare with previous states
   dyn_string prevChannelStates = emu_dpGetCached(hvDp + ".channel_states");
-  if (compareArrays(prevChannelStates, channelStates)) {
+  if (compareArrays(prevChannelStates, channelStates) && !alert) {
     // if they're the same, then nothing to do
+    // (though if there's an alert, still redo the state calc because there might be alerts coming not from channels)
     return;
   }
 
@@ -132,19 +133,19 @@ void emuhv_updateChamberState(string hvDp) {
   // compute the overal chamber HV state
   string fsmState;
   if (alert) {
-    fsmState = "ERROR";
+    fsmState = EMUHV_FSM_STATE_ERROR;
   } else {
     for (int i=1; i <= dynlen(channelStates); i++) {
       string chState = channelStates[i];
-      if (strpos(chState, "DISABLED") >= 0) {
+      if (strpos(chState, EMUHV_FSM_STATE_DISABLED) >= 0) {
         continue;
       }
-      if (strpos(chState, "ERROR") >= 0) {
-        fsmState = "ERROR";
+      if (strpos(chState, EMUHV_FSM_STATE_ERROR) >= 0) {
+        fsmState = EMUHV_FSM_STATE_ERROR;
         break;
       }
-      if (strpos(chState, "RAMPING") >= 0) {
-        fsmState = "RAMPING";
+      if (strpos(chState, EMUHV_FSM_STATE_RAMPING) >= 0) {
+        fsmState = EMUHV_FSM_STATE_RAMPING;
         break;
       }
     
@@ -153,12 +154,12 @@ void emuhv_updateChamberState(string hvDp) {
         fsmState = chState;
       }
       if (fsmState != chState) {
-        fsmState = "NOT-READY";
+        fsmState = EMUHV_FSM_STATE_NOT_READY;
         break;
       }
     }
     if (fsmState == "") { // all channels disabled??? :)
-      fsmState = "NOT-READY";
+      fsmState = EMUHV_FSM_STATE_NOT_READY;
     }
   }
   strreplace(fsmState, ";", "");
@@ -179,7 +180,7 @@ string emuhv_getChannelStates(string hvDp, int channelNum, bool checkForAlerts =
   // check if it's disabled
   bool isDisabled = emu_dpGetCached(settingsDp + ".disabled");
   if (isDisabled) {
-    ret += "DISABLED;";
+    ret += EMUHV_FSM_STATE_DISABLED + ";";
   }
   
   // check if it has alerts
@@ -187,7 +188,7 @@ string emuhv_getChannelStates(string hvDp, int channelNum, bool checkForAlerts =
     int alert = 0;
     dpGet(fastMonDp + ".status:_alert_hdl.._act_state", alert);
     if (alert > 0) {
-      ret += "ERROR;";
+      ret += EMUHV_FSM_STATE_ERROR + ";";
     }
   }
   
@@ -199,19 +200,19 @@ string emuhv_getChannelStates(string hvDp, int channelNum, bool checkForAlerts =
   if (status == EMUHV_STATE_ON) {
     if ((vmon >= onVset - EMUHV_STATE_ON_VMON_ACCURACY) &&
         (vmon <= onVset + EMUHV_STATE_ON_VMON_ACCURACY)) {
-      ret += "ON;";
+      ret += EMUHV_FSM_STATE_ON + ";";
     } else if ((vmon >= EMUHV_VOLTAGE_STANDBY - EMUHV_STATE_STANDBY_VMON_ACCURACY) &&
                (vmon <= EMUHV_VOLTAGE_STANDBY + EMUHV_STATE_STANDBY_VMON_ACCURACY)) {
-      ret += "STANDBY;";
+      ret += EMUHV_FSM_STATE_STANDBY + ";";
     } else if (vmon < EMUHV_STATE_OFF_HIGHEST_VMON) {
-      ret += "OFF;";
+      ret += EMUHV_FSM_STATE_OFF + ";";
     } else { // this shouldn't happen, but if it does, let's say it's ramping
-      ret += "RAMPING;";
+      ret += EMUHV_FSM_STATE_RAMPING + ";";
     }
   } else if (status == EMUHV_STATE_OFF) {
-    ret += "OFF;";
+    ret += EMUHV_FSM_STATE_OFF + ";";
   } else if ((status == EMUHV_STATE_RAMP_UP) || (status == EMUHV_STATE_RAMP_DOWN)) {
-    ret += "RAMPING;";
+    ret += EMUHV_FSM_STATE_RAMPING + ";";
   }
   
   return ret;
@@ -230,7 +231,7 @@ void emuhv_commandReceivedCB(string dpe, string command) {
   if (emu_checkException(ex)) { return; }
 
   // turn on and make sure all channels have correct settings
-  if ((command == "ON") || (command == "STANDBY")) {
+  if ((command == EMUHV_FSM_COMMAND_ON) || (command == EMUHV_FSM_COMMAND_STANDBY)) {
     string fastMonDp = emuhv_getDp(chamber, EMUHV_DP_POSTFIX_FAST_MON, ex);
     if (emu_checkException(ex)) { return; }
     // turn module on if it's off
@@ -262,7 +263,7 @@ void emuhv_commandReceivedCB(string dpe, string command) {
       }
       
       int vset;
-      if (command == "STANDBY") {
+      if (command == EMUHV_FSM_COMMAND_STANDBY) {
         vset = EMUHV_VOLTAGE_STANDBY;
       } else {
         vset = emu_dpGetCached(channelSettingsDps[i] + ".on_vset");
@@ -278,7 +279,7 @@ void emuhv_commandReceivedCB(string dpe, string command) {
       emuhv_sendCommand(channels[disabledChannels[i]], EMUHV_COMMAND_SET_STATE, ex, EMUHV_STATE_OFF);
     }
 
-  } else if (command == "OFF") {
+  } else if (command == EMUHV_FSM_COMMAND_OFF) {
     emuhv_sendCommand(chamber, EMUHV_COMMAND_SET_STATE, ex, EMUHV_STATE_OFF);
     if (emu_checkException(ex)) { return; }
   } 
@@ -293,13 +294,13 @@ void emuhv_primaryCommandReceivedCB(string dpe, string command) {
   mapping primary = emuhv_getPrimaryDeviceParams(dpe, ex);
   if (emu_checkException(ex)) { return; }
   
-  if (command == "OFF") { // switch off
+  if (command == EMUHV_FSM_COMMAND_OFF) { // switch off
     emuhv_sendPrimaryCommand(primary, EMUHV_COMMAND_OFF, ex);
     if (emu_checkException(ex)) { return; }
     delay(0, 100);
     emuhv_requestPrimaryData(primary, ex);
     if (emu_checkException(ex)) { return; }
-  } else if (command == "STANDBY") { // lower the voltage
+  } else if (command == EMUHV_FSM_COMMAND_STANDBY) { // lower the voltage
     emuhv_sendPrimaryCommand(primary, EMUHV_COMMAND_SET_VSET, ex, EMUHV_VOLTAGE_PRIMARY_STANDBY);
     if (emu_checkException(ex)) { return; }
     delay(0, 100);
