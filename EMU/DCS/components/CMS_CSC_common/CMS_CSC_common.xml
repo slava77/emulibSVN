@@ -14,6 +14,8 @@
 <config>./config/CMS_CSC_common.config</config>
 <dplist>./dplist/CMS_CSC_common/CMS_CSC_common_alert_class_descriptors.dpl</dplist>
 <dplist>./dplist/CMS_CSC_common/emu_masks.dpl</dplist>
+<dplist>./dplist/CMS_CSC_common/emu_primitiveTypes.dpl</dplist>
+<dplist>./dplist/CMS_CSC_common/DimConfigDevice.dpl</dplist>
 <file>./config/emucdb_createSchema.sql</file>
 <file>./config/emucdb_DBConnection</file>
 <file>./panels/CMS_CSC_common/*.pnl</file>
