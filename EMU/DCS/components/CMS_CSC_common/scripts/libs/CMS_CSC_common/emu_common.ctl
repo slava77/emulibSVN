@@ -464,9 +464,26 @@ void emu_dynRemove(dyn_anytype &x, dyn_anytype y) {
 /** Does a dpGet, then checks if the value is different from the one provided, if so then does a dpSetWait with the value provided. */
 void emu_dpSetWaitIfDifferent(string dp, anytype value) {
   anytype currentValue;
-  dpGet(dp, currentValue);
+  if (_emu_isInCache(dp)) {
+    currentValue = emu_dpGetCached(dp);
+  } else {
+    dpGet(dp, currentValue);
+  }
   if (currentValue != value) {
     dpSetWait(dp, value);
+  }
+}
+
+/** Does a dpGet, then checks if the value is different from the one provided, if so then does a dpSet with the value provided. */
+void emu_dpSetIfDifferent(string dp, anytype value) {
+  anytype currentValue;
+  if (_emu_isInCache(dp)) {
+    currentValue = emu_dpGetCached(dp);
+  } else {
+    dpGet(dp, currentValue);
+  }
+  if (currentValue != value) {
+    dpSet(dp, value);
   }
 }
 
@@ -576,25 +593,45 @@ string emu_getChamberName(mapping deviceParams, bool zeroPadded = true) {
   * than you're going to query it's value - use this function, otherwise don't.
   */
 anytype emu_dpGetCached(string dpe) {
-//   if (mappingHasKey(g_emu_dpCache, dpe)) {
-//     emu_info("returning from cache");
-//     return g_emu_dpCache[dpe];
-//   } else {
-//     anytype ret;
-//     dpGet(dpe, ret);
-//     g_emu_dpCache[dpe] = ret;
-//     dpConnect("_emu_cachedDpUpdatedCB", false, dpe);
-//     emu_info("adding to cache");
-//     return ret;
-//   }
+  dpe = dpSubStr(dpe, DPSUB_SYS_DP_EL_CONF_DET_ATT);
+  strreplace(dpe, ":_online.._value", "");
+  if (mappingHasKey(g_emu_dpCache, dpe)) {
+    return g_emu_dpCache[dpe];
+  } else {
+    anytype ret;
+    dpGet(dpe, ret);
+    g_emu_dpCache[dpe] = ret;
+    dpConnect("_emu_cachedDpUpdatedCB", false, dpe);
+    return ret;
+  }
   
-  anytype ret;
-  dpGet(dpe, ret); // dummy implementation for now
-  return ret;
+//   anytype ret;
+//   dpGet(dpe, ret); // dummy implementation for now
+//   return ret;
 }
 
 void _emu_cachedDpUpdatedCB(string dpe, anytype value) {
-//  emu_info("cache update came, dpe=" + dpe + ", value=" + value);
-//  emu_info("does it even exist in the mapping? " + mappingHasKey(g_emu_dpCache, dpe));
-//  g_emu_dpCache[dpe] = value;
+  strreplace(dpe, ":_online.._value", "");
+  if (!mappingHasKey(g_emu_dpCache, dpe)) {
+    emu_errorSingle("cache update came for a DPE that couldn't be found in the cache!! DPE = " + dpe + ". To ensure the integrity, destroying the whole cache!");
+    emu_destroyCache();
+    return;
+  }
+  g_emu_dpCache[dpe] = value;
+}
+
+/**
+  * Disconnects from all the DPEs in the cache and cleans the cache.
+  */
+void emu_destroyCache() {
+  for (int i=1; i <= mappinglen(g_emu_dpCache); i++) {
+    dpDisconnect("_emu_cachedDpUpdatedCB", mappingGetKey(g_emu_dpCache, i));
+  }
+  mappingClear(g_emu_dpCache);
+}
+
+bool _emu_isInCache(string dpe) {
+  dpe = dpSubStr(dpe, DPSUB_SYS_DP_EL_CONF_DET_ATT);
+  strreplace(dpe, ":_online.._value", "");
+  return mappingHasKey(g_emu_dpCache, dpe);
 }
