@@ -3,17 +3,18 @@
 # Datapoint/DpId
 DpName	TypeName	ID
 ConfigurationSetups/default	_FwConfigurationDB_setup	545863
-DBConnections/confDb	_FwDBConnection	545884
+DBConnections/cscConfDb	_FwDBConnection	621398
 
 # DpValue
 ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
-ConfigurationSetups/default.version	_FwConfigurationDB_setup	3	0x101	11.01.2011 11:35:15.446
-ConfigurationSetups/default.DBConnection	_FwConfigurationDB_setup	"confDb"	0x101	12.01.2011 18:14:35.827
+ConfigurationSetups/default.version	_FwConfigurationDB_setup	5	0x300101	08.12.2011 13:49:22.510
+ConfigurationSetups/default.DBConnection	_FwConfigurationDB_setup	"cscConfDb"	0x300101	09.02.2012 19:33:10.241
 ConfigurationSetups/default.default	_FwConfigurationDB_setup	1	0x101	11.01.2011 11:35:15.449
-DBConnections/confDb.version	_FwDBConnection	3	0x101	12.01.2011 18:13:39.877
-DBConnections/confDb.description	_FwDBConnection	"P5 Configuration DB"	0x101	12.01.2011 18:13:39.877
-DBConnections/confDb.dbType	_FwDBConnection	"ORACLE"	0x101	12.01.2011 18:13:39.877
-DBConnections/confDb.dbName	_FwDBConnection	"cms_pvss_confdb"	0x101	12.01.2011 18:13:39.877
-DBConnections/confDb.dbUser	_FwDBConnection	"CMS_CSC_PVSS_CONF"	0x101	12.01.2011 18:13:39.877
-DBConnections/confDb.dbPassword	_FwDBConnection	"fzv0flAUUAZkcTDS8PXBpg=="	0x101	12.01.2011 18:13:39.878
-DBConnections/confDb.connectString	_FwDBConnection	"driver=<DRIVER>;uid=<USER>;enc_pwd=<PASSWORD>;database=<DBNAME>;"	0x101	12.01.2011 18:13:39.877
+DBConnections/cscConfDb.version	_FwDBConnection	5	0x101	09.02.2012 19:31:00.391
+DBConnections/cscConfDb.description	_FwDBConnection	"P5 CSC Configuration DB"	0x101	09.02.2012 19:31:00.391
+DBConnections/cscConfDb.dbType	_FwDBConnection	"ORACLE"	0x101	09.02.2012 19:31:00.391
+DBConnections/cscConfDb.dbName	_FwDBConnection	"cms_pvss_confdb"	0x101	09.02.2012 19:31:00.391
+DBConnections/cscConfDb.dbUser	_FwDBConnection	"CMS_CSC_PVSS_CONF"	0x101	09.02.2012 19:31:00.391
+DBConnections/cscConfDb.dbPassword	_FwDBConnection	"u5u1m8kr8b1f98xQufR/bg=="	0x101	09.02.2012 19:31:00.392
+DBConnections/cscConfDb.connectString	_FwDBConnection	"driver=<DRIVER>;uid=<USER>;enc_pwd=<PASSWORD>;database=<DBNAME>;"	0x101	09.02.2012 19:31:00.391
+DBConnections/cscConfDb.dbSchema	_FwDBConnection	""	0x101	09.02.2012 19:31:00.391
