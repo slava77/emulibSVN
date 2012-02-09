@@ -4,6 +4,7 @@
 #uses "fwInstallationUtils.ctl"
 
 const int DIM_MANAGER_NUM_START = 30;
+const string COMPONENT_NAME = "CMS_CSC_MiddleLayer";
 
 main() {
 
@@ -14,7 +15,7 @@ main() {
 //   fwInstallationUtils_switchSimDriver(FALSE, "PVSS00opc", 14);
 
   emu_info("CMS_CSC_MiddleLayer PostInstall: Loading configurations...");
-  fwInstallationUtils_loadConfigurations("CMS_CSC_MiddleLayer", ex);
+  fwInstallationUtils_loadConfigurations(COMPONENT_NAME, ex);
   if (emu_checkException(ex)) { emu_info("CMS_CSC_MiddleLayer PostInstall: aborted"); return; }
   emu_info("CMS_CSC_MiddleLayer PostInstall: Finished loading configurations");
 
@@ -23,13 +24,18 @@ main() {
   
   emu_info("CMS_CSC_MiddleLayer PostInstall: Creating FSM...");
   emuFsm_createMiddleLayerFsm(ex);
-  if (emu_checkException(ex)) { return; }
+  if (emu_checkException(ex)) { emu_info("CMS_CSC_MiddleLayer PostInstall: aborted"); return; }
   emu_info("CMS_CSC_MiddleLayer PostInstall: Finished creating FSM");
   
   emu_info("CMS_CSC_MiddleLayer PostInstall: Creating DIM managers");
   createAllDimManagers(ex);
-  if (emu_checkException(ex)) { return; }
+  if (emu_checkException(ex)) { emu_info("CMS_CSC_MiddleLayer PostInstall: aborted"); return; }
   emu_info("CMS_CSC_MiddleLayer PostInstall: Finished creating DIM managers");
+  
+  emu_info("CMS_CSC_MiddleLayer PostInstall: Creating CTRL managers from the installation DB");
+  fwInstallationUtils_appendManagers(COMPONENT_NAME, ex);
+  if (emu_checkException(ex)) { emu_info("CMS_CSC_MiddleLayer PostInstall: aborted"); return; }
+  emu_info("CMS_CSC_MiddleLayer PostInstall: Finished creating CTRL managers from the installation DB");  
   
   emu_info("CMS_CSC_MiddleLayer PostInstall: DONE");
 
