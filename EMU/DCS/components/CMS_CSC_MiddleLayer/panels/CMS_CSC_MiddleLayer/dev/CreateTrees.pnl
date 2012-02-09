@@ -645,7 +645,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 30 40 74 56
+E E 0 1 1 2 1 E U  0 E 30 40 78 56
 0 2 2 "0s" 0 0 0 192 0 0  30 40 1
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
@@ -1246,7 +1246,10 @@ LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 T 
 1
 LANG:1 21 Create default alerts
-"main()
+"const float EMU_ALERT_CFEB_VOLTAGE_DEVIATION_TOLERANCE = 0.2;
+const float EMU_ALERT_ALCT_VOLTAGE_DEVIATION_TOLERANCE = 0.2;
+
+main()
 {
   dyn_string ex;
 
@@ -1354,7 +1357,7 @@ void setCfebLvAlerts(dyn_string &ex) {
   // 3.3V voltage
   dps = dpNames(\"*CSC_ME*.cfeb.v33.*\", \"CscLvChamberMon\");
   texts = makeDynString(\"CFEB 3.3V voltage is too low\", \"\", \"CFEB 3.3V voltage is too high\");
-  limits = makeDynFloat(2.64, 3.96);
+  limits = _getRange(3.3, EMU_ALERT_CFEB_VOLTAGE_DEVIATION_TOLERANCE);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
   setAndActivateAnalogAlerts(dps, texts, limits, classes, ex, dpsToIgnore);
   if (emu_checkException(ex)) { return; }
@@ -1363,7 +1366,7 @@ void setCfebLvAlerts(dyn_string &ex) {
   // 5V voltage
   dps = dpNames(\"*CSC_ME*.cfeb.v50.*\", \"CscLvChamberMon\");
   texts = makeDynString(\"CFEB 5V voltage is too low\", \"\", \"CFEB 5V voltage is too high\");
-  limits = makeDynFloat(4.0, 6.0);
+  limits = _getRange(5.0, EMU_ALERT_CFEB_VOLTAGE_DEVIATION_TOLERANCE);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
   setAndActivateAnalogAlerts(dps, texts, limits, classes, ex, dpsToIgnore);
   if (emu_checkException(ex)) { return; }
@@ -1372,7 +1375,7 @@ void setCfebLvAlerts(dyn_string &ex) {
   // 6V voltage
   dps = dpNames(\"*CSC_ME*.cfeb.v60.*\", \"CscLvChamberMon\");
   texts = makeDynString(\"CFEB 6V voltage is too low\", \"\", \"CFEB 6V voltage is too high\");
-  limits = makeDynFloat(4.8, 7.2);
+  limits = _getRange(6.0, EMU_ALERT_CFEB_VOLTAGE_DEVIATION_TOLERANCE);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
   setAndActivateAnalogAlerts(dps, texts, limits, classes, ex, dpsToIgnore);
   if (emu_checkException(ex)) { return; }
@@ -1414,7 +1417,7 @@ void setAlctLvAlerts(dyn_string &ex) {
   // 1.8V voltage
   dps = dpNames(\"*CSC_ME*.alct.v18\", \"CscLvChamberMon\");
   texts = makeDynString(\"ALCT 1.8V voltage is too low\", \"\", \"ALCT 1.8V voltage is too high\");
-  limits = makeDynFloat(1.44, 2.16);
+  limits = _getRange(1.8, EMU_ALERT_ALCT_VOLTAGE_DEVIATION_TOLERANCE);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
   setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
   if (emu_checkException(ex)) { return; }
@@ -1423,7 +1426,7 @@ void setAlctLvAlerts(dyn_string &ex) {
   // 3.3V voltage
   dps = dpNames(\"*CSC_ME*.alct.v33\", \"CscLvChamberMon\");
   texts = makeDynString(\"ALCT 3.3V voltage is too low\", \"\", \"ALCT 3.3V voltage is too high\");
-  limits = makeDynFloat(2.64, 3.96);
+  limits = _getRange(3.3, EMU_ALERT_ALCT_VOLTAGE_DEVIATION_TOLERANCE);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
   setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
   if (emu_checkException(ex)) { return; }
@@ -1432,7 +1435,7 @@ void setAlctLvAlerts(dyn_string &ex) {
   // 5.5V voltage
   dps = dpNames(\"*CSC_ME*.alct.v55\", \"CscLvChamberMon\");
   texts = makeDynString(\"ALCT 5.5V voltage is too low\", \"\", \"ALCT 5.5V voltage is too high\");
-  limits = makeDynFloat(4.4, 6.6);
+  limits = _getRange(5.5, EMU_ALERT_ALCT_VOLTAGE_DEVIATION_TOLERANCE);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
   setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
   if (emu_checkException(ex)) { return; }
@@ -1441,14 +1444,14 @@ void setAlctLvAlerts(dyn_string &ex) {
   // 5.6V voltage
   dps = dpNames(\"*CSC_ME*.alct.v56\", \"CscLvChamberMon\");
   texts = makeDynString(\"ALCT 5.6V voltage is too low\", \"\", \"ALCT 5.6V voltage is too high\");
-  limits = makeDynFloat(4.4, 6.6);
+  limits = _getRange(5.5, EMU_ALERT_ALCT_VOLTAGE_DEVIATION_TOLERANCE);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
   setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
   if (emu_checkException(ex)) { return; }
   setDefaultValueAndRange(dps, 5.5);
   
   // 1.8V current
-  dps = dpNames(\"*CSC_ME*.alct.v18\", \"CscLvChamberMon\");
+  dps = dpNames(\"*CSC_ME*.alct.c18\", \"CscLvChamberMon\");
   texts = makeDynString(\"ALCT 1.8V current is too low\", \"\", \"ALCT 1.8V current is too high\");
   limits = makeDynFloat(0, 4.2);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
@@ -1457,7 +1460,7 @@ void setAlctLvAlerts(dyn_string &ex) {
   setDefaultValueAndRange(dps, 2.1);
   
   // 3.3V current
-  dps = dpNames(\"*CSC_ME*.alct.v33\", \"CscLvChamberMon\");
+  dps = dpNames(\"*CSC_ME*.alct.c33\", \"CscLvChamberMon\");
   texts = makeDynString(\"ALCT 3.3V current is too low\", \"\", \"ALCT 3.3V current is too high\");
   limits = makeDynFloat(0, 5);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
@@ -1466,7 +1469,7 @@ void setAlctLvAlerts(dyn_string &ex) {
   setDefaultValueAndRange(dps, 2.5);
   
   // 5.5V current
-  dps = dpNames(\"*CSC_ME*.alct.v55\", \"CscLvChamberMon\");
+  dps = dpNames(\"*CSC_ME*.alct.c55\", \"CscLvChamberMon\");
   texts = makeDynString(\"ALCT 5.5V current is too low\", \"\", \"ALCT 5.5V current is too high\");
   limits = makeDynFloat(0, 4.2);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
@@ -1475,7 +1478,7 @@ void setAlctLvAlerts(dyn_string &ex) {
   setDefaultValueAndRange(dps, 2.1);
   
   // 5.6V current
-  dps = dpNames(\"*CSC_ME*.alct.v56\", \"CscLvChamberMon\");
+  dps = dpNames(\"*CSC_ME*.alct.c56\", \"CscLvChamberMon\");
   texts = makeDynString(\"ALCT 5.6V current is too low\", \"\", \"ALCT 5.6V current is too high\");
   limits = makeDynFloat(0, 4.2);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
@@ -1608,6 +1611,10 @@ void setDefaultValueAndRange(dyn_string dpes, float defaultValue, dyn_string dpe
              dpes[i] + \":_default.._value\", defaultValue,
              dpes[i] + \":_default.._set_pvrange\", true);                 
  }
+}
+
+dyn_float _getRange(float defaultValue, float deviationTolerance) {
+  return makeDynFloat(defaultValue - defaultValue * deviationTolerance, defaultValue + defaultValue * deviationTolerance);
 }" 0
  E E E
 13 18

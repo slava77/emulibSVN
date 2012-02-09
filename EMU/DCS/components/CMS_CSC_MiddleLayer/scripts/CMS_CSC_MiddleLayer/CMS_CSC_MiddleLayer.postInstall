@@ -3,27 +3,57 @@
 #uses "CMS_CSC_MiddleLayer/setup/fsmCreate.ctl"
 #uses "fwInstallationUtils.ctl"
 
+const int DIM_MANAGER_NUM_START = 30;
+
 main() {
 
   emu_info("CMS_CSC_MiddleLayer PostInstall: Starting");
   
   dyn_string ex;
-  emu_info("CMS_CSC_MiddleLayer PostInstall: Switching to Wiener simulation driver");
-  fwInstallationUtils_switchSimDriver(FALSE, "PVSS00opc", 14);
+//   emu_info("CMS_CSC_MiddleLayer PostInstall: Switching to Wiener simulation driver");
+//   fwInstallationUtils_switchSimDriver(FALSE, "PVSS00opc", 14);
 
   emu_info("CMS_CSC_MiddleLayer PostInstall: Loading configurations...");
   fwInstallationUtils_loadConfigurations("CMS_CSC_MiddleLayer", ex);
   if (emu_checkException(ex)) { emu_info("CMS_CSC_MiddleLayer PostInstall: aborted"); return; }
   emu_info("CMS_CSC_MiddleLayer PostInstall: Finished loading configurations");
 
-  emu_info("CMS_CSC_MiddleLayer PostInstall: Switching to Wiener real driver");
-  fwInstallationUtils_switchSimDriver(TRUE, "PVSS00opc", 14);
+//   emu_info("CMS_CSC_MiddleLayer PostInstall: Switching to Wiener real driver");
+//   fwInstallationUtils_switchSimDriver(TRUE, "PVSS00opc", 14);
   
   emu_info("CMS_CSC_MiddleLayer PostInstall: Creating FSM...");
   emuFsm_createMiddleLayerFsm(ex);
   if (emu_checkException(ex)) { return; }
   emu_info("CMS_CSC_MiddleLayer PostInstall: Finished creating FSM");
   
+  emu_info("CMS_CSC_MiddleLayer PostInstall: Creating DIM managers");
+  createAllDimManagers(ex);
+  if (emu_checkException(ex)) { return; }
+  emu_info("CMS_CSC_MiddleLayer PostInstall: Finished creating DIM managers");
+  
   emu_info("CMS_CSC_MiddleLayer PostInstall: DONE");
 
+}
+
+void createAllDimManagers(dyn_string &ex) {
+  dyn_string configDps = dpNames("DimConfig/{HV,X2P}_*", "_FwDimConfig");
+  for (int i=1; i <= dynlen(configDps); i++) {
+    string configDp = configDps[i];
+    string dns;
+    dpGet(configDp + ".ApiParams.dimDnsNode", dns);
+    string name = dpSubStr(configDp, DPSUB_DP);
+    strreplace(name, "DimConfig/", "");
+    int num = DIM_MANAGER_NUM_START + i;
+    
+    if (dns == "") {
+      emu_addError("DIM config " + configDp + " doesn't have a valid DNS set", ex);
+      return;
+    }
+    
+    emu_info("CMS_CSC_MiddleLayer PostInstall: creating DIM manager for " + name + " with num=" + num);
+    fwInstallation_appendManager(TRUE, name, "PVSS00dim", 
+                                 "always", 90, 2, 2,
+                                 "-num " + num + " -dim_dp_config " + dpSubStr(configDp, DPSUB_DP) + 
+                                 " -dim_dns_node " + dns);
+  }
 }

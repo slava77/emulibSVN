@@ -121,7 +121,8 @@ void emuhv_updateChamberState(string hvDp) {
   
   // compare with previous states
   dyn_string prevChannelStates = emu_dpGetCached(hvDp + ".channel_states");
-  if (compareArrays(prevChannelStates, channelStates) && !alert) {
+  string prevFsmState = emu_dpGetCached(hvDp + ".fsm_state");
+  if (compareArrays(prevChannelStates, channelStates) && !alert && (prevFsmState != EMUHV_FSM_STATE_ERROR)) {
     // if they're the same, then nothing to do
     // (though if there's an alert, still redo the state calc because there might be alerts coming not from channels)
     return;
@@ -163,7 +164,7 @@ void emuhv_updateChamberState(string hvDp) {
     }
   }
   strreplace(fsmState, ";", "");
-  dpSet(hvDp + ".fsm_state", fsmState);
+  emu_dpSetIfDifferent(hvDp + ".fsm_state", fsmState);
 }
 
 /**

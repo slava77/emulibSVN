@@ -35,28 +35,25 @@ PANEL,-1 -1 861 841 N "_3DFace" 2
   string moduleStatusDp = emuui_getDpName(\"HV_moduleStatus\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
   
-  // disabled channels
-  string offChannelsDp = emuui_getDpName(\"HV_off_channels\", deviceParams, ex);
+  // channel fsm states
+  string channelFsmStatesDp = emuui_getDpName(\"HV_channel_fsm_states\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
   
-  // module type (if 0 - indicates an LV or signal cable problem)
+  // module type and master module type (if 0 - indicates an LV or signal cable problem)
   string moduleTypeDp = emuui_getDpName(\"HV_moduleType\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  string masterTypeDp = emuui_getDpName(\"HV_masterType\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
   
   // all channels
-  dyn_string channelDps;
-  emuui_chamberGetHvChannelDps(deviceParams, channelDps, channelsOffset, ex);
+  dyn_string channelFastMonDps = emuhv_getAllChannelDps(deviceParams, EMUHV_DP_POSTFIX_FAST_MON, ex);
   if (emu_checkException(ex)) { return; }
-  for (int i=1; i <= dynlen(channelDps); i++) {
+  dyn_string channelSlowMonDps = emuhv_getAllChannelDps(deviceParams, EMUHV_DP_POSTFIX_FAST_MON, ex);
+  if (emu_checkException(ex)) { return; }
+  for (int i=1; i <= dynlen(channelFastMonDps); i++) {
     tableChannels.appendLine(\"chn\", i);
   }
 
-  // all channels details DPs
-  dyn_string channelDetailsDps;
-  int offsetNotUsed;
-  emuhv_chamberGetHvChannelDetailsDps(deviceParams, channelDetailsDps, offsetNotUsed, ex);
-  if (emu_checkException(ex)) { return; }
-  
   // find out the \"disconnected devices\" DP to be able to show the \"no communication\" warning
   if (dynlen(channelDps) > 1) {
     deviceParams[\"sysName\"] = emuui_getSystemName(channelDps[1]);
@@ -77,80 +74,42 @@ PANEL,-1 -1 861 841 N "_3DFace" 2
   }
 
   // get master channel status DP
-  mapping masterDeviceParams;
-  string masterIdDp = emuui_getDpName(\"HV_moduleToMasterId\", deviceParams, ex);
+  string masterIdDp = emuui_getDpName(\"HV_masterId\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
-  string masterHostIdDp = emuui_getDpName(\"HV_moduleToMasterHostId\", deviceParams, ex);
+  string masterStatusDp = emuui_getDpName(\"HV_masterStatus\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
-  string masterHvCardDp = emuui_getDpName(\"HV_moduleToMasterHvCard\", deviceParams, ex);
-  if (emu_checkException(ex)) { return; }
-  string masterBusAddressDp = emuui_getDpName(\"HV_moduleToMasterBusAddress\", deviceParams, ex);
-  if (emu_checkException(ex)) { return; }
-  string masterChannelDp = emuui_getDpName(\"HV_moduleToMasterChannel\", deviceParams, ex);
+  string masterChannelStatusDp = emuui_getDpName(\"HV_masterChannelStatus\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
   
-  dpGet(masterIdDp, masterDeviceParams[\"ID\"],
-        masterHostIdDp, masterDeviceParams[\"hostId\"],
-        masterHvCardDp, masterDeviceParams[\"hvCard\"],
-        masterBusAddressDp, masterDeviceParams[\"busAddress\"],
-        masterChannelDp, masterDeviceParams[\"channelNumber\"]);
-  masterDeviceParams[\"channelNumber\"] += 1;
-  string masterChannelStatusDp = emuui_getDpName(\"HV_masterChannelStatus\", masterDeviceParams, ex);
-  if (emu_checkException(ex)) { return; }
-  lblMasterInfo.text = \"ID=\" + masterDeviceParams[\"ID\"] + \", ch.=\" + masterDeviceParams[\"channelNumber\"];
-    
+  string masterId;
+  dpGet(masterIdDp, masterId);
+  
+  lblMasterInfo.text = \"ID=\" + masterId;
+
   // init gui and connect everything
   initConsts();
   initGui(dynlen(channelDps), ex);
   if (emu_checkException(ex)) { return; }
 
-  // make up the data DPs
-  dyn_dyn_string dataDps;
-  for (int ch=1; ch <= dynlen(channelDps); ch++) {
-    dataDps[ch] = makeDynString();
-    for (int dpeIdx=1; dpeIdx <= dynlen(dataDpeNames); dpeIdx++) {
-      dynAppend(dataDps[ch], channelDps[ch] + \".\" + dataDpeNames[dpeIdx]);
-    }
-  }
-  
-  // make up the detailed data DPs
-  dyn_dyn_string dataDetailsDps;
-  for (int ch=1; ch <= dynlen(channelDetailsDps); ch++) {
-    dataDetailsDps[ch] = makeDynString();
-    for (int dpeIdx=1; dpeIdx <= dynlen(packDataDpeNames); dpeIdx++) {
-      dynAppend(dataDetailsDps[ch], channelDetailsDps[ch] + \".\" + packDataDpeNames[dpeIdx]);
-    }
-  }
-  
-  // make up the status & state DPs
-  dyn_string stateDps;
-  for (int i=1; i <= dynlen(channelDps); i++) {
-    dynAppend(statusDps, channelDps[i] + \".status\");
-    dynAppend(stateDps, channelDps[i] + \".state\");
-  }
-  
-  // disconnected devices DP
-  dpConnect(\"updateDisconnectedWarningCB\", true, disconnectedDevicesDps);
-  // data & detailed data
-  for (int i=1; i <= dynlen(dataDps); i++) {
-    dpConnect(\"updateChannelDataCB\", true, dataDps[i]);
-  }
-  for (int i=1; i <= dynlen(dataDetailsDps); i++) {
-    dpConnect(\"updateChannelDataCB\", true, dataDetailsDps[i]);
-  }
-  // channel status & state
-  dpConnect(\"updateStatusCB\", true, statusDps);
-  dpConnect(\"updateStateCB\", true, stateDps);
   // disabled channels
   if (!allGrayMode) {
-    dpConnect(\"updateDisabledChannelsCB\", true, offChannelsDp);
+    dpConnect(\"updateFsmStatesCB\", true, channelFsmStatesDp);
   }
+  // disconnected devices DP
+  dpConnect(\"updateDisconnectedWarningCB\", true, disconnectedDevicesDps);
+  
+  // data
+  dpConnect(\"updateFastMonCB\", true, channelFastMonDps);
+  dpConnect(\"updateSlowMonCB\", true, channelSlowMonDps);
+  
   // module status
   dpConnect(\"updateModuleStatusCB\", true, moduleStatusDp);
+  dpConnect(\"updateMasterStatusCB\", true, masterStatusDp);
   // master channel status
   dpConnect(\"updateMasterChannelStatusCB\", true, masterChannelStatusDp);
   // module type - used to detect LV or cabling issues
   dpConnect(\"updateModuleTypeCB\", true, moduleTypeDp);
+  dpConnect(\"updateModuleTypeCB\", true, masterTypeDp);
   
   startThread(\"getDataThread\"); // start the data refresh thread
 }
@@ -162,23 +121,16 @@ void initGui(int channelCount, dyn_string &ex) {
   tableChannels.deleteSelection();
   
   // set the module info
-  string hvCoordDp = emuui_getDpName(\"HV_coord\", deviceParams, ex);
+  string moduleIdDp = emuui_getDpName(\"HV_moduleId\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
-  string coordsCombined;
-  dpGet(hvCoordDp, coordsCombined);
-  dyn_string coords = strsplit(coordsCombined, \";\");
-  if (dynlen(coords) == 0) {
-    emu_addError(\"Could not get HV module coordinates. This is a sign that one of DCS computers is unreachable (perhaps OFF).\", ex);
-    return;
-  } else if (dynlen(coords) < 4) {
-    emu_addError(\"HV module coordinates are incomplete. DP = \" + hvCoordDp + \". Returned coordinates = \" + coordsCombined, ex);
-    return;
-  }
-  lblModuleInfo.text = \"host=\" + coords[1] + \"; slot=\" + coords[2] + \"; addr=\" + coords[3] + \"; part=\" + coords[4] + \",\";
+  string moduleId;
+  dpGet(moduleIdDp, moduleId);  
+  lblModuleInfo.text = \"ID=\" + moduleId;
   
   if (allGrayMode) {
     //paint everything in gray
     lblModuleStatus.backCol = \"FwEquipmentDisabled\";
+    lblMasterStatus.backCol = \"FwEquipmentDisabled\";    
     lblMasterChannelStatus.backCol = \"FwEquipmentDisabled\";
     for (int i=0; i < tableChannels.lineCount(); i++) {
       for (int j=0; j < tableChannels.columnCount(); j++) {
@@ -189,9 +141,11 @@ void initGui(int channelCount, dyn_string &ex) {
 }
 
 void initConsts() {
-  dynAppend(dataDpeNames, \"vmon\");
-  dynAppend(dataDpeNames, \"imon\");
-  dynAppend(packDataDpeNames, \"vset\");
+  dynAppend(fastMonDpeNames, \"vmon\");
+  dynAppend(fastMonDpeNames, \"imon\");
+  dynAppend(fastMonDpeNames, \"status\");
+  dynAppend(slowMonDpeNames, \"vset\");
+
   dynAppend(packDataDpeNames, \"vcur\");
   dynAppend(packDataDpeNames, \"ramp_up\");
   dynAppend(packDataDpeNames, \"ramp_down\");
@@ -631,7 +585,7 @@ LANG:1 14 Module Status:
 2 19
 "PRIMITIVE_TEXT8"
 ""
-1 610 710 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 610 730 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 28 0 0 0 0 0
 E E E
@@ -641,8 +595,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 610 710 739 725
-0 2 2 "0s" 0 0 0 192 0 0  610 710 1
+E E 0 1 1 2 1 E U  1 E 610 730 739 745
+0 2 2 "0s" 0 0 0 192 0 0  610 730 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -669,7 +623,7 @@ LANG:1 10 LOADING...
 2 26
 "lblMasterChannelStatus"
 ""
-1 750 710 E E E 1 E 1 E N "_WindowText" E N "FwStateOKPhysics" E E
+1 750 730 E E E 1 E 1 E N "_WindowText" E N "FwStateOKPhysics" E E
  E E
 39 0 0 0 0 0
 E E E
@@ -679,8 +633,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 750 710 810 724
-1 2 2 "0s" 0 0 0 65 0 0  750 710 1
+E E 0 1 1 2 1 E U  1 E 750 730 810 744
+1 2 2 "0s" 0 0 0 65 0 0  750 730 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -688,7 +642,7 @@ LANG:1 10 LOADING...
 2 27
 "lblForModuleInfo"
 ""
-1 430 740 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 610 710 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 40 0 0 0 0 0
 E E E
@@ -698,16 +652,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 430 740 499 755
-0 2 2 "0s" 0 0 0 192 0 0  430 740 1
+E E 0 1 1 2 1 E U  1 E 610 710 656 725
+0 2 2 "0s" 0 0 0 192 0 0  610 710 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 13 Module info: 
+LANG:1 8 Module: 
 2 28
 "lblForMasterInfo"
 ""
-1 700 740 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 710 710 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 41 0 0 0 0 0
 E E E
@@ -717,8 +671,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 700 740 742 755
-0 2 2 "0s" 0 0 0 192 0 0  700 740 1
+E E 0 1 1 2 1 E U  1 E 710 710 752 725
+0 2 2 "0s" 0 0 0 192 0 0  710 710 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -726,7 +680,7 @@ LANG:1 7 Master:
 2 29
 "lblModuleInfo"
 ""
-1 500 740 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 660 710 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 42 0 0 0 0 0
 E E E
@@ -736,16 +690,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 500 740 681 755
-0 2 2 "0s" 0 0 0 192 0 0  500 740 1
+E E 0 1 1 2 1 E U  1 E 660 710 694 725
+0 2 2 "0s" 0 0 0 192 0 0  660 710 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 33 host=###; slot=#; addr=#; part=#,
+LANG:1 5 ID=##
 2 30
 "lblMasterInfo"
 ""
-1 5174.573806483713 8442 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 5470.124741966436 8992 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 43 0 0 0 0 0
 E E E
@@ -755,12 +709,12 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 0.964285714285714 0 1 460.357142857143 580 1 E 290 160 359 175
+E E 0 1 1 2 1 E 0.964285714285714 0 1 480.3571428571429 550 1 E 290 160 324 175
 0 2 2 "0s" 0 0 0 192 0 0  290 160 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 13 ID ##, ch. ##
+LANG:1 5 ID=##
 30 32
 "FRAME1"
 ""
@@ -1241,6 +1195,44 @@ LANG:1 7 Disable
   if (selectedChannel == -1) { return; } // should not happen (since the button should be disabled in that case), but just in case
 }" 0
  E E E
+2 52
+"PRIMITIVE_TEXT12"
+""
+1 430 730 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+65 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 430 730 509 745
+0 2 2 "0s" 0 0 0 192 0 0  430 730 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 14 Master Status:
+2 53
+"lblMasterStatus"
+""
+1 520 730 E E E 1 E 1 E N "_WindowText" E N "FwStateOKPhysics" E E
+ E E
+66 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 520 730 580 744
+1 2 2 "0s" 0 0 0 65 0 0  520 730 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 10 LOADING...
 0
 LAYER, 1 
 1

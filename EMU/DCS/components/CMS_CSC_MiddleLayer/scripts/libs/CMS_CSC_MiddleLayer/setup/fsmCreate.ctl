@@ -37,13 +37,25 @@ const string EMU_FSM_NODE_ELMB_PSU_PLUS = "CSC_ME_LV_CR1_PLUS_PSU";
   * Creates Middle Layer FSM.
   */
 void emuFsm_createMiddleLayerFsm(dyn_string &ex) {
-  emu_info("Creating FSM");
-
-  // ****************** create the top system node ******************
+  
+  // ****************** Define top node ******************  
   string systemNode = getSystemName();
   strreplace(systemNode, ":", "");
-  emuFsm_createFsmNode("FSM", systemNode, EMU_FSM_TYPE_SYSTEM, true);
 
+  // ****************** Cleanup ******************
+  
+  emu_info("Deleting old FSM");
+  
+  if (fwFsmTree_isNode(systemNode)) {
+    emu_info("Deleting " + systemNode);
+    fwFsmTree_removeNode("FSM", systemNode);
+    emuFsm_deleteFwTreeNodes(makeDynString("fwTN_" + systemNode));
+  }  
+
+  // ****************** create the top system node ******************
+  
+  emu_info("Creating FSM");
+  emuFsm_createFsmNode("FSM", systemNode, EMU_FSM_TYPE_SYSTEM, true);
   
   // ****************** Create stations FSM ******************
 
@@ -200,7 +212,7 @@ void emuFsm_createHvFsm(string systemNode, string side, dyn_string primaryDps, d
     
   for (int i=1; i <= dynlen(primaryDps); i++) {
     string hvPrimaryDp = primaryDps[i];
-    string nodeName = hvPrimaryDp;
+    string nodeName = dpSubStr(hvPrimaryDp, DPSUB_DP);
     strreplace(nodeName, "CscHighVoltage/", "");
     emuFsm_createFsmNode(hvPrimariesNode, hvPrimaryDp, EMUHV_DPT_PRIMARY_FSM, false);
     fwFsmTree_setNodeLabel(hvPrimaryDp, nodeName);
