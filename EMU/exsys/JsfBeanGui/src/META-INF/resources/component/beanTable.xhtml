@@ -375,7 +375,7 @@
                             <ice:panelGroup rendered="#{!column.entityType and !column.listType}"
                                             style="padding: 0px;">
 
-                                <ice:panelGroup rendered="#{column.boolean and column.cellValue != null and column.cellValue != ''}"
+                                <ice:panelGroup rendered="#{column.boolean and column.cellValue != null}"
                                                 style="padding: 0px; text-align: center">
                                     <ice:graphicImage value="./xmlhttp/beantable/img/#{column.cellValue}.png"/>
                                 </ice:panelGroup>

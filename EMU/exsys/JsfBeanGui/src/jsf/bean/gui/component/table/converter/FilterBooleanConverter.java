@@ -22,8 +22,10 @@ public class FilterBooleanConverter extends FilterConverter {
         for (Iterator<BeanTableFilterItem> itemItr = filter.getItems().iterator(); itemItr.hasNext();) {
             BeanTableFilterItem item = itemItr.next();
             BeanTableFilter.Operation op = item.getOperation();
-            if (op != BeanTableFilter.Operation.EQUAL) {
-                ConversionError("Boolean accepts only EQUAL operation. Please fix the filter!");
+            if (!(op == BeanTableFilter.Operation.EQUAL ||
+                  op == BeanTableFilter.Operation.ISNULL ||
+                  op == BeanTableFilter.Operation.ISNOTNULL)) {
+                ConversionError("Boolean accepts EQUAL, ISNULL and ISNOTNULL operation. Please fix the filter!");
             }
         }
     }
