@@ -38,8 +38,16 @@ void AFEB::teststand::Analysis::collectAnalyzedDevices(){
     XCEPT_RAISE( xcept::Exception, "No measurements found!" );
   }
   set<TestedDevice*> td = configuration_->getMeasurements().front()->getTestedDevices();
+  cout << "Creating analyzed device from tested device " << endl << **td.begin() << endl;
+  AnalyzedDevice ad( **td.begin() );
+  analyzedDevices_.push_back( ad );
+  cout << "Created analyzed device from tested device " << endl << **td.begin() << endl;
   for ( set<TestedDevice*>::iterator tdi = td.begin(); tdi != td.end(); ++tdi ){
-    analyzedDevices_.push_back( AnalyzedDevice( **tdi ) );
+    //cout << "Creating analyzed device from tested device " << endl << **tdi << endl;
+    //analyzedDevices_.push_back( AnalyzedDevice( **tdi ) );
+    //AnalyzedDevice ad( **tdi );
+    //cout << "Created analyzed device  " << endl << ad << endl;
+    //cout << "Created analyzed device from tested device " << endl << **tdi << endl;
   }
   cout << "Analyzed devices" << endl << analyzedDevices_ << endl;
 }
@@ -100,8 +108,8 @@ void AFEB::teststand::Analysis::calibrateDACs( const string& configXML ){
     DACs_.back().setCalibrationParameters( slfitter.getFittedParameters(),
 					   slfitter.getFittedParametersCovariance() );
     cout << DACs_.back().getCalibrationParametersCovariance() << endl;
-    TMatrixT<double> mm(2,2); mm(0,0)=-1.; mm(0,1)=2.; mm(1,0)=3.; mm(1,1)=4.;
-    cout << mm << endl;
+    // TMatrixT<double> mm(2,2); mm(0,0)=-1.; mm(0,1)=2.; mm(1,0)=3.; mm(1,1)=4.;
+    // cout << mm << endl;
   }
   cout << DACs_ << endl;
 }

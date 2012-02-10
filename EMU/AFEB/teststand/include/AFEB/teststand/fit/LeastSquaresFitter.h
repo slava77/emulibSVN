@@ -21,22 +21,48 @@ namespace AFEB { namespace teststand { namespace fit {
 	  model_               ( new Model() ),
 	  dataCovariance_      ( NULL ),
 	  jacobian_            ( NULL ),
-	  y_                   ( NULL ),
 	  Gamma_               ( NULL ),
 	  beta_                ( NULL ),
 	  parameters_          ( NULL ),
 	  parametersCovariance_( NULL ){
 	}
 
+	/// Copy CTOR for STL containers.
+	///
+	/// @param other Fitter to be copied.
+	///
+	LeastSquaresFitter( const LeastSquaresFitter& other ) :
+	  model_               ( NULL ),
+	  dataCovariance_      ( NULL ),
+	  jacobian_            ( NULL ),
+	  Gamma_               ( NULL ),
+	  beta_                ( NULL ),
+	  parameters_          ( NULL ),
+	  parametersCovariance_( NULL ){
+	  if ( other.model_                ) model_                = new Model      ( *other.model_ );
+	  if ( other.dataCovariance_       ) dataCovariance_       = new TMatrixDSym( *other.dataCovariance_ );
+	  if ( other.jacobian_             ) jacobian_             = new TMatrixD   ( *other.jacobian_ );
+	  if ( other.Gamma_                ) Gamma_                = new TMatrixD   ( *other.Gamma_ );
+	  if ( other.beta_                 ) beta_                 = new TMatrixD   ( *other.beta_ );
+	  if ( other.parameters_           ) parameters_           = new TMatrixD   ( *other.parameters_ );
+	  if ( other.parametersCovariance_ ) parametersCovariance_ = new TMatrixDSym( *other.parametersCovariance_ );
+	}
+
 	~LeastSquaresFitter(){
-	  delete model_;
-	  delete dataCovariance_;
-	  delete jacobian_;
-	  delete y_;
-	  delete Gamma_;
-	  delete beta_;
-	  delete parameters_;
-	  delete parametersCovariance_;
+	  dispose();
+	}
+
+	// std::vector doesn't seem to use this:
+	LeastSquaresFitter& operator=( const LeastSquaresFitter& rhs ){
+	  dispose();
+	  if ( rhs.model_                ) model_                = new Model      ( *rhs.model_ );
+	  if ( rhs.dataCovariance_       ) dataCovariance_       = new TMatrixDSym( *rhs.dataCovariance_ );
+	  if ( rhs.jacobian_             ) jacobian_             = new TMatrixD   ( *rhs.jacobian_ );
+	  if ( rhs.Gamma_                ) Gamma_                = new TMatrixD   ( *rhs.Gamma_ );
+	  if ( rhs.beta_                 ) beta_                 = new TMatrixD   ( *rhs.beta_ );
+	  if ( rhs.parameters_           ) parameters_           = new TMatrixD   ( *rhs.parameters_ );
+	  if ( rhs.parametersCovariance_ ) parametersCovariance_ = new TMatrixDSym( *rhs.parametersCovariance_ );
+	  return *this;
 	}
 
 	void setParameterNames( const vector<string>& parameterNames ){
@@ -159,6 +185,24 @@ namespace AFEB { namespace teststand { namespace fit {
 	}
 
       private:
+	void dispose(){
+	  delete model_;
+	  delete dataCovariance_;
+	  delete jacobian_;
+	  // delete y_;
+	  delete Gamma_;
+	  delete beta_;
+	  delete parameters_;
+	  delete parametersCovariance_;
+	  model_ = NULL;
+	  dataCovariance_ = NULL;
+	  jacobian_ = NULL;
+	  Gamma_ = NULL;
+	  beta_ = NULL;
+	  parameters_ = NULL;
+	  parametersCovariance_ = NULL;
+	}
+
 	void solve(){
 	  // Case of uncorrelated observations.
 	  
@@ -231,7 +275,7 @@ namespace AFEB { namespace teststand { namespace fit {
 	
 	TMatrixDSym*    dataCovariance_;       ///< covariance of the data
 	TMatrixD*       jacobian_;	       ///< dModelFunction/dParameters
-	TMatrixD*       y_;		       ///< the observed dependent coordinate(s) of the data
+	// TMatrixD*       y_;		       ///< the observed dependent coordinate(s) of the data
 
 	TMatrixD*       Gamma_;	///< auxilliary matrix (for the Gamma * parameters = beta normal equation)
 	TMatrixD*       beta_;	///< auxilliary matrix (for the Gamma * parameters = beta normal equation)

@@ -1,7 +1,15 @@
 #include "AFEB/teststand/fit/StraightLine2D.h"
 
-AFEB::teststand::fit::StraightLine2D::StraightLine2D() :
-  AFEB::teststand::fit::AbstractModel(){
+
+ostream& AFEB::teststand::fit::operator<<( ostream& os, const AbstractModel& am ){
+  if ( am.jacobian_ ){
+    os << "Jacobian:" << endl;
+    am.jacobian_->Print();
+  }
+  else{
+    os << "Jacobian undefined.";
+  }
+  return os;
 }
 
 TMatrixD& AFEB::teststand::fit::StraightLine2D::getJacobian( const TMatrixD& x ){

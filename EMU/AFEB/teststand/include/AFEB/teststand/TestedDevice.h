@@ -32,16 +32,16 @@ namespace AFEB { namespace teststand {
       int getNChannels() const { return nChannels_; }
       Crate* getCrate() const { return crate_; }
     protected:
-      string type_;
-      int nChannels_;
-      string id_;
-      int socket_;
-      int tdcSlot_;
-      int tdcSocket_;
-      int signalConverterSlot_;
-      int signalConverterSocket_;
-      int pulseGeneratorSlot_;
-      int pulseGeneratorSocket_;
+      string type_;		///< The device type.
+      int nChannels_;		///< The number of channels in this device.
+      string id_;		///< The unique id of this device.
+      int socket_;		///< The adaptor socket this device is plugged into.
+      int tdcSlot_;		///< The crate slot the TDC reading out this device is inserted into.
+      int tdcSocket_;		///< The TDC's input socket used for this device.
+      int signalConverterSlot_;	///< The crate slot the signal converter reading out this device is inserted into.
+      int signalConverterSocket_; ///< The signal converter's input socket the cable from this device is plugged into.
+      int pulseGeneratorSlot_;	///< The crate slot the pulse generator used for this device is inserted into.
+      int pulseGeneratorSocket_; ///< The pulse generator's output socket used for this device.
       Crate* crate_;
     };
 

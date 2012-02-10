@@ -36,6 +36,7 @@ Sources = \
 	Measurement.cc \
 	Calibration.cc \
 	TestedDevice.cc \
+	AnalyzedChannel.cc \
 	AnalyzedDevice.cc \
 	Results.cc \
 	Analysis.cc \

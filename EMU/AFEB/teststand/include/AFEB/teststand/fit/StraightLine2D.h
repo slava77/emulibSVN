@@ -7,7 +7,7 @@ namespace AFEB { namespace teststand { namespace fit {
       class StraightLine2D : public AbstractModel{
 
       public:
-	StraightLine2D();
+	//StraightLine2D( const StraightLine2D& other );
 	TMatrixD& getJacobian( const TMatrixD& x );
 	TMatrixD  getModelFunctionValue( const TMatrixD& x, const TMatrixD& parameters );
 

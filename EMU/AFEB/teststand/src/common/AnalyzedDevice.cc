@@ -6,26 +6,18 @@
 #include <iomanip>
 
 ostream& AFEB::teststand::operator<<( ostream& os, const AnalyzedDevice& d ){
-  os << "socket    type                id                      TDC slot   TDC input      converter slot" << endl
-     << right
-     << setw(6) << d.socket_ << "    "
-     << left
-     << setw(20) << d.type_ 
-     << setw(20) << d.id_
-     << right 
-     << setw(12) << d.tdcSlot_ 
-     << setw(12) << d.tdcSocket_ 
-     << setw(20) << d.signalConverterSlot_ << endl;
+  os << *dynamic_cast<const TestedDevice*>( &d ) << endl;
   return os;
 }
 
 AFEB::teststand::AnalyzedDevice::AnalyzedDevice( const TestedDevice& device ) :
   TestedDevice( device ){
-  resizeContainers();
+  channels_.resize( nChannels_ );
 }
 
-void AFEB::teststand::AnalyzedDevice::resizeContainers(){
-  gains_.resize( nChannels_ );
-  fitters_.resize( nChannels_ );
+AFEB::teststand::AnalyzedDevice::AnalyzedDevice( const AnalyzedDevice& other ) :
+  TestedDevice( other ){
+  for ( vector<AnalyzedChannel>::const_iterator c = other.channels_.begin(); c != other.channels_.end(); ++c ){
+    channels_.push_back( *c );
+  }
 }
-

@@ -2,6 +2,7 @@
 #define __AFEB_teststand_AnalyzedDevice_h__
 
 #include "AFEB/teststand/TestedDevice.h"
+#include "AFEB/teststand/AnalyzedChannel.h"
 #include "AFEB/teststand/fit/LeastSquaresFitter.h"
 #include "AFEB/teststand/fit/StraightLine2D.h"
 
@@ -20,13 +21,21 @@ namespace AFEB { namespace teststand {
     class AnalyzedDevice : public TestedDevice {
     public:
       friend ostream& operator<<( ostream& os, const AnalyzedDevice& d );
+
+      /// CTOR from TestedDevice
+      ///
+      /// @param device Tested device to be used as a base for this analyzed device.
+      ///
       AnalyzedDevice( const TestedDevice& device );
-      // fit::LeastSquaresFitter<fit::StraightLine2D>* getFitter( const int channel ){ return fitters_[channel]; }
-      vector< fit::LeastSquaresFitter<fit::StraightLine2D>* > fitters_;	///< straight-line fitter[channel]
+
+      /// Copy CTOR needed for STL containers
+      ///
+      /// @param other Analyzed device to be copied.
+      ///
+      AnalyzedDevice( const AnalyzedDevice& other );
 
     private:
-      void resizeContainers();
-      vector<double> gains_;	///< gain[channel]
+      vector<AnalyzedChannel> channels_;	///< Channels with analysis data and results.
     };
 
   }
