@@ -368,7 +368,7 @@ bool emu_isTypeDynDyn(int type) {
 /** Compares two arrays.
   @return true if they are identical, false if not.
 */
-bool compareArrays(dyn_anytype array1, dyn_anytype array2) {
+bool emu_compareArrays(dyn_anytype array1, dyn_anytype array2) {
   int length1, length2;
   length1 = dynlen(array1);
   length2 = dynlen(array2);
@@ -387,7 +387,7 @@ bool compareArrays(dyn_anytype array1, dyn_anytype array2) {
 }
 
 /** Converts anytype value to string. If maxChars is given then if resulting string is longer than maxChars - it's cut off and "..." is added. */
-string convertToString(anytype value, int maxChars = 0) {
+string emu_convertToString(anytype value, int maxChars = 0) {
   string strValue = (string)value;
   if ((maxChars > 0) &&(strlen(strValue) > maxChars)) {
     strValue = substr(strValue, 0, maxChars - 3);
