@@ -215,7 +215,7 @@ dyn_string emuui_getDpNames(string type, mapping parameters, dyn_string &excepti
   
   string pattern = emuui_getMappingValue("dpNamePatterns", type, exceptionInfo);
   if (dynlen(exceptionInfo) > 0) {
-    emu_errorHandled(exceptionInfo);  
+    //emu_errorHandled(exceptionInfo);  
     return ret;
   }
   

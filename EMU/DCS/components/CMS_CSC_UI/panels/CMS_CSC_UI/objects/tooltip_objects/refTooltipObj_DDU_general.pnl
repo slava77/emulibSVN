@@ -73,7 +73,7 @@ void initGui() {
   //set the appropriate width for the table
   tableLV.appendLine(\"v15\", \"loading\", \"v25a\", \"loading\", \"v25b\", \"loading\", \"v33\", \"loading\");
   emuui_tableCompact(\"tableLV\", 1);
-  tableTemp.appendLine(\"td1\", \"loading\", \"td2\", \"loading\", \"td3\", \"loading\", \"td4\", \"loading\");
+  tableTemp.appendLine(\"v1\", \"loading\", \"v2\", \"loading\", \"v3\", \"loading\", \"v4\", \"loading\");
   emuui_tableCompact(\"tableTemp\", 1);
   
   if (allGrayMode) {
@@ -162,7 +162,7 @@ void updateAlarmColorsCB(dyn_string dps, dyn_string alarmColors) {
     dyn_string dpSplit = strsplit(dps[i], \".\");
     string columnName = dpSplit[dynlen(dpSplit)];
     string tableName = \"tableLV\";
-    if (strpos(columnName, \"td\") >= 0) { tableName = \"tableTemp\"; }
+    if (strpos(dps[i], \"temp\") >= 0) { tableName = \"tableTemp\"; }
     
     alarmColors[i] = emuui_correctAlarmColor(alarmColors[i]);
     setValue(tableName, \"cellBackColRC\", 0, columnName, alarmColors[i]);
@@ -263,25 +263,25 @@ LANG:1 0
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0  8 98 292 142
-EE 1 0 1 4 0 "td1" 6 1 0 "s" 1
+EE 1 0 1 4 0 "v1" 6 1 0 "s" 1
 LANG:1 8 Sensor 1
 E
 1
 LANG:1 0 
 
-70 "td2" 6 1 0 "s" 1
+70 "v2" 6 1 0 "s" 1
 LANG:1 8 Sensor 2
 E
 1
 LANG:1 0 
 
-70 "td3" 6 1 0 "s" 1
+70 "v3" 6 1 0 "s" 1
 LANG:1 8 Sensor 3
 E
 1
 LANG:1 0 
 
-70 "td4" 6 1 0 "s" 1
+70 "v4" 6 1 0 "s" 1
 LANG:1 8 Sensor 4
 E
 1

@@ -191,7 +191,7 @@ string lastFsmState;
 
 // operation mode related variables
 bool hvOffChannelsWarningEnabled;
-dyn_int disabledHvChannels;
+bool hvHasDisabledChannels;
 bool me11HasDisabledChannels;
 string me11HvFsmNode;
 /** when device has disabled children or PNPI HV channels (which are not in FSM) - show the incompleteWarning and set this flag */
@@ -206,7 +206,7 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
   dyn_string ex;
   bool connectSuccessful = false;
   
-  dynClear(disabledHvChannels);
+  hvHasDisabledChannels = false;
   me11HasDisabledChannels = false;
   deviceIncomplete = false;
   greyOut = false;
@@ -391,12 +391,12 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
     dyn_string modesWithHvDisabledWarning = emuui_getArray(\"modesWithHvDisabledWarning\", ex);
     if (emu_checkException(ex)) { return; }
     if (dynContains(modesWithHvDisabledWarning, currentConnectionMode)) {
-      string dpName = emuui_getDpName(\"HV_off_channels\", deviceParams, ex);
+      dyn_string hvDisabledDpNames = emuui_getDpNames(\"HV_channel_disabled\", deviceParams, ex);
       if (emu_checkException(ex)) { return; }
-      if (dpExists(dpName)) {
+      if (dynlen(hvDisabledDpNames) > 0) {
         hvOffChannelsWarningEnabled = true;
         //TODO need a more generic approach here - probably show the exclamation mark if any (not only HV) channel is excluded (?) i.e. also LV and TEMP, ... maybe also FSM subnodes
-        dpConnect(\"updateHVOffChannels\", true, dpName);
+        dpConnect(\"updateHvDisabledChannels\", true, hvDisabledDpNames);
       }
     }
   }
@@ -466,7 +466,7 @@ void updateFSMModeBitsCB() {
   
   imgDeviceIncomplete.visible = me11HasDisabledChannels || 
                                 deviceIncomplete || 
-                                (dynlen(disabledHvChannels) > 0);
+                                hvHasDisabledChannels;
 
   // --=== Check for grey color ===---
   greyOut = getBit(modeBits, FwFreeBit) ||
@@ -483,7 +483,7 @@ void updateME11hvFSMModeBitsCB(string dp, bit32 modeBits) {
   
   imgDeviceIncomplete.visible = me11HasDisabledChannels || 
                                 deviceIncomplete || 
-                                (dynlen(disabledHvChannels) > 0);
+                                hvHasDisabledChannels;
 }
 
 /** This function is used in in DP mode when connection is made to a DP of float or integer types. */
@@ -584,11 +584,11 @@ void updateDPsMaxStateCB(string firstDp, float firstValue) {
 }
 
 /** Updates UF PNPI disabled HV channels. Addition to deviceIncomplete. */
-void updateHVOffChannels(string dpName, dyn_string offChannels) {
-  disabledHvChannels = offChannels;
+void updateHvDisabledChannels(dyn_string dpNames, dyn_bool disabledChannels) {
+  hvHasDisabledChannels = dynContains(disabledChannels, true);
   imgDeviceIncomplete.visible = me11HasDisabledChannels || 
                                 deviceIncomplete || 
-                                (dynlen(offChannels) > 0);
+                                hvHasDisabledChannels;
 }
 
 void disconnect() {
@@ -597,8 +597,8 @@ void disconnect() {
     hvOffChannelsWarningEnabled = false;
     imgDeviceIncomplete.visible = false;
     if (!me11) {
-      string dpName = emuui_getDpName(\"HV_off_channels\", deviceParams, ex);
-      dpDisconnect(\"updateHVOffChannels\", dpName);
+      string hvDisabledDpNames = emuui_getDpNames(\"HV_channel_disabled\", deviceParams, ex);
+      dpDisconnect(\"updateHvDisabledChannels\", hvDisabledDpNames);
     } else {
       dyn_string channelFsmNodes = emuui_getME11HVChannelFsmNodes(deviceParams, ex);
       for (int i=1; i <= dynlen(channelFsmNodes); i++) {
@@ -730,80 +730,11 @@ void pollMode() {
   }
 }
 
-
-
-
-
-
-
-
 void showPopupMenu() {
-//  return; // NOT IMPLEMENTED YET
-  
   dyn_string ex;
   emuui_openContextMenu($deviceType, deviceParams, ex);
   if (emu_checkException(ex)) { return; }
   return;
-  
-  int answer;
-  dyn_string menu;
-  
-//   example of a menu
-//   dyn_string menu = makeDynString(\"PUSH_BUTTON, text1, 1, 1\", 
-//    \"PUSH_BUTTON, text2, 2, 1\", 
-//    \"SEPARATOR\", // separating line 
-//    \"CASCADE_BUTTON, Level 2, 1\", // branch 
-//    \"PUSH_BUTTON, text3, 3, 1\", 
-//    \"Level 2\", // from here level 2 
-//    \"PUSH_BUTTON, text4, 4, 0\", 
-//    \"PUSH_BUTTON, text5, 5, 1\"); 
-  
-  int canEnable = 0;
-  if (dynlen(disabledHvChannels) > 0) { canEnable = 1; }
-  
-  dynAppend(menu, \"CASCADE_BUTTON, Recover High Voltage, 1\");
-  dynAppend(menu, \"CASCADE_BUTTON, Disable High Voltage Channels, 1\");
-  dynAppend(menu, \"CASCADE_BUTTON, Enable High Voltage Channels, \" + canEnable);
-    
-  // recover submenu
-  dynAppend(menu, \"Recover High Voltage\");
-  dynAppend(menu, \"PUSH_BUTTON, Recover All Tripped Channels, 100, 1\");
-  dynAppend(menu, \"CASCADE_BUTTON, Recover One Channel, 1\");
-  dynAppend(menu, \"Recover One Channel\");
-  dynAppend(menu, \"PUSH_BUTTON, Recover #3, 103, 1\");
-  dynAppend(menu, \"PUSH_BUTTON, Recover #4, 104, 1\");
-
-  //disable submenu
-  dynAppend(menu, \"Disable High Voltage Channels\");
-  dynAppend(menu, \"PUSH_BUTTON, Disable All Tripped Channels, 200, 1\");
-  dynAppend(menu, \"CASCADE_BUTTON, Disable One Channel, 1\");
-  dynAppend(menu, \"Disable One Channel\");
-  dynAppend(menu, \"PUSH_BUTTON, Disable #3, 203, 1\");
-  dynAppend(menu, \"PUSH_BUTTON, Disable #4, 204, 1\");
-    
-  //enable submenu
-  dynAppend(menu, \"Enable High Voltage Channels\");
-  dynAppend(menu, \"PUSH_BUTTON, Enable All Disabled Channels, 300, 1\");
-  dynAppend(menu, \"CASCADE_BUTTON, Enable One Channel, 1\");
-  dynAppend(menu, \"Enable One Channel\");
-  for (int i=1; i <= dynlen(disabledHvChannels); i++) {
-    dynAppend(menu, \"PUSH_BUTTON, Enable #\" + disabledHvChannels[i] + \", 30\" + disabledHvChannels[i] + \", 1\");
-  }
-    
-    
-  string font = \"\";//\"-microsoft windows-Courier New-bold-i-normal-*-*-140-100-100-*-*-iso8859-1\"; //font 
-  string forecolor = \"black\"; //foreground color 
-  string backcolor = \"white\"; //background color 
-
-  int posX, posY;   
-  getCursorPosition(posX, posY);
-  //popupMenuXY(menu, posX, posY, answer, font, forecolor, backcolor);
-  popupMenu(menu, answer);
-  
-  emu_info(\"popupso atsakymas: \" + answer);
-  if (answer != 0) {
-    emu_errorSingle(\"This functionality is not implemented. Please inform DCS expert about this (make sure to describe how you got this message)\");
-  }
 }
 " 0
  2

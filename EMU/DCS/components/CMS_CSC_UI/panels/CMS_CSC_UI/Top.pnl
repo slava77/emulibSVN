@@ -676,6 +676,8 @@ LANG:1 0
   posY += 30;
   emuui_addFsmNode(\"CMS_CSC_MINUS\", posX, posY, references, false, \"CMS_CSC\");
   posY += 30;
+  emuui_addFsmNode(\"CMS_CSC_INFRA\", posX, posY, references, false, \"CMS_CSC\");
+  posY += 30;
    
   fwCU_connectState(\"updateTopFSMStateCB\", \"CMS_CSC_PLUS\");  
   fwCU_connectState(\"updateTopFSMStateCB\", \"CMS_CSC_MINUS\");  
@@ -1148,7 +1150,7 @@ E E 0 1 1 2 1 E 1 0 1 -339 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png"
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 -4362.289421296593 -1130 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -4581.108265749304 -1150 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -1167,7 +1169,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 48.53809542279456 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 48.52716962740787 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
@@ -1853,7 +1855,7 @@ LANG:1 52 Only CSC Expert is allowed to turn ON from OFF state
 13 96
 "btnDcsExpertPanel"
 ""
-1 90 1020 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+1 1240 0 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
  E E
 110 0 0 0 0 0
 E E E
@@ -1864,11 +1866,11 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  88 1018 292 1042
+0  1238 -2 1372 42
 
 T 
 1
-LANG:1 21 Open DCS expert panel
+LANG:1 16 DCS expert panel
 "main()
 {
   ChildPanelOnCentral(\"CMS_CSC_UI/util/DcsExpertTools/Main.pnl\", \"CSC DCS Expert Panel\", makeDynString());

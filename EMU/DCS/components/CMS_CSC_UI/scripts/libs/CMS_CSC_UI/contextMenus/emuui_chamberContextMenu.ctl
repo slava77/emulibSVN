@@ -8,7 +8,7 @@ This package contains functions to construct context and process menus for "cham
 
 #uses "CMS_CSC_common/emu_common.ctl"
 #uses "CMS_CSC_common/emu_alert.ctl"
-#uses "CMS_CSCfw_HV_CC/emu_hvCommon.ctl"
+#uses "CMS_CSC_MiddleLayer/emu_hv.ctl"
 #uses "CMS_CSC_UI/emuui_deviceInfo.ctl"
 #uses "CMS_CSC_common/emu_accessControl.ctl"
 

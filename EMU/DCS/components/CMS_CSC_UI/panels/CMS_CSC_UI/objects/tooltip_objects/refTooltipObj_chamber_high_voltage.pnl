@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 420 276 N "_3DFace" 1
+PANEL,-1 -1 420 284 N "_3DFace" 1
 "$deviceParams"
 "main()
 {
@@ -23,22 +23,18 @@ PANEL,-1 -1 420 276 N "_3DFace" 1
   string moduleStatusDp = emuui_getDpName(\"HV_moduleStatus\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
   
-  // disabled channels
-  string offChannelsDp = emuui_getDpName(\"HV_off_channels\", deviceParams, ex);
+  // channel fsm states
+  string channelFsmStatesDp = emuui_getDpName(\"HV_channel_fsm_states\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
   
-  // channel vsets
-  string onChannelVsetsDp = emuui_getDpName(\"HV_ch_vsets\", deviceParams, ex);
-  if (emu_checkException(ex)) { return; }
-  dpGet(onChannelVsetsDp, channelVsets);
-  
-  // module type (if 0 - indicates an LV or signal cable problem)
+  // module type and master module type (if 0 - indicates an LV or signal cable problem)
   string moduleTypeDp = emuui_getDpName(\"HV_moduleType\", deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  string masterTypeDp = emuui_getDpName(\"HV_masterType\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
   
   // all channels
-  dyn_string channelDps;
-  emuui_chamberGetHvChannelDps(deviceParams, channelDps, channelsOffset, ex);
+  dyn_string channelDps = emuhv_getAllChannelDps(deviceParams, EMUHV_DP_POSTFIX_FAST_MON, ex);
   if (emu_checkException(ex)) { return; }
 
   // find out the \"disconnected devices\" DP to be able to show the \"no communication\" warning
@@ -66,27 +62,17 @@ PANEL,-1 -1 420 276 N "_3DFace" 1
   }
 
   // get master channel status DP
-  mapping masterDeviceParams;
-  string masterIdDp = emuui_getDpName(\"HV_moduleToMasterId\", deviceParams, ex);
+  string masterIdDp = emuui_getDpName(\"HV_masterId\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
-  string masterHostIdDp = emuui_getDpName(\"HV_moduleToMasterHostId\", deviceParams, ex);
+  string masterStatusDp = emuui_getDpName(\"HV_masterStatus\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
-  string masterHvCardDp = emuui_getDpName(\"HV_moduleToMasterHvCard\", deviceParams, ex);
-  if (emu_checkException(ex)) { return; }
-  string masterBusAddressDp = emuui_getDpName(\"HV_moduleToMasterBusAddress\", deviceParams, ex);
-  if (emu_checkException(ex)) { return; }
-  string masterChannelDp = emuui_getDpName(\"HV_moduleToMasterChannel\", deviceParams, ex);
+  string masterChannelStatusDp = emuui_getDpName(\"HV_masterChannelStatus\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
   
-  dpGet(masterIdDp, masterDeviceParams[\"ID\"],
-        masterHostIdDp, masterDeviceParams[\"hostId\"],
-        masterHvCardDp, masterDeviceParams[\"hvCard\"],
-        masterBusAddressDp, masterDeviceParams[\"busAddress\"],
-        masterChannelDp, masterDeviceParams[\"channelNumber\"]);
-  masterDeviceParams[\"channelNumber\"] += 1;
-  string masterChannelStatusDp = emuui_getDpName(\"HV_masterChannelStatus\", masterDeviceParams, ex);
-  if (emu_checkException(ex)) { return; }
-  lblMasterInfo.text = \"ID=\" + masterDeviceParams[\"ID\"] + \", ch.=\" + masterDeviceParams[\"channelNumber\"];
+  string masterId;
+  dpGet(masterIdDp, masterId);
+  
+  lblMasterInfo.text = \"ID=\" + masterId;
     
   // init gui and connect everything
   initConsts();
@@ -98,15 +84,17 @@ PANEL,-1 -1 420 276 N "_3DFace" 1
     dynAppend(statusDps, channelDps[i] + \".status\");
   }
   
+  if (!allGrayMode) {
+    dpConnect(\"updateDisabledChannelsCB\", true, channelFsmStatesDp);
+  }
   dpConnect(\"updateDisconnectedWarningCB\", true, disconnectedDevicesDps);
   dpConnect(\"updateVMonCB\", true, vMonDps);
   dpConnect(\"updateStatusCB\", true, statusDps);
-  if (!allGrayMode) {
-    dpConnect(\"updateDisabledChannelsCB\", true, offChannelsDp);
-  }
   dpConnect(\"updateModuleStatusCB\", true, moduleStatusDp);
+  dpConnect(\"updateMasterStatusCB\", true, masterStatusDp);
   dpConnect(\"updateMasterChannelStatusCB\", true, masterChannelStatusDp);
   dpConnect(\"updateModuleTypeCB\", true, moduleTypeDp);
+  dpConnect(\"updateModuleTypeCB\", true, masterTypeDp); // use the same callback - warning is the same anyway
 }
 
 void initGui(int channelCount, dyn_string &ex) {  
@@ -126,19 +114,12 @@ void initGui(int channelCount, dyn_string &ex) {
   getValue(\"tableVoltages\", \"size\", newSizeX, newSizeY);
 
   // set the module info
-  string hvCoordDp = emuui_getDpName(\"HV_coord\", deviceParams, ex);
+  
+  string moduleIdDp = emuui_getDpName(\"HV_moduleId\", deviceParams, ex);
   if (emu_checkException(ex)) { return; }
-  string coordsCombined;
-  dpGet(hvCoordDp, coordsCombined);
-  dyn_string coords = strsplit(coordsCombined, \";\");
-  if (dynlen(coords) == 0) {
-    emu_addError(\"Could not get HV module coordinates. This is a sign that one of DCS computers is unreachable (perhaps OFF).\", ex);
-    return;
-  } else if (dynlen(coords) < 4) {
-    emu_addError(\"HV module coordinates are incomplete. DP = \" + hvCoordDp + \". Returned coordinates = \" + coordsCombined, ex);
-    return;
-  }
-  lblModuleInfo.text = \"host=\" + coords[1] + \"; slot=\" + coords[2] + \"; addr=\" + coords[3] + \"; part=\" + coords[4] + \",\";
+  string moduleId;
+  dpGet(moduleIdDp, moduleId);  
+  lblModuleInfo.text = \"ID=\" + moduleId;
   
   emuui_repositionObjectRelatively(shapesBelowTable, oldSizeX, oldSizeY, newSizeX, newSizeY);
   int backSizeX, backSizeY;
@@ -149,6 +130,7 @@ void initGui(int channelCount, dyn_string &ex) {
   if (allGrayMode) {
     //paint everything in gray
     lblModuleStatus.backCol = \"FwEquipmentDisabled\";
+    lblMasterStatus.backCol = \"FwEquipmentDisabled\";
     lblMasterChannelStatus.backCol = \"FwEquipmentDisabled\";
     for (int i=0; i < tableVoltages.lineCount(); i++) {
       for (int j=0; j < tableVoltages.columnCount(); j++) {
@@ -170,6 +152,7 @@ void initConsts() {
  E E E 1 -1 -1 0  0 0
 ""0  1
 E "#uses \"CMS_CSC_common/emu_math.ctl\"
+#uses \"CMS_CSC_MiddleLayer/emu_hv.ctl\"
 
 //some panel-wide constants
 mapping deviceParams;
@@ -177,19 +160,16 @@ dyn_string vMonDps, statusDps;
 mapping hvStatusColors;
 mapping hvStatusTexts;
 mapping hvModuleStatusTexts;
-int channelsOffset = 0; // offset in module channels that are used by this chamber (e.g. small chambers use channels 1-18 or 19-36 so offset is either 0 or 18 here)
 dyn_int currentStatuses;
+dyn_string currentFsmStates;
 dyn_float currentVoltages;
-dyn_int disabledChannels;
 string hvFsmNode;
 dyn_string references;
 int posX, posY;
 dyn_string shapesBelowTable;
 bool allGrayMode; // this flag is true when the whole LV FSM node is disabled - then back color of the tables is always gray
 bool noCommunication;
-dyn_int channelVsets;
-
-const int EMU_HVPANEL_VOLTAGE_DIFFERENCE_TOLERANCE = 50; // tolerable voltage differance, if voltage differs more than that, the channel will be marked yellow
+dyn_int disabledChannels;
 
 void updateVMonCB(dyn_string dpList, dyn_float voltages) {
   if (noCommunication) { return; } // don't update the table - let the \"???\" stay there
@@ -223,7 +203,9 @@ void updateStatusCB(dyn_string dpList, dyn_int statuses) {
       string statusText = hvStatusTexts[(string)statuses[arrayIndex]];
       string statusColor = hvStatusColors[statusText];
       if (!dynContains(disabledChannels, arrayIndex) && !allGrayMode) { // if this channel is disabled - do not update it's color - let it stay gray
-        if ((statusText == \"ON\") && (emu_abs(currentVoltages[arrayIndex] - channelVsets[arrayIndex]) > EMU_HVPANEL_VOLTAGE_DIFFERENCE_TOLERANCE)) { // in case the status is ON, but actually the voltage is too low, paint it yellow (majority also sees that and paints the chamber yellow)
+        if ((statusText == \"ON\") &&
+            (strpos(currentFsmStates[arrayIndex], EMUHV_FSM_STATE_ON) < 0) &&
+            (strpos(currentFsmStates[arrayIndex], EMUHV_FSM_STATE_STANDBY))) {  // in case the status is ON, but actually the FSM state is not ON or STANDBY, paint it yellow
           statusColor = \"FwStateAttention1\";
         }
         tableVoltages.cellBackColRC(i, \"group\" + j, statusColor);
@@ -246,11 +228,18 @@ void updateStatusCB(dyn_string dpList, dyn_int statuses) {
   }  
 }
 
-void updateDisabledChannelsCB(string dpName, dyn_string disabledChannelsParam) {
-  disabledChannels = disabledChannelsParam;
-  for (int i=1; i <= dynlen(disabledChannels); i++) {
-    disabledChannels[i] -= channelsOffset;
-  }
+void updateDisabledChannelsCB(string dpName, dyn_string channelFsmStates) {
+
+  currentFsmStates = channelFsmStates;
+  
+  dyn_int disabledChannelsTmp = makeDynInt();
+  for (int i=1; i <= dynlen(channelFsmStates); i++) {
+    if (strpos(channelFsmStates[i], EMUHV_FSM_STATE_DISABLED) >= 0) {
+      dynAppend(disabledChannelsTmp, i);
+    }
+  }  
+  disabledChannels = disabledChannelsTmp;
+  
   if (dynlen(disabledChannels) == 0) {
     lblDisabledChannels.text = \"none\";
     return;
@@ -324,6 +313,17 @@ void updateModuleStatusCB(string dpName, int status) {
   }
 }
 
+/** Updates master module status. */
+void updateMasterStatusCB(string dpName, int status) {
+  string statusText = hvModuleStatusTexts[(string)status];
+  string statusColor = hvStatusColors[statusText];
+  
+  lblMasterStatus.text = statusText;
+  if (!allGrayMode) {
+    lblMasterStatus.backCol = statusColor;
+  }
+}
+
 /** Updates master channel status. */
 void updateMasterChannelStatusCB(string dpName, int status) {
   string statusText = hvStatusTexts[(string)status];
@@ -368,7 +368,7 @@ E E 0 1 1 2 1 E 3.454545454545452 0 2.222222222222222 -1381.818181818179 -88.888
 2 4
 "PRIMITIVE_TEXT1"
 ""
-1 12 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 10 10 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 6 0 0 0 0 0
 E E E
@@ -378,8 +378,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 12 10 85 25
-0 2 2 "0s" 0 0 0 192 0 0  12 10 1
+E E 0 1 1 2 1 E U  1 E 10 10 83 25
+0 2 2 "0s" 0 0 0 192 0 0  10 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -387,7 +387,7 @@ LANG:1 12 High Voltage
 25 5
 "tableVoltages"
 ""
-1 12 59.99999999999999 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 10 80 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 7 0 0 0 0 0
 E E E
@@ -398,7 +398,7 @@ LANG:1 0
 0
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
-0  10 58 372 152
+0  8 78 370 172
 EE 0 1 1 6 5 "group1" 4 1 0 "s" 1
 LANG:1 2 #1
 E
@@ -454,7 +454,7 @@ LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 2 7
 "lblForDisabledChannels"
 ""
-1 10 160 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 10 180 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 9 0 0 0 0 0
 E E E
@@ -464,8 +464,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 160 117 175
-0 2 2 "0s" 0 0 0 192 0 0  10 160 1
+E E 0 1 1 2 1 E U  1 E 10 180 117 195
+0 2 2 "0s" 0 0 0 192 0 0  10 180 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -473,7 +473,7 @@ LANG:1 18 Disabled channels:
 2 8
 "lblDisabledChannels"
 ""
-1 120 160 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 120 180 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 10 0 0 0 0 0
 E E E
@@ -487,8 +487,8 @@ LANG:1 0
 {
   this.text = \"\";
 }" 0
- E 0 1 1 2 1 E U  1 E 120 160 165 175
-0 2 2 "0s" 0 0 0 192 0 0  120 160 1
+ E 0 1 1 2 1 E U  1 E 120 180 165 195
+0 2 2 "0s" 0 0 0 192 0 0  120 180 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -600,7 +600,7 @@ E E 0 1 1 2 1 E 1 0 1 -140 -110 1 E 140 110 10 10
 2 18
 "PRIMITIVE_TEXT7"
 ""
-1 12 40 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 10 40 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 27 0 0 0 0 0
 E E E
@@ -610,8 +610,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 12 40 95 55
-0 2 2 "0s" 0 0 0 192 0 0  12 40 1
+E E 0 1 1 2 1 E U  1 E 10 40 93 55
+0 2 2 "0s" 0 0 0 192 0 0  10 40 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -619,7 +619,7 @@ LANG:1 14 Module Status:
 2 19
 "PRIMITIVE_TEXT8"
 ""
-1 173 40 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 170 60 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 28 0 0 0 0 0
 E E E
@@ -629,8 +629,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 173 40 302 55
-0 2 2 "0s" 0 0 0 192 0 0  173 40 1
+E E 0 1 1 2 1 E U  1 E 170 60 299 75
+0 2 2 "0s" 0 0 0 192 0 0  170 60 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -657,7 +657,7 @@ LANG:1 10 LOADING...
 2 26
 "lblMasterChannelStatus"
 ""
-1 307 40 E E E 1 E 1 E N "_WindowText" E N "FwStateOKPhysics" E E
+1 306 60 E E E 1 E 1 E N "_WindowText" E N "FwStateOKPhysics" E E
  E E
 39 0 0 0 0 0
 E E E
@@ -667,8 +667,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 307 40 367 54
-1 2 2 "0s" 0 0 0 65 0 0  307 40 1
+E E 0 1 1 2 1 E U  1 E 306 60 366 74
+1 2 2 "0s" 0 0 0 65 0 0  306 60 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -676,7 +676,7 @@ LANG:1 10 LOADING...
 2 27
 "lblForModuleInfo"
 ""
-1 10 180 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 210 180 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 40 0 0 0 0 0
 E E E
@@ -686,16 +686,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 180 79 195
-0 2 2 "0s" 0 0 0 192 0 0  10 180 1
+E E 0 1 1 2 1 E U  1 E 210 180 256 195
+0 2 2 "0s" 0 0 0 192 0 0  210 180 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 13 Module info: 
+LANG:1 8 Module: 
 2 28
 "lblForMasterInfo"
 ""
-1 262 180 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 297 180 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 41 0 0 0 0 0
 E E E
@@ -705,8 +705,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 262 180 304 195
-0 2 2 "0s" 0 0 0 192 0 0  262 180 1
+E E 0 1 1 2 1 E U  1 E 297 180 339 195
+0 2 2 "0s" 0 0 0 192 0 0  297 180 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
@@ -714,7 +714,7 @@ LANG:1 7 Master:
 2 29
 "lblModuleInfo"
 ""
-1 80 180 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 260 180 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 42 0 0 0 0 0
 E E E
@@ -724,16 +724,16 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 80 180 261 195
-0 2 2 "0s" 0 0 0 192 0 0  80 180 1
+E E 0 1 1 2 1 E U  1 E 260 180 294 195
+0 2 2 "0s" 0 0 0 192 0 0  260 180 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 33 host=###; slot=#; addr=#; part=#,
+LANG:1 5 ID=##
 2 30
 "lblMasterInfo"
 ""
-1 395.1518581568536 360 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 493.6556133428092 420 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 43 0 0 0 0 0
 E E E
@@ -743,12 +743,12 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E 0.964285714285714 0 1 22.35714285714295 20 1 E 290 160 359 175
+E E 0 1 1 2 1 E 0.964285714285714 0 1 60.35714285714295 20 1 E 290 160 320 175
 0 2 2 "0s" 0 0 0 192 0 0  290 160 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 13 ID ##, ch. ##
+LANG:1 5 ID ##
 2 32
 "warnAutomaticTripRecovery"
 ""
@@ -768,6 +768,44 @@ E E 0 1 1 2 1 E U  1 E 10 250 370 264
 LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
 0 1
 LANG:1 53 Recovery from this HV trip is automatic (waits 10min)
+2 33
+"lblMasterStatus"
+""
+1 100 60 E E E 1 E 1 E N "_WindowText" E N "FwStateOKPhysics" E E
+ E E
+46 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 100 60 160 74
+1 2 2 "0s" 0 0 0 65 0 0  100 60 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 10 LOADING...
+2 34
+"PRIMITIVE_TEXT10"
+""
+1 10 60 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+47 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 60 89 75
+0 2 2 "0s" 0 0 0 192 0 0  10 60 1
+1
+LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 14 Master Status:
 0
 LAYER, 1 
 1

@@ -41,7 +41,7 @@ PANEL,-1 -1 417 506 N "_3DFace" 1
   
   //cycle through 5 CFEBs at most, get the datapoints for each board and voltage and fill the dpIndexToTableCell map
   dyn_string vMonDps, iMonDps;
-  deviceParams[\"boardType\"] = \"Cfeb\";
+  deviceParams[\"boardType\"] = \"cfeb\";
   dyn_string voltageLines = makeDynString(\"33\", \"50\", \"60\"); // 3.3V, 5.0V and 6.0V lines
   int index = 1;
   for (int i=1; i <= 5; i++) { // cycle through cfeb boards
@@ -92,7 +92,7 @@ PANEL,-1 -1 417 506 N "_3DFace" 1
   //----------============= ALCT ================-------------
   dynClear(vMonDps);
   dynClear(iMonDps);
-  deviceParams[\"boardType\"] = \"Alct\";
+  deviceParams[\"boardType\"] = \"alct\";
   deviceParams[\"boardNumber\"] = 1;
   voltageLines = makeDynString(\"18\", \"33\", \"55\", \"56\"); // 3.3V, 5.0V and 6.0V lines
   for (int i=1; i <= dynlen(voltageLines); i++) {
@@ -350,6 +350,7 @@ void updateAlctLvCB(dyn_string dps, dyn_float voltagesAndCurrents) {
       sprintf(strValue, \"%.1f\", voltagesAndCurrents[i + currentsOffset]);
       strToShow += strValue + \"A\";
     }
+    
     tableAlct.cellValueRC(0, tableAlct.columnToName(i - 1), strToShow);
   }
 }
