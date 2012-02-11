@@ -1150,7 +1150,7 @@ E E 0 1 1 2 1 E 1 0 1 -339 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png"
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 -4581.108265749304 -1150 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -4797.973370519403 -1170 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -1169,7 +1169,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 48.52716962740787 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 48.51646567558233 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
@@ -1836,7 +1836,7 @@ LANG:1 22 Operation Help (twiki)
 2 94
 "lblOffInterlock"
 ""
-1 196 1020 E E E 1 E 0 E N "_WindowText" E N "FwStateAttention1" E E
+1 190 880 E E E 1 E 0 E N "_WindowText" E N "FwStateAttention1" E E
  E E
 108 0 0 0 0 0
 E E E
@@ -1846,8 +1846,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 22 1020 370 1038
-1 2 2 "0s" 0 0 0 193 0 0  196 1020 1
+E E 0 1 1 2 1 E U  1 E 16 880 364 898
+1 2 2 "0s" 0 0 0 193 0 0  190 880 1
 1
 LANG:1 31 Sans Serif,10,-1,5,50,0,0,0,0,0
 0 1
