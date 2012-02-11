@@ -1,16 +1,11 @@
  <component>
 	<name>CMS_CSCfw_Supervisor</name>
-	<version>3.0.2</version>
-	<date>06/11/2010</date>
-	<config>./config/CMS_CSCfw_Supervisor.config</config>
+	<version>4.0.0</version>
+	<date>2012/02/10</date>
 	<dplist>./dplist/CMS_CSCfw_Supervisor/CMS_CSCfw_Supervisor.dpl</dplist>
-	<dplist>./dplist/CMS_CSCfw_Supervisor/CMS_CSCfw_Supervisor2.dpl</dplist>
       <postInstall>./scripts/CMS_CSCfw_Supervisor/CMS_CSCfw_Supervisor.postInstall</postInstall>                   
 	<file>./CMS_CSCfw_Supervisor.xml</file>
 	<file>./panels/CMS_CSCfw_Supervisor/*.pnl</file>
-	<file>./panels/CMS_CSCfw_Supervisor/config/*.pnl</file>
-	<file>./panels/CMS_CSCfw_Supervisor/init/*.pnl</file>
 	<file>./scripts/CMS_CSCfw_Supervisor/*</file>
 	<file>./scripts/libs/CMS_CSCfw_Supervisor/*</file>
-    <file>./source/CMS_CSCfw_Supervisor/config/*</file>
 </component>

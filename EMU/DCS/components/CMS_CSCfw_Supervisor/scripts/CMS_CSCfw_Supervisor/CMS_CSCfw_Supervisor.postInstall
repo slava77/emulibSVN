@@ -79,7 +79,7 @@ main() {
   }
 
 //infrastructure
-  emuFsm_createRefNode(EMU_FSM_NODE_ELMB_PSU, EMU_FSM_DOMAIN_INFRA, EMU_FSM_DOMAIN_CRB, true, ex);
+  emuFsm_createRefNode(EMU_FSM_NODE_ELMB_PSU, EMU_FSM_DOMAIN_INFRA, EMU_FSM_DOMAIN_CRB, false, ex);
   if (emu_checkException(ex)) { return; }  
   
 //finish 
