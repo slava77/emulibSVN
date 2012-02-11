@@ -1,6 +1,6 @@
  <component>
 	<name>CMS_CSCfw_Supervisor</name>
-	<version>4.0.0</version>
+	<version>4.0.1</version>
 	<date>2012/02/10</date>
 	<dplist>./dplist/CMS_CSCfw_Supervisor/CMS_CSCfw_Supervisor.dpl</dplist>
       <postInstall>./scripts/CMS_CSCfw_Supervisor/CMS_CSCfw_Supervisor.postInstall</postInstall>                   
