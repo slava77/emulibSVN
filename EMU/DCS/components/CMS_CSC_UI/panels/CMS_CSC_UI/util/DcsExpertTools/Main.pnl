@@ -388,9 +388,7 @@ LANG:1 24 Share all necessary FSMs
 
   dyn_string nodesToShare = makeDynString(\"CSC_ME_11_HV\",
                                           \"CMS_CSC_LV_CAN1\",
-                                          \"CMS_CSC_LV_CAN2\",
-                                          \"CSC_HV\",
-                                          \"CSC_LV\");
+                                          \"CMS_CSC_LV_CAN2\");
   
   for (int i=1; i <= dynlen(nodesToShare); i++) {
     fwCU_takeTree(nodesToShare[i], \"emu\");
