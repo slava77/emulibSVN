@@ -528,7 +528,7 @@ void updateDPsAverageStateCB(string firstDp, float firstValue) {
   for (int i=1; i <= dynlen(currentConnectionMultiple); i++) {
     dpGet(currentConnectionMultiple[i], values[i]);
     if (isImon) {
-      values[i] /= 11.0; // convert units to micro amps for HV current
+      values[i] /= 1000; // convert units from nano Amps to micro amps for HV current
     }    
   }
   // compute the average value
@@ -561,11 +561,11 @@ void updateDPsMaxStateCB(string firstDp, float firstValue) {
   for (int i=1; i <= dynlen(currentConnectionMultiple); i++) {
     dpGet(currentConnectionMultiple[i], values[i]);
     if (isImon) {
-      values[i] /= 11.0; // convert units to micro amps for HV current
+      values[i] /= 1000; // convert units from nano Amps to micro amps for HV current
     }
   }
   
-  // compute the average value
+  // find the max
   float value = minFLOAT();
   for (int i=1; i <= dynlen(values); i++) {
     if (values[i] > value) {
