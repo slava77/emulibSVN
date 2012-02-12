@@ -17,54 +17,21 @@ PANEL,-1 -1 400 408 N "_3DFace" 0
   //=========================
   
   dyn_string ex;
-  int minMidLayerNumP = 10,  // used to get the lowest mid. layer num for plus side
-      maxMidLayerNumM = -1; // used to get the highest mid. layer num for minus side
   
-  dyn_string xmasControlDPs = emuui_getDpNames(\"xmas_control\", emuui_dummyMapping, ex);
+  mapping xmas;
+  xmas[\"side\"] = \"P\";
+  xmasControlDpsPlus = emuui_getDpNames(\"xmas_control\", xmas, ex);
   if (emu_checkException(ex)) { return; }
-  for (int i=1; i <= dynlen(xmasControlDPs); i++) {
-    // connect the DPs to listen for last command
-    string side = emuui_getMappingValue(\"sysNameToSide\", emuui_getSystemName(xmasControlDPs[i]), ex);
-    if (emu_checkException(ex)) { return; }
-    dpConnect(\"xmasControlUpdated\" + side + \"CB\", true, xmasControlDPs[i]);
-    
-    // check if the project is valid, if so, then assign it for a control DP
-    dyn_string validDps = dpNames(dpSubStr(xmasControlDPs[i], DPSUB_SYS) + \"CMS_CSC_HV_CC_*\",\"MUDCS_STRING\");
-    for (int j=1; j <= dynlen(validDps); j++) {
-      string isValid;
-      dpGet(validDps[j] + \".value\", isValid);
-      if (isValid == \"valid\") {
-        dyn_string split = strsplit(validDps[j], \"_\");
-        int sysNum = split[dynlen(split)];
-        if (side == \"P\") {
-          if (sysNum < minMidLayerNumP) {
-            controlSystemPlus = dpSubStr(xmasControlDPs[i], DPSUB_SYS);
-            btnStopPlus.enabled = true;
-            btnResumePlus.enabled = true;
-            minMidLayerNumP = sysNum;
-          }
-        } else if (side == \"M\") {
-          if (sysNum > maxMidLayerNumM) {
-            controlSystemMinus = dpSubStr(xmasControlDPs[i], DPSUB_SYS);
-            btnStopMinus.enabled = true;
-            btnResumeMinus.enabled = true;
-            maxMidLayerNumM = sysNum;
-          }
-        }
-        break;
-      }
-    }
+  xmas[\"side\"] = \"M\";
+  xmasControlDpsMinus = emuui_getDpNames(\"xmas_control\", xmas, ex);
+  if (emu_checkException(ex)) { return; }
+
+  for (int i=1; i <= dynlen(xmasControlDpsPlus); i++) {
+    dpConnect(\"xmasControlUpdatedPlusCB\", true, xmasControlDpsPlus[i]);
   }
-  
-  if (controlSystemPlus == \"\") {
-    lblPlusNotValid.visible = true;
+  for (int i=1; i <= dynlen(xmasControlDpsMinus); i++) {
+    dpConnect(\"xmasControlUpdatedMinusCB\", true, xmasControlDpsMinus[i]);
   }
-  if (controlSystemMinus == \"\") {
-    lblMinusNotValid.visible = true;
-  }
-  
-  emu_info(\"Control System for Plus: \" + controlSystemPlus);
-  emu_info(\"Control System for Minus: \" + controlSystemMinus);
 }
 
 /** initialize constants required for access control - basically just fill in the arrays of control and expert control button names. */
@@ -84,21 +51,23 @@ E "// Common libs
 dyn_string controlButtons;
 dyn_string expertControlButtons;
 time lastActionTimePlus = 0, lastActionTimeMinus = 0;
+string lastCommandPlus, lastCommandMinus;
+dyn_string xmasControlDpsPlus, xmasControlDpsMinus;
 
-string controlSystemPlus, controlSystemMinus;
-
-void xmasControlUpdatedPCB(dyn_string dp, dyn_string command) {
+void xmasControlUpdatedPlusCB(dyn_string dp, dyn_string command) {
   time t = emuui_getLastUpdateTimeAsTime(dp);
   if (t > lastActionTimePlus) {
+    lastCommandPlus = command;
     lastActionTimePlus = t;
     lblLastActionPlus.text = getCommandMeaning(command);
     lblLastActionTimePlus.text = emuui_getLastUpdateTime(dp);
   }
 }
 
-void xmasControlUpdatedMCB(dyn_string dp, dyn_string command) {
+void xmasControlUpdatedMinusCB(dyn_string dp, dyn_string command) {
   time t = emuui_getLastUpdateTimeAsTime(dp);
   if (t > lastActionTimeMinus) {
+    lastCommandMinus = command;
     lastActionTimeMinus = t;
     lblLastActionMinus.text = getCommandMeaning(command);
     lblLastActionTimeMinus.text = emuui_getLastUpdateTime(dp);
@@ -117,7 +86,7 @@ string getCommandMeaning(string command) {
 
 /** This function is called whenever the user privileges change and just passes that to emu_enableDisableControl() which takes care of enabling/disabling buttons. */
 void accessPrivilegesChangedCB(string dummy1, string dummy2) {
-  emu_enableDisableControl(\"CMS_CSC::CMS_CSC\", controlButtons, true, \"lblNoControl\", expertControlButtons, true);
+  emu_enableDisableControl(\"CMS_CSC::CMS_CSC\", controlButtons, false, \"lblNoControl\", expertControlButtons, false);
 }
 " 0
  2
@@ -223,16 +192,11 @@ T
 LANG:1 25 Stop Plus Side Monitoring
 "main()
 {
-  string last_command;
-  dpGet(controlSystemPlus + \"STOP_SLOW_CONTROL.value\", last_command);
-  
-  if(strpos(last_command, \"PREPARE_POWER_UP\") < 0){
-    dpSet(controlSystemPlus + \"LV_1_COM.command\", \"STOP_SLOW_CONTROL\"); 
-    dpSet(controlSystemPlus + \"STOP_SLOW_CONTROL.value\", \"STOP_SLOW_CONTROL\"); 
-    dpSet(controlSystemPlus + \"SPECIAL_STOP_SC.value\", \"STOP\");
+  if(strpos(lastCommandPlus, EMU_X2P_COMMAND_PREPARE_POWER_UP) < 0){
+    dpSet(xmasControlDpsPlus[1], EMU_X2P_COMMAND_STOP_MONITORING);
     emu_info(\"Xmas monitoring STOPPED on PLUS side\");
   } else {
-    mudcsDebug(\"LV IS PREPARING TO POWER UP: \\n TRY TO DO IT LATER (in 1 minute)\");
+    emu_errorSingle(\"LV is preparing to power up: X2P will stop the monitoring automatically when needed\");
   }
 }" 0
  E E E
@@ -333,18 +297,12 @@ T
 LANG:1 27 Resume Plus Side Monitoring
 "main()
 {
-  string last_command;
-  dpGet(controlSystemPlus + \"STOP_SLOW_CONTROL.value\", last_command);
-  
-  if(strpos(last_command, \"PREPARE_POWER_UP\") < 0){
-    dpSetWait(controlSystemPlus + \"LV_1_COM.command\", \"EXIT_SLOW_CONTROL\");
-    dpSetWait(controlSystemPlus + \"LV_1_COM.command\", \"RESUME_SLOW_CONTROL\"); //for x2p
-    dpSet(controlSystemPlus + \"STOP_SLOW_CONTROL.value\", \"RESUME_SLOW_CONTROL\");
-    dpSet(controlSystemPlus + \"SPECIAL_STOP_SC.value\", \"RESUME\");
+  if(strpos(lastCommandPlus, EMU_X2P_COMMAND_PREPARE_POWER_UP) < 0){
+    dpSet(xmasControlDpsPlus[1], EMU_X2P_COMMAND_START_MONITORING);
     emu_info(\"Xmas monitoring RESUMED on PLUS side\");
   } else {
-    mudcsDebug(\"LV IS PREPARING TO POWER UP: \\n TRY TO DO IT LATER (in 1 minute)\");
-  }
+    emu_errorSingle(\"LV is preparing to power up now: please try resuming the monitoring after the power up is finished\");
+  }  
 }" 0
  E E E
 13 11
@@ -368,16 +326,11 @@ T
 LANG:1 26 Stop Minus Side Monitoring
 "main()
 {
-  string last_command;
-  dpGet(controlSystemMinus + \"STOP_SLOW_CONTROL.value\", last_command);
-  
-  if(strpos(last_command, \"PREPARE_POWER_UP\") < 0){
-    dpSet(controlSystemMinus + \"LV_1_COM.command\", \"STOP_SLOW_CONTROL\");
-    dpSet(controlSystemMinus + \"STOP_SLOW_CONTROL.value\", \"STOP_SLOW_CONTROL\"); 
-    dpSet(controlSystemMinus + \"SPECIAL_STOP_SC.value\", \"STOP\");
+  if(strpos(lastCommandMinus, EMU_X2P_COMMAND_PREPARE_POWER_UP) < 0){
+    dpSet(xmasControlDpsMinus[1], EMU_X2P_COMMAND_STOP_MONITORING);
     emu_info(\"Xmas monitoring STOPPED on MINUS side\");
   } else {
-    mudcsDebug(\"LV IS PREPARING TO POWER UP: \\n TRY TO DO IT LATER (in 1 minute)\");
+    emu_errorSingle(\"LV is preparing to power up: X2P will stop the monitoring automatically when needed\");
   }
 }" 0
  E E E
@@ -402,18 +355,13 @@ T
 LANG:1 28 Resume Minus Side Monitoring
 "main()
 {
-  string last_command;
-  dpGet(controlSystemMinus + \"STOP_SLOW_CONTROL.value\", last_command);
-  
-  if(strpos(last_command, \"PREPARE_POWER_UP\") < 0){
-    dpSetWait(controlSystemMinus + \"LV_1_COM.command\", \"EXIT_SLOW_CONTROL\");
-    dpSetWait(controlSystemMinus + \"LV_1_COM.command\", \"RESUME_SLOW_CONTROL\"); //for x2p
-    dpSet(controlSystemMinus + \"STOP_SLOW_CONTROL.value\", \"RESUME_SLOW_CONTROL\");
-    dpSet(controlSystemMinus + \"SPECIAL_STOP_SC.value\", \"RESUME\");
+  if(strpos(lastCommandMinus, EMU_X2P_COMMAND_PREPARE_POWER_UP) < 0){
+    dpSet(xmasControlDpsMinus[1], EMU_X2P_COMMAND_START_MONITORING);
     emu_info(\"Xmas monitoring RESUMED on MINUS side\");
   } else {
-    mudcsDebug(\"LV IS PREPARING TO POWER UP: \\n TRY TO DO IT LATER (in 1 minute)\");
-  }
+    emu_errorSingle(\"LV is preparing to power up now: please try resuming the monitoring after the power up is finished\");
+  }  
+
 }" 0
  E E E
 2 13
@@ -492,44 +440,6 @@ E E 0 1 1 2 1 E U  0 E 160 290 218 305
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 9 timestamp
-2 19
-"lblPlusNotValid"
-""
-1 100 70 E E E 1 E 0 E N "_WindowText" E N "FwStateAttention3" E E
- E E
-19 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 100 70 350 85
-0 2 2 "0s" 0 0 0 192 0 0  100 70 1
-1
-LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
-0 1
-LANG:1 49 Plus side DCS is not ready for control, try later
-2 20
-"lblMinusNotValid"
-""
-1 100 240 E E E 1 E 0 E N "_WindowText" E N "FwStateAttention3" E E
- E E
-20 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 100 240 359 255
-0 2 2 "0s" 0 0 0 192 0 0  100 240 1
-1
-LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
-0 1
-LANG:1 50 Minus side DCS is not ready for control, try later
 2 21
 "lblNoControl"
 ""
