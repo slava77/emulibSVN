@@ -142,7 +142,7 @@ void initStatusBitMap() {
 }" 0
  E E E 1 -1 -1 0  0 0
 ""0  1
-E "#uses \"CMS_CSCfw_HV_CC/emu_x2pDataProcessing.ctl\"
+E "#uses \"CMS_CSC_MiddleLayer/emu_x2p.ctl\"
 
 //some panel-wide constants and variables
 int cfebCount;
