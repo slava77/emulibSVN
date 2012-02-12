@@ -33,6 +33,14 @@ const string EMU_FSM_DOMAIN_LV_CRB = "CMS_CSC_LV_CAN1";
 const string EMU_FSM_NODE_ELMB_PSU_MINUS = "CSC_ME_LV_CR1_MINUS_PSU";
 const string EMU_FSM_NODE_ELMB_PSU_PLUS = "CSC_ME_LV_CR1_PLUS_PSU";
 
+const string EMU_FSM_PANEL_HV = "CMS_CSC_MiddleLayer/devices/hv.pnl";
+const string EMU_FSM_PANEL_HV_PRIMARY = "CMS_CSC_MiddleLayer/devices/hvPrimary.pnl";
+const string EMU_FSM_PANEL_HV_LV_WIENER = "fwWiener/fwWienerPL512Operation.pnl";
+const string EMU_FSM_PANEL_HV_LV_WIENER_CHANNEL = "fwWiener/fwWienerPL512ChannelOperation.pnl";
+const string EMU_FSM_PANEL_LV = "CMS_CSC_MiddleLayer/devices/lv.pnl";
+const string EMU_FSM_PANEL_TEMP = "CMS_CSC_MiddleLayer/devices/temperature.pnl";
+const string EMU_FSM_PANEL_DDU = "CMS_CSC_MiddleLayer/devices/ddu.pnl";
+
 /**
   * Creates Middle Layer FSM.
   */
@@ -158,6 +166,7 @@ void emuFsm_createStationsFsm(string systemNode, dyn_mapping chambers, dyn_strin
       if (emu_checkException(ex)) { return; }
       emuFsm_createFsmNode(chamberNode, hvDp, EMUHV_DPT_HV_FSM, false);
       fwFsmTree_setNodeLabel(hvDp, chamberName + " HV");
+      fwFsmTree_setNodePanel(hvDp, EMU_FSM_PANEL_HV);
     } else {  // CAEN HV system
       string me11HvNode = "CSC_ME_" +
                           ((chamber["side"] == "M") ? "N" : "P") + // translate M (minus) to ME1/1 notation i.e. N (negative)
@@ -175,12 +184,14 @@ void emuFsm_createStationsFsm(string systemNode, dyn_mapping chambers, dyn_strin
     if (emu_checkException(ex)) { return; }
     emuFsm_createFsmNode(chamberNode, lvDp, EMU_X2P_DEVICE_FSM_DPT_LV, false);
     fwFsmTree_setNodeLabel(lvDp,  chamberName + " LV");
+    fwFsmTree_setNodePanel(lvDp, EMU_FSM_PANEL_LV);
 
     // create chamber Temperature DU
     string tempDp = emux2p_getTempDpName(chamber, ex);
     if (emu_checkException(ex)) { return; }
     emuFsm_createFsmNode(chamberNode, tempDp, EMU_X2P_DEVICE_FSM_DPT_TEMP, false);
     fwFsmTree_setNodeLabel(tempDp,  chamberName + " Temperature");
+    fwFsmTree_setNodePanel(tempDp, EMU_FSM_PANEL_TEMP);
   }
 }
 
@@ -216,6 +227,7 @@ void emuFsm_createHvFsm(string systemNode, string side, dyn_string primaryDps, d
     strreplace(nodeName, "CscHighVoltage/", "");
     emuFsm_createFsmNode(hvPrimariesNode, hvPrimaryDp, EMUHV_DPT_PRIMARY_FSM, false);
     fwFsmTree_setNodeLabel(hvPrimaryDp, nodeName);
+    fwFsmTree_setNodePanel(hvPrimaryDp, EMU_FSM_PANEL_HV_PRIMARY);
   }
     
   // HV LV PSU
@@ -233,6 +245,7 @@ void emuFsm_createHvFsm(string systemNode, string side, dyn_string primaryDps, d
       string wienerName = "Wiener PSU for HV " + sideFull;
       emuFsm_createFsmNode(hvLvNode, wienerDp, "FwWienerMarathon", false);
       fwFsmTree_setNodeLabel(wienerDp, wienerName);
+      fwFsmTree_setNodePanel(wienerDp, EMU_FSM_PANEL_HV_LV_WIENER);
       
       dyn_string channelDps = dpNames(wienerDp + "/*", "FwWienerMarathonChannel");
       for (int i=1; i <= dynlen(channelDps); i++) {
@@ -243,6 +256,7 @@ void emuFsm_createHvFsm(string systemNode, string side, dyn_string primaryDps, d
         
         emuFsm_createFsmNode(hvLvNode, channelDp, "FwWienerMarathonChannel", false);
         fwFsmTree_setNodeLabel(channelDp, channelName);
+        fwFsmTree_setNodePanel(channelDp, EMU_FSM_PANEL_HV_LV_WIENER_CHANNEL);
       }
     }      
   }
@@ -278,6 +292,7 @@ void emuFsm_createFedFsm(string systemNode, dyn_string dduDps) {
     sprintf(dduLabel, "DDU%.2d", dduId);
     emuFsm_createFsmNode(fedNode, dduDp, EMU_X2P_DEVICE_FSM_DPT_FED, false);
     fwFsmTree_setNodeLabel(dduDp, dduLabel);
+    fwFsmTree_setNodePanel(dduDp, EMU_FSM_PANEL_DDU);
   }
   
 }
