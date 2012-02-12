@@ -689,7 +689,7 @@ LANG:1 5 ID=##
 2 30
 "lblMasterInfo"
 ""
-1 5802.937103504249 10732 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 5906.046492664809 11312 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 43 0 0 0 0 0
 E E E
@@ -961,21 +961,20 @@ LANG:1 8 Force ON
   mapping channelDeviceParams = deviceParams;
   channelDeviceParams[\"channelNumber\"] = selectedChannel;
   
-  string channelDp = emuhv_getHvChannelDp(channelDeviceParams, ex);
+  string channelDp = emuhv_getDp(channelDeviceParams, EMUHV_DP_POSTFIX_FAST_MON, ex);
   if (emu_checkException(ex)) { return; }
   
-  int state, status;
-  dpGet(channelDp + \".state\", state,
-        channelDp + \".status\", status);
+  int status;
+  dpGet(channelDp + \".status\", status);
   
   // switch it off if it's tripped
-  if ((state == 0) && (status >= 4)) {
-    emuhv_sendChannelCommand(channelDeviceParams, EMUHV_COMMAND_OFF, ex);
+  if (status >= 4) {
+    emuhv_sendCommand(channelDeviceParams, EMUHV_COMMAND_OFF, ex);
     if (emu_checkException(ex)) { return; }
   }
   
   // turn it back on
-  emuhv_sendChannelCommand(channelDeviceParams, EMUHV_COMMAND_ON, ex);
+  emuhv_sendCommand(channelDeviceParams, EMUHV_COMMAND_ON, ex);
   
   // reset the channel selection
   tableChannels.deleteSelection();
@@ -1110,9 +1109,9 @@ LANG:1 10 Switch OFF
 "main()
 {
   dyn_string ex;
-  string hvStatusDp = emuui_getDpName(\"HV_status\", deviceParams, ex);
+  string hvFsmDp = emuhv_getDp(deviceParams, EMUHV_DP_POSTFIX_FSM, ex);
   if (emu_checkException(ex)) { return; }
-  dpSetWait(hvStatusDp, 0);
+  dpSetWait(hvFsmDp + \".fsm_command\", \"OFF\");
 }" 0
  E E E
 13 49
@@ -1137,9 +1136,9 @@ LANG:1 9 Switch ON
 "main()
 {
   dyn_string ex;
-  string hvStatusDp = emuui_getDpName(\"HV_status\", deviceParams, ex);
+  string hvFsmDp = emuhv_getDp(deviceParams, EMUHV_DP_POSTFIX_FSM, ex);
   if (emu_checkException(ex)) { return; }
-  dpSetWait(hvStatusDp, 2);
+  dpSetWait(hvFsmDp + \".fsm_command\", \"ON\");
 }" 0
  E E E
 2 50
