@@ -139,24 +139,18 @@ void mudcsCrbPnlInit(int level=1)
       addGlobal("CSC_fwCAN1_g_MINUS_SYSTEM_NAME", STRING_VAR);
       addGlobal("CSC_fwCAN1_g_PLUS_SYSTEM_NAME", STRING_VAR);  
 
-      int m_max=0;
-      int p_min=10;
-      string valid;    
-      CSC_fwCAN1_g_PLUS_SYSTEM_NAME="";
-      CSC_fwCAN1_g_MINUS_SYSTEM_NAME="";
-      systemNamesDps=dpNames("*:CMS_CSC_HV_CC_*","MUDCS_STRING"); //looking for dps at middle layer projects
-      emuLvCRB_showDebug(bDebug,"systemNamesDps at midlayer ="+systemNamesDps);
-  
-      for(i=1;i<=dynlen(systemNamesDps);i++)
-        {
-          dpGet(systemNamesDps[i]+".value",valid);
-          if(valid !="valid")continue;    
-          ds2=strsplit(systemNamesDps[i],":");
-          ds3=strsplit(ds2[dynlen(ds2)],"_");
-          n=ds3[dynlen(ds3)];
-          if(n<=4 && n > m_max){CSC_fwCAN1_g_MINUS_SYSTEM_NAME=ds2[1];m_max=n;}
-          else if(n>=5 && n < p_min){CSC_fwCAN1_g_PLUS_SYSTEM_NAME=ds2[1];p_min=n;}
-        }   
+      dyn_string commandDpsPlus = dpNames("*:CscDimCommand/X2P_P", "CscDimCommand");
+      dyn_string commandDpsMinus = dpNames("*:CscDimCommand/X2P_M", "CscDimCommand");
+      
+      if (dynlen(commandDpsPlus) > 0) {
+        CSC_fwCAN1_g_PLUS_SYSTEM_NAME = dpSubStr(commandDpsPlus[1], DPSUB_SYS);
+        strreplace(CSC_fwCAN1_g_PLUS_SYSTEM_NAME, ":", "");
+      }
+      if (dynlen(commandDpsMinus) > 0) {
+        CSC_fwCAN1_g_MINUS_SYSTEM_NAME = dpSubStr(commandDpsMinus[1], DPSUB_SYS);
+        strreplace(CSC_fwCAN1_g_MINUS_SYSTEM_NAME, ":", "");
+      }
+         
     }   
 //------- elmb ai channel--> voltage of module in crate------     
   addGlobal("CSC_fwCAN1_g_LIST_5V", DYN_INT_VAR); 
@@ -255,7 +249,7 @@ void mudcsCrbCommandCrb(string fsm, bool isOn)
      if(!isOn)
        {
         mudcsCrb_remove_id(fsm);
-        mudcsCrb_sendToX2P("CRATE_POWER_OFF", fsm);
+        mudcsCrb_sendPCrateCommandToX2P("CRATE_POWER_OFF", fsm);
        }
     }    
 //-------- isOn --> from ture to false or false to ture ---- 
@@ -422,20 +416,18 @@ void mudcsCrbCommandCrbGroup(string fsm, bool isOn, dyn_int boards)
 void update_confirmation(string dpName, string value)
 { // x2p  
   int i;
-  string remote_system;
   dyn_string ds1,ds2;
-  ds1=strsplit(dpName,":");
-  remote_system=ds1[1];
   ds1=strsplit(value,";");
   string coord, last_command, id_s;
   int coord_int, coord_int_receive;
   int minus_len=0, plus_len=0;
-  string special_stop_value;
   
-  dpGet(remote_system+":STOP_SLOW_CONTROL.value",last_command);
-  dpGet(remote_system+":SPECIAL_STOP_SC.value",special_stop_value);//   
+  dyn_string dpSplit = strsplit(dpSubStr(dpName, DPSUB_DP), "_");
+  string side = dpSplit[dynlen(dpSplit)];
+  
+  last_command = mudcsCrb_getLastX2PCommand(side);
   //--------------------------
-  emuLvCRB_showDebug(bDebug,remote_system+" "+dpName+" "+value);
+  emuLvCRB_showDebug(bDebug,dpName+" "+value);
   emuLvCRB_showDebug(bDebug,CSC_fwCAN1_g_PREPARE_POWER_UP_BUFFER);
   //---------------------------
   if((dynlen(ds1)==2 && ds1[1]=="INIT_IS_DONE"))
@@ -454,20 +446,12 @@ void update_confirmation(string dpName, string value)
             if(coord_int<=30)plus_len++;
             else minus_len++;
           }
-         if(special_stop_value != "STOP")
-          { 
-            if(coord_int_receive <=30 && remote_system==CSC_fwCAN1_g_PLUS_SYSTEM_NAME && plus_len==0 && last_command !="STOP_SLOW_CONTROL")
-             {
-              dpSetWait(remote_system+":STOP_SLOW_CONTROL.value","RESUME_SLOW_CONTROL");
-              dpSetWait(remote_system+":LV_1_COM.command","RESUME_SLOW_CONTROL");     
-             }
-            if(coord_int_receive > 30 && remote_system==CSC_fwCAN1_g_MINUS_SYSTEM_NAME && minus_len==0 && last_command !="STOP_SLOW_CONTROL")
-             {
-              dpSetWait(remote_system+ ":STOP_SLOW_CONTROL.value","RESUME_SLOW_CONTROL");
-              dpSetWait(remote_system+":LV_1_COM.command","RESUME_SLOW_CONTROL");     
-             }
-          }//  if(special_stop_value != "STOP")  
-         dpSetWait(mudcsLvAddSystem("PREPARE_POWER_UP_BUFFER."),CSC_fwCAN1_g_PREPARE_POWER_UP_BUFFER);   
+          if ((coord_int_receive <=30 && side == "P" && plus_len==0 && last_command !="STOP_SLOW_CONTROL") ||
+              (coord_int_receive > 30 && side == "M" && minus_len==0 && last_command !="STOP_SLOW_CONTROL"))
+          {
+            mudcsCrb_sendToX2P(side, "RESUME_SLOW_CONTROL");
+          }
+          dpSetWait(mudcsLvAddSystem("PREPARE_POWER_UP_BUFFER."),CSC_fwCAN1_g_PREPARE_POWER_UP_BUFFER);   
         }
      }
   else
@@ -477,7 +461,7 @@ void update_confirmation(string dpName, string value)
         {   
           if(last_command=="RESUME_SLOW_CONTROL")
             {
-              dpSetWait(remote_system+":LV_1_COM.command","RESUME_SLOW_CONTROL");
+              mudcsCrb_sendToX2P(side, "RESUME_SLOW_CONTROL");
             }
           else if(last_command != "STOP_SLOW_CONTROL")
             {    
@@ -489,15 +473,10 @@ void update_confirmation(string dpName, string value)
                     coord_int=CSC_fwCAN1_g_PREPARE_POWER_UP_BUFFER[i];//ds2[2];
                     coord=CSC_fwCAN1_g_PREPARE_POWER_UP_BUFFER[i];//ds2[2];
                     string vme=mudcsCrb_getVmeById(coord);
-                    if(coord_int <=30 && remote_system==CSC_fwCAN1_g_PLUS_SYSTEM_NAME)
+                    if((coord_int <=30 && side == "P") ||
+                       (coord_int >30 && side == "M"))
                      { // <=1f
-                      dpSetWait(remote_system+":STOP_SLOW_CONTROL.value","PREPARE_POWER_UP;"+vme);
-                      dpSetWait(remote_system+":LV_1_COM.command","PREPARE_POWER_UP;"+vme);
-                     }
-                   else if(coord_int >30 && remote_system==CSC_fwCAN1_g_MINUS_SYSTEM_NAME)
-                     {
-                      dpSetWait(remote_system+":STOP_SLOW_CONTROL.value","PREPARE_POWER_UP;"+vme);
-                      dpSetWait(remote_system+":LV_1_COM.command","PREPARE_POWER_UP;"+vme);       
+                      mudcsCrb_sendToX2P(side, "PREPARE_POWER_UP;" + vme);
                      }
                  } //for 
               }
@@ -508,8 +487,7 @@ void update_confirmation(string dpName, string value)
            } // else
           else if(last_command=="STOP_SLOW_CONTROL")
            {
-             dpSetWait(remote_system+":STOP_SLOW_CONTROL.value","STOP_SLOW_CONTROL");
-             dpSetWait(remote_system+":LV_1_COM.command","STOP_SLOW_CONTROL");     
+             mudcsCrb_sendToX2P(side, "STOP_SLOW_CONTROL");
            }
         } // if "START_"
     } //else  
@@ -519,34 +497,40 @@ void mudcsCrb_remove_id(string fsm)
 { // x2p  
   if(two_way_communications_x2p)
      {
-       string coord,remote_system;
+       string coord,remote_system, side;
        int coord_int;  
        dpGet(fsm+".coord",coord); 
        sscanf(coord,"%x",coord_int);  
-       if(coord_int <=30)
-          {remote_system=CSC_fwCAN1_g_PLUS_SYSTEM_NAME;}
-       else
-          {remote_system=CSC_fwCAN1_g_MINUS_SYSTEM_NAME;}
-       update_confirmation(remote_system+":any", "INIT_IS_DONE;"+coord_int);
+       if(coord_int <=30) {
+         remote_system=CSC_fwCAN1_g_PLUS_SYSTEM_NAME;
+         side = "P";
+       } else {
+         remote_system=CSC_fwCAN1_g_MINUS_SYSTEM_NAME;
+         side = "M";
+       }
+       update_confirmation(remote_system+":CscDimCommand/X2P_" + side, "INIT_IS_DONE;"+coord_int);
      }  
 }
 //===============================for X2P=========================================
 void mudcsCrb_stop_slow_control(string fsm)
 {  
   string coord, previous_command;   
+  string side;
+  if(strpos(fsm,"ME_M")>=0) {
+    side = "M";
+  } else if(strpos(fsm,"ME_P")>=0) {
+    side = "P";
+  }
+
   if(two_way_communications_x2p)
    {
      int coord_int;
      emuLvCRB_showDebug(bDebug,"debug_stop_slow_control "+fsm);
      emuLvCRB_showDebug(bDebug,"debug_stop_slow_control "+CSC_fwCAN1_g_PLUS_SYSTEM_NAME);
-     string stop_value,remote_system;
-     if(strpos(fsm,"ME_M")>=0)
-        {remote_system=CSC_fwCAN1_g_MINUS_SYSTEM_NAME;}
-     else if(strpos(fsm,"ME_P")>=0)
-        {remote_system=CSC_fwCAN1_g_PLUS_SYSTEM_NAME;} 
+     string stop_value;
      dpGet(fsm+".coord",coord); 
      sscanf(coord,"%x",coord_int);
-     dpSetWait(remote_system+":STOP_SLOW_CONTROL.value","PREPARE_POWER_UP;"+coord_int);
+     mudcsCrb_sendToX2P(side, "PREPARE_POWER_UP;" + coord_int);
      dynAppend(CSC_fwCAN1_g_PREPARE_POWER_UP_BUFFER,coord_int);
      dynUnique(CSC_fwCAN1_g_PREPARE_POWER_UP_BUFFER);      
    } 
@@ -554,13 +538,8 @@ void mudcsCrb_stop_slow_control(string fsm)
    {    
      emuLvCRB_showDebug(bDebug,"debug_stop_slow_control "+fsm);
      emuLvCRB_showDebug(bDebug,"debug_stop_slow_control "+CSC_fwCAN1_g_PLUS_SYSTEM_NAME);
-     string stop_value,remote_system;
-     if(strpos(fsm,"ME_M")>=0)
-        {remote_system=CSC_fwCAN1_g_MINUS_SYSTEM_NAME;}
-     else if(strpos(fsm,"ME_P")>=0)
-        {remote_system=CSC_fwCAN1_g_PLUS_SYSTEM_NAME;}    
-     dpSetWait(remote_system+":STOP_SLOW_CONTROL.value","STOP_SLOW_CONTROL_LV");
-     dpSetWait(remote_system+":LV_1_COM.command","STOP_SLOW_CONTROL");         
+     string stop_value;
+     mudcsCrb_sendToX2P(side, "STOP_SLOW_CONTROL_LV");
    }
 }
 //===========================================
@@ -629,8 +608,8 @@ void mudcsCrb_power_up_packet(string remote_system)
     if(coord_int>30 && remote_system==CSC_fwCAN1_g_PLUS_SYSTEM_NAME)continue;
     dynAppend(final_buffer,CSC_fwCAN1_g_PREPARE_POWER_UP_BUFFER[i]);
     string vme=mudcsCrb_getVmeById(CSC_fwCAN1_g_PREPARE_POWER_UP_BUFFER[i] );
-    dpSetWait(remote_system+":LV_1_COM.command","PREPARE_POWER_UP;"+vme);
-    emuLvCRB_showDebug(bDebug,remote_system+":LV_1_COM.command  "+"PREPARE_POWER_UP;"+vme);
+    string side = (coord_int<=30) ? "P" : "M";
+    mudcsCrb_sendToX2P(side, "PREPARE_POWER_UP;" + vme);
    } // for
   emuLvCRB_showDebug(bDebug,remote_system);
   dpSetWait(mudcsLvAddSystem("PREPARE_POWER_UP_BUFFER."),CSC_fwCAN1_g_PREPARE_POWER_UP_BUFFER);  
@@ -639,19 +618,25 @@ void mudcsCrb_power_up_packet(string remote_system)
 void mudcsCrb_resume_slow_control()
 { //x2p  
   int i;
-  string stop_value, special_stop_value;
+  string stop_value;
   time stop_value_time, current_time;
-  string remote_system; 
+  string remote_system;
+  string side;
+  
   if(two_way_communications_x2p)
     {    
      current_time=getCurrentTime();
      emuLvCRB_showDebug(bDebug,CSC_fwCAN1_g_MINUS_SYSTEM_NAME+","+CSC_fwCAN1_g_PLUS_SYSTEM_NAME);
      for(i=1;i<=2;i++)
       {
-        if(i==1)remote_system=CSC_fwCAN1_g_MINUS_SYSTEM_NAME;
-        else if(i==2)remote_system=CSC_fwCAN1_g_PLUS_SYSTEM_NAME;
-        dpGet(remote_system+":STOP_SLOW_CONTROL.value",stop_value);//"STOP_SLOW_CONTROL_LV"
-        dpGet(remote_system+":STOP_SLOW_CONTROL.value:_online.._stime",stop_value_time);
+       if (i==1) {
+         remote_system=CSC_fwCAN1_g_MINUS_SYSTEM_NAME;
+         side = "M";
+       } else if (i==2) {
+         remote_system=CSC_fwCAN1_g_PLUS_SYSTEM_NAME;
+         side = "P";
+       }
+       stop_value = mudcsCrb_getLastX2PCommand(side);
         if(strpos(stop_value,"PREPARE_POWER_UP")>=0)
          {
           string side = "M";
@@ -672,8 +657,7 @@ void mudcsCrb_resume_slow_control()
           if (powerupFinished)
            {
              mudcsCrb_power_up_packet(remote_system);
-             dpSetWait(remote_system+":STOP_SLOW_CONTROL.value","EXECUTE_POWER_UP");
-             dpSetWait(remote_system+":LV_1_COM.command","EXECUTE_POWER_UP");       
+             mudcsCrb_sendToX2P(side, "EXECUTE_POWER_UP");
            }
          }//if
        } // for  
@@ -683,17 +667,20 @@ void mudcsCrb_resume_slow_control()
       current_time=getCurrentTime();    
       for(i=1;i<=2;i++)
        {
-         if(i==1)remote_system=CSC_fwCAN1_g_MINUS_SYSTEM_NAME;
-         else if(i==2)remote_system=CSC_fwCAN1_g_PLUS_SYSTEM_NAME;
-         dpGet(remote_system+":STOP_SLOW_CONTROL.value",stop_value);//"STOP_SLOW_CONTROL_LV"
-         dpGet(remote_system+":SPECIAL_STOP_SC.value",special_stop_value);//   
-         dpGet(remote_system+":STOP_SLOW_CONTROL.value:_online.._stime",stop_value_time);
-         if(stop_value == "STOP_SLOW_CONTROL_LV" && special_stop_value != "STOP")
+         if (i==1) {
+           remote_system=CSC_fwCAN1_g_MINUS_SYSTEM_NAME;
+           side = "M";
+         } else if (i==2) {
+           remote_system=CSC_fwCAN1_g_PLUS_SYSTEM_NAME;
+           side = "P";
+         }
+         stop_value = mudcsCrb_getLastX2PCommand(side);
+         dpGet(remote_system+":CscDimCommand/X2P_" + side + ".command:_online.._stime",stop_value_time);
+         if(stop_value == "STOP_SLOW_CONTROL_LV")
           {
             if((current_time-stop_value_time) > 3)
              {
-               dpSetWait(remote_system+":STOP_SLOW_CONTROL.value","RESUME_SLOW_CONTROL");
-               dpSetWait(remote_system+":LV_1_COM.command","RESUME_SLOW_CONTROL");       
+               mudcsCrb_sendToX2P(side, "RESUME_SLOW_CONTROL");
              }
           }//if
        } // for        
@@ -810,14 +797,51 @@ void mudcsCrbGetDmbTempAlerts(string DpName, dyn_string &ds_alerts, dyn_int &ale
   * @param command command you wish to send.
   * @param crateFsmDp FSM DP of the crate for which the command is dedicated.
   */
-void mudcsCrb_sendToX2P(string command, string crateFsmDp) {
+void mudcsCrb_sendPCrateCommandToX2P(string command, string crateFsmDp) {
+  int crateId = mudcsCrb_getCrateId(crateFsmDp);
+  string side = (crateId <= 30) ? "P" : "M";
+  string crateVmeId = mudcsCrb_getVmeById(crateId);
+  mudcsCrb_sendToX2P(side, command + ";" + crateVmeId);
+}
+
+/**
+  * Sends the given command to X2P.
+  * @param side P or M.
+  * @param command command you wish to send.
+  */
+void mudcsCrb_sendToX2P(string side, string command) {
   if(two_way_communications_x2p){
-    int crateId = mudcsCrb_getCrateId(crateFsmDp);
-    string midLayerSystem = mudcsCrb_getMidLayerSystemForCrateId(crateId);
-    string crateVmeId = mudcsCrb_getVmeById(crateId);
-    dpSetWait(midLayerSystem + ":LV_1_COM.command", command + ";" + crateVmeId);
-    DebugTN("Sent command to X2P: " + command + ";" + crateVmeId);
+    string sys;
+    if (side == "P") {
+      sys = CSC_fwCAN1_g_PLUS_SYSTEM_NAME;
+    } else if (side == "M") {
+      sys = CSC_fwCAN1_g_MINUS_SYSTEM_NAME;
+    } else {
+      DebugTN("ERROR: got invalid 'side' argument to mudcsCrb_sendToX2P(): " + side);
+      return;
+    }
+    dpSetWait(sys + ":CscDimCommand/X2P_" + side + ".command", command);
+    DebugTN("Sent command to X2P: " + command);
   }
+}
+
+/**
+  * @return last command sent to X2P of a given side.
+  * @param side P or M.
+  */
+string mudcsCrb_getLastX2PCommand(string side) {
+  string sys;
+  if (side == "P") {
+    sys = CSC_fwCAN1_g_PLUS_SYSTEM_NAME;
+  } else if (side == "M") {
+    sys = CSC_fwCAN1_g_MINUS_SYSTEM_NAME;
+  } else {
+    DebugTN("ERROR: got invalid 'side' argument to mudcsCrb_getLastX2PCommand(): " + side);
+    return;
+  }
+  string command;
+  dpGet(sys + ":CscDimCommand/X2P_" + side + ".command", command);
+  return command;
 }
 
 /**

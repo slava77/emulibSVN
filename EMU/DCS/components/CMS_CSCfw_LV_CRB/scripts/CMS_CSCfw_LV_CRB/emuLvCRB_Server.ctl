@@ -59,14 +59,14 @@ void dist_connections_detect(string dpName, dyn_int dists)
   emuLvCRB_showDebug(bDebug,"_CSC_fwCAN1_g_MINUS_SYSTEM_NAME="+CSC_fwCAN1_g_MINUS_SYSTEM_NAME);
   if(CSC_fwCAN1_g_PLUS_SYSTEM_NAME!="" && !connected_plus_side)
    {      
-     dpConnect("update_confirmation",FALSE,CSC_fwCAN1_g_PLUS_SYSTEM_NAME+":LV_CONFIRMATION_SERVICE.value");
-     update_confirmation(CSC_fwCAN1_g_PLUS_SYSTEM_NAME+":LV_CONFIRMATION_SERVICE.value", "SOFT_START");
+     dpConnect("update_confirmation",FALSE,CSC_fwCAN1_g_PLUS_SYSTEM_NAME+":X2P_REPLY_P.value");
+     update_confirmation(CSC_fwCAN1_g_PLUS_SYSTEM_NAME+":X2P_REPLY_P.value", "SOFT_START");
      connected_plus_side=true;
    }
   if(CSC_fwCAN1_g_MINUS_SYSTEM_NAME!="" && !connected_minus_side)
    {
-     dpConnect("update_confirmation",FALSE,CSC_fwCAN1_g_MINUS_SYSTEM_NAME+":LV_CONFIRMATION_SERVICE.value");
-     update_confirmation(CSC_fwCAN1_g_MINUS_SYSTEM_NAME+":LV_CONFIRMATION_SERVICE.value", "SOFT_START");
+     dpConnect("update_confirmation",FALSE,CSC_fwCAN1_g_MINUS_SYSTEM_NAME+":X2P_REPLY_M.value");
+     update_confirmation(CSC_fwCAN1_g_MINUS_SYSTEM_NAME+":X2P_REPLY_M.value", "SOFT_START");
      connected_minus_side=true;
    }    
 }
@@ -762,7 +762,7 @@ void emuLvCRB_powerOffCRB(string sCRB)
   delay(0,500); //delay 500ms
   //----for x2p-----------------------------------------
   mudcsCrb_remove_id(sCRB); 
-  mudcsCrb_sendToX2P("CRATE_POWER_OFF", sCRB); 
+  mudcsCrb_sendPCrateCommandToX2P("CRATE_POWER_OFF", sCRB); 
   
   dyn_string dsSwitchList,argdsExceptionInfo;
   dpGet(sCRB+".switch_list",dsSwitchList);
