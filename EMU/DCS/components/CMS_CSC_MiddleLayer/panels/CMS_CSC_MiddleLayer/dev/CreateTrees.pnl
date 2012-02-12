@@ -37,7 +37,10 @@ const string DIM_DEVICE_PREFIX = \"DimConfig\";
 // ****************** DIM Command ***************************
 
 const string HV_DIM_COMMAND_SERVICE = \"HV_1_COMMAND\";
+const string X2P_DIM_COMMAND_SERVICE = \"LV_1_COMMAND\";
 const string COMMAND_DP_PREFIX = \"CscDimCommand/\";
+
+const string X2P_REPLY_SERVICE = \"LV_CONFIRMATION_SERVICE\";
 
 // ***************** DIM DNS ********************************
 
@@ -540,6 +543,50 @@ void createX2PFedDimConfig(dyn_string &ex) {
   setX2PDimDnsNode(dimConfigName, station[\"side\"]);
 }
 
+void createX2PCommandDpAndDimConfig(dyn_string &ex) {
+  mapping station = getStationToCreate();
+  string side = station[\"side\"];
+  
+  string cmdDp = COMMAND_DP_PREFIX + \"X2P_\" + side;
+  if (side == \"ISR\") {
+    cmdDp = COMMAND_DP_PREFIX + \"X2P_\" + \"M\";
+  }
+  if (!dpExists(cmdDp)) {
+    dpCreate(cmdDp, \"CscDimCommand\");
+  }
+  
+  string dimConfigName = DIM_DEVICE_PREFIX + fwDevice_HIERARCHY_SEPARATOR +
+                         \"X2P_COMMAND_\" + side;
+  createDimConfigDevice(dimConfigName, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  fwDim_subscribeCommand(dimConfigName, X2P_DIM_COMMAND_SERVICE, cmdDp);
+  
+  setX2PDimDnsNode(dimConfigName, side);
+}
+
+void createX2PReplyService(dyn_string &ex) {
+  mapping station = getStationToCreate();
+  string side = station[\"side\"];
+  
+  string dp = \"X2P_REPLY_\" + side;
+  if (side == \"ISR\") {
+    dp = COMMAND_DP_PREFIX + \"X2P_\" + \"M\";
+  }
+  if (!dpExists(dp)) {
+    dpCreate(dp, \"CscCommonString\");
+  }
+  
+  string dimConfigName = DIM_DEVICE_PREFIX + fwDevice_HIERARCHY_SEPARATOR +
+                         \"X2P_REPLY_\" + side;
+  createDimConfigDevice(dimConfigName, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  fwDim_subscribeServices(dimConfigName, makeDynString(X2P_REPLY_SERVICE), makeDynString(dp));
+  
+  setX2PDimDnsNode(dimConfigName, side);
+}
+
 void createAllDimManagers(dyn_string &ex) {
   emu_info(\"Creating DIM managers\");
   
@@ -645,7 +692,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 30 40 78 56
+E E 0 1 1 2 1 E U  0 E 30 40 74 56
 0 2 2 "0s" 0 0 0 192 0 0  30 40 1
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
@@ -1197,7 +1244,15 @@ LANG:1 54 Create X2P devices (LV, temperature, FED), DIM configs
   emu_info(\"Creating X2P FED DIM config...\");
   createX2PFedDimConfig(ex);
   if (emu_checkException(ex)) { return; }
-      
+
+  emu_info(\"Creating X2P command DP and DIM config...\");
+  createX2PCommandDpAndDimConfig(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  emu_info(\"Creating X2P reply DP and DIM config...\");
+  createX2PReplyService(ex);
+  if (emu_checkException(ex)) { return; }
+  
   emu_info(\"DONE\");
 }" 0
  E E E
@@ -1716,7 +1771,12 @@ main()
     if (emu_checkException(ex)) { return; }
     emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"DimConfig\", ex, \"*X2P_[PM]*\"));
     if (emu_checkException(ex)) { return; }
+    emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"DimConfig\", ex, \"*X2P_COMMAND_[PM]*\"));
+    if (emu_checkException(ex)) { return; }
+    emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"DimConfig\", ex, \"*X2P_REPLY_[PM]*\"));
+    if (emu_checkException(ex)) { return; }
     emu_dynAppend(devices, dpNames(\"*X2P*\", \"CscDimCommand\"));
+    emu_dynAppend(devices, dpNames(\"X2P_REPLY_*\", \"CscCommonString\"));
   
     saveConfiguration(devices, \"X2P\", editVersion.text, ex, chkJustPrint.state(0));
     if (emu_checkException(ex)) { return; }

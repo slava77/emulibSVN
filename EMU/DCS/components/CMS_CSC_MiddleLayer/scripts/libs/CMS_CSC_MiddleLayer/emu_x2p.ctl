@@ -46,6 +46,10 @@ public const int EMU_X2P_STATUS_BAD_DATA = 0x9D; /* EMU_X2P_STATUS_OTHER_PROBLEM
 public const int EMU_X2P_STATUS_ERROR_WITH_DATA = 0x600; /*EMU_X2P_STATUS_CHAMBER_HAS_NO_ANALOG_POWER |
                                                            EMU_X2P_STATUS_CHAMBER_HAS_NO_DIGITAL_POWER; */
 
+public const string EMU_X2P_COMMAND_STOP_MONITORING = "STOP_SLOW_CONTROL";
+public const string EMU_X2P_COMMAND_START_MONITORING = "RESUME_SLOW_CONTROL";
+public const string EMU_X2P_COMMAND_PREPARE_POWER_UP = "PREPARE_POWER_UP";
+
 public const string EMU_X2P_DEVICE_PREFIX_LV = "CscLowVoltage/";
 public const string EMU_X2P_DEVICE_PREFIX_TEMP = "CscTemperature/";
 public const string EMU_X2P_DEVICE_PREFIX_FED = "CscFed/";
