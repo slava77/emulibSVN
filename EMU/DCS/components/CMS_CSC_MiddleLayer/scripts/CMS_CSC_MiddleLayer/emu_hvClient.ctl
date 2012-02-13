@@ -15,6 +15,8 @@ const int EMUHV_STATE_OFF_HIGHEST_VMON = 80;
 const int EMUHV_STATE_ON_VMON_ACCURACY = 50;
 const int EMUHV_STATE_STANDBY_VMON_ACCURACY = 60;
 
+bool emuhv_serverReady = false;
+
 main() {
   emu_info("HV Client: starting up...");
   
@@ -26,6 +28,9 @@ main() {
     emu_info("HV Client: no critical integrity errors found");
   }
   
+  // hook up to server status DP
+  dpConnect("emuhv_serverStatusUpdatedCB", true, EMUHV_DP_SERVER_STATUS + ".value");
+
   // hook up to monitoring DPEs
   dyn_string monDps = dpNames(EMUHV_DP_PREFIX + "*.num_chans", "CscHvChamberFastMon");
   for (int i=1; i <= dynlen(monDps); i++) {
@@ -50,6 +55,19 @@ main() {
   }
   
   emu_info("HV Client: started up successfully");
+}
+
+void emuhv_serverStatusUpdatedCB(string dp, string value) {
+  emu_info("HV Client: Server status changed to " + value);
+
+  dyn_string ex;
+  if (value == "READY") {
+    emuhv_reconfigure(ex);
+    emuhv_serverReady = true;
+    if (emu_checkException(ex)) { return; }
+  } else {
+    emuhv_serverReady = false;
+  }
 }
 
 /**
@@ -111,7 +129,7 @@ void emuhv_updateChamberState(string hvDp) {
   int alert = 0;
   dpGet(hvDp + ".:_alert_hdl.._act_state", alert);
   
-  int numChannels = emu_dpGetCached(slowMonDp + ".num_chans");
+  int numChannels = emu_dpGetCached(slowMonDp + ".num_chans", false);
   
   dyn_string channelStates = makeDynString();
   for(int i=1; i <= numChannels; i++) {
@@ -225,6 +243,11 @@ string emuhv_getChannelStates(string hvDp, int channelNum, bool checkForAlerts =
   * Callback function which actually executes FSM commands.
   */
 void emuhv_commandReceivedCB(string dpe, string command) {
+  if (!emuhv_serverReady) {
+    emu_info("HV Client WARNING: ignoring command because server is not ready. " + "cmd=" + command + " dpe=" + dpe);
+    return;
+  }
+  
   emu_info("HV Client: executing command " + command + " on " + dpe);
   
   dyn_string ex;
@@ -250,18 +273,19 @@ void emuhv_commandReceivedCB(string dpe, string command) {
     if (emu_checkException(ex)) { return; }
     
     // go through all channels and ensure they have the correct settings set
+    int firstVset = -1;
     for (int i=1; i <= dynlen(channelSettingsDps); i++) {
       bool isDisabled = emu_dpGetCached(channelSettingsDps[i] + ".disabled");
       if (isDisabled) {
         dynAppend(disabledChannels, i);
       }
       
-      int imax = emu_dpGetCached(channelSettingsDps[i] + ".imax");
-      int imaxActual = emu_dpGetCached(channelSlowMonDps[i] + ".imax");
-      if (imax != imaxActual) {
-        emuhv_sendCommand(channels[i], EMUHV_COMMAND_SET_IMAX, ex, imax);
-        if (emu_checkException(ex)) { return; }
-      }
+//       int imax = emu_dpGetCached(channelSettingsDps[i] + ".imax");
+//       int imaxActual = emu_dpGetCached(channelSlowMonDps[i] + ".imax");
+//       if (imax != imaxActual) {
+//         emuhv_sendCommand(channels[i], EMUHV_COMMAND_SET_IMAX, ex, imax);
+//         if (emu_checkException(ex)) { return; }
+//       }
       
       int vset;
       if (command == EMUHV_FSM_COMMAND_STANDBY) {
@@ -269,7 +293,12 @@ void emuhv_commandReceivedCB(string dpe, string command) {
       } else {
         vset = emu_dpGetCached(channelSettingsDps[i] + ".on_vset");
       }
-      emuhv_sendCommand(channels[i], EMUHV_COMMAND_SET_VSET, ex, vset);
+      if (i == 1) {
+        firstVset = vset;
+        emuhv_sendCommand(chamber, EMUHV_COMMAND_SET_VSET, ex, vset);
+      } else if (vset != firstVset) {
+        emuhv_sendCommand(channels[i], EMUHV_COMMAND_SET_VSET, ex, vset);
+      }
     }
     
     // switch on all channels
@@ -291,6 +320,11 @@ void emuhv_commandReceivedCB(string dpe, string command) {
   * Callback function which actually executes primary PSU FSM commands.
   */
 void emuhv_primaryCommandReceivedCB(string dpe, string command) {
+  if (!emuhv_serverReady) {
+    emu_info("HV Client WARNING: ignoring primary command because server is not ready. " + "cmd=" + command + " dpe=" + dpe);
+    return;
+  }
+
   dyn_string ex;
   mapping primary = emuhv_getPrimaryDeviceParams(dpe, ex);
   if (emu_checkException(ex)) { return; }

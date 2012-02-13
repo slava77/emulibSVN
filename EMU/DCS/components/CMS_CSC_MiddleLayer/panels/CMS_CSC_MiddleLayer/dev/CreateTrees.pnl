@@ -34,13 +34,14 @@ const string DDU_MON_DP_TYPE = \"CscFedDduMon\";
 
 const string DIM_DEVICE_PREFIX = \"DimConfig\";
 
-// ****************** DIM Command ***************************
+// ****************** DIM **********************************
 
 const string HV_DIM_COMMAND_SERVICE = \"HV_1_COMMAND\";
 const string X2P_DIM_COMMAND_SERVICE = \"LV_1_COMMAND\";
 const string COMMAND_DP_PREFIX = \"CscDimCommand/\";
-
 const string X2P_REPLY_SERVICE = \"LV_CONFIRMATION_SERVICE\";
+const string HV_SERVER_STATUS_DIM_SERVICE_PLUS = \"HV_DIM_SERVER_HID600/SERVER_STATUS\";
+const string HV_SERVER_STATUS_DIM_SERVICE_MINUS = \"HV_DIM_SERVER_HID500/SERVER_STATUS\";
 
 // ***************** DIM DNS ********************************
 
@@ -446,13 +447,25 @@ void createHvCommandDpAndDimConfig(dyn_string &ex) {
   if (!dpExists(cmdDp)) {
     dpCreate(cmdDp, \"CscDimCommand\");
   }
-  
+
+  if (!dpExists(EMUHV_DP_SERVER_STATUS)) {
+    dpCreate(EMUHV_DP_SERVER_STATUS, \"CscCommonString\");
+  }
+
   string dimConfigName = DIM_DEVICE_PREFIX + fwDevice_HIERARCHY_SEPARATOR +
                          \"HV_COMMAND_\" + side;
   createDimConfigDevice(dimConfigName, ex);
   if (emu_checkException(ex)) { return; }
   
+  // subscribe the command
   fwDim_subscribeCommand(dimConfigName, HV_DIM_COMMAND_SERVICE, cmdDp);
+  
+  // subscribe to the server status DP
+  if (side == \"P\") {
+    fwDim_subscribeServices(dimConfigName, makeDynString(HV_SERVER_STATUS_DIM_SERVICE_PLUS), EMUHV_DP_SERVER_STATUS);
+  } else if ((side == \"M\") || (side == \"ISR\")) {
+    fwDim_subscribeServices(dimConfigName, makeDynString(HV_SERVER_STATUS_DIM_SERVICE_MINUS), EMUHV_DP_SERVER_STATUS);
+  }
   
   setHvDimDnsNode(dimConfigName, side);
 }
@@ -1404,7 +1417,7 @@ void setSummaryAlerts(string type, string okText, string badText, dyn_string &ex
 
 // CFEB LV
 void setCfebLvAlerts(dyn_string &ex) {
-  dyn_string dpsToIgnore = dpNames(\"*CSC_ME13_*.cfeb.*.v5\", \"CscLvChamberMon\"); // ME1/3 only have 4 CFEBs - so ignore the 5th
+  dyn_string dpsToIgnore = dpNames(\"*CSC_ME_{P,M}13_*.cfeb.*.v5\", \"CscLvChamberMon\"); // ME1/3 only have 4 CFEBs - so ignore the 5th
   
   dyn_string dps, texts, classes;
   dyn_float limits;
@@ -1572,7 +1585,7 @@ void setLvdbLvAlerts(dyn_string &ex) {
 
 // Temperature
 void setTemperatureAlerts(dyn_string &ex) {
-  dyn_string dpsToIgnore = dpNames(\"*CSC_ME13_*.cfeb.*.v5\", \"CscTempChamberMon\"); // ME1/3 only have 4 CFEBs - so ignore the 5th
+  dyn_string dpsToIgnore = dpNames(\"*CSC_ME_{P,M}13_*.cfeb.v5\", \"CscTempChamberMon\"); // ME1/3 only have 4 CFEBs - so ignore the 5th
   
   dyn_string dps, texts, classes;
   dyn_float limits;
@@ -1749,6 +1762,7 @@ main()
     emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"DimConfig\", ex, \"*HV*\"));
     if (emu_checkException(ex)) { return; }
     emu_dynAppend(devices, dpNames(\"*HV*\", \"CscDimCommand\"));
+    emu_dynAppend(devices, dpNames(\"HvServerStatus\", \"CscCommonString\"));
   
     saveConfiguration(devices, \"HV\", editVersion.text, ex, chkJustPrint.state(0));
     if (emu_checkException(ex)) { return; }

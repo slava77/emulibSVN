@@ -24,6 +24,8 @@ public const string EMUHV_DP_POSTFIX_FAST_MON = "/FastMon";
 public const string EMUHV_DP_POSTFIX_SETTINGS = "/Settings";
 public const string EMUHV_DP_POSTFIX_PRIMARY_MON = "/Mon";
 
+public const string EMUHV_DP_SERVER_STATUS = "HvServerStatus";
+
 public const string EMUHV_FSM_STATE_ON        = "ON";
 public const string EMUHV_FSM_STATE_OFF       = "OFF";
 public const string EMUHV_FSM_STATE_STANDBY   = "STANDBY";
@@ -158,7 +160,7 @@ public mapping emuhv_getPrimaryDeviceParams(string dp, dyn_string &exceptionInfo
 public dyn_string emuhv_getAllChannelDps(mapping deviceParams, string dpPostfix, dyn_string &exceptionInfo) {
   string baseDp = dpSubStr(emuhv_getDp(deviceParams, dpPostfix, exceptionInfo), DPSUB_SYS_DP);
   if (emu_checkException(exceptionInfo)) { return makeDynString(); }
-  int channelCount = emu_dpGetCached(emuhv_getDp(deviceParams, EMUHV_DP_POSTFIX_SLOW_MON, exceptionInfo) + ".num_chans");
+  int channelCount = emu_dpGetCached(emuhv_getDp(deviceParams, EMUHV_DP_POSTFIX_SLOW_MON, exceptionInfo) + ".num_chans", false);
   if (emu_checkException(exceptionInfo)) { return makeDynString(); }
 
   dyn_string ret;
@@ -174,7 +176,7 @@ public dyn_string emuhv_getAllChannelDps(mapping deviceParams, string dpPostfix,
   * @param deviceParams device parameters describing a chamber (must include "side", "station", "ring" and "chamberNumber" params)
   */
 public dyn_mapping emuhv_getAllChannelDevices(mapping deviceParams, dyn_string &exceptionInfo) {
-  int channelCount = emu_dpGetCached(emuhv_getDp(deviceParams, EMUHV_DP_POSTFIX_SLOW_MON, exceptionInfo) + ".num_chans");
+  int channelCount = emu_dpGetCached(emuhv_getDp(deviceParams, EMUHV_DP_POSTFIX_SLOW_MON, exceptionInfo) + ".num_chans", false);
   if (emu_checkException(exceptionInfo)) { return; }
   
   dyn_mapping ret;
@@ -449,7 +451,7 @@ public void emuhv_checkIntegrity(dyn_string &exceptionInfo) {
     emu_debug("HV: Checking " + dps[i]);
 
     string numChannelsDp = dps[i] + EMUHV_DP_POSTFIX_SLOW_MON + ".num_chans";
-    int numChannels = emu_dpGetCached(numChannelsDp);
+    int numChannels = emu_dpGetCached(numChannelsDp, false);
     if (numChannels <= 0) {
       emu_addError("Invalid number of HV channels! " +
                    numChannelsDp + " = " + numChannels, exceptionInfo);
@@ -481,7 +483,8 @@ public void emuhv_checkIntegrity(dyn_string &exceptionInfo) {
       if (onVset == 0) {
         dpSet(channelSettingsDp + ".on_vset", EMUHV_VOLTAGE_NOMINAL);
       }
-      int imax = emu_dpGetCached(channelSettingsDp + ".imax");
+      int imax;
+      dpGet(channelSettingsDp + ".imax", imax);
       if (imax == 0) {
         dpSet(channelSettingsDp + ".imax", EMUHV_DEFAULT_IMAX);
       }
@@ -499,6 +502,44 @@ public void emuhv_checkIntegrity(dyn_string &exceptionInfo) {
   emu_info("HV: Integrity check finished");
 }
 
-public void emuhv_reconfigure() {
-  // set default settings to all channels
+/**
+  * Configures the HV system - sets things like imax and so on. Used after a server or the DCS client (re)start.
+  */
+public void emuhv_reconfigure(dyn_string &exceptionInfo) {
+  emu_info("HV: Configuring HV system");
+  
+  dyn_string settingsDps = dpNames(EMUHV_DP_PREFIX + "*", "CscHvChamberSettings");
+  
+  for (int i=1; i <= dynlen(settingsDps); i++) {
+    string settingsDp = settingsDps[i];
+    mapping chamberDeviceParams = emu_fsmNodeToDeviceParams(settingsDp, exceptionInfo);
+    if (emu_checkException(exceptionInfo)) { return; }
+    dyn_mapping channels = emuhv_getAllChannelDevices(chamberDeviceParams, exceptionInfo);
+    if (emu_checkException(exceptionInfo)) { return; }
+
+    // look at the first channel and set all to this value, then run through the rest and if we find a different setting - set it separately, if not, just skip
+    mapping firstChannel = channels[1];
+    string firstChSettingsDp = emuhv_getDp(firstChannel, EMUHV_DP_POSTFIX_SETTINGS, exceptionInfo);
+    if (emu_checkException(exceptionInfo)) { return; }
+
+    int firstImax;
+    dpGet(firstChSettingsDp + ".imax", firstImax);
+    emuhv_sendCommand(chamberDeviceParams, EMUHV_COMMAND_SET_IMAX, exceptionInfo, firstImax);
+    if (emu_checkException(exceptionInfo)) { return; }
+    
+    // run through the rest of the channels and only set the ones that have a different setting than the first one
+    for (int i=2; i <= dynlen(channels); i++) {
+      mapping channel = channels[i];
+      string chSettingsDp = emuhv_getDp(channel, EMUHV_DP_POSTFIX_SETTINGS, exceptionInfo);
+      if (emu_checkException(exceptionInfo)) { return; }
+      int imax;
+      dpGet(chSettingsDp + ".imax", imax);
+      if (imax != firstImax) {
+        emuhv_sendCommand(channel, EMUHV_COMMAND_SET_IMAX, exceptionInfo, imax);
+        if (emu_checkException(exceptionInfo)) { return; }
+      }
+    }
+  }
+  
+  emu_info("HV: HV system configuration done");
 }
