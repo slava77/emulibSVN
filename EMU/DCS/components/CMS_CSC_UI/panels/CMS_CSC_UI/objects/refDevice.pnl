@@ -391,13 +391,13 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
     dyn_string modesWithHvDisabledWarning = emuui_getArray(\"modesWithHvDisabledWarning\", ex);
     if (emu_checkException(ex)) { return; }
     if (dynContains(modesWithHvDisabledWarning, currentConnectionMode)) {
-      dyn_string hvDisabledDpNames = emuui_getDpNames(\"HV_channel_disabled\", deviceParams, ex);
-      if (emu_checkException(ex)) { return; }
-      if (dynlen(hvDisabledDpNames) > 0) {
-        hvOffChannelsWarningEnabled = true;
+//       dyn_string hvDisabledDpNames = emuui_getDpNames(\"HV_channel_disabled\", deviceParams, ex);
+//       if (emu_checkException(ex)) { return; }
+//       if (dynlen(hvDisabledDpNames) > 0) {
+//         hvOffChannelsWarningEnabled = true;
         //TODO need a more generic approach here - probably show the exclamation mark if any (not only HV) channel is excluded (?) i.e. also LV and TEMP, ... maybe also FSM subnodes
-        dpConnect(\"updateHvDisabledChannels\", true, hvDisabledDpNames);
-      }
+//         dpConnect(\"updateHvDisabledChannels\", true, hvDisabledDpNames);
+//       }
     }
   }
 }
