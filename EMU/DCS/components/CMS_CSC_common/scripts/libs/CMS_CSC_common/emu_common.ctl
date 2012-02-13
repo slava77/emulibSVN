@@ -601,9 +601,9 @@ string emu_getChamberName(mapping deviceParams, bool zeroPadded = true) {
   *    updated by DIM client every once in awhile.
   */
 anytype emu_dpGetCached(string dpe, bool keepUpToDate = TRUE) {
-//   anytype ret;
-//   dpGet(dpe, ret); // dummy implementation for now
-//   return ret;
+  anytype ret;
+  dpGet(dpe, ret); // dummy implementation for now
+  return ret;
 
   dpe = dpSubStr(dpe, DPSUB_SYS_DP_EL_CONF_DET_ATT);
   strreplace(dpe, ":_online.._value", "");
