@@ -57,7 +57,7 @@ void emuFsm_createMiddleLayerFsm(dyn_string &ex) {
   if (fwFsmTree_isNode(systemNode)) {
     emu_info("Deleting " + systemNode);
     fwFsmTree_removeNode("FSM", systemNode);
-    emuFsm_deleteFwTreeNodes(makeDynString("fwTN_" + systemNode));
+    emuFsm_deleteFwTreeNodes(makeDynString("fwTN_" + systemNode, "CSC", "csc"));
   }  
 
   // ****************** create the top system node ******************

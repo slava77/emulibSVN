@@ -144,3 +144,15 @@ string emux2p_getDduDpName(mapping ddu, dyn_string &exceptionInfo) {
   sprintf(dduDp, EMU_X2P_DEVICE_PREFIX_FED + "DDU%.2d", ddu["id"]);
   return dduDp;
 }
+
+/** 
+  * Enables / disables a given channel.
+  * @param channelDeviceParams device params of a chamber hv channel - has to include side, station, ring, chamberNumber, channelNumber
+  * @param isEnable if this is true then the channel is included, if false excluded
+  */
+public void emux2p_enableDisableChannel(string dp, bool isEnable, dyn_string &exceptionInfo) {
+  if (!dpExists(dp)) {
+    emu_addError("Not existing DP passed to emux2p_enableDisableChannel()", exceptionInfo);
+  }
+  emu_notImplementedError("emux2p_enableDisableChannel");
+}
