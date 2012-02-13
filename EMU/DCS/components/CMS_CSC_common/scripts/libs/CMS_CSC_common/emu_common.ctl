@@ -515,7 +515,7 @@ mapping emu_fsmNodeToDeviceParams(string fsmNode, dyn_string &exceptionInfo) {
   ret["station"] = substr(fsmNodeSplit[3], 1, 1);
   ret["ring"] = substr(fsmNodeSplit[3], 2, 1);
   strreplace(fsmNodeSplit[4], "C", "");
-  ret["chamberNumber"] = fsmNodeSplit[4];
+  ret["chamberNumber"] = substr(fsmNodeSplit[4], 0, 2);
   
   return ret;
 }
@@ -591,8 +591,20 @@ string emu_getChamberName(mapping deviceParams, bool zeroPadded = true) {
   * @note DO NOT USE THIS FUNCTION ON FREQUENTLY CHANGING DPEs.
   * Rule of thumb here would be this: if you think the DPE will change less frequently
   * than you're going to query it's value - use this function, otherwise don't.
+  * @param keepUpToDate (optional, default = true) if this parameter is set to false (careful with that!)
+  *    then the cached value of this DPE won't be updated, meaning that you will always
+  *    get the same value with a call to this function with the given DPE as you got from the 
+  *    first call. This removes any overhead when the DPE is updated. But this should only be 
+  *    used with DPEs whose value is considered completely static (or updates are irrelevant).
+  *    e.g. it would make sense for HV number of channels DPE since the total number of channels 
+  *    for a given chamber type never changes, but still this DPE is inside DP which is 
+  *    updated by DIM client every once in awhile.
   */
-anytype emu_dpGetCached(string dpe) {
+anytype emu_dpGetCached(string dpe, bool keepUpToDate = TRUE) {
+//   anytype ret;
+//   dpGet(dpe, ret); // dummy implementation for now
+//   return ret;
+
   dpe = dpSubStr(dpe, DPSUB_SYS_DP_EL_CONF_DET_ATT);
   strreplace(dpe, ":_online.._value", "");
   if (mappingHasKey(g_emu_dpCache, dpe)) {
@@ -601,13 +613,11 @@ anytype emu_dpGetCached(string dpe) {
     anytype ret;
     dpGet(dpe, ret);
     g_emu_dpCache[dpe] = ret;
-    dpConnect("_emu_cachedDpUpdatedCB", false, dpe);
+    if (keepUpToDate) {
+      dpConnect("_emu_cachedDpUpdatedCB", false, dpe);
+    }
     return ret;
-  }
-  
-//   anytype ret;
-//   dpGet(dpe, ret); // dummy implementation for now
-//   return ret;
+  }  
 }
 
 void _emu_cachedDpUpdatedCB(string dpe, anytype value) {
