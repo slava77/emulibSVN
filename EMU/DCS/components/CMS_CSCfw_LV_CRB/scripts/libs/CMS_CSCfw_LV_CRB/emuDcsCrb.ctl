@@ -530,7 +530,8 @@ void mudcsCrb_stop_slow_control(string fsm)
      string stop_value;
      dpGet(fsm+".coord",coord); 
      sscanf(coord,"%x",coord_int);
-     mudcsCrb_sendToX2P(side, "PREPARE_POWER_UP;" + coord_int);
+     string vme=mudcsCrb_getVmeById(coord_int);
+     mudcsCrb_sendToX2P(side, "PREPARE_POWER_UP;" + vme);
      dynAppend(CSC_fwCAN1_g_PREPARE_POWER_UP_BUFFER,coord_int);
      dynUnique(CSC_fwCAN1_g_PREPARE_POWER_UP_BUFFER);      
    } 
