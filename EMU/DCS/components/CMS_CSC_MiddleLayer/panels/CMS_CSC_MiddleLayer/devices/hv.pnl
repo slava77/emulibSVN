@@ -290,7 +290,7 @@ void updateFsmStatesCB(string dp, dyn_string fsmStates) {
   }
   
   // update the disabled channels label
-  if (emu_compareArrays(disabledChannels, disabledChannelsTmp)) {
+  if (!emu_compareArrays(disabledChannels, disabledChannelsTmp)) {
     disabledChannels = disabledChannelsTmp;
     if (dynlen(disabledChannels) > 0) {
       string channelsStr;
@@ -689,7 +689,7 @@ LANG:1 5 ID=##
 2 30
 "lblMasterInfo"
 ""
-1 5906.046492664809 11312 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 6005.473403641065 11892 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 43 0 0 0 0 0
 E E E
