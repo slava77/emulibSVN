@@ -27,15 +27,9 @@ PANEL,-1 -1 399 366 N "_3DFace" 1
   }
   
   // data status
-  if (isFunctionDefined(\"emux2p_init\")) {
-    initStatusBitMap();
-    string dataStatusDp = emuui_getDpName(\"chamber_temperature_data_status\", deviceParams, ex);
-    dpConnect(\"updateDataStatusCB\", true, dataStatusDp);
-  } else {
-    emuui_showTooltipWarning(getShape(\"refPoint\"),
-                           getShape(\"warnNoLibrary\"), 
-                           getShape(\"chamber_low_voltage_tooltipBack\"));
-  }
+  initStatusBitMap();
+  string dataStatusDp = emuui_getDpName(\"chamber_temperature_data_status\", deviceParams, ex);
+  dpConnect(\"updateDataStatusCB\", true, dataStatusDp);
   
   // connect to the temperature    
   dyn_string alctTempDps = emuui_getDpNames(\"chamber_alct_temperature\", deviceParams, ex);
@@ -462,126 +456,12 @@ E E 0 1 1 2 1 E U  1 E 10 90 370 104
 LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
 0 1
 LANG:1 54 No Communication - check PCrate LV and Xmas monitoring
-2 21
-"warnNoLibrary"
-""
-1 10 110 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
- E E
-28 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 110 370 124
-1 2 2 "0s" 0 0 0 65 0 0  10 110 1
-1
-LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
-0 1
-LANG:1 51 CMS_CSCfw_HV_CC/emu_x2pDataProcessing.ctl not found
 2 22
 "warnChamberOff"
 ""
-1 10 310 E E E 1 E 0 E N "_Window" E N "FwStateOKNotPhysics" E E
+1 10 290 E E E 1 E 0 E N "_Window" E N "FwStateOKNotPhysics" E E
  E E
 29 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 310 370 324
-1 2 2 "0s" 0 0 0 65 0 0  10 310 1
-1
-LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
-0 1
-LANG:1 14 Chamber is OFF
-2 23
-"warnPCrateOff"
-""
-1 10 330 E E E 1 E 0 E N "_Window" E N "FwStateOKNotPhysics" E E
- E E
-30 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 330 370 344
-1 2 2 "0s" 0 0 0 65 0 0  10 330 1
-1
-LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
-0 1
-LANG:1 41 Peripheral Crate is OFF or not configured
-2 24
-"warnDmbReadingError"
-""
-1 10 130 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
- E E
-31 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 130 370 144
-1 2 2 "0s" 0 0 0 65 0 0  10 130 1
-1
-LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
-0 1
-LANG:1 17 DMB reading error
-2 25
-"warnVccProblem"
-""
-1 10 170 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
- E E
-32 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 170 370 184
-1 2 2 "0s" 0 0 0 65 0 0  10 170 1
-1
-LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
-0 1
-LANG:1 51 VCC not accessible - power cycling the VCC may help
-2 26
-"warnCorruptedData"
-""
-1 10 230 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
- E E
-33 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 230 370 244
-1 2 2 "0s" 0 0 0 65 0 0  10 230 1
-1
-LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
-0 1
-LANG:1 14 Corrupted Data
-2 27
-"warnUnknownProblem"
-""
-1 10 290 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
- E E
-34 0 0 0 0 0
 E E E
 0
 1
@@ -594,13 +474,51 @@ E E 0 1 1 2 1 E U  1 E 10 290 370 304
 1
 LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
 0 1
-LANG:1 15 Unknown problem
-2 28
-"warnTmbReadingError"
+LANG:1 14 Chamber is OFF
+2 23
+"warnPCrateOff"
+""
+1 10 310 E E E 1 E 0 E N "_Window" E N "FwStateOKNotPhysics" E E
+ E E
+30 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 310 370 324
+1 2 2 "0s" 0 0 0 65 0 0  10 310 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 41 Peripheral Crate is OFF or not configured
+2 24
+"warnDmbReadingError"
+""
+1 10 110 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+31 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 110 370 124
+1 2 2 "0s" 0 0 0 65 0 0  10 110 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 17 DMB reading error
+2 25
+"warnVccProblem"
 ""
 1 10 150 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
  E E
-35 0 0 0 0 0
+32 0 0 0 0 0
 E E E
 0
 1
@@ -613,32 +531,13 @@ E E 0 1 1 2 1 E U  1 E 10 150 370 164
 1
 LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
 0 1
-LANG:1 17 TMB reading error
-2 29
-"warnDmbCausedVccError"
-""
-1 10 190 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
- E E
-36 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 190 370 204
-1 2 2 "0s" 0 0 0 65 0 0  10 190 1
-1
-LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
-0 1
-LANG:1 40 This DMB module caused VCC reading error
-2 30
-"warnTmbCausedVccError"
+LANG:1 51 VCC not accessible - power cycling the VCC may help
+2 26
+"warnCorruptedData"
 ""
 1 10 210 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
  E E
-37 0 0 0 0 0
+33 0 0 0 0 0
 E E E
 0
 1
@@ -651,32 +550,13 @@ E E 0 1 1 2 1 E U  1 E 10 210 370 224
 1
 LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
 0 1
-LANG:1 40 This TMB module caused VCC reading error
-2 31
-"warnNoAnalogPower"
-""
-1 10 250 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
- E E
-38 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-1
-"dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 250 370 264
-1 2 2 "0s" 0 0 0 65 0 0  10 250 1
-1
-LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
-0 1
-LANG:1 33 Chamber doesn't have analog power
-2 32
-"warnNoDigitalPower"
+LANG:1 14 Corrupted Data
+2 27
+"warnUnknownProblem"
 ""
 1 10 270 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
  E E
-39 0 0 0 0 0
+34 0 0 0 0 0
 E E E
 0
 1
@@ -686,6 +566,101 @@ LANG:1 0
 "dashclr"N "_Transparent"
 E E 0 1 1 2 1 E U  1 E 10 270 370 284
 1 2 2 "0s" 0 0 0 65 0 0  10 270 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 15 Unknown problem
+2 28
+"warnTmbReadingError"
+""
+1 10 130 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+35 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 130 370 144
+1 2 2 "0s" 0 0 0 65 0 0  10 130 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 17 TMB reading error
+2 29
+"warnDmbCausedVccError"
+""
+1 10 170 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+36 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 170 370 184
+1 2 2 "0s" 0 0 0 65 0 0  10 170 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 40 This DMB module caused VCC reading error
+2 30
+"warnTmbCausedVccError"
+""
+1 10 190 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+37 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 190 370 204
+1 2 2 "0s" 0 0 0 65 0 0  10 190 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 40 This TMB module caused VCC reading error
+2 31
+"warnNoAnalogPower"
+""
+1 10 230 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+38 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 230 370 244
+1 2 2 "0s" 0 0 0 65 0 0  10 230 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 33 Chamber doesn't have analog power
+2 32
+"warnNoDigitalPower"
+""
+1 10 250 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+39 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 250 370 264
+1 2 2 "0s" 0 0 0 65 0 0  10 250 1
 1
 LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
 0 1
