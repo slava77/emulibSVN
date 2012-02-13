@@ -49,7 +49,7 @@ void emuFsm_deleteFwTreeNodes(dyn_string parents) {
     dpGet(dps[i] + ".parent", parent);
     // check if parent is in the array and if so - delete the node
     for (int j=1; j <= dynlen(parents); j++) {
-      if ((strpos(dps[i], parents[j]) >= 0) || (strpos(parent, parents[j]) >= 0)) {
+      if ((strpos(dpSubStr(dps[i], DPSUB_DP), parents[j]) >= 0) || (strpos(parent, parents[j]) >= 0)) {
         emu_info("deleting " + dps[i]);
         dpDelete(dps[i]);
         break;
