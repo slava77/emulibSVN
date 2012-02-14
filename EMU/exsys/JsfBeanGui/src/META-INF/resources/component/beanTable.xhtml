@@ -280,7 +280,7 @@
                                                                     <ice:panelGroup style="width: 80px; overflow: hidden; text-align: right;">
                                                                         <ice:outputLabel value="#{p.title}:"/>
                                                                     </ice:panelGroup>
-                                                                    <ice:panelGroup panelTooltip="columnHelpTooltip">
+                                                                    <ice:panelGroup onmouseover="addSuffixToolTip(event, this, 'columnHelpTooltip');">
                                                                         <ice:inputText converter="#{p.filterConverter}"
                                                                                        style="width: 120px;"
                                                                                        required="false"
@@ -288,19 +288,17 @@
                                                                                        actionListener="#{cc.attrs.manager.table.filterListener}"/>
                                                                     </ice:panelGroup>
                                                                 </ice:panelGrid>
-                                                                <ice:panelTooltip id="columnHelpTooltip">
-                                                                    <f:facet name="body">
-                                                                        <ice:outputText value="${tableHelp[p.filterConverter.class.simpleName]}"
-                                                                                        style="font-weight: normal; white-space: nowrap"
-                                                                                        escape="false"/>
-                                                                    </f:facet>
-                                                                </ice:panelTooltip>
+                                                                <ice:panelGroup id="columnHelpTooltip" style="display: none">
+                                                                    <ice:outputText value="${tableHelp[p.filterConverter.class.simpleName]}"
+                                                                                    style="font-weight: normal; white-space: nowrap"
+                                                                                    escape="false"/>
+                                                                </ice:panelGroup>
                                                             </ui:repeat>
                                                         </ice:panelGrid>
                                                     </ice:panelGroup>
 
                                                     <ice:panelGroup rendered="#{!column.entityType and !column.listType and !column.embedType}">
-                                                        <ice:panelGroup panelTooltip="columnHelpTooltip">
+                                                        <ice:panelGroup onmouseover="addSuffixToolTip(event, this, 'columnHelpTooltip');">
                                                             <ice:inputText id="filterInput"
                                                                            converter="#{column.filterConverter}"
                                                                            required="false"
@@ -309,13 +307,11 @@
                                                                            styleClass="filterInput"
                                                                            style="width: 100px; overflow: hidden" />
                                                         </ice:panelGroup>
-                                                        <ice:panelTooltip id="columnHelpTooltip">
-                                                            <f:facet name="body">
-                                                                <ice:outputText value="${tableHelp[column.filterConverter.class.simpleName]}"
-                                                                                style="font-weight: normal; white-space: nowrap"
-                                                                                escape="false"/>
-                                                            </f:facet>
-                                                        </ice:panelTooltip>
+                                                        <ice:panelGroup id="columnHelpTooltip" style="display: none">
+                                                            <ice:outputText value="${tableHelp[column.filterConverter.class.simpleName]}"
+                                                                            style="font-weight: normal; white-space: nowrap"
+                                                                            escape="false"/>
+                                                        </ice:panelGroup>
                                                     </ice:panelGroup>
                                                     
                                                     <ice:commandLink value="Clear Filter"

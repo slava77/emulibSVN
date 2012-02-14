@@ -54,11 +54,20 @@ public class BeanTable extends BeanTableControls {
             this.columns.add(col);
         }
 
-        /*
-         * Set selected columns
-         */
+        setupColumns(getProperties().getColumns());
+        setupSorting(getProperties().getSorting());
 
-        for (String cname: getProperties().getColumns()) {
+    }
+
+    /*
+    * Set selected columns
+    */
+    public final void setupColumns(List<String> visibleColumns) {
+        
+        this.selectedColumns.getTarget().clear();
+        this.selectedColumns.getSource().clear();
+        
+        for (String cname: visibleColumns) {
             for (BeanTableColumn col: this.columns) {
                 if (col.getName().equals(cname)) {
                     this.selectedColumns.getTarget().add(col);
@@ -74,16 +83,35 @@ public class BeanTable extends BeanTableControls {
             this.selectedColumns.setSourceExceptTarget(columns);
         }
 
-        /*
-         * Set sorting columns
-         */
-
-        for (String cname: getProperties().getSorting()) {
+    }
+    
+    /*
+    * Set sorting columns
+    */
+    public final void setupSorting(List<String> sortingColumns) {
+        
+        for (String cname: sortingColumns) {
+            
+            boolean isAsc = false;
+            boolean isDir = false;
+            
+            // If there is direction information encoded in column item
+            // retrieve direction
+            if (cname.trim().contains(" ")) {
+                String[] splitParts = cname.trim().split(" ");
+                cname = splitParts[0];
+                isAsc = splitParts[1].equalsIgnoreCase("asc");
+                isDir = true;
+            }
+            
             for (BeanTableColumn col: this.columns) {
                 if (col.getName().equals(cname)) {
                     if (col instanceof BeanTableColumnSortable && col.isSortable()) {
                         BeanTableColumnSortable scol = (BeanTableColumnSortable) col;
                         this.sortingColumns.getTarget().add(scol);
+                        if (isDir && scol.isAscending() != isAsc) {
+                            scol.setAscending(isAsc);
+                        }
                     }
                     break;
                 }
@@ -98,9 +126,9 @@ public class BeanTable extends BeanTableControls {
                 }
             }
         }
-
+        
     }
-
+    
     /*********************************************
      * 
      * General getters
@@ -346,5 +374,5 @@ public class BeanTable extends BeanTableControls {
         }
         return queryColumnCache.get(this.rowClass);
     }
-
+    
 }
