@@ -28,14 +28,24 @@ namespace AFEB { namespace teststand {
       ///
       AnalyzedDevice( const TestedDevice& device );
 
-      /// Copy CTOR needed for STL containers
-      ///
-      /// @param other Analyzed device to be copied.
-      ///
-      AnalyzedDevice( const AnalyzedDevice& other );
+      void addThresholdMeasurement( const int iChannel, 
+				    const pair<double,double> setThreshold, 
+				    const pair<double,double> measuredThreshold );
+
+      double getCorrectionCoefficient() const { return correctionCoefficient_; }
+      double getInjectionCapacitance () const { return injectionCapacitance_;  }
+      double getPulseDivisionFactor  () const { return pulseDivisionFactor_;   }
+      void setCorrectionCoefficient( const double value ){ correctionCoefficient_ = value; }
+      void setInjectionCapacitance ( const double value ){ injectionCapacitance_  = value; }
+      void setPulseDivisionFactor  ( const double value ){ pulseDivisionFactor_   = value; }
+
+      void calculateGains();
 
     private:
-      vector<AnalyzedChannel> channels_;	///< Channels with analysis data and results.
+      vector<AnalyzedChannel> channels_;	      ///< Channels with analysis data and results.
+      double                  correctionCoefficient_; ///< The ratio of the measured threshold to the threshold measured when plugged into a reference adaptor socket.
+      double                  injectionCapacitance_;  ///< Injection capacitance [pF] of the adaptor in use.
+      double                  pulseDivisionFactor_;   ///< Pulse division factor of the adaptor in use.
     };
 
   }

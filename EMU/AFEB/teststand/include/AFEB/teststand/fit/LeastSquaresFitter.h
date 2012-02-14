@@ -133,7 +133,7 @@ namespace AFEB { namespace teststand { namespace fit {
 	  return *parameters_;
 	}
 
-	double getFittedParameter( const unsigned int index, const bool refit=false ){
+	double getFittedParameter( const int index, const bool refit=false ){
 	  if ( observationCount_ == 0 ) throw logic_error( "No observations yet." );
 
 	  if ( jacobian_->GetNcols() <= index ){

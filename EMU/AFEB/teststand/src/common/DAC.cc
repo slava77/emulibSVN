@@ -104,13 +104,24 @@ AFEB::teststand::DAC::setCalibrationParameters( const TMatrixD& parameters,
 pair<double,double> 
 AFEB::teststand::DAC::toMilliVolts( const double valueInDACUnits, 
 				    const double errorInDACUnits ) const {
-  TMatrixD Jacobian( DAC::nCalibrationParameters, 0 );
+  TMatrixD Jacobian( DAC::nCalibrationParameters, 1 );
   Jacobian( DAC::intercept, 0 ) = 1.;
   Jacobian( DAC::slope    , 0 ) = valueInDACUnits;
+  // Jacobian.Print();
+  // calibrationParametersCovariance_->Print();
+  // TMatrixD( *calibrationParametersCovariance_, 
+  // 	    TMatrixD::kMult, 
+  // 	    Jacobian ).Print();
+  // TMatrixD( Jacobian, 
+  // 	    TMatrixD::kTransposeMult, 
+  // 	    TMatrixD( *calibrationParametersCovariance_, 
+  // 		      TMatrixD::kMult, 
+  // 		      Jacobian ) 
+  // 	    ).Print();
   double varianceDueToParameters = TMatrixD( Jacobian, 
-					     TMatrixD::kMult, 
+					     TMatrixD::kTransposeMult, 
 					     TMatrixD( *calibrationParametersCovariance_, 
-						       TMatrixD::kMultTranspose, 
+						       TMatrixD::kMult, 
 						       Jacobian ) 
 					     )( 0, 0 );
   double varianceDueToObservation = TMath::Power( (*calibrationParameters_)( DAC::slope, 0 ) * errorInDACUnits, 2 );

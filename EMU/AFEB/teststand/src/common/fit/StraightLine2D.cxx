@@ -14,13 +14,13 @@ ostream& AFEB::teststand::fit::operator<<( ostream& os, const AbstractModel& am 
 
 TMatrixD& AFEB::teststand::fit::StraightLine2D::getJacobian( const TMatrixD& x ){
   if ( jacobian_ == NULL ) jacobian_ = new TMatrixD( 1, 2 );
-  (*jacobian_)( 0, 0 ) = 1;
-  (*jacobian_)( 0, 1 ) = x( 0, 0 );
+  (*jacobian_)( 0, intercept ) = 1.;
+  (*jacobian_)( 0, slope     ) = x( 0, 0 );
   return *jacobian_;
 }
 
 TMatrixD AFEB::teststand::fit::StraightLine2D::getModelFunctionValue( const TMatrixD& x, const TMatrixD& parameters ){
   TMatrixD value( 1, 1 );
-  value( 0, 0 ) = parameters( 0, 0 ) + parameters( 1, 0 ) * x( 0, 0 );
+  value( 0, 0 ) = parameters( intercept, 0 ) + parameters( slope, 0 ) * x( 0, 0 );
   return value;
 }

@@ -29,6 +29,7 @@ namespace AFEB { namespace teststand {
       int getTDCSocket() const { return tdcSocket_; }
       string getId() const { return id_; }
       string getType() const { return type_; }
+      int getAdaptorSocket() const { return socket_; }
       int getNChannels() const { return nChannels_; }
       Crate* getCrate() const { return crate_; }
     protected:

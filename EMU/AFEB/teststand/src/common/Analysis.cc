@@ -23,32 +23,65 @@ AFEB::teststand::Analysis::Analysis( const string& resultsDir )
 
   configuration_ = new Configuration( configXML, "" );
 
-  collectAnalyzedDevices();
+  collectAnalyzedDevices( configXML );
   calibrateDACs( configXML );
   calculateGain();
+  cout << analyzedDevices_ << endl;
 }
 
 AFEB::teststand::Analysis::~Analysis(){
   delete configuration_;
 }
 
-void AFEB::teststand::Analysis::collectAnalyzedDevices(){
+void AFEB::teststand::Analysis::collectAnalyzedDevices( const string& configXML ){
+
   // Get devices from configuration's first measurement
   if ( configuration_->getMeasurements().size() == 0 ){
     XCEPT_RAISE( xcept::Exception, "No measurements found!" );
   }
   set<TestedDevice*> td = configuration_->getMeasurements().front()->getTestedDevices();
-  cout << "Creating analyzed device from tested device " << endl << **td.begin() << endl;
-  AnalyzedDevice ad( **td.begin() );
-  analyzedDevices_.push_back( ad );
-  cout << "Created analyzed device from tested device " << endl << **td.begin() << endl;
   for ( set<TestedDevice*>::iterator tdi = td.begin(); tdi != td.end(); ++tdi ){
-    //cout << "Creating analyzed device from tested device " << endl << **tdi << endl;
-    //analyzedDevices_.push_back( AnalyzedDevice( **tdi ) );
-    //AnalyzedDevice ad( **tdi );
-    //cout << "Created analyzed device  " << endl << ad << endl;
-    //cout << "Created analyzed device from tested device " << endl << **tdi << endl;
+    analyzedDevices_.push_back( AnalyzedDevice( **tdi ) );
   }
+
+  // Also get the parameters of the adaptor used
+  for ( vector<AnalyzedDevice>::iterator ad = analyzedDevices_.begin(); ad != analyzedDevices_.end(); ++ad ){
+    // Get name of adaptor in use
+    stringstream xpath;
+    xpath << "/c:configuration/c:inputs/@c:adaptor";
+    string adaptorName = utils::getSelectedNodeValue( configXML, xpath.str() );
+    // Get the injection capacitance [pF] of this adaptor
+    xpath.str("");
+    xpath << "/c:configuration/c:calibrations/c:adaptors/c:adaptor[@c:name='" << adaptorName << "']/@c:injectionCapacitance";
+    string capacitance = utils::getSelectedNodeValue( configXML, xpath.str() );
+    cout << xpath.str() << endl;
+    cout << capacitance << endl;
+    if ( capacitance.size() == 0 ){
+      stringstream ss; ss << "Failed to find the injection capacitance for adaptor " << adaptorName;
+      XCEPT_RAISE( xcept::Exception, ss.str() );
+    }
+    ad->setInjectionCapacitance( utils::stringTo<double>( capacitance ) );
+    // Get the pulse division factor of this adaptor
+    xpath.str("");
+    xpath << "/c:configuration/c:calibrations/c:adaptors/c:adaptor[@c:name='" << adaptorName << "']/@c:pulseDivisionFactor";
+    string factor = utils::getSelectedNodeValue( configXML, xpath.str() );
+    if ( capacitance.size() == 0 ){
+      stringstream ss; ss << "Failed to find the pulse division factor for adaptor " << adaptorName;
+      XCEPT_RAISE( xcept::Exception, ss.str() );
+    }
+    ad->setPulseDivisionFactor( utils::stringTo<double>( factor ) );
+    // Get the correction coefficient for this adaptor's socket into which this device is plugged into
+    xpath.str("");
+    xpath << "/c:configuration/c:calibrations/c:adaptors/c:adaptor[@c:name='" << adaptorName 
+	  << "']/c:socket[@c:number='" << ad->getAdaptorSocket() << "']/@c:coefficient";
+    string coefficient = utils::getSelectedNodeValue( configXML, xpath.str() );
+    if ( coefficient.size() == 0 ){
+      stringstream ss; ss << "Failed to find the threshold correction coefficient for socket " << ad->getAdaptorSocket() << " of adaptor " << adaptorName;
+      XCEPT_RAISE( xcept::Exception, ss.str() );
+    }
+    ad->setCorrectionCoefficient( utils::stringTo<int>( coefficient ) );
+  }
+
   cout << "Analyzed devices" << endl << analyzedDevices_ << endl;
 }
 
@@ -107,7 +140,8 @@ void AFEB::teststand::Analysis::calibrateDACs( const string& configXML ){
     }
     DACs_.back().setCalibrationParameters( slfitter.getFittedParameters(),
 					   slfitter.getFittedParametersCovariance() );
-    cout << DACs_.back().getCalibrationParametersCovariance() << endl;
+    cout << *DACs_.back().getCalibrationParameters() << endl;
+    cout << *DACs_.back().getCalibrationParametersCovariance() << endl;
     // TMatrixT<double> mm(2,2); mm(0,0)=-1.; mm(0,1)=2.; mm(1,0)=3.; mm(1,1)=4.;
     // cout << mm << endl;
   }
@@ -118,7 +152,7 @@ void AFEB::teststand::Analysis::calculateGain(){
   stringstream xpath;
 
   // Loop over the devices
-  for ( vector<AnalyzedDevice>::const_iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
+  for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
 
     // Find the pulse generator's and the threshold generator's DACs for this device
     DAC pulseDAC( d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getId(),
@@ -163,11 +197,17 @@ void AFEB::teststand::Analysis::calculateGain(){
 	  cout << iChannel+1 << "  " 
 	       << histogram->GetBinContent( iChannel+1 ) << "   " 
 	       << histogram->GetBinError( iChannel+1 ) << endl;
-
-	}
+	  d->addThresholdMeasurement( iChannel,
+				      thresholdDAC.toMilliVolts( (*m)->getSetThreshold() ),
+				      pulseDAC    .toMilliVolts( histogram->GetBinContent( iChannel+1 ),
+								 histogram->GetBinError  ( iChannel+1 )  )
+				      );
+    
+	} // for ( int iChannel=0; iChannel<d->getNChannels(); ++iChannel )
 
 	f.Close();
-      }
-    }
-  }
+      } // if ( (*m)->getTypeType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitorType() == Measurement::external )
+    } // for ( vector<Measurement*>::const_iterator m = configuration_->getMeasurements().begin(); m != configuration_->getMeasurements().end(); ++m )
+    d->calculateGains();
+  } // for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d )
 }

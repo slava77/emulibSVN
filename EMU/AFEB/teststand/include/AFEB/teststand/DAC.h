@@ -52,7 +52,7 @@ namespace AFEB { namespace teststand {
       void setCalibrationParameters( const TMatrixD& parameters,
 				     const TMatrixDSym& covariance );
       pair<double,double> toMilliVolts( const double valueInDACUnits, 
-					const double errorInDACUnits ) const;
+					const double errorInDACUnits=0. ) const;
 
     private:
       string moduleId_;

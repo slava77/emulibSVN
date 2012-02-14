@@ -18,10 +18,13 @@ namespace AFEB { namespace teststand {
 
     class AnalyzedChannel{
     public:
+      friend class AnalyzedDevice;
       friend ostream& operator<<( ostream& os, const AnalyzedChannel& d );
+      void calculateGain();
 
     private:
-      double gain_;	///< gain
+      double gain_;	///< gain (slope of the line fitted to measuredThreshold( setThreshold ) )
+      double offset_;	///< offset (intercept of the line fitted to measuredThreshold( setThreshold ) )
       fit::LeastSquaresFitter<fit::StraightLine2D> fitter_; ///< straight-line fitter
     };
 

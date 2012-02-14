@@ -6,6 +6,12 @@
 #include <iomanip>
 
 ostream& AFEB::teststand::operator<<( ostream& os, const AnalyzedChannel& d ){
-  os << "Gain=" << d.gain_ << endl;
+  os << " gain="   << showpos << d.gain_ 
+     << " offset=" << showpos << d.offset_;
   return os;
+}
+
+void AFEB::teststand::AnalyzedChannel::calculateGain(){
+  gain_   = fitter_.getFittedParameter( AFEB::teststand::fit::StraightLine2D::slope     );
+  offset_ = fitter_.getFittedParameter( AFEB::teststand::fit::StraightLine2D::intercept );
 }
