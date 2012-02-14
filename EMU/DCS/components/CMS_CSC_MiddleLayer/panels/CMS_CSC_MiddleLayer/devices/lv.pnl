@@ -28,7 +28,7 @@ PANEL,-1 -1 810 506 N "_3DFace" 2
             makeDynString(deviceParamsDollar),
             20, 100, 0, 1, 1);
   
-  lvDp = dpSubStr(emux2p_getLvDpName(deviceParams, ex), DPSUB_SYS_DP);
+  lvDp = dpSubStr(emuui_getDpName(\"chamber_LV_disabled_channels\", deviceParams, ex), DPSUB_SYS_DP);
   if (emu_checkException(ex)) { return; }
   dpConnect(\"disabledChannelsUpdatedCB\", true, lvDp + \".disabled_channels\");
 }
