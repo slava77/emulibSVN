@@ -221,7 +221,7 @@ dyn_string references;
 int posX, posY;
 bool allGrayMode; // this flag is true when the whole LV FSM node is disabled - then back color of the tables is always gray
 
-dyn_int disabledChannels;
+dyn_string disabledChannels;
 dyn_string cfebAlarmColorDps, alctAlarmColorDps, lvdbAlarmColorDps;
 bool noCommunication;
 
@@ -284,7 +284,7 @@ void updateLastReadTimestampCB(string timestampDp, int timestamp) {
   lblLastUpdate.text = emuui_formatTime(t);
 }
 
-void updateDisabledChannelsCB(string dp, dyn_int disabledChannelsParam) {
+void updateDisabledChannelsCB(string dp, dyn_string disabledChannelsParam) {
   disabledChannels = disabledChannelsParam;
   
   //repaint the colors
@@ -309,21 +309,15 @@ void updateCfebAlarmColorsCB(dyn_string dps, dyn_string colors) {
     string currentAlarmColor = colors[i + currentsOffset];
     voltageAlarmColor = emuui_correctAlarmColor(voltageAlarmColor);
     currentAlarmColor = emuui_correctAlarmColor(currentAlarmColor);
+    bool isDisabled = dynContains(disabledChannels, dpSubStr(dps[i], DPSUB_SYS_DP_EL));
     string mainColor = voltageAlarmColor;
-    if ((strlen(currentAlarmColor) != 0) && (currentAlarmColor != \"FwStateOKPhysics\")) { // if there's an error in current, put this color in main color
+    if (isDisabled) {
+      mainColor = \"FwEquipmentDisabled\";
+    } else if ((strlen(currentAlarmColor) != 0) && (currentAlarmColor != \"FwStateOKPhysics\")) { // if there's an error in current, put this color in main color
       mainColor = currentAlarmColor;
     }
     
     tableCfeb.cellBackColRC(dpIndexToTableCell[i][1], dpIndexToTableCell[i][2], mainColor);
-  }
-  
-  // gray out the disabled channels
-  for (int i=1; i <= dynlen(disabledChannels); i++) {
-    if (disabledChannels[i] <= 5) { // if channel number is in [1;5] - it means it's a CFEB
-      tableCfeb.cellBackColRC(0, \"Cfeb_\" + disabledChannels[i], \"FwEquipmentDisabled\");
-      tableCfeb.cellBackColRC(1, \"Cfeb_\" + disabledChannels[i], \"FwEquipmentDisabled\");
-      tableCfeb.cellBackColRC(2, \"Cfeb_\" + disabledChannels[i], \"FwEquipmentDisabled\");
-    }
   }
 }                             
                              
@@ -354,14 +348,6 @@ void updateAlctAlarmColorsCB(dyn_string dps, dyn_string colors) {
   if (noCommunication) { return; } // don't update the table - let the \"???\" and grey color stay there
   if (lastStatus != 0) { return; }
 
-  if (dynContains(disabledChannels, 6)) { // 6 is the channel number for ALCT
-    tableAlct.cellBackColRC(0, \"#1\", \"FwEquipmentDisabled\");
-    tableAlct.cellBackColRC(0, \"#2\", \"FwEquipmentDisabled\");
-    tableAlct.cellBackColRC(0, \"#3\", \"FwEquipmentDisabled\");
-    tableAlct.cellBackColRC(0, \"#4\", \"FwEquipmentDisabled\");
-    return;
-  }
-  
   int currentsOffset = dynlen(colors) / 2; // the first half of this array is filled with voltage alarm colors, the second one with current alarm colors
   
   for (int i=1; i <= dynlen(colors) / 2; i++) {
@@ -371,7 +357,10 @@ void updateAlctAlarmColorsCB(dyn_string dps, dyn_string colors) {
       voltageAlarmColor = \"FwStateOKPhysics\";
     }
     string mainColor = voltageAlarmColor;
-    if ((strlen(currentAlarmColor) != 0) && (currentAlarmColor != \"FwStateOKPhysics\")) { // if there's an error in current, put this color in main color
+    bool isDisabled = dynContains(disabledChannels, dpSubStr(dps[i], DPSUB_SYS_DP_EL));
+    if (isDisabled) {
+      mainColor = \"FwEquipmentDisabled\";
+    } else if ((strlen(currentAlarmColor) != 0) && (currentAlarmColor != \"FwStateOKPhysics\")) { // if there's an error in current, put this color in main color
       mainColor = currentAlarmColor;
     }
     
@@ -401,14 +390,11 @@ void updateLvdbAlarmColorsCB(dyn_string dps, dyn_string colors) {
 
   for (int i=1; i <= dynlen(colors); i++) {
     string color = emuui_correctAlarmColor(colors[i]);
+    bool isDisabled = dynContains(disabledChannels, dpSubStr(dps[i], DPSUB_SYS_DP_EL));
+    if (isDisabled) {
+      color = \"FwEquipmentDisabled\";
+    }    
     tableLvdb.cellBackColRC(0, tableLvdb.columnToName(i - 1), color);
-  }
-  
-  if (dynContains(disabledChannels, 10)) { // let's say 10 will be number for LVDB 7v analog
-    tableLvdb.cellBackColRC(0, \"#1\", \"FwEquipmentDisabled\");
-  }
-  if (dynContains(disabledChannels, 11)) { // let's say 11 will be number for LVDB 7v digital
-    tableLvdb.cellBackColRC(0, \"#2\", \"FwEquipmentDisabled\");
   }
 }
 
