@@ -20,7 +20,7 @@ bool isSupervisor;
 
 main()
 {
-
+return;
   setFsmAccessControl();
   emumaj_debug("Access Control has been set.", true);
   
