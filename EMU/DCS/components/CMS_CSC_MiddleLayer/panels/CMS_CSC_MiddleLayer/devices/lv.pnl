@@ -1,23 +1,136 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 693 400 N "_3DFace" 0
-E E E E E 1 -1 -1 0  0 0
+PANEL,-1 -1 810 506 N "_3DFace" 2
+"$1"
+"$2"
+"main()
+{
+  
+  // ==== access control ====
+  if (isFunctionDefined(\"fwAccessControl_setupPanel\")) {
+    initAcConstants();
+    dyn_string ex;
+    fwAccessControl_setupPanel(\"accessPrivilegesChangedCB\", ex);
+    fwCU_connectOperationMode(\"accessPrivilegesChangedCB\", $1 + \"::\" + $2);
+    if (emu_checkException(ex)) { return; }
+  }
+  //=========================  
+  
+  dyn_string ex;
+  deviceParams = emu_fsmNodeToDeviceParams($2, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  string deviceParamsDollar = \"$deviceParams:\" + emuui_deviceParamsToString(deviceParams);
+  addSymbol(myModuleName(), myPanelName(),
+            EMUUI_OBJECTS_DIR + \"/tooltip_objects/refTooltipObj_chamber_low_voltage.pnl\",
+            \"refMon\",
+            makeDynString(deviceParamsDollar),
+            20, 100, 0, 1, 1);
+  
+  lvDp = emux2p_getLvDpName(deviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  dpConnect(\"disabledChannelsUpdatedCB\", true, lvDp + \".disabled_channels\");
+}
+
+/** initialize constants required for access control - basically just fill in the arrays of control and expert control button names. */
+void initAcConstants() {
+  controlButtons = makeDynString();
+  expertControlButtons = makeDynString();
+}" 0
+ "main()
+{
+  emuui_destroyReferences(references);
+}" 0
+ E E E 1 -1 -1 0  0 0
 ""0  1
-E E 2
+E "#uses \"CMS_CSC_common/emu_accessControl.ctl\"
+#uses \"CMS_CSC_MiddleLayer/emu_x2p.ctl\"
+
+//some panel-wide constants and variables
+mapping deviceParams;
+string lvDp;
+dyn_string disabledChannels;
+dyn_string selectedChannels;
+bool isSelectedChannelEnabled;
+
+/** for access control - arrays of control and expert control buttons which should be under access control */
+dyn_string controlButtons;
+dyn_string expertControlButtons;
+
+/** This function is called whenever the user privileges change and just passes that to emu_enableDisableControl() which takes care of enabling/disabling buttons. */
+void accessPrivilegesChangedCB(string dummy1, string dummy2) {
+  emu_enableDisableControl($1 + \"::\" + $2, controlButtons, true, \"lblNoControl\", expertControlButtons, true);
+}
+
+void disabledChannelsUpdatedCB(string dp, dyn_string disChan) {
+  disabledChannels = disChan;
+}
+
+void channelSelectionUpdated() {
+  dynClear(selectedChannels);
+  
+  string name = comboChannel.text;
+  if (strpos(name, \"---\") >= 0) {
+    selectedChannel = \"\";
+    isSelectedChannelEnabled = false;
+    btnEnableDisable.enabled = false;
+    return;
+  } else {
+    dyn_string split = strsplit(name, \" \");
+    string board = strtolower(split[1]);
+    int boardNum;
+    string ch;
+    if (board == \"cfeb\") {
+      boardNum = split[2];
+      ch = split[3]; //e.g. 3.3V
+    } else if (board == \"alct\") {
+      ch = split[2];
+    }
+    strreplace(ch, \".\", \"\");
+    strreplace(ch, \"V\", \"\");
+    
+    dyn_string chDps;
+    if (board == \"cfeb\") {
+      chDps = dpNames(lvDp + \"/Mon.\" + board + \".*\" + ch + \".v\" + boardNum);
+    } else if (board == \"alct\") {
+      chDps = dpNames(lvDp + \"/Mon.\" + board + \".*\" + ch);
+    }
+    
+    for (int i=1; i <= dynlen(chDps); i++) {
+      dynAppend(selectedChannels, dpSubStr(chDps[i], DPSUB_SYS_DP_EL));
+    }
+    
+    isSelectedChannelEnabled = !dynContains(disabledChannels, selectedChannels[1]);
+    
+    if (isSelectedChannelEnabled) {
+      btnEnableDisable.text = \"Disable\";
+    } else {
+      btnEnableDisable.text = \"Enable\";
+    }
+    btnEnableDisable.enabled = true;
+  }
+  emu_info(\"selected channels: \" + selectedChannels);
+}" 0
+ 2
 "CBRef" "1"
-"EClose" E
+"EClose" "main()
+{
+  emuui_destroyReferences(references);
+  PanelOff();
+}" 0
+
 ""
 DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
 LAYER, 0 
 1
 LANG:1 0 
-2 0
-"PRIMITIVE_TEXT2"
+2 26
+"lblNoControl"
 ""
-1 22 112 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 558 42 E E E 1 E 1 E N "_3DText" E N "FwStateAttention1" E E
  E E
-0 0 0 0 0 0
+36 0 0 0 0 0
 E E E
 0
 1
@@ -25,12 +138,164 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 22 112 544 128
-0 2 2 "0s" 0 0 0 192 0 0  22 112 1
+E E 0 0 0 0 1 E U  1 E 30 480 375 497
+1 2 2 "0s" 0 0 0 65 0 0  30 480 1
+1
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
+0 1
+LANG:1 32 You don't have control privilege
+22 27
+"comboChannel"
+""
+1 430 30 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+37 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  428 28 622 56
+20
+1
+LANG:1 24 --- choose a channel ---
+
+0
+1
+LANG:1 11 CFEB 1 3.3V
+
+0
+1
+LANG:1 11 CFEB 1 5.0V
+
+0
+1
+LANG:1 11 CFEB 1 6.0V
+
+0
+1
+LANG:1 11 CFEB 2 3.3V
+
+0
+1
+LANG:1 11 CFEB 2 5.0V
+
+0
+1
+LANG:1 11 CFEB 2 6.0V
+
+0
+1
+LANG:1 11 CFEB 3 3.3V
+
+0
+1
+LANG:1 11 CFEB 3 5.0V
+
+0
+1
+LANG:1 11 CFEB 3 6.0V
+
+0
+1
+LANG:1 11 CFEB 4 3.3V
+
+0
+1
+LANG:1 11 CFEB 4 5.0V
+
+0
+1
+LANG:1 11 CFEB 4 6.0V
+
+0
+1
+LANG:1 11 CFEB 5 3.3V
+
+0
+1
+LANG:1 11 CFEB 5 5.0V
+
+0
+1
+LANG:1 11 CFEB 5 6.0V
+
+0
+1
+LANG:1 9 ALCT 1.8V
+
+0
+1
+LANG:1 9 ALCT 3.3V
+
+0
+1
+LANG:1 9 ALCT 5.5V
+
+0
+1
+LANG:1 9 ALCT 5.6V
+
+0
+
+E
+"main()
+{
+  channelSelectionUpdated();
+}" 0
+
+E
+ 0 0
+13 28
+"btnEnableDisable"
+""
+1 430 60 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+38 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  428 58 622 92
+
+T 
+1
+LANG:1 6 Enable
+"main()
+{
+  dyn_string ex;
+  for (int i=1; i <= dynlen(selectedChannels); i++) {
+    emux2p_enableDisableChannel(selectedChannels[i], !isSelectedChannelEnabled, ex);
+    if (emu_checkException(ex)) { return; }
+  }
+  channelSelectionUpdated();
+}" 0
+ E E E
+30 29
+"FRAME1"
+""
+1 410 12 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+39 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1 0 0.859375 0 -10.3125 0 E 410 12 641 141
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
-LANG:1 87 LV panel is currently under development, sorry... contact Evaldas Juska for more info..
+LANG:1 7 Control
 0
 LAYER, 1 
 1

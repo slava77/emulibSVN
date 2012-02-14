@@ -1,23 +1,79 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 693 400 N "_3DFace" 0
-E E E E E 1 -1 -1 0  0 0
+PANEL,-1 -1 663 506 N "_3DFace" 2
+"$1"
+"$2"
+"main()
+{
+  
+  // ==== access control ====
+  if (isFunctionDefined(\"fwAccessControl_setupPanel\")) {
+    initAcConstants();
+    dyn_string ex;
+    fwAccessControl_setupPanel(\"accessPrivilegesChangedCB\", ex);
+    fwCU_connectOperationMode(\"accessPrivilegesChangedCB\", $1 + \"::\" + $2);
+    if (emu_checkException(ex)) { return; }
+  }
+  //=========================  
+  
+  dyn_string ex;
+  deviceParams = emu_fsmNodeToDeviceParams($2, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  string deviceParamsDollar = \"$deviceParams:\" + emuui_deviceParamsToString(deviceParams);
+  addSymbol(myModuleName(), myPanelName(),
+            EMUUI_OBJECTS_DIR + \"/tooltip_objects/refTooltipObj_hvPrimary_general.pnl\",
+            \"refMon\",
+            makeDynString(deviceParamsDollar),
+            20, 100, 0, 1, 1);  
+}
+
+/** initialize constants required for access control - basically just fill in the arrays of control and expert control button names. */
+void initAcConstants() {
+  controlButtons = makeDynString();
+  expertControlButtons = makeDynString();
+}" 0
+ "main()
+{
+  emuui_destroyReferences(references);
+}" 0
+ E E E 1 -1 -1 0  0 0
 ""0  1
-E E 2
+E "#uses \"CMS_CSC_common/emu_accessControl.ctl\"
+#uses \"CMS_CSC_MiddleLayer/emu_x2p.ctl\"
+
+//some panel-wide constants and variables
+mapping deviceParams;
+
+/** for access control - arrays of control and expert control buttons which should be under access control */
+dyn_string controlButtons;
+dyn_string expertControlButtons;
+
+/** This function is called whenever the user privileges change and just passes that to emu_enableDisableControl() which takes care of enabling/disabling buttons. */
+void accessPrivilegesChangedCB(string dummy1, string dummy2) {
+  emu_enableDisableControl($1 + \"::\" + $2, controlButtons, true, \"lblNoControl\", expertControlButtons, true);
+}
+" 0
+ 2
 "CBRef" "1"
-"EClose" E
+"EClose" "main()
+{
+  emuui_destroyReferences(references);
+  PanelOff();
+}" 0
+
 ""
 DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
 LAYER, 0 
 1
 LANG:1 0 
-2 0
-"PRIMITIVE_TEXT2"
+2 26
+"lblNoControl"
 ""
-1 22 112 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 558 42 E E E 1 E 1 E N "_3DText" E N "FwStateAttention1" E E
  E E
-0 0 0 0 0 0
+36 0 0 0 0 0
 E E E
 0
 1
@@ -25,12 +81,12 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 22 112 596 128
-0 2 2 "0s" 0 0 0 192 0 0  22 112 1
+E E 0 0 0 0 1 E U  1 E 30 480 375 497
+1 2 2 "0s" 0 0 0 65 0 0  30 480 1
 1
-LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
 0 1
-LANG:1 95 HV Primary panel is currently under development, sorry... contact Evaldas Juska for more info..
+LANG:1 32 You don't have control privilege
 0
 LAYER, 1 
 1

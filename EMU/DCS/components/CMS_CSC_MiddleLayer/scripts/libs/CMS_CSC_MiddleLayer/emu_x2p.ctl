@@ -154,5 +154,24 @@ public void emux2p_enableDisableChannel(string dp, bool isEnable, dyn_string &ex
   if (!dpExists(dp)) {
     emu_addError("Not existing DP passed to emux2p_enableDisableChannel()", exceptionInfo);
   }
-  emu_notImplementedError("emux2p_enableDisableChannel");
+
+  string fsmDp = emux2p_getFsmDpFromDataDp(dp, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  dyn_string disabledDps;
+  dpGet(fsmDp + ".disabled_channels", disabledDps);
+  
+  int idx = dynContains(disabledDps, dpSubStr(dp, DPSUB_SYS_DP_EL));
+  if (isEnable && (idx > 0)) {
+    emu_info("Enabling " + dpSubStr(dp, DPSUB_SYS_DP_EL));
+    fwAlertConfig_activate(dp, exceptionInfo);
+    if (emu_checkException(exceptionInfo)) { return; }
+    dynRemove(disabledDps, idx);
+    dpSet(fsmDp + ".disabled_channels", disabledDps);
+  } else if (!isEnable && (idx <= 0)) {
+    emu_info("Disabling " + dpSubStr(dp, DPSUB_SYS_DP_EL));
+    fwAlertConfig_deactivate(dp, exceptionInfo);
+    if (emu_checkException(exceptionInfo)) { return; }
+    dynAppend(disabledDps, dpSubStr(dp, DPSUB_SYS_DP_EL));
+    dpSet(fsmDp + ".disabled_channels", disabledDps);
+  }
 }
