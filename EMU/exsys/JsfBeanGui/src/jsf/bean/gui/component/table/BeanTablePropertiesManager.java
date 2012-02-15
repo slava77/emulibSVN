@@ -8,9 +8,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 import jsf.bean.gui.JsfBeanBase;
 import jsf.bean.gui.component.BeanTableManager;
@@ -28,9 +25,6 @@ public class BeanTablePropertiesManager {
     private static final String PROPERTIES_BASE_PATH = "resources/tables/";
     private static final String PROPERTIES_EXTENSION = ".properties";
     private static final String COOKIE_NAME_PATTERN = "table.%s.properties";
-    
-    // Caching default properties
-    private static Map<String, Properties> beanProperties = new HashMap<String, Properties>();
 
     public static Properties getProperties(String tableId) {
 
@@ -50,32 +44,19 @@ public class BeanTablePropertiesManager {
                     fin.close();
                     return p;
                 } catch (Exception ex) {
-                    logger.warn("Table [id = {0}] personal properties not found at [{1}]. Reseting and loading defaults...", tableId, f.getAbsolutePath());
+                    //logger.warn("Table [id = {0}] personal properties not found at [{1}]. Reseting and loading defaults...", tableId, f.getAbsolutePath());
                     JsfBeanBase.setCookie(cookieName, "", 0);
                 }
             }
         }
 
         // Loading default properties
-        {
-            if (!beanProperties.containsKey(tableId)) {
-                File f = JsfBeanBase.getRealFile(PROPERTIES_BASE_PATH.concat(File.separator).concat(tableId).concat(PROPERTIES_EXTENSION));
-                Properties p = new Properties();
-                try {
-                    p.load(new FileInputStream(f));
-                } catch (Exception ex) {
-                    logger.warn("Table [id = {0}] properties not found at [{1}]. Loading defaults...", tableId, f.getAbsolutePath());
-                }
-                beanProperties.put(tableId, p);
-            }
-        }
-
-        // Copy properties instead of using the same...
-        Properties op = beanProperties.get(tableId);
+        File f = JsfBeanBase.getRealFile(PROPERTIES_BASE_PATH.concat(File.separator).concat(tableId).concat(PROPERTIES_EXTENSION));
         Properties p = new Properties();
-        for (Enumeration keys = op.propertyNames(); keys.hasMoreElements();) {
-            Object key = keys.nextElement();
-            p.put(key, op.get(key));
+        try {
+            p.load(new FileInputStream(f));
+        } catch (Exception ex) {
+            //logger.warn("Table [id = {0}] properties not found at [{1}]. Loading defaults...", tableId, f.getAbsolutePath());
         }
 
         return p;
