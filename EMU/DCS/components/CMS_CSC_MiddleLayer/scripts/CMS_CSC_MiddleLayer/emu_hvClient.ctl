@@ -65,11 +65,15 @@ void emuhv_serverStatusUpdatedCB(string dp, string value) {
 
   dyn_string ex;
   if (value == "READY") {
-    emuhv_reconfigure(ex);
+//    emuhv_reconfigure(ex);
     emuhv_serverReady = true;
     if (emu_checkException(ex)) { return; }
   } else if (value == "UPDATING") {
     for (int i=1; i <= dynlen(test_all_chambers); i++) {
+      emuhv_sendCommand(test_all_chambers[i], EMUHV_COMMAND_SET_IMAX, ex, 5);
+      if (emu_checkException(ex)) { return; }
+      emuhv_sendCommand(test_all_chambers[i], EMUHV_COMMAND_SET_IMAX, ex, 5);
+      if (emu_checkException(ex)) { return; }
       emuhv_sendCommand(test_all_chambers[i], EMUHV_COMMAND_SET_IMAX, ex, 5);
       if (emu_checkException(ex)) { return; }
     }
