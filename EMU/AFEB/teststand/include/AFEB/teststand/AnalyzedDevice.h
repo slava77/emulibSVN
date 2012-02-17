@@ -29,8 +29,8 @@ namespace AFEB { namespace teststand {
       AnalyzedDevice( const TestedDevice& device );
 
       void addThresholdMeasurement( const int iChannel, 
-				    const pair<double,double> setThreshold, 
-				    const pair<double,double> measuredThreshold );
+				    const pair<double,double> V_measuredThreshold,
+				    const pair<double,double> V_setThreshold );
 
       double getCorrectionCoefficient() const { return correctionCoefficient_; }
       double getInjectionCapacitance () const { return injectionCapacitance_;  }

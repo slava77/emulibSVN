@@ -44,7 +44,7 @@ void AFEB::teststand::Analysis::collectAnalyzedDevices( const string& configXML 
     analyzedDevices_.push_back( AnalyzedDevice( **tdi ) );
   }
 
-  // Also get the parameters of the adaptor used
+  // Associate with the analyzed devices the parameters of the adaptor used
   for ( vector<AnalyzedDevice>::iterator ad = analyzedDevices_.begin(); ad != analyzedDevices_.end(); ++ad ){
     // Get name of adaptor in use
     stringstream xpath;
@@ -198,9 +198,9 @@ void AFEB::teststand::Analysis::calculateGain(){
 	       << histogram->GetBinContent( iChannel+1 ) << "   " 
 	       << histogram->GetBinError( iChannel+1 ) << endl;
 	  d->addThresholdMeasurement( iChannel,
-				      thresholdDAC.toMilliVolts( (*m)->getSetThreshold() ),
-				      pulseDAC    .toMilliVolts( histogram->GetBinContent( iChannel+1 ),
-								 histogram->GetBinError  ( iChannel+1 )  )
+				      pulseDAC    .mV_from_DACUnit( histogram->GetBinContent( iChannel+1 ),
+								    histogram->GetBinError  ( iChannel+1 )  ),
+				      thresholdDAC.mV_from_DACUnit( (*m)->getSetThreshold() )
 				      );
     
 	} // for ( int iChannel=0; iChannel<d->getNChannels(); ++iChannel )

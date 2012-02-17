@@ -30,17 +30,19 @@ AFEB::teststand::AnalyzedDevice::AnalyzedDevice( const TestedDevice& device )
 }
 
 void AFEB::teststand::AnalyzedDevice::addThresholdMeasurement( const int iChannel, 
-							       const pair<double,double> setThreshold, 
-							       const pair<double,double> measuredThreshold ){
+							       const pair<double,double> V_measuredThreshold,
+							       const pair<double,double> V_setThreshold ){
   TMatrixD    x  ( 1, 1 );
   TMatrixD    y  ( 1, 1 );
   TMatrixDSym var( 1 );
-  x  ( 0, 0 ) = setThreshold.first;
-  y  ( 0, 0 ) = measuredThreshold.first;
-  var( 0, 0 ) = measuredThreshold.second * measuredThreshold.second;
+  // Convert measured threshold voltage to injected charge [fC]. Take into account the correction coefficient as well:
+  x  ( 0, 0 ) = injectionCapacitance_ * V_measuredThreshold.first / pulseDivisionFactor_ / correctionCoefficient_;
+  y  ( 0, 0 ) = V_setThreshold.first;
+  var( 0, 0 ) = V_setThreshold.second * V_setThreshold.second;
   //cout << "Variance: "; var.Print();
   channels_[iChannel].fitter_.addObservation( x, y, var );
 }
+
 
 void AFEB::teststand::AnalyzedDevice::calculateGains(){
   for ( vector<AnalyzedChannel>::iterator c = channels_.begin(); c != channels_.end(); ++c ){

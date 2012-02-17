@@ -102,8 +102,8 @@ AFEB::teststand::DAC::setCalibrationParameters( const TMatrixD& parameters,
 }
 
 pair<double,double> 
-AFEB::teststand::DAC::toMilliVolts( const double valueInDACUnits, 
-				    const double errorInDACUnits ) const {
+AFEB::teststand::DAC::mV_from_DACUnit( const double valueInDACUnits, 
+				       const double errorInDACUnits ) const {
   TMatrixD Jacobian( DAC::nCalibrationParameters, 1 );
   Jacobian( DAC::intercept, 0 ) = 1.;
   Jacobian( DAC::slope    , 0 ) = valueInDACUnits;

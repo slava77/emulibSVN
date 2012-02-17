@@ -23,8 +23,8 @@ namespace AFEB { namespace teststand {
       void calculateGain();
 
     private:
-      double gain_;	///< gain (slope of the line fitted to measuredThreshold( setThreshold ) )
-      double offset_;	///< offset (intercept of the line fitted to measuredThreshold( setThreshold ) )
+      double gain_;	///< gain, i.e., the slope of the line fitted to V_setThreshold( Q_measuredThreshold )
+      double offset_;	///< offset, i.e., the intercept of the line fitted to V_setThreshold( Q_measuredThreshold ))
       fit::LeastSquaresFitter<fit::StraightLine2D> fitter_; ///< straight-line fitter
     };
 
