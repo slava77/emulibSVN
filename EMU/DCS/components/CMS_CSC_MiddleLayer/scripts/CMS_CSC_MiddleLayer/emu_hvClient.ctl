@@ -16,6 +16,7 @@ const int EMUHV_STATE_ON_VMON_ACCURACY = 50;
 const int EMUHV_STATE_STANDBY_VMON_ACCURACY = 60;
 
 bool emuhv_serverReady = false;
+dyn_mapping test_all_chambers;
 
 main() {
   emu_info("HV Client: starting up...");
@@ -47,6 +48,8 @@ main() {
   dyn_string dps = dpNames(EMUHV_DP_PREFIX + "*.fsm_command", "CscHvChamber");
   for (int i=1; i <= dynlen(dps); i++) {
     dpConnect("emuhv_commandReceivedCB", false, dps[i]);
+    dynAppend(test_all_chambers, emu_fsmNodeToDeviceParams(dps[i], ex));
+    if (emu_checkException(ex)) { return; }
   }
   // hook up to primary FSM command DPEs
   dyn_string primaryCommandDps = dpNames(EMUHV_DP_PREFIX + "*.fsm_command", "CscHvPrimary");
@@ -65,6 +68,12 @@ void emuhv_serverStatusUpdatedCB(string dp, string value) {
     emuhv_reconfigure(ex);
     emuhv_serverReady = true;
     if (emu_checkException(ex)) { return; }
+  } else if (value == "UPDATING") {
+    for (int i=1; i <= dynlen(test_all_chambers); i++) {
+      emuhv_sendCommand(test_all_chambers[i], EMUHV_COMMAND_SET_IMAX, ex, 5);
+      if (emu_checkException(ex)) { return; }
+    }
+    emuhv_serverReady = true;
   } else {
     emuhv_serverReady = false;
   }
