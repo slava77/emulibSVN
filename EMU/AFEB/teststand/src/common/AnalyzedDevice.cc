@@ -3,6 +3,8 @@
 #include "AFEB/teststand/utils/IO.h"
 #include "xcept/Exception.h"
 
+#include "TMath.h"
+
 #include <iomanip>
 
 ostream& AFEB::teststand::operator<<( ostream& os, const AnalyzedDevice& d ){
@@ -32,15 +34,17 @@ AFEB::teststand::AnalyzedDevice::AnalyzedDevice( const TestedDevice& device )
 void AFEB::teststand::AnalyzedDevice::addThresholdMeasurement( const int iChannel, 
 							       const pair<double,double> V_measuredThreshold,
 							       const pair<double,double> V_setThreshold ){
+  // Fit Q(V) instead of V(Q) to better estimate the error of the fit parameters. (The error is on Q rather than on V.)
+
   TMatrixD    x  ( 1, 1 );
   TMatrixD    y  ( 1, 1 );
   TMatrixDSym var( 1 );
   // Convert measured threshold voltage to injected charge [fC]. Take into account the correction coefficient as well:
-  x  ( 0, 0 ) = injectionCapacitance_ * V_measuredThreshold.first / pulseDivisionFactor_ / correctionCoefficient_;
-  y  ( 0, 0 ) = V_setThreshold.first;
-  var( 0, 0 ) = V_setThreshold.second * V_setThreshold.second;
-  //cout << "Variance: "; var.Print();
+  x  ( 0, 0 ) = V_setThreshold.first;
+  y  ( 0, 0 ) = injectionCapacitance_ * V_measuredThreshold.first / pulseDivisionFactor_ / correctionCoefficient_;
+  var( 0, 0 ) = TMath::Power( injectionCapacitance_ * V_measuredThreshold.second / pulseDivisionFactor_, 2 );
   channels_[iChannel].fitter_.addObservation( x, y, var );
+  // cout << "Added ( " << x(0,0) << ", " << y(0,0) << "+-" << var(0,0) << " )" << endl;
 }
 
 
