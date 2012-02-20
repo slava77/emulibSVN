@@ -27,6 +27,10 @@ PANEL,-1 -1 663 506 N "_3DFace" 2
             \"refMon\",
             makeDynString(deviceParamsDollar),
             20, 100, 0, 1, 1);  
+
+  tempDp = dpSubStr(emuui_getDpName(\"chamber_temperature_disabled_channels\", deviceParams, ex), DPSUB_SYS_DP);
+  if (emu_checkException(ex)) { return; }
+  dpConnect(\"disabledChannelsUpdatedCB\", true, tempDp + \".disabled_channels\");
 }
 
 /** initialize constants required for access control - basically just fill in the arrays of control and expert control button names. */
@@ -45,6 +49,10 @@ E "#uses \"CMS_CSC_common/emu_accessControl.ctl\"
 
 //some panel-wide constants and variables
 mapping deviceParams;
+string tempDp;
+dyn_string disabledChannels;
+dyn_string selectedChannels;
+bool isSelectedChannelEnabled;
 
 /** for access control - arrays of control and expert control buttons which should be under access control */
 dyn_string controlButtons;
@@ -54,7 +62,46 @@ dyn_string expertControlButtons;
 void accessPrivilegesChangedCB(string dummy1, string dummy2) {
   emu_enableDisableControl($1 + \"::\" + $2, controlButtons, true, \"lblNoControl\", expertControlButtons, true);
 }
-" 0
+
+void disabledChannelsUpdatedCB(string dp, dyn_string disChan) {
+  emu_debug(\"disabled channels updated: \" + disChan);
+  disabledChannels = disChan;
+}
+
+void channelSelectionUpdated() {
+  dynClear(selectedChannels);
+  
+  string name = comboChannel.text;
+  if (strpos(name, \"---\") >= 0) {
+    selectedChannel = \"\";
+    isSelectedChannelEnabled = false;
+    btnEnableDisable.enabled = false;
+    return;
+  } else {
+    dyn_string split = strsplit(name, \" \");
+    string board = strtolower(split[1]);
+    int boardNum = 1;
+    if (board == \"cfeb\") {
+      boardNum = split[2];
+    }
+    
+    dyn_string chDps = dpNames(tempDp + \"/Mon.\" + board + \".v\" + boardNum);
+
+    for (int i=1; i <= dynlen(chDps); i++) {
+      dynAppend(selectedChannels, dpSubStr(chDps[i], DPSUB_SYS_DP_EL));
+    }
+    
+    isSelectedChannelEnabled = !dynContains(disabledChannels, selectedChannels[1]);
+    
+    if (isSelectedChannelEnabled) {
+      btnEnableDisable.text = \"Disable\";
+    } else {
+      btnEnableDisable.text = \"Enable\";
+    }
+    btnEnableDisable.enabled = true;
+  }
+  emu_debug(\"selected channels: \" + selectedChannels);
+}" 0
  2
 "CBRef" "1"
 "EClose" "main()
@@ -87,6 +134,111 @@ E E 0 0 0 0 1 E U  1 E 30 480 375 497
 LANG:1 38 Helvetica [Adobe],-1,14,5,50,0,0,0,0,0
 0 1
 LANG:1 32 You don't have control privilege
+22 27
+"comboChannel"
+""
+1 420 30 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+37 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  418 28 612 56
+8
+1
+LANG:1 24 --- choose a channel ---
+
+0
+1
+LANG:1 6 CFEB 1
+
+0
+1
+LANG:1 6 CFEB 2
+
+0
+1
+LANG:1 6 CFEB 3
+
+0
+1
+LANG:1 6 CFEB 4
+
+0
+1
+LANG:1 6 CFEB 5
+
+0
+1
+LANG:1 4 ALCT
+
+0
+1
+LANG:1 3 DMB
+
+0
+
+E
+"main()
+{
+  channelSelectionUpdated();
+}" 0
+
+E
+ 0 0
+13 28
+"btnEnableDisable"
+""
+1 420 60 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+38 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  418 58 612 92
+
+T 
+1
+LANG:1 6 Enable
+"main()
+{
+  dyn_string ex;
+  for (int i=1; i <= dynlen(selectedChannels); i++) {
+    emux2p_enableDisableChannel(selectedChannels[i], !isSelectedChannelEnabled, ex);
+    if (emu_checkException(ex)) { return; }
+  }
+  delay(0, 200); // so that disabled channels are updated first..
+  channelSelectionUpdated();
+}" 0
+ E E E
+30 29
+"FRAME1"
+""
+1 410 12 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+39 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1 0 0.859375 -10 -10.3125 0 E 410 12 641 141
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 7 Control
 0
 LAYER, 1 
 1

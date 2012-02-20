@@ -35,7 +35,7 @@ PANEL,-1 -1 810 506 N "_3DFace" 2
 
 /** initialize constants required for access control - basically just fill in the arrays of control and expert control button names. */
 void initAcConstants() {
-  controlButtons = makeDynString();
+  controlButtons = makeDynString(\"btnEnableDisable\");
   expertControlButtons = makeDynString();
 }" 0
  "main()
@@ -110,7 +110,7 @@ void channelSelectionUpdated() {
     }
     btnEnableDisable.enabled = true;
   }
-  emu_info(\"selected channels: \" + selectedChannels);
+  emu_debug(\"selected channels: \" + selectedChannels);
 }" 0
  2
 "CBRef" "1"
@@ -275,6 +275,7 @@ LANG:1 6 Enable
     emux2p_enableDisableChannel(selectedChannels[i], !isSelectedChannelEnabled, ex);
     if (emu_checkException(ex)) { return; }
   }
+  delay(0, 200); // so that disabled channels are updated first..
   channelSelectionUpdated();
 }" 0
  E E E
