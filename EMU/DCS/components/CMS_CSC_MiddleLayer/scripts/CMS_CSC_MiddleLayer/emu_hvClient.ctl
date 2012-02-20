@@ -16,8 +16,9 @@ const int EMUHV_STATE_ON_VMON_ACCURACY = 50;
 const int EMUHV_STATE_STANDBY_VMON_ACCURACY = 60;
 
 bool emuhv_serverReady = false;
-dyn_mapping test_all_chambers;
-int test_last_vset = 5;
+
+// dyn_mapping test_all_chambers;
+// int test_last_vset = 5;
 
 main() {
   emu_info("HV Client: starting up...");
@@ -65,22 +66,22 @@ void emuhv_serverStatusUpdatedCB(string dp, string value) {
 
   dyn_string ex;
   if (value == "READY") {
-//    emuhv_reconfigure(ex);
+    emuhv_reconfigure(ex);
     emuhv_serverReady = true;
     if (emu_checkException(ex)) { return; }
-  } else if (value == "UPDATING") {
-    if (test_last_vset == 5) {
-      test_last_vset = 10;
-    } else if (test_last_vset == 10) {
-      test_last_vset = 5;
-    }
-    for (int i=1; i <= dynlen(test_all_chambers); i++) {
-      emuhv_sendCommand(test_all_chambers[i], EMUHV_COMMAND_SET_VSET, ex, test_last_vset);
-      if (emu_checkException(ex)) { return; }
-      emuhv_sendCommand(test_all_chambers[i], EMUHV_COMMAND_SET_IMAX, ex, 5);
-      if (emu_checkException(ex)) { return; }
-    }
-    emuhv_serverReady = true;
+//   } else if (value == "UPDATING") {
+//     if (test_last_vset == 5) {
+//       test_last_vset = 10;
+//     } else if (test_last_vset == 10) {
+//       test_last_vset = 5;
+//     }
+//     for (int i=1; i <= dynlen(test_all_chambers); i++) {
+//       emuhv_sendCommand(test_all_chambers[i], EMUHV_COMMAND_SET_VSET, ex, test_last_vset);
+//       if (emu_checkException(ex)) { return; }
+//       emuhv_sendCommand(test_all_chambers[i], EMUHV_COMMAND_SET_IMAX, ex, 5);
+//       if (emu_checkException(ex)) { return; }
+//     }
+//     emuhv_serverReady = true;
   } else {
     emuhv_serverReady = false;
   }
