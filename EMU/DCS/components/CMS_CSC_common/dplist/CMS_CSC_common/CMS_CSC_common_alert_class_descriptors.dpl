@@ -50,7 +50,7 @@ CscAlertClass_FwCaenChannel_dot_actual_dot_Trip.alertTexts	CscConf_alertClassDes
 CscAlertClass_FwCaenChannel_dot_actual_dot_OvC.class	CscConf_alertClassDescriptors	_fwErrorNack_61.	0x101	14.10.2010 16:43:23.098
 CscAlertClass_CscFedDdu.class	CscConf_alertClassDescriptors	_fwWarningNack_41.	0x101	20.02.2012 13:40:36.261
 CscAlertClass_CscFedDdu.alertTexts	CscConf_alertClassDescriptors	"DDU OK", "DDU ERROR"	0x101	20.02.2012 13:40:48.515
-CscAlertClass_CscHvChamber.class	CscConf_alertClassDescriptors	_fwWarningNack_41.	0x101	20.02.2012 13:41:34.486
+CscAlertClass_CscHvChamber.class	CscConf_alertClassDescriptors	_fwErrorNack_70.	0x101	20.02.2012 13:58:10.871
 CscAlertClass_CscHvChamber.alertTexts	CscConf_alertClassDescriptors	"HV OK", "HV ERROR"	0x101	20.02.2012 13:41:45.781
 CscAlertClass_CscHvPrimary.class	CscConf_alertClassDescriptors	_fwFatalAck_90.	0x101	20.02.2012 13:42:19.478
 CscAlertClass_CscHvPrimary.alertTexts	CscConf_alertClassDescriptors	"HV PRIMARY PSU OK", "HV PRIMARY PSU ERROR"	0x101	20.02.2012 13:42:31.204
