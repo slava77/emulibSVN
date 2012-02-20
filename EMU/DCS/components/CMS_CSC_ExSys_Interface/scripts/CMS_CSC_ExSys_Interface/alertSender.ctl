@@ -23,12 +23,12 @@ void exsys_alertSenderInternalCommandUpdatedCB(string dp, string command) {
   emu_info("Exsys Alert Sender: got '" + command + "' internal command");
   
   if (command == EXSYS_INTERNAL_CMD_NO_EXSYS_MODE) {
-    dpSetWait("CscAlertClass_HV_1_d.class", "_fwErrorNack_70.");
+    dpSetWait("CscAlertClass_CscHvChamber.class", "_fwErrorNack_70.");
     emuAlert_updateAllAlertClassesForType("HV_1_d");
     dpSetWait("CscAlertClass_FwCaenChannel.class", "_fwErrorNack_70.");
     emuAlert_updateAllAlertClassesForType("FwCaenChannel");
   } else if (command == EXSYS_INTERNAL_CMD_EXSYS_MODE) {
-    dpSetWait("CscAlertClass_HV_1_d.class", "_fwWarningNack_41.");
+    dpSetWait("CscAlertClass_CscHvChamber.class", "_fwWarningNack_41.");
     emuAlert_updateAllAlertClassesForType("HV_1_d");
     dpSetWait("CscAlertClass_FwCaenChannel.class", "_fwWarningNack_41.");
     emuAlert_updateAllAlertClassesForType("FwCaenChannel");
