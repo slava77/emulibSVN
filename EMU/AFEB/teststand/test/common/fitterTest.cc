@@ -1,5 +1,6 @@
 #include "AFEB/teststand/fit/AbstractModel.h"
 #include "AFEB/teststand/fit/StraightLine2D.h"
+#include "AFEB/teststand/fit/Polynomial.h"
 #include "AFEB/teststand/fit/LeastSquaresFitter.h"
 
 #include "TRandom.h"
@@ -98,20 +99,32 @@ int main( int argc, char** argv ){
   TMatrixDSym C(1);
   C(0,0) = 1.;
   LeastSquaresFitter<StraightLine2D> slfitter;
+  LeastSquaresFitter< Polynomial<1> > p1fitter; // with new implementation of straight line model
+  LeastSquaresFitter< Polynomial<0> > p0fitter; // simple avaraging (fitting constant function)
   for ( unsigned int i=0; i<10; ++i ){
     x(0,0) = i;
     y(0,0) = 5*i;
     slfitter.addObservation( x, y, C );
+    p1fitter.addObservation( x, y, C );
+    p0fitter.addObservation( x, y, C );
   }
   cout << "Fitted parameters:" << endl;
   slfitter.getFittedParameters().Print();
+  p1fitter.getFittedParameters().Print();
+  p0fitter.getFittedParameters().Print();
   cout << "Fitted parameters' covariance:" << endl;
   slfitter.getFittedParametersCovariance().Print();
+  p1fitter.getFittedParametersCovariance().Print();
+  p0fitter.getFittedParametersCovariance().Print();
   TMatrixD x1(1,1); x1(0,0)=4.5;
   cout << "Fitted function value at " << x1(0,0) << endl;
   slfitter.getY( x1 ).Print();
+  p1fitter.getY( x1 ).Print();
+  p0fitter.getY( x1 ).Print();
   cout << "Fitted function value's covariance at " << x1(0,0) << endl;
   slfitter.getYCovariance( x1 ).Print();
+  p1fitter.getYCovariance( x1 ).Print();
+  p0fitter.getYCovariance( x1 ).Print();
 
   //
   // General linear 3D --> 3D

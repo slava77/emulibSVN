@@ -4,7 +4,7 @@
 #include "AFEB/teststand/utils/IO.h"
 #include "AFEB/teststand/utils/ROOTIO.h"
 #include "AFEB/teststand/utils/String.h"
-#include "AFEB/teststand/fit/StraightLine2D.h"
+#include "AFEB/teststand/fit/Polynomial.h"
 #include "AFEB/teststand/fit/LeastSquaresFitter.h"
 #include "TFile.h"
 #include "TH1D.h"
@@ -127,7 +127,7 @@ void AFEB::teststand::Analysis::calibrateDACs( const string& configXML ){
       // DAC dac( moduleId, moduleName, type, channel );
       XCEPT_RAISE( xcept::Exception, ss.str() );
     }
-    fit::LeastSquaresFitter<fit::StraightLine2D> slfitter;
+    fit::LeastSquaresFitter< fit::Polynomial<1> > p1fitter;
     vector< pair<string,string> >::const_iterator ix, iy;
     TMatrixD X(1,1);
     TMatrixD Y(1,1);
@@ -136,10 +136,10 @@ void AFEB::teststand::Analysis::calibrateDACs( const string& configXML ){
     for ( ix = x.begin(), iy = y.begin(); ix != x.end() && iy != y.end(); ++ix, ++iy ){
       X( 0, 0 ) = utils::stringTo<double>( ix->second );
       Y( 0, 0 ) = utils::stringTo<double>( iy->second );
-      slfitter.addObservation( X, Y, V );
+      p1fitter.addObservation( X, Y, V );
     }
-    DACs_.back().setCalibrationParameters( slfitter.getFittedParameters(),
-					   slfitter.getFittedParametersCovariance() );
+    DACs_.back().setCalibrationParameters( p1fitter.getFittedParameters(),
+					   p1fitter.getFittedParametersCovariance() );
     cout << *DACs_.back().getCalibrationParameters() << endl;
     cout << *DACs_.back().getCalibrationParametersCovariance() << endl;
     // TMatrixT<double> mm(2,2); mm(0,0)=-1.; mm(0,1)=2.; mm(1,0)=3.; mm(1,1)=4.;
@@ -187,22 +187,24 @@ void AFEB::teststand::Analysis::calculateGain(){
 	}
 	cout << "Opened " << f.GetName() << endl;
 	f.cd();
-	// ...and get the threshold histogram
+	// ...and get the threshold histogram...
 	string histogramName = string( "threshold__" ) + fileName;
-	TH1D *histogram;
-	f.GetObject( histogramName.c_str(), histogram );
+	TH1D *thresholdHistogram;
+	f.GetObject( histogramName.c_str(), thresholdHistogram );
+	// ...and the noise histogram, too, while we're at it:
+	histogramName = string( "noise__" ) + fileName;
+	TH1D *noiseHistogram;
+	f.GetObject( histogramName.c_str(), noiseHistogram );
 
 	// Loop over the channels
 	for ( int iChannel=0; iChannel<d->getNChannels(); ++iChannel ){
-	  cout << iChannel+1 << "  " 
-	       << histogram->GetBinContent( iChannel+1 ) << "   " 
-	       << histogram->GetBinError( iChannel+1 ) << endl;
 	  d->addThresholdMeasurement( iChannel,
-				      pulseDAC    .mV_from_DACUnit( histogram->GetBinContent( iChannel+1 ),
-								    histogram->GetBinError  ( iChannel+1 )  ),
-				      thresholdDAC.mV_from_DACUnit( (*m)->getSetThreshold() )
+				      thresholdDAC.mV_from_DACUnit( (*m)->getSetThreshold() ),
+				      pulseDAC    .mV_from_DACUnit( thresholdHistogram->GetBinContent( iChannel+1 ),
+								    thresholdHistogram->GetBinError  ( iChannel+1 )  ),
+				      pulseDAC    .mV_from_DACUnit( noiseHistogram    ->GetBinContent( iChannel+1 ),
+								    noiseHistogram    ->GetBinError  ( iChannel+1 )  )
 				      );
-    
 	} // for ( int iChannel=0; iChannel<d->getNChannels(); ++iChannel )
 
 	f.Close();

@@ -2,7 +2,7 @@
 #define __AFEB_teststand_AnalyzedChannel_h__
 
 #include "AFEB/teststand/fit/LeastSquaresFitter.h"
-#include "AFEB/teststand/fit/StraightLine2D.h"
+#include "AFEB/teststand/fit/Polynomial.h"
 
 #include <string>
 #include <vector>
@@ -23,12 +23,14 @@ namespace AFEB { namespace teststand {
       void calculateGain();
 
     private:
-      double gain_;	  ///< gain, i.e., the slope of the line fitted to V_setThreshold( Q_measuredThreshold )
-      double gainError_;  ///< error on gain
-      double offset_;	  ///< offset, i.e., the intercept of the line fitted to V_setThreshold( Q_measuredThreshold ))
-      double offsetError_;///< error on offset
-      fit::LeastSquaresFitter<fit::StraightLine2D> fitter_; ///< straight-line fitter
-      fit::LeastSquaresFitter<fit::StraightLine2D> fitter__; ///< straight-line fitter
+      double noise_;		///< noise [fC], i.e., the width of the efficiency S-curve
+      double noiseError_;	///< error on noise [fC]
+      double gain_;		///< gain [mV/fC], i.e., the slope of the line fitted to V_setThreshold( Q_measuredThreshold )
+      double gainError_;	///< error on gain [mV/fC]
+      double offset_;		///< offset [mV], i.e., the intercept of the line fitted to V_setThreshold( Q_measuredThreshold ))
+      double offsetError_;	///< error on offset [mV]
+      fit::LeastSquaresFitter< fit::Polynomial<1> > QofVfitter_;	///< straight-line fitter to get offset and gain from Q_measuredThreshold( V_setThreshold )
+      fit::LeastSquaresFitter< fit::Polynomial<0> > noiseAverager_;	///< constant function fitter to get average of noise measurements
     };
 
   }

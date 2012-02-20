@@ -32,8 +32,9 @@ AFEB::teststand::AnalyzedDevice::AnalyzedDevice( const TestedDevice& device )
 }
 
 void AFEB::teststand::AnalyzedDevice::addThresholdMeasurement( const int iChannel, 
+							       const pair<double,double> V_setThreshold ,
 							       const pair<double,double> V_measuredThreshold,
-							       const pair<double,double> V_setThreshold ){
+							       const pair<double,double> V_measuredNoise ){
   // Fit Q(V) instead of V(Q) to better estimate the error of the fit parameters. (The error is on Q rather than on V.)
 
   TMatrixD    x  ( 1, 1 );
@@ -43,8 +44,11 @@ void AFEB::teststand::AnalyzedDevice::addThresholdMeasurement( const int iChanne
   x  ( 0, 0 ) = V_setThreshold.first;
   y  ( 0, 0 ) = injectionCapacitance_ * V_measuredThreshold.first / pulseDivisionFactor_ / correctionCoefficient_;
   var( 0, 0 ) = TMath::Power( injectionCapacitance_ * V_measuredThreshold.second / pulseDivisionFactor_, 2 );
-  channels_[iChannel].fitter_.addObservation( x, y, var );
-  // cout << "Added ( " << x(0,0) << ", " << y(0,0) << "+-" << var(0,0) << " )" << endl;
+  channels_[iChannel].QofVfitter_   .addObservation( x, y, var );
+  y  ( 0, 0 ) = injectionCapacitance_ * V_measuredNoise.first / pulseDivisionFactor_;
+  var( 0, 0 ) = TMath::Power( injectionCapacitance_ * V_measuredNoise.second / pulseDivisionFactor_, 2 );
+  channels_[iChannel].noiseAverager_.addObservation( x, y, var );
+  // cout << channels_[iChannel].noiseAverager_.getObservationCount() << " Added ( " << x(0,0) << ", " << y(0,0) << "+-" << TMath::Sqrt( var(0,0) ) << " )" << endl;
 }
 
 
@@ -52,5 +56,5 @@ void AFEB::teststand::AnalyzedDevice::calculateGains(){
   for ( vector<AnalyzedChannel>::iterator c = channels_.begin(); c != channels_.end(); ++c ){
     c->calculateGain();
   }
-  cout << channels_ << endl;
+  // cout << channels_ << endl;
 }

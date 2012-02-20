@@ -19,6 +19,7 @@ namespace AFEB { namespace teststand { namespace fit {
       public:
 	LeastSquaresFitter( unsigned int nObservations = 0 ) :
 	  model_               ( new Model() ),
+	  observationCount_    ( 0 ),
 	  dataCovariance_      ( NULL ),
 	  jacobian_            ( NULL ),
 	  Gamma_               ( NULL ),
@@ -46,6 +47,9 @@ namespace AFEB { namespace teststand { namespace fit {
 	  if ( other.beta_                 ) beta_                 = new TMatrixD   ( *other.beta_ );
 	  if ( other.parameters_           ) parameters_           = new TMatrixD   ( *other.parameters_ );
 	  if ( other.parametersCovariance_ ) parametersCovariance_ = new TMatrixDSym( *other.parametersCovariance_ );
+	  parameterNames_   = other.parameterNames_;
+	  parameterIndices_ = other.parameterIndices_;
+	  observationCount_ = other.observationCount_;
 	}
 
 	~LeastSquaresFitter(){
@@ -62,6 +66,9 @@ namespace AFEB { namespace teststand { namespace fit {
 	  if ( rhs.beta_                 ) beta_                 = new TMatrixD   ( *rhs.beta_ );
 	  if ( rhs.parameters_           ) parameters_           = new TMatrixD   ( *rhs.parameters_ );
 	  if ( rhs.parametersCovariance_ ) parametersCovariance_ = new TMatrixDSym( *rhs.parametersCovariance_ );
+	  parameterNames_   = rhs.parameterNames_;
+	  parameterIndices_ = rhs.parameterIndices_;
+	  observationCount_ = rhs.observationCount_;
 	  return *this;
 	}
 
@@ -183,6 +190,8 @@ namespace AFEB { namespace teststand { namespace fit {
 	  TMatrixD yCovariance;
 	  return TMatrixD( model_->getJacobian( x ), TMatrixD::kMult, TMatrixD( *parametersCovariance_, TMatrixD::kMultTranspose,  model_->getJacobian( x ) ) );
 	}
+
+	unsigned int getObservationCount() const { return observationCount_; }
 
       private:
 	void dispose(){

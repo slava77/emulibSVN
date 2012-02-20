@@ -3,8 +3,6 @@
 
 #include "AFEB/teststand/TestedDevice.h"
 #include "AFEB/teststand/AnalyzedChannel.h"
-#include "AFEB/teststand/fit/LeastSquaresFitter.h"
-#include "AFEB/teststand/fit/StraightLine2D.h"
 
 #include <string>
 #include <vector>
@@ -28,9 +26,10 @@ namespace AFEB { namespace teststand {
       ///
       AnalyzedDevice( const TestedDevice& device );
 
-      void addThresholdMeasurement( const int iChannel, 
+      void addThresholdMeasurement( const int iChannel,
+				    const pair<double,double> V_setThreshold ,
 				    const pair<double,double> V_measuredThreshold,
-				    const pair<double,double> V_setThreshold );
+				    const pair<double,double> V_measuredNoise );
 
       double getCorrectionCoefficient() const { return correctionCoefficient_; }
       double getInjectionCapacitance () const { return injectionCapacitance_;  }
