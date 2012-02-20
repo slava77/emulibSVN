@@ -150,7 +150,7 @@ bool allGrayMode; // this flag is true when the whole LV FSM node is disabled - 
 bool noCommunication;
 
 dyn_string alarmColorDps;
-dyn_int disabledChannels;
+dyn_string disabledChannels;
 
 mapping warningNameToStatusBit; // map of warning label names to status bits
 int lastStatus = -1;
@@ -206,7 +206,7 @@ void updateLastReadTimestampCB(string timestampDp, int timestamp) {
   lblLastUpdate.text = emuui_formatTime(t);
 }
 
-void updateDisabledChannelsCB(string dp, dyn_int disabledChannelsParam) {
+void updateDisabledChannelsCB(string dp, dyn_string disabledChannelsParam) {
   disabledChannels = disabledChannelsParam;
   
   //repaint the colors
@@ -223,13 +223,13 @@ void updateTemperatureAlarmColorsCB(dyn_string dps, dyn_string alarmColors) {
     int index = dynPartiallyContains(dps, columnNames[i]);
     if (index > 0) {
       alarmColors[index] = emuui_correctAlarmColor(alarmColors[index]);
-      tableTemp.cellBackColRC(0, columnNames[i], alarmColors[index]);
+      string color = alarmColors[index];
+      bool isDisabled = dynContains(disabledChannels, dpSubStr(dps[index], DPSUB_SYS_DP_EL));
+      if (isDisabled) {
+        color = \"FwEquipmentDisabled\";
+      }      
+      tableTemp.cellBackColRC(0, columnNames[i], color);
     }
-  }
-  //gray out the disabled channels
-  for (int i=1; i <= dynlen(disabledChannels); i++) {
-    string column = disabledChNumToColumn[disabledChannels[i]];
-    tableTemp.cellBackColRC(0, column, \"FwEquipmentDisabled\");
   }
 }
     
