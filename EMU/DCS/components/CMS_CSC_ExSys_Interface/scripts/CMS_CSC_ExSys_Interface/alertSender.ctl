@@ -24,12 +24,12 @@ void exsys_alertSenderInternalCommandUpdatedCB(string dp, string command) {
   
   if (command == EXSYS_INTERNAL_CMD_NO_EXSYS_MODE) {
     dpSetWait("CscAlertClass_CscHvChamber.class", "_fwErrorNack_70.");
-    emuAlert_updateAllAlertClassesForType("HV_1_d");
+    emuAlert_updateAllAlertClassesForType("CscHvChamber");
     dpSetWait("CscAlertClass_FwCaenChannel.class", "_fwErrorNack_70.");
     emuAlert_updateAllAlertClassesForType("FwCaenChannel");
   } else if (command == EXSYS_INTERNAL_CMD_EXSYS_MODE) {
     dpSetWait("CscAlertClass_CscHvChamber.class", "_fwWarningNack_41.");
-    emuAlert_updateAllAlertClassesForType("HV_1_d");
+    emuAlert_updateAllAlertClassesForType("CscHvChamber");
     dpSetWait("CscAlertClass_FwCaenChannel.class", "_fwWarningNack_41.");
     emuAlert_updateAllAlertClassesForType("FwCaenChannel");
     exit(); // restart so that a snapshot of current alerts is sent over to exsys
