@@ -20,7 +20,6 @@ bool isSupervisor;
 
 main()
 {
-return;
   setFsmAccessControl();
   emumaj_debug("Access Control has been set.", true);
   
@@ -544,10 +543,10 @@ void configureHv(string topNode) {
 
 void configureLv(string topNode) {
   majority_addDevice("LV", // this defines the internal name of the device for the majority
-  "LV_1", // this is the corresponding Device Unit Type
-  makeDynString(".status", ".noalert_channels"), // define the datapoint elements you need to connect
+  "CscLvChamber", // this is the corresponding Device Unit Type
+  makeDynString(".fsm_state", ".disabled_channels"), // define the datapoint elements you need to connect
   makeDynString("on", "error", "no_communication"), // these are the basic device states for this device
-  19 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  -1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
   );
  
   // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
@@ -560,10 +559,10 @@ void configureLv(string topNode) {
 
 void configureTemp(string topNode) {
   majority_addDevice("TEMP", // this defines the internal name of the device for the majority
-  "TEMP_1", // this is the corresponding Device Unit Type
-  makeDynString(".status", ".off_channels"), // define the datapoint elements you need to connect
+  "CscTempChamber", // this is the corresponding Device Unit Type
+  makeDynString(".fsm_state", ".disabled_channels"), // define the datapoint elements you need to connect
   makeDynString("ok", "alert", "no_communication"), // these are the basic device states for this device
-  7 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
+  -1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
   );
  
   // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              

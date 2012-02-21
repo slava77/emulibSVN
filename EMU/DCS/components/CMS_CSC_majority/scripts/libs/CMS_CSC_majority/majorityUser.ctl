@@ -247,10 +247,19 @@ dyn_string majorityUser_nodeTranslationToDpes(string dev, string node, bool& use
   * @return weight of devices which have a variable weight so have been set a weight of -1 during majority configuration (e.g. HV)
   */
 int majorityUser_getDeviceWeight(string node, string device) {
-  if ((device == "HV_OUTER") || (device == "HV_INNER")) {
-    dyn_string ex;
-    mapping deviceParams = emu_fsmNodeToDeviceParams(node, ex);
-    if (emu_checkException(ex)) { return 0; }
+  emu_debug("got majorityUser_getDeviceWeight() call for device = " + device + ", node = " + node);
+  dyn_string nodeDps = dpNames("*:" + node);
+  if (dynlen(nodeDps) == 0) {
+    emu_errorSingle("got majorityUser_getDeviceWeight() call for device = " + device + ", node = " + node + ", but couldn't find a dp for the given node");
+    exit(-1);
+  }
+  node = nodeDps[1];
+  
+  dyn_string ex;
+  mapping deviceParams = emu_fsmNodeToDeviceParams(node, ex);
+  if (emu_checkException(ex)) { return 0; }
+  
+  if ((device == "HV_OUTER") || (device == "HV_INNER")) {               // *********** High Voltage ************
     string hvType = (deviceParams["ring"] == 1) ? "HV_INNER" : "HV_OUTER";
     if (device != hvType) {
       return 0;
@@ -258,7 +267,21 @@ int majorityUser_getDeviceWeight(string node, string device) {
     int numChannels;
     dpGet(dpSubStr(node, DPSUB_SYS_DP) + EMUHV_DP_POSTFIX_SLOW_MON + ".num_chans", numChannels);
     return numChannels;
+  } else if (device == "LV") {                                         // *********** Low Voltage ************
+    if ((deviceParams["station"] == 1) && (deviceParams["ring"] == 3)) {
+      return 16; // ME1/3 chambers have 4 CFEBs, all other chambers have 5
+    } else {
+      return 19;
+    }
+  } else if (device == "TEMP") {                                      // *********** Temperature ************
+    if ((deviceParams["station"] == 1) && (deviceParams["ring"] == 3)) {
+      return 6; // ME1/3 chambers have 4 CFEBs, all other chambers have 5
+    } else {
+      return 7;
+    }
   }
+  
+  return 0;
 }
 
 /**/
