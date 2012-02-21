@@ -18,7 +18,8 @@ PANEL,-1 -1 663 506 N "_3DFace" 2
   //=========================  
   
   dyn_string ex;
-  deviceParams = emu_fsmNodeToDeviceParams($2, ex);
+  deviceParams[\"id\"] = substr($2, strlen($2) - 2);
+//  deviceParams = emu_fsmNodeToDeviceParams($2, ex);
   if (emu_checkException(ex)) { return; }
   
   string deviceParamsDollar = \"$deviceParams:\" + emuui_deviceParamsToString(deviceParams);
