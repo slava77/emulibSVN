@@ -158,21 +158,20 @@ void emuuicm_recoverHvChannel(mapping deviceParams, dyn_int channelNumbers) {
     mapping channelDeviceParams = deviceParams;
     channelDeviceParams["channelNumber"] = chNum;
   
-    string channelDp = emuhv_getHvChannelDp(channelDeviceParams, ex);
+    string channelDp = emuhv_getDp(channelDeviceParams, EMUHV_DP_POSTFIX_FAST_MON, ex);
     if (emu_checkException(ex)) { return; }
   
-    int state, status;
-    dpGet(channelDp + ".state", state,
-          channelDp + ".status", status);
+    int status;
+    dpGet(channelDp + ".status", status);
   
     // switch it off if it's tripped
-    if ((state == 0) && (status >= 4)) {
-      emuhv_sendChannelCommand(channelDeviceParams, EMUHV_COMMAND_OFF, ex);
+    if (status >= 4) {
+      emuhv_sendCommand(channelDeviceParams, EMUHV_COMMAND_OFF, ex);
       if (emu_checkException(ex)) { return; }
     }
   
     // turn it back on
-    emuhv_sendChannelCommand(channelDeviceParams, EMUHV_COMMAND_ON, ex);
+    emuhv_sendCommand(channelDeviceParams, EMUHV_COMMAND_ON, ex);
   
     // refresh the data now  
     delay(1, 0);
