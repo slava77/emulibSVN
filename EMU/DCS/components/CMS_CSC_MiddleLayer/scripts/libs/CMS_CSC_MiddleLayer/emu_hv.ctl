@@ -33,6 +33,7 @@ public const string EMUHV_FSM_STATE_RAMPING   = "RAMPING";
 public const string EMUHV_FSM_STATE_ERROR     = "ERROR";
 public const string EMUHV_FSM_STATE_NOT_READY = "NOT-READY";
 public const string EMUHV_FSM_STATE_DISABLED  = "DISABLED";
+public const string EMUHV_FSM_STATE_NO_COMM   = "NO_COMMUNICATION";
 
 public const string EMUHV_FSM_COMMAND_ON        = "ON";
 public const string EMUHV_FSM_COMMAND_OFF       = "OFF";

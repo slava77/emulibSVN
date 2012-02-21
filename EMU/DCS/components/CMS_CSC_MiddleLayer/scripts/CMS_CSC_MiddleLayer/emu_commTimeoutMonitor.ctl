@@ -114,7 +114,7 @@ private void _emu_commMonitorThread(dyn_string timestampDpList, int interval, in
             if (!dynContains(emu_comm_timedOutDevices, fsmDp)) {
               dynAppend(emu_comm_timedOutDevices, fsmDp);
               listHasChanged = true;
-              dpSet(fsmDp + ".fsm_state", "NO_COMMUNICATION");
+              dpSet(fsmDp + ".fsm_state", EMUHV_FSM_STATE_NO_COMM);
             }
           }
         } else {                                                       // came back from the dead :)
