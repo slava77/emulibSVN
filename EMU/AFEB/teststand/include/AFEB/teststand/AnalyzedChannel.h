@@ -21,6 +21,8 @@ namespace AFEB { namespace teststand {
       friend class AnalyzedDevice;
       friend ostream& operator<<( ostream& os, const AnalyzedChannel& d );
       void calculateGain();
+      void calculateInternalCapacitance( const pair<double,double> V_setThreshold,
+					 const pair<double,double> V_measuredThreshold );
 
     private:
       double noise_;		///< noise [fC], i.e., the width of the efficiency S-curve

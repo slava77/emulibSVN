@@ -233,7 +233,7 @@ namespace AFEB { namespace teststand { namespace fit {
 	  //cout << "Gamma's determinant " << det << endl;
 	  //cout << "Gamma inverse" << endl; Gamma_->Print();
 
-	  // It's inverse is the inverse of the fitted parameters' covariance (a symmetric matrix):
+	  // Gamma's inverse is the fitted parameters' covariance (a symmetric matrix):
 	  parametersCovariance_ = new TMatrixDSym( Gamma_->GetNrows() );
 	  parametersCovariance_->SetMatrixArray( Gamma_->GetMatrixArray() );
 	  //cout << "parametersCovariance_" << endl; parametersCovariance_->Print();
@@ -269,7 +269,7 @@ namespace AFEB { namespace teststand { namespace fit {
 	//   // Invert Gamma as general square matrix. Inversion of TMatrixDSym is unstable.
 	//   Gamma.Invert(); // From here on, Gamma is GammaInverse!
 	//   cout << "Gamma_Inv" << endl; Gamma.Print();
-	//   // It's inverse is the inverse of the fitted parameters' covariance (a symmetric matrix):
+	//   // Gamma's inverse is the fitted parameters' covariance (a symmetric matrix):
 	//   parametersCovariance_ = new TMatrixDSym( Gamma.GetNrows() );
 	//   parametersCovariance_->SetMatrixArray( Gamma.GetMatrixArray() );
 	//   cout << "parametersCovariance_" << endl; parametersCovariance_->Print();

@@ -39,6 +39,9 @@ namespace AFEB { namespace teststand {
       void setPulseDivisionFactor  ( const double value ){ pulseDivisionFactor_   = value; }
 
       void calculateGains();
+      void calculateInternalCapacitance( const int iChannel,
+					 const pair<double,double> V_setThreshold,
+					 const pair<double,double> V_measuredThreshold );
 
     private:
       vector<AnalyzedChannel> channels_;	      ///< Channels with analysis data and results.

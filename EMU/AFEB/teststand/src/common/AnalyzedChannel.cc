@@ -58,3 +58,15 @@ void AFEB::teststand::AnalyzedChannel::calculateGain(){
   noise_      = noiseAverager_.getFittedParameter( 0 );
   noiseError_ = TMath::Sqrt( noiseAverager_.getFittedParametersCovariance()( 0, 0 ) );
 }
+
+void AFEB::teststand::AnalyzedChannel::calculateInternalCapacitance( const pair<double,double> V_setThreshold,
+								     const pair<double,double> V_measuredThreshold ){
+  // At this point, offset and gain must already have been calculated.
+
+  // From the Q(V) function, get the the charge needed for the pre-amp to produce a voltage equal to the set discriminator threshold.
+  TMatrixD x( 1, 1 );
+  x = V_setThreshold.first;
+  double thresholdCharge = QofVfitter_.getY( x )( 0, 0 );
+  cout << "thresholdCharge=" << thresholdCharge << endl;
+  
+}

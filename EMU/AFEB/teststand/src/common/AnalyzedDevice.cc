@@ -58,3 +58,9 @@ void AFEB::teststand::AnalyzedDevice::calculateGains(){
   }
   // cout << channels_ << endl;
 }
+
+void AFEB::teststand::AnalyzedDevice::calculateInternalCapacitance( const int iChannel,
+								    const pair<double,double> V_setThreshold,
+								    const pair<double,double> V_measuredThreshold ){
+  channels_[iChannel].calculateInternalCapacitance( V_setThreshold, V_measuredThreshold );
+}
