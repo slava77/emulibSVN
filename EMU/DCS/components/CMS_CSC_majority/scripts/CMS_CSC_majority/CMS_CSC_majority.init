@@ -304,20 +304,18 @@ void emumaj_createMajorityConfiguration(string majorityTopNode) {
   configureME11Hv(majorityTopNode);
   DebugTN("Creating HV Primary majority");
   configureHVPrimaries(majorityTopNode);
-//  DebugTN("Creating LV majority");
-//  configureLv(majorityTopNode);
-//  DebugTN("Creating Temperature majority");
-//  configureTemp(majorityTopNode);
+  DebugTN("Creating LV majority");
+  configureLv(majorityTopNode);
+  DebugTN("Creating Temperature majority");
+  configureTemp(majorityTopNode);
   DebugTN("Creating CRB majority");
   configureCrb(majorityTopNode);
   DebugTN("Creating Maraton Channel majority");
   configureMaratonChannel(majorityTopNode);
   DebugTN("Creating Maraton Crate majority");
   configureMaratonCrate(majorityTopNode);
-//  DebugTN("Creating DDU majority");
-//  configureDDU(majorityTopNode);
-  DebugTN("Creating LV for HV majority");
-  configureLvForHv(majorityTopNode);
+  DebugTN("Creating DDU majority");
+  configureDDU(majorityTopNode);
   DebugTN("Creating Atlas PSU branch majority");
   configureAtlasPSU(majorityTopNode);
   DebugTN("Creating GAS majority (top device only)");
@@ -620,49 +618,17 @@ void configureMaratonCrate(string topNode) {
 
 void configureDDU(string topNode) {
   majority_addDevice("DDU", // this defines the internal name of the device for the majority
-  "FED_1", // this is the corresponding Device Unit Type
-  makeDynString(".status", ".off_channels"), // define the datapoint elements you need to connect
-  makeDynString("on", "error", "no_communication"), // these are the basic device states for this device
+  "CscFedDdu", // this is the corresponding Device Unit Type
+  makeDynString(".fsm.currentState"), // define the datapoint elements you need to connect
+  makeDynString("on", "error"), // these are the basic device states for this device
   1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
   );
  
   // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
   majority_addColors("DDU", "on", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
   majority_addColors("DDU", "error", majority_getStandardColorsError() );    
-  majority_addColors("DDU", "no_communication", majority_getStandardColorsError() );    
 
-  majority_addPercentages(topNode, "DDU", makeDynFloat(95, 6, 40)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
-}
-
-void configureLvForHv(string topNode) {
-  // LV for HV Wiener Crate
-  majority_addDevice("LvForHv_Cr", // this defines the internal name of the device for the majority
-  "fwWnrCr_CSC_LV", // this is the corresponding Device Unit Type
-  makeDynString(".status"), // define the datapoint elements you need to connect
-  makeDynString("on", "error"), // these are the basic device states for this device
-  1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
-  );
- 
-  // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
-  majority_addColors("LvForHv_Cr", "on", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
-  majority_addColors("LvForHv_Cr", "error", majority_getStandardColorsError() );    
-
-  majority_addPercentages(topNode, "LvForHv_Cr", makeDynFloat(100, 0)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
-
-  
-  // LV for HV Wiener Channel
-  majority_addDevice("LvForHv_Ch", // this defines the internal name of the device for the majority
-  "fwWnrCh_CSC_LV", // this is the corresponding Device Unit Type
-  makeDynString(".status"), // define the datapoint elements you need to connect
-  makeDynString("on", "error"), // these are the basic device states for this device
-  1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
-  );
- 
-  // For each device and each state define the colors to be used in the interface. Standard colors are defined for on and error states, but can be customized              
-  majority_addColors("LvForHv_Ch", "on", majority_getStandardColorsOn() ); // majority_getStandardColorsOn() uses a lighter green to differentiate when the percentage = 100%. However if you set the threshold (see below) to 100, use majority_getStandardColorsPhysics
-  majority_addColors("LvForHv_Ch", "error", majority_getStandardColorsError() );    
-
-  majority_addPercentages(topNode, "LvForHv_Ch", makeDynFloat(100, 0)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
+  majority_addPercentages(topNode, "DDU", makeDynFloat(95, 6)); // here you define the thresholds for the percentages: in this case we have 95% for ON and 5% for ERROR
 }
 
 void configureAtlasPSU(string topNode) {

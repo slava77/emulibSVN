@@ -190,7 +190,7 @@ if (fsmState == EMUHV_FSM_STATE_NO_COMM) { // no communication
   }
   
   // check ALCT alert
-  string alctDp = dataDp + "alct.v1";
+  string alctDp = dataDp + ".alct.v1";
   if (calcTotal || !dynContains(disabledChannels, alctDp)) {
     int alert;
     dpGet(alctDp + ":_alert_hdl.._act_state", alert);
@@ -201,7 +201,7 @@ if (fsmState == EMUHV_FSM_STATE_NO_COMM) { // no communication
   }
   
   // check DMB alert
-  string dmbDp = dataDp + "dmb.v1";
+  string dmbDp = dataDp + ".dmb.v1";
   if (calcTotal || !dynContains(disabledChannels, dmbDp)) {
     int alert;
     dpGet(dmbDp + ":_alert_hdl.._act_state", alert);
@@ -212,29 +212,6 @@ if (fsmState == EMUHV_FSM_STATE_NO_COMM) { // no communication
   }
   
   return makeDynInt(ok, error, noCommunication);
-}
-
-/** standard .status DP. > 1 means ON, < 0 means ERROR, -2 means NO_COMMUNICATION, else means OFF.
-  values here are ".status". States are ON, ERROR and NO_COMMUNICATION */
-dyn_int emumaj_onOffErrorNoCommStatusDpCounts(dyn_anytype values, int &weight, bool calcTotal, string node, bool noCommMeansOn) {
-  int status = values[1];
-  int on = 0,
-      error = 0,
-      noCommunication = 0;
-  
-  if (status > 1) {
-    on = 1;
-  } else if (status == -2) {
-    if (noCommMeansOn) {
-      on = 1;
-    }
-    noCommunication = 1;
-  } else if (status < 0) {
-    on = 1;
-    error = 1;
-  }
-  
-  return makeDynInt(on, error, noCommunication);
 }
 
 /** standard .status DP. > 1 means ON, < 0 means ERROR, else means OFF.

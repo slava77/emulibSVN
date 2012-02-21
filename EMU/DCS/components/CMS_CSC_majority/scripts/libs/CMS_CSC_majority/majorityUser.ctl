@@ -42,11 +42,7 @@ dyn_int majorityUser_stateCounts(string device, dyn_anytype values, // informati
     case "AtlasPSU_Branch":
       return emumaj_onOffErrorFsmStateCounts(values, all, calcTotal, node);
     case "DDU":
-      return emumaj_onOffErrorNoCommStatusDpCounts(values, all, calcTotal, node, true);
-    case "LvForHv_Cr":
-      return emumaj_onOffErrorStatusDpCounts(values, all, calcTotal, node, false);
-    case "LvForHv_Ch":
-      return emumaj_onOffErrorStatusDpCounts(values, all, calcTotal, node, false);
+      return emumaj_onOffErrorFsmStateCounts(values, all, calcTotal, node);
     case "Gas":
       return emumaj_onOffErrorStatusDpCounts(values, all, calcTotal, node, true, false);
     case "Cooling":
@@ -100,8 +96,6 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
                     makeDynString("LV:on",
                                   "DDU:on",
                                   "DDU:error",
-                                  "LvForHv_Cr:on",
-                                  "LvForHv_Ch:on",
                                   "AtlasPSU_Branch:on",
                                   "AtlasPSU_Branch:error",
                                   "Gas:on",
@@ -122,8 +116,6 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
                                  "MrtnChannel:error",
                                  "MrtnCrate:error",
                                  "DDU:error",
-                                 "LvForHv_Cr:error",
-                                 "LvForHv_Ch:error",
                                  "AtlasPSU_Branch:error",
                                  "Gas:error",
                                  "Cooling:error"))) {
@@ -141,8 +133,6 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
                                  "MrtnChannel:on",
                                  "MrtnCrate:on",
                                  "DDU:on",
-                                 "LvForHv_Cr:on",
-                                 "LvForHv_Ch:on",
                                  "AtlasPSU_Branch:on",
                                  "Gas:on",
                                  "Cooling:on"))) {
@@ -162,8 +152,6 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
                                  "MrtnChannel:on",
                                  "MrtnCrate:on",
                                  "DDU:on",
-                                 "LvForHv_Cr:on",
-                                 "LvForHv_Ch:on",
                                  "AtlasPSU_Branch:on",
                                  "Gas:on",
                                  "Cooling:on"))){
@@ -181,8 +169,6 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
                                  "MrtnChannel:on",
                                  "MrtnCrate:on",
                                  "DDU:on",
-                                 "LvForHv_Cr:on",
-                                 "LvForHv_Ch:on",
                                  "AtlasPSU_Branch:on",
                                  "Gas:on",
                                  "Cooling:on")) &&
@@ -214,6 +200,7 @@ string majorityUser_nodeTranslation(string node) {
       (type == "FwWienerMarathonChannel") || 
       (type == "FwWienerMarathon") || 
       (type == "FwElmbPSUBranch") ||
+      (type == "CscFedDdu") ||
       (type == "CscHvPrimary") ||
       (type == "FwCaenChannel")) {
     return treeCache_getFsmInternalDp(node);
@@ -248,12 +235,14 @@ dyn_string majorityUser_nodeTranslationToDpes(string dev, string node, bool& use
   */
 int majorityUser_getDeviceWeight(string node, string device) {
   emu_debug("got majorityUser_getDeviceWeight() call for device = " + device + ", node = " + node);
-  dyn_string nodeDps = dpNames("*:" + node);
-  if (dynlen(nodeDps) == 0) {
-    emu_errorSingle("got majorityUser_getDeviceWeight() call for device = " + device + ", node = " + node + ", but couldn't find a dp for the given node");
-    exit(-1);
+  if (!dpExists(node)) {
+    dyn_string nodeDps = dpNames("*:" + node);
+    if (dynlen(nodeDps) == 0) {
+      emu_errorSingle("got majorityUser_getDeviceWeight() call for device = " + device + ", node = " + node + ", but couldn't find a dp for the given node");
+      exit(-1);
+    }
+    node = nodeDps[1];
   }
-  node = nodeDps[1];
   
   dyn_string ex;
   mapping deviceParams = emu_fsmNodeToDeviceParams(node, ex);
