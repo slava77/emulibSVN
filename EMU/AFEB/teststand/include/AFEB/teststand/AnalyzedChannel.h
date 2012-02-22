@@ -31,6 +31,8 @@ namespace AFEB { namespace teststand {
       double gainError_;	///< error on gain [mV/fC]
       double offset_;		///< offset [mV], i.e., the intercept of the line fitted to V_setThreshold( Q_measuredThreshold ))
       double offsetError_;	///< error on offset [mV]
+      double internalCapacitance_; 	///< internal capacitance [pF]
+      double internalCapacitanceError_;	///< error on internal capacitance
       fit::LeastSquaresFitter< fit::Polynomial<1> > QofVfitter_;	///< straight-line fitter to get offset and gain from Q_measuredThreshold( V_setThreshold )
       fit::LeastSquaresFitter< fit::Polynomial<0> > noiseAverager_;	///< constant function fitter to get average of noise measurements
     };

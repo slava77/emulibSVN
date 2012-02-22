@@ -11,9 +11,10 @@
 using namespace AFEB::teststand;
 
 ostream& AFEB::teststand::operator<<( ostream& os, const AnalyzedChannel& d ){
-  os << " gain="     << showpos << d.gain_   << " +- " << noshowpos << d.gainError_
-     << "   offset=" << showpos << d.offset_ << " +- " << noshowpos << d.offsetError_
-     << "   noise="  << showpos << d.noise_  << " +- " << noshowpos << d.noiseError_;
+  os << " gain="     << showpos << d.gain_                 << " +- " << noshowpos << d.gainError_
+     << "   offset=" << showpos << d.offset_               << " +- " << noshowpos << d.offsetError_
+     << "   noise="  << showpos << d.noise_                << " +- " << noshowpos << d.noiseError_
+     << "   C_int="  << showpos << d.internalCapacitance_  << " +- " << noshowpos << d.internalCapacitanceError_;
   return os;
 }
 
@@ -63,10 +64,29 @@ void AFEB::teststand::AnalyzedChannel::calculateInternalCapacitance( const pair<
 								     const pair<double,double> V_measuredThreshold ){
   // At this point, offset and gain must already have been calculated.
 
+  if ( V_measuredThreshold.first == 0. ){
+    internalCapacitance_ = internalCapacitanceError_ = 0.;
+    return;
+  }
+
   // From the Q(V) function, get the the charge needed for the pre-amp to produce a voltage equal to the set discriminator threshold.
   TMatrixD x( 1, 1 );
-  x = V_setThreshold.first;
-  double thresholdCharge = QofVfitter_.getY( x )( 0, 0 );
-  cout << "thresholdCharge=" << thresholdCharge << endl;
+  x( 0, 0 ) = V_setThreshold.first;
+  double Q_threshold = QofVfitter_.getY( x )( 0, 0 );
   
+  // The internal capaciance (C=Q/V)...
+  internalCapacitance_ = Q_threshold / V_measuredThreshold.first;
+  // cout << "Q_threshold=" << Q_threshold << " variance=" << QofVfitter_.getYCovariance( x ) 
+  //      << "    V_measuredThreshold=" << V_measuredThreshold.first 
+  //      << "   C_int=" << internalCapacitance_ << endl;
+
+  // ...and its error
+  TMatrixDSym Var( 2 ); // variance of Q and V
+  Var( 0, 0 ) = QofVfitter_.getYCovariance( x )( 0, 0 );
+  Var( 1, 1 ) = TMath::Power( V_measuredThreshold.second, 2 );
+  Var( 0, 1 ) = Var( 1, 0 ) = 0.;
+  TMatrixD A( 1, 2 ); // A = ( dC/dQ, dC/dV ) = ( 1/V, -Q/V^2 )
+  A( 0, 0 ) = 1. / V_measuredThreshold.first;
+  A( 0, 1 ) = - Q_threshold / TMath::Power( V_measuredThreshold.first, 2 );
+  internalCapacitanceError_ = TMath::Sqrt( TMatrixD( A, TMatrixD::kMult, TMatrixD( Var, TMatrixD::kMultTranspose, A ) )( 0, 0 ) );
 }
