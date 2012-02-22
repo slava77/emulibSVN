@@ -1,7 +1,6 @@
 #ifndef __AFEB_teststand_TestedDevice_h__
 #define __AFEB_teststand_TestedDevice_h__
 
-#include "AFEB/teststand/Device.h"
 #include "AFEB/teststand/crate/Crate.h"
 
 #include <string>
