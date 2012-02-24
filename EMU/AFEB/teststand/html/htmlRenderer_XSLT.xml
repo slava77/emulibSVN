@@ -30,6 +30,9 @@
 	<link rel="stylesheet" type="text/css" href="{@htmlDir}teststand.css"/>
       </head>
       <body>
+	<xsl:attribute name="class">
+	  <xsl:if test="//c:dummyData">dummyData</xsl:if>
+	</xsl:attribute>
         <form action="{a:application/@a:urlPath}/control" method="post">
 	  <xsl:apply-templates select="a:application"/>
 	  <xsl:apply-templates mode="results" select="a:results[not(../a:application)]"/>
