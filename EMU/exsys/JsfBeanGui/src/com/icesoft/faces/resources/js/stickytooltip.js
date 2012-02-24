@@ -65,6 +65,7 @@ var stickytooltip={
             if ($target.length == 0) return;
 
             var $ttText = jQuery('#'+tipid);
+            if (!$ttText.html()) return;
             if ($ttText.html().trim().length == 0) return;
 
             $target.data("tooltip", tipid);
