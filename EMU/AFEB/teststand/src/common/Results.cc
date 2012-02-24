@@ -393,6 +393,9 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
     for ( int iAmpBin = 1; iAmpBin <= pulses_->GetNbinsY(); ++iAmpBin ){
       // cout << pulses_->GetBinContent( iChannelBin, iAmpBin ) << " ";
       p.SetBinContent( iAmpBin, pulses_->GetBinContent( iChannelBin, iAmpBin ) );
+      // Use binomial error
+      double P = TMath::Min( pulses_->GetBinContent( iChannelBin, iAmpBin ) / measurement_->getNPulses(), 1. );
+      p.SetBinError( iAmpBin, TMath::Sqrt( measurement_->getNPulses() * P * ( 1. - P ) ) );
     }
     bsem_.give();
 
@@ -530,7 +533,7 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   gPad->SetGridx();
   gPad->SetFrameFillColor( kGray + 3 );
   pulses.SetTitle("");
-  pulses_->SetZTitle( "count" );
+  pulses.SetZTitle( "count" );
   pulses.DrawCopy("colz");
 
   efficiencyPad->cd( 2 );
@@ -561,7 +564,7 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   pulses.SetMaximum( measurement_->getNPulses() + 2 );
   pulses.SetNdivisions( 5, "z" );
   pulses.SetTitle("");
-  pulses_->SetZTitle( "count (zoomed in on 100%)" );
+  pulses.SetZTitle( "count (zoomed in on 100%)" );
   pulses.DrawCopy("colz");
 
   //
