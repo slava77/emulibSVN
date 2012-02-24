@@ -10,8 +10,9 @@ This package contains procedures to monitor communication for timeouts.
 #uses "CMS_CSC_common/emu_common.ctl"
 #uses "CMS_CSC_common/emu_util.ctl"
 
-// HV_CC common libs
+// Mid layer common libs
 #uses "CMS_CSC_MiddleLayer/emu_x2p.ctl"
+#uses "CMS_CSC_MiddleLayer/emu_hv.ctl"
 
 /** 
   * DP to last good timestamp mapping (key can be original value e.g. CSC_ME_P11_C01_LV.update_value or it can be a PVSS timestamp config e.g. CSC_ME_P12_C01_HV.update_value:_online.._stime)
