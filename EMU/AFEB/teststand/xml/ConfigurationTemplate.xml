@@ -105,22 +105,22 @@
 
   <c:measurements>
     <c:measurement c:name="Threshold scan" c:type="count_vs_dac" c:enabled="yes">
-      <c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="1000" c:capacitor="external"/>
+      <c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="400" c:capacitor="external"/>
       <c:SignalConverter c:thresholdValue="50"/>
       <c:TDC c:timeMin="0" c:timeMax="120"/>
     </c:measurement>
     <c:measurement c:name="Threshold scan" c:type="count_vs_dac" c:enabled="yes">
-      <c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="120" c:amplitudeStep="2" c:nPulses="1000" c:capacitor="external"/>
-      <c:SignalConverter c:thresholdValue="80"/>
+      <c:PulseGenerator c:amplitudeMin="40" c:amplitudeMax="140" c:amplitudeStep="2" c:nPulses="400" c:capacitor="external"/>
+      <c:SignalConverter c:thresholdValue="90"/>
       <c:TDC c:timeMin="0" c:timeMax="120"/>
     </c:measurement>
     <c:measurement c:name="Threshold scan" c:type="count_vs_dac" c:enabled="yes">
-      <c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="1000" c:capacitor="internal"/>
+      <c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="400" c:capacitor="internal"/>
       <c:SignalConverter c:thresholdValue="50"/>
       <c:TDC c:timeMin="0" c:timeMax="120"/>
     </c:measurement>
     <c:measurement c:name="Time response vs. pulse hight" c:type="time_vs_dac" c:enabled="yes">
-      <c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="1000" c:capacitor="external"/>
+      <c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="400" c:capacitor="external"/>
       <c:SignalConverter c:thresholdValue="50"/>
       <c:TDC c:timeMin="0" c:timeMax="120"/>
     </c:measurement>
