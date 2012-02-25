@@ -32,6 +32,7 @@ namespace AFEB { namespace teststand {
       void save( const string directory );
       void saveInOldFormat( const string directory );
       map<string,double> getThresholdStats();
+      map<string,double> getNoiseStats();
       map<string,double> getTimeStats();
       static string getFileName( const int     measurementIndex, const string& measurementTypeString, const string& deviceId );
     private:

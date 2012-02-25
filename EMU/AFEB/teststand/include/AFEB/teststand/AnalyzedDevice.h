@@ -4,6 +4,7 @@
 #include "AFEB/teststand/TestedDevice.h"
 #include "AFEB/teststand/AnalyzedChannel.h"
 
+#include <valarray>
 #include <string>
 #include <vector>
 #include <map>
@@ -38,10 +39,18 @@ namespace AFEB { namespace teststand {
       void setInjectionCapacitance ( const double value ){ injectionCapacitance_  = value; }
       void setPulseDivisionFactor  ( const double value ){ pulseDivisionFactor_   = value; }
 
+      double fC_from_mV( const double voltage ){ return injectionCapacitance_ * voltage / pulseDivisionFactor_ / correctionCoefficient_; }
+
       void calculateGains();
       void calculateInternalCapacitance( const int iChannel,
 					 const pair<double,double> V_setThreshold,
 					 const pair<double,double> V_measuredThreshold );
+
+      // valarray<double> getThresholds() const;
+      valarray<double> getNoises() const;
+      valarray<double> getGains() const;
+      valarray<double> getOffsets() const;
+      valarray<double> getInternalCapacitances() const;
 
     private:
       vector<AnalyzedChannel> channels_;	      ///< Channels with analysis data and results.

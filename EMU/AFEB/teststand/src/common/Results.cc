@@ -157,7 +157,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 			  0.,
 			  0. + testedDevice_->getNChannels() );
   timeOnPlateau_->SetXTitle( "channel" );
-  timeOnPlateau_->SetYTitle( "RMS of times on plateau" );
+  timeOnPlateau_->SetYTitle( "mean +- RMS of times on plateau" );
   // timeOnPlateau_->SetStats( kFALSE );
   // timeOnPlateau_->SetMarkerStyle( kFullDotLarge );
   // timeOnPlateau_->SetMarkerColor( kBlue );
@@ -723,15 +723,23 @@ map<string,pair<double,double> > AFEB::teststand::Results::getParameters( const 
 map<string,double> AFEB::teststand::Results::getStats( const TH1D* hist ){
   map<string,double> stats;  
   bsem_.take();
-  stats["mean"] = mean( *hist, hist->GetXaxis()->GetXmin(), hist->GetXaxis()->GetXmax() );
+  double m = mean( *hist, hist->GetXaxis()->GetXmin(), hist->GetXaxis()->GetXmax() );
+  stats["mean"] = m;
   stats["rms" ] = rms ( *hist, hist->GetXaxis()->GetXmin(), hist->GetXaxis()->GetXmax() );
-  stats["span"] = hist->GetBinContent( hist->GetMaximumBin() ) - hist->GetBinContent( hist->GetMinimumBin() );
+  stats["min" ] = hist->GetBinContent( hist->GetMinimumBin() );
+  stats["max" ] = hist->GetBinContent( hist->GetMaximumBin() );
+  stats["max_residual"] = max( hist->GetBinContent( hist->GetMaximumBin() ) - m, 
+			       m - hist->GetBinContent( hist->GetMinimumBin() ) );
   bsem_.give();
   return stats;
 }
 
 map<string,double> AFEB::teststand::Results::getThresholdStats(){
   return getStats( threshold_ );
+}
+
+map<string,double> AFEB::teststand::Results::getNoiseStats(){
+  return getStats( noise_ );
 }
 
 map<string,double> AFEB::teststand::Results::getTimeStats(){

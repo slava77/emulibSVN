@@ -28,6 +28,7 @@ AFEB::teststand::Analysis::Analysis( const string& resultsDir )
   calculateGain();
   calculateInternalCapacitance();
   cout << analyzedDevices_ << endl;
+  saveResults();
 }
 
 AFEB::teststand::Analysis::~Analysis(){
@@ -270,4 +271,13 @@ void AFEB::teststand::Analysis::calculateInternalCapacitance(){
       } // if ( (*m)->getTypeType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitorType() == Measurement::internal )
     } // for ( vector<Measurement*>::const_iterator m = configuration_->getMeasurements().begin(); m != configuration_->getMeasurements().end(); ++m )
   } // for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d )
+}
+
+void AFEB::teststand::Analysis::saveResults(){
+  for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
+    cout << utils::statistics( d->getNoises()               ) << endl;
+    cout << utils::statistics( d->getGains()                ) << endl;
+    cout << utils::statistics( d->getOffsets()              ) << endl;
+    cout << utils::statistics( d->getInternalCapacitances() ) << endl;
+  }
 }

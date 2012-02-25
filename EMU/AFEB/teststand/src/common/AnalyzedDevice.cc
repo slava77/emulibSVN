@@ -42,11 +42,11 @@ void AFEB::teststand::AnalyzedDevice::addThresholdMeasurement( const int iChanne
   TMatrixDSym var( 1 );
   // Convert measured threshold voltage to injected charge [fC]. Take into account the correction coefficient as well:
   x  ( 0, 0 ) = V_setThreshold.first;
-  y  ( 0, 0 ) = injectionCapacitance_ * V_measuredThreshold.first / pulseDivisionFactor_ / correctionCoefficient_;
-  var( 0, 0 ) = TMath::Power( injectionCapacitance_ * V_measuredThreshold.second / pulseDivisionFactor_, 2 );
+  y  ( 0, 0 ) = fC_from_mV( V_measuredThreshold.first );
+  var( 0, 0 ) = TMath::Power( fC_from_mV( V_measuredThreshold.second ), 2 );
   channels_[iChannel].QofVfitter_   .addObservation( x, y, var );
-  y  ( 0, 0 ) = injectionCapacitance_ * V_measuredNoise.first / pulseDivisionFactor_;
-  var( 0, 0 ) = TMath::Power( injectionCapacitance_ * V_measuredNoise.second / pulseDivisionFactor_, 2 );
+  y  ( 0, 0 ) = fC_from_mV( V_measuredNoise.first );
+  var( 0, 0 ) = TMath::Power( fC_from_mV( V_measuredNoise.second ), 2 );
   channels_[iChannel].noiseAverager_.addObservation( x, y, var );
   // cout << channels_[iChannel].noiseAverager_.getObservationCount() << " Added ( " << x(0,0) << ", " << y(0,0) << "+-" << TMath::Sqrt( var(0,0) ) << " )" << endl;
 }
@@ -63,4 +63,32 @@ void AFEB::teststand::AnalyzedDevice::calculateInternalCapacitance( const int iC
 								    const pair<double,double> V_setThreshold,
 								    const pair<double,double> V_measuredThreshold ){
   channels_[iChannel].calculateInternalCapacitance( V_setThreshold, V_measuredThreshold );
+}
+
+valarray<double> AFEB::teststand::AnalyzedDevice::getNoises() const {
+  valarray<double> v( channels_.size() );
+  size_t n = 0;
+  for ( vector<AnalyzedChannel>::const_iterator c = channels_.begin(); c != channels_.end(); ++c ) v[n++] = c->noise_;
+  return v;
+}
+
+valarray<double> AFEB::teststand::AnalyzedDevice::getGains() const {
+  valarray<double> v( channels_.size() );
+  size_t n = 0;
+  for ( vector<AnalyzedChannel>::const_iterator c = channels_.begin(); c != channels_.end(); ++c ) v[n++] = c->gain_;
+  return v;
+}
+
+valarray<double> AFEB::teststand::AnalyzedDevice::getOffsets() const {
+  valarray<double> v( channels_.size() );
+  size_t n = 0;
+  for ( vector<AnalyzedChannel>::const_iterator c = channels_.begin(); c != channels_.end(); ++c ) v[n++] = c->offset_;
+  return v;
+}
+
+valarray<double> AFEB::teststand::AnalyzedDevice::getInternalCapacitances() const {
+  valarray<double> v( channels_.size() );
+  size_t n = 0;
+  for ( vector<AnalyzedChannel>::const_iterator c = channels_.begin(); c != channels_.end(); ++c ) v[n++] = c->internalCapacitance_;
+  return v;
 }
