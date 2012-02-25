@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <map>
+#include <valarray>
 #include <iostream>
 
 using namespace std;
@@ -34,6 +35,18 @@ namespace AFEB { namespace teststand {
       return os;
     }
     
+    template <typename T>
+    ostream& operator<<( ostream& os, const valarray<T>& t ){
+      cout << "[";
+      size_t i=0;
+      while( i+1 < t.size() ){
+	cout << t[i] << ", ";
+	++i;
+      }
+      cout << t[i] << "]";
+      return os;
+    }
+
   }}
 
 #endif
