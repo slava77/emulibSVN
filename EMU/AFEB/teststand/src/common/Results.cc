@@ -742,6 +742,10 @@ map<string,double> AFEB::teststand::Results::getNoiseStats(){
   return getStats( noise_ );
 }
 
+map<string,double> AFEB::teststand::Results::getChi2NDFStats(){
+  return getStats( chi2ndf_ );
+}
+
 map<string,double> AFEB::teststand::Results::getTimeStats(){
   return getStats( timeOnPlateau_ );
 }

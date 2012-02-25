@@ -3,6 +3,8 @@
 
 #include "AFEB/teststand/TestedDevice.h"
 #include "AFEB/teststand/AnalyzedChannel.h"
+#include "AFEB/teststand/DAC.h"
+#include "AFEB/teststand/Measurement.h"
 
 #include <valarray>
 #include <string>
@@ -32,19 +34,31 @@ namespace AFEB { namespace teststand {
 				    const pair<double,double> V_measuredThreshold,
 				    const pair<double,double> V_measuredNoise );
 
-      double getCorrectionCoefficient() const { return correctionCoefficient_; }
-      double getInjectionCapacitance () const { return injectionCapacitance_;  }
-      double getPulseDivisionFactor  () const { return pulseDivisionFactor_;   }
-      void setCorrectionCoefficient( const double value ){ correctionCoefficient_ = value; }
-      void setInjectionCapacitance ( const double value ){ injectionCapacitance_  = value; }
-      void setPulseDivisionFactor  ( const double value ){ pulseDivisionFactor_   = value; }
+      /// Get the pulse DAC descriptor for this device.
+      /// It's to be used for identifying the DAC object that already contains the calibration.
+      ///
+      /// @return A DAC object that does not contain the calibration.
+      ///
+      DAC  getPulseDACDescriptor() const;
+
+      /// Get the threshold DAC descriptor for this device. 
+      /// It's to be used for identifying the DAC object that already contains the calibration.
+      ///
+      /// @return A DAC object that does not contain the calibration.
+      ///
+      DAC  getThresholdDACDescriptor() const;
+
+      void setAdaptorName          ( const string& value ){ adaptorName_           = value; }
+      void setCorrectionCoefficient( const double  value ){ correctionCoefficient_ = value; }
+      void setInjectionCapacitance ( const double  value ){ injectionCapacitance_  = value; }
+      void setPulseDivisionFactor  ( const double  value ){ pulseDivisionFactor_   = value; }
+      void setPulseDAC    ( const DAC* dac ){ pulseDAC_     = dac; }
+      void setThresholdDAC( const DAC* dac ){ thresholdDAC_ = dac; }
 
       double fC_from_mV( const double voltage ){ return injectionCapacitance_ * voltage / pulseDivisionFactor_ / correctionCoefficient_; }
 
-      void calculateGains();
-      void calculateInternalCapacitance( const int iChannel,
-					 const pair<double,double> V_setThreshold,
-					 const pair<double,double> V_measuredThreshold );
+      void calculateGains               ( const vector<Measurement*> measurements, const string& rawResultsDir );
+      void calculateInternalCapacitances( const vector<Measurement*> measurements, const string& rawResultsDir );
 
       // valarray<double> getThresholds() const;
       valarray<double> getNoises() const;
@@ -52,11 +66,17 @@ namespace AFEB { namespace teststand {
       valarray<double> getOffsets() const;
       valarray<double> getInternalCapacitances() const;
 
+      void saveResults() const;
+
     private:
       vector<AnalyzedChannel> channels_;	      ///< Channels with analysis data and results.
+      string                  adaptorName_;           ///< The name of the adaptor this device is plugged into.
       double                  correctionCoefficient_; ///< The ratio of the measured threshold to the threshold measured when plugged into a reference adaptor socket.
       double                  injectionCapacitance_;  ///< Injection capacitance [pF] of the adaptor in use.
       double                  pulseDivisionFactor_;   ///< Pulse division factor of the adaptor in use.
+      const DAC              *pulseDAC_;              ///< The DAC that pulses this device.
+      const DAC              *thresholdDAC_;          ///< The DAC that sets the threshold for this device.
+      static const string     analyzedDeviceNamespace_; ///< the namespace to be used in the analyzed result XML file
     };
 
   }

@@ -25,6 +25,7 @@ AFEB::teststand::Analysis::Analysis( const string& resultsDir )
 
   collectAnalyzedDevices( configXML );
   calibrateDACs( configXML );
+  assignDACs();
   calculateGain();
   calculateInternalCapacitance();
   cout << analyzedDevices_ << endl;
@@ -52,6 +53,7 @@ void AFEB::teststand::Analysis::collectAnalyzedDevices( const string& configXML 
     stringstream xpath;
     xpath << "/c:configuration/c:inputs/@c:adaptor";
     string adaptorName = utils::getSelectedNodeValue( configXML, xpath.str() );
+    ad->setAdaptorName( adaptorName );
     // Get the injection capacitance [pF] of this adaptor
     xpath.str("");
     xpath << "/c:configuration/c:calibrations/c:adaptors/c:adaptor[@c:name='" << adaptorName << "']/@c:injectionCapacitance";
@@ -150,128 +152,39 @@ void AFEB::teststand::Analysis::calibrateDACs( const string& configXML ){
   cout << DACs_ << endl;
 }
 
-void AFEB::teststand::Analysis::calculateGain(){
-
+void AFEB::teststand::Analysis::assignDACs(){
   // Loop over the devices
   for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
 
     // Find the pulse generator's and the threshold generator's DACs for this device
-    DAC pulseDAC( d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getId(),
-		  d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getName(),
-		  DAC::getType( d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getType() ),
-		  d->getPulseGeneratorSocket() ); // Just the descriptor, no calibration yet.
-    DAC thresholdDAC( d->getCrate()->getModule( d->getSignalConverterSlot() )->getId(),
-		      d->getCrate()->getModule( d->getSignalConverterSlot() )->getName(),
-		      DAC::getType( d->getCrate()->getModule( d->getSignalConverterSlot() )->getType() ),
-		      d->getSignalConverterSocket() ); // Just the descriptor, no calibration yet.
     for ( vector<DAC>::const_iterator dac=DACs_.begin(); dac!=DACs_.end(); ++dac ){
-      if ( *dac == pulseDAC ){
+      if ( *dac == d->getPulseDACDescriptor() ){
 	cout << "Found pulse DAC" << endl << *dac << endl;
-	pulseDAC = *dac; // Now it contains the calibration, too.
+	d->setPulseDAC( &*dac );
       }
-      else if ( *dac == thresholdDAC ){
+      else if ( *dac == d->getThresholdDACDescriptor() ){
 	cout << "Found threshold DAC" << endl << *dac << endl;
-	thresholdDAC = *dac; // Now it contains the calibration, too.
+	d->setThresholdDAC( &*dac );
       }
     }
 
-    // Find the count_vs_dac measurements with charge injection through external capacitors
-    for ( vector<Measurement*>::const_iterator m = configuration_->getMeasurements().begin(); m != configuration_->getMeasurements().end(); ++m ){
-      if ( (*m)->getTypeType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitorType() == Measurement::external ){      
-	// Open the root file of this measurement's results...
-	string fileName = Results::getFileName( (*m)->getIndex(), (*m)->getType(), d->getId() );
-	TFile f( ( rawResultsDir_ + "/" + fileName +".root").c_str(), "READ" );
-	if ( f.IsZombie() ){
-	  stringstream ss;
-	  ss << "Failed to open ROOT file " << f.GetName();
-	  XCEPT_RAISE( xcept::Exception, ss.str() );
-	}
-	cout << "Opened " << f.GetName() << endl;
-	f.cd();
-	// ...and get the threshold histogram...
-	string histogramName = string( "threshold__" ) + fileName;
-	TH1D *thresholdHistogram;
-	f.GetObject( histogramName.c_str(), thresholdHistogram );
-	// ...and the noise histogram, too, while we're at it:
-	histogramName = string( "noise__" ) + fileName;
-	TH1D *noiseHistogram;
-	f.GetObject( histogramName.c_str(), noiseHistogram );
-
-	// Loop over the channels
-	for ( int iChannel=0; iChannel<d->getNChannels(); ++iChannel ){
-	  d->addThresholdMeasurement( iChannel,
-				      thresholdDAC.mV_from_DACUnit( (*m)->getSetThreshold() ),
-				      pulseDAC    .mV_from_DACUnit( thresholdHistogram->GetBinContent( iChannel+1 ),
-								    thresholdHistogram->GetBinError  ( iChannel+1 )  ),
-				      pulseDAC    .mV_from_DACUnit( noiseHistogram    ->GetBinContent( iChannel+1 ),
-								    noiseHistogram    ->GetBinError  ( iChannel+1 )  )
-				      );
-	} // for ( int iChannel=0; iChannel<d->getNChannels(); ++iChannel )
-
-	f.Close();
-      } // if ( (*m)->getTypeType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitorType() == Measurement::external )
-    } // for ( vector<Measurement*>::const_iterator m = configuration_->getMeasurements().begin(); m != configuration_->getMeasurements().end(); ++m )
-    d->calculateGains();
-  } // for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d )
+  }  
 }
+
+void AFEB::teststand::Analysis::calculateGain(){
+  // Loop over the devices
+  for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
+    d->calculateGains( configuration_->getMeasurements(), rawResultsDir_ );
+  }  
+}
+
 
 void AFEB::teststand::Analysis::calculateInternalCapacitance(){
-
-  // Loop over the devices
   for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
-
-    // Find the pulse generator's and the threshold generator's DACs for this device
-    DAC pulseDAC( d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getId(),
-		  d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getName(),
-		  DAC::getType( d->getCrate()->getModule( d->getPulseGeneratorSlot() )->getType() ),
-		  d->getPulseGeneratorSocket() ); // Just the descriptor, no calibration yet.
-    DAC thresholdDAC( d->getCrate()->getModule( d->getSignalConverterSlot() )->getId(),
-		      d->getCrate()->getModule( d->getSignalConverterSlot() )->getName(),
-		      DAC::getType( d->getCrate()->getModule( d->getSignalConverterSlot() )->getType() ),
-		      d->getSignalConverterSocket() ); // Just the descriptor, no calibration yet.
-    for ( vector<DAC>::const_iterator dac=DACs_.begin(); dac!=DACs_.end(); ++dac ){
-      if ( *dac == pulseDAC ){
-	cout << "Found pulse DAC" << endl << *dac << endl;
-	pulseDAC = *dac; // Now it contains the calibration, too.
-      }
-      else if ( *dac == thresholdDAC ){
-	cout << "Found threshold DAC" << endl << *dac << endl;
-	thresholdDAC = *dac; // Now it contains the calibration, too.
-      }
-    }
-
-    // Find the count_vs_dac measurements with charge injection through internal capacitors
-    for ( vector<Measurement*>::const_iterator m = configuration_->getMeasurements().begin(); m != configuration_->getMeasurements().end(); ++m ){
-      if ( (*m)->getTypeType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitorType() == Measurement::internal ){      
-	// Open the root file of this measurement's results...
-	string fileName = Results::getFileName( (*m)->getIndex(), (*m)->getType(), d->getId() );
-	TFile f( ( rawResultsDir_ + "/" + fileName +".root").c_str(), "READ" );
-	if ( f.IsZombie() ){
-	  stringstream ss;
-	  ss << "Failed to open ROOT file " << f.GetName();
-	  XCEPT_RAISE( xcept::Exception, ss.str() );
-	}
-	cout << "Opened " << f.GetName() << endl;
-	f.cd();
-	// ...and get the threshold histogram...
-	string histogramName = string( "threshold__" ) + fileName;
-	TH1D *thresholdHistogram;
-	f.GetObject( histogramName.c_str(), thresholdHistogram );
-
-	// Loop over the channels
-	for ( int iChannel=0; iChannel<d->getNChannels(); ++iChannel ){
-	  d->calculateInternalCapacitance( iChannel,
-					   thresholdDAC.mV_from_DACUnit( (*m)->getSetThreshold() ),
-					   pulseDAC    .mV_from_DACUnit( thresholdHistogram->GetBinContent( iChannel+1 ),
-									 thresholdHistogram->GetBinError  ( iChannel+1 )  )
-					   );
-	} // for ( int iChannel=0; iChannel<d->getNChannels(); ++iChannel )
-
-	f.Close();
-      } // if ( (*m)->getTypeType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitorType() == Measurement::internal )
-    } // for ( vector<Measurement*>::const_iterator m = configuration_->getMeasurements().begin(); m != configuration_->getMeasurements().end(); ++m )
-  } // for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d )
+    d->calculateInternalCapacitances( configuration_->getMeasurements(), rawResultsDir_ );
+  }
 }
+
 
 void AFEB::teststand::Analysis::saveResults(){
   for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){

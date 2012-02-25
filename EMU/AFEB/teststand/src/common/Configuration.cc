@@ -236,7 +236,8 @@ string AFEB::teststand::Configuration::resultsXML(){
 	}
 	ss << "</a:channel>" << endl;
       } // for ( int iChannel = 1; iChannel <= r->first->getNChannels(); ++iChannel )
-      // Add statistics to assess stability and uniformity
+      // Add statistics to assess stability and uniformity of...
+      // ...threshold,... 
       ss << "<a:statistics>" << endl;
       map<string,double> stat = r->second->getThresholdStats();
       ss << "<a:parameter a:name=\"threshold [ADC units]\"";
@@ -244,12 +245,21 @@ string AFEB::teststand::Configuration::resultsXML(){
 	ss << " a:" << s->first << "=\"" << noshowpos << showpoint << setprecision(6) << s->second << "\"";
       }
       ss << "/>" << endl;
+      // ...noise,...
       stat = r->second->getNoiseStats();
       ss << "<a:parameter a:name=\"noise [ADC units]\"";
       for ( map<string,double>::const_iterator s=stat.begin(); s!=stat.end(); ++s ){
 	ss << " a:" << s->first << "=\"" << noshowpos << showpoint << setprecision(6) << s->second << "\"";
       }
       ss << "/>" << endl;
+      // ...chi^2/ndf,...
+      stat = r->second->getChi2NDFStats();
+      ss << "<a:parameter a:name=\"&#x03c7;&#xb2;/ndf\"";
+      for ( map<string,double>::const_iterator s=stat.begin(); s!=stat.end(); ++s ){
+	ss << " a:" << s->first << "=\"" << noshowpos << showpoint << setprecision(6) << s->second << "\"";
+      }
+      ss << "/>" << endl;
+      // ...and times on the efficiency plateau.
       stat = r->second->getTimeStats();
       ss << "<a:parameter a:name=\"mean time on plateau [TDC units]\"";
       for ( map<string,double>::const_iterator s=stat.begin(); s!=stat.end(); ++s ){
