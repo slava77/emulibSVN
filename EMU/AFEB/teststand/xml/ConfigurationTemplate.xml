@@ -119,8 +119,8 @@
       <c:SignalConverter c:thresholdValue="50"/>
       <c:TDC c:timeMin="0" c:timeMax="120"/>
     </c:measurement>
-    <c:measurement c:name="Time response vs. pulse hight" c:type="time_vs_dac" c:enabled="yes">
-      <c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="400" c:capacitor="external"/>
+    <c:measurement c:name="Time response vs. pulse height" c:type="time_vs_dac" c:enabled="yes">
+      <c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="500" c:amplitudeStep="10" c:nPulses="400" c:capacitor="external"/>
       <c:SignalConverter c:thresholdValue="50"/>
       <c:TDC c:timeMin="0" c:timeMax="120"/>
     </c:measurement>
