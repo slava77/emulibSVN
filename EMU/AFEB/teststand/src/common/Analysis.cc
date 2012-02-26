@@ -44,7 +44,7 @@ void AFEB::teststand::Analysis::collectAnalyzedDevices( const string& configXML 
   }
   set<TestedDevice*> td = configuration_->getMeasurements().front()->getTestedDevices();
   for ( set<TestedDevice*>::iterator tdi = td.begin(); tdi != td.end(); ++tdi ){
-    analyzedDevices_.push_back( AnalyzedDevice( **tdi ) );
+    analyzedDevices_.push_back( AnalyzedDevice( **tdi, configuration_->getMeasurements() ) );
   }
 
   // Associate with the analyzed devices the parameters of the adaptor used
@@ -174,23 +174,26 @@ void AFEB::teststand::Analysis::assignDACs(){
 void AFEB::teststand::Analysis::calculateGain(){
   // Loop over the devices
   for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
-    d->calculateGains( configuration_->getMeasurements(), rawResultsDir_ );
+    d->calculateGains( rawResultsDir_ );
   }  
 }
 
 
 void AFEB::teststand::Analysis::calculateInternalCapacitance(){
   for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
-    d->calculateInternalCapacitances( configuration_->getMeasurements(), rawResultsDir_ );
+    d->calculateInternalCapacitances( rawResultsDir_ );
   }
 }
 
 
 void AFEB::teststand::Analysis::saveResults(){
   for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
-    cout << utils::statistics( d->getNoises()               ) << endl;
-    cout << utils::statistics( d->getGains()                ) << endl;
-    cout << utils::statistics( d->getOffsets()              ) << endl;
-    cout << utils::statistics( d->getInternalCapacitances() ) << endl;
+    d->saveResults( analyzedResultsDir_ );
+  }
+}
+
+void AFEB::teststand::Analysis::saveResults( const string& destinationDir ){
+  for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
+    d->saveResults( destinationDir );
   }
 }

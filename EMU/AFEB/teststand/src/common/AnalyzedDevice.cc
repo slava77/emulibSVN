@@ -1,6 +1,7 @@
 #include "AFEB/teststand/AnalyzedDevice.h"
 #include "AFEB/teststand/utils/String.h"
 #include "AFEB/teststand/utils/IO.h"
+#include "AFEB/teststand/utils/System.h"
 #include "xcept/Exception.h"
 
 #include "TMath.h"
@@ -24,8 +25,9 @@ ostream& AFEB::teststand::operator<<( ostream& os, const AnalyzedDevice& d ){
   return os;
 }
 
-AFEB::teststand::AnalyzedDevice::AnalyzedDevice( const TestedDevice& device )
+AFEB::teststand::AnalyzedDevice::AnalyzedDevice( const TestedDevice& device, const vector<Measurement*>& measurements )
   : TestedDevice( device )
+  , measurements_( measurements )
   , correctionCoefficient_( 0. )
   , injectionCapacitance_ ( 0. )
   , pulseDivisionFactor_  ( 0. )
@@ -71,9 +73,9 @@ void AFEB::teststand::AnalyzedDevice::addThresholdMeasurement( const int iChanne
   // cout << channels_[iChannel].noiseAverager_.getObservationCount() << " Added ( " << x(0,0) << ", " << y(0,0) << "+-" << TMath::Sqrt( var(0,0) ) << " )" << endl;
 }
 
-void AFEB::teststand::AnalyzedDevice::calculateGains( const vector<Measurement*> measurements, const string& rawResultsDir ){
+void AFEB::teststand::AnalyzedDevice::calculateGains( const string& rawResultsDir ){
   // Loop over the count_vs_dac measurements with pulses through external capacitors
-  for ( vector<Measurement*>::const_iterator m = measurements.begin(); m != measurements.end(); ++m ){
+  for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m ){
     if ( (*m)->getTypeType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitorType() == Measurement::external ){      
       // Open the root file of this measurement's results...
       string fileName = Results::getFileName( (*m)->getIndex(), (*m)->getType(), id_ );
@@ -123,9 +125,9 @@ void AFEB::teststand::AnalyzedDevice::calculateGains( const vector<Measurement*>
 //   // cout << channels_ << endl;
 // }
 
-void AFEB::teststand::AnalyzedDevice::calculateInternalCapacitances( const vector<Measurement*> measurements, const string& rawResultsDir ){
+void AFEB::teststand::AnalyzedDevice::calculateInternalCapacitances( const string& rawResultsDir ){
   // Find the count_vs_dac measurements with charge injection through internal capacitors
-  for ( vector<Measurement*>::const_iterator m = measurements.begin(); m != measurements.end(); ++m ){
+  for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m ){
     if ( (*m)->getTypeType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitorType() == Measurement::internal ){      
       // Open the root file of this measurement's results...
       string fileName = Results::getFileName( (*m)->getIndex(), (*m)->getType(), id_ );
@@ -184,20 +186,66 @@ valarray<double> AFEB::teststand::AnalyzedDevice::getInternalCapacitances() cons
   return v;
 }
 
-void AFEB::teststand::AnalyzedDevice::saveResults() const {
-  string resultXML;
-  
+string AFEB::teststand::AnalyzedDevice::statisticsToXML( const string& name, const valarray<double>& values ) const {
   stringstream ss;
+  map<string,double> stats = utils::statistics( values );
+  ss << "<ad:" << name ;
+  for ( map<string,double>::const_iterator s=stats.begin(); s!=stats.end(); ++s ){
+    ss << " ad:" << s->first << "=\"" << showpos << showpoint << setprecision(4) << setw(8) << fixed << s->second << "\"";
+  }
+  ss <<   ">";
+  return ss.str();
+}
+
+void AFEB::teststand::AnalyzedDevice::saveResults( const string& analyzedResultsDir ) const {
+
+  utils::execShellCommand( string( "mkdir -p " ) + analyzedResultsDir );
+
+  stringstream ss;
+  ss << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"        << endl
+     << "<?xml-stylesheet type=\"text/xml\" href=\"analyzedResults_XSLT.xml\"?>" << endl;
+
+
   ss << "<ad:device xmlns:ad=\"" << analyzedDeviceNamespace_ << "\""
      <<           " ad:type=\""  << type_                    << "\""
-     <<           " ad:id=\""    << id_                      << "\">"
+     <<           " ad:id=\""    << id_                      << "\""
+     << ">" << endl
      << "  <ad:adaptor ad:name=\""                  << adaptorName_ << "\""
      <<              " ad:socket=\""                << socket_      << "\""
-     <<              " ad:correctionCoefficient=\"" << noshowpos << showpoint << setprecision(6) << correctionCoefficient_ << "\""
-     <<              " ad:injectionCapacitance=\""  << noshowpos << showpoint << setprecision(6) << injectionCapacitance_  << "\""
-     <<              " ad:pulseDivisionFactor=\""   << noshowpos << showpoint << setprecision(6) << pulseDivisionFactor_   << "\"/>"
-     << "</ad:device>";
+     <<              " ad:correctionCoefficient=\"" << noshowpos << showpoint << setprecision(4) << setw(8) << fixed << correctionCoefficient_ << "\""
+     <<              " ad:injectionCapacitance=\""  << noshowpos << showpoint << setprecision(4) << setw(8) << fixed << injectionCapacitance_  << "\""
+     <<              " ad:pulseDivisionFactor=\""   << noshowpos << showpoint << setprecision(4) << setw(8) << fixed << pulseDivisionFactor_   << "\"/"
+     <<   "/>" << endl;
 
+  for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m ){
+    ss.str() = "";
+    ss << "  <ad:measurement ad:index=\""        << (*m)->getIndex()              << "\""
+       <<                  " ad:type=\""         << (*m)->getType()               << "\""
+       <<                  " ad:capacitor=\""    << (*m)->getInjectionCapacitor() << "\""
+       <<                  " ad:nPulses=\""      << (*m)->getNPulses()            << "\""
+       <<                  " ad:setThreshold=\"" << (*m)->getSetThreshold()       << "\"" // TODO: convert to charge
+       <<   "/>" << endl;
+  }
+
+  size_t iChannel = 0;
+  for ( vector<AnalyzedChannel>::const_iterator c = channels_.begin(); c != channels_.end(); ++c ){
+    ss << "  <ad:channel ad:noise=\""   << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->noise_               << "\""
+       <<              " ad:offset=\""  << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->offset_              << "\""
+       <<              " ad:gain=\""    << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->gain_                << "\""
+       <<              " ad:C_int=\""   << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->internalCapacitance_ << "\""
+       <<              " ad:number=\""  << setw(2) << iChannel++                                                                  << "\""
+       <<   ">" << endl;
+  }
   
+  ss << "  " << statisticsToXML( "noise ", getNoises()               ) << endl;
+  ss << "  " << statisticsToXML( "gain  ", getGains()                ) << endl;
+  ss << "  " << statisticsToXML( "offset", getOffsets()              ) << endl;
+  ss << "  " << statisticsToXML( "C_int ", getInternalCapacitances() ) << endl;
+  
+  ss << "</ad:device>" << endl;
+
+  cout << ss.str();
+
+  utils::writeFile( analyzedResultsDir + "/" + id_ + ".xml", ss.str() );
 
 }

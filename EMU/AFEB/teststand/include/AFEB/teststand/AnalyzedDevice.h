@@ -27,7 +27,7 @@ namespace AFEB { namespace teststand {
       ///
       /// @param device Tested device to be used as a base for this analyzed device.
       ///
-      AnalyzedDevice( const TestedDevice& device );
+      AnalyzedDevice( const TestedDevice& device, const vector<Measurement*>& measurements );
 
       void addThresholdMeasurement( const int iChannel,
 				    const pair<double,double> V_setThreshold ,
@@ -57,26 +57,27 @@ namespace AFEB { namespace teststand {
 
       double fC_from_mV( const double voltage ){ return injectionCapacitance_ * voltage / pulseDivisionFactor_ / correctionCoefficient_; }
 
-      void calculateGains               ( const vector<Measurement*> measurements, const string& rawResultsDir );
-      void calculateInternalCapacitances( const vector<Measurement*> measurements, const string& rawResultsDir );
+      void calculateGains               ( const string& rawResultsDir );
+      void calculateInternalCapacitances( const string& rawResultsDir );
+      void saveResults                  ( const string& analyzedResultsDir ) const;
+
+    private:
+      vector<Measurement*>       measurements_;	         ///< Measurements preformed on this device.
+      vector<AnalyzedChannel>    channels_;	         ///< Channels with analysis data and results.
+      string                     adaptorName_;           ///< The name of the adaptor this device is plugged into.
+      double                     correctionCoefficient_; ///< The ratio of the measured threshold to the threshold measured when plugged into a reference adaptor socket.
+      double                     injectionCapacitance_;  ///< Injection capacitance [pF] of the adaptor in use.
+      double                     pulseDivisionFactor_;   ///< Pulse division factor of the adaptor in use.
+      const DAC                 *pulseDAC_;              ///< The DAC that pulses this device.
+      const DAC                 *thresholdDAC_;          ///< The DAC that sets the threshold for this device.
+      static const string        analyzedDeviceNamespace_; ///< the namespace to be used in the analyzed result XML file
 
       // valarray<double> getThresholds() const;
       valarray<double> getNoises() const;
       valarray<double> getGains() const;
       valarray<double> getOffsets() const;
       valarray<double> getInternalCapacitances() const;
-
-      void saveResults() const;
-
-    private:
-      vector<AnalyzedChannel> channels_;	      ///< Channels with analysis data and results.
-      string                  adaptorName_;           ///< The name of the adaptor this device is plugged into.
-      double                  correctionCoefficient_; ///< The ratio of the measured threshold to the threshold measured when plugged into a reference adaptor socket.
-      double                  injectionCapacitance_;  ///< Injection capacitance [pF] of the adaptor in use.
-      double                  pulseDivisionFactor_;   ///< Pulse division factor of the adaptor in use.
-      const DAC              *pulseDAC_;              ///< The DAC that pulses this device.
-      const DAC              *thresholdDAC_;          ///< The DAC that sets the threshold for this device.
-      static const string     analyzedDeviceNamespace_; ///< the namespace to be used in the analyzed result XML file
+      string statisticsToXML( const string& name, const valarray<double>& values ) const;
     };
 
   }

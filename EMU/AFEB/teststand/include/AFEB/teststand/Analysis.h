@@ -22,7 +22,17 @@ namespace AFEB { namespace teststand {
       void assignDACs();
       void calculateGain();
       void calculateInternalCapacitance();
+
+      /// 
+      /// Save results in the standard analyzed results directory (<resultsDir>/analyzed)
+      ///
       void saveResults();
+
+      /// Save results in the specified directory instead of the standard one.
+      ///
+      /// @param destinationDir Directory to save the analyzed results in.
+      ///
+      void saveResults( const string& destinationDir );
 
       string rawResultsDir_;
       string analyzedResultsDir_;
