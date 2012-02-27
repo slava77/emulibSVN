@@ -44,7 +44,7 @@ void AFEB::teststand::Analysis::collectAnalyzedDevices( const string& configXML 
   }
   set<TestedDevice*> td = configuration_->getMeasurements().front()->getTestedDevices();
   for ( set<TestedDevice*>::iterator tdi = td.begin(); tdi != td.end(); ++tdi ){
-    analyzedDevices_.push_back( AnalyzedDevice( **tdi, configuration_->getMeasurements() ) );
+    analyzedDevices_.push_back( AnalyzedDevice( **tdi, rawResultsDir_, configuration_->getMeasurements() ) );
   }
 
   // Associate with the analyzed devices the parameters of the adaptor used
@@ -174,14 +174,14 @@ void AFEB::teststand::Analysis::assignDACs(){
 void AFEB::teststand::Analysis::calculateGain(){
   // Loop over the devices
   for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
-    d->calculateGains( rawResultsDir_ );
+    d->calculateGains();
   }  
 }
 
 
 void AFEB::teststand::Analysis::calculateInternalCapacitance(){
   for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
-    d->calculateInternalCapacitances( rawResultsDir_ );
+    d->calculateInternalCapacitances();
   }
 }
 

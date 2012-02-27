@@ -27,7 +27,7 @@ namespace AFEB { namespace teststand {
       ///
       /// @param device Tested device to be used as a base for this analyzed device.
       ///
-      AnalyzedDevice( const TestedDevice& device, const vector<Measurement*>& measurements );
+      AnalyzedDevice( const TestedDevice& device, const string& rawResultsDir, const vector<Measurement*>& measurements );
 
       void addThresholdMeasurement( const int iChannel,
 				    const pair<double,double> V_setThreshold ,
@@ -55,13 +55,20 @@ namespace AFEB { namespace teststand {
       void setPulseDAC    ( const DAC* dac ){ pulseDAC_     = dac; }
       void setThresholdDAC( const DAC* dac ){ thresholdDAC_ = dac; }
 
-      double fC_from_mV( const double voltage ){ return injectionCapacitance_ * voltage / pulseDivisionFactor_ / correctionCoefficient_; }
+      /// Converts voltage [mV] to charge [fC] taking into account the correction coefficient for the adapter socket, too.
+      ///
+      /// @param voltage Voltage [mV]
+      ///
+      /// @return Charge [fC]
+      ///
+      double chargeFromVoltage( const double voltage ) const { return injectionCapacitance_ * voltage / pulseDivisionFactor_ / correctionCoefficient_; }
 
-      void calculateGains               ( const string& rawResultsDir );
-      void calculateInternalCapacitances( const string& rawResultsDir );
+      void calculateGains               ();
+      void calculateInternalCapacitances();
       void saveResults                  ( const string& analyzedResultsDir ) const;
 
     private:
+      string                     rawResultsDir_;
       vector<Measurement*>       measurements_;	         ///< Measurements preformed on this device.
       vector<AnalyzedChannel>    channels_;	         ///< Channels with analysis data and results.
       string                     adaptorName_;           ///< The name of the adaptor this device is plugged into.
@@ -77,6 +84,7 @@ namespace AFEB { namespace teststand {
       valarray<double> getGains() const;
       valarray<double> getOffsets() const;
       valarray<double> getInternalCapacitances() const;
+      string measurementsToXML() const;
       string statisticsToXML( const string& name, const valarray<double>& values ) const;
     };
 
