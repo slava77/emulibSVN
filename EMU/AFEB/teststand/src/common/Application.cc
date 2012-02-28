@@ -354,6 +354,7 @@ string AFEB::teststand::Application::createXMLWebPageSkeleton(){
      <<           "\" a:urlHost=\"" << url.getHost()
      <<           "\" a:urlPath=\"" << rawResultURLDir_ << "/"
      <<           "\" a:file=\"" << "results.xml"
+     <<           "\" a:measurementDate=\"" << utils::getDateTime()
      <<           "\">" << endl;
   if ( configuration_ != NULL ) ss << configuration_->resultsXML();
   ss << "  </a:results>" << endl;
