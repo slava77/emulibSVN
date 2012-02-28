@@ -191,13 +191,13 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
   stringstream ss;
   for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m ){
     ss.str() = "";
-    ss << "  <ad:measurement ad:index=\""            << noshowpos 
-       <<                                               (*m)->getIndex()              << "\""
-       <<                  " ad:type=\""             << (*m)->getType()               << "\""
-       <<                  " ad:capacitor=\""        << (*m)->getInjectionCapacitor() << "\""
-       <<                  " ad:nPulses=\""          << (*m)->getNPulses()            << "\""
-       <<                  " ad:setThreshold_ADC=\"" << (*m)->getSetThreshold()       << "\""
-       <<                  " ad:setThreshold_mV=\""  << thresholdDAC_->mV_from_DACUnit( (*m)->getSetThreshold() ).first << "\""
+    ss << "  <ad:measurement index=\""             << noshowpos 
+       <<                                             (*m)->getIndex()              << "\""
+       <<                  " type=\""              << (*m)->getType()               << "\""
+       <<                  " capacitor=\""         << (*m)->getInjectionCapacitor() << "\""
+       <<                  " nPulses=\""           << (*m)->getNPulses()            << "\""
+       <<                  " setThreshold[ADC]=\"" << (*m)->getSetThreshold()       << "\""
+       <<                  " setThreshold[mV]=\""  << thresholdDAC_->mV_from_DACUnit( (*m)->getSetThreshold() ).first << "\""
        <<   ">" << endl;
 
     // Open the root file of this measurement's results...
@@ -225,14 +225,14 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
 
     // Loop over the channels
     for ( int iChannel=0; iChannel<nChannels_; ++iChannel ){
-      ss << "    <ad:channel ad:number=\""    << noshowpos << setw(2) 
-	 <<                                   iChannel
-	 <<              "\" ad:threshold=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed
-	 <<                                   chargeFromVoltage( pulseDAC_->mV_from_DACUnit( thresholdHistogram->GetBinContent( iChannel+1 ) ).first )
-	 <<              "\" ad:noise=\""
-	 <<                                   chargeFromVoltage( pulseDAC_->mV_from_DACUnit( noiseHistogram    ->GetBinContent( iChannel+1 ) ).first )
-	 <<              "\" ad:chi2ndf=\""
-	 <<                                                                                  chi2ndfHistogram  ->GetBinContent( iChannel+1 )
+      ss << "    <ad:channel number=\""        << noshowpos << setw(2) 
+	 <<                                    iChannel
+	 <<              "\" threshold[fC]=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed
+	 <<                                    chargeFromVoltage( pulseDAC_->mV_from_DACUnit( thresholdHistogram->GetBinContent( iChannel+1 ) ).first )
+	 <<              "\" noise[fC]=\""
+	 <<                                    chargeFromVoltage( pulseDAC_->mV_from_DACUnit( noiseHistogram    ->GetBinContent( iChannel+1 ) ).first )
+	 <<              "\" chi2ndf=\""
+	 <<                                                                                   chi2ndfHistogram  ->GetBinContent( iChannel+1 )
 	 <<     "/>" << endl;
     } // for ( int iChannel=0; iChannel<d->getNChannels(); ++iChannel )
     
@@ -247,13 +247,23 @@ string AFEB::teststand::AnalyzedDevice::statisticsToXML( const string& name, con
   map<string,double> stats = utils::statistics( values );
   ss << "<ad:" << name ;
   for ( map<string,double>::const_iterator s=stats.begin(); s!=stats.end(); ++s ){
-    ss << " ad:" << s->first << "=\"" << showpos << showpoint << setprecision(4) << setw(8) << fixed << s->second << "\"";
+    ss << " " << s->first << "=\"" << showpos << showpoint << setprecision(4) << setw(8) << fixed << s->second << "\"";
   }
   ss <<   ">";
   return ss.str();
 }
 
-void AFEB::teststand::AnalyzedDevice::saveResults( const string& analyzedResultsDir ) const {
+double AFEB::teststand::AnalyzedDevice::getMaxMeasuredThreshold( const double setThreshold ){
+  TMatrixD x( 1, 1 );
+  x( 0, 0 ) = setThreshold;
+  valarray<double> thresholds( nChannels_ );
+  for ( int iChannel=0; iChannel<nChannels_; ++iChannel ){
+    thresholds[iChannel] = channels_[iChannel].QofVfitter_.getY( x )( 0, 0 );
+  }
+  return utils::statistics( thresholds )["max"];
+}
+
+void AFEB::teststand::AnalyzedDevice::saveResults( const string& analyzedResultsDir ){
 
   utils::execShellCommand( string( "mkdir -p " ) + analyzedResultsDir );
 
@@ -262,34 +272,42 @@ void AFEB::teststand::AnalyzedDevice::saveResults( const string& analyzedResults
      << "<?xml-stylesheet type=\"text/xml\" href=\"analyzedResults_XSLT.xml\"?>" << endl;
 
 
-  ss << "<ad:device xmlns:ad=\"" << analyzedDeviceNamespace_ << "\""
-     <<           " ad:type=\""  << type_                    << "\""
-     <<           " ad:id=\""    << id_                      << "\""
+  ss << "<ad:device xmlns:ad=\""     << analyzedDeviceNamespace_ << "\""
+     <<           " type=\""         << type_                    << "\""
+     <<           " id=\""           << id_                      << "\""
+     <<           " analysisDate=\"" << utils::getDateTime()     << "\""
      << ">" << endl
-     << "  <ad:adaptor ad:name=\""                  << adaptorName_ << "\""
-     <<              " ad:socket=\""                << socket_      << "\""
-     <<              " ad:correctionCoefficient=\"" << noshowpos << showpoint << setprecision(4) << setw(8) << fixed << correctionCoefficient_ << "\""
-     <<              " ad:injectionCapacitance=\""  << noshowpos << showpoint << setprecision(4) << setw(8) << fixed << injectionCapacitance_  << "\""
-     <<              " ad:pulseDivisionFactor=\""   << noshowpos << showpoint << setprecision(4) << setw(8) << fixed << pulseDivisionFactor_   << "\"/"
+     << "  <ad:adaptor name=\""                  << adaptorName_ << "\""
+     <<              " socket=\""                << socket_      << "\""
+     <<              " correctionCoefficient=\"" << noshowpos << showpoint << setprecision(4) << setw(8) << fixed << correctionCoefficient_ << "\""
+     <<              " injectionCapacitance[fC]=\""  << noshowpos << showpoint << setprecision(4) << setw(8) << fixed << injectionCapacitance_  << "\""
+     <<              " pulseDivisionFactor=\""   << noshowpos << showpoint << setprecision(4) << setw(8) << fixed << pulseDivisionFactor_   << "\"/"
      <<   "/>" << endl;
 
   ss << measurementsToXML();
 
   size_t iChannel = 0;
   for ( vector<AnalyzedChannel>::const_iterator c = channels_.begin(); c != channels_.end(); ++c ){
-    ss << "  <ad:channel ad:noise=\""   << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->noise_               << "\""
-       <<              " ad:offset=\""  << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->offset_              << "\""
-       <<              " ad:gain=\""    << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->gain_                << "\""
-       <<              " ad:C_int=\""   << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->internalCapacitance_ << "\""
-       <<              " ad:number=\""  << setw(2) << iChannel++                                                                  << "\""
+    ss << "  <ad:channel noise[fC]=\""   << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->noise_               << "\""
+       <<              " offset[mV]=\""  << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->offset_              << "\""
+       <<              " gain[mV/fC]=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->gain_                << "\""
+       <<              " C_int[pF]=\""   << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->internalCapacitance_ << "\""
+       <<              " number=\""      << setw(2) << iChannel++                                                                  << "\""
        <<   ">" << endl;
   }
   
-  ss << "  " << statisticsToXML( "noise ", getNoises()               ) << endl;
-  ss << "  " << statisticsToXML( "gain  ", getGains()                ) << endl;
-  ss << "  " << statisticsToXML( "offset", getOffsets()              ) << endl;
-  ss << "  " << statisticsToXML( "C_int ", getInternalCapacitances() ) << endl;
+  ss << "  " << statisticsToXML( "noise[fC]",    getNoises()               ) << endl;
+  ss << "  " << statisticsToXML( "gain[mV/fC] ", getGains()                ) << endl;
+  ss << "  " << statisticsToXML( "offset[mV]",   getOffsets()              ) << endl;
+  ss << "  " << statisticsToXML( "C_int[pF]",    getInternalCapacitances() ) << endl;
   
+  ss << "  <ad:averageSetThreshold value[mV]=\"" 
+     << utils::statistics( getOffsets() )["mean"] + utils::statistics( getGains() )["mean"] * 20
+     <<                          " atCharge[fC]=\"20\"/>" << endl;
+
+  ss << "  <ad:maxMeasuredThreshold value[fC]=\"" << getMaxMeasuredThreshold( 0 )
+     <<                           " atSetThreshold[mV]=\"0\"/>" << endl;
+
   ss << "</ad:device>" << endl;
 
   cout << ss.str();

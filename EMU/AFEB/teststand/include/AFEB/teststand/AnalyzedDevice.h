@@ -65,7 +65,7 @@ namespace AFEB { namespace teststand {
 
       void calculateGains               ();
       void calculateInternalCapacitances();
-      void saveResults                  ( const string& analyzedResultsDir ) const;
+      void saveResults                  ( const string& analyzedResultsDir );
 
     private:
       string                     rawResultsDir_;
@@ -86,6 +86,7 @@ namespace AFEB { namespace teststand {
       valarray<double> getInternalCapacitances() const;
       string measurementsToXML() const;
       string statisticsToXML( const string& name, const valarray<double>& values ) const;
+      double getMaxMeasuredThreshold( const double setThreshold );
     };
 
   }
