@@ -244,28 +244,75 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
       TProfile *timesHistogram;
       f.GetObject( histogramName.c_str(), timesHistogram );
       // Profile hist needs projecting:
+      cout << "timesHistogram " << (void*)timesHistogram << endl;
+      timesHistogram->Print();
       TH1D *timesVsADC = timesHistogram->ProjectionX( "tp", "e" ); // Keep the original errors, which are actually the RMS in this case.
+      cout << timesVsADC->GetNbinsX() << endl
+	   << timesVsADC->GetBinLowEdge( 1 ) << " " 
+	   << timesVsADC->GetBinLowEdge ( timesVsADC->GetNbinsX()+1 ) << endl
+	   << pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinLowEdge( 1 ) ).first << " " 
+	   << pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinLowEdge ( timesVsADC->GetNbinsX()+1 ) ).first << endl
+	   << chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinLowEdge( 1 ) ).first ) << " " 
+	   << chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinLowEdge ( timesVsADC->GetNbinsX()+1 ) ).first ) << endl;
       TH1D *timesVsCharge = new TH1D( "timesVsCharge", "timesVsCharge", timesVsADC->GetNbinsX(), 
 				      chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinLowEdge(                          1 ) ).first ),
 				      chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinLowEdge ( timesVsADC->GetNbinsX()+1 ) ).first )
 				      );
-      delete timesVsADC;
-      vector<size_t> bins;
+
+      // Find the bins which the nominal input charge values would fall into, and get the charges corresponding the center of those bins:
+      vector<size_t> bins;                 // bins[iCharge]
+      vector<double> realCharges;          // realCharges[iCharge]
+      vector<valarray<double> > meanTimes; // meanTimes[iCharge][iChannel]
+      vector<valarray<double> > rmsTimes;  // rmsTimes[iCharge][iChannel]
       for ( size_t iCharge=0; iCharge<sizeof(quotedInputCharges_)/sizeof(double); ++iCharge ){
 	bins.push_back( timesVsCharge->FindBin( quotedInputCharges_[iCharge] ) );
+	realCharges.push_back( chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinCenter( bins.back() ) ).first ) );
+	meanTimes.push_back( valarray<double>(nChannels_) ); // prepare container
+	rmsTimes .push_back( valarray<double>(nChannels_) ); // prepare container
       }
+      cout << "bins" << bins << endl;
+      cout << "realCharges" << realCharges << endl;
       double inputChargeRangeStart = timesVsCharge->GetBinCenter(                          1 );
       double inputChargeRangeEnd   = timesVsCharge->GetBinCenter( timesVsCharge->GetNbinsX() );
+      delete timesVsADC;
       delete timesVsCharge;
 
-      // Loop over the channels
+      // Loop over the channels and get the mean and rms of the times at the specified input charges:
       for ( int iChannel=0; iChannel<nChannels_; ++iChannel ){
 	// Get the times histogram...
 	histogramName = string( "timeVsAmpl__" ) + fileName + "__ch_" + utils::stringFrom<int>( iChannel );
 	f.GetObject( histogramName.c_str(), timesHistogram );
 	// Profile hist needs projecting:
 	TH1D *timesVsADC = timesHistogram->ProjectionX( "tp", "e" ); // Keep the original errors, which are actually the RMS in this case.
+	for ( size_t iCharge=0; iCharge<sizeof(quotedInputCharges_)/sizeof(double); ++iCharge ){
+	  meanTimes[iCharge][iChannel] = timesVsADC->GetBinContent( bins[iCharge] );
+	  rmsTimes [iCharge][iChannel] = timesVsADC->GetBinError  ( bins[iCharge] );
+	}
 	delete timesVsADC;
+      }
+
+      cout << "meanTimes" << endl << meanTimes << endl;
+      cout << "rmsTimes" << endl << rmsTimes << endl;
+
+      // Now write the values to XML;
+      for ( size_t iCharge=0; iCharge<sizeof(quotedInputCharges_)/sizeof(double); ++iCharge ){
+	ss << "    <ad:times nominalInputCharge.fC=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed
+	   <<                                          quotedInputCharges_[iCharge]
+	   <<            "\" realInputCharge.fC=\""
+	   <<                                          realCharges[iCharge]
+	   <<    "\">" << endl;
+	for ( int iChannel=0; iChannel<nChannels_; ++iChannel ){
+	  ss << "      <ad:channel number=\""       << noshowpos << setw(2) 
+	     <<                                     iChannel
+	     <<                "\" mean.ns=\""      << showpos << showpoint << setw(8) << setprecision(4) << fixed
+	     <<                                     meanTimes[iCharge][iChannel]
+	     <<                "\" rms.ns=\""
+	     <<                                     rmsTimes [iCharge][iChannel]
+	     <<       "\"/>" << endl;
+	}
+	ss << "      " << statisticsToXML( "mean.ns", meanTimes[iCharge] ) << endl;
+	ss << "      " << statisticsToXML( "rms.ns" , rmsTimes[iCharge]  ) << endl;
+	ss << "    </ad:times>" << endl;
       }
 
     } // if ( (*m)->getType() == Measurement::time_vs_dac )
