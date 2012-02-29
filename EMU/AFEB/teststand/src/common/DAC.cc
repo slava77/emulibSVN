@@ -130,6 +130,11 @@ AFEB::teststand::DAC::mV_from_DACUnit( const double valueInDACUnits,
 				   TMath::Sqrt( varianceDueToParameters + varianceDueToObservation ) );
 }
 
+// double AFEB::teststand::DAC::DACUnit_from_mV( const double valueInmV ) const {
+//   if ( (*calibrationParameters_)( DAC::slope, 0 ) == double(0.) ) return 0.;
+//   return ( valueInmV - (*calibrationParameters_)( DAC::intercept, 0 ) ) / (*calibrationParameters_)( DAC::slope, 0 ); 
+// }
+
 // static function
 AFEB::teststand::DAC::Type_t 
 AFEB::teststand::DAC::getType( const string& typeString ){

@@ -9,6 +9,9 @@
 #include <iomanip>
 
 const string AFEB::teststand::AnalyzedDevice::analyzedDeviceNamespace_( "http://cms.cern.ch/emu/afeb/teststand/analyzeddevice" );
+const double AFEB::teststand::AnalyzedDevice::quotedInputCharges_[]  = { 50., 100., 150. };
+const double AFEB::teststand::AnalyzedDevice::inputChargeRangeStart_ =  50.;
+const double AFEB::teststand::AnalyzedDevice::inputChargeRangeEnd_   = 580.;
 
 ostream& AFEB::teststand::operator<<( ostream& os, const AnalyzedDevice& d ){
   os << *dynamic_cast<const TestedDevice*>( &d );
@@ -235,6 +238,35 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
 
     if ( (*m)->getType() == Measurement::time_vs_dac ){
 
+      // Find the bins corresponding to the charges at which the mean and RMS of time are to be reported. 
+      // Do it for the first channel only; they're the same for the other channels.
+      string histogramName = string( "timeVsAmpl__" ) + fileName + "__ch_0";
+      TProfile *timesHistogram;
+      f.GetObject( histogramName.c_str(), timesHistogram );
+      // Profile hist needs projecting:
+      TH1D *timesVsADC = timesHistogram->ProjectionX( "tp", "e" ); // Keep the original errors, which are actually the RMS in this case.
+      TH1D *timesVsCharge = new TH1D( "timesVsCharge", "timesVsCharge", timesVsADC->GetNbinsX(), 
+				      chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinLowEdge(                          1 ) ).first ),
+				      chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinLowEdge ( timesVsADC->GetNbinsX()+1 ) ).first )
+				      );
+      delete timesVsADC;
+      vector<size_t> bins;
+      for ( size_t iCharge=0; iCharge<sizeof(quotedInputCharges_)/sizeof(double); ++iCharge ){
+	bins.push_back( timesVsCharge->FindBin( quotedInputCharges_[iCharge] ) );
+      }
+      double inputChargeRangeStart = timesVsCharge->GetBinCenter(                          1 );
+      double inputChargeRangeEnd   = timesVsCharge->GetBinCenter( timesVsCharge->GetNbinsX() );
+      delete timesVsCharge;
+
+      // Loop over the channels
+      for ( int iChannel=0; iChannel<nChannels_; ++iChannel ){
+	// Get the times histogram...
+	histogramName = string( "timeVsAmpl__" ) + fileName + "__ch_" + utils::stringFrom<int>( iChannel );
+	f.GetObject( histogramName.c_str(), timesHistogram );
+	// Profile hist needs projecting:
+	TH1D *timesVsADC = timesHistogram->ProjectionX( "tp", "e" ); // Keep the original errors, which are actually the RMS in this case.
+	delete timesVsADC;
+      }
 
     } // if ( (*m)->getType() == Measurement::time_vs_dac )
 

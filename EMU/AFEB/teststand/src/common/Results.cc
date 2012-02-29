@@ -196,7 +196,8 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 				measurement_->getAmplitudeMin() + ( nAmp - 0.5 ) * measurement_->getAmplitudeStep(),
 				measurement_->getTDCTimeMin(),
 				measurement_->getTDCTimeMax(),
-				"S" ); // spread option (not error on mean)
+				"S" ); // Important: spread option (not error on mean)! We'll need to quote RMS!
+                             // "" ); // error on mean
     t->SetXTitle( "amplitude" );
     t->SetYTitle( "time [TDC units]" );
     t->SetStats( kFALSE );
@@ -594,7 +595,7 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   gPad->SetRightMargin( 0.10 );
   for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
     // Profile hist needs projecting:
-    TH1D *tp = timeVsAmplitude_.at( iChannel )->ProjectionX( "t", "" );
+    TH1D *tp = timeVsAmplitude_.at( iChannel )->ProjectionX( "t", "e" ); // keep the original errors
     // Create a copy so that we can delete the original projection, just to avoid any possible interference:
     TH1D t( *tp );
     // Delete original projection:

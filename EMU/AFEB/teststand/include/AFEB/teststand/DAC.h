@@ -62,6 +62,8 @@ namespace AFEB { namespace teststand {
       pair<double,double> mV_from_DACUnit( const double valueInDACUnits, 
 					   const double errorInDACUnits=0. ) const;
 
+      //double DACUnit_from_mV( const double valueInmV ) const;
+
     private:
       string moduleId_;
       string moduleName_;
