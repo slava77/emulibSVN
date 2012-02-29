@@ -186,13 +186,13 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
   stringstream ss;
   for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m ){
     ss.str() = "";
-    ss << "  <ad:measurement index=\""              << noshowpos 
-       <<                                              (*m)->getIndex()
-       <<                  "\" type=\""             << (*m)->getTypeString()
-       <<                  "\" capacitor=\""        << (*m)->getInjectionCapacitor()
-       <<                  "\" nPulses=\""          << (*m)->getNPulses()
-       <<                  "\" setThreshold.ADC=\"" << (*m)->getSetThreshold()
-       <<                  "\" setThreshold.mV=\""  << thresholdDAC_->mV_from_DACUnit( (*m)->getSetThreshold() ).first
+    ss << "  <ad:measurement index=\""                     << noshowpos 
+       <<                                                     (*m)->getIndex()
+       <<                  "\" type=\""                    << (*m)->getTypeString()
+       <<                  "\" capacitor=\""               << (*m)->getInjectionCapacitorString()
+       <<                  "\" nPulses=\""                 << (*m)->getNPulses()
+       <<                  "\" setThreshold.ADC=\""        << (*m)->getSetThreshold()
+       <<                  "\" setThresholdVoltage.mV=\""  << thresholdDAC_->mV_from_DACUnit( (*m)->getSetThreshold() ).first
        <<   "\">" << endl;
 
     // Open the root file of this measurement's results...
@@ -386,11 +386,11 @@ void AFEB::teststand::AnalyzedDevice::saveResults( const string& analyzedResults
 
   size_t iChannel = 0;
   for ( vector<AnalyzedChannel>::const_iterator c = channels_.begin(); c != channels_.end(); ++c ){
-    ss << "  <ad:channel number=\""       << noshowpos << noshowpoint << setw(2) << iChannel++
-       <<            "\" offset.mV=\""    << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->offset_
-       <<            "\" gain.mV.fC-1=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->gain_
-       <<            "\" C_int.pF=\""     << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->internalCapacitance_
-       <<            "\" noise.fC=\""     << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->noise_
+    ss << "  <ad:channel number=\""          << noshowpos << noshowpoint << setw(2) << iChannel++
+       <<            "\" offset.mV=\""       << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->offset_
+       <<            "\" gain.mV.fC-1=\""    << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->gain_
+       <<            "\" C_int.pF=\""        << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->internalCapacitance_
+       <<            "\" averageNoise.fC=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->noise_
        <<   "\"/>" << endl;
   }
   
