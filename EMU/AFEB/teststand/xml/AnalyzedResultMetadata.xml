@@ -104,7 +104,7 @@
     <meta:attr name="atCharge" units="fC" description="Input charge for which the average set threshold is calculated from the avarage gain and offset."/>
   </meta:tag>
   <meta:tag name="ad:maxMeasuredThreshold">
-    <meta:attr name="value" description="Maximum over the channels of the measured threshold values for which the set threshold is the specified value."/>
-    <meta:attr name="atSetThreshold" description="Set threshold value for which the maximum over the channels of the measured threshold values is calculated."/>
+    <meta:attr name="value" units="fC" description="Maximum over the channels of the measured threshold values for which the set threshold is the specified value."/>
+    <meta:attr name="atSetThreshold" units="mV" description="Set threshold value for which the maximum over the channels of the measured threshold values is calculated."/>
   </meta:tag>
 </meta:data>
