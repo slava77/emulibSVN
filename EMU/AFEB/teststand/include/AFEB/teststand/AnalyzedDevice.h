@@ -78,9 +78,9 @@ namespace AFEB { namespace teststand {
       const DAC                 *pulseDAC_;              ///< The DAC that pulses this device.
       const DAC                 *thresholdDAC_;          ///< The DAC that sets the threshold for this device.
       static const string        analyzedDeviceNamespace_; ///< the namespace to be used in the analyzed result XML file
-      static const double        quotedInputCharges_[];  ///< The nominal input charge values [fC] at which the mean and RMS of times are to be reported. The actual values may be slightly different due to the finite pulse amplitude step size.
-      static const double        inputChargeRangeStart_; ///< The lower end of the input charge range [fC] for the slew time calculation.
-      static const double        inputChargeRangeEnd_;   ///< The upper end of the input charge range [fC] for the slew time calculation.
+      static const double        nominalInputCharges_[];  ///< The nominal input charge values [fC] at which the mean and RMS of times are to be reported. The actual values may be slightly different due to the finite pulse amplitude step size.
+      static const double        nominalInputChargeRangeStart_; ///< The lower end of the input charge range [fC] for the slew time calculation.
+      static const double        nominalInputChargeRangeEnd_;   ///< The upper end of the input charge range [fC] for the slew time calculation.
 
       // valarray<double> getThresholds() const;
       valarray<double> getNoises() const;
