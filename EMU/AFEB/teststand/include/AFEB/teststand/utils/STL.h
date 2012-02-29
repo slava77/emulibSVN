@@ -23,10 +23,10 @@ namespace AFEB { namespace teststand { namespace utils {
 	double mean = a.sum() / a.size();
 	stats["mean"  ] = mean;
 	//cout << valarray<double>( pow( a - mean, 2 ) ) << endl;
-	stats["rms"   ] = pow( ( pow( a - mean, 2 ) ).sum() / a.size(), 0.5 );
-	stats["min"   ] = a.min();
-	stats["max"   ] = a.max();
-	stats["maxRes"] = max( a.max() - mean, mean - a.min() );
+	stats["rms"        ] = pow( ( pow( a - mean, 2 ) ).sum() / a.size(), 0.5 );
+	stats["min"        ] = a.min();
+	stats["max"        ] = a.max();
+	stats["maxAbsResid"] = max( a.max() - mean, mean - a.min() );
 	return stats;
       }
 
