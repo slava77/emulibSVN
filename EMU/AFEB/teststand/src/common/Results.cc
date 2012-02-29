@@ -184,8 +184,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 
     // time vs amplitude profile histogram
     name.str("");
-    name << "timeVsAmpl__" << measurement_->getIndex() << "__" << measurement_->getType() 
-	 << "__" << testedDevice_->getId() << "__ch_" << iChannel;
+    name << "timeVsAmpl__" << fileName_ << "__ch_" << iChannel;
     title.str("");
     title << "Times in channel " << iChannel << " of " << testedDevice_->getType()
 	  << " of id "  << testedDevice_->getId();
@@ -207,8 +206,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 
     // measured efficiency( amplitude ) graph
     name.str("");
-    name << "effVsAmpl__" << measurement_->getIndex() << "__" << measurement_->getType() 
-	 << "__" << testedDevice_->getId() << "__ch_" << iChannel;
+    name << "effVsAmpl__" << fileName_ << "__ch_" << iChannel;
     title.str("");
     title << "Efficiency vs. pulse amplitude in channel " << iChannel << " of " << testedDevice_->getType()
 	  << " of id "  << testedDevice_->getId();
