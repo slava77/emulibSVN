@@ -17,7 +17,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   isFinal_( false ),
   measurement_( measurement ),
   testedDevice_( device ),
-  fileName_( getFileName( measurement_->getIndex(), measurement_->getType(), testedDevice_->getId() ) )
+  fileName_( getFileName( measurement_->getIndex(), measurement_->getTypeString(), testedDevice_->getId() ) )
 {
 
   // pulses( channel, amplitude)  2D histogram
@@ -405,7 +405,7 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
 
     bsem_.take();
     if ( isFinal_ ){
-      if ( measurement_->getTypeType() == AFEB::teststand::Measurement::time_vs_dac ){
+      if ( measurement_->getType() == AFEB::teststand::Measurement::time_vs_dac ){
 	// Fit may fail in time_vs_dac as the transition region may not be covered or resolved well. 
 	// Use the estimates instead, which are less accurate but more robust.
 	threshold_ ->SetBinContent( iChannelBin, mean  );

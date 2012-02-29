@@ -216,9 +216,9 @@ string AFEB::teststand::Configuration::resultsXML(){
   stringstream ss;
   for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m ){
     ss << "<a:measurement index=\""  << (*m)->getIndex()
-       <<             "\" type=\""   << (*m)->getType()
+       <<             "\" type=\""   << (*m)->getTypeString()
        <<             "\" name=\""   << (*m)->getName()
-       <<             "\" status=\"" << (*m)->getStatus() 
+       <<             "\" status=\"" << (*m)->getStatusString() 
        <<             "\">" << endl;
     map<TestedDevice*,Results*> results = (*m)->getResults();
     for ( map<TestedDevice*,Results*>::const_iterator r = results.begin(); r != results.end(); ++r ){

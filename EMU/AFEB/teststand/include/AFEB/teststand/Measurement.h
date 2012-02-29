@@ -24,9 +24,8 @@ namespace AFEB { namespace teststand {
 
     class Measurement{
     public:
-      enum Type_t { count_vs_dac, time_vs_dac, dummy, nTypes };
-      enum Status_t { waiting, running, done, nStatus };
-      enum Injection_t { common, individual };
+      enum Type_t { count_vs_dac, time_vs_dac, nTypes };
+      enum Status_t { waiting, running, done, nStatuses };
       enum Capacitor_t { external, internal, nCapacitors };
 
       friend ostream& operator<<( ostream& os, const Measurement& m );
@@ -40,15 +39,15 @@ namespace AFEB { namespace teststand {
       int getPosition() const { return position_; }
       int getIndex() const { return index_; }
       string getName() const { return name_; }
-      string getType() const { return type_; }
-      Type_t getTypeType() const { return type_t_; }
+      Type_t getType() const { return type_; }
+      string getTypeString() const { return typeString_[type_]; }
       string getResultDir() const { return resultDir_; }
       const TestedDevice* getTestedDevice( const int tdcSocket ) const;
       const map<TestedDevice*,Results*> getResults() const { return results_; }
       const set<TestedDevice*> getTestedDevices() const { return utils::keys( results_ ); }
       int getTDCSlot() const;
-      string getInjectionCapacitor() const { return capacitors_[injectionCapacitor_]; }
-      Capacitor_t getInjectionCapacitorType() const { return injectionCapacitor_; }
+      Capacitor_t getInjectionCapacitor() const { return injectionCapacitor_; }
+      string getInjectionCapacitorString() const { return capacitorString_[injectionCapacitor_]; }
       int getAmplitudeMin () const { return amplitudeMin_; }
       int getAmplitudeMax () const { return amplitudeMax_; }
       int getAmplitudeStep() const { return amplitudeStep_;}
@@ -56,21 +55,25 @@ namespace AFEB { namespace teststand {
       int getSetThreshold() const { return thresholdValue_; }
       int getTDCTimeMin() const { return tdcTimeMin_; }
       int getTDCTimeMax() const { return tdcTimeMax_; }
-      string getStatus() const { return status_[status_t_]; }
+      Status_t getStatus() const { return status_; }
+      string getStatusString() const { return statusString_[status_]; }
       bool execute();
       void abort(){ bsem_.take(); isToKeepRunning_ = false; bsem_.give(); }
+      static Type_t getType      ( const string& typeString );
+      static string getTypeString( const Type_t  type       );
+      static Capacitor_t getInjectionCapacitor      ( const string&     injectionCapacitorString );
+      static string      getInjectionCapacitorString( const Capacitor_t injectionCapacitor       );
 
     private:
       toolbox::BSem bsem_;	///< Binary semaphore.
-      static const char* const types_[nTypes];
-      static const char* const status_[nStatus];
-      static const char* const capacitors_[nCapacitors];
+      static const char* const typeString_[nTypes];
+      static const char* const statusString_[nStatuses];
+      static const char* const capacitorString_[nCapacitors];
       int position_; ///< The position of the corresponding c:measurement element in the configuration XML.
       int index_; ///< The index of this measurement among the selected (c:enabled="yes") measurements.
       string name_;
-      string type_;
-      Type_t type_t_;
-      Status_t status_t_;
+      Type_t type_;
+      Status_t status_;
       string resultDir_; ///< The full path to the directory to save the results in.
       bool generateDummyData_;	///< If \e true, use the software generator of dummy results for offline test purposes.
       bool isToKeepRunning_;
@@ -80,7 +83,6 @@ namespace AFEB { namespace teststand {
       int amplitudeMax_;
       int amplitudeStep_;
       int nPulses_;
-      Injection_t injection_;
       Capacitor_t injectionCapacitor_;
 
       int thresholdValue_;

@@ -10,14 +10,14 @@
 using namespace std;
 using namespace AFEB::teststand;
 
-const char* const AFEB::teststand::Measurement::types_[] = { "count_vs_dac", "time_vs_dac", "dummy" };
-const char* const AFEB::teststand::Measurement::status_[] = { "waiting", "running", "done" };
-const char* const AFEB::teststand::Measurement::capacitors_[] = { "external", "internal" };
+const char* const AFEB::teststand::Measurement::typeString_[] = { "count_vs_dac", "time_vs_dac" };
+const char* const AFEB::teststand::Measurement::statusString_[] = { "waiting", "running", "done" };
+const char* const AFEB::teststand::Measurement::capacitorString_[] = { "external", "internal" };
 
 ostream& AFEB::teststand::operator<<( ostream& os, const Measurement& m ){
 
-  os << "Measurement " << m.index_ << ": '" << m.name_ << "' of type " << m.type_ << " (" << m.type_t_ << ") at position " << m.position_ << endl
-     << " injectionCapacitor="  << m.capacitors_[m.injectionCapacitor_]
+  os << "Measurement " << m.index_ << ": '" << m.name_ << "' of type " << m.getTypeString() << " (" << m.type_ << ") at position " << m.position_ << endl
+     << " injectionCapacitor="  << m.capacitorString_[m.injectionCapacitor_]
      << " amplitudeMin="        << m.amplitudeMin_        
      << " amplitudeMax="        << m.amplitudeMax_        
      << " amplitudeStep="       << m.amplitudeStep_       << endl
@@ -40,21 +40,12 @@ AFEB::teststand::Measurement::Measurement( const int position, const int index, 
   position_( position ),
   index_( index ),
   name_( name ),
-  type_( type ),
-  status_t_( AFEB::teststand::Measurement::waiting ),
+  type_( getType( type ) ),
+  status_( AFEB::teststand::Measurement::waiting ),
   resultDir_( resultDir ),
   generateDummyData_( generateDummyData ),
   isToKeepRunning_( true )
 {
-  bool isValidType = false;
-  for ( int i=0; i<nTypes && !isValidType; ++i ){
-    isValidType |= ( type.compare( types_[i] ) == 0 );
-    if ( isValidType ) type_t_ = (Type_t) i;
-  }
-  if ( !isValidType ){
-    bsem_.give();
-    XCEPT_RAISE( xcept::Exception, type + " is not a valid meaurement type." );
-  }
   bsem_.give();
 }
 
@@ -71,20 +62,7 @@ void AFEB::teststand::Measurement::setPulseParameters( const vector< pair<string
     else if ( p->first.compare( "amplitudeMax"  ) == 0 ) amplitudeMax_       = utils::stringTo<int>( p->second );
     else if ( p->first.compare( "amplitudeStep" ) == 0 ) amplitudeStep_      = utils::stringTo<int>( p->second );
     else if ( p->first.compare( "nPulses"       ) == 0 ) nPulses_            = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "capacitor"     ) == 0 ){
-      bool isValidCapacitor = false;
-      for ( size_t i=0; i<nCapacitors; ++i ){
-	if ( p->second == capacitors_[i] ){
-	  injectionCapacitor_ = (Capacitor_t) i;
-	  isValidCapacitor = true;
-	  break;
-	}
-      }
-      if ( ! isValidCapacitor ){
-	bsem_.give();
-	XCEPT_RAISE( xcept::Exception, p->second + " is not a valid injection capacitor type." );
-      }
-    }
+    else if ( p->first.compare( "capacitor"     ) == 0 ) injectionCapacitor_ = getInjectionCapacitor( p->second );
   } // for ( p = param.begin(); p != param.end(); ++p )
 
   //cout << param << endl << *this << endl;
@@ -165,22 +143,22 @@ int AFEB::teststand::Measurement::getTDCSlot() const {
 bool AFEB::teststand::Measurement::execute(){
   bsem_.take();
   if ( ! isToKeepRunning_ ){
-    status_t_ = AFEB::teststand::Measurement::waiting;
+    status_ = AFEB::teststand::Measurement::waiting;
     bsem_.give();
     return false;
   }
   bool keepRunning = true;
-  status_t_ = AFEB::teststand::Measurement::running;
+  status_ = AFEB::teststand::Measurement::running;
   bsem_.give();
 
-  switch ( type_t_ ){
+  switch ( type_ ){
   case count_vs_dac:
   case time_vs_dac:
     keepRunning = ( generateDummyData_ ? dummyResultGenerator() : countVsDAQ() );
     break;
   default:
     stringstream ss;
-    ss << "Unknown measurement type " << type_t_ << " specified as '" << type_ << "'";
+    ss << "Unknown measurement type " << type_;
     XCEPT_RAISE( xcept::Exception, ss.str() );
     break;
   }
@@ -189,7 +167,7 @@ bool AFEB::teststand::Measurement::execute(){
   // Save everything if it hasn't been aborted:
   if ( keepRunning ) for ( map<TestedDevice*,Results*>::iterator r = results_.begin(); r != results_.end(); ++r ) r->second->save( resultDir_ );
 
-  status_t_ = AFEB::teststand::Measurement::done;
+  status_ = AFEB::teststand::Measurement::done;
   bsem_.give();
 
   return keepRunning;
@@ -345,4 +323,58 @@ bool AFEB::teststand::Measurement::dummyResultGenerator(){
   } // for ( int amplitude = amplitudeMin_; amplitude <= amplitudeMax_; amplitude += amplitudeStep_ )
 
   return true;
+}
+
+// static function
+AFEB::teststand::Measurement::Type_t AFEB::teststand::Measurement::getType( const string& typeString ){
+  AFEB::teststand::Measurement::Type_t type = AFEB::teststand::Measurement::nTypes;
+  bool isValidType = false;
+  for ( int i=0; i<AFEB::teststand::Measurement::nTypes && !isValidType; ++i ){
+    isValidType |= ( typeString.compare( typeString_[i] ) == 0 );
+    if ( isValidType ) type = (AFEB::teststand::Measurement::Type_t) i;
+  }
+  if ( !isValidType ){
+    stringstream ss;
+    ss << "\"" << typeString << "\" is not a valid measurement type.";
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  return type;
+}
+
+// static function
+string AFEB::teststand::Measurement::getTypeString( const Type_t type ){
+  if ( type < (AFEB::teststand::Measurement::Type_t)0 || 
+       type >= AFEB::teststand::Measurement::nTypes      ){
+    stringstream ss;
+    ss << "'" << type << "' is not a valid measurement type.";
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  return typeString_[type];
+}
+
+// static function
+AFEB::teststand::Measurement::Capacitor_t AFEB::teststand::Measurement::getInjectionCapacitor( const string& injectionCapacitorString ){
+  AFEB::teststand::Measurement::Capacitor_t capacitor = AFEB::teststand::Measurement::nCapacitors;
+  bool isValidType = false;
+  for ( int i=0; i<AFEB::teststand::Measurement::nCapacitors && !isValidType; ++i ){
+    isValidType |= ( injectionCapacitorString.compare( capacitorString_[i] ) == 0 );
+    if ( isValidType ) capacitor = (AFEB::teststand::Measurement::Capacitor_t) i;
+  }
+  if ( !isValidType ){
+    stringstream ss;
+    ss << "\"" << injectionCapacitorString << "\" is not a valid injection capacitor type.";
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  return capacitor;
+}
+
+// static function
+string AFEB::teststand::Measurement::getInjectionCapacitorString( const Capacitor_t injectionCapacitor ){
+  if ( injectionCapacitor < (AFEB::teststand::Measurement::Capacitor_t)0 || 
+       injectionCapacitor >= AFEB::teststand::Measurement::nCapacitors      ){
+    stringstream ss;
+    ss << "'" << injectionCapacitor << "' is not a valid injection capacitor type.";
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  return capacitorString_[injectionCapacitor];
 }

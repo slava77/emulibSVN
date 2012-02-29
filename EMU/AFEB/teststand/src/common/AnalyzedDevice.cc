@@ -77,9 +77,9 @@ void AFEB::teststand::AnalyzedDevice::addThresholdMeasurement( const int iChanne
 void AFEB::teststand::AnalyzedDevice::calculateGains(){
   // Loop over the count_vs_dac measurements with pulses through external capacitors
   for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m ){
-    if ( (*m)->getTypeType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitorType() == Measurement::external ){      
+    if ( (*m)->getType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitor() == Measurement::external ){      
       // Open the root file of this measurement's results...
-      string fileName = Results::getFileName( (*m)->getIndex(), (*m)->getType(), id_ );
+      string fileName = Results::getFileName( (*m)->getIndex(), (*m)->getTypeString(), id_ );
       TFile f( ( rawResultsDir_ + "/" + fileName +".root").c_str(), "READ" );
       if ( f.IsZombie() ){
 	stringstream ss;
@@ -109,7 +109,7 @@ void AFEB::teststand::AnalyzedDevice::calculateGains(){
       } // for ( int iChannel=0; iChannel<nChannels; ++iChannel ){
       
       f.Close();
-    } // if ( (*m)->getTypeType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitorType() == Measurement::external )
+    } // if ( (*m)->getType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitor() == Measurement::external )
   } // for ( vector<Measurement*>::const_iterator m = measurements.begin(); m != measurements.end(); ++m ){
   
   // Now we're ready to calculate the gains
@@ -121,9 +121,9 @@ void AFEB::teststand::AnalyzedDevice::calculateGains(){
 void AFEB::teststand::AnalyzedDevice::calculateInternalCapacitances(){
   // Find the count_vs_dac measurements with charge injection through internal capacitors
   for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m ){
-    if ( (*m)->getTypeType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitorType() == Measurement::internal ){      
+    if ( (*m)->getType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitor() == Measurement::internal ){      
       // Open the root file of this measurement's results...
-      string fileName = Results::getFileName( (*m)->getIndex(), (*m)->getType(), id_ );
+      string fileName = Results::getFileName( (*m)->getIndex(), (*m)->getTypeString(), id_ );
       TFile f( ( rawResultsDir_ + "/" + fileName +".root").c_str(), "READ" );
       if ( f.IsZombie() ){
 	stringstream ss;
@@ -147,7 +147,7 @@ void AFEB::teststand::AnalyzedDevice::calculateInternalCapacitances(){
       } // for ( int iChannel=0; iChannel<d->getNChannels(); ++iChannel )
       
       f.Close();
-    } // if ( (*m)->getTypeType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitorType() == Measurement::internal )
+    } // if ( (*m)->getType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitor() == Measurement::internal )
   } // for ( vector<Measurement*>::const_iterator m = measurements.begin(); m != measurements.end(); ++m )
 }
 
@@ -183,17 +183,17 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
   stringstream ss;
   for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m ){
     ss.str() = "";
-    ss << "  <ad:measurement index=\""             << noshowpos 
-       <<                                             (*m)->getIndex()
-       <<                  "\" type=\""              << (*m)->getType()
-       <<                  "\" capacitor=\""         << (*m)->getInjectionCapacitor()
-       <<                  "\" nPulses=\""           << (*m)->getNPulses()
+    ss << "  <ad:measurement index=\""              << noshowpos 
+       <<                                              (*m)->getIndex()
+       <<                  "\" type=\""             << (*m)->getTypeString()
+       <<                  "\" capacitor=\""        << (*m)->getInjectionCapacitor()
+       <<                  "\" nPulses=\""          << (*m)->getNPulses()
        <<                  "\" setThreshold.ADC=\"" << (*m)->getSetThreshold()
        <<                  "\" setThreshold.mV=\""  << thresholdDAC_->mV_from_DACUnit( (*m)->getSetThreshold() ).first
        <<   "\">" << endl;
 
     // Open the root file of this measurement's results...
-    string fileName = Results::getFileName( (*m)->getIndex(), (*m)->getType(), id_ );
+    string fileName = Results::getFileName( (*m)->getIndex(), (*m)->getTypeString(), id_ );
     TFile f( ( rawResultsDir_ + "/" + fileName +".root").c_str(), "READ" );
     if ( f.IsZombie() ){
       stringstream ss;
@@ -202,35 +202,46 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
     }
     cout << "Opened " << f.GetName() << endl;
     f.cd();
-    // ...and get the threshold histogram...
-    string histogramName = string( "threshold__" ) + fileName;
-    TH1D *thresholdHistogram;
-    f.GetObject( histogramName.c_str(), thresholdHistogram );
-    // ...and the noise histogram...
-    histogramName = string( "noise__" ) + fileName;
-    TH1D *noiseHistogram;
-    f.GetObject( histogramName.c_str(), noiseHistogram );
-    // ...and the chi^2/ndf histogram:
-    histogramName = string( "chi2ndf__" ) + fileName;
-    TH1D *chi2ndfHistogram;
-    f.GetObject( histogramName.c_str(), chi2ndfHistogram );
 
-    // Loop over the channels
-    for ( int iChannel=0; iChannel<nChannels_; ++iChannel ){
-      ss << "    <ad:channel number=\""       << noshowpos << setw(2) 
-	 <<                                   iChannel
-	 <<              "\" threshold.fC=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed
-	 <<                                   chargeFromVoltage( pulseDAC_->mV_from_DACUnit( thresholdHistogram->GetBinContent( iChannel+1 ) ).first )
-	 <<              "\" noise.fC=\""
-	 <<                                   chargeFromVoltage( pulseDAC_->mV_from_DACUnit( noiseHistogram    ->GetBinContent( iChannel+1 ) ).first )
-	 <<              "\" chi2ndf=\""
-	 <<                                                                                  chi2ndfHistogram  ->GetBinContent( iChannel+1 )
-	 <<     "\"/>" << endl;
-    } // for ( int iChannel=0; iChannel<d->getNChannels(); ++iChannel )
-    
+    if ( (*m)->getType() == Measurement::count_vs_dac ){
+
+      // Get the threshold histogram...
+      string histogramName = string( "threshold__" ) + fileName;
+      TH1D *thresholdHistogram;
+      f.GetObject( histogramName.c_str(), thresholdHistogram );
+      // ...and the noise histogram...
+      histogramName = string( "noise__" ) + fileName;
+      TH1D *noiseHistogram;
+      f.GetObject( histogramName.c_str(), noiseHistogram );
+      // ...and the chi^2/ndf histogram:
+      histogramName = string( "chi2ndf__" ) + fileName;
+      TH1D *chi2ndfHistogram;
+      f.GetObject( histogramName.c_str(), chi2ndfHistogram );
+      
+      // Loop over the channels
+      for ( int iChannel=0; iChannel<nChannels_; ++iChannel ){
+	ss << "    <ad:channel number=\""       << noshowpos << setw(2) 
+	   <<                                   iChannel
+	   <<              "\" threshold.fC=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed
+	   <<                                   chargeFromVoltage( pulseDAC_->mV_from_DACUnit( thresholdHistogram->GetBinContent( iChannel+1 ) ).first )
+	   <<              "\" noise.fC=\""
+	   <<                                   chargeFromVoltage( pulseDAC_->mV_from_DACUnit( noiseHistogram    ->GetBinContent( iChannel+1 ) ).first )
+	   <<              "\" chi2ndf=\""
+	   <<                                                                                  chi2ndfHistogram  ->GetBinContent( iChannel+1 )
+	   <<     "\"/>" << endl;
+      } // for ( int iChannel=0; iChannel<d->getNChannels(); ++iChannel )
+      
+    } // if ( (*m)->getType() == Measurement::count_vs_dac )
+
+    if ( (*m)->getType() == Measurement::time_vs_dac ){
+
+
+    } // if ( (*m)->getType() == Measurement::time_vs_dac )
+
     f.Close();
     ss << "  </ad:measurement>" << endl;
-  }
+
+  } // for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m )
   return ss.str();
 }
 

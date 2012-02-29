@@ -25,7 +25,7 @@ namespace AFEB { namespace teststand {
       void setCrate( AFEB::teststand::Crate* crate ){ crate_= crate; }
       void setSlot( const int slot ){ slot_ = slot; }
       static Type_t getType      ( const string& typeString );
-      static string getTypeString( const Type_t  type       );      
+      static string getTypeString( const Type_t  type       );
     protected:
       string name_;
       Type_t type_;
