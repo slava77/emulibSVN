@@ -1,128 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<c:configuration xmlns:c="http://cms.cern.ch/emu/afeb/teststand/configuration" c:name="AFEB_Example" c:dateTime="2011-04-29 12:00:00">
+<c:configuration xmlns:c="http://cms.cern.ch/emu/afeb/teststand/configuration" name="AFEB_Example" dateTime="2011-04-29 12:00:00">
 
   <c:metadata>
-    <c:tag c:name="c:testedDevice">
-      <c:attr c:name="c:type" c:value="AD16" c:description="16-channel pre-amp, shaper and discriminator board"/>
-      <c:attr c:name="c:type" c:value="CMP16" c:description="16-channel pre-amp, shaper and discriminator chip"/>
-      <c:attr c:name="c:nChannels" c:value="16" c:description="Number of channels."/>
-      <c:attr c:name="c:tdcSlot" c:value="1" c:description="The crate slot in which the TDC reading out this device is inserted."/>
-      <c:attr c:name="c:tdcSlot" c:value="2" c:description="The crate slot in which the TDC reading out this device is inserted."/>
-      <c:attr c:name="c:tdcSlot" c:value="3" c:description="The crate slot in which the TDC reading out this device is inserted."/>
-      <c:attr c:name="c:tdcSlot" c:value="4" c:description="The crate slot in which the TDC reading out this device is inserted."/>
-      <c:attr c:name="c:tdcSlot" c:value="5" c:description="The crate slot in which the TDC reading out this device is inserted."/>
-      <c:attr c:name="c:tdcSlot" c:value="6" c:description="The crate slot in which the TDC reading out this device is inserted."/>
-      <c:attr c:name="c:tdcSlot" c:value="7" c:description="The crate slot in which the TDC reading out this device is inserted."/>
-      <c:attr c:name="c:tdcSlot" c:value="8" c:description="The crate slot in which the TDC reading out this device is inserted."/>
-      <c:attr c:name="c:tdcSlot" c:value="9" c:description="The crate slot in which the TDC reading out this device is inserted."/>
-      <c:attr c:name="c:tdcSocket" c:value="1" c:description="The TDC's upper input socket (channels 1-16)."/>
-      <c:attr c:name="c:tdcSocket" c:value="2" c:description="The TDC's lower input socket (channels 17-32)."/>
-      <c:attr c:name="c:signalConverterSlot" c:value="1" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <c:attr c:name="c:signalConverterSlot" c:value="2" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <c:attr c:name="c:signalConverterSlot" c:value="3" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <c:attr c:name="c:signalConverterSlot" c:value="4" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <c:attr c:name="c:signalConverterSlot" c:value="5" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <c:attr c:name="c:signalConverterSlot" c:value="6" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <c:attr c:name="c:signalConverterSlot" c:value="7" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <c:attr c:name="c:signalConverterSlot" c:value="8" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <c:attr c:name="c:signalConverterSlot" c:value="9" c:description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <c:attr c:name="c:signalConverterSocket" c:value="1" c:description="The signal converter's / threshold setter's upper input socket."/>
-      <c:attr c:name="c:signalConverterSocket" c:value="2" c:description="The signal converter's / threshold setter's lower input socket."/>
-      <c:attr c:name="c:pulseGeneratorSlot" c:value="1" c:description="The crate slot in which the pulse generator for this device is inserted."/>
-      <c:attr c:name="c:pulseGeneratorSlot" c:value="2" c:description="The crate slot in which the pulse generator for this device is inserted."/>
-      <c:attr c:name="c:pulseGeneratorSlot" c:value="3" c:description="The crate slot in which the pulse generator for this device is inserted."/>
-      <c:attr c:name="c:pulseGeneratorSlot" c:value="4" c:description="The crate slot in which the pulse generator for this device is inserted."/>
-      <c:attr c:name="c:pulseGeneratorSlot" c:value="5" c:description="The crate slot in which the pulse generator for this device is inserted."/>
-      <c:attr c:name="c:pulseGeneratorSlot" c:value="6" c:description="The crate slot in which the pulse generator for this device is inserted."/>
-      <c:attr c:name="c:pulseGeneratorSlot" c:value="7" c:description="The crate slot in which the pulse generator for this device is inserted."/>
-      <c:attr c:name="c:pulseGeneratorSlot" c:value="8" c:description="The crate slot in which the pulse generator for this device is inserted."/>
-      <c:attr c:name="c:pulseGeneratorSlot" c:value="9" c:description="The crate slot in which the pulse generator for this device is inserted."/>
-      <c:attr c:name="c:pulseGeneratorSocket" c:value="1" c:description="The pulse generator's upper output socket for common external pulses."/>
-      <c:attr c:name="c:pulseGeneratorSocket" c:value="2" c:description="The pulse generator's lower output socket for common external pulses."/>
+    <c:tag name="c:testedDevice">
+      <c:attr name="type" value="AD16" description="16-channel pre-amp, shaper and discriminator board"/>
+      <c:attr name="type" value="CMP16" description="16-channel pre-amp, shaper and discriminator chip"/>
+      <c:attr name="nChannels" value="16" description="Number of channels."/>
+      <c:attr name="tdcSlot" value="1" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <c:attr name="tdcSlot" value="2" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <c:attr name="tdcSlot" value="3" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <c:attr name="tdcSlot" value="4" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <c:attr name="tdcSlot" value="5" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <c:attr name="tdcSlot" value="6" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <c:attr name="tdcSlot" value="7" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <c:attr name="tdcSlot" value="8" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <c:attr name="tdcSlot" value="9" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <c:attr name="tdcSocket" value="1" description="The TDC's upper input socket (channels 1-16)."/>
+      <c:attr name="tdcSocket" value="2" description="The TDC's lower input socket (channels 17-32)."/>
+      <c:attr name="signalConverterSlot" value="1" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <c:attr name="signalConverterSlot" value="2" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <c:attr name="signalConverterSlot" value="3" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <c:attr name="signalConverterSlot" value="4" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <c:attr name="signalConverterSlot" value="5" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <c:attr name="signalConverterSlot" value="6" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <c:attr name="signalConverterSlot" value="7" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <c:attr name="signalConverterSlot" value="8" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <c:attr name="signalConverterSlot" value="9" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <c:attr name="signalConverterSocket" value="1" description="The signal converter's / threshold setter's upper input socket."/>
+      <c:attr name="signalConverterSocket" value="2" description="The signal converter's / threshold setter's lower input socket."/>
+      <c:attr name="pulseGeneratorSlot" value="1" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <c:attr name="pulseGeneratorSlot" value="2" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <c:attr name="pulseGeneratorSlot" value="3" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <c:attr name="pulseGeneratorSlot" value="4" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <c:attr name="pulseGeneratorSlot" value="5" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <c:attr name="pulseGeneratorSlot" value="6" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <c:attr name="pulseGeneratorSlot" value="7" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <c:attr name="pulseGeneratorSlot" value="8" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <c:attr name="pulseGeneratorSlot" value="9" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <c:attr name="pulseGeneratorSocket" value="1" description="The pulse generator's upper output socket for common external pulses."/>
+      <c:attr name="pulseGeneratorSocket" value="2" description="The pulse generator's lower output socket for common external pulses."/>
     </c:tag>
-    <c:tag c:name="c:crate">
-      <c:attr c:name="c:number" c:value="1" c:description="The crate number to be set on the crate controller."/>
-      <c:attr c:name="c:number" c:value="2" c:description="The crate number to be set on the crate controller."/>
-      <c:attr c:name="c:number" c:value="3" c:description="The crate number to be set on the crate controller."/>
-      <c:attr c:name="c:number" c:value="4" c:description="The crate number to be set on the crate controller."/>
+    <c:tag name="c:crate">
+      <c:attr name="number" value="1" description="The crate number to be set on the crate controller."/>
+      <c:attr name="number" value="2" description="The crate number to be set on the crate controller."/>
+      <c:attr name="number" value="3" description="The crate number to be set on the crate controller."/>
+      <c:attr name="number" value="4" description="The crate number to be set on the crate controller."/>
     </c:tag>
-    <c:tag c:name="c:module">
-      <c:attr c:name="c:name" c:value="LeCroy3377" c:description="LeCroy Model 3377 32-channel CAMAC TDC"/>
-      <c:attr c:name="c:name" c:value="LE32" c:description="CAMAC 32-channel Converter and 2-channel Pulse and Threashold Generator"/>
-      <c:attr c:name="c:name" c:value="Jorway73A" c:description="SCSI Bus CAMAC Crate Controller, vendor: JORWAY model: 73A"/>
-      <c:attr c:name="c:type" c:value="TDC" c:description="Time-to-Digital Converter"/>
-      <c:attr c:name="c:type" c:value="SignalConverter" c:description="LVDS-to-ECL Signal Converter, Threshold Generator and Pulse Generator to the device's internal capacitor."/>
-      <c:attr c:name="c:type" c:value="PulseGenerator" c:description="Adjustable height pulse generator to external capacitor."/>
-      <c:attr c:name="c:type" c:value="CrateController" c:description="Crate controller."/>
+    <c:tag name="c:module">
+      <c:attr name="name" value="LeCroy3377" description="LeCroy Model 3377 32-channel CAMAC TDC"/>
+      <c:attr name="name" value="LE32" description="CAMAC 32-channel Converter and 2-channel Pulse and Threashold Generator"/>
+      <c:attr name="name" value="Jorway73A" description="SCSI Bus CAMAC Crate Controller, vendor: JORWAY model: 73A"/>
+      <c:attr name="type" value="TDC" description="Time-to-Digital Converter"/>
+      <c:attr name="type" value="SignalConverter" description="LVDS-to-ECL Signal Converter, Threshold Generator and Pulse Generator to the device's internal capacitor."/>
+      <c:attr name="type" value="PulseGenerator" description="Adjustable height pulse generator to external capacitor."/>
+      <c:attr name="type" value="CrateController" description="Crate controller."/>
     </c:tag>
-    <c:tag c:name="c:inputs">
-      <c:attr c:name="c:adaptor" c:value="10AD16A" c:description="10-socket adapter for AD16 boards, see 'Adaptors' table for details."/>
-      <c:attr c:name="c:adaptor" c:value="2AD16A" c:description="2-socket adapter for AD16 boards,  see 'Adaptors' table for details."/>
-      <c:attr c:name="c:adaptor" c:value="2CMP16A" c:description="2-socket adapter for CMP16 chips,  see 'Adaptors' table for details."/>
+    <c:tag name="c:inputs">
+      <c:attr name="adaptor" value="10AD16A" description="10-socket adapter for AD16 boards, see 'Adaptors' table for details."/>
+      <c:attr name="adaptor" value="2AD16A" description="2-socket adapter for AD16 boards,  see 'Adaptors' table for details."/>
+      <c:attr name="adaptor" value="2CMP16A" description="2-socket adapter for CMP16 chips,  see 'Adaptors' table for details."/>
     </c:tag>
-    <c:tag c:name="c:measurement">
-      <c:attr c:name="c:type" c:value="count_vs_dac" c:description="Efficiency vs pulse amplitude"/>
-      <c:attr c:name="c:type" c:value="time_vs_dac" c:description="Time vs. pulse amplitude"/>
-      <c:attr c:name="c:enabled" c:value="yes" c:description="Perform this measurement."/>
-      <c:attr c:name="c:enabled" c:value="no" c:description="Skip this measurement."/>
-      <c:attr c:name="c:" c:value="" c:description=""/>
-      <c:attr c:name="c:" c:value="" c:description=""/>
+    <c:tag name="c:measurement">
+      <c:attr name="type" value="count_vs_dac" description="Efficiency vs pulse amplitude"/>
+      <c:attr name="type" value="time_vs_dac" description="Time vs. pulse amplitude"/>
+      <c:attr name="enabled" value="yes" description="Perform this measurement."/>
+      <c:attr name="enabled" value="no" description="Skip this measurement."/>
+      <c:attr name="" value="" description=""/>
+      <c:attr name="" value="" description=""/>
     </c:tag>
-    <c:tag c:name="c:PulseGenerator">
-      <c:attr c:name="c:capacitor" c:value="internal" c:description="Inject pulses through the device's internal capacitor."/>
-      <c:attr c:name="c:capacitor" c:value="external" c:description="Inject pulses through the external capacitor."/>
+    <c:tag name="c:PulseGenerator">
+      <c:attr name="capacitor" value="internal" description="Inject pulses through the device's internal capacitor."/>
+      <c:attr name="capacitor" value="external" description="Inject pulses through the external capacitor."/>
     </c:tag>
   </c:metadata>
 
-  <c:testedDevice c:type="AD16" c:nChannels="16"/>
+  <c:testedDevice type="AD16" nChannels="16"/>
 
-  <c:crate c:number="1">
-    <c:module c:slot="1"  c:name=""           c:id=""       c:type=""/>
-    <c:module c:slot="2"  c:name=""           c:id=""       c:type=""/>
-    <c:module c:slot="3"  c:name="LeCroy3377" c:id="B58662" c:type="TDC"/>
-    <c:module c:slot="4"  c:name=""           c:id=""       c:type=""/>
-    <c:module c:slot="5"  c:name="LE32"       c:id="11"     c:type="SignalConverter"/>
-    <c:module c:slot="6"  c:name="LE32"       c:id="5"      c:type="PulseGenerator"/>
-    <c:module c:slot="7"  c:name="LeCroy3377" c:id="B58652" c:type="TDC"/>
-    <c:module c:slot="8"  c:name=""           c:id=""       c:type=""/>
-    <c:module c:slot="9"  c:name="LE32"       c:id="12"     c:type="SignalConverter"/>
-    <c:module c:slot="10" c:name=""           c:id=""       c:type=""/>
-    <c:module c:slot="11" c:name="Jorway73A"  c:id=""       c:type="CrateController"/>
+  <c:crate number="1">
+    <c:module slot="1"  name=""           id=""       type=""/>
+    <c:module slot="2"  name=""           id=""       type=""/>
+    <c:module slot="3"  name="LeCroy3377" id="B58662" type="TDC"/>
+    <c:module slot="4"  name=""           id=""       type=""/>
+    <c:module slot="5"  name="LE32"       id="11"     type="SignalConverter"/>
+    <c:module slot="6"  name="LE32"       id="5"      type="PulseGenerator"/>
+    <c:module slot="7"  name="LeCroy3377" id="B58652" type="TDC"/>
+    <c:module slot="8"  name=""           id=""       type=""/>
+    <c:module slot="9"  name="LE32"       id="12"     type="SignalConverter"/>
+    <c:module slot="10" name=""           id=""       type=""/>
+    <c:module slot="11" name="Jorway73A"  id=""       type="CrateController"/>
   </c:crate>
 
-  <c:inputs c:adaptor="10AD16A">
-    <c:testedDevice c:socket="1"  c:id="01" c:tdcSlot="7" c:tdcSocket="1" c:signalConverterSlot="9" c:signalConverterSocket="1" c:pulseGeneratorSlot="6" c:pulseGeneratorSocket="1"/>
-    <c:testedDevice c:socket="2"  c:id="02" c:tdcSlot="7" c:tdcSocket="2" c:signalConverterSlot="9" c:signalConverterSocket="2" c:pulseGeneratorSlot="6" c:pulseGeneratorSocket="2"/>
-    <c:testedDevice c:socket="3"  c:id=""   c:tdcSlot=""  c:tdcSocket=""  c:signalConverterSlot=""  c:signalConverterSocket=""  c:pulseGeneratorSlot=""  c:pulseGeneratorSocket=""/>
-    <c:testedDevice c:socket="4"  c:id=""   c:tdcSlot=""  c:tdcSocket=""  c:signalConverterSlot=""  c:signalConverterSocket=""  c:pulseGeneratorSlot=""  c:pulseGeneratorSocket=""/>
-    <c:testedDevice c:socket="5"  c:id=""   c:tdcSlot=""  c:tdcSocket=""  c:signalConverterSlot=""  c:signalConverterSocket=""  c:pulseGeneratorSlot=""  c:pulseGeneratorSocket=""/>
-    <c:testedDevice c:socket="6"  c:id=""   c:tdcSlot=""  c:tdcSocket=""  c:signalConverterSlot=""  c:signalConverterSocket=""  c:pulseGeneratorSlot=""  c:pulseGeneratorSocket=""/>
-    <c:testedDevice c:socket="7"  c:id=""   c:tdcSlot=""  c:tdcSocket=""  c:signalConverterSlot=""  c:signalConverterSocket=""  c:pulseGeneratorSlot=""  c:pulseGeneratorSocket=""/>
-    <c:testedDevice c:socket="8"  c:id=""   c:tdcSlot=""  c:tdcSocket=""  c:signalConverterSlot=""  c:signalConverterSocket=""  c:pulseGeneratorSlot=""  c:pulseGeneratorSocket=""/>
-    <c:testedDevice c:socket="9"  c:id=""   c:tdcSlot=""  c:tdcSocket=""  c:signalConverterSlot=""  c:signalConverterSocket=""  c:pulseGeneratorSlot=""  c:pulseGeneratorSocket=""/>
-    <c:testedDevice c:socket="10" c:id=""   c:tdcSlot=""  c:tdcSocket=""  c:signalConverterSlot=""  c:signalConverterSocket=""  c:pulseGeneratorSlot=""  c:pulseGeneratorSocket=""/>
+  <c:inputs adaptor="10AD16A">
+    <c:testedDevice socket="1"  id="01" tdcSlot="7" tdcSocket="1" signalConverterSlot="9" signalConverterSocket="1" pulseGeneratorSlot="6" pulseGeneratorSocket="1"/>
+    <c:testedDevice socket="2"  id="02" tdcSlot="7" tdcSocket="2" signalConverterSlot="9" signalConverterSocket="2" pulseGeneratorSlot="6" pulseGeneratorSocket="2"/>
+    <c:testedDevice socket="3"  id=""   tdcSlot=""  tdcSocket=""  signalConverterSlot=""  signalConverterSocket=""  pulseGeneratorSlot=""  pulseGeneratorSocket=""/>
+    <c:testedDevice socket="4"  id=""   tdcSlot=""  tdcSocket=""  signalConverterSlot=""  signalConverterSocket=""  pulseGeneratorSlot=""  pulseGeneratorSocket=""/>
+    <c:testedDevice socket="5"  id=""   tdcSlot=""  tdcSocket=""  signalConverterSlot=""  signalConverterSocket=""  pulseGeneratorSlot=""  pulseGeneratorSocket=""/>
+    <c:testedDevice socket="6"  id=""   tdcSlot=""  tdcSocket=""  signalConverterSlot=""  signalConverterSocket=""  pulseGeneratorSlot=""  pulseGeneratorSocket=""/>
+    <c:testedDevice socket="7"  id=""   tdcSlot=""  tdcSocket=""  signalConverterSlot=""  signalConverterSocket=""  pulseGeneratorSlot=""  pulseGeneratorSocket=""/>
+    <c:testedDevice socket="8"  id=""   tdcSlot=""  tdcSocket=""  signalConverterSlot=""  signalConverterSocket=""  pulseGeneratorSlot=""  pulseGeneratorSocket=""/>
+    <c:testedDevice socket="9"  id=""   tdcSlot=""  tdcSocket=""  signalConverterSlot=""  signalConverterSocket=""  pulseGeneratorSlot=""  pulseGeneratorSocket=""/>
+    <c:testedDevice socket="10" id=""   tdcSlot=""  tdcSocket=""  signalConverterSlot=""  signalConverterSocket=""  pulseGeneratorSlot=""  pulseGeneratorSocket=""/>
   </c:inputs>
 
   <c:measurements>
-    <c:measurement c:name="Threshold scan" c:type="count_vs_dac" c:enabled="yes">
-      <c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="400" c:capacitor="external"/>
-      <c:SignalConverter c:thresholdValue="50"/>
-      <c:TDC c:timeMin="0" c:timeMax="120"/>
+    <c:measurement name="Threshold scan" type="count_vs_dac" enabled="yes">
+      <c:PulseGenerator amplitudeMin="20" amplitudeMax="90" amplitudeStep="2" nPulses="400" capacitor="external"/>
+      <c:SignalConverter thresholdValue="50"/>
+      <c:TDC timeMin="0" timeMax="120"/>
     </c:measurement>
-    <c:measurement c:name="Threshold scan" c:type="count_vs_dac" c:enabled="yes">
-      <c:PulseGenerator c:amplitudeMin="40" c:amplitudeMax="140" c:amplitudeStep="2" c:nPulses="400" c:capacitor="external"/>
-      <c:SignalConverter c:thresholdValue="90"/>
-      <c:TDC c:timeMin="0" c:timeMax="120"/>
+    <c:measurement name="Threshold scan" type="count_vs_dac" enabled="yes">
+      <c:PulseGenerator amplitudeMin="40" amplitudeMax="140" amplitudeStep="2" nPulses="400" capacitor="external"/>
+      <c:SignalConverter thresholdValue="90"/>
+      <c:TDC timeMin="0" timeMax="120"/>
     </c:measurement>
-    <c:measurement c:name="Threshold scan" c:type="count_vs_dac" c:enabled="yes">
-      <c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="90" c:amplitudeStep="2" c:nPulses="400" c:capacitor="internal"/>
-      <c:SignalConverter c:thresholdValue="50"/>
-      <c:TDC c:timeMin="0" c:timeMax="120"/>
+    <c:measurement name="Threshold scan" type="count_vs_dac" enabled="yes">
+      <c:PulseGenerator amplitudeMin="20" amplitudeMax="90" amplitudeStep="2" nPulses="400" capacitor="internal"/>
+      <c:SignalConverter thresholdValue="50"/>
+      <c:TDC timeMin="0" timeMax="120"/>
     </c:measurement>
-    <c:measurement c:name="Time response vs. pulse height" c:type="time_vs_dac" c:enabled="yes">
-      <c:PulseGenerator c:amplitudeMin="20" c:amplitudeMax="500" c:amplitudeStep="10" c:nPulses="400" c:capacitor="external"/>
-      <c:SignalConverter c:thresholdValue="50"/>
-      <c:TDC c:timeMin="0" c:timeMax="120"/>
+    <c:measurement name="Time response vs. pulse height" type="time_vs_dac" enabled="yes">
+      <c:PulseGenerator amplitudeMin="20" amplitudeMax="500" amplitudeStep="10" nPulses="400" capacitor="external"/>
+      <c:SignalConverter thresholdValue="50"/>
+      <c:TDC timeMin="0" timeMax="120"/>
     </c:measurement>
   </c:measurements>
 
@@ -130,253 +130,253 @@
   <c:calibrations>
 
     <c:adaptors>
-      <c:adaptor c:name="10AD16A" c:pulseDivisionFactor="6.31" c:injectionCapacitance="1.6">
-	<c:socket c:number= "1" c:coefficient="1.0"/>
-	<c:socket c:number= "2" c:coefficient="1.0"/>
-	<c:socket c:number= "3" c:coefficient="1.0"/>
-	<c:socket c:number= "4" c:coefficient="1.0"/>
-	<c:socket c:number= "5" c:coefficient="1.0"/>
-	<c:socket c:number= "6" c:coefficient="1.0"/>
-	<c:socket c:number= "7" c:coefficient="1.0"/>
-	<c:socket c:number= "8" c:coefficient="1.0"/>
-	<c:socket c:number= "9" c:coefficient="1.0"/>
-	<c:socket c:number="10" c:coefficient="1.0"/>
+      <c:adaptor name="10AD16A" pulseDivisionFactor="6.31" injectionCapacitance="1.6">
+	<c:socket number= "1" coefficient="1.0"/>
+	<c:socket number= "2" coefficient="1.0"/>
+	<c:socket number= "3" coefficient="1.0"/>
+	<c:socket number= "4" coefficient="1.0"/>
+	<c:socket number= "5" coefficient="1.0"/>
+	<c:socket number= "6" coefficient="1.0"/>
+	<c:socket number= "7" coefficient="1.0"/>
+	<c:socket number= "8" coefficient="1.0"/>
+	<c:socket number= "9" coefficient="1.0"/>
+	<c:socket number="10" coefficient="1.0"/>
       </c:adaptor>
-      <c:adaptor c:name="2AD16A" c:pulseDivisionFactor="1.0" c:injectionCapacitance="1.0">
-	<c:socket c:number= "1" c:coefficient="1.0"/>
-	<c:socket c:number= "2" c:coefficient="1.0"/>
+      <c:adaptor name="2AD16A" pulseDivisionFactor="1.0" injectionCapacitance="1.0">
+	<c:socket number= "1" coefficient="1.0"/>
+	<c:socket number= "2" coefficient="1.0"/>
       </c:adaptor>
-      <c:adaptor c:name="2CMP16A" c:pulseDivisionFactor="5.0" c:injectionCapacitance="1.6">
-	<c:socket c:number= "1" c:coefficient="1.0"/>
-	<c:socket c:number= "2" c:coefficient="1.0"/>
+      <c:adaptor name="2CMP16A" pulseDivisionFactor="5.0" injectionCapacitance="1.6">
+	<c:socket number= "1" coefficient="1.0"/>
+	<c:socket number= "2" coefficient="1.0"/>
       </c:adaptor>
     </c:adaptors>
 
     <c:DACs>
-      <c:DAC c:type="pulse" c:moduleName="LE32" c:moduleId="11" c:channel="1">
-	<c:value c:DACUnits=  "25" c:milliVolts=  "50"/>
-	<c:value c:DACUnits=  "50" c:milliVolts= "100"/>
-	<c:value c:DACUnits=  "75" c:milliVolts= "150"/>
-	<c:value c:DACUnits= "100" c:milliVolts= "200"/>
-	<c:value c:DACUnits= "150" c:milliVolts= "300"/>
-	<c:value c:DACUnits= "200" c:milliVolts= "400"/>
-	<c:value c:DACUnits= "250" c:milliVolts= "500"/>
-	<c:value c:DACUnits= "300" c:milliVolts= "600"/>
-	<c:value c:DACUnits= "350" c:milliVolts= "700"/>
-	<c:value c:DACUnits= "400" c:milliVolts= "800"/>
-	<c:value c:DACUnits= "450" c:milliVolts= "900"/>
-	<c:value c:DACUnits= "500" c:milliVolts="1000"/>
-	<c:value c:DACUnits= "600" c:milliVolts="1200"/>
-	<c:value c:DACUnits= "700" c:milliVolts="1400"/>
-	<c:value c:DACUnits= "800" c:milliVolts="1600"/>
-	<c:value c:DACUnits= "900" c:milliVolts="1800"/>
-	<c:value c:DACUnits="1000" c:milliVolts="2000"/>
+      <c:DAC type="pulse" moduleName="LE32" moduleId="11" channel="1">
+	<c:value DACUnits=  "25" milliVolts=  "50"/>
+	<c:value DACUnits=  "50" milliVolts= "100"/>
+	<c:value DACUnits=  "75" milliVolts= "150"/>
+	<c:value DACUnits= "100" milliVolts= "200"/>
+	<c:value DACUnits= "150" milliVolts= "300"/>
+	<c:value DACUnits= "200" milliVolts= "400"/>
+	<c:value DACUnits= "250" milliVolts= "500"/>
+	<c:value DACUnits= "300" milliVolts= "600"/>
+	<c:value DACUnits= "350" milliVolts= "700"/>
+	<c:value DACUnits= "400" milliVolts= "800"/>
+	<c:value DACUnits= "450" milliVolts= "900"/>
+	<c:value DACUnits= "500" milliVolts="1000"/>
+	<c:value DACUnits= "600" milliVolts="1200"/>
+	<c:value DACUnits= "700" milliVolts="1400"/>
+	<c:value DACUnits= "800" milliVolts="1600"/>
+	<c:value DACUnits= "900" milliVolts="1800"/>
+	<c:value DACUnits="1000" milliVolts="2000"/>
       </c:DAC>
-      <c:DAC c:type="pulse" c:moduleName="LE32" c:moduleId="11" c:channel="2">
-	<c:value c:DACUnits=  "25" c:milliVolts=  "50"/>
-	<c:value c:DACUnits=  "50" c:milliVolts= "100"/>
-	<c:value c:DACUnits=  "75" c:milliVolts= "150"/>
-	<c:value c:DACUnits= "100" c:milliVolts= "200"/>
-	<c:value c:DACUnits= "150" c:milliVolts= "300"/>
-	<c:value c:DACUnits= "200" c:milliVolts= "400"/>
-	<c:value c:DACUnits= "250" c:milliVolts= "500"/>
-	<c:value c:DACUnits= "300" c:milliVolts= "600"/>
-	<c:value c:DACUnits= "350" c:milliVolts= "700"/>
-	<c:value c:DACUnits= "400" c:milliVolts= "800"/>
-	<c:value c:DACUnits= "450" c:milliVolts= "900"/>
-	<c:value c:DACUnits= "500" c:milliVolts="1000"/>
-	<c:value c:DACUnits= "600" c:milliVolts="1200"/>
-	<c:value c:DACUnits= "700" c:milliVolts="1400"/>
-	<c:value c:DACUnits= "800" c:milliVolts="1600"/>
-	<c:value c:DACUnits= "900" c:milliVolts="1800"/>
-	<c:value c:DACUnits="1000" c:milliVolts="2000"/>
+      <c:DAC type="pulse" moduleName="LE32" moduleId="11" channel="2">
+	<c:value DACUnits=  "25" milliVolts=  "50"/>
+	<c:value DACUnits=  "50" milliVolts= "100"/>
+	<c:value DACUnits=  "75" milliVolts= "150"/>
+	<c:value DACUnits= "100" milliVolts= "200"/>
+	<c:value DACUnits= "150" milliVolts= "300"/>
+	<c:value DACUnits= "200" milliVolts= "400"/>
+	<c:value DACUnits= "250" milliVolts= "500"/>
+	<c:value DACUnits= "300" milliVolts= "600"/>
+	<c:value DACUnits= "350" milliVolts= "700"/>
+	<c:value DACUnits= "400" milliVolts= "800"/>
+	<c:value DACUnits= "450" milliVolts= "900"/>
+	<c:value DACUnits= "500" milliVolts="1000"/>
+	<c:value DACUnits= "600" milliVolts="1200"/>
+	<c:value DACUnits= "700" milliVolts="1400"/>
+	<c:value DACUnits= "800" milliVolts="1600"/>
+	<c:value DACUnits= "900" milliVolts="1800"/>
+	<c:value DACUnits="1000" milliVolts="2000"/>
       </c:DAC>
-      <c:DAC c:type="pulse" c:moduleName="LE32" c:moduleId="5" c:channel="1">
-	<c:value c:DACUnits=  "25" c:milliVolts=  "50"/>
-	<c:value c:DACUnits=  "50" c:milliVolts= "100"/>
-	<c:value c:DACUnits=  "75" c:milliVolts= "150"/>
-	<c:value c:DACUnits= "100" c:milliVolts= "200"/>
-	<c:value c:DACUnits= "150" c:milliVolts= "300"/>
-	<c:value c:DACUnits= "200" c:milliVolts= "400"/>
-	<c:value c:DACUnits= "250" c:milliVolts= "500"/>
-	<c:value c:DACUnits= "300" c:milliVolts= "600"/>
-	<c:value c:DACUnits= "350" c:milliVolts= "700"/>
-	<c:value c:DACUnits= "400" c:milliVolts= "800"/>
-	<c:value c:DACUnits= "450" c:milliVolts= "900"/>
-	<c:value c:DACUnits= "500" c:milliVolts="1000"/>
-	<c:value c:DACUnits= "600" c:milliVolts="1200"/>
-	<c:value c:DACUnits= "700" c:milliVolts="1400"/>
-	<c:value c:DACUnits= "800" c:milliVolts="1600"/>
-	<c:value c:DACUnits= "900" c:milliVolts="1800"/>
-	<c:value c:DACUnits="1000" c:milliVolts="2000"/>
+      <c:DAC type="pulse" moduleName="LE32" moduleId="5" channel="1">
+	<c:value DACUnits=  "25" milliVolts=  "50"/>
+	<c:value DACUnits=  "50" milliVolts= "100"/>
+	<c:value DACUnits=  "75" milliVolts= "150"/>
+	<c:value DACUnits= "100" milliVolts= "200"/>
+	<c:value DACUnits= "150" milliVolts= "300"/>
+	<c:value DACUnits= "200" milliVolts= "400"/>
+	<c:value DACUnits= "250" milliVolts= "500"/>
+	<c:value DACUnits= "300" milliVolts= "600"/>
+	<c:value DACUnits= "350" milliVolts= "700"/>
+	<c:value DACUnits= "400" milliVolts= "800"/>
+	<c:value DACUnits= "450" milliVolts= "900"/>
+	<c:value DACUnits= "500" milliVolts="1000"/>
+	<c:value DACUnits= "600" milliVolts="1200"/>
+	<c:value DACUnits= "700" milliVolts="1400"/>
+	<c:value DACUnits= "800" milliVolts="1600"/>
+	<c:value DACUnits= "900" milliVolts="1800"/>
+	<c:value DACUnits="1000" milliVolts="2000"/>
       </c:DAC>
-      <c:DAC c:type="pulse" c:moduleName="LE32" c:moduleId="5" c:channel="2">
-	<c:value c:DACUnits=  "25" c:milliVolts=  "50"/>
-	<c:value c:DACUnits=  "50" c:milliVolts= "100"/>
-	<c:value c:DACUnits=  "75" c:milliVolts= "150"/>
-	<c:value c:DACUnits= "100" c:milliVolts= "200"/>
-	<c:value c:DACUnits= "150" c:milliVolts= "300"/>
-	<c:value c:DACUnits= "200" c:milliVolts= "400"/>
-	<c:value c:DACUnits= "250" c:milliVolts= "500"/>
-	<c:value c:DACUnits= "300" c:milliVolts= "600"/>
-	<c:value c:DACUnits= "350" c:milliVolts= "700"/>
-	<c:value c:DACUnits= "400" c:milliVolts= "800"/>
-	<c:value c:DACUnits= "450" c:milliVolts= "900"/>
-	<c:value c:DACUnits= "500" c:milliVolts="1000"/>
-	<c:value c:DACUnits= "600" c:milliVolts="1200"/>
-	<c:value c:DACUnits= "700" c:milliVolts="1400"/>
-	<c:value c:DACUnits= "800" c:milliVolts="1600"/>
-	<c:value c:DACUnits= "900" c:milliVolts="1800"/>
-	<c:value c:DACUnits="1000" c:milliVolts="2000"/>
+      <c:DAC type="pulse" moduleName="LE32" moduleId="5" channel="2">
+	<c:value DACUnits=  "25" milliVolts=  "50"/>
+	<c:value DACUnits=  "50" milliVolts= "100"/>
+	<c:value DACUnits=  "75" milliVolts= "150"/>
+	<c:value DACUnits= "100" milliVolts= "200"/>
+	<c:value DACUnits= "150" milliVolts= "300"/>
+	<c:value DACUnits= "200" milliVolts= "400"/>
+	<c:value DACUnits= "250" milliVolts= "500"/>
+	<c:value DACUnits= "300" milliVolts= "600"/>
+	<c:value DACUnits= "350" milliVolts= "700"/>
+	<c:value DACUnits= "400" milliVolts= "800"/>
+	<c:value DACUnits= "450" milliVolts= "900"/>
+	<c:value DACUnits= "500" milliVolts="1000"/>
+	<c:value DACUnits= "600" milliVolts="1200"/>
+	<c:value DACUnits= "700" milliVolts="1400"/>
+	<c:value DACUnits= "800" milliVolts="1600"/>
+	<c:value DACUnits= "900" milliVolts="1800"/>
+	<c:value DACUnits="1000" milliVolts="2000"/>
       </c:DAC>
-      <c:DAC c:type="pulse" c:moduleName="LE32" c:moduleId="12" c:channel="1">
-	<c:value c:DACUnits=  "25" c:milliVolts=  "50"/>
-	<c:value c:DACUnits=  "50" c:milliVolts= "100"/>
-	<c:value c:DACUnits=  "75" c:milliVolts= "150"/>
-	<c:value c:DACUnits= "100" c:milliVolts= "200"/>
-	<c:value c:DACUnits= "150" c:milliVolts= "300"/>
-	<c:value c:DACUnits= "200" c:milliVolts= "400"/>
-	<c:value c:DACUnits= "250" c:milliVolts= "500"/>
-	<c:value c:DACUnits= "300" c:milliVolts= "600"/>
-	<c:value c:DACUnits= "350" c:milliVolts= "700"/>
-	<c:value c:DACUnits= "400" c:milliVolts= "800"/>
-	<c:value c:DACUnits= "450" c:milliVolts= "900"/>
-	<c:value c:DACUnits= "500" c:milliVolts="1000"/>
-	<c:value c:DACUnits= "600" c:milliVolts="1200"/>
-	<c:value c:DACUnits= "700" c:milliVolts="1400"/>
-	<c:value c:DACUnits= "800" c:milliVolts="1600"/>
-	<c:value c:DACUnits= "900" c:milliVolts="1800"/>
-	<c:value c:DACUnits="1000" c:milliVolts="2000"/>
+      <c:DAC type="pulse" moduleName="LE32" moduleId="12" channel="1">
+	<c:value DACUnits=  "25" milliVolts=  "50"/>
+	<c:value DACUnits=  "50" milliVolts= "100"/>
+	<c:value DACUnits=  "75" milliVolts= "150"/>
+	<c:value DACUnits= "100" milliVolts= "200"/>
+	<c:value DACUnits= "150" milliVolts= "300"/>
+	<c:value DACUnits= "200" milliVolts= "400"/>
+	<c:value DACUnits= "250" milliVolts= "500"/>
+	<c:value DACUnits= "300" milliVolts= "600"/>
+	<c:value DACUnits= "350" milliVolts= "700"/>
+	<c:value DACUnits= "400" milliVolts= "800"/>
+	<c:value DACUnits= "450" milliVolts= "900"/>
+	<c:value DACUnits= "500" milliVolts="1000"/>
+	<c:value DACUnits= "600" milliVolts="1200"/>
+	<c:value DACUnits= "700" milliVolts="1400"/>
+	<c:value DACUnits= "800" milliVolts="1600"/>
+	<c:value DACUnits= "900" milliVolts="1800"/>
+	<c:value DACUnits="1000" milliVolts="2000"/>
       </c:DAC>
-      <c:DAC c:type="pulse" c:moduleName="LE32" c:moduleId="12" c:channel="2">
-	<c:value c:DACUnits=  "25" c:milliVolts=  "50"/>
-	<c:value c:DACUnits=  "50" c:milliVolts= "100"/>
-	<c:value c:DACUnits=  "75" c:milliVolts= "150"/>
-	<c:value c:DACUnits= "100" c:milliVolts= "200"/>
-	<c:value c:DACUnits= "150" c:milliVolts= "300"/>
-	<c:value c:DACUnits= "200" c:milliVolts= "400"/>
-	<c:value c:DACUnits= "250" c:milliVolts= "500"/>
-	<c:value c:DACUnits= "300" c:milliVolts= "600"/>
-	<c:value c:DACUnits= "350" c:milliVolts= "700"/>
-	<c:value c:DACUnits= "400" c:milliVolts= "800"/>
-	<c:value c:DACUnits= "450" c:milliVolts= "900"/>
-	<c:value c:DACUnits= "500" c:milliVolts="1000"/>
-	<c:value c:DACUnits= "600" c:milliVolts="1200"/>
-	<c:value c:DACUnits= "700" c:milliVolts="1400"/>
-	<c:value c:DACUnits= "800" c:milliVolts="1600"/>
-	<c:value c:DACUnits= "900" c:milliVolts="1800"/>
-	<c:value c:DACUnits="1000" c:milliVolts="2000"/>
-      </c:DAC>
-
-      <c:DAC c:type="threshold" c:moduleName="LE32" c:moduleId="11" c:channel="1">
-	<c:value c:DACUnits=  "16" c:milliVolts= "50"/>
-	<c:value c:DACUnits=  "32" c:milliVolts="100"/>
-	<c:value c:DACUnits=  "48" c:milliVolts="150"/>
-	<c:value c:DACUnits=  "64" c:milliVolts="200"/>
-	<c:value c:DACUnits=  "80" c:milliVolts="250"/>
-	<c:value c:DACUnits=  "96" c:milliVolts="300"/>
-	<c:value c:DACUnits= "112" c:milliVolts="350"/>
-	<c:value c:DACUnits= "128" c:milliVolts="400"/>
-	<c:value c:DACUnits= "144" c:milliVolts="450"/>
-	<c:value c:DACUnits= "160" c:milliVolts="500"/>
-	<c:value c:DACUnits= "176" c:milliVolts="550"/>
-	<c:value c:DACUnits= "192" c:milliVolts="600"/>
-	<c:value c:DACUnits= "208" c:milliVolts="650"/>
-	<c:value c:DACUnits= "224" c:milliVolts="700"/>
-	<c:value c:DACUnits= "240" c:milliVolts="750"/>
-	<c:value c:DACUnits= "255" c:milliVolts="800"/>
-      </c:DAC>
-      <c:DAC c:type="threshold" c:moduleName="LE32" c:moduleId="11" c:channel="2">
-	<c:value c:DACUnits=  "16" c:milliVolts= "50"/>
-	<c:value c:DACUnits=  "32" c:milliVolts="100"/>
-	<c:value c:DACUnits=  "48" c:milliVolts="150"/>
-	<c:value c:DACUnits=  "64" c:milliVolts="200"/>
-	<c:value c:DACUnits=  "80" c:milliVolts="250"/>
-	<c:value c:DACUnits=  "96" c:milliVolts="300"/>
-	<c:value c:DACUnits= "112" c:milliVolts="350"/>
-	<c:value c:DACUnits= "128" c:milliVolts="400"/>
-	<c:value c:DACUnits= "144" c:milliVolts="450"/>
-	<c:value c:DACUnits= "160" c:milliVolts="500"/>
-	<c:value c:DACUnits= "176" c:milliVolts="550"/>
-	<c:value c:DACUnits= "192" c:milliVolts="600"/>
-	<c:value c:DACUnits= "208" c:milliVolts="650"/>
-	<c:value c:DACUnits= "224" c:milliVolts="700"/>
-	<c:value c:DACUnits= "240" c:milliVolts="750"/>
-	<c:value c:DACUnits= "255" c:milliVolts="800"/>
+      <c:DAC type="pulse" moduleName="LE32" moduleId="12" channel="2">
+	<c:value DACUnits=  "25" milliVolts=  "50"/>
+	<c:value DACUnits=  "50" milliVolts= "100"/>
+	<c:value DACUnits=  "75" milliVolts= "150"/>
+	<c:value DACUnits= "100" milliVolts= "200"/>
+	<c:value DACUnits= "150" milliVolts= "300"/>
+	<c:value DACUnits= "200" milliVolts= "400"/>
+	<c:value DACUnits= "250" milliVolts= "500"/>
+	<c:value DACUnits= "300" milliVolts= "600"/>
+	<c:value DACUnits= "350" milliVolts= "700"/>
+	<c:value DACUnits= "400" milliVolts= "800"/>
+	<c:value DACUnits= "450" milliVolts= "900"/>
+	<c:value DACUnits= "500" milliVolts="1000"/>
+	<c:value DACUnits= "600" milliVolts="1200"/>
+	<c:value DACUnits= "700" milliVolts="1400"/>
+	<c:value DACUnits= "800" milliVolts="1600"/>
+	<c:value DACUnits= "900" milliVolts="1800"/>
+	<c:value DACUnits="1000" milliVolts="2000"/>
       </c:DAC>
 
-      <c:DAC c:type="threshold" c:moduleName="LE32" c:moduleId="5" c:channel="1">
-	<c:value c:DACUnits=  "16" c:milliVolts= "50"/>
-	<c:value c:DACUnits=  "32" c:milliVolts="100"/>
-	<c:value c:DACUnits=  "48" c:milliVolts="150"/>
-	<c:value c:DACUnits=  "64" c:milliVolts="200"/>
-	<c:value c:DACUnits=  "80" c:milliVolts="250"/>
-	<c:value c:DACUnits=  "96" c:milliVolts="300"/>
-	<c:value c:DACUnits= "112" c:milliVolts="350"/>
-	<c:value c:DACUnits= "128" c:milliVolts="400"/>
-	<c:value c:DACUnits= "144" c:milliVolts="450"/>
-	<c:value c:DACUnits= "160" c:milliVolts="500"/>
-	<c:value c:DACUnits= "176" c:milliVolts="550"/>
-	<c:value c:DACUnits= "192" c:milliVolts="600"/>
-	<c:value c:DACUnits= "208" c:milliVolts="650"/>
-	<c:value c:DACUnits= "224" c:milliVolts="700"/>
-	<c:value c:DACUnits= "240" c:milliVolts="750"/>
-	<c:value c:DACUnits= "255" c:milliVolts="800"/>
+      <c:DAC type="threshold" moduleName="LE32" moduleId="11" channel="1">
+	<c:value DACUnits=  "16" milliVolts= "50"/>
+	<c:value DACUnits=  "32" milliVolts="100"/>
+	<c:value DACUnits=  "48" milliVolts="150"/>
+	<c:value DACUnits=  "64" milliVolts="200"/>
+	<c:value DACUnits=  "80" milliVolts="250"/>
+	<c:value DACUnits=  "96" milliVolts="300"/>
+	<c:value DACUnits= "112" milliVolts="350"/>
+	<c:value DACUnits= "128" milliVolts="400"/>
+	<c:value DACUnits= "144" milliVolts="450"/>
+	<c:value DACUnits= "160" milliVolts="500"/>
+	<c:value DACUnits= "176" milliVolts="550"/>
+	<c:value DACUnits= "192" milliVolts="600"/>
+	<c:value DACUnits= "208" milliVolts="650"/>
+	<c:value DACUnits= "224" milliVolts="700"/>
+	<c:value DACUnits= "240" milliVolts="750"/>
+	<c:value DACUnits= "255" milliVolts="800"/>
       </c:DAC>
-      <c:DAC c:type="threshold" c:moduleName="LE32" c:moduleId="5" c:channel="2">
-	<c:value c:DACUnits=  "16" c:milliVolts= "50"/>
-	<c:value c:DACUnits=  "32" c:milliVolts="100"/>
-	<c:value c:DACUnits=  "48" c:milliVolts="150"/>
-	<c:value c:DACUnits=  "64" c:milliVolts="200"/>
-	<c:value c:DACUnits=  "80" c:milliVolts="250"/>
-	<c:value c:DACUnits=  "96" c:milliVolts="300"/>
-	<c:value c:DACUnits= "112" c:milliVolts="350"/>
-	<c:value c:DACUnits= "128" c:milliVolts="400"/>
-	<c:value c:DACUnits= "144" c:milliVolts="450"/>
-	<c:value c:DACUnits= "160" c:milliVolts="500"/>
-	<c:value c:DACUnits= "176" c:milliVolts="550"/>
-	<c:value c:DACUnits= "192" c:milliVolts="600"/>
-	<c:value c:DACUnits= "208" c:milliVolts="650"/>
-	<c:value c:DACUnits= "224" c:milliVolts="700"/>
-	<c:value c:DACUnits= "240" c:milliVolts="750"/>
-	<c:value c:DACUnits= "255" c:milliVolts="800"/>
+      <c:DAC type="threshold" moduleName="LE32" moduleId="11" channel="2">
+	<c:value DACUnits=  "16" milliVolts= "50"/>
+	<c:value DACUnits=  "32" milliVolts="100"/>
+	<c:value DACUnits=  "48" milliVolts="150"/>
+	<c:value DACUnits=  "64" milliVolts="200"/>
+	<c:value DACUnits=  "80" milliVolts="250"/>
+	<c:value DACUnits=  "96" milliVolts="300"/>
+	<c:value DACUnits= "112" milliVolts="350"/>
+	<c:value DACUnits= "128" milliVolts="400"/>
+	<c:value DACUnits= "144" milliVolts="450"/>
+	<c:value DACUnits= "160" milliVolts="500"/>
+	<c:value DACUnits= "176" milliVolts="550"/>
+	<c:value DACUnits= "192" milliVolts="600"/>
+	<c:value DACUnits= "208" milliVolts="650"/>
+	<c:value DACUnits= "224" milliVolts="700"/>
+	<c:value DACUnits= "240" milliVolts="750"/>
+	<c:value DACUnits= "255" milliVolts="800"/>
       </c:DAC>
 
-      <c:DAC c:type="threshold" c:moduleName="LE32" c:moduleId="12" c:channel="1">
-	<c:value c:DACUnits=  "16" c:milliVolts= "50"/>
-	<c:value c:DACUnits=  "32" c:milliVolts="100"/>
-	<c:value c:DACUnits=  "48" c:milliVolts="150"/>
-	<c:value c:DACUnits=  "64" c:milliVolts="200"/>
-	<c:value c:DACUnits=  "80" c:milliVolts="250"/>
-	<c:value c:DACUnits=  "96" c:milliVolts="300"/>
-	<c:value c:DACUnits= "112" c:milliVolts="350"/>
-	<c:value c:DACUnits= "128" c:milliVolts="400"/>
-	<c:value c:DACUnits= "144" c:milliVolts="450"/>
-	<c:value c:DACUnits= "160" c:milliVolts="500"/>
-	<c:value c:DACUnits= "176" c:milliVolts="550"/>
-	<c:value c:DACUnits= "192" c:milliVolts="600"/>
-	<c:value c:DACUnits= "208" c:milliVolts="650"/>
-	<c:value c:DACUnits= "224" c:milliVolts="700"/>
-	<c:value c:DACUnits= "240" c:milliVolts="750"/>
-	<c:value c:DACUnits= "255" c:milliVolts="800"/>
+      <c:DAC type="threshold" moduleName="LE32" moduleId="5" channel="1">
+	<c:value DACUnits=  "16" milliVolts= "50"/>
+	<c:value DACUnits=  "32" milliVolts="100"/>
+	<c:value DACUnits=  "48" milliVolts="150"/>
+	<c:value DACUnits=  "64" milliVolts="200"/>
+	<c:value DACUnits=  "80" milliVolts="250"/>
+	<c:value DACUnits=  "96" milliVolts="300"/>
+	<c:value DACUnits= "112" milliVolts="350"/>
+	<c:value DACUnits= "128" milliVolts="400"/>
+	<c:value DACUnits= "144" milliVolts="450"/>
+	<c:value DACUnits= "160" milliVolts="500"/>
+	<c:value DACUnits= "176" milliVolts="550"/>
+	<c:value DACUnits= "192" milliVolts="600"/>
+	<c:value DACUnits= "208" milliVolts="650"/>
+	<c:value DACUnits= "224" milliVolts="700"/>
+	<c:value DACUnits= "240" milliVolts="750"/>
+	<c:value DACUnits= "255" milliVolts="800"/>
       </c:DAC>
-      <c:DAC c:type="threshold" c:moduleName="LE32" c:moduleId="12" c:channel="2">
-	<c:value c:DACUnits=  "16" c:milliVolts= "50"/>
-	<c:value c:DACUnits=  "32" c:milliVolts="100"/>
-	<c:value c:DACUnits=  "48" c:milliVolts="150"/>
-	<c:value c:DACUnits=  "64" c:milliVolts="200"/>
-	<c:value c:DACUnits=  "80" c:milliVolts="250"/>
-	<c:value c:DACUnits=  "96" c:milliVolts="300"/>
-	<c:value c:DACUnits= "112" c:milliVolts="350"/>
-	<c:value c:DACUnits= "128" c:milliVolts="400"/>
-	<c:value c:DACUnits= "144" c:milliVolts="450"/>
-	<c:value c:DACUnits= "160" c:milliVolts="500"/>
-	<c:value c:DACUnits= "176" c:milliVolts="550"/>
-	<c:value c:DACUnits= "192" c:milliVolts="600"/>
-	<c:value c:DACUnits= "208" c:milliVolts="650"/>
-	<c:value c:DACUnits= "224" c:milliVolts="700"/>
-	<c:value c:DACUnits= "240" c:milliVolts="750"/>
-	<c:value c:DACUnits= "255" c:milliVolts="800"/>
+      <c:DAC type="threshold" moduleName="LE32" moduleId="5" channel="2">
+	<c:value DACUnits=  "16" milliVolts= "50"/>
+	<c:value DACUnits=  "32" milliVolts="100"/>
+	<c:value DACUnits=  "48" milliVolts="150"/>
+	<c:value DACUnits=  "64" milliVolts="200"/>
+	<c:value DACUnits=  "80" milliVolts="250"/>
+	<c:value DACUnits=  "96" milliVolts="300"/>
+	<c:value DACUnits= "112" milliVolts="350"/>
+	<c:value DACUnits= "128" milliVolts="400"/>
+	<c:value DACUnits= "144" milliVolts="450"/>
+	<c:value DACUnits= "160" milliVolts="500"/>
+	<c:value DACUnits= "176" milliVolts="550"/>
+	<c:value DACUnits= "192" milliVolts="600"/>
+	<c:value DACUnits= "208" milliVolts="650"/>
+	<c:value DACUnits= "224" milliVolts="700"/>
+	<c:value DACUnits= "240" milliVolts="750"/>
+	<c:value DACUnits= "255" milliVolts="800"/>
+      </c:DAC>
+
+      <c:DAC type="threshold" moduleName="LE32" moduleId="12" channel="1">
+	<c:value DACUnits=  "16" milliVolts= "50"/>
+	<c:value DACUnits=  "32" milliVolts="100"/>
+	<c:value DACUnits=  "48" milliVolts="150"/>
+	<c:value DACUnits=  "64" milliVolts="200"/>
+	<c:value DACUnits=  "80" milliVolts="250"/>
+	<c:value DACUnits=  "96" milliVolts="300"/>
+	<c:value DACUnits= "112" milliVolts="350"/>
+	<c:value DACUnits= "128" milliVolts="400"/>
+	<c:value DACUnits= "144" milliVolts="450"/>
+	<c:value DACUnits= "160" milliVolts="500"/>
+	<c:value DACUnits= "176" milliVolts="550"/>
+	<c:value DACUnits= "192" milliVolts="600"/>
+	<c:value DACUnits= "208" milliVolts="650"/>
+	<c:value DACUnits= "224" milliVolts="700"/>
+	<c:value DACUnits= "240" milliVolts="750"/>
+	<c:value DACUnits= "255" milliVolts="800"/>
+      </c:DAC>
+      <c:DAC type="threshold" moduleName="LE32" moduleId="12" channel="2">
+	<c:value DACUnits=  "16" milliVolts= "50"/>
+	<c:value DACUnits=  "32" milliVolts="100"/>
+	<c:value DACUnits=  "48" milliVolts="150"/>
+	<c:value DACUnits=  "64" milliVolts="200"/>
+	<c:value DACUnits=  "80" milliVolts="250"/>
+	<c:value DACUnits=  "96" milliVolts="300"/>
+	<c:value DACUnits= "112" milliVolts="350"/>
+	<c:value DACUnits= "128" milliVolts="400"/>
+	<c:value DACUnits= "144" milliVolts="450"/>
+	<c:value DACUnits= "160" milliVolts="500"/>
+	<c:value DACUnits= "176" milliVolts="550"/>
+	<c:value DACUnits= "192" milliVolts="600"/>
+	<c:value DACUnits= "208" milliVolts="650"/>
+	<c:value DACUnits= "224" milliVolts="700"/>
+	<c:value DACUnits= "240" milliVolts="750"/>
+	<c:value DACUnits= "255" milliVolts="800"/>
       </c:DAC>
     </c:DACs>
 

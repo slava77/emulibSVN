@@ -51,12 +51,12 @@ void AFEB::teststand::Analysis::collectAnalyzedDevices( const string& configXML 
   for ( vector<AnalyzedDevice>::iterator ad = analyzedDevices_.begin(); ad != analyzedDevices_.end(); ++ad ){
     // Get name of adaptor in use
     stringstream xpath;
-    xpath << "/c:configuration/c:inputs/@c:adaptor";
+    xpath << "/c:configuration/c:inputs/@adaptor";
     string adaptorName = utils::getSelectedNodeValue( configXML, xpath.str() );
     ad->setAdaptorName( adaptorName );
     // Get the injection capacitance [pF] of this adaptor
     xpath.str("");
-    xpath << "/c:configuration/c:calibrations/c:adaptors/c:adaptor[@c:name='" << adaptorName << "']/@c:injectionCapacitance";
+    xpath << "/c:configuration/c:calibrations/c:adaptors/c:adaptor[@name='" << adaptorName << "']/@injectionCapacitance";
     string capacitance = utils::getSelectedNodeValue( configXML, xpath.str() );
     cout << xpath.str() << endl;
     cout << capacitance << endl;
@@ -67,7 +67,7 @@ void AFEB::teststand::Analysis::collectAnalyzedDevices( const string& configXML 
     ad->setInjectionCapacitance( utils::stringTo<double>( capacitance ) );
     // Get the pulse division factor of this adaptor
     xpath.str("");
-    xpath << "/c:configuration/c:calibrations/c:adaptors/c:adaptor[@c:name='" << adaptorName << "']/@c:pulseDivisionFactor";
+    xpath << "/c:configuration/c:calibrations/c:adaptors/c:adaptor[@name='" << adaptorName << "']/@pulseDivisionFactor";
     string factor = utils::getSelectedNodeValue( configXML, xpath.str() );
     if ( capacitance.size() == 0 ){
       stringstream ss; ss << "Failed to find the pulse division factor for adaptor " << adaptorName;
@@ -76,8 +76,8 @@ void AFEB::teststand::Analysis::collectAnalyzedDevices( const string& configXML 
     ad->setPulseDivisionFactor( utils::stringTo<double>( factor ) );
     // Get the correction coefficient for this adaptor's socket into which this device is plugged into
     xpath.str("");
-    xpath << "/c:configuration/c:calibrations/c:adaptors/c:adaptor[@c:name='" << adaptorName 
-	  << "']/c:socket[@c:number='" << ad->getAdaptorSocket() << "']/@c:coefficient";
+    xpath << "/c:configuration/c:calibrations/c:adaptors/c:adaptor[@name='" << adaptorName 
+	  << "']/c:socket[@number='" << ad->getAdaptorSocket() << "']/@coefficient";
     string coefficient = utils::getSelectedNodeValue( configXML, xpath.str() );
     if ( coefficient.size() == 0 ){
       stringstream ss; ss << "Failed to find the threshold correction coefficient for socket " << ad->getAdaptorSocket() << " of adaptor " << adaptorName;
@@ -99,27 +99,27 @@ void AFEB::teststand::Analysis::calibrateDACs( const string& configXML ){
     // Create DAC objects
     //
     xpath.str("");
-    xpath << "/c:configuration/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/@c:moduleId";
+    xpath << "/c:configuration/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/@moduleId";
     string moduleId = utils::getSelectedNodeValue( configXML, xpath.str() );
     xpath.str("");
-    xpath << "/c:configuration/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/@c:moduleName";
+    xpath << "/c:configuration/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/@moduleName";
     string moduleName = utils::getSelectedNodeValue( configXML, xpath.str() );
     xpath.str("");
-    xpath << "/c:configuration/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/@c:type";
+    xpath << "/c:configuration/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/@type";
     string type = utils::getSelectedNodeValue( configXML, xpath.str() );
     xpath.str("");
-    xpath << "/c:configuration/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/@c:channel";
+    xpath << "/c:configuration/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/@channel";
     int channel = utils::stringTo<int>( utils::getSelectedNodeValue( configXML, xpath.str() ) );
     DACs_.push_back( DAC( moduleId, moduleName, type, channel ) );
     //
     // Load calibration data
     //
     xpath.str("");
-    xpath << "/c:configuration/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/*[name()='c:value']/@c:DACUnits";
+    xpath << "/c:configuration/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/*[name()='c:value']/@DACUnits";
     vector< pair<string,string> > x = utils::getSelectedNodesValues( configXML, xpath.str() );
     cout << x << endl;
     xpath.str("");
-    xpath << "/c:configuration/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/*[name()='c:value']/@c:milliVolts";
+    xpath << "/c:configuration/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/*[name()='c:value']/@milliVolts";
     vector< pair<string,string> > y = utils::getSelectedNodesValues( configXML, xpath.str() );
     cout << y << endl;
     //

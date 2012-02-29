@@ -27,14 +27,14 @@ AFEB::teststand::TestedDevice::TestedDevice( const string type, const int nChann
 void AFEB::teststand::TestedDevice::setParameters( const vector< pair<string,string> >& param ){
   vector< pair<string,string> >::const_iterator p;
   for ( p = param.begin(); p != param.end(); ++p ){
-    if      ( p->first.compare( "c:id"       ) == 0 ) id_       = p->second;
-    else if ( p->first.compare( "c:socket"   ) == 0 ) socket_   = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "c:tdcSlot"  ) == 0 ) tdcSlot_  = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "c:tdcSocket" ) == 0 ) tdcSocket_ = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "c:signalConverterSlot"  ) == 0 ) signalConverterSlot_  = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "c:signalConverterSocket" ) == 0 ) signalConverterSocket_ = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "c:pulseGeneratorSlot"    ) == 0 ) pulseGeneratorSlot_    = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "c:pulseGeneratorSocket"  ) == 0 ) pulseGeneratorSocket_  = utils::stringTo<int>( p->second );
+    if      ( p->first.compare( "id"       ) == 0 ) id_       = p->second;
+    else if ( p->first.compare( "socket"   ) == 0 ) socket_   = utils::stringTo<int>( p->second );
+    else if ( p->first.compare( "tdcSlot"  ) == 0 ) tdcSlot_  = utils::stringTo<int>( p->second );
+    else if ( p->first.compare( "tdcSocket" ) == 0 ) tdcSocket_ = utils::stringTo<int>( p->second );
+    else if ( p->first.compare( "signalConverterSlot"  ) == 0 ) signalConverterSlot_  = utils::stringTo<int>( p->second );
+    else if ( p->first.compare( "signalConverterSocket" ) == 0 ) signalConverterSocket_ = utils::stringTo<int>( p->second );
+    else if ( p->first.compare( "pulseGeneratorSlot"    ) == 0 ) pulseGeneratorSlot_    = utils::stringTo<int>( p->second );
+    else if ( p->first.compare( "pulseGeneratorSocket"  ) == 0 ) pulseGeneratorSocket_  = utils::stringTo<int>( p->second );
   }
   //cout << param << endl << *this << endl;
 }

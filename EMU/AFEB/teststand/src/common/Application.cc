@@ -320,10 +320,10 @@ string AFEB::teststand::Application::createXMLWebPageSkeleton(){
 
   // Application info
   ss << "  <a:application xmlns:a=\""    << applicationNamespace_ 
-     <<               "\" a:urlPath=\""  << applicationURLPath_ 
-     <<               "\" a:dateTime=\"" << AFEB::teststand::utils::getDateTime()
-     <<               "\" a:state=\""    << fsm_.getStateName( fsm_.getCurrentState() )
-     <<               "\" a:mode=\""     << modeNames_[ mode_ ]
+     <<               "\" urlPath=\""  << applicationURLPath_ 
+     <<               "\" dateTime=\"" << AFEB::teststand::utils::getDateTime()
+     <<               "\" state=\""    << fsm_.getStateName( fsm_.getCurrentState() )
+     <<               "\" mode=\""     << modeNames_[ mode_ ]
      <<               "\">" << endl;
 
   // Message, if any
@@ -334,13 +334,13 @@ string AFEB::teststand::Application::createXMLWebPageSkeleton(){
   // Configuration files
   ss << "    <a:configuration>" << endl;
   for ( vector<pair<string,string> >::const_iterator c=configList.begin(); c!=configList.end(); ++c ){
-    ss << "      <a:file a:time=\"" << c->first << "\" a:name=\"" << c->second << "\"/>" << endl;
+    ss << "      <a:file time=\"" << c->first << "\" name=\"" << c->second << "\"/>" << endl;
   }
   ss << "    </a:configuration>" << endl;
   // Calibration
   if ( mode_ == AFEB::teststand::Application::calibration && configuration_->getCalibration() != NULL ){
-    ss << "    <a:calibration a:thresholdLevel=\"" << configuration_->getCalibration()->getThresholdLevel()
-       <<                 "\" a:pulseAmplitude=\"" << configuration_->getCalibration()->getPulseAmplitude()
+    ss << "    <a:calibration thresholdLevel=\"" << configuration_->getCalibration()->getThresholdLevel()
+       <<                 "\" pulseAmplitude=\"" << configuration_->getCalibration()->getPulseAmplitude()
        <<                 "\"/>" << endl;
   }
   ss << "  </a:application>" << endl;
@@ -349,12 +349,12 @@ string AFEB::teststand::Application::createXMLWebPageSkeleton(){
   // Results
   toolbox::net::URL url( getApplicationDescriptor()->getContextDescriptor()->getURL() );
   ss << "  <a:results xmlns:a=\"" << applicationNamespace_ 
-     <<           "\" a:host=\"" << host_
-     <<           "\" a:systemPath=\"" << rawResultSystemDir_
-     <<           "\" a:urlHost=\"" << url.getHost()
-     <<           "\" a:urlPath=\"" << rawResultURLDir_ << "/"
-     <<           "\" a:file=\"" << "results.xml"
-     <<           "\" a:measurementDate=\"" << utils::getDateTime()
+     <<           "\" host=\"" << host_
+     <<           "\" systemPath=\"" << rawResultSystemDir_
+     <<           "\" urlHost=\"" << url.getHost()
+     <<           "\" urlPath=\"" << rawResultURLDir_ << "/"
+     <<           "\" file=\"" << "results.xml"
+     <<           "\" measurementDate=\"" << utils::getDateTime()
      <<           "\">" << endl;
   if ( configuration_ != NULL ) ss << configuration_->resultsXML();
   ss << "  </a:results>" << endl;
@@ -382,11 +382,11 @@ string AFEB::teststand::Application::createResultsXML(){
 
     toolbox::net::URL url( getApplicationDescriptor()->getContextDescriptor()->getURL() );
     ss << "  <a:results xmlns:a=\"" << applicationNamespace_ 
-       <<           "\" a:host=\"" << host_
-       <<           "\" a:systemPath=\"" << rawResultSystemDir_
-       <<           "\" a:urlHost=\"" << url.getHost()
-       <<           "\" a:urlPath=\"" // Everything is in the current directory.
-       <<           "\" a:file=\"" << "results.xml"
+       <<           "\" host=\"" << host_
+       <<           "\" systemPath=\"" << rawResultSystemDir_
+       <<           "\" urlHost=\"" << url.getHost()
+       <<           "\" urlPath=\"" // Everything is in the current directory.
+       <<           "\" file=\"" << "results.xml"
        <<           "\">" << endl;
     if ( configuration_ != NULL ) ss << configuration_->resultsXML();
     ss << "  </a:results>" << endl;
@@ -413,11 +413,11 @@ string AFEB::teststand::Application::createResultsXML(){
        << "<root htmlDir=\"/AFEB/teststand/html/\" softwareVersion=\"" << AFEBteststand::versions << "\">" << endl;
 
     ss << "  <a:results xmlns:a=\"" << applicationNamespace_ 
-       <<           "\" a:host=\"" << host_
-       <<           "\" a:systemPath=\"" << rawResultSystemDir_
-       <<           "\" a:urlHost=\"" << url.getHost()
-       <<           "\" a:urlPath=\"" << rawResultURLDir_ << "/"
-       <<           "\" a:file=\"" << "results.xml"
+       <<           "\" host=\"" << host_
+       <<           "\" systemPath=\"" << rawResultSystemDir_
+       <<           "\" urlHost=\"" << url.getHost()
+       <<           "\" urlPath=\"" << rawResultURLDir_ << "/"
+       <<           "\" file=\"" << "results.xml"
        <<           "\">" << endl;
     if ( configuration_ != NULL ) ss << configuration_->resultsXML();
     ss << "  </a:results>" << endl;
@@ -551,14 +551,14 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
       // Save?
       if ( action["config"].compare( "save" ) == 0 ){
 	map<string,string> values = AFEB::teststand::utils::selectFromQueryString( fev, "^/" );
-	values["/c:configuration[1]/@c:dateTime"] = AFEB::teststand::utils::getDateTime();
+	values["/c:configuration[1]/@dateTime"] = AFEB::teststand::utils::getDateTime();
 	// cout << v << endl;
 	configurationXML_ = AFEB::teststand::utils::setSelectedNodesValues( configurationXML_, values );
 	// cout << "configurationXML" << endl << configurationXML_ << endl << flush;
 	AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + configurationDir_.toString() );
 	string expandedConfigDir = AFEB::teststand::utils::performExpansions( configurationDir_.toString() );
 	LOG4CPLUS_INFO( logger_, string("Expanded ") + configurationDir_.toString() + string( " to " ) +  expandedConfigDir );
-	string fileToSaveConfigIn = expandedConfigDir + "/" + values["/c:configuration[1]/@c:name"] + ".xml";
+	string fileToSaveConfigIn = expandedConfigDir + "/" + values["/c:configuration[1]/@name"] + ".xml";
 	AFEB::teststand::utils::writeFile( fileToSaveConfigIn, configurationXML_ );
 	LOG4CPLUS_INFO( logger_, string("Saved configuration to ") + fileToSaveConfigIn );
       }

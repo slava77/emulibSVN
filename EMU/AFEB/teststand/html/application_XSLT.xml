@@ -10,9 +10,9 @@
   <xsl:template match="a:application">
     <table class="layout">
       <tr>
-	<td><span class="{@a:state}"><xsl:value-of select="@a:state"/></span></td>
+	<td><span class="{@state}"><xsl:value-of select="@state"/></span></td>
 	<td><xsl:copy-of select="a:message"/></td>
-	<td><xsl:value-of select="@a:dateTime"/></td>
+	<td><xsl:value-of select="@dateTime"/></td>
       </tr>
       <tr>
 	<td colspan="3"><hr/></td>
@@ -20,26 +20,26 @@
       <tr>
 	<td>
 	  <input type="submit" name="fsm" value="Configure" class="submit" title="Configure for the selected mode.">
-	    <xsl:if test="@a:state!='Halted'"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
+	    <xsl:if test="@state!='Halted'"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
 	  </input>
 	  <select name="mode">
-	    <xsl:if test="@a:state!='Halted'"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
+	    <xsl:if test="@state!='Halted'"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
 	    <option title="Perform measurements.">
-	      <xsl:if test="@a:mode='measurement'"><xsl:attribute name="selected">selected</xsl:attribute></xsl:if>
+	      <xsl:if test="@mode='measurement'"><xsl:attribute name="selected">selected</xsl:attribute></xsl:if>
 	      measurement
 	    </option>
 	    <option title="Perform calibrations.">
-	      <xsl:if test="@a:mode='calibration'"><xsl:attribute name="selected">selected</xsl:attribute></xsl:if>
+	      <xsl:if test="@mode='calibration'"><xsl:attribute name="selected">selected</xsl:attribute></xsl:if>
 	      calibration
 	    </option>
 	  </select>
 	</td>
 	<td>
 	  <xsl:choose>
-	    <xsl:when test="@a:mode='calibration'">
+	    <xsl:when test="@mode='calibration'">
 	      <input type="submit" name="fsm" class="submit">
 		<xsl:choose>
-		  <xsl:when test="@a:state='Enabled'">
+		  <xsl:when test="@state='Enabled'">
 		    <xsl:attribute name="value">Stop</xsl:attribute>
 		    <xsl:attribute name="title">Stop the calibration to change DAC values.</xsl:attribute>
 		  </xsl:when>
@@ -48,21 +48,21 @@
 		    <xsl:attribute name="title">Start the calibration with the given DAC values.</xsl:attribute>
 		  </xsl:otherwise>
 		</xsl:choose>
-		<xsl:if test="@a:state='Halted' or @a:state='Failed'"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
+		<xsl:if test="@state='Halted' or @state='Failed'"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
 	      </input>
 	    </xsl:when>
 	    <xsl:otherwise>
 	      <input type="submit" name="fsm" value="Enable" class="submit" title="Start the measurement.">
-		<xsl:if test="@a:state!='Configured'"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
+		<xsl:if test="@state!='Configured'"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
 	      </input>
 	    </xsl:otherwise>
 	  </xsl:choose>
 	</td>
 	<td>
 	  <input type="submit" name="fsm" value="Halt" class="submit">
-	    <xsl:if test="@a:mode='calibration'"><xsl:attribute name="title">Halt the calibration to reconfigure the setup.</xsl:attribute></xsl:if>
-	    <xsl:if test="@a:mode='measurement'"><xsl:attribute name="title">Halt the measurement.</xsl:attribute></xsl:if>
-	    <xsl:if test="@a:state='Halted' or @a:state='Failed'"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
+	    <xsl:if test="@mode='calibration'"><xsl:attribute name="title">Halt the calibration to reconfigure the setup.</xsl:attribute></xsl:if>
+	    <xsl:if test="@mode='measurement'"><xsl:attribute name="title">Halt the measurement.</xsl:attribute></xsl:if>
+	    <xsl:if test="@state='Halted' or @state='Failed'"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
 	  </input>
 	</td>
       </tr>
@@ -73,7 +73,7 @@
 	  <xsl:if test="$APPMODE='calibration'"><xsl:apply-templates select="a:calibration"/></xsl:if>
 	</td>
       </tr>
-      <xsl:if test="@a:state='Halted'">
+      <xsl:if test="@state='Halted'">
 	<tr>
 	  <td colspan="3">
 	    Select a previously defined configuration:
@@ -96,41 +96,41 @@
 	  <th>index</th><th>type</th><th>name</th><th colspan="{$NDEVICES}">devices</th>
 	</tr>
 	<xsl:apply-templates mode="application" select="a:measurement">
-	  <xsl:sort select="@a:index"/>
+	  <xsl:sort select="@index"/>
 	</xsl:apply-templates>
       </table>
     </xsl:if>
-    <xsl:for-each select="a:measurement[@a:status='running']/a:device">
-      <xsl:sort select="@a:id"/>
-      <img src="{../../@a:urlPath}{a:file/@a:name}.png"/>
+    <xsl:for-each select="a:measurement[@status='running']/a:device">
+      <xsl:sort select="@id"/>
+      <img src="{../../@urlPath}{a:file/@name}.png"/>
     </xsl:for-each>
   </xsl:template>
 
   <xsl:template mode="application" match="a:measurement">
     <tr>
-      <td><xsl:value-of select="@a:index"/></td>
-      <td><xsl:value-of select="@a:type"/></td>
-      <td><xsl:value-of select="@a:name"/></td>
+      <td><xsl:value-of select="@index"/></td>
+      <td><xsl:value-of select="@type"/></td>
+      <td><xsl:value-of select="@name"/></td>
       <xsl:apply-templates mode="application" select="a:device">
-	<xsl:sort select="@a:id"/>
+	<xsl:sort select="@id"/>
       </xsl:apply-templates>
     </tr>
   </xsl:template>
 
   <xsl:template mode="application" match="a:device">
     <td>
-      <a href="{/root/a:application/@a:urlPath}/results" class="{../@a:status}" target="_blank"><xsl:value-of select="@a:id"/></a>
+      <a href="{/root/a:application/@urlPath}/results" class="{../@status}" target="_blank"><xsl:value-of select="@id"/></a>
     </td>
   </xsl:template>
 
   <xsl:template mode="results" match="a:results">
     <p>
-      These results can also be accessed offline by opening <a href="file://{@a:systemPath}/{@a:file}">file://<xsl:value-of select="@a:systemPath"/>/<xsl:value-of select="@a:file"/></a> in a browser running on host <xsl:value-of select="@a:host"/>.
+      These results can also be accessed offline by opening <a href="file://{@systemPath}/{@file}">file://<xsl:value-of select="@systemPath"/>/<xsl:value-of select="@file"/></a> in a browser running on host <xsl:value-of select="@host"/>.
     </p>
     <table class="layout">
       <xsl:apply-templates mode="results" select="a:measurement/a:device">
-	<xsl:sort select="../@a:index"/>
- 	<xsl:sort select="@a:id"/>
+	<xsl:sort select="../@index"/>
+ 	<xsl:sort select="@id"/>
       </xsl:apply-templates>
    </table>
   </xsl:template>
@@ -141,18 +141,18 @@
 	<table class="title">
 	  <tr><th colspan="3">measurement</th><th>device</th></tr>
 	  <tr><th>index</th><th>type</th><th>name</th><th>id</th></tr>
-	  <tr><td><xsl:value-of select="../@a:index"/></td><td><xsl:value-of select="../@a:type"/></td><td><xsl:value-of select="../@a:name"/></td><td><xsl:value-of select="@a:id"/></td></tr>
+	  <tr><td><xsl:value-of select="../@index"/></td><td><xsl:value-of select="../@type"/></td><td><xsl:value-of select="../@name"/></td><td><xsl:value-of select="@id"/></td></tr>
 	</table>
       </td>
     </tr>
     <tr>
       <td>
-	<a name="{a:file/@a:name}"/>
-	<img src="{../../@a:urlPath}{a:file/@a:name}.png"/>
+	<a name="{a:file/@name}"/>
+	<img src="{../../@urlPath}{a:file/@name}.png"/>
       </td>
       <td style="vertical-align:top;">
 	<table>
-	  <xsl:apply-templates mode="header" select="a:channel[@a:number=1]"/>
+	  <xsl:apply-templates mode="header" select="a:channel[@number=1]"/>
 	  <xsl:apply-templates mode="data" select="a:channel"/>
 	</table>
 	<xsl:apply-templates select="a:statistics"/>
@@ -165,11 +165,11 @@
 	<th rowspan="2">channel</th>
 	<xsl:for-each select="a:parameter">
 	  <xsl:choose>
-	    <xsl:when test="@a:name='chi2ndf'">
+	    <xsl:when test="@name='chi2ndf'">
 	      <th rowspan="2">&#x03c7;&#xb2;/ndf</th>
 	    </xsl:when>
 	    <xsl:otherwise>
-	      <th colspan="2"><xsl:value-of select="@a:name"/></th>
+	      <th colspan="2"><xsl:value-of select="@name"/></th>
 	    </xsl:otherwise>
 	  </xsl:choose>
 	</xsl:for-each>
@@ -177,10 +177,10 @@
       <tr>
 	<xsl:for-each select="a:parameter">
 	  <xsl:choose>
-	    <xsl:when test="@a:name='time on plateau [TDC]'">
+	    <xsl:when test="@name='time on plateau [TDC]'">
 	      <th>mean</th><th>rms</th>
 	    </xsl:when>
-	    <xsl:when test="@a:name='chi2ndf'">
+	    <xsl:when test="@name='chi2ndf'">
 	    </xsl:when>
 	    <xsl:otherwise>
 	      <th>value</th><th>error</th>
@@ -192,12 +192,12 @@
 
   <xsl:template mode="data" match="a:channel">
       <tr>
-	<th><xsl:value-of select="@a:number"/></th>
+	<th><xsl:value-of select="@number"/></th>
 	<xsl:for-each select="a:parameter">
-	  <!-- <td style="width: 25x;"><xsl:value-of select="@a:value"/> &#177; <xsl:value-of select="@a:error"/></td> -->
-	  <td><xsl:value-of select="@a:value"/></td>
-	  <xsl:if test="@a:name!='chi2ndf'">
-	    <td><xsl:value-of select="@a:error"/></td>
+	  <!-- <td style="width: 25x;"><xsl:value-of select="@value"/> &#177; <xsl:value-of select="@error"/></td> -->
+	  <td><xsl:value-of select="@value"/></td>
+	  <xsl:if test="@name!='chi2ndf'">
+	    <td><xsl:value-of select="@error"/></td>
 	  </xsl:if>
 	</xsl:for-each>
       </tr>
@@ -214,7 +214,7 @@
   <xsl:template mode="header" match="a:parameter">
       <tr>
 	<th>parameter name</th>
-	<xsl:for-each select="@a:*[local-name()!='name']">
+	<xsl:for-each select="@*[local-name()!='name']">
 	  <th style="width: 25x;"><xsl:value-of select="local-name()"/></th>
 	</xsl:for-each>
       </tr>
@@ -222,8 +222,8 @@
 
   <xsl:template mode="data" match="a:parameter">
       <tr>
-	<th><xsl:value-of select="@a:name"/></th>
-	<xsl:for-each select="@a:*[local-name()!='name']">
+	<th><xsl:value-of select="@name"/></th>
+	<xsl:for-each select="@*[local-name()!='name']">
 	  <td style="width: 25x;"><xsl:value-of select="."/></td>
 	</xsl:for-each>
       </tr>
@@ -237,15 +237,15 @@
   </xsl:template>
 
   <xsl:template match="a:file">
-    <option value="{@a:name}"><xsl:value-of select="@a:time"/><xsl:text> </xsl:text><b><xsl:value-of select="@a:name"/></b></option>
+    <option value="{@name}"><xsl:value-of select="@time"/><xsl:text> </xsl:text><b><xsl:value-of select="@name"/></b></option>
   </xsl:template>
 
   <xsl:template match="a:calibration">
     <p>Enter the DAC values, and click 'Enable' to set them.</p>
     <table class="calibrations">
       <tr><th>all DACs of type</th><th>value [DAC units]</th></tr>
-      <tr><td>test pulse</td><td><input type="text" name="pulseApmlitude" value="{@a:pulseAmplitude}" title="Enter a negative integer if test pulse DACs are not to be pulsed." size="4"/></td></tr>
-      <tr><td>threshold</td><td><input type="text" name="thresholdLevel" value="{@a:thresholdLevel}" title="Enter a negative integer if threshold DACs are not to be set." size="4"/></td></tr>
+      <tr><td>test pulse</td><td><input type="text" name="pulseApmlitude" value="{@pulseAmplitude}" title="Enter a negative integer if test pulse DACs are not to be pulsed." size="4"/></td></tr>
+      <tr><td>threshold</td><td><input type="text" name="thresholdLevel" value="{@thresholdLevel}" title="Enter a negative integer if threshold DACs are not to be set." size="4"/></td></tr>
     </table>
   </xsl:template>
 

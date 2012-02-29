@@ -36,17 +36,17 @@ AFEB::teststand::Configuration::~Configuration(){
 }
 
 void AFEB::teststand::Configuration::createCrate() {
-  int crateNumber = utils::stringTo<int>( utils::getSelectedNodeValue( xml_, "//c:crate/@c:number" ) );
+  int crateNumber = utils::stringTo<int>( utils::getSelectedNodeValue( xml_, "//c:crate/@number" ) );
   crate_ = new AFEB::teststand::Crate();
   for ( int slot=1; slot<=AFEB::teststand::Crate::maxModules_; ++slot ){
     stringstream xpath;
-    xpath << "//c:configuration/c:crate/c:module[@c:slot=\"" << slot << "\"]/@c:name";
+    xpath << "//c:configuration/c:crate/c:module[@slot=\"" << slot << "\"]/@name";
     string moduleName = utils::getSelectedNodeValue( xml_, xpath.str() );
     xpath.str("");
-    xpath << "//c:configuration/c:crate/c:module[@c:slot=\"" << slot << "\"]/@c:type";
+    xpath << "//c:configuration/c:crate/c:module[@slot=\"" << slot << "\"]/@type";
     string moduleTypeString = utils::getSelectedNodeValue( xml_, xpath.str() );
     xpath.str("");
-    xpath << "//c:configuration/c:crate/c:module[@c:slot=\"" << slot << "\"]/@c:id";
+    xpath << "//c:configuration/c:crate/c:module[@slot=\"" << slot << "\"]/@id";
     string moduleId = utils::getSelectedNodeValue( xml_, xpath.str() );
     if ( moduleName.size() != 0 && moduleTypeString.size() != 0 ){
 
@@ -101,10 +101,10 @@ void AFEB::teststand::Configuration::createCrate() {
 
 void AFEB::teststand::Configuration::createMeasurements() {
   // Get the 'enabled' flag of the measurements ["yes" or "no"]:
-  vector< pair<string,string> > measurementEnabledFlags = utils::getSelectedNodesValues( xml_, "/c:configuration/c:measurements/c:measurement/@c:enabled" );
+  vector< pair<string,string> > measurementEnabledFlags = utils::getSelectedNodesValues( xml_, "/c:configuration/c:measurements/c:measurement/@enabled" );
 
   // Find the requested (enabled) measurements in the XML
-  vector< pair<string,string> > enabledMeasurementTypes = utils::getSelectedNodesValues( xml_, "/c:configuration/c:measurements/c:measurement[@c:enabled='yes']/@c:type" );
+  vector< pair<string,string> > enabledMeasurementTypes = utils::getSelectedNodesValues( xml_, "/c:configuration/c:measurements/c:measurement[@enabled='yes']/@type" );
   if ( enabledMeasurementTypes.size() == 0 ){
     XCEPT_RAISE( xcept::Exception, "No measurements are selected." );
   }
@@ -113,11 +113,11 @@ void AFEB::teststand::Configuration::createMeasurements() {
   createCrate();
 
   // Find the type of tested device
-  string testedDeviceType   = utils::getSelectedNodeValue( xml_, "/c:configuration/c:testedDevice/@c:type" );
-  int testedDeviceNChannels = utils::stringTo<int>( utils::getSelectedNodeValue( xml_, "/c:configuration/c:testedDevice/@c:nChannels" ) );
+  string testedDeviceType   = utils::getSelectedNodeValue( xml_, "/c:configuration/c:testedDevice/@type" );
+  int testedDeviceNChannels = utils::stringTo<int>( utils::getSelectedNodeValue( xml_, "/c:configuration/c:testedDevice/@nChannels" ) );
 
   // Find the socket number of devices to be tested (i.e., those for which an id is given):
-  vector< pair<string,string> > testedDevices = utils::getSelectedNodesValues( xml_, "/c:configuration/c:inputs/c:testedDevice[@c:id!='']/@c:socket" );
+  vector< pair<string,string> > testedDevices = utils::getSelectedNodesValues( xml_, "/c:configuration/c:inputs/c:testedDevice[@id!='']/@socket" );
   if ( testedDevices.size() == 0 ){
     XCEPT_RAISE( xcept::Exception, "No device ids to be tested are specified." );
   }
@@ -127,7 +127,7 @@ void AFEB::teststand::Configuration::createMeasurements() {
   for ( t = testedDevices.begin(); t != testedDevices.end(); ++t ){
     // Create this device
     stringstream xpath;
-    xpath << "/c:configuration/c:inputs/c:testedDevice[@c:socket='" << t->second << "']/@*";
+    xpath << "/c:configuration/c:inputs/c:testedDevice[@socket='" << t->second << "']/@*";
     vector< pair<string,string> > deviceParameters = utils::getSelectedNodesValues( xml_, xpath.str() );
     TestedDevice* testedDevice = new TestedDevice( testedDeviceType, testedDeviceNChannels, crate_ );
     testedDevice->setParameters( deviceParameters );
@@ -149,10 +149,10 @@ void AFEB::teststand::Configuration::createMeasurements() {
 	if ( measurement == NULL ){
 	  // Create this measurement
 	  xpath.str("");
-	  xpath << "/c:configuration/c:measurements/c:measurement[position()=" << position << "]/@c:name";
+	  xpath << "/c:configuration/c:measurements/c:measurement[position()=" << position << "]/@name";
 	  string name = utils::getSelectedNodeValue( xml_, xpath.str() );
 	  xpath.str("");
-	  xpath << "/c:configuration/c:measurements/c:measurement[position()=" << position << "]/@c:type";
+	  xpath << "/c:configuration/c:measurements/c:measurement[position()=" << position << "]/@type";
 	  string type = utils::getSelectedNodeValue( xml_, xpath.str() );
 	  bool dummyData = ( utils::getSelectedNodesValues( xml_, "//c:dummyData" ).size() > 0 ); 
 	  measurement = new Measurement( position, index++, name, type, resultDir_, dummyData );
@@ -215,23 +215,23 @@ Measurement* AFEB::teststand::Configuration::findMeasurement( const int position
 string AFEB::teststand::Configuration::resultsXML(){
   stringstream ss;
   for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m ){
-    ss << "<a:measurement a:index=\""  << (*m)->getIndex()
-       <<             "\" a:type=\""   << (*m)->getType()
-       <<             "\" a:name=\""   << (*m)->getName()
-       <<             "\" a:status=\"" << (*m)->getStatus() 
+    ss << "<a:measurement index=\""  << (*m)->getIndex()
+       <<             "\" type=\""   << (*m)->getType()
+       <<             "\" name=\""   << (*m)->getName()
+       <<             "\" status=\"" << (*m)->getStatus() 
        <<             "\">" << endl;
     map<TestedDevice*,Results*> results = (*m)->getResults();
     for ( map<TestedDevice*,Results*>::const_iterator r = results.begin(); r != results.end(); ++r ){
-      ss << "<a:device a:id=\"" << r->first->getId() << "\">" << endl
-	 << "<a:file a:name=\"" << r->second->getFileName() << "\"/>" << endl;
+      ss << "<a:device id=\"" << r->first->getId() << "\">" << endl
+	 << "<a:file name=\"" << r->second->getFileName() << "\"/>" << endl;
       // Loop over channels and get fit results
       for ( int iChannel = 0; iChannel < r->first->getNChannels(); ++iChannel ){
-	ss << "<a:channel a:number=\"" <<  iChannel << "\">";
+	ss << "<a:channel number=\"" <<  iChannel << "\">";
 	map<string,pair<double,double> > parameters = r->second->getParameters( iChannel );
 	for ( map<string,pair<double,double> >::const_iterator p = parameters.begin(); p != parameters.end(); ++p ){ 
-	  ss << "<a:parameter a:name=\""  << p->first
-	     <<           "\" a:value=\"" <<   showpos << showpoint << setprecision(6) << p->second.first
-	     <<           "\" a:error=\"" << noshowpos << showpoint << setprecision(6) << p->second.second
+	  ss << "<a:parameter name=\""  << p->first
+	     <<           "\" value=\"" <<   showpos << showpoint << setprecision(6) << p->second.first
+	     <<           "\" error=\"" << noshowpos << showpoint << setprecision(6) << p->second.second
 	     <<           "\"/>" << noshowpos << noshowpoint;
 	}
 	ss << "</a:channel>" << endl;
@@ -240,30 +240,30 @@ string AFEB::teststand::Configuration::resultsXML(){
       // ...threshold,... 
       ss << "<a:statistics>" << endl;
       map<string,double> stat = r->second->getThresholdStats();
-      ss << "<a:parameter a:name=\"threshold [ADC units]\"";
+      ss << "<a:parameter name=\"threshold [ADC units]\"";
       for ( map<string,double>::const_iterator s=stat.begin(); s!=stat.end(); ++s ){
-	ss << " a:" << s->first << "=\"" << noshowpos << showpoint << setprecision(6) << s->second << "\"";
+	ss << " " << s->first << "=\"" << noshowpos << showpoint << setprecision(6) << s->second << "\"";
       }
       ss << "/>" << endl;
       // ...noise,...
       stat = r->second->getNoiseStats();
-      ss << "<a:parameter a:name=\"noise [ADC units]\"";
+      ss << "<a:parameter name=\"noise [ADC units]\"";
       for ( map<string,double>::const_iterator s=stat.begin(); s!=stat.end(); ++s ){
-	ss << " a:" << s->first << "=\"" << noshowpos << showpoint << setprecision(6) << s->second << "\"";
+	ss << " " << s->first << "=\"" << noshowpos << showpoint << setprecision(6) << s->second << "\"";
       }
       ss << "/>" << endl;
       // ...chi^2/ndf,...
       stat = r->second->getChi2NDFStats();
-      ss << "<a:parameter a:name=\"&#x03c7;&#xb2;/ndf\"";
+      ss << "<a:parameter name=\"&#x03c7;&#xb2;/ndf\"";
       for ( map<string,double>::const_iterator s=stat.begin(); s!=stat.end(); ++s ){
-	ss << " a:" << s->first << "=\"" << noshowpos << showpoint << setprecision(6) << s->second << "\"";
+	ss << " " << s->first << "=\"" << noshowpos << showpoint << setprecision(6) << s->second << "\"";
       }
       ss << "/>" << endl;
       // ...and times on the efficiency plateau.
       stat = r->second->getTimeStats();
-      ss << "<a:parameter a:name=\"mean time on plateau [TDC units]\"";
+      ss << "<a:parameter name=\"mean time on plateau [TDC units]\"";
       for ( map<string,double>::const_iterator s=stat.begin(); s!=stat.end(); ++s ){
-	ss << " a:" << s->first << "=\"" << noshowpos << showpoint << setprecision(6) << s->second << "\"";
+	ss << " " << s->first << "=\"" << noshowpos << showpoint << setprecision(6) << s->second << "\"";
       }
       ss << "/>" << endl;      
       ss << "</a:statistics>" << endl;

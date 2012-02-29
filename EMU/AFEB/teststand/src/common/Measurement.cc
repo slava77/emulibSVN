@@ -67,11 +67,11 @@ void AFEB::teststand::Measurement::setPulseParameters( const vector< pair<string
   bsem_.take();
   vector< pair<string,string> >::const_iterator p;
   for ( p = param.begin(); p != param.end(); ++p ){
-    if      ( p->first.compare( "c:amplitudeMin"  ) == 0 ) amplitudeMin_       = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "c:amplitudeMax"  ) == 0 ) amplitudeMax_       = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "c:amplitudeStep" ) == 0 ) amplitudeStep_      = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "c:nPulses"       ) == 0 ) nPulses_            = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "c:capacitor"     ) == 0 ){
+    if      ( p->first.compare( "amplitudeMin"  ) == 0 ) amplitudeMin_       = utils::stringTo<int>( p->second );
+    else if ( p->first.compare( "amplitudeMax"  ) == 0 ) amplitudeMax_       = utils::stringTo<int>( p->second );
+    else if ( p->first.compare( "amplitudeStep" ) == 0 ) amplitudeStep_      = utils::stringTo<int>( p->second );
+    else if ( p->first.compare( "nPulses"       ) == 0 ) nPulses_            = utils::stringTo<int>( p->second );
+    else if ( p->first.compare( "capacitor"     ) == 0 ){
       bool isValidCapacitor = false;
       for ( size_t i=0; i<nCapacitors; ++i ){
 	if ( p->second == capacitors_[i] ){
@@ -95,7 +95,7 @@ void AFEB::teststand::Measurement::setThresholdParameters( const vector< pair<st
   bsem_.take();
   vector< pair<string,string> >::const_iterator p;
   for ( p = param.begin(); p != param.end(); ++p ){
-    if ( p->first.compare( "c:thresholdValue" ) == 0 ) thresholdValue_ = utils::stringTo<int>( p->second );
+    if ( p->first.compare( "thresholdValue" ) == 0 ) thresholdValue_ = utils::stringTo<int>( p->second );
   }
   bsem_.give();
 }
@@ -104,8 +104,8 @@ void AFEB::teststand::Measurement::setTDCParameters( const vector< pair<string,s
   bsem_.take();
   vector< pair<string,string> >::const_iterator p;
   for ( p = param.begin(); p != param.end(); ++p ){
-    if      ( p->first.compare( "c:timeMin" ) == 0 ) tdcTimeMin_ = utils::stringTo<int>( p->second );
-    else if ( p->first.compare( "c:timeMax" ) == 0 ) tdcTimeMax_ = utils::stringTo<int>( p->second );
+    if      ( p->first.compare( "timeMin" ) == 0 ) tdcTimeMin_ = utils::stringTo<int>( p->second );
+    else if ( p->first.compare( "timeMax" ) == 0 ) tdcTimeMax_ = utils::stringTo<int>( p->second );
   }
   bsem_.give();
 }
