@@ -10,6 +10,9 @@ namespace AFEB { namespace teststand {
 
     class LeCroy3377 : public Module
     {
+
+      // See manual at http://www-esd.fnal.gov/esd/catalog/main/lcrynim/3377man.pdf
+
     public:
       enum TdcMode_t {
 	M0,    //Mode0 - Common Stop  , Single Word  ( Default )

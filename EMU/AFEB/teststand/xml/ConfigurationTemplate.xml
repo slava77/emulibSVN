@@ -72,6 +72,10 @@
       <c:attr name="capacitor" value="internal" description="Inject pulses through the device's internal capacitor."/>
       <c:attr name="capacitor" value="external" description="Inject pulses through the external capacitor."/>
     </c:tag>
+    <c:tag name="c:TDC">
+      <c:attr name="timeMin" units="ns" description="The minimum TDC time recorded [ns]. TDC resolution is 0.5 ns, thus 10-bit data words allow 511 ns maximum value."/>
+      <c:attr name="timeMax" units="ns" description="The minimum TDC time recorded [ns]. TDC resolution is 0.5 ns, thus 10-bit data words allow 511 ns maximum value."/>
+    </c:tag>
   </c:metadata>
 
   <c:testedDevice type="AD16" nChannels="16"/>

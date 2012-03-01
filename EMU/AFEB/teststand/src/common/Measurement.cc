@@ -213,6 +213,13 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
   // END test pulses
 
   // Set up TDC:
+  // Mode1 = M1    : Common Start , Single Word
+  // Shift = 0     : 0.5 ns resolution
+  // Hit   = 2     : max 2 hits per channel allowed
+  // Edge  = 0     : only leading edge recorded
+  // Mpi   = 0     : no Measure Pause Interval
+  // TimeOut = 550 : time out at 550 ns (in multiples of 50ns, should be slightly longer than the enforced time out delay)
+  // TimeEnf = 511 : time out enforced at 511 ns (10-bit data for single word, leading edge only --> max 1024 * 0.5 ns = 512 ns)
   tdc->Set( LeCroy3377::M1, 0, 2, 0, 0, 550, 511 ); // ( Mode, Shift, Hit, Edge, Mpi, TimeOut, TimeEnf )
 
   // Set up threshold-setting module:
