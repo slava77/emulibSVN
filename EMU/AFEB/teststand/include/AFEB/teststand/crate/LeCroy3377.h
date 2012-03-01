@@ -22,7 +22,7 @@ namespace AFEB { namespace teststand {
       };
       enum TdcRegister_t { R0 , R1 , R2 , R3 , R4 , R5 };
       static const int nTdcChannels = 16 * 2;
-      static const int nShortsData = 16 * 4; // TODO: why not 16 * 2 = 32 ?
+      static const int nShortsData = 16 * 4; // TODO: why not 16 * 2 = 32 ? Because we allow 2 hits per channel?
       LeCroy3377( const string type );
       bool Set( TdcMode_t mode, short shift, short hit,
 		short edge, int mpi, int time_out, int time_enforced );
