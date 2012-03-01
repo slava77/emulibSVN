@@ -1,4 +1,4 @@
-<meta:data xmlns:meta="http://cms.cern.ch/emu/afeb/teststand/analyzedresultmetadata">
+<meta:data xmlns:meta="http://cms.cern.ch/emu/afeb/teststand/metadata">
   <meta:tag name="ad:device">
     <meta:attr name="type" description="Type of the measured device."/>
     <meta:attr name="id" description="Unique id of the measured device."/>

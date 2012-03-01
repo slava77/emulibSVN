@@ -29,7 +29,6 @@ AFEB::teststand::Analysis::Analysis( const string& resultsDir )
   calculateGain();
   calculateInternalCapacitance();
   cout << analyzedDevices_ << endl;
-  saveResults();
 }
 
 AFEB::teststand::Analysis::~Analysis(){

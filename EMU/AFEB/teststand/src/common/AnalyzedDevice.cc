@@ -192,7 +192,7 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
        <<                  "\" capacitor=\""               << (*m)->getInjectionCapacitorString()
        <<                  "\" nPulses=\""                 << (*m)->getNPulses()
        <<                  "\" setThreshold.ADC=\""        << (*m)->getSetThreshold()
-       <<                  "\" setThresholdVoltage.mV=\""  << thresholdDAC_->mV_from_DACUnit( (*m)->getSetThreshold() ).first
+       <<                  "\" setThresholdVoltage=\""  << thresholdDAC_->mV_from_DACUnit( (*m)->getSetThreshold() ).first
        <<   "\">" << endl;
 
     // Open the root file of this measurement's results...
@@ -223,13 +223,13 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
       
       // Loop over the channels
       for ( int iChannel=0; iChannel<nChannels_; ++iChannel ){
-	ss << "    <ad:channel number=\""       << noshowpos << setw(2) << iChannel
-	   <<              "\" threshold.fC=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed
-	   <<                                   chargeFromVoltage( pulseDAC_->mV_from_DACUnit( thresholdHistogram->GetBinContent( iChannel+1 ) ).first )
-	   <<              "\" noise.fC=\""
-	   <<                                   chargeFromVoltage( pulseDAC_->mV_from_DACUnit( noiseHistogram    ->GetBinContent( iChannel+1 ) ).first )
+	ss << "    <ad:channel number=\""    << noshowpos << setw(2) << iChannel
+	   <<              "\" threshold=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed
+	   <<                                chargeFromVoltage( pulseDAC_->mV_from_DACUnit( thresholdHistogram->GetBinContent( iChannel+1 ) ).first )
+	   <<              "\" noise=\""
+	   <<                                chargeFromVoltage( pulseDAC_->mV_from_DACUnit( noiseHistogram    ->GetBinContent( iChannel+1 ) ).first )
 	   <<              "\" chi2ndf=\""
-	   <<                                                                                  chi2ndfHistogram  ->GetBinContent( iChannel+1 )
+	   <<                                                                               chi2ndfHistogram  ->GetBinContent( iChannel+1 )
 	   <<     "\"/>" << endl;
       } // for ( int iChannel=0; iChannel<d->getNChannels(); ++iChannel )
       
@@ -281,8 +281,8 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
 	TH1D *timesVsADC = timesHistogram->ProjectionX( "tp", "e" ); // Keep the original errors, which are actually the RMS in this case.
 	// Get the mean and rms of times at the specified input charges:
 	for ( size_t iCharge=0; iCharge<sizeof(nominalInputCharges_)/sizeof(double); ++iCharge ){
-	  meanTimes[iCharge][iChannel] = timesVsADC->GetBinContent( bins[iCharge] );
-	  rmsTimes [iCharge][iChannel] = timesVsADC->GetBinError  ( bins[iCharge] );
+	  meanTimes[iCharge][iChannel] = (*m)->nanosecondsFromTDCUnits( timesVsADC->GetBinContent( bins[iCharge] ) );
+	  rmsTimes [iCharge][iChannel] = (*m)->nanosecondsFromTDCUnits( timesVsADC->GetBinError  ( bins[iCharge] ) );
 	}
 	// Get the min and max of mean and rms of times in the specified input charge range: 
 	double minMean = 999999., maxMean = -999999.;
@@ -293,8 +293,8 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
 	  if ( timesVsADC->GetBinError  ( iBin ) < minRMS  ) minRMS  = timesVsADC->GetBinError  ( iBin );
 	  if ( timesVsADC->GetBinError  ( iBin ) > maxRMS  ) maxRMS  = timesVsADC->GetBinError  ( iBin );
 	}
-	meanSpan[iChannel] = maxMean - minMean;
-	rmsSpan [iChannel] = maxRMS  - minRMS;
+	meanSpan[iChannel] = (*m)->nanosecondsFromTDCUnits( maxMean - minMean );
+	rmsSpan [iChannel] = (*m)->nanosecondsFromTDCUnits( maxRMS  - minRMS  );
 	delete timesVsADC;
       } // for ( int iChannel=0; iChannel<nChannels_; ++iChannel )
 
@@ -303,31 +303,31 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
 
       // Now write the values to XML;
       for ( size_t iCharge=0; iCharge<sizeof(nominalInputCharges_)/sizeof(double); ++iCharge ){
-	ss << "    <ad:times nominalInputCharge.fC=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed << nominalInputCharges_[iCharge]
-	   <<            "\" realInputCharge.fC=\""    << showpos << showpoint << setw(8) << setprecision(4) << fixed << realCharges[iCharge]
+	ss << "    <ad:times nominalInputCharge=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed << nominalInputCharges_[iCharge]
+	   <<            "\" realInputCharge=\""    << showpos << showpoint << setw(8) << setprecision(4) << fixed << realCharges[iCharge]
 	   <<    "\">" << endl;
 	for ( int iChannel=0; iChannel<nChannels_; ++iChannel ){
 	  ss << "      <ad:channel number=\""  << noshowpos << setw(2) << iChannel
-	     <<                "\" mean.ns=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed << meanTimes[iCharge][iChannel]
-	     <<                "\" rms.ns=\""  << showpos << showpoint << setw(8) << setprecision(4) << fixed << rmsTimes [iCharge][iChannel]
+	     <<                "\" mean=\""    << showpos << showpoint << setw(8) << setprecision(4) << fixed << meanTimes[iCharge][iChannel]
+	     <<                "\" rms=\""     << showpos << showpoint << setw(8) << setprecision(4) << fixed << rmsTimes [iCharge][iChannel]
 	     <<       "\"/>" << endl;
 	}
-	ss << "      " << statisticsToXML( "mean.ns", meanTimes[iCharge] ) << endl;
-	ss << "      " << statisticsToXML( "rms.ns" , rmsTimes[iCharge]  ) << endl;
+	ss << "      " << statisticsToXML( "mean", meanTimes[iCharge] ) << endl;
+	ss << "      " << statisticsToXML( "rms" , rmsTimes[iCharge]  ) << endl;
 	ss << "    </ad:times>" << endl;
       } //
 
-      ss << "    <ad:slew fromInputCharge.fC=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed << inputChargeRangeStart
-	 <<           "\" toInputCharge.fC=\""   << showpos << showpoint << setw(8) << setprecision(4) << fixed << inputChargeRangeEnd
+      ss << "    <ad:slew fromInputCharge=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed << inputChargeRangeStart
+	 <<           "\" toInputCharge=\""   << showpos << showpoint << setw(8) << setprecision(4) << fixed << inputChargeRangeEnd
 	 <<    "\">" << endl;
       for ( int iChannel=0; iChannel<nChannels_; ++iChannel ){
-	ss << "      <ad:channel number=\""          << noshowpos << setw(2) << iChannel
-	   <<                "\" spanOfMeans.ns=\""  << showpos << showpoint << setw(8) << setprecision(4) << fixed << meanSpan[iChannel]
-	   <<                "\" spanOfRMSs.ns=\""   << showpos << showpoint << setw(8) << setprecision(4) << fixed << rmsSpan[iChannel]
+	ss << "      <ad:channel number=\""       << noshowpos << setw(2) << iChannel
+	   <<                "\" spanOfMeans=\""  << showpos << showpoint << setw(8) << setprecision(4) << fixed << meanSpan[iChannel]
+	   <<                "\" spanOfRMSs=\""   << showpos << showpoint << setw(8) << setprecision(4) << fixed << rmsSpan[iChannel]
 	   <<       "\"/>" << endl;
       }
-      ss << "      " << statisticsToXML( "spanOfMeans.ns", meanSpan ) << endl;
-      ss << "      " << statisticsToXML( "spanOfRMSs.ns" , rmsSpan  ) << endl;
+      ss << "      " << statisticsToXML( "spanOfMeans", meanSpan ) << endl;
+      ss << "      " << statisticsToXML( "spanOfRMSs" , rmsSpan  ) << endl;
       ss << "    </ad:slew>" << endl;
 
 
@@ -375,36 +375,36 @@ void AFEB::teststand::AnalyzedDevice::saveResults( const string& analyzedResults
      <<         "\" id=\""           << id_
      <<         "\" analysisDate=\"" << utils::getDateTime()
      << "\">" << endl
-     << "  <ad:adaptor name=\""                    << adaptorName_
-     <<            "\" socket=\""                  << socket_
-     <<            "\" correctionCoefficient=\""   << noshowpos << showpoint << setprecision(4) << setw(8) << fixed << correctionCoefficient_
-     <<            "\" injectionCapacitance.fC=\"" << noshowpos << showpoint << setprecision(4) << setw(8) << fixed << injectionCapacitance_
-     <<            "\" pulseDivisionFactor=\""     << noshowpos << showpoint << setprecision(4) << setw(8) << fixed << pulseDivisionFactor_
+     << "  <ad:adaptor name=\""                  << adaptorName_
+     <<            "\" socket=\""                << socket_
+     <<            "\" correctionCoefficient=\"" << noshowpos << showpoint << setprecision(4) << setw(8) << fixed << correctionCoefficient_
+     <<            "\" injectionCapacitance=\""  << noshowpos << showpoint << setprecision(4) << setw(8) << fixed << injectionCapacitance_
+     <<            "\" pulseDivisionFactor=\""   << noshowpos << showpoint << setprecision(4) << setw(8) << fixed << pulseDivisionFactor_
      <<   "\"/>" << endl;
 
   ss << measurementsToXML();
 
   size_t iChannel = 0;
   for ( vector<AnalyzedChannel>::const_iterator c = channels_.begin(); c != channels_.end(); ++c ){
-    ss << "  <ad:channel number=\""          << noshowpos << noshowpoint << setw(2) << iChannel++
-       <<            "\" offset.mV=\""       << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->offset_
-       <<            "\" gain.mV.fC-1=\""    << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->gain_
-       <<            "\" C_int.pF=\""        << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->internalCapacitance_
-       <<            "\" averageNoise.fC=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->noise_
+    ss << "  <ad:channel number=\""       << noshowpos << noshowpoint << setw(2) << iChannel++
+       <<            "\" offset=\""       << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->offset_
+       <<            "\" gain=\""         << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->gain_
+       <<            "\" C_int=\""        << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->internalCapacitance_
+       <<            "\" averageNoise=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->noise_
        <<   "\"/>" << endl;
   }
   
-  ss << "  " << statisticsToXML( "noise.fC",      getNoises()               ) << endl;
-  ss << "  " << statisticsToXML( "gain.mV.fC-1 ", getGains()                ) << endl;
-  ss << "  " << statisticsToXML( "offset.mV",     getOffsets()              ) << endl;
-  ss << "  " << statisticsToXML( "C_int.pF",      getInternalCapacitances() ) << endl;
+  ss << "  " << statisticsToXML( "noise",  getNoises()               ) << endl;
+  ss << "  " << statisticsToXML( "gain ",  getGains()                ) << endl;
+  ss << "  " << statisticsToXML( "offset", getOffsets()              ) << endl;
+  ss << "  " << statisticsToXML( "C_int",  getInternalCapacitances() ) << endl;
   
-  ss << "  <ad:averageSetThreshold value.mV=\"" 
+  ss << "  <ad:averageSetThreshold value=\"" 
      << utils::statistics( getOffsets() )["mean"] + utils::statistics( getGains() )["mean"] * 20
-     <<                        "\" atCharge.fC=\"20\"/>" << endl;
+     <<                        "\" atCharge=\"20\"/>" << endl;
 
-  ss << "  <ad:maxMeasuredThreshold value.fC=\"" << getMaxMeasuredThreshold( 0 )
-     <<                         "\" atSetThreshold.mV=\"0\"/>" << endl;
+  ss << "  <ad:maxMeasuredThreshold value=\"" << getMaxMeasuredThreshold( 0 )
+     <<                         "\" atSetThreshold=\"0\"/>" << endl;
 
   ss << "</ad:device>" << endl;
 

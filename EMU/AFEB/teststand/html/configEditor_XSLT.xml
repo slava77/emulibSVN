@@ -2,7 +2,8 @@
 
 <xsl:transform 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-    xmlns:c="http://cms.cern.ch/emu/afeb/teststand/configuration" 
+    xmlns:c="http://cms.cern.ch/emu/afeb/teststand/configuration"
+    xmlns:meta="http://cms.cern.ch/emu/afeb/teststand/metadata"
     version="1.0">
 
   <xsl:output method="html" indent="yes"/>
@@ -64,12 +65,26 @@
     <xsl:param name="TAG"/>
     <xsl:param name="ATTR"/>
     <xsl:param name="SELVAL"/>
-    <xsl:for-each select="//c:metadata/c:tag[@name=$TAG]/c:attr[@name=$ATTR]">
+    <xsl:for-each select="//meta:data/meta:tag[@name=$TAG]/meta:attr[@name=$ATTR]">
       <option title="{@description}" value="{@value}">
 	<xsl:if test="@value=$SELVAL"><xsl:attribute name="selected">selected</xsl:attribute></xsl:if>
 	<xsl:value-of select="@value"/>
       </option>
     </xsl:for-each>
+  </xsl:template>
+
+  <!-- generate title from metadata -->
+  <xsl:template name="title">
+    <xsl:param name="TAG"/>
+    <xsl:param name="ATTR"/>
+    <xsl:value-of select="//meta:data/meta:tag[@name=$TAG]/meta:attr[@name=$ATTR]/@description"/>
+  </xsl:template>
+
+  <!-- generate units from metadata -->
+  <xsl:template name="units">
+    <xsl:param name="TAG"/>
+    <xsl:param name="ATTR"/>
+    <xsl:value-of select="//meta:data/meta:tag[@name=$TAG]/meta:attr[@name=$ATTR]/@units"/>
   </xsl:template>
 
   <xsl:template match="c:crate">
@@ -418,10 +433,12 @@
 			  <xsl:if test="$CONFIGMODE='control'">
 			  <!-- for-each: just to set the current node for the templates called by name: -->
 			  <xsl:for-each select="c:PulseGenerator/@amplitudeMin">
-			    <input type="text" title="The lowest pulse amplitude." size="3">
+			    <input type="text" size="3">
 			      <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
 			      <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+			      <xsl:attribute name="title"><xsl:call-template name="title"><xsl:with-param name="TAG" select="name(..)"/><xsl:with-param name="ATTR" select="name()"/></xsl:call-template></xsl:attribute>
 			    </input>
+			    <xsl:call-template name="units"><xsl:with-param name="TAG" select="name(..)"/><xsl:with-param name="ATTR" select="name()"/></xsl:call-template>
 			  </xsl:for-each>
 			  </xsl:if>
 			  <xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="c:PulseGenerator/@amplitudeMin"/></xsl:if>	
@@ -430,10 +447,12 @@
 			  <xsl:if test="$CONFIGMODE='control'">
 			  <!-- for-each: just to set the current node for the templates called by name: -->
 			  <xsl:for-each select="c:PulseGenerator/@amplitudeMax">
-			    <input type="text" title="The highest pulse amplitude." size="3">
+			    <input type="text" size="3">
 			      <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
 			      <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+			      <xsl:attribute name="title"><xsl:call-template name="title"><xsl:with-param name="TAG" select="name(..)"/><xsl:with-param name="ATTR" select="name()"/></xsl:call-template></xsl:attribute>
 			    </input>
+			    <xsl:call-template name="units"><xsl:with-param name="TAG" select="name(..)"/><xsl:with-param name="ATTR" select="name()"/></xsl:call-template>
 			  </xsl:for-each>
 			  </xsl:if>
 			  <xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="c:PulseGenerator/@amplitudeMax"/></xsl:if>	
@@ -442,10 +461,12 @@
 			  <xsl:if test="$CONFIGMODE='control'">
 			  <!-- for-each: just to set the current node for the templates called by name: -->
 			  <xsl:for-each select="c:PulseGenerator/@amplitudeStep">
-			    <input type="text" title="The pulse amplitude increment." size="3">
+			    <input type="text" size="3">
 			      <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
 			      <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+			      <xsl:attribute name="title"><xsl:call-template name="title"><xsl:with-param name="TAG" select="name(..)"/><xsl:with-param name="ATTR" select="name()"/></xsl:call-template></xsl:attribute>
 			    </input>
+			    <xsl:call-template name="units"><xsl:with-param name="TAG" select="name(..)"/><xsl:with-param name="ATTR" select="name()"/></xsl:call-template>
 			  </xsl:for-each>
 			  </xsl:if>
 			  <xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="c:PulseGenerator/@amplitudeStep"/></xsl:if>	
@@ -454,10 +475,12 @@
 			  <xsl:if test="$CONFIGMODE='control'">
 			  <!-- for-each: just to set the current node for the templates called by name: -->
 			  <xsl:for-each select="c:PulseGenerator/@nPulses">
-			    <input type="text" title="The number of pulses at each amplitude." size="4">
+			    <input type="text" size="4">
 			      <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
 			      <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+			      <xsl:attribute name="title"><xsl:call-template name="title"><xsl:with-param name="TAG" select="name(..)"/><xsl:with-param name="ATTR" select="name()"/></xsl:call-template></xsl:attribute>
 			    </input>
+			    <xsl:call-template name="units"><xsl:with-param name="TAG" select="name(..)"/><xsl:with-param name="ATTR" select="name()"/></xsl:call-template>
 			  </xsl:for-each>
 			  </xsl:if>
 			  <xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="c:PulseGenerator/@nPulses"/></xsl:if>	
@@ -477,10 +500,12 @@
 			  <xsl:if test="$CONFIGMODE='control'">
 			  <!-- for-each: just to set the current node for the templates called by name: -->
 			  <xsl:for-each select="c:SignalConverter/@thresholdValue">
-			    <input type="text" title="The threshold value." size="4">
+			    <input type="text" size="4">
 			      <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
 			      <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+			      <xsl:attribute name="title"><xsl:call-template name="title"><xsl:with-param name="TAG" select="name(..)"/><xsl:with-param name="ATTR" select="name()"/></xsl:call-template></xsl:attribute>
 			    </input>
+			    <xsl:call-template name="units"><xsl:with-param name="TAG" select="name(..)"/><xsl:with-param name="ATTR" select="name()"/></xsl:call-template>
 			  </xsl:for-each>
 			  </xsl:if>
 			  <xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="c:SignalConverter/@thresholdValue"/></xsl:if>	
@@ -500,10 +525,12 @@
 			  <xsl:if test="$CONFIGMODE='control'">
 			  <!-- for-each: just to set the current node for the templates called by name: -->
 			  <xsl:for-each select="c:TDC/@timeMin">
-			    <input type="text" title="The minimum TDC time recoreded." size="4">
+			    <input type="text" size="4">
 			      <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
 			      <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+			      <xsl:attribute name="title"><xsl:call-template name="title"><xsl:with-param name="TAG" select="name(..)"/><xsl:with-param name="ATTR" select="name()"/></xsl:call-template></xsl:attribute>
 			    </input>
+			    <xsl:call-template name="units"><xsl:with-param name="TAG" select="name(..)"/><xsl:with-param name="ATTR" select="name()"/></xsl:call-template>
 			  </xsl:for-each>
 			  </xsl:if>
 			  <xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="c:TDC/@timeMin"/></xsl:if>	
@@ -512,10 +539,12 @@
 			  <xsl:if test="$CONFIGMODE='control'">
 			  <!-- for-each: just to set the current node for the templates called by name: -->
 			  <xsl:for-each select="c:TDC/@timeMax">
-			    <input type="text" title="The maximum TDC time recoreded." size="4">
+			    <input type="text" size="4">
 			      <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
 			      <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+			      <xsl:attribute name="title"><xsl:call-template name="title"><xsl:with-param name="TAG" select="name(..)"/><xsl:with-param name="ATTR" select="name()"/></xsl:call-template></xsl:attribute>
 			    </input>
+			    <xsl:call-template name="units"><xsl:with-param name="TAG" select="name(..)"/><xsl:with-param name="ATTR" select="name()"/></xsl:call-template>
 			  </xsl:for-each>
 			  </xsl:if>
 			  <xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="c:TDC/@timeMax"/></xsl:if>	

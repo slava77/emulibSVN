@@ -57,6 +57,7 @@ namespace AFEB { namespace teststand {
       int getTDCTimeMax() const { return tdcTimeMax_; }
       Status_t getStatus() const { return status_; }
       string getStatusString() const { return statusString_[status_]; }
+      double nanosecondsFromTDCUnits( const double tdcUnits ) const { return tdcUnits * tdcResolution_; }
       bool execute();
       void abort(){ bsem_.take(); isToKeepRunning_ = false; bsem_.give(); }
       static Type_t getType      ( const string& typeString );
@@ -89,6 +90,8 @@ namespace AFEB { namespace teststand {
 
       int tdcTimeMin_;
       int tdcTimeMax_;
+
+      const double tdcResolution_;	///< [ns] TDC will be set to this resolution.
 
       bool countVsDAQ();
       // bool countVsTime(); // Will not be implemented, being essentially the same as countVsDAQ with only the parameters different.

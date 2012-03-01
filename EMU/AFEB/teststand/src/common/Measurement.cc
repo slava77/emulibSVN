@@ -44,7 +44,8 @@ AFEB::teststand::Measurement::Measurement( const int position, const int index, 
   status_( AFEB::teststand::Measurement::waiting ),
   resultDir_( resultDir ),
   generateDummyData_( generateDummyData ),
-  isToKeepRunning_( true )
+  isToKeepRunning_( true ),
+  tdcResolution_( 0.5 ) // [ns] Will set TDC to this resolution. It can be hard-coded as it's never changed.
 {
   bsem_.give();
 }

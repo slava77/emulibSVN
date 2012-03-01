@@ -593,7 +593,7 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   gPad->SetRightMargin( 0.10 );
   for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
     // Profile hist needs projecting:
-    TH1D *tp = timeVsAmplitude_.at( iChannel )->ProjectionX( "t", "e" ); // keep the original errors
+    TH1D *tp = timeVsAmplitude_.at( iChannel )->ProjectionX( "t", "" );
     // Create a copy so that we can delete the original projection, just to avoid any possible interference:
     TH1D t( *tp );
     // Delete original projection:

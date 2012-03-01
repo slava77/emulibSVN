@@ -1,82 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <c:configuration xmlns:c="http://cms.cern.ch/emu/afeb/teststand/configuration" name="AFEB_Example" dateTime="2011-04-29 12:00:00">
 
-  <c:metadata>
-    <c:tag name="c:testedDevice">
-      <c:attr name="type" value="AD16" description="16-channel pre-amp, shaper and discriminator board"/>
-      <c:attr name="type" value="CMP16" description="16-channel pre-amp, shaper and discriminator chip"/>
-      <c:attr name="nChannels" value="16" description="Number of channels."/>
-      <c:attr name="tdcSlot" value="1" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <c:attr name="tdcSlot" value="2" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <c:attr name="tdcSlot" value="3" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <c:attr name="tdcSlot" value="4" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <c:attr name="tdcSlot" value="5" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <c:attr name="tdcSlot" value="6" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <c:attr name="tdcSlot" value="7" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <c:attr name="tdcSlot" value="8" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <c:attr name="tdcSlot" value="9" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <c:attr name="tdcSocket" value="1" description="The TDC's upper input socket (channels 1-16)."/>
-      <c:attr name="tdcSocket" value="2" description="The TDC's lower input socket (channels 17-32)."/>
-      <c:attr name="signalConverterSlot" value="1" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <c:attr name="signalConverterSlot" value="2" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <c:attr name="signalConverterSlot" value="3" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <c:attr name="signalConverterSlot" value="4" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <c:attr name="signalConverterSlot" value="5" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <c:attr name="signalConverterSlot" value="6" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <c:attr name="signalConverterSlot" value="7" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <c:attr name="signalConverterSlot" value="8" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <c:attr name="signalConverterSlot" value="9" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <c:attr name="signalConverterSocket" value="1" description="The signal converter's / threshold setter's upper input socket."/>
-      <c:attr name="signalConverterSocket" value="2" description="The signal converter's / threshold setter's lower input socket."/>
-      <c:attr name="pulseGeneratorSlot" value="1" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <c:attr name="pulseGeneratorSlot" value="2" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <c:attr name="pulseGeneratorSlot" value="3" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <c:attr name="pulseGeneratorSlot" value="4" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <c:attr name="pulseGeneratorSlot" value="5" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <c:attr name="pulseGeneratorSlot" value="6" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <c:attr name="pulseGeneratorSlot" value="7" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <c:attr name="pulseGeneratorSlot" value="8" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <c:attr name="pulseGeneratorSlot" value="9" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <c:attr name="pulseGeneratorSocket" value="1" description="The pulse generator's upper output socket for common external pulses."/>
-      <c:attr name="pulseGeneratorSocket" value="2" description="The pulse generator's lower output socket for common external pulses."/>
-    </c:tag>
-    <c:tag name="c:crate">
-      <c:attr name="number" value="1" description="The crate number to be set on the crate controller."/>
-      <c:attr name="number" value="2" description="The crate number to be set on the crate controller."/>
-      <c:attr name="number" value="3" description="The crate number to be set on the crate controller."/>
-      <c:attr name="number" value="4" description="The crate number to be set on the crate controller."/>
-    </c:tag>
-    <c:tag name="c:module">
-      <c:attr name="name" value="LeCroy3377" description="LeCroy Model 3377 32-channel CAMAC TDC"/>
-      <c:attr name="name" value="LE32" description="CAMAC 32-channel Converter and 2-channel Pulse and Threashold Generator"/>
-      <c:attr name="name" value="Jorway73A" description="SCSI Bus CAMAC Crate Controller, vendor: JORWAY model: 73A"/>
-      <c:attr name="type" value="TDC" description="Time-to-Digital Converter"/>
-      <c:attr name="type" value="SignalConverter" description="LVDS-to-ECL Signal Converter, Threshold Generator and Pulse Generator to the device's internal capacitor."/>
-      <c:attr name="type" value="PulseGenerator" description="Adjustable height pulse generator to external capacitor."/>
-      <c:attr name="type" value="CrateController" description="Crate controller."/>
-    </c:tag>
-    <c:tag name="c:inputs">
-      <c:attr name="adaptor" value="10AD16A" description="10-socket adapter for AD16 boards, see 'Adaptors' table for details."/>
-      <c:attr name="adaptor" value="2AD16A" description="2-socket adapter for AD16 boards,  see 'Adaptors' table for details."/>
-      <c:attr name="adaptor" value="2CMP16A" description="2-socket adapter for CMP16 chips,  see 'Adaptors' table for details."/>
-    </c:tag>
-    <c:tag name="c:measurement">
-      <c:attr name="type" value="count_vs_dac" description="Efficiency vs pulse amplitude"/>
-      <c:attr name="type" value="time_vs_dac" description="Time vs. pulse amplitude"/>
-      <c:attr name="enabled" value="yes" description="Perform this measurement."/>
-      <c:attr name="enabled" value="no" description="Skip this measurement."/>
-      <c:attr name="" value="" description=""/>
-      <c:attr name="" value="" description=""/>
-    </c:tag>
-    <c:tag name="c:PulseGenerator">
-      <c:attr name="capacitor" value="internal" description="Inject pulses through the device's internal capacitor."/>
-      <c:attr name="capacitor" value="external" description="Inject pulses through the external capacitor."/>
-    </c:tag>
-    <c:tag name="c:TDC">
-      <c:attr name="timeMin" units="ns" description="The minimum TDC time recorded [ns]. TDC resolution is 0.5 ns, thus 10-bit data words allow 511 ns maximum value."/>
-      <c:attr name="timeMax" units="ns" description="The minimum TDC time recorded [ns]. TDC resolution is 0.5 ns, thus 10-bit data words allow 511 ns maximum value."/>
-    </c:tag>
-  </c:metadata>
+  <meta:data xmlns:meta="http://cms.cern.ch/emu/afeb/teststand/metadata">
+    <meta:tag name="c:testedDevice">
+      <meta:attr name="type" value="AD16" description="16-channel pre-amp, shaper and discriminator board"/>
+      <meta:attr name="type" value="CMP16" description="16-channel pre-amp, shaper and discriminator chip"/>
+      <meta:attr name="nChannels" value="16" description="Number of channels."/>
+      <meta:attr name="tdcSlot" value="1" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="2" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="3" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="4" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="5" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="6" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="7" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="8" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="9" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSocket" value="1" description="The TDC's upper input socket (channels 1-16)."/>
+      <meta:attr name="tdcSocket" value="2" description="The TDC's lower input socket (channels 17-32)."/>
+      <meta:attr name="signalConverterSlot" value="1" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="2" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="3" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="4" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="5" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="6" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="7" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="8" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="9" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSocket" value="1" description="The signal converter's / threshold setter's upper input socket."/>
+      <meta:attr name="signalConverterSocket" value="2" description="The signal converter's / threshold setter's lower input socket."/>
+      <meta:attr name="pulseGeneratorSlot" value="1" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="2" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="3" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="4" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="5" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="6" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="7" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="8" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="9" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSocket" value="1" description="The pulse generator's upper output socket for common external pulses."/>
+      <meta:attr name="pulseGeneratorSocket" value="2" description="The pulse generator's lower output socket for common external pulses."/>
+    </meta:tag>
+    <meta:tag name="c:crate">
+      <meta:attr name="number" value="1" description="The crate number to be set on the crate controller."/>
+      <meta:attr name="number" value="2" description="The crate number to be set on the crate controller."/>
+      <meta:attr name="number" value="3" description="The crate number to be set on the crate controller."/>
+      <meta:attr name="number" value="4" description="The crate number to be set on the crate controller."/>
+    </meta:tag>
+    <meta:tag name="c:module">
+      <meta:attr name="name" value="LeCroy3377" description="LeCroy Model 3377 32-channel CAMAC TDC"/>
+      <meta:attr name="name" value="LE32" description="CAMAC 32-channel Converter and 2-channel Pulse and Threashold Generator"/>
+      <meta:attr name="name" value="Jorway73A" description="SCSI Bus CAMAC Crate Controller, vendor: JORWAY model: 73A"/>
+      <meta:attr name="type" value="TDC" description="Time-to-Digital Converter"/>
+      <meta:attr name="type" value="SignalConverter" description="LVDS-to-ECL Signal Converter, Threshold Generator and Pulse Generator to the device's internal capacitor."/>
+      <meta:attr name="type" value="PulseGenerator" description="Adjustable height pulse generator to external capacitor."/>
+      <meta:attr name="type" value="CrateController" description="Crate controller."/>
+    </meta:tag>
+    <meta:tag name="c:inputs">
+      <meta:attr name="adaptor" value="10AD16A" description="10-socket adapter for AD16 boards, see 'Adaptors' table for details."/>
+      <meta:attr name="adaptor" value="2AD16A" description="2-socket adapter for AD16 boards,  see 'Adaptors' table for details."/>
+      <meta:attr name="adaptor" value="2CMP16A" description="2-socket adapter for CMP16 chips,  see 'Adaptors' table for details."/>
+    </meta:tag>
+    <meta:tag name="c:measurement">
+      <meta:attr name="type" value="count_vs_dac" description="Efficiency vs pulse amplitude"/>
+      <meta:attr name="type" value="time_vs_dac" description="Time vs. pulse amplitude"/>
+      <meta:attr name="enabled" value="yes" description="Perform this measurement."/>
+      <meta:attr name="enabled" value="no" description="Skip this measurement."/>
+      <meta:attr name="" value="" description=""/>
+      <meta:attr name="" value="" description=""/>
+    </meta:tag>
+    <meta:tag name="c:PulseGenerator">
+      <meta:attr name="capacitor" value="internal" description="Inject pulses through the device's internal capacitor."/>
+      <meta:attr name="capacitor" value="external" description="Inject pulses through the external capacitor."/>
+      <meta:attr name="amplitudeMin" units="ADC" description="The lowest pulse amplitude in ADC units."/>
+      <meta:attr name="amplitudeMax" units="ADC" description="The highest pulse amplitude in ADC units."/>
+      <meta:attr name="amplitudeStep" units="ADC" description="The pulse amplitude increment in ADC units."/>
+      <meta:attr name="nPulses" description="The number of pulses at each amplitude."/>
+    </meta:tag>
+    <meta:tag name="c:SignalConverter">
+      <meta:attr name="thresholdValue" units="ADC" description="The device's threshold is to be set to this value expressed in ADC units."/>
+    </meta:tag>
+    <meta:tag name="c:">
+      <meta:attr name="" units="" description=""/>
+    </meta:tag>
+    <meta:tag name="c:TDC">
+      <meta:attr name="timeMin" units="TDC" description="The minimum TDC time recorded in TDC units. TDC resolution is 0.5 ns, thus the maximum allowed value of 1023 (10-bit data words) corresponds to 511 ns."/>
+      <meta:attr name="timeMax" units="TDC" description="The maximum TDC time recorded in TDC units. TDC resolution is 0.5 ns, thus the maximum allowed value of 1023 (10-bit data words) corresponds to 511 ns."/>
+    </meta:tag>
+  </meta:data>
 
   <c:testedDevice type="AD16" nChannels="16"/>
 
