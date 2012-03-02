@@ -72,7 +72,7 @@ namespace AFEB { namespace teststand {
       static const char* const statusString_[nStatuses];
       static const char* const capacitorString_[nCapacitors];
       int position_; ///< The position of the corresponding c:condition element in the configuration XML.
-      int index_; ///< The index of this measurement among the selected (c:enabled="yes") measurements.
+      int index_; ///< The index of this measurement's condition among the selected (c:enabled="yes") conditions.
       string name_;
       Type_t type_;
       Status_t status_;
