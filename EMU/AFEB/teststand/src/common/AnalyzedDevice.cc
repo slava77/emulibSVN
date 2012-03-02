@@ -78,8 +78,9 @@ void AFEB::teststand::AnalyzedDevice::addThresholdMeasurement( const int iChanne
 }
 
 void AFEB::teststand::AnalyzedDevice::calculateGains(){
-  // Loop over the count_vs_dac measurements with pulses through external capacitors
+  // Loop over the measurements
   for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m ){
+    // Pick the count_vs_dac measurements with pulses through external capacitors into this device:
     if ( (*m)->getTestedDevice( id_ ) && (*m)->getType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitor() == Measurement::external ){      
       // Open the root file of this measurement's results...
       string fileName = Results::getFileName( (*m)->getIndex(), (*m)->getTypeString(), id_ );
@@ -122,8 +123,9 @@ void AFEB::teststand::AnalyzedDevice::calculateGains(){
 }
 
 void AFEB::teststand::AnalyzedDevice::calculateInternalCapacitances(){
-  // Find the count_vs_dac measurements with charge injection through internal capacitors
+  // Loop over measurements:
   for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m ){
+    // Pick the count_vs_dac measurements with pulses through external internal into this device:
     if ( (*m)->getTestedDevice( id_ ) && (*m)->getType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitor() == Measurement::internal ){      
       // Open the root file of this measurement's results...
       string fileName = Results::getFileName( (*m)->getIndex(), (*m)->getTypeString(), id_ );
@@ -184,8 +186,11 @@ valarray<double> AFEB::teststand::AnalyzedDevice::getInternalCapacitances() cons
 
 string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
   stringstream ss;
+  // Loop over measurements:
   for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m ){
+    // Pick the ones involving this device:
     if ( (*m)->getTestedDevice( id_ ) ){
+
     ss.str() = "";
     ss << "  <ad:measurement index=\""                     << noshowpos 
        <<                                                     (*m)->getIndex()
