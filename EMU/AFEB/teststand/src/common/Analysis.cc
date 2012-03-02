@@ -60,38 +60,42 @@ void AFEB::teststand::Analysis::collectAnalyzedDevices( const string& configXML 
 
   // Associate with the analyzed devices the parameters of the adaptor used
   for ( vector<AnalyzedDevice>::iterator ad = analyzedDevices_.begin(); ad != analyzedDevices_.end(); ++ad ){
-    // Get name of adaptor in use
+    // Get id and type of adaptor in use
     stringstream xpath;
-    xpath << "/c:configuration/c:inputs/@adaptor";
-    string adaptorName = utils::getSelectedNodeValue( configXML, xpath.str() );
-    ad->setAdaptorName( adaptorName );
+    xpath << "/c:configuration/c:inputs/@adaptorId";
+    string adaptorId = utils::getSelectedNodeValue( configXML, xpath.str() );
+    ad->setAdaptorId( adaptorId );
+    xpath.str("");
+    xpath << "/c:configuration/c:inputs/@adaptorType";
+    string adaptorType = utils::getSelectedNodeValue( configXML, xpath.str() );
+    ad->setAdaptorType( adaptorType );
     // Get the injection capacitance [pF] of this adaptor
     xpath.str("");
-    xpath << "/c:configuration/c:calibrations/c:adaptors/c:adaptor[@name='" << adaptorName << "']/@injectionCapacitance";
+    xpath << "/c:configuration/c:calibrations/c:adaptors/c:adaptor[@id='" << adaptorId << "' and @type='" << adaptorType << "']/@injectionCapacitance";
     string capacitance = utils::getSelectedNodeValue( configXML, xpath.str() );
     cout << xpath.str() << endl;
     cout << capacitance << endl;
     if ( capacitance.size() == 0 ){
-      stringstream ss; ss << "Failed to find the injection capacitance for adaptor " << adaptorName;
+      stringstream ss; ss << "Failed to find the injection capacitance for adaptor " << adaptorId << " of type " << adaptorType;
       XCEPT_RAISE( xcept::Exception, ss.str() );
     }
     ad->setInjectionCapacitance( utils::stringTo<double>( capacitance ) );
     // Get the pulse division factor of this adaptor
     xpath.str("");
-    xpath << "/c:configuration/c:calibrations/c:adaptors/c:adaptor[@name='" << adaptorName << "']/@pulseDivisionFactor";
+    xpath << "/c:configuration/c:calibrations/c:adaptors/c:adaptor[@id='" << adaptorId << "' and @type='" << adaptorType << "']/@pulseDivisionFactor";
     string factor = utils::getSelectedNodeValue( configXML, xpath.str() );
     if ( capacitance.size() == 0 ){
-      stringstream ss; ss << "Failed to find the pulse division factor for adaptor " << adaptorName;
+      stringstream ss; ss << "Failed to find the pulse division factor for adaptor " << adaptorId << " of type " << adaptorType;
       XCEPT_RAISE( xcept::Exception, ss.str() );
     }
     ad->setPulseDivisionFactor( utils::stringTo<double>( factor ) );
     // Get the correction coefficient for this adaptor's socket into which this device is plugged into
     xpath.str("");
-    xpath << "/c:configuration/c:calibrations/c:adaptors/c:adaptor[@name='" << adaptorName 
+    xpath << "/c:configuration/c:calibrations/c:adaptors/c:adaptor[@id='" << adaptorId << "' and @type='" << adaptorType 
 	  << "']/c:socket[@number='" << ad->getAdaptorSocket() << "']/@coefficient";
     string coefficient = utils::getSelectedNodeValue( configXML, xpath.str() );
     if ( coefficient.size() == 0 ){
-      stringstream ss; ss << "Failed to find the threshold correction coefficient for socket " << ad->getAdaptorSocket() << " of adaptor " << adaptorName;
+      stringstream ss; ss << "Failed to find the threshold correction coefficient for socket " << ad->getAdaptorSocket() << " of adaptor " << adaptorId << " of type " << adaptorType;
       XCEPT_RAISE( xcept::Exception, ss.str() );
     }
     ad->setCorrectionCoefficient( utils::stringTo<int>( coefficient ) );

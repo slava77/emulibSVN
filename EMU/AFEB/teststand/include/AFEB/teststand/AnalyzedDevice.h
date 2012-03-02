@@ -48,7 +48,8 @@ namespace AFEB { namespace teststand {
       ///
       DAC  getThresholdDACDescriptor() const;
 
-      void setAdaptorName          ( const string& value ){ adaptorName_           = value; }
+      void setAdaptorId            ( const string& value ){ adaptorId_            = value; }
+      void setAdaptorType          ( const string& value ){ adaptorType_           = value; }
       void setCorrectionCoefficient( const double  value ){ correctionCoefficient_ = value; }
       void setInjectionCapacitance ( const double  value ){ injectionCapacitance_  = value; }
       void setPulseDivisionFactor  ( const double  value ){ pulseDivisionFactor_   = value; }
@@ -71,7 +72,8 @@ namespace AFEB { namespace teststand {
       string                     rawResultsDir_;
       vector<Measurement*>       measurements_;	         ///< Measurements preformed on this device.
       vector<AnalyzedChannel>    channels_;	         ///< Channels with analysis data and results.
-      string                     adaptorName_;           ///< The name of the adaptor this device is plugged into.
+      string                     adaptorId_;             ///< The id of the adaptor this device is plugged into.
+      string                     adaptorType_;           ///< The type of the adaptor this device is plugged into.
       double                     correctionCoefficient_; ///< The ratio of the measured threshold to the threshold measured when plugged into a reference adaptor socket.
       double                     injectionCapacitance_;  ///< Injection capacitance [pF] of the adaptor in use.
       double                     pulseDivisionFactor_;   ///< Pulse division factor of the adaptor in use.

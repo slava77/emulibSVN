@@ -388,7 +388,8 @@ void AFEB::teststand::AnalyzedDevice::saveResults( const string& afebRootDir, co
      <<         "\" id=\""           << id_
      <<         "\" analysisDate=\"" << utils::getDateTime()
      << "\">" << endl
-     << "  <ad:adaptor name=\""                  << adaptorName_
+     << "  <ad:adaptor id=\""                    << adaptorId_
+     <<            "\" type=\""                  << adaptorType_
      <<            "\" socket=\""                << socket_
      <<            "\" correctionCoefficient=\"" << noshowpos << showpoint << setprecision(4) << setw(8) << fixed << correctionCoefficient_
      <<            "\" injectionCapacitance=\""  << noshowpos << showpoint << setprecision(4) << setw(8) << fixed << injectionCapacitance_

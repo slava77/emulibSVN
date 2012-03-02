@@ -197,7 +197,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 				measurement_->getTDCTimeMax(),
 				"S" ); // Important: spread option (not error on mean)! We'll need to quote RMS!
                              // "" ); // error on mean
-    t->SetXTitle( "amplitude" );
+    t->SetXTitle( "amplitude [ADC units]" );
     t->SetYTitle( "time [TDC units]" );
     t->SetStats( kFALSE );
     if ( iChannel / nStyles < nColors ) t->SetLineColor( color[ iChannel/nStyles ] );
@@ -215,7 +215,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 			nAmp,
 			measurement_->getAmplitudeMin() -          0.5   * measurement_->getAmplitudeStep(),
 			measurement_->getAmplitudeMin() + ( nAmp - 0.5 ) * measurement_->getAmplitudeStep() );
-    e->SetXTitle( "amplitude" );
+    e->SetXTitle( "amplitude [ADC units]" );
     e->SetYTitle( "efficiency" );
     e->SetStats( kFALSE );
     if ( iChannel / nStyles < nColors ) e->SetLineColor( color[ iChannel/nStyles ] );

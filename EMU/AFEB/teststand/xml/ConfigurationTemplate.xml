@@ -56,9 +56,9 @@
       <meta:attr name="type" value="CrateController" description="Crate controller."/>
     </meta:tag>
     <meta:tag name="c:inputs">
-      <meta:attr name="adaptor" value="10AD16A" description="10-socket adapter for AD16 boards, see 'Adaptors' table for details."/>
-      <meta:attr name="adaptor" value="2AD16A" description="2-socket adapter for AD16 boards,  see 'Adaptors' table for details."/>
-      <meta:attr name="adaptor" value="2CMP16A" description="2-socket adapter for CMP16 chips,  see 'Adaptors' table for details."/>
+      <meta:attr name="adaptorType" value="10AD16A" description="10-socket adapter for AD16 boards, see 'Adaptors' table for details."/>
+      <meta:attr name="adaptorType" value="2AD16A" description="2-socket adapter for AD16 boards,  see 'Adaptors' table for details."/>
+      <meta:attr name="adaptorType" value="2CMP16A" description="2-socket adapter for CMP16 chips,  see 'Adaptors' table for details."/>
     </meta:tag>
     <meta:tag name="c:condition">
       <meta:attr name="type" value="count_vs_dac" description="Efficiency vs pulse amplitude"/>
@@ -104,7 +104,7 @@
     <c:module slot="11" name="Jorway73A"  id=""       type="CrateController"/>
   </c:crate>
 
-  <c:inputs adaptor="10AD16A">
+  <c:inputs adaptorType="10AD16A" adaptorId="1">
     <c:testedDevice socket="1"  id="01" tdcSlot="7" tdcSocket="1" signalConverterSlot="9" signalConverterSocket="1" pulseGeneratorSlot="6" pulseGeneratorSocket="1"/>
     <c:testedDevice socket="2"  id="02" tdcSlot="7" tdcSocket="2" signalConverterSlot="9" signalConverterSocket="2" pulseGeneratorSlot="6" pulseGeneratorSocket="2"/>
     <c:testedDevice socket="3"  id=""   tdcSlot=""  tdcSocket=""  signalConverterSlot=""  signalConverterSocket=""  pulseGeneratorSlot=""  pulseGeneratorSocket=""/>
@@ -144,7 +144,7 @@
   <c:calibrations>
 
     <c:adaptors>
-      <c:adaptor name="10AD16A" pulseDivisionFactor="6.31" injectionCapacitance="1.6">
+      <c:adaptor type="10AD16A" id="1" pulseDivisionFactor="6.31" injectionCapacitance="1.6">
 	<c:socket number= "1" coefficient="1.0"/>
 	<c:socket number= "2" coefficient="1.0"/>
 	<c:socket number= "3" coefficient="1.0"/>
@@ -156,11 +156,11 @@
 	<c:socket number= "9" coefficient="1.0"/>
 	<c:socket number="10" coefficient="1.0"/>
       </c:adaptor>
-      <c:adaptor name="2AD16A" pulseDivisionFactor="1.0" injectionCapacitance="1.0">
+      <c:adaptor type="2AD16A" id="1" pulseDivisionFactor="1.0" injectionCapacitance="1.0">
 	<c:socket number= "1" coefficient="1.0"/>
 	<c:socket number= "2" coefficient="1.0"/>
       </c:adaptor>
-      <c:adaptor name="2CMP16A" pulseDivisionFactor="5.0" injectionCapacitance="1.6">
+      <c:adaptor type="2CMP16A" id="1" pulseDivisionFactor="5.0" injectionCapacitance="1.6">
 	<c:socket number= "1" coefficient="1.0"/>
 	<c:socket number= "2" coefficient="1.0"/>
       </c:adaptor>

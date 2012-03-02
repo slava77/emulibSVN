@@ -177,7 +177,15 @@
 	  socket of adaptor
 	  <xsl:if test="$CONFIGMODE='control'">
 	    <!-- for-each: just to set the current node for the templates called by name: -->
-	    <xsl:for-each select="@adaptor">
+	    <xsl:for-each select="@adaptorId">
+	      <input type="text" title="The unique id of this adaptor." size="3">
+		<xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+		<xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+	      </input>
+	    </xsl:for-each>
+	    of type 
+	    <!-- for-each: just to set the current node for the templates called by name: -->
+	    <xsl:for-each select="@adaptorType">
 	      <select>
 		<xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
 		<xsl:call-template name="options">
@@ -188,7 +196,9 @@
 	      </select>
 	    </xsl:for-each>
 	  </xsl:if>
-	  <xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="@adaptor"/></xsl:if>	
+	  <xsl:if test="$CONFIGMODE='display'">
+	    <xsl:value-of select="@adaptorId"/> of type <xsl:value-of select="@adaptorType"/>
+	  </xsl:if>	
 	</th>
 	<th>device id</th>
 	<th>TDC slot</th>
@@ -575,7 +585,8 @@
 
   <xsl:template match="c:adaptor">
     <table class="adaptor">
-      <tr><th rowspan="{count(c:socket)+4}"><xsl:value-of select="@name"/></th></tr>
+      <tr><th>id</th><th>type</th><th colspan="2">parameters</th></tr>
+      <tr><th rowspan="{count(c:socket)+4}"><xsl:value-of select="@id"/></th><th rowspan="{count(c:socket)+4}"><xsl:value-of select="@type"/></th></tr>
       <tr><th>pulse division</th><td><xsl:value-of select="@pulseDivisionFactor"/></td></tr>
       <tr><th>injection C [pF]</th><td><xsl:value-of select="@injectionCapacitance"/></td></tr>
       <tr><th>socket</th><th>coefficient</th></tr>

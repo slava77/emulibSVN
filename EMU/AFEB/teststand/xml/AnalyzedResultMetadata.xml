@@ -5,7 +5,8 @@
     <meta:attr name="analysisDate" description="The date and time this analysis was performed."/>
   </meta:tag>
   <meta:tag name="ad:adaptor">
-    <meta:attr name="name" description="The name of the adaptor used."/>
+    <meta:attr name="id" description="The id of the adaptor used."/>
+    <meta:attr name="type" description="The type of the adaptor used."/>
     <meta:attr name="socket" description="The adaptor's connector this device is plugged into."/>
     <meta:attr name="correctionCoefficient" description="Ratio of the threshold measured with the device in this socket of the adaptor to that measured with the same device in a reference scoket."/>
     <meta:attr name="pulseDivisionFactor" description="Pulse division factor."/>
