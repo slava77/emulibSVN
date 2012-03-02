@@ -14,8 +14,9 @@
 
 using namespace AFEB::teststand;
 
-AFEB::teststand::Analysis::Analysis( const string& resultsDir )
-  : rawResultsDir_     ( resultsDir + "/raw"      )
+AFEB::teststand::Analysis::Analysis( const string& AFEB_ROOT, const string& resultsDir )
+  : afebRootDir_       ( AFEB_ROOT                )
+  , rawResultsDir_     ( resultsDir + "/raw"      )
   , analyzedResultsDir_( resultsDir + "/analyzed" ){
   string       XML = utils::readFile( rawResultsDir_ + "/results.xml" );
   string configXML = utils::getSelectedNode( XML, "/root/c:configuration" );
@@ -187,12 +188,12 @@ void AFEB::teststand::Analysis::calculateInternalCapacitance(){
 
 void AFEB::teststand::Analysis::saveResults(){
   for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
-    d->saveResults( analyzedResultsDir_ );
+    d->saveResults( afebRootDir_, analyzedResultsDir_ );
   }
 }
 
 void AFEB::teststand::Analysis::saveResults( const string& destinationDir ){
   for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
-    d->saveResults( destinationDir );
+    d->saveResults( afebRootDir_, destinationDir );
   }
 }

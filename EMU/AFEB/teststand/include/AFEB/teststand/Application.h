@@ -151,11 +151,13 @@ private:
   toolbox::task::WorkLoop *workLoop_; ///< work loop for the calibrations or measurements to be executed in a separate thread
   toolbox::task::ActionSignature *measurementSignature_;
   toolbox::task::ActionSignature *calibrationSignature_;
+  string resultSystemDir_;	///< Result directory given as full path (parent of the raw and analyzed result directories)
   string rawResultURLDir_; ///< Raw result directory relative to the HTML root.
   string rawResultSystemDir_; ///< The raw result directory given as full path.
   string analyzedResultURLDir_; ///< Analyzed result directory relative to the HTML root.
   string analyzedResultSystemDir_; ///< The analyzed result directory given as full path.
   string host_;  ///< The name of the host we're running on.
+  string dateTimeAtConfiguring_;
 };
 
 }}

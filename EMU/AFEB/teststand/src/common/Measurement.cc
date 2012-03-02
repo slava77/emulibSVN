@@ -117,6 +117,14 @@ const TestedDevice* AFEB::teststand::Measurement::getTestedDevice( const int tdc
   return NULL;
 }
 
+const TestedDevice* AFEB::teststand::Measurement::getTestedDevice( const string& deviceId ) const {
+  map<TestedDevice*,Results*>::const_iterator r;
+  for ( r = results_.begin(); r != results_.end(); ++r ){
+    if ( r->first->getId() == deviceId ) return r->first;
+  }
+  return NULL;  
+}
+
 TestedDevice* AFEB::teststand::Measurement::findTestedDevice( const int tdcSocket ) {
   map<TestedDevice*,Results*>::iterator r;
   for ( r = results_.begin(); r != results_.end(); ++r ){

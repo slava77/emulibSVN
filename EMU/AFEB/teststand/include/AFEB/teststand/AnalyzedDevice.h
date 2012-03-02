@@ -65,7 +65,7 @@ namespace AFEB { namespace teststand {
 
       void calculateGains               ();
       void calculateInternalCapacitances();
-      void saveResults                  ( const string& analyzedResultsDir );
+      void saveResults                  ( const string& afebRootDir, const string& analyzedResultsDir );
 
     private:
       string                     rawResultsDir_;

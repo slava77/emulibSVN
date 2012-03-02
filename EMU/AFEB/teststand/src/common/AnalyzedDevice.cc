@@ -80,7 +80,7 @@ void AFEB::teststand::AnalyzedDevice::addThresholdMeasurement( const int iChanne
 void AFEB::teststand::AnalyzedDevice::calculateGains(){
   // Loop over the count_vs_dac measurements with pulses through external capacitors
   for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m ){
-    if ( (*m)->getType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitor() == Measurement::external ){      
+    if ( (*m)->getTestedDevice( id_ ) && (*m)->getType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitor() == Measurement::external ){      
       // Open the root file of this measurement's results...
       string fileName = Results::getFileName( (*m)->getIndex(), (*m)->getTypeString(), id_ );
       TFile f( ( rawResultsDir_ + "/" + fileName +".root").c_str(), "READ" );
@@ -112,7 +112,7 @@ void AFEB::teststand::AnalyzedDevice::calculateGains(){
       } // for ( int iChannel=0; iChannel<nChannels; ++iChannel ){
       
       f.Close();
-    } // if ( (*m)->getType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitor() == Measurement::external )
+    } // if ( (*m)->getTestedDevice( id_ ) && (*m)->getType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitor() == Measurement::external )
   } // for ( vector<Measurement*>::const_iterator m = measurements.begin(); m != measurements.end(); ++m ){
   
   // Now we're ready to calculate the gains
@@ -124,7 +124,7 @@ void AFEB::teststand::AnalyzedDevice::calculateGains(){
 void AFEB::teststand::AnalyzedDevice::calculateInternalCapacitances(){
   // Find the count_vs_dac measurements with charge injection through internal capacitors
   for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m ){
-    if ( (*m)->getType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitor() == Measurement::internal ){      
+    if ( (*m)->getTestedDevice( id_ ) && (*m)->getType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitor() == Measurement::internal ){      
       // Open the root file of this measurement's results...
       string fileName = Results::getFileName( (*m)->getIndex(), (*m)->getTypeString(), id_ );
       TFile f( ( rawResultsDir_ + "/" + fileName +".root").c_str(), "READ" );
@@ -150,7 +150,7 @@ void AFEB::teststand::AnalyzedDevice::calculateInternalCapacitances(){
       } // for ( int iChannel=0; iChannel<d->getNChannels(); ++iChannel )
       
       f.Close();
-    } // if ( (*m)->getType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitor() == Measurement::internal )
+    } // if ( (*m)->getTestedDevice( id_ ) && (*m)->getType() == Measurement::count_vs_dac && (*m)->getInjectionCapacitor() == Measurement::internal )
   } // for ( vector<Measurement*>::const_iterator m = measurements.begin(); m != measurements.end(); ++m )
 }
 
@@ -185,6 +185,7 @@ valarray<double> AFEB::teststand::AnalyzedDevice::getInternalCapacitances() cons
 string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
   stringstream ss;
   for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m ){
+    if ( (*m)->getTestedDevice( id_ ) ){
     ss.str() = "";
     ss << "  <ad:measurement index=\""                     << noshowpos 
        <<                                                     (*m)->getIndex()
@@ -336,6 +337,7 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
     f.Close();
     ss << "  </ad:measurement>" << endl;
 
+    } // if ( (*m)->getTestedDevice( id_ ) )
   } // for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m )
   return ss.str();
 }
@@ -361,10 +363,16 @@ double AFEB::teststand::AnalyzedDevice::getMaxMeasuredThreshold( const double se
   return utils::statistics( thresholds )["max"];
 }
 
-void AFEB::teststand::AnalyzedDevice::saveResults( const string& analyzedResultsDir ){
+void AFEB::teststand::AnalyzedDevice::saveResults( const string& afebRootDir, const string& analyzedResultsDir ){
 
+  // Create directory for analyzed results
   utils::execShellCommand( string( "mkdir -p " ) + analyzedResultsDir );
-
+  // Copy style file to it
+  stringstream command;
+  command << "cp " << afebRootDir << "/AFEB/teststand/html/analyzedResults_XSLT.xml " << analyzedResultsDir;
+  AFEB::teststand::utils::execShellCommand( command.str() );
+  
+  // Write results to XML
   stringstream ss;
   ss << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"        << endl
      << "<?xml-stylesheet type=\"text/xml\" href=\"analyzedResults_XSLT.xml\"?>" << endl;
@@ -405,6 +413,12 @@ void AFEB::teststand::AnalyzedDevice::saveResults( const string& analyzedResults
 
   ss << "  <ad:maxMeasuredThreshold value=\"" << getMaxMeasuredThreshold( 0 )
      <<                         "\" atSetThreshold=\"0\"/>" << endl;
+
+  // Include metadata:
+  try{
+    ss << AFEB::teststand::utils::readFile( afebRootDir + "/AFEB/teststand/xml/AnalyzedResultMetadata.xml" );
+  }
+  catch( xcept::Exception& ignored ){}
 
   ss << "</ad:device>" << endl;
 

@@ -43,6 +43,7 @@ namespace AFEB { namespace teststand {
       string getTypeString() const { return typeString_[type_]; }
       string getResultDir() const { return resultDir_; }
       const TestedDevice* getTestedDevice( const int tdcSocket ) const;
+      const TestedDevice* getTestedDevice( const string& deviceId ) const;
       const map<TestedDevice*,Results*> getResults() const { return results_; }
       const set<TestedDevice*> getTestedDevices() const { return utils::keys( results_ ); }
       int getTDCSlot() const;

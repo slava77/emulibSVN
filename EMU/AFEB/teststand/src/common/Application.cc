@@ -1,4 +1,5 @@
 #include "AFEB/teststand/Application.h"
+#include "AFEB/teststand/Analysis.h"
 #include "AFEB/teststand/version.h"
 #include "AFEB/teststand/utils/DOM.h"
 #include "AFEB/teststand/utils/Cgi.h"
@@ -88,9 +89,11 @@ void AFEB::teststand::Application::configureAction(toolbox::Event::Reference e){
   delete configuration_;
   currentMeasurementIndex_ = -1;
   try{
-    rawResultURLDir_ = resultBaseURLDir_.toString() + "/" + AFEB::teststand::utils::getDateTime() + "/raw";
+    dateTimeAtConfiguring_ = utils::getDateTime();
+    resultSystemDir_ = string( getenv(HTML_ROOT_.toString().c_str()) ) + resultBaseURLDir_.toString() + "/" + dateTimeAtConfiguring_;
+    rawResultURLDir_ = resultBaseURLDir_.toString() + "/" + dateTimeAtConfiguring_ + "/raw";
     rawResultSystemDir_ = string( getenv(HTML_ROOT_.toString().c_str()) ) + rawResultURLDir_;
-    analyzedResultURLDir_ = resultBaseURLDir_.toString() + "/" + AFEB::teststand::utils::getDateTime() + "/analyzed";
+    analyzedResultURLDir_ = resultBaseURLDir_.toString() + "/" + dateTimeAtConfiguring_ + "/analyzed";
     analyzedResultSystemDir_ = string( getenv(HTML_ROOT_.toString().c_str()) ) + analyzedResultURLDir_;
     AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + rawResultSystemDir_ );
     configuration_ = new Configuration( configurationXML_, rawResultSystemDir_ );
@@ -186,7 +189,13 @@ bool AFEB::teststand::Application::measurementInWorkLoop(toolbox::task::WorkLoop
   createResultsXML();
 
   bsem_.take();
-  fsm_.reset(); // To go back to initial state (Halted) without triggering haltAction.
+  // Go back to initial state (Halted) without triggering haltAction:
+  fsm_.reset();
+  // Do analysis:
+  if ( getenv( HTML_ROOT_.toString().c_str() ) != NULL ){
+    Analysis a( getenv( HTML_ROOT_.toString().c_str() ), resultSystemDir_ );
+    a.saveResults();
+  }
   bsem_.give();
 
   return false;
@@ -354,7 +363,7 @@ string AFEB::teststand::Application::createXMLWebPageSkeleton(){
      <<           "\" urlHost=\"" << url.getHost()
      <<           "\" urlPath=\"" << rawResultURLDir_ << "/"
      <<           "\" file=\"" << "results.xml"
-     <<           "\" measurementDate=\"" << utils::getDateTime()
+     <<           "\" measurementDate=\"" << dateTimeAtConfiguring_
      <<           "\">" << endl;
   if ( configuration_ != NULL ) ss << configuration_->resultsXML();
   ss << "  </a:results>" << endl;
@@ -387,6 +396,7 @@ string AFEB::teststand::Application::createResultsXML(){
        <<           "\" urlHost=\"" << url.getHost()
        <<           "\" urlPath=\"" // Everything is in the current directory.
        <<           "\" file=\"" << "results.xml"
+       <<           "\" measurementDate=\"" << dateTimeAtConfiguring_
        <<           "\">" << endl;
     if ( configuration_ != NULL ) ss << configuration_->resultsXML();
     ss << "  </a:results>" << endl;

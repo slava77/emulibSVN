@@ -13,7 +13,7 @@ namespace AFEB { namespace teststand {
 
     class Analysis{
     public:
-      Analysis( const string& resultsDir );
+      Analysis( const string& AFEBRootDir, const string& resultsDir );
       ~Analysis();
 
       /// 
@@ -34,6 +34,7 @@ namespace AFEB { namespace teststand {
       void calculateGain();
       void calculateInternalCapacitance();
 
+      string afebRootDir_;
       string rawResultsDir_;
       string analyzedResultsDir_;
       string rawResultXML_;
