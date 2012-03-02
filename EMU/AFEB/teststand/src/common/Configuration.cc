@@ -101,10 +101,10 @@ void AFEB::teststand::Configuration::createCrate() {
 
 void AFEB::teststand::Configuration::createMeasurements() {
   // Get the 'enabled' flag of the measurements ["yes" or "no"]:
-  vector< pair<string,string> > measurementEnabledFlags = utils::getSelectedNodesValues( xml_, "/c:configuration/c:measurements/c:measurement/@enabled" );
+  vector< pair<string,string> > measurementEnabledFlags = utils::getSelectedNodesValues( xml_, "/c:configuration/c:measurements/c:condition/@enabled" );
 
   // Find the requested (enabled) measurements in the XML
-  vector< pair<string,string> > enabledMeasurementTypes = utils::getSelectedNodesValues( xml_, "/c:configuration/c:measurements/c:measurement[@enabled='yes']/@type" );
+  vector< pair<string,string> > enabledMeasurementTypes = utils::getSelectedNodesValues( xml_, "/c:configuration/c:measurements/c:condition[@enabled='yes']/@type" );
   if ( enabledMeasurementTypes.size() == 0 ){
     XCEPT_RAISE( xcept::Exception, "No measurements are selected." );
   }
@@ -149,27 +149,27 @@ void AFEB::teststand::Configuration::createMeasurements() {
 	if ( measurement == NULL ){
 	  // Create this measurement
 	  xpath.str("");
-	  xpath << "/c:configuration/c:measurements/c:measurement[position()=" << position << "]/@name";
+	  xpath << "/c:configuration/c:measurements/c:condition[position()=" << position << "]/@name";
 	  string name = utils::getSelectedNodeValue( xml_, xpath.str() );
 	  xpath.str("");
-	  xpath << "/c:configuration/c:measurements/c:measurement[position()=" << position << "]/@type";
+	  xpath << "/c:configuration/c:measurements/c:condition[position()=" << position << "]/@type";
 	  string type = utils::getSelectedNodeValue( xml_, xpath.str() );
 	  bool dummyData = ( utils::getSelectedNodesValues( xml_, "//c:dummyData" ).size() > 0 ); 
 	  measurement = new Measurement( position, index++, name, type, resultDir_, dummyData );
 	  // Set pulse generator parameters
 	  xpath.str("");
-	  xpath << "/c:configuration/c:measurements/c:measurement[position()=" << position << "]/c:PulseGenerator/@*";
+	  xpath << "/c:configuration/c:measurements/c:condition[position()=" << position << "]/c:PulseGenerator/@*";
 	  vector< pair<string,string> > parameters = utils::getSelectedNodesValues( xml_, xpath.str() );
 	  measurement->setPulseParameters( parameters );
 	  // Set thereshold parameters
 	  xpath.str("");
-	  xpath << "/c:configuration/c:measurements/c:measurement[position()=" << position << "]/c:SignalConverter/@*";
+	  xpath << "/c:configuration/c:measurements/c:condition[position()=" << position << "]/c:SignalConverter/@*";
 	  parameters.clear();
 	  parameters = utils::getSelectedNodesValues( xml_, xpath.str() );
 	  measurement->setThresholdParameters( parameters );
 	  // Set TDC parameters
 	  xpath.str("");
-	  xpath << "/c:configuration/c:measurements/c:measurement[position()=" << position << "]/c:TDC/@*";
+	  xpath << "/c:configuration/c:measurements/c:condition[position()=" << position << "]/c:TDC/@*";
 	  parameters.clear();
 	  parameters = utils::getSelectedNodesValues( xml_, xpath.str() );
 	  measurement->setTDCParameters( parameters );

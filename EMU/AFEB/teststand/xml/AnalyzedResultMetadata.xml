@@ -12,7 +12,7 @@
     <meta:attr name="injectionCapacitance" units="fC" description="Injection capacitance."/>
   </meta:tag>
   <meta:tag name="ad:measurement">
-    <meta:attr name="index" description="Index of this measurement."/>
+    <meta:attr name="index" description="Index of this measurement's condition."/>
     <meta:attr name="type" value="count_vs_dac" description="Threshold scan (efficiency vs. pulse amplitude)."/>
     <meta:attr name="type" value="time_vs_dac" description="Time vs. pulse amplitude."/>
     <meta:attr name="capacitor" value="external" description="Pulses were injected through the external capacitor."/>

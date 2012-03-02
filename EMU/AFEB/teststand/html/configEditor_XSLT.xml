@@ -341,7 +341,7 @@
 	  <xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="../c:testedDevice/@type"/></xsl:if>	
 	</th>
       </tr>
-      <xsl:for-each select="c:measurement">
+      <xsl:for-each select="c:condition">
 	<xsl:if test="$CONFIGMODE='control' or ($CONFIGMODE='display' and @enabled='yes')">
 	  <tr>
 	    <th>

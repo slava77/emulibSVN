@@ -60,7 +60,7 @@
       <meta:attr name="adaptor" value="2AD16A" description="2-socket adapter for AD16 boards,  see 'Adaptors' table for details."/>
       <meta:attr name="adaptor" value="2CMP16A" description="2-socket adapter for CMP16 chips,  see 'Adaptors' table for details."/>
     </meta:tag>
-    <meta:tag name="c:measurement">
+    <meta:tag name="c:condition">
       <meta:attr name="type" value="count_vs_dac" description="Efficiency vs pulse amplitude"/>
       <meta:attr name="type" value="time_vs_dac" description="Time vs. pulse amplitude"/>
       <meta:attr name="enabled" value="yes" description="Perform this measurement."/>
@@ -118,26 +118,26 @@
   </c:inputs>
 
   <c:measurements>
-    <c:measurement name="Threshold scan" type="count_vs_dac" enabled="yes">
+    <c:condition name="Threshold scan" type="count_vs_dac" enabled="yes">
       <c:PulseGenerator amplitudeMin="20" amplitudeMax="90" amplitudeStep="2" nPulses="400" capacitor="external"/>
       <c:SignalConverter thresholdValue="50"/>
       <c:TDC timeMin="0" timeMax="120"/>
-    </c:measurement>
-    <c:measurement name="Threshold scan" type="count_vs_dac" enabled="yes">
+    </c:condition>
+    <c:condition name="Threshold scan" type="count_vs_dac" enabled="yes">
       <c:PulseGenerator amplitudeMin="40" amplitudeMax="140" amplitudeStep="2" nPulses="400" capacitor="external"/>
       <c:SignalConverter thresholdValue="90"/>
       <c:TDC timeMin="0" timeMax="120"/>
-    </c:measurement>
-    <c:measurement name="Threshold scan" type="count_vs_dac" enabled="yes">
+    </c:condition>
+    <c:condition name="Threshold scan" type="count_vs_dac" enabled="yes">
       <c:PulseGenerator amplitudeMin="20" amplitudeMax="90" amplitudeStep="2" nPulses="400" capacitor="internal"/>
       <c:SignalConverter thresholdValue="50"/>
       <c:TDC timeMin="0" timeMax="120"/>
-    </c:measurement>
-    <c:measurement name="Time response vs. pulse height" type="time_vs_dac" enabled="yes">
+    </c:condition>
+    <c:condition name="Time response vs. pulse height" type="time_vs_dac" enabled="yes">
       <c:PulseGenerator amplitudeMin="20" amplitudeMax="500" amplitudeStep="10" nPulses="400" capacitor="external"/>
       <c:SignalConverter thresholdValue="50"/>
       <c:TDC timeMin="0" timeMax="120"/>
-    </c:measurement>
+    </c:condition>
   </c:measurements>
 
 
