@@ -42,8 +42,19 @@ void AFEB::teststand::Analysis::collectAnalyzedDevices( const string& configXML 
   if ( configuration_->getMeasurements().size() == 0 ){
     XCEPT_RAISE( xcept::Exception, "No measurements found!" );
   }
-  set<TestedDevice*> td = configuration_->getMeasurements().front()->getTestedDevices();
-  for ( set<TestedDevice*>::iterator tdi = td.begin(); tdi != td.end(); ++tdi ){
+
+  // Collect all tested devices. By definition, each element of this set will be unique.
+  set<TestedDevice*> allTestedDevices;
+  for ( vector<Measurement*>::const_iterator m = configuration_->getMeasurements().begin(); m != configuration_->getMeasurements().end(); ++m ){
+    // Get the devices tested in this measurement:
+    set<TestedDevice*> td = (*m)->getTestedDevices();
+    // Add them to the set of all devices:
+    allTestedDevices.insert( td.begin(), td.end() );
+  }
+
+  // Construct an analyzed device out of every tested device:
+  cout << "set<TestedDevice*>" << endl << allTestedDevices << endl;
+  for ( set<TestedDevice*>::iterator tdi = allTestedDevices.begin(); tdi != allTestedDevices.end(); ++tdi ){
     analyzedDevices_.push_back( AnalyzedDevice( **tdi, rawResultsDir_, configuration_->getMeasurements() ) );
   }
 
