@@ -58,17 +58,24 @@ void AFEB::teststand::Analysis::collectAnalyzedDevices( const string& configXML 
     analyzedDevices_.push_back( AnalyzedDevice( **tdi, rawResultsDir_, configuration_->getMeasurements() ) );
   }
 
+  // Get the date and time of measurement
+  stringstream xpath;
+  xpath.str("/a:results/@measurementDate");
+  string measurementDate = utils::getSelectedNodeValue( rawResultXML_, xpath.str() );
+
   // Associate with the analyzed devices the parameters of the adaptor used
   for ( vector<AnalyzedDevice>::iterator ad = analyzedDevices_.begin(); ad != analyzedDevices_.end(); ++ad ){
+
+    ad->setMeasurementDate( measurementDate );
+
     // Get id and type of adaptor in use
-    stringstream xpath;
-    xpath << "/c:configuration/c:inputs/@adaptorId";
+    xpath.str("/c:configuration/c:inputs/@adaptorId");
     string adaptorId = utils::getSelectedNodeValue( configXML, xpath.str() );
     ad->setAdaptorId( adaptorId );
-    xpath.str("");
-    xpath << "/c:configuration/c:inputs/@adaptorType";
+    xpath.str("/c:configuration/c:inputs/@adaptorType");
     string adaptorType = utils::getSelectedNodeValue( configXML, xpath.str() );
     ad->setAdaptorType( adaptorType );
+
     // Get the injection capacitance [pF] of this adaptor
     xpath.str("");
     xpath << "/c:configuration/c:calibrations/c:adaptors/c:adaptor[@id='" << adaptorId << "' and @type='" << adaptorType << "']/@injectionCapacitance";
@@ -80,6 +87,7 @@ void AFEB::teststand::Analysis::collectAnalyzedDevices( const string& configXML 
       XCEPT_RAISE( xcept::Exception, ss.str() );
     }
     ad->setInjectionCapacitance( utils::stringTo<double>( capacitance ) );
+
     // Get the pulse division factor of this adaptor
     xpath.str("");
     xpath << "/c:configuration/c:calibrations/c:adaptors/c:adaptor[@id='" << adaptorId << "' and @type='" << adaptorType << "']/@pulseDivisionFactor";
@@ -89,6 +97,7 @@ void AFEB::teststand::Analysis::collectAnalyzedDevices( const string& configXML 
       XCEPT_RAISE( xcept::Exception, ss.str() );
     }
     ad->setPulseDivisionFactor( utils::stringTo<double>( factor ) );
+
     // Get the correction coefficient for this adaptor's socket into which this device is plugged into
     xpath.str("");
     xpath << "/c:configuration/c:calibrations/c:adaptors/c:adaptor[@id='" << adaptorId << "' and @type='" << adaptorType 

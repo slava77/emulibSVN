@@ -192,12 +192,12 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
     if ( (*m)->getTestedDevice( id_ ) ){
 
     ss.str() = "";
-    ss << "  <ad:measurement index=\""                     << noshowpos 
-       <<                                                     (*m)->getIndex()
-       <<                  "\" type=\""                    << (*m)->getTypeString()
-       <<                  "\" capacitor=\""               << (*m)->getInjectionCapacitorString()
-       <<                  "\" nPulses=\""                 << (*m)->getNPulses()
-       <<                  "\" setThreshold.ADC=\""        << (*m)->getSetThreshold()
+    ss << "  <ad:measurement index=\""                  << noshowpos 
+       <<                                                  (*m)->getIndex()
+       <<                  "\" type=\""                 << (*m)->getTypeString()
+       <<                  "\" capacitor=\""            << (*m)->getInjectionCapacitorString()
+       <<                  "\" nPulses=\""              << (*m)->getNPulses()
+       <<                  "\" setThreshold=\""         << (*m)->getSetThreshold()
        <<                  "\" setThresholdVoltage=\""  << thresholdDAC_->mV_from_DACUnit( (*m)->getSetThreshold() ).first
        <<   "\">" << endl;
 
@@ -383,10 +383,11 @@ void AFEB::teststand::AnalyzedDevice::saveResults( const string& afebRootDir, co
      << "<?xml-stylesheet type=\"text/xml\" href=\"analyzedResults_XSLT.xml\"?>" << endl;
 
 
-  ss << "<ad:device xmlns:ad=\""     << analyzedDeviceNamespace_
-     <<         "\" type=\""         << type_
-     <<         "\" id=\""           << id_
-     <<         "\" analysisDate=\"" << utils::getDateTime()
+  ss << "<ad:device xmlns:ad=\""        << analyzedDeviceNamespace_
+     <<         "\" type=\""            << type_
+     <<         "\" id=\""              << id_
+     <<         "\" analysisDate=\""    << utils::getDateTime()
+     <<         "\" measurementDate=\"" << measurementDate_
      << "\">" << endl
      << "  <ad:adaptor id=\""                    << adaptorId_
      <<            "\" type=\""                  << adaptorType_
