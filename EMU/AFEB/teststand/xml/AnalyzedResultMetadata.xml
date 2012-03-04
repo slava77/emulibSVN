@@ -28,7 +28,7 @@
     <meta:attr name="noise" units="fC" description="The measured noise in units of fC."/>
     <meta:attr name="chi2ndf" description="Chi square over number of degrees of freedom of the threshold curve fit."/>
     <meta:attr name="mean" units="ns" description="Mean time in ns."/>
-    <meta:attr name="RMS" units="ns" description="Time RMS in ns."/>
+    <meta:attr name="rms" units="ns" description="Time RMS in ns."/>
     <meta:attr name="spanOfMeans" units="ns" description="The maximum over the input charge range of the difference of the mean time responses."/>
     <meta:attr name="spanOfRMSs" units="ns" description="The maximum over the input charge range of the difference of the RMS of time responses."/>
     <meta:attr name="offset" units="mV" description="Offset, i.e., the intercept of the straight line fitted to the setThreshold( measuredThresold ) function."/>
