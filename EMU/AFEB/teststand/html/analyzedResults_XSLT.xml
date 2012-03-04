@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+
+<xsl:transform 
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+    xmlns:ad="http://cms.cern.ch/emu/afeb/teststand/analyzeddevice"
+    xmlns:meta="http://cms.cern.ch/emu/afeb/teststand/metadata"
+    version="1.0">
+
+  <xsl:output method="html" indent="yes"/>
+
+  <xsl:template mode="description" match="@*">
+    <xsl:param name="TAG"><xsl:value-of select="name(..)"/></xsl:param>
+    <xsl:param name="ATTR"><xsl:value-of select="name(.)"/></xsl:param>
+    <xsl:value-of select="//meta:data/meta:tag[@name=$TAG]/meta:attr[@name=$ATTR]/@description"/>
+  </xsl:template>
+
+  <xsl:template mode="units" match="@*">
+    <xsl:param name="TAG"><xsl:value-of select="name(..)"/></xsl:param>
+    <xsl:param name="ATTR"><xsl:value-of select="name(.)"/></xsl:param>
+    <xsl:value-of select="//meta:data/meta:tag[@name=$TAG]/meta:attr[@name=$ATTR]/@units"/>
+  </xsl:template>
+
+  <xsl:template match="/ad:device">
+    <html xmlns="http://www.w3.org/1999/xhtml">
+      <head>
+	<title><xsl:value-of select="@id"/> (<xsl:value-of select="@type"/>): analyzed results</title>
+      </head>
+      <body>
+	<p><h1>Device <xsl:value-of select="@id"/> of type <xsl:value-of select="@type"/></h1></p>
+	<p><h3>Results of analysis of <xsl:value-of select="@analysisDate"/> of device <xsl:value-of select="@id"/> of type <xsl:value-of select="@type"/> measured at <xsl:value-of select="@measurementDate"/></h3></p>
+	<xsl:apply-templates/>
+      </body>
+    </html>
+  </xsl:template>
+
+  <xsl:template match="ad:adaptor">
+    <table class="adaptor">
+      <tr><th colspan="2">Adaptor</th></tr>
+      <tr>
+	<th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="@id"/></xsl:attribute>id</th>
+	<td><xsl:value-of select="@id"/></td>
+      </tr>
+      <tr>
+	<th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="@type"/></xsl:attribute>type</th>
+	<td><xsl:value-of select="@type"/></td>
+      </tr>
+      <tr>
+	<th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="@socket"/></xsl:attribute>socket</th>
+	<td><xsl:value-of select="@socket"/></td>
+      </tr>
+      <tr>
+	<th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="@correctionCoefficient"/></xsl:attribute>coefficient</th>
+	<td><xsl:value-of select="@correctionCoefficient"/></td>
+      </tr>
+      <tr>
+	<th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="@injectionCapacitance"/></xsl:attribute>C<span style="vertical-align:sub;">in</span> [<xsl:apply-templates mode="units" select="@injectionCapacitance"/>]</th>
+	<td><xsl:value-of select="@injectionCapacitance"/></td>
+      </tr>
+      <tr>
+	<th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="@pulseDivisionFactor"/></xsl:attribute>attenuation</th>
+	<td><xsl:value-of select="@pulseDivisionFactor"/></td>
+      </tr>
+    </table>
+  </xsl:template>  
+ 
+  <xsl:template match="ad:measurement">
+    <table class="measurement">
+      <tr><th colspan="2">Measurement</th></tr>
+      <tr>
+	<th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="@index"/></xsl:attribute>index</th>
+	<td><xsl:value-of select="@index"/></td>
+      </tr>
+      <tr>
+	<th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="@type"/></xsl:attribute>type</th>
+	<td><xsl:value-of select="@type"/></td>
+      </tr>
+      <tr>
+	<th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="@capacitor"/></xsl:attribute>capacitor</th>
+	<td><xsl:value-of select="@capacitor"/></td>
+      </tr>
+      <tr>
+	<th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="@nPulses"/></xsl:attribute>number of pulses</th>
+	<td><xsl:value-of select="@nPulses"/></td>
+      </tr>
+      <tr>
+	<th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="@setThreshold"/></xsl:attribute>set threshold [<xsl:apply-templates mode="units" select="@setThreshold"/>]</th>
+	<td><xsl:value-of select="@setThreshold"/></td>
+      </tr>
+      <tr>
+	<th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="@setThresholdVoltage"/></xsl:attribute>set threshold [<xsl:apply-templates mode="units" select="@setThresholdVoltage"/>]</th>
+	<td><xsl:value-of select="@setThresholdVoltage"/></td>
+      </tr>
+      <tr>
+	<td colspan="2">
+	  <table class="channel">
+	    <tr>
+	      <th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="ad:channel[1]/@number"/></xsl:attribute>channel</th>
+	      <th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="ad:channel[1]/@threshold"/></xsl:attribute>threshold [<xsl:apply-templates mode="units" select="ad:channel[1]/@threshold"/>]</th>
+	      <th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="ad:channel[1]/@noise"/></xsl:attribute>noise [<xsl:apply-templates mode="units" select="ad:channel[1]/@noise"/>]</th>
+	      <th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="ad:channel[1]/@chi2ndf"/></xsl:attribute>&#x03c7;&#xb2;/ndf</th>
+	    </tr>
+	    <xsl:apply-templates select="ad:channel"/>
+	  </table>
+	</td>
+      </tr>
+    </table>
+  </xsl:template>
+ 
+  <xsl:template match="ad:channel[name(..)='ad:measurement']">
+      <tr>
+	<th><xsl:value-of select="@number"/></th>
+	<td><xsl:value-of select="@threshold"/></td>
+	<td><xsl:value-of select="@noise"/></td>
+	<td><xsl:value-of select="@chi2ndf"/></td>
+      </tr>
+  </xsl:template>
+
+
+</xsl:transform>
