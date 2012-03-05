@@ -31,8 +31,8 @@
     <meta:attr name="rms" units="ns" description="Time RMS in ns."/>
     <meta:attr name="spanOfMeans" units="ns" description="The maximum over the input charge range of the difference of the mean time responses."/>
     <meta:attr name="spanOfRMSs" units="ns" description="The maximum over the input charge range of the difference of the RMS of time responses."/>
-    <meta:attr name="offset" units="mV" description="Offset, i.e., the intercept of the straight line fitted to the setThreshold( measuredThresold ) function."/>
-    <meta:attr name="gain" units="mV/fC" description="Gain, i.e., the slope of the straight line fitted to the setThreshold( measuredThresold ) function."/>
+    <meta:attr name="offset" units="mV" description="Offset, i.e., the intercept of the straight line fitted to the setThresholdVoltage( measuredThresoldCharge ) function."/>
+    <meta:attr name="gain" units="mV/fC" description="Gain, i.e., the slope of the straight line fitted to the setThresholdVoltage( measuredThresoldCharge ) function."/>
     <meta:attr name="C_int" units="pf" description="Internal capacitance."/>
     <meta:attr name="averageNoise" units="ns" description="Average over the external capacitor threshold scan measurements of the noise."/>
   </meta:tag>
@@ -43,7 +43,7 @@
     <meta:attr name="rms" units="ns" description="RMS over the channels of the mean times."/>
     <meta:attr name="maxAbsResid" units="ns" description="Maximum absolute residual over the channels of the mean times."/>
   </meta:tag>
-  <meta:tag name="ad:mean">
+  <meta:tag name="ad:rms">
     <meta:attr name="max" units="ns" description="Maximum over the channels of the RMS values of times."/>
     <meta:attr name="min" units="ns" description="Minimum over the channels of the RMS values of times."/>
     <meta:attr name="mean" units="ns" description="Average over the channels of the RMS values of times."/>

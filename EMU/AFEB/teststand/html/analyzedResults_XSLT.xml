@@ -24,14 +24,26 @@
     <html xmlns="http://www.w3.org/1999/xhtml">
       <head>
 	<title><xsl:value-of select="@id"/> (<xsl:value-of select="@type"/>): analyzed results</title>
+	<style type="text/css">
+	  table,td,th { border-color: #000000; border-collapse: collapse; border-width: 1px 1px 1px 1px; border-style:solid; }
+	  th,td { padding: 5px 5px 5px 5px; }
+	  table.channel { width: 100%; margin-top: 5px; }
+	  table.statistics { width: 100%; }
+	  table.adaptor { padding: 5px 5px 5px 5px; margin: 5px 5px 5px 5px; }
+	  table.measurement { padding: 5px 5px 5px 5px; margin: 5px 5px 5px 5px; padding: 0px 0px 0px 0px; }
+	  table.device { padding: 5px 5px 5px 5px; margin: 5px 5px 5px 5px; }
+	  td { text-align: right; color: #0000ff; }
+	  th { color: #000000; }
+	  .highlight { color: #0000ff; }	  
+	</style>
       </head>
       <body>
-	<p><h1>Device <xsl:value-of select="@id"/> of type <xsl:value-of select="@type"/></h1></p>
+	<p><h1>Device <span class="highlight"><xsl:value-of select="@id"/></span> of type <xsl:value-of select="@type"/></h1></p>
 	<p><h3>Results of analysis of <xsl:value-of select="@analysisDate"/> of device <xsl:value-of select="@id"/> of type <xsl:value-of select="@type"/> measured at <xsl:value-of select="@measurementDate"/></h3></p>
 
 	<xsl:apply-templates select="*[name()!='ad:channel']"/>
 
-	<table class="channel">
+	<table class="device">
 	  <tr>
 	    <th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="ad:channel[1]/@number"/></xsl:attribute>channel</th>
 	    <th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="ad:channel[1]/@offset"/></xsl:attribute>offset [<xsl:apply-templates mode="units" select="ad:channel[1]/@offset"/>]</th>
@@ -42,27 +54,27 @@
 	  <xsl:apply-templates select="ad:channel"/>
 	</table>
 
-	<table class="channel">
-	  <tr><th>statistics</th><xsl:apply-templates mode="th" select="ad:noise"/></tr>
+	<table class="device">
+	  <tr><th></th><xsl:apply-templates mode="th" select="ad:noise"/></tr>
 	  <tr><th>noise</th><xsl:apply-templates mode="td" select="ad:noise"/></tr>
 	</table>
 
-	<table class="channel">
-	  <tr><th>statistics</th><xsl:apply-templates mode="th" select="ad:gain"/></tr>
+	<table class="device">
+	  <tr><th></th><xsl:apply-templates mode="th" select="ad:gain"/></tr>
 	  <tr><th>gain</th><xsl:apply-templates mode="td" select="ad:gain"/></tr>
 	</table>
 
-	<table class="channel">
-	  <tr><th>statistics</th><xsl:apply-templates mode="th" select="ad:offset"/></tr>
+	<table class="device">
+	  <tr><th></th><xsl:apply-templates mode="th" select="ad:offset"/></tr>
 	  <tr><th>offset</th><xsl:apply-templates mode="td" select="ad:offset"/></tr>
 	</table>
 
-	<table class="channel">
-	  <tr><th>statistics</th><xsl:apply-templates mode="th" select="ad:C_int"/></tr>
+	<table class="device">
+	  <tr><th></th><xsl:apply-templates mode="th" select="ad:C_int"/></tr>
 	  <tr><th>C<span style="vertical-align:sub;">internal</span></th><xsl:apply-templates mode="td" select="ad:C_int"/></tr>
 	</table>
 
-	<table class="channel">
+	<table class="device">
 	  <tr>
 	    <th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="ad:averageSetThreshold/@value"/></xsl:attribute>average set threshold [<xsl:apply-templates mode="units" select="ad:averageSetThreshold/@value"/>] at input charge of <xsl:value-of select="ad:averageSetThreshold/@atCharge"/> <xsl:apply-templates mode="units" select="ad:averageSetThreshold/@atCharge"/></th>
 	    <td><xsl:value-of select="ad:averageSetThreshold/@value"/></td>
@@ -167,11 +179,11 @@
       </tr>
       <xsl:apply-templates select="ad:channel"/>
     </table>   
-    <table class="channel">
+    <table class="statistics">
       <tr><th>statistics</th><xsl:apply-templates mode="th" select="ad:mean"/></tr>
       <tr><th>mean times</th><xsl:apply-templates mode="td" select="ad:mean"/></tr>
     </table>
-    <table class="channel">
+    <table class="statistics">
       <tr><th>statistics</th><xsl:apply-templates mode="th" select="ad:rms"/></tr>
       <tr><th>rms of times</th><xsl:apply-templates mode="td" select="ad:rms"/></tr>
     </table>
@@ -189,11 +201,11 @@
       </tr>
       <xsl:apply-templates select="ad:channel"/>
     </table>   
-    <table class="channel">
+    <table class="statistics">
       <tr><th>statistics</th><xsl:apply-templates mode="th" select="ad:spanOfMeans"/></tr>
       <tr><th>span of means</th><xsl:apply-templates mode="td" select="ad:spanOfMeans"/></tr>
     </table>
-    <table class="channel">
+    <table class="statistics">
       <tr><th>statistics</th><xsl:apply-templates mode="th" select="ad:spanOfRMSs"/></tr>
       <tr><th>span of RMSs</th><xsl:apply-templates mode="td" select="ad:spanOfRMSs"/></tr>
     </table>
