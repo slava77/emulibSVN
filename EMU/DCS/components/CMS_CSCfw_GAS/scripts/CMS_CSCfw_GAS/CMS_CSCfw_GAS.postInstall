@@ -8,10 +8,10 @@ const string EMU_FSM_DOMAIN_INFRA = "CMS_CSC_INFRA";
 
 const string FSM_GAS_NODE_NAME = "CSC Gas";
 const string FSM_GAS_DP = "CscGas/CSC_GAS_MONITOR";
-const string FSM_GAS_DPT = "fwGasSystem_CSC_GAS";
+const string FSM_GAS_DPT = "CscGasSystem_CSC_GAS";
 const string FSM_COOLING_NODE = "CSC_COOLING";
 const string FSM_COOLING_DP = "CscCooling/CSC_COOLING_MONITOR";
-const string FSM_COOLING_DPT = "fwCooling_CSC_COOLING";
+const string FSM_COOLING_DPT = "CscCooling_CSC_COOLING";
 
 const string COMPONENT_NAME = "CMS_CSCfw_GAS";
 
