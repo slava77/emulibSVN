@@ -320,8 +320,8 @@ void emumaj_createMajorityConfiguration(string majorityTopNode) {
   configureAtlasPSU(majorityTopNode);
   DebugTN("Creating GAS majority (top device only)");
   configureGas(majorityTopNode);
-  DebugTN("Creating COOLING majority (top device only)");
-  configureCooling(majorityTopNode);
+//  DebugTN("Creating COOLING majority (top device only)");
+//  configureCooling(majorityTopNode);
 
   DebugTN("Creating general majority parameters");
   
@@ -684,8 +684,8 @@ void configureME11Hv(string topNode) {
 void configureGas(string topNode) {
   //GAS - top (global) device only
   majority_addDevice("Gas", // this defines the internal name of the device for the majority
-  "fwGasSystem_CSC_GAS", // this is the corresponding Device Unit Type
-  makeDynString(".status"), // define the datapoint elements you need to connect
+  "CscGasSystem_CSC_GAS", // this is the corresponding Device Unit Type
+  makeDynString(".fsm.currentState"), // define the datapoint elements you need to connect
   makeDynString("on", "error"), // these are the basic device states for this device
   1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
   );
@@ -700,8 +700,8 @@ void configureGas(string topNode) {
 void configureCooling(string topNode) {
   //GAS - top (global) device only
   majority_addDevice("Cooling", // this defines the internal name of the device for the majority
-  "fwCooling_CSC_COOLING", // this is the corresponding Device Unit Type
-  makeDynString(".status"), // define the datapoint elements you need to connect
+  "CscCooling_CSC_COOLING", // this is the corresponding Device Unit Type
+  makeDynString(".fsm.currentState"), // define the datapoint elements you need to connect
   makeDynString("on", "error"), // these are the basic device states for this device
   1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
   );

@@ -44,9 +44,9 @@ dyn_int majorityUser_stateCounts(string device, dyn_anytype values, // informati
     case "DDU":
       return emumaj_onOffErrorFsmStateCounts(values, all, calcTotal, node);
     case "Gas":
-      return emumaj_onOffErrorStatusDpCounts(values, all, calcTotal, node, true, false);
+      return emumaj_onOffErrorFsmStateCounts(values, all, calcTotal, node);
     case "Cooling":
-      return emumaj_onOffErrorStatusDpCounts(values, all, calcTotal, node, true, false);
+      return emumaj_onOffErrorFsmStateCounts(values, all, calcTotal, node);
     default:
       break;
   }
@@ -202,7 +202,9 @@ string majorityUser_nodeTranslation(string node) {
       (type == "FwElmbPSUBranch") ||
       (type == "CscFedDdu") ||
       (type == "CscHvPrimary") ||
-      (type == "FwCaenChannel")) {
+      (type == "FwCaenChannel") ||
+      (type == "CscGasSystem_CSC_GAS") ||
+      (type == "CscCooling_CSC_COOLING")) {
     return treeCache_getFsmInternalDp(node);
   } else {
     return treeCache_getFsmDevDp(node);
