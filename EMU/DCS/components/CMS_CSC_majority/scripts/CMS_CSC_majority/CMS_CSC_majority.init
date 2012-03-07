@@ -4,11 +4,11 @@
 
 dyn_string majorityTopNodes;
 
-const bool EMUMAJ_DELETE_TREE_CACHE_AND_MAJORITY_CONF = true;
-const bool EMUMAJ_CREATE_TREE_CACHE = true;
-const bool EMUMAJ_CREATE_MAJORITY_CONF = true;
-const bool EMUMAJ_DELETE_MAJORITY_DUS = true;
-const bool EMUMAJ_CREATE_MAJORITY_DUS = true;
+const bool EMUMAJ_DELETE_TREE_CACHE_AND_MAJORITY_CONF = false;
+const bool EMUMAJ_CREATE_TREE_CACHE = false;
+const bool EMUMAJ_CREATE_MAJORITY_CONF = false;
+const bool EMUMAJ_DELETE_MAJORITY_DUS = false;
+const bool EMUMAJ_CREATE_MAJORITY_DUS = false;
 const bool EMUMAJ_UPDATE_FSM_TYPES = true;
 const bool EMUMAJ_OVERWRITE_FSM_TYPE_BACKUPS = false;
 const bool EMUMAJ_RESTORE_FSM_TYPES = false;
@@ -20,8 +20,6 @@ bool isSupervisor;
 
 main()
 {
-return;  
-  
   setFsmAccessControl();
   emumaj_debug("Access Control has been set.", true);
   
@@ -400,17 +398,13 @@ bool emu_checkException(dyn_string &exceptionInfo, string higherLevelMsg = "") {
 
 void emumaj_updateFsmTypes() {
   dyn_string typesToUpdate = makeDynString("CSC_LV_NODES",
-                                           "CSC_LV_HV",
                                            "CSC_LV_TREE_NODES",
-                                           "EMUFEDNodes",
-                                           "EMUNodes",
-                                           "EMUSTBYNodes",
-                                           "EMUTREESTBYNodes",
-                                           "EMUTREENodes",
-                                           "EMUTREENodes_I",
-                                           "EMUTREENodes_O",
-                                           "EMUTREENodes_S",
-                                           "CMS_CSC_ME11_HV_Type");
+                                           "CMS_CSC_ME11_HV_Type",
+                                           "EMUGrouping",
+                                           "EMU_LV",
+                                           "EMUFed",
+                                           "EMUChamberInner",
+                                           "EMUChamberOuter");
   
   for (int i=1; i <= dynlen(typesToUpdate); i++) {
     string typeDp = "fwOT_" + typesToUpdate[i];
