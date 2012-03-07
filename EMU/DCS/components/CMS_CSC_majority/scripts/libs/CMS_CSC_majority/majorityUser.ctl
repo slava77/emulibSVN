@@ -98,10 +98,10 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
                                   "DDU:error",
                                   "AtlasPSU_Branch:on",
                                   "AtlasPSU_Branch:error",
+//                                  "Cooling:on",
+//                                  "Cooling:error",                         
                                   "Gas:on",
-                                  "Gas:error",
-                                  "Cooling:on",
-                                  "Cooling:error")))) {
+                                  "Gas:error")))) {
     return "OFF";
     
   // ERROR state
@@ -117,8 +117,8 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
                                  "MrtnCrate:error",
                                  "DDU:error",
                                  "AtlasPSU_Branch:error",
-                                 "Gas:error",
-                                 "Cooling:error"))) {
+//                                 "Cooling:error",
+                                 "Gas:error"))) {
     return "ERROR";
     
   // ON state
@@ -134,8 +134,8 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
                                  "MrtnCrate:on",
                                  "DDU:on",
                                  "AtlasPSU_Branch:on",
-                                 "Gas:on",
-                                 "Cooling:on"))) {
+//                                 "Cooling:on",
+                                 "Gas:on"))) {
     return "ON";
 
   // OUTER_ON state
@@ -153,8 +153,8 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
                                  "MrtnCrate:on",
                                  "DDU:on",
                                  "AtlasPSU_Branch:on",
-                                 "Gas:on",
-                                 "Cooling:on"))){
+//                                 "Cooling:on",
+                                 "Gas:on"))){
     return "OUTER_ON";
 
   // STANDBY state    
@@ -170,8 +170,8 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
                                  "MrtnCrate:on",
                                  "DDU:on",
                                  "AtlasPSU_Branch:on",
-                                 "Gas:on",
-                                 "Cooling:on")) &&
+//                                 "Cooling:on",
+                                 "Gas:on")) &&
              emumaj_allOFF(majStates, true,
                    makeDynString("HV_OUTER:on",
                                  "HV_INNER:on",
