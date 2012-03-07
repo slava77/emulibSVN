@@ -2,92 +2,47 @@
 
 # Datapoint/DpId
 DpName	TypeName	ID
-fwGasSystem_CSC_GASInfo	_FwDeviceDefinition	649494
 CscGas	FwNode	649547
-fwOT_fwGasSystem_CSC_GAS	_FwFsmObjectType	649557
+CscGasSystem_CSC_GASInfo	_FwDeviceDefinition	649570
+fwOT_CscGasSystem_CSC_GAS	_FwFsmObjectType	649572
 
 # DpValue
 ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
-fwGasSystem_CSC_GASInfo.type	_FwDeviceDefinition	"CSC Gas"	0x101	06.03.2012 13:30:15.861
-fwGasSystem_CSC_GASInfo.dpType	_FwDeviceDefinition	"fwGasSystem_CSC_GAS"	0x101	06.03.2012 13:30:15.861
-fwGasSystem_CSC_GASInfo.version	_FwDeviceDefinition	""	0x101	06.03.2012 13:30:15.861
-fwGasSystem_CSC_GASInfo.properties.names	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.844
-fwGasSystem_CSC_GASInfo.properties.dpes	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.844
-fwGasSystem_CSC_GASInfo.properties.description	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.845
-fwGasSystem_CSC_GASInfo.configuration.address.canHave	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.846
-fwGasSystem_CSC_GASInfo.configuration.address.general.defaultType	_FwDeviceDefinition	""	0x101	06.03.2012 13:30:15.862
-fwGasSystem_CSC_GASInfo.configuration.address.OPC.items	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.847
-fwGasSystem_CSC_GASInfo.configuration.address.OPC.groups	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.847
-fwGasSystem_CSC_GASInfo.configuration.address.OPC.general.canHave	_FwDeviceDefinition	0	0x101	06.03.2012 13:30:15.863
-fwGasSystem_CSC_GASInfo.configuration.address.OPC.general.serverName	_FwDeviceDefinition	""	0x101	06.03.2012 13:30:15.863
-fwGasSystem_CSC_GASInfo.configuration.address.OPC.general.driverNumber	_FwDeviceDefinition	0	0x101	06.03.2012 13:30:15.863
-fwGasSystem_CSC_GASInfo.configuration.address.OPC.general.groupIn	_FwDeviceDefinition	""	0x101	06.03.2012 13:30:15.863
-fwGasSystem_CSC_GASInfo.configuration.address.OPC.general.groupOut	_FwDeviceDefinition	""	0x101	06.03.2012 13:30:15.863
-fwGasSystem_CSC_GASInfo.configuration.address.DIM.items	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.848
-fwGasSystem_CSC_GASInfo.configuration.address.DIM.general.canHave	_FwDeviceDefinition	0	0x101	06.03.2012 13:30:15.864
-fwGasSystem_CSC_GASInfo.configuration.address.DIM.general.driverNumber	_FwDeviceDefinition	0	0x101	06.03.2012 13:30:15.864
-fwGasSystem_CSC_GASInfo.configuration.address.DIM.general.timeInterval	_FwDeviceDefinition	0	0x101	06.03.2012 13:30:15.864
-fwGasSystem_CSC_GASInfo.configuration.address.DIM.general.timeStamp	_FwDeviceDefinition	0	0x101	06.03.2012 13:30:15.864
-fwGasSystem_CSC_GASInfo.configuration.dpFunction.canHave	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.848
-fwGasSystem_CSC_GASInfo.configuration.dpFunction.function	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.849
-fwGasSystem_CSC_GASInfo.configuration.dpFunction.params	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.849
-fwGasSystem_CSC_GASInfo.configuration.alert.canHave	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.849
-fwGasSystem_CSC_GASInfo.configuration.alert.defaultClasses	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.850
-fwGasSystem_CSC_GASInfo.configuration.alert.defaultTexts	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.850
-fwGasSystem_CSC_GASInfo.configuration.archive.canHave	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.851
-fwGasSystem_CSC_GASInfo.configuration.archive.defaultClass	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.851
-fwGasSystem_CSC_GASInfo.configuration.archive.smoothType	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.852
-fwGasSystem_CSC_GASInfo.configuration.archive.smoothProcedure	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.852
-fwGasSystem_CSC_GASInfo.configuration.archive.deadband	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.852
-fwGasSystem_CSC_GASInfo.configuration.archive.timeInterval	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.853
-fwGasSystem_CSC_GASInfo.configuration.smoothing.canHave	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.853
-fwGasSystem_CSC_GASInfo.configuration.smoothing.smoothProcedure	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.854
-fwGasSystem_CSC_GASInfo.configuration.smoothing.deadband	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.854
-fwGasSystem_CSC_GASInfo.configuration.smoothing.timeInterval	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.854
-fwGasSystem_CSC_GASInfo.configuration.pvRange.canHave	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.855
-fwGasSystem_CSC_GASInfo.configuration.pvRange.minValue	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.855
-fwGasSystem_CSC_GASInfo.configuration.pvRange.maxValue	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.856
-fwGasSystem_CSC_GASInfo.configuration.pvRange.negateRange	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.856
-fwGasSystem_CSC_GASInfo.configuration.pvRange.ignoreOutside	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.856
-fwGasSystem_CSC_GASInfo.configuration.pvRange.inclusiveMin	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.857
-fwGasSystem_CSC_GASInfo.configuration.pvRange.inclusiveMax	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.857
-fwGasSystem_CSC_GASInfo.configuration.format.canHave	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.857
-fwGasSystem_CSC_GASInfo.configuration.format.format	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.858
-fwGasSystem_CSC_GASInfo.configuration.unit.canHave	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.858
-fwGasSystem_CSC_GASInfo.configuration.unit.unit	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.859
-fwGasSystem_CSC_GASInfo.panels.navigator.hardware	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.862
-fwGasSystem_CSC_GASInfo.panels.navigator.logical	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.862
-fwGasSystem_CSC_GASInfo.panels.editor.hardware	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.862
-fwGasSystem_CSC_GASInfo.panels.editor.logical	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.863
-fwGasSystem_CSC_GASInfo.panels.editor.expert	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.863
-fwGasSystem_CSC_GASInfo.properties.defaultValues	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.845
-fwGasSystem_CSC_GASInfo.configuration.address.OPC.direction	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.847
-fwGasSystem_CSC_GASInfo.configuration.address.DIM.direction	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.848
-fwGasSystem_CSC_GASInfo.general.childrenDPTypes	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.862
-fwGasSystem_CSC_GASInfo.general.nameRoot	_FwDeviceDefinition	""	0x101	06.03.2012 13:30:15.862
-fwGasSystem_CSC_GASInfo.general.nameDigits	_FwDeviceDefinition	0	0x101	06.03.2012 13:30:15.862
-fwGasSystem_CSC_GASInfo.configuration.conversion.canHave	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.859
-fwGasSystem_CSC_GASInfo.configuration.conversion.type	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.859
-fwGasSystem_CSC_GASInfo.general.startingNumber	_FwDeviceDefinition	0	0x101	06.03.2012 13:30:15.862
-fwGasSystem_CSC_GASInfo.panels.editor.hardwareAdd	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.863
-fwGasSystem_CSC_GASInfo.panels.editor.hardwareRemove	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.863
-fwGasSystem_CSC_GASInfo.configuration.canHaveDefaults	_FwDeviceDefinition	0	0x101	06.03.2012 13:30:15.862
-fwGasSystem_CSC_GASInfo.properties.types	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.846
-fwGasSystem_CSC_GASInfo.configuration.alert.defaultLimits	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.851
-fwGasSystem_CSC_GASInfo.configuration.conversion.conversionType	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.860
-fwGasSystem_CSC_GASInfo.configuration.conversion.order	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.860
-fwGasSystem_CSC_GASInfo.configuration.conversion.arguments	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.860
-fwGasSystem_CSC_GASInfo.properties.userData	_FwDeviceDefinition		0x101	06.03.2012 13:30:15.845
 CscGas.type	FwNode	"VENDOR"	0x101	06.03.2012 13:30:14.486
-CscGas.dpTypes	FwNode	"fwGasSystem_CSC_GAS"	0x101	06.03.2012 13:30:14.486
+CscGas.dpTypes	FwNode	"CscGasSystem_CSC_GAS"	0x101	07.03.2012 11:29:50.500
 CscGas.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	06.03.2012 13:30:14.486
 CscGas.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	06.03.2012 13:30:14.486
-fwOT_fwGasSystem_CSC_GAS.panel	_FwFsmObjectType	"CMS_CSCfw_GAS/emuDevfwGasSystem_CSC_GASOperation.pnl"	0x101	06.03.2012 14:11:59.402
-fwOT_fwGasSystem_CSC_GAS.components	_FwFsmObjectType	"string fsm_state
-", "", "fwGasSystem_CSC_GAS_initialize(string domain, string device)
+CscGasSystem_CSC_GASInfo.type	_FwDeviceDefinition	"CSC Gas"	0x101	07.03.2012 11:31:10.226
+CscGasSystem_CSC_GASInfo.dpType	_FwDeviceDefinition	"CscGasSystem_CSC_GAS"	0x101	07.03.2012 11:31:10.226
+CscGasSystem_CSC_GASInfo.properties.names	_FwDeviceDefinition	".disabled_channels", ".fsm_state", ".isError"	0x101	07.03.2012 11:31:10.307
+CscGasSystem_CSC_GASInfo.properties.dpes	_FwDeviceDefinition	".disabled_channels", ".fsm_state", ".isError"	0x101	07.03.2012 11:31:10.307
+CscGasSystem_CSC_GASInfo.properties.description	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	07.03.2012 11:31:10.307
+CscGasSystem_CSC_GASInfo.configuration.address.canHave	_FwDeviceDefinition	0, 0, 0	0x101	07.03.2012 11:31:10.307
+CscGasSystem_CSC_GASInfo.configuration.address.general.defaultType	_FwDeviceDefinition	"NO HARDWARE CONNECTION"	0x101	07.03.2012 11:31:10.307
+CscGasSystem_CSC_GASInfo.configuration.address.OPC.general.canHave	_FwDeviceDefinition	0	0x101	07.03.2012 11:31:10.307
+CscGasSystem_CSC_GASInfo.configuration.address.DIM.general.canHave	_FwDeviceDefinition	0	0x101	07.03.2012 11:31:10.307
+CscGasSystem_CSC_GASInfo.configuration.dpFunction.canHave	_FwDeviceDefinition	0, 0, 0	0x101	07.03.2012 11:31:10.307
+CscGasSystem_CSC_GASInfo.configuration.alert.canHave	_FwDeviceDefinition	0, 0, 0	0x101	07.03.2012 11:31:10.307
+CscGasSystem_CSC_GASInfo.configuration.archive.canHave	_FwDeviceDefinition	0, 0, 0	0x101	07.03.2012 11:31:10.307
+CscGasSystem_CSC_GASInfo.configuration.smoothing.canHave	_FwDeviceDefinition	0, 0, 0	0x101	07.03.2012 11:31:10.307
+CscGasSystem_CSC_GASInfo.configuration.pvRange.canHave	_FwDeviceDefinition	0, 0, 0	0x101	07.03.2012 11:31:10.307
+CscGasSystem_CSC_GASInfo.configuration.format.canHave	_FwDeviceDefinition	0, 0, 0	0x101	07.03.2012 11:31:10.307
+CscGasSystem_CSC_GASInfo.configuration.unit.canHave	_FwDeviceDefinition	0, 0, 0	0x101	07.03.2012 11:31:10.307
+CscGasSystem_CSC_GASInfo.panels.navigator.hardware	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	07.03.2012 11:31:10.226
+CscGasSystem_CSC_GASInfo.panels.navigator.logical	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	07.03.2012 11:31:10.226
+CscGasSystem_CSC_GASInfo.panels.editor.hardware	_FwDeviceDefinition	"fwDevice/fwDeviceManage", "fwDevice/fwDeviceExpertConfiguration"	0x101	07.03.2012 11:31:10.226
+CscGasSystem_CSC_GASInfo.panels.editor.logical	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	07.03.2012 11:31:10.226
+CscGasSystem_CSC_GASInfo.panels.editor.expert	_FwDeviceDefinition	"fwDevice/fwDeviceConfigurationExpert"	0x101	07.03.2012 11:31:10.226
+CscGasSystem_CSC_GASInfo.properties.defaultValues	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	07.03.2012 11:31:10.307
+CscGasSystem_CSC_GASInfo.configuration.conversion.canHave	_FwDeviceDefinition	0, 0, 0	0x101	07.03.2012 11:31:10.307
+CscGasSystem_CSC_GASInfo.properties.types	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	07.03.2012 11:31:10.307
+CscGasSystem_CSC_GASInfo.properties.userData	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY"	0x101	07.03.2012 11:31:10.307
+fwOT_CscGasSystem_CSC_GAS.panel	_FwFsmObjectType	"CscGasSystem_CSC_GAS.pnl"	0x101	07.03.2012 11:34:01.078
+fwOT_CscGasSystem_CSC_GAS.components	_FwFsmObjectType	"string fsm_state
+", "", "CscGasSystem_CSC_GAS_initialize(string domain, string device)
 {
 }
-", "fwGasSystem_CSC_GAS_valueChanged( string domain, string device,
+", "CscGasSystem_CSC_GAS_valueChanged( string domain, string device,
       string fsm_state, string &fwState )
 {
 	if (fsm_state == \"ON\")
@@ -104,6 +59,6 @@ fwOT_fwGasSystem_CSC_GAS.components	_FwFsmObjectType	"string fsm_state
 	}
 }
 
-", ""	0x101	06.03.2012 14:52:34.968
-fwOT_fwGasSystem_CSC_GAS.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	06.03.2012 14:52:34.965
-fwOT_fwGasSystem_CSC_GAS.actions	_FwFsmObjectType		0x101	06.03.2012 14:52:34.965
+", ""	0x101	07.03.2012 11:34:01.088
+fwOT_CscGasSystem_CSC_GAS.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	07.03.2012 11:34:01.085
+fwOT_CscGasSystem_CSC_GAS.actions	_FwFsmObjectType		0x101	07.03.2012 11:34:01.085

@@ -45,15 +45,15 @@ main()
   
   if (chkSaveGas.state(0)) {
     // *** GAS ***
-    emu_dynAppend(devices, dpNames(\"CSC_GAS_MONITOR\", \"fwGasSystem_CSC_GAS_d\"));
-    emu_dynAppend(devices, dpNames(\"*\", \"fwGasPurifier_CSC_GAS_data\"));
-    emu_dynAppend(devices, dpNames(\"*\", \"fwGasPump_CSC_GAS_data\"));
-    emu_dynAppend(devices, dpNames(\"*\", \"fwGasPreDistribution_CSC_GAS_data\"));
-    emu_dynAppend(devices, dpNames(\"*\", \"fwGasMixer_CSC_GAS_data\"));
-    emu_dynAppend(devices, dpNames(\"*\", \"fwGasExhaust_CSC_GAS_data\"));
-    emu_dynAppend(devices, dpNames(\"*\", \"fwGasDistribution_CSC_GAS_data\"));
-    emu_dynAppend(devices, dpNames(\"*\", \"fwGasDistributionRack_CSC_GAS_data\"));
-    emu_dynAppend(devices, dpNames(\"*\", \"fwGasDistributionChannel_CSC_GAS_data\"));
+    emu_dynAppend(devices, dpNames(\"CSC_GAS_MONITOR\", \"CscGasSystem_CSC_GAS_d\"));
+    emu_dynAppend(devices, dpNames(\"*\", \"CscGasPurifier_CSC_GAS_data\"));
+    emu_dynAppend(devices, dpNames(\"*\", \"CscGasPump_CSC_GAS_data\"));
+    emu_dynAppend(devices, dpNames(\"*\", \"CscGasPreDistribution_CSC_GAS_data\"));
+    emu_dynAppend(devices, dpNames(\"*\", \"CscGasMixer_CSC_GAS_data\"));
+    emu_dynAppend(devices, dpNames(\"*\", \"CscGasExhaust_CSC_GAS_data\"));
+    emu_dynAppend(devices, dpNames(\"*\", \"CscGasDistribution_CSC_GAS_data\"));
+    emu_dynAppend(devices, dpNames(\"*\", \"CscGasDistributionRack_CSC_GAS_data\"));
+    emu_dynAppend(devices, dpNames(\"*\", \"CscGasDistributionChannel_CSC_GAS_data\"));
     
     // include the plc thing as well, but better to put it inside the CSC_GAS_MONITOR
     //emu_dynAppend(devices, dpNames(\"HvServerStatus\", \"CscCommonString\"));
