@@ -19,9 +19,10 @@ ostream& AFEB::teststand::operator<<( ostream& os, const TestedDevice& d ){
   return os;
 }
 
-AFEB::teststand::TestedDevice::TestedDevice( const string type, const int nChannels, Crate* const crate ) :
+AFEB::teststand::TestedDevice::TestedDevice( const string type, const int nChannels, const double nominalCint, Crate* const crate ) :
   type_( type ),
   nChannels_( nChannels ),
+  nominalInternalCapacitance_( nominalCint ),
   crate_( crate ){}
 
 void AFEB::teststand::TestedDevice::setParameters( const vector< pair<string,string> >& param ){

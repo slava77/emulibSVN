@@ -414,7 +414,7 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
 	threshold_ ->SetBinError( iChannelBin, 0. );
 	noise_     ->SetBinError( iChannelBin, 0. );
 	efficiency_->SetBinError( iChannelBin, 0.00001 ); // For some reason the efficiency histogram refuses to be plotted scaled to the others if the error is zero...
-	// // If sigma=0 (the S curve is a step function at the given resolution), take the increment
+	// // If sigma=0 (the Efficiency curve is a step function at the given resolution), take the increment
 	// // size for sigma, i.e., start the plateau 3 amplitude steps away from the transition.
 	// double plateauStart = mean + 3. * TMath::Max( sigma, double( measurement_->getAmplitudeStep() ) );
 
@@ -567,7 +567,7 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   pulses.DrawCopy("colz");
 
   //
-  // S curves
+  // Efficiency curves
   //
   sCurvePad->cd( 0 );
   gPad->SetLeftMargin( 0.12 );
@@ -576,7 +576,7 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
     // Create a copy so as not to change the original's tile:
     TH1D e( *sCurve_.at( iChannel ) );
     e.Scale( 1./measurement_->getNPulses() );
-    e.SetTitle( (string( "S curve for device " ) + testedDevice_->getId()).c_str() );
+    e.SetTitle( (string( "Efficiency curve for device " ) + testedDevice_->getId()).c_str() );
     e.SetMinimum( 0. );
     e.SetMaximum( 2.1 );
     e.SetTitleOffset( 1.5, "Y" );

@@ -113,7 +113,8 @@ void AFEB::teststand::Configuration::createMeasurements() {
   createCrate();
 
   // Find the type of tested device
-  string testedDeviceType   = utils::getSelectedNodeValue( xml_, "/c:configuration/c:testedDevice/@type" );
+  string testedDeviceType = utils::getSelectedNodeValue( xml_, "/c:configuration/c:testedDevice/@type" );
+  double testedDeviceNominalCint = utils::stringTo<double>( utils::getSelectedNodeValue( xml_, "/c:configuration/c:testedDevice/@nominalInternalCapacitance" ) );
   int testedDeviceNChannels = utils::stringTo<int>( utils::getSelectedNodeValue( xml_, "/c:configuration/c:testedDevice/@nChannels" ) );
 
   // Find the socket number of devices to be tested (i.e., those for which an id is given):
@@ -129,7 +130,7 @@ void AFEB::teststand::Configuration::createMeasurements() {
     stringstream xpath;
     xpath << "/c:configuration/c:inputs/c:testedDevice[@socket='" << t->second << "']/@*";
     vector< pair<string,string> > deviceParameters = utils::getSelectedNodesValues( xml_, xpath.str() );
-    TestedDevice* testedDevice = new TestedDevice( testedDeviceType, testedDeviceNChannels, crate_ );
+    TestedDevice* testedDevice = new TestedDevice( testedDeviceType, testedDeviceNChannels, testedDeviceNominalCint, crate_ );
     testedDevice->setParameters( deviceParameters );
     
     cout << deviceParameters << endl;

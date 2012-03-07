@@ -53,10 +53,22 @@ DAC AFEB::teststand::AnalyzedDevice::getThresholdDACDescriptor() const {
 	      signalConverterSocket_ );
 }
 
+double AFEB::teststand::AnalyzedDevice::chargeFromVoltage( const double voltage, Measurement::Capacitor_t capacitorType ) const {
+  if ( capacitorType == Measurement::external ) return injectionCapacitance_ * voltage / pulseDivisionFactor_ / correctionCoefficient_; 
+  if ( capacitorType == Measurement::internal ) return nominalInternalCapacitance_ * voltage;
+  return 0.;
+}
+
+pair<double,double> AFEB::teststand::AnalyzedDevice::chargeFromVoltage( const pair<double,double> voltage, Measurement::Capacitor_t capacitorType ) const {
+  return make_pair( AnalyzedDevice::chargeFromVoltage( voltage.first , capacitorType ),
+		    AnalyzedDevice::chargeFromVoltage( voltage.second, capacitorType ) );
+}
+
+
 void AFEB::teststand::AnalyzedDevice::addThresholdMeasurement( const int iChannel, 
 							       const pair<double,double> V_setThreshold ,
-							       const pair<double,double> V_measuredThreshold,
-							       const pair<double,double> V_measuredNoise ){
+							       const pair<double,double> Q_measuredThreshold,
+							       const pair<double,double> Q_measuredNoise ){
   // Fit Q(V) instead of V(Q) to better estimate the error of the fit parameters. (The error is on Q rather than on V.)
 
   TMatrixD    x  ( 1, 1 );
@@ -65,13 +77,13 @@ void AFEB::teststand::AnalyzedDevice::addThresholdMeasurement( const int iChanne
 
   // Convert measured threshold voltage to injected charge [fC]. Take into account the correction coefficient as well:
   x  ( 0, 0 ) = V_setThreshold.first;
-  y  ( 0, 0 ) = chargeFromVoltage( V_measuredThreshold.first );
-  var( 0, 0 ) = TMath::Power( chargeFromVoltage( V_measuredThreshold.second ), 2 );
+  y  ( 0, 0 ) = Q_measuredThreshold.first;
+  var( 0, 0 ) = TMath::Power( Q_measuredThreshold.second, 2 );
   channels_[iChannel].QofVfitter_.addObservation( x, y, var );
 
   // Add the noise measurements as well to average them while we're at it:
-  y  ( 0, 0 ) = chargeFromVoltage( V_measuredNoise.first );
-  var( 0, 0 ) = TMath::Power( chargeFromVoltage( V_measuredNoise.second ), 2 );
+  y  ( 0, 0 ) = Q_measuredNoise.first;
+  var( 0, 0 ) = TMath::Power( Q_measuredNoise.second, 2 );
   channels_[iChannel].noiseAverager_.addObservation( x, y, var );
 
   // cout << channels_[iChannel].noiseAverager_.getObservationCount() << " Added ( " << x(0,0) << ", " << y(0,0) << "+-" << TMath::Sqrt( var(0,0) ) << " )" << endl;
@@ -105,10 +117,12 @@ void AFEB::teststand::AnalyzedDevice::calculateGains(){
       for ( int iChannel=0; iChannel<nChannels_; ++iChannel ){
 	addThresholdMeasurement( iChannel,
 				 thresholdDAC_->mV_from_DACUnit( (*m)->getSetThreshold() ),
-				 pulseDAC_    ->mV_from_DACUnit( thresholdHistogram->GetBinContent( iChannel+1 ),
-								 thresholdHistogram->GetBinError  ( iChannel+1 )  ),
-				 pulseDAC_    ->mV_from_DACUnit( noiseHistogram    ->GetBinContent( iChannel+1 ),
-								 noiseHistogram    ->GetBinError  ( iChannel+1 )  )
+				 chargeFromVoltage( pulseDAC_->mV_from_DACUnit( thresholdHistogram->GetBinContent( iChannel+1 ),
+										thresholdHistogram->GetBinError  ( iChannel+1 )  ),
+						    (*m)->getInjectionCapacitor() ),
+				 chargeFromVoltage( pulseDAC_->mV_from_DACUnit( noiseHistogram    ->GetBinContent( iChannel+1 ),
+										noiseHistogram    ->GetBinError  ( iChannel+1 )  ),
+						    (*m)->getInjectionCapacitor() )
 				 );
       } // for ( int iChannel=0; iChannel<nChannels; ++iChannel ){
       
@@ -231,12 +245,17 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
       for ( int iChannel=0; iChannel<nChannels_; ++iChannel ){
 	ss << "    <ad:channel number=\""    << noshowpos << setw(2) << iChannel
 	   <<              "\" threshold=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed
-	   <<                                chargeFromVoltage( pulseDAC_->mV_from_DACUnit( thresholdHistogram->GetBinContent( iChannel+1 ) ).first )
+	   <<                                chargeFromVoltage( pulseDAC_->mV_from_DACUnit( thresholdHistogram->GetBinContent( iChannel+1 ) ).first,
+								(*m)->getInjectionCapacitor() )
 	   <<              "\" noise=\""
-	   <<                                chargeFromVoltage( pulseDAC_->mV_from_DACUnit( noiseHistogram    ->GetBinContent( iChannel+1 ) ).first )
+	   <<                                chargeFromVoltage( pulseDAC_->mV_from_DACUnit( noiseHistogram    ->GetBinContent( iChannel+1 ) ).first,
+								(*m)->getInjectionCapacitor() )
 	   <<              "\" chi2ndf=\""
 	   <<                                                                               chi2ndfHistogram  ->GetBinContent( iChannel+1 )
 	   <<     "\"/>" << endl;
+	TH1D *efficiencyHistogram;
+	histogramName = string( "effVsAmpl__" ) + fileName + "__ch_" + utils::stringFrom<int>( iChannel );
+	f.GetObject( histogramName.c_str(), efficiencyHistogram );
       } // for ( int iChannel=0; iChannel<d->getNChannels(); ++iChannel )
       
     } // if ( (*m)->getType() == Measurement::count_vs_dac )
@@ -251,8 +270,12 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
       // Profile hist needs projecting:
       TH1D *timesVsADC = timesHistogram->ProjectionX( "tp", "e" ); // Keep the original errors, which are actually the RMS in this case.
       TH1D *timesVsCharge = new TH1D( "timesVsCharge", "timesVsCharge", timesVsADC->GetNbinsX(), 
-				      chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinLowEdge(                          1 ) ).first ),
-				      chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinLowEdge ( timesVsADC->GetNbinsX()+1 ) ).first )
+				      chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinLowEdge(                          1 ) ).first,
+							 (*m)->getInjectionCapacitor()
+							 ),
+				      chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinLowEdge ( timesVsADC->GetNbinsX()+1 ) ).first,
+							 (*m)->getInjectionCapacitor()
+							 )
 				      );
 
       // Find the bins which the nominal input charge values would fall into, and get the charges corresponding the center of those bins:
@@ -262,15 +285,18 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
       vector<valarray<double> > rmsTimes;  // rmsTimes[iCharge][iChannel]
       for ( size_t iCharge=0; iCharge<sizeof(nominalInputCharges_)/sizeof(double); ++iCharge ){
 	bins.push_back( timesVsCharge->FindBin( nominalInputCharges_[iCharge] ) );
-	realCharges.push_back( chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinCenter( bins.back() ) ).first ) );
+	realCharges.push_back( chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinCenter( bins.back() ) ).first,
+						  (*m)->getInjectionCapacitor() ) );
 	meanTimes.push_back( valarray<double>( nChannels_ ) ); // prepare container
 	rmsTimes .push_back( valarray<double>( nChannels_ ) ); // prepare container
       }
       // Find the bins for the ends of range for slew calculation:
       int binInputChargeRangeStart = max(                          1, timesVsCharge->FindBin( nominalInputChargeRangeStart_ ) );
       int binInputChargeRangeEnd   = min( timesVsCharge->GetNbinsX(), timesVsCharge->FindBin( nominalInputChargeRangeEnd_   ) );
-      double inputChargeRangeStart = chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinCenter( binInputChargeRangeStart ) ).first );
-      double inputChargeRangeEnd   = chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinCenter( binInputChargeRangeEnd   ) ).first );
+      double inputChargeRangeStart = chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinCenter( binInputChargeRangeStart ) ).first,
+							(*m)->getInjectionCapacitor() );
+      double inputChargeRangeEnd   = chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinCenter( binInputChargeRangeEnd   ) ).first,
+							(*m)->getInjectionCapacitor() );
       valarray<double> meanSpan( nChannels_ );
       valarray<double> rmsSpan ( nChannels_ );
 

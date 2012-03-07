@@ -18,7 +18,7 @@ namespace AFEB { namespace teststand {
     class TestedDevice {
     public:
       friend ostream& operator<<( ostream& os, const TestedDevice& d );
-      TestedDevice( const string type, const int nChannels, Crate* const crate );
+      TestedDevice( const string type, const int nChannels, const double nominalCint, Crate* const crate );
       void setParameters( const vector< pair<string,string> >& param );
       int getTDCSlot() const { return tdcSlot_; }
       int getSignalConverterSlot() const { return signalConverterSlot_; }
@@ -34,6 +34,8 @@ namespace AFEB { namespace teststand {
     protected:
       string type_;		///< The device type.
       int nChannels_;		///< The number of channels in this device.
+      double nominalInternalCapacitance_;   ///< Nominal internal capacitance [pF] of this device.
+      
       string id_;		///< The unique id of this device.
       int socket_;		///< The adaptor socket this device is plugged into.
       int tdcSlot_;		///< The crate slot the TDC reading out this device is inserted into.

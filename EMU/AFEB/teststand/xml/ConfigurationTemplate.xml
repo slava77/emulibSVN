@@ -6,6 +6,7 @@
       <meta:attr name="type" value="AD16" description="16-channel pre-amp, shaper and discriminator board"/>
       <meta:attr name="type" value="CMP16" description="16-channel pre-amp, shaper and discriminator chip"/>
       <meta:attr name="nChannels" value="16" description="Number of channels."/>
+      <meta:attr name="nominalInternalCapacitance" units="pF" description="The nominal internal capacitance [pF]."/>
       <meta:attr name="tdcSlot" value="1" description="The crate slot in which the TDC reading out this device is inserted."/>
       <meta:attr name="tdcSlot" value="2" description="The crate slot in which the TDC reading out this device is inserted."/>
       <meta:attr name="tdcSlot" value="3" description="The crate slot in which the TDC reading out this device is inserted."/>
@@ -88,7 +89,7 @@
     </meta:tag>
   </meta:data>
 
-  <c:testedDevice type="AD16" nChannels="16"/>
+  <c:testedDevice type="AD16" nChannels="16" nominalInternalCapacitance="0.25"/>
 
   <c:crate number="1">
     <c:module slot="1"  name=""           id=""       type=""/>
